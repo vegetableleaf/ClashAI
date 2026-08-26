@@ -1,0 +1,204 @@
+{{DISPLAYTITLE: <span style="color: #ffa31a;">Heal Spirit</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card_Infobox|Cost=1|Rarity=Rare|Type=Troop|Arena=Rascal's Hideout|ReleaseDate=2 April 2020}}
+{{Quote|A mischevious Spirit that leaps at enemies, dealing Damage and leaving behind a powerful healing effect that restores Hitpoints to friendly Troops!}}
+
+The Heal Spirit is a {{Rarity|Rare}} [[Cards|card]] that is unlocked from the [[Arenas|Rascal's Hideout (Arena 13)]]. It spawns a very fast, area-damage, air-targeting, short-ranged, ground [[:Category:Troop Cards|troop]] with low hitpoints and low damage. It launches itself at its target when attacking, destroying itself on impact. It creates a small glowing restoration field that heals allied troops nearby. Its physical appearance is similar to an [[Ice Spirit]], but it is lemon in color and is shaped more closely to a rectangle. It also has a red tongue which appears to be sticking out and a single yellow tooth.  A Heal Spirit card costs 1 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Heal Spirit Card}}
+*The Heal Spirit is best played behind the [[:Category:Troop Cards|troop]] the player wants to heal to guarantee that the troop is inside of the healing radius after the Heal Spirit attacks. Even if the troop is already damaged, placing the Heal Spirit in front of any troop that doesn't move at a fast speed will likely still cause the troop to be out of the Heal Spirit's heal radius when the Heal Spirit attacks, wasting most of its value.
+**In certain situation, it might be worth it to use it as a tank for a small push. A Heal Spirit has sufficient hitpoints to reach an opposing [[Tower Princess]] or [[Royal Chef]]. This means that all [[Goblins|Goblin]] [[cards]], all [[Minions|Minion]] cards, [[Wall Breakers]], [[Bats]], and [[Guards]] can reach the [[:Category:Crown Towers|Crown Tower]] unscathed while the Heal Spirit tanks the Crown Tower. This will not work if the Heal Spirit is at a lower Level or the opponent is using the [[Cannoneer]] or [[Dagger Duchess]].
+*The Heal Spirit has enough hitpoints to take a shot from most medium-sized units. The [[Musketeer]], [[Executioner]], [[Baby Dragon]], [[Witch]], [[Magic Archer]], [[Archer Queen]], [[Princess]], [[Flying Machine]], [[Fisherman]], [[Cannon Cart]], [[Goblin Demolisher]], [[Ice Wizard]], [[Electro Dragon]], [[Firecracker]], [[Bomber]], [[Dart Goblin]], all take more than 1 hit to eliminate the Heal Spirit, giving it ample time to jump on them.
+**Against the [[Mother Witch]], you want to place it as close to her as possible, so that it is killed as part of its attack instead of being killed by the Mother Witch, otherwise she will spawn a Cursed Hog from it.
+*The Heal Spirit's healing radius will spawn around the enemy troop that it jumps on. To get the maximum amount of value healing troops on defense, the player should place the Heal Spirit in a way that will bring the enemy troop closer to their own defenders, so that more of their troops end up being healed. Alternatively, the player can use [[Tornado]] to bring enemy troops very close to friendly ones, increasing the likelihood that the healing radius will take effect.
+*The Heal Spirit can tack on a small amount of damage for a cheap cost, allowing other cards to more easily take out other troops. For example, a Heal Spirit in combination with a [[Fireball]] will fully take out units like the Musketeer, [[Electro Wizard]], or [[Wizard]]. Similarly, a Heal Spirit combined with a [[Zap]], [[Rage]], or [[Giant Snowball]] will be able to fully take out Goblins, Minions, or [[Rascals|Rascal Girls]].
+*It is much harder to heal long-ranged troops, such as the Musketeer, Flying Machine, and the Magic Archer, as the healing radius is quite small. Even when versed against melee troops that will approach the ranged troop, it may not be worth letting them close in as most long-ranged troops have somewhat low hitpoints, potentially leaving them with less health after the healing than if they were to simply be protected.
+*A good counterplay against a Heal Spirit is to separate it from the push that it is supporting. This can be done easily by placing a cheap card like [[Skeletons]], Bats, Goblins, [[Spear Goblins]], [[Ice Golem]], or another Spirit card to the side. This works in situations where the Heal Spirit is supporting troops that have a different targeting than the Heal Spirit, such as that of an [[Elixir Golem]].
+**Conversely, the Heal Spirit can be used to lure another Spirit card to attack it. It is able to survive the attacks of any of the other Spirits for a neutral [[Elixir]] trade and save itself for additional defense.
+*[[The Log]] and the [[Barbarian Barrel]] are good counters to the Heal Spirit, especially since the Heal Spirit will often be played in tandem with other cards, which allows the defender to get splash value on them. They are still good counters to Heal Spirits that are played at or near the bridge alone, as The Log can chip the Crown Tower, while the Barbarian Barrel can force out another card from the opponent to prevent chip damage. However, the player may want to do this to bait the opponent's [[:Category:Spell Cards|spell]], which can allow them to more effectively use other cards, such as a [[Goblin Barrel]].
+**Note that with the Barbarian Barrel, it is important that the barrel itself defeats the Heal Spirit before the [[Barbarians|Barbarian]] spawns, otherwise it may result in the Heal Spirit jumping onto the Barbarian, possibly healing the troops that the Heal Spirit was used alongside. The same principle applies to using the [[Royal Delivery]] against it.
+*The Heal Spirit pairs well with any kind of swarm that is subject to a certain spell but can survive said spell with just a sliver of health. They are typically left alone for the Tower Princess to clean up, but a Heal Spirit following behind them forces them to spend more Elixir on defense, or else their lone Tower will be overwhelmed by the sudden health rejuvenation. However, this will not work against the Dagger Duchess, as the Heal Spirit will not jump in time to save the crippled swarms from her daggers.
+**The [[Royal Hogs]] can have most of their damage prevented by a Fireball, but the healing of the Heal Spirit is enough to allow them to gain more damage on the Tower Princess.
+**The [[Minion Horde]] output high damage, but can be easily dealt with Zap, Rage, or Giant Snowball. The Heal Spirit is able to fully reverse the damage of those spells, allowing the Minion Horde to devastate the Tower Princess.
+**Similarly, both [[Arrows]] and [[Royal Delivery]] are a decent check to Barbarians, preventing most of their damage. Much like the Minion Horde, they can destroy the Tower Princess if they get healed by the Heal Spirit. A similar principle applies to unshielded [[Royal Recruits]].
+**The Heal Spirit works very well with [[Elite Barbarians]]. The Elite Barbarians are bulky enough to survive most attacks and come as a swarm, meaning that the Heal Spirit is gaining more value from its healing. The Heal Spirit is also able to OHKO any Skeleton card, which are common counters used against Elite Barbarians.
+*Heal Spirit also synergizes well in [[Sparky]] and [[Balloon]] [[Battle Decks|decks]]. The sudden health boost<nowiki/> of a few hundred hitpoints can allow these cards to get a single deadly connection that would be otherwise difficult to land on a Crown Tower.
+*The Heal Spirit pairs well with the [[Royal Giant]]. It is reliable against swarms, and its healing can help the Royal Giant generate damage to the Crown Tower. Because of the Royal Giant being close to the bridge, there are also less placements for the opponent to effectively block without it positively affecting the Royal Giant in some way.
+*It is also quite helpful in [[Electro Giant]] and Elixir Golem pushes. The troops that are commonly used in those pushes would benefit significantly from the extra healing but the tanks themselves would also benefit, with the Electro Giant having more opportunities to deal damage with the Zap Pack to any defender, and the Elixir Golem having the drawback of giving Elixir to the opponent delayed by surviving for a bit longer. It can also be helpful in [[Giant]], [[Goblin Giant]], [[Rune Giant]], [[Lava Hound]], and [[Golem]] pushes in a similar way, although with not as much of benefit for the tank, as its healing would be pretty negligible.
+*The Heal Spirit has enough hitpoints to stop a pair of [[Archers]] when they are split with the help of the Tower Princess for a +2 Elixir trade. It may not be able to jump on either on them, but it will be able to distract them long enough for the Tower Princess to finish them off. However, unlike the [[Ice Spirit]], it is not able to prevent all damage if the Archers are not split, as the lack of a stun will still allow the second Archer to engage the Tower Princess and get one hit.
+*If the player can suspect the opponent using a [[Poison]] alongside their main attacker, the player can deploy the Heal Spirit to counteract the damage from Poison, either saving the troops from being defeated by the spell or simply delaying their death, allowing them to defend for slightly longer.
+*A [[Skeleton Barrel]] heading toward a Crown Tower can be fully countered by dropping an Heal Spirit behind the Tower when the barrel's shadow is one tile away from the Tower. The Heal Spirit should spawn right as the barrel pops, and finish deploying right as all the [[Skeletons]] spawn, and proceed to jump onto all of them. This will prevent all damage from the Skeleton Barrel, excluding its Death Damage.
+*The Heal Spirit does not deal enough damage to take out the Guards' shields but it does deal enough damage to finish off the Guards themselves. Knowing this, you can combine the Heal Spirit with The Log or Barbarian Barrel to counter Guards for a neutral Elixir trade, however that requires precise timing.
+*If a [[Royal Ghost]] is coming from one lane, the Heal Spirit should be used to kite him towards the other lane. This is most useful when the Royal Ghost is supporting a larger push to separate him from it.
+*When choosing to use the Heal Spirit over the other Spirit cards in a deck, it is important to note that it is slightly less effective at defending, due to its lack of status effect or its lower damage. Because of this, most of its value comes from its healing capabilities. As such, it should not be used in [[X-Bow]] or [[Mortar]] decks, as the healing has no effect on [[:Category:Building Cards|buildings]].
+**The Heal Spirit is not a replacement for the Skeletons as a [[:Category:1-Elixir Cards|1-Elixir]] card in a deck, as their playstyles are very different. The Heal Spirit is immediately sacrificed when it attacks, making it less valuable in decks where creating large pushes is the way to attack, while the Skeletons are able to survive and keep defending thanks to other tanks absorbing hits for them.
+**If the player is more interested in cheap persistent splash damage, they can use the Bomber instead for such a role. He can attack multiple times for just 1 extra Elixir, while also surviving more attacks thanks to his higher hitpoints. However, in decks where the healing or the cheap cost of the card matter more, the Heal Spirit is the clear option.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}{{StatisticsSubheader|Heal Spirit Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|1||Very Fast (120)||1 sec||2.5||1.5||Air & Ground||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+
+{{StatisticsSubheader|Healing Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Heal Speed<br />{{Icon|I=Hitpoint}}
+! scope="col" |Time Between Pulses<br />{{Icon|I=Time}}
+! scope="col" |Radius<br />{{Icon|I = Radius}}
+! scope="col" |Target<br />{{Icon|I = Targets}}
+|-
+|4 pulses every 1 second||0.25 sec||2.5||Air & Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, heal_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 215}}
+{{#vardefine: dmg_11 | 110 }}
+{{#vardefine: heal_11 | 100.25 }}
+{{#vardefine: heal_speed | 0.25 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Area Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Healing Per Pulse<br />{{Icon|I=Hitpoint}}
+! scope="col" |Healing Per Second<br />{{Icon|I=HPS}}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:heal_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:heal_11}} * (1.1^(3-11)) round 0 }}|{{#var:heal_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}  || {{#expr: {{#var:heal_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:heal_11}} * (1.1^(4-11)) round 0 }}|{{#var:heal_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:heal_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:heal_11}} * (1.1^(5-11)) round 0 }}|{{#var:heal_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:heal_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:heal_11}} * (1.1^(6-11)) round 0 }}|{{#var:heal_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:heal_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:heal_11}} * (1.1^(7-11)) round 0 }}|{{#var:heal_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:heal_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:heal_11}} * (1.1^(8-11)) round 0 }}|{{#var:heal_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:heal_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:heal_11}} * (1.1^(9-11)) round 0 }}|{{#var:heal_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}  || {{#expr: {{#var:heal_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:heal_11}} * (1.1^(10-11)) round 0 }}|{{#var:heal_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{#var:heal_11}} || {{Dps|{{#var:heal_11}}|{{#var:heal_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:heal_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:heal_11}} * (1.1^(12-11)) round 0 }}|{{#var:heal_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}  || {{#expr: {{#var:heal_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:heal_11}} * (1.1^(13-11)) round 0 }}|{{#var:heal_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:heal_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:heal_11}} * (1.1^(14-11)) round 0 }}|{{#var:heal_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:heal_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:heal_11}} * (1.1^(15-11)) round 0 }}|{{#var:heal_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:heal_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:heal_11}} * (1.1^(16-11)) round 0 }}|{{#var:heal_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 10,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|100 {{BASEPAGENAME}} cards<br>50 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 30,000 Damage to enemy Troops or buildings
+|4,000 {{Icon|I=Gold}}<br>50 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 50,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>50 {{Icon|I=XP}}
+|-
+| rowspan="3" |Medic <br/ > [[File:Medic.png|50x50px]]
+|1
+|Heal a total of 640 Troops
+|6,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Heal a total of 1,800 Troops
+|100 {{Icon|I=Rare Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Heal a total of 3,150 Troops
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2020
+*The Heal Spirit [[Cards|card]] was added to the game on 2/4/2020, in a [[Version History#Maintenance%20Break%20(2/4/2020)|maintenance break]], replacing the [[Heal]].
+*On 31/8/2020, the [[Version History#Clan%20Wars%20II%20Update%20(31/8/2020)|Clan Wars II Update]], added the Damage, Healing, Range and Targets statistics on the Heal Spirit's card info screen. It also made it so that [[Clone|cloned]] [[:Category:Troop Cards|troops]] can no longer be healed by the Heal Spirit.
+*On 9/9/2020, a [[Version History#Balance Changes (9/9/2020)|Balance Update]], decreased the Heal Spirit's healing radius to 3.5 tiles (from 4 tiles).
+*On 6/10/2020, a [[Version History#Balance Changes (6/10/2020)|Balance Update]], decreased the Heal Spirit's healing effect by 9%.
+*On 9/12/2020, a [[Version History#Balance Changes (9/12/2020)|Balance Update]], decreased the Heal Spirit's damage by 69%.
+2021
+*On 30/3/2021, the [[Version History#2021%20Quarter%201%20Update%20(30/3/2021)|2021 Quarter 1 Update]], increased the Heal Spirit's damage by 225%, but decreased its healing radius to 2.5 tiles (from 3.5 tiles).
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the [[Arenas|Arena]] to unlock the Heal Spirit from Hog Mountain to Rascal's Hideout and fixed an issue where the Heal Spirit was considered a [[:Category:Spell Cards|spell]] card in its info menu.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 30/3/2022, the [[Version History#Miner%20Update%20(30/3/2022)|Miner Update]], fixed an issue where the Heal Spirit's [[Star Points|Star Level]] used the sound effects of the [[Ice Spirit]].
+*On 12/12/2022, the [[Version History#Clashmas%20Update%20(12/12/2022)|Clashmas Update]], made it so that the Heal Spirit's projectile can no longer be deflected.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Heal Spirit's hitpoints by 0.43%, and increased its healing by 0.25%.
+2026
+
+* On 4/8/2026, a Balance Update, decreased the Heal Spirit's hitpoints by 6%
+
+==Gallery==
+<gallery>
+File:PreRelease Heal Spirit card render.png|Heal Spirit's card render before its release.
+File:Heal Spirit card render.png|Current card render.
+File:Heal Spirit Preview.gif|Current card preview
+File:Heal Spirit 1.png|Heal Spirit 1
+File:Heal Spirit 2.png|Heal Spirit 2
+</gallery>
+
+==Trivia==
+* The Heal Spirit, along with [[Skeletons]], [[Electro Spirit]], [[Fire Spirit]], [[Ice Spirit]], [[Warmth]], and [[Heal]], are the cheapest [[cards]], costing 1 [[Elixir]]. Also, along with Heal, the Heal Spirit is the cheapest {{Rarity|Rare}} card.
+*The Heal Spirit is 1 of 8 [[:Category:Troop Cards|troops]] to die as a part of their attack, the others being the Electro Spirit, Fire Spirit, Ice Spirit, [[Skeleton Barrel]], [[Battle Ram]], [[Suspicious Bush]], and [[Wall Breakers]].
+*The Heal Spirit is 1 of 9 troops that have the same sprite for both players, the others are Skeletons, Electro Spirit, Fire Spirit, [[Bats]], Ice Spirit, [[Elixir Golem|Elixir Blob]], [[Phoenix]], and [[Lava Hound|Lava Pup]].
+*In the French, Portuguese and Malaysian language settings of the game, the Heal Spirit's name translates to "Spirit of Healing". In the German, Spanish, Dutch, Korean, Russian, Arabic, Portuguese, Finnish and Vietnamese language settings of the game, the Heal Spirit's name translates to "Healing Spirit". In the Italian, Norwegian, Turkish, Chinese, and Persian language settings of the game, the Heal Spirit's name translates to "Spirit of Treatment", "Spirit of Sanitation", "Restoration Spirit", "Healer", and "Healing Soul" respectively.
+*The Heal Spirit is 1 of 23 troops that has been featured in the [[Troop Rush]] game [[:Category:Modes|mode]], the others being Skeletons, Skeleton Dragons, Fire Spirit, Bats, [[Elite Barbarians]], [[Firecracker]], [[Rascals|Rascal Girls]], [[Royal Hogs]], Elixir Golem, [[Guards]], [[Prince]], [[Balloon]], [[Golem]], Wall Breakers, [[Ram Rider]], [[Sparky]], Phoenix, [[Royal Ghost]], [[Bandit]], [[Lumberjack]], [[Santa Hog Rider]], and the [[Monk]].
+*The Heal Spirit was the first card to replace another card, which was Heal. This is referenced in a line of text below the description which reads "''R.I.P. Heal. 2017 - 2020. Alas, we hardly used ye.''", referring to its extremely low usage rate in both casual and competitive play.
+*The Heal Spirit has received the largest percentage buff to a singular upgradeable stat out of all cards in the game, with a 225% damage increase in the [[Version History#2021%20Quarter%201%20Update%20(30/3/2021)|2021 Quarter 1 Update]].
+*In [[Touchdown]], if a Heal Spirit jumps into the enemy end zone as it attacks, it does not count as a touchdown. This is because a jumping spirit no longer counts as a troop; it becomes similar to a projectile.
+*The Heal Spirit is the subject of 3 [[Emotes]].
+**The Heal Spirit Buddy Jesus Emote is a reference to the [https://knowyourmeme.com/memes/buddy-christ Buddy Christ] meme.
+*Before the Heal Spirit's release, the card description was changed. It used to read, “''A little ball of sunshine that jumps on enemies but heals your Troops.''”
+
+{{Navigation|Card}}
+
+[[fr:Esprit de guérison]]
+[[de:Heilungsgeist]]
+[[es:Espíritu sanador]]
+[[it:Spirito della cura]]
+[[ru:Дух исцеления]]
+[[zh:治疗精灵]]
+[[Category:Kamikaze Cards]]

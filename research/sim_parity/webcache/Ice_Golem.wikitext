@@ -1,0 +1,211 @@
+{{DISPLAYTITLE: <span style="color: #ffa31a;">Ice Golem</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}
+{{Card Infobox|Cost=2|Rarity=Rare|Type=Troop|Arena=Frozen Peak|ReleaseDate=14 October 2016}}
+{{SubpageNavBox|Hero=yes}}
+{{Quote|He's tough, targets buildings and explodes when destroyed, slowing nearby enemies. Made entirely out of ice... or is he?! Yes.}}
+
+The Ice Golem is a {{Rarity|Rare}} [[Cards|card]] that is unlocked from the [[Arenas|Frozen Peak (Arena 8)]]. It spawns a slow, single-target, [[:Category:Building Cards|building]]-targeting, melee, ground [[:Category:Troop Cards|troop]] with high hitpoints and very low damage. When defeated, the Ice Golem explodes, dealing damage, while additionally slowing down anything nearby for 2 seconds. The Ice Golem takes the appearance of a large creature made out of snow with glowing team-colored eyes and ice shards on his head, with his hands being mostly made of ice, and his nose and rocks on his spine being in the form of coal. An Ice Golem card costs 2 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Ice Golem Card}}
+*The Ice Golem's death damage is enough to one-shot [[Skeletons]] and [[Bats]]. When combined with a [[Zap]] or [[Giant Snowball]], he can fully defeat [[Goblins]], [[Spear Goblins]], [[Minions]], [[Princess]], [[Dart Goblin]], or [[Rascals|Rascal Girls]].
+*A simple strategy is to deploy the Ice Golem in front of a [[Hog Rider]], [[Battle Ram]], [[Dark Prince]], or [[Ram Rider]] as the [[:Category:Tower Troop Cards|Crown Towers]] and any other [[:Category:Troop Cards|troops]] or defensive [[:Category:Building Cards|buildings]] will target the Ice Golem, giving the other troop more time to deal damage, and opposing units will be slowed upon the Ice Golem's death.
+**Once the Ice Golem is eliminated, the Ice Golem's slowing effect of the supporting troops and buildings will give the Hog Rider 1-2 extra hits. This can also help manage a common counter to the Hog Rider, the [[Skeleton Army]]. which the Ice Golem will take care of due to his death damage taking out most if not all of the Skeletons.
+**The Ice Golem can be placed in front of leftover low health defenders to start a mini counter-push or to force a response from the opponent.
+*The Ice Golem can be placed at the bridge along with a unit behind him. This will allow the Ice Golem to tank for the unit, and then slow nearby troops upon death.
+*The Ice Golem can be used defensively as a slowing tank for any attacking troops and buildings. When the Ice Golem is played 2 tiles from the river but in the opposite lane, melee troops will chase the Ice Golem to the other lane giving the player and their Crown Towers more time to defeat the troops. This is called 'kiting'. He is especially effective against slow-moving troops like the [[P.E.K.K.A.|P.E.K.K.A]], [[Giant Skeleton]], [[Valkyrie]], [[Skeleton King]], or the [[Mighty Miner]] as they will take a long time to catch up to the Ice Golem and be pulled into the other lane, all while being chipped down by the Crown Towers.
+**This tactic also works against dual-lane attacks. Placing the Ice Golem on the center can force the troops on one lane to unite with the troops in the other lane, making it easier for area attackers like the [[Mega Knight]], Skeleton King, Valkyrie, or [[Dark Prince]] to counter them.
+**It can also work against some long-range troops. This can easily stop the [[Dart Goblin]], [[Firecracker]], and [[Magic Archer]] for a positive Elixir, due to these troops' longer sight range.
+*To counter ranged troops like the [[Musketeer]], Wizard, [[Ice Wizard]], Mega Minion, [[Archer Queen]], [[Witch]], Hunter, or Electro Wizard, placing the Ice Golem directly on top of the troop is more beneficial, as he slows down the troop after he dies, allowing the tower to finish them off.
+*A simple but powerful strategy is to place the Ice Golem followed by a [[Balloon]]. The Ice Golem acts as a cheap tank for the Balloon and distract poorly placed anti-air ranged units, as well as eliminate Bats with his death damage if defeated.
+*The Ice Golem can be paired with ground troops such as the [[Prince]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], P.E.K.K.A, Mighty Miner, and [[Elite Barbarians]] to defeat swarms that were deployed to execute the troop. If the opponent uses Minions, [[Minion Horde]], or [[Bats/Evolution|Evolved Bats]]. the Ice Golem's Death Damage and a Zap can defeat them.
+*He can be used with cheap, fast troops such as Goblins to deal high damage to a Crown Tower.
+*The Ice Golem is a good counter to the [[Clone]] as he can both distract the clones and one-shot them with his large area damage upon death.
+*The Ice Golem can be a decent counter against the [[Skeleton Barrel]] if the player does not want to use small [[:Category:Spell Cards|spells]] or does not have one in hand. The Ice Golem should be played right as the barrel drops, so that the most Skeletons possible target the Ice Golem and trigger his death damage.
+*The Ice Golem should generally not be used to attack solo, as his damage is very low. He is much more effectively used to tank for other troops, especially glass cannons.
+*As he is the cheapest mini-tank, he can be an addition to cycle [[Battle Decks|decks]], which usually lack high hitpoint units.
+*Due to his low cost, he is disposable. While defending, his death explosion can slow down surrounding troops. During attacks, he can tank for a while and slow down surrounding troops. In addition, he can absorb one strike from [[Lightning]], due to his high hitpoints, and possibly saving another more valuable troop such as a Musketeer, Witch, [[Hunter]], [[Fisherman]], [[Wizard]], [[Mega Minion]], [[Electro Dragon]], [[Berserker]], [[Night Witch]], [[Phoenix]], Archer Queen, Battle Ram, and [[Electro Wizard]].
+*The Ice Golem is not a replacement for a [[Golem]] in any deck, and their playstyles are very different. The Ice Golem costs much less [[Elixir]], has much fewer hitpoints, does lesser death damage, doesn't spawn Golemites upon death, and slows down troops. The Golem serves the role of being a huge tank for a large, tower-taking push, while the Ice Golem is a cheap, reactive mini-tank that is useful on both offense and defense.
+*The Ice Golem is a cheap absorb for spirit cards like the [[Fire Spirit]] and [[Ice Spirit]]. Place the Ice Golem further away from the intended target so that the Spirit card does not hit both the Ice Golem and its original target.
+*Note that the Ice Golem's slow effect from his death does not stack with the slow effects of the Giant Snowball and [[Ice Wizard]]. In addition, the movement speed decrease of the Ice Golem will be overwritten by the [[Earthquake]] and Ram Rider if used together, as their movement speed debuffs of them are more severe.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Ice Golem Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|2||2.5 sec||1 sec||Slow (45)||1 sec||Melee: Short (0.75)||Buildings||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+
+{{StatisticsSubheader|Death Nova Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+! scope="col" |Slow Duration<br />{{Icon|I=Freeze}}
+! scope="col" |Slowdown<br />{{Icon|I=Freeze}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+|-
+|2||2 sec||-30%||Air & Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1315 }}
+{{#vardefine: dmg_11 | 84 }}
+{{#vardefine: atk_speed | 2.5 }}
+{{#vardefine: death_11 | 84 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Death Damage<br />{{Icon|I=Death Damage}}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(3-11)) round 0 }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(4-11)) round 0 }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(5-11)) round 0 }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(7-11)) round 0 }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(8-11)) round 0 }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:death_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{|class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 25,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|100 {{BASEPAGENAME}} cards<br/ >50 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 75,000 Damage to enemy Troops or buildings
+|4,000 {{Icon|I=Gold}}<br>50 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 125,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>50 {{Icon|I=XP}}
+|-
+| rowspan="3" |Collateral Damage <br/ > [[File:Hit Maker.png|50x50px]]
+|1
+|Hit enemy Troops a total of 420 times with Death Damage
+|6,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Troops a total of 1,200 times with Death Damage
+|100 {{Icon|I=Rare Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Troops a total of 2,100 times with Death Damage
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Ice Golem [[Cards|card]] was added to the game on 14/10/2016.
+*On 20/10/2016, a [[Version History#Balance Changes (20/10/2016)|Balance Update]], allowed the Ice Golem's death damage to affect flying [[:Category:Troop Cards|troops]], but Supercell called it a bug fix.
+*On 1/11/2016, the [[Version History#November 2016 Update (1/11/2016)|November 2016 Update]], increased the Ice Golem's death damage by 74%. The update also changed the description. It used to read "''He's tough, targets buildings and explodes when destroyed, slowing nearby enemies. Wears a fashionable collar of coal to match his ears and nails.''". It also changed the Ice Golem's sound effects. Previously, his sound effects when deployed were identical to those of the [[Knight]].
+2017
+*On 23/1/2017, a [[Version History#Balance Changes (23/1/2017)|Balance Update]], decreased the Ice Golem's hitpoints by 5%, his death damage radius to 2 tiles (from 3 tiles), and slow effect duration to 2 seconds (from 3 seconds).
+*On 13/3/2017, the [[Version History#March%202017%20Update%20(13/3/2017)|March 2017 Update]], fixed a bug when using a [[Rocket]] on 2 Ice Golems would result in the Rocket dealing double damage. It also removed the audience sound effects when the Ice Golem is deployed.
+*On 12/12/2017, the [[Version History#Electrifying Update (12/12/2017)|Electrifying Update]], decreased the Ice Golem‘s slow effect duration to 1 second (from 2 seconds).
+2018
+*On 4/6/2018, a [[Version History#Balance Changes (4/6/2018)|Balance Update]], decreased the Ice Golem's hitpoints by 5%.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Rare}} cards start at Level 3 and end at Level 13 (from 1 to 11).
+2020
+*On 3/2/2020, the [[Version History#Pass%20Royale%20and%20more%20(3/2/2020)|February 2020 Update]], added a card render to the Ice Golem's card info screen.
+2021
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 27/6/2022, the [[Version History#Summer%202022%20Update%20(27/6/2022)|Summer 2022 Update]], changed the Ice Golem's second [[Card Mastery]] task to Collateral Damage. Previously, its second Card Mastery Task was Hit Maker.
+*On 2/8/2022, a [[Version History#Balance%20Changes%20(2/8/2022)|Balance Update]], increased the Ice Golem's slow effect duration to 1.5 seconds (from 1 second).
+*On 22/12/2022, a maintenance break, changed the Ice Golem's card image.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+*On 3/10/2023, a [[Version History#Balance%20Changes%20(3/10/2023)|Balance Update]], increased the Ice Golem's slow effect duration to 2 seconds (from 1.5 seconds).
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], increased the Ice Golem's hitpoints by 0.08%.
+*On 8/7/2025, a [[Version History#Balance Changes (8/7/2025)|Balance Update]], increased the Ice Golem's hitpoints by 10%.
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)=|Balance Update]] decreased the slowdown effect to -30% (from -35%).
+
+==Gallery==
+<gallery>
+File:IceGolemCardOld.png|Ice Golem's card image before 22/12/2022.
+File:Ice Golem card render.png|Current card render.
+File:Ice Golem Preview.gif|Current card preview
+File:Ice Golem 2.png|Ice Golem.
+File:Ice Golem 3.png|Ice Golem 2.
+File:Ice Golem 4.png|Ice Golem 3.
+</gallery>
+
+==Trivia==
+*The word "Golem" occurs once in the Bible in Psalm 139:16, which uses the word "''golmi''", that means "my light form", "raw" material, connoting the unfinished human being. A golem is an animated, anthropomorphic being in [https://en.wikipedia.org/wiki/Jewish_folklore Jewish folklore], which is entirely created from inanimate matter, usually clay or mud. The most famous golem narrative involves [https://en.wikipedia.org/wiki/Judah_Loew_ben_Bezalel Judah Loew ben Bezalel], the late 16th-century rabbi of Prague.
+*The Ice Golem is 1 of 17 [[:Category:Troop Cards|troops]] that inspired a troop in Clash of Clans, the others being [[Spear Goblins]], [[Bomber]], [[Bats]], [[Skeleton Barrel]], [[Minion Horde]], [[Firecracker]], [[Battle Ram]], [[Zappies]], [[Baby Dragon]], [[Giant Skeleton]], [[Ram Rider]], [[Inferno Dragon]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], and [[Night Witch]].
+**Unlike his [https://clashofclans.fandom.com/wiki/Ice_Golem counterpart in Clash of Clans], he deals slight damage and merely slows down enemies upon death, rather than freezing them completely and he will slow enemies only after death instead of slowing them even when he attacks them.
+**He has a slightly different appearance in Clash Royale, gaining coals, and is smaller-sized in comparison, like a [[Golem|Golemite]].
+**He walks with only his legs instead with also both of his hands like the Golem, which is unlike his Clash of Clans counterpart.
+*The Ice Golem is 1 of 7 [[cards]] associated with ice, with the others being [[Ice Spirit]], [[Giant Snowball]], [[Freeze]], [[Ice Wizard]], [[Super Ice Golem]], and [[Wizard Trio]].
+**In the Finnish language setting of the game, the Ice Golem's name translates to "Freezing Golem".
+**A Trainer in the [[Training Camp]] is called Trainer Freeze and uses 4 ice-related cards in their [[Battle Decks|deck]], one of them being Ice Golem, and the others being Ice Spirit, Giant Snowball, and Freeze.
+*Unlike the Golem, the Ice Golem attacks with both hands, whereas the Golem only punches with one hand. The [[Elixir Golem]] attacks with both hands, but the Elixir Golemites use one hand and the Elixir Blobs appear to bite.
+*The Ice Golem, along with the [[Minions]], Bomber, [[Skeletons]], [[Skeleton Dragons]], Ice Spirit, [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Mega Minion]], [[Dart Goblin]], Elixir Golem, [[Goblin Cage|Goblin Brawler]], [[Guards]], Baby Dragon, [[P.E.K.K.A.|P.E.K.K.A]], Giant Skeleton, Golem, [[Wall Breakers]], [[Bowler]], [[Executioner]], [[Mega Knight]], Inferno Dragon, Royal Ghost, and [[Lava Hound]], are featured as a [https://squad-busters.fandom.com/wiki/Monsters monster] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*Unlike the Golem and Elixir Golem, the Ice Golem doesn't spawn his smaller versions upon death.
+*The Ice Golem is the subject of certain cosmetics in the game. More specifically:
+**The Ice Golem is the subject of 3 [[Emotes]].
+**The Ice Golem is the subject of a [[King's Tower|Tower Skin]].
+*The initial balance change for Ice Golem on the [[Version History#Balance Changes (8/7/2025)|8/7/2025 balance changes]] was a 12% hitpoints increase, but it was lowered to 10% [https://royaleapi.com/blog/season-73-balance-wip-july-2025 last minute].
+
+{{Navigation|Card}}
+
+[[fr:Golem de glace]]
+[[de:Eisgolem]]
+[[es:Gólem de hielo]]
+[[it:Golem del ghiaccio]]
+[[ru:Ледяной голем]]
+[[pt-br:Golem de Gelo]]
+[[zh:戈仑冰人]]
+[[pl:Lodowy golem]]

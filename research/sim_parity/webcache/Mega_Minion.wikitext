@@ -1,0 +1,197 @@
+{{DISPLAYTITLE: <span style="color: #ffa31a;">Mega Minion</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=3|Rarity=Rare|Type=Troop|Arena=Barbarian Bowl|ReleaseDate=19 September 2016}}
+{{SubpageNavBox|Hero=yes}}{{Quote|Flying, armored and powerful. What could be its weakness?! Cupcakes.}}
+
+The Mega Minion is a {{Rarity|Rare}} [[Cards|card]] that is unlocked from the [[Arenas|Barbarian Bowl (Arena 3)]]. It spawns a single-target, air-targeting, melee, air [[:Category:Troop Cards|troop]] with moderate hitpoints and high damage. It appears as an enlarged [[Minions|Minion]] wearing a set of armor with a mask, chainmail, and a team-colored belt. A Mega Minion card costs 3 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Mega Minion Card}}
+*Unlike the [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Lumberjack]], and [[Prince]], the Mega Minion is vulnerable on offense alone if you were to counterpush after trading some. The Mega Minion, however, excels at defense and should be mostly used as a defensive [[Cards|card]] as it has a high damage output but is slower than [[Minions]]. However, it is often used on the offensive as a support card, being able to clear out low-medium hitpoint units and deal significant damage to everything else.
+*Its high damage to moderate hitpoints allow it to be able to defend relatively well against many ground-based pushes. Its defensive value is even greater since it is much more resistant to [[:Category:Spell Cards|spells]], unlike the [[Minion Horde]] and [[Minions]]. However, it can't deal with swarms very effectively due to its slow hit speed.
+**Also, unlike the Minions, it can counter area damage units such as the [[Witch]], [[Wizard]], [[Baby Dragon]], [[Skeleton Dragons]], [[Magic Archer]], [[Princess|Princess,]] [[Firecracker]], [[Ice Wizard]], and [[Executioner]] without being destroyed. However, it doesn't fare so well against [[Inferno Dragon]] due to the damage ramp up and the Mega Minion's relatively low health.
+*Against ranged troops that can target air troops like the [[Musketeer]], [[Electro Dragon]], [[Mother Witch]], [[Flying Machine]], [[Archer Queen]], and [[Electro Wizard]], place the Mega Minion on top of them, to negate their range advantage and defeat them. This will save more of its hitpoints in case the player wants to use a tank in front of it for a counterattack.
+*If ignored, the Mega Minion will be able to reach the Crown Tower and attack once if the player is using the [[Tower Princess]] or [[Cannoneer]], dealing a fair amount of chip damage. However, a [[Zap]] or a [[Giant Snowball]] will allow the Crown Tower to defeat it for a positive Elixir trade. If the player is using the [[Dagger Duchess]], she will kill it quick enough, causing it to get no damage on the Crown Tower. For this reason, if you know you're going to play against a Mega Minion, it may be a good idea to use the Dagger Duchess as your tower troop.
+*The Mega Minion is a very effective counter against the [[Balloon]] for a cheap cost. Its moderate hitpoints allow it to survive spells from [[Zap]] to [[Poison]] while its damage allows it to quickly deal with the [[Balloon]] itself. Place the Mega Minion on the Balloon's path to further lower its chances of connecting to the Tower.
+*The Mega Minion pairs well with the [[Lava Hound]] since it deals with any moderate-health defending units trying to destroy the Lava Hound while the [[Lava Hound]] tanks most of the incoming damage. When the Lava Hound bursts, the Mega Minion's moderate health will allow it to tank [[:Category:Crown Towers|Crown Tower]] hits while the Lava Pups deal massive damage to the Tower. Naturally, the Mega Minion also fits in very well with the Double Dragon strategy, as its high damage allows it to quickly deal with major threats such as a [[Musketeer]] or [[Wizard]], something that the Baby Dragon and Inferno Dragon both fail at.
+**On the other hand, it is a great counter to an opposing Lava Hound. Its high damage will quickly defeat the Lava Hound itself, and it is also high enough to OHKO each Lava Pup.
+*Cheap air-targeting troops like the [[Archers]], [[Dart Goblin]], Firecracker, and [[Spear Goblins]] are great counters to the Mega Minion. Place them far enough from it to ensure that none of the troops are OHKOed by the Mega Minion, to ensure a more potent counterattack.
+*If placed optimally, any troop, even [[Skeletons]] or [[Bats]], can distract the Mega Minion long enough for any [[:Category:Tower Troop Cards|tower troop]] to defeat it. Any spawner [[:Category:Building Cards|building]] can also work in a similar way.
+*The Mega Minion pairs well with the [[Miner]]. The Mega Minion can be utilized defensively first and then after going for a counterattack, the [[Miner]] can be deployed to distract the Crown Tower. However, the Mega Minion is notably slower than other similar troops, so try to place the Miner further back to prevent the opponent's defending troops to distract the Mega Minion when it arrives.
+*To defend against a [[Minion Horde]], the player can place this card in the middle of the Arena so that the Minion Horde will be pulled to the center, increasing the length of their way to the Crown Tower and distracting them. The Mega Minion will take out 2 or 3 Minions while your Crown Tower continually attacks. However, it is likely that you will still suffer some damage so it is best to use splash damage troops or spells.
+*When placed and timed correctly, a Mega Minion combined with [[Skeletons]] can fully counter a [[Little Prince]] and Guardienne for a +2 Elixir trade. Likewise, this duo works against most ground troops.
+*If the player can predict a [[Princess]] placed at the bridge, they can place the Mega Minion to counter her for a neutral Elixir trade. This tactic also works against a [[Princess]] walking towards the bridge, and is more effective compared to other cheap cards due to the Mega Minion's higher hitpoints.
+*The [[Void]] is the only spell effective against a Mega Minion. It will be able to destroy it in just 2 hits for a neutral Elixir trade. The player can deploy any troop inside the Void's radius to allow the Mega Minion to completely survive the spell.
+*The [[Phoenix]] can be used as a replacement for the Mega Minion. It offers higher hitpoints, a faster attack speed, some additional death damage, the ability to respawn after being defeated, and is resistant to the [[Monk]]'s ability. In exchange, the Mega Minion is cheaper by 1 Elixir, and has significantly higher damage.
+<center>
+
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|3||1.5 sec||0.4 sec||Medium (60)||1 sec||Melee: Long (1.6)||1000||Air & Ground||x1||Air||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 837 }}
+{{#vardefine: dmg_11 | 312 }}
+{{#vardefine: atk_speed | 1.5 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 125,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|100 {{BASEPAGENAME}} cards<br>50 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 380,000 Damage to enemy Troops or buildings
+|4,000 {{Icon|I=Gold}}<br>50 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 640,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>50 {{Icon|I=XP}}
+|-
+| rowspan="3" |Troop Destroyer <br> [[File:Troop Destroyer.png|50x50px]]
+|1
+|Destroy 350 enemy Troops
+|6,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Destroy 1,000 enemy Troops
+|100 {{Icon|I=Rare Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Destroy 1,750 enemy Troops
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+== History==
+2016
+*The Mega Minion [[Cards|card]] was added to the game on 19/9/2016, in the [[Version History#September 2016 Update (19/9/2016)|September 2016 Update]].
+*On 21/9/2016, a [[Version History#Maintenance Break (21/9/2016)|maintenance break]], added a Mega Minion offer in the [[Shop]], selling 100 Mega Minion cards.
+*On 30/11/2016, a [[Version History#Balance Changes (30/11/2016)|Balance Update]], decreased the Mega Minion's damage by 6% and increased its attack time interval to 1.4 seconds (from 1.3 seconds).
+2017
+*On 23/1/2017, a [[Version History#Balance Changes (23/1/2017)|Balance Update]], decreased the Mega Minion's damage by 4% and increased its attack time interval to 1.5 seconds (from 1.4 seconds).
+2018
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], moved the [[Arenas|Arena]] to unlock the Mega Minion from Royal Arena to P.E.K.K.A's Playhouse.
+*On 2/7/2018, a [[Version History#Balance Changes (2/7/2018)|Balance Update]], increased the Mega Minion's attack time interval to 1.6 seconds (from 1.5 seconds).
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Rare}} cards start at Level 3 and end at Level 13 (from 1 to 11).
+2019
+*On 1/7/2019, the [[Version History#July%202019%20Update%20(1/7/2019)|July 2019 Update]], decreased the Mega Minion's range to 1.6 tiles (from 2 tiles), now classified as Melee: Long.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the Arena to unlock the Mega Minion from [[P.E.K.K.A.|P.E.K.K.A's Playhouse]] to Barbarian Bowl.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 28/4/2022, a maintenance break, added a card render to the Mega Minions's card info screen.
+2023
+*On 4/4/2023, a [[Version History#Balance%20Changes%20(4/4/2023)|Balance Update]], decreased the Mega Minion's attack time interval to 1.5 seconds (from 1.6 seconds).
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], increased the Mega Minion's damage by 0.32%.
+2026
+*On 2/2/2026, the February 2026 Update changed the Mega Minion's card image.
+
+==Gallery==
+<gallery>
+File:Mega Minion card render.png|Current card render.
+File:Mega Minion Preview.gif|Current card preview
+File:Mega Minion 2.png|Mega Minion 1
+File:Mega Minion full.png|Mega Minion 2
+File:MegaMinionCardOld.png|Card Icon Before 2/2/2026
+</gallery>
+
+==Trivia == 
+*The design of the Mega Minion resembles [https://en.wikipedia.org/wiki/Gargoyle_(monster) gargoyles]. The gargoyle is a fantasy and horror monster inspired by the [https://en.wikipedia.org/wiki/Gargoyle gargoyle architectural element]. While they were believed in mythology to frighten away evil spirits, the idea of such statues physically coming to life is a more recent notion. They are usually made of magically animated or transformed stone, but have animal or chimera traits and are often guardians of a place such as a cathedral or castle. They can also be depicted as vessels for demonic possession or as a living species resembling statues.
+**In the French and Japanese language settings of the game, the Mega Minion's name translates to "Mega Gargoyle". In the Arabic, Chinese, Malaysian, Thai, and Vietnamese language settings of the game, the Mega Minion's name translates to "Giant Minion", "Armored Undead", "Big Minion", "Armored Drone", and "Super Minion" respectively.
+*The Mega Minion was the first [[Cards|card]] to be introduced in the game along with a Special Offer in the [[Shop]].
+*The Mega Minion, along with the [[Minions]], [[Bomber]], [[Skeletons]], [[Skeleton Dragons]], [[Ice Spirit]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Ice Golem]], [[Dart Goblin]], [[Elixir Golem]], [[Goblin Cage|Goblin Brawler]], [[Guards]], [[Baby Dragon]], [[P.E.K.K.A.|P.E.K.K.A]], [[Giant Skeleton]], [[Golem]], [[Wall Breakers]], [[Bowler]], [[Executioner]], [[Mega Knight]], [[Inferno Dragon]], [[Royal Ghost]], and [[Lava Hound]], are featured as a [https://squad-busters.fandom.com/wiki/Monsters monster] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*When deployed, the Mega Minion says "''Cupcake''". However, the Mega Minion's audio is muffled.
+**The Mega Minion is 1 of 24 [[:Category:Troop Cards|troops]] that speak distinct words when on the field, the others being Mini P.E.K.K.A., [[Wizard]], [[Hog Rider]], P.E.K.K.A., [[Dark Prince]], Bowler, [[Ram Rider]], [[Electro Wizard]], [[Princess]], [[Ice Wizard]], [[Magic Archer]], [[Lumberjack]], [[Mother Witch]], [[Fisherman]], [[Goblin Machine]], [[Super Mini P.E.K.K.A.]], [[Santa Hog Rider]], [[Super Magic Archer]], [[Golden Knight]], [[Boss Bandit]], [[Archer Queen]], [[Little Prince]], and the [[Terry]].
+*When the Mega Minion is defeated, its helmet falls to the ground. The other units that drop items upon death are the [[Knight]], [[Rascals|Rascal Boy]], Dark Prince, Executioner, [[Mega Knight]], [[Sparky]], [[Fisherman]], [[Super Knight]], Golden Knight, and the Little Prince.
+*The Mega Minion is 1 of 10 cards to have an alliterative name, the others being the [[Royal Recruits]], [[Goblin Gang]], [[Goblin Giant]], [[Cannon Cart]], [[Barbarian Barrel]], Ram Rider, [[Dagger Duchess]], [[Boss Bandit]], and the [[Mighty Miner]].
+*The Minions and [[Minion Horde]]'s descriptions say that the regular Minions are "unarmored", which hinted the addition of the "armored" Mega Minion.
+**According to a Clash-A-Rama comic [https://clasharama.fandom.com/wiki/Clash-A-Rama!_Comic_Strips?file=BRING-YOUR-CHILD-TO-WORK-DAY_Final.jpg strip], a Minion is the Mega Minion's child.
+*The Mega Minion's health is a little higher than 3 Minions of equivalent level put together, while its damage is slightly lower.
+*The grill covering the Mega Minion's mouth is very similar to the visor on the [[Prince]]'s helmet.
+*The Mega Minion's gender has been confirmed as male, as the [https://make.supercell.com/en/campaign/3468 Mega Minion Emote Supercell Make campaign] referred to Mega Minion as "he".
+*The Mega Minion is the subject of an [[Emotes|Emote]].
+**The Mega Minion Mute Emote was created by [https://make.supercell.com/en/creation/i-can-not-hear-you LordFink] on [[Supercell Make]].
+*Its range was shown as 2 before the [[Version History#July%202019%20Update%20(1/7/2019)|July 2019 Update]].
+*The Mega Minion was featured in the winning [[Battle Decks|decks]] of multiple Clash Royale Tournaments. More specifically:
+**The Mega Minion was featured in the winning deck of the [https://youtu.be/LWQjS0e6iiE Super Magical Cup Tournament], by a player called CMcHugh.
+**The Mega Minion was featured in the winning deck of the [https://www.youtube.com/live/1fuCnNBTqBU?feature=share King's Cup Tournament], by a player called TMD YAOYAO.
+**The Mega Minion was featured in the winning deck of the [https://www.youtube.com/watch?v=kIGdeKaT_is The Crown Duel Tournament], by a player called Backstabx.
+*The initial balance change for Mega Minion on the [[Version History#Balance%20Changes%20(4/4/2023)|4/4/2023 balance changes]] was an attack time interval decrease to 1.3 seconds (from 1.6 seconds), but it was raised to 1.5 seconds [https://royaleapi.com/blog/season-46-balance-wip last minute].
+
+{{Navigation|Card}}
+
+[[fr:Méga gargouille]]
+[[de:Megalakai]]
+[[es:Megaesbirro]]
+[[it:Megasgherro]]
+[[ru:Мегаминьон]]
+[[pt-br:Megasservo]]
+[[zh:重甲亡灵]]

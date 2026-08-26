@@ -1,0 +1,252 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Graveyard</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=5|Rarity=Legendary|Type=Spell|Arena=Spooky Town|ReleaseDate=28 October 2016}}
+{{Quote|Surprise! It's a party. A Skeleton party, anywhere in the Arena. Yay!}}
+
+The Graveyard is a {{Rarity|Legendary}} [[Cards|card]] that is unlocked from the [[Arenas|Spooky Town (Arena 12)]]. It is [[:Category:Spell Cards|spell]] with a large radius. After 2.2 seconds, it spawns a single [[Skeletons|Skeleton]] that appears to be rising from a tombstone with the letters "XX" on it every 0.5 seconds for 9 seconds on the edge of the spell's radius. A Graveyard card costs 5 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Graveyard Common Modifier.png|45x45px]] Common: Undead Again===
+{{Quote|More Skellies}}
+Graveyard spawns more Skeletons.
+
+===[[File:Graveyard Rare Modifier.png|45x45px]] Rare: Go! Go! Go!===
+{{Quote|Spawn Guards}}
+Graveyard spawns [[Guards]] instead of regular Skeletons.
+
+===[[File:Graveyard Epic Modifier.png|45x45px]] Epic: They're Skeverywhere!===
+{{Quote|Random Skeleton troops}}
+Can randomly spawn [[Bomber]]s, [[Wall Breakers]], [[Skeleton Dragons]], and Guards.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Graveyard Card}}
+*An effective strategy with the Graveyard is to place a high hitpoint unit, such as the [[Giant]] or [[Golem]], and then cast the Graveyard near the [[:Category:Crown Towers|Crown Tower]]. The Giant/Golem will tank the damage from the Crown Tower while the [[Skeletons]] deal damage to the Tower and destroy it. However, this strategy can be effectively countered with an area damage unit such as a [[Valkyrie]], [[Wizard]], [[Bowler]], [[Bomber]], [[Goblin Demolisher]], [[Ice Wizard]], or [[Executioner]], or swarms like [[Guards]], [[Skeleton Army]], and [[Goblin Gang]] to handle the Skeletons and a high damage per second unit such as a [[P.E.K.K.A.|P.E.K.K.A]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Hunter]], [[Mighty Miner]], [[Monk]], [[Prince]], [[Elite Barbarians]], [[Mega Knight/Evolution|Evolved Mega Knight]], [[Sparky]], or [[Lumberjack]] to handle the tank.
+**Bulky ranged troops like the [[Bowler]], [[Executioner]], and [[Baby Dragon]] make great tanks for the Graveyard, as their range keeps them far enough from the Skeletons, splitting the defenses of the opponent thin.
+**The [[Barbarian Barrel]] can function as a cheap tank for a Graveyard. The Graveyard [[:Category:Spell Cards|spell]] should be played first, and then the Barbarian Barrel should be placed at the bridge immediately afterward. The [[Barbarians|Barbarian]] will spawn as soon as the Graveyard's Skeletons start spawning, both tanking for them and also threatening to deal chip damage to the Crown Tower.
+**The Graveyard + tank push is very effective against the [[Cannoneer]], due to his weakeness to the Skeletons that are spawned from the Graveyard. When using him, it is important to dedicate the counters to the Graveyard itself, while the Cannoneer handles the tank.
+**If the [[Dagger Duchess]] is in use, it is important not to let her connect to the tank at all, and instead save her 8 daggers for 8 of the Skeletons, as that will prevent more damage than using her daggers on the tank.
+*Since the Graveyard can be placed anywhere on the map, it has great synergy with the [[Miner]], as the Miner can immediately tank for the Skeletons while they decimate the Tower. However, this combo is still weak to the types of [[cards]] mentioned above. This problem can be temporarily solved with a [[Tornado]], as it can pull the units away from the Graveyard and allow the Skeletons to continue dealing damage, though this is a large amount of [[Elixir]] to spend.
+*Tornado synergises well with Graveyard, as it can pull the units away from the Graveyard and allow the Skeletons to continue dealing damage. However, this is a large amount of Elixir to spend.
+**If splash units are played to support the Graveyard, pulling the defending units into the splash range can allow for better value from splash unit, possibly taking out those units.
+**An opponent might use fragile ranged cards to defend against your Graveyard. You can use a Tornado to bring those troops closer to your Skeletons so that they can defeat these counters, or weaken them enough for a spell to finish them off.
+*A Graveyard is easily countered by fast attacking cards or swarm cards, but most of them can easily be dealt with spells like [[Poison]] or [[Fireball]].
+**Effective counters to the Graveyard include [[Goblins]], [[Bats]], and [[Minions]]. They are cheap and fast, with the Bats and Minions even able to avoid being attacked, facilitating those spells to defeat them.
+**[[Guards]] are a great counter to the Graveyard. They are fast enough at clearly the Skeletons, have a longer range than them, preventing easy clump up. Their shields also make them resistant to most spells, only being susceptible to Poison.
+**The [[Archers]] and [[Spear Goblins]] combine the characteristics of the previous options with range, allowing them to stay out of range of prediction spells while they are defending against the Graveyard. The player should wait for them to be deployed, then deploy their spell to eliminate them.
+**A [[Skeleton Army]] and [[Goblin Gang]] can be great counters to the Graveyard for a 2+ Elixir advantage. As they cover a large area, they can quickly react to the Skeletons that are newly spawned and destroy them before they have a chance to do any damage. However, they are susceptible to Zap, [[Giant Snowball]], Arrows, or Poison.
+**Barbarians, [[Rascals]], and [[Minion Horde]] work similarly to the previous options, but for only a neutral Elixir trade, so only use them if cheaper counters are out of rotations. In the case of the Rascals, place them in a way to avoid prediction spells that could eliminate the Rascal Girls.
+**With the [[Skeleton Dragons]]' area-damage attacks, they will not only attack multiple times without getting overwhelmed, but the attacks will also eliminate multiple Skeletons. Note that they have less range than some of the previous options, so a Fireball can easily defeat them and at the same time hit the Crown Tower.
+**Although not a swarm card, the [[Witch]] and [[Night Witch]] can spawn additional units to assist with defending against the Graveyard. The Witch can also deal area damage, allowing her to hit multiple Skeletons, while her own Skeletons distract them, and the Night Witch will distract them herself, while her Bats attack them.
+**The [[Golden Knight]], [[Lumberjack]], [[Berserker]], and Monk may only attack one Skeleton at a time, but their fast attack speed lets them keep up with the Tower Princess, preventing a lot of would-be damage. They can also survive most spells, and will be close enough to distract the Skeletons. A [[Dart Goblin]] works similarly, however it is frailer, meaning that it must be placed at a distance to utilize his range. Note that these troops are ineffective in conjuction with the Cannoneer, as his slow attack speed will result in them being overwhelmed.
+**Despite being slower, the [[Valkyrie]]'s attack is able to hit Skeletons even behind her, making her a great defense against the Graveyard. She also has high hitpoints, which prevents the opponent from using any spells against her. The [[Valkyrie/Evolution|Evolved Valkyrie]] is even more effective, as the tornado effect will also affect any Skeletons that are out of range of her attack.
+**With the help of a Crown Tower, the [[Mother Witch]] can not only counter Graveyard, but also create a massive counterpush for a positive Elixir trade, since she OHKOes each Skeleton and the Graveyard spawns 13 Skeletons.
+**The [[Magic Archer]] is an effective counter to the Graveyard, as he shoots rapidly and his arrows can hit multiple Skeletons at once. However, his higher vulnerability to Poison compared to a troop like [[Musketeer]], Ice Wizard, [[Electro Wizard]], or Wizard means that he will often be defeated during a larger Graveyard push. Players should take advantage of his long range and place him behind their [[King's Tower]] to make it harder for the Graveyard user to spell him without accidentally activating the King's Tower.
+*Spells are very effective at defeating several grouped Skeletons. Delaying the spell for a bit is more effective than an immediate deployment, as it allows the spell to clip a few more Skeletons. Building a [[Battle Decks|deck]] with many spell vulnerable cards like the [[Princess]] can be useful in indirectly supporting a Graveyard, as the opponent will only be able to use their spell on one of them.
+**In a similar principle, the player can wait for multiple Skeletons to accumulate, then deploy an [[Electro Spirit]] to destroy up to 9 of them for only 1 Elixir. An [[Electro Dragon/Evolution|Evolved Electro Dragon]] can also work the same way and prepare itself for a counterattack.
+**A fairly reliable counter to the Graveyard is the Poison, with the Poison covering most of the radius of the Graveyard and being able to OHKO the Skeletons with each pulse. However, some Skeletons that spawn right next to the Crown Tower will still be able to attack it once, as the first attack speed of a Skeleton is lower than the time required for the Poison to take effect (1 second). The Poison's duration is only shorter than the Graveyard by 1 second, so it can be placed slightly earlier than other spells in order to counter it.
+***You may want to implement cards in your deck that can bait the Poison, like [[Goblin Hut]] or Ice Wizard, to prevent them from using Poison on your Graveyard.
+***On the other hand, the Poison works well with the Graveyard. The Poison can deal with enemy counters well, and can counteract enemy placements of Minions or other small troops. However, it is not effective against higher-health troops such as the Valkyrie.
+**The [[Barbarian Barrel]] is a situational counter to a Graveyard push itself. The defender should wait for some Skeletons to build up, then deploy the Barbarian Barrel. After it finishes rolling, the Barbarian will help take out and tank some of the Skeletons. Players should keep in mind that despite appearances, the Barbarian Barrel's radius is thinner than The Log, so some Skeletons may seem like they are in range of the Barbarian Barrel when they are not.
+**Among all the spells, the [[Goblin Curse]] is the single best counter to Graveyard. For a +3 Elixir trade, it negates most, if not all, of the Graveyard’s damage while creating a massive counterpush of several Goblins that can deal severe damage to the Crown Tower.
+**An [[Tesla/Evolution|Evolved Tesla]] will unleash one pulse that can fully eliminate a large amount of Skeletons that have accumulated. After that, it will remain on the field to continue defending against any remaining Skeleton, or if placed in front of the Tower, the tank that is used alongside the Graveyard.
+*It is generally not a good idea to pair the Graveyard with a [[Zap]] spell, as the stun will cause the Tower to retarget onto the Skeletons, weakening the tank-Graveyard synergy.
+**In a similar principle, the [[Electro Giant]] is an ineffective tank for the Graveyard, as his Zap Pack will cause him to retarget onto the Skeletons, reducing the damage dealt to the Tower from both the Graveyard and the Electro Giant.
+**However, [[:Category:Troop Cards|troops]] that have stun effects within their main attack, like an [[Electro Wizard]], [[Electro Dragon]], [[Goblinstein]], or [[Zappies]] are very effective with Graveyard. Their attacks mess with the Crown Tower's attack speed, allowing more Skeletons to spawn before the other ones are killed.
+**The [[Ice Wizard]] can work similarly by slowing down the Crown Tower's attack speed. However, this is still an 8 Elixir push, so only do this if the Ice Wizard has successfully defended against something beforehand.
+*Pairing this card with the [[Freeze]] can allow the player to circumvent counters that would otherwise be difficult to prevent, such as Valkyrie, [[Skeleton Dragons]], or Baby Dragon, and deal massive damage to the opposing Crown Tower. However, after the Freeze's effect wears off, the opponent will have a healthy troop available to counterpush with. The player should avoid freezing without a substantial Elixir advantage or if they know that they will be able to end the game before the opponent can take advantage of the Elixir deficit (e.g. in the Overtime period, where taking a Tower immediately ends the game). Keep in mind that [[Poison]] can defeat this combo for a +5 Elixir trade.
+**The opponent might be able to predict the Freeze if the Graveyard is played without a tank. Try to use a tank to keep the surprise factor, while also allowing the tank to take advantage of the lack of counters.
+*The Graveyard should not be placed in the center of a targeted Crown Tower, as there is a chance for a Skeleton to spawn near the King's Tower and activate it early. Instead, it should be placed on the side of the Crown Tower that is the furthest away from the King's Tower to prevent any Skeletons from spawning near it. The optimal position is 1 tile staggered to towards the edge of the Arena.
+*The Graveyard can be used as a response to a spawner [[:Category:Building Cards|building]] like a [[Barbarian Hut]] or an [[Elixir Collector]]. The high amount of Skeletons and spawn pattern prevents the opponent from defending their building quickly and with most buildings having a slow spawn speed, it will result in the building being destroyed without much resistance. This should not be done however if the building is close to the King's Tower since it can activate it early.
+**Other buildings can be similarly overwhelmed from the Graveyard's spawned Skeletons which can make it effective when paired with a building-targeting troop like a Giant. This works particularly well against the [[Inferno Tower]] due to its slow retargeting. However, this is a heavy Elixir investment, and cheaper alternatives like the Barbarian Barrel are better at doing this.
+*Compared to a [[Goblin Barrel]], the upsides of the Graveyard are that it spawns more troops than the Goblin Barrel and virtually guarantees damage, due to its unpredictability. The downsides are that the Skeletons do not spawn immediately, are easier to defeat individually by being a frailer troop, and its higher rarity and Arena unlock point makes it harder to obtain and level up for use in ladder [[Basics of Battle|battles]].
+*Due to the staggered spawn of the Skeletons, Graveyard is also a situational defensive card against single targeting units or units with a slow attack speed. This means it can synergize well with an Inferno Tower to defend against large pushes. Even if the opponent uses Zap, the support behind the tank will be preoccupied with the Skeletons to deal with the Inferno Tower. The spell must be placed a bit preemptively due to its 2.2 second delay before the spawning of the first Skeleton. It is good at stalling troops when both the player and the opponent are racing to take the other's Tower in Sudden Death, granting the edge to the player.
+*An activated King's Tower is an enormous problem for a Graveyard user. The King's Tower can attack alongside any Crown Tower and their combined targeting will eliminate more Skeletons, severely weakening a Graveyard push. Try not to have troops in your deck that are exploitable for King Tower activations like Electro Spirit, [[Bomber/Evolution|Evolved Bomber]], [[Magic Archer]], [[Bowler]], and [[Firecracker]].
+**Freeze can temporarily mitigate this issue, as it can be used to temporarily disable the King Tower, and the Crown Tower. However, it will limit where the player can deploy their spell, thus making it easier to counter with troops.
+*Since the Graveyard's Skeletons are OHKOed by the vast majority of cards, cards with healing effects like the [[Heal Spirit]] and [[Battle Healer]] are unable to utilize their effects on the spawned Skeletons, making them poor choices in a deck alongside the Graveyard. As such they should never be used in Graveyard decks, and it is better to seek for other alternatives.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Graveyard Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+! scope="col" |Duration<br />{{Icon|I=Time}}
+! scope="col" |Spawn Speed<br />{{Icon|I=Time}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||4||9 sec||0.5 sec||[[:Category:Spell Cards|Spell]]||{{Rarity|Legendary}}
+|}
+
+{{StatisticsSubheader|Skeleton Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.1 sec||0.5 sec||Fast (90)||2.2 sec||Melee: Short (0.5)||Ground||x12||Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 81 }}
+{{#vardefine: dmg_11 | 81 }}
+{{#vardefine: atk_speed | 1.1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 140,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|2 {{BASEPAGENAME}} cards<br>100 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 420,000 Damage to enemy Troops or buildings
+|8,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 700,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>100 {{Icon|I=XP}}
+|-
+| rowspan="3" |Tower Tapper <br> [[File:Tower Tapper.png|50x50px]]
+|1
+|Hit enemy [[:Category:Crown Towers|Crown Towers]] a total 1,750 times
+|12,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Crown Towers a total 5,000 times
+|2 {{Icon|I=Legendary Wild Card}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Crown Towers a total 8750 times
+|18,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+| rowspan="3" |Siege Weapon <br> [[File:Siege Weapon.png|50x50px]]
+|1
+|Hit towers at least 30 times within a single battle a total of 50 times
+|6,000 {{Icon|I=Gold}}<br>200 {{Icon|I=XP}}
+|-
+|2
+|Hit towers at least 30 times within a single battle a total of 150 times
+|8,000 {{Icon|I=Gold}}<br>200 {{Icon|I=XP}}
+|-
+|3
+|Hit towers at least 30 times within a single battle a total of 300 times
+|10,000 {{Icon|I=Gold}}<br>200 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Graveyard [[Cards|card]] was added to the game on 28/10/2016.
+*On 1/11/2016, the [[Version History#November%202016%20Update%20(1/11/2016)|November 2016 Update]], changed the Graveyard's description. Prior to this, its description was "''Unearths a gang of Skeletons anywhere in the Arena. Spooky!''"
+2017
+*On 11/8/2017, a [[Version History#Balance Changes (11/8/2017)|Balance Update]], decreased the Graveyard's duration to 9 seconds (from 10 seconds).
+*On 9/10/2017, the [[Version History#Epic Quests Update (9/10/2017)|Epic Quests Update]], increased the Graveyard's duration to 10 seconds (from 9 seconds), decreased its radius to 4 tiles (from 5), increased the first spawn time interval to 2 seconds (from 1.5 seconds), and made the spawn mechanics of the [[Skeletons]] less random by making the Skeletons spawn on the edge.
+2018
+*On 25/4/2018, the [[Version History#Clan%20Wars%20Update%20(25/4/2018)|Clan Wars Update]], allowed the Graveyard to be placed on the river.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Legendary}} cards start at Level 9 and end at Level 13 (from 1 to 5).
+2019
+*On 28/1/2019, the [[Version History#January%202019%20Update%20(28/1/2019)|January 2019 Update]], moved the [[Arenas|Arena]] to unlock the Graveyard from Spell Valley to Spooky Town.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], removed the Graveyard from [[Touchdown]] [[Tournament/Special Event Challenges|Draft]].
+2020
+*On 3/11/2020, a [[Version History#Balance Changes (3/11/2020)|Balance Update]], increased the minimum range where Skeletons can potentially spawn to 3.5 tiles (from 3 tiles).
+*On 18/11/2020, the [[Version History#Clan Wars Improvement Update (18/11/2020)|Clan Wars Improvement Update]], reverted the Graveyard to its state before 3/11/2020. More specifically, the minimum range where Skeletons can potentially spawn was decreased to 3 tiles (from 3.5 tiles).
+*On 9/12/2020, a [[Version History#Balance Changes (9/12/2020)|Balance Update]], increased the first spawn time interval to 2.2 seconds (from 2 seconds).
+2021
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022 
+*On 4/4/2022, the [[Version History#April%202022%20Update%20(4/4/2022)|April 2022 Update]], decreased the Graveyard's duration to 9.5 seconds (from 10 seconds)
+*On 3/6/2022, a maintenance break, added a card render to the Graveyard's card info screen.
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], added the Siege Weapon [[Card Mastery]] task for the Graveyard.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+*On 5/3/2024, a [[Version History#Balance Changes (5/3/2024)|Balance Update]], decreased the Graveyard’s duration to 9 seconds (from 9.5 seconds).
+2025
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] made it so that the [[Witch/Evolution|Evolved Witch]] would no longer be healed by defeated Skeletons.
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)=|Balance Update]] increased the Skeleton's attack time interval to 1.1 seconds (from 1.0 seconds).
+2026
+
+* On 12/1/2026, a Balance Update changed the graveyard's spawn pattern from random to defined, and increased the amount of skeletons to 14 (from 13).
+* On 14/1/2026, a Maintenance Break, decreased the amount of skeletons to 13 (from 14), and made it to where the skeletons spawn closer to the edge of the graveyard
+* On 2/2/2026, a Balance Update, increased the spawn radius to 3.3 tiles (from 2.9 tiles)
+* On 1/6/2026, a Balance Update, decreased the amount of skeletons to 12 (from 13)
+
+==Gallery==
+<gallery>
+File:Graveyard card render.png|Current card render.
+File:Chinese Graveyard card render.png|Graveyard’s card render in the Chinese version of the game.
+File:Graveyard Preview.gif|Current card preview
+File:Graveyard Tower.jpg|Graveyard being used on the Princess Tower.
+</gallery>
+
+==Trivia==
+*In Clash of Clans, there is a similar spell called the [https://clashofclans.fandom.com/wiki/Skeleton_Spell Skeleton Spell], which summons Skeletons within its radius. It originally summoned its Skeletons all at once, but has since been reworked to behave similarly to the Graveyard. However, unlike the Graveyard, the Skeleton Spell in Clash of Clans spawns Skeletons with shields, similar to [[Guards]].
+*The Graveyard is 1 of 15 [[cards]] associated with [[Skeletons]], with the others being [[Bomber]], [[Skeleton Dragons]], [[Skeleton Barrel]], [[Tombstone]], [[Bomb Tower]], [[Skeleton Army]], Guards, [[Witch]], [[Balloon]], [[Giant Skeleton]], [[Wall Breakers]], [[Super Witch]], [[Skeleton King]], and of course, Skeletons.
+**In the Norwegian, Arabic, Indonesian, and Vietnamese language settings of the game, the Graveyard's name translates to "Cemetery". In the Japanese, Korean, and Chinese language settings of the game, the Graveyard's name translates to "Skeleton Rush", "Tomb", and "Skeleton Call" respectively.
+**A Trainer in the [[Training Camp]] is called Trainer Gravy, and uses the Graveyard in the [[Battle Decks|deck]]. This is a reference to the fact that the word "graveyard" can be abbreviated to "gravy".
+**It is the only [[:Category:Spell Cards|spell]] card associated with Skeletons.
+*The Graveyard is 1 of 7 spells which have team-colored rings on their radius, the others are [[Earthquake]], [[Freeze]], [[Poison]], [[Rage]], [[Clone]], and [[Tornado]].
+*The small tombstones visual effect can be seen in this card's image and also when this card is deployed. This effect is taken from Clash of Clans when Elixir troops die.
+*The jingle that plays upon its deployment is an excerpt from the [https://youtu.be/74oFkMQ-KaM?t=8 Clash of Clans battle theme].
+*The Graveyard was featured in the winning decks of multiple Clash Royale Tournaments. More specifically:
+**The Graveyard was featured in the winning deck of the [https://www.youtube.com/watch?v=kIGdeKaT_is The Crown Duel Tournament], by a player called Backstabx.
+**The Graveyard was featured in the winning deck of the [https://www.youtube.com/live/cmBlEI-aDoo?si=UoD1Sit2YvQR19xs Clash Royale League 2019 Tournament], by a player called Surgical Goblin.
+**The Graveyard was featured in the winning deck of the [https://www.youtube.com/live/h3IOFTfT8Sk?si=wTF1FekCifpSULn- Clash Royale League 2020 Tournament], by a player called Ruben.
+*On 27/3/2023, a [[Training Camp|Trainer]] was added to the game called Boss Cheddar, and used a Level 18 Graveyard in their deck, despite the highest Level being Level 14 at the time. This Trainer was removed on 18/4/2023.
+*In an update on 24/11/2025, Graveyard's deploy sound was mysteriously removed from the game (As was the attack sound of the [[Electro Dragon]] and [[Electro Spirit]]), giving it an unintentional buff as when played, it would be completely silent and players might not notice it being placed. This was fixed a couple days later in a bugfix update on 26/11/2025.
+
+{{Navigation|Cards}}
+
+[[fr:Cimetière]]
+[[de:Friedhof]]
+[[es:Cementerio]]
+[[it:Cimitero]]
+[[ko:무덤]]
+[[ru:Кладбище]]
+[[zh:骷髅召唤]]

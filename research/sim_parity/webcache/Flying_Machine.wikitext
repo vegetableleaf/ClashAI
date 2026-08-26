@@ -1,0 +1,211 @@
+{{DISPLAYTITLE: <span style="color: #ffa31a;">Flying Machine</span>}}
+{{Protection}}{{MagicWords}} 
+
+{{Card Infobox|Cost=4|Rarity=Rare|Type=Troop|Arena=Builder's Workshop|DeployDelay=1|ReleaseDate=6 October 2017}}
+{{Quote|The Master Builder has sent his first contraption to the Arena! It's a fast and fun flying machine, but fragile!}}
+
+The Flying Machine is a {{Rarity|Rare}} [[Cards|card]] that is unlocked from the [[Arenas|Builder's Workshop (Arena 5)]]. It spawns a fast, single-target, air-targeting, long-ranged, air [[:Category:Troop Cards|troop]] with moderate hitpoints and moderate damage. It appears to be a small turret in a barrel with a rotor with team-colored blades on top. A Flying Machine card costs 4 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Flying Machine Common Modifier.png|45x45px]] Common: Bada Bing, Bada Boom!===
+{{Quote|+100% hit speed}}
+Doubles Flying Machine hit speed.
+
+===[[File:Flying Machine Rare Modifier.png|45x45px]] Rare: Paragob Pursuit===
+{{Quote|Spawn Goblins}}
+Spawns a [[Goblins|Goblin]] when attacking.
+
+===[[File:Flying Machine Epic Modifier.png|45x45px]] Epic: Beam Me Up, Barb===
+{{Quote|Inferno beam attack}}
+Uses the [[Inferno Tower]]'s beam instead of its default attack.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Flying Machine Card}}
+*The Flying Machine can be a suitable substitute for a [[Musketeer]], as they generally have similar stats. However, the Flying Machine is airborne, moves more quickly, has less hitpoints, and deals less damage than a Musketeer. These characteristics can make it better at immediately supporting a push at the bridge.
+*Due to its long range and fast initial hit speed, a Flying Machine will get a shot on a [[:Category:Crown Towers|Crown Tower]] before the [[Tower Princess]]’s arrow can reach it. This makes the Flying Machine threatening even when it is only one attack away from being destroyed, as one shot deals decent chip damage to a Crown Tower. The player should either use counters which destroy it completely, like the [[Mega Minion]] or the [[Inferno Dragon]], or use ground troops like the [[Ice Golem]] or the Knight to block its attacks so that the Crown Tower can defeat it, like the Skeletons.
+**The [[Cannoneer]] and [[Dagger Duchess]] can prevent more attacks from the Flying Machine, only allowing 2 hits to go through. The player may choose to ignore the Flying Machine with them if they are using a heavy [[Battle Decks|deck]] or respond with cheaper cards.
+*The Flying Machine is excellent at defeating spawners as well as most [[:Category:Building Cards|buildings]]. Due to its long range, it can pick off buildings near the middle of the [[Arenas|Arena]] without being targeted by the Crown Towers.
+**Passive buildings can be sniped with the Flying Machine if they are placed 6 tiles from the river. The Flying Machine will be able to reach it without being in range of the Crown Towers. It will be able to bypass a 5-2 placement, unless it is in the inner side of the [[Arenas|Arena]].
+**Active buildings can be sniped with the Flying Machine if they are placed 5 tiles from the river, without being in range of the Crown Towers. This is great against a 5-2 placement used to lure building-targeting troops. A 4-3 building placement can be sniped in a similar way. Alternatively, it can be used to bypass these building placements and go straight for the Crown Tower.
+**Despite a [[Tesla]] having less range than the Flying Machine, the Tesla's property of being invisible while underground forces the Flying Machine to fly into range before attacking the Tesla. However, it may be worthwhile to use a cheap distraction troop like Skeletons to provoke the Tesla into popping up, allowing the Flying Machine to use its range advantage.
+*A [[Fireball]] or [[Poison]] will completely destroy a Flying Machine up to 1 level higher for a neutral [[Elixir]] trade, but hitting other targets with said [[:Category:Spell Cards|spell]] will make this move more advantageous. Using other Fireball-vulnerable [[cards]], such as [[Barbarians]], Royal Recruits, [[Zappies]], [[Ice Wizard]], [[Mother Witch]], [[Magic Archer]], or [[Skeleton Dragons]], can allow the Flying Machine to survive for longer periods of time. Alternatively, the Flying Machine can be used to bait these spells so that the other Fireball-vulnerable cards can wreck havoc.
+**A [[Lightning]] or [[Rocket]] can also defeat a Flying Machine, however it is a negative Elixir trade unless other units are caught in the radius with the latter not being advisable due to the Flying Machine's high movement speed.
+**The Flying Machine can be destroyed entirely within 2 hits from the [[Void]], provided that it is the only troop inside it. This is enough to counter the Flying Machine for a slight positive Elixir trade. The player can deploy any troop to save the Flying Machine from the spell if they can predict the spell.
+*The Flying Machine is fragile and therefore will need to be supported with a tank such as an [[Ice Golem]], Knight or a [[Giant]] if it is used offensively. The [[Lava Hound]] is especially effective as a tank, due to being an air troop.
+*Like other fast air troops, it can be quite good at supporting a [[Balloon]]. It can push the Balloon slightly closer to the Tower, as well as help it bypass certain building placements. However, it is less effective at doing this, due to its longer range.
+*Unlike a Musketeer, it can't completely stop troops like [[Mini P.E.K.K.A.]], Prince, [[Elite Barbarians]], or [[Lumberjack]] even with Crown Towers' support since it can't distract them. Because of this, the player should typically place a decoy unit like [[Skeletons]], [[Goblins]], or [[Guards]] to distract the units so the Flying Machine can finish them off.
+*With the assistance of a Crown Tower, a Flying Machine can defeat a lone Balloon, [[Knight]], or [[Valkyrie]] before they reach the Tower. However, Balloon will get its death damage on the Crown Tower.
+*Pairing the Flying Machine with a cheap unit like an [[Ice Spirit]] or a [[Heal Spirit]] can deal significant damage to a Crown Tower or act as a quick defensive combo; however, it is vulnerable to spells like Fireball.
+*The Flying Machine deals enough damage to OHKO anything with as much hitpoints as [[Wall Breakers/Evolution|Runners]]. However, sturdier swarms like [[Minions]] and Lava Pups can survive a single attack from it, so it is a good idea to pair it with [[Zap]] in order to fully destroy these units.
+*Ranged troops that can attack air like the [[Executioner]], Musketeer, [[Wizard]], and [[Electro Wizard]] are good counters to the Flying Machine, with only requiring a few hits to destroy it. Pairing them with the Crown Tower can further reduce the damage that they will take when defending, setting them up for a better counterattack. In the case of the Electro Wizard, it is a better idea to utilize his spawn Zap to further reduce that damage that he takes.
+*If placed on top, the [[Hunter]] deals enough damage to destroy a Flying Machine for a neutral Elixir trade.
+*The Flying Machine synergizes with [[Royal Recruits]]. The Royal Recruits will tank for the Flying Machine from both lanes, while the Flying Machine attacks air troops that can threaten the Royal Recruits. Due to being in both lanes, the Flying Machine works better when placed in the center of the Arena instead of being dedicated to one lane, as it will be able to support the Royal Recruits in both lanes.
+*A Flying Machine cannot be kited due to having an attack range identical to its sight range (i.e, if an enemy unit moves out of its attack range, it will not chase that unit down). When using a grounded unit to tank for a Crown Tower in order to counter an opposing Flying Machine, players should place the grounded unit in the same lane as the Flying Machine to assure the grounded unit will not walk out of range.
+*Flying Machine outranges the 5.5 tile sight range of most troops. Placing the Flying Machine by the river and 2 tiles into the opposite lane will allow him to shoot enemies currently crossing the bridge without being targeted by them, since the distance will be about 7 tiles away. This is especially useful against the [[Ram Rider]], as it will keep attacking her without her attacking it in return.
+*If the player has a building already placed down in the center of the Arena, and the opponent tries to bypass it with a [[Hog Rider]] at the edge of the Arena, they can use the Flying Machine to push the Hog Rider towards the building as it jumps over the river, effectively denying the bypass attempt. They must be already hovering over the correct placement, as very quick reflexes are required to correctly perform this technique. Stagger the above placement one tile to the right if the Hog Rider is placed on the left side of the Arena, and vice versa.
+*If the player has already destroyed one Crown Tower and wants to target the second one, they can place the Flying Machine on the tiles that face the Crown Tower. Depending on which tile it is placed, the player can choose whether they want to deal as much damage as possible or to deal the damage as quickly as possible.
+**Placing in 4 tiles from the river is the quickest way to connect to the second Tower Princess. This placement is unreactable from the opponent, but it also results in the Flying Machine being within range of the King Tower. As such, it will only hit the Crown Tower twice. If it is placed 1 tile lower, it will deploy out of range of the King Tower, but it will enter its range afterwards. In the end, it will still do the same damage.
+**On the 2nd tile from the river, it is out of range of both the Crown Tower and the King Tower when deployed, but it will have to float in order to get in range, taking more time for the opponent to react to this. However, it will be able to deal the full damage to the Tower Princess compared to the previous placement.
+*Depending on whether the player wants more single-target damage or area damage, the Flying Machine can be substituted with the Skeleton Dragons. Both cards have similar hitpoints, being able to survive weak spells, although still being OHKOed by strong spells like Fireball. Alternatively, they can be both utilized in the same deck, where one baits for the other to be used unharmed.
+
+<center>
+
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||1.1 sec||0.5 sec||Fast (90)||1 sec||6||800||Air & Ground||x1||Air||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 614 }}
+{{#vardefine: dmg_11 | 171 }}
+{{#vardefine: atk_speed | 1.1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{|class="wikitable" style="width:100%; text-align:center;"
+! width="20%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="30%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 185,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|100 {{BASEPAGENAME}} cards<br>50 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 560,000 Damage to enemy Troops or buildings
+|4,000 {{Icon|I=Gold}}<br>50 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 930,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>50 {{Icon|I=XP}}
+|-
+| rowspan="3" |Tower Tapper <br/ > [[File:Tower Tapper.png|50x50px]]
+|1
+|Hit enemy [[:Category:Crown Towers|Crown Towers]] a total of 420 times
+|6,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Crown Towers a total of 1,200 times
+|100 {{Icon|I=Rare Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Crown Towers a total of 2,100 times
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+| rowspan="3" |Efficient Attacker <br> [[File:Efficient Attacker.png|50x50px]]
+|1
+|Land 8 attacks with a single deploy a total of 80 times!
+|6,000 {{Icon|I=Gold}}<br/ >175 {{Icon|I=XP}}
+|-
+|2
+|Land 8 attacks with a single deploy a total of 240 times!
+|8,000 {{Icon|I=Gold}}<br/ >175 {{Icon|I=XP}}
+|-
+|3
+|Land 8 attacks with a single deploy a total of 480 times!
+|10,000 {{Icon|I=Gold}}<br/ >175 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2017
+*The Flying Machine was once available in the [[Tournament/Special Event Challenges|Flying Machine Draft Challenge]], which started on 22/9/2017. In this challenge, gameplay was similar to a regular Draft Challenge, except that one of the players was able to choose who would use the Flying Machine. If the player achieved at least 8 wins, they obtained the Flying Machine early.
+*From 29/9/2017 through 1/10/2017, the [[Shop]] had a special offer where [[Arenas|Arena]] 9+ players could buy up to 6 Giant [[Chests]] at the normal price that guarantee at least 40% of the Chest's contents to be Flying Machine.
+*The Flying Machine [[Cards|card]] was generally released on 6/10/2017.
+*On 9/10/2017, the [[Version History#Epic Quests Update (9/10/2017)|Epic Quests Update]], changed the Flying Machine's card image.
+2018
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], moved the Arena to unlock the Flying Machine from Jungle Arena to Builder's Workshop.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Rare}} cards start at Level 3 and end at Level 13 (from 1 to 11).
+2019
+*On 1/4/2019, a [[Version History#Balance Changes (1/4/2019)|Balance Update]], increased the Flying Machine's attack time interval to 1.1 seconds (from 1 second).
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Flying Machine's card info screen.
+2021
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], added the Efficient Attacker [[Card Mastery]] task for the Flying Machine.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+
+==Gallery==
+<gallery>
+File:FlyingMachineCardOld.png|Flying Machine's card image before 9/10/2017.
+File:Flying Machine card render.png|Current card render.
+File:Flying Machine Preview.gif|Current card preview
+File:FlyingMachineConcept.jpeg|Original concept of the Flying Machine
+</gallery>
+
+==Trivia==
+*The first use of rotorcraft in war was in 1939, where the Soviet Union used the [https://en.wikipedia.org/wiki/Kamov_A-7 Kamov A-7 autogyro] during the Winter War in 20 combat flights. This autogyro was armed with machine guns and rockets and it was used for spotting enemy artillery and several reconnaissance operations. Rotorcrafts are still used to this day, whether that is warfare, rescue operations, or police enforcement.
+**In the Japanese, Chinese, Persian, and Finnish language settings of the game, the Flying Machine's name translates to "Hovering Gun", "Aircraft", "Flying Car", and "Flywheel" respectively.
+*According to a [https://twitter.com/ClashRoyale/status/1448227054210715649 Tweet] by the Clash Royale Twitter account, the Flying Machine was originally called "Dart Barrel", therefore behaving like the aerial equivalent of a [[Dart Goblin]].
+*The Flying Machine is one of the first [[:Category:Troop Cards|troop]] [[cards]] to receive a card render, alongside the [[Archers]], [[Knight]], [[Goblins]], [[Bomber]], [[Skeletons]], [[Barbarians]], [[Bats]], [[Royal Recruits]], [[Skeleton Barrel]], [[Rascals]], [[Musketeer]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], [[Royal Hogs]], Dart Goblin, [[Zappies]], [[Elixir Golem]], [[Baby Dragon]], [[Skeleton Army]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], [[Prince]], [[Balloon]], [[Giant Skeleton]], [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Mega Knight]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], [[Magic Archer]], [[Bandit]], [[Lava Hound]], [[Night Witch]], and [[Fisherman]].
+*The Flying Machine's creator is the [https://clashofclans.fandom.com/wiki/Master_Builder Master Builder], a character from Clash of Clans' Builder Base. He is also the one piloting the Flying Machine; his legs can be seen sticking out of the Flying Machine in its card image, card render, and also in its [https://www.youtube.com/watch?v=hWxPlqhTkl8 reveal trailer].
+*The Flying Machine is featured as a Builder Boat in the [https://clashofclans.fandom.com/wiki/Scenery Royale Scenery] in Clash of Clans.
+*The Flying Machine was featured in the winning [[Battle Decks|deck]] of the [https://www.youtube.com/live/Sa0QOSJ5AVY?si=Hlcj6efCnFhxfDYe Clash Royale League 2024 Tournament], by a player called Mohamed Light.
+
+{{Navigation|Card}}
+
+[[fr:Machine volante]]
+[[de:Flugmaschine]]
+[[es:Máquina voladora]]
+[[it:Macchina volante]]
+[[ru:Летучка]]
+[[zh:飞行器]]

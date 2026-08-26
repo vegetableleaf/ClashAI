@@ -1,0 +1,149 @@
+{
+ "Knight/Evolution": {
+  "live_revid": 437498,
+  "cached_revid": 437498,
+  "edit_war": "pass",
+  "sha1_live": "3b6857cbfc",
+  "fetched": "2026-08-26"
+ },
+ "Lumberjack/Evolution": {
+  "live_revid": 437284,
+  "cached_revid": 437284,
+  "edit_war": "pass",
+  "sha1_live": "7a75339e27",
+  "fetched": "2026-08-26"
+ },
+ "Mega Knight/Evolution": {
+  "live_revid": 437281,
+  "cached_revid": 437281,
+  "edit_war": "pass",
+  "sha1_live": "e78d40c9ed",
+  "fetched": "2026-08-26"
+ },
+ "Minion Horde/Evolution": {
+  "live_revid": 437379,
+  "cached_revid": 437379,
+  "edit_war": "pass",
+  "sha1_live": "33b194c80c",
+  "fetched": "2026-08-26"
+ },
+ "Mortar/Evolution": {
+  "live_revid": 437361,
+  "cached_revid": 437361,
+  "edit_war": "pass",
+  "sha1_live": "f5561f273e",
+  "fetched": "2026-08-26"
+ },
+ "Musketeer/Evolution": {
+  "live_revid": 436483,
+  "cached_revid": 436483,
+  "edit_war": "pass",
+  "sha1_live": "8ed0f0caca",
+  "fetched": "2026-08-26"
+ },
+ "P.E.K.K.A./Evolution": {
+  "live_revid": 437337,
+  "cached_revid": 437337,
+  "edit_war": "pass",
+  "sha1_live": "b82d0b91c6",
+  "fetched": "2026-08-26"
+ },
+ "Princess/Evolution": {
+  "live_revid": 437368,
+  "cached_revid": 437368,
+  "edit_war": "pass",
+  "sha1_live": "5957e12201",
+  "fetched": "2026-08-26"
+ },
+ "Royal Ghost/Evolution": {
+  "live_revid": 437237,
+  "cached_revid": 437237,
+  "edit_war": "pass",
+  "sha1_live": "3bb9bfcc5b",
+  "fetched": "2026-08-26"
+ },
+ "Royal Giant/Evolution": {
+  "live_revid": 437218,
+  "cached_revid": 437218,
+  "edit_war": "pass",
+  "sha1_live": "74d87f441b",
+  "fetched": "2026-08-26"
+ },
+ "Royal Hogs/Evolution": {
+  "live_revid": 437265,
+  "cached_revid": 437265,
+  "edit_war": "pass",
+  "sha1_live": "c96bcfa04b",
+  "fetched": "2026-08-26"
+ },
+ "Royal Recruits/Evolution": {
+  "live_revid": 436465,
+  "cached_revid": 436465,
+  "edit_war": "pass",
+  "sha1_live": "ab3ba2dd53",
+  "fetched": "2026-08-26"
+ },
+ "Skeleton Army/Evolution": {
+  "live_revid": 436959,
+  "cached_revid": 436959,
+  "edit_war": "pass",
+  "sha1_live": "46794d8702",
+  "fetched": "2026-08-26"
+ },
+ "Skeleton Barrel/Evolution": {
+  "live_revid": 437248,
+  "cached_revid": 437248,
+  "edit_war": "pass",
+  "sha1_live": "78f513873e",
+  "fetched": "2026-08-26"
+ },
+ "Skeletons/Evolution": {
+  "live_revid": 436451,
+  "cached_revid": 436451,
+  "edit_war": "pass",
+  "sha1_live": "8e51cd5c16",
+  "fetched": "2026-08-26"
+ },
+ "Tesla/Evolution": {
+  "live_revid": 437289,
+  "cached_revid": 437289,
+  "edit_war": "pass",
+  "sha1_live": "f84c06fc96",
+  "fetched": "2026-08-26"
+ },
+ "Valkyrie/Evolution": {
+  "live_revid": 437367,
+  "cached_revid": 437367,
+  "edit_war": "pass",
+  "sha1_live": "aea9b50832",
+  "fetched": "2026-08-26"
+ },
+ "Wall Breakers/Evolution": {
+  "live_revid": 437358,
+  "cached_revid": 437358,
+  "edit_war": "pass",
+  "sha1_live": "fb07946725",
+  "fetched": "2026-08-26"
+ },
+ "Witch/Evolution": {
+  "live_revid": 437350,
+  "cached_revid": 437350,
+  "edit_war": "pass",
+  "sha1_live": "a7aed06ef1",
+  "fetched": "2026-08-26"
+ },
+ "Wizard/Evolution": {
+  "live_revid": 437069,
+  "cached_revid": 437069,
+  "edit_war": "pass",
+  "sha1_live": "ea93c92e65",
+  "fetched": "2026-08-26"
+ },
+ "Zap/Evolution": {
+  "live_revid": 437306,
+  "cached_revid": 437306,
+  "edit_war": "pass",
+  "sha1_live": "24a36225b3",
+  "fetched": "2026-08-26"
+ }
+}

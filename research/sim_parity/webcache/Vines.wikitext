@@ -1,0 +1,179 @@
+{{DISPLAYTITLE: <span style="color: #b300b3;">Vines</span>}}
+{{Protection}}{{MagicWords}}
+{{Card Infobox|Cost=3|Rarity=Epic|Type=Spell|Arena=Frozen Peak|ReleaseDate=1 September 2025}}
+{{Quote|Entangle the three highest hitpoint troops or buildings in the area, stunning them while doing damage. If the troop is in the air, they'll ground them. Don't worry, they'll grow on you!}}
+
+The Vines is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from the [[Arenas|Frozen Peak (Arena 8)]]. It is a multi-damage, air-targeting [[:Category:Spell Cards|spell]] with a small radius and high damage per second. When used, it will freeze the troop in place and render it unable to move or attack, and allow ground units to hit the trapped unit for 2.5 seconds. The three troops that are targeted are always the three that have the highest hitpoints within its radius. It appears as an aquamarine-colored potion encased in a large, diamond-shaped vial, that is strangled with a curling vine with thorns. It also has a lid which is made of wood with a thick, large thorn on top of it. A Vines card costs 3 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Vines Common Modifier.png|45x45px]] Common: All Tangled Up===
+{{Quote|+100% radius & x2 targets}}
+Vines radius is doubled and can affect twice the amount of units at once.
+
+===[[File:Vines Rare Modifier.png|45x45px]] Rare: Jungle Fever===
+{{Quote|+1 Suspicious Bush}}
+Sends in a [[Suspicious Bush]] when deployed.
+
+===[[File:Vines Epic Modifier.png|45x45px]] Epic: Entangling Endeavor===
+{{Quote|Infinite roots}}
+Vines duration is heavily extended.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Vines Card}}
+*The Vines deal slightly less damage than Arrows for the same [[Elixir]] cost, allowing them to take out any unit up to [[Wall Breakers]] or [[Bomber]] within its duration.
+*This card, along with [[Arrows]], is the only two cards able to fully counter an [[Skeleton Army/Evolution|Evolved Skeleton Army]] for an equal Elixir trade. However for Vines, you need perfect placement and timing to pull it off, therefore making Arrows a better option.
+*The Vines act as a cheaper alternative to the [[Freeze]] spell, costing 1 less Elixir but with the drawback of only being able to hold down 3 targets, within a smaller radius, and having a shorter duration. However, unlike the Freeze, the Vines can drag any air troops to the ground and deals more damage over time at a slower rate.
+*The 2-second duration of the spell makes it very effective against troops with shields such as [[Guards]]. 4 of its hits will destroy the shields of these troops, while the last one will deal some minor chip damage to them.
+*The Vines pair well with any ground-targeting unit, as it can allow them to deal damage to air units instead of relying on other support units to help them against them. This makes it a great spell to use in decks with low anti-air cards.
+
+<center>
+<div id="unit-statistics" class="table-back">
+{{Statistics}}
+
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+! scope="col" |Duration<br />{{Icon|I=Time}}
+!Deploy Time
+{{Icon|I=Deploy Time}}
+!Count
+{{Icon|I=Troop Count}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|3||2.5||2 sec
+|0.9s||3||Air & Ground||[[:Category:Spell Cards|Spell]]||{{Rarity|Epic}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: dmg_11 | 153 }}
+{{#vardefine: dmg_hits| 2 }}
+{{#vardefine: crown_dmg_11| 39 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Area Damage<br>{{Icon|I=Area Damage}}
+!scope="col"|Crown Tower Damage<br>{{Icon|I=Tower Damage}}
+|-
+| 6 || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(6-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(6-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(6-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 7 || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(7-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(7-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(7-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 8 || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(8-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(8-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(8-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 9 || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(9-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(9-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(9-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 10 || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(10-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(10-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(10-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 11 || {{#var:dmg_11}} x{{#var:dmg_hits}} ({{#expr: {{#var:dmg_11}} * {{#var:dmg_hits}} }}) || {{#var:crown_dmg_11}} x{{#var:dmg_hits}} ({{#expr: {{#var:crown_dmg_11}} * {{#var:dmg_hits}} }})
+|-
+| 12 || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(12-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(12-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(12-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 13 || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(13-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(13-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(13-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 14 || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(14-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(14-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(14-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 15 || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(15-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(15-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(15-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 16 || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(16-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(16-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(16-11)) round 0) * {{#var:dmg_hits}} }})
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 28,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|20 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 85,000 Damage to enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 140,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" |No Escape <br/ > [[File:No Escape.png|50x50px]]
+|1
+|Hit 3 Troops with a single deploy a total of 350 times
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Hit 3 Troops with a single deploy a total of 1,000 times
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Hit 3 Troops with a single deploy a total of 1,750 times
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+== Sound Effects ==
+===Current===
+{| class="wikitable"
+!Sound Effect
+!Action
+!Description
+|-
+|[[File:Vines.wav]]
+|Deployment
+|Plays when the Vines spell is used.
+|-
+|[[File:Vines End.wav]]
+|End
+|Plays when the Vines spell ends.
+|}
+
+===Unused===
+{| class="wikitable"
+!Sound Effect
+!Action
+!Description
+|-
+|[[File:Vines Unused.wav]]
+|Deployment (used before release)
+|Used to play when the Vines spell was used. Replaced on the card's formal release.
+|-
+|[[File:Vines Debug.wav]]
+|Debug
+|Unknown. Likely a debug related to the Vines.
+|}
+
+==History==
+2025
+*On 14/08/2025, the Vines was accidentally added into the game during a maintenance break along with the Baby Dragon Evolution, but were quickly removed afterwards. Players who had unlocked the card before it was removed would still be able to use it.
+*On 1/9/2025, the Vines was added to the game in the September 2025 Update.
+*On 5/9/2025, a [[Version History#Balance Changes (5/9/2025)|Balance Update]] decreased total damage by 17%.
+*On 8/10/2025, a [[Version History#Balance Changes (6/10/2025)=|Balance Update]] decreased duration to 2 seconds (from 2.5 seconds) and decreased total damage 9%.
+2026
+
+* On 2/3/2026, a Balance Update, increased the Vines deploy time to 0.9 seconds (from 0.4 seconds).
+* On 1/6/2026, a Balance Update, decreased the Vines' Crown Tower damage to 23% of its full damage (from 25%)
+
+==Gallery==
+<gallery>
+File:Vines card render.png|Current card render.
+File:Vines Preview.gif|Current card preview
+</gallery>
+
+==Trivia==
+*In the German, Italian and Turkish language settings of the game, the Vines' name translates to "Tendrils", "Tangle", and "Ivy" respectively.
+**In the Italian langauge settings of the game, the Vines name used to have a different name, which translated to "I'll Catch You", but it was changed in a later update.
+*The mechanism is similar to the net thrown by the [[Hunter/Evolution|Evolved Hunter]] and the [https://clashofclans.fandom.com/wiki/Overgrowth_Spell Overgrowth Spell] from Clash of Clans.
+*Before the Vines card was released, the Vines' damage was decreased by 7%.
+
+{{Navigation|Card}}

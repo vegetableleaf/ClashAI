@@ -1,0 +1,221 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Sparky</span>}}
+
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=6|Rarity=Legendary|Type=Troop|Arena=Electro Valley |ReleaseDate=3 May 2016}}
+{{Quote|Sparky slowly charges up, then unloads MASSIVE area damage. Overkill isn't in her vocabulary.}}
+
+The Sparky is a {{Rarity|Legendary}} [[Cards|card]] that is unlocked from the [[Arenas|Electro Valley (Arena 11)]]. It spawns a slow, area-damage, ground-targeting, medium-ranged, ground [[:Category:Troop Cards|troop]] with high hitpoints and extremely high damage. Sparky will charge up over time, releasing her attack when it is full and when an enemy is within her range. However, this charge can be reset by a stun effect. A common example is the [[Zap]] which can reset Sparky's charge. She takes the appearance of a large machine with a front-facing golden tesla coil with an attached steel ram and a plate at the front and rear, a wooden base with 4 wheels and golden coil springs, and team-colored body encased in black metallic frame. A Sparky card costs 6 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Sparky Card}}
+*Due to her massive damage, Sparky is capable of taking out high hitpoint [[:Category:Troop Cards|troops]] such as [[Giant]], [[Royal Giant]], [[Giant Skeleton]], [[Goblin Giant]], [[Goblin Machine]], [[Rune Giant]], [[Mega Knight]], [[P.E.K.K.A.]], [[Golem]], [[Prince]], [[Knight]], [[Valkyrie]], [[Golden Knight]], [[Skeleton King]], [[Monk]], [[Mighty Miner]], [[Bowler]], and [[Elite Barbarians]] in just a few hits.
+*The Sparky is most effectively used in counterattacking, being able to decimate entire pushes for large [[Elixir]] trades thanks to her attack's high area damage and radius. Her slow attacking and movement speed leaves her vulnerable on offense when she is alone, and her high 6 Elixir cost will leave the player at a deficit for some time.
+*Because Sparky deals immense damage but can be easily countered, she is best used as a support troop, ideally behind a high hitpoint tank that targets [[:Category:Building Cards|buildings]] like the [[Golem]] or Giant. Having the tank target buildings means that it will separate itself from the Sparky when units are deployed to defend, making it more difficult for the opponent to hit them both with area damage cards. Additionally, her massive damage may cause the opponent to overcommit and focus too many cards onto the Sparky, allowing the tank to sneak by and deal a significant amount of damage to the [[:Category:Crown Towers|Crown Tower]].
+*Sparky pairs well with the [[Goblin Giant]], due to the fact that the Goblin Giant tanks for her, while the [[Spear Goblins]] on his back take out air troops that would normally give Sparky trouble. However, the Goblin Giant's hitpoints and the Spear Goblins' damage are rather low, so the Sparky is still somewhat vulnerable.
+*Regular tanks can also be effective, but they may be less consistent in getting to a Crown Tower. For example, a [[P.E.K.K.A.]] is helpful for when the opponent has high-health units that Sparky cannot defeat in one shot, allowing both of them to finish them off, but the combo is very costly and is weak to air units and swarms. The [[Mega Knight]] is also helpful when Sparky is surrounded by swarms, also allowing both of them to clean them up at once, but may take longer to defeat tanks while still being costly and helpless against air units. However, if they are supported by the right units, the tank's ability to take down units can allow the push to take down a tower in a single swoop.
+*The [[Ice Golem]] can be a decent mini tank for a Sparky. The Ice Golem will tank for the Sparky and if destroyed, the death damage will instantly defeat Skeletons and Bats and weaken other troops for spells or for Sparky to finish off.
+*The player should be careful when using the Sparky alongside a [[Royal Giant]]. The Sparky's large hitbox and high mass will push the Royal Giant closer to the Tower, which allows the opponent to defend against the push more easily. It is better to have both troops at a slight distance from each other so that Sparky can attack threats to Royal Giant from the player's side.
+*A [[Rage]] [[:Category:Spell Cards|spell]] can throw off the opponent's expectation of when exactly she will fire, possibly allowing her to land a deadly shot on a Crown Tower. This is more effective later as an offense when the opponent has already exhausted several distraction units.
+*Sparky is able to destroy the [[Cannoneer]] with 2 blasts, so she should not be ignored when using him. The [[Dagger Duchess]] and [[Tower Princess]] can survive one more blast, giving a larger room for error, with the former also surviving a full confrontation from a lone Sparky, although she should still not be ignored even with them, as just one hit from Sparky can be deadly.
+*Sparky's massive damage can be wasted on weak, low cost troops like [[Ice Spirit]], [[Skeletons]] or [[Goblins]], or on shielded troops such as [[Guards]]. With that being said, make sure to play splash units such as the [[Bomber]], [[Executioner]], [[Wizard]], [[Bowler]], [[Witch]], [[Goblin Demolisher]], or the [[Fire Spirit]] along with the Sparky to kill low hitpoint troops to clear the way for Sparky.
+*Sparky cannot attack air troops. This means that air troops like [[Minions]], [[Bats]] and [[Inferno Dragon]] can quickly defeat a Sparky, remaining unharmed.
+*[[Electro Wizard]] and [[Electro Dragon]] are very reliable counters to the Sparky, being able to permanently stun her until she's destroyed for a positive [[Elixir]] trade.
+**If an Electro Wizard is approaching your fully charged Sparky, a spell that can interrupt his attack will allow Sparky to shoot him before he gets a chance to stun her.
+*When approached from a distance, Sparky will OHKO the trio of [[Zappies]] before they can reset her attack. To properly counter the Sparky, wait for her to cross the bridge and surround her so that one or two Zappies will survive and leave her permanently stunned until death.
+*A [[Tornado]] pairs extremely well with Sparky and any other splash support troops since it drags them together, allowing them to be easily defeated. Dragging them onto the Crown Tower is even more effective since they will hit the Tower and the opposing troops at the same time.
+*Pairing [[The Log]] with a Sparky can deal significant damage to a Double Prince push. The Log must be casted before the Sparky attacks so that it takes out the [[Dark Prince]]'s shield, then Sparky will finish off the Dark Prince and significantly weaken the [[Prince]]. The knockback from The Log will also reset the charge of the Prince, allowing Sparky to blast a second time if needed.
+*Players can also use Sparky to counter the P.E.K.K.A. However, if the P.E.K.K.A is at least two Levels higher than Sparky, it could be risky as the P.E.K.K.A will survive 3 blasts from her and eventually destroy Sparky due to her very high damage and hitpoints. A similar principle applies to the Mega Knight.
+**On the contrary, the P.E.K.K.A and Mega Knight work well against a Sparky. Although they are a negative Elixir trade, the can stop her while only taking one blast worth of damage, saving most of their hitpoints, for a counterattack.
+*[[Zap]], [[Freeze]], and [[Lightning]] are spells that can reset Sparky's charge attack. While they cannot defeat her alone, they can be paired with troops that would be otherwise OHKOed by the Sparky, allowing them to be saved for a counterattack. However, beware of situations where those spells can baited, allowing other [[cards]] to thrive from their absence, such as a [[Skeleton Barrel]].
+*Buildings are largely ineffective against a Sparky, as she will be able to OHKO most of them and from a distance. The few buildings that can survive a blast from Sparky will be left with very low hitpoints that will be defeated by their own health decay.
+*A lone Sparky may be countered with a [[Tombstone]] along with the help of a [[:Category:Tower Troop Cards|tower troop]]. Due to the Sparky's slow attack speed, the spawned [[Skeletons]] will distract her indefinitely. If placed correctly, the Skeletons can distract Sparky while the [[Tower Princess]] will destroy her. Even if the Sparky gets a hit on the Tombstone, the 4 spawned Skeletons will cause more distractions. Conversely, the opponent can let the Tombstone's spawned Skeletons to keep Sparky on their side, allowing them to accumulate more Elixir for a larger push.
+*The [[Graveyard]] is an effective counter for a lone Sparky since it will distract her for a maximum of 7 seconds and has a high chance of destroying her. The random nature of the spawned Skeletons hinders the efficiency of any supporting splash units, as they will have trouble hitting multiple units at once, leaving plenty of time for the defender to deal with the push. Using the [[Skeleton King]]'s ability can counter the Sparky in a similar way.
+*The [[Battle Ram]] is a situational counter to the Sparky. Sparky will OHKO the Battle Ram itself, while the [[Barbarians]] that spawn from it will start attacking her. As a last resort, those Barbarians may absorb a second blast from the Sparky, leaving enough time for the player to place another card against her.
+*Surrounding her with ground swarms such as [[Barbarians]], [[Skeleton Army]], Guards, [[Skeletons]], [[Goblins]], [[Royal Recruits]], or [[Goblin Gang]] will cause her to eliminate only a fraction of the whole unit, allowing surviving ones and Crown Towers to attack her. However, this should not be done when a splash troop such as the [[Magic Archer]], [[Princess]], [[Firecracker]], [[Valkyrie]], [[Ice Wizard]], [[Baby Dragon]], or [[Wizard]] are around.
+*Skeletons + Bats can stop a lone Sparky. The Skeletons will surround and stall the Sparky while the Bats damage her down. However, the player should be certain that the opponent does not have a quick spell like Arrows to take care of the swarms.
+*The [[Rocket]] hard counters Sparky due to its high damage, capable of destroying an equal-level Sparky in one hit. If you suspect that your opponent has a Rocket, try placing your Sparky in the middle and not on the behind your Crown Tower since the opponent may use the Rocket to kill Sparky and damage your Crown Tower. If your opponent has one, you can continue placing it in the middle to force them to use Rocket on her solely (preventing them from using it on a Crown Tower or other troops) or try baiting their Rocket by deploying other expensive cards (like [[Elite Barbarians]] or [[Elixir Collector]]).
+*A [[Mini P.E.K.K.A.]] can be effective at supporting a Sparky when faced with units that do not die to her blast in one shot. The Mini P.E.K.K.A. can quickly finish them off and allow her to keep advancing. The Mini P.E.K.K.A will also deny the opponent from deploying an Electro Wizard on top of her if they have one, as he will immediately be defeated by the Mini P.E.K.K.A. in one blast and only stun the Sparky once.
+**On the contrary, a Mini P.E.K.K.A. is effective against an enemy Sparky. He will be able to survive just one blast from her and defeat her in 2 hits in return. Beware of troops that might be assisting the Sparky, however. A Mini P.E.K.K.A. that is 1 Level lower than the Sparky or vice versa, will be killed in one blast by a Sparky.
+*A well-placed [[Bandit]] can dash towards a Sparky. During her dash, she is immune to damage, avoiding her blast entirely, and with the help of the Tower Princess, she can stop a Sparky without her taking any damage.
+*Sparky's slow movement speed often results in all of its support clumping up around her. This means it is very easy to gain large positive Elixir trades with a Rocket or a [[Giant Skeleton]]. Rocket can destroy an equal level Sparky, and a Giant Skeleton can cripple a Sparky and everything around her.
+*When Sparky fires off her shot, she will recoil back 0.75 tiles. When using her to defend a push, try not to put her in the middle. She could easily push herself into the other lane after firing or push herself out of range and abandon the opposing troop. Conversely, the recoil is helpful in defense, as she will stay away from slower troops and possibly survive for longer. Because of this, using a [[Miner]] against a distracted Sparky is ineffective, as the Sparky's recoil may cause her to retarget onto the Miner and destroy him immediately with her next blast.
+*[[Heal Spirit]] also synergizes well in Sparky [[Battle Decks|decks]]. The sudden health boost of a few hundred hitpoints can allow the Sparky to get a single deadly connection that would be otherwise difficult to land on a Crown Tower.
+*In Sparky versus Sparky duels, it is a good idea to use Zap on the opposing Sparky. This will allow your own Sparky to attack and destroy the opposing Sparky without taking any damage in return.
+*The Sparky pairs excellently with the [[Fisherman]], due to the fact that if the opponent tries to punish the Sparky's deployment with an attack in the opposite lane, the Fisherman can pull it into the range of the Sparky, which would blast it. This, however, is ineffective against swarms or air units.
+*Avoid attacking in the same lane as a Sparky. Sparky's extreme damage may result in the attacking troop being immediately destroyed, gaining almost no value, and allowing their Sparky to be supported afterwards. It is better to attack the opposite lane instead to force the opponent to abandon their Sparky and defend their other Tower which will end up with weakened defenders and a lone Sparky, both of which can be countered much more easily, or ignore the attack which could result in significant Tower damage or possibly a loss.
+**If the opponent is rushing in the other lane with non-building-targeting troops, you can kite them with an Ice Golem towards Sparky's lane, allowing her to shoot them and nullify the push.
+*Against an [[Electro Giant]], Sparky does not have much trouble as opposed to other cards that can stun her, because he will only stun her after she hits him. However, it is still advisable to place Sparky at a distance from the Electro Giant, so that she does not take unnecessary damage from his counterattacking capabilities and the stuns that he could do to her might allow him to get extra damage to the Crown Tower.
+*If an [[Knight/Evolution|Evolved Knight]] is placed 1 tile into the opposite lane of where a Sparky is, he can tank two blasts from the Sparky and have the Evolved Knight at high health for a great counterpush.
+*[[Clone|Cloning]] a Sparky will retain her current charge, and it will not reset it, and a non-fully charged Sparky will continue charging from where it was left. However, the cloned Sparky will not inherit the state of the original Sparky and will still have to charge from empty.
+*A Sparky will be immune to stun effects while on the process of cloning. This can surprise an opponent who tries to stun her with an Electro Wizard. If you notice that the opponent uses both Sparky and Clone in their deck, wait for them to use the Clone on the Sparky before placing the Electro Wizard on top of her.
+*Keep in mind that Sparky is not the best anti-tank card, despite her massive damage. A Mini P.E.K.K.A or a pair of Elite Barbarians actually does a lot more damage per second than her. Therefore, if one needs to quickly defeat a threat with a lot of hitpoints such as a Royal Giant or Golem, using a Mini P.E.K.K.A. or Elite Barbarians can destroy it quicker. Generally Sparky is better against larger tank pushes, while those other cards are better for lone tanks.
+*With great timing, the [[Golden Knight]] and his ability can absorb one hit from a Sparky. If necessary, his high hitpoints will allow him to survive a second attack. Together with any tower troop, he can stop her for a positive Elixir trade.
+*The [[Monk]] can activate his ability to cause Sparky's attack to be deflected back to her and leaving her for a sliver of health while also destroying anything next to her. However, Sparky will still be alive, so make sure that something else, even just the Crown Tower, is attacking her.
+*Sparky is very effective in [[Global Spell|The Floor is Healing]] sub-[[:Category:Modes|mode]]. Since she can OHKO a large majority of troops, she can completely negate the healing that the global [[Heal]] will provide.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|6||4 sec||1 sec||Slow (45)||1 sec||5||1.8||1400||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1451 }}
+{{#vardefine: dmg_11 | 1331 }}
+{{#vardefine: atk_speed | 4.0 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Area Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width: 100%; text-align: center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer  <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 295,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|2 {{BASEPAGENAME}} cards<br>100 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 850,000 Damage to enemy Troops or buildings
+|8,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 1,480,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>100 {{Icon|I=XP}}
+|-
+| rowspan="3" |Arena Destroyer <br> [[File:Arena Destroyer.png|50x50px]]
+|1
+|Destroy 420 enemy Troops or buildings
+|12,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|2
+|Destroy 1,200 enemy Troops or buildings
+|2 {{Icon|I=Legendary Wild Card}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Destroy 2,100 enemy Troops or buildings
+|18,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Sparky [[Cards|card]] was added to the game on 3/5/2016, in the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]].
+*On 4/7/2016, the [[Version History#Tournaments Update (4/7/2016)|Tournaments Update]], changed her description. It used to read "''Sparky has a heavy-handed approach in life: Obliterate everything in sight.''"
+*On 19/9/2016, the [[Version History#September 2016 Update (19/9/2016)|September 2016 Update]], changed her description. It used to read "''With coils of iron and wheels of wood, the Sparky unloads massive damage to opponents. Overkill isn't in her dictionary.''"
+*On 1/11/2016, the [[Version History#November 2016 Update (1/11/2016)|November 2016 Update]], changed her description slightly. It used to read "''Sparky slowly charges up, then unloads MASSIVE area damage. Overkill isn't in her dictionary''".
+2017
+*On 9/10/2017, the [[Version History#Epic Quests Update (9/10/2017)|Epic Quests Update]], decreased the Sparky's damage by 15% and decreased her attack time interval to 4 seconds (from 5 seconds).
+2018
+*On 25/4/2018, the [[Version History#Clan%20Wars%20Update%20(25/4/2018)|Clan Wars Update]], fixed a bug where Sparky's hit would reset if she was knocked out of range while charging.
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], moved the [[Arenas|Arena]] to unlock the Sparky from Builder's Workshop to Electro Valley.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Legendary}} cards start at Level 9 and end at Level 13 (from 1 to 5).
+*On 5/12/2018, the [[Version History#December 2018 Update (5/12/2018)|December 2018 Update]], increased the Sparky's range to 5 tiles (from 4.5 tiles). This change was not mentioned in any change notes and was later said to be unintentional by Supercell, and as such it got reverted in 7/12/2018, in a [[Version History#Maintenance Break (7/12/2018)|maintenance break]].
+2019
+*On 7/1/2019, a [[Version History#Balance Changes (7/1/2019)|Balance Update]], reverted the Sparky to her state on 5/12/2018. More specifically, the Sparky's range was increased to 5 tiles (from 4.5 tiles).
+2020
+*On 7/1/2020, a [[Version History#Balance Changes (7/1/2020)|Balance Update]], removed the Sparky from all [[Tournament/Special Event Challenges|Draft]] selections. However, she remained in Triple Draft.
+*On 3/11/2020, a [[Version History#Balance Changes (3/11/2020)|Balance Update]], increased the Sparky's first attack time interval to 1 second (from 0.5 seconds).
+2021 
+*On 2/9/2021, a maintenance break, added a card render to the Sparky's card info screen.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], fixed a bug where Sparky was not reset when hit by [[Electro Spirit]] at the same time she was being hooked by [[Fisherman]].
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14). It also fixed an issue with Sparky's charge sound effects.
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Sparky's hitpoints by 0.06%.
+
+==Gallery==
+<gallery>
+File:Sparky card render.png|Current card render.
+File:Sparky Preview.gif|Current card preview
+File:Sparky 1.png|Sparky 1
+File:Sparky02.jpg|Sparky 2
+</gallery>
+
+== Trivia ==
+*The name "Sparky" is a gender-neutral name of Middle English and Old Norse origins from the surname "''Spark''", meaning “''lively''”, “''high-spirited''”, “''sprightly''”, and “''vivacious''”. Despite it being a gender-neutral name, Sparky has been confirmed to be female, according to her [[Cards|card]] description.
+**In the French and Chinese language settings of the game, the Sparky's name translates to "Zappy" and "Electromagnetic Gun" respectively.
+**In the Turkish language setting of the game, Sparky's name lacks the diminutive suffix, causing it to have a name that translates to just "Spark".
+*Electricity was first detected through electric fish from as far back as 2750 BCE where Ancient Egyptian texts described them as the "protectors" of all other fish. At around 600 BCE, Thales of Miletus made a series of observations on static electricity, from which he believed that friction rendered amber magnetic, in contrast to minerals such as magnetite, which needed no rubbing. Thales was incorrect in believing the attraction was due to a magnetic effect, but later science would prove a link between magnetism and electricity. Electricity would remain little more than an intellectual curiosity for millennia until 1600, when the English scientist William Gilbert wrote ''De Magnete'', in which he made a careful study of electricity and magnetism, distinguishing the lodestone effect from static electricity produced by rubbing amber.
+**The Sparky is 1 of 11 [[cards]] associated with electricity, with the others being [[Electro Spirit]], [[Zap]], [[Tesla]], [[Zappies]], [[Electro Dragon]], [[Electro Giant]], [[Lightning]], [[Electro Wizard]], [[Wizard Trio]], and the [[Goblinstein]].
+***The Tesla and the Sparky are the only cards associated with electricity that don't stun.
+*The Sparky's stats are the highest or lowest among all [[:Category:Troop Cards|troops]]. More specifically:
+**The Sparky has the lowest attack speed of all troops, with an attack speed of 4 seconds.
+*The Sparky is 1 of 3 troops to recoil when attacking, the others being [[Firecracker]] and [[Super Archers]].
+*The Sparky has been featured in multiple [[Tournament/Special Event Challenges|special game modes]] outside of the card. More specifically: 
+**The Sparky is 1 of 23 troops that has been featured in the [[Troop Rush]] game [[:Category:Modes|mode]], the others being [[Skeletons]], [[Skeleton Dragons]], [[Fire Spirit]], [[Bats]], [[Elite Barbarians]], Firecracker, [[Rascals|Rascal Girls]], [[Royal Hogs]], [[Heal Spirit]], [[Elixir Golem]], [[Guards]], [[Prince]], [[Balloon]], [[Golem]], [[Wall Breakers]], [[Ram Rider]], [[Phoenix]], [[Royal Ghost]], [[Bandit]], [[Lumberjack]], [[Santa Hog Rider]], and the [[Monk]].
+**The Sparky is 1 of 3 troops that has been featured in the [[Treasure Hunt|Capture the Troop]] sub-mode of the Treasure Hunt game mode, the others being [[Fisherman]] and the [[Archer Queen]].
+**The Sparky is 1 of 14 troops that has been featured with a [[Buff#Rage|Rage]] [[buff]], the others being Electro Spirit, [[Giant]], Zappies, Guards, [[Giant Skeleton]], [[Goblin Giant]], Electro Dragon, Wall Breakers, Electro Giant, [[Mega Knight]], Ram Rider, Electro Wizard, and Royal Ghost.
+**The Sparky is 1 of 10 troops that has been featured under the [[Ruler Ability#Special Delivery|Special Delivery]] [[Ruler Ability|ruler ability]], the others being [[Knight]], [[Skeleton Barrel]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Musketeer]], [[Wizard]], [[P.E.K.K.A.|P.E.K.K.A]], Giant Skeleton, Golem, and Royal Ghost.
+*The Sparky is 1 of 15 troops which bring an excited reaction from the audience upon spawning and brings a collective groan from the audience when defeated, as well as a concerning gasp when the opponent plays her, the others include [[Royal Giant]], Giant, P.E.K.K.A., Giant Skeleton, [[Rune Giant]], Goblin Giant, Golem, [[Bowler]], Electro Wizard, [[Inferno Dragon]], [[Lava Hound]], [[Night Witch]], [[Super Lava Hound]], and the Monk.
+*The three notes Sparky makes when charging up are C, E♭, and G♭, making a diminished [https://en.wikipedia.org/wiki/C_minor c-minor] chord if put together.
+*There is a [[Loading Screen Hints|Loading Screen Hint]] that directly refers to a nickname for her. It says: "''Calling Sparky a trash can on wheels hurts her feelings.''" This may suggest that Sparky is a sentient being.
+*The second part of the card description is also used as a Loading Screen Hint.
+*When an enemy Sparky is defeated, her wheels fall to the ground. However, if a friendly Sparky is defeated, nothing is dropped. The other units that drop items upon defeat are the Knight, Rascal Boy, [[Mega Minion]], [[Dark Prince]], [[Executioner]], Mega Knight, Fisherman, [[Super Knight]], [[Golden Knight]], and the [[Little Prince]].
+*The Sparky is the subject of 4 [[Emotes]].
+*A [[Clone|cloned]] Sparky does not fall from the sky when deployed.
+*The initial balance change for Sparky on the [[Version History#January Balance Changes (7/1/2019)|7/1/2019 balance changes]] was a range increase to 4.75 tiles (from 4.5 tiles), but it was raised to 5 tiles [https://twitter.com/ClashRoyale/status/1082197094868373505 last minute].
+
+{{Navigation|Card}}
+
+[[fr:Zappy]]
+[[de:Funki]]
+[[es:Chispitas]]
+[[it:Scintilla]]
+[[ja:スパーキー]]
+[[ko:스파키]]
+[[ru:Спарки]]
+[[pt-br:Sparky]]
+[[zh:电磁炮]]
+[[pl:Sparky]]

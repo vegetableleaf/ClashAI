@@ -1,0 +1,98 @@
+{
+ "barbarian_hut": {
+  "title": "Barbarian Hut",
+  "parsed_title": "Barbarian Hut",
+  "revid": 436519,
+  "fetched": "2026-08-26",
+  "bytes": 21353,
+  "file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Barbarian_Hut.wikitext"
+ },
+ "bomb_tower": {
+  "title": "Bomb Tower",
+  "parsed_title": "Bomb Tower",
+  "revid": 436520,
+  "fetched": "2026-08-26",
+  "bytes": 22776,
+  "file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Bomb_Tower.wikitext"
+ },
+ "cannon": {
+  "title": "Cannon",
+  "parsed_title": "Cannon",
+  "revid": 437251,
+  "fetched": "2026-08-26",
+  "bytes": 18954,
+  "file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Cannon.wikitext"
+ },
+ "elixir_collector": {
+  "title": "Elixir Collector",
+  "parsed_title": "Elixir Collector",
+  "revid": 436522,
+  "fetched": "2026-08-26",
+  "bytes": 23704,
+  "file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Elixir_Collector.wikitext"
+ },
+ "goblin_cage": {
+  "title": "Goblin Cage",
+  "parsed_title": "Goblin Cage",
+  "revid": 436552,
+  "fetched": "2026-08-26",
+  "bytes": 24583,
+  "file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Goblin_Cage.wikitext"
+ },
+ "goblin_drill": {
+  "title": "Goblin Drill",
+  "parsed_title": "Goblin Drill",
+  "revid": 437382,
+  "fetched": "2026-08-26",
+  "bytes": 23959,
+  "file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Goblin_Drill.wikitext"
+ },
+ "goblin_hut": {
+  "title": "Goblin Hut",
+  "parsed_title": "Goblin Hut",
+  "revid": 437256,
+  "fetched": "2026-08-26",
+  "bytes": 29795,
+  "file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Goblin_Hut.wikitext"
+ },
+ "inferno_tower": {
+  "title": "Inferno Tower",
+  "parsed_title": "Inferno Tower",
+  "revid": 437542,
+  "fetched": "2026-08-26",
+  "bytes": 28742,
+  "file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Inferno_Tower.wikitext"
+ },
+ "mortar": {
+  "title": "Mortar",
+  "parsed_title": "Mortar",
+  "revid": 437360,
+  "fetched": "2026-08-26",
+  "bytes": 25479,
+  "file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Mortar.wikitext"
+ },
+ "tesla": {
+  "title": "Tesla",
+  "parsed_title": "Tesla",
+  "revid": 437288,
+  "fetched": "2026-08-26",
+  "bytes": 26062,
+  "file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Tesla.wikitext"
+ },
+ "tombstone": {
+  "title": "Tombstone",
+  "parsed_title": "Tombstone",
+  "revid": 436518,
+  "fetched": "2026-08-26",
+  "bytes": 31454,
+  "file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/Tombstone.wikitext"
+ },
+ "x_bow": {
+  "title": "X-Bow",
+  "parsed_title": "X-Bow",
+  "revid": 437356,
+  "fetched": "2026-08-26",
+  "bytes": 30141,
+  "file": "C:/Users/benpe/ClashBot/research/sim_parity/webcache/X-Bow.wikitext"
+ }
+}

@@ -1,0 +1,234 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Magic Archer</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=4|Rarity=Legendary|Type=Troop|Arena=Rascal's Hideout|ReleaseDate=2 March 2018}}{{SubpageNavBox|Hero=Yes}}
+{{Quote|Not quite a Wizard, nor an Archer - he shoots a magic arrow that passes through and damages all enemies in its path. It's not a trick, it's magic!}}
+
+The Magic Archer is a {{Rarity|Legendary}} [[Cards|card]] that is unlocked from the [[Arenas|Rascal's Hideout (Arena 13)]]. It spawns an area damage, air-targeting, long-ranged, ground [[:Category:Troop Cards|troop]] with moderate hitpoints and moderate damage. The Magic Archer launches an attack that travels up to its maximum range, while piercing through enemies. He takes the appearance of a man with gray hair with white stripes, glowing turquoise eyes, bushy black eyebrows, and a French-fork beard, wears a dark green tunic, a team-colored cape, a brown belt with a triangular copper rune and fingerless gloves, and dark brown pants and boots, and wields a glowing team-colored bow. A Magic Archer card costs 4 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Magic Archer Card}}
+*The Magic Archer is excellent at countering [[:Category:Building Cards|buildings]] in the opponent's territory due to his long range while also surviving [[:Category:Spell Cards|spells]] like [[The Log]], [[Zap]], [[Giant Snowball]], and [[Arrows]].
+**He has enough range to outrange the [[Bomb Tower]], [[Cannon]], [[Tesla]], and [[Inferno Tower]], making him an effective choice at supporting tanks like [[Giant]], [[Golem]], [[Ice Golem]], [[Elixir Golem]], and [[Lava Hound]] or fast attackers like the [[Hog Rider]], [[Ram Rider]], and [[Battle Ram]]. If the building is 4 tiles from the river, he can reach it without having to cross the bridge.
+***If he approaches the building from the other lane, he can snipe the building from the bridge, provided that he comes from the inner side of the [[Arenas|Arena]].
+**He is also great against spawner buildings, as his piercing arrow will not only hit the building but also the spawned [[:Category:Troop Cards|troops]] from those buildings. If he lands the finishing hit on the building, he will also immediately defeat the spawned units after death that these buildings spawn. This is especially effective against [[Tombstone]] and [[Goblin Hut]], due to being able to OHKO their spawned troops.
+***Passive buildings have a larger hitbox than active buildings, which allows the Magic Archer to hit them from a safe distance even if placed further deep within the opponent's territory. In fact, a Magic Archer placed on the inner side of the bridge will be able to reach a passive building that is 5 tiles from the river.
+**An offensive [[Mortar]] or an [[X-Bow]] placed on the center of the bridge can be attacked from the Magic Archer while placed on the center of the bridge and 1 tile away from the river. This is enough to also hit the [[:Category:Tower Troop Cards|Crown Tower]] as well.
+***However, a staggered Mortar or X-Bow will cause the Magic Archer to be too far away from the Crown Tower, so that it would not be able to hit it as well. In this case, the Magic Archer has to be placed one tile closer in order to hit the Crown Tower alongside the building.
+***Against a defensive Mortar, when the tank enters the Mortar's blind spot, it will retarget towards the Magic Archer. To prevent that from happening, distract it with a mini tank in the other lane, and then place the Magic Archer to snipe the Mortar.
+*When he shoots a Crown Tower, his arrow goes through the Tower. This can be used to hit troops behind a Tower, although it is very unlikely the opponent will deploy a troop behind a Tower while the Magic Archer is attacking it.
+*Due to his fast hit speed, long range, and his arrow's ability to go through other troops, he can defeat swarms such as [[Bats]], [[Goblin Gang]], [[Guards]], and [[Skeleton Army]]. He can also completely destroy a [[Minion Horde]] without taking any damage as long as he has the help of a Crown Tower.
+*The Magic Archer has relatively low hitpoints for his [[Elixir]] cost, leaving him weak to high damage spells.
+**A [[Fireball]] or [[Poison]] can completely destroy a Magic Archer for a neutral Elixir trade, but hitting other targets with the said spell such as a Crown Tower will make the move even more advantageous.
+**The [[Barbarian Barrel]] is able to counter a lone Magic Archer for a 2 Elixir profit. Place it so that the Barbarian Barrel hits the Magic Archer and the [[Barbarians|Barbarian]] pops out behind him and distracts him. The Magic Archer and the Crown Tower combined will be able to defeat the Magic Archer. The [[Royal Delivery]] can work in a similar way.
+**[[Lightning]] and [[Rocket]] can instantly obliterate the Magic Archer when they hit him, however, they are a negative Elixir trade. Use them against the Magic Archer if they are also hitting something else, such as a Crown Tower.
+**A lone Magic Archer can be destroyed within 2 hits from the [[Void]] for a positive Elixir trade. With great timing, the player can deploy any troop on the Void's radius to save the Magic Archer from the spell.
+**Note that the opponent may take advantage of the lack of spells due to being used on the Magic Archer, and place another [[Cards|card]] that would thrive due to their absense, such as Barbarians.
+*He is an effective counter to the [[Graveyard]], as he shoots rapidly and his arrows can hit multiple [[Skeletons]] at once. However, his higher vulnerability to Poison compared to a troop like [[Musketeer]], [[Ice Wizard]], [[Wizard]], or [[Electro Wizard]] means that he will often be defeated during a larger Graveyard push. Players should take advantage of his long range and place him behind their [[King's Tower]] to make it harder for the Graveyard user to spell him without accidentally activating the King's Tower.
+*When using him against a [[Goblin Barrel]], place him in such a way that he distracts one [[Goblins|Goblin]], while also hitting the top 2 Goblins with one attack. This will prevent the most damage from the Goblin Barrel.
+*The Magic Archer's long projectile range means that if a unit is in front of a Crown Tower, he can be played at the river and damage both of them. If the opponent is distracted with the player's other troops and lacks a unit that can quickly defeat the Magic Archer, he can garner immense chip damage. When defending against a Magic Archer crossing the bridge, the counter unit should be placed off to the side to prevent the Magic Archer dealing unnecessary Tower damage.
+**In order to get chip damage with the Magic Archer, he should be placed on the same horizontal line as the troop where the Magic Archer's attack will hit. If the troop comes from the center of the bridge, then the Magic Archer should be placed on the center as well; if the troops is staggered to the left or right, the Magic Archer should be staggered accordingly.
+**Because of his hitpoints, high damage ranged troops would be able to defeat him quickly, largely negating the chip damage that he would gain from doing this tactic. It is recommended to pair him with a mini tank, to make this tactic safer to execute.
+**Like the [[Princess]], his long range makes him effective at supporting pushes from the river. Ground troops would be unable to reach him, and will instead be forced to walk through the bridge, leaving enough time for the player to distract them with a mini tank in order to save their Magic Archer.
+*The Magic Archer can be effectively used with the [[Tornado]] to cripple or even defeat large groups of enemy troops. The Tornado will group up all the troops, and the Magic Archer will constantly shoot them, dealing quite a bit of damage, all due to his ability to pierce multiple troops with his projectile. If done at the bridge, he can also snipe the Crown Tower for some chip damage. His long range should also be accounted for when placing the Tornado; units can be pulled slightly farther away than if the player was defending with something like an [[Executioner]] or [[Wizard]], which helps prevent the opposing units from attacking them during the Tornado's effect.
+**A Tornado combined with a singular troop like an Ice Golem can be used against the Magic Archer to activate the King's Tower. In order to prevent this tactic from happening, the player can utilize their own Tornado to pull the troop away from the King's Tower.
+*A lone Magic Archer can be countered with an [[Ice Spirit]], [[Fire Spirit]], or an [[Electro Spirit]] and the help of a Crown Tower. As the Magic Archer crosses the river, the Ice Spirit/Fire Spirit/Electro Spirit should be placed one tile to the opposite side and five tiles up from the King's Tower. The Magic Archer will attempt to chase and shoot it as it moves away, and the arrows will miss due to their Very Fast speed. The defender can also activate their King's Tower during the kite by deploying a unit between the Magic Archer and their King's Tower.
+*The Magic Archer outranges the 5.5 tile sight range of most troops. Placing Magic Archer by the river and 2 tiles into the opposite lane will allow him to shoot enemies currently crossing the bridge without being targeted by them, since the distance will be about 7 tiles away. This is especially useful against potent medium-range units like [[Wizard]], [[Executioner]], [[Hunter]], and [[Bowler]], who will otherwise 2HKO the Magic Archer. This is also useful against the [[Ram Rider]], as he will keep attacking her without her attacking him in return.
+*Even though he has a long range, his sight range is also very long. Because of this, he can be easily kited to the other lane with an [[Ice Golem]] or a [[Goblin Giant]], while the Crown Tower slowly takes him down. This counters the Magic Archer for a +2 Elixir trade.
+*Because of his small area, swarms can effectively surround him and stop him with the help of the Crown Tower. Even something as frail as [[Bats]] or [[Skeletons]] can prevent him from connecting to the Crown Tower by surrounding him. This is enough to stop him for a +2 and +3 Elixir trade.
+*He is good when used against a Princess at the bridge. Whether he distracts the Princess or not, he will deal damage to her as well as chip at the Crown Tower, and then counterattack, forcing the opponent to spend additional Elixir on him.
+*The [[Fisherman]] can be used to activate the King’s Tower against the Magic Archer. The defender should place the Fisherman in the middle of their side of the Arena, staggered 2 tiles diagonally towards the Crown Tower in the lane that the Magic Archer is walking in, as soon as the opponent’s Magic Archer crosses the bridge. The Magic Archer would then be hooked towards the Fisherman and start firing, with his arrows piercing through the Fisherman and activating the King Tower.
+*A Magic Archer can pierce almost all the Skeletons from the [[Skeleton Barrel]] with a very precise timing, similar to the Princess. Deploy him behind your King's Tower in the same lane when the barrel's shadow is 5 tiles from the Crown Tower. If timed correctly, his arrow will hit the Skeletons as they are clumped up, leaving only one alive at most (which is easily defeated by the Crown Tower).
+*The Magic Archer synergizes well with the [[Hunter]]. The Hunter is excellent at beating tanks and short range threats to the Magic Archer while the Magic Archer deals a lot of damage to long range threats to the Hunter. However, beware of spells that could be used against the duo.
+*Pairing the Magic Archer with a cheap unit like an Ice Spirit, Fire Spirit, or an Electro Spirit can deal significant damage to a Crown Tower or act as a quick defensive combo; however, it is vulnerable to spells like The Log or Royal Delivery. For example, the Magic Archer is not enough to take down a [[Balloon]] + [[Minions]] push with the help of a Crown Tower. This can be prevented by using the Ice Spirit, Fire Spirit, or the Electro Spirit.
+**The Ice Spirit or Electro Spirit's stun will also leave swarms at an angle for the Magic Archer to hit multiple troops. This is key for countering certain pushes that involve swarms, such as a [[Miner]] + Minion Horde push.
+*He is a decent counter to the [[Lava Hound]]; his high attack speed lets him defeat the Lava Hound and his splash makes him a great choice against the Lava Pups. If timed right, the fatal hit on the Lava Hound will allow the Magic Archer to hit all Lava Pups at once, preventing even more damage on the Crown Tower.
+*The Miner is a decent counter to a defending Magic Archer, as he will 3HKO him and can be deployed anywhere around him. The defender can use swarms to reduce the likelihood that the Miner locks onto him. However, if the opponent also has Poison, they may decide to fake the player out and deploy the Miner on the Crown Tower, while the Poison is placed on the Magic Archer. If the player uses a swarm to protect her, this will give the opponent spell value and chip damage.
+**If the Miner response is placed in a poorly position, you can use Tornado to send the Miner toward the King Tower, activating him early while also saving your Magic Archer.
+*When timed right, the Magic Archer paired with The Log can stop 2 of the [[Three Musketeers]] when split, while also getting chip damage towards the Crown Tower. This will leave the player with 3 spare Elixir to use on the third [[Musketeer]] in the other lane.
+*Beware of troops coming from behind the Magic Archer, especially fast ones like Goblins. The Goblins may push him closer to the opponent's side, which can be used against the player by placing a troop to distract him and cause a King Tower activation.
+*In [[2v2]], one can activate the King's Tower with a troop only if the Magic Archer is staggered towards the center of the Arena as it crosses the bridge (caused by being placed or displaced towards the center of the Arena). The troop should be placed to the side to your Crown Tower as the Magic Archer crosses the bridge.
+*Due to its long range and fast initial hit speed, a Magic Archer at critical health is still able to land a shot on a Tower before the Tower Princess' arrow can reach the Magic Archer. This can deal considerable chip damage over the course of a game, so one should consider using a cheap troop to distract the Magic Archer in these instances.
+**An unsupported Magic Archer can safely be ignored as it deals low Tower damage for its cost, preferably if the defender runs a heavy [[Battle Decks|deck]]. This is more applicable with the [[Cannoneer]] and [[Dagger Duchess]], as they will prevent all but three and two hits respectively
+*The Magic Archer is very similar to an Executioner, except that he attacks faster, has less hitpoints, deals less damage, attacks from further, and hits less units. However, he costs less Elixir, making him more individually flexible compared to the Executioner (i.e. they are not forced to use 5 Elixir on a single push as opposed to dropping 4 Elixir and having an additional 1 Elixir for a second push or a different card altogether).
+*If the player has already destroyed one Crown Tower and wants to target the second one, they can place the Magic Archer on the tiles that face the Crown Tower. Depending on which tile he is placed, the player can choose whether they want to deal as much damage as possible or to deal the damage as quickly as possible.
+**Placing in 4 tiles from the river is the quickest way to connect to the second Tower Princess. This placement is unreactable from the opponent, but it also results in the Magic Archer being within range of the King Tower. As such, he will only hit the Crown Tower twice.
+**If he is placed 1 tile lower, he will stay out of range of the King Tower, allowing him to deal 1 extra hit to the Tower Princess. This is a good position to do as it is still quick while also not sacrificing a lot of potential damage.
+**On the 2nd tile from the river, he is out of range of both the Crown Tower and the King Tower when deployed, but he will have to walk in order to get in range, taking more time for the opponent to react to this. However, he will be able to deal 1 extra hit to the Tower Princess compared to the previous placement. Placing the Magic Archer 3 tiles from the river and 1 tile from the center will yield the same results.
+**A placement that is 4 tiles from the river and 3 tiles from the center will cause the Magic Archer to target the King Tower instead while also staying out of range of the Crown Tower. This results in him hitting the King Tower 5 times.
+*The [[Mini P.E.K.K.A.|Mini P.E.K.K.A]] is a very effective counter to the Magic Archer. He deals more than enough damage to defeat him in one hit and survive with almost all of his health for a counterattack. The [[Elite Barbarians]], [[Sparky]], and [[P.E.K.K.A.]] can work in a similar way, albeit for a negative Elixir trade.
+*The [[Valkyrie]], [[Giant Skeleton]], [[Mega Minion]], [[Night Witch]], [[Goblin Cage|Goblin Brawler]], [[Mega Knight]] (if not jumping), and [[Prince]] (if not charging) are all able to 2HKO the Magic Archer, making them great counters against him. Place them slightly staggered so that the Magic Archer does not hit the Crown Tower.
+*Stacking multiple Magic Archers on the map is a great way to control the Arena. With their great range and slow movement speed, a Magic Archer can easily protect another Magic Archer from swarms and it can also discourage the opponent from attacking. However, make sure that the Magic Archers are far away from each other to prevent the opponent from gaining major spell value.
+*If you can predict a Magic Archer at the bridge, activating the [[Monk]]'s ability will cause the Magic Archer to deal damage to his own Crown Tower through the reflected projectiles.
+**On the other hand, these reflected projectiles can be used to activate the King Tower. This can be a great way to activate your King Tower against the Monk, however this is risky, and is likely to result in the Magic Archer being killed in the process.
+*A Magic Archer that is 1 Level lower takes more hits to defeat certain units like the Princess, [[Firecracker]], [[Archers]], [[Bomber]], and [[Dart Goblin]]. This can be beneficial for doing more piercing damage to the Crown Tower. However, it is not recommended, as it will result in the Magic Archer having less hitpoints, which makes him easier to defeat after he crosses the bridge.
+
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Range<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Width<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||1.1 sec||0.7 sec||Medium (60)||1 sec||7||11||0.5||1000||Air & Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 529 }}
+{{#vardefine: dmg_11 | 133 }}
+{{#vardefine: atk_speed | 1.1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Area Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer  <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 230,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|2 {{BASEPAGENAME}} cards<br>100 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 690,000 Damage to enemy Troops or buildings
+|8,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 1,160,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>100 {{Icon|I=XP}}
+|-
+| rowspan="3" |Arena Destroyer <br> [[File:Arena Destroyer.png|50x50px]]
+|1
+|Destroy 420 enemy Troops or buildings
+|12,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|2
+|Destroy 1,200 enemy Troops or buildings
+|2 {{Icon|I=Legendary Wild Card}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Destroy 2,100 enemy Troops or buildings
+|18,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|}
+</div>
+
+==History==
+2018
+*The Magic Archer was once available in the [[Tournament/Special Event Challenges|Magic Archer Draft Challenge]] which started on 16/2/2018. In this [[Tournament|challenge]], gameplay was similar to a regular Draft Challenge, except that one of the players was able to choose who would use the Magic Archer. If the player achieved 12 wins, they obtained the Magic Archer early.
+*From 23/2/2018 through 26/2/2018, the [[Shop]] had a special offer where [[Arenas|Arena]] 11+ players could buy up to 9 special Fortune [[Chests]] for 1,000 [[Gems]] that had a 33% chance to contain a Magic Archer with the first and second Chest and guaranteed with the third. If a Magic Archer was obtained in the first or second Chest, then the third one would not guarantee it. The process was repeated with the next three trios of Chests.
+*The Magic Archer [[Cards|card]] was generally released on 2/3/2018.
+*On 25/4/2018, the [[Version History#Clan%20Wars%20Update%20(25/4/2018)|Clan Wars Update]], increased the Magic Archer's projectile speed to 1000 (from 800).
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], fixed a bug where the Magic Archer would extend his range and accidentally activate the [[King's Tower|King Tower]]. It also moved the [[Arenas|Arena]] to unlock the Magic Archer from Electro Valley to Hog Mountain.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Legendary}} cards start at Level 9 and end at Level 13 (from 1 to 5).
+*On 5/11/2018, a [[Version History#Balance Changes (5/11/2018)|Balance Update]], increased the Magic Archer's first attack time interval to 0.9 seconds (from 0.4 seconds).
+2019
+*On 7/1/2019, a [[Version History#Balance Changes (7/1/2019)|Balance Update]], decreased the Magic Archer's first attack time interval to 0.6 seconds (from 0.9 seconds).
+*On 28/1/2019, the [[Version History#January%202019%20Update%20(28/1/2019)|January 2019 Update]], moved the Arena to unlock the Magic Archer from Hog Mountain to Spell Valley.
+*On 15/4/2019, the [[Version History#April%202019%20Update%20(15/4/2019)|April 2019 Update]], added two extra [[Star Points|Star Levels]].
+*On 5/8/2019, a [[Version History#Pass Royale and more (5/8/2019)|Balance Update]], increased the Magic Archer's damage by 16%, increased his attack time interval to 1.1 seconds (from 1 second), and decreased his first attack time interval to 0.5 seconds (from 0.6 seconds).
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Magic Archer's card info screen.
+2020 
+*On 7/4/2020, a [[Version History#Balance Changes (7/4/2020)|Balance Update]], decreased the Magic Archer's range to 6 tiles (from 7 tiles).
+*On 5/5/2020, a [[Version History#Balance Changes (5/5/2020)|Balance Update]], increased the Magic Archer's range to 7 tiles (from 6 tiles), but also decreased his hitpoints by 10%.
+2021 
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the Arena to unlock the Magic Archer from Spell Valley to Rascal's Hideout.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2023
+*On 6/2/2023, the [[Version History#Pass Royale and more (6/2/2023)|February 2023 Update]], changed the Magic Archer's card render.
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+*On 3/10/2023, a [[Version History#Balance%20Changes%20(3/10/2023)|Balance Update]], increased the Magic Archer's first attack time interval to 0.8 seconds (from 0.5 seconds).
+2024
+*On 5/3/2024, a [[Version History#Balance Changes (5/3/2024)|Balance Update]], decreased the Magic Archer's first attack time interval to 0.7 seconds (from 0.8 seconds).
+*On 8/10/2024, a [[Version History#Balance Changes (8/10/2024)|Balance Update]], decreased the Magic Archer's hitpoints by 0.2%.
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Magic Archer's hitpoints by 0.18%, and his damage by 0.74%.
+*On 1/12/2025, a Balance Update, increased the Magic Archer's damage by 8%.
+2026
+
+* On 4/8/2026, a Balance Update, decreased the Magic Archer's damage by 6%
+
+==Gallery==
+<gallery>
+File:MagicArcherCardBo.png|Magic Archer's card image reskinned as Bo during the Brawl Stars Challenge.
+File:Old Magic Archer card render.png|Magic Archer's card render before 6/2/2023.
+File:Magic Archer card render.png|Current card render.
+File:Magic Archer Preview.gif|Current card preview
+File:MagicArcherConcepts.jpeg|Concept designs of Magic Archer.
+File:MagicArcherConcepts2.jpeg|More concept designs of Magic Archer.
+File:Magic Archer 2.png|Magic Archer holding his arrow.
+File:Magic Archer 3.png|Magic Archer aiming.
+</gallery>
+
+==Trivia==
+*The word "''Archer''" comes from the Latin "''arcus"'', meaning bow. The practice of archery was first developed in Africa by the later Middle Stone Age (approx. 70,000 years ago). It is documented as part of warfare and hunting from the classical period until the late medieval period when it was made obsolete by the increased use of firearms. 
+**The bow that Magic Archer uses in [[Basics of Battle|battle]] is a magical [https://en.wikipedia.org/wiki/Recurve_bow recurve bow].
+**In the Persian language setting of the game, the Magic Archer's name translates to "Magic Shooter".
+**The Magic Archer is 1 of 10 [[cards]] associated with archery, with the others being [[Archers]], [[Arrows]], [[Tower Princess]], [[X-Bow]], [[Princess]], [[Super Magic Archer]], [[Super Archers]], [[Archer Queen]], and the [[Little Prince]].
+*Among all troops with area damage, the Magic Archer is tied with Super Magic Archer and Super Archers for the smallest area damage radius of all troops, with a radius of 0.25 tiles.
+*The Magic Archer is one of the first troop [[cards]] to receive a card render, alongside the Archers, [[Knight]], [[Goblins]], [[Bomber]], [[Skeletons]], [[Barbarians]], [[Bats]], [[Royal Recruits]], [[Skeleton Barrel]], [[Rascals]], [[Musketeer]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Flying Machine]], [[Hog Rider]], [[Royal Hogs]], [[Dart Goblin]], [[Zappies]], [[Elixir Golem]], [[Baby Dragon]], [[Skeleton Army]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], [[Prince]], [[Balloon]], [[Giant Skeleton]], [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Mega Knight]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], [[Bandit]], [[Lava Hound]], [[Night Witch]], and [[Fisherman]].
+*The [https://clashofclans.fandom.com/wiki/Super_Archer Super Archer] troop in Clash of Clans is likely inspired from the Magic Archer, with both being long range troops whose attacks pierce through enemy troops.
+*Along with the [[Firecracker]], Rascals, Bandit, and the [[Boss Bandit]], the Magic Archer belongs to the Forest Gang.
+*When deployed, the Magic Archer will say "''好的 (Hǎo de)''"'','' and when attacking, often says “''爆炸 (Bàozhà)''” which mean "''Ok''" and ''“Explode''“ in Chinese.
+**The Magic Archer is 1 of 24 troops that speak distinct words when on the field, the others being [[Mini P.E.K.K.A.]], [[Mega Minion]], Wizard, Hog Rider, P.E.K.K.A., [[Dark Prince]], Bowler, Ram Rider, [[Electro Wizard]], Princess, Ice Wizard, [[Lumberjack]], [[Mother Witch]], Fisherman, [[Goblin Machine]], [[Super Mini P.E.K.K.A.]], [[Santa Hog Rider]], Super Magic Archer, [[Golden Knight]], Boss Bandit, Archer Queen, Little Prince, and the [[Terry]].
+*If the [[Boss Bandit]] is played when an allied Magic Archer is on the field, she says "''Cover me, sharp eyes!''".
+*During the global release of Brawl Stars celebration, the Magic Archer was reskinned as [https://brawlstars.fandom.com/wiki/Bo Bo] in the [[Heist]] [[:Category:Modes|mode]].
+*The Magic Archer is the subject of certain cosmetics in the game. More specifically:
+**The Magic Archer is the subject of 3 [[Emotes]].
+**The Magic Archer is the subject of a [[King's Tower|Tower Skin]].
+*A [[Clone|cloned]] Magic Archer does not fall from the sky when deployed.
+*On 27/3/2023, a [[Training Camp|Trainer]] was added to the game called Boss Cheddar, and used a Level 18 Magic Archer in their [[Battle Decks|deck]], despite the highest Level being Level 14 at the time. This Trainer was removed on 18/4/2023.
+*The initial balance change for Magic Archer on the [[Version History#Balance Changes (5/3/2024)|5/3/2024 balance changes]] was a first attack time interval decrease to 0.6 seconds (from 0.8 seconds), but it was raised to 0.7 seconds [https://royaleapi.com/blog/season-57-balance-wip last minute].
+*The Magic Archer shares the same triangular logo on his belt as troops and defenses from Town Hall 15 (magic themed) in Clash of Clans, interestingly Magic Archer preceded the release of Town Hall 15 by 4 years.
+
+{{Navigation|Cards}}
+
+[[fr:Archer magique]]
+[[de:Magieschütze]]
+[[es:Arquero mágico]]
+[[it:Arciere magico]]
+[[ru:Магический лучник]]
+[[zh:神箭游侠]]

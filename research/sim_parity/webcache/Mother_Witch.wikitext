@@ -1,0 +1,213 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Mother Witch</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=4|Rarity=Legendary|Type=Troop|Arena=Miner's Mine|ReleaseDate=7 December 2020}}
+{{Quote|Places a curse on enemy troops with each attack. When a cursed troop is destroyed, it turns into a building-targeting Hog that fights alongside the Mother Witch. She also bakes great cookies.}}
+
+The Mother Witch is a {{Rarity|Legendary}} [[Cards|card]] that is unlocked from the [[Arenas|Miner's Mine (Arena 15)]]. It spawns a single-target, air-targeting, medium-ranged, ground [[:Category:Troop Cards|troop]] with moderate hitpoints and moderate damage. When the Mother Witch attacks a troop, that troop will have a curse placed on it for 5 seconds. If the troop dies during the curse's duration, a Cursed Hog will spawn, which has moderate hitpoints and very low damage. She appears to be an elderly [[Witch]] wearing a lighter-colored cloak with a pink outline and a team-colored patch on its front and back, shorter purple gloves with team-colored cuffs, and a belt with a skull face in the middle, has glowing blue eyes and purple nail paint, wields a staff with a cauldron placed on top, and carries a wooden spoon. The Cursed Hog resembles a [[Royal Hogs|Royal Hog]] without its helmet and has a team-colored band on its tusks and a skull logo on the side of its back. A Mother Witch card costs 4 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Mother Witch Common Modifier.png|45x45px]] Common: I Double Hog Dare You===
+{{Quote|Double Hogs}}
+Spawns 2 cursed Hogs instead of 1 for each cursed unit destroyed.
+
+===[[File:Mother Witch Rare Modifier.png|45x45px]] Rare: KA! BOOM!===
+{{Quote|Hogs curse on defeat}}
+Hogs create their own curses when destroyed.
+
+===[[File:Mother Witch Epic Modifier.png|45x45px]] Epic: The Mother Curse===
+{{Quote|Spawn Mother Witch}}
+Curses a troop to spawn in another Mother Witch instead of a cursed Hog.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Mother Witch Card}}
+*Any [[:Category:Troop Cards|troops]] that spawn sub-troops (smaller variants) upon death will not spawn a Cursed Hog. For example, [[Elixir Golem]]s, Elixir Golemites, [[Lava Hound|Lava Hounds]], and [[Golem]]s do not turn into Cursed Hogs (they do not even show the tint of being cursed), but Elixir Blobs and Golemites do. Only a troop's final stage can turn into a Cursed Hog. As such, the [[Cannon Cart]] can never get cursed since its final form is a [[:Category:Building Cards|building]]. The [[Battle Ram]] and [[Skeleton Barrel]] also cannot turn into a Cursed Hog, but the [[Barbarians]] and [[Skeletons]] which spawn after its destruction can be turned into Cursed Hogs.
+**The spawned sub-troops are not automatically cursed when they spawn from their parent troops, even if the parent troops were killed or damaged by Mother Witch. The sub-troops need to specifically be targeted and damaged/killed by Mother Witch post-spawn in order for them to spawn a Cursed Hog on death.
+**The [[Goblin Giant]] is an exception to this rule, as both he and his 2 [[Spear Goblins]] can be turned into Cursed Hogs.
+**The [[Phoenix]] is another exception to this rule, as it can turn into a Cursed Hog despite spawning a Phoenix Egg on death. Both the initially deployed Phoenix and the Phoenix respawned from an egg are capable of turning into Cursed Hogs. However, the Phoenix Egg is itself immune to the curse.
+*Any [[Clone]]d troops that the Mother Witch defeats will turn into Cloned Cursed Hogs. A Cloned Mother Witch will spawn regular Cursed Hogs if attacking non-cloned troops.
+*Cursed Hogs cannot be inflicted with a curse, but the Mother Witch herself is vulnerable to being cursed.
+*The cursed effect does not stack. If two Mother Witches attacked a single unit, and it triggered the curse's effect, only one Cursed Hog would spawn. However, it can stack with the curse effect of the [[Goblin Curse]], allowing the troop to spawn both a Cursed Hog and a [[Goblins|Goblin]] out of it.
+*[[Ice Spirit]] and the like, along with the [[Wall Breakers]] will not transform into Cursed Hogs if they are destroyed as part of their attack, even if they are cursed.
+*Effects that activate after death will still activate even if the Mother Witch successfully converts a troop into a Cursed Hog. For example, the [[Ice Golem]] will still deal its full death damage, and it will slow down nearby units, as well as the Cursed Hog that spawns after it is defeated. As such, she is slightly less effective against these units.
+*Any ranged attacks that have already initiated after the ranged troop was killed will continue until they travel to their maximum distance or their target. For example, the [[Hunter]]'s bullets will still fire and deal damage to the Cursed Hog that spawns, destroying it immediately, and the [[Executioner]]'s axe will still fly the full distance even after being converted into a Cursed Hog.
+*Mother Witch is good as support for a tank such as [[Giant]] or Golem, because she denies fragile troops being used to defeat the tank. Otherwise, the opponent would have to deal with Cursed Hogs in addition to the current push.
+*The [[Electro Giant]] synergizes with the Mother Witch, as his reflected damage can allow the Mother Witch's curse to take effect more easily. However, they cost 11 [[Elixir]] together.
+*Unlike the [[Ram Rider]], she cannot switch her attack to other troops, meaning she can be easily distracted by a tank or a mini tank.
+*The Mother Witch is good against swarm units because she has a fairly fast attack speed and can easily take them out and curse all of them to create a huge army of Cursed Hogs. She is particularly effective against Skeletons, [[Bats]], and [[Spear Goblins]] as she is able to one-shot them (i.e., immediately create Cursed Hogs). However, she still fares well against [[Minions]] or [[Goblins]], which will get two-shot, but the Cursed Hogs may be damaged down more due to the swarm staying alive for longer. Conversely, she gets countered by mini-tanks like the [[Knight]], [[Mighty Miner]], [[Lumberjack]], [[Mini P.E.K.K.A]], [[Monk]], Executioner, [[Royal Ghost]], [[Dark Prince]], [[Prince]], [[Golden Knight]], [[Skeleton King]], or [[Valkyrie]] as she cannot do enough damage.
+*The best way of preventing [[:Category:Tower Troop Cards|Crown Tower]] damage against a lone Mother Witch with swarm cards is to simply wait for her to lock onto the Crown Tower before deploying the swarm, so that she does not curse them. This prevents much more damage than trying to have the swarm tank for the Crown Tower, as Cursed Hogs will quickly accumulate. The player should make sure to place the swarm behind her, rather than in front of her, to prevent accidentally pushing her away from the Crown Tower and retargeting onto the swarm. However, if the swarm is large or bulky enough, as is the case with a [[Skeleton Army]], [[Minion Horde]], Royal Recruits, or Barbarians, then placing it on top of her will prevent more damage despite the curse effect as the Cursed Hogs will also be defeated quickly.
+*The Mother Witch is a perfect counter to [[Graveyard]], as not only will she help the Tower take down the Skeletons, but she will curse a lot of Skeletons, translating the defense into a potentially massive counterattack. Also, the spawned Skeletons will spawn too slow enough to kill the Cursed Hogs.
+*The Mother Witch wastes her potential when matched against tanks because it takes a long time to counter them for just one Cursed Hog.
+*The Mother Witch is not very effective when paired with area damage units, as she herself does not have area damage. Against swarms, she will only be able to curse one or two units as the area damage unit will defeat them too quickly. However, she can be useful when paired with a [[Zap]] or [[Giant Snowball]], to allow her to OHKO Minions or Goblins.
+*The Mother Witch is able to be fully defeated by an equally-levelled [[Fireball]] or [[Poison]]. Therefore, it may be beneficial to bait out the Fireball/Poison for the Mother Witch with other Fireball/Poison-vulnerable [[cards]] like the [[Barbarians]], [[Skeleton Dragons]], [[Royal Recruits]], [[Musketeer]], [[Wizard]], [[Flying Machine]], [[Zappies]], [[Electro Wizard]], [[Ice Wizard]], [[Magic Archer]], [[Little Prince]], or [[Goblinstein]] so that the opponent cannot take her out as easily when she is deployed. Conversely, she can act as the bait herself for the aforementioned cards in certain match-ups where her abilities are less impactful compared to the other cards.
+*The [[Bomb Tower]] is an amazing counter against the Mother Witch. Since it is a building, it cannot be cursed by the Mother Witch, and its splash damage makes short work of the Cursed Hogs. Other buildings can work similarly, however they are less effective when the Mother Witch has already accumulated a large number of Cursed Hogs.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Mother Witch Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Curse Duration<br />{{Icon|I = Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||1 sec||0.3 sec||Medium (60)||1 sec||5 sec||5.5||600||Air & Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+{{StatisticsSubheader|Cursed Hog Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width: 100%; text-align: center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.2 sec||0.25 sec||Very Fast (120)||0.2 sec||Melee: Short (0.75)||[[:Category:Building Cards|Buildings]]||Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 529 }}
+{{#vardefine: dmg_11 | 133 }}
+{{#vardefine: atk_speed | 1.0 }}
+{{#vardefine: hog_hp_11 | 629 }}
+{{#vardefine: hog_dmg_11 | 53 }}
+{{#vardefine: hog_atk_speed | 1.2 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Mother Witch Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Mother Witch Damage<br />{{Icon|I=Damage}}
+! scope="col" |Mother Witch Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Cursed Hog Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Cursed Hog Damage<br />{{Icon|I=Damage}}
+! scope="col" |Cursed Hog Damage per second<br />{{Icon|I=DPS}}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hog_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:hog_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:hog_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:hog_atk_speed}} }}
+|- 
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hog_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:hog_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:hog_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:hog_atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:hog_hp_11}} || {{#var:hog_dmg_11}} || {{Dps|{{#var:hog_dmg_11}}|{{#var:hog_atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hog_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:hog_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:hog_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:hog_atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hog_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:hog_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:hog_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:hog_atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hog_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:hog_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:hog_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:hog_atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hog_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:hog_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:hog_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:hog_atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hog_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:hog_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:hog_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:hog_atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" | Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" | Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 160,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|2 {{BASEPAGENAME}} cards<br>100 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 475,000 Damage to enemy Troops or buildings
+|8,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|3
+| Deal a total of 800,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>100 {{Icon|I=XP}}
+|-
+| rowspan="3" |Troop Destroyer <br> [[File:Troop Destroyer.png|50x50px]]
+|1
+|Destroy 350 enemy Troops
+|12,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|2
+|Destroy 1,000 enemy Troops
+|2 {{Icon|I=Legendary Wild Card}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Destroy 1,750 enemy Troops
+|18,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2020 
+*The Mother Witch was once available in the [[Tournament/Special Event Challenges|Mother Witch Draft Challenge]], which started on 7/12/2020. In this [[Tournament|challenge]], gameplay was similar to a regular Draft Challenge, except that one of the players was able to choose who would use the Mother Witch. If the player achieved at least 6 wins, they obtained the Mother Witch early.
+2021
+*The Mother Witch [[Cards|card]] was generally released on 4/1/2021.
+*On 30/3/2021, the [[Version History#2021%20Quarter%201%20Update%20(30/3/2021)|2021 Quarter 1 Update]], decreased the Mother Witch's attack time interval to 1.1 seconds (from 1.2 seconds), decreased her first attack time interval to 0.4 seconds (from 0.5 seconds), and increased her damage by 14%. It also added the Mother Witch to all Draft selections.
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the [[Arenas|Arena]] to unlock the Mother Witch from Jungle Arena to Legendary Arena.
+*On 6/9/2021, the [[Version History#2021%20Quarter%203%20Update%20(6/9/2021)|2021 Quarter 3 Update]], decreased the Mother Witch's hitpoints by 4%.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13). It also added two extra [[Star Points|Star Levels]].
+*On 7/12/2021, the [[Version History#Balance%20Changes%20(7/12/2021)|2021 Quarter 4 Update]], decreased the Mother Witch's hitpoints by 18%.
+2022
+*On 30/3/2022, the [[Version History#Miner%20Update%20(30/3/2022)|Miner Update]], fixed an issue where the Mother Witch's [[Star Points|Star Levels]] used the sound effects of the [[Witch]].
+*On 7/6/2022, a [[Version History#Balance%20Changes%20(7/6/2022)|Balance Update]], decreased the Mother Witch's attack time interval to 1 second (from 1.1 seconds) and decreased her first attack time interval to 0.3 seconds (from 0.4 seconds).
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Mother Witch from Legendary Arena to Miner's Mine.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+*On 8/10/2024, a [[Version History#Balance Changes (8/10/2024)|Balance Update]], decreased the Mother Witch's hitpoints by 0.2%.
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Mother Witch's hitpoints by 0.18%.
+
+==Gallery==
+<gallery>
+File:Mother Witch card render.png|Current card render.
+File:Mother Witch Preview.gif|Current card preview
+File:Mother Witch 3.png|Mother Witch 2
+File:Mother Witch 2.png|Mother Witch 3
+File:Mother Witch 4.png|Mother Witch 4
+File:Pig 1.png|Cursed Hog 1
+File:Pig 2.png|Cursed Hog 2
+</gallery>
+
+==Trivia==  
+*The Mother Witch is based on [https://en.wikipedia.org/wiki/Circe Circe], a Greek witch that appeared in [https://en.wikipedia.org/wiki/Homer Homer]'s [https://en.wikipedia.org/wiki/Odyssey Odyssey] epic. In Odyssey, [https://en.wikipedia.org/wiki/Odysseus Odysseus] visits her island of Aeaea on the way back from the Trojan War and she changes most of his crew into swine. He managed to persuade her to return them to human shape, lived with her for a year and received advice on how to continue his journey back to Ithaca.
+*The Mother Witch's stats are the highest or lowest among all [[:Category:Troop Cards|troops]]. More specifically:
+**The Cursed Hogs are tied with [[Hog Rider]], [[Royal Hogs]], [[Princess]], [[Santa Hog Rider]], and the [[Terry]] for the longest sight range of all troops, with a sight range of 9.5 tiles.
+**The Cursed Hogs has the shortest deployment time of all troops, with a deployment time of 0.2 seconds.
+*The Cursed Hogs are 1 of 8 troops that can jump over the river, the others being Hog Rider, Royal Hogs, [[Dark Prince]], [[Prince]], [[Raging Prince]], [[Ram Rider]], and Santa Hog Rider.
+*In the Russian and Chinese language setting of the game, the Mother Witch's name translates to "Grandmother Witch". In the Japanese language setting of the game, the Witch's name translates to "Mother Necromancer". In the Malaysian language setting of the game, the Mother Witch's name translates to "Magic Grandmother". In the French, Turkish, and Thai language setting of the game, the Mother Witch's names translates to "Granny Witch", "Old Witch", and "Great Grandmother" respectively.
+*It is rumored that the [[Super Witch]] has been summoned from all the other 3 Witches, as demonstrated in the [https://www.youtube.com/watch?v=VQf90EQVeX8 Super Witch trailer], hence explaining the combination of all the other Witches' abilities.
+*When attacking, the Mother Witch may say "''Hocus Pocus''" or “''Oinkie Poinkie''”. She also laughs.
+**The Mother Witch is 1 of 24 troops that speak distinct words when on the field, the others being [[Mini P.E.K.K.A.]], [[Mega Minion]], [[Wizard]], Hog Rider, [[P.E.K.K.A.]], Dark Prince, [[Bowler]], Ram Rider, [[Electro Wizard]], Princess, [[Ice Wizard]], [[Magic Archer]], [[Lumberjack]], [[Fisherman]], [[Goblin Machine]], [[Super Mini P.E.K.K.A.]], Santa Hog Rider, [[Super Magic Archer]], [[Golden Knight]], [[Boss Bandit]], [[Archer Queen]], [[Little Prince]], and the Terry.
+*The Mother Witch is 1 of 2 troops that have been featured with an [[Buff#Initial%20Spawn|Initial Spawn]] [[buff]], the other being the [[Skeleton King]].
+*In the card's description, the “''She also bakes great cookies.''” line is likely a reference to [https://cookierun.fandom.com/wiki/Cookie_Run:_Kingdom Cookie Run: Kingdom] and [https://cookierun.fandom.com/wiki/Cookie_Run:_OvenBreak Cookie Run: OvenBreak]'','' as the characters are baked by a witch to be eaten.
+*The Mother Witch and her Cursed Hogs are the subject of a few [[Emotes]].
+**The Spooky Cursed Hog Emote is a reference to the [https://youtu.be/d-ABIIZV3vA?si=9VYzz0GeQHOmwrC8 Here's Johnny] scene from [https://en.wikipedia.org/wiki/The_Shining_(film) The Shining].
+*A [[Clone|cloned]] Mother Witch does not fall from the sky when deployed.
+*The Mother Witch was featured in the winning [[Battle Decks|deck]] of the [https://www.youtube.com/live/vRrgTfqRdpw?si=YDASUydL7qNm9QZz Clash Royale League 2023 Tournament], by a player called Mugi.
+*The initial balance change for Mother Witch on the [[Version History#Balance%20Changes%20(7/6/2022)|7/6/2022 balance changes]] was an attack time interval decrease to 0.9 seconds (from 1.1 seconds), but it was raised to 1 second [https://royaleapi.com/blog/season-36-balance-wip last minute].
+
+{{Navigation|Card}}
+
+[[de:Hexenmutter]]
+[[es:Bruja madre]]
+[[it:Strega madre]]
+[[ru:Ведьмина бабушка]]
+[[zh:女巫婆婆]]

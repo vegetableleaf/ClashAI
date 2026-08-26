@@ -1,0 +1,239 @@
+{{DISPLAYTITLE: <span style="color: #ffa31a;">Elixir Golem</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=3|Rarity=Rare|Type=Troop|Arena=Serenity Peak|ReleaseDate=4 November 2019}}
+{{Quote|Splits into two Elixir Golemites when destroyed, which split into two sentient Blobs when defeated. Each part of the Elixir Golem gives your opponent some Elixir when destroyed!}}
+
+The Elixir Golem is a {{Rarity|Rare}} [[Cards|card]] that is unlocked from [[Arenas|Serenity Peak (Arena 14)]]. It spawns a slow, single-target, [[:Category:Building Cards|building]]-targeting, melee, ground [[:Category:Troop Cards|troop]] with high hitpoints and high damage. When defeated, Elixir Golem splits into two faster Elixir Golemites which have moderate hitpoints and low damage. When the Elixir Golemites are defeated, each one produces two faster Elixir Blobs which have low hitpoints and very low damage. Each part of the Elixir Golem awards the opponent [[Elixir]] when destroyed; the main Elixir Golem gives 1 [[Elixir]], and both Elixir Golemites and Elixir Blobs give 0.5 Elixir. The Elixir Golem appears as a massive brute made of Elixir, wearing two team-colored collars on its arms, with its Elixir Golemites being smaller versions with the team-colored collar on their waist, and their Elixir Blobs resembling a plain lump of Elixir. An Elixir Golem card costs 3 Elixir to deploy.
+
+==Modifiers==
+===[[File:Elixir Golem Common Modifier.png|45x45px]] Common: Gooey Golemites===
+{{Quote|+2 Elixir Golemite}}
+When the Elixir Golem is defeated, it splits into 4 Elixir Golemites instead of 2.
+
+===[[File:Elixir Golem Rare Modifier.png|45x45px]] Rare: Give Some, Get Some===
+{{Quote|Get Elixir when defeated}}
+When any form of the Elixir Golem is defeated, both the player and the opponent will gain the [[Elixir]] death spawn instead of only the opponent.
+
+===[[File:Elixir Golem Epic Modifier.png|45x45px]] Epic: From Blob to Glob===
+{{Quote|Evolving Blobs}}
+Every few seconds, an Elixir Blob spawns behind the Elixir Golem. This Elixir Blob will change to an Elixir Golemite if it remains alive.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Elixir Golem Card}}
+*An Elixir Golem costs 3 [[Elixir]], but gives the opponent 4 Elixir after being fully defeated, giving the opponent a 7 Elixir advantage, although the actual advantage is usually lower, since the opponent will almost certainly deploy [[:Category:Troop Cards|troops]] to counter the Elixir Golem.
+*The Elixir Golem's low cost of 3 Elixir enables it to be the center point of many offensive strategies. For example, its low upfront cost means it can be more easily played in front of counter pushing troops compared to other bulky tanks like the [[Giant]], [[Lava Hound]], [[Giant Skeleton]], [[P.E.K.K.A.|P.E.K.K.A]], [[Mega Knight]], [[Goblin Giant]], [[Electro Giant]], or [[Golem]], and it will advance the player's [[Cards|card]] rotation more quickly for a lower cost. Its lower upfront cost also makes deploying it less risky than other large tanks, as the player can have up to 7 Elixir left in their hand after placing it.
+**Similarly, the player can afford to support the Elixir Golem with more expensive support units compared to the other tanks. For example: a push with a Golem and a [[Sparky]] costs a significant 14 Elixir, while the same push with the Elixir Golem only costs 9 Elixir.
+*The Elixir Golem must be used with great care and planning, as it gives the enemy 4 Elixir when fully destroyed. This can be offset in numerous ways: 
+**Starting an Elixir Golem push right after making a positive Elixir trade or after defending for a good trade is a simple but effective method. This means that if the opponent survives the defense, they will merely be at an even amount of Elixir rather than in the lead.
+**Protecting the Elixir Golem means that the opponent cannot destroy it and gain Elixir to begin with. Putting a mini tank in front of the Golem can protect it and allow it to stay alive for as long as possible. In particular, Elixir Golem and [[Battle Healer]] or [[Valkyrie]] are fairly cheap pushes that can be devastating if not handled properly.
+**If the opponent's Elixir is full, the Elixir Golem's parts will not give any more Elixir. They may have to deploy [[cards]] simply to prevent a waste of potential extra Elixir, which could result in a less effective counterpush.
+**Having an [[Elixir Collector]] on the field can offset the negative Elixir trade from using the card. Since the Elixir Collector will grant 1 more Elixir to the player compared to its cost, as well as the death Elixir, it is enough to completely negate the 1 extra Elixir that the Elixir Golem will grant compared to its cost, which will neutralize any possible Elixir trades with the card.
+*In the presence of buildings in the opponent's [[Battle Decks|deck]], it may be a better idea to place the Elixir Golem at the corner of the Arena. Since the Elixir Golem has a lower sight range than a Giant, he may be able to bypass certain building placements when he is placed that way.
+*The Elixir Golem's sub-units each have half the health and the damage of their previous form, meaning that for 3 Elixir, a player gets three Elixir Golems' worth of health and damage if every unit summoned by the card is counted and left ignored. However, since each subsequent form raises the unit count, it makes the total health less effective over time. For example, [[The Log]] will bring down the health of each Elixir Blob enough so that the [[:Category:Crown Towers|Crown Tower]]'s arrow can OHKO them. When using spells to defend against an Elixir Golem push, try and save them for the last two phases to get the most area damage value.
+**Although the Elixir Golem spawns Elixir Golemites upon death, buildings and troops will start targeting troops behind the Elixir Golem since it takes a split second for the Elixir Golemites to spawn and the closest targets will be the troops the Elixir Golem is protecting. This can easily be fixed by placing a spell such as [[Zap]], [[Lightning]], or [[Freeze]], which can all stun or freeze the Tower changing its target to the Golemites instead. An [[Ice Spirit]] or [[Electro Wizard]] could also work, but they are blockable and may result in a waste of Elixir.
+**Piercing splash cards like the [[Bowler]], [[Executioner]], [[Barbarian Barrel]], and [[Firecracker]] are particularly effective against the Elixir Golem. Their attacks will be able to hit multiple of the forms of the Elixir Golem, even being able to hit the next form if the previous form takes a fatal attack. In the case of the Bowler and [[Executioner/Evolution|Evolved Executioner]], their attacks will be able to also knockback the Elixir Golemites and Elixir Blobs, which can prevent them from connecting to their target, while the [[Firecracker/Evolution|Evolved Firecracker]] will slow them down with her sparks.
+**The [[Arrows]] deal enough damage to destroy the Elixir Blobs, immediately gaining 2 Elixir upon defeating them. [[Poison]] can also defeat the Elixir Blobs, requiring at least 4 hits to destroy each one of them. Other spells are not recommended to use, either because the forms of the Elixir Golem will survive or the damage will not carry over to its frailer forms.
+**The splitting can also be beneficial to the player. Troops like the [[Inferno Dragon]] and [[Mighty Miner]] that ramp up in damage over time are less effective due the defending troop having to charge up on every sub-unit. Additionally, all healing will effect all of the sub-units, making it more effective.
+*The Elixir Golem is capable of doing devastating damage to [[:Category:Building Cards|buildings]] unlike the Golem and [[Ice Golem]], especially as it divides into more units. This makes it a good chip damage card, boasting high health, sub-units, and good damage for 3 Elixir. As such, it is not recommended to ignore it.
+**The [[Barbarian Hut]] is the most effective spawner building at destroying the Elixir Golem. The spawned Barbarians will deal high damage to the Golem, preventing it from reaching a Crown Tower. Some Barbarians will survive, allowing for a small counterpush.
+**Due to Elixir Golem's lower hitpoints than the Golem, in all of its forms, the [[Bomb Tower]] 's splash damage is quite useful against a larger Elixir Golem push, hitting multiple troops in the push, particularly when the Elixir Golemites appear. However, it does not work against a push with air support troops like the [[Skeleton Dragons]], [[Flying Machine]], Baby Dragon, Minion Horde, and Electro Dragon.
+** A reactive [[Tesla]] placed 4 tiles from the bridge and 4 tiles from the Crown Tower can pull an Elixir Golem that was initially placed behind the King Tower. This is because the unit will walk closer to the inner side of the bridge (i.e. closer to the center of the Arena), rather than the center or the outside. Although this is somewhat situational, it is more effective at separating a tank from its support units than the above middle placement, as the tank will have to walk slightly farther, and the Tesla will not draw the attention of other grounded troops. However, because of the Elixir Golem's lower sight range compared to a Giant, this placement will not work if he was placed directly at the bridge.
+** Other buildings are less effective overall, however they can still handle a lone Elixir Golem. Try to use them if the Elixir Golem is unsupported or the support troops are separated from the Elixir Golem.
+*If an opponent deploys an Elixir Golem, the defender should not be afraid to spend more Elixir than usual to counter something of its cost - the Elixir provided by it will make up for that. If a cheap anti-tank card such a [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Hunter]], [[Lumberjack]], [[Mega Minion]], [[Skeletons/Evolution|Evolved Skeletons]], or [[Skeleton Army]] is used, it may even be possible to make a profit in Elixir from the opponent's play.
+*Due to its high mass, the Elixir Golem's first form cannot be pulled with a [[Tornado]] towards the player's [[King's Tower]] to activate it, even when it is locked onto a Crown Tower. However, some of the Elixir Golemites or the Elixir Blobs can be pulled towards the King's Tower.
+*If an Elixir Golem push is struggling to reach the Tower, it is not recommended to use [[Clone]] or [[Mirror]] the Elixir Golem, as this will spawn more units, which all give Elixir when destroyed, and potentially give the defender a large amount of Elixir. Clone is particularly ineffective as all of its forms are easily destroyed, allowing the defender to easily gain Elixir.
+*The Elixir Golem is not a replacement for an [[Ice Golem]] in any deck, and their playstyles are very different. The Ice Golem costs less [[Elixir]], has much fewer hitpoints and damage, has death damage, doesn't spawn Golemites upon death, and slows down troops. The Elixir Golem serves the role of being a large tank for a large, tower-taking push, while the Ice Golem is a cheap, reactive mini-tank that is useful on both offense and defense.
+*In periods or [[Tournament/Special Event Challenges|game modes]] where Elixir generation is increased, the Elixir gained from defeating the Elixir Golem may become less meaningful as it is easier for the defender to accidentally leak Elixir. Because of this, he is slightly more effective in those modes.
+*In 2v2 battles, only the player that defeats the Elixir Golem or any of its smaller forms will receive the Elixir. Because of this, he is more effective to use as a tank in the mode, but less effective if both players are using it. The player can manipulate which opponent will receive the Elixir by playing it towards the lane with the tower troop of the player who is more likely to leak Elixir.
+*The Elixir Golem is excellent in [[Clan Wars|Boat Battles]]. He has a low Elixir cost for the amount of total hitpoints that he has, making him a great tank for the mode. In adddition, the defender deploys their cards independent of the Elixir mechanic, meaning that the drawback of giving Elixir to the opponent does not matter in that mode.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Elixir Golem Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|3||1.1 sec||0.8 sec||Slow (45)||1 sec||Melee: Short (0.8)||Buildings||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+
+{{StatisticsSubheader|Elixir Golemite Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.1 sec||0.8 sec||Medium (60)||Melee: Short (0.8)||Buildings||x2||Ground
+|}
+
+{{StatisticsSubheader|Elixir Blob Attributes}}
+{| class="wikitable" id="unit-attributes-table-tertiary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.1 sec||0.8 sec||Fast (90)||Melee: Short (0.8)||Buildings||x4||Ground
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, golem_atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+{{#vardefine: golem_hp_11 | 1569 }}{{#vardefine: golem_dmg_11 | 253 }}{{#vardefine: golem_atk_speed | 1.1 }}{{#vardefine: mite_hp_11 | 762 }}{{#vardefine: mite__dmg_11 | 128 }}{{#vardefine: mite_atk_speed | 1.1 }}{{#vardefine: blob_hp_11 | 360 }}{{#vardefine: blob__dmg_11 | 64 }}{{#vardefine: blob_atk_speed | 1.1 }}
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Elixir Golem Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Elixir Golem Damage<br />{{Icon|I=Damage}}
+! scope="col" |Elixir Golem Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Elixir Golemite Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Elixir Golemite Damage<br />{{Icon|I=Damage}}
+! scope="col" |Elixir Golemite Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Elixir Blob Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Elixir Blob Damage<br />{{Icon|I=Damage}}
+! scope="col" |Elixir Blob Damage per second<br />{{Icon|I=DPS}}
+|-
+| 3 || {{#expr: {{#var:golem_hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:golem_dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:golem_dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:golem_atk_speed}} }} || {{#expr: {{#var:mite_hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:mite__dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:mite__dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:mite_atk_speed}} }} || {{#expr: {{#var:blob_hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:blob__dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:blob__dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:blob_atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:golem_hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:golem_dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:golem_dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:golem_atk_speed}} }} || {{#expr: {{#var:mite_hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:mite__dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:mite__dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:mite_atk_speed}} }} || {{#expr: {{#var:blob_hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:blob__dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:blob__dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:blob_atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:golem_hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:golem_dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:golem_dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:golem_atk_speed}} }} || {{#expr: {{#var:mite_hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:mite__dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:mite__dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:mite_atk_speed}} }} || {{#expr: {{#var:blob_hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:blob__dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:blob__dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:blob_atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:golem_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:golem_dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:golem_dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:golem_atk_speed}} }} || {{#expr: {{#var:mite_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:mite__dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:mite__dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:mite_atk_speed}} }} || {{#expr: {{#var:blob_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:blob__dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:blob__dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:blob_atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:golem_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:golem_dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:golem_dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:golem_atk_speed}} }} || {{#expr: {{#var:mite_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:mite__dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:mite__dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:mite_atk_speed}} }} || {{#expr: {{#var:blob_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:blob__dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:blob__dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:blob_atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:golem_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:golem_dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:golem_dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:golem_atk_speed}} }} || {{#expr: {{#var:mite_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:mite__dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:mite__dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:mite_atk_speed}} }} || {{#expr: {{#var:blob_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:blob__dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:blob__dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:blob_atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:golem_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:golem_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:golem_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:golem_atk_speed}} }} || {{#expr: {{#var:mite_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:mite__dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:mite__dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:mite_atk_speed}} }} || {{#expr: {{#var:blob_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:blob__dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:blob__dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:blob_atk_speed}} }}
+|- 
+| 10 || {{#expr: {{#var:golem_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:golem_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:golem_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:golem_atk_speed}} }} || {{#expr: {{#var:mite_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:mite__dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:mite__dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:mite_atk_speed}} }} || {{#expr: {{#var:blob_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:blob__dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:blob__dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:blob_atk_speed}} }}
+|-
+| 11 || {{#var:golem_hp_11}} || {{#var:golem_dmg_11}} || {{Dps|{{#var:golem_dmg_11}}|{{#var:golem_atk_speed}} }} || {{#var:mite_hp_11}} || {{#var:mite__dmg_11}} || {{Dps|{{#var:mite__dmg_11}}|{{#var:mite_atk_speed}} }} || {{#var:blob_hp_11}} || {{#var:blob__dmg_11}} || {{Dps|{{#var:blob__dmg_11}}|{{#var:blob_atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:golem_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:golem_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:golem_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:golem_atk_speed}} }} || {{#expr: {{#var:mite_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:mite__dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:mite__dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:mite_atk_speed}} }} || {{#expr: {{#var:blob_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:blob__dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:blob__dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:blob_atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:golem_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:golem_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:golem_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:golem_atk_speed}} }} || {{#expr: {{#var:mite_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:mite__dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:mite__dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:mite_atk_speed}} }} || {{#expr: {{#var:blob_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:blob__dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:blob__dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:blob_atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:golem_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:golem_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:golem_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:golem_atk_speed}} }} || {{#expr: {{#var:mite_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:mite__dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:mite__dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:mite_atk_speed}} }} || {{#expr: {{#var:blob_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:blob__dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:blob__dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:blob_atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:golem_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:golem_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:golem_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:golem_atk_speed}} }} || {{#expr: {{#var:mite_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:mite__dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:mite__dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:mite_atk_speed}} }} || {{#expr: {{#var:blob_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:blob__dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:blob__dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:blob_atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:golem_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:golem_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:golem_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:golem_atk_speed}} }} || {{#expr: {{#var:mite_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:mite__dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:mite__dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:mite_atk_speed}} }} || {{#expr: {{#var:blob_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:blob__dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:blob__dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:blob_atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 110,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|100 {{BASEPAGENAME}} cards<br>50 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 325,000 Damage to enemy Troops or buildings
+|4,000 {{Icon|I=Gold}}<br>50 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 540,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>50 {{Icon|I=XP}}
+|-
+| rowspan="3" |Tower Tapper <br> [[File:Tower Tapper.png|50x50px]]
+|1
+|Hit enemy [[:Category:Crown Towers|Crown Towers]] a total of 2,100 times
+|6,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Crown Towers a total of 6,000 times
+|100 {{Icon|I=Rare Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Crown Towers a total of 11,000 times
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History ==
+2019
+*The Elixir Golem was once available in the [[Tournament/Special Event Challenges|Elixir Golem Draft Challenge]], which started on 11/10/2019. In this [[Tournament|challenge]], gameplay was similar to a regular Draft Challenge, except that one of the players was able to choose who would use the Elixir Golem. If the player achieved at least 8 wins, they obtained the Elixir Golem early.
+*The Elixir Golem [[Cards|card]] was generally released on 4/11/2019. On the same day, a [[Version History#Pass Royale and more (4/11/2019)|Balance Update]], decreased the hitpoints of all of Elixir Golem's forms by 10%. It also moved the [[Arenas|Arena]] to unlock the Elixir Golem from Spooky Town to Electro Valley.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Elixir Golem's card info screen.
+*On 2/12/2019, a [[Version History#Pass Royale and more (2/12/2019)|Balance Update]], normalized the attack time interval of all Elixir Golem forms to 1.3 seconds. Being beneficial to the Elixir Golem and Elixir Golemites, but hurting the Elixir Blob damage per second significantly.
+2020
+*On 7/1/2020, a [[Version History#Balance Changes (7/1/2020)|Balance Update]], decreased the hitpoints of all Elixir Golem forms by 6%.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the Arena to unlock the Elixir Golem from Electro Valley to Serenity Peak.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 2/8/2022, a [[Version History#Balance Changes (2/8/2022)|Balance Update]], increased the Elixir Golem's hitpoints by 9%, and the Elixir Golemites' hitpoints by 6%. It also increased the Elixir given by the Elixir Golem after being killed to 1 [[Elixir]] (from 0 Elixir), the Elixir given by the Elixir Golemite after being killed to 0.5 Elixir (from 0 Elixir), and decreased the Elixir given by the Elixir Blob after being killed to 0.5 Elixir (from 1 Elixir). The card description was also changed. It used to read "''Splits into two Elixir Golemites when destroyed, which split into two sentient Blobs when defeated. A Blob gives your opponent 1 Elixir when destroyed!''"
+*On 4/10/2022, a [[Version History#Balance%20Changes%20(4/10/2022)|Balance Update]], decreased the attack time interval of all Elixir Golem forms to 1.1 seconds (from 1.3 seconds). Their first attack time interval was also increased to 0.8 seconds (from 1 second).
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+*On 30/6/2023, a [[Version History#Maintenance%20Break%20(30/6/2023)|maintenance break]], fixed an issue where Elixir Golem was not giving Elixir to opponent when destroyed.
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], increased the Elixir Golem's hitpoints by 0.06%, and decreased the Elixir Golemites' hitpoints by 0.13%. It also decreased the Elixir Golem's damage by 0.39%, increased the Elixir Golemites' damage by 0.78%, and increased the Elixir Blobs' damage by 1.58%. The same update also fixed a bug where Elixir Golemites and Elixir Blobs would not spawn after being buffed by [[Royal Chef]].
+
+==Gallery==
+<gallery>
+File:Elixir Golem card render.png|Current card render.
+File:Elixir Golem Preview.gif|Current card preview
+File:Elixir Golem 1.png|Elixir Golem 1
+File:Elixir Golem 4.png|Elixir Golem 2
+File:Elixir Golem 2.png|Elixir Golem 3
+File:Elixir Golem 3.png|Elixir Golem 4
+File:Elixir Monster.jpg|The Elixir Golem making an appearance in an April Fool's image.
+File:Elixir Golem.jpg|Screenshot of the Elixir Golem from its release video.
+</gallery>
+
+==Trivia== 
+*The word "''Golem''" occurs once in the Bible in Psalm 139:16, which uses the word "''golmi''", that means "my light form", "raw" material, connoting the unfinished human being. A golem is an animated, anthropomorphic being in [https://en.wikipedia.org/wiki/Jewish_folklore Jewish folklore], which is entirely created from inanimate matter, usually clay or mud. The most famous golem narrative involves [https://en.wikipedia.org/wiki/Judah_Loew_ben_Bezalel Judah Loew ben Bezalel], the late 16th-century rabbi of Prague.
+*The word “''Elixir''” comes from the Arabic word "اَلْإِكْسِير" (''al iksir''), which is the word for miracle substances. Dating back to the third century BC, Elixir was rumored to change base metals into gold and prolong life indefinitely.
+*The Elixir Golem was designed after [https://youtu.be/aFrk-wDjJ4w?t=212 a scrapped concept], which involved a monster constructed entirely from [[Elixir]]. It was also originally called "Elixir Monster", and it would involve an Elixir Monster that would spawn Elixirmites when destroyed, Those Elixirmites would be fused back to an Elixir Monster if they were not defeated in time. This was later introduced with the C.H.A.O.S Epic Modifier From Blob to Glob.
+*The Elixir Golem first made an appearance in an April Fool's image that Supercell posted in a [https://twitter.com/ClashRoyale/status/848110687012478976 Tweet], showing an 8v8 [[Basics of Battle|battle]].
+*According to a Clash of Clans comment on [https://www.reddit.com/r/ClashOfClans/comments/l5hny0/ama_i_am_darian_community_manager_for_clash_of/gkua282/?context=3 Reddit], the Elixir Golem was prototyped during the development of TH12 in Clash of Clans. It would have gained strength as it creates destruction, and adopt the [[Rage]] [[:Category:Spell Cards|Spell]]'s characteristics when destroyed, similar to the [[Lumberjack]]. However, it was scrapped due to its complex mechanics.
+*The Elixir Golem is 1 of 2 [[cards]] being associated with the Elixir mechanic, with the other being [[Elixir Collector]].
+*The Elixir Golem is tied with the [[Super Lava Hound]] for the highest amount of forms and divisions of any card - it has 3 forms and divides 3 times.
+*The Elixir Golem is one of the first troop cards to receive a card render, alongside the [[Archers]], [[Knight]], [[Goblins]], [[Bomber]], [[Skeletons]], [[Barbarians]], [[Bats]], [[Royal Recruits]], [[Skeleton Barrel]], [[Rascals]], [[Musketeer]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Flying Machine]], [[Hog Rider]], [[Royal Hogs]], [[Dart Goblin]], [[Zappies]], [[Baby Dragon]], [[Skeleton Army]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], [[Prince]], [[Balloon]], [[Giant Skeleton]], [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Mega Knight]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], [[Magic Archer]], [[Bandit]], [[Lava Hound]], [[Night Witch]], and [[Fisherman]].
+*The Elixir Blobs are 1 of 9 troops that have the same sprite for both players, the others are Skeletons, [[Electro Spirit]], [[Fire Spirit]], Bats, [[Ice Spirit]], [[Heal Spirit]], [[Phoenix]], and Lava Pup.
+*The Elixir Golem is 1 of 23 troops that has been featured in the [[Troop Rush]] game [[:Category:Modes|mode]], the others being Skeletons, [[Skeleton Dragons]], Fire Spirit, Bats, [[Elite Barbarians]], [[Firecracker]], Rascal Girls, Royal Hogs, Heal Spirit, [[Guards]], Prince, Balloon, [[Golem]], Wall Breakers, Ram Rider, [[Sparky]], Phoenix, Royal Ghost, Bandit, Lumberjack, [[Santa Hog Rider]], and the [[Monk]].
+*The Elixir Golem, along with the [[Minions]], Bomber, Skeletons, Skeleton Dragons, Ice Spirit, [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Mega Minion]], [[Ice Golem]], Dart Goblin, [[Goblin Cage|Goblin Brawler]], [[Guards]], Baby Dragon, P.E.K.K.A, Giant Skeleton, Golem, Wall Breakers, Bowler, [[Executioner]], Mega Knight, [[Inferno Dragon]], Royal Ghost, and Lava Hound, are featured as a [https://squad-busters.fandom.com/wiki/Monsters monster] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*Unlike the Golem and Ice Golem, the Elixir Golem and its subsequent forms do not inflict death damage.
+*According to the [https://youtu.be/zbVa7koGVQY?si=VH2WsCpNKobf9V8_ Season 4 trailer], the Elixir Golem originates from a meteor that came from outer space.
+*The Elixir Golem is the subject of 4 [[Emotes]].
+*Its [[Star Points|Star Level 1 skin]] has a different deploy sound effect to the one of an Elixir Golem without Star Levels.
+*Despite the Damage Dealer [[Card Mastery]] task mentioning that the Elixir Golem can deal damage to troops or [[:Category:Building Cards|buildings]], it cannot progress the task by dealing damage to troops.
+**The Elixir Golem is 1 of 6 troops that cannot deal damage to other troops whatsoever, the others being the [[Royal Giant]], Giant, Hog Rider, Royal Hogs, and [[Rune Giant]].
+
+{{Navigation|Card}}
+
+[[fr:Golem élixir]]
+[[de:Elixiergolem]]
+[[es:Gólem de elixir]]
+[[it:Golem di elisir]]
+[[ru:Эликсирный голем]]
+[[zh:圣水戈仑]]

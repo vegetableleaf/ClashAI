@@ -1,0 +1,291 @@
+{{DISPLAYTITLE: <span style="color: #ffa31a;">Hog Rider</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}
+
+{{Card Infobox|Cost=4|Rarity=Rare|Type=Troop|Arena=Builder's Workshop|ReleaseDate=4 January 2016}}
+{{Quote|Fast melee troop that targets buildings and can jump over the river. He followed the echoing call of "Hog Riderrrrr" all the way through the Arena doors.}}
+
+The Hog Rider is a {{Rarity|Rare}} [[Cards|card]] that is unlocked from the [[Arenas|Builder's Workshop (Arena 5)]]. It spawns a fast, single-target, [[:Category:Building Cards|building]]-targeting, melee, ground [[:Category:Troop_Cards|troop]] with high hitpoints and high damage. He is able to jump over the river. He appears as a dark-skinned shirtless man with blue eyes, dark brown eyebrows, beard and mohawk, wearing a gold earring in his left ear, a team-colored belt and wristbands, along with a brown loincloth and sandals. He wields a hammer with two brass bands and a team-colored ribbon tied at the bottom, and is riding a hog with a brown bridle attached to its tusks. A Hog Rider card costs 4 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Hog Rider Card}}
+*When he is jumping over the river, he cannot be targeted by any ground attacking units. [[The Log]] and [[Earthquake]] will fail to damage a Hog Rider while he is jumping. Air [[:Category:Troop Cards|troops]] can still attack him though, and the [[Inferno Tower]] and [[Inferno Dragon]] will continue to ramp up their damage.
+**Utilizing the jump, you can use the Hog Rider to distract a [[Mega Knight]]. As Mega Knight crosses the river, place a Hog Rider so that he jumps over the river. The Mega Knight will jump at the Hog Rider, but as Hog Rider will be midair, he will be unaffected by the Mega Knight's jump. After, he will proceed to distract the Mega Knight further for a few seconds.
+*When countering the Hog Rider, using [[:Category:Building Cards|buildings]] would be your best bet. But be wary, as the offender will usually play around him with [[cards]] such as Earthquake. Air swarms such as [[Minion Horde]], [[Skeleton Dragons]], and [[Bats]] can also help due to the Hog Rider's usual support cards not countering them.
+**On the offender's side, a powerful move is to accompany him with an Earthquake, obliterating almost every building, and also grounded swarms. To a lesser extent, [[Lightning]] could also be used, retaining the same point of almost destroying every building while also crippling troops such as the [[Wizard]], [[Witch]], [[Mega Minion]], [[Electro Dragon]], [[Night Witch]], [[Bandit]], [[Electro Wizard]], [[Archer Queen]], [[Berserker]], [[Fisherman]], [[Musketeer]], [[Ice Wizard]], or the [[Hunter]].
+*Using The Log to predict a [[Skeleton Army]], [[Goblin Gang]] or even a [[Tombstone]] will let your Hog Rider keep most of his hitpoints and your opponent may not answer in time, letting your Hog Rider connect to the [[:Category:Tower Troop Cards|Crown Tower]]. In Double Elixir, a [[Fireball]] can be used similarly to predict against bulkier swarms like Barbarians.
+*The Hog Rider can be paired with the [[Lumberjack]] as both a swarm bait and damage combo. It is a very fast combo with an extremely high damage output potential, so the defender will likely try to counter it with a swarm. If this happens, the attacker should use a [[:Category:Spell Cards|spell]] like [[Arrows]] to render the defender poetically defenseless. If they manage to defeat the Lumberjack, the dropped [[Rage]] will make the Hog Rider even more dangerous than he normally is.
+*A fast and deadly combination is the Hog Rider and [[Mini P.E.K.K.A.|Mini P.E.K.K.A]] combo. Both units are fast but the Mini P.E.K.K.A does much more damage and does not attack only buildings so the Mini P.E.K.K.A can deal with troops like the [[Executioner]], Wizard, [[Knight]], [[Valkyrie]], [[Royal Ghost]], [[Golden Knight]], and [[Musketeer]]. However, this combo can be defeated with swarms like Skeleton Army due to the Mini P.E.K.K.A's single target, or by the opponent kiting the Mini P.E.K.K.A with a small troop like [[Skeletons]] or Goblins to deal with the Hog Rider alone. They are also unable to target air troops, so the Minion Horde or [[Electro Dragon/Evolution|Evolved Electro Dragon]] can stop this easily.
+*A Hog Rider combined with a [[Goblin Barrel]] can be awkward for the opponent to defend against. Timing it so that the Hog Rider is tanking the tower shots for the [[Goblins]] is the most effective way to deal damage.
+**A [[Barbarian Barrel]] can shut this down with minimal Tower damage for a positive [[Elixir]] trade, as long as the Goblin Barrel was placed directly on the Tower. Use another card (such as a [[Cannon]] or [[Tesla]]) to counter the Hog Rider if necessary.
+*His fast movement speed can boost forward mini tanks like an [[Ice Golem]] or a Valkyrie in a push. At the same time, he can also function as a tank for lower-hitpoint troops such as Goblins, Skeletons, [[Spear Goblins]], [[Archers]], and [[Guards]], as he still has a fair amount of health. However, the Hog Rider struggles with swarms, as they can damage him down and defeat him quickly while obstructing his path, due to his inability to target troops. [[Barbarians]] in particular can fully counter him without very strict timing on the defender's part, though they are vulnerable to spells. Swarm cards like Skeleton Army, [[Goblin Gang]], and Minion Horde can also very easily counter him, although with the same weakness.
+**Use this to your advantage by placing a bulky anti-swarm card in front of the Hog Rider (eg. Ice Golem, [[Valkyrie]]) so that the Hog Rider can transport the troop to the Tower faster and also get protection from swarms in return.
+*Most cheap swarms complement the Hog Rider well, as they are nearly as fast as him and usually force more than one card out of the opponent's hand.
+*The Hog Rider in conjunction with the [[Freeze]] can surprise the opponent and allow the Hog Rider to deal much more damage than anticipated, especially if the opponent's go-to counter is a swarm, or swarms are their only effective counter to him. Skeletons and [[Bats]] will immediately be defeated by the spell, while [[Spear Goblins]], Goblins, and [[Minions]] will be at low enough health to be defeated by a follow up small spell. 
+**Against non-swarm troops, it can deal a lot of damage during the freeze time, but this can allow the opponent to set up a massive counterpush. For this reason, players should either only go for a Hog Rider + Freeze when they have other units backing it up from a counterattack, or if the match is about to end and they need to deal as much damage as possible. The exception to this is an [[Elixir Collector]] placed in front of the [[King's Tower]]. If a Hog Rider placed at the bridge, he can destroy the Elixir Collector for a positive Elixir trade, though the damage from both Crown Towers will usually mean he does not survive to deal any damage to them. However, if the opponent sends in defending troops, it can be an opportunity to gain spell damage value.
+*It is obviously not a good idea to send in a Hog Rider simply to destroy a building, especially if he is the only building targeting unit available, as defeating Crown Towers becomes substantially more difficult. Spells, long-range troops, or simply waiting out the lifetime of the building are more effective.
+**In a [[Battle Decks|deck]] with several low-cost cards, it might be worth it to simply send the Hog Rider against one building. These decks, called "cycle decks", shuffle their card rotation quick enough, that they will arrive to their next Hog Rider before the next Hog Rider counter arrives in the opponent's card rotation.
+*When there are buildings placed in the middle to counter the Hog Rider, understanding the placement of the Hog Rider and the type of building placed can help the Hog Rider to bypass certain buildings.
+**Passive buildings such as spawners have a larger hitbox than defensive buildings; which means that if a passive building was placed 3 tiles away from the river in the middle of the opponent's side, then it is impossible for the Hog Rider to bypass that placement. He'll just be pulled.
+**Defensive buildings have a smaller hitbox than a passive building, which means if that if a defensive building was placed three tiles away from the river in the middle of the opponent's side, a Hog Rider placed at the very left or right side of the Arena may be able to bypass it due to its smaller hitbox.
+**If the player has a building already placed down in the center of the arena, and the opponent tries to bypass it with a Hog Rider at the edge of the [[Arenas|Arena]], they can use certain air troops to push the Hog Rider towards the building as he jumps over the river, effectively denying the bypass attempt. They must be already hovering over the correct placement, as very quick reflexes are required to correctly perform this technique.
+***For Bats, [[Skeleton Dragons]], and Minion Horde, they should be placed right in front of the Hog Rider as soon as it is deployed.
+***For Minions, [[Skeleton Barrel]], [[Mega Minion]], [[Flying Machine]], [[Electro Dragon]], [[Baby Dragon]], [[Inferno Dragon]], [[Balloon]], and [[Lava Hound]], stagger the above placement one tile to the right if the Hog Rider is placed on the left side of the Arena, and vice versa.
+**They can also use ground troops to achieve the same result. Something like an Ice Golem deployed at the Hog Rider’s landing spot will obstruct his path and force him to go around the unit, which causes him to be closer to the building instead of the Crown Tower.
+*The Hog Rider can kite Very Fast non-building targeting troops due to his own Very Fast speed and building only targeting if he is placed on the fourth tile from the bridge, slightly into the opposite lane. He can also stall grounded units when placed right at the bridge. He will pull them towards him while deploying, and then be untargetable by them when he jumps over the bridge. After landing, he will pull them back. This can be useful when the player needs to deal damage in the same lane they are defending. It will also help separate troops behind a tank in a large push.
+*A very powerful combo is the Hog Rider, the Musketeer, and the Valkyrie, typically referred to as the Trifecta. The Musketeer will defend against most troops, while the Valkyrie can protect her and the Hog Rider from swarms or high damage units. The Hog Rider is used to deal damage to the tower. However, this is for a whopping 12 Elixir.
+**This can be effectively countered by Lightning, one-shotting the Musketeer and severely damaging both the Valkyrie and Hog Rider. The Minion Horde is also effective, but the enemy can Zap them and the Musketeer will one-shot them all. Even if the Musketeer is defeated, the Hog Rider and Valkyrie will have enough time to severely damage the Tower. The [[P.E.K.K.A.|P.E.K.K.A]] can hard counter this strategy allowing relatively low damage and being able to start a counterpush for a 5 Elixir advantage.
+**The Hog Rider should be placed behind the Valkyrie to give her a boost so that she stays in front of the Hog Rider, protecting him.
+*Pairing the Hog Rider with the Balloon can deal devastating damage. If executed properly, the Hog Rider will act as a tank while the Balloon threatens to deal massive damage. The Hog Rider can also destroy any buildings attempting to slow down the combo. However, this combo is very vulnerable to swarms and anti-air cards as they only target buildings. Additionally, they are easy to separate, due to the disparity in move speeds. Alternatively, the Hog Rider and the Balloon can be played in different lanes to spread the opponent's defenses thin. However, a building or [[Tornado]] can bring them back together for an easier defense.
+*A solid play is to deploy the Hog Rider at the bridge as soon as the match starts or when you reach 10 Elixir which is safer. If the opponent does not react fast enough or has a bad starting hand, the Hog Rider will deal a significant amount of damage to the Crown Tower. This can also allow the player to quickly scout the opponent's deck if they happen to react to him fast enough.
+*A [[Hunter]] can kill the Hog Rider in 2 hits if placed right on top of him. However, if the opponent places something in front of the Hog Rider, the Hunter's shot will transfer overkill damage to said card.
+*A good placement and timing with [[Guards]] and The Log will fully counter the Hog Rider, canceling all Hog hits. This works with Goblins as well.
+*A Tornado placed on the second tile front of the player's [[King's Tower]] and staggered two tiles towards the Crown Tower will activate it without any damage dealt to the Crown Tower, helping them in defending future pushes. This can also be a method of mitigating all damage dealt to a Crown Tower, but doing this more than three times may result in the King's Tower's health being low enough to be targeted directly, opening up the possible threat of a back door three crown. Make sure to avoid this by stopping the tornado's if your king tower is at low enough health.
+*A [[Fisherman]] timed perfectly can pull a Hog Rider without him dealing damage, activating the King's Tower. When it has already been activated, put the Fisherman closer to the river rather than the King's Tower so the Hog Rider will be pulled to a safer location for you.
+*Using a [[Rocket]] on a Hog Rider is sometimes a good play, especially if you do not have a good response in hand or if you can clip something else along with the Hog Rider.
+
+<center>
+<div id="unit-statistics" class="table-back">
+{{Statistics}}{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||1.6 sec||0.6 sec||Very Fast (120)||1 sec||Melee: Short (0.8)||Buildings||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1697 }}
+{{#vardefine: dmg_11 | 317 }}
+{{#vardefine: atk_speed | 1.6 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 85,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|100 {{BASEPAGENAME}} cards<br>50 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 250,000 Damage to enemy Troops or buildings
+|4,000 {{Icon|I=Gold}}<br>50 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 420,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>50 {{Icon|I=XP}}
+|-
+| rowspan="3" |Tower Tapper <br> [[File:Tower Tapper.png|50x50px]]
+|1
+|Hit enemy [[:Category:Crown Towers|Crown Towers]] a total of 560 times
+|6,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Crown Towers a total of 1,600 times
+|100 {{Icon|I=Rare Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Crown Towers a total of 2,800 times
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+| rowspan="3" |Siege Weapon <br> [[File:Siege Weapon.png|50x50px]]
+|1
+|Hit towers at least 10 times within a single [[Basics of Battle|battle]] a total of 80 times
+|6,000 {{Icon|I=Gold}}<br/ >175 {{Icon|I=XP}}
+|-
+|2
+|Hit towers at least 10 times within a single battle a total of 240 times
+|8,000 {{Icon|I=Gold}}<br/ >175 {{Icon|I=XP}}
+|-
+|3
+|Hit towers at least 10 times within a single battle a total of 480 times
+|10,000 {{Icon|I=Gold}}<br/ >175 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==Sound Effects==
+{|class="wikitable"
+!Sound Effect
+!Action
+!Description
+!Line
+|-
+|[[File:Hog Rider Deployment.ogg|thumb]]
+|Deployment
+|Plays when the Hog Rider is deployed.
+|
+|-
+|[[File:Hog Rider Deploy End.ogg|thumb]]
+|Deploy End
+|Occasionally plays after the Hog Rider is deployed.
+|"HOG RIDER!"
+|-
+|[[File:Hog Rider Step.ogg|thumb]]
+|Walk
+|Plays when the Hog is moving.
+|
+|-
+|[[File:Hog Rider Attack.ogg|thumb]]
+|Attack
+|Plays when the Hog Rider attacks something.
+|
+|-
+|[[File:Hog Rider Hit.ogg|thumb]]
+|Hit
+|Plays when the Hog Rider hits his target.
+|
+|}
+==History==
+2016
+*The Hog Rider [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016.
+*On 29/2/2016, the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]], decreased the Hog Rider's sight range to 9.5 tiles (from 10 tiles). It also changed the Hog Rider's sound effects. Previously, his sound effects were identical to those of the [[Barbarians]].
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], increased the {{Rarity|Rare}} card Level cap to 11 (from 10). The update also fixed the “range bug”, which decreased the Hog Rider's range to 0.8 tiles (from 1.4 tiles), but his effective range was unchanged.
+*On 21/6/2016, a [[Version History#Balance Changes (21/6/2016)|Balance Update]], decreased the Hog Rider's damage by 6%.
+2017
+*On 22/11/2017, a [[Version History#Maintenance%20Break%20(22/11/2017)|maintenance break]], temporarily removed the Hog Rider from the [[Touchdown]] [[:Category:Modes|mode]].
+*On 12/12/2017, the [[Version History#Electrifying Update (12/12/2017)|Electrifying Update]], increased the Hog Rider’s attack time interval to 1.6 seconds (from 1.5 seconds) and his first attack time interval to 0.6 seconds (from 0.5 seconds).
+2018
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], moved the [[Arenas|Arena]] to unlock the Hog Rider from P.E.K.K.A's Playhouse to Goblin Stadium.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Rare}} cards start at Level 3 and end at Level 13 (from 1 to 11).
+2019
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], removed the Hog Rider from [[Tournament/Special Event Challenges|Mega Deck]] Touchdown. It also added a card render to the Hog Rider's card info screen.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the Arena to unlock the Hog Rider from Goblin Stadium to Spell Valley.
+*On 2/9/2021, a maintenance break, changed the Hog Rider's card render.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Hog Rider from Spell Valley to Builder's Workshop. It also added the Siege Weapon [[Card Mastery]] task for the Hog Rider.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], increased the Hog Rider's hitpoints by 0.05% and decreased his damage by 0.31%.
+
+==Gallery==
+<gallery>
+File:Old Hog Rider card render.png|Hog Rider's card render before 2/9/2021.
+File:Hog Rider card render.png|Current card render.
+File:Hog Rider Preview.gif|Current card preview
+File:Hog Rider 1.png|Hog Rider 1
+File:Hog Rider 7.png|Hog Rider 2
+File:Hog Rider 3.png|Hog Rider 3
+File:Hog Rider 4.png|Hog Rider 4
+File:Hog Rider 5.png|Hog Rider 5
+File:Hog Rider 6.png|Hog Rider 6
+File:Hog Rider 8.png|Hog Rider 7
+File:Hog Rider 9.png|Hog Rider 8
+File:Hog Rider 10.png|Hog Rider 9
+File:Hog Rider body.png|Full body render.
+File:Ram Rider and Hog Rider.png|With [[Ram Rider]]
+</gallery>
+
+==Trivia==
+*The hog that he rides is most likely a "''Phacochoerus africanus''" ([https://en.wikipedia.org/wiki/Common_warthog common warthog]). Common Warthogs are smaller than boars but more agile which might explain why the Hog Rider can move particularly fast. Warthogs also have tusks, which is like the Hog Rider's hog in Clash Royale.
+*The Hog Rider is 1 of 19 [[:Category:Troop Cards|troops]] which first existed in Clash of Clans, the others being [[Minions]], [[Archers]], [[Goblins]], [[Skeletons]], [[Barbarians]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], [[Balloon]], [[Golem]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Phoenix]], [[Lava Hound]], and the [[Archer Queen]].
+**The Hog Rider resembles the Level 1-2 Hog Rider from Clash of Clans.
+*The Hog Rider is tied with [[Royal Hogs]], [[Princess]], [[Mother Witch|Cursed Hog]], [[Santa Hog Rider]], and the [[Terry]] for the longest sight range of all troops, with a sight range of 9.5 tiles.
+*The Hog Rider is one of the first troop [[cards]] to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the Minions, Archers, [[Knight]], [[Spear Goblins]], Goblins, [[Bomber]], Skeletons, Barbarians, [[Minion Horde]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Musketeer]], Giant, Valkyrie, Wizard, [[Baby Dragon]], [[Skeleton Army]], Witch, P.E.K.K.A, [[Prince]], and Balloon.
+*The Hog Rider is one of the first troop cards to receive a card render, alongside the Archers, Knight, Goblins, Bomber, Skeletons, Barbarians, [[Bats]], [[Royal Recruits]], [[Skeleton Barrel]], [[Rascals]], Musketeer, Giant, Valkyrie, Wizard, [[Flying Machine]], Royal Hogs, [[Dart Goblin]], [[Zappies]], [[Elixir Golem]], Baby Dragon, Skeleton Army, Witch, P.E.K.K.A, Prince, Balloon, [[Giant Skeleton]], [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], Wall Breakers, Bowler, Cannon Cart, [[Mega Knight]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], [[Magic Archer]], [[Bandit]], Lava Hound, [[Night Witch]], and [[Fisherman]].
+*The Hog Rider is 1 of 8 troops that can jump over the river, the others being Royal Hogs, [[Dark Prince]], Prince, [[Raging Prince]], Ram Rider, Cursed Hog, and Santa Hog Rider.
+*In the French, German, Spanish, Dutch, Turkish, Arabic, Persian, Indonesian, and Malaysian language settings of the game, the Hog Rider's name translates to "Pig Rider". In the Italian, Thai, Finnish, Vietnamese and Portuguese language settings of the game, the Hog Rider's name translates to "Wild Boar Tamer", "Wild Boar Rider", "Hog Knight" and "Runner" respectively.
+*The Hog Rider bears more than a passing resemblance to [[wikipedia:Mr._T|Mr. T]] and [https://streetfighter.fandom.com/wiki/Zangief Zangief] from Street Fighter.
+*His description is based on the Clash of Clans [https://youtu.be/XH3Xu1-cvII Ride of the Hog Riders commercial].
+**From his description, it is implied that the [[Arenas|Arena]] has doors leading to it.
+*When the Hog Rider is deployed, he will occasionally yell "''Hog Riderrrrr!''"
+**The Hog Rider is 1 of 24 troops that speak distinct words when on the field, the others being Mini P.E.K.K.A., [[Mega Minion]], Wizard, P.E.K.K.A., Dark Prince, Bowler, Ram Rider, [[Electro Wizard]], Princess, Ice Wizard, Magic Archer, [[Lumberjack]], Mother Witch, Fisherman, [[Goblin Machine]], [[Super Mini P.E.K.K.A.]], Santa Hog Rider, [[Super Magic Archer]], [[Golden Knight]], [[Boss Bandit]], Archer Queen, [[Little Prince]], and the Terry.
+*In Hog Mountain, 2 Hog Rider statues can be seen behind the enemy's [[King's Tower]].
+*The [[Ranked|Master 2 League]] badge resembles a Hog Rider's hammer.
+*According to a Clash-A-Rama comic [https://clasharama.fandom.com/wiki/Clash-A-Rama!_Comic_Strips?file=RamRiderComic.jpg strip], the Ram Rider is the Hog Rider's sister.
+*The Hog Rider is featured in non-Clash games. More specifically:
+**The Hog Rider is featured as [https://brawlstars.fandom.com/wiki/Carl?file=Carl_Skin-Hog_Rider.png a character skin for Carl] in Brawl Stars.
+**The Hog Rider, along with the Goblins, Barbarians, Giant, Valkyrie, Wizard, Witch, P.E.K.K.A, and the Archer Queen, were featured as a non-playable opponent in [https://www.chess.com/ Chess].
+**The Hog Rider, along with the Archers, Goblins, Barbarians, Musketeer, Wizard, [[Battle Healer]], Witch, Miner, Ice Wizard, and Bandit, are featured as a [https://squad-busters.fandom.com/wiki/Squaddies Squaddie] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+***Along with the Goblin, Barbarian, Wizard, and Witch, he has the same rarity in both games.
+*The Hog Rider, along with the Archers, Goblins, Barbarians, [[Ice Spirit]], Mini P.E.K.K.A, Musketeer, Giant, Wizard, Witch, Prince, and Night Witch, is featured as a sticker in [https://en.wikipedia.org/wiki/IMessage iMessage], in a sticker pack called [https://apps.apple.com/us/app/clash-theater-stickers/id1353823484 Clash Theater].
+*The Hog Rider is the subject of certain cosmetics in the game. More specifically:
+**The Hog Rider is the subject of a few [[Clans|Clan]] badges.
+**The Hog Rider is the subject of a few [[Emotes]].
+***It is also 1 of 3 cards in which an Emote he is the subject of relates to one of its [[Star Points|Star Levels]], the others being the [[Elite Barbarians]] and [[Rocket]].
+**The Hog Rider is the subject of a Tower Skin.
+**The Hog Rider is the subject of a few [[Battle Banners|Battle Banner]] items.
+***The Riders decoration is created by Myoho.
+***The Snow Leopard decoration is part of a collaboration with [https://www.playing4theplanet.org/participants/clash-royale Green Game Jam 2023].
+***The Hog Hammers frame's description says "''Yes, we know what time it is. No, we are not going to say it.''", which is a reference to the hip hop song "[https://youtu.be/otCpCn0l4Wo?si=m8_Da_vJq2Jua_S5 U Can't Touch This]" by the MC Hammer.
+***The Hogley Davriderson decoration is a reference to [https://en.wikipedia.org/wiki/Harley-Davidson Harley-Davidson], a motorcycle manufacturer.
+*The Hog Rider was featured in the winning decks of multiple Clash Royale Tournaments. More specifically:
+**The Hog Rider was featured in the winning deck of the [https://www.youtube.com/watch?v=VxEzjdKQ4HA Clash Royale Helsinki Tournament], by a player called Jason.
+**The Hog Rider was featured in the winning deck of the [https://youtu.be/LWQjS0e6iiE Super Magical Cup Tournament], by a player called CMcHugh.
+**The Hog Rider was featured in the winning deck of the [https://www.youtube.com/live/C5qBcdcErfM?si=e37mhAgNKAA5kMJI Clash Royale League 2018 Tournament], by a player called Lciop.
+*In the [https://youtu.be/iXOgPaHXxWo?si=Dp2YCKpiE35sCRUo Quests intro video], there was a [[Quests|Quest]] that required the player to hit [[:Category:Crown Towers|Crown Towers]] with a Hog Rider 10 times. However, this Quest never made it to the game.
+*His Star Level 3 skin is not the same as it is shown in the [https://youtu.be/FBRWUwm0_gY Star Levels commercial] and the [https://youtu.be/s67c93v1njk Star Level intro video]. In the commercial and the intro video, he has a fully golden beard mustache and mohawk, whereas in-game only his mohawk is golden.
+*Despite the Damage Dealer [[Card Mastery]] task mentioning that the Hog Rider can deal damage to troops or [[:Category:Building Cards|buildings]], he cannot progress the task by dealing damage to troops.
+**The Hog Rider is 1 of 6 troops that cannot deal damage to other troops whatsoever, the others being the [[Royal Giant]], Giant, Royal Hogs, Elixir Golem, and [[Rune Giant]].
+*Before the Hog Rider's card release, the Hog Rider's damage was decreased by 5%.
+
+==In other languages==
+{{Other languages|fr=Chevaucheur de cochon|de=Schweinereiter|es=Montapuercos|it=Domatore di cinghiali|nl=Varkensruiter|no=Villsvinrytter|tr=Domuz Binicisi|jp=ホグライダー|kr=호그 라이더|ru=Всадник на кабане|ar=راكب الخنزير|pt=Corredor|cn=野猪骑士|cnt=野豬騎士|fa=خوک سوار|id=Penunggang Babi|ms=Penunggang Khinzir|th=คนขี่หมูป่า|fi=Karjuratsastaja|vi=Trư Kỵ sĩ|frmeaning=Pig Rider.|demeaning=Pig Rider.|esmeaning=Pig Rider.|nlmeaning=Pig Rider.|trmeaning=Pig Rider.|armeaning=Pig Rider.|fameaning=Pig Rider.|msmeaning=Pig Rider.|idmeaning=Pig Rider.|itmeaning=Wild Boar Tamer.|thmeaning=Wild Boar Rider.|fimeaning=Hog Knight.|vimeaning=Runner.}}
+
+{{Navigation|Card}}
+
+[[fr:Chevaucheur de cochon]]
+[[de:Schweinereiter]]
+[[es:Montapuercos]]
+[[it:Domatore di cinghiali]]
+[[ja:ホグライダー]]
+[[ko:호그 라이더]]
+[[ru:Всадник_на_кабане]]
+[[zh:野猪骑士]]

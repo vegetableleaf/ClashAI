@@ -1,0 +1,218 @@
+{
+ "Giant Skeleton": {
+  "revid": 436713,
+  "fetched": "2026-08-26",
+  "bytes": 27976,
+  "file": "Giant_Skeleton.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Giant%20Skeleton&prop=wikitext|revid&format=json"
+ },
+ "Goblin Cage": {
+  "revid": 436552,
+  "fetched": "2026-08-26",
+  "bytes": 24583,
+  "file": "Goblin_Cage.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Goblin%20Cage&prop=wikitext|revid&format=json"
+ },
+ "Goblin Demolisher": {
+  "revid": 437137,
+  "fetched": "2026-08-26",
+  "bytes": 17500,
+  "file": "Goblin_Demolisher.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Goblin%20Demolisher&prop=wikitext|revid&format=json"
+ },
+ "Goblin Gang": {
+  "revid": 436482,
+  "fetched": "2026-08-26",
+  "bytes": 22415,
+  "file": "Goblin_Gang.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Goblin%20Gang&prop=wikitext|revid&format=json"
+ },
+ "Goblin Giant": {
+  "revid": 437386,
+  "fetched": "2026-08-26",
+  "bytes": 28355,
+  "file": "Goblin_Giant.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Goblin%20Giant&prop=wikitext|revid&format=json"
+ },
+ "Goblin Machine": {
+  "revid": 437354,
+  "fetched": "2026-08-26",
+  "bytes": 18858,
+  "file": "Goblin_Machine.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Goblin%20Machine&prop=wikitext|revid&format=json"
+ },
+ "Goblins": {
+  "revid": 437504,
+  "fetched": "2026-08-26",
+  "bytes": 30556,
+  "file": "Goblins.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Goblins&prop=wikitext|revid&format=json"
+ },
+ "Golem": {
+  "revid": 436719,
+  "fetched": "2026-08-26",
+  "bytes": 42716,
+  "file": "Golem.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Golem&prop=wikitext|revid&format=json"
+ },
+ "Guards": {
+  "revid": 436700,
+  "fetched": "2026-08-26",
+  "bytes": 24257,
+  "file": "Guards.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Guards&prop=wikitext|revid&format=json"
+ },
+ "Heal Spirit": {
+  "revid": 437344,
+  "fetched": "2026-08-26",
+  "bytes": 23700,
+  "file": "Heal_Spirit.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Heal%20Spirit&prop=wikitext|revid&format=json"
+ },
+ "Hog Rider": {
+  "revid": 436540,
+  "fetched": "2026-08-26",
+  "bytes": 32215,
+  "file": "Hog_Rider.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Hog%20Rider&prop=wikitext|revid&format=json"
+ },
+ "Hunter": {
+  "revid": 436717,
+  "fetched": "2026-08-26",
+  "bytes": 21833,
+  "file": "Hunter.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Hunter&prop=wikitext|revid&format=json"
+ },
+ "Ice Golem": {
+  "revid": 436644,
+  "fetched": "2026-08-26",
+  "bytes": 20759,
+  "file": "Ice_Golem.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Ice%20Golem&prop=wikitext|revid&format=json"
+ },
+ "Ice Spirit": {
+  "revid": 437338,
+  "fetched": "2026-08-26",
+  "bytes": 26797,
+  "file": "Ice_Spirit.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Ice%20Spirit&prop=wikitext|revid&format=json"
+ },
+ "Ice Wizard": {
+  "revid": 436741,
+  "fetched": "2026-08-26",
+  "bytes": 28748,
+  "file": "Ice_Wizard.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Ice%20Wizard&prop=wikitext|revid&format=json"
+ },
+ "Inferno Dragon": {
+  "revid": 436733,
+  "fetched": "2026-08-26",
+  "bytes": 28537,
+  "file": "Inferno_Dragon.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Inferno%20Dragon&prop=wikitext|revid&format=json"
+ },
+ "Knight": {
+  "revid": 437500,
+  "fetched": "2026-08-26",
+  "bytes": 31681,
+  "file": "Knight.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Knight&prop=wikitext|revid&format=json"
+ },
+ "Lava Hound": {
+  "revid": 436744,
+  "fetched": "2026-08-26",
+  "bytes": 26082,
+  "file": "Lava_Hound.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Lava%20Hound&prop=wikitext|revid&format=json"
+ },
+ "Lumberjack": {
+  "revid": 436746,
+  "fetched": "2026-08-26",
+  "bytes": 25720,
+  "file": "Lumberjack.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Lumberjack&prop=wikitext|revid&format=json"
+ },
+ "Lumberjack Evolution": {
+  "apierror": "missingtitle"
+ },
+ "Magic Archer": {
+  "revid": 437369,
+  "fetched": "2026-08-26",
+  "bytes": 32306,
+  "file": "Magic_Archer.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Magic%20Archer&prop=wikitext|revid&format=json"
+ },
+ "Mega Knight": {
+  "revid": 436729,
+  "fetched": "2026-08-26",
+  "bytes": 36619,
+  "file": "Mega_Knight.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Mega%20Knight&prop=wikitext|revid&format=json"
+ },
+ "Mega Minion": {
+  "revid": 436530,
+  "fetched": "2026-08-26",
+  "bytes": 19791,
+  "file": "Mega_Minion.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Mega%20Minion&prop=wikitext|revid&format=json"
+ },
+ "Miner": {
+  "revid": 437332,
+  "fetched": "2026-08-26",
+  "bytes": 33375,
+  "file": "Miner.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Miner&prop=wikitext|revid&format=json"
+ },
+ "Mini P.E.K.K.A.": {
+  "revid": 436435,
+  "fetched": "2026-08-26",
+  "bytes": 52367,
+  "file": "Mini_P.E.K.K.A..wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Mini%20P.E.K.K.A.&prop=wikitext|revid&format=json"
+ },
+ "Minion Horde": {
+  "revid": 436476,
+  "fetched": "2026-08-26",
+  "bytes": 22193,
+  "file": "Minion_Horde.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Minion%20Horde&prop=wikitext|revid&format=json"
+ },
+ "Minions": {
+  "revid": 437493,
+  "fetched": "2026-08-26",
+  "bytes": 37548,
+  "file": "Minions.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Minions&prop=wikitext|revid&format=json"
+ },
+ "Mother Witch": {
+  "revid": 436750,
+  "fetched": "2026-08-26",
+  "bytes": 22707,
+  "file": "Mother_Witch.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Mother%20Witch&prop=wikitext|revid&format=json"
+ },
+ "Musketeer": {
+  "revid": 436481,
+  "fetched": "2026-08-26",
+  "bytes": 37249,
+  "file": "Musketeer.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Musketeer&prop=wikitext|revid&format=json"
+ },
+ "Knight Evolution": {
+  "apierror": "missingtitle"
+ },
+ "Lumberjack/Evolution": {
+  "revid": 437284,
+  "fetched": "2026-08-26",
+  "bytes": 17061,
+  "file": "Lumberjack_Evolution.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Lumberjack/Evolution&prop=wikitext|revid&format=json"
+ },
+ "Knight/Evolution": {
+  "revid": 437498,
+  "fetched": "2026-08-26",
+  "bytes": 30611,
+  "file": "Knight_Evolution.wikitext",
+  "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Knight/Evolution&prop=wikitext|revid&format=json"
+ }
+}

@@ -1,0 +1,220 @@
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=3|Rarity=Common|Type=Troop|Arena=Jungle Arena|ReleaseDate=24 February 2017}}
+{{Quote|Spawns Six Goblins - three with knives, three with spears - at a discounted Elixir cost. It's like a Goblin Value Pack!}}
+
+The Goblin Gang is a {{Rarity|Common}} [[Cards|card]] that is unlocked from the [[Arenas|Jungle Arena (Arena 9)]]. It spawns three [[Goblins]] and three [[Spear Goblins]] in a hexagon formation. The Goblins will spawn before the Spear Goblins. A Goblin Gang card costs 3 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Goblin Gang Card}}
+*Even though the Goblin Gang spawns both [[Goblins]] and [[Spear Goblins]] at once, using both of these [[:Category:Troop Cards|troops]] as two [[cards]] in the same [[Battle Decks|deck]] has the advantage of being able to be deployed separately, such that they cannot be countered all at once by splash damage troops such as the [[Valkyrie]], [[Dark Prince]], [[Royal Ghost]], and the Mega Knight.
+*Because of their placement, the Goblins in front, which have more health, will tank for the Spear Goblins behind, creating a mini-push, though the Goblins actually deal much more damage than the Spear Goblins.
+*It can be risky to deploy the Goblin Gang on one lane since [[The Log]] can completely counter the Goblin Gang for a positive [[Elixir]] trade. However, they can be used to bait the opponent's [[Arrows]] or The Log.
+*An [[Electro Wizard]] or a Valkyrie spawned on top of the Goblin Gang can make short work of this card and will be able to set up for a counter push.
+*This card can provide a decent distraction for enemy high damage single-targeting troops like the [[P.E.K.K.A.|P.E.K.K.A]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Inferno Dragon]], [[Mighty Miner]], or the [[Prince]], giving time for you to finish these troops off.
+*An unsupported P.E.K.K.A. can be defeated by a Goblin Gang in the right placement with the assistance of a [[:Category:Tower Troop Cards|Crown Tower]].
+*The Goblin Gang can be used to surround and destroy non-360 degree splash units (excluding the [[Bomber]] and [[Wizard]] due to their large splash range) as they will not be able to kill all of the spawned Goblins and Spear Goblins at once.
+*An [[Ice Spirit]] or [[Electro Spirit]] can tank one or two hits and then freeze/stun a Crown Tower, potentially allowing the Goblin Gang to deal massive damage.
+*Using a [[Mirror]] and a [[Clone]] together on this card is a very risky strategy unless the player is certain the opponent has no splash damage, but it has the potential to swarm or rush the enemy.
+*A high Level Goblin Gang's Goblins will take three shots instead of two from the Crown Tower, allowing it to deal much more damage than if it was at equivalent Level. Keep this in mind whenever rushing a lane with a Goblin Gang.
+*The Goblin Gang can completely shut down a [[Goblin Barrel]] if timed properly.
+*When countering [[Elite Barbarians]], placing the Goblin Gang with the corner most Goblin nearest to both Elite Barbarians will make them both attack one Goblin the entire time, increasing the time the Goblin Gang can stall them. This way, (assuming both cards are a similar level) only one heavily damaged Elite Barbarian will make it to the Tower.
+*The Goblin Gang can completely shut down a [[Hog Rider]] when timed correctly and placed in front of him.
+*When distracting a [[Mortar]], placing the Goblin Gang in the centre will effectively optimize the amount of time the Mortar stays distracted, giving you more time to finish it off.
+*When defending against a lone [[Golem]], take advantage of the range that the Spear Goblins have. Placing the Goblin Gang at a distance will prevent the Spear Goblins from being killed by the Golem's Death Damage so that the Spear Goblins defend against the spawned Golemites, preventing more damage from being dealt to the Tower.
+*The Goblin Gang can be used to defend against fragile air units like the [[Flying Machine]], [[Bats]], and [[Minion Horde]]. The Goblins will tank the damage from the air units, while the Spear Goblins will attack the air units. This is especially key when defending against the [[Baby Dragon]] or the [[Electro Dragon]], as their damage is not enough to one-shot the Goblins.
+*The Goblin Gang can completely stop a lone [[Mega Knight]] if placed correctly.
+*Skeleton Army can be used as an alternative to the Goblin Gang. However, it has much less hitpoints per unit, making it weak to more [[:Category:Spell Cards|spells]], the Skeletons also move slower, making it less threatening in offense, and cannot hit air troops. In exchange, the Skeleton Army has more total damage than Goblin Gang and comes with more units overall.
+
+<center>
+
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Card Attributes}}
+{| class="wikitable" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|3||1 sec||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+
+{{StatisticsSubheader|Goblin Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.1 sec||0.6 sec||Very Fast (120)||Melee: Short (0.5)||Ground||x3
+|Ground
+|}
+
+{{StatisticsSubheader|Spear Goblin Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width: 100%; text-align: center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.7 sec||0.5 sec||Very Fast (120)||5||500||Air & Ground||x3||Ground
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, stab_atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: stab_hp_11 | 202 }}
+{{#vardefine: stab_dmg_11 | 120 }}
+{{#vardefine: stab_atk_speed | 1.1 }}
+{{#vardefine: spear_hp_11 | 133 }}
+{{#vardefine: spear_dmg_11 | 81 }}
+{{#vardefine: spear_atk_speed | 1.7 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+! scope="col" |Goblin Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Goblin Damage<br />{{Icon|I=Damage}}
+! scope="col" |Goblin Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Spear Goblin Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Spear Goblin Damage<br />{{Icon|I=Damage}}
+! scope="col" |Spear Goblin Damage per second<br />{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:stab_hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:stab_dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:stab_dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:stab_atk_speed}} }} || {{#expr: {{#var:spear_hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:spear_dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:spear_dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:spear_atk_speed}} }}
+|-
+| 2 || {{#expr: {{#var:stab_hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:stab_dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:stab_dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:stab_atk_speed}} }} || {{#expr: {{#var:spear_hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:spear_dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:spear_dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:spear_atk_speed}} }}
+|-
+| 3 || {{#expr: {{#var:stab_hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:stab_dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:stab_dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:stab_atk_speed}} }} || {{#expr: {{#var:spear_hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:spear_dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:spear_dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:spear_atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:stab_hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:stab_dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:stab_dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:stab_atk_speed}} }} || {{#expr: {{#var:spear_hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:spear_dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:spear_dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:spear_atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:stab_hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:stab_dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:stab_dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:stab_atk_speed}} }} || {{#expr: {{#var:spear_hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:spear_dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:spear_dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:spear_atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:stab_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:stab_dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:stab_dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:stab_atk_speed}} }} || {{#expr: {{#var:spear_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:spear_dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:spear_dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:spear_atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:stab_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:stab_dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:stab_dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:stab_atk_speed}} }} || {{#expr: {{#var:spear_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:spear_dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:spear_dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:spear_atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:stab_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:stab_dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:stab_dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:stab_atk_speed}} }} || {{#expr: {{#var:spear_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:spear_dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:spear_dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:spear_atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:stab_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:stab_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:stab_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:stab_atk_speed}} }} || {{#expr: {{#var:spear_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:spear_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:spear_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:spear_atk_speed}} }}
+|- 
+| 10 || {{#expr: {{#var:stab_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:stab_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:stab_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:stab_atk_speed}} }} || {{#expr: {{#var:spear_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:spear_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:spear_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:spear_atk_speed}} }}
+|-
+| 11 || {{#var:stab_hp_11}} || {{#var:stab_dmg_11}} || {{Dps|{{#var:stab_dmg_11}}|{{#var:stab_atk_speed}} }} || {{#var:spear_hp_11}} || {{#var:spear_dmg_11}} || {{Dps|{{#var:spear_dmg_11}}|{{#var:spear_atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:stab_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:stab_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:stab_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:stab_atk_speed}} }} || {{#expr: {{#var:spear_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:spear_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:spear_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:spear_atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:stab_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:stab_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:stab_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:stab_atk_speed}} }} || {{#expr: {{#var:spear_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:spear_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:spear_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:spear_atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:stab_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:stab_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:stab_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:stab_atk_speed}} }} || {{#expr: {{#var:spear_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:spear_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:spear_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:spear_atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:stab_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:stab_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:stab_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:stab_atk_speed}} }} || {{#expr: {{#var:spear_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:spear_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:spear_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:spear_atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:stab_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:stab_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:stab_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:stab_atk_speed}} }} || {{#expr: {{#var:spear_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:spear_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:spear_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:spear_atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 85,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|200 {{BASEPAGENAME}} cards<br/ >25 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 255,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|2,000 {{Icon|I=Gold}}<br>25 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 425,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>25 {{Icon|I=XP}}
+|-
+| rowspan="3" |Hit Maker <br/ > [[File:Hit Maker.png|50x50px]]
+|1
+|Hit enemy Troops a total of 1,750 times
+|3,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Troops a total of 5,000 times
+|200 {{Icon|I=Common Wild Card}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Troops a total of 8,750 times
+|5,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2017
+*The Goblin Gang [[Cards|card]] was added to the game on 24/2/2017.
+*On 16/3/2017, a [[Version History#Maintenance%20Break%20(16/3/2017)|maintenance break]], increased the Spear Goblins' projectile speed to 500 (from 350). This was done to fix some unexpected behaviour that the Spear Goblins showed.
+*On 12/6/2017, the [[Version History#June 2017 Update (12/6/2017)|June 2017 Update]], decreased the number of [[Spear Goblins]] spawned to 2 (from 3). It also increased the distance between the Goblins upon deployment. This changed the description to match the number of [[:Category:Troop Cards|troops]] spawned.
+*On 9/10/2017, the [[Version History#Epic Quests Update (9/10/2017)|Epic Quests Update]], decreased the Spear Goblins' attack time interval to 1.1 seconds (from 1.3 seconds).
+*On 12/12/2017, the [[Version History#Electrifying Update (12/12/2017)|Electrifying Update]], decreased the [[Goblins]]’ damage by 6%.
+2018
+*On 25/4/2018, the [[Version History#Clan%20Wars%20Update%20(25/4/2018)|Clan Wars Update]], decreased the Spear Goblins' attack time interval to 1.2 seconds (from 1.1 seconds).
+*On 4/6/2018, a [[Version History#Balance Changes (4/6/2018)|Balance Update]], increased the Spear Goblins’ damage by 34%, but also increased their attack time interval to 1.7 seconds (from 1.2 seconds) and increased their first attack time interval to 0.5 seconds (from 0.2 seconds).
+*On 2/7/2018, a [[Version History#Balance Changes (2/7/2018)|Balance Update]], decreased the Goblins' hitpoints by 1%. This was to fix an inconsistency with [[Minions]] that could not take out Goblins in two hits at the same Level.
+2019
+*On 4/3/2019, a [[Version History#Balance Changes (4/3/2019)|Balance Update]], gave the Goblin Gang a new 0.15 seconds deploy stagger from each other.
+2020
+*On 2/6/2020, a [[Version History#Balance Changes (2/6/2020)|Balance Update]], decreased the deploy stagger for each Goblin to 0.1 seconds (from 0.15 seconds).
+*On 31/8/2020, the [[Version History#Clan%20Wars%20II%20Update%20(31/8/2020)|Clan Wars II Update]], added a card render to the Goblin Gang's card info screen.
+2021
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 4/10/2022, a [[Version History#Balance Changes (4/10/2022)|Balance Update]], increased the number of Spear Goblins spawned to 3 (from 2). This also changed the description to match the number of troops spawned.
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], increased the Goblins' first attack time interval to 0.4 seconds (from 0.2 seconds).
+2023
+*On 4/4/2023, a [[Version History#Balance Changes (4/4/2023)|Balance Update]], increased the Spear Goblins' range to 5.5 tiles (from 5 tiles).
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+*On 17/6/2024, the [[Version History#Goblin World Update (17/6/2024)|Goblin World Update]], decreased the Spear Goblins’ first attack time interval to 0.3 seconds (from 0.5 seconds). It also added the Goblin Gang to the Goblin class.
+2025
+*On 8/1/2025, a [[Version History#Balance Changes (8/1/2025)|Balance Update]], increased the Spear Goblins’ first attack time interval to 0.4 seconds (from 0.3 seconds).
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], made it so that Goblin Gang's spawn formation would be correctly mirrored depending on which side of the [[Arenas|Arena]] it was placed.
+*On 9/4/2025, a [[Version History#Balance Changes (9/4/2025)|Balance Update]], increased the Goblins' first attack time interval to 0.6 seconds (from 0.4 seconds).
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] increased the Spear Goblins’ first attack time interval to 0.5 seconds (from 0.4 seconds) {{Balance|Nerf}}, and decreased their range to 5 tiles (from 5.5 tiles) {{Balance|Nerf}}.
+
+==Gallery==
+<gallery>
+File:Goblin Gang card render.png|Current card render.
+File:Goblin Gang Preview.gif|Current card preview
+</gallery>
+
+==Trivia==
+*Goblins are small, grotesque, monstrous creatures that appear in the folklore of multiple European cultures. First attested in stories from the Middle Ages, they are ascribed conflicting abilities, temperaments, and appearances depending on the story and country of origin, ranging from mischievous household spirits to malicious, bestial thieves. They often have magical abilities similar to a fairy or demon, such as the ability to shapeshift. Similar creatures include [https://en.wikipedia.org/wiki/Duende duendes], [https://en.wikipedia.org/wiki/Kobold kobolds], [https://en.wikipedia.org/wiki/Leprechaun leprechauns], and [https://en.wikipedia.org/wiki/Ghoul ghouls].
+**In the German and Dutch language setting of the game, the Goblin Gang's name translates to "Kobold Gang". In the Spanish, Arabic, Persian, and Vietnamese language setting of the game, the Goblin Gang's name translates to "Duende Gang", "Ghoul Gang", "Goblin Group" and "Leprechaun Gang" respectively.
+**The Goblin Gang is 1 of 17 [[cards]] associated with [[Goblins]], with the others being [[Spear Goblins]], [[Baby Goblins]], [[Dart Goblin]], [[Goblin Demolisher]], [[Suspicious Bush]], [[Goblin Cage]], [[Goblin Hut]], [[Goblin Giant]], [[Goblin Barrel]], [[Goblin Curse]], [[Goblin Drill]], [[Goblin Machine]], [[Party Rocket]], [[Party Hut]], [[Goblinstein]], and of course, Goblins.
+*The Goblin Gang is 1 of 4 cards associated with outlawry, with the others being [[Rascals]], [[Bandit]], and the [[Boss Bandit]].
+*It is 1 of 4 cards that spawns different [[:Category:Troop Cards|troops]] at once, the others being Rascals, [[Wizard Trio]], and the Goblinstein.
+*The Goblin Gang is 1 of 10 cards to have an alliterative name, the others being the [[Royal Recruits]], [[Mega Minion]], Goblin Giant, [[Cannon Cart]], [[Barbarian Barrel]], [[Ram Rider]], [[Dagger Duchess]], Boss Bandit, and the [[Mighty Miner]].
+*Even though the Goblin Gang spawns 6 Goblins, the card render displays 5 Goblins, due to the fact that the card used to spawn 5 troops. 
+*Their [[Star Points|Star Level 3 Skin]] grants them a red mohawk similar to the Level 6 Goblin in Clash of Clans.
+*The Goblin Gang was featured in the winning [[Battle Decks|deck]] of the [https://www.youtube.com/live/psZXKWHkKkE?si=PbjvbZt8stghz6eJ King's Cup II Tournament], by a player called Surgical Goblin.
+*On 3/1/2024, the Goblin Gang was supposed to receive a Goblin first attack time interval increase to 0.5 seconds (from 0.4 seconds), but this change [https://royaleapi.com/blog/season-55-balance-wip was pulled back last minute].
+
+{{Navigation|Card}}
+
+[[fr:Gang de gobelins]]
+[[de:Koboldgang]]
+[[es:Pandilla de duendes]]
+[[it:Gang di goblin]]
+[[ru:Банда гоблинов]]
+[[zh:哥布林团伙]]

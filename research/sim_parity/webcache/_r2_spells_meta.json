@@ -1,0 +1,156 @@
+{
+ "Arrows": {
+  "revid": 437304,
+  "fetched": "2026-08-26",
+  "bytes": 30528,
+  "had_cache": false,
+  "cache_content_same": null
+ },
+ "Barbarian Barrel": {
+  "revid": 437163,
+  "fetched": "2026-08-26",
+  "bytes": 26141,
+  "had_cache": false,
+  "cache_content_same": null
+ },
+ "Clone": {
+  "revid": 436842,
+  "fetched": "2026-08-26",
+  "bytes": 22836,
+  "had_cache": false,
+  "cache_content_same": null
+ },
+ "Earthquake": {
+  "revid": 437302,
+  "fetched": "2026-08-26",
+  "bytes": 20450,
+  "had_cache": false,
+  "cache_content_same": null
+ },
+ "Fireball": {
+  "revid": 437299,
+  "fetched": "2026-08-26",
+  "bytes": 25852,
+  "had_cache": false,
+  "cache_content_same": null
+ },
+ "Freeze": {
+  "revid": 437301,
+  "fetched": "2026-08-26",
+  "bytes": 27338,
+  "had_cache": false,
+  "cache_content_same": null
+ },
+ "Giant Snowball": {
+  "revid": 437307,
+  "fetched": "2026-08-26",
+  "bytes": 16361,
+  "had_cache": false,
+  "cache_content_same": null
+ },
+ "Goblin Barrel": {
+  "revid": 436494,
+  "fetched": "2026-08-26",
+  "bytes": 31619,
+  "had_cache": false,
+  "cache_content_same": null
+ },
+ "Goblin Curse": {
+  "revid": 437353,
+  "fetched": "2026-08-26",
+  "bytes": 18022,
+  "had_cache": false,
+  "cache_content_same": null
+ },
+ "Graveyard": {
+  "revid": 437290,
+  "fetched": "2026-08-26",
+  "bytes": 28816,
+  "had_cache": false,
+  "cache_content_same": null
+ },
+ "Lightning": {
+  "revid": 437298,
+  "fetched": "2026-08-26",
+  "bytes": 22327,
+  "had_cache": false,
+  "cache_content_same": null
+ },
+ "Mirror": {
+  "revid": 436846,
+  "fetched": "2026-08-26",
+  "bytes": 20698,
+  "had_cache": false,
+  "cache_content_same": null
+ },
+ "Poison": {
+  "revid": 437536,
+  "fetched": "2026-08-26",
+  "bytes": 22143,
+  "had_cache": false,
+  "cache_content_same": null
+ },
+ "Rage": {
+  "revid": 437309,
+  "fetched": "2026-08-26",
+  "bytes": 23989,
+  "had_cache": false,
+  "cache_content_same": null
+ },
+ "Rocket": {
+  "revid": 437297,
+  "fetched": "2026-08-26",
+  "bytes": 26281,
+  "had_cache": false,
+  "cache_content_same": null
+ },
+ "Royal Delivery": {
+  "revid": 437384,
+  "fetched": "2026-08-26",
+  "bytes": 25292,
+  "had_cache": false,
+  "cache_content_same": null
+ },
+ "The Log": {
+  "revid": 437310,
+  "fetched": "2026-08-26",
+  "bytes": 24486,
+  "had_cache": false,
+  "cache_content_same": null
+ },
+ "Tornado": {
+  "revid": 436504,
+  "fetched": "2026-08-26",
+  "bytes": 25584,
+  "had_cache": false,
+  "cache_content_same": null
+ },
+ "Vines": {
+  "revid": 437543,
+  "fetched": "2026-08-26",
+  "bytes": 10981,
+  "had_cache": false,
+  "cache_content_same": null
+ },
+ "Void": {
+  "revid": 437352,
+  "fetched": "2026-08-26",
+  "bytes": 21325,
+  "had_cache": false,
+  "cache_content_same": null
+ },
+ "Zap": {
+  "revid": 437305,
+  "fetched": "2026-08-26",
+  "bytes": 22557,
+  "had_cache": false,
+  "cache_content_same": null
+ },
+ "Goblin Barrel/Evolution": {
+  "revid": 437372,
+  "fetched": "2026-08-26",
+  "bytes": 16174,
+  "had_cache": true,
+  "cache_content_same": true
+ }
+}

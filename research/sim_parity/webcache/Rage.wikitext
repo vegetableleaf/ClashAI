@@ -1,0 +1,219 @@
+{{DISPLAYTITLE: <span style="color: #b300b3;">Rage</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink|Rage Spell}}
+
+{{Card Infobox|Cost=2|Rarity=Epic|Type=Spell|Arena=Serenity Peak|ReleaseDate=4 January 2016}}
+{{Quote|Increases troop movement and attack speed. Buildings attack faster and summon troops quicker, too. Chaaaarge!}}
+
+The Rage is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from the [[Arenas|Serenity Peak (Arena 14)]]. It is an area-damage, air-targeting [[:Category:Spell Cards|spell]] with a medium radius and low damage. It increases the movement speed and attack speed of allied [[:Category:Troop Cards|troops]] and [[:Category:Building Cards|buildings]] by 30%. It is a deep purple potion packed in a large bottle. It is also the same as that spawned by the [[Lumberjack]] and the [[Santa Hog Rider]]. A Rage card costs 2 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Rage Common Modifier.png|45x45px]] Common: Raging Rage===
+{{Quote|+200% radius}}
+Rage's area radius is increased by 200%, for a total of 9 tiles. Its damage is also increased.
+
+===[[File:Rage Rare Modifier.png|45x45px]] Rare: Just Superhero Stuff===
+{{Quote|Super Rage buff}}
+The Rage's boost is increased.
+
+===[[File:Rage Epic Modifier.png|45x45px]] Epic: Keep Calm & Rage On===
+{{Quote|Infinite Rage buff}}
+Rage's duration after leaving the radius is increased to infinite seconds.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Rage Card}}
+*The Rage can be used to increase the movement speed of slow [[:Category:Troop Cards|troops]], such as [[Golem]]s, [[P.E.K.K.A.|P.E.K.K.A]]s, [[Giant]]s, [[Giant Skeleton]]s, [[Electro Giant]]s, [[Elixir Golem]]s, [[Valkyrie]]s, [[Mighty Miner]]s, and [[Lava Hound]]s.
+*This [[:Category:Spell Cards|spell]] can also be used to boost the spawn speeds of [[cards]] such as the [[Barbarian Hut]], [[Furnace]], [[Witch]], and [[Night Witch]], the fire rate of defensive [[:Category:Building Cards|buildings]], or the [[Elixir Collector]]'s production speed. However, building lifetime still drops with its normal rate, even with the Rage, so beware when using it on low-health buildings. It should also never be used on the [[Goblin Cage]], as the Goblin Brawler only spawns after it is destroyed. 
+**When used with Barbarian Hut, it will result in the last wave spawning 3 [[Barbarians]] instead of 1. The death spawn Barbarian will also spawn afterwards for extra defense. This is a 2 Elixir investment for an equivalent return value of 2 Elixir, and thus it can be worth using if the player wants to make use of the last wave of Barbarians in defense.
+*Rage can be used to help fast attacks, and with its low cost, it can assist the [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Prince]], [[Hog Rider]], [[Ram Rider]], [[Elite Barbarians]], and other troops to destroy a [[:Category:Crown Towers|Crown Tower]]. It is particularly effective when the opponent's best counter to the attack is out of hand, forcing them to quickly react with a different card.
+*In addition to their normal attack speed, the Rage can also increase the speed of the first attack for troops, allowing them to retarget to other troops faster. For example, against a [[Skeleton Army]], ranged troops like the [[Musketeer]], [[Dart Goblin]], [[Archers]], [[Cannon Cart]], and [[Electro Wizard]] will be able to defeat more [[Skeletons]] compared to a non-raged one.
+*Rage does a small amount of damage when used, which is enough to defeat anything up to [[Spear Goblins]]. This is enough to allow troops to break through weak swarms while also getting their speed and attack speed boosted.
+**The [[Goblin Curse]] synergizes well with Rage, as Rage instantly turns any troops defeated within the radius of the curse into [[Goblins]], which are immediately boosted by the Rage and can quickly overwhelm the enemy's Crown Tower if they don't have a spell prepared.
+*Rage works well in [[Goblin Giant]] [[Battle Decks|decks]], as the Goblin Giant is faster than other tanks, allowing him to reach the Crown Tower much sooner and deal significantly more damage. The Goblin Giant also comes with 3 different attackers that benefit from the spell, making him a better choice than other troops. A Ram Rider and [[Goblin Machine]] can benefit in a similar way.
+*The effect of Rage falls off after 1 second after something has left its radius, and will always expire once the spell's duration ends. This matters the most on short-ranged cards like [[Balloon]] as they would not be able to take full advantage of the spell, restricting the spell's placement as a result.
+*When used on cards with a ramp-up mechanic like the [[Inferno Tower]], [[Inferno Dragon]], and [[Mighty Miner]], the Rage will allow them to reach their next tier faster. This can be key in situations where there is something that is following the tank, allowing the Inferno Tower to defeat its support troops as well instead of just the tank.
+*Rage does not affect animations occurring after set periods, nor can it influence anything irrelevant to movement or direct attacks. For example, the [[Executioner]]'s axe flies at the same speed even if the Executioner is raged, the [[King's Tower]] will not activate its cannon more quickly, and the [[Giant Skeleton]]'s or Balloon's death bomb will not explode faster, so raging these units would be less effective. 
+**The only exception is the [[Phoenix]]'s Egg; Rage allows it to revive faster. However, it will still be destroyed solo by the [[Tower Princess]] if nothing is tanking for the Egg.
+*It is effective when the player is defending their Crown Towers since it will be able to affect both the defensive units and buildings.
+*Rage can be quite effective in [[Goblin Barrel]] decks, as its unrestricted deployment allows it to be placed directly on the Goblin Barrel when attacking the Crown Tower, boosting the attack speed of the Goblins while also defeating or weakening enemy swarms like the [[Goblin Gang]]. Unlike the [[Giant Snowball]], it does not have to travel to reach the target, and unlike the [[Zap]], it does not force the Crown Tower to retarget on the Goblins when used in conjunction with a tank. However, these combos should only be done if opposing spells are not in rotation.
+*Inherently, the Rage is a high-risk, high-reward card that requires good timing in order to succeed. When using Rage, be careful to time it right or else an opposing counterattack will come unhindered due to the player's lack of [[Elixir]].
+*Rage can be used for the player’s troops to dodge slow-moving spells, especially ones with a small radius, like the [[Rocket]]. This is effective with the [[Three Musketeers]], [[Baby Dragon]], and Balloon.
+**However, the Rage's 0.5 second deploy time gives more time for the spell to reach said troop. Timing the Rage is very important, especially with slower moving troops.
+**Similarly, it can allow troops to escape a [[Poison]] and Goblin Curse, as well as neutralize the slow effect of the former. However, it is a heavy Elixir investment.
+*The [[Lumberjack]] is an alternative to Rage. He can deal high damage on offense or defense, and act as a tank for the player's push before activating its Rage, but he costs 2 more Elixir, and the player has less control over when and where the spell's effect takes place.
+*Rage's effect does not stack with another Rage spell, the Lumberjack's dropped Rage spell, the built-in [[Buff#Rage|Rage buff]] from raged troops, or the Rage effect of the [[Barbarians/Evolution|Evolved Barbarians]]. However, the effect of Rage does stack with the environmental Rage boost of [[Global Spell|Rage Battles]].
+*Under the influence of Rage, an [[X-Bow]] can shoot 4 projectiles every second, dealing massive damage to the opposing Crown Tower. This can be risky however, so only cast the Rage if you notice that the opponent does not react to the X-Bow in time.
+*Troops or buildings with additional effects in their attacks can benefit greatly from Rage, allowing their effects to activate more frequently.
+**Stunning cards, like the [[Electro Wizard]] will be able to stun the enemy troops more frequently, buying more time for the player to defeat. However, even with Rage, they cannot reset their attacks entirely, so they might still get hit.
+**Similar to stunning cards, the [[Valkyrie/Evolution|Evolved Valkyrie]] and [[Mega Knight/Evolution|Evolved Mega Knight]] can make more uses of their pulling and pushing effects, and unlike the stunning cards, their attacks can reset the attacks of opposing troops. A [[Bowler]] or [[Executioner/Evolution|Evolved Executioner]] can work similarly.
+**Troops that heal themselves when they attack, like the [[Battle Healer]] and [[Bats/Evolution|Evolved Bats]] will have increased longevity, allowing them to stay on the field for longer.
+**With more frequent attacks, an [[Mortar/Evolution|Evolved Mortar]] will be able to spawn more Goblins, which will allow the player to overwhelm their opponent.
+*Rage can be used to neutralize slowing effects, such as from the [[Ice Wizard]]. This might allow your troops to get closer to said Ice Wizard and be able to defeat him without taking too much damage.
+*Do not use Rage on troops that are instantly defeated from their own attacks like the [[Ice Spirit]], [[Fire Spirit]], and [[Wall Breakers]], as this is a waste of 2 Elixir. An exception applies to ones that spawn other troops after death, such as the [[Battle Ram]] and [[Skeleton Barrel]].
+*The Elixir Collector is affected by Rage, technically allowing it to produce Elixir faster. However, it is not enough to produce even a single Elixir due to its duration. In order to produce additional Elixir, 3 Rage spells are needed. This results in a massive 5 Elixir deficit, and thus is an ineffective strategy.
+** Other spawner buildings can similarly result in additional waves of troops being spawned from them. The Barbarian Hut will not spawn additional waves, but it will result in the last wave spawning additional Barbarians. However, like the Elixir Collector, using the Rage spell just to spawn additional waves is an ineffective strategy.
+*Since Rage's duration is identical at all Levels and its damage is quite low, upgrading it is generally wasteful if the player wishes to only boost friendly troops. At equal Levels, a Rage spell deal enough damage to OHKO the Spear Goblins, and a Level 14 Rage spell can OHKO Level 15 Spear Goblins. Therefore, it is recommended that the player invest their {{Rarity|Epic}} resources, (i.e., [[Magic Items|Wild Cards]] or [[Trade Tokens]]) into other {{Rarity|Epic}} cards first. However, a Level 14 Rage cannot OHKO [[Mirror|Mirrored]] Level 16 Spear Goblins, so the player should consider levelling it to 15.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{|class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Duration<br />{{Icon|I=Time}}
+! scope="col" |Boost<br />{{Icon|I=Boost}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|2||3||0.5 sec||4.5 sec||+30%||Friendly [[:Category:Troop Cards|Troops]] & [[:Category:Building Cards|Buildings]]||[[:Category:Spell Cards|Spell]]||{{Rarity|Epic}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: dmg_11 | 179 }}
+{{#vardefine: crown_dmg_11| 54 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Area Damage<br>{{Icon|I=Area Damage}}
+!scope="col"|Crown Tower Damage<br>{{Icon|I=Tower Damage}}
+|-
+| 6 || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(7-11)) round 0 }} 
+|-
+| 8 || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(8-11)) round 0 }} 
+|-
+| 9 || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(9-11)) round 0 }} 
+|-
+| 10 || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:dmg_11}} || {{#var:crown_dmg_11}}
+|-
+| 12 || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}  ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(15-11)) round 0 }} 
+|-
+| 16 || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Rage of Empires <br> [[File:Rage Of Empires.png|50x50px]]
+|1
+|Affect a total of 600 [[:Category:Troop Cards|Troops]] with Rage
+|20 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Affect a total of 1,800 Troops with Rage 
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Affect a total of 3,000 Troops with Rage
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" |All the Rage <br> [[File:All The Rage.png|50x50px]]
+|1
+|Deal a total of 425,000 Damage with friendly 'Raged' Troops
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 1,220,000 Damage with friendly 'Raged' Troops
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 2,140,000 Damage with friendly 'Raged' Troops
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Rage [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016 {{Balance|Add}}.
+*On 29/2/2016, the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]], added a falloff effect to Rage, causing [[:Category:Troop Cards|troops]] to lose the bonus if they are out of its effect for 2 seconds, whereas previously troops kept the effect permanently {{Balance|Add}}.
+*On 23/3/2016, a [[Version History#Balance Changes (23/3/2016)|Balance Update]], increased the Rage's speed boost to 40% (from 35%) {{Balance|Buff}} and decreased its duration by 2 seconds {{Balance|Nerf}}. Its description was also changed to match the speed boost percentage number {{Balance|Neutral}}.
+*On 3/5/2016, the [[Version History#May%202016%20Update%20(3/5/2016)|May 2016 Update]], changed the Rage's description. It used to say, ''“Increases troop movement and attack speed by 40%. Troop buildings and summoners deploy troops faster. Chaaaarge!''” {{Balance|Neutral}}.
+*On 4/7/2016, the [[Version History#Tournaments Update (4/7/2016)|Tournaments Update]], allowed the [[Elixir Collector]] to be affected by Rage {{Balance|Neutral}}.
+*On 19/9/2016, the [[Version History#September 2016 Update (19/9/2016)|September 2016 Update]], decreased the Rage's cost to 2 [[Elixir]] (from 3 Elixir) {{Balance|Buff}}, its speed boost to 30% (from 40%) {{Balance|Nerf}}, and its duration by 2 seconds {{Balance|Nerf}}. It also slightly changed its card description. It used to say, ''“Increases troop movement and attack speed. Troop buildings and summoners deploy troops faster. Chaaaarge!''” {{Balance|Neutral}}.
+*On 1/11/2016, the [[Version History#November 2016 Update (1/11/2016)|November 2016 Update]], increased the Rage's speed boost to 35% (from 30%) {{Balance|Buff}}.
+2018
+*On 25/4/2018, the [[Version History#Clan%20Wars%20Update%20(25/4/2018)|Clan Wars Update]], allowed the Rage to be directly placed on the river {{Balance|Neutral}}.
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], moved the [[Arenas|Arena]] to unlock the Rage from Spell Valley to Hog Mountain {{Balance|Nerf}}.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Epic}} cards start at Level 6 and end at Level 13 (from 1 to 8) {{Balance|Neutral}}.
+2019
+*On 1/7/2019, the [[Version History#July%202019%20Update%20(1/7/2019)|July 2019 Update]], removed the Rage from all [[Tournament/Special Event Challenges|Draft]] selections {{Balance|Remove}}.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the Arena to unlock the Rage from Hog Mountain to Serenity Peak {{Balance|Nerf}}.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13) {{Balance|Buff}}.
+2022
+*On 12/12/2022, the [[Version History#Clashmas Update (12/12/2022)|Clashmas Update]], set the Rage's duration to 6 seconds for every Level {{Balance|Neutral}} and made the [[:Category:Spell Cards|spell]] deal area damage {{Balance|Add}}. In addition, its area radius was decreased to 3 tiles (from 5 tiles) {{Balance|Nerf}}, and added a 0.5 second deploy timer to Rage {{Balance|Add}}.
+2023
+*On 4/1/2023, an [[Version History#Optional Update (4/1/2023)|Optional Update]], made the in-game visual effects of the Rage match the duration of the spell {{Balance|Neutral}}. It also fixed an issue where the Rage was considered a Troop card in its info menu {{Balance|Neutral}}.
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14) {{Balance|Buff}}.
+2024
+*On 3/1/2024, a [[Version History#Balance Changes (3/1/2024)|Balance Update]], decreased the Rage's duration to 5.5 seconds (from 6 seconds) {{Balance|Nerf}}.
+2025
+*On 11/2/2025, a [[Version History#Maintenance Break (11/2/2025)|maintenance break]], made it so that [[Lumberjack/Evolution|Lumberjack Ghost]]'s lifetime is no longer affected by Rage {{Balance|Neutral}}.
+*On 4/3/2025, a [[Version History#Balance Changes (4/3/2025)|Balance Update]], decreased the Rage's duration after leaving the radius to 1 second (from 2 seconds) {{Balance|Nerf}}.
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], allowed the [[Executioner]] and [[Ram Rider]] to be affected by Rage {{Balance|Neutral}}.
+*On 9/4/2025, a [[Version History#Balance Changes (9/4/2025)|Balance Update]], decreased the Rage's damage by 23% {{Balance|Nerf}}.
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] increased the Rage's damage by 21% {{Balance|Buff}}, but decreased its duration to 4.5 seconds (from 5.5 seconds) {{Balance|Nerf}}.
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)=|Balance Update]] decreased the Rage's speed boost to 30% (from 35%).
+2026
+
+* On 1/6/2026, a Balance Update, decreased the Rage's Crown Tower damage to 25% of the full damage (from 30%)
+
+==Gallery==
+<gallery>
+File:Rage Preview.gif|Current card preview
+</gallery>
+
+==Trivia== 
+*The Rage is 1 of 7 [[:Category:Spell Cards|spells]] which first existed in Clash of Clans, the others being [[Earthquake]], [[Heal]], [[Lightning]], [[Freeze]], [[Poison]], and [[Clone]].
+**Unlike its [https://clashofclans.fandom.com/wiki/Rage_Spell Clash of Clans counterpart], the Rage in Clash Royale deals damage and increases attacks speed instead of damage.
+*The Rage, along with [[Wall Breakers]], [[Barbarian Barrel]], and [[Goblin Curse]], are the cheapest {{Rarity|Epic}} [[cards]], costing 2 [[Elixir]].
+*In the Arabic, Persian, Indonesian, and Malaysian language settings of the game, the Rage's name translates to "Anger". In the Korean, Chinese, and Thai language settings of the game, the Rage's name translates to "Rage Magic", "Rage Spell", and "Mania" respectively.
+*The Rage is 1 of 4 damaging spell [[cards]] that does not contain the phrase "''Reduced damage to Crown Towers.''" in its description despite dealing reduced damage to [[:Category:Crown Towers|Crown Towers]], with the others being Earthquake, Goblin Curse, and [[Tornado]].
+*The Rage is 1 of 23 cards that has had its Elixir cost changed, the others being [[Bomber]], [[Fire Spirit]], [[Royal Recruits]], [[Cannon]], [[Mortar]], [[Musketeer]], [[Three Musketeers]], Heal, [[Goblin Hut]], [[Bomb Tower]], [[Barbarian Hut]], [[Furnace]], [[Elixir Collector]], [[Skeleton Army]], [[P.E.K.K.A.]], Wall Breakers, [[Electro Giant]], [[Bowler]], [[Goblin Barrel]], Barbarian Barrel, [[Fisherman]], and the [[Monk]].
+*The Rage is 1 of 7 spells which have team-colored rings on their radius, the others are Earthquake, Freeze, Poison, Clone, Tornado, and [[Graveyard]].
+**Along the perimeter of the spell, symbols will light up in sequence like a clock as the spell's duration continues.
+*The Rage has been featured in multiple [[Tournament/Special Event Challenges|special game modes]] outside of the card. More specifically:
+**The Rage is 1 of 4 spells that have been featured in the [[Global Spell]] game [[:Category:Modes|mode]], the others being Heal, Lightning, and Freeze.
+**The Rage is 1 of 3 spells that have been featured in the [[Battleground#Boost Fields|Boost Fields]] sub-mode of the [[Battleground]] game mode, the others being Heal and Clone.
+**The Rage is 1 of 5 spells that have been featured in the [[Treasure Hunt#Spell Cauldron|Spell Cauldron]] sub-mode of the [[Treasure Hunt]] game mode, the others being Heal, Lightning, Freeze, and Clone.
+*The Rage, along with the Heal, Lightning, Freeze, and [[The Log]], are featured as a [https://squad-busters.fandom.com/wiki/Spells spell] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*Like its Clash of Clans counterpart, the Rage creates a "roaring" sound when casted, hence the name of the spell.
+*When affected by Rage, a troop with a movement speed of Slow or Fast is enough to outpace a troop with a movement speed of Normal or Very Fast unaffected by the spell respectively. However, a troop with a movement speed of Very Slow or Normal is not enough to outpace a troop with a movement speed of Slow or Fast respectively.
+*[[:Category:Troop Cards|Troops]] and certain buildings affected by the Rage will have their sounds played faster with a higher pitched effect. Slowdown effects however, like that of the [[Ice Wizard]], will do the opposite.
+*The [[Card Mastery]] task "Rage of Empires" is a reference to the [https://en.wikipedia.org/wiki/Age_of_Empires Age of Empires] games series.
+*Units under the effect of Rage will have their level visible, even if said units are at full health.
+*In the [https://youtu.be/zWW1dtcsDGk?si=Ytadsvv1hpz23v9y Card Mastery intro video], the Rage's All the Rage Card Mastery task was shown to require raged troops to deal 427,000 damage. However, it was lowered to 425,000 in-game.
+*On 12/12/2022, the Rage was supposed to be added higher damage and a pushback of 0.3 tiles, but it [https://royaleapi.com/blog/season-42-balance-wip was pulled back last minute].
+*Before the Rage's card release, the Rage's duration was increased by 1 second.
+
+
+{{Navigation|Card}}
+
+[[fr:Rage]]
+[[de:Wut]]
+[[es:Furia]]
+[[it:Furia]]
+[[ja:レイジ]]
+[[ko:분노]]
+[[ru:Ярость]]
+[[zh:狂暴法术]]

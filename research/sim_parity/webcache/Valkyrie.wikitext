@@ -1,0 +1,246 @@
+{{DISPLAYTITLE: <span style="color: #ffa31a;">Valkyrie</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}
+
+{{Card Infobox|Cost=4|Rarity=Rare|Type=Troop|Arena=Bone Pit|ReleaseDate=4 January 2016}}{{SubpageNavBox|Evolution=yes|MergeTactics=yes|Hero=yes}}{{Quote|Tough melee fighter, deals area damage around her. Swarm or horde, no problem! She can take them all out with a few spins.}}
+
+The Valkyrie is a {{Rarity|Rare}} [[Cards|card]] that is unlocked from the [[Arenas|Bone Pit (Arena 2)]]. It spawns an area-damage, ground-targeting, melee, ground [[:Category:Troop Cards|troop]] with high hitpoints and high damage. The Valkyrie attacks by spinning with her axe, damaging all the ground troops surrounding her in a 360° area of effect. She resembles a woman who bears orange hair and eyebrows, have blue eyes, wields a double-sided axe, wears a team-colored suit, wristbands and boots, and attacks with a powerful whirl of her axe. A Valkyrie card costs 4 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Valkyrie Card}}
+*The Valkyrie has high hitpoints for her [[Elixir]] cost, slow movement speed and moderate splash damage around her, so she is most effectively used as a defensive [[:Category:Troop Cards|troop]]. With the assistance of a [[:Category:Tower Troop Cards|Crown Tower]], the Valkyrie can counter almost all non-[[:Category:Building Cards|building]]-targeting troops, and even some frail air troops thanks to her high hitpoints. Her area damage hits in a 360° radius around her, which prevents her from being surrounded by most swarms.
+*Units with long melee range can attack a Valkyrie without being damaged by her splash, as long as the Valkyrie is currently fighting another troop or is distracted. This means Valkyrie is a suitable counter to [[Royal Recruits]] and [[Guards]] when she is dropped on top of them, but will struggle to fight against them when they both approach each other, as she will only be able to walk close enough to damage one or two at a time.
+*When using her to counter melee ground swarms, one should typically place her at a short distance instead of deploying her on top of the swarm. This minimizes the damage she will take, as she will not be hit while deploying. This is key for bulkier swarms such as [[Barbarians]]. However, in larger pushes, it may still be recommended to place her inside of the swarm, so that it is eliminated as quickly as possible.
+*Defensively, the Valkyrie is generally most effective when played reactively. Instead of dropping her preemptively against a push, it is better to wait for the support troops to cross the bridge, so that the player can deploy her on top of them and deal area damage to the whole push. This will save more of her hitpoints for a counterattack.
+*She is extremely effective against most ranged low-hitpoint to medium-hitpoint troops such as a [[Musketeer]], [[Witch]], Archers, [[Mother Witch]], Ice Wizard, Little Prince, Princess, [[Goblinstein]], [[Electro Wizard]], Firecracker, [[Bomber]], Zappies, [[Archer Queen]], [[Magic Archer]], Dart Goblin, Spear Goblins, or [[Wizard]]. She can take out most glass cannons in a few swings, and her hitpoints allows her to stay alive long enough to defeat them. However, she must be placed right next to them so that she does not take unnecessary damage by having to first walk towards them.
+*In a 1-on-1 fight, the Valkyrie will be able to defeat certain melee units on the player's side, such as the [[Monk]], [[Dark Prince]], Prince, Mini P.E.K.K.A, Boss Bandit, and even the [[Mega Knight]]. Try to place the Valkyrie in such a way that their charge attack does not activate, to save more of the Valkyrie's hitpoints for a counterattack.
+*A Valkyrie placed one tile up from the bottom-outer corner of a Crown Tower can catch two Goblins from a [[Goblin Barrel]] in her swing and only let the Goblins get one hit on the Tower. The Valkyrie can be placed slightly ahead of time and hit all three Goblins due to her very quick first attack speed.
+*A Valkyrie can be used to bait the enemy's tank counter, allowing a more threatening tank like a [[Giant]] or [[Golem]] to have an easier time on offense.
+*Due to her weakness to air troops, she pairs well with troops that can target air troops such as the Wizard, Musketeer, Electro Wizard, Witch, [[Executioner]], [[Princess]], Goblinstein, [[Flying Machine]], Dart Goblin, [[Hunter]], Little Prince, [[Firecracker]], Archers, [[Skeleton Dragons]], Inferno Dragon, Spear Goblins, [[Electro Dragon]], [[Zappies]], Archer Queen, Magic Archer, [[Mega Minion]], Ice Wizard, and the [[Baby Dragon]].
+*The Valkyrie works well with the [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], as they are able to cover each others' main weaknesses. This combo, however, is very susceptible to air units, so be sure to have proper air-targeting support.
+**Deploying the Valkyrie in front and then placing the Mini P.E.K.K.A directly behind her is the most effective method of attacking as the Valkyrie has more hitpoints and will be pushed by the faster Mini P.E.K.K.A closer to the Tower. If the enemy deploys a swarm, the Valkyrie will eliminate them quickly; if the enemy deploys a tank, the Mini P.E.K.K.A will walk around her and support her.
+**This combo can also be done with a [[Prince]] and a Valkyrie. It is more potent since the Prince has more hitpoints and his charge ability allows the combo to move even faster. The Prince is also immune to knockback, making such a push able to break through a defensive [[Bowler]]. However, his damage per second is lower without his charge strike, and he costs more Elixir.
+**A more notorious combo is the Valkyrie and the [[Elite Barbarians]]. Like the Mini P.E.K.K.A, the Elite Barbarians will push the Valkyrie, also providing extra damage. Their combined damage is slightly higher, allowing them to break through defending units more easily. However, it is more expensive than the previous combinations, and the Elite Barbarians' higher sight range makes it easier to separate them from the Valkyrie.
+**A cheaper alternative is to combine the Valkyrie with [[Goblins]]. While weak to area damage, the Goblins can also push the Valkyrie to the Crown Tower, and their combined damage will be enough to quickly bring it down if not countered.
+**If the player wants to prioritize attacking the Crown Tower over defeating the enemy's defending units, the Valkyrie can be paired with fast building-targeting [[cards]] like the [[Hog Rider]], [[Ram Rider]], [[Battle Ram]], and [[Wall Breakers]]. Like the other combinations, they can push her closer to the Tower while she protects them from swarms. In the case of the Ram Rider, she will also attack air troops used against the Valkyrie, and the Wall Breakers may catch any incorrectly placed air units used to counter the push.
+*The Valkyrie also works well with the Witch. Since they both do area damage, and the Witch can target air, they can take out most swarms, and her Skeletons can distract and attack single-target units and tanks like the [[P.E.K.K.A.|P.E.K.K.A]], [[Giant Skeleton]], Prince, Mini P.E.K.K.A., [[Boss Bandit]], and the [[Mighty Miner]].
+*Against ranged troops, such as the Musketeer, Wizard, Electro Wizard, Ice Wizard, Archer Queen, Magic Archer, Firecracker, Bomber, Witch, and the Mother Witch, placing her at a distance will make her take unnecessary damage. It is better to place her on top of the unit to nullify their range advantage.
+**In offense, the player can negate the range advantage of them by utilizing a [[Tornado]]. Place the Tornado close to the Valkyrie to pull all ranged units towards her, defeating them in the process. 
+*Do not underestimate a lone Valkyrie, as even a lone Valkyrie can deal a lot of damage to a Crown Tower for only 4 Elixir, if left ignored. Tanks like the [[Knight]], [[Lumberjack]], [[Royal Ghost]], [[Battle Healer]], Prince, [[Skeleton King]], Golden Knight, [[Monk]], or Mini P.E.K.K.A can pull her towards the center and negate most, if not all, of her damage.
+**The [[Cannoneer]]'s higher damage gives him the best matchup out of all [[:Category:Tower Troop Cards|tower troops]] against the Valkyrie. He will only be hit 4 times by the Valkyrie, allowing the player to deploy cheaper cards to defend against her.
+*If the Valkyrie manages to lock onto a Crown Tower, the defending player should not place ranged defending troops too close to their Tower, or the unit may take unnecessary damage, and vice versa. If the unit is placed too close to their Tower, the Valkyrie will end up getting substantial chip damage to the unit and the Crown Tower.
+*Defensively, [[Freeze]] + Valkyrie is a very effective combo. With the Valkyrie's moderately high splash damage, the player can Freeze the support troops behind a tank (Musketeer, Wizard, Hunter, Firecracker, Zappies, [[Ice Wizard]], [[Little Prince]], Archer Queen, Magic Archer, Princess, Dart Goblin, [[Bomber]], [[Archers]], Musketeer, Witch, Goblinstein, Electro Wizard, etc.) then use the Valkyrie to wipe them out.
+*The Valkyrie can be countered with several cheap cards. Her slow move speed can be exploited by [[Spear Goblins]], Guards, [[Dart Goblin]], Archers, and [[Skeletons]] to stall her when placed at a distance, allowing the player's Crown Towers to deal major damage. Air cards like [[Bats]] or [[Minions]] can fully counter her provided they are placed early and that the Valkyrie has no support behind her.
+*Building-targeting units like the Ice Golem, [[Elixir Golem]], [[Goblin Giant]], or Battle Ram can kite the Valkyrie to the other lane when placed on the fourth tile from the bridge, 1 tile into the other lane, helping the player defend against her while also setting up a push in the other lane. However, a Tornado or [[Fisherman]] can largely negate this tactic by pulling that troop out of Valkyrie's sight range.
+*[[Inferno Tower]] and [[Inferno Dragon]] are effective counters if the opponent places the Valkyrie alone. The Inferno Tower should be placed at a distance so that the Valkyrie has to walk further, while the Inferno Dragon should be placed in front of her, as it is unable to be targeted by her. The Inferno Tower is a negative Elixir trade, but its health will be almost fully intact, allowing it to defend against other troops.
+*A very powerful combination is the Hog Rider, the Musketeer, and the Valkyrie. The Musketeer counters air cards, and works well with the other two troops in a counterpush. The Valkyrie can tank for the Hog Rider on offense and the Musketeer on defense. This combo is often called the "Trifecta".
+**This can be effectively countered by Lightning, OHKOing the Musketeer and severely damaging both the Valkyrie and Hog Rider. The Minion Horde is also effective, but the enemy can use [[Zap]] on them and the Musketeer will OHKO them all. Even if the Musketeer is defeated, the Hog Rider and Valkyrie will have enough time to severely damage the Tower.
+**A P.E.K.K.A can hard counter this strategy allowing relatively low damage and being able to start a counterpush for a 5 Elixir advantage.
+**If all three troops are very close together, a [[Rocket]] can nullify the push for a +6 Elixir trade. Even if separated, a Tornado can bring them all together for the Rocket to still defeat them for a +3 Elixir trade.
+**This push can also be crippled by the [[Bowler]], as his knockback and damage can slow down all three units at the same time. 
+**The Hog Rider should be placed behind the Valkyrie to give her a boost so that she stays in front of the Hog Rider, protecting him.
+*The Valkyrie is a great counter to the [[Graveyard]] since she can quickly eliminate the Skeletons with her 360° attack and can survive every offensive spell in the game. If the opponent uses [[Freeze]], the Tower will take more damage without other Graveyard counters present, but the Valkyrie will still have a majority of her health left for a counterpush.
+*A Valkyrie can be used in tandem with a [[Balloon]]. Placing the Valkyrie in front of the Balloon makes her soak up the damage of the Crown Tower while dealing with smaller units that may target the Balloon, leaving the Balloon with a higher chance of reaching the Tower, and dealing massive damage. However, this combo is highly susceptible to air units and a building + tank combo.
+*Against a [[Skeleton Barrel]], wait for it to pop on the Crown Tower, then have her deployed where all the Skeletons are around her. She will defeat all of them with a single spin, preventing the most damage.
+*The Valkyrie can be used to tank for and counter an [[X-Bow]]. Her high hitpoints and moderately high area damage attack can clear out frail support cards that come alongside an X-Bow. However, she can be blocked with a tank like the Knight, which will usually win the duel with the help of the X-Bow. The player should consider placing her farther back on their side to tank for the X-Bow and protect her from ranged troops, while using another [[Cards|card]], like a ranged troop, to damage down the X-Bow.
+*The Valkyrie can also counter a lone [[Sparky]] that has crossed the bridge for a positive Elixir Trade. This is because at the same Level, the Valkyrie can survive one Sparky blast, and with the help of a Tower, destroy her before she can attack again.
+*Beware when placing the Valkyrie behind the [[King's Tower|King Tower]]. Her high hitpoints and medium speed makes her easily exploitable by the [[Magic Archer]], [[Firecracker]], and [[Bomber/Evolution|Evolved Bomber]], allowing them to target her from range and also hit the Crown Tower.
+*In a situation where the opponent places a Fisherman behind the King Tower, the Valkyrie can be placed at the bridge. The Fisherman will walk towards the Crown Tower and once he reaches it, he will be close enough to start his hook and pull the Valkyrie towards him and the Crown Tower. This can be an unexpected way for the Valkyrie to deal damage to the Crown Tower.
+**On the other hand, the Fisherman can force the Valkyrie to activate the King Tower. Once the Valkyrie reaches the Crown Tower, place down the Fisherman in front of the King Tower. The Valkyrie will attack the Fisherman after being pulled from him, but she will be close enough to the King Tower, activating him.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||1.5 sec||0.1 sec||Medium (60)||1 sec||Melee: Medium (1.2)||2||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1907 }}
+{{#vardefine: dmg_11 | 266 }}
+{{#vardefine: atk_speed | 1.5 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+! scope="col" |Area Damage<br />{{Icon|I=Area Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 145,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|100 {{BASEPAGENAME}} cards<br>50 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 440,000 Damage to enemy Troops or buildings
+|4,000 {{Icon|I=Gold}}<br>50 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 740,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>50 {{Icon|I=XP}}
+|-
+| rowspan="3" |Troop Destroyer <br> [[File:Troop Destroyer.png|50x50px]]
+|1
+|Destroy 350 enemy Troops
+|6,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Destroy 1,000 enemy Troops 
+|100 {{Icon|I=Rare Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Destroy 1,750 enemy Troops
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+| rowspan="3" |No Escape <br> [[File:No Escape.png|50x50px]]
+|1
+|Hit 15 Troops with a single deploy a total of 50 times
+|6,000 {{Icon|I=Gold}}<br/ >175 {{Icon|I=XP}}
+|-
+|2
+|Hit 15 Troops with a single deploy a total of 150 times
+|8,000 {{Icon|I=Gold}}<br/ >175 {{Icon|I=XP}}
+|-
+|3
+|Hit 15 Troops with a single deploy a total of 300 times
+|10,000 {{Icon|I=Gold}}<br/ >175 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Valkyrie [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016.
+*On 9/2/2016, the [[Version History#Chest Rewards & Card Balance (9/2/2016)|Chest Reward & Card Balance Update]], decreased the Valkyrie's attack time interval to 1.5 seconds (from 1.6 seconds).
+*On 29/2/2016, the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]], changed the Valkyrie so that it would no longer stop her attack if her target dies during the attack animation. It also decreased the Valkyrie's sight range to 5.5 tiles (from 6 tiles).
+*On 23/3/2016, a [[Version History#Balance%20Changes%20(23/3/2016)|Balance Update]], increased the Valkyrie's hitpoints and damage by 10%.
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], increased the {{Rarity|Rare}} [[Cards|card]] Level cap to 11 (from 10) and also made the Valkyrie affected by all forms of pushback. The update also fixed the “range bug”, which decreased the Valkyrie's range to 1 tile (from 1.5 tiles), but her effective range was unchanged.
+2017
+*On 9/10/2017, the [[Version History#Epic Quests Update (9/10/2017)|Epic Quests Update]], increased the Valkyrie's damage by 5%.
+2018
+*On 12/2/2018, a [[Version History#Balance Changes (12/2/2018)|Balance Update]], decreased the Valkyrie's attack time interval to 1.4 seconds (from 1.5 seconds).
+*On 4/6/2018, a [[Version History#Balance Changes (4/6/2018)|Balance Update]], increased the Valkyrie‘s hitpoints by 7% and made her first attack instant (from 0.2 seconds).
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], moved the [[Arenas|Arena]] to unlock the Valkyrie from Goblin Stadium to Bone Pit.
+*On 3/9/2018, a [[Version History#Balance Changes (3/9/2018)|Balance Update]], increased the Valkyrie's attack time interval to 1.6 seconds (from 1.4 seconds), and added a 0.2 second delay in her first attack.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Rare}} cards start at Level 3 and end at Level 13 (from 1 to 11).
+2019
+*On 7/1/2019, a [[Version History#Balance Changes (7/1/2019)|Balance Update]], decreased the Valkyrie's attack time interval to 1.5 seconds (from 1.6 seconds), and decreased her first attack time interval to 0.1 seconds (from 0.2 seconds).
+*On 1/7/2019, the [[Version History#July%202019%20Update%20(1/7/2019)|July 2019 Update]], increased the Valkyrie's range to 1.2 tiles (from 1 tile), now classified as Melee: Medium, and increased her area radius to 2.4 tiles (from 2 tiles).
+*On 5/8/2019, a [[Version History#Pass Royale and more (5/8/2019)|Balance Update]], decreased the Valkyrie's area radius to 1.9 tiles (from 2.4 tiles). This was to fix a bug where the Valkyrie's attack was able to reach Melee: Long troops.
+*On 30/9/2019, the [[Version History#End%20of%20September%202019%20Update%20(30/9/2019)|End of September 2019 Update]], increased the Valkyrie's area radius to 2 tiles (from 1.9 tiles). This change was not mentioned in any change notes.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Valkyrie's card info screen.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], changed the Valkyrie's card render.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 30/3/2022, the [[Version History#Miner Update (30/3/2022)|Miner Update]], changed the Valkyrie's card image.
+*On 4/4/2022, the [[Version History#April%202022%20Update%20(4/4/2022)|April 2022 Update]], decreased the Valkyrie's hitpoints by 4%.
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], added the No Escape [[Card Mastery]] task for the Valkyrie.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+*On 1/1/2024, the [[Version History#Pass Royale and more (1/1/2024)|January 2024 Update]], added the Valkyrie's Evolution.
+2025
+*On 31/3/2024, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Valkyrie's hitpoints by 0.05% and her damage by 0.45%.
+* [[2026|On 3/8/26 the [https://supercell.com/en/games/clashroyale/blog/news/new-season-k-h-a-o-s/ k.h.a.o.s] update added the Hero Valkyrie. 
+
+==Gallery==
+<gallery>
+File:ValkyrieCardOld.png| # Valkyrie's card image before 30/3/2022. 
+File:Old Valkyrie card render.png|Valkyrie's card render before 7/6/2021.
+File:Valkyrie card render.png|Current card render.
+File:Valkyrie Preview.gif|Current card preview
+File:Valkyrie 1.png|Valkyrie 1
+File:Valkyrie 2.png|Valkyrie 2
+File:Valkyrie 4.png|Valkyrie 3
+File:Valkyrie 5.png|Valkyrie 4
+File:Valkyrie 6.png|Valkyrie 5
+File:Valkyrie 3.png|Valkyrie full body
+File:Valkyrie vs Skarmy.png|Valkyrie about to shred a [[Skeleton Army]].
+File:Screenshot 2022-06-08 at 8.42.07 PM.png|Valkyrie cleaning up a Skeleton Army and tanking shots from a [[Baby Dragon]].
+</gallery>
+
+==Trivia==
+*In Norse mythology, [https://en.wikipedia.org/wiki/Valkyrie valkyries] collect spirits of the dead to take to [https://en.wikipedia.org/wiki/Valhalla Valhalla], one of the Norse afterlives. Most depictions show them riding on horseback or may have wings, however, in Clash Royale, they do not ride horses or fly and instead travel on foot.
+*The Valkyrie is 1 of 19 [[:Category:Troop Cards|troops]] which first existed in Clash of Clans, the others being [[Minions]], [[Archers]], [[Goblins]], [[Skeletons]], [[Barbarians]], [[Giant]], [[Wizard]], [[Hog Rider]], [[Witch]], [[P.E.K.K.A.]], [[Balloon]], [[Golem]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Phoenix]], [[Lava Hound]], and the [[Archer Queen]].
+**The Valkyrie resembles the [https://clashofclans.fandom.com/wiki/Valkyrie Level 5 Valkyrie] from Clash of Clans.
+**Before 7/6/2021, the Valkyrie's [[Cards|card]] render was taken from her Clash of Clans counterpart's render.
+**The sound effects of the Valkyrie in Clash of Clans were taken from her Clash Royale counterpart.
+***When attacking, the Valkyrie sings opera, which is a reference to the opera called [https://en.wikipedia.org/wiki/Die_Walk%C3%BCre Die Walküre (The Valkyrie)] by [https://en.wikipedia.org/wiki/Richard_Wagner Richard Wagner].
+**In Clash of Clans, Valkyrie's movement speed is high whereas in Clash Royale, her movement speed is moderate.
+*The Valkyrie is tied with [[Fisherman]] for the highest first attack speed of all troops, with a first attack speed of 0.1 seconds.
+*The Valkyrie is one of the first troop cards to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the Minions, Archers, Knight, [[Spear Goblins]], Goblins, [[Bomber]], Skeletons, Barbarians, [[Minion Horde]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Musketeer]], Giant, Wizard, Hog Rider, [[Baby Dragon]], [[Skeleton Army]], Witch, P.E.K.K.A, [[Prince]], and Balloon.
+*The Valkyrie is one of the first troop cards to receive a card render, alongside the Archers, Knight, Goblins, Bomber, Skeletons, Barbarians, [[Bats]], [[Royal Recruits]], [[Skeleton Barrel]], [[Rascals]], Musketeer, Giant, Wizard, [[Flying Machine]], Hog Rider, [[Royal Hogs]], [[Dart Goblin]], [[Zappies]], [[Elixir Golem]], Baby Dragon, Skeleton Army, Witch, P.E.K.K.A, Prince, Balloon, [[Giant Skeleton]], [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], Wall Breakers, Bowler, Cannon Cart, [[Mega Knight]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], [[Magic Archer]], [[Bandit]], Lava Hound, [[Night Witch]], and Fisherman.
+*The Valkyrie is featured as a [https://clashofclans.fandom.com/wiki/Hero_Skins?file=Valkyrie_Queen_info.png skin for Archer Queen in Clash of Clans].
+*The Valkyrie, along with the Goblins, Barbarians, Giant, Wizard, Hog Rider, Witch, P.E.K.K.A, and the Archer Queen, were featured as a non-playable opponent in [https://www.chess.com/ Chess].
+*The Valkyrie is the subject of 2 [[Emotes]].
+*The Valkyrie was featured in the winning deck of the [https://www.youtube.com/live/nMANpDweTA4?si=nsUAou7ny3WAA2ve Clash Royale League 2022 Tournament], by a player called Mohamed Light.
+*Before the Valkyrie's card release, the Valkyrie' hitpoints were increased by 14%, and her attack time interval was increased to 1.5 seconds (from 1.4 seconds).
+
+==In other languages==
+{{Other languages|fr=Valkyrie|de=Walküre|es=Valquiria|it=Valchiria|nl=Valkyrie|no=Valkyrje|tr=Valkür|jp=バルキリー|kr=발키리|ru=Валькирия|ar=فالكيري|pt=Valquíria|cn=瓦基丽武神|cnt=瓦基麗武神|fa=والکری|id=Valkyrie|ms=Valkyrie|th=วัลคีรี|fi=Valkyria|vi=Valkyrie}}
+
+{{Navigation|Card}}
+
+[[fr:Valkyrie]]
+[[de:Walküre]]
+[[es:Valquiria]]
+[[it:Valchiria]]
+[[ja:バルキリー]]
+[[ko:발키리]]
+[[ru:Валькирия]]
+[[zh:瓦基丽武神]]

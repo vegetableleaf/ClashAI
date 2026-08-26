@@ -1,0 +1,216 @@
+{{DISPLAYTITLE: <span style="color: #ffa31a;">Royal Hogs</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=5|Rarity=Rare|Type=Troop|Arena=Royal Arena|ReleaseDate=20 June 2018}}{{SubpageNavBox|Evolution=yes}}{{Quote|The King’s personal pets are loose! They love to chomp on apples and towers alike - who let the hogs out?!}}
+
+The Royal Hogs is a {{Rarity|Rare}} [[Cards|card]] that is unlocked from the [[Arenas|Royal Arena (Arena 7)]]. It spawns four very fast, single-target, [[:Category:Building Cards|building]]-targeting, melee, ground [[:Category:Troop Cards|troops]] with moderate hitpoints and very low damage. Their deployment is in a horizontal formation. They are able to jump over the river. They appear to be smaller versions of the [[Hog Rider]]'s hog wearing knight-like helmets with team-colored feathers. A Royal Hogs card costs 5 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Royal Hogs Card}}
+*Since the Royal Hogs are a swarm [[Cards|card]], some methods for countering a [[Hog Rider]] (like placing a [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Mighty Miner]], [[Inferno Dragon]], [[Prince]], or [[P.E.K.K.A.]]) are less effective due to having to deal with more than one unit at a time. Area damage is the most effective way to quickly eliminate the Royal Hogs; large swarms and [[:Category:Building Cards|buildings]] are also still effective.
+**Against area damage [[:Category:Troop Cards|troops]], it is usually more effective to split the Royal Hogs rather than placing them all in one lane. This reduces the amount of splash value the opponent gets from each attack, and can allow the swarm to get more damage across both [[:Category:Crown Towers|Crown Towers]]. This is less effective if the area damage troop is ranged.
+*When they are jumping over the river, they cannot be targeted by any ground attacking units. [[The Log]] and [[Earthquake]] will fail to damage the Royal Hogs while they are jumping. Air troops can still attack them though, and the [[Inferno Tower]] and [[Inferno Dragon]] will continue to ramp up their damage.
+*The ability to split the Royal Hogs make them great to be used alongside other swarms, with a large variety of them being used alongside them as support troops.
+**The Royal Hogs pair well with the [[Skeleton Dragons]]. The Royal Hogs can tank for the Skeleton Dragons, while the Skeleton Dragons protect the Royal Hogs from attacking troops, especially swarms. They can also be split immediately on the river which allows the player to attack both lanes while also preventing the opponent from gaining significant value with their [[:Category:Spell Cards|spells]].
+**The [[Three Musketeers]] are strong ranged support troops that are very effective at supporting the Royal Hogs from a distance. They are also able to outrange certain buildings like the [[Cannon]].
+**As a cheaper alternative, [[Zappies]] have slightly less range, but can be split similarly. They also come with a stun effect, which can save the Royal Hogs from a devastating attack from a [[Sparky]] or a charging [[Dark Prince]].
+**If the player wants a tank for the Royal Hogs in both lanes, they can use the [[Royal Recruits]] alongside them. They can be evenly split in both lanes, while their shields discourage the use of spells against the duo. If the Royal Hogs are placed after the Royal Recruits have crossed the bridge, it may also result in some Royal Recruits being pushed from behind, allowing them to connect to the Tower or a defending unit easier.
+**Cheaper fast swarms like the [[Goblins]], [[Spear Goblins]], [[Bats]], and [[Goblin Gang]] pair well with Royal Hogs, as they are fast to keep up with them and provide cheap damage to enemy responses. However, they are easily defeated with area-damage troops and are much more prone to spells.
+**Although it is a singular troop, the [[Flying Machine]] has the longest range of all flying troops, allowing it to support both lanes of the Royal Hogs when placed at the center. This can be especially effective against buildings used to lure the Royal Hogs.
+*Placing the Royal Hogs one tile off the center, allows them to split with 3 Royal Hogs in one lane and 1 in the other lane. This is useful to be done when pushing into both lanes and one of the two is weaker (example: after splitting Zappies, the 1 Royal Hog is in the 2 Zappies lane while the other 3 are in the 1 Zappy lane). This also works similarly with the Royal Recruits.
+*Due to their low individual damage, it is not recommended to split the Royal Hogs if they will not have any support with them, as they will deal much less damage overall due to each Royal Hog tanking for less Royal Hogs and both of the opponent's Crown Towers attacking simultaneously. This is especially important against the [[Dagger Duchess]], because she is able to handle the Royal Hogs much more effectively when split.
+*Certain spells can be a decent response against the Royal Hogs, due to their high [[Elixir]] cost and inability to hit enemy troops whatsoever.
+**[[Fireball]] will leave the Royal Hogs with a sliver of health while only getting minor damage on the Crown Tower. While this is a positive Elixir trade, the opponent may have other Fireball vulnerable troops that are more difficult to counter with troops, such as the Flying Machine, [[Mother Witch]], [[Magic Archer]], Skeleton Dragons, [[Ice Wizard]], or Zappies, so try not to overly rely on it.
+**Similarly, the [[Royal Delivery]] will deal heavy damage to the Royal Hogs and spawn an additional Royal Recruit to continue with further defense. This is most recommended when the Royal Hogs are assisted by another card.
+**The Log will not counter the Royal Hogs on its own, but it can provide cheap and efficient support for the player's other defenders. It is cheap, only costing 2 Elixir, and deals a decent amount of damage to them for its costs and pushes them back, buying the Crown Tower time to defeat them. The [[Barbarian Barrel]] can be used similarly.
+**A [[Rocket]] will be able to destroy them outright but for a negative Elixir trade. In addition, due to their fast movement speed along with the Rocket's slow travel time, it can be difficult and risky to use it successfully.
+**While a [[Lightning]] will be able to destroy 3 of the 4 Royal Hogs, the remaining one will still be left untouched, making it a rather ineffective spell to use against them. In fact, Royal Hogs can be used as a predictive play in order to block it from destroying another support unit, like a a [[Wizard]], [[Little Prince]], or the [[Goblinstein]].
+*Conversely, since the Royal Hogs are unable to target opposing troops whatsoever, they can benefit significantly from support that comes from spells.
+**Most swarm counters can be easily destroyed with the [[Arrows]] and The Log, with some also being a positive Elixir trade.
+**Despite being a swarm, they have a lot of total hitpoints, which allows them to keep troops inside a [[Poison]] for a long time. This can be quite effective when bulky swarms like [[Barbarians]] are used against them.
+**[[Rage]] can be effective with the Royal Hogs, allowing the entire swarm's damage to exponentially increase, while also defeating a possible responsive swarm. It is also slightly more effective on them since it can affect multiple troops, without it being a frail swarm.
+**Due to the Royal Hogs' weakness to buildings, they pair quite well with the Earthquake. The Earthquake will destroy buildings for the Royal Hogs to continue pursuing towards the Crown Tower.
+**The Royal Hogs in conjunction with the [[Freeze]] can surprise the opponent and allow the Royal Hogs to deal much more damage than anticipated, especially if the opponent's go-to counter is a swarm, or swarms are their only effective counter to them. [[Skeletons]] and Bats will immediately be defeated by the spell, while Spear Goblins, Goblins, and [[Minions]] will be at low enough health to be defeated by a follow up weak spell.
+***Against non-swarm troops, it can deal a lot of damage during the freeze time, but this can allow the opponent to set up a massive counterpush. For this reason, players should either only go for a Hog Rider + Freeze when they have other units backing it up from a counterattack, or if the match is about to end and they need to deal as much damage as possible.
+*The [[Bowler]] and [[Executioner/Evolution|Evolved Executioner]] are extremely effective against the Royal Hogs. Their knockback and area damage help them eliminating the Royal Hogs very quickly, delaying them from connecting to their target. Both of them can counter Royal Hogs for a neutral Elixir trade.
+*Buildings can be a great way to counter the Royal Hogs, being able to distract them for a long time. Some of them are also a positive Elixir trade.
+**The [[Bomb Tower]] is a hard counter to the Royal Hogs due to having high health, a lower Elixir cost, high splash damage, and being a building, able to distract the Royal Hogs. Earthquake will damage down the building considerably, but the Royal Hogs will still be fairly damaged before it dies.
+**Since the Royal Hogs are unable to hit troops whatsoever, the [[Tombstone]] and [[Barbarian Hut]] make great counters to them. The spawned Skeletons and Barbarians will take down the Royal Hogs, while the buildings tank for them. However, they can be easily be destroyed with spells like The Log and Poison.
+**The [[Goblin Hut]] is slightly less effective against the Royal Hogs, due to spawning low-damage troops. However, it has more hitpoints than the previous buildings, so it is able to generate a lot of Spear Goblins for a counterattack.
+**Despite its single-target nature, the [[Inferno Tower]] can fully counter the Royal Hogs thanks to its high hitpoints allowing it to distract the Royal Hogs for a long time for the Towers to damage them.
+*Even though they deal low damage, it is not wise to ignore them, as their health pool allows them to effectively tank for each other and deal extremely high damage to a Crown Tower, if not completely destroy it.
+*The Royal Hogs pair well with mobile area attackers, like the [[Royal Ghost]] and [[Dark Prince]]. They can counter swarms very well, while the Royal Hogs continue attacking the Crown Tower with little resistance. However, these pushes can be destroyed by the P.E.K.K.A and Mega Knight.
+*A risky play is to deploy the Royal Hogs at the bridge as soon as the match starts or when you reach 10 Elixir which is safer. If the opponent does not react fast enough or has a bad starting hand, the Royal Hogs will deal a significant amount of damage to the Crown Tower. This can also allow the player to quickly scout the opponent's [[Battle Decks|deck]] if they happen to react to him fast enough.
+*If your opponent happens to be low in Elixir or you know that their cheap counter is out of rotation, you can rush a lane with Royal Hogs. Their high hitpoints and speed makes them hard to react to. However, be sure to have an area damage spell or a support troop ready, since swarms and high damage dealers can make short work of them.
+*When a Crown Tower is down, placing the Royal Hogs on the third tile from the center of the opponent's side will allow them to deal the most overall damage to the remaining Crown Tower. This will also result in all 4 of them proceeding towards the Crown Tower. Placing them as far forward as possible will make them harder to react to, but they will deal less damage overall as they will be in range of the [[King's Tower]] while deploying, with some of them even walking towards it.
+*In an emergency, Royal Hogs can kite Very Fast melee troops into the opposite lane, as long as the opposing troop is staggered towards the inner side of the bridge (such as when it is placed in the middle of the [[Arenas|Arena]]). One should place them on the fourth tile away from the bridge, and on the third tile horizontally in the opposite lane. Fast moving air troops can help damage down the enemy troop safely while the Royal Hogs kite it.
+*Royal Hogs can be an effective counter to an [[Elixir Collector]] played in front of the King's Tower. Placing them in the middle will cause two to go in one lane, one to go to the other, and one to go to the Elixir Collector. This will get damage on both Crown Towers and also deny the Elixir Collector of some of its Elixir. This can also be an opportunity to get spell value on their Elixir Collector if they try to protect it with low health troops.
+*Royal Hogs synergize well with the [[Heal Spirit]]. Heal Spirits have the same move speed as Royal Hogs, and due to the former being a bulky swarm, the healing of the Heal Spirit will restore more hitpoints overall. However, the combination is weak to spells like Arrows and the Heal Spirit can be easily lured by a mini tank such as an [[Ice Golem]], [[Valkyrie]], [[Prince]], [[Skeleton King]], [[Monk]], Mighty Miner, [[Battle Healer]], Dark Prince, [[Golden Knight]], or [[Knight]].
+*The [[Fisherman]] can activate the [[King's Tower|King Tower]] against Royal Hogs. Make sure that he is played so that he pulls a full-hitpoint Royal Hog, otherwise his attacks and the Crown Tower's attacks will defeat the pulled Royal Hog before it hits the King Tower, preventing an activation.
+*When using [[Mirror]] on the Royal Hogs, it is important to place them in the other lane. This is to prevent the opponent from using the same card to defeat both waves and generate a devastating counterpush out of it.
+*Royal Hogs are a very effective card in [[Touchdown]] [[:Category:Modes|mode]] because of their very fast speed and combined hitpoints. Many single-targeting troops and even defensive buildings cannot stop them in time.
+
+<center>
+
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||1.2 sec||0.4 sec||Very Fast (120)||1 sec||Melee: Short (0.7)||Buildings||x4||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 837 }}
+{{#vardefine: dmg_11 | 74 }}
+{{#vardefine: atk_speed | 1.2 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="20%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="30%" |Reward 
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+| 1
+|Deal a total of 120,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|100 {{BASEPAGENAME}} cards<br>50 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 360,000 Damage to enemy Troops or buildings
+|4,000 {{Icon|I=Gold}}<br>50 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 600,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>50 {{Icon|I=XP}}
+|-
+| rowspan="3" |Tower Tapper <br> [[File:Tower Tapper.png|50x50px]]
+|1
+|Hit enemy [[:Category:Crown Towers|Crown Towers]] a total of 2,250 times
+|6,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Crown Towers a total of 6,400 times
+|100 {{Icon|I=Rare Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Crown Towers a total of 11,000 times
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+<br />
+</div>
+</center>
+
+==History==
+2018 
+*The Royal Hogs [[Cards|card]] was added to the game on 20/6/2018, in the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]].
+*On 27/6/2018, an [[Version History#Optional Update (27/6/2018)|Optional Update]], fixed a bug where the game would crash if the Royal Hogs were hit by area damage when they jumped over the river.
+*On 2/7/2018, a [[Version History#Balance Changes (2/7/2018)|Balance Update]], added the Royal Hogs to [[Clan Wars]] [[Clan Wars/Clan Wars I|Collection Day]] card pool.
+*On 6/8/2018, a [[Version History#Balance Changes (6/8/2018)|Balance Update]], decreased the Royal Hogs' first attack time interval to 0.1 seconds (from 0.75 seconds).
+*On 3/9/2018, a [[Version History#Balance Changes (3/9/2018)|Balance Update]], increased the Royal Hogs' attack time interval to 1.2 seconds (from 1.1 seconds) and their first attack time interval to 0.25 seconds (from 0.1 seconds).
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Rare}} cards start at Level 3 and end at Level 13 (from 1 to 11).
+*On 5/11/2018, a [[Version History#Balance Changes (5/11/2018)|Balance Update]], decreased the Royal Hogs' damage by 6%, and decreased their mass to 2 (from 4).
+2019
+*On 4/11/2019, a [[Version History#Pass Royale and more (4/11/2019)|Balance Update]], moved the [[Arenas|Arena]] to unlock this card from Hog Mountain to Royal Arena.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], removed the Royal Hogs from [[Tournament/Special Event Challenges|Mega Deck]] [[Touchdown]]. It also added a card render to the Royal Hogs' card info screen.
+2020  
+*On 4/2/2020, a [[Version History#Balance Changes (4/2/2020)|Balance Update]], increased the Royal Hogs' damage by 6%.
+2021
+*On 6/9/2021, the [[Version History#2021%20Quarter%203%20Update%20(6/9/2021)|2021 Quarter 3 Update]], increased the Royal Hogs' damage by 6%.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022 
+*On 3/2/2022, a [[Version History#Balance%20Changes%20(3/2/2022)|Balance Update]], decreased the Royal Hogs' damage by 3%.
+*On 4/10/2022, a [[Version History#Balance%20Changes%20(4/10/2022)|Balance Update]], increased the Royal Hogs' first attack time interval to 0.4 seconds (from 0.25 seconds).
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2025
+*On 3/11/2025, the [[Version History#Pass Royale and more (3/11/2025)|November 2025]], added the Royal Hogs' Evolution.
+
+==Gallery==
+<gallery>
+File:Royal Hogs card render.png|Current card render.
+File:Royal Hogs Preview.gif|Current card preview
+File:Royal Hogs 2.png|Royal Hogs 1
+File:Royal Hogs 3.png|Royal Hogs 2
+File:Royal Hogs 1.png|Royal Hogs Full Body.
+File:Royal Hogs 4.png|Two Royal Hogs attacking a tower.
+</gallery>
+
+==Trivia==
+*Archaeological evidence suggests that pigs were domesticated from the wild boar in the Near East in the Tigris Basin, being managed in the wild in a way similar to the way they are managed by some modern New Guineans. Remains of pigs have been dated to earlier than 11,400 years ago in Cyprus. Those animals must have been introduced from the mainland, which suggests domestication in the adjacent mainland by then. Pigs were separately domesticated in China beginning 8,000 years ago, and have been one of the most important domesticated animals there ever since.
+**In the French, German, Spanish, Italian, Dutch, Turkish, Arabic, Portuguese, Persian, Indonesian, and Malaysian language settings of the game, the Royal Hogs' name translates to "Royal Pigs". In the Norwegian, Russian, and Chinese language settings of the game, the Royal Hogs' name translates to "Royal Boars". In the Thai and Finnish language settings of the game, the Royal Hogs' name translates to "Royal Wild Boars" and "King's Boars" respectively.
+*The Royal Hogs are 1 of 20 [[cards]] associated with nobility, with the others being [[Knight]], [[Royal Recruits]], [[Royal Giant]], [[Royal Delivery]], [[Tower Princess]], [[Dark Prince]], [[Prince]], [[Raging Prince]], [[Mega Knight]], [[Princess]], [[Royal Ghost]], [[Spirit Empress]], [[Super Knight]], [[Dagger Duchess]], [[Royal Chef]], [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], and the [[Little Prince]].
+*The Royal Hogs are tied with [[Hog Rider]], [[Princess]], [[Mother Witch|Cursed Hog]], [[Santa Hog Rider]], and the [[Terry]] for the longest sight range of all [[:Category:Troop Cards|troops]], with a sight range of 9.5 tiles.
+*The Royal Hogs are one of the first troop cards to receive a card render, alongside the [[Archers]], Knight, [[Goblins]], [[Bomber]], [[Skeletons]], [[Barbarians]], [[Bats]], Royal Recruits, [[Skeleton Barrel]], [[Rascals]], [[Musketeer]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Flying Machine]], Hog Rider, [[Dart Goblin]], [[Zappies]], [[Elixir Golem]], [[Baby Dragon]], [[Skeleton Army]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], Prince, [[Balloon]], [[Giant Skeleton]], [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], Mega Knight, [[Ram Rider]], [[Miner]], Royal Ghost, [[Ice Wizard]], [[Magic Archer]], [[Bandit]], [[Lava Hound]], [[Night Witch]], and [[Fisherman]].
+*The Royal Hogs are 1 of 8 troops that can jump over the river, the others being Hog Rider, Dark Prince, Prince, Raging Prince, Ram Rider, Cursed Hog, and Santa Hog Rider.
+*Even though the card spawns 4 Royal Hogs, the card render displays only 3 Royal Hogs.
+*In the card's description, the “''Who let the hogs out?!''” line is a reference to the pop song, [https://www.youtube.com/watch?v=ojULkWEUsPs “Who Let the Dogs Out,”] by the Baha Men.
+*The Royal Hogs are 1 of 23 troops that have been featured in the [[Troop Rush]] game [[:Category:Modes|mode]], the others being Skeletons, [[Skeleton Dragons]], [[Fire Spirit]], Bats, [[Elite Barbarians]], [[Firecracker]], Rascal Girls, [[Heal Spirit]], Elixir Golem, [[Guards]], Prince, Balloon, [[Golem]], Wall Breakers, Ram Rider, [[Sparky]], [[Phoenix]], Royal Ghost, [[Bandit]], [[Lumberjack]], Santa Hog Rider, and the [[Monk]].
+**The Royal Hogs were the first troops to be featured in the Troop Rush game mode to celebrate the [[wikipedia:Pig (zodiac)|Year of the Pig]].
+*2 Royal Hogs are featured on the card render of the [[Tornado]].
+*The Royal Hogs are the subject of a few [[Emotes]].
+*Despite the Damage Dealer [[Card Mastery]] task mentioning that the Royal Hogs can deal damage to troops or [[:Category:Building Cards|buildings]], they cannot progress the task by dealing damage to troops.
+**The Royal Hogs are 1 of 6 troops that cannot deal damage to other troops whatsoever, the others being the [[Royal Giant]], Giant, Hog Rider, Elixir Golem, and [[Rune Giant]].
+*Before the Royal Hogs' card release, the Royal Hogs' hitpoints were increased by 15%, and their spawn formation was changed to be on a straight horizontal line.
+
+{{Navigation|Cards}}
+
+[[fr:Cochons royaux]]
+[[de:Königsschweinchen]]
+[[es:Puercos reales]]
+[[it:Maiali Royale]]
+[[ru:Королевские кабаны]]
+[[zh:皇家野猪]]

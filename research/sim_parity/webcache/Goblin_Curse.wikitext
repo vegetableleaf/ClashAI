@@ -1,0 +1,165 @@
+{{DISPLAYTITLE: <span style="color: #b300b3;">Goblin Curse</span>}}
+{{MagicWords}}{{Protection}}
+
+{{Card Infobox|Cost=2|Rarity=Epic|Type=Spell|Arena=Serenity Peak|ReleaseDate=17 June 2024}}
+{{Quote|One does not simply reverse a curse! Enemies within the curse's reach will take damage over time and be turned into Goblins after they are defeated.}}
+
+The Goblin Curse is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from [[Arenas|Serenity Peak (Arena 14)]]. It is an area-damage, air-targeting [[:Category:Spell Cards|spell]] with a medium radius and very low damage that is dealt every second for 6 seconds. If those troops are defeated, they would convert into [[Goblins]]. It is a lime-colored liquid encased in a large vial, which is secured by a thin rope, with a large, rectangular wooden cap with three golden hairs, a circular mouth, two large ears, and two green, gem-shaped eyes on the front, resembling a [[Baby Goblins|Baby Goblin]]. A Goblin Curse card costs 2 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Goblin Curse Card}}
+*The Goblin Curse has extremely high potential on both offense and defense for its [[Elixir]] cost. This is especially useful in [[Battle Decks|decks]] where the user will have a large push consisting of many high damage cards.
+*Be extremely careful when placing swarm units, like [[Bats]], [[Spear Goblins]], or [[Skeleton Army]], behind your [[:Category:Crown Towers|Crown Tower]] as the Goblin Curse will turn them into [[Goblins]] given enough time or with the assistance of a small spell. These Goblins will then attack your Crown Tower, dealing heavy damage or even destroying a Crown Tower if not answered properly.
+**In scenarios where the user’s swarm units are turned into Goblins, using spells like [[The Log]] and [[Barbarian Barrel]] are quick and very effective temporary solutions to them as they’ll do more than enough damage to OHKO Goblins. More permanent solutions involve cards with high area damage like [[Executioner]], Bowler, [[Wizard]], [[Sparky]], [[Firecracker]], and [[Bomber/Evolution|Evolved Bomber]] as they’ll stay in the [[Arenas|Arena]] after finishing them off.
+*The Goblin Curse's damage stacks with another Goblin Curse, but the curse effect does not stack. However, the curse effect does stack with the [[Mother Witch]]'s curse, allowing them to spawn both a Goblin and a Cursed Hog out of the same troop.
+*The Goblin Curse is easily one of the best counters for Graveyard, being able to almost always fully counter it with the help of the [[Tower Princess]], [[Dagger Duchess]] or [[Royal Chef]] for a +3 positive Elixir trade. Also, the Skeletons spawned from the Graveyard will turn into Goblins, creating a threatening counterattack under certain circumstances.
+*The Goblin Curse has incredible synergy with the [[Void]]. The damage of the Void is high enough that makes it more likely for singlular units to be destroyed by either spel. However, this synergy is completely ineffective against buildings, especially defensive buildings, as they unfortunately can’t be turned in Goblins like troops can.
+*The [[Goblin Giant]] is a great offensive combo in combination with the Goblin Curse due to the 2 Spear Goblins in the backpack. If light swarms, such as [[Goblin Gang]] or [[Skeleton Army]] are used to deal with the Goblin Giant, the Spear Goblins and Goblin Curse will do enough damage to turn these fragile troops into Goblins, adding to the push and increasing offensive pressure.
+*Due to the Goblin Curse’s very low damage over its duration, it’s advised to nearly always avoid using it for spell cycling onto the Crown Towers. Doing so, in most cases, will essentially result in a waste of 2 Elixir and ruin its potential to get more value against the opponent’s units.
+*The [[Tornado]] can be a valuable synergy with the Goblin Curse when used in large offensive pushes. The Tornado will keep opposing troops within the Goblin Curse’s radius for slightly longer, raising the chances of spawning Goblins out of it. However, this is a somewhat expensive combination, so it should ideally be used in Overtime, where Elixir is much more prevalent.
+*Under the right circumstances and with the help of the Tower Princess, the Goblin Curse can fully counter a [[Witch]] for a +3 positive Elixir trade. Make sure the Tower Princess is attacking the Skeletons first, turning them into Goblins and overwhelming the Witch before she can get any damage onto the Crown Tower.
+*The Goblin Curse can synergize well with the [[Rage]] when used against swarms. Playing the Goblin Curse first and then using Rage will turn all low health troop within the area of effect of both spells into Goblins, which are immediately boosted by the Rage spell and can quickly overwhelm the enemy Crown Tower if uninterrupted.
+
+<div id="unit-statistics" class="table-back">
+{{Statistics}}{{StatusEffects}}
+{{StatisticsSubheader|Goblin Curse Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+! scope="col" |Duration<br />{{Icon|I=Time}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|2||3||6 sec||Air & Ground||[[:Category:Spell Cards|Spell]]||{{Rarity|Epic}}
+|}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+{{StatisticsSubheader|Goblin Attributes}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.1 sec||0.4 sec||Very Fast (120)||Melee: Short (0.5)||Ground||Ground
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: curse_dmg_11 | 35 }}
+{{#vardefine: dmg_hits| 6 }}
+{{#vardefine: crown_dmg_11| 10 }}
+{{#vardefine: hp_11 | 202 }}
+{{#vardefine: dmg_11 | 120 }}
+{{#vardefine: atk_speed | 1.1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Area Damage<br>{{Icon|I=Area Damage}}
+!scope="col"|Crown Tower Damage<br>{{Icon|I=Tower Damage}}
+! scope="col" |Goblin Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Goblin Damage<br />{{Icon|I=Damage}}
+! scope="col" |Goblin Damage per second<br />{{Icon|I=DPS}}
+|-
+| 6 || {{#expr: {{#var:curse_dmg_11}} * (1.1^(6-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:curse_dmg_11}} * (1.1^(6-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(6-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(6-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:curse_dmg_11}} * (1.1^(7-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:curse_dmg_11}} * (1.1^(7-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(7-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(7-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:curse_dmg_11}} * (1.1^(8-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:curse_dmg_11}} * (1.1^(8-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(8-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(8-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:curse_dmg_11}} * (1.1^(9-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:curse_dmg_11}} * (1.1^(9-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(9-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(9-11)) round 0) * {{#var:dmg_hits}} }})  || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:curse_dmg_11}} * (1.1^(10-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:curse_dmg_11}} * (1.1^(10-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(10-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(10-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:curse_dmg_11}} x{{#var:dmg_hits}} ({{#expr: {{#var:curse_dmg_11}} * {{#var:dmg_hits}} }}) || {{#var:crown_dmg_11}} x{{#var:dmg_hits}} ({{#expr: {{#var:crown_dmg_11}} * {{#var:dmg_hits}} }}) || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:curse_dmg_11}} * (1.1^(12-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:curse_dmg_11}} * (1.1^(12-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(12-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(12-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:curse_dmg_11}} * (1.1^(13-11)) round 0 }} x{{#var:curse_dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(13-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(13-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(13-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:curse_dmg_11}} * (1.1^(14-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:curse_dmg_11}} * (1.1^(14-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(14-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(14-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:curse_dmg_11}} * (1.1^(15-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:curse_dmg_11}} * (1.1^(15-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(15-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(15-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:curse_dmg_11}} * (1.1^(16-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:curse_dmg_11}} * (1.1^(16-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(16-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(16-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 28,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|2 {{BASEPAGENAME}} cards<br>20 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 85,000 Damage to enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 140,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>100 {{Icon|I=XP}}
+|-
+| rowspan="3" |Troop Destroyer <br> [[File:Troop Destroyer.png|50x50px]]
+|1
+|Destroy 350 enemy Troops
+|9,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|2
+|Destroy 1,000 enemy Troops
+|20 {{Icon|I=epic Wild Card}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Destroy 1,750 enemy Troops
+|15,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|}
+</div>
+
+==History==
+2024
+*The Goblin Curse was added to the game on 17/6/2024, in the [[Version History#Goblin World Update (17/6/2024)|Goblin World Update]] {{Balance|Add}}.
+*On 19/6/2024, a [[Version History#Maintenance Break (19/6/2024)|maintenance break]], decreased the Goblin Curse’s damage amplification to 35% (from 50%) {{Balance|Nerf}}.
+*On 2/7/2024, a [[Version History#Balance Changes (2/7/2024)|Balance Update]], decreased the Goblin Curse’s damage amplification to 20% (from 35%) {{Balance|Nerf}} and decreased its radius to 3 tiles (from 4 tiles) {{Balance|Nerf}}.
+*On 8/10/2024, a [[Version History#Balance Changes (8/10/2024)|Balance Update]], increased the Goblin Curse’s damage by 20% {{Balance|Buff}}.
+*On 30/10/2024, the [[Version History#Removal of Goblin Queen's Journey Update (30/10/2024)|Removal of Goblin Queen's Journey Update]], moved the [[Arenas|Arena]] to unlock the Goblin Curse from Mud Pit to Serenity Peak {{Balance|Buff}}.
+2025
+*On 4/2/2025, a [[Version History#Balance Changes (4/2/2025)|Balance Update]], made it so that [[Lumberjack/Evolution|Lumberjack Ghost]] is immune to Goblin Curse {{Balance|Neutral}}.
+*On 1/9/2025, the September 2025 Update, increased the Goblin Curse's damage by 17% {{Balance|Buff}}, its Crown Tower damage to 27% of its full damage (from 20%) {{Balance|Buff}}, but removed its damage boost {{Balance|Remove}}.
+*On 26/9/2025, a maintenance break changed the Goblin Curse's card description. It used to read: "''And thrice were their afflictions... nixed, vexed, and hexed! Enemy troops in the area will receive extra damage from attacks and become Goblins when destroyed. Deals damage to enemies over time." {{Balance|Neutral}}''.
+2026
+
+* On 4/8/2026, a Balance Update, added a slowdown mechanic to the Goblin Curse
+
+==Gallery==
+<gallery>
+File:Goblin Curse card render.png|Current card render.
+File:Goblin Curse Preview.gif|Current card preview
+</gallery>
+
+==Trivia==
+*Goblins are small, grotesque, monstrous creatures that appear in the folklore of multiple European cultures. First attested in stories from the Middle Ages, they are ascribed conflicting abilities, temperaments, and appearances depending on the story and country of origin, ranging from mischievous household spirits to malicious, bestial thieves. They often have magical abilities similar to a fairy or demon, such as the ability to shapeshift. Similar creatures include [https://en.wikipedia.org/wiki/Duende duendes], [https://en.wikipedia.org/wiki/Kobold kobolds], [https://en.wikipedia.org/wiki/Leprechaun leprechauns], and [https://en.wikipedia.org/wiki/Ghoul ghouls].
+**The Goblin Curse is 1 of 17 [[cards]] associated with [[Goblins]], with the others being [[Spear Goblins]], [[Goblin Gang]], [[Baby Goblins]], [[Dart Goblin]], [[Goblin Demolisher]], [[Suspicious Bush]], [[Goblin Cage]], [[Goblin Hut]], [[Goblin Giant]], [[Goblin Barrel]], [[Goblin Drill]], [[Goblin Machine]], [[Party Rocket]], [[Party Hut]], [[Goblinstein]], and of course, Goblins.
+***Despite other cards that spawn Goblins having 3 [[Star Points|Star Levels]], the Goblin Curse only has 1 Star Level. This trait is shared with the Goblin Drill.
+*The Goblin Curse may have been inspired by the Party Rocket as they both turn opposing troops into Goblins.
+*The Goblin Curse, along with [[Wall Breakers]], [[Barbarian Barrel]], and [[Rage]], are the cheapest {{Rarity|Epic}} cards, costing 2 [[Elixir]].
+*The Goblin Curse deals the lowest damage of all spells, with 57 damage at Level 16 and 22 damage at Level 6.
+*The Goblin Curse is 1 of 4 damaging [[:Category:Spell Cards|spell]] cards that does not contain the phrase "''Reduced damage to Crown Towers.''" in its description despite dealing reduced damage to [[:Category:Crown Towers|Crown Towers]], with the others being [[Earthquake]], Rage, and [[Tornado]].
+*A [[Barbarians|Barbarian]] is featured on the Goblin Curse's card render.
+*When deployed, a whispering voice will say "''Goblin''" and laugh.
+**The Goblin Curse is 1 of 3 spells that speak distinct words when on the field, the others being [[The Log]] and Party Rocket.
+*Unlike other troops, Goblins converted from the spell will disintegrate into Goblin Curse liquid instead of [[Elixir]].
+*Before the Goblin Curse's card release, the Goblin Curse’s damage was decreased by 41.9% and its Crown Tower damage was decreased to 20% of its full damage (from 30%).
+
+{{Navigation|Card}}

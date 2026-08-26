@@ -1,0 +1,160 @@
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=2|Rarity=Common|Type=Troop|Arena=Jungle Arena|ReleaseDate=3 February 2025}}
+
+{{Quote|It's surprising how often she needs her axes sharpened, but then again, if you liked hitting things as fast as her, so would you.}}
+The Berserker is a [[:Category:Common Cards|Common]] [[Cards|card]] that is unlocked from the [[Arenas|Jungle Arena (Arena 9)]] It spawns a fast, single-target, ground-targeting, melee, ground [[:Category:Troop Cards|troop]] with moderate hitpoints and low damage. She appears as a kid who wears a brown dress made of bear skin and wristbands and a team-colored belt, has orange hair with two buns, eyes and eyebrows, a loose tooth, and a scar on her left chin, arms and legs, and wields a pair of cleavers. A Berserker card costs 2 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Berserker Common Modifier.png|45x45px]] Common: Beatdown Boulevard===
+{{Quote|+200% hit speed}}
+Berserker's attack speed is increased by 200%, for a total of 0.2 seconds.
+
+===[[File:Berserker Rare Modifier.png|45x45px]] Rare: Don't Get in Her Way===
+{{Quote|Charge attack}}
+Berserker's charges an attack similarly to a [[Bandit]].
+
+===[[File:Berserker Epic Modifier.png|45x45px]] Epic: Mutilation Meditation===
+{{Quote|Heal on attack}}
+Berserker heals herself when she attacks.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Berserker Card}}
+*The Berserker is a great option to use against enemy [[:Category:Troop Cards|troops]] such as small swarms and medium size units as she has a moderate amount of hitpoints and high hit speed but low damage, and is perfect for attacks with other tanks.
+*The Berserker pairs really well with [[Rune Giant]] as her fast attack speed and average hitpoints makes her get a lot of bonus damage.
+**She also kills a lot of swarms that surrounds the Rune Giant, and can also do good damage against bigger troops as well.
+*With the help of a [[Tower Princess]], she's an excellent option against weak ground swarms on defense thanks to her fast attack rate and low cost.
+*A Berserker can fully counter an unsupported [[Goblin Drill]] for a +2 Elixir trade. Place her in such a way that she tanks the first spawned Goblin and then tanks the death spawn Goblins.
+*On defense, a Berserker paired with an [[Ice Spirit]] forms an extremely potent defensive combo that only costs 3 [[Elixir]]. The Ice Spirit can distract a target and/or freeze it, allowing the Berserker to land 3-5 more hits.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|2||0.6 sec||0.2 sec||Fast (90)||1 sec||Melee: Short (0.8)||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 896 }}
+{{#vardefine: dmg_11 | 102 }}
+{{#vardefine: atk_speed | 0.6 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+!Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+!Rewards
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 97,500 damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|200 {{BASEPAGENAME}} cards<br>25 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 290,000 damage to enemy Troops or buildings
+|2,000 {{Icon|I=Gold}}<br>25 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 485,000 damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>25 {{Icon|I=XP}}
+|-
+| rowspan="3" |Hit Maker <br> [[File:Hit Maker.png|50x50px]]
+|1
+|Hit enemy Troops a total of 1,800 times
+|3,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Troops a total of 4,500 times
+|200 {{Icon|I=Common Wild Card}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Troops a total of 8,000 times
+|5,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2025
+*The Berserker [[Cards|card]] was added to the game on 3/2/2025, in the [[Version History#Pass Royale and more (3/2/2025)|February 2025 Update]].
+*On 4/2/2025, a [[Version History#Balance Changes (4/2/2025)|Balance Update]], fixed an issue with Berserker's [[Star Points|Star Level]] sound effects.
+*On 11/2/2025, a [[Version History#Maintenance Break (11/2/2025)|maintenance break]], decreased the Berserker's attack time interval to 0.5 seconds (from 0.6 seconds).
+*On 9/4/2025, a [[Version History#Balance Changes (9/4/2025)|Balance Update]], increased the Berserker's hitpoints by 8%.
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)|Balance Update]] increased Berserker's Hit Speed to 0.6 seconds (from 0.5 seconds).
+
+==Gallery==
+<gallery>
+File:Berserker card render.png|Current card render.
+File:Berserker Preview.gif|Current card preview
+File:Berserker.png|Berserker pose.
+File:Berserker full body.png|Berserker
+</gallery>
+
+==Trivia==
+*The word "''Berserker''" comes from the Old Norse "''berserkr''", meaning 'warrior clothed in bearskin'.
+*In the Turkish language settings of the game, the Berserker's name translates to "Naughty".
+*The [[Cards|card]] image shows 2 [[Fire Spirit|Fire Spirits]], one behind the Berserker's cheek, and another Berserker on the background.
+*The Berserker is 1 of 7 troops to have a death voiceline/death scream, the others being the [[Battle Healer]], [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], [[Mighty Miner]], and [[Monk]].
+*If a [[Rune Giant]] throws her enhancement at a Berserker, the Berserker will perform her enhanced attack with both weapons at once instead of only one of them. This is merely a visual indicator; her attack does not hit twice or deal double damage.
+*The Berserker is the subject of 2 [[Emotes]].
+*Before the Berserker's card release, the Berserker's damage was increased by 25% and her attack time interval was increased to 0.6 seconds (from 0.5 seconds). 
+*In the [[TV Royale|TV royale]] released on the 27th of July 2026 it was confirmed that [https://www.youtube.com/@kenforrest Ken] is the berserker's official father and the [[Rune Giant]] is the official mother.
+
+{{Navigation|Card}}

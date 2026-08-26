@@ -1,0 +1,271 @@
+{{DISPLAYTITLE:<span style="color: #F9CF5F">Giant</span>}}{{Protection}}{{MagicWords}}{{ClashofClansLink}}{{Card Infobox|Cost=5|Rarity=Rare|Type=Troop|Arena=Training Camp|ReleaseDate=4 January 2016}}{{SubpageNavBox|Hero=yes|MergeTactics=yes}}
+
+{{Quote|Slow but durable, only attacks buildings. A real one-man wrecking crew!}}
+
+The Giant is a {{Rarity|Rare}} [[Cards|card]] that is unlocked in the [[Training Camp]]. It spawns a single-target, [[:Category:Building Cards|building]]-targeting, melee, and ground [[:Category:Troop Cards|troop]] with very high hitpoints and high damage. The Giant takes the appearance of a colossal humanoid creature who has blue eyes, bushy orange eyebrows and mutton chops, and no hair on his head, wearing a large, brown coat made of cloth with a team-colored patch on its front and back, a team-colored belt, and dark brown pants. A Giant card costs 5 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Giant Common Modifier.png|45x45px]] Common: 2 Fast 4 You===
+{{Quote|+300% movement speed}}
+Quadruples movement speed.
+
+===[[File:Giant Rare Modifier.png|45x45px]] Rare: Large & In Charge===
+{{Quote|Charging Giant}}
+Giant charges at the nearest building.
+
+===[[File:Giant Epic Modifier.png|45x45px]] Epic: World's Largest Barrel===
+{{Quote|Giant Barrel}}
+Becomes an enlarged [[Barbarian Barrel]] that can insta-kill anything it touches which spawns a Giant after.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Giant Card}}
+*The Giant costs only 5 [[Elixir]], which is very cheap considering his massive health pool. This makes him more effective in [[Battle Decks|decks]] that rely on counterpushes to deal damage, as Giant's nice health per Elixir cost allows him to be played quickly after dispatching the opponent's troops, allowing the player to defend their support units without losing a lot of Elixir.
+*Giant is very effective when used as a shield for other [[:Category:Troop Cards|troops]] due to his health per Elixir ratio. This means that his tank capabilities will usually be a good investment even if the Giant isn't played optimally. If played in the middle of the arena (slightly staggered to the opposite side of the opponent's push), one tile below the river, the Giant is able to distract many enemy troops while letting the player's own support units and/or [[:Category:Crown Towers|Crown Towers]] chip their health down. The Giant and the support units will still be available for a counterpush afterwards.
+*Dealing with an opposing Giant that is paired with a support troop can be difficult. Since his Elixir cost is low for the potential value he gives, Giant forces players to wait for him to cross the river, then play defensive units to take down enemy support troops, and finally address the Giant afterwards with an appropriate [[Cards|card]], most commonly a [[:Category:Building Cards|building]]. A glass cannon such as [[Mini P.E.K.K.A.]], [[Dark Prince]], [[Royal Ghost]], [[Executioner]], or [[Lumberjack]] can address his support troops, then deal a lot of damage to the Giant himself at once, although some Crown Tower damage may be dealt in the process.
+**On the contrary, a lone Giant can easily be defended, as he isn't able to attack troops, and he moves quite slowly. As such, unlike most other offensive cards, troops won't receive damage from him, which means that glass cannons, swarms, and buildings can easily take him out.
+*A Giant should almost never be ignored as he can single-handedly take down a Crown Tower, regardless of what [[:Category:Tower Troop Cards|tower troop]] the player uses, for only 5 Elixir. His high hit speed combined with a high damage output allow him to quickly deal massive damage to the Crown Towers if not properly distracted or defended.
+*An effective way to counter the Giant is by using high damage troops like Mini P.E.K.K.A., [[Prince]], [[Elite Barbarians]], [[Hunter]], or Lumberjack, or by using swarms of troops that deal high damage per second, like [[Barbarians]], [[Bats]], [[Skeleton Army]], [[Goblin Gang]], or [[Minion Horde]]. If the support troops behind the Giant have low enough hitpoints, the player can use a [[:Category:Spell Cards|spell]] to eliminate them, and then deploy any of the aforementioned cards. It should be noted that swarms can easily be spelled down, so the player must have more responses ready.
+**Troops with an elevated damage output are able to quickly take out Giant, while also leaving them mostly unharmed for a counterpush if they're deployed to fight support troops first. Even when played in front of the Giant, they're more than likely to end up defeating the support troops behind him when he dies.
+***Mini P.E.K.K.A. and Lumberjack are a positive Elixir trade, but they can be defeated fairly easily due to their lower hitpoints, which means other support units should be used to distract the enemy support troops. While Mini P.E.K.K.A. deals high damage per hit and has a low hit speed, Lumberjack is the inverse, and even spawns a [[Rage]] when destroyed, aiding all other units that are used to take the Giant and its support troops.
+***Prince forces a neutral Elixir trade on the Giant alone. Combined with his charge damage, his damage output is high enough to deal with the Giant by himself, and is tanky enough to handle some hits from support units.
+***Although Elite Barbarians are a negative Elixir trade, they deal a lot of damage in a short amount of time, quickly destroying the Giant and possibly his support troops, leaving them somewhat healthy for a counterpush afterwards.
+**Since the Giant moves slowly and cannot damage troops, swarms that can deal high damage per second can take him out quickly. However, they are susceptible to spells, so those must be baited out first, and anti-swarm cards (especially ranged ones) can decimate them. Plus, [[Goblins]] and Bats aren't able to consistently take out the Giant by themselves without Crown Tower damage due to their weak damage output, although [[Bats/Evolution|Evolved Bats]] could be used to activate their overheal when attacking the Giant.
+*Giant’s high hitpoint-to-elixir ratio makes him very flexible and able to synergise well with a variety of support Troops.
+**High DPS melee Troops like the Mini P.E.K.K.A. and Lumberjack appreciate the Giant tanking enemy tower troops. In exchange, they threaten damage on Towers or Troops placed on top of the Giant to counter them. This push is usually defended by combining a Giant counter and a distraction to the High DPS melee troops
+***The [[Mega Minion]] especially is an exceptional pairing with the Giant. It can dish out consistent DPS on troops used to counter the Giant and can shred the Tower Troop if it reaches it due to the Giant tanking hits from the Crown Tower and single-target Anti-Air troops used to counter the Mega Minion effectively. Additionally, being airborne, it can avoid being targeted by many Giant counters like the Mini P.E.K.K.A.
+**Ranged troops like the [[Archers]] and [[Electro Wizard]] can hide behind the Giant and dish out good damage. Certain ones like the Magic Archer and Musketeer may also have range long enough to allow the Giant to break through buildings. This push is defended by placing a mini-tank like [[Knight]] or [[Valkyrie]] to defeat the ranged troops while simultaneously using a Giant counter like the Mini P.E.K.K.A. on the Giant.
+**A splash damage unit like the [[Skeleton Dragons]] or [[Wizard]] are much appreciated in a Giant push as it helps deal with swarms like the Skeleton Army, Goblin Gang, and Minion Horde.
+**Spawners like the Witch and the Night Witch are great support troops for the Giant. His high mass combined with his slow speed will allow them to stay behind him and continuously spawn Skeletons or Bats behind the Giant, assisting in taking out anything that the opponent uses to defeat him. While the Giant tanks most (if not all) damage from the troops and the spawned troops, the Witch is better at eliminating swarms and distracting single-target troops with a low hit speed, while the Night Witch excels at dealing more damage per hit with her Bats being airborne. Both troops will be able to distract Inferno cards for long enough, however, they can be swiftly taken out by a spell like [[Lightning]], which would damage the Giant and defeat the Witch or the Night Witch. This similarly applies to [[Furnace]], even more so with his [[Furnace/Evolution|Evolution]].
+**As Giant is commonly countered by High DPS melee troops, troops with good matchups into them are appreciated. For example, the [[Fisherman]] can pull away High DPS melee units placed on top of the Giant like the Mini P.E.K.K.A. or P.E.K.K.A. away. Another example is the [[Bowler]] who can clear swarms while disrupting those high DPS melee troops with the knockback, such as the [[Lumberjack]]
+**The Giant pairs well with these specific strong offensive cards, due to his low Elixir cost for the hitpoints that he offers.
+***A [[Goblin Barrel]] can be timed after a Giant crosses the bridge so that the Goblins sneak past the Tower's targeting. This is potentially more threatening than other tank + Goblin Barrel combos, as the Giant has much more health per Elixir and will head straight for the Crown Tower. However, it won't be able to aid in taking down the troops that try to counter this combo, nor can it prevent the Goblin Barrel from being defeated by spells.
+***Similarly, the Giant pairs well with the [[Graveyard]]. The Giant's high health to Elixir ratio allows him to reliably tank hits from the Crown Tower's shots and other enemy units, allowing the Skeletons spawned by the Graveyard to do massive damage to the Tower, if not completely take it down. However, this combo costs a hefty 10 Elixir, and can easily backfire if the opponent distracts the Giant with a building while the Graveyard is dealt with a splash unit like [[Valkyrie]], or if swarms like the Barbarians are used for the Graveyard then attack the Giant.
+***Using a [[Miner]] with a Giant is a cheap but effective push. The Giant will tank for the Miner, while the Miner deals damage to either the Crown Tower or any ranged defending unit that is used against the larger Giant push.
+***A very strong strategy is using the Giant + [[Balloon]] combo. Although it costs a hefty 10 Elixir, it is very difficult to defend due to the combined health pool of both cards, as well as the aerial trait of the Balloon, while catching the opponent off-guard, especially if they started a slow and high cost push in the other lane. The Giant should be played first so that he tanks for the Balloon due to his superior hitpoints.
+****It is most effective to play the Balloon on the side of the bridge closest to the edge of the arena, which allows it to bypass buildings that are used to pull the Giant to the center of the Arena. This is especially useful if the building is placed slightly staggered to the opposite lane of the push.
+****An Inferno card, paired with a well-timed Zap, is sufficient to shut down the push for a +3 or +4 Elixir trade.
+****Minions and Minion Horde can decimate this push. They're able to take down the Balloon quickly enough so that it doesn't reach the Crown Tower, while still being able to defeat the Giant afterwards. However, the opponent can quickly deploy an appropriate spell like [[Arrows]] in order to counter those cards. As such, keeping track of the opponent's cycle is crucial. Also, Balloon's death damage may defeat the card used if it is poorly placed while distracted by the Giant, so other defensive units must be followed.
+****[[Mega Minion]]'s high damage per second will take the Balloon out, stopping all possible damage other than its death bomb, but additional support is needed in order to stop the incoming Giant as well.
+***Placing a Dark Prince or a Prince behind a Giant is a good strategy since their charge speed will allow the Giant to move faster and reaching the Crown Tower in less time, pressuring the opponent more. However, this push should be supported with the correct troops, as Giant and Prince are weak to swarms and the Dark Prince is weak to high-damage units like the [[P.E.K.K.A.]]. Both Princes can be used together to cover their weaknesses, although this only should be done if the player has a massive Elixir lead or during Double/Triple Elixir, as this costs a whole 14 Elixir, and none of the troops used can counter air troops, so spells or anti-air troops should also be accounted.
+***Another alternative is a Giant + Sparky push. Similarly to the Prince, Sparky deals high damage, but is quite suspeptible to damage from other cards, so the Giant can tank hits for her. However, much like the Giant + Prince push, it can easily be defeated with air troops, as well as a continuous stun card, as it invalidates Sparky if not dealt with by playing another card.
+***An expensive push is the Giant combined with the Three Musketeers. For his Elixir cost and hitpoints, he can withstand a lot of damage whie the Three Musketeers deal damage to defenders. Since the Three Musketeers are typically split, it is a good idea to place the Giant in the weaker lane, while a cheaper mini tank is used on the stronger lane.
+*Spells are important to support a Giant push, given that it cleans the path for the Giant and its support troops to threaten massive damage to the Crown Tower.
+**[[Arrows]] are great at removing frailer swarms for a very cheap cost. Certain other cards, like [[Dart Goblin]], Princess, and Firecracker, who can destroy the player's push when properly positioned and supported, can also be taken out by the spell.
+**[[Fireball]] costs one more Elixir, but it deals knockback and defeats a bigger number of troops, while also weakening more. Barbarians, [[Skeleton Dragons]], [[Zappies]], and [[Ice Wizard]] will all lose their value when dealt with a Fireball, while other troops, like [[Musketeer]], [[Electro Wizard]], [[Archer Queen]], [[Goblinstein]], and [[Little Prince]] will only need a few more hits to be taken out.
+**[[Zap]] is able to stun and reset cards with a ramp-up damage mechanic, like [[Inferno Tower]], [[Inferno Dragon]], and [[Sparky]]. [[Zap/Evolution|Evolved Zap]] is particularly effective as it does additional damage, and the added stuns can help in disrupting counters like Mini P.E.K.K.A., causing them to re-target.
+**[[Poison]] is a great spell to use alongside the Giant, as it will slowly chip down all buildings and troops (specially swarm cards such as Skeleton Army) used to take the Giant and his support troops down, as well as dealing some Crown Tower damage. Earthquake can be used for similar strategies as well, however, it is only effective against buildings and troops with health equal to or lower than Goblins.
+**[[Lightning]] is the most expensive spell, but it is also extremely potent on offense. It could outright destroy or severely cripple many cards used to defend the Giant push like Mini P.E.K.K.A., [[Cannon]], [[Wizard]], Inferno Tower, Executioner, or Archer Queen. It is particularly effective against buildings, since it immediately destroys frailer ones, like Cannon and [[Tesla]], while severely crippling bulkier buildings, like [[Bomb Tower]] and Inferno Tower, with the latter's ramp-up effect also being reset.
+**Due to the Giant's weakness to buildings, he pairs quite well with the [[Earthquake]]. The Earthquake will destroy buildings for the Giant to continue pursuing towards the Crown Tower, as well as destroy certain frail swarms like Goblins.
+**Rage is arguably the most effective spell. It clears frail swarms like [[Skeletons]] and Bats in a moderate area while making the Giant push harder to defend.
+*[[Witch]] is a reliable counter to the Giant. While her damage is low, she continuously spawns Skeletons] that can quickly accumulate and can hit everything behind the Giant with her splash. They can then be used in a counterpush, especially if paired with other troops such as another Giant or a [[Golem]]. This can also apply to [[Night Witch]] as, although she spawns less Bats per wave and has no splash damage, she has a higher damage output and quicker spawn speed, all for a +1 Elixir trade.
+*Buildings are one of the best ways to counter a Giant, as they can pull him away from the Crown Tower in positions that they don't pull most other troops, letting the Giant be separated from his support troops. By positioning those buildings closer to the Crown Tower opposite of the push and 3 tiles from the bridge, Cannon and the Tesla cause a positive Elixir trade, since they can take out a Giant with the help of a Crown Tower. [[Cannon/Evolution|Evolved Cannon]] and [[Tesla/Evolution|Evolved Tesla]] are also able to damage (or fully take out) support troops behind him with their barrage and spawn electric pulse, respectively, which will also deal extra damage to the Giant.
+*Spawner buildings, such as [[Goblin Hut]], [[Tombstone]], and [[Barbarian Hut]] are able to amass troops and distract the Giant for long enough so that the Crown Tower paired with the [[Spear Goblins]], Skeletons, and the [[Barbarians]] spawned from them take the Giant out. They should be played closer to the center instead of the building-targeting unit placement, as it will make sure the spawned troops stay in the Giant's lane and not the opposite one. Goblin Hut is a +1 Elixir trade and Tombstone is a +2 Elixir trade, while Barbarian Hut is a -1 Elixir trade.
+**While the Goblin Hut only spawns units when the Giant is close, the spawning is activated at a relatively long distance, letting a lot of Spear Goblins to amass and quickly chip the Giant's hitpoints. Even if a spell defeats the Spear Goblins, the Goblin Hut's spawn period will quickly refill the area with Spear Goblins, unless the spell also defeats the Goblin Hut, particularly [[Earthquake]]. Nonetheless, if the Giant is defeated, the defender is left with +1 Elixir and loads of Spear Goblins threatening to chip the opponent's Crown Tower.
+**The Barbarian Hut is a negative Elixir trade for the defender. However, it is the most durable, and the spawned Barbarians can both hit the Giant for high damage, tank some support unit hits, and have plenty of health after an Earthquake is used, possibly still defeating the Giant after the building is taken out, as a total of 4 Barbarians will keep attacking him.
+**The [[Goblin Drill]] is able to spawn Goblins quickly enough so that the Giant is overwhelmed. Its low lifetime also means that it could pull the Giant without needing to get hit by him. The [[Goblin Drill/Evolution|Evolved Goblin Drill]] is slightly better since it not only makes the Giant walk to the Crown Tower while it's submerged then back to it when resurfacing, further delaying his threat to the Crown Tower, but also spawns one more Goblin with each submerge.
+**Conversely, The Giant can be used to protect troops from spawners, allowing them to build up a powerful offense. This is especially useful with the Barbarians from a Barbarian Hut, who are bulky enough to stay alive for some time alongside the Giant, and the Goblins from a Goblin Drill near an opposing Crown Tower, as the Giant will tank for both the Drill, allowing it to spawn more Goblins, and the Goblins themselves, which will keep damaging the Crown Tower.
+*The [[Goblin Cage]] in a position slightly staggered to the opposite side the Giant is in can pull him to the building and let both Crown Towers target him, while he attacks the Cage and frees the Goblin Brawler, which further helps in taking his hitpoints down, all for a +1 Elixir trade.
+*If taking down a Crown Tower in Overtime is impossible, yet one of the opposing Crown Towers have less hitpoints than the player's own, a defensive Giant can stall for time until the match ends, while the player plays spells in order to secure the victory. This can also be used on the last seconds of a match when the player has a Crown lead, granting the win to the player.
+*One of the most effective counters to the Giant is the Inferno Tower, as it will both distract the Giant and eliminate him in seconds with its ramp up damage, all for a neutral Elixir trade and letting the building survive unscathed. However, cards such as [[Minions]] and Bats can divert the Inferno Tower's attention for several seconds, while also depleting its hitpoints. As such, spells should be used to defeat them so that the Inferno Tower targets the Giant instead.
+**If spells are out of cycle, the Inferno Tower user should be aware of when the opponent has distraction troops in hand for their building. For example, the Inferno Tower could be placed to the side of the [[Arenas|Arena]] if the opponent keeps playing swarms in the center of the arena to distract the building. This results in the Inferno Tower still targeting the Giant first, making the defense more efficient.
+**A good alternative to Inferno Tower is the Inferno Dragon. The Inferno Dragon costs 1 less Elixir than the Inferno Tower and can be used in a counterpush, while being aerial, which means certain cards will not target it, but its damage is weaker and it is vulnerable to knockback, which will reset its charge. Most of the same strategies against a defending Inferno Tower will also work against the Inferno Dragon, but one must keep in mind that the Inferno Dragon flies and can counterattack after defending.
+**Another alternative is the [[Mighty Miner]], a ground troop that deals similar ramp-up damage. If he is about to be defeated by swarms or other support units, then he can use his Ability to get more value before his defeat.
+**The Zap will reset the charge of all ramp-up cards, but if the player lacks other support units to take these cards out, the Giant will still be incinerated. A far more dangerous spell that is also usually paired with the Giant is the Lightning, which not only resets the Inferno cards, but also leaves their hitpoints crippled enough so that anything else can defeat them with ease, while also hitting nearby troops. [[Freeze]] can similarly stall those cards for 4 seconds, but it should only be used to buy time for support troops to kill the cards, as Freeze deals very low damage by itself.
+**Troops with stun effects, like [[Zappies]], [[Electro Wizard]], or [[Electro Dragon]], can be used to support the Giant since they're able to repeatedly attack the card. However, the defender must make sure spells must be out of the opponent's cycle, as a Direball will destroy the Zappies and weaken the latter two.
+*Depending on the situation, a Giant can be played similarly to an [[Ice Golem]] and kite troops to the opposite lane. The difference is that the Giant costs more, but is much more threatening than the Ice Golem on offense. However, this can allow the opponent to create a powerful split-lane push, as opposing troops will accumulate around the Giant, building a counterpush on the same lane as the Giant's own on top of the already existing push in the other lane.
+*Unlike the [[Golem]] or [[Lava Hound]], it is not feasible to attack the opposite lane as a response to a Giant played behind the King Tower. This is because the Giant costs much less than those tanks, giving the opposing player more Elixir to defend, and, unlike the Lava Hound, is a serious threat even by himself.
+*If no other counter is available, Giant can be used to absorb the damage of the opponent’s small pushes, allowing the Crown Tower to defeat the opposing troops without taking damage in return. If a troop is already locked onto the Crown Tower, the player can play the Giant in front of them to push them out of range and force them to retarget onto him.
+**If the player has nothing else to defend with, a Giant can counter a [[Giant Skeleton]] that has reached the Tower. Deploying the Giant in front of the Crown Tower pushes the Giant Skeleton, thus causing him to retarget, and since he is slow, he will lure the Giant Skeleton away from the Tower, taking away with him and saving the tower from the enormous death damage that the Giant Skeleton's death bomb can deal.
+*A Sparky + [[Tornado]] combo is a good answer to the Giant and anything that may be behind him, as the support troops will most likely get defeated while the Giant loses a big portion of his hitpoints. The defender should wait until the opponent uses their reset card on the Sparky, then use the Tornado when she has three rings loaded (two if there is an Electro Wizard or Electro Dragon), which allows her to hit the Giant and anything behind him.
+*If the player only has fragile cards to counter splash units, they can use the Giant to tank and distract the splash unit and then quick-drop the card directly behind the splash unit. If the unit in question is a Valkyrie, air troops and ranged units should be used, as they can't hit them either because they're aerial or they stay out of the attack's range. This can also be used to stop a charging Dark Prince or a jumping [[Mega Knight]].
+*Whenever a Giant is deployed in the very back, a player must prepare for a very big push with support cards such as a Sparky behind a Giant, accompanied with a splash unit such as [[Bomber]], [[Wizard]], [[Baby Dragon]], Witch, [[Firecracker]], [[Goblin Demolisher]], [[Bowler]], or Executioner. A good idea is for the defender to begin a push or play a punishing card like Lumberjack in the opposite lane that the Giant is deployed, requiring the opponent to spend Elixir to defend the push instead of spending on supporting the Giant. This weakens his offensive potential as however much Elixir the opponent uses to counter this push is how much Elixir is denied from their Giant push.
+*Although the Giant has a great amount of hitpoints for his cost, he can be substituted by other more specialized cards.
+**Despite being weaker and having less hitpoints, the [[Rune Giant]] costs 1 less Elixir and can enchant up to 2 other troops at once. This means that support troops will aid the Rune Giant even better than they would with the Giant. However, Giant's higher hitpoints allow him to survive for longer, and his superior damage will allow him to break through defensive buildings or the Crown Tower with more ease even if the support troops fail to do so.
+**If the player cannot afford to defend any opposing counterattack, they can use [[Goblin Giant]] or [[Electro Giant]] in place of the Giant. The former moves faster and can attack enemies directly, while the latter has the ability to stun and damage enemies that attack him when within range. Both of them can deal damage to air troops, allowing them to be supported with cards that do not target air troops, and they can cause enemies to re-target thanks of the former's spawned Goblins when [[Goblin Giant/Evolution|Evolved]] and the latter's stun. However, the Giant is better for sole tanking, due to his higher hitpoints.
+**[[Golem]] offers more damage and hitpoints, making him a stronger and bulkier tank for a push, while also offering death damage against poorly placed defenders, and provide two extra small tanks when defeated. However, he is slower and less reliable in desperate situations, because he costs 8 Elixir, as opposed to the 5-Elixir Giant.
+**In decks where the support troops consist of air troops, the [[Lava Hound]] is often used as the alternative to the Giant. Being an air troop much like its support troops, it is able to bypass certain counters, and also attack from a range, allowing him to connect to the Crown Tower earlier. If defeated, he will also spawn 6 Lava Pups to further assist with dealing damage to the Crown Tower, or possibly weaken a counterpush. However, he costs 2 more Elixir and deals significantly less damage.
+**An even cheaper alternative is the [[Elixir Golem]]. Although he has lower hitpoints, he is faster and still offers the same damage, while his lower cost allows him to be supported by stronger more expensive support cards, and like the Golem, comes with additional small tanks after defeat. However, destroying any form of the Elixir Golem will result in the opponent gaining Elixir, which would result in a deadly counterattack. As he gives the opponent 4 Elixir, he technically costs 2 more Elixir than the Giant.
+**If the player does not have a {{Rarity|Champion}} card in their deck, they can use the [[Goblinstein]] in their deck to replicate the Giant's role. For the same cost, the player can get a tank with less hitpoints and less damage, but also a troop that targets air and stuns, and due to their deployment formation, they can be split to different lanes when deployed in the center, making the card better for kiting. Lightning Link can efficiently clear swarms and weaken the opponent's push/defense. However, if the player wants to use other {{Rarity|Champions}} or {{Rarity|Heroes}} in their deck, then the Giant is the clear choice.
+*Due to his slow speed and complete passivity, the Giant is completely ineffective in [[Touchdown]], as this can allow the opponent to accumulate a lot of troops when attacking him. Instead, it is better to seek for faster alternatives like the Hog Rider, or for ones that can still partially defend themselves like the Electro Giant and Golem. 
+
+<center><div class="table-back" id="unit-statistics">{{Statistics}}{{StatusEffects}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+!scope="col"|Cost<br>{{Icon|I=Elixir}}
+!scope="col"|Hit Speed<br>{{Icon|I=Damage Speed}}
+!scope="col"|First Hit Speed<br>{{Icon|I=Damage Speed}}
+!scope="col"|Speed<br>{{Icon|I=Speed}}
+!scope="col"|Deploy Time<br>{{Icon|I=Deploy Time}}
+!scope="col"|Range<br>{{Icon|I=Range}}
+!scope="col"|Target<br>{{Icon|I=Targets}}
+!scope="col"|Count<br>{{Icon|I=Troop Count}}
+!scope="col"|Transport<br>{{Icon|I=Transport}}
+!scope="col"|Type<br>{{Icon|I=Type}}
+!scope="col"|Rarity<br>{{Icon|I=Rarity}}
+|-
+|5||1.5 sec||0.5 sec||Slow (45)||1 sec||Melee: Medium (1.2)||Buildings||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 3968 }}
+{{#vardefine: dmg_11 | 253 }}
+{{#vardefine: atk_speed | 1.5 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{|class="wikitable" style="width:100%; text-align:center;"
+!width="25%"|Type
+!width="10%"|Level/Tier
+!width="40%"|Objective
+!width="25%"|Reward
+|-
+|rowspan="3"|Damage Dealer<br>[[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 57,500 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|100 Giant cards<br>50{{Icon|I=XP}}
+|-
+|2
+|Deal a total of 175,000 Damage to enemy Troops or buildings
+|4,000{{Icon|I=Gold}}<br>50{{Icon|I=XP}}
+|-
+|3
+|Deal a total of 290,000 Damage to enemy Troops or buildings
+|100{{Icon|I=Gem}}<br>50{{Icon|I=XP}}
+|-
+|rowspan="3"|Tower Tapper<br>[[File:Tower Tapper.png|50x50px]]
+|1
+|Hit enemy [[:Category:Crown Towers|Crown Towers]] a total of 490 times
+|6,000{{Icon|I=Gold}}<br>125{{Icon|I=XP}}
+|-
+|2
+|Hit enemy Crown Towers a total of 1,400 times
+|100{{Icon|I=Rare Wild Card}}<br>125{{Icon|I=XP}}
+|-
+|3
+|Hit enemy Crown Towers a total of 2,450 times
+|9,000{{Icon|I=Gold}}<br>125{{Icon|I=XP}}
+|}
+</div></center>
+
+==History==
+2016 
+*The Giant [[Cards|card]] was added with [[Version History#Softlaunch on iOS (4/1/2016)|Clash Royale's game launch]] on 4/1/2016.
+*On 9/2/2016, the [[Version History#Chest Rewards & Card Balance (9/2/2016)|Chest Rewards & Card Balance Update]] increased the Giant's Hitpoints by 5%.
+*On 29/2/2016, the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]] decreased the Giant's Sight Range to 7.5 tiles (from 8 tiles).
+*On 23/3/2016, a [[Version History#Balance Changes (23/3/2016)|Balance Update]] increased the Giant's Damage by 5%.
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]] increased the {{Rarity|Rare}} card Level Cap to 11 (from 10). The update also fixed the “range bug" by decreasing the Giant's Range to 1.25 tiles (from 2 tiles), but maintaining his effective Range.
+*On 19/9/2016, the [[Version History#September 2016 Update (19/9/2016)|September 2016 Update]] decreased the Giant's Damage by 5%.
+*On 20/10/2016, a [[Version History#Balance Changes (20/10/2016)|Balance Update]] decreased the Giant's Hitpoints by 5%.
+2018
+*On 5/9/2018, the [[Version History#September 2018 Update (5/9/2018)|September 2018 Update]] made {{Rarity|Rare}} cards start at Level 3 and end at Level 13 (from 1 to 11).
+*On 5/11/2018, a [[Version History#Balance Changes (5/11/2018)|Balance Update]] decreased the Giant's Hitpoints by 2%.
+2019 
+*On 1/7/2019, the [[Version History#Pass_Royale_and_more_(1/7/2019)|July 2019 Update]] decreased the Giant's range to 1.2 tiles (from 1.25 tiles), classifying his Range as "Melee: Medium".
+*On 2/9/2019, a [[Version History#Pass Royale and more (2/9/2019)|Balance Update]] fixed a bug where the Giant was incorrectly shown as a Melee: Long troop in his card info screen.
+*On 26/11/2019, the [[Version History#End of November 2019 Update (26/11/2019)|End of November 2019 Update]] added a card render to the Giant's card info screen.
+2021
+*On 27/10/2021, the [[Version History#Champions Update (27/10/2021)|Champions Update]], increased the Level Cap of all cards to 14 (from 13).
+2022 
+*On 3/2/2022, a [[Version History#Balance Changes (3/2/2022)|Balance Update]] increased the Giant's Hitpoints by 4%.
+2023
+*On 19/6/2023, the [[Version History#Card Evolution Update (19/6/2023)|Card Evolution Update]] increased the Level Cap of all cards to 15 (from 14).
+*On 3/10/2023, a [[Version History#Balance Changes (3/10/2023)|Balance Update]], increased the Giant's Range to 1.6 tiles (from 1.2 tiles), classifying his Range as "Melee: Long".
+2024
+*On 17/6/2024, the [[Version History#Goblin World Update (17/6/2024)|Goblin World Update]] decreased the Giant's Range to 1.2 tiles (from 1.6 tiles), classifying his Range as "Melee: Medium".
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]] decreased the Giant's Damage by 0.39% and his Hitpoints by 0.02%.
+*On 24/11/2025, the [[Version History#Level 16 Update (24/11/2025)|Level 16 Update]] increased the Level Cap of all cards to 16 (from 15).
+*On 1/12/2025, the [[Version History#Pass Royale and more (1/12/2025)|December 2025 Update]] added the Giant's [[Heroes|Hero]] form.
+2026
+
+* On 2/2/2026, a Balance Update, decreased the Giant's hitpoints by 3%
+
+==Gallery==
+<gallery>
+File:Giant Card Render.png|Current card render.
+File:Giant Stomping Barbarian.png|The Giant stepping on a [[Barbarians|Barbarian]].
+File:Giant Full Body Card Render.png|Giant's full body card render.
+File:Giant Render.png|Giant 1.
+File:Giant Render 2.png|Giant 2.
+File:Giant Render 3.png|Giant 3.
+File:Giant Walking.png|Giant walking.
+</gallery>
+
+==Trivia==
+*The Giant is 1 of 19 [[:Category:Troop Cards|troops]] which first existed in Clash of Clans, the others being [[Minions]], [[Archers]], [[Goblins]], [[Skeletons]], [[Barbarians]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], [[Witch]], [[P.E.K.K.A.]], [[Balloon]], [[Golem]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Phoenix]], [[Lava Hound]], and the [[Archer Queen]].
+**The Giant resembles the Level 1-2 Giant from Clash of Clans. His [[Star Points|Star Level 2 skin]] resembles the Level 5 Giant from Clash of Clans.
+**The Giant is 1 of 5 troops to have Giant in their name, The others being Giant Skeleton, Rune Giant, Royal Giant, Electro Giant, and of course, Giant.
+*The Giant is 1 of 7 [[cards]] that are already unlocked for the player when they start playing the game, the others being the Minions, Archers, [[Knight]], [[Arrows]], [[Tower Princess]], and [[Fireball]]. Despite this, the game recognizes that those cards are unlocked in the [[Training Camp]].
+*The Giant is one of the first troops to be featured in Clash-A-Rama, alongside the Minions, Goblins, and Barbarians.
+*The Giant is one of the first troop cards to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the Minions, Archers, Knight, [[Spear Goblins]], Goblins, [[Bomber]], Skeletons, Barbarians, [[Minion Horde]], [[Mini P.E.K.K.A.]], [[Musketeer]], Valkyrie, Wizard, Hog Rider, [[Baby Dragon]], [[Skeleton Army]], Witch, P.E.K.K.A., [[Prince]], and Balloon.
+*The Giant is one of the first troop cards to receive a card render, alongside the Archers, Knight, Goblins, Bomber, Skeletons, Barbarians, [[Bats]], [[Royal Recruits]], [[Skeleton Barrel]], [[Rascals]], Musketeer, Valkyrie, Wizard, [[Flying Machine]], Hog Rider, [[Royal Hogs]], [[Dart Goblin]], [[Zappies]], [[Elixir Golem]], Baby Dragon, Skeleton Army, Witch, P.E.K.K.A., Prince, Balloon, [[Giant Skeleton]], [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], Wall Breakers, Bowler, Cannon Cart, [[Mega Knight]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], [[Magic Archer]], [[Bandit]], Lava Hound, [[Night Witch]], and [[Fisherman]].
+*The Giant is 1 of 14 troops that has been featured with a [[Buff#Rage|Rage]] [[buff]], the others being [[Electro Spirit]], Zappies, [[Guards]], Giant Skeleton, Goblin Giant, Electro Dragon, Wall Breakers, [[Electro Giant]], Mega Knight, Ram Rider, [[Electro Wizard]], [[Sparky]], and Royal Ghost.
+**He is the first troop to be featured with a buff.
+*The Giant is 1 of 3 troops that has had its Melee range classification changed, the others being Mini P.E.K.K.A. and P.E.K.K.A..
+*According to The Art of Supercell, the Giant was originally supposed to be blue.
+*The Giant shares the first part of his description with the Golem.
+*The Giant is 1 of 15 [[:Category:Troop Cards|troops]] which bring an excited reaction from the audience upon spawning and brings a collective groan from the audience when defeated, as well as a concerning gasp when the opponent plays him and applause when he's destroyed, the others include [[Royal Giant]], P.E.K.K.A., Giant Skeleton, [[Rune Giant]], Goblin Giant, Golem, Bowler, Electro Wizard, [[Inferno Dragon]], Sparky, Lava Hound, Night Witch, [[Super Lava Hound]], and the [[Monk]].
+*The Giant, along with the Goblins, Barbarians, Valkyrie, Wizard, Hog Rider, Witch, P.E.K.K.A., and the Archer Queen, was featured as a non-playable opponent in [https://www.chess.com/ Chess].
+*The Giant, along with the Archers, Goblins, Barbarians, [[Ice Spirit]], Mini P.E.K.K.A., Musketeer, Wizard, Hog Rider, Witch, Prince, and Night Witch, is featured as a sticker in [https://en.wikipedia.org/wiki/IMessage iMessage], in a sticker pack called [https://apps.apple.com/us/app/clash-theater-stickers/id1353823484 Clash Theater].
+*In [[Pass Royale|Fisherman's Float]], Giants can be seen sitting in the audience.
+*The Giant is the subject of a few [[Emotes]].
+*The Giant was featured in the winning decks of multiple Clash Royale Tournaments. More specifically:
+**The Giant was featured in the winning deck of the [https://www.youtube.com/watch?v=VxEzjdKQ4HA Clash Royale Helsinki Tournament], by a player called Jason.
+**The Giant was featured in the winning deck of the [https://www.youtube.com/watch?v=kIGdeKaT_is The Crown Duel Tournament], by a player called Backstabx.
+*Despite the Damage Dealer [[Card Mastery]] task mentioning that the Giant can deal damage to troops or [[:Category:Building Cards|buildings]], he cannot progress the task by dealing damage to troops.
+**The Giant is 1 of 6 troops that cannot deal damage to other troops whatsoever, the others being the Royal Giant, Hog Rider, Royal Hogs, Elixir Golem, and Rune Giant.
+***However, the Giant's Hero form changes this, as the ability can allow him to deal damage to one ground troop that is launched from it.
+*Before the Giant's card release, the Giant's Hitpoints were increased by 11%, and his Damage was increased by 4%.
+
+==In other languages==
+{{Other languages|fr=Géant|de=Riese|es=Gigante|it=Gigante|nl=Reus|no=Kjempe|tr=Dev|jp=ジャイアント|kr=자이언트|ru=РГигант|ar=عملاق|pt=Gigante|cn=巨人|cnt=巨人|fa=غول|id=Raksasa|ms=Gergasi|th=ยักษ์|fi=Jätti|vi=Khổng nhân}}
+
+{{Navigation|Card}}
+
+[[fr:Géant]]
+[[de:Riese]]
+[[es:Gigante]]
+[[it:Gigante]]
+[[ja:ジャイアント]]
+[[ko:자이언트]]
+[[ru:Гигант]]
+[[zh:巨人]]

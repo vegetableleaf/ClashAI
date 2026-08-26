@@ -1,0 +1,228 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Princess</span>}}
+{{Protection}}{{MagicWords}}{{Card Infobox|Cost=3|Rarity=Legendary|Type=Troop|Arena=Electro Valley|ReleaseDate=29 February 2016}}{{SubpageNavBox|MergeTactics=yes|Evolution=yes}}{{Quote|This stunning Princess shoots flaming arrows from long range. If you're feeling warm feelings towards her, it's probably because you're on fire.}}
+
+The Princess is a {{Rarity|Legendary}} [[Cards|card]] that is unlocked from the [[Arenas|Electro Valley (Arena 11)]]. It spawns an area-damage, air-targeting, very long-ranged, ground [[:Category:Troop Cards|troop]] with low hitpoints and moderate damage. She resembles a woman with brown eyes, short black hair and eyebrows, wearing a golden crown, a chestplate, chain mail, a team-colored robe and leggings, brown gloves, belt with a crown buckle, and boots, carries a quiver on her back, and wields a bow with a team-colored handle and arrows with team-colored fletchings. A Princess card costs 3 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Princess Common Modifier.png|45x45px]] Common: Quickdraw===
+{{Quote|+100% hit speed}}
+Princess' attack speed is increased by 100%, for a total of 1.5 seconds.
+
+===[[File:Princess Rare Modifier.png|45x45px]] Rare: Royal Ranger===
+{{Quote|+55% range}}
+Princess range is increased by 55%, for a total of 13.95 tiles.
+
+===[[File:Princess Epic Modifier.png|45x45px]] Epic: Pierce the Tower===
+{{Quote|Arrows attack}}
+Princess shoots three volleys per attack instead of one.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Princess Card}}
+*Due to her splash damage and long range, Princess is a strong support or siege unit. However, she does moderate damage which coupled with her very slow attack rate makes her a weak solo counter to anything but swarms. [[Zap]] is an excellent synergy with Princess as together they can instantly take out [[Minion Horde]]s and [[Goblin Gang|Goblin Gangs]].
+*A good method of getting some early chip damage on the opponent's [[:Category:Tower Troop Cards|Crown Tower]] is to deploy her at the bridge at the start of the match if she appears in the player's starting hand, since her first attack is faster than the others after it. This is extremely hard to react to and will often catch their opponent off guard.
+**The defender should be aware of when the opponent has a Princess in their hand and cycle their cards in the center of the [[Arenas|Arena]] to increase their odds of catching a Princess' sight as it is deployed.
+**[[Skeletons]] are the cheapest counter to a distracted Princess at the bridge. They can be removed with a [[:Category:Spell Cards|spell]] on reaction before she even gets hit once, allowing the Princess to provide more value, but almost any response to the Skeletons will be a negative [[Elixir]] trade since they cost just 1 Elixir, in addition to the Princess' 3 Elixir cost. This can give the player a decent Elixir advantage at the cost of some Tower damage, and also potentially bait a spell out of the opponent.
+*Despite her low DPS, she does deal moderate damage and has an extremely long range. This means that she will easily affect the outcome of duels, and since she has such a long range, she will safely engage from behind cover. It is valuable to protect her with cheap troops such as the [[Knight]], [[Skeletons]], Bats, [[Ice Wizard]], [[Elixir Golem]], Minions, [[Guards]], [[Ice Golem]], or [[Goblins]], as even if all the other supporting [[:Category:Troop Cards|troops]] are defeated, she will begin dealing chip damage to the opposing Crown Towers. However, many spells can defeat her regardless of how well she is protected.
+**She can be placed on the opposite side of your enemy's push to force out a response from the opponent.
+*The [[Miner]] is a decent counter to a defending Princess, as he will two-shot her and can be deployed anywhere around her. The defender can use swarms to reduce the likelihood that the Miner locks onto her. However, if the opponent also has [[Poison]], they may decide to fake the player out and deploy the Miner on the Crown Tower, while the Poison is placed on the Princess. If the player uses a swarm to protect her, this will give the opponent spell value and chip damage. 
+**If the Miner response is placed in a poor position, you can use [[Tornado]] to send the Miner toward the [[King's Tower|King Tower]], activating him early while also saving your Princess.
+*Despite being a negative Elixir trade, a [[Mini P.E.K.K.A.|Mini P.E.K.K.A]] can counter the Princess and be able to set up for a counter push. Wait for the Princess to reach the bridge, then place the Mini P.E.K.K.A in front to OHKO her, while he survives the first attack. The Mini P.E.K.K.A will still have most of his health remaining, forcing the opponent to spend more Elixir to defeat him. The [[Prince]] can work in a similar way.
+*The [[Magic Archer]] is good when used against a Princess at the bridge. Whether he distracts the Princess or not, he will deal damage to her as well as chip at the Crown Tower, and then counterattack, forcing the opponent to spend additional Elixir on him.
+*Even though the Princess deals moderate damage per shot, it is not wise to leave her shooting a Tower for too long, as she can rack up major amounts of damage. If the player allows her to stay on the Arena for long enough, she will have not only dealt enormous chip damage, but the opponent may have another Princess available right after the last one is destroyed.
+*Area damage spells are the most effective counters to the Princess as it is impossible to defend her from them. [[The Log]], [[Arrows]], [[Fireball]], and Poison are the most reliable counters to a defending Princess, in addition to the fact that they can clip the Crown Towers for extra damage. The defender should be aware of when their opponent's spells are in hand to maximize the time their Princess stays on the map.
+**[[The Log]] can one-shot a Princess up to the same Level as it; even a Princess 1 Level higher can barely survive and get a few more hits on your tower. [[Arrows]] can fully defeat a Princess up to 3 Levels higher. However, The Log is usually the better counter since it costs 1 less Elixir than the Princess at the cost of being unable to handle aerial swarms. The Log is also useful in the sense that it has an area denial effect; waiting until the Princess is at the bridge to use it can allow the player to hit other troops that may be played to protect the Princess. Arrows are most recommended over The Log when the Princess is deep within enemy territory, such as behind the Crown Tower.
+**The player can intentionally use other spell vulnerable troops with the Princess to help spread their opponent's counters to her thin. For example, an opponent may use The Log to counter her, on principle that it is a good Elixir trade, only to be left vulnerable to an offensive swarm card such as the [[Goblin Barrel]].
+**The [[Barbarian Barrel]] can also counter the Princess. Place the Barbarian Barrel in such a way that the Barbarian will spawn right next to her, so that it lands the finishing blow as fast as possible. However, this is not a reliable counter as the opponent can be ready to react to this and play another card to distract the [[Barbarians|Barbarian]], leaving the Princess alive but crippled. Note that a Barbarian Barrel that is 1 Level can defeat the Princess without the Barbarian's help.
+*If the player doesn't have spells to counter her, they can use other cheap [[cards]] instead. The [[Dart Goblin]] is an excellent counter to Princess since the Dart Goblin can survive 1 attack from the Princess and after defeating her, will chip damage the opponent's Tower. The player can also use Goblins, [[Bomber]], [[Minions]], and [[Archers]], but they should be wary of predictive defending units or spells.
+**More fragile units like [[Bats]], Skeletons, and [[Spear Goblins]] cannot defeat her alone due to her being able to OHKO those units. When using these units, wait for her to target a different unit instead like a Crown Tower, [[Lava Hound]], [[Golem]], or a [[Giant]], then drop those units separated from the tank to defeat her.
+*The Princess can deny all other damage from a [[Skeleton Barrel]] besides its death damage. Deploy the Princess behind the King's Tower staggered towards the lane of the Skeleton Barrel, and time it so that she spawns when the Skeleton Barrel's shadow is one and a half tiles from the Crown Tower. If done correctly, she will shoot her volley of arrows at the Skeleton Barrel right as it pops, and the area damage will immediately defeat all the Skeletons that spawn.
+*You can trick your enemy by placing your Princess near the bridge when there is a push, wasting a spell.
+*In Princess versus Princess duels, it is a good idea to use Zap on the enemy Princess so that your Princess can defeat her while not taking any damage in return. Alternatively, you can use [[Tornado]] to pull the enemy Princess next to their Crown Tower, defeating her in the process, while yours survives the first attack.
+*Starting out a match, you have two options. The first is to place the Princess behind the King Tower. With her long range, she will have a defensive presence in both lanes, deterring opponents from attacking either Crown Tower. The second option is to play her at the bridge instead. This will force a response from the opponent, which could give an idea of what [[Battle Decks|deck]] they might be using while also dealing chip damage to the opposing Crown Tower.
+*If one of the opposing Crown Towers has been destroyed, you can place her on the center of the opposing side on the first tile from the river. She will target the next Crown Tower quicker than if she was placed at the bridge. However, she is vulnerable to be defeated by enemy defensive cards, so only place her there if you are desperate for damage.
+*Stacking multiple Princesses on the map is a great way to control the Arena. With their great range and slow movement speed, a Princess can easily protect another Princess from swarms and it can also discourage the opponent from attacking. However, make sure that the Princesses are far away from each other to prevent the opponent from gaining major spell value.
+*If an [[Inferno Tower]] survives a push with decent health to spare, you can place a Princess at the bridge for an immediate attack. The opponent will most likely respond with a troop, which will then proceed to attack the Inferno Tower, only to be melted by it. This allows the Inferno Tower to make better use of its 30 second lifetime, and can otherwise negate the Elixir deficit the player would have from attacking.
+*It is possible to push the Princess at the bridge into the range of the Crown Towers, with a perfect placement and timing [[Giant Snowball]]. To do it, wait for the Princess to walk as far as she can into the river and use the Giant Snowball on the Princess to knock her forward, making her in range of the Crown Towers.
+
+<center>
+
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|3||3 sec||0.3 sec||Medium (60)||1.2 sec||9||2||600||Air & Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 261 }}
+{{#vardefine: dmg_11 | 168 }}
+{{#vardefine: atk_speed | 3.0 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Area Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 160,000 damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|2 {{BASEPAGENAME}} cards<br>100 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 485,000 Damage to enemy Troops or buildings
+|8,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 810,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>100 {{Icon|I=XP}}
+|-
+| rowspan="3 |Tower Tapper <br/ > [[File:Tower Tapper.png|50x50px]]
+|1
+|Hit enemy [[:Category:Crown Towers|Crown Towers]] a total of 420 times
+|12,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Crown Towers a total of 1,200 times
+|2 {{Icon|I=Legendary Wild Card}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Crown Towers a total of 2,100 times
+|18,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+| rowspan="3" |Efficient Attacker <br> [[File:Efficient Attacker.png|50x50px]]
+|1
+|Land 7 attacks with a single deploy a total of 80 times!
+|6,000 {{Icon|I=Gold}}<br/ >200 {{Icon|I=XP}}
+|-
+|2
+|Land 7 attacks with a single deploy a total of 240 times!
+|8,000 {{Icon|I=Gold}}<br/ >200 {{Icon|I=XP}}
+|-
+|3
+|Land 7 attacks with a single deploy a total of 480 times!
+|10,000 {{Icon|I=Gold}}<br/ >200 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Princess [[Cards|card]] was added to the game on 29/2/2016, in the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]].
+*On 23/3/2016, a [[Version History#Balance Changes (23/3/2016)|Balance Update]], decreased the Princess' hitpoints by 10%.
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], decreased the {{Rarity|Legendary}} card Level cap to 5 (from 6) and fixed the "range bug" and decreased the Princess' range to 9 tiles (from 9.5 tiles), but her effective range is unchanged. The same update also changed her card description. Prior to this update, it read "''Shoots a volley of flaming arrows halfway across the Arena. The Princess is afraid of germs, so keep the rabble away from her!''"
+*On 24/8/2016, a [[Version History#Balance Changes (24/8/2016)|Balance Update]], decreased the Princess' area radius to 2 tiles (from 2.5 tiles).
+*On 29/8/2016, a [[Version History#Minor Update (29/8/2016)|Minor Update]], increased the Princess' projectile speed to 450 (from 400).
+2018
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Legendary}} cards start at Level 9 and end at Level 13 (from 1 to 5).
+2019
+*On 6/5/2019, a [[Version History#Balance Changes (6/5/2019)|Balance Update]], increased the Princess' projectile speed to 600 (from 450).
+2020
+*On 7/4/2020, a [[Version History#Balance Changes (7/4/2020)|Balance Update]], added a card render to the Princess' card info screen.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the [[Arenas|Arena]] to unlock the Princess from Royal Arena to Spell Valley.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 27/6/2022, the [[Version History#Summer%202022%20Update%20(27/6/2022)|Summer 2022 Update]], added the Efficient Attacker [[Card Mastery]] task for the Princess.
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Princess from Royal Arena to Electro Valley.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2025
+*On 4/3/2025, a [[Version History#Balance Changes (4/3/2025)|Balance Update]], increased the Princess' deployment time to 1.2 seconds (from 1 second) and decreased her first attack time interval to 0.3 seconds (from 0.5 seconds).
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Princess' damage by 0.59%.
+
+==Gallery==
+<gallery>
+File:Princess card render.png|Current card render.
+File:Princess Preview.gif|Current card preview.
+File:Princess 6.png|Princess 1
+File:Princess 7.png|Princess 2
+File:Princess 3.png|Princess 3
+File:Princess 4.png|Princess 4
+File:Princess 5.png|Princess happy.
+File:Princess 2.png|Princess confused.
+</gallery>
+
+==Trivia==
+*The word "''Prince''" and by extention "''Princess''" comes from the Latin word "''prīnceps''", meaning first head.
+**The Princess is 1 of 20 [[cards]] associated with nobility, with the others being [[Knight]], [[Royal Recruits]], [[Royal Giant]], [[Royal Delivery]], [[Tower Princess]], [[Royal Hogs]], [[Dark Prince]], [[Prince]], [[Raging Prince]], [[Mega Knight]], [[Royal Ghost]], [[Spirit Empress]], [[Super Knight]], [[Dagger Duchess]], [[Royal Chef]], [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], and the [[Little Prince]].
+*Although the Princess' leggings are team-colored in official Clash Royale promotional videos and renders, they are colored to appear bare on in-game sprites.
+*The Princess is 1 of 10 cards associated with archery, with the others being [[Archers]], [[Arrows]], Tower Princess, [[X-Bow]], [[Magic Archer]], [[Super Magic Archer]], [[Super Archers]], Archer Queen, and the Little Prince.
+*The Princess was one of the first {{Rarity|Legendary}} [[cards]] to be added to the game, alongside the [[Ice Wizard]].
+*The Princess' stats are the highest or lowest among all troops. More specifically:
+**The Princess has the longest range of all troops, with a range of 9 tiles.
+***The Princess is the only troop that has a higher range than [[:Category:Crown Towers|Crown Towers]].
+***It is theoretically possible to win a [[Basics of Battle|battle]] with just a Princess, due to her range being able to outrange Crown Towers, and is 1 of 2 troops that can do a 3-Crown victory by herself at even Levels, along with the [[Super Mini P.E.K.K.A.|Super Mini P.E.K.K.A]].
+**The Princess is tied with [[Hog Rider]], Royal Hogs, [[Mother Witch|Cursed Hog]], [[Santa Hog Rider]], and the [[Terry]] for the longest sight range of all troops, with a sight range of 9.5 tiles.
+*The [[Ranked|Grand Champion League]] badge resembles a Princess' crown.
+*The Princess has 3 arrows nocked in the card picture, while she only nocks 1 arrow in-game. However, she shoots 5 arrows in-game.
+*When spawning, she may say "''Let's go!''"  or "''Yay!''". When attacking, she may say "''Gotcha!''", "''Pew!''", or "''Bullseye!''".  
+**The Princess is 1 of 24 troops that speak distinct words when on the field, the others being [[Mini P.E.K.K.A.]], [[Mega Minion]], [[Wizard]], Hog Rider, [[P.E.K.K.A.]], Dark Prince, [[Bowler]], [[Ram Rider]], [[Electro Wizard]], Ice Wizard, [[Magic Archer]], [[Lumberjack]], Mother Witch, [[Fisherman]], [[Goblin Machine]], Super Mini P.E.K.K.A., Santa Hog Rider, [[Super Magic Archer]], Golden Knight, [[Boss Bandit]], Archer Queen, Little Prince, and the Terry.
+*The Princess, along with the Archers, [[Goblins]], [[Skeletons]], [[Barbarians]], Mini P.E.K.K.A, [[Musketeer]], Wizard, [[Witch]], and Prince, is featured as a sticker in [https://en.wikipedia.org/wiki/IMessage iMessage], in a sticker pack called [https://apps.apple.com/us/app/clash-a-rama/id1182384664 Clash-A-Rama].
+*The Princess is the subject of a few [[Emotes]].
+**The [https://clashroyale.fandom.com/wiki/Emotes?file=Muscle_Princess.png Princess Muscle Emote] is a reference to [https://en.wikipedia.org/wiki/Rosie_the_Riveter Rosie the Riveter].
+*A [[Clone|cloned]] Princess does not fall from the sky when deployed.
+*The Princess was featured in the winning [[Battle Decks|decks]] of multiple Clash Royale Tournaments. More specifically:
+**The Princess was featured in the winning deck of the [https://youtu.be/LWQjS0e6iiE Super Magical Cup Tournament], by a player called CMcHugh.
+**The Princess was featured in the winning deck of the [https://www.youtube.com/live/psZXKWHkKkE?si=PbjvbZt8stghz6eJ King's Cup II Tournament], by a player called Surgical Goblin.
+*Before the Princess' [[Cards|card]] release, the Princess' damage was decreased by 6%.
+
+==In other languages==
+{{Other languages|fr=Princesse|de=Prinzessin|es=Princesa|it=Principessa|nl=Prinses|no=Prinsesse|tr=Prenses|jp=プリンセス|kr=프린세스|ru=Принцесса|ar=أميرة|pt=Princesa|cn=公主|cnt=公主|fa=شاهزاده خانم|id=Putri|ms=Puteri|th=เจ้าหญิง|fi=Prinsessa|vi=Công chúa}}
+
+{{Navigation|Card}}
+
+[[fr:Princesse]]
+[[de:Prinzessin]]
+[[es:Princesa]]
+[[it:Principessa]]
+[[ja:プリンセス]]
+[[ko:프린세스]]
+[[ru:Принцесса]]
+[[pt-br:Princesa]]
+[[zh:公主]]

@@ -1,0 +1,245 @@
+{{DISPLAYTITLE:<span style="color: #99CCFF;">Arrows</span>}}{{Protection}}{{MagicWords}}{{Card Infobox|Cost=3|Rarity=Common|Type=Spell|Arena=Training Camp|ReleaseDate=4 January 2016}}{{Quote|Arrows pepper a large area, damaging all enemies hit. Reduced damage to Crown Towers.}}
+
+The Arrows is a {{Rarity|Common}} [[Cards|card]] that is unlocked in the [[Training Camp]]. It is an area-damage air-targeting [[:Category:Spell Cards|spell]] with a large radius, high speed, and low damage that deals damage in 3 sets of volleys. The Arrows take the appearance of objects consisting of a medium-sized shaft, red fletchings, and shiny metal points. An Arrows card costs 3 {{Icon|I=Elixir}} to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Arrows Card}}
+*Arrows are extremely effective against large swarms of low health [[:Category:Troop Cards|troops]] such as [[Bats]], [[Skeleton Army]], [[Goblin Gang]], or [[Minion Horde]]. They cost 1 more [[Elixir]] than [[Zap]], but they have a larger area of effect and also deal more damage, being able to fully defeat [[Minions]] up to 5 Levels higher than themselves.
+*Arrows can be used to finish off [[:Category:Building Cards|buildings]] that are extremely low on hitpoints. However, this is generally discouraged unless another vulnerable unit is played in the area, otherwise, Arrows will lose their potential to defeat swarms. This can be beneficial if the building is [[Goblin Hut]], [[Tombstone]], or even [[Barbarian Hut]], since Arrows can defeat or weaken the waves of troops they've generated, as well as their death spawn if timed correctly.
+*Arrows' three volleys are able to take at most [[Archers]] and [[Firecracker]] without assistance from other spells. This means that it's able to shut down almost any swarm card, since almost every swarm has less health than those two troops, potentially giving a lot of spell value, leading to an advantage that could turn into victory. Swarms that can give massive value to Arrows involve Minions, Skeleton Army, Goblin Gang, and Minion Horde, with the latter also being a positive Elixir trade. [[Guards]] can also be countered this way, but since only their shields will be knocked out, the situations may vary.
+**Arrows are an ideal counter to an [[Skeleton Army/Evolution|Evolved Skeleton Army]] because the General's shield does not have as much health as a Guard's shield, allowing 2 of the volleys to take out both the General and the nearby Skeletons.
+**Although mostly for a negative Elixir trade and resulting in a pretty big investment, the Arrows can be played preemptively to take down low-health distraction cards, which will clear the path for cards like [[Mini P.E.K.K.A.]], [[P.E.K.K.A.]], [[Prince]], [[Giant Skeleton]], [[Elite Barbarians]], [[Boss Bandit]], and [[Mighty Miner]] to threaten the opponent's [[:Category:Tower Troop Cards|Crown Tower]]. This can apply to all of the troops with a health lower than Archers.
+*Even though Arrows have a short but noticeable travel time, its large area of effect means it is unlikely to completely miss any target. The separate volleys give the spell a slight area denial effect and allow the spell to be played preemptively to instantly destroy any swarms played, making it useful in supporting single-targeting units like [[Knight]], Mini P.E.K.K.A., P.E.K.K.A., Prince, Giant Skeleton, Elite Barbarians, [[Inferno Dragon]], [[Bandit]], [[Lumberjack]], [[Goblin Machine]], [[Golden Knight]], Boss Bandit, Mighty Miner, and [[Monk]]. However, if the prediction fails, the defender will be favored even more, having more Elixir to defend against the unit and then utilize said unit for a counterpush.
+*Arrows synergize well with [[Graveyard]] on offense. The damage of all three waves is able to defeat Archers or Minions by itself for 1 less Elixir than a [[Poison]], which gives the player more Elixir to spare while allowing more Skeletons to stay alive and deal damage to the Crown Tower, at the cost of less duration. Generally, the player should deploy Arrows reactively to these units, as the opponent might take note of this and deploy their troops right after the three Arrows waves, as they don't last long enough to keep troops away compared to Poison.
+**On the contrary, Arrows can also be a decent counter to the Graveyard if the player has no better options in their hand. It's best if the Skeletons slightly accumulate around the Crown Tower so that the Arrows can defeat the maximum number of Skeletons possible at the same time, resulting in less hits dealt to the Crown Tower.
+*Arrows are a neutral Elixir trade for countering [[Goblin Barrel]], but also the most reliable counter. When the opponent throws the Goblin Barrel, the player should fire their Arrows right when or slightly before the Goblins spawn, so that they will be instantly destroyed. The Arrows are particularly useful versus opponents who like to mix up their Goblin Barrel placements in an attempt to make the defender miss the Goblin Barrel, as the Arrows' large radius denies all realistic fake-out attempts. However, the opponent might use other cards vulnerable to Arrows once the spell has been cast, like [[Goblin Gang]], Minion Horde, or [[Princess]].
+*An effective tactic is to deploy less valuable swarm cards to bait an opponent into using their Arrows on them, and then deploying more threatening swarm cards like Goblin Barrel, Goblin Gang, or Minion Horde when the spell is out of their hand. However, if the opponent has other area damage spells or troops, such as [[Fireball]], Zap, [[Wizard]], [[Witch]], [[Poison]], [[Ice Wizard]], or [[Executioner]], this may simply end up giving them several positive Elixir trades, so these counters should also be baited out or the player should only deploy their more threatening swarms when the opponent does not have enough Elixir to deploy a counter.
+*Since the Arrows can kill a lot of weak cards, they can be used to keep weak troops that can get a lot of value at bay. For example, [[Bomber]] and Firecracker deny swarms and severely cripple other troops, Archers, Minions, Bats, and Minion Horde deal a significant damage per second especially when ignored, Goblins, Spear Goblins, and Goblin Gang are great distraction units, [[Dart Goblin]] and Princess act as great defensive cards that can turn into powerful offensive units, and [[Wall Breakers]] can deal a lot of damage to the Crown Tower when unattended. These are all of the troops that Arrows can neutralize so that they don't get any value. However, Bomber, Bats, Wall Breakers, Goblins, and Spear Goblins are all a negative Elixir trade, so the player should only use Arrows on them if they can hit other troops nearby or if removing them instantly is a must.
+**Consequently, the Arrows are great at keeping [[Archers/Evolution|Evolved Archers]], [[Bomber/Evolution|Evolved Bomber]], [[Dart Goblin/Evolution|Evolved Dart Goblin]], [[Firecracker/Evolution|Evolved Firecracker]], and [[Wall Breakers/Evolution|Evolved Wall Breakers]] at bay. However, in the case of the latter, the Runners will survive and will still be able to do some chip damage to the Crown Tower, or cause the player to spend more to deal with them.
+**All 3 Arrows volleys eliminate Dart Goblins and Princesses up to 2 Levels higher and Archers, Bomber, Firecracker, and Wall Breakers up to 1 Level higher. 2 volleys eliminate Minions, Goblins, Spear Goblins, and all of Spirit cards, while a single volley is enough to take out Skeletons and the Bats.
+**Arrows are able to destroy the shields of [[Wizard/Evolution|Evolved Wizard]], [[Dark Prince]], and [[Royal Recruits]] with only 2 of the 3 waves, while also dealing minor chip damage to those troops with the last wave. However, all 3 Arrows volleys are needed to destroy the shields of Guards.
+*Arrows are a hard counter against the [[Clone]]. Its multiple attacking waves will wipe out the cloned units as well as any possible death spawns from them, though certain cloned troops will avoid being defeated, such as [[Skeleton Barrel]], which has a spawn delay after it is defeated, so the Skeletons will still need to be addressed.
+*Arrows can be used to defeat [[Phoenix]]'s Egg, Lava Pups spawned from a [[Lava Hound]], or Elixir Blobs spawned from an [[Elixir Golem]]. For Phoenix, it will prevent it from respawning; for Lava Hound, it will negate its value and make addressing its accompanying units much easier without the Lava Pups being tanked for; for the Elixir Golem, it will allow the user to immediately claim 2 Elixir back by defeating all of the Elixir Blobs at once. In the case of the Lava Pups, the first volley can be used on a low health Lava Hound, because the Arrows are strong enough to be able to defeat the Lava Pups in 2 of the 3 volleys.
+*Arrows may cripple some other fragile units like [[Barbarians]], [[Skeleton Dragons]], [[Flying Machine]], Skeleton Barrel, [[Zappies]], [[Magic Archer]], and [[Mother Witch]]. While the spell will not defeat them alone, it will bring them low enough so that using other spells like Zap or letting the Crown Tower address them will finish them off. However, using another spell usually results in a negative Elixir trade or some damage being dealt, so additional units must be hit alongside to get value from spell usage, while letting the Crown Tower finish those troops off may also risk the opponent putting a tank to let the weakened troop gain value for a bit longer. Magic Archer can still land a hit on the Crown Tower before being defeated due to his long range.
+*While normally, Arrows are unable to destroy a Tombstone and its death spawn Skeletons with its 3 volleys alone, using them when the Tombstone is at low enough health will take care of death spawns. This can be useful when allowing building targeting troops to continue proceeding towards the Crown Towers without having to worry about being pulled by the Tombstone and having its hitpoints chipped down by the spawned Skeletons.
+*Even though Arrows do little damage to the [[Inferno Dragon]], it deals enough damage to enable the [[Tower Princess]] to eliminate the Inferno Dragon before it can deal its maximum damage. It can prove to be a handy alternative if the player does not have any better troops or [[:Category:Spell Cards|spells]] on their hand, possibly saving the Tower Princess from taking massive damage or even from being destroyed.
+*Arrows can be combined with [[Golden Knight]]'s ability to fully eliminate all troops with health equal to or lower than [[Little Prince]]. This can be very useful for allowing the Golden Knight to dash towards and quickly chip down the Crown Tower without having to deal with with distraction troops and losing all of his health before chipping the Crown Tower.
+*Although a Monk can reflect the Arrows, he will not fully reflect the spell unless he is in or within 2 tiles of the exact center of the casting area for the spell; if this isn't the case, some of the Arrows may still damage or take down some of the troops he is nearby.
+*Depending on what the player wants in their [[Battle Decks|deck]], the Arrows can be substituted by similar spells.
+**[[Fireball]] travels slower, has a smaller radius, and costs one more Elixir, however, it is able to deal more damage and all at once, destorying anything with health equal to or lower than the [[Barbarians]]. It is also able to knockback troops that are vulnerable to such effect, making certain units retarget and resetting Inferno Dragon's ramp up damage. The player should favor the Fireball over Arrows when desiring for higher damage, Crown Tower damage, and especially when the deck struggles with cards that are weak to Fireball, while Arrows should be favored when the player wants to hit their target more often and have more versatility.
+**Zap deals a little over half of Arrows' full volley damage. however, it is able to do instant damage, defeating up to Spear Goblins, while also hurting Minions enough so that a Crown Tower could defeat them alone, and clearing half of Goblin Gang. It is also cheaper by one Elixir, while being able to reset cards that have a charge or ramp-up attack, like [[Battle Ram]], [[Royal Recruits/Evolution|Evolved Royal Recruits]], [[Dark Prince]], [[Prince]], [[Ram Rider]], [[Sparky]], Inferno Dragon, and Mighty Miner. Zap should be favored when the player wants a quick and cheap way to deal low damage while resetting charging cards, while Arrows should be used to control the usage of troops like Archers, Bomber, and Firecracker. The [[Zap/Evolution|Evolved Zap]] will be even better, as it's able to be cycled easily due to its cheap cost, with both discharges dealing slightly more damage than Arrows' three volleys.
+**[[Giant Snowball]] plays very similarly to Zap, dealing the same amount of damage and costing the same amount of Elixir, while having the travel speed around that of the Arrows' own. However, its knockback and slow effects will allow it to be more effective against certain troops than Zap, while also allowing the Crown Tower to finish the same troops that Arrows can. Plus, Giant Snowball can also counter the Goblin Barrel for a +1 Elixir trade, as well as reset Battle Ram, Ram Rider, Sparky, and Inferno Dragon. [[Giant Snowball/Evolution|Evolved Giant Snowball]] has a slightly different functionality, as it clumps up troops and pushes them away.
+**[[Vines]] costs the same as Arrows, while also being able to bring enemy air troops to the ground, freeze them in place like a [[Freeze]], defeat troops with as much health as a Firecracker, affect buildings, and counter Evolved Wall Breakers more efficiently. Vines' drawback is that it only targets three troops, with healthier troops having priority as targets, meaning that Arrows deals with swarms better, while Vines is more efficient against a number of units, as well as Crown Tower and building invalidation.
+**[[The Log]] is pretty similar to the Arrows: they deal nearly the same amount of damage, even taking out Guards' Shields, while both serve to deal with swarms. However, The Log is cheaper and can push back enemies at the cost of less damage and not being anti-air, while Arrows are more expensive, but can defeat more troops without assistance from Crown Towers and can defeat air troops.
+**[[Earthquake]] has the same Elixir cost for less damage, slower hit speed, and lack of air defense. However, it is able to slow down troops by 50% of their movement speed when inside the Earthquake, and it deals far more damage to buildings, while still taking out up to Goblins with all of its three damage waves. The player should use Earthquake when the deck struggles with buildings or is centered around cheap building-targeting win conditions, while Arrows should be favored when focusing on taking out slightly stronger troops or air units.
+**For the same Elixir cost, [[Royal Delivery]] can be used in the place of Arrows for defense against swarms. It has slightly higher damage, and also comes with a [[Royal Recruits|Royal Recruit]] to further assist on defense against bulkier troops, like Wizard or Witch. However, unlike Royal Delivery, Arrows can also be used for offensive purposes or for defeating enemy troops on the opponent's side, and they have a larger radius.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+!scope="col"|Cost<br>{{Icon|I=Elixir}}
+!scope="col"|Radius<br>{{Icon|I=Radius}}
+!Projectile Speed
+{{Icon|I=Speed}}
+! scope="col" |Target<br>{{Icon|I=Targets}}
+!scope="col"|Type<br>{{Icon|I=Type}}
+!scope="col"|Rarity<br>{{Icon|I=Rarity}}
+|-
+|3||3.5
+|1100||Air & Ground||[[:Category:Spell Cards|Spell]]||{{Rarity|Common}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: dmg_11 | 122 }}
+{{#vardefine: dmg_hits| 3 }}
+{{#vardefine: crown_dmg_11| 31 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Area Damage<br>{{Icon|I=Area Damage}}
+!scope="col"|Crown Tower Damage<br>{{Icon|I=Tower Damage}}
+|-
+| 1 || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(1-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(1-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(1-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 2 || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(2-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(2-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(2-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 3 || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(3-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(3-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(3-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 4 || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(4-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(4-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(4-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 5 || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(5-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(5-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(5-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 6 || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(6-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(6-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(6-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 7 || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(7-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(7-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(7-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 8 || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(8-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(8-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(8-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 9 || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(9-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(9-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(9-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 10 || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(10-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(10-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(10-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 11 || {{#var:dmg_11}} x{{#var:dmg_hits}} ({{#expr: {{#var:dmg_11}} * {{#var:dmg_hits}} }}) || {{#var:crown_dmg_11}} x{{#var:dmg_hits}} ({{#expr: {{#var:crown_dmg_11}} * {{#var:dmg_hits}} }})
+|-
+| 12 || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(12-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(12-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(12-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 13 || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(13-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(13-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(13-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 14 || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(14-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(14-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(14-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 15 || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(15-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(15-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(15-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 16 || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(16-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(16-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(16-11)) round 0) * {{#var:dmg_hits}} }})
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{|class="wikitable" style="width:100%; text-align:center;"
+!width="25%"|Type
+!width="10%"|Level/Tier 
+!width="40%"|Objective
+!width="25%"|Rewards
+|-
+|rowspan="3"|Damage Dealer<br>[[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 65,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|200 Arrows cards<br>25{{Icon|I=XP}}
+|-
+|2
+|Deal a total of 195,000 Damage to enemy Troops or buildings
+|2,000{{Icon|I=Gold}}<br>25{{Icon|I=XP}}
+|-
+|3
+|Deal a total of 325,000 Damage to enemy Troops or buildings
+|100{{Icon|I=Gem}}<br>25{{Icon|I=XP}}
+|-
+|rowspan="3"|Troop Destroyer<br>[[File:Troop Destroyer.png|50x50px]]
+|1
+|Destroy 420 enemy Troops
+|3,000{{Icon|I=Gold}}<br>100{{Icon|I=XP}}
+|-
+|2
+|Destroy 1,200 enemy Troops
+|200{{Icon|I=Common Wild Card}}<br>100{{Icon|I=XP}}
+|-
+|3
+|Destroy 2,100 enemy Troops
+|5,000{{Icon|I=Gold}}<br>100{{Icon|I=XP}}
+|-
+|rowspan="3"|No Escape<br>[[File:No Escape.png|50x50px]]
+|1
+|Hit 12 Troops with a single deploy a total of 50 times
+|6,000{{Icon|I=Gold}}<br>150{{Icon|I=XP}}
+|-
+|2
+|Hit 12 Troops with a single deploy a total of 150 times
+|8,000{{Icon|I=Gold}}<br>150{{Icon|I=XP}}
+|-
+|3
+|Hit 12 Troops with a single deploy a total of 300 times 
+|10,000{{Icon|I=Gold}}<br>150{{Icon|I=XP}}
+|}
+</div></center>
+
+==History==
+2016
+*The Arrows [[Cards|card]] was added with [[Version History#Softlaunch on iOS (4/1/2016)|Clash Royale's game launch]] on 4/1/2016.
+*On 2/2/2016, the [[Version History#February 2016 Update (2/2/2016)|February 2016 Update]] decreased the Arrows' Damage by 4%.
+*On 19/2/2016, a [[Version History#Balance Changes (19/2/2016)|Balance Update]] decreased the Arrows’ [[:Category:Tower Troop Cards|Crown Tower]] Damage to 40% of their full Damage (from 50%).
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]] increased the {{Rarity|Common}} card Level Cap to 13 (from 12).
+2017
+*On 13/3/2017, the [[Version History#March 2017 Update (13/3/2017)|March 2017 Update]], increased the Arrows' Projectile Speed to 800 (from 600). It also slightly changed its card description. It used to say, ''“Arrows pepper a large area, damaging everyone hit. Reduced damage to Crown Towers.''”.
+*On 12/12/2017, the [[Version History#Electrifying Update (12/12/2017)|Electrifying Update]] decreased the Arrows’ Crown Tower Damage to 35% of their full Damage (from 40%).
+2018
+*On 25/4/2018, the [[Version History#Clan Wars Update (25/4/2018)|Clan Wars Update]] allowed the Arrows to be played directly on the river.
+*On 1/10/2018, a [[Version History#Balance Changes (1/10/2018)|Balance Update]] fixed a bug where troops that were spawned after their parent [[:Category:Troop Cards|troops]] died would be immune to [[:Category:Spell Cards|Spell]] Damage.
+*On 12/12/2018, an [[Version History#Optional Update (12/12/2018)|Optional Update]] fixed an issue where Arrows' [[Star Points|Star Levels]] used the sound effects of [[Goblin Barrel]].
+2019
+*On 3/6/2019, a [[Version History#Balance Changes (3/6/2019)|Balance Update]] increased the Arrows' Projectile Speed to 1100 (from 800).
+*On 26/11/2019, the [[Version History#End of November 2019 Update (26/11/2019)|End of November 2019 Update]], decreased the Arrows' Damage by 58%, but made them damage troops in three volleys of Arrows instead of one, causing their Total Damage to be increased by 23%. It also added a card render to the Arrows' card info screen.
+2020
+*On 4/8/2020, a [[Version History#Balance Changes (4/8/2020)|Balance Update]] decreased the Arrows' Crown Tower Damage to 30% of their full Damage (from 35%).
+2021
+*On 27/10/2021, the [[Version History#Champions Update (27/10/2021)|Champions Update]] increased the Level Cap of all cards to 14 (from 13).
+2022 
+*On 27/6/2022, the [[Version History#Summer 2022 Update (27/6/2022)|Summer 2022 Update]] added the No Escape [[Card Mastery]] task for the Arrows.
+*On 26/10/2022, the [[Version History#2022 Quarter 3 Update (26/10/2022)|2022 Quarter 3 Update]] changed the Arrows' behavior so that they deals damage in multiple 1.4-tiles areas instead of one 4-tiles area. This was done to prevent [[Monk]] from deflecting the entirety of Arrows. Its effective Attack Radius remained unchanged.
+*On 27/10/2022, a [[Version History#Maintenance Break (27/10/2022)|maintenance break]] re-added missing visual effects for Arrows' Star Levels.
+2023 
+*On 27/3/2023, the [[Version History#Losers Update (27/3/2023)|Losers Update]] fixed an issue where Arrows dealt double damage to [[King's Tower|Mega King Towers]] in [[2v2]].
+*On 19/6/2023, the [[Version History#Card Evolution Update (19/6/2023)|Card Evolution Update]] increased the Level Cap of all cards to 15 (from 14).
+2024
+*On 6/8/2024, a [[Version History#Balance Changes (6/8/2024)|Balance Update]] decreased the Arrows' Crown Tower Damage to 25% of their full damage (from 30%).
+2025
+*On 4/3/2025, a [[Version History#Balance Changes (4/3/2025)|Balance Update]] decreased the Arrows' Attack Radius to 3.5 tiles (from 4 tiles).
+*On 24/11/2025, the [[Version History#Level 16 Update (24/11/2025)|Level 16 Update]] increased the Level Cap of all cards to 16 (from 15).
+2026
+
+* On 1/6/2026, a Balance Update decreased the Arrows' Crown Tower Damage to 20% of their full damage (from 25%)
+
+==Gallery==
+<gallery>
+File:ArrowsCardPreRelease.png|Arrows' card image before its release.
+File:Arrows card render.png|Current card render.
+</gallery>
+
+==Trivia==
+*The Arrows are 1 of 10 [[cards]] associated with archery, with the others being [[Archers]], [[Tower Princess]], [[X-Bow]], [[Princess]], [[Magic Archer]], [[Super Magic Archer]], [[Super Archers]], [[Archer Queen]], and the [[Little Prince]].
+**The Arrows, Archers, and the Tower Princess are the only cards associated with archery that are unlocked in [[Training Camp]].
+**In the Japanese and Vietnamese language settings of the game, the Arrows' name translates to "Rain of Arrows".
+**In the Chinese language setting of the game, it is revealed that the barrage consists of 10,000 arrows.
+*The Arrows are 1 of 7 cards that are already unlocked for the player when they start playing the game, the others being [[Minions]], Archers, [[Knight]], Tower Princess, [[Giant]], and [[Fireball]]. Despite this, the game recognizes that those cards are unlocked in the Training Camp.
+*The Arrows are one of the first [[:Category:Spell Cards|spell]] cards to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the [[Zap]], Fireball, and [[Rocket]].
+*The Arrows are one of the first spells to be featured in a [[Loading Screens|Loading Screen]], alongside the Fireball and Rocket.
+*The Arrows are one of the first spells to receive a card render, alongside the Rocket and [[Barbarian Barrel]].
+*The Arrows' card render is identical to its card image.
+*Although not available as a spell, the Arrows reappear as [https://squad-busters.fandom.com/wiki/Archer Archer]'s active ability in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+** In Clash Royale, it is called "Arrows", but in Squad Busters, it is called "Arrow Volley".
+*The Arrows are the subject of certain cosmetics in the game. More specifically:
+**The Arrows are the subject of a few [[Clans|Clan]] badges.
+**The Arrows are the subject of an [[Emotes|Emote]].
+*The Arrows were featured in the winning decks of multiple Clash Royale Tournaments. More specifically:
+**The Arrows were featured in the winning deck of the [https://www.youtube.com/watch?v=VxEzjdKQ4HA Clash Royale Helsinki Tournament], by a player called Jason.
+**The Arrows were featured in the winning deck of the [https://www.youtube.com/live/vRrgTfqRdpw?si=YDASUydL7qNm9QZz Clash Royale League 2023 Tournament], by a player called Mugi.
+**The Arrows were featured in the winning deck of the [https://www.youtube.com/live/Sa0QOSJ5AVY?si=Hlcj6efCnFhxfDYe Clash Royale League 2024 Tournament], by a player called Mohamed Light.
+*The initial balance change for Arrows on the [[Version History#Balance Changes (4/3/2025)|4/3/2025 Balance Update]] was a Crown Tower Damage decrease to 10% (from 25%), but it was changed to an Area Radius decrease [https://royaleapi.com/blog/season-69-balance-wip-march-2025?lang=en last minute].
+*Before the Arrows' card release, Arrows' Damage were increased by 9%.
+==In other languages==
+{{Other languages
+|cn=万箭齐发|cnmeaning=Volley of ten thousand arrows.
+|kr=화살
+|jp=矢の雨|jpmeaning=Rain of arrows
+|fr=Flèches
+|de=Pfeile
+|es=Flechas
+|it=Flecce
+|nl=Pijlen
+|no=Piler
+|pt=Flechas
+|tr=Oklar
+|fi=Nuolet
+|ru=Стрелы
+|cnt=萬箭齊發|cntmeaning=Volley of ten thousand arrows.
+|ar=سهام
+|fa=تیر
+|ms=Anak Panah
+|id=Panah
+|th=ลูกธนู
+|vi=Mưa Tên|vimeaning=Rain of arrows}}
+</div></center>
+
+{{Navigation|Card}}
+
+[[fr:Flèches]]
+[[de:Pfeile]]
+[[es:Flechas]]
+[[it:Frecce]]
+[[ja:矢の雨]]
+[[ko:화살]]
+[[ru:Стрелы]]
+[[pt-br:Flechas]]
+[[zh:万箭齐发]]

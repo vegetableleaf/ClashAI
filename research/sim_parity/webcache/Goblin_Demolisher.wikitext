@@ -1,0 +1,185 @@
+{{DISPLAYTITLE: <span style="color: #ffa31a;">Goblin Demolisher</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=4|Rarity=Rare|Type=Troop|Arena=Spooky Town|ReleaseDate=17 June 2024}}{{SubpageNavBox|MergeTactics=yes}}{{Quote|Boom goes dynamite! Goblin Demolisher deals area damage and explodes on death. At low health, he charges towards the nearest building.}}
+
+The Goblin Demolisher is a {{Rarity|Rare}} [[Cards|card]] that is unlocked from the [[Arenas|Spooky Town (Arena 12)]]. It spawns an area-damage, ground-targeting, medium-ranged, ground [[:Category:Troop Cards|troop]] with high hitpoints and moderate damage. When his hitpoints are lowered below 50%, he changes into a very fast, [[:Category:Building Cards|building]]-targeting troop that charges toward the nearest building, dealing high damage and inflicting knockback after defeat. He appears to be a larger [[Goblins|Goblin]] with a small team-colored feather on his head and ash marks on his skin, wears stained brown goggles and a wooden barrel with straps filled with dynamite, and holds a dynamite in each hands. A Goblin Demolisher card costs 4 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Goblin Demolisher Common Modifier.png|45x45px]] Common: Go the Distance===
+{{Quote|+150% range}}
+Can attack at over double the distance.
+
+===[[File:Goblin Demolisher Rare Modifier.png|45x45px]] Rare: Skippin' Bombs Like Stones===
+{{Quote|Bouncing attack}}
+Bomb is able to bounce multiple units further.
+
+===[[File:Goblin Demolisher Epic Modifier.png|45x45px]] Epic: Explosions Everywhere===
+{{Quote|Bomb trail}}
+Rapidly drops bombs when under half health.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Goblin Demolisher Card}}
+*The Goblin Demolisher can be utilized as a mix between a [[Bomber]] and a [[Wall Breakers|Wall Breaker]] depending on the amount of hitpoints the Goblin Demolisher has left. The first 50% of his hitpoints can be used to take out opposing swarms on defense, such as [[Skeleton Army]] and [[Goblin Gang]], while the last 50% of his hitpoints can be used to increase pressure in a counterattack.
+*The Goblin Demolisher’s death explosion is comparable to a [[Giant Skeleton]]'s death bomb, dealing less damage and a slightly smaller radius. Fortunately, the Goblin Demolisher’s cheaper cost and instant explosion makes him more reliable and versatile, especially as a reactionary device for oncoming pushes.
+*The Goblin Demolisher can be ignored under the right circumstances as he will only do about a fourth of the [[Tower Princess]], a fourth of the [[Dagger Duchess]], and a third of the [[Cannoneer]]'s hitpoints respectively if deployed at the bridge.
+*For an equal Elixir trade, the [[Fireball]] can fully counter the Goblin Demolisher. This is due to the Fireball doing just enough to put him into his charging phase, allowing the [[:Category:Crown Towers|Crown Tower]] and the charge's lifetime to take him out before the blast can connect.
+**Although, the [[Void]] is actually a better counter to a lone Goblin Demolisher as its single target damage strikes will get him low enough to be taken out by the Crown Tower for a +1 positive Elixir trade.
+*With the assistance of an [[Ice Spirit]] or [[Electro Spirit]] and [[Skeletons]], the [[Dagger Duchess]] can fully counter the Goblin Demolisher for a +2 Elixir trade. However, if the Skeletons are deployed before the Goblin Demolisher starts charging, the Skeletons will be instantly taken out; this will result in the Goblin Demolisher getting his death damage onto the Crown Tower.
+*The [[Prince]] has a particularly strong synergy with the Goblin Demolisher as the Goblin Demolisher can help the Prince with swarm cards and punishes most defensive troops with his death damage pushback and splash damage. On the other hand, the Prince applies most of the pressure with his quick charges and heavy damage against mini tanks, such as [[Mini P.E.K.K.A.|Mini P.E.K.K.A]] or [[Lumberjack]], that are capable of dealing with the Goblin Demolisher.
+*The Goblin Demolisher also has a strong synergy with the [[Goblin Drill]]. His moderate hitpoints allows him to tank the Crown Tower and poorly placed troops as the Goblin Drill does the majority of the damage. Additionally, he will charge toward the Crown Tower after a while, pushing tankier troops away from the Goblin Drill while destroying frailer troops upon connection. This combination can result in very heavy damage to the Crown Tower if handled poorly across all tower troops.
+*Despite being incapable of attacking air troops like the [[Baby Dragon]], [[Electro Dragon]], [[Flying Machine]], [[Phoenix]], [[Mega Minion]], or [[Skeleton Dragons]], the Goblin Demolisher’s death explosion can. This can be impeccably useful for grouped together air pushes that contain [[Minion Horde]] or [[Bats/Evolution|Evolved Bats]]; the death explosion will instantly destroy them.
+*If placed properly and with the help of a Crown Tower, preferably Cannoneer, the Goblin Demolisher can fully counter [[Barbarians/Evolution|Evolved Barbarians]] and [[Royal Recruits]] for a +1 and +3 Elixir trade respectively.
+*Thanks to his low sight range and decent range, he cannot be kited into the other lane by an [[Ice Golem]]. Thus, the Ice Golem should be deployed in the same lane as Goblin Demolisher. The Ice Golem will tank the dynamite thrown at him, but the blast will connect to the Crown Tower as a trade off for a +2 positive Elixir trade.
+*If placed properly, any [[:Category:Building Cards|building]] can be used as a reliable counter to the Goblin Demolisher.
+**Defensive buildings, such as [[Cannon]], [[Tesla]], and [[Bomb Tower]], should be deployed in the center of your side of the [[Arenas|arena]]. This will allow them to kite him over and swiftly defeat him with the help of a Crown Tower.
+**[[Goblin Cage]] and [[Tombstone]] should be deployed directly on top of him after he comes within range of the Crown Tower. This will allow the Goblin Brawler and the Skeletons to damage the Goblin Demolisher. This will also keep the Goblin Brawler fairly healthy for a counterattack.
+**Spawner buildings besides Tombstone, like [[Goblin Hut]] and [[Barbarian Hut]], are less effective due to the Goblin Demolisher’s area damage and their high Elixir costs, making them less recommended when countering him.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}{{StatusEffects}}
+{{StatisticsSubheader|Goblin Demolisher Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||1.2 sec||0.5 sec||Medium (60)||1 sec||5||1.5||400||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+{{StatisticsSubheader|Kamikaze Goblin Demolisher Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Activation<br />{{Icon|I=Activation}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Lifetime<br />{{Icon|I=Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Death Damage Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+|-
+|50%||Very Fast (120)||10 sec||Melee: Short (0.5)||2.5||[[:Category:Building Cards|Buildings]]||Ground||Troop
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1300 }}
+{{#vardefine: dmg_11 | 186 }}
+{{#vardefine: atk_speed | 1.2 }}
+{{#vardefine: life | 10 }}
+{{#vardefine: death_11 | 404 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Area Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Damage Per Second<br />{{Icon|I=DPS}}
+! scope="col" |Kamikaze Goblin Demolisher Hitpoints lost per second<br />{{Icon|I=Time}}
+! scope="col" |Death Damage<br />{{Icon|I=Death Damage}}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) / {{#var:life}} / 2 round 1 }} || {{#expr: {{#var:death_11}} * (1.1^(3-11)) round 0 }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) / {{#var:life}} / 2 round 1 }} || {{#expr: {{#var:death_11}} * (1.1^(4-11)) round 0 }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) / {{#var:life}} / 2 round 1 }} || {{#expr: {{#var:death_11}} * (1.1^(5-11)) round 0 }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) / {{#var:life}} / 2 round 1 }} || {{#expr: {{#var:death_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) / {{#var:life}} / 2 round 1 }} || {{#expr: {{#var:death_11}} * (1.1^(7-11)) round 0 }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) / {{#var:life}} / 2 round 1 }} || {{#expr: {{#var:death_11}} * (1.1^(8-11)) round 0 }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) / {{#var:life}} / 2 round 1 }} || {{#expr: {{#var:death_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) / {{#var:life}} / 2 round 1 }} || {{#expr: {{#var:death_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#expr: {{#var:hp_11}} / {{#var:life}} / 2 round 1 }} || {{#var:death_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) / {{#var:life}} / 2 round 1 }} || {{#expr: {{#var:death_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) / {{#var:life}} / 2 round 1 }} || {{#expr: {{#var:death_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) / {{#var:life}} / 2 round 1 }} || {{#expr: {{#var:death_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) / {{#var:life}} / 2 round 1 }} || {{#expr: {{#var:death_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) / {{#var:life}} / 2 round 1 }} || {{#expr: {{#var:death_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 190,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|100 {{BASEPAGENAME}} cards<br>50 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 570,000 Damage to enemy Troops or buildings
+|4,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 950,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>100 {{Icon|I=XP}}
+|-
+| rowspan="3" |Troop Destroyer <br> [[File:Troop Destroyer.png|50x50px]]
+|1
+|Destroy 700 enemy Troops
+|6,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|2
+|Destroy 2,000 enemy Troops 
+|100 {{Icon|I=Rare Wild Card}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Destroy 3,500 enemy Troops 
+|9,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|}
+</div>
+</center>
+==History==
+2024
+*The Goblin Demolisher card was added to the game on 17/6/2024, in the [[Version History#Goblin World Update (17/6/2024)|Goblin World Update]].
+*On 2/7/2024, a [[Version History#Balance Changes (2/7/2024)|Balance Update]], decreased the Goblin Demolisher’s death damage radius to 2.5 tiles (from 3 tiles), his death damage by 13.1%, and his attack time interval to 1.2 seconds (from 1.1 seconds).
+*On 8/10/2024, a [[Version History#Balance Changes (8/10/2024)|Balance Update]], decreased the Goblin Demolisher’s lifetime to 7 seconds (from 10 seconds).
+*On 30/10/2024, the [[Version History#Removal of Goblin Queen's Journey Update (30/10/2024)|Removal of Goblin Queen's Journey Update]], moved the [[Arenas|Arena]] to unlock the Goblin Demolisher from Goblin Mines to Spooky Town.
+2025
+*On 8/1/2025, a [[Version History#Balance Changes (8/1/2025)|Balance Update]], increased the Goblin Demolisher’s lifetime to 8 seconds (from 7 seconds).
+*On 3/6/2025, a [[Version History#Balance Changes (3/6/2025)|Balance Update]], increased the Goblin Demolisher’s lifetime to 10 seconds (from 8 seconds).
+*On 1/12/2025, a balance update increased the Goblin Demolisher's attack speed to 1.1 seconds (from 1.2 seconds)
+
+==Gallery ==
+<gallery>
+File:Goblin Demolisher card render.png|Current card render.
+File:Goblin Demolisher Preview.gif|Current card preview
+File:Goblin Demolisher 1.png|Goblin Demolisher
+</gallery>
+
+==Trivia ==
+*Goblins are small, grotesque, monstrous creatures that appear in the folklore of multiple European cultures. First attested in stories from the Middle Ages, they are ascribed conflicting abilities, temperaments, and appearances depending on the story and country of origin, ranging from mischievous household spirits to malicious, bestial thieves. They often have magical abilities similar to a fairy or demon, such as the ability to shapeshift. Similar creatures include [https://en.wikipedia.org/wiki/Duende duendes], [https://en.wikipedia.org/wiki/Kobold kobolds], [https://en.wikipedia.org/wiki/Leprechaun leprechauns], and [https://en.wikipedia.org/wiki/Ghoul ghouls].
+**The Goblin Demolisher is 1 of 17 [[cards]] associated with [[Goblins]], with the others being [[Spear Goblins]], [[Goblin Gang]], [[Baby Goblins]], [[Dart Goblin]], [[Suspicious Bush]], [[Goblin Cage]], [[Goblin Hut]], [[Goblin Giant]], [[Goblin Barrel]], [[Goblin Curse]], [[Goblin Drill]], [[Goblin Machine]], [[Party Rocket]], [[Party Hut]], [[Goblinstein]], and of course, Goblins.
+*The dynamite used by the Goblin Demolisher is the same held by the [[Wall Breakers/Evolution|Evolved Wall Breakers]].
+*The barrel of the Goblin Demolisher looks similar to the hull of the [[Rocket]].
+*Before the Goblin Demolisher's card release, the Goblin Demolisher’s death damage radius was increased to 3 tiles (from 2.5 tiles).
+
+{{Navigation|Card}}

@@ -1,0 +1,243 @@
+{{DISPLAYTITLE:<span style="color: #99CCFF;">Minions</span>}}{{Protection}}{{MagicWords}}{{ClashofClansLink|Minion}}{{Card Infobox|Cost=3|Rarity=Common|Type=Troop|Arena=Training Camp|ReleaseDate=4 January 2016}}{{Quote|Three fast, unarmored flying attackers. Roses are red, minions are blue, they can fly, and will crush you!}}
+
+The Minions is a {{Rarity|Common}} [[Cards|card]] that is unlocked in the [[Training Camp]]. It spawns three single-target, air-targeting, short-ranged, and air [[:Category:Troop Cards|troops]] with low hitpoints and low damage, deployed in a triangular formation. The Minions take the appearance of small, light blue gargoyles with team-colored eyes, an underbite, two large, team-colored horns, two stubby silver wings on their backs, and large hands and legs with vicious-looking claws covered in Dark Elixir, while wearing two team-colored bands on their arms, and producing blackish purple orbs of Dark Elixir as their ammunition. They are also the same as the Minions spawned by the [[Minion Horde]] card. A Minions card costs 3 {{Icon|I=Elixir}} to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Minions Card}}
+*Being cheap [[:Category:Troop Cards|troops]] with decent total damage, Minions can be a great way to assist ground troops in taking out enemy units, or even take them down on their own. They are also air troops, which means they can't be attacked by ground units, though this can be detrimental if it's better to take down an opposing troop by distracting it with a ground unit and letting the [[:Category:Crown Towers|Crown Tower]] chip its hitpoints.
+*Minions can be used to support high-hitpoint troops like [[Giant]], [[Royal Giant]], [[Golem]], and [[Lava Hound]] by distracting some of their counters, like [[Inferno Tower]] and [[Inferno Dragon]].
+*Minions with no support present minimal threat on attack due to their low hitpoints. However, if they manage to get to the Crown Tower without losing members and at full health, they can still do notably high damage. If the player's Minions are unscathed after a defense, they can play a tank in front of them for a much more threatening counterpush.
+**[[Miner]] pairs well with Minions, as he will reach the Crown Tower directly and provide a decent health pool, which deny assistance from the opponent's Crown Tower against Minions while not being vulnerable to [[:Category:Spell Cards|spells]] or splash units. Even if just one Minion is still alive after a defense, tanking for it with a Miner will force the opponent to address both. It is a decent punishment play when ahead on [[Elixir]] or when the opponent's counter for Minions is out of hand. A similar strategy works with the [[Goblin Drill]], however, one should note that the [[Goblin Drill/Evolution|Evolved Goblin Drill]] won't tank for the Minions due to its threshold mechanic.
+**It is considerable to use a [[Freeze]] to disable the Crown Tower and any nearby [[cards]] for 4 seconds when attacking with Minions. This is especially punishing when the opponent is caught off-guard, for example, if they rely on a [[Zap]] to counter them. However, this is risky, as Minions are weak to stronger spells, it costs a heavy 7 Elixir investment, and, without the surprise factor, follow-up attempts may not be as successful.
+**The [[Tower Princess]] and [[Royal Chef]] are able to 2HKO them if they are 1 Level higher. Because of this, leveling Minions up is a high priority, otherwise offensive attempts with them will be far less effective. A similar principle works with [[Archers]].
+*Since Minions are pretty easy to counter on offense, even with another troop tanking for them (because they can quickly distance from their support units due to being fast-moving air troops), it's advised to conserve the Minions purely for defensive purposes, and avoid building counterpushes with them. However, if the opponent lacks Area of Effect anti-air units, such as [[Skeleton Dragons]], [[Wizard]], [[Witch]], [[Magic Archer]], [[Princess]], [[Firecracker]], or [[Executioner]], then the Minions are pretty viable for a counterpush, not being able to be taken down easily without the aid of spells.
+*As Minions are air troops, they are able to bypass the river, which means that they can quickly reach all buildings put near, forcing the opponent to put the building in awkward positions or to spend extra Elixir to defend against them. Because of this, alongside their speed and range, they are useful to take down buildings like [[Cannon]] and [[Tesla]] when they're deployed to counter a friendly [[Hog Rider]], to distract and deal some damage to Inferno Tower to aid slow moving tanks like [[Valkyrie]], [[P.E.K.K.A.]], [[Battle Healer]], [[Giant Skeleton]], [[Sparky]], [[Bowler]], [[Goblin Machine]], [[Skeleton King]], and [[Mighty Miner]], or to take down [[Mortar]]s or [[X-Bow]]s placed near the river, as their high damage per second when all three Minions are alive can take down [[:Category:Building Cards|buildings]] pretty quickly.
+*Spells are a great way to counter Minions, given that they have low hitpoints.
+**[[Arrows]] are able to defeat Minions for a neutral Elixir trade, destroying them in 2 of the 3 waves. However, the opponent can take advantage of this and bait out the Arrows, before dropping more damaging swarms that can be defeated with Arrows, such as [[Minion Horde]].
+**[[Royal Delivery]] can counter the Minions for a neutral Elixir trade, while spawning a [[Royal Recruits|Royal Recruit]] to assist with additional defense. This is most recommended to be used when another card is tanking for the Minions.
+**[[Vines]] can take care of them for a neutral Elixir trade. However, if the opponent has healthier troops on the Vines' area, then some Minions will survive, due to those troops taking the Vines' targeting priority.
+**[[Zap]], [[Giant Snowball]], and [[Rage]] can weaken Minions enough to allow the player's Tower Princess to OHKO them. The additional effects of these spells also buys them more time in case the opponent decides to support them (or, in the case of Rage, improve allied troops' performance). Those spells can also be used to assist anti-air troops in taking them down in less hits. An [[Ice Golem]] or a Spirit card can also be paired with those spells to nullify the Minions' remaining hitpoints, with the latter also being a neutral Elixir trade.
+**While it cannot hit them at all, a [[Barbarian Barrel]] will be able to spawn a [[Barbarians|Barbarian]] and distract the Minions long enough to allow the Crown Tower to defeat them. Although this is a +1 Elixir trade, this should only be used if the Barbarian Barrel is also distracting another troop.
+**The trio can be destroyed entirely within 2 hits from the [[Void]], provided that they are the only troops inside it. The player can lower the damage of the Void by placing a troop card of at least 2 troops to allow them to survive the entire spell. This is enough to counter the Minions for a neutral Elixir trade or force the opponent to spend more Elixir to save their Minions.
+*Due to their low Elixir cost, cheap distraction cards are the most logical way to counter Minions, while also saving stronger counters for other cards and potentially creating counterpushes.
+**[[Skeletons]] or any Spirit card can be deployed in the center to stall them long enough for the Crown Towers to take them out. [[Fire Spirit]] can also be placed closer to them, because its damage is high enough to allow the [[:Category:Crown Towers|Crown Tower]] to OHKO them.
+**Similarly, an Ice Golem can distract them enough to allow the Crown Tower to take them out. The Ice Golem's death nova will further weaken them, as well as slow them down, further decreasing any chances for the Minions to deal additional damage.
+**Multi-troops ranged units, like Archers, [[Spear Goblins]], and [[Rascals]], are effective in countering lone Minions, since they can distract the Minions long enough to kill them with the assistance of the Crown Tower. The Spear Goblins have less chances of being hit by them, while also being a +1 Elixir trade.
+***Compared to the Archers, the [[Archers/Evolution|Evolved Archers]] deal more damage, which is enough to 2HKO the Minions, making them more effective against them. They also have longer range, which may allow them to counter them unharmed.
+**Other cheap anti-air ranged units, like [[Dart Goblin]], [[Princess]], and [[Firecracker]], are able to handle Minions well. Dart Goblin has a fast hit speed and retarget speed, allowing him to defeat them quickly, while Princess and Firecracker deal splash damage, allowing them to hit multiple Minions at once. Both Dart Goblin and Princess 2HKO them, while having a long enough range to safely hit them, whereas the Firecracker's combined shrapnel damage is high enough to defeat the Minions with a correct alignment. Even if she's not positioned properly, only one Minion will survive, and with a silver of health.
+*When placed on top of opposing troops, Minions are able to take down some anti-air units that would otherwise counter them, due to being able to survive a single hit from most of them, while quickly dealing a lot of damage back to them. This applies when Minions are dealing with a [[Musketeer]], [[Flying Machine]], Dart Goblin, [[Electro Wizard]], or an [[Archer Queen]]. [[Three Musketeers]] can also be countered that way if they're distracted beforehand. While the Firecracker can one-shot them, she will be distracted long enough for the Crown Tower to take her out. The Minions can also be placed in such a way that the Firecracker causes a [[King's Tower|King Tower]] activation while still being defeated by the Crown Tower before she shoots again. This can't be done with the [[Cannoneer]] and the timing is stricter with the [[Dagger Duchess]].
+*Because of their high hit speed and notable range, Minions are good choices to defeat slow-moving mini-tanks like [[Knight]], [[Mini P.E.K.K.A.]], Valkyrie, [[Hog Rider]], [[Battle Healer]], [[Balloon]], Bowler, [[Lumberjack]], Goblin Machine, [[Golden Knight]], Skeleton King, [[Goblinstein]], and [[Mighty Miner]], being able to chip them quickly. This strategy works even better if the opponent's spells have been baited beforehand. If they're supported by other cards, tankier troops can be taken down, like Giant, P.E.K.K.A., Royal Giant, [[Giant Skeleton]], [[Goblin Giant]], Golem, [[Mega Knight]], [[Electro Giant]], Lava Hound, or [[Elixir Golem]].
+**On the contrary, a mini-tank combined with Minions can defeat many non-building-targeting troops. The mini tank provides splash damage protection and ground distraction, while Minions provide considerable damage output and are not hindered by ground troops, providing more options in terms of placement.
+**If [[Prince]]'s charge is interrupted by a [[:Category:1-Elixir Cards|1-Elixir troop]], Minions will do damage to him quickly enough to take him down for a +1 Elixir trade. [[Dark Prince]] can also be countered if the distraction unit is [[Electro Spirit]] or [[Ice Spirit]], resulting in a neutral Elixir trade.
+**Goblin Giant's backpack Spear Goblins will chip the Minions' health, making them less effective at dealing with him if the Spear Goblins are not distracted beforehand. On the contrary, Minions's high hit speed can complement the Spear Goblins' chip damage pretty well, being able to take a notable number of units.
+**Against a [[Royal Ghost]], the player should attempt to distract him with another troop so that he attacks it and becomes visible to enemy troops, allowing for the Minions to quickly take them down. Otherwise, the Royal Giant and the Minions will ignore each other. A similar strategy works with the [[Knight/Evolution|Evolved Knight]] and his damage reduction shield, except that the Minions can target the Knight.
+**Minions' range is high enough to be able to bypass Electro Giant's Zap Pack when deployed correctly to the side. Even if they aren't positioned as good as they should, only one Minion will be defeated by him. On the other hand, an allied Electro Giant will get a lot of value from Minions because, much like Goblin Giant's Spear Goblins, they will complement the Electro Giant's Zap Pack damage pretty well.
+**Because they're aerial units, Minions are a good support card for a Lava Hound. They will be able to quickly chip troops used to counter him, while also reaching buildings faster. They will also help the Balloon, a card commonly paired with Lava Hound, in moving faster when the player wants a lighter Balloon push.
+*Minions are usually able to neutralize non-building targeting air troops with the help of a Crown Tower. Against melee troops, they should be played at a short distance to allow their deploy timer to finish. Against ranged troops, they should be deployed on top of them to negate the range advantage. Against air-splash troops such as the Skeleton Dragons and [[Baby Dragon]], the player should attempt to surround the splasher with Minions or wait until it locks onto another unit first. 
+**Against Baby Dragon, it is possible for one Minion to dodge an attack from the Baby Dragon, especially with their range, allowing it to deal extra damage to it. Placing the Minions 6 tiles from the bridge and 4 tiles from the Crown Tower after the Baby Dragon is 2 tiles from the bridge will allow this to happen. This way, the Minions can stop the Baby Dragon for a +1 Elixir trade.
+*Minions are effective at countering a Balloon, as they can obstruct its path and defeat it on their own due to their high damage per second, and the Balloon will never target them as it only attacks ground and targets buildings. If the Balloon is paired with Lava Hound or Lumberjack, the hefty cost of those pushes will likely make the opponent unable to spell the Minions, taking care of the whole investment once the defender correctly addresses Lava Hound or Lumberjack with another card to distract them.
+**Conversely, they synergize well with the Balloon. Not only do they deny specific defensive approaches, like [[Mega Minion]], [[Bats]], and [[Phoenix]], their fast movement speed and combined mass can also push the Balloon towards the Crown Tower more quickly, as well as reach defensive buildings. If needed, the Minions can be put in such a way that the Balloon tanks some damage, like against a Musketeer, or vice-versa.
+*An [[Musketeer/Evolution|Evolved Musketeer]] can counter the Minions with her three sniper shots, since they do more than enough damage to OHKO them. However, the player could benefit from this by using a card that the Evolved Musketeer would get more value countering with her sniper shots, like Baby Dragon.
+*Against a [[Skeleton Barrel]], the Minions can be placed on top of it. After destroying it, the Minions will fly away from it, avoiding its death damage, only to return back afterwards to defeat the Skeletons that spawn. This is a good way to counter the Skeleton Barrel for a neutral Elixir trade, while also reducing Crown Tower damage taken and saving the Minions' hitpoints for a counterattack. This should not be done against the [[Skeleton Barrel/Evolution|Evolved Skeleton Barrel]], as it comes with two drops, so they will be destroyed in the process while the second drop has all of Skeletons alive.
+*Minions can negate a great portion of damage from [[Graveyard]] due to their quick hit speed and the fact that they can't be hindered by the Crown Tower's hitbox. However, they are vulnerable to certain spells, particularly [[Poison]], commonly used to accompany the Graveyard, being able to quickly take down the Minions, so one should not be overly reliant on them.
+*Skeleton Dragons, Wizard, Witch, Magic Archer, [[Hunter]], and Executioner are good anti-air units to counter the Minions. Although they're a negative Elixir trade, which means that cheaper troops could be considered instead, the troop used to counter them will be left with all of their hitpoints and force the opponent to spend more Elixir to take them down.
+**Wizard will take out Minions with a single attack, which can come in handy when Minions are behind a tank. The same can be said for the Executioner, although he requires a full axe throw to counter them. Executioner is more spell resistant than Wizard, as he can survive a [[Lightning]], and will also be beneficial to counter swarm cards behind tank units later in the game.
+**While the Witch can only 2HKO the Minions, the Skeletons that spawn from her will distract them for long enough for her, with or without the Crown Tower, to take them down. A similar principle applies to [[Mother Witch]], who will also create Cursed Hogs from defeating the Minions to aid in distracting them and pressuring the Crown Tower.
+**The [[Furnace]] is a great counter to the Minions because the Fire Spirits spawned will leave them vulnerable enough for both the Furnace and a Crown Tower to OHKO them. Afterwards, the Furnace can be used for a counterpush.
+*An [[Tesla/Evolution|Evolved Tesla]]'s pulses can weaken Minions and might take them out if they have been damaged previously. This helps when they are attempting to distract the player's troops for a more dangerous unit. A similar principle also works with the [[Cannon/Evolution|Evolved Cannon]], with the barrage damage being high enough to defeat them.
+*The [[Electro Dragon]] is able to chain onto the three Minions with one attack, while also 2HKOing them. Though this costs a -2 Elixir trade, he will be very healthy for a counterpush. The [[Electro Dragon/Evolution|Evolved Electro Dragon]] may be able to finish them with only one attack if it does not bounce away from them or if it does not hit the Crown Tower.
+*Minions can take down a lone [[Battle Ram]] when placed a in front of it. However, the [[Barbarians]] that spawn once it dies may be able to get some hits on the Crown Tower, requiring the usage of another distraction card, such as [[Skeletons]], Electro Spirit, or Ice Spirit. This results in a neutral Elixir trade and healthy Minions that can be used for a counterattack. This also applies to the [[Battle Ram/Evolution|Evolved Battle Ram]].
+*If properly supported, Minions can be a great tool in defeating high-cost cards that can pressure both lanes, like [[Royal Recruits]], [[Royal Hogs]], and [[Elite Barbarians]], being able to provide extra damage to stop a push involving said troops. The same can be said about the inverse: the Minions will aid dual-lane cards when trying to kill enemy units that try to defeat them. This is specially true for Royal Recruits pushes, as they might cause the opponent to neglect using spells, though the Minions and the Royal Recruits' shields may instead encourage their usage.
+*They can be quite effective against a Golem. The Minions slowly chip away at the Golem alongside the Crown Tower, countering him for a +5 Elixir trade. If placed correctly, they can even avoid the death damage of the Golem from hitting them, and even if misplaced, they can survive it and be pushed away from the Golemites, saving them from their death damage.
+*If they're distracted with something like an Ice Golem, Minions will quickly take out a Giant Skeleton, Mega Knight, or a [[Boss Bandit]] on defense, preventing them from connecting to the Crown Tower. However, they should only be used as a backup option, since they're easily killed by spells, which means more troops must be placed in order to take the unit down in case the Minions are defeated.
+*Depending on what the player needs in their [[Battle Decks|deck]], Minions can be substituted with other similar cards.
+**Bats can be a replacement for Minions. However, they have significantly lower hitpoints, slightly lower damage and thus can be one-shot by more air-targeting troops, like Archers, Spear Goblins, Witch, Dart Goblin, Hunter, or Princess, or spells like Zap or Giant Snowball. They also pose much less of a threat when used for attacking. However, they come in greater numbers, cost less Elixir, and are resistant to Monk's ability.
+**For the same Elixir cost, the Mega Minion has higher hitpoints, allowing it to survive most spells, along with more damage on its own, enough to one-shot certain troops that the Minions cannot, such as Archers, Princesses, Dart Goblins, and [[Rascals|Rascal Girls]]. However, its total damage is lower than that of 3 Minions due to its slow hit speed, which makes it less effective against tanks. It is also significantly slower, making it far less of a threat on offense. Phoenix can work similarly, although for one extra Elixir.
+**For 2 more Elixir, the player can use [[Minion Horde]] on their deck for more power within a push, having 3 Minions more than the Minions card. Because of this, they deal half the damage, meaning they are not nearly as threatening as Minion Horde when abusing the opponent's lack of counters. The drawback is that Minions are more flexible to be used compared to the Minion Horde (i.e, they are not forced to store 3 Elixir for using on a single attack, unlike what happens with the Minion Horde, costing 5 Elixir), and their lower cost means that the player won't need to worry about giving spell value to the opponent.
+**If the player is more interested in anti-air cards that have more range, they can use ground anti-air cards to replicate Minions' role. Such examples of cards include Archers, Musketeer, Spear Goblins, Dart Goblin, Princess, and Firecracker.
+**Other air cards that can replicate the effect of Minions include Skeleton Dragons, Flying Machine, Baby Dragon, and Electro Dragon. In some cases, the splash damage at the cost of extra Elixir will permit for more coverage.
+**Other cheap swarms like Goblins, Skeletons, and Guards can substitute the Minions if their deck has enough anti-air coverage. They have similar total damage while also having a lower Elixir cost, or in the Guards' case, higher bulk.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}{{StatusEffects}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+!scope="col"|Cost<br>{{Icon|I=Elixir}}
+!scope="col"|Hit Speed<br>{{Icon|I=Damage Speed}}
+!scope="col"|First Hit Speed<br>{{Icon|I=Damage Speed}}
+!scope="col"|Speed<br>{{Icon|I=Speed}}
+!scope="col"|Deploy Time<br>{{Icon|I=Deploy Time}}
+!scope="col"|Range<br>{{Icon|I=Range}}
+!scope="col"|Projectile Speed<br>{{Icon|I=Speed}}
+!scope="col"|Target<br>{{Icon|I=Targets}}
+!scope="col"|Count<br>{{Icon|I=Troop Count}}
+!scope="col"|Transport<br>{{Icon|I=Transport}}
+!scope="col"|Type<br>{{Icon|I=Type}}
+!scope="col"|Rarity<br>{{Icon|I=Rarity}}
+|-
+|3||1.2 sec||0.5 sec||Fast (90)||1 sec||2.5||1000||Air & Ground||x3||Air||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_base | 230 }}
+{{#vardefine: dmg_base | 107 }}
+{{#vardefine: atk_speed | 1.2 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:hp_base}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 2 || {{#expr: {{#var:hp_base}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 3 || {{#expr: {{#var:hp_base}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_base}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_base}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_base}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_base}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_base}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_base}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_base}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_base}} || {{#var:dmg_base}} || {{Dps|{{#var:dmg_base}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_base}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_base}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_base}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_base}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_base}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{|class="wikitable" style="width:100%; text-align:center;"
+!width="20%"|Type
+!width="10%"|Level/Tier
+!width="45%"|Objective
+!width="25%"|Reward
+|-
+|rowspan="3"|Damage Dealer<br>[[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 105,000 damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|4,000{{Icon|I=Gold}}
+|-
+|2
+|Deal a total of 310,000 damage to enemy Troops or buildings
+|4,000{{Icon|I=Gold}}
+|-
+|3
+|Deal a total of 520,000 damage to enemy Troops or buildings
+|4,000{{Icon|I=Gold}}
+|-
+|rowspan="3"|Hit Maker<br>[[File:Hit Maker.png|50x50px]]
+|1
+|Hit enemy Troops a total of 1,400 times
+|6,000{{Icon|I=Gold}}
+|-
+|2
+|Hit enemy Troops a total of 4,000 times
+|6,000{{Icon|I=Gold}}
+|-
+|3
+|Hit enemy Troops a total of 7,000 times
+|6,000{{Icon|I=Gold}}
+|}
+The requirements may be different, thank to the [[Version History#2026 Q2 Update (26/5/2026)|update]]
+</div></center>
+
+==History==
+2016
+*The Minions [[Cards|card]] was added with [[Version History#Softlaunch on iOS (4/1/2016)|Clash Royale's game launch]] on 4/1/2016 {{Balance|Add}}.
+*On 29/2/2016, the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]] decreased the Minions' Sight Range to 5.5 tiles (from 6 tiles) {{Balance|Buff}}.
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]] increased the {{Rarity|Common}} card Level Cap to 13 (from 12) {{Balance|Buff}}. The update also fixed the "range bug" by decreasing the Minions' Range to 2 tiles (from 2.5 tiles) {{Balance|Nerf}}, but maintaining their effective Range.
+2018
+*On 20/6/2018, the [[Version History#Summer 2018 Update (20/6/2018)|Summer 2018 Update]] gave the Minions a new a delay between each other when deployed, with a Minion spawning 0.15 seconds after the previous one {{Balance|Add}}. It also moved the [[Arenas|Arena]] required to unlock this card from Bone Pit to [[Training Camp]] {{Balance|Buff}}.
+2019
+*On 1/7/2019, the [[Version History#July 2019 Update (1/7/2019)|July 2019 Update]] decreased the Minions' Range to 1.6 tiles (from 2 tiles) {{Balance|Nerf}}, classifying their Range as "Melee: Long".
+2020
+*On 2/6/2020, a [[Version History#Balance Changes (2/6/2020)|Balance Update]] decreased the delay between each Minion deployment to 0.1 seconds (from 0.15 seconds) {{Balance|Buff}}.
+*On 3/11/2020, a [[Version History#Balance Changes (3/11/2020)|Balance Update]] added a card render to the Minions' card info screen {{Balance|Add}}.
+2021
+*On 27/10/2021, the [[Version History#Champions Update (27/10/2021)|Champions Update]] increased the Level Cap of all cards to 14 (from 13) {{Balance|Buff}}.
+2022
+*On 7/12/2022, a [[Version History#Balance Changes (7/12/2022)|Balance Update]] increased the Minions' Damage by 15% {{Balance|Buff}}.
+2023
+*On 19/6/2023, the [[Version History#Card Evolution Update (19/6/2023)|Card Evolution Update]] increased the Level Cap of all cards to 15 (from 14) {{Balance|Buff}}.
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]] made it so that Minions' spawn formation would be correctly mirrored depending on which side of the Arena they were placed {{Balance|Neutral}}.
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] increased the Minions' Hitpoints by 16% {{Balance|Buff}} and their Range to 2.5 tiles (from 1.6 tiles) {{Balance|Buff}}, removing their Melee range classification.
+*On 7/8/2025, a [[Version History#Maintenance Break (7/8/2025)|maintenance break]], decreased the Minions' Hitpoints by 14%{{Balance|Nerf}}.
+*On 1/9/2025, a [[Version History#Balance Changes (1/9/2025)|Balance Update]] increased the Minions' Attack Period to 1.1 seconds (from 1 second){{Balance|Nerf}}.
+*On 6/10/2025, a [[Version History #Balance Changes (6/10/2025|Balance Update]] decreased the Minions' Damage by 9%{{Balance|Nerf}}.
+*On 24/11/2025, the [[Version History#Level 16 Update (24/11/2025)|Level 16 Update]] increased the Level Cap of all cards to 16 (from 15){{Balance|Buff}}.
+2026
+*On 2/2/2026, the [[Version History#Pass Royale and more (2/2/2026)|February 2026 Update]] increased the Minions' Attack Period to 1.2 seconds (from 1.1 seconds){{Balance|Nerf}}.
+
+==Gallery==
+<gallery>
+File:Minions Card Render.png|Current card render.
+File:Minion Alone.png|A lone Minion from the card render.
+File:Minion Alone 2.png|Minion 1.
+File:Minion Alone 3.png|Minion 2.
+File:Minion Alone 4.png|Minion 3.
+File:Minion With Background.jpg|A Minion in a background.
+</gallery>
+
+==Trivia==
+*The Minions' design resembles [https://en.wikipedia.org/wiki/Gargoyle_(monster) gargoyles]. The gargoyle is a fantasy and horror monster inspired by the [https://en.wikipedia.org/wiki/Gargoyle gargoyle architectural element]. While they were believed in mythology to frighten away evil spirits, the idea of such statues physically coming to life is a more recent notion. They are usually magically animated or transformed stone, but have animal or chimera traits and are often guardians of a place such as a cathedral or castle. They can also be depicted as vessels for demonic possession or as a statue-resembling living species.
+**In the French and Japanese language settings of the game, the Minions' name translates to "Gargoyles".
+*The Minions are 1 of 19 [[:Category:Troop Cards|troops]] which first existed in Clash of Clans, the others being [[Archers]], [[Goblins]], [[Skeletons]], [[Barbarians]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], [[Witch]], [[P.E.K.K.A.]], [[Balloon]], [[Golem]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Phoenix]], [[Lava Hound]], and the [[Archer Queen]].
+**The Minions resemble the Level 1-2 Minion from Clash of Clans. Their [[Star Points|Star Level 3 skin]] resembles the Level 7-8 Minion in Clash of Clans.
+**Minions in Clash Royale share an attack sound effect with their Clash of Clans counterpart.
+**In Clash of Clans, their projectile comes from their mouths, however, in Clash Royale, it comes from their fists instead.
+***This is confirmed by the Clash Royale trailers Trophies and Landscaper, where the Minions seem to build up Dark Elixir from their hands and throw it at their enemies once the ball is big enough.
+*The Minions are 1 of 7 [[cards]] that are already unlocked for the player when they start playing the game, the others being Archers, [[Knight]], [[Arrows]], [[Tower Princess]], Giant, and [[Fireball]]. Despite this, the game recognizes that those cards are unlocked in the [[Training Camp]].
+*The Minions are one of the first troops to be featured in Clash-A-Rama, alongside the Goblins, Barbarians, and Giant.
+*The Minions are one of the first troop cards to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the Archers, Knight, [[Spear Goblins|Sperar Goblins]], Goblins, [[Bomber]], Skeletons, Barbarians, Minion Horde, [[Mini P.E.K.K.A.]], [[Musketeer]], Giant, Valkyrie, Wizard, Hog Rider, [[Baby Dragon]], [[Skeleton Army]], [[Witch]], P.E.K.K.A., Prince, and Balloon.
+*In the card's description, the "''Roses are red, Minions are blue''" line is from the [https://en.wikipedia.org/wiki/Roses_Are_Red classic love poem] starting "''Roses are red, Violets are blue''".
+**In the Spanish, Japanese, and Portuguese language settings of the game, the Minions' card description says "''It is a bird? It is a plane? No, it's a super minion!''", which is a reference to [https://en.wikipedia.org/wiki/Superman Superman].
+**In the Korean language setting of the game, the Minions' card description says "''fly like butterflies, sting like bees''", which is a reference to a quote mentioned by [https://en.wikipedia.org/wiki/Muhammad_Ali Muhammad Ali].
+*The [[Minion Horde]]'s description describes 3 Minions as a crowd, while six as a horde for obvious reasons.
+*The Minions' description says that the regular Minions are "unarmored", which hinted at the addition of the [[Mega Minion]], an armored Minion.
+**According to a Clash-A-Rama comic [https://clasharama.fandom.com/wiki/Clash-A-Rama!_Comic_Strips?file=BRING-YOUR-CHILD-TO-WORK-DAY_Final.jpg strip], a Minion is the Mega Minion's child.
+*The Minions appear to have an underbite, similar to the [[Guards]], [[Giant Skeleton]], Lava Hound, and the [[Super Lava Hound]].
+*The Minions in the card image are darker in skin color compared to the Minion Horde. They also appear to be wearing indigo gloves, as opposed to the burgundy gloves worn by the Minion Horde. They also seem to have team-colored eyes in battle, instead of purple eyes like on their card.
+*Using the Minions card to summon 6 Minions would cost 6 [[Elixir]], whereas using the Minion Horde card to summon 6 Minions costs 5 Elixir.
+*The Minions, along with the Mini P.E.K.K.A., Bomber, Skeletons, [[Skeleton Dragons]], [[Ice Spirit]], Mega Minion, [[Ice Golem]], [[Dart Goblin]], [[Elixir Golem]], [[Goblin Cage|Goblin Brawler]], Guards, Baby Dragon, P.E.K.K.A., Giant Skeleton, Golem, Wall Breakers, Bowler, [[Executioner]], [[Mega Knight]], [[Inferno Dragon]], [[Royal Ghost]], and Lava Hound, are featured as a [https://squad-busters.fandom.com/wiki/Monsters monster] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*The Minions are 1 of 20 cards that are unavailable in [[Mirror]] [[Tournament/Special Event Challenges|mode]], the others being [[Cannon]], [[Mortar]], [[Tesla]], [[Goblin Hut]], [[Tombstone]], [[Bomb Tower]], [[Inferno Tower]], [[Barbarian Hut]], [[Furnace]], [[Elixir Collector]], [[Freeze]], [[Clone]], [[X-Bow]], [[Golden Knight]], [[Skeleton King]], Archer Queen, [[Mighty Miner]], [[Little Prince]], and the [[Monk]].
+*The Minions are the subject of an [[Emotes|Emote]].
+*The Minions' range was shown as 2 instead of "Ranged" before the [[Version History#July 2019 Update (1/7/2019)|July 2019 Update]].
+*The Minions were featured in the winning deck of the [https://www.youtube.com/live/DVY2TndGf4U?si=ptuVz0tHkkkDIvEl Crown Championship Global Series Tournament], by a player called Sergioramos:).
+*Before the Minions' card release, the Minions' Hitpoints were increased by 5%.
+
+==In other languages==
+{{Other languages|frmeaning=Gargoyles.|jpmeaning=Gargoyles.|cnmeaning=Undead.|cntmeaning=Undead.|thmeaning=Drones.|fr=Gargouilles|de=Lakaien|es=Esbirros|it=Sgherri|nl=Gunstelingen|no=Lakeier|tr=Minyonlar|jp=ガーゴイル|kr=미니언|ru=Миньоны|ar=كائنات المينيون|pt=Servos|cn=亡灵|cnt=亡靈|fa=مینیون|id=Minion|ms=Konco|th=ลูกกระจ๊อก|fi=Kätyrit|vi=Minion}}
+
+{{Navigation|Card}}
+
+[[fr:Gargouilles]]
+[[de:Lakaien]]
+[[es:Esbirros]]
+[[it:Sgherri]]
+[[ja:ガーゴイル]]
+[[ko:미니언]]
+[[ru:Миньоны]]
+[[pt-br:Servos]]
+[[zh:亡灵]]

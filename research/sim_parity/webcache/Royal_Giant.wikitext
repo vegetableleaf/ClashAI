@@ -1,0 +1,245 @@
+{{Protection}}{{MagicWords}}{{Card Infobox|Cost=6|Rarity=Common|Type=Troop|Arena=Royal Arena|ReleaseDate=29 February 2016}}<br><br>
+{{SubpageNavBox|Evolution=yes|MergeTactics=yes}}{{Quote|Destroying enemy buildings with his massive cannon is his job; making a raggedy blond beard look good is his passion.}}
+
+The Royal Giant is a {{Rarity|Common}} [[Cards|card]] that is unlocked from the [[Arenas|Royal Arena (Arena 7)]]. It spawns a slow, single-target, [[:Category:Building Cards|building]]-targeting, medium-ranged, ground [[:Category:Troop Cards|troop]] with high hitpoints and high damage. His appearance is similar to that of a [[Giant]], but he sports a dark navy coat with team-colored cuffs, has a mustache and bigger mutton chops, wears a crown and a chainmail, wields a [[Cannon]] with two gold ridges in the middle in one hand, and carries a cannonball in the other. A Royal Giant card costs 6 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Royal Giant Common Modifier.png|45x45px]] Common: Splish Splash Splosh===
+{{Quote|Splash damage}}
+Royal Giant's bullet does an area of effect.
+
+===[[File:Royal Giant Rare Modifier.png|45x45px]] Rare: Look Out, Over There!===
+{{Quote|+200% range}}
+Triples range.
+
+===[[File:Royal Giant Epic Modifier.png|45x45px]] Epic: Let Loose the Hogs of War===
+{{Quote|Royal Hog Projectile}}
+Shoots out a [[Royal Hogs|Royal Hog]] with every shot.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Royal Giant Card}}
+*Since the Royal Giant is a ranged [[:Category:Troop Cards|troop]], he will not protect any melee or short-range troops from enemy defenders, making his high hitpoints nearly worthless as a meat shield. However, it is possible to use the Royal Giant as a tank if the player puts down melee troops after the [[:Category:Crown Towers|Crown Tower]] targets the Royal Giant.
+**The [[Princess]], [[Magic Archer]], [[Dart Goblin]], [[Firecracker]], [[Wizard]], [[Archers/Evolution|Evolved Archers]], [[Musketeer]], [[Cannon Cart]], [[Witch]], and the [[Flying Machine]] can stay safely behind the Royal Giant since they have a longer range than him. Keep in mind that [[:Category:Spell Cards|spells]] such as [[The Log]], [[Fireball]], [[Lightning]], [[Rocket]], and certain troops can nullify this synergy.
+**Generally, ranged support [[cards]] should be placed at a slight distance from the Royal Giant, so that they attack troops that are on top of the Royal Giant while they are on your side. This will make these support troops harder to deal with troops.
+*The [[Cannoneer]] works much better against him than the [[Tower Princess]] or [[Dagger Duchess]] due to his higher damage. Unlike the other [[:Category:Tower Troop Cards|tower troops]], the Royal Giant will not have the hitpoints to be able to deal any damage to the [[King's Tower|King Tower]] right after destroying the Crown Tower.
+*The Royal Giant works decently well with the [[Dark Prince]]. The Royal Giant can tank for the Dark Prince while dealing damage, while the Dark Prince can counter defending troops and swarms, while also pushing him towards the Crown Tower, possibly allowing him to connect earlier. Alterntively, he can be placed at the center of the Arena in response to a building used against the Royal Giant. However, high DPS tanks such as the [[P.E.K.K.A.]] and [[Mega Knight/Evolution|Evolved Mega Knight]] can still destroy this combo.
+*The [[Minion Horde]], [[Skeleton Army]], [[Goblin Gang]], [[Royal Recruits]], and [[Barbarians]] can effectively counter a Royal Giant due to their high damage output, minimizing the amount of damage the Royal Giant is able to do. However, these swarms are defeated easily by supporting splash units like the Wizard, [[Bomber]], [[Bowler]], [[Executioner]], Princess, Ice Wizard, Witch, [[Firecracker]], or [[Goblin Demolisher]], or spells like [[Arrows]], Fireball, or [[Zap/Evolution|Evolved Zap]]. Other high damage units like [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Elite Barbarians]], [[Sparky]], P.E.K.K.A, [[Prince]], and [[Hunter]] or fast attacking troops like [[Lumberjack]], [[Inferno Dragon]], [[Three Musketeers]], [[Monk]], [[Phoenix]], [[Golden Knight]], and [[Mighty Miner]] are more reliable due to their higher hit points.
+**When countering a Royal Giant with a P.E.K.K.A. or Mighty Miner, the P.E.K.K.A./Mighty Miner should be deployed on top of the Royal Giant and in his path. This will cause the P.E.K.K.A/Mighty Miner to push him back slightly due to their high mass. This causes the Royal Giant to get one less shot onto the Crown Tower.
+**Note that the player can take advantage of the lack of those cards by baiting them with other high pressure cards like a Dark Prince or [[Bandit]]. After doing this, the Royal Giant can be used in the other lane with less resistance.
+**The Royal Giant synergizes quite well with the [[Fisherman]]. The Fisherman will pull any high damage per second troops away from the Royal Giant, which will force the opponent to drop more [[Elixir]]. However, this can be easily predicted and your opponent may drop a distraction card to distract the Fisherman. You can also use the Fisherman to snipe [[:Category:Building Cards|buildings]] by placing him at the middle of the river to finish of buildings like the Inferno Tower to help your Royal Giant break through.
+*The Royal Giant can be used to kite slow moving troops like the P.E.K.K.A into the other lane, while also threatening the opponent's Crown Tower. It is recommended to have spells and cheap troops ready though when using this method.
+*The [[Ice Wizard]]'s ability to slow down troops can also be an effective support option to make the Royal Giant less of a threat. On the contrary, he can also be a great assist card for the Royal Giant by crippling the attack speed of counters to the Royal Giant or for killing swarms used against the Royal Giant.
+**Stunning cards like the [[Zappies]] can work in a similar way. Placing them beside the Tower will make them line up vertically and efficiently stagger the timing of their stuns, leaving the Royal Giant nearly immobile, preventing a lot of damage. However, this allows for spells like [[Fireball]] and [[Poison]] to gain value by hitting the Crown Tower and the Zappies.
+*During Single Elixir time, it is most recommended to make pushes with the Royal Giant from the back of the King Tower instead of the bridge. This will make it so that the opponent cannot gain much value from countering a lone Royal Giant while the player lacks the Elixir to support the Royal Giant. Once Double Elixir time starts, the player can be more reckless with the Royal Giant and start using him at the bridge.
+*Since the Royal Giant is unable to target opposing troops whatsoever, he can benefit significantly from support that comes from spells.
+**[[Lightning]] is a useful support card for resetting charge attackers that can counter the Royal Giant, such as the Sparky and Inferno Dragon. Even if the opponent lack these cards, it can still provide value as he will often force more than one card out of the opponent's hand, allowing the spell to gain positive Elixir trades.
+**For a cheaper alternative, [[Zap]] can be used to reset the same cards that Lightning can while trading off its strength against glass cannons, for a strength against swarms like the Skeleton Army.
+**The [[Barbarian Barrel]] pairs well with the Royal Giant. The Barbarian Barrel will be able to kill any ground swarms placed on top of the Royal Giant, and when the Barbarian spawns, he will help against single units placed on top. The Royal Giant will tank for the spawned Barbarian, possibly allowing him to connect to the Crown Tower afterwards.
+*The [[Inferno Tower]] is one of the best counters to the Royal Giant, as it distracts the Royal Giant while melting him down quickly with its unravelled resulting damage per second. However, beware of spells such as Zap or Lightning as they can be quickly deployed to reset the ramp-up damage. Other buildings are less effective so they should only be used in conjunction with other cards. 
+**Other cards with stun effects like the [[Electro Dragon]], [[Zappies]], [[Electro Spirit]], and [[Electro Wizard]] are also great synergies with the Royal Giant for similar reasons, while also being able to provide additional support against swarms.
+*Placing him on the end of the bridge allows him to attack the enemy Crown Tower after taking just a few steps, making him a pressing threat. After destroying one Tower and opening the lane, he can be placed in the middle of the opponent's map to almost immediately attack the second Crown Tower. He should be placed 1 tile down from the center so that he is out of the King's Tower's range during his deployment time. Since he can single-handedly take down a Crown Tower, this is very effective in the Overtime period, as the mere threat of the Royal Giant typically deters opponents from using all of their Elixir at once to attack, allowing the player to defend more flexibly.
+*If the player fails to place a building on time and an opposing Royal Giant locks on to the Crown Tower, they can use a stunning card to cause the Royal Giant to retarget and hit a placed building instead. If none of these cards are available, the player can also move the Royal Giant by using a Fisherman, a [[Tornado]], a spell that has a knockback effect, or placing troops or buildings on top of him, which also forces a retarget.
+**Even if the player does not try to cause a retarget, the [[Tombstone]] and [[Goblin Cage]] should be placed directly on top of the Royal Giant. This will have the [[Skeletons]] or Goblin Brawler immediately attack the Royal Giant, which will prevent more damage than if the building was placed at a distance. However, this leaves the troops vulnerable to attackers from the bridge.
+*He pairs well with [[Minions]] and [[Bats]]. They have the damage to handle opposing swarms and even bulkier units like the [[Mega Minion]] while the Royal Giant tanks for them. Additionally, if the opponent decides to defend against the Royal Giant with the Inferno Tower, these troops will be able to distract the Inferno Tower, allowing the Royal Giant to deal sufficient damage to it, eventually destroying it. This strategy can also be replicated with the [[Skeleton Barrel]].
+**Conversely, if placed properly, Bats or Minions combined with a [[Cannon]] can fully counter the Royal Giant for a slight positive Elixir trade.
+*The Royal Giant synergizes with the [[Witch]]. The Witch is able to attack air troop counters to the Royal Giant, while her Skeletons distract heavy hitting counters to the Royal Giant. Both are also ranged, meaning that the Witch can safely stay on the player's side while the Royal Giant is attacking. However, this can be easily stopped by waiting for the Witch to reach the Royal Giant, then deploying a melee splash troop on top of them, such as the [[Valkyrie]], [[Mega Knight]], [[Royal Ghost]], [[Dark Prince]], or the [[Skeleton King]].
+**Similarly, spawner buildings like the [[Furnace]] and [[Goblin Hut]] also pair well with the Royal Giant, as they can constantly chip against enemy swarms, or discourage the opponent from placing swarms to counter him. These buildings can also be preplaced for when the player wants to start a Royal Giant from the King Tower, as they will discourage the opponent from attacking.
+*The Royal Giant is a great counter to siege buildings such as the [[X-Bow]] and [[Mortar]]. Since he has decent range, high health, and only targets buildings, he can stand on your side while tanking the siege building and taking it out on his own. This is especially potent against the Mortar as he will stay outside its blind spot and keep it distracted. After defeating the buildings, he will still have above half of his health for a counter push.
+**If a building is placed too close to the river, the Royal Giant can be used to snipe that building from your side. This is especially useful against spawner buildings to prevent them from accumulating more troops, though it is recommended to combine him with spells, to defeat any existing troops that spawned while sniping the building.
+*Spirit cards are a cheap but decent way to support a Royal Giant push. They are reliable against swarms, and have secondary effects that can help the Royal Giant generate damage to the Crown Tower. Because of the Royal Giant being close to the bridge, there are also less placements for the opponent to effectively block without them positively affecting the Royal Giant in some way.
+*In [[Giant]] versus Royal Giant matchups, the Royal Giant should attack in the same lane as the Giant if they are placed in the back. Even if both players support their tanks with the same troops, the Royal Giant will have been able to gain more damage to the opposing Crown Tower than the Giant will have, despite the lower hitpoints.
+*While the Royal Giant does not have enough range to attack the Crown Towers from the river, he cannot be used to activate the King Tower with a Tornado or a Fisherman, and he will not get into range of the King Tower by these cards. Because of these, it can sometimes be beneficial to take advantage of positive Elixir trades with spells by activating the King Tower.
+*A [[Giant Skeleton]] + Royal Giant push is expensive at the cost of 12 Elixir, but is very challenging to defend due to the Giant Skeleton effectively tanking hits for the Royal Giant, and his death bomb outright destroying or doing severe damage to melee troops placed to defend the push, like [[Barbarians]], [[Elite Barbarians]], [[Skeleton Army]], and [[Mini P.E.K.K.A.]].
+**However, an [[Inferno Tower]] paired with a troop to distract the Giant Skeleton so that his bomb won’t detonate on the Inferno Tower can effectively shred this push.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|6||1.8 sec||0.9 sec||Slow (45)||1 sec||5||1000||Buildings||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 3164 }}
+{{#vardefine: dmg_11 | 307 }}
+{{#vardefine: atk_speed | 1.8 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="20%" |Type
+! width="10%" |Level/Tier 
+! width="45%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 110,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|200 {{BASEPAGENAME}} cards<br>25 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 335,000 Damage to enemy Troops or buildings
+|2,000 {{Icon|I=Gold}}<br>25 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 560,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>25 {{Icon|I=XP}}
+|-
+| rowspan="3" |Tower Tapper <br> [[File:Tower Tapper.png|50x50px]]
+|1
+|Hit enemy [[:Category:Crown Towers|Crown Towers]] a total of 780 times
+|3,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Crown Towers a total of 2,200 times
+|200 {{Icon|I=Common Wild Card}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Crown Towers a total of 3,850 times
+|5,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+| rowspan="3" |Siege Weapon <br> [[File:Siege Weapon.png|50x50px]]
+|1
+|Hit towers at least 8 times within a single [[Basics of Battle|battle]] a total of 80 times
+|6,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|2
+|Hit towers at least 8 times within a single battle a total of 240 times
+|8,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Hit towers at least 8 times within a single battle a total of 480 times
+|10,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016 
+*The Royal Giant [[Cards|card]] was added to the game on 29/2/2016, in the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]].
+*On 23/3/2016, a [[Version History#Balance Changes (23/3/2016)|Balance Update]], increased the Royal Giant's damage by 20%.
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], increased the {{Rarity|Common}} card Level cap to 13 (from 12) and also changed his description. It used to say, ''“Sighting his massive cannon at enemy buildings, the Royal Giant comes in like a wrecking ball.''” The same update also fixed the “range bug” and decreased the Royal Giant's range but was compensated with a range increase. Overall, his range was increased to 6.5 tiles (from 6 tiles).
+*On 18/5/2016, a [[Version History#Balance Changes (18/5/2016)|Balance Update]], decreased the Royal Giant's damage by 4%.
+*On 24/8/2016, a [[Version History#Balance Changes (24/8/2016)|Balance Update]], increased the Royal Giant's attack time interval to 1.7 seconds (from 1.5 seconds) and his first attack time interval to 0.7 seconds (from 0.5 seconds).
+2017 
+*On 19/4/2017, a [[Version History#Balance Changes (19/4/2017)|Balance Update]], increased the Royal Giant's deployment time to 2 seconds (from 1 second).
+2018
+*On 1/10/2018, a [[Version History#Balance Changes (1/10/2018)|Balance Update]], decreased the Royal Giant's range to 5 tiles (from 6.5 tiles), increased his damage by 60%, and decreased his deployment time to 1 second (from 2 seconds).
+2019
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], removed the Royal Giant from [[Touchdown]] [[Tournament/Special Event Challenges|Draft]].
+2021
+*On 6/9/2021, the [[Version History#2021%20Quarter%203%20Update%20(6/9/2021)|2021 Quarter 3 Update]], increased the Royal Giant's first attack time interval to 0.9 seconds (from 0.7 seconds).
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 2/9/2022, a [[Version History|maintenance break]], changed the Royal Giant's card image and added a card render to the Royal Giant's card info screen.
+2023 
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14), and added the Royal Giant's Evolution. It also added the Siege Weapon [[Card Mastery]] task for the Royal Giant.
+2024
+*On 14/5/2024, a [[Version History#Balance Changes (14/5/2024)|Balance Update]], increased the Royal Giant's hitpoints by 3%.
+2025
+
+2026
+
+* On 2/3/2026, a Balance Update, decreased the Royal Giant's hitpoints to 1.7 seconds (from 1.8 seconds).
+
+==Gallery==
+<gallery>
+File:RoyalGiantCardOld.png|Royal Giant's card image before 2/9/2022.
+File:Royal Giant card render.png|Current card render.
+File:Royal Giant Preview.gif|Current card preview
+File:Royal Giant sprite.png|Royal Giant's sprite in-game.
+File:Royaler giant.png|Royal Giant.
+File:Royal Giant Full Body.webp|Royal Giant's full body render.
+</gallery>
+
+==Trivia==
+*Cannons were invented in China during the twelfth century. It was most likely developed in parallel or as an evolution of an earlier gunpowder weapon called the fire lance. Cannons were used for warfare by the late thirteenth century in the Yuan dynasty and spread throughout Eurasia in the fourteenth century. During the late Middle Ages, large and small cannons were developed for siege and field battles. The cannon replaced prior siege weapons such as the trebuchet. After the late Middle Ages, most large cannons were abandoned in favor of greater numbers of lighter, more maneuverable field artillery.
+**The Royal Giant is 1 of 4 [[cards]] associated with cannonry, with the others being [[Cannon]], [[Cannon Cart]], and [[Cannoneer]].
+**Oddly, the cannonball he holds is larger than the cannonball fired from his cannon. Even so, the Royal Giant can be seen loading this cannonball back into the cannon during the recoil animation after he fires.
+*The Royal Giant is 1 of 20 cards associated with nobility, with the others being [[Knight]], [[Royal Recruits]], [[Royal Delivery]], [[Tower Princess]], [[Royal Hogs]], [[Dark Prince]], [[Prince]], [[Raging Prince]], [[Mega Knight]], [[Princess]], [[Royal Ghost]], [[Spirit Empress]], [[Super Knight]], [[Dagger Duchess]], [[Royal Chef]], [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], and the [[Little Prince]].
+**In the Spanish and Finnish language settings of the game, the Royal Giant's name translates to "Noble Giant".
+*The Royal Giant is one of the first troop cards to receive a [[Card Evolution]], alongside the [[Skeletons]], [[Barbarians]], and [[Firecracker]].
+*The Royal Giant is 1 of 15 [[:Category:Troop Cards|troops]] which bring an excited reaction from the audience upon spawning and brings a collective groan from the audience when defeated, as well as a concerning gasp when the opponent plays him and applause when he's destroyed, the others include the [[Giant]], [[P.E.K.K.A.|P.E.K.K.A]], [[Giant Skeleton]], [[Rune Giant]], [[Goblin Giant]], [[Golem]], [[Bowler]], [[Electro Wizard]], [[Inferno Dragon]], [[Sparky]], [[Lava Hound]], [[Night Witch]], [[Super Lava Hound]], and the [[Monk]].
+*Despite wearing an armor, he has less hit points than an equal-level Giant. This is likely for balancing reasons.
+*The cannon he wields appears to be the turret of a Level 7 Cannon in Clash of Clans. His [[Star Points|Star Level 2 skin]] has a cannon that resembles the Level 10 Cannon in Clash of Clans.
+*The Royal Giant was once very infamous among players for being overpowered due to his range and high hit points, meaning that he was harder to take down before landing a highly damaging shot. This is referenced in the game a few times:
+**A [[Loading Screen Hints|Loading Screen Hint]] that reads “''All cards are created equally… even Royal Giants.''”.
+**A post-[[Basics of Battle|battle]] [[2v2]] message that says “''Nerf the Royal Giant''”.
+*While not available as a troop in Boom Beach, the Royal Giant made an appearance in an April Fool's [https://youtu.be/Z8XT_cP7bsA?si=tzV1XUjCE7NB1jfB video] that Supercell posted in Boom Beach's Youtube channel.
+*The Royal Giant is the subject of 2 [[Emotes]].
+**He is also the only card in which an Emote has changed.
+**The [https://clashroyale.fandom.com/wiki/Emotes?file=Royal_Giant_Gorgeous.png Royal Giant Gorgeous Emote] is a reference to the Royal Giant's card description.
+*Despite the Damage Dealer [[Card Mastery]] task mentioning that the Royal Giant can deal damage to troops or [[:Category:Building Cards|buildings]], he cannot progress the task by dealing damage to troops.
+**The Royal Giant is 1 of 6 troops that cannot deal damage to other troops whatsoever, the others being the Giant, [[Hog Rider]], [[Royal Hogs]], [[Elixir Golem]], and Rune Giant.
+***However, the Royal Giant's Evolution changes this, as the recoil from shooting will cause him to deal area damage to any ground troop nearby.
+
+==In other languages==
+{{Other languages|esmeaning=Noble Giant.|fimeaning=Noble Giant.|fr=Géant royal|de=Königsriese|es=Gigante noble|it=Gigante Royale|nl=Koninklijke reus|no=Kongelig kjempe|tr=Kraliyet Devi|jp=ロイヤルジャイアント|kr=로얄 자이언트|ru=Королевский гигант|ar=عملاق ملكي|pt=Gigante Real|cn=皇家巨人|cnt=皇家巨人|fa=غول سلطنتی|id=Raksasa Royal|ms=Gergasi Diraja|th=ยักษ์ราชวงศ์|fi=Aatelisjätti|vi=Khổng nhân Hoàng gia}}
+
+{{Navigation|Card}}
+
+[[fr:Géant royal]]
+[[de:Königsriese]]
+[[es:Gigante noble]]
+[[it:Gigante Royale]]
+[[ja:ロイヤルジャイアント]]
+[[ko:로얄 자이언트]]
+[[ru:Королевский гигант]]
+[[zh:皇家巨人]]

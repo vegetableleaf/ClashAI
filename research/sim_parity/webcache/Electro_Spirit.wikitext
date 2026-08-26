@@ -1,0 +1,226 @@
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=1|Rarity=Common|Type=Troop|Arena=Spell Valley|ReleaseDate=2 November 2020}}
+{{Quote|Jumps on enemies, dealing Area Damage and stunning up to 9 enemy Troops. Locked in an eternal battle with Knight for the best mustache.}}
+
+The Electro Spirit is a {{Rarity|Common}} [[Cards|card]] that is unlocked from the [[Arenas|Spell Valley (Arena 4)]]. It spawns a very fast, single-target, air-targeting, short-ranged, ground [[:Category:Troop Cards|troop]] with low hitpoints and low damage. It launches itself at its target when attacking, destroying itself on impact. If it jumps onto a unit, its attack will arc and strike up to 8 other targets within 4 tiles of each other. It will stun affected troops for 0.5 seconds. Its physical appearance is similar to an [[Ice Spirit]], but its body is violet, and it has a glowing blue spiky moustache. An Electro Spirit card costs 1 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Electro Spirit Common Modifier.png|45x45px]] Common: Sentient & Spirited===
+{{Quote|3 Electro Spirits}}
+When placed, it spawns three Electro Spirits instead of one, in a triangle formation.
+
+===[[File:Electro Spirit Rare Modifier.png|45x45px]] Rare: Zap, Glorious Zap===
+{{Quote|Zaps all units}}
+Electro Spirit's chain range increases to infinite tiles, and its chain count increases to infinite.
+
+===[[File:Electro Spirit Epic Modifier.png|45x45px]] Epic: Don't Look Directly at It===
+{{Quote|Chain Lightning}}
+Electro Spirit spawns a [[Lightning]] when it attacks.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Electro Spirit Card}}
+*For just 1 [[Elixir]], the Electro Spirit is a strong card to have in many decks due to its ability to cycle the deck, and to give other [[:Category:Troop Cards|troops]] or even the [[:Category:Crown Towers|Crown Tower]] more time to destroy an oncoming threat.
+*The Electro Spirit can be used to briefly stun enemy troops and [[:Category:Building Cards|buildings]], reducing the enemy's damage per second.
+**The Electro Spirit can also be used to reset charging attacks from cards like [[Inferno Tower]], [[Inferno Dragon]], [[Prince]], [[Dark Prince]], [[Ram Rider]], [[Battle Ram]], [[Bandit]], [[Fisherman]], [[Sparky]], [[Mega Knight]], and [[Mighty Miner]].
+**The stun of the Electro Spirit can be useful to keep troops in place. This can be useful for defeating certain pushes with piercing splashers like the [[Magic Archer]]. This allows him to deal with a [[Miner]] + [[Minion Horde]] push.
+**When used on troops that are inside a [[Poison]], the 0.5 second stun will keep them inside the radius of Poison for a longer amount of time, which allows the Poison to deal more damage to the troops.
+*Its increased chain count, chain range, and lower cost in comparison to the Electro Dragon make it notably more difficult to nullify for a good trade. The Electro Spirit can stun and force most, if not all troops in a push to retarget, simply by deploying it from a short distance so that it can jump on the frontmost unit.
+**Its chain attack is very effective at dealing damage to a [[Witch]] or a [[Night Witch]] while also defeating their [[Skeletons]] and [[Bats]]. It will also stun them, delaying her from spawning additional Skeletons or Bats.
+**If the Electro Spirit's attack only strikes 1 target, the target will only take one-ninth of the Electro Spirit's potential firepower. Unlike the [[Electro Wizard]], unspent charges on the Electro Spirit's attack are not stacked on to the original target.
+*If it crosses the bridge at full health, the player can deploy a unit between their [[Tower Princess]] and [[King's Tower]] to force a King's Tower activation for minimal Crown Tower damage. Since it can chain onto more units in one attack than the [[Electro Dragon]], small swarms like Skeletons can also function as a link to the player's King's Tower. As a result, the player should avoid using the Electro Spirit in decks where a King's Tower activation greatly hampers the effectiveness of future attacks, such as a [[Graveyard]] deck. Use this fact and deploy it only when the opponent is low on Elixir, or if it is countered by [[:Category:Troop Cards|troops]]. This is not possible with the [[Cannoneer]] and [[Dagger Duchess]] as they will destroy the Electro Spirit before it can connect.
+*It is important to note that the Electro Spirit does slightly less damage per hit than the [[Ice Spirit]].  For example, when used in tandem with a [[Dart Goblin]], the Electro Spirit is incapable of dropping the health of troops with shields to the point where the Dart Goblin can OHKO them, whereas the Ice Spirit is able to do so.
+*The Electro Spirit can counter most swarms with the help of a Crown Tower, when placed to pull the swarm off to a side before stunning them. This does not work very well versus the Minion Horde, as the Crown Tower must still shoot each Minion twice to defeat them, and since there are 5 of them, this equates to 10 shots to defeat the entire Minion Horde. This is not fast enough to prevent some Minions from swiping at the Tower.
+*The Electro Spirit has enough hitpoints to take a shot from most medium-sized units. The [[Musketeer]], [[Executioner]], [[Baby Dragon]], [[Witch]], [[Minions]], [[Princess]], [[Goblin Demolisher]], Electro Wizard, Magic Archer, Zappies, Firecracker, [[Dart Goblin]], [[Bomber]], [[Miner]], Electro Dragon, [[Archer Queen]], [[Phoenix]], Fisherman, [[Ice Wizard]], and Bandit, all take more than 1 hit to eliminate the Electro Spirit, giving it ample time to stun them.
+*Slow units like the [[Mega Minion]] and [[Hunter]] can be prevented from hitting the Tower Princess with the help of the Electro Spirit. Place the Electro Spirit close to the river when they cross it so that they get lured towards it.
+*Normally, an Electro Spirit will fail to counter [[Spear Goblins]] when placed on top of them, as all three immediately throw their spears to take it out. However, if the player lets one Spear Goblin connect to the Tower Princess, the other Spear Goblins will not deal enough damage to 2HKO the Electro Spirit, allowing it to connect to them. This will prevent the most damage to the Tower Princess.
+*If the Electro Spirit is placed ahead of a [[Hog Rider]], the Electro Spirit can stun buildings or take out Goblins, Minions, Dart Goblin, Princess, or [[Rascals|Rascal Girls]] with the help of a [[Zap]]. The same applies to cards like the [[Lumberjack]], [[Mini P.E.K.K.A.]], [[Prince]], and Musketeer.
+*When combined with a Zap or [[Giant Snowball]], the Electro Spirit can allow the spell to OHKO frail swarms. This is especially useful on offence, as it allows for the player's push to continue on for a good trade, and the Electro Spirit is almost guaranteed to hit each swarm unit with its chain attack. In the same principle, it can be used with a [[Fireball]] to effectively put troops like a [[Musketeer]], [[Electro Wizard]], [[Goblinstein]], [[Little Prince]], or a [[Wizard]] into a hitpoint range where the [[:Category:Spell Cards|spell]] can finish them off.
+*[[The Log]] and the [[Barbarian Barrel]] are the cheapest methods of countering an Electro Spirit that is being tanked for by something else, as they can both OHKO it. When attacking, the Electro Spirit should generally not be played behind the push when these cards are in hand, as it will result in a waste of 1 Elixir. However, the player may want to do this to bait the opponent's spell, which can allow them to more effectively use other cards, such as a [[Goblin Barrel]].
+*It is quite effective against an [[Elixir Golem]] or a [[Lava Hound]]. When these units are defeated, the Electro Spirit will hit some of their death spawn units with the chain attack, increasing its value. This is not useful against the [[Skeleton Barrel]] however, as the Skeleton Barrel has a slight delay between its death and the spawned Skeletons.
+**Against the Skeleton Barrel, it is best to wait for it to connect to the Tower Princess first, then deploy the Electro Spirit behind the Crown Tower. The Electro Spirit will jump onto the Skeletons, eventually killing them. This will prevent more damage than if it was placed on top of the Skeletons.
+*Pairing the [[Fire Spirit]] with Electro Spirit is very effective, as they both cost 1 Elixir, which will only use a total of 2 Elixir. This combination can take out units such as [[Princess]], [[Minions]], [[Archers]], [[Bomber]], [[Firecracker]] and can even completely stop a Goblin Barrel with the help of the Crown Tower. This combo can help a lot of decks which try to bait The Log or [[Arrows]], since the combo is very effective against swarms. It is also good on the offensive side, having more damage potential than The Log and can hit air. The player should make sure to deploy the Spirits a short distance from their targets to ensure they can finish deploying and attack successfully.
+*An Electro Spirit, paired with Skeletons can fully stop a Goblin Barrel for a positive Elixir trade. Place the Electro Spirit on the inner [[Goblins|Goblin]] so that it will target it, while the Skeletons will distract the other two Goblins. The damage and stun combined with the Skeletons will be able to finish off those Goblins while the inner one will be finished off by the Tower Princess.
+**Without the Skeletons, the Electro Spirit can prevent all but 1 hit from a Goblin Barrel. The Electro Spirit should be planted so that it attacks the inner Goblin, and it should be planted just before the Goblin Barrel's shadow reaches the river.
+*When playing against a [[Graveyard]], the player should wait for a few Skeletons to group up so that they can hit as many of them as possible without taking too much damage.
+*The Electro Spirit can serve as a replacement for the Zap since it stuns troops for just as long while having only half the cost. However, it deals noticeably less damage than Zap, does not deal area damage and also cannot be placed on the opponent's side.
+*It is a good supporting card to help defend against a [[Balloon]], stunning it for 0.5 seconds for the cost of 1 Elixir. If a Balloon is already locked onto a Crown Tower, this 0.5-second duration could prevent another high-damage hit. On the contrary, it works well with the Balloon. The 0.5 second stun will leave a larger time for the Balloon to continue its path, which can allow it to get a hit on the Tower.
+*The Electro Spirit does not deal enough damage to take out the [[Guards]]' shields but it does deal enough damage to finish off the Guards themselves. Knowing this, you can combine the Electro Spirit with [[The Log]] to counter Guards for a neutral Elixir trade, however that requires precise timing.
+*For only 1 Elixir, it can deny a few waves from a [[Furnace]]. Make sure that it is placed in such a way that it jumps onto a Fire Spirit and then chains onto the Furnace.
+*If a [[Royal Ghost]] is coming from one lane, the Electro Spirit should be used to kite him towards the other lane. This is most useful when the Royal Ghost is supporting a larger push to separate him from it.
+*The Electro Spirit is not a replacement for the Skeletons as a [[:Category:1-Elixir Cards|1-Elixir]] card in a deck, as their playstyles are very different. The Electro Spirit is immediately sacrificed when it attacks, making it less valuable in decks where creating large pushes is the way to attack, while the Skeletons are able to survive and keep defending thanks to other tanks absorbing hits for them.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Stun Duration<br />{{Icon|I=Freeze}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|1||0.5 sec||Very Fast (120)||1 sec||2.5||Air & Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 215}}
+{{#vardefine: dmg_11 | 99 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} x9
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} x9
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} x9
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} x9
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} x9
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} x9
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} x9
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} x9
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} x9
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} x9
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} x9
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} x9
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} x9
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} x9
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} x9
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} x9
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 35,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|200 {{BASEPAGENAME}} cards<br>25 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 105,000 Damage to enemy Troops or buildings
+|2,000 {{Icon|I=Gold}}<br>25 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 175,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>25 {{Icon|I=XP}}
+|-
+| rowspan="3" |Hit Maker <br> [[File:Hit Maker.png|50x50px]]
+|1
+|Hit enemy Troops a total of 980 times
+|3,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Troops a total of 2,800 times
+|200 {{Icon|I=Common Wild Card}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Troops a total of 4,900 times
+|5,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+| rowspan="3" |Shocking Behavior <br> [[File:Debilitator.png|50x50px]]
+|1
+|Zap 6 targets with a single deploy a total of 50 times
+|6,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|2
+|Zap 6 targets with a single deploy a total of 150 times
+|8,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Zap 6 targets with a single deploy a total of 300 times
+|10,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2020
+*The Electro Spirit was once available in the [[Tournament/Special Event Challenges|Electro Spirit Challenge]], which started on 14/10/2020. In this [[Tournament|challenge]], the player would build a [[Battle Decks|deck]] which included the Electro Spirit. If the player achieved at least 7 wins, they obtained the Electro Spirit early.
+*The Electro Spirit [[Cards|card]] was generally released on 2/11/2020.
+2021
+*On 30/3/2021, the [[Version History#2021%20Quarter%201%20Update%20(30/3/2021)|2021 Quarter 1 Update]], added the Electro Spirit to all Draft selections.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 30/3/2022, the [[Version History#Miner%20Update%20(30/3/2022)|Miner Update]], fixed an issue where the Electro Spirit's [[Star Points|Star Level]] used the sound effects of the [[Ice Spirit]].
+*On 27/6/2022, the [[Version History#Summer 2022 Update (27/6/2022)|Summer 2022 Update]], added the Shocking Behavior [[Card Mastery]] task for the Electro Spirit.
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the [[Arenas|Arena]] to unlock the Electro Spirit from Electro Valley to Spell Valley. It also fixed a bug where [[Sparky]] was not reset when hit by Electro Spirit at the same time she was being hooked by [[Fisherman]].
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2025
+*On 24/11/2025, increased the Level cap of all cards to 16 (from 15).
+*On 1/12/2025, the Heroes Update, decreased the Electro Spirit's projectile speed to 1000 (from 2000), and increased it's Shock Chain Period to 0.25 seconds (from 0.2 seconds) {{Balance|Nerf}}.
+2026
+
+* On 4/8/2026, a Balance Update, decreased the Electro Spirit's hitpoints by 6%
+
+==Gallery==
+<gallery>
+File:Electro Spirit card render.png|Current card render.
+File:Electro Spirit Preview.gif|Current card preview
+File:Electro Spirit1.png|Electro Spirit 1
+File:Electro Spirit2.png|Electro Spirit 2
+File:Electro Spirit3.png|Electro Spirit 3
+File:ElectroSpiritConcept.jpeg|Concept design
+</gallery>
+
+==Trivia==
+*The word "Electro" come from the Greek word "''ἤλεκτρον''" (elektron), meaning amber, referring to its electrostatic capabilities. Electricity was first detected through electric fish from as far back as 2750 BCE where Ancient Egyptian texts described them as the "protectors" of all other fish. At around 600 BCE, Thales of Miletus made a series of observations on static electricity, from which he believed that friction rendered amber magnetic, in contrast to minerals such as magnetite, which needed no rubbing. Thales was incorrect in believing the attraction was due to a magnetic effect, but later science would prove a link between magnetism and electricity. Electricity would remain little more than an intellectual curiosity for millennia until 1600, when the English scientist William Gilbert wrote ''De Magnete'', in which he made a careful study of electricity and magnetism, distinguishing the lodestone effect from static electricity produced by rubbing amber.
+**In the Spanish, Italian, Russian, Arabic, Portuguese, and Thai language settings of the game, the Electro Spirit's name translates to "Electric Spirit". In the Chinese, Persian, and Finnish language settings of the game, the Electro Spirit's name translates to "Thunder Spirit", "Electric Soul", and "Lightning Spirit" respectively.
+**The Electro Spirit is 1 of 11 cards associated with electricity, with the others being [[Zap]], [[Tesla]], [[Zappies]], [[Electro Dragon]], [[Electro Giant]], [[Lightning]], [[Electro Wizard]], [[Sparky]], [[Wizard Trio]], and the [[Goblinstein]].
+**A Trainer in the [[Training Camp]] is called Trainer Clemont and uses an electric-related card in their [[Battle Decks|deck]] which is Electro Spirit. This is a reference to [https://bulbapedia.bulbagarden.net/wiki/Clemont_(anime) Clemont], a companion of Ash from the anime and [https://bulbapedia.bulbagarden.net/wiki/Lumiose_Gym Lumiose City Gym] Leader.
+*The Electro Spirit, along with [[Skeletons]], [[Fire Spirit]], [[Ice Spirit]], [[Warmth]], [[Heal Spirit]], and [[Heal]], are the cheapest [[cards]], costing 1 [[Elixir]].
+*The Electro Spirit 1 of 8 [[:Category:Troop Cards|troops]] to die as a part of their attack, the others being the Fire Spirit, Ice Spirit, [[Skeleton Barrel]], [[Battle Ram]], Heal Spirit, [[Suspicious Bush]], and [[Wall Breakers]].
+*The Electro Spirit is 1 of 9 troops that have the same sprite for both players, the others are Skeletons, Fire Spirit, [[Bats]], Ice Spirit, Heal Spirit, [[Elixir Golem|Elixir Blob]], [[Phoenix]], and [[Lava Hound|Lava Pup]].
+*The Electro Spirit is 1 of 14 troops that has been featured with a [[Buff#Rage|Rage]] [[buff]], the others being [[Giant]], Zappies, [[Guards]], [[Giant Skeleton]], [[Goblin Giant]], Electro Dragon, Wall Breakers, Electro Giant, [[Mega Knight]], [[Ram Rider]], Electro Wizard, Sparky, and [[Royal Ghost]].
+*The Electro Spirit is the only Spirit card that does not deal area damage. Instead it deals chain damage which hits up to 8 targets after its initial launch.
+*The description is inaccurate as Electro Spirit does not inflict area damage; it likely refers to the massive count of the multi-hit chain lightning mechanic.
+**The Electro Spirit is 1 of 4 troops that can deal damage to multiple units with one attack without an area damage radius, the others being [[Hunter]], Electro Dragon, and Electro Wizard.
+*In [[Touchdown]], if an Electro Spirit jumps into the enemy end zone as it attacks, it does not count as a touchdown. This is because a jumping spirit no longer counts as a troop; it becomes similar to a projectile.
+*The Electro Spirit is the subject of an [[Emotes|Emote]].
+*Before the Electro Spirit's card release, the Electro Spirit's damage was decreased by 48%.
+
+==In other languages==
+{{Other languages|fr=Électro-esprit|de=Elektrogeist|es=Espíritu eléctrico|it=Spirito elettrico|nl=Elektrogeest|no=Elektroånd|tr=Elektro Ruh|jp=エレクトロスピリット|kr=일렉트로 스피릿|ru=Электрический дух|ar=الروح الكهربية|pt=Espírito Elétrico|cn=雷电精灵|cnt=閃電精靈|fa=روح برقی|id=Roh Elektro|ms=Roh Elektro|th=วิญญาณไฟฟ้า|fi=Salamahenki|vi=Tinh linh Điện|esmeaning=Electric Spirit.|itmeaning=Electric Spirit.|rumeaning=Electric Spirit.|ptmeaning=Electric Spirit.|armeaning=Electric Spirit.|thmeaning=Electric Spirit.|cnmeaning=Thunder Spirit.|cntmeaning=Thunder Spirit.|fameaning=Electric Soul.|fimeaning=Lightning Spirit.}}
+
+{{Navigation|Card}}
+
+[[fr:Électro-esprit]]
+[[de:Elektrogeist]]
+[[es:Espíritu eléctrico]]
+[[it:Spirito elettrico]]
+[[ru:Электрический дух]]
+[[zh:雷电精灵]]
+[[Category:Kamikaze Cards]]

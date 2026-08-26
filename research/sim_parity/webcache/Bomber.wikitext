@@ -1,0 +1,229 @@
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}
+
+{{Card Infobox|Cost=2|Rarity=Common|Type=Troop|Arena=Bone Pit|ReleaseDate=4 January 2016}}<br><br>
+{{SubpageNavBox|Evolution=yes|MergeTactics=yes}}{{Quote|Small, lightly protected skeleton who throws bombs. Deals area damage that can wipe out a swarm of enemies.}}
+
+The Bomber is a {{Rarity|Common}} [[Cards|card]] that is unlocked from the [[Arenas|Bone Pit (Arena 2)]]. It spawns an area-damage, ground-targeting, medium-ranged, ground [[:Category:Troop Cards|troop]] with low hitpoints and high damage. He appears to be a [[Wall Breakers|Wall Breaker]] that carries a black bomb and wears a team-colored aviator hat with gold-rimmed aviation goggles and gloves. A Bomber card costs 2 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Bomber Card}}
+*The Bomber is best used as a defensive [[:Category:Troop Cards|troop]], being able to take out [[Barbarians]], [[Skeleton Army]], [[Goblin Gang]], [[Archers]], [[Royal Recruits]], [[Guards]], and other ground swarms more effectively than most other [[cards]] of similar cost, due to his moderate splash radius, high damage, decent range, and low [[Elixir]] cost.
+*Even though he has low hitpoints, his survivability is good for his Elixir cost, as he is able to survive any [[:Category:2-Elixir Cards|2-Elixir]] [[:Category:Spell Cards|spell]] of similar Level. Therefore, using any spell that is more expensive is usually a waste of Elixir, as a [[Fireball]] or [[Arrows]] played to defeat a Bomber results in an Elixir advantage for the opponent unless the player can hit something else with the spell such as a [[:Category:Crown Towers|Crown Tower]] or troops nearby. He has a lot of damage potential when placed safely behind high hitpoint troops such as a [[Giant]] or a [[Golem]].
+**A lone Bomber can be countered with a [[Zap]], [[Giant Snowball]], [[Rage]], or [[The Log]] alongside the help of a Crown Tower without the Bomber doing any damage. The player should hold the Zap ready, and when the Bomber is within range of the Crown Tower, cast the spell. The Crown Tower's damage along with the Zap's stun time of 0.5 seconds will prevent the Bomber from throwing any bombs for a neutral Elixir trade.
+**[[Barbarian Barrel]] is the best [[:Category:2-Elixir Cards|2-Elixir]] damaging spell to counter the Bomber behind a tank or alone on the enemies side as the Barbarian Barrel used properly will leave the Bomber on critical health, leaving the Barbarian that spawns to safely defeat it.
+**If the Bomber is alone, the [[Void]] can destroy him immediately in one strike. The player should deploy Goblins, [[Bats]], or Barbarians in order to save him from the spell. This can counter the Bomber for a slight negative Elixir or force the opponent to place other cards to save the Bomber from the spell.
+*For a further positive Elixir trade, any Spirit card like an [[Ice Spirit]], [[Electro Spirit]], or [[Fire Spirit]], can counter him due to the Bomber taking two hits to defeat them, allowing your Crown Tower to finish him off.
+*Left alone, the Bomber will connect to the [[Tower Princess]], hitting it once for a slight amount of chip damage. This means that the player can safely ignore him if they are running a heavy [[Battle Decks|deck]]. However, a [[Cannoneer]] and [[Dagger Duchess]] will completely prevent him from connecting, by quickly defeating the Bomber.
+*For just 2 Elixir, the Bomber deals good area damage and is one of the cheapest counters to Barbarians due to his range. In fact, it takes a Bomber just 3 throws to defeat Barbarians of the same Level. He complements tank pushes very well because of this. However, due to his somewhat slow hit speed, the Bomber will often be taken out by the Barbarians, but the player can place him in the center or slightly staggered to the opposite side to increase the Barbarians' travel time. Another method is to place protective troops such as the [[Ice Golem]], [[Elixir Golem]], Valkyrie, and the Knight or to push them back with a card that has a knockback like The Log and the [[Monk]].
+*An effective way to counter a lone Bomber is to place a cheap unit like Skeletons or an Ice Spirit followed immediately by another cheap unit like Goblins. The first unit will distract the Bomber while the second unit destroys him. This is generally a negative Elixir trade, but can used to make an counterpush.
+*The Bomber cannot attack air units, making him vulnerable against [[Minions]], [[Bats]], and other flying troops. However, when using the Bomber, the player can place protective troops such as the [[Goblin Giant]], [[Hunter]], [[Electro Wizard]], [[Electro Dragon]], or the [[Baby Dragon]] to assist in taking these troops out.
+*Because of his low hitpoints, he can be easily defeated with mini tanks placed on top of him like the [[Knight]], [[Royal Ghost]], Valkyrie, Miner, Mini P.E.K.K.A, [[Lumberjack]], [[Skeleton King]], Prince, Monk, [[Dark Prince]], [[Goblin Machine]], Golden Knight, [[Mighty Miner]], Battle Healer, and the [[Ram Rider]]. This is useful to do in case he is part of a larger push.
+*Since he is very light, the Bomber can be pushed by almost any other troop in the game. In particular, fast units like the Goblins can provide the Bomber with a major speed boost. Putting this card with Spear Goblins is a good idea since together they can engage targets within their comfortable range, making for a quick ranged point-target and splash damage backup for the player's other troops across the river, or even a quick and small push.
+*Because he has lower range than some other cards, certain area-of-effect cards like the [[Wizard]], Witch, Goblin Demolisher, and [[Sparky]] can take advantage of their splash attack and longer range and defeat the Bomber easily when he is behind a tank. Try to space out the Bomber from the tank, so that enemy splash attackers cannot hit both of them at the same time.
+*For a neutral Elixir trade, he is able to counter [[Wall Breakers]], even when split. He does enough damage to weaken them so that any tower troop can finish them off, and he will remain with full hitpoints for a counterattack.
+*The Bomber can be played as a response for a [[Barbarian Hut]]. While he will not be able to fully deny all waves, he will prevent a lot of damage for only 2 Elixir. A similar strategy works against the [[Furnace]].
+*The [[Miner]] is a decent counter to a defending Bomber, as he will 2HKO him and can be deployed anywhere around him. The defender can use swarms to reduce the likelihood that the Miner locks onto him. However, if the opponent also has [[Poison]], they may decide to fake the player out and deploy the Miner on the Crown Tower, while the Poison is placed on the Bomber. If the player uses a swarm to protect him, this will give the opponent spell value and chip damage.
+**If the Miner response is placed in a poorly position, you can use [[Tornado]] to send the Miner toward the [[King's Tower|King Tower]], activating him early while also saving your Bomber.
+*The Bomber paired with the [[Prince]] is a high-risk, high reward strategy. The Prince can take out mini tanks such as the Mini P.E.K.K.A, while the Bomber can take out swarms such as Goblin Gang or Skeleton Army. However, the combo is countered by separating the duo, since they have different movement speeds and ranges.
+*He is able to stop a [[Princess]] at the bridge relatively well. He can survive one attack from her, and 2HKO her back, although the player should be wary of predictive troops or spells used with the Princess.
+**On the contrary, a lone Bomber can be stopped by a Princess with the help of a [[:Category:Tower Troop Cards|tower troop]]. Place her from a distance to avoid her taking damage from the Bomber.
+*If protected by an Ice Golem, the Bomber, along with the Crown Tower, can take care of mini tanks such as [[Elite Barbarians]], [[Golden Knight]], [[Lumberjack]], Valkyrie, [[Bowler]], Skeleton King, Dark Prince, Knight, [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Bandit]], [[Battle Healer]], Executioner, Prince, Mighty Miner, [[Cannon Cart]], Monk, and others due to his decent damage per second.
+*The Bomber is a good counter to the [[Royal Hogs]]. The Royal Hogs are unable to attack the Bomber, and the Bomber can hit all of them with his splash and prevent a lot of damage for a +3 Elixir trade.
+*With great timing, a Bomber can prevent most damage from a [[Goblin Drill]]. He has enough damage to OHKO the Goblins, and if the Bomber attacks just before the Goblin Drill expires, he will be able to finish off the death Goblins. This allows him to counter it for a +2 Elixir trade.
+*The Bomber works quite well with Tornado. Tornado groups up units for the Bomber to hit, while also keeping him at a safe distance from melee attackers.
+*Depending on what the player wants to use in their deck, the Bomber's function can be replicated by other similar cards.
+**The Spirit cards have an even cheaper Elixir cost than the Bomber, making them a good alternative to use against frail swarms. However, unlike the Bomber, they are unable to handle bulkier swarms such as Barbarians, and will require the use of additional cards, which will often cost more than using a single Bomber.
+**The Bomber is interchangeable with the Wizard. However, he cannot attack air troops and has fewer hitpoints, meaning he can be OHKOed by Fireball or Arrows. In exchange, the Bomber is better in desperate situations where the player's Elixir is low, as he only costs 2 Elixir, as opposed to the 5 Elixir Wizard.
+**Another alternative is the [[Firecracker]]. The Firecracker costs 1 more Elixir than the Bomber, has slightly less hitpoints, and attacks less frequently. However, the Firecracker has the ability to attack air troops, a longer range, a larger spread, a piercing effect, and the ability to push herself to safer positions, thanks to her recoil.
+**The Princess is another alternative to the Bomber, as a cheap splash card. She has a larger area splash compared to the Bomber, from a longer range, as well as the ability to hit air troops. However, much like the Firecracker, she is even frailer, just as slow, and deals lesser damage.
+**More expensive alternatives include the [[Valkyrie]], Bowler, Baby Dragon, Sparky, Mega Knight, Royal Ghost, Dark Prince, [[Skeleton Dragons]], [[Magic Archer]], [[Executioner]], [[Witch]], Skeleton King, [[Goblin Demolisher]], and [[Ice Wizard]]. While all of them have improved hitpoints, allowing them to survive for longer, they have a higher Elixir cost, making them worse choices for quick defense.
+**If the player already has great coverage against swarms in their deck, they may choose to use other cheap ranged troops instead to replicate Bomber's role. Such examples of cards include Archers, [[Spear Goblins]], and [[Dart Goblin]].
+*A good counter for the Bomber is the Bandit. The Bandit will dash towards the Bomber, dodging the bomb thrown at her, and OHKO him with her dash, which will leave her at full health for a counter attack. This is better when the Bomber is in the middle of the opponent's territory as this will allow the Bandit to reach the Tower faster. A [[Mega Knight]] and Golden Knight with his Dashing Dash can work in a similar way, albeit for a negative Elixir trade with both, though heavier with the former.
+*A Dart Goblin has a much longer range, allowing him to easily defeat a lone Bomber, even from the other lane, and prepare himself for a counterattack.
+*The Bomber has great synergy with the [[Electro Giant]], as he can assist in taking out large swarms or mini tanks that cripple the Electro Giant. His cheap Elixir cost and range allows him to support the Electro Giant, weakening defending troops enough that the Electro Giant can defeat them with his Zap Pack, and save more of his hitpoints for the attack.
+
+<center>
+<div id="unit-statistics" class="table-back">
+{{Statistics}}{{StatusEffects}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|2||1.8 sec||0.2 sec||Medium (60)||1 sec||4.5||1.5||400||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 304 }}
+{{#vardefine: dmg_11 | 225 }}
+{{#vardefine: atk_speed | 1.8 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+! scope="col" |Area Damage<br />{{Icon|I=Area Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="20%" |Type
+! width="10%" |Level/Tier
+! width="45%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 77,500 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|200 {{BASEPAGENAME}} cards<br>25 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 235,000 Damage to enemy Troops or buildings
+|2,000 {{Icon|I=Gold}}<br>25 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 390,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>25 {{Icon|I=XP}}
+|-
+| rowspan="3" |Troop Destroyer <br> [[File:Troop Destroyer.png|50x50px]]
+|1
+|Destroy 280 enemy Troops
+|3,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|2
+|Destroy 800 enemy Troops
+|200 {{Icon|I=Common Wild Card}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Destroy 1,400 enemy Troops
+|5,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|}
+</div></center>
+
+== History==
+2016
+*The Bomber [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016.
+*On 2/2/2016, the [[Version History#February 2016 Update (2/2/2016)|February 2016 Update]], increased the Bomber's hit speed to 1.9 seconds (from 2 seconds).
+*On 29/2/2016, the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]], changed the Bomber so that he would no longer stop his attack if his target dies during the attack animation. It also decreased the Bomber's sight range to 5.5 tiles (from 6 tiles).
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], increased the {{Rarity|Common}} card Level cap to 13 (from 12). The update also fixed the "range bug", which decreased the Bomber's range to 4.5 tiles (from 5 tiles), but his effective range was unchanged.
+*On 18/5/2016, a [[Version History#Balance Changes (18/5/2016)|Balance Update]], increased the Bomber's damage by 10%.
+*On 4/7/2016, the [[Version History#Tournaments Update (4/7/2016)|Tournaments Update]], increased the Bomber's damage by 9%.
+*On 19/9/2016, the [[Version History#September 2016 Update (19/9/2016)|September 2016 Update]], decreased the Bomber's hitpoints by 2% and increased his damage by 2.5%. This resolved a minor issue where [[Goblins]] could not defeat an equal Level Bomber in three hits at some Levels, e.g. Level 7.
+*On 15/12/2016, the [[Version History#December 2016 Update (15/12/2016)|December 2016 Update]], increased the Bomber's damage by 4%.
+2017
+*On 16/3/2017, a [[Version History#Maintenance%20Break%20(16/3/2017)|maintenance break]], increased the Bomber's projectile speed to 400 (from 300). This was done to fix some unexpected behavior that the Bomber showed.
+2018
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], moved the [[Arenas|Arena]] to unlock the Bomber from [[Training Camp]] to Bone Pit.
+*On 2/7/2018, a [[Version History#Balance Changes (2/7/2018)|Balance Update]], increased the Bomber's range to 5 tiles (from 4.5 tiles).
+2019
+*On 28/1/2019, the [[Version History#January%202019%20Update%20(28/1/2019)|January 2019 Update]], made a small change to the Bomber's card description.
+*On 6/5/2019, a [[Version History#Balance Changes (6/5/2019)|Balance Update]], increased the Bomber's hitpoints by 28%.
+*On 30/9/2019, the [[Version History#End%20of%20September%202019%20Update%20(30/9/2019)|End of September 2019 Update]], added an extra [[Star Points|Star Level]].
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Bomber's card info screen.
+2020
+*On 9/9/2020, a [[Version History#Balance Changes (9/9/2020)|Balance Update]], decreased the Bomber's attack time interval to 1.8 seconds (from 1.9 seconds).
+2021
+*On 30/3/2021, the [[Version History#2021%20Quarter%201%20Update%20(30/3/2021)|2021 Quarter 1 Update]], decreased the Bomber's cost to 2 [[Elixir]] (from 3 Elixir), decreased his hitpoints by 31%, and decreased his damage by 32%.
+*On 6/9/2021, the [[Version History#2021%20Quarter%203%20Update%20(6/9/2021)|2021 Quarter 3 Update]], decreased the Bomber's range to 4.5 tiles (from 5 tiles).
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+*On 3/1/2024, a [[Version History#Balance Changes (3/1/2024)|Balance Update]], increased the Bomber's damage by 4%.
+*On 5/2/2024, the [[Version History#Pass Royale and more (5/2/2024)|February 2024 Update]], added the Bomber's Evolution.
+*On 8/10/2024, a [[Version History#Balance Changes (8/10/2024)|Balance Update]], decreased the Bomber's damage by 2%.
+2025
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)|Balance Update]] decreased Bomber's Hitpoints by 7%.
+
+==Gallery==
+<gallery>
+File:BomberCardPreRelease.png|Bomber's card image before its release.
+File:Bomber card render.png|Current card render.
+File:Bomber Preview.gif|Current card preview.
+File:Chinese Bomber card render.png|Bomber’s card render in the Chinese version of the game.
+File:Bomber1.png|Bomber
+</gallery>
+
+==Trivia==
+*The word "''Bomb''" and by extension "''Bomber''" come from the Greek "''βόμβος''" (''bómbos)'', meaning booming or buzzing, referring to the sound that bombs do when they explode. Bombs were first invented in China during the ninth century. Initialy, they were made with ceramic material along with gunpowder, however, they were later changed to cast-iron shells with the [https://en.wikipedia.org/wiki/Thunder_crash_bomb Thunder crash bomb] during the twelfth century.
+*The Bomber is 1 of 17 [[:Category:Troop Cards|troops]] that inspired a troop in Clash of Clans, the others being [[Spear Goblins]], [[Bats]], [[Skeleton Barrel]], [[Minion Horde]], [[Firecracker]], [[Battle Ram]], [[Ice Golem]], [[Zappies]], [[Baby Dragon]], [[Giant Skeleton]], [[Ram Rider]], [[Inferno Dragon]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], and [[Night Witch]].
+**The Bomber's [[Cards|card]] render is taken from his Clash of Clans counterpart's render.
+*The Bomber is 1 of 15 cards associated with [[Skeletons]], with the others being [[Skeleton Dragons]], Skeleton Barrel, [[Tombstone]], [[Bomb Tower]], [[Guards]], [[Skeleton Army]], [[Witch]], [[Balloon]], Giant Skeleton, [[Wall Breakers]], [[Graveyard]], [[Super Witch]], [[Skeleton King]], and of course, Skeletons.
+**A [[Loading Screen Hints|Loading Screen Hint]] relevant to the Bomber reads "''One day, Wall Breakers realized that they could do a lot more damage if they THREW the bomb rather than sat beside it. Imagine that...''". This may be a reference to his creation as a ranged counterpart to the [https://clashofclans.fandom.com/wiki/Wall_Breaker Wall Breaker in Clash of Clans]. 
+***Ultimately, the Wall Breakers were added in one of Clash Royale's updates.
+***The Bomber was later added into Clash of Clans in return as Wall Breaker's counterpart in the Builder Base.
+**In the Japanese language setting of the game, the Giant Skeleton's description refers to how the Bomber is a tiny skeleton carrying a much smaller bomb.
+**The Bomber, Skeletons, and Tombstone are the only cards associated with Skeletons that are unlocked in [[Arenas|Bone Pit]].
+*The Bomber is one of the first troop cards to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the [[Minions]], [[Archers]], [[Knight]], Spear Goblins, [[Goblins]], Skeletons, [[Barbarians]], Minion Horde, [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Musketeer]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], Baby Dragon, Skeleton Army, Witch, [[P.E.K.K.A.|P.E.K.K.A]], [[Prince]], and Balloon.
+*The Bomber is one of the first troop cards to receive a card render, alongside the Archers, Knight, Goblins, Skeletons, Barbarians, Bats, [[Royal Recruits]], Skeleton Barrel, [[Rascals]], Musketeer, Giant, Valkyrie, Wizard, [[Flying Machine]], Hog Rider, [[Royal Hogs]], [[Dart Goblin]], Zappies, [[Elixir Golem]], Baby Dragon, Skeleton Army, Witch, P.E.K.K.A, Prince, Balloon, Giant Skeleton, [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], Wall Breakers, [[Bowler]], [[Cannon Cart]], [[Mega Knight]], Ram Rider, Miner, Royal Ghost, Ice Wizard, [[Magic Archer]], [[Bandit]], [[Lava Hound]], Night Witch, and [[Fisherman]].
+*The Bomber is 1 of 2 troops that has been featured with a [[Buff#Knockback Attack|Knockback Attack]] [[buff]], the other being Skeleton Dragons.
+*The Bomber is 1 of 23 cards that has had its [[Elixir]] cost changed, the others being [[Fire Spirit]], Royal Recruits, [[Cannon]], [[Mortar]], Musketeer, [[Three Musketeers]], [[Heal]], [[Goblin Hut]], Bomb Tower, [[Barbarian Hut]], [[Furnace]], [[Elixir Collector]], Skeleton Army, P.E.K.K.A., Wall Breakers, [[Electro Giant]], Bowler, [[Goblin Barrel]], [[Barbarian Barrel]], [[Rage]], Fisherman, and the [[Monk]].
+*The Bomber throws 1 bomb in-game, holds 3 bombs in his card render, and has 2 visible bombs in his card image.
+*The Bomber, along with the Minions, Skeletons, Skeleton Dragons, [[Ice Spirit]], Mini P.E.K.K.A, [[Mega Minion]], Ice Golem, Dart Goblin, Elixir Golem, [[Goblin Cage|Goblin Brawler]], Guards, Baby Dragon, P.E.K.K.A, Giant Skeleton, Golem, Wall Breakers, Bowler, [[Executioner]], Mega Knight, [[Inferno Dragon]], Royal Ghost, and Lava Hound, are featured as a [https://squad-busters.fandom.com/wiki/Monsters monster] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+**An [https://squad-busters.fandom.com/wiki/Ice_Bomber ice variant] and a [https://squad-busters.fandom.com/wiki/Lava_Bomber lava variant] for the Bomber are also featured as a monster in Squad Buster.
+*The Bomber is the subject of 2 [[Emotes]].
+*The Bomber was featured in the winning deck of the [https://www.youtube.com/live/Sa0QOSJ5AVY?si=Hlcj6efCnFhxfDYe Clash Royale League 2024 Tournament], by a player called Mohamed Light.
+*On 1/10/2018, the Bomber was supposed to receive a cost decrease to 2 Elixir (from 3 Elixir), and a 33% hitpoints decrease, but this change [https://x.com/ClashRoyale/status/1043051141687324672 was pulled back last minute].
+
+==In other languages==
+{{Other languages|esmeaning=Bombardier.|rumeaning=Demoman.|fimeaning=Bombardier.|fr=Bombardier|de=Bomber|es=Bombardero|it=Bombarolo|nl=Bommengooier|no=Bomber|tr=Bombacı|jp=ボンバー|kr=폭탄병|ru=Подрывник|ar=مفجر|pt=Bombardeiro|cn=炸弹兵|cnt=炸彈兵|fa=بمب‌گذار|id=Pengebom|ms=Pengebom|th=มือระเบิด|fi=Pommittaja|vi=Bom thủ}}
+
+{{Navigation|Card}}
+
+[[fr:Bombardier]]
+[[de:Bomber]]
+[[es:Bombardero]]
+[[it:Bombarolo]]
+[[ja:ボンバー]]
+[[ko:폭탄병]]
+[[ru:Подрывник]]
+[[pt-br:Bombardeiro]]
+[[zh:炸弹兵]]

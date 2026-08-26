@@ -1,0 +1,255 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Ice Wizard</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}
+
+{{Card Infobox|Cost=3|Rarity=Legendary|Type=Troop|Arena=Spooky Town|DeployDelay=1|ReleaseDate=29 February 2016}}
+{{Quote|This chill caster throws ice shards that slow down enemies' movement and attack speed. Despite being freezing cold, he has a handlebar mustache that's too hot for TV.}}
+
+The Ice Wizard is a {{Rarity|Legendary}} [[Cards|card]] that is unlocked from the [[Arenas|Spooky Town (Arena 12)]]. It spawns an area-damage, air-targeting, medium-ranged, ground [[:Category:Troop Cards|troop]] with moderate hitpoints and low damage. The Ice Wizard's attacks slow the target's movement and attack speed by 30%. Upon deployment, he will deal damage around enemy units around him in a 360º area around him and slow them down similarly to his attack. He resembles a man with cyan spiky hair, fuzzy eyebrows, glowing eyes and hands, and a horseshoe mustache, wearing a brown leather coat and boots and a team-colored suit and a belt. An Ice Wizard card costs 3 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Ice Wizard Common Modifier.png|45x45px]] Common: Splashy Entrance===
+{{Quote|+300% deploy splash}}
+Ice Wizard's spawn area radius is increased by 300%, for a total of 12 tiles.
+
+===[[File:Ice Wizard Rare Modifier.png|45x45px]] Rare: Inspired by Snails===
+{{Quote|Permanent slowdown}}
+Ice Wizard slows troops infinitely.
+
+===[[File:Ice Wizard Epic Modifier.png|45x45px]] Epic: Simon Says: Freeze!===
+{{Quote|Freeze attacks}}
+Instead of a slow effect, Ice Wizard's attacks now stun the opponent for 2 seconds.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Ice Wizard Card}}
+*The Ice Wizard is best used defensively before being translated into a counterattack as a support [[:Category:Troop Cards|troop]]. Make the most out of his slowing effect as he does very little damage.
+*A good position for an Ice Wizard is in the middle of the defender's side of the [[Arenas|Arena]] as it maximizes the distance melee troops must travel. Any melee troops that reach the Ice Wizard will be targeted by the defender's other [[:Category:Crown Towers|Crown Tower]] too. For example, an Ice Wizard in this position can counter a full squad of [[Barbarians]] and survive with a sliver of health for a potential counterattack.
+*The Ice Wizard will only deal a few hundred damage to a Crown Tower alone, which can be prevented easily by the opponent for a good trade. The player should consider the amount of defensive value their Ice Wizard obtained; trying to support an Ice Wizard when it has not helped gain an [[Elixir]] lead can put the player in a bad spot. 
+**An unsupported Ice Wizard can safely be ignored as he deals low damage to the Tower for his cost, preferably if the defender runs a heavy [[Battle Decks|deck]]. This can be more advantageous with the [[Cannoneer]] and [[Dagger Duchess]], as they will prevent all but one and two hits respectively.
+*Despite dealing low area damage, the Ice Wizard is capable of quickly clearing fragile swarms, such as the [[Skeleton Army]], [[Spear Goblins]], and [[Bats]].
+*The Ice Wizard is a powerful asset to both offense and defense as he significantly lowers the damage per second of enemy troops. The slowing effect is most noticeable against units with fast attack rates, such as the [[Inferno Tower]], [[Mighty Miner]], [[Little Prince]], and the [[Inferno Dragon]]. Under the slowdown effect, these cards take noticeably longer to reach their maximum damage output.
+*The Ice Wizard only has a moderate amount of hitpoints, making him weak to most high-damage [[:Category:Spell Cards|spells]].
+**A [[Fireball]] will fully defeat an equally levelled Ice Wizard at a slight Elixir deficit. This may be valuable if another unit, like a [[:Category:Crown Towers|Crown Tower]], can also be hit.
+**The [[Barbarian Barrel]] is able to counter a lone Ice Wizard for a 1 Elixir profit. Place it so that the Barbarian Barrel hits the Ice Wizard and the Barbarian pops out behind him and distracts him. The Barbarian and the Crown Tower combined will be able to defeat the Ice Wizard. The [[Royal Delivery]] can work in a similar way.
+**If waiting to defeat him is an option, a [[Poison]] does enough damage that it will fully defeat the Ice Wizard through its duration, though for a slight negative Elixir trade.
+**If he is alone, the [[Void]] can defeat him for a neutral Elixir trade. The player should deploy either [[Goblins]] or Barbarians in order to save the Ice Wizard from the spell, as he can survive the first hit, and the damage that it will deal after the deployment of these cards will not be enough to defeat him.
+**Note that the opponent may take advantage of the lack of spells due to being used on the Ice Wizard, and place another card that would thrive due to their absense, such as a [[Flying Machine]], [[Mother Witch]], [[Magic Archer]], [[Zappies]], [[Skeleton Dragons]], or [[Barbarians]].
+*The Ice Wizard deals enough damage and impede the [[Balloon]]'s progress enough so that it does not reach the Tower. This is enough to counter it for a +2 Elixir trade.
+*The Ice Wizard + [[Skeletons]] combination can also function as a great counter to mini tanks, preferably single-target ones such as the [[Knight]], [[Mini P.E.K.K.A]], Mighty Miner, [[Battle Healer]], or [[Prince]], with the help from the player’s Crown Tower. The Skeletons would distract and damage down the attacking mini-tank while the Ice Wizard slows it down from afar, allowing a quick and easy Elixir profit, as the Ice Wizard will likely still survive with most of his hitpoints after this due to helpful tanking by the Skeletons. Other swarms like Goblins and [[Guards]] can work in a similar way.
+**On the other hand, Skeletons can be used against an Ice Wizard after he crosses the bridge. If they surround him, the Ice Wizard will only attack one Skeleton at a time, allowing the other Skeletons to deal enough damage to defeat him with the help of any [[:Category:Tower Troop Cards|tower troop]].
+**Similarly, those mini tanks can stop him easily when placed on top of him. Some like the [[Berserker]] are also a positive Elixir trade.
+*Unlike the [[Ram Rider]], he cannot switch his attack to other troops, meaning he can be easily distracted by a tank or a mini tank. Despite this, he can still affect multiple troops thanks to his splash damage. Because of this, the [[Tornado]] is an iconic and effective synergy with the Ice Wizard. The Tornado can displace units and clump them up, such that the Ice Wizard's splash attack damages and slows down an entire group of enemies, helping the player's Crown Towers and units take out the push more easily.
+*One of the best checks to an Ice Wizard is to tank his attacks with an [[Ice Golem]] while the Crown Tower attacks him. This can stop him for a +1 Elixir trade.
+*[[Rage]] can be used to neutralize the Ice Wizard's slow effect. This might allow your troops to get closer to said Ice Wizard and be able to defeat him without taking too much damage.
+*A very powerful but risky defensive combo is the Ice Wizard and [[Wizard]] combo, given the condition that the opponent's push lacks ranged high DPS units. The Ice Wizard will slow down enemies, clumping them together for the Wizard to deal high amounts of area damage. If possible, the two should be placed some distance apart to mitigate potential spell value from the opponent, as spells like Poison or Fireball can take out the pair for a positive Εlixir trade.
+**One cheap way to counter the Wizard is the Ice Wizard, due to his slow effect, making an easy 2 Elixir profit. An equal level Wizard, however, will leave the Ice Wizard with less than half his health.
+*The Ice Wizard pairs very well with [[Tombstone]]. The Ice Wizard should be placed at the middle of the defender’s field to maximize defensive potential from the 2 Crown Towers, while the Tombstone adds insult to injury with intermittent distractions, also including the Tombstone’s death spawn and the Tombstone itself. With proper timing, this synergy can even annihilate a duo of [[Elite Barbarians]].
+*Ice Wizard synergizes well with the Battle Healer since the Ice Wizard is able to lower the enemy's attack rate, allowing the Battle Healer to heal safer. On the contrary, Ice Wizard is a great assist card against a Battle Healer. He will slow her down so that she attacks less frequently and get less healing.
+*The Ice Wizard is a great counter to the [[Witch]] and [[Night Witch]]. Not only is he able to OHKO their Skeleton and Bat spawns, but he will also slow down the Witches, making them take longer to spawn more troops. Because of this, it makes him a great assist card against a tank + Witch push, and along with a heavy hitter, they can counter such a push and prepare themselves for a counterattack.
+*The Ice Wizard's constant slow effect will make the [[Battle Ram]] take longer to charge up and reduce its speed once it does charge up, making him a good assist card in defense against it.
+**However, the Ice Wizard struggles against other charging units like the [[Prince]], [[Dark Prince]], [[Bandit]], [[Mega Knight]], [[Boss Bandit]], [[Royal Recruits/Evolution|Evolved Royal Recruits]], and [[Fisherman]], as their high mobility will allow them to get to the Ice Wizard quickly and deal a lot of damage to him, or in the case of the Fisherman, pull him away from the safety of the player's side. It is important to distract these units with cheap swarms, or in the case of the Mega Knight, a mini tank in order to prevent the Ice Wizard from being defeated.
+*With his spawn damage, he is able to instantly defeat Skeletons and Bats, making him a great choice against them. However, in is inadvisable to deploy him on anything bulkier, aside from [[:Category:Building Cards|building]]-targeting troops, as he would otherwise be overwhelmed and defeated easily.
+**Despite being able to OHKO Bats with his spawn damage, he should not be used against [[Bats/Evolution|Evolved Bats]], as they are going to survive it, even if they have not healed at all, and will immediately revert it with an attack on him.
+**There is a precise technique for the Ice Wizard's spawn damage to hit all three Goblins from a [[Goblin Barrel]], provided that the Goblin Barrel is placed on the center of the Crown Tower. He is able to hit all three Goblins with his spawn damage by placing him down shortly after the Barrel crosses the river (around 2-3 tiles past it). Against a lone Goblin Barrel, it does not prevent any extra damage compared to simply reacting to where the Goblins split and then deploying him. However, if the Goblins are being tanked for by another unit, and there is another unit on the map that can attack the Goblins, hitting all three with the spawn damage can potentially eliminate them more quickly, though this is very situational.
+**If the player can afford to take the [[Skeleton Barrel]]'s death damage, they can wait for it to connect and then immediately deploy the Ice Wizard on top of the Skeletons, immediately destroying them for a neutral Elixir trade. However, it is better to deploy him earlier and from a distance as this can prevent even more damage that way.
+**The Ice Wizard's spawn damage can be combined with spells like [[Zap]] and [[Giant Snowball]] to eliminate slightly bulkier swarms like Goblins, [[Minions]], and [[Rascals|Rascal Girls]]. However, this combination is a negative Elixir trade on them. Despite this, the combination can still work against a [[Minion Horde]], as it is a neutral Elixir trade.
+*The Ice Wizard's ability to slow down troops can also be an effective support option to make the [[Royal Giant]] less of a threat. On the contrary, he can also be a great assist card for the Royal Giant by crippling the attack speed of counters to the Royal Giant or for killing swarms used against the Royal Giant.
+*The Ice Wizard can work well as a tank for a [[Graveyard]]. The Ice Wizard can slow down the Crown Tower's attack speed, allowing more Skeletons to spawn before the other ones are killed.
+*Note that the Ice Wizard's slow effect does not stack with the slow effects of the Giant Snowball and Ice Golem. In addition, the movement speed decrease of the Ice Wizard will be overwritten by the [[Earthquake]] and Ram Rider if used together, as their movement speed debuffs of them are more severe.
+*The [[Monk]] is very effective against the Ice Wizard. Activating his ability will force his to take damage from his own attack and being slowed down, while also slowing down his own allied troops.
+*The [[Electro Wizard]], [[Zappies]], and [[Electro Dragon]] can used in place of the Ice Wizard in certain decks. They all have higher damage and their stun can prevent more attacks from happening as opposed to the Ice Wizard's slowdown. However, they all cost more Elixir than the Ice Wizard and do not deal area damage, making their attacks more limited against swarms.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Ice Wizard Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Slow Duration<br />{{Icon|I=Freeze}}
+! scope="col" |Slowdown<br />{{Icon|I=Freeze}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|3||1.7 sec||0.5 sec||2.5 sec||-30%||Medium (60)||1 sec||5.5||1.5||700||Air & Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+
+{{StatisticsSubheader|Spawn Damage Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%; text-align:center;"
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+! scope="col" |Spawn Slow Duration<br />{{Icon|I=Freeze}}
+! scope="col" |Slowdown<br />{{Icon|I=Freeze}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+|-
+|3||1 sec||-30%||Air & Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 688 }}
+{{#vardefine: dmg_11 | 89 }}
+{{#vardefine: atk_speed | 1.7 }}
+{{#vardefine: spawn_11 | 84 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Area Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Spawn Damage<br />{{Icon|I=Damage}}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:spawn_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 97,500 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|2 {{BASEPAGENAME}} cards<br>100 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 295,000 Damage to enemy Troops or buildings
+|8,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 490,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>100 {{Icon|I=XP}}
+|-
+| rowspan="3" |Speed Limit <br/ > [[File:Speed Limit.png|50x50px]]
+|1
+|Slow enemy Troops a total of 840 times
+|12,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|2
+|Slow enemy Troops a total of 2,400 times
+|2 {{Icon|I=Legendary Wild Card}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Slow enemy Troops a total of 4,200 times
+|18,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Ice Wizard [[Cards|card]] was added to the game on 29/2/2016, in the [[Version History#March%202016%20Update%20(29/2/2016)|March 2016 Update]].
+*On 23/3/2016, a [[Version History#Balance Changes (23/3/2016)|Balance Update]], increased the Ice Wizard's damage by 5%.
+*On 3/5/2016, the [[Version History#May%202016%20Update%20(3/5/2016)|May 2016 Update]], decreased the {{Rarity|Legendary}} card Level cap to 5 (from 6) and fixed the "range bug" and decreased the Ice Wizard's range to 5.5 tiles (from 6 tiles), but his effective range is unchanged. Also, this update changed his description. It used to read, "''This chill caster hails from the far North. He shoots ice shards at enemies, slowing down their movement and attack speed.''". His sound effects were also changed.
+*On 4/7/2016, the [[Version History#Tournaments%20Update%20(4/7/2016)|Tournaments Update]], allowed the [[Elixir Collector]] to be affected by the Ice Wizard's slowing.
+*On 24/8/2016, a [[Version History#Balance Changes (24/8/2016)|Balance Update]], decreased the Ice Wizard's hitpoints by 5%.
+2017
+*On 11/8/2017, a [[Version History#Balance Changes (11/8/2017)|Balance Update]], increased the Ice Wizard's damage by 10% and increased his attack time interval to 1.7 seconds (from 1.5 seconds).
+2018
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], moved the [[Arenas|Arena]] to unlock the Ice Wizard from Spell Valley to Frozen Peak.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Legendary}} cards start at Level 9 and end at Level 13 (from 1 to 5).
+*On 1/10/2018, a [[Version History#Balance Changes (1/10/2018)|Balance Update]], increased the Ice Wizard's slowdown duration to 2.5 seconds (from 2 seconds). This change was voted for by the community.
+*On 3/12/2018, a [[Version History#Balance Changes (3/12/2018)|Balance Update]], decreased the Ice Wizard’s hitpoints by 11% and increased his damage by 10%.
+2019
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Ice Wizard's card info screen.
+2020
+*On 7/7/2020, a [[Version History#Balance Changes (7/7/2020)|Balance Update]], changed the Ice Wizard's card render.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], decreased the Ice Wizard's hitpoints by 3%.
+*On 10/6/2021, a [[Version History#Maintenance Break (10/6/2021)|maintenance break]], decreased the Ice Wizard's hitpoints by 0.1%. This was to fix a rounding error where a Level 12 Fireball should've been able to kill an equivalent Level Ice Wizard.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+*On 7/12/2021, the [[Version History#Balance%20Changes%20(7/12/2021)|2021 Quarter 4 Update]], allowed the Ice Wizard to deal Spawn Damage with a slow effect.
+2022
+*On 30/3/2022, the [[Version History#Miner%20Update%20(30/3/2022)|Miner Update]], changed the Ice Wizard's sound effects. Previously, his sound effects when deployed were identical to those of the [[Zap]].
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Ice Wizard from Frozen Peak to Spooky Town.
+2023
+*On 6/6/2023, a [[Version History#Balance Changes (6/6/2023)|Balance Update]], increased the Ice Wizard's spawn area radius to 3 tiles (from 2.5 tiles). 
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14). 
+2024
+*On 6/8/2024, a [[Version History#Balance Changes (6/8/2024)|Balance Update]], increased the Ice Wizard's area radius to 1.5 tiles (from 1 tile).
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Ice Wizard's damage by 1.11% and increased his spawn damage by 1.2%.
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)=|Balance Update]] decreased the slowdown effect to -30% (from -35%).
+
+==Gallery==
+<gallery>
+File:Old Ice Wizard card render.png|Ice Wizard's card render before 7/7/2020.
+File:Ice Wizard card render.png|Current card render.
+File:Ice Wizard Preview.gif|Current card preview
+File:Ice Wizard 1.png|Ice Wizard 1
+File:Ice Wizard.png|In-game sprite 
+</gallery>
+
+==Trivia==
+*The word "''Wizard''" comes from the Middle English "''wys''", meaning wise.
+**In the German, Persian, and Vietnamese language settings of the game, the Ice Wizard's name translates to "Ice Magician". In the Chinese language settings of the game, the Ice Wizard's name translates to "Ice Mage".
+*The Ice Wizard is 1 of 17 troops that inspired a troop in Clash of Clans, the others being [[Spear Goblins]], [[Bomber]], [[Bats]], [[Skeleton Barrel]], [[Minion Horde]], [[Firecracker]], [[Battle Ram]], [[Ice Golem]], [[Zappies]], [[Baby Dragon]], [[Giant Skeleton]], [[Ram Rider]], [[Inferno Dragon]], [[Miner]], [[Royal Ghost]], and [[Night Witch]].
+**He is the first one that was added as a temporary troop.
+**The word "''Legendary''" in the description in Clash of Clans could refer to the {{Rarity|Legendary}} rarity of the Ice Wizard in Clash Royale.
+**Unlike his [https://clashofclans.fandom.com/wiki/Ice_Wizard Clash of Clans counterpart], the Ice Wizard in Clash Royale attacks anything in sight instead of prioritizing buildings.
+*The Ice Wizard is 1 of 7 [[cards]] associated with ice, with the others being [[Ice Spirit]], [[Giant Snowball]], Ice Golem, [[Freeze]], [[Super Ice Golem]], and [[Wizard Trio]].
+*The Ice Wizard was one of the first {{Rarity|Legendary}} cards to be added to the game, alongside the [[Princess]].
+*The Ice Wizard is one of the first troop cards to receive a card render, alongside the [[Archers]], [[Knight]], [[Goblins]], Bomber, [[Skeletons]], [[Barbarians]], Bats, [[Royal Recruits]], Skeleton Barrel, [[Rascals]], [[Musketeer]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Flying Machine]], [[Hog Rider]], [[Royal Hogs]], [[Dart Goblin]], [[Zappies]], [[Elixir Golem]], Baby Dragon, [[Skeleton Army]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], [[Prince]], [[Balloon]], Giant Skeleton, [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Mega Knight]], Ram Rider, Miner, Royal Ghost, [[Magic Archer]], [[Bandit]], [[Lava Hound]], Night Witch, and [[Fisherman]].
+*His description implies that TVs might exist within Clash Royale.
+*His description incorrectly states his type of mustache as handlebar; based on his appearance both on the card image and in-game, it appears to be a horseshoe mustache.
+*Occasionally when attacking and during his deployment time, the Ice Wizard exclaims "''Lunta!''", "''Kylmä!''", "''Pakastaa!''", "''Jäädy!''", "''Jää!''", "''Jäätykää!''" or "''Täältä pesee!''". He actually speaks Finnish, and nearly all his words refer to icy things, for example, "''Snow!''", "''Cold!''", "''Freeze!''", "''Turn to ice!''", "''Ice!''", "''You turn to ice!''" or "''Here it comes!''"
+**The Ice Wizard is 1 of 24 troops that speak distinct words when on the field, the others being [[Mini P.E.K.K.A.]], [[Mega Minion]], Wizard, Hog Rider, P.E.K.K.A., [[Dark Prince]], Bowler, Ram Rider, [[Electro Wizard]], Princess, Magic Archer, [[Lumberjack]], [[Mother Witch]], Fisherman, [[Goblin Machine]], [[Super Mini P.E.K.K.A.]], [[Santa Hog Rider]], [[Super Magic Archer]], [[Golden Knight]], [[Boss Bandit]], [[Archer Queen]], [[Little Prince]], and the [[Terry]].
+*When the Ice Wizard is deployed, a small pile of snow is left behind him before he starts to move. Likewise, when he walks, a snow crunching sound effect is played.
+*The Wizard and Ice Wizard are revealed to be cousins according to the balance changes in the [[Version History#Tournaments Update (4/7/2016)|Tournaments Update]].
+*The [[Wizard/Evolution|Evolved Wizard]], Ice Wizard, and Electro Wizard are responsible for creating the [[Void]], according to the Clash Royale [https://youtube.com/shorts/32qX1fEbxX4?si=KqXAuxOvVZ5QaMFP Void intro video].
+*When the Ice Wizard slows an enemy, a pile of snow will fall off the target, and the enemy also leaves a trail of snow when it walks.
+**The enemy will also speak with a deeper pitch. [[Rage]] however will do the opposite.
+**The Ice Wizard's hands appear to be glowing, even when not attacking, unlike the Wizard and Electro Wizard.
+*The Ice Wizard, along with the Archers, Goblins, Barbarians, Wizard, Hog Rider, [[Battle Healer]], Witch, Miner, and the Archer Queen, are featured as a [https://squad-busters.fandom.com/wiki/Characters character] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*The Ice Wizard is the subject of certain cosmetics in the game. More specifically:
+**The Ice Wizard is the subject of 4 [[Emotes]].
+**The Ice Wizard is the subject of a few [[Battle Banners|Battle Banner]] items.
+***The Cold Corkscrew decoration is a reference to [https://en.wikipedia.org/wiki/Iceman_(Marvel_Comics) Iceman]. Its description says "''I think I've seen this trick in a comic book before.''", which is also a reference to the same character.
+*A [[Clone|cloned]] Ice Wizard does not fall from the sky when deployed.
+*The Ice Wizard was featured in the winning [[Battle Decks|decks]] of multiple Clash Royale Tournaments. More specifically:
+**The Ice Wizard was featured in the winning deck of the [https://www.youtube.com/live/C5qBcdcErfM?si=e37mhAgNKAA5kMJI Clash Royale League 2018 Tournament], by a player called Lciop.
+**The Ice Wizard was featured in the winning deck of the [https://www.youtube.com/live/cmBlEI-aDoo?si=UoD1Sit2YvQR19xs Clash Royale League 2019 Tournament], by a player called Surgical Goblin.
+*The Ice Wizard was featured in a promotional image for Merge Tactics, but has never been added into the game mode.
+
+{{Navigation|Card}}
+
+[[fr:Sorcier de glace]]
+[[de:Eismagier]]
+[[es:Mago de hielo]]
+[[it:Stregone di ghiaccio]]
+[[ja:アイスウィザード]]
+[[ru:Ледяной колдун]]
+[[pt-br:Mago de Gelo]]
+[[zh:寒冰法师]]
+[[pl:Ice Wizard]]

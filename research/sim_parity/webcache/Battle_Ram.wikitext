@@ -1,0 +1,240 @@
+{{DISPLAYTITLE: <span style="color: #ffa31a;">Battle Ram</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}
+
+{{Card Infobox|Cost=4|Rarity=Rare|Type=Troop|Arena=Barbarian Bowl|ReleaseDate=10 February 2017}}{{SubpageNavBox|Evolution=yes}}
+
+{{Quote|Two Barbarians holding a big log charge at the nearest building, dealing significant damage if they connect; then they go to town with their swords!}}
+
+The Battle Ram is a {{Rarity|Rare}} [[Cards|card]] that is unlocked from [[Arenas|Barbarian Bowl (Arena 3)]]. It spawns a single-target, [[:Category:Building Cards|building]]-targeting, melee, ground [[:Category:Troop Cards|troop]] with moderate hitpoints and high damage. After it travels 3 tiles, it will begin to charge towards its target, and deals double damage if it hits its target whilst charging. Once it reaches a building or it is destroyed, it will break and reveal the two [[Barbarians]] underneath. It appears to be a battering ram consisting of a large, thick, heavy log with an attached metal knob at the front and a chain at the back carried by two Barbarians underneath. A Battle Ram card costs 4 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Battle Ram Card}}
+*Due to its charging mechanic, the Battle Ram can push heavier and slower troops towards the [[:Category:Tower Troop Cards|Crown Tower]] faster. Likewise, the Battle Ram can be pushed by [[:Category:Troop Cards|troops]] with at least a Fast movement speed before it begins to charge. With this knowledge, the Battle Ram can be paired with the [[Ice Golem]]. The Ice Golem's death damage will slow melee defenders and fully defeat [[Skeletons]] or [[Bats]], giving the Battle Ram a higher chance to connect to the Tower, while a [[Valkyrie]] can deal with bulkier swarms very effectively.
+*Cards that have a stun effect or deal knockback are great supports to defend against a Battle Ram. The [[Bowler]], [[Executioner/Evolution|Evolved Executioner]], [[Electro Wizard]], [[Zappies]], [[Goblinstein]], and [[Electro Dragon]] in particular make great counters as they have attacks that can continually disrupt the Battle Ram's charge and they will also take care of the [[Barbarians]] that spawn upon the Battle Ram's destruction. They will have a majority of their health left for a counterpush.
+*The [[Ice Wizard]]'s constant slow effect will make the Battle Ram take longer to charge up and reduce its speed once it does charge up, making him a good assist card in defense against it.
+*High DPS swarms like the [[Skeleton Army]] and [[Goblin Gang]] will obstruct the path of the Battle Ram and deal enough damage to shut it down before it reaches the Crown Tower.
+*High damaging mini tanks, like the [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Prince]], Mighty Miner, [[Lumberjack]], [[Monk]], Sparky, and [[Elite Barbarians]], are effective at stopping the Battle Ram by themselves. They will be able to destroy the Ram phase quickly and have enough health to deal with the spawned Barbarians.
+*All buildings barring the [[Elixir Collector]] will shut down a Battle Ram. [[Tombstone]] and [[Cannon]] are positive [[Elixir]] trades, while spawners such as the [[Goblin Hut]] will rack up troop value. The player can force a Tombstone user to use another card to counter the Barbarians by timing a cheap [[:Category:Spell Cards|spell]] to immediately defeat the Skeletons that spawn upon the Tombstone's destruction.
+**Unlike most other building targeting troops, a Battle Ram's sight range is shorter than usual, at 5.5 tiles. This means that certain defensive building placements will not pull the Battle Ram, such as a Cannon placed 4 tiles from the bridge and 3 tiles from the defending Crown Tower. This is useful as it hampers the amount of space the opponent can cover in both lanes.
+*Air troops with sufficient DPS such as [[Minions]], [[Mega Minion]], and [[Bats]] can prevent the Battle Ram from connecting to the [[Tower Princess]], but not troops like [[Baby Dragon]] or [[Skeleton Dragons]]. However, the Barbarians will get a few hits in, so only use them as a last resort if you can't afford to take damage.
+*The Battle Ram works like a shield for the [[Barbarians]] carrying it in the sense that if the Battle Ram is destroyed in one blow, the Barbarians will have taken no damage, similar to a [[Dark Prince]]'s, a [[Guards|Guard]]'s, or a [[Royal Recruits|Royal Recruit]]'s shield. However, since the Barbarians are separate entities from the Ram, the [[Lightning]] spell can hit both the Battle Ram and the Barbarians.
+**However, piercing-splash [[cards]] like [[The Log]], [[Barbarian Barrel]], Bowler, [[Firecracker]], [[Magic Archer]], [[Bomber/Evolution|Evolved Bomber]], and [[Executioner]] will deal damage to the spawned Barbarians after dealing fatal damage to the Battle Ram itself. This is a neat feature for the latter two, as it will preserve more health for a counterattack.
+*The Battle Ram itself can also be used to tank for units that don't survive a [[Lightning]] like a [[Musketeer]], [[Fisherman]], [[Electro Wizard]], [[Wizard]], [[Royal Hogs]], [[Berserker]], Barbarians, Royal Recruits, Electro Dragon, [[Ice Wizard]], [[Hunter]], [[Night Witch]], [[Goblin Cage]], [[Mega Minion]], [[Bandit]], or [[Witch]], as it has more health than these units. However, keep in mind the opponent will have 2 more strikes, and the spawned Barbarians do not have more health than any of the above units. The defender should only do this if the unit they want to protect has lower health than the Barbarians, or if they know their opponent will attempt to clip the Crown Tower, allowing them to drop another tank in time. If the unit the player is trying to protect has less health than the Barbarians, like a [[Flying Machine]], Magic Archer, or [[Mother Witch]], all 3 Lightning strikes can be absorbed by the Battle Ram and its Barbarians.
+**Unlike the Lightning, the Battle Ram cannot completely block the [[Vines]], since it only spawns one unit initially, making it a waste of 4 Elixir.
+*If the Battle Ram is destroyed while it is under the effects of [[Freeze]], the spawned Barbarians will not be frozen, making Freeze slightly less effective against the card.
+*If the player doesn't have any other counters to a high damage troop heading for their Tower, they can use the Battle Ram as a last-resort distraction card as the Ram will soak up any powerful attacks, like a [[Sparky]] blast, and then spawn 2 [[Barbarians]] to help defend.
+*Since the Battle Ram by itself can do more damage to a Crown Tower than a [[Hog Rider]] or [[Ram Rider]] when ignored, it may be a good idea to deploy this card in the other lane to pressure the opponent into spending Elixir to defend against it.
+*An effective strategy is to pair the Battle Ram with the Dark Prince because they both charge and therefore will be aligned with each other. The Dark Prince will also take out any swarms that would normally shut down the Battle Ram. A [[Minion Horde]] can shut down this combination, since the Dark Prince cannot attack air troops, so bring a spell to counter, such as [[Arrows]] or [[Zap/Evolution|Evolved Zap]].
+*The Battle Ram can be used on defense to kite non-building targeting melee units to the other lane, similar to an Ice Golem. Bear in mind that Battle Ram will start charging after 3 tiles however, so slower units such as [[P.E.K.K.A.]], [[Skeleton King]], [[Valkyrie]], [[Giant Skeleton]], [[Mega Minion]], or [[Mighty Miner]] will eventually lose sight of the Battle Ram and will not be kited the whole way.
+*A Battle Ram is a passable distraction card for an [[X-Bow]]. Since there is a slight time between the Battle Ram being destroyed and the Barbarians being spawned where neither unit exist, similar to [[Skeleton Barrel]], the X-Bow will proceed to lock on to the Crown Tower if there is no other troop in sight, making it a bit unreliable as it will require more support.
+*It can be used to delay the [[Mega Knight]], increasing the time you have to defend against him by placing high-damage mini-tanks. The Mega Knight takes 3 hits to destroy the Battle Ram itself (2 if the Mega Knight jumps) and another 2-3 to kill the Barbarians, buying you 5-6 more seconds to place assisting defenders.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Battle Ram Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||Medium (60)||1 sec||Melee: Short (0.5)||Buildings||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+
+{{StatisticsSubheader|Charge Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%; text-align:center;"
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Charge Range<br />{{Icon|I=Radius}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|Very Fast (120)||3.5||Buildings||Ground
+|}
+
+{{StatisticsSubheader|Barbarian Attributes}}
+{| class="wikitable" id="unit-attributes-table-tertiary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.3 sec||Medium (60)||1 sec||Melee: Short (0.7)||Ground||x2||Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: ram_hp_11 | 967 }}
+{{#vardefine: ram_dmg_11 | 286 }}
+{{#vardefine: charge_dmg_11 | 573 }}
+{{#vardefine: hp_11 | 670 }}
+{{#vardefine: dmg_11 | 191 }}
+{{#vardefine: atk_speed | 1.3 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+! scope="col" |Battle Ram Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Battle Ram Damage<br />{{Icon|I=Damage}}
+! scope="col" |Battle Ram Charge Damage<br />{{Icon|I=Boost}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 3 || {{#expr: {{#var:ram_hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:ram_dmg_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:charge_dmg_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:ram_hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:ram_dmg_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:charge_dmg_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:ram_hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:ram_dmg_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:charge_dmg_11}} * (1.1^(5-11)) round 0 }}|| {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6|| {{#expr: {{#var:ram_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:ram_dmg_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:charge_dmg_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7|| {{#expr: {{#var:ram_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:ram_dmg_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:charge_dmg_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:ram_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:ram_dmg_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:charge_dmg_11}} * (1.1^(8-11)) round 0 }}|| {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:ram_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:ram_dmg_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:charge_dmg_11}} * (1.1^(9-11)) round 0 }}|| {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10|| {{#expr: {{#var:ram_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:ram_dmg_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:charge_dmg_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:ram_hp_11}} || {{#var:ram_dmg_11}} || {{#var:charge_dmg_11}} || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12|| {{#expr: {{#var:ram_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:ram_dmg_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:charge_dmg_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13|| {{#expr: {{#var:ram_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:ram_dmg_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:charge_dmg_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:ram_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:ram_dmg_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:charge_dmg_11}} * (1.1^(14-11)) round 0 }}|| {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:ram_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:ram_dmg_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:charge_dmg_11}} * (1.1^(15-11)) round 0 }}|| {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:ram_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:ram_dmg_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:charge_dmg_11}} * (1.1^(16-11)) round 0 }}|| {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 85,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|100 {{BASEPAGENAME}} cards<br/ >50 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 255,000 Damage to enemy Troops or buildings
+|4,000 {{Icon|I=Gold}}<br>50 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 425,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>50 {{Icon|I=XP}}
+|-
+| rowspan="3" |Tower Tapper <br/ > [[File:Tower Tapper.png|50x50px]]
+|1
+|Hit enemy [[:Category:Crown Towers|Crown Towers]] a total of 490 times
+|6,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Crown Towers a total of 1,400 times
+|100 {{Icon|I=Rare Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Crown Towers a total of 2,450 times
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+| rowspan="3" |CHARGE!!! <br/ > [[File:CHARGE!!!.png|50x50px]]
+|1
+|Hit a total of 500 buildings with the Charge ability 
+|6,000 {{Icon|I=Gold}}<br/ >175 {{Icon|I=XP}}
+|-
+|2
+|Hit a total of 1,500 buildings with the Charge ability 
+|8,000 {{Icon|I=Gold}}<br/ >175 {{Icon|I=XP}}
+|-
+|3
+|Hit a total of 2,500 buildings with the Charge ability 
+|10,000 {{Icon|I=Gold}}<br/ >175 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+
+==History==
+2017
+*The Battle Ram was once available in the [[Tournament/Special Event Challenges|Battle Ram Challenge]], which started on 3/2/2017. In this [[Tournament|challenge]], the player would build a [[Battle Decks|deck]] which included the Battle Ram. If the player achieved at least 5 wins, they obtained the Battle Ram early, in addition to the normal prizes.
+*The Battle Ram [[Cards|card]] was generally released on 10/2/2017. On the same day, a [[Version History#Maintenance Break (10/2/2017)|maintenance break]], fixed an issue where the Battle Ram offer was missing from the [[Shop]].
+*On 13/3/2017, the [[Version History#March%202017%20Update%20(13/3/2017)|March 2017 Update]], changed the Battle Ram's sound effects.
+*On 11/8/2017, a [[Version History#Balance Changes (11/8/2017)|Balance Update]], increased the distance required for charging to 4 tiles (from 3 tiles) and increased the [[Barbarians|Barbarian]]'s spawn time to 1 second (from 0.8 seconds).
+2018
+*On 4/6/2018, a [[Version History#Balance Changes (4/6/2018)|Balance Update]], decreased the Barbarians' attack time interval to 1.4 seconds (from 1.5 seconds) and made the Battle Ram affected by all forms of pushback.
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], decreased the distance required for charging to 3.5 tiles (from 4 tiles). It also moved the [[Arenas|Arena]] to unlock this card from Builder's Workshop to Barbarian Bowl.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Rare}} cards start at Level 3 and end at Level 13 (from 1 to 11).
+2019
+*On 7/1/2019, a [[Version History#Balance Changes (7/1/2019)|Balance Update]], decreased the Battle Ram's damage and charge damage by 11%.
+*On 4/3/2019, a [[Version History#Balance Changes (4/3/2019)|Balance Update]], decreased the Barbarians' hitpoints by 13%.
+2020
+*On 28/5/2020, a maintenance break, added a card render to the Battle Ram's card info screen.
+2021
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+*On 7/12/2021, the [[Version History#Balance%20Changes%20(7/12/2021)|2021 Quarter 4 Update]], increased the Battle Ram's damage and charge damage by 8%.
+2022
+*On 7/6/2022, a [[Version History#Balance%20Changes%20(7/6/2022)|Balance Update]], decreased the Barbarians‘ attack time interval to 1.3 seconds (from 1.4 seconds).
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14). It also added the CHARGE!!! [[Card Mastery]] task for the Battle Ram.
+*On 8/8/2023, a [[Version History#Balance%20Changes%20(8/8/2023)|Balance Update]], increased the Battle Ram's hitpoints by 6% and decreased the distance required for charging to 3 tiles (from 3.5 tiles).
+2024
+*On 1/4/2024, the [[Version History|April 2024 Update]], added the Battle Ram’s Evolution.
+2025
+*On 31/3/2024, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], increased the Battle Ram's hitpoints by 0.1% and its charge damage by 0.17%. It also fixed a bug where Barbarians would not spawn after being buffed by [[Royal Chef]].
+
+==Gallery==
+<gallery>
+File:Battle Ram card render.png|Current card render.
+File:Battle Ram Preview.gif|Current card preview
+File:Battle Ram 3.png|Battle Ram
+File:Battle Ram.png|Battle Ram 2
+File:Battle Ram 2.png|Battle Ram 3
+</gallery>
+
+==Trivia==
+*A [https://en.wikipedia.org/wiki/Battering_ram battering ram] is a siege engine that originated in ancient times and was designed to break open the masonry walls of fortifications or splinter their wooden gates. In its simplest form, a battering ram is just a large, heavy log carried by several people and propelled with force against an obstacle; the ram would be sufficient to damage the target if the log were massive enough and/or it were moved quickly enough. The earliest depiction of a possible battering ram is from the tomb of the 11th Dynasty noble Khety, where a pair of soldiers advance towards a fortress under the protection of a mobile roofed structure, carrying a long pole that may represent a simple battering ram.
+**In the German, Norwegian, Turkish, Indonesian and Finnish language settings of the game, the Battle Ram's name translates to "Battering Ram". In the Japanese, Chinese, Persian, Malaysian, Thai, and Vietnamese language settings of the game, the Battle Ram's name translates to "Siege Barbarian", "Barbarian Battering Ram", "Battle Tower", "Crasher", "Fight Bumper", and "Castle Breaking Weapon" respectively.
+**The Battle Ram can be seen on the [[Trophies|Trophy Road]] as a decoration.
+*The Battle Ram is 1 of 17 [[:Category:Troop Cards|troops]] that inspired a troop in Clash of Clans, the others being [[Spear Goblins]], [[Bomber]], [[Bats]], [[Skeleton Barrel]], [[Minion Horde]], [[Firecracker]], [[Ice Golem]], [[Zappies]], [[Baby Dragon]], [[Giant Skeleton]], [[Ram Rider]], [[Inferno Dragon]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], and [[Night Witch]].
+**Unlike its counterpart in Clash of Clans, the Battle Ram in Clash Royale spawns 2 [[Barbarians]] upon death, instead of 4, and it does not prioritize any specific [[:Category:Building Cards|building]].
+*The Battle Ram is 1 of 6 [[cards]] associated with Barbarians, with the others being [[Elite Barbarians]], [[Barbarian Launcher]], [[Barbarian Hut]], [[Barbarian Barrel]], and of course, Barbarians.
+**It is the only Barbarian-related card to not have the word “Barbarian” in its name.
+**According to a Clash-A-Rama comic [https://clasharama.fandom.com/wiki/Clash-A-Rama!_Comic_Strips?file=Barb_Barrel_ColourWeb2.jpg strip], the Barbarians follow a career path, with the ones on the Battle Ram being the second lowest ranking ones.
+*It is 1 of 5 troops that have a charge, the others being [[Dark Prince]], [[Prince]], [[Raging Prince]], and [[Ram Rider]]. 
+**It is also the only one that cannot jump over the river.
+**The Battle Ram's charge shares the same sound effects as the Prince's and Raging Prince's, only at a lower pitch.
+*The Battle Ram is 1 of 8 troops to die as a part of their attack, the others being the [[Electro Spirit]], [[Fire Spirit]], [[Ice Spirit]], [[Skeleton Barrel]], [[Heal Spirit]], [[Suspicious Bush]], and [[Wall Breakers]].
+*On 12/6/2017, the Battle Ram was supposed to receive a change where fatal damage to the Battle Ram would not deal damage to the Barbarians as well, but this change [https://www.reddit.com/r/ClashRoyale/comments/6g0id8/balance_changes_coming_612_were_taking_a_look_at/dio2nyb/ was pulled back last minute].
+* Before the Battle Ram's card release, the Battle Ram was affected by pushback. This was changed in a [[Version History#Maintenance Break (2/2/2017)|maintenance break]] on 2/2/2017, to prepare for the [[Tournament/Special Event Challenges|Battle Ram Challenge]].
+
+{{Navigation|Card}}
+
+[[fr:Bélier de combat]]
+[[de:Rammbock]]
+[[es:Ariete de batalla]]
+[[it:Ariete da battaglia]]
+[[ru:Боевой таран]]
+[[zh:野蛮人攻城槌]]
+[[pl:Battle Ram]]
+[[Category:Kamikaze Cards]]

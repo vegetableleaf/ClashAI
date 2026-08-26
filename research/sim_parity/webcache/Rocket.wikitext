@@ -1,0 +1,269 @@
+{{DISPLAYTITLE:<span style="color: #ffa31a;">Rocket</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=6|Rarity=Rare|Type=Spell|Arena=Builder's Workshop|ReleaseDate=4 January 2016}}
+{{Quote|Deals high damage to a small area. Looks really awesome doing it. Reduced damage to Crown Towers.}}
+
+The Rocket is a {{Rarity|Rare}} [[Cards|card]] that is unlocked from the [[Arenas|Builder's Workshop (Arena 5)]]. It is an area-damage, air-targeting [[:Category:Spell Cards|spell]] with a small radius and very high damage that also inflicts knockback. It is a large rocket with a nose cone, an iron hull, fins, and a skull printed on it. A Rocket card costs 6 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Rocket Common Modifier.png|45x45px]] Common: Knows No Bounds===
+{{Quote|+200% radius}}
+Triples Rocket radius.
+
+===[[File:Rocket Rare Modifier.png|45x45px]] Rare: Party On, Goblin!===
+{{Quote|Goblin Party Rocket}}
+Sends out a [[Party Rocket]].
+
+===[[File:Rocket Epic Modifier.png|45x45px]] Epic: Bouncing Bomb===
+{{Quote|Bouncy Rocket}}
+Rocket explodes multiple times and bounces.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Rocket Card}}
+*The Rocket has the highest damage per [[Elixir]] against [[:Category:Crown Towers|Crown Towers]], and is most effectively used offensively to finish off weakened ones, making it a great endgame [[:Category:Spell Cards|spell]] to bring. The spell should be aimed at the bottom corner of the Crown Tower closest to the player's own [[King's Tower]] to minimize the lengthy travel time of the Rocket.
+**The [[Tower Princess]] can be destroyed with the use of 9 Rocket [[cards]] in total, while all the other [[:Category:Tower Troop Cards|tower troops]] require one less use of the Rocket. Keep this in mind when using the Rocket as the only source of dealing damage to the Crown Towers.
+*As a general rule of thumb, if there are or will be units around the Rocket's intended target, aim to hit them all at once. It is not worth it if the primary target isn't hit, so don't switch targets from the intended one unless a more important target is deployed.
+*It can take out medium health [[:Category:Troop Cards|troops]] such as the [[Musketeer]], [[Archer Queen]], [[Night Witch]], [[Wizard]], [[Mega Minion]], [[Hunter]], [[Phoenix]], [[Electro Dragon]], [[Royal Hogs]], [[Bandit]], [[Baby Dragon]], or the [[Witch]]. However, since this is a negative Elixir trade, it is better to wait and see if the medium health unit is placed close to a Crown Tower or used with another unit, which would allow the Rocket user to get more value. Otherwise, using regular units along with the Crown Tower's damage or even other cards is more efficient.
+**It may be tempting to Rocket the opponent's medium health troop placed in the back at the start of the match, but a better strategy is to wait and explore the opponent's [[Battle Decks|deck]] first. For example, countering a [[Lumberjack]] + [[Balloon]] push with a single Rocket is a greater Elixir trade than using a Rocket on a Witch placed in the back.
+**A similar principle can apply to the [[Archer Queen]]. Against her, it is better to use the Rocket on her after she activates her ability. This will even out the Elixir cost that would otherwise happen compared to using it on a lone Archer Queen.
+*It can completely counter [[Elite Barbarians]] up to 1 Level higher for a neutral Elixir trade. However, due to their fast move speed making it difficult to aim, this is a somewhat a risky play unless the place and the timing is correct. Even if the Elite Barbarians are at a higher Level than the Rocket, they will be picked off by the Crown Tower.
+*The Rocket can also take out an equally leveled [[Mini P.E.K.K.A.|Mini P.E.K.K.A]]. While this is a negative Elixir trade, it might worth it since he often comes with low cost support troops that could balance the cost.
+*It is not recommended to use the Rocket against swarms of low hitpoint troops due to its small radius unless the player can get more value by hitting something else. Using spells like [[Arrows]], [[The Log]], [[Giant Snowball]], or [[Zap]] are usually better, but Rocket could be played in desperate circumstances to destroy expensive swarms such as the [[Minion Horde]], [[Rascals]], or [[Goblinstein]].
+*The Rocket is effective at weakening or destroying [[:Category:Building Cards|buildings]], such as the [[Barbarian Hut]], as they cannot move from their position, making the Rocket deal a guaranteed hit. This is quite useful for hindering the opponent and also make way for a push. Using Rocket on the Barbarian Hut is also a neutral Elixir trade.
+**The player can aim the Rocket so that it lands on the very edge of the Barbarian Hut, damaging both the Barbarian Hut and nearby Barbarians. Hitting both the Barbarian Hut and Barbarians requires precise timing, as the explosion radius is fairly small.
+**A Rocket can severely cripple an [[Inferno Tower]], and depending on when it is deployed, it may be able to fully destroy it. However, this is a negative Elixir trade, so only use this if it can hit another card alongside the Inferno Tower.
+**A Rocket can deny all Elixir from being generated by an [[Elixir Collector]] up to 4 Levels higher than it, though the Elixir Collector will still generate one Elixir when it is destroyed. If the Elixir Collector is placed behind a Crown Tower, the user can also deal decent damage to the Tower. Most opponents will adapt to this and start placing their Elixir Collector in front of their King Tower, to prevent you from hitting both the Crown Tower and the Elixir Collector.
+**The Rocket is a fairly reliable counter to [[X-Bow]]. The Rocket will heavily damage it, or completely destroy it if the Rocket is at least 1 higher level than the X-Bow. Since it deals high area damage, it can also eliminate any support units played alongside the X-Bow, giving the player an Elixir advantage. However, an equivalently-leveled X-Bow will still deal around 15% of the player's Crown Tower's health so using a cheap unit to distract it for a bit longer is recommended.
+***If the opponent executes a [[Tesla]] + X-Bow or [[Mortar]] combination, it is a great idea to place a distracting unit to allow the Tesla to unveil itself and get destroyed by the incoming Rocket. In addition to the destroyed Tesla, the Mortar will be fully destroyed, while the X-Bow will be left with low hitpoints and distracted by the troop used.
+**Even though the Rocket is one of the best ways to destroy buildings, in most cases it is a negative Elixir trade. Therefore, it is important to know when it is a good time to fire a Rocket. This also applies to troops. If you are only hitting 1 or 2 troops, it usually results in a negative Elixir trade. If you purely want to destroy just buildings, you can consider bringing [[Earthquake]], which costs half as much.
+*The Rocket is difficult to aim and target at fast moving troops, as the spell has a considerable cast time and small damage radius, but can be overcome by an experienced player.
+**Because of this, Rocket pairs very nicely with [[Tornado]]. The Tornado will drag most, if not all, desired targets into the Rocket's blast radius, allowing for the annihilating of large groups of medium sized troops while also heavily damaging larger ones. Make sure that the Rocket is launched before the Tornado, and the Tornado's center overlaps with the Rocket's radius. Remember that certain units resist a Tornado more than others, including charging units such as [[Prince]] and [[Dark Prince]] and heavy units such as [[Giant]], [[Lava Hound]], and [[Golem]], so this tactic may not always work. It also costs a hefty 9 Elixir, leaving you very defenseless, though it may be worth it if you are against a large push as it will nuke the push completely.
+***Aim the Rocket considerably in front of the target or at the shadow in order to hit them properly.
+***The combination is most recommended to be used when the troops that are being targeted move at different movement speeds. A good example is against a Lumberjack and Balloon combination, where the Tornado will prevent the faster Lumberjack from moving away from the slower Balloon, allowing the Rocket to hit both.
+***The player can also use the [[Lightning]] as an alternative, as it has a larger range and can hit up to three targets, along with doing instant damage. The tradeoff is that Lightning does considerably less damage, can only hit a maximum of three targets, and targets based on hitpoints.
+**It can similarly pair well with cards that can inflict knockback, such as [[The Log]], [[Giant Snowball]], or an incoming [[Skeleton Barrel]]. Place them right so that these cards will knock back troops towards the Rocket's radius.
+*If the opponent uses a Rocket, depending on what they hit, it may be a good idea to send an attack down either lane as long as it is not too expensive, due to the fact that they will have to replenish up from 4 Elixir unless they have Elixir Collectors down. Alternatively, the player can utilize the lack of a Rocket in the opponent's hand, and place down cards that would thrive from its absence, such as an Elixir Collector.
+*The Rocket is completely ineffective against troops that have shields, as their shields will cause most of its damage to be wasted. Because of this, it is better to remove their shield with another card, which is worsen the Elixir trade against it. This is especially futile against [[Royal Recruits/Evolution|Evolved Royal Recruits]], as removing their shields will allow them to charge and possibly dodge the Rocket.
+*If the opponent places a [[Sparky]], a Rocket with the same Level can completely destroy her for a neutral Elixir trade. If they placed their Sparky in the back, the Rocket can also deal decent damage to their Crown Tower.
+*This can be used as an alternative to the powerful [[Fireball]] and [[Zap]] combination, as that combo can only defeat a minimum of 10 cards of equivalent Level that a lone Fireball cannot ([[Fisherman]], [[Furnace]], [[Little Prince]], Witch, Musketeer, Wizard, [[Royal Hogs]], [[Three Musketeers]], [[Electro Wizard]], and [[Mega Minion]]), while the Rocket can defeat at least 18 other cards of equivalent Level (e.g. Hunter, [[Executioner]], [[Night Witch]], Sparky, [[Baby Dragon]], [[Electro Dragon]], Mini P.E.K.K.A, [[Bandit]], [[Royal Ghost]], Phoenix, [[Goblin Demolisher]], [[Ice Golem]], [[Miner]], Elite Barbarians, Lumberjack, [[Berserker]], [[Archer Queen]], and [[Inferno Dragon]]), as well as the cards that are taken out by the Fireball and Zap combo, while using one less deck slot.
+**Unlike the Fireball, the Rocket has enough damage to destroy [[Barbarians/Evolution|Evolved Barbarians]] without the need of a second spell, for a slight negative Elixir trade.
+*A Rocket is a decent counter to the [[Cannon Cart]], turning it into a useless defensive building which despawns after a few seconds, which is beneficial as long as the player does not need to push into its lane any time soon. This becomes an even more effective trade if other units like a Crown Tower can be caught in the Rocket's blast, as the Cannon Cart costs one less Elixir than the Rocket.
+*In a pinch, it can be used to stop a lone [[Balloon]], Hog Rider, or [[Ram Rider]], however that is a negative Elixir trade, so it is recommended to only use it if they are accompanied with other troops. In the case of the Ram Rider, it will also reset her charge in a pinch.
+*When using the Rocket on a [[Battle Healer]], it is important not to place any troops afterwards as she will survive it and then heal back up by attacking those troops, which will then force you to spend additional Elixir to defeat her.
+*The Rocket is a great counter to the [[Witch/Evolution|Evolved Witch]]. It deals enough damage to fully destroy her even when having full overheal hitpoints, and unlike other spells, there is no risk with it also destroying a wave of Skeletons that she spawns.
+*The Rocket is impractical to use against a [[Goblin Barrel]] since it is a negative Elixir trade and may not hit all of the Goblins. However, if the defending player is ahead in a match and their Tower is at low health, they can use it to clear out a Goblin Barrel in the final seconds of a match.
+*If you can predict the opponent using a Rocket, you can place down a [[Monk]] and use his ability to deflect it back to their Crown Tower and save any units from being defeated from said Rocket. However, this will not work as a reactive move, due to the ability's casting time and the Monk's 1-second deploy time.
+*[[Rage]] can be used for the player’s troops to dodge the Rocket. This is effective with the [[Three Musketeers]], [[Baby Dragon]], and [[Balloon]].
+**However, the Rage's 0.5 second deploy time gives more time for the Rocket to reach said troop. Timing the Rage is very important, especially with slower moving troops.
+**Similarly, [[Clone]] can be utilized to shift a troop forwards to dodge a Rocket if the spell's accuracy is somewhat off, however it requires precise timing, and is ineffective if the Rocket is casted in front of the troop.
+*The Rocket can be casted alongside the [[Goblin Barrel]], for a threatening last resort attack. The Goblin Barrel's physical body would be obstructed by the Rocket's, and it would result in the opponent not noticing the Goblin Barrel, and as such, the [[Goblins]] would deal damage unharmed. However, this is a heavy Elixir investement, so this should be only done if the player wants to finish off a Crown Tower but is not enough for a lone Rocket to do so.
+**Alternatively, the player can cast the Rocket slightly before the Goblin Barrel, to allow it to destroy moderate-health counters to the Goblin Barrel, such as the Hunter and Witch. It can also be placed slightly after the Goblin Barrel, which may discourage the opponent from placing these counters until after it lands, allowing the Goblins to deal more damage to the Crown Tower.
+*The Rocket is very effective in [[:Category:Modes|game modes]] with an increased Elixir production, as it will result in more troops being available on the Arena and get a lot of value from using it. This also applies to [[2v2]], where it can used very effectively alongside a Tornado to clump up more troops for it to hit.
+*It can be quite effective in The Floor is Healing sub-mode of the [[Global Spell]] game mode, as it can render the healing of the Arena useless by OHKOing a large majority of troops.
+**On the other hand, it is completely ineffective in the Rage sub-mode of the Global Spell game mode, as like the Rage card, the increased speed may result in completely missing the troops.
+
+<center>
+
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+!Projectile Speed
+{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|6||2
+|350||Air & Ground||[[:Category:Spell Cards|Spell]]||{{Rarity|Rare}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: dmg_11 | 1484 }}
+{{#vardefine: crown_dmg_11| 371 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Area Damage<br>{{Icon|I=Area Damage}}
+!scope="col"|Crown Tower Damage<br>{{Icon|I=Tower Damage}}
+|-
+| 3 || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}||{{#expr: {{#var:crown_dmg_11}} * (1.1^(3-11)) round 0 }}
+|-
+| 4 || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}||{{#expr: {{#var:crown_dmg_11}} * (1.1^(4-11)) round 0 }} 
+|-
+| 5 || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(5-11)) round 0 }}
+|-
+| 6 || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(7-11)) round 0 }} 
+|-
+| 8 || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(8-11)) round 0 }} 
+|-
+| 9 || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(9-11)) round 0 }} 
+|-
+| 10 || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:dmg_11}} || {{#var:crown_dmg_11}}
+|-
+| 12 || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}  ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(15-11)) round 0 }} 
+|-
+| 16 || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 55,000 damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|100 {{BASEPAGENAME}} cards<br>50 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 170,000 damage to enemy Troops or buildings
+|4,000 {{Icon|I=Gold}}<br>50 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 280,000 damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>50 {{Icon|I=XP}}
+|-
+| rowspan="3" |Arena Destroyer <br> [[File:Arena Destroyer.png|50x50px]]
+|1
+|Destroy 140 enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Destroy 400 enemy Troops or buildings
+|100 {{Icon|I=Rare Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Destroy 700 enemy Troops or buildings
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Rocket [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016 {{Balance|Add}}.
+*On 19/2/2016, a [[Version History#Balance Changes (19/2/2016)|Balance Update]], decreased the Rocket's [[:Category:Crown Towers|Crown Tower]] damage to 40% of the full damage (from 50%) {{Balance|Nerf}}.
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], increased the {{Rarity|Rare}} card Level cap to 11 (from 10) {{Balance|Buff}}.
+2017 
+*On 13/3/2017, the [[Version History#March%202017%20Update%20(13/3/2017)|March 2017 Update]], fixed a bug when using a Rocket on 2 [[Ice Golem|Ice Golems]] would result in the Rocket dealing double damage {{Balance|Neutral}}.
+*On 12/12/2017, the [[Version History#Electrifying Update (12/12/2017)|Electrifying Update]], decreased the Rocket’s Crown Tower damage to 35% of the full damage (from 40%) {{Balance|Nerf}}.
+2018
+*On 25/4/2018, the [[Version History#Clan%20Wars%20Update%20(25/4/2018)|Clan Wars Update]], allowed the Rocket to be placed on the river {{Balance|Neutral}}.
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], moved the [[Arenas|Arena]] to unlock the Rocket from Barbarian Bowl (Arena 3) to Builder's Workshop (Arena 6) {{Balance|Nerf}}.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Rare}} cards start at Level 3 and end at Level 13 (from 1 to 11) {{Balance|Neutral}}.
+*On 1/10/2018, a [[Version History#Balance Changes (1/10/2018)|Balance Update]], fixed a bug where troops that were spawned after their parent troops died would be immune to spell damage {{Balance|Neutral}}.
+2019
+*On 15/4/2019, the [[Version History#April%202019%20Update%20(15/4/2019)|April 2019 Update]], added two extra [[Star Points|Star Levels]] {{Balance|Add}}.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Rocket's card info screen {{Balance|Add}}.
+2020
+*On 4/8/2020, a [[Version History#Balance Changes (4/8/2020)|Balance Update]], decreased the Rocket’s Crown Tower damage to 30% of the full damage (from 35%) {{Balance|Nerf}}.
+2021 
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13) {{Balance|Buff}}.
+2023
+*On 7/2/2023, a [[Version History#Balance Changes (7/2/2023)|Balance Update]], decreased the Rocket's Crown Tower damage to 25% of the full damage (from 30%) {{Balance|Nerf}}.
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14) {{Balance|Buff}}.
+2026
+
+* On 1/6/2026, a Balance Update, decreased the Rocket's Crown Tower damage to 23% of the full damage (from 25%)
+
+==Gallery==
+<gallery>
+File:Rocket card render.png|Current card render.
+File:Chinese Rocket card render.png|Rocket’s card render in the Chinese version of the game.
+File:Rocket Preview.gif|Current card preview
+</gallery>
+
+==Sound Effects==
+{| class="wikitable"
+!Sound Effect
+!Action
+!Description
+|-
+|[[File:Rocket Launch.wav]]
+|Launch
+|Plays when the Rocket is being launched.
+|-
+|[[File:Rocket Hit.wav]]
+|Hit
+|Plays when the Rocket hits something.
+|}
+
+==Trivia==
+*The first use of rockets were in 1232, when reports appeared describing fire arrows and 'iron pots' that could be heard for 25 kilometers when they exploded upon impact, causing devastation for a radius of 600 meters, apparently due to shrapnel. A "flying fire-lance" that had reusable barrels was also mentioned to have been used by the Jin dynasty. Rockets are recorded to have been used by the Song navy in a military exercise dated to 1245. Rockets are still used to this day for multiple purposes, whether that is military, science, and entertainment.
+**The Rocket is 1 of 5 [[cards]] associated with rocketry, with the others being [[Firecracker]], [[Goblin Machine]], [[Party Rocket]], and [[Rocket Silo]].
+**A Trainer in the [[Training Camp]] is called Trainer Rocket and uses a rocketry-related card in the [[Battle Decks|deck]], which is Rocket.
+**Its hull looks similar to the barrel of the [[Skeleton Barrel]], [[Goblin Demolisher]], [[Balloon]], and [[Goblin Barrel]].
+*While not available as a spell in Clash of Clans, the Rocket reappears there in a few situations.
+**2 Rockets can be seen attached on both sides of the [https://clashofclans.fandom.com/wiki/Rocket_Balloon Rocket Balloon's] hot air balloon.
+**In the [https://clashofclans.fandom.com/wiki/Scenery?file=Map_10th_Clashiversary.jpg 10th Clashiversary Scenery], the [https://clashofclans.fandom.com/wiki/Scenery?file=10th_Clashiversary_Scenery_Boat.png Boat] is reskinned as a balloon with 2 Rockets attached on both sides of its hot air balloon, like the Rocket Balloon.
+**The Rocket is used from the [https://clashofclans.fandom.com/wiki/Rocket_Artillery Rocket Artillery], a defensive building in the [https://clashofclans.fandom.com/wiki/Clan_Capital Clan Capital].
+*The Rocket is tied with [[Lightning]] for the most expensive [[:Category:Spell Cards|spell]], costing 6 [[Elixir]], excluding the [[Mirror]] as it does not have a [[:Category:Variable-Elixir Cards|defined Elixir cost]].
+*The Rocket deals the highest damage out of all spells, with 2,163 damage at Level 15.
+*The Rocket is one of the first spell cards to be featured in a Trainer's deck, alongside the [[Arrows]], [[Zap]], and [[Fireball]].
+*The Rocket is one of the first spells to be featured in a [[Loading Screens|Loading Screen]], alongside the Arrows and Fireball.
+*The Rocket is one of the first spell cards to receive a card render, alongside the Arrows and [[Barbarian Barrel]].
+*Its [[Star Points|Star Level 3 Skin]] has a [[Goblins|Goblin]] riding on top of it.
+*The [[Baby Goblins]] are responsible for creating the Rocket, according to the Clash Royale [https://youtube.com/shorts/9_N_r0Nib2c?si=JDSgvKgJbdPfJiPe Goblin Machine Lore Drop video].
+*The Rocket is unavailable in multiple [[Tournament/Special Event Challenges|special gamemodes]]. More specifically:
+**It is 1 of 3 cards that is unavailable in Timeless Towers, the others being [[Goblin Drill]] and Miner.
+**It is 1 of 12 cards that is unavailable in [[Chess Royale]], the others being [[Royal Recruits]], [[Earthquake]], Lightning, [[Poison]], Goblin Drill, Miner, [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], [[Mighty Miner]], and the [[Monk]].
+*The Rocket is the subject of certain cosmetics in the game. More specifically:
+**The Rocket is the subject of a few [[Clans|Clan]] badges.
+**The Rocket is the subject of an [[Emotes|Emote]]. 
+***It is also 1 of 3 cards in which an Emote it is the subject of relates to one of its Star Levels, the others being the [[Elite Barbarians]] and [[Hog Rider]].
+*The Rocket was featured in the winning deck of the [https://www.youtube.com/live/psZXKWHkKkE?si=PbjvbZt8stghz6eJ King's Cup II Tournament], by a player called Surgical Goblin.
+*Before the Rocket's card release, the Rocket's damage was increased by 7%.
+
+==In other languages==
+{{Other languages
+|cn=火箭
+|kr=로켓
+|jp=ロケット
+|fr=Roquette
+|de=Rakete
+|es=Cohete
+|it=Razzo
+|nl=Raket
+|no=Rakett
+|pt=Foguete
+|tr=Roket
+|fi=Raketti
+|ru=Ракета
+|cnt=火箭
+|ar=صاروخ
+|fa=موشک
+|ms=Roket
+|id=Roket
+|th=จรวด
+|vi=Tên lửa}}
+
+{{Navigation|Card}}
+
+[[fr:Roquette]]
+[[de:Rakete]]
+[[es:Cohete]]
+[[it:Razzo]]
+[[ja:ロケット]]
+[[ru:Ракета]]
+[[pt-br:Foguete]]
+[[zh:治疗法术]]

@@ -1,0 +1,289 @@
+{{DISPLAYTITLE: <span style="color: #b300b3;">P.E.K.K.A.</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink|P.E.K.K.A}}
+
+{{Card Infobox|Cost=7|Rarity=Epic|Type=Troop|Arena=P.E.K.K.A.'s Playhouse|ReleaseDate=4 January 2016}}<br>
+{{SubpageNavBox|Evolution=yes|MergeTactics=yes}}{{Quote|A heavily armored, slow melee fighter. Swings from the hip, but packs a huge punch.}}
+
+The P.E.K.K.A is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from the [[Arenas|P.E.K.K.A's Playhouse (Arena 6)]]. It spawns a slow, single-target, ground-targeting, melee, ground [[:Category:Troop Cards|troop]] with very high hitpoints and extremely high damage. She appears as a robot-looking troop larger than the [[Mini P.E.K.K.A.]] wearing a heavy dark steel blue armor, has team-colored horns and eyes, and wields a large metal sword. A P.E.K.K.A card costs 7 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:P.E.K.K.A. Common Modifier.png|45x45px]] Common: 2 Fast 2 Ferocious===
+{{Quote|+200% movement speed}}
+Triples P.E.K.K.A movement speed.
+
+===[[File:P.E.K.K.A. Rare Modifier.png|45x45px]] Rare: Miniature P.E.K.K.As===
+{{Quote|3 Mini P.E.K.K.As}}
+Turns it into 3 small P.E.K.K.As.
+
+===[[File:P.E.K.K.A. Epic Modifier.png|45x45px]] Epic: Dig Deep===
+{{Quote|Deploy anywhere}}
+P.E.K.K.A functions similarly to a [[Miner]].
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the P.E.K.K.A. Card}}
+*The P.E.K.K.A.'s a "high risk, high reward" card, massive damage and very high hitpoints make her nearly impossible to defeat on the other side. Because of this, she can get enormous value against massive pushes. However, she gets countered relatively easily when alone.
+*If she crosses the bridge alone, a grounded swarm [[Cards|card]] like the [[Skeleton Army]] or [[Skeletons/Evolution|Evolved Skeletons]] are effective at distracting and defeating her, usually for a positive [[Elixir]] trade, although this is easily countered with a quick [[:Category:Spell Cards|spell]] like [[The Log]] or [[Zap]]. However, as sending her alone is in generally unadvisable without playing support cards, expect the enemy to place a counter.
+*The P.E.K.K.A can defeat [[Barbarians]] up to 3 Levels higher in just 1 hit. This is useful to keep in mind if Barbarians are the opponent's only counter to her.
+*The [[Hunter]] is an effective counter to the P.E.K.K.A as long as he is being protected by a tank such as [[Knight]], [[Giant]], [[Ice Golem]], [[Valkyrie]], or [[Prince]], or a swarm like [[Guards]], [[Skeletons]], or [[Goblins]], allowing him to stay near the P.E.K.K.A unharmed.
+*Ranged troops that deal area damage like the [[Wizard]], [[Bowler]], [[Bomber]], [[Firecracker]], [[Baby Dragon]], [[Magic Archer]], [[Ice Wizard]], [[Witch]], [[Goblin Demolisher]], [[Princess]], [[Skeleton Dragons]], and the [[Executioner]] are effective at backing up the P.E.K.K.A, as they cover each others' weaknesses fairly well. However, combos like this are often vulnerable to spells or mini tanks that can take care of the back end support troops first.
+*The P.E.K.K.A works quite well with the Executioner because he can deal area damage that can help defend against swarms, while the P.E.K.K.A deal with tanky units. The Executioner is also quite tanky, making him serve as a mini tank, and can survive a strike from an enemy P.E.K.K.A.
+*[[Royal Recruits]] are an effective counter to a lone P.E.K.K.A, since one side, with the help of a [[:Category:Tower Troop Cards|Crown Tower]] can take care of her while the other side sets up a fairly threatening counterpush. Their shields and regular hitpoints also makes them spell-proof, with the latter being high enough to survive any spell that costs 3 Elixir or less. 
+*Spells are extremely important on P.E.K.K.A. [[Battle Decks|decks]], as they can temporarily replace area damage troops if they were currently out of rotation.
+**[[Poison]] is very effective as its long duration can prevent large swarms from attacking her, while also giving you an advantage against hard counters like the [[Witch]] and [[Skeleton King]]'s ability. This can easily assure at least a single connection at most of the times, due to the fact of this strategy being relatively cheap and unpredictable.
+**The [[Tornado]] pairs well with the P.E.K.K.A since the Tornado can pull ranged units that the P.E.K.K.A usually has a tough time getting to, allowing the P.E.K.K.A to finish them off, and can also destroy some swarms. A notable example of this is against Witch since the Tornado damage allows the P.E.K.K.A to OHKO her while also defeating the Skeletons she spawns.
+**[[Rage]] complements a P.E.K.K.A counterpush fairly well, as long as there are already sufficient support troops on the [[Arenas|Arena]]. Raging a lone P.E.K.K.A will often still be a waste of Elixir as her weaknesses to swarms and kiting are not mitigated.
+*The P.E.K.K.A is very weak against enemy air [[:Category:Troop Cards|troops]] like a [[Minion Horde]] or an [[Inferno Dragon]] as she cannot attack air units. They can attack her completely unharmed and set up for a good counterattack.
+*Although situational, the P.E.K.K.A can be used as a distraction for enemy air troops, as her hitpoints are high enough to tank many shots from units such as [[Baby Dragon]], Electro Dragon, [[Phoenix]], or [[Flying Machine]].
+*The [[Electro Dragon]] pairs well with the P.E.K.K.A, as its chain lightning denies both small swarms and the Inferno cards that she is weak against. The [[Electro Wizard]] can have a similar effect, but he is more easily blocked off, since he doesn't deal area damage unlike the other Wizards, can only affect 2 targets at once and glass cannons can kill him easier. Both these troops are also effective assisting counters to the P.E.K.K.A, slowing her down even further from a distance and being fairly spell resistant. This is very useful in scenarios where your P.E.K.K.A approaches an enemy P.E.K.K.A, allowing yours to win the duel.
+*The P.E.K.K.A functions differently from other high cost tanks in the sense that she attacks all units. While this generally makes her less effective on offense, as she can be distracted, it allows her to be effective on defense as she will destroy most enemy ground units in a few hits. As such, she is a hard counter to dangerous cards such as the [[Mega Knight/Evolution|Evolved Mega Knight]], [[Elite Barbarians]], [[Prince]], [[Mighty Miner]], [[Giant Skeleton]], [[Sparky]], [[Golem]], [[Monk]], [[Boss Bandit]], or the [[Electro Giant]], having a large amount of health remaining afterward, enough to start a counterattack. When doing so, she can serve as a meat shield that makes it more difficult for the opponent to place frail troops or tanks, limiting their defensive options. Her high damage can cause the opponent to overcommit their defenses on her solely, allowing other troops (especially quick ones like the [[Lumberjack]], [[Golden Knight]], [[Little Prince]], [[Dart Goblin]], [[Monk]], or [[Berserker]]) to pass by unharmed.
+*The P.E.K.K.A.'s high damage and hitpoints makes her very effective against multiple ground offensive responses consisting of multiple cards that cover different roles.
+**A P.E.K.K.A can be quite helpful against a Double Prince push. While she would be overwhelmed alone, she can be combined with cheap distraction troops like Bats or Minions and stop such a push while keeping some of the P.E.K.K.A's hitpoints for a counterattack.
+***Pairing the Double Prince push with the P.E.K.K.A is a potentially devastating strategy, as it amplifies the strong points of the push, but also its weak points. Their high hitpoints and damage can allow the Princes to shred through units even faster, but cards that output a large damage, such as [[Rocket]] or Minion Horde, can deal with it.
+***A similar strategy is to combine Mega Knight & P.E.K.K.A. in a push, as they also counter each other’s weaknesses. While it can be more threatening, it is extremely expensive at 14 Elixir, often requiring that 1 of them be used on defense beforehand, which can whittle down their hitpoints. It is also even weaker to air units. You also shouldn't put two of them in the same deck for they are very expensive and you are left vulnerable to a punishment for your lack of Elixir. Instead, consider a [[Mini P.E.K.K.A.]], [[Mighty Miner]], [[Mega Minion]], or a [[Prince]], as it is obviously cheaper.
+**She is also quite good against the [[Hog Rider]], [[Valkyrie]], and [[Musketeer]] combo. The P.E.K.K.A. has enough damage to OHKO the Musketeer and will take little damage from the Valkyrie while she deals with the Hog Rider. This will prevent most of the damage for a +5 Elixir trade.
+***If the Hog Rider is placed alone, a P.E.K.K.A. can stop him entirely when placed in front to bodyblock him. Although that is a negative Elixir trade, she will have full hitpoints for a counterattack. A similar tactic works against the [[Ram Rider]].
+*Spell cards and distraction units are the most effective methods of countering a P.E.K.K.A push. An [[Ice Golem]] is especially effective as he will kite the P.E.K.K.A away from her support troops for a cheap Elixir cost, rendering her helpless against enemy troops. Once the P.E.K.K.A has dealt with the Ice Golem, she will not have much, if any support behind her, also being easily taken care of.
+*More costly building chasers can substitute the Ice Golem's role, and set up for a large push during the kite. [[Goblin Giant]] is particularly effective as its faster move speed will prevent the P.E.K.K.A from attacking it during the kite, and the Spear Goblins in its pouch will damage down the P.E.K.K.A. However, this strategy can allow the P.E.K.K.A to reap much more defensive value after the kite and open up the opportunity for a powerful split push by the opponent. Air troops complement the kite very well, as they will chip away at her health without being obstructed by the kiting unit.
+*A mini tank + swarm combo is effective at taking a P.E.K.K.A push head on. By placing the mini tank close to the support troops and then deploying the swarm beside the P.E.K.K.A right afterwards, the opponent's units are forced to deal with the type of troop they are weak to, giving them more time for the player's Crown Tower to chip away at the push and also for them to articulate further counters.
+*Air swarms like [[Bats]] and [[Minions]] complement a P.E.K.K.A. very well. They can handle most ground swarms very well while the P.E.K.K.A. tanks for them. However, cheap spells can easily destroy the swarms, leaving the P.E.K.K.A. alone and easy to counter.
+*[[:Category:Building Cards|Buildings]] can be good follow up defenders if the opponent lacks an instant damage spell to take care of them, as the P.E.K.K.A will not be able to reach them quickly. 
+**An [[Inferno Tower]] can stop her on its own and still have most of its hitpoints for a follow-up attack. However, it is weak to cards with a stun effect like the Electro Wizard, Electro Dragon, [[Goblinstein]], or [[Zappies]].
+**A [[Tombstone]] will constantly spawn Skeletons which can distract the P.E.K.K.A. for a long time. Even if the P.E.K.K.A. destroys the Tombstone, the death Skeletons will distract her even further. However, the Skeletons can easily be destroyed with spells, with some of them also being effective against the Tombstone itself.
+*Playing a P.E.K.K.A behind the King's Tower is often a risky play due to her high cost leaving the investor vulnerable to a punish in the other lane. The player should only do this if they need to build a bigger push to break through the opponent's defenses, if they have a sufficient Elixir lead, if the other Crown Tower is already close to being destroyed so that the opponent's punish will not be efficient for their Elixir (for example, a Hog Rider being played to take out a Crown Tower with only 300 health), if the opponent has no cards that can punish the P.E.K.K.A player for placing her in the back, or if the opponent is forced to attack the same lane as the P.E.K.K.A in order to destroy a Crown Tower.
+*The [[Fisherman]] also works well with the P.E.K.K.A as he can pull in ranged troops that the P.E.K.K.A would usually have trouble reaching and also deal a bit of extra damage. However, this is still weak to swarms or air units so also bring a spell or a splash unit to further support this push.
+**While a Fisherman is weak to an opposing P.E.K.K.A., he can still be quite useful from separating her from your offensive tank, allowing the tank to deal damage to the Crown Tower. Try to combine the Fisherman with distraction units in order to fully counter the P.E.K.K.A.
+*Even though her hitpoints are higher, it is recommended to have a distraction unit like [[Skeletons]] or [[Goblins]] in front of her when defending against a heavy hitter like a Prince or Mini P.E.K.K.A. This will allow her to save more of her hitpoints for a counterattack after defending against the heavy hitter.
+*The [[Zappies]] can almost permanently stun an approaching P.E.K.K.A. Placing them beside the Crown Tower will make them line up vertically and efficiently stagger the timing of their stuns, leaving the P.E.K.K.A nearly immobile. However, they are weak to [[Fireball]] and Poison.
+*A good strategy to use with the P.E.K.K.A is to support with a [[Valkyrie]], Executioner, Bowler, [[Wizard]], or [[Baby Dragon]]. This is a good combo because the five can take out swarms and survive most spells. If you use a Valkyrie or Bowler you may want to have a spell or other unit to finish off air troops.
+*Against an [[Electro Giant]], the P.E.K.K.A. can be paired with the Electro Wizard to counter him. If timed right, the Electro Wizard's attacks will stun the Electro Giant on the same time span that the P.E.K.K.A. attacks him, causing her to take no damage from the Electro Giant's reflection.
+*If you place a tank in the back, and the opponent responds with a P.E.K.K.A. in the back, you can lure the P.E.K.K.A. into the other lane with a Miner. Although the [[Miner]] will be easily obliterated by the P.E.K.K.A., she will have switched lanes, allowing your tank to continue on its lane unharmed.
+*Players can use a [[Sparky]] to counter the P.E.K.K.A. However, if the P.E.K.K.A is at least two Levels higher than Sparky, it could be risky as the P.E.K.K.A will survive 3 blasts from her and eventually destroy Sparky due to her very high damage and hitpoints.
+*Due to her low speed, she can be pushed by fast charging units like the [[Prince]], [[Dark Prince]], [[Ram Rider]], [[Battle Ram]], and [[Golden Knight]], allowing her to connect to a more valuable target.
+*If a P.E.K.K.A. is approaching your [[Skeleton King]], activate his ability. The P.E.K.K.A. will get distracted by the Skeletons summoned by the ability, buying time to support the Skeleton King.
+*Pairing the P.E.K.K.A. and the [[Mighty Miner]] is a good choice for a push. Deploy them together and when they reach the opponent's side, the opponent is sure to defend this push. To create tension on both sides, activate the Mighty Miner's ability. This push could easily take a crown or two unless it is defended properly.
+*Depending on what the player requires in their deck, the P.E.K.K.A. can be substituted with other similar cards.
+**A Mega Knight has the same Elixir cost as the P.E.K.K.A. and has slightly higher hitpoints, while also dealing area damage. However, he deals a lot less damage in comparison. Generally the P.E.K.K.A. should be chosen if the player's deck is weak to bulkier threats, while Mega Knight is better against swarmy threats.
+**The Mini P.E.K.K.A. is a cheap alternative to the P.E.K.K.A. to be used against tanks, offering similar, although, slightly lower damage and moving faster. It is usually better in desperate situation where the player can afford to spend 4 Elixir on the Mini P.E.K.K.A. as opposed to the 7 Elixir P.E.K.K.A.
+**In dual lane decks, the Elite Barbarians can serve as an alternative to the P.E.K.K.A. Like the Mini P.E.K.K.A., they have similar damage that is split into two units if the player wants to consider splitting them. However, they are significantly weaker when alone compared to the P.E.K.K.A.
+**A Sparky can be used in place of the P.E.K.K.A. in certain decks. Her damage is even higher than the P.E.K.K.A.'s and she also comes from range, in addition to dealing area damage. However, she is even slower than the P.E.K.K.A., has much lower hitpoints, and is also weak to stun effects.
+*An expensive but extremely potent offensive combination is the P.E.K.K.A. paired with the [[Goblin Giant]]. The Goblin Giant can quickly clear small swarms like Bats and Skeletons, while the P.E.K.K.A. has excellent one-on-one matchups with many single-target damage dealers used to counter the Goblin Giant like the Prince, [[Mighty Miner]], and Mini P.E.K.K.A.
+**Spell support is crucial to wipe out larger swarms like the Skeleton Army, Goblin Gang, and Minion Horde, that could deal hefty damage to the push. [[Rage]] is especially potent as it helps make the push even more threatening, and makes the Spear Goblins on the Goblin Giant attack faster.
+<center><div id="unit-statistics" class="table-back">
+{{Statistics}} {{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|7||1.8 sec||0.5 sec||Slow (45)||1 sec||Melee: Medium (1.2)||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 3760 }}
+{{#vardefine: dmg_11 | 842 }}
+{{#vardefine: atk_speed | 1.8 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 255,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|20 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 770,000 Damage to enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 1,280,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" |Troop Destroyer <br/ > [[File:Troop Destroyer.png|50x50px]]
+|1
+|Destroy 420 enemy Troops
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Destroy 1,200 enemy Troops
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Destroy 2,100 enemy Troops
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+| rowspan="3" |Armor Breaker <br/ > [[File:Armor Breaker.png|50x50px]]
+|1
+|Land hits for the full Damage amount 600 times
+|6,000 {{Icon|I=Gold}}<br>175 {{Icon|I=XP}} 
+|-
+|2
+|Land hits for the full Damage amount 1,800 times
+|8,000 {{Icon|I=Gold}}<br>175 {{Icon|I=XP}}
+|-
+|3
+|Land hits for the full Damage amount 3,600 times
+|10,000 {{Icon|I=Gold}}<br>175 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+== History ==
+2016
+*The P.E.K.K.A [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016.
+*On 2/2/2016, the [[Version History#February 2016 Update (2/2/2016)|February 2016 Update]], decreased the P.E.K.K.A's hitpoints by 13% and decreased her cost to 7 [[Elixir]] (from 8 Elixir). It also changed the walking animation of the P.E.K.K.A.
+*On 29/2/2016, the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]], decreased the P.E.K.K.A's sight range to 5 tiles (from 6 tiles).
+*On 3/5/2016, the [[Version History#May%202016%20Update%20(3/5/2016)|May 2016 Update]], fixed the "range bug" and decreased the P.E.K.K.A's range to 0.75 tiles (from 1.5 tiles), but her effective range was unchanged.
+*On 21/6/2016, a [[Version History#Balance Changes (21/6/2016)|Balance Update]], increased the P.E.K.K.A's damage by 8%.
+*On 24/8/2016, a [[Version History#Balance Changes (24/8/2016)|Balance Update]], increased the P.E.K.K.A's damage by 5%. There was also an unannounced change to the P.E.K.K.A, a decrease to her first attack time interval to 0.5 seconds (from 0.6 seconds).
+2017
+*On 13/2/2017, a [[Version History#Balance Changes (13/2/2017)|Balance Update]], decreased the P.E.K.K.A's deployment time to 1 second (from 3 seconds).
+2018
+*On 25/4/2018, the [[Version History#Clan%20Wars%20Update%20(25/4/2018)|Clan Wars Update]], made a small change to the P.E.K.K.A's card description.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Epic}} cards start at Level 6 and end at Level 13 (from 1 to 8).
+2019
+*On 5/8/2019, a [[Version History#Pass Royale and more (5/8/2019)|Balance Update]], decreased the P.E.K.K.A's hitpoints by 9.5% but increased her range to 1.6 tiles (from 0.75 tiles), now classified as Melee: Long.
+*On 2/9/2019, a [[Version History#Pass Royale and more (2/9/2019)|Balance Update]], decreased the P.E.K.K.A's range to 1.2 tiles (from 1.6 tiles), now classified as Melee: Medium.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the P.E.K.KA's card info screen.
+2021
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 27/6/2022, the [[Version History#Summer%202022%20Update%20(27/6/2022)|Summer 2022 Update]], added the Armor Breaker [[Card Mastery]] task for the P.E.K.K.A.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+*On 5/3/2024, a [[Version History#Balance Changes (5/3/2024)|Balance Update]], increased the P.E.K.K.A's range to 1.6 tiles (from 1.2 tiles), now classified as Melee: Long.
+*On 2/9/2024, the [[Version History#Pass Royale and more (2/9/2024)|September 2024 Update]], added the P.E.K.K.A’s Evolution.
+2025
+*On 4/2/2025, a [[Version History#Balance%20Changes%20(4/2/2025)|Balance Update]], decreased the P.E.K.K.A's range to 1.2 tiles (from 1.6 tiles), now classified as Melee: Medium
+2026
+
+* On 6/7/2026, a a [[Version History#Balance Changes (5/3/2024)|Balance Update]], increased the P.E.K.K.A's damage by 3%
+
+==Gallery==
+<gallery>
+P.E.K.K.A. card render.png|Current card render.
+P.E.K.K.A. Preview.gif|Current card preview
+PEKKA 1.png|P.E.K.K.A with a butterfly. 
+Profile Picture2.png|P.E.K.K.A 1
+PEKKA 2.png|P.E.K.K.A 2
+PEKKA 3.png|P.E.K.K.A 3
+PEKKA 4.png|P.E.K.K.A 4
+Brady55 Giveaway-PEKKA.png|P.E.K.K.A action figure
+Pekka.jpg|P.E.K.K.A in a dark background.
+</gallery>
+
+==Trivia==
+*P.E.K.K.A's name derives from the Finnish name for "''Peter''", which in turn comes from the Greek name "''Petros''", meaning stone.
+*The acronym for P.E.K.K.A didn’t officially stand for anything in particular originally. Supercell held a Facebook contest on 22 August 2012 to see who could come up with the best written-out name for P.E.K.K.A as judged by the number of likes the comment received. The name "''Perfectly Enraged Knight Killer of Assassins''" was the winner. The person who submitted the acronym was called Víctor in the [https://www.facebook.com/ClashofClans/photos/478339952190333 Facebook announcement].
+*The P.E.K.K.A is 1 of 19 [[:Category:Troop Cards|troops]] which first existed in Clash of Clans, the others being [[Minions]], [[Archers]], [[Goblins]], [[Skeletons]], [[Barbarians]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], [[Witch]], [[Balloon]], [[Golem]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Phoenix]], [[Lava Hound]], and the [[Archer Queen]].
+**The P.E.K.K.A resembles the [https://clashofclans.fandom.com/wiki/P.E.K.K.A Level 1 P.E.K.K.A] from Clash of Clans. Her [[Star Points|Star Level 2 skin]] grants her a second sword similar to the Level 4 P.E.K.K.A in Clash of Clans. However, the P.E.K.K.A in Clash Royale will never attack with the other sword or both swords, while the P.E.K.K.A in Clash of Clans will swing both.
+**Like in Clash of Clans, when P.E.K.K.A hits an enemy, a heavy slashing sound effect and a faint, low-pitched laugh plays.
+**In Clash of Clans, the P.E.K.K.A's movement speed is moderate whereas in Clash Royale, her movement speed is low.
+*The P.E.K.K.A is one of the first troop [[cards]] to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the Minions, Archers, Knight, [[Spear Goblins]], Goblins, [[Bomber]], Skeletons, Barbarians, [[Minion Horde]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Musketeer]], Giant, Valkyrie, Wizard, Hog Rider, [[Baby Dragon]], [[Skeleton Army]], Witch, [[Prince]], and Balloon.
+*The P.E.K.K.A is one of the first troop cards to receive a card render, alongside the Archers, Knight, Goblins, Bomber, Skeletons, Barbarians, [[Bats]], [[Royal Recruits]], [[Skeleton Barrel]], [[Rascals]], Musketeer, Giant, Valkyrie, Wizard, [[Flying Machine]], Hog Rider, [[Royal Hogs]], [[Dart Goblin]], [[Zappies]], [[Elixir Golem]], Baby Dragon, Skeleton Army, Witch, Prince, Balloon, [[Giant Skeleton]], [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], Wall Breakers, Bowler, Cannon Cart, [[Mega Knight]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], [[Magic Archer]], [[Bandit]], Lava Hound, [[Night Witch]], and [[Fisherman]].
+*The P.E.K.K.A is 1 of 10 troops that has been featured under the [[Ruler Ability#Special Delivery|Special Delivery]] [[Ruler Ability|ruler ability]], the others being Knight, Skeleton Barrel, Mini P.E.K.K.A, Musketeer, Wizard, Giant Skeleton, Golem, [[Sparky]], and Royal Ghost.
+*The P.E.K.K.A is 1 of 23 cards that has had its [[Elixir]] cost changed, the others being Bomber, [[Fire Spirit]], Royal Recruits, [[Cannon]], [[Mortar]], Musketeer, [[Three Musketeers]], [[Heal]], [[Goblin Hut]], [[Bomb Tower]], [[Barbarian Hut]], [[Furnace]], [[Elixir Collector]], Skeleton Army, Wall Breakers, [[Electro Giant]], Bowler, [[Goblin Barrel]], [[Barbarian Barrel]], [[Rage]], Fisherman, and the [[Monk]].
+**The P.E.K.K.A, the Cannon, and the Mortar were the first cards whose Elixir cost was changed since the [[Version History#February 2016 Update (2/2/2016)|February 2016 Update]].
+*The P.E.K.K.A is 1 of 3 troops that has had its Melee range classification changed, the others being Mini P.E.K.K.A and Giant.
+**The P.E.K.K.A is the first troop whose Melee range classification was changed since the 5/8/2019 balance changes.
+*The P.E.K.K.A is 1 of 15 troops which bring an excited reaction from the audience upon spawning and brings a collective groan from the audience when defeated, as well as a concerning gasp when the opponent plays her, the others include [[Royal Giant]], Giant, Giant Skeleton, [[Rune Giant]], Goblin Giant, Golem, Bowler, [[Electro Wizard]], [[Inferno Dragon]], Sparky, Lava Hound, Night Witch, [[Super Lava Hound]], and the Monk.
+*The P.E.K.K.A's gender has been confirmed as female, as one of the Loading Screen Hints in Clash of Clans states, ''"The armor on P.E.K.K.A is so heavy that Spring Traps don't affect her"'', and also several videos from the official YouTube. In Clash Royale, the P.E.K.K.A. Protector [[Battle Banners|decoration]]'s description says "''No one messes with her butterfly''".
+**However, in the Arabic, Persian, and Finnish language setting of the game, the P.E.K.K.A is referred to as male, according to her card description.
+*According to a Clash-A-Rama comic [https://clasharama.fandom.com/wiki/Clash-A-Rama!_Comic_Strips?file=BRING-YOUR-CHILD-TO-WORK-DAY_Final.jpg strip], the [[Mini P.E.K.K.A.|Mini P.E.K.K.A]] is the P.E.K.K.A's child.
+*There is a [[Loading Screen Hints|Loading Screen Hint]] that says: ''"P.E.K.K.A: No one knows what's behind that mask. Maybe even another mask.".'' This is a reference to the anime [https://en.wikipedia.org/wiki/Naruto Naruto], specifically the episode called: "''[https://naruto.fandom.com/wiki/Gotta_See!_Gotta_Know!_Kakashi-Sensei's_True_Face! Gotta See! Gotta Know! Kakashi-Sensei's True Face!]''"
+*The P.E.K.K.A may be a reference to [https://backyardmonsters.fandom.com/wiki/D.A.V.E. D.A.V.E.] from [https://backyardmonsters.fandom.com/wiki/Backyard_Monsters_Wiki Backyard Monsters]. Both have names that don't stand for anything in particular, both are robotic in nature and both were considered the strongest regular troop in their respective games.
+*The P.E.K.K.A is featured as a [https://clashofclans.fandom.com/wiki/Hero_Skins?file=PEKKA_King_info.png skin for Barbarian King in Clash of Clans].
+*The P.E.K.K.A's sword can be seen can be seen on the [[Trophies|Trophy Road]] as a decoration.
+*The P.E.K.K.A is featured in non-Clash games. More specifically:
+**The P.E.K.K.A, along with the Archers, Goblins, Barbarians, and [[Elite Barbarians]], were featured as a [https://pad.fandom.com/wiki/Homepage/Monster monster] in [https://pad.fandom.com/wiki/Puzzle_%26_Dragons_Wiki Puzzles and Dragons], in a [https://pad.fandom.com/wiki/Homepage/Dungeon dungeon] called [https://pad.fandom.com/wiki/Clash_of_Clans_Dungeon Clash of Clans Dungeon].
+**The P.E.K.K.A, along with the Goblins, Barbarians, Giant, Valkyrie, Wizard, Hog Rider, Witch, and the Archer Queen, were featured as a non-playable opponent in [https://www.chess.com/ Chess].
+**The P.E.K.K.A is featured as [https://brawlstars.fandom.com/wiki/Ash?file=Ash_Skin-P.E.K.K.A.S.H.png a character skin for Ash] in Brawl Stars.
+**The P.E.K.K.A, along with the Minions, Bomber, Skeletons, [[Skeleton Dragons]], [[Ice Spirit]], Mini P.E.K.K.A, [[Mega Minion]], [[Ice Golem]], Dart Goblin, Elixir Golem, [[Goblin Cage|Goblin Brawler]], [[Guards]], Baby Dragon, Giant Skeleton, Golem, Wall Breakers, Bowler, [[Executioner]], Mega Knight, [[Inferno Dragon]], Royal Ghost, and Lava Hound, are featured as a [https://squad-busters.fandom.com/wiki/Monsters monster] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*The P.E.K.K.A has a passion towards butterflies. Her passion for butterflies is also referenced a few times:
+**When deployed, the P.E.K.K.A will briefly say ''"Butterfly"'' in a deep robotic voice.
+***The P.E.K.K.A. is 1 of 24 troops that speak distinct words when on the field, the others being Mini P.E.K.K.A., Mega Minion, Wizard, Hog Rider, [[Dark Prince]], Bowler, [[Ram Rider]], [[Electro Wizard]], [[Princess]], Ice Wizard, Magic Archer, [[Lumberjack]], [[Mother Witch]], Fisherman, [[Goblin Machine]], [[Super Mini P.E.K.K.A.]], [[Santa Hog Rider]], [[Super Magic Archer]], [[Golden Knight]], [[Boss Bandit]], Archer Queen, [[Little Prince]], and the [[Terry]].
+**In Clash of Clans, every day, a butterfly will spawn near the [https://clashofclans.fandom.com/wiki/Trader Trader]. If an [https://clashofclans.fandom.com/wiki/Army_Camp/Home_Village Army Camp] housing a P.E.K.K.A is nearby, a P.E.K.K.A will chase after it, saying "''Butterfly''" in a raspy robotic voice. She sounds upset when the butterfly despawns.
+**In the Clash of Clans [https://www.youtube.com/watch?v=fYpB24pIU_8 P.E.K.K.A. commercial] where the P.E.K.K.A chases a butterfly.
+**The P.E.K.K.A. Protector Decoration's description saying "''No one messes with her butterfly''".
+**{{Trait|P.E.K.K.A.}} is represented by a butterfly icon.
+*There is an [[Arenas|Arena]] based on the P.E.K.K.A called P.E.K.K.A's Playhouse, which shares the name of a [https://clashofclans.fandom.com/wiki/Single_Player_Campaign#P.E.K.K.A's_Playhouse Single Player Map] in Clash of Clans.
+*The P.E.K.K.A is the subject of certain cosmetics in the game. More specifically: 
+**The P.E.K.K.A is the subject of a few [[Clans|Clan]] badges.
+**The P.E.K.K.A is the subject of a few [[Emotes]].
+**The P.E.K.K.A is the subject of a [[King's Tower|Tower Skin]].
+**The P.E.K.K.A is the subject of a few Battle Banner items.
+***The P.E.K.K.A is one of the first troops to be the subject of a Battle Banner item, along with the Mini P.E.K.K.A, Dart Goblin, Prince, Giant Skeleton, Mega Knight, [[Super Witch]], and the Golden Knight.
+***The P.E.K.K.A Protector decoration is identical to its card render.
+***The Night of the Living P.E.K.K.A frame is a reference to [https://en.wikipedia.org/wiki/Night_of_the_Living_Dead Night of the Living Dead]. Its description says "''They're coming to get you, Barbarian!''", which is also a reference to the same film.
+*The P.E.K.K.A was featured in the winning deck of the [https://www.youtube.com/live/DVY2TndGf4U?si=ptuVz0tHkkkDIvEl Crown Championship Global Series Tournament], by a player called Sergioramos:).
+*The initial balance change for P.E.K.K.A on the [[Version History#Pass Royale and more (5/8/2019)|5/8/2019 balance changes]] was a 15% hitpoints decrease, but it was lowered to 9.5% [https://x.com/Seth_Supercell/status/1158324991684988928?s=20 last minute].
+*The P.E.K.K.A is said to be piloted by a spirit trapped inside of the armor, as seen in a [https://www.youtube.com/watch?v=FSZHXlHyrZM short].
+**A popular theory shown in the video is that there was a 5th spirit, the Nature spirit, who was rejected by the King for being too weak when discovered by him. The Nature Spirit would become upset and remain dormant near an old suit of armor until fusing with it and becoming the P.E.K.K.A.
+**In "[[w:c:clasharama:Clash-A-Rama!|Clash-A-Rama!]]", in the episodes [https://youtu.be/aUnB5nzmmtc?si=yrXyrKdPlfez__d2&t=436 12 Days of Clashmas] and [https://youtu.be/7mPbPLbVfoc?si=eqHqdxpikzgQojwJ&t=579 Clone Alone], it's shown that the P.E.K.K.A has a phonograph or DJ set inside and is sometimes piloted by the Mini P.E.K.K.A.
+***The Zap Evolution lore [https://youtu.be/Rtgpx2YLLO4?si=AvAMV3xPB1KHwPtK short] also shows the Mini P.E.K.K.A inside.
+*In the "[https://youtu.be/Qo0Innwk2FY?si=HqNUzg0LmohA_DF9&t=43 Clash-A-Rama! Tower Decoration!]" video, it's shown that the P.E.K.K.A. can fire lasers from her eyes.
+
+==In other languages==
+{{Other languages|fr=P.E.K.K.A|de=P.E.K.K.A.|es=P.E.K.K.A.|it=P.E.K.K.A|nl=P.E.K.K.A.|no=P.E.K.K.A|tr=P.E.K.K.A|jp=P.E.K.K.A|kr=P.E.K.K.A|ru=П.Е.К.К.А.|ar=بيكا|pt=P.E.K.K.A|cn=皮卡超人|cnt=皮卡超人|fa=P.E.K.K.A|id=P.E.K.K.A|ms=P.E.K.K.A|th=P.E.K.K.A|fi=P.E.K.K.A.|vi=P.E.K.K.A|cnmeaning=P.E.K.K.A superhuman|cntmeaning=P.E.K.K.A Superhuman}}
+
+{{Navigation|Card}}
+
+[[fr:P.E.K.K.A]]
+[[de:P.E.K.K.A.]]
+[[es:P.E.K.K.A.]]
+[[it:P.E.K.K.A]]
+[[ja:P.E.K.K.A.]]
+[[ko:P.E.K.K.A.]]
+[[ru:П.Е.К.К.А.]]
+[[pt-br:P.E.K.K.A]]
+[[zh:皮卡超人]]

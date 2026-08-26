@@ -1,0 +1,245 @@
+{{DISPLAYTITLE:<span style="color: #F9CF5F;">Fireball</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}{{Card Infobox|Cost=4|Rarity=Rare|Type=Spell|Arena=Training Camp|ReleaseDate=4 January 2016}}
+{{Quote|Annnnnd... Fireball. Incinerates a small area, dealing high damage. Reduced damage to Crown Towers.}}
+
+The Fireball is a {{Rarity|Rare}} [[Cards|card]] that is unlocked in the [[Training Camp]]. It is an area-damage, air-targeting [[:Category:Spell Cards|spell]] with a medium radius and high damage that also inflicts knockback. It is a large ball of fire. A Fireball card costs 4 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Fireball Common Modifier.png|45x45px]] Common: Scorched Earth===
+{{Quote|Leaves ground burning}}
+Fireball leaves behind burning residue.
+
+===[[File:Fireball Rare Modifier.png|45x45px]] Rare: Brighter Than the Sun!===
+{{Quote|Mirrored Fireball}}
+A second Fireball is sent and reflected on the middle y-axis.
+
+===[[File:Fireball Epic Modifier.png|45x45px]] Epic: Fanning the Flames===
+{{Quote|Tornado Fireball combo}}
+Throws 3 Fireballs alongside a [[Tornado]].
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Fireball Card}}
+*The Fireball is a good all-round generalist [[:Category:Spell Cards|spell]] that can suit any type of [[Battle Decks|deck]] for the role of a strong spell, with decent damage, a reasonable travelling time, and a wide area radius.
+*As a general rule when using the Fireball, players should be patient. If waiting to cast the Fireball on a target, wait until another unit is deployed next to it to get an even bigger [[Elixir]] advantage than if the Fireball had been used before. Another thing to keep in mind is that the Fireball has a travel time of a few seconds, depending on how far it is sent from the [[King's Tower]]. [[:Category:Troop Cards|Troops]] that appear to be at the edge of the spell's radius when it is launched may not be hit by the time the spell actually lands.
+*The Fireball should be used to finish off weakened units or to defeat large numbers of small troops like [[Minion Horde|Minion Hordes]], [[Goblin Gang|Goblin Gangs]], [[Skeleton Army|Skeleton Armies]], [[Skeleton Dragons]], [[Zappies]], or [[Archers]]. However, it is unwise to use a Fireball on lone high-hitpoint troops like a [[Giant]], [[Golem]], [[Mega Knight]], [[Royal Giant]], [[Giant Skeleton]], [[Lava Hound]], [[Knight/Evolution|Evolved Knight]], [[Electro Giant]], [[Goblin Giant]], or a [[P.E.K.K.A.]] as it will hardly affect them, resulting in a negative Elixir trade.
+*[[Barbarians]], [[Wizard]]s, [[Furnace|Furnaces]], [[Musketeer]]s, [[Three Musketeers|Elite Musketeers]], [[Hunter]]s, [[Electro Wizard]]s, [[Witch]]es, [[Little Prince]]s, [[Goblinstein]]s, and [[Mega Minion]]s will survive the Fireball if they are of equal Level. A tank like a [[Knight]], [[Hog Rider]], [[Ram Rider]], [[Prince]], [[Valkyrie]], [[Bowler]], [[Golden Knight]], [[Monk]], [[Mighty Miner]], [[Battle Healer]], [[Boss Bandit]], [[Skeleton King]], or [[Goblin Machine]] placed in front of them might become a disaster as the surviving troops can quickly take the player's [[:Category:Crown Towers|Crown Tower]]. 
+**The Fireball and [[Zap]] or [[Rage]] combo can serve as a replacement for a [[Rocket]] to fully defeat these units. The trade-off is that the combo deals less damage and takes up 1 more card slot. However, they have significantly less travel time than a Rocket, and their lower individual costs allow the player to use them more flexibly.
+***If used together, make sure that the Zap or Rage hits the enemies before the Fireball does, as otherwise, the Fireball will knock them back, which could result in Zap or Rage missing the troops.
+***An alternative to this is the Fireball and [[The Log]] combo. Due to The Log's higher damage, it is able to defeat certain troops that can survive the Fireball + Zap/Rage combo, such as a [[Night Witch]]. The drawback to this is that unlike Zap and Rage, The Log cannot hit air troops.
+***Another alternative is the Fireball + [[Barbarian Barrel]] combo. Certain troops like the [[Executioner]] can survive a lone Fireball with decent hitpoints to spare, even being able to survive the damage from the second spell. However, the Barbarian spawned from the spell will be able to weaken them even further, and be able to take them out.
+***The Fireball + [[Giant Snowball]] combo is often risky to use as an alternative, because the knockback from one spell may cause the other to miss. The player should make sure to have both of them in hand, and deploy each one of them long after the other one hits its intended target.
+**In a similar principle, the Fireball synergizes well with the Goblin Giant and [[Ram Rider]] due to the Spear Goblins and Rider being able to finish off defenders like Musketeer, Goblinstein, Little Prince, or Electro Wizard, allowing the Goblin Giant or Ram Rider to deal more damage.
+**If the level of the Fireball is higher than the Level of a Barbarian, Wizard, Electro Wizard, Little Prince, Furnace, Goblinstein, or Musketeer, it will completely destroy them. This is a reliable way to always defeat these troops.
+**Remember to destroy the tank after everything behind it is gone. Otherwise, it could do heavy damage to or even destroy a Crown Tower.
+*Its knockback effect is a true stun that resets the attack animations of small to medium sized troops. This is in contrast to a normal stun such as that of the Zap, which stalls attack animations but does not reset them.
+*A Fireball can destroy Zappies, Skeleton Dragons, [[Mother Witch]], or [[Magic Archer]] up to 2 Levels higher, and a [[Flying Machine]] up to 1 Level higher for a neutral Elixir trade.
+*Although it is a slight negative Elixir trade, the Fireball will be able to OHKO an equally-leveled [[Ice Wizard]], allowing an offensive push to break through.
+*The Fireball deals enough damage to put the [[Goblin Demolisher]]'s hitpoints under the 50% threshold, which will force him to be defeated by his own hitpoint decay. Make sure that he is as far away from the Crown Tower as possible to ensure that he is defeated before he reaches it.
+*The Fireball can be quite effective versus [[:Category:Building Cards|buildings]], as it is able to lower a lot of their hitpoints, and since buildings cannot move, it is almost guaranteed to hit them. However, it is less effective at doing this compared to other spells, due to its lower damage.
+**It is effective against spawner buildings such as the [[Barbarian Hut]] because as the spell will reduce their lifespan and deny several waves of troops. However, hitting only the spawner building will often result in a negative Elixir trade as it will typically still have enough hitpoints to spawn a few waves. Try to hit a wave of troops as well, to neutralize the investment.
+**Similarly, using them on a lone [[X-Bow]] or [[Mortar]] is a negative Elixir trade, as the damage dealt will not be enough to prevent the Crown Tower from taking significant damage. It is recommended to wait until the opponent deploys defenders in front of their building to use the Fireball on all of them.
+**The Fireball can destroy the [[Tombstone]] no matter its current hitpoints. However, it is usually a negative Elixir trade unless the player is able to hit something else too, and it cannot hit the spawned [[Skeletons]].
+**The Fireball can be effective against [[Elixir Collector]]s, as it will lower its hitpoints enough to deny a lot of Elixir from being produced.
+**The Fireball can be used against other buildings like [[Cannon|Cannons]] and [[Bomb Tower|Bomb Towers]], allowing offensive troops like a [[Hog Rider]] to quickly destroy the building and proceed towards the Crown Towers.
+**Against the [[Tesla]], it is not recommended to use the Fireball on it, because it is immune to it while underground. When using it, make sure that the Tesla is revealed so that it will be able to take damage.
+**If the player wants to avoid their building being hit from a spell, they should place it 3 tiles from the river and 4 tiles from the Crown Tower. This will prevent the opponent from hitting both the Crown Tower and the building with the Fireball. For the Tesla, a placement 3 tiles from the river and 3 tiles from the Crown Tower will also prevent both the Tesla and the Crown Tower from being hit by the Fireball.
+*Fireball can be used against the [[Rascals]]. It will OHKO the Rascal Girls, and deal some damage to the Rascal Boy. Interestingly, the Rascal Boy is affected by knockback, allowing the Fireball to knock the Rascal Boy, possibly causing him to retarget.
+*Fireball will leave the [[Royal Hogs]] with a sliver of health while only getting minor damage on the Crown Tower. While this is a positive Elixir trade, it is not enough to fully destroy them, so try not to overly rely on it.
+*With the help of the [[Tower Princess]], the Fireball can barely prevent a [[Balloon]] from hitting the Tower with the exception of its death bomb. Aim for the bottom of the Balloon's shadow so that the Balloon is knocked away from the Tower Princess, buying more time for the Tower Princess to chip it down. This strategy will not work if the Fireball or the Tower Princess is at a lower Level than the Balloon.
+*The Fireball is impractical to use against a [[Goblin Barrel]] since it is a negative Elixir trade, even if it hits all of the Goblins. However, if the defending player is ahead in a match and their Tower is at low health, they can use it to clear out a Goblin Barrel in the final seconds of a match.
+*Fireball pairs very nicely with [[Tornado]]. The Tornado will drag most, if not all, desired targets into the Fireball's blast radius, allowing for the annihilating of large groups of medium sized troops while also heavily damaging larger ones. Make sure that the Fireball is launched before the Tornado, and the Tornado's center overlaps with the Fireball's radius. Remember that certain units resist a Tornado more than others, including charging units such as [[Prince]] and [[Dark Prince]] and heavy units such as [[Giant]], [[Lava Hound]], and [[Golem]], so this tactic may not always work. It also costs a hefty 7 Elixir, leaving you slightly vulnerable, though it may be worth it if you are against a large push as it weaken the push significantly.
+** Aim the Fireball considerably in front of the target or at the shadow in order to hit them properly.
+** The combination is most recommended to be used when the troops that are being targeted move at different movement speeds. A good example is against a [[Lumberjack]] and [[Balloon]] combination, where the Tornado will prevent the faster Lumberjack from moving away from the slower Balloon, allowing the Fireball to hit both.
+*The Fireball has a delay between it being cast and it hitting the [[Arenas|Arena]]. Some troops may escape the radius before it hits, especially troops with a fast or very fast movement speed. This can be avoided by placing the Fireball slightly ahead of the troop's current path, depending on the troop's movement speed.
+*The Fireball is completely ineffective against troops that have shields, as their shields will cause most of its damage to be wasted. Because of this, it is better to remove their shield with another card, which is worsen the Elixir trade against it. This is especially futile against [[Royal Recruits/Evolution|Evolved Royal Recruits]], as removing their shields will allow them to charge and possibly dodge the Fireball.
+*If the opponent places a small troop close to the center of the Arena, such as a Wizard, a properly placed Fireball can knock it back and make it head into the other lane after recovering from the blast. This can be useful for diverting small troops to the other path, especially if that lane is better defended or has more remaining Crown Tower health. This should only be done with a Fireball if a [[Tornado]] is not being used or is out of rotation, as a Tornado is much more reliable for doing this.
+*The Fireball's knockback is great against the [[Inferno Dragon]], as it will be able to reset its ramp-up attack, buying more time for a tank + anti-air push to break through. However, this does not work against the [[Inferno Tower]] and [[Mighty Miner]], due to their immunity to its knockback. It is also ineffective against the [[Inferno Dragon/Evolution|Evolved Inferno Dragon]], as it does not reset when knocked back.
+*With proper timing, the Fireball's knockback can allow troops to finish off enemy troops before they take any damage. This is especially useful against high damage troops that can survive the spell, such as an Executioner, Wizard, Mega Minion, or Hunter.
+*In Overtime, a Fireball can be used to quickly take out an enemy Tower and secure a win if the enemy's Tower has low enough health. Aim for the bottom corner of the Crown Tower that is closest to your King's Tower to reduce the spell's travel time considerably.
+*In a pinch, it can be used to reset the charge of the Ram Rider or the [[Battle Ram]] to prevent them from dealing extra damage to the Crown Tower. However, it is more effective to do this with a cheaper spell that has knockback capabilities such as [[The Log]].
+*The Fireball does enough damage to fully destroy the [[Skeleton Barrel]] and [[Skeleton Barrel/Evolution|Evolved Skeleton Barrel]] on its own. Although it is a negative Elixir trade, the Skeletons will be far enough that they will not connect to the Tower Princess. This is most recommended to be done if the [[Dagger Duchess]] is in use, as this will save her daggers for the Skeletons instead of wasting them on the Skeleton Barrel.
+*The Fireball can be combined with Spirit [[cards]] to defeat certain units for a lower Elixir cost compared to using 2 spells. With an [[Electro Spirit]], [[Ice Spirit]], or [[Heal Spirit]] it is able to defeat anything up to [[Elixir Golem|Elixir Golemites]], and with a [[Fire Spirit]], it can defeat anything up to a Hunter.
+**Similarly, it can be paired with {{Rarity|Champion}} abilities to defeat certain units without having to use multiple cards. For example, with the [[Golden Knight]]'s ability, the combination of Fireball + Dashing Dash will be able to eliminate anything up to an [[Archer Queen]].
+*If the player can afford to activate their opponent's King's Tower (for example, if they are playing a siege deck, wherein the main offense does not cross the river), a quick Fireball to any [[Three Musketeers]] planted in the back can give them a huge 5 Elixir advantage, provided they react quickly enough.
+*If you can predict the opponent using a Fireball, you can place down a [[Monk]] and use his ability to deflect it back to their Crown Tower and save any units from being defeated from said Fireball. However, this will not work as a reactive move, due to the ability's casting time and the Monk's 1-second deploy time.
+*Depending on what the player wants to use in their deck, the Fireball can be substituted with other more specialized spells.
+**[[Poison]] can be used as a replacement for Fireball in decks for the spot of a strong spell. However, it does not deal its damage immediately and cannot knockback enemy units. In exchange, it has slightly higher damage, a larger area, and the damage lasts for longer, allowing for area denial which makes it much better against spawner troops and buildings.
+**A cheaper alternative is the [[Royal Delivery]]. It costs 1 less Elixir than the Fireball, and despite dealing less damage, it also spawns a Royal Recruit, allowing for more potential damage. However, the Royal Delivery is unable to be casted at the opponent side, and will often require the use of a second spell in the deck, as opposed to the Fireball which can work even as a sole spell on a deck.
+**Another cheaper alternative is the [[Void]]. The Void has higher damage, allowing it to defeat troops that can survive a Fireball, like an Electro Dragon, for 1 less Elixir. However, it is ineffective against swarms, especially bulky ones like Barbarians and Zappies.
+**If the player wants to prioritize destroying buildings over troops, they can use the [[Earthquake]] in place of the Fireball. The Earthquake destroys buildings much more effectively, and for 1 less Elixir. The Earthquake also comes with a snare ability, which functions as an alternative to Fireball's knockback, although it cannot reset any charge attacks.
+*Because of its high number of possible targets with the spell, it can be easily baited by Fireball-vulnerable swarms like Minion Horde, Skeleton Dragons, and Zappies. As such, it may be a good idea to include area-damage troops in the same deck with the Fireball to handle them, while Fireball can be used on its intented targets.
+
+<center>
+
+<div class="table-back" id="unit-statistics">{{Statistics}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+!Projectile Speed
+{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||2.5
+|600||Air & Ground||[[:Category:Spell Cards|Spell]]||{{Rarity|Rare}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: dmg_11 | 688 }}
+{{#vardefine: crown_dmg_11| 207 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Area Damage<br>{{Icon|I=Area Damage}}
+!scope="col"|Crown Tower Damage<br>{{Icon|I=Tower Damage}}
+|-
+| 3 || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}||{{#expr: {{#var:crown_dmg_11}} * (1.1^(3-11)) round 0 }}
+|-
+| 4 || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}||{{#expr: {{#var:crown_dmg_11}} * (1.1^(4-11)) round 0 }} 
+|-
+| 5 || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(5-11)) round 0 }}
+|-
+| 6 || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(7-11)) round 0 }} 
+|-
+| 8 || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(8-11)) round 0 }} 
+|-
+| 9 || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(9-11)) round 0 }} 
+|-
+| 10 || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:dmg_11}} || {{#var:crown_dmg_11}}
+|-
+| 12 || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}  ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(15-11)) round 0 }} 
+|-
+| 16 || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 72,500 damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|100 {{BASEPAGENAME}} cards<br>50 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 215,000 damage to enemy Troops or buildings
+|4,000 {{Icon|I=Gold}}<br>50 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 360,000 damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>50 {{Icon|I=XP}}
+|-
+| rowspan="3" |Hit Maker <br> [[File:Hit Maker.png|50x50px]]
+|1
+|Hit enemy Troops a total of 350 times
+|6,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Troops a total of 1,000 times
+|100 {{Icon|I=Rare Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Troops a total of 1,750 times
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+==History==
+2016
+*The Fireball [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016.
+*On 19/2/2016, a [[Version History#Balance Changes (19/2/2016)|Balance Update]], decreased the Fireball’s [[:Category:Crown Towers|Crown Tower]] damage to 40% of the full damage (from 50%).
+*On 29/2/2016, the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]], changed the Fireball's card image.
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], increased the {{Rarity|Rare}} card Level cap to 11 (from 10).
+2017
+*On 12/12/2017, the [[Version History#Electrifying Update (12/12/2017)|Electrifying Update]], decreased the Fireball’s Crown Tower damage to 35% of the full damage (from 40%).
+2018
+*On 25/4/2018, the [[Version History#Clan%20Wars%20Update%20(25/4/2018)|Clan Wars Update]], allowed the Fireball to be placed on the river.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Rare}} cards start at Level 3 and end at Level 13 (from 1 to 11).
+*On 1/10/2018, a [[Version History#Balance Changes (1/10/2018)|Balance Update]], fixed a bug where [[:Category:Troop Cards|troops]] that were spawned after their parent troops died would be immune to [[:Category:Spell Cards|spell]] damage.
+2020
+*On 4/8/2020, a [[Version History#Balance Changes (4/8/2020)|Balance Update]], decreased the Fireball’s Crown Tower damage to 30% of the full damage (from 35%).
+2021
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 2/8/2022, a [[Version History#Balance%20Changes%20(2/8/2022)|Balance Update]], decreased the Fireball's pushback range to 1 tile (from 1.8 tiles).
+2023
+*On 27/3/2023, the [[Version History#Losers%20Update%20(27/3/2023)|Losers Update]], increased the Fireball's reflect radius to 0.7 tiles (from 0.6 tiles).
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Fireball's damage by 0.14%.
+*2026
+*1/7/26 Decreased the fireballs crown tower damage by 17% 207-172 [https://supercell.com/en/games/clashroyale/blog/release-notes/june-balance-changes-2026/ june update]
+2026
+
+* On 1/6/2026, a Balance Update, decreased the Fireball’s Crown Tower damage to 25% of its full damage (from 30%)
+
+==Gallery==
+<gallery>
+FireballCardOld.png|Fireball's card image before 29/2/2016.
+File:Fireball Preview.gif|Current card preview
+</gallery>
+
+==Trivia==
+*While not available as a spell in Clash of Clans, the Fireball reappears there as [https://clashofclans.fandom.com/wiki/Fireball a hero equipment for the Grand Warden].
+*The Fireball is 1 of 7 [[cards]] that is already unlocked for the player when they start playing the game, the others being the [[Minions]], [[Archers]], [[Knight]], [[Arrows]], [[Tower Princess]], and [[Giant]]. Despite this, the game recognizes that those cards are unlocked in the [[Training Camp]].
+*The Fireball is one of the first [[:Category:Spell Cards|spell]] cards to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the Arrows, [[Zap]], and [[Rocket]].
+*The Fireball is one of the first spells to be featured in a [[Loading Screens|Loading Screen]], alongside the Arrows and Rocket.
+*The first part of Fireball's description is a reference to the Clash of Clans [https://www.youtube.com/watch?v=6BsTLlR40kM Magic commercial].
+*Although not available as a spell, the Fireball reappears as [https://squad-busters.fandom.com/wiki/Wizard Wizard]'s active ability in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+**In Clash Royale, it is simply called "Fireball", but in Squad Busters, it is called "Mega Fireball".
+*The Fireball was featured in the winning decks of multiple Clash Royale Tournaments. More specifically:
+**The Fireball was featured in the winning deck of the [https://www.youtube.com/watch?v=kIGdeKaT_is The Crown Duel Tournament], by a player called Backstabx.
+**The Fireball was featured in the winning deck of the [https://www.youtube.com/live/C5qBcdcErfM?si=e37mhAgNKAA5kMJI Clash Royale League 2018 Tournament], by a player called Lciop.
+**The Fireball was featured in the winning deck of the [https://www.youtube.com/live/h3IOFTfT8Sk?si=wTF1FekCifpSULn- Clash Royale League 2020 Tournament], by a player called Ruben.
+==In other languages==
+{{Other languages
+|cn=火球
+|kr=파이어 볼
+|jp=ファイアボール
+|fr=Boule de feu
+|de=Feuerball
+|es=Bola de fuego
+|it=Sfera infuocata
+|nl=Vuurbal
+|no=Ildkule
+|pt=Bola de Fogo
+|tr=Alev Topu
+|fi=Tulipallo
+|ru=Огненный шар
+|cnt=火球
+|ar=كرة نارية
+|fa=گلوله آتش
+|ms=Bebola Api
+|id=Bola Api
+|th=ลูกไฟ
+|vi=Hỏa cầu}}
+{{Navigation|Card}}
+
+[[fr:Boule de feu]]
+[[de:Feuerball]]
+[[es:Bola de fuego]]
+[[it:Sfera infuocata]]
+[[ja:ファイアボール]]
+[[ko:파이어 볼]]
+[[ru:Огненный шар]]
+[[zh:治疗法术]]

@@ -1,0 +1,302 @@
+{{DISPLAYTITLE:<span style="color: #F9CF5F;">Mini P.E.K.K.A.</span>}}{{Protection}}{{MagicWords}}{{Card Infobox|Cost=4|Rarity=Rare|Type=Troop|Arena=Training Camp|ReleaseDate=4 January 2016}}<br><br>
+{{SubpageNavBox|MergeTactics=yes|Hero=yes}}{{Quote|The Arena is a certified butterfly-free zone. No distractions for P.E.K.K.A, only destruction.}}
+
+The Mini P.E.K.K.A. is a {{Rarity|Rare}} [[Cards|card]] that is unlocked in the [[Training Camp]]. It spawns one single-target, ground-targeting, melee, and ground [[:Category:Troop Cards|troop]] with high hitpoints and extremely high damage. The Mini P.E.K.K.A. takes the appearance of a robot-like troop smaller than the [[P.E.K.K.A.]] who wears a dark steel blue armor with two team-colored horns, spikes on his arms, and a single eye, while wielding a smaller version of the P.E.K.K.A.'s metal sword as his weapon. A Mini P.E.K.K.A. card costs 4 {{Icon|I=Elixir}} to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Mini P.E.K.K.A. Card}}
+*Since the Mini P.E.K.K.A. attacks slowly, but deals high damage per hit and moves pretty quickly, he is best used offensively and defensively against single [[:Category:Troop Cards|troops]], then turned into a counterpush unit. His moderately high hitpoints also allow him to tank for other support troops.
+*He can be used against high health troops, such as the [[Giant]], [[Royal Giant]], or [[Golem]], so that the Mini P.E.K.K.A. can quickly defeat them before they damage [[:Category:Crown Towers|Crown Towers]] too much.
+**Unlike the Royal Giant, the Mini P.E.K.K.A is ineffective against the [[Royal Giant/Evolution|Evolved Royal Giant]], as the recoil will constantly push him away, preventing him from attacking. It is recommended to support him with cards that can slow or stun the Evolved Royal Giant if the player wants to counter him that way.
+**The Mini P.E.K.K.A. can counter a [[Goblin Giant]] pretty well. His high damage output stops the Goblin Giant from dealing any damage to the player's Crown Tower due to the Goblin Giant having lower hitpoints, while his notably high health allows him to tank for the backpack [[Spear Goblins]] and still be fairly healthy for a counterpush, or tank for both the backpack Spear Goblins and any support troops. However, he is a ineffective against the [[Goblin Giant/Evolution|Evolved Goblin Giant]], because he will constantly spawn [[Goblins]] to support. Paired with the Mini P.E.K.K.A.'s slow hit speed and Goblin Giant's movement speed, the Mini P.E.K.K.A. can quickly retarget to one of the spawned Goblins, letting the Evolved Goblin Giant spawn Goblins fast enough to keep the Mini P.E.K.K.A. distracted until he's defeated.
+**Against a lone Golem, the Mini P.E.K.K.A. can prevent him and his death damage from connecting to the [[Tower Princess]] with the help of [[Skeletons]] and an [[Ice Spirit]]. Only the Golemites will deal damage to the Tower Princess, which the Mini P.E.K.K.A. can easily handle alone.
+**An [[Electro Giant]] can be countered by the Mini P.E.K.K.A. fairly well. His high hitpoints will allow him to survive a considerable number of hits from the Zap Pack, while his damage is enough to quickly defeat the Electro Giant before he reaches the Crown Tower. The Mini P.E.K.K.A. would be fairly healthy for a counterpush afterwards.
+**While the Mini P.E.K.K.A. cannot target a [[Lava Hound]], the player can pair him with the [[Hunter/Evolution|Evolved Hunter]] to bring the Lava Hound to the ground in order for the Mini P.E.K.K.A. to deal damage. The Mini P.E.K.K.A. would deal two hits to the Lava Hound before the Evolved Hunter's net wears off, which might cause the Mini P.E.K.K.A. to walk away from the Lava Hound, so the player must make sure that the Mini P.E.K.K.A. is deployed by the second time the Evolved Hunter throws his net, causing him to finish the Lava Hound off and the Evolved Hunter to clear the Lava Pups. This is most effective if the Lava Hound is supported by a [[Balloon]], allowing the Mini P.E.K.K.A. to defeat it after the Evolved Hunter nets it, decreasing the chances of him going away by the time the Lava Hound is trapped by the net as well. This strategy should only be done if the player lacks better options, as this is hard to pull off with a positive value trade, and [[Lightning]] will defeat the Evolved Hunter and severely cripple the Mini P.E.K.K.A. at once.
+**The Mini P.E.K.K.A. is a great counter to the [[Elixir Golem]]. While he's initially a -1 Elixir trade, Mini P.E.K.K.A.'s high damage output will allow him to quickly defeat the Elixir Golem and get his Elixir every time a form of him is defeated. He also leaves his Elixir Golemites vulnerable enough so that a Crown Tower can take it out in one hit. This causes a +3 Elixir trade that can be used to either stop the Elixir Golem afterwards or invest in a counterpush. His damage output also easily overwhelms [[Battle Healer]] and [[Heal Spirit]] that come with the Elixir Golem to delay his death Elixir, while Mini P.E.K.K.A. himself can defeat a Battle Healer afterwards.
+**Against a [[Giant/Hero|Heroic Giant]], the Mini P.E.K.K.A can be thrown away with the use of the ability, making him ineffective against him. It is recommended to bait out the ability before deploying him or using a card with higher hitpoints alongside him.
+*A Mini P.E.K.K.A. can defeat equally levelled [[Musketeer]]s, [[Wizard]]s, [[Electro Wizard]]s, [[Ice Wizard]]s, [[Goblinstein]]s, and [[Little Prince]]s in one hit for a similar [[Elixir]] cost, making him useful for quickly taking out these troops behind a tank. This also makes him useful as a defensive alternative to [[Poison]] due to his similar damage.
+**He can also defeat most support troops in two hits, and paired with his high speed, the Mini P.E.K.K.A. can be considered as an anti-tank and anti-support troop. Because of this, against a tank and support push, it is more effective to deploy the Mini P.E.K.K.A on the support troop instead of the tank, allowing him to defeat the support and then target the tank, saving more of his hitpoints for a counterpush.
+*Because of the Mini P.E.K.K.A.'s slow hit speed, swarms can efficiently defeat him without losing enough of them, usually making positive Elixir trades.
+**Skeletons placed close to the center of the enemy's side are capable of eliminating a Mini P.E.K.K.A. with the help of a Crown Tower. The Mini P.E.K.K.A. would take enough time so that both the Crown Tower and the Skeletons deal damage high enough to fully defeat him for a +1 Elixir trade. Goblins can work very similarly. This works with any [[:Category:Tower Troop Cards|tower troop]].
+**[[Archers]] and [[Spear Goblins]] combine the previous option with range, allowing them to pull the Mini P.E.K.K.A. deeper towards the player's side. If they're deployed in the center and with correct timing, an Archer or Spear Goblin would be closer to the opposite side of the Mini P.E.K.K.A. while still being able to be aggroed by him due to the increased sight range, causing a +1 or +2 Elixir trade. In the case of the latter, a Spear Goblin will survive and move towards attacking the other lane for small chip damage.
+**[[Guards]] combine the melee capabilities with shields, allowing two of them to survive a confrontation against the Mini P.E.K.K.A. for a +1 Elixir trade and a small counterattack. They also have a longer range than the Mini P.E.K.K.A., meaning that they will get the first hit on him. Because of the shields, the enemy won't be able to defeat those units with spells, only taking down their shields at most, causing a higher Elixir trade if the opponent tries to predict any units with spell usage.
+**[[Skeleton Army]] and [[Goblin Gang]] are also great choices for countering a Mini P.E.K.K.A. because more of them will survive against him. However, while they are significantly stronger against him and cause a +1 Elixir trade, their higher cost paired with an increased troop count makes them weaker against spells.
+**Other expensive swarms like [[Barbarians]], [[Royal Recruits]], [[Minion Horde]], and [[Rascals]] are great counters to the Mini P.E.K.K.A., however, they are a negative Elixir trade. As such, they should only be used if better counters are unavailable or if they're able to create a counterpush.
+**If a Mini P.E.K.K.A. is approaching your [[Skeleton King]], activate his ability. The Mini P.E.K.K.A. will get distracted by the Skeletons summoned by the ability, buying time to support the Skeleton King. However, this is a negative Elixir trade.
+*Ranged and air units are also great counters to Mini P.E.K.K.A. because he would take some time to reach the former, while he cannot attack the latter at all. Although those may need additional support units to fully counter a Mini P.E.K.K.A., causing slight negative Elixir trades, they can create a counterpush and also counter most Mini P.E.K.K.A. support troops.
+**[[Minions]] will be able to stop a Mini P.E.K.K.A. for +1 Elixir, while also being able to avoid most anti-swarm cards that come with him. [[Bats]] can be played similarly for +2 Elixir, but they're more fragile to spells and splash troops.
+**A Musketeer can be placed in the center of the player's side of the Arena, causing the Mini P.E.K.K.A. to take more time to reach her and take more damage. If she survives, then the player can start a counterpush in the opposite lane.
+**A [[Goblin Hut]] will amass Spear Goblins quick enough so that Mini P.E.K.K.A. has to slowly take them out one by one, taking a lot of damage in the process. Even if the Goblin Hut is defeated, some Spear Goblins will still survive to deal some chip damage to the enemy's Crown Tower. A similar principle can be achieved with [[Tombstone]] for a +1 Elixir trade, however, given that the building and the troops spawned are frailer, spells are far more effective at shutting the defense down.
+**Splash troops like [[Bomber]], [[Valkyrie]], Wizard, [[Baby Dragon]], [[Witch]], Hunter, [[Sparky]], [[Firecracker]], [[Goblin Demolisher]], [[Bowler]], and [[Executioner]] can defeat both the Mini P.E.K.K.A. and additional support troops. If the troop in question has high hitpoints, they may survive with some health for a counterpush, while if the troop can hit air units, they will fare better. The Witch's Skeletons can distract the Mini P.E.K.K.A. enough to take him down without taking a hit, while Firecracker's recoil and Bowler and [[Executioner/Evolution|Evolved Executioner]]'s pushback effects increase their survivability.
+***Similarly to the Witch, a [[Night Witch]] can spawn enough Bats to defeat the Mini P.E.K.K.A. for a neutral Elixir trade, leaving her somewhat healthy for a counterpush alongside her spawned Bats. The player should let her spawn her Bats from the far back, letting her damage him without taking damage initially. Then, before letting him reach the Crown Tower, she distracts him and deals damage high enough to quickly defeat him. While she does not deal splash damage and the Bats are weak, she spawns Bats slow enough so that spell value is minimal, however, a Poison can still nearly counter her. [[Furnace]] also works similarly as the spawned [[Fire Spirit]]s deal splash damage, but the Furnace himself attacks slower and deals less damage.
+***Similarly to splash troops, [[Barbarian Barrel]] and [[Royal Delivery]]'s damage can take down a number of units that could be supporting the Mini P.E.K.K.A. while the Barbarian or Royal Recruit spawned can finish him off for a +2 or +1 Elixir trade. Royal Delivery deals more damage, spawns a troop with a shield, covers a larger area, and damages air, so one should keep that in mind.
+**[[Cannon]] or [[Tesla]] can weaken a Mini P.E.K.K.A. for a +1 or 0 Elixir trade, while also pulling [[:Category:Building Cards|building]]-targeting units to themselves. With additional support, they may fully take out a push. The [[Cannon/Evolution|Evolved Cannon]] and [[Tesla/Evolution|Evolved Tesla]]'s abilities can also damage support units enough to significantly weaken them, or even take them out.
+**[[Dart Goblin]] and [[Magic Archer]]'s long ranges compared to other ranged units can make them relatively safe while still allowing them to chip Mini P.E.K.K.A.'s hitpoints. An [[Dart Goblin/Evolution|Evolved Dart Goblin]] can also clear swarms similarly to Magic Archer if he accumulates enough poison.
+**While an Ice Wizard deals very weak damage, his slowdown effect is excellent at dealing with an opposing push, giving the player's troops more time to defeat it. He is also +1 Elixir compared to the Mini P.E.K.K.A., though he might need additional support to take him down.
+**For a -2 Elixir trade, [[Archer Queen]] can defeat a Mini P.E.K.K.A. and be fully healthy for a counterpush alongside her Cloaking Cape Ability. She might also deal with other support units if she defeats the Mini P.E.K.K.A. quickly enough.
+**Also for a -2 Elixir trade, [[Little Prince]] can use his Royal Rescue ability to push Mini P.E.K.K.A. back a few tiles, while also damaging anything nearby and giving the Little Prince more time to attack faster.
+**Unlike with other {{Rarity|Champion}} troops, [[Goblinstein]] does not need to activate his ability to counter a Mini P.E.K.K.A.. The card should be placed in the center in such a way so that the Doctor stays in the same lane as the Mini P.E.K.K.A. while the Monster is placed slightly to the opposite lane. This allows the Doctor to constantly stun Mini P.E.K.K.A. at the same time that the Monster's slow movement speed allows him to kite the Mini P.E.K.K.A., countering him for a -1 Elixir trade, but resulting in a healthy Doctor and a fairly healthy Monster. If the Mini P.E.K.K.A. is supported by numerous but fragile troops, then the Monster can be played in the same lane in order for the Doctor to activate Lightning Link, countering the push for a possible positive Elixir trade.
+*Spells, especially lighter ones, complement the Mini P.E.K.K.A. well, as they are able to instantly take effect and surprise the opponent if they're played as a prediction, removing cards like Skeleton Army, Goblin Gang, and Minion Horde, depending on the spell, and making the opponent spend more Elixir to counter him, which, if done desperately, can cause a card that does not counter him well, or an unnecessary negative Elixir trade. Spells like [[Zap]], [[Giant Snowball]], and [[Rage]] require stricter timing and may not deal enough damage, while [[The Log]] requires some time to take effect, and [[Arrows]] and [[Earthquake]] cost more.
+**[[Vines]] is an excellent pair with the Mini P.E.K.K.A. when facing tankier air cards, like [[Baby Dragon]], [[Inferno Dragon]], [[Electro Dragon]], and [[Spirit Empress]], because the spell would allow Mini P.E.K.K.A. to deal 2 hits to those units, possibly defeating them with the aid of Vines' own damage. While this is a bigger Elixir investment, the Mini P.E.K.K.A. would still be fairly healthy. [[Balloon]] can also be countered this way, and a similar principle can be applied to the Evolved Hunter's net, though the opponent can play Lightning to both destroy the Evolved Hunter and severely cripple the Mini P.E.K.K.A. at the same time.
+**Rage can amplify the Mini P.E.K.K.A.’s already high damage per second and movement speed, as well as mitigate his low hit speed.
+*Bulky splash damage troops, like Valkyrie, Bowler, Executioner, and [[Skeleton King]] can also be a great support for Mini P.E.K.K.A., as they'll be able to clear swarms and tank hits from units that deal more damage and/or have more health, making Mini P.E.K.K.A. more efficient at countering cards like [[P.E.K.K.A.]], [[Elite Barbarians]], and [[Goblin Machine]].
+*The [[Electro Dragon]] has great synergy with the Mini P.E.K.K.A. because the Electro Dragon attacks from the air, hitting up to 3 troops at once, as well as stunning enemies, allowing the Mini P.E.K.K.A to deal with them with less resistance.
+*Due to the many positive [[Elixir]] trades that can be made on a Mini P.E.K.K.A., it is generally not effective to send one down the lane by himself, as this usually results in a waste of 4 Elixir. However, if the opponent happens to be low on Elixir or lacks a cheap counter, then this strategy is capable of dealing major damage to the opponent's Crown Tower forcing a bad trade.
+**In certain situations, this can work as a way to bait out counters. For example, this can be used alongside a [[Battle Ram]], allowing the Mini P.E.K.K.A. to bait counters to the Battle Ram so that it can attack in the other lane unharmed. A similar principle can be achieved with [[Hog Rider]] and [[Ram Rider]].
+*The player should never ignore a Mini P.E.K.K.A. in the opposite lane, as he can easily deal massive damage or even destroy a Crown Tower if not dealt with. If the [[Dagger Duchess]] is in use, the Mini P.E.K.K.A. will be able to hit the King Tower once as well.
+*Defensively, the Mini P.E.K.K.A. can be used to easily annihilate a great variety of enemy troops due to his high damage output for the cost of 4 Elixir. Many mini-tanks, like the [[Knight]], Valkyrie, [[Dark Prince]], Battle Healer, [[Royal Ghost]], Bowler, Executioner, [[Cannon Cart]], [[Golden Knight]], and [[Monk]], can be easily stopped by the Mini P.E.K.K.A. in only a few hits, and he will still survive for a counterattack.
+**He is an excellent counter to the Battle Ram: the first few hits from the Mini P.E.K.K.A. will deal enough damage to prevent the Battle Ram from connecting to the Tower, and then he will OHKO each of the two Barbarians, with him taking minor damage in return. However, this will not work against the [[Battle Ram/Evolution|Evolved Battle Ram]], as they will push him away and the spawned [[Barbarians/Evolution|Evolved Barbarians]] can survive a hit from him, taking longer to be defeated, though he might still survive.
+**A Mini P.E.K.K.A. is a great counter to the Hog Rider, allowing only allowing one hit on the Tower if not placed in a proper position for a neutral Elixir trade. Ram Rider can also be countered this way for +1 Elixir, even with her snare attack.
+***If the player has an idea of when and where the opponent will send in their Hog Rider, they can hover their Mini P.E.K.K.A. in the middle of the lane and deploy it the instant the opponent places the Hog Rider. Doing this will completely shut him down. This tactic also works against the Ram Rider.
+***If the Hog Rider is accompanied by fast ground units like Skeletons or Goblins, the Mini P.E.K.K.A. may retarget onto them, disrupting the player's defense. Using a spell to quickly destroy the swarms so that the Mini P.E.K.K.A. can help defeat the Hog Rider is recommended, even if it causes a negative Elixir trade, as the Hog Rider will get much more damage for only a small Elixir advantage otherwise.
+***A fast and deadly combination is the Hog Rider and Mini P.E.K.K.A. combo. Both units are fast, but the Mini P.E.K.K.A. attacks troops as well, allowing him to distract troops and buildings used to counter the Hog Rider, while letting him reach the Crown Tower earlier. However, troops like P.E.K.K.A. and Elite Barbarians will counter this push without suffering major health losses and a lot of Crown Tower damage. Swarm cards and air troops can also make short work of this attack if no spells are available.
+**Against a P.E.K.K.A., he cannot survive a confrontation alone, so it is a good idea to add her a distraction like Skeletons or Goblins. The Skeletons/Goblins will take the P.E.K.K.A.'s attacks while the Mini P.E.K.K.A. attacks her. This will counter her for a positive Elixir trade. This tactic also works against Elite Barbarians.
+**If a [[Prince]] does not manage to charge in time, a Mini P.E.K.K.A. can easily defeat him for a positive Elixir trade, while surviving with half health for a counterattack. Even if he charges, the player can deploy a distraction unit, like Skeletons, Goblins, [[Electro Spirit]], or Ice Spirit, to stop the Prince's charge for slightly more Elixir, but leaving the Mini P.E.K.K.A. far healthier for a counterpush. A [[Dark Prince]] can similarly be countered this way, even when the Dark Prince hits Mini P.E.K.K.A. while charging.
+**A Mini P.E.K.K.A. has enough health to counter a lone [[Giant Skeleton]] for a +2 Elixir trade alongside a Crown Tower, stopping any kind of damage dealt.
+**The [[Mega Knight]] can be countered by the Mini P.E.K.K.A. and a Crown Tower for a +3 Elixir trade. He should be placed in such a way so that Mega Knight does not jump on him. Even if he jumps, a well-timed Mini P.E.K.K.A. deploy will cause him to hit the Mega Knight just before he lands on the Mini P.E.K.K.A.. Because of this, he can also shut down the [[Mega Knight/Evolution|Evolved Mega Knight]]. A similar principle works with [[Bandit]], [[Fisherman]], and Golden Knight.
+**A [[Miner]] placed behind or beside the Crown Tower can be distracted by a Mini P.E.K.K.A. placed on the corner. Although that causes a -1 Elixir trade, the Mini P.E.K.K.A. will take minimal damage from him, getting ready for a counterattack.
+**The Mini P.E.K.K.A. may be a good counter to the [[Royal Ghost/Evolution|Evolved Royal Ghost]] for -1 Elixir, as his damage output is high enough to quickly defeat him before he can turn invisible and spawn more Souldiers. The Crown Tower will finish him and the Souldiers for the Mini P.E.K.K.A..
+**The Mini P.E.K.K.A. can quickly defeat a [[Lumberjack]], requiring only a few Crown Tower shots to fully defeat him. This is especially useful if the Lumberjack is paired with the Balloon, allowing the Crown Tower and the player's additional support troops to quickly take the Balloon down. Due to his notably high health, the Mini P.E.K.K.A. can tank hits from the [[Lumberjack/Evolution|Evolved Lumberjack]]'s Ghost before he disappears.
+**On the contrary, mini-tanks are great at defeating the Mini P.E.K.K.A. alongside a Crown Tower because of his slow attack speed. While cards like Bowler and Evolved Executioner make it harder for the Mini P.E.K.K.A. to reach them, Golden Knight's Dashing Dash ability can be timed just when the Mini P.E.K.K.A. is about to land a hit, absorving one hit for -1 Elixir.
+*A Mini P.E.K.K.A. can be effective at supporting a [[Sparky]] when faced with units that do not get OHKOed by her blast. The Mini P.E.K.K.A. can quickly finish them off and allow her to keep advancing. The Mini P.E.K.K.A. will also deny the opponent from deploying an [[Electro Wizard]] on top of her if they have one, as he will immediately be defeated by the Mini P.E.K.K.A. in one hit and only stun the Sparky once.
+**On the contrary, a Mini P.E.K.K.A. is effective against an enemy Sparky. He will be able to survive just one blast from her and 2HKO her in return. The player should address troops that might be assisting the Sparky, as this allows her to blast the Mini P.E.K.K.A. again. A Mini P.E.K.K.A. that is 1 Level lower than the Sparky will get OHKOed by the Sparky's blast.
+*[[Tornado]] can be used to drag ranged troops to the Mini P.E.K.K.A. If the Mini P.E.K.K.A. is struggling to reach the ranged troops, the Tornado will pull them closer, allowing him to one-shot them effectively. This also matters against troops that the Tornado will weaken enough for the Mini P.E.K.K.A. to one-shot, such as a Witch, [[Berserker]], Bandit, Night Witch, or Fisherman, with the former's troops also being unable to distract the Mini P.E.K.K.A.. However, the investment is costly and it is still weak to most swarms. A similar principle also works with the Fisherman.
+**While a Fisherman is weak to an opposing Mini P.E.K.K.A., he can still be quite useful from separating him from his support troops or his intented target, allowing the player to have an easier time taking down the Mini P.E.K.K.A. Try to pair him with a cheap distraction card like Guards to take out the Mini P.E.K.K.A.
+*The Mini P.E.K.K.A. is a decent counter to the [[Royal Hogs]]. Although this causes the Crown Tower to be notably damaged, the Mini P.E.K.K.A. can be deployed so that he targets the Royal Hogs that the Crown Tower targets last, drastically reducing the damage done. If timed correctly, the Mini P.E.K.K.A. can also damage the Royal Hogs that the Crown Tower targets first because his damage output allows the Royal Hogs to be two-shot by the Crown Tower, which can also reduce the damage output. The Mini P.E.K.K.A. would leave with a full health for a counterpush and a +1 Elixir trade is caused.
+*The Mini P.E.K.K.A. can be a good counter to split [[Three Musketeers]]. In the single Elite Musketeer lane, he can be placed on top of her to nearly defeat her, allowing the Crown Tower to finish her off. In the lane with two Elite Musketeers, the same can be done, however, due to the melee damage of the two Elite Musketeers, he will be way less healthy for a counterpush.
+*Although the Mini P.E.K.K.A. has a fast movement speed, he can still be efficiently kited by enemy troops placed in the center of the player's side of the Arena, slightly staggered and 1 tile away from the river.
+**The Battle Ram is the best troop that can be used for kiting. His slow movement speed when charging allows the Mini P.E.K.K.A. to nearly reach it, then, once it charges, it will just barely outrun the Mini P.E.K.K.A., allowing both of the player's Crown Towers to chip his health while the Battle Ram will cause a counterpush, all for a neutral Elixir trade.
+***The Hog Rider can also distract the Mini P.E.K.K.A. for the same Elixir cost. However, he should nit be played like other kiting troops as it will be easier to pull him with buildings. Instead, the player should let the Mini P.E.K.K.A. cross the bridge then walk some tiles further away, then deploy the Hog Rider on the far left/right of the Arena, pulling Mini P.E.K.K.A.. Then, once he jumps the bridge, the Mini P.E.K.K.A. will go back to walking to the Crown Tower for a bit before the Hog Rider lands and pulls the Mini P.E.K.K.A. again. This causes the Mini P.E.K.K.A. to be notably damaged while the Hog Rider pressures the opponent's Crown Tower for a neutral Elixir trade. A similar principle works with the Ram Rider and her snare attack for -1 Elixir.
+**While the [[Ice Golem]] moves very slowly and allows the Mini P.E.K.K.A. to reach him, he will survive for long enough so that the player's Crown Towers can defeat him in time for a +2 Elixir trade. Ice Golem's slowdown effect upon defeat will also help.
+**For a -2 Elixir trade, the Goblin Giant's moderate movement speed can keep the Mini P.E.K.K.A. distracted for long enough, while both the player's two Crown Towers and the backpack Spear Goblins can chip him down. However, the Goblin Giant might take notable damage, weakening the potential of the push.
+*The Mini P.E.K.K.A. may be an effective counter to both [[Mortar]] and [[X-Bow]], provided that the opponent tries protecting them with a singular troop instead of swarms. This lets the Mini P.E.K.K.A. to counter the buildings for a possible positive Elixir trade, even if additional support is needed.
+*When a Firecracker shoots, she pushes herself back by 1 tile. This recoil can be used to counter a lone Mini P.E.K.K.A. for a positive Elixir trade. The player should deploy her on the fourth tile from the river staggered slightly into the other lane to pull this technique.
+*The player can hide a Mini P.E.K.K.A. underneath a Minion Horde so that when the opponent defeats the Minion Horde, the Mini P.E.K.K.A. beneath might take them by surprise. This costs 9 Elixir, so the player must spend it wisely.
+*The Mini P.E.K.K.A. can counter a [[Boss Bandit]] for a +2 Elixir trade by being deployed directly above her. The Mini P.E.K.K.A.'s high movement speed allows him to quickly reach her if she uses her Getaway Grenade ability, while his high damage per hit allows him to quickly take her down. If she uses her second Getaway Grenade, then the player only needs to defend with a cheap card.
+*A [[Mighty Miner]] can be countered by a Mini P.E.K.K.A. in the center of the player's side of the Arena, stopping him from using his Explosive Escape ability. The Mini P.E.K.K.A. may not survive, but he will stop all damage for a neutral or +1 Elixir trade.
+*Depending on what the player wants in their [[Battle Decks|deck]], they are able to substitute the Mini P.E.K.K.A. with other similar cards.
+**The Mini P.E.K.K.A. has the exact same cost as the Lumberjack. Both are very effective against tanks, but since the former deals high damage per hit slowly and the latter deals low damage per hit quickly, the Mini P.E.K.K.A. is better against glass cannons, while the Lumberjack excels against swarms. Lumberjack's Rage also allows him to support the player's own push once he's defeated. However, the Lumberjack’s lower immediate damage compared to the Mini P.E.K.K.A. is a considerable tradeoff.
+**For more Elixir, P.E.K.K.A., Prince, and Elite Barbarians are viable alternatives to the Mini P.E.K.K.A. as they offer similar pressure value and come up with more total hitpoints, with the latter also being able to be split. However, the Mini P.E.K.K.A. is much better to be used in desperate situations due to his lower Elixir cost, while also being much better reactively than the Prince, who needs time to charge.
+**Cheaper troops that can also deal a lot of damage for defense include the [[Mega Minion]], Berserker, Hunter, and [[Phoenix]]. Those troops are decently spell-resistant for the cost and hitpoints they provide, while also carrying either a lot of damage per hit or great damage per second. Despite this, they are still frailer than the Mini P.E.K.K.A, making them easier to break through.
+**Another high-damage alternative to the Mini P.E.K.K.A is the Night Witch. Although her initial damage is lower, she can spawn Bats that will increase her total damage further, while also distracting troops that can target air. Despite this, she is much easier to defeat with area damage cards, as she has less hitpoints than the Mini P.E.K.K.A, and the Bats can easily allow them to hit both them and the Night Witch.
+**Strong ranged alternatives to the Mini P.E.K.K.A. include the Cannon Cart and Sparky. Both of them have high damage like the Mini P.E.K.K.A, but that also comes from range, allowing them to stay safely away from enemies, especially swarms. However, they both have a higher cost than the Mini P.E.K.K.A. and they are also slower.
+**If the player is more interested in tanking over damage and pressure, the Mini P.E.K.K.A can be substituted with cards like Knight, Valkyrie, Battle Healer, or [[Skeleton King]]. While they are not as effective against tanks, they can survive much more easily to enemy attacks and be more valuable on defense.
+**Other fast mini-tanks with decent damage that can be used in place of the Mini P.E.K.K.A. are the Dark Prince, Royal Ghost, and Golden Knight. While they all deal less immediate damage, they are able to deal splash damage, subverting the Mini P.E.K.K.A.'s weakness to swarms. They also have better survivability, with the Dark Prince's shield, Royal Ghost's invisibility, and Golden Knight's higher base hitpoints and immunity to damage during his Dashing Dash.
+**An alternative for a cheap pressure card is the Bandit. Costing -1 Elixir, the Bandit has the same speed as the Mini P.E.K.K.A. and her dash allows for more mobility, which is quite effective for quick pressure. However, even with her dash, she deals significantly less damage than the Mini P.E.K.K.A., and she is also frailer, making her weaker to counters.
+**If the player wants to use a {{Rarity|Champion}} card as an anti-tank mini-tank, they can use the Mighty Miner in place of the Mini P.E.K.K.A. He has higher hitpoints, and he charges up for high damage against tanks. However, he is very susceptible to stun effects or being run out of range. He is also weaker to swarms, though he can spend 1 extra Elixir on the ability to circumvent such weakness. Since the Mighty Miner occupies a {{Rarity|Hero}} slot, if the player wants to use other {{Rarity|Champion}} or {{Rarity|Hero}} cards in their deck, then the Mini P.E.K.K.A. is the clear choice.
+*The Mini P.E.K.K.A. is a great card to use in the [[Treasure Hunt]] [[:Category:Modes|game mode]]. He has high enough damage to be able to claim the building quickly, and his decent hitpoints prevents the opponent from removing him immediately from the Arena.
+
+<center><div class="table-back" id="unit-statistics">{{Statistics}}
+{{StatusEffects}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+!scope="col"|Cost<br/>{{Icon|I=Elixir}}
+!scope="col"|Hit Speed<br>{{Icon|I=Damage Speed}}
+!scope="col"|First Hit Speed<br>{{Icon|I=Damage Speed}}
+!scope="col"|Speed<br>{{Icon|I=Speed}}
+!scope="col"|Deploy Time<br>{{Icon|I=Deploy Time}}
+!scope="col"|Range<br>{{Icon|I=Range}}
+!scope="col"|Target<br>{{Icon|I=Targets}}
+!scope="col"|Count<br>{{Icon|I=Troop Count}}
+!scope="col"|Transport<br>{{Icon|I=Transport}}
+!scope="col"|Type<br>{{Icon|I=Type}}
+!scope="col"|Rarity<br>{{Icon|I=Rarity}}
+|-
+|4||1.6 sec||0.5 sec||Fast (90)||1 sec||Melee: Short (0.8)||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), that will be level 11. Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_base | 1433 }}
+{{#vardefine: dmg_base | 755 }}
+{{#vardefine: atk_speed | 1.6 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 3 || {{#expr: {{#var:hp_base}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_base}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_base}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_base}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_base}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_base}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_base}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_base}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_base}} || {{#var:dmg_base}} || {{Dps|{{#var:dmg_base}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_base}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_base}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_base}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_base}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_base}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{|class="wikitable" style="width:100%; text-align:center;"
+!width="25%"|Type
+!width="10%"|Level/Tier
+!width="40%"|Objective
+!width="25%"|Reward
+|-
+|rowspan="3"|Damage Dealer<br>[[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 150,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|100 Mini P.E.K.K.A. cards<br>50{{Icon|I=XP}}
+|-
+|2
+|Deal a total of 455,000 Damage to enemy Troops or buildings
+|4,000{{Icon|I=Gold}}<br>50{{Icon|I=XP}}
+|-
+|3
+|Deal a total of 760,000 Damage to enemy Troops or buildings
+|100{{Icon|I=Gem}}<br>50{{Icon|I=XP}}
+|-
+|rowspan="3"|Troop Destroyer<br>[[File:Troop Destroyer.png|50x50px]]
+|1
+|Destroy 350 enemy Troops
+|6,000{{Icon|I=Gold}}<br>125{{Icon|I=XP}}
+|-
+|2
+|Destroy 1,000 enemy Troops
+|100{{Icon|I=Rare Wild Card}}<br>125{{Icon|I=XP}}
+|-
+|3
+|Destroy 1,750 enemy Troops
+|9,000 {{Icon|I=Gold}}<br>125{{Icon|I=XP}}
+|-
+|rowspan="3"|Armor Breaker<br>[[File:Armor Breaker.png|50x50px]]
+|1
+|Land hits for the full Damage amount 800 times
+|6,000{{Icon|I=Gold}}<br>175{{Icon|I=XP}}
+|-
+|2
+|Land hits for the full Damage amount 2,400 times
+|8,000{{Icon|I=Gold}}<br>175{{Icon|I=XP}}
+|-
+|3
+|Land hits for the full Damage amount 4,800 times
+|10,000{{Icon|I=Gold}}<br>175{{Icon|I=XP}}
+|}
+</div></center>
+
+==History==
+2016
+*The Mini P.E.K.K.A. [[Cards|card]] was added with [[Version History#Softlaunch on iOS (4/1/2016)|Clash Royale's game launch]] on 4/1/2016 {{Balance|Add}}.
+*On 9/2/2016, the [[Version History#Chest Rewards & Card Balance (9/2/2016)|Chest Rewards & Card Balance Update]] increased the Mini P.E.K.K.A.'s Hitpoints by 3% {{Balance|Buff}}.
+*On 29/2/2016, the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]] decreased the Mini P.E.K.K.A.'s Sight Range to 5.5 tiles (from 6 tiles) {{Balance|Buff}}.
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]] increased the {{Rarity|Rare}} card Level Cap to 11 (from 10) {{Balance|Buff}} and made the Mini P.E.K.K.A. able to be affected by all forms of pushback {{Balance|Nerf}}. The update also fixed the “range bug”, by decreasing the Mini P.E.K.K.A.'s Range to 1.05 tiles (from 1.5 tiles), but maintaining his effective Range {{Balance|Nerf}}. Additionally, the Mini P.E.K.K.A.'s deployment sound effect was changed {{Balance|Neutral}}.
+2017
+*On 11/8/2017, a [[Version History#Balance Changes (11/8/2017)|Balance Update]] increased the Mini P.E.K.K.A.'s Damage by 4.6% {{Balance|Buff}}.
+2018
+*On 24/1/2018, a [[Version History#Balance Changes (24/1/2018)|Balance Update]] increased the Mini P.E.K.K.A.'s Hitpoints by 7% {{Balance|Buff}}.
+*On 5/9/2018, the [[Version History#September 2018 Update (5/9/2018)|September 2018 Update]] made {{Rarity|Rare}} cards start at Level 3 and end at Level 13 (from 1 to 11) {{Balance|Neutral}}.
+2019
+*On 1/7/2019, the [[Version History#Pass Royale and more (1/7/2019)|July 2019 Update]] increased the Mini P.E.K.K.A.'s Range to 1.2 tiles (from 1.05 tiles), classifying his Range as "Melee: Medium" {{Balance|Buff}}.
+2020
+*On 7/4/2020, a [[Version History#Balance Changes (7/4/2020)|Balance Update]] added a card render to the Mini P.E.K.K.A.'s card info screen {{Balance|Add}}.
+*On 5/5/2020, a [[Version History#Balance Changes (5/5/2020)|Balance Update]] decreased the Mini P.E.K.K.A.'s Range to 0.8 tiles (from 1.2 tiles), classifying his Range as "Melee: Short" {{Balance|Nerf}}.
+*On 3/11/2020, a [[Version History#Balance Changes (3/11/2020)|Balance Update]] decreased the Mini P.E.K.K.A.'s Attack Period to 1.7 seconds (from 1.8 seconds) {{Balance|Buff}}.
+2021
+*On 27/10/2021, the [[Version History#Champions Update (27/10/2021)|Champions Update]], increased the Level Cap of all cards to 14 (from 13) {{Balance|Buff}}.
+2022
+*On 3/2/2022, a [[Version History#Balance Changes (3/2/2022)|Balance Update]] decreased the Mini P.E.K.K.A.'s Attack Period to 1.6 seconds (from 1.7 seconds) {{Balance|Buff}}.
+*On 1/7/2022, a [[Version History#Maintenance Break (1/7/2022)|maintenance break]] changed the Mini P.E.K.K.A.'s card image {{Balance|Neutral}}.
+*On 26/10/2022, the [[Version History#2022 Quarter 3 Update (26/10/2022)|2022 Quarter 3 Update]] added the Armor Breaker [[Card Mastery]] task for the Mini P.E.K.K.A. {{Balance|Add}}. It also fixed an issue where unlocking Mini P.E.K.K.A. caused all card previews to be stuck with a loading spinner {{Balance|Neutral}}.
+2023
+*On 19/6/2023, the [[Version History#Card Evolution Update (19/6/2023)|Card Evolution Update]] increased the Level Cap of all cards to 15 (from 14) {{Balance|Buff}}.
+2025
+*On 8/1/2025, a [[Version History#Balance Changes (8/1/2025)|Balance Update]] increased the Mini P.E.K.K.A.'s Damage by 5% {{Balance|Buff}}.
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]] decreased the Mini P.E.K.K.A.'s Damage by 3.05% {{Balance|Nerf}}. On the same day, his Damage was increased by 5% in a [[Version History#Maintenance Break (31/3/2025)|maintenance break]] {{Balance|Buff}}.
+*On 8/7/2025, a [[Version History#Balance Changes (8/7/2025)|Balance Update]] increased the Mini P.E.K.K.A.'s Hitpoints by 5% {{Balance|Buff}}.
+*On 24/11/2025, the [[Version History#Level 16 Update (24/11/2025)|Level 16 Update]] increased the Level Cap of all cards to 16 (from 15) {{Balance|Buff}}.
+*On 1/12/2025, the [[Version History#Pass Royale and more (1/12/2025)|December 2025 Update]] added the Mini P.E.K.K.A.'s [[Heroes|Hero]] form {{Balance|Add}}.
+2026
+
+* On 12/1/2026, a [[Version History|Balance Update]] decreased the Mini P.E.K.K.A.'s Hitpoints by 3%  {{Balance|Nerf}}
+
+==Gallery==
+<gallery>
+File:MiniPEKKACardOld.png|Mini P.E.K.K.A's card image before 1/7/2022.
+File:Mini P.E.K.K.A. Card Render.png|Current card render.
+File:Mini P.E.K.K.A. Render.png|Mini P.E.K.K.A.'s full body card image render.
+File:Mini P.E.K.K.A. Standing.png|Mini P.E.K.K.A standing.
+File:Mini P.E.K.K.A. Pancake.png|Mini P.E.K.K.A.'s full body card render.
+File:Mini P.E.K.K.A. Walking.png|Mini P.E.K.K.A. walking.
+File:Mini P.E.K.K.A. Render 2.png|Mini P.E.K.K.A. raising his sword.
+File:Mini P.E.K.K.A. Spatula.png|Mini P.E.K.K.A. holding his spatula.
+File:Mini P.E.K.K.A. Renders.jpeg|Some Mini P.E.K.K.A. renders.
+File:Mini P.E.K.K.A. Renders 2.jpeg|More Mini P.E.K.K.A. renders alongside in-game images where the Mini P.E.K.K.A. appears.
+</gallery>
+
+==Trivia==
+*The Mini P.E.K.K.A.'s name derives from the Finnish name for "''Peter''", which in turn comes from the Greek name "''Petros''", meaning stone.
+*The acronym for P.E.K.K.A. didn't officially stand for anything in particular originally. Supercell held a Facebook contest on 22 August 2012 to see who could come up with the best written-out name for P.E.K.K.A as judged by the number of likes the comment received. The name "''Perfectly Enraged Knight Killer of Assassins''" was the winner. The person who submitted the acronym was called Víctor in the [https://www.facebook.com/ClashofClans/photos/478339952190333 Facebook announcement].
+*The Mini P.E.K.K.A. is one of the first [[:Category:Troop Cards|troop]] [[cards]] to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the [[Minions]], [[Archers]], [[Knight]], [[Spear Goblins]], [[Goblins]], [[Bomber]], [[Skeletons]], [[Barbarians]], [[Minion Horde]], [[Musketeer]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], [[Baby Dragon]], [[Skeleton Army]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], [[Prince]], and [[Balloon]].
+*He is 1 of 3 troops that are “miniature” versions of another troop in Clash of Clans, the others being the Baby Dragon and [[Electro Dragon]]. They are a smaller version of [https://clashofclans.fandom.com/wiki/P.E.K.K.A P.E.K.K.A.], [https://clashofclans.fandom.com/wiki/Dragon Dragon], and [https://clashofclans.fandom.com/wiki/Electro_Dragon Electro Dragon], respectively.
+**In the Arabic, Thai, and Finnish language settings of the game, the Mini P.E.K.K.A.'s name translates to "Small P.E.K.K.A.", "Tiny P.E.K.K.A.", and "Little P.E.K.K.A." respectively.
+**According to a Clash-A-Rama comic [https://clasharama.fandom.com/wiki/Clash-A-Rama!_Comic_Strips?file=BRING-YOUR-CHILD-TO-WORK-DAY_Final.jpg strip], the Mini P.E.K.K.A. is the P.E.K.K.A.'s child.
+*The Mini P.E.K.K.A. is 1 of 10 troops that have been featured under the [[Ruler Ability#Special Delivery|Special Delivery]] [[Ruler Ability|ruler ability]], the others being Knight, [[Skeleton Barrel]], Musketeer, Wizard, P.E.K.K.A., [[Giant Skeleton]], [[Golem]], [[Sparky]], and [[Royal Ghost]].
+*The Mini P.E.K.K.A. is 1 of 3 troops that have had its Melee range classification changed, the others being Giant and P.E.K.K.A..
+*The Mini P.E.K.K.A.'s gender has been confirmed as male, as the [https://www.youtube.com/watch?v=UfNcIMpLv5o Mini P.E.K.K.A. commercial] referred to Mini P.E.K.K.A. as "he" and "him", despite being based on a female troop, the P.E.K.K.A..
+**The Clash of Clans Facebook account erroneously referred to the Mini P.E.K.K.A. as a she in a [https://www.facebook.com/ClashofClans/posts/pfbid02rKk27v67K9HuBFzFdmUbMrHdMEQ8nETBq4HPtnSD7iu5W15ZoB1WptnuYFR8br8tl?__cft__&#x5B;0&#x5D;=AZVoj9lkS5pqSSI48FD8Xzl1DsFiFfv_fvSBUAOashs1PB7Cdac78sGCEv9ZeYs9maKA_qzOJmz6iTFrb9T920AnST1CH2fKjYefb2FjDE2SoZndBGEXJSf_IHlFcvVEzd7TpQYU0bTQxTjvwcDBXK2ZAdIiY8J8oZRRSN0P6jWwSeiPSKapD54pDFMMGxRnIZ8HsCK8IKYWOZTV3TUD4S4-&__tn__=%2CO%2CP-y-R post].
+*His description is a reference to the Clash of Clans [https://www.youtube.com/watch?v=nmlIkSvezkU P.E.K.K.A. commercial].
+**Even though his description states that the [[Arenas|Arena]] is a butterfly-free zone, a butterfly can be seen flying in the Training Camp picture, and butterflies fly in Rascal's Hideout.
+*The Mini P.E.K.K.A., along with the Minions, Bomber, Skeletons, [[Skeleton Dragons]], [[Ice Spirit]], [[Mega Minion]], [[Ice Golem]], [[Dart Goblin]], [[Elixir Golem]], [[Goblin Cage|Goblin Brawler]], [[Guards]], Baby Dragon, P.E.K.K.A., Giant Skeleton, Golem, [[Wall Breakers]], [[Bowler]], [[Executioner]], [[Mega Knight]], [[Inferno Dragon]], Royal Ghost, [[Lava Hound]], and the [[Skeleton King]], are featured as a [https://squad-busters.fandom.com/wiki/Monsters monster] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*The Mini P.E.K.K.A., along with the Archers, Goblins, Barbarians, Ice Spirit, Musketeer, Giant, Wizard, Hog Rider, Witch, Prince, and [[Night Witch]], is featured as a sticker in [https://en.wikipedia.org/wiki/IMessage iMessage], in a sticker pack called [https://apps.apple.com/us/app/clash-theater-stickers/id1353823484 Clash Theater]. Also, along with the Archers, Goblins, Skeletons, Barbarians, Musketeer, Wizard, Witch, Prince, and [[Princess]], he is also featured in the [https://apps.apple.com/us/app/clash-a-rama/id1182384664 Clash-A-Rama] sticker pack.
+*The Mini P.E.K.K.A. has a passion towards pancakes. His passion of pancakes is referenced a few times:
+**When deployed, the Mini P.E.K.K.A. will say "''Pancakes''".
+***If the [[Royal Chef]] throws a pancake to a Mini P.E.K.K.A., the Mini P.E.K.K.A. will say "''Pancakes''" in a higher pitched voiced than his normal deploy sound.
+***The Mini P.E.K.K.A. is 1 of 24 troops that speak distinct words when on the field, the others being Mega Minion, Wizard, Hog Rider, P.E.K.K.A., [[Dark Prince]], Bowler, [[Ram Rider]], [[Electro Wizard]], Princess, [[Ice Wizard]], [[Magic Archer]], [[Lumberjack]], [[Mother Witch]], [[Fisherman]], [[Goblin Machine]], [[Super Mini P.E.K.K.A.]], [[Santa Hog Rider]], [[Super Magic Archer]], [[Golden Knight]], [[Boss Bandit]], [[Archer Queen]], [[Little Prince]], and the [[Terry]].
+**A [https://twitter.com/ClashRoyale/status/759055983381360640?s=20&t=5xU2JkgTzrZ2n-3aaPRolA tweet] by the Clash Royale official Twitter account which had a real life Mini P.E.K.K.A standing next to a Giant Skeleton, with the caption "Who wants pancakes?".
+**[https://youtu.be/dIXbEtVWBMo The trailer for the Crown Duel tournament] shows a man eating pancakes while the Mini P.E.K.K.A's deploy sound plays.
+**In [https://www.youtube.com/watch?v=9I9WOg0DwE0 an Emote trailer] depicting him for his [[Emotes]].
+**The PANCAKES! Arena that was featured during [[Pass Royale|Season 37]], Mini P.E.K.K.A.'s Dream.
+**The Mini P.E.K.K.A.'s card render depicts a pancake on Mini P.E.K.K.A.'s head.
+**The [https://clashroyale.fandom.com/wiki/Battle_Banners?file=Pancaked_Decoration.png Pancaked Decoration] saying "''It's rude to throw a pancake at somebody. Unless that somebody is Mini P.E.K.K.A!''".
+**His description in Merge Tactics which says "''A lightly armored heavy hitter with a soft spot for pancakes''".
+**His Hero form, its card image, and its ability ability depicts pancakes. Its description also says "''Hero Mini P.E.K.K.A has finally perfected his pancake recipe by speeding up cooking time with each attack! Stacks on stacks on stacks!''" and its ability's decription says "''Eats pancakes to level up. The longer you wait, the more pancakes he cooks!''".
+*The [[Furnace]]'s description could be a reference towards the Mini P.E.K.K.A. since the Mini P.E.K.K.A. says "''Pancakes''" when he is deployed in the Arena.
+*The Mini P.E.K.K.A. is one of the first cards that the player unlocks, as a reward for the player winning the first Tutorial match through a Wooden [[Chests|Chest]], alongside the Musketeer.
+**Unlike the Musketeer, the player is told to use the Mini P.E.K.K.A. during the tutorial.
+*The Mini P.E.K.K.A. is the subject of certain cosmetics in the game. More specifically:
+**The Mini P.E.K.K.A. is the subject of a few [[Clans|Clan]] badges.
+**The Mini P.E.K.K.A. is the subject of a few Emotes.
+**The Mini P.E.K.K.A. is the subject of a few [[Battle Banners|Battle Banner]] items.
+***The Mini P.E.K.K.A. is one of the first troops to be the subject of a Battle Banner item, along with the Dart Goblin, P.E.K.K.A., Prince, Giant Skeleton, Mega Knight, [[Super Witch]], and the Golden Knight.
+***The Night of the Living P.E.K.K.A. frame is a reference to [https://en.wikipedia.org/wiki/Night_of_the_Living_Dead Night of the Living Dead]. Its description says "''They're coming to get you, Barbarian!''", which is also a reference to the same film.
+*In the [https://youtu.be/zWW1dtcsDGk?si=Ytadsvv1hpz23v9y Card Mastery intro video], the Mini P.E.K.K.A.'s Damage Dealer [[Card Mastery]] task was shown to require the Mini P.E.K.K.A. to deal 151,000 damage. However, it was lowered to 150,000 in-game.
+*Before the Mini P.E.K.K.A.'s card release, the Mini P.E.K.K.A. was supposed to be an {{Rarity|Epic}} card. However, he was changed to a {{Rarity|Rare}} card post-release.
+
+==In other languages==
+{{Other languages|armeaning=Small P.E.K.K.A.|thmeaning=Tiny P.E.K.K.A.|fimeaning=Little P.E.K.K.A.|vimeaning=Same as its English name.|fr=Mini P.E.K.K.A|de=Mini-P.E.K.K.A.|es=Mini P.E.K.K.A.|it=Mini P.E.K.K.A|nl=Mini-P.E.K.K.A.|no=Mini-P.E.K.K.A|tr=Mini P.E.K.K.A|jp=ミニP.E.K.K.A|kr=미니 P.E.K.K.A|ru=Мини-П.Е.К.К.А.|ar=بيكا صغير|pt=Mini P.E.K.K.A|cn=迷你皮卡|cnt=迷你皮卡|fa=مینی P.E.K.K.A|id=P.E.K.K.A Mini|ms=P.E.K.K.A Mini|th=P.E.K.K.A จิ๋ว|fi=Pikku P.E.K.K.A.|vi=P.E.K.K.A Mini}}
+
+{{Navigation|Card}}
+
+[[fr:Mini P.E.K.K.A]]
+[[de:Mini-P.E.K.K.A.]]
+[[es:Mini P.E.K.K.A.]]
+[[it:Mini P.E.K.K.A]]
+[[ja:ミニP.E.K.K.A]]
+[[ko:미니 P.E.K.K.A]]
+[[ru:Мини-П.Е.К.К.А.]]
+[[pt-br:Mini P.E.K.K.A]]
+[[zh:迷你皮卡]]
+[[pl:Mini P.E.K.K.A]]

@@ -1,0 +1,173 @@
+{
+ "fetched": "2026-08-26",
+ "pages": {
+  "archers_evo": {
+   "title": "Archers/Evolution",
+   "live_revid": 437495,
+   "cached_revid": 437495,
+   "changed": false,
+   "bytes": 28101,
+   "cache_file": "Archers_Evolution.wikitext"
+  },
+  "baby_dragon_evo": {
+   "title": "Baby Dragon/Evolution",
+   "live_revid": 437336,
+   "cached_revid": 437336,
+   "changed": false,
+   "bytes": 7987,
+   "cache_file": "Baby_Dragon_Evolution.wikitext"
+  },
+  "barbarians_evo": {
+   "title": "Barbarians/Evolution",
+   "live_revid": 437363,
+   "cached_revid": 437363,
+   "changed": false,
+   "bytes": 19726,
+   "cache_file": "Barbarians_Evolution.wikitext"
+  },
+  "bats_evo": {
+   "title": "Bats/Evolution",
+   "live_revid": 437215,
+   "cached_revid": 437215,
+   "changed": false,
+   "bytes": 16433,
+   "cache_file": "Bats_Evolution.wikitext"
+  },
+  "battle_ram_evo": {
+   "title": "Battle Ram/Evolution",
+   "live_revid": 437079,
+   "cached_revid": 437079,
+   "changed": false,
+   "bytes": 21194,
+   "cache_file": "Battle_Ram_Evolution.wikitext"
+  },
+  "bomber_evo": {
+   "title": "Bomber/Evolution",
+   "live_revid": 436449,
+   "cached_revid": 436449,
+   "changed": false,
+   "bytes": 22038,
+   "cache_file": "Bomber_Evolution.wikitext"
+  },
+  "cannon_evo": {
+   "title": "Cannon/Evolution",
+   "live_revid": 437252,
+   "cached_revid": 437252,
+   "changed": false,
+   "bytes": 14114,
+   "cache_file": "Cannon_Evolution.wikitext"
+  },
+  "dart_goblin_evo": {
+   "title": "Dart Goblin/Evolution",
+   "live_revid": 437234,
+   "cached_revid": 437234,
+   "changed": false,
+   "bytes": 15973,
+   "cache_file": "Dart_Goblin_Evolution.wikitext"
+  },
+  "electro_dragon_evo": {
+   "title": "Electro Dragon/Evolution",
+   "live_revid": 437294,
+   "cached_revid": 437294,
+   "changed": false,
+   "bytes": 15103,
+   "cache_file": "Electro_Dragon_Evolution.wikitext"
+  },
+  "elite_barbarians_evo": {
+   "title": "Elite Barbarians/Evolution",
+   "live_revid": 436936,
+   "cached_revid": 436936,
+   "changed": false,
+   "bytes": 14,
+   "cache_file": "Elite_Barbarians_Evolution.wikitext"
+  },
+  "executioner_evo": {
+   "title": "Executioner/Evolution",
+   "live_revid": 437539,
+   "cached_revid": 437539,
+   "changed": false,
+   "bytes": 18843,
+   "cache_file": "Executioner_Evolution.wikitext"
+  },
+  "firecracker_evo": {
+   "title": "Firecracker/Evolution",
+   "live_revid": 437259,
+   "cached_revid": 437259,
+   "changed": false,
+   "bytes": 35849,
+   "cache_file": "Firecracker_Evolution.wikitext"
+  },
+  "furnace_evo": {
+   "title": "Furnace/Evolution",
+   "live_revid": 437286,
+   "cached_revid": 437286,
+   "changed": false,
+   "bytes": 10280,
+   "cache_file": "Furnace_Evolution.wikitext"
+  },
+  "giant_snowball_evo": {
+   "title": "Giant Snowball/Evolution",
+   "live_revid": 437371,
+   "cached_revid": 437371,
+   "changed": false,
+   "bytes": 12355,
+   "cache_file": "Giant_Snowball_Evolution.wikitext"
+  },
+  "goblin_barrel_evo": {
+   "title": "Goblin Barrel/Evolution",
+   "live_revid": 437372,
+   "cached_revid": 437372,
+   "changed": false,
+   "bytes": 16174,
+   "cache_file": "Goblin_Barrel_Evolution.wikitext"
+  },
+  "goblin_cage_evo": {
+   "title": "Goblin Cage/Evolution",
+   "live_revid": 437374,
+   "cached_revid": 437374,
+   "changed": false,
+   "bytes": 20630,
+   "cache_file": "Goblin_Cage_Evolution.wikitext"
+  },
+  "goblin_drill_evo": {
+   "title": "Goblin Drill/Evolution",
+   "live_revid": 437383,
+   "cached_revid": 437383,
+   "changed": false,
+   "bytes": 17331,
+   "cache_file": "Goblin_Drill_Evolution.wikitext"
+  },
+  "goblin_giant_evo": {
+   "title": "Goblin Giant/Evolution",
+   "live_revid": 437292,
+   "cached_revid": 437292,
+   "changed": false,
+   "bytes": 23860,
+   "cache_file": "Goblin_Giant_Evolution.wikitext"
+  },
+  "hunter_evo": {
+   "title": "Hunter/Evolution",
+   "live_revid": 436718,
+   "cached_revid": 436718,
+   "changed": false,
+   "bytes": 10651,
+   "cache_file": "Hunter_Evolution.wikitext"
+  },
+  "ice_spirit_evo": {
+   "title": "Ice Spirit/Evolution",
+   "live_revid": 437339,
+   "cached_revid": 437339,
+   "changed": false,
+   "bytes": 13467,
+   "cache_file": "Ice_Spirit_Evolution.wikitext"
+  },
+  "inferno_dragon_evo": {
+   "title": "Inferno Dragon/Evolution",
+   "live_revid": 437282,
+   "cached_revid": 437282,
+   "changed": false,
+   "bytes": 14909,
+   "cache_file": "Inferno_Dragon_Evolution.wikitext"
+  }
+ }
+}

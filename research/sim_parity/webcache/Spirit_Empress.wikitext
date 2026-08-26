@@ -1,0 +1,166 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Spirit Empress</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=6 ''(Air form: if the player's Elixir count ≥ 6)''<br />3 ''(Ground form: otherwise)''|Rarity=Legendary|Type=Troop|Arena=Miner's Mine|ReleaseDate=7 July 2025}}
+
+{{SubpageNavBox|MergeTactics=yes}}
+{{Quote|Behold the Spirit Empress, the First of Her Name, Protector of Spirits, Rider of Dragons. Summon her as a hard-hitting ground troop for 3 Elixir, or atop her majestic spirit dragon for 6 Elixir.}}
+
+The Spirit Empress is a {{Rarity|Legendary}} [[Cards|card]] that is unlocked from the [[Arenas|Miner's Mine (Arena 15)]]. It spawns a single-target, air-targeting, medium-ranged, air troop with high hitpoints and high damage, or a single-target, ground-targeting, melee, ground troop with moderate hitpoints and high damage, depending on its [[Elixir]] cost. She appears as a woman who bears light blonde eyebrows and hair with two buns tied with team-colored knots, has heterochromic eyes, one golden and one blue, wears golden wristbands, an armor similar to the [[Battle Healer]]'s, a team-colored cape and boots, and wields a scimitar with a light blue glow and a blue handle. She also appears to ride a blue dragon that looks similar to an [[Electro Dragon]], except that it is paler and has glowing eyes. A Spirit Empress card costs 6 Elixir to deploy if the player has 6 or more Elixir stored, and 3 Elixir to deploy otherwise.
+
+== Strategies ==
+{{Battle Deck with Card|:Category:Battle Decks using the Spirit Empress Card}}
+*Like the [[Mega Minion]], the Spirit Empress deals high damage per attack in both forms, while having slightly higher hitpoints in both forms. This allows her to have a great matchup against the vast majority of troops in the game, while also being mostly resistant to spells.
+*Using [[Mirror]] on the Spirit Empress will copy the form which the previous Spirit Empress was used. For example: if the player used the 3-Elixir version of the Spirit Empress prior to using the Mirror, then the mirrored version will cost 4 [[Elixir]] and will have the attributes of the 3-Elixir form at one Level higher. The cost of the mirrored version will not increase even if it reaches the threshold required to play the more expensive form.
+*Since she only targets one troop at a time, swarms such as [[Goblins]], [[Barbarians]], [[Royal Recruits]], [[Guards]], and [[Skeletons/Evolution|Evolved Skeletons]] make great counters to the ground form of the Spirit Empress. For her flying form, swarms that can target air troops like [[Spear Goblins]], [[Minions]], [[Bats]], and [[Archers]] are more recommended to stop her.
+*A [[Rocket]] can OHKO the Spirit Empress in both of her forms, making it a good counter to her. In the case of her flying form, it is also a neutral Elixir trade.
+**[[Lightning]] does not deal enough damage to OHKO the Spirit Empress, so it should not be used against her
+**Unlike other cards with similar hitpoints, she has enough hitpoints to survive any combination of [[Fireball]] or [[Poison]] with any 2-Elixir spell, so they should not be used against her.
+*The Spirit Empress works best with cards like [[Golem]], [[Giant]], [[Royal Giant]], and [[Lava Hound]]. Using the cheap ground version for emergency defense, while using the air card for offense.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Spirit Empress Attributes}}
+{|class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+!scope="col" |Deploy Time<br/>{{Icon|I=Deploy Time}}
+!scope="col" |Count<br />{{Icon|I=Troop Count}}
+!scope="col" |Type<br/>{{Icon|I=Type}}
+!scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|1 sec||1||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+
+{{StatisticsSubheader|Air Form Attributes}}
+{|class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+!scope="col" |Speed<br/>{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|6||1.6 sec||0.6 sec||Medium (60)||5||Air & Ground||Air
+|}
+
+{{StatisticsSubheader|Ground Form Attributes}}
+{|class="wikitable" id="unit-attributes-table-tertiary" style="width:100%;text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+!scope="col" |Speed<br/>{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|3||1.2 sec||0.3 sec||Fast (90)||Melee: Medium (1.2)||Ground||Ground
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, air_atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1798 }}
+{{#vardefine: dmg_11 | 309 }}
+{{#vardefine: air_atk_speed | 1.6 }}
+{{#vardefine: ground_atk_speed | 1.2 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br/>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br/>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br/>{{Icon|I=Damage}}
+!scope="col"|Air Form Damage per second<br/>{{Icon|I=DPS}}
+!scope="col"|Ground Form Damage per second<br/>{{Icon|I=DPS}}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:air_atk_speed}} }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:ground_atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:air_atk_speed}} }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:ground_atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:air_atk_speed}} }} || {{Dps|{{#var:dmg_11}}|{{#var:ground_atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:air_atk_speed}} }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:ground_atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:air_atk_speed}} }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:ground_atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:air_atk_speed}} }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:ground_atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:air_atk_speed}} }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:ground_atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:air_atk_speed}} }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:ground_atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]] 
+|1
+|Deal a total of 205,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|2 {{BASEPAGENAME}} cards<br>100 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 610,000 Damage to enemy Troops or buildings
+|8,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 1,020,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>100 {{Icon|I=XP}}
+|-
+| rowspan="3" |Troop Destroyer <br/ > [[File:Troop Destroyer.png|50x50px]]
+|1
+|Destroy 700 enemy Troops
+|12,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|2
+|Destroy 2,000 enemy Troops 
+|2 {{Icon|I=Legendary Wild Card}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Destroy 3,500 enemy Troops
+|18,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+== History ==
+2025
+*The Spirit Empress [[Cards|card]] was added to the game on 7/7/2025, in the [[Version History#Pass Royale and more (7/7/2025)|July 2025 Update]] {{Balance|Add}}.
+*On 10/7/2025, a [[Version History#Maintenance Break (10/7/2025)|maintenance break]], increased the Spirit Empress Ground Form hitpoints by 5% {{Balance|Buff}} and decreased her Air Form's attack time interval to 1.4 seconds (from 1.5 seconds) {{Balance|Buff}}.
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] increased the Spirit Empress' hitpoints in both forms by 5% {{Balance|Buff}}, and her Air Form's range to 5 tiles (from 4.5 tiles) {{Balance|Buff}}.
+*On 1/9/2025, a Balance Update, decreased the Spirit Empress' Air Form Hitpoints decreased by 10%.
+*On 3/11/25, a Balance Update, increased the Spirit Empress' Ground Form Hitpoints by 10%.
+2026
+
+* On 2/3/2026, a Balance Update, increased the Spirit Empress' Ground speed to fast (from medium), decreased her Ground hitpoints by 7%, and decreased her Air Hitpoints by 1%.
+* On 4/5/2026, a Balance Update, decreased the Sprirt Empress' Ground Hitpoints by 3% and decreased her Air Hitpoints by 5%. Her ground hit speed was also increased to 1.2 seconds (from 1.1 seconds)
+
+== Gallery ==
+<gallery>
+File:SpiritEmpressCardGround.png|Spirit Empress' card image in her ground form.
+File:Spirit Empress card render.png|Current card render.
+File:Spirit Empress Preview.gif|Current card preview
+File:Spirit Empress 1.png|Spirit Empress riding on her Dragon.
+File:Spirit Empress 2.png|Spirit Empress alone.
+File:Spirit Empress 3.png|Spirit Empress with her dragon.
+</gallery>
+
+== Trivia ==
+*The Spirit Empress is 1 of 20 [[cards]] associated with nobility, with the others being [[Knight]], [[Royal Recruits]], [[Royal Giant]], [[Royal Delivery]], [[Tower Princess]], [[Royal Hogs]], [[Dark Prince]], [[Prince]], [[Raging Prince]], [[Mega Knight]], [[Princess]], [[Royal Ghost]], [[Super Knight]], [[Dagger Duchess]], [[Royal Chef]], [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], and the [[Little Prince]].
+*The Spirit Empress is the only variable-Elixir cost card with a clearly defined Elixir cost.
+*The Spirit Empress is the only card without [[Star Points|Star Levels]]. Others are {{Rarity|Champion}} [[cards]].
+*The card's description introducing the Spirit Empress, "''the First of Her Name, Protector of Spirits, Rider of Dragons.''" is a reference to Daenerys Targaryen, a character from the series Game of Thrones, based on the novel series A Song Of Fire & Ice by George R. R. Martin. 
+* When deployed in her air form, the Spirit Empress may say "''Wings up!''" or "''Skyward!''".
+* The Spirit Empress is the subject of 3 [[Emotes]].
+*[https://ocellusart.artstation.com/projects/GvPL8Q Concept art] by the Supercell Art Team and Ocellus Art team shows the many designs the Spirit Empress went through.
+*Every time she attacks (in Ground form), her target will have a glowing cyan blue effect. 
+
+{{Navigation|Card}}
+
+[[ru:Императрица духов]]

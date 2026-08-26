@@ -1,0 +1,266 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Mega Knight</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=7|Rarity=Legendary|Type=Troop|Arena=Electro Valley|ReleaseDate=8 September 2017}}<br><br>
+{{SubpageNavBox|MergeTactics=yes|Evolution=yes}}{{Quote|He lands with the force of 1,000 mustaches, then jumps from one foe to the next dealing huge area damage. Stand aside!}}
+
+The Mega Knight is a {{Rarity|Legendary}} [[Cards|card]] that is unlocked from the [[Arenas|Electro Valley (Arena 11)]]. It spawns an area-damage, ground-targeting, melee, ground [[:Category:Troop Cards|troop]] with very high hitpoints and high damage. Upon deployment, he will deal damage to enemy units around him in a 360º area around him, and inflict knockback. If there are ground units between 3.5 and 5 tiles of him, he will stop moving and begin charging a jump attack which takes 0.9 seconds to execute, and will deal double damage, and inflict knockback. He appears as a [[Knight]] with blue eyes and black eyebrows, wearing a helmet with a team-colored feather on top, maces on his arms, and huge dark armor. A Mega Knight card costs 7 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Mega Knight Common Modifier.png|45x45px]] Common: Power Jump===
+{{Quote|+100% jump attack damage}}
+Doubles damage of its jump attack.
+
+===[[File:Mega Knight Rare Modifier.png|45x45px]] Rare: Mega Power Jump===
+{{Quote|Infinite jump range}}
+Can target a unit or tower for a jump attack at any distance.
+
+===[[File:Mega Knight Epic Modifier.png|45x45px]] Epic: Ultra Mega Power Jump===
+{{Quote|Unlimited jump attacks}}
+Mega Knight continuously jump attacks.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Mega Knight Card}}
+*His spawn damage is slightly less than a [[Royal Delivery]], which makes him useful for quickly defeating [[cards]] with similar health to a [[Musketeer]], [[Barbarians/Evolution|Evolved Barbarians]], [[Little Prince]], [[Ice Wizard]], [[Electro Wizard]], [[Goblinstein]], or [[Wizard]]. He will then only require two more regular attacks to defeat them fully.
+**His spawn damage does less damage than his jumping attack. For example, when you are fighting troops that can survive the spawn impact but not the jump, such as [[Zappies]], [[Mother Witch]], or [[Magic Archer]], you may want to deploy them further instead of on top of them for more damage.
+*The Mega Knight's high spawn damage and very high hitpoints make him a bit hard to defeat on the opposing side. He can get enormous value against massive pushes because of this. However, he can be countered relatively easily if alone.
+*Mega Knight has great defensive potential, but despite everything, he is not effective at taking out tanks such as the Giant, [[Royal Giant]], Giant Skeleton, [[Goblin Giant]], or the [[Golem]]. His main defensive potential comes from his very high health and his spawn and jump damage obliterating support [[:Category:Troop Cards|troops]] and glass cannons.
+*He is very good at countering equally-leveled [[Elite Barbarians]], thanks to his high spawn damage and knockback. Make sure that the Mega Knight is placed in such the way that both Elite Barbarians are knocked towards the same direction such that he would be able to damage down both at the same time, and spare enough health for a counterattack. It is also recommended to use the Mega Knight's jump damage against a pair of Elite Barbarians instead of his spawn damage as it denies up to 2 more hits by a pair of Elite Barbarians.
+**However, if the Elite Barbarians are at a much higher Level, do not attempt to use a Mega Knight on them. The Mega Knight would only chip at most 4/5 of their HP off before being completely overwhelmed. A swarm card, [[Sparky]], or [[P.E.K.K.A.]] would be better to fully defeat them.
+**Do not place the Mega Knight 3.5-5 tiles directly in front of a pair of Elite Barbarians. This will cause the Mega Knight to knock them into two directions, causing the Mega Knight to lose more health than he needs to. If you want to use the Mega Knight's jump damage on a pair of Elite Barbarians, kite the Elite Barbarians with the Mega Knight so they walk in a straight line. That way, when the Mega Knight jumps on them the Elite Barbarians will be knocked in the same direction.
+*The Mega Knight works especially well with the [[Inferno Dragon]], as they compliment each other's weakness. The Mega Knight can take out ranged glass cannons and swarms that counter the Inferno Dragon. The Inferno Dragon in turn can sear tanks Mega Knight would struggle to deal enough damage to. However, it can be somewhat countered by air swarms so be sure to bring [[:Category:Spell Cards|spells]] to deal with them.
+**The [[Mighty Miner]] may also be another alternative for the Inferno Dragon to counter air swarms with his ability but cards like [[Electro Dragon]] might counter the Mighty Miner unless the ability is used.
+***Despite this combo being able to counter P.E.K.K.A., she can survive and start a counterpush as long as helped by an [[Electro Wizard]] for a neutral [[Elixir]] trade, but it requires some alignment. You should place your P.E.K.K.A. some tiles away from them, forcing the Mega Knight to jump and the Inferno Dragon to reach her position slowly due to its short range, then deploying the Electro Wizard to zap it down. Remember to take caution as the Mega Knight could retarget onto him and leave your P.E.K.K.A. helpless.
+***A similar strategy is to combine Mega Knight & P.E.K.K.A. in a push, as they also counter each other’s weaknesses. While it can be more threatening, it is extremely expensive at 14 Elixir, often requiring that 1 of them be used on defense beforehand, which can whittle down their hitpoints. It is also even weaker to air units. You also shouldn't put two of them in the same [[Battle Decks|deck]] for they are very expensive and you are left vulnerable to a punishment for your lack of Elixir. Instead, consider a [[Mini P.E.K.K.A.]] or a [[Prince]], as it is obviously cheaper.
+*The Mega Knight is helpless against air troops such as [[Minions]] and [[Bats]], so it is best to pair him with other troops that can attack air, by using such as the [[Archers]], [[Electro Dragon]], [[Archer Queen]], [[Musketeer]], [[Wizard]], [[Princess]], Flying Machine, [[Skeleton Dragons]], [[Mega Minion]], Magic Archer, [[Hunter]], [[Dart Goblin]], [[Witch]], [[Baby Dragon]], [[Spear Goblins]], Firecracker, [[Zappies]], [[Phoenix]], or the [[Executioner]]. Alternatively, you can have a cheap spell such as [[Arrows]] in hand to deal with most air swarms.
+*Since the Mega Knight's damage per second without his initial jump is somewhat low, other highly damaging units like the [[Prince]], P.E.K.K.A, or the Mini P.E.K.K.A. can synergize with him well, helping him take out tanks while the Mega Knight helps deal with swarms. Air units like the Minions and the Bats also work well, but are usually vulnerable to spells.
+*A powerful but odd combo is pairing him with the [[Ram Rider]], as he will stomp on cards that will stop the Ram Rider such as stuns like Zappies, Electro Wizard, and Goblinstein or [[:Category:Building Cards|buildings]] like [[Tesla]]. You also cannot distract both simultaneously with troops, which is important as the Ram Rider will most likely get damage.
+*When using him to counter a reactive pack of [[Royal Recruits]], be careful for the other side of the Royal Recruits approaching. Alternatively, you can use an [[Ice Golem]] to bring them all together, so that the Mega Knight can spawn right on top of all of them.
+*The Mega Knight can be a potential counter to the [[Sparky]]. If the Sparky has low enough health and is about to cross the bridge, the spawn damage from the Mega Knight might be able to knock her out. If you time it correctly, the Mega Knight will absorb the Sparky's shot and with the help of a [[:Category:Crown Towers|Tower]], be able to destroy the Sparky. This will leave you with a relatively high health Mega Knight to do a counter-attack with. However, if the Sparky somehow manages to defeat the Mega Knight, then it is a negative trade of 1 Elixir for you.
+**If a Sparky is placed behind a tank such as the [[Giant Skeleton]], place the Mega Knight behind the combo. This will cause the Mega Knight to spawn on top of the Sparky while forcing the Giant Skeleton to walk into the splash radius of the Mega Knight.
+**If a Sparky is placed behind a building-targeting tank such as the [[Giant]] or Golem, place the Mega Knight to the side of the combo and make sure the Sparky is closest to the Mega Knight. The Mega Knight will spawn on both troops while distracting the Sparky, allowing you to counter the Giant or Golem with troops that will otherwise be destroyed by the Sparky.
+*The Mega Knight can be used to counter a [[Goblin Barrel]] but it requires precise timing. His spawn damage can defeat all three [[Goblins]] if timed correctly — ideally, he should be deployed at the back of the Tower when the Goblin Barrel’s shadow crosses the river. This is, again, 7 Elixir for 3, but the counterpush potential is huge. Be cautious.
+**If you find this too hard to execute, you can deploy the Mega Knight between two Goblins which will prevent most of the damage dealt to your Tower. This is done by placing the Mega Knight in between the top Goblin and the one at the bottom. Be aware of tricky barrels, however.
+*The Mega Knight is a simple card to use on your side, but be wary as he is more defense-orientated than offense. When you see a bunch of squishy troops, put him in, and you'll be left with a counterpushing one, which may gain some offensive value when the opponent can't counter.
+*One of the keys to defeating the Mega Knight is timing. To counter the Mega Knight properly, the counter unit should generally be placed no more than three tiles away from him, so that he doesn't initiate his jump attack and deal massive damage. Without it, his damage per second is somewhat low for his Elixir cost.
+**Using the above strategy, ground tanks like the [[Knight]], [[Battle Healer]], [[Golden Knight]], Skeleton King, and the [[Valkyrie]] (obviously save for the [[Ice Golem]], as a kite wouldn't be enough) or high-damage glass cannons like the Mini P.E.K.K.A., [[Lumberjack]], [[Royal Ghost]], [[Night Witch]], or the [[Goblin Cage|Goblin Brawler]] are the most Elixir-efficient counters to a lone Mega Knight coming onto the defender's side of the arena. With the help of the Crown Tower, the Mega Knight will not be able to take them before they are defeated.
+*Similar to the [[Bandit]], the Mega Knight will re-target onto any troop placed nearby him if his original target ends up being farther away than the newly spawned troop. If the defender is in a situation where they know they cannot prevent his jump from occurring, they can still place a cheap troop like [[Skeletons]] or [[Goblins]] in front of him right before he is about to jump to soak up the damage. 
+**However, the Mega Knight's jump mechanic is not purely identical to the Bandit's dash ability. His charge time is 0.1 seconds higher but does not make him invincible. He will still take damage while he is airborne and can be defeated mid-air. Interestingly, while in mid-air, [[The Log]], [[Earthquake]], and [[Bowler]] will not be able to damage him, but an [[X-Bow]] or [[Mortar]] will stay locked onto an airborne Mega Knight. As a result, he counters these siege buildings well as his jump is difficult to react to at the bridge and will take out a majority of their health. He can also take care of the weaker support troops backing up the building after taking it out. Sparky and Bomber will also hit the Mega Knight even when he jumps.
+**Like the Bandit, a Mega Knight will retain his jumping ability, and [[Clone|cloning]] him, will not interrupt the original troop's actions. However, the cloned unit will not inherit the current status of the troop. Additionally, a jumping Mega Knight will not produce another clone that is already jumping, and it still needs to charge up its ability.
+***Cloned Mega Knights do not inflict spawn damage,
+**A Bandit can fully counter a lone Mega Knight. By deploying her 4 tiles from the river and 3 tiles from the [[:Category:Tower Troop Cards|Crown Tower]] when the Mega Knight is 2 or 3 tiles from the river, she will dash at just the right time to nullify the jump damage of the Mega Knight as well as lure him into range of both Crown Towers.
+*The P.E.K.K.A. is a very effective, and arguably a hard-counter to the Mega Knight, as her high damage per second and high hitpoints allow her to defeat the Mega Knight 1-on-1 even without a Crown Tower helping. She can also wreck the Mega Knight's support cards, save for air troops. After defending, she will have a fair amount of hitpoints remaining in case the player would like to counterpush. In the case that your opponent reveals that they have P.E.K.K.A. first, it is best to drop the Mega Knight in the other lane as it is unlikely that they will have much Elixir to counter your Mega Knight. Additionally, the Mega Knight moves much faster than the P.E.K.K.A., and is harder to distract with swarms, making the P.E.K.K.A. approaching your Tower fairly easy to deal with.
+*With the help of the Crown Tower, a Mega Knight can stop the Prince and still have a lot of hitpoints left for a counterattack. With his spawn damage, he will counteract the Prince's charge, and he will withstand a decent amount of hits while the Crown Tower attacks him. On the contrary, a Prince can also stop a Mega Knight with the help of a Crown Tower, thanks to his high hitpoints and high damage.
+**A Mega Knight can be quite helpful against a Double Prince push. While he would be overwhelmed alone, he can be combined with cheap distraction troops like Bats and stop such a push while keeping some of the Mega Knight's hitpoints for a counterattack.
+**Pairing the Double Prince push with the Mega Knight is a potentially devastating strategy, as it amplifies the strong points of the push, but also its weak points. Their high hitpoints and damage can allow the Princes to shred through units even faster, but cards that output a large damage, such as [[Rocket]], P.E.K.K.A, or [[Minion Horde]], can deal with it.
+*An [[Inferno Tower]], Inferno Dragon, or [[Mighty Miner]] can take out the Mega Knight as long as their ramp-up attack is uninterrupted. If they do get interrupted once, spending a bit more Elixir to deploy a distraction unit, such as an Ice Golem, will keep the Mega Knight in place and can allow either Inferno and Mighty Miner to defeat the Mega Knight, keeping a positive Elixir trade (if you use Inferno Dragon/Mighty Miner + Ice Golem).
+*Bats and [[Cannon]] (or any other defensive tower), can counter Mega Knight pretty well if he gets distracted by a defensive tower. When he is distracted, Bats can be placed to swarm the Mega Knight and eventually take him out. This strategy is only recommended when the Mega Knight has taken prior damage since Bats isn't the best damage dealer and can't usually take out a tank by itself.
+**Conversely, Bats also synergise rather well with the Mega Knight. The Bats provide DPS and air coverage for the Mega Knight, while the Mega Knight takes out swarms, mini-tanks and tanks tower shots for the Bats. This combination can be both defensively effective and offensively deadly if played correctly.
+*A [[Zap]] spell will not stop the Mega Knight from jumping once his charge initiates, neither does any stun effect. The jump can only be stopped if he is defeated mid-air, by using [[The Log]], or if the player uses other cards to pull him out of his jumping range like a [[Tornado]]. When he is already mid-jump, only the [[Fisherman]]'s dragging ability can cancel its effect.
+**If the Mega Knight is stunned while in the air, he will still land normally, however, he will remain stunned after landing down. Because of this, [[Freeze]] can be used to save some time for the defender to deploy a troop in such a way that the Mega Knight does not jump a second time. However, this is situational and not practical during single Elixir time.
+*A [[Skeleton Army]] is typically not effective against the Mega Knight. In most cases, the Mega Knight will destroy the Skeleton Army even when he's surrounded due to his large splash radius. However, if he has around half of his hitpoints left, it can be effective to use the Skeleton Army on him due to his slow hit speed.
+**However, a Skeleton Army can be useful in taking him out if you have a tank soaking up the damage for them. You can place a tank in front of Mega Knight and place a Skeleton Army behind the Mega Knight.
+**Skeleton Army can fully counter the Mega Knight if placed correctly, if you put the Skeleton Army right at the middle of the tower slightly veering to the opposite side of the Mega Knight right as the Mega Knight jumps, a few Skeletons will distract the Mega Knight as the other Skeletons will come to their aid. The Mega Knight will die with one or two Skeletons surviving with no damage done on the Crown Tower.
+*The defender can use the Mega Knight's jump mechanic and/or splash damage against him and activate their [[King's Tower]] with various methods:
+**A combination of [[Ice Spirit]] and Skeletons, or any cheap troop can be used. The player should wait for the Mega Knight to approach their Crown Tower, and when he is about to jump, deploy the Ice Spirit four tiles from the King's Tower and one tile into his lane to redirect his jump. Afterwards, they should place Skeletons one tile from the King's Tower and one tile away from his lane, right before he jumps a second time. If done correctly, he will head towards the King's Tower after jumping onto the Skeletons, activating it. This will deal significant damage to the player's King's Tower however, so it is not recommended to perform this more than once.
+**A variant of this utilises a disposable troop and a [[Tornado]]. Place the disposable troops slightly in front of the Crown Tower and slightly to the inner side of the arena. After the Mega Knight defeats the troop, use Tornado to pull Mega Knight towards the King Tower to activate it.
+**Likewise, [[Tombstone]] can also lure the Mega Knight into activating King's Tower, given the Tombstone is deployed right in front of the King's Tower to the Mega Knight side (7-2 placement). The Mega Knight will jump closer to the Tombstone and eventually destroy it, targeting the King's Tower afterward. For a slightly more expensive, but more consistent King activation, the Tombstone can be placed higher up, such as with a placement 5 tiles from the river and 2 tiles from the Crown Tower. After its destruction, the player can place a troop that is one shot by the Mega Knight's jump close to the King's Tower.
+**If the player is planning to conserve elixir to set up a big push or is in an emergency, [[Fisherman]] can be used, but at the expense of a considerable portion of the Crown Tower’s hit points. Wait for the Mega Knight to jump on the Crown Tower, then place Fisherman in front of the King’s Tower. The Fisherman will pull the Mega Knight. The Mega Knight’s Area Damage would activate the King’s Tower.
+*Heavy swarm cards such as the [[Barbarians]] and Royal Recruits are an effective counter to the Mega Knight when played reactively, provided his jump is negated. 3 of the Barbarians will survive, demanding further response, while for the Royal Recruits, some of them are spawned in the other lane, which also demand response.
+*When you suspect that your opponent is running a Mega Knight, it is not advised to clump up troops together in a small area proactively, as he will reap massive value. To play around him when proactively playing an offensive card like [[Royal Hogs]], splitting them in the middle of the [[Arenas|Arena]] is always an option.
+*A very common mistake among players is to defend against him with glass cannons such as the [[Musketeer]], [[Ice Wizard]], [[Witch]], [[Electro Wizard]], or the [[Wizard]] without support. It is highly advised to distract him with a tank such as the [[Knight]], [[Monk]], [[Battle Healer]], [[Golden Knight]], [[Skeleton King]], or [[Valkyrie]] when you want to defend him using this route.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Mega Knight Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|7||1.7 sec||0.5 sec||Medium (60)||1 sec||Melee: Medium (1.2)||1.3||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+
+{{StatisticsSubheader|Jump Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%; text-align:center;"
+! scope="col" |Jump Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Jump Speed<br />{{Icon|I=Speed}}
+! scope="col" |Jump Range<br />{{Icon|I=Dash Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|0.9 sec||250||3.5-5||2.2||Ground||Air 
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 3993 }}
+{{#vardefine: dmg_11 | 268 }}
+{{#vardefine: atk_speed | 1.7 }}
+{{#vardefine: spawn_11 | 430 }}
+{{#vardefine: jump_11 | 537 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Area Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Spawn Damage<br />{{Icon|I=Damage}}
+! scope="col" |Jump Damage<br />{{Icon|I=Boost}}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:jump_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:jump_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:spawn_11}} || {{#var:jump_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:jump_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:jump_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:jump_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:jump_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:jump_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier 
+! width="40%" |Objective 
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 270,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|2 {{BASEPAGENAME}} cards<br>100 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 810,000 Damage to enemy Troops or buildings
+|8,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 1,360,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>100 {{Icon|I=XP}}
+|-
+| rowspan="3 " |Crash Landing <br/ > [[File:Crash Landing.png|50x50px]]
+|1
+|Hit 280 enemy Troops with Spawn Damage
+|12,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|2
+|Hit 800 enemy Troops with Spawn Damage
+|2 {{Icon|I=Legendary Wild Card}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Hit 1,400 enemy Troops with Spawn Damage
+|18,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+| rowspan="3" |Superhero Landing <br> [[File:Steamroller.png|50x50px]]
+|1
+|Push back 6 or more units with a single deploy a total of 50 times
+|6,000 {{Icon|I=Gold}}<br/ >200 {{Icon|I=XP}}
+|-
+|2
+|Push back 6 or more units with a single deploy a total of 150 times
+|8,000 {{Icon|I=Gold}}<br/ >200 {{Icon|I=XP}}
+|-
+|3
+|Push back 6 or more units with a single deploy a total of 300 times
+|10,000 {{Icon|I=Gold}}<br/ >200 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2017
+*The Mega Knight was once available in the [[Tournament/Special Event Challenges|Mega Knight Challenge]], which started on 25/8/2017. In this [[Tournament|challenge]], the player would build a [[Battle Decks|deck]] which included the Mega Knight. If the player achieved 12 wins, they obtained the Mega Knight early,
+*From 31/8/2017 through 4/9/2017, the [[Shop]] had a special offer where [[Arenas|Arena]] 10+ players could buy up to 4 Super Magical [[Chests]] at the normal price that had a 50% chance to contain a Mega Knight with the first Chest and guaranteed with the second. If a Mega Knight was obtained in the first Chest, then the second one would not guarantee it. The process was repeated with the second pair of Chests.
+*The Mega Knight [[Cards|card]] was generally released on 8/9/2017.
+*On 9/10/2017, the [[Version History#Epic Quests Update (9/10/2017)|Epic Quests Update]], fixed a bug where the Mega Knight would jump even if he was less than 4 tiles away from his target.
+2018
+*On 12/2/2018, a [[Version History#Balance Changes (12/2/2018)|Balance Update]], decreased both his spawn and jump damage by 25% and decreased his spawn area radius to 2.2 tiles (from 2.5 tiles).
+*On 4/6/2018, a [[Version History#Balance Changes (4/6/2018)|Balance Update]], increased both his spawn and jump damage by 23%, but also decreased his damage by 7.5%.
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], decreased his minimum jump range to 3.5 tiles (from 4 tiles).
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Legendary}} cards start at Level 9 and end at Level 13 (from 1 to 5).
+*On 5/11/2018, a [[Version History#Balance Changes (5/11/2018)|Balance Update]], decreased the Mega Knight's attack time interval to 1.7 seconds (from 1.8 seconds) and his first attack time interval to 0.5 seconds (from 0.6 seconds).
+2019
+*On 28/1/2019, the [[Version History#January%202019%20Update%20(28/1/2019)|January 2019 Update]], moved the Arena to unlock the Mega Knight from Hog Mountain to Royal Arena.
+*On 1/7/2019, the [[Version History#July%202019%20Update%20(1/7/2019)|July 2019 Update]], increased the Mega Knight's range to 1.2 tiles (from 1 tile), now classified as Melee: Medium.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Mega Knight's card info screen.
+2021
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+*On 1/11/2021, an [[Version History#Optional%20Update%20(1/11/2021)|Optional Update]], made it so that the Mega Knight cannot be forever stunned by [[Zappies]] or [[Electro Wizard]].
+*On 15/11/2021, a [[Version History#Minor%20Update%20(15/11/2021)|Minor Update]], allowed the Mega Knight to deal damage to an [[Archer Queen]] if she's cloaked during his jump.
+2022
+*On 4/4/2022, the [[Version History#April%202022%20Update%20(4/4/2022)|April 2022 Update]], decreased the Mega Knight's spawn damage by 20%.
+*On 27/6/2022, the [[Version History#Summer%202022%20Update%20(27/6/2022)|Summer 2022 Update]], added the Superhero Landing [[Card Mastery]] task for the Mega Knight.
+*On 2/8/2022, a [[Version History#Balance%20Changes%20(2/8/2022)|Balance Update]], decreased the time required for charging his jump to 0.9 seconds (from 1.1 seconds).
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Mega Knight from Royal Arena to Electro Valley.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+*On 14/9/2024, the [[Mega Knight/Evolution|Mega Knight’s Evolution]] was added.
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], increased the Mega Knight's spawn damage by 0.23%.
+
+==Gallery==
+<gallery>
+File:Mega Knight card render.png|Card render
+File:Mega Knight Preview.gif|Current card preview
+File:Mega Knight 1.png|Mega Knight 1
+File:Mega Knight 2.png|Mega Knight 2
+File:Mega Knight 3.png|Mega Knight 3
+File:Mega Knight 4.png|Mega Knight 4
+File:Mega Knight 5.png|Mega Knight 5
+File:Mega Knight past.png|Mega Knight in [https://www.youtube.com/shorts/TfVrkZ0bcks the past]; bullied in Knight school for having small, delicate hands.
+</gallery>
+
+==Trivia== 
+*The word ''"Knight"'' comes from the German "''Knecht"'', meaning servant or vassal. Originally, knights were associated with mounted warriors, later being considered a class of lower nobility, until eventually, knighthood had become associated with the ideals of [https://en.wikipedia.org/wiki/Chivalry chivalry], a code of conduct for the perfect courtly Christian warrior. Often, a knight was a vassal who served as an elite fighter or a bodyguard for a lord, with payment in the form of land holdings.
+**In the Chinese and Vietnamese language settings of the game, the Mega Knight's name translates to "Super Knight". In the Italian and Arabic language settings of the game, the Mega Knight's name translates to "Great Knight" and "Giant Knight" respectively.
+**The Mega Knight is 1 of 20 [[cards]] associated with nobility, with the others being [[Knight]], [[Royal Recruits]], [[Royal Giant]], [[Royal Delivery]], [[Tower Princess]], [[Royal Hogs]], [[Dark Prince]], [[Prince]], [[Raging Prince]], [[Princess]], [[Royal Ghost]], [[Spirit Empress]], [[Super Knight]], [[Dagger Duchess]], [[Royal Chef]], [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], and the [[Little Prince]].
+*The Mega Knight is one of the first [[:Category:Troop Cards|troop]] cards to receive a card render, alongside the [[Archers]], Knight, [[Goblins]], [[Bomber]], [[Skeletons]], [[Barbarians]], [[Bats]], Royal Recruits, [[Skeleton Barrel]], [[Rascals]], [[Musketeer]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Flying Machine]], [[Hog Rider]], Royal Hogs, [[Dart Goblin]], [[Zappies]], [[Elixir Golem]], [[Baby Dragon]], [[Skeleton Army]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], Prince, [[Balloon]], [[Giant Skeleton]], [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Ram Rider]], [[Miner]], Royal Ghost, [[Ice Wizard]], [[Magic Archer]], [[Bandit]], [[Lava Hound]], [[Night Witch]], and [[Fisherman]].
+*The Mega Knight, the [[Electro Wizard]], and the Ice Wizard are the only troops that deal spawn damage. Unlike the other two, the Mega Knight's spawn damage does not affect air troops.
+*The Mega Knight and Lava Hound are the most expensive permanent {{Rarity|Legendary}} cards, costing 7 [[Elixir]].
+*The Mega Knight is 1 of 14 troops that has been featured with a [[Buff#Rage|Rage]] [[buff]], the others being [[Electro Spirit]], Giant, Zappies, [[Guards]], Giant Skeleton, Goblin Giant, Electro Dragon, Wall Breakers, [[Electro Giant]], Ram Rider, Electro Wizard, [[Sparky]], and Royal Ghost.
+*The Mega Knight, along with the [[Minions]], Bomber, Skeletons, [[Skeleton Dragons]], [[Ice Spirit]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Mega Minion]], [[Ice Golem]], Dart Goblin, Elixir Golem, [[Goblin Cage|Goblin Brawler]], Guards, Baby Dragon, P.E.K.K.A, Giant Skeleton, [[Golem]], Wall Breakers, Bowler, [[Executioner]], [[Inferno Dragon]], Royal Ghost, and Lava Hound, are featured as a [https://squad-busters.fandom.com/wiki/Monsters monster] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*Since the description implies it lands with the force of "1,000 mustaches", it is implied that the force of 1 mustache deals approximately 0.429 damage at Tournament Standard.
+*The Mega Knight was originally a Knight who had been teased by other Knights for having small and weak hands, as seen in a [https://www.youtube.com/shorts/TfVrkZ0bcks short].
+**Previous theories by fans were that the Mega Knight was the [[w:c:clashofclans:Builder|Builder]] from Clash of Clans, but this was [https://www.reddit.com/r/ClashRoyale/comments/6x01fo/clash_royale_ama_qa_collection/ disproven by Supercell]. Although fans continue to speculate and are not entirely convinced.
+*When the Mega Knight is defeated, his maces fall to the ground. The other units that drop items upon death are the Knight, Rascal Boy, [[Mega Minion]], Dark Prince, Executioner, Sparky, Fisherman, Super Knight, Golden Knight, and the Little Prince.
+*The Mega Knight is the subject of certain cosmetics in the game. More specifically:
+**The Mega Knight is the subject of 3 [[Emotes]].
+**The Mega Knight is the subject of a [[King's Tower|Tower Skin]].
+**The Mega Knight is the subject of a [[Battle Banners|Battle Banner]] item.
+***The Mega Knight is one of the first troops to be the subject of a Battle Banner item, along with the [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Dart Goblin]], [[Mini P.E.K.K.A.|P.E.K.K.A,]] Prince, Giant Skeleton, [[Super Witch]], and the Golden Knight.
+*A [[Clone|cloned]] Mega Knight does not fall from the sky when deployed.
+*On 27/3/2023, a [[Training Camp|Trainer]] was added to the game called Boss Cheddar, and used a Level 18 Mega Knight in their [[Battle Decks|deck]], despite the highest Level being Level 14 at the time. This Trainer was removed on 18/4/2023.
+*On 1/4/2024, a Clash Royale [https://youtube.com/shorts/zkmPW505IL8?si=vtvLO_UVVs-tguhS video] on Youtube showcased a fake Mega Knight's [[Card Evolution|Evolution]]. The Evolved Mega Knight had higher spawn damage and spawn radius, infinite jump range, lower time to charge his jump, could target air troops, and required 0 cycles to deploy. However, it never made it into the game.
+
+{{Navigation|Card}}
+
+[[fr:Méga chevalier]]
+[[de:Megaritter]]
+[[es:Megacaballero]]
+[[it:Gran cavaliere]]
+[[ru:Мегарыцарь]]
+[[zh:超级骑士]]

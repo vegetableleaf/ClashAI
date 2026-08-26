@@ -1,0 +1,192 @@
+{{DISPLAYTITLE:<span style="color: #ffa31a;">Earthquake</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink|Earthquake Spell}}
+
+{{Card Infobox|Cost=3|Rarity=Rare|Type=Spell|Arena=Spooky Town|ReleaseDate=15 April 2019}}
+{{Quote|Deals Damage per second to Troops and Crown Towers. Deals huge Building Damage! Does not affect flying units (it is an EARTHquake, after all).}}
+
+The Earthquake is a {{Rarity|Rare}} [[Cards|card]] that is unlocked from the [[Arenas|Spooky Town (Arena 12)]]. It is an area-damage, ground-targeting [[:Category:Spell Cards|spell]] with a medium radius and low damage, also doing 3.5 times damage to [[:Category:Building Cards|buildings]], that is dealt every second for 3 seconds. It also decreases movement speed of enemy [[:Category:Troop Cards|troops]] by 50%. It is a murky brown liquid encased in a small oblong vial. An Earthquake card costs 3 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Earthquake Card}}
+*Since the Earthquake does massive damage to most [[:Category:Building Cards|buildings]], it can be a good [[Elixir]] trade against structures such as the [[Elixir Collector]] and spawner buildings like the [[Goblin Hut]], as it is more cost-effective than a [[Fireball]] or [[Rocket]].
+**A lone Earthquake will fully stop a [[Tombstone]] by itself for a neutral Elixir trade. The first two ticks will destroy the Tombstone itself, while the third tick will kill the [[Skeletons]] that spawn after death. Use this in case you want to allow a building-targeting [[:Category:Troop Cards|troop]] to continue proceeding towards the [[:Category:Crown Towers|Crown Towers]] without having to worry about the Skeletons.
+**It may be a good idea to utilize both Earthquake and Fireball in a [[Battle Decks|deck]] in case of bait decks. Earthquake will handle those buildings while Fireball is saved for an attacking troop like the [[Three Musketeers]] or [[Wizard]].
+*The Earthquake deals slightly less Crown Tower damage than a Rocket and equal as much to [[Poison]], but compensates for its lower cost, making it good to use in [[:Category:Spell Cards|spell]] cycle decks.
+*It is generally not a good idea to use it on defense due to its low [[:Category:Troop Cards|troop]] damage, but in a pinch the 50% slowdown effect can prevent the opponent's push from decimating the Tower. The 50% slow effect does not stack with the slow from the [[Ice Wizard]], [[Ice Golem]], and the [[Giant Snowball]].
+*Against the [[Inferno Tower]], Earthquake combined with a [[Zap]] can severely cripple, if not take out the defensive building entirely. This is a great alternative to [[Lightning]], for 1 less Elixir. A lone Earthquake is not worth using on an Inferno Tower though, as the Inferno Tower will be able to kill any incoming tank before Earthquake destroys it.
+*It is also a great blanket counter to offensive building [[cards]] like [[X-Bow]] and [[Mortar]], though you will need something else to take them out fully or distract their targeting.
+*An Earthquake is able to damage a [[Tesla]] even if it has been concealed, making it one of the most efficient ways to eliminate the building at a positive Elixir trade.
+*The Earthquake does enough damage to destroy a [[Goblin Cage]] by itself and release the Goblin Brawler.
+*Against a [[Goblin Barrel]], place the Earthquake when the Goblin Barrel's shadow is 4 tiles from the river. This will prevent the most damage from the spell for a neutral Elixir trade.
+*It pairs best with the [[Hog Rider]] and the [[Royal Hogs]]. Both are fast moving troops that appreciate being able to take down buildings relatively quickly. The spell also does enough damage to OHKO [[Skeletons]] in one tick and to completely destroy [[Goblins]] with all three ticks, making trying to support the building with cheap follow up troops difficult.
+*Using the same principle, the [[Miner]] can pair well with Earthquake. The spell's 3 second duration gives it an area denial effect, and can clear away many of the swarms typically used to counter a Miner while dealing considerable Crown Tower damage. However, compared to Poison, Earthquake can't fully defeat troops like the [[Dart Goblin]], [[Princess]], [[Archers]], [[Firecracker]], [[Bomber]], or the [[Rascals|Rascal Girls]], nor can it target aerial troops such as [[Bats]] or [[Minions]].
+**When attacking a passive building with a Miner, it may be a good idea to feign the attack on the building (i.e. aiming for the Crown Tower instead) in order to make the opponent waste Elixir, which can allowing for Earthquake to deal damage on their unit, the Crown Tower, and the building.
+*It can also work well with large tanks like the [[Giant]], [[Electro Giant]], [[Goblin Giant]], [[Elixir Golem]], and [[Golem]]. Due to all of them being weak to buildings, Earthquake will assist them in breaking through, to allow them to proceed to the Crown Tower instead.
+*A full Earthquake eliminates Goblins up to 1 Level higher, and all Spirit cards of the same Level. Two ticks eliminate [[Spear Goblins]], while a single tick is enough to take out Skeletons.
+*The Earthquake can be combined with [[The Log]], in a similar way to other spell combinations in order to fully defeat certain troops. Together, the two spells are able to defeat anything up to an [[Elixir Golem|Elixir Blob]]. However, they are a negative Elixir trade, so try to use them when you hit other troops as well.
+*Since the Earthquake does its damage in 3 ticks, it can be a semi-decent counter to [[Graveyard]]. You must place the Earthquake after 2 waves of Skeletons spawn from the Graveyard in order to get its full effect.
+*When using the Earthquake against the [[Cannon Cart]], always wait for its shield to be destroyed first before deploying the Earthquake. This will allow the spell to deal its full damage to it, saving more of your attacking units' hitpoints.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+! scope="col" |Duration<br />{{Icon|I=Time}}
+! scope="col" |Slowdown<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|3||3.5||3 sec||-50%||Ground||[[:Category:Spell Cards|Spell]]||{{Rarity|Rare}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: dmg_11 | 84 }}
+{{#vardefine: build_dmg_11 | 287 }}
+{{#vardefine: dmg_hits| 3 }}
+{{#vardefine: crown_dmg_11| 53 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Area Damage<br>{{Icon|I=Area Damage}}
+!scope="col"|Crown Tower Damage<br>{{Icon|I=Tower Damage}}
+! scope="col" |Building Damage<br />{{Icon|I=DPS}}
+|-
+| 3 || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(3-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(3-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(3-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:build_dmg_11}} * (1.1^(3-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:build_dmg_11}} * (1.1^(3-11)) round 0) * {{#var:dmg_hits}} }}) 
+|-
+| 4 || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(4-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(4-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(4-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:build_dmg_11}} * (1.1^(4-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:build_dmg_11}} * (1.1^(4-11)) round 0) * {{#var:dmg_hits}} }}) 
+|-
+| 5 || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(5-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(5-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(5-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:build_dmg_11}} * (1.1^(5-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:build_dmg_11}} * (1.1^(5-11)) round 0) * {{#var:dmg_hits}} }}) 
+|-
+| 6 || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(6-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(6-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(6-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:build_dmg_11}} * (1.1^(6-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:build_dmg_11}} * (1.1^(6-11)) round 0) * {{#var:dmg_hits}} }}) 
+|-
+| 7 || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(7-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(7-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(7-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:build_dmg_11}} * (1.1^(7-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:build_dmg_11}} * (1.1^(7-11)) round 0) * {{#var:dmg_hits}} }}) 
+|-
+| 8 || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(8-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(8-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(8-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:build_dmg_11}} * (1.1^(8-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:build_dmg_11}} * (1.1^(8-11)) round 0) * {{#var:dmg_hits}} }}) 
+|-
+| 9 || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(9-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(9-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(9-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:build_dmg_11}} * (1.1^(9-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:build_dmg_11}} * (1.1^(9-11)) round 0) * {{#var:dmg_hits}} }}) 
+|-
+| 10 || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(10-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(10-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(10-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:build_dmg_11}} * (1.1^(10-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:build_dmg_11}} * (1.1^(10-11)) round 0) * {{#var:dmg_hits}} }}) 
+|-
+| 11 || {{#var:dmg_11}} x{{#var:dmg_hits}} ({{#expr: {{#var:dmg_11}} * {{#var:dmg_hits}} }}) || {{#var:crown_dmg_11}} x{{#var:dmg_hits}} ({{#expr: {{#var:crown_dmg_11}} * {{#var:dmg_hits}} }}) || {{#var:build_dmg_11}} x{{#var:dmg_hits}} ({{#expr: {{#var:build_dmg_11}} * {{#var:dmg_hits}} }})
+|-
+| 12 || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(12-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(12-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(12-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:build_dmg_11}} * (1.1^(12-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:build_dmg_11}} * (1.1^(12-11)) round 0) * {{#var:dmg_hits}} }}) 
+|-
+| 13 || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(13-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(13-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(13-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:build_dmg_11}} * (1.1^(13-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:build_dmg_11}} * (1.1^(13-11)) round 0) * {{#var:dmg_hits}} }}) 
+|-
+| 14 || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(14-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(14-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(14-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:build_dmg_11}} * (1.1^(14-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:build_dmg_11}} * (1.1^(14-11)) round 0) * {{#var:dmg_hits}} }}) 
+|-
+| 15 || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(15-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(15-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(15-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:build_dmg_11}} * (1.1^(15-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:build_dmg_11}} * (1.1^(15-11)) round 0) * {{#var:dmg_hits}} }}) 
+|-
+| 16 || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(16-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(16-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(16-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:build_dmg_11}} * (1.1^(16-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:build_dmg_11}} * (1.1^(16-11)) round 0) * {{#var:dmg_hits}} }}) 
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 39,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|100 {{BASEPAGENAME}} cards<br>50 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 115,000 Damage to enemy Troops or buildings
+|4,000 {{Icon|I=Gold}}<br>50 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 195,000 Damage to enemy Troops or buildings 
+|100 {{Icon|I=Gem}}<br>50 {{Icon|I=XP}}
+|-
+| rowspan="3" |Buidling Basher <br> [[File:Building Basher.png|50x50px]]
+|1
+|Hit enemy buildings a total of 1,050 times
+|6,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy buildings a total of 3,000 times
+|100 {{Icon|I=Rare Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy buildings a total of 5,250 times
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+| rowspan="3" |Demolition Expert <br> [[File:Demolition Expert.png|50x50px]]
+|1
+|Hit buildings at least 18 times within a single [[Basics of Battle|battle]] a total of 50 times
+|6,000 {{Icon|I=Gold}}<br/ >175 {{Icon|I=XP}}
+|-
+|2
+|Hit buildings at least 18 times within a single battle a total of 150 times
+|8,000 {{Icon|I=Gold}}<br/ >175 {{Icon|I=XP}}
+|-
+|3
+|Hit buildings at least 18 times within a single battle a total of 300 times
+|10,000 {{Icon|I=Gold}}<br/ >175 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2019
+*The Earthquake [[Cards|card]] was added to the game on 15/4/2019, in the [[Version History#April%202019%20Update%20(15/4/2019)|April 2019 Update]].
+*On 3/6/2019, a [[Version History#Balance Changes (3/6/2019)|Balance Update]], made it so that the Earthquake would appear more often in [[Clan Wars/Clan Wars I|Clan Wars]]. It also added the the Earthquake as a [[Trophies|Trophy Road]] reward, in [[Tournament/Special Event Challenges|Draft]] and in Mini Collection.
+2020
+*On 3/3/2020, a [[Version History#Balance Changes (3/3/2020)|Balance Update]], allowed the Earthquake to affect the [[Tesla]] even if it is hidden.
+*On 5/5/2020, a [[Version History#Balance Changes (5/5/2020)|Balance Update]], increased the Earthquake's damage by 11%, but decreased its [[:Category:Building Cards|building]] damage to 200% of its [[:Category:Troop Cards|troop]] damage (from 300%).
+*On 2/6/2020, a [[Version History#Balance Changes (2/6/2020)|Balance Update]], increased the Earthquake's movement speed debuff to 50% (from 35%), but removed its attack speed and spawn speed debuffs.
+*On 31/8/2020, the [[Version History#Clan Wars II Update (31/8/2020)|Clan Wars II Update]], added the Slowdown statistic on the Earthquake's card info screen.
+2021
+*On 11/2/2021, a [[Version History#Maintenance Break (11/2/2021)|maintenance break]], made it so that the Earthquake would only deal 85% of its full troop damage to [[:Category:Crown Towers|Crown Towers]], but increased its building damage to 250% of its full troop damage (from 200%).
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the [[Arenas|Arena]] to unlock the Earthquake from Jungle Arena to Spooky Town.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 8/4/2022, a [[Version History#Maintenance Break (8/4/2022)|maintenance break]], decreased the Earthquake's Crown Tower damage to 65% of the full troop damage (from 85%).
+*On 28/4/2022, a maintenance break, added a card render to the Earthquake's card info screen.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+*On 2/10/2024, the [[Version History#Lucky Drops 2.0 Update (2/10/2024)|Lucky Drops 2.0 Update]], made it so that hovering troops would no longer be immune to Earthquake.
+2025
+*On 4/2/2025, a [[Version History#Balance Changes (4/2/2025)|Balance Update]], made it so that [[Lumberjack/Evolution|Lumberjack Ghost]] is immune to Earthquake.
+*On 31/3/2024, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], increased the Earthquake's damage by 2.43%.
+2026
+
+* On 1/6/2026, a Balance Update, decreased the Earthquake's Crown Tower damage to 58% of the full troop damage (from 65%)
+
+==Gallery==
+<gallery>
+File:Earthquake card render.png|Current card render.
+File:Earthquake Preview.gif|Current card preview
+File:Earthquake.png|Earthquake
+</gallery>
+
+==Trivia==
+*The Earthquake is 1 of 7 [[:Category:Spell Cards|spells]] which first existed in Clash of Clans, the others being [[Heal]], [[Lightning]], [[Freeze]], [[Poison]], [[Rage]], and [[Clone]].
+**In Clash of Clans, the container for Earthquake resemble spells that take up 1 housing space, which is similar to its Clash Royale counterpart.
+**Unlike its [https://clashofclans.fandom.com/wiki/Earthquake_Spell Clash of Clans counterpart], the Earthquake in Clash Royale is able to damage ground [[:Category:Troop Cards|troops]], hits its targets for a specified value, has no damage penalty or bonuses with repeated uses, can affect [[Tesla|Teslas]] that are underground, and slows all affected targets.
+*The Earthquake is 1 of 4 [[cards]] associated with subterranea, with the others being [[Goblin Drill]], [[Miner]], and the [[Mighty Miner]].
+*In the Korean, Chinese, and Finnish language settings of the game, the Earthquake's name translates to "Earthquake Magic", "Earthquake Spell", and "Tremor" respectively.
+*The Earthquake is 1 of 4 damaging spell cards that does not contain the phrase "''Reduced damage to Crown Towers.''" in its description despite dealing reduced damage to [[:Category:Crown Towers|Crown Towers]], with the others being Goblin Curse, Rage, and [[Tornado]].
+*The Earthquake is 1 of 7 spells which have team-colored rings on their radius, the others are Freeze, Poison, Rage, Clone, Tornado, and [[Graveyard]].
+*A [[Barbarians|Barbarian]] is featured on the Earthquake's card render.
+*It is 1 of 12 cards that is unavailable in [[Chess Royale]], the others being [[Royal Recruits]], [[Rocket]], Lightning, Poison, Goblin Drill, Miner, [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], Mighty Miner, and the [[Monk]].
+
+{{Navigation|Card}}
+
+[[fr:Séisme]]
+[[de:Erdbeben]]
+[[es:Terremoto]]
+[[it:Terremoto]]
+[[ru:Землетрясение]]
+[[zh:治疗法术]]

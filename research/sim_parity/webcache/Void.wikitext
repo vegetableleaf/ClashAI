@@ -1,0 +1,152 @@
+{{DISPLAYTITLE: <span style="color: #b300b3;">Void</span>}}
+{{Protection}}{{MagicWords}}
+{{Card Infobox|Cost=5|Rarity=Epic|Type=Spell|Arena=Miner's Mine|ReleaseDate=6 May 2024}}
+
+{{Quote|You shall not pass! Unless there are lot of you...Creates a field of dark magic damaging all enemy troop and buildings within. More damage is dealt when fewer targets are on its area. Reduced damage to Crown Towers.}}
+
+The Void is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from the [[Arenas|Miner's Mine (Arena 15)]]. It is a multi-damage, air-targeting [[:Category:Spell Cards|spell]] with a medium radius and various damage stages. The Void targets all [[Cards|troops]] inside its radius, dealing more damage to them the fewer there are inside its radius. It appears as a deep orange-amber liquid in a large vial, with dark purple decals around the corners and a cap on top. A Void card costs 5 [[Elixir]] to deploy.
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Void Card}}
+*The Void is best utilized when one or four targets are in its radius. This will do the most damage for the Elixir cost and in turn, give the most value to the player.
+*The Void is very effective against troops with moderately high hitpoints, such as the [[Electro Dragon]], [[Bandit]], [[Archer Queen]], [[Goblin Cage|Goblin Brawler]], [[Phoenix]], [[Baby Dragon]], [[Night Witch]], and the [[Inferno Dragon]] as each attack will deal a large amount of damage as long as it's the only troop in its radius, destroying or heavily crippling the troop.
+*Unlike most spells, it is advised to rarely try hitting the [[:Category:Crown Towers|Crown Towers]] with the Void with another troop next to it. Doing so will greatly reduce its damage to the troop, potentially leaving it in a healthy state.
+*If the Void is misplaced, distraction cards like [[Goblins]], [[Skeletons]], Minions, Guards, Spear Goblins, or [[Bats]] in combination with a tank, such as a [[Goblin Giant]], Ice Golem, or [[Royal Giant]], can greatly reduce the damage dealt to the tank. This drastic rise of targets in the Void’s radius will heavily decrease it’s damage output, essentially wasting the opponent’s Void spell and keeping your offense potent.
+*If the opponent deploys a troop behind the [[King's Tower]], it may be a good idea to try to use the Void on that troop without hitting the Crown Tower, to ensure that the troop is defeated in the process. However, against swarms split behind the King's Tower, it’s recommended to hit the Crown Tower as well for the extra damage, as adding an additional target would not decrease Void's damage.
+*The Void is very effective against defensive [[:Category:Building Cards|buildings]]. Since they’re usually placed far away from the Crown Towers, they’ll be hit by the spell for maximum damage, effectively destroying them over its duration. However, this is ineffective when another troop is placed in front of them, as in this case, the damage of the Void will decrease drastically.
+**When countering spawner buildings like [[Barbarian Hut]] and [[Goblin Hut]], deploying the Void away from where troops spawn can be much more effective; this will likely prevent the Void from attacking more units and allow it to fully take out the building.
+*The Void is an excellent counter to the [[Elixir Collector]], being able to almost destroy it for a bit less than the cost of a [[Rocket]]. The placement must be very precise, as even 1 additional target can negate most of the damage. As such, it’s advised to place it at the very edge of the collector, making sure to avoid the opponent's Crown Tower.
+*In a similar case, the Void can also nearly take out a lone [[Sparky]] for a positive 1 Elixir trade. This can be risky to do more than once though, as your opponent will likely catch on and ensure sure the Sparky always has units surrounding it. If using this tactic offensively, do be warned that the Sparky will be able to fire once before being destroyed by the Crown Tower.
+*The Void’s attacks do not count as projectiles. This allows the Void to deal damage to the [[Monk]] without being deflected back at the Crown Tower.
+*When countering [[X-Bow]], it’s recommended to deploy a cheaper distraction card, such as a [[Knight]], [[Spear Goblins]], Skeletons, [[Ice Golem]], [[Guards]], Minions, Bats, or Goblins, to block the X-Bow's chip damage while the Void finishes it off. The Void should be placed where it’s only targeting the X-Bow, any other troops in the Void’s radius will allow the X-Bow to survive the Void.
+*If timed and placed correctly, the Void can fully counter a [[Goblin Barrel]] with the assistance of the any tower troop. It is not recommended other than in an emergency because it is a -2 elixir trade.
+*The Void is a viable substitution for the [[Fireball]] in certain decks. For one more Elixir, the Void has the capability to do 3x the damage of the Fireball with the same radius. However, unlike the Fireball, the Void is much worse against large offensive pushes and deals less damage to the Crown Tower. This can result in inconsistent utility. If the void is hitting 2-4 targets it still deals considerably more damage than fireball so if youre killing something like a wizard, try hitting the crown tower as well.
+*Void is now a good counter by itself to cards like [[Bowler]] and other cards with similar health.
+
+<center><div id="unit-statistics" class="table-back">
+{{Statistics}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+! scope="col" |Duration<br />{{Icon|I=Time}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||2.5||4 sec||Air & Ground||[[:Category:Spell Cards|Spell]]||{{Rarity|Epic}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+{{#vardefine: dmg_hits| 3 }}
+{{#vardefine: 5_dmg_11 | 153}}
+{{#vardefine: 5_crown_dmg_11| 35}}
+{{#vardefine: 3_dmg_11 | 294}}
+{{#vardefine: 3_crown_dmg_11| 51}}
+{{#vardefine: 1_dmg_11 |696}}
+{{#vardefine: 1_crown_dmg_11|97}}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+! scope="col" |Single Target Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Single Target Crown Tower Damage<br />{{Icon|I=Tower Damage}}
+! scope="col" |2-4 Targets Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |2-4 Targets Crown Tower Damage<br />{{Icon|I=Tower Damage}}
+! scope="col" |5 Or More Targets Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |5 Or More Targets Crown Tower Damage<br />{{Icon|I=Tower Damage}}
+|-
+| 6 || {{#expr: {{#var:1_dmg_11}} * (1.1^(6-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:1_dmg_11}} * (1.1^(6-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:1_crown_dmg_11}} * (1.1^(6-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:1_crown_dmg_11}} * (1.1^(6-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:3_dmg_11}} * (1.1^(6-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:3_dmg_11}} * (1.1^(6-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:3_crown_dmg_11}} * (1.1^(6-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:3_crown_dmg_11}} * (1.1^(6-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:5_dmg_11}} * (1.1^(6-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:5_dmg_11}} * (1.1^(6-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:5_crown_dmg_11}} * (1.1^(6-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:5_crown_dmg_11}} * (1.1^(6-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 7 || {{#expr: {{#var:1_dmg_11}} * (1.1^(7-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:1_dmg_11}} * (1.1^(7-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:1_crown_dmg_11}} * (1.1^(7-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:1_crown_dmg_11}} * (1.1^(7-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:3_dmg_11}} * (1.1^(7-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:3_dmg_11}} * (1.1^(7-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:3_crown_dmg_11}} * (1.1^(7-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:3_crown_dmg_11}} * (1.1^(7-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:5_dmg_11}} * (1.1^(7-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:5_dmg_11}} * (1.1^(7-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:5_crown_dmg_11}} * (1.1^(7-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:5_crown_dmg_11}} * (1.1^(7-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 8 || {{#expr: {{#var:1_dmg_11}} * (1.1^(8-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:1_dmg_11}} * (1.1^(8-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:1_crown_dmg_11}} * (1.1^(8-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:1_crown_dmg_11}} * (1.1^(8-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:3_dmg_11}} * (1.1^(8-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:3_dmg_11}} * (1.1^(8-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:3_crown_dmg_11}} * (1.1^(8-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:3_crown_dmg_11}} * (1.1^(8-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:5_dmg_11}} * (1.1^(8-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:5_dmg_11}} * (1.1^(8-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:5_crown_dmg_11}} * (1.1^(8-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:5_crown_dmg_11}} * (1.1^(8-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 9 || {{#expr: {{#var:1_dmg_11}} * (1.1^(9-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:1_dmg_11}} * (1.1^(9-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:1_crown_dmg_11}} * (1.1^(9-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:1_crown_dmg_11}} * (1.1^(9-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:3_dmg_11}} * (1.1^(9-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:3_dmg_11}} * (1.1^(9-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:3_crown_dmg_11}} * (1.1^(9-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:3_crown_dmg_11}} * (1.1^(9-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:5_dmg_11}} * (1.1^(9-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:5_dmg_11}} * (1.1^(9-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:5_crown_dmg_11}} * (1.1^(9-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:5_crown_dmg_11}} * (1.1^(9-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 10 || {{#expr: {{#var:1_dmg_11}} * (1.1^(10-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:1_dmg_11}} * (1.1^(10-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:1_crown_dmg_11}} * (1.1^(10-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:1_crown_dmg_11}} * (1.1^(10-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:3_dmg_11}} * (1.1^(10-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:3_dmg_11}} * (1.1^(10-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:3_crown_dmg_11}} * (1.1^(10-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:3_crown_dmg_11}} * (1.1^(10-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:5_dmg_11}} * (1.1^(10-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:5_dmg_11}} * (1.1^(10-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:5_crown_dmg_11}} * (1.1^(10-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:5_crown_dmg_11}} * (1.1^(10-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 11 || {{#var:1_dmg_11}} x{{#var:dmg_hits}} ({{#expr: {{#var:1_dmg_11}} * {{#var:dmg_hits}} }}) || {{#var:1_crown_dmg_11}} x{{#var:dmg_hits}} ({{#expr: {{#var:1_crown_dmg_11}} * {{#var:dmg_hits}} }}) || {{#var:3_dmg_11}} x{{#var:dmg_hits}} ({{#expr: {{#var:3_dmg_11}} * {{#var:dmg_hits}} }}) || {{#var:3_crown_dmg_11}} x{{#var:dmg_hits}} ({{#expr: {{#var:3_crown_dmg_11}} * {{#var:dmg_hits}} }}) || {{#var:5_dmg_11}} x{{#var:dmg_hits}} ({{#expr: {{#var:5_dmg_11}} * {{#var:dmg_hits}} }}) || {{#var:5_crown_dmg_11}} x{{#var:dmg_hits}} ({{#expr: {{#var:5_crown_dmg_11}} * {{#var:dmg_hits}} }})
+|-
+| 12 || {{#expr: {{#var:1_dmg_11}} * (1.1^(12-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:1_dmg_11}} * (1.1^(12-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:1_crown_dmg_11}} * (1.1^(12-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:1_crown_dmg_11}} * (1.1^(12-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:3_dmg_11}} * (1.1^(12-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:3_dmg_11}} * (1.1^(12-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:3_crown_dmg_11}} * (1.1^(12-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:3_crown_dmg_11}} * (1.1^(12-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:5_dmg_11}} * (1.1^(12-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:5_dmg_11}} * (1.1^(12-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:5_crown_dmg_11}} * (1.1^(12-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:5_crown_dmg_11}} * (1.1^(12-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 13 || {{#expr: {{#var:1_dmg_11}} * (1.1^(13-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:1_dmg_11}} * (1.1^(13-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:1_crown_dmg_11}} * (1.1^(13-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:1_crown_dmg_11}} * (1.1^(13-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:3_dmg_11}} * (1.1^(13-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:3_dmg_11}} * (1.1^(13-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:3_crown_dmg_11}} * (1.1^(13-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:3_crown_dmg_11}} * (1.1^(13-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:5_dmg_11}} * (1.1^(13-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:5_dmg_11}} * (1.1^(13-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:5_crown_dmg_11}} * (1.1^(13-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:5_crown_dmg_11}} * (1.1^(13-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 14 || {{#expr: {{#var:1_dmg_11}} * (1.1^(14-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:1_dmg_11}} * (1.1^(14-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:1_crown_dmg_11}} * (1.1^(14-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:1_crown_dmg_11}} * (1.1^(14-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:3_dmg_11}} * (1.1^(14-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:3_dmg_11}} * (1.1^(14-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:3_crown_dmg_11}} * (1.1^(14-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:3_crown_dmg_11}} * (1.1^(14-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:5_dmg_11}} * (1.1^(14-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:5_dmg_11}} * (1.1^(14-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:5_crown_dmg_11}} * (1.1^(14-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:5_crown_dmg_11}} * (1.1^(14-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 15 || {{#expr: {{#var:1_dmg_11}} * (1.1^(15-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:1_dmg_11}} * (1.1^(15-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:1_crown_dmg_11}} * (1.1^(15-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:1_crown_dmg_11}} * (1.1^(15-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:3_dmg_11}} * (1.1^(15-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:3_dmg_11}} * (1.1^(15-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:3_crown_dmg_11}} * (1.1^(15-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:3_crown_dmg_11}} * (1.1^(15-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:5_dmg_11}} * (1.1^(15-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:5_dmg_11}} * (1.1^(15-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:5_crown_dmg_11}} * (1.1^(15-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:5_crown_dmg_11}} * (1.1^(15-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 16 || {{#expr: {{#var:1_dmg_11}} * (1.1^(16-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:1_dmg_11}} * (1.1^(16-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:1_crown_dmg_11}} * (1.1^(16-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:1_crown_dmg_11}} * (1.1^(16-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:3_dmg_11}} * (1.1^(16-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:3_dmg_11}} * (1.1^(16-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:3_crown_dmg_11}} * (1.1^(16-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:3_crown_dmg_11}} * (1.1^(16-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr: {{#var:5_dmg_11}} * (1.1^(16-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:5_dmg_11}} * (1.1^(16-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:5_crown_dmg_11}} * (1.1^(16-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:5_crown_dmg_11}} * (1.1^(16-11)) round 0) * {{#var:dmg_hits}} }})
+|}
+There will be rounding mistakes, as we have stats from level 11 (Level 12 should be 764 x3 and 106 x3 for single target)
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="20%" |Type 
+! width="10%" |Level/Tier
+! width="45%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 70,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|20 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 200,000 Damage to enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 335,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" |Troop Destroyer <br> [[File:Troop Destroyer.png|50x50px]]
+|1
+|Destroy 385 enemy Troops
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Destroy 1,100 enemy Troops
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Destroy 1,900 enemy Troops
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2024
+*The Void [[Cards|card]] was added to the game on 6/5/2024, in the [[Version History#Pass Royale and more (6/5/2024)|May 2024 Update]].
+*On 17/6/2024, the [[Version History#Goblin World Update (17/6/2024)|Goblin World Update]], decreased the Void's strike interval to 1.3 seconds (from 1.5 seconds), but increased the Void's first strike interval to 1 second (from 0.5 seconds).
+*On 2/7/2024, a [[Version History#Balance Changes (2/7/2024)|Balance Update]], increased the Void's area radius to 2.6 tiles (from 2.5 tiles).
+*On 6/8/2024, a [[Version History#Balance Changes (6/8/2024)|Balance Update]], decreased the Void's Single Target damage by 13.2%, but increased the 5 or More Targets damage by 58.4%.
+*On 2/10/2024, the [[Version History#Lucky Drops 2.0 Update (2/10/2024)|Lucky Drops 2.0 Update]], decreased the Void's area radius to 2.5 tiles (from 2.6 tiles).
+*On 8/10/2024, a [[Version History#Balance Changes (8/10/2024)|Balance Update]], decreased the Void's Single Target damage by 32%.
+2025
+*On 4/2/2025, a [[Version History#Balance Changes (4/2/2025)|Balance Update]], made it so that [[Lumberjack/Evolution|Lumberjack Ghost]] is immune to Void.
+*On 4/3/2025, a [[Version History#Balance Changes (4/3/2025)|Balance Update]], decreased the Void's strike interval to 1 second (from 1.3 seconds).
+*On 1/12/2025, a Balance Update, increased the Void's Single Target damage by 6%.
+2026
+
+* On 4/8/2026, a Balance Update, increased the Void's elixir cost to 5 elixir (from 3), increased its hit speed to 1.2 seconds (from 1 second), increased the single target damage by 105%, increased the 2-4 unit target damage by 83%, and increased the 5 or more target damage by 101%
+
+==Gallery==
+<gallery>
+File:Void card render.png|Current card render.
+File:Chinese Void card render.png|Void’s card render in the Chinese version of the game.
+File:Void Preview.gif|Current card preview
+</gallery>
+
+==Trivia==
+*The word "''Void''" comes from the Latin "''vacuus''", meaning empty.
+**In the Italian language settings of the game, the void's name is "Nihil", meaning "nothing" in Latin.
+*The Void is the only [[:Category:Spell Cards|spell]] that deals less damage the more [[:Category:Troop Cards|troops]] are inside its radius.
+*An [[Wizard/Evolution|Evolved Wizard]] is featured on the Void's [[Cards|card]] render.
+*The Evolved Wizard, [[Ice Wizard]], and [[Electro Wizard]] are responsible for creating the Void, according to the Clash Royale [https://youtube.com/shorts/32qX1fEbxX4?si=KqXAuxOvVZ5QaMFP Void intro video]. 
+*In the card's description, the "''You shall not pass!''" line is a reference to a quote mentioned by [https://en.wikipedia.org/wiki/Gandalf Gandalf] in [https://en.wikipedia.org/wiki/The_Lord_of_the_Rings The Lord of the Rings]. 
+*The Void is the subject of 2 [[Emotes]].
+
+{{Navigation|Card}}

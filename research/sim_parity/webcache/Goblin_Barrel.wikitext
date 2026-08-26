@@ -1,0 +1,248 @@
+{{DISPLAYTITLE: <span style="color: #b300b3;">Goblin Barrel</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=3|Rarity=Epic|Type=Spell|Arena=P.E.K.K.A.'s Playhouse|ReleaseDate=4 January 2016}}{{SubpageNavBox|Evolution=yes}}{{Quote|Spawns three Goblins anywhere in the Arena. It's going to be a thrilling ride, boys!}}
+
+The Goblin Barrel is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from the [[Arenas|P.E.K.K.A's Playhouse (Arena 6)]]. It is a [[:Category:Spell Cards|spell]], once the spell has hit the ground, it spawns three [[Goblins]]. It is a wooden barrel with a Goblin logo on it. A Goblin Barrel card costs 3 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Goblin Barrel Common Modifier.png|45x45px]]Common: Cannonball!===
+{{Quote|Impact damage}}
+The Goblin Barrel deals damage when it lands, similarly to a [[Fireball]]. Its area radius is also increased.
+
+===[[File:Goblin Barrel Rare Modifier.png|45x45px]] Rare: Double Barrel===
+{{Quote|x2 Goblins}}
+The Goblin Barrel shoots two waves instead of one.
+
+===[[File:Goblin Barrel Epic Modifier.png|45x45px]] Epic: Muscle Mates===
+{{Quote|3 Goblin Brawlers}}
+Instead of [[Goblins]], the Goblin Barrel spawns [[Goblin Cage|Goblin Brawlers]].
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Goblin Barrel Card}}
+*As the description says, the Goblin Barrel can be launched anywhere in the [[Arenas|Arena]], allowing players to attack or finish off [[:Category:Building Cards|buildings]] they cannot reach. However, it is easily countered with damaging [[:Category:Spell Cards|spells]] and area damage [[:Category:Troop Cards|troops]] due to their low hitpoints.
+*It is a good idea to put a tank/mini-tank (such as an [[Ice Golem]], [[Knight]], [[Hog Rider]], [[Lumberjack]], or [[Valkyrie]]) in the same lane as your Goblin Barrel, so the opponent’s [[:Category:Tower Troop Cards|Crown Tower]] would lock on to the tank, potentially allowing all three [[Goblins]] to connect multiple times and deal massive damage to the Crown Tower.
+**However, this combo can easily be countered by using a spell or splash damage-dealing card to destroy the Goblins before finishing the tank off.
+*It is not a good idea to leave a Goblin Barrel alone as it will do nearly twice as much damage to a Crown Tower as an equivalent level [[Rocket]] for half the [[Elixir]] cost.
+*When the Goblin Barrel is placed at the center of a Crown Tower, the spawned Goblins split apart on all sides of the Tower, making them harder for area damage units to defeat.
+**This is why area damage units will sometimes hit all three Goblins before they are separated, such as a preemptively placed Valkyrie.
+**In this situation, the Crown Tower will first target the Goblin horizontally closest to the [[King's Tower]]. If the player lacks reliable counters, they should place their [[:Category:Troop Cards|troop]] counter on the Goblin closer to the edge of the Arena. This will prevent more damage than placing the troop on the Goblin closer to the King Tower.
+*The Goblins from the Goblin Barrel have high damage per second, but low hitpoints. If it is being tanked by a high hitpoint troop that distracts the Crown Tower and any defending units, the Goblin Barrel can deal extremely high damage in a relatively short amount of time.
+*As Goblins have low hitpoints, they can be eliminated fairly quickly by Crown Towers. When using a Goblin Barrel to attack a King's Tower, the remaining Towers should be distracted with another unit, lest the Goblins be defeated quickly.
+*Although the primary Goblin Barrel placement is directly on the center of a Crown Tower, there are other placements which vary in practicality.
+**Playing a Goblin Barrel 3 tiles above a Crown Tower looks very similar to a Barrel that is placed on the center of it (this is colloquially referred to as a "tricky barrel"). It may cause the [[Barbarian Barrel]] or [[The Log]] played too far forward to miss one or more of the Goblins, allowing them to sneakily deal damage. However, this does not work in [[2v2]] due to the increased width of the King Tower pulling the Goblins.
+**A "tricky barrel" also can work against spells such as [[Arrows]], and if you launch the Goblin Barrel in the top right/left corner, then they may miss the Arrows barely, allowing your Goblins to get a few stabs on the Tower, or force them to place another card such as a [[Skeleton Army]] or an Ice Golem to counter it. However, this will generally result in less damage done to the Tower, due to the Goblins having to walk towards it.
+**Another placement for the Goblin Barrel is 1 tile on the side of the Tower. If the player places a Barbarian Barrel on the center of their Tower, the small width of the spell will cause it to miss 1 Goblin, letting it stab the Tower twice. It is also much more punishing if the opponent guesses the wrong side, as all 3 Goblins will stay alive longer. However, this is ineffective against The Log as it will always hit all 3 Goblins.
+**Placing a Goblin Barrel directly in front of the Tower can be effective if the opponent plays their counters to the Goblin Barrel farther back. The Goblins will spawn more quickly and possibly get a round of stabs on the Tower before being defeated. This is most important against swarms like the Skeleton Army and [[Goblin Gang]], as these swarms will not arrive in time before the Goblins attack the Tower.
+**Against a [[Elixir Collector]] placed at the back corner of the opponent's side, playing the Goblin Barrel at the very corner of the Arena can be very effective if you know the opponent only has swarms to counter the Goblin Barrel, as they will not be able to play them on top of the Goblins, allowing them to deny at least 3 Elixir from generating. This can also work against spawner buildings, such as a [[Goblin Hut]], however, make sure that the Goblins do not spawn when a wave of spawned troops appears.
+**If the enemy’s King Tower is low on health, send the Goblin Barrel in front of the Tower as most of the time. Not only will they arrive earlier to the Tower, but also the opponent is more likely to place their units or spells at the back of the Tower.
+**Placing the Goblin Barrel in the outer corner of the Crown Tower is a good way to prevent the opponent from using a [[Tornado]] to activate their King Tower. These placement should be used when the player notices that the Tornado is their opponent's only way to counter to the Goblin Barrel.
+*The Goblin Barrel can force the opponent to use their spells, allowing the player to swarm their opponent with cards such as the Skeleton Army and [[Minion Horde]]. However, this strategy can backfire if the opponent has some splash damage troops, another splash spell, or a [[Mirror]]. If the player has a Mirror, they can send a higher Level Goblin Barrel at the Tower again, forcing them to react with less effective counters. A Mirrored Goblin Barrel is very deadly when the Goblins at least one Level above the [[Tower Princess]], as this will cause the said Crown Tower to take three shots to defeat them, which will allow the Goblins to deal much more damage if left ignored. However, the visual effects will reveal its location, making it easier to counter.
+*When countering the Goblin Barrel, the player must not overreact and play a high cost [[Cards|card]] unless they are confident that they can turn said card into a counterpush, since the Goblin Barrel only costs 3 Elixir.
+*Spells like Rocket and [[Lightning]] are impractical to use against a Goblin Barrel since they are both a negative Elixir trade and may not hit all of the Goblins. However, if the defending player is ahead in a match and their Tower is at low health, they can use these spells to clear out a Goblin Barrel in the final seconds of a match.
+*Some spells such as [[Zap]] and [[Earthquake]] will not instantly defeat the Goblins when equally leveled, so a Crown Tower will take some damage. This is significant enough to fully destroy it over the course of a match if this is the only card played to counter the Goblin Barrel. The [[Royal Delivery]], Barbarian Barrel, and The Log fully defeat the Goblin Barrel for a neutral or positive Elixir trade.
+**The Royal Delivery's lengthy deploy time means that the defender must be ready to react as soon as the Goblin Barrel is launched from the opposing King's Tower. It is helpful to know which Crown Tower they will want to attack and when they will have their Goblin Barrel in hand, so that the Delivery can be hovered directly over the Crown Tower and released immediately.
+**The Log is the best counter to the Goblin Barrel. It will be able to defeat them instantly, and unlike other spells, it will also deal some chip damage to any incoming tank that was used alongside the Goblin Barrel
+**The Barbarian Barrel has a slightly shorter width than The Log, meaning it may fail to hit all three Goblins against certain staggered placements. For example, if the Goblin Barrel is placed to the side of the Crown Tower, and the Barbarian Barrel is placed on the center tile behind the Tower, the outermost Goblins will avoid being rolled over and will get a stab in. Therefore, the user must be more vigilant as opposed to if they were using The Log. It also does less damage so Goblins 2 Levels above the Barbarian Barrel will survive. However, the extra Barbarian is more useful in against a tank + Goblin Barrel push, compared to The Log which will only hit the tank once.
+**Arrows are the most reliable counter to the Goblin Barrel because of its large area of effect. The Goblins will be defeated in 2 of the 3 waves, and even against a higher Level Goblin Barrel, the third wave will be enough to defeat them.
+**A Tornado placed 2 tiles to the left/right (depending on where the Goblin Barrel is flying towards) of the middle of the King's Tower, 1 second before the Goblin Barrel lands will not only prevent all damage from the Goblins, it will also activate the King's Tower.
+**A [[Fireball]] will get the job done no matter what level the Goblins are, but it is a negative Elixir trade. Only use it if you must prevent all damage or when you are confident that your opponent will not have a higher priority target for Fireball, such as [[Magic Archer]] or [[Flying Machine]].
+**While a [[Giant Snowball]] cannot instantly defeat the Goblins, when placed correctly, it can fully counter a lone center placed Goblin Barrel. The player should hover their Giant Snowball over the Crown Tower and deploy it when the shadow of the Goblin Barrel is 2 tiles above the Crown Tower.
+**The spells that cannot defeat the Goblin Barrel on their own can still prevent all damage from the Goblins if the [[Dagger Duchess]] is in use. She attacks fast enough that the weakened Goblins in addition to their deploy time will not be able to hit the Crown Tower in time.
+*If the player has no spells, then swarms such as the Skeleton Army and Goblin Gang will be able to negate the damage. When played behind the Crown Tower, both will cover all positions except the front tiles. Some swarms like [[Barbarians]] and Goblins may have to be placed slightly earlier in order to be able to fully stop the Goblin Barrel. The same principle also applies to the [[Witch]] and her spawned [[Skeletons]].
+**These swarms can be stopped with a Giant Snowball, Arrows, or [[Rage]] used alongside the Goblin Barrel. These spells will defeat or weaken the defensive swarm enough for the Goblins to connect to the Crown Tower.
+*A Valkyrie placed one tile up from the bottom-outer corner of a Crown Tower can catch two Goblins in her swing and only let the Goblins get one stab on the Tower. The Valkyrie can be placed slightly ahead of time and hit all three Goblins due to her very quick first attack speed.
+**Similarly, a [[Dark Prince]] can completely stop a Goblin Barrel with his charge, since the hit from it is instant, and has a 360° splash radius. If you can predict an incoming Goblin Barrel, place the Dark Prince behind the King Tower, facing towards the Crown Tower where the Goblin Barrel will land. The charge will fully defeat the Goblins and the Dark Prince will prepare for a counterpush.
+*Good outcomes can be achieved with troops that can OHKO Goblins, such as the [[Lumberjack]]. These counters are somewhat situational and depends on what else the player has to counter Goblin Barrels because the opponent can throw their Goblin Barrels anywhere they please.
+*Ranged units aren't affected by placement since as long as all three Goblins are in range, the result will still be the same. [[Archers]], [[Musketeer]], [[Wizard]], [[Cannon Cart]], and other ranged units prevent all but two hits on the player's Crown Tower, and a [[Dart Goblin]] only lets three hits on the Tower. In some situations, the player may want to have the ranged troop tank a few hits from the Goblins in order to prevent more chip damage.
+*An [[Archer Queen]] can use her ability to hit the Goblins while she is invisible. Her boosted attack speed and range will defeat the Goblins quickly enough for no damage. The [[Golden Knight]] and [[Mighty Miner]] can use their abilities and counter the Goblin Barrel in a similar way.
+*Although the [[Fire Spirit]]’s area damage radius is not enough to completely stop a Tower-centered Goblin Barrel, if you drag any card like Skeletons behind the Tower and then select the Fire Spirit while your still holding the Skeletons, and then double tapping on the same tile will result in the Fire Spirit being pushed forward a bit, close enough to defeat all of the Goblins. This is enough to defeat the Goblin Barrel for a +1 Elixir trade, while also saving your spell for a different card. A [[Furnace]] placed directly behind the Crown Tower can stop the Goblin Barrel in a similar way, though it is a negative Elixir trade.
+*Placing a [[Bowler]] behind a Crown Tower will take out all three Goblins with the right timing. The Bowler should finish his deployment timer just as the Goblins spawn. Release him once the Goblin Barrel's shadow passes the enemy's Crown Tower. If the opponent tries to mix up their placement, the Bowler will still crush the Goblins anyway. He can then be used to build a counter-push. This can also be done with [[Hunter]], but does not work if the opponent mixes up their placement.
+**Due to a similar attack mechanic and counter-push potential, the [[Executioner]] can substitute the Bowler. He can destroy two Goblins in one throw, and the Goblin Barrel will get two hits on a Crown Tower.
+**When using the [[Magic Archer]] against a Goblin Barrel, place him in such a way that he distracts one Goblin, while also hitting the top 2 Goblins with one attack. This will prevent the most damage from the Goblin Barrel.
+*There is a precise technique for the [[Mega Knight]]'s spawn damage to hit all three Goblins, provided that the Goblin Barrel is placed on the center of the Crown Tower. The Mega Knight should be deployed right as the Goblin Barrel's shadow crosses the river, and all three Goblins will immediately be destroyed. The Mega Knight should be placed on the middle tile on any side of the Crown Tower.
+**An adept opponent may keep note of which side the defender drops their Mega Knight on, and stagger their Barrel one tile opposite to its placement and make the Mega Knight miss all three Goblins. This can be predicted in turn, but it is important to note that the Mega Knight costs 7 Elixir compared to the Goblin Barrel's 3. Unless the defender has enough Elixir to capitalize with the Mega Knight on the counterpush, they may want to consider a cheaper, less risky alternative to preventing damage.
+**The [[Electro Wizard]] and [[Ice Wizard]] are also able to hit all three Goblins with their spawn damage by placing them down shortly after the Barrel crosses the river (around 2-3 tiles past it). Against a lone Goblin Barrel, it does not prevent any extra damage compared to simply reacting to where the Goblins split and then deploying him. However, if the Goblins are being tanked for by another unit, and there is another unit on the map that can attack the Goblins, hitting all three with the spawn damage can potentially eliminate them more quickly, though this is very situational.
+*Flying swarm troops such as [[Bats]] or [[Minions]] can be effective when placed directly above the Goblin Barrel's landing, as they will safely destroy the Goblins without being counterattacked.
+*An effective offensive strategy is to play a [[Princess]] at the bridge after sending a Goblin Barrel to the opponent's Crown Tower. The opponent will likely be distracted by the Goblin Barrel and allow the Princess to lock onto the Crown Tower, and since they cannot hit both with one spell, they will have to choose which one to go for. If combined with a tricky barrel, it may even result in the opponent missing both cards with their spell.
+*An activated King's Tower is an enormous problem for a Goblin Barrel user. The King's Tower can attack alongside any Crown Tower and their combined targeting will eliminate the Goblins faster, severely weakening a Goblin Barrel push. Try not to have troops in your deck that are exploitable for King Tower activations like [[Electro Spirit]] and [[Firecracker]].
+*[[Freeze]] is an effective combo with Goblin Barrel as the Tower will be frozen while the Goblins deal damage. However this push is risky as it can be countered by area damage cards, mostly for a positive Elixir trade. Rage and [[Clone]] can be utilized in a similar way, for a slightly lower Elixir cost.
+*On defense, a properly placed Goblin Barrel can surround a [[Sparky]]. Taking her out with the assistance of the Crown Tower as she will have to shoot 3 times to take out all 3 Goblins.
+
+<center><div id="unit-statistics" class="table-back">
+{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Goblin Barrel Attributes}}
+{| id="unit-attributes-table" class="wikitable" style="width:100%; text-align:center;"
+!scope="col"|Cost<br />{{Icon|I=Elixir}}
+!scope="col"|Radius<br />{{Icon|I=Radius}}
+!scope="col"|Type<br />{{Icon|I=Type}}
+!scope="col"|Rarity<br />{{Icon|I=Rarity}}
+|-
+|3||1.5||[[:Category:Spell Cards|Spell]]||{{Rarity|Epic}}
+|}
+
+{{StatisticsSubheader|Goblin Attributes}}
+{| id="unit-attributes-table-secondary" class="wikitable" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.1 sec||0.4 sec||Very Fast (120)||1.1 sec||Melee: Short (0.5)||Ground||x3||Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 202 }}
+{{#vardefine: dmg_11 | 120 }}
+{{#vardefine: atk_speed | 1.1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 92,500 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|20 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 280,000 Damage to enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 465,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" |Tower Tapper <br/ > [[File:Tower Tapper.png|50x50px]]
+|1
+|Hit enemy [[:Category:Crown Towers|Crown Towers]] a total of 1,400 times
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Crown Towers a total of 4,000 times
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Crown Towers a total of 7,000 times
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Goblin Barrel [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016.
+*On 11/1/2016, the [[Version History#The First Update (11/1/2016)|First Update]], decreased the Goblin Barrel's spawned [[Goblins]] Level by 1. Before this update, a Level 8 Goblin Barrel would be able to spawn Level 14 Goblins.
+*On 19/2/2016, a [[Version History#Balance Changes (19/2/2016)|Balance Update]], decreased the Goblin Barrel's [[:Category:Crown Towers|Crown Tower]] damage to 40% of the full damage (from 50%).
+*On 29/2/2016, the [[Version History#March%202016%20Update%20(29/2/2016)|March 2016 Update]], decreased the Goblins' sight range to 5.5 tiles (from 6 tiles).
+*On 3/5/2016, the [[Version History#May%202016%20Update%20(3/5/2016)|May 2016 Update]], fixed the “range bug”, which decreased the Goblins' range to 0.5 tiles (from 1 tile), but their effective range was unchanged. It also made a small change to the Goblin Barrel's card description. Also, before the update, the Goblin Barrel was able to spawn Level 13 Goblins while the Level cap for the Skeletons card was 12. The [[Witch]] was able to do the same with the [[Skeletons]].
+*On 21/6/2016, a [[Version History#Balance Changes (21/6/2016)|Balance Update]], decreased the Goblins' spawn time to 1 second (from 1.2 seconds).
+*On 4/7/2016, the [[Version History#Tournaments Update (4/7/2016)|Tournaments Update]], decreased the Goblin Barrel's cost to 3 [[Elixir]] (from 4 Elixir), increased its Goblin spawn time to 1.2 seconds (from 1 second), and removed its impact damage.
+2017
+*On 11/10/2017, a [[Version History#Maintenance%20Break%20(11/10/2017)|maintenance break]], temporarily removed the Goblin Barrel from the [[Touchdown]] [[:Category:Modes|mode]] due to a bug where scoring a touchdown did not clear flying barrels from the [[Arenas|Arena]], which break into Goblins to score another touchdown while the opponent is unable to defend against it.
+*On 12/12/2017, the [[Version History#Electrifying Update (12/12/2017)|Electrifying Update]], decreased the Goblins’ damage by 6%.
+2018
+*On 2/7/2018, a [[Version History#Balance Changes (2/7/2018)|Balance Update]], decreased the Goblins' hitpoints by 1%. This was to fix an inconsistency with [[Minions]] that could not take out Goblins in two hits at the same Level.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Epic}} cards start at Level 6 and end at Level 13 (from 1 to 8).
+2019
+*On 6/5/2019, a [[Version History#Balance Changes (6/5/2019)|Balance Update]], decreased the Goblins' spawn time to 1.1 seconds (from 1.2 seconds).
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the Arena to unlock the Goblin Barrel from Goblin Stadium to Barbarian Bowl. It also added a card render to the Goblin Barrel's card info screen.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], increased the Goblins' first attack time interval to 0.4 seconds (from 0.2 seconds). It also moved the Arena to unlock the Goblin Barrel from Barbarian Bowl to P.E.K.K.A's Playhouse.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+
+* On 3/6/2023, the [[Version History#Pass Royale and more (3/6/2024)|June 2024 Update]], added the Goblin Barrel's Evolution.
+* On 17/6/2024, the [[Version History#Goblin World Update (17/6/2024)|Goblin World Update]], added the Goblin Barrel to the Goblin class.
+
+==Gallery==
+<gallery>
+File:Goblin Barrel card render.png|Card render
+File:Goblin Barrel Preview.gif|Current card preview
+File:Goblin Barrel 1.png|Goblin Barrel 
+</gallery>
+
+==Trivia==
+*Goblins are small, grotesque, monstrous creatures that appear in the folklore of multiple European cultures. First attested in stories from the Middle Ages, they are ascribed conflicting abilities, temperaments, and appearances depending on the story and country of origin, ranging from mischievous household spirits to malicious, bestial thieves. They often have magical abilities similar to a fairy or demon, such as the ability to shapeshift. Similar creatures include [https://en.wikipedia.org/wiki/Duende duendes], [https://en.wikipedia.org/wiki/Kobold kobolds], [https://en.wikipedia.org/wiki/Leprechaun leprechauns], and [https://en.wikipedia.org/wiki/Ghoul ghouls].
+**In the German and Dutch language setting of the game, the Goblin Barrel's name translates to "Kobold Barrel". In the Spanish, Arabic, Thai, and Vietnamese language setting of the game, the Goblin Barrel's name translates to "Duende Barrel", "Ghoul Barrel", "Goblin Tank" and "Leprechaun Box" respectively.
+**The Goblin Barrel is 1 of 17 [[cards]] associated with [[Goblins]], with the others being [[Spear Goblins]], [[Goblin Gang]], [[Baby Goblins]], [[Dart Goblin]], [[Goblin Demolisher]], [[Suspicious Bush]], [[Goblin Cage]], [[Goblin Hut]], [[Goblin Giant]], [[Goblin Curse]], [[Goblin Drill]], [[Goblin Machine]], [[Party Rocket]], [[Party Hut]], [[Goblinstein]], and of course, Goblins.
+*While not available as a spell in Clash of Clans, the Goblin Barrel may have inspired the [https://clashofclans.fandom.com/wiki/Goblin_Thrower Goblin Thrower] building, which launches Goblin Barrels of Spear Goblins instead, another card which inspired something in that game.
+*The Goblin Barrel is 1 of 3 cards related to barrels, alongside the [[Skeleton Barrel]] and [[Barbarian Barrel]].
+*The Goblin Barrel has the smallest radius out of all [[:Category:Spell Cards|spells]] in the game, with a radius of 1.5 tiles.
+*The Goblin Barrel is one of the first cards to ever receive balance changes since [[Version History#The First Update (11/1/2016)|The First Update]], the others being the [[Mortar]], [[Witch]], and [[Prince]].
+**It is the first spell card to ever receive balance changes.
+*The Goblin Barrel is 1 of 23 cards that has had its [[Elixir]] cost changed, the others being [[Bomber]], [[Fire Spirit]], [[Royal Recruits]], [[Cannon]], Mortar, [[Musketeer]], [[Three Musketeers]], [[Heal]], Goblin Hut, [[Bomb Tower]], [[Barbarian Hut]], [[Furnace]], [[Elixir Collector]], [[Skeleton Army]], [[P.E.K.K.A.]], [[Wall Breakers]], [[Electro Giant]], [[Bowler]], [[Barbarian Barrel]], [[Rage]], [[Fisherman]], and the [[Monk]].
+*The barrel of the Goblin Barrel looks similar to the hull of the [[Rocket]].
+*The [[Goblin Machine]]'s torso was created using an empty Goblin Barrel.
+*Its [[Star Points|Star Level 3 Skin]] grants the Goblins a red mohawk similar to the Level 6 Goblin in Clash of Clans.
+*Another Goblin's leg can be seen sticking out of the Barrel on the card image.
+*In the [https://www.youtube.com/watch?v=mtgrUd-Pvmc Goblin Barrel commercial], 4 Goblins are shown coming out of the Goblin Barrel, despite the Goblin Barrel only spawning 3 Goblins.
+*The Goblin Barrel is unavailable in multiple [[Tournament/Special Event Challenges|special gamemodes]]. More specifically:
+**It is 1 of 2 cards that is unavailable in [[Touchdown]] Draft, the other being Elixir Collector.
+**It is 1 of 3 cards that is unavailable in Boost Fields, the others being Goblin Drill and [[Miner]].
+*The Goblin Barrel is the subject of an [[Emotes|Emote]].
+*The description incorrectly mentions that the Goblin Barrel can be placed anywhere in the [[Arenas|Arena]], as it is unable to be placed directly on the river.
+**The Goblin Barrel is the only spell that cannot be placed directly on the river.
+*On 1/4/2016, certain Content Creators were given a different version of the game, with a Mortar that attacked by shooting Goblin Barrels instead of boulders.
+*The Goblin Barrel was featured in the winning [[Battle Decks|deck]] of the [https://www.youtube.com/live/psZXKWHkKkE?si=PbjvbZt8stghz6eJ King's Cup II Tournament], by a player called Surgical Goblin.
+*On 3/1/2024, the Goblin Barrel was supposed to receive a Goblin first attack time interval increase to 0.5 seconds (from 0.4 seconds), but this change [https://royaleapi.com/blog/season-55-balance-wip was pulled back last minute].
+*Before the Goblin Barrel's card release, the Goblin Barrel's Goblin spawn time was decreased to 1.2 seconds (from 1.3 second), and it was added impact damage.
+
+{{Navigation|Card}}
+
+[[fr:Fût à gobelins]]
+[[de:Koboldfass]]
+[[es:Barril de duendes]]
+[[it:Barile goblin]]
+[[ja:ゴブリンバレル]]
+[[ru:Гоблинская бочка]]
+[[zh:哥布林飞桶]]

@@ -1,0 +1,220 @@
+{{DISPLAYTITLE: <span style="color: #b300b3;">Barbarian Barrel</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=2|Rarity=Epic|Type=Spell|Arena=Jungle Arena|ReleaseDate=6 April 2018}}{{SubpageNavBox|Hero=Yes}}
+{{Quote|It rolls over and damages anything in its path, then breaks open and out pops a Barbarian! How did he get inside?!}}
+
+The Barbarian Barrel is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from the [[Arenas|Jungle Arena (Arena 9)]]. It is an area-damage, ground-targeting [[:Category:Spell Cards|spell]] with a short rectangular area and moderate damage. It can only be deployed on the player's own side. Once the spell reaches its destination, it spawns a single [[Barbarians|Barbarian]]. It is a spiked barrel with a Barbarian inside it. A Barbarian Barrel card costs 2 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Barbarian Barrel Card}}
+*The Barbarian Barrel can be used similarly to [[The Log]], but it will not reach the [[:Category:Crown Towers|Crown Tower]] before releasing its [[Barbarians|Barbarian]]. However, the Barbarian can follow up and attack anything while alive. When you place the Barbarian Barrel on the bridge, the Barbarian can hit the Crown Tower just one time. Similar to The Log, The Barbarian Barrel is useful to defend against the [[Goblin Barrel]] because it can kill the spawned [[Goblins]] up to one Level higher. This can be extended to a Goblin Barrel + tank combo, due to the spawned Barbarian distracting the tank and dealing damage to it.
+**The Barbarian Barrel has great synergy with the [[Battle Ram]]. The Barbarian Barrel eliminates many ground swarms for the Battle Ram to be able to connect to its target, and adds a third Barbarian to handle bulkier counters. A similar strategy works with the [[Hog Rider]] and [[Ram Rider]]. 
+*The Barbarian from the Barbarian Barrel can be fully countered by any support unit and the [[Tower Princess]]. Some cards, such as [[Skeletons]], [[Electro Spirit]], and [[Ice Spirit]], are +1 [[Elixir]] trades.
+**Against the [[Cannoneer]] and [[Dagger Duchess]], the Barbarian will not connect at all, allowing the player to fully ignore it. 
+*The Barbarian Barrel can fully counter lone support [[:Category:Troop Cards|troops]] such as [[Wizard]], [[Witch]], [[Ice Wizard]], [[Bandit]], [[Electro Wizard]], [[Night Witch]], [[Berserker]], [[Fisherman]], and [[Musketeer]] with the help of a Crown Tower. Even without a Crown Tower, if the troop is distracted, the Barbarian can take it out on his own. The Barbarian Barrel also has enough range so that the Barbarian can spawn across the river, giving it more utility for defending against ranged troops.
+**Against the Witch, the Barbarian Barrel should be placed as soon as the Witch's Skeletons spawn so they do not protect the Witch. The Barbarian Barrel should also be placed so the Barbarian spawns beside the Witch and attack her faster.
+**Against the [[Hunter]], the Barbarian should spawn at a distance from the Hunter while the Crown Tower is slowly attacking him. This will ensure that the Barbarian survives the first attack from the Hunter, which will distract him for long enough that the Crown Tower defeats him with no damage dealt back.
+**Against a [[Lumberjack]] or a [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], the player should place it so that they have to walk backwards in order to eliminate the Barbarian. This will distract them long enough for the Tower Princess to finish them off.
+**Certain support troops, like the [[Executioner]], Mini P.E.K.K.A, [[Cannon Cart]], [[Goblin Demolisher]], and Lumberjack, have higher health that a strong spell like [[Fireball]] will not be able to deal noticeable damage to them. A Barbarian Barrel can weaken them enough that the strong spell will be able to finish them. This creates a great synergy; Fireball deals high damage to the bulky support troop and Barbarian Barrel finishes them off.
+*While the Barbarian Barrel can take out the shield of the [[Wizard/Evolution|Evolved Wizard]], the [[Guards]]', Dark Prince's and [[Royal Recruits]]' shields cannot be taken out with just the Barbarian Barrel's damage due to their slightly higher health, making the Barbarian Barrel much less effective against them.
+*Like The Log, the Barbarian Barrel can destroy the [[Tombstone]]. If the Tombstone is under 50% of its health, it will not only destroy the Tombstone itself, but it will also destroy the Skeletons after death. However, it cannot reach the Tombstone if it is placed too deep within the enemy's territory.
+**Similarly, a Barbarian Barrel makes a decent soft counter to the [[Goblin Drill]], as the area of effect can hit both the Goblin Drill and the spawned Goblins after its destruction.
+*The Barbarian Barrel can function as a cheap tank for a [[Graveyard]]. The Graveyard [[:Category:Spell Cards|spell]] should be played first, and then the Barbarian should be placed at the bridge immediately afterward. The Barbarian will spawn as soon as the Graveyard's Skeletons start spawning, both tanking for them and also threatening to deal chip damage to the Crown Tower.
+**In a similar principle, the Barbarian from the Barbarian Barrel can function as a tank for a [[Miner]]. By having the Crown Tower attacking the Barbarian, the Miner will be able to attack it without him being attacked in return. Alternatively, the Miner can be used to tank for the Barbarian, giving him enough time to connect and deal damage, although this is less consistent. The Goblin Drill can be used in a similar way.
+**An even cheaper push is to use the Barbarian Barrel with the Goblin Barrel. The Barbarian Barrel tanks for the Goblins while the Goblins attack the Crown Tower. Even if they use Zap on the Goblins, the Barbarian will take no damage from it, and continue tanking. However, make sure that this push is executed when The Log or an opposing Barbarian Barrel is out of rotation, as these spells will not only OHKO the Goblins but also prevent the Barbarian from connecting to the Crown Tower, either by knocking him back or distracting him.
+**The Barbarian Barrel is a situational counter to a Graveyard push itself. The defender should wait for some Skeletons to build up, then deploy the Barbarian Barrel. After it finishes rolling, the Barbarian will help take out and tank some of the Skeletons. Players should keep in mind that despite appearances, the Barbarian Barrel's radius is thinner than The Log, so some Skeletons may seem like they are in range of the Barbarian Barrel when they are not.
+*The Barbarian Barrel has good synergy with the [[Bats/Evolution|Evolved Bats]] as the Barbarian can be used as a cheap tank for the Evolved Bats, letting them attack a ground troop and heal enough to make themselves harder to defeat. Likewise, this tactic works with any cheap swarm such as [[Goblin Gang]], Guards, [[Skeletons/Evolution|Evolved Skeletons]], and [[Skeleton Army]].
+*The Barbarian Barrel pairs well with the [[Royal Giant]]. The Barbarian Barrel will be able to kill any ground swarms placed on top of the Royal Giant, and when the Barbarian spawns, he will help against single units placed on top. The Royal Giant will tank for the spawned Barbarian, possibly allowing him to connect to the Crown Tower afterwards.
+*The Barbarian Barrel cannot take out equal-level [[Princess|Princesses]], [[Dart Goblin|Dart Goblins]], or [[Rascals|Rascal Girls]] with just the Barbarian Barrel's damage, meaning an extra swing from the Barbarian is needed. However, a Barbarian Barrel one Level higher than these units will be able to take them out without the Barbarian's help.
+*The Barbarian can help counter air troops placed close to the center of the [[Arenas|Arena]], such as a [[Baby Dragon]], [[Electro Dragon]], [[Skeleton Dragons]], [[Mega Minion]], [[Flying Machine]], [[Phoenix]], or [[Minions]]. The defender should place the Barbarian Barrel so that once the enemy troop is in range of the Crown Towers, the Barbarian will spawn slightly in the lane opposite of the air troop. This will kite the air troop into the opposite lane, giving the defender's Towers ample time to chip it down.
+*Since it does spawn a troop, the spell can be used to separate a building-targeting troop from a regular troop. For example, against a [[Giant Skeleton]] [[Balloon]] push, the Barbarian Barrel can be used to lure the Giant Skeleton away from the Balloon, allowing your air defenders to defeat the Balloon much easier.
+*When using a Goblin Barrel against a Barbarian Barrel, staggering the Goblin Barrel 1 tile to either side of the Crown Tower will cause the Barbarian Barrel to miss one of the Goblins if it is placed directly in the center, allowing the Goblin to stab the Tower twice for chip damage.
+*If the Barbarian Barrel is placed at most 2 tiles from the river, the Barbarian will spawn at the opposing side of the Arena. This is good to know for situations where the Barbarian Barrel would be good to be on the opposing side, such as for distracting an [[Inferno Tower]]. However, in such situations, it is generally better to place it as close to the river as possible in order to spawn the Barbarian closer to said Inferno Tower, giving more opportunity for the Barbarian to deal damage to that Inferno Tower.
+*The Barbarian Barrel is a great counter to the Skeletons from the [[Skeleton Barrel]] since its death damage does not deal too much damage, and it can easily destroy all of the Skeletons for a positive Elixir Trade. The player must account for the 0.5 second animation where neither the Skeleton Barrel nor the Skeletons are considered as entities; if the spell is cast during this phase, it will not affect the Skeletons.
+*The Barbarian Barrel is completely ineffective against the [[Prince]], as it will result in little damage dealt to him, while the Barbarian will be OHKOed by the charge.
+*Note that unlike some other [[:Category:Spell Cards|spells]], the Barbarian Barrel's range is not enough to be able to hit the Crown Towers. As such, it may be a good idea to be used in [[Battle Decks|decks]] alongside other spells that are able to reach the Crown Tower such as [[Arrows]], [[Zap]], [[Fireball]], [[Giant Snowball]], or [[Poison]].
+*Against the [[Monk]], if he activates his ability while at the center of the Arena, a Barbarian Barrel can be casted towards the Monk. The Monk will deflect it back and spawn an enemy Barbarian that will proceed towards the King's Tower, activating him.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Barbarian Barrel Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Width<br />{{Icon|I=Radius}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|2||4.5||2.6||Ground||[[:Category:Spell Cards|Spell]]||{{Rarity|Epic}}
+|}
+
+{{StatisticsSubheader|Barbarian Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.3 sec||0.4 sec||Medium (60)||0.5 sec||Melee: Short (0.5)||Ground||x1||Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: spawn_11 | 230 }}
+{{#vardefine: hp_11 | 670 }}
+{{#vardefine: dmg_11 | 191 }}
+{{#vardefine: atk_speed | 1.3 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+! scope="col" |Barbarian Barrel Area Damage<br />{{Icon|I=Area Damage}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 6 || {{#expr: {{#var:spawn_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:spawn_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:spawn_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:spawn_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:spawn_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:spawn_11}} || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:spawn_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:spawn_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:spawn_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:spawn_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:spawn_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type 
+! width="10%" |Level/Tier 
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 80,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|20 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 240,000 Damage to enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 400,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" |Troop Destroyer <br/ > [[File:Troop Destroyer.png|50x50px]]
+|1
+|Destroy 280 enemy Troops
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Destroy 800 enemy Troops
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Destroy 1,400 enemy Troops
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2018
+*The Barbarian Barrel was once available in the [[Tournament/Special Event Challenges|Barbarian Barrel Draft Challenge]] which started on 23/3/2018. In this [[Tournament|challenge]], gameplay was similar to a regular Draft Challenge, except that one of the players was able to choose who would use the Barbarian Barrel. If the player achieved 12 wins, they obtained the Barbarian Barrel early.
+*From 31/3/2018 through 4/4/2018, the [[Shop]] had a special offer where [[Arenas|Arena]] 10+ players could buy an unlimited number of special Fortune [[Chests]] for 1,200 [[Gems]] that guarantee at least 60% of the Chest's contents to be Barbarian Barrel. The Chest was able to generate up to 150% of its contents to be Barbarian Barrel.
+*The Barbarian Barrel [[Cards|card]] was generally released on 6/4/2018.
+*On 25/4/2018, the [[Version History#Clan%20Wars%20Update%20(25/4/2018)|Clan Wars Update]], increased the Barbarian Barrel’s rolling distance to 7 tiles (from 6.5 tiles). It also allowed the Barbarian Barrel to be placed on the river if a [[:Category:Crown Towers|Crown Tower]] has been already destroyed. The card's description was also changed slightly. It used to read “''It rolls, knocks back and damages anything in the way - then breaks and out pops a Barbarian! How did he get inside?!''”. It also added the Barbarian Barrel to [[Touchdown]] Draft.
+*On 4/6/2018, a [[Version History#Balance Changes (4/6/2018)|Balance Update]], decreased the [[Barbarians]]‘ attack time interval to 1.4 seconds (from 1.5 seconds).
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], increased the Barbarian Barrel's damage by 17% and allow the user to see where the spawned Barbarian will be after it is used. It also moved the [[Arenas|Arena]] to unlock the Barbarian Barrel from Hog Mountain to Barbarian Bowl.
+*On 3/9/2018, a [[Version History#Balance Changes (3/9/2018)|Balance Update]], decreased the Barbarian Barrel's cost to 2 [[Elixir]] (from 3 Elixir), decreased its rolling distance to 5 tiles (from 7 tiles), decreased its damage by 9%, and removed its pushback. Due to the range decrease, its Crown Tower Damage was also removed.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Epic}} cards start at Level 6 and end at Level 13 (from 1 to 8).
+*On 1/10/2018, a [[Version History#Balance Changes (1/10/2018)|Balance Update]], increased the Barbarian Barrel's casting speed to 360 (from 310), its projectile speed to 200 (from 150) and decreased the Barbarian's spawn time to 0.2 seconds (from 0.5 seconds). It also fixed a bug where [[:Category:Troop Cards|troops]] that were spawned after their parent troops died would be immune to [[:Category:Spell Cards|spell]] damage.
+*On 3/12/2018, a [[Version History#Balance Changes (3/12/2018)|Balance Update]], decreased the Barbarian Barrel’s damage by 4%. There was also an unannounced change to the Barbarian Barrel, an increase to the Barbarian's spawn time to 0.25 seconds (from 0.2 seconds).
+2019
+*On 7/1/2019, a [[Version History#Balance Changes (7/1/2019)|Balance Update]], increased the Barbarian's spawn time to 0.5 seconds (from 0.25 seconds).
+*On 4/3/2019, a [[Version History#Balance Changes (4/3/2019)|Balance Update]], decreased the Barbarian's hitpoints by 13%.
+*On 3/6/2019, a [[Version History#Balance Changes (3/6/2019)|Balance Update]], decreased the Barbarian Barrel's damage by 10.5%.
+*On 1/7/2019, the [[Version History#July%202019%20Update%20(1/7/2019)|July 2019 Update]], decreased the Barbarian Barrel's width to 2.6 tiles (from 3.9 tiles). This was to fix a bug where the the Barbarian Barrel's width did not match the visual width of the barrel.
+*On 5/8/2019, a [[Version History#Pass Royale and more (5/8/2019)|Balance Update]], decreased the Barbarian Barrel's damage by 15%.
+*On 4/11/2019, a [[Version History#Pass Royale and more (4/11/2019)|Balance Update]], increased the Barbarian's Barrel's damage by 8%.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Barbarian Barrel's card info screen.
+2021
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 7/6/2022, a [[Version History#Balance%20Changes%20(7/6/2022)|Balance Update]], decreased the Barbarians‘ attack time interval to 1.3 seconds (from 1.4 seconds), but it also decreased the Barbarian Barrel's rolling distance to 4.5 tiles (from 5 tiles).
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Barbarian Barrel from Barbarian Bowl to Jungle Arena.
+2023
+*On 27/3/2023, the [[Version History#Losers%20Update%20(27/3/2023)|Losers Update]], improved the Barbarian Barrel's collision detection.
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14). It also fixed an issue with Barbarian Barrel's sound effects.
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Barbarian Barrel's damage by 0.41%.
+*On 1/12/2025, a Balance Update decreased the Barbarian Barrel's Barbarian deploy time to 1 seconds (from 0.5 seconds) and decreased the Barrel damage by 4%.
+2026
+
+* On 2/2/2026, a Balance Update, increased the Barbarian Barrel's damage by 1%.
+
+==Gallery==
+<gallery>
+File:Barbarian Barrel card render.png|Current card render.
+File:Barbarian Barrel Preview.gif|Current card preview.
+File:Barbarian Barrel.png|Barbarian Barrel
+File:Barbarian Barrel 2.png|Barbarian Barrel 2
+</gallery>
+
+==Trivia==
+*The word "''Barbarian''" comes from the Greek "''βάρβαρος''" (''bárbaros''), meaning foreign. Dating back to the ancient Greek times, the Greeks referred to non-Greek people as barbarians because the language they spoke sounded to Greeks like gibberish represented by the sounds "''bar..bar..;''".
+**In the Japanese and Thai language setting of the game, the Barbarian Barrel's name translates to "Rolling Barbarian" and "Barbarian Tank" respectively.
+**The Barbarian Barrel is 1 of 6 [[cards]] associated with [[Barbarians]], with the others being [[Elite Barbarians]], [[Barbarian Launcher]], [[Battle Ram]], [[Barbarian Hut]], and of course, Barbarians.
+***It is the only Barbarian-related card to be {{Rarity|Epic}}.
+***It is the only Barbarian-related card to be a [[:Category:Spell Cards|spell]].
+***It is the only Barbarian-related card to spawn only 1 Barbarian instead of more than 1.
+**According to a Clash-A-Rama comic [https://clasharama.fandom.com/wiki/Clash-A-Rama!_Comic_Strips?file=Barb_Barrel_ColourWeb2.jpg strip], the Barbarians follow a career path, with the one in the Barbarian Barrel being the lowest-ranking one.
+*The Barbarian Barrel, along with [[Wall Breakers]], [[Rage]], and [[Goblin Curse]], are the cheapest {{Rarity|Epic}} cards, costing 2 [[Elixir]].
+*The Barbarian Barrel is one of the first spell cards to receive a card render, alongside the [[Arrows]] and [[Rocket]].
+*It is 1 of 3 spells that can only be placed in the player's territory, the others being [[Royal Delivery]] and [[The Log]].
+*The Barbarian Barrel is 1 of 23 cards that has had its [[Elixir]] cost changed, the others being [[Bomber]], [[Fire Spirit]], [[Royal Recruits]], [[Cannon]], [[Mortar]], [[Musketeer]], [[Three Musketeers]], [[Heal]], [[Goblin Hut]], [[Bomb Tower]], [[Barbarian Hut]], [[Furnace]], [[Elixir Collector]], [[Skeleton Army]], [[P.E.K.K.A.]], Wall Breakers, [[Electro Giant]], [[Bowler]], [[Goblin Barrel]], Rage, [[Fisherman]], and the [[Monk]].
+*The Barbarian Barrel is 1 of 10 cards to have an alliterative name, the others being the [[Royal Recruits]], [[Goblin Gang]], [[Mega Minion]], [[Goblin Giant]], [[Cannon Cart]], [[Ram Rider]], [[Dagger Duchess]], [[Boss Bandit]], and the [[Mighty Miner]].
+*The Barbarian Barrel is the subject of an [[Emotes|Emote]].
+**The Barbarian Barrel Back in Time Emote is a reference to [https://en.wikipedia.org/wiki/Back_to_the_Future Back to the Future].
+*The Barbarian Barrel was featured in the winning [[Battle Decks|decks]] of multiple Clash Royale Tournaments. More specifically:
+**The Barbarian Barrel was featured in the winning deck of the [https://www.youtube.com/live/cmBlEI-aDoo?si=UoD1Sit2YvQR19xs Clash Royale League 2019 Tournament], by a player called Surgical Goblin.
+**The Barbarian Barrel was featured in the winning deck of the [https://www.youtube.com/live/h3IOFTfT8Sk?si=wTF1FekCifpSULn- Clash Royale League 2020 Tournament], by a player called Ruben.
+**The Barbarian Barrel was featured in the winning deck of the [https://www.youtube.com/live/pRfrjMiHbQA?si=P2kVLJUlXH1SZoHm Clash Royale League 2021 Tournament], by a player called Mugi.
+*If a [[Monk]] activates Pensive Protection in the corner of the [[Arenas|Arena]], then an opposing Barbarian Barrel will be deflected out of the Arena's bounds. However, the [[Barbarians|Barbarian]] will spawn inside the Arena.
+**Thanks to the Monk, it is possible for a Barbarian Barrel to deal damage to [[:Category:Crown Towers|Crown Towers]] by itself. Unlike other spells, it will not deal reduced damage.
+*On 3/1/2024, the Barbarian Barrel was supposed to receive a 7% damage decrease, but this change [https://royaleapi.com/blog/season-55-balance-wip was pulled back last minute].
+
+{{Navigation|Cards}}
+
+[[fr:Fût à barbare]]
+[[de:Barbarenfass]]
+[[es:Barril de bárbaro]]
+[[it:Barile barbarico]]
+[[ru:Варварская бочка]]
+[[zh:野蛮人滚桶]]

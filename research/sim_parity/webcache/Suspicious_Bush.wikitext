@@ -1,0 +1,195 @@
+{{DISPLAYTITLE: <span style="color: #ffa31a;">Suspicious Bush</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=2|Rarity=Rare|Type=Troop|Arena=Rascal's Hideout|Class=Goblin|ReleaseDate=30 July 2024}}
+{{Quote|This invisible bush skulks towards the nearest building. Sus. If Suspicious Bush reaches its target or gets destroyed by a spell, it surprises the enemy with Bush Goblins!}}
+The Suspicious Bush is a {{Rarity|Rare}} [[Cards|card]] that is unlocked from the [[Arenas|Rascal's Hideout (Arena 13)]]. It spawns a medium speed, building-targeting, ground [[:Category:Troop Cards|troop]] with very low hitpoints. Upon deployment, it spawns invisible as it moves towards the nearest building. Once the Suspicious Bush either reaches a building or is defeated, it will spawn two Bush Goblins, which are single-target, ground-targeting, melee, ground troops with low hitpoints and moderate damage. It is a tiny bush with team-colored flowers on it and a periscope mounted on top that has a white flower on it, while the Bush Goblins appear as [[Goblins]] that wear leaves on their heads and waists held by a rope, have team-colored body markings on their skin, and wield stone hammers. A Suspicious Bush card costs 2 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Suspicious Bush Common Modifier.png|45x45px]] Common: If One Goes, We ALL Go===
+{{Quote|Vines on reveal}}
+Sends out a Vines spell when Suspicious Bush is revealed.
+
+===[[File:Suspicious Bush Rare Modifier.png|45x45px]] Rare: Looks Fine to Me!===
+{{Quote|+2 Bush Goblins}}
+Adds 2 Bush Goblins when revealed.
+
+===[[File:Suspicious Bush Epic Modifier.png|45x45px]] Epic: Always Look in the Bush!===
+{{Quote|4 Bush Brawlers}}
+Replaces Bush Goblins with 4 [[Goblin Cage|Goblin Brawlers]].
+
+==Strategy==
+*While it’s in Bush form, similarly to the [[Royal Ghost]], the Suspicious Bush is completely untargetable to opposing troops. Thus, it’s nearly required to destroy it with [[:Category:Spell Cards|spells]] or lure it with defensive [[:Category:Building Cards|buildings]] to prevent the Bush Goblins from spawning next to the [[:Category:Crown Towers|Crown Tower]].
+**Alternatively, if the Suspicious Bush is next to another ground troop, a card with area damage, like [[Valkyrie]], [[Firecracker]], [[Bowler]], [[Executioner]], and [[Bomber/Evolution|Evolved Bomber]], can indirectly hit and destroy the Bush. These cards will also destroy the Bush Goblins and provide more value on defense.
+**Since the Bush is invisible, a [[Tesla]] should be placed right next to a Suspicious Bush if the Bush is the only troop approaching the Crown Tower. Otherwise, the Tesla fails to detect the Suspicious Bush and hides under the ground, causing the Bush to go to the Crown Tower.
+*Due to the Bush’s very low hitpoints, any spell with the help of any [[:Category:Tower Troop Cards|tower troop]] can fully counter the Bush and the spawned Bush Goblins. Using the spell too late will change the interaction as they’ll spawn closer, likely resulting in slight chip damage to the Crown Tower.
+**2 Elixir spells, like [[Giant Snowball]] and [[Goblin Curse]], are ideal in this scenario as the interaction will result in an equal Elixir trade.
+**The [[Barbarian Barrel]] is the best spell to use against the Suspicious Bush. It will be able to destroy the Suspicious Bush itself, while the Barbarian distracts the Bush Goblins. If placed right, it may also force the Bush Goblins to have to walk towards the Barbarian, possibly resulting in the Barbarian surviving the confrontation.
+**Defensive buildings will always result in at least a -1 Elixir trade for the player since the cheapest buildings are 3 Elixir, making them less effective at countering a lone Suspicious Bush, but better for pushes involving the Suspicious Bush.
+*The Bush Goblins take multiple seconds to spawn from the Bush after it receives fatal damage. Thus, piercing cards, like [[The Log]], [[Magic Archer]], [[Barbarian Barrel]], and [[Bowler]], are incapable of hitting both the Bush and the Bush Goblins in a single attack.
+*A Suspicious Bush can be ignored under certain circumstances; it’ll do some noticeable chip damage on the Crown Tower across all tower troops.
+*Since the Suspicious Bush is an invisible building-targeting troop with low hitpoints and no damage utility, it’s almost entirely worthless on defense. Instead, the player can deploy it in the other lane to force a response from the opponent while the player is busy defending a push. This may result in the opponent using their small spell on the Bush instead of the player’s defensive units.
+*Unlike the Royal Ghost, the Suspicious Bush is slow and light, meaning that it is not as effective at having it push a mini tank towards the Crown Tower. In this case, it is better to deploy the mini tank after the Suspicious Bush and at a slight distance, to prevent the opponent from gaining spell value with certain spells like the Zap, by hitting both the mini tank and the Bush Goblins.
+*Troops with moderate hitpoints and spawn damage, including [[Ice Wizard]] and [[Electro Wizard]], are risky counters to the Suspicious Bush. After their spawn damage destroys the Bush form, the Bush Goblins will deal significant damage to these troops, allowing the opponent to mostly ignore them for a +1 and +2 Elixir trade respectively.
+*Depending on the tower troop, a [[Miner]] paired with the Suspicious Bush is a cheap way to deal a very high to even lethal amount of damage to the Crown Tower as the Miner tanks for the Bush Goblins.
+**Deploying the Miner too late will significantly alter this interaction, letting the Crown Tower destroy the Bush Goblins, which do most of the damage, first before taking out the Miner.
+*Using a [[Goblin Barrel]] or [[Skeleton Barrel]] to bait out the opponent’s small spells can be very effective at forcing them to overcommit against the Suspicious Bush as the Bush Goblins will otherwise pose a notable threat. This may give the user a small Elixir advantage, which can be consistently repeated to mount a large offensive push later on.
+**Conversely, a Suspicious Bush can bait out an opponent’s small spell for the Goblin Barrel or Skeleton Barrel to have better odds of dealing damage to the Crown Tower.
+*The [[Skeletons]] and the [[Skeletons/Evolution|Evolved Skeletons]] are the only reliable ways to get a positive Elixir trade against the Suspicious Bush while resulting in no damage across all tower troops. Once it reaches the Crown Tower, deploy the Skeletons directly on top of the Bush. They’ll take the Bush Goblins attacks and help take them out, resulting in a +1 Elixir trade.
+*The Suspicious Bush can fully counter the [[Goblin Drill]] with the Crown Tower’s assistance for a +2 Elixir trade. Deploy the Bush directly in front of the drill, instantly breaking it and revealing the Bush Goblins. The Bush Goblins will then proceed to take out every [[Goblins|Goblin]] and the drill itself.
+*With the help of the [[Dagger Duchess]], the Suspicious Bush is able to counter the Skeleton Barrel for a +1 Elixir trade. The Dagger Duchess will destroy the Skeleton Barrel, forcing the Skeleton Barrel's death damage to immediately destroy the Suspicious Bush, allowing the Bush Goblins to spawn and attack the Skeletons while also tanking for them.
+*It’s advised to not deploy the Suspicious Bush next to a Crown Tower or other friendly troops. Any form of splash damage, like a [[Princess]], [[Wizard]], [[Witch]], [[Goblin Demolisher]], [[Baby Dragon]], or [[Zap]], that hits them may also hit the Bush and reveal the Bush Goblins, providing little offensive value.
+*The Suspicious Bush is a good substitute for [[Wall Breakers]]. Their Bush’s invisibility makes it much harder to stop on its way to the Crown Tower and the Bush Goblins deal much more damage to the Crown Tower when ignored with the same hitpoints and Elixir cost. However, they cannot affect air troops at all, get easily distracted by defending troops, and deal less damage per hit.
+**The [[Wall Breakers/Evolution|Evolved Wall Breakers]] make up for many of the regular Wall Breakers’ weaknesses over the Suspicious Bush, particularly raw damage. This makes them better than the Suspicious Bush in most cases.
+
+<center><div id="unit-statistics" class="table-back">
+{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Suspicious Bush Attributes}}
+{| id="unit-attributes-table" class="wikitable" style="width:100%; text-align:center;"
+!scope="col"|Cost<br />{{Icon|I=Elixir}}
+! scope="col"|Speed<br />{{Icon|I=Speed}}
+! scope="col"|Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col"|Range<br />{{Icon|I=Range}}
+! scope="col"|Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+!scope="col"|Type<br />{{Icon|I=Type}}
+!scope="col"|Rarity<br />{{Icon|I=Rarity}}
+|-
+|2||Medium (60)||1 sec||Melee: Short (0.5)||Buildings||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+
+{{StatisticsSubheader|Bush Goblin Attributes}}
+{| id="unit-attributes-table-secondary" class="wikitable" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.4 sec||Medium (60)||1 sec||Melee: Short (0.8)||Ground||x2||Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+{{#vardefine: bush_hp_11 | 81 }}
+{{#vardefine: hp_11 | 304 }}
+{{#vardefine: dmg_11 | 256 }}
+{{#vardefine: atk_speed | 1.4 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Bush Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Bush Goblin Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Bush Goblin Damage<br />{{Icon|I=Damage}}
+! scope="col" |Bush Goblin Damage per second<br />{{Icon|I=DPS}}
+|-
+| 3 || {{#expr: {{#var:bush_hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:bush_hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:bush_hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:bush_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:bush_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:bush_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:bush_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:bush_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:bush_hp_11}} || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:bush_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:bush_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:bush_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:bush_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:bush_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 92,500 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|100 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 280,000 Damage to enemy Troops or buildings
+|4,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 465,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" |Tower Tapper <br/ > [[File:Tower Tapper.png|50x50px]]
+|1
+|Hit enemy [[:Category:Crown Towers|Crown Towers]] a total of 1,400 times
+|6,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Crown Towers a total of 4,000 times
+|100 {{Icon|I=Rare Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Crown Towers a total of 7,000 times
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2024
+*The Suspicious Bush card was added to the game on 30/7/2024, in the [[Version History#Goblin Queen's Journey Changes Update (30/7/2024)|Goblin Queen's Journey Changes Update]].
+*On 8/10/2024, a [[Version History#Balance Changes (8/10/2024)|Balance Update]], increased the Suspicious Bush's movement speed to 60 (from 45), now classified as Medium.
+*On 30/10/2024, the [[Version History#Removal of Goblin Queen's Journey Update (30/10/2024)|Removal of Goblin Queen's Journey Update]], moved the [[Arenas|Arena]] to unlock the Suspicious Bush from Party Beach to Rascal's Hideout.
+2025
+*On 9/4/2025, a [[Version History#Balance Changes (9/4/2025)|Balance Update]], increased the Bush Goblins' damage by 12%.
+2026
+
+* On 6/4/2026, a Balance Update, increased the Bush range to 1.6 tiles (from 0.5 tiles), now classified as Melee: Long
+* On 4/8/2026, a Balance Update, increased the Bush Goblins' hitpoints by 11%
+
+==Gallery==
+<gallery>
+File:Suspicious Bush card render.png|Current card render.
+File:Suspicious Bush Preview.gif|Current card preview
+File:Suspicious Bush 1.png|Suspicious Bush
+</gallery>
+
+==Trivia==
+*Goblins are small, grotesque, monstrous creatures that appear in the folklore of multiple European cultures. First attested in stories from the Middle Ages, they are ascribed conflicting abilities, temperaments, and appearances depending on the story and country of origin, ranging from mischievous household spirits to malicious, bestial thieves. They often have magical abilities similar to a fairy or demon, such as the ability to shapeshift. Similar creatures include [https://en.wikipedia.org/wiki/Duende duendes], [https://en.wikipedia.org/wiki/Kobold kobolds], [https://en.wikipedia.org/wiki/Leprechaun leprechauns], and [https://en.wikipedia.org/wiki/Ghoul ghouls].
+**The Suspicious Bush is 1 of 17 [[cards]] associated with [[Goblins]], with the others being [[Spear Goblins]], [[Goblin Gang]], [[Dart Goblin]], [[Goblin Demolisher]], [[Goblin Cage]], [[Goblin Hut]], [[Goblin Giant]], [[Goblin Curse]], [[Goblin Barrel]], [[Goblin Drill]], [[Goblin Machine]], [[Party Rocket]], [[Party Hut]], [[Goblinstein]], and of course, Goblins.
+*The Suspicious Bush first made an appearance in the Clash Royale [https://www.youtube.com/watch?v=_VnqcBnWM0k Goblin Queen's Takeover commercial].
+*The Suspicious Bush is tied with [[Bats]] and [[Skeletons]] for the lowest hitpoints of all troops, with 119 hitpoints at Level 15.
+*The Suspicious Bush is 1 of 8 troops to die as a part of their attack, the others being the [[Electro Spirit]], [[Fire Spirit]], [[Ice Spirit]], [[Skeleton Barrel]], [[Battle Ram]], [[Heal Spirit]], and [[Wall Breakers]]. 
+*The Suspicious Bush is 1 of 3 troops that can turn invisible and not distract other enemies, the others being the [[Royal Ghost]] and the [[Archer Queen]].
+*The Suspicious Bush is 1 of 7 troops that has had its movement speed classification changed, the others being Skeleton Barrel, [[Elite Barbarians]], Goblin Brawler, [[Cannon Cart]], [[Lumberjack]], and the [[Mighty Miner]].
+*Upon deployment, Bush Goblins chuckling can be heard faintly inside the Suspicious Bush.
+*From its card description, "''Sus''" is an abbreviated version of the word "''Suspicious''" and is a reference to the [https://among-us.fandom.com/wiki/Among_Us_Wiki Among Us] game.
+*The Suspicious Bush is the subject of 2 [[Emotes]].
+*Before the Suspicious Bush was released, the Bush Goblin’s speed was decreased to 60 (from 90), now classified as Medium.
+
+{{Navigation|Card}}
+[[Category:Kamikaze Cards]]

@@ -1,0 +1,234 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Lava Hound</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}
+
+{{Card Infobox|Cost=7|Rarity=Legendary|Type=Troop|Arena=Rascal's Hideout|ReleaseDate=3 May 2016}}
+{{Quote|The Lava Hound is a majestic flying beast that attacks buildings. The Lava Pups are less majestic angry babies that attack anything.}}
+
+The Lava Hound is a {{Rarity|Legendary}} [[Cards|card]] that is unlocked from the [[Arenas|Rascal's Hideout (Arena 13)]]. It spawns a slow, single-target, [[:Category:Building Cards|building]]-targeting, short-ranged, air [[:Category:Troop Cards|troop]] with very high hitpoints and very low damage. When defeated, it bursts into six spread-out Lava Pups which have slightly higher damage but with much lower hitpoints. The Lava Hound appears to be a flying, burning rock beast with an underbite, short wings, small rocky dog ears, team-colored spikes on its back, and small limbs. A Lava Hound card costs 7 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Lava Hound Common Modifier.png|45x45px]] Common: Super Troops===
+{{Quote|+500% hit speed}}
+Quintuples the base Lava Hound's fire rate.
+
+===[[File:Lava Hound Rare Modifier.png|45x45px]] Rare: Burn Book Business===
+{{Quote|+6 Fire Spirits on defeat}}
+Spawns in 6 [[Fire Spirit]]s when Lava Hound splits.
+
+===[[File:Lava Hound Epic Modifier.png|45x45px]] Epic: Like Bunnies===
+{{Quote|Continuous Lava Pups}}
+Periodically spawns in 2 Lava Pups at the back when in Lava Hound form.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Lava Hound Card}}
+*Since the Lava Hound is a great air tank with high hitpoints, it is best used as a shield for air [[:Category:Troop Cards|troops]] with higher damage and less hitpoints like [[Minion Horde]], [[Bats]], [[Mega Minion]], [[Phoenix]], [[Electro Dragon]], or the [[Inferno Dragon]]. It is less effective to use the Lava Hound as a shield for ground troops as the opponent can use troops with ground-only targeting to bypass the Lava Hound.
+*Sending the Lava Hound alone is futile unless your opponent completely ignores it, as the Lava Hound and Lava Pups without support can be countered easily with no damage taken at all.
+*The Lava Hound has a lower sight range compared to other troops that only target [[:Category:Building Cards|buildings]]. Its sight range matches that of most non-building-targeting troops, like the [[Knight]]. This means that it can bypass certain building placements, as opposed to a [[Golem]] or a [[Balloon]].
+*The Lava Pups cannot deal much damage without a tank, so a Knight, Miner, [[Dark Prince]], [[Valkyrie]], Prince, [[Monk]], or [[Hog Rider]] could tank for it long enough for it to take a [[:Category:Tower Troop Cards|Crown Tower]]. The Lava Hound can also tank for the said units, allowing them to return the favor subsequently by tanking for its Lava Pups. 
+*Defenders should always prepare an area damage card like [[Arrows]], [[Fireball]], Giant Snowball, [[Poison]], [[Fire Spirit]], [[Executioner]], or [[Wizard]] against Lava Hound players, as the Lava Pups will deal incredible damage if left uncountered.
+*If timed correctly, a [[Zap]] can hit and stun all its Lava Pups. You need to use Zap on the Lava Hound just as it dies. Arrows are a much better alternative as they have less room for error with its larger area of effect and it kills all the Lava Pups. Arrows can also be used on a low-health Lava Hound, as the Lava Pups can be defeated in 2 of the 3 waves of the [[:Category:Spell Cards|spell]]'s waves.
+*The [[Inferno Tower]] is an excellent counter to the Lava Hound, as it deals high damage to the Lava Hound while it does not take much damage from the Lava Hound in return.
+**Back the Inferno Tower up with a [[Musketeer]] or use Arrows to finish off the Lava Pups.
+**Despite this, the Lava Hound may not be powerless. Send [[Minions]] to distract/destroy the Inferno Tower and the Musketeer. This will allow the Lava Hound to continue its job.
+**Zap may also help with dealing with the Inferno Tower since its stun effect will make it retarget to the Minions, as well as resetting its damage.
+**Using a second tank on the field (such as a [[Miner]]) will allow the Lava Pups do more damage. This is because the Lava Pups spawn only a short while after the Lava Hound has been defeated, meaning that any other troops will be targeted instead. This can easily fixed by using any card that has a stun effect, such as Zap and [[Freeze]]. However, it is usually better not to stun the troops since the Lava Pups are the main damage dealers in this situation.
+**Pairing the Lava Hound with [[Lightning]] is a good option since it will cripple an [[Inferno Tower]], Inferno Dragon, and take out glass cannons such as [[Wizard]]s, [[Goblinstein]]s, [[Little Prince]]s, [[Ice Wizard]]s, [[Archer Queen]]s, Musketeers, [[Electro Dragon]]s, [[Witch]]es, Hunters, [[Night Witch]]es, and Mega Minions.
+*The [[Tornado]] and [[Executioner]] combo is very effective in destroying the Lava Hound and its support troops. The Tornado brings all the troops to the same spot so the Executioner can hit all of them at once. If the Executioner defeats the Lava Hound, it can also hit the generated Lava Pups at once. The Tornado can also pull things back, giving your Executioner more time to defeat them. The [[Magic Archer]], [[Wizard]], and [[Firecracker]] can work in a similar way.
+**Like the other options, the [[Hunter]] is also able to defeat the Lava Hound. He deals great damage to the Lava Hound, while also retaining the ability to hit the Lava Pups right after defeating the Lava Hound. However, he is less reliable against a larger Lava Hound push due to his fairly low health, so try to protect him with a mini tank while he attacks the Lava Hound.
+*The LavaLoon is a popular strategy where the Lava Hound tanks for a Balloon while it wreaks havoc on Towers.
+**However, this strategy is easily countered if the troops have no support, as the Balloon can be destroyed before the Lava Hound. For example, the Minion Horde can easily destroy the Balloon before it deals damage to the Tower and proceed to destroy the Lava Hound. So a support unit behind them like a [[Baby Dragon]], Electro Dragon, or [[Skeleton Dragons]] is crucial to protect the Balloon from swarm units, although this would make the combo very costly.
+**It can also be easily defeated by the Wizard. Place the Wizard correctly so that it targets the Balloon. When the Balloon dies, support the Wizard with other troops to finish off the Lava Hound and its Lava Pups. Thus having a Mega Minion supporting them could also come in handy.
+***Other air-targeting area damage troops like the Executioner can also work if paired with a Tornado. Try to use these combinations when the Balloon has already passed the tile where the Tornado is placed.
+**The Inferno Tower is also able to counter this combo. After defeating the Lava Hound, it will immediately retarget to the next closest unit, which is often the Balloon. The Inferno Tower also has high enough hitpoints to withstand the Balloon's attacks, buying it enough time to defeat it, while the Lava Pups do not deal enough damage to it in return. However, the Inferno Tower will not stop a Lava Hound + Balloon push by itself if the opponent uses Zap, [[Electro Spirit]], or [[Ice Spirit]].
+**When they have both combo tools prepped up on their side, it is important to abuse the Lava Hound's long range by playing a distraction such as a [[Tombstone]] on the bridge. The Balloon goes in front of the Lava Hound, and the Crown Tower will target the Balloon first, making it easier for troops such as the Mega Minion to plow the Balloon and some more to the Lava Hound.
+*A high risk, high reward move is to use [[Clone]] on the Lava Hound. After the original Lava Hound dies, the Crown Tower will lock onto the cloned Hound for one shot before targeting the original's Lava Pups. This results in twelve Lava Pups dealing massive damage on the map. This is especially effective when the Lava Hound is paired with other swarms like Bats, Minion Horde, [[Goblin Gang]], or [[Skeleton Army]] that can be used to bait out a spell like a Zap, Arrows, or [[Giant Snowball]] that would be more effective against the Clone spell.
+*A Lava Hound can be more versatile than a Golem. The Lava Hound costs less [[Elixir]] and cannot be targeted by high-damage ground troops like the [[P.E.K.K.A.]], [[Mini P.E.K.K.A.]], [[Elite Barbarians]], [[Monk]], [[Sparky]], [[Mighty Miner]], [[Mega Knight/Evolution|Evolved Mega Knight]], [[Lumberjack]], [[Night Witch]], [[Goblin Cage|Goblin Brawler]], or [[Prince]] while the Lava Pups have higher damage overall than the Golemites. The Lava Hound also has a one-second deploy time as opposed to the Golem's three-second deploy time. However, one disadvantage in using the Lava Hound is its difficulty to obtain and upgrade because the Lava Hound is a {{Rarity|Legendary}} [[Cards|card]]. It also cannot be targeted by troops that cannot target air, such as [[Barbarians]], [[Guards]], [[Skeleton Army]], [[Goblins]], or [[Royal Recruits]], which means it cannot distract them. It also has lesser health than the Golem. Its most glaring flaw when compared to the Golem, however, is its extremely low damage output and lack of death damage. Because of this, it should be supported with high-damaging units that can use the Lava Hound as a meat shield such as Baby Dragon, Skeleton Dragons, or [[Flying Machine]].
+*The Miner is very effective when paired with the Lava Hound. Sending in a Miner after a Tower has locked on to the Lava Hound will allow the Miner to deal a lot of chip damage without being targeted. Alternatively, the Miner can be sent onto grounded anti-air troops like Musketeer, Wizard, and [[Archer Queen]] to defeat them. After the Lava Hound dies, the Miner will tank for the fragile Lava Pups, allowing for even more damage to the Tower. However, this can be countered by certain spells or swarms that target air troops for a positive Elixir trade, such as [[Fireball]], [[Lightning]], [[Archers]], [[Spear Goblins]], or [[Rascals]].
+*In a [[Tournament/Special Event Challenges|Draft Challenge]] or a Triple Draft Challenge, the player is guaranteed to receive a card that can target air troops (2 in the case of Triple Draft). As such, it might not be a good idea to pick the Lava Hound in those [[Tournament|challenges]].
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Lava Hound Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%;text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|7||1.3 sec||1 sec||Slow (45)||1 sec||3.5||400||Buildings||x1||Air||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+
+{{StatisticsSubheader|Lava Pup Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.7 sec||1 sec||Medium (60)||Melee: Long (1.6)||500||Air & Ground||x6||Air
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, hound_atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hound_hp_11 | 3581 }}
+{{#vardefine: hound_dmg_11 | 53 }}
+{{#vardefine: hound_atk_speed | 1.3 }}
+{{#vardefine: pup_hp_11 | 217 }}
+{{#vardefine: pup_dmg_11 | 81 }}
+{{#vardefine: pup_atk_speed | 1.7 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+! scope="col" |Lava Hound Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Lava Hound Damage<br />{{Icon|I=Damage}}
+! scope="col" |Lava Hound Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Lava Pup Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Lava Pup Damage<br />{{Icon|I=Damage}}
+! scope="col" |Lava Pup Damage per second<br />{{Icon|I=DPS}}
+|-
+| 9 || {{#expr: {{#var:hound_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:hound_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:hound_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:hound_atk_speed}} }} || {{#expr: {{#var:pup_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:pup_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:pup_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:pup_atk_speed}} }}
+|- 
+| 10 || {{#expr: {{#var:hound_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:hound_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:hound_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:hound_atk_speed}} }} || {{#expr: {{#var:pup_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:pup_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:pup_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:pup_atk_speed}} }}
+|-
+| 11 || {{#var:hound_hp_11}} || {{#var:hound_dmg_11}} || {{Dps|{{#var:hound_dmg_11}}|{{#var:hound_atk_speed}} }} || {{#var:pup_hp_11}} || {{#var:pup_dmg_11}} || {{Dps|{{#var:pup_dmg_11}}|{{#var:pup_atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hound_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:hound_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:hound_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:hound_atk_speed}} }} || {{#expr: {{#var:pup_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:pup_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:pup_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:pup_atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hound_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:hound_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:hound_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:hound_atk_speed}} }} || {{#expr: {{#var:pup_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:pup_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:pup_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:pup_atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hound_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:hound_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:hound_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:hound_atk_speed}} }} || {{#expr: {{#var:pup_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:pup_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:pup_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:pup_atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hound_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:hound_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:hound_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:hound_atk_speed}} }} || {{#expr: {{#var:pup_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:pup_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:pup_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:pup_atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hound_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:hound_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:hound_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:hound_atk_speed}} }} || {{#expr: {{#var:pup_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:pup_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:pup_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:pup_atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 130,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|2 {{BASEPAGENAME}} cards<br>100 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 385,000 Damage to enemy Troops or buildings
+|8,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 650,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>100 {{Icon|I=XP}}
+|-
+| rowspan="3 |Pincushion <br/ > [[File:Pincushion.png|50x50px]]
+|1
+|Receive a total of 3,500 hits from enemy [[:Category:Crown Towers|Towers]]
+|12,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|2
+|Receive a total of 10,000 hits from enemy Towers
+|2 {{Icon|I=Legendary Wild Card}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Receive a total of 18,000 hits from enemy Towers
+|18,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Lava Hound [[Cards|card]] was added to the game on 3/5/2016, in the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]].
+*On 18/5/2016, a [[Version History#Balance Changes (18/5/2016)|Balance Update]], increased the Lava Hound's hitpoints by 3% and Lava Pup's hitpoints by 9%.
+*On 21/6/2016, a [[Version History#Balance Changes (21/6/2016)|Balance Update]], increased the Lava Hound's damage by 28%.
+*On 30/11/2016, a [[Version History#Balance Changes (30/11/2016)|Balance Update]], decreased the Lava Pup's hitpoints by 1%. This was to fix a rounding error where a level 12 [[Princess Towers|Crown Tower]] should've been able to kill equivalent level Lava Pups in two shots.
+2017
+*On 12/6/2017, the [[Version History#June 2017 Update (12/6/2017)|June 2017 Update]], increased the Lava Hound's collision radius to 0.75 tiles (from 0.5 tiles). This change was not mentioned in any change notes.
+2018
+*On 24/1/2018, a [[Version History#Balance Changes (24/1/2018)|Balance Update]], increased the Lava Hounds hitpoints by 5%.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Legendary}} cards start at Level 9 and end at Level 13 (from 1 to 5).
+2019
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Lava Hound's card info screen.
+2020
+*On 7/1/2020, a [[Version History#Balance Changes (7/1/2020)|Balance Update]], increased the Lava Hound's range to 3.5 tiles (from 2 tiles). The damage of the Lava Pups was also increased by 70%, but their attack time interval was increased to 1.7 seconds (from 1 second), their first attack time interval was increased to 1 second (from 0.8 seconds), and their range was decreased to 1.6 tiles (from 2 tiles), now classified as Melee: Long. There was also an unannounced change to Lava Hound's pathing, allowing it to bypass some [[:Category:Building Cards|building]] placements it was not able to bypass before.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the [[Arenas|Arena]] to unlock the Lava Hound from P.E.K.K.A's Playhouse to Hog Mountain.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Lava Hound from Hog Mountain to Rascal's Hideout.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+*On 3/10/2023, a [[Version History#Balance%20Changes%20(3/10/2023)|Balance Update]], decreased the Lava Hound's hitpoints by 6%.
+2025
+*On 4/2/2025, a [[Version History#Balance Changes (4/2/2025)|Balance Update]], decreased the Lava Pups' damage by 7%.
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Lava Hound's damage by 1.85%. It also increased the Lava Pups' hitpoints by 0.46%, and decreased their damage by 3.57%. The same update also fixed a bug where Lava Pups would not spawn after being buffed by [[Royal Chef]].
+
+==Gallery==
+<gallery>
+File:Lava Hound card render.png|Current card render.
+File:Lava Hound Preview.gif|Current card preview.
+File:Lava Hound 1.png|Lava Hound 1
+File:Lava Hound 2.png|Lava Hound 2
+File:Lava Hound 3.png|Lava Hound 3
+File:Lava Pup.png|Lava Pup
+File:Lava Hound and Pups.png|Lava Hound with his pups.
+</gallery>
+
+==Trivia==
+*The Lava Hound is based on the [https://en.wikipedia.org/wiki/Basset_Hound basset hound], which has an average litter of 6 to 8 pups and the Lava Hound, when defeated, releases a total of 6 Lava Pups.
+*The Lava Hound is 1 of 19 [[:Category:Troop Cards|troops]] which first existed in Clash of Clans, the others being [[Minions]], [[Archers]], [[Goblins]], [[Skeletons]], [[Barbarians]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], [[Witch]], [[P.E.K.K.A.]], [[Balloon]], [[Golem]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Phoenix]], and the [[Archer Queen]].
+**The Lava Hound resembles the Level 1-2 Lava Hound from Clash of Clans.
+**He functions just like his [https://clashofclans.fandom.com/wiki/Lava_Hound Clash of Clans counterpart], but when he is upgraded in Clash Royale, the Lava Pups gain a stat increase, while in Clash of Clans the Lava Pups gain a count increase.
+**Unlike in Clash of Clans, the Lava Hound in Clash Royale does not have death damage and does not prioritize any specific building.
+**In Clash of Clans, his movement speed is high whereas in Clash Royale, his movement speed is low.
+*The Lava Hound, along with Mega Knight, is the most expensive permanent {{Rarity|Legendary}} card, costing 7 [[Elixir]].
+*The Lava Hound is one of the first troop [[cards]] to receive a card render, alongside the Archers, [[Knight]], Goblins, [[Bomber]], Skeletons, Barbarians, [[Bats]], [[Royal Recruits]], [[Skeleton Barrel]], [[Rascals]], [[Musketeer]], Giant, Valkyrie, Wizard, [[Flying Machine]], Hog Rider, [[Royal Hogs]], [[Dart Goblin]], [[Zappies]], [[Elixir Golem]], [[Baby Dragon]], [[Skeleton Army]], Witch, P.E.K.K.A, [[Prince]], Balloon, [[Giant Skeleton]], [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], Wall Breakers, Bowler, Cannon Cart, [[Mega Knight]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], [[Magic Archer]], [[Bandit]], [[Night Witch]], and [[Fisherman]].
+*The Lava Pups are 1 of 9 troops that have the same sprite for both players, the others are Skeletons, [[Electro Spirit]], [[Fire Spirit]], Bats, [[Ice Spirit]], [[Heal Spirit]], Elixir Blob, and Phoenix.
+*The Lava Hound is the first card to have its own Super Troop version.
+*In the Italian and French language settings of the game, the Lava Hound's name translates to "Lava Mastiff" meanwhile in the Russian language settings of the game,  it translates to "Hell Hound"
+*The Lava Hound bears more than a passing resemblance to [https://bulbapedia.bulbagarden.net/wiki/Heatran_(Pok%C3%A9mon) Heatran] from [https://en.wikipedia.org/wiki/Pok%C3%A9mon Pokemon].
+*The Lava Hound is confirmed to be a male, as the storyteller in [https://youtu.be/5fbKJG_4qRo?t=29 The Last Lava Pup commercial] referred to Lava Hound as "he" and "father".
+*While the Lava Hound appears to be made of both molten lava and solid rock, the Lava Pup seems to be a pure lava being. Fans theorize that the lava cools into rocks as the Lava Pups mature.
+*It appears to have an underbite, similar to the Minions, [[Guards]], Giant Skeleton, and Super Lava Hound.
+*A large part of the Lava Hound's card description is used as a [[Loading Screen Hints|Loading Screen Hint]].
+*The Lava Hound is 1 of 15 troops which bring an excited reaction from the audience upon spawning and brings a collective groan from the audience when defeated, as well as a concerning gasp when the opponent plays it, the others include [[Royal Giant]], Giant, P.E.K.K.A., Giant Skeleton, [[Rune Giant]], Goblin Giant, Golem, Bowler, [[Electro Wizard]], [[Inferno Dragon]], [[Sparky]], Night Witch, [[Super Lava Hound]], and the [[Monk]].
+*The Lava Hound, along with the Minions, Bomber, Skeletons, [[Skeleton Dragons]], Ice Spirit, [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Mega Minion]], [[Ice Golem]], Dart Goblin, Elixir Golem, [[Goblin Cage|Goblin Brawler]], Guards, Baby Dragon, P.E.K.K.A, Giant Skeleton, Golem, Wall Breakers, Bowler, [[Executioner]], Mega Knight, Inferno Dragon, and Royal Ghost, are featured as a [https://squad-busters.fandom.com/wiki/Monsters monster] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*The Lava Hound is the subject of 2 [[Emotes]].
+*A [[Clone|cloned]] Lava Hound does not fall from the sky when deployed.
+*The Lava Pups' range was shown as 2 before the [[Version History#Balance Changes (7/1/2020)|7/1/2020 balance changes]].
+*The Lava Hound was featured in the winning [[Battle Decks|deck]] of the [https://www.youtube.com/live/Sa0QOSJ5AVY?si=Hlcj6efCnFhxfDYe Clash Royale League 2024 Tournament], by a player called Mohamed Light.
+
+{{Navigation|Card}}
+
+[[fr:Molosse de lave]]
+[[de:Lavahund]]
+[[es:Sabueso de lava]]
+[[it:Mastino lavico]]
+[[ja:ラヴァハウンド]]
+[[ru:Адская гончая]]
+[[pt-br:Lava Hound]]
+[[zh:熔岩猎犬]]
+[[pl:Lawowy Ogar]]

@@ -1,0 +1,217 @@
+{{DISPLAYTITLE: <span style="color: #b300b3;">Guards</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=3|Rarity=Epic|Type=Troop|Arena=P.E.K.K.A.'s Playhouse|ReleaseDate=3 May 2016}}
+{{Quote|Three ruthless bone brothers with shields. Knock off their shields and all that's left are three ruthless bone brothers.}}
+
+The Guards is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from the [[Arenas|P.E.K.K.A's Playhouse (Arena 6)]]. It spawns three fast single-target, ground-targeting, melee, ground [[:Category:Troop Cards|troops]] with low hitpoints and low damage with shields in addition to their normal hitpoints. Their deployment is in a triangle formation. They appear to be [[Skeletons]], but are somewhat taller, wear black helmets with team-colored feathers, and carry spears and wooden shields with a crown emblem on them. A Guards card costs 3 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Guards Card}}
+*The Guards function similar to [[Skeletons]] with triple the cost, but are more reliable defensively thanks to their shields improving their resistance against enemy [[:Category:Spell Cards|spells]] or any other powerful attack, as any excess damage is negated.
+**If [[Lightning]] is used on Guards, only the shields will be destroyed. This is because the shield and the unit are both considered the same entity.
+*Guards are best used as a defensive [[Cards|card]], then used in a counterpush with something that can tank for them, such as a [[Miner]], [[Ice Golem]], or a [[Hog Rider]].
+*Their defensive potential marks them as a low-risk, high-reward option. They can eliminate ground [[:Category:Troop Cards|troops]] like groups of Skeletons and can distract air troops like [[Minions]], making them a good pick against an incoming enemy push for gaining positive [[Elixir]] trades. They don't have much damage or pushing power for 3 Elixir, so they should be rarely used on offense; they could even fail to take out tanky troops like the [[Royal Giant]] quickly.
+*The Guards can be used effectively to counter a lone [[Sparky]]. With their shield, they can withstand a blow from the Sparky and destroy her before she shoots a second time. For better results, surround her by spawning them directly on her so only one Guard gets hit with the blast. They will quickly destroy Sparky with the help of a [[:Category:Crown Towers|Crown Tower]], leaving the player two Guards with shields and one without.
+*The vast majority of single-target troops or those with slow attacks can be easily countered by Guards, including [[Prince]], [[P.E.K.K.A.|P.E.K.K.A]], [[Giant Skeleton]], [[Boss Bandit]], and [[Mini P.E.K.K.A.|Mini P.E.K.K.A]]. They are especially effective against ones that cannot destroy their shields in one hit, such as [[Knight]], [[Musketeer]], [[Bandit]], [[Battle Healer]], [[Archer Queen]], [[Electro Wizard]], [[Golden Knight]], and [[Fisherman]].
+*Guards are able to counter [[Mega Knight]] if placed dirrectly on top of him circling his so he only hit one at a time. This must be done before his jump animation. Proper placement is mandatory and will not fully countered if not placed right. 
+*Despite having a shield, certain spells are still effective counters to Guards.
+**[[The Log]] can make short work of the Guards since it knocks off the Guards' shields, making them weak enough for the Crown Tower to finish them off. An [[Zap/Evolution|Evolved Zap]] can be used similarly.
+**[[Poison]] can be used to completely take them out, due to the 8 ticks of Poison being more than capable of taking their shield out first and finishing them off second. It takes 3 seconds for it to destroy the shields, while an additional one is required for the Guards themselves.
+**If the Guards are alone, they can be destroyed entirely with the [[Void]] for a neutral Elixir trade. The shields will be taken down with 2 of the strikes, while the last one will finish off the Guards. The player can deploy any card that spawns 2 or more troops to save the Guards from the spell, even preventing their shield from being removed.
+**While they cannot fully destroy them, [[Arrows]] and [[Royal Delivery]] have the same Elixir cost and enough damage to destroy the Guards' shields. The latter will also spawn a [[Royal Recruits|Royal Recruit]] to assist with further defense against them.
+**The [[Barbarian Barrel]] can be used similarly to the Royal Delivery and for 1 less Elixir. However, it is unable to destroy the shields by itself and will require the assistance of the [[Barbarians|Barbarian]] to do so.
+*The Guards can be countered with area damage troops or [[:Category:Building Cards|buildings]]. Cards like [[Bomber]], [[Royal Ghost]], [[Ice Wizard]], [[Firecracker]], and [[Princess]] are most effective, while the [[Wizard]], [[Valkyrie]], [[Executioner]], [[Dark Prince]], [[Witch]], [[Magic Archer]], [[Bowler]], [[Mega Knight]], [[Goblin Demolisher]], [[Skeleton King]], or [[Bomb Tower]] are also good, though expensive, alternative options.
+**Although not dealing area damage, the [[Electro Dragon]] will be able to hit all three of the Guards with one attack. It takes it 3 attacks to fully destroy the Guards. Although it is a negative Elixir trade, it will have full hitpoints for a counterattack.
+**The [[Hunter]]'s attack can bypass the shields allowing him to deal with the Guards easily. His first attack will be able to fully destroy 2 Guards, and the next one will finish off the last Guard. After that, he will be ready for a counterattack.
+*Guards cannot target air units, so cheap air troops like [[Bats]] or Minions can quickly defeat them. The Baby Dragon and Skeleton Dragons are especially effective due to being able to hit multiple Guards at once.
+*The [[Fire Spirit]], [[Ice Spirit]], [[Heal Spirit]], and [[Electro Spirit]] do not deal enough damage to take out the Guards' shields but they do deal enough damage to finish off the Guards themselves. Knowing this, you can combine either of them with The Log to fully counter the Guards for a neutral Elixir trade, however that requires precise timing.
+**Ice Spirit can be used to counter them, freezing them and allowing your Crown Tower to finish them off.
+*Guards are great for defending against the [[Graveyard]], since they are more durable than regular Skeletons and have a longer range. For similar reasons, they are also effective at countering the Miner, capable of tanking multiple hits from him.
+*The Guards can finish off a weakened [[Golem]] reliably. Their shields will allow them survive the Golem's death damage, and they will quickly destroy the Golemites. However, they will likely be defeated rather quickly if the Golem is supported by other cards, and the Guards will be destroyed entirely after dealing with the Golemites.
+*The Guards are a great support card for an [[X-Bow]] or a [[Mortar]]. Their shields allow them to distract enemy troops long enough, buying for time for the siege building to deal damage to its target.
+*When the [[Three Musketeers]] are coming to a Crown Tower without support, once the player's Crown Tower targets the Three Musketeers, they can do a quick drop of Guards and then Ice Spirit. The first Guard can negate three simultaneous hits and then the Ice Spirit will freeze them for 1.2 seconds which is enough time for the 2 remaining Guards and Crown Tower to finish off the Musketeers.
+*An very powerful defensive combination is the Guards paired with the [[Ice Wizard]]. The Ice Wizard slows down enemy troops while chipping them down, while the Guards distract and damage the troops, benefitting immensely from the Ice Wizard’s slow improving their survivability. This combo can be further enhanced by high-DPS ranged units like the [[Cannon]] and [[Musketeer]], who will appreciate the amount of free time generated from the combo.
+*Guards are actually able to slightly outrange some troops because of their spears, similar to the Prince. Because of this, they can poke at a distracted Valkyrie without taking any damage, setting you up for a counterpush.
+*The Guards' shields allows them to be a great meatshield against an [[Inferno Tower]], [[Inferno Dragon]], or a [[Mighty Miner]]. These three cards will reset their charge after they destroy a shield, being distracted for longer.
+*Depending on the player's needs in a [[Battle Decks|deck]], the Guards can be replaced with other similar cards.
+**The Guards are a good alternative to Barbarians if the player needs to keep their deck cheap as they cost 2 less Elixir. The trade-off is that the Guards have all-around lower statistics except for speed.
+**For a lower Elixir cost, Skeletons and [[Goblins]] can work as a replacement for Guards, with the latter also being better than Guards offensively due to their higher movement speed. However, the lack of shields on both units makes them worse defensively, especially against spells.
+**[[Skeleton Army]] and [[Goblin Gang]] offer significantly higher damage compared to Guards for the same Elixir cost. However, much like the previous cards, they are easier to counter with spells, due to their lack of shields.
+**If the player can afford to defend without a counterpush afterwards, they can use the [[Tombstone]] as a replacemet for the Guards for the same Elixir cost. While weak to spells, it can also distract building-targeting troops like the [[Giant]], [[Battle Ram]], [[Ram Rider]], [[Wall Breakers]], [[Elixir Golem]], and Hog Rider.
+
+<center>
+<div id="unit-statistics" class="table-back">
+{{Statistics}}{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|3||1 sec||0.5 sec||Fast (90)||1 sec||Melee: Long (1.6)||Ground||x3||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+{{#vardefine: hp_11 | 81 }}
+{{#vardefine: shield_11 | 256 }}
+{{#vardefine: dmg_11 | 117 }}
+{{#vardefine: atk_speed | 1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Shield Hitpoints<br />{{Icon|I=Shield Hitpoints}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:shield_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 105,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|20 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 310,000 Damage to enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 520,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" |Pain's An Old Friend <br> [[File:Pain's An Old Friend.png|50x50px]]
+|1
+|Receive a total of 495,000 Damage from enemy Troops or buildings
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Receive a total of 1,420,000 Damage from enemy Troops or buildings
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Receive a total of 2,480,000 Damage from enemy Troops or buildings
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Guards [[Cards|card]] was added to the game on 3/5/2016, in the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]].
+*On 18/5/2016, a [[Version History#Balance%20Changes%20(18/5/2016)|Balance Update]], increased the Guards' hitpoints and damage by 8%.
+*On 21/6/2016, a [[Version History#Balance Changes (21/6/2016)|Balance Update]], removed the Guards' pushback when their shields break.
+2017
+*On 9/10/2017, the [[Version History#Epic%20Quests%20Update%20(9/10/2017)|Epic Quests Update]], fixed a bug where the [[Inferno Tower]]'s and [[Inferno Dragon]]'s damage did not reset after breaking the Guards' shield. This change was reverted on 11/10/2017, in a [[Version History#Maintenance%20Break%20(11/10/2017)|maintenance break]].
+*On 12/12/2017, the [[Version History#Electrifying Update (12/12/2017)|Electrifying Update]], increased the Guards’ hitpoints and damage by 5% and decreased their attack time interval to 1.1 seconds (from 1.2 seconds). It also made it so that the Inferno Tower's and Inferno Dragon's would now reset after breaking the Guards' shield.
+2018 
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Epic}} cards start at Level 6 and end at Level 13 (from 1 to 8).
+2020
+*On 2/6/2020, a [[Version History#Balance Changes (2/6/2020)|Balance Update]], gave the Guards a new 0.1 seconds deploy stagger from each other.
+*On 9/12/2020, a [[Version History#Balance Changes (9/12/2020)|Balance Update]], decreased the Guards' attack time interval to 1 second (from 1.1 seconds) and decreased their hitpoints by 26%.
+2021 
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the [[Arenas|Arena]] to unlock the Guards from Royal Arena to Spooky Town.
+*On 2/9/2021, a maintenance break, added a card render to the Guards' card info screen.
+*On 6/9/2021, the [[Version History#2021%20Quarter%203%20Update%20(6/9/2021)|2021 Quarter 3 Update]], increased the Guards' damage by 12%.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Guards from Spooky Town to P.E.K.K.A's Playhouse.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+*On 3/1/2024, a [[Version History#Balance Changes (3/1/2024)|Balance Update]], increased the Guards' shield hitpoints by 7%.
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], increased the Guards' damage by 0.82%. It also made it so that Guards' spawn formation would be correctly mirrored depending on which side of the Arena they were placed.
+*On 5/5/2025, the [[Version History#Pass Royale and more (5/5/2025)|May 2025 Update]], decreased the Guards' damage by 4%.
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] made it so that the [[Witch/Evolution|Evolved Witch]] would no longer be healed by defeated Guards.
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)=|Balance Update]], decreased the Guards' First Hit Speed to 0.5 second (from 0.4 seconds)
+
+==Gallery==
+<gallery>
+File:Guards card render.png|Current card render.
+File:Chinese Guards card render.png|Guards’ card render in the Chinese version of the game.
+File:Guards Preview.gif|Current card preview.
+File:Guards 4.png|1 Guard.
+File:Guard with shield.png|A Guard with a shield.
+File:Guards 1.png|Three Guards together.
+File:Guards 2.png|A Guard alone.
+</gallery>
+
+==Trivia ==
+*Shields were first developed during the Bronze Age, as a protection device, designed to block attacks by hand weapons, such as swords, axes and maces, or ranged weapons like sling-stones and arrows. Shields have varied greatly in construction over time and place. Sometimes shields were made of metal, but wood or animal hide construction was much more common; wicker and even turtle shells have been used. Shields were retired in warfare, but are still used to this day for police enforcement.
+**The Guards are 1 of 3 [[:Category:Troop Cards|troops]] to have a shield, along with the [[Royal Recruits]] and [[Dark Prince]].
+***The Guards are the only troop to have more shield hitpoints than their own hitpoints.
+***The Guards are 1 of 2 troops with more damage than hitpoints, the other being [[Wall Breakers]].
+**In the Dutch and Russian language settings of the game, the Guards' name translates to "Guardians". In the Turkish, Japanese, and Malaysian language settings of the game, the Guards' name translates to "Protectors", "Shield Warriors", and "Controllers" respectively.
+*While not available as a troop in Clash of Clans, the Guards are similar to the Skeletons spawned from a Skeleton Spell.
+*The Guards are 1 of 15 [[cards]] associated with [[Skeletons]], with the others being [[Bomber]], [[Skeleton Dragons]], [[Skeleton Barrel]], [[Tombstone]], [[Bomb Tower]], [[Skeleton Army]], [[Witch]], [[Balloon]], [[Giant Skeleton]], Wall Breakers, [[Super Witch]], Graveyard, [[Skeleton King]], and of course, Skeletons.
+**In the Chinese language settings of the game, the Guards' name translates to "Skeleton Guards".
+*The Guards are tied with Skeletons, [[Bats]], and [[Suspicious Bush]] for the lowest hitpoints of all troops in the game, with 118 hitpoints at Level 15. However, unlike the other two, they also come with a shield.
+*The Guards have been featured in multiple [[Tournament/Special Event Challenges|special game modes]] outside of the card. More specifically:
+**The Guards are 1 of 23 troops that have been featured in the [[Troop Rush]] game [[:Category:Modes|mode]], the others being Skeletons, Skeleton Dragons, [[Fire Spirit]], Bats, [[Elite Barbarians]], [[Firecracker]], [[Rascals|Rascal Girls]], [[Royal Hogs]], [[Heal Spirit]], [[Elixir Golem]], [[Prince]], Balloon, [[Golem]], Wall Breakers, [[Ram Rider]], [[Sparky]], [[Phoenix]], [[Royal Ghost]], [[Bandit]], [[Lumberjack]], [[Santa Hog Rider]], and the [[Monk]].
+***Along with Skeleton Dragons, the Guards in the Troop Rush game mode would spawn in random positions instead of behind the [[:Category:Crown Towers|Crown Towers]].
+**The Guards are 1 of 14 troops that has been featured with a [[Buff#Rage|Rage]] [[buff]], the others being [[Electro Spirit]], [[Giant]], [[Zappies]], Giant Skeleton, [[Goblin Giant]], [[Electro Dragon]], Wall Breakers, [[Electro Giant]], [[Mega Knight]], Ram Rider, [[Electro Wizard]], Sparky, and Royal Ghost.
+*They appear to have an underbite, similar to the [[Minions]], Giant Skeleton, [[Lava Hound]], and [[Super Lava Hound]].
+*The Guards, along with the Minions, Bomber, Skeletons, Skeleton Dragons, [[Ice Spirit]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A,]] [[Mega Minion]], [[Ice Golem]], [[Dart Goblin]], Elixir Golem, [[Goblin Cage|Goblin Brawler]], [[Baby Dragon]], [[P.E.K.K.A.|P.E.K.K.A]], Giant Skeleton, Golem, Wall Breakers, [[Bowler]], [[Executioner]], Mega Knight, [[Inferno Dragon]], Royal Ghost, and Lava Hound, are featured as a [https://squad-busters.fandom.com/wiki/Monsters monster] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+**An [https://squad-busters.fandom.com/wiki/Ice_Guard ice variant] and a [https://squad-busters.fandom.com/wiki/Lava_Guard lava variant] for the Guard are also featured as a monster in Squad Buster.
+**According to their description in Squad Busters, the Guards are the [[King's Tower|King']]s bodyguards
+*The [[Card Mastery]] task "Pain's An Old Friend" is a reference to a quote mentioned by [https://en.wikipedia.org/wiki/Doctor_Strange Dr. Strange].
+* The Guards are the subject of an [[Emotes|Emote]].
+**The Guard Crown Emote is a reference to the Clash of Clans [https://www.youtube.com/watch?v=N0QqNGbpTK0&t=631s&pp=ygUQbG9zdCBhbmQgY3Jvd25lZA%3D%3D Lost & Crowned commercial].
+*The Guards were featured in the winning [[Battle Decks|deck]] of the [https://www.youtube.com/live/nMANpDweTA4?si=nsUAou7ny3WAA2ve Clash Royale League 2022 Tournament], by a player called Mohamed Light.
+*The initial balance change for Guards on the [[Version History#Pass Royale and more (5/5/2025)|May 2025 Update]] was a 6% damage decrease, but it was lowered to 4% [https://royaleapi.com/blog/season-71-balance-wip-may-2025 last minute].
+
+==In other languages==
+{{Other languages|jpmeaning=Shield Warriors.|fr=Gardes|de=Wächter|es=Guardias|it=Guardie|nl=Wachters|no=Vakter|tr=Korumalar|jp=盾の戦士|kr=가드|ru=Стражи|ar=حراس|pt=Guardas|cn=骷髅守卫|cnt=骷髏守衛|fa=حفاظ‌ها|id=Penjaga|ms=Pengawal|th=องครักษ์|fi=Vartio|vi=Vệ binh|rumeaning=Guardians.|nlmeaning=Guardians.|trmeaning=Protectors.|cnmeaning=Skeleton Guards.|cntmeaning=Skeleton Guards.|msmeaning=Controllers.}}
+
+{{Navigation|Card}}
+
+[[fr:Gardes]]
+[[de:Wächter]]
+[[es:Guardias]]
+[[it:Guardie]]
+[[ja:盾の戦士]]
+[[ru:Стражи]]
+[[pt-br:Guardas]]
+[[zh:骷髅守卫]]

@@ -1,0 +1,207 @@
+{{DISPLAYTITLE: <span style="color: #b300b3;">Skeleton Army</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}
+
+{{Card Infobox|Cost=3|Rarity=Epic|Type=Troop|Arena=P.E.K.K.A.'s Playhouse|ReleaseDate=4 January 2016}}{{SubpageNavBox|Evolution=yes}}{{Quote|Spawns an army of Skeletons. Meet Larry and his friends Harry, Gerry, Terry, Mary, etc.}}
+
+The Skeleton Army is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from [[Arenas|P.E.K.K.A's Playhouse (Arena 6)]]. It spawns 15 [[Skeletons]] in a scatter formation. A Skeleton Army card costs 3 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Skeleton Army Card}}
+*Due to their high numbers and overall very high DPS, the Skeleton Army is very effective against single target enemy [[:Category:Troop Cards|troops]] and [[:Category:Building Cards|building]]-targeting troops such as the [[P.E.K.K.A.]], [[Mighty Miner]], [[Prince]], [[Lumberjack]], [[Mini P.E.K.K.A.]], [[Elite Barbarians]], [[Knight]], [[Golden Knight]], [[Hog Rider]], [[Miner]], [[Goblin Giant]], [[Giant Skeleton]], [[Ram Rider]], [[Battle Ram]], [[Wall Breakers]], [[Boss Bandit]], [[Monk]], [[Elixir Golem]], [[Rune Giant]], [[Royal Giant]], or the [[Giant]].
+**Another benefit is the Skeleton Army's low cost of 3 [[Elixir]], making it a very versatile [[Cards|card]] that can give the player an Elixir advantage in almost any case.
+**Although they have low health individually, their sheer numbers allow for them to be effective at blocking most troops and siege buildings. This can even work for air troops, such as the [[Inferno Dragon]] due to the fact that the Skeleton Army can stall and pull the Inferno Dragon away from the tower, giving the [[Tower Princess]] a chance to destroy the Inferno Dragon. The same also applies to the [[Phoenix]], [[Electro Dragon]], [[Flying Machine]], and the [[Mega Minion]].
+*While being powerful in numbers, they are very weak against splash damage and [[:Category:Spell Cards|spells]]; most area damage units will be able to take out the whole swarm without losing health, while low cost spells will take out the swarm quickly and efficiently.
+**Despite their area damage weakness, the Skeleton Army is capable of countering directional area damage troops like a [[Wizard]], [[Witch]], [[Princess]], [[Ice Wizard]], or [[Bomber]]. For this to work, the Skeleton Army must be placed directly on top of the unit, surrounding it and overwhelming their area damage before the swarm is defeated. The player must also have the assistance of a [[:Category:Crown Towers|Crown Tower]] to damage down the troop, as otherwise there is a chance the Skeletons could clump up in such a way that the troop could eliminate them all before being defeated.
+**The Skeleton Army can bait the opponent into using their area damage spell, allowing the player to use other high DPS swarms such as [[Goblin Gang]] safely. However, unlike the Goblin Gang, the Skeleton Army can be fully countered by a wider range of spells. As such, they may not the most effective at baiting out the desired spell, such as [[The Log]], if they have more than one.
+**Other swarm troops such as [[Barbarians]], [[Royal Recruits]], and [[Minion Horde]] may be more favorable as a substitute, as they have higher hitpoints compared to the Skeleton Army. However, they also have a heavier Elixir cost, which does make them more committal but also makes them more enticing for the opponent to use a higher cost spell like [[Fireball]] on them, allowing other spell-vulnerable cards in the player's [[Battle Decks|deck]] to thrive.
+**[[Poison]] and Fireball are a negative Elixir trade but do counter the Skeleton Army effectively. However, it is still desirable if the spells can hit other troops too as well.
+**The [[Barbarian Barrel]] can not only counter the Skeleton Army for a positive Elixir trade but might also force out a response from the opponent. If the Barbarian Barrel is played right at the river, the Barbarian that spawns will get one hit on the Tower Princess left unattended, allowing for minor chip damage. The [[Royal Delivery]] can be utilized in a similar way.
+*The Skeleton Army's high troop count may cause some Skeletons to be out of range of their target, missing a lot of would-be damage from the target. Because of this, they do not pair very well with other melee troops, as they will occupy more space, decreasing the number of Skeletons that are attacking even further. However, this limitation will not appear with allied ranged troops.
+*The [[Witch]] works well with the Skeleton Army because she can help spawn more [[Skeletons]] to help out. However, be careful doing this as it may cause the opponent to use spells to kill all the Skeletons and possibly defeat the Witch and cause an Elixir loss.
+*The Skeleton Army is not recommended to be used offensively, as they can be easily wiped out with spells such as [[Arrows]]. However, if the opponent's cheap spell is out of rotation, this play may force non-efficient counters out of their hand, as if the Skeleton Army manages to lock on to a Crown Tower, they will deal extremely high damage to or even destroy it.
+*Cheap ranged swarms like the [[Archers]] and [[Spear Goblins]] are great counters to an offensive Skeleton Army. Their range allows them to kill each Skeleton from a safe distance. Along with the Tower Princess, they can defeat the Skeleton Army while allowing for a slight counterattack afterwards.
+*The Skeleton Army cannot target air troops. As such, cheap air swarms like [[Minions]] and [[Bats]] make great counters to it. Similarly, air splash cards like the [[Baby Dragon]] and [[Skeleton Dragons]] can also counter them.
+*Their high count allows them to be played in the center or behind the player's [[King's Tower]] to cover both lanes. This often entirely deters the opponent from immediately attacking, as they will only be able to spell down half of the swarm with one push.
+*If the player has no spells, then the Skeleton Army will be able to negate the damage from a [[Goblin Barrel]]. When played behind the Crown Tower, it will cover all positions except the front tiles.
+*When defending against the [[Goblin Drill]], the player should wait until the Goblin Drill appears on the surface and then deploy the Skeleton Army to counter it, otherwise the Goblin Drill's spawn damage would OHKO most of the Skeletons. The same tactic should also be used when using it to defend against the Skeletons spawned from a [[Skeleton Barrel]].
+*If the player has no other cards to effectively counter an [[Electro Giant]], the Skeleton Army will deal some limited damage to him. Keep in mind that they will likely all die, but the Electro Giant will be weakened.
+*Using a [[Rage]] on the Skeleton Army makes it a huge threat since they already move quite fast and deal high damage per second. [[Mirror]]ing or [[Clone|Cloning]] the Skeleton Army gives a huge numbers advantage. However, trying either of these strategies is very risky, as a splash unit or a spell can wipe it out for a positive Elixir trade. Additionally, the [[Goblin Curse]] may be a serious threat as it produces 60 goblins for 2 elixir.
+*Defensively, [[Freeze]] + Skeleton Army is capable of destroying many ground based troops that would otherwise obliterate it, like [[Valkyrie]], [[Mega Knight]], [[Dark Prince]], and Electro Giant. However, it is very volatile, as the Skeleton Army is frail and vulnerable to spells.
+*An [[Ice Golem]] is able to eliminate the entire Skeleton Army with his death damage when equally leveled for a positive Elixir trade.
+*If a friendly [[Skeleton King]] is alive, the player can try to accumulate the Skeleton King's ability by placing down the Skeleton Army and expecting the opponent to defeat it. The Skeleton Army is enough to fully accumulate the Skeleton King's ability, allowing for a threatening push.
+**On the other hand, the player should not place the Skeleton Army if an enemy Skeleton King is alive, as it could allow him to create a devastating push through this tactic.
+
+<center>
+
+<div class="table-back" id="unit-statistics">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|3||1.1 sec||0.5 sec||Fast (90)||1 sec||Melee: Short (0.5)||Ground||x15||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 81 }}
+{{#vardefine: dmg_11 | 81 }}
+{{#vardefine: atk_speed | 1.1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width: 100%; text-align: center;"
+! width="30%" |Type
+! width="10%" |Level/Tier
+! width="35%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 130,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|20 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 390,000 Damage to enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 650,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" |Hit Maker <br> [[File:Hit Maker.png|50x50px]]
+|1
+|Hit enemy Troops a total of 2,450 times
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+| 2
+|Hit enemy Troops a total of 7,000 times
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Troops a total of 12,000 times
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+
+</div>
+</center>
+==History==
+2016
+*The Skeleton Army [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016.
+*On 19/2/2016, a [[Version History#Balance Changes (19/2/2016)|Balance Update]], increased the [[Skeletons]]' hitpoints and damage by 11%.
+*On 29/2/2016, the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]], decreased the Skeletons' sight range to 5.5 tiles (from 6 tiles).
+*On 3/5/2016, the [[Version History#May%202016%20Update%20(3/5/2016)|May 2016 Update]], fixed the "range bug" and decreased the Skeletons' range to 0.5 tiles (from 0.75 tiles), but their effective range is unchanged.
+*On 18/5/2016, a [[Version History#Balance Changes (18/5/2016)|Balance Update]], increased the Skeletons' hitpoints and damage by 5%.
+*On 4/7/2016, the [[Version History#Tournaments Update (4/7/2016)|Tournaments Update]], increased the number of Skeletons spawned to 21 (from 20) and compressed the spawning pattern of the Skeleton Army when the card is deployed by the river. Previously, the Skeletons would spawn on top of the river, even in enemy territory. Its description was also changed, adding the word "Ledoot" on it.
+*On 20/10/2016, a [[Version History#Balance Changes (20/10/2016)|Balance Update]], decreased the Skeleton Army's cost to 3 [[Elixir]] (from 4 Elixir), increased the Skeletons' Levels by 5 (to match the [[Tournament|Tournament Standard]]) and decreased the number of Skeletons spawned to 16 (from 21).
+*On 1/11/2016, the [[Version History#November 2016 Update (1/11/2016)|November 2016 Update]], removed the word "Ledoot" from its description.
+2017 
+*On 13/2/2017, a [[Version History#Balance Changes (13/2/2017)|Balance Update]], decreased the number of Skeletons spawned to 15 (from 16).
+*On 19/4/2017, a [[Version History#Balance Changes (19/4/2017)|Balance Update]], decreased the number of Skeletons spawned to 14 (from 15).
+*On 9/10/2017, the [[Version History#Epic Quests Update (9/10/2017)|Epic Quests Update]], changed the card description. Prior to this update, it read "''Summons an army of Skeletons. Meet Larry and his friends Harry, Gerry, Terry, Mary, etc.''".
+2018
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Epic}} cards start at Level 6 and end at Level 13 (from 1 to 8).
+*On 1/10/2018, a [[Version History#Balance Changes (1/10/2018)|Balance Update]], increased the number of Skeletons spawned to 15 (from 14).
+2019
+*On 15/4/2019, the [[Version History#April%202019%20Update%20(15/4/2019)|April 2019 Update]], added an extra [[Star Points|Star Level]].
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Skeleton Army's card info screen.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the [[Arenas|Arena]] to unlock the Skeleton Army from [[Training Camp]] to Bone Pit.
+*On 2/9/2021, a maintenance break, changed the Skeleton Army's card render.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Skeleton Army from Bone Pit to P.E.K.K.A's Playhouse.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2025
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] made it so that the [[Witch/Evolution|Evolved Witch]] would no longer be healed by defeated Skeletons.
+*On 2/10/2025, the [[Version History#Pass Royale and more (6/10/2025)|October 2025 Update]], added the Skeleton Army's Evolution
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)=|Balance Update]] increased the Skeleton's attack time interval to 1.1 seconds (from 1.0 seconds).
+
+==Gallery==
+<gallery>
+File:Old Skeleton Army card render.png|Skeleton Army's card render before 2/9/2021.
+File:Skeleton Army card render.png|Current card render.
+File:Chinese Skeleton Army card render.png|Skeleton Army’s card render in the Chinese version of the game.
+File:Skeleton Army Preview.gif|Current card preview
+File:Skeleton Army 1.png|Skeleton Army 1
+File:Skeleton Army 2.png|Skeleton Army 2
+File:Skeleton Army 3.png|Skeleton Army 3
+</gallery>
+
+==Trivia== 
+*The word "''Skeleton''" comes from the Greek "''σκελετός''" (''skeletós''), meaning dried up or withered.
+**The Skeleton Army is 1 of 15 [[cards]] associated with [[Skeletons]], with the others being [[Bomber]], [[Skeleton Dragons]], [[Skeleton Barrel]], [[Tombstone]], [[Bomb Tower]], [[Guards]], [[Witch]], [[Balloon]], [[Giant Skeleton]], [[Wall Breakers]], [[Super Witch]], [[Graveyard]], [[Skeleton King]], and of course, Skeletons.
+***In the French and Russian language settings of the game, the Skeleton Army's name translates to "Army of Skeletons". In the Italian and Japanese language settings of the game, the Skeleton Army's name translates to "Skeleton Horde" and "Skeleton Troops" respectively.
+***Before 2/9/2021, the Skeleton Army's card render was similar to the Skeletons' card render, only having one additional Skeleton.
+*The Skeleton Army is one of the first [[:Category:Troop Cards|troop]] cards to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the [[Minions]], [[Archers]], [[Knight]], [[Spear Goblins]], [[Goblins]], Bomber, Skeletons, [[Barbarians]], [[Minion Horde]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Musketeer]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], [[Baby Dragon]], Witch, [[P.E.K.K.A.|P.E.K.K.A]], [[Prince]], and Balloon.
+*The Skeleton Army is one of the first troop cards to receive a card render, alongside the Archers, Knight, Goblins, Bomber, Skeletons, Barbarians, [[Bats]], [[Royal Recruits]], Skeleton Barrel, [[Rascals]], Musketeer, Giant, Valkyrie, Wizard, [[Flying Machine]], Hog Rider, [[Royal Hogs]], [[Dart Goblin]], [[Zappies]], [[Elixir Golem]], Baby Dragon, Witch, P.E.K.K.A, Prince, Balloon, Giant Skeleton, [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], Wall Breakers, [[Bowler]], [[Cannon Cart]], [[Mega Knight]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], [[Magic Archer]], [[Bandit]], [[Lava Hound]], [[Night Witch]], and [[Fisherman]].
+*The Skeleton Army is 1 of 23 cards that has had its [[Elixir]] cost changed, the others being Bomber, [[Fire Spirit]], Royal Recruits, [[Cannon]], [[Mortar]], Musketeer, [[Three Musketeers]], [[Heal]], [[Goblin Hut]], Bomb Tower, [[Barbarian Hut]], [[Furnace]], [[Elixir Collector]], P.E.K.K.A., Wall Breakers, [[Electro Giant]], Bowler, [[Goblin Barrel]], [[Barbarian Barrel]], [[Rage]], Fisherman, and the [[Monk]].
+*According to the [[Version History#Balance Changes (1/10/2018)|1/10/2018 balance changes]], the names of the Skeletons are "Larry", "Harry", "Gerry", "Terry", "Mary", "Barry", "Cherry", "Karrie", "Faerie", "Scary", "Sherry", "Gary", "McClary", "Huckleberry", and "Doot"/"Ledoot".
+**The Skeleton "Larry" in the Skeleton Army's description is a reference to the Clash of Clans [https://www.youtube.com/watch?v=434cGQAc3E0 Larry commercial].
+**In the French language setting of the game, 5 of the Skeletons' names are "Kévin", "Kenny", "Katie", "Karim", and "Kelly". In the Spanish language setting of the game, 4 of the Skeletons' names are "Adolfo", "Astolfo", "Rodolfo", and "Ataúlfo". In the Italian language setting of the game, 5 of the Skeletons' names are "Gino", "Pino", "Dino", "Lino", and "Rino". In the Dutch language setting of the game, 5 of the Skeletons' names are "Harry", "Barry", "Eddy", "Tommy", and "Mary". In the Norwegian language setting of the game, 5 of the Skeletons' names are "Inge", "Ingar", "Ingvart", "Ingve", and "Inghild". In the Portuguese language setting of the game, 5 of the Skeletons' names are "Tico", "Teco", "Taco", "Toco", and "Tuco". In the Finnish language setting of the game, 5 of the Skeletons' names are "Lari", "Jari", "Kari", "Sari", and "Mari".
+**According to the [[Version History#Tournaments Update (4/7/2016)|Tournaments Update]], the Skeleton that was removed from the [[Version History#Balance%20Changes%20(21/6/2016)|21/6/2016 balance changes]] joined the Skeleton Army. However, it was removed from the Skeleton Army in the [[Version History#Balance Changes (20/10/2016)|20/10/2016 balance changes]], but it returned back in the 1/10/2018 balance changes.
+***The Skeleton's name was "Ledoot", which was a reference to the [https://knowyourmeme.com/memes/skull-trumpet-doot-doot Skull Trumpet] meme.
+*The Skeleton Army spawns the most troops of all troop cards, with a total of 15 Skeletons.
+*Along with the Skeletons and [[Wizard Trio]], the Skeleton Army is the only swarm card whose members spawn all at the exact same time.
+*Even though the Skeleton Army spawns 15 Skeletons, the card render displays 6 Skeletons.
+*In the card image, each Skeleton appears to have a diagonal cross on its eye.
+*The Skeleton Army is 1 of 2 "value pack" troop card that has a different rarity with its corresponding "basic" troop card, the other being Wizard Trio (the Skeletons are a {{Rarity|Common}} card while the Skeleton Army is an {{Rarity|Epic}} card).
+*Using the Skeletons card to summon 15 Skeletons would cost 5 Elixir, whereas using the Skeleton Army card to summon 15 Skeletons costs 3 Elixir.
+*The Skeleton Army was featured in the winning deck of the [https://www.youtube.com/watch?v=kIGdeKaT_is The Crown Duel Tournament], by a player called Backstabx.
+*Before the Skeletons Army' card release, the Skeletons' hitpoints and damage were increased by 8%.
+
+{{Navigation|Card}}
+
+[[fr:Armée de squelettes]]
+[[de:Skelettarmee]]
+[[es:Ejército de esqueletos]]
+[[it:Orda di scheletri]]
+[[ja:スケルトン部隊]]
+[[ko:해골 군대]]
+[[ru:Армия скелетов]]
+[[zh:骷髅军团]]

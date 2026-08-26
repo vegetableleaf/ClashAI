@@ -1,0 +1,243 @@
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=5|Rarity=Common|Type=Troop|Arena=Rascal's Hideout|ReleaseDate=25 May 2018}}
+{{Quote|Spawns a mischievous trio of Rascals! The boy takes the lead, while the girls pelt enemies from behind... with slingshots full of Double Trouble Gum!}}
+
+The Rascals is a {{Rarity|Common}} [[Cards|card]] that is unlocked from the [[Arenas|Rascal's Hideout (Arena 13)]]. It spawns a single-target, ground-targeting, melee, ground [[:Category:Troop Cards|troop]] with high hitpoints and moderate damage output in front of two single-target, air-targeting, medium-ranged, ground troops with low hitpoints and moderate damage. The Rascals features a boy who has black eyes and eyebrows, dons a bowl cut which covers his eyes, wears a team-colored tunic, a black hood and pants, wields a wooden sword, carries a medium-sized pouch on his waist attached with a rope, and is barefoot, with the girls appearing similarly to [[Archers]] and being dressed similarly to the boy, except they have brown eyes and aquamarine hair, wear eyepatches, gloves and shoes, and wield slingshots with an attached team-colored rubber band. A Rascals card costs 5 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Rascals Common Modifier.png|45x45px]] Common: Just a Giggle of Girls===
+{{Quote|+2 Rascal Girls}}
+Adds 2 ranged Rascal girls.
+
+===[[File:Rascals Rare Modifier.png|45x45px]] Rare: Gorgeous Groupies===
+{{Quote|Spawn Giant & Rascal Girls}}
+Rascal boy is replaced by [[Giant]].
+
+===[[File:Rascals Epic Modifier.png|45x45px]] Epic: Callin' in the Bosses===
+{{Quote|Spawn Boss Bandit & Magic Archer}}
+Rascal girls are replaced by [[Magic Archer]]s and Rascal boy is replaced by [[Boss Bandit]].
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Rascals Card}}
+*The Rascals can be used similarly to a [[Knight]] and [[Archers]] combo, albeit for 1 less Elixir and with more fragile but stronger “Archers” as well as a weaker but bulkier “Knight”. The Rascal Girls can be used to attack air troops similarly to the Archers, while the Rascal Boy can be used in the same way as a Knight.
+*Left alone, this [[Cards|card]] can inflict massive damage towards, if not completely destroy, a [[:Category:Crown Towers|Crown Tower]], regardless of the [[:Category:Tower Troop Cards|tower troop]] used. Always aim to destroy the Rascal Girls first, as they deal more damage per second than the Rascal Boy.
+*Similar to Archers, the Rascals can be split if they are placed in the middle of the [[Arenas|Arena]]. A Rascal Girl will leave the group and go towards the other lane, helping to defend. The lone Rascal Girl will get 1 hit on the Crown Tower, and her respectable damage output means putting a cheap tank in front of her like an [[Ice Golem]], [[Elixir Golem]], [[Knight]], or a [[Miner]] is not a bad idea to force a response out of the opponent.
+**By splitting them at the center, the Rascals can counter the Royal Recruits for a +2 [[Elixir]] trade, with even a single Rascal Girl surviving for a possible counterpush.
+*The Rascals are weak to a large variety of [[:Category:Spell Cards|spells]], with some of them being able to OHKO the Rascal Girls while doing some chip damage to the Rascal Boy.
+**[[The Log]], [[Arrows]], and [[Royal Delivery]] are excellent at countering this card, as they OHKO the Rascal Girls which is a part of damage. Knowing this, it is not a bad idea to use the Rascals with other spell-vulnerable cards, as the opponent may be forced to spread their spells thin. [[Goblin Barrel]] in particular synergizes well as the boy will survive with a majority of his health and can tank for the [[Goblins]] spawned from the Goblin Barrel.
+**The [[Barbarian Barrel]] is also a very good counter to this card for a positive Elixir trade. The spell cripples the Rascal Girls, while the [[Barbarians|Barbarian]] finishes them off and defeats the Rascal Boy with a Crown Tower's assistance. However, in a larger [[Basics of Battle|battle]] with support [[:Category:Troop Cards|troops]], the Barbarian may not be able to finish off the Rascal Girls.
+**The high Elixir cost of the card makes it weak to a [[Poison]] spell. The Poison is able to 3HKO the Rascal Girls while also doing some notable damage to the Rascal Boy.
+**[[Fireball]] can be used against the Rascals, similarly to the Poison. It will OHKO the Rascal Girls, and deal some damage to the Rascal Boy. Interestingly, the Rascal Boy is affected by knockback, allowing the Fireball to knock the Rascal Boy, possibly causing him to retarget.
+**If the player wants to ensure that the Rascal Boy will not be a threat, [[Lightning]] and [[Rocket]] can be used against the trio. Although the Rascal Boy will survive, he will be too weak to pose a threat. However, they are both a negative Elixir trade, so try to hit something else as well with the latter.
+*The [[Valkyrie]] is an effective counter to the Rascals, if placed properly, for a positive Elixir trade, since she can destroy the Rascal Girls in one spin and then finish off the Rascal Boy, and can counterpush with most of her hitpoints remaining.
+*The [[Executioner]] and the [[Bowler]] are great counters to them, as they can splash all 3 Rascals and survive for a counterpush. However, on defense, the player can place the Rascals in such a way that the Bowler or Executioner target the Rascal Boy, allowing the Rascal Girls to survive and deal damage to them.
+*The [[Mega Knight]] is also a great counter, since his spawn damage instantly kills the Rascal Girls and can quickly kill the Rascal Boy with almost no hitpoints lost, and can be used in a counter-push.
+*They are great counters against tanks (along with the help of a Crown Tower) such as the [[P.E.K.K.A.|P.E.K.K.A]], Mega Knight, [[Giant Skeleton]], [[Boss Bandit]], and [[Mighty Miner]] for a positive Elixir trade, as the Rascal Boy will absorb all the damage while the Rascal Girls will continuously hit the tank.
+*They can be an effective counter to the [[Graveyard]]; the Rascal Girls will attack 2 Skeletons at a time, along with the [[Tower Princess]] while the Rascal Boy tanks some hits from the Skeletons. This is a neutral Elixir trade and sets them for a counterpush. However, beware of spells that could destroy the Rascal Girls, like Arrows and Poison, as the Rascal Boy will not be able to keep up.
+*When defending against a [[Golem]] or [[Balloon]], it's a good idea to put the Rascals away from the path of the Golem or Balloon, such that the Rascal Girls do not take death damage. This tactic should also be used against the [[Electro Giant]], to avoid the Rascal Girls being destroyed by the Electro Giant's Zap Pack.
+*It is always a good idea to separate the Rascal Boy from the Rascal Girls to prevent the Rascal Girls from getting killed by area damage. This can be done by putting a large tank (for example the Electro Giant) amid the Rascals. On defense, the Rascals should be placed slightly earlier to allow the Rascal Boy to separate from the Rascal Girls so that any area damage support behind the troop that the Rascals are defending against would not gain value by hitting the Rascal Girls.
+*The Rascals can counter 2 of the split [[Three Musketeers]] with the help of a [[:Category:Tower Troop Cards|tower troop]]. Both the tower troop and the Rascal Girls will deal damage to the [[Musketeer|Musketeers]] while the Rascal Boy tanks for them.
+*The Rascals pair well with the [[X-Bow]] and [[Mortar]]. The Rascal Boy's high hitpoints acts as a meat-shield for the building, buying it more time to deal damage, while the Rascal Girls will target air troops that the buildings are unable to target.
+*Similarly, they can also work with a Balloon. The Rascal Boy acts as a tank for the Balloon while the Rascal Girls handle air troops that are threatening the Balloon. Unlike Archers, the Rascal Girls are able to 2HKO [[Minions]] that are usually used against the Balloon.
+*The Rascals have great synergy with the [[Skeleton Barrel]]. Both of them can act as bait for spells and their difference in ranges will force the opponent to use spells on one of the swarms, with the other swarm being protected by the Rascal Boy.
+*They can work quite well with a [[Dark Prince]]. The Dark Prince adds splash damage to the trio, improving their matchup against swarms, while he also pushes the Rascal Boy closer to a target thanks to increased speed from his charge.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Card Attributes}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||1 sec||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+
+{{StatisticsSubheader|Rascal Boy Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.5 sec||0.4 sec||Medium (60)||Melee: Short (0.8)||Ground||x1||Ground
+|}
+
+{{StatisticsSubheader|Rascal Girl Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1 sec||0.5 sec||Medium (60)||5||800||Air & Ground||x2||Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, boy_atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: boy_hp_11 | 1940 }}
+{{#vardefine: boy_dmg_11 | 204 }}
+{{#vardefine: boy_atk_speed | 1.5 }}
+{{#vardefine: girl_hp_11 | 261 }}
+{{#vardefine: girl_dmg_11 | 125 }}
+{{#vardefine: girl_atk_speed | 1.0 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+! scope="col" |Rascal Boy Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Rascal Boy Damage<br />{{Icon|I=Damage}}
+! scope="col" |Rascal Boy Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Rascal Girl Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Rascal Girl Damage<br />{{Icon|I=Damage}}
+! scope="col" |Rascal Girl Damage per second<br />{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:boy_hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:boy_dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:boy_dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:boy_atk_speed}} }} || {{#expr: {{#var:girl_hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:girl_dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:girl_dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:girl_atk_speed}} }}
+|-
+| 2 || {{#expr: {{#var:boy_hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:boy_dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:boy_dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:boy_atk_speed}} }} || {{#expr: {{#var:girl_hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:girl_dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:girl_dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:girl_atk_speed}} }}
+|-
+| 3 || {{#expr: {{#var:boy_hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:boy_dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:boy_dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:boy_atk_speed}} }} || {{#expr: {{#var:girl_hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:girl_dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:girl_dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:girl_atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:boy_hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:boy_dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:boy_dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:boy_atk_speed}} }} || {{#expr: {{#var:girl_hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:girl_dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:girl_dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:girl_atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:boy_hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:boy_dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:boy_dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:boy_atk_speed}} }} || {{#expr: {{#var:girl_hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:girl_dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:girl_dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:girl_atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:boy_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:boy_dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:boy_dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:boy_atk_speed}} }} || {{#expr: {{#var:girl_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:girl_dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:girl_dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:girl_atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:boy_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:boy_dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:boy_dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:boy_atk_speed}} }} || {{#expr: {{#var:girl_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:girl_dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:girl_dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:girl_atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:boy_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:boy_dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:boy_dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:boy_atk_speed}} }} || {{#expr: {{#var:girl_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:girl_dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:girl_dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:girl_atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:boy_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:boy_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:boy_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:boy_atk_speed}} }} || {{#expr: {{#var:girl_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:girl_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:girl_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:girl_atk_speed}} }}
+|- 
+| 10 || {{#expr: {{#var:boy_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:boy_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:boy_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:boy_atk_speed}} }} || {{#expr: {{#var:girl_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:girl_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:girl_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:girl_atk_speed}} }}
+|-
+| 11 || {{#var:boy_hp_11}} || {{#var:boy_dmg_11}} || {{Dps|{{#var:boy_dmg_11}}|{{#var:boy_atk_speed}} }} || {{#var:girl_hp_11}} || {{#var:girl_dmg_11}} || {{Dps|{{#var:girl_dmg_11}}|{{#var:girl_atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:boy_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:boy_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:boy_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:boy_atk_speed}} }} || {{#expr: {{#var:girl_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:girl_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:girl_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:girl_atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:boy_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:boy_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:boy_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:boy_atk_speed}} }} || {{#expr: {{#var:girl_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:girl_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:girl_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:girl_atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:boy_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:boy_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:boy_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:boy_atk_speed}} }} || {{#expr: {{#var:girl_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:girl_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:girl_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:girl_atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:boy_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:boy_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:boy_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:boy_atk_speed}} }} || {{#expr: {{#var:girl_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:girl_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:girl_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:girl_atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:boy_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:boy_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:boy_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:boy_atk_speed}} }} || {{#expr: {{#var:girl_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:girl_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:girl_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:girl_atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 155,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|200 {{BASEPAGENAME}} cards<br>25 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 460,000 Damage to enemy Troops or buildings
+|2,000 {{Icon|I=Gold}}<br>25 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 770,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>25 {{Icon|I=XP}}
+|-
+| rowspan="3" |Hit Maker <br> [[File:Hit Maker.png|50x50px]]
+|1
+|Hit enemy Troops a total of 2,650 times
+|3,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Troops a total of 7,600 times
+|200 {{Icon|I=Common Wild Card}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Troops a total of 13,000 times
+|5,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2018
+*The Rascals were once available in the [[Tournament/Special Event Challenges|Rascals Draft Challenge]], which started on 11/5/2018. In this [[Tournament|challenge]], gameplay was similar to a regular Draft Challenge, except that one of the players was able to choose who would use the Rascals. If the player achieved 12 wins, they obtained the Rascals early.
+*From 18/5/2018 through 22/5/2018, the [[Shop]] had a special offer where [[Arenas|Arena]] 9+ players could buy an unlimited number of special Fortune [[Chests]] at the normal price that guarantee at least 50% of the Chest's contents to be Rascals. The Chest was able to generate up to 110% of its contents to be Rascals.
+*The Rascals [[Cards|card]] was generally released on 25/5/2018.
+*On 2/7/2018, a [[Version History#Balance Changes (2/7/2018)|Balance Update]], decreased the Rascal Boy's hitpoints by 5.3% and increased the Rascal Girls' first attack time interval to 1 second (from 0.4 seconds).
+2019
+*On 4/3/2019, a [[Version History#Balance Changes (4/3/2019)|Balance Update]], gave the Rascals a new 0.15 seconds deploy stagger from each other.
+*On 11/3/2019, a [[Version History#Maintenance Break (11/3/2019)|maintenance break]] changed the deployment of the Rascals by making the Rascal Boy spawn first instead of the Rascal Girls.
+*On 3/6/2019, a [[Version History#Balance Changes (3/6/2019)|Balance Update]], increased the Rascal Boy’s attack time interval to 1.5 seconds (from 1.3 seconds), and his first attack time interval to 0.4 seconds (from 0.3 seconds).
+*On 1/7/2019, the [[Version History#July%202019%20Update%20(1/7/2019)|July 2019 Update]], decreased the Rascal Boy's range to 0.8 tiles (from 1 tile), now classified as Melee: Short.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Rascals' card info screen.
+2020
+*On 2/6/2020, a [[Version History#Balance Changes (2/6/2020)|Balance Update]], decreased the deploy stagger for each Rascal to 0.1 seconds (from 0.15 seconds).
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], decreased the Rascal Girls' first attack time interval to 0.8 seconds (from 1 second). It also moved the [[Arenas|Arena]] to unlock the Rascals from Jungle Arena to Rascal’s Hideout.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+*On 7/12/2021, the [[Version History#Balance%20Changes%20(7/12/2021)|2021 Quarter 4 Update]], decreased the Rascal Girls’ attack time interval to 1 second (from 1.1 seconds).
+2023
+*On 4/4/2023, a [[Version History#Balance%20Changes%20(4/4/2023)|Balance Update]], increased the Rascal Boy's hitpoints by 6%, and decreased the Rascal Girls' first attack time interval to 0.5 second (from 0.8 seconds). It also increased the distance between the Rascals upon deployment.
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], made it so that Rascals' spawn formation would be correctly mirrored depending on which side of the Arena they were placed.
+*On 8/7/2025, a [[Version History#Balance Changes (8/7/2025)|Balance Update]], increased the Rascal Boy's damage by 54%, and decreased the Rascal Girls' damage by 6%.
+*On 3/11/2025, a [[Version History#November (11) 2025|Balance Update]] increased the Rascal Boy's Damage by 6%.
+2026
+
+* On 1/6/2026, a Balance Update, decreased the Rascal Boy's Hitpoints by 6%
+
+== Gallery ==
+<gallery>
+File:Rascals card render.png|Current card render.
+File:Rascals Preview.gif|Current card preview
+File:Rascals boy 2.png|Rascals boy
+File:Rascals 2.png|Rascals 1
+File:Rascals boy.png|Rascals boy 2
+File:Rascals girl.png|Rascals girl
+File:Rascals 1.png|Rascals 2
+</gallery>
+
+== Trivia==
+*The word "''Rascal''" comes from the Latin "''rasicō''", meaning 'to scrape'.
+**In the German, Turkish, Japanese, Korean, Russian, Chinese, Indonesian, Malaysian, Finnish, and Vietnamese language settings of the game, the Rascals' name translates to "Bullies", "Vagrants", "Outlaws", "Bad Boys", "Rogues", "Greenwood Gang", "Troublemakers", "The Naughty Ones", "Fiends", and "Dodgy Group" respectively.
+**The Rascals are 1 of 4 [[cards]] associated with outlawry, with the others being [[Goblin Gang]], [[Bandit]], and the [[Boss Bandit]].
+**Along with the [[Firecracker]], Bandit, [[Magic Archer]], and the Boss Bandit, the Rascals belong to the Forest Gang.
+*The Rascals are one of the first troop cards to receive a card render, alongside the [[Archers]], [[Knight]], [[Goblins]], [[Bomber]], [[Skeletons]], [[Barbarians]], [[Bats]], [[Royal Recruits]], [[Skeleton Barrel]], [[Musketeer]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Flying Machine]], [[Hog Rider]], [[Royal Hogs]], [[Dart Goblin]], [[Zappies]], [[Elixir Golem]], [[Baby Dragon]], [[Skeleton Army]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], [[Prince]], [[Balloon]], [[Giant Skeleton]], [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Mega Knight]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], [[Magic Archer]], [[Bandit]], [[Lava Hound]], [[Night Witch]], and [[Fisherman]].
+*It is 1 of 4 cards that spawns different troops at once, the others being Goblin Gang, [[Wizard Trio]], and the [[Goblinstein]].
+*The Rascal Girls are 1 of 23 troops that have been featured in the [[Troop Rush]] game [[:Category:Modes|mode]], the others being Skeletons, [[Skeleton Dragons]], [[Fire Spirit]], Bats, [[Elite Barbarians]], Firecracker, Royal Hogs, [[Heal Spirit]], Elixir Golem, [[Guards]], Prince, Balloon, [[Golem]], Wall Breakers, Ram Rider, [[Sparky]], [[Phoenix]], Royal Ghost, Bandit, [[Lumberjack]], [[Santa Hog Rider]], and the [[Monk]].
+*In [https://www.youtube.com/watch?v=F4AmkFBJFTA&t=22s The Flood trailer], it is revealed that the Rascal Boy is bald and actually wears a wig.
+*In the card's description, "''Double Trouble Gum''" is likely a reference to the brand of gum called [https://en.wikipedia.org/wiki/Dubble_Bubble Dubble Bubble].
+*Upon the release of this card, the total amount of cards since the soft launch was doubled, also making Modern Royale have the same number of cards as Retro Royale. Later, since the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], which released [[Giant Snowball]] and Royal Hogs, Modern Royale contains more cards than Retro Royale.
+*When the Rascal Boy is defeated, his wooden sword falls to the ground. The other units that drop items upon death are the Knight, [[Mega Minion]], [[Dark Prince]], [[Executioner]], Mega Knight, Sparky, Fisherman, [[Super Knight]], [[Golden Knight]], and the [[Little Prince]].
+*If the Boss Bandit is played when allied Rascals are on the field, she says "''Trouble squad, I'm in!''".
+*A Rascal Girl is the subject of 3 [[Emotes]].
+*The initial balance change for Rascals on the [[Version History#Balance%20Changes%20(4/4/2023)|4/4/2023 balance changes]] was an attack time interval decrease to 0.2 seconds (from 0.8 seconds) for the Rascal Girls, but it was raised to 0.5 seconds [https://royaleapi.com/blog/season-46-balance-wip last minute].
+
+{{Navigation|Cards}}
+
+[[fr:Fripons]]
+[[de:Rabauken]]
+[[es:Pillos]]
+[[it:Mascalzoni]]
+[[ru:Разбойники]]
+[[zh:绿林团伙]]

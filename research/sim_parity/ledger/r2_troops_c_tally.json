@@ -1,0 +1,32 @@
+{
+ "night_witch": {
+  "fields_checked": 20,
+  "matches": 20,
+  "notes": "all published fields match incl. bat sub-unit stats; load_time_s 0.55 vs wiki First-Hit 0.75 NOT flagged (different quantity, see group note)"
+ },
+ "pekka": {
+  "fields_checked": 12,
+  "matches": 12,
+  "notes": "dmg 842@11 confirmed post-6/7/2026 buff via rev 436019 (816) vs 436627 (842); range 1.2 post-4/2/2025 correct"
+ },
+ "phoenix": {
+  "fields_checked": 16,
+  "matches": 13,
+  "notes": ""
+ },
+ "phoenix_egg": {
+  "fields_checked": 4,
+  "matches": 3,
+  "notes": "speed_tiles 0 is an owner curation (stationary egg), wiki silent - not audited"
+ },
+ "prince": {
+  "fields_checked": 15,
+  "matches": 15,
+  "notes": "charge_range 2.5 = P2 + P3(6/10/2025); charge dmg 783, all 3 paths agree with KB"
+ },
+ "princess": {
+  "fields_checked": 14,
+  "matches": 14,
+  "notes": "deploy_time 1.2 already reflects 4/3/2025 change; splash 2.0, proj 600 all match"
+ }
+}

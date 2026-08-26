@@ -1,0 +1,218 @@
+{{DISPLAYTITLE: <span style="color: #ffa31a;">Dart Goblin</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=3|Rarity=Rare|Arena=Jungle Arena|Type=Troop|ReleaseDate=13 January 2017}}<br><br>
+{{SubpageNavBox|Evolution=yes|MergeTactics=yes}}{{Quote|Runs fast, shoots far and chews gum. How does he blow darts with a mouth full of Double Trouble gum? Years of didgeridoo lessons.}}
+
+The Dart Goblin is a {{Rarity|Rare}} [[Cards|card]] that is unlocked from the [[Arenas|Jungle Arena (Arena 9)]]. It spawns a very fast, single-target, air-targeting, long-ranged, ground [[:Category:Troop Cards|troop]] with low hitpoints and low damage. He resembles a [[Goblins|Goblin]], but wears a voodoo mask with red eyes, team-colored face paint and a rope behind, and leaves with team-colored tips, and holds a blowgun. A Dart Goblin card costs 3 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Dart Goblin Common Modifier.png|45x45px]] Common: Speedy Goblinez===
+{{Quote|+100% movement speed}}
+Dart Goblin's attack speed is increased by 100%, for a total of 0.4 seconds.
+
+===[[File:Dart Goblin Rare Modifier.png|45x45px]] Rare: Call Him Darcher===
+{{Quote|Magic Archer darts}}
+Dart Goblin's attacks pierce through enemies, identically to a [[Magic Archer]].
+
+===[[File:Dart Goblin Epic Modifier.png|45x45px]] Epic: Shocking Gum===
+{{Quote|Sparky darts}}
+Dart Goblin's attacks deal area damage, identically to a [[Sparky]].
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Dart Goblin Card}}
+*The Dart Goblin is best used behind a tank such as a [[Knight]], [[Valkyrie]], [[Golden Knight]]. [[Skeleton King]], Prince, [[Battle Healer]], [[Mighty Miner]], Executioner, [[Dark Prince]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], Bowler, [[Monk]], [[Lumberjack]], [[Goblin Machine]], or an [[Ice Golem]]. The tank will absorb all the damage for the Dart Goblin, and coupled with the Dart Goblin's fast hit speed and high damage per second, the combination could quickly destroy a [[:Category:Tower Troop Cards|Crown Tower]]. However, due to the Dart Goblin’s low hitpoints, he can be countered easily with [[The Log]] or [[Barbarian Barrel]] for a positive [[Elixir]] trade or [[Arrows]] for a neutral Elixir trade.
+**Although The Log or Arrows may seem like a good and instantaneous counter to the Dart Goblin, be careful when choosing to use them as your opponent might be using a [[Battle Decks|deck]] that baits [[:Category:Spell Cards|spells]].
+*The Dart Goblin's fast attack speed allows him to take care of swarms of small [[:Category:Troop Cards|troops]] quickly. He can also easily counter a [[Graveyard]] with the help of the [[Tower Princess]] or [[Dagger Duchess]]. However, he can't survive or completely take out a Graveyard by himself.
+*Pairing the Dart Goblin with any distraction [[Cards|card]], even something as cheap as [[Skeletons]], can counter [[Elite Barbarians]], Mini P.E.K.K.A., [[Mega Minion]], [[Inferno Dragon]], Mighty Miner, and [[Prince]]. Combined with [[Guards]], he can even stop a [[P.E.K.K.A.]], [[Boss Bandit]], or a [[Giant Skeleton]] on defense.
+*Pairing the Dart Goblin with a cheap unit like an [[Ice Spirit]] can deal significant damage to a Crown Tower or act as a quick defensive combo; however, he is vulnerable to spells like [[Zap]] or The Log. For example, the Dart Goblin can take down a [[Balloon]] with the help of a Crown Tower, but he will not stop the Balloon's death damage from reaching, and thus damaging the Crown Tower. This can be prevented by using the Ice Spirit.
+*The Dart Goblin is a very effective counter to spawner buildings, particularly the [[Furnace]]; he can snipe the Furnace if placed 4 tiles away from the river and 2HKO the spawned [[Fire Spirit]].
+*If there are [[:Category:Building Cards|buildings]] that are 4 tiles or fewer away from the river on the opponent's side, you can use the Dart Goblin to attack those buildings from your side of the Arena. A Dart Goblin outranges the [[Bomb Tower]], [[Inferno Tower]] and [[Cannon]], which can make him an excellent asset in battle to destroy your opponent's defenses and further your advancement plans.
+**Note that the [[Tesla]] cannot be outranged because it is only vulnerable to damage when it comes out of the ground to attack. However, if the Tesla placement is 4 tiles from the river and 2 tiles from the Crown Tower, the player can place the Dart Goblin at the very edge of the bridge, and he will ignore the Tesla completely and target the Crown Tower.
+*An effective way of getting some early chip damage on your opponent's [[Tower Princess]] is by placing the Dart Goblin right at the bridge if it appears in your starting hand. His range and speed makes it extremely hard to react to and thus will catch the opponent off-guard. Even if the opponent reacts in time, it allows the player to scout the opponent's deck.
+*His range and speed allows him to easily run and get some sizeable damage to a Crown Tower or even finish it off if it has relatively low hitpoints. Even if the Dart Goblin can be defeated in one hit by a Crown Tower, he will still get 2 shots off before dying and 4 shots at full health. However, a [[Cannoneer]] and Dagger Duchess will be able to destroy him before he gets a chance to attack more than once, so the player can almost always ignore the Dart Goblin if they run a heavy deck.
+*The Dart Goblin is excellent at pulling melee units towards the middle of your side of the map due to his very long range. He can engage the unit while they approach him.
+*The Dart Goblin can be used as a distraction card, but at a high cost. He is best used as cheap and effective air defense, that can kill off a Balloon at the bridge by himself, though he allows the death bomb hit to your Tower. Used with another air defense such as an [[Electro Wizard]], Hunter, [[Archer Queen]], [[Zappies]], [[Little Prince]], or a [[Musketeer]], he can completely defeat a [[rage]]d Balloon. It is also indispensable when defending against a [[Lava Hound]].
+*Because of the Dart Goblin's fast attack speed, he is great against tanks like the [[Giant]], [[Royal Giant]], Lava Hound, and [[Golem]]. Pair him with other distraction units to prevent further damage from being dealt to the Crown Tower.
+*Skeletons can distract and completely deny the Dart Goblin for 2 less Elixir, but requires some timing.
+*Dart Goblin outranges the 5.5 tile sight range of most troops. Placing Dart Goblin by the river and 2 tiles into the opposite lane will allow him to shoot enemies currently crossing the bridge without being targeted by them, since the distance will be about 7 tiles away. This is especially useful against potent medium-range units like [[Wizard]], [[Executioner]], [[Bomber]], [[Sparky]], [[Hunter]], and [[Bowler]], who will otherwise OHKO the Dart Goblin. This is also useful against the [[Ram Rider]], as he will keep attacking her without her attacking him in return.
+*The [[Royal Ghost]] is a very effective counter against the Dart Goblin. With his invisibility, he can completely negate the Dart Goblin's range advantage, and he deals enough damage to OHKO a Dart Goblin of the same Level for a neutral Elixir trade, while taking no damage in return.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{|class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|3||0.8 sec||0.35 sec||Very Fast (120)||1 sec||6.5||800||Air & Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 261 }}
+{{#vardefine: dmg_11 | 156 }}
+{{#vardefine: atk_speed | 0.8 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 145,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|100 {{BASEPAGENAME}} cards<br>50 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 435,000 Damage to enemy Troops or buildings
+|4,000 {{Icon|I=Gold}}<br>50 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 730,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>50 {{Icon|I=XP}}
+|-
+| rowspan="3" |Hit Maker <br> [[File:Hit Maker.png|50x50px]]
+|1
+|Hit enemy Troops a total of 1,400 times
+|6,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Troops a total of 4,000 times
+|100 {{Icon|I=Rare Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Troops a total of 7,000 times
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+| rowspan="3" |Efficient Attacker <br> [[File:Efficient Attacker.png|50x50px]]
+|1
+|Land 10 attacks with a single deploy a total of 80 times!
+|6,000 {{Icon|I=Gold}}<br/ >175 {{Icon|I=XP}}
+|-
+|2
+|Land 10 attacks with a single deploy a total of 240 times!
+|8,000 {{Icon|I=Gold}}<br/ >175 {{Icon|I=XP}}
+|-
+|3
+|Land 10 attacks with a single deploy a total of 480 times!
+|10,000 {{Icon|I=Gold}}<br/ >175 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2017
+*The Dart Goblin [[Cards|card]] was added to the game on 13/1/2017 {{Balance|Add}}.
+*On 16/3/2017, a [[Version History#Maintenance Break (16/3/2017)|maintenance break]], decreased the Dart Goblin's attack time interval to 0.65 seconds (from 0.7 seconds) {{Balance|Buff}}. This was done to fix some unexpected behaviour that the Dart Goblin showed.
+2018
+*On 25/4/2018, the [[Version History#Clan%20Wars%20Update%20(25/4/2018)|Clan Wars Update]], increased the Dart Goblin’s damage by 3% {{Balance|Buff}}. The update also slightly changed his description. It used to read “''Runs fast, shoots far and chews gum. How does he blow darts with a mouth full of gum? Years of didgeridoo lessons.''” {{Balance|Neutral}}.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Rare}} cards start at Level 3 and end at Level 13 (from 1 to 11) {{Balance|Neutral}}.
+*On 5/11/2018, a [[Version History#Balance Changes (5/11/2018)|Balance Update]], increased the Dart Goblin's damage by 4% {{Balance|Buff}}. This change was voted for by the community.
+2019
+*On 4/2/2019, a [[Version History#Balance Changes (4/2/2019)|Balance Update]], increased the Dart Goblin's attack time interval to 0.7 seconds (from 0.65 seconds) {{Balance|Nerf}}, and increased his first attack time interval to 0.35 seconds (from 0.3 seconds) {{Balance|Nerf}}.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Dart Goblin's card info screen {{Balance|Add}}.
+2021
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13) {{Balance|Buff}}.
+*On 7/12/2021, the [[Version History#Balance%20Changes%20(7/12/2021)|2021 Quarter 4 Update]], increased the Dart Goblin's damage by 9% {{Balance|Buff}}.
+2022
+*On 30/3/2022, the [[Version History#Miner%20Update%20(30/3/2022)|Miner Update]], changed the Dart Goblin's card render {{Balance|Neutral}}.
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], added the Efficient Attacker [[Card Mastery]] task for the Dart Goblin {{Balance|Add}}.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14) {{Balance|Buff}}.
+2024
+*On 17/6/2024, the [[Version History#Goblin World Update (17/6/2024)|Goblin World Update]], increased the Dart Goblin’s damage by 8.4% {{Balance|Buff}}. It also added the Dart Goblin to the Goblin class {{Balance|Add}}.
+2025
+*On 6/1/2025, the [[Version History#Pass Royale and more (6/1/2025)|January 2025 Update]], added the Dart Goblin's Evolution {{Balance|Add}}.
+*On 4/2/2025, a [[Version History#Balance Changes (4/2/2025)|Balance Update]], decreased the Dart Goblin's damage by 5% {{Balance|Nerf}}.
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], increased the Dart Goblin's hitpoints by 0.38% {{Balance|Buff}}, and decreased his damage by 1.48% {{Balance|Nerf}}.
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] increased the Dart Goblin's Damage by 17% {{Balance|Buff}} and increased his attack time interval to 0.8 seconds (from 0.7 seconds) {{Balance|Nerf}}.
+2026
+
+* On 12/1/2026, a Balance Update, decreased the dart goblins damage by 8%.
+* On 2/3/2026, a Balance Update, increased the Dart Goblin's sight range to 7.5 tiles (from 7 tiles).
+
+==Gallery==
+<gallery>
+File:Old Dart Goblin card render.png|Dart Goblin's card render before 30/3/2022.
+File:Dart Goblin card render.png|Current card render.
+File:Dart Goblin Preview.gif|Current card preview.
+File:Dart Goblin Render.png|Dart Goblin render.
+</gallery>
+
+==Trivia==
+*Goblins are small, grotesque, monstrous creatures that appear in the folklore of multiple European cultures. First attested in stories from the Middle Ages, they are ascribed conflicting abilities, temperaments, and appearances depending on the story and country of origin, ranging from mischievous household spirits to malicious, bestial thieves. They often have magical abilities similar to a fairy or demon, such as the ability to shapeshift. Similar creatures include [https://en.wikipedia.org/wiki/Duende duendes], [https://en.wikipedia.org/wiki/Kobold kobolds], [https://en.wikipedia.org/wiki/Leprechaun leprechauns], and [https://en.wikipedia.org/wiki/Ghoul ghouls].
+**In the Italian and Japanese language setting of the game, the Dart Goblin's name translates to "Blowgun Goblin". In the French, German, Spanish, Dutch, Norwegian. Arabic, Persian, Malaysian, and Vietnamese language setting of the game, the Dart Goblin's name translates to "Blowpipe Goblin", "Blowgun Kobold", "Dart-throwing Duende", "Blowpipe Kobold", "Blowing Goblin", "Arrow-blowing Ghoul", "Blowdart Goblin", "Greedy Goblin", and "Dart-throwing Leprechauns" respectively.
+**The Dart Goblin is 1 of 17 [[cards]] associated with [[Goblins]], with the others being [[Spear Goblins]], [[Goblin Gang]], [[Baby Goblins]], [[Goblin Demolisher]], [[Suspicious Bush]], [[Goblin Cage]], [[Goblin Hut]], [[Goblin Giant]], [[Goblin Barrel]], [[Goblin Curse]], [[Goblin Drill]], [[Goblin Machine]], [[Party Rocket]], [[Party Hut]], [[Goblinstein]], and of course, Goblins.
+*The Dart Goblin is making the practice of playing the [https://en.wikipedia.org/wiki/Didgeridoo didgeridoo]. The didgeridoo is a wind instrument, played with vibrating lips to produce a continuous drone while using a special breathing technique called circular breathing. The didgeridoo was developed by Aboriginal peoples of northern Australia at least 1,000 years ago, and is now in use around the world, though still most strongly associated with Indigenous Australian music.
+**In the Arabic language setting of the game, the Dart Goblin plays the oboe. In the Chinese language setting of the game, the Dart Goblin plays the flute.
+*The Dart Goblin is one of the first [[:Category:Troop Cards|troop]] cards to receive a card render, alongside the [[Archers]], [[Knight]], [[Goblins]], [[Bomber]], [[Skeletons]], [[Barbarians]], [[Bats]], [[Royal Recruits]], [[Skeleton Barrel]], [[Rascals]], [[Musketeer]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Flying Machine]], [[Hog Rider]], [[Royal Hogs]], [[Zappies]], [[Elixir Golem]], [[Baby Dragon]], [[Skeleton Army]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], [[Prince]], [[Balloon]], [[Giant Skeleton]], [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Mega Knight]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], [[Magic Archer]], [[Bandit]], [[Lava Hound]], [[Night Witch]], and [[Fisherman]].
+*The Dart Goblin is the only troop that has been featured with a [[Buff#Poison Attack|Poison Attack]] [[buff]].
+*In the card's description, "''Double Trouble gum''" is likely a reference to the brand of gum called [https://en.wikipedia.org/wiki/Dubble_Bubble Dubble Bubble].
+*The Dart Goblin, along with the Minions, Bomber, Skeletons, [[Skeleton Dragons]], [[Ice Spirit]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Mega Minion]], [[Ice Golem]], Elixir Golem, [[Goblin Cage|Goblin Brawler]], [[Guards]], Baby Dragon, P.E.K.K.A, Giant Skeleton, [[Golem]], Wall Breakers, Bowler, [[Executioner]], Mega Knight, [[Inferno Dragon]], Royal Ghost, and Lava Hound, are featured as a [https://squad-busters.fandom.com/wiki/Monsters monster] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*The Dart Goblin's C.H.A.O.S Common Modifier Speedy Goblinez is a reference to [https://en.wikipedia.org/wiki/Speedy_Gonzales Speedy Gonzalez].
+*The Dart Goblin is the subject of certain cosmetics in the game. More specifically:
+**The Dart Goblin is the subject of 3 [[Emotes]].
+**The Dart Goblin is the subject of 2 [[Battle Banners|Battle Banner]] items.
+***The Dart Goblin is one of the first troops to be the subject of a Battle Banner item, along with the Mini P.E.K.K.A, P.E.K.K.A, Prince, Giant Skeleton, Mega Knight, [[Super Witch]], and the [[Golden Knight]].
+
+{{Navigation|Card}}
+
+[[fr:Gobelin à sarbacane]]
+[[de:Blasrohrkobold]]
+[[es:Duende lanzadardos]]
+[[it:Goblin cerbottaniere]]
+[[ru:Гоблин с дротиками]]
+[[zh:吹箭哥布林]]

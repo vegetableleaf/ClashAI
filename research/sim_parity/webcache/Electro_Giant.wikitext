@@ -1,0 +1,220 @@
+{{DISPLAYTITLE: <span style="color: #b300b3;">Electro Giant</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=7|Rarity=Epic|Type=Troop|Arena=Rascal's Hideout|ReleaseDate=2 November 2020}}{{SubpageNavBox|MergeTactics=yes}}{{Quote|He channels electricity through his Zap Pack, a unique device that stuns and damages any troop attacking him within its range. Don't tell him that his finger guns aren't real! He'll zap you.}}
+
+The Electro Giant is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from the [[Arenas|Rascal's Hideout (Arena 13)]]. It spawns a slow, single-target, [[:Category:Building Cards|building]]-targeting, melee, ground [[:Category:Troop Cards|troop]] with very high hitpoints and moderate damage. Enemy units who damage the Electro Giant while being within a 3-tile radius of him will be damaged and stunned for 0.5 seconds with each hit. He generally resembles the [[Giant]], but is bare-chested, has spiky eyebrows and a beard, wears gloves with team-colored bolts on top, gold-rimmed goggles, team-colored pants, and a belt with a golden bolt in the center, and carries a generator on his back with two team-colored rings on top called the ‘Zap Pack’, which creates a team-colored electric field around him. An Electro Giant card costs 7 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Electro Giant Card}}
+*The Electro Giant does not inflict any reflected damage if he is frozen. Hence, [[Freeze]] can be used along with a swarm [[Cards|card]] to safely defeat him as it buys 4 valuable seconds.
+*When a unit attacks the Electro Giant, their attack will take priority over the stun, even though both effects happen simultaneously. Due to this, the [[Prince]] and [[Dark Prince]]'s charge attacks will successfully connect against an Electro Giant.
+*When playing with an Electro Giant deck, it is important you include spells such as Zap or Lighting. These are important to reset Inferno Dragons or Inferno Towers as they will easily take down Electro Giant. You can also use cards such as Zappies, Electro Wizard, [[Goblinstein]], and Electro Dragon to help counter them.
+*When against the Electro Giant, your best bet has to be [[:Category:Building Cards|buildings]] such as [[Cannon]] and [[Tesla]], as they cannot be pulled by his usual support [[:Category:Troop Cards|troops]], save for damaging [[:Category:Spell Cards|spells]] such as [[Lightning]], which the user can use.
+*The Electro Giant's high cost leaves the user vulnerable to a push in the other lane such as a [[Hog Rider]], Ram Rider, or [[Battle Ram]]. If this happens, the user should either have some cheap troops available to defend, or be prepared to trade towers.
+*He will easily take out a [[:Category:Tower Troop Cards|Crown Tower]] if he is ignored, so he should not be left alone unless both players are racing for each others' Crown Tower (such as in Sudden Death).
+*The [[Inferno Dragon]] and [[Inferno Tower]] can easily and quickly defeat the Electro Giant if placed correctly. The Inferno Dragon should be placed as far as possible to the side, in a position that the Electro Giant will not walk towards (i.e, not between him and a defensive building). The Inferno Tower can be placed as it usually is against building-targeting units; 4 tiles from the river, and 3 tiles from the defending Crown Tower. These workarounds are not infallible, however.
+**The user's opponent can deploy a [[Giant Snowball]], [[Tornado]], or a [[Fireball]] to force the Inferno Dragon and other units inside the stunning radius, and they can [[Zap]] or distract the Inferno Tower with swarms or ranged tanks to give their Electro Giant more time to reach it and stun it.
+*Like the [[Golem]], he should rarely be played in single [[Elixir]] time due to the high 7 Elixir one must commit to use him. Placing him in the back without a sufficient lead or without being able to circumvent the opponent's counters will often give the opponent momentum, through a powerful opposite lane push or a positive Elixir trade on their defense. However, unlike the Golem who cannot defend himself, his reflected damage will hit troops attacking him within a close-set range and potentially destroy them before they can defeat him.
+*The Electro Giant can be pushed by dashing units like the Prince or Dark Prince so that he can travel faster.
+*The Electro Giant synergizes well with Tornado. This is handy for ranged troops that stay outside his "zap" area that can be pulled in to stun the troops.
+*The Electro Giant can be used as a defense-turned-counterattack, as he cripples some offensive cards such as a [[Mighty Miner]], Inferno Dragon, or a [[Ram Rider]].
+*The [[Fisherman]] has synergy with the Electro Giant, as he will pull ranged troops to the Electro Giant's zap radius. He can also defend the Electro Giant from heavy hitters such as [[P.E.K.K.A.|P.E.K.K.A]], Mini P.E.K.K.A, [[Night Witch]], Hunter, Prince, Royal Ghost, and [[Sparky]] by pulling them away towards himself, allowing the Electro Giant to escape their sight range. However, the player will have less Elixir to defend the heavy hitter afterwards, and the Fisherman cannot target air troops, although Electro Giant's zaps will do.
+*The [[Barbarian Hut]] is an effective counter to the Electro Giant when placed in the middle. It will distract the Electro Giant and pull him in range of both Crown Towers, while the [[Barbarians]] deal high damage to the Electro Giant for a neutral Elixir trade, with some Barbarians possibly surviving for a counterattack.
+*If the opponent makes their own high-cost investment early on, the Electro Giant can be deployed to pressure their other lane, as he threatens to take out an entire Crown Tower if he is ignored. Furthermore, making high-cost investments will restrict them to deploying swarms only, which is ineffective against him.
+*If the opponent carries Tornado to pull units into the Electro Giant's stun radius, the player can deploy their counter units farther back and close to their [[King's Tower]], making it more difficult for the opponent to safely reel them in. If the opponent makes a misstep, they may activate the player's King's Tower.
+*The Electro Giant's reflected damage is static and is dependent on the enemy's attack speed. Troops that attack slowly with high damage such as the [[Giant Skeleton]], P.E.K.K.A, [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Royal Ghost]], Sparky, [[Elite Barbarians]], Prince, [[Mega Minion]], Night Witch, or [[Hunter]] can handle him alone easily for a positive Elixir trade, while rapid-hitting troops like [[Lumberjack]], [[Golden Knight]], [[Monk]], [[Phoenix]], or [[Berserker]] will suffer much more, since they will be damaged down more quickly and be stunned more often, reducing their DPS. Casting [[Rage]] on troops defending against the Electro Giant is not recommended because of this.
+**The reflected damage is also counted per hit. Because of this, the [[Electro Wizard]] and the [[Executioner]] will hit the Electro Giant twice, effectively hitting themselves twice. Since their range is longer than the Electro Giant's area, they should be placed as far away as possible to avoid them taking damage. The Hunter is an exception to this, as even with him hitting 10 times per attack, he will still only take the reflexion of 1 hit.
+*If the player has no other cards to effectively counter him, the [[Skeleton Army]] or [[Minion Horde]] will deal some limited damage to him. Keep in mind that they will likely all die, but the Electro Giant will be weakened.
+*[[Sparky]] can also counter Electro Giant to a certain extent. Amazingly, even if the Sparky is in the zap radius, her attack would still charge up and not be reset by the reflect damage. This makes it rather reliable against spells that the opponent might use. However, try to place the Sparky further away, outside the zap radius so that she would take minimal damage and set up for a counterattack. It usually only takes 2-4 blasts for the Sparky to finish off the Electro Giant, however, the Tower would still take some damage, so this counter isn't the most effective.
+*Unlike other building-targeting tanks, the Electro Giant should not be used with the [[Witch]] and [[Night Witch]]. This is because the Zap Pack will force the Tower to retarget from the Electro Giant into the Skeletons and Bats, weakening the push. Similarly, he is ineffective with offensive cards that are directly placed on the Tower, such as the [[Goblin Drill]], [[Graveyard]], [[Miner]], and [[Goblin Barrel]].
+*[[Mirror]] can also be used on the Electro Giant. Deploy an Electro Giant at the back of your King's Tower and wait for more Elixir. Then deploy the mirrored Electro Giant at the back. The opponent will likely spend a lot of Elixir defending this push.
+*Avoid using [[Arrows]], Fireball, [[Rocket]], [[Barbarian Barrel]], [[The Log]], or Giant Snowball against the Electro Giant if he is attacking the King Tower. This will cause the King Tower to get stunned unnecessarily, making him take longer to defeat the Electro Giant. However, in [[2v2]] [[:Category:Modes|mode]] you can combine a Tornado with one of these spells to activate your King Tower from the reflect damage, without it taking any damage. This is because damage dealt by any direct damage spell originates from the King Tower and technically counts as an attack by it.
+
+<center><div class="table-back" id="unit-statistics">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Electro Giant Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|7||1.8 sec||1 sec||Slow (45)||1 sec||Melee: Medium (1.2)||Buildings||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+
+{{StatisticsSubheader|Zap Pack Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+! scope="col" |Stun Duration<br />{{Icon|I=Freeze}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+|-
+|3||0.5 sec||Air & Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 3952 }}
+{{#vardefine: dmg_11 | 163 }}
+{{#vardefine: atk_speed | 2.1 }}
+{{#vardefine: reflect_11 | 192 }}
+{{#vardefine: crown_11 | 97 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per Second<br />{{Icon|I=DPS}}
+! scope="col" |Reflected Damage<br />{{Icon|I=Damage}}
+! scope="col" |Reflected Tower Damage <br />{{Icon|I=Tower Damage}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:reflect_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:crown_11}} * (1.1^(6-11)) round 0 }}
+
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:reflect_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:crown_11}} * (1.1^(7-11)) round 0 }}
+
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:reflect_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:crown_11}} * (1.1^(8-11)) round 0 }}
+
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:reflect_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:crown_11}} * (1.1^(9-11)) round 0 }}
+
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:reflect_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:crown_11}} * (1.1^(10-11)) round 0 }}
+
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:reflect_11}} || {{#var:crown_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:reflect_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:crown_11}} * (1.1^(12-11)) round 0 }}
+
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:reflect_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:crown_11}} * (1.1^(13-11)) round 0 }}
+
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:reflect_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:crown_11}} * (1.1^(14-11)) round 0 }}
+
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:reflect_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:crown_11}} * (1.1^(15-11)) round 0 }}
+
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:reflect_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:crown_11}} * (1.1^(16-11)) round 0 }}
+
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" | Type
+! width="10%" | Level/Tier
+! width="40%" | Objective
+! width="25%" | Reward
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 280,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|20 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 840,000 Damage to enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 1,400,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" |Tower Tapper <br> [[File:Tower Tapper.png|50x50px]]
+|1
+|Hit enemy [[:Category:Crown Towers|Crown Towers]] a total of 980 times
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Crown Towers  a total of 2,800 times
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Crown Towers a total of 4,900 times
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2020
+*The Electro Giant was once available in the [[Tournament/Special Event Challenges|Electro Giant Draft Challenge]], which started on 5/10/2020. In this [[Tournament|challenge]], gameplay was similar to a regular Draft Challenge, except that one of the players was able to choose who would use the Electro Giant. If the player achieved at least 6 wins, they obtained the Electro Giant early.
+*On 14/10/2020, prior to the [[Cards|card]]'s general release, a [[Version History#Maintenance Break (14/10/2020)|maintenance break]], increased the Electro Giant's hitpoints by 12.5%.
+*The Electro Giant card was generally released on 2/11/2020.
+*On 18/11/2020, the [[Version History#Clan%20Wars%20Improvement%20Update%20(18/11/2020)|Clan Wars Improvement Update]], made the Electro Giant's reflected damage scale with his level. Additionally, certain interactions with the reflected damage were changed. For example, each of the [[Hunter]]'s pellets no longer count as individual attacks versus the Electro Giant. Previously, if the Hunter hit the Electro Giant from a point-blank range, the Hunter would take reflected damage 10 times and die instantly.
+*On 19/11/2020, a [[Version History#Maintenance Break (19/11/2020)|maintenance break]], fixed a bug where using [[Lightning]] on an Electro Giant would cause the game to crash.
+2021
+*On 30/3/2021, the [[Version History#2021%20Quarter%201%20Update%20(30/3/2021)|2021 Quarter 1 Update]], added the Electro Giant to all Draft selections.
+*On 6/9/2021, the [[Version History#2021%20Quarter%203%20Update%20(6/9/2021)|2021 Quarter 3 Update]], decreased the Electro Giant's hitpoints by 4%.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+*On 1/11/2021, an [[Version History#Optional Update (1/11/2021)|Optional Update]], fixed an issue where Electro Giant could not stun some enemies.
+*On 15/11/2021, a [[Version History#Minor Update (15/11/2021)|Minor Update]], fixed an issue where the Electro Giant counter-zaps would causes incorrect damage to enemy units.
+2022
+*On 30/3/2022, the [[Version History#Miner%20Update%20(30/3/2022)|Miner Update]], fixed a few bugs on the Electro Giant such as with his zap damage behaving inconsistently, a rare crash when Electro Giant received certain types of damage, and an issue where the Electro Giant's [[Star Points|Star Level]] used the sound effects of the [[Giant]].
+*On 4/4/2022, the [[Version History#April%202022%20Update%20(4/4/2022)|April 2022 Update]], decreased the Electro Giant cost to 7 [[Elixir]] (from 8 Elixir), but also decreased his hitpoints and damage by 15%.
+*On 7/6/2022, a [[Version History#Balance%20Changes%20(7/6/2022)|Balance Update]], increased the Electro Giant's hitpoints by 9%.
+*On 2/8/2022, a [[Version History#Balance%20Changes%20(2/8/2022)|Balance Update]], decreased the Electro Giant's reflected tower damage by 33%.
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the [[Arenas|Arena]] to unlock the Electro Giant from Electro Valley to Rascal's Hideout.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+*On 16/12/2024, the [[Version History#2024 Quarter 4 Update (16/12/2024)|2024 Quarter 4 Update]], fixed a bug where Electro Giant's Zap Pack would not deal reduced damage to the [[King's Tower|King Tower]].
+2025
+*On 8/1/2025, a [[Version History#Balance Changes (8/1/2025)|Balance Update]], added a 2-tile sight clip to the Electro Giant.
+*On 31/3/2024, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Electro Giant's hitpoints by 0.02% and increased his reflected tower damage by 37.5%. It also fixed a bug where Electro Giant would not always be knocked back when hit by [[Mega Knight/Evolution|Evolved Mega Knight]].
+*On 1/4/2025, a [[Version History#Maintenance Break (1/4/2025)|maintenance break]], decreased the Electro Giant's reflected tower damage by 33%.
+2026
+
+* On 4/5/2026, a Balance Update, decreased the Electro Giant's attack time interval to 1.8 seconds (from 2.1 seconds) and his first attack time interval to 1 second (from 1.5 seconds), but also decreased his reflected tower damage by 24%.
+* On 6/7/2026, a Balance Update, increased the Electro Giant's hitpoints by 3%.
+
+==Gallery==
+<gallery>
+File:Electro Giant card render.png|Current card render.
+File:Electro Giant Preview.gif|Current card preview
+File:Electro Giant 1.png|Electro Giant 1
+File:Electro Giant 2.png|Electro Giant 2
+File:Electro Giant 3.png|Electro Giant 3
+File:Electro Giant 4.png|Electro Giant 4
+File:Electro Giant 5.png|Electro Giant 5
+</gallery>
+
+==Trivia== 
+*The word "Electro" comes from the Greek word "''ἤλεκτρον''" (elektron), meaning amber, referring to its electrostatic capabilities. Electricity was first detected through electric fish from as far back as 2750 BCE where Ancient Egyptian texts described them as the "protectors" of all other fish. At around 600 BCE, Thales of Miletus made a series of observations on static electricity, from which he believed that friction rendered amber magnetic, in contrast to minerals such as magnetite, which needed no rubbing. Thales was incorrect in believing the attraction was due to a magnetic effect, but later science would prove a link between magnetism and electricity. Electricity would remain little more than an intellectual curiosity for millennia until 1600, when the English scientist William Gilbert wrote ''De Magnete'', in which he made a careful study of electricity and magnetism, distinguishing the lodestone effect from static electricity produced by rubbing amber.
+**In the Spanish, Italian, Russian, Arabic, Portuguese, and Thai language settings of the game, the Electro Giant's name translates to "Electric Giant". In the Chinese and Finnish language settings of the game, the Electro Giant's name translates to "Thunder Giant" and "Lightning Giant" respectively.
+**The Electro Giant is 1 of 11 [[cards]] associated with electricity, with the others being [[Electro Spirit]], [[Zap]], [[Tesla]], [[Zappies]], [[Electro Dragon]], [[Lightning]], [[Electro Wizard]], [[Sparky]], [[Wizard Trio]], and the [[Goblinstein]].
+*The Electro Giant is tied with [[Super Magic Archer]] for the lowest first attack speed of all [[:Category:Troop Cards|troops]], with a first attack speed of 1.5 seconds.
+*The Electro Giant is 1 of 2 troops to deal reduced damage to [[:Category:Crown Towers|Crown Towers]], the others being [[Miner]]. In the case of the Electro Giant, his reflecting damage deals 66% of the full damage.
+*The Electro Giant is 1 of 14 troops that has been featured with a [[Buff#Rage|Rage]] [[buff]], the others being Electro Spirit, [[Giant]], Zappies, [[Guards]], [[Giant Skeleton]], [[Goblin Giant]], Electro Dragon, Wall Breakers, [[Mega Knight]], [[Ram Rider]], Electro Wizard, Sparky, and [[Royal Ghost]].
+*The Electro Giant is 1 of 23 cards that has had its [[Elixir]] cost changed, the others being [[Bomber]], [[Fire Spirit]], [[Royal Recruits]], [[Cannon]], [[Mortar]], [[Musketeer]], [[Three Musketeers]], [[Heal]], [[Goblin Hut]], [[Bomb Tower]], [[Barbarian Hut]], [[Furnace]], [[Elixir Collector]], [[Skeleton Army]], [[P.E.K.K.A.]], Wall Breakers, [[Bowler]], [[Goblin Barrel]], [[Barbarian Barrel]], [[Rage]], [[Fisherman]], and the [[Monk]].
+*The Electro Giant may have inspired the [https://clashofclans.fandom.com/wiki/Electro_Titan Electro Titan], a troop from Clash of Clans.
+*His hit sounds are reused from Giant albeit with altered pitch.
+*The Electro Giant is the 100th card to be added in the game.
+*The Electro Giant is the subject of a few [[Emotes]].
+*Before the Electro Giant's release, the card description was changed. It used to read, “''A hulking hunk of man and metal. Zaps nearby enemies when attacked.''”
+*There is currently a visual bug where using an [[Giant Snowball/Evolution|Evolved Giant Snowball]] on the Electro Giant will cause its electric aura to flash repeatedly.
+
+{{Navigation|Card}}
+
+[[fr:Électro-géant]]
+[[de:Elektroriese]]
+[[es:Gigante eléctrico]]
+[[it:Gigante elettrico]]
+[[ru:Электрогигант]]
+[[zh:雷电巨人]]

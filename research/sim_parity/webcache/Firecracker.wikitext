@@ -1,0 +1,221 @@
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}
+
+{{Card Infobox|Cost=3|Rarity=Common|Type=Troop|Arena=Spooky Town|ReleaseDate=3 February 2020}}{{SubpageNavBox|Evolution=yes}}{{Quote|Shoots a firework that explodes on impact, damaging the target and showering anything behind it with sparks. This is what happens when Archers get bored!}}
+
+The Firecracker is a {{Rarity|Common}} [[Cards|card]] that is unlocked from the [[Arenas|Spooky Town (Arena 12)]]. It spawns a fast, single-target, air-targeting, long-ranged, ground [[:Category:Troop Cards|troop]] with low hitpoints and high damage. The Firecracker launches an attack that once it hits its target, splits into 5 additional shrapnel, which continue to travel, while piercing through enemies. After attacking, she will recoil backwards 1 tile. The Firecracker resembles an [[Archers|Archer]], but wears a team-colored headband and tunic, a black hood, gloves and boots, and a brown belt, and carries a wooden rocket launcher with a striped team-colored golden rocket inside it. A Firecracker card costs 3 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Firecracker Card}}
+*She has the exact same amount of hitpoints as a single [[Archers|Archer]]. Anything that would OHKO an Archer, like [[Royal Delivery]] and [[Arrows]] would also OHKO a Firecracker. However, since the Firecracker only has a count of 1 and deals higher concentrated damage, many one-on-one interactions differ.
+*The Firecracker's attack is similar to the [[Hunter]]'s. Each shrapnel deals its own damage, so something closer to the point where her firework hits will be hit by more of them, and therefore take more damage. Unlike the Hunter's attack, the shrapnel  deals area damage and goes straight through enemies just like the⁣⁣ [[Magic Archer]]'s arrow, [[Bowler]]'s boulder, [[Bomber/Evolution|Evolved Bomber]]'s bomb, and the [[Executioner]]'s axe.
+*The impact of the firework does not deal damage; rather, it is that all 5 pieces of shrapnel spawn clumped together, creating the illusion of impact-induced damage. This means that against shielded units, not much of her damage is wasted, since each piece of shrapnel is an individual hit. For example, against an undamaged [[Dark Prince]], 4 shrapnel pieces will break his shield, and the last piece of shrapnel will damage the Dark Prince himself.
+*Alone, a Firecracker will connect to the [[Tower Princess]], [[Dagger Duchess]], and [[Royal Chef]], hitting them with all 5 shrapnel, doing notable chip damage. Depending on whether the player can afford to spend Elixir to counter her, the player might choose to ignore her if they run a heavy [[Battle Decks|deck]]. However, a [[Cannoneer]] will be able to OHKO her before she gets the chance to attack.
+*Players should be careful when deploying her. If their opponent plays a card 4 tiles in front of their [[King's Tower|King Tower]] and 2 tiles away from their [[:Category:Tower Troop Cards|Crown Tower]], the Firecracker's shrapnel will cause a King's Tower activation with most units. This works especially well with [[:Category:Troop Cards|troops]] with quick movement speeds because they will dodge her attack, taking no damage while the Crown Tower slowly chips down the Firecracker’s low hitpoints. With that in mind, Firecracker shouldn't be used on offense; rather, as a defensive powerhouse.
+**Most Spirit [[cards]] can be used to pull off this technique, due to their movement speeds being fast enough to avoid the Firecracker from damaging them if deployed at the right time.
+**A standard 4-2 [[:Category:Building Cards|building]] deployment is enough to cause the Firecracker to attack it and activate the King Tower. While this is not a good play by itself, it is worth doing if this building is also used to distract a building-targeting troop at the same time.
+***Note that spawner buildings may not be as applicable for this strategy, as an early deployment can cause the Firecracker to lock onto the spawned troops of the deployed building first, preventing a King Tower activation.
+**Since activating the King Tower is a relatively simple technique, it is not advised to use her in decks that suffer heavily against an activated King Tower, such as [[Graveyard]] or [[Goblin Barrel]] decks.
+**These techniques are possible to be executed with the Cannoneer as well, however, more precise timing is required due to the Cannoneer's ability to OHKO the Firecracker before she gets the chance to attack.
+*When she shoots, she pushes herself back by 1 tile. Players should keep this in mind when they are positioning her to attack, as her repeated recoil may cause her to switch to the other lane. At the same time however, this makes her effective at kiting grounded troops for a short while, and depending on which troop it is, she can fully counter them with the assistance of the Crown Towers as they cross the bridge.
+**Against a [[Mini P.E.K.K.A.]], [[Lumberjack]], or [[Prince]] place her on the fourth tile from the bridge, staggered slightly into the other lane.
+**Against a [[P.E.K.K.A.]] or [[Giant Skeleton]], place her on the fifth tile away from the bridge, and on the third tile horizontally from the Crown Tower. This can allow the P.E.K.K.A to activate your King Tower.
+**Against a [[Battle Healer]] or [[Mega Knight]], place her on the sixth tile away from the bridge, and on the third tile horizontally from the Crown Tower.
+**Against [[Elite Barbarians]], place her in an area near the middle of the board. She will do considerable damage to the Elite Barbarians, but they will need to be distracted by an [[Ice Spirit]] or [[Skeletons]] to fully finish them off. If done correctly, the Firecracker player is netted a +2 positive [[Elixir]] trade.
+**Against a [[Bandit]], place her on the sixth tile away from the bridge, and on the second tile horizontally from the Crown Tower. The Firecracker will dodge the Bandit's damage, forcing her to attack her normally. While the Firecracker will be defeated in the process, the Bandit will only be able to hit the [[Tower Princess]] once.
+**Against a [[Bowler]] that is in the inside of the [[Arenas|Arena]], place her on the fifth tile from the bridge, and on the second tile horizontally from the Crown Tower. The Bowler will hit her once but will have to walk closer to her after the recoil, which will bring him closer to the King Tower. The second attack from the Bowler will cause a King Tower activation after defeating the Firecracker.
+*When using [[:Category:Spell Cards|spells]] to finish off a Firecracker, the player should be especially mindful of any other units on the map that she could attack, possibly causing their spells to miss due to her speed and recoil effect.
+*She can be used in a manner similar to the Magic Archer and get chip damage by angling her to attack another unit and have the shrapnel hit the tower. If the unit is closer to the Crown Tower, more shrapnel will deal damage.
+*When using an [[Elixir Collector]] against her, players should avoid placing it behind their Crown Towers, as a Firecracker leftover from defense could not only chip their Tower, but also deny their Elixir Collector from generating a bit of Elixir.
+*When using a [[Miner]] to snipe a Firecracker that is on the opposing side of the arena firing at your troops, be particularly careful with your timing, as his pushback can make the Miner walk some extra distance, thus giving the enemy Tower and herself more time to defeat the Miner.
+*The Firecracker pairs well with the [[Balloon]]. The Firecracker helps to get rid of air swarms, and the Balloon tanks the damage from the Tower. However, this could possibly be a lot of spell value for the opponent.
+*When using the Firecracker to counter [[Wall Breakers]], the defending player should place her right in front of them as soon as they see the Wall Breakers deployed at the bridge. If they try to counter the Wall Breakers by placing her at a distance, the rocket will be outrun by the time it lands, allowing both Wall Breakers to connect for unnecessary damage.
+*Sending a Miner to the back of the Crown Tower as the Firecracker finishes defending is a good synergy. The Miner tanks for the Firecracker, and if the opponent uses swarms to counter the Miner, the Firecracker's shrapnel will splash onto those troops when it fires onto the tower. However, this is a fairly predictable tactic and can be easily countered by placing a tankier unit on the Miner and distracting the Firecracker to attack in a different angle.
+*She can defend supported tank pushes similarly to an [[Executioner]] by placing her right in front of the tank, allowing her area damage to heavily damage back end troops. However, this makes her more vulnerable to spell damage value.
+*Despite her shrapnel effect, she is not too effective at countering a [[Graveyard]] that is tanked for due to her slow attack time and her shrapnel not OHKOing [[Skeletons]].
+*Stacking multiple Firecrackers on the map is a great way to control the Arena. With their great range and recoil effect, a Firecracker can easily protect another Firecracker from swarms and it can also discourage the opponent from attacking. However, make sure that the Firecrackers are far away from each other to prevent the opponent from gaining major spell value.
+*The best time to place the Firecracker against a Goblin Barrel is when the Goblin Barrel's shadow is 4 tiles from the river. Try to place her angled so that she attacks the bottom Goblin while the attack hits the outer Goblin. This placement will prevent the most damage from the Goblin Barrel.
+*Against a Mortar or an X-Bow placed 1 tile staggered from the bridge, the Firecracker will be able to hit both the building and the Crown Tower, as well as any additional support troops. The Crown Tower will be hit with only one shrapnel, but placing her at the edge of the Arena will cause 2 shrapnel to hit the Crown Tower.
+*If you can predict a Firecracker at the bridge, activating the [[Monk]]'s ability will cause the Firecracker to deal damage to her own Crown Tower through the reflected projectiles.
+**On the other hand, these reflected projectiles can be used to activate the King Tower. This can be a great way to activate your King Tower against the Monk, however this is risky, and is likely to result in the Firecracker being killed in the process.
+*In [[2v2]] [[Basics of Battle|battles]], if the Firecracker locks onto a Crown Tower, the shrapnel will also hit the King's Tower. If she is crossing the bridge alone and headed for the healthier Crown Tower, it may be valuable to soak one hit for a King's activation instead of spending Elixir on a distraction unit. This also means that it may not be worth it to use her in 2v2 Battle decks, as a King activation can severely cripple future pushes.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Range<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Radius<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|3||3 sec||0.65 sec||Fast (90)||1 sec||6||11||0.4||550||Air & Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 304 }}
+{{#vardefine: dmg_11 | 64 }}
+{{#vardefine: dmg_hits | 5 }}
+{{#vardefine: atk_speed | 3.0 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Area Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(1-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(2-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(3-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(4-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(5-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(6-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(7-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(8-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(9-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(10-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} x{{#var:dmg_hits}} ({{#expr: {{#var:dmg_11}} * {{#var:dmg_hits}} }})|| {{#expr:{{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} * {{#var:dmg_hits}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(12-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(13-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(14-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(15-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(16-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 185,500 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|200 {{BASEPAGENAME}} Cards<br>25 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 550,000 Damage to enemy Troops or buildings
+|2,000 {{Icon|I=Gold}}<br>25 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 920,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>25 {{Icon|I=XP}}
+|-
+| rowspan="3" |Greatest Hits <br> [[File:Greatest Hits.png|50x50px]]
+|1
+|Hit Troops or buildings a total of 5,600 times
+|3,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|2
+|Hit Troops or buildings a total of 16,000 times
+|200 {{Icon|I=Common Wild Card}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Hit Troops or buildings a total of 28,000 times
+|5,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+| rowspan="3" |Efficient Attacker <br> [[File:Efficient Attacker.png|50x50px]]
+|1
+|Land 8 attacks with a single deploy a total of 80 times!
+|6,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|2
+|Land 8 attacks with a single deploy a total of 240 times!
+|8,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Land 8 attacks with a single deploy a total of 480 times!
+|10,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2020
+*The Firecracker was made available before its general release on 6/1/2020 via the [[Trophies|Trophy Road]]. She was also available in a [[Tournament/Special Event Challenges|Special Challenge]] as a reward {{Balance|Add}}.
+*The Firecracker [[Cards|card]] was generally released on 3/2/2020 {{Balance|Add}}.
+*On 4/2/2020, a [[Version History#Balance Changes (4/2/2020)|Balance Update]], added the Firecracker to [[Clan Wars]] [[Clan Wars/Clan Wars I|Collection Day]] card pool, Draft selections, and Mega Deck [[Touchdown]] {{Balance|Add}}.
+*On 7/4/2020, a [[Version History#Balance Changes (7/4/2020)|Balance Update]], added the Firecracker as a Trophy Road reward {{Balance|Add}}.
+*On 7/7/2020, a [[Version History#Balance Changes (7/7/2020)|Balance Update]], decreased the Firecracker's recoil range to 1.5 tiles (from 2 tiles) {{Balance|Nerf}}.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the [[Arenas|Arena]] to unlock the Firecracker from Hog Mountain to Serenity Peak {{Balance|Nerf}}.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13) {{Balance|Buff}}.
+2022
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Firecracker from Serenity Peak to Spooky Town {{Balance|Buff}}. It also added the Efficient Attacker [[Card Mastery]] task for the Firecracker {{Balance|Add}}.
+2023 
+*On 7/2/2023, a [[Version History#Balance Changes (7/2/2023)|Balance Update]], decreased the Firecracker’s first attack time interval to 0.6 seconds (from 1 second) {{Balance|Buff}}.
+*On 6/6/2023, a [[Version History#Balance%20Changes%20(6/6/2023)|Balance Update]], decreased the Firecracker’s first attack time interval to 0.55 seconds (from 0.6 seconds) {{Balance|Buff}}.
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14) {{Balance|Buff}}, increased the Firecracker’s first attack time interval to 0.6 seconds (from 0.55 seconds) {{Balance|Nerf}}, and added the Firecracker's Evolution {{Balance|Add}}. It also changed the Firecracker's card image and card render {{Balance|Neutral}}.
+*On 30/6/2023, a [[Version History#Maintenance%20Break%20(30/6/2023)|maintenance break]], increased the Firecracker’s first attack time interval to 0.65 seconds (from 0.6 seconds) {{Balance|Nerf}}.
+2025
+*On 30/1/2025, a [[Version History#Maintenance Break (30/1/2025)|maintenance break]], made it so that damage boost from the [[Rune Giant]] would be split on Firecracker instead of being granted to each of her projectiles {{Balance|Neutral}}.
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] decreased the Firecrackes's sight range to 8 tiles (from 8.5 tiles) {{Balance|Buff}} and decreased her recoil range to 1 tile (from 1.5 tiles) {{Balance|Nerf}}.
+2026
+
+* On 6/4/2026, a Balance Update, increased her projectile speed to 500 (from 400){{Balance|Buff}}.
+
+==Gallery==
+<gallery>
+File:FirecrackerCardOld.png|Firecracker’s card image before 19/6/2023.
+File:Old Firecracker card render.png|Firecracker’s card render before 19/6/2023.
+File:Firecracker card render.png|Current card render.
+File:Firecracker Preview.gif|Current card preview
+File:FirecrackerBody.png|Full body render.
+</gallery>
+
+==Trivia==
+*The Firecracker's weapon resembles [https://en.wikipedia.org/wiki/Shoulder-fired_missile man-portable rocket launchers]. Rocket Launchers were first developed in ancient China in the ninth century. Originally, they were firing multiple arrows together in a device called [https://en.wikipedia.org/wiki/Fire_arrow fire arrow], until they were replaced with rocket motors during the twelfth century.
+**In the Turkish and Portuguese language settings of the game, the Firecracker's name translates to "Pyrotechnist". In the Dutch and Indonesian language settings of the game, the Firecracker's name translates to "Fireworks Shooter". In the French, Spanish, Italian, Japanese, Korean, Russian, Arabic, Chinese, Malaysian, Thai, and Finnish language settings of the game, the Firecracker's name translates to "Artificer", "Firethrower", "Pyrotechnic Archer", "Rocket Gunner", "Rocketeer", "Fire Archer", "Fireworks Thrower", "Fireworks Gunner", "Firecracker Shooter", "Firework Archer", and "Firewoman" respectively.
+**The Firecracker is 1 of 5 [[cards]] associated with rocketry, with the others being [[Rocket]], [[Goblin Machine]], [[Party Rocket]], and [[Rocket Silo]].
+**According to a [https://x.com/Seth_Supercell/status/1212713267543576577?s=20 tweet], the Firecracker's firework is taken from an Air Defense from Clash of Clans. Additionally, the rocket shot by the Goblin Machine resembles the Firecracker’s firework.
+*The Firecracker was inspired by [https://brawlstars.fandom.com/wiki/Penny Penny] from Brawl Stars, another Supercell game, according to  [https://youtu.be/DMi-5WpqQHk?t=53 Firecracker's intro video].
+*The Firecracker is 1 of 17 [[:Category:Troop Cards|troops]] that inspired a troop in Clash of Clans, the others being [[Spear Goblins]], [[Bomber]], [[Bats]], [[Skeleton Barrel]], [[Minion Horde]], [[Battle Ram]], [[Ice Golem]], [[Zappies]], [[Baby Dragon]], [[Giant Skeleton]], [[Ram Rider]], [[Inferno Dragon]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], and [[Night Witch]].
+*The Firecracker is one of the first troop cards to receive a [[Card Evolution]], alongside the [[Skeletons]], [[Barbarians]], and [[Royal Giant]].
+*The Firecracker is 1 of 4 troops which can defeat itself in one attack, the others being Skeletons, Bats and [[Wall Breakers]].
+*The Firecracker is 1 of 3 troops to recoil when attacking, the others being [[Sparky]] and [[Super Archers]].
+*The Firecracker is 1 of 23 troops that has been featured in the [[Troop Rush]] game [[:Category:Modes|mode]], the others being Skeletons, [[Skeleton Dragons]], [[Fire Spirit]], Bats, [[Elite Barbarians]], [[Rascals|Rascal Girls]], [[Royal Hogs]], [[Heal Spirit]], [[Elixir Golem]], [[Guards]], [[Prince]], [[Balloon]], [[Golem]], Wall Breakers, Ram Rider, Sparky, [[Phoenix]], Royal Ghost, [[Bandit]], [[Lumberjack]], [[Santa Hog Rider]], and the [[Monk]].
+*From her description, it is implied that the Firecracker used to be an [[Archers|Archer]].
+*Along with the Rascals, Magic Archer, Bandit, and the [[Boss Bandit]], the Firecracker belongs to the Forest Gang.
+*If the Boss Bandit is played when an allied Firecracker is on the field, she says "''You fire, I dash!''".
+*The spread angle between the leftmost and rightmost small projectiles is 70 degrees, which means the angle between any two adjacent small projectiles is 17.5 degrees.
+*The Firecracker is the subject of 4 [[Emotes]].
+**The Santa Firecracker Emote was originally going to appear in December of 2021, but did not make it to the game until the December of 2022.<br />
+
+{{Navigation|Card}}
+
+[[fr:Artificière]]
+[[de:Feuerwerkerin]]
+[[es:Lanzafuegos]]
+[[it:Arciere pirotecnico]]
+[[ru:Огненная лучница]]
+[[zh:烟花炮手]]

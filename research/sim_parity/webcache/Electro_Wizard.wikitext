@@ -1,0 +1,251 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Electro Wizard</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=4|Rarity=Legendary |Type=Troop|Arena=Electro Valley|ReleaseDate=30 December 2016}}{{SubpageNavBox|MergeTactics=yes}}{{Quote|He lands with a "POW!", stuns nearby enemies and shoots lightning with both hands! What a show off.}}
+
+The Electro Wizard is a {{Rarity|Legendary}} [[Cards|card]] that is unlocked from the [[Arenas|Electro Valley (Arena 11)]]. It spawns a fast, multi-target, air-targeting, medium-ranged, ground [[:Category:Troop Cards|troop]] with moderate hitpoints and moderate damage. The Electro Wizard's attack stuns his targets for 0.5 seconds. If 2 or more targets are within his range, his attack will split and attack the closest 2 units. He spawns with a [[Zap]] upon deployment. He appears as a [[Wizard]] with blue eyes, long ears, black spiky hair, eyebrows and moustache, wearing a team-colored suit with gold linings and wristbands, a belt, and black boots. An Electro Wizard card costs 4 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Electro Wizard Common Modifier.png|45x45px]] Common: Zip Zap Zop===
+{{Quote|+3 Electro Spirits}}
+Places 3 additional Electro Spirits around the Electro Wizard.
+
+===[[File:Electro Wizard Rare Modifier.png|45x45px]] Rare: Quadruple Ruple===
+{{Quote|Chain attack 5 enemies}}
+Is able to both stun and chain 5 enemies, including the Crown Towers. Can double attack and stun an enemy again if it still has a chain left.
+
+===[[File:Electro Wizard Epic Modifier.png|45x45px]] Epic: Chain Reaction===
+{{Quote|Chain attack all enemies}}
+Is able to both stun and chain every enemy across the board, including the Crown Towers. Will double attack and stun both all enemies and Crown Towers again.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Electro Wizard Card}}
+*Each of his zaps deal half of his full damage. Thus, when attacking two targets, the Electro Wizard will deal half of his full potential damage to each. Conversely, if there is only one target in his range, he will inflict all the possible damage to it.
+**This can also work against the Electro Wizard. This can work if he is attacking an Electro Giant, while inside the Zap Pack, which will result in effectively hitting himself twice. Since his range is longer than the Electro Giant's area, he should be placed as far away as possible to avoid him taking damage.
+*Keep in mind that an Electro Wizard does not inflict splash damage, meaning he is weak against large swarms. However, if he is able to use his spawn damage, he can often cancel them out.
+*His spawn damage behaves identically to a [[Zap]] of equal Level. Hence, he can be used to OHKO [[Skeleton Army]] or [[Bats]] while crippling [[Goblin Gang]] and [[Minion Horde]]. This is usually a negative [[Elixir]] trade, so this should only be used in an emergency or if the player knows the Electro Wizard can immediately get value, such as by attacking a nearby unit after clearing the swarm.
+**A [[Clone|cloned]] Electro Wizard does not inflict spawn damage. Similarly, an Electro Wizard fed by the [[Royal Chef]] will not have his spawn damage affected.
+*His stunning abilities allow him to force the [[Inferno Dragon]], [[Mighty Miner]], [[Inferno Tower]], and Little Prince to reset their ramp, [[Prince]], [[Dark Prince]], [[Ram Rider]], [[Battle Ram]], and [[Royal Recruits/Evolution|Evolved Royal Recruits]] to stop charging, temporarily reset the wind-up before the [[Bandit]]'s and [[Boss Bandit]]'s dashes, [[Mega Knight]]'s jumps, or the [[Fisherman]]'s hooks, and completely reset the [[Sparky]].
+**A Sparky will be immune to stun effects while on the process of cloning. This can surprise an opponent who tries to stun her with an Electro Wizard. If you notice that the opponent uses both Sparky and Clone in their [[Battle Decks|deck]], wait for them to use the Clone on the Sparky before placing the Electro Wizard on top of her.
+**A [[Giant Snowball]] can temporarily knock back the Electro Wizard and slow him down, letting a Prince connect his charge on him and defeat him instantly.
+*Unlike other ranged [[:Category:Troop Cards|troops]], the Electro Wizard does not attack with projectiles. Because of this, his attack will always connect to his target at the same time no matter how far away he is from the target. As such, the Electro Wizard should engage other ranged troops from as far away as possible. An exception can be made for the case where the player wants to make use of the spawn damage against the enemy ranged unit.
+**This aspect also makes him great against the [[Monk]], as the Monk's Pensive Protection ability will not deflect the Electro Wizard's attack back allowing him to safely damage the Monk unharmed.
+*Due to his ability to reset the high damage per second of the Inferno Dragon, Mighty Miner, Little Prince, and Sparky, he can be extremely useful in supporting a [[Giant]], [[P.E.K.K.A.|P.E.K.K.A]], [[Elixir Golem]], Mega Knight, [[Lava Hound]], [[Balloon]], [[Giant Skeleton]], or a Golem.
+*The Electro Wizard works well with mini tanks like the [[Knight]], [[Lumberjack]], [[Valkyrie]], Dark Prince, [[Ice Golem]], Prince, [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], Monk, [[Skeleton King]], [[Golden Knight]], Mighty Miner, [[Battle Healer]], or [[Goblin Machine]]. The mini tank can tank for the Electro Wizard while dealing damage, thanks to his stun attacks causing the tower to target onto them.
+**Similarly, he works well with the [[Graveyard]]. His attacks messes with the [[:Category:Crown Towers|Crown Tower]]'s attack speed, allowing more [[Skeletons]] to spawn before the other ones are killed. The Graveyard can be placed slightly later to allow the Electro Wizard to tank a few hits before the Crown Tower retargets to the Skeletons.
+*The Electro Wizard has moderate health and moderately-high damage. He is capable of surviving a [[Fireball]] of equivalent levels at full health, although a Mini P.E.K.K.A, P.E.K.K.A, or a Prince with his charge can OHKO him. Because of this, Electro Wizard is best used behind tanks such as the Knight, Valkyrie, Skeleton King, Golem, Battle Healer, or the Giant. Despite this, a lone Electro Wizard should not be ignored as he can still inflict considerable damage.
+*The Electro Wizard is an excellent support unit in a push due to his ability to reset Inferno Towers. If at least one of the opposing Crown Towers, the player can drop the Electro Wizard on top of it and force it to reset and retarget. However, he is vulnerable to Fireball, so defending players should be mindful and space out their troops.
+*The Electro Wizard is a great counter to [[Royal Hogs]]. Place him on top of them to reduce their hitpoints. After that, he will attack two at a time, further reducing damage dealt to the Crown Tower. Since the Royal Hogs have no way to deal any damage to him, he will survive with full hitpoints for a counterattack.
+*The Electro Wizard is capable of reliably countering [[Hog Rider]], allowing only one hit on the Tower. The surviving Electro Wizard can then set up a counterpush.
+*Against an [[Electro Giant]], the Electro Wizard can be paired with the P.E.K.K.A. or Royal Ghost to counter him. If timed right, the Electro Wizard's attacks will stun the Electro Giant on the same time span that the P.E.K.K.A. or Royal Ghost attacks him, causing them to take no damage from the Electro Giant's reflection.
+*The Electro Wizard can bring slow enemies to a crawl with his frequent attacks. Despite this, troops with slower attack speeds than the Electro Wizard such as the [[Golem]], [[Executioner]], [[Hunter]], Electro Dragon, [[Firecracker]], [[Princess]], and the [[Bowler]] will still be able to attack, as Electro Wizard's zap does not reset non-charge attacks but rather freezes the attack frame in place for a short amount of time.
+**Because of hist stun attack, he can benefit a lot from [[Rage]], as he will be able to stun the enemy troops more frequently, buying more time for the player to defeat. However, even with Rage, he cannot reset their attacks entirely, so he might still get hit.
+*Against Lumberloon strategies, protect the Electro Wizard and make sure the [[Balloon]] goes in front of the [[Lumberjack]] to fully counter them.
+*When using the Electro Wizard to counter the [[Skeleton Dragons]], it is most recommended to drop him on top of them instead of attacking them from a distance. This will result in the Skeleton Dragons being defeated quicker due to the spawn damage.
+*When attacking a Crown Tower, the player can send the Electro Wizard in front of other shorter-ranged troops. He will tank a few hits from the tower until the shorter-ranged troop moves in front of the Electro Wizard, after which a hit from the Electro Wizard will force the Tower to change its target to that of the shorter-ranged troop. Although the payoff is potentially high, the risk is equally as high. The opponent can play a troop in front of the unprotected Electro Wizard and quickly take it out with the help of their Crown Tower, leaving the shorter ranged troop also unprotected.
+*When defending against a Electro Wizard, the player should not place a counter troop too close to the side of the Crown Tower, as the Electro Wizard could split the strike onto the Tower and deal unnecessary chip damage. Troops placed at least one tile in front of the Tower will ensure that the Electro Wizard's split attack focuses on the troop only. This makes placing cheap troops like Skeletons almost useless to counter him, since unlike the other Wizards he will still target [[cards]] that surround him.
+*An Electro Wizard deployed at the front of a Crown Tower can negate all but one stab from a [[Goblin Barrel]], assuming the barrel is the only card coming. He will attack the front two [[Goblins]] and cause them to be taken out by the Tower before attacking, then he will one-shot the last [[Goblins|Goblin]]. This is a negative Elixir Trade, but the Electro Wizard can then be used for a counterpush.
+**There is a precise technique for the Electro Wizard's spawn damage to hit all three Goblins, provided that the Barrel is placed on the center of the Crown Tower. He is able to hit all three Goblins with his spawn damage by placing him down shortly after the Barrel crosses the river (around 2-3 tiles past it). Against a lone Goblin Barrel, it does not prevent any extra damage compared to simply reacting to where the Goblins split and then deploying him. However, if the Goblins are being tanked for by another unit, and there is another unit on the map that can attack the Goblins, hitting all three with the spawn damage can potentially eliminate them more quickly, though this is very situational.
+*The Electro Wizard's split attack can be used to activate the [[King's Tower]] with [[Tornado]] if he is crossing the bridge alone. When he runs up to your tower, use a Tornado placed 1 tile above and 2 tiles beside the Crown Tower once he stops moving. He will attack the Crown Tower once, then be pulled within range of the King's Tower, causing his next attack to hit both the targeted Crown Tower and the King's Tower. This should only be done if the Electro Wizard is fully healthy, as otherwise he may be defeated during the activation attempt.
+*Unless he is on low enough health to be finished off by a Crown Tower in 1-2 shots, an Electro Wizard should generally never be ignored as even alone he can deal a surprising amount of damage to the Tower thanks to his stun and the fact that his single-target damage is effectively double the damage of a single attack from him. Placing down a mini-tank or even a cheap distraction such as Skeletons, Bats, [[Archers]], [[Goblins]], [[Spear Goblins]], [[Minions]], or a Spirit is enough to prevent unnecessary damage to your Crown Towers.
+**Note that the Electro Wizard's multi target attack will not cause him to retarget. For example, if the player deploys Archers after the Electro Wizard connects to a Crown Tower, only 1 of the 2 Archers will take damage and he will still hit the Crown Tower. Because of this, the player should try to push him out of range of his previous target if they want to counter him that way.
+*An Electro Wizard is a very reliable counter to an unsupported [[Ram Rider]], being capable of fully countering one with Crown Tower support for a +1 Elixir trade. However, depending on the Level difference between them and when the Electro Wizard was placed, the Ram Rider's snare attack can severely cripple his hitpoints. Keep this in mind if you plan on using him in a counterpush.
+*The Zappies and Electro Dragon can used in place of the Electro Wizard in certain decks. Like the Electro Wizard, they are all able to stun enemies, the Zappies can be split into both lanes and the Electro Dragon is bulkier and can fly. However, the Electro Wizard is faster and has longer range, which makes him more ideal in fast paced decks, such as Battle Ram decks.
+
+<center>
+<div id="unit-statistics" class="table-back">
+{{Statistics}}{{StatusEffects}}
+{{StatisticsSubheader|Electro Wizard Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Stun Duration<br />{{Icon|I=Freeze}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||1.8 sec||0.6 sec||0.5 sec||Fast (90)||1 sec||5||Air & Ground||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+{{StatisticsSubheader|Zap Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+! scope="col" |Stun Duration<br />{{Icon|I=Freeze}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+|-
+|3||0.5 sec||Air & Ground
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 714 }}
+{{#vardefine: dmg_11 | 115 }}
+{{#vardefine: dmg_hits | 2 }}
+{{#vardefine: atk_speed | 1.8 }}
+{{#vardefine: zap_11 | 192 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Zap Damage<br />{{Icon|I=Damage}}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(9-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} || {{#expr: {{#var:zap_11}} * (1.1^(9-11)) round 0 }} 
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(10-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} || {{#expr: {{#var:zap_11}} * (1.1^(10-11)) round 0 }} 
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} x{{#var:dmg_hits}} ({{#expr: {{#var:dmg_11}} * {{#var:dmg_hits}} }})|| {{#expr:{{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} * {{#var:dmg_hits}} }} || {{#var:zap_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(12-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} || {{#expr: {{#var:zap_11}} * (1.1^(12-11)) round 0 }} 
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(13-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} || {{#expr: {{#var:zap_11}} * (1.1^(13-11)) round 0 }} 
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(14-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} || {{#expr: {{#var:zap_11}} * (1.1^(14-11)) round 0 }} 
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(15-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} || {{#expr: {{#var:zap_11}} * (1.1^(15-11)) round 0 }} 
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(16-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }} || {{#expr: {{#var:zap_11}} * (1.1^(16-11)) round 0 }} 
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 160,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|2 {{BASEPAGENAME}} cards<br>100 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 480,000 Damage to enemy Troops or buildings
+|8,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 800,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>100 {{Icon|I=XP}}
+|-
+| rowspan="3" |Crash Landing <br> [[File:Crash Landing.png|50x50px]]
+|1
+|Hit 280 enemy Troops with Spawn Damage
+|12,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|2
+|Hit 800 enemy  Troops with Spawn Damage
+|2 {{Icon|I=Legendary Wild Card}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Hit 1,400 enemy Troops with Spawn Damage
+|18,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+| rowspan="3" |Debilitator <br> [[File:Debilitator.png|50x50px]]
+|1
+|Debuff 12 enemy Troops with a single deploy a total of 80 times
+|6,000 {{Icon|I=Gold}}<br/ >200 {{Icon|I=XP}}
+|-
+|2
+|Debuff 12 enemy Troops with a single deploy a total of 240 times
+|8,000 {{Icon|I=Gold}}<br/ >200 {{Icon|I=XP}}
+|-
+|3
+|Debuff 12 enemy Troops with a single deploy a total of 480 times
+|10,000 {{Icon|I=Gold}}<br/ >200 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Electro Wizard was once available in the [[Tournament/Special Event Challenges|Electro Wizard Challenge]], which started on 23/12/2016. In this [[Tournament|challenge]], the player would build a [[Battle Decks|deck]] which included the Electro Wizard. If the player achieved 12 wins, they obtained the Electro Wizard early, in addition to the normal prizes.
+*The Electro Wizard [[Cards|card]] was generally released on 30/12/2016.
+2017
+*On 23/1/2017, a [[Version History#Balance Changes (23/1/2017)|Balance Update]], decreased the Electro Wizard's spawn damage by 6% and increased his hitpoints by 9%.
+*On 13/3/2017, the [[Version History#March 2017 Update (13/3/2017)|March 2017 Update]], removed the Electro Wizard's ability to permanently stun enemy [[:Category:Troop Cards|troops]]. It also added the audience sound effects when the Electro Wizard is deployed.
+*On 19/4/2017, a [[Version History#Balance Changes (19/4/2017)|Balance Update]], increased the Electro Wizard's attack time interval to 1.8 seconds (from 1.7 seconds) and increased his first attack time interval to 0.4 seconds (from 0.3 seconds).
+*On 11/8/2017, a [[Version History#Balance Changes (11/8/2017)|Balance Update]], decreased the Electro Wizard's hitpoints by 2%.
+*On 9/10/2017, the [[Version History#Epic Quests Update (9/10/2017)|Epic Quests Update]], decreased his damage by 4% and increased his first attack time interval to 0.6 seconds (from 0.4 seconds).
+2018
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], moved the [[Arenas|Arena]] to unlock the Electro Wizard from Royal Arena to Electro Valley.
+*On 3/9/2018, a [[Version History#Balance Changes (3/9/2018)|Balance Update]], made it so that the Electro Wizard can no longer reset the attack of the [[Zappies]].
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Legendary}} cards start at Level 9 and end at Level 13 (from 1 to 5).
+2020
+*On 2/1/2020, a maintenance break, fixed an issue where the Electro Wizard's [[Star Points|Star Level]] used the sound effects of the [[Electro Dragon]].
+*On 6/10/2020, a [[Version History#Balance Changes (6/10/2020)|Balance Update]], added a card render to the Electro Wizard's card info screen.
+*On 3/11/2020, a [[Version History#Balance Changes (3/11/2020)|Balance Update]], decreased the Electro Wizard's damage by 3.5%.
+*On 9/12/2020, a [[Version History#Balance Changes (9/12/2020)|Balance Update]], decreased the Electro Wizard's damage by 2.5%.
+2021
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13). It also removed the [[:Category:Crown Towers|Crown Tower]] Spawn Damage statistic from the Electro Wizard's card info screen.
+*On 1/11/2021, an [[Version History#Optional%20Update%20(1/11/2021)|Optional Update]], made it so that the [[Mega Knight]] cannot be stunned infinitely by the Electro Wizard.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14). It also added the Debilitator [[Card Mastery]] task for the Electro Wizard.
+2024
+*On 6/8/2024, a [[Version History#Balance Changes (6/8/2024)|Balance Update]], increased the Electro Wizard's spawn area radius to 3 tiles (from 2.5 tiles).
+2025
+*On 4/3/2025, a [[Version History#Balance Changes (4/3/2025)|Balance Update]], increased the Electro Wizard's damage by 5%.
+*On 31/3/2024, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Electro Wizard's hitpoints by 0.14%, and his damage by 0.86%.
+*On 1/4/2025, a [[Version History#Maintenance Break (1/4/2025)|maintenance break]] fixed a bug where Electro Wizard could nullify [[Lumberjack/Evolution|Lumberjack]]'s and [[Wall Breakers/Evolution|Wall Breakers]]' Evolutions' death effects.
+
+==Gallery==
+<gallery>
+File:Electro Wizard card render.png|Current card render.
+File:Electro Wizard Preview.gif|Current card preview.
+File:Electro Wizard 5.png|Electro Wizard.
+File:Electro Wizard1.png|Electro Wizard 2.
+File:Electro Wizard-0.png|In-game sprite.
+File:Electro Wizard Render.png|Electro Wizard render.
+</gallery>
+
+==Trivia==
+*The word "''Wizard''" comes from the Middle English "''wys''", meaning wise.
+**In the German, Persian, and Vietnamese language settings of the game, the Wizard's name translates to "Electro Magician". In the Spanish, Italian, Russian, Arabic, Portuguese, and Thai language settings of the game, the Electro Wizard's name translates to "Electric Wizard". In the Chinese and Finnish language settings of the game, the Wizard's name translates to "Thunder Mage" and "Lightning Wizard" respectively.
+*The word "Electro" come from the Greek word "''ἤλεκτρον''" (elektron), meaning amber, referring to its electrostatic capabilities. Electricity was first detected through electric fish from as far back as 2750 BCE where Ancient Egyptian texts described them as the "protectors" of all other fish. At around 600 BCE, Thales of Miletus made a series of observations on static electricity, from which he believed that friction rendered amber magnetic, in contrast to minerals such as magnetite, which needed no rubbing. Thales was incorrect in believing the attraction was due to a magnetic effect, but later science would prove a link between magnetism and electricity. Electricity would remain little more than an intellectual curiosity for millennia until 1600, when the English scientist William Gilbert wrote ''De Magnete'', in which he made a careful study of electricity and magnetism, distinguishing the lodestone effect from static electricity produced by rubbing amber.
+**The Electro Wizard is 1 of 11 [[cards]] associated with electricity, with the others being [[Electro Spirit]], [[Zap]], [[Tesla]], [[Zappies]], [[Electro Dragon]], [[Electro Giant]], [[Lightning]], [[Sparky]], [[Wizard Trio]], and the [[Goblinstein]].
+*The Electro Wizard is 1 of 4 [[:Category:Troop Cards|troops]] that can deal damage to multiple units with one attack without an area damage radius, the others being Electro Spirit, [[Hunter]], and Electro Dragon.
+*The Electro Wizard, the Mega Knight, and the Ice Wizard are the only troops that deal spawn damage.
+**The Electro Wizard used to have a "Crown Tower Spawn Damage" statistic despite the fact that its restricted deployment meant its spawn damage could never hit a [[:Category:Crown Towers|Crown Tower]]. This was most likely because he spawned with a Zap instead of having his own spawn damage. This, however, was removed from the statistics in the [[Version History#Champions Update (27/10/2021)|Champions Update]].
+*The Electro Wizard was the first card to be introduced in the game through a [[Tournament|Challenge]].
+*The Electro Wizard is 1 of 14 troops that has been featured with a [[Buff#Rage|Rage]] [[buff]], the others being Electro Spirit, [[Giant]], Zappies, [[Guards]], [[Giant Skeleton]], [[Goblin Giant]], Electro Dragon, [[Wall Breakers]], Electro Giant, [[Mega Knight]], [[Ram Rider]], Sparky, and [[Royal Ghost]].
+*The Electro Wizard is 1 of 15 troops which bring an excited reaction from the audience upon spawning and brings a collective groan from the audience when defeated, as well as a concerning gasp when the opponent plays him, the others include [[Royal Giant]], Giant, [[P.E.K.K.A.|P.E.K.K.A]], Giant Skeleton, [[Rune Giant]], Goblin Giant, [[Golem]], [[Bowler]], [[Inferno Dragon]], Sparky, [[Lava Hound]], [[Night Witch]], [[Super Lava Hound]], and the [[Monk]].
+*The Electro Wizard might be a reference to [https://en.wikipedia.org/wiki/Electric_Wizard Electric Wizard], a British [https://en.wikipedia.org/wiki/Doom_metal doom metal] band.
+*In the Finnish language settings of the game, it is revealed that the Electro Wizard likes electronic music.
+*According to the [https://www.youtube.com/watch?v=4M_PPPCN19E Electro Dragon's intro video], the Electro Dragon is the Electro Wizard's pet dragon.
+*Upon spawning in, the Electro Wizard will yell "''Electricity!''", in a shaky voice. Upon dealing damage, he may yell "''Zap!",'' "''Electrify!''"'', or'' "''Electrons!''".
+**Along with the Knight, [[Barbarians]], and Lumberjack, he is voice acted by [https://www.imdb.com/name/nm1423395/ John Mondelli].
+**The Electro Wizard is 1 of 24 troops that speak distinct words when on the field, the others being [[Mini P.E.K.K.A.]], [[Mega Minion]], [[Wizard]], [[Hog Rider]], P.E.K.K.A., [[Dark Prince]], Bowler, Ram Rider, [[Princess]], [[Ice Wizard]], [[Magic Archer]], [[Lumberjack]], [[Mother Witch]], [[Fisherman]], [[Goblin Machine]], [[Super Mini P.E.K.K.A.]], [[Santa Hog Rider]], [[Super Magic Archer]], [[Golden Knight]], [[Boss Bandit]], [[Archer Queen]], [[Little Prince]], and the [[Terry]].
+*The [[Wizard/Evolution|Evolved Wizard]], Ice Wizard, and Electro Wizard are responsible for creating the [[Void]], according to the Clash Royale [https://youtube.com/shorts/32qX1fEbxX4?si=KqXAuxOvVZ5QaMFP Void intro video].
+*The Electro Wizard is the subject of certain cosmetics in the game. More specifically:
+**The Electro Wizard is the subject of a few [[Emotes]].
+**The Electro Wizard is the subject of a [[King's Tower|Tower Skin]].
+*When 2 Electro Wizards face each other, 1 of the 2 Electro Wizards will attack before the other, stunning him in between. This results in 1 of the 2 winning the duel instead of both being defeated at the same time.
+*A [[Clone|cloned]] Electro Wizard does not fall from the sky when deployed.
+*The Electro Wizard was featured in the winning [[Battle Decks|deck]] of the [https://www.youtube.com/live/DVY2TndGf4U?si=ptuVz0tHkkkDIvEl Crown Championship Global Series Tournament], by a player called Sergioramos:).
+*On 27/3/2023, a [[Training Camp|Trainer]] was added to the game called Boss Cheddar, and used a Level 18 Electro Wizard in their deck, despite the highest Level being Level 14 at the time. This Trainer was removed on 18/4/2023.
+*Before the Electro Wizard's release, the card description was changed. It used to read, "''He lands with a 'POW!', stunning nearby enemies, and continues to show off by zapping two at a time! His favorite movie is T2.''"
+*The Electro Wizard doesn't know anything about magic, as he is actually an inventor specializing in static electricity, as seen in a [https://www.youtube.com/shorts/Rtgpx2YLLO4 short].
+**He made key inventions in the Tesla and Zap, and created the [[Zap/Evolution|Evolved Zap]].
+**He gained his abilities when accidentally drinking a Zap vial.
+**He's unable to touch metal or take a bath without electrocuting, the latter being life-threatening.
+
+{{Navigation|Card}}
+
+[[fr:Électro-sorcier]]
+[[de:Elektromagier]]
+[[es:Mago eléctrico]]
+[[it:Stregone elettrico]]
+[[ru:Громовержец]]
+[[zh:闪电法师]]
+[[pl:Electro Wizard]]

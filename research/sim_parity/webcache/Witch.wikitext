@@ -1,0 +1,279 @@
+{{DISPLAYTITLE: <span style="color: #b300b3;">Witch</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}
+
+{{Card Infobox|Cost=5|Rarity=Epic|Type=Troop|Arena=P.E.K.K.A.'s Playhouse|ReleaseDate=4 January 2016}}
+{{SubpageNavBox|Evolution=yes|MergeTactics=yes}}
+{{Quote|Summons Skeletons, shoots destructo beams, has glowing pink eyes that unfortunately don't shoot lasers.}}
+
+The Witch is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from the [[Arenas|P.E.K.K.A's Playhouse (Arena 6)]]. It spawns an area-damage, air-targeting, medium-ranged, ground [[:Category:Troop Cards|troop]] with moderate hitpoints and moderate damage. Every 7 seconds, the Witch will passively summon a group of four [[Skeletons]] surrounding her. However, her first wave of Skeletons will spawn 1 second after she is deployed. She appears as a woman with glowing pink eyes, no legs, wears a violet cloak, a dark gray top, dark purple lipstick, two golden skulls on her shoulders, team-colored gloves with golden armlets, a golden belt with a skull face in the middle, and a team-colored dress, and wields a staff with a ram skull on top with two golden horns on its head. A Witch card costs 5 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Witch Common Modifier.png|45x45px]] Common: Speedy Spawn===
+{{Quote|+100% spawn speed}}
+Doubles witch unit spawn speed.
+
+===[[File:Witch Rare Modifier.png|45x45px]] Rare: On Guard!===
+{{Quote|Spawn Guards}}
+Witch spawns [[Guards]] instead of normal Skeletons.
+
+===[[File:Witch Epic Modifier.png|45x45px]] Epic: Skelebrate Good Times===
+{{Quote|Spawn Evo Skellies}}
+Witch spawns [[Skeletons/Evolution|Evolved Skeletons]] instead of normal Skeletons.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Witch Card}}
+*Since the Witch has a low health to [[Elixir]] ratio and a low damage output, she should be placed far behind high hitpoint [[:Category:Troop Cards|troops]] such as the [[Golem]], [[Giant Skeleton]], or the [[Giant]] so that she can have more time to summon her [[Skeletons]] and provide offensive support. To defend a push like this, it is best to destroy the Witch first with a spell or area damage troop, leaving the tank with no support and making it easier.
+*Although the Witch deals significantly less damage than the [[Wizard]], she is generally more reliable on defense as a lone unit due to her Skeleton spawns and higher hitpoints. This allows her to effectively distract and counter single targeting units with slow attack speeds like the [[Prince]], Mini P.E.K.K.A, [[Elite Barbarians]], Giant Skeleton, and P.E.K.K.A, while the Wizard cannot. However, her Skeletons are often ineffective versus most air units.
+*Her first Skeleton spawn has a notable delay. This means that against fast moving troops, like the [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Berserker]], [[Bandit]], or [[Lumberjack]], the Skeletons may not spawn in time to protect her on reaction.
+*The Witch is very vulnerable without her Skeletons, due to her health and damage being very low for her cost. Thus, it is recommended to place the Witch at a distance when countering any troop, so that she has more time to spawn Skeletons and can utilize her range advantage to counter the troop.
+*Placing the Witch behind the [[King's Tower|King Tower]] will have 1 of the Skeletons spawn in the other lane. This can discourage the opponent from attacking that lane due to the single Skeleton's defensive presence.
+*The Witch works well with the [[Skeleton Army]] because she can help spawn more Skeletons to help out.
+*When the Witch is [[Clone|cloned]], her clone will also spawn cloned Skeletons. If the opponent lacks a [[:Category:Spell Cards|spell]] or proper area damage unit, this will often overwhelm them and destroy their [[:Category:Tower Troop Cards|Crown Tower]] in seconds.
+*Area damage units are the most reliable counters to the Witch, as they will make quick work of the Witch and her spawns and be able to counterattack afterwards.
+**The [[Valkyrie]] costs 1 less Elixir than the Witch, and is reliable to use against a larger push with more support units, thanks to her health pool and 360° area attack.
+**Area denial units like the [[Bowler]], [[Firecracker]], [[Bomber/Evolution|Evolved Bomber]], [[Magic Archer]], and the [[Executioner]] will be able to immediately defeat the spawned Skeletons as they are spawned and continue to attack the Witch with little issue.
+**The [[Electro Dragon]] may not be able to deal area damage but its chain attack is very effective at dealing damage to the Witch while also defeating her Skeletons. It will also stun her, delaying her from spawning additional Skeletons. The [[Electro Spirit]] works in a similar way for only 1 Elixir, but remember that it will only do that once.
+**The [[Electro Wizard]] has a similar effect, since his spawn damage will defeat all the Skeletons around him while quickly defeating the Witch due to his higher damage.
+*While a [[Mother Witch]] does not deal area damage, she will immediately defeat each Skeleton in one hit, spawning Cursed Hogs from them. These Cursed Hogs will distract the Witch and any remaining Skeletons for a long time, allowing the Mother Witch to curse the Witch, eventually defeating her and spawning a Cursed Hog out of her.
+*By far the cheapest way to counter the Witch is using the [[Barbarian Barrel]], considering that the Barbarian Barrel itself can destroy all Skeletons in front of it and the [[Barbarians|Barbarian]] will directly target the Witch afterwards. This is especially useful when there is a meat shield in front of the Witch, such as an [[Ice Golem]] or [[Knight]], as the Crown Tower would be unable to defeat her on its own with other spells that have a similar cost to the Barbarian Barrel. The [[Royal Delivery]] works in a similar way.
+*It is not recommended to spawn the Witch next to the player's Crown Tower if the opponent has cards like the [[Rocket]] or [[Lightning]] since they can take out the Witch and damage the Crown Tower at the same time, dealing a good amount of Tower damage for just 1 extra Elixir. A [[Fireball]] at least 3 levels higher or [[Poison]] 2 levels higher than a Witch can take her out completely, and otherwise leaves her with a sliver of health, which is still valuable as these spells cost 4 Elixir.
+**To work around this, the player can play the Witch in the other lane to split their overall spell damage, or they can play her closer to the river and deny their opponent of any opportunity for spell damage on their tower.
+**Fireball or Poison combined with any other 2 Elixir spell will take out the Witch as well. If she is beside other troops or a Crown Tower, the negative Elixir trade will be made up for in splash value or chip damage respectively.
+*The Witch is powerful in countering a lone Mini P.E.K.K.A, Prince, Mega Minion, or [[P.E.K.K.A.|P.E.K.K.A]]. The Witch can summon Skeletons fast enough to distract them indefinitely, and will be left undamaged for a possible counterattack. However, beware that opponents may use a cheap spell on the spawned Skeletons to nullify the Witch’s distracting potential, so players might wish to have a cheap troop or spell ready for immediate defensive placement.
+*Even a low-health Witch can be threatening to a Crown Tower thanks to her Skeleton spawns being able to distract and damage the tower continuously while she pellets the tower with damaging beams.
+**The Witch pairs well with the [[Miner]], as he can tank for her and her Skeletons, allowing her to spawn them more safely and cause a considerable damage to a Crown Tower, being more useful if the opponent has low Elixir. The combo, however, is still weak to swarms or spells, due to the fact that once the Witch targets the Tower she will ignore every enemy surrounding her.
+*Underneath the effect of a [[Rage]] spell, the Witch will not only move and attack faster, but she will also spawn Skeletons slightly faster. Those Skeletons will also benefit from the Rage spell, making her a more valuable troop to use Rage on and more likely to result in a snowball effect on a counterattack.
+*The Witch is a good counter to a lone [[Sparky]]. She should be placed far enough back that her first wave of Skeletons spawn right as the Sparky rolls in range. This will be able to distract the Sparky multiple times with her Skeletons, allowing herself and/or other troops to destroy the Sparky. However, the defending player should be very mindful of the timing of the Witch's deployment. If done incorrectly, the Witch will be defeated in one swift shot without spawning anything, and the opponent will have a healthy Sparky on the [[Arenas|Arena]] while leaving the defending player with a massive Elixir deficit. Their opponent could also clear the Skeletons out with a spell right before the Sparky attacks, allowing their Sparky to take out the Witch instantly.
+*[[Tornado]] can be used to soft counter a Witch, being able to one-shot her Skeletons and nullify her range advantage at the same time. This can allow high-damage, slow attackers like P.E.K.K.A., Prince, [[Mega Minion]], or Mini P.E.K.K.A to instantly defeat her and fast attackers like the [[Phoenix]], [[Monk]], [[Golden Knight]], or the Lumberjack to defeat her with little damage taken back.
+**Alternatively, the Tornado spell can also be used to pull a defending Witch away. This can be useful if the Tornado player has a swarm or big push coming in the same lane as the Witch.
+**Similarly, the Tornado spell can also be used in conjunction with the Witch to clump up enemy troops, allowing the Witch’s spells to hit them all. It can also be used to pull other troops further away from the Witch, to allow her to spawn more Skeletons in time.
+*The Witch is very effective at baiting spells from the opponent. She can either bait weaker spells like Zap and [[The Log]] that are used against her Skeletons or she can bait stronger spells like Lightning and Poison that are used to directly target her. This allows the user to deploy other cards that are weak to those spells such as [[Dart Goblin]] and [[Flying Machine]] respectively.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Witch Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Spawn Speed<br />{{Icon|I = Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||1.1 sec||0.7 sec||Medium (60)||1 sec||7 sec||5.5||1.5||600||Air & Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+{{StatisticsSubheader|Skeleton Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+|-
+|1.1 sec||0.5 sec||Fast (90)||Melee: Short (0.5)||Ground||Ground||[[:Category:Troop Cards|Troop]]
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 839 }}
+{{#vardefine: dmg_11 | 135 }}
+{{#vardefine: atk_speed | 1.1 }}
+{{#vardefine: skel_hp_11 | 81 }}
+{{#vardefine: skel_dmg_11 | 81 }}
+{{#vardefine: skel_atk_speed | 1.1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br/>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br/>{{Icon|I=Hitpoint}}
+!scope="col"|Area Damage<br/>{{Icon|I=Area Damage}}
+!scope="col"|Damage per second<br/>{{Icon|I=DPS}}
+!scope="col"|Skeleton Hitpoints<br/>{{Icon|I=Hitpoint}}
+!scope="col"|Skeleton Damage<br/>{{Icon|I=Damage}}
+!scope="col"|Skeleton Damage per second<br/>{{Icon|I=DPS}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:skel_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:skel_atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:skel_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:skel_atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:skel_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:skel_atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:skel_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:skel_atk_speed}} }}
+|- 
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:skel_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:skel_atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:skel_hp_11}} || {{#var:skel_dmg_11}} || {{Dps|{{#var:skel_dmg_11}}|{{#var:skel_atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:skel_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:skel_atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:skel_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:skel_atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:skel_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:skel_atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:skel_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:skel_atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:skel_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:skel_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:skel_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:skel_atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 220,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|20 {{BASEPAGENAME}} Cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 650,000 Damage to enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 1,100,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" |Spawner <br> [[File:Spawner.png|50x50px]]
+|1
+|Spawn a total of 2,800 Troops
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Spawn a total of 8,000 Troops
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Spawn a total of 14,000 Troops
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Witch [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016 {{Balance|Add}}.
+*On 11/1/2016, the [[Version History#The First Update (11/1/2016)|First Update]], decreased the Witch's spawned [[Skeletons]] Level by 1 {{Balance|Nerf}}. Before this update, a Level 13 Witch would be able to spawn Level 14 Skeletons.
+*On 2/2/2016, the [[Version History#February%202016%20Update%20(2/2/2016)|February 2016 Update]], fixed a bug where the Witch would get stuck if placed in the corner behind a [[:Category:Building Cards|building]] {{Balance|Neutral}}.
+*On 19/2/2016, a [[Version History#Balance Changes (19/2/2016)|Balance Update]], increased the Witch's damage by 3% {{Balance|Buff}}. In addition, the [[Skeletons]]' hitpoints and damage were increased by 11% {{Balance|Buff}}.
+*On 29/2/2016, the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]], changed the Witch so that she would no longer stop her attack if her target dies during the attack animation {{Balance|Neutral}}. It also decreased the Witch's and Skeletons' sight range to 5.5 tiles (from 6 tiles) {{Balance|Buff}}.
+*On 23/3/2016, a [[Version History#Balance Changes (23/3/2016)|Balance Update]], increased the Witch's damage by 5% {{Balance|Buff}}.
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], fixed the "range bug" and decreased the Witch's range to 5 tiles (from 5.5 tiles), but her effective range is unchanged {{Balance|Nerf}}. The Skeletons' range was also decreased to 0.5 tiles (from 0.75 tiles), but their effective range was unchanged {{Balance|Nerf}}. Also, before the update, the Witch was able to summon Level 13 Skeletons while the Level cap for the Skeletons card was 12. The [[Goblin Barrel]] was able to do the same with the [[Goblins]].
+*On 18/5/2016, a [[Version History#Balance Changes (18/5/2016)|Balance Update]], increased the Witch's damage by 10% {{Balance|Buff}}. In addition, the Skeletons' hitpoints and damage were increased by 5% {{Balance|Buff}}.
+*On 21/6/2016, a [[Version History#Balance Changes (21/6/2016)|Balance Update]], increased the Witch's damage by 17% {{Balance|Buff}}.
+*On 19/9/2016, the [[Version History#September%202016%20Update%20(19/9/2016)|September 2016 Update]], made a small change to the Witch's card description {{Balance|Neutral}}.
+2017
+*On 13/2/2017, a [[Version History#Balance Changes (13/2/2017)|Balance Update]], increased the Witch's damage by 6% {{Balance|Buff}}.
+*On 12/6/2017, the [[Version History#June 2017 Update (12/6/2017)|June 2017 Update]], increased the Witch's hitpoints by 5% {{Balance|Buff}}, increased her area damage radius to 1.1 tiles (from 1 tile) {{Balance|Buff}}, decreased her spawn time interval to 7 seconds (from 7.5 seconds) {{Balance|Buff}}, and added a 1 second delay in her first spawn {{Balance|Neutral}}.
+2018
+*On 25/4/2018, the [[Version History#Clan%20Wars%20Update%20(25/4/2018)|Clan Wars Update]], fixed a bug where the Witch would switch targets if spawning Skeletons pushed her target out of range {{Balance|Neutral}}.
+*On 2/7/2018, a [[Version History#Balance Changes (2/7/2018)|Balance Update]], increased the Witch's hitpoints by 17% {{Balance|Buff}}, decreased her spawn time interval to 5 seconds (from 7 seconds) {{Balance|Buff}}, and increased her attack time interval to 1 second (from 0.7 seconds) {{Balance|Nerf}}.
+*On 3/9/2018, a [[Version History#Balance Changes (3/9/2018)|Balance Update]], decreased the Witch's hitpoints by 3.5% {{Balance|Nerf}}.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Epic}} cards start at Level 6 and end at Level 13 (from 1 to 8) {{Balance|Neutral}}.
+2019
+*On 28/1/2019, the [[Version History#January%202019%20Update%20(28/1/2019)|January 2019 Update]], moved the [[Arenas|Arena]] to unlock the Witch from [[Training Camp]] to Bone Pit {{Balance|Nerf}}.
+*On 1/4/2019, a [[Version History#Balance Changes (1/4/2019)|Balance Update]], made the Witch spawn 3 additional Skeletons upon death {{Balance|Add}}.
+*On 15/4/2019, the [[Version History#April%202019%20Update%20(15/4/2019)|April 2019 Update]], changed the Witch's card description, adding the phrase "''Spawns 3 Skeletons when destroyed.''" to it {{Balance|Neutral}}.
+*On 7/10/2019, a [[Version History#Pass Royale and more (7/10/2019)|Balance Update]], increased the Witch's damage by 220% {{Balance|Buff}}, decreased her area damage radius to 0.5 tiles (from 1.1 tiles) {{Balance|Nerf}}, decreased her hitpoints by 12% {{Balance|Nerf}}, increased her attack time interval to 1.4 seconds (from 1 second) {{Balance|Nerf}}, decreased her first attack time interval to 0.4 seconds (from 0.5 seconds) {{Balance|Buff}}, and removed the 3 Skeletons that spawned upon death {{Balance|Remove}}. Her spawn time interval was also increased to 7 seconds (from 5 seconds) {{Balance|freN}}, she now spawns Skeletons in a plus shape around her {{Balance|Neutral}}, and the Skeletons now all spawn immediately {{Balance|Neutral}}. Her sound effects also changed slightly {{Balance|Neutral}}.
+*On 4/11/2019, a [[Version History#Pass Royale and more (4/11/2019)|Balance Update]], removed the Witch's area damage {{Balance|Remove}}, decreased her attack time interval to 1.7 seconds (from 1.4 seconds) {{Balance|Nerf}}, increased her first attack time interval to 0.7 seconds (from 0.4 seconds) {{Balance|Nerf}}, and increased the first spawn time interval to 3.5 seconds (from 1 second) {{Balance|Nerf}}. Her mass was also increased to 8 (from 4) {{Balance|Buff}}. The "''Spawns 3 Skeletons when destroyed.''" line from her description was also removed {{Balance|Neutral}}.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added area damage to the Witch's attacks {{Balance|Add}}, decreased her damage by 49% {{Balance|Nerf}}, decreased her attack time interval to 1.1 seconds (from 1.7 seconds) {{Balance|Buff}}, and increased her first attack time interval to 1 second (from 0.7 seconds) {{Balance|Buff}}. It also added a card render to the Witch's card info screen {{Balance|Add}}.
+2020
+*On 4/2/2020, a [[Version History#Balance Changes (4/2/2020)|Balance Update]], decreased the Witch's first attack time interval to 0.7 seconds (from 1 second) {{Balance|Buff}}.
+*On 9/12/2020, a [[Version History#Balance Changes (9/12/2020)|Balance Update]], increased the first spawn time interval to 1 second (from 3.5 seconds) {{Balance|Buff}}.
+2021
+*On 30/3/2021, the [[Version History#2021%20Quarter%201%20Update%20(30/3/2021)|2021 Quarter 1 Update]], increased the Witch's range to 5.5 tiles (from 5 tiles) {{Balance|Buff}}.
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the Arena to unlock the Witch from Bone Pit to Spell Valley {{Balance|Nerf}}.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13) {{Balance|Buff}}.
+2022
+*On 3/2/2022, a [[Version History#Balance%20Changes%20(3/2/2022)|Balance Update]], made it so that the [[Ram Rider]]'s snare ability would no longer affect the spawn speed of the Witch {{Balance|Buff}}.
+*On 28/4/2022, a maintenance break, changed the Witch's card image and card render {{Balance|Neutral}}.
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Witch from Spell Valley to P.E.K.K.A's Playhouse {{Balance|Nerf}}.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14) {{Balance|Buff}}.
+2025
+*On 8/1/2025, a [[Version History#Balance Changes (8/1/2025)|Balance Update]], increased the Witch's area radius radius to 1.5 tiles (from 1 tile) {{Balance|Buff}}.
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], increased the Witch's hitpoints by 0.11% {{Balance|Buff}} and her damage by 0.74% {{Balance|Buff}}.
+*On 5/5/2025, the [[Version History#Pass Royale and more (5/5/2025)|May 2025 Update]], added the Witch's Evolution {{Balance|Add}}.
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] made it so that the [[Witch/Evolution|Evolved Witch]] would no longer be healed by defeated Skeletons {{Balance|Neutral}}.
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)=|Balance Update]] increased the Skeleton's attack time interval to 1.1 seconds (from 1 second) {{Balance|Nerf}}.
+
+==Gallery==
+<gallery>
+File:WitchCardOld.png|Witch's card image before 28/4/2022.
+File:Old Witch card render.png|Witch's card render before 28/4/2022.
+File:Witch card render.png|Current card render.
+File:Chinese Witch card render.png|Witch's card render in the Chinese version of the game.
+File:Witch Preview.gif|Current card preview
+File:Witch 1.png|Witch 1
+File:Witch 2.png|Witch 2
+File:Witch 5.png|Witch 3
+File:Witch 6.png|Witch 4
+File:Witch 3.png|Witch with her Skeletons.
+File:Witch 4.png|Witch alone.
+File:Witch Art.jpg|Witch artwork.
+</gallery>
+
+==Trivia==
+*The Witch is shown to make the practice of [https://en.wikipedia.org/wiki/Necromancy necromancy]. Necromancy is a form of magic involving communication with the deceased; either by summoning their spirit as an apparition or raising them bodily.
+**In the Japanese language setting of the game, the Witch's name translates to "Necromancer".
+*The Witch is 1 of 19 [[:Category:Troop Cards|troops]] which first existed in Clash of Clans, the others being [[Minions]], [[Archers]], [[Goblins]], [[Skeletons]], [[Barbarians]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], [[P.E.K.K.A.|P.E.K.K.A]], [[Balloon]], [[Golem]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Phoenix]], [[Lava Hound]], and the [[Archer Queen]].
+**The Witch resembles the Level 1-2 Witch from Clash of Clans. Her [[Star Points|Star Level 2 skin]] resembles the Level 3 Witch in Clash of Clans.
+**The Witch in Clash Royale shares the same Skeleton spawn sound effect with her Clash of Clans counterpart's.
+**In Clash of Clans, the Witch gets around by floating, whereas she walks in Clash Royale.
+**Unlike in Clash of Clans, the stats of the Skeletons increase when the Witch is upgraded. In addition, the Witch in Clash Royale does not stop moving when she is spawning Skeletons.
+*The Witch is 1 of 15 [[cards]] associated with Skeletons, with the others being [[Bomber]], [[Skeleton Dragons]], [[Skeleton Barrel]], [[Tombstone]], [[Bomb Tower]], [[Guards]], [[Skeleton Army]], Balloon, [[Giant Skeleton]], Wall Breakers, [[Super Witch]], [[Graveyard]], [[Skeleton King]], and of course, Skeletons.
+**Despite other cards that spawn Skeletons having 3 [[Star Points|Star Levels]], the Witch only has 2 Star Levels. This trait is also shared with the Tombstone.
+*The Witch is one of the first troop cards to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the Minions, Archers, [[Knight]], [[Spear Goblins]], Goblins, Bomber, Skeletons, Barbarians, [[Minion Horde]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Musketeer]], Giant, Valkyrie, Wizard, Hog Rider, [[Baby Dragon]], Skeleton Army, P.E.K.K.A, [[Prince]], and Balloon.
+*The Witch is one of the first troop cards to receive a card render, alongside the Archers, Knight, Goblins, Bomber, Skeletons, Barbarians, [[Bats]], [[Royal Recruits]], Skeleton Barrel, [[Rascals]], Musketeer, Giant, Valkyrie, Wizard, [[Flying Machine]], Hog Rider, [[Royal Hogs]], [[Dart Goblin]], [[Zappies]], [[Elixir Golem]], Baby Dragon, Skeleton Army, P.E.K.K.A, Prince, Balloon, Giant Skeleton, [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], Wall Breakers, Bowler, Cannon Cart, [[Mega Knight]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], [[Magic Archer]], [[Bandit]], Lava Hound, [[Night Witch]], and [[Fisherman]].
+*The Witch is one of the first cards to ever receive balance changes since [[Version History#The First Update (11/1/2016)|The First Update]], the others being the [[Mortar]], Prince, and [[Goblin Barrel]].
+*The Witch is 1 of 3 troops that has been featured with a [[Buff#Stun Attack|Stun Attack]] [[buff]], the others being Spear Goblins and [[Executioner]].
+*The Witch is confirmed to be Night Witch's sister, according to the [https://www.youtube.com/watch?v=p0KUcGDRJjc&t=46s Night Witch Karaoke Contest video] and the Night Witch's description in Clash of Clans.
+*According to a Clash of Clans [https://youtube.com/shorts/GmKY_dWMUlk?si=hc2oOztwbFxVPr6C video] on Youtube, the names of the Witch's Skeletons are "Larry", "Kevin", "Toby", and "Carl".
+*In [[Arenas|Spooky Town]], a Witch statue can be seen behind the enemy's [[King's Tower]].
+*It is rumored that the Super Witch has been summoned from all the other 3 Witches, as demonstrated in the [https://www.youtube.com/watch?v=VQf90EQVeX8 Super Witch trailer], hence explaining the combination of all the other Witches' abilities.
+*The Witch has received the most balance changes of any card in game, having received a total of 46 individual changes.
+*When placed right in front of the river, 1 of the Witch's Skeletons will spawn across the river.
+*The Witch is featured in non-Clash games. More specifically:
+**The Witch, along with the Goblins, Barbarians, Giant, Valkyrie, Wizard, Hog Rider, P.E.K.K.A, and the Archer Queen, were featured as a non-playable opponent in [https://www.chess.com/ Chess].
+**The Witch, along with the Archers, Goblins, Barbarians, Musketeer, Wizard, Hog Rider, [[Battle Healer]], Miner, Ice Wizard, and Bandit, are featured as a [https://squad-busters.fandom.com/wiki/Squaddies Squaddie] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+***Along with the Goblin, Barbarian, Wizard, and Hog Rider, she has the same rarity in both games.
+*The Witch, along with the Archers, Goblins, Barbarians, [[Ice Spirit]], Mini P.E.K.K.A, Musketeer, Giant, Wizard, Hog Rider, Prince, and Night Witch, is featured as a sticker in [https://en.wikipedia.org/wiki/IMessage iMessage], in a sticker pack called [https://apps.apple.com/us/app/clash-theater-stickers/id1353823484 Clash Theater]. Also, along with the Archers, Goblins, Skeletons, Barbarians, Mini P.E.K.K.A, Musketeer, Wizard, Prince, and [[Princess]], she is also featured in the [https://apps.apple.com/us/app/clash-a-rama/id1182384664 Clash-A-Rama] sticker pack.
+*In [[2v2|2v2 Battles]], a Witch placed directly behind the [[King's Tower]] on either side will have one of her Skeletons become stuck behind the King's Tower, unable to move forward unless an opposing troop is very close to it.
+*The Witch is the subject of certain cosmetics in the game. More specifically:
+**The Witch is the subject of 4 [[Emotes]].
+**The Witch is the subject of a few [[Battle Banners|Battle Banner]] items.
+***The Swift Summon decoration is created by [https://x.com/suzyq53936155 SuzyQ].
+*The initial balance change for Witch on the [[Version History#Balance%20Changes%20(7/6/2022)|End of November 2019 Update]] was an attack time interval decrease to 1 second (from 1.7 seconds), but it was raised to 1.1 seconds [https://x.com/RoyaleAPI_News/status/1197515213089726464?s=20 last minute].
+*Before the Witch's card release, the Witch's damage was increased by 9%, and her Skeletons' hitpoints and damage were increased by 8%.
+
+==In other languages==
+{{Other languages|fr=Sorcière|de=Hexe|es=Bruja|it=Strega|nl=Heks|no=Heks|tr=Cadı|jp=ネクロマンサー|kr=마녀|ru=Ведьма|ar=ساحرة|pt=Bruxa|cn=女巫|cnt=女巫|fa=ساحره|id=Nenek Sihir|ms=Sihir Perempuan|th=แม่มด|fi=Noita|vi=Phù thủy|jpmeaning=Necromancer.|msmeaning=Magic Girl.}}
+
+{{Navigation|Card}}
+
+[[fr:Sorcière]]
+[[de:Hexe]]
+[[es:Bruja]]
+[[it:Strega]]
+[[ja:ネクロマンサー]]
+[[ko:마녀]]
+[[ru:Ведьма]]
+[[zh:女巫]]

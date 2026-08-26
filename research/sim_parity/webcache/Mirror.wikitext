@@ -1,0 +1,201 @@
+{{DISPLAYTITLE: <span style="color: #b300b3;">Mirror</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=? ''(Cost of previous card played +1)''|Rarity=Epic|Type=Spell|Arena=Miner's Mine|ReleaseDate=4 January 2016}}
+{{Quote|Mirrors your last card played for +1 Elixir. Does not appear in your starting hand.}}
+
+The Mirror is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from the [[Arenas|Miner's Mine (Arena 15)]]. It is a [[:Category:Spell Cards|spell]] that repeats the last [[Cards|card]] used by the player for 1 extra [[Elixir]]. It will never appear as 1 of the first 4 cards dealt to the player at the start of a [[Basics of Battle|battle]]. The Level of the copied card will be one Level higher than that of the Mirror. When in a battle, the card will display the player's last placed card inside the Mirror. It is a black frame with a transparent glass and yellow edges. A Mirror card does not have a defined Elixir cost; instead, it shows a "?".
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Mirror Card}}
+*The Mirror allows the player to repeat a [[Cards|card]], such as the [[Goblin Barrel]], leaving the opponent without the proper [[Elixir]] or cards to counter it.
+**There are a few ways around this. The opponent may have a single card that counters both, like an area damage [[:Category:Troop Cards|troop]] like the [[Wizard]], [[Baby Dragon]], [[Executioner]] and [[Bomber]], or may have multiple cards that can counter one after the other, like two [[:Category:Spell Cards|spells]]. The opponent will also be able to counter a Mirrored card more easily with an Elixir advantage.
+**It is effective to use Mirror a card which the opponent only has one counter to. For example, if the opponent always counters a Goblin Barrel with [[The Log]], the player can Mirror their Goblin Barrel and their opponent will not have The Log to counter it, unless if the opponent also has a Mirror. If not, a Mirrored Goblin Barrel at tournament standard will do massive damage as [[:Category:Tower Troop Cards|Crown Towers]] take three shots to defeat higher Level [[Goblins]].
+*[[Elixir Collector]]s can be Mirrored in order to boost the player's [[Elixir]] production, allowing the player to deploy cards faster, although it will only give a profit of 1 Elixir.
+*The Mirror has the ability to prevent appearing in the player's starting hand. This decreases the number of cards that can appear in the starting hand to 7 cards instead of 8, allowing the player to manipulate their starting hand slightly, for a more optimal starting hand. The player can further manipulate their starting hand by using an Elixir Collector in their [[Battle Decks|deck]], to lower the number of possible cards that can appear to 6.
+*It is easy to tell that an opposing player has the Mirror, as it is the only way to deploy a card twice in a row or have two of the same card at different Levels on the field. However, [[Spear Goblins]] from the [[Goblin Hut]]/[[Goblin Gang]] and Spear Goblins from the card can have different Levels on the same field. The same goes for the [[Fire Spirit]], [[Skeletons]], [[Barbarians]], [[Goblins]], [[Minions]], [[Musketeer]]s, [[Bats]], and [[Royal Recruits]]. In [[2v2]], it is also possible that two players from the same team use the same card of different Levels.
+**With the addition of Mirror's unique sound effects, it becomes much easier to learn if your opponent has it or not.
+*Mirroring cards is especially effective against spells, as the Level boost can change some key interactions against troops.
+**Mirrored Fire Spirits, [[Ice Spirit]]s, [[Heal Spirit]]s, and [[Electro Spirit]]s will be able to survive a [[Barbarian Barrel]] and [[Earthquake]], compared to a same Level one. The same applies to the shields of the [[Dark Prince]] and Royal Recruits.
+***The same troops will also survive an additional hit from Arrows. [[Elixir Golem|Elixir Blobs]] will also survive an additional hit, and in its case, survive the entire spell.
+**Mirrored [[Dart Goblin]]s, [[Princess]]es and [[Rascals|Rascal Girls]] will be able to survive [[The Log]], [[Royal Ghost]]s, [[Dark Prince]] non-charge hits, [[Valkyrie]]s, [[Mortar]]s, [[Mega Knight]] melee hits or [[Boss Bandit]] hits. The same applies to the shields of the [[Guards]].
+**Mirrored Elixir Blobs will be able to survive [[Arrows]].
+**Mirrored Barbarians, [[Ice Wizard]]s or [[Mother Witch|Cursed Hogs]] will be able to survive a [[Fireball]], compared to a same Level one.
+**Mirrored [[Golem|Golemites]], [[Phoenix]]es or [[Goblin Cage|Goblin Brawlers]] will be able to survive a [[Lightning]], compared to a same Level one.
+**Mirrored [[Mini P.E.K.K.A.]]s, [[Elixir Golem]]s or [[Sparky|Sparkies]] will be able to survive a [[Rocket]], compared to a same Level one.
+**Mirrored [[Witch|Witches]] will be able to survive a "meatshot" (point blank range shot) from a [[Hunter]].
+**Mirrored Skeletons, Bats and [[Suspicious Bush]]es will be able to survive a [[Tornado]].
+**Mirrored [[Lumberjack]] will defeat Princesses, Dart Goblins, and Rascal Girls immediately.
+***The same troops will also survive an additional hit from Earthquake. Fire Spirits, Ice Spirits, Heal Spirits, Electro Spirits, and the shields of the [[Guards]], [[Dark Prince]], and Royal Recruits will also survive an additional hit, and in their case, survive the entire spell.
+**Mirrored Princesses, Dart Goblins, [[Rascals|Rascal Girls]], [[Bomber]]s, [[Archers]], Elixir Blobs, [[Zappies]], [[Firecracker]]s, Royal Recruits, [[Mother Witch]]es, [[Magic Archer]]s, [[Skeleton Barrel]]s, [[Skeleton Dragons]], [[Flying Machine]]s, Cursed Hogs, Barbarians, Ice Wizards, Musketeers, and [[Electro Wizard]]s will be able to survive an additional hit from [[Poison]] compared to a same Level one. In the case of the last 7, they will be able to survive the entire spell.
+*On the other hand, mirrored spells are a great way to remove a certain troop from the field immediately due to the Level boost. 
+**Mirrored [[Zap]] and [[Rage]] will defeat Goblins immediately.
+**Mirrored Earthquake will defeat Princesses, Dart Goblins, and Rascal Girls immediately.
+**Mirrored Fireball will defeat Musketeers, Wizards, Little Princes, Goblinsteins, and Electro Wizards immediately.
+**Mirrored Lightning will defeat [[Baby Dragon|Baby Dragons]] immediately.
+**Mirrored Rocket will defeat Elixir Golems immediately.
+*On uncapped modes certain interactions change compared to [[Tournament|Tournament Standard]] if both players are at the highest Level, where Mirror produces level 16 cards. Take note of the following interactions to know which cards are more or less favorable to Mirror. 
+**A Mirrored [[Bandit]], [[Night Witch]], [[Miner]], [[Royal Ghost]], [[Giant Skeleton]], [[Lava Hound]], or [[Mega Knight]] will die one Tower shot faster at maxed ladder than at tournament standard. In the Miner's case, this causes him to get one less hit on the Tower at maxed ladder in a 1v1 situation.
+**A Mirrored Poison will deal a lower percentage of Tower damage compared to the tournament standard.
+**A Mirrored Rocket will deal a higher percentage of Tower damage compared to the tournament standard.
+*The Mirror is a high-risk, high-reward card. If played correctly using powerful cards like the Giant Skeleton, [[P.E.K.K.A.]], Prince, [[Mighty Miner]], Mini P.E.K.K.A., [[Elite Barbarians]], or Mega Knight, the resulting push can have a devastating snowball effect.
+**This strategy is especially effective during the double-Elixir period, allowing the player to Mirror the above cards more easily and support them.
+**The opponent will gain more of an Elixir advantage if the Mirrored card was easily countered.
+*If the player accidentally plays a card too early or otherwise at the wrong time, they can use the Mirror to play that same card again but at the cost of 1 additional Elixir.
+*There are cards that are not wise to Mirror: 
+**Minions, as the player can use the Minion Horde to get the same number of Minions for 2 less Elixir.
+**Skeletons, as the player can use the [[Skeleton Army]] to get 9 more Skeletons with the same Elixir cost.
+**Goblins or Spear Goblins, as the player can use the [[Goblin Gang]] to get 3 Goblins and 3 Spear Goblins for 2 less Elixir.
+**Musketeer, as the player can use the Three Musketeers to get 1 more Musketeer with the same Elixir cost.
+**Elixir Golem as the player will give 4 Elixir to the opponent after being defeated while costing 4 Elixir for the player.
+*The Mirror can be used as a surprise card. The opponent may use multiple cards to defend against a single unit. If the player mirrors that card (better in the opposite lane), the opponent will not have those counters in hand to defend against the second unit, possibly forcing them to take tower damage or overspend on defense.
+**Because of this, it might not be a good idea to mirror cards that rely on surprise placements, like the Miner or Goblin Barrel, as the visual indicator would reveal their location, making them easier to counter.
+*The Mirror can be used along a [[Clone]] to make a large push and overwhelm an opponent (with a high-damaging troop or low-health troops) if they can't defend against it. This tactic is not advised with low health troops, as splash damage can take down those troops with ease unless the opponent has no counter.
+**If you mirror and then clone your units, it will cost more, and half of them will have full hitpoints. If you clone and then use mirror, it will produce less units and cost less, but only 1/3 of them will have full hitpoints.
+*Before placing Mirror into a deck, players should consider what cards they will want to Mirror. If they are intending to Mirror anti-tanks such as a Mini P.E.K.K.A, P.E.K.K.A, Elite Barbarians, [[Inferno Dragon]], or Mighty Miner, they may be able to add a different anti-tank, such as the [[Mega Knight/Evolution|Evolved Mega Knight]], [[Prince]], [[Hunter]], [[Three Musketeers]], or even a Sparky, which can have the same surprise factor Mirror could have, possibly at a more efficient cost. Most successful decks with Mirror have cards with a unique purpose in them, such as the [[Furnace]].
+*In scenarios where the opponent's Crown Towers are low on hitpoints, the player can Mirror their offensive spells to finish them off. Alternatively, Mirror can be utilized to cycle the deck if you have some cheap utility cards like Skeletons, to allow the user to rotate to their offensive spells quicker.
+
+<center>
+<div class="table-back" id="unit-statistics">{{Statistics}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|Cost of previous [[Cards|card]] played +1||[[:Category:Spell Cards|Spell]]||{{Rarity|Epic}}
+|}
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" style="width: 12%;" |Level<br />{{Icon|I=Level}}
+! scope="col" style="width: 22%;" |Mirrored {{Rarity|Common}} Level<br />[[File:MirroredCommon.jpeg|center|28px|link=]]
+! scope="col" style="width: 22%;" |Mirrored {{Rarity|Rare}} Level<br />[[File:MirroredRare.jpeg|center|28px|link=]]
+! scope="col" style="width: 22%;" |Mirrored {{Rarity|Epic}} Level<br />[[File:MirroredEpic.jpeg|center|28px|link=]]
+! scope="col" style="width: 22%;" |Mirrored {{Rarity|Legendary}} Level<br />[[File:MirroredLegendary.jpeg|center|28px|link=]]
+! scope="col" style="width: 22%;" |Mirrored {{Rarity|Champion}} Level<br />[[File:Champion Card.png|center|28px|link=]]
+|-
+|6||7||7||7||7||7
+|-
+|7||8||8||8||8||8
+|-
+|8||9||9||9||9||9
+|-
+|9||10||10||10||10||10
+|-
+|10||11||11||11||11||11
+|-
+|11||12||12||12||12||12
+|-
+|12||13||13||13||13||13
+|-
+|13||14||14||14||14||14
+|-
+|14||15||15||15||15||15
+|-
+|15||16||16||16||16||16
+|-
+|16||17||17||17||17||17
+|}
+{{MirrorLevels}}
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 90,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|20 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 275,000 Damage to enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 455,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" |Big Spender <br> [[File:Big Spender.png|50x50px]]
+|1
+|Spend a total of 1,100 [[Elixir]] playing this [[Cards|card]]
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Spend a total of 3,200 Elixir playing this card
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Spend a total of 5,600 Elixir playing this card
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Mirror [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016.
+*On 2/2/2016, the [[Version History#February 2016 Update (2/2/2016)|February 2016 Update]], increased the Mirrored {{Rarity|Common}} cards Level by 4 and Mirrored {{Rarity|Rare}} cards Level by 2.
+*On 29/2/2016, the [[Version History#March%202016%20Update%20(29/2/2016)|March 2016 Update]], changed the Mirror's card image. It was also fixed a bug that caused the player to receive 1 [[Elixir]] after using Mirror, effectively refunding the +1 Elixir cost.
+*On 23/3/2016, a [[Version History#Balance Changes (23/3/2016)|Balance Update]], decreased the Mirrored {{Rarity|Legendary}} cards Level by 1.
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], increased the Mirrored {{Rarity|Common}} and {{Rarity|Rare}} cards Level by 1. It also changed the Mirror by making it count as a 1.5 [[Elixir]] card when calculating the Average Elixir Cost of a [[Battle Decks|deck]]. Before the update, it was simply ignored in calculating the average cost as if the deck had only 7 cards.
+*On 19/9/2016, the [[Version History#September 2016 Update (19/9/2016)|September 2016 Update]], increased all Mirrored cards Level by 1. This allows players with Level 8 Mirror to deploy Level 14 cards, which would be unobtainable otherwise.
+*On 2/11/2016, a [[Version History#Maintenance Break (2/11/2016)|maintenance break]], decreased the Level 8 Mirror's Mirrored card Level by 1. This was to fix a bug where cards above the max Level did not appear.
+*On 15/12/2016, the [[Version History#December 2016 Update (15/12/2016)|December 2016 Update]], increased the Level 8 Mirror's Mirrored card Level by 1; the bug above was finally fixed.
+2018
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], changed the Mirror such that, if used in a deck, will never appear as one of the cards in the player's opening hand. It also moved the [[Arenas|Arena]] to unlock the Mirror from Spell Valley to Electro Valley.
+*On 27/6/2018, an [[Version History#Optional Update (27/6/2018)|Optional Update]], changed the Mirror such that it will never appear as one of the cards in the player's opening hand during [[Tournament/Special Event Challenges|Draft]] battles.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Epic}} cards start at Level 6 and end at Level 13 (from 1 to 8).
+*On 5/12/2018, the [[Version History#December%202018%20Update%20(5/12/2018)|December 2018 Update]], changed the Mirror's card description, adding the phrase "''Will not appear in your starting cards''" to it.
+2019
+*On 28/1/2019, the [[Version History#January%202019%20Update%20(28/1/2019)|January 2019 Update]], moved the Arena to unlock the Mirror from Electro Valley to Spooky Town.
+*On 13/2/2019, an [[Version History#Optional Update (13/2/2019)|Optional Update]], made it so that mirroring [[Three Musketeers]] would no longer display the cost of 11 Elixir.
+*On 15/4/2019, the [[Version History#April%202019%20Update%20(15/4/2019)|April 2019 Update]], changed the Mirror's card description. Previously, its description was "''Mirrors your last card played for +1 Elixir. Will not appear in your starting cards.''"
+*On 1/7/2019, the [[Version History#July%202019%20Update%20(1/7/2019)|July 2019 Update]], removed the Mirror from all Draft selections.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], gave the Mirror a new animation if a card has been mirrored. A Mirror appears on the ground with the new card, in addition to a special sound effect.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], fixed the missing Mirror deployment animation.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13). It also added a card render to the Mirror's card info screen.
+2022
+*On 4/4/2022, the [[Version History#April%202022%20Update%20(4/4/2022)|April 2022 Update]], increased all Mirrored cards Level by 1. This allows players with Level 14 Mirror to deploy Level 16 cards, which would be unobtainable otherwise.
+*On 12/9/2022, a [[Version History#Maintenance Break (12/9/2022)|maintenance break]], reverted the Mirror to its state before 4/4/2022. More specifically, it decreased all Mirrored cards Level by 1, making a Level 14 Mirror deploy Level 15 cards once again.
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], made it so that the Mirror is unusable immediately after using a {{Rarity|Champion}} card. It also moved the Arena to unlock the Mirror from Spooky Town to Miner's Mine.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+*On 16/12/2024, the [[Version History#2024 Quarter 4 Update (16/12/2024)|2024 Quarter 4 Update]], fixed a bug where Mirror would show a question mark instead of its Elixir cost.
+2025
+*On 29/9/2025, the [[Version_History/2025#2025 Quarter 3 Update (29/9/2025)|2025 Quarter 3 Update]], made the Mirror able to copy a {{Rarity|Champion}} card.
+
+==Gallery==
+<gallery>
+File:MirrorCardOld.png|Mirror's card image before 29/2/2016.
+File:Mirror card render.png|Current card render.
+File:Mirror Preview.gif|Current card preview
+File:Mirror 3.png|Mirror
+</gallery>
+
+==Trivia==
+*The word "''Mirror''" comes from the Latin "''mīrus''", meaning wonderful. The earliest manufactured mirrors were pieces of polished stone such as obsidian, a naturally occurring volcanic glass. Examples of obsidian mirrors found at Çatalhöyük in Anatolia have been dated to around 6000 BCE. Mirrors are still used to this day for multiple applications, whether that is for transportation, architecture, or general aesthetics.
+*The Mirror is the only [[Cards|card]] in the game that does not have a defined [[Elixir]] cost. However, the cost will always be at least 2 and at most 10, as there are no other cards that cost less than 1 or more than 9.
+**When calculating the Average Elixir Cost of a [[Battle Decks|deck]], the Mirror is treated as a 1.5 Elixir card. Before the [[Version History#May 2016 Update (3/5/16)|May 2016 Update]], it was simply ignored in calculating the average cost as if the deck had only 7 cards.
+**Mirror is grouped with [[:Category:1-Elixir Cards|1 Elixir cards]] when sorting them by Elixir in-game.
+**While there are no [[:Category:10-Elixir Cards|10 Elixir cards]] currently, a 10 Elixir card would still cost 10 Elixir after mirroring it.
+*The Mirror is 1 of 2 cards which does not appear in the player's starting hand, with the other being [[Elixir Collector]].
+*The upgrades work like that of a [[Clone]]. When leveling up the Mirror, the mirrored cards' Level will be increased.
+*The Mirror is unavailable in multiple [[Tournament/Special Event Challenges|special game modes]]. More specifically:
+**It is 1 of 2 cards that is unavailable in Draft, the other being Clone.
+**It is 1 of 9 cards that is unavailable in Triple Draft, the others being [[Three Musketeers]], [[Giant Skeleton]] and Clone
+**It is 1 of 2 cards that is unavailable in Mega Draft, the others being Clone.
+**It is 1 of 3 cards that cannot be set on Defense Towers in [[Clan Wars]], the others being Elixir Collector and Clone.
+*While upgrading it, the card will show its original card image. This is likely a bug ot oversight.
+
+{{Navigation|Card}}
+
+[[fr:Miroir]]
+[[de:Spiegel]]
+[[es:Espejo]]
+[[it:Specchio]]
+[[ja:鏡]]
+[[ko:반사경]]
+[[ru:Зеркало]]
+[[zh:镜像法术]]

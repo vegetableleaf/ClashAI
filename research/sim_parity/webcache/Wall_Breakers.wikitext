@@ -1,0 +1,214 @@
+{{DISPLAYTITLE: <span style="color: #b300b3;">Wall Breakers</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink|Wall Breaker}}
+
+{{Card Infobox|Cost=2|Rarity=Epic|Type=Troop|Arena=Spooky Town|ReleaseDate=26 February 2019}}{{SubpageNavBox|Evolution=yes}}{{Quote|A daring duo of dangerous dive bombers. Nothing warms a Wall Breaker's cold and undead heart like blowing up buildings.}}
+
+The Wall Breakers is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from the [[Arenas|Spooky Town (Arena 12)]]. It spawns two very fast, area-damage, building-targeting, melee, ground [[:Category:Troop Cards|troop]] with low hitpoints and very high damage. They drop their barrel at their target when attacking, destroying themselves in the process on impact. Their deployment is in a horizontal formation. They resemble [[Skeletons]] donning team-colored bandannas and carry explosive barrels. A Wall Breakers card costs 2 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Wall Breakers Card}}
+*For just 2 [[Elixir]], Wall Breakers can force an enemy response, as they threaten to take out around 20% of a [[:Category:Tower Troop Cards|Crown Tower]]'s health if ignored.
+*It also can be a huge threat if the opposing player has Wall Breakers along with [[Clone]] and [[Mirror]], releasing 8 Wall Breakers being able to instantly destroy a +1 leveled Crown Tower for 8 Elixir. Consider baiting spells like [[The Log]], [[Barbarian Barrel]], [[Arrows]], and 360° attackers like [[Valkyrie]], [[Dark Prince]], and [[Mega Knight]].
+*Wall Breakers are especially effective in [[Battle Decks|decks]] with several low-cost [[cards]], as their own low cost combined with other low-cost cards can cause the opponent's best counter to them to not be available when the player deploys them multiple times in a row, forcing them to defend inefficiently.
+*Due to the Wall Breakers being in pairs, the player can split them into separate lanes by deploying them in the middle of the [[Arenas|Arena]]. This is an effective way to divide their attacks, as countering this attack Elixir-efficiently is somewhat difficult.
+*The Wall Breakers do area damage. [[Tornado]] can be used to group up enemy troops just as they explode for a potentially high Elixir profit.
+*Staggering the Wall Breakers 1 tile to either side of the bridge instead of placing them directly in front will allow the Wall Breakers to connect slightly sooner to a Crown Tower, since the outer Wall Breaker will push the inner Wall Breaker slightly forward as they run onto the enemy's side.
+*Wall Breakers have shockingly high defensive use despite their low hitpoints and lack of damage. Its high movement speed is especially helpful when kiting troops with Fast or Very Fast movement speed. This helps stall melee troops with similar movement speeds, like the Lumberjack. To do this, place them two tiles into the opposite lane and three tiles from the bridge. If timed properly, the attacker will be slightly chipped by Crown Towers and chase the Wall Breakers ineffectively, allowing them to connect unless more Elixir is committed. Either outcome benefits the defender; valuable damage for 2 Elixir or a positive Elixir trade. This tactic also works against the [[Bandit]]; her dash often misses due to their speed, though she still needs to be defended afterward. A variant of this is to wait for the troop to be halfway between the bridge and Tower Troop, then place the Wall Breakers at the bridge.
+*[[Arrows]] and [[Royal Delivery]] will completely destroy the Wall Breakers, but for a negative Elixir trade. This is not necessarily a bad decision, as letting them connect freely more than once is usually detrimental. In the case of the Royal Delivery, a [[Royal Recruits|Royal Recruit]] will also spawn to assist in defense.
+*[[The Log]], [[Zap]], [[Barbarian Barrel]], and [[Giant Snowball]] will all deal enough damage to the Wall Breakers that the Crown Tower will be able to destroy them before they connect. This is an effective counter as long as they are not supported with a tank. If they are supported with a tank, an [[Ice Spirit]] can complement the defense well as it will be able to finish both of them off if played second, or will stall them and give the defender more time to counter them if played first.
+*A lone Ice Spirit is one of the few cards which cannot fully defend Wall Breakers with the help of the Crown Tower. One will still be able to connect for notable chip damage, but it may be a worthwhile play if the player can make the most out of the 1 Elixir gained from the trade.
+*When making a push with another troop who only targets buildings, Wall Breakers placed in the opposite lane can cripple or even destroy any defensive [[:Category:Building Cards|buildings]] placed in order to block it.
+*If the player has already taken a Crown Tower, they can place the Wall Breakers in the middle of the opponent's side, giving their opponent very little time to react. However, only 1 Wall Breaker will connect, so quickly placing a tank beforehand will make this more effective.
+*Using Wall Breakers with a small and cheap card such as Ice Spirit allows the player to cheaply tank for their Wall Breakers without spending much Elixir, and the Ice Spirit can freeze any troops the opponent might try to use to defeat the Wall Breakers.
+*Combining the Wall Breakers with [[Rage]] makes them difficult to react to at the bridge and can result in both connecting to the tower if the opponent lacks area damage counters or buildings, but their damage won't be boosted, as Rage only increases attack speed and the Wall Breakers' damage is instant.
+*Pairing the Wall Breakers with the [[Miner]] results in a cheap and efficiently threatening push since the Crown Tower will target the Miner first and allow the Wall Breakers to hit their mark. Even if the Wall Breakers are stopped, the Miner will have dealt chip damage, and often times eliminating both requires the same amount of Elixir.
+*Wall Breakers do enough damage to destroy a [[Goblin Cage]] and release the Goblin Brawler.
+*Using Zap along with a Wall Breakers push is especially effective against swarms, as the spell will not only get splash damage value but also supports the Wall Breakers with its 0.5 second stun and instantaneous deploy, possibly allowing them to connect with just a sliver of health.
+*Wall Breakers from Level 6 to Level 8 will be destroyed in 3 hits by an equally levelled Crown Tower, but otherwise they take 4 hits. Additionally, if they are at least 1 level lower, the Crown Tower will always destroy a Wall Breaker in 3 hits. Since a Wall Breaker being destroyed in 3 hits means that one will fail to connect, the player should keep this in mind when deciding to use them.
+*Paired with a [[Giant]] or [[Golem]], the Wall Breakers can rush to the Crown Tower as either tank will tank the damage from Crown Tower.
+*The Wall Breakers should never be used in conjunction with the [[Rune Giant]]. The Rune Giant will enhance their damage, but it will never activate due to them destroying themselves with their first attack, effectively wasting her ability.
+*An activated [[King's Tower]] is an enormous problem for a Wall Breakers user. The King Tower will be able to hit and kill one Wall Breaker with the assistance of their Crown Tower, which would result in only the second Wall Breaker connecting. Try not to have troops in your deck that are exploitable for King Tower activations like [[Electro Spirit]], [[Magic Archer]], [[Bomber/Evolution|Evolved Bomber]], and [[Firecracker]].
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{|class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|2||Very Fast (120)||1 sec||Melee: Short (0.5)||1.5||Buildings||x2||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 330 }}
+{{#vardefine: dmg_11 | 391 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Area Damage<br />{{Icon|I=Area Damage}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective 
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 60,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|20 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 180,000 Damage to enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 300,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" |Tower Tapper <br> [[File:Tower Tapper.png|50x50px]]
+|1
+|Hit enemy [[:Category:Crown Towers|Crown Towers]] a total of 245 times
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Crown Towers a total of 700 times
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Crown Towers a total of 1,250 times
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+| rowspan="3" |No Escape <br> [[File:No Escape.png|50x50px]]
+|1
+|Deal Area Damage to at least one Troop a total of 80 times
+|6,000 {{Icon|I=Gold}}<br>175 {{Icon|I=XP}} 
+|-
+|2
+|Deal Area Damage to at least one Troop a total of 240 times
+|8,000 {{Icon|I=Gold}}<br>175 {{Icon|I=XP}}
+|-
+|3
+|Deal Area Damage to at least one Troop a total of 480 times
+|10,000 {{Icon|I=Gold}}<br>175 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2019
+*The Wall Breakers were once available in the [[Tournament/Special Event Challenges|Wall Breakers Draft Challenge]] which started on 14/2/2019. In this [[Tournament|challenge]], gameplay was similar to a regular Draft Challenge, except that one of the players was able to choose who would use the Wall Breakers. If the player achieved at least 8 wins, they obtained the Wall Breakers early.
+*From 20/2/2019 through 22/2/2019, the [[Shop]] had a special offer where [[Arenas|Arena]] 1+ players could buy up to 4 special Fortune [[Chests]] for 500 [[Gems]] that guarantee at least 50% of the Chest's contents to be Wall Breakers. The Chest was able to generate up to 150% of its contents to be Wall Breakers.
+*The Wall Breakers [[Cards|card]] was generally released on 26/2/2019.
+*On 4/3/2019, a [[Version History#Balance Changes (4/3/2019)|Balance Update]], decreased the Wall Breakers' attack time to 1.2 seconds (from 1.5 seconds).
+*On 6/5/2019, a [[Version History#Balance Changes (6/5/2019)|Balance Update]], increased the Wall Breakers' damage by 10%, their range to 0.5 tiles (from 0.25 tiles), and re-centered their splash radius to damage nearby troops when attacking. The damage increase was not stated in the balance update video but is mentioned in the [https://clashroyale.com/blog/release-notes/balance-update-coming-5-6.html official release notes] and on the [https://twitter.com/ClashRoyale/status/1125306820904595456 Clash Royale Twitter page].
+*On 3/6/2019, a [[Version History#Balance Changes (3/6/2019)|Balance Update]], changed the sound and visual effects of the Wall Breakers.
+*On 7/10/2019, a [[Version History#Pass Royale and more (7/10/2019)|Balance Update]], decreased the Wall Breaker's cost to 2 [[Elixir]] (from 3 Elixir), decreased their damage by 10%, increased their mass to 4 (from 2), and decreased their collision radius to 0.4 tiles (from 0.5 tiles). The deploy position of the Wall Breakers was also tweaked slightly, putting them a bit closer together.
+*On 4/11/2019, a [[Version History#Pass Royale and more (4/11/2019)|Balance Update]], decreased the Wall Breakers' damage by 19% and decreased their area radius to 1.5 tiles (from 2 tiles). They also now spawn further apart.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Wall Breakers' card info screen.
+2020
+*On 2/6/2020, a [[Version History#Balance Changes (2/6/2020)|Balance Update]], gave the Wall Breakers a new 0.1 seconds deploy stagger from each other.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the Arena to unlock the Wall Breakers from Training Camp to Spell Valley.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 27/6/2022, the [[Version History#Summer%202022%20Update%20(27/6/2022)|Summer 2022 Update]], added the No Escape [[Card Mastery]] task for the Wall Breakers.
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Wall Breakers from Spell Valley to Spooky Town.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+*On 14/2/2024, the Wall Breakers' Evolution was added.
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Wall Breakers' hitpoints by 0.3%, and their damage by 0.25%.
+*On 3/11/2025, a [[Version History#Balance Changes (2/6/2020)|Balance Update]], decreased the Wall Breakers’ damage by 10%. 
+2026
+
+* On 4/8/2026, a Balance Update, decreased the Wall Breakers’ damage by 20%
+
+==Gallery==
+<gallery>
+File:Wall Breakers card render.png|Current card render.
+File:Chinese Wall Breakers card render.png|Wall Breakers’ card render in the Chinese version of the game.
+File:Wall Breakers Preview.gif|Current card preview
+File:Wall Breakers 1.png|Wall Breakers 1
+File:Wall Breakers 2.png|Wall Breakers 2
+File:Wall Breakers 3.png|Wall Breakers 3
+</gallery>
+
+==Trivia==
+*The Wall Breakers are 1 of 19 [[:Category:Troop Cards|troops]] which first existed in Clash of Clans, the others being [[Minions]], [[Archers]], [[Goblins]], [[Skeletons]], [[Barbarians]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], [[Witch]], [[P.E.K.K.A.]], [[Balloon]], [[Golem]], [[Bowler]], [[Cannon Cart]], [[Phoenix]], [[Lava Hound]], and the [[Archer Queen]].
+**The Clash of Clans counterpart targets Walls, hence the name, and has a 40x damage multiplier against them. Unlike the Clash Royale counterpart, the Wall Breaker's damage in Clash of Clans is extremely low and not enough to destroy anything other than Walls. Due to Walls not existing in Clash Royale, they were made to target any [[:Category:Building Cards|building]] instead, with higher base damage but no damage multiplier. Wall Breakers in Clash of Clans also have death damage, which is not the case in Clash Royale.
+**The second part of the Wall Breaker's card description is also shared from its Clash of Clans counterpart, with the word "''walls''" replaced by "''buildings''", as "walls" do not exist in Clash Royale.
+**The Wall Breakers resemble the Level 6 Wall Breaker from Clash of Clans, although they do not wear an aviator cap.
+**According to Clash of Clans, Balloons are "promoted" Wall Breakers.
+***It is somewhat ironic to note that Balloon pilots are promoted Wall Breakers, as the latter are kamikaze units and would not be actually "promoted" since they will perish instantly upon attacking.
+*The Wall Breakers are 1 of 15 [[cards]] associated with Skeletons, with the others being [[Bomber]], [[Skeleton Dragons]], [[Skeleton Barrel]], [[Tombstone]], [[Bomb Tower]], [[Guards]], [[Skeleton Army]], Witch, Balloon, [[Giant Skeleton]], [[Super Witch]], [[Graveyard]], [[Skeleton King]], and of course, Skeletons.
+**It is suggested that Bombers are promoted Wall Breakers, as one of the [[Loading Screen Hints]] says "''One day, Wall Breakers realized that they could do a lot more damage if they THREW the bomb rather than sat beside it. Imagine that...''", implying that Bombers used to be Wall Breakers.
+***Their deployment audio is shared with the Bomber, however, once their deployment timer is over, they will make their own battle cry.
+***Their attack audio is a slightly sped-up version of Bomber's attack.
+*The Wall Breakers are one of the first troop cards to receive a card render, alongside the Archers, [[Knight]], Goblins, Bomber, Skeletons, Barbarians, [[Bats]], [[Royal Recruits]], Skeleton Barrel, [[Rascals]], [[Musketeer]], Giant, Valkyrie, Wizard, [[Flying Machine]], Hog Rider, [[Royal Hogs]], [[Dart Goblin]], [[Zappies]], [[Elixir Golem]], [[Baby Dragon]], Skeleton Army, Witch, P.E.K.K.A, [[Prince]], Balloon, Giant Skeleton, [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], Bowler, Cannon Cart, [[Mega Knight]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], [[Magic Archer]], [[Bandit]], Lava Hound, [[Night Witch]], and [[Fisherman]].
+*The Wall Breakers are 1 of 8 troops to die as a part of their attack, the others being the [[Electro Spirit]], [[Fire Spirit]], [[Ice Spirit]], Skeleton Barrel, [[Battle Ram]], [[Heal Spirit]], and [[Suspicious Bush]].
+*The Wall Breakers are 1 of 4 troops which can defeat themselves in one attack, the others being Skeletons, Bats and [[Firecracker]]. 
+**Unlike the others, the Wall Breakers cannot target other Wall Breakers.
+**The Wall Breakers are 1 of 2 troops with more damage than hitpoints, the other being Guards.
+*The Wall Breakers, along with [[Barbarian Barrel]], [[Rage]], and [[Goblin Curse]], are the cheapest {{Rarity|Epic}} cards, costing 2 [[Elixir]].
+*The Wall Breakers are the only building-targeting troops that inflict area damage with their regular attack.
+*In the French, Korean, Arabic, Chinese, Malaysian, Thai, and Vietnamese language settings of the game, the Wall Breakers' name translates to "Sappers", "Skeleton Assault", "Wall Destroyers", "Siege Bombers", "Fortress Breakers", "Wall Bombers", and "Siege Soldiers" respectively.
+*The Wall Breakers have been featured in multiple [[Tournament/Special Event Challenges|special game modes]] outside of the card. More specifically:
+**The Wall Breakers are 1 of 23 troops that have been featured in the [[Troop Rush]] game [[:Category:Modes|mode]], the others being Skeletons, Skeleton Dragons, Fire Spirit, Bats, [[Elite Barbarians]], Firecracker, Rascal Girls, Royal Hogs, Heal Spirit, Elixir Golem, Guards, Prince, Balloon, Golem, Ram Rider, [[Sparky]], Phoenix, Royal Ghost, Bandit, [[Lumberjack]], [[Santa Hog Rider]], and the [[Monk]].
+**The Wall Breakers are 1 of 14 troops that has been featured with a [[Buff#Rage|Rage]] [[buff]], the others being Electro Spirit, Giant, Zappies, Guards, Giant Skeleton, Goblin Giant, Electro Dragon, [[Electro Giant]], Mega Knight, Ram Rider, [[Electro Wizard]], Sparky, and Royal Ghost.
+*The Wall Breakers are 1 of 23 cards that has had its Elixir cost changed, the others being Bomber, Fire Spirit, Royal Recruits, [[Cannon]], [[Mortar]], Musketeer, [[Three Musketeers]], [[Heal]], [[Goblin Hut]], Bomb Tower, [[Barbarian Hut]], [[Furnace]], [[Elixir Collector]], Skeleton Army, P.E.K.K.A., Electro Giant, Bowler, [[Goblin Barrel]], Barbarian Barrel, Rage, Fisherman, and the Monk.
+*The Wall Breakers, along with the Minions, Bomber, Skeletons, Skeleton Dragons, Ice Spirit, [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Mega Minion]], [[Ice Golem]], Dart Goblin, Elixir Golem, [[Goblin Cage|Goblin Brawler]], Guards, Baby Dragon, P.E.K.K.A, Giant Skeleton, Golem, Bowler, [[Executioner]], Mega Knight, [[Inferno Dragon]], Royal Ghost, and Lava Hound, are featured as a [https://squad-busters.fandom.com/wiki/Monsters monster] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*Before the Wall Breakers' card release, the Wall Breakers were supposed to be a {{Rarity|Legendary}} card. However, they were changed to an {{Rarity|Epic}} card post-release.
+*The Wall Breakers are in a relationship according to the [https://x.com/ClashRoyale/status/1964343375223537669/photo/3 Royale High Yearbook].
+
+{{Navigation|Cards}}
+
+[[fr:Sapeurs]]
+[[de:Mauerbrecher]]
+[[es:Rompemuros]]
+[[it:Spaccamuro]]
+[[ru:Стенобои]]
+[[zh:攻城炸弹人]]
+[[Category:Kamikaze Cards]]

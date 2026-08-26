@@ -1,0 +1,219 @@
+{{DISPLAYTITLE: <span style="color: #b300b3;">Cannon Cart</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}
+
+{{Card Infobox|Cost=5|Rarity=Epic|Type=Troop|Arena=Miner's Mine|ReleaseDate=5 August 2017}}
+{{Quote|A Cannon on wheels?! Bet they won't see that coming! At low health, it becomes a Cannon not on wheels.}}
+
+The Cannon Cart is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from the [[Arenas|Miner's Mine (Arena 15)]]. It spawns a single-target, ground-targeting, medium-ranged, ground [[:Category:Troop Cards|troop]] with high hitpoints and moderate damage. When its hitpoints are lowered below 50%, it becomes a [[:Category:Building Cards|building]] with a 15-second lifetime. It appears as a [[Cannon]] with a wooden base atop a wooden cart, with a small team-colored ridge at the rear and a large bolted ridge in the center. A Cannon Cart card costs 5 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Cannon Cart Card}}
+*Since the first form isn't a [[:Category:Building Cards|building]], the Cannon Cart is not a substitute for the [[Cannon]]. It is quite difficult to control when the Cannon Cart enters its second form, so it cannot consistently pull building targeting [[:Category:Troop Cards|troops]] to a favorable position. Thus, the player should seek other alternatives.
+*Despite both forms having a large amount of combined health, the Cart being rendered immobile once its first form has been defeated means that it is best to put the Cannon Cart behind a tank or other high-hitpoint troops such as the [[Giant]], P.E.K.K.A, Giant Skeleton, [[Electro Giant]], [[Goblin Giant]], or the [[Golem]], like glass cannon cards. The tank will absorb all damage and the Cannon Cart will clear away units attacking the tank and eventually the [[:Category:Tower Troop Cards|Crown Tower]]. Keep in mind that this combo is very vulnerable to swarms, so it is advised to bring an area damage spell or troops.
+*Both its troop and building form at full health can survive one hit from a [[Fireball]], [[Mini P.E.K.K.A.]], P.E.K.K.A, [[Elite Barbarians]], or a charging [[Prince]] if they are all at equivalent levels. If the cart is in its troop form, the Mini P.E.K.K.A. will still fully counter it, but his health will be too low for a threatening counterpush.
+*If the player does not need to attack any time soon, they can use [[:Category:Spell Cards|spells]] to destroy the Cannon Cart's shield when it is placed in the back with the opponent's Crown Tower and force it to start decaying. A [[Lightning]], [[Rocket]], or a Fireball combined with [[The Log]] can all defeat the Cart's first form. Although this is a slight negative [[Elixir]] trade, the tower damage gained is enough to offset this.
+*Placing a Cannon Cart in the middle of the opponent's territory when they have one Crown Tower destroyed can be a great strategy. The Cannon Cart's decent range will let it lock on to the remaining Crown Tower in a short time, dealing great damage if left ignored. However, if the opponent expects this, they may play a [[Cards|card]] pre-emptively to stop it, causing the Cannon Cart to be a waste of Elixir. This is easier for them to do at a low cost due to the fact that the Cannon Cart will be in range of both the [[King's Tower]] and the Crown Tower when placed as far forward as possible.
+**If the Cannon Cart is placed on the second tile from the river closest to the enemy's Crown Tower, the Cannon Cart will actually be out of range of the King's Tower. This is useful as it'll still quickly lock-on to the Crown Tower, whilst also completely eliminating the King Tower's damage output. However, this comes with the drawback of taking a bit longer to connect, giving your opponent more time to react.
+*Mini-tanks or high-damage units like the [[Knight]], [[Dark Prince]], [[Lumberjack]], Elite Barbarians, [[Monk]], [[Goblin Cage|Goblin Brawler]], [[Sparky]], Battle Healer, [[Executioner]], [[Valkyrie]], [[Bowler]], Prince, P.E.K.K.A, [[Skeleton King]], or the Mini P.E.K.K.A. are great counters to Cannon Cart. They can survive multiple hits while dealing great damage to Cannon Cart, destroying it. However, the Cannon Cart can counter these units with the help of Crown Towers, even being able to stop a [[Mega Knight]] despite his jump attack, [[P.E.K.K.A.]], or a [[Giant Skeleton]], as long as at least two Crown Towers are helping.
+*The cheapest card combo to counter a Cannon Cart crossing the river alone is the [[Ice Spirit]] or [[Electro Spirit]] combined with [[Skeletons]] or [[Goblins]]. When it is about to roll within range of the player's Crown Tower, the player should deploy the Ice Spirit/Electro Spirt immediately followed by Skeletons/Goblins. The Ice Spirit/Electro Spirit will tank one shot, freeze/stun it, and the Skeletons/Goblins will damage it down to its second form, where it will then be chipped down by the player's Crown Tower. This is a +3 and a +2 Elixir trade respectively, but it is very delicate; the opponent may use a spell to neutralize the combo, and allow the Cannon Cart to connect to the Tower. Since this is unreactable, the player should keep in mind when they can thwart this combo. Using a different card all of a sudden to counter the Cart can make the opponent react wrongly, spelling something that isn't vulnerable like a Knight or Valkyrie.
+*The [[Ice Golem]] is the cheapest single card counter to the Cannon Cart with the help of a Crown Tower, and is harder to work around due to his higher health. For the best results, the Ice Golem should be timed so that he begins distracting the Cart the moment the Crown Tower begins targeting it, and he should be placed in such a way that the Ice Golem's death damage also chips at the cart and slows it.
+*Swarm cards like the [[Skeleton Army]], [[Barbarians]], [[Royal Recruits]], the [[Guards]] are effective at countering this card, since the Cannon Cart can only attack one target at a time, causing it to be overwhelmed and destroyed. In the case of the Guards and Recruits, the damage of the Cannon Cart is not enough to destroy their shields in one hit, so they can defend it for longer.
+*The Cannon Cart has enough firepower to destroy an equivalent-level [[Goblins|Goblin]] in one hit. It is a good card for clearing away small units one by one so that the rest of a push can follow.
+*The Cannon Cart is difficult to redirect due to its long range and its immunity to knockback (besides [[The Log]]), so it can be used to surprise an opponent at the start of the game or when they have little to no Elixir. This is especially devastating if a spell is at the ready to defeat any swarms, one of the simplest methods of dealing with the Cart.
+*A Cannon Cart can be strong when paired up with [[Graveyard]] due to its fast movement speed and high combined hitpoints, being able to distract the opponent's tower for a sufficient amount of time.
+*The Cannon Cart can be used to counter a [[Goblin Barrel]], due to its ability to one-shot them, letting the Goblins get no more than three hits. However, due to it being a negative Elixir trade, the player should try to counterpush with the Cannon Cart to try and even the Elixir deficit or to try and deal damage to a Crown Tower, as otherwise it is a waste of potential.
+*The Cannon Cart's shield hitpoints combined with its normal hitpoints are higher than the entire hitpoints of a [[Battle Healer]]. Because of this, it is a good idea to use it in response to a [[Mortar]] or [[X-Bow]] placed at the bridge. Breaking the shield would not result in the building retargeting and as such, the Cannon Cart will tank more shots for longer.
+*The [[Ram Rider]] can easily stop a Cannon Cart. Her attack will slowly kill the first form while her charge will deal massive damage to the second form of the Cannon Cart.
+
+<center>
+
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Cannon Cart Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||0.9 sec||0.5 sec||Medium (60)||1 sec||5.5||1000||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+
+{{StatisticsSubheader|Broken Cannon Cart Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width: 100%; text-align: center;"
+! scope="col" |Activation<br />{{Icon|I=Activation}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Lifetime<br />{{Icon|I=Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+|-
+|50%||0.9 sec||0.5 sec||15 sec||5.5||1000||Ground||x1||[[:Category:Building Cards|Building]]
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1809 }}
+{{#vardefine: dmg_11 | 212 }}
+{{#vardefine: atk_speed | 0.9 }}
+{{#vardefine: life | 15 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per Second <br />{{Icon|I=DPS}}
+! scope="col" |Broken Cannon Cart Hitpoints Lost per Second<br />{{Icon|I=Time}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) / {{#var:life}} / 2 round 1 }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) / {{#var:life}} / 2 round 1 }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) / {{#var:life}} / 2 round 1 }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) / {{#var:life}} / 2 round 1 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) / {{#var:life}} / 2 round 1 }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#expr: {{#var:hp_11}} / {{#var:life}} / 2 round 1 }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) / {{#var:life}} / 2 round 1 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) / {{#var:life}} / 2 round 1 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) / {{#var:life}} / 2 round 1 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) / {{#var:life}} / 2 round 1 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) / {{#var:life}} / 2 round 1 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 260,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|20 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 790,000 Damage to enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 1,320,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" |Pincushion <br> [[File:Pincushion.png|50x50px]]
+|1
+|Receive a total of 980 hits from enemy [[:Category:Crown Towers|Towers]]
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Receive a total of 2,800 hits from enemy Towers
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Receive a total of 4,900 hits from enemy Towers
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2017
+*The Cannon Cart was once available in the [[Tournament/Special Event Challenges|Cannon Cart 2v2 Draft Challenge]], which started on 28/7/2017. In this [[Tournament|challenge]], gameplay was similar to a regular [[2v2]] Draft Challenge, except that 2 of the players were able to choose who would use the Cannon Cart. If the player achieved at least 8 wins, they obtained the Cannon Cart early.
+*From 31/7/2017 through 3/8/2017, the [[Shop]] had a special offer where [[Arenas|Arena]] 10+ players could buy up to 6 Magical [[Chests]] at the normal price that guarantee at least 50% of the Chest's contents to be Cannon Cart.
+*The Cannon Cart [[Cards|card]] was generally released on 5/8/2017.
+*On 9/10/2017, the [[Version History#Epic Quests Update (9/10/2017)|Epic Quests Update]], increased the Cannon Cart's hitpoints and shield hitpoints by 5%. The same update also fixed a bug where [[:Category:Troop Cards|troops]] would stop targeting the Cannon Cart or get stuck behind a broken Cannon Cart. In addition, it fixed a bug where the [[Inferno Tower]]'s and [[Inferno Dragon]]'s damage did not reset after breaking the Cannon Cart's shield. This change was reverted on 11/10/2017, in a [[Version History#Maintenance Break (11/10/2017)|maintenance break]].
+*On 12/12/2017, the [[Version History#Electrifying%20Update%20(12/12/2017)|Electrifying Update]] reverted the Cannon Cart to its state on 9/10/2017. More specifically, the Inferno Tower's and Inferno Dragon's damage would now reset after breaking the Cannon Cart's shield.
+2018
+*On 25/4/2018, the [[Version History#Clan%20Wars%20Update%20(25/4/2018)|Clan Wars Update]], changed the death animation of the Cannon Cart. The same update also fixed a bug where the Cannon Cart was not being targeted after losing its shield.
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], moved the [[Arenas|Arena]] to unlock the Cannon Cart from Hog Mountain to Builder's Workshop.
+*On 6/8/2018, a [[Version History#Balance Changes (6/8/2018)|Balance Update]], increased the Cannon Cart's unshielded form's lifetime to 30 seconds (from 20 seconds), decreased the unshielded form's deploy time to 0.15 seconds (from 1 second), and gave it knockback immunity.
+*On 3/9/2018, a [[Version History#Balance Changes (3/9/2018)|Balance Update]], decreased the Cannon Cart's range to 5 tiles (from 5.5 tiles).
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Epic}} cards start at Level 6 and end at Level 13 (from 1 to 8).
+*On 5/11/2018, a [[Version History#Balance Changes (5/11/2018)|Balance Update]], decreased the Cannon Cart's hit speed to 1.3 seconds (from 1.2 seconds), and increased its attack time interval to 0.5 seconds (from 0.4 seconds).
+2019
+*On 28/1/2019, the [[Version History#January%202019%20Update%20(28/1/2019)|January 2019 Update]], moved the Arena to unlock the Cannon Cart from Builder’s Workshop to Hog Mountain.
+*On 4/2/2019, a [[Version History#Balance Changes (4/2/2019)|Balance Update]], decreased the Cannon Cart's attack time interval to 1.2 seconds (from 1.3 seconds).
+*On 1/7/2019, the [[Version History#Pass Royale and more (1/7/2019)|July 2019 Update]], decreased the Cannon Cart's attack time interval to 1 second (from 1.2 seconds), increased its first attack time interval to 0.6 seconds (from 0.5 seconds), increased its range to 5.5 tiles (from 5 tiles), and decreased the damage by 17%. It also increased the hitpoints and shield hitpoints by 1.5%. There was also an unannounced change to the Cannon Cart, an increase to its sight range to 6 tiles (from 5.5 tiles).
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Cannon Cart's card info screen.
+2020
+*On 3/3/2020, a [[Version History#Balance Changes (3/3/2020)|Balance Update]], increased the Cannon Cart's damage by 5%.
+2021
+*On 30/3/2021, the [[Version History#2021%20Quarter%201%20Update%20(30/3/2021)|2021 Quarter 1 Update]], decreased the Cannon Cart's speed to 60 (from 90), now classified as Medium.
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], decreased the Cannon Cart's unshielded form's attack time interval to 0.9 seconds (from 1 seconds), and its first attack time interval to 0.5 seconds (from 0.6 seconds). It also moved the Arena to unlock the Cannon Cart from Hog Mountain to Legendary Arena.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022 
+*On 4/10/2022, a [[Version History#Balance%20Changes%20(4/10/2022)|Balance Update]], decreased the Cannon Cart's hitpoints by 8%.
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Cannon Cart from Legendary Arena to Miner's Mine.
+2023 
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+*On 6/8/2024, a [[Version History#Balance Changes (6/8/2024)|Balance Update]], decreased the Cannon Cart's attack time interval to 0.9 seconds (from 1 second) and its first attack time interval to 0.5 seconds (from 0.6 seconds).
+2025
+*On 8/1/2025, a [[Version History#Balance Changes (8/1/2025)|Balance Update]] decreased the Cannon Cart's shield hitpoints by 8%, but increased its hitpoints by 0.5%.
+*On 5/5/2025, the [[Version History#Pass Royale and more (5/5/2025)|May 2025 Update]] increased the Cannon Cart's hitpoints by 109%, but removed its shield hitpoints.
+*On 3/6/2025, a [[Version History#Balance Changes (3/6/2025)|Balance Update]] increased the Cannon Cart's hitpoints by 5%.
+*On 30/6/2025, the End of June 2025 Update changed the card description. It used to say: “''A Cannon on wheels?! Bet they won't see that coming! Once you break its shield, it becomes a Cannon not on wheels.''"
+
+==Gallery==
+<gallery>
+File:Cannon Cart card render.png|Current card render.
+File:Cannon Cart Preview.gif|Current card preview
+File:Cannon Cart 1.png|Cannon Cart
+</gallery>
+
+==Trivia==
+*The word "''Cannon''" comes from the Akkadian word "''𒄀''" (''qanû''), meaning reed. Cannons were invented in China during the twelvth century. It was most likely developed in parallel or as an evolution of an earlier gunpowder weapon called the fire lance. Cannons were used for warfare by the late thirteenth century in the Yuan dynasty and spread throughout Eurasia in the fourteenth century. During the late Middle Ages, large and small cannons were developed for siege and field battles. The cannon replaced prior siege weapons such as the trebuchet. After the late Middle Ages, most large cannons were abandoned in favor of greater numbers of lighter, more maneuverable field artillery.
+**The Cannon Cart is 1 of 4 [[cards]] associated with cannonry, with the others being [[Royal Giant]], [[Cannon]], and [[Cannoneer]].
+**In the Japanese language setting of the game, the Cannon Cart is revealed to be a [https://en.wikipedia.org/wiki/Type-60_self-propelled_106_mm_recoilless_rifle Type 60 Self-Propelled Recoilless Gun].
+*The Cannon Cart is 1 of 19 [[:Category:Troop Cards|troops]] which first existed in Clash of Clans, the others being [[Minions]], [[Archers]], [[Goblins]], [[Skeletons]], [[Barbarians]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], [[Witch]], [[P.E.K.K.A.]], [[Balloon]], [[Golem]], [[Wall Breakers]], [[Bowler]], [[Phoenix]], [[Lava Hound]], and the [[Archer Queen]]. 
+**The first part of the Cannon Cart's description was taken from the [https://clashofclans.fandom.com/wiki/Cannon_Cart Cannon Cart] in Clash of Clans, where it says "''A cannon on wheels?! Wait, did it just turn into a mortar?? Bet they won't see that coming! Both powerful and versatile!''"
+**Its ability differs from its Clash of Clans counterpart. Instead of dropping its wheels when the shield is destroyed, the Clash of Clans Cannon Cart can be switched between its moving and stationary form, with its stationary form having higher range and area damage, similar to a [[Mortar]].
+***The previous version of the Cannon Cart in Clash of Clans dropped its wheels after being defeated with extra but temporary amount of hitpoints, which inspired the ability for its Clash Royale counterpart.
+**Its [[Star Points|Star Level 3 skin]] grants it the Golden Dragon's head, a boss that appears in a [https://clashofclans.fandom.com/wiki/Single_Player_Campaign#Dragon's_Lair Single Player Map] in Clash of Clans.
+*The Cannon Cart is one of the first troop [[cards]] to receive a card render, alongside the Archers, [[Knight]], Goblins, [[Bomber]], Skeletons, Barbarians, [[Bats]], [[Royal Recruits]], [[Skeleton Barrel]], [[Rascals]], [[Musketeer]], Giant, Valkyrie, Wizard, Flying Machine, Hog Rider, [[Royal Hogs]], [[Dart Goblin]], [[Zappies]], [[Elixir Golem]], [[Baby Dragon]], [[Skeleton Army]], Witch, P.E.K.K.A, [[Prince]], Balloon, [[Giant Skeleton]], [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], Wall Breakers, Bowler, [[Mega Knight]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], [[Magic Archer]], [[Bandit]], Lava Hound, [[Night Witch]], and [[Fisherman]].
+*In the Spanish and Italian language settings of the game, the Cannon Cart's name translates to "Wheeled Cannon". In the Russian language settings of the game, the Cannon Cart's name translates to "Cart with a Cannon". In the Norwegian and Turkish language settings of the game, the Cannon Cart's name translates to "Gun Carriage". In the Chinese language settings of the game, the Cannon Cart's name translates to "Cannon Car".
+*The Cannon Cart is the only troop that changes type when unshielded, going from a troop to a [[:Category:Building Cards|building]].
+*The Cannon Cart is 1 of 7 troops that has had its movement speed classification changed, the others being [[Skeleton Barrel]], [[Elite Barbarians]], [[Suspicious Bush]], [[Goblin Cage|Goblin Brawler]], [[Lumberjack]], and the [[Mighty Miner]].
+*The Cannon Cart is 1 of 10 cards to have an alliterative name, the others being Royal Recruits, [[Goblin Gang]], [[Mega Minion]], Goblin Giant, [[Barbarian Barrel]], Ram Rider, [[Dagger Duchess]], [[Boss Bandit]], and the Mighty Miner.
+*Since the Cannon Cart is a troop, it can be [[Clone|cloned]], and a cloned copy will drop a cloned cannon, making it the only case where Clone can generate a building. Since the cloned cannon still has a limited lifetime, it is the only cloned troop with a health bar.
+*The Cannon Cart is unavailable in [[Tournament/Special Event Challenges|The Floor is Healing Challenge]], as buildings are unavailable and its second form is a building.
+*When a Cannon Cart turns into a building, it drops its wheels. However, only 3 wheels are seen to come off despite it having 4 wheels.
+*The Cannon Cart was featured in the winning [[Battle Decks|deck]] of the [https://www.youtube.com/live/h3IOFTfT8Sk?si=wTF1FekCifpSULn- Clash Royale League 2020 Tournament], by a player called Ruben.
+*There used to be a glitch where if the [[Obstacle Course|Neutral Fisherman]] targeted an unshielded Cannon Cart, he would move away from the center towards the Cannon Cart and staying there until the [[Basics of Battle|battle]] ended or he moved towards another unshielded Cannon Cart.
+*The initial balance change for Cannon Cart on the [[Version History#Balance%20Changes%20(4/10/2022)|4/10/2022 balance changes]] was a 14% hitpoints decrease, but it was lowered to 8% [https://royaleapi.com/blog/season-40-balance-wip last minute].
+
+{{Navigation|Card}}
+
+[[fr:Charrette à canon]]
+[[de:Kanonenkarre]]
+[[es:Cañón con ruedas]]
+[[it:Cannone a rotelle]]
+[[ru:Повозка с пушкой]]
+[[zh:加农炮战车]]

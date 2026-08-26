@@ -1,0 +1,208 @@
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=6|Rarity=Common|Type=Troop|Arena=Hog Mountain|ReleaseDate=25 November 2016}}
+{{Quote|Spawns a pair of leveled up Barbarians. They're like regular Barbarians, only harder, better, faster and stronger.}}
+
+The Elite Barbarians is a {{Rarity|Common}} [[Cards|card]] that is unlocked from the [[Arenas|Hog Mountain (Arena 10)]]. It spawns two fast, single-target, ground-targeting, melee, ground [[:Category:Troop Cards|troops]] with high hitpoints and very high damage. Their deployment is in a horizontal formation. They resemble normal [[Barbarians]], except they wear a horned helmet with a team-colored stripe and edges. An Elite Barbarians card costs 6 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Elite Barbarians Card}}
+*Compared to the regular [[Barbarians]], they have higher stats and offensive capabilities. However, there are only 2 Elite Barbarians and the [[Elixir]] cost is 6, while the Barbarians are 5 on count and Elixir cost. Therefore, they do less combined damage than regular Barbarians and are less effective on defense due to their lower numbers. However, Elite Barbarians are much less susceptible to splash damage (an equal Level [[Fireball]] will not OHKO them) due to their comparatively higher individual hit points.
+**Because of the higher [[:Category:Troop Cards|troop]] count of the Barbarians, they can shut down Elite Barbarians for a positive Elixir trade.
+**The Elite Barbarians are unlocked in a higher [[Arenas|Arena]] (Hog Mountain), which means that the Barbarians can be obtained earlier and be leveled up more easily for use in ladder [[Basics of Battle|battles]].
+*Elite Barbarians are comparable to a [[P.E.K.K.A.|P.E.K.K.A]], but unlike her, they spawn in pairs. A strategy would be to have 1 Elite Barbarian down each lane, giving your opponent pressure to defend both of them. Elite Barbarians are also cheaper than the P.E.K.K.A by 1 Elixir.
+**While defending split Elite Barbarians, place a troop or building in the middle so both Elite Barbarians will be pulled to the center due to their high sight range.
+*Elite Barbarians are most reliable as a defensive card turned into a threatening counterattack, especially against tanks and troops that are easily shredded by a pair of Elite Barbarians, like a [[Musketeer]], [[Bandit]], [[Ice Wizard]], [[Magic Archer]], [[Electro Wizard]], [[Berserker]], [[Archer Queen]], [[Royal Ghost]], or [[Wizard]]. This allows them to push for a lower cost than if they were just played at the bridge, with two nearly unscathed Elite Barbarians counterattacking. Against the splash attackers, it is recommended to place them in a way that they surround the troop, to minimize the damage further.
+*If the opponent is low on Elixir or you know that the opponent's counter for the Elite Barbarians is out of rotation, you can rush a lane with Elite Barbarians. Their fast movement speed allows them to reach the [[:Category:Tower Troop Cards|Crown Tower]] quickly and gives little time for the opponent to react. However, it is advised to have an offensive [[:Category:Spell Cards|spell]] ready since cheap swarms will make short work of the Elite Barbarians.
+*The P.E.K.K.A, [[Royal Recruits]], and [[Mega Knight]] are good counters to Elite Barbarians. They can reliably chop them down by themselves using their powerful damage and health, even without a Crown Tower helping, with the counter alive, albeit heavily damaged to counterpush for the negative Elixir trade. [[Sparky]] can act similarly for a neutral Elixir trade, but she will only OHKO them if they are one Level lower and thus require assistance from Crown Towers.
+*Due to their fast move speed, the Elite Barbarians can be used to push slower troops like the [[Valkyrie]] and Skeleton King, creating an excellent synergy; the Valkyrie/Skeleton King eliminates the swarms while the Elite Barbarians annihilate the bulkier troops.
+*Using [[Rage]] on Elite Barbarians can be even more deadly, as it amplifies their already fast movement speed, making them even harder to react to. Despite the benefits, this strategy can leave the player with a huge Elixir deficit, as this combo is still susceptible to swarms. Because of this, pairing the [[Lumberjack]] with the Elite Barbarians may be just as effective since the Lumberjack's fast hit speed will help the Elite Barbarians take care of small swarms, and when the Lumberjack dies, his Rage effect will make the Elite Barbarians far more dangerous. The Rage effect from the Lumberjack could also take out remaining swarms such as a [[Skeleton Army]], which can be a threat to the Elite Barbarians. This can still be risky as it may leave the player at an even larger Elixir deficit of course, as Lumberjack costs 2 more Elixir.
+*The Elite Barbarians pair well with any Spirit card, as for a low Elixir cost of 1 Elixir, they can help the Elite Barbarians in a push.
+**A great combo is Elite Barbarians and [[Fire Spirit]]. The Fire Spirit deters opposing swarms, quickly clearing out any attempting to stop the Elite Barbarians. They also provide considerable Tower damage should they reach it. Since the Fire Spirit is faster than the Elite Barbarians, it should be placed behind the Elite Barbarians to push them and to ensure that it targets the same troops as the Elite Barbarians. However, it can still get shut down by a mini tank + swarm combo. This can also give the opponent decent spell value.
+**The [[Electro Spirit]] works very similar to the Fire Spirit, being able to assist them against swarms, even stopping swarms that are placed in a way to avoid all of them from being hit. However, it deals a lot less damage than the Fire Spirit, making it worse against certain swarms like [[Goblins]] and [[Spear Goblins]]. In exchange, it comes with a stun effect, making the combo better against bulkier troops. The extra damage of the Electro Spirit will allow the pair to immediately destroy troops that can survive 2 attacks, such as a Witch.
+**The [[Ice Spirit]] is less effective against swarms, but it has a longer stun, making it more effective against even bulkier opponents. This can be amplified with the Evolved Ice Spirit, allowing them to break through even mini tanks like the Valkyrie and Bowler.
+**The [[Heal Spirit]] could be a decent replacement, especially when they are severely damaged. However, it does not deal as much damage as the Fire Spirit, which leaves the Elite Barbarians still weak to swarms bulkier than [[Skeletons]] or [[Bats]]. Despite the downsides, Heal Spirit can come in to heal Elite Barbarians if they're critically low on health, causing massive damage to a player's troops or Crown Towers.
+*The Elite Barbarians pair well with mobile area attackers, like the [[Royal Ghost]] and [[Dark Prince]]. They can counter swarms very well, while the Elite Barbarians destroy bulkier threats to them. However, these pushes can be destroyed by the P.E.K.K.A and Mega Knight.
+*They also pair well with split [[Skeleton Dragons]], for the ability to counter their weakness to swarms, especially when said swarm is used at the center of the Arena to bring the Elite Barbarians back together. Additionally, the Elite Barbarians + Skeleton Dragons combo works better than other combos with Skeleton Dragons when not split, due to the Elite Barbarians higher hitpoints and damage making them less vulnerable to strong defenders.
+*If placed properly, Elite Barbarians can completely counter a Mega Knight and leave with 1 Elite Barbarian at full health. To do this, the Elite Barbarians should be spawned directly on top of the Mega Knight so that they split apart, negating the Mega Knight's area damage, and they should be spawned before he initiates a jump. To perform this, place the Elite Barbarians 1 tile ahead of the Mega Knight. Due to the 1 second server delay, the Elite Barbarians will spawn and split right on top of the Mega Knight as he walks to your designated tile. A similar strategy works against the Sparky.
+*Although Elite Barbarians have high damage per second, their health is mediocre, so almost all swarms can counter it for a positive Elixir trade. An [[Ice Golem]] or [[Elixir Golem]] with any other high damage support card (e.g. [[Minions]] or Bats) can easily take down the Elite Barbarians. Despite this, their mediocre hit points and high damage make them decent tanks for other troops, like [[Archers]], [[Firecracker]], [[Bomber]], and Spear Goblins.
+*Unlike the [[Prince]] and Dark Prince, Elite Barbarians are not immune to knockback effects. Because of this, the [[Bowler]] and [[Executioner/Evolution|Evolved Executioner]] can push them away, delaying them from connecting to their target. Both of them can counter Elite Barbarians for a +1 Elixir trade.
+**Similarly, because of their lack of knockback immunity, they are ineffective counters to the [[Royal Giant/Evolution|Evolved Royal Giant]] and [[Battle Ram/Evolution|Evolved Battle Ram]]. As such, it would be better not to use them against them, and instead seek for other alternatives, such as ranged units.
+*Splash units like the Bomber, Valkyrie, Wizard, Executioner, Bowler, Skeleton King, and Dark Prince are amazing at countering Elite Barbarians when paired with Skeletons, Goblins, [[Guards]], Heal Spirit, Electro Spirit, or Ice Spirit, diverting damage from your counter. The same can be said for powerful glass cannons like the [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Night Witch]], Executioner, [[Cannon Cart]], and the [[Lumberjack]]. Those small troops can be protected by the Ice Golem or Elixir Golem as well.
+**When a Firecracker shoots, she pushes herself back by 1.5 tiles. This recoil can be used to counter lone Elite Barbarians for a positive Elixir trade. Place her in an area near the middle of the board. She will do considerable damage to the Elite Barbarians, but they will need to be distracted by an Ice Spirit or Skeletons to fully finish them off. If done correctly, the Firecracker player is netted a +2 positive [[Elixir]] trade.
+**The [[Witch]] can stop them similarly without the need of a distraction unit. The Skeletons will distract the Elite Barbarians long enough for her to defeat them for a positive Elixir trade. The [[Skeleton King]] can activate his ability can counter them in a similar way.
+*A [[Rocket]] can completely destroy Elite Barbarians up to 1 Level higher for a neutral Elixir trade. However, due to their fast movement speed along with the Rocket's slow travel time, it can be difficult and risky to use it successfully. Alternatively, you can use [[Lightning]] to cripple the Elite Barbarians and 1 supporting card, if possible, however you may need additional support, since the Elite Barbarians will have some health left and may get some hits on the Tower.
+**Note that using a Rocket on Elite Barbarians is risky, as it can allow the opponent to use another card that would thrive from its absense, such as an [[Elixir Collector]].
+* Mini tanks such as [[Knight]], Ice Golem, Prince, and Valkyrie can pull the Elite Barbarians to the center, allowing both Towers to whittle them down for a positive Elixir trade.
+*Pulling the Elite Barbarians with a [[Tombstone]] is a great way of stalling the Elite Barbarians especially with the Skeletons that it continually spawns. If your opponent defends against your Elite Barbarians with a Tombstone, hover a small spell, like [[Zap]], over the Tombstone and cast it right as the Tombstone is destroyed. The four spawned Skeletons will be destroyed, and the Elite Barbarians will quickly head for the Crown Tower without a distraction.
+*The [[Bomb Tower]] can be used to counter Elite Barbarians for a positive Elixir trade. However, if the Elite Barbarians are at a higher Level than the Bomb Tower, the defender would also need to play another card, like Skeletons or Goblins, to distract and effectively counter them.
+*The [[Goblin Cage]]'s hitpoints are enough to still survive 2 hits from the Elite Barbarians. However, the life decay may cause it to be immediately destroyed by them if placed too early.
+*The Elite Barbarians are one of the most effective counters to the [[Elixir Golem]] and [[Battle Healer]] combo, as their high individual damage and moderately high hitpoints are able to take care of the Battle Healer easily and destroy the Elixir Golem, as they have a relatively high hit speed and will destroy all forms of the Elixir Golem very quickly, also having enough damage to OHKO each Elixir Blob. Beware, as the opponent may place a swarm card like the Skeleton Army to distract the Elite Barbarians, so having spells in hand will help out a great deal. Try to defeat the Battle Healer before the Elixir Golem so that the Elite Barbarians save more of their hitpoints for a counterattack.
+*The Elite Barbarians occupy large space when placed down. Their high mass will obstruct the [[Ram Rider]]'s pathing, forcing her to take a longer path, which will allow them to defeat her. Since they are swarm cards, the damage caused by the Rider on them will also be split, meaning that they have taken pretty minimal damage from her, setting up for a counterattack.
+**Against Elite Barbarians, it is best for the Ram Rider to kite them without her jumping over the river. This will keep her in range for longer, doing more damage and snaring them for longer. This is enough to stop them for a +1 Elixir trade.
+*Beware when using a [[Fisherman]] against Elite Barbarians, as he will pull one of them close to him and take a hard hit from him, while the other one catches up quickly. It is recommended to have a distraction unit if you want to counter them this way.
+*The Elite Barbarians are a great card to use in the [[Treasure Hunt]] [[:Category:Modes|game mode]]. They have high enough damage to be able to claim the building quickly, and their decent health prevents the opponent from removing them immediately from the Arena.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|6||1.4 sec||0.5 sec||Fast (90)||1 sec||Melee: Medium (1.2)||Ground||x2||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1341 }}
+{{#vardefine: dmg_11 | 384 }}
+{{#vardefine: atk_speed | 1.4 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="20%" |Type
+! width="10%" |Level/Tier
+! width="45%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 205,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|200 {{BASEPAGENAME}} cards<br>25 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 610,000 Damage to enemy Troops or buildings
+|2,000 {{Icon|I=Gold}}<br>25 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 1,020,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>25 {{Icon|I=XP}}
+|-
+| rowspan="3" |Arena Destroyer <br> [[File:Arena Destroyer.png|50x50px]]
+|1
+|Destroy 350 enemy Troops or buildings
+|3,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|2
+|Destroy 1,000 enemy Troops or buildings
+|200 {{Icon|I=Common Wild Card}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Destroy 1,750 enemy Troops or buildings
+|5,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Elite Barbarians [[Cards|card]] was added to the game on 25/11/2016.
+*On 15/12/2016, a [[Version History#December 2016 Update (15/12/2016)|Balance Update]], increased the Elite Barbarians' hitpoints by 19%, their damage by 14% and decreased their attack time interval to 1.4 seconds (from 1.5 seconds).
+2017
+*On 23/1/2017, a [[Version History#Balance Changes (23/1/2017)|Balance Update]], decreased the Elite Barbarians' hitpoints by 4.4%, damage by 4% and increased their attack time interval to 1.5 seconds (from 1.4 seconds).
+*On 19/4/2017, a [[Version History#Balance Changes (19/4/2017)|Balance Update]], decreased the Elite Barbarians' hitpoints by 4%, and increased their first attack time interval to 0.5 seconds (from 0.4 seconds).
+2018
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], moved the [[Arenas|Arena]] to unlock the Elite Barbarians from Royal Arena to Hog Mountain.
+2019
+*On 3/6/2019, a [[Version History#Balance Changes (3/6/2019)|Balance Update]], increased the Elite Barbarians' damage by 18%, but increased their attack time interval to 1.7 seconds (from 1.5 seconds), and their first attack time interval to 0.7 seconds (from 0.5 seconds).
+*On 1/7/2019, the [[Version History#July%202019%20Update%20(1/7/2019)|July 2019 Update]], increased the Elite Barbarians' range to 1.2 tiles (from 1 tile), now classified as Melee: Medium.
+2020
+*On 2/6/2020, a [[Version History#Balance Changes (2/6/2020)|Balance Update]], gave the Elite Barbarians a new 0.1 seconds deploy stagger from each other.
+*On 3/11/2020, a [[Version History#Balance Changes (3/11/2020)|Balance Update]], decreased the Elite Barbarians' speed to 90 (from 120), now classified as Fast, decreased their attack time interval to 1.5 seconds (from 1.7 seconds), increased their hitpoints by 14%, and increased their damage by 5.5%. Their first attack time interval was also decreased to 0.5 seconds (from 0.7 seconds).
+2021
+*On 30/3/2021, the [[Version History#2021%20Quarter%201%20Update%20(30/3/2021)|2021 Quarter 1 Update]], decreased the Elite Barbarians' attack time interval to 1.4 seconds (from 1.5 seconds) and their first attack time interval to 0.4 seconds (from 0.5 seconds).
+*On 7/4/2021, a [[Version History#Maintenance Break (7/4/2021)|maintenance break]], increased the Elite Barbarians' first attack time interval to 0.5 seconds (from 0.4 seconds).
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], increased the Elite Barbarians' sight range to 6 tiles (from 5.5 tiles).
+*On 2/9/2021, a maintenance break, added a card render to the Elite Barbarians' card info screen.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+
+==Gallery ==
+<gallery>
+File:Elite Barbarians card render.png|Current card render.
+File:Elite Barbarians Preview.gif|Current card preview
+File:Elite Barbarians.png|Elite Barbarian
+</gallery>
+
+==Trivia==
+*The word "''Barbarian''" comes from the Greek "''βάρβαρος''" (''bárbaros''), meaning foreign. Dating back to the ancient Greek times, the Greeks referred to non-Greek people as barbarians because the language they spoke sounded to Greeks like gibberish represented by the sounds "''bar..bar..;''".
+** In the Italian, Arabic, and Thai language settings of the game, the Elite Barbarians' name translates to "Chosen Barbarians", "Distinguished Barbarians", and "Skilled Barbarians" respectively.
+** The Elite Barbarians are 1 of 6 [[cards]] associated with [[Barbarians]], with the others being [[Barbarian Launcher]], [[Battle Ram]], [[Barbarian Hut]], [[Barbarian Barrel]], and of course, Barbarians.
+** According to a Clash-A-Rama comic [https://clasharama.fandom.com/wiki/Clash-A-Rama!_Comic_Strips?file=Barb_Barrel_ColourWeb2.jpg strip], the Barbarians follow a career path, with the Elite Barbarians being the highest-ranking ones.
+* The Elite Barbarians are 1 of 7 troops that has had its movement speed classification changed, the others being [[Skeleton Barrel]], [[Suspicious Bush]], [[Goblin Cage|Goblin Brawler]], [[Cannon Cart]], [[Lumberjack]], and the [[Mighty Miner]].
+* The Elite Barbarians are 1 of 23 troops that have been featured in the [[Troop Rush]] game [[:Category:Modes|mode]], the others being [[Skeletons]], [[Skeleton Dragons]], [[Fire Spirit]], [[Bats]], [[Firecracker]], [[Rascals|Rascal Girls]], [[Royal Hogs]], [[Heal Spirit]], [[Elixir Golem]], [[Guards]], [[Prince]], [[Balloon]], [[Golem]], [[Wall Breakers]], [[Ram Rider]], [[Sparky]], [[Phoenix]], [[Royal Ghost]], [[Bandit]], Lumberjack, [[Santa Hog Rider]], and the [[Monk]].
+*The Elite Barbarians resemble the [https://clashofclans.fandom.com/wiki/Barbarian Level 6 Barbarian] in Clash of Clans. Their [[Star Points|Star Level 2 Skin]] resembles the Level 7 Barbarian in Clash of Clans.
+*The helmets they wear may be a reference to the [[w:c:elderscrolls:Iron_Helmet_(Skyrim)|Iron Helmet]] that the [[w:c:elderscrolls:Last_Dragonborn|Dragonborn]] wears in the [[w:c:elderscrolls:The_Elder_Scrolls_V:_Skyrim|Elder Scrolls V: Skyrim]], which is one of the most iconic helmets in the game.
+*In the card's description, the "''Harder, Better, Faster, Stronger''" line is a reference to the house song "''[https://www.youtube.com/watch?v=gAjR4_CbPpQ Harder, Better, Faster, Stronger]''" by the [https://en.wikipedia.org/wiki/Daft_Punk Daft Punk].
+*Elite Barbarians in [[Touchdown]] [[:Category:Modes|mode]] wear [https://en.wikipedia.org/wiki/Football_helmet American football helmets] instead of their regular helmets seen in standard [[Basics of Battle|battle]].
+*The Elite Barbarians are featured in non-Clash games. More specifically:
+**The Elite Barbarians, along with the [[Archers]], [[Goblins]], Barbarians, and [[P.E.K.K.A.|P.E.K.K.A]], were featured as a [https://pad.fandom.com/wiki/Homepage/Monster monster] in [https://pad.fandom.com/wiki/Puzzle_%26_Dragons_Wiki Puzzles and Dragons], in a [https://pad.fandom.com/wiki/Homepage/Dungeon dungeon] called [https://pad.fandom.com/wiki/Clash_of_Clans_Dungeon Clash of Clans Dungeon].
+***In Clash Royale, they are called "Elite Barbarians" but in Puzzles and Dragons, they are called "Rage Barbarians".
+**While not available as a character, the Elite Barbarians are available as [https://squad-busters.fandom.com/wiki/Barbarian?file=Barbarian_Classic_ability.png a promoted form for the Barbarian] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*The Elite Barbarians are the subject of 3 [[Emotes]].
+**It is also 1 of 3 cards in which an Emote it is the subject of relates to one of its Star Levels, the others being the [[Hog Rider]] and [[Rocket]].
+
+{{Navigation|Card}}
+
+[[fr:Barbares d'élite]]
+[[de:Elitebarbaren]]
+[[es:Bárbaros de élite]]
+[[it:Barbari scelti]]
+[[ko:엘리트 바바리안]]
+[[ru:Элитные варвары]]
+[[zh:野蛮人精锐]]

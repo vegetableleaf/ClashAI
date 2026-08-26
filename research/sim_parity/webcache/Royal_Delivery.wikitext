@@ -1,0 +1,244 @@
+{{DISPLAYTITLE:<span style="color: #888888;">Royal Delivery</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=3|Rarity=Common|Type=Spell|Arena=Serenity Peak|ReleaseDate=6 April 2020}}
+{{Quote|No need to sign for this package! Dropped from the sky, it deals Area Damage to enemy Troops before delivering a Royal Recruit. The empty box is also handy for espionage.}}
+
+The Royal Delivery is a {{Rarity|Common}} [[Cards|card]] that is unlocked from the [[Arenas|Serenity Peak (Arena 14)]]. It is an area-damage, air-targeting [[:Category:Spell Cards|spell]] with a medium radius and moderate damage. It can only be deployed on the player's own side. Once the spell has hit the ground, it spawns a single [[Royal Recruits|Royal Recruit]] with a red arrow on his head. It appears to be a wooden box with a team-colored crown logo on the side attached with a rope. A Royal Delivery card costs 3 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Royal Delivery Common Modifier.png|45x45px]] Common: Evo Delivery===
+{{Quote|Evo Recruit Delivery}}
+Sends in 1 [[Royal Recruits/Evolution|Evolved Royal Recruit]] instead of a normal Recruit.
+
+===[[File:Royal Delivery Rare Modifier.png|45x45px]] Rare: Here, There, Anywhere!===
+{{Quote|Place anywhere}}
+Royal Delivery can be dropped anywhere.
+
+===[[File:Royal Delivery Epic Modifier.png|45x45px]] Epic: Random Delivery===
+{{Quote|Spawn a random unit}}
+Royal Delivery is randomly substituted for another troop.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Royal Delivery Card}}
+*This [[:Category:Spell Cards|spell]] has a 3 second delay after being deployed. Keep this in mind when defending, and time your drop accordingly. This is especially important against the [[Goblin Barrel]]. As soon as you see the Goblin Barrel coming, place the Royal Delivery right on top of your [[:Category:Crown Towers|Crown Tower]] to prevent all damage. The same applies to defending against a [[Graveyard]].
+*The Royal Delivery is comparable to [[Arrows]], being worse offensively and stronger defensively, as it deals more damage and spawns a Royal Recruit to distract any remaining units. However, since its damage is dealt in only one hit, shielded units like [[Guards]] will only have their shields knocked off by the Royal Delivery regardless of level, but Arrows will completely counter them if the Arrows are at a higher level than the Guards, knocking their shield off in two volleys and OHKOing them with the last volley.
+*While the spell itself cannot be played past the bridge, its radius is large enough to hit a [[Princess]] that is standing at the bridge. Likewise, this works against any troop that is directly at the river.
+*If the [[Tower Princess]] is used, a fully healthy [[Royal Recruits|Royal Recruit]] will attack a Crown Tower once after crossing the bridge, dealing decent chip damage. The Royal Recruit can be also used as a tank for a small push after it defends, which can be especially useful as its shield may force the opponent to delay their use of a spell on defense. However, if the [[Cannoneer]] or [[Dagger Duchess]] is used, the Royal Recruit will not connect to the Crown Tower when left alone.
+*The Royal Delivery's high damage and high area makes it a great pair with [[Tornado]]. Tornado will clump up all the troops together for the Royal Delivery to hit at once. This is especially good against pushes that involve multiple ranged troops, as it would mean that the Royal Recruit would not require to move to defeat one ranged troop after already defeating another.
+*The spell is effective at dealing with a [[Miner]] + swarm combo. The player should wait for the swarm to advance further before dropping the spell on the Crown Tower in the lane where the swarm is approaching. The splash damage would obliterate the swarm while the spawned Royal Recruit will help deal with the Miner. If the Miner is placed at the front of the Tower, try to hit him as well with the spell.
+**On the other hand, the Royal Recruit from the Royal Delivery can function as a tank for a Miner. By having the Crown Tower attacking the Royal Recruit, the Miner will be able to attack it without it being attacked in return. Alternatively, the Miner can be used to tank for the Royal Recruit, giving him enough time to connect and deal damage, although this is less consistent. A [[Goblin Drill]] can be used in a similar way.
+*Placing it directly on ranged glass cannons such as [[Musketeer]]s, [[Ice Wizard|Ice Wizards]], [[Electro Wizard]]s, [[Little Prince]]s, [[Goblinstein]]s, [[Magic Archer]]s, [[Mother Witch]]es, and [[Wizard]]s right after they cross the bridge will allow the Royal Delivery to counter these [[:Category:Troop Cards|troops]] for a positive [[Elixir]] trade. The player should make sure that the enemy troop is in range of your Crown Tower when the Royal Delivery drops, and they should avoid letting the enemy troop lock onto the Tower for unnecessary damage. A workaround to this is placing the Royal Delivery right in front of the troop. This will push the enemy troop back slightly and force them to retarget onto the Royal Recruit if the spell deployment was too late.
+**Against the [[Witch]], the Royal Delivery should be placed as soon as the Witch's [[Skeletons]] spawn so they do not protect the Witch. The Royal Delivery should also be placed so the Royal Recruit spawns beside the Witch and attack her faster.
+**Against melee troops, it is better to deploy the Royal Delivery when the troop is closer to the Tower instead. The Crown Tower will have already weakened the melee troop enough for the Royal Delivery to leave the melee troop at even lower hitpoints. This will result in the Royal Recruit taking less damage, allowing for a better counterattack.
+*The spell pairs extremely well with [[Bomb Tower]] or [[Goblin Cage]] on defense. The [[:Category:Building Cards|building]] will buy time for the Royal Delivery to drop as well as clumping up all the enemy troops, and the spawned Royal Recruit will distract the remaining enemy units long enough for the bomb to blow up or the Goblin Brawler to finish them off.
+*Since it does spawn a troop, the spell can be used to separate a building-targeting troop from a regular troop. For example, against a [[Giant Skeleton]] [[Balloon]] push, the Royal Delivery can be used similarly to any ranged unit to lure the [[Giant Skeleton]] away from the [[Balloon]], allowing your air defenders to defeat the Balloon much easier. However, this is a tactic that should be used very rarely, because using the Royal Delivery to lure troops in this way would result in its deploy damage being wasted.
+*The Royal Delivery can negate most damage from the Goblin Drill. The Royal Delivery should be deployed when the Goblin Drill is coming towards the Crown Tower, so that it immediately destroys the first [[Goblins|Goblin]] that spawns from the Goblin Drill. The area damage will also damage the Goblin Drill itself and the Royal Recruit’s decent health and damage will allow it to distract and finish off all the remaining Goblins with the help of the Crown Tower. However, this may be hard to carry out due to the defender’s likely difficulty in predicting the surfacing spot of the Goblin Drill.
+*The Royal Delivery has good synergy with [[The Log]]. Against troops like [[Three Musketeers]], [[Zappies]], and [[Barbarians]], The Log will decrease the troops' health enough to where the Royal Delivery's damage can destroy them instantly.
+*In desperate situations, it can be used like other melee troops to distract an [[X-Bow]] or a [[Mortar]]. The player should account for the 3 second deploy time of the spell to ensure that the siege building does not lock into another target like a Crown Tower.
+**Note that the Royal Delivery itself does not have the range to hit these buildings. This is especially important versus the latter, as that would mean that the Royal Delivery would not be able to prevent damage from it due to its blind spot.
+**Conversely, the Royal Delivery is a good spell to use alongside the X-Bow and Mortar. With its high damage, it can eliminate a lot of melee swarms, and severely weaker other bulky melee units that are approaching the siege building. The Royal Recruit will also spawn afterwards, further assisting with defending the siege building.
+*If the player has already destroyed a Crown Tower, they can use the Royal Delivery as a response for any defenders placed at the center, such as defensive buildings used to distract a building-targeting troop. The Royal Delivery's high damage will decrease the hitpoints of the defenders' significantly, and the Royal Recruit will keep attacking them to finish them off.
+*The Royal Delivery is a great counter to the Skeletons from the [[Skeleton Barrel]] since its death damage does not deal too much damage, and it can easily destroy all of the Skeletons for a neutral Elixir Trade. The player must account for the 0.5 second animation where neither the Skeleton Barrel nor the Skeletons are considered as entities; if the spell is cast during this phase it will not affect the Skeletons. Alternatively, the Royal Delivery can be casted on the Skeleton Barrel itself to destroy it with the spell, while the Royal Recruit distracts the Skeletons, preventing even the death damage from affecting the Crown Tower.
+*The Royal Delivery can fully counter a [[Sparky]] by itself with the help of the Crown Tower. The spell should be deployed anywhere on the user's side after the Sparky crosses the bridge, but before it locks onto your Crown Tower. Once the Sparky is defeated, the Royal Recruit that spawns will be without a shield, yet still remain on the field.
+*Against the [[Elixir Golem]], it is better to use the Royal Delivery on the Elixir Blobs, rather than the other phases, as it is able to OHKO them immediately, while the others will survive with some hitpoints to spare. However, if there are accompanied troops with the Elixir Golem, then it might be a good idea to deploy the Royal Delivery during the Golemite phase, to defeat the accompanied troops and deal heavy damage on the Elixir Golemites, while the Royal Recruit further assists in defending against the Elixir Blobs. A similar principle applies to the [[Lava Hound]] as well.
+*Note that unlike some other spells, the Royal Delivery's range is not enough to be able to hit the Crown Towers. As such, it may be a good idea to be used in [[Battle Decks|decks]] alongside other spells that are able to reach the Crown Tower such as Arrows, [[Giant Snowball]], or [[Poison]].
+*This card is very similar to the [[Barbarian Barrel]] in function with certain differences. While the Royal Delivery [[Cards|card]] is more expensive, it has the ability to damage air troops, dealing more initial damage. However, Royal Delivery spawns a weaker troop in terms of damage, and doesn't have the unique rectangular radius that the Barbarian Barrel does.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Royal Delivery Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Radius<br />{{icon|I=Radius}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|3||3||3 sec||Air & Ground||[[:Category:Spell Cards|Spell]]||{{Rarity|Common}}
+|}
+
+{{StatisticsSubheader|Royal Recruit Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.3 sec||0.5 sec||Medium (60)||0.25 sec||Melee: Long (1.6)||Ground||x1||Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: spawn_11 | 437 }}
+{{#vardefine: hp_11 | 547 }}
+{{#vardefine: Shield_11 | 240 }}
+{{#vardefine: dmg_11 | 133 }}
+{{#vardefine: atk_speed | 1.3 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+! scope="col" |Royal Delivery Area Damage<br />{{Icon|I=Area Damage}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+! scope="col" |Shield Hitpoints<br />{{Icon|I=Shield Hitpoints}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:spawn_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 2 || {{#expr: {{#var:spawn_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 3 || {{#expr: {{#var:spawn_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:spawn_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:spawn_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:spawn_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:spawn_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:spawn_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:spawn_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:spawn_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:spawn_11}} || {{#var:hp_11}} || {{#var:Shield_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:spawn_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:spawn_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14  || {{#expr: {{#var:spawn_11}} * (1.1^(14-11)) round 0 }}|| {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:spawn_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:spawn_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards 
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 87,500 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|200 {{BASEPAGENAME}} cards<br>25 {{Icon|I=XP}}
+|-
+| 2
+|Deal a total of 260,000 Damage to enemy Troops or buildings
+|2,000 {{Icon|I=Gold}}<br/ >25 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 435,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>25 {{Icon|I=XP}}
+|-
+| rowspan="3" |Crash Landing <br> [[File:Crash Landing.png|50x50px]]
+|1
+|Hit 420 enemy Troops with Spawn Damage
+|3,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|2
+|Hit 1,200 enemy Troops with Spawn Damage
+|200 {{Icon|I=Common Wild Card}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Hit 2,100 enemy Troops with Spawn Damage
+|5,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+== Sound Effects ==
+{| class="wikitable"
+!Sound Effect
+!Action
+!Description
+!Line
+|-
+|[[File:RD Fall.wav]]
+|Falling
+|Plays when the Royal Delivery is falling from the sky.
+|
+|-
+|[[File:RD_Hit.wav]]
+|Hit
+|Plays when the Royal Delivery hits the ground.
+|
+|-
+|[[File:RD_Deployment.wav]]
+|Deployment
+|Plays when the Royal Delivery is deployed.
+|"Ha ha!"
+|}
+
+==History==
+2020
+*The Royal Delivery was made available before its general release on 2/3/2020 via the [[Trophies|Trophy Road]]. It was also available in a [[Tournament/Special Event Challenges|Special Challenge]] as a reward.
+*From 25/3/2020 through 27/3/2020, the [[Shop]] had a special offer where [[Arenas|Arena]] 12+ players could buy up to 2 special Fortune [[Chests]] for 500 [[Gems]] that guarantee at least 50% of the Chest's contents to be Royal Delivery. The Chest was able to generate up to 110% of its contents to be Royal Delivery.
+*The Royal Delivery [[Cards|card]] was generally released on on 6/4/2020.
+*On 7/4/2020, a [[Version History#Balance Changes (7/4/2020)|Balance Update]], added the Royal Delivery as a Trophy Road reward.
+*On 5/5/2020, a [[Version History#Season 11 Balance Changes (5/5/2020)|Balance Update]], increased the Royal Delivery's damage by 27%.
+*On 1/6/2020, a [[Version History#Season 12 Balance Changes|Balance Update]], decreased the Royal Delivery's damage by 10%.
+*On 4/8/2020, a [[Version History#Season 14 Balance Changes (4/8/2020)|Balance Update]], increased the [[Royal Recruits|Royal Recruit]]'s damage by 8%, and removed the Royal Delivery's knockback. Its description was also updated to reflect this, previously saying "''No need to sign for this package! Dropped from the sky, it damages and knocks back enemy Troops before delivering a Royal Recruit. The empty box is also handy for espionage.''"
+*On 31/8/2020, the [[Version History#Clan%20Wars%20II%20Update%20(31/8/2020)|Clan Wars II Update]], added the Royal Recruit's statistics on the Royal Delivery's card info screen. It also changed the visual effects of the Royal Delivery's [[Star Points|Star Level]].
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the [[Arenas|Arena]] to unlock the Royal Delivery from Spooky Town to Legendary Arena.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Royal Delivery from Legendary Arena to Serenity Peak.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+*On 14/5/2024, a [[Version History#Balance Changes (14/5/2024)|Balance Update]], increased the Royal Recruit’s hitpoints by 3%.
+2026
+
+* On 4/8/2026, a Balance Update, decreased the Royal Delivery's landing damage by 12%
+
+==Gallery ==
+<gallery>
+File:PreRelease Royal Delivery card render.png|Royal Delivery's card render before its release.
+File:Royal Delivery card render.png|Current card render.
+File:Royal Delivery Preview.gif|Current card preview
+File:Royal Delivery 2.png|Royal Delivery 
+</gallery>
+
+==Trivia==
+*The word "''Delivery''" comes from the Old French "''delivrer''", meaning 'to set free'.
+*The Royal Delivery was designed after [https://youtu.be/yFQHXGVuukw?t=62 a concept], which involved a bomb. It was also originally called "Bone Bomb", and it would involve a bomb that would explode after a short time, After the bomb exploded, 2 [[Guards]] would spawn from where the bomb exploded.
+*The Royal Delivery is 1 of 20 [[cards]] associated with nobility, with the others being [[Knight]], [[Royal Recruits]], [[Royal Giant]], [[Tower Princess]], [[Royal Hogs]], [[Dark Prince]], [[Prince]], [[Raging Prince]], [[Mega Knight]], [[Princess]], [[Royal Ghost]], [[Spirit Empress]], [[Super Knight]], [[Dagger Duchess]], [[Royal Chef]], [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], and the [[Little Prince]].
+*It is 1 of 3 [[:Category:Spell Cards|spells]] which can only be placed in the player's own territory, the others being [[Barbarian Barrel]] and [[The Log]].
+*In the Dutch, Turkish, Arabic, and Malaysian language settings of the game, the Royal Delivery's name translates to "Royal Package". In the French, Thai and Vietnamese language settings of the game, the Royal Delivery's name translates to "Royal Parcel". In the German, Spanish, Korean, Russian, Portuguese, Chinese, Persian, Indonesian, and Finnish language settings of the game, the Royal Delivery's name translates to "Royal Airmail", "Royal Packet", "Royal Courier", "Royal Mail", "Royal Order", "Royal Express", "Royal Cargo", "Royal Gift", and "Royal Commision" respectively.
+*The Royal Delivery is 1 of 3 spells that has been featured in the [[Troop Rush]] game [[:Category:Modes|mode]], the others being [[Giant Snowball]] and [[Clone]].
+**Unlike the Royal Delivery [[Cards|card]], the Royal Deliveries in this game mode can knockback enemy [[:Category:Troop Cards|troops]].
+*The deploy sound of the Royal Recruit spawned from the Royal Delivery is different to the one of the Royal Recruits spawned from the Royal Recruits card. Instead, it shares the same deploy sound with the [[Royal Recruits/Evolution|Royal Recruit's Evolution]].
+*In the card's description, the "''The empty box is also handy for espionage''" line is likely a reference to [https://metalgear.fandom.com/wiki/Metal_Gear_Solid Metal Gear Solid].
+*Although not available as a spell, the Royal Delivery reappear as [https://squad-busters.fandom.com/wiki/Royale_King Royale King]'s active ability in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*Despite other cards that spawn Royal Recruits having 2 [[Star Points|Star Levels]], the Royal Delivery only has 1 Star Level.
+
+{{Navigation|Cards}}
+
+[[fr:Colis royal]]
+[[de:Königliche Luftpost]]
+[[es:Paquete real]]
+[[it:Consegna Royale]]
+[[ru:Королевская почта]]
+[[zh:皇家速递]]

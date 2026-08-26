@@ -1,0 +1,237 @@
+{{DISPLAYTITLE: <span style="color: #ffa31a;">Battle Healer</span>}}
+{{Protection}}{{MagicWords}}{{Card Infobox|Cost=4|Rarity=Rare|Type=Troop|Arena=Frozen Peak|ReleaseDate=6 January 2020}}
+{{Quote|With each attack, she unleashes a powerful healing aura that restores Hitpoints to herself and friendly Troops.}}
+
+The Battle Healer is a {{Rarity|Rare}} [[Cards|card]] that is unlocked from the [[Arenas|Frozen Peak (Arena 8)]]. It spawns a single-target, ground-targeting, melee, ground [[:Category:Troop Cards|troop]] with high hitpoints and moderate damage. She has a continuous healing effect that takes effect when she attacks, having four healing pulses with a 0.25 second interval. Upon deployment, she can also heal allied troops around her, The Battle Healer hovers, meaning she is targeted as a ground unit, but travels similar to air units. She resembles a woman who has blue eyes, white hair, eyebrows and wings, wields a short sword, and wears an armor that is similar to the [[Knight]]'s, but her breastplate is golden and her faulds and the chainmail on her arms are team-colored. A Battle Healer card costs 4 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Battle Healer Card}}
+*Although she has low damage per second, her healing effect and high hitpoints will allow her to take out slightly over half of the [[Tower Princess]]' hitpoints when left ignored, so she must be addressed.
+**If the [[Dagger Duchess]] is in use, the Battle Healer will be able to destroy her by herself, and even have some hitpoints left to deal minor chip damage to the [[King's Tower|King Tower]]. As such she should never be ignored.
+**The [[Cannoneer]] will only lose one third of his hitpoints in a confrontation against the Battle Healer. This makes him the most effective [[:Category:Tower Troop Cards|tower troop]] against the Battle Healer due to his high damage.
+*Strong counters to a lone Battle Healer include mini tanks and swarms. The former will be able to out-damage her healing effect and survive with most of their health left for a counterpush, while the latter will overwhelm her due to her slow attack speed and low damage per hit. The [[Ice Golem]] cannot counter her due to his inability to attack units. However, in a larger push, he can be useful to kite her and other support [[:Category:Troop Cards|troops]] into the other lane to separate them from the large tank and take advantage of the other [[:Category:Crown Towers|Crown Tower]]'s damage.
+*Air troops like [[Minions]] or [[Bats]] are effective counters to the Battle Healer, since she cannot attack them. Furthermore, these air troops can deal more damage than the amount she can heal herself. Be careful, though, because your opponent may bring [[:Category:Spell Cards|spells]] like [[Zap]] or [[Arrows]] to take out these counters.
+*Good counters to a Battle Healer include almost any defensive [[:Category:Building Cards|building]]. They can lure her to the center, allowing both Crown Towers to attack her, negating most of her healing. Some buildings like the [[Tombstone]] are also a positive [[Elixir]] trade.
+*On defense, the Battle Healer works best with troops that are not immediately defeated from most spells, like the [[Hunter]], [[Wizard]], Archer Queen, and [[Witch]]. Her healing effect will gradually build up as the push is taken care of, negating most of the spell damage dealt to the unit, allowing for a powerful counterpush.
+**This can extend to offensive cards like the [[Royal Hogs]]. The Royal Hogs can be stopped by a Fireball, but will not be defeated from it alone. With a Battle Healer alongside them, she will be able to heal them back up, forcing the opponent to spend more Elixir on her. On the other hand offensive cards that would be defeated easily by spells, like a [[Graveyard]], are not good pairs with the Battle Healer, as they will be defeated before she gets any chance to heal them.
+**Thanks to her spawn healing, she can be used as a direct response to spells to heal any troop damaged from them. The spawn healing is enough to negate any damage as much as a [[Barbarian Barrel]], allowing troops that survive it or any weaker spell to be healed back to full.
+*She is best placed at the front of a push due to her health pool and the fact that her area heal only takes place when she is in combat.
+**She can also be placed behind another tank in a push. Although this would cause her healing aura to be activated much later, her surviving time would be greatly increased and allow her healing effect to be used for a longer amount of time.
+**She has a great synergy with the [[Elixir Golem]]. The Elixir Golem tanks for her, then she tanks for the Elixir Golemites and the Elixir Blobs while also healing them, so your opponent will have more trouble gaining Elixir.
+**She also has good synergy with the [[Electro Giant]]. The Electro Giant will gain back hitpoints thanks to the Battle Healer, which will allow him to deal more damage to enemy melee units with his Zap Pack.
+**She also pairs well with any {{Rarity|Champion}} [[Cards|card]], as her ability to heal them will keep them alive for longer, to use their abilities more times. This works especially well with the [[Archer Queen]], [[Little Prince]], and [[Goblinstein]], as they can assist her against air troops.
+*If the player has air units such as [[Minion Horde]] that they'd like to counterattack with, they should be mindful of where they are on the map before deciding to use the Battle Healer. She moves at a Medium speed, meaning Minions will outpace her fairly quickly, and may end up going in front of the Battle Healer and reducing the effectiveness of the push.
+*Stacking multiple Battle Healers on the map is a good way to make a strong push that is impossible to stop due to all of the Battle Healers constantly healing each other, allowing them to break through even a [[P.E.K.K.A.|P.E.K.K.A]], [[Sparky]], or [[Three Musketeers]] without any of them dying.
+*As a last resort, the player can stop a push with the Battle Healer with a defensive [[Freeze]]. Much like other troops, the Battle Healer cannot attack while frozen, which will prevent her from healing her allied troops. However, this is a heavy Elixir investment.
+*The [[Ice Wizard]] synergizes well with the Battle Healer since the Ice Wizard is able to lower the enemy's attack rate, allowing the Battle Healer to heal safer. Similarly, [[Rage]] pairs well with the Battle Healer, as she will be able to attack more frequently and heal herself more.
+**On the contrary, the Ice Wizard is a great assist card against a Battle Healer. He will slow her down so that she attacks less frequently and get less healing. Stunning cards like [[Zappies]], [[Electro Dragon]], [[Electro Wizard]], Goblinstein, and [[Electro Giant]] can work in a similar way.
+*The Battle Healer pairs well with the [[Phoenix]]. The Phoenix will be able to attack air troops that can threaten the Battle Healer, while the Battle Healer heals both of them. Interestingly, the healing of the Battle Healer also works on the Phoenix Egg, raising the chances for a second Phoenix to be revived.
+*She is a good counter to the [[Mega Knight]]; she has the hitpoints to withstand multiple attacks from him, while he does not deal as much damage back. With the help of any [[:Category:Tower Troop Cards|tower troop]], she will be able to stop him for a +3 Elixir trade.
+*Because the Battle Healer can move across the river, she can be used to snipe a defensive building such as a [[Bomb Tower]], X-Bow, [[Cannon]], and [[Tesla]]. This can be helpful to be used in conjunction with a tank that would be lured by the building such as a [[Giant]], [[Hog Rider]], [[Lava Hound]], or [[Golem]]. However, she is less effective than other troops at doing this, due to her lower damage and speed.
+*The Battle Healer deals low damage compared to other mini tanks, so she should only be used over them in [[Battle Decks|decks]] if the player wants to make use of her healing capabilities. She should also never be used in [[X-Bow]] or [[Mortar]] decks, as the healing of the Battle Healer has no effect on buildings.
+*The healing of the Battle Healer also works on allied troops in [[2v2|2v2 battles]], making her a great option as a support unit in the [[:Category:Modes|mode]].
+
+<center>
+
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Battle Healer Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||2 sec||0.3 sec||Medium (60)||1 sec||Melee: Long (1.6)||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+
+{{StatisticsSubheader|Active Healing Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Heal Speed<br />{{Icon|I=Hitpoint}}
+! scope="col" |Time Between Pulses<br />{{Icon|I = Time}}
+! scope="col" |Radius<br />{{Icon|I = Radius}}
+! scope="col" |Target<br />{{Icon|I = Targets}}
+|-
+|4 pulses every 1 sec||0.25 sec||3||Friendly Troops
+|}
+
+{{StatisticsSubheader|Spawn Healing Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Heal Speed<br />{{Icon|I=Hitpoint}}
+! scope="col" |Time Between pulses<br />{{Icon|I = Time}}
+! scope="col" |Radius<br />{{Icon|I = Radius}}
+! scope="col" |Target<br />{{Icon|I = Targets}}
+|-
+|4 pulses every 1 sec||0.25|| 2.5||Friendly Troops
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1920 }}
+{{#vardefine: dmg_11 | 268 }}
+{{#vardefine: atk_speed | 2 }}
+{{#vardefine: spawn_heal_11 | 50}}
+{{#vardefine: heal_11 | 25}}
+{{#vardefine: heal_speed | 0.25 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Spawn healing per pulse<br />{{Icon|I=Hitpoint}}
+! scope="col" |Spawn healing per second<br />{{Icon|I=HPS}}
+! scope="col" |Active healing per pulse<br />{{Icon|I=Hitpoint}}
+! scope="col" |Active healing per second<br />{{Icon|I=HPS}}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_heal_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:spawn_heal_11}} * (1.1^(3-11)) round 0 }}|{{#var:heal_speed}} }} || {{#expr: {{#var:heal_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:heal_11}} * (1.1^(3-11)) round 0 }}|{{#var:heal_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_heal_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:spawn_heal_11}} * (1.1^(4-11)) round 0 }}|{{#var:heal_speed}} }} || {{#expr: {{#var:heal_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:heal_11}} * (1.1^(4-11)) round 0 }}|{{#var:heal_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_heal_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:spawn_heal_11}} * (1.1^(5-11)) round 0 }}|{{#var:heal_speed}} }} || {{#expr: {{#var:heal_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:heal_11}} * (1.1^(5-11)) round 0 }}|{{#var:heal_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_heal_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:spawn_heal_11}} * (1.1^(6-11)) round 0 }}|{{#var:heal_speed}} }} || {{#expr: {{#var:heal_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:heal_11}} * (1.1^(6-11)) round 0 }}|{{#var:heal_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_heal_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:spawn_heal_11}} * (1.1^(7-11)) round 0 }}|{{#var:heal_speed}} }} || {{#expr: {{#var:heal_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:heal_11}} * (1.1^(7-11)) round 0 }}|{{#var:heal_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_heal_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:spawn_heal_11}} * (1.1^(8-11)) round 0 }}|{{#var:heal_speed}} }} || {{#expr: {{#var:heal_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:heal_11}} * (1.1^(8-11)) round 0 }}|{{#var:heal_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_heal_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:spawn_heal_11}} * (1.1^(9-11)) round 0 }}|{{#var:heal_speed}} }} || {{#expr: {{#var:heal_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:heal_11}} * (1.1^(9-11)) round 0 }}|{{#var:heal_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_heal_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:spawn_heal_11}} * (1.1^(10-11)) round 0 }}|{{#var:heal_speed}} }} || {{#expr: {{#var:heal_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:heal_11}} * (1.1^(10-11)) round 0 }}|{{#var:heal_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:spawn_heal_11}} || {{Dps|{{#var:spawn_heal_11}}|{{#var:heal_speed}} }} || {{#var:heal_11}} || {{Dps|{{#var:heal_11}}|{{#var:heal_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_heal_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:spawn_heal_11}} * (1.1^(12-11)) round 0 }}|{{#var:heal_speed}} }} || {{#expr: {{#var:heal_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:heal_11}} * (1.1^(12-11)) round 0 }}|{{#var:heal_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_heal_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:spawn_heal_11}} * (1.1^(13-11)) round 0 }}|{{#var:heal_speed}} }} || {{#expr: {{#var:heal_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:heal_11}} * (1.1^(13-11)) round 0 }}|{{#var:heal_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_heal_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:spawn_heal_11}} * (1.1^(14-11)) round 0 }}|{{#var:heal_speed}} }} || {{#expr: {{#var:heal_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:heal_11}} * (1.1^(14-11)) round 0 }}|{{#var:heal_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_heal_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:spawn_heal_11}} * (1.1^(15-11)) round 0 }}|{{#var:heal_speed}} }} || {{#expr: {{#var:heal_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:heal_11}} * (1.1^(15-11)) round 0 }}|{{#var:heal_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:spawn_heal_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:spawn_heal_11}} * (1.1^(16-11)) round 0 }}|{{#var:heal_speed}} }} || {{#expr: {{#var:heal_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:heal_11}} * (1.1^(16-11)) round 0 }}|{{#var:heal_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" | Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 72,500 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|100 {{BASEPAGENAME}} cards<br>50 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 220,000 Damage to enemy Troops or buildings
+|4,000 {{Icon|I=Gold}}<br>50 {{Icon|I=XP}} 
+|-
+|3
+|Deal a total of 365,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>50 {{Icon|I=XP}}
+|-
+| rowspan="3" |Healer <br> [[File:Healer.png|50x50px]]
+|1
+|Heal a total of 120,000 friendly Troops' Hitpoints
+|6,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}} 
+|-
+|2
+|Heal a total of 340,000 friendly Troops' Hitpoints
+|100 {{Icon|I=Rare Wild Card}}<br>125 {{Icon|I=XP}} 
+|-
+| 3
+|Heal a total of 600,000 friendly Troops' Hitpoints
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+| rowspan="3" | Walk It Off <br> [[File:All The Rage.png|50x50px]]
+| 1
+|Deal a total of 600,000 Damage with Troops while they are being healed!
+|6,000 {{Icon|I=Gold}}<br/ >175 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 1,800,000 Damage with Troops while they are being healed!
+|8,000 {{Icon|I=Gold}}<br/ >175 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 3,000,000 Damage with Troops while they are being healed!
+|10,000 {{Icon|I=Gold}}<br/ >175 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2019
+*The Battle Healer was made available before its general release on 2/12/2019 via the [[Trophies|Trophy Road]]. She was also available in a [[Tournament/Special Event Challenges|Special Challenge]] as a reward for reaching 5 wins.
+*On 3/12/2019, a [[Version History#Maintenance Break (3/12/2019)|maintenance break]], changed the Battle Healer's card description. It used to say, “''With each attack, she unleashes a powerful healing aura that restores Hitpoints to friendly Troops. Outside of combat she passively heals herself!''”
+2020
+*The Battle Healer [[Cards|card]] was generally released on 6/1/2020.
+*On 7/4/2020, a [[Version History#Balance Changes (7/4/2020)|Balance Update]], added the Battle Healer as a Trophy Road reward.
+*On 5/5/2020, a [[Version History#Balance Changes (5/5/2020)|Balance Update]], decreased the Battle Healer's hitpoints by 10%.
+*On 31/8/2020, the [[Version History#Clan%20Wars%20II%20Update%20(31/8/2020)|Clan Wars II Update]], added the Healing statistic on the Battle Healer's card info screen. It also made it so that [[Clone|cloned]] [[:Category:Troop Cards|troops]] can no longer be healed by the Battle Healer.
+*On 6/10/2020, a [[Version History#Balance Changes (6/10/2020)|Balance Update]], allowed the Battle Healer to hover, meaning she can cross the river and will collide with air troops instead of ground troops.
+*On 18/11/2020, the [[Version History#Clan%20Wars%20Improvement%20Update%20(18/11/2020)|Clan Wars Improvement Update]], changed the hover mechanic. The Battle Healer would no longer pass through [[:Category:Building Cards|buildings]], push back air troops, or bounce off the river when knocked back.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the [[Arenas|Arena]] to unlock the Battle Healer from Spooky Town to Legendary Arena.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022 
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Battle Healer from Legendary Arena to Frozen Peak.
+2023
+*On 6/6/2023, a [[Version History#Balance%20Changes%20(6/6/2023)|Balance Update]], allowed the Battle Healer to deal Spawn Healing.
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14). It also added the Walk It Off [[Card Mastery]] task for the Battle Healer.
+2024
+*On 19/6/2024, a [[Version History#Maintenance Break (19/6/2024)|maintenance break]], removed the Battle Healer's Passive Healing.
+*On 2/10/2024, the [[Version History#Lucky Drops 2.0 Update (2/10/2024)|Lucky Drops 2.0 Update]], made it so that Battle Healer would no longer be immune to [[Earthquake]] and [[Royal Giant/Evolution|Evolved Royal Giant]]'s recoil. The "''When she isn't attacking, she passively heals herself!''" words from her description were also removed.
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], increased the Battle Healer's healing by 0.99% and her spawn healing by 0.49%.
+2026
+
+* On 4/8/2026, a Balance Update, increased the Battle Healer's damage by 81%, increased her hit speed to 2 seconds (from 1.5 seconds), decreased her heal radius to 3 tiles (from 4 tiles), decreased her heal area to 28.3 square tiles (from 50.3 square tiles), and made it to where she can no longer hear herself nor other Battle Healers
+
+== Gallery ==
+<gallery>
+File:Battle Healer card render.png|Current card render.
+File:Battle Healet Preview.gif|Current card preview
+File:Battle Healer full body.png|Battle Healer's full body render.
+</gallery>
+
+==Trivia==
+*The Battle Healer resembles [https://en.wikipedia.org/wiki/Archangel archangels], an order of angels that is depicted as more warrior-like, with duties of protecting and healing.
+**In the Spanish, Italian, Russian, Portuguese, and Vietnamese language settings of the game, the Battle Healer's name translates to "Warrior Healer". In the French, Turkish, Chinese, Thai, and Finnish language settings of the game, the Battle Healer's name translates to "Army Healer", "Healer", "Battle Angel", "Action Healer", and "Combat Healer" respectively.
+*The Battle Healer is the first [[Cards|card]] to use the [[Pass Royale|Level Boost]] mechanic, where players can use the card at the Level equal to their own [[Experience|King Level]] for one Season.
+*The Battle Healer is the only winged troop that is not actually flying.
+*The heal effect sound she produces every time she hits is a high-pitched version of the [https://www.youtube.com/watch?v=zPqwPevGxwo&t=126s old Healing Spell sound] from Clash of Clans.
+*The Battle Healer, along with the [[Archers]], [[Goblins]], [[Barbarians]], [[Musketeer]], [[Wizard]], [[Hog Rider]], [[Witch]], [[Miner]], [[Ice Wizard]], and [[Bandit]], are featured as a [https://squad-busters.fandom.com/wiki/Squaddies Squaddie] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*There is a [[Loading Screen Hints|Loading Screen Hint]] that says "''The Battle Healer's older sister can heal entire villages''". This might be a reference to the [https://clashofclans.fandom.com/wiki/Healer Healer] in Clash of Clans.
+*If 2 pairs of Battle Healers face each other, it will end up in an endless [[Basics of Battle|battle]]. This can happen if the Battle Healers are close enough to heal each other but not so close that 1 Battle Healer is targeted by 2 Battle Healers. This is because the amount of healing that both Battle Healers do is higher than the amount of damage that the opposing Battle Healer will deal.
+*The icon of the "Healer" [[Card Mastery]] task resembles a [[Heal]] [[:Category:Spell Cards|spell]].
+*The Battle Healer is the subject of 4 [[Emotes]].
+*Before the Battle Healer's card release, she was going to be released alongside the hovering mechanic. However, it was pulled back when a bug that made her invulnerable to ground-targeting splash such as [[Mega Knight]] and [[Sparky]] was discovered.
+
+==In other languages==
+{{Other languages|fr=Guérisseuse armée|de=Kampfheilerin|es=Curandera guerrera|it=Guaritrice guerriera|nl=Strijdheler|no=Stridshelbreder|tr=Şifacı|jp=バトルヒーラー|kr=전투 치유사|ru=Целительница-воин|ar=معالجة المعركة|pt=Curadora Guerreira|cn=战斗天使|cnt=戰爭天使|fa=شفادهنده نبرد|id=Penyembuh Tempur|ms=Penyembuh Pertempuran|th=ผู้เยียวยาสายบู๊|fi=Taisteluparantaja|vi=Chiến binh Hồi máu|esmeaning=Warrior Healer.|itmeaning=Warrior Healer.|ptmeaning=Warrior Healer.|rumeaning=Warrior Healer.|vimeaning=Warrior Healer.|frmeaning=Army Healer.|trmeaning=Healer.|cnmeaning=Battle Angel.|cntmeaning=Battle Angel.|thmeaning=Action Healer.|fimeaning=Combat Healer.}}
+
+{{Navigation|Card}}
+
+[[fr:Guérisseuse armée]]
+[[de:Kampfheilerin]]
+[[es:Curandera guerrera]]
+[[it:Guaritrice guerriera]]
+[[ru:Целительница-воин]]
+[[zh:战斗天使]]

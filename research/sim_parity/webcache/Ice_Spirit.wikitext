@@ -1,0 +1,237 @@
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=1|Rarity=Common|Type=Troop|Arena=Frozen Peak|ReleaseDate=4 July 2016}}{{SubpageNavBox|Evolution=yes}}{{Quote|Spawns one lively little Ice Spirit to freeze a group of enemies. Stay frosty.}}
+
+The Ice Spirit is a {{Rarity|Common}} [[Cards|card]] that is unlocked from the [[Arenas|Frozen Peak (Arena 8)]]. It spawns a very fast, area-damage, air-targeting, short-ranged, ground [[:Category:Troop Cards|troop]] with low hitpoints and low damage. It launches itself at its target when attacking, destroying itself on impact. It will stun affected troops for 1.1 seconds. It resembles a small snowball with cyan eyes and a mouth, along with its hands, legs, teeth and crystals on its head being in the form of ice. An Ice Spirit card costs 1 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Ice Spirit Common Modifier.png|45x45px]] Common: Ice, Ice, Ice, Baby!===
+{{Quote|3 Ice Spirits}}
+When placed, it spawns three Ice Spirits instead of one, in a triangle formation.
+
+===[[File:Ice Spirit Rare Modifier.png|45x45px]] Rare: To Thaw or Not to Thaw===
+{{Quote|5sec freeze}}
+Ice Spirit's stun duration is increased to 5 seconds.
+
+===[[File:Ice Spirit Epic Modifier.png|45x45px]] Epic: No Finger Left Unfrozen===
+{{Quote|Blizzard attack}}
+Ice Spirit's attacks spawn a [[Ice Golem/Hero#Ability: Snowstorm|Snowstorm]] when it attacks.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Ice Spirit Card}}
+*The Ice Spirit is an excellent utility [[Cards|card]] when paired with other units. It can be used to offensively or defensively and will cycle the player’s deck for only 1 [[Elixir]].
+*For just 1 Elixir, the Ice Spirit is a strong card to have in many [[Battle Decks|decks]] due to its ability to cycle the deck, and to give other [[:Category:Troop Cards|troops]] or even the [[:Category:Tower Troop Cards|Crown Tower]] more time to destroy an oncoming threat.
+*An Ice Spirit has sufficient hitpoints to reach an opposing [[Tower Princess]]. This means that all [[Goblins|Goblin]] cards, the [[Graveyard]], [[Archers]], [[Minions]], [[Minion Horde]], [[Skeleton Army]], [[Bats/Evolution|Evolved Bats]], and [[Skeletons/Evolution|Evolved Skeletons]] card can reach the Crown Tower unscathed while the Ice Spirit tanks and freezes the Crown Tower. This will not work if the Ice Spirit is at a lower level than the Tower Princess or the opponent is using the [[Cannoneer]] or [[Dagger Duchess]]. 
+**The Ice Spirit and [[Goblins]] combination can deal heavy damage to the Crown Tower if left ignored, especially for just 3 elixir.
+*The Ice Spirit’s freeze can force enemy troops to retarget, which can be useful in an emergency. For example, if an opposing [[X-Bow]] has locked onto a Crown Tower, place an Ice Spirit quickly followed by the tank. The Ice Spirit will cause the X-Bow to retarget on the tank, minimising damage done.
+*The Ice Spirit has enough hitpoints to take a shot from most medium-sized units. The [[Musketeer]], [[Executioner]], Electro Dragon, [[Fisherman]], [[Baby Dragon]], [[Witch]], [[Archer Queen]], [[Zappies]], [[Firecracker]], Minions, [[Princess]], [[Ice Wizard]], [[Miner]], Magic Archer, [[Phoenix]], [[Goblin Demolisher]], Bomber, Dart Goblin, and [[Bandit]], all take more than 1 hit to eliminate the Ice Spirit, giving it ample time to freeze them.
+*The Ice Spirit’s stun can reset the [[Sparky]], [[Mighty Miner]], [[Inferno Tower]], [[Inferno Dragon]] and [[Little Prince]], making it a good answer to them.
+**Against the [[Sparky]], it is optimal to wait for her to fire, using another distraction like [[Skeletons]] if necessary. Then, use the Ice Spirit so that it freezes the Sparky right before she fires again.
+*While the main value of the Ice Spirit is on defense, it can also get offensive value too. The freeze can help troops survive longer, and the Ice Spirit can clear [[Skeletons]] and [[Bats]]. It could freeze the Crown Tower, which is especially devastating alongside the [[Hog Rider]] and especially the [[Balloon]].
+*The Ice Spirit can be used to absorb a [[Bandit]], [[Boss Bandit]] dash or a [[Mega Knight]] jump. When they are about to initiate their dash/jump, place the Ice Spirit close to their target. This can help protect the target.
+*The Ice Spirit pairs well with the [[Poison]] on defense. Its stalling abilities can help keep troops in the Poison. Additionally, the Ice Spirit’s chip damage can finish off targets that would normally survive a poison like the [[Witch]] and [[Musketeer]].
+*The Ice Spirit distracting and freezing troops make it a good synergizer with ranged Troops like [[Archers]] and [[Musketeer]] on defense, giving them more time to dish out damage.
+*Ice Spirit forms a famous combination with [[Skeletons]]. Both units can help pull enemy Troops across the map, buying time for ranged Troops and Tower Troops to damage enemy troops. Additionally, they complement each other well: While the Ice Spirit does area damage and gets immediate value, the Skeletons together have a surprisingly high DPS and appreciate the Ice Spirit’s freeze buying them some time to attack. Furthermore, their cheap cost allows them to get value easily and cycle your deck. This combination forms the core of "Cycle" decks, which are made with low-cost cards that can get value easily to cycle back to your win condition faster.
+**A lesser-known but also effective combination is the Ice Spirit paired with the [[Bats]]. The Ice Spirit being a distraction is more important, as the Bats cannot distract ground-targeting troops, but in exchange can dish out consistent damage. An Ice Spirit can help distract air targeting troops like the [[Dart Goblin]] to benefit the Bats on defence.
+*When defending against a ranged splash damage card like the [[Bowler]] or [[Executioner]], the Ice Spirit can help buy time for swarms to help counter them.
+*An Ice Spirit can be paired with the [[Zap]] to defeat certain units that survive a lone Zap. Notably, their cheap cost combination can defeat [[Goblins]], [[Minions]], [[Princess]], [[Dart Goblin]], and knock out the [[Guards]]’ shields. Do note that the [[Archers]], [[Wall Breakers]], [[Bomber]], and [[Firecracker]] will barely survive the combination with a sliver of health.
+*A niche but useful combo is the Ice Spirit paired with the [[Fire Spirit]]. The Ice Spirit can help freeze troops and the Fire Spirit damages them. On defense, they could pull troops to buy more time on top of the Ice Spirit’s stun, and on offense, they can be paired similarly to the Ice Spirit + Zap combination to knock out certain units. The pairing’s slightly higher damage allows them to defeat [[Archers]], [[Bomber]], Wall Breakers, and [[Firecracker]]
+*Ice Spirit has a good defensive synergy with the [[Tornado]] when trying to defend a big push. When timed, the Tornado will clump the units together, helping the Ice Spirit to damage and freeze all of them. While this combination is weak by itself, it is very helpful when paired with ranged units due to the stalling provided, especially AoE attackers that also benefit from the Tornado clumping up units, such as the [[Executioner]] and Wizard.
+**Adding the [[Rocket]] can enhance the combination to make it even more potent. The Tornado clumping troops together and the Ice Spirit freezing them can let the Rocket hit many of the units in a push. Optimally, the Rocket should be thrown first, followed by the Ice Spirit at a distance away from the troops, then the Tornado. However, this costs a whopping 10 elixir, so it is recommended to only use it against big pushes.
+*The Ice Spirit pairs well with the [[Mighty Miner]], [[Little Prince]], and the [[Inferno Tower]]. The stun provided by the Ice Spirit can help the Inferno Tower, Little Prince, and Mighty Miner safely ramp up their damage.
+**While the [[Mini P.E.K.K.A.]] does not have a ramp-up mechanic, he has a very high damage per hit, so Ice Spirit’s distraction and freeze can buy time for 1 or even 2 more hits, gaining more value out of the Mini P.E.K.K.A.
+*An Ice Spirit pairs well with ranged defensive buildings like the [[Cannon]] and [[Tesla]]. The Ice Spirit can help further stall non-building targeting troops, and its stun is helpful especially against the [[Battle Ram]] and [[Ram Rider]], two building-targeting troops with a charge the Ice Spirit can reset.
+*Normally, an Ice Spirit will fail to counter [[Spear Goblins]] when placed on top of them, as all three Goblins immediately throw their spears to take it out. However, by placing on the frontmost tile on either side of the Crown Tower, the Ice Spirit will jump onto the trio right before the third spear hits it, freezing all three and bringing their health low enough for the Crown Tower to counter them for a positive Elixir trade. The Ice Spirit should be timed so that it finishes deploying right before the first Spear Goblin walks close enough to attack it.
+*If the Tower Princess is available, the Ice Spirit can almost fully counter a [[Goblin Gang]]. Deploy the Ice Spirit so that it spawns right before the Spear Goblins are about to lock onto the Crown Tower. If done correctly, the Goblins will walk back and the whole swarm will be splashed and stunned, allowing for a +2 Elixir trade in exchange for minimal Tower damage.
+*An Ice Spirit placed on the fifth tile away from the bridge and staggered into the opposite lane as a [[Magic Archer]] walks in range of the Crown Tower will both kite and fully counter it. Once the Magic Archer's health has dropped to about one-third, you can place a single unit between it and the [[King's Tower]] to activate it.
+*A [[Skeleton Barrel]] heading toward a Crown Tower can be fully countered by dropping an Ice Spirit behind the Tower when the barrel's shadow is one tile away from the Tower. The Ice Spirit should spawn right as the barrel pops, and finish deploying right as all the Skeletons spawn, and proceed to jump onto all of them. This will prevent all damage from the Skeleton Barrel, excluding its Death Damage.
+*If the Ice Spirit is placed ahead of a [[Hog Rider]], the Ice Spirit can freeze [[:Category:Building Cards|buildings]] or take out Goblins, Minions, [[Dart Goblin]], Princess, or [[Rascals|Rascal Girls]] with the help of a [[Zap]]. The same applies to cards like the [[Lumberjack]], [[Mini P.E.K.K.A.]], [[Wizard]], and Musketeer.
+*The Ice Spirit can reset all charged or channeled abilities like the [[Prince]] and [[Dark Prince]]'s charges with its temporary freeze. This allows the Ice Spirit to be paired with a mini-tank like the [[Knight]], [[Valkyrie]], [[Skeleton King]], or [[Monk]] to more effectively counter both Princes, especially the former.
+*The stun of the Ice Spirit can be useful to keep troops in place. This can be useful for defeating certain pushes with piercing splashers like the [[Magic Archer]], Executioner, and Firecracker. This allows them to deal with a Miner + Minion Horde push.
+*It is a good supporting card to help defend against a [[Balloon]], stunning it for 1.1 seconds for the cost of one Elixir. If a Balloon is already locked onto a Crown Tower, this 1.1-second duration could prevent another high-damage hit. On the contrary, it works well with the Balloon. The 1.1 second stun will leave a larger time for the Balloon to continue its path, which can allow it to get a hit on the Tower.
+*The Ice Spirit does not deal enough damage to take out the [[Guards]]' shields but it does deal enough damage to finish off the Guards themselves. Knowing this, you can combine the Ice Spirit with [[The Log]] to counter Guards for a neutral Elixir trade, however that requires precise timing.
+*The Ice Spirit may be substituted out for other stalling cards:
+**The [[Giant Snowball]] could fulfill a similar role of the Ice Spirit in some decks. While it is more expensive and does not send a unit to distract, the knockback paired with the slow makes it able to be more effective at stalling, and its additional damage allows it to instantly knock out units up to a [[Spear Goblins|Spear Goblin]]. The knockback is useful on offense to knock troops back and disrupt their positioning. Additionally, being a Spell, you have much more control over it, especially on offense. It could also fully counter a lone [[Goblin Barrel]] with good timing. The Giant Snowball should be considered if the player wants a stalling card that is also much more potent on offense.
+**The [[Royal Delivery]] is much more expensive, but it comes with strong damage, able to OHKO [[Minions]], [[Archers]], [[Bomber]], [[Firecracker]], [[Wall Breakers]], [[Elixir Golem|Elixir Blobs]], and other weaker units. The spawned Recruit also comes with a shield and does not knock himself out when deployed, giving him more time to distract enemy troops. The Recruit could also deal chip damage.
+**[[Zap]] can serve as a replacement for the Ice Spirit. Although the Ice Spirit freezes troops for twice as long while having only half the cost , it deals noticeably less damage than Zap, the area being damaged is smaller and also cannot be placed on the opponent's side.
+**The [[Electro Spirit]] is the most direct alternative to the Ice Spirit. It retains the ability to stun and reset cards like [[Sparky]], Inferno Tower, Mighty Miner, and [[Inferno Dragon]], but its chain attack can help hit units that are spaced out, notably being more effective against [[Bats]] and [[Graveyard]]. However, it deals slightly less damage, has a shorter stun duration, and its chain attack has a limit when clearing swarms. The Electro Spirit can be used to easily activate the opponent’s King Tower, making it worse in decks that rely on the opponent’s king tower not being activated like [[Graveyard]].
+*One of the main strengths of the Ice Spirit is that it is very cheap at 1 Elixir, being able to get good utility and cycle the player’s deck. However, other than the aforementioned Electro Spirit, there are also some other 1 elixir alternatives that provide different utilities:
+**[[Skeletons]] may not be able to get as much immediate value, but they are much better at distracting, due to being 3 units. Additionally, the 3 skeletons combined have a shockingly high DPS, over half of that of the [[Mini P.E.K.K.A.]], meaning they can get very high value against building-targeting troops too. However, the Ice Spirit’s immediate value and consistent stalling would be better if the player already has a swarm in their deck.
+**[[Fire Spirit]] lacks the stun and is much worse at stalling, but in exchange deals significantly more damage. This makes it better against swarms like [[Goblins]] and [[Minions]]. The higher damage also makes it able to get even more chip damage to the enemy tower if ignored, the same as the crown tower damage of a [[Fireball]]. Fire Spirit is a better alternative if the player has sufficient stalling and would like a better matchup into swarms. It is also better on [[Goblin Drill]] decks, as the Fire Spirit can splash onto the troops placed on the Goblin Drill to counter it, dealing chip damage to the tower while wiping out swarms.
+**[[Heal Spirit]] doesn’t have the stun, but the healing ability is more helpful on heavier, more offensive decks.
+<center>
+<div id="unit-statistics" class="table-back">
+{{Statistics}}{{StatusEffects}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Freeze Duration<br />{{Icon|I=Freeze}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|1||Very Fast (120)||1 sec||2.5||1.5||Air & Ground||1.1 sec||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 215}}
+{{#vardefine: dmg_11 | 110 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Area Damage}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{|class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 18,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|100 {{BASEPAGENAME}} cards<br/ >25 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 52,500 Damage to enemy Troops or buildings
+|2,000 {{Icon|I=Gold}}<br>25 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 87,500 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>25 {{Icon|I=XP}}
+|-
+| rowspan="3" |Speed Limit <br/ > [[File:Speed Limit.png|50x50px]]
+|1
+|Slow enemy Troops a total of 420 times
+|3,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|2
+|Slow enemy Troops a total of 1,200 times
+|200 {{Icon|I=Common Wild Card}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Slow enemy Troops a total of 2,100 times
+|5,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Ice Spirit [[Cards|card]] was added to the game on 4/7/2016, in the [[Version History#Tournaments Update (4/7/2016)|Tournaments Update]].
+*On 19/9/2016, the [[Version History#September 2016 Update (19/9/2016)|September 2016 Update]], changed the walking animation of the Ice Spirit.
+*On 1/11/2016, the [[Version History#November 2016 Update (1/11/2016)|November 2016 Update]], decreased the Ice Spirit's freeze duration to 1.5 seconds (from 2 seconds).
+2017
+*On 23/1/2017, a [[Version History#Balance Changes (23/1/2017)|Balance Update]], decreased the Ice Spirit's damage by 10%.
+2018
+*On 25/4/2018, the [[Version History#Clan%20Wars%20Update%20(25/4/2018)|Clan Wars Update]], decreased the Ice Spirit's damage by 4% and freeze duration to 1 second (from 1.5 seconds).
+*On 3/9/2018, a [[Version History#Balance Changes (3/9/2018)|Balance Update]], made it so that the Ice Spirit can no longer reset the attack of the [[Zappies]].
+2020
+*On 3/2/2020, the [[Version History#Pass Royale and more (3/2/2020)|February 2020 Update]], added a card render to the Ice Spirit's card info screen.
+2021
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 4/4/2022, the [[Version History#April%202022%20Update%20(4/4/2022)|April 2022 Update]], increased the Ice Spirit's freeze duration to 1.3 seconds (from 1 second).
+2023
+*On 6/6/2023, a [[Version History#Balance%20Changes%20(6/6/2023)|Balance Update]], decreased the Ice Spirit's freeze duration to 1.2 seconds (from 1.3 seconds).
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+*On 4/12/2023, the [[Version History#Pass Royale and more (4/12/2023)|December 2023 Update]], added the Ice Spirit's Evolution.
+2025
+*On 8/7/2025, a [[Version History#Balance Changes (8/7/2025)|Balance Update]], decreased the Ice Spirit's freeze duration to 1.1 seconds (from 1.2 seconds).
+2026
+
+* On 4/8/2026, a Balance Update, decreased the Ice Spirit's hitpoints by 6%
+
+==Gallery==
+<gallery>
+File:Ice Spirit card render.png|Current card render.
+File:Ice Spirit Preview.gif|Current card preview
+File:Ice Spirit 4.png|Current card image.
+File:Ice spirit 3.png|Ice Spirit 1
+File:Ice Spirit 1.png|Ice Spirit 2
+</gallery>
+
+==Trivia==
+*The Ice Spirit, along with [[Skeletons]], [[Electro Spirit]], [[Fire Spirit]], [[Warmth]], [[Heal Spirit]], and [[Heal]], are the cheapest [[cards]], costing 1 [[Elixir]].
+*The Ice Spirit is 1 of 7 cards associated with ice, with the others being [[Giant Snowball]], [[Ice Golem]], [[Freeze]], [[Ice Wizard]], [[Super Ice Golem]], and [[Wizard Trio]].
+**In the French, Italian, Portuguese, Malaysian, and Finnish language settings of the game, the Ice Spirit's name translates to "Spirit of Ice". In the Persian language settings of the game, the Ice Spirit's name translates to "Ice Soul".
+**A Trainer in the [[Training Camp]] is called Trainer Freeze and uses 4 ice-related cards in their [[Battle Decks|deck]], one of them being Ice Spirit, and the others being Giant Snowball, Ice Golem, and Freeze.
+*The Ice Spirit is 1 of 8 [[:Category:Troop Cards|troops]] to die as part of its attack, the others being the Electro Spirit, Fire Spirit, [[Skeleton Barrel]], [[Battle Ram]], Heal Spirit, [[Suspicious Bush]], and [[Wall Breakers]].
+*The Ice Spirit is 1 of 9 troops that have the same sprite for both players, the others are Skeletons, Electro Spirit, Fire Spirit, [[Bats]], Heal Spirit, [[Elixir Golem|Elixir Blob]], [[Phoenix]], and [[Lava Hound|Lava Pup]].
+*Out of the four Spirit cards, it is the only one with no pupils.
+*The Ice Spirit, along with the [[Archers]], [[Goblins]], [[Barbarians]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Musketeer]], [[Giant]], [[Wizard]], [[Hog Rider]], [[Witch]], [[Prince]], and [[Night Witch]], is featured as a sticker in [https://en.wikipedia.org/wiki/IMessage iMessage], in a sticker pack called [https://apps.apple.com/us/app/clash-theater-stickers/id1353823484 Clash Theater].
+*The Ice Spirit’s gender is confirmed to be male, as in the balance changes in the [[Version History#April 2022 Update (4/4/2022)|April 2022 Update]] it states, "''We want to provide more distinct use for the Ice Spirit compared to his counterparts the Electro Spirit.''"
+*The Ice Spirit's description references that of Clash of Clans' Freeze spell, which is, "''When the going gets hot, stay frosty!''"
+**In the Spanish language setting of the game, the Ice Spirit's card description says "''Winter is coming''", which is a reference to [https://en.wikipedia.org/wiki/Game_of_Thrones Game of Thrones], more specifically, the [https://en.wikipedia.org/wiki/Winter_Is_Coming first episode of the series].
+*In [[Touchdown]], if an Ice Spirit jumps into the enemy end zone as it attacks, it does not count as a point. This is because a jumping spirit no longer counts as a troop; it becomes similar to a projectile.
+*In the Ice Spirit's concept art, it is referred to as "Snow Spirit".
+*The Ice Spirit, along with the [[Minions]], [[Bomber]], Skeletons, [[Skeleton Dragons]], Mini P.E.K.K.A, [[Mega Minion]], Ice Golem, [[Dart Goblin]], Elixir Golem, [[Goblin Cage|Goblin Brawler]], [[Guards]], [[Baby Dragon]], [[P.E.K.K.A.|P.E.K.K.A]], [[Giant Skeleton]], [[Golem]], Wall Breakers, [[Bowler]], [[Executioner]], [[Mega Knight]], [[Inferno Dragon]], [[Royal Ghost]], and Lava Hound, are featured as a [https://squad-busters.fandom.com/wiki/Monsters monster] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+**It is the 1 of 2 troops that appears in a modifier in Squad Busters, the other being Royal Ghost.
+**Unlike the other monsters, the Ice Spirit does not attack the player, instead being completely passive.
+*The Ice Spirit is the subject of certain cosmetics in the game. More specifically:
+**The Ice Spirit is the subject of an [[Emotes|Emote]].
+**The Ice Spirit is the subject of a few [[Battle Banners|Battle Banner]] items.
+***The Ice Spirit decoration is identical to its card render.
+***The Goblin Drummer decoration is created by Myoho.
+*The Ice Spirit was featured in the winning decks of multiple Clash Royale Tournaments. More specifically:
+**The Ice Spirit was featured in the winning deck of the [https://youtu.be/LWQjS0e6iiE Super Magical Cup Tournament], by a player called CMcHugh.
+**The Ice Spirit was featured in the winning deck of the [https://www.youtube.com/live/psZXKWHkKkE?si=PbjvbZt8stghz6eJ King's Cup II Tournament], by a player called Surgical Goblin.
+**The Ice Spirit was featured in the winning deck of the [https://www.youtube.com/live/C5qBcdcErfM?si=e37mhAgNKAA5kMJI Clash Royale League 2018 Tournament], by a player called Lciop.
+*Despite its [[Card Mastery]] task being "Speed Limit", the Ice Spirit does not slow down enemies, instead it stuns them.
+
+{{Navigation|Card}}
+
+[[fr:Esprit de glace]]
+[[de:Eisgeist]]
+[[es:Espíritu de hielo]]
+[[it:Spirito del ghiaccio]]
+[[ru:Ледяной дух]]
+[[pt-br:Espírito de Gelo]]
+[[zh:冰雪精灵]]
+[[Category:Kamikaze Cards]]

@@ -1,0 +1,234 @@
+{{DISPLAYTITLE: <span style="color: #ffa31a;">Furnace</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}
+
+{{Card Infobox|Cost=4|Rarity=Rare|Type=Troop|Arena=Hog Mountain|ReleaseDate=3 May 2016}}{{SubpageNavBox|Evolution=yes}}{{Quote|Furnace spawns one Fire Spirit at a time while dealing damage with its special cauldron brew. It also makes great brick-oven pancakes.}}
+
+The Furnace is a {{Rarity|Rare}} [[Cards|card]] that is unlocked from the [[Arenas|Hog Mountain (Arena 10)]]. It spawns a single-target, air-targeting, long-ranged, ground [[:Category:Troop Cards|troop]] with moderate hitpoints and moderate damage, but slow hit speed. Every 7 seconds, the Furnace will passively summon a [[Fire Spirit]] in front. It appears to be a cast-iron steam locomotive armor with limbs wearing team-colored gloves and pants, chainmail, and a metal witch-like hat on top and a grate in the center. It also holds a wooden staff with a cauldron placed on top filled with bubbling lava in it, along with a large metal knob on the bottom with black spikes on it. A Furnace card costs 4 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Furnace Common Modifier.png|45x45px]] Common: Never Put Out Your Flame===
+{{Quote|+400% Fire Spirit range}}
+The spawned [[Fire Spirit]]'s range is increased by 400%, for a total of 12.5 tiles.
+
+===[[File:Furnace Rare Modifier.png|45x45px]] Rare: So Many Spirits!===
+{{Quote|Spawn every Spirit}}
+Instead of Fire Spirits, the Furnace spawns [[Electro Spirit|Electro Spirits]], [[Ice Spirit|Ice Spirits]], or [[Heal Spirit|Heal Spirits]]. Whichever spirit it will spawn is completely random. Its attacks also deal area damage, identically to a Fire Spirit.
+
+===[[File:Furnace Epic Modifier.png|45x45px]] Epic: Semifunctional Furnacee===
+{{Quote|Furnace doesn't move}}
+Furnace's movement speed is decreased to 0, preventing it from moving.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Furnace Card}}
+*The Furnace can act as a useful defense as well as a support troop, thanks to its [[Fire Spirit|Fire Spirits]] which deal area damage.
+*The Furnace is effective at preventing other spawners from building momentum due to the fact that the Fire Spirits spawned deal splash damage and can take out spawners easily.
+*Since the Fire Spirits spawned from the Furnace explode on impact, Skeletons from the [[Tombstone]] can distract Fire Spirits easily and sop almost all the waves of Fire Spirits.
+*The Furnace is a great support card if placed behind a tank, eliminating nearly any type of cheap card that the enemy will place down to counter it. For example, a great combo is [[Hog Rider]], [[Giant]], [[Golem]], [[Lava Hound]], or [[Royal Giant]] with a Furnace. If the opponent spawn cards such as [[Minions]], [[Skeleton Army]], [[Guards]], [[Bats]], or [[Goblins]] to either distract or destroy, the Fire Spirits will take them out, and if left unchecked behind a tank can decimate the Tower with their powerful splash. The Furnace can also be pre-placed for when the player wants to start a tank push from the [[King's Tower|King Tower]], as they will discourage the opponent from attacking.
+*The Furnace is good at supporting counterattacks as it takes out many small troops, such as [[Minions]], [[Bats]], [[Skeletons]], [[Spear Goblins]], and [[Goblins]], that opponents may play due to being low on Elixir from their attack. By placing it in advance, the player will not have to worry about cards like Minions, as the spawned [[Fire Spirit]]<nowiki/>s will take care of them.
+**This tactic can also work against bulkier swarms, such as [[Barbarians]]. Although the Barbarians can survive multiple of them, they will be slowly weakened enough that they will not provide any counterpush value afterwards. If placed at a safe distance, it can even counter them with the assistance of a [[:Category:Tower Troop Cards|tower troop]], and no damage being dealt to the Furnace.
+*Keep in mind that the spawned [[Fire Spirit]] will be able to attack the [[Tower Princess]], dealing valuable chip damage to a Tower. However, the spawned Fire Spirits will be defeated by the [[Cannoneer]] and [[Dagger Duchess]] before they get a chance to connect, so they can be ignored unless supported with a tank.
+*The [[Knight/Evolution|Evolved Knight]] is great at absorbing the Fire Spirits, thanks to his shield boost reducing the damage that he will take from them. This will allow him to reach a Furnace and take it out.
+**Another good unit for the tactic is the [[Battle Healer]]. Even though she will take full damage from them, her passive healing will quickly heal parts of the damage, allowing her to easily survive any upcoming Fire Spirits.
+**Although it cannot directly attack the Furnace, the [[Goblin Cage]] can be a decent tank against the spawned Fire Spirits from the Furnace, and it is less of an issue for it to take damage, due to its complete passivity, with the Goblin Brawler taking out the Furnace.
+*Ranged troops that can OHKO the Fire Spirits such as [[Bowler]], [[Executioner]], [[Bomber]], Firecracker, [[Hunter]], and [[Wizard]] are good counters to the Furnace, as they can instantly defeat them without taking any damage. The constant spawning of the Fire Spirits will let them stay engaged in the fight for longer, allowing the player to accumulate more Elixir for a counterpush.
+**Even though it is stationary, a [[Tesla]] can counter the Furnace for a neutral Elixir trade, thanks to its longer duration and ability to OHKO the Fire Spirits. Other [[:Category:Building Cards|buildings]] like the [[Bomb Tower]] and [[Cannon]] are less effective, as their lower damage will allow the Fire Spirits to accumulate damage and destroy said buildings.
+*Fast melee troops like the [[Mini P.E.K.K.A.]], [[Prince]], [[Elite Barbarians]], or [[Lumberjack]] are a great pair with the Furnace's Fire Spirits, as the Fire Spirits take out any Goblins, or other frail swarms (excluding [[Skeleton Army]]), allowing them to head to the Tower quickly. However, this strategy is vulnerable to heavy tanks, such as a [[P.E.K.K.A.]], [[Mega Knight]], [[Mighty Miner]], or a [[Giant Skeleton]].
+*[[:Category:Spell Cards|Spells]] like [[Lightning]] and [[Rocket]] can kill the Furnace, however, they are a -2 Elixir trade. Try to use them against it if they can hit additional targets with it, such as a Crown Tower or other units played with the Furnace. A thing to note is that a Lightning will get rid of a Fire Spirit spawned by the Furnace if timed right.
+**When using the [[Void]] against the Furnace, the Void should be used in such a way that it will only target the Furnace, allowing it to be destroyed with just 2 strikes from the spell. Note that the opponent can place down a swarm like [[Skeletons]], Guards, Minions, or Goblins to delay its destruction, or in the case of the latter, prevent it entirely.
+*For only 1 Elixir, an [[Electro Spirit]] can deny a few waves from a Furnace. Make sure that it is placed in such a way that it jumps onto a Fire Spirit and then chains onto the Furnace.
+*A Furnace placed directly behind the Crown Tower can stop a center-placed [[Goblin Barrel]]. The Furnace will be close enough to the Crown Tower, that the first Fire Spirit will be close enough to hit all three Goblins. However, it is a negative Elixir trade, so one must make sure to use it for a counterpush to even the loss.
+*Even though Minions are weak to Fire Spirits, when split, a singular Minion can absorb 2 Fire Spirits spawned from a Furnace. This is a good way to save other troops from the damage caused by 2 Fire Spirits, while also attacking the other lane.
+*[[Mirror]]ing it can spawn two Fire Spirits at a time, which provides fast and heavy area damage support for tanks. However, Fire Spirits themselves are weak to area damage cards like spells, and placing the second Furnace close to the first can allow the opponent to get a large positive [[Elixir]] trade by targeting both Furnaces at once with spell [[cards]].
+**To combat this, place one Furnace at the back and another at the center of the map staggered slightly to the side. Both Furnaces would be able to deal considerable chip damage.
+**Alternatively, the player can place the mirrored Furnace in the other lane. This will allow to pressure both lanes as well as discourage the opponent from attacking either lane due to the Fire Spirits' defensive presence.
+*The [[Mother Witch]] is a great counter to the Furnace. Even though she cannot OHKO the Fire Spirits, she has the range and attack speed to defeat them before they jump on her, allowing her to spawn Cursed Hogs from them. Those Cursed Hogs will distract any additional Fire Spirits.
+*Avoid using the Furnace when there is an enemy [[Skeleton King]] on the field. The constant spawning of the Fire Spirits, along with the fact that the Fire Spirits cannot be prevented from being killed, will allow him to accumulate his ability and spawn more Skeletons from it.
+**Conversely, the Furnace works well with the Skeleton King, as it will allow him to easily accumulate his ability to spawn more Skeletons, as well as help him against air troops.
+*The Furnace is affected by [[Rage]], allowing it to produce waves of Fire Spirits faster, on top of the increase in attack speed.
+
+<center>
+
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Furnace Attributes}}
+{|id="unit-attributes-table" class="wikitable" style="width:100%; text-align:center;"
+!scope="col"|Cost<br />{{Icon|I=Elixir}}
+!scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+!scope="col" |Speed<br />{{Icon|I=Speed}}
+!scope="col"|Deploy Time<br />{{Icon|I=Deploy Time}}
+!scope="col"|Spawn Speed<br />{{Icon|I=Time}}
+!scope="col" |Range<br />{{Icon|I=Range}}
+!scope="col" |Target<br />{{Icon|I=Targets}}
+!scope="col" |Count<br />{{Icon|I=Troop Count}}
+!scope="col" |Transport<br />{{Icon|I=Transport}}
+!scope="col"|Type<br />{{Icon|I=Type}}
+!scope="col"|Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||1.8 sec||Medium (60)||1 sec||7 sec||6||Air & Ground||1x||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+
+{{StatisticsSubheader|Fire Spirit Attributes}}
+{| id="unit-attributes-table-secondary" class="wikitable" style="width:100%;text-align:center;"
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|Very Fast (120)||2.5||Air & Ground||Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 727 }}
+{{#vardefine: dmg_11 | 179 }}
+{{#vardefine: atk_speed | 1.8 }}
+{{#vardefine: fire_hp_11 | 230 }}
+{{#vardefine: fire_dmg_11 | 207 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Furnace Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Furnace Damage<br />{{Icon|I=Damage}}
+! scope="col" |Furnace Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Fire Spirit Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Fire Spirit Area Damage<br />{{Icon|I=Area Damage}}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:fire_hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:fire_dmg_11}} * (1.1^(3-11)) round 0 }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:fire_hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:fire_dmg_11}} * (1.1^(4-11)) round 0 }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:fire_hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:fire_dmg_11}} * (1.1^(5-11)) round 0 }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:fire_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:fire_dmg_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:fire_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:fire_dmg_11}} * (1.1^(7-11)) round 0 }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:fire_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:fire_dmg_11}} * (1.1^(8-11)) round 0 }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:fire_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:fire_dmg_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:fire_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:fire_dmg_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:fire_hp_11}} || {{#var:fire_dmg_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:fire_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:fire_dmg_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:fire_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:fire_dmg_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:fire_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:fire_dmg_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:fire_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:fire_dmg_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:fire_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:fire_dmg_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Spawner <br/ > [[File:Spawner.png|50x50px]]
+|1
+|Spawn a total of 660 [[:Category:Troop Cards|Troops]]
+|100 {{BASEPAGENAME}} cards<br>50 {{Icon|I=XP}}
+|-
+|2
+|Spawn a total of 1,950 Troops
+|4,000 {{Icon|I=Gold}}<br>50 {{Icon|I=XP}}
+|-
+|3
+|Spawn a total of 3,250 Troops
+|100 {{Icon|I=Gem}}<br>50 {{Icon|I=XP}}
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 240,000 Damage to enemy Troops or [[:Category:Building Cards|buildings]] with spawned [[Fire Spirit|Fire Spirits]]
+|6,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 680,000 Damage to enemy Troops or buildings with spawned Fire Spirits
+|100 {{Icon|I=Rare Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 1,200,000 Damage to enemy Troops or buildings with spawned Fire Spirits
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Furnace [[Cards|card]] was added to the game on 3/5/2016, in the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]] {{Balance|Add}}.
+*On 18/5/2016, a [[Version History#Balance Changes (18/5/2016)|Balance Update]], decreased the Furnace's cost to 4 [[Elixir]] (from 5 Elixir) {{Balance|Buff}}, its hitpoints by 14% {{Balance|Nerf}}, and its lifetime to 40 seconds (from 50 seconds) {{Balance|Nerf}}. In addition, the [[Fire Spirit|Fire Spirits]]' area radius was increased to 1.5 tiles (from 1.2 tiles) {{Balance|Buff}}.
+*On 21/6/2016, a [[Version History#Balance Changes (21/6/2016)|Balance Update]], increased the Furnace's lifetime to 50 seconds (from 40 seconds) {{Balance|Buff}}.
+2017
+*On 19/4/2017, a [[Version History#Balance Changes (19/4/2017)|Balance Update]], decreased the Furnace's hitpoints by 5% {{Balance|Nerf}}.
+2018
+*On 2/7/2018, a [[Version History#Balance Changes (2/7/2018)|Balance Update]], increased the Fire Spirits' damage by 5% {{Balance|Buff}}.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Rare}} cards start at Level 3 and end at Level 13 (from 1 to 11) ''{{Balance|Neutral}}''.
+2020
+*On 5/5/2020, a [[Version History#Balance Changes (5/5/2020)|Balance Update]], decreased the Furnace's hitpoints by 16% {{Balance|Nerf}}.
+*On 9/9/2020, a [[Version History#Balance Changes (9/9/2020)|Balance Update]], increased the Fire Spirits' area radius to 1.7 tiles (from 1.5 tiles) {{Balance|Buff}}.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], decreased the Furnace's spawn time interval to 7 seconds (from 9.9 seconds) {{Balance|Buff}}, number of Fire Spirits spawned each wave to 1 (from 2) {{Balance|Nerf}}, and decreased its lifetime to 49 seconds (from 50 seconds) {{Balance|Nerf}}. Its description was also changed, previously saying: "''The Furnace spawns two Fire Spirits at a time. It also makes great brick-oven pancakes.''" ''{{Balance|Neutral}}''. In addition, the Fire Spirits' hitpoints were increased by 109% {{Balance|Buff}}, their damage by 6% {{Balance|Buff}}, their range to 2.5 tiles (from 2 tiles) {{Balance|Buff}}, and their area radius to 2.5 tiles (from 1.7 tiles) {{Balance|Buff}}. It also moved the [[Arenas|Arena]] to unlock the Furnace from Spell Valley to Hog Mountain {{Balance|Nerf}}.
+*On 6/9/2021, the [[Version History#2021%20Quarter%203%20Update%20(6/9/2021)|2021 Quarter 3 Update]], decreased the Fire Spirits' area radius to 2.3 tiles (from 2.5 tiles) {{Balance|Nerf}}.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13) {{Balance|Buff}}.
+*On 7/12/2021, the [[Version History#Balance%20Changes%20(7/12/2021)|2021 Quarter 4 Update]], decreased the hitpoints of the Furnace by 17% {{Balance|Nerf}}, its lifetime to 33 seconds (from 49 seconds) {{Balance|Nerf}}, and its spawn time interval to 6 seconds (from 7 seconds) {{Balance|Buff}}, and made the Furnace spawn 1 additional Fire Spirit upon death {{Balance|Add}}. It also decreased the range of the Fire Spirits to 2 tiles (from 2.5 tiles) {{Balance|Nerf}}.
+2022
+*On 2/8/2022, a [[Version History#Balance%20Changes%20(2/8/2022)|Balance Update]], decreased the Fire Spirit's damage by 9% {{Balance|Nerf}}.
+2023
+*On 4/4/2023, a [[Version History#Balance%20Changes%20(4/4/2023)|Balance Update]], decreased the Furnace's spawn time interval to 5 seconds (from 6 seconds) {{Balance|Buff}}, and its lifetime to 28 seconds (from 33 seconds) {{Balance|Nerf}}.
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14) {{Balance|Buff}}.
+2025
+*On 4/2/2025, a [[Version History#Balance Changes (4/2/2025)|Balance Update]], increased the Fire Spirit's range to 2.5 tiles (from 2 tiles) {{Balance|Buff}}.
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Furnace's hitpoints by 0.11% {{Balance|Nerf}}.
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] changed the Furnace into a troop that can walk and deal damage ''{{Balance|Neutral}}'', as well as increasing the hitpoints by 5% {{Balance|Buff}}, and removing the death spawn {{Balance|Remove}}. It also changed the Furnace card image ''{{Balance|Neutral}}'', and added a card render to the Furnace's card info screen {{Balance|Add}}. Its description was also changed. Prior to the update, it used to say "''The Furnace spawns one Fire Spirit at a time. It also makes great brick-oven pancakes.''". It also added the Furnace's Evolution {{Balance|Add}}.
+*On 7/8/2025, a [[Version History#Maintenance Break (7/8/2025)|maintenance break]] reduced the Furnace's hitpoints by 19% and increased the spawn time for its Fire Spirits to 7 seconds (from 5 seconds).
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)|Balance Update]] increased Furnace's Movement Speed to Medium (from Slow).
+2026
+*On 12/1/2026, a Balance Update increased Furnace's attack speed to 1.7 (from 1.8)
+*On 1/6/2026, a Balance Update, decreased the Furnace's range to 5.5 tiles (from 6 tiles)
+*On 4/8/2026, a Balance Update, decreased the Furnace's spawn duration to 5 seconds (from 7 seconds)
+
+==Gallery==
+<gallery>
+File:FurnaceCardOld.png|Furnace's card image before 4/8/2025.
+File:Furnace card render.png|Current card render.
+File:Furnace Preview.gif|Current card preview
+File:FurnaceTroop.png|New Furnace
+File:FurnacePoster 1.jpg|Poster to tease 1
+File:FurnacePoster 2.jpg|Poster to tease 2
+File:FurnacePoster 3.jpg|Poster to tease 3
+File:FurnacePoster 4.jpg|Poster to tease 4
+</gallery>
+
+==Trivia==
+*Much like the [[Heal Spirit]], who was the first card to be reworked into a Troop from a Spell, the Furnace is also a first of its kind rework. Only instead it was reworked into a troop from a building.
+*In the German, Turkish, Japanese and Finnish language settings of the game, the Furnace's name translates to "Oven". In the Norwegian, Korean, and Chinese language settings of the game, the Furnace's name translates to "Fireplace", "Blast Furnace", and "Furnace of Flames" respectively.
+*The Furnace was the first [[:Category:Building Cards|building]] to be added to the game after Clash Royale's release.
+*While the current, reworked Furnace is not available as a troop in Clash of Clans, the original version is available as a Dark Elixir troop. 
+**The Furnace in Clash of Clans spawns "''Firemites''" instead of Fire Spirits, although one could argue that a Firemite is just a Fire Spirit under a different name.
+*The Furnace is 1 of 23 [[cards]] that has had its [[Elixir]] cost changed, the others being [[Bomber]], [[Fire Spirit]], [[Royal Recruits]], [[Cannon]], [[Mortar]], [[Musketeer]], [[Three Musketeers]], [[Heal]], [[Goblin Hut]], [[Bomb Tower]], [[Barbarian Hut]], [[Elixir Collector]], [[Skeleton Army]], [[P.E.K.K.A.]], [[Wall Breakers]], [[Electro Giant]], [[Bowler]], [[Goblin Barrel]], [[Barbarian Barrel]], [[Rage]], [[Fisherman]], and the [[Monk]].
+*The Furnace's description could be a reference towards the [[Mini P.E.K.K.A.|Mini P.E.K.K.A]] since the Mini P.E.K.K.A says "''pancakes''" when deployed in the [[Arenas|Arena]].
+*This may be inspired by a scrapped card idea called the [https://x.com/ClashRoyale/status/1597597818763751424 "Fire Knight"] and he slightly resembles the [https://character-catalogue.fandom.com/wiki/Potter_(Clash) Potter] from Clash Mini.
+*The Furnace was featured in the winning [[Battle Decks|deck]] of the [https://www.youtube.com/watch?v=kIGdeKaT_is The Crown Duel Tournament], by a player called Backstabx.
+*The Furnace is the subject of multiple [[Emotes]].
+
+{{Navigation|Card}}
+
+[[fr:Fournaise]]
+[[de:Ofen]]
+[[es:Horno]]
+[[it:Fornace]]
+[[ru:Печь]]
+[[zh:烈焰熔炉]]

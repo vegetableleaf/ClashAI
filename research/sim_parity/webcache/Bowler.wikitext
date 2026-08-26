@@ -1,0 +1,278 @@
+{{DISPLAYTITLE: <span style="color: #b300b3;">Bowler</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}{{SubpageNavBox|Hero=yes}}{{Card Infobox|Cost=5|Rarity=Epic|Type=Troop|Arena=Rascal's Hideout|ReleaseDate=4 July 2016}}
+{{Quote|This big blue dude digs the simple things in life - Dark Elixir drinks and throwing rocks. His massive boulders roll through their target, hitting everything behind for a strike!}}
+
+The Bowler is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from the [[Arenas|Rascal's Hideout (Arena 13)]]. It spawns a slow, area-damage, ground-targeting, medium-ranged, ground [[:Category:Troop Cards|troop]] with high hitpoints and high damage. The Bowler launches an attack that travels up to its maximum range, and inflicts knockback, while piercing through enemies. He resembles a massive, indigo-skinned humanoid creature with blue eyes, wearing a pale brown loincloth and team-colored bands on his arms, and carries a boulder. A Bowler card costs 5 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Bowler Card}}
+*The Bowler's knockback effect functions identically to a [[Fireball]], [[Giant Snowball]], or [[Rocket]], pushing back small to medium sized ground [[:Category:Troop Cards|troops]], and minimally damaging heavy troops such as the [[Prince]], [[Sparky]], [[Dark Prince]], [[Skeleton King]], [[Giant Skeleton]], [[Goblin Machine]], [[P.E.K.K.A.|P.E.K.K.A]], [[Mega Knight]], [[Cannon Cart]], and the [[Mighty Miner]]. Troops vulnerable to knockback will have their attack animations reset and they are knocked back, causing troops with slow attack animations or troops with charges to be incredibly less efficient.
+*The Bowler has a linear attack that passes through all troops, allowing him to damage support troops behind a tank and clear swarms with ease. Maximize his damage potential by lining up enemies with the [[Tornado]]. 
+**Although Bowler's range is 4 tiles, his rock roll has a range of 7.5 tiles, and the rock itself has a 1.8 tile radius, so his effective reach is 9.3 tiles. The defending player should always separate their troops and never deploy them directly in front of their [[:Category:Crown Towers|Crown Tower]], as otherwise they may end up letting the Bowler deal substantial chip damage.
+*His high health, linear attack, and knockback effect makes him a strong defense against pushes, damaging both a tank and the support units behind it. As an added bonus, his inability to knock back tanks means he can separate the tanks and the support units, making them easier to deal with individually. He is extremely effective when paired with an [[Ice Wizard]] and [[Electro Wizard]] as their slowing and stun effects coupled with the Bowler's knockback make for a near impenetrable wall.
+**Because of this, he pairs well with the [[Ice Spirit]] and [[Electro Spirit]], as they will stun the defending troops, while he knocks them back. This combo can prevent a lot of damage from the opposing troops.
+*Placing a Bowler behind a [[:Category:Crown Towers|Crown Tower]] will take out all three [[Goblins]] from a [[Goblin Barrel]] with the right timing. The Bowler should finish his deployment timer just as the Goblins spawn. Release him once the Goblin Barrel's shadow passes the enemy's Crown Tower. If the opponent tries to mix up their placement, the Bowler will still crush the Goblins anyway. He can then be used to build a counter-push.
+*The Bowler is one of the best counters against spawner [[:Category:Building Cards|buildings]]. He OHKOes [[Spear Goblins]], Goblins, and [[Skeletons]]. He can also take out [[Barbarians]] since he constantly delays them with his knockback, giving himself enough time to take them out. If he lands the final blow on those buildings, he will not only destroy them, but also destroy the death troops that would have spawned from them. This also makes him a very strong counter against the [[Witch]] and [[Furnace]] since he can easily tank their attacks and will destroy any Skeletons or [[Fire Spirit]] spawns.
+*[[Minions]], [[Minion Horde]], [[Bats]], [[Mega Minion]], [[Phoenix]], Flying Machine, [[Electro Dragon]], and [[Inferno Dragon]] can take out a Bowler without facing retaliation due to his inability to attack air targets. Some of these are also a positive Elixir trade.
+*Despite his splash damage, his slow attack rate means that he can still be taken out by swarms like the [[Skeletons/Evolution|Evolved Skeletons]], [[Skeleton Army]], [[Royal Recruits]], or Barbarians if he is surrounded.
+*The Bowler attacks slowly which makes him weak against tanks, as he is not able to take them down quickly. Against tanks, it is better to support him wih troops with a faster attack and higher damage output such as the [[Musketeer]], [[Wizard]], [[Dart Goblin]], [[Cannon Cart]], [[Flying Machine]], [[Magic Archer]], [[Baby Dragon]], [[Archers/Evolution|Evolved Archers]], [[Archer Queen]], [[Skeleton Dragons]], Little Prince, and the Witch.
+*The Bowler is very effective against certain fast-moving troops by being able to knock them back preventing them from connecting to either the Tower or himself, or minimizing their damage dealt to either.
+**The [[Hog Rider]] can be stopped with the Bowler, only allowing one hit to the [[Tower Princess]]. After countering him, he will have full health for a counterattack. The [[Royal Hogs]] and [[Wall Breakers]] can be countered in a similar way.
+**The Battle Ram and Ram Rider will have their charges resetted by the Bowlers knockback, preventing them from connecting to the Tower, while he takes minimal damage. The [[Royal Recruits/Evolution|Evolved Royal Recruits]] can be countered similarly.
+**He can counter [[Elite Barbarians]], [[Royal Ghost]], [[Lumberjack]], [[Monk]], and [[Mini P.E.K.K.A.|Mini P.E.K.K.A]] with the help of a Crown Tower due to his knockback ability and high hitpoints, preserving most of his health for a counterpush. Conversely these troops can counter the Bowler if placed on top, with the former preferably surrounding the Bowler.
+*Certain troops make good counters to the Bowler, due to their immunity to his knockback.
+**The Giant Skeleton, P.E.K.K.A, and Mega Knight both have the hitpoints to withstand the Bowler's attacks and dealt high damage to him. Although they are a negative Elixir trade, they will survive with high hitpoints for a counterattack.
+**The Skeleton King and Goblin Machine may have lower hitpoints than the previous options but like them, they are immune to knockback and come at a lower cost, making them great counters for their cost if placed on top. In the case of the Skeleton King, avoid activating the ability, to make sure that he does not take uneccessary damage from targeted Skeletons.
+**Although he can handle other troops with charges, he cannot reset the charges of the Prince and Dark Prince, due to being immune to the knockback. They will be able to reach him and deal massive damage to him.
+**Similarly, if the Mighty Miner manages to reach him or is placed on top, he will be able to safely charge up his attack and deal with him for a positive Elixir trade.
+**Unlike the other options, the Cannon Cart and Sparky combine the previous immunity with range that is longer than the Bowler's allowing them to easily handle him, Interestingly, the immunity allows the Cannon Cart to remain in range of the Bowler, even when its hitpoints drop below 50%, and the Sparky has high enough damage to 2HKO the Bowler.
+**Defensive buildings are also a good counter to the Bowler, as they all outrange him and will always remain in range. The [[Inferno Tower]] is especially effective due to its ramp-up attack.
+*The Bowler is an excellent counter to the [[X-Bow]] and [[Mortar]], as he has the hitpoints to contest it from range, without the need for another mini tank. The linear attack may also deal significant damage to any poorly placed defenders for the siege buildings.
+**Conversely, he is a great support card for the X-Bow and Mortar. His attack can knock melee troops back, buying more time for the siege buildings to deal damage to their target.
+*Unlike most support troops, the Bowler has far higher health and a knockback effect. This means that the Bowler cannot be countered by most mini tanks such as the [[Knight]], [[Valkyrie]], [[Battle Healer]], or [[Golden Knight]]. He is also [[:Category:Spell Cards|spell]]-resistant, being able to survive an equal Level [[Rocket]]. These factors make him a powerful support troop. However, he also costs more than most support troops, and his slow attack rate makes him prone to being overwhelmed.
+**The Bowler is a great support troop for the [[Electro Giant]]. The Bowler will be able to push troops towards the Electro Giant and force them to attack him and take damage from his Zap Pack, while the Electro Giant takes hits, including from air troops than neither can attack directly. However, troops that are immune to the knockback, such as P.E.K.K.A and Giant Skeleton can easily counter the duo.
+**Unlike other support troops, using a [[Miner]] against a Bowler is ineffective, as the Bowler's knockback may cause him to retarget onto a different troop and leave the Bowler healthy for defending against the push that the Miner is supporting.
+*Against the Bowler, placing the [[Fisherman]] on the fourth tile vertically from the King's Tower and the third tile horizontally from the Crown Tower as the troop walks in his range will force a King activation after hooking him.
+*When the [[Firecracker]] shoots, she pushes herself back by 1 tile. This makes her effective at kiting grounded troops for a short while, and depending on which troop it is, she can fully counter them with the assistance of the Crown Towers as they cross the bridge. Against a Bowler that is in the inside of the [[Arenas|Arena]], place her on the fifth tile from the bridge, and on the second tile horizontally from the Crown Tower. The Bowler will hit her once but will have to walk closer to her after the recoil, which will bring him closer to the King Tower. The second attack from the Bowler will cause a King Tower activation after defeating the Firecracker.
+*The Bowler is exceptionally good at stopping the [[Little Prince]] even with the ability activated, as you can align the Bowler to hit both the Little Prince and Guardienne. The knockback from the Bowler's attack resets the Little Prince's ramp-up attack as well, preventing the Bowler from dying. The [[Goblinstein]] can be countered similarly.
+*The Bowler has an unusually large hitbox, occupying as much space as a Mega Knight. This can be advantageous if he is surrounded by allied swarms and is attacked by melee area-damage troops such as the Royal Ghost and Dark Prince, as it would mean that the allied swarms would not be hit by them.
+*The [[Executioner]] can be a reasonable substitute for him. Executioner can attack air troops and has a faster hit speed, but has lower health and cannot counter ground mini tanks. Bowler's knockback effect allows him to counter many grounded units, but it is not very effective against large, heavy troops that ignore his knockback effect, as well as aerial foes whom he cannot target.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Range<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Width<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||2.5 sec||0.5 sec||Slow (45)||1 sec||4||7.5||3.6||170||Ground||1x||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 2081 }}
+{{#vardefine: dmg_11 | 289 }}
+{{#vardefine: atk_speed | 2.5 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Area Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 185,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|20 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 560,000 Damage to enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 930,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" |Keep Your Distance <br/ > [[File:Keep Your Distance.png|50x50px]]
+|1
+|Knock back enemy Troops a total of 560 times
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Knock back enemy Troops a total of 1,600 times
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Knock back enemy Troops a total of 2,800 times 
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+| rowspan="3" |I'm Throwing Rocks Tonight! <br> [[File:Steamroller.png|50x50px]]
+|1
+|Push back 10 or more units with a single deploy a total of 80 times
+|6,000 {{Icon|I=Gold}}<br>175 {{Icon|I=XP}} 
+|-
+|2
+|Push back 10 or more units with a single deploy a total of 240 times
+|8,000 {{Icon|I=Gold}}<br>175 {{Icon|I=XP}}
+|-
+|3
+|Push back 10 or more units with a single deploy a total of 480 times
+|10,000 {{Icon|I=Gold}}<br>175 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+== Sound Effects ==
+===Current===
+{| class="wikitable"
+!Sound Effect
+!Action
+!Description
+!Line
+|-
+|[[File:Bowler Deploy.wav]]
+|Deployment
+|Plays when the Bowler is deployed.
+|"Bowling!"
+|-
+|[[File:Bowler Step.wav]]
+|Walk
+|Plays when the Bowler walks.
+|
+|-
+|[[File:Bowler Idle 1.wav]][[File:Bowler Idle 2.wav]]
+|Idle
+|Occasionally plays when the Bowler is not attacking.
+|Bowler hums
+|-
+|[[File:Bowler Attack 1.wav]][[File:Bowler Attack 2.wav]][[File:Bowler Attack 3.wav]][[File:Bowler Attack 4.wav]][[File:Bowler Attack 5.wav]]
+|Attack
+|Plays when the Bowler attacks something.
+|"Hee-hee-hoor!"<br>"Rolling, rolling, rolling!"<br>"Strike!"<br>"Bye-bye!"
+|-
+|[[File:Bowler Hit.wav]]
+|Hit
+|Plays when the Bowler hits his target.
+|
+|}
+===Removed===
+{| class="wikitable"
+!Sound Effect
+!Action
+!Description
+!Line
+|-
+|[[File:Bowler Attack 6.wav]][[File:Bowler Attack 7.wav]]
+|Attack
+|Used to play when the Bowler attacks something.
+|Bowler grunts
+"Hoo-wee!"
+|-
+|[[File:Bowler Hit 1.wav]]
+|Hit
+|Used to play when the Bowler hits his target.
+|
+|}
+==History==
+2016
+*The Bowler [[Cards|card]] was added to the game on 4/7/2016, in the [[Version History#Tournaments Update (4/7/2016)|Tournaments Update]].
+*On 24/8/2016, a [[Version History#Balance Changes (24/8/2016)|Balance Update]], decreased the Bowler's cost to 5 [[Elixir]] (from 6 Elixir), decreased his hitpoints by 7%, and decreased his damage by 10%.
+*On 19/9/2016, the [[Version History#September 2016 Update (19/9/2016)|September 2016 Update]], changed his description. The description used to say "''This big blue dude digs the simple things in life - Dark Elixir drinks and throwing rocks. His massive boulders bounce off their target, landing behind for a double strike.''"
+*On 1/11/2016, the [[Version History#November 2016 Update (1/11/2016)|November 2016 Update]], changed the Bowler's sound effects.
+2018
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Epic}} cards start at Level 6 and end at Level 13 (from 1 to 8).
+*On 5/12/2018, the [[Version History#December 2018 Update (5/12/2018)|December 2018 Update]], increased the Bowler's range to 5.5 tiles (from 5 tiles). This change was not mentioned in any change notes and was later said to be unintentional by Supercell, and as such it got reverted in 7/12/2018, in a [[Version History#Maintenance Break (7/12/2018)|maintenance break]].
+2019
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Bowler's card info screen.
+2020 
+*On 4/8/2020, a [[Version History#Balance Changes (4/8/2020)|Balance Update]], decreased the Bowler's range to 4 tiles (from 5 tiles), increased his projectile range to 7.5 tiles (from 6 tiles), and increased his hitpoints by 8%.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the [[Arenas|Arena]] to unlock the Bowler from Frozen Peak to Rascal's Hideout.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], added the I'm Throwing Rocks Tonight [[Card Mastery]] task for the Bowler.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], increased the Bowler's hitpoints by 0.04% and his damage by 0.34%.
+2026
+
+* On 4/8/2026, a Balance Update, decreased the Bowler's projectile range to 7 tiles (from 7.5 tiles)
+
+==Gallery==
+<gallery>
+File:Bowler card render.png|Current card render.
+File:Bowler Preview.gif|Current card preview.
+File:Bowler 1.png|Bowler throwing his boulder.
+File:Bowler 2.png|Bowler
+File:OriginalBowlerConcept.jpeg|Original concepts.
+File:BowlerDrakeMeme.png|Bowler, with Drake meme reference on Season 14 Balance Changes.
+</gallery>
+
+==Trivia== 
+*The Bowler is 1 of 19 [[:Category:Troop Cards|troops]] which first existed in Clash of Clans, the others being [[Minions]], [[Archers]], [[Goblins]], [[Skeletons]], [[Barbarians]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], [[Balloon]], [[Golem]], [[Wall Breakers]], [[Cannon Cart]], [[Phoenix]], [[Lava Hound]], and the [[Archer Queen|Archer Queen.]]
+**The Bowler resembles the Level 1-2 Bowler from Clash of Clans.
+**The Bowler was originally a troop idea for Clash Royale, but being scrapped, he was transferred to Clash of Clans. Ultimately, the Bowler was added in one of Clash Royale's updates.
+**The Bowler's description is very similar to his description in Clash of Clans. Before the [[Version History#September 2016 Update (19/9/2016)|September 2016 Update]], the description erroneously stated the Bowler's boulders bounce, which do in Clash of Clans, but not in Clash Royale.
+***There is also a [[Loading Screen Hints|Loading Screen Hint]] that is similar to its [[Cards|card]] description.
+**In Clash Royale, the Bowler's bowling action resembles a more conventional underhand style of bowling, like that seen in [https://en.wikipedia.org/wiki/Ten-pin_bowling ten-pin bowling], for example, as opposed to in Clash of Clans, where he hurls his boulder overhand, resembling that of a bowler in [https://en.wikipedia.org/wiki/Cricket cricket].
+***In the Russian, Chinese, and Vietnamese language settings of the game, the Bowler's name translates to "Bouncer", "Boulder Pitcher", and "Stone Goalkeeper" respectively.
+**In Clash of Clans, the Bowler has glowing red eyes and yellow sclerae, however in Clash Royale, the Bowler has normal eyes and sclerae.
+**The Bowler's [[Cards|card]] render is taken from his Clash of Clans counterpart's old render.
+*Among all troops that attack with projectiles, the Bowler has the lowest projectile speed of all troops, with a projectile speed of 170.
+*The Bowler is one of the first troop cards to receive a card render, alongside the Archers, [[Knight]], Goblins, [[Bomber]], Skeletons, Barbarians, [[Bats]], [[Royal Recruits]], [[Skeleton Barrel]], [[Rascals]], [[Musketeer]], Giant, Valkyrie, Wizard, [[Flying Machine]], Hog Rider, [[Royal Hogs]], [[Dart Goblin]], [[Zappies]], [[Elixir Golem]], [[Baby Dragon]], [[Skeleton Army]], Witch, P.E.K.K.A, [[Prince]], Balloon, [[Giant Skeleton]], [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], Wall Breakers, Cannon Cart, [[Mega Knight]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], [[Magic Archer]], [[Bandit]], Lava Hound, [[Night Witch]], and [[Fisherman]].
+*The Bowler is 1 of 23 cards that has had its [[Elixir]] cost changed, the others being Bomber, [[Fire Spirit]], Royal Recruits, [[Cannon]], [[Mortar]], Musketeer, [[Three Musketeers]], [[Heal]], [[Goblin Hut]], [[Bomb Tower]], [[Barbarian Hut]], [[Furnace]], [[Elixir Collector]], Skeleton Army, P.E.K.K.A., Wall Breakers, [[Electro Giant]], [[Goblin Barrel]], [[Barbarian Barrel]], [[Rage]], Fisherman, and the [[Monk]].
+*The Bowler has been confirmed to be a Goblin. Despite this, he does not belong to the Goblin class.
+*The Bowler is 1 of 15 troops which bring an excited reaction from the audience upon spawning and brings a collective groan from the audience when defeated, as well as a concerning gasp when the opponent plays him, the others include [[Royal Giant]], Giant, P.E.K.K.A, Giant Skeleton, [[Rune Giant]], Goblin Giant, Golem, [[Electro Wizard]], [[Inferno Dragon]], [[Sparky]], Lava Hound, Night Witch, [[Super Lava Hound]], and the Monk.
+*The Bowler's rock can be seen can be seen on the [[Trophies|Trophy Road]] as a decoration.
+*The Bowler says “''Bowling!''” upon spawn. He may also say “''Buh-bye''”, “''He-he-hoor!''”, "''Strike''", and/or “''Rolling, rolling, rolling!''” while attacking. He also passively hums while walking.
+** The Bowler is voice acted by [https://www.imdb.com/name/nm5354454/ Lucas Schuneman].
+**The Bowler is 1 of 24 troops that speak distinct words when on the field, the others being [[Mini P.E.K.K.A.]], [[Mega Minion]], Wizard, Hog Rider, P.E.K.K.A., [[Dark Prince]], Ram Rider, Electro Wizard, [[Princess]], Ice Wizard, Magic Archer, [[Lumberjack]], [[Mother Witch]], Fisherman, [[Goblin Machine]], [[Super Mini P.E.K.K.A.]], [[Santa Hog Rider]], [[Super Magic Archer]], [[Golden Knight]], [[Boss Bandit]], Archer Queen, [[Little Prince]], and the [[Terry]].
+*The Bowler, along with the Minions, Bomber, Skeletons, [[Skeleton Dragons]], [[Ice Spirit]], Mini P.E.K.K.A, Mega Minion, [[Ice Golem]], Dart Goblin, Elixir Golem, [[Goblin Cage|Goblin Brawler]], [[Guards]], Baby Dragon, P.E.K.K.A, Giant Skeleton, Golem, Wall Breakers, [[Executioner]], Mega Knight, Inferno Dragon, Royal Ghost, Lava Hound, and the [[Skeleton King]], are featured as a [https://squad-busters.fandom.com/wiki/Monsters monster] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*The [[Card Mastery]] task "I'm Throwing Rocks Tonight!" is a reference to a quote from [https://en.wikipedia.org/wiki/The_Big_Lebowski The Big Lebowski].
+*According to Vlad Perge, the Community Manager of Clash Mini, the Bowler is his favorite troop, as stated on [https://www.pocketgamer.com/clash-mini/interview-fan-fang-vlad-perge/ Pocket Gamer].
+*The Bowler is the subject of 4 [[Emotes]].
+*The Bowler was featured in the winning [[Battle Decks|deck]] of the [https://www.youtube.com/live/pRfrjMiHbQA?si=P2kVLJUlXH1SZoHm Clash Royale League 2021 Tournament], by a player called Mugi.
+*On 3/1/2024, the Bowler was supposed to receive a first attack time interval increase to 0.6 seconds (from 0.5 seconds), but this change [https://royaleapi.com/blog/season-55-balance-wip was pulled back last minute].
+
+==In other languages==
+{{Other languages|esmeaning=Rock Thrower.|trmeaning=Shooter.|rumeaning=Bouncer.|ptmeaning=Launcher.|cnmeaning=Boulder Pitcher.|cntmeaning=Boulder Pitcher.|fameaning=Crusher.|msmeaning=Crusher.|thmeaning=Thrower.|vimeaning=Stone Goalkeeper.|fr=Bouliste|de=Bowler|es=Lanzarrocas|it=Bocciatore|nl=Bowler|no=Bowler|tr=Atıcı|jp=ボウラー|kr=볼러|ru=Вышибала|ar=باولر|pt=Lançador|cn=巨石投手|cnt=巨石投手|fa=له‌کننده|id=Bowler|ms=Pembaling|th=นักขว้างหิน|fi=Keilaaja|vi=Thạch thủ}}
+
+{{Navigation|Card}}
+
+[[fr:Bouliste]]
+[[de:Bowler]]
+[[es:Lanzarrocas]]
+[[it:Bocciatore]]
+[[ru:Вышибала]]
+[[pt-br:Lançador]]
+[[zh:巨石投手]]

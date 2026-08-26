@@ -1,0 +1,200 @@
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}
+
+{{Card Infobox|Cost=5|Rarity=Common|Type=Troop|Arena=Hog Mountain|ReleaseDate=4 January 2016}}{{SubpageNavBox|Evolution=Yes}}{{Quote|Six fast, unarmored flying attackers. Three's a crowd, six is a horde!}}
+
+The Minion Horde is a {{Rarity|Common}} [[Cards|card]] that is unlocked from the [[Arenas|Hog Mountain (Arena 10)]]. It spawns six [[Minions]] in a hexagon formation. A Minion Horde card costs 5 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Minion Horde Card}}
+*The Minion Horde is a high risk, high reward [[Cards|card]]. It is a powerful defensive card and can easily be turned into a threatening counterpush. However, area damage cards such as the [[Wizard]], Baby Dragon, Witch, Executioner, Firecracker, Skeleton Dragons, [[Arrows]], [[Zap/Evolution|Evolved Zap]], Poison, or Fireball will easily destroy the Minions, so placing them at the bridge alone to attack is not recommended.
+*Despite their massive damage, a Minion Horde can't always destroy a unit before it reaches the player's [[:Category:Crown Towers|Tower]]. For example, the [[Giant Skeleton]] or the [[Mega Knight]] paired with the [[Hog Rider]] will both reach the Tower because of their combination of high hitpoints, jump and fast movement speed. The player should keep this in mind when facing similar threats and respond accordingly by placing a ground unit like [[Skeletons/Evolution|Evolved Skeletons]], [[Skeleton Army]], [[Barbarians]], [[Royal Recruits]], or a [[:Category:Building Cards|building]] to distract them.
+*Slower troops like the [[P.E.K.K.A.]], [[Golem]], [[Sparky]], [[Bowler]], and [[Giant]] are enough for the Minion Horde to fully destroy them. If they are supported by single-target cards that can target air troops such as [[Archers/Evolution|Evolved Archers]], [[Electro Dragon]], Musketeer, Mega Minion, [[Phoenix]], Electro Wizard, [[Archer Queen]], [[Flying Machine]], [[Little Prince]], Dart Goblin, or Hunter, place the Minion Horde in such a way that they target the support troop. This will save more of the Minions for the tank.
+*The Minion Horde can be used to support high-hitpoint troops like the [[Giant]], [[Golem]], [[Royal Giant]], and the [[Lava Hound]], or distract air-targeting charge cards like the [[Inferno Tower]] and the [[Inferno Dragon]].
+*The [[Miner]] pairs well with any surviving [[Minions]]. Even if just one is still alive after a defense, tanking for it with a Miner will force the opponent to address both. It can also be played as a fast and lethal push when at an [[Elixir]] advantage or when the opponent's best counter is not in hand.
+**On a similar idea, it may be worth casting a [[Freeze]] to allow the Minion Horde to deal severe damage to the Crown Tower. This is especially punishing when the opponent is caught off-guard, for example, if they counter them with a [[Zap]]. One thing to remember is that the surprise factor is what makes this effective, so follow-up attempts may not be as successful.
+** Another deadly but risky combo is the Minion Horde and [[Clone]]. When their spell or splash damage troops are baited out, a cloned Minion Horde could destroy almost anything.
+**The [[Tower Princess]] is able to 2HKO the Minions if she is is 1 Level higher. Because of this, leveling the Minion Horde up is a high priority, otherwise offensive attempts with them will be less effective.
+*The Minion Horde is extremely vulnerable to splash damage; most area damage [[:Category:Troop Cards|troops]] that target air and [[:Category:Spell Cards|spells]] can eliminate it efficiently for a positive or neutral Elixir trade.
+**Area-damage spells will be able to counter a Minion Horde when played correctly. Arrows's large area, fast travel time, and cheap cost makes it the most reliable counter by far. Evolved Zap, [[Fireball]] and [[Poison]] will quickly defeat a Minion Horde, but the Evolved Zap deals damage in turns, Fireball has a smaller radius, and Poison deals damage over time. The [[Rocket]] can counter them as well, but its slow travel speed, tiny area-of-effect and high Elixir cost makes the Rocket both unreliable and a negative Elixir trade unless other troops are caught in the explosion.
+**Zap, [[Giant Snowball]], and Rage can weaken Minions enough to allow your Tower Princess to OHKO them. The additional effects of these spells also buys them more time in case the opponent decides to support them. However, if the Zap is 2 Levels higher than the Minions, it will be able to defeat them without any additional support.
+***You can combine these two spells with an [[Ice Golem]] or a Spirit card to defeat them in offense, with both options being a positive Elixir trade.
+**The [[Royal Delivery]] can also counter the Minion Horde for a positive Elixir trade, and also spawns a [[Royal Recruits|Royal Recruit]] to assist with additional defense. This is most recommended to be used when the Minion Horde are assisting another card.
+**Troops are reliable counters and are an active presence in the [[Arenas|Arena]], meaning they can be counterpushed with after defending the Minion Horde. The Wizard and [[Executioner]] can defeat the Minion Horde with one attack and threaten any enemy units nearby with their splash, while the [[Witch]] has a fast attack speed and can stall the Minion Horde with her spawned Skeletons. The [[Hunter]] can also be a great counter as his spread-out bullets will easily decimate the entire Minion Horde in only two shots, if played well. The [[Magic Archer]], [[Princess]], [[Ice Wizard]], and [[Firecracker]] can work in a similar way.
+**An [[Electro Wizard]] can spawn on top of the Minion Horde and along with the Tower Princess stop the Minion Horde for a positive Elixir trade, however he will be defeated in the process.
+*Cheap ranged cards like [[Archers]], [[Spear Goblins]], and [[Dart Goblin]] are not enough to stop the Minion Horde from defeating these units. When using these cards, it is better to combine them with other cheap cards like Spirit cards, Giant Snowball, or Zap in order to defeat the Minion Horde.
+*The [[Cannoneer]] is the most effective [[:Category:Tower Troop Cards|tower troop]] against the Minion Horde, as he is able to OHKO every Minion. It is most recommended to support him with other cards that can OHKO the Minions to prevent his higher damage from getting wasted on weakened Minions.
+*Due to their high DPS and low hitpoints, the Minion Horde is an excellent bait card for Fireball, Arrows, and in some cases, Zap or Giant Snowball. Therefore, it is often used in Fireball and Zap bait [[Battle Decks|decks]].
+*The Minions on the Minion Horde have a slight spread upon deployment. Because of this, they can effectively surround air area-damage troops like the [[Baby Dragon]] and [[Skeleton Dragons]]. With this method, they can counter these types of troops with minimal damage dealt to the Minions.
+*The Minion Horde is very effective at taking out [[Balloon|Balloons]] because of their large numbers getting in the way of the Balloon and also having high damage per second. Since the Balloon’s death bomb takes 3 seconds to explode, they will usually escape it and create the opportunity for a counterpush. They also cost as much as the Balloon, making it a neutral Elixir trade. However, these are fairly vulnerable to spells and area damage troops like Arrows, Fireball, Wizard, Firecracker, Executioner, Skeleton Dragons, and Baby Dragon.
+**On the contrary, the Minion Horde synergizes well with the Balloon. Not only do the Minions deny specific defensive approaches like [[Bats]], [[Musketeer]], Electro Wizard, Phoenix, Dart Goblin, and [[Mega Minion]], but their fast movement speed can also push the Balloon towards the Crown Tower more quickly.
+*The Minion Horde can negate a great portion of damage from [[Graveyard]] due to their quick attack speed and not being hindered by the Crown Tower. However, it is vulnerable to certain spells such as Arrows, so one should not be overly reliant on it.
+*Minion Horde can be used to increase the troop count for the [[Void]], allowing the player to possible save their other troops from the spell. The card spawns enough troops that it can save any single troop with just the Minions.
+*The player can hide a fast moving troop (eg. [[Mini P.E.K.K.A.]]) underneath a Minion Horde so that when the opponent defeats the Minion Horde, the troop beneath might take them by surprise. The [[Bandit]] can have a similar effect.
+*For 2 less Elixir, the player can deploy the Minions [[Cards|card]] for a cheaper defense, having 3 Minions less than using the Minion Horde card. This means that it is not wise to use [[Mirror]] on the Minions, as that would cost 2 more Elixir than using the Minion Horde card. The drawback is that the Minions are individually more flexible to be used compared to the Minion Horde (i.e. they are not forced to use 5 Elixir on a single push as opposed to dropping 3 Elixir and having an additional 4 Elixir for a second push or a different card altogether).
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||1.1 sec ||0.5 sec||Fast (90)||1 sec||2.5||1000||Air & Ground||x6 ||Air||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_base | 230 }}
+{{#vardefine: dmg_base | 107 }}
+{{#vardefine: atk_speed | 1.2 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:hp_base}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 2 || {{#expr: {{#var:hp_base}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 3 || {{#expr: {{#var:hp_base}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_base}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_base}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_base}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_base}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_base}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_base}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_base}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_base}} || {{#var:dmg_base}} || {{Dps|{{#var:dmg_base}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_base}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_base}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_base}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_base}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_base}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" | Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 140,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|200 {{BASEPAGENAME}} cards<br>25 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 420,000 Damage to enemy Troops or buildings
+|2,000 {{Icon|I=Gold}}<br>25 {{Icon|I=XP}}
+|-
+| 3
+|Deal a total of 700,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>25 {{Icon|I=XP}}
+|-
+| rowspan="3" |Troop Destroyer <br> [[File:Troop Destroyer.png|50x50px]]
+|1
+|Destroy 420 enemy Troops
+| 3,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|2
+|Destroy 1,200 enemy Troops
+|200 {{Icon|I=Common Wild Card}}<br>100 {{Icon|I=XP}}
+|-
+| 3
+|Destroy 2,100 enemy Troops
+|5,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Minion Horde [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016.
+*On 29/2/2016, the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]], decreased the [[Minions]]' sight range to 5.5 tiles (from 6 tiles).
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], increased the {{Rarity|Common}} card Level cap to 13 (from 12), and fixed the “range bug” and decreased the Minions' range to 2 tiles (from 2.5 tiles), but their effective range is unchanged.
+2018
+*On 20/6/2018, the [[Version History#Summer 2018 Update (20/6/2018)|Summer 2018 Update]], gave the Minion Horde a new 0.15 seconds deploy stagger from each other.
+2019
+*On 1/7/2019, the [[Version History#July%202019%20Update%20(1/7/2019)|July 2019 Update]], decreased the Minions' range to 1.6 tiles (from 2 tiles), now classified as Melee: Long.
+2020
+* On 2/6/2020, a [[Version History#Balance Changes (2/6/2020)|Balance Update]], decreased the deploy stagger for each Minion to 0.1 seconds (from 0.15 seconds).
+*On 3/11/2020, a [[Version History#Balance Changes (3/11/2020)|Balance Update]], added a card render to the Minion Horde's card info screen.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the [[Arenas|Arena]] to unlock the Minion Horde from P.E.K.K.A's Playhouse to Hog Mountain.
+* On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 7/12/2022, a [[Version History#Balance Changes (7/12/2022)|Balance Update]], increased the Minions' damage by 15%. It also increased the distance between the Minions upon deployment.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], made it so that Minion Horde's spawn formation would be correctly mirrored depending on which side of the Arena it was placed.
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] increased the Minion's range to 2.5 tiles (from 1.6 tiles), and the Hitpoints by 16%.
+*On 7/8/2025, a [[Version History#Maintenance Break (7/8/2025)|Maintenance Break]], decreased the Minion's hitpoints by 14%.
+
+==Gallery ==
+<gallery>
+File:Minion Horde card render.png|Current Card render.
+</gallery>
+
+==Trivia==
+* The design of the [[Minions]] resembles [https://en.wikipedia.org/wiki/Gargoyle_(monster) gargoyles]. The gargoyle is a fantasy and horror monster inspired by the [https://en.wikipedia.org/wiki/Gargoyle gargoyle architectural element]. While they were believed in mythology to frighten away evil spirits, the idea of such statues physically coming to life is a more recent notion. They are usually made of magically animated or transformed stone, but have animal or chimera traits and are often guardians of a place such as a cathedral or castle. They can also be depicted as vessels for demonic possession or as a living species resembling statues. 
+** In the French and Japanese language settings of the game, the Minion Horde's name translates to "Gargoyle Horde" and "Group of Gargoyles" respectively. In the Turkish, Korean, Arabic, Persian, Indonesian, Finnish, and Vietanmese language settings of the game, the Minion Horde's name translates to "Herd of Minions", "Minion Gang", "Minion Crowd", "Minion Herd", "Horde of Minions", "Swarm of Minions", and "Minion Swarm" respectively. In the Chinese and Thai language settings of the game, the Minion Horde's name translates to "Army of the Undead", and "Flock of Drones" respectively.
+*The Minion Horde is 1 of 17 [[:Category:Troop Cards|troops]] that inspired a troop in Clash of Clans, the others being [[Spear Goblins]], [[Bomber]], [[Bats]], [[Skeleton Barrel]], [[Firecracker]], [[Battle Ram]], [[Ice Golem]], [[Zappies]], [[Baby Dragon]], [[Giant Skeleton]], [[Ram Rider]], [[Inferno Dragon]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], and [[Night Witch]].
+**The Minion Horde in Clash of Clans shares the same render with Minions' [[Cards|card]] render in Clash Royale, despite the fact that Minion Horde has its own card render in Clash Royale.
+**The Minion Horde's description in Clash of Clans is identical to its description in Clash Royale.
+**Its [[Star Points|Star Level 3 skin]] resembles the Level 3 Minion in Clash of Clans.
+**In Clash of Clans, the Minions' projectile comes from their mouths, however, in Clash Royale, it comes from their fists instead.
+*** This is confirmed by the Clash Royale trailers Trophies and Landscaper, where the Minions seem to build up Dark Elixir from their hands and throw it at their enemies once the ball is big enough.
+*The Minion Horde is one of the first troop cards to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the Minions, [[Archers]], [[Knight]], Spear Goblins, [[Goblins]], Bomber, [[Skeletons]], [[Barbarians]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Musketeer]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], Baby Dragon, [[Skeleton Army]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], [[Prince]], and [[Balloon]].
+*In the card's description, the "''three's a crowd, six is a horde!''" line is a reference to the [https://en.wiktionary.org/wiki/two%27s_company,_three%27s_a_crowd proverb] “''two's company, three's a crowd''”.
+*The Minion Horde's description says that the regular Minions are "unarmored", which hinted the addition of the "armored" [[Mega Minion]].
+*The Minions on the Minion Horde appear to have an underbite, similar to the [[Guards]], Giant Skeleton, [[Lava Hound]], and [[Super Lava Hound]].
+*The Minions in the card picture of Minion Horde are paler in skin color compared to the regular Minions, most likely due to the lighting of the area they are in. They also appear to be wearing burgundy fingerless gloves, as opposed to the indigo gloves worn by the regular Minions. They also seem to have team-colored eyes in battle, instead of purple eyes like on their card. However, the Minions of the Minion Horde are visually identical to the regular Minions in battle.
+*Using the Minions card to summon 6 Minions would cost 6 [[Elixir]], whereas using the Minion Horde card to summon 6 Minions costs 5 Elixir.
+*The Minions' range was shown as 2 before the [[Version History#July%202019%20Update%20(1/7/2019)|July 2019 Update]].
+*The Minion Horde was featured in the winning deck of the [https://www.youtube.com/watch?v=VxEzjdKQ4HA Clash Royale Helsinki Tournament], by a player called Jason.
+*Before the Minion Horde's card release, the Minions' hitpoints were increased by 5%.
+*The August 2025 buff was just meant to be its range. But they also accidently buffed its hitpoints. This was reverted 3 days latter
+
+{{Navigation|Card}}
+
+[[fr:Horde de gargouilles]]
+[[de:Lakaienhorde]]
+[[es:Horda de esbirros]]
+[[it:Orda di sgherri]]
+[[ja:ガーゴイルの群れ]]
+[[ko:미니언 패거리]]
+[[ru:Орда миньонов]]
+[[zh:亡灵大军]]
+[[pl:Minion Horde]]

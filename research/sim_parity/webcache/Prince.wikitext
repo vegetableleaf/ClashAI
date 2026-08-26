@@ -1,0 +1,303 @@
+{{DISPLAYTITLE: <span style="color: #b300b3;">Prince</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=5|Rarity=Epic|Type=Troop|Arena=Royal Arena|ReleaseDate=4 January 2016}}{{SubpageNavBox|MergeTactics=yes}}{{Quote|Don't let the little pony fool you. Once the Prince gets a running start, you WILL be trampled. Deals double damage once he gets charging.}}
+
+The Prince is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from the [[Arenas|Royal Arena (Arena 7).]] It spawns a single-target, ground-targeting, melee, ground [[:Category:Troop Cards|troop]] with high hitpoints and very high damage. After he travels 2 tiles, he will begin to charge towards his target, and deals double damage if he hits the target whilst charging. He is able to jump over the river. He resembles a man in heavy, golden armor, who wields a striped team-colored lance tied with a team-colored ribbon on top, wears a helmet with a visor and a team-colored feather on it, a team-colored belt and brown shoes with golden plates on them, has a brown goatee, mustache, hair, eyebrows and eyes, and rides a pony with team-colored reins and a saddle on its back. A Prince card costs 5 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Prince Card}}
+*The Prince is best used as a counterattacking [[:Category:Troop Cards|troop]]. With his increased speed and damage while charging, the Prince can stop ground pushes fairly quickly and threaten enemy [[:Category:Crown Towers|Crown Towers]] with ease. 
+**Due to the Prince's speed when he is charging, he is effective for early offensive attacks, or as a punish to an opponent's [[Elixir]] investment.
+**He is a great [[Cards|card]] to deploy when the opponent has little Elixir left to counter him or their counters are out of rotation, as he will quickly get to the opposing Crown Tower. However, during the double Elixir period, the opponent will likely be able to counter him due to the rapid Elixir generation rate.
+**The Prince fares fairly evenly among all [[:Category:Tower Troop Cards|tower troops]], being able to destroy all of them and deal a similar amount of damage to the [[King's Tower]] afterwards. As such, he should never be ignored regardless on the tower troop used.
+*On defense, he deals high damage with his attack, making him decent against [[:Category:Building Cards|building]]-targeting troops like the [[Hog Rider]], [[Battle Ram]], and the [[Ram Rider]]. If the troop happens to be slow as well, try to place the Prince closer to the Tower, to allow him to charge and hit the slow troop for more damage.
+**Unlike the Goblin Giant, the Prince is not recommended against the [[Goblin Giant/Evolution|Evolved Goblin Giant]] as he will be quickly overwhelmed by the numerous spawned Goblins and the 2 Spear Goblins after he destroys the Evolved Goblin Giant.
+*If the player has a medium sized push going on one lane, they can drop a Prince in the opposite lane. The opponent will have to defend both, otherwise their Towers take massive damage. This may also spread their counters to the Prince thin. For example, they may only have one swarm card but would need it to defend both pushes.
+*His charge does enough damage to OHKO every unit with as much hitpoints as [[Elixir Golem|Elixir Golemites]]. Therefore if a Prince is approaching your troop, it is most recommended to distract him with a tank to save the frailer troop. Alternative, a cheap distraction troop [[Cards|card]] or a card with a stun effect can be used to save the frail troop.
+*The Prince can be paired with high hitpoint troops such as the [[Giant]] or the [[Golem]]. The Giant/Golem will soak up the hits while the Prince inflicts damage. However, without support from air targeting splash damage troops or [[:Category:Spell Cards|spells]], this combo can easily be taken down by large swarms or air troops.
+**A Prince paired with the [[Mega Knight]] is a particularly effective combination. The Mega Knight provides splash damage and tanks for the Prince, helping clear swarms like the [[Goblin Gang]], [[Skeleton Army]], and [[Guards]]. In exchange, the Prince and his charge can do significant damage to tanky troops like the [[Valkyrie]], [[Knight]], [[Monk]], and [[Giant Skeleton]] used to counter the Mega Knight, shoring up the Mega Knight's low consistent damage. The Mega Knight's jump and Prince's charge also means that they can easily catch up to each other, preventing them from being easily separated.
+*Strong and durable troops such as a [[P.E.K.K.A.]], [[Mega Knight]], [[Boss Bandit]], Giant Skeleton, or a [[Mighty Miner]] are effective one-card counters to a Prince, and are more consistent in doing so if they have the help of a Crown Tower. Players should not use weaker, single-unit glass cannons on their own, as they will quickly be defeated, resulting in a waste of Elixir. However, if these cards are alone and walk onto the player's side of the [[Arenas|Arena]], the Prince can still deal a hefty amount of damage to them with the help of the Crown Tower.
+*The Prince can be used in conjunction with the [[Miner]] in a counterattack to try and get the Prince to connect to the Tower, by using the Miner to distract their support troops. For example, if they rely on a [[Bandit]] to soak the Prince's charge attack, the Miner can be preemptively placed near the Bandit so that it will walk behind the Tower, leaving their Crown Tower with no defenders in front of it. However, this combo is also weak to swarms.
+*Spells, especially lighter ones, complement the Prince well, as they are able to instantly take effect and surprise the opponent if they're played as a prediction, removing cards like Skeleton Army, Goblin Gang, and Minion Horde, depending on the spell, and making the opponent spend more Elixir to counter him, which, if done desperately, can cause a card that does not counter him well, or an unnecessary negative Elixir trade. Spells like [[Zap]], [[Giant Snowball]], and [[Rage]] require stricter timing and may not deal enough damage, while [[The Log]] requires some time to take effect, and [[Arrows]] and [[Earthquake]] cost more.
+**Rage can amplify the Prince’s already high damage per second and also allow him to charge up faster.
+**[[Freeze]] is useful to assist in countering a Prince push, as the Prince's charge attack will be disabled and allow the player to deploy units to eliminate him without having the Prince's backup troops attacking their defenders. The opposite holds true also, allowing a Prince to do massive damage to, if not defeat a Mega Knight or P.E.K.K.A.
+**An [[Electro Wizard]] can stop the Prince's charge with his stun attack, preventing him from charging and will eventually finish him off with the help of a Crown Tower. A [[Giant Snowball]] can temporarily knock back the Electro Wizard and slow him down, letting the Prince connect his charge on him and defeat him instantly. The same combination also works against the [[Hunter]], saving a lot of the Prince's hitpoints on offense.
+*Pairing the Dark Prince with the Prince is a deadly strategy. The Prince can take out more powerful single troops while the Dark Prince takes out weaker units that come in large numbers. This is a strategy that was known as the Double Prince combo and is also frequently used with a tank like the Giant, who can be pushed to the Crown Tower faster thanks to the Prince's and Dark Prince's high momentum. However, this combo is weak to air units like [[Minion Horde]] so be sure to bring some spells.
+**This strategy cannot be defeated by surrounding the group. When charging, the Dark Prince has a 360° splash attack, similar to a [[Valkyrie]] or a jumping Mega Knight, and can therefore defeat most, if not all of a swarm with one charge attack. His regular attack also deals splash damage, so swarms have nearly no effect on this combo.
+**The Double Prince combo can also be used separately from a tank. They can attack in one lane as a duo, while the tank is pressuring from the other lane, which can make the push harder to deal with.
+**The P.E.K.K.A. and the Mega Knight are hard counters to this strategy. They can counter the Princes for a positive Elixir trade, and will still have a decent amount of health left over for a counterpush.
+**The most effective way to counter this push is with an [[Inferno Dragon]] or a [[Minion Horde]] alongside a tank to distract the two units, due to the lack of anti-air and the amount of Elixir required to start this attack. However, the Inferno Dragon can easily be knocked out of range and forced to restart its ramp up attack, while the Minion Horde is very vulnerable to spells and area damage such as [[Arrows]]. The defender should try to bait out these counters with their other units so that the opponent will not have them on hand when on the offense.
+**Luring the two Princes away from the Tower with a cheap moderately high health troop such as the [[Ice Golem]] can work. The Princes will stop charging once they hit the Ice Golem and will be distracted by him, giving the player enough time to drop a swarm or another unit behind the Princes to take them out.
+**Pairing [[The Log]] with a [[Sparky]] can deal significant damage to the Prince duo. The Log must be casted before the Sparky attacks so that it takes out the Dark Prince's shield, then Sparky will finish off the Dark Prince and significantly weaken the Prince. The knockback from The Log will also reset the charge of the Prince, allowing Sparky to blast a second time if needed.
+**Even though an [[Electro Dragon]] does not deal a lot of damage, it cannot be targeted by the Princes, making it a great assist card against the Double Prince push, plus its attacks also resets their charges as well. Pair it with a ground mini tank and it will be able to stop the push with all of its hitpoints left for a counterattack. Note that using [[Vines]] can cause it to get grounded, which allows the Prince to finish it off instantly, so make sure that the spell is baited out beforehand.
+**Since this combo costs a lot of Elixir, attacking in the other lane can be a good way to prevent the opponent from effectively executing it.
+**Pairing the Double Prince push with the P.E.K.K.A. or Mega Knight. is a potentially devastating strategy, as it amplifies the strong points of the push, but also its weak points. Their high hitpoints and damage can allow the Princes to shred through units even faster, but cards that output a large damage, such as [[Rocket]] or Minion Horde, can deal with it.
+**This combo is very expensive and it can lead to a counterattack which you cannot defend. So, only place it if you're sure your opponent is very low on Elixir. Alternative, one of the two cards can be used defensively, and then the second one can be used afterwards in a counterpush.
+**A cheaper alternative is to pair the Prince with the [[Royal Ghost]]. Much like the Dark Prince, he is able to deal area damage, allowing the Prince to hit a bulkier target with his charge that could easily withstand the Royal Ghost's attacks. However, the Royal Ghost is slower, which makes it much easier to separate from the Prince.
+**Another alternative is to pair the Prince with the Golden Knight. The Golden Knight has very similar bulk to the Prince, which makes him harder to deal with, and by using his ability, he can effectively counter swarms that can stop the Prince's charge. However, he is much slower, which makes him easier to separate from the Prince.
+*If a troop is placed in front of the Prince, he will be able to push them while charging and speed them up. They will both reach the Crown Towers faster and can be used as mutual shields for each other.
+**This works best when used with bulky melee troops, especially the Valkyrie. The Valkyrie can tank hits for the Prince while also removing swarms which are often the bane of the Prince. However, similar to the Prince + Dark Prince combo, this is also hard countered by P.E.K.K.A. and Mega Knight.
+**However, this trick is not effective with small, light troops, as they typically cannot tank well for the Prince and will often end up being shoved to the side anyways.
+*The Prince, being a single target troop, is most often countered with swarms like the [[Skeleton Army]] or [[Goblin Gang]] for a positive Elixir trade or [[Barbarians]], as it is simple and cost-effective to do so. Therefore, it is beneficial for the player to pair cheap area damage spells with the Prince to quickly clear these units out on offense.
+*The Prince is weak to spawning cards, as they will constantly spawn troops, preventing him from charging.
+**The [[Witch]] is an amazing counter against the Prince. She will constantly spawn [[Skeletons]], preventing him from charging up, and spells are less effective against her than they are against a swarm card. However, spelling away the Witch's Skeletons preemptively will cause the Prince to defeat the Witch.
+**The [[Tombstone]] is a great counter to the Prince. It can withstand multiple Prince attacks, stop his charge effectively and is a positive Elixir trade against him.
+**The [[Goblin Hut]] and [[Barbarian Hut]] are less effective, however, they will spawn more troops to distract the Prince, meaning that they will deal more damage to him.
+**The [[Skeletons/Evolution|Evolved Skeletons]] are the cheapest counter to a lone Prince. Provided that at least one of the Evolved Skeletons attacks the Prince, they will constantly multiply themselves and keep him distracted long enough until he is defeated.
+**If a Prince is approaching your [[Skeleton King]], activate his ability. The Prince will get distracted by the Skeletons summoned by the ability, buying time to support the Skeleton King. However, this is a negative Elixir trade.
+*Troops with a shield are a great way absorb the Prince's charge and have the troop keep their hitpoints for a counterpush. The [[Guards]] and [[Royal Recruits]] are particularly effective, because they come in multiple numbers, distracting the Prince for longer. An [[Knight/Evolution|Evolved Knight]] can work in a similar way.
+**In a pinch, a [[Royal Delivery]] will deal some notable damage to a charging Prince, and then spawn a Royal Recruit that will withstand the charge, with only the shield being taken out in the process. However, it is not enough to stop him on its own, and requires support from another card, such as [[Bats]].
+***Unlike the Royal Delivery, the [[Barbarian Barrel]] is completely ineffective against the Prince, as the Prince will OHKO the Barbarian, which allows him to start charging again.
+*A good way to counter a lone Prince is to lure him closer to the center with cheap cards like [[Spear Goblins]]. Spear Goblins, with the help of the two Crown Towers, can take out a Prince. The player should place the Spear Goblins in the center of their side. When the Prince attacks the Spear Goblins, the second Crown Tower will also attack the Prince, taking him out.
+*The [[Goblin Cage]]'s hitpoints are enough to still survive 2 hits from the Prince or his charge strike. However, the life decay may cause it to be immediately destroyed by him if placed too early. On the other hand, the [[Goblin Cage/Evolution|Evolved Goblin Cage]] has a longer range which allows it to absorb the Prince, preventing him from hitting it entirely.
+*The charge attacks from the Prince will not have it reset from the Tornado, which is not the case with knockbacks. The Prince also resist the Tornado's pull a lot more effectively than it would if it was not charging. This makes certain combinations with Tornado less effective against him; in this case, Zap, Lightning, or The Log may be better to use.
+*The [[Executioner]] paired with the Prince is a high-risk, high reward strategy. The Prince can take out mini tanks such as the Mini P.E.K.K.A and [[Lumberjack]], while the Executioner can take out swarms such as Goblin Gang, Minion Horde or Skeleton Army. The [[Bomber]], [[Baby Dragon]], [[Bowler]], [[Firecracker]], [[Goblin Demolisher]], Sparky, [[Princess]], and [[Wizard]] can work in a similar way with the Prince. However, the combo is countered by separating the duo, since they have different movement speeds and ranges.
+*A deadly combination is the Prince and [[Balloon]] combo. Despite being expensive at 10 Elixir, the Prince can OHKO frail grounded anti-air troops like the Musketeer while the Balloon decimates the Tower. While this may seem weak to air units like the Minion Horde, the Prince will then be more likely to land a hit. This can be defeated with a ground swarm and an air swarm, such as Skeleton Army and Bats. It can also be defeated with a well timed Rocket, although this has to be done immediately since the Prince will eventually charge and separate from the Balloon, making it impossible to hit both. This can be remedied by placing a unit to distract the Prince, like Skeletons, so that the units stay clumped together.
+*If the Prince does not manage to charge in time, a [[Mini P.E.K.K.A.]] can defeat him for a positive Elixir trade. Even if he charges, the player can deploy a distraction unit, like Skeletons, Goblins, [[Electro Spirit]], or Ice Spirit, to stop the Prince's charge for slightly more Elixir, but leaving the Mini P.E.K.K.A. far healthier for a counterpush.
+*The Prince is one of the most effective counters to the [[Elixir Golem]] and [[Battle Healer]] combo, as his high individual damage and moderately high hitpoints are able to take care of the Battle Healer easily and destroy all forms of the Elixir Golem very quickly, also having enough damage to OHKO each Elixir Blob. Beware, as the opponent may place a swarm card like the Skeleton Army to distract the Prince, so having spells in hand will help out a great deal. Try to defeat the Battle Healer before the Elixir Golem so that the Prince saves more of his hitpoints for a counterattack.
+*A [[Fisherman]] has long enough range with his hook that allows him to pull the Prince close to the center while also resetting his charge. Pair him with a cheap distraction to counter the Prince for, at worst, a neutral Elixir trade.
+*In Prince versus Prince duels, it is a good idea to use Zap on the opposing Prince. This will allow your own Prince to heavily cripple the opposing Prince with his charge without taking the opposing charge in return.
+*The Prince has a slightly higher range than most other melee troops. When he approaches a distracted Valkyrie from a distance, he can safely attack without taking damage.
+**Because of his longer melee range and relatively large hitbox, it is possible for a Prince to hit a Sparky, [[Golden Knight]], or [[Skeleton King]] from across the river. However, this is hard to emulate and will likely not happen very often.
+*Unlike the [[Battle Ram]], the Prince has an immunity to all forms of knockback, except for The Log, [[Little Prince]], and [[Monk]]. Because of this, it is not effective to use spells like [[Fireball]] or Giant Snowball to reset the Prince's charge, nor is it a good idea to use a [[Bowler]] or [[Executioner/Evolution|Evolved Executioner]] against the Prince.
+**Similarly, because of his knockback immunity, he is an effective counter to the [[Royal Giant/Evolution|Evolved Royal Giant]] and [[Battle Ram/Evolution|Evolved Battle Ram]]. With his high damage, he will be able to defeat them relatively quickly, especially if he manages to charge. However, the Evolved Barbarians can still survive his charge, so one should not be overreliant on him against them.
+*The Prince is able to jump over the river. This is useful for attacking ranged units or buildings that are attacking a tank like a Giant or a Golem.
+*[[Clone|Cloning]] a Prince will retain his charge and will not interrupt it. However, the cloned Prince will not inherit the charging status of the original one.
+*The Prince can counter a lone proactive [[Archer Queen]], assuming that his charge effect hits her. It is a situational idea to use Zap or The Log on the Prince so that his charges gets reset, defeating him, albeit leaving you at a great Elixir deficit. A similar principle applies to the [[Little Prince]].
+*An alternative for a single target pressure card is the [[Bandit]]. Costing 2 less Elixir, the [[Bandit]] is faster than the Prince and her dash allows for more mobility, which is quite effective for quick pressure. However, even with her dash, she deals significantly less damage than the Prince, and she is also frailer, making her weaker to counters.
+*Since the Prince's charge can be reset by spells like Zap and The Log, he is very effective at baiting out these spells. This makes him great to use in decks whose main offensive cards are easily countered by those spells, such as [[Goblin Barrel]] and [[Skeleton Barrel]] decks.
+
+<center>
+
+<div class="table-back" id="unit-statistics">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Prince Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||1.4 sec||0.5 sec||Medium (60)||1 sec||Melee: Long (1.6)||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+
+{{StatisticsSubheader|Charge Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%; text-align:center;"
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Charge Range<br />{{Icon|I=Radius}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|Very Fast (120)||2.5||Ground||Ground
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1920 }}
+{{#vardefine: dmg_11 | 391 }}
+{{#vardefine: charge_11 | 783 }}
+{{#vardefine: atk_speed | 1.4 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Charge Damage<br />{{Icon|I=Boost}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }}|| {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }}  || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }}  || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }}  || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}}  || {{#var:dmg_11}} || {{#var:charge_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }}  || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }}  || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }}  || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }}  || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }}  || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 205,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|20 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 610,000 Damage to enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 1,020,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" |CHARGE!!! <br> [[File:CHARGE!!!.png|50x50px]]
+|1
+|Hit a total of 245 Troops or buildings with the Charge ability
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Hit a total of 700 Troops or buildings with the Charge ability
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Hit a total of 1,250 Troops or buildings with the Charge ability
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==Sound Effects==
+{| class="wikitable"
+!Sound Effect
+!Action
+!Description
+!Line
+|-
+|[[File:Prince Deploy.wav]][[File:Prince Blow.wav]]
+|Deployment
+|Plays when the Prince is deployed.
+|-
+|[[File:Prince Charge.wav]]
+|Charge
+|Plays when the Prince charges.
+|-
+|[[File:Prince Impact.wav]]
+|Charge Impact
+|Plays when the Prince hits something during his charge.
+|-
+|[[File:Prince Hit 1.wav]] [[File:Prince Hit 2.wav]] [[File:Prince Hit 3.wav]] [[File:Prince Hit 4.wav]]
+|Hit
+|Plays when the Prince hits something.
+|"Mm-ha!"<br>"Ho-ho!"<br>"Ha-Ha!"<br>"Ho-ho!"
+|}
+
+==History==
+2016
+*The Prince [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016.
+*On 11/1/2016, the [[Version History#The First Update (11/1/2016)|First Update]], decreased the Prince's hitpoints by 4%.
+*On 29/2/2016, the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]], decreased the Prince's sight range to 5.5 tiles (from 6 tiles). It also changed the Prince's sound effects.
+*On 23/3/2016, a [[Version History#Balance Changes (23/3/2016)|Balance Update]], decreased the Prince's charge speed to 120 (from 138).
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], fixed the "range bug" and decreased the Prince's range to 1.85 tiles (from 2.5 tiles), now classified as Melee, but his effective range remained unchanged. It also made a small change to the Prince's card description.
+*On 21/6/2016, a [[Version History#Balance Changes (21/6/2016)|Balance Update]], increased the Prince's damage by 9%.
+*On 24/8/2016, a [[Version History#Balance%20Changes%20(24/8/2016)|Balance Update]], increased the Prince's damage by 2%. This means that a Level 13 Prince will now be able to defeat Level 13 [[Barbarians]] in 2 hits or 1 charge strike.
+2017
+*On 12/12/2017, the [[Version History#Electrifying Update (12/12/2017)|Electrifying Update]], increased the Prince’s hitpoints by 5% and decreased his attack time interval to 1.4 seconds (from 1.5 seconds).
+2018
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], increased the distance required for charging to 3.5 tiles (from 2.5 tiles).
+*On 3/9/2018, a [[Version History#Balance Changes (3/9/2018)|Balance Update]], increased the Prince's hitpoints by 5%.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Epic}} cards start at Level 6 and end at Level 13 (from 1 to 8).
+*On 12/12/2018, an [[Version History#Optional%20Update%20(12/12/2018)|Optional Update]], fixed an issue where the Prince's [[Star Points|Star Level]] used the sound effects of the [[Dark Prince]].
+2019
+*On 1/7/2019, the [[Version History#July%202019%20Update%20(1/7/2019)|July 2019 Update]], decreased the Prince's range to 1.6 tiles (from 1.85 tiles), now classified as Melee: Long.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Prince's card info screen.
+2020
+*On 2/6/2020, a [[Version History#Balance Changes (2/6/2020)|Balance Update]], increased the Prince's hitpoints by 3%.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the [[Arenas|Arena]] to unlock the Prince from [[Training Camp]] to Royal Arena.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 3/2/2022, a [[Version History#Balance%20Changes%20(3/2/2022)|Balance Update]], decreased the Prince's hitpoints by 4% and made him able to jump over the river.
+*On 2/8/2022, a [[Version History#Balance%20Changes%20(2/8/2022)|Balance Update]], decreased the distance required for charging to 3 tiles (from 3.5 tiles).
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+*On 17/6/2024, the [[Version History#Goblin World Update (17/6/2024)|Goblin World Update]], decreased the distance required for charging to 1.5 tiles (from 3 tiles).
+*On 2/7/2024, a [[Version History#Balance Changes (2/7/2024)|Balance Update]], increased the distance required for charging to 2 tiles (from 1.5 tiles).
+2025
+*On 31/3/2024, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Prince's damage by 0.25% and his charge damage by 0.12%.
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)=|Balance Update]], increased the distance required for charging to 2.5 tiles (from 2 tiles).
+
+== Gallery==
+<gallery>
+Prince card render.png|Current card render.
+Prince Preview.gif|Current card preview.
+Prince 1.png|Prince 1
+Prince 2.png|Prince 2
+Prince 3.png|Prince 3
+Prince 4.png|Prince 4
+Prince 5.png|Prince 5
+Prince 8.png|Prince 6
+Prince 6.png|Prince waving his hand.
+Prince 7.png|Prince with his pony.
+Prince helmetless.png|The Prince without his helmet in the [https://www.youtube.com/watch?v=N0QqNGbpTK0&t=377s LOST & CROWNED] video.
+</gallery>
+
+==Trivia==
+*The word "''Prince''" comes from the Latin word "''prīnceps''", meaning first head.
+**The Prince is 1 of 20 [[cards]] associated with nobility, with the others being [[Knight]], [[Royal Recruits]], [[Royal Giant]], [[Royal Delivery]], [[Tower Princess]], [[Royal Hogs]], [[Dark Prince]], [[Raging Prince]], [[Mega Knight]], [[Princess]], [[Royal Ghost]], [[Spirit Empress]], [[Super Knight]], [[Dagger Duchess]], [[Royal Chef]], [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], and the [[Little Prince]].
+*The Prince is shown to make the practice of [https://en.wikipedia.org/wiki/Jousting jousting]. Jousting is a medieval and renaissance martial game or hastilude between two combatants either on horse or on foot. The joust became an iconic characteristic of the knight in Romantic medievalism. The participants of a joust on horseback experience close to three and a quarter times their body weight in G-forces when the lances collide with their armour. Originally, it started as the military use of lances by heavy cavalry, but was transformed into a specialized sport during the Late Middle Ages.
+**He is 1 of 5 [[:Category:Troop Cards|troops]] that have a charge, the others being [[Battle Ram]], Dark Prince, Raging Prince, and [[Ram Rider]].
+***The Battle Ram's charge shares the same sound effects as the Prince's, only at a lower pitch.
+*The Prince's pony resembles a [https://en.wikipedia.org/wiki/Shetland_pony Shetland pony], a breed of ponies that has a compact body with short legs and a long mane, and is commonly ridden in horse shows.
+*The Prince is one of the first troop cards to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the [[Minions]], [[Archers]], Knight, [[Spear Goblins]], [[Goblins]], [[Bomber]], [[Skeletons]], [[Barbarians]], [[Minion Horde]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Musketeer]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], [[Baby Dragon]], [[Skeleton Army]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], and [[Balloon]].
+*The Prince is one of the first troops to be featured in a [[Loading Screens|Loading Screen]], alongside the Knight, Goblins, and Skeletons.
+*The Prince is one of the first troop cards to receive a card render, alongside the Archers, Knight, Goblins, Bomber, Skeletons, Barbarians, [[Bats]], Royal Recruits, [[Skeleton Barrel]], [[Rascals]], Musketeer, Giant, Valkyrie, Wizard, [[Flying Machine]], Hog Rider, Royal Hogs, [[Dart Goblin]], [[Zappies]], [[Elixir Golem]], Baby Dragon, Skeleton Army, Witch, P.E.K.K.A, Balloon, [[Giant Skeleton]], [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], Mega Knight, Ram Rider, [[Miner]], Royal Ghost, [[Ice Wizard]], [[Magic Archer]], [[Bandit]], [[Lava Hound]], [[Night Witch]], and [[Fisherman]].
+*The Prince is one of the first cards to ever receive balance changes since [[Version History#The First Update (11/1/2016)|The First Update]], the others being the [[Mortar]], Witch, and [[Goblin Barrel]]
+*The Prince is 1 of 8 troops that can jump over the river, the others being Hog Rider, Royal Hogs, Dark Prince, Raging Prince, Ram Rider, [[Mother Witch|Cursed Hog]], and [[Santa Hog Rider]].
+*The Prince has been featured in multiple [[Tournament/Special Event Challenges|special game modes]] outside of the card. More specifically:
+**The Prince is 1 of 23 troops that has been featured in the [[Troop Rush]] game [[:Category:Modes|mode]], the others being Skeletons, [[Skeleton Dragons]], [[Fire Spirit]], Bats, [[Elite Barbarians]], [[Firecracker]], Rascal Girls, Royal Hogs, [[Heal Spirit]], Elixir Golem, [[Guards]], Balloon, [[Golem]], Wall Breakers, Ram Rider, [[Sparky]], [[Phoenix]], Royal Ghost, Bandit, [[Lumberjack]], Santa Hog Rider, and the [[Monk]].
+*The Prince, along with the Archers, Goblins, Barbarians, [[Ice Spirit]], Mini P.E.K.K.A, Musketeer, Giant, Wizard, Hog Rider, Witch, and Night Witch, is featured as a sticker in [https://en.wikipedia.org/wiki/IMessage iMessage], in a sticker pack called [https://apps.apple.com/us/app/clash-theater-stickers/id1353823484 Clash Theater]. Also, along with the Archers, Goblins, Skeletons, Barbarians, Mini P.E.K.K.A, Musketeer, Wizard, Witch, and [[Princess]], he is also featured in the [https://apps.apple.com/us/app/clash-a-rama/id1182384664 Clash-A-Rama] sticker pack.
+*The Prince and the Dark Prince are revealed to be brothers according to the balance changes in the [[Version History#Tournaments%20Update%20(4/7/2016)|Tournaments Update]].
+*The grill covering the [[Mega Minion]]'s mouth is very similar to the visor on the Prince's helmet.
+*The [[Ranked|Champion League]] badge resembles a Prince's helmet.
+*In [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters], the [https://squad-busters.fandom.com/wiki/Pi%C3%B1ata Piñata] resembles a piñata version of the Prince's pony.
+*The Prince is the subject of certain cosmetics in the game. More specifically:
+**The Prince is the subject of a few [[Clans|Clan]] badges.
+**The Prince is the subject of a few [[Emotes]]. His pony is also the subject of an Emote.
+**The Prince is the subject of a few [[Battle Banners|Battle Banner]] items.
+***The Prince is one of the first troops to be the subject of a Battle Banner item, along with the Mini P.E.K.K.A, Dart Goblin, P.E.K.K.A, Giant Skeleton, Mega Knight, [[Super Witch]], and the Golden Knight.
+***The [https://clashroyale.fandom.com/wiki/Battle_Banners?file=Headless_Ponyman_Decoration.png Headless Ponyman decoration] is a reference to [https://en.wikipedia.org/wiki/Headless_Horseman Headless Horseman].
+*His range was shown as 2.5 before the [[Version History#May 2016 Update (3/5/16)|May 2016 Update]].
+*The description incorrectly mentions that the Prince does double damage with his charge, as at some Levels, he deals 1 more than double.
+*If the player collects the free {{Rarity|Epic}} card from the [[Shop]] in Epic Sunday, while being below [[Arenas|Arena]] 6, the {{Rarity|Epic}} card being given to them will always be the Prince.
+*Before the Prince's card release, the Prince was supposed to be a {{Rarity|Rare}} card. However, he was changed to an {{Rarity|Epic}} card post-release.
+*The Prince can be seen without his helmet in the [https://youtu.be/N0QqNGbpTK0?si=qs4_dS0-uoPB535E&t=377 LOST & CROWNED] video.
+
+==In other languages==
+{{Other languages|fr=Prince|de=Prinz|es=Príncipe|it=Principe|nl=Prins|no=Prins|tr=Prens|jp=プリンス|kr=프린스|ru=Принц|ar=أمير|pt=Príncipe|cn=王子|cnt=王子|fa=شاهزاده|id=Pangeran|ms=Putera|th=เจ้าชาย|fi=Prinssi|vi=Hoàng tử}}
+
+{{Navigation|Card}}
+
+[[fr:Prince]]
+[[de:Prinz]]
+[[es:Príncipe]]
+[[it:Principe]]
+[[ja:プリンス]]
+[[ko:프린스]]
+[[ru:Принц]]
+[[pt-br:Príncipe]]
+[[zh:王子]]
+[[pl:Prince]]

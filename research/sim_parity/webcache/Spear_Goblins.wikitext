@@ -1,0 +1,202 @@
+{{Protection}}{{MagicWords}}{{ClashofClansLink|Goblin_Thrower/Spear_Goblin}}
+
+{{Card Infobox|Cost=2|Rarity=Common|Type=Troop|Arena=Goblin Stadium|ReleaseDate=4 January 2016}}{{SubpageNavBox|MergeTactics=yes}}{{Quote|Three unarmored ranged attackers. Who the heck taught these guys to throw spears!? Who thought that was a good idea?!}}
+
+The Spear Goblins is a {{Rarity|Common}} [[Cards|card]] that is unlocked from the [[Arenas|Goblin Stadium (Arena 1)]]. It spawns three very fast, single-target, air-targeting, medium-ranged, ground [[:Category:Troop Cards|troops]] with low hitpoints and low damage. Their deployment is in a triangle formation. They resemble normal [[Goblins]], but are taller and thinner, have sharper elven ears and side hair, wear team-colored bandanas and belts, have team-colored spear cases tied to their backs with a rope, and always have a wooden spear in their hands with a team-colored rope tied on top. They are also the same as those spawned by the [[Goblin Hut]], [[Goblin Gang]], [[Goblin Giant]], and the [[Party Hut]]. A Spear Goblins card costs 2 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Spear Goblins Card}}
+*Spear Goblins provides anti-air and ground distraction for a cheap cost, but they will be defeated by any damaging [[:Category:Spell Cards|spell]] beside the [[Freeze]] spell. Being overly reliant on them to defend or distract pushes can backfire if the opponent predicts the move and spells them immediately. The player should be aware of when the opponent can or can't quickly defeat Spear Goblins on their side of the [[Arenas|Arena]].
+*Mini tanks pair well with Spear Goblins, they can help in distracting the enemy units and absorbing hits from them while the Spear Goblins deal damage from distance. Additionally, they can also assist in protecting them from distractible splash [[:Category:Troop Cards|troops]] such as the [[Skeleton Dragons]], [[Wizard]], [[Ice Wizard]], [[Magic Archer]], [[Firecracker]], [[Princess]], [[Heal Spirit]], [[Witch]], [[Ice Spirit]], [[Fire Spirit]], and the [[Bomber]], or even against bulkier splash troops such as the [[Baby Dragon]], [[Executioner]], [[Sparky]], [[Dark Prince]], [[Skeleton King]], [[Bowler]], Valkyrie, [[Goblin Demolisher]], [[Royal Ghost]], and the [[Mega Knight]].
+*Compared to other cheap swarms like [[Goblins]], [[Bats]], [[Minions]], [[Archers]], [[Guards]], and [[Skeletons]], Spear Goblins can stall for a longer period of time, as their range allows them to stay in place instead of approaching the unit intended for distraction.
+*Due to their low [[Elixir]] cost, Spear Goblins are easily disposable and can be used to block an enemy [[Prince]]'s charge. In fact, Spear Goblins, with the help of the two [[:Category:Tower Troop Cards|Crown Towers,]] can take out a Prince. The player should place the Spear Goblins in the center of their side. When the Prince attacks the Spear Goblins, the second Crown Tower will also attack the Prince, taking him out.
+*Spear Goblins are decent support behind higher hitpoint troops such as [[Giant]], [[Lava Hound]], [[Giant Skeleton]], [[Royal Giant]], [[P.E.K.K.A.|P.E.K.K.A]], [[Mega Knight]], [[Electro Giant]], or [[Golem]]. They can deal considerable damage to defending units and [[:Category:Building Cards|buildings]], and are less susceptible to splash troops behind a tank due to their range.
+*When playing Spear Goblins at the bridge for chip damage, the player can place them in the bypass placement for ground troop. This will result in the second Spear Goblin to throw an extra spear before dying to the Crown Tower. Do be aware that doing so gives the opponent more time to react. Even if the opponent reacts to them in time, it will still allow the player to scout the opponent's [[Battle Decks|deck]] based on what [[Cards|card]] they used to counter the Spear Goblins.
+*Spear Goblins combined with a Crown Tower's damage can prevent a [[Balloon]] from landing its powerful melee attack onto it, only letting the death damage slip by. This is not a bad trade, as the defender will be up 3 Elixir.
+*Spear Goblins can prevent major damage from [[Graveyard]], as one Spear Goblin can one shot a Skeleton. However, their slow hit speed may cause them to stutter and allow a few hits on the Crown Tower, and they are susceptible to spells like [[Giant Snowball]], Zap, or [[Poison]] commonly paired with Graveyard.
+*[[Zap]], Giant Snowball, [[Rage]], [[Barbarian Barrel]], and [[The Log]] are all effective in eliminating Spear Goblins due to their equivalent cost. However, the player should be cautious of other cards the opponent may be running, as the opponent may abuse the lack of efficient counter with cards such as [[Minion Horde]] or [[Goblin Barrel]].
+*They can tank three hits from a [[Valkyrie]]. By placing them almost horizontal to her, their triangular formation will cause the Valkyrie to only be able to take out one Spear Goblin at a time, buying time for the player's tower to take her out.
+*The [[Miner]] pairs well with the Spear Goblins on a counterattack, as the Miner's health pool will allow the Spear Goblins to rack up major damage if left unattended. It can be awkward to counter if the opponent does not have a cheap spell in hand.
+*The Spear Goblins paired with Goblins can replicate the effect of the [[Goblin Gang]] for a slightly more expensive cost. However, there is 1 more Goblin than there is in the Goblin Gang, and their lower individual costs allow the player to defend more efficiently to several attacks (i.e, they are not forced to overcommit with 4 Elixir to a single attack, like with the Goblin Gang's 3 Elixir cost).
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|2||1.6 sec||0.5 sec||Very Fast (120)||1 sec||5||500||Air & Ground||x3||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 133 }}
+{{#vardefine: dmg_11 | 81 }}
+{{#vardefine: atk_speed | 1.6 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 70,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|4,000 {{Icon|I=Gold}}
+|-
+|2
+|Deal a total of 210,000 Damage to enemy Troops or buildings
+|4,000 {{Icon|I=Gold}}
+|-
+|3
+|Deal a total of 350,000 Damage to enemy Troops or buildings
+|4,000 {{Icon|I=Gold}}
+|-
+| rowspan="3" |Hit Maker <br/ > [[File:Hit Maker.png|50x50px]]
+|1
+|Hit enemy Troops a total of 1,550 times
+|6,000 {{Icon|I=Gold}}
+|-
+|2
+|Hit enemy Troops a total of 4,400 times
+|6,000 {{Icon|I=Gold}}
+|-
+|3
+|Hit enemy Troops a total of 7,700 times
+|6,000 {{Icon|I=Gold}}
+|}
+<center>
+The requirements may be different, thank to the [[Version History#2026 Q2 Update (26/5/2026)|update]]
+</center>
+</div>
+</center>
+
+==History==
+2016
+*The Spear Goblins [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016 {{Balance|Add}}.
+*On 29/2/2016, the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]], decreased the Spear Goblins' sight range to 5.5 tiles (from 6 tiles) {{Balance|Buff}}.
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], increased the {{Rarity|Common}} card Level cap to 13 (from 12) {{Balance|Buff}}. The update also fixed the "range bug", which decreased the Spear Goblins' range to 5 tiles (from 5.5 tiles) {{Balance|Nerf}}, but their effective range is unchanged.
+2017
+*On 16/3/2017, a [[Version History#Maintenance%20Break%20(16/3/2017)|maintenance break]], increased the Spear Goblins' projectile speed to 500 (from 350) {{Balance|Buff}}. This was done to fix some unexpected behaviour that the Spear Goblins showed.
+*On 9/10/2017, the [[Version History#Epic Quests Update (9/10/2017)|Epic Quests Update]], decreased the Spear Goblins' attack time interval to 1.1 seconds (from 1.3 seconds) {{Balance|Buff}}.
+2018
+*On 25/4/2018, the [[Version History#Clan%20Wars%20Update%20(25/4/2018)|Clan Wars Update]], increased the Spear Goblins‘ attack time interval to 1.2 seconds (from 1.1 seconds) {{Balance|Nerf}}. A small change to the Spear Goblin's card description was also made {{Balance|Neutral}}.
+*On 4/6/2018, a [[Version History#Balance Changes (4/6/2018)|Balance Update]], increased the Spear Goblins’ damage by 34% {{Balance|Buff}}, but also increased their attack time interval to 1.7 seconds (from 1.2 seconds) {{Balance|Nerf}} and increased their first attack time interval to 0.5 seconds (from 0.2 seconds) {{Balance|Nerf}}.
+2020
+*On 2/6/2020, a [[Version History#Balance Changes (2/6/2020)|Balance Update]], gave the Spear Goblins a new 0.1 second deploy stagger from each other {{Balance|Add}}.
+*On 30/7/2020, a maintenance break, added a card render to the Spear Goblins' card info screen {{Balance|Add}}.
+2021
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13) {{Balance|Buff}}.
+2023
+*On 4/4/2023, a [[Version History#Balance Changes (4/4/2023)|Balance Update]], increased the Spear Goblins' range to 5.5 tiles (from 5 tiles) {{Balance|Buff}}.
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14) {{Balance|Buff}}.
+2024
+*On 17/6/2024, the [[Version History#Goblin World Update (17/6/2024)|Goblin World Update]], decreased the Spear Goblins’ first attack time interval to 0.3 seconds (from 0.5 seconds) {{Balance|Buff}}. It also added the Spear Goblins to the Goblin class {{Balance|Add}}.
+2025
+*On 8/1/2025, a [[Version History#Balance Changes (8/1/2025)|Balance Update]], increased the Spear Goblins’ first attack time interval to 0.4 seconds (from 0.3 seconds) {{Balance|Nerf}}.
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], made it so that Spear Goblins' spawn formation would be correctly mirrored depending on which side of the [[Arenas|Arena]] they were placed {{Balance|Neutral}}.
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] increased the Spear Goblins’ first attack time interval to 0.5 seconds (from 0.4 seconds) {{Balance|Nerf}}, and decreased their range to 5 tiles (from 5.5 tiles) {{Balance|Nerf}}.
+2026
+* On 7/4/2026, a [[Version History#Balance Changes (7/4/2026)|Balance Update]], increased the Spear Goblins' spawn radius{{Balance|Neutral}}.
+* On 4/8/2026, a [[Version History#Balance Changes (4/8/2026)|Balance Update]], decreased the Spear Goblins' hit speed to 1.6 seconds (from 1.7 seconds){{Balance|Buff}}.
+
+== Gallery ==
+<gallery>
+File:Spear Goblins card render.png|Current card render.
+File:Spear Goblins Preview.gif|Current card preview
+File:Spear Goblin.png|Spear Goblin
+File:Spear Goblins alone.png|Spear Goblins Alone.
+File:SpearGoblinRenderConcepts.jpeg|Render concepts
+File:OriginalSpearGoblinRender.jpeg
+File:SpearGoblin3D.jpeg|3D model
+</gallery>
+
+==Trivia==
+*Goblins are small, grotesque, monstrous creatures that appear in the folklore of multiple European cultures. First attested in stories from the Middle Ages, they are ascribed conflicting abilities, temperaments, and appearances depending on the story and country of origin, ranging from mischievous household spirits to malicious, bestial thieves. They often have magical abilities similar to a fairy or demon, such as the ability to shapeshift. Similar creatures include [https://en.wikipedia.org/wiki/Duende duendes], [https://en.wikipedia.org/wiki/Kobold kobolds], [https://en.wikipedia.org/wiki/Leprechaun leprechauns], and [https://en.wikipedia.org/wiki/Ghoul ghouls].
+**In the German and Dutch language setting of the game, the Spear Goblins' name translates to "Spear Kobolds". In the Spanish, Arabic, and Vietnamese language setting of the game, the Spear Goblins' name translates to "Duendes with Spears", "Spear Ghouls", and "Spear Throwing Leprechauns" respectively.
+**The Spear Goblins are 1 of 17 [[cards]] associated with [[Goblins]], with the others being [[Goblin Gang]], [[Baby Goblins]], [[Dart Goblin]], [[Goblin Demolisher]], [[Suspicious Bush]], [[Goblin Cage]], [[Goblin Hut]], [[Goblin Giant]], [[Goblin Barrel]], [[Goblin Curse]], [[Goblin Drill]], [[Goblin Machine]], [[Party Rocket]], [[Party Hut]], [[Goblinstein]], and of course, Goblins.
+***The Goblins, Spear Goblins, Goblin Cage, and Goblin Hut are the only cards associated with Goblins that are unlocked in Goblin Stadium.
+*Spear throwing is believed to have been in use by Homo Sapiens since the Upper Paleolithic, at around 30,000 years ago. Most stratified European finds come from the [https://en.wikipedia.org/wiki/Magdalenian Magdalenian]. In this period, elaborate pieces, often in the form of animals, are common. The earliest reliable data concerning atlatls have come from several caves in France dating to the Upper Paleolithic, about 21,000 to 17,000 years ago. The earliest known example is a 17,500-year-old Solutrean atlatl made of reindeer antler, found at Combe Saunière (Dordogne), France. Spear throwing was later supplemented by the bow and arrow in the Epi-Paleolithic, until it was added to the [https://en.wikipedia.org/wiki/Ancient_Olympic_Games Ancient Olympic Games] as part of the [https://en.wikipedia.org/wiki/Pentathlon pentathlon] in 708 BC.
+**The Spear Goblins' spears can be seen on the [[Trophies|Trophy Road]] as a decoration.
+**A Trainer in the [[Training Camp]] is called Trainer Gary and uses an spear-related card in their [[Battle Decks|deck]] which is Spear Goblins. This is a reference to the name origin of the name "Gary", which means "''spear king''".
+*The Spear Goblins are 1 of 17 [[:Category:Troop Cards|troops]] that inspired a troop in Clash of Clans, the others being [[Bomber]], [[Bats]], [[Skeleton Barrel]], [[Minion Horde]], [[Firecracker]], [[Battle Ram]], [[Ice Golem]], [[Zappies]], [[Baby Dragon]], [[Giant Skeleton]], [[Ram Rider]], [[Inferno Dragon]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], and [[Night Witch]].
+*The Spear Goblins are one of the first troop cards to be featured in a Trainer's deck, alongside the [[Minions]], [[Archers]], [[Knight]], Goblins, Bomber, [[Skeletons]], [[Barbarians]], Minion Horde, [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Musketeer]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], Baby Dragon, [[Skeleton Army]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], [[Prince]], and [[Balloon]].
+*The Spear Goblins are 1 of 14 troops that has been featured with a [[Buff#Stun Attack|Stun Attack]] [[buff]], the others being Witch and [[Executioner]].
+*Their [[Star Points|Star Level 3 Skin]] grants them a red mohawk similar to the Level 6 Goblin in Clash of Clans.
+*Out of all [[Emotes]] with Goblins as a subject, 1 Emote has a Goblin wearing a bandana, and can be safely assumed to be a Spear Goblin.
+*The Spear Goblins were featured in the winning decks of multiple Clash Royale Tournaments. More specifically:
+**The Spear Goblins were featured in the winning deck of the [https://www.youtube.com/watch?v=VxEzjdKQ4HA Clash Royale Helsinki Tournament], by a player called Jason.
+**The Spear Goblins were featured in the winning deck of the [https://www.youtube.com/live/h3IOFTfT8Sk?si=wTF1FekCifpSULn- Clash Royale League 2020 Tournament], by a player called Ruben.
+*On 1/4/2019, a Clash Royale [https://x.com/ClashRoyale/status/1112701338012532737 tweet] on Twitter showcased a fake Spear Goblins balance change. The Spear Gobins would gain a 4th Spear Goblin that would be able to deal Area Damage. However, it never made it into the game.
+
+==In other languages==
+{{Other languages|esmeaning=Goblins with Spears|armeaning=Spear Ghouls|cnmeaning=Spear Thrower Goblins|cntmeaning=Spear Thrower Goblins|thmeaning=Spear-holding Goblins|fr=Gobelins à lances|de=Speerkobolde|es=Duendes con lanza|it=Goblin lancieri|nl=Speerkobolden|no=Spydnisser|tr=Mızraklı Goblin|jp=槍ゴブリン|kr=창 고블린|ru=Гоблины-копейщики|ar=غيلان الرمح|pt=Goblins Lanceiros|cn=哥布林投矛手|cnt=哥布林投矛手|fa=گابلین نیزه‌دار|id=Goblin Tombak|ms=Goblin Lembing|th=ก็อบลินถือทวน|fi=Keihäshiidet|vi=Yêu tinh ném lao}}
+
+{{Navigation|Card}}
+
+[[fr:Gobelins à lances]]
+[[de:Speerkobolde]]
+[[es:Duendes con lanza]]
+[[it:Goblin lancieri]]
+[[ja:槍ゴブリン]]
+[[ko:창 고블린]]
+[[ru:Гоблины-копейщики]]
+[[zh:哥布林投矛手]]

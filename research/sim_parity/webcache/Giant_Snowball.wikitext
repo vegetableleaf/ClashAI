@@ -1,0 +1,195 @@
+{{DISPLAYTITLE:<span style="color: #888888;">Giant Snowball</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=2|Rarity=Common|Type=Spell|Arena=Frozen Peak|ReleaseDate=20 June 2018}}{{SubpageNavBox|Evolution=yes}}{{Quote|It’s HUGE! Once it began rolling down Frozen Peak, there was no stopping it. Enemies hit are knocked back and slowed down. Reduced damage to Crown Towers.}}
+
+The Giant Snowball is a {{Rarity|Common}} [[Cards|card]] that is unlocked from [[Arenas|Frozen Peak (Arena 8)]]. It is an area-damage, air-targeting [[:Category:Spell Cards|spell]] with a medium radius and low damage. When used, it slows enemies in its radius for 3 seconds and inflict knockback. It is an oversized snowball. A Giant Snowball card costs 2 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Giant Snowball Common Modifier.png|45x45px]] Common: Practically Glacial===
+{{Quote|+300% slow duration}}
+Giant Snowball's duration is increased by 300%, for a total of 12 seconds.
+
+===[[File:Giant Snowball Rare Modifier.png|45x45px]] Rare: Get Outta Here!===
+{{Quote|+300% knockback}}
+Giant Snowball's pushback range is increased by 300%, for a total of 6 tiles.
+
+===[[File:Giant Snowball Epic Modifier.png|45x45px]] Epic: Snowball Fight!===
+{{Quote|5 Evo Snowballs}}
+Instead of a Giant Snowball, 5 Evolved Giant Snowballs are launched.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Giant Snowball Card}}
+*The Giant Snowball is a 2 [[Elixir]] utility [[Cards|card]] that is an effective finisher against [[:Category:Troop Cards|troops]] with low hitpoints.
+*This card excels at disrupting enemy pushes by knocking them back and slowing them down briefly, giving the defending player extra time to attack or defend. Its knockback effect can reset an [[Inferno Dragon]]'s ramp up attack or a [[Battle Ram]], Ram Rider, and [[Royal Recruits/Evolution|Evolved Royal Recruits]]' charge. However, this is not to be confused with a stun, as the Giant Snowball will not reset an [[Inferno Tower]], [[Mighty Miner]], [[Prince]], [[Dark Prince]], [[Mega Knight]], or a [[Sparky]].
+*Its knockback effect is the same as that of [[Fireball]]; it is a true stun that resets the attack animations of small to medium sized troops. This is in contrast to a normal stun such as that of the [[Zap]], which stalls attack animations but does not reset them.
+*The Giant Snowball can activate the [[King's Tower]] with a poorly placed [[Miner]] or [[Goblin Barrel]]. The Miner activation only works if the opponent plays their Miner on the corner of the [[:Category:Tower Troop Cards|Crown Tower]] that is closest to the King.
+*A Goblin Barrel can be easily defeated with large swarm cards like a [[Skeleton Army]] or a [[Goblin Gang|Goblin Gang.]] A Giant Snowball can prevent them from surrounding the [[Goblins]] spawned from the Goblin Barrel, allowing them to connect to the Crown Tower instead, but it doesn't mitigate their weakness to such [[:Category:Spell Cards|spells]] such as [[The Log]] or [[Arrows]].
+*Since it can be deployed anywhere in the [[Arenas|Arena]] and moves decently fast, the Giant Snowball can force a troop close to the center of the Arena to switch lanes, possibly hampering the opponent's future plays.
+*The Giant Snowball has the ability to mitigate a majority of stray damage from frail, lone support troops like a [[Musketeer]] or a [[Wizard]] for a positive Elixir trade, in some cases even preventing the damage entirely. Time the Snowball so that it lands right as the enemy troop is about to attack to reduce the damage taken as much as possible.
+*The Giant Snowball's knockback mechanic can be used to force enemy troops into favorable positions for the defender. For example, the knockback can force a [[Hog Rider]] off the player's Crown Tower and onto a defensive [[:Category:Building Cards|building]] like the [[Cannon]], [[Tesla]], [[X-Bow]], [[Bomb Tower]], or [[Mortar]].
+*With proper timing, the Giant Snowball can also be an effective support on offense, destroying low hitpoint troops and knocking back and slowing down other incoming troops.
+*The Giant Snowball works fairly well with the [[Ram Rider]]. On offense, the spell can knock defenders away from the player's Ram Rider while she simultaneously snares them, leaving them nearly immobile for several seconds and will allow the Ram Rider to deal much more damage. It also weakens low-health troops enough for the Ram Rider to finish them off with her snare attack. On defense, the Ram Rider will snare and slow down enemy troops, and Giant Snowball will push them back (if small or medium sized) and slow them even more, making it extremely difficult for slow moving troops like a [[Balloon]], [[Giant]], Sparky, [[Elixir Golem]], P.E.K.K.A, [[Giant Skeleton]], [[Electro Giant]], [[Valkyrie]], [[Skeleton King]], Mighty Miner, [[Battle Healer]], or [[Golem]] to connect.
+**Conversely, Giant Snowball is also a fairly reliable counter to the Ram Rider. Time the Giant Snowball such that it knocks the Ram Rider backwards just as her charge is about to connect to the Crown Tower to reset her charge and reduce tower damage.
+*Another good synergy is with [[P.E.K.K.A.|P.E.K.K.A]]. It can knock an [[Ice Golem]] further away from the P.E.K.K.A to prevent her being kited to the other lane. This requires precise timing and some degree of prediction, however.
+*The Giant Snowball is comparable to the Zap. The Giant Snowball offers a large knockback and long slowdown, while the Zap also has instant damage, slightly higher damage, and a stun to reset enemy charges. Zap however, cannot fully counter a Goblin Barrel.
+*Similarly, The Giant Snowball is comparable to the [[Rage]]. The Giant Snowball offers a large knockback and long slowdown, while the Rage can use its damage quicker on offense, has slightly higher damage, and can be used boost the attack and movement speed troops. Rage however, cannot fully counter a Goblin Barrel.
+**This means a prediction Snowball on offense is often more effective than a prediction Zap would be, as the travel time of the Snowball is much less relevant in this scenario.
+**This means the Giant Snowball is often the more effective spell over Rage on defense while the Rage is the more effective spell on offense.
+**Since the Snowball deals knockback and has a circular area of effect, it is harder to use with Fireball as the knockback from one spell may cause the other to miss. The player should make sure to have both of them in hand, and deploy each one of them long after the other one hits its intended target.
+**It is better at keeping troops inside a [[Poison]] than Zap is, thanks to the knockback and slow effect.
+*When placed correctly, a Giant Snowball can fully counter a lone center placed Goblin Barrel. The player should hover their Snowball over the Crown Tower and deploy it when the shadow of the Goblin Barrel is 0-2 tiles above the Crown Tower.
+*With the help of the [[Dart Goblin]], the Giant Snowball can fully counter the [[Wall Breakers/Evolution|Evolved Wall Breakers]]. Although this is a -2 trade, the Dart Goblin will counterattack if left ignored, dealing a large amount of chip damage.
+**Conversely, the Giant Snowball can fully counter an offensive Dart Goblin when timed and placed properly.
+
+<center><div id="unit-statistics" class="table-back">
+{{Statistics}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+! scope="col" |Slow Duration<br />{{Icon|I=Freeze}}
+! scope="col" |Slowdown<br />{{Icon|I=Freeze}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|2||2.5||3 sec||-30%||Air & Ground||[[:Category:Spell Cards|Spell]]||{{Rarity|Common}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: dmg_11 | 179 }}
+{{#vardefine: crown_dmg_11| 54 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Area Damage<br>{{Icon|I=Area Damage}}
+!scope="col"|Crown Tower Damage<br>{{Icon|I=Tower Damage}}
+|-
+| 1 || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}||{{#expr: {{#var:crown_dmg_11}} * (1.1^(1-11)) round 0 }}
+|-
+| 2 || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}||{{#expr: {{#var:crown_dmg_11}} * (1.1^(2-11)) round 0 }} 
+|-
+| 3 || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}||{{#expr: {{#var:crown_dmg_11}} * (1.1^(3-11)) round 0 }}
+|-
+| 4 || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}||{{#expr: {{#var:crown_dmg_11}} * (1.1^(4-11)) round 0 }} 
+|-
+| 5 || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(5-11)) round 0 }}
+|-
+| 6 || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(7-11)) round 0 }} 
+|-
+| 8 || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(8-11)) round 0 }} 
+|-
+| 9 || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(9-11)) round 0 }} 
+|-
+| 10 || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:dmg_11}} || {{#var:crown_dmg_11}}
+|-
+| 12 || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}  ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(15-11)) round 0 }} 
+|-
+| 16 || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 36,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|200 {{BASEPAGENAME}} cards<br/ >25 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 110,000 Damage to enemy Troops or buildings
+|2,000 {{Icon|I=Gold}}<br/ >25 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 180,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>25 {{Icon|I=XP}}
+|-
+| rowspan="3" |Hit Maker <br/ > [[File:Hit Maker.png|50x50px]]
+|1
+|Hit enemy Troops a total of 490 times
+|3,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Troops a total of 1,400 times
+|200 {{Icon|I=Common Wild Card}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Troops a total of 2,450 times
+|5,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History ==
+2018
+*The Giant Snowball [[Cards|card]] was added to the game on 20/6/2018, in the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]].
+*On 2/7/2018, a [[Version History#Balance Changes (2/7/2018)|Balance Update]], added the Giant Snowball to [[Clan Wars]] [[Clan Wars/Clan Wars I|Collection Day]] card pool.
+*On 1/10/2018, a [[Version History#October%20Balance%20Changes%20(1/10/2018)|Balance Update]], increased the Giant Snowball's slow duration to 2.5 seconds (from 2 seconds) and damage by 10%. It also fixed a bug where [[:Category:Troop Cards|troops]] that were spawned after their parent troops died would be immune to [[:Category:Spell Cards|spell]] damage.
+*On 3/12/2018, a [[Version History#December%20Balance%20Changes%20(3/12/2018)|Balance Update]], increased the Giant Snowball’s damage by 14%.
+2019
+*On 1/7/2019, the [[Version History#July%202019%20Update%20(1/7/2019)|July 2019 Update]], decreased the Giant Snowball's area radius to 2.5 tiles (from 3 tiles).
+*On 7/10/2019, a [[Version History#Season 4 Balance Changes|Balance Update]], decreased the Giant Snowball's pushback range to 1.5 tiles (from 1.8 tiles).
+2020
+*On 4/8/2020, a [[Version History#Season 14 Balance Changes (4/8/2020)|Balance Update]], decreased the Giant Snowball's [[:Category:Crown Towers|Crown Tower]] damage to 30% of the full damage (from 35%).
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], slightly changed the Giant Snowball's description, adding the phrase “''Reduced damage to Crown Towers.''” to it.
+*On 6/9/2021, the [[Version History#2021%20Quarter%203%20Update%20(6/9/2021)|2021 Quarter 3 Update]], increased the Giant Snowball's pushback range to 1.8 tiles (from 1.5 tiles).
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2023
+*On 27/3/2023, the [[Version History#Losers%20Update%20(27/3/2023)|Losers Update]], increased the Giant Snowball's reflect radius to 0.7 tiles (from 0.6 tiles).
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+*On 3/10/2023, a [[Version History#Balance%20Changes%20(3/10/2023)|Balance Update]], increased the Giant Snowball's slow duration to 3 seconds (from 2.5 seconds), but decreased its damage by 6.7%.
+2024
+*On 2/12/2024, the [[Version History#Pass Royale and more (2/12/2024)|December 2024 Update]], added the Giant Snowball's Evolution.
+2025
+
+* On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)=|Balance Update]] decreased the slowdown effect to -30% (from -35%).
+
+2026
+
+* On 1/6/2026, a Balance Update, decreased the Giant Snowball's [[:Category:Crown Towers|Crown Tower]] damage to 25% of the full damage (from 30%)
+
+==Gallery==
+<gallery>
+File:Giant Snowball Preview.gif|Current card preview
+</gallery>
+
+== Trivia==
+*The Giant Snowball is 1 of 7 [[cards]] associated with ice, with the others being [[Ice Spirit]], [[Ice Golem]], [[Freeze]], [[Ice Wizard]], [[Super Ice Golem]], and [[Wizard Trio]].
+**In the German, Spanish, Dutch, and Portuguese language settings of the game, the Giant Snowball's name translates to "Snowball". In the Arabic and Finnish language settings of the game, the Giant Snowball's name translates to "Giant Snow Globe". In the Chinese and Persian language settings of the game, the Giant Snowball's name translates to "Big Snowball". In the French and Norwegian language settings of the game, the Giant Snowball's name translates to "Mega Snowball" and "Huge Snowball" respectively.
+**A Trainer in the [[Training Camp]] is called Trainer Freeze and uses 4 ice-related cards in their [[Battle Decks|deck]], one of them being Giant Snowball, and the others being Ice Spirit, Ice Golem, and Freeze.
+*The Giant Snowball is 1 of 3 spells that has been featured in the [[Troop Rush]] game [[:Category:Modes|mode]], the others being [[Royal Delivery]] and [[Clone]].
+*Giant Snowball is the only card with "''Giant''" in its name that isn't a [[:Category:Troop Cards|troop]].
+*Despite the Giant Snowball being large, its shadow on the ground is very small.
+*The Giant Snowball was featured in the winning deck of the [https://www.youtube.com/live/Sa0QOSJ5AVY?si=Hlcj6efCnFhxfDYe Clash Royale League 2024 Tournament], by a player called Mohamed Light.
+*Before the Giant Snowball's card release, the Giant Snowball's damage was increased by 15%, and its travel speed was increased to 800 (from 700).
+
+{{Navigation|Cards}}
+
+[[fr:Méga boule de neige]]
+[[de:Schneeball]]
+[[es:Bola de nieve]]
+[[it:Palla di neve gigante]]
+[[ru:Гигантский снежок]]
+[[zh:大雪球]]

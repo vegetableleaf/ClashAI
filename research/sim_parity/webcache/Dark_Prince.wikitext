@@ -1,0 +1,242 @@
+{{DISPLAYTITLE: <span style="color: #b300b3;">Dark Prince</span>}}
+{{Protection}}{{SubpageNavBox|Hero=yes|HeroLink=Dark Prince/Hero}}
+{{MagicWords}}
+
+{{Card Infobox|Cost=4|Rarity=Epic|Type=Troop|Arena=Royal Arena|ReleaseDate=29 February 2016}}
+{{Quote|The Dark Prince deals area damage and lets his spiked club do the talking for him - because when he does talk, it sounds like he has a bucket on his head.}}
+
+The Dark Prince is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from the [[Arenas|Royal Arena (Arena 7)]]. It spawns an area-damage, ground-targeting, melee, ground [[:Category:Troop Cards|troop]] with high hitpoints and high damage with shields in addition to his normal hitpoints. After he travels 3 tiles, he will begin to charge towards his target, and deals double damage if he hits the target whilst charging. The charge will hit all enemies in a 360º area around him. He is able to jump over the river. The Dark Prince takes an appearance as a man who has blue eyes, black eyebrows, dark brown hair, and is mostly covered in dark steel armor, wearing a bucket with a team-colored feather on his head, a team-colored belt, and brown shoes with dark steel plates on them. He carries a spiked club and a shield with a crown emblem on it, and rides a pony which is identical to that of the [[Prince]]'s, but is darker. A Dark Prince card costs 4 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Dark Prince Card}}
+*The Dark Prince's normal attack damage is similar to [[The Log]]. This means he can kill units like [[Goblins]], [[Dart Goblin]], [[Rascals|Rascal Girls]], and [[Princess]] in a single hit, but cannot kill units like [[Firecracker]], [[Bomber]], [[Wall Breakers]], and [[Archers]] in a single hit.
+*When fighting an opposing Dark Prince, an effective counter is to place a unit to tank his charge attack, such as a [[Knight]], [[Valkyrie]], [[Mini P.E.K.K.A.]], [[Lumberjack]], [[Battle Healer]], [[Cannon Cart]], or a [[Golden Knight]]. However, unlike the [[Prince]], a high-hitpoint [[:Category:Troop Cards|troop]] is much more effective to counter the Dark Prince than deploying low hitpoint units to counter the [[Cards|card]], because the Dark Prince deals area damage and deals significantly less damage than the Prince. Even if the player surrounds him with troops, his 360º charge attack will damage them all.
+**It can be beneficial to deploy a cheap unit (such as [[Skeletons]] or [[Goblins]]) to absorb the Dark Prince's charge attack before deploying your tank counter, as it will preserve more of your defender's health for a possible counterpush. You can also use a stun-inflicting card like a [[Zap]] to reset his charge and deal a bit of damage to him.
+**[[Barbarians]] and [[Rascals]], two expensive swarm cards, are also a good counter to the Dark Prince as their staggered deployment means that the Dark Prince's charge attack will only hit one or just a fraction of the units, allowing the others to stay alive longer for a potential counterattack. However, they are a negative [[Elixir]] trade so it is usually not recommended to use them against him.
+***Other swarm cards, although costing less, are not that effective as counters as their close deployment times and lower individual hitpoints would allow the Dark Prince’s splash to hit large amounts of them at a time, thus negating a large percentage of their damage potential.
+*Excess damage from destroying the Dark Prince's shield will not affect his actual hitpoints. For example, the Dark Prince has 240 shield hitpoints, and a [[Lightning]] does 1,056 damage to him, the extra 816 damage will be completely negated, making it ineffective to use high Elixir [[:Category:Spell Cards|spells]] on him. The shield also makes him effective at countering high single damage units like [[Sparky]], Mini P.E.K.K.A., or [[P.E.K.K.A.|P.E.K.K.A]].
+*His total amount of health is comparable to that of Sparky, for 2 less Elixir. Because of this, he is a great disposable tank in defense against other mini tanks.
+*The Dark Prince fills multiple roles within one [[Battle Decks|deck]] due to his moderate-high hitpoints, strong splash attack, and shield. He can be used to take out support units like a [[Musketeer]], [[Wizard]], [[Witch]], [[Archer Queen]], or [[Ice Wizard]] behind a tank, absorb damage from big units with his shield, support pushes, and rush from the bridge. 
+*Even though the Dark Prince deals less damage than the Prince, it is a good idea to take care of him before he reaches the [[:Category:Tower Troop Cards|Crown Tower]] as he can still deal a considerable amount of damage to the player's Tower.
+*The [[Electro Giant]] can be used as a tank for the Dark Prince. They help support each other on offense and defense.
+*The [[Electro Wizard]] is effective at stopping the Dark Prince with his stun attacks, slowing down the Dark Prince and preventing him from charging at all.
+*The Dark Prince can fully counter unsupported [[Elite Barbarians]] with the help of a Crown Tower for a positive Elixir trade. He should be placed a short distance away from the Elite Barbarians if possible so that he is not hit during his deployment time, and if possible, getting him to charge for hitting the Elite Barbarians with more damage.
+*The Dark Prince can be paired with fast-moving troops that target [[:Category:Building Cards|buildings]] such as [[Hog Rider]] or Battle Ram. The Dark Prince's fast charge speed will make him aligned with the troop. The Dark Prince then will eliminate any swarms, while the troop moves to attack the Tower. However, this combo is very vulnerable to air swarms like the [[Minion Horde]] since these troops do not target air.
+*An attacking Dark Prince in affiliation with the Prince is immensely effective. The Dark Prince can eliminate opposing low hitpoint troops while the Prince can take out more powerful single troops. This is known as the Double Prince combo and is also frequently used with a tank like the [[Giant]]. However, this combo is weak to air units like [[Minion Horde]] or [[Electro Dragon/Evolution|Evolved Electro Dragon]] so be sure to bring some spells.
+**This strategy cannot be defeated by surrounding the group. When charging, the Dark Prince has a 360° splash attack, similar to a [[Valkyrie]] or a jumping [[Mega Knight]], and can therefore defeat most, if not all of a swarm with one charge attack. His regular attack also deals splash damage, so swarms have nearly no effect on this combo.
+**The [[P.E.K.K.A.]] and the Mega Knight are hard counters to this strategy. They can counter the Princes for a positive Elixir trade, and will still have a decent amount of health left over for a counterpush.
+**The most effective way to counter this push is with an [[Inferno Dragon]] or a Minion Horde alongside a tank to distract the two units, due to the lack of anti-air and the amount of Elixir required to start this attack. However, the Inferno Dragon can easily be knocked out of range and forced to restart its ramp up attack, while the Minion Horde is very vulnerable to spells and area damage such as [[Arrows]]. The defender should try to bait out these counters with their other units so that the opponent will not have them on hand when on the offense.
+**Luring the two Princes away from the Tower with a cheap moderately high health troop such as the [[Ice Golem]] can work. The Princes will stop charging once they hit the Ice Golem and will be distracted by him, giving the player enough time to drop a swarm or another unit behind the Princes to take them out.
+**Pairing [[The Log]] with a Sparky can deal significant damage to the Prince duo. The Log must be casted before the Sparky attacks so that it takes out the Dark Prince's shield, then Sparky will finish off the Dark Prince and significantly weaken the Prince. The knockback from The Log will also reset the charge of the Prince, allowing Sparky to blast a second time if needed.
+**Since this combo costs a lot of Elixir, attacking in the other lane can be a good way to prevent the opponent from effectively executing it.
+**Pairing the Double Prince push with the P.E.K.K.A., Mega Knight, or the Giant Skeleton is a potentially devastating strategy, as it amplifies the strong points of the push, but also its weak points. Their high hitpoints and damage can allow the Princes to shred through units even faster while being tanked by them, but cards that output a large damage, such as [[Rocket]] or Minion Horde, can deal with it.
+**This combo is very expensive and it can lead to a counterattack which you cannot defend. So, only place it if you're sure your opponent is very low on Elixir. Alternative, one of the two cards can be used defensively, and then the second one can be used afterwards in a counterpush.
+*Unlike the [[Battle Ram]], but like the Prince, the Dark Prince has an immunity to all forms of knockback, except for [[The Log]], [[Monk]], and the [[Little Prince]]'s ability. Because of this, it is not a good idea to use spells like [[Fireball]] or [[Giant Snowball]] to reset the Dark Prince's charge, nor is it a good idea to use a [[Bowler]] against the Dark Prince.
+*The Dark Prince's charge can fully counter the [[Goblin Barrel]] if you place him behind your [[King's Tower|King Tower]] as the opponent plays their Goblin Barrel, The Dark Prince will 360 splash onto all three Goblins taking zero damage. This is especially effective if you have just placed your spell beforehand.
+*A Dark Prince is a great distraction for the [[Inferno Tower]] and [[Inferno Dragon]]. Thanks to his shield, after being destroyed, it will result in them resetting their ramp up mechanic. In the case of the Inferno Tower, his jumping mechanic will allow him to jump over the river, reaching it and dealing heavy damage to it, which could potentially save a tank from being defeated.
+*An effective counter for a +1 Elixir trade is to place The Log to take out his shield and then kite him with a cheap card like [[Ice Golem]], [[Elixir Golem]], [[Skeletons]], or [[Goblins]].
+*The Dark Prince has a relatively high mass. Coupled with his high movement speed when charging, this makes a unit in front of him being pushed closer to its destined target. This is very effective with the [[Giant Skeleton]], as a Dark Prince pushing him will result in the bomb being closer to a more valuable target such as a Crown Tower.
+*A Dark Prince combined with the [[Bandit]] is an effective Bridge Spam pair. 
+**The Dark Prince is a noisy troop, the opponent could possibly keep the focus on him. Also, his speed and his charge could force the opponent to defend. So it is possible to use him as a distraction, play a Bandit on the opposite side after that the opponent overcommitted. The Dark Prince could be use this way with the [[Battle Ram]], [[Wall Breakers]], [[Hog Rider]], [[Ram Rider]], or [[Royal Ghost]].
+**Played on the same side, they are able to keep up with each other while not colliding too much, and the Dark Prince's splash will eliminate swarms like a [[Goblin Gang]] or [[Skeleton Army]], When this damage is combined with the Bandit's dash or the [[Cannoneer]]'s attack, they can take out glass cannons like a [[Lumberjack]], [[Executioner]], Royal Ghost, [[Goblin Demolisher]], or [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], However, this combo is susceptible to air units, such as the Minion Horde, so be sure to have proper supports.
+*In a situation where the opponent has placed a [[Golem]] behind their King's Tower, you can place the Dark Prince in the other lane. Since most low Elixir cards can be defeated instantly by the Dark Prince's charge, the Dark Prince will be able to deal damage to the Crown Tower with little resistance.
+*The Dark Prince is a very versatile troop. If well placed on defense, he can beat any card around 5 Elixir and counterattack, forcing the opponent to defend. In this case you can choose to support the Dark Prince with other cards or pushing on the other lane.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Dark Prince Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||1.4 sec||0.6 sec||Medium (60)||1 sec||Melee: Medium (1.2)||1.1||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+
+{{StatisticsSubheader|Charge Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%; text-align:center;"
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Charge Range<br />{{Icon|I=Radius}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|Very Fast (120)||3||1.1||Ground||Ground
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1200 }}
+{{#vardefine: shield_11 | 256 }}
+{{#vardefine: dmg_11 | 266 }}
+{{#vardefine: charge_11 | 532 }}
+{{#vardefine: atk_speed | 1.3 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Shield Hitpoints<br />{{Icon|I=Shield Hitpoints}}
+! scope="col" |Area Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Charge Damage<br />{{Icon|I=Boost}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:shield_11}} || {{#var:dmg_11}} || {{#var:charge_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:shield_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:charge_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" | Type
+! width="10%" | Level/Tier
+! width="40%" | Objective
+! width="25%" | Reward
+|-
+| rowspan="3" | Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 165,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|20 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 490,000 Damage to enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 820,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" | CHARGE!!! <br> [[File:CHARGE!!!.png|50x50px]]
+|1
+|Hit a total of 280 Troops or buildings with the Charge ability
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Hit a total of 800 Troops or buildings with the Charge ability
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Hit a total of 1,400 Troops or buildings with the Charge ability
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Dark Prince [[Cards|card]] was added to the game on 29/2/2016, in the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update.]]
+*On 23/3/2016, a [[Version History#Balance Changes (23/3/2016)|Balance Update]], decreased the Dark Prince's charge speed to 120 (from 138).
+*On 3/5/2016, the [[Version History#May%202016%20Update%20(3/5/2016)|May 2016 Update]], changed the Dark Prince's card description. It used to say, “''Dealing area damage with each swing and double after charging, the Dark Prince is a formidable fighter. To harm his squishy core, break his shield first.''” The update also fixed the “range bug”, which decreased the Dark Prince's range to 1.05 tiles (from 1.8 tiles), but his effective range was unchanged.
+*On 4/7/2016, the [[Version History#Tournaments Update (4/7/2016)|Tournaments Update]], increased the Dark Prince's damage by 8% and made him unaffected by pushback.
+*On 24/8/2016, a [[Version History#Balance%20Changes%20(24/8/2016)|Balance Update]], increased the Dark Prince's damage by 7.5%.
+2017
+*On 13/2/2017, a [[Version History#Balance Changes (13/2/2017)|Balance Update]], increased the Dark Prince's hitpoints by 5%.
+*On 11/8/2017, a [[Version History#Balance Changes (11/8/2017)|Balance Update]], increased the Dark Prince's damage by 6% and decreased his attack time interval to 1.4 seconds (from 1.5 seconds).
+*On 9/10/2017, the [[Version History#Epic%20Quests%20Update%20(9/10/2017)|Epic Quests Update]], fixed a bug where the [[Inferno Tower]]'s and [[Inferno Dragon]]'s damage did not reset after breaking the Dark Prince's shield. This change was reverted on 11/10/2017, in a [[Version History#Maintenance%20Break%20(11/10/2017)|maintenance break]].
+*On 12/12/2017, the [[Version History#Electrifying Update (12/12/2017)|Electrifying Update]] reverted the Dark Prince to his state on 9/10/2017. More specifically, the Inferno Tower's and Inferno Dragon's damage would now reset after breaking the Dark Prince's shield.
+2018
+*On 12/2/2018, a [[Version History#Balance Changes (12/2/2018)|Balance Update]], increased the Dark Prince's hitpoints by 5%, decreased his attack time interval to 1.3 seconds (from 1.4 seconds), and decreased his first attack time interval to 0.4 seconds (from 0.5 seconds)
+*On 25/4/2018, the [[Version History#Clan%20Wars%20Update%20(25/4/2018)|Clan Wars Update]], decreased the Dark Prince’s shield hitpoints by 25%.
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], increased the distance required for charging to 3.5 tiles (from 2.5 tiles).
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Epic}} cards start at Level 6 and end at Level 13 (from 1 to 8).
+2019
+*On 6/5/2019, a [[Version History#Balance Changes (6/5/2019)|Balance Update]], increased his range to 1.25 tiles (from 1.05 tiles) and increased his area radius and charge area radius to 1.25 tiles (from 1 tile).
+*On 1/7/2019, the [[Version History#July%202019%20Update%20(1/7/2019)|July 2019 Update]], decreased the Dark Prince's range to 1.2 tiles (from 1.25 tiles), now classified as Melee: Medium, and decreased his area radius and charge area radius to 1.2 tiles (from 1.25 tiles).
+*On 2/9/2019, a [[Version History#Pass Royale and more (2/9/2019)|Balance Update]], decreased the Dark Prince's area radius to 1.1 tiles (from 1.2 tiles).
+2021
+*On 2/9/2021, a maintenance break, added a card render to the Dark Prince's card info screen.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 3/2/2022, a [[Version History#Balance%20Changes%20(3/2/2022)|Balance Update]], decreased the Dark Prince's hitpoints by 3% and gave him the ability to jump the river.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2025
+*On 8/1/2025, a [[Version History#Balance Changes (8/1/2025)|Balance Update]], decreased the distance required from charging to 3 tiles (from 3.5 tiles).
+*On 1/9/2025, a [[Version_History#Balance_Changes_(1/9/2025)|Balance Update]] increased the Dark Prince's damage by 7% and his charge damage by 7%.
+2026
+
+* On 4/5/2026, a Balance Update, increased the Dark Prince's Hit Speed to 1.4s (from 1.3s)
+
+==Gallery==
+<gallery>
+Dark Prince card render.png|Current card render.
+Dark Prince Preview.gif|Current card preview
+Dark Prince.png|Dark Prince 1
+Dark Prince 2.png|Dark Prince 2
+Dark Prince 3.png|Dark Prince 3
+Dark Prince body.png|Full body 
+Dark Prince helmetless.png|The Dark Prince without his helmet in the [https://www.youtube.com/watch?v=SfoPTgt4jXs&t=38s Little Prince release video].
+</gallery>
+
+==Trivia==
+*The word "''Prince''" comes from the Latin word "''prīnceps''", meaning first head.
+**The Dark Prince is 1 of 20 [[cards]] associated with nobility, with the others being [[Knight]], [[Royal Recruits]], [[Royal Giant]], [[Royal Delivery]], [[Tower Princess]], [[Royal Hogs]], [[Prince]], [[Raging Prince]], [[Mega Knight]], [[Princess]], [[Royal Ghost]], [[Spirit Empress]], [[Super Knight]], [[Dagger Duchess]], [[Royal Chef]], [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], and the [[Little Prince]].
+*Shields were first developed during the Bronze Age, as a protection device, designed to block attacks by hand weapons, such as swords, axes and maces, or ranged weapons like sling-stones and arrows. Shields have varied greatly in construction over time and place. Sometimes shields were made of metal, but wood or animal hide construction was much more common; wicker and even turtle shells have been used. Shields were retired in warfare, but are still used to this day for police enforcement.
+**The Dark Prince is 1 of 3 [[:Category:Troop Cards|troops]] to have a shield, along with the Royal Recruits and [[Guards]].
+*The Dark Prince's pony resembles a [https://en.wikipedia.org/wiki/Shetland_pony Shetland pony], a breed of ponies that has a compact body with short legs and a long mane, and is commonly ridden in horse shows.
+*He is 1 of 5 troops that have a charge, the others being [[Battle Ram]], Prince, Raging Prince, and [[Ram Rider]].
+*The Dark Prince is 1 of 8 troops that can jump over the river, the others being [[Hog Rider]], Royal Hogs, Prince, Raging Prince, Ram Rider, [[Mother Witch|Cursed Hog]], and [[Santa Hog Rider]].
+*The Prince and the Dark Prince are revealed to be brothers according to the balance changes in the [[Version History#Tournaments%20Update%20(4/7/2016)|Tournaments Update]].
+*Similar to the Prince, once he starts charging, a sound effect will play. However, the Dark Prince's audio is muffled and played in a lower pitch compared to the Prince. 
+**When the Dark Prince charges, he will shout "''Attack''" or "''Charge''".
+***The Dark Prince is 1 of 24 troops that speak distinct words when on the field, the others being [[Mini P.E.K.K.A.]], [[Mega Minion]], [[Wizard]], Hog Rider, [[P.E.K.K.A.]], [[Bowler]], Ram Rider, [[Electro Wizard]], Princess, [[Ice Wizard]], [[Magic Archer]], [[Lumberjack]], Mother Witch, [[Fisherman]], [[Goblin Machine]], [[Super Mini P.E.K.K.A.]], Santa Hog Rider, [[Super Magic Archer]], Golden Knight, [[Boss Bandit]], Archer Queen, Little Prince, and the [[Terry]].
+*From the Royal Recruits' description, it is implied that they can be promoted to be Dark Princes at some point.
+*The Royal Recruits are commanded by the Dark Prince, as seen in a [https://www.facebook.com/ClashRoyale/posts/introducing-the-royal-recruits-/2116688775069410/ Facebook post].
+*In [[w:c:Squad-Busters|Squad Busters]], the [[w:c:squad-busters:Pi%C3%B1ata|Piñata]] resembles a piñata version of the Dark Prince's pony.
+*While not available as a character, the Dark Prince's sounds, along with the Knight, [[Barbarians]], and Wizard, are featured in the [[w:c:beatstar:Clash Royale Theme|Clash Royale Theme]] [[w:c:beatstar:Songs|song]] in Beatstar.
+*When the Dark Prince is defeated, his spiked club falls to the ground. The other units that drop items upon death are the Knight, [[Rascals|Rascal Boy]], Mega Minion, [[Executioner]], [[Mega Knight]], [[Sparky]], Fisherman, Super Knight, Golden Knight, and the Little Prince.
+*The Dark Prince is the subject of certain cosmetics in the game. More specifically:
+**The Dark Prince is the subject of a few [[Clans|Clan]] badges.
+**The Dark Prince is the subject of 4 [[Emotes]].
+*The back of the Dark Prince's head can be seen without his bucket in the [https://youtu.be/SfoPTgt4jXs?si=F3qJjcyjbE2PL-NI&t=38 Little Prince release video].
+**The "On The Road Again" [[Battle Banners|Battle Banner]] shows the front of his face.
+
+==In other languages==
+<center>
+<div id="unit-statistics" class="table-back">
+{{Other languages|frmeaning=Same as its English name.|demeaning=Same as its English name.|esmeaning=Same as its English name.|itmeaning=Black Prince.|nlmeaning=Same as its English name.|nomeaning=Same as its English name.|trmeaning=Black Prince.|jpmeaning=Same as its English name.|krmeaning=Same as its English name.|rumeaning=Same as its English name.|armeaning=Prince of Darkness.|ptmeaning=Prince of Darkness.|cnmeaning=Prince of Darkness.|cntmeaning=Prince of Darkness.|fameaning=Black Prince.|idmeaning=Black Prince.|msmeaning=Prince of Evil.|thmeaning=Same as its English name.|fimeaning=Same as its English name.|vimeaning=Black Prince.|fr=Prince ténébreux|de=Dunkler Prinz|es=Príncipe oscuro|it=Principe nero|nl=Duistere prins|no=Den mørke prinsen|tr=Kara Prens|jp=ダークプリンス|kr=다크 프린스|ru=Темный принц|ar=أمير الظلام|pt=Príncipe das Trevas|cn=黑暗王子|cnt=黑暗王子|fa=شاهزاده سیاه|id=Pangeran Hitam|ms=Putera Kejahatan|th=เจ้าชายมืด|fi=Tumma prinssi|vi=Hắc Hoàng tử}}
+</div></center>
+
+{{Navigation|Card}}
+
+[[fr:Prince ténébreux]]
+[[de:Dunkler Prinz]]
+[[es:Príncipe oscuro]]
+[[it:Principe nero]]
+[[ja:ダークプリンス]]
+[[ko:다크 프린스]]
+[[ru:Тёмный принц]]
+[[zh:黑暗王子]]

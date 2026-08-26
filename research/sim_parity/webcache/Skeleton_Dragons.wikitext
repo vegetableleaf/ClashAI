@@ -1,0 +1,216 @@
+{{Protection}}{{MagicWords}}
+
+{{Card_Infobox|Cost=4|Rarity=Common|Type=Troop|Arena=Spell Valley|ReleaseDate=6 July 2020}}{{SubpageNavBox|MergeTactics=yes}}{{Quote|This pair of skeletal scorchers deal Area Damage and fly above the Arena. They also play a mean rib cage xylophone duet.}}
+
+The Skeleton Dragons is a {{Rarity|Common}} [[Cards|card]] that is unlocked from the [[Arenas|Spell Valley (Arena 4)]]. It spawns two fast, area-damage, air-targeting, short-ranged, air [[:Category:Troop Cards|troops]] with moderate hitpoints and moderate damage. Their deployment is in a horizontal formation. They appear to be smaller, skeletal versions of the [[Baby Dragon]] with team-colored wings, horns and back spikes. A Skeleton Dragons card costs 4 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Skeleton Dragons Card}}
+*Compared to the [[Baby Dragon]], the Skeleton Dragons do the same amount of damage per shot each in equivalent Levels, effectively doubling the destruction with just the same cost. However, they have much less health, and attack more slowly, so they benefit much more from having other units to tank for them on offense or defense.
+**Whenever the player wants to make a [[Battle Decks|deck]] and include either [[Cards|card]] in it, the Skeleton Dragons work better in decks where there are large tanks to protect them like [[Golem]], [[Giant]], [[Lava Hound]], or [[Elixir Golem]], while the Baby Dragon works better in decks where it can be used to tank for a frailer offensive card, such as a [[Graveyard]], [[Miner]], and [[Goblin Barrel]].
+*They are weak to units that target air and outrange them, especially those that can deal area damage such as [[Wizard]], [[Firecracker]], and [[Executioner]]. They are usually easily destroyed when played alone. However, on defense, they are able to do quite a bit of damage to enemy [[:Category:Troop Cards|troops]] before dying, so it is usually a neutral [[Elixir]] trade. Make sure that their placement is slightly staggered so that they do not take too much damage, allowing for a possible counterattack.
+**If the Skeleton Dragons has locked onto a tanky troop or building, frailer troops such as the [[Spear Goblins]], [[Minions]], [[Princess]], [[Dart Goblin]], or [[Archers]] can safely deal considerable damage to them, possibly also taking them down.
+**If the support of a [[:Category:Crown Towers|Crown Tower]] is available, even tanks that do not target air units can soak the Skeleton Dragons' hits and allow the Crown Tower to take them down.
+*Since the Skeleton Dragons come in a pair, they can defeat Minions quickly and will usually be able to counter them and [[Minion Horde]]s if given enough distance to attack.
+*It is effective to pair the Skeleton Dragons with the [[Prince]], [[P.E.K.K.A.|P.E.K.K.A]], [[Mighty Miner]], or the [[Mini P.E.K.K.A.]] since most common counters to the latter are easily decimated by the former. However, the combo is countered by separating the trio, since they have different movement speeds and ranges.
+*The Skeleton Dragons can weaken [[Barbarians]] and [[Royal Recruits|Recruits]], allowing the player's Crown Towers to take care of them.
+*The Skeleton Dragons can be kited with a well-placed [[Ice Golem]] at the center of the [[Arenas|Arena]], fully countering them with the help of another troop or the player's Crown Towers. This will not work if the Skeleton Dragons are placed in the corners of the Arena.
+*Their high damage per second as a pair and their low hitpoints makes them effective at baiting [[:Category:Spell Cards|spells]]. [[Fireball]] will OHKO them, and [[Poison]] will fully defeat them if they are kept in its radius for most of its duration. The [[Royal Delivery]] will allow the [[Tower Princess]] to OHKO each Skeleton Dragon given all units are equivalently leveled. [[Rocket]] and [[Lightning]] are less common, however, and are not advisable to be used against them alone in the first place due to their high Elixir cost, which makes these spells both negative Elixir trades, with the former being even less advisable because of the Skeleton Dragons' high movement speed and the Rocket's slow travel time. 
+*Arrows used on lone Skeleton Dragons will prevent all but one hit from being dealt to the [[Tower Princess]] for a positive Elixir trade. 
+*The [[Tesla]] can counter the Skeleton Dragons easily, although one should prioritize using it to tackle dangerous [[:Category:Building Cards|building]]-targeting troops if they are present. 
+*A [[Tombstone]] can distract the Skeleton Dragons long enough for the Crown Tower to take them out.
+*Due to their ability to be split and to fly, they work very well in decks that rely on dual lane pushes, with different applications of practicality:
+**The Skeleton Dragons pair well with the [[Royal Hogs]]. The Royal Hogs can tank for the Skeleton Dragons, while the Skeleton Dragons protect the Royal Hogs from attacking troops, especially swarms. They can also be split immediately on the river which allows the player to attack both lanes while also preventing the opponent from gaining significant value with their spells.
+**In [[Three Musketeers]] decks, a common way to allow them to defend against heavy air pushes is to bait their spells first before deploying them. This can be easily done with Skeleton Dragons, which will be more effective than using a different card for this purpose, as they will have already weakened the air push first. 
+**[[Royal Recruits]] are always split when deployed, making a Skeleton Dragon split more effective than a push without them split. The Royal Recruits also have shields, which can discourage the opponent from using spells on them and the Skeleton Dragons.
+**They also pair well with split [[Elite Barbarians]], for the ability to counter their weakness to swarms, especially when said swarm is used at the center of the Arena to bring the Elite Barbarians back together. Additionally, the Elite Barbarians + Skeleton Dragons combo works better than the previous combos when not split, due to the Elite Barbarians higher hitpoints and damage making them less vulnerable to strong defenders.
+**An even cheaper dual lane push is the Skeleton Dragons paired with [[Wall Breakers]]. The Skeleton Dragons will deal damage to cheap ranged counters to the Wall Breakers, allowing them to connect to the [[Tower Princess]].
+**Conversely, the Skeleton Dragons work quite well against these types of dual lane pushes, particularly those that have troops that cannot target air.
+*Lone Skeleton Dragons can be stopped with a [[Hunter]] on your side. Place the Hunter below the Skeleton Dragon, and he will defeat both of them in one attack. However, this will not work if there is something that tanks for them.
+*When using them to support a Slow or Medium speed troop, such as a [[Giant]], [[Electro Giant]], or [[Golem]], it is best to place the Skeleton Dragons a good distance behind the tank. Otherwise, the Skeleton Dragons will outpace them, and will get targeted first by the Crown Tower, which weakens the combo.
+*The Skeleton Dragons pair well with the [[Balloon]]. Not only do they protect the Balloon for air swarms like [[Bats]] or [[Minion Horde]], but their high speed and mass can push the Balloon closer to the Crown Tower, making it arrive there earlier, as well as bypass some defensive [[:Category:Building Cards|building]] placements. However, an [[Inferno Tower]] or a tank + Anti-Air combo can counter this push, as the Skeleton Dragons' damage is not enough to take out anything bulkier than swarms in two hits.
+*Because of the way their staggered deploy time works, placing the Skeleton Dragons closer to the center of the Arena will result in the Skeleton Dragon that is further from the attacking unit to be targeted. After defending, they will counterattack with the healthier dragon tanking for the other one, which will result in more damage overall.
+**Against a [[Mortar]] or an [[X-Bow]], it is better to place them further from the edge of the Arena, as the outer Skeleton Dragon may have to move slightly closer to the building, which can delay its attack slightly. This delay may allow the building to deal more damage to the Crown Tower or distraction troop than necessary. 
+*Occasionally, the Skeleton Dragons can be used to snipe a defensive building on the enemy side. The Skeleton Dragons have decent range and can fly, allowing them to attack the building without being exposed into the opposing Crown Towers.
+*When using the [[Electro Wizard]] to counter the Skeleton Dragons, it is most recommended to drop him on top of them instead of attacking them from a distance. This will result in the Skeleton Dragons being defeated quicker due to the spawn damage.
+*When defending against a center-planted [[Goblin Barrel]], the player should deploy the Skeleton Dragons on the outer side of the Arena. The Skeleton Dragons will attack the outer and bottom Goblins, while the Crown Tower focuses on the inner Goblin. This will prevent the most damage from the Goblin Barrel.
+*The Skeleton Dragons pair quite well with the [[Miner]]. The Miner tanks for them while the Skeleton Dragons protect him from swarms like Goblins, Minions and Bats. The pairing also works when sending the Miner on the center tile of the inner side while the Skeleton Dragons are split, as the Miner will be tanking for both Crown Towers. If doing such a push, it is most recommended to send the Miner towards the healthier Crown Tower, in order to force the opponent to defend it more heavily, while the lone Skeleton Dragon is attacking their frailer Crown Tower.
+*They can be quite effective against a Graveyard. Similar to Minions, they will be able to attack the [[Skeletons]] without them being attacked and their splash may also occasionally hit more than one Skeleton. Combined with the Tower Princess or [[Dagger Duchess]], they can stop a Graveyard for a positive Elixir trade.
+*Even though they can deal area damage, their area of effect is small. Because of this, you can surround them with Bats and defeat them for a positive Elixir trade.
+**A [[Tornado]] can mitigate their small area of effect, allowing them to hit more troops at once. This is more effective when it also hits an enemy Crown Tower, especially if opposing air troops are pushed towards the Crown Tower by the Tornado.
+*Depending on whether the player wants more single-target damage or area damage, the Skeleton Dragons can be substituted with the [[Flying Machine]]. Both cards have similar hitpoints, being able to survive weak spells, although still being OHKOed by strong spells like Fireball or [[Lightning]]. Alternatively, they can be both utilized in the same deck, where one baits for the other to be used unharmed.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||2 sec||0.4 sec||Fast (90)||1 sec||3.5||1.5||500||Air & Ground||x2||Air||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 560 }}
+{{#vardefine: dmg_11 | 161 }}
+{{#vardefine: atk_speed | 2.0 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+! scope="col" |Area Damage<br />{{Icon|I=Area Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 140,000 damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|200 {{BASEPAGENAME}} cards<br>25 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 415,000 damage to enemy Troops or buildings
+|2,000 {{Icon|I=Gold}}<br>25 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 700,000 damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>25 {{Icon|I=XP}}
+|-
+| rowspan="3" |Troop Destroyer <br> [[File:Troop Destroyer.png|50x50px]]
+|1
+|Destroy 350 enemy Troops.
+|3,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|2
+|Destroy 1,000 enemy Troops.
+|200 {{Icon|I=Common Wild Card}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Destroy 1,750 enemy Troops.
+|5,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2020
+*The Skeleton Dragons were once available in the [[Tournament/Special Event Challenges|Skeleton Dragons Draft Challenge]], which started on 5/6/2020. In this challenge, gameplay was similar to a regular Draft Challenge, except that one of the players was able to choose who would use the Skeleton Dragons. If the player achieved at least 3 wins, they obtained the Skeleton Dragons early.
+*The Skeleton Dragons card was generally released on 6/7/2020, in the [[Version History#Pass Royale and more (6/7/2020)|July 2020 Update]].
+*On 7/7/2020, a [[Version History#Balance Changes (7/7/2020)|Balance Update]], decreased the Skeleton Dragons' damage by 6%.
+*On 31/8/2020, the [[Version History#Clan%20Wars%20II%20Update%20(31/8/2020)|Clan Wars II Update]], changed the Skeleton Dragons' sound effects. Previously, their sound effects were identical to those of the [[Minions]].
+*On 6/10/2020, a [[Version History#Balance Changes (6/10/2020)|Balance Update]], increased the Skeleton Dragons' attack time interval to 1.9 seconds (from 1.7 seconds).
+2021
+*On 30/3/2021, the [[Version History#2021%20Quarter%201%20Update%20(30/3/2021)|2021 Quarter 1 Update]], added the Skeleton Dragons to all Draft selections.
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the [[Arenas|Arena]] to unlock the Skeleton Dragons from Spooky Town to P.E.K.K.A's Playhouse.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 30/3/2022, the [[Version History#Miner%20Update%20(30/3/2022)|Miner Update]], fixed an issue where the Skeleton Dragons' [[Star Points|Star Level]] used the sound effects of the [[Baby Dragon]].
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Skeleton Dragons from P.E.K.K.A's Playhouse to Spell Valley.
+2023
+*On 6/6/2023, a [[Version History#Balance%20Changes%20(6/6/2023)|Balance Update]], increased the Skeleton Dragons' hitpoints by 5.8%. It also increased the distance between the Skeleton Dragons upon deployment.
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+*On 6/8/2024, a [[Version History#Balance Changes (6/8/2024)|Balance Update]], decreased the Skeleton Dragons' hitpoints by 0.5%.
+2026
+
+* On 6/4/2026, a Balance Update, increased the Skeleton Dragons' splash radius to 1.5 tiles (from 0.8 tiles). Their hit speed was also increased to 2s (from 1.9s)
+* On 4/5/2026, a Balance Update, decreased the Skeleton Dragons' damage by 6%
+
+==Gallery==
+<gallery>
+File:Skeleton Dragons card render.png|Current card render.
+File:Chinese Skeleton Dragons card render.png|Skeleton Dragons’ card render in the Chinese version of the game.
+File:Skeleton Dragons Preview.gif|Current card preview
+File:Skeleton Dragons 1.png|Skeleton Dragons 1
+File:Skeleton Dragons 2.png|Skeleton Dragons 2
+File:Skeleton Dragon and Baby Dragon.png|With [[Baby Dragon]]
+</gallery>
+
+==Trivia ==
+*The Skeleton Dragons resemble [https://en.wikipedia.org/wiki/European_dragon dragons from European cultures]. being reptilian legendary creatures, often depicted as winged, horned, and capable of breathing fire.
+**In the Chinese and Persian language settings of the game, the Skeleton Dragons' name translates to "Skeleton Wyverns".
+*The word "''Skeleton''" comes from the Greek "''σκελετός''" (''skeletós''), meaning dried up or withered.
+**The Skeleton Dragons is 1 of 15 [[cards]] associated with [[Skeletons]], with the others being [[Bomber]], [[Skeleton Barrel]], [[Tombstone]], [[Bomb Tower]], [[Guards]], [[Skeleton Army]], [[Witch]], [[Balloon]], [[Giant Skeleton]], [[Wall Breakers]], [[Super Witch]], [[Graveyard]], [[Skeleton King]], and of course, Skeletons.
+**The Skeleton Dragons is 1 of 5 cards associated with Dragons, with the others being Baby Dragon, Inferno Dragon, Electro Dragon, and of course, Skeleton Dragons
+***When defeated, Skeleton Dragons briefly crumble into a pile of bones, unlike most other Skeleton-cards which just vanish.
+*The Skeleton Dragons were designed after [https://youtu.be/J-CGy8efpHA?si=cTr99k0lvQD6p-U7&t=65 a scrapped concept] of a singular Skeleton Dragon that would attack with a bomb, as well as the [https://clashofclans.fandom.com/wiki/Beta_Minion Beta Minions] from Clash of Clans.
+* The Skeleton Dragons have been featured in multiple [[Tournament/Special Event Challenges|special game modes]] outside of the card. More specifically:
+**The Skeleton Dragons are 1 of 23 troops that have been featured in the [[Troop Rush]] game [[:Category:Modes|mode]], the others being Skeletons, [[Fire Spirit]], [[Bats]], [[Elite Barbarians]], [[Firecracker]], [[Rascals|Rascal Girls]], [[Royal Hogs]], [[Heal Spirit]], [[Elixir Golem]], Guards, [[Prince]], Balloon, [[Golem]], Wall Breakers, [[Ram Rider]], [[Sparky]], [[Phoenix]], [[Royal Ghost]], [[Bandit]], [[Lumberjack]], [[Santa Hog Rider]], and the [[Monk]].
+***Along with Guards, the Skeleton Dragons in the Troop Rush game mode would spawn in random positions instead of behind the [[Princess Towers|Crown Towers]].
+**The Skeleton Dragons are 1 of 4 troops that has been featured in the [[Treasure Hunt#Dragon Hunt|Dragon Hunt]] sub-mode of the [[Treasure Hunt]] game mode, the others being [[Baby Dragon]], [[Electro Dragon]], and [[Inferno Dragon]].
+**The Skeleton Dragons are 1 of 2 troops that has been featured with a [[Buff#Knockback Attack|Knockback Attack]] [[buff]], the other being Bomber.
+*In the card's description, the "''They also play a mean rib cage xylophone duet''" line is likely a reference to a piece of music called [https://youtu.be/0TSkIG9lFvY Fossiles (Fossils)] of the album "''[https://en.wikipedia.org/wiki/The_Carnival_of_the_Animals Carnival of the Animals]''" by [https://en.wikipedia.org/wiki/Camille_Saint-Sa%C3%ABns Camille Saint-Saëns].
+*The skull of the Skeleton Dragons resembles the [https://clashofclans.fandom.com/wiki/Obstacles?file=Obstacle_Halloween_2017.png Halloween Obstacle] from Clash of Clans.
+*The Skeleton Dragons and Bats are the only troops which have been available outside their card before they were released as cards. In the case of the Skeleton Dragons, they were available as a spawned troop in the Dragon Hunt sub-mode of the Treasure Hunt game mode.
+*The Skeleton Dragons, along with the [[Minions]], Bomber, Skeletons, [[Ice Spirit]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Mega Minion]], [[Ice Golem]], [[Dart Goblin]], Elixir Golem, [[Goblin Cage|Goblin Brawler]], Guards, Baby Dragon, [[P.E.K.K.A.|P.E.K.K.A]], Giant Skeleton, Golem, Wall Breakers, [[Bowler]], [[Executioner]], [[Mega Knight]], [[Inferno Dragon]], [[Royal Ghost]], [[Lava Hound]], and the Skeleton King, are featured as a [https://squad-busters.fandom.com/wiki/Monsters monster] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*The Skeleton Dragons are the subject of 2 [[Emotes]].
+*The Skeleton Dragons were featured in the winning [[Battle Decks|deck]] of the [https://www.youtube.com/live/vRrgTfqRdpw?si=YDASUydL7qNm9QZz Clash Royale League 2023 Tournament], by a player called Mugi.
+*Before the Skeleton Dragons' card release, the Skeleton Dragons' area radius was increased to 0.8 tiles (from 0.6 tiles).
+
+==In other languages==
+{{Other languages|fr=Dragons squelettes|de=Skelettdrachen|es=Dragones esqueleto|it=Draghi d'ossa|nl=Skelettendraken|no=Skjelettdrager|tr=İskelet Ejderhalar|jp=スケルトンドラゴン|kr=해골 드래곤|ru=Костяные драконы|ar=التنانين العظمية|pt=Dragões Esqueleto|cn=骷髅飞龙|cnt=骷髏飛龍|fa=جفت اژدهای اسکلتی|id=Naga Jerangkong|ms=Kerangka Naga|th=มังกรโครงกระดูก|fi=Luurankolohikäärmeet|vi=Bộ xương Rồng|itmeaning=Bone Dragons.|rumeaning=Bone Dragons.|cnmeaning=Skeleton Wyverns.|cntmeaning=Skeleton Wyverns.|fameaning=Pair of Skeletal Dragons.}}
+
+{{Navigation|Card}}
+
+[[fr:Dragons squelettes]]
+[[de:Skelettdrachen]]
+[[es:Dragones esqueleto]]
+[[it:Draghi d'ossa]]
+[[ru:Костяные драконы]]
+[[zh:骷髅飞龙]]

@@ -1,0 +1,223 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Lumberjack</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=4|Rarity=Legendary|Type=Troop|Arena=Serenity Peak|ReleaseDate=4 July 2016}}{{SubpageNavBox|Evolution=yes}}{{Quote|He chops trees by day and hunts The Log by night. His bottle of Rage spills everywhere when he's defeated.}}
+
+The Lumberjack is a {{Rarity|Legendary}} [[Cards|card]] that is unlocked from the [[Arenas|Serenity Peak (Arena 14)]]. It spawns a very fast, single-target, ground-targeting, melee, ground [[:Category:Troop Cards|troop]] with high hitpoints and high damage. When defeated, the Lumberjack spawns a [[Rage]]. The Lumberjack appears as a ginger-haired [[Barbarians|Barbarian]] with a beard, purple eyes, and a scarlet nose, wearing a brown belt and a team-colored ushanka, wristbands and sandals. He wields an axe and carries a Rage Spell on his shoulder. A Lumberjack card costs 4 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Lumberjack Card}}
+*The Lumberjack can be considered a more expensive, but potentially more rewarding version of the [[Rage]], being able to attack and defend on its own at the cost of more [[Elixir]] and less control over the Rage's location. 
+**It is recommended to use him in tandem with other [[:Category:Troop Cards|troops]] because when he dies, the Rage will increase the other troops' damage output with no extra cost. Thus, it is somewhat wasteful to use him alone. For this strategy to work, he should be placed near or at the front of a push so when he dies, allowing many of the troops in the push to survive and undergo the Rage effect, making them much more deadly.
+**He can also be used defensively. If he is defeated near your [[:Category:Tower Troop Cards|Crown Tower]], the resulting Rage will be dropped on your Crown Tower, increasing its attack speed. You can also capitalize on this by placing other [[:Category:Building Cards|buildings]] or troops in front of or near the Crown Tower, to increase defensive value.
+*As such, most, if not, all combos and strategies that use the Rage work with him.
+**The Lumberjack pairs well with a [[Balloon]] in a deadly combo known as the LumberLoon. Place the Lumberjack first at the bridge, then the Balloon, forcing the opposing Tower to defeat the Lumberjack first. When he is destroyed, his Rage will increase the Balloon's speed and attack speed as usual, dealing major damage, or defeating the Crown Tower, so this push should never be left alone. On top of that, the Lumberjack compliments the Balloon by scrapping glass cannons such as the [[Dart Goblin]], [[Firecracker]], [[Wizard]], [[Ice Wizard]], [[Goblinstein]], [[Mother Witch]], [[Spear Goblins]], [[Little Prince]], [[Magic Archer]], [[Electro Wizard]], [[Archers]], [[Princess]], [[Archer Queen]], [[Witch]], [[Zappies]], or [[Musketeer]].
+***A [[Rocket]] can defeat this push for a positive Elixir trade of 3 if the Rocket is placed at the right place at the right time. The [[Lightning]] can cripple this push, but not destroy it.  A [[Hunter]] can however defeat this combo but will be left with little hitpoints.
+****For safer players, the [[Tornado]]-Rocket combination can destroy the push risk-free with an equal Elixir trade.
+***A [[Minion Horde]] can also defend this push for a +4 Elixir trade. The Minions would effectively take out the Lumberjack and take out the Balloon in time before it reaches the Crown Tower. But keep in mind that the opponent can have [[Arrows]] or [[Fireball]], leaving you at a negative Elixir trade.
+**You can use the Lumberjack in combination with a Minion Horde. Place the Lumberjack first and the Minion Horde right behind. The Lumberjack would tank for the Minion Horde, allowing the Minions to deal massive damage to the Tower. 
+***An [[Ice Golem]] and [[Fire Spirit]] combo is powerful enough to destroy this push for a 6 Elixir advantage. Place the Ice Golem first to distract the Lumberjack and Minions. The Ice Golem's death damage will bring the Minions' health low enough for the Fire Spirit to one shot them. However, this might result in the Lumberjack gaining some chip damage on the Tower.
+***This push can also be stopped with Arrows to defeat the Minions and a swarm [[Cards|card]] such as the [[Skeleton Army]] or [[Goblin Gang]] to deal with the Lumberjack.
+**Pairing the Lumberjack with the [[Elite Barbarians]] can decimate a Tower very quickly, but at a very high Elixir cost of 10 Elixir. This can be countered with high DPS swarms such as Minion Horde, Goblin Gang, or Skeleton Army, brute force such as [[Royal Recruits]] and [[Barbarians]], or highly-damaging [[:Category:Spell Cards|spells]] like Rocket. The [[Ice Wizard]] paired with a tank or swarm can also be an effective counter to slow the attack and movement speed of the push.
+**The Lumberjack can also be used as a meatshield for an [[X-Bow]]. His decent health and hit speed is good at protecting the X-Bow from tanks or swarms and if he happens to be killed, the Rage will boost the X-Bow's hit speed significantly.
+*His very fast movement and hit speed make him very effective to use as a punishment card if the opponent places a high cost unit such as the [[Golem]] on the opposite lane. He will deal important chip damage and once he falls, his Rage can boost troops as cheap as the [[Miner]] or [[Goblin Barrel]], to leave the Tower at critical health.
+*The Lumberjack has very quick death damage that can kill small swarms up to Spear Goblins, while damaging Goblins and Minions to be OHKOed by the Crown Towers. This makes any such swarm card played to counter him die upon killing him, removing any counterattacking potential from the opponent. This also makes him serviceable as a last resort counter to small swarms as his fast attack speed makes him better at fighting the swarms than most single target melee troops and they will be killed or weakened by the death damage, should he die.
+*An effective strategy is to place a tank, such as a [[Giant]] or [[Golem]], then support them with the Lumberjack. If your opponent ignores the Lumberjack, he'll be able to take out troops or buildings attacking the tank due to his high attack speed and damage output. If they eliminate him, his Rage will cause the tank to get in lots of additional hits. However, this strategy is very weak to swarms, so bring a cheap area damage spell like [[Zap]], [[Giant Snowball|Snowball]], or Arrows. You may also decide to rely on the Lumberjack's death damage to get the job done, though it can be very inconsistent.
+*Even though the Lumberjack is best used in affiliation with other troops so that they can benefit from the dropped Rage, it is not wise to ignore the Lumberjack. Left alone, he can deal lots of damage to the player's Tower.
+*Combining the Lumberjack with the [[Ice Spirit]] can leave a Crown Tower with very low health. The combination can also be used in defense to clear off small pushes, being in fact, extremely useful at taking out Elite Barbarians for an Elixir advantage of 1.
+*The Lumberjack can effectively counter a [[Sparky]] one Level lower, since he will survive her high area damage while damaging her down quickly with his very fast hit speed. This is further supported in affiliation with Zap, which should be used whenever the Sparky has fully charged up.
+*He has similar damage per second as the [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], so he is not to be ignored. Unlike the Mini P.E.K.K.A, his high hit speed can eliminate [[Goblins]] and [[Skeletons]] much more quickly so have other troops at the ready. The Lumberjack, however, is still weak to the Skeleton Army. There are just too many units for the Lumberjack to defeat fast enough.
+*If you place the Lumberjack near the [[Three Musketeers]] you can surprise the enemy with the sheer speed and damage, but put it between the Musketeers as he will be gunned down in a range. However, some Musketeers will still last.
+*When countering the Lumberjack with melee troops, don't deploy them directly on top of the Lumberjack as his fast attack speed can do a lot of damage to it and even possibly take them out.
+*He is also useful for protecting other glass cannons from the [[Valkyrie]], Mini P.E.K.K.A, [[Cannon Cart]], or [[Prince]] due to his high damage per second and reasonable health pool.
+*A Lumberjack can be used to counter a [[Graveyard]] and [[Poison]] combination. He will quickly defeat the Skeletons as they appear, and he will survive the Poison. He can clean up every single Skeleton from Graveyard with the help of the Crown Tower, as long as nothing is tanking for the Graveyard. If there is something tanking for the Graveyard, the Lumberjack won't be able to hit all the Skeletons fast enough. They will soon overwhelm and defeat the Lumberjack, and do heavy damage, if not completely destroy, to the Crown Tower.  
+**He can also be used to counter the [[Goblin Drill]], since he won't take important spawn damage and his somewhat easy distraction will make him able to take out all the Goblins without allowing major Crown Tower damage.
+*Units such as the [[Bowler]], [[Monk]], or [[Mega Knight/Evolution|Evolved Mega Knight]] are effective against Lumberjack combos as their knockback somewhat counteracts the Rage's effect, allowing them to survive with sufficient health for a counterattack. However, if there are aerial units behind the Lumberjack, these units will be less effective at defending.
+*The Lumberjack's Rage does not affect retargeting speeds, animations occurring after set periods, nor can it influence anything irrelevant to movement or direct attacks. For example, the [[Giant Skeleton]]'s or [[Balloon]]'s death bomb will not explode faster.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Lumberjack Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||0.8 sec||0.4 sec||Very Fast (120)||1 sec||Melee: Short (0.7)||Ground||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+
+{{StatisticsSubheader|Rage Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+! scope="col" |Duration<br />{{Icon|I=Time}}
+! scope="col" |Boost<br />{{Icon|I=Boost}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+|-
+|3||5.5 sec||+30%||Friendly Troops & Buildings
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1282 }}
+{{#vardefine: dmg_11 | 256 }}
+{{#vardefine: atk_speed | 0.8 }}
+{{#vardefine: rage_dmg_11 | 179 }}
+{{#vardefine: rage_crown_11 | 54 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Lumberjack Damage<br />{{Icon|I=Damage}}
+! scope="col" |Lumberjack Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Rage Damage<br />{{Icon|I=Death Damage}}
+! scope="col" |Rage Crown Tower Damage<br />{{Icon|I=Tower Damage}}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:rage_dmg_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:rage_crown_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:rage_dmg_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:rage_crown_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:rage_dmg_11}} || {{#var:rage_crown_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:rage_dmg_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:rage_crown_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:rage_dmg_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:rage_crown_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:rage_dmg_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:rage_crown_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:rage_dmg_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:rage_crown_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:rage_dmg_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:rage_crown_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective 
+! width="25%" |Rewards
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 165,000 damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|2 {{BASEPAGENAME}} cards<br>100 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 490,000 Damage to enemy Troops or buildings
+|8,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 820,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>100 {{Icon|I=XP}}
+|-
+| rowspan="3" |Rage of Empires <br> [[File:Rage Of Empires.png|50x50px]]
+|1
+|Affect a total of 420 Troops with [[Rage]]
+|12,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|2
+|Affect a total of 1.200 Troops with Rage
+|2 {{Icon|I=Legendary Wild Card}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Affect a total of 2,100 Troops with Rage
+|18,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016 
+*The Lumberjack [[Cards|card]] was added to the game on 4/7/2016, in the [[Version History#Tournaments Update (4/7/2016)|Tournaments Update]].
+*On 24/8/2016, a [[Version History#Balance Changes (24/8/2016)|Balance Update]], increased the Lumberjack's speed to 120 (from 90), now classified as Very Fast, decreased his attack time interval to 0.7 seconds (from 1.1 seconds), and decreased his damage by 23%.
+*On 19/9/2016, the [[Version History#September 2016 Update (19/9/2016)|September 2016 Update]], decreased the [[Rage]]'s attack speed boost to 30% (from 40%) and its duration to 6 seconds (from 8 seconds).
+*On 1/11/2016, the [[Version History#November 2016 Update (1/11/2016)|November 2016 Update]], increased the Rage's attack speed boost to 35% (from 30%).
+*On 15/12/2016, the [[Version History#December 2016 Update (15/12/2016)|December 2016 Update]], increased the Lumberjack's hitpoints by 6%.
+2017
+*On 13/3/2017, the [[Version History#March 2017 Update (13/3/2017)|March 2017 Update]], increased the Rage's Level such that a [[Tournament|Tournament Standard]] Lumberjack drops a Tournament Standard Rage, a maxed Lumberjack drops a maxed Rage, etc.
+*On 19/4/2017, a [[Version History#Balance Changes (19/4/2017)|Balance Update]], increased the Lumberjack's hitpoints by 4%.
+2018
+*On 24/1/2018, a [[Version History#Balance Changes (24/1/2018)|Balance Update]], increased the Lumberjack´s hitpoints by 7%.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Legendary}} cards start at Level 9 and end at Level 13 (from 1 to 5).
+*On 24/10/2018, a maintenance break, slightly changed the Lumberjack's card description. Its new description is now this: "''He chops trees by day and hunts The Log by night. His bottle of Rage spills everywhere when he dies.''"
+*On 5/12/2018, the [[Version History#December%202018%20Update%20(5/12/2018)|December 2018 Update]], reverted the Lumberjack's card description to its state before 24/10/2018.
+2019
+*On 5/8/2019, a [[Version History#Pass Royale and more (5/8/2019)|Balance Update]], increased the Lumberjack's attack time interval to 0.8 seconds (from 0.7 seconds).
+2020
+*On 4/12/2020, a [[Version History#Maintenance%20Break%20(4/12/2020)|maintenance break]], added a card render to the Lumberjack's card info screen.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the [[Arenas|Arena]] to unlock the Lumberjack from Frozen Peak to Serenity Peak.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 12/12/2022, the [[Version History#Clashmas%20Update%20(12/12/2022)|Clashmas Update]], set the Rage's duration to 6 seconds for every level and made the [[:Category:Spell Cards|spell]] deal area damage. In addition, its area radius was decreased to 3 tiles (from 5 tiles), and added a 0.5 second deploy timer to Rage.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2025
+*On 8/1/2025, a [[Version History#Balance Changes (8/1/2025)|Balance Update]], decreased the Rage’s duration to 5.5 seconds (from 6 seconds) and increased the Lumberjack’s damage by 6%.
+*On 3/2/2025, the [[Version History#Pass Royale and more (3/2/2025)|Febuary 2025 Update]], added the Lumberjack's Evolution.
+*On 11/2/2025, a [[Version History#Maintenance Break (11/2/2025)|maintenance break]], made it so that Lumberjack Ghost's lifetime is no longer affected by Rage.
+*On 4/3/2025, a [[Version History#Balance Changes (4/3/2025)|Balance Update]], decreased the Rage's duration after leaving the radius to 1 second (from 2 seconds).
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], allowed the [[Executioner]] and [[Ram Rider]] to be affected by Rage.
+*On 9/4/2025, a [[Version History#Balance Changes (9/4/2025)|Balance Update]], decreased the Rage's damage by 23%.
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] increased the Rage's damage by 21%.
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)=|Balance Update]] decreased the Rage's speed boost to 30% (from 35%).
+
+==Gallery==
+<gallery>
+File:Lumberjack card render.png|Current card render.
+File:Lumberjack Preview.gif|Current card preview
+File:Lumberjack body.png|Lumberjack full body
+</gallery>
+
+==Trivia==
+*In the Turkish, Korean, and Vietnamese language settings of the game, the Lumberjack's name translates to "Woodcutter". In the Chinese and Finnish language settings of the game, the Lumberjack's name translates to "Crazy Woodcutter" and "Logman" respectively.
+*The Lumberjack is 1 of 7 troops that has had its movement speed classification changed, the others being [[Skeleton Barrel]], [[Elite Barbarians]], [[Suspicious Bush]], [[Goblin Cage|Goblin Brawler]], [[Cannon Cart]], and the [[Mighty Miner]].
+**The Lumberjack is the first troop whose movement speed classification was changed since the [[Version History#Balance Changes (24/8/2016)|24/8/2016 balance changes]].
+*The Lumberjack is 1 of 22 troops that has been featured in the [[Troop Rush]] game [[:Category:Modes|mode]], the others being [[Skeletons]], [[Skeleton Dragons]], [[Fire Spirit]], [[Bats]], Elite Barbarians, [[Firecracker]], [[Rascals|Rascal Girls]], [[Royal Hogs]], [[Heal Spirit]], [[Elixir Golem]], [[Guards]], [[Prince]], [[Balloon]], [[Golem]], [[Wall Breakers]], [[Ram Rider]], [[Sparky]], [[Phoenix]], [[Royal Ghost]], [[Bandit]], and the [[Monk]].
+*When attacking, the Lumberjack will say "''Chop chop!''" or “''Timber!''”. He also laughs.
+**Along with the [[Knight]], [[Barbarians]], and Electro Wizard, he is voice acted by [https://www.imdb.com/name/nm1423395/ John Mondelli].
+**The Lumberjack is 1 of 24 troops that speak distinct words when on the field, the others being [[Mini P.E.K.K.A.]], [[Mega Minion]], [[Wizard]], [[Hog Rider]], [[P.E.K.K.A.]], [[Dark Prince]], [[Bowler]], Ram Rider, Electro Wizard, [[Princess]], [[Ice Wizard]], [[Magic Archer]], [[Mother Witch]], [[Fisherman]], [[Goblin Machine]], [[Super Mini P.E.K.K.A.]], [[Santa Hog Rider]], [[Super Magic Archer]], [[Golden Knight]], [[Boss Bandit]], [[Archer Queen]], [[Little Prince]], and the [[Terry]].
+* While not available as a troop in Clash of Clans, the [https://clashofclans.fandom.com/wiki/Super_Valkyrie Super Valkyrie] troop in the former is likely inspired from the Lumberjack, with both being fast melee troops that deal high damage per second, and drop a Rage spell after death. However, unlike the Super Valkyrie, the Lumberjack's [[Rage]] is identical to ones not used by the Lumberjack.
+*The Lumberjack is responsible for creating [[The Log]], which is hinted at on several different occasions: 
+**The Lumberjack's description states ''"and hunts The Log by night"''.
+**In The Log's description, it states the cause of its creation was "''a spilt bottle of Rage''", which is a property exclusive to the Lumberjack.
+**In the Clash of Clans [https://youtu.be/O__Lo2FQJKo?si=-HOvOgWxC1jNOeI- No More Clashmas?! commercial], The Log had a flashback to its creation where the Lumberjack is seen spilling the Rage spell in a forest.
+**By an [[Emotes|Emote]] where the Lumberjack cowers because The Log towers over him.
+**In the Clash-A-Rama episode "[https://clasharama.fandom.com/wiki/%22%27Twas_The_Night_Before_Clashmas%22 Twas The Night Before Clashmas]", the Kings search for a Clashmas Tree. They ignore the Lumberjack's majestic one, and decides on a smaller and ugly looking tree. The agitated Lumberjack tries to destroy it, but slips and drops his Rage spell, which converts the tree into The Log.
+*The Lumberjack, Ram Rider, Phoenix, and the Fisherman are the only normal spawning {{Rarity|Legendary}} troops that do not fall from the sky when deployed.
+*During the Lumberjack's deploy time, he can be seen drinking his bottle of Rage.
+*The Lumberjack's rage drop animation used to be smooth, rather than the rigid one we have today. This animation was removed in an unknown update.
+*The [[Card Mastery]] task "Rage of Empires" is a reference to the [https://en.wikipedia.org/wiki/Age_of_Empires Age of Empires] games series.
+*The Lumberjack is the subject of a few Emotes.
+**The Lumberjack All Seeing Emote is a reference to [https://en.wikipedia.org/wiki/Doctor_Strange Dr. Strange].
+**The Lumberjack Cheers Emote was originally going to appear in December of 2023, but did not make it to the game until the January of 2024.
+**In the [https://youtu.be/fe6vI5RiqAQ?si=sCO1l_NmT850bvbQ Trophy Road intro video], there was an Emote that showed the Lumberjack spilling [[Elixir]] from his mouth. However, this Emote never made it to the game.
+*The Lumberjack was featured in the winning [[Battle Decks|decks]] of multiple Clash Royale Tournaments. More specifically:
+**The Lumberjack was featured in the winning deck of the [https://www.youtube.com/live/pRfrjMiHbQA?si=P2kVLJUlXH1SZoHm Clash Royale League 2021 Tournament], by a player called Mugi.
+**The Lumberjack was featured in the winning deck of the [https://www.youtube.com/live/vRrgTfqRdpw?si=YDASUydL7qNm9QZz Clash Royale League 2023 Tournament], by a player called Mugi.
+*The Lumberjack has had balance changes that were planned for it but were not added to the game. More specifically:
+**On 12/12/2022, the Rage was supposed to be added higher damage and a pushback of 0.3 tiles, but [https://royaleapi.com/blog/season-42-balance-wip was pulled back last minute].
+**The initial balance change for Lumberjack on the [[Version History#Balance Changes (8/1/2025)|8/1/2025 balance changes]] was a 5% damage increase and a Rage duration decrease to 5.5 seconds (from 6 seconds), but the damage increase was raised to 6% [https://royaleapi.com/blog/season-67-balance-wip-january-2025 last minute].
+
+{{Navigation|Card}}
+
+[[fr:Bûcheron]]
+[[de:Holzfäller]]
+[[es:Leñador]]
+[[it:Boscaiolo]]
+[[ru:Дровосек]]
+[[zh:狂暴樵夫]]

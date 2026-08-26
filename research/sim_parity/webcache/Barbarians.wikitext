@@ -1,0 +1,243 @@
+{{Protection}}{{MagicWords}}{{ClashofClansLink|Barbarian}}
+
+{{Card Infobox|Cost=5|Rarity=Common|Type=Troop|Arena=Barbarian Bowl|ReleaseDate=4 January 2016}}
+{{SubpageNavBox|Evolution=yes|MergeTactics=yes|Hero=}}
+
+{{Quote|A horde of melee attackers with mean mustaches and even meaner tempers.}}
+
+The Barbarians is a {{Rarity|Common}} [[Cards|card]] that is unlocked from the [[Arenas|Barbarian Bowl (Arena 3)]]. It spawns five single-target, ground-targeting, melee, ground [[:Category:Troop Cards|troops]] with moderate hitpoints and damage. Their deployment is in a star formation. They appear as bare-chested men who wield swords, have blue eyes, blonde eyebrows, close-cropped hair and horseshoe moustaches, and wear a brown kilt and sandals, a team-colored belt with a shield buckle and spiked wristbands. They are also the same as those spawned by the [[Barbarian Hut]], [[Battle Ram]], [[Barbarian Barrel]], and the [[Barbarian Launcher]]. A Barbarians card costs 5 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Barbarians Card}}
+*The Barbarians are a great option to use against enemy [[:Category:Troop Cards|troops]] such as tanks and medium size pushes as the Barbarians have a moderate amount of hitpoints and damage, and are perfect for attacks with other tanks. Although they are very effective against single target troops like the [[Prince]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Golden Knight]], [[Mighty Miner]], [[Lumberjack]], [[Monk]], [[Boss Bandit]], or [[Giant Skeleton]], Barbarians are susceptible to [[:Category:Spell Cards|spells]] and troops which do area damage due to their slow move-speed. Their slow attack speed also leaves them vulnerable to swarms such as the [[Skeleton Army]].
+*Despite being a swarm unit, Barbarians are fairly effective against an [[Electro Giant]] due to their high DPS and their moderately higher hitpoints compared to other swarm units, allowing them to survive the Electro Giant's reflected damage and defeat him for a +2 [[Elixir]] trade, but they will likely die in the process or have an insignificant amount of remaining health. Note that since the Barbarians will have little health remaining, any sort of damage dealt to them besides the Electro Giant's reflected damage will often nullify their defense, so the player should account for supporting troops accompanying the Electro Giant as well.
+*Due to the amount of counters to a Barbarian and most resulting in a positive Elixir trade for the opponent, it is ineffective to deploy a group of Barbarians without support in one lane, as they can be easily countered due to their slow speed and can leave the player vulnerable to a push in the other lane. However, if the opponent is extremely low on Elixir, or their best counters are out of rotation, they can be very effective at forcing the opponent to spend Elixir poorly, as they can quickly chop down cheap troops and will completely destroy a [[:Category:Tower Troop Cards|Crown Tower]] by themselves.
+*They are excellent for taking out low numbers of enemy troops such as the Prince, Mini P.E.K.K.A, [[Bandit]], Lumberjack, [[Hunter]], or [[Musketeer]] on the player's side. The 5 Barbarians will quickly eliminate the unit if they are dropped directly on top of it, surrounding it.
+**A successful defense with Barbarians will also make for a powerful counter-push; tank for the Barbarians for a threatening push or use them to tank for a glass-cannon, which also results in a threatening push.
+**They can also defeat a splash unit if placed directly on top of the unit, but failing to surround the splasher with Barbarians will cause them to take more damage than necessary. Note that this is ineffective against a charging [[Dark Prince]], a [[Valkyrie]] or a jumping [[Mega Knight]], as they have 360º splash.
+*The Barbarians can be effectively countered by most ranged splash troops such as the [[Bomber]], [[Bowler]], [[Wizard]], [[Witch]], [[Goblin Demolisher]], Sparky, Firecracker, and [[Executioner]] from a distance. However, you must be careful as the opponent can use a [[Tornado]] or [[Freeze]] to immobilize or destroy the splash attacker, allowing the Barbarians to devastate the Crown Tower.
+*An effective counter is the [[Fireball]]; the damage and radius of the spell is more than enough to OHKO the Barbarians. However, keep in mind that if the Fireball is a level lower than the Barbarians, it will not OHKO them. 
+**Additionally, the Barbarians can also act as a bait for these counters, allowing you to use other [[cards]] that would be weak to Fireball, such as [[Zappies]], Magic Archer, Mother Witch, [[Skeleton Dragons]], and Flying Machine.
+**[[Poison]] can also be an effective counter to use. Its damage over time will eliminate the Barbarians and any supporting troops. However, as with Fireball, it will not defeat Barbarians with a Level higher than the Poison.
+**If the Barbarians survive, try supporting them with a tank in front to get some use out of them.
+**A [[Rocket]] can also defeat them, however it is a negative Elixir trade. It is best to be used if the Barbarians are assisted with another card such as a [[Sparky]], [[Inferno Dragon]], [[Lumberjack]], or [[Elite Barbarians]].
+*[[Rage]] used with Barbarians can do severe damage to a Crown Tower or even take it out, as it is hard to stop because Rage increases movement and attack speed. The Barbarians together have high damage and can make short work of a tower before the opponent stops them. However, spells such as Poison still make quick work of this combo.
+*They are very effective at defeating enemy tanks due to their numbers, high combined damage, and ability to tank most spells. Support troops will have trouble defeating them due to their combined hitpoints. If the combo happens to be any ground-based splash damage card + ground-based melee tank, wait for the troops to cross the river. As soon as they cross, immediately drop the Barbarians upon the splash card. They will surround and destroy it quickly before moving on to eliminate the now unsupported tank. This can result in a large positive elixir trade. However, if there is more than one splash unit, the Barbarians are likely to be taken out immediately. Note that this may be ineffective against a [[P.E.K.K.A.|P.E.K.K.A]] as she can OHKO Barbarians up to 2 Levels higher.
+*Barbarians cannot target air troops, so any air troops like [[Minions]], [[Bats]], [[Baby Dragon]], [[Electro Dragon]], Flying Machine, [[Mega Minion]], [[Phoenix]], and [[Skeleton Dragons]] can counter them easily unharmed, with the particular examples also being a positive Elixir trade.
+**Although situational, the player can use the Barbarians to distract air troops on defense. Compared to other ground swarms, they have the hitpoints to survive multiple attacks from the air troops, while the [[:Category:Crown Towers|Crown Tower]] slowly chip them down.
+*They are very effective against [[Hog Rider|Hog Riders]] and [[Ram Rider|Ram Riders]]. Not only do they deal a lot of damage to these troops, but their high mass and slight spread forces the Hog Rider and Ram Rider to go around them, extending their distance from the Crown Tower. Because of this, the Barbarians can easily defeat these units with no damage to the Crown Tower.
+*The Barbarians, if placed early enough, can surround the Crown Tower, making it less vulnerable to attacks from a [[Goblin Barrel]]. They can handle it quite well with only minimal damage done. However, this is a 5 Elixir investment so only consider using it if you lack better counters.
+*Like other swarms, they are a great counter to [[Graveyard]]. Their large unit count allows them to spread out enough to cover most of the spell's area, while their hitpoints allows them to survive weak incoming spells, like [[Arrows]], [[Zap]], [[The Log|Log]], and [[Giant Snowball]]. However, they can still be defeated with stronger spells, like Fireball and Poison.
+*Splitting the Barbarians in the back can discourage the opponent from attacking either Crown Tower, due to the Barbarians' defensive presence, and spells will not have as much value. However, they are slow moving and as such, the opponent might deal some unnecessary damage before the Barbarians arrive on their target.
+*Because there are 5 of them, they can block three [[Lightning]] strikes for more fragile units like a [[Magic Archer]], [[Mother Witch]], [[Firecracker]], [[Princess]], Zappies, Bomber, [[Dart Goblin]], Skeleton Dragons, or a [[Flying Machine]]. 2 of them will also survive for extra protection for the guarded fragile units.
+*Barbarians can be used to increase the troop count for the [[Void]], allowing the player to possibly save their other troops from the spell. The card spawns enough troops that it can save any single troop with just the Barbarians.
+*[[Guards]] can be used as an alternative to Barbarians in certain [[Battle Decks|decks]]. They have a lower 3 Elixir cost, slightly longer range, move faster, and come with a shield that makes them more resistant to spells, with the exception of Poison. In exchange, they have less hitpoints, deal a lot less damage, and come with less units.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||1.4 sec||0.4 sec||Medium (60)||1 sec||Melee: Short (0.7)||Ground||x5||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 691}}
+{{#vardefine: dmg_11 | 191 }}
+{{#vardefine: atk_speed | 1.4 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+!Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+!Rewards
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 110,000 damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|200 {{BASEPAGENAME}} cards<br>25 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 330,000 damage to enemy Troops or buildings
+|2,000 [[File:Gold.png|25x25px]]<br>25 {{Icon|I=XP}}
+|-
+| 3
+|Deal a total of 550,000 damage to enemy Troops or buildings
+|100 [[File:Gem.png|25x25px]]<br>25 {{Icon|I=XP}}
+|-
+| rowspan="3" |Troop Destroyer <br> [[File:Troop Destroyer.png|50x50px]]
+|1
+|Destroy 350 enemy Troops
+|3,000 [[File:Gold.png|25x25px]]<br>100 {{Icon|I=XP}}
+|-
+|2
+|Destroy 1,000 enemy Troops
+|200 [[File:Common Wild Card.png|25x25px]]<br>100 {{Icon|I=XP}}
+|-
+|3
+|Destroy 1,750 enemy Troops
+|300 [[File:Gem.png|25x25px]]<br>100 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Barbarians [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016.
+*On 2/2/2016, the [[Version History#February 2016 Update (2/2/2016)|February 2016 Update]], decreased the Barbarians' hitpoints by 3%.
+*On 29/2/2016, the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]], decreased the Barbarians' sight range to 5.5 tiles (from 6 tiles).
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], increased the {{Rarity|Common}} card Level cap to 13 (from 12). The update also fixed the “range bug”, which decreased the Barbarians' range to 0.7 tiles (from 1.2 tiles), but their effective range was unchanged.
+2018
+*On 4/6/2018, a [[Version History#Balance Changes (4/6/2018)|Balance Update]], decreased the Barbarians‘ attack time interval to 1.4 seconds (from 1.5 seconds). It also increased the distance between the Barbarians upon deployment.
+2019
+*On 28/1/2019, the [[Version History#January%202019%20Update%20(28/1/2019)|January 2019 Update]], fixed an issue where the Barbarians' [[Star Points|Star Level]] used the sound effects of the [[Elite Barbarians]].
+*On 4/3/2019, a [[Version History#Balance Changes (4/3/2019)|Balance Update]], decreased the Barbarians' hitpoints by 13%. It also increased the Barbarians' count to 5 (from 4) and gave the Barbarians a new 0.15 second deploy stagger from each other.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Barbarians' card info screen.
+2020
+*On 2/6/2020, a [[Version History#Balance Changes (2/6/2020)|Balance Update]], decreased the deploy stagger for each Barbarian to 0.1 seconds (from 0.15 seconds).
+2021
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 7/6/2022, a [[Version History#Balance Changes (7/6/2022)|Balance Update]], decreased the Barbarians‘ attack time interval to 1.3 seconds (from 1.4 seconds).
+*On 1/8/2022, the [[Version History#Pass Royale and more (1/8/2022)|August 2022 Update]], changed the Barbarians' card image and card render, by making them look pixilated.
+*On 2/9/2022, a maintenance break, reverted the Barbarians' card image and card render to their state before 1/8/2022.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14), and added the Barbarians' Evolution. It also changed the Barbarians' card image and card render.
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], made it so that Barbarians' spawn formation would be correctly mirrored depending on which side of the [[Arenas|Arena]] they were placed.
+2026
+
+* On 2/3/2026, a Balance Update, increased the Barbarians' hitpoints by 3%, and increased their attack speed to 1.4 seconds (from 1.3 seconds).
+* On 4/8/2026, a Balance Update, increased the Barbarians' hitpoints by 4%
+
+==Gallery==
+<gallery>
+File:BarbariansCardPixel.png|Barbarians' card image between 1/8/2022 and 2/9/2022.
+File:BarbariansCardOld.png|Barbarians' card image before 19/6/2023.
+File:Bitbarian card render.png|Barbarians' card render between 1/8/2022 and 2/9/2022.
+File:Old Barbarians card render.png|Barbarians' card render before 19/6/2023.
+File:Barbarians card render.png|Current card render.
+File:Barbarians Preview.gif|Current card preview
+File:Barbarians 1.png|Barbarians 1
+File:Barbarians 2.png|Barbarians 2
+File:Barbarians 3.png|Barbarians 3
+File:Barbarians 6.png|Barbarians 4
+File:Barbarians 10.png|Barbarians 5
+File:Barbarians 11.png|Barbarians 6
+File:Barbarians12.png|Barbarians 7
+File:Barbarians 14.png|Barbarians 8
+File:Barbarians 13.png|Barbarians 9
+File:Barbarians 15.png|Barbarians 10
+File:Barbarians Full Body.png|Barbarians Full Body.
+File:Rock Barbarian.webp|Rock Barbarian.
+</gallery>
+
+==Trivia==
+*The word "''Barbarian''" comes from the Greek "''βάρβαρος''" (''bárbaros''), meaning foreign. Dating back to the ancient Greek times, the Greeks referred to non-Greek people as barbarians because the language they spoke sounded to Greeks like gibberish represented by the sounds "''bar... bar...''". 
+**According to a Clash-A-Rama comic [https://clasharama.fandom.com/wiki/Clash-A-Rama!_Comic_Strips?file=Barb_Barrel_ColourWeb2.jpg strip], the Barbarians follow a career path, with the Barbarians being the second highest ranking ones.
+*The Barbarians are 1 of 19 [[:Category:Troop Cards|troops]] which first existed in Clash of Clans, the others being [[Minions]], [[Archers]], [[Goblins]], [[Skeletons]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], [[Balloon]], [[Golem]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Phoenix]], [[Lava Hound]], and the [[Archer Queen]].
+**The Barbarians resemble the [https://clashofclans.fandom.com/wiki/Barbarian Level 1-2 Barbarian] from Clash of Clans.
+*The Barbarians are 1 of 3 troops which can be spawned by a troop (Barbarians/[[Battle Ram]]), a [[:Category:Spell Cards|spell]] ([[Barbarian Barrel]]), and a [[:Category:Building Cards|building]] ([[Barbarian Hut]]). The others are Goblins and Skeletons.
+*The Barbarians are one of the first troops to be featured in Clash-A-Rama, alongside the Minions, Goblins, and Giant.
+*The Barbarians are one of the first troop [[cards]] to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the Minions, Archers, [[Knight]], [[Spear Goblins]], Goblins, [[Bomber]], Skeletons, [[Minion Horde]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Musketeer]], Giant, Valkyrie, Wizard, Hog Rider, [[Baby Dragon]], [[Skeleton Army]], Witch, P.E.K.K.A, [[Prince]], and Balloon.
+*The Barbarians are one of the first troop cards to receive a card render, alongside the Archers, Knight, Goblins, Bomber, Skeletons, [[Bats]], [[Royal Recruits]], [[Skeleton Barrel]], [[Rascals]], Musketeer, Giant, Valkyrie, Wizard, [[Flying Machine]], Hog Rider, [[Royal Hogs]], [[Dart Goblin]], [[Zappies]], [[Elixir Golem]], Baby Dragon, Skeleton Army, Witch, P.E.K.K.A, Prince, Balloon, [[Giant Skeleton]], [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], Wall Breakers, Bowler, Cannon Cart, [[Mega Knight]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], [[Magic Archer]], [[Bandit]], Lava Hound, [[Night Witch]], and [[Fisherman]].
+*The Barbarians are one of the first troop cards to receive a [[Card Evolution]], alongside the Skeletons, [[Royal Giant]], and [[Firecracker]].
+*Even though the card spawns 5 Barbarians, the card render displays only 1 Barbarian.
+*The Barbarian bears more than a passing resemblance to [[wikipedia:Hulk_Hogan|Hulk Hogan]] and [https://walkingdead.fandom.com/wiki/Abraham_Ford_(TV_Series) Abraham Ford] from [https://walkingdead.fandom.com/wiki/The_Walking_Dead_(TV_Series) The Walking Dead TV series].
+*From the Knight's description, it is implied that Knight and the Barbarians are distant cousins, due to their physical similarities, especially the color of their hair and mustaches. Coincidentally, both the Knight and Barbarians are voice acted by [https://www.imdb.com/name/nm1423395/ John Mondelli]. 
+**The [[Electro Wizard]] and the [[Lumberjack]] are also voice acted by John Mondelli.
+*The Barbarians' swords can be seen on the [[Trophies|Trophy Road]] as a decoration.
+*The Barbarians are 1 of 2 troops that has been featured in the [[Obstacle Course]] game [[:Category:Modes|mode]], the other being Fisherman.
+**The Barbarian in the Obstacle Course game mode looked like a rock guitarist player that would boost the speed of incoming troops for a few seconds.
+*The Barbarians are featured in non-Clash games. More specifically:
+**The Barbarians are featured as [https://brawlstars.fandom.com/wiki/Pins?file=Barbarian_Pin-Angry.png a pin in Brawl Stars] after Clash of Clans' 10th anniversary.
+**The Barbarians, along with the Archers, Goblins, Elite Barbarians, and P.E.K.K.A, were featured as a [https://pad.fandom.com/wiki/Homepage/Monster monster] in [https://pad.fandom.com/wiki/Puzzle_%26_Dragons_Wiki Puzzles and Dragons], in a [https://pad.fandom.com/wiki/Homepage/Dungeon dungeon] called [https://pad.fandom.com/wiki/Clash_of_Clans_Dungeon Clash of Clans Dungeon].
+**The Barbarians, along with the Goblins, Giant, Valkyrie, Wizard, Hog Rider, Witch, P.E.K.K.A, and the Archer Queen, were featured as a non-playable opponent in [https://www.chess.com/ Chess].
+**The Barbarians, along with the Archers, Goblins, Musketeer, Wizard, Hog Rider, [[Battle Healer]], Witch, Miner, Ice Wizard, and Bandit, are featured as a [https://squad-busters.fandom.com/wiki/Squaddies Squaddie] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+**The Barbarians are featured as a trophy in [https://mocosupercell.fandom.com/wiki/Mo.co_Wiki Mo.co].
+**While not available as a character, the Barbarian's sounds, along with the Knight, Wizard, and [[Dark Prince]], were featured in the [https://beatstar.fandom.com/wiki/Clash_Royale_Theme Clash Royale Theme] [https://beatstar.fandom.com/wiki/Songs song] in [https://beatstar.fandom.com/wiki/Main_Page Beatstar].
+*The Barbarians, along with the Archers, Goblins, [[Ice Spirit]], Mini P.E.K.K.A, Musketeer, Giant, Wizard, Hog Rider, Witch, Prince, and Night Witch, are featured as a sticker in [https://en.wikipedia.org/wiki/IMessage iMessage], in a sticker pack called [https://apps.apple.com/us/app/clash-theater-stickers/id1353823484 Clash Theater]. Also, along with the Archers, Goblins, Skeletons, Mini P.E.K.K.A, Musketeer, Wizard, Witch, Prince, and [[Princess]], they are also featured in the [https://apps.apple.com/us/app/clash-a-rama/id1182384664 Clash-A-Rama] sticker pack.
+*The Barbarian is featured on the card renders of the [[Zap]], [[Earthquake]], [[Goblin Curse]], [[Clone]], and [[Mirror]].
+*In [[Pass Royale|Fisherman's Float]] and Shipwreck Island, Barbarians can be seen sitting in the audience.
+*It is said that Barbarians cannot function without their swords. This is referenced a few times:
+**The Duelist [[Battle Banners|Decoration]] saying "''Swords. Barbarians don't enter the Arena without them!''"
+**The [https://clashofclans.fandom.com/wiki/Raged_Barbarian Raged Barbarian]'s description in Clash of Clans which says "''Why is he so angry, speedy, and vicious? Nobody's brave enough to ask. Maybe it's because he can't find his sword?''"
+**In the Clash-A-Rama episode "[https://clasharama.fandom.com/wiki/%22Ballad_of_the_Barbarian%22 Ballad of the Barbarian]", a Barbarian was depressed because he lost his sword.
+*There is a [[Loading Screen Hints|Loading Screen Hint]] that says: "''Don't feed Barbarian after midnight.''" This is a reference to [https://gremlins.fandom.com/wiki/Gremlins_Wiki Gremlins].
+*The Barbarians are the subject of certain cosmetics in the game. More specifically:
+**The Barbarians are the subject of a few [[Clans|Clan]] badges.
+**The Barbarians are the subject of a few [[Emotes]].
+***The [https://clashroyale.fandom.com/wiki/Emotes?file=Barbarian_Pixel_Frenzy.png Barbarian Pixel Frenzy Emote] is a reference to [https://en.wikipedia.org/wiki/Donkey_Kong Donkey Kong].
+*The Barbarians were featured in the winning deck of the [https://www.youtube.com/watch?v=VxEzjdKQ4HA Clash Royale Helsinki Tournament], by a player called Jason.
+*Before the Barbarians' card release, the Barbarians' hitpoints were increased by 24%, and their damage was decreased by 12%.
+
+==In other languages==
+{{Other languages|fr=Barbares|de=Barbaren|es=Bárbaros|it=Barbari|nl=Barbaren|no=Barbarer|tr=Barbarlar|jp=バーバリアン|kr=바바리안|ru=Варвары|ar=برابرة|pt=Bárbaros|cn=野蛮人|cnt=野蠻人|fa=بربرها|id=Orang Barbar|ms=Orang Gasar|th=คนเถื่อน|fi=Barbaarit|vi=Man di}}
+
+{{Navigation|Card}}
+
+[[fr:Barbares]]
+[[de:Barbaren]]
+[[es:Bárbaros]]
+[[it:Barbari]]
+[[ja:バーバリアン]]
+[[ko:바바리안]]
+[[ru:Варвары]]
+[[zh:野蛮人]]
+[[pl:Barbarians]]

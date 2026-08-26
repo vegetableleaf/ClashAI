@@ -1,0 +1,208 @@
+{{Protection}}{{MagicWords}}{{ClashofClansLink|Furnace/Firemite}}
+
+{{Card Infobox|Cost=1|Rarity=Common|Type=Troop|Arena=Spell Valley|ReleaseDate=3 May 2016}}
+{{Quote|The Fire Spirit is on a kamikaze mission to give you a warm hug. It'd be adorable if it wasn't on fire.}}
+
+The Fire Spirit is a {{Rarity|Common}} [[Cards|card]] that is unlocked from the [[Arenas|Spell Valley (Arena 4)]]. It spawns a very fast, area-damage, air-targeting, short-ranged, ground [[:Category:Troop Cards|troop]] with low hitpoints and moderate damage. It launches itself at its target when attacking, destroying itself on impact. It resembles a small chunk of flaming coal with hands, legs, and glowing eyes. It is also the same as those spawned by the [[Furnace]]. A Fire Spirit card costs 1 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Fire Spirit Card}}
+*The Fire Spirit's area damage is very useful against swarms of weak, small [[:Category:Troop Cards|troops]] like [[Goblins]], [[Spear Goblins]], [[Bats]], or [[Minions]]. However, due to its relatively low health, placing it next to these units will result in it dying before it can attack. Placing the Fire Spirit at a distance allows it to safely deploy.
+**Against the [[Mother Witch]], you want to place it close to her instead, so that it is killed as part of its attack instead of being killed by the Mother Witch, otherwise she will spawn a Cursed Hog from it.
+**If timed correctly, a Fire Spirit can damage all the Lava Pups just as they explode from the [[Lava Hound]], weakening them enough for the [[:Category:Tower Troop Cards|Crown Tower]] to finish them off.
+**Due to this splash, an effective strategy is to pair it with troops that deal high single hit damage but are easily stopped by the small troops mentioned, such as the [[Mini P.E.K.K.A.|Mini P.E.K.K.A]] and [[Prince]].
+*The Fire Spirit will connect to a [[Tower Princess]] provided it is equivalently levelled. Although it can easily be stopped, its cheap cost often lures out cheap [[:Category:Spell Cards|spells]] and can cause opponents to over-commit [[Elixir]]-wise with their defenders. If used at the start of a [[Basics of Battle|match]], it can also act as a way to tell what [[Battle Decks|deck]] your opponent is using based on the [[Cards|card]] that they use to stop the Fire Spirit. However, this will not work with the [[Cannoneer]] and [[Dagger Duchess]] as they will defeat the Fire Spirit before it can connect. Causing a -1 Elixir trade.
+**It is less feasible to ignore a Fire Spirit compared to the other Spirits because of its much higher damage, doing the same damage to Crown Towers as the [[Fireball]].
+*The Fire Spirit has enough hitpoints to take a shot from most medium-sized units. The [[Musketeer]], [[Executioner]], [[Baby Dragon]], [[Witch]], Minions, [[Archers]], [[Princess]], [[Ice Wizard]], [[Miner]], [[Fisherman]], [[Archer Queen]], Phoenix, Electro Dragon, [[Magic Archer]], Firecracker, [[Zappies]], [[Bomber]], Electro Wizard, and the [[Bandit]], all take more than one hit to eliminate the Fire Spirit, giving it ample time to deal high damage to them.
+*Fire Spirit can compliment pushes effectively due to its good cost-to-damage ratio and fast movement speed. For example, if the player is pushing with a [[P.E.K.K.A.|P.E.K.K.A]] and Fire Spirit behind and the opponent drops Minions to counter for example, the Fire Spirit drops the health of said units to be finished off by a [[Zap]] or cheap ranged units to protect the P.E.K.K.A, letting her continue towards the Tower without taking extra damage.
+*It is most effective with fast moving troops like the [[Hog Rider]], [[Mini P.E.K.K.A.|Mini P E.K.K.A]], [[Ram Rider]], [[Prince]], [[Dark Prince]], and the [[Lumberjack]], as they will not collide with each other as much during an attack.
+*The player can use units to soak it up. For example, the [[Skeletons]] or another Spirit result in a neutral Elixir trade.
+*For more Fire Spirit value, a [[Furnace]] costs 4 Elixir and can spawn up to 7 Fire Spirits, giving the player almost twice as many Fire Spirits for their Elixir. It can allow for more consistent chip damage to Crown Towers and can bait spells due to its cost. However, the Fire Spirits do not spawn all at once, and its upfront cost is higher, so in a situation where the player needs quick area damage, the Furnace is much less versatile.
+*Occasionally, it is a good idea to combine the Fire Spirit with spells to defeat certain troops for a low Elixir cost. With a Zap, it can defeat anything up to [[Wall Breakers]], with [[Arrows]], it can defeat anything up to [[Skeleton Dragons]], with [[Fireball]], it can defeat anything up to a [[Night Witch]], and with [[Lightning]], it can defeat anything up to an [[Inferno Dragon]]. Use these combinations when you are lacking better counters for these troops or to get a good Elixir trade that would be granted compared to using two Spells.
+**The Fire Spirit does not deal enough damage to take out the [[Guards]]' shields but it does deal enough damage to finish off the Guards themselves. Knowing this, you can combine the Fire Spirit with [[The Log]] or a [[Barbarian Barrel]] to counter Guards for a neutral Elixir trade, however that requires precise timing.
+*Pairing the Fire Spirit with [[Electro Spirit]] is very effective, as they both cost 1 Elixir, which will only use a total of 2 Elixir. This combination can take out units such as Princess, Minions, Archers, Bomber, [[Firecracker]] and can even completely stop a [[Goblin Barrel]] with the help of the Crown Tower. This combo can help a lot of decks which try to bait [[The Log]] or Arrows, since the combo is very effective against swarms. It is also good on the offensive side, having more damage potential than The Log and can hit air. The player should make sure to deploy the Spirits a short distance from their targets to ensure they can finish deploying and attack successfully.
+*The Log can defeat it immediately, for a slight negative Elixir trade. Beware of using the Fire Spirit in conjunction with other troops weak to The Log as it can result in the opponent gaining high spell value.
+*Although the Fire Spirit’s area damage radius is not enough to completely stop a Tower-centered Goblin Barrel, if you drag any card like Skeletons behind the Crown Tower and then select the Fire Spirit while your still holding the Skeletons, and then double tapping on the same tile will result in the Fire Spirit being close enough to defeat all of the Goblins. This is enough to defeat the Goblin Barrel for a +1 Elixir trade, while also saving your spell for a different card.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|1||Very Fast (120)||1 sec||2.5||2.3||Air & Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 215}}
+{{#vardefine: dmg_11 | 207 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+! scope="col" |Area Damage<br />{{Icon|I=Area Damage}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 35,000 damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|200 {{BASEPAGENAME}} cards<br/ >25 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 105,000 damage to enemy Troops or buildings
+|2,000 {{Icon|I=Gold}}<br>25 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 175,000 damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>25 {{Icon|I=XP}}
+|-
+| rowspan="3" |Hit Maker <br/ > [[File:Hit Maker.png|50x50px]]
+|1
+|Hit enemy Troops a total of 780 times
+|3,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Troops a total of 2,200 times
+|200 {{Icon|I=Common Wild Card}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Troops a total of 3,850 times
+|5,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+| rowspan="3" |No Escape <br/ > [[File:No Escape.png|50x50px]]
+|1
+|Hit 5 Troops with a single deploy a total of 150 times
+|6,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|2
+|Hit 5 Troops with a single deploy a total of 450 times
+|8,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Hit 5 Troops with a single deploy a total of 900 times
+|10,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Fire Spirits [[Cards|card]] was added to the game on 3/5/2016, in the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]].
+*On 18/5/2016, a [[Version History#Balance Changes (18/5/2016)|Balance Update]], increased the Fire Spirits' area radius to 1.5 tiles (from 1.2 tiles).
+2018
+*On 2/7/2018, a [[Version History#Balance Changes (2/7/2018)|Balance Update]], increased the Fire Spirits' damage by 5%.
+2020
+*On 2/6/2020, a [[Version History#Balance Changes (2/6/2020)|Balance Update]], gave the Fire Spirits a new 0.1 seconds deploy stagger from each other.
+*On 9/9/2020, a [[Version History#Balance Changes (9/9/2020)|Balance Update]], increased the Fire Spirits' area radius to 1.7 tiles (from 1.5 tiles).
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], reworked the card, decreasing its cost to 1 [[Elixir]] (from 2 Elixir), its unit count to 1 (from 3), increasing its hitpoints by 109%, its damage by 6%, its range to 2.5 tiles (from 2 tiles), and its area radius to 2.5 tiles (from 1.7 tiles). Its name and description were updated to reflect the count change. Its description previously read, “''These three Fire Spirits are on a kamikaze mission to give you a warm hug. It'd be adorable if they weren't on fire.''” It also moved the [[Arenas|Arena]] to unlock the Fire Spirit from Spell Valley to P.E.K.K.A's Playhouse.
+*On 6/9/2021, the [[Version History#2021%20Quarter%203%20Update%20(6/9/2021)|2021 Quarter 3 Update]], decreased the Fire Spirit's area radius to 2.3 tiles (from 2.5 tiles).
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+*On 7/12/2021, the [[Version History#Balance Changes (7/12/2021)|2021 Quarter 4 Update]], decreased the Fire Spirit's range to 2 tiles (from 2.5 tiles).
+2022
+*On 2/8/2022, a [[Version History#Balance Changes (2/8/2022)|Balance Update]], decreased the Fire Spirit's damage by 9%.
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Fire Spirit from P.E.K.K.A's Playhouse to Spell Valley. It also added the No Escape [[Card Mastery]] task for the Fire Spirit.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2025
+*On 4/2/2025, a [[Version History#Balance Changes (4/2/2025)|Balance Update]], increased the Fire Spirit's range to 2.5 tiles (from 2 tiles).
+*On 30/6/2025, the End of June 2025 Update, added a card render to the Fire Spirit's card info screen.
+2026
+
+* On 4/8/2026, a Balance Update, decreased the Fire Spirit's hitpoints by 6%
+
+==Gallery==
+<gallery>
+File:Fire Spirit card render.png|Current card render.
+File:Fire Spirit Preview.gif|Current card preview
+File:Fire Spirit.png|Fire Spirit 1
+File:Fire Spirit 2.png|Fire Spirit 2
+File:Fire Spirit 1.png|Fire Spirit 3
+File:Fire Spirit 3.png|Fire Spirit 4
+</gallery>
+
+==Trivia==
+*While not available as a troop in Clash of Clans, the Fire Spirit reappears there in a few situations.
+**The Fire Spirit is used from one of the Siege Machines, the [https://clashofclans.fandom.com/wiki/Flame_Flinger Flame Flinger]. 
+**The Fire Spirit is seen on top of the [https://clashofclans.fandom.com/wiki/Super_Miner Super Miner]'s helmet as a lighter.
+**The Firemites (resembles Fire Spirit) is spawned from the [https://clashofclans.fandom.com/wiki/Furnace Furnace].
+*The Fire Spirit, along with [[Skeletons]], [[Electro Spirit]], [[Ice Spirit]], [[Warmth]], [[Heal Spirit]], and [[Heal]], are the cheapest [[cards]], costing 1 [[Elixir]].
+*Among all troops with area damage, the Fire Spirit has the largest area damage radius of all [[:Category:Troop Cards|troops]], with a radius of 2.3 tiles.
+*The Fire Spirit is 1 of 8 troops to die as a part of their attack, the others being the Electro Spirit, Ice Spirit, [[Skeleton Barrel]], [[Battle Ram]], Heal Spirit, [[Suspicious Bush]], and [[Wall Breakers]].
+*It was the only “Spirit” card to have a spawner [[:Category:Building Cards|building]] version, which was the [[Furnace]] before 4/8/2025.
+*The Fire Spirit is 1 of 9 troops that have the same sprite for both players, the others are Skeletons, Electro Spirit, [[Bats]], Ice Spirit, Heal Spirit, [[Elixir Golem|Elixir Blob]], [[Phoenix]], and [[Lava Hound|Lava Pup]].
+*In the French, Italian, Portuguese, Malaysian, and Finnish language settings of the game, the Fire Spirit's name translates to "Spirit of Fire". In the Russian, Chinese, and Persian language settings of the game, the Fire Spirit's name translates to "Fiery Spirit", "Flame Spirit" and "Fiery Soul" respectively.
+*The Fire Spirit is 1 of 23 troops that has been featured in the [[Troop Rush]] game [[:Category:Modes|mode]], the others being Skeletons, [[Skeleton Dragons]], Bats, [[Elite Barbarians]], [[Firecracker]], [[Rascals|Rascal Girls]], [[Royal Hogs]], Heal Spirit, Elixir Golem, [[Guards]], [[Prince]], [[Balloon]], [[Golem]], Wall Breakers, [[Ram Rider]], [[Sparky]], Phoenix, [[Royal Ghost]], [[Bandit]], [[Lumberjack]], [[Santa Hog Rider]], and the [[Monk]].
+*The Fire Spirit is 1 of 23 cards that has had its Elixir cost changed, the others being [[Bomber]], [[Royal Recruits]], [[Cannon]], [[Mortar]], [[Musketeer]], [[Three Musketeers]], Heal, [[Goblin Hut]], [[Bomb Tower]], [[Barbarian Hut]], Furnace, [[Elixir Collector]], [[Skeleton Army]], [[P.E.K.K.A.]], Wall Breakers, [[Electro Giant]], [[Bowler]], [[Goblin Barrel]], [[Barbarian Barrel]], [[Rage]], [[Fisherman]], and the Monk.
+*2 Fire Spirits are featured on the card image of the [[Rune Giant]]. Another Fire Spirit is featured on the card image of the [[Berserker]].
+*The Fire Spirit's mouth is seen in "[https://youtu.be/5FXOdOySfsI?si=aK3PbidZSTSPF9fx The Evolution of Furnace!]" video.
+**It's also shown that the Fire Spirit has a feminine voice.
+*The Fire Spirit is the only card in English whose name has changed, as a result of its count changing from 3 to 1 in the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]].
+*In [[Touchdown]], if a Fire Spirit jumps into the enemy end zone as it attacks, it does not count as a touchdown. This is because a jumping spirit no longer counts as a troop; it becomes similar to a projectile.
+*The Fire Spirit is the subject of 3 [[Emotes]].
+*The Fire Spirit was featured in the winning [[Battle Decks|deck]] of the [https://www.youtube.com/live/nMANpDweTA4?si=nsUAou7ny3WAA2ve Clash Royale League 2022 Tournament], by a player called Mohamed Light.
+
+{{Navigation|Card}}
+
+[[fr:Esprit de feu]]
+[[de:Feuergeist]]
+[[es:Espíritus de fuego]]
+[[it:Spirito del fuoco]]
+[[ko:파이어 스피릿]]
+[[ru:Огненный дух]]
+[[zh:烈焰精灵]]
+[[Category:Kamikaze Cards]]

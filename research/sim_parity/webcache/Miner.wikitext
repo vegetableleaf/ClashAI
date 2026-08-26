@@ -1,0 +1,229 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Miner</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}
+
+{{Card Infobox|Cost=3|Rarity=Legendary|Type=Troop|Arena=Electro Valley|ReleaseDate=3 May 2016}}
+{{Quote|The Miner can burrow his way underground and appear anywhere in the Arena. It's not magic, it's a shovel. A shovel that deals reduced damage to Crown Towers.}}
+
+The Miner is a {{Rarity|Legendary}} [[Cards|card]] that is unlocked from the [[Arenas|Electro Valley (Arena 11)]]. It spawns a fast, single-target, ground-targeting, melee, ground [[:Category:Troop Cards|troop]] with high hitpoints and moderate damage. The Miner can be placed anywhere in the Arena. He appears as a man wearing a dark gray helmet with a partially melted candle on top, a team-colored shirt, a belt with a golden handle, and brown pants, carries a shovel, and has brown eyebrows, a large reddish nose, and a slightly dirtied face. He also carries an open backpack which appears to be filled with gold and rocks. A Miner card costs 3 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Miner Card}}
+*Due to his ability to be placed anywhere in the [[Arenas|Arena]], the Miner can be used for surprise attacks on [[:Category:Crown Towers|Crown Towers]] and [[:Category:Troop Cards|troops]].
+*He deals only 25% of his normal damage to Crown Towers, so it is generally not recommended to use him on them alone, unless your deck is built around winning via chip damage from the Miner.
+*The Miner’s unique ability grants him a great amount of versatility and use cases, depending on the deck:
+**He can act as a surprise tank for high damage per second troops, which is a reliable way to deal immense damage if ignored by the opponent. The Miner will tank the damage from the Tower or other troops while the supporting units deal massive damage. This can be countered by swarm troops or [[:Category:Spell Cards|spells]], however.
+**Even a lone Miner can dish out similar damage to a [[Rocket]] for half the price to a Crown Tower if ignored, so it is generally advised to address him whenever possible and reduce the damage he deals with each push. However, if one is using a high [[Elixir]] cost [[Battle Decks|deck]], it may be worth ignoring a lone Miner that is used to punish one's Elixir investment, so that they have more Elixir to create a large, unstoppable push. Compared to other [[:Category:3-Elixir Cards|3 Elixir cards]], he does not deal very much damage to a Crown Tower if ignored, but is reliable at dishing out that damage.
+**If the player is sending the Miner to a [[Princess Towers|Crown Tower]], sending the Miner on the center tile of the inner side will allow the other Crown Tower to target him. This can be helpful in that the Miner is distracting both Crown Towers, so the player can send in fast backup troops to attack both lanes (eg. [[Wall Breakers]]). However, if the Miner is being sent in alone, it is generally not recommended to deploy him here as he will simply die more quickly and deal less damage, also increasing the risk of him activating the [[King's Tower|King Tower]] if pulled with a [[Tornado]] or with other units. 
+***On the contrary, due to this interaction, this placement is very effective when one only needs a few Miner hits to take down the Tower, as many players will not expect this "self-destructive" placement.
+**The Miner can take out squishy but powerful troops such as the [[Princess]], [[Firecracker]], [[Dart Goblin]], [[Bomber]], [[Magic Archer]], [[Ice Wizard]], [[Wizard]], or [[Musketeer]] that are protected by a tank. Against a Princess that is attacking a tower from the bridge, placing him on the outside tiles will not cause her to re-target to him; the player needs to deploy the Miner on the inside or the center tile to cause her to re-target.
+***Much like feigning an attack on a building, this tactic also works on ranged support troops, as the opponent is more likely that they will try to protect their ranged troop. Sending the Miner on the Tower while using a spell on the troop can result in a larger positive Elixir trade.
+***If the Miner response is placed in a poorly position, you can use Tornado to send the Miner toward the King Tower, activating him early while also saving your ranged troop.
+***Certain ranged troops like the [[Bowler]] and [[Sparky]] are strong enough that the player should not deploy the Miner against them, as it will result in either him being destroyed in an attempt to defeat the troop or retarget onto something else, again denying the attempt to defeat the ranged troop.
+***Against the [[Archer Queen]] and [[Little Prince]], the player should not attempt to deploy the Miner to defeat them, unless they can ensure that cannot use their abilities. This is because the abilities will cause the Miner's attempts to defeat them to fail, thanks to the effects of the abilities.
+**In situations where the player wants to hit the Crown Tower with a spell, they can send a Miner first on it. This will inevitably bait a troop from the opponent to distract him, which can be removed with the spell from the player, while also dealing some chip damage on the Tower. This can be a great way to even out a trade compared to sending the spell alone.
+**If the player is rushing to take down a Crown Tower, the Miner should be placed on the inner front corner tile. This is because, much like spells, the Miner travels from the player's King Tower, and this tile is the closest to the King Tower, allowing him to start attacking the Crown Tower earlier. This placement is also less likely to be blocked, due to being to the opposite side of his typical placements.
+*The [[Electro Wizard]] works well with the Miner on offense. After the Tower locks onto the Electro Wizard, a Miner can be sent in to tank for it when. The Electro Wizard's stun attacks will cause the Tower to retarget onto the Miner, allowing the Electro Wizard to survive longer and deal more damage and possibly take out the whole Tower. You can also do this with the [[Zappies]] or an [[Electro Dragon]].
+*If the player deploys him in front of the Tower, their supporting units are much easier to counter as splash units can easily splash the Miner and support troops, while incoming single target troops can easily be distracted by the troops that were used to defend against the Miner. An [[Ice Golem]] can also be placed in front of Tower pushing the Miner and forcing him to change target. Due to this, it is not recommended to deploy him here, even as a surprise attack, as a unit placed far enough forward can take care of both the Miner and incoming support troops.
+*If one wishes to attack the King's Tower without their Miner being within range of a Crown Tower, they should place the Miner on the left corner or 1 tile beside said corner of the King's Tower to avoid getting targeted by the right Crown Tower, and vice versa. Conversely, if one wishes to attack a Crown Tower without getting targeted by the King's Tower, place him in the bottom right corner of the right Crown Tower so that he can target it without getting targeted by the King's Tower, and vice versa.
+*If the opponent has the Tornado [[Cards|card]] in their deck, they are able to drag the Miner to their King's Tower against many common placements, causing a King activation for an equal Elixir trade and very little Crown Tower damage. One should be aware of the two safe spots in which a Miner cannot be dragged to the King's Tower by the Tornado, those being the bottom-most tile on the non-King Tower side and the tile directly above that. Although a Miner is safe in these positions, this makes his attacks very predictable and easy to block with units as soon as the Miner is seen approaching. One may want to consider intentionally placing the Miner in a Tornado-vulnerable position and supporting him with fast, high damage units like [[Goblins]], [[Minions]], [[Guards]], or [[Bats]]. If the opponent is low on Elixir, they will take major damage from the supporting units should they decide to activate their King's Tower (more than they would have if they simply ignored the Miner and addressed the supporting units).
+**A [[Tesla]] can be placed on those two tiles, to prevent the Miner from being placed on them to avoid a King activation or simply to limit where the Miner can be placed, which will make addressing him easier. 
+*Miners can destroy enemy [[:Category:Building Cards|buildings]] such as spawners when they are not attacking or defending, as his damage is only reduced to Crown Towers, and will deal normal damage to other buildings. An [[Elixir Collector]] is also particularly vulnerable to Miner attacks, potentially allowing for large positive Elixir trades.
+**However, it is important to note that most players will attempt to protect any passive buildings placed in the back from Miner damage. Single units placed behind the Crown Tower can "catch" most Miner placements provided the defender reacts quickly enough. Cheap swarms are more lenient on this timing as they can spread out. One should either wait for the opponent's blocking unit to be out of their hand, or if the opponent uses swarms to defend him, use a spell alongside the Miner on reaction. Another strategy is to feign an attack on the building (i.e. aiming for the Crown Tower instead) in order to make the opponent waste Elixir, which can allowing for spell value on their unit, the Crown Tower, and the building.
+**If the opponent places their building beside their King's Tower, a high-risk, high-reward play is to send the Miner towards the back of the building, rather than the front or side. This is risky because if the opponent ignores it, the Miner will activate their King's Tower after destroying the building (which is still a positive Elixir trade, but will notably limit future Miner damage). However, if the opponent plays a card to defend a Miner in front or beside the building, the unit will waste time walking towards him and defeat him before he can get a chance to activate the King's Tower, which also results in an even larger positive Elixir trade as the opponent will have spent Elixir to deploy a unit, and would have lost the opportunity to activate the King's Tower.
+**The Miner should not be deployed directly above and 1 tile beside on the left (for both sides of the Arena) of the Crown Tower as he will target it instead. The Miner will always attack the left corner of the targeted building.
+**The [[Tombstone]] is the only passive building which is not recommended to be taken down with a Miner under any circumstance. The constant Skeleton spawns make it difficult for the Miner to connect to it, and its equal Elixir cost and death spawn will deny all Miner damage even if the Miner does connect. In fact, a Tombstone is typically only placed behind a Crown Tower specifically in anticipation for Miner attacks.
+*It's not recommended to reel the Miner to the King's Tower with a Tornado when the Miner is at low health, as the Miner can possibly die during the spell effect, resulting in a waste of 3 Elixir.
+*When [[Mirror|mirroring]] a Miner, the Mirror will reveal its location. Due to this, it is not recommended to mirror a Miner when using it on offense, as the Mirror's visual indicator will make it easier to block with a troop.
+*The player can also support their pushes by deploying the Miner next to their troops. However, the Miner is best used to tank, diverting some damage from the main push.
+*The Miner can be used to take early-placed opposing defenders by surprise. That way, Miner can tank for the player's main offense.
+*Being a single-target troop, the Miner is very weak against a small swarm of troops, such as [[Skeletons]], [[Archers]], [[Goblins]], [[Guards]], and [[Spear Goblins]], which distract the Miner and prevent him from attacking nearby buildings. High damage troops like the [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Prince]], [[Hunter]], [[Elite Barbarians]], [[Three Musketeers]], [[Mighty Miner]], [[P.E.K.K.A.|P.E.K.K.A]], [[Sparky]], [[Inferno Dragon]], [[Monk]], and [[Lumberjack]] can also easily destroy the Miner.
+*Switching up the placement of the Miner unpredictably is highly recommended and prevents the opponent from efficiently addressing the Miner, allowing him to chip the tower constantly. Many players will start anticipating a Miner's position even after just one attack, so deploying him in the same spot twice is mostly ineffective. Another method to sneak in Miner damage is to deploy him nearby an enemy unit placed near the Tower, but barely far enough so that he will not attack them. This is effective because many players will expect the Miner to be placed far away from all units so that his damage is maximized, but this ends up being predictable.
+*The Miner is rather situational on defense. While he has decent hitpoints, damage, and attack speed, he takes longer to be placed on the tile that he is selected, making him an inferior choice over mini tanks like the [[Knight]] and [[Bandit]]. However, he can still be used as a last resort defense, or he can be assisted with other cheap cards.
+*The Miner pairs well with a large variety of spells that have unrestricted placements.
+**The Miner pairs well with the [[Poison]] as the Poison will defeat any swarms trying to counter the Miner while the Miner does constant chip damage to the Crown Tower. The Poison, too, will chip some damage off the Tower. The [[Earthquake]] can work in a similar way, but unlike the Poison, it does not hit air troops , and its damage is notably lower, that the Miner might not be able to defeat the swarms in time.
+***Make sure that the Poison or Earthquake are deployed at the exact same time that the Miner resurfaces. Otherwise, the opponent might have an idea of where you placed the Miner and react accordingly. Alternatively, you can place the Miner and the spell on different tiles to foul the enemy into thinking that the Miner is placed on the same tile.
+**If the Miner is used in a deck to tank for troops, [[Zap]] is essential. It can clear swarms around the Miner like [[Bats]] and [[Skeletons]] but more importantly causes Crown Towers to retarget on the Miner, allowing incoming troops from the bridge to provide more value by staying alive.
+**The quick speed of the Arrows and its large area make them a great spell to use with the Miner, especially against swarms. Most swarms will be destroyed within its waves, while the Guards will lose their shields, allowing the Miner to OHKO them.
+**The [[Giant Snowball]] can knock troops away from the Miner, letting the Miner potentially lock onto its target. The slow effect of the spell will also buy him more time to deal damage to his target, possibly even destroying certain responses to him.
+**An expensive combination that should only be done in Double Elixir is the Miner [[Rocket]] combo. The opponent will instinctively place troops near the Miner, allowing the Rocket to gain value by knocking out or severely crippling them, all while the Miner and Rocket deal a great amount of chip damage to the Crown Tower. Even if the Miner remains on the troop used, the Rocket will have weakened it enough that it could be defeated by the Miner.
+**The [[Goblin Curse]] is the best spell to use alongside the Miner. Much like the Poison, it lasts for a long time, while it counters some swarms. In addition, it will be able to curse them, allowing the Miner to defeat them and convert them to Goblins, for which he will tank for.
+*The Miner has an excellent synergy with the [[Skeleton Barrel]]. The Skeleton Barrel initially tanks for the Miner, then the Miner tanks for the Skeletons from the barrel. However, this synergy is easily stopped by a spell after the Skeleton Barrel pops, so be sure to make do with bait such as [[Skeleton Army]] or better yet, those that still synergize with the Miner such as the [[Dart Goblin]], Minions, or Bats.
+*Similarly, he can work with other troops that spawn troops after death, such as a [[Goblin Giant]], [[Golem]], [[Elixir Golem]], [[Battle Ram]], or a [[Lava Hound]]. These troops will tank for him initially, and then when they are killed, they will unleash their fragile death spawn troops that the Miner will tank for. In the case of the Lava Hound, a ground spell cannot be used to damage both the Miner and the Lava Pups.
+*Pairing up the Miner and [[Hog Rider]] is a great choice for a push. Against buildings, the Miner can be placed as a prediction on them, so that he takes all the damage, which will allow the Hog Rider to destroy the building. However, it is vulnerable to air troops, such as [[Minions]] and [[Bats]], and is also easily stopped by [[Barbarians]], [[Goblin Gang]], [[Skeletons/Evolution|Evolved Skeletons]], or Skeleton Army. It is recommended to have a spell ready to support them.
+*If the Miner digs under a place where troops are standing, the troops above him will move aside. This uprooting of the dirt can re-aggro troops as it pushes them aside and make them switch targets. However, this is not substantially used as it is hard to predict Miner movement.
+*A [[Goblin Barrel]] works well with the Miner. The Miner can soak up damage, while the [[Goblins]] deal damage, and vice versa. However, this combo is very vulnerable to spells. Deploying a Miner alongside the Goblin Barrel may simply allow the opponent to damage the Miner for "free". Another way to use this combo is to deploy the Goblin Barrel on one Crown Tower and the Miner on the other. This is especially effective if the Miner is tanking for both towers, which can allow the Goblins to sneak damage in if they are not one-shot by a spell.
+*The Miner also works very well with the [[Graveyard]]. The Miner will tank the damage from the Tower or counters while the Skeletons continuously spawn, allowing them to potentially deal heavy damage to the Tower or every destroy it as well. A [[Minion Horde]], [[Goblin Gang]], or Poison can counter this combo for an Elixir advantage, however. This strategy is also very bad against decks with Tornado since they can activate the King Tower and reduce damage in future pushes.
+*An [[Ice Spirit]] is useful as a cheap support unit when defending against the Miner. An Ice Spirit deployed behind the defending Crown Tower will, at most, only allow one Miner hit to get through before it freezes him. This gives the defender time to deploy units and force the Miner to retarget onto them.
+
+<center>
+
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|3||1.3 sec||0.5 sec||Fast (90)||1 sec||Melee: Medium (1.2)||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1210 }}
+{{#vardefine: dmg_11 | 194 }}
+{{#vardefine: atk_speed | 1.3 }}
+{{#vardefine: crown_11 | 48 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Crown Tower Damage<br />{{Icon|I=Tower Damage}}
+! scope="col" |Crown Tower Damage per second<br />{{Icon|I=Tower Damage}}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:crown_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:crown_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:crown_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:crown_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:crown_11}} || {{Dps|{{#var:crown_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:crown_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:crown_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:crown_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:crown_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:crown_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:crown_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:crown_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:crown_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:crown_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:crown_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 62,500 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|2 {{BASEPAGENAME}} cards<br>100 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 185,000 Damage to enemy Troops or buildings
+|8,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 310,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>100 {{Icon|I=XP}}
+|-
+| rowspan="3 " |Pincushion <br/ > [[File:Pincushion.png|50x50px]]
+|1
+|Receive a total of 1,750 hits from enemy [[:Category:Crown Towers|Towers]]
+|12,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|2
+|Receive a total of 5,000 hits from enemy Towers
+|2 {{Icon|I=Legendary Wild Card}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Receive a total of 8,750 hits from enemy Towers
+|18,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Miner [[Cards|card]] was added to the game on 3/5/2016, in the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]] {{Balance|Add}}.
+*On 18/5/2016, a [[Version History#Balance Changes (18/5/2016)|Balance Update]], increased the Miner's hitpoints by 6% {{Balance|Buff}}.
+*On 4/7/2016, the [[Version History#Tournaments Update (4/7/2016)|Tournaments Update]], decreased the Miner's deploy time to 0.75 seconds (from 1 second) {{Balance|Buff}}. This change was not mentioned in any change notes and was later said to be unintentional by Supercell.
+*On 24/8/2016, a [[Version History#Balance Changes (24/8/2016)|Balance Update]], increased the Miner's deploy to 1 second (from 0.75 seconds) {{Balance|Nerf}} and decreased his hitpoints by 6% {{Balance|Nerf}}.
+2018
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], moved the [[Arenas|Arena]] to unlock the Miner from Builder's Workshop to P.E.K.K.A's Playhouse {{Balance|Buff}}.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Legendary}} cards start at Level 9 and end at Level 13 (from 1 to 5) {{Balance|Neutral}}.
+2019
+*On 1/7/2019, the [[Version History#July%202019%20Update%20(1/7/2019)|July 2019 Update]], decreased the Miner's range to 1.2 tiles (from 1.3 tiles) {{Balance|Nerf}}, now classified as Melee: Medium.
+*On 7/10/2019, a [[Version History#Maintenance Break (7/10/2019)|maintenance break]], added a new [[Star Points|Star Level]] {{Balance|Add}}.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Miner's card info screen {{Balance|Add}}.
+2020
+*On 3/3/2020, a [[Version History#Balance Changes (3/3/2020)|Balance Update]], decreased the Miner's [[:Category:Crown Towers|Crown Tower]] damage to 35% of the full damage (from 40%) {{Balance|Nerf}}.
+*On 4/8/2020, a [[Version History#Balance Changes (4/8/2020)|Balance Update]], decreased the Miner's Crown Tower damage to 30% of the full damage (from 35%) {{Balance|Nerf}}.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], slightly changed the Miner's description, adding the line "''A shovel that deals reduced damage to Crown Towers.''" {{Balance|Neutral}}.
+*On 2/9/2021, a maintenance break, changed the Miner's card render {{Balance|Neutral}}.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13) {{Balance|Buff}}.
+2022
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Miner from P.E.K.K.A's Playhouse to Electro Valley {{Balance|Nerf}}.
+2023
+*On 4/4/2023, a [[Version History#Balance Changes (4/4/2023)|Balance Update]], decreased the Miner's Crown Tower damage to 25% of the full damage (from 30%) {{Balance|Nerf}}.
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14) {{Balance|Buff}}.
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], increased the Miner's damage by 0.51% {{Balance|Buff}}.
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] increased the Miner's attack time interval to 1.3 seconds (from 1.2 seconds) {{Balance|Nerf}}.
+2026
+
+* On 6/7/2026, a Balance Update, decreased the Miner's Crown Tower damage to 20% of the full damage (from 25%)
+
+==Gallery==
+<gallery>
+File:Old Miner card render.png|Miner's card render before 2/9/2021.
+File:Miner card render.png|Current card render.
+File:Miner Preview.gif|Current card preview
+File:Miner 1.png|Miner 1
+File:Miner 3.png|Miner 2
+</gallery>
+
+==Trivia==
+*The word "''Mine''" and by extention "''Miner''" come from the Celtic "''meinis''", meaning ore. Mining was invented from the beginning of civilization, with the oldest mine being the [https://en.wikipedia.org/wiki/Ngwenya_Mine Ngwenya Mine] in Eswatini, which radiocarbon dating shows to be about 43,000 years old. At this site Paleolithic humans mined [https://en.wikipedia.org/wiki/Hematite hematite] to make the red pigment [https://en.wikipedia.org/wiki/Ochre ochre]. Mining is still done to this day, for the extraction of rare-earth minerals for industrial use.
+**In the Korean language settings of the game, the Miner's name translates to "Mine Worker".
+**The Miner is 1 of 4 [[cards]] associated with subterranea, with the others being [[Earthquake]], [[Goblin Drill]], and the [[Mighty Miner]].
+*The Miner is 1 of 17 [[:Category:Troop Cards|troops]] that inspired a troop in Clash of Clans, the others being [[Spear Goblins]], [[Bomber]], [[Bats]], [[Skeleton Barrel]], [[Minion Horde]], [[Firecracker]], [[Battle Ram]], [[Ice Golem]], [[Zappies]], [[Baby Dragon]], [[Giant Skeleton]], [[Ram Rider]], [[Inferno Dragon]], [[Royal Ghost]], [[Ice Wizard]], and [[Night Witch]].
+**Unlike his [https://clashofclans.fandom.com/wiki/Miner Clash of Clans counterpart], he can be deployed in opposing territory but does not have the ability to burrow again after surfacing.
+**His Barracks image in Clash of Clans and his old card render are likely based off of his card image from Clash Royale.
+*A burrowing Miner has the highest speed of all troops, with a speed of 650.
+*The Miner is one of the first troop cards to receive a card render, alongside the [[Archers]], [[Knight]], [[Goblins]], Bomber, [[Skeletons]], [[Barbarians]], Bats, [[Royal Recruits]], Skeleton Barrel, [[Rascals]], [[Musketeer]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Flying Machine]], [[Hog Rider]], [[Royal Hogs]], [[Dart Goblin]], Zappies, [[Elixir Golem]], Baby Dragon, [[Skeleton Army]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], [[Prince]], [[Balloon]], Giant Skeleton, [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Mega Knight]], Ram Rider, Royal Ghost, Ice Wizard, [[Magic Archer]], [[Bandit]], [[Lava Hound]], Night Witch, and [[Fisherman]].
+* The Miner is the only troop that can be placed on the opponent's territory.
+*The Miner is 1 of 2 troops to deal reduced damage to [[:Category:Crown Towers|Crown Towers]], the others being [[Electro Giant]]. In the case of the Miner, his regular attacks deal 25% of the full damage.
+*The Miner, along with the Archers, Goblins, Barbarians, Musketeer, Wizard, Hog Rider, [[Battle Healer]], Witch, Ice Wizard, and Bandit, are featured as a [https://squad-busters.fandom.com/wiki/Squaddies Squaddie] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*According to Fan Fang, the Game Lead/Designer of Clash Mini, the Miner is his favorite troop, as stated on [https://www.pocketgamer.com/clash-mini/interview-fan-fang-vlad-perge/ Pocket Gamer].
+*The Miner is unavailable in multiple [[Tournament/Special Event Challenges|special gamemodes]]. More specifically:
+**It is 1 of 3 cards that is unavailable in Boost Fields, the others being Goblin Barrel and Goblin Drill.
+**It is 1 of 3 cards that is unavailable in Timeless Towers, the others being [[Rocket]] and Goblin Drill.
+**It is 1 of 12 cards that is unavailable in [[Chess Royale]], the others being Royal Recruits, Rocket, Earthquake, [[Lightning]], [[Poison]], Goblin Drill, [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], Mighty Miner, and the [[Monk]].
+*The Miner is the subject of a few [[Emotes]].
+*During the 1st Anniversary Offer, when the free Magical Chest is opened, a right-facing Goblin will be there trying to blow out a candle. The candle will appear on a Miner's helmet if the [[Gold]] and [[Gems|Gem]] pack in the middle is purchased, and a left-facing Goblin will appear if the Gold and Super Magical [[Chests|Chest]] pack on the right is purchased.
+*The Miner was featured in the winning [[Battle Decks|decks]] of multiple Clash Royale Tournaments. More specifically:
+**The Miner was featured in the winning deck of the [https://www.youtube.com/live/DVY2TndGf4U?si=ptuVz0tHkkkDIvEl Crown Championship Global Series Tournament], by a player called Sergioramos:).
+**The Miner was featured in the winning deck of the [https://www.youtube.com/live/nMANpDweTA4?si=nsUAou7ny3WAA2ve Clash Royale League 2022 Tournament], by a player called Mohamed Light.
+*The initial balance change for Miner on the [[Version History#Balance Changes (4/4/2023)|4/4/2023 balance changes]] was a 7% hitpoints decrease, but it was changed to a Crown Tower damage decrease to 25% (from 30%) [https://royaleapi.com/blog/season-46-balance-wip last minute].
+
+==In other languages==
+{{Other languages|fr=Mineur|de=Tunnelgräber|es=Minero|it=Minatore|nl=Mijnwerker|no=Graver|tr=Madenci|jp=ディガー|kr=광부|ru=Шахтер|ar=عامل المنجم|pt=Mineiro|cn=掘地矿工|cnt=掘地礦工|fa=معدنچی|id=Penambang|ms=Pelombong|th=คนงานเหมือง|fi=Kaivosmies|vi=Thợ mỏ|jpmeaning=Digger.|demeaning=Tunnel Digger.|krmeaning=Mine Worker|nomeaning=Digger}}
+
+{{Navigation|Card}}
+
+[[fr:Mineur]]
+[[de:Tunnelgräber]]
+[[es:Minero]]
+[[it:Minatore]]
+[[ja:穴掘り師]]
+[[ru:Шахтёр]]
+[[pt-br:Mineiro]]
+[[zh:掘地矿工]]

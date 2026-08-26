@@ -1,0 +1,206 @@
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=7|Rarity=Common|Type=Troop|Arena=Royal Arena|ReleaseDate=7 August 2018}}{{SubpageNavBox|Evolution=yes}}{{Quote|Deploys a line of recruits armed with spears, shields and wooden buckets. They dream of ponies and one day wearing metal buckets.}}
+
+The Royal Recruits is a {{Rarity|Common}} [[Cards|card]] that is unlocked from the [[Arenas|Royal Arena (Arena 7)]]. It spawns six single-target, ground-targeting, melee, ground [[:Category:Troop Cards|troops]] with moderate hitpoints and moderate damage with shields in addition to their normal hitpoints. Their deployment is in a horizontal formation spanning the Arena. They appear as men with large, round noses, wear wooden buckets with team-colored feathers, which cover their faces, metal gloves, an armor, a chain mail, a team-colored shirt and belt, and brown sandals, and wield spears and wooden shields. They are also the same as that spawned by the [[Royal Delivery]]. A Royal Recruits card costs 7 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Royal Recruits Card}}
+*The Royal Recruits are a powerful defensive [[Cards|card]] because of how they are deployed, allowing good defense from [[:Category:Troop Cards|troops]] coming from both lanes.
+**This can stop numerous split lane pushes since each Royal Recruit has a decent amount of health and damage. After that, they can be used for a very strong counterattack in both lanes.
+**They can also distract some air troops, buying time to counter them.
+**Treat the Royal Recruits like slower and bulkier [[Guards]] when countering high-damage, slow-hitting units such as the [[P.E.K.K.A.|P.E.K.K.A]], [[Mini P.E.K.K.A.]], [[Prince]], [[Elite Barbarians]], [[Hunter]], [[Giant Skeleton]], [[Royal Ghost]], and [[Sparky]]. Their shields and sheer numbers can stall these units for extremely long amounts of time, allowing the player's [[:Category:Tower Troop Cards|Crown Towers]] to easily chip these units down.
+*Just like the [[Dark Prince]] and Guards, excess damage from destroying the Royal Recruit's shield will not affect their actual hitpoints. For instance, the Royal Recruits have 240 shield hitpoints, and a [[Fireball]] does 689 damage; the extra 449 damage will be completely negated.
+*Despite their horizontal formation, they can be split in slightly different ways by shifting the central tile of their deployment pattern to the left or right. This can cause 4 Royal Recruits to go in one lane and 2 in the other lane as opposed to the usual even formation.
+*Because of their horizontal formation, they can be used defensively even against splash units. This is especially useful against the [[Mega Knight]] and Dark Prince, as their formation minimizes the number of Royal Recruits that are hit from a single attack from either of them.
+*Unlike other cards, the Royal Recruits cannot be placed in the opponent's territory if one Crown Tower has been destroyed. Instead, they need both Crown Towers to be destroyed in order to be placed in the opponent's territory.
+*When dealing with them, use area damage cards such as a [[Wizard]], [[Firecracker]], [[Witch]], [[Ice Wizard]], [[Goblin Demolisher]], or [[Bomber]] to counter one or both Royal Recruit pushes due to their large count, especially if there is a lane with 4 Royal Recruits. Pulling both lanes of Royal Recruits into the middle of your side with a cheap distraction unit will make defending against them much easier. The [[Bowler]] is particularly effective when placed in the middle, as he can knock off their shields in 1 hit, and his ranged attack can easily pierce through multiple Recruits at once. The [[Executioner]], [[Magic Archer]], [[Bomber/Evolution|Evolved Bomber]], and the [[Firecracker/Evolution|Evolved Firecracker]] can be used to a similar effect.
+*When using the Mega Knight against the Royal Recruits, try to lure them all together to the center with a cheap mini tank, like an [[Ice Golem]], [[Elixir Golem]], or [[Knight]], then deploy the Mega Knight to hit them hard with his Spawn Damage.
+*Since they cannot attack air troops, they can be countered by splitting air swarms, like the [[Bats]], [[Minion Horde]], and [[Skeleton Dragons]].
+*They have a combined health (including their shield hitpoints) of 4,632. This is more than a [[Giant]], meaning they are very hard to deal with effectively without splash units, especially when they have the shield mechanic which can potentially absorb more damage. This makes them a powerful pick in draft, where splash units or spells are not as likely to be in the opponent's deck.
+*They should never be left alone when there are more than two of them, as four unsupported Royal Recruits can take a Crown Tower, three will deal 1,700 damage to a Crown Tower, and two will deal 800. However, simply using cheap spells against them (such as [[The Log]]) or kiting them with cheap units such as [[Skeletons]] can prevent a lot of damage on your Crown Tower because of their slow movement speed. Splash cards like [[Wizard]], [[Bomber]], [[Witch]], and [[Goblin Demolisher]] can also easily obliterate them from a distance.
+*The Royal Recruits have a slightly higher range than other melee troops, thus allowing them to safely attack distracted lower-range splash cards (such as the [[Valkyrie]]) without taking damage in return.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|7||1.3 sec||0.5 sec||Medium (60)||1 sec||Melee: Long (1.6)||Ground||x6||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 547 }}
+{{#vardefine: Shield_11 | 240 }}
+{{#vardefine: dmg_11 | 133 }}
+{{#vardefine: atk_speed | 1.3 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+! scope="col" |Shield Hitpoints<br />{{Icon|I=Shield Hitpoints}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:Shield_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:Shield_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="20%" |Type
+! width="10%" |Level/Tier
+! width="45%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 165,000 Damage to enemy [[:Category:Troop Cards|Troops]] and [[:Category:Building Cards|buildings]]
+|200 {{BASEPAGENAME}} cards<br>25 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 495,000 Damage to enemy Troops and buildings
+|2,000 {{Icon|I=Gold}}<br>25 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 830,000 Damage to enemy Troops and buildings
+|100 {{Icon|I=Gem}}<br>25 {{Icon|I=XP}}
+|-
+| rowspan="3" |Tower Tapper <br> [[File:Tower Tapper.png|50x50px]]
+|1
+|Hit enemy [[:Category:Crown Towers|Crown Towers]] a total of 700 times
+|3,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Crown Towers a total of 2,000 times 
+|200 {{Icon|I=Common Wild Card}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Crown Towers a total of 3,500 times
+|5,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2018
+*The Royal Recruits were once available in the [[Tournament/Special Event Challenges|Royal Recruits Draft Challenge]], which started on 20/7/2018. In this [[Tournament|challenge]], gameplay was similar to a regular Draft Challenge, except that one of the players was able to choose who would use the Royal Recruits. If the player achieved at least 8 wins, they obtained the Royal Recruits early.
+*On 27/7/2018, prior to the [[Cards|card]]'s general release, a [[Version History#Maintenance Break (27/7/2018)|maintenance break]], increased the Royal Recruits' cost to 8 [[Elixir]] (from 6 Elixir).
+*From 29/7/2018 through 1/8/2018, the [[Shop]] had a special offer where [[Arenas|Arena]] 7+ players could buy up to 6 special Fortune [[Chests]] for 300 [[Gems]] that guarantee at least 65% of the Chest's contents to be Royal Recruits. The Chest was able to generate up to 150% of its contents to be Royal Recruits.
+*The Royal Recruits card was generally released on 7/8/2018.
+*On 3/9/2018, a [[Version History#Balance Changes (3/9/2018)|Balance Update]], increased the Royal Recruits damage by 12%, and slightly changed their spawn formation, allowing the Royal Recruits to be split to 2-4 or 4-2. It also added the Royal Recruits to [[Clan Wars]] [[Clan Wars/Clan Wars I|Collection Day]] Card pool.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed the Royal Recruits' sound effects. Previously, their sound effects were identical to those of the [[Guards]].
+*On 3/12/2018, a [[Version History#Balance Changes (3/12/2018)|Balance Update]], decreased the Royal Recruit's cost to 7 Elixir (from 8 Elixir), but also increased their attack time interval to 1.3 seconds (from 1.2 seconds).
+2019
+*On 28/1/2019, the [[Version History#January%202019%20Update%20(28/1/2019)|January 2019 Update]], added an extra [[Star Points|Star Level]].
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Royal Recruits' card info screen.
+2020
+*On 2/6/2020, a [[Version History#Balance Changes (2/6/2020)|Balance Update]], gave the Royal Recruits a new 0.1 second deploy stagger from each other.
+*On 4/8/2020, a [[Version History#Balance Changes (4/8/2020)|Balance Update]], increased the Royal Recruits damage by 8%.
+2021
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], fixed an issue where Royal Recruits could be placed on the opposing player's side.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+*On 4/9/2023, the [[Version History#Pass%20Royale%20and%20more%20(4/9/2023)|September 2023 Update]], added the Royal Recruits' Evolution.
+2024
+*On 14/5/2024, a [[Version History#Balance Changes (14/5/2024)|Balance Update]], increased the Royal Recruits’ hitpoints by 3%.
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], made it so that Royal Recruits' spawn formation would be correctly mirrored depending on which side of the Arena they were placed.
+
+==Gallery==
+<gallery>
+File:Royal Recruits card render.png|Current card render.
+File:Royal Recruits Preview.gif|Current card preview
+File:Royal Recruits 2.png|Royal Recruits 1
+File:Royal Recruits 5.png|Royal Recruits 2
+File:Royal Recruits 4.png|Royal Recruits 3
+File:Royal Recruits 6.png|Royal Recruits 4
+File:Royal Recruits 8.png|Royal Recruits 5
+File:Royal Recruits 3.png|Royal Recruits 6
+File:Royal Recruits Full Body.png|Royal Recruits Full Body.
+File:Royal Recruits 1.png|Royal Recruit alone.
+File:Royal recruits.jpg
+</gallery>
+
+==Trivia==
+*Shields were first developed during the Bronze Age, as a protection device, designed to block attacks by hand weapons, such as swords, axes and maces, or ranged weapons like sling-stones and arrows. Shields have varied greatly in construction over time and place. Sometimes shields were made of metal, but wood or animal hide construction was much more common; wicker and even turtle shells have been used. Shields were retired in warfare, but are still used to this day for police enforcement.
+**The Royal Recruits are 1 of 3 [[:Category:Troop Cards|troops]] to have a shield, along with the [[Guards]] and [[Dark Prince]].
+*The Royal Recruits are 1 of 20 [[cards]] associated with nobility, with the others being [[Knight]], [[Royal Giant]], [[Royal Delivery]], [[Tower Princess]], [[Royal Hogs]], [[Dark Prince]], [[Prince]], [[Raging Prince]], [[Mega Knight]], [[Princess]], [[Royal Ghost]], [[Spirit Empress]], [[Super Knight]], [[Dagger Duchess]], [[Royal Chef]], [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], and the [[Little Prince]].
+**In the Turkish, Japanese, Korean, Chinese, Persian, Indonesian, Thai, Finnish, and Vietnamese language settings of the game, the Royal Recruits' name translates to "Bodyguards", "Apprentice Bodyguards", "Royal Trainees", "Royal Guards", "Royal Soldiers", "Royal Army", "Royal Conscripts", "The King's Warriors", and "Royal Rookies" respectively.
+*The Royal Recruits is the most expensive {{Rarity|Common}} card, costing 7 [[Elixir]].
+*The Royal Recruits are one of the first troop cards to receive a card render, alongside the [[Archers]], Knight, [[Goblins]], [[Bomber]], [[Skeletons]], [[Barbarians]], [[Bats]], [[Skeleton Barrel]], [[Rascals]], [[Musketeer]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Flying Machine]], [[Hog Rider]], Royal Hogs, [[Dart Goblin]], [[Zappies]], [[Elixir Golem]], [[Baby Dragon]], [[Skeleton Army]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], Prince, [[Balloon]], [[Giant Skeleton]], [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], Mega Knight, [[Ram Rider]], [[Miner]], Royal Ghost, [[Ice Wizard]], [[Magic Archer]], [[Bandit]], [[Lava Hound]], [[Night Witch]], and [[Fisherman]].
+*The Royal Recruits are 1 of 23 cards that has had its Elixir cost changed, the others being Bomber, [[Fire Spirit]], [[Cannon]], [[Mortar]], Musketeer, [[Three Musketeers]], [[Heal]], [[Goblin Hut]], [[Bomb Tower]], [[Barbarian Hut]], [[Furnace]], [[Elixir Collector]], Skeleton Army, P.E.K.K.A., Wall Breakers, [[Electro Giant]], Bowler, [[Goblin Barrel]], [[Barbarian Barrel]], [[Rage]], Fisherman, and the [[Monk]]. 
+**The Royal Recruits, the Three Musketeers, the Elixir Collector, and the Monk are the only cards whose Elixir cost was increased.
+*The Royal Recruits are 1 of 10 cards to have an alliterative name, the others being the [[Goblin Gang]], [[Mega Minion]], Goblin Giant, Cannon Cart, [[Barbarian Barrel]], Ram Rider, Dagger Duchess, [[Boss Bandit]], and the [[Mighty Miner]].
+*The Royal Recruits take up the most amount of space of any card in the game, stretching across almost the entire arena.
+**As a result, the Royal Recruits is the only card that cannot be placed at the opponent's territory if one [[Princess Towers|Crown Tower]] has been destroyed.
+*Even though the card spawns 6 Royal Recruits, the card image only displays 3 Royal Recruits, and the render displays only 2.
+*From their description, it is implied that Royal Recruits can be promoted to be Dark Princes at some point. This is further referenced in a [https://www.facebook.com/ClashRoyale/posts/introducing-the-royal-recruits-/2116688775069410/ Facebook post] where they are commanded by a Dark Prince.
+*The Royal Recruits were responsible for recruiting the Golden Knight, Skeleton King, Archer Queen, and the Monk in the [[Arenas|Arena]]. They were also responsible for recruiting an unknown {{Rarity|Champion}}, however the Little Prince ended up stealing the recruitment letter and was recruited instead.
+*The deploy sound of the Royal Recruit spawned from the Royal Delivery is different to the one of the Royal Recruits spawned from the Royal Recruits card.
+*The Royal Recruits, along with the Skeletons and Bats, are featured as a sub-character in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*In [[Pass Royale|Island Arena]], Royal Recruits can be seen sitting in the audience.
+*The Royal Recruits are unavailable in multiple [[Tournament/Special Event Challenges|special game modes]]. More specifically:
+**It is 1 of 12 cards that is unavailable in [[Chess Royale]], the others being [[Rocket]], [[Earthquake]], [[Lightning]], [[Poison]], [[Goblin Drill]], Miner, Golden Knight, Skeleton King, Archer Queen, Mighty Miner, and the Monk.
+*The Royal Recruits were featured in the winning [[Battle Decks|deck]] of the [https://www.youtube.com/live/vRrgTfqRdpw?si=YDASUydL7qNm9QZz Clash Royale League 2023 Tournament], by a player called Mugi.
+*The Royal Recruits have had balance changes that were planned for it but were not added to the game. More specifically:
+**On 1/10/2018, the Royal Recruits were supposed to receive a cost decrease to 7 Elixir (from 8 Elixir), and a 12% damage decrease, but this change [https://x.com/ClashRoyale/status/1043051141687324672 was pulled back last minute].
+**On 8/1/2025, the Royal Recruits were supposed to receive a 4% damage increase but this change [https://royaleapi.com/blog/season-67-balance-wip-january-2025 was pulled back last minute].
+
+{{Navigation|Cards}}
+
+[[fr:Recrues royales]]
+[[de:Königsrekruten]]
+[[es:Reclutas reales]]
+[[it:Reclute Royale]]
+[[ru:Королевские рекруты]]
+[[zh:皇家卫队]]

@@ -1,0 +1,245 @@
+{{DISPLAYTITLE: <span style="color: #FF99FF;">Baby Dragon</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}
+
+{{Card Infobox|Cost=4|Rarity=Epic|Type=Troop|Arena=P.E.K.K.A.'s Playhouse|ReleaseDate=4 January 2016}}{{SubpageNavBox|Evolution=yes|MergeTactics=yes}}{{Quote|Burps fireballs from the sky that deal area damage. Baby dragons hatch cute, hungry and ready for a barbeque.}}
+
+The Baby Dragon is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from [[Arenas|P.E.K.K.A's Playhouse (Arena 6)]]. It spawns a fast, area-damage, air-targeting, short-ranged, air [[:Category:Troop Cards|troop]] with high hitpoints and moderate damage. The Baby Dragon is a small, spring green dragon with short, stubby, team-colored wings, ears, spikes, tongue, hands and feet, brown eyes, and yellow sclera. A Baby Dragon card costs 4 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Baby Dragon Common Modifier.png|45x45px]] Common: Baby Fly, Fly, Fly===
+{{Quote|+200% movement speed}}
+Baby Dragon's movement speed is increased by 200%, for a total of 270.
+
+===[[File:Baby Dragon Rare Modifier.png|45x45px]] Rare: Gargantuan Flameballs===
+{{Quote|Fireball attacks}}
+Baby Dragon spawns a [[Fireball]] when it attacks.
+
+===[[File:Baby Dragon Epic Modifier.png|45x45px]] Epic: Baby's Got a Baby!===
+{{Quote|Egg spawns Evo Dragon}}
+When defeated, Baby Dragon spawns an Egg, which will spawn an Evolved Baby Dragon, [[Electro Dragon/Evolution|Evolved Electro Dragon]], or [[Inferno Dragon/Evolution|Evolved Inferno Dragon]] when it hatches. Whichever evolved dragon will spawn is completely random.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Baby Dragon Card}}
+*It can be countered by any air-targeting [[:Category:Troop Cards|troop]] if it is distracted by another unit. If the Baby Dragon is surrounded by troops that are not one-shot by it, such as [[Minions]], Archers, or the [[Minion Horde]], it will be taken out very quickly since it takes multiple hits to defeat them.
+*The Baby Dragon's area damage allows it to effectively support and protect tanks such as the [[Giant]], [[Lava Hound]], [[Golem]], [[P.E.K.K.A.|P.E.K.K.A]], [[Mighty Miner]], [[Royal Giant]], [[Boss Bandit]], [[Knight/Evolution|Evolved Knight]], [[Elixir Golem]], [[Monk]], and the [[Giant Skeleton]] from swarms. This is more effective due to its ability to fly, allowing it to attack without endangering itself to as many [[cards]]. However, because the Baby Dragon doesn't do much damage per attack, players should consider supporting it with other, high damage per second troops such as the [[Wizard]], [[Executioner]], [[Lumberjack]], Prince, Mini P.E.K.K.A, [[Bomber]], Musketeer, [[Golden Knight]], [[Hunter]], [[Monk]], [[Cannon Cart]], [[Berserker]], and the [[Bowler]].
+*A lone Baby Dragon is quite easy to counter due to its low damage and relatively short attacking range. [[Musketeer]], [[Electro Wizard]], [[Phoenix]], and [[Mega Minion]] are the most effective due to their high damage per second and same [[Elixir]] cost to the Baby Dragon.
+**A lone [[Hunter]] can also counter a Baby Dragon of the same level, provided that he is placed directly below it. This placement would allow him to two-shot the Baby Dragon.
+**If the Baby Dragon has locked onto a tanky troop or building, frailer troops such as the [[Spear Goblins]], Minions, [[Archers]], [[Dart Goblin]], or [[Firecracker]] can safely deal considerable damage to it, possibly also taking it down.
+**If the support of a [[:Category:Tower Troop Cards|Crown Tower]] is available, even tanks that do not target air units can soak the Baby Dragon's hits and allow the Crown Tower to take it down.
+*If split, Archers can take it out as the Baby Dragon will not splash on to the second Archer. This can also work with Spear Goblins; however, this requires incredibly precise timing and, in most cases, another card is required, usually resulting in a negative [[Elixir]] trade.
+*The [[Inferno Tower]] and the [[Inferno Dragon]] are reliable counters to the Baby Dragon. Because the Infernos' damage intensifies over time against higher health units, they will take down the Baby Dragon without taking much damage in return. Although this is not a positive Elixir trade, the former will often still stay alive long enough to defend a few other troops, while the latter can be used for a counterattack.
+*If the opponent has placed a tank in front of the Baby Dragon, an Inferno card will burn straight through both of them, negating the combo for a major Elixir advantage. If using the Inferno Dragon, place it so that it targets the Baby Dragon first, and then the tank, to maximize the amount of health the Inferno Dragon will have remaining. This is not necessary with the Inferno Tower as its lifetime means it will decay soon regardless.
+*The [[Tesla]] can counter the Baby Dragon easily, although one should prioritize using it to tackle dangerous [[:Category:Building Cards|building]]-targeting troops if they are present.
+*A [[Tombstone]] can distract the Baby Dragon long enough for the Crown Tower to take it out.
+*The Baby Dragon pairs well with Spear Goblins. The Baby Dragon's high health and fast speed allow the Spear Goblins to damage a Crown Tower while the Baby Dragon tanks the Crown Tower's shots.
+*Despite its low damage output, it is not wise to ignore a lone Baby Dragon on a Crown Tower since it can inflict substantial chip damage.
+*It is effective to pair the Baby Dragon with the [[Prince]], [[Elite Barbarians]], P.E.K.K.A, Mighty Miner, or the [[Mini P.E.K.K.A.]] since most common counters to the latters are easily decimated by the former. However, large swarms such as the [[Skeleton Army]] can still defeat the five, due to the Baby Dragon's slow hit speed and rather small splash radius. In addition, the combo is countered by separating the duo, since they have different movement speeds and ranges.
+*The Baby Dragon can weaken [[Barbarians]] and [[Royal Recruits|Recruits]], allowing the player's Crown Towers to take care of them.
+*Pairing the Baby Dragon with the Inferno Dragon is a good idea since the Baby Dragon takes care of small swarms while the Inferno Dragon takes down high health units; this is known as the Double Dragon combo, which is similar to the Double Prince Combo. However, this combo is vulnerable to some ranged troop cards like the Wizard, [[Minion Horde]], Executioner, [[Electro Wizard]], [[Electro Dragon/Evolution|Evolved Electro Dragon]], [[Three Musketeers]], [[Hunter/Evolution|Evolved Hunter]], or [[:Category:Spell Cards|spells]] like [[Rocket]].
+*By placing a Baby Dragon at the leftmost or rightmost side of the [[Arenas|Arena]], it will be able to ignore buildings placed in the centre of the Arena, thereby reducing the effectiveness of kiting.
+*When using this to support a Slow or Medium speed troop, such as a Giant, it is best to place the Baby Dragon a good distance behind the tank. Otherwise, the Baby Dragon will outpace them, and will get targeted first by the Crown Tower, which weakens the combo.
+*The Baby Dragon pairs well with the [[Balloon]]. Not only does it protect the Balloon for air swarms like [[Bats]], but its high speed and mass can push the Balloon closer to the Crown Tower, allowing it to travel faster and arrive there earlier. However, an Inferno Tower or a tank + Anti-Air combo can counter this push, as the Baby Dragon's damage is not enough to take out anything bulkier than swarms in two shots.
+**The Baby Dragon does not do enough damage to stop a lone Balloon from reaching the Crown Tower, so it is not recommended to use it unless there are other cards supporting the Balloon, like Minions, Bats, Archers or Dart Goblin.
+*Occasionally, the Baby Dragon can be used to snipe a defensive building on the enemy side. The Baby Dragon has decent range and can fly, allowing it to attack the building without being exposed into the opposing Crown Towers.
+*The Baby Dragon can be used as a tank for more fragile units like Skeletons spawned from a [[Graveyard]]. Use this after your Baby Dragon has defended against something and is going for a counterattack.
+*The Baby Dragon has a limited area of effect with its attack. A [[Tornado]] can mitigate this, allowing it to hit more troops at once. This is more effective when it also hits an enemy Crown Tower, especially if opposing air troops are pushed towards the Crown Tower by the Tornado.
+
+<center>
+<div class="table-back" id="unit-statistics">
+{{Statistics}}{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%;text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||1.5 sec||0.3 sec||Fast (90)||1 sec||3.5||1.5||500||Air & Ground||x1||Air||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1152 }}
+{{#vardefine: dmg_11 | 168 }}
+{{#vardefine: atk_speed | 1.5 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 160,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|20 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 480,000 Damage to enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 800,000 damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" |Troop Destroyer <br/ > [[File:Troop Destroyer.png|50x50px]]
+|1
+|Destroy 420 enemy Troops
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Destroy 1,200 enemy Troops
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Destroy 2,100 enemy Troops
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+| rowspan="3" |No Escape <br/ > [[File:No Escape.png|50x50px]]
+|1
+|Hit 12 Troops with a single deploy a total of 80 times
+|6,000 {{Icon|I=Gold}}<br>175 {{Icon|I=XP}} 
+|-
+|2
+|Hit 12 Troops with a single deploy a total of 240 times
+|8,000 {{Icon|I=Gold}}<br>175 {{Icon|I=XP}}
+|-
+|3
+|Hit 12 Troops with a single deploy a total of 480 times
+|10,000 {{Icon|I=Gold}}<br>175 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Baby Dragon [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016.
+*On 29/2/2016, the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]], changed the Baby Dragon so that it would no longer stop its attack if its target dies during the attack animation. It also decreased the Baby Dragon's sight range to 5.5 tiles (from 6 tiles).
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], fixed the "range bug" and decreased the Baby Dragon's range to 3 tiles (from 3.5 tiles), but its effective range remained unchanged.
+*On 24/8/2016, a [[Version History#Balance Changes (24/8/2016)|Balance Update]], decreased the Baby Dragon's attack time interval to 1.6 seconds (from 1.8 seconds) and its first attack time interval to 0.3 seconds (from 0.5 seconds).
+2017
+*On 13/2/2017, a [[Version History#Balance Changes (13/2/2017)|Balance Update]], increased the Baby Dragon's range to 3.5 tiles (from 3 tiles).
+2018
+*On 6/8/2018, a [[Version History#Balance Changes (6/8/2018)|Balance Update]], decreased the Baby Dragon's attack time interval to 1.5 seconds (from 1.6 seconds), but allow it to be knocked back.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Epic}} cards start at Level 6 and end at Level 13 (from 1 to 8). It also changed the Baby Dragon's card description. It used to read "''Flying troop that deals area damage. Baby dragons hatch cute, hungry and ready for a barbeque.''"
+2019
+*On 4/11/2019, a [[Version History#Pass Royale and more (4/11/2019)|Balance Update]], decreased the Baby Dragon's hitpoints by 4%.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Baby Dragon's card info screen.
+2020
+*On 5/5/2020, a [[Version History#Balance Changes (5/5/2020)|Balance Update]], decreased the Baby Dragon's hitpoints by 6.5%.
+*On 30/7/2020, a maintenance break, changed the Baby Dragon's card render.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the [[Arenas|Arena]] to unlock the Baby Dragon from [[Training Camp]] to Bone Pit.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Baby Dragon from Bone Pit to P.E.K.K.A's Playhouse. It also added the No Escape [[Card Mastery]] task for the Baby Dragon.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2025
+*On 8/1/2025, a [[Version History#Balance Changes (8/1/2025)|Balance Update]] increased the Baby Dragon's area radius to 1.5 tiles (from 1.2 tiles).
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], increased the Baby Dragon's damage by 0.62%.
+*On 1/9/2025, the [[Version History#Pass Royale and more (1/9/2025)|September 2025 Update]], added the Baby Dragon's Evolution.
+*On 24/11/2025, the [[Version History#Level 16 Update (24/11/2025)|Level 16 Update]] increased the Level Cap of all cards to 16 (from 15).
+2026
+
+* On 6/7/2026, a Balance Update, increased the Baby Dragon's damage by 4%
+
+==Gallery==
+<gallery>
+File:Old Baby Dragon card render.png|Baby Dragon's card render before 30/7/2020.
+File:Baby Dragon card render.png|Current card render.
+File:Baby Dragon Preview.gif|Current card preview
+File:Baby Dragon 1.png|Baby Dragon 1
+File:Baby Dragon 2.png|Baby Dragon 2
+File:Baby Dragon 3.png|Baby Dragon 3
+File:Baby Dragon 4.png|Baby Dragon 4
+File:Skeleton Dragon and Baby Dragon.png|With [[Skeleton Dragons|Skeleton Dragon]]
+File:Baby Baby Dragon.jpg|Baby Baby Dragon 
+</gallery>
+
+==Trivia==
+*The Baby Dragon resemble [https://en.wikipedia.org/wiki/European_dragon dragons from European cultures], being reptilian legendary creatures, often depicted as winged, horned, and capable of breathing fire.
+**The [[Inferno Dragon]] is of the same breed as the Baby Dragon, but the Inferno Dragon moves slower, and has slightly more hitpoints, possibly because it carries extra equipment and wears a helmet. However, they are otherwise identical in terms of animations and deployment sound effects.
+**A Trainer in the [[Training Camp]] is called Trainer Dragon and uses 2 dragon [[cards]] in their [[Battle Decks|deck]], one of them being Baby Dragon, and the other being Inferno Dragon.
+*It is 1 of 3 [[:Category:Troop Cards|troops]] that are “miniature” versions of another troop in Clash of Clans, the others being the [[Mini P.E.K.K.A.|Mini P.E.K.K.A]] and [[Electro Dragon]]. They are smaller versions of [https://clashofclans.fandom.com/wiki/Dragon Dragon], [https://clashofclans.fandom.com/wiki/P.E.K.K.A P.E.K.K.A], and [https://clashofclans.fandom.com/wiki/Electro_Dragon Electro Dragon], respectively.
+**In the Arabic, Thai, and Finnish language settings of the game, the Baby Dragon's name translates to "Little Dragon".
+*The Baby Dragon is 1 of 17 troops that inspired a troop in Clash of Clans, the others being [[Spear Goblins]], [[Bomber]], [[Bats]], [[Skeleton Barrel]], [[Minion Horde]], [[Firecracker]], [[Battle Ram]], [[Ice Golem]], [[Zappies]], [[Giant Skeleton]], [[Ram Rider]], Inferno Dragon, [[Miner]], [[Royal Ghost]], [[Ice Wizard]], and [[Night Witch]].
+**Unlike its Clash of Clans counterpart, the Baby Dragon in Clash Royale does not get enraged when alone.
+**Before the game's release, the Dragon from Clash of Clans was originally planned to be in Clash Royale, however, due to Dragon's wings being too large that covers a great part of the battlefield, it was replaced by the Baby Dragon.
+*The Baby Dragon is one of the first troop cards to be featured in a Trainer's deck, alongside the [[Minions]], [[Archers]], [[Knight]], Spear Goblins, [[Goblins]], Bomber, [[Skeletons]], [[Barbarians]], Minion Horde, [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Musketeer]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], [[Skeleton Army]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], [[Prince]], and [[Balloon]].
+*The Baby Dragon is one of the first troop cards to receive a card render, alongside the Archers, Knight, Goblins, Bomber, Skeletons, Barbarians, Bats, [[Royal Recruits]], Skeleton Barrel, [[Rascals]], Musketeer, Giant, Valkyrie, Wizard, [[Flying Machine]], Hog Rider, [[Royal Hogs]], [[Dart Goblin]], Zappies, [[Elixir Golem]], Skeleton Army, Witch, P.E.K.K.A, Prince, Balloon, Giant Skeleton, [[Goblin Giant]], [[Hunter]], Electro Dragon, [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Mega Knight]], Ram Rider, Miner, Royal Ghost, Ice Wizard, [[Magic Archer]], [[Bandit]], [[Lava Hound]], Night Witch, and [[Fisherman]].
+*The Baby Dragon is 1 of 4 troops that has been featured in the [[Treasure Hunt#Dragon Hunt|Dragon Hunt]] sub-[[:Category:Modes|mode]] of the [[Treasure Hunt]] game mode, the others being [[Skeleton Dragons]], Electro Dragon, and Inferno Dragon.
+*Baby Dragon's wings are undersized. It doesn't seem to have enough wingspan to support flight, yet this has no impact on gameplay.
+*The Baby Dragon, along with the Minions, Bomber, Skeletons, Skeleton Dragons, [[Ice Spirit]], Mini P.E.K.K.A, [[Mega Minion]], Ice Golem, Dart Goblin, Elixir Golem, [[Goblin Cage|Goblin Brawler]], [[Guards]], P.E.K.K.A, Giant Skeleton, [[Golem]], Wall Breakers, Bowler, [[Executioner]], Mega Knight, Inferno Dragon, Royal Ghost, and Lava Hound, are featured as a [https://squad-busters.fandom.com/wiki/Monsters monster] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*The Baby Dragon's gender has been confirmed as male, as the [https://youtu.be/tbiICYsRdGc Baby Dragon's commercial] referred to Baby Dragon as "he".
+*According to the [https://www.youtube.com/watch?v=4M_PPPCN19E Electro Dragon's intro video], it is implied that the Baby Dragon, Electro Dragon, and Inferno Dragon are brothers.
+*The Baby Dragon is the subject of certain cosmetics in the game. More specifically:
+**The Baby Dragon is the subject of 4 [[Emotes]].
+***In the card's image, the Baby Dragon's tongue is blue, but in its Emotes, the Baby Dragon's tongue is red. This does not depict an opponent Baby Dragon, as the spikes on its back are still blue in its Emotes.
+**The Baby Dragon is the subject of a few [[Battle Banners|Battle Banner]] items.
+***The King and Dragon decoration is created by Myoho.
+***The Pumpkin Barrage decoration is a reference to [https://en.wikipedia.org/wiki/Green_Goblin Green Goblin]. Its description says "''What a nice Dragon, sharing these pumpkins with us. Wait a second, are these explosive pumpkins?!''", which is also a reference to the same character.
+***The Dragon Trio decoration's description says "''There's a Queen somewhere who is a big fan of three dragons.''", which is a reference to [https://gameofthrones.fandom.com/wiki/Daenerys_Targaryen Daenerys Targaryen].
+*The Baby Dragon was featured in the winning decks of multiple Clash Royale Tournaments. More specifically:
+**The Baby Dragon was featured in the winning deck of the [https://www.youtube.com/live/1fuCnNBTqBU?feature=share King's Cup Tournament], by a player called TMD YAOYAO.
+**The Baby Dragon was featured in the winning deck of the [https://www.youtube.com/live/cmBlEI-aDoo?si=UoD1Sit2YvQR19xs Clash Royale League 2019 Tournament], by a player called Surgical Goblin.
+**The Baby Dragon was featured in the winning deck of the [https://www.youtube.com/live/pRfrjMiHbQA?si=P2kVLJUlXH1SZoHm Clash Royale League 2021 Tournament], by a player called Mugi.
+*On 6/6/2023, the Baby Dragon was supposed to receive a sight range decrease to 5 tiles (from 5.5 tiles), but this change [https://royaleapi.com/blog/season-48-balance-wip was pulled back last minute].
+
+{{Navigation|Card}}
+
+[[fr:Bébé dragon]]
+[[de:Drachenbaby]]
+[[es:Bebé dragón]]
+[[it:Cucciolo di drago]]
+[[ja:ベビードラゴン]]
+[[ko:베이비 드래곤]]
+[[nl:Babydraak]]
+[[ru:Дракончик]]
+[[pt-br:Bebê Dragão]]
+[[zh:飞龙宝宝]]

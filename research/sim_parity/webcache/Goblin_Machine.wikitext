@@ -1,0 +1,170 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Goblin Machine</span>}}
+{{Protection}}{{MagicWords}}
+{{Card Infobox|Cost=5|Rarity=Legendary|Type=Troop|Arena=Miner's Mine|ReleaseDate=17 June 2024}}{{SubpageNavBox|MergeTactics=yes}}{{Quote|Goblin Machine has two arms for melee and one big rocket for faraway targets. Who let a baby drive this thing?}}
+
+The Goblin Machine is a {{Rarity|Legendary}} [[Cards|card]] that is unlocked from the [[Arenas|Miner's Mine (Arena 15)]]. It spawns a single-target, ground-targeting, melee, ground troop with high hitpoints and moderate damage. It also carries a rocket launcher on its back that can attack independently from the Goblin Machine. The rocket launcher is an area-damage, air-targeting, medium-ranged troop with very high damage. It has a blind spot, preventing it from attacking enemies inside it. It is a wood and metal mech with team-colored zig zag lines, spikes on the edges, a [[Goblins|Goblin]] emblem in the center, and a team-colored rocket launcher on its back that has a striped team-colored rocket, all controlled by a [[Baby Goblins|Baby Goblin]] who has a magenta mohawk, carries a small hammer on his back, and wears light brown gloves. A Goblin Machine card costs 5 [[Elixir]] to deploy.
+
+==Strategy==
+*The Goblin Machine is a valuable tank due to his high damage rocket, making him great on defense against smaller pushes and supporting larger pushes on offense.
+*The Goblin Machine should almost never be ignored, as doing so will easily destroy over half of the [[:Category:Crown Towers|Crown Tower]]. This goes for all Tower Troops, but especially the [[Royal Chef]] and [[Dagger Duchess]].
+*High damage, high health, single-targeting melee troops, such as [[P.E.K.K.A.|P.E.K.K.A]], [[Mighty Miner]], [[Elite Barbarians]], [[Prince]], [[Monk]], [[Lumberjack]], [[Giant Skeleton]], and [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], are the most effective counters to the Goblin Machine as they’ll do enough DPS to defeat the Goblin Machine with the help of a Crown Tower, stay out of the Rocket’s range, and will counterattack with their remaining hitpoints.
+**When using melee troops to defend against a Goblin Machine, it’s optimal to deploy them at least 5 tiles away from the Crown Tower to prevent the Rocket from getting free chip damage onto the Crown Tower.
+**Conversely, most ranged cards with a range less than 6 tiles, such as the [[Hunter]], [[Executioner]], [[Bowler]], [[Baby Dragon]], [[Goblin Demolisher]], [[Witch]], [[Archer Queen]], [[Electro Dragon]], [[Cannon Cart]], [[Skeleton Dragons]], and [[Wizard]], are very weak to the Goblin Machine as his Rocket will likely lock onto these cards and quickly destroy them, providing little to no defensive value to the user.
+*With the assistance of the Dagger Duchess and an [[Ice Spirit]] or [[Electro Spirit]], a [[Void]] can fully counter the Goblin Machine for a +1 positive Elixir trade. The Void must be played 1 tile in front of the Goblin Machine to achieve all 3 hits while the Ice Sprit should ideally be deployed 4 tiles from the bridge horizontally to buy time for the Dagger Duchess. Failing to do so will allow one Rocket to connect to the Crown Tower, dealing chip damage.
+*The Goblin Machine has a notable synergy with the [[Goblin Drill]]. The Rockets coming from the Goblin Machine will likely lock onto anything used by the opponent to defend the Goblin Drill, instantly destroying most swarm troops, like [[Goblin Gang]] and [[Skeleton Army]], and potentially hitting the Crown Tower thanks to its area damage. Also, the Goblin Machine’s high hitpoints can tank the Crown Tower’s attacks for the Goblin Drill’s duration, leaving the [[Goblins]] unscathed to deal significant damage.
+**A similar and more deadly strategy works with the [[Goblin Drill/Evolution|Evolved Goblin Drill]] thanks to the Evolved Goblin Drill ability to reappear in a different spot than before; this will likely disorient the opponent from defending properly more so than the regular Goblin Drill.
+*Surprisingly, [[Fisherman]] can activate the [[King's Tower|King Tower]] against the Goblin Machine. Wait for the Goblin Machine to come close to the Crown Towers, then place him 2 tiles in front of the King Tower, where he will fire a Rocket at the King Tower, activating it.
+*Using air swarms, such as [[Minion Horde]] and [[Bats/Evolution|Evolved Bats]], on offense against a defending Goblin Machine is generally unfavorable as not placing them directly on top of the Goblin Machine will cause the Rocket to target them, wiping out a large amount of troops in 1 hit and essentially wasting the user’s Elixir.
+*Due to the Goblin Machine’s Rocket, the [[Goblin Curse]] can be an important synergy as the damage amplification allows the Rocket to take out [[Magic Archer]], [[Mother Witch]], [[Zappies]], [[Flying Machine]], and [[Skeleton Dragons]] all in 1 hit instead of 2. Also, the Goblin Machine will tank for the spawned Goblins, forcing an immediate response from the opponent.
+*Be weary when trying to kite the Goblin Machine into the other lane with a building-targeting troop like [[Ice Golem]] or [[Goblin Giant]]. Dropping the troop too far away from the bridge can result in a Rocket locking onto the Crown Tower and dealing chip damage.
+*Due to the rocket’s slow projectile speed, troops with a Very Fast movement speed can actually out run the rocket shot by the Goblin Machine under most circumstances. This is important in situations where the Goblin Machine is distracted by a slow card while a faster card is targeted by the rocket, such as an Ice Golem + [[Hog Rider]] push.
+*In [[2v2]] [[Basics of Battle|battles]], if the Goblin Machine locks onto a Crown Tower, the rocket will target the King's Tower. If it is crossing the bridge alone and headed for the healthier Crown Tower, it may be valuable to let it connect to the Crown Tower before spending Elixir to take it down. This also means that it may not be worth it to use it in 2v2 Battle decks, as a King activation can severely cripple future pushes.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}{{StatusEffects}}
+{{StatisticsSubheader|Goblin Machine Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||1.2 sec||0.5 sec||Medium (60)||1 sec||Melee: Medium (1.2)||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+
+{{StatisticsSubheader|Rocket Launcher Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width: 100%; text-align: center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+|-
+|3.5 sec||1.5 sec||2.5-5||1.5||250||Air & Ground 
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 2150 }}
+{{#vardefine: dmg_11 | 212 }}
+{{#vardefine: atk_speed | 1.2 }}
+{{#vardefine: rocket_dmg_11 | 304 }}
+{{#vardefine: rocket_crown_11 | 152 }}
+{{#vardefine: rocket_atk_speed | 3.5 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per Second<br />{{Icon|I=DPS}}
+! scope="col" |Rocket Launcher Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Rocket Launcher Crown Tower Damage<br />{{Icon|I=Tower Damage}}
+! scope="col" |Rocket Launcher Damage per Second<br />{{Icon|I=DPS}}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:rocket_dmg_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:rocket_crown_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:rocket_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:rocket_atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:rocket_dmg_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:rocket_crown_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:rocket_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:rocket_atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:rocket_dmg_11}} || {{#var:rocket_crown_11}} || {{Dps|{{#var:rocket_dmg_11}}|{{#var:rocket_atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:rocket_dmg_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:rocket_crown_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:rocket_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:rocket_atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:rocket_dmg_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:rocket_crown_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:rocket_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:rocket_atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:rocket_dmg_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:rocket_crown_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:rocket_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:rocket_atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:rocket_dmg_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:rocket_crown_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:rocket_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:rocket_atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:rocket_dmg_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:rocket_crown_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:rocket_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:rocket_atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 205,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]] 
+|2 {{BASEPAGENAME}} cards<br>100 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 610,000 Damage to enemy Troops or buildings
+|8,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}} 
+|-
+|3
+|Deal a total of 1,020,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>100 {{Icon|I=XP}}
+|-
+| rowspan="3" |Troop Destroyer <br> [[File:Troop Destroyer.png|50x50px]]
+|1
+|Destroy 700 enemy Troops
+|12,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|2
+|Destroy 2,000 enemy Troops
+|2 {{Icon|I=Legendary Wild Card}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Destroy 3,500 enemy Troops
+|18,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2024
+*The Goblin Machine was added to the game on 17/6/2024, in the [[Version History#Goblin World Update (17/6/2024)|Goblin World Update]].
+*On 19/6/2024, a [[Version History#Maintenance Break (19/6/2024)|maintenance break]], decreased the rocket’s damage by 33.5%, increased the rocket’s attack time interval to 4 seconds (from 3.5 seconds), and made it so that the Rocket would only deal 50% of its full damage to [[:Category:Crown Towers|Crown Towers]].
+*On 2/7/2024, a [[Version History#Balance Changes (2/7/2024)|Balance Update]], decreased the Goblin Machine’s hitpoints by 15.5%, and increased its first attack time interval to 0.5 seconds (from 0.2 seconds).
+*On 6/8/2024, a [[Version History#Balance Changes (6/8/2024)|Balance Update]], decreased the rocket's attack time interval to 3.5 seconds (from 4 seconds).
+*On 8/10/2024, a [[Version History#Balance Changes (8/10/2024)|Balance Update]], increased the Goblin Machine's hitpoints by 5%.
+*On 30/10/2024, the [[Version History#Removal of Goblin Queen's Journey Update (30/10/2024)|Removal of Goblin Queen's Journey Update]], moved the [[Arenas|Arena]] to unlock the Goblin Machine from Scrap Yard to Miner's Mine.
+2025
+*On 8/1/2025, a [[Version History#Balance Changes (8/1/2025)|Balance Update]], increased the Goblin Machine's damage by 57% and increased its attack time interval to 1.2 seconds (from 0.9 seconds).
+*On 30/1/2025, a [[Version History#Maintenance Break (30/1/2025)|maintenance break]], made it so that [[Rune Giant]]'s damage boost would no longer affect the Goblin Machine's rocket.
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)|Balance Update]], decreased the Goblin Machine's hitpoints by 7% and decreased its rocket's damage by 22%.
+2026
+
+* On 4/8/2026, a Balance Update, decreased the Goblin Machine's rocket hit speed to 5 seconds (from 3.5 seconds), increased the rocket speed by 40%, increased the melee damage by 9%, and increased his hitpoints by 5%
+
+== Gallery ==
+<gallery>
+File:Goblin Machine card render.png|Current card render.
+File:Goblin Machine Preview.gif|Current card preview
+File:Goblin Machine 1.png|Goblin Machine
+</gallery>
+
+==Trivia==
+*Goblins are small, grotesque, monstrous creatures that appear in the folklore of multiple European cultures. First attested in stories from the Middle Ages, they are ascribed conflicting abilities, temperaments, and appearances depending on the story and country of origin, ranging from mischievous household spirits to malicious, bestial thieves. They often have magical abilities similar to a fairy or demon, such as the ability to shapeshift. Similar creatures include [https://en.wikipedia.org/wiki/Duende duendes], [https://en.wikipedia.org/wiki/Kobold kobolds], [https://en.wikipedia.org/wiki/Leprechaun leprechauns], and [https://en.wikipedia.org/wiki/Ghoul ghouls].
+**In the German and Dutch language setting of the game, the Goblin Machine's name translates to "Kobold Machine". In the Spanish, Arabic, and Vietnamese language setting of the game, the Goblin Machine's name translates to "Duende Machine", "Ghoul Machine", and "Leprechaun Machine" respectively.
+**The Goblin Machine is 1 of 17 [[cards]] associated with [[Goblins]], with the others being [[Spear Goblins]], [[Goblin Gang]], [[Baby Goblins]], [[Dart Goblin]], [[Goblin Demolisher]], [[Suspicious Bush]], [[Goblin Cage]], [[Goblin Hut]], [[Goblin Giant]], [[Goblin Barrel]], [[Goblin Curse]], [[Goblin Drill]], [[Party Rocket]], [[Party Hut]], [[Goblinstein]], and of course, Goblins.
+*The first use of rockets were in 1232, when reports appeared describing fire arrows and 'iron pots' that could be heard for 25 kilometers when they exploded upon impact, causing devastation for a radius of 600 meters, apparently due to shrapnel. A "flying fire-lance" that had reusable barrels was also mentioned to have been used by the Jin dynasty. Rockets are recorded to have been used by the Song navy in a military exercise dated to 1245. Rockets are still used to this day for multiple purposes, whether that is military, science, and entertainment.
+**The Goblin Machine is 1 of 5 [[cards]] that are associated with rocketry, with the others being [[Firecracker]], [[Rocket]], [[Party Rocket]], and [[Rocket Silo]].
+**The rocket shot by the Goblin Machine resembles the Firecracker’s firework.
+*The [[Baby Goblins]] are responsible for creating the Goblin Machine, according to the Clash Royale [https://youtube.com/shorts/9_N_r0Nib2c?si=JDSgvKgJbdPfJiPe Goblin Machine Lore Drop video].
+*The Goblin Machine's torso was created using an empty [[Goblin Barrel]].
+*When deployed, the Goblin Machine says "''Goblin Machine!''".
+**The Goblin Machine is 1 of 24 [[:Category:Troop Cards|troops]] that speak distinct words when on the field, the others being [[Mini P.E.K.K.A.]], [[Mega Minion]], [[Wizard]], [[Hog Rider]], [[P.E.K.K.A.]], [[Dark Prince]], [[Bowler]], [[Ram Rider]], [[Electro Wizard]], [[Princess]], [[Ice Wizard]], [[Magic Archer]], [[Lumberjack]], [[Mother Witch]], [[Fisherman]], [[Super Mini P.E.K.K.A.]], [[Santa Hog Rider]], [[Super Magic Archer]], [[Golden Knight]], [[Boss Bandit]], [[Archer Queen]], [[Little Prince]], and the [[Terry]].
+*The initial balance change for Goblin Machine on the [[Version History#Balance Changes (2/7/2024)|2/7/2024 balance changes]] was a 15.5% hitpoints decrease, its first attack time interval increase to 0.5 seconds (from 0.2 seconds), and a rocket first attack time interval increase to 2.5 seconds (from 1.5 seconds), but the rocket first attack time interval increase [https://royaleapi.com/blog/season-61-balance-wip was pulled back last minute].
+*Before the Goblin Machine’s release, the rocket’s range was decreased to 5 tiles (from 5.5 tiles).
+*The machine the Goblin baby is riding on resembles the [[w:c:clashofclans:Battle_Machine|Battle Machine]] from Clash of Clans.
+
+{{Navigation|Card}}

@@ -1,0 +1,281 @@
+{{DISPLAYTITLE: <span style="color: #b300b3;">Golem</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}
+
+{{Card Infobox|Cost=8|Rarity=Epic|Type=Troop|Arena=Hog Mountain|ReleaseDate=4 January 2016}}
+{{Quote|Slow but durable, only attacks buildings. When destroyed, explosively splits into two Golemites and deals area damage!}}
+
+The Golem is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from the [[Arenas|Hog Mountain (Arena 10)]]. It spawns a slow, single-target, [[:Category:Building Cards|building]]-targeting, melee, ground [[:Category:Troop Cards|troop]] with extremely high hitpoints and high damage. When defeated, the Golem explodes, dealing damage, inflicting knockback, while spawning two Golemites which have moderate hitpoints and low damage. Like the Golem, the Golemites also explode, dealing damage and inflicting knockback. The Golem is a colossal, menacing rock brute with team-colored eyes and crystals on its back, while its Golemites appear similarly, but are smaller with only one eye. A Golem card costs 8 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Golem Common Modifier.png|45x45px]] Common: Paint It Pink!===
+{{Quote|Returns 4 Elixir on defeat}}
+Once the Golem splits into Golemites, the player is given 4 Elixir back.
+
+===[[File:Golem Rare Modifier.png|45x45px]] Rare: Twin Tanks===
+{{Quote|Double Golem on defeat}}
+Once the Golem splits, it spawns 2 new Golems instead of Golemites.
+
+===[[File:Golem Epic Modifier.png|45x45px]] Epic: Not Today!===
+{{Quote|Deflects projectiles}}
+Golem has permanent [[Monk]] ability active.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Golem Card}}
+*As the Golem has a 3 second deploy time, placing it at the bridge is a very situational thing to do as it will be exceptionally easy to react to. The player of the Golem would also not have much [[Elixir]] in hand to support it, essentially giving the opponent free value in most cases.
+**The same idea applies to placing the Golem on the opponent's side. The 3 second deploy time will allow the opponent to deal significant damage to the Golem before it starts walking. It can also be exploited by placing a [[:Category:Building Cards|building]] further away from the Golem's intended target, and can even change which [[:Category:Crown Towers|Crown Tower]] the Golem heads towards after the building expires.
+**Because of the Golem's 8 Elixir cost, it is generally a bad idea to start a match with it. This will leave the player with little Elixir to defend against an early attack. It is best to start a Golem push after their main threat is out of rotation, so that they can effectively support the Golem.
+**An effective strategy with the Golem is to deploy the Golem behind the [[King's Tower]]. Due to the Golem's long deploy time and slow movement speed, the player will have time to generate Elixir and place other [[:Category:Troop Cards|troops]] behind the Golem to make the push extremely effective and difficult to counter. High damage, [[:Category:Spell Cards|spell]] resistant troops are the most effective as they make up for the Golem's low damage per second and still elicit another response as the push crosses the bridge. However, this costs a heavy amount of Elixir, and will leave the player fairly vulnerable for an enemy push in the other lane. Workarounds to this are waiting until the last minute where double Elixir starts, or to use the [[Elixir Collector]] to obtain an Elixir advantage.
+**In the presence of buildings in the opponent's [[Battle Decks|deck]], it may be a better idea to place the Golem at the corner of the Arena. Since the Golem has a lower sight range than a Giant, he may be able to bypass certain building placements when he is placed that way.
+*The Golem's death damage is enough to take down any unit with as much or less hitpoints than [[Lava Hound|Lava Pups]]. [[Tornado]] can reel poorly spaced defenders into the explosion, and allow the player to fully take out [[Archers]], [[Princess|Princesses]], [[Dart Goblin|Dart Goblins]], [[Bomber|Bombers]], [[Firecracker|Firecrackers]], or [[Minions]]. Ranged units should be at their maximum range, away from the Golem's destination, to prevent unnecessary damage and to make it harder for a Tornado to reel them towards the Golem.
+**The Golemites also deal area damage upon death, but it is insignificant compared to the health of most [[cards]], only being able to OHKO [[Skeletons]] and [[Bats]] up to 4 Levels higher. This is still useful in taking out these defending foes since it will often allow one Golemite to survive without any defending troops left, letting it deal some chip damage. Combined with the Golem's death damage, it is enough to fully defeat any troop with as much hitpoints as [[Elixir Golem|Elixir Blobs]].
+*Although the Golem spawns Golemites upon death, buildings and troops will start targeting troops behind the Golem since it takes a split second for the Golemites to spawn and the closest targets will be the troops the Golem is protecting. This can easily be fixed by placing a spell such as [[Zap]], [[Lightning]], or [[Freeze]], which can all stun or freeze the Tower changing its target to the Golemites instead. An [[Ice Spirit]] or [[Electro Wizard]] could also work, but they are blockable and may result in a waste of Elixir.
+*A Golem is a very effective tank against an [[X-Bow]] or a [[Mortar]]. Place him at the maximum range of the building to accumulate some Elixir to support the Golem, otherwise the Golem will be overwhelmed by the building's defenders if it is placed directly on the building. In the case of the Mortar, it is recommended to place him in the opposite lane, or place another tanking unit afterwards to soak up the remaining hits.
+*Using Golem as a damage sponge on defense is a situational but surprisingly useful play. Golem can tank hits against enemy Troops, giving time for your Crown Tower and damage-dealing Troops to damage them. Then, after the defense, you end up with a sizable counterpush, and the Golem will walk towards the enemy Crown Tower demanding response. For example, if your opponent places a [[Mega Knight]] at the bridge, you can place Golem slightly in front of your Crown Tower. This will buy time for your Crown Towers to do damage, and you can place troops like a [[Mega Minion]] to damage the Mega Knight and defeat it. It will be awkward for the opponent to add support to the Mega Knight as you will have the defender’s advantage. After the defense, you will end up with a counterpush. This strategy is generally effective when the opponent has invested a large amount of Elixir on the offensive push, leaving them with little remaining Elixir to attack on the opposite side.
+*The opponent may try to lure your support troops to the other lane with an [[Ice Golem]], separating them from the Golem. This can be cancelled out by a Tornado or a [[Fisherman]], which despite being a negative Elixir trade are still more valuable than letting all the support troops be kited away.
+*Many buildings provide effective support to distract and damage down a Golem. Even those which do not directly attack can be useful as they can still separate the Golem from its support troops, allowing for an easier defeating of it.
+**The [[Inferno Tower]] can easily destroy a Golem for a positive Elixir trade if allowed to reach maximum damage stage. The Golem player should always consider packing a card with a stun effect, as this will allow the player to reset the opposing Inferno Tower's charge and help a Golem push force its way through the defensive building.
+***Zap is the cheapest and most consistent method of resetting an Inferno card, but it will often not be enough to prevent the Golem from being incinerated unless the Golem has other support troops behind it. Lightning, although of a much higher cost, will deal much more damage in addition to a stun, and can additionally also target and fully destroy many glass cannons like the [[Musketeer]], [[Mega Minion]], [[Electro Dragon]], [[Hunter]], [[Archer Queen]], Fisherman, Electro Wizard, [[Witch]], [[Bandit]], [[Night Witch]]. [[Berserker]], [[Little Prince]], or [[Wizard]].
+***Another method to counter the Inferno Tower is to deploy fast swarm troops (preferably those that can also target air troops) such as Bats, [[Spear Goblins]], or [[Minion Horde]] at the middle of the river. This will distract and possibly even destroy both Inferno cards due to their slow first targeting speed. However, these can easily be spelled down on reaction, leaving the Golem helpless.
+***A Night Witch can continually spawn Bats to distract both Inferno cards while being fairly-resistant to spells, and her Bats are hard to deal with without a spell in hand as the Golem can be forced to tank the Crown Tower's shots. However, anti-air area-damage troops such as the [[Baby Dragon]] would be able to deal with her very easily, although this can usually be solved by cards with a stun effect (such as the Electro Wizard or Zap) to get the anti-air splash troops to target the Golem instead, or by means of heavy spells, such as the [[Rocket]].
+***Troops with a shield like [[Guards]] or a [[Dark Prince]] can stall the Inferno Tower for additional time. Their shields will cause the Inferno Tower to reset on its own when it takes down their shields. The Dark Prince can also jump over the river, allowing him to reach the Inferno Tower and damage it on his own, possibly forcing the opponent to place down troops to distract him.
+***Some Inferno Tower users may play their Inferno Tower at the bridge and slightly into the other lane to avoid the Golem player from using Lightning on both their Crown Tower and Inferno Tower. An Electro Wizard or Electro Dragon are the most effective units in this situation as they will continually stun until the building is destroyed, and then support the Golem on the counterpush, while also being very difficult to block.
+***If they place their Inferno Tower early, the Golem player may be able to snipe the building with a Dart Goblin or [[Magic Archer]]. These troops outrange the building, and even if the opponent stops them, the building would be too much weakened that it would not be able to stop the Golem. However, this can be circumvented by waiting for the Golem to cross the bridge and then placing the Inferno Tower, as otherwise these troops would not be able to destroy the building in time.
+***In certain situations, it may be worth it to bait the Inferno Tower by using another cheap and fast building-targeting troop like the [[Skeleton Barrel]]. It will distract it enough to destroy it on its own, while keeping it out of rotation from a future Golem push.
+***A lone [[Earthquake]] is not enough to destroy the Inferno Tower before it can destroy the Golem. It is reccomended to support it with one of the previously mentioned cards to destroy it.
+**The [[Barbarian Hut]] is the most effective spawner building at destroying the Golem. The spawned Barbarians will deal high damage to the Golem, preventing it from reaching a Crown Tower with its death damage. Some Barbarians will survive, allowing for a small counterpush.
+**While the [[Bomb Tower]] is not good against the Golem himself, its splash damage is quite useful against a larger Golem push, hitting multiple troops in the push, particularly when the Golemites appear. However, it does not work against a push with air support troops like the [[Skeleton Dragons]], [[Flying Machine]], Baby Dragon, Minion Horde, and Electro Dragon.
+**A reactive [[Tesla]] placed 4 tiles from the bridge and 4 tiles from the Crown Tower can pull a Golem that was initially placed behind the King Tower. This is because the unit will walk closer to the inner side of the bridge (i.e. closer to the center of the Arena), rather than the center or the outside. Although this is somewhat situational, it is more effective at separating a tank from its support units than the above middle placement, as the tank will have to walk slightly farther, and the Tesla will not draw the attention of other grounded troops. However, because of the Golem's lower sight range compared to a Giant, this placement will not work if he was placed directly at the bridge.
+**Other buildings are less effective overall, however they can still handle a lone Golem. Try to use them if the Golem is unsupported or the support troops are separated from the Golem.
+*Since the Golem only targets buildings, troops are quite strong against it, especially ones with high damage.
+**The [[P.E.K.K.A.|P.E.K.K.A]] is a fairly reliable counter to the Golem. She has enough damage per second to defeat the Golem before it can attack a Crown Tower, and possesses sufficient health to withstand a good number of support troop attacks. This is also a positive Elixir trade since she only costs 7 Elixir, while the Golem costs 8, not accounting for the support troops behind it. A [[Mini P.E.K.K.A.|Mini P.E.K.K.A]] can achieve similar results to the P.E.K.K.A but needs to have the other support troops taken out first as he cannot withstand too much damage.
+**The [[Lumberjack]] may not deal as much damage as the Mini P.E.K.K.A but he is quicker and achieves it quite quickly, meaning that he can defeat the Golem in similar time. If he ends up defeated, his dropped [[Rage]] will appear, further helping with defending against the Golem push.
+**Similarly, the [[Inferno Dragon]] and [[Mighty Miner]] may not deal a lot of initial damage, but after 4 seconds, they will be able to reach their maximum damage and quickly defeat him afterwards. However, they can be stiffled with any card that has stun effects, or pulled out of range with a Tornado, on in the Mighty Miner's case, a Fisherman or [[Valkyrie/Evolution|Evolved Valkyrie]].
+**A [[Sparky]] combines the high-damage of the previous options with range, allowing her to attack the Golem from a safe distance. Try to stun her right before she attacks, to force her to charge again, saving time from the Golem push before it is blasted. An Electro Dragon can be added in a Golem push to continuously stun her, rendering her useless.
+**Although not particularly great at handling a Golem, an Evolved Valkyrie attacking from behind him can prevent the Golem from reaching his target and accumulate damage on the Crown Tower. She is particularly effective against the Golemites, as she will be able to hit both of them, and their death damage will not hit her severely. A [[Monk]] and [[Mega Knight/Evolution|Evolved Mega Knight]] can function similarly, though they would be better placed in front of the Golem instead of behind.
+*Like high-damage troops, swarms are quite effective against a Golem, although they can easily be defeated from support troops.
+**The [[Skeleton Army]] is a risky but rewarding counter. While it can be easily taken out by spells and splash units, its damage per second for 3 Elixir will easily demolish the Golem. The death explosion is not large enough to destroy all the Skeletons, meaning that the surviving ones will defeat the Golemites.
+**When using a [[Goblin Gang]] against a Golem, take advantage of the range that the Spear Goblins have. Placing the Goblin Gang at a distance will prevent the Spear Goblins from being defeated by the Golem's Death Damage so that the Spear Goblins defend against the spawned Golemites, preventing more damage from being dealt to the Tower. The same principle applies to the [[Rascals]].
+**The [[Guards]] can finish off a weakened Golem reliably. Their shields will allow them survive the Golem's death damage, and they will quickly destroy the Golemites. However, they will likely be defeated rather quickly if the Golem is supported by other cards.
+**The Barbarians, [[Elite Barbarians]], [[Royal Recruits]], and [[Three Musketeers]] are bulkier swarms with high damage, which makes them great against the Golem, with them being able to survive his death damage, or in the Royal Recruit's case, even their shields being able to. However, they are notably more expensive, with the Three Musketeers also being a negative Elixir trade.
+**The Witch and Night Witch can continuously spawn troops which will accumulate damage on the Golem, eventually killing it. However, they have much lower initial damage without their spawned troops, and the Golem's death damage will kill the spawned troops, which would remove a lot of would-be damage from the Golemites.
+*There is a large variety of troops commonly used to support Golem pushes:
+**It is strongly recommended to support a Golem with splash troops like the Baby Dragon, Firecracker, [[Bowler]], [[Executioner]], Bomber, [[Goblin Demolisher]], and Wizard. They can handle a lot of swarms threatening to the Golem while they stay in a safe spot behind the Golem.
+**Troops with stun effects are great support troops for the Golem, helping him push through charging defenders like the Inferno Tower, Mighty Miner, Inferno Dragon, [[Prince]], Little Prince, and Sparky.
+**The Witch and Night Witch can safely spawn troops while behind the Golem. The spawned troop would also be helpful for distracting defenders used against the Golem. However, these troops can easily be stopped with a splash troop + Tornado combo.
+**Sometimes, the opponent may try to use tanky troops like the [[Giant Skeleton]], [[Mega Knight]], and [[Goblin Giant/Evolution|Evolved Goblin Giant]] to deal with other support troops while they use an Anti-Tank card for the Golem. The former can be mitigated with heavy-hitting support troops like a Prince, Mighty Miner, Sparky, Hunter, Mini P.E.K.K.A., Monk, or a Lumberjack, keeping most of the other support troops alive for them to save the Golem afterwards.
+**Long-ranged troops like the [[Musketeer]] and Magic Archer can be great support in a Golem push, particularly against buildings. Their long range will allow them to snipe the building before the Golem gets into range, weakening the building enough for the Golem or his other support troops to finish it off. A similar strategy applies to cards that can reach the building by bypassing the river, such as the [[Royal Ghost]], [[Bandit]], and Prince.
+**A [[Fisherman]] combines the previous two aspects of long-range anti-building capabilities with a pull mechanic, allowing him to reach opposing buildings while also pulling away Anti-Tank cards from the Golem, and allow him or his support troops to break through. An Evolved Valkyrie can work to a lesser extent similarly.
+***Conversely, he is very effective against a Golem push. He can either be played in the other lane to drag the Golem as far away as possible from its supportive troops and even force it to switch lanes, or he can be played in front of the King's Tower to lure the Golem to it and activate it. The former can be circumvented by placing a troop closer to where the Fisherman would be, cancelling the Fisherman's pull, and the latter can be circumvented by using a Lightning spell to OHKO the Fisherman. Despite these countermeasures, the Fisherman is still quite stifling against the Golem as these methods are somewhat expensive, requiring a fairly high level of commitment which is quite punishing if the Golem player guesses incorrectly.
+**A [[Battle Healer]] can be quite useful in keeping the other support troops alive, allowing them to break through any resistance against the push. However, the healing on the Golem is pretty negligible meaning that she is not as good as helping the Golem as she would help its support troops.
+*Avoid attacking in the same lane as a Golem. This will allow the opponent to defend with troops that were intended to support the Golem, which will be much harder to defend afterwards with a Golem in front of them. Attacking in the opposite lane is more effective. This is because most troops must be played in the same lane as a push in order to defend effectively, meaning they will not be able to support the Golem in the other lane. The Golem player must choose to either abandon their expensive Golem push, which makes their troops a lot easier to address separately, or ignore the attack, taking massive damage.
+**The Dark Prince is a great unit to attack in the other lane when the player plays a Golem in the back. Since most low Elixir cards can be defeated instantly by the Dark Prince's charge, the Dark Prince will be able to deal damage to the Crown Tower with little resistance.
+**The [[Goblin Giant]] is another great unit to use this tactic with. His medium speed, high hitpoints, and decent damage allow him to effectively punish the opponent's early Golem placement, forcing them to either defend against the Goblin Giant which will result in weakened defenders in the same lane and a lone Golem in the other lane, or ignore the attack which will result in a Crown Tower loss.
+**To mitigate these kind of pushes putting pressure, the player can implement certain cheap distraction cards like the Skeletons, [[Tombstone]], or [[Berserker]] on their deck to stiffle them.
+***It is not recommended to use a Spirit card for the same purpose in a Golem deck, as they are immediately sacrificed when they attack, preventing them from being used in a counterattack with the Golem.
+***Similarly, most buildings are not very effective to be used in Golem decks, as even if they are able to defend, they cannot be utilized in a counterattack. An exception applies to buildings that spawn troops like the [[Goblin Cage]] and [[Goblin Hut]].
+*Due to the Golem's high mass and the 3 second deploy time, the player can use the Golem to bodyblock certain troops.
+**If the player can predict a [[Hog Rider]] placed on their side after a Crown Tower has been destroyed, the Golem can be placed in front of the tile where the Hog Rider would be placed. The Hog Rider would be forced to move around the Golem, eventually changing their target towards the King's Tower instead.
+**The player can also bodyblock their own troops with their Golem. For example, by placing a Night Witch behind the King's Tower, when she reach the Crown Tower, the Golem can be placed right in front. The Night Witch will be blocked, staying there until the Golem starts moving. This can let the player generate more Elixir to support this push afterwards.
+*[[Clone|Cloning]] a Golem during his long deploy process of 3 seconds will produce a cloned Golem that begins moving immediately. This can be an unexpected way to start a Golem push earlier.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Golem Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Death Damage Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|8||2.5 sec||1 sec||Slow (45)||3 sec||Melee: Short (0.75)||2||Buildings||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+
+{{StatisticsSubheader|Golemite Attributes}}
+{| id="unit-attributes-table-secondary" class="wikitable" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Death Damage Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|2.5 sec||1 sec||Slow (45)||Melee: Short (0.25)||2||Buildings||x2||Ground
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, golem_atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: golem_hp_11 | 5120 }}
+{{#vardefine: golem_dmg_11 | 312 }}
+{{#vardefine: golem_atk_speed | 2.5 }}
+{{#vardefine: golem_death_11 | 225 }}
+{{#vardefine: mite_hp_11 | 1039 }}
+{{#vardefine: mite_dmg_11 | 84 }}
+{{#vardefine: mite_atk_speed | 2.5 }}
+{{#vardefine: mite_death_11 | 99 }}
+
+{{StatisticsSubheader|Card Statistics}}
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Golem Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Golem Damage<br />{{Icon|I=Damage}}
+! scope="col" |Golem Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Golem Death Damage<br />{{Icon|I=Death Damage}}
+! scope="col" |Golemite Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Golemite Damage<br />{{Icon|I=Damage}}
+! scope="col" |Golemite Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Golemite Death Damage<br />{{Icon|I=Death Damage}}
+|-
+| 6 || {{#expr: {{#var:golem_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:golem_dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:golem_dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:golem_atk_speed}} }} || {{#expr: {{#var:golem_death_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:mite_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:mite_dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:mite_dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:mite_atk_speed}} }} || {{#expr: {{#var:mite_death_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:golem_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:golem_dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:golem_dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:golem_atk_speed}} }} || {{#expr: {{#var:golem_death_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:mite_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:mite_dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:mite_dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:mite_atk_speed}} }}|| {{#expr: {{#var:mite_death_11}} * (1.1^(7-11)) round 0 }}
+|-
+| 8 || {{#expr: {{#var:golem_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:golem_dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:golem_dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:golem_atk_speed}} }} || {{#expr: {{#var:golem_death_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:mite_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:mite_dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:mite_dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:mite_atk_speed}} }} || {{#expr: {{#var:mite_death_11}} * (1.1^(8-11)) round 0 }}
+|-
+| 9 || {{#expr: {{#var:golem_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:golem_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:golem_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:golem_atk_speed}} }} || {{#expr: {{#var:golem_death_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:mite_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:mite_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:mite_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:mite_atk_speed}} }} || {{#expr: {{#var:mite_death_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:golem_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:golem_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:golem_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:golem_atk_speed}} }} || {{#expr: {{#var:golem_death_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:mite_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:mite_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:mite_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:mite_atk_speed}} }} || {{#expr: {{#var:mite_death_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:golem_hp_11}} || {{#var:golem_dmg_11}} || {{Dps|{{#var:golem_dmg_11}}|{{#var:golem_atk_speed}} }} || {{#var:golem_death_11}} || {{#var:mite_hp_11}} || {{#var:mite_dmg_11}} || {{Dps|{{#var:mite_dmg_11}}|{{#var:mite_atk_speed}} }} || {{#var:mite_death_11}}
+|-
+| 12 || {{#expr: {{#var:golem_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:golem_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:golem_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:golem_atk_speed}} }} || {{#expr: {{#var:golem_death_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:mite_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:mite_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:mite_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:mite_atk_speed}} }} || {{#expr: {{#var:mite_death_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:golem_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:golem_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:golem_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:golem_atk_speed}} }} || {{#expr: {{#var:golem_death_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:mite_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:mite_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:mite_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:mite_atk_speed}} }} || {{#expr: {{#var:mite_death_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:golem_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:golem_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:golem_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:golem_atk_speed}} }} || {{#expr: {{#var:golem_death_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:mite_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:mite_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:mite_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:mite_atk_speed}} }} || {{#expr: {{#var:mite_death_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:golem_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:golem_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:golem_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:golem_atk_speed}} }} || {{#expr: {{#var:golem_death_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:mite_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:mite_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:mite_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:mite_atk_speed}} }} || {{#expr: {{#var:mite_death_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:golem_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:golem_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:golem_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:golem_atk_speed}} }} || {{#expr: {{#var:golem_death_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:mite_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:mite_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:mite_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:mite_atk_speed}} }} || {{#expr: {{#var:mite_death_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 145,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|20 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 440,000 Damage to enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 740,000 damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" |Tower Tapper <br/ > [[File:Tower Tapper.png|50x50px]]
+|1
+|Hit enemy [[:Category:Crown Towers|Crown Towers]] a total of 980 times
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Crown Towers a total of 2,800 times
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Crown Towers a total of 4,900 times
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Golem [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016 {{Balance|Add}}.
+*On 2/2/2016, the [[Version History#February 2016 Update (2/2/2016)|February 2016 Update]], increased the Golem's hitpoints, attack damage and death damage by 43% {{Balance|Buff}}, and decreased the same stats on the Golemites by 43% {{Balance|Nerf}}. It also added the Death Damage statistic on the Golem's card info screen {{Balance|Add}}.
+*On 19/2/2016, a [[Version History#Balance Changes (19/2/2016)|Balance Update]], decreased the Golem's and Golemites' hitpoints by 5% {{Balance|Nerf}}.
+*On 29/2/2016, the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]], decreased the Golem's and its Golemites' sight range to 7 tiles (from 8 tiles) {{Balance|Buff}}. It also moved the [[Arenas|Arena]] to unlock the Golem from Royal Arena to Builder's Workshop {{Balance|Buff}}.
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], changed the Golem's appearance to include crystals on its back, removed the team-colored spiked collars from its neck {{Balance|Neutral}}, and changed the death animation of the Golem and the Golemites {{Balance|Neutral}}. The update also fixed the “range bug”, which decreased the Golem's range to 0.75 tiles (from 1.5 tiles) {{Balance|Nerf}}, but its effective range was unchanged. The Golemites' range was also decreased to 0.25 tiles (from 0.75 tiles) {{Balance|Nerf}}, but their effective range was unchanged.
+*On 18/5/2016, a [[Version History#Balance Changes (18/5/2016)|Balance Update]], increased the Golem and Golemite's hitpoints by 5% {{Balance|Buff}}.
+*On 24/8/2016, a [[Version History#Balance Changes (24/8/2016)|Balance Update]], increased the Golem's damage and death damage by 5% {{Balance|Buff}} and hitpoints by 1% {{Balance|Buff}}. The Golemites had their hit and death damage increased by 8% {{Balance|Buff}} and their hitpoints by 3.2% {{Balance|Buff}}.
+*On 20/10/2016, a [[Version History#Balance Changes (20/10/2016)|Balance Update]], allowed the Golem's and its Golemites' death damage to affect flying [[:Category:Troop Cards|troops]] {{Balance|Neutral}}, but Supercell called it a bug fix.
+2018
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], moved the Arena to unlock the Golem from Builder's Workshop to Barbarian Bowl {{Balance|Buff}}.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Epic}} cards start at Level 6 and end at Level 13 (from 1 to 8) {{Balance|Neutral}}.
+2019
+*On 7/1/2019, a [[Version History#Balance Changes (7/1/2019)|Balance Update]], decreased the Golemite's death pushback range to 0.9 tiles (from 1.8 tiles) {{Balance|Nerf}}.
+2020
+*On 3/3/2020, a [[Version History#Balance Changes (3/3/2020)|Balance Update]], decreased the Golemites' damage by 22.5% {{Balance|Nerf}}, but also increased their death damage by 55% {{Balance|Buff}}.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], decreased the Golem's death damage by 28% {{Balance|Nerf}}. It also moved the Arena to unlock the Golem from Barbarian Bowl to Hog Mountain {{Balance|Nerf}}.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13) {{Balance|Buff}}.
+2022
+*On 15/12/2022, a [[Version History#Maintenance Break (15/12/2022)|maintenance break]], added a card render to the Golem's info screen {{Balance|Add}}.
+2023
+*On 27/3/2023, the [[Version History#Losers%20Update%20(27/3/2023)|Losers Update]], fixed a pathfinding issue related to Golem's sight range {{Balance|Neutral}}.
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14) {{Balance|Buff}}.
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], increased the Golem's death damage by 0.44% {{Balance|Buff}}. It also decreased the Golemites' hitpoints by 0.09% {{Balance|Nerf}} and their damage by 2.04% {{Balance|Nerf}}. The same update also fixed a bug where Golemites would not spawn after being buffed by [[Royal Chef]] {{Balance|Neutral}}.
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] increased the Golemite's damage by 74% {{Balance|Buff}}.
+
+==Gallery==
+<gallery>
+File:Golem card render.png|Current card render.
+File:Golem Preview.gif|Current card preview
+File:Golem 1.png|Golem
+</gallery>
+
+==Trivia==
+*The word "''Golem''" occurs once in the Bible in Psalm 139:16, which uses the word "''golmi''", that means "my light form", "raw" material, connoting the unfinished human being. A golem is an animated, anthropomorphic being in [https://en.wikipedia.org/wiki/Jewish_folklore Jewish folklore], which is entirely created from inanimate matter, usually clay or mud. The most famous golem narrative involves [https://en.wikipedia.org/wiki/Judah_Loew_ben_Bezalel Judah Loew ben Bezalel], the late 16th-century rabbi of Prague.
+**In the Vietnamese language setting of the game, the Golem's name translates to "Stone Man".
+*The Golem was likely inspired by the [https://ageofempires.fandom.com/wiki/Promethean Promethean] from [https://ageofempires.fandom.com/wiki/Age_of_Mythology Age of Mythology], as both units are stone creatures that split in two, smaller versions of themselves once defeated.
+*The Golem is 1 of 19 [[:Category:Troop Cards|troops]] which first existed in Clash of Clans, the others being [[Minions]], [[Archers]], [[Goblins]], [[Skeletons]], [[Barbarians]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], [[Balloon]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Phoenix]], [[Lava Hound]], and the [[Archer Queen]].
+**The Golem resembles the Level 6 Golem from Clash of Clans.
+**The Golem in Clash Royale shares its deploy sound effect with its Clash of Clans counterpart's.
+**In Clash Royale, Golemites possess a unique design, animations, and sound effects, while in Clash of Clans, Golemites are a scaled-down version of the Golem, and have the same sound effects as the Golem, only at a higher pitch.
+**Unlike in Clash of Clans, the Clash Royale counterpart always spawns 2 Golemites regardless of Level, while the Golem in Clash of Clans may spawn more than 2 Golemites depending on the Level.
+*It is the most expensive {{Rarity|Epic}} [[Cards|card]], costing 8 [[Elixir]], not counting the [[Mirror]] as it does not have a [[:Category:Variable-Elixir Cards|defined Elixir cost]].
+**It is also currently the only permanent 8 Elixir card in Clash Royale.
+*The Golem's stats are the highest or lowest among all troops. More specifically:
+**The Golem has the highest hitpoints of all troops, with 7,456 hitpoints at Level 15.
+**The Golem has the longest deployment time of all troops, with a deployment time of 3 seconds.
+*The Golem has been featured in multiple [[Tournament/Special Event Challenges|special game modes]] outside of the card. More specifically:
+**The Golem is 1 of 23 troops that have been featured in the [[Troop Rush]] game [[:Category:Modes|mode]], the others being Skeletons, [[Skeleton Dragons]], [[Fire Spirit]], [[Bats]], [[Elite Barbarians]], [[Firecracker]], [[Rascals|Rascal Girls]], [[Royal Hogs]], [[Heal Spirit]], [[Elixir Golem]], [[Guards]], [[Prince]], Balloon, Wall Breakers, [[Ram Rider]], [[Sparky]], Phoenix, [[Royal Ghost]], [[Bandit]], [[Lumberjack]], [[Santa Hog Rider]], and the [[Monk]].
+**The Golem is 1 of 10 troops that has been featured under the [[Ruler Ability#Special Delivery|Special Delivery]] [[Ruler Ability|ruler ability]], the others being [[Knight]], [[Skeleton Barrel]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Musketeer]], Wizard, P.E.K.K.A, [[Giant Skeleton]], [[Sparky]], and Royal Ghost.
+*The Golem shares the first part of his description with the Giant.
+*The Golem is 1 of 15 troops which bring an excited reaction from the audience upon spawning and brings a collective groan from the audience when defeated, as well as a concerning gasp when the opponent plays it, the others include [[Royal Giant]], Giant, P.E.K.K.A, Giant Skeleton, [[Rune Giant]], [[Goblin Giant]], Bowler, [[Electro Wizard]], [[Inferno Dragon]], Sparky, Lava Hound, [[Night Witch]], [[Super Lava Hound]], and the Monk.
+*A [[Loading Screen Hints|Loading Screen Hint]] suggests that the Golem's heart is made of stone.
+*Unlike the Ice Golem, the Golem only punches with one hand, whereas the [[Ice Golem]] attacks with both hands. The Elixir Golem attacks with both hands, but the Elixir Golemites use one hand and the Elixir Blobs appear to bite.
+*The Golem is featured as a [https://clashofclans.fandom.com/wiki/Hero_Skins?file=Golem_King_info.png skin for Barbarian King in Clash of Clans].
+*The Golem is featured in non-Clash games. More specifically:
+**The Golem, along with the Goblins and the Archer Queen, was featured as a character skin for the Rook in [https://www.chess.com/ Chess].
+**The Golem, along with the Minions, [[Bomber]], Skeletons, Skeleton Dragons, [[Ice Spirit]], Mini P.E.K.K.A, [[Mega Minion]], Ice Golem, [[Dart Goblin]], Elixir Golem, [[Goblin Cage|Goblin Brawler]], Guards, [[Baby Dragon]], P.E.K.K.A, Giant Skeleton, Wall Breakers, Bowler, [[Executioner]], [[Mega Knight]], Inferno Dragon, Royal Ghost, and Lava Hound, are featured as a [https://squad-busters.fandom.com/wiki/Monsters monster] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+***A [https://squad-busters.fandom.com/wiki/Gem_Golem gem variant] for the Golem is also featured as a monster in Squad Buster.
+*The Golem is the subject of 4 [[Emotes]].
+*The Golem was featured in the winning [[Battle Decks|deck]] of the [https://www.youtube.com/live/1fuCnNBTqBU?feature=share King's Cup Tournament], by a player called TMD YAOYAO.
+*Before the Golem's card release, the Golem's and its Golemites' hitpoints were decreased by 4%.
+
+{{Navigation|Card}}
+
+[[fr:Golem]]
+[[de:Golem]]
+[[es:Gólem]]
+[[it:Golem]]
+[[ja:ゴーレム]]
+[[ko:골렘]]
+[[ru:Голем]]
+[[pt-br:Golem]]
+[[zh:戈仑石人]]
+[[pl:Golem]]

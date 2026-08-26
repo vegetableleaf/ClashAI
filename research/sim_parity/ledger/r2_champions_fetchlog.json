@@ -1,0 +1,53 @@
+{
+ "fetched": "2026-08-26",
+ "pages": {
+  "Archer Queen": {
+   "cached_revid": 436755,
+   "live_revid": 436755,
+   "changed": false,
+   "bytes": 27726
+  },
+  "Boss Bandit": {
+   "cached_revid": 437146,
+   "live_revid": 437146,
+   "changed": false,
+   "bytes": 18525
+  },
+  "Goblinstein": {
+   "cached_revid": 437348,
+   "live_revid": 437348,
+   "changed": false,
+   "bytes": 17562
+  },
+  "Golden Knight": {
+   "cached_revid": 437147,
+   "live_revid": 437147,
+   "changed": false,
+   "bytes": 23732
+  },
+  "Little Prince": {
+   "cached_revid": 437347,
+   "live_revid": 437347,
+   "changed": false,
+   "bytes": 27276
+  },
+  "Mighty Miner": {
+   "cached_revid": 437349,
+   "live_revid": 437349,
+   "changed": false,
+   "bytes": 24317
+  },
+  "Monk": {
+   "cached_revid": 437140,
+   "live_revid": 437140,
+   "changed": false,
+   "bytes": 24657
+  },
+  "Skeleton King": {
+   "cached_revid": 436753,
+   "live_revid": 436753,
+   "changed": false,
+   "bytes": 20337
+  }
+ }
+}

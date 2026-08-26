@@ -1,0 +1,209 @@
+{{DISPLAYTITLE: <span style="color: #b300b3;">Executioner</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=5|Rarity=Epic|Type=Troop|Arena=Serenity Peak|ReleaseDate=27 January 2017}}{{SubpageNavBox|Evolution=yes|MergeTactics=yes}}{{Quote|He throws his axe like a boomerang, striking all enemies on the way out AND back. It's a miracle he doesn't lose an arm.}}
+
+The Executioner is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from the [[Arenas|Serenity Peak (Arena 14)]]. It spawns an area damage, air-targeting, medium-ranged, ground [[:Category:Troop Cards|troop]] with high hitpoints and high damage. The Executioner launches an axe that travels up to its maximum range, and returns back to him after some time, while piercing through enemies in both ways. He appears as a shirtless man who has blue eyes, a large red nose, a five-o'clock shadow, carries a double-sided axe with a chip on one of its sides, and wears a black mask, gloves and boots, a belt, and a team-colored kilt and pants. An Executioner card costs 5 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Executioner Common Modifier.png|45x45px]] Common: Stronger Than Ever===
+{{Quote|+100% hitpoints}}
+Doubles Executioner hitpoints.
+
+===[[File:Executioner Rare Modifier.png|45x45px]] Rare: Let's Axe a Dud!===
+{{Quote|x4 axes}}
+Throws 4 axes at a time instead of 1.
+
+===[[File:Executioner Epic Modifier.png|45x45px]] Epic: Axed with the Wind===
+{{Quote|Tornado axe}}
+Combines the [[Tornado]] spell with its axe attack.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Executioner Card}}
+*The Executioner's long range, ability to hit air [[:Category:Troop Cards|troops]], and area damage can allow him to fulfill similar defensive roles to a [[Wizard]], Bowler, [[Witch]], [[Baby Dragon]], or a Bomber.
+*Although Executioner's range is 4.5 tiles, his axe throw has a range of 7.5 tiles, and the axe itself has a 1 tile radius, so his effective reach is 8.5 tiles. The defending player should always separate their troops and never deploy them directly in front of their [[:Category:Crown Towers|Crown Tower]], as otherwise they may end up letting the Executioner deal substantial chip damage.
+*His hit speed comes in two parts; 0.9 seconds to throw his axe and 1.5 seconds for his axe to return. This adds up to an overall 2.4-second hit speed. [[Rage]] and slowing effects will only affect how long it takes the axe to return to his hand, which will be evened out by Executioner throwing the axe slower. Therefore, damage per second does not make a difference. Even when he's pulled backwards by the [[Tornado]], the axe will still take 1.5 seconds to return.
+*Due to being [[:Category:Spell Cards|spell]] resistant and having decent damage per swing, the Executioner is great against low to medium health troops. However, his damage per second is somewhat low for 5 [[Elixir]], so mini tanks such as the [[Mini P.E.K.K.A.]], [[Lumberjack]], [[Valkyrie]], [[Knight]], [[Dark Prince]], [[Royal Ghost]], [[Battle Healer]], and [[Prince]] can easily counter him.
+*High-damage ranged troops like the [[Musketeer]], Wizard, [[Inferno Dragon]], or [[Electro Wizard]] are decent counters to a lone Executioner. They typically have higher damage per second and range than the Executioner, allowing them to get decent damage on him before he deals too much back to them. With the help of any tower troop, they can stop him for positive Elixir trades, and some may even survive for a counterattack.
+*Left alone, the Executioner will deal the same damage to all [[:Category:Tower Troop Cards|tower troops]], throwing his axe 3 times against all of them. It is most recommended to lower this with a cheap distraction first to lower any damage dealt to the Crown Tower.
+*The [[P.E.K.K.A.]] works quite well with the Executioner because he can deal area damage that can help defend against swarms, while the P.E.K.K.A. strikes down tanks with her massively high DPS.
+*The [[Rocket]] is able to instantly destroy the Executioner for a -1 Elixir trade. This can be quite advantageous if he is placed at the back, allowing the player to hit both the Crown Tower and the Executioner. However, the player can take advantage of the lack of a Rocket and deploy something that would thrive from its absence, such as a [[Sparky]].
+*The range of the Executioner's axe lets him not only damage a tank like the [[Giant]], but also being able to hit support troops behind the tank if the Executioner is placed aligned with the enemy tank.
+*The Tornado spell works well with the Executioner. The Tornado can group enemy troops together, allowing him to easily hit them all.
+**Conversely, the Tornado can also be used to defend against the Executioner. Placing the Tornado staggered a tile towards the approaching Executioner and a tile towards the closest [[Arenas|Arena]] wall on the defender’s Crown Tower will cause the Executioner to be pulled diagonally beside the Tower, causing his axe to hit the [[King's Tower|King Tower]] when thrown. However, as this strategy causes unnecessary Tower damage, the Tornado player should contemplate whether a King Tower activation is necessary for them to win, such as if the opponent uses a [[Graveyard]] [[Battle Decks|deck]]. Alternatively, they can allow the Executioner to hit an [[Ice Spirit]] first, and then pull him with the Tornado to minimize Tower damage
+*The Executioner is also an excellent counter to swarms of all kinds, capable of defeating most low-cost units with one throw of his axe. However, his low hit speed and directional area damage attack leave him vulnerable to being surrounded by [[Barbarians]], [[Minion Horde]], [[Bats]], [[Skeleton Army]], [[Royal Recruits]], or [[Goblin Gang]] once he crosses the river.
+*Like the [[Bowler]], the Executioner's axe continually denies the area that it occupies; troops played on top of it will instantly be damaged. Against cards with a death spawn, like a [[Goblin Hut]] or a [[Tombstone]], a single attack will be able to completely wipe it out.
+**This makes him a great counter to the [[Goblin Drill]]. He has high hitpoints to tank a few hits from the [[Goblins]], and his attack will hit the spawned Goblins after the Goblin Drill is destroyed, with the returning hit of the axe finishing off the death Goblins. It is a negative Elixir trade, but this sets him up for a counterattack.
+*The Executioner paired with the Prince is a high-risk, high reward strategy. The Prince can take out mini tanks such as the Mini P.E.K.K.A with his charge, while the Executioner can take out swarms such as Bats, Minion Horde, Goblin Gang or Skeleton Army. However, the combo is countered by separating the duo, since they have different movement speeds and ranges.
+*When the Goblins of a [[Goblin Barrel]] surround a Crown Tower, an Executioner placed directly behind the Tower will target the Goblin at the back of the Tower aligned to the center, allowing him to damage all three Goblins at once.
+*With the help of the [[Tower Princess]], the Executioner can stop a [[Balloon]] for a neutral Elixir trade. His damage is enough to stop all damage from the Balloon, except from the death bomb.
+*He is a decent counter to the [[Lava Hound]]; his high damage lets him defeat the Lava Hound and his splash makes him a great choice against the Lava Pups. If timed right, the fatal hit on the Lava Hound will allow the Executioner to hit all Lava Pups at once, preventing even more damage on the Crown Tower.
+*If he is defeated while his axe is not in his hand, the axe will still fly back to where he was defeated and inflict damage normally. This is important to know when to drop additional troops to defend against other troops that are supported by the Executioner and avoid unnecessary damage.
+*A full throw of the Executioner's axe is enough to eliminate Goblins, [[Minions]], all Spirit [[cards]], [[Princess]], and [[Dart Goblin]] up to 2 Levels higher, [[Archers]] and [[Firecracker|Firecarcker]] up to 1 Level higher, and [[Wall Breakers]] and [[Bomber]] of the same Level. One hit from the axe is enough to OHKO [[Skeletons]], [[Bats]], and [[Spear Goblins]].
+*The [[Fisherman]] can be used to activate the King’s Tower against the Executioner. The defender should place the Fisherman in the middle of their side of the Arena, staggered 2 tiles diagonally towards the Crown Tower in the lane that the Executioner is walking in, as soon as the opponent’s Executioner crosses the bridge. The Executioner would then be hooked towards the Fisherman and start firing, with his axe piercing through the Fisherman and activating the King Tower.
+*The [[Magic Archer]] is very similar to the Executioner, except that he attacks faster, has less hitpoints, deals less damage, attacks from further, and hits less units due to small splash radius. However, he costs less Elixir, making him more individually flexible compared to the Executioner (i.e. they are not forced to use 5 Elixir on a single push as opposed to dropping 4 Elixir and having an additional 1 Elixir for a second push or a different card altogether).
+*When the Executioner's axe hits the [[Monk]] under Pensive Protection, it is immediately returned to him and will cause him to throw it faster and therefore, take lots of damage or otherwise die because of it.
+
+<center>
+
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Axe Time<br />{{Icon|I = Time}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Range<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Width<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||0.9 sec||0.5 sec||1.5 sec||Medium (60)||1 sec||4.5||7.5||2||550||Air & Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1280 }}
+{{#vardefine: dmg_11 | 168 }}
+{{#vardefine: dmg_hits | 2 }}
+{{#vardefine: atk_speed | 2.4 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Area Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(6-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(7-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(8-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(9-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(10-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} x{{#var:dmg_hits}} ({{#expr: {{#var:dmg_11}} * {{#var:dmg_hits}} }})|| {{#expr:{{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} * {{#var:dmg_hits}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(12-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(13-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(14-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(15-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(16-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 220,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|20 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 660,000 Damage to enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 1,100,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" |Troop Destroyer <br/ > [[File:Troop Destroyer.png|50x50px]]
+|1
+|Destroy 700 enemy [[:Category:Troop Cards|Troops]]
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Destroy 2,000 enemy Troops
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Destroy 3,500 enemy Troops
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2017
+*The Executioner [[Cards|card]] was added to the game on 27/1/2017.
+*On 13/2/2017, a [[Version History#Balance Changes (13/2/2017)|Balance Update]], decreased the Executioner's damage by 6%, the range to 4.5 tiles (from 5 tiles), the projectile range to 6.5 tiles (from 7 tiles), and the axe's area radius to 0.9 tiles (from 1 tile). This update also fixed some glitches where the Executioner's axe would hit enemies behind him when it came back, would do damage in front of him when the axe was at its furthest, cause enemy attack animations to reset to 0 when it hit small to medium-sized enemies and caused him to sometimes throw his axe out of the [[Arenas|Arena]] and getting stuck.
+*On 13/3/2017, the [[Version History#March 2017 Update (13/3/2017)|March 2017 Update]], increased the axe's radius to 1 tile (from 0.9 tiles) and decreased his projectile speed to 550 (from 600). This update also changed the Executioner's card image and fixed all of the bugs of the Executioner mentioned above.
+*On 19/4/2017, a [[Version History#Balance Changes (19/4/2017)|Balance Update]], increased the Executioner's damage by 6%.
+*On 12/6/2017, the [[Version History#June 2017 Update (12/6/2017)|June 2017 Update]], changed the sound effect of his axe throw.
+2018
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Epic}} cards start at Level 6 and end at Level 13 (from 1 to 8).
+2019
+*On 28/1/2019, the [[Version History#January%202019%20Update%20(28/1/2019)|January 2019 Update]], moved the Arena to unlock the Executioner from Jungle Arena to Spooky Town.
+*On 2/9/2019, a [[Version History#Pass Royale and more (2/9/2019)|Balance Update]], increased the Executioner's damage by 82% and decreased his axe return time to 1 second (from 1.5 seconds). However, his range was decreased to 3 tiles (from 4.5 tiles), his projectile range was decreased to 4.5 tiles (from 6.5 tiles), his attack time interval was increased to 2.5 seconds (from 2.4 seconds), his first attack time interval was increased to 0.7 seconds (from 0.5 seconds), and his hitpoints were decreased by 5%.
+*On 5/9/2019, a [[Version History#Maintenance Break (5/9/2019)|maintenance break]], increased the Executioner's damage by 2% and increased his range to 4 tiles (from 3 tiles).
+*On 30/9/2019, the [[Version History#End%20of%20September%202019%20Update%20(30/9/2019)|End of September 2019 Update]], decreased his first attack time interval to 0.5 seconds (from 0.7 seconds). This change was not mentioned in any change notes and was later said to be unintentional by Supercell, and as such it got reverted in 1/10/2019, in a [[Version History#Maintenance Break (1/10/2019)|maintenance break]].
+*On 4/11/2019, a [[Version History#Pass Royale and more (4/11/2019)|Balance Update]], increased the Executioner's projectile range to 5 tiles (from 4.5 tiles), increased the axe's hover time to 1.2 seconds (from 1 second), and decreased his area radius to 0.8 tiles (from 1 tile).
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], increased the Executioner's hitpoints by 5%, decreased his attack time interval to 2.4 seconds (from 2.5 seconds), decreased his first attack time interval to 0.5 seconds (from 0.7 seconds), increased the axe's hover time to 1.5 seconds (from 1.2 seconds), increased his range to 4.5 tiles (from 4 tiles), increased his projectile range to 6.5 tiles (from 5 tiles), increased his area radius to 1 tile (from 0.8 tiles), and decreased his damage by 45%.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the Arena to unlock the Executioner from Spooky Town to Serenity Peak.
+*On 2/9/2021, a maintenance break, added a card render to the Executioner's card info screen.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+*On 7/12/2021, the [[Version History#Balance%20Changes%20(7/12/2021)|2021 Quarter 4 Update]], increased the Executioner's hitpoints by 5%.
+2022
+*On 2/8/2022, a [[Version History#Balance%20Changes%20(2/8/2022)|Balance Update]], increased the Executioner's projectile range to 7.5 tiles (from 6.5 tiles).
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Executioner's damage by 0.59%. It also allowed the Executioner to be affected by [[Rage]].
+*On 7/4/2025, the [[Version History#Pass Royale and more (7/4/2025)|April 2025 Update]], added the Executioner's Evolution.
+2026
+
+* On 2/3/2026, a Balance Update, increased the Executioners damage by 7%.
+* On 4/8/2026, a Balance Update, decreased the Executioner's projectile range to 7 tiles (from 7.5 tiles)
+
+==Gallery==
+<gallery>
+File:ExecutionerCardOld.png|Executioner's card image before 13/3/2017.
+File:Executioner card render.png|Current card render.
+File:Executioner Preview.gif|Current card preview
+File:ExecutionerRenderConcepts.jpeg|3D model and render concepts.
+File:Executioner Body.png|Executioner
+</gallery>
+
+==Trivia==
+*In the Korean and Arabic language settings of the game, the Executioner's name translates to "Axeman". In the Chinese and Thai language settings of the game, the Executioner's name translates to "Throwing Axe Butcher" and "Hangman" respectively.
+*The word Executioner comes from the Latin stem ex(s)equi, meaning to follow out.
+*The Executioner is 1 of 3 [[:Category:Troop Cards|troops]] that has been featured with a [[Buff#Stun Attack|Stun Attack]] [[buff]], the others being [[Spear Goblins]] and [[Witch]].
+*The Executioner's axe can be seen can be seen on the [[Trophies|Trophy Road]] as a decoration.
+*The Executioner, along with the [[Minions]], [[Bomber]], [[Skeletons]], [[Skeleton Dragons]], [[Ice Spirit]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Mega Minion]], [[Ice Golem]], [[Dart Goblin]], [[Elixir Golem]], [[Goblin Cage|Goblin Brawler]], [[Guards]], [[Baby Dragon]], [[P.E.K.K.A.|P.E.K.K.A]], [[Giant Skeleton]], [[Golem]], [[Wall Breakers]], [[Bowler]], [[Mega Knight]], [[Inferno Dragon]], [[Royal Ghost]], and [[Lava Hound]], are featured as a [https://squad-busters.fandom.com/wiki/Monsters monster] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*When the Executioner is defeated, his axe falls to the ground after it returns back to his death spot. The other units that drop an item upon death are the [[Knight]], [[Rascals|Rascal Boy]], Mega Minion, [[Dark Prince]], Mega Knight, [[Sparky]], [[Fisherman]], [[Super Knight]], [[Golden Knight]], and the [[Little Prince]].
+*In the Japanese language setting of the game, the Executioner's personal name is revealed to be "''Falche''".
+*The Executioner is the subject of 2 [[Emotes]].
+*The initial balance change for Executioner on the [[Version History#Pass Royale and more (2/9/2019)|September 2019 Update]] was a 98% damage increase, a range decrease to 3.5-5 tiles (from 4.5-6.5 tiles), and a decreased axe return time decrease to 1.1 seconds (from 1.5 seconds), but the damage increased was lowered to 82%, the range decrease was lowered to 3-4.5 tiles, and his axe return time was lowered to 1 second [https://twitter.com/ClashRoyale/status/1168426165599711233?s=20 last minute].
+
+{{Navigation|Card}}
+
+[[fr:Bourreau]]
+[[de:Scharfrichter]]
+[[es:Verdugo]]
+[[it:Boia]]
+[[ru:Палач]]
+[[zh:飞斧屠夫]]

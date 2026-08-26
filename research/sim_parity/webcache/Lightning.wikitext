@@ -1,0 +1,191 @@
+{{DISPLAYTITLE: <span style="color: #b300b3;">Lightning</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink|Lightning Spell}}
+
+{{Card Infobox|Cost=6|Rarity=Epic|Type=Spell|Arena=Frozen Peak|ReleaseDate=4 January 2016}}
+{{Quote|Bolts of lightning damage and stun up to three enemy troops or buildings with the most hitpoints in the target area. Reduced damage to Crown Towers.}}
+
+The Lightning is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from the [[Arenas|Frozen Peak (Arena 8)]]. It is a multi-damage, air-targeting [[:Category:Spell Cards|spell]] with a medium radius and very high damage. When used, it can stun enemies in its radius for 0.5 seconds. The three troops that are targeted are always the three that have the highest hitpoints within its radius. It is a deep blue liquid encased in a large vial. A Lightning card costs 6 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Lightning Card}}
+*Lightning does massive damage, though not as much compared to the toughest units such as [[Lava Hound]], [[Golem]], [[Giant]], or [[Knight/Evolution|Evolved Knight]]. It is still useful as two of its strikes can cripple or obliterate support units.
+*The Lightning [[:Category:Spell Cards|spell]] can be used to finish off [[:Category:Crown Towers|Crown Towers]] with low health or to OHKO all [[:Category:Troop Cards|troops]] with less than or as much health as a [[Phoenix]].
+*Lightning is extremely effective against the [[Wizard]], [[Electro Dragon]], Archer Queen, and [[Witch]], especially next to enemy Crown Towers, as it will deal a sizable amount of chip damage for only 1 extra [[Elixir]] while also still being able to strike one more unit. 
+*Lightning can be effectively used to counter [[Three Musketeers]] to create a 3 [[Elixir]] advantage. The player should keep in mind that they should avoiding hitting the [[:Category:Crown Towers|Tower]] if they would like to hit all 3 of them.
+*Lightning is effective in [[Lava Hound]] [[Battle Decks|decks]] as it can quickly OHKO multiple threatening ranged [[:Category:Troop Cards|troops]] such as the Wizard, Electro Dragon, and [[Archer Queen]], both of which can quickly destroy the [[Lava Hound]] and any support units behind it.
+**This can also be done against cheaper units like the [[Hunter]], Electro Wizard, or the [[Night Witch]], but the high Elixir deficit that this would cause may or may not be worth the risk depending on the situation of the [[Basics of Battle|match]].
+*As the Lightning strikes once on each target, it will strike fewer than three times if there are only 1 or 2 enemy [[:Category:Troop Cards|troops]] or [[:Category:Building Cards|buildings]] within its radius, reducing its value. Thus, the player should try to use it only when there are sufficient targets in the target radius.
+*Since Lightning prioritises striking the targets with the highest health, placing a troop with more health next to a low health unit will block them from being struck.
+**A Lightning spell might fail to defeat a [[Mother Witch]] as the Cursed Hogs she summons have more health than the Mother Witch.
+**The [[Goblin Cage]] can absorb 2 of the 3 strikes from the Lightning spell, so it can be used to tank for Lightning-vulnerable troops like the [[Musketeer]], Zappies, [[Electro Wizard]], [[Little Prince]], [[Ice Wizard]], [[Wizard]], [[Magic Archer]], [[Goblinstein]], [[Flying Machine]], [[Princess]], [[Firecracker]], [[Bomber]], and Mother Witch. 
+*When using the Lightning, it is important to designate the targets of the spell in its radius. It is best to refrain from showing the opponent the Lightning until the opportunity for the highest Elixir advantage possible arises.
+*If Lightning is used on a shielded unit, only the shield will be destroyed. This is because both the shield and the unit are both considered the same entity. This is not the case with units such as [[Battle Ram]]; Lightning will destroy the Battle Ram and then the [[Barbarians]], as both are considered separate entities which Lightning can retarget onto.
+*When trying to destroy the enemy Crown Tower at the last few seconds of the game, be careful, as any medium-high hitpoint units in its radius will be targeted instead by the Lightning, as in such situations the Crown Tower will have relatively low health, possibly even lower than a [[Skeletons|Skeleton]]. Instead, cast the Lightning towards the corner of the Tower while it is within its radius to avoid targeting other units surrounding the Tower.
+**As for the defending player, pay attention to the Crown Tower's health, and place a swarm [[Cards|card]] accordingly. Battle Ram and [[Zappies]] are especially effective, due to having a lower Elixir cost for the highest range of possible Crown Tower health that would be needed to finish it off.
+*The Elixir trade-off for using a Lightning can be very high, giving the enemy an Elixir advantage in most cases. However, the Lightning spell is ineffective against units with extremely high hitpoints such as the Giant, Lava Hound, [[Mega Knight]], [[Giant Skeleton]], Golem, Evolved Knight, or [[P.E.K.K.A.|P.E.K.K.A]].
+*Lightning is quite effective versus [[:Category:Building Cards|buildings]]. It deals high damage to severely cripple them to allow building-targeting troops to continue their path towards the Crown Towers. Unlike with Rocket, its area is large enough that it can hit something else alongside the buildings, such as a Crown Tower.
+**The Lightning can deny all Elixir from being generated by an [[Elixir Collector]], though the Elixir Collector will still generate one Elixir when it is destroyed. If the Elixir Collector is placed behind a Crown Tower, the user can also deal decent damage to the Tower. Unlike with Rocket, placing the Elixir Collector in front of their King Tower cannot prevent it from hitting both the Crown Tower and the Elixir Collector.
+**It can be decent against [[Mortar]] and [[X-Bow]] setups. Lightning will cripple both buildings and its stun effect may cause them to retarget to a different troop if a distraction is placed late. However, it will not fully destroy the buildings, so make sure that something else is distracting them before deploying the spell.
+**Even though the Lightning is one of the best ways to destroy buildings, in most cases it is a negative Elixir trade. Therefore, it is important to know when it is a good time to cast a Lightning spell. This also applies to troops. If you are only hitting 1 or 2 troops, it usually results in a negative Elixir trade.
+*The Lightning is very effective against the [[Sparky]] as it will reset Sparky's damage while also dealing high damage to her and other supporting troops. However, a Lightning will not take out a Sparky of the same Level, meaning she is still dangerous if she is still being protected by a tank.
+*The Lightning is very effective against the [[Inferno Tower]], [[Mighty Miner]], and the [[Inferno Dragon]] since it can not only heavily damage these units, but also reset their target lock on troops, thus making them take longer to defeat them.
+**While the Lightning may stun and cripple an Inferno Tower, it is a negative trade since the Inferno Tower can still damage pushes and the building costs 1 less Elixir than the spell itself. Try also hitting something else to maximize the value.
+*Lightning can also reset charging troops with its stun, so can be used in a pinch to reset charges of the [[Prince]], [[Dark Prince]], [[Royal Recruits/Evolution|Evolved Royal Recruits]], and [[Ram Rider]].
+**However, with Dark Prince and Evolved Royal Recruits, you need to destroy their shields first, as otherwise Lightning will just have most of its damage canceled by the shields.
+*A Lightning is a decent counter to the [[Cannon Cart]], turning it into a useless defensive building which despawns after a few seconds, which is beneficial as long as the player does not need to push into its lane any time soon. This becomes an even more effective trade if other units like a Crown Tower can be caught in the Lightning's zone, as the Cannon Cart costs one less Elixir than the Lightning. A similar tactic can work against the [[Goblin Demolisher]].
+*The Lightning is a great counter to the [[Witch/Evolution|Evolved Witch]]. It deals enough damage to fully destroy her even when having full overheal hitpoints, and it will also destroy 2 Skeletons afterwards.
+*The Lightning is impractical to use against a [[Goblin Barrel]] since it is a negative Elixir trade and may not hit all of the Goblins. However, if the defending player is ahead in a match and their Tower is at low health, they can use it to clear out a Goblin Barrel in the final seconds of a match.
+*Lightning can immediately destroy an Archer Queen of equal Level, although it is a negative Elixir trade. The player can hit 2 more units or buildings in its radius. Since it is a spell, Lightning can hit the Archer Queen even with her ability active, where it is a neutral Elixir trade.
+*Depending on what the player requires in their deck, they may substitute the Lightning with other similar cards.
+**An alternative to the Lightning is the [[Rocket]]. Although Rocket costs the same amount of Elixir, takes more time to deploy, has some travel time and has a smaller AOE, it does massive area damage that is capable of taking out or heavily damaging many more targets.
+**This can be used as an alternative to the powerful [[Fireball]] and [[Zap]] combination, as that combo can only defeat a minimum of 10 cards of equivalent Level that a lone Fireball cannot ([[Fisherman]], [[Furnace]], [[Little Prince]], Witch, Musketeer, Wizard, [[Royal Hogs]], [[Three Musketeers]], [[Electro Wizard]], and [[Mega Minion]]), while the Lightning can defeat at least 8 other cards of equivalent Level (e.g. Hunter, Night Witch, [[Electro Dragon]], [[Bandit]], Phoenix, [[Berserker]], [[Archer Queen]], and Battle Ram), as well as the cards that are taken out by the Fireball and Zap combo, while using one less deck slot.
+***However, this combination is more effective against Evolved Barbarians, as the Lightning can only destroy 3 of them, while the Fireball and Zap combo will defeat all 5 of them.
+**A cheaper alternative is the [[Void]]. The Void has slightly less damage, but can defeat the same troops that the Lightning can, besides the Phoenix, for half the cost. However, it is ineffective against swarms, especially bulky ones like Barbarians and Zappies.
+**If the player wants to prioritize destroying buildings over troops, they can use the [[Earthquake]] in place of the Lightning. The Earthquake destroys buildings much more effectively, and for 3 less Elixir. The Earthquake also comes with a snare ability, which functions as an alternative to Lightning's stun, although it cannot reset any charge attacks.
+**For a spell with a longer stun, the player can use the [[Freeze]] in place of the Lightning. It comes at a lower cost, and can stun enemies for longer. However, it has significantly lower damage, and its smaller area means that it is easier to separate troops from being frozen.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: dmg_11 | 1057 }}
+{{#vardefine: crown_dmg_11| 286 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Area Damage<br>{{Icon|I=Area Damage}}
+!scope="col"|Crown Tower Damage<br>{{Icon|I=Tower Damage}}
+|-
+| 6 || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(7-11)) round 0 }} 
+|-
+| 8 || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(8-11)) round 0 }} 
+|-
+| 9 || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(9-11)) round 0 }} 
+|-
+| 10 || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:dmg_11}} || {{#var:crown_dmg_11}}
+|-
+| 12 || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}  ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(15-11)) round 0 }} 
+|-
+| 16 || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 77,500 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|20 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 230,000 Damage to enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 385,000 damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" |Arena Destroyer <br/ > [[File:Arena Destroyer.png|50x50px]]
+|1
+|Destroy 180 enemy Troops or buildings
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Destroy 520 enemy Troops or buildings
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Destroy 920 enemy Troops or buildings
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Lightning [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016.
+*On 19/2/2016, the [[Version History#Balance Changes (19/2/2016)|Balance Update]], decreased the Lightning's [[:Category:Crown Towers|Crown Tower]] damage to 40% of the full damage (from 50%).
+*On 19/9/2016, the [[Version History#September%202016%20Update%20(19/9/2016)|September 2016 Update]], allowed the Lightning to stun enemies for 0.5 seconds. The update also changed the description. Previously, it used to say "''Bolts of lightning hit up to three enemy troops or buildings with the most hitpoints in the target area. Reduced damage to Crown Towers.''"
+2017
+*On 9/10/2017, the [[Version History#Epic Quests Update (9/10/2017)|Epic Quests Update]], decreased Lightning's damage by 3% and its area radius to 3 tiles (from 3.5 tiles).
+*On 12/12/2017, the [[Version History#Electrifying Update (12/12/2017)|Electrifying Update]], decreased the Lightning’s Crown Tower damage to 35% of the full damage (from 40%).
+2018
+*On 25/4/2018, the [[Version History#Clan%20Wars%20Update%20(25/4/2018)|Clan Wars Update]], increased the Lightning’s area radius to 3.5 tiles (from 3 tiles). It also allowed the Lightning to be placed on the river.
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], moved the [[Arenas|Arena]] to unlock the Lightning from Goblin Stadium to P.E.K.K.A's Playhouse.
+*On 3/9/2018, a [[Version History#Balance Changes (3/9/2018)|Balance Update]], increased the Lightning's damage by 5%. It also made it so that the Lightning can no longer reset the attack of the [[Zappies]].
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Epic}} cards start at Level 6 and end at Level 13 (from 1 to 8).
+*On 1/10/2018, a [[Version History#Balance Changes (1/10/2018)|Balance Update]], fixed a bug where [[:Category:Troop Cards|troops]] that were spawned after their parent troops died would be immune to [[:Category:Spell Cards|spell]] damage.
+2020
+*On 4/8/2020, a [[Version History#Balance Changes (4/8/2020)|Balance Update]], decreased the Lightning's Crown Tower damage to 30% of the full damage (from 35%).
+*On 19/11/2020, a [[Version History#Maintenance%20Break%20(19/11/2020)|maintenance break]], fixed a bug where using Lightning on an [[Electro Giant]] would cause the game to crash.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the Arena to unlock the Lightning from P.E.K.K.A's Playhouse to Frozen Peak.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 30/3/2022, the [[Version History#Miner%20Update%20(30/3/2022)|Miner Update]], gave the Lightning a visual effect that shows even if it does not damage anything.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], increased the Lightning's damage by 0.09%.
+*On 3/6/2025, a [[Version History#Balance Changes (3/6/2025)|Balance Update]], decreased the Lightning's Crown Tower damage to 27% of the full damage (from 30%).
+*On 24/11/2025, the 2025 Quarter 4 Update added a card render to the Lightning's card info screen.
+2026
+
+* On 1/6/2026, a Balance Update, decreased the Lightning's Crown Tower damage to 25% of the full damage (from 27%)
+
+==Gallery==
+<gallery>
+File:Lightning Card Render.png|Current card render.
+</gallery>
+
+== Trivia==
+*Electricity was first detected through electric fish from as far back as 2750 BCE where Ancient Egyptian texts described them as the "protectors" of all other fish. At around 600 BCE, Thales of Miletus made a series of observations on static electricity, from which he believed that friction rendered amber magnetic, in contrast to minerals such as magnetite, which needed no rubbing. Thales was incorrect in believing the attraction was due to a magnetic effect, but later science would prove a link between magnetism and electricity. Electricity would remain little more than an intellectual curiosity for millennia until 1600, when the English scientist William Gilbert wrote ''De Magnete'', in which he made a careful study of electricity and magnetism, distinguishing the lodestone effect from static electricity produced by rubbing amber.
+**The Lightning is 1 of 11 [[cards]] associated with electricity, with the others being [[Electro Spirit]], [[Zap]], [[Tesla]], [[Zappies]], [[Electro Dragon]], [[Electro Giant]], [[Electro Wizard]], [[Sparky]], [[Wizard Trio]], and the [[Goblinstein]].
+***In the Spanish, Korean, Chinese, Malaysian, and Vietnamese language settings of the game, the Lightning's name translates to "Ray", "Lightning Magic", "Lightning Spell", "Bolt", and "Thunder" respectively.
+*The Lightning is 1 of 7 [[:Category:Spell Cards|spells]] which first existed in Clash of Clans, the others being [[Earthquake]], [[Heal]], [[Freeze]], [[Poison]], [[Rage]], and [[Clone]].
+**It resembles the older iteration of the Lightning spell in Clash of Clans that took 2 housing spaces and fired multiple individual strikes. However, unlike the said spell, the Clash Royale iteration fires up to 3 lightning bolts that could stun enemies and only targeted one enemy, whereas its Clash of Clans counterpart fired 6 bolts that could not stun enemies and could deal area damage.
+*The Lightning is tied with [[Rocket]] for the most expensive spell, costing 6 [[Elixir]], excluding the [[Mirror]] as it does not have a [[:Category:Variable-Elixir Cards|defined Elixir cost]].
+*Although the Lightning has a circular radius, unlike the [[Zap]], it does not inflict area damage. Instead only the highest health troops there are targeted.
+*The Lightning, along with the Heal, Freeze, Rage, and [[The Log]], are featured as a [https://squad-busters.fandom.com/wiki/Spells spell] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*The [[Ranked|Master 3 League]] badge resembles a Lightning spell bottle.
+*The Lightning has been featured in multiple [[Tournament/Special Event Challenges|special game modes]] outside of the card. More specifically:
+**The Lightning is 1 of 4 spells that have been featured in the [[Global Spell]] game [[:Category:Modes|mode]], the others being Heal, Freeze, and Rage.
+***In the Power Surge sub-mode of the Global Spell game mode, the Global Lightning deals more damage than a Lightning card, and can bypass the shields of the [[Royal Recruits]], [[Guards]], and [[Dark Prince]].
+**The Lightning is 1 of 5 spells that have been featured in the [[Treasure Hunt#Spell%20Cauldron|Spell Cauldron]] sub-mode of the [[Treasure Hunt]] game [[:Category:Modes|mode]], the others being Heal, Freeze, Rage, and Clone.
+*It is 1 of 12 cards that is unavailable in [[Chess Royale]], the others being Royal Recruits, Rocket, Earthquake, Poison, [[Goblin Drill]], [[Miner]], [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], [[Mighty Miner]], and the [[Monk]].
+*The Lightning is the subject of a few [[Clans|Clan]] badges.
+*The Lightning was featured in the winning [[Battle Decks|decks]] of multiple Clash Royale Tournaments. More specifically:
+**The Lightning was featured in the winning deck of the [https://youtu.be/LWQjS0e6iiE Super Magical Cup Tournament], by a player called CMcHugh.
+**The Lightning was featured in the winning deck of the [https://www.youtube.com/live/1fuCnNBTqBU?feature=share King's Cup Tournament], by a player called TMD YAOYAO.
+*Before the Lightning's card release, the Lightning's damage was increased by 8%.
+
+{{Navigation|Card}}
+
+[[fr:Foudre]]
+[[de:Blitz]]
+[[es:Rayo]]
+[[it:Fulmine]]
+[[ja:ライトニング]]
+[[ru:Молния]]
+[[pt-br:Relâmpago]]
+[[zh:雷电法术]]

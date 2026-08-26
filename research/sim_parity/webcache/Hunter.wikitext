@@ -1,0 +1,205 @@
+{{DISPLAYTITLE: <span style="color: #b300b3;">Hunter</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=4|Rarity=Epic|Type=Troop|Arena=Hog Mountain|ReleaseDate=12 December 2017}}{{SubpageNavBox|Evolution=yes}}{{Quote|He deals BIG damage up close - not so much at range. What he lacks in accuracy, he makes up for with his impressively bushy eyebrows.}}
+
+The Hunter is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from the [[Arenas|Hog Mountain (Arena 10)]]. It spawns a single-target, air-targeting, medium-ranged, ground [[:Category:Troop Cards|troop]] with moderate hitpoints and very high damage. The Hunter launches an attack that shoots 10 shotgun pellets that travel in random directions with a wide spread, giving him higher damage the closer he is to the target and lower damage at long range. He resembles a man wearing a brown cloth, gloves, belt, pants and boots, a team-colored shirt and coonskin cap, armed with a double-barreled shotgun, and has fuzzy black eyebrows and mustache covering his eyes and mouth respectively. A Hunter card costs 4 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Hunter Common Modifier.png|45x45px]] Common: Shoot Your Shot===
+{{Quote|+100% shot range}}
+Hunter's projectile range is increased by 100%, for a total of 13 tiles.
+
+===[[File:Hunter Rare Modifier.png|45x45px]] Rare: Ambush===
+{{Quote|Invisible when not attacking}}
+The Hunter spawns invisible until he attacks. After a short time when not attacking, he becomes invisible again.
+
+===[[File:Hunter Epic Modifier.png|45x45px]] Epic: Burn Baby Burn!===
+{{Quote|Flamethrower attack}}
+Hunter's attack pierces through enemies. His attack speed is also increased.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Hunter Card}}
+*The Hunter is able to take care of swarms when placed at a distance, and can quickly damage down high-hitpoint units when placed right next to them, having slightly more damage than a [[P.E.K.K.A.]] when all his bullets connect. However, although he has slightly more health than units of identical [[Elixir]] cost like the [[Musketeer]], [[Mega Minion]], and the [[Electro Wizard]], he will still be taken down fairly quickly by support [[:Category:Troop Cards|troops]] in a push due to his low range and attack pattern forcing him to be played near the front. Distraction units like [[Skeletons]], [[Archers]], [[Minions]], [[Bats]], [[Goblins]], and [[Spear Goblins]], and mini tanks like the [[Ice Golem]] and the [[Knight]] complement him very well, buying him considerable time to get his powerful burst shots off for a cheap cost.
+*The [[Prince]] is a hard counter to a lone Hunter, being able to counter it defensively or offensively whether he has his charge attack or not thanks to his health pool, damage, and his melee attack having a longer range than most others, meaning that the Prince will not take much damage after countering him. However, a Hunter paired with Skeletons, [[Zap]], Log, [[Ice Spirit]], or [[Electro Spirit]] can fully counter a [[Prince]] on the player's side. If Skeletons are used, the Hunter can be deployed closer to the Prince, allowing it to defeat the Prince without taking damage. This makes it stronger on the counterattack.
+*One on one, he can neutralize a lot of mini tanks and [[:Category:Building Cards|building]]-targeting units; against a [[Hog Rider]], he will at most only let it hit the [[:Category:Tower Troop Cards|Crown Tower]] once before defeating it. He can usually take three or four hits from a mini tank before being defeated, and he has enough health to survive a single strike from a P.E.K.K.A., provided that the two [[cards]] are of the same level.
+* A lone Hunter can be surrounded with swarm units such as the Skeletons, Goblins, or [[Bats]] to counter him, since he can only shoot in one direction at once and has a fairly slow attack speed.
+*As the Hunter's shotgun shoots multiple projectiles, he can counter troops with shields relatively well, since each bullet is an individual hit. When the shield's health is depleted by some of the bullets, the damage from the rest of the bullets will dig into the unit's actual health.
+*Ranged units such as the Musketeer, Electro Wizard, [[Baby Dragon]], [[Executioner]], [[Bowler]], [[Inferno Dragon]], [[Zappies]], [[Goblin Demolisher]], [[Electro Dragon]], and [[Wizard]] are good counters to the Hunter since they do not get close enough for the Hunter to deal significant damage to them. However, the Hunter will destroy these troops extremely fast if he is deployed right on top of them.
+*He is a fairly reliable counter to the [[Graveyard]], since he can one-shot the spawned Skeletons with each pellet and can survive an equivalent level [[Poison]] [[:Category:Spell Cards|spell]]. However, the varied spawn locations of the Skeletons can cause him to be inconsistent as the spawning order of his bullets is also random, possibly making him miss more of his bullet shots. Additionally, as the spell's duration goes on, he will walk towards the center of the Graveyard and be vulnerable to being surrounded.
+*He can counter a [[Goblin Barrel]] placed on the center of a Crown Tower entirely without any damage if he is placed directly behind the Crown Tower before the barrel lands. However, the timing for this needs to be precise; the Hunter's deploy timer should finish the moment the [[Goblins]] stop being pushed out to the sides of the tower. Otherwise, the Hunter may not shoot straight ahead, causing some of his bullets to miss.
+*An Ice Spirit is sufficient to distract the Hunter long enough for a [[Cannoneer]] or [[Dagger Duchess]] to finish him off.
+*The Hunter pairs very well with the [[Fisherman]], as the Fisherman pulls units towards the Hunter, allowing the Hunter to maximize his damage easily. This combo can defeat many singular units on defense, but can be defended with swarms like a [[Skeleton Army]] or [[Minion Horde]] and units with high enough burst damage, like a [[Sparky]], P.E.K.K.A, [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Elite Barbarians]], or [[Three Musketeers]].
+*Though the Hunter is very powerful on defense, he deals little damage towards opposing Crown Towers due to rarely, if ever, getting close to them. However, charging units such as the [[Battle Ram]], [[Ram Rider]], Prince, and [[Dark Prince]] can actually push him close to the Crown Tower if placed directly behind the Hunter, though this combo is very impractical at 8 Elixir.
+*When defending against a Hunter, the player should try not to place their counter too close to the Tower at an angle, as some of the Hunter's bullets could hit a Crown Tower and deal substantial chip damage.
+*When using a melee troop to defend against a lone Hunter, the player should not place the countering unit directly in front of the Hunter, as his high damage up close can result in the unit taking more damage than necessary. Instead, the melee unit should be placed at a distance so that the Tower has time to chip down the Hunter, and so that the Hunter's first shot is spread out, and deals less damage to the melee unit. However, if the Hunter is already locked onto a Crown Tower, it may be more valuable to place the melee unit directly in front of the Hunter to soak all of the damage.
+*The Hunter is a good counter to [[Balloon]], if you place him early enough. He will land one full shot which will cripple the Balloon, and the Tower can finish it off. Then you can use the Hunter for a counter-push if you want. However, the Balloon death bomb will damage the tower and possibly the Hunter too. Also, beware of spells that might accompany the Balloon.
+*The Hunter is a good counter to [[Lava Hound]], as he can quickly burst it down. If placed far back enough, he can also defeat the Lava Pups without any major Tower damage.
+*The [[Magic Archer]] synergizes well with the Hunter. The Hunter is excellent at beating tanks and short range threats to the Magic Archer while the Magic Archer deals a lot of damage to long range threats to the Hunter as well as swarms. However, beware of spells like [[Lightning]] that could be used against the duo.
+*Spells that can knockback the Hunter such as [[The Log]], [[Fireball]], and [[Giant Snowball]] can be used against the Hunter to knock him further from his target, dealing less damage with each attack. They can also reset the windup time of his attack. On top of that, the Giant Snowball slows down his already slow attack.
+**A Giant Snowball along with the Crown Tower is enough to stop the Hunter on your side. The knockback and slow are enough to prevent him from attacking the Crown Tower before dying.
+
+<center><div id="unit-statistics" class="table-back">
+{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Range<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||2.2 sec||0.7 sec||Medium (60)||1 sec||4||6.5||550||Air & Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 885 }}
+{{#vardefine: dmg_11 | 84 }}
+{{#vardefine: dmg_hits | 10 }}
+{{#vardefine: atk_speed | 2.2 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I = Hitpoint}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per second<br />{{Icon|I = DPS}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(6-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(7-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(8-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(9-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(10-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} x{{#var:dmg_hits}} ({{#expr: {{#var:dmg_11}} * {{#var:dmg_hits}} }})|| {{#expr:{{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} * {{#var:dmg_hits}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(12-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(13-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(14-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(15-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(16-11)) round 0) * {{#var:dmg_hits}} }}) || {{#expr:{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}* {{#var:dmg_hits}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward 
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 180,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|20 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 540,000 Damage to enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 910,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" |Troop Destroyer <br> [[File:Troop Destroyer.png|50x50px]]
+|1
+|Destroy 490 enemy Troops
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Destroy 1,400 enemy Troops
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Destroy 2,450 enemy Troops
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History ==
+2017
+*The Hunter [[Cards|card]] was added to the game on 12/12/2017, in the [[Version History#Electrifying Update (12/12/2017)|Electrifying Update]].
+2018
+*On 24/1/2018, a [[Version History#Balance Changes (24/1/2018)|Balance Update]], decreased the Hunter's range to 4 tiles (from 5 tiles) and slightly decreased his bullet spread.
+*On 25/4/2018, the [[Version History#Clan%20Wars%20Update%20(25/4/2018)|Clan Wars Update]], fixed a bug where the Hunter could not hit targets on top of him.
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], moved the [[Arenas|Arena]] to unlock the Hunter from Jungle Arena to Goblin Stadium.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Epic}} cards start at Level 6 and end at Level 13 (from 1 to 8).
+2019
+*On 7/10/2019, a [[Version History#Pass Royale and more (7/10/2019)|Balance Update]], increased the Hunter's damage by 2%.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Hunter's card info screen.
+2021
+*On 30/3/2021, the [[Version History#2021%20Quarter%201%20Update%20(30/3/2021)|2021 Quarter 1 Update]], increased the Hunter's first attack time interval to 1.1 seconds (from 0.7 seconds).
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the Arena to unlock the Hunter from Goblin Stadium to Hog Mountain.
+*On 6/9/2021, the [[Version History#2021%20Quarter%203%20Update%20(6/9/2021)|2021 Quarter 3 Update]], decreased the Hunter's first attack time interval to 0.9 seconds (from 1.1 seconds).
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 3/2/2022, a [[Version History#Balance%20Changes%20(3/2/2022)|Balance Update]], decreased the Hunter's first attack time interval to 0.8 seconds (from 0.9 seconds).
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+*On 6/8/2024, a [[Version History#Balance Changes (6/8/2024)|Balance Update]], increased the Hunter's hitpoints by 5.5%
+2025
+*On 30/1/2025, a [[Version History#Maintenance Break (30/1/2025)|maintenance break]], made it so that damage boost from the [[Rune Giant]] would be split on Hunter instead of being granted to each of his projectiles.
+*On 3/3/2025, the [[Version History#Pass Royale and more (3/3/2025)|March 2025 Update]], added the Hunter's Evolution.
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], increased the Hunter's hitpoints by 0.11%.
+*On 3/6/2025, a [[Version History#Balance Changes (3/6/2025)|Balance Update]], decreased the Hunter's first attack time interval to 0.7 seconds (from 0.8 seconds).
+
+==Gallery==
+<gallery>
+File:HunterCardShelly.png|Hunter's card image reskinned as Shelly during the Brawl Stars Challenge.
+File:Hunter card render.png|Current card render.
+File:Hunter Preview.gif|Current card preview.
+File:Hunter.png|Hunter shooting.
+File:Hunter2.png|Hunter
+File:Hunter body.png|Hunter full body render.
+</gallery>
+
+==Trivia==
+*The shotgun is a long-barreled firearm designed to shoot a straight-walled cartridge known as a shotshell, which discharges numerous small spherical projectiles called shot. Shotguns come in a wide variety of calibers and gauges ranging from 5.5 mm to up to 5 cm. Almost all are breechloading, and can be single barreled, or in Hunter's case, double barreled. Shotguns are far less common in military use than rifles or pistols, but are a lot more common in law enforcement use.
+*The Hunter is likely inspired by [https://brawlstars.fandom.com/wiki/Shelly Shelly] from Brawl Stars, another Supercell game. This is referenced a few times:
+**During the global release of Brawl Stars celebration, the Hunter was reskinned as Shelly in the [[Heist]] [[:Category:Modes|mode]].
+**A Trainer in the [[Training Camp]] is called Trainer Shelly and uses the Hunter in their [[Battle Decks|deck]].
+*The Hunter is one of the first [[:Category:Troop Cards|troop]] [[cards]] to receive a card render, alongside the [[Archers]], [[Knight]], [[Goblins]], [[Bomber]], [[Skeletons]], [[Barbarians]], [[Bats]], [[Royal Recruits]], [[Skeleton Barrel]], [[Rascals]], [[Musketeer]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Flying Machine]], [[Hog Rider]], [[Royal Hogs]], [[Dart Goblin]], [[Zappies]], [[Elixir Golem]], [[Baby Dragon]], [[Skeleton Army]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], [[Prince]], [[Balloon]], [[Giant Skeleton]], [[Goblin Giant]], [[Electro Dragon]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Mega Knight]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], [[Magic Archer]], [[Bandit]], [[Lava Hound]], [[Night Witch]], and [[Fisherman]].
+*The Hunter is 1 of 4 troops that can deal damage to multiple units with one attack without an area damage radius, the others being [[Electro Spirit]], Electro Dragon, and [[Electro Wizard]].
+*The Hunter's attack load shares the same sound effects as the Musketeer's deploy sound.
+*If the Hunter performed his attack right before dying while being cursed by the [[Mother Witch]], it is possible for the Cursed Hog to spawn right inside these bullets, destroying it immediately.
+*The Hunter is the subject of certain cosmetics in the game. More specifically:
+**The Hunter is the subject of 2 [[Emotes]].
+**The Hunter is the subject of a [[Battle Banners|Battle Banner]] item.
+*The Hunter was featured in the winning [[Battle Decks|deck]] of the [https://www.youtube.com/live/h3IOFTfT8Sk?si=wTF1FekCifpSULn- Clash Royale League 2020 Tournament], by a player called Ruben.
+*The initial balance change for Hunter on the [[Version History#Balance Changes (6/8/2024)|6/8/2024 balance changes]] was a 4% hitpoints increase, but it was raised to 5% [https://royaleapi.com/blog/season-62-balance-wip last minute].
+*The Hunter was originally going to have a hook mechanic, similarly to the Fisherman. However, the hook mechanic [https://www.reddit.com/r/ClashRoyale/comments/atmpr5/official_what_weve_been_up_to_this_week_feb_22/?utm_source=share&utm_medium=web2x&context=3 were dropped], which lead to the creation of the Hunter. Ultimately, the Fisherman was added in one of Clash Royale's updates.
+
+==In other languages==
+{{Other languages|fr=Chasseur|de=Jäger|es=Cazador|it=Cacciatore|nl=Jager|no=Jeger|tr=Avcı|jp=ハンター|kr=사냥꾼|ru=Охотник|ar=الصياد|pt=Caçador|cn=猎人|cnt=獵人|fa=شکارچی|id=Pemburu|ms=Pemburu|th=นักล่า|fi=Metsästäjä|vi=Thợ săn}}
+
+{{Navigation|Cards}}
+
+[[fr:Chasseur]]
+[[de:Jäger]]
+[[es:Cazador]]
+[[it:Cacciatore]]
+[[ru:Охотник]]
+[[zh:猎人]]

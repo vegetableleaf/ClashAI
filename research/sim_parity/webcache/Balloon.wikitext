@@ -1,0 +1,260 @@
+{{DISPLAYTITLE: <span style="color: #b300b3;">Balloon</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}{{SubpageNavBox|Hero=Yes}}{{Card Infobox|Cost=5|Rarity=Epic|Type=Troop|Arena=Royal Arena|ReleaseDate=4 January 2016}}
+{{Quote|As pretty as they are, you won't want a parade of THESE balloons showing up on the horizon. Drops powerful bombs and when shot down, crashes dealing area damage.}}
+
+The Balloon is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from the [[Arenas|Royal Arena (Arena 7)]]. It spawns a single-target, [[:Category:Building Cards|building]]-targeting, melee, air [[:Category:Troop Cards|troop]] with high hitpoints and very high damage. When defeated, it drops a bomb which explodes after 3 seconds, dealing moderate damage. It is a hot air balloon with a team-colored envelope and a wooden basket with sacks held together by patches and ropes, and is piloted by a [[Bomber]]. A Balloon card costs 5 [[Elixir]] to deploy.
+
+==Strategies==
+{{Battle Deck with Card|:Category:Battle Decks using the Balloon Card}}
+*The somewhat sturdy Balloon can easily devastate [[:Category:Tower Troop Cards|Crown Towers]] with its extremely high damage, which is further augmented by a tank protecting it and additional support [[cards]].
+**When an opposing Balloon is deployed, the player should destroy it as fast as possible since it has an extremely fast first hit speed and if left alone can destroy any Tower or inflict massive damage.
+**An attack strategy is pairing the [[Lumberjack]] with the Balloon, most commonly called LumberLoon. The Lumberjack tanks for the Balloon and drops a [[Rage]] [[:Category:Spell Cards|spell]], boosting the Balloon and allowing it to get multiple hits on the tower. However, anti-air cards with enough damage output like the [[Minion Horde]], Hunter, and [[Three Musketeers]], or [[:Category:Building Cards|buildings]] like the [[Inferno Tower]] and [[Tesla/Evolution|Evolved Tesla]] will be able to counter this push. If using this strategy, the player should make sure they have other alternatives to back up the Balloon, such as [[Fireball]] or a [[Baby Dragon]]. It can be more beneficial for the player to do this as a counterattack to allow [[Elixir]] to generate so that the player can deploy more support units.
+*[[Minions]], Bats, and the Minion Horde are very effective at taking out Balloons because of their large numbers getting in the way of the Balloon and also having high damage per second. Since the Balloon’s death bomb takes 3 seconds to explode, they will usually escape it and create the opportunity for a counter-push. They also cost as much or less than the Balloon, making it a positive/neutral Elixir trade. However, these are fairly vulnerable to spells and area damage troops like [[Arrows]], Baby Dragon, or Skeleton Dragons.
+*More reliable counters to the Balloon are the [[Wizard]], [[Electro Wizard]], and the [[Musketeer]], as they have a similar damage output but higher health. The Wizard and Electro Wizard can also hit other units paired with the Balloon.
+*[[Archers]] are also a good counter because as a pair they deal similar damage per second to the Musketeer for 1 less Elixir, only allowing its death damage to reach the tower. However, unless placed ahead, the death damage will weaken them significantly.
+*The [[Rocket]] is arguably one of the most powerful counters. Despite being a negative Elixir trade, it can easily stop the Balloon and only allow it to inflict death damage. However, note that a single Rocket is not enough to defeat a Balloon by itself, so pair it with another card if there is something else tanking for the Balloon.
+*One can support the Balloon with a Baby Dragon. The Baby Dragon has moderately high health and deals area damage, meaning it can easily defeat anti-air swarms like Minions, Bats, Archers, or [[Spear Goblins]] while simultaneously tanking damage for the Balloon. In addition, the Balloon reaches the tower faster if the Baby Dragon is deployed behind it, as the Baby Dragon is a fast unit and pushes the slow Balloon toward its target faster. In some cases, this results in the Balloon getting an extra hit on its target before being taken down. However, an Inferno Tower or a tank + Anti-Air combo can counter this push, as the Baby Dragon's damage is not enough to take out anything bulkier than swarms in two shots.
+**The Skeleton Dragons can work in a similar way with the Balloon. Their combined damage is enough to destroy Minions or Archers for the same Elixir cost. Alternatively, the player can choose to attack the stronger Crown Tower with the Balloon while splitting the Skeleton Dragons. The opponent will focus more on defending against the Balloon with the one Skeleton Dragon, leaving the other Skeleton Dragon to sneak by and deal damage to the weaker Crown Tower.
+*Like the [[Giant Skeleton]], it can be used as bait for enemy ranged troops that can target the Balloon since when it is destroyed, it drops a bomb that deals moderate area damage. In particular, the Balloon's bomb can defeat any unit with as much health as Minions, so the player should try to get these units caught up in the blast.
+*One method of defending against a Balloon combo is to start a push in the other lane to force the Balloon user to spend Elixir on defense, leaving the Balloon without support. This is effective as the Balloon is slow and has a relatively low amount of hitpoints per Elixir, allowing the player to make back the Elixir deficit from starting their push. However, the player must not overcommit as even a single hit from a Balloon is deadly.
+*One expensive, but potentially deadly push using the Balloon involves Minions or a Minion Horde. Putting the Balloon in front, and having Minions or Minion Horde behind, the Balloon's speed can be increased dramatically. Be sure to bait out enemy splash cards beforehand.
+*Since most counters to the Balloon are swarms or have low to moderate health, spells are essential to any Balloon push.
+**It is strongly recommended for the Balloon user to use Arrows for a quick and effective counter to Minions and the Minion Horde. They must be aware that they should also preserve their tank to maximize Balloon damage.
+**[[Fireball]] is a good alternative to Arrows. It keeps its effectiveness against Minions, while also allowing the Balloon to defeat sturdier counters, like [[Zappies]] and [[Skeleton Dragons]].
+**[[Zap]] is a strong and versatile card. Its brief stun can reset channeled attacks or abilities such as the [[Inferno Dragon]] and/or Inferno Tower. Specifically, stunning the Inferno cards right as their attack reaches the four second mark will maximize the effectiveness of the reset timing, as they will be prevented from dealing their highest amount of damage per second. If the Balloon and the tank have both reached the Crown Tower and the tank has low health, consider using Zap on the Tower so the Balloon becomes the primary tank.
+**The [[Giant Snowball]] can defeat [[Bats]] and Spear Goblins quickly, while also knocking back and slowing down the Crown Tower along with any other troops. These effects can allow the Balloon to survive long enough to land an extra shot.
+**[[Tornado]] is quite useful for dragging away sturdy troops out of range of the Balloon, saving it from those troops. Depending on how those troops where deployed, it should be deployed either to pull them to the other lane or pull them towards the player's side. Like Giant Snowball, it can also finish off Bats and Spear Goblins if necessary.
+**[[Rage]] is a powerful spell in any push. It will dramatically increase the movement speed and hit speed of all troops under its effects. If the player has managed to build up a strong Balloon push, adding a Rage spell will make it almost unstoppable.
+**[[Lightning]] should be reserved for the sole purpose of destroying Inferno Towers and medium hitpoint ranged units. The player should aim to clip a building, troop, and the Crown Tower with Lightning to maximize value. Of course, they may target just troops if that is the main threat. Since Lightning is so expensive, it is rarely used until double Elixir.
+**[[Void]] can be used to eliminate isolated damage dealers, such as the Wizard or [[Tesla]].
+**A Balloon can also be paired with the [[Freeze]] to surprise the opponent and deal massive damage. Against this combo, the defending player should make sure to space out their troops from their tower to minimize the amount of value their Freeze spell will get, and allow some troops to continue attacking the Balloon. Freeze is also a good counter against the Balloon if timed correctly, but is less reliable compared to a bait like Tesla.
+**Occasionally, a [[Clone]] spell can be used with the Balloon. Similarly to Freeze, it acts as a surprise to the opponent, dealing massive damage. Clone also pushes the Balloon closer to the [[Princess Towers|Crown Tower]], possibly attacking it earlier, as well as bypassing certain defensive building setups.
+*A Balloon paired with a [[Lava Hound]] can be very powerful. This combo is often called LavaLoon. The Lava Hound will absorb the upcoming hits while the Balloon deals damage to the Crown Tower. Once the Lava Hound spawns the Lava Pups, the Balloon becomes the primary tank, allowing the Pups to deal massive damage. However, this strategy is expensive at 12 Elixir, so it must be started from the back of the arena, and since both troops only attack buildings, swarms can damage down the push uncontested without a proper spell in rotation. The Inferno Tower will also burn up both troops. Air-targeting area damage combined with a [[Tornado]] is also extremely effective defeating the LavaLoon combination, so prepare your stronger spells such as Lightning or Fireball to use against them.
+**When they have both combo tools prepped up on their side, it is important to abuse the Lava Hound's long range by playing a distraction such as a [[Tombstone]] on the bridge. The Balloon goes in front of the Lava Hound, and the Crown Tower will target the Balloon first, making it easier for troops such as the [[Mega Minion]] to plow the Balloon and some more to the Lava Hound.
+*A [[Skeleton Barrel]] can also be paired with the Balloon, in a lesser known strategy known as the SkellyLoon. The fragile Skeleton Barrel should be placed behind the Balloon, giving it a turbo boost while the Balloon tanks for the spawned skeletons when the Barrel reaches the Tower. This combo could potentially destroy a Crown Tower if left unattended.
+**To counter this push, the opponent should draw the Balloon and the Skeleton Barrel away with a defensive building (eg. [[Tesla]]) and use their spells on the [[Skeletons]] when they spawn over the defensive building, allowing for a clean defense.
+**A Rocket can counter this push for a positive Elixir trade of 2. However, the Rocket's slow travel speed, coupled with the fast speed of this push, could potentially mean that it would miss either or both airborne units, so it should be used with caution.
+***Lightning is a safer counter to this push. The Lightning would severely cripple the Balloon and pop the Skeleton Barrel, allowing at most the Balloon's death damage to hit the Tower. Fireball could be a good soft counter too.
+*If a building is placed at least 3 tiles away from the river, a Balloon placed at the leftmost or rightmost end of the Arena will be able to bypass that building. On the side where it is only 2 tiles from the Crown Tower, the player will need to place the Balloon at the farthest edge.
+*When placing the Balloon on the opponent's side, it is best to be placed on the third tile from the river. This is the most recommended placement because it will help it arrive to the second Crown Tower quickly enough, while also not taking as much damage from the King's Tower. However, if the player wishes for their Balloon to connect as quickly as possible with no regard to its hitpoints, they can switch its placement to the fourth tile.
+*The [[Giant]] and Balloon combo costs a heavy 10 Elixir, but is hard to defend due to their health pools, and can catch the opponent off-guard, especially if they tried starting a push in the other lane and are low on Elixir.
+**It is most effective to start this push in the corners of the bridge to let the Balloon ignore some defenses.
+**Like the LavaLoon push, both units are slow and only attack buildings, so similar countermeasures will also work here.
+*A deadly combination is the [[Prince]] and Balloon combo. Despite being expensive at 10 Elixir, the Prince can one-shot frail grounded anti-air troops like the Musketeer while the Balloon decimates the tower. While this may seem weak to air units like the Minion Horde, the Prince will then be more likely to land a hit. This can be defeated with a ground swarm and an air swarm, such as [[Skeleton Army]], Minion Horde, and Bats. It can also be defeated with a well timed Rocket, although this has to be done immediately since the Prince will eventually charge and separate from the Balloon, making it impossible to hit both. This can be remedied by placing a unit to distract the Prince, like Skeletons, so that the units stay clumped together.
+*The [[Ice Wizard]], Wizard, and [[Electro Wizard]] each deal enough damage or impede the Balloon's progress enough so that it does not reach the tower.
+*Bats are a very effective counter to Balloon, but if the defending player does not want any bomb chip damage, they can use a knockback or stun spell such as Giant Snowball or Zap, or cheap units such as Spear Goblins, [[Ice Spirit]] or [[Fire Spirit]]. However, beware of overcommitting.
+*The Mega Minion is a very effective counter to the Balloon for a positive Elixir trade, as it can survive a Fireball 3 levels higher and will defeat the Balloon before it reaches the tower. It can then be used in a counterpush.
+*The [[Hunter]]'s high close-range damage can easily destroy a Balloon in two shots. Even though he will suffer the Balloon's death damage, it is still a 1 Elixir positive trade.
+*The Baby Dragon does not do enough damage to stop a lone Balloon from reaching the Crown Tower, so it is not recommended to use it unless there are other cards supporting the Balloon, like Minions.
+*Most buildings can deny the Balloon if placed in the middle. Tesla is a great counter as it is a positive trade and still has a bit of hitpoints left. Even if the building can't attack air, it can stall while the Tower slowly chips at the Balloon.
+*When using Balloon, pay attention to your opponent's card rotation. Since only air-targeting cards can affect the Balloon, most players try to reserve their air-targeting card for the Balloon. Try to bait out that card as much as possible.
+*In a pinch, a Balloon can be used to counter an [[X-Bow]] or a [[Mortar]] placed at the bridge. Its high immediate damage allows it to two-shot both buildings, which only takes a few seconds, buying you time to support the Balloon, and its death bomb will also deal notable damage to any extra defenders. However, note that the Balloon is unable to take damage from those buildings, so place down a mini tank like an [[Ice Golem]] in range of those buildings to prevent all damage to your [[Princess Towers|Crown Tower]].
+**The player should not attempt to execute a LavaLoon push against these X-Bow and Mortar setups, as the Balloon's range is shorter than the Lava Hound's, meaning that it would end up in front of the Lava Hound, leaving it vulnerable. In this case, try to destroy those buildings first before deploying your Balloon.
+*In rare situations, it can snipe a [[Barbarian Hut]] placed in the center of the opponent's side. It will easily destroy the Barbarian Hut for a +1 Elixir trade, without it being distracted by the spawned Barbarians or vice versa. However, this should only be done if the player lacks better counters.
+*Troops or buildings cannot be placed on top of the Balloon's death bomb. Players who have a means of distracting the Balloon, i.e. a building, should take this into consideration when deciding where to pull the Balloon, as this may otherwise make placing other defending troops awkward.
+*The [[Ram Rider]] and Zappies can counter Balloon fairly well since their stalling makes it harder to reach the Balloon's goal. The former also survives a Fireball, Lightning, and a Rocket, which are common strong spells used to support Balloons.
+
+<center>
+
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Balloon Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||2 sec||0.2 sec||Medium (60)||1 sec||Melee: Short (0.1)||Buildings||x1||Air||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+
+{{StatisticsSubheader|Bomb Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Death Damage Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+|-
+|3||3 sec||Air & Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1679 }}
+{{#vardefine: dmg_11 | 640 }}
+{{#vardefine: atk_speed | 2.0 }}
+{{#vardefine: death_11 |  240}}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}} 
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Death Damage<br />{{Icon|I=Death Damage}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(7-11)) round 0 }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(8-11)) round 0 }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:death_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 155,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|20 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 460,000 Damage to enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 770,000 damage to enemy Troops or buildings 
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" |Tower Tapper <br> [[File:Tower Tapper.png|50x50px]]
+|1
+|Hit enemy [[:Category:Crown Towers|Crown Towers]] a total of 350 times
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}} 
+|-
+|2
+|Hit enemy Crown Towers a total of 1,000 times
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Crown Towers a total of 1,750 times
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+| rowspan="3" |Siege Weapon <br> [[File:Siege Weapon.png|50x50px]]
+|1
+|Hit towers at least 6 times within a single [[Basics of Battle|battle]] a total of 80 times
+|6,000 {{Icon|I=Gold}}<br>175 {{Icon|I=XP}}
+|-
+|2
+|Hit towers at least 6 times within a single battle a total of 240 times
+|8,000 {{Icon|I=Gold}}<br>175 {{Icon|I=XP}} 
+|-
+|3
+|Hit towers at least 6 times within a single battle a total of 480 times
+|10,000 {{Icon|I=Gold}}<br>175 {{Icon|I=XP}} 
+|}
+</div>
+</center>
+
+==History ==
+2016  
+*The Balloon [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016.
+*On 2/2/2016, the [[Version History#February 2016 Update (2/2/2016)|February 2016 Update]], added the Death Damage statistic to the Balloon's card info screen.
+*On 29/2/2016, the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]], decreased the Balloon's sight range to 7.7 tiles (from 8 tiles).
+*On 23/3/2016, a [[Version History#Balance Changes (23/3/2016)|Balance Update]], increased the Balloon's hitpoints by 5%.
+*On 3/5/2016, the [[Version History#May%202016%20Update%20(3/5/2016)|May 2016 Update]], increased the size of the Balloon's hitpoint bar to prevent it from being recognized as a low-health troop when encountered. The update also fixed the “range bug”, which decreased the Balloon's range to 0.1 tiles (from 0.4 tiles), but its effective range was unchanged.
+*On 15/12/2016, the [[Version History#December 2016 Update (15/12/2016)|December 2016 Update]], increased the Balloon's death damage by 105% and its death damage explosion radius to 3 tiles (from 2 tiles).
+2017
+*On 19/4/2017, a [[Version History#Balance Changes (19/4/2017)|Balance Update]], increased the Balloon's death damage time to 3 seconds (from 1 second).
+2018
+*On 6/8/2018, a [[Version History#Balance Changes (6/8/2018)|Balance Update]], allowed the Balloon to be knocked back.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Epic}} cards start at Level 6 and end at Level 13 (from 1 to 8).
+2019
+*On 28/1/2019, the [[Version History#January%202019%20Update%20(28/1/2019)|January 2019 Update]], moved the [[Arenas|Arena]] to unlock the Balloon from Bone Pit to Builder’s Workshop.
+*On 15/4/2019, the [[Version History#April%202019%20Update%20(15/4/2019)|April 2019 Update]], added an extra [[Star Points|Star Level]].
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Balloon's card info screen.
+2021
+*On 30/3/2021, the [[Version History#2021%20Quarter%201%20Update%20(30/3/2021)|2021 Quarter 1 Update]], decreased the Balloon's death damage by 27%.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022 
+*On 3/2/2022, a [[Version History#Balance%20Changes%20(3/2/2022)|Balance Update]], decreased the Balloon's damage by 33%, but also decreased its attack time interval to 2 seconds (from 3 seconds).
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Balloon from Builder's Workshop to Royal Arena.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14). It also added the Siege Weapon [[Card Mastery]] task for the Balloon.
+2025
+*On 31/3/2024, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Balloon's hitpoints by 0.05%.
+2026
+
+* On 2/2/2026, a Balance Update, increased the Balloon's damage by 0.02%.
+
+==Gallery==
+<gallery>
+File:Balloon card render.png|Current card render.
+File:Chinese Balloon card render.png|Balloon’s card render in the Chinese version of the game.
+File:Ballon Preview.gif|Current card preview
+File:Balloon red.png|Balloon 1
+File:Balloon 1.png|Balloon 2
+File:Balloon 2.png|Balloon 3
+</gallery>
+
+==Trivia==
+*The first use of [https://en.wikipedia.org/wiki/History_of_military_ballooning hot air balloons in warfare] was in 1849, where the Austrian imperial forces besieging Venice attempted to float some 200 paper hot air balloons each carrying an 11–14 kg bomb that was to be dropped from the balloon with a time fuse over the besieged city. Before that, Balloons were used in wars exclusive for reconnaissance purposes, the first instance being in the Battle of Fleurus in 1794, used by the French  against the Austrians. 
+**In the Italian, Finnish, and Vietnamese language settings of the game, the Balloon's name translates to "Hot Air Balloon". In the Spanish, Japanese, Korean, and Chinese language settings of the game, the Balloon's name translates to "Bombastic Balloon", "Air Balloon", "Skull Airship", and "Balloon Soldier" respectively.
+*The Balloon is 1 of 19 [[:Category:Troop Cards|troops]] which first existed in Clash of Clans, the others being [[Minions]], [[Archers]], [[Goblins]], [[Skeletons]], [[Barbarians]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], [[Golem]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Phoenix]], [[Lava Hound]], and the [[Archer Queen]].
+**The Balloon resemble the Level 1-2 Balloon from Clash of Clans. Its [[Star Points|Star Level 3 skin]] resembles the Level 3-4 Balloon in Clash of Clans, only without its crown.
+**Its [[Cards|card]] image and render are identical to the old render of the Balloon in Clash of Clans, except for the re-skinned envelope and color change.
+**Unlike its counterpart in Clash of Clans, the Balloon in Clash Royale does not deal area damage.
+**In Clash of Clans, the Balloon's death damage will only affect ground troops and buildings, while in Clash Royale, the Balloon's Clash Royale will affect air troops. Visually, the Balloon in Clash of Clans will crash down, dealing damage upon impact when defeated, while in Clash Royale, it will disappear completely, only dropping a bomb which will deal damage.
+**According to Clash of Clans, Balloons are "promoted" Wall Breakers. The Skeleton riding the Balloon is visually identical to a Level 1 [https://clashofclans.fandom.com/wiki/Wall_Breaker Wall Breaker] in Clash of Clans.
+***It is somewhat ironic to note that Balloon pilots are promoted Wall Breakers, as the latter are kamikaze units and would not be actually "promoted" since they will perish instantly upon attacking.
+*The Balloon is 1 of 15 cards associated with Skeletons, with the others being [[Bomber]], [[Skeleton Dragons]], [[Skeleton Barrel]], [[Tombstone]], [[Bomb Tower]], [[Guards]], [[Skeleton Army]], Witch, [[Giant Skeleton]], Wall Breakers, [[Super Witch]], [[Graveyard]], [[Skeleton King]], and of course, Skeletons.
+**The Balloon, along with Skeleton Dragons and Skeleton Barrel are the only Skeleton-cards to fly.
+**The bombs in the Balloon and Bomber's card renders are identical.
+*The Balloon has the shortest range of all troops, with a range of 0.1 tiles.
+*The Balloon is one of the first troop cards to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the Minions, Archers, [[Knight]], [[Spear Goblins]], Goblins, Bomber, Skeletons, Barbarians, [[Minion Horde]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Musketeer]], Giant, Valkyrie, Wizard, Hog Rider, [[Baby Dragon]], Skeleton Army, Witch, P.E.K.K.A, and [[Prince]].
+*The Balloon is one of the first troop cards to receive a card render, alongside the Archers, Knight, Goblins, Bomber, Skeletons, Barbarians, [[Bats]], [[Royal Recruits]], Skeleton Barrel, [[Rascals]], Musketeer, Giant, Valkyrie, Wizard, [[Flying Machine]], Hog Rider, [[Royal Hogs]], [[Dart Goblin]], [[Zappies]], [[Elixir Golem]], Baby Dragon, Skeleton Army, Witch, P.E.K.K.A, Prince, Giant Skeleton, [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], Wall Breakers, Bowler, Cannon Cart, [[Mega Knight]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], [[Magic Archer]], [[Bandit]], Lava Hound, [[Night Witch]], and [[Fisherman]].
+*The Balloon has been featured in multiple [[Tournament/Special Event Challenges|special game modes]] outside of the card. More specifically:
+**The Balloon is 1 of 23 troops that has been featured in the [[Troop Rush]] game [[:Category:Modes|mode]], the others being Skeletons, Skeleton Dragons, [[Fire Spirit]], Bats, [[Elite Barbarians]], [[Firecracker]], Rascal Girls, Royal Hogs, [[Heal Spirit]], Elixir Golem, Guards, Prince, Golem, Wall Breakers, Ram Rider, [[Sparky]], Phoenix, Royal Ghost, Bandit, [[Lumberjack]], [[Santa Hog Rider]], and the [[Monk]].
+**The Balloon is 1 of 2 troops that has been featured with a [[Buff#Death Spawn|Death Spawn]] [[buff]], the other being Giant Skeleton.
+*Its description is based on the Clash of Clans [https://www.youtube.com/watch?v=4Hm5OktGsQ8 Balloon Parade commercial].
+*The Balloon's design strongly resembles that of the [https://cnc.fandom.com/wiki/Kirov_airship_(Red_Alert_iPhone) Kirov Airship] from the [https://en.wikipedia.org/wiki/Command_%26_Conquer Command and Conquer] games. They are both airships that deal massive damage to things right under them, both are very slow and can only target ground units.
+*The Balloon's basket looks similar to the hull of the [[Rocket]].
+*In Touchdown, if a Balloon is still on the [[Arenas|Arena]] after a touchdown has been scored (unless it scored it itself), will have its dropped bomb cleared.
+*Unlike other troops, the Balloon does not disintegrate into [[Elixir]] when defeated.
+*The Balloon is the subject of 2 [[Emotes]].
+*The Balloon was featured in the winning deck of the [https://www.youtube.com/live/pRfrjMiHbQA?si=P2kVLJUlXH1SZoHm Clash Royale League 2021 Tournament], by a player called Mugi.
+*Before the Balloon's card release, the Balloon's cost was increased to 5 Elixir (from 4 Elixir), its hitpoints were increased by 31%, and its deploy time was decreased to 1 second (from 3 seconds).
+
+{{Navigation|Card}}
+
+[[fr:Ballon]]
+[[de:Ballon]]
+[[es:Globo bombástico]]
+[[it:Mongolfiera]]
+[[ja:エアバルーン]]
+[[ko:해골 비행선]]
+[[ru:Шар]]
+[[zh:气球兵]]
+[[pl:Balon]]

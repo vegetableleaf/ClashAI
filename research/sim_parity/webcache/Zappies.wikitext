@@ -1,0 +1,206 @@
+{{DISPLAYTITLE: <span style="color: #ffa31a;">Zappies</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink|O.T.T.O's Outpost/Zappy}}
+
+{{Card Infobox|Cost=4|Rarity=Rare|Type=Troop|Arena=Hog Mountain|ReleaseDate=12 December 2017}}
+{{Quote|Spawns a pack of miniature Zap machines. Who controls them...? Only the Master Builder knows.}}
+
+The Zappies is a {{Rarity|Rare}} [[Cards|card]] that is unlocked from the [[Arenas|Hog Mountain (Arena 10)]]. It spawns three single-target, air-targeting, medium-ranged, ground [[:Category:Troop Cards|troops]] with moderate hitpoints and low damage. Their deployment is in a triangle formation. Each of their attacks stun the target for 0.5 seconds. They appear as small machines having an upwards coil on a wooden chassis and wheels, with a spiked steel ram at the front and team-colored flags at the rear. A Zappies card costs 4 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Zappies Common Modifier.png|45x45px]] Common: Zippy Zappies===
+{{Quote|+100% hit speed}}
+Doubles Zappies attack speed.
+
+===[[File:Zappies Rare Modifier.png|45x45px]] Rare: Zap Zep Zip Zop & Zup===
+{{Quote|+2 Zappies}}
+Adds in 2 Zappies when deployed.
+
+===[[File:Zappies Epic Modifier.png|45x45px]] Epic: The Sparky Sparkles!===
+{{Quote|Spawn Mini Sparkies}}
+Zappies turn into miniature [[Sparky|Sparkies]].
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Zappies Card}}
+*Since Zappies can stun, they are effective counters against a lone [[Fisherman]], [[Ram Rider]], [[Mighty Miner]], Sparky, [[Prince]], [[Dark Prince]], [[Battle Ram]], [[Inferno Tower]], and [[Inferno Dragon]].
+*Zappies can be very effective against low hit speed [[:Category:Troop Cards|troops]] such as the [[Hunter]], [[Baby Dragon]], [[Skeleton Dragons]], and [[Bowler]] because they can cripple them with constant stuns, making them almost unable to attack. However, as most of such troops have attacks that can hit multiple troops, do not rely solely on the Zappies to defeat them.
+*Since Zappies have low hitpoints, effective counters are [[:Category:Spell Cards|spells]] such as the [[Fireball]] or [[Poison]]. Both spells can destroy Zappies for a neutral [[Elixir]] trade.
+**Split two Zappies on the lane with the healthier [[:Category:Tower Troop Cards|Crown Tower]] to minimize the spell value.
+**Consider using other spell vulnerable troops with the Zappies such as the [[Royal Hogs]] to try and bait out the opponent's spell so that they won't be able to take out the Zappies on offense. Alternatively, in matchups where Zappies would not have a great use, they can be used to bait out these spells so that the other spell vulnerable troops can attack unharmed.
+*They can be decent support behind a tank since they can cripple [[:Category:Building Cards|buildings]], especially the [[Inferno Tower]], and with their stuns, they will leave the Crown Tower barely being able to shoot.
+*Zappies crossing the bridge can be countered by the [[Barbarian Barrel]] and [[Royal Delivery]] fairly well even when supported by a tank, so try to either have support [[cards]] to quickly eliminate the follow-up defenders, or simply not push when these counters are in cycle.
+*Zappies can be good counters to small swarms like [[Skeletons]], [[Archers]], [[Minions]], [[Spear Goblins]], [[Bats]], [[Guards]], and [[Goblins]], and with the help of a Crown Tower, they can also counter larger swarms like the [[Skeleton Army]], [[Minion Horde]], and [[Goblin Gang]]. However, defensively, these swarms can also be used to counter the Zappies, by surrounding them with the said swarm.
+*Zappies are most effective as defensive troops against single targeting units, especially slower ones as all three will focus their attacks onto them, making their stun effect much more effective at slowing them down. Placing them beside the Tower will make them line up vertically and efficiently stagger the timing of their stuns, leaving the enemy troop nearly immobile.
+*Zappies can easily be stumped by proper ranged support troops like the [[Executioner]], [[Wizard]], [[Firecracker]], [[Bomber]], [[Witch]], or spell combos, so try and bait these out beforehand.
+*The Zappies have an medium first attack, so placing them down on top of a unit to distract them is generally a bad idea. Instead, place them behind the Crown Tower so they have more time to charge their shots and stun approaching units.
+*Zappies counter [[Balloon]] fairly well since their stalling makes it harder to reach the Balloon's goal. They can also survive many spells like [[Arrows]], [[Zap]], and [[Giant Snowball]] commonly used with the Balloon, necessitating Fireball in order to defeat them.
+*Zappies can synergize well with [[Graveyard]]. They can bait out the Graveyard's hardest counter, Poison. Additionally, even just a single Zappy supporting a Graveyard can be deadly, as it will survive to hit and stun the Tower once, making it retarget onto the spawned Skeletons, letting the Zappy stay alive and continue to slow down the tower's shots. The stun from the singular Zappy will also allow for more Skeletons to spawn before the existing ones are killed, further increasing the damage that the Graveyard will deal.
+*When approached from a distance, [[Sparky]] will one shot the trio of Zappies before they can reset her attack due to her range. To properly counter the Sparky, wait for it to cross the bridge and surround her so that one or two Zappies will survive and leave her permanently stunned until death. This is also effective against area damage troops that lack a 360° area damage effect.
+*The [[Mega Knight]] is extremely effective against the Zappies. While his Spawn Damage is not enough to defeat them immediately, it will lower it to a point where one regular attack from him can finish them off. In addition, Zappies are also usually paired with other troops, so the Mega Knight gains additional value from his Spawn Damage by hitting more troops.
+*If a Crown Tower is at a health range where a [[Lightning]] could finish it off, Zappies can be placed in the expected area to block the spell, as they will likely have more hitpoints than the Crown Tower. This can be an unexpected way to save your Crown Tower from being destroyed and preventing a loss, especially in a Sudden Death match.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Stun Duration<br />{{Icon|I=Freeze}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||2.2 sec||0.8 sec||0.5 sec||Medium (60)||1 sec||4.5|| Air & Ground||x3||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 529 }}
+{{#vardefine: dmg_11 | 117 }}
+{{#vardefine: atk_speed | 2.2 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="20%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="30%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 140,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|100 {{BASEPAGENAME}} cards<br>50 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 425,000 Damage to enemy Troops or buildings
+|4,000 {{Icon|I=Gold}}<br>50 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 710,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>50 {{Icon|I=XP}}
+|-
+| rowspan="3" |Shocking <br> [[File:Speed Limit.png|50x50px]]
+|1
+|Zap a total of 1,400 enemy Troops
+|6,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Zap a total of 4,000 enemy Troops
+|100 {{Icon|I=Rare Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Zap a total of 7,000 enemy Troops
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2017
+*The Zappies [[Cards|card]] was added to the game on 12/12/2017, in the [[Version History#Electrifying Update (12/12/2017)|Electrifying Update]] {{Balance|Add}}.
+2018 
+*On 24/1/2018, a [[Version History#Balance Changes (24/1/2018)|Balance Update]], allowed the Zappies to target air [[:Category:Troop Cards|troops]] {{Balance|Neutral}}.
+*On 3/9/2018, a [[Version History#Balance Changes (3/9/2018)|Balance Update]], increasing the Zappies' first attack time interval to 1.4 seconds (from 0.6 second) {{Balance|Nerf}}, but changed their attack so that it cannot be reset by stunning cards {{Balance|Neutral}}.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Rare}} cards start at Level 3 and end at Level 13 (from 1 to 11) {{Balance|Neutral}}.
+2019
+*On 15/4/2019, the [[Version History#April%202019%20Update%20(15/4/2019)|April 2019 Update]], added an extra [[Star Points|Star Level]] {{Balance|Add}}.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]] added a card render to the Zappies' card info screen {{Balance|Add}}.
+2020 
+*On 4/2/2020, a [[Version History#Balance Changes (4/2/2020)|Balance Update]], increased the Zappies’ damage by 20% {{Balance|Buff}}, but also increased their attack time interval to 2 seconds (from 1.6 seconds) {{Balance|Nerf}}, decreased their first attack time interval to 1 second (from 1.4 seconds) {{Balance|Buff}}, and increased the deploy stagger for each Zappy to 0.15 seconds (from 0.1 seconds) {{Balance|Nerf}}.
+*On 2/6/2020, a [[Version History#Balance Changes (2/6/2020)|Balance Update]], decreased the deploy stagger for each Zappy to 0.1 seconds (from 0.15 seconds) {{Balance|Buff}}.
+*On 7/7/2020, a [[Version History#Balance Changes (7/7/2020)|Balance Update]], increased the Zappies' damage by 14% {{Balance|Buff}}, but increased their attack time interval to 2.1 seconds (from 2 seconds) {{Balance|Nerf}}, and increased their first attack time interval to 1.1 seconds (from 1 second) {{Balance|Nerf}}.
+*On 9/9/2020, a [[Version History#Balance Changes (9/9/2020)|Balance Update]], decreased the Zappies' first attack time interval to 0.9 seconds (from 1.1 seconds) {{Balance|Buff}}.
+2021
+*On 30/3/2021, the [[Version History#2021%20Quarter%201%20Update%20(30/3/2021)|2021 Quarter 1 Update]], increased the Zappies' first attack time interval to 1.1 seconds (from 0.9 seconds) {{Balance|Nerf}}.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the level cap of all cards to 14 (from 13) {{Balance|Buff}}.
+*On 1/11/2021, an [[Version History#Optional%20Update%20(1/11/2021)|Optional Update]], made it so that the [[Mega Knight]] cannot be forever stunned by Zappies {{Balance|Neutral}}.
+2022
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the [[Arenas|Arena]] to unlock the Zappies from Electro Valley to Hog Mountain {{Balance|Buff}}.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14) {{Balance|Buff}}.
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Zappies' hitpoints by 0.18% and increased their damage by 0.86% {{Balance|Buff}}.
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] decreased the Zappies' first attack time interval to 0.8 seconds (from 1.1 seconds) {{Balance|Buff}}.
+2026
+
+* On 4/8/2026, a Balance Update, increased the Zappies' hit speed to 2.2 seconds (from 2.1 seconds)
+
+==Gallery==
+<gallery>
+File:Zappies card render.png|Current card render.
+File:Zappies Preview.gif|Current card preview
+File:Zappies 1.png|Zappies 1
+File:Zappies 2.png|Zappies 2
+File:Zappies 4.png|Zappies 3
+File:Zappies 5.png|Zappies 4
+File:Zappies 6.png|Zappies 5
+File:Zappies 3.png|Three Zappies together.
+</gallery>
+
+==Trivia==  
+*Electricity was first detected through electric fish from as far back as 2750 BCE where Ancient Egyptian texts described them as the "protectors" of all other fish. At around 600 BCE, Thales of Miletus made a series of observations on static electricity, from which he believed that friction rendered amber magnetic, in contrast to minerals such as magnetite, which needed no rubbing. Thales was incorrect in believing the attraction was due to a magnetic effect, but later science would prove a link between magnetism and electricity. Electricity would remain little more than an intellectual curiosity for millennia until 1600, when the English scientist William Gilbert wrote ''De Magnete'', in which he made a careful study of electricity and magnetism, distinguishing the lodestone effect from static electricity produced by rubbing amber.
+**The Zappies are 1 of 11 [[cards]] associated with electricity, with the others being [[Electro Spirit]], [[Zap]], [[Tesla]], [[Electro Dragon]], [[Electro Giant]], [[Lightning]], [[Electro Wizard]], [[Sparky]], [[Wizard Trio]], and the [[Goblinstein]].
+***In the French and Portuguese language settings of the game, the Zappies' name translates to "Electrocutioners". In the Spanish, Turkish, Korean, Russian, Chinese, Persian, Indonesian, Malaysian, and Vietnamese language settings of the game, the Zappies' name translates to "Shockers", "Shock Union", "Electric Shockers", "Mini Generators", "Electric Car Squad", "Sparkers", "Electrocutters", "Zap-Zaps", and "Lightning Shock Robots" respectively.
+*The Zappies are 1 of 17 [[:Category:Troop Cards|troops]] that inspired a troop in Clash of Clans, the others being [[Spear Goblins]], [[Bomber]], [[Bats]], [[Skeleton Barrel]], [[Minion Horde]], [[Firecracker]], [[Battle Ram]], [[Ice Golem]], [[Baby Dragon]], [[Giant Skeleton]], [[Ram Rider]], [[Inferno Dragon]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], and [[Night Witch]].
+**It is the only troop from Clash Royale that is only available as a defensive troop in Clash of Clans.
+**The Zappies' description implies its creator is the [https://clashofclans.fandom.com/wiki/Master_Builder Master Builder], a character from Clash of Clans.
+*The Zappies are one of the first troop cards to receive a card render, alongside the [[Archers]], [[Knight]], [[Goblins]], Bomber, [[Skeletons]], [[Barbarians]], Bats, [[Royal Recruits]], Skeleton Barrel, [[Rascals]], [[Musketeer]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Flying Machine]], [[Hog Rider]], [[Royal Hogs]], [[Dart Goblin]], [[Elixir Golem]], Baby Dragon, [[Skeleton Army]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], [[Prince]], [[Balloon]], Giant Skeleton, [[Goblin Giant]], [[Hunter]], Electro Dragon, [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Mega Knight]], Ram Rider, Miner, Royal Ghost, Ice Wizard, [[Magic Archer]], [[Bandit]], [[Lava Hound]], Night Witch, and [[Fisherman]].
+*The Zappies are 1 of 14 troops that has been featured with a [[Buff#Rage|Rage]] [[buff]], the others being Electro Spirit, Giant, [[Guards]], Giant Skeleton, Goblin Giant, Electro Dragon, Wall Breakers, Electro Giant, Mega Knight, Ram Rider, Electro Wizard, Sparky, and Royal Ghost.
+*The Zappies are 1 of 2 non-{{Rarity|Legendary}} or {{Rarity|Champion}} troops to fall from the sky when deployed, the other being the [[Rune Giant]].
+**[[Clone|Cloned]] Zappies do not fall from the sky when deployed.
+
+{{Navigation|Cards}}
+
+[[fr:Électrocuteurs]]
+[[de:Zappys]]
+[[es:Electrocutadores]]
+[[it:Scaricuccioli]]
+[[ru:Мини-генераторы]]
+[[zh:电击车小队]]

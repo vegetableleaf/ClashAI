@@ -1,0 +1,199 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Royal Ghost</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}{{Card Infobox|Cost=3|Rarity=Legendary|Type=Troop|Arena=Spooky Town|ReleaseDate=4 January 2018}}<br>
+{{SubpageNavBox|Evolution=yes|MergeTactics=yes}}{{Quote|He drifts invisibly through the Arena until he's startled by an enemy... then he attacks! Then he's invisible again! Zzzz.}}
+
+The Royal Ghost is a {{Rarity|Legendary}} [[Cards|card]] that is unlocked from the [[Arenas|Spooky Town (Arena 12)]]. It spawns a fast, area-damage, ground-targeting, melee, ground [[:Category:Troop Cards|troop]] with high hitpoints and high damage. Upon deployment, he will spawn invisible, and will only turn visible once he attacks. If he is in his invisible state, he will not be targeted by opposing units, but can still be hit by area damage or [[:Category:Spell Cards|spells]]. When he is not fighting any unit for 1.8 seconds, he will become invisible again. The Royal Ghost hovers, meaning he is targeted as a ground unit, but travels similar to air units. The Royal Ghost resembles an undead [[King's Tower|King]] who has pale skin, puffy eyes, white eyebrows, mustache and beard, wears a crown, dark gauntlets and chain mail, a team-colored robe and shoes, and a belt, and wields a light blue glowing sword. A Royal Ghost card costs 3 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Royal Ghost Card}}
+*The Royal Ghost will always attack first thanks to his invisibility mechanic. However, [[:Category:Spell Cards|spells]] and area damage attacks can still affect the Royal Ghost. An [[Electro Dragon]] or [[Electro Spirit]]'s attack can also chain onto him. In addition, any projectiles that have already been fired to target him will deal damage to him. Similarly, he will take the bullets of the [[Hunter]], even if the Hunter targets a different troop behind the Royal Ghost.
+*Due to his invisibility, the Royal Ghost is ineffective at tanking since the [[:Category:Crown Towers|Crown Tower]] will attack the [[:Category:Troop Cards|troop]] behind him. This can be an advantage, though, since he will be more effective to do surprise attacks, and you can deploy other [[cards]] after he's visible.
+**Note that the Royal Ghost will only appear invisible to the troops and [[:Category:Building Cards|buildings]] that are on the field, and not to the players themselves. Keep this in mind when preparing counters to him.
+*The Royal Ghost is a powerful offensive troop since his speed allows him to reach targets quickly without taking unnecessary damage. The ability to pick off ranged support troops like this is incredibly disruptive, sometimes forcing the opposing player to use a card that they might not have wanted to.
+**Even if the mini tank is placed behind the Royal Ghost, the mini tank will still tank for the Royal Ghost unless the opponent distracts the Royal Ghost. This makes the Royal Ghost great for quick pushes at the bridge, alongside mini tanks like an [[Ice Golem]]. However, it is usually better to place the mini tank in front of the Royal Ghost, as the Royal Ghosts speed and mass will push the mini tank closer to its target.
+*The Royal Ghost is an effective way of taking out ranged support troops placed close to the river thanks to his aforementioned invisibility and his hover ability. His damage is enough to OHKO units like the [[Princess]], [[Dart Goblin]], [[Goblins]], and [[Spear Goblins]], 2HKO units like the [[Archers]], [[Bomber]], [[Wall Breakers]], and [[Firecracker]], and 3HKO units like the [[Magic Archer]], [[Ice Wizard]], [[Electro Wizard]], [[Musketeer]], and [[Wizard]]. This can be a powerful alternative to using a spell like [[Fireball]] or [[Poison]] allowing the player to instead save it for another opposing troop or for their next offense as he's cheaper.
+**On defense, he can be placed earlier against ranged troops. His invisibility allows him to always get the first strike against them. This saves more hitpoints on him that it would for other melee defenders, setting up for a better counterpush.
+**This can also be useful against the charges of the Mega Knight, Bandit, and Fisherman. The Royal Ghost's invisibility allows him to engage these troops without taking the charge directly. Because of this, he can counter these troops on his own, or stall them enough to gain more [[Elixir]] to counter them more properly.
+*The Royal Ghost's area damage is large enough to effectively take out small swarms like the [[Goblin Gang]], but he will rarely be able to hit other troops if the unit he is attacking is large, like a [[Giant]] or [[Golem]]. Despite this, the defending player should take note of this and not play their counter unit too close to their Crown Tower to avoid unnecessary damage. In addition, his slow attack speed will make him very weak against cards like the [[Skeleton Army]] and will need the help of a Crown Tower to take it out.
+*When the enemy deploys a [[Goblin Drill]] beside your Crown Tower, you can deploy Royal Ghost because he has area damage and can wipe out the [[Goblins]].
+*He is great at disarming enemy Spirit cards, as his stealth ensures he gets the first attack in and OHKO them. This is especially useful against the [[Heal Spirit]], as it will not heal any nearby troops this way.
+**On the other hand, if a Royal Ghost is coming from one lane, a Spirit card should be used to kite him towards the other lane. This is most useful when the Royal Ghost is supporting a larger push to separate him from it.
+*The Royal Ghost has great synergy with fast offensive cards like the [[Hog Rider]], [[Ram Rider]], [[Prince]], and [[Battle Ram]]. His fast speed allows him to stay caught up with them, while his splash damage eliminates swarms that would threaten the offensive unit. However, such pushes can be easily stopped with heavy defenders like the [[P.E.K.K.A.|P.E.K.K.A]], [[Three Musketeers]], [[Sparky]], and [[Mega Knight/Evolution|Evolved Mega Knight]].
+*The Royal Ghost is a situational defensive troop. He is difficult to play reactively due to his invisibility making tanking for troops on reaction harder. The Royal Ghost also cannot kite troops since he spawns invisible, and whenever he's not attacking, he enters stealth again, meaning enemy troops will stop chasing him.
+*The Royal Ghost will ignore an opposing Royal Ghost, a [[Suspicious Bush]], a hidden [[Tesla]], or an invisible [[Archer Queen]] and bypass them. Therefore, the player may want to deploy a cheap troop to force the opposing unit to make themselves visible, so that their own unit can get the first strike.
+**Unlike other mini tanks, air troops are ineffective against him despite him being unable to attack them. This is because he will become invisible and thus untargetable from them, and since he cannot attack them, he will not become visible again. The player should use a ground distraction alongside the air troops if they want to counter the Royal Ghost in this way.
+*If the player would like to deploy the Royal Ghost to wait for [[Elixir]] to accumulate, he should be placed at the back corner of the [[Arenas|Arena]] rather than behind the [[King's Tower]]. This makes it more difficult for the opponent to kite the Royal Ghost to the center and for the opponent to activate their King's Tower by using a [[Tornado]] spell.
+*The Royal Ghost has an unimpressive damage per second ratio. Because of this, units with high hitpoints like the [[Knight]], [[Valkyrie]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Lumberjack]], or [[Prince]] can effectively stop him on defense without taking too much damage. Make sure that they are placed close to the Tower, but not close enough that the Tower takes area damage.
+*A good way to counter the Royal Ghost is to surround him with swarms like [[Goblins]] and [[Guards]]. His small area will only allow him to hit one troop at a time, which will leave the other troops attack him and eliminate him. These swarms can defeat him for at worst a neutral Elixir trade.
+*Because the Royal Ghost can move across the river, he can be used to snipe a defensive building such as a [[Bomb Tower]]. This can be helpful to be used in conjunction with a tank that would be lured by the building such as a Giant.
+*You may predict the opponent's Princess at the bridge with the Royal Ghost, leading to no shots from the Princess since the Royal Ghost will kill her in just one hit.
+*A [[Rocket]] will OHKO the Royal Ghost, completely eliminating him, but for a negative Elixir trade. His high movement speed also makes it risky to use the spell, so only do this if you lack better counters.
+*Against an [[Electro Giant]], the Royal Ghost can be paired with the [[Electro Wizard]] to counter him. If timed right, the Electro Wizard's attacks will stun the Electro Giant on the same time span that the Royal Ghost attacks him, causing him to take no damage from the Electro Giant's reflection.
+*The [[Dark Prince]] can be used as a replacement for the Royal Ghost in certain deck. The Dark Prince has a slightly higher area, a shield for more spell resistance, and a charge mechanic for making him faster and dealing a lot of damage. However, the Royal Ghost's immediate speed and damage are slightly higher, and his invisibility grants him a better matchup against ranged units.
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Invisibility Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|3||1.8 sec||0.6 sec||Fast (90)||1 sec||2 sec||Melee: Medium (1.2)||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1210 }}
+{{#vardefine: dmg_11 | 261 }}
+{{#vardefine: atk_speed | 1.8 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 130,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|2 {{BASEPAGENAME}} cards<br>100 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 395,000 Damage to enemy Troops or buildings
+|8,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 660,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>100 {{Icon|I=XP}}
+|-
+| rowspan="3" |Such Stealth! <br> [[File:Such Stealth!.png|50x50px]]
+|1
+|Hit Troops a total of 350 times whilst invisible
+|12,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|2
+|Hit Troops a total of 1,000 times whilst invisible
+|2 {{Icon|I=Legendary Wild Card}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Hit Troops a total of 1,750 times whilst invisible
+|18,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2017
+*The Royal Ghost was once available in the [[Tournament/Special Event Challenges|Royal Ghost Mirror Challenge]] which started on 22/12/2017. In this [[Tournament|challenge]], gameplay was similar to a regular [[Mirror]] Challenge, except that the players has the Royal Ghost in their [[Battle Decks|decks]]. If the player achieved 12 wins, they obtained the Royal Ghost early.
+2018
+*The Royal Ghost [[Cards|card]] was generally released on 4/1/2018.
+*On 24/1/2018, a [[Version History#Balance Changes (24/1/2018)|Balance Update]], decreased the Royal Ghost's damage by 6%, increased his attack time interval to 1.8 seconds (from 1.7 seconds), increased his first attack time interval to 0.6 seconds (from 0.5 seconds), and increased the time required for turning invisible to 1.2 seconds (from 0.7 seconds). There was also an unannounced change to the Royal Ghost, an increase to his sight range to 5.5 tiles (from 5 tiles).
+*On 25/4/2018, the [[Version History#Clan%20Wars%20Update%20(25/4/2018)|Clan Wars Update]], added the Royal Ghost to [[Touchdown]] Draft.
+*On 4/6/2018, a [[Version History#Balance Changes (4/6/2018)|Balance Update]], increased the time required for turning invisible to 1.6 seconds (from 1.2 seconds).
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], moved the [[Arenas|Arena]] to unlock the Royal Ghost from Hog Mountain to Royal Arena.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Legendary}} cards start at Level 9 and end at Level 13 (from 1 to 5).
+*On 5/11/2018, a [[Version History#Balance Changes (5/11/2018)|Balance Update]], decreased the Royal Ghost's hitpoints by 9%.
+2019
+*On 28/1/2019, the [[Version History#January%202019%20Update%20(28/1/2019)|January 2019 Update]], moved the Arena to unlock the Royal Ghost from Royal Arena to Spooky Town.
+*On 2/9/2019, a [[Version History#Pass Royale and more (2/9/2019)|Balance Update]], increased the Royal Ghost's area radius to 1 tile (from 0.8 tiles).
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Royal Ghost's card info screen.
+2020
+*On 6/10/2020, a [[Version History#Balance Changes (6/10/2020)|Balance Update]], allowed the Royal Ghost to hover, meaning he can cross the river and will collide with air [[:Category:Troop Cards|troops]] instead of ground troops.
+*On 3/11/2020, a [[Version History#Balance Changes (3/11/2020)|Balance Update]], changed the Royal Ghost's card render.
+*On 18/11/2020, the [[Version History#Clan%20Wars%20Improvement%20Update%20(18/11/2020)|Clan Wars Improvement Update]], changed the hover mechanic. The Royal Ghost would no longer pass through [[:Category:Building Cards|buildings]], push back air troops, or bounce off the river when knocked back.
+2021
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 8/4/2022, a [[Version History#Maintenance Break (8/4/2022)|maintenance break]], fixed an issue where an invisible Royal Ghost was not receiving splash damage.
+*On 7/6/2022, a [[Version History#Balance%20Changes%20(7/6/2022)|Balance Update]], increased the time required for turning invisible to 1.8 seconds (from 1.6 seconds).
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+*On 2/10/2024, the [[Version History#Lucky Drops 2.0 Update (2/10/2024)|Lucky Drops 2.0 Update]], made it so that Royal Ghost would no longer be immune to [[Earthquake]] and [[Royal Giant/Evolution|Evolved Royal Giant]]'s recoil.
+2025
+*On 6/10/2025, the [[Version History#Pass Royale and more (6/10/2025)|October 2025 Update]], added the Royal Ghost's Evolution
+2026
+
+* On 2/3/2026, a Balance Update, decreased the Royal Ghost's invisibility delay to 2 seconds (from 1.8 seconds).
+
+==Gallery==
+<gallery>
+File:Old Royal Ghost card render.png|Royal Ghost's card render before 3/11/2020.
+File:Royal Ghost card render.png|Current card render.
+File:Royal Ghost Preview.gif|Current card preview.
+File:Royal Ghost 3.png|Royal Ghost standing with his sword.
+File:Royal Ghost 4.png|Royal Ghost hovering.
+File:RoyalGhostConcept.jpg|Concept art of Royal Ghost.
+</gallery>
+
+==Trivia ==
+*The Royal Ghost may be inspired by the [https://en.wikipedia.org/wiki/Ghost_(Hamlet) ghost of Hamlet's father] from the theatrical play ''"[https://en.wikipedia.org/wiki/Hamlet Hamlet]"'' by [https://en.wikipedia.org/wiki/William_Shakespeare William Shakespeare].
+*The Royal Ghost is 1 of 17 [[:Category:Troop Cards|troops]] that inspired a troop in Clash of Clans, the others being [[Spear Goblins]], [[Bomber]], [[Bats]], [[Skeleton Barrel]], [[Minion Horde]], [[Firecracker]], [[Battle Ram]], [[Ice Golem]], [[Zappies]], [[Baby Dragon]], [[Giant Skeleton]], [[Ram Rider]], [[Inferno Dragon]], [[Miner]], [[Ice Wizard]], and [[Night Witch]].
+**Unlike [https://clashofclans.fandom.com/wiki/Royal_Ghost his counterpart in Clash of Clans], the Royal Ghost in Clash Royale is always invisible until he breaks stealth and can enter it again after some inactivity, deals medium amounts of area damage with moderate health, but never slows his targets.
+*The Royal Ghost is 1 of 20 [[cards]] associated with nobility, with the others being [[Knight]], [[Royal Recruits]], [[Royal Giant]], [[Royal Delivery]], [[Tower Princess]], [[Royal Hogs]], [[Dark Prince]], [[Prince]], [[Raging Prince]], [[Mega Knight]], [[Princess]], [[Spirit Empress]], [[Super Knight]], [[Dagger Duchess]], [[Royal Chef]], [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], and the [[Little Prince]].
+*The Royal Ghost is one of the first troop cards to receive a card render, alongside the [[Archers]], Knight, [[Goblins]], Bomber, [[Skeletons]], [[Barbarians]], Bats, Royal Recruits, Skeleton Barrel, [[Rascals]], [[Musketeer]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Flying Machine]], [[Hog Rider]], Royal Hogs, [[Dart Goblin]], Zappies, [[Elixir Golem]], Baby Dragon, [[Skeleton Army]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], Prince, [[Balloon]], Giant Skeleton, [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], Mega Knight, Ram Rider, Miner, Ice Wizard, [[Magic Archer]], [[Bandit]], [[Lava Hound]], Night Witch, and [[Fisherman]].
+*The Royal Ghost is 1 of 3 troops that can turn invisible and not distract other enemies, the others being [[Suspicious Bush]] and the [[Archer Queen]].
+*The Royal Ghost has been featured in multiple [[Tournament/Special Event Challenges|special game modes]] outside of the card. More specifically:
+**The Royal Ghost is 1 of 23 troops that has been featured in the [[Troop Rush]] game [[:Category:Modes|mode]], the others being Skeletons, [[Skeleton Dragons]], [[Fire Spirit]], Bats, [[Elite Barbarians]], Firecracker, Rascal Girls, Royal Hogs, [[Heal Spirit]], Elixir Golem, [[Guards]], Prince, Balloon, [[Golem]], Wall Breakers, Ram Rider, [[Sparky]], [[Phoenix]], Bandit, [[Lumberjack]], [[Santa Hog Rider]], and the [[Monk]].
+**The Royal Ghost is 1 of 14 troops that has been featured with a [[Buff#Rage|Rage]] [[buff]], the others being [[Electro Spirit]], Giant, Zappies, Guards, Giant Skeleton, Goblin Giant, Electro Dragon, Wall Breakers, [[Electro Giant]], Mega Knight, Ram Rider, [[Electro Wizard]], and Sparky.
+**The Royal Ghost is 1 of 10 troops that has been featured under the [[Ruler Ability#Special Delivery|Special Delivery]] [[Ruler Ability|ruler ability]], the others being Knight, Skeleton Barrel, [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], Musketeer, Wizard, P.E.K.K.A, Giant Skeleton, Golem, and Sparky.
+*The Royal Ghost, along with the [[Minions]], Bomber, Skeletons, Skeleton Dragons, [[Ice Spirit]], Mini P.E.K.K.A, [[Mega Minion]], Ice Golem, Dart Goblin, Elixir Golem, [[Goblin Cage|Goblin Brawler]], Guards, Baby Dragon, P.E.K.K.A, Giant Skeleton, Golem, Wall Breakers, Bowler, [[Executioner]], Mega Knight, [[Inferno Dragon]], and Lava Hound, are featured as a [https://squad-busters.fandom.com/wiki/Monsters monster] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+**He is the 1 of 2 troops that appears in a modifier in Squad Busters, the other being Ice Spirit.
+*The Royal Ghost is confirmed to be both of the [[King's Tower|Kings]]' father. He is also confirmed to be a former King according to the Clash-A-Rama episode "[https://clasharama.fandom.com/wiki/%22Pork-tergeist%22 Pork-tergeist]".
+*The Royal Ghost is the subject of certain cosmetics in the game. More specifically:
+**The Royal Ghost is the subject of 4 [[Emotes]].
+***The Royal Ghost Shadow Emote was originally going to appear in April of 2019, but did not make it to the game until the September of 2025.
+**The Royal Ghost is the subject of a [[King's Tower|Tower Skin]].
+*A [[Clone|cloned]] Royal Ghost does not fall from the sky when deployed.
+*On 27/3/2023, a [[Training Camp|Trainer]] was added to the game called Boss Cheddar, and used a Level 18 Royal Ghost in their [[Battle Decks|deck]], despite the highest Level being Level 14 at the time. This Trainer was removed on 18/4/2023.
+*In the [https://www.youtube.com/watch?v=FsOoUI57Dzw 5/11/2018 balance changes reveal video], the text on screen incorrectly states the Royal Ghost's 9% hitpoints decrease as a 6% hitpoints decrease.
+*The Royal Ghost was originally going to appear in early 2017, with a invisibility mechanic that would dash to the enemy, and reveal himself along with a stun. However, the stun mechanic [https://youtu.be/9zfaXDCY0ZI?si=XUmeaFpHOsXKAVt1&t=1068 were dropped], and the dash mechanic lead to the creation of the Bandit. Ultimately, the Royal Ghost was added in one of Clash Royale's updates.
+
+{{Navigation|Cards}}
+
+[[fr:Fantôme royal]]
+[[de:Königsgeist]]
+[[es:Fantasma real]]
+[[it:Fantasma Royale]]
+[[ru:Королевский призрак]]
+[[zh:皇家幽灵]]

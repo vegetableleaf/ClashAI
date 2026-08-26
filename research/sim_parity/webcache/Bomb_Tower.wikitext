@@ -1,0 +1,214 @@
+{{DISPLAYTITLE:<span style="color: #ffa31a;">Bomb Tower</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}
+
+{{Card Infobox|Cost=4|Rarity=Rare|Type=Building|Arena=Spell Valley|ReleaseDate=4 January 2016}}
+{{Quote|Defensive building that houses a Bomber. Deals area damage to anything dumb enough to stand near it.}}
+
+The Bomb Tower is a {{Rarity|Rare}} [[Cards|card]] that is unlocked at [[Arenas|Spell Valley (Arena 4)]]. It spawns an area-damage, ground-targeting, long-ranged, [[:Category:Building Cards|building]] with high hitpoints and moderate damage. When defeated, it drops a bomb which explodes after 3 seconds, dealing damage. The building is made of wood, surrounded by steel rams, held together by ropes on the sides, and has a team-colored stripe of paint on it, with a [[Bomber]] located at the top. A Bomb Tower card costs 4 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Bomb Tower Card}}
+*The Bomb Tower deals similar damage per hit and similar damage per second to the [[Bomber]], so it is effective at dealing with all grounded swarms or clumped up [[:Category:Troop Cards|troops]]. Since it is a [[:Category:Building Cards|building]], it is better than a Bomber at stalling tanks like a [[Giant]], Hog Rider, or a [[Golem]].
+*The Bomb Tower's range is decently long at 6 tiles. Thus, it cannot be sniped by [[Musketeer]], [[Firecracker]], [[Furnace]], or [[Archers/Evolution|Evolved Archers]] across the river.
+*The Bomb Tower pairs well with the [[Mighty Miner]] or [[Monk]] on defense. The Mighty Miner/Monk will destroy high hitpoint units, like Giant, [[Giant Skeleton]], [[Goblin Giant]], Mega Knight, [[Royal Giant]], or Golem, while the Bomb Tower will wipe out swarms of ground troops. Additionally, both of them have high hitpoints, helping them withstand multiple attacks on defense.
+**The [[Mini P.E.K.K.A.]], [[Prince]], [[Lumberjack]], Hunter, and Elite Barbarians are similar, but less effective [[:Category:Troop Cards|troops]] because of the their lower hitpoints.
+*The Bomb Tower can be effectively placed in the radius of the player's [[:Category:Tower Troop Cards|Crown Tower]]. It will attract most enemy troops, and any opposing offensive troops attacking the Bomb Tower will also be targeted by the defending the Crown Tower.
+*When using the Bomb Tower to defend against a [[Lava Hound]] push, it is more effective to place the Bomb Tower directly within the Lava Hound's path, rather than trying to pull it and its support troops away. Doing this increases the odds that the Lava Hound and its aerial support troops will get hit by the death bomb.
+*Even though the Bomb Tower cannot hit air troops, sending them in alone to try and take down a Bomb Tower is ill-advised, as they will also have to bear the attacks of one or both of the opponent's Crown Towers in addition to any countermeasures the opponent deploys. 
+**If waiting for its lifetime to drain naturally is not an option, cards that can outrange the building, like [[Dart Goblin]], [[Princess]], and [[Magic Archer]], are more effective since they will not be in range of the opponent's Crown Towers.
+**Ranged air troops like a [[Baby Dragon]], [[Inferno Dragon]], [[Electro Dragon]], [[Skeleton Dragons]], or a [[Flying Machine]] is also very effective against a lone Bomb Tower, as their range is long enough where they are generally safe from the Crown Towers.
+*The Bomb Tower is a very effective counter against a [[Hog Rider]] and swarm push, as it will be able to eliminate the swarms and damage the Hog Rider at the same time while also distracting the latter.
+*The Bomb Tower is a great counter to Hog Rider and [[Earthquake]] decks. While it cannot fully counter a Hog Rider and Earthquake, it can withstand the Earthquake with its high hitpoints and severely damage the Hog Rider to where a low-Elixir card, like an [[Ice Spirit]] or [[Electro Spirit]], is enough to prevent all damage from the Hog Rider.
+*Though not all damage is prevented, the Bomb Tower can be a great counter to the [[Elixir Golem]]. It can wipe out the Elixir Golemites and blobs with its high hitpoints can help it tank hits from support units and the Elixir Golem. However, it's recommended to pair it with a single target unit to wipe out the Golem form of the Elixir Golem.
+*The Bomb Tower can be used to counter [[Elite Barbarians]] for a positive Elixir trade. However, if the Elite Barbarians are at a higher Level than the Bomb Tower, the defender would also need to play another card (e.g. [[Skeletons]] or [[Goblins]]) to distract and effectively counter them.
+*The Bomb Tower's high health means that if timed correctly, the Bomb Tower can nearly take out a [[Royal Giant]] despite its somewhat low damage per second.  This may be ineffective against a Royal Giant that's supported with back-end units unless they are ground swarms.
+*The Bomb Tower is also capable of distracting and/or destroying troops that have moderate hitpoints, like the Mini P.E.K.K.A., Lumberjack, [[Executioner]], [[Miner]], [[Royal Ghost]], [[Dark Prince]], and the [[Goblin Demolisher]], thanks to its high health pool. It can also take out low to moderate hitpoint ranged troops, such as the [[Witch]], Ice Wizard, [[Archer Queen]], Musketeer, [[Electro Wizard]], [[Hunter]], and the [[Wizard]]. With assistance of the Crown Tower, the Bomb Tower can defeat high hitpoint troops such as the [[Knight]], [[Valkyrie]], [[Skeleton King]], Monk, [[Golden Knight]], [[Battle Healer]], or [[Bowler]].
+*With the help of two or more Crown Towers, it is able to fully counter the [[Mega Knight]]. The Bomb Tower must be placed 4 tiles from the river and 2 tiles from a Crown Tower to pull the Mega Knight into the range of the second Crown Tower.
+*The Bomb Tower synergizes well with [[Tornado]]. The Tornado can not only clump up all troops in an incoming push so that the Bomb Tower can hit all of them, but it can also be used to pull units into the Bomb Tower's death bomb.
+*Very rarely, the Bomb Tower can be used offensively to attack troops that are next to the Crown Towers if one of them has been destroyed. The Bomb Tower has an attack radius large enough that it can hit troops whose hitboxes are touching the Crown Towers and hit the Crown Towers simultaneously. This can be a very unexpected way to finish off a Crown Tower in Sudden Death.
+*An unusual but powerful defensive combination is the [[Ice Wizard]], Bomb Tower, and Tornado. The Tornado can group a push together for the splash damage of the Bomb Tower and Ice Wizard to hit them all. The Ice Wizard will slow the push down, wiping out air swarms while the Bomb Tower will repeatedly damage the push. However, this combination is rather expensive at 10 elixir, and can give spell value to your opponent.
+*The Bomb Tower's counterpart is the [[Tesla]]. For the same elixir cost, the Tesla can target air, has more damage per second and can hide when not attacking. However, the Bomb Tower has splash damage and more health. If the player needs anti-air, they should use the Tesla. However, if the player already has sufficient anti air, then they can benefit from the Bomb Tower's higher health and splash damage.
+**Additionally, the Tesla is a {{Rarity|Common}} card, making it easier to upgrade than the Bomb Tower.
+
+<center><div id="unit-statistics" class="table-back">
+{{Statistics}}{{StatusEffects}}
+{{StatisticsSubheader|Bomb Tower Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Lifetime<br />{{Icon|I=Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||1.8 sec||0.5 sec||1 sec||30 sec||6||1.5||500||Ground||[[:Category:Building Cards|Building]]||{{Rarity|Rare}}
+|}
+
+{{StatisticsSubheader|Bomb Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Death Damage Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+|-
+|3||3 sec||Air & Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1356 }}
+{{#vardefine: dmg_11 | 222 }}
+{{#vardefine: life | 30 }}
+{{#vardefine: atk_speed | 1.8 }}
+{{#vardefine: death_11 | 222 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+! scope="col" |Hitpoints lost per second<br />{{Icon|I=Time}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+! scope="col" |Death Damage<br />{{Icon|I=Death Damage}}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(3-11)) round 0 }} 
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(4-11)) round 0 }} 
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(5-11)) round 0 }} 
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(6-11)) round 0 }} 
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(7-11)) round 0 }} 
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(8-11)) round 0 }} 
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(9-11)) round 0 }} 
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(10-11)) round 0 }} 
+|-
+| 11 || {{#var:hp_11}} || {{#expr: {{#var:hp_11}} / {{#var:life}} round 1 }} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}|| {{#var:death_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(12-11)) round 0 }} 
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(13-11)) round 0 }} 
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(14-11)) round 0 }} 
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:death_11}} * (1.1^(15-11)) round 0 }} 
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:death_11}} * (1.1^(16-11)) round 0 }} 
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward 
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 100,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|100 {{BASEPAGENAME}} cards<br>50 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 305,000 Damage to enemy Troops or buildings
+|4,000 {{Icon|I=Gold}}<br>50 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 510,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>50 {{Icon|I=XP}}
+|-
+| rowspan="3" |Troop Destroyer <br> [[File:Troop Destroyer.png|50x50px]]
+|1
+|Destroy 490 enemy Troops
+|6,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Destroy 1,400 enemy Troops
+|100 {{Icon|I=Rare Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Destroy 2,450 enemy Troops
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Bomb Tower [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016.
+*On 2/2/2016, the [[Version History#February 2016 Update (2/2/2016)|February 2016 Update]], increased the Bomb Tower's attack time interval to 1.7 seconds (from 1.8 seconds).
+*On 9/2/2016, the [[Version History#Chest Rewards & Card Balance (9/2/2016)|Chest Rewards &amp; Card Balance Update]], increased the Bomb Tower's attack time interval to 1.6 seconds (from 1.7 seconds).
+*On 29/2/2016, the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]], changed the Bomb Tower so that it would no longer stop its attack if its target dies during the attack animation.
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], increased the {{Rarity|Rare}} card Level cap to 11 (from 10), and decreased the Bomb Tower's lifetime to 40 seconds (from 60 seconds). This update also fixed the "range bug" and decreased the Bomb Tower's range to 6 tiles (from 6.5 tiles), but its effective range was unchanged.
+*On 4/7/2016, the [[Version History#Tournaments Update (4/7/2016)|Tournaments Update]], increased the Bomb Tower's hitpoints by 6%.
+2017 
+*On 13/3/2017, the [[Version History#March 2017 Update (13/3/2017)|March 2017 Update]], increased the Bomb Tower's projectile speed to 500 (from 300).
+2018 
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], moved the [[Arenas|Arena]] to unlock the Bomb Tower from Bone Pit to Hog Mountain. It also fixed a bug where the Bomb Tower would occasionally stop shooting at the edge of its range.
+*On 6/8/2018, a [[Version History#Balance Changes (6/8/2018)|Balance Update]], decreased the Bomb Tower's cost to 4 [[Elixir]] (from 5 Elixir), but also decreased its lifetime to 35 seconds (from 40 seconds) and its hitpoints by 33%.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Rare}} cards start at Level 3 and end at Level 13 (from 1 to 11).
+*On 1/10/2018, a [[Version History#Balance Changes (1/10/2018)|Balance Update]], increased the Bomb Tower's damage by 5%.
+2019 
+*On 4/3/2019, a [[Version History#Balance Changes (4/3/2019)|Balance Update]], allowed the Bomb Tower to deal Death Damage.
+2020
+*On 2/6/2020, a [[Version History#Balance Changes (2/6/2020)|Balance Update]], decreased the Bomb Tower's lifetime to 25 seconds (from 35 seconds).
+2021  
+*On 30/3/2021, the [[Version History#2021%20Quarter%201%20Update%20(30/3/2021)|2021 Quarter 1 Update]], decreased the Bomb Tower's death damage by 50%.
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the Arena to unlock the Bomb Tower from Hog Mountain to Spooky Town.
+*On 6/9/2021, the [[Version History#2021%20Quarter%203%20Update%20(6/9/2021)|2021 Quarter 3 Update]], increased the Bomb Tower's lifetime to 30 seconds (from 25 seconds).
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 3/6/2022, a maintenance break, added a card render to the Bomb Tower's card info screen.
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Bomb Tower from Spooky Town to Spell Valley.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+*On 3/10/2023, a [[Version History#Balance%20Changes%20(3/10/2023)|Balance Update]], increased the Bomb Tower's attack time interval to 1.8 seconds (from 1.6 seconds).
+
+==Gallery==
+<gallery>
+File:Bomb Tower card render.png|Current card render.
+File:Chinese Bomb Tower card render.png|Bomb Tower’s card render in the Chinese version of the game.
+File:Bomb Tower Preview.gif|Current card preview
+File:Bomb Tower 1.png|Bomb Tower
+</gallery>
+
+==Trivia==
+*The word "''Bomb''" comes from the Greek "''βόμβος''" (''bómbos)'', meaning booming or buzzing, referring to the sound that bombs do when they explode. Bombs were first invented in China during the ninth century. Initialy, they were made with ceramic material along with gunpowder, however, they were later changed to cast-iron shells with the [https://en.wikipedia.org/wiki/Thunder_crash_bomb Thunder crash bomb] during the twelve century.
+*The Bomb Tower is 1 of 15 [[cards]] associated with [[Skeletons]], with the others being [[Bomber]], [[Skeleton Dragons]], [[Skeleton Barrel]], [[Tombstone]], [[Guards]], [[Skeleton Army]], [[Witch]], [[Balloon]], [[Giant Skeleton]], [[Wall Breakers]], [[Super Witch]], [[Graveyard]], [[Skeleton King]], and of course, Skeletons.
+*The Bomb Tower is the only [[:Category:Building Cards|building]] that inspired a building in Clash of Clans.
+*Among all buildings with area damage, the Bomb Tower has the smallest area damage radius of all buildings, with a radius of 1.5 tiles.
+*The Cannon is one of the first building cards to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the [[Cannon]], [[Goblin Hut]], Tombstone, [[Inferno Tower]], and [[Barbarian Hut]].
+*Though not the first [[cards]] to receive balance changes, the Bomb Tower is one of the first {{Rarity|Rare}} cards to ever receive balance changes since the [[Version History#February 2016 Update (2/2/2016)|February 2016 Update]], the others are the [[Wizard]], Inferno Tower, Barbarian Hut, and [[Elixir Collector]].
+*The Bomb Tower is the only building that has been featured with a [[Buff#Knockback Attack|Knockback Attack]] [[buff]].
+*The Bomb Tower is 1 of 23 cards that has had its [[Elixir]] cost changed, the others being Bomber, [[Fire Spirit]], [[Royal Recruits]], Cannon, [[Mortar]], [[Musketeer]], [[Three Musketeers]], [[Heal]], Goblin Hut, Barbarian Hut, [[Furnace]], Elixir Collector, Skeleton Army, [[P.E.K.K.A.]], Wall Breakers, [[Electro Giant]], [[Bowler]], [[Goblin Barrel]], [[Barbarian Barrel]], [[Rage]], [[Fisherman]], and the [[Monk]].
+*The Bomb Tower is unavailable in multiple [[Tournament/Special Event Challenges|special game modes]]. More specifically:
+**It is 1 of 20 cards that is unavailable in [[Mirror]] mode, the others being [[Minions]], Cannon, Mortar, [[Tesla]], Goblin Hut, Tombstone, Inferno Tower, Barbarian Hut, Furnace, Elixir Collector, [[Freeze]], [[Clone]], [[X-Bow]], [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], [[Mighty Miner]], [[Little Prince]], and the Monk.
+**It is unavailable in [[Global Spell|The Floor is Healing]] sub-[[:Category:Modes|mode]] of the Global Spell game mode, much like other building cards, as well as the [[Cannon Cart]].
+*The Bomb Tower was featured in the winning deck of the [https://www.youtube.com/live/cmBlEI-aDoo?si=UoD1Sit2YvQR19xs Clash Royale League 2019 Tournament], by a player called Surgical Goblin.
+*There used to be a glitch where if a Bomb Tower was directly in front of the [[King's Tower]] and was hit by [[The Log]], the Bomb Tower would extend The Log's effective range, causing it to activate the King's Tower.
+*In [[Touchdown]], if a Bomb Tower is still on the [[Arenas|Arena]] after a touchdown has been scored, it will have its dropped bomb cleared.
+* Before the Bomb Tower's card release, the Bomb Tower's cost was decreased to 5 Elixir (from 6 Elixir), its hitpoints were increased by 12.5%, its damage was decreased by 16%, and its attack time interval was decreased to 1.8 seconds (from 1.9 seconds).
+
+{{Navigation|Card}}
+
+[[fr:Tour à bombes]]
+[[de:Bombenturm]]
+[[es:Torre bombardera]]
+[[it:Torre bombardiera]]
+[[ja:ボムタワー]]
+[[ko:폭탄 타워]]
+[[ru:Башня-бомбёжка]]
+[[zh:炸弹塔]]

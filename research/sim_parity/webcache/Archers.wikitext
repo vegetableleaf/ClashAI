@@ -1,0 +1,266 @@
+{{DISPLAYTITLE:<span style="color: #99CCFF;">Archers</span>}}{{Protection}}{{MagicWords}}{{ClashofClansLink|Archer}}{{Card Infobox|Cost=3|Rarity=Common|Type=Troop|Arena=Training Camp|ReleaseDate=4 January 2016}}
+
+{{SubpageNavBox|Evolution=yes|MergeTactics=yes|EvolutionLink=Archers/Evolution}}
+
+{{Quote|A pair of lightly armored ranged attackers. They'll help you take down ground and air units, but you're on your own with hair coloring advice.}}
+
+The Archers is a {{Rarity|Common}} [[Cards|card]] that is unlocked in the [[Training Camp]]. It spawns two single-target, air-targeting, medium-ranged, and ground [[:Category:Troop Cards|troops]] with low hitpoints and low damage, deployed in a horizontal line. The Archers take the appearance of women who have blue eyes, deep pink eyebrows and short hair with side bangs, are barefoot, and wear golden bands on their arms, team-colored capes, lime-colored tunics, and a team-colored belt with a buckle, along with a bag and a quiver around their waists and on their backs respectively, while wielding a recurve bow with team-colored stabilizers as their weapon, and having arrows with team-colored fletchings and a team-colored point as their ammunition. An Archers card costs 3 {{Icon|I=Elixir}} to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Archers Card}}
+*Archers are versatile support [[:Category:Troop Cards|troops]]. Even though they have low health, they have a high hit speed and deal decent damage, being able to 2HKO [[Goblins]] and [[Spear Goblins]], while having a low cost of 3 [[Elixir]], making them a good and cheap choice at clearing out swarms or mini-tanks when in a pair. As they can survive [[The Log]] if they are at the same Level, placing them behind a tank can make them somewhat hard to counter.
+*Splitting the Archers behind of or in front of the [[King's Tower]] is a good way to cheaply cover both lanes while denying the opponent of the most possible [[:Category:Spell Cards|spell]] damage value. If the opponent decides to ignore them, they might also deal some chip damage on the opposing [[Tower Princess]]es or [[Royal Chef]]s.
+**To diffuse this attack, simply sending a tanky troop in the middle (slightly staggered to the side the player wants to counterattack) is enough to distract both Archers and swiftly take them down, causing them to deal no Crown Tower damage.
+**The [[Cannoneer]] is able to OHKO them and the [[Dagger Duchess]] can quickly finish them off, preventing all damage entirely when split. Even when not split, the Archers will hit those Crown Towers for very low damage, which means that the player can ignore it if they are running a heavy [[Battle Decks|deck]].
+**The Archers can be timed to split in the middle shortly before engaging with an enemy troop. If done correctly, both Archers will still target the enemy troop, while forcing said troop to travel further to defeat each Archer. This is especially useful versus area damage troops like [[Skeleton Dragons]] and [[Baby Dragon]], since they will usually have to spend twice as much time trying to take out the Archers.
+***If this strategy is used, the Archers can counter a [[P.E.K.K.A.]] for a +4 Elixir trade. However, if spells are used, the defender must spend extra Elixir to keep the P.E.K.K.A. distracted, and even if the Archers are alive for the whole duration, she may still land a hit on a [[:Category:Crown Towers|Crown Tower]]. As such, distracting her for a bit longer with cheap units like [[Skeletons]] is recommended.
+**Split Archers are very effective at countering split [[Wall Breakers]], but for a negative Elixir trade. However, both Archers will survive and can possibly be used for a counterattack. They can also quickly take care of cheap [[:Category:Troop Cards|troops]] used to tank for Wall Breakers, like a [[Fire Spirit]] or an [[Ice Spirit]].
+**Splitting the Archers is especially useful if paired with other cards that can attack both lanes, like the [[Royal Recruits]], [[Royal Hogs]], and the [[Elite Barbarians]], possibly setting up for a powerful dual lane push.
+***Conversely, Archers can be a viable counter to Royal Recruits and Elite Barbarians if another card tanks for Archers, like the [[Knight]], [[Valkyrie]], [[Golden Knight]], or [[Skeleton King]]. The Archers' nice damage per second allow them to rapidly remove split foes for a neutral or a positive Elixir trade. They can also be quite useful against split Royal Hogs; in this case no tank is required.
+**Split Archers, specifically if placed in the center, can make it harder for a [[Mighty Miner]] to bypass defenses with his Explosive Escape Ability, as he will be pulled by the Archer in the lane he just entered after his ability, while the Archer on the other lane can either keep attacking him or set up a small counterpush.
+*Archers are a good counter to [[Balloon]] because, as a pair, they deal more damage per second than the [[Musketeer]] for 1 less Elixir, only allowing its death damage to reach the Tower. However, unless placed ahead, the death damage will weaken them significantly.
+*They can be used effectively to counter low hitpoint troops like [[Minions]], Goblins, Spear Goblins, and [[Guards]]. Although Archers are not splash troops, they are an effective counter to an unsupported [[Skeleton Army]], [[Goblin Gang]], or [[Graveyard]] if paired with their respective Crown Tower at a safe distance. Their decent damage and fast attack speed plus the Crown Tower's damage and attack speed easily cut down the Skeletons without letting many of them damage either the Crown Tower or the Archers, while being able to quickly take down the Goblins and Spear Goblins with one Archer surviving.
+**Similarly, they can be decent against a [[Witch]] or a [[Night Witch]]. The player should place them far enough to allow them to take out the spawned troops, and in the case of the Witch, they should be split to prevent her splash damage from hitting both.
+**The Archers can 2HKO Minions if they're 1 level higher than them. This is especially effective against [[Minion Horde]], lessening the chances of the Archers dying and defeating the Minions quicker.
+*With the assistance of a Crown Tower, Archers are capable of taking out mini-tanks and glass cannons such as Knight, Musketeer, [[Mega Minion]], [[Berserker]], [[Hunter]], [[Electro Wizard]], [[Lumberjack]], [[Golden Knight]], Mighty Miner, and [[Monk]]. However, they will be swiftly taken out by cards that are able to do splash damage, like the [[Bomber]], Valkyrie, [[Wizard]], Witch, [[Dark Prince]], [[Mega Knight]], [[Princess]], [[Sparky]], [[Firecracker]], [[Ice Wizard]], [[Royal Ghost]], [[Goblin Demolisher]], [[Bowler]], [[Magic Archer]], [[Executioner]], and Skeleton King, so it is advised to have another troop placed to the side to tank for the Archers, like a Knight, [[Giant]], [[Ice Golem]], or Berserker.
+*With the help of a Crown Tower, Archers can stop a Wizard for a +2 Elixir trade, however, they will be defeated in the process.
+*A [[Miner]] paired with the Archers is a way to deal a surprising amount of damage, because the Miner tanks for them, especially if spells are out of the opponent's cycle.
+*Spells are a great way to counter Archers, given that they have low hitpoints.
+**The Archers can be defeated by [[Arrows]] for a neutral Elixir trade, however, the opponent can take advantage of this and bait out the Arrows with the Archers, then drop swarms that would be more valuable to be defeated with the spell, such as the Minion Horde.
+**[[Zap]], [[Giant Snowball]], and [[Rage]] deal enough damage to allow the Crown Tower to finish them off. An [[Zap/Evolution|Evolved Zap]] can take out the Archers for +1 Elixir, as well as stunning and damaging anything nearby.
+**Although they are a negative Elixir trade, the [[Fireball]] and [[Poison]] can both stop the Archers. To even out the Elixir trade, one should make sure that something else is also being hit by those spells, including an opposing Crown Tower.
+**[[Barbarian Barrel]] deals damage and spawns a [[Barbarians|Barbarian]]. However, it cannot defeat them by itself, and will either require them to be weakened first or the Barbarian will have to finish them off.
+**[[Vines]] can take care of them for a neutral Elixir trade. However, if the opponent has two healthier troops on the Vines' area, then one Archer will survive, due to the healthier troop(s) taking the Vines' targeting priority.
+**The Log and [[Earthquake]] can weaken the Archers enough to allow the Crown Tower to OHKO them. The additional effects of these spells also buys them more time in case the opponent decides to support them.
+**[[Royal Delivery]] works similar to Barbarian Barrel, given that it can counter the Archers. Although it is a neutral Elixir trade instead, the spell also spawns a Royal Recruit to assist with additional defense. This spell is recommended when another card is tanking for the Archers.
+**The duo can be destroyed entirely within 2 hits from the [[Void]], provided that they are the only troops inside it. This is enough to counter the Archers for a neutral Elixir trade or force the opponent to spend more Elixir to save their Archers, resulting in an overcommitment.
+*Certain troops, like Mega Minion, [[Mini P.E.K.K.A.]], [[Prince]], Night Witch, and [[Spirit Empress]], deal enough damage to one-shot them. Because of this, it might be effective to use them against the Archers by placing them on top. Conversely, when using the Archers against them, they should be placed as far away as possible to allow them to deal damage to them before they get one-shot.
+**Unlike with Mega Minion, Mini P.E.K.K.A., Night Witch, and Ground Form Spirit Empress, a Prince cannot be countered by Archers without additional support due to his charge attack. Air Form Spirit Empress also cannot be defeated by them because of her range and increased hitpoints.
+***Archers are likely to survive against a Night Witch if they're placed in the center of the player's side of the Arena, quickly taking care of the spawned [[Bats]], then chipping her hitpoints.
+*If an [[Electro Giant]] threatens to deal massive Crown Tower damage, the Archers can aid in taking him out if the defender has no better options or is low on Elixir. Their high hit speed and decent damage combined will drastically reduce the damage the Electro Giant would deal to the Crown Tower. However, this is a risky play, as the opponent can use the Arrows or a [[Tornado]] on them, or a poor position will allow the Electro Giant's Zap Pack to take out one of the Archers, or even both of them. As such, it's recommended to further support the Archers or use a building instead.
+*The Archers pair well with the [[Mortar]] and the [[X-Bow]] because they can consistently chip away at things attacking the building whilst not taking much damage themselves, due to their medium range. Depending on the troop used to take down the siege building, either the Archers can soak some damage or the siege building sacrifices some of its lifetime to let the Archers take the opposing troop down.
+**If properly distracted with a card like the Ice Golem, the Archers can also be a good counter to the siege buildings, especially the X-Bow. The Ice Golem tanks for sufficiently long enough for the Archers to take the siege building down, rewarding the defender with a +1 Elixir trade. Since the Mortar's hit speed is low and the Archers can survive one hit, they can be used alone on the Mortar to invalidate all possible value, also resulting in a +1 Elixir profit.
+*With the assistance of a Crown Tower, Archers can significantly weaken or even fully take out all 5 [[Barbarians]] for a +2 Elixir trade. The Archer that's farther away may also cause some of the Barbarians to be targeted by the second Crown Tower.
+*The Archers can be a good choice to support all [[:Category:Building Cards|building]]-targeting units if the opponent misplaces a building position or is forced to play it closer to the river, as they'll be able to quickly chip down the building from a relatively safe distance. Depending on the building, it may also be beneficial to use the Archers as a distraction, like if the opponent uses an [[Inferno Tower]]. They are also good at taking down weaker troops that try to counter the building-targeting unit, especially if it's [[Ram Rider]], [[Goblin Giant]], or Electro Giant, who all are able to damage troops.
+**The Archers are a good pair with the [[Lava Hound]] because he requires aerial or air-targeting troops to be able to chip the Crown Tower and tank for another card. The Archers' damage per second can quickly defeat certain counters to the Lava Hound and distract or chip buildings like Inferno Tower and [[Tesla]].
+***Conversely, the Archers can be used to counter a Lava Hound if the defender is able to take down the other units alongside it, and if the opponent's spells have been wasted. They can also be a decent counter to the Lava Pups, who can be three-shot by the Archers, so with the assistance of the Crown Tower, they will be taken down quicker. However, the Lava Pups must have been distracted beforehand, or the Archers will eventually be defeated.
+**The Archers are cheap but valuable support troops to an Electro Giant because their high damage and hit speed complement his Zap Pack very well, allowing the combo to take down units pretty quickly.
+**Due to their low cost, they can also serve as a cheap support troop for the [[Golem]]. His slow movement speed allows for the player to build a big push, while his elevated hitpoints allow him to tank for Archers for long enough for them to deal a lot of damage to enemies. A similar principle works with the Giant or [[Elixir Golem]].
+*Due to their high hit speed, they can quickly chip down [[Bats/Evolution|Evolved Bats]] negating the overheal hitpoints before they can chip the Crown Tower.
+*Archers will swiftly take out an [[Inferno Dragon]] because of his slow movement speed, short range, and low initial damage stage, allowing the Archers to defeat him before he reaches the Crown Tower.
+*Although the [[Flying Machine]] is faster and has a longer range, it is notably frailer, so Archers paired with at least one Crown Tower can counter it for +1 Elixir.
+*The Archers can be a good counter to the [[Skeleton Barrel]] if they're placed away from it so that they don't suffer from its death damage and don't risk the spawned Skeletons hitting them. Since they have a decent hit speed along with some damage, they can take it out before it gets too close to the Crown Tower, while quickly taking the death spawn Skeletons before they get any extra value. This results in a neutral Elixir trade and the Archers will be available for a counterpush.
+**Similarly, another neutral Elixir trade can be achieved against the [[Goblin Barrel]]. The Archers should be positioned near the Goblins that the Crown Tower will not be targeting, so they are able to assist in taking out the Goblins faster while potentially soaking a single hit from them. This also leaves the Archers available for a counterpush.
+*Because the Royal Ghost is invisible before attacking, he can deal damage to the Archers without taking damage himself, leaving him almost fully healthy for a counterpush for a neutral Elixir trade.
+*If the Archers are supported by a tank, Golden Knight's Dashing Dash ability can chain onto them, defeating them and being able to address the tank without trouble. A [[Goblin Machine]]'s Rocket can also lock in the Archers while the Machine itself fights the tank if the player deploys him slightly away from them.
+*Depending on what the player wants in their deck, the Archers can be substituted by other similar cards.
+**Although being functionally similar to Spear Goblins, Archers are generally more versatile for their cost. They outclass Spear Goblins in every way except for speed, [[:Category:Troop Cards|troop]] count, and Elixir cost, making them more flexible in decks.
+**The Archers are a viable substitute for the [[Musketeer]]. In a pair, their damage per second is higher than a Musketeer and they have better crowd control for 1 less Elixir. However, they have significantly less hitpoints, less damage per hit, and a shorter range. The [[Furnace]] can have similar effects due to spawning [[Fire Spirit]]s to clear swarms and add extra chip damage, while also attacking at a long range.
+**For the same Elixir cost, the Dart Goblin combines improved speed and range, allowing him to outrange more buildings that the Archers cannot, as well as offering more damage over time. However, he is frailer than Archers, being able to be one-shot by cards like The Log and Bowler, and comes as a single unit, meaning that he cannot be used to defend both lanes at once as well, despite his longer range.
+**For a cheap anti-air splash card, the player can use Princess or [[Firecracker]] in place of the Archers. With their splash damage, they are able to handle swarms more effectively, while both have a higher immediate damage and a longer range. However, they attack much slower than the Archers, and the former is also weak to more spells.
+**For a cheaper Elixir cost, the Bomber can be used similarly to the Princess and Firecracker, offering higher damage. However, unlike the Archers, he cannot attack air troops, so it may be required to have other anti-air cards alongside him.
+**If the player is using a deck that relies on air cards, Minions and Bats function as the Archers' role. Although they have significantly lower range, they are able to attack air troops while being protected by their allied air troops, unlike the Archers who would be forced to take damage from cards that cannot attack air troops.
+**The Archers paired with the Knight can replicate the effect of the [[Rascals]] for a slightly more expensive cost. However, the Knight deals more damage per second than the Rascal Boy, and their lower individual costs allow the player to defend more efficiently to several attacks (i.e, they are not forced to overcommit with 6 Elixir to a single attack, like with the Rascals' 5 Elixir cost).
+**If the player wants a {{Rarity|Champion}} in their deck as a quick-damaging anti-air, they can use [[Archer Queen]] or [[Little Prince]]. Archer Queen is able to deal more damage to troops, but she attacks slower and costs +2 Elixir, though her Cloaking Cape ability allows her to quickly defeat both tankier troops and a large swarm quick enough for +1 Elixir, while Little Prince begins attacking slow, but can easily attack quicker if he stays still long enough, with the bonus of being able to summon a mini-tank whenever needed for +3 Elixir. However, if the player wants to use other {{Rarity|Champions}} or {{Rarity|Heroes}} in their deck, then the Archers are the clear choice.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}{{StatusEffects}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+!scope="col"|Cost<br>{{Icon|I=Elixir}}
+!scope="col"|Hit Speed<br>{{Icon|I=Damage Speed}}
+!scope="col"|First Hit Speed<br>{{Icon|I=Damage Speed}}
+!scope="col"|Speed<br>{{Icon|I=Speed}}
+!scope="col"|Deploy Time<br>{{Icon|I=Deploy Time}}
+!scope="col"|Range<br>{{Icon|I=Range}}
+!scope="col"|Projectile Speed<br>{{Icon|I=Speed}}
+!scope="col"|Target<br>{{Icon|I=Targets}}
+!scope="col"|Count<br>{{Icon|I=Troop Count}}
+!scope="col"|Transport<br>{{Icon|I=Transport}}
+!scope="col"|Type<br>{{Icon|I=Type}}
+!scope="col"|Rarity<br>{{Icon|I=Rarity}}
+|-
+|3||0.9 sec||0.5 sec||Medium (60)||1 sec||5||600||Air & Ground||x2||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_base | 304 }}
+{{#vardefine: dmg_base | 112 }}
+{{#vardefine: atk_speed | 0.9 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:hp_base}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 2 || {{#expr: {{#var:hp_base}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 3 || {{#expr: {{#var:hp_base}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_base}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_base}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_base}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_base}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_base}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_base}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_base}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_base}} || {{#var:dmg_base}} || {{Dps|{{#var:dmg_base}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_base}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_base}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_base}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_base}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_base}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_base}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_base}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{|class="wikitable" style="width:100%; text-align:center;"
+!width="20%"|Type
+!width="10%"|Level/Tier
+!width="40%"|Objective
+!width="25%"|Rewards
+|-
+|rowspan="3"|Damage Dealer<br>[[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 105,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|4,000{{Icon|I=Gold}}
+|-
+|2
+|Deal a total of 320,000 Damage to enemy Troops or buildings
+|4,000{{Icon|I=Gold}}
+|-
+|3
+|Deal a total of 530,000 Damage to enemy Troops or buildings
+|4,000{{Icon|I=Gold}}
+|-
+|rowspan="3"|Hit Maker<br>[[File:Hit Maker.png|50x50px]]
+|1
+|Hit enemy Troops a total of 1,750 times
+|6,000{{Icon|I=Gold}}
+|-
+|2
+|Hit enemy Troops a total of 5,000 times
+|6,000{{Icon|I=Gold}}
+|-
+|3
+|Hit enemy Troops a total of 8,750 times
+|6,000{{Icon|I=Gold}}
+|}
+<center>
+The requirements may be different, thank to the [[Version History#2026 Q2 Update (26/5/2026)|update]]
+</center>
+</div></center>
+
+==History==
+2016
+*The Archers [[Cards|card]] was added with [[Version History#Softlaunch on iOS (4/1/2016)|Clash Royale's game launch]] on 4/1/2016 {{Balance|Add}}.
+*On 29/2/2016, the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]] decreased the Archers' Sight Range to 5.5 tiles (from 6 tiles) {{Balance|Buff}}.
+*On 23/3/2016, a [[Version History#Balance Changes (23/3/2016)|Balance Update]] decreased the Archers' First Attack Period to 0.1 seconds (from 0.2 seconds) {{Balance|Buff}}.
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]] increased the {{Rarity|Common}} card Level Cap to 13 (from 12) {{Balance|Buff}}. The update also fixed the “range bug” by decreasing the Archers' Range to 5 tiles (from 5.5 tiles), {{Balance|Nerf}} but maintaining their effective Range.
+*On 24/8/2016, a [[Version History#Balance Changes (24/8/2016)|Balance Update]] increased the Archers' Damage by 2% {{Balance|Buff}}.
+*On 19/9/2016, the [[Version History#September 2016 Update (19/9/2016)|September 2016 Update]] changed the Archers' description. It used to say: “''A pair of unarmored ranged attackers. They'll help you with ground and air unit attacks, but you're on your own with coloring your hair.''" {{Balance|Neutral}}.
+2017
+*On 23/1/2017, a [[Version History#Balance Changes (23/1/2017)|Balance Update]] decreased the Archers' Hitpoints by 4% {{Balance|Nerf}}.
+*On 16/3/2017, a [[Version History#Maintenance Break (16/3/2017)|maintenance break]] increased the Archers' Projectile Speed to 600 (from 400) {{Balance|Buff}}. This was done to fix some unexpected behaviour that the Archers showed.
+2018
+*On 3/12/2018, a [[Version History#Balance Changes (3/12/2018)|Balance Update]] increased the Archers’ Damage by 2.5% {{Balance|Buff}} and decreased their Hitpoints by 1% {{Balance|Nerf}}.
+*On 5/12/2018, the [[Version History#December 2018 Update (5/12/2018)|December 2018 Update]] increased the Archers' Range to 5.5 tiles (from 5 tiles) {{Balance|Buff}}. This change was not mentioned in any change notes and was later said to be unintentional by Supercell, and as such, it was reverted in a [[Version History#Maintenance Break (7/12/2018)|maintenance break]] on 7/12/2018 {{Balance|Nerf}}.
+2019
+*On 26/11/2019, the [[Version History#End of November 2019 Update (26/11/2019)|End of November 2019 Update]] added a card render to the Archers' card info screen {{Balance|Add}}.
+2020
+*On 2/6/2020, a [[Version History#Balance Changes (2/6/2020)|Balance Update]] gave the Archers a delay between each other when deployed, with the second Archer spawning 0.1 seconds after the first {{Balance|Add}}.
+2021
+*On 27/10/2021, the [[Version History#Champions Update (27/10/2021)|Champions Update]] increased the Level Cap of all cards to 14 (from 13) {{Balance|Buff}}.
+2022
+*On 4/4/2022, the [[Version History#April 2022 Update (4/4/2022)|April 2022 Update]] decreased the Archers' Attack Period to 1.1 seconds (from 1.2 seconds) {{Balance|Buff}}.
+2023
+*On 7/2/2023, a [[Version History#Balance Changes (7/2/2023)|Balance Update]] decreased the Archers' Attack Period to 0.9 seconds (from 1.1 seconds) {{Balance|Buff}}.
+*On 27/3/2023, the [[Version History#Losers Update (27/3/2023)|Losers Update]] changed the Archers' card image {{Balance|Neutral}}.
+*On 4/4/2023, a [[Version History#Balance Changes (4/4/2023)|Balance Update]] increased the Archers' First Attack Period to 0.5 seconds (from 0.1 seconds) {{Balance|Nerf}}.
+*On 19/6/2023, the [[Version History#Card Evolution Update (19/6/2023)|Card Evolution Update]] increased the Level Cap of all cards to 15 (from 14) {{Balance|Buff}}.
+*On 6/11/2023, the [[Version History#Pass Royale and more (6/11/2023)|November 2023 Update]] added the Archer's Evolution {{Balance|Add}}.
+2024
+*On 18/3/2024, the [[Version History#Lucky Drops Update (18/3/2024)|Lucky Drops Update]] changed the Archers' card render {{Balance|Neutral}}.
+2025
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] increased the Archers' Damage by 5% {{Balance|Buff}}.
+*On 24/11/2025, the [[Version History#Level 16 Update (24/11/2025)|Level 16 Update]] increased the Level Cap of all cards to 16 (from 15){{Balance|Buff}}.
+
+==Gallery==
+<gallery>
+File:ArchersCardOld.png|Archers' card image before 27/3/2023.
+File:Archers Old Card Render.png|Archers' card render before 18/3/2024.
+File:Archers Card Render.png|Current card render.
+File:Archer Aiming.png|An Archer using her bow.
+File:Archer Alone.png|A lone Archer.
+File:Archers Together 3.png|Two Archers standing together looking above them.
+File:Archers Together.png|Archers.
+File:Archers Together 2.png|A full body shot of the Archers.
+File:Blue Archer.png|A full body render of the Archers card's old render, except that the tunic is blue.
+File:Archers Battling.png|Two Archers on the battlefield.
+</gallery>
+
+==Trivia== 
+*The word "''Archer''" comes from the Latin "''arcus''", meaning bow. The practice of archery was first developed in Africa by the later Middle Stone Age (approx. 70,000 years ago). It is documented as part of warfare and hunting from the classical period until the late medieval period when it was made obsolete by the increased use of firearms.
+**The bow that Archers use in [[Basics of Battle|battle]] is a [https://en.wikipedia.org/wiki/Recurve_bow recurve bow].
+**The Archers are 1 of 10 [[cards]] associated with archery, with the others being the [[Arrows]], [[Tower Princess]], [[X-Bow]], [[Princess]], [[Magic Archer]], [[Super Magic Archer]], [[Super Archers]], [[Archer Queen]], and the [[Little Prince]].
+***The Archers, Arrows, and Tower Princess are the only cards associated with archery that are unlocked in [[Training Camp]].
+*The Archers are 1 of 19 [[:Category:Troop Cards|troops]] which first existed in Clash of Clans, the others being the [[Minions]], [[Goblins]], [[Skeletons]], [[Barbarians]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], [[Witch]], [[P.E.K.K.A.]], [[Balloon]], [[Golem]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Phoenix]], [[Lava Hound]], and the Archer Queen.
+**The Archers resemble the Level 1 Archer from Clash of Clans. Their [[Star Points|Star Level 2 skin]] grants them a tiara similar to the Level 7 Archer in Clash of Clans.
+**Archers in Clash Royale share a similar deploy sound effect with their Clash of Clans counterpart.
+**In Clash of Clans, the Archers' movement speed is high, whereas in Clash Royale, their movement speed is moderate.
+*The Archers are 1 of 7 cards that are already unlocked for the player when they start playing the game, the others being the Minions, [[Knight]], Arrows, Tower Princess, Giant, and [[Fireball]]. Despite this, the game recognizes that those cards are unlocked in the Training Camp.
+*The Archers are one of the first troop cards to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the Minions, Knight, [[Spear Goblins]], Goblins, [[Bomber]], Skeletons, Barbarians, [[Minion Horde]], [[Mini P.E.K.K.A.]], [[Musketeer]], Giant, Valkyrie, Wizard, Hog Rider, [[Baby Dragon]], [[Skeleton Army]], Witch, P.E.K.K.A, [[Prince]], and Balloon.
+*The Archers are one of the first troop cards to receive a card render, alongside the Knight, Goblins, Bomber, Skeletons, Barbarians, [[Bats]], [[Royal Recruits]], [[Skeleton Barrel]], [[Rascals]], Musketeer, Giant, Valkyrie, Wizard, [[Flying Machine]], Hog Rider, [[Royal Hogs]], [[Dart Goblin]], [[Zappies]], [[Elixir Golem]], Baby Dragon, Skeleton Army, Witch, P.E.K.K.A., Prince, Balloon, [[Giant Skeleton]], [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], Wall Breakers, Bowler, Cannon Cart, [[Mega Knight]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], Magic Archer, [[Bandit]], Lava Hound, [[Night Witch]], and [[Fisherman]].
+*Even though the card spawns 2 Archers, the card render displays only 1 Archer.
+*From the [[Firecracker]]'s description, it is implied that the Firecracker used to be an Archer.
+*It's unknown why the Archers have a small pouch on her belt, though it's most likely there to store supplies, such as bowstrings and water.
+*Despite wearing a quiver filled with arrows, the Archers don't take the arrows out of her quiver when performing an attack.
+*In [[Pass Royale|Fisherman's Float]], Shipwreck Island, and Island Arena, Archers can be seen sitting in the audience.
+*The Archers are featured in non-Clash games. More specifically:
+**The Archers, along with the Goblins, Barbarians, [[Elite Barbarians]], and P.E.K.K.A., were featured as a [https://pad.fandom.com/wiki/Homepage/Monster monster] in [https://pad.fandom.com/wiki/Puzzle_%26_Dragons_Wiki Puzzles and Dragons], in a [https://pad.fandom.com/wiki/Homepage/Dungeon dungeon] called [https://pad.fandom.com/wiki/Clash_of_Clans_Dungeon Clash of Clans Dungeon].
+**The Archers, along with the Goblins, Barbarians, Wizard, Hog Rider, [[Battle Healer]], Witch, Miner, Ice Wizard, and Bandit, are featured as a [https://squad-busters.fandom.com/wiki/Squaddies Squaddie] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*The Archers, along with the Goblins, Barbarians, [[Ice Spirit]], Mini P.E.K.K.A., Musketeer, Giant, Wizard, Hog Rider, Witch, Prince, and Night Witch, are featured as a sticker in [https://en.wikipedia.org/wiki/IMessage iMessage], in a sticker pack called [https://apps.apple.com/us/app/clash-theater-stickers/id1353823484 Clash Theater]. Also, along with the Goblins, Skeletons, Barbarians, Mini P.E.K.K.A., Musketeer, Wizard, Witch, Prince, and Princess, they are featured in the [https://apps.apple.com/us/app/clash-a-rama/id1182384664 Clash-A-Rama] sticker pack.
+*The Archers are the subject of certain cosmetics in the game. More specifically:
+**The Archers are the subject of a few [[Emotes]].
+***The [https://clashroyale.fandom.com/wiki/Emotes?file=Slowmo_Archer.png Archer Slowmo Emote] is a reference to Clash Royale's [https://youtu.be/TJryIc0Cwy4?si=5lN2tWZ-xNBMjHee The Last Second commercial].
+**The Archers are the subject of a [[King's Tower|Tower Skin]].
+**The Archers are the subject of a few [[Battle Banners|Battle Banner]] items.
+***The Deadly Trio decoration was created by [https://x.com/suzyq53936155 SuzyQ].
+*The Archers were featured in the winning decks of multiple Clash Royale Tournaments. More specifically:
+**The Archers were featured in the winning deck of the [https://www.youtube.com/watch?v=VxEzjdKQ4HA Clash Royale Helsinki Tournament], by a player called Jason.
+**The Archers were featured in the winning deck of the [https://www.youtube.com/live/1fuCnNBTqBU?feature=share King's Cup Tournament], by a player called TMD YAOYAO.
+**The Archers were featured in the winning deck of the [https://www.youtube.com/watch?v=kIGdeKaT_is The Crown Duel Tournament], by a player called Backstabx.
+
+==In other languages==
+{{Other languages|fr=Archères|de=Bogenschützen|es=Arqueras|it=Arcieri|nl=Boogschutters|no=Bueskyttere|tr=Okçular|jp=アーチャー|kr=아처|ru=Лучницы|ar=راميات السهام|pt=Arqueiras|cn=弓箭手|cnt=弓箭手|fa=تیرانداز|id=Pemanah|ms=Pemanah|th=พลธนู|fi=Jousiampujat|vi=Cung thủ}}
+
+{{Navigation|Card}}
+
+[[fr:Archers]]
+[[de:Bogenschützen]]
+[[es:Arqueras]]
+[[it:Arcieri]]
+[[nl:Boogschutters]]
+[[ja:アーチャー]]
+[[ko:아처]]
+[[ru:Лучницы]]
+[[zh:弓箭手]]

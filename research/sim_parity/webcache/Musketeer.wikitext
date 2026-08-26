@@ -1,0 +1,313 @@
+{{DISPLAYTITLE:<span style="color: #F9CF5F;">Musketeer</span>}}{{Protection}}{{MagicWords}}{{Card Infobox|Cost=4|Rarity=Rare|Type=Troop|Arena=Training Camp|ReleaseDate=4 January 2016}}<br>
+{{SubpageNavBox|Evolution=yes|MergeTactics=yes|Hero=yes}}{{Quote|Don't be fooled by her delicately coiffed hair, the Musketeer is a mean shot with her trusty boomstick.}}
+
+The Musketeer is a {{Rarity|Rare}} [[Cards|card]] that is unlocked in the [[Training Camp]]. It spawns one single-target, air-targeting, long-ranged, and ground [[:Category:Troop Cards|troop]] with moderate hitpoints and moderate damage. The Musketeer takes the appearance of a woman who has blue eyes and purple coiffed curly hair and eyebrows, and wears a steel blue tunic with a team-colored cloth on it, a team-colored cape, a metal helmet with a team-colored feather and a tiny crater on it, a belt, a metal shoulder pad, and brown boots, while carrying a blunderbuss-styled musket as her weapon with dark gray spheres as her ammunition. A Musketeer card costs 4 {{Icon|I=Elixir}} to deploy.
+
+==Modifiers==
+===[[File:Musketeer Common Modifier.png|45x45px]] Common: Shots Fired!===
+{{Quote|Spread shot}}
+Musketeer shoots 5 projectles spread out with her attack, similarly to a [[Hunter]].
+
+===[[File:Musketeer Rare Modifier.png|45x45px]] Rare: Realllllllllllly Long Range===
+{{Quote|+100% range}}
+Musketeer's range is increased by 100%, for a total of 12 tiles.
+
+===[[File:Musketeer Epic Modifier.png|45x45px]] Epic: #Girlbosses===
+{{Quote|2 Elite Musketeers}}
+Instead of a Musketeer, two [[Three Musketeers|Elite Musketeers]] are spawned.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Musketeer Card}}
+*Thanks to her high damage per second and long range, the Musketeer can counter many medium or low hitpoint [[:Category:Troop Cards|troops]] effectively, with or without the help of a [[:Category:Crown Towers|Crown Tower]].
+**The player should always be sure to make the most of her 6 tile range and force melee troops to walk towards her. Thanks to her 6 tile range, she can be placed in the center of the player's side of the arena slightly in the other lane, which will then result in a counterattack in the opposite lane.
+**Mini-tanks and distraction unit complement the Musketeer well, allowing her to stay alive longer and make use of her range and moderately high damage per second. Stun and slow effects, like those of a [[Zap]], [[Ice Spirit]], or [[Ice Wizard]], will buy more time for her to defeat the enemy troops.
+**Her high damage and range makes her a decent choice against other ranged troops, like the [[Wizard]], [[Baby Dragon]], [[Witch]], [[Furnace]], [[Zappies]], [[Hunter]], [[Electro Wizard]], [[Goblin Demolisher]], [[Bowler]], and [[Executioner]]. However, she will take notable damage in return, depending on the troop.
+***Due to her range, she'll never be affected by [[Wizard/Evolution|Evolved Wizard]]'s fire shield, [[Royal Giant/Evolution|Evolved Royal Giant]]'s recoil, and [[Executioner/Evolution|Evolved Executioner]]'s Axe Smash abilities.
+***Against the Goblin Demolisher, the Musketeer should be placed away from the Goblin Demolisher's path, in order to avoid her from being hit by his death damage. A similar strategy applies to the [[Battle Ram/Evolution|Evolved Battle Ram]], [[Skeleton Barrel]], and [[Wall Breakers/Evolution|Evolved Wall Breakers]].
+**She does well against most air troops when placed at a distance. However, [[Minions]], [[Mega Minion]], [[Bats]], and [[Phoenix]] will take her out quickly when placed on top of her.
+**While not dealing damage in an area or being a multi-targeting troop, her high hit speed and ability to OHKO [[Goblins]] allow her to be great against swarms on defense, like [[Spear Goblins]], [[Skeletons/Evolution|Evolved Skeletons]], [[Skeleton Army]], and [[Goblin Gang]]. This extends to spawner troops, like Witch, [[Night Witch]], and [[Mother Witch]]. However, due to not OHKOing Minions, she'll have a harder time against [[Minion Horde]] without additional assistance.
+***Her high hit speed allows her to take down an [[Witch/Evolution|Evolved Witch]], even if she targets her [[Skeletons]] first. If the Musketeer manages to target her in time, she and the Crown Tower will defeat the Evolved Witch before she can heal more.
+**Her high range, high hit speed, and moderate damage allow her to defeat many mini-tanks on defense, those being [[Knight]], [[Valkyrie]], [[Battle Ram]], [[Hog Rider]], Baby Dragon, [[Battle Healer]], [[Berserker]], [[Miner]], [[Lumberjack]], [[Spirit Empress]], [[Golden Knight]], [[Skeleton King]], and [[Mighty Miner]], even though she might need additional support in some cases. When supported with other troops or [[:Category:Building Cards|buildings]], she may take down troops like [[P.E.K.K.A.]], [[Dark Prince]], [[Prince]], [[Giant Skeleton]], [[Mega Knight]], [[Sparky]], and [[Bandit]].
+**The Musketeer can be used to back up building-targeting troops, such as [[Giant]], Hog Rider, [[Royal Giant]], [[Balloon]], [[Goblin Giant]], [[Golem]], [[Electro Giant]], [[Lava Hound]], and [[Elixir Golem]]. The Musketeer's high hit speed and damage compensates for the other troop's inability to defeat troops and lower damage, and her range allows her to reach and snipe buildings faster. On the contrary, she's pretty good at countering them:
+***Against a Balloon, she can prevent all Crown Tower damage with a quick placement close to the bridge. However, this makes her extremely vulnerable to support troops behind the Balloon.
+***Due to her long range, she will be completely safe from Electro Giant's Zap Pack if [[Valkyrie/Evolution|Evolved Valkyrie]], [[Tornado]], or [[Fisherman]] aren't used to pull her towards him, causing her to significantly damage him.
+***She can instantly defeat any unit with the same or less hitpoints than Lava Pups, making her an excellent choice against the Lava Hound if he's supported beforehand.
+***Because of her high hit speed, she will help the player in quickly taking down an Elixir Golem, causing the player to get its [[Elixir]] more quickly for extra support.
+*The Musketeer’s long range allows her to attack from a distance without engaging with defending troops. This makes her very effective against Crown Towers, as the [[King's Tower]] will be unable to target her if she is attacking a Crown Tower.
+**Because of her range, she can also be deployed in the pocket on matches where both players took one Crown Tower. The player should keep this in mind if this gains an advantage over the opponent, especially when the match is nearing Tiebreaker. Depending on whether the player wants to prioritize more damage or quicker damage, they should place the Musketeer further from the river for the quickest damage or closer for the most damage.
+*The Musketeer can outrange the [[Cannon]] and defeat it without being counterattacked. However, despite a [[Tesla]] having the same range as the Cannon, the Tesla's property of being invisible while underground forces the Musketeer to walk into range before attacking the Tesla. However, it may be worthwhile to use a cheap distraction troop like Skeletons to provoke the Tesla into popping up, allowing the Musketeer to use her range advantage.
+**Though she does not outrange other buildings, the Musketeer can still be played on the river to snipe a building down, aiding building-targeting units in reaching the Crown Tower.
+**Against attacking buildings, the Musketeer will be able to bypass a building placed 4 tiles from the river and 3 tiles from the Crown Tower, and will also be out of range. A 5-2 placement can also be bypassed. Placing the building 1 tile closer to the Crown Tower will ensure that the Musketeer will not bypass it.
+**Against passive buildings, she will be able to bypass a 5-2 placement, unless she is in the inner side of the Arena.
+*Most troops can defeat the Musketeer if she is on the other side of the [[Arenas|Arena]] unaccompanied. However, she can deal high damage to a Crown Tower despite her slightly below average hitpoints, so there is little reason to leave a Musketeer unattended.
+**Mini-tanks and high damage troops like the Knight, Mini P.E.K.K.A., Valkyrie, P.E.K.K.A., Dark Prince, Prince, Lumberjack, [[Goblin Machine]], Golden Knight, Skeleton King, Mighty Miner, or [[Monk]] will counter her and have plenty of health remaining for a counterpush.
+***The Mini P.E.K.K.A. or Prince (with his charge) cannot OHKO the Musketeer if she's one level higher, so leveling her up is important.
+**When using the [[Goblin Cage]] against the Musketeer, it should be placed directly on top of her. This will spawn the Goblin Brawler within range and attack her immediately instead of having to walk towards her, causing him to be defeated. A similar strategy applies to the [[Tombstone]].
+**The [[Goblin Hut]] will activate once she reaches the range required to attack it. This causes the Goblin Hut to spawn Spear Goblins at the same time she locks onto the building, letting it tank for the spawned troops. Afterwards, the Spear Goblins will be available for a counterpush.
+**Well-timed [[Skeletons]] can counter the Musketeer placed around her. Alongside the Crown Tower, they will do enough damage so that the Musketeer is unable to deal damage to the Crown Tower for +3 Elixir.
+**An [[Ice Spirit]] placed at a distance from her will prevent all but one hit at the Crown Tower from the Musketeer. The same can be achieved with the [[Electro Spirit]].
+**The [[Electro Wizard]]'s spawn damage can deal decent damage to a Musketeer, weakening her enough for the Crown Tower to defeat her. The Electro Wizard will also stun the Musketeer, raising his chances of staying alive for a counterpush.
+**Mega Knight, Bandit, Fisherman, and [[Boss Bandit]] can utilize their dash and jump attacks to negate the Musketeer's range advantage and reach her. They will also deal a lot of damage to her at once while not taking back much in return. Alternatively, the Mega Knight can be placed directly on top of her to utilize his spawn damage. Those troops can be used in a counterattack afterwards
+***Similarly, the [[Royal Ghost]] will be able to get the first hit on the Musketeer, since he is deployed invisible. He is able to 3HKO the Musketeer, on top of not receiving a lot in return because of his invisibility, leaving him very healthy for a counterpush.
+**A Sparky has more than enough damage to OHKO the Musketeer without taking much damage in return. However, a card with a stun effect can be used to save the Musketeer from being blasted by Sparky.
+**Swarms like the Goblins, [[Guards]], Skeleton Army, Goblin Gang will also counter her, though a well-timed [[:Category:Spell Cards|spell]] can let her get a lock onto the Tower. Also, those swarms will not withstand her even when at a distance because of her fast hit speed, except the Guards, who require three hits from her to be taken down.
+**Against the [[Cannoneer]] and [[Dagger Duchess]], the Musketeer will only hit them twice, as their damage or speed will quickly defeat the Musketeer. This means that, depending on how heavy the player's [[Battle Decks|deck]] is, they may choose to ignore her or respond with cheaper cards.
+*A very powerful combo is the Musketeer, [[Valkyrie]], and Hog Rider played together. With her long range and air-targeting capacities, Musketeer protects Valkyrie and Hog Rider from aerial units at a distance, while the Valkyrie protects Musketeer and Hog Rider with her elevated hitpoints and splash damage, and the Hog Rider pushes Valkyrie closer to the Crown Tower while threatening to damage it. This strategy is commonly called the Trifecta for its combination of three troops. 
+**This can be effectively countered by [[Lightning]], OHKOing the Musketeer and severely damaging both the Valkyrie and Hog Rider. The [[Minion Horde]] is also effective, but the enemy can use [[Zap]] on them, causing the Musketeer will OHKO them all. Even if the Musketeer is defeated, the Hog Rider and Valkyrie will have enough time to severely damage the Tower.
+**A P.E.K.K.A. can hard counter this strategy, allowing relatively low damage to the Crown Tower for +5 Elixir. The P.E.K.K.A. can be used for a counterpush afterwards.
+**If all three troops are very close together, a [[Rocket]] can severely weaken the push for a +6 Elixir trade. Even if separated, a [[Tornado]] can bring them all together for the Rocket to nearly defeat them for a +3 Elixir trade.
+**This push can also be crippled by the Bowler, as his knockback and damage affect down all three units.
+**A Musketeer has a relatively small mass. Because of this, a Hog Rider placed behind her can push her quicker to the Crown Tower, allowing her to connect more easily than if she were to walk normally. However, this will cause her to take more damage and will leave the Hog Rider weak to opposing troops, as well as making the overall push weaker to swarm cards.
+*Spells are a great way to counter the Musketeer, given that she's pretty fragile for her cost.
+**A [[Fireball]] can defeat the Musketeer in one hit if the Musketeer is one Level lower than the Fireball. Otherwise, it will survive with a slither of health, but it will not be able to land a shot on a Crown Tower alone. A cheap spell like Zap or [[The Log]] can be used to defeat it if it must be taken out immediately, such as if it is on the opponent's side defending, or if it is supported with a tank. [[Poison]], Lightning, and Rocket are the 3 spells that can fully destroy an equally leveled Musketeer, though the last two cause a -2 Elixir trade, so it's recommended that the player also hits a Crown Tower or another troop alongside her. Note that the opponent may take advantage of the lack of said spells due to being used on the Musketeer, and place another [[Cards|card]] that would thrive due to their absense, such as Barbarians.
+**A [[Giant Snowball]] will knock her back enough to interrupt her attack, and then slow her down so that she does not connect to the Tower in time. This is enough to stop her for a positive Elixir trade.
+**With the help of the Crown Tower, [[Barbarian Barrel]] or [[Royal Delivery]] can stop the Musketeer for a positive Elixir trade. The spells will weaken the Musketeer while the spawned troop will finish her off.
+**The Musketeer can be destroyed entirely within 2 hits from the [[Void]], provided that she is the only troop inside it. This is enough to counter the Musketeer for a +1 Elixir trade. Otherwise, the player can save her by placing another troop inside the Void, though it's generally not worth the risk, as the player will get an even bigger Elixir advantage.
+*Although they serve similar functions, the Musketeer is an excellent pair with the Cannon. For 7 Elixir, the player will get a defense that deals a lot of damage per hit. However, they are very weak to swarms, and using Fireball, Poison, and Lightning will reliably take them down (or, in the case of Fireball, severely weaken the Musketeer) for a positive Elixir trade. An [[Cannon/Evolution|Evolved Cannon]] will make clearing swarms significantly better, however, heavy spells are still troublesome for them.
+*Using troops that are able to kite other units, like Battle Ram, [[Ice Golem]], Goblin Giant, and [[Wall Breakers]], allows the Musketeer and the two Crown Towers to deplete the target's hitpoints without letting it harm the Musketeer herself. She will be fully healthy for a counterpush afterwards.
+*Due to her long range and moderate hitpoints, she can deal with a [[Mortar]] and an [[X-Bow]] with some efficiently, defeating those buildings quickly for a neutral or +2 Elixir trade. However, without additional support, the Goblins spawned from an [[Mortar/Evolution|Evolved Mortar]] might defeat her before the Mortar is defeated.
+*A Night Witch will quickly defeat the Musketeer when deployed on top of her due to her high damage output paired with her ability to spawn Bats. Afterwards, she can be used for a counterpush.
+*The Musketeer can make quick work of the Mother Witch's Cursed Hogs alongside a Crown Tower, then defeat her with barely any damage taken.
+*Depending on what the player wants in their deck, they can substitute the Musketeer with other similar cards.
+**As the Musketeer can target both air and ground troops, she is a reasonable substitute to the [[Archers]], albeit at the price of a higher [[Elixir]] cost.
+**The Cannon is a close alternative to the Musketeer, dealing slightly more damage, costing -1 Elixir, and pulling enemy building-targeting troops, but it is significantly weaker, and it does not target air. The Musketeer is better in decks that favor offensive plays, or decks that already have a defensive building.
+**The Mega Minion and the Phoenix can have a damage per second close enough to the Musketeer. The former costs -1 Elixir, while the latter can reborn if his Egg survives for long enough. However, they cannot be targeted by certain troops, and due to being melee units, they won't be able to assist pushes from a long range.
+**The Musketeer has a slightly higher damage output per second than the [[Wizard]] for 1 less Elixir and slighty longer range, but lacks the area damage effect. Generally, the Wizard is more efficient at countering swarm troops, while the Musketeer is better suited to take down singular troops.
+**The [[Flying Machine]] can be a good replacement for the Musketeer in a deck, particularly one that relies a lot on air troops. However, in ground decks, the Musketeer is usually better because of her higher damage and hitpoints. Also, the Flying Machine is unable to survive a Fireball, making it significantly weaker against decks that use it, albeit the player can use this to their advantage by using other cards susceptible to Fireball.
+**The Baby Dragon is another similar substitute to the Musketeer. His splash damage, faster movement speed, and higher health traits allow him to be better at survivability and crowd control at support, however, he deals less damage, attacks slower, and is a flying troop, making him unable to be targeted by certain troops, making him worse defensively in most cases.
+**For 5 more Elixir, the player can deploy the [[Three Musketeers]] [[Cards|card]] for more power within a push, having 2 Musketeers more than using the Musketeer card. This means that it is not wise to use [[Mirror]] on the Musketeer, as that would cost the same as using the Three Musketeers card. The drawback is that the Musketeer is individually more flexible to be used compared to the Three Musketeers (i.e. they are not forced to use 9 Elixir on a single push as opposed to dropping 4 Elixir and having an additional 5 Elixir for a second push or a different card altogether), though the Elite Musketeers have more health and also deal more damage at close quarters.
+***The player should never try deploying 4 Musketeers or more unless the opponent has no area damage cards. In the case of 4 Musketeers, not only does it cost 13 Elixir, a Fireball, Poison, Lightning, or Rocket can severely cripple or fully destroy them and give the opponent a massive Elixir profit. The player should almost always deploy the Three Musketeers in the middle of the Arena, making them split up, and then deploy another Musketeer in the single Musketeer lane.
+**Another building substition that the player can make with the Musketeer is Tesla. For a similar cost, it deals slightly less damage and attacks slower, but hides itself when inactive and is smaller, making it better at providing supports in Mortar or X-Bow decks.
+**For a similar cost, the Furnace deals less damage and attacks slower, but constantly spawns [[Fire Spirit]]s to help dealing damage and clearing swarms, making him better at supporting a push. It also has a similar range, allowing him to reach buildings with efficiency, though his damage makes it less worthy to do so.
+**The Hunter deals more damage than the Musketeer and also has higher health, making him more durable and also powerful. However, because he has a significantly shorter range and deals less damage the more distant he is from the target, he is worse at countering things far away, while requiring other troops for the player to get the most value out of him.
+**The Musketeer has very similar damage to an Electro Wizard, as well as a faster attack speed and longer range. However, the Electro Wizard also comes with a stun effect on his attack, as well as being better against frail swarms because of his spawn damage.
+**[[Magic Archer]] has a significantly longer range than the Musketeer and also deals slight area damage, but deals less damage and has less hitpoints, making him less durable. The Magic Archer is better for sniping troops and buildings from afar, while the Musketeer is a better defensive troop.
+**If the player does not have a {{Rarity|Champion}} card in their deck, they can use the [[Archer Queen]] or [[Little Prince]] in their deck to replicate the Musketeer's role. The Archer Queen's higher health allows her to have more survivability, while her Cloaking Cape ability allows her to defeat anything very quickly. The Little Prince has similar hitpoints to the Musketeer, but deals less damage for -1 Elixir. If he stays still long enough, his hit speed drastically increases, and he also has a portable tank due to his Royal Rescue ability spawning a Guardienne. However, if the player wants to use other {{Rarity|Champion}} or {{Rarity|Hero}} cards in their deck, then the Musketeer is the clear choice.
+*Because of her great matchup against the [[Skeleton Dragons]], Baby Dragon, [[Inferno Dragon]], and [[Electro Dragon]], she is a good choice in the [[Treasure Hunt|Dragon Hunt]] sub-[[:Category:Modes|mode]] of the Treasure Hunt game mode. She can handle any of the four Dragons if the player fails to claim the Elixir Egg, while also being able to deal high enough damage to be used as a back-up to claim the Elixir Egg.
+
+<center><div class="table-back" id="unit-statistics">{{Statistics}}
+{{StatusEffects}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+!scope="col"|Cost<br>{{Icon|I=Elixir}}
+!scope="col"|Hit Speed<br>{{Icon|I=Damage Speed}}
+!scope="col"|First Hit Speed<br>{{Icon|I=Damage Speed}}
+!scope="col"|Speed<br>{{Icon|I=Speed}}
+!scope="col"|Deploy Time<br>{{Icon|I=Deploy Time}}
+!scope="col"|Range<br>{{Icon|I=Range}}
+!scope="col"|Projectile Speed<br>{{Icon|I=Speed}}
+!scope="col"|Target<br>{{Icon|I=Targets}}
+!scope="col"|Count<br>{{Icon|I=Troop Count}}
+!scope="col"|Transport<br>{{Icon|I=Transport}}
+!scope="col"|Type<br>{{Icon|I=Type}}
+!scope="col"|Rarity<br>{{Icon|I=Rarity}}
+|-
+|4||1 sec||0.7 sec||Medium (60)||1 sec||6||1000||Air & Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 721 }}
+{{#vardefine: dmg_11 | 217 }}
+{{#vardefine: atk_speed | 1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{|class="wikitable" style="width:100%; text-align:center;"
+!width="25%"|Type
+!width="10%"|Level/Tier
+!width="40%"|Objective
+!width="25%"|Reward
+|-
+|rowspan="3"|Damage Dealer<br>[[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 175,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|100 Musketeer cards<br>50{{Icon|I=XP}}
+|-
+|2
+|Deal a total of 520,000 Damage to enemy Troops or buildings
+|4,000{{Icon|I=Gold}}<br>50{{Icon|I=XP}}
+|-
+|3
+|Deal a total of 870,000 Damage to enemy Troops or buildings
+|100{{Icon|I=Gem}}<br>50{{Icon|I=XP}}
+|-
+|rowspan="3"|Troop Destroyer<br>[[File:Troop Destroyer.png|50x50px]]
+|1
+|Destroy 490 troops
+|6,000{{Icon|I=Gold}}<br>125{{Icon|I=XP}}
+|-
+|2
+|Destroy 1,400 troops
+|100{{Icon|I=Rare Wild Card}}<br>125{{Icon|I=XP}}
+|-
+|3
+|Destroy 2,450 troops
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|rowspan="3"|No Escape<br>[[File:No Escape.png|50x50px]] 
+|1
+|Hit 9 Troops with a single deploy a total of 80 times
+|6,000{{Icon|I=Gold}}<br>175{{Icon|I=XP}}
+|-
+|2
+|Hit 9 Troops with a single deploy a total of 240 times
+|8,000{{Icon|I=Gold}}<br>175{{Icon|I=XP}}
+|-
+|3
+|Hit 9 Troops with a single deploy a total of 480 times
+|10,000{{Icon|I=Gold}}<br>175{{Icon|I=XP}}
+|}
+</div></center>
+
+==Sound Effects==
+===Generic===
+{|class="wikitable"
+!Sound Effect
+!Action
+!Description
+!Source
+|-
+|[[File:Knight Step 1.wav]][[File:Knight Step 2.wav]][[File:Knight Step 3.wav]][[File:Knight Step 4.wav]]
+|Walk
+|Plays when the Musketeer is walking.
+|[[Knight]]
+|}
+
+===Unique===
+{|class="wikitable"
+!Sound Effect
+!Action
+!Description
+|-
+|[[File:Musketeer Deploy.wav]]
+|Deployment
+|Plays when the Musketeer is deployed.
+|-
+|[[File:Musketeer Reload.wav]]
+|Reload
+|Plays after the Musketeer is deployed.
+|-
+|[[File:Musketeer Attack.wav]]
+|Attack
+|Plays when the Musketeer attacks something.
+|-
+|[[File:Musketeer Hit.wav]]
+|Hit
+|Plays when the Musketeer hits her target.
+|}
+
+==History==
+2016
+*The Musketeer [[Cards|card]] was added with [[Version History#Softlaunch on iOS (4/1/2016)|Clash Royale's game launch]] on 4/1/2016.
+*On 9/2/2016, the [[Version History#Chest Rewards & Card Balance (9/2/2016)|Chest Rewards & Card Balance Update]] decreased the Musketeer's Damage by 25% and her Cost to 4 [[Elixir]] (from 5).
+*On 19/2/2016, a [[Version History#Balance Changes (19/2/2016)|Balance Update]] increased the Musketeer's Damage by 11%.
+*On 29/2/2016, the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]], decreased the Musketeer's Sight Range to 6 tiles (from 6.5 tiles). It also changed the Musketeer's card image.
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]] increased the {{Rarity|Rare}} card Level Cap to 11 (from 10). The update also fixed the “range bug”, by decreasing the Musketeer's Range to 6 tiles (from 6.5 tiles), but maintaining her effective Range.
+2018
+*On 5/9/2018, the [[Version History#September 2018 Update (5/9/2018)|September 2018 Update]] made {{Rarity|Rare}} cards start at Level 3 and end at Level 13 (from 1 to 11).
+2019
+*On 4/2/2019, a [[Version History#Balance Changes (4/2/2019)|Balance Update]] increased the Musketeer's Damage by 3%.
+*On 26/11/2019, the [[Version History#End of November 2019 Update (26/11/2019)|End of November 2019 Update]] added a card render to the Musketeer's card info screen.
+2020
+*On 6/10/2020, a [[Version History#Balance Changes (6/10/2020)|Balance Update]] increased the Musketeer's First Attack Period to 0.8 seconds (from 0.5 seconds).
+2021
+*On 2/9/2021, a maintenance break, changed the Musketeer's card render.
+*On 27/10/2021, the [[Version History#Champions Update (27/10/2021)|Champions Update]] increased the Level Cap of all cards to 14 (from 13).
+2022
+*On 3/2/2022, a [[Version History#Balance Changes (3/2/2022)|Balance Update]] decreased the Musketeer's Attack Period to 1 second (from 1.1 seconds).
+2023
+*On 19/6/2023, the [[Version History#Card Evolution Update (19/6/2023)|Card Evolution Update]]  increased the Level Cap of all cards to 15 (from 14). It also added the No Escape [[Card Mastery]] task for the Musketeer.
+2024
+*On 4/11/2024, the [[Version History#Pass Royale and more (4/11/2024)|November 2024 Update]] allowed the Musketeer to [[Card Evolution|Evolve]].
+2025
+*On 4/2/2025, a [[Version History#Balance Changes (4/2/2025)|Balance Update]] decreased the Musketeer's First Attack Period to 0.7 seconds (from 0.8 seconds).
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]] decreased the Musketeer's Damage by 0.45% and her Hitpoints by 0.06%.
+*On 29/10/2025, a [[Version History#Maintenance Break (29/10/2025)|maintenance break]] changed the Musketeer's card image.
+*On 24/11/2025, the [[Version History#Level 16 Update (24/11/2025)|Level 16 Update]] increased the Level Cap of all cards to 16 (from 15).
+*On 1/12/2025, the [[Version History#Pass Royale and more (1/12/2025)|December 2025 Update]] added the Musketeer's [[Heroes|Hero]] form.
+
+==Gallery==
+<gallery>
+File:MusketeerCardOld.png|Musketeer's card image before 29/2/2016.
+File:MusketeerCardOld1.png|Musketeer's card image between 29/2/2016 and 29/10/2025.
+File:Old Musketeer Card Render.png|Musketeer's card render before 2/9/2021.
+File:Musketeer Card Render.png|Current card render.
+File:New Musketeer.png|Musketeer's full body card image render.
+File:Musketeer Render.png|Musketeer's full body card render.
+File:Musketeer Render 2.png|A Musketeer render, originating from [[Three Musketeers]]' card render.
+File:Musketeer Render 3.png|Another Musketeer render, originating from a Three Musketeers render.
+File:Musketeer Render 4.png|A Musketeer looking above.
+File:Musketeer Render 5.png|A Musketeer aiming with her musket.
+</gallery>
+
+==Trivia==
+*The [https://en.wikipedia.org/wiki/Musket musket] is a muzzle-loaded long gun that appeared as a smoothbore weapon in the early 16th century, at first as a heavier variant of the [https://en.wikipedia.org/wiki/Arquebus arquebus], capable of penetrating [https://en.wikipedia.org/wiki/Plate_armour plate armour]. By the mid-16th century, this type of musket gradually disappeared as the use of heavy armour declined, but muskets continued as the generic term for smoothbore long guns until the mid-19th century. In turn, this style of musket was retired in the 19th century when [https://en.wikipedia.org/wiki/Rifled_musket rifles] became common.
+*The Musketeer [[Cards|card]] could be a reference to the fourth Musketeer in the novel "''[https://en.wikipedia.org/wiki/The_Three_Musketeers The Three Musketeers]''", D'Artagnan, who was never considered to be in the group.
+*The Musketeer is one of the first [[:Category:Troop Cards|troop]] cards to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the [[Minions]], [[Archers]], [[Knight]], [[Spear Goblins]], [[Goblins]], [[Bomber]], [[Skeletons]], [[Barbarians]], [[Minion Horde]], [[Mini P.E.K.K.A.]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], [[Baby Dragon]], [[Skeleton Army]], [[Witch]], [[P.E.K.K.A.]], [[Prince]], and [[Balloon]].
+*The Musketeer is one of the first troop cards to receive a card render, alongside the Archers, Knight, Goblins, Bomber, Skeletons, Barbarians, [[Bats]], [[Royal Recruits]], [[Skeleton Barrel]], [[Rascals]], Giant, Valkyrie, Wizard, [[Flying Machine]], Hog Rider, [[Royal Hogs]], [[Dart Goblin]], [[Zappies]], [[Elixir Golem]], Baby Dragon, Skeleton Army, Witch, P.E.K.K.A., Prince, Balloon, [[Giant Skeleton]], [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Mega Knight]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], [[Magic Archer]], [[Bandit]], [[Lava Hound]], [[Night Witch]], and [[Fisherman]].
+*The Musketeer is 1 of 10 troops that have been featured under the [[Ruler Ability#Special Delivery|Special Delivery]] [[Ruler Ability|ruler ability]], the others being Knight, Skeleton Barrel, Mini P.E.K.K.A., Wizard, P.E.K.K.A., Giant Skeleton, [[Golem]], [[Sparky]], and Royal Ghost.
+*The Musketeer is 1 of 23 cards that have had its [[Elixir]] cost changed, the others being Bomber, [[Fire Spirit]], Royal Recruits, [[Cannon]], [[Mortar]], [[Three Musketeers]], [[Heal]], [[Goblin Hut]], [[Bomb Tower]], [[Barbarian Hut]], [[Furnace]], [[Elixir Collector]], Skeleton Army, P.E.K.K.A., Wall Breakers, [[Electro Giant]], Bowler, [[Goblin Barrel]], [[Barbarian Barrel]], [[Rage]], Fisherman, and the [[Monk]].
+*The Musketeer wears a cape in her card image, but not in [[Basics of Battle|battle]].
+*In the Arabic language setting of the game, the Musketeer is revealed to be a knight.
+*The Musketeer, along with the Archers, Goblins, Barbarians, Wizard, Hog Rider, [[Battle Healer]], Witch, Miner, Ice Wizard, and Bandit, is featured as a [https://squad-busters.fandom.com/wiki/Squaddies Squaddie] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*The Musketeer, along with the Archers, Goblins, Barbarians, [[Ice Spirit]], Mini P.E.K.K.A., Giant, Wizard, Hog Rider, Witch, Prince, and Night Witch, is featured as a sticker in [https://en.wikipedia.org/wiki/IMessage iMessage], in a sticker pack called [https://apps.apple.com/us/app/clash-theater-stickers/id1353823484 Clash Theater]. Also, along with the Archers, Goblins, Skeletons, Barbarians, Mini P.E.K.K.A., Wizard, Witch, Prince, and [[Princess]], she is also featured in the [https://apps.apple.com/us/app/clash-a-rama/id1182384664 Clash-A-Rama] sticker pack.
+*"Boomstick" may be a reference to the horror movie ''[https://en.wikipedia.org/wiki/Army_of_Darkness Army of Darkness].''
+*The Musketeer's deployment shares the same sound effects as the Hunter's attack load sound.
+*The Musketeer is one of the first cards that the player unlocks, as a reward for the player winning the first Tutorial match through a Wooden Chest, alongside the Mini P.E.K.K.A..
+**Unlike the Mini P.E.K.K.A., the player is not told to use the Musketeer during the tutorial.
+*The Musketeer is the subject of 2 [[Emotes]].
+*In the [https://youtu.be/s67c93v1njk Star Level intro video], the Musketeer was shown to have 3 [[Star Points|Star Levels]]. However, she ended up with only 2 Star Levels in-game.
+*Before the Musketeer's card release, the Musketeer's damage was decreased by 14%.
+
+==In other languages==
+{{Other languages|fr=Mousquetaire|de=Musketierin|es=Mosquetera|it=Moschettiere|nl=Musketier|no=Musketer|tr=Silahşor|jp=マスケット銃士|kr=머스킷병|ru=Мушкетер|ar=فارسة|pt=Mosqueteira|cn=火枪手|cnt=火槍手|fa=تفنگدار|id=Musketeer|ms=Musketeer|th=ทหารเสือ|fi=Musketti|vi=Ngự lâm quân|armeaning=Female Knight.}}
+
+{{Navigation|Card}}
+
+[[fr:Mousquetaire]]
+[[de:Musketierin]]
+[[es:Mosquetera]]
+[[it:Moschettiere]]
+[[ja:マスケット銃士]]
+[[ko:머스킷병]]
+[[ru:Мушкетёр]]
+[[zh:火枪手]]

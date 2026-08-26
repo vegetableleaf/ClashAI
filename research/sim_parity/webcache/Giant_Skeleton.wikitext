@@ -1,0 +1,248 @@
+{{DISPLAYTITLE: <span style="color: #b300b3;">Giant Skeleton</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}
+
+{{Card Infobox|Cost=6|Rarity=Epic|Type=Troop|Arena=Frozen Peak|ReleaseDate=4 January 2016}}{{SubpageNavBox|MergeTactics=yes}}{{Quote|The bigger the skeleton, the bigger the bomb. Carries a bomb that blows up when the Giant Skeleton dies.}}
+
+The Giant Skeleton is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from the [[Arenas|Frozen Peak (Arena 8)]]. It spawns a single-target, ground-targeting, melee, ground [[:Category:Troop Cards|troop]] with very high hitpoints and high damage. When defeated, he drops a bomb which explodes after 3 seconds, dealing damage, which is double against [[:Category:Crown Towers|Crown Towers]], and inflicting knockback. He appears to be a colossal [[Skeletons|Skeleton]] that wears a team-colored ushanka, has an underbite, and carries a large gunpowder barrel on his back and a black bomb on his hand. A Giant Skeleton card costs 6 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Giant Skeleton Card}}
+*The Giant Skeleton is effective to use as a meat shield for other [[:Category:Troop Cards|troops]]. This makes him a good [[Cards|card]] to use as a buffer for spawner [[:Category:Building Cards|buildings]], as any unit that takes out the Giant Skeleton will be taken out by his bomb afterwards while the spawner cooks up troops. They will continue unopposed to the [[:Category:Crown Towers|Crown Tower]]. However, he is not very interchangeable with a [[Giant]], as the Giant Skeleton can be distracted with any ground unit, has lesser hitpoints, and costs 1 more [[Elixir]].
+*The Giant Skeleton's death bomb is useful for weakening or destroying troops that are close together. The death damage is enough to defeat any unit up to a [[Magic Archer]], [[Zappies]], or [[Mother Witch]] on its own. Combined with [[The Log]] or a [[Barbarian Barrel]], the combo can finish off [[Musketeer]], [[Wizard]], [[Electro Wizard]], and the like. [[Tornado]] also works well with the Giant Skeleton, helping his death bomb and support troops to hit more units, and also allowing [[Zap]] and [[Giant Snowball]] to finish off the weakened troops.
+**If a Giant Skeleton or [[Mega Knight]] is used behind your Giant Skeleton, a Tornado placed close to the Tower will cause them to push your Giant Skeleton closer to the Tower. While the Giant Skeleton himself will not connect, his bomb will.
+*[[Clone]] can forcibly push an allied Giant Skeleton forward, allowing his death damage to hit the Crown Tower reliably. The cloned bomb can also help clean up the troops that the opponent used to defend the first Giant Skeleton. If the Giant Skeleton was already attacking the Crown Tower before being cloned, it is almost a guarantee that his clone's bomb will also detonate on top of the Tower, dealing much more damage for just 3 extra Elixir.
+*Since he moves quite slowly and has a low damage per second, players may need to back him up with splash damage troops, such as the [[Witch]], [[Princess]], [[Firecracker]], Bomber, or Wizard. This gives the Giant Skeleton a higher chance to connect to the Tower.
+*[[:Category:Spell Cards|Spells]] with an unrestricted placement also support a Giant Skeleton well once he has crossed the bridge, decimating swarms placed to destroy him.
+*The Giant Skeleton's high hitpoints and death bomb can cause the opponent to overcommit their defenses on him solely, allowing other troops (especially quick ones like the [[Lumberjack]] and the [[Berserker]]) to pass by unharmed.
+*Fast troops can push the Giant Skeleton forward and allow him to reach the Tower more quickly. However, depending on the unit that is used, the main weakness of the push may become amplified (eg. a [[Mini P.E.K.K.A.]], [[Elite Barbarians]], or a Prince combined with a Giant Skeleton is still weak to swarms and air units), so often times more than 1 layer of offense will be necessary.
+**On the other hand, a Giant Skeleton can bodyblock friendly units. For example; a Giant Skeleton can block a friendly [[Hog Rider]] from travelling towards a building, allowing him to connect to the Tower.
+*As the Giant Skeleton is easily countered by swarms, a good way to ensure the Giant Skeleton reaches the Tower is to deploy him with the [[Skeleton Army]]. The Skeleton Army will surround the Giant Skeleton and defeat any swarms and troops sent to surround him. Furthermore, they will also help damage the Tower, and some Skeletons can even remain to help deal some extra damage on the [[King's Tower|King Tower]]. This however, is easily countered by spells or splash-damaging troops such as the Wizard, [[Bomber]], [[Valkyrie]], Baby Dragon, [[Executioner]], [[Bowler]], and the Mega Knight.
+*Pairing the Giant Skeleton with another threatening troop can cause the opponent to split their defenses thin, allowing one or the other to connect. For example, a Giant Skeleton paired with a [[Balloon]] can block air units and protect the Balloon long enough for it to reach the Tower. Additionally, the defending units will almost certainly die to one or both of the death bombs, eliminating or weakening the opponent's opportunity to counterpush. However, this push is extremely weak to air units (such as the [[Inferno Dragon]] or the [[Minion Horde]]), so it may be more beneficial to play anti-air cards or anti-air spells along with the push.
+*The Giant Skeleton is a good way to stop a large push, since he can group the enemies up and his death bomb will cripple the push, allowing other cards to finish everything off. It is a good idea to combine him with distracting troops like [[Skeletons]] to allow the bomb to explode on the Giant Skeleton's targets.
+*Despite being a negative Elixir trade, the [[P.E.K.K.A.]] is a good counter to the Giant Skeleton, since she can easily defeat him and not let the Crown Tower take any death damage while also surviving with many of her hitpoints remaining.
+*The [[Inferno Tower]] is an effective counter to the Giant Skeleton. Not only does it cost 1 less Elixir, but is also less vulnerable to most enemy spells. If needed, the Giant Skeleton can also be pulled away with another cheap card such as Skeletons.
+*On defense, mini tanks such as [[Knight]], [[Lumberjack]], Valkyrie, Mini P.E.K.K.A, [[Battle Healer]], [[Prince]], [[Royal Ghost]], [[Golden Knight]], and [[Dark Prince]] can counter a lone Giant Skeleton, with the help of any [[:Category:Tower Troop Cards|tower troop]] and have some hitpoints for a counterattack.
+*If the player has nothing else to defend with, a Giant can counter a Giant Skeleton that has reached the Tower. Deploying the Giant in front of the Crown Tower pushes the Giant Skeleton, thus causing it to retarget, and since it is slow, it will lure the Giant Skeleton away from the Tower, taking away with it and saving the Tower from the enormous death damage that the Giant Skeleton can deal.
+*Despite not dealing high damage, the Giant Skeleton can stop a Mega Knight on his own, thanks to his higher attack speed and decently high hitpoints. With the help of any tower troop, he will also be left with half his hitpoints for a counterattack.
+*Although situational, the Giant Skeleton can be used as a distraction for enemy air troops, as his hitpoints are high enough to tank many shots from units such as [[Baby Dragon]], [[Electro Dragon]], [[Phoenix]], [[Skeleton Dragons]], or [[Flying Machine]].
+*When using a [[Fisherman]], the player should not play him behind the King Tower, as this is an opportunity for the Giant Skeleton to be pulled by the Fisherman and landing next to the Crown Tower. Instead it should be used as a reaction when the Giant Skeleton is a low health in order to pull him away from the Tower and drop the bomb in a spot away from the Tower.
+*A [[Mighty Miner]] or [[Monk]] can counter a Giant Skeleton for a positive Elixir trade. If the Mighty Miner was misplaced, it may be a good idea to use his ability, to allow him to escape the Giant Skeleton's bomb, which is still a positive Elixir trade.
+*The Giant Skeleton can be a good tank for pushes in [[Global Spell|Rage Battles]], as his increased speed will force the opponent to put more focus on him to prevent colossal damage to Towers. However, this benefit comes with a catch - a decreased viability on defense, since enemy troops will be able to quickly leave his death bomb's range before it detonates.
+
+<center>
+
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Giant Skeleton Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|6||1.3 sec||0.3 sec||Medium (60)||1 sec||Melee: Short (0.8)||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+
+{{StatisticsSubheader|Bomb Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Death Damage Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+|-
+|3||3 sec||Air & Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 3361 }}
+{{#vardefine: dmg_11 | 276 }}
+{{#vardefine: atk_speed | 1.4 }}
+{{#vardefine: death_11 |  688}}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per Second<br />{{Icon|I=DPS}}
+! scope="col" |Death Damage<br />{{Icon|I=Death Damage}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(7-11)) round 0 }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(8-11)) round 0 }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:death_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 220,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|20 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 670,000 Damage to enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 1,120,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" |Tower Tapper <br/ > [[File:Tower Tapper.png|50x50px]]
+|1
+|Hit enemy [[:Category:Crown Towers|Crown Towers]] a total of 280 times
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Crown Towers a total of 800 times
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Crown Towers a total of 1,400 times
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Giant Skeleton [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016.
+*On 2/2/2016, the [[Version History#February 2016 Update (2/2/2016)|February 2016 Update]], added the Death Damage statistic on the Giant Skeleton's card info screen.
+*On 29/2/2016, the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]], increased the Giant Skeleton's hitpoints by 11% and death damage time to 3 seconds (from 1 second). It also decreased the Giant Skeleton's sight range to 5 tiles (from 6 tiles).
+*On 3/5/2016, the [[Version History#May%202016%20Update%20(3/5/2016)|May 2016 Update]], fixed the "range bug" and decreased the Giant Skeleton's range to 0.8 tiles (from 2 tiles), but his effective range was unchanged. There was also an unannounced change to the Giant Skeleton, a decrease to his collision radius to 1 tile (from 1.2 tiles).
+*On 4/7/2016, the [[Version History#Tournaments Update (4/7/2016)|Tournaments Update]], increased the Giant Skeleton's damage by 20%.
+*On 1/11/2016, the [[Version History#November 2016 Update (1/11/2016)|November 2016 Update]], changed the Giant Skeleton's sound effects, and he now laughs when deployed.
+*On 15/12/2016, the [[Version History#December 2016 Update (15/12/2016)|December 2016 Update]], increased the Giant Skeleton's damage by 8%.
+2017
+*On 12/12/2017, the [[Version History#Electrifying Update (12/12/2017)|Electrifying Update]], increased the Giant Skeleton‘s hitpoints by 5%.
+2018
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Epic}} cards start at Level 6 and end at Level 13 (from 1 to 8).
+2019
+*On 1/4/2019, a [[Version History#Balance Changes (1/4/2019)|Balance Update]], decreased the Giant Skeleton’s first attack time interval to 0.3 seconds (from 0.5 seconds) and increased his mass to 18 (from 15).
+*On 5/8/2019, a [[Version History#Pass Royale and more (5/8/2019)|Balance Update]], removed the Giant Skeleton from all [[Tournament/Special Event Challenges|Draft]] selections.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Giant Skeleton's card info screen.
+2021
+*On 30/3/2021, the [[Version History#2021%20Quarter%201%20Update%20(30/3/2021)|2021 Quarter 1 Update]], decreased the Giant Skeleton's death damage by 54% and increased his damage by 29%.
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], gave the Giant Skeleton's bomb the ability to inflict double damage on [[:Category:Crown Towers|Crown Towers]]. It also moved the [[Arenas|Arena]] to unlock the Giant Skeleton from Bone Pit to P.E.K.K.A's Playhouse.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 4/4/2022, the [[Version History#April%202022%20Update%20(4/4/2022)|April 2022 Update]], increased the Giant Skeleton’s hitpoints by 7% and decreased his attack time interval to 1.4 seconds (from 1.5 seconds).
+*On 3/6/2022, a maintenance break, changed the Giant Skeleton card image and card render.
+*On 12/9/2022, a [[Version History#Maintenance Break (12/9/2022)|maintenance break]], decreased the Giant Skeleton's hitpoints by 5%.
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Giant Skeleton from P.E.K.K.A's Playhouse to Frozen Peak.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+*On 3/1/2024, a [[Version History#Balance Changes (3/1/2024)|Balance Update]], increased the Giant Skeleton's hitpoints by 6%.
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], increased the Giant Skeleton's hitpoints by 0.02%, decreased his damage by 0.37%, and increased his death damage by 0.18%.
+*On 8/7/2025, a [[Version History#Balance Changes (8/7/2025)|Balance Update]], increased the Giant Skeleton's damage by 4%.
+*On 24/11/2025, the [[Version History#Level 16 Update (24/11/2025)|Level 16 Update]], increased the Level cap of all cards to 16 (from 15).
+2026
+
+* On 12/1/2026, a [[Version History#January 2026|Balance Update]], decreased the Giant Skeleton's attack time interval to 1.3 seconds (from 1.4 seconds).
+* On 4/5/2026, a Balance Update, increased the Giant Skeleton's death damage by 29%, decreased his hitpoints by 7%, decreased his collision radius to 0.75 tiles (from 1 tile), reduced his model size and removed his bomb's ability to inflict double damage on [[:Category:Crown Towers|Crown Towers]].
+
+==Gallery==
+<gallery>
+File:GiantSkeletonCardOld.png|Giant Skeleton's card image before 3/6/2022.
+File:Old Giant Skeleton card render.png|Giant Skeleton's card render before 3/6/2022.
+File:Giant Skeleton card render.png|Current card render.
+File:Chinese Giant Skeleton card render.png|Giant Skeleton’s card render in the Chinese version of the game.
+File:Giant Skeleton Preview.gif|Current card preview
+File:Giant Skeleton 2.png|Giant Skeleton.
+File:Giant Skeleton 3.png|Giant Skeleton with red ushanka.
+File:Giant Skeleton Body.png|Full Body Render
+File:Giant skelly.jpg|Official 3D model of Clash of Clans Giant Skeleton
+File:Screenshot 2025-11-19 184410.png|Giant Skeleton in the "Clash Royale - Anime Trailer" by IGN on Youtube. (1)
+File:Screenshot 2025-11-19 184441.png|Giant Skeleton in the "Clash Royale - Anime Trailer" by IGN on Youtube. (2)
+</gallery>
+
+==Trivia==
+*The word "''Skeleton''" comes from the Greek "''σκελετός''" (''skeletós''), meaning dried up or withered.
+**The Giant Skeleton is 1 of 15 cards associated with [[Skeletons]], with the others being [[Bomber]], [[Skeleton Dragons]], [[Skeleton Barrel]], [[Tombstone]], [[Bomb Tower]], [[Guards]], [[Skeleton Army]], [[Witch]], [[Balloon]], [[Wall Breakers]], [[Super Witch]], [[Graveyard]], [[Skeleton King]], and of course, Skeletons.
+***In the Japanese language setting of the game, his description refers to how the Bomber is a tiny skeleton carrying a much smaller bomb.
+***According to a Clash-A-Rama comic [https://clasharama.fandom.com/wiki/Clash-A-Rama!_Comic_Strips?file=BRING-YOUR-CHILD-TO-WORK-DAY_Final.jpg strip], a Skeleton is the Giant Skeleton's child.
+*Bombs were first invented in China during the ninth century. Initially, they were made with ceramic material along with gunpowder, however, they were later changed to cast-iron shells with the [https://en.wikipedia.org/wiki/Thunder_crash_bomb Thunder crash bomb] during the twelve century.
+*The Giant Skeleton is 1 of 17 troops that inspired a troop in Clash of Clans, the others being [[Spear Goblins]], Bomber, [[Bats]], Skeleton Barrel, [[Minion Horde]], [[Firecracker]], [[Battle Ram]], [[Ice Golem]], [[Zappies]], [[Baby Dragon]], [[Ram Rider]], [[Inferno Dragon]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], and [[Night Witch]].
+**According to his [https://clashofclans.fandom.com/wiki/Giant_Skeleton Clash of Clans counterpart]'s render, the actual color of his ushanka is brown. However, when used in battle, he is shown to have a red ushanka, similarly to an opponent's Giant Skeleton troop in Clash Royale.
+**Unlike his Clash of Clans counterpart, the Giant Skeleton in Clash Royale attacks anything in sight instead of prioritizing buildings.
+***Giant Skeleton is also the only 'Giant' card that doesn't target buildings.
+**Before the 3/6/2022 maintenance break, the Giant Skeleton's [[Cards|card]] render was taken from his Clash of Clans counterpart's render, except with a color change of his ushanka.
+**The bomb and barrel of the Giant Skeleton appear to be taken from a [[w:c:clashofclans:Giant Bomb|Giant Bomb]] from Clash of Clans.
+*The Giant Skeleton is one of the first troop cards to receive a card render, alongside the [[Archers]], [[Knight]], [[Goblins]], Bomber, Skeletons, [[Barbarians]], Bats, [[Royal Recruits]], Skeleton Barrel, [[Rascals]], [[Musketeer]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Flying Machine]], [[Hog Rider]], [[Royal Hogs]], [[Dart Goblin]], Zappies, [[Elixir Golem]], Baby Dragon, Skeleton Army, Witch, [[P.E.K.K.A.|P.E.K.K.A]], [[Prince]], Balloon, [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], Wall Breakers, [[Bowler]], [[Cannon Cart]], [[Mega Knight]], Ram Rider, Miner, Royal Ghost, Ice Wizard, [[Magic Archer]], [[Bandit]], [[Lava Hound]], Night Witch, and [[Fisherman]].
+*The Giant Skeleton has been featured in multiple [[Tournament/Special Event Challenges|special game modes]] outside of the card. More specifically:
+**The Giant Skeleton has been featured with multiple [[Buff|buffs]]. More specifically:
+***The Giant Skeleton is 1 of 14 troops that has been featured with a [[Buff#Rage|Rage]] buff, the others being [[Electro Spirit]], Giant, Zappies, Guards, Goblin Giant, Electro Dragon, Wall Breakers, [[Electro Giant]], Mega Knight, Ram Rider, [[Electro Wizard]], [[Sparky]], and Royal Ghost.
+***The Giant Skeleton is 1 of 2 troops that has been featured with a [[Buff#Death Spawn|Death Spawn]] buff, the other being Balloon.
+**The Giant Skeleton is 1 of 10 troops that has been featured under the [[Ruler Ability#Special Delivery|Special Delivery]] [[Ruler Ability|ruler ability]], the others being Knight, Skeleton Barrel, [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], Musketeer, Wizard, P.E.K.K.A, [[Golem]], Sparky, and Royal Ghost.
+*The Giant Skeleton has the same walking sound as the Skeleton King.
+*He appears to have an underbite, similar to the [[Minions]], Guards, Lava Hound, and [[Super Lava Hound]].
+*The Giant Skeleton's ushanka hat is a reference to [https://en.wikipedia.org/wiki/R504_Kolyma_Highway Road of Bones], a highway in Russia, where up to 1000000 imprisoned laborers died during its construction.
+*The Giant Skeleton makes a laughing sound when deployed, possibly a reference to the Clash Royale [https://www.youtube.com/watch?v=WugvrZBrExY Giant Skeleton commercial].
+*The Giant Skeleton is 1 of 15 troops which bring an excited reaction from the audience upon spawning and brings a collective groan from the audience when defeated, as well as a concerning gasp when the opponent plays him, the others include [[Royal Giant]], Giant, P.E.K.K.A., [[Rune Giant]], Goblin Giant, Golem, Bowler, Electro Wizard, Inferno Dragon, Sparky, Lava Hound, Night Witch, Super Lava Hound, and the [[Monk]].
+*The Giant Skeleton, along with the Minions, Bomber, Skeletons, Skeleton Dragons, [[Ice Spirit]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Mega Minion]], Ice Golem, Dart Goblin, Elixir Golem, [[Goblin Cage|Goblin Brawler]], Guards, Baby Dragon, P.E.K.K.A, Golem, Wall Breakers, Bowler, [[Executioner]], Mega Knight, Inferno Dragon, Royal Ghost, Lava Hound, and the Skeleton King are featured as a [https://squad-busters.fandom.com/wiki/Monsters monster] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*The Giant Skeleton is unavailable in multiple [[Tournament/Special Event Challenges|special game modes]]. More specifically:
+**It is 1 of 4 cards that is unavailable in Triple Draft, the others being [[Three Musketeers]], [[Clone]], and [[Mirror]].
+*In [[Touchdown]], if a Giant Skeleton is still on the [[Arenas|Arena]] after a touchdown has been scored (unless he scored it himself), will have his dropped bomb cleared.
+*The Giant Skeleton is the subject of certain cosmetics in the game. More specifically:
+**The Giant Skeleton is the subject of 2 [[Emotes]].
+**The Giant Skeleton is the subject of a [[King's Tower|Tower Skin]].
+**The Giant Skeleton is the subject of a few [[Battle Banners|Battle Banner]] items.
+***The Giant Skeleton is one of the first troops to be the subject of a Battle Banner item, along with the Mini P.E.K.K.A, Dart Goblin, P.E.K.K.A, Prince, Mega Knight, [[Super Witch]], and the [[Golden Knight]].
+***The Hole In The Wall frame and the Backpack, Backpack decoration are created by [https://x.com/suzyq53936155 SuzyQ].
+***The Harlequin Toad decoration is part of a collaboration with [https://www.playing4theplanet.org/participants/clash-royale Green Game Jam 2023].
+*On 1/4/2016, certain Content Creators were given a different version of the game, with a Tombstone that visually looked larger and would spawn Giant Skeletons instead of Skeletons.
+*The initial balance change for Giant Skeleton on the [[Version History#Balance%20Changes%20(3/1/2024)|3/1/2024 balance changes]] was a 8% hitpoints increase, but it was lowered to 6% [https://royaleapi.com/blog/season-55-balance-wip last minute].
+*Before the Giant Skeleton's card release, the Giant Skeleton's cost was decreased to 6 [[Elixir]] (from 7 Elixir), his hitpoints were decreased by 10%, and his damage was increased by 11%.
+
+==In other languages==
+{{Other languages|fr=Squelette géant|de=Riesenskelett|es=Esqueleto gigante|it=Scheletro gigante|nl=Reuzenskelet|no=Kjempeskjelett|tr=Dev İskelet|jp=巨大スケルトン|kr=자이언트 해골|ru=Гигантский скелет|ar=هيكل عظمي عملاق|pt=Esqueleto Gigante|cn=骷髅巨人|cnt=骷髏巨人|fa=اسکلت غول‌پیکر|id=Jerangkong Raksasa|ms=Rangka Gergasi|th=โครงกระดูกยักษ์|fi=Jättiluuranko|vi=Bộ xương khổng lồ}}
+
+{{Navigation|Card}}
+
+[[fr:Squelette géant]]
+[[de:Riesenskelett]]
+[[es:Esqueleto gigante]]
+[[it:Scheletro gigante]]
+[[ja:巨大スケルトン]]
+[[ko:자이언트 해골]]
+[[ru:Гигантский скелет]]
+[[pt-br:Esqueleto Gigante]]
+[[zh:骷髅巨人]]

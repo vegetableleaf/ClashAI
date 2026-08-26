@@ -1,0 +1,201 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Inferno Dragon</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}
+
+{{Card Infobox|Cost=4|Rarity=Legendary|Type=Troop|Arena=Electro Valley|ReleaseDate=30 September 2016}}{{SubpageNavBox|Evolution=yes}}{{Quote|Shoots a focused beam of fire that increases in damage over time. Wears a helmet because flying can be dangerous.}}
+
+The Inferno Dragon is a {{Rarity|Legendary}} [[Cards|card]] that is unlocked from the [[Arenas|Electro Valley (Arena 11)]]. It spawns a single-target, air-targeting, short-ranged, air [[:Category:Troop Cards|troop]] with high hitpoints and various damage stages. The Inferno Dragon's damage increases over time as it remains focused on a single target specifically every two seconds it goes up to a stage until stage 3. It resembles a [[Baby Dragon]] with a helmet, a yellow hose and a fuel tank on its back. An Inferno Dragon card costs 4 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Inferno Dragon Card}}
+*Against a moving target, the Inferno Dragon should be placed, at most, 3.5 tiles away from the target's destination. This is because If the target moves out of range, the Inferno Dragon's damage stage will reset, severely hurting its damage per second. Use this fact and be sure to deploy your Inferno Dragon close to your [[:Category:Crown Towers|Crown Towers]] or in front of [[:Category:Troop Cards|troops]] to ensure that it will damage the target for as long as possible.
+*The damage of the Inferno Dragon functions generally the same as the [[Inferno Tower]]. For its first four hits, it deals about 8.5% of its full damage (stage 1). For its next five hits, it burns at about 28.5% of its full damage (stage 2). After that, it will incinerate the enemy with its full 100% damage (stage 3). The optimal time to stun the Inferno Dragon is at 4 seconds, right before it reaches its third stage of damage.
+**Rage effects can allow the Inferno Dragon to reach higher damage stages sooner and counter enemy troops quicker. Conversely, slowdown effects like that of the [[Ice Wizard]] will force it to take longer to reach higher damage stages, which can save more time for the Inferno Dragon's target to deal damage.
+*The Inferno Dragon can be considered a better alternative for the Inferno Tower due to its lower cost and the ability to counterattack. However, unlike the Inferno Tower, the Inferno Dragon is vulnerable to knockback and other effects that move it around the [[Arenas|Arena]], such as Giant Snowball, [[Fireball]], or [[Tornado]]. It also has significantly less health than an Inferno Tower and deals slightly less damage.
+**Due to the fact that it cannot pull ground or building-targeting troops, the Inferno Tower is the superior distraction. However, this can be an advantage as it means the Inferno Dragon can take down ground units easily without being damaged.
+**An Inferno Dragon can be countered with an Inferno Tower due to its much higher hitpoints and damage, but this is a negative Elixir trade. However, the Inferno Tower will attack first, due to the longer range, and it may survive to defend against other troops.
+*The [[Mega Knight]] is great to use with the Inferno Dragon since he can protect the Inferno Dragon from ranged troops as well as destroy swarms, while the Inferno Dragon can melt troops that can withstand the Mega Knight like the [[P.E.K.K.A.]], [[Mini P.E.K.K.A.]], [[Mighty Miner]], [[Golden Knight]], [[Prince]], and the [[Monk]].
+**On the other hand, the Inferno Dragon should never be used in conjunction with the [[Mega Knight/Evolution|Evolved Mega Knight]], as the Evolved Mega Knight will constantly push the troop that the Inferno Dragon targets, preventing him from attacking with a full charge. An exception can apply to troops that the Evolved Mega Knight cannot target, such as other air troops. A similar case applies to other cards with pulling effects, such as the [[Fisherman]] and [[Valkyrie/Evolution|Evolved Valkyrie]].
+*An Inferno Dragon is best used against high hitpoint troops due to its extremely high damage per second at its final damage stage. Against troops with lower hitpoints, its damage per second will only ever be somewhat average since they will be defeated before the Inferno Dragon can reach its maximum damage stage, the Inferno Dragon also cannot kill low hitpoint troops like [[Spear Goblins]] and [[Skeletons]] instantly so a splash card such as the Baby Dragon is a better counter to those troops.
+*While it has a decent amount of hitpoints, the Inferno Dragon is delicate in the heat of the battle, so it is best to pair the Inferno Dragon with higher-hitpoint troops, such as the [[Balloon]] and the [[Lava Hound]].
+*Units with a continuous stunning effect, like [[Zappies]], [[Electro Wizard]], [[Goblinstein]], or [[Electro Dragon]] make great counters. They will prevent the Inferno Dragon from ever reaching maximum damage, while taking minimal damage themselves. The [[Electro Giant]] can potentially counter the Inferno Dragon to some degree provided that the Inferno Dragon is in range of the Electro Giant's Zap Pack.
+**Despite the [[Tesla]] having an electric theme and attack, it can't reset the Inferno Dragon's attack. However, due to the Inferno Dragon's relatively low health and the fact that the Tesla will likely be placed between the Towers, the Tesla can effectively distract and eliminate the Inferno Dragon with Tower help for a neutral [[Elixir]] trade.
+*If the opponent has a unit with a continuous stunning effect, the player should consider trying to bait it out before playing the Inferno Dragon. For example, if the opponent is attempting to build a push with the stunning unit as a support card, the player can deploy units in the other lane that are weak to stunning effects, like the [[Dark Prince]], Prince, [[Mighty Miner]], or [[Sparky]]. This will likely prompt the opponent to use their stunning unit in the other lane, allowing the Inferno Dragon to attack uninterrupted. However, an adept opponent will likely try to defend the punishment without using the stunning unit, so the player should try to make the punish more threatening or have another method of controlling the stunning unit.
+*Since the Inferno Dragon is quite volatile (as its DPS drops sharply when stunned or knocked back), the player should consider carrying another high-damage unit in their deck. The [[Hunter]] can be quite effective as he can also take out swarms that can counter the Inferno Dragon.
+*When defending, it is advised to never let the Inferno Dragon lock onto a Crown Tower, as it can quickly threaten to take out the Tower if it's not defended. If it does manage to lock onto a Tower, one of the best methods to stall its attack is by using [[Freeze]], the [[Ice Spirit]], or [[Zap]]. They can prevent it from dealing massive damage per second for a few seconds, which could easily save most of the health of a Crown Tower. There is also a possibility that the Inferno Dragon will retarget onto another unit. Spells like Fireball and Giant Snowball can also be used to reset the Inferno Dragon's attack charge since they can knock it back. Tornado can also be used to drag the Inferno Dragon out of range of its target, however, be careful with how you place the Tornado, because it will not retarget to another target if it is not out of range of its previous target.
+*A [[Rocket]] will OHKO the Inferno Dragon, completely eliminating it, but for a negative Elixir trade. Consider doing this if you lack better counters.
+*Like the Inferno Tower, the Inferno Dragon is very vulnerable to swarms as it retargets very slowly. Even [[Skeletons]] and [[Goblins]] can help counter an Inferno Dragon, as the Inferno Dragon will take very long to destroy each Skeleton.
+**[[Minions]] or [[Bats]] are the cheapest counters to a lone Inferno Dragon crossing the river. If the opponent uses a spell to take the swarm out before it can defeat the Inferno Dragon, the opponent will be at an even larger Elixir deficit.
+**[[Minion Horde]] is also a good counter, despite the negative Elixir trade. The higher damage per second means that if the Minion Horde is taken out with [[:Category:Spell Cards|spells]], the Inferno Dragon likely would not have enough health to deal significant damage to a Crown Tower, or even reach one, which would put the opposing player at an Elixir disadvantage (due to the cost of the spell). If the Horde is not defeated with a spell, the opponent must still deal with the counterattacking Minions, lest they take significant Crown Tower damage.
+**The [[Mega Minion]] is less effective at dealing with Inferno Dragon due to it being a single troop, as well as dealing a bit less damage per second compared to three Minions. However, it can still win against the Inferno Dragon if paired with a Zap, a Crown Tower, an Ice Spirit, or a Giant Snowball.
+**[[Archers]] and [[Spear Goblins]] can attack the Inferno Dragon from a distance and also come as a swarm, which allows them to distract it for a long time and counter it for a positive Elixir trade.
+**The [[Guards]] may not be able to attack the Inferno Dragon, but the shields allow them to reset the Inferno Dragon when it takes them down. Together with a tower troop, they can check the Inferno Dragon for a +1 Elixir trade. A [[Dark Prince]] can be used in a similar way.
+*A [[Tombstone]] or any spawner may be very useful to stall an Inferno Dragon. The [[Goblin Hut]] is particularly effective due to spawning troops that can attack the Inferno Dragon directly.
+**The [[Witch]] can deal with the Inferno Dragon because she continuously spawns Skeletons that the Inferno Dragon gets distracted by. The Witch will also be at full health, making a counterpush easy. Due to the time she takes to destroy the Inferno Dragon, a lot of Elixir will be generated while this is happening.
+**The [[Night Witch]] is slightly less effective, due to being unable to attack the Inferno Dragon, and spawning fewer Bats. However, she can counter the Inferno Dragon in a similar matter to the Witch, for a slightly lower Elixir cost.
+*The Inferno Dragon is quite slow moving and its range is also quite low. Due to this, high-damage ranged units like [[Musketeer]], [[Wizard]], [[Electro Wizard]], [[Executioner]], [[Firecracker]], and [[Flying Machine]] can deal significant damage to it before it is able to deal any damage to them. The ranged unit will not take a lot of damage in the end, allowing for a better counterattack.
+*An Inferno Dragon can take out tanks, such as [[Giant]]s and [[Golem]]s, and can be an advantage because it can be used to create a push. However, the player should be sure to take out any counters to the Inferno Dragon if it prevents killing the tanks or if they want to create a push with it.
+*The Inferno Dragon is a great counter to a [[Balloon]]. The Balloon is unable to target the Inferno Dragon and is also slow, allowing the Inferno Dragon to counter it faster than it can counter tanks and for a positive Elixir trade. If placed right, the Inferno Dragon can even avoid the death bomb, allowing it to have full hitpoints for a counterattack.
+*Pairing the Inferno Dragon with the [[Baby Dragon]] can be a good strategy since they cover each other's weaknesses. This is known as the Double Dragon combo, which is the air troop analogue of the Double Prince combo (single target high damage + area damage). The Baby Dragon takes out the low-hitpoint troops while the Inferno Dragon takes out higher-hitpoint units. When Baby Dragon takes on a swarm, it will save the Inferno Dragon from having to get rid of it. However, this combo is vulnerable to a Rocket since both dragons will instantly die to it, but it requires precise timing since these two dragons' speed is different.
+*Although the Inferno Dragon can be countered by most ranged units, it can often neutralize them if it is placed directly beside them or if another unit like a Crown Tower is assisting. However, this should only be a last-resort option as the player's high-damage unit will be out of rotation, and there are more efficient methods of eliminating ranged troops, such as with spells.
+*Even though [[Arrows]] do little damage to the Inferno Dragon, it deals enough damage to enable a tower to eliminate the Inferno Dragon before it can deal its maximum damage. It can prove to be a handy alternative if the player does not have the [[Zap]], [[Fireball]], [[Tornado]], or [[Giant Snowball]] in their hand, possibly saving the tower from massive damage.
+*When facing an Electro Giant, always place the Inferno Dragon on the side of the troop at its maximum range and not directly on the Electro Giant's path. This is because the Inferno Dragon has higher range than the Electro Giant's Zap Pack radius, allowing it to defeat him safely. Otherwise, the Inferno Dragon will constantly stun itself when it attacks the Electro Giant, resulting is a high waste of damage potential. The Electro Giant player might carry Tornado to counteract this tactic, so prepare with additional counters or displace him with your own Tornado.
+*The Inferno Dragon works well with the [[Rune Giant]]. The Rune Giant will tank hits for the Inferno Dragon as well as enhance the Inferno Dragon's attack, while the Inferno Dragon attacks threats to the Rune Giant. The Inferno Dragon's fast attack speed allows it to make better use of the Rune Giant's enhancement than other troops, which can allow it to destroy enemy counters to the Rune Giant quicker than other cards.
+*Because of its vulnerability to spells with stuns or knockbacks, it is wise to carry other cards that can bait them out, like Bats, Skeleton Barrel, Flying Machine or Witch. This will reduce the chances of the opponent using their spell to reset the Inferno Dragon's charge.
+*The Inferno Dragon's attack is not considered a projectile, despite coming from range. Because of this, it is able to attack the Monk through his ability without having it deflected back to itself or to allied troops. Even if the Monk takes reduced damage, it will still allow it to charge the attack, without the charge being paused while the Monk's ability is active. This allows the Inferno Dragon to counter the Monk for a positive Elixir trade.
+
+<center>
+
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" | Cost<br />{{Icon|I=Elixir}}
+! scope="col" | Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" | Speed<br />{{Icon|I=Speed}}
+! scope="col" | Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" | Range<br />{{Icon|I=Range}}
+! scope="col" | Target<br />{{Icon|I=Targets}}
+! scope="col" | Count<br />{{Icon|I=Troop Count}}
+! scope="col" | Transport<br />{{Icon|I=Transport}}
+! scope="col" | Type<br />{{Icon|I=Type}}
+! scope="col" | Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||0.4 sec||Medium (60)||1 sec||3.5||Air & Ground||x1||Air||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1295 }}
+{{#vardefine: 1_dmg_11 | 35 }}
+{{#vardefine: 2_dmg_11 | 120 }}
+{{#vardefine: 3_dmg_11 | 422 }}
+{{#vardefine: atk_speed | 0.4 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|1 stage Damage<br>{{Icon|I=Damage}}
+!scope="col"|1 stage Damage Per Second<br>{{Icon|I=DPS}}
+!scope="col"|2 stage Damage<br>{{Icon|I=Damage}}
+!scope="col"|2 stage Damage Per Second<br>{{Icon|I=DPS}}
+!scope="col"|3 stage Damage<br>{{Icon|I=Damage}}
+!scope="col"|3 stage Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:1_dmg_11}} || {{Dps|{{#var:1_dmg_11}}|{{#var:atk_speed}} }}|| {{#var:2_dmg_11}} || {{Dps|{{#var:2_dmg_11}}|{{#var:atk_speed}} }}|| {{#var:3_dmg_11}} || {{Dps|{{#var:3_dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 205,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|2 {{BASEPAGENAME}} cards<br>100 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 610,000 Damage to enemy Troops or buildings
+|8,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 1,020,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>100 {{Icon|I=XP}}
+|-
+| rowspan="3 " |Inferno Master <br> [[File:Inferno Master.png|50x50px]]
+|1
+|Hit Troops a total of 490 times with a fully charged Inferno beam
+|12,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|2
+|Hit Troops a total of 1,400 times with a fully charged Inferno beam
+|2 {{Icon|I=Legendary Wild Card}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Hit Troops a total of 2,450 times with a fully charged Inferno beam
+|18,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Inferno Dragon [[Cards|card]] was added to the game on 30/9/2016.
+*On 1/11/2016, the [[Version History#November 2016 Update (1/11/2016)|November 2016 Update]], moved the [[Arenas|Arena]] to unlock the Inferno Dragon from P.E.K.K.A's Playhouse to Frozen Peak. However, Supercell confirmed on Reddit that this change was unintentional. This change was reverted the next day, on 2/11/2016, in a [[Version History#Maintenance Break (2/11/2016)|maintenance break]].
+*On 15/12/2016, the [[Version History#December 2016 Update (15/12/2016)|December 2016 Update]] increased the Inferno Dragon's hitpoints by 5% and decreased its re-targeting time by 0.4 seconds.
+2017
+*On 13/3/2017, the [[Version History#March%202017%20Update%20(13/3/2017)|March 2017 Update]], added the audience sound effects when the Inferno Dragon is deployed.
+*On 12/6/2017, the [[Version History#June 2017 Update (12/6/2017)|June 2017 Update]], increased the Inferno Dragon's hitpoints by 7%, and decreased its re-targeting time by 0.2 seconds.
+*On 9/10/2017, the [[Version History#Epic Quests Update (9/10/2017)|Epic Quests Update]], fixed a bug where the Inferno Dragon's damage did not reset after breaking a shield. This change was reverted on 11/10/2017, in a [[Version History#Maintenance%20Break%20(11/10/2017)|maintenance break]].
+*On 12/12/2017, the [[Version History#Electrifying Update (12/12/2017)|Electrifying Update]], reverted the Inferno Dragon to its state on 9/10/2017. More specifically, the Inferno Dragon's damage would now reset after breaking a shield.
+2018
+*On 12/2/2018, a [[Version History#Balance Changes (12/2/2018)|Balance Update]], increased the Inferno Dragon’s re-targeting time by 0.2 seconds.
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], moved the Arena to unlock the Inferno Dragon from P.E.K.K.A's Playhouse to Builder's Workshop.
+*On 6/8/2018, a [[Version History#Balance Changes (6/8/2018)|Balance Update]], decreased the Inferno Dragon's range to 3.5 tiles (from 4 tiles) and allowed it to be knocked back.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Legendary}} cards start at Level 9 and end at Level 13 (from 1 to 5).
+2020
+*On 28/5/2020, a maintenance break, added a card render to the Inferno Dragon's card info screen.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the Arena to unlock the Inferno Dragon from Builder's Workshop to Jungle Arena.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Inferno Dragon from Jungle Arena to Electro Valley.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2024)|2025 Quarter 1 Update]], increased the Inferno Dragon's hitpoints by 0.07%.
+*On 2/6/2025, the [[Version History#Pass Royale and more (2/6/2025)|June 2025 Update]], added the Inferno Dragon's Evolution.
+
+==Gallery==
+<gallery>
+File:Inferno Dragon card render.png|Current card render.
+File:Inferno Dragon Preview.gif|Current card preview
+</gallery>
+
+==Trivia==
+*The Inferno Dragon resembles [https://en.wikipedia.org/wiki/European_dragon dragons from European cultures]. being reptilian legendary creatures, often depicted as winged, horned, and capable of breathing fire.
+**The Inferno Dragon is of the same breed as the [[Baby Dragon]], but the Inferno Dragon moves slower, and has slightly more hitpoints, possibly because it carries extra equipment and wears a helmet. However, they are otherwise identical in terms of animations and deployment sound effects.
+**A Trainer in the [[Training Camp]] is called Trainer Dragon and uses 2 dragon [[cards]] in their [[Battle Decks|deck]], one of them being Inferno Dragon, and the other being Baby Dragon.
+*The word "''Inferno''" comes from the Latin "''inferus''", meaning underworld.
+**In the French, Turkish, Chinese, Persian, and Malaysian language settings of the game, the Inferno Dragon's name translates to "Hell Dragon". In the Portuguese language settings of the game, the Inferno Dragon's name translates to "Infernal Dragon". In the Russian and Arabic language settings of the game, the Inferno Dragon's name translates to "Fiery Dragon".
+*The Inferno Dragon is 1 of 17 [[:Category:Troop Cards|troops]] that inspired a troop in Clash of Clans, the others being [[Spear Goblins]], [[Bomber]], [[Bats]], [[Skeleton Barrel]], [[Minion Horde]], [[Firecracker]], [[Battle Ram]], [[Ice Golem]], [[Zappies]], Baby Dragon, [[Giant Skeleton]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], and [[Night Witch]].
+**The Inferno Dragon's card render is shared with Clash of Clans. Despite coming after the one in Clash Royale, the artwork was originally made for Clash of Clans.
+**The barrel on its back likely contains Dark Elixir, as it is the source of fuel for the Inferno Tower in Clash of Clans, and Dark Elixir is also needed to obtain an Inferno Dragon in that game.
+*The Inferno Dragon is tied with the [[Mighty Miner]] and the [[Little Prince]] for the highest attack speed of all troops, with an attack speed of 0.4 seconds.
+*The Inferno Dragon is 1 of 4 troops that has been featured in the [[Treasure Hunt#Dragon Hunt|Dragon Hunt]] sub-[[:Category:Modes|mode]] of the [[Treasure Hunt]] game mode, the others being [[Skeleton Dragons]], Baby Dragon, and [[Electro Dragon]].
+*The Inferno Dragon is 1 of 15 troops which bring an excited reaction from the audience upon spawning and brings a collective groan from the audience when defeated, as well as a concerning gasp when the opponent plays it, the others include [[Royal Giant]], [[Giant]], [[P.E.K.K.A.]], Giant Skeleton, [[Rune Giant]], [[Goblin Giant]], [[Golem]], [[Bowler]], [[Electro Wizard]], [[Sparky]], [[Lava Hound]], Night Witch, [[Super Lava Hound]], and the [[Monk]].
+*Acoording to the [https://www.youtube.com/watch?v=4M_PPPCN19E Electro Dragon's intro video], it is implied that the Baby Dragon, [[Electro Dragon]], and Inferno Dragon are brothers.
+*The Inferno Dragon, along with the [[Minions]], Bomber, [[Skeletons]], Skeleton Dragons, [[Ice Spirit]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Mega Minion]], Ice Golem, [[Dart Goblin]], [[Elixir Golem]], [[Goblin Cage|Goblin Brawler]], [[Guards]], Baby Dragon, P.E.K.K.A, Giant Skeleton, Golem, [[Wall Breakers]], Bowler, [[Executioner]], [[Mega Knight]], Royal Ghost, and Lava Hound, are featured as a [https://squad-busters.fandom.com/wiki/Monsters monster] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*The Inferno Dragon is the subject of an [[Emotes|Emote]].
+*A [[Clone|cloned]] Inferno Dragon does not fall from the sky when deployed.
+*The Inferno Dragon was featured in the winning deck of the [https://www.youtube.com/live/pRfrjMiHbQA?si=P2kVLJUlXH1SZoHm Clash Royale League 2021 Tournament], by a player called Mugi.
+
+{{Navigation|Card}}
+
+[[fr:Dragon de l'enfer]]
+[[de:Infernodrache]]
+[[es:Dragón infernal]]
+[[it:Drago infernale]]
+[[ru:Пламенный дракон]]
+[[zh:地狱飞龙]]
