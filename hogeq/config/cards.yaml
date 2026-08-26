@@ -230,10 +230,15 @@ cards:
   baby_dragon_evo: {aura_radius_tiles: 4.0, aura_slow_frac: 0.30, aura_boost_frac: 0.30, verified: true}
   # EVO PRINCESS: "her first shot will slow down enemies within a 3-tile radius for 7 seconds.
   # After this first shot, she will fire two normal shots, and the third one will slow them."
-  princess_evo: {volley_slow_every: 3, volley_slow_s: 7.0, verified: true}
+  # evo_cycles from the wiki's Cycles column (research/sim_parity/ledger/r1a_evolutions.json,
+  # Princess/Evolution): the importer never wrote one for this row, and 0 does not mean "no
+  # evolution" to the slot -- `charge >= cycles` is satisfied from tick one, so it would present
+  # the Evolution on every lap. The opponent picker's `or 2` floor hid it; the number is 2 anyway
+  # here, but Evo Minion Horde below is 1 and was being fielded a cycle late.
+  princess_evo: {evo_cycles: 2, volley_slow_every: 3, volley_slow_s: 7.0, verified: true}
   # EVO MINION HORDE: "Horde Immunity makes a minion invincible for 3 seconds after taking the
   # initial hit. Only the Minions that receive a hit become invincible."
-  minion_horde_evo: {first_hit_immune_s: 3.0, verified: true}
+  minion_horde_evo: {evo_cycles: 1, first_hit_immune_s: 3.0, verified: true}
   # EVO DART GOBLIN: "Poisonous Darts, which inflict poison damage on impact. This poison
   # becomes stronger the longer the Dart Goblin remains alive." Base dps + the x2-by-30s growth
   # curve are curated [verify] -- no published numbers anywhere scrapeable.
