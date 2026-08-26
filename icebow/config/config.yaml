@@ -1729,8 +1729,8 @@ sim:
   ppo_epochs: 4                 # optimisation passes over each rollout
   ppo_minibatch: 512            # minibatch size within a rollout
   ppo_clip: 0.2
-  ppo_clip_play_mult: 4.0   # scales the PPO clip bound for PLAY actions only (1.0 = old behaviour).
-  ppo_clip_per_head: true   # clip EACH head against its OWN ratio instead of the joint one.
+  ppo_clip_play_mult: 1.0   # scales the PPO clip bound for PLAY actions only (1.0 = old behaviour).
+  ppo_clip_per_head: false  # clip EACH head against its OWN ratio instead of the joint one.
                              # Measured on play steps: sd(log r) gate 0.0019 / card 0.0284 /
   ppo_value_detach: false    # train the value head on a DETACHED trunk. The critic carries
   # ⚠ TURNED ON 2026-08-23, AFTER ppo_value_head_split ALONE WAS MEASURED INSUFFICIENT.

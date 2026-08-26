@@ -3285,6 +3285,68 @@ play/wait asymmetry to correct).
 gradient is necessary, not sufficient, and this can still come back null. Pre-committed: >=2 sigma
 on the paired probe or it is reported as NO MEASUREMENT.
 
+## 4q. 2026-08-25 — ⚠⚠⚠ STAGE B: THE CLIP FIX FAILS ITS OWN CRITERION. REJECTED, reverted, NOT in the long run.
+
+§4o established the gate's gradient is inverted by clipping and that per_head+play_mult together
+un-invert it (Stage A, 5 arms). Stage B trained the winning config (per_head true, play_mult 4.0)
+to 2600 episodes and measured BEHAVIOUR. **The mechanism worked; the behaviour got worse.**
+
+### THE MEASUREMENT (paired, n=30, same seeds, PYTHONHASHSEED=0, threads pinned)
+⚠ FIRST READ WAS CONFOUNDED — recorded because it nearly produced a wrong verdict. `ARM_control4`
+finished 09:45; `7f99a1b` (16:41) shipped the **fix 2+3 retry**, which rewrites `xbow_overcommit`
+and adds `xbow_defends` DPS credit; `ARM_clipfix` started ~18:00. So control4-vs-clipfix differed
+in the clip config AND in the exact xbow terms being measured. Re-ran against **`ARM_fix23b`**
+(fix 2+3, no clip fix) to isolate the clip variable — remaining deltas are only log width and
+royal-hogs formation, no reward change.
+
+```
+ARM_fix23b -> ARM_clipfix     base    cand    delta    sem   sigma
+bow plays/match               0.93    0.30    -0.63   0.23   2.73   WORSE
+xbow_lock                     7.67    2.63    -5.03   2.23   2.26   WORSE
+xbow_defends                  8.53    2.17    -6.37   3.01   2.12   WORSE
+plays/match                  35.67   39.30    +3.63   3.86   0.94   n.s.
+```
+Pre-committed bar: ≥2σ or NO MEASUREMENT. **≥2σ was reached AGAINST the fix on all three bow
+metrics.** This is a measured failure, not a null.
+
+### WHY — and it is the useful part
+The gate's new willingness landed where it cannot help and does harm:
+```
+elixir:   0     1     2     3   |   6     7     8     9    10
+dP(play):+.25  +.26  +.26  +.24 | +.03  +.02  -.01  +.00  +.02
+%masked: 100%   87%   73%   33% |   0%    0%    0%    0%    0%
+```
+It plays far more when only CHEAP cards are affordable and **no more at 6+, where the X-Bow lives.**
+Consequence, measured on the same run:
+```
+mean elixir             3.10 -> 2.29  (-0.81)
+steps at >=6 elixir    13.3% ->  5.4%  (2.5x fewer)
+```
+**It drains the bar before it can bank.** icebow is a 3.5-cycle deck whose doctrine is banking
+elixir for a 6-cost win condition; the fix taught the policy to violate that.
+
+### WHAT THIS RETIRES
+**§4o's plan hypothesis — "the gate refuses to play, so un-inverting it lets the bow out" — is
+REFUTED.** The inversion was real and the fix removed it; that was necessary and NOT sufficient.
+Undirected willingness-to-play is harmful here. Any future attempt must raise P(play)
+**conditioned on elixir** (or on the wincon being affordable), not uniformly. Do not re-run
+per_head/play_mult expecting a bow gain — that question is now answered, at 2600 episodes.
+
+### SHIPPED
+`ppo_clip_play_mult: 1.0`, `ppo_clip_per_head: false` (back to defaults). Card upgrades applied:
+evo tesla 14→15, ice_wizard 12→13 (§4i closed). icebow **645 tests OK**. Long PPO launched
+(`data/policy_ppo_long.pt`, log `data/ppo_long.log`, 40000 episodes, init
+`policy_BEST_m26000_20260823.pt`) with `wait_eps.py` armed.
+
+### TRAP (§8)
+**An arm is only matched to a control that shares its CODE TREE.** Two arms trained hours apart on
+`main` differ by every commit in between; here a reward change to the measured terms landed at
+16:41. Before comparing any two checkpoints, diff `git log` between their training windows and
+name the variables. The cheap rescue is to re-base against an arm that shares the newer tree —
+`ARM_fix23b` cost 5 minutes of eval and saved a wrong verdict.
+
+---
+
 ## 4p. 2026-08-25 — SIM PARITY PROJECT OPENED (plan approved; research running, implementation parked until the PPO is up)
 
 Owner goal: bring the sim to parity with the current game — add missing evolutions, ALL heroes and
