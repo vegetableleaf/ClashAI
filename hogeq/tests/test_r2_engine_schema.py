@@ -201,5 +201,77 @@ class FurnaceIsATroopTests(unittest.TestCase):
                 self.assertAlmostEqual(build_spec(eng.db, name, LVL).lifetime, life, delta=1e-6)
 
 
+class RamRiderSnareTests(unittest.TestCase):
+    """Ram Rider's snare lasts 2 s, off the card and not off a global default.
+
+    Wiki (Ram_Rider.wikitext rev 437334, "Rider Attributes" table):
+    Hit Speed 1.1 | First Hit 0.4 | Snare Duration 2 sec | Slowdown -70% | Range 5.5 |
+    Projectile Speed 600 | Target "Air & Ground (Troops only)".
+    Owner: R2 #8 item 3.
+
+    MEASURED BEFORE: build_spec slow_dur 0.00 with slow_mult 0.30, so `_apply_status` fell through
+    to `spec.slow_dur or self.slow_dur` and used the engine-wide `sim.slow_duration`. That global
+    is 2.0 in both decks today, so the snare LOOKED right -- by coincidence. Ram Rider was the only
+    card in either KB carrying slow_pct without a slow_duration_s.
+    """
+
+    def test_the_card_publishes_its_own_snare_duration(self):
+        eng = _make_engine()
+        s = build_spec(eng.db, "ram_rider", LVL)
+        self.assertAlmostEqual(s.slow_dur, 2.0, delta=1e-6, msg="MEASURED BEFORE: 0.0")
+        self.assertAlmostEqual(s.slow_mult, 0.30, delta=1e-6)     # -70%
+        self.assertTrue(s.slows)
+
+    def _snare(self, engine_default):
+        eng = _make_engine()
+        eng.slow_dur = engine_default              # retune the GLOBAL out from under the card
+        s = build_spec(eng.db, "ram_rider", LVL)
+        t = build_spec(eng.db, "knight", LVL)
+        atk = Unit(spec=s, team=0, x=0.50, y=0.55, hp=s.hp)
+        tgt = Unit(spec=t, team=1, x=0.50, y=0.55 - (0.5 + t.radius) / _TILES_Y, hp=t.hp * 50)
+        eng.units += [atk, tgt]
+        eng._attack(atk, "unit", tgt)
+        return tgt
+
+    def test_the_snare_is_applied_at_the_published_strength(self):
+        tgt = self._snare(2.0)
+        self.assertAlmostEqual(tgt.slow_left, 2.0, delta=1e-6)
+        self.assertAlmostEqual(tgt.slow_mult, 0.30, delta=1e-6)
+
+    def test_it_no_longer_moves_with_the_global_slow_duration(self):
+        """The defect this closes. Retuning sim.slow_duration for, say, the Ice Wizard used to
+        silently retune Ram Rider's snare with it."""
+        self.assertAlmostEqual(self._snare(9.0).slow_left, 2.0, delta=1e-6)
+        self.assertAlmostEqual(self._snare(0.5).slow_left, 2.0, delta=1e-6)
+
+    def _walk(self, snare):
+        """A lone Knight walking up an empty lane, clear of both towers. Returns the tiles it
+        covers in the first 2 s and in the 2 s after that."""
+        eng = _make_engine()
+        t = build_spec(eng.db, "knight", LVL)
+        k = Unit(spec=t, team=1, x=0.50, y=0.35, hp=t.hp)
+        eng.units.append(k)
+        for _ in range(20):                        # burn the 1 s deploy timer first
+            eng.advance(0.1)
+        if snare:
+            eng._apply_status(0, build_spec(eng.db, "ram_rider", LVL), k)
+        ys = [k.y]
+        for _ in range(40):                        # 4 s
+            eng.advance(0.1)
+            ys.append(k.y)
+        return (ys[20] - ys[0]) * 32.0, (ys[40] - ys[20]) * 32.0, k.slow_left
+
+    def test_a_snared_unit_crawls_then_regains_full_speed_after_two_seconds(self):
+        """The behaviour, measured on the board rather than on the counter.
+        MEASURED: free 1.290 then 1.319 tiles per 2 s; snared 0.387 then 1.290 --
+        0.387 / 1.290 = 0.30, exactly the published -70%, and it lasts exactly 2 s."""
+        free_a, free_b, _ = self._walk(False)
+        slow_a, slow_b, left = self._walk(True)
+        self.assertAlmostEqual(slow_a / free_a, 0.30, delta=0.02, msg="snared window is -70%")
+        self.assertAlmostEqual(slow_b / free_a, 1.00, delta=0.05,
+                               msg="full speed is back once the 2 s snare expires")
+        self.assertEqual(left, 0.0)
+
+
 if __name__ == "__main__":
     unittest.main()

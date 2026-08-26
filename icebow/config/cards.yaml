@@ -996,13 +996,21 @@ cards:
     range: melee
     verified: true
 
+  # RAM RIDER'S SNARE lasts 2 s (Ram_Rider.wikitext rev 437334, "Rider Attributes" table:
+  # Snare Duration 2 sec | Slowdown -70% | Range 5.5 | Target "Air & Ground (Troops only)").
+  # The KB carried slow_pct -70 with NO duration -- the only card in either deck with one and not
+  # the other -- so the engine fell through to the GLOBAL `sim.slow_duration` for her snare.
+  # That global happens to be 2.0 today, so this is not a behaviour change at the current config;
+  # it is the card asserting its own published number instead of borrowing the Ice Wizard's.
+  # Retune sim.slow_duration and her snare no longer moves with it.
   ram_rider:
     display: "Ram Rider"
     win_condition: true
     targets: buildings_only
     flags: [building_targeting, charge]
     range: melee
-    verified: false
+    slow_duration_s: 2.0
+    verified: true
 
   # 2026-08-15 wiki: "When defeated, it drops a bomb which explodes after 3 seconds."
   # Its SHOTS do not shove -- only the bomb it drops when it dies does (user, 2026-08-16). The
