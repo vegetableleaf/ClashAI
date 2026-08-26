@@ -1,0 +1,199 @@
+<!-- revid:436720 fetched:2026-08-26 title:Electro Dragon TIME-MACHINE evidence for r2_evos_a -->
+{{DISPLAYTITLE: <span style="color: #b300b3;">Electro Dragon</span>}}
+{{Protection}}{{MagicWords}}{{Card Infobox|Cost = 5|Rarity = Epic|Type = Troop|Arena = Spooky Town|ReleaseDate = 9 November 2018}}{{SubpageNavBox|Evolution=yes}}{{Quote|Spits out bolts of electricity hitting up to three targets. Suffers from middle child syndrome to boot.}}
+
+The Electro Dragon is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from the [[Arenas|Spooky Town (Arena 12)]]. It spawns a single-target, air-targeting, short-ranged, air [[:Category:Troop Cards|troop]] with moderate hitpoints and moderate damage. The Electro Dragon launches an attack that hits its target, which will arc and strike up to 2 other targets within 4 tiles of each other. It will stun affected troops for 0.5 seconds. The Electro Dragon resembles a small blue dragon with blue eyes, gray spots and glowing spikes on its back, purple tongue, and team-colored wings and underbelly. An Electro Dragon card costs 5 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Electro Dragon Card}}
+*The Electro Dragon has a chain lightning attack wherein each attack that the Dragon fires has the ability to spread out to a maximum of 2 other nearby targets. The targets can be hit from up to 4 tiles away from the previous target.
+**Keep in mind that this is not a splash damage effect. The chain lightning will merely hit three individual [[:Category:Troop Cards|troops]]. The player can take advantage of this when facing an opposing Electro Dragon by placing a swarm like a [[Skeleton Army]] in front of the unit they want to protect, as the chain lightning will only hit three units.
+**Its chain attack is very effective at dealing damage to a [[Witch]] or a [[Night Witch]] while also defeating their [[Skeletons]] and [[Bats]]. It will also stun them, delaying her from spawning additional Skeletons or Bats.
+**If the Electro Dragon's attack only strikes 1 target, the target will only take one-third of the Electro Dragon's potential firepower. Unlike the [[Electro Wizard]], unspent charges on the Dragon's attack are not stacked on to the original target. Thus it won't deal thrice the damage to the said target.
+*A lone enemy Electro Dragon can be used to activate your [[King's Tower|King Tower]]. Place down a single unit in the middle between the [[:Category:Tower Troop Cards|Crown Tower]] and King's Tower, so that when the Electro Dragon attacks the Crown Tower, the chain will bounce to the solo unit, and then it will bounce to the King's Tower, activating it. This is easier to do with [[:Category:Building Cards|buildings]], as their size will make them closer to both Towers and increase the likelihood of a chain. In addition, since they cannot move, there is less risk of them moving away from the King Tower and end the chain. Because of this, players should avoid putting the Electro Dragon in [[Graveyard]] [[Battle Decks|decks]], as a King Tower activation can severely cripple future pushes.
+**If possible, try to take a hit with a weak unit like [[Skeletons]] or [[Spear Goblins]] first to minimize attacks on the Crown Tower while trying this technique.
+**A [[Princess]] placed 3 tiles beside the Crown Tower and 1 tile in front of the King Tower is enough to cause a King Tower activation in a similar way. However, note that the Princess will be defeated in the process.
+**These techniques are also possible with the [[Cannoneer]] and [[Dagger Duchess]], however they need to be more precise, as the Electro Dragon will only have the chance to hit them once. Nevertheless, the player may be able to ignore the Electro Dragon if they running a heavy deck with these tower troops.
+*The Electro Dragon can be a decent counter to a [[Goblin Barrel]] due to its attack chaining onto each [[Goblins|Goblin]]. However, the Goblins will still get a few stabs in, so don't rely on the Electro Dragon as your only counter.
+*The Electro Dragon is somewhat fragile for its [[Elixir]] cost. Its attack and move speed are also slow, so it is best used as a helper on defense where other troops can take blows for it or behind a tank on offense.
+*Since the Electro Dragon stuns and flies, it can be reliably used to counter charge units, especially those that cannot hit air like the [[Prince]], [[Battle Ram]], [[Mighty Miner]], [[Golem|Dark Prince]], [[Ram Rider]], [[Bandit]], or [[Sparky]].
+**Even though an Electro Dragon does not deal a lot of damage, it cannot be targeted by the Princes, making it a great assist card against the Double Prince push. Pair it with a ground mini tank and it will be able to stop the push with all of its hitpoints left for a counterattack.
+*A [[Lightning]] [[:Category:Spell Cards|spell]] can take out an Electro Dragon up to 1 Level higher immediately. To work around this, the player can deploy other [[cards]] that die to Lightning, like [[Witch]], [[Night Witch]], [[Mega Minion]], [[Hunter]], or [[Wizard]] to bait out the spell, or the player can deploy their Electro Dragon away from other units so that their Lightning does not get much value. The player can also deploy it near a Crown Tower, and then deploy a card with more hitpoints than an Electro Dragon, like [[Ice Golem]] or [[Miner]], in an attempt to block the remaining Lightning strikes.
+*When compared to the other dragons, the Electro Dragon moves slower, making it easier to destroy with a [[Rocket]], and it is also more expensive making the Rocket a slightly better negative Elixir trade against it.
+*A lone Electro Dragon can be destroyed within all 3 hits from the [[Void]] for a positive Elixir trade. With great timing, the player can deploy any troop on the Void's radius to save the Electro Dragon from the spell.
+*The Electro Dragon can be used to attack troops that are being protected by tank cards, like [[Archers]] behind a [[Giant]] or [[Rascals]] for example.
+*Single-troop [[cards]] like the [[Musketeer]], [[Electro Wizard]], [[Wizard]], or [[Mega Minion]] are great counters since the Electro Dragon will not be able to deal full damage to them because its attack will be unable to chain.
+**The [[Ice Golem]] is the cheapest check to a lone Electro Dragon. Place him to tank its hits while the Crown Tower shoots it down. This will stop it for a +3 Elixir trade, with a half-health Ice Golem surviving for a counterattack.
+**A [[Goblin Giant]] works in a similar way, setting up for an attack, while the [[Spear Goblins]] deal damage to it. The chain attack will not be able to hit them, allowing them to deal significant damage to it.
+*Electro Dragon is an ideal counter to [[Zappies]] because even though the lights on its back light up before attacking, stun effects will not reset its attack; destroying them with more than enough health left over for a counterpush.
+*The Electro Dragon can stop a [[Balloon]] on its own, preventing all but the death bomb from hitting the Crown Tower. If an [[Ice Spirit]] or [[Electro Spirit]] is used alongside it, it can prevent the death bomb as well from hitting the Tower.
+*The Electro Dragon is very strong in [[Golem]] and Giant decks as it will be able to delay and defeat support units or tank killers that are placed to counter the tank with its chain attack. It can also render [[Inferno Tower]], [[Inferno Dragon]], and the [[Mighty Miner]] useless, similar to an Electro Wizard, although they could make it target another troop easier than the Electro Wizard since he targets 2 troops at a time.
+*The Electro Dragon pairs well with the [[Miner]]. The Electro Dragon can start a push and take some damage from the Crown Tower, and then the Miner can be send in to damage the Tower. The Electro Dragon will stun the Tower, causing it to retarget to the Miner, saving itself. It can also assist the Miner against defenders thanks to its chain attack.
+**A good way to stop this push is to distract the Electro Dragon before it connects to the Tower. Place a single troop away from the Tower and distract the Miner with another card.
+*It is quite effective against an [[Elixir Golem]] or a [[Lava Hound]]. When these units are defeated, the Electro Dragon will hit some of their death spawn units with the chain attack, increasing its value. This is not useful against the [[Skeleton Barrel]] however, as the Skeleton Barrel has a slight delay between its death and the spawned Skeletons.
+*A poorly placed Electro Dragon can be kited into the other lane with any ground-attacking troop; it will keep following the ground troop while the Crown Towers slowly shoot it down. In order to prevent such a move, make sure that the Electro Dragon is placed closer to the edges of the [[Arenas|Arena]], making it further away from the ground troop.
+*Spawner buildings placed on the center can be sniped by an Electro Dragon placed on the river. The [[Goblin Hut]] will cause all Spear Goblins to stay close to the building, which will cause the Electro Dragon to hit the building as well. Other troops from spawner buildings will simply run away, but they will chipped by the Electro Dragon, removing any value that they could have got otherwise.
+*When combined with a mini tank, the Electro Dragon can stop an [[X-Bow]] or [[Mortar]] push very well. If the building has already connected to the Tower, the Electro Dragon will force it to retarget to the mini tank, while its chain attack will hit additional defenders next to the building.
+*While weak to the chain attack, the [[Minions]] and [[Bats]] are just enough to stop an Electro Dragon from connecting to the Crown Tower. Make sure that they are placed close enough to get enough hits to it, preferable surrounding the Electro Dragon.
+*A [[Tornado]] can bring troops close enough for an Electro Dragon to chain on them. When used on offense, bring at most 2 troops towards the Tower with a Tornado, so that the Electro Dragon can hit the troops while the third hit bounces onto the Tower.
+*Against the [[Three Musketeers]], the Electro Dragon and a mini tank can stop two of them together while also hitting the Crown Tower. In order for the Crown Tower to be hit, make sure that the front Musketeer is 4 tiles from the river.
+**If you want to stop all three of the Musketeers, you can combine them with a Tornado to pull the Musketeers closer to each other, so that the chain attack hits all three, while the mini tank distracts them.
+**On defence, an even cheaper combination would be an Electro Dragon combined with Skeletons or an Ice Spirit. This can stop two of the split Musketeers with the help of the Crown Tower.
+
+<center>
+
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Stun Duration<br />{{Icon|I=Freeze}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||2.1 sec||0.7 sec||0.5 sec||Medium (60)||1 sec||3.5||Air & Ground||x1||Air||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 949 }}
+{{#vardefine: dmg_11 | 192 }}
+{{#vardefine: dmg_hits | 3 }}
+{{#vardefine: atk_speed | 2.1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} x{{#var:dmg_hits}} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} x{{#var:dmg_hits}} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} x{{#var:dmg_hits}} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} x{{#var:dmg_hits}} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} x{{#var:dmg_hits}} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} x{{#var:dmg_hits}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} x{{#var:dmg_hits}} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} x{{#var:dmg_hits}} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} x{{#var:dmg_hits}} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} x{{#var:dmg_hits}} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} x{{#var:dmg_hits}} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 165,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|20 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 495,000 Damage to enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 830,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" |Hit Maker <br> [[File:Hit Maker.png|50x50px]]
+|1
+|Hit enemy Troops a total of 1,450 times
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Troops a total of 4,200 times
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Troops a total of 7,350 times
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2018
+*The Electro Dragon was once available in the [[Tournament/Special Event Challenges|Electro Dragon Draft Challenge]], which started on 27/10/2018. In this [[Tournament|challenge]], gameplay was similar to a regular Draft Challenge, except that one of the players was able to choose who would use the Electro Dragon. If the player achieved at least 6 wins, they obtained the Electro Dragon early.
+*The Electro Dragon [[Cards|card]] was generally released on 9/11/2018.
+*On 3/12/2018, a [[Version History#Balance Changes (3/12/2018)|Balance Update]], decreased the Electro Dragon’s hitpoints by 5% and increased its first attack time interval to 0.7 seconds (from 0.2 seconds).
+2019
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Electro Dragon's card info screen.
+2021
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the [[Arenas|Arena]] to unlock the Electro Dragon from Electro Valley to Spooky Town.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+*On 7/10/2024, the [[Version History#Pass Royale and more (7/10/2024)|October 2024 Update]], added the Electro Dragon’s Evolution.
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Electro Dragon's hitpoints by 0.1%.
+
+==Gallery==
+<gallery>
+File:Electro Dragon card render.png|Current card render.
+File:Electro Dragon Preview.gif|Current card preview
+File:Electro Dragon 5.png|Electro Dragon 1
+File:Electro Dragon 2.png|Electro Dragon 2
+File:Electro Dragon 7.png|Electro Dragon 3
+</gallery>
+
+==Trivia==
+*The Electro Dragon resemble [https://en.wikipedia.org/wiki/European_dragon dragons from European cultures]. being reptilian legendary creatures, often depicted as winged, horned, and capable of breathing fire. However, the Electro Dragon breathes lightning bolts instead.
+*The word "Electro" come from the Greek word "''ἤλεκτρον''" (elektron), meaning amber, referring to its electrostatic capabilities. Electricity was first detected through electric fish from as far back as 2750 BCE where Ancient Egyptian texts described them as the "protectors" of all other fish. At around 600 BCE, Thales of Miletus made a series of observations on static electricity, from which he believed that friction rendered amber magnetic, in contrast to minerals such as magnetite, which needed no rubbing. Thales was incorrect in believing the attraction was due to a magnetic effect, but later science would prove a link between magnetism and electricity. Electricity would remain little more than an intellectual curiosity for millennia until 1600, when the English scientist William Gilbert wrote ''De Magnete'', in which he made a careful study of electricity and magnetism, distinguishing the lodestone effect from static electricity produced by rubbing amber.
+**The Electro Dragon is 1 of 11 [[cards]] associated with electricity, with the others being [[Electro Spirit]], [[Zap]], [[Tesla]], [[Zappies]], [[Electro Giant]], [[Lightning]], [[Electro Wizard]], [[Sparky]], [[Wizard Trio]], and the [[Goblinstein]].
+***In the Spanish, Italian, Russian, Arabic, Portuguese, and Thai language settings of the game, the Electro Dragon's name translates to "Electric Dragon". In the Chinese and Finnish language settings of the game, the Electro Dragon's name translates to "Thunder Dragon" and "Lightning Dragon" respectively.
+*It is 1 of 3 [[:Category:Troop Cards|troops]] that are “miniature” versions of another troop in Clash of Clans, the others being the [[Mini P.E.K.K.A.|Mini P.E.K.K.A]] and [[Baby Dragon]]. They are smaller versions of [https://clashofclans.fandom.com/wiki/Electro_Dragon Electro Dragon], [https://clashofclans.fandom.com/wiki/P.E.K.K.A P.E.K.K.A], and [https://clashofclans.fandom.com/wiki/Dragon Dragon], respectively.
+**The Electro Dragon is a reference to the eponymous troop in Clash of Clans. However, the Electro Dragon in Clash Royale is a less durable infant, only hits up to three targets with its chain lightning, has the same damage for all three hits, stuns on strike and doesn't inflict death damage.
+*The Electro Dragon is one of the first troop cards to receive a card render, alongside the [[Archers]], [[Knight]], [[Goblins]], [[Bomber]], [[Skeletons]], [[Barbarians]], [[Bats]], [[Royal Recruits]], [[Skeleton Barrel]], [[Rascals]], [[Musketeer]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Flying Machine]], [[Hog Rider]], [[Royal Hogs]], [[Dart Goblin]], Zappies, [[Elixir Golem]], Baby Dragon, [[Skeleton Army]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], [[Prince]], [[Balloon]], [[Giant Skeleton]], [[Goblin Giant]], [[Hunter]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Mega Knight]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], [[Magic Archer]], [[Bandit]], [[Lava Hound]], [[Night Witch]], and [[Fisherman]].
+*The Electro Dragon has been featured in multiple [[Tournament/Special Event Challenges|special game modes]] outside of the card. More specifically:
+**The Electro Dragon is 1 of 4 troops that has been featured in the [[Treasure Hunt#Dragon Hunt|Dragon Hunt]] sub-[[:Category:Modes|mode]] of the Treasure Hunt game mode, the others being [[Skeleton Dragons]], Baby Dragon, and [[Inferno Dragon]].
+**The Electro Dragon is 1 of 14 troops that has been featured with a [[Buff#Rage|Rage]] [[buff]], the others being Electro Spirit, Giant, Zappies, [[Guards]], Giant Skeleton, Goblin Giant, Wall Breakers, Electro Giant, Mega Knight, Ram Rider, Electro Wizard, Sparky, and Royal Ghost.
+*Acoording to the [https://www.youtube.com/watch?v=4M_PPPCN19E Electro Dragon's intro video], and its description, it is implied that the Baby Dragon, Electro Dragon, and Inferno Dragon are brothers, with the Electro Dragon being the middle child.
+*According to the Electro Dragon's intro video, the Electro Dragon is the Electro Wizard's pet dragon.
+*After each attack, the spikes on the Electro Dragon's backlight up in sequence, similar to a Sparky's charge. This is merely a visual indicator; its attack does not charge like Sparky's attack does.
+*The Electro Dragon is 1 of 4 troops that can deal damage to multiple units with one attack without an area damage radius, the others being Electro Spirit, Hunter, and Electro Wizard.
+*The Electro Dragon is the subject of 2 [[Emotes]].
+**From the Electro Dragon's Emotes, the Electro Dragon produces its lightning by sneezing, unlike its counterparts who produce fire by burping.
+*The Electro Dragon was featured in the winning [[Battle Decks|deck]] of the [https://www.youtube.com/live/C5qBcdcErfM?si=e37mhAgNKAA5kMJI Clash Royale League 2018 Tournament], by a player called Lciop.
+*The Electro Dragon is currently the only Dragon unit in Clash Royale to shoot a projectile other than fire.
+*In an update on 24/11/2025, the attack sound belonging to both the Electro Dragon and [[Electro Spirit]] was mysteriously removed (As was [[Graveyard|Graveyard's]] deploy sound). While Graveyard's sound has been restored, the other two strangely have not had their sound restored yet.
+
+{{Navigation|Card}}
+
+[[fr:Électro-dragon]]
+[[de:Elektrodrache]]
+[[es:Dragón eléctrico]]
+[[it:Drago elettrico]]
+[[ru:Электродракон]]
+[[zh:雷电飞龙]]

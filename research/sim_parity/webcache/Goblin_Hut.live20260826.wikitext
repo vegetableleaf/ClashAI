@@ -1,0 +1,257 @@
+<!-- revid:437256 fetched:2026-08-26 title:Goblin Hut LIVE -->
+{{DISPLAYTITLE:<span style="color: #ffa31a;">Goblin Hut</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=4|Rarity=Rare|Type=Building|Arena=Goblin Stadium|ReleaseDate=4 January 2016}}
+{{Quote|Defensive building that spawns Spear Goblins when enemies are in range. Don't look inside... you don't want to see how they're made.}}
+
+The Goblin Hut is a {{Rarity|Rare}} [[Cards|card]] that is unlocked from the [[Arenas|Goblin Stadium (Arena 1)]]. It spawns a single-target, long-ranged, [[:Category:Building Cards|building]] with high hitpoints. Every 2.2 seconds, the Goblin Hut will summon a [[Spear Goblins|Spear Goblin]] when an enemy is within range. When defeated, it will also spawn a Spear Goblin. It appears as a wooden hut on a stone foundation with a thatched roof that has a team-colored chimney on top, which is surrounded by wooden planks on each side, two horns protruding from the sides, three spears near the entrance, two on the right and one on the left, with a rope tied to each of them, and a small team-colored skull at the bottom used as a decoration. A Goblin Hut card costs 4 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Goblin Hut Common Modifier.png|45x45px]] Common: ALARM!===
+{{Quote|+100% spawn range}}
+Goblin Hut's range is doubled, for a total of 12 tiles.
+
+===[[File:Goblin Hut Rare Modifier.png|45x45px]] Rare: No Party Like a Goblin Party===
+{{Quote|Goblin Party Hut}}
+Instead of a Goblin Hut, a [[Party Hut]] is spawned.
+
+===[[File:Goblin Hut Epic Modifier.png|45x45px]] Epic: Bombs Away!===
+{{Quote|Spawn Goblin Demolishers}}
+Instead of [[Spear Goblins]], the Goblin Hut spawns [[Goblin Demolisher|Goblin Demolishers]].
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Goblin Hut Card}}
+*The Goblin Hut should be placed on either side of the player's territory, as the spawned [[Spear Goblins]] will target the closest enemy [[cards]] or [[:Category:Crown Towers|Crown Towers]] on the respective side on which the Goblin Hut is placed.
+*As with any spawner, the player should not allow a Goblin Hut user to build up spawners. If the opponent's Goblin Huts do accumulate, then the opponent will be gaining a passive [[Elixir]] advantage all the while.
+*Unless the Goblin Hut had already been planted, it is not possible to counter a [[Sparky]] efficiently with this because of the spawned unit's range.
+*The Goblin Hut can spawn up to 17 Spear Goblins, creating a maximum profit of 2.83 Elixir. It is advised to place troops with high hitpoints such as the [[Giant]], [[Giant Skeleton]], [[P.E.K.K.A]], or [[Golem]] to shield the Spear Goblins so that they can accumulate behind the tank, build up a strong push, and yield a higher damage potential.
+*The player should avoid attacking directly towards a Goblin Hut with [[:Category:Building Cards|building]]-targeting [[:Category:Troop Cards|troops]] like a Giant, [[Hog Rider]], [[Elixir Golem]], [[Lava Hound]], or Golem, otherwise the Spear Goblins will accumulate quickly and they would be able to counterattack after the tank is defeated.
+*Since the Spear Goblins deal little damage, the opponent will likely ignore them to an extent, allowing the Spear Goblins to slowly damage their Crown Towers. All Spear Goblins can hit the Tower at least once even if the Crown Tower can take them out in one shot.
+*A common strategy is to place the Goblin Hut at the back of the player's own territory to make sure enemy troops don't attack it, though this is vulnerable to [[:Category:Spell Cards|spells]] which can generate an Elixir profit if they also hit the Tower, with [[Rocket]], [[Lightning]] and [[Earthquake]] being the most dangerous examples. Placing it in front of a [[King's Tower|King Tower]] is a good way to prevent the Rocket from affecting both a Crown Tower and the Goblin Hut, though Lightning, [[Poison]], and Earthquake can still be deployed in such a way that it can hit both the Crown Tower and the building.
+*Another strategy is to play it in the middle of the player's field between the river and the King's Tower and between the two Crown Towers. This will pull incoming troops away from a Crown Tower and allow for more time to counter, as well as have your Crown Tower take less damage. This is especially useful before Double Elixir time, when spawners normally aren't as powerful.
+**If one is desperate enough, they can deploy the Goblin Hut in front of their Crown Tower. The Goblin Hut will also act as a temporary shield to draw away troops from the tower. However, this can be countered by most spells, as all damaging spells but [[Freeze]] destroy equal-Level Spear Goblins instantly.
+*The Goblin Hut can also be used to counter other spawning buildings, such as the [[Tombstone]], or [[Barbarian Hut]], as the spawned Spear Goblins will quickly destroy the enemy melee troops with their range.
+*A Goblin Hut can easily be destroyed or heavily damaged with spell cards such as the [[Goblin Barrel]] or Rocket.
+*Poison is effective against it due to its long duration, allowing the spell to damage the Hut and the spawned Spear Goblins. Its radius is also often large enough to allow it to also chip at a Crown Tower. However, a Goblin Hut user may take advantage of the used Poison and try strategies that would be weakened by Poison, such as a [[Graveyard]] push. Therefore, the player should only use Poison on the Goblin Hut if they do not need it to counter a more threatening card.
+*The Goblin Hut can be used with other spawners like the [[Barbarian Hut]], [[Tombstone]], or [[Furnace]], to overwhelm the opponent. This is known as a Spawner strategy and works at all Levels. This deprives the opponent of any Elixir as they must constantly defend against the spawned troops, leaving the player free to devastate them.
+*The Goblin Hut is most effective during the double Elixir period. During this stage, it is possible to put down multiple Goblin Huts very quickly, and overwhelm the opponent with mass numbers. However, remember that a Spear Goblin push can easily be countered with an area damage spell or troop such as the [[Wizard]], [[Witch]], [[Goblin Demolisher]], [[Arrows]], or [[The Log]].
+*The Goblin Hut is rather ineffective against [[Bowler|Bowlers]], [[Firecracker|Firecrackers]], [[Bomber/Evolution|Evolved Bombers]], and [[Executioner|Executioners]], since their projectiles have the ability to not only destroy the building but also to destroy the recently spawned Spear Goblins.
+*Long range or air attackers like a [[Magic Archer]], [[Dart Goblin]], [[Musketeer]], [[Princess]], [[Archers/Evolution|Evolved Archers]], or a [[Flying Machine]] can snipe down a Goblin Hut placed in the center of the opponent's side without getting in range of the Crown Towers. This will not work if the Goblin Hut is placed farther back closer to their King's Tower, but this means that it will be more difficult for it to distract building targeting troops, giving the player a chance to attack.
+*While the [[Bomb Tower]] cannot counter the Goblin Hut itself, it will counter the Spear Goblins that spawn from it. However, since the Spear Goblins are ranged and move fast, the Bomb Tower will take some damage and will be destroyed before the Goblin Hut expires.
+*In a pinch, the player can use spells like [[Zap]], [[Giant Snowball]], or The Log to defeat multiple Spear Goblins that were accumulated from the Goblin Hut. This is most recommended doing when the lane needs to be cleared from the Spear Goblins so that troops like a [[Prince]], [[Mighty Miner]], P.E.K.K.A, [[Inferno Dragon]], [[Sparky]], [[Elite Barbarians]], or [[Mini P.E.K.K.A.]] can attack more potent targets.
+**Against a Goblin Hut that is low on health, The Log can will not only finish off the Goblin Hut but also destroy the Spear Goblin that spawns upon the building's destruction.
+**The [[Barbarian Barrel]] can destroy a low-hitpoint Goblin Hut similarly to The Log, and spawns a [[Barbarians|Barbarian]] to attack the Crown Towers. However, it cannot reach the Goblin Hut if it is placed too deep within the enemy's territory.
+*The Goblin Hut is affected by [[Rage]], technically allowing it to produce extra waves. However, its lifetimer decays more quickly under a Rage spell's effect, and as a result, only 1 extra wave will be produced with the help of Rage. This is a 2 Elixir investment for a equivalent return value of 0.66 Elixir, and thus is an ineffective strategy to use.
+*In the [[Global Spell|Rage Challenge]], all buildings' (including the Goblin Hut's) lifetimes are unaffected, but in Goblin Hut's case, the Troop producing speed is, allowing it to produce up to 4 waves of Spear Goblins instead of the usual 3 in the challenge.
+*The reworked Goblin Hut has the potential to spawn an enormous swarm of Spear Goblins if used correctly, making it effective for counterpushes. For instance, if you use a tank to defend against a Mega Knight and place a Goblin Hut nearby, the number of Spear Goblins will accumulate rapidly, and provided that the Mega Knight never reaches the Spear Goblins, you could potentially end up with around 7 or more Spear Goblins overwhelming the enemy defenses, especially if your tank is still alive.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Goblin Hut Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Spawn Speed<br />{{Icon|I=Time}}
+! scope="col" |Spawn Delay<br />{{Icon|I=Time}}
+! scope="col" |Spawn Range<br />{{Icon|I=Range}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Lifetime<br />{{Icon|I=Time}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||2.2 sec||0.5 sec||6||1 sec||30 sec||[[:Category:Building Cards|Building]]||{{Rarity|Rare}}
+|}
+
+{{StatisticsSubheader|Spear Goblin Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.7 sec||0.5 sec||Very Fast (120)||5||500||Air & Ground||Ground
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hut_hp_11 | 1228 }}
+{{#vardefine: life | 30 }}
+{{#vardefine: hp_11 | 133 }}
+{{#vardefine: dmg_11 | 81 }}
+{{#vardefine: atk_speed | 1.7 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+! scope="col" |Hitpoints lost per second<br />{{Icon|I=Time}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 3 || {{#expr: {{#var:hut_hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:hut_hp_11}} * (1.1^(3-11)) / {{#var:life}} round 1 }}  || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hut_hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:hut_hp_11}} * (1.1^(4-11)) / {{#var:life}} round 1 }}|| {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hut_hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:hut_hp_11}} * (1.1^(5-11)) / {{#var:life}} round 1 }}|| {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hut_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:hut_hp_11}} * (1.1^(6-11)) / {{#var:life}} round 1 }}|| {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hut_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:hut_hp_11}} * (1.1^(7-11)) / {{#var:life}} round 1 }}|| {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hut_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:hut_hp_11}} * (1.1^(8-11)) / {{#var:life}} round 1 }}|| {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hut_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:hut_hp_11}} * (1.1^(9-11)) / {{#var:life}} round 1 }}|| {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hut_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:hut_hp_11}} * (1.1^(10-11)) / {{#var:life}} round 1 }}|| {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hut_hp_11}} || {{#expr: {{#var:hut_hp_11}} / {{#var:life}} round 1 }}|| {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hut_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:hut_hp_11}} * (1.1^(12-11)) / {{#var:life}} round 1 }}|| {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hut_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:hut_hp_11}} * (1.1^(13-11)) / {{#var:life}} round 1 }}|| {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hut_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:hut_hp_11}} * (1.1^(14-11)) / {{#var:life}} round 1 }}|| {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hut_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:hut_hp_11}} * (1.1^(15-11)) / {{#var:life}} round 1 }}|| {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hut_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:hut_hp_11}} * (1.1^(16-11)) / {{#var:life}} round 1 }}|| {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward 
+|-
+| rowspan="3" |Spawner <br> [[File:Spawner.png|50x50px]]
+|1
+|Spawn a total of 960 [[:Category:Troop Cards|Troops]]
+|100 {{BASEPAGENAME}} cards<br>50 {{Icon|I=XP}}
+|-
+|2
+|Spawn a total of 2,850 Troops
+|4,000 {{Icon|I=Gold}}<br>50 {{Icon|I=XP}}
+|-
+|3
+|Spawn a total of 4,750 Troops 
+|100 {{Icon|I=Gem}}<br>50 {{Icon|I=XP}}
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 230,000 Damage to enemy Troops or [[:Category:Building Cards|buildings]] with spawned [[Spear Goblins|Goblins]]
+|6,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 660,000 Damage to enemy Troops or buildings with spawned Goblins
+|100 {{Icon|I=Rare Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 1,140,000 Damage to enemy Troops or buildings with spawned Goblins
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|}
+</div>
+</center>
+
+==History==
+2016 
+*The Goblin Hut [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016 {{Balance|Add}}.
+*On 29/2/2016, the [[Version History#March%202016%20Update%20(29/2/2016)|March 2016 Update]], decreased the [[Spear Goblins]]' sight range to 5.5 tiles (from 6 tiles) {{Balance|Buff}}.
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], increased the {{Rarity|Rare}} card Level cap to 11 (from 10) {{Balance|Buff}}. The update also fixed the "range bug", which decreased the Spear Goblins' range to 5 tiles (from 5.5 tiles) {{Balance|Nerf}}, but their effective range is unchanged.
+2017
+*On 16/3/2017, a [[Version History#Maintenance%20Break%20(16/3/2017)|maintenance break]], increased the Spear Goblins' projectile speed to 500 (from 350) {{Balance|Buff}}. This was done to fix some unexpected behaviour that the Spear Goblins showed.
+*On 19/4/2017, a [[Version History#Balance Changes (19/4/2017)|Balance Update]], increased the Goblin Hut's hitpoints by 5% {{Balance|Buff}}.
+*On 9/10/2017, the [[Version History#Epic Quests Update (9/10/2017)|Epic Quests Update]], decreased the Spear Goblins' attack time interval to 1.1 seconds (from 1.3 seconds) {{Balance|Buff}}.
+2018
+*On 24/1/2018, a [[Version History#Balance Changes (24/1/2018)|Balance Update]], increased the spawn time interval to 5.05 seconds (from 4.95 seconds) {{Balance|Nerf}}.
+*On 25/4/2018, the [[Version History#Clan%20Wars%20Update%20(25/4/2018)|Clan Wars Update]], increased the Spear Goblins’ attack time interval to 1.2 seconds (from 1.1 seconds) {{Balance|Nerf}}. The card's description was also changed slightly. It used to read “''Building that spawns Spear Goblins. But don't look inside. You don't want to see how they are made.''” ''{{Balance|Neutral}}''.
+*On 4/6/2018, a [[Version History#Balance Changes (4/6/2018)|Balance Update]], 
+*increased the Spear Goblins’ damage by 34% {{Balance|Buff}}, but also increased their attack time interval to 1.7 seconds (from 1.2 seconds) {{Balance|Nerf}}, increased their first attack time interval to 0.5 seconds (from 0.2 seconds) {{Balance|Nerf}}, and decreased the Goblin Hut’s lifetime to 50 seconds (from 60 seconds).
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Rare}} cards start at Level 3 and end at level 13 (from 1 to 11) ''{{Balance|Neutral}}''.
+*On 1/10/2018, a [[Version History#Balance Changes (1/10/2018)|Balance Update]], decreased the Goblin Hut's spawn time interval to 4.75 seconds (from 5.05 seconds) {{Balance|Buff}}.
+2019
+*On 1/4/2019, a [[Version History#Balance Changes (1/4/2019)|Balance Update]], decreased the Goblin Hut's spawn time interval to 4.5 seconds (from 4.75 seconds) {{Balance|Buff}}.
+*On 15/4/2019, the [[Version History#April%202019%20Update%20(15/4/2019)|April 2019 Update]], changed the Goblin Hut's card image ''{{Balance|Neutral}}'' and also added two extra [[Star Points|Star Levels]] {{Balance|Add}}.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Goblin Hut's card info screen {{Balance|Add}}.
+2020
+*On 7/4/2020, a [[Version History#Balance Changes (7/4/2020)|Balance Update]], decreased the Goblin Hut's lifetime to 40 seconds (from 50 seconds) {{Balance|Nerf}}, but also made the Goblin Hut spawn 3 additional Spear Goblins upon death {{Balance|Add}}.
+*On 5/5/2020, a [[Version History#Balance Changes (5/5/2020)|Balance Update]], decreased the Goblin Hut's hitpoints by 35% {{Balance|Nerf}}.
+2021 
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the [[Arenas|Arena]] to unlock the Goblin Hut from Goblin Stadium to Jungle Arena {{Balance|Nerf}}.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13) {{Balance|Buff}}.
+*On 7/12/2021, the [[Version History#Balance%20Changes%20(7/12/2021)|2021 Quarter 4 Update]], decreased the Goblin Hut's hitpoints by 17% {{Balance|Nerf}}, its lifetime to 31 seconds (from 40 seconds) {{Balance|Nerf}} and its spawn time interval to 4 seconds (from 4.5 seconds) {{Balance|Buff}}.
+2022 
+*On 3/6/2022, a maintenance break, changed the Goblin Hut's card render ''{{Balance|Neutral}}''.
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Goblin Hut from Jungle Arena to Goblin Stadium {{Balance|Buff}}.
+*On 7/12/2022, a [[Version History#Balance%20Changes%20(7/12/2022)|Balance Update]], increased the Goblin Hut's spawn time interval to 10 seconds (from 4 seconds) {{Balance|Nerf}}, decreased its lifetime to 29 seconds (from 31 seconds) {{Balance|Nerf}}, and made it so that 3 Spear Goblins will spawn per wave (from 1) {{Balance|Buff}}.
+2023
+*On 4/4/2023, a [[Version History#Balance%20Changes%20(4/4/2023)|Balance Update]], increased the Spear Goblins' range to 5.5 tiles (from 5 tiles) {{Balance|Buff}}.
+*On 6/6/2023, a [[Version History#Balance%20Changes%20(6/6/2023)|Balance Update]], decreased the Goblin Hut's Spear Goblins spawned upon death to 1 (from 3) {{Balance|Nerf}}.
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14) {{Balance|Buff}}.
+2024
+*On 17/6/2024, the [[Version History#Goblin World Update (17/6/2024)|Goblin World Update]], decreased the Spear Goblins’ first attack time interval to 0.3 seconds (from 0.5 seconds) {{Balance|Buff}}. It also added the Goblin Hut to the Goblin class {{Balance|Add}}.
+2025
+*On 8/1/2025, a [[Version History#Balance Changes (8/1/2025)|Balance Update]], increased the Spear Goblins’ first attack time interval to 0.4 seconds (from 0.3 seconds) {{Balance|Nerf}}.
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Goblin Hut's hitpoints by 0.11% {{Balance|Nerf}}.
+*On 5/5/2025, the [[Version History#Pass Royale and more (5/5/2025)|May 2025 Update]], decreased the Goblin Hut's cost to 4 Elixir (from 5 Elixir) {{Balance|Buff}}, increased its hitpoints by 46% {{Balance|Buff}}, increased its lifetime to 30 seconds (from 29 seconds) {{Balance|Buff}}, decreased its spawn time interval to 1.7 seconds (from 10 seconds) {{Balance|Buff}}, decreased the Spear Goblin count per wave to 1 (from 3) {{Balance|Nerf}}, and made it so that Spear Goblins would spawn when an enemy is within range instead of spawning automatically ''{{Balance|Neutral}}''. It also changed the Goblin Hut's card image ''{{Balance|Neutral}}''. Its description was also changed. Prior to the update, it used to say "''Building that spawns Spear Goblins. Don't look inside... You don't want to see how they're made.''" ''{{Balance|Neutral}}''.
+*On 3/6/2025, a [[Version History#Balance Changes (3/6/2025)|Balance Update]], decreased the Goblin Hut's hitpoints by 6% {{Balance|Nerf}} and increased its spawn time interval to 1.8 seconds (from 1.7 seconds) {{Balance|Nerf}}.
+* On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] increased the Goblin Hut's spawn time interval to 1.9 seconds (from 1.8 seconds) {{Balance|Nerf}}, and decrease the spawn delay to 0.5 seconds (from 1 second) {{Balance|Buff}}. In addition, the Spear Goblins’ first attack time interval was also increased to 0.5 seconds (from 0.4 seconds) {{Balance|Nerf}}, and their range was decreased to 5 tiles (from 5.5 tiles) {{Balance|Nerf}}.
+* On 6/10/2025, a Balance Update decreased the Goblin Hut's hitpoints by 4%.
+* On 3/11/2025, a Balance Update increased the Goblin Hut's  Spawn Period to 2.1 seconds (from 1.9 seconds).
+2026
+
+* On 6/4/2026, a Balance Update, increased the Goblin Hut's  Spawn Period to 2.2 seconds (from 2.1 seconds)
+
+==Gallery==
+<gallery>
+File:GoblinHutCardOld.png|Goblin Hut's card image before 15/4/2019.
+File:GoblinHutCardOld1.png|Goblin Hut's card image between 15/4/2019 and 5/5/2025.
+File:Old Goblin Hut card render.png|Goblin Hut's card render before 3/6/2022.
+File:Goblin Hut card render.png|Current card render.
+File:Goblin Hut Preview.gif|Current card preview
+File:Goblin Hut 2.png|Goblin Hut 1
+File:Goblin Hut 3.png|Goblin Hut 2
+File:Goblin Hut 4.png|Goblin Hut 3
+</gallery>
+
+==Trivia ==
+*Goblins are small, grotesque, monstrous creatures that appear in the folklore of multiple European cultures. First attested in stories from the Middle Ages, they are ascribed conflicting abilities, temperaments, and appearances depending on the story and country of origin, ranging from mischievous household spirits to malicious, bestial thieves. They often have magical abilities similar to a fairy or demon, such as the ability to shapeshift. Similar creatures include [https://en.wikipedia.org/wiki/Duende duendes], [https://en.wikipedia.org/wiki/Kobold kobolds], [https://en.wikipedia.org/wiki/Leprechaun leprechauns], and [https://en.wikipedia.org/wiki/Ghoul ghouls].
+**In the German and Dutch language setting of the game, the Goblin Hut's name translates to "Kobold Hut". In the Spanish, Norwegian, Arabic, Finnish, and Vietnamese language setting of the game, the Goblin Hut's name translates to "Duende Hut", "Goblin Cabin", "Ghoul Hut", "Goblin Lodge", and "Leprechaun Tent" respectively.
+**The Goblin Hut is 1 of 17 [[cards]] associated with [[Goblins]], with the others being [[Spear Goblins]], [[Goblin Gang]], [[Baby Goblins]], [[Dart Goblin]], [[Goblin Demolisher]], [[Suspicious Bush]], [[Goblin Cage]], [[Goblin Giant]], [[Goblin Barrel]], [[Goblin Curse]], [[Goblin Drill]], [[Goblin Machine]], [[Party Rocket]], [[Party Hut]], [[Goblinstein]], and of course, Goblins.
+***The Goblins, Spear Goblins, Goblin Cage and Goblin Hut are the only cards associated with Goblins that are unlocked in Goblin Stadium.
+*The Goblin Hut is 1 of 7 [[:Category:Building Cards|buildings]] which first existed in Clash of Clans, the others being [[Cannon]], [[Mortar]], [[Tesla]], [[Inferno Tower]], [[Elixir Collector]], and [[X-Bow]].
+**The Goblin Hut resembles its respective counterpart from the Single Player Campaign, in Clash of Clans. However, in Clash of Clans, the Goblin Hut does not spawn Spear Goblins or any troop for that matter.
+*While not available as a building in Squad Busters, the Goblin Hut reappears there as a decoration.
+*The Goblin Hut is one of the first building [[cards]] to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the Cannon, [[Tombstone]], [[Bomb Tower]], Inferno Tower, and [[Barbarian Hut]].
+*The Goblin Hut is one of the first building cards to receive a card render, alongside the Mortar, Tesla, and Goblin Cage.
+*The Goblin Hut is 1 of 23 cards that has had its Elixir cost changed, the others being [[Bomber]], [[Fire Spirit]], [[Royal Recruits]], Cannon, Mortar, [[Musketeer]], [[Three Musketeers]], [[Heal]], Bomb Tower, Barbarian Hut, [[Furnace]], Elixir Collector, [[Skeleton Army]], [[P.E.K.K.A.]], [[Wall Breakers]], [[Electro Giant]], [[Bowler]], Goblin Barrel, [[Barbarian Barrel]], [[Rage]], [[Fisherman]], and the [[Monk]].
+*Its [[Star Points|Star Level 3 Skin]] grants the Spear Goblins a red mohawk similar to the Level 6 Goblin in Clash of Clans.
+*In the Clash Royale [https://youtu.be/QoG41jI12bY Goblin Hut commercial], it is revealed what apparently goes on inside the Goblin Hut: a Goblin dance party.
+*The Goblin Hut can be seen on the [[Trophies|Trophy Road]] as a decoration.
+* During [[Clan Wars]], a Goblin Hut appears at the bottom-left side of the river, giving the player statistics about Clan War mechanics when tapped on.
+* The Goblin Hut is 1 of 2 buildings that has been featured with a [[Buff#Shield%20Boost|Shield Boost]] [[buff]], the other being Goblin Cage.
+*The Goblin Hut is unavailable in multiple [[Tournament/Special Event Challenges|special game modes]]. More specifically:
+**It is 1 of 20 cards that is unavailable in [[Mirror]] mode, the others being [[Minions]], Cannon, Mortar, Tesla, Tombstone, Bomb Tower, Inferno Tower, Barbarian Hut, Furnace, Elixir Collector, [[Freeze]], [[Clone]], X-Bow, [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], [[Mighty Miner]], [[Little Prince]], and the Monk.
+**It is unavailable in [[Global Spell|The Floor is Healing]] sub-[[:Category:Modes|mode]] of the Global Spell game mode, much like other building cards, as well as the [[Cannon Cart]].
+*The Goblin Hut is the subject of a [[King's Tower|Tower Skin]].
+
+{{Navigation|Card}}
+
+[[fr:Cabane de gobelin]]
+[[de:Koboldhütte]]
+[[es:Choza de duendes]]
+[[it:Capanna goblin]]
+[[ja:ゴブリンの小屋]]
+[[ru:Хижина гоблинов]]
+[[zh:哥布林小屋]]

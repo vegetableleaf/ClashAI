@@ -1,0 +1,236 @@
+<!-- revid:436234 fetched:2026-08-26 title:Goblin Giant TIME-MACHINE evidence for r2_evos_a -->
+{{DISPLAYTITLE: <span style="color: #b300b3;">Goblin Giant</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=6|Rarity=Epic|Type=Troop|Arena=Jungle Arena|ReleaseDate=5 September 2018}}{{SubpageNavBox|Evolution=yes}}{{Quote|This jolly green Goblin Giant stomps towards enemy buildings. He carries two Spear Goblins everywhere he goes. It's a weird but functional arrangement.}}
+
+The Goblin Giant is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from the [[Arenas|Jungle Arena (Arena 9)]]. It spawns a single-target, [[:Category:Building Cards|building]]-targeting, melee, ground [[:Category:Troop Cards|troop]] with very high hitpoints and moderate damage. He also carries two [[Spear Goblins]] on his back, that can attack independently on the Goblin Giant. When he is defeated, the Spear Goblins spawn and continue attacking. He appears to be a colossal, aquamarine-skinned [[Goblins|Goblin]] wearing a brown aviator hat and pants with stitches, along with a backpack with ropes tied on the sides and team-colored suspenders, and has two ropes tied on his wrists, teal eyebrows, and a deep pink nose. A Goblin Giant card costs 6 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Goblin Giant Common Modifier.png|45x45px]] Common: Javelin Junkies===
+{{Quote|+100% spear range}}
+Goblin Giant's Spear Goblins have double the range.
+
+===[[File:Goblin Giant Rare Modifier.png|45x45px]] Rare: Mean & Green===
+{{Quote|Spawn Giant Goblin}}
+Becomes a literal giant melee Goblin.
+
+===[[File:Goblin Giant Epic Modifier.png|45x45px]] Epic: Elec-trick-tians===
+{{Quote|Sparky Spear Goblins}}
+Spear Goblins on the back shoot out [[Sparky]] projectiles instead of spears.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Goblin Giant Card}}
+*Using a second unit to tank for the [[Spear Goblins]] after the Goblin Giant is defeated will allow them to stay on the field longer and deal more damage. This is because the Spear Goblins are untargetable shortly after spawning, meaning the opposing [[:Category:Crown Towers|Crown Tower]] will target onto any other of the player's units in range. The [[Miner]] is particularly effective since the player has more control over when the Miner will be in range of the Crown Tower.
+*The defending player should be wary of using fragile [[:Category:Troop Cards|troops]] like [[Bats]] and [[Skeletons]] against the Goblin Giant. A mistimed deploy can result in the Spear Goblins targeting their frail swarms and quickly eliminating them. If there is not enough [[Elixir]] to deploy a tank for the swarm, the defender should wait for the Spear Goblins to lock onto the Crown Tower or a mini tank, letting the swarms gain defensive value.
+*Despite the similarities this [[Cards|card]] has to a [[Giant]], certain counters such as [[Musketeer]], [[Mega Minion]], [[Electro Wizard]], [[Ice Wizard]], [[Witch]], [[Magic Archer]], [[Flying Machine]], [[Night Witch]], [[Electro Dragon]], [[Baby Dragon]], [[Phoenix]], and [[Wizard]] are less reliable due to the Spear Goblins being able to take them out before they can counterpush. As such, mini tanks with high damage per second like the [[Prince]], Lumberjack, [[Monk]], Mighty Miner, [[Inferno Dragon]], or the [[Mini P.E.K.K.A.]] are the most effective single card counters to the Goblin Giant, not being threatened by the chip damage from the Spear Goblins and defeating the Goblin Giant before he can get to the Crown Towers.
+*His sight range is the same as a Giant, so he can be lured with a 5-2 or 4-3 [[:Category:Building Cards|building]] placement. Most building counters are also positive Elixir trades against the Goblin Giant.
+**Unlike other tanks, the [[Tombstone]] is not recommended to be used against the Goblin Giant, as the Spear Goblins can OHKO the spawned Skeletons from the Tombstone.
+*In a situation where the opponent has placed a [[Golem]] behind the [[King's Tower|King Tower]], the player can place a Goblin Giant to pressure them. His medium speed, high health, and decent damage allow him to effectively punish the opponent's early Golem placement, forcing them to either defend against the Goblin Giant which will result in weakened defenders in the same lane and a lone Golem in the other lane, or ignore the attack which will result in a Crown Tower loss.
+*Certain [[:Category:Spell Cards|spells]] work particularly well with the Goblin Giant because of the Spear Goblins in his backpack.
+**The [[Zap]] and [[Giant Snowball]] make great synergies with the Goblin Giant. Their cheaper cost and damage threshold is significant, as using them on defending [[Minions]] or [[Goblins]]⁣ allows the Spear Goblins to OHKO the swarms efficiently.
+**[[Rage]] does similar damage to the Zap, allowing the Spear Goblins to OHKO the same swarms. The Rage will be able to affect both the Goblin Giant and his Spear Goblins, allowing the spell to benefit multiple troops without the risk that comes from using it on frail swarms.
+**Similarly, the [[Fireball]] synergizes well with the Goblin Giant due to the Spear Goblins being able to finish off defenders like Musketeer, [[Goblinstein]], [[Little Prince]], or [[Electro Wizard]], allowing the Goblin Giant to deal more damage.
+**Due to the Goblin Giant's weakness to buildings, he pairs quite well with the [[Earthquake]]. The Earthquake will destroy buildings for the Goblin Giant to continue pursuing towards the Crown Tower. The Spear Goblins can also finish off troops that can survive a lone Earthquake such as a [[Dart Goblin]].
+**[[Lightning]] can be paired with the Goblin Giant for the sole purpose of destroying high-damage mini tanks used against him like an [[Inferno Dragon]], Mini P.E.K.K.A,or [[Lumberjack]].
+*The Goblin Giant's unique ability to move and attack in separate patterns allows him to effectively kite units while simultaneously dealing damage to them. This is less effective on troops that move slower than the Goblin Giant, such as the [[P.E.K.K.A.]]. The result will be that the kited troop will only follow the Goblin Giant into the other lane, but not across the bridge. These tactics become more effective when used with the [[Dagger Duchess]] or [[Cannoneer]].
+*The Goblin Giant pairs well with [[Sparky]]. The Goblin Giant moves slightly faster than her, making it harder for the opponent's defender to get area damage value, and the Goblin Giant can be used after a Sparky is placed in the back to kite any opposite lane punishes into her, provided the punish targets all types of units. The Spear Goblin damage can also help spells fully take out swarms that usually counter the Sparky.
+*Fast troops like the [[Dark Prince]], Prince, and [[Lumberjack]] pair well with the Goblin Giant. Since he moves faster than other tanks, they will stay close to him for longer, allowing them to handle threats to him, with the former and the middle also being able to push him closer to the Crown Tower and connect to it earlier.
+*The Goblin Giant can be a situational counter to the [[Lava Hound]]. Wait until the Lava Hound is close to death, then place the Goblin Giant in the centre of all the Lava Pups in order to not only tank the damage of the Lava Pups, but also whittle them down with the Spear Goblins carried in his backpack. He will then counterpush with the majority of his health left.
+*He can be an effective counter to the [[Graveyard]]; the Spear Goblins on his back will attack 2 Skeletons at a time, along with the [[Tower Princess]] while the Goblin Giant tanks some hits from the Skeletons. Although this is a negative Elixir trade, it sets the Goblin Giant for a counterpush.
+**On the contrary, he can be quite a good tank for a Graveyard. He is able to attack troops that are defending against him, while also tanking for the Graveyard, with it dealing damage to the Crown Tower.
+*Along with an [[Ice Spirit]] or [[Electro Spirit]], the Goblin Giant can prevent all damage from a [[Balloon]], except for its death damage, and have full hitpoints for a counterattack.
+*The Goblin Giant is a decent counter to the [[X-Bow]]. The Goblin Giant tanks the attacks from it, while the Spear Goblins deal damage to any additional defenders or to the X-Bow itself.
+*The Spear Goblins have a longer spawn delay after death compared to other units like [[Battle Ram]]. This means that the Goblin Giant and the Spear Goblins cannot both be hit with [[The Log]], unlike the [[Barbarians]] in the Battle Ram. Similarly, the [[Bowler]] would not immediately defeat the Spear Goblins. However, the [[Executioner]]'s axe will be able to finish off the Spear Goblins when it returns back to him.
+*In certain situations, the Spear Goblins of the Goblin Giant can bait spells from the opponent such as Zap. This can be capitalized afterwards with cards that are weak to those spells, such as a follow-up attack with a [[Skeleton Barrel]].
+*The [[Rascals]] are extremely effective against the Goblin Giant. The trio deal a lot of damage together, and the Rascal Boy tanks the Spear Goblins' damage. They are able to stop him for a +1 Elixir trade.
+*An expensive but extremely potent offensive combination is the [[P.E.K.K.A.]] paired with the Goblin Giant. The Goblin Giant can quickly clear small swarms like Bats and Skeletons, while the P.E.K.K.A. has excellent one-on-one matchups with many single-target damage dealers used to counter the Goblin Giant like the Prince, [[Mighty Miner]], and Mini P.E.K.K.A.
+**Spell support is crucial to wipe out larger swarms like the Skeleton Army, [[Goblin Gang]], and [[Minion Horde]], that could deal hefty damage to the push. [[Rage]] is especially potent as it helps make the push even more threatening, and makes the Spear Goblins on the Goblin Giant attack faster.
+**[[Elite Barbarians]] are a cheaper alternative to the P.E.K.K.A. While they are less bulkier and are more susceptible to area damage, they are cheaper and move significantly faster, making them harder to distract. Additionally, they can clear small swarms faster as a pair.
+*The [[Fisherman]] pairs well with the Goblin Giant to pull away single-target damage dealers used to counter the Goblin Giant like the [[Mini P.E.K.K.A.]], Prince, and Mighty Miner.
+<center>
+
+<div class="table-back" id="unit-statistics">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Goblin Giant Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|6||1.5 sec||0.8 sec||Medium (60)||1 sec||Melee: Medium (1.2)||Buildings||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+
+{{StatisticsSubheader|Backpack Spear Goblin Attributes}}
+{| id="unit-attributes-table-tertiary" class="wikitable" style="width: 100%; text-align: center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+|-
+|1.7 sec||0.5 sec||5||500||Air & Ground||x2
+|}
+
+{{StatisticsSubheader|Spear Goblin Attributes}}
+{| id="unit-attributes-table-secondary" class="wikitable" style="width: 100%; text-align: center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.7 sec||0.5 sec||Very Fast (120)||0.7 sec||5||500||Air & Ground||x2||Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Goblin Giant Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Goblin Giant Damage<br />{{Icon|I=Damage}}
+! scope="col" |Goblin Giant Damage per Second<br />{{Icon|I=DPS}}
+! scope="col" |Spear Goblin Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Spear Goblin Damage<br />{{Icon|I=Damage}}
+! scope="col" |Spear Goblin Damage per Second<br />{{Icon|I=DPS}}
+|-
+|6||1,889||110||{{Dps|110|1.5}}||83||51||{{Dps|51|1.7}}
+|-
+|7||2,077||121||{{Dps|121|1.5}}||91||56||{{Dps|56|1.7}}
+|-
+|8||2,285||133||{{Dps|133|1.5}}||100||61||{{Dps|61|1.7}}
+|-
+|9||2,512||146||{{Dps|146|1.5}}||110||67||{{Dps|67|1.7}}
+|-
+|10||2,757||160||{{Dps|160|1.5}}||121||74||{{Dps|74|1.7}}
+|-
+|11||3,022||176||{{Dps|176|1.5}}||133||81||{{Dps|81|1.7}}
+|-
+|12||3,324||193||{{Dps|193|1.5}}||146||89||{{Dps|89|1.7}}
+|-
+|13||3,645||213||{{Dps|213|1.5}}||160||98||{{Dps|98|1.7}}
+|-
+|14||4,004||233||{{Dps|233|1.5}}||176||108||{{Dps|108|1.7}}
+|-
+|15||4,401||256||{{Dps|256|1.5}}||193||119||{{Dps|119|1.7}}
+|-
+|16
+|4,826
+|282
+|188
+|212
+|130
+|76
+|}
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 120,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|20 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 360,000 Damage to enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 600,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" |Building Basher <br/ > [[File:Building Basher.png|50x50px]]
+|1
+|Hit enemy buildings a total of 980 times
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy buildings a total of 2,800 times
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy buildings a total of 4,900 times
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2018
+*The Goblin Giant [[Cards|card]] was added to the game on 5/9/2018, in the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]].
+*On 1/10/2018, a [[Version History#Balance Changes (1/10/2018)|Balance Update]], increased the Goblin Giant's hitpoints by 6%.
+2019
+*On 7/1/2019, a [[Version History#Balance Changes (7/1/2019)|Balance Update]], increased the Goblin Giant's hitpoints by 3%, and increased the range of the Spear Goblins in the backpack to 5.5 tiles (from 5 tiles).
+*On 15/4/2019, the [[Version History#April%202019%20Update%20(15/4/2019)|April 2019 Update]], fixed a bug where the Goblin Giant's Spear Goblins would not despawn correctly if the Goblin Giant scored a [[Touchdown]], causing the Spear Goblins to remain intact and score a consecutive Touchdown immediately upon the beginning of the next round.
+*On 1/7/2019, the [[Version History#July%202019%20Update%20(1/7/2019)|July 2019 Update]], decreased the Goblin Giant's range to 1.2 tiles (from 1.25 tiles), now classified as Melee: Medium.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Goblin Giant's card info screen.
+2020
+*On 9/12/2020, a [[Version History#Balance Changes (9/12/2020)|Balance Update]], decreased the Goblin Giant's attack time interval to 1.5 seconds (from 1.7 seconds), and his first attack time interval to 0.8 seconds (from 1 second).
+2021
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2023
+*On 7/2/2023, a [[Version History#Balance%20Change%20(7/2/2023)|Balance Update]], decreased the attack time interval of the Spear Goblins in the backpack to 1.5 seconds (from 1.7 seconds).
+*On 4/4/2023, a [[Version History#Balance%20Changes%20(4/4/2023)|Balance Update]], increased the Spear Goblins' range to 5.5 tiles (from 5 tiles).
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+*On 8/8/2023, a [[Version History#Balance%20Changes%20(8/8/2023)|Balance Update]], increased the Goblin Giant's hitpoints by 6%.
+*On 13/11/2023, a [[Version History#Minor%20Update%20(13/11/2023)|Minor Update]], fixed a bug where [[Clone|cloning]] a Goblin Giant would spawn floating bodyless Spear Goblins.
+*On 13/12/2023, the [[Version History#Tower Troop Update (13/12/2023)|Tower Troop Update]], increased the attack time interval of the Spear Goblins in the backpack to 1.7 seconds (from 1.5 seconds).
+2024
+*On 5/3/2024, a [[Version History#Balance Changes (5/3/2024)|Balance Update]], decreased the Goblin Giant’s hitpoints by 3.2%.
+*On 17/6/2024, the [[Version History#Goblin World Update (17/6/2024)|Goblin World Update]], decreased the Spear Goblins’ first attack time interval to 0.3 seconds (from 0.5 seconds). It also added the Goblin Giant to the Goblin class.
+*On 1/7/2024, the [[Version History#Pass Royale and more (1/7/2024)|July 2024 Update]], added the Goblin Giant’s Evolution.
+2025
+*On 8/1/2025, a [[Version History#Balance Changes (8/1/2025)|Balance Update]], increased the Spear Goblins’ first attack time interval to 0.4 seconds (from 0.3 seconds).
+*On 30/1/2025, a [[Version History#Maintenance Break (30/1/2025)|maintenance break]], made it so that [[Rune Giant]]'s damage boost would no longer affect the Goblin Giant's Spear Goblins.
+*On 31/3/2024, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], increased the Goblin Giant's hitpoints by 0.03%. It also fixed a bug where Spear Goblins would not spawn after being buffed by [[Royal Chef]].
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] increased the Spear Goblins’ first attack time interval to 0.5 seconds (from 0.4 seconds) {{Balance|Nerf}}, and decreased their range to 5 tiles (from 5.5 tiles) {{Balance|Nerf}}.
+*On 6/10/2025, a [[Version History#Balance Changes (4/8/2025)|Balance Update]], increased the Backpack Spear Goblins' first attack time interval to 0.5 seconds (from 0.4 seconds), decreased their range to 5 tiles (from 5.5 tiles) and decreased the Goblin Giant's hitpoints by 7%.
+
+==Gallery==
+<gallery>
+File:Goblin Giant card render.png|Current card render.
+File:Goblin Giant Preview.gif|Current card preview
+File:Goblin Giant 2.png|Goblin Giant 1
+File:Goblin Giant 3.png|Goblin Giant 2
+</gallery>
+
+==Trivia==
+*Goblins are small, grotesque, monstrous creatures that appear in the folklore of multiple European cultures. First attested in stories from the Middle Ages, they are ascribed conflicting abilities, temperaments, and appearances depending on the story and country of origin, ranging from mischievous household spirits to malicious, bestial thieves. They often have magical abilities similar to a fairy or demon, such as the ability to shapeshift. Similar creatures include [https://en.wikipedia.org/wiki/Duende duendes], [https://en.wikipedia.org/wiki/Kobold kobolds], [https://en.wikipedia.org/wiki/Leprechaun leprechauns], and [https://en.wikipedia.org/wiki/Ghoul ghouls].
+**In the German and Dutch language setting of the game, the Goblin Giant's name translates to "Kobold Giant". In the Spanish, Arabic, and Vietnamese language setting of the game, the Goblin Giant's name translates to "Duende Giant", "Giant Ghoul", and "Giant Leprechaun" respectively.
+**The Goblin Giant is 1 of 17 [[cards]] associated with [[Goblins]], with the others being [[Spear Goblins]], [[Goblin Gang]], [[Baby Goblins]], [[Dart Goblin]], [[Goblin Demolisher]], [[Suspicious Bush]], [[Goblin Cage]], [[Goblin Hut]], [[Goblin Barrel]], [[Goblin Curse]], [[Goblin Drill]], [[Goblin Machine]], [[Party Rocket]], [[Party Hut]], [[Goblinstein]], and of course, Goblins.
+*The Goblin Giant is one of the first [[:Category:Troop Cards|troop]] cards to receive a card render, alongside the [[Archers]], [[Knight]], Goblins, [[Bomber]], [[Skeletons]], [[Barbarians]], [[Bats]], [[Royal Recruits]], [[Skeleton Barrel]], [[Rascals]], [[Musketeer]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Flying Machine]], [[Hog Rider]], [[Royal Hogs]], Dart Goblin, [[Zappies]], [[Elixir Golem]], [[Baby Dragon]], [[Skeleton Army]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], [[Prince]], [[Balloon]], [[Giant Skeleton]], [[Hunter]], [[Electro Dragon]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Mega Knight]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], [[Magic Archer]], [[Bandit]], [[Lava Hound]], [[Night Witch]], and [[Fisherman]].
+*The Goblin Giant is one of the first cards to be featured in the [[Season Shop]], alongside the Goblins and Goblin Cage.
+*The Goblin Giant is 1 of 14 troops that has been featured with a [[Buff#Rage|Rage]] [[buff]], the others being [[Electro Spirit]], Giant, Zappies, [[Guards]], Giant Skeleton, Electro Dragon, Wall Breakers, [[Electro Giant]], Mega Knight, Ram Rider, [[Electro Wizard]], [[Sparky]], and Royal Ghost.
+*The Goblin Giant is 1 of 15 troops which bring an excited reaction from the audience upon spawning and brings a collective groan from the audience when defeated, as well as a concerning gasp when the opponent plays him, the others include [[Royal Giant]], Giant, P.E.K.K.A., Giant Skeleton, [[Rune Giant]], [[Golem]], Bowler, Electro Wizard, [[Inferno Dragon]], Sparky, Lava Hound, Night Witch, [[Super Lava Hound]], and the [[Monk]].
+*The Goblin Giant is 1 of 2 troops with the “Ranged Ground & Air targeting unit riding on Melee Building targeting unit” pattern, the other being Ram Rider.
+*The Goblin Giant is 1 of 10 cards to have an alliterative name, the others being the Royal Recruits, Goblin Gang, [[Mega Minion]], Cannon Cart, [[Barbarian Barrel]], Ram Rider, [[Dagger Duchess]], [[Boss Bandit]], and the [[Mighty Miner]].
+* While not available as a troop in Clash of Clans, the Goblin Giant may have inspired the [https://clashofclans.fandom.com/wiki/Yeti Yeti], a troop from the former as they share similarities.
+*The Goblin Giant's hat is very similar to the [https://clashofclans.fandom.com/wiki/Builder Builder]'s from Clash of Clans.
+*His [[Star Points|Star Level 3 Skin]] grants the Spear Goblins a red mohawk similar to the Level 6 Goblin in Clash of Clans.
+*There is a [[Loading Screen Hints|Loading Screen Hint]] that says: "''Somebody once told Goblin Giant that the world was gonna roll him.''" This is a reference to the alternative rock song "[https://youtu.be/5xxQs34UMx4 All Star]", by the Smash Mouth, which was used in the beginning of the Shrek movie. This is a reference to the fact that Goblin Giant resembles Shrek.
+*The Goblin Giant is the subject of 2 [[Emotes]].
+
+{{Navigation|Cards}}
+
+[[fr:Gobelin géant]]
+[[de:Koboldriese]]
+[[es:Duende gigante]]
+[[it:Gigante goblin]]
+[[ru:Гоблин-гигант]]
+[[zh:哥布林巨人]]

@@ -1,0 +1,219 @@
+<!-- revid:436519 fetched:2026-08-26 title:Barbarian Hut LIVE -->
+{{DISPLAYTITLE:<span style="color: #ffa31a;">Barbarian Hut</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=6|Rarity=Rare|Type=Building|Arena=Jungle Arena|ReleaseDate=4 January 2016}}
+{{Quote|Building that periodically spawns Barbarians to fight the enemy. Time to make the Barbarians!}}
+
+The Barbarian Hut is a {{Rarity|Rare}} [[Cards|card]] that is unlocked from the [[Arenas|Jungle Arena (Arena 9)]]. It spawns a [[:Category:Building Cards|building]] with high hitpoints. Every 15 seconds, the Barbarian Hut will passively summon a group of three [[Barbarians]], with a 0.5 seconds delay from each other. When defeated, it will also spawn a Barbarian. It appears as a wooden hut with a team-colored roof and a sword hoisted above the entrance, along with a keg of [[Elixir]] for decoration beside it. A Barbarian Hut card costs 6 Elixir to deploy.
+
+==Modifiers==
+===[[File:Barbarian Hut Common Modifier.png|45x45px]] Common: Best of Both Barbs===
+{{Quote|+100% spawn rate}}
+Barbarians spawn twice as frequently.
+
+===[[File:Barbarian Hut Rare Modifier.png|45x45px]] Rare: Extra Elitists===
+{{Quote|Spawns Elite Barbarians}}
+Each spawn cycle sends out 2 [[Elite Barbarians]] instead of regular Barbarians.
+
+===[[File:Barbarian Hut Epic Modifier.png|45x45px]] Epic: Well, ****!===
+{{Quote|Mini Mega Knight Hut}}
+Each spawn cycle sends out 1 small [[Mega Knight]] instead of regular Barbarians.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Barbarian Hut Card}}
+*The continual spawning of the Barbarians from the Barbarian Hut in affiliation with [[Tombstone]]s and [[Goblin Hut]]s can destroy an opposing [[:Category:Tower Troop Cards|Crown Tower]] if they are overlooked by the opponent. Placing down many huts like this is known as the Spawner strategy and can overwhelm opponents at all levels though some opponents can defend this strategy easily sometimes using [[Poison]] or [[Fireball]].
+*The Barbarian Hut can be used defensively and deployed in front of the player's Crown Tower in order to protect it, do be careful, Your opponent may use [[:Category:Spell Cards|spells]] for some value on the Crown Towers.
+*The player should be careful when using the Barbarian Hut as it may render them defenseless against an opponent's attack due to its high [[Elixir]] cost, so have some cheap [[:Category:Troop Cards|troops]] just in case.
+*The Barbarian Hut can spawn up to 8 Barbarians (value of 8 Elixir), creating a maximum profit of 2 Elixir.
+**Due to the high cost of placing a Barbarian Hut down and the total time it takes for the hut to create its maximum profit of Elixir, it is highly advised to protect the Barbarian Hut so that potential and Elixir profit is maximized.
+**With its difficulty to maximize efficiency, an opposing player can easily throw a high damage spell card to greatly reduce the efficiency and the amount of spawned Barbarians. A [[Rocket]] will completely destroy the Barbarian Hut, but will be unable to prevent the first wave and its death spawn.
+*Barbarians cannot target flying troops, so the Barbarian Hut can be destroyed by [[Minions]], [[Bats]], [[Baby Dragon]], [[Skeleton Dragons]], [[Mega Minion]], [[Electro Dragon]], or the [[Flying Machine]] unhindered if placed incorrectly outside a Crown Tower's range.
+*The [[Bowler]] is a great counter to the Barbarian Hut, due to his damage and him knocking back each wave of Barbarians and stopping while doing so, allowing him to move more slowly and stay on the map longer and defend more troops.
+*Even though it spawns Barbarians very slowly, do not underestimate it; it can deal heavy damage to or even destroy a Crown Tower.
+*Since the [[:Category:Building Cards|building]] spawns Barbarians in groups of 3, it is very easy for splash damage troops or buildings to wipe them out one after one. When using the Barbarian Hut, try to take out area damage cards as quickly as possible. Alternatively, use fast troops with high health (e.g., [[Dark Prince]], [[Prince]], [[Ram Rider]], [[Boss Bandit]], [[Golden Knight]], [[Lumberjack]], [[Mini P.E.K.K.A]], or [[Hog Rider]]) to briefly soak up some damage.
+*A Barbarian Hut can stop a lone [[Mega Knight]] for a +1 Elixir trade. The 1 Barbarian which spawn upon the building's destruction will survive but will not be very useful.
+*In rare situations, a [[Balloon]] can snipe a Barbarian Hut placed in the center of the opponent's side. It will easily destroy the Barbarian Hut for a +1 Elixir trade, without it being distracted by the spawned Barbarians or vice versa. However, this should only be done if the player lacks better counters.
+*The [[Miner]] can be a slightly effective counter to this card, as he gives an almost 3 Elixir trade advantage. However, the Miner will not completely destroy it, and it will be able to spawn 2 waves of Barbarians before it runs out of health. Due to this, it might just be a good idea to not play a Miner, as the Barbarian Hut will be able to still summon 6 Barbarians for a 4 Elixir trade disadvantage, and they will be grouped up, making them a more effective potential counterpush.
+**The [[Goblin Barrel]] is ineffective against the Barbarian Hut as it may not do much damage, especially if a wave of Barbarians come out just in time.
+*The Barbarian Hut is affected by [[Rage]], technically allowing it to produce extra waves. However, its lifetime decays more quickly under a Rage spell's effect, and as a result, no extra wave will be produced with the help of Rage. However, it will result in the last wave spawning 3 Barbarians instead of 1. This is a 2 Elixir investment for an equivalent return value of 2 Elixir, and thus it can be worth using if the player wants to make use of the last wave of Barbarians in defense.
+*In the [[Global Spell|Rage Challenge]], all buildings' (including the Barbarian Hut's) lifetimes are unaffected, but in Barbarian Hut's case, the Troop producing speed is, allowing it to produce up to 3 waves of Barbarians instead of the usual 2.33 in the challenge.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Barbarian Hut Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Spawn Speed<br />{{Icon|I=Time}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Lifetime<br />{{Icon|I=Time}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|6||15 sec||1 sec||30 sec||[[:Category:Building Cards|Building]]||{{Rarity|Rare}}
+|}
+
+{{StatisticsSubheader|Barbarian Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.3 sec||0.4 sec||Medium (60)||Melee: Short (0.7)||Ground||Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hut_hp_11 | 1164 }}
+{{#vardefine: life | 30 }}
+{{#vardefine: hp_11 | 670 }}
+{{#vardefine: dmg_11 | 192 }}
+{{#vardefine: atk_speed | 1.3 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+! scope="col" |Hitpoints lost per second<br />{{Icon|I=Time}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 3 || {{#expr: {{#var:hut_hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:hut_hp_11}} * (1.1^(3-11)) / {{#var:life}} round 1 }}  || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hut_hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:hut_hp_11}} * (1.1^(4-11)) / {{#var:life}} round 1 }}|| {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hut_hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:hut_hp_11}} * (1.1^(5-11)) / {{#var:life}} round 1 }}|| {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hut_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:hut_hp_11}} * (1.1^(6-11)) / {{#var:life}} round 1 }}|| {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hut_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:hut_hp_11}} * (1.1^(7-11)) / {{#var:life}} round 1 }}|| {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hut_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:hut_hp_11}} * (1.1^(8-11)) / {{#var:life}} round 1 }}|| {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hut_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:hut_hp_11}} * (1.1^(9-11)) / {{#var:life}} round 1 }}|| {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hut_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:hut_hp_11}} * (1.1^(10-11)) / {{#var:life}} round 1 }}|| {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hut_hp_11}} || {{#expr: {{#var:hut_hp_11}} / {{#var:life}} round 1 }}|| {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hut_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:hut_hp_11}} * (1.1^(12-11)) / {{#var:life}} round 1 }}|| {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hut_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:hut_hp_11}} * (1.1^(13-11)) / {{#var:life}} round 1 }}|| {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hut_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:hut_hp_11}} * (1.1^(14-11)) / {{#var:life}} round 1 }}|| {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hut_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:hut_hp_11}} * (1.1^(15-11)) / {{#var:life}} round 1 }}|| {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hut_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:hut_hp_11}} * (1.1^(16-11)) / {{#var:life}} round 1 }}|| {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Spawner <br> [[File:Spawner.png|50x50px]]
+|1
+|Spawn a total of 900 [[:Category:Troop Cards|Troops]]
+|100 {{BASEPAGENAME}} cards<br>50 {{Icon|I=XP}}
+|-
+|2
+|Spawn a total of 2,700 Troops
+|4,000 {{Icon|I=Gold}}<br>50 {{Icon|I=XP}}
+|-
+|3
+|Spawn a total of 4,500 Troops
+|100 {{Icon|I=Gem}}<br>50 {{Icon|I=XP}}
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 160,000 Damage to enemy Troops or [[:Category:Building Cards|buildings]] with spawned [[Barbarians]]
+|6,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 455,000 Damage to enemy Troops or buildings with spawned Barbarians
+|100 {{Icon|I=Rare Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 800,000 Damage to enemy Troops or buildings with spawned Barbarians
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Barbarian Hut [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016.
+*On 2/2/2016, the [[Version History#February 2016 Update (2/2/2016)|February 2016 Update]], increased the Barbarian Hut's hitpoints by 10%, but also decreased the [[Barbarians]]' hitpoints by 4%.
+*On 29/2/2016, the [[Version History#March%202016%20Update%20(29/2/2016)|March 2016 Update]], decreased the Barbarians' sight range to 5.5 tiles (from 6 tiles).
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], increased the {{Rarity|Rare}} card Level cap to 11 (from 10). The update also fixed the “range bug”, which decreased the Barbarians' range to 0.7 tiles (from 1.2 tiles), but their effective range was unchanged.
+2018
+*On 25/4/2018, the [[Version History#Clan%20Wars%20Update%20(25/4/2018)|Clan Wars Update]], changed the Barbarian Hut's card description. It used to read “''Troop building that periodically deploys Barbarians to fight the enemy. Time to make the Barbarians.''”
+*On 4/6/2018, a [[Version History#Balance Changes (4/6/2018)|Balance Update]], decreased the Barbarians‘ attack time interval to 1.4 seconds (from 1.5 seconds).
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Rare}} cards start at Level 3 and end at Level 13 (from 1 to 11).
+2019
+*On 7/1/2019, a [[Version History#Balance Changes (7/1/2019)|Balance Update]], decreased the Barbarian Hut's hitpoints by 7%.
+*On 4/3/2019, a [[Version History#Balance Changes (4/3/2019)|Balance Update]], decreased the Barbarians' hitpoints by 13%.
+*On 15/4/2019, the [[Version History#April%202019%20Update%20(15/4/2019)|April 2019 Update]], added an extra [[Star Points|Star Level]].
+2020
+*On 4/2/2020, a [[Version History#Balance Changes (4/2/2020)|Balance Update]], decreased the Barbarian Hut’s lifetime to 50 seconds (from 60 seconds), decreased its spawn time interval to 12.5 seconds (from 13.5 seconds), and made it spawn 2 additional Barbarians upon death.
+*On 5/5/2020, a [[Version History#Balance Changes (5/5/2020)|Balance Update]], decreased the Barbarian Hut's hitpoints by 19.5%.
+*On 9/12/2020, a [[Version History#Balance Changes (9/12/2020)|Balance Update]], decreased the Barbarian Hut's hitpoints by 21%.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the [[Arenas|Arena]] to unlock the Barbarian Hut from Barbarian Bowl to Serenity Peak.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+*On 7/12/2021, the [[Version History#Balance%20Changes%20(7/12/2021)|2021 Quarter 4 Update]], decreased the hitpoints of the Barbarian Hut by 15%, its lifetime to 40 seconds (from 50 seconds) and its spawn time interval to 10 seconds (from 12.5 seconds).
+2022
+*On 7/6/2022, a [[Version History#Balance%20Changes%20(7/6/2022)|Balance Update]], increased the Barbarian‘s attack time interval to 1.3 seconds (from 1.4 seconds).
+*On 4/10/2022, a [[Version History#Balance%20Changes%20(4/10/2022)|Balance Update]], decreased the Barbarian Hut's cost to 6 [[Elixir]] (from 7 Elixir), and increased its spawn time interval to 14 seconds (from 10 seconds). It also made it so that 3 Barbarians will spawn per wave (from 2), decreased its lifetime to 30 seconds (from 40 seconds), and decreased the Barbarians spawned upon death to 1 (from 2).
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Barbarian Hut from Serenity Peak to Jungle Arena.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Barbarian Hut's hitpoints by 0.17%.
+
+==Gallery==
+<gallery>
+File:Barbarian Hut Preview.gif|Current card preview
+File:Barbarian Hut 2.png|Barbarian Hut
+File:Barbarian Hut.png|Barbarian Hut 2
+</gallery>
+
+==Trivia==
+*The word "''Barbarian''" comes from the Greek "''βάρβαρος''" (''bárbaros''), meaning foreign. Dating back to the ancient Greek times, the Greeks referred to non-Greek people as barbarians because the language they spoke sounded to Greeks like gibberish represented by the sounds “bar…bar…;”.
+**The Barbarian Hut is 1 of 6 [[cards]] associated with [[Barbarians]], with the others being [[Elite Barbarians]], [[Barbarian Launcher]], [[Battle Ram]], [[Barbarian Barrel]], and of course, Barbarians.
+*The Barbarian Hut closely resembles the Level 1 Barracks from Clash of Clans, only that it now has a blue roof; however, from the enemy's point of view, it is red. The Barbarian Hut also has a small hole in the roof that the Barracks does not have, a keg of [[Elixir]], and is more reinforced. Level 1 Barracks also only allow the training of Barbarians.
+*The Barbarian Hut, along with [[Elixir Collector]] and [[X-Bow]], are the most expensive [[:Category:Building Cards|buildings]], costing 6 Elixir.
+*Among all buildings that can spawn troops, the Barbarian Hut has the lowest spawn speed of all buildings, with an spawn speed of 13.5 seconds.
+*In the Norwegian, Finnish, and Vietnamese language settings of the game, the Barbarian Hut's name translates to "Barbarian Cabin", "Barbarian Lodge", and "Barbarian Tent" respectively.
+*The Barbarian Hut is one of the first building cards to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the [[Cannon]], [[Goblin Hut]], [[Tombstone]], [[Bomb Tower]], and [[Inferno Tower]].
+*Though not the first cards to receive balance changes, the Barbarian Hut is one of the first {{Rarity|Rare}} cards to ever receive balance changes since the [[Version History#February 2016 Update (2/2/2016)|February 2016 Update]], the others are the [[Wizard]], Bomb Tower, Inferno Tower, and Elixir Collector.
+*The Barbarian Hut is 1 of 23 cards that has had its Elixir cost changed, the others being [[Bomber]], [[Fire Spirit]], [[Royal Recruits]], Cannon, [[Mortar]], [[Musketeer]], [[Three Musketeers]], [[Heal]], Goblin Hut, Bomb Tower, [[Furnace]], Elixir Collector, [[Skeleton Army]], [[P.E.K.K.A.]], [[Wall Breakers]], [[Electro Giant]], [[Bowler]], [[Goblin Barrel]], [[Barbarian Barrel]], [[Rage]], [[Fisherman]], and the [[Monk]].
+*The Barbarian Hut is unavailable in multiple [[Tournament/Special Event Challenges|special gamemodes]]. More specifically:
+**It is 1 of 20 cards that is unavailable in [[Mirror]] mode, the others being [[Minions]], Cannon, Mortar, [[Tesla]], Goblin Hut, Tombstone, Bomb Tower, Inferno Tower, Furnace, Elixir Collector, [[Freeze]], [[Clone]], X-Bow, [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], [[Mighty Miner]], [[Little Prince]], and the Monk.
+**It is unavailable in [[Global Spell|The Floor is Healing]] sub-[[:Category:Modes|mode]] of the Global Spell game mode, much like other building cards, as well as the [[Cannon Cart]].
+*Before the Barbarian Hut's card release, the Barbarian Hut's cost was increased to 7 Elixir (from 6 Elixir), its hitpoints were increased by 42%, its spawn time interval was increased to 14 seconds (from 11.85 seconds), the Barbarians' hitpoints were increased by 24%, and their damage was decreased by 12%.
+
+{{Navigation|Card}}
+
+[[fr:Cabane de barbare]]
+[[de:Barbarenhütte]]
+[[es:Choza de bárbaros]]
+[[it:Capanna dei barbari]]
+[[ja:バーバリアンの小屋]]
+[[ru:Хижина варваров]]
+[[zh:野蛮人小屋]]

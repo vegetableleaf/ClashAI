@@ -1,0 +1,10 @@
+{
+ "Version History/2025": {
+  "revid": 436887,
+  "file": "Version_History_2025.wikitext",
+  "cached_identical": true,
+  "patch_note": [
+   "*{{Balance|Neutral}} All troop stats have now been defined with {{Rarity|Common}} Rarity as the base, solving many level scaling inconsistencies."
+  ]
+ }
+}

@@ -150,3 +150,36 @@ spawn radius (prose 4 tiles vs History 24/10/2025 3.5 tiles); Monk knockback imm
 (ability-scoped vs unqualified); Golden Knight has NO duration and NO dash travel speed, so chain
 timing is not simulatable from the page alone; Goblinstein link geometry ("2 tiles" from the
 Doctor, the Monster, or the line between them — never stated).
+
+
+## R2 sweep 2026-08-26
+
+Eleven independent R2 claim files (8 family sweeps + 3 cross-checks) merged into one canonical
+ledger, `ledger/stat_diffs.jsonl`. Full owner batch review table: **`ledger/R2_REVIEW.md`**.
+Nothing in `icebow/config/cards.yaml` or `cards_stats.json` was touched.
+
+- **Coverage** — 179 distinct card keys swept, 3,321 field-checks. 14 keys came back with no line
+  at all. 2,799 field-checks (84.3%) produced no claim; 522 did.
+- **Merge** — 595 claim lines in, **556** canonical rows out. 39 `(key, field)` pairs were claimed
+  twice; the claim with more sources was kept and the loser preserved under `dup_verdicts`.
+  **26 duplicates agreed, 13 did not** and were forced to `escalate` (review section 2a). Three
+  of those were promoted from a clean verdict purely by the merge: `elixir_collector.lifetime`
+  (update vs escalate), `tombstone.spawns.interval` (pin 3.5 vs escalate 4.0),
+  `goblin_curse.damage` (update vs escalate — both sides agree the value is 35, they disagree on
+  whether an owner gate is needed).
+- **Verdicts, canonical** — 316 escalate, 101 update, 73 match, 66 pin.
+- **Escalation buckets** — 13 duplicate-claim disagreements, 115 curated `verified: true`
+  contradicted, 125 split votes, 63 where the sources agree but the fix is a schema/engine
+  decision.
+- **Edit-war quarantines — 0.** All 595 incoming claims carry `edit_war: "pass"`; every sweep
+  re-fetched its pages live on 2026-08-26 and revid-compared (most byte-compared) against its own
+  archive. Two false CHANGED flags were traced to a `<!-- revid:... -->` provenance line an earlier
+  fetch script had prepended to the archived copies, and cleared.
+- **Level-ladder question closed** — 41 of the 66 pins are one finding: the wiki's per-level table
+  is a MediaWiki `round(v11 * 1.1^(L-11))` render, not game data, so it cannot adjudicate a scaling
+  model. `levels.py` is correct for the post-31/3/2025 game. Do not "correct" these back.
+
+Open items C1-C8 above are unchanged by the merge except where R2_REVIEW cites them: C1 and the
+`mighty_miner.ability_bomb_damage` 366 -> 332 fix are re-verified and still unapplied; C4 is
+resolved (goblinstein Doctor damage 92 -> 135); the `skeleton_king` and `little_prince` halves of
+C8 are resolved by dated History entries.

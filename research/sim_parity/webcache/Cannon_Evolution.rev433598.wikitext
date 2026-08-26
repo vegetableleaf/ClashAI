@@ -1,0 +1,117 @@
+<!-- revid:433598 fetched:2026-08-26 title:Cannon/Evolution TIME-MACHINE evidence for r2_evos_a -->
+{{Protection}}{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Cannon</span>}}
+{{Evolved_Card_Infobox|Cost=3|CycleCost=2|Rarity=Common|Arena=Barbarian Bowl|Type=Building}}
+{{Quote|When this Evolution is deployed, it barrages both sides of the Arena, dealing damage and knocking enemies back. Who doesn't love the smell of gunpowder in the morning?}}
+
+The Cannon's Evolution is a {{Rarity|Common}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns a Cannon with identical stats to the original. After deployment, the Cannon shoots 9 cannonballs in 2 rows, 5 on the top row and 4 on the bottom, which deals area damage and inflicts knockback. It appears as a large dark metal barrel mounted on a four-legged wooden mount with a purple metal plate, legs and supports reinforced with gold chains, with a purple muzzle, two team-colored ridges, one midway and the other at the rear, along with a [[Card Evolution]] symbol in between, and a metal wing attached to both sides. The Cannon's Evolution costs 3 [[Elixir]] and requires 2 cycles to deploy.
+
+==Strategy==
+*The Evolved Cannon can be used offensively to snipe buildings and troops on the opponents side of the [[Arenas|Arena]].
+*The knock back can push units towards the Cannon, making it great on defense.
+*When a tower is down, placing the Cannon on the opponent's side would actually hit the other towers (however, it does reduced damage to them, but this is still beneficial, especially during Sudden Death).
+*Against the [[Goblin Barrel/Evolution|Evolved Goblin Barrel]], the Evolved Cannon can prevent all but one hit on either [[:Category:Crown Towers|Crown Tower]] when using the [[Tower Princess]]. However, it has to be placed in front of the [[King's Tower|King Tower]] to do this, which will prevent it from distracting any other incoming troop, either from the Evolved Goblin Barrel push or from follow-up attacks.
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Lifetime<br />{{Icon|I=Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|3||1 sec||1 sec||1 sec||30 sec||5.5||1000||Ground||[[:Category:Building Cards|Building]]||{{Rarity|Common}}
+|}
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+! scope="col" |Barrage Radius<br />{{Icon|I=Radius}}
+! scope="col" |Barrage Count<br />{{Icon|I=Troop Count}}
+|-
+|2||2||9
+|}
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Hitpoints lost per second<br />{{Icon|I=Time}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Barrage Damage<br />{{Icon|I=Damage}}
+! scope="col" |Barrage Crown Tower Damage<br />{{Icon|I=Tower Damage}}
+|-
+|1||322||10.7||83||{{Dps|83|1}}||119||35
+|-
+|2||354||11.8||91||{{Dps|91|1}}||130||38
+|-
+|3||389||12.9||100||{{Dps|100|1}}||143||42
+|-
+|4||428||14.2||110||{{Dps|110|1}}||158||46
+|-
+|5||470||15.6||121||{{Dps|121|1}}||173||51
+|-
+|6||515||17.1||132||{{Dps|132|1}}||190||55
+|-
+|7||566||18.8||146||{{Dps|146|1}}||209||61
+|-
+|8||621||20.7||160||{{Dps|160|1}}||229||67
+|-
+|9||682||22.7||175||{{Dps|175|1}}||252||73
+|-
+|10||750||25||193||{{Dps|193|1}}||277||81
+|-
+|11||824||27.4||212||{{Dps|212|1}}||304||89
+|-
+|12||904||30.1||233||{{Dps|233|1}}||334||97
+|-
+|13||994||33.1||256||{{Dps|256|1}}||367||107
+|-
+|14||1,091||36.3||281||{{Dps|281|1}}||403||117
+|-
+|15||1,197||39.9||308||{{Dps|308|1}}||442||129
+|-
+|16
+|1,316
+|43.9
+|339
+|339
+|449
+|131
+|}
+</div>
+</center>
+
+==History==
+2024
+*The Cannon's Evolution [[Cards|card]] was added to the game on 15/11/2024.
+2025
+*On 8/1/2025, a [[Version History#Balance Changes (8/1/2025)|Balance Update]], increased the Evolved Cannon's Barrage damage by 10%.
+*On 4/3/2025, a [[Version History#Balance Changes (4/3/2025)|Balance Update]], increased the Evolved Cannon's attack time interval to 1 second (from 0.9 second).
+*On 5/5/2025, the [[Version History#Pass Royale and more (5/5/2025)|May 2025 Update]], decreased the Evolved Cannon's Barrage radius to 2 tiles (from 2.5 tiles).
+*On 1/12/2025, a Balance Update decreased the Evolved Cannon's Barrage damage by 8%. This made it unable to kill Archers or Firecrackers.
+
+==Gallery==
+<gallery>
+File:Evolved Cannon Card Render.png|Current card render.
+File:Evolved Cannon Preview.gif|Current card preview
+File:CannonEvoShard.png|Evolution Shard
+File:Evolved Cannon 1.png|Evolved Cannon
+</gallery>
+
+==Trivia==
+*The word "''Cannon''" comes from the Akkadian word "''𒄀''" (''qanû''), meaning reed. Cannons were invented in China during the twelfth century. It was most likely developed in parallel or as an evolution of an earlier gunpowder weapon called the fire lance. Cannons were used for warfare by the late thirteenth century in the Yuan dynasty and spread throughout Eurasia in the fourteenth century. During the late Middle Ages, large and small cannons were developed for siege and field battles. The cannon replaced prior siege weapons such as the trebuchet. After the late Middle Ages, most large cannons were abandoned in favor of greater numbers of lighter, more maneuverable field artillery.
+*The Evolved Cannon's ability is inspired by the Eagle Artillery from Clash of Clans, similarly to its wings.
+*Among all evolved [[:Category:Building Cards|buildings]] that can attack, the Evolved Cannon is tied with [[Tesla/Evolution|Tesla]] for the shortest range of all buildings, with a range of 5.5 tiles.
+*Although Cannons themselves can only target ground [[:Category:Troop Cards|troops]], the [[King's Tower|King Tower]]'s cannon can target both air and ground troops. This might be because the cannon is elevated on the tower.
+*The Cannon is unavailable in multiple [[Tournament/Special Event Challenges|special game modes]]. More specifically:
+** It is 1 of 20 cards that is unavailable in [[Mirror]] mode, the others being [[Minions]], [[Mortar]], [[Tesla]], [[Goblin Hut]], [[Tombstone]], [[Bomb Tower]], [[Inferno Tower]], [[Barbarian Hut]], [[Furnace]], [[Elixir Collector]], [[Freeze]], [[Clone]], [[X-Bow]], [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], [[Mighty Miner]], [[Little Prince]], and the [[Monk]].
+** It is unavailable in [[Global Spell|The Floor is Healing]] sub-[[:Category:Modes|mode]] of the Global Spell game mode, much like other building cards, as well as the [[Cannon Cart]].
+*The Cannon’s Evolution is the subject of an [[Emotes|Emote]].
+*The initial balance change for Evolved Cannon on the [[Version History#Balance Changes (4/3/2025)|4/3/2025 balance changes]] was a 6% damage decrease, but it was changed to an attack time interval increase to 1 second (from 0.9 seconds) [https://royaleapi.com/blog/season-69-balance-wip-march-2025 last minute].
+*Before the Cannon Evolution's release, it was made it so that the Evolved Cannon's barrage damage would only deal 25% of its full damage to [[:Category:Crown Towers|Crown Towers]].
+
+{{Navigation|Card}}

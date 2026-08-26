@@ -1,0 +1,251 @@
+<!-- revid:437360 fetched:2026-08-26 title:Mortar LIVE -->
+{{DISPLAYTITLE:<span style="color: #888888;">Mortar</span>}}{{Protection}}{{MagicWords}}{{ClashofClansLink}}{{Card Infobox|Cost=4|Rarity=Common|Type=Building|Arena=Builder's Workshop|ReleaseDate=4 January 2016}}<br>
+{{SubpageNavBox|Evolution=yes|MergeTactics=yes}}{{Quote|Defensive building with a long range. Shoots big boulders that deal area damage, but cannot hit targets that get very close!}}
+
+The Mortar is a {{Rarity|Common}} [[Cards|card]] that is unlocked from the [[Arenas|Builder's Workshop (Arena 5)]]. It spawns an area-damage, ground-targeting, very long-ranged, [[:Category:Building Cards|building]] with high hitpoints and high damage. It has a blind spot, preventing it from attacking enemies inside it. It is a black cylindrical tube with a metal base, a wooden gimbal on each side with a stud on them which are held by iron stakes and a metal disc, and a large team-colored band near the muzzle. A Mortar card costs 4 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Mortar Common Modifier.png|45x45px]] Common: On the Up & Up===
+{{Quote|+200% hit speed}}
+Mortar's attack speed is increased by 200%, for a total of 1.66 seconds.
+
+===[[File:Mortar Rare Modifier.png|45x45px]] Rare: Be the Boulder===
+{{Quote|Barbarian launcher}}
+Instead of a Mortar, a [[Barbarian Launcher]] is spawned.
+
+===[[File:Mortar Epic Modifier.png|45x45px]] Epic: A Mystical Mystery===
+{{Quote|Invisible Mortar}}
+The Mortar is invisible.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Mortar Card}}
+*The Mortar can be used to eliminate large swarms of [[:Category:Troop Cards|troops]] or assist in eliminating medium to high hitpoint troops. However, its slow hit speed and mediocre damage means that it is less effective on higher hitpoint troops, such as the [[Giant]] or [[Golem]].
+*As a defense, the Mortar can be placed in the center of the player's territory, preferably closer to the [[King's Tower]], so opposing troops cannot get to the [[:Category:Tower Troop Cards|Crown Towers]] without defensive resistance.
+*If the opponent deploys an [[Elixir Collector]] two or more tiles from their King's Tower, the Mortar can be used to get rid of it. Be cautious when doing this, however, as this will put the player at an [[Elixir]] disadvantage due to the Mortar's slow hit speed.
+*The Mortar is able to target the enemy's Crown Towers from the player's own side, making it an effective offensive [[:Category:Building Cards|building]]. With its cheaper cost, ability to deal area damage, and its dead zone, the Mortar can be used as a cheaper, more versatile, and less risky alternative to the [[X-Bow]]. However, the Mortar deals much less damage per second than the X-Bow, and with only 6 shots, the total damage output is significantly lower.
+*The area damage can also hurt enemy units that are close to the Tower, maximizing the damage output.
+*Use the [[Tornado]] to bring units closer to the Tower to utilize the Mortar's area splash damage. Units can also be pulled out of the range of the Mortar, either pulling them into the Mortar, or simply out of the range of it.
+*It is recommended to place a tank, splash unit, and/or splash building to protect it from troops in its blind spot and allow it to deal more damage to the Crown Towers.
+*It also will not get distracted by any troops like Giants that are placed near it while it's deploying due to its “blind spot”.
+*When facing the Mortar, try to place slow building-targeting troops with high hitpoints, like the [[Ice Golem]] or [[Elixir Golem]], one tile into the other lane. This will distract the Mortar completely, due to its low DPS, the slow movement speed, and the high hitpoints of the placed defending unit.
+*Generally, the player should consider attacking in the other lane with their main offensive [[cards]], in order to prevent the Mortar from attacking their Crown Tower. The exception to this is for [[Battle Decks|decks]] that use the [[Royal Giant]], in this case, it is better to attack in the same lane with the Royal Giant against the Mortar.
+*While the Mortar is very powerful, it should be noted that fast troops such as the [[Hog Rider]] and [[Ram Rider]] can get towards it quickly, making them untargetable due to the fact the Mortar cannot target troops that are very close to it. However, this can be to the attacker's advantage, allowing the Mortar to lock onto something else, such as a Crown Tower.
+*In a pinch, a [[Balloon]] can be used to counter a Mortar placed at the bridge. Its high immediate damage allows it to two-shot both buildings, which only takes a few seconds, buying you time to support the Balloon, and its death bomb will also deal notable damage to any extra defenders. However, note that the Balloon is unable to take damage from those buildings, so place down a mini tank like an Ice Golem in range of those buildings to prevent all damage to your Crown Tower.
+**The player should not attempt to execute a LavaLoon push against these Mortar setups, as the Balloon's range is shorter than the [[Lava Hound]]'s, meaning that it would end up in front of the Lava Hound, leaving it vulnerable. In this case, try to destroy those buildings first before deploying your Balloon.
+*A Mortar takes 3.5 seconds to deploy, giving the defender ample time to place cards to distract the Mortar and prevent it from locking onto their Crown Towers, as well as deal with its supporting troops. With sufficient cards, this can then be turned into a punishing counterpush. Placing the distraction unit at the last second is usually the most effective way to distract the Mortar as the opponent won't be able to react to the unit and eliminate it before the Mortar finishes deploying. The defender can also mix up their timing and play their unit immediately to catch their opponent off guard, such as with an immediate [[Inferno Tower]]. However, even this can be be countered through a stun unit and distraction units.
+*If the player misses their timing for a distraction and the Mortar is locked on to their Crown Tower, using any card with a stun effect such as [[Zap]] or [[Electro Spirit]] will force the Mortar to retarget to the nearest entity, which is helpful in denying a lot of would-be damage.
+*In a situation where both players have lost a Crown Tower in opposite lanes, the Mortar user should attack the Tower opposite to their destroyed one by placing their Mortar in the middle. This limits the areas in which their opponent can deploy troops directly on top of the Mortar. Going for the King's Tower is not recommended, as all four sides of the Mortar will be vulnerable to being deployed on and the King’s Tower’s higher amount of hitpoints will be difficult to break through consistently.
+*An offensive Mortar placed on the center of the bridge can be attacked from the [[Magic Archer]] while placed on the center of the bridge and 1 tile away from the river. This is enough to also hit the Crown Tower as well.
+**However, a staggered Mortar will cause the Magic Archer to be too far away from the Crown Tower, so that it would not be able to hit it as well. In this case, the Magic Archer has to be placed one tile closer in order to hit the Crown Tower alongside the building.
+*Having an area damage [[:Category:Spell Cards|spell]] in hand when attacking with the Mortar is very effective, as it can allow the player to defeat low or moderate-hitpoint troops nearly instantly, allowing it to lock onto a Crown Tower.
+*Conversely, having an area damage spell in hand when defending against a Mortar is also effective. Due to the Mortar's moderately high Elixir cost, the units played alongside it are often of low Elixir cost and have low to moderate hitpoints, allowing the player to reap a large amount of spell value. Note that consistent usage of this strategy will lead to the Mortar player using their heavy spell to gain damage on Crown Towers.
+*It is possible for troop spawners to distract the Mortar due to the quick troop spawn rate that can be faster than the Mortar's fire rate and that the Mortar aims at the troops that are spawned.
+**However, due to its blind spot, long-range and area damage, the Mortar can also be a good counter to troop spawners if it manages to lock onto the building itself.
+**Similarly, the blind spot of the Mortar can be utilized to defeat support troops behind the tank when the tank is in the blind spot of the Mortar.
+*Since it is a building, it is important to note that certain cards like the [[Heal Spirit]], [[Battle Healer]], [[Royal Chef]], and [[Rune Giant]] are unable to utilize their effects on it, making them poor choices in a deck alongside the Mortar. As such they should never be used in Mortar decks, and it is better to seek for other alternatives.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Lifetime<br />{{Icon|I=Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||5 sec||1 sec||3.5 sec||30 sec||3.5-11.5||2||300||Ground||[[:Category:Building Cards|Building]]||{{Rarity|Common}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1369 }}
+{{#vardefine: dmg_11 | 266 }}
+{{#vardefine: life | 30 }}
+{{#vardefine: atk_speed | 5 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+! scope="col" |Hitpoints lost per second<br />{{Icon|I=Time}}
+! scope="col" |Area Damage<br />{{Icon|I=Area Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#expr: {{#var:hp_11}} / {{#var:life}} round 1 }} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 50,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|200 {{BASEPAGENAME}} cards<br>25 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 150,000 Damage to enemy Troops or buildings
+|2,000 {{Icon|I=Gold}}<br>25 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 250,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>25 {{Icon|I=XP}}
+|-
+| rowspan="3" |Tower Tapper <br> [[File:Tower Tapper.png|50x50px]]
+|1
+|Hit enemy [[:Category:Crown Towers|Crown Towers]] a total of 350 times
+|3,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Crown Towers a total of 1,000 times
+|200 {{Icon|I=Common Wild Card}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Crown Towers a total of 1,750 times
+|5,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+| rowspan="3" |Siege Weapon <br> [[File:Siege Weapon.png|50x50px]]
+|1
+|Hit towers at least 6 times within a single [[Basics of Battle|battle]] a total of 80 times
+|6,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|2
+|Hit towers at least 6 times within a single battle a total of 240 times
+|8,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Hit towers at least 6 times within a single battle a total of 480 times
+|10,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Mortar [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016.
+*On 11/1/2016, the [[Version History#The First Update (11/1/2016)|First Update]], decreased the Mortar's lifetime to 40 seconds (from 60 seconds).
+*On 2/2/2016, the [[Version History#February 2016 Update (2/2/2016)|February 2016 Update]], decreased the Mortar's cost to 4 [[Elixir]] (from 6 Elixir), its damage by 40%, its lifetime to 20 seconds (from 40 seconds), and its range to 12 tiles (from 13 tiles).
+*On 9/2/2016, the [[Version History#Chest Rewards & Card Balance (9/2/2016)|Chest Rewards &amp; Card Balance Update]], increased the Mortar's lifetime to 30 seconds (from 20 seconds).
+*On 29/2/2016, the [[Version History#March%202016%20Update%20(29/2/2016)|March 2016 Update]], changed the Mortar so that it would no longer stop its attack if its target dies during the attack animation. It also moved the [[Arenas|Arena]] to unlock the Mortar from Royal Arena to Builder's Workshop.
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], increased the {{Rarity|Common}} card Level cap to 13 (from 12), increased the Mortar's deployment time to 5 seconds (from 3 seconds) and decreased its damage by 10%. This update also fixed the “range bug” and decreased the Mortar's range to 4.5-11.5 tiles (from 5-12 tiles), but its effective range is unchanged. Its sound effects and death animation were also changed.
+*On 21/6/2016, a [[Version History#Balance Changes (21/6/2016)|Balance Update]], decreased the Mortar's deployment time to 4 seconds (from 5 seconds).
+*On 15/12/2016, the [[Version History#December 2016 Update (15/12/2016)|December 2016 Update]], increased the Mortar's area radius to 2 tiles (from 1.8 tiles).
+2017
+*On 11/8/2017, a [[Version History#Balance Changes (11/8/2017)|Balance Update]], decreased the Mortar's deployment time to 3.5 seconds (from 4 seconds).
+*On 12/12/2017, the [[Version History#Electrifying Update (12/12/2017)|Electrifying Update]], fixed a bug where the Mortar would not shoot [[:Category:Troop Cards|troops]] close to its blind spot.
+2018
+*On 24/1/2018, a [[Version History#Balance Changes (24/1/2018)|Balance Update]], decreased the Mortar's minimum range to 3.5 tiles (from 4.5 tiles).
+*On 25/4/2018, the [[Version History#Clan%20Wars%20Update%20(25/4/2018)|Clan Wars Update]], changed the Mortar's card description. It used to read “''Defensive building with a long range. Shoots exploding boulders that deal area damage. Cannot shoot at targets that get very close!''”
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], fixed a bug where the Mortar would occasionally stop shooting at the edge of its range.
+*On 2/7/2018, a [[Version History#Balance Changes (2/7/2018)|Balance Update]], decreased the Mortar's damage by 3.5% and its hitpoints by 4%.
+2019
+*On 15/4/2019, the [[Version History#April%202019%20Update%20(15/4/2019)|April 2019 Update]], changed the Mortar's card image.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Mortar's card info screen.
+2021
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 27/6/2022, the [[Version History#Summer%202022%20Update%20(27/6/2022)|Summer 2022 Update]], added the Siege Weapon [[Card Mastery]] task for the Mortar.
+*On 4/10/2022, a [[Version History#Balance%20Changes%20(4/10/2022)|Balance Update]], decreased the Mortar's hitpoints by 7%.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+*On 3/7/2023, the [[Version History#Pass%20Royale%20and%20more%20(3/7/2023)|July 2023 Update]], added the Mortar's Evolution.
+2026
+
+* On 4/8/2026, a Balance Update, decreased the Mortar's hit speed to 4.7 seconds (from 5 seconds)
+
+==Gallery==
+<gallery>
+File:MortarCardOld.png|Mortar's card image before 15/4/2019.
+File:Mortar card render.png|Current card render.
+File:Mortar Preview.gif|Current card preview
+File:Mortar full.png|Mortar 1
+File:Mortar.png|Mortar 2
+File:Mortar02.jpg|Mortar 3
+</gallery>
+
+==Trivia==
+*The first use of [https://en.wikipedia.org/wiki/Mortar_(weapon) mortars in warfare] was in 1413, where the Koreans used the ''wan'gu'' (gourd-shaped mortar) during a naval battle. Mortars are still used in modern warfare to this day as indirect fire weapons for close fire support.
+*The Mortar is 1 of 7 [[:Category:Building Cards|buildings]] which first existed in Clash of Clans, the others being [[Cannon]], [[Tesla]], [[Goblin Hut]], [[Inferno Tower]], [[Elixir Collector]], and [[X-Bow]].
+**The Mortar resembles the Level 5 Mortar from Clash of Clans.
+*The Mortar's stats are the highest or lowest among all buildings. More specifically:
+**Among all buildings that can attack, the Mortar is tied with [[Barbarian Launcher]], X-Bow, and [[Party Hut]] for the longest range of all buildings, with a range of 11.5 tiles.
+**The Mortar is tied with Barbarian Launcher, X-Bow, and Party Hut for the longest deployment time of all buildings, with a deployment time of 3.5 seconds.
+**Among all buildings that can attack, the Mortar has the lowest attack speed of all buildings, with an attack speed of 5 seconds.
+**Among all buildings that can attack, the Mortar is tied with Barbarian Launcher for the lowest first attack speed of all buildings, with a first attack speed of 1 second.
+**Among all buildings with area damage, the Mortar is tied with Barbarian Launcher for the largest area damage radius of all buildings, with a radius of 2 tiles.
+**Among all buildings that attack with projectiles, the Mortar is tied with Barbarian Launcher for the lowest projectile speed of all buildings, with a projectile speed of 300.
+*The Mortar is one of the first building [[cards]] to receive a card render, alongside the Tesla, [[Goblin Cage]], and Goblin Hut.
+*The Mortar is the first building cards to receive a [[Card Evolution]].
+*In the Korean language setting of the game, the Mortar's name translates to "Mine Thrower".
+*The Mortar is one of the first cards to ever receive balance changes since [[Version History#The First Update (11/1/2016)|The First Update]], the others being the [[Witch]], [[Prince]], and [[Goblin Barrel]].
+**It is the first {{Rarity|Common}} card to ever receive balance changes.
+**It is the first building card to ever receive balance changes.
+*The Mortar is 1 of 23 cards that has had its [[Elixir]] cost changed, the others being [[Bomber]], [[Fire Spirit]], [[Royal Recruits]], Cannon, [[Musketeer]], [[Three Musketeers]], [[Heal]], Goblin Hut, Bomb Tower, [[Barbarian Hut]], [[Furnace]], Elixir Collector, [[Skeleton Army]], [[P.E.K.K.A.]], [[Wall Breakers]], [[Electro Giant]], [[Bowler]], [[Goblin Barrel]], [[Barbarian Barrel]], [[Rage]], [[Fisherman]], and the [[Monk]].
+**The Mortar, the Cannon, and the P.E.K.K.A were the first cards whose Elixir cost was changed since the [[Version History#February 2016 Update (2/2/2016)|February 2016 Update]].
+*The Mortar is unavailable in multiple [[Tournament/Special Event Challenges|special game modes]]. More specifically: 
+**It is 1 of 20 cards that is unavailable in [[Mirror]] mode, the others being [[Minions]], Cannon, Tesla, Goblin Hut, [[Tombstone]], Bomb Tower, Inferno Tower, Barbarian Hut, Furnace, Elixir Collector, [[Freeze]], [[Clone]], X-Bow, [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], [[Mighty Miner]], [[Little Prince]], and the Monk.
+**It is unavailable in [[Global Spell|The Floor is Healing]] sub-[[:Category:Modes|mode]] of the Global Spell game mode, much like other building cards, as well as the [[Cannon Cart]].
+*On 1/4/2016, certain Content Creators were given a different version of the game, with a Mortar that attacked by shooting Goblin Barrels instead of boulders. This was later implemented with the Mortar's Evolution.
+*The Mortar is the subject of 2 [[Emotes]].
+*The Mortar was featured in the winning [[Battle Decks|decks]] of multiple Clash Royale Tournaments. More specifically:
+**The Mortar was featured in the winning deck of the [https://www.youtube.com/live/h3IOFTfT8Sk?si=wTF1FekCifpSULn- Clash Royale League 2020 Tournament], by a player called Ruben.
+**The Mortar was featured in the winning deck of the [https://www.youtube.com/live/nMANpDweTA4?si=nsUAou7ny3WAA2ve Clash Royale League 2022 Tournament], by a player called Mohamed Light.
+*The initial balance change for Mortar on the [[Version History#Balance Changes (4/10/2022)|4/10/2022 balance changes]] was a 13% hitpoints decrease, but it was lowered to 7% [https://royaleapi.com/blog/season-40-balance-wip last minute].
+**Additionally, in the balance notes from 4/10/2022, although Mortar is normally genderless, it is referred to as 'he.'
+*Before the Mortar's card release, the Mortar's hitpoints were increased by 20%.
+
+{{Navigation|Card}}
+
+[[fr:Mortier]]
+[[de:Minenwerfer]]
+[[es:Mortero]]
+[[it:Mortaio]]
+[[ja:迫撃砲]]
+[[ko:박격포]]
+[[ru:Мортира]]
+[[pt-br:Morteiro]]
+[[zh:迫击炮]]

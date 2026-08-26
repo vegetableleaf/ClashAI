@@ -1,0 +1,342 @@
+{
+ "Lumberjack/Evolution": {
+  "revid": 437284,
+  "fetched": "2026-08-26",
+  "level_tables": [
+   {
+    "hdr": [
+     "Level",
+     "Hitpoints",
+     "Lumberjack Damage",
+     "Lumberjack Damage per second",
+     "Rage Damage",
+     "Rage Crown Tower Damage",
+     "Ghost Damage",
+     "Ghost Damage per second",
+     "Ghost Crown Damage",
+     "Ghost Crown Damage per second"
+    ],
+    "l11": [
+     "11",
+     "1282",
+     "256",
+     "320",
+     "179",
+     "54",
+     "256",
+     "320",
+     "128",
+     "160"
+    ],
+    "l1": [
+     "9",
+     "1060",
+     "212",
+     "265",
+     "148",
+     "45",
+     "212",
+     "265",
+     "106",
+     "132"
+    ]
+   }
+  ]
+ },
+ "Magic Archer": {
+  "revid": 437369,
+  "fetched": "2026-08-26",
+  "level_tables": [
+   {
+    "hdr": [
+     "Level",
+     "Hitpoints",
+     "Area Damage",
+     "Damage per second"
+    ],
+    "l11": [
+     "11",
+     "529",
+     "133",
+     "120"
+    ],
+    "l1": [
+     "9",
+     "437",
+     "110",
+     "99"
+    ]
+   }
+  ]
+ },
+ "Mega Knight": {
+  "revid": 436729,
+  "fetched": "2026-08-26",
+  "level_tables": [
+   {
+    "hdr": [
+     "Level",
+     "Hitpoints",
+     "Area Damage",
+     "Damage per second",
+     "Spawn Damage",
+     "Jump Damage"
+    ],
+    "l11": [
+     "11",
+     "3993",
+     "268",
+     "157",
+     "430",
+     "537"
+    ],
+    "l1": [
+     "9",
+     "3300",
+     "221",
+     "130",
+     "355",
+     "444"
+    ]
+   }
+  ]
+ },
+ "Mega Minion": {
+  "revid": 436530,
+  "fetched": "2026-08-26",
+  "level_tables": [
+   {
+    "hdr": [
+     "Level",
+     "Hitpoints",
+     "Damage",
+     "Damage Per Second"
+    ],
+    "l11": [
+     "11",
+     "837",
+     "312",
+     "208"
+    ],
+    "l1": [
+     "3",
+     "390",
+     "146",
+     "97"
+    ]
+   }
+  ]
+ },
+ "Miner": {
+  "revid": 437332,
+  "fetched": "2026-08-26",
+  "level_tables": [
+   {
+    "hdr": [
+     "Level",
+     "Hitpoints",
+     "Damage",
+     "Damage per second",
+     "Crown Tower Damage",
+     "Crown Tower Damage per second"
+    ],
+    "l11": [
+     "11",
+     "1210",
+     "194",
+     "149",
+     "48",
+     "36"
+    ],
+    "l1": [
+     "9",
+     "1000",
+     "160",
+     "123",
+     "40",
+     "30"
+    ]
+   }
+  ]
+ },
+ "Mini P.E.K.K.A.": {
+  "revid": 436435,
+  "fetched": "2026-08-26",
+  "level_tables": [
+   {
+    "hdr": [
+     "Level",
+     "Hitpoints",
+     "Damage",
+     "Damage Per Second"
+    ],
+    "l11": [
+     "11",
+     "1433",
+     "755",
+     "471"
+    ],
+    "l1": [
+     "3",
+     "669",
+     "352",
+     "220"
+    ]
+   }
+  ]
+ },
+ "Minion Horde": {
+  "revid": 436476,
+  "fetched": "2026-08-26",
+  "level_tables": [
+   {
+    "hdr": [
+     "Level",
+     "Hitpoints",
+     "Damage",
+     "Damage Per Second"
+    ],
+    "l11": [
+     "11",
+     "230",
+     "107",
+     "89"
+    ],
+    "l1": [
+     "1",
+     "89",
+     "41",
+     "34"
+    ]
+   }
+  ]
+ },
+ "Minions": {
+  "revid": 437493,
+  "fetched": "2026-08-26",
+  "level_tables": [
+   {
+    "hdr": [
+     "Level",
+     "Hitpoints",
+     "Damage",
+     "Damage Per Second"
+    ],
+    "l11": [
+     "11",
+     "230",
+     "107",
+     "89"
+    ],
+    "l1": [
+     "1",
+     "89",
+     "41",
+     "34"
+    ]
+   }
+  ]
+ },
+ "Mother Witch": {
+  "revid": 436750,
+  "fetched": "2026-08-26",
+  "level_tables": [
+   {
+    "hdr": [
+     "Level",
+     "Mother Witch Hitpoints",
+     "Mother Witch Damage",
+     "Mother Witch Damage per second",
+     "Cursed Hog Hitpoints",
+     "Cursed Hog Damage",
+     "Cursed Hog Damage per second"
+    ],
+    "l11": [
+     "11",
+     "529",
+     "133",
+     "133",
+     "629",
+     "53",
+     "44"
+    ],
+    "l1": [
+     "9",
+     "437",
+     "110",
+     "110",
+     "520",
+     "44",
+     "36"
+    ]
+   }
+  ]
+ },
+ "Musketeer": {
+  "revid": 436481,
+  "fetched": "2026-08-26",
+  "level_tables": [
+   {
+    "hdr": [
+     "Level",
+     "Hitpoints",
+     "Damage",
+     "Damage Per Second"
+    ],
+    "l11": [
+     "11",
+     "721",
+     "217",
+     "217"
+    ],
+    "l1": [
+     "3",
+     "336",
+     "101",
+     "101"
+    ]
+   }
+  ]
+ },
+ "Golem": {
+  "revid": 436719,
+  "fetched": "2026-08-26",
+  "level_tables": [
+   {
+    "hdr": [
+     "Level",
+     "Golem Hitpoints",
+     "Golem Damage",
+     "Golem Damage per second",
+     "Golem Death Damage",
+     "Golemite Hitpoints",
+     "Golemite Damage",
+     "Golemite Damage per second",
+     "Golemite Death Damage"
+    ],
+    "l11": [
+     "11",
+     "5120",
+     "312",
+     "124",
+     "225",
+     "1039",
+     "84",
+     "33",
+     "99"
+    ],
+    "l1": [
+     "6",
+     "3179",
+     "194",
+     "77",
+     "140",
+     "645",
+     "52",
+     "20",
+     "61"
+    ]
+   }
+  ]
+ }
+}

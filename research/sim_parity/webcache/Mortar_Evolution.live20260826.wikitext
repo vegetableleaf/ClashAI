@@ -1,0 +1,159 @@
+<!-- revid:437361 fetched:2026-08-26 title:Mortar/Evolution LIVE -->
+{{Protection}}{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Mortar</span>}}
+{{Evolved Card Infobox|Cost=4|CycleCost=2|Rarity=Common|Type=Building|Arena=Builder's Workshop|ReleaseDate=3 July 2023}}
+{{Quote|The New & Improved Mortar uses patented Goblin Delivery Technology to rain noisy green destruction upon the Arena!}}
+
+The Mortar's Evolution is a {{Rarity|Common}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns a Mortar with a hit speed 1 second faster than the original. Every attack that it does will also spawn a [[Goblins|Goblin]]. It is a metallic cylindrical tube with a golden base, a wooden gimbal on each side with three purple studs on them which are held by purple and black metal stakes, gold chains and a [[Card Evolution]] symbol on the side, and a large, double-layered team-colored band near the muzzle, which is surrounded by two gold rings, with a Goblin located near the top. The Mortar's Evolution costs 4 [[Elixir]] and requires 2 cycles to deploy.
+
+==Strategy==
+*As it requires 2 cycles to evolve, It takes a long time to get this card into the [[Arenas|Arena]]. However, it makes up for the wait with incredible power. Due to its incredibly high damage, this card can take a [[:Category:Crown Towers|Crown Tower]] down on its own if ignored.
+*The Evolved Mortar has great synergy with the [[Fisherman]]. The Fisherman can distract and pull single-targeting units such as a [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], Knight, Mighty Miner, [[Goblin Machine]], Cannon Cart, [[P.E.K.K.A.|P.E.K.K.A]], [[Giant Skeleton]], [[Golden Knight]], Monk, [[Battle Healer]], [[Lumberjack]], Boss Bandit, Miner, or a [[Prince]] into the Mortar's blind spot, causing the Evolved Mortar to connect to the Crown Tower and get massive damage.
+*In certain situations, [[Earthquake]] can be a reliable and effective counter to the Evolved Mortar due to its high damage to buildings. This can be paired with a properly placed [[Fire Spirit]] or [[Ice Spirit]] to mostly counter it for an equal Elixir trade.
+*Whenever the Evolved Mortar attacks the [[Tower Princess]], the Goblin it spawns will always get 2 hits, making even 1 connection deal hundreds of damage, factoring in both the Evolved Mortar's boulders and its spawned Goblins.
+**If the [[Cannoneer]] or [[Dagger Duchess]] are in use, the Evolved Mortar’s Goblin will only get 1 hit, significantly reducing the damage dealt over time compared to the Tower Princess.
+*Compared to the regular Mortar, the Evolved Mortar is slightly weaker to an activated [[King's Tower|King Tower]], as the spawned Goblins will take damage from both the King Tower and the Crown Tower. Because of this, it’s highly recommended to get the Evolved Mortar or another unit to activate your King Tower as this will reduce future damage from 2 Goblin hits on the Tower Princess to 1. Interactions with the Cannoneer and Dagger Duchess don’t change as the Goblin will get 1 hit regardless.
+*The Evolved Mortar has decent synergy with the [[Goblin Drill]] as the Evolved Mortar can assist with taking out swarms and high health units, such as [[Goblin Gang]], [[Skeleton Army]], Prince, Lumberjack, [[Skeleton King]], Mini P.E.K.K.A, Golden Knight, [[Goblin Machine]], [[Skeleton King]], Cannon Cart, [[Mega Knight]], [[Valkyrie]], [[Elite Barbarians]], [[Monk]], [[Sparky]], [[Mighty Miner]], P.E.K.K.A, [[Boss Bandit]], Battle Healer, [[Royal Ghost]], Giant Skeleton, Miner, and [[Knight]], meant to defend the Goblin Drill while the Goblin Drill does the majority of the damage. The additional Goblins spawned by the Evolved Mortar will further help in dealing damage to the Crown Tower, forcing the opponent to respond with a spell.
+**Contrary, a Goblin Drill played on defense is a decent counter to the Evolved Mortar as the Goblins that come out from the Goblin Drill will attack the Evolved Mortar as it is attacking the drill itself. This is an equal Elixir trade while heavily reducing the damage done to your Crown Tower.
+*Other building cards, such as [[Tesla]] and [[Bomb Tower]], are reliable counters to the Evolved Mortar as their somewhat high health and good damage allow them to fully stop the Evolved Mortar. These cards also are equal Elixir trades.
+*Low health ranged cards, such as [[Dart Goblin]], [[Princess]], and [[Spear Goblins]], should not be used alone to counter the Evolved Mortar as its damage will OHKO them. Instead, it’s encouraged to use a mini tank, such as an [[Ice Golem]], Knight, Battle Healer, [[Elixir Golem]], Valkyrie, Skeleton King, [[Hog Rider]], or [[Miner]], to tank the Evolved Mortar’s shots, giving the chance for these cards to take out the Evolved Mortar unharmed.
+**Similarly they should not be placed next to the Evolved Mortar's target as the Evolved Mortar does splash damage, and will hit both. Even ranged troops that can survive its attack are unrecommended because the spawned Goblins may defeat them after getting weakened by the Evolved Mortar's boulders.
+*On the other hand, bulky ranged cards, such as [[Royal Giant/Evolution|Evolved Royal Giant]], [[Cannon Cart]], [[Executioner]], and [[Bowler]], are great counters to the Evolved Mortar as they’re capable of staying out of its blind radius, tank the Evolved Mortar’s shots, and deal high damage to take it out before it can lock onto the Crown Tower.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}{{StatisticsSubheader|Evolved Mortar Attributes}}{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Lifetime<br />{{Icon|I=Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||4 sec||1 sec||3.5 sec||30 sec||3.5-11.5||2||300||Ground||[[:Category:Building Cards|Building]]||{{Rarity|Common}}
+|}
+
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+|-
+|2
+|}
+
+{{StatisticsSubheader|Goblin Attributes}}
+{| class="wikitable" id="unit-attributes-table-tertiary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}} 
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.1 sec||Very Fast (120)||0.2 sec||Melee: Short (0.5)||Ground||x1||Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1369 }}
+{{#vardefine: dmg_11 | 266 }}
+{{#vardefine: life | 30 }}
+{{#vardefine: atk_speed | 4 }}
+{{#vardefine: gob_hp_11 | 202 }}
+{{#vardefine: gob_dmg_11 | 120 }}
+{{#vardefine: gob_atk_speed | 1.1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+! scope="col" |Hitpoints lost per second<br />{{Icon|I=Time}}
+! scope="col" |Area Damage<br />{{Icon|I=Area Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+! scope="col" |Goblin Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Goblin Damage<br />{{Icon|I=Damage}}
+! scope="col" |Goblin Damage per second<br />{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:gob_hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:gob_dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:gob_dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:gob_atk_speed}} }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:gob_hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:gob_dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:gob_dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:gob_atk_speed}} }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:gob_hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:gob_dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:gob_dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:gob_atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:gob_hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:gob_dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:gob_dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:gob_atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:gob_hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:gob_dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:gob_dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:gob_atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:gob_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:gob_dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:gob_dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:gob_atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:gob_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:gob_dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:gob_dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:gob_atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:gob_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:gob_dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:gob_dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:gob_atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:gob_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:gob_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:gob_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:gob_atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:gob_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:gob_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:gob_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:gob_atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#expr: {{#var:hp_11}} / {{#var:life}} round 1 }} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:gob_hp_11}} || {{#var:gob_dmg_11}} || {{Dps|{{#var:gob_dmg_11}}|{{#var:gob_atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:gob_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:gob_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:gob_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:gob_atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:gob_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:gob_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:gob_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:gob_atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:gob_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:gob_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:gob_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:gob_atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:gob_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:gob_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:gob_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:gob_atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}|| {{#expr: {{#var:gob_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:gob_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:gob_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:gob_atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div>
+</center>
+
+==History==
+2023
+*The Mortar's Evolution [[Cards|card]] was added to the game on 3/7/2023, in the [[Version History#Pass Royale and more (3/7/2023)|July 2023 Update]].
+2024
+*On 5/2/2024, the [[Version History#Pass Royale and more (5/2/2024)|February 2024 Update]], changed the Evolved Mortar's sound effects.
+*On 14/5/2024, a [[Version History#Balance Changes (14/5/2024)|Balance Update]], removed the Evolved Mortar's hitpoints boost.
+*On 8/10/2024, a [[Version History#Balance Changes (8/10/2024)|Balance Update]], added a 1 second delay in the Evolved Mortar's first attack.
+*On 16/12/2024, the [[Version History#2024 Quarter 4 Update (16/12/2024)|2024 Quarter 4 Update]], added a sound effect to the Evolved Mortar after death.
+2026
+
+* On 1/6/2026, a Balance Update, increased the Evolved Mortar's Goblin Deploy Time to 0.5 seconds (from 0.2 seconds)
+* On 4/8/2026, a Balance Update, increased the Evolved Mortar's hit speed to 4.7 seconds (from 4 seconds)
+
+==Gallery==
+<gallery>
+File:Evolved Mortar card render.png|Current card render.
+File:Evolved Mortar Preview.gif|Current card preview.
+File:MortarEvoShard.png|Evolution Shard.
+File:Evolved Mortar 2.png|Evolved Mortar
+</gallery>
+
+==Trivia==
+*The first use of [https://en.wikipedia.org/wiki/Mortar_(weapon) mortars in warfare] was in 1413, where the Koreans used the ''wan'gu'' (gourd-shaped mortar) during a naval battle. Mortars are still used in modern warfare to this day as indirect fire weapons for close fire support.
+*The Mortar's Evolution might be based off of an April Fools joke, where on 1/4/2016, certain Content Creators were given a different version of the game, with a Mortar that attacked by shooting [[Goblin Barrel|Goblin Barrels]] instead of boulders.
+*The Mortar is 1 of 6 evolved [[cards]] associated with [[Goblins]], with the others being [[Dart Goblin/Evolution|Dart Goblin]], [[Goblin Cage/Evolution|Goblin Cage]], [[Goblin Giant/Evolution|Goblin Giant]], [[Goblin Barrel/Evolution|Goblin Barrel]], and [[Goblin Drill/Evolution|Goblin Drill]].
+*The Mortar was the first [[:Category:Building Cards|building]] to receive a [[Card Evolution]].
+*In the Korean and German language settings of the game, the Mortar's name translates to "Mine Thrower".
+*Due to a glitch, the [[Tesla/Evolution|Evolved Tesla]] plays the Evolved Mortar's deployment sound when played by the opponent.
+*The Mortar is unavailable in multiple [[Tournament/Special Event Challenges|special game modes]]. More specifically:
+**It is 1 of 20 cards that is unavailable in [[Mirror]] mode, the others being [[Minions]], [[Royal Recruits]], [[Cannon]], [[Tesla]], [[Goblin Hut]], [[Tombstone]], [[Bomb Tower]], [[Inferno Tower]], [[Barbarian Hut]], [[Furnace]], [[Elixir Collector]], [[Freeze]], [[Clone]], [[X-Bow]], [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], [[Mighty Miner]], and the [[Monk]].
+**It is unavailable in [[Global Spell|The Floor is Healing]] sub-[[:Category:Modes|mode]] of the Global Spell game mode, much like other building cards, as well as the [[Cannon Cart]].
+*The Mortar's Evolution is the subject of an [[Emotes|Emote]].
+*On 3/1/2024, the Evolved Mortar was supposed to receive a Goblin first attack time interval increase to 0.5 seconds (from 0.4 seconds), but this change [https://royaleapi.com/blog/season-55-balance-wip was pulled back last minute].
+
+{{Navigation|Card}}
+
+[[ru:Мортира/Эволюция]]

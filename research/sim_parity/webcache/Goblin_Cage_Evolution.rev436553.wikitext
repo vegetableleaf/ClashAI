@@ -1,0 +1,183 @@
+<!-- revid:436553 fetched:2026-08-26 title:Goblin Cage/Evolution TIME-MACHINE evidence for r2_evos_a -->
+{{Protection}}
+{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Goblin Cage</span>}}
+{{Evolved Card Infobox|Cost=4|CycleCost=1|Rarity=Rare|Type=Building|Arena=Goblin Stadium|ReleaseDate=5 August 2024}}
+{{Quote|If you smell what the Goblin Brawler is cooking! Enemies that get close to the Evolved Goblin Cage are pulled inside and take damage over time until the enemy or the cage is destroyed.}}
+
+The Goblin Cage's Evolution is a {{Rarity|Rare}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns a Goblin Cage with identical stats to the original. Once a ground troop comes within 3 tiles of the building, they get pulled into the cage and they are attacked directly by the Goblin Cage, and any troop pulled will be freed. When defeated, it spawns a Goblin Brawler with identical stats to the original. It appears to be a wooden cage with four dark violet metal supports with a golden spike on them, a lock on the front with the [[Card Evolution]] symbol on it, and a pair of bars at each side, while the Goblin Brawler appears as a larger, buff [[Goblins|Goblin]] with violet eyes, mohawk and unibrow with a golden piercing, has tattoos printed on his back and arms, and sports a striped white shirt and a gold chain with the Card Evolution symbol, along with violet pants and bands tied on his hands which extends till his lower arms. The Goblin Cage’s Evolution costs 4 [[Elixir]] and requires 1 cycle to deploy.
+
+==Strategy==
+*When the Evolved Goblin Cage pulls a unit into the cage, it won't be targeted by other units. This is especially helpful at separating win conditions, like [[Giant]] or [[Golem]] from their support troops, like [[Witch]] or [[Night Witch]], to make defending easier.
+*If a troop is already on the Crown Tower, the user can deploy the Evolved Goblin Cage next to them to pull them into the cage. This can result in the Crown Tower taking significantly less damage if done properly.
+**Done to the [[Giant Skeleton]], the death bomb will spawn in front of the cage, leaving the Crown Tower just outside its radius while the cage itself takes the damage for the Evolved Goblin Brawler, allowing the Brawler to leave at full health for a counterpush.
+*If the cage is destroyed while a troop is still inside, the troop will exit the cage with its remaining hitpoints and become targetable again.
+*Under most circumstances, the [[Earthquake]] is a mostly ineffective counter to the Evolved Goblin Cage. Only the cage will be destroyed, leaving the Evolved Goblin Brawler to assist in future pushes while you’re low on Elixir.
+**[[Battle Decks|Decks]] with a fast cycle, such as [[Hog Rider]] decks, may still see the Earthquake as valuable since their cheap cards are able to dispose enemy pushes for large positive Elixir trades.
+*When an [[Knight/Evolution|Evolved Knight]] is pulled inside the cage, the shield will still be active. This can be used to tank for higher pressure cards, such as a [[Ram Rider]], Prince, or an [[Battle Ram/Evolution|Evolved Battle Ram]], possibly preventing the Evolved Goblin Cage from getting too much defensive value.
+*Despite the Evolved Goblin Brawler’s higher hitpoints, the [[Skeletons]], [[Goblins]], [[Guards]], [[Archers]], or [[Ice Spirit/Evolution|Evolved Ice Spirit]] deployed in the center of the arena with the help of the Crown Tower is enough to fully counter him, resulting in a large +3 Elixir trade.
+*The Evolved Goblin Brawler’s higher hitpoints allows it to take one additional attack from a [[Prince]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[P.E.K.K.A.|P.E.K.K.A]], or [[Elite Barbarians]] with no Crown Tower inference compared to the regular Goblin Brawler.
+*The Evolved Goblin Cage is an amazing counter to the [[Electro Giant]]. The Electro Giant will be quickly pulled into the cage and if ignored, will be fully destroyed for a +3 Elixir trade before the Cage’s lifetime runs out, leaving the Goblin Brawler at full hitpoints for a counterattack. Interestingly, the reflection damage will not affect the cage itself nor the Goblin Brawler despite the Electro Giant taking damage.
+*Unlike the regular Goblin Cage, the Evolved Goblin Cage can be effective at destroying troops when deployed at the bridge. Any fragile ranged troops, like [[Dart Goblin]], [[Firecracker]], [[Bomber]], [[Magic Archer]], [[Mother Witch]], or [[Princess]] placed too close to the river can be pulled in and easily killed. Troops like [[Knight]], [[Ice Golem]], [[Golden Knight]], Giant, [[Elixir Golem]], [[Battle Healer]], Golem, [[Valkyrie]], or Hog Rider used to tank the Crown Tower for certain win conditions, such as [[Miner]], [[Goblin Barrel]], or [[Graveyard]], will no longer be targetable after being pulled in, allowing the Crown Tower to remain helpful.
+*When defending a [[Mega Knight]] with the Evolved Goblin Cage, it’s recommended to not kite it very far as the Mega Knight won’t be pulled into the cage while jumping. Instead, deploy the card 3 tiles to the side of the Mega Knight. This will allow the Goblin Brawler to drag him into the cage without the Mega Knight jumping and will fully counter him if unchecked.
+*Unlike the regular Goblin Cage, it is not a good idea to waste it on kamikaze troops like the [[Wall Breakers]], as it will remove any chances of utilizing the pull mechanic, and the Goblin Brawler isn’t much stronger than a regular one to be worth releasing prematurely.
+*The 3 tile pull range of the Evolved Goblin Cage is longer than all cards with a charge, allowing them to be pulled into the cage while they’re charging without damaging it.
+**This is especially effective with the Ram Rider, [[Dark Prince]], [[Battle Ram]], and Prince as these cards will be fully countered for a +1 Elixir trade and fail to break the cage, leaving the Goblin Brawler at full hitpoints.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatisticsSubheader|Goblin Cage Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Lifetime<br />{{Icon|I=Time}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||1 sec||20 sec||[[:Category:Building Cards|Building]]||{{Rarity|Rare}}
+|}
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+|-
+|1||1 sec||3||Ground
+|}
+{{StatisticsSubheader|Evolved Goblin Brawler Attributes}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table-tertiary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.1 sec||0.2 sec||Fast (90)||Melee: Short (0.8)||Ground||x1||Ground
+|}
+
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+{{#vardefine: cage_hp_11 | 780 }}
+{{#vardefine: cage_dmg_11 | 337 }}
+{{#vardefine: cage_atk_speed | 1 }}
+{{#vardefine: life | 20 }}
+{{#vardefine: hp_11 | 1080 }}
+{{#vardefine: dmg_11 | 337 }}
+{{#vardefine: atk_speed | 1.1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+! scope="col" |Goblin Cage Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Goblin Cage Hitpoints lost per second<br />{{Icon|I=Time}}
+! scope="col" |Goblin Cage Damage<br />{{Icon|I=Damage}}
+! scope="col" |Goblin Cage Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Goblin Brawler Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Goblin Brawler Damage<br />{{Icon|I=Damage}}
+! scope="col" |Goblin Brawler Damage per second<br />{{Icon|I=DPS}}
+|-
+| 3 || {{#expr: {{#var:cage_hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:cage_hp_11}} * (1.1^(3-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:cage_dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:cage_dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:cage_atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:cage_hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:cage_hp_11}} * (1.1^(4-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:cage_dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:cage_dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:cage_atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:cage_hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:cage_hp_11}} * (1.1^(5-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:cage_dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:cage_dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:cage_atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:cage_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:cage_hp_11}} * (1.1^(6-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:cage_dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:cage_dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:cage_atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:cage_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:cage_hp_11}} * (1.1^(7-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:cage_dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:cage_dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:cage_atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:cage_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:cage_hp_11}} * (1.1^(8-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:cage_dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:cage_dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:cage_atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:cage_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:cage_hp_11}} * (1.1^(9-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:cage_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:cage_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:cage_atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:cage_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:cage_hp_11}} * (1.1^(10-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:cage_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:cage_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:cage_atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11  || {{#var:cage_hp_11}} || {{#expr: {{#var:cage_hp_11}} / {{#var:life}} round 1 }} || {{#var:cage_dmg_11}} || {{Dps|{{#var:cage_dmg_11}}|{{#var:cage_atk_speed}} }} || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:cage_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:cage_hp_11}} * (1.1^(12-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:cage_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:cage_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:cage_atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:cage_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:cage_hp_11}} * (1.1^(13-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:cage_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:cage_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:cage_atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:cage_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:cage_hp_11}} * (1.1^(14-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:cage_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:cage_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:cage_atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:cage_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:cage_hp_11}} * (1.1^(15-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:cage_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:cage_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:cage_atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:cage_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:cage_hp_11}} * (1.1^(16-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:cage_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:cage_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:cage_atk_speed}} }} || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+</div>
+</center>
+== Sound Effects ==
+===Current===
+{| class="wikitable"
+!Sound Effect
+!Action
+!Description
+!Line
+|-
+|[[File:GoblinCageEvoSpawn.mp3]]
+|Deployment
+|Plays when the Evolved Goblin Cage is deployed.
+|"Goblin Cage!"
+|-
+|[[File:GoblinCageEvoGrab.mp3]]
+|Grab
+|Plays when the Evolved Goblin Cage grabs a troop.
+|-
+|[[File:GoblinCageEvoDamageLoop.mp3]]
+|Brawls
+|Plays when the Goblin Brawler inside the Evolved Goblin Cage is "brawling" a troop.
+|-
+|[[File:GoblinCageEvoBreakout.mp3]]
+|Breaking Out
+|Plays when the Goblin Brawler breaks out of his evolved cage.
+|''"CAGE RAAAGE!''
+|-
+|[[File:GoblinCageHit1.mp3]][[File:GoblinCageHit2.mp3]][[File:GoblinCageHit3.mp3]][[File:GoblinCageHit4.mp3]][[File:GoblinCageHitImpact.mp3]]
+|Hit
+|Plays when the Goblin Brawler hits his target.
+|}
+==History==
+2024
+*The Goblin Cage Evolution [[Cards|card]] was added to the game on 5/8/2024, in the [[Version History#Pass Royale and more (5/8/2024)|August 2024 Update]].
+*On 2/10/2024, the [[Version History#Lucky Drops 2.0 Update (2/10/2024)|Lucky Drops 2.0 Update]], fixed a few bugs with the Goblin Cage's Evolution.
+*On 8/10/2024, a [[Version History#Balance Changes (8/10/2024)|Balance Update]], decreased the Evolved Goblin Cage’s attack time interval to 1 second (from 1.1 seconds).
+*On 16/12/2024, the [[Version History#2024 Quarter 4 Update (16/12/2024)|2024 Quarter 4 Update]], added a sound effect to the Evolved Goblin Brawler after death.
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Evolved Goblin Brawler's hitpoints by 0.16%. It also made it so that [[Rune Giant]] would no longer be able to enchant troops if captured by Evolved Goblin Cage.
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)|Balance Update]] removed the Evolved Goblin Brawler's hitpoints boost.
+
+==Gallery==
+<gallery>
+File:Evolved Goblin Cage card render.png|Current card render.
+File:Evolved Goblin Cage Preview.gif|Current card preview
+File:GoblinCageEvoShard.png|Evolution Shard
+File:Evolved Goblin Cage 1.png|Evolved Goblin Cage 1
+File:Evolved Goblin Cage backround.png|Goblin Cage background.
+</gallery>
+
+==Trivia==
+*Goblins are small, grotesque, monstrous creatures that appear in the folklore of multiple European cultures. First attested in stories from the Middle Ages, they are ascribed conflicting abilities, temperaments, and appearances depending on the story and country of origin, ranging from mischievous household spirits to malicious, bestial thieves. They often have magical abilities similar to a fairy or demon, such as the ability to shapeshift. Similar creatures include [[Wikipedia:Duende|duendes]], [[Wikipedia:Kobold|kobolds]], [[Wikipedia:Leprechaun|leprechauns]], and [[Wikipedia:Ghoul|ghouls]].
+**In the German and Dutch language setting of the game, the Goblin Cage's name translates to "Kobold Cage". In the Spanish, Italian, Russian, Arabic, and Vietnamese language settings of the game, the Goblin Cage's name translates to "Strongman's Cage", "Cage for Goblins", "Cage with Goblin", "Ghoul Cage", and "Leprechaun Cage" respectively.
+**The Goblin Cage is 1 of 6 evolved [[cards]] associated with [[Goblins]], with the others being [[Mortar/Evolution|Mortar]], [[Dart Goblin/Evolution|Dart Goblin]], [[Goblin Giant/Evolution|Goblin Giant]], [[Goblin Barrel/Evolution|Goblin Barrel]], and [[Goblin Drill/Evolution|Goblin Drill]].
+*The Evolved Goblin Brawler has a mohawk, similarly to the Goblin Brawler’s [[Star Points|Star Level 3 Skin]].
+*The Evolved Goblin Cage is the cheapest 1-Cycle evolution, being 4 elixir.
+*[[Chests|Gold Crates]] have an appearance similar to the Evolved Goblin Cage.
+*When deployed, a voice can be heard exclaiming "''Goblin Cage!''", and when the Evolved Goblin Cage is destroyed, the Evolved Goblin Brawler yells "''Cage Rage!''".
+**The Goblin Cage is the only evolved [[:Category:Building Cards|building]] to speak distinct words when on the field.
+**The Goblin Brawler is 1 of 9 evolved [[:Category:Troop Cards|troops]] that speak distinct words when on the field, the others being [[Bomber/Evolution|Bomber]], [[Wizard/Evolution|Wizard]], [[Witch/Evolution|Witch]], [[P.E.K.K.A./Evolution|P.E.K.K.A.]], [[Hunter/Evolution|Hunter]], [[Executioner/Evolution|Executioner]], [[Mega Knight/Evolution|Mega Knight]], and [[Lumberjack/Evolution|Lumberjack]].
+***Also, the Goblin Brawler is 1 of 6 evolved troops whose regular troop do not speak distinct words when on the field, the others being Bomber, Witch, Hunter, Executioner, and Mega Knight.
+*The Evolved Goblin Brawler has a weight of 87.5 kilograms according to the Clash Royale August 2024 event calendar.
+*The Goblin Cage's Evolution is the subject of an [[Emotes|Emote]].
+*The Goblin Cage's Evolution was featured in the winning [[Battle Decks|deck]] of the [https://www.youtube.com/live/Sa0QOSJ5AVY?si=Hlcj6efCnFhxfDYe Clash Royale League 2024 Tournament], by a player called Mohamed Light.
+*The Goblin Brawler evolved due to training inside of the cage, as seen in a [https://www.youtube.com/shorts/A5iYQSUkBrI short].
+
+{{Navigation|Card}}

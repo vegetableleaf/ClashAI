@@ -1,0 +1,219 @@
+<!-- revid:437349 fetched:2026-08-26 title:Mighty Miner LIVE -->
+{{Protection}}{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-champion";">Mighty Miner</span>}}
+
+{{Card_Infobox|Cost=4|AbilityCost=1|Rarity=Champion|Type=Troop|Arena=Royal Crypt|ReleaseDate=30 March 2022}}
+{{Quote|Walk softly... and carry a big drill! This Champion deals increasing Damage to his target and can switch lanes to escape combat or change attack plans. This makes him not only the mightiest, but also the sneakiest Miner in the Arena.}}
+
+The Mighty Miner is a {{Rarity|Champion}} [[Cards|card]] that is unlocked from the [[Arenas|Royal Crypt (Arena 17)]]. It spawns a single-target, ground-targeting, melee, ground [[:Category:Troop Cards|troop]] with high hitpoints and various damage stages. The Mighty Miner's damage increases over time as he remains focused on a single target, similar to the [[Inferno Dragon]]. The Mighty Miner’s ability causes him to dig underground to the horizontally opposite position of it and drop a bomb in the spot he was at which explodes after 1 second, dealing damage and inflicting knockback. He appears as a hunk with tangerine-colored hair, eyebrows and a mustache, wearing team-colored shorts, a belt, and a hat with a more advanced helmet for its candle and a crown symbol, which covers his eyes, wielding a giant drill with an emblem of a crown, which majorly resembles the [[Goblin Drill]], has a slightly dirtied face and arms, and carries a giant bomb on his back inside a large, open backpack with a crown symbol on both sides. A Mighty Miner card costs 4 [[Elixir]] to deploy, and his ability costs an additional 1 Elixir to activate.
+
+==Ability: Explosive Escape==
+{{Quote|Mines underground to the opposite lane, leaving a bomb at the original location. Surprise!}}
+{{Champion Ability}}
+The Mighty Miner has a special ability, accessible from the rightmost side of the screen just above the player's card slots in [[Basics of Battle|battle]]. After a 1-second delay, the Mighty Miner changes his position to the horizontally mirrored position of himself. He is intangible while changing positions. He also drops a bomb in the position he originally was prior to using the ability, dealing medium area damage to enemies around it after 1 second. His bomb affects both ground and air units and will also knock them back 1.8 tiles. The ability goes on a 13-second cooldown after the duration ends. The Explosive Escape ability costs 1 [[Elixir]] to activate.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Mighty Miner Card}}
+*For the purposes of determining [[Elixir]] trades, the Mighty Miner and his activated Ability count as 5 Elixir, as the player must play the 4 Elixir Mighty Miner and then spend a further 1 on his Ability.
+*Thanks to the Mighty Miner's main [[Inferno Tower]]-like attack, he can shred tanks such as the [[Golem]], [[Giant Skeleton]], [[Royal Giant]], [[Giant]], [[Goblin Giant]], or the [[Mega Knight]]. Unlike other anti-tank cards such as the [[Hunter]], [[Prince]], [[Minion Horde]], [[Mega Minion]], [[Lumberjack]], [[Inferno Dragon]], [[Elite Barbarians]], [[Three Musketeers]], [[Skeleton Army]], [[Barbarians]], [[Sparky]], [[Monk]], and the [[Mini P.E.K.K.A.]], he packs more health and mass, giving him more survivability.
+*Use his ability wisely. One of his weaknesses are swarms, and Explosive Escape's bomb mitigates that. Explosive Escape's lane swapping mechanic can also be handy with [[cards]] such as reactive melee [[:Category:Troop Cards|troops]].
+*Outside of his ability, the Mighty Miner does not deal area damage. He cannot defeat [[Skeletons]] in one hit, so avoid using him to defensively kill swarms though you can spend another 1 Elixir to use his ability.
+*A good strategy is to send the Mighty Miner alone at the bridge. The opponent will likely spend a fair amount of Elixir to try to defend him. Then, activate his ability and place a threat card like [[Graveyard]] or [[Goblin Barrel]] in the other lane (the lane that he will resurface on). The troops that the opponent used to defend him will be weakened by the bomb and minimal Elixir is needed to defend this counterpush. Be wary, as good players can and will be prepared for it. However, if one uses this as a punishment, it can very easily take out the [[:Category:Tower Troop Cards|Crown Tower]] if the opponent does not have counters in hand since the opponent cannot predict if one might actually use the ability or not.
+*When using the Mighty Miner's ability to tank for an opposite side Graveyard, place the Graveyard first and then use the ability. This allows the Skeletons from the Graveyard to spawn in faster before the Tower starts targeting the Mighty Miner.
+*The Mighty Miner can defend some split-lane pushes, mostly ground ones, due to his high damage potential from his main attack, combined with Explosive Escape's lane swap mechanic.
+*If the Mighty Miner is deployed in the enemy side, in the position opposite of your opponent's Crown Tower, you can use the ability and quickly jump to the opponent's other Crown Tower, leaving minimal reaction time. However, this can be predicted for an Elixir advantage.
+*Do not counter the Mighty Miner with tanky low-damage melee cards such as the [[Mega Knight]], [[Miner]], [[Dark Prince]], [[Battle Healer]], [[Golden Knight]], [[Skeleton King]], [[Goblin Machine]], [[Boss Bandit]], [[Giant Skeleton]], [[Valkyrie]], or the [[Knight]], but only if their Explosive Escape is ready. A ranged card in the center, such as the [[Musketeer]], [[Electro Wizard]], and the [[Wizard]], will defend well against offensive Mighty Miners, regardless of whether he uses Explosive Escape or not.
+**A center-placed [[Tombstone]] also counters a proactive Mighty Miner. He has a very hard time shredding the Skeletons, and even if you use his ability (which is used to mitigate its swarm counter), he will still head for the Tombstone instead.
+**Likewise, a center-placed Inferno Tower will counter the Mighty Miner, regardless if the opponent decides to use the Explosive Escape ability because the Mighty Miner will always be pulled to a center Inferno Tower on either lane. However, if the opponent does not use the Explosive Escape ability, then it is a negative Elixir trade of 1. Nevertheless, the Inferno Tower can discourage future attacks on your Crown Towers because of its defensive potential.
+*Like the [[Inferno Dragon]] or Inferno Tower, stun cards such as the [[Electro Wizard]], [[Electro Dragon]], [[Goblinstein]], [[Electro Giant]], and [[Zappies]] can counter a reactive Mighty Miner. Before doing so, you should try to bait his Explosive Escape first with a swarm such as the [[Skeleton Army]] or [[Goblin Gang]].
+*A [[Fisherman]] counters him quite well. When the Fisherman drags him to the center, value from Explosive Escape's lane swap will be minimized, and he will still be countered. Also, if you want more profit, you can drag him to activate the [[King's Tower|King Tower]], but this is risky, as if the Mighty Miner has high enough health left after destroying the Fisherman, he might drill down the entire King Tower.
+*With the same concept, do not attempt to drag a Mighty Miner towards your King Tower with a [[Tornado]], unless you have a [[:Category:Spell Cards|spell]] or troop with a stun, as he might deal a high amount of damage to it.
+*When a Mighty Miner is nearing your Tower or you suspect Explosive Escape to be used offensively, prepare cards for the other side if a center-place can't, as his ability can head for the other Tower quickly.
+*The [[Royal Recruits]] are also an excellent counter to the Mighty Miner as the Royal Recruits can block both lanes and Mighty Miner will be swarmed by them, but this will result in a negative Elixir trade even if Mighty Miner uses his special ability.
+*Because the Mighty Miner has melee range, he's less reliable than the Inferno Dragon against building-targeting units such as the [[Hog Rider]], [[Ram Rider]], [[Wall Breakers]], and the [[Battle Ram]], which can quickly run out of range if the Mighty Miner isn't near the [[:Category:Building Cards|building]] he's targeting. Against the Wall Breakers, it is a good idea to use his ability to counter them, as it is able to OHKO them, and the Battle Ram can have its charge reset from its knockback.
+*Pairing the [[P.E.K.K.A.]] and the Mighty Miner is a good choice for a push. Deploy them together and when they reach the opponent's side, the opponent is sure to defend this push. To create tension on both sides, activate the Mighty Miner's ability. This push could get a Crown Tower or both of them down unless defended properly. However, if the opponent is smart enough, they might use a mini tank to pressurize the opponent to activate the Mighty Miner's ability, then use a swam card in the center, killing both cards for a positive Elixir trade.
+*The Mighty Miner's ability can be used to completely counter a Goblin Barrel if timed correctly.
+*The Mighty Miner can be placed as a defender in [[Clan Wars|Boat Battles]]. However, much like other {{Rarity|Champion}} cards, he is unable to use his ability. As such, he should not be set for Defense Towers in Clan Wars, and it is better to seek for other alternatives.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Mighty Miner Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+!Damage Charge
+Speed
+{{Icon|I=Time}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||0.4 sec
+|2 sec||Medium (60)||1 sec|| Melee: Long (1.6)||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Champion}}
+|}
+
+{{StatisticsSubheader|Explosive Escape Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Deploy Time<br />{{Icon|I=Time}}
+! scope="col" |Cast Time<br />{{Icon|I=Time}}
+! scope="col" |Ability Cooldown<br />{{Icon|I=Time}}
+|-
+|1||1 sec||0.933 sec||13 sec
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 2250 }}
+{{#vardefine: 1_dmg_11 | 40 }}
+{{#vardefine: 2_dmg_11 | 204 }}
+{{#vardefine: 3_dmg_11 | 409 }}
+{{#vardefine: atk_speed | 0.4 }}
+{{#vardefine: escape_11 | 332 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|1 stage Damage<br>{{Icon|I=Damage}}
+!scope="col"|1 stage Damage Per Second<br>{{Icon|I=DPS}}
+!scope="col"|2 stage Damage<br>{{Icon|I=Damage}}
+!scope="col"|2 stage Damage Per Second<br>{{Icon|I=DPS}}
+!scope="col"|3 stage Damage<br>{{Icon|I=Damage}}
+!scope="col"|3 stage Damage Per Second<br>{{Icon|I=DPS}}
+! scope="col" |Explosive Escape Damage<br />{{Icon|I=Area Damage}}
+|-
+| 11 || {{#var:hp_11}} || {{#var:1_dmg_11}} || {{Dps|{{#var:1_dmg_11}}|{{#var:atk_speed}} }}|| {{#var:2_dmg_11}} || {{Dps|{{#var:2_dmg_11}}|{{#var:atk_speed}} }}|| {{#var:3_dmg_11}} || {{Dps|{{#var:3_dmg_11}}|{{#var:atk_speed}} }} || {{#var:escape_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:escape_11}} * (1.1^(12-11)) round 0 }} 
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:escape_11}} * (1.1^(13-11)) round 0 }} 
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:escape_11}} * (1.1^(14-11)) round 0 }} 
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:escape_11}} * (1.1^(15-11)) round 0 }} 
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:escape_11}} * (1.1^(16-11)) round 0 }} 
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 275,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|1 {{BASEPAGENAME}} card <br>150 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 830,000 Damage to enemy Troops or buildings
+|10,000 {{Icon|I=Gold}} <br>150 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 1,380,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}} <br>150 {{Icon|I=XP}}
+|-
+| rowspan="3 " |Drill Master <br> [[File:Inferno Master.png|50x50px]]
+|1
+|Hit Troops or buildings a total of 350 times with a fully charged drill attack
+|15,000 {{Icon|I=Gold}} <br>175 {{Icon|I=XP}}
+|-
+|2
+|Hit Troops or buildings a total of 1,000 times with a fully charged drill attack
+|100 {{Icon|I=Gem}} <br>175 {{Icon|I=XP}}
+|-
+|3
+|Hit Troops or buildings a total of 1,750 times with a fully charged drill attack 
+|25,000 {{Icon|I=Gold}} <br>175 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2022
+*The Mighty Miner [[Cards|card]] was added to the game on 30/3/2022, in the [[Version History#Miner%20Update%20(30/3/2022)|Miner Update]].
+*On 1/4/2022, an [[Version History#Optional Update (1/4/2022)|Optional Update]], fixed an issue where Mighty Miner was not being targeted correctly.
+*On 8/4/2022, a [[Version History#Maintenance Break (8/4/2022)|maintenance break]], decreased the Explosive Escape's cost to 1 [[Elixir]] (from 2 Elixir) and gave the Mighty Miner knockback immunity.
+*On 21/4/2022, a [[Version History#Maintenance Break (21/4/2022)|maintenance break]], decreased the Explosive Escape's exploding time to 1 second (from 3 seconds).
+*On 4/10/2022, a [[Version History#Balance%20Changes%20(4/10/2022)|Balance Update]], decreased the Mighty Miner's hitpoints by 8%.
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the [[Arenas|Arena]] to unlock the Mighty Miner from [[Training Camp]] to Royal Crypt. This also made it so that players at any [[Experience|King Level]] could unlock the Mighty Miner, as opposed to only Level 14.
+*On 7/12/2022, a [[Version History#Balance%20Changes%20(7/12/2022)|Balance Update]], increased the Might Miner's speed to 90 (from 60), now classified as Fast.
+*On 22/12/2022, a [[Version History#Maintenance Break (22/12/2022)|maintenance break]], increased the Mighty Miner's hitpoints by 5% and decreased his speed to 60 (from 90), now classified as Medium.
+2023
+*On 6/6/2023, a [[Version History#Balance%20Changes%20(6/6/2023)|Balance Update]], decreased the Mighty Miner's hitpoints by 2.2%.
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+*On 21/6/2023, a [[Version History#Maintenance%20Break%20(21/6/2023)|maintenance break]], fixed the Mighty Miner’s Bomb inflicting too much damage.
+*On 8/8/2023, a [[Version History#Balance%20Changes%20(8/8/2023)|Balance Update]], increased the time required to change stages to 2.25 seconds (from 2 seconds).
+2024
+*On 17/6/2024, the [[Version History#Goblin World Update (17/6/2024)|Goblin World Update]], decreased the Explosive Escape's damage by 1.67%.
+2025
+*On 8/1/2025, a [[Version History#Balance Changes (8/1/2025)|Balance Update]], decreased the time required to change stages to 2 seconds (from 2.25 seconds).
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], allowed an underground Mighty Miner to be affected by [[Royal Chef]].
+2026
+
+* On 4/8/2026, a Balance Update, made it so that the Mighty Miner would no longer have a cooldown timer in-between abilities. Instead, his ability will now be single use. His base damage was increased by 8%
+
+==Gallery==
+<gallery>
+File:Mighty Miner card render.png|Current card render.
+File:Mighty Miner Preview.gif|Current card preview
+File:Mighty Miner.png|Mighty Miner 1
+File:Mighty Miner2.png|Mighty Miner 2
+File:MightyMinerConcept.jpeg|Concept design #1
+File:MightyMinerConcept2.jpeg|Concept design #2
+File:MightyMinerConcept3.jpeg|Concept design #3
+File:MightyMinerConcept4.jpeg|Concept design #4
+</gallery>
+
+==Trivia== 
+*The word "''Mine''" and by extension "''Miner''" come from the Celtic "''meinis''", meaning ore. Mining was invented from the beginning of civilization, with the oldest mine being the [https://en.wikipedia.org/wiki/Ngwenya_Mine Ngwenya Mine] in Eswatini, which radiocarbon dating shows to be about 43,000 years old. At this site Paleolithic humans mined [https://en.wikipedia.org/wiki/Hematite hematite] to make the red pigment [https://en.wikipedia.org/wiki/Ochre ochre]. Mining is still done to this day, for the extraction of rare-earth minerals for industrial use.
+**In the German and Arabic language settings of the game, the Mighty Miner's name translates to "Great Miner". In the French, Spanish, Italian, Dutch, Norwegian, Korean, Russian, Portuguese, Persian, Malaysian, and Vietnamese language settings of the game, the Mighty Miner's name translates to "Master Miner", "Big Miner", "Colossal Miner", "Mega Miner", "Solid Miner", "Power Miner", "Nimble Miner", "Pumped up Miner", "Powerful Miner", "Superior Miner", and "Brave Miner" respectively.
+**The Mighty Miner is 1 of 4 [[cards]] associated with subterranea, with the others being [[Earthquake]], [[Goblin Drill]], and [[Miner]].
+
+* Along with the [[Golden Knight]], [[Boss Bandit]], [[Archer Queen]], [[Monk]], and the [[Terry]], the Mighty Miner has the cheapest ability, costing 1 Elixir.
+** Also along with the Golden Knight and the Terry, the Mighty Miner has the cheapest combined Elixir cost of {{Rarity|Champion}} and ability, costing 5 Elixir.
+*The Mighty Miner is tied with [[Inferno Dragon]] and the [[Little Prince]] for the highest attack speed of all [[:Category:Troop Cards|troops]], with an attack speed of 0.4 seconds.
+*The Mighty Miner is 1 of 2 troops that deals ramp up damage, along with the Inferno Dragon.
+*The Mighty Miner is the only {{Rarity|Champion}} card whose ability's Elixir cost was changed.
+*The Mighty Miner is 1 of 7 troops that has had its movement speed classification changed, the others being [[Skeleton Barrel]], [[Elite Barbarians]], [[Suspicious Bush]], [[Goblin Cage|Goblin Brawler]], [[Cannon Cart]], and [[Lumberjack]].
+*The [https://clashofclans.fandom.com/wiki/Super_Miner Super Miner] troop in Clash of Clans is likely inspired from the Mighty Miner, with both wielding a hand drill that deals damage overtime the longer they attack, and both having the ability to leave a bomb. However, unlike the Super Miner, the Mighty Miner drops his bomb when he uses his ability instead of after death.
+*The Mighty Miner is 1 of 10 cards to have an alliterative name, the others being the [[Royal Recruits]], [[Goblin Gang]], [[Mega Minion]], [[Goblin Giant]], Cannon Cart, [[Barbarian Barrel]], [[Ram Rider]], [[Dagger Duchess]], and the Boss Bandit.
+*As he charges up his drill attack, the tip of the drill will turn different colors, with orange in Stage 2 and red in Stage 3.
+*Despite carrying a bomb-like backpack, he does not get rid of the bomb on his back when using his ability, probably due to the fact he can use the ability multiple times.
+*From his description, the “''walk softly… and carry a big drill!''” line is a reference to the USA President Theodore Roosevelt's [https://en.wikipedia.org/wiki/Big_stick_ideology quote] which says “''speak softly and carry a big stick''”.
+*The Mighty Miner is unavailable in multiple [[Tournament/Special Event Challenges|special game modes]]. More specifically:
+**It is 1 of 20 cards that is unavailable in [[Mirror]] mode, the others being [[Minions]], [[Cannon]], [[Mortar]], [[Tesla]], [[Goblin Hut]], [[Tombstone]], [[Bomb Tower]], [[Inferno Tower]], [[Barbarian Hut]], [[Furnace]], [[Elixir Collector]], [[Freeze]], [[Clone]], [[X-Bow]], Golden Knight, [[Skeleton King]], Archer Queen, Little Prince, and the Monk.
+**It is 1 of 12 cards that is unavailable in [[Chess Royale]], the others being Royal Recruits, [[Rocket]], Earthquake, [[Lightning]], [[Poison]], Goblin Drill, Miner, Golden Knight, Skeleton King, Archer Queen, Mighty Miner, and the Monk.
+*On 28 April 2022, according to a [https://twitter.com/ClashRoyale/status/1519647700085575683 tweet] by the Clash Royale official Twitter, the number of Mighty Miner's ability activations was 732,965,024.
+*The Mighty Miner is the subject of certain cosmetics in the game. More specifically:
+**The Mighty Miner is the subject of 2 [[Emotes]].
+**The Mighty Miner is the subject of a [[King's Tower|Tower Skin]].
+**The Mighty Miner is the subject of 2 [[Battle Banners|Battle Banner]] items.
+*By using Mirror on a Clone and using it on a Mighty Miner, it is actually possible to get a Level 16 Mighty Miner.
+**A cloned Mighty Miner does not fall from the sky when deployed.
+*The initial balance change for Mighty Miner on the [[Version History#Balance Changes (6/6/2023)|6/6/2023 balance changes]] was a 6.5% hitpoints decrease, but it lowered to 2.2% [https://royaleapi.com/blog/season-48-balance-wip last minute].
+*During the development, the Mighty Miner was originally named "Chief Miner".
+
+{{Navigation|Card}}
+
+[[fr:Maitre Mineur]]
+[[de:Großer Gräber]]
+[[es:Gran Minero]]
+[[it:Minatore colossale]]
+[[ru:Шустрый шахтёр]]

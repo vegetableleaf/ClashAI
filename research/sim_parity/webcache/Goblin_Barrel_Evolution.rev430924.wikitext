@@ -1,0 +1,123 @@
+<!-- revid:430924 fetched:2026-08-26 title:Goblin Barrel/Evolution TIME-MACHINE evidence for r2_evos_a -->
+{{Protection}}{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Goblin Barrel</span>}}
+{{Evolved_Card_Infobox|Cost=3|Rarity=Epic|Arena=P.E.K.K.A.'s Playhouse|ReleaseDate=June 3 2024|CycleCost=2|Type=Spell}}
+{{Quote|Evolved Goblin Barrel is like a box of chocolates. You never know what you're going to get. Whenever Evolved Goblin Barrel is cast, a Decoy Barrel - filled with Decoy Goblins! - is thrown in the opposite lane.}}
+
+The Goblin Barrel’s Evolution is an {{Rarity|Epic}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It is a Goblin Barrel with identical stats to the original. When launched, a second Goblin Barrel is launched alongside the first one, which lands on its mirroring tile in the other lane. Once the second Goblin Barrel has hit the ground, it spawns three Decoy Goblins. which are single-target, ground-targeting, melee, ground [[:Category:Troop Cards|troops]] with very low hitpoints and high damage. It is a purple-spiked wooden barrel with a purple Goblin emblem on it. The Decoy Goblins appear as dolls with light blonde hair, an "X" mark on their forehead, purple eyes with an "X" on them, and a wind-up key behind them, wear team-colored overalls, and wield a shorter version of the [[Goblins]]' daggers. The Goblin Barrel’s Evolution costs 3 [[Elixir]] and requires 2 cycles to deploy.
+
+==Strategy==
+*The Evolved Goblin Barrel can be a devastating threat on offense in both lanes if not countered properly and paired with the right cards to assist it; utilizing the identical appearances to trick the opponent into using their counter onto the wrong one.
+*If placed one tile below their respective lane’s [[:Category:Crown Towers|Crown Tower]], [[Goblins]] or [[Guards]] and an [[Electro Spirit]] can fully counter the Evolved Goblin Barrel for a neutral Elixir trade. The Electro Spirit can easily dispose of the Decoy Goblins while the Goblins/Guards, if placed early enough, will quickly distract and take out the Goblins from the real Goblin Barrel. Additionally, the Goblins/Guards will survive, providing momentum for a potential counter push.
+*The [[Royal Recruits/Evolution|Evolved Royal Recruits]] have amazing synergy with the Evolved Goblin Barrel. In both lanes, three Royal Recruits will tank for both the Decoy Goblins and regular Goblins, allowing them to get massive damage if not responded to. Additionally, if the opponent uses [[The Log]] or [[Arrows]] to get rid of the Goblin Barrels, the shields of the [[Royal Recruits]] may come off, causing them to charge and apply even more pressure to the opponent. However, this combination is a hefty 10 Elixir, so it should only be done after the Evolved Royal Recruits have defended against something.
+*Similarly, the [[Royal Hogs]] also have incredible synergy with the Evolved Goblin Barrel, especially if they’re split. The two Royal Hogs on each side will bait out weak [[:Category:Spell Cards|spells]] and tank for the Evolved Goblin Barrel, increasing pressure on the opponent as they’ll have to defend both sides or else risk significant damage dealt to their Crown Tower. However, unlike the Royal Recruits, the Royal Hogs don’t attack troops, making counters like [[Executioner]], [[Bowler]], [[Valkyrie]], [[Bomber]], [[Goblin Demolisher]], [[Witch]], and [[Wizard]] much more effective at mitigating damage.
+*The [[Dagger Duchess]] alone can fully counter the Decoy Goblins by herself no matter the placement, allowing the player to focus their counters entirely on the regular Goblins. This can’t be said for the [[Cannoneer]] or [[Tower Princess]].
+*With the help of a Crown Tower, the Evolved Goblin Barrel can fully counter a [[P.E.K.K.A.|P.E.K.K.A]] for a +4 positive Elixir trade if placed in the center of the [[Arenas|arena]]. This is due to the Decoy Goblins landing very close to the regular Goblins, adding extra damage to the Goblin Barrel. Additionally, the extra count distracts the P.E.K.K.A for longer, leaving her defenseless without a small spell, such as The Log, to back her up.
+*If the user has [[Clone]] and [[Mirror]] in their deck with the Evolved Goblin Barrel and the opponent’s counters are out of cycle, using the Evolved Goblin Barrel on the [[King's Tower|King Tower]] may very rarely be an effective strategy at instantly winning the [[Basics of Battle|battle]]. The Evolved Goblin Barrel will deploy the regular Goblins and Decoy Goblins in very similar spots and with the extra Goblins from a Mirrored Goblin Barrel and Clone, the insane amount of Goblins can easily destroy the King Tower if not responded too, winning the user the entire battle right off the bat. However, this is extremely predictable as the opponent would be able to prepare for it from the previous regular Goblin Barrels.
+*If the player is unsure on which Crown Tower the real Goblin Barrel will land, placing a cheaper ranged card, such as [[Dart Goblin]], [[Spear Goblins]], or [[Archers]] directly in front of the King Tower can reduce the damage a user takes from both Goblin Barrels. Additionally, activating the King Tower makes both Goblin Barrels significantly less effective, so finding a way to do such should be prioritized.
+*An [[Cannon/Evolution|Evolved Cannon]] can prevent all but one hit on either Crown Tower when using the Tower Princess. However, it has to be placed in front of the King Tower to do this, which will prevent it from distracting any other incoming troop, either from the Evolved Goblin Barrel push or from follow-up attacks.
+
+<center>
+<div id="unit-statistics" class="table-back">
+{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Evolved Goblin Barrel Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|3||1.5||[[:Category:Spell Cards|Spell]]||{{Rarity|Epic}}
+|}
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+|-
+|2
+|}
+{{StatisticsSubheader|Goblin Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.1 sec||Very Fast (120)||1.1 sec ||Melee: Short (0.5)||Ground||x3||Ground
+|}
+{{StatisticsSubheader|Decoy Goblin Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.1 sec||Very Fast (120)||1.10 sec ||Melee: Short (0.5)||Ground||x3||Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Goblin Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Goblin Damage<br />{{Icon|I=Damage}}
+! scope="col" |Goblin Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Decoy Goblin Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Decoy Goblin Damage<br />{{Icon|I=Damage}}
+! scope="col" |Decoy Goblin Damage per second<br />{{Icon|I=DPS}}
+|-
+|6||126||75||68||51||75||68
+|-
+|7||139||82||74||56||82||74
+|-
+|8||152||90||81||61||90||81
+|-
+|9||167||99||90||67||99||90
+|-
+|10||184||109||99||74||109||99
+|-
+|11||202||120||109||81||120||109
+|-
+|12||221||132||120||89||132||120
+|-
+|13||244||145||131||98||145||131
+|-
+|14||267||159||144||108||159||144
+|-
+|15||293||175||159||119||175||159
+|}
+</div>
+</center>
+
+==History==
+2024
+*The Goblin Barrel’s Evolution [[Cards|card]] was added to the game on 3/6/2024, in the [[Version History#Pass Royale and more (3/6/2024)|June 2024 Update]].
+2025
+*On 8/1/2025, a [[Version History#Balance Changes (8/1/2025)|Balance Update]], changed the Evolved Goblin Barrel's visual effects. The fake barrel will now have a different color for the first second when launched.
+*On 8/7/2024, a [[Version History#Balance Changes (8/7/2025)|Balance Update]], decreased the Decoy Goblins' damage by 26%.
+
+== Gallery==
+<gallery>
+File:Evolved Goblin Barrel card render.png|Current card render.
+File:Evolved Goblin Barrel Preview.gif|Current card preview
+File:GoblinBarrelEvoShard.png|Evolution Shard
+File:Barrel Evo.png|Evolved Goblin Barrel
+File:GoblinBarrelEvoIndicator.png|The visual effect on the Decoy Goblins
+</gallery>
+
+==Trivia==
+*Goblins are small, grotesque, monstrous creatures that appear in the folklore of multiple European cultures. First attested in stories from the Middle Ages, they are ascribed conflicting abilities, temperaments, and appearances depending on the story and country of origin, ranging from mischievous household spirits to malicious, bestial thieves. They often have magical abilities similar to a fairy or demon, such as the ability to shapeshift. Similar creatures include [https://en.wikipedia.org/wiki/Duende duendes], [https://en.wikipedia.org/wiki/Kobold kobolds], [https://en.wikipedia.org/wiki/Leprechaun leprechauns], and [https://en.wikipedia.org/wiki/Ghoul ghouls].
+**In the German and Dutch language setting of the game, the Goblin Barrel's name translates to "Kobold Barrel". In the Spanish, Arabic, Thai, and Vietnamese language setting of the game, the Goblin Barrel's name translates to "Duende Barrel", "Ghoul Barrel", "Goblin Tank" and "Leprechaun Box" respectively.
+**The Goblin Barrel is 1 of 6 evolved [[cards]] associated with [[Goblins]], with the others being [[Mortar/Evolution|Mortar]], [[Dart Goblin/Evolution|Dart Goblin]], [[Goblin Cage/Evolution|Goblin Cage]], [[Goblin Giant/Evolution|Goblin Giant]], and [[Goblin Drill/Evolution|Goblin Drill]].
+*The Goblin Barrel has the smallest radius out of all evolved [[:Category:Spell Cards|spells]] in the game, with a radius of 1.5 tiles.
+*The Decoy Goblins are 1 of 5 evolved [[:Category:Troop Cards|troops]] which can defeat themselves in one attack, the others being [[Skeletons/Evolution|Skeletons]], [[Firecracker/Evolution|Firecracker]], [[Wall Breakers/Evolution|Wall Breakers]], and Runners.
+*In the cards decription, the "''You never know what you're going to get''" and "''like a box of chocolates''" lines may be references to the comedy romance movie [https://en.wikipedia.org/wiki/Forrest_Gump Forrest Gump].
+*Unlike other evolved troops, the Decoy Goblins do not disintegrate into [https://clashofclans.fandom.com/wiki/Resource_Buildings#Dark_Elixir Dark Elixir] when defeated. Instead, they disintegrate into [[Elixir]]. This trait is shared with the Runners.
+*The Goblin Barrel's Evolution is the subject of an [[Emotes|Emote]].
+
+{{Navigation|Card}}

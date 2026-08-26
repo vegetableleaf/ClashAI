@@ -1,0 +1,63 @@
+{
+ "group": "crosscheck2_spawn_contamination + reverse_derivation_anchor_sweep",
+ "generated": "2026-08-26",
+ "keys_done": 26,
+ "fields_checked": 585,
+ "matches": 19,
+ "updates": 6,
+ "pins": 5,
+ "escalations": 10,
+ "lines_emitted": 40,
+ "fields_checked_breakdown": {
+  "spawner_vs_spawned_unit_field_assertions": 332,
+  "anchor_sweep_values_inverted_through_levels.base_for": 155,
+  "wiki_vardefines_read_across_21_live_pages": 98
+ },
+ "scope": {
+  "spawner_ish_keys_enumerated_from_snapshot": 46,
+  "spawner_unit_pairs_where_both_rows_exist": 19,
+  "spawner_BUILDINGS_covered": [
+   "goblin_hut", "tombstone", "barbarian_hut", "goblin_drill", "goblin_drill_evo",
+   "goblin_cage", "goblin_cage_evo", "furnace", "furnace_evo", "elixir_collector",
+   "mortar_evo", "party_hut (absent from KB, correctly)"
+  ],
+  "decks_swept": ["hogeq", "icebow"],
+  "note": "furnace/furnace_evo are kind:troop in the KB but were swept as spawner buildings because that is what they were before the 4/8/2025 rework and what the 2023 mechanics dump still calls them (character FirespiritHut)."
+ },
+ "edit_war": "pass (21/21 pages: live revid == cached revid wherever an archived copy existed, and every live body byte-identical to the archive; 6 pages had no prior archive and were added)",
+ "pages_fetched_live_2026-08-26": {
+  "Goblin Cage": 436552, "Goblin Cage/Evolution": 437374, "Party Hut": 431993,
+  "Furnace": 437285, "Furnace/Evolution": 437286, "Goblin Hut": 437256,
+  "Tombstone": 436518, "Barbarian Hut": 436519, "Goblin Drill": 437382,
+  "Goblin Drill/Evolution": 437383, "Elixir Collector": 436522, "Mortar/Evolution": 437361,
+  "Phoenix": 437212, "Mighty Miner": 437349, "Little Prince": 437347,
+  "Fire Spirit": 437343, "Goblins": 437504, "Mortar": 437360,
+  "Spear Goblins": 437502, "Skeletons": 436874, "Barbarians": 437362
+ },
+ "regression_check_95e9879": {
+  "verdict": "NO REGRESSION on the 4 buildings the commit fixed",
+  "measured": "build_spec(db, key, 11) returns hp 1228 / 529 / 1164 / 1313 with dps 0.0 for goblin_hut / tombstone / barbarian_hut / goblin_drill, and each spawner is wired to the right unit row.",
+  "but": "the commit's stated heuristic ('the card's own body is the TANKIER one') is REFUTED on Goblin Cage, where the cage is 780 and the Goblin Brawler is 1080. The imported layer still writes 1080; only a cards.yaml curation saves the base card, and the evolution row has no such curation."
+ },
+ "new_cases_found": {
+  "goblin_cage_evo": "hitpoints 1080 / hit_speed 1.1 / dps 306 are the Goblin Brawler's; should be 780 / 1.0 / 337. LIVE in the sim, no curation masking it.",
+  "goblin_cage": "hit_speed 1.1 vestigial (inert today, damage is curated 0).",
+  "spear_goblins": "hit_speed 1.7 is the Goblin Hut page's stale copy; the card page says 1.6."
+ },
+ "adjacent_defects_found_while_sweeping": {
+  "furnace/furnace_evo lifetime_s 28.0": "reinstated by the 2023 card_mechanics.json dump, which sits ABOVE the wiki import in CardDB's merge order. The live card has no lifetime at all.",
+  "furnace spawns.interval 5.0": "contradicts both the wiki (7 s) and its own trailing comment (which says 7 s).",
+  "tombstone spawns.interval 3.5": "wiki table says 4 s.",
+  "mortar_evo range_tiles 3.5": "the dead-zone minimum of the '3.5-11.5' band, the same parse bug the base card was fixed for on 2026-08-15. Engine is unaffected (it resolves reach through the base key) -- latent data defect only.",
+  "elixir_collector lifetime 70": "dead second copy of lifetime_s 93.0.",
+  "CardDB.resolved_deck": "still uses 1.1 ** (level - 11); dead code, zero callers, engine path uses levels.scale correctly."
+ },
+ "anchor_sweep_result": {
+  "method": "levels.base_for(v, 11) over every curated level-scaled stat in both decks, with the candidate level set clamped to [rarity floor, 16]; rarity floors from ledger/rarity_floors.json (Common 1 / Rare 3 / Epic 6 / Legendary 9 / Champion 11).",
+  "non_invertible": 16,
+  "expected_failures": 15,
+  "genuine_anchor_or_transcription_errors": ["phoenix_egg.hitpoints 239 -> 240 (NEW)", "mighty_miner.ability_bomb_damage 366 -> 332 (ruling 9, still unapplied)"],
+  "already_closed": ["little_prince 653/98 -> 698/104 (the other champion-floor case)"],
+  "ladder_check_note": "The wiki publishes no per-level ladders -- every non-11 row is rendered from the L11 vardefine with 1.1^(L-11) -- so base_for cannot be validated against 'full wiki ladders'. Only the L11 row is evidence, and rarity floors bind only when inverting an in-game observation."
+ }
+}

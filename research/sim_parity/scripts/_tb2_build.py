@@ -1,0 +1,437 @@
+# -*- coding: utf-8 -*-
+"""Build research/sim_parity/ledger/r2_troops_b.jsonl (round 2, group troops_b)."""
+import json, urllib.parse
+
+OUT = 'C:/Users/benpe/ClashBot/research/sim_parity/ledger/r2_troops_b.jsonl'
+R = []
+
+
+def S(page, revid, raw, fetched='2026-08-26'):
+    return {"url": "https://clashroyale.fandom.com/api.php?action=parse&page=%s&prop=wikitext|revid&format=json"
+                   % urllib.parse.quote(page),
+            "revid": revid, "fetched": fetched, "raw": raw}
+
+
+def A(key, field, cur, p1, p2, p3, vote, verdict, notes, sources, ew='pass'):
+    R.append({"key": key, "field": field, "current_db": cur, "p1_vardefine": p1, "p2_table": p2,
+              "p3_history": p3, "sources": sources, "vote": vote,
+              "cross_checks": {"edit_war": ew}, "verdict": verdict, "notes": notes})
+
+
+# ---------------------------------------------------------------- giant_skeleton
+GS, GSR = 'Giant Skeleton', 436713
+gs_hist = ("P3 '* On 12/1/2026, a Balance Update, decreased the Giant Skeleton's attack time interval to 1.3 "
+           "seconds (from 1.4 seconds).' | '* On 4/5/2026, a Balance Update, increased the Giant Skeleton's death "
+           "damage by 29%, decreased his hitpoints by 7%, decreased his collision radius to 0.75 tiles (from 1 "
+           "tile), reduced his model size and removed his bomb's ability to inflict double damage on Crown Towers.'")
+gs_tm = ("TIME MACHINE oldid 435951 (2026-04-22, last rev before 4/5/2026): hardcoded L11 row "
+         "'|11||3,617||276||{{Dps|276|1.4}}||535||1,068' -- so hp 3617->3361 (-7%) and death 535->688 (+29%) DID "
+         "land, and the 6th column (1,068 = 2x534) was the crown-tower death damage the update removed; today's "
+         "page has no such column.")
+
+A('giant_skeleton', 'hit_speed', 1.4, 1.4, 1.3, 1.3, '2of3', 'update',
+  "P1 vardefine atk_speed is still 1.4 and was ALSO 1.4 at oldid 435951, i.e. it never moved for the 12/1/2026 "
+  "change; the hand-typed attributes table and the dated history both read 1.3. Attributes-table hit speed is a "
+  "literal, independent of the vardefine, so this is a genuine 2-of-3. giant_skeleton has NO cards.yaml curation, "
+  "so the field is importable. Proposed: 1.3.",
+  [S(GS, GSR, "P1 {{#vardefine: atk_speed | 1.4 }} | P2 attrs row '6||1.3 sec||0.3 sec||Medium (60)||1 sec||"
+              "Melee: Short (0.8)||Ground||x1||Ground||Troop||Epic' | " + gs_hist)])
+
+A('giant_skeleton', 'dps', 197, 197, None, 212, '2of3', 'update',
+  "Derived field, follows the hit_speed 1.4->1.3 update: 276/1.3 = 212.3 -> 212. The wiki's own DPS column renders "
+  "197 only because it is computed from the stale atk_speed vardefine. Proposed: 212.",
+  [S(GS, GSR, "rendered L11 row (live revid 436713): '11 | 3361 | 276 | 197 | 688' -- 197 = floor(276/1.4), stale")])
+
+A('giant_skeleton', 'death_crown_mult', 2.0, None, 1.0, 1.0, '2of3', 'update',
+  "The 4/5/2026 entry explicitly removes the bomb's double damage on Crown Towers. The P2 leg is STRUCTURAL rather "
+  "than a printed number: the pre-change revision carried a 6th stats column '1,068' (= 2 x 534 death damage) and "
+  "today's table has no crown-tower death column at all. Two independent paths therefore agree on 1.0, and the "
+  "field is not curated in cards.yaml. Proposed: 1.0 (or drop the field).",
+  [S(GS, GSR, gs_hist + " | " + gs_tm)])
+
+A('giant_skeleton', 'collision', 1.0, None, None, 0.75, 'split', 'escalate',
+  "Only P3 carries a collision number (there is no attributes-table column for it). Recommend 0.75. Two reasons to "
+  "take it seriously: (a) the other three effects in the SAME dated entry are confirmed landed by the pre/post "
+  "revision diff, so this is not a proposal that never shipped; (b) `collision` does not come from the wiki at all "
+  "-- config/card_mechanics.json sources it from the RoyaleAPI cr-api-data dump FROZEN 2023-10-18, on the stated "
+  "premise that 'balance patches leave structural constants alone'. This entry falsifies that premise, which is an "
+  "owner-level call rather than an auto-import.",
+  [S(GS, GSR, gs_hist + " | card_mechanics.json giant_skeleton: {'collision': 1.0, 'load_time_s': 1.1, 'mass': 18, "
+              "'sight': 5.0}, meta.source_frozen '2023-10-18'")])
+
+A('giant_skeleton', 'load_time_s', 1.1, None, 1.0, None, 'split', 'escalate',
+  "Frozen-dump field (card_mechanics.json, 2023-10-18), not a wiki field. The wiki's First Hit Speed column "
+  "supports the identity load_time_s = hit_speed - first_hit_speed exactly on 13 cards in this group (golem, "
+  "hog_rider, ice_golem, ice_wizard, knight, lava_hound, lumberjack, mega_knight, mega_minion, mini_pekka, "
+  "mother_witch, goblin_giant, and giant_skeleton itself at the old 1.4). Under the proposed hit_speed 1.3 with "
+  "FHS 0.3 the identity gives 1.0. Coupled to the hit_speed decision -- rule on both together.",
+  [S(GS, GSR, "P2 attrs 'Hit Speed 1.3 sec | First Hit Speed 0.3 sec' -> 1.3-0.3=1.0; frozen dump has 1.1, which "
+              "pairs with the old 1.4")])
+
+# ---------------------------------------------------------------- goblin_demolisher
+GD, GDR = 'Goblin Demolisher', 437137
+gd_raw = ("P1 {{#vardefine: atk_speed | 1.2 }} | P2 attrs '4||1.2 sec||0.5 sec||Medium (60)||1 sec||5||1.5||400||"
+          "Ground||x1||Ground||Troop||Rare' | P3 '* On 1/12/2025, a balance update increased the Goblin "
+          "Demolisher's attack speed to 1.1 seconds (from 1.2 seconds)' | CORROBORATION from the independent "
+          "Version History 2025 page (cached Version_History_2025.wikitext): '{{Balance|Buff}}[[Goblin "
+          "Demolisher]]: Attack Period decreassed to 1.1 seconds (from 1.2 seconds).' | TIME MACHINE oldid 430339 "
+          "(2025-11-17, last rev before 1/12/2025): L11 row '|11||1,300||186||{{Dps|186|1.2}}||65||404' and the "
+          "attributes table already 1.2 -- so the card page's STAT BLOCK never moved across the change date.")
+
+A('goblin_demolisher', 'hit_speed', 1.2, 1.2, 1.2, 1.1, 'split', 'escalate',
+  "Genuinely contested, so escalating rather than proposing an overwrite. The two paths that say 1.2 (vardefine + "
+  "attributes table) are both renderings of the SAME card page, and the time machine proves that page's stat block "
+  "did not move across 1/12/2025. The two that say 1.1 are the change record: this page's own History and the "
+  "independent Version History 2025 page. Recommend 1.1; if taken, dps follows to 169.",
+  [S(GD, GDR, gd_raw)])
+
+A('goblin_demolisher', 'dps', 155, 155, None, 169, 'split', 'escalate',
+  "Dependent on the hit_speed ruling above: 186/1.1 = 169.1 -> 169. The current 155 = floor(186/1.2) matches the "
+  "wiki's rendered L11 DPS, which is computed from the same lagging atk_speed.",
+  [S(GD, GDR, "rendered L11 (live revid 437137): '11 | 1300 | 186 | 155 | 65 | 404'")])
+
+# ---------------------------------------------------------------- goblin_gang / goblin_giant / goblin_machine
+A('goblin_gang', 'load_time_s', 0.7, None, 0.5, None, 'split', 'escalate',
+  "Frozen-dump field (card_mechanics.json goblin_gang, character 'Goblin', load_time_s 0.7, source_frozen "
+  "2023-10-18). The wiki's First Hit Speed is 0.6 against hit speed 1.1, so the identity gives 0.5; history "
+  "records the goblin first-hit move to 0.6 on 9/4/2025, i.e. after the dump froze. Same value and same cause as "
+  "the `goblins` row -- rule on both together. Recommend 0.5.",
+  [S('Goblin Gang', 436482, "P2 attrs Goblin section 'Hit Speed 1.1 sec | First Hit Speed 0.6 sec' -> 1.1-0.6=0.5; "
+                            "frozen dump 0.7")])
+
+A('goblin_giant', 'spawn_unit_stats.hit_speed', 1.7, 1.7, 1.7, 1.6, 'split', 'escalate',
+  "Confirmed stale by time machine: at oldid 436715 (2026-07-16, before the 4/8/2026 update) spear_atk_speed was "
+  "already 1.7 and it is still 1.7 today, so the page never applied the documented change. Both 1.7 paths are the "
+  "same lagging card page. Recommend 1.6.",
+  [S('Goblin Giant', 437386, "P1 {{#vardefine: spear_atk_speed | 1.7 }} | P2 Backpack Spear Goblin attrs '1.7 sec||"
+                             "0.5 sec||Very Fast (120)||0.7 sec||5||500||Air & Ground||x2||Ground' | P3 '* On "
+                             "4/8/2026, a Balance Update, decreased the Backpack Spear Goblins' hit speed to 1.6 "
+                             "seconds (from 1.7 seconds)' | TIME MACHINE oldid 436715: spear_atk_speed = 1.7")])
+
+GM, GMR = 'Goblin Machine', 437354
+gm_tm = ("TIME MACHINE oldid 436749 (2026-07-16, last rev before 4/8/2026): hp_11 2150, dmg_11 212, "
+         "rocket_atk_speed 3.5 -- IDENTICAL to today's live values, so the card page never applied the update.")
+gm_h = ("P3 '* On 4/8/2026, a Balance Update, decreased the Goblin Machine's rocket hit speed to 5 seconds (from "
+        "3.5 seconds), increased the rocket speed by 40%, increased the melee damage by 9%, and increased his "
+        "hitpoints by 5%'")
+
+A('goblin_machine', 'hitpoints', 2150, 2150, None, 2258, 'split', 'escalate',
+  "Page proven stale across a documented change. 2150 x 1.05 = 2257.5 -> 2258. Recommend 2258.",
+  [S(GM, GMR, gm_h + " | " + gm_tm)])
+A('goblin_machine', 'damage', 212, 212, None, 231, 'split', 'escalate',
+  "Page proven stale across the same change. 212 x 1.09 = 231.1 -> 231. Recommend 231.",
+  [S(GM, GMR, gm_h + " | " + gm_tm)])
+A('goblin_machine', 'dps', 177, 177, None, 192, 'split', 'escalate',
+  "Two separate problems in one field. (a) It trails the damage ruling: 231/1.2 = 192.5 -> 192. (b) Even on "
+  "today's published numbers 177 is wrong: floor(212/1.2) = 176 and the wiki renders 176, so 177 is a round() "
+  "where the wiki floors. See the group-wide dps note.",
+  [S(GM, GMR, "rendered L11 (live revid 437354) DPS column = 176 | " + gm_h)])
+A('goblin_machine', 'rocket_ability', None,
+  {'rocket_dmg_11': 304, 'rocket_crown_11': 152, 'rocket_atk_speed': 3.5},
+  {'hit_speed': 3.5, 'first_hit': 1.5, 'range': '2.5-5', 'radius': 1.5, 'projectile_speed': 250,
+   'target': 'Air & Ground'},
+  {'hit_speed': 5, 'projectile_speed': 350}, 'split', 'escalate',
+  "The KB row carries no rocket at all, so the Goblin Machine's locking AOE missile is unmodelled. Published: "
+  "damage 304, crown 152, radius 1.5, range 2.5-5. Hit speed and projectile speed are contested by the same "
+  "4/8/2026 lag -- page says 3.5 s / 250, history says 5 s and +40% (= 350).",
+  [S(GM, GMR, "P2 rocket attrs '3.5 sec||1.5 sec||2.5-5||1.5||250||Air & Ground' | " + gm_h + " | " + gm_tm)])
+
+# ---------------------------------------------------------------- goblins / golem / guards
+A('goblins', 'dps', 114, None, 113, None, '2of3', 'escalate',
+  "floor(125/1.1) = 113 and the wiki renders 113; 114 is a round(). Escalating rather than auto-updating: "
+  "engine.py line 524 lets a present `dps` override the exact `damage`, and line 600 rebuilds per-hit damage as "
+  "hit_dmg = dps * hit_speed -- so writing the wiki's floor would make per-hit damage WORSE (113 x 1.1 = 124.3 "
+  "against a true 125). The right fix is to derive dps from damage/hit_speed rather than store a rounded integer. "
+  "See the group-wide note.",
+  [S('Goblins', 437504, "P1 dmg_11 125, atk_speed 1.1 | rendered L11 DPS column = 113 | TIME MACHINE oldid 436473 "
+                        "(2026-06-27): dmg_11 = 120, so the 4/8/2026 +4% (120 -> 125) DID land and `damage` itself "
+                        "is correct")])
+A('goblins', 'load_time_s', 0.7, None, 0.5, None, 'split', 'escalate',
+  "Same frozen-dump case as goblin_gang (identical 'Goblin' character row). Wiki FHS 0.6 against hit speed 1.1 -> "
+  "0.5. Recommend 0.5, ruled together with goblin_gang.",
+  [S('Goblins', 437504, "P2 attrs '2||1.1 sec||0.6 sec||Very Fast (120)||1 sec||Melee: Short (0.5)||Ground||x4||"
+                        "Ground||Troop||Common'; frozen dump 0.7")])
+
+A('golem', 'dps', 125, None, 124, None, '2of3', 'escalate',
+  "floor(312/2.5) = 124 and the wiki renders 124; 125 is a round(). Same engine caveat as goblins.dps -- adopting "
+  "124 would give hit_dmg 310 against a true 312.5, so this wants the derive-don't-store fix rather than a value "
+  "swap. Everything else on golem and golemite verified clean, including golem.death_damage 225 (curated "
+  "verified:true) and the whole Golemite block.",
+  [S('Golem', 436719, "rendered L11 (live revid 436719): '11 | 5120 | 312 | 124 | 225 | 1039 | 84 | 33 | 99'")])
+
+A('guards', 'load_time_s', 0.6, None, 0.5, None, 'split', 'escalate',
+  "Frozen-dump field. Wiki Guard attrs give hit speed 1.0 / First Hit Speed 0.5 -> 0.5; dump says 0.6. "
+  "Recommend 0.5.",
+  [S('Guards', 436700, "P2 attrs '3||1 sec||0.5 sec||Fast (90)||1 sec||Melee: Long (1.6)||Ground||x3||Ground||"
+                       "Troop||Epic'; frozen dump 0.6")])
+
+# ---------------------------------------------------------------- heal_spirit / hunter
+A('heal_spirit', 'hitpoints', 215, 215, 215, 215, '3of3', 'match',
+  "CORRECTION of the pass-1 line, which escalated this as 215-vs-202. 202 was derived by applying the 4/8/2026 "
+  "-6% to 215 on the assumption that 215 was the pre-change value. The time machine shows the opposite: at oldid "
+  "436972 (2026-07-31, before the change) hp_11 was 230, and 230 x 0.94 = 216.2 -> 215. The wiki HAD already "
+  "applied it, so 215 is current and the KB is right. Recorded as a match so the next pass does not re-flag it.",
+  [S('Heal Spirit', 437344, "P1 today {{#vardefine: hp_11 | 215 }} | TIME MACHINE oldid 436972 (2026-07-31): "
+                            "hp_11 = 230 | P3 '* On 4/8/2026, a Balance Update, decreased the Heal Spirit's "
+                            "hitpoints by 6%'")])
+A('heal_spirit', 'heal_ability', None, {'heal_11': 100.25, 'heal_speed': 0.25},
+  {'pulses': '4 pulses every 1 second', 'pulse_interval': 0.25, 'radius': 2.5, 'target': 'Air & Ground'},
+  None, '2of3', 'escalate',
+  "The KB row carries no heal at all -- a Heal Spirit that does not heal. Published: 100.25 heal per pulse at L11, "
+  "4 pulses every 1 second (0.25 s interval), radius 2.5, hits air and ground friendlies. Carried over from pass 1 "
+  "and re-verified against the live page.",
+  [S('Heal Spirit', 437344, "P1 heal_11 100.25 / heal_speed 0.25 | P2 heal attrs '4 pulses every 1 second||"
+                            "0.25 sec||2.5||Air & Ground'")])
+
+A('hunter', 'load_time_s', 1.4, None, 1.5, None, 'split', 'escalate',
+  "Frozen-dump field. Wiki gives hit speed 2.2 / First Hit Speed 0.7 -> 1.5; dump says 1.4. Recommend 1.5. "
+  "Checked and CLEARED separately: hunter.dps 38 is NOT a bug -- the wiki's rendered 380 is its per-pellet 38 x 10, "
+  "and engine.py deliberately models the volley via multi_kind='shotgun' + hits_per_attack 10, per its own comment "
+  "\"the wiki's damage is PER HIT and its dps counts only ONE\".",
+  [S('Hunter', 436717, "P2 attrs '4||2.2 sec||0.7 sec||Medium (60)||1 sec||4||6.5||550||Air & Ground||x1||Ground||"
+                       "Troop||Epic' | rendered L11 '11 | 885 | 84 x10 (840) | 380'")])
+
+# ---------------------------------------------------------------- ice_golem / ice_spirit / ice_wizard
+A('ice_golem', 'dps', 34, None, 33, None, '2of3', 'escalate',
+  "floor(84/2.5) = 33; 34 is a round(). Same engine caveat as goblins.dps.",
+  [S('Ice Golem', 436644, "P1 dmg_11 84, atk_speed 2.5 -> 33.6")])
+A('ice_golem', 'death_radius_tiles', None, None, 2.0, 2.0, '2of3', 'escalate',
+  "KB row carries death_damage 84 but no radius for it, so the death blast currently has no area. Published "
+  "radius 2. Carried over from pass 1 and re-verified.",
+  [S('Ice Golem', 436644, "P2 attrs Death Damage Splash Radius = 2")])
+
+A('ice_spirit', 'hitpoints', 215, 215, 215, 215, '3of3', 'match',
+  "CORRECTION of the pass-1 line, which escalated this as 215-vs-202 -- the same arithmetic slip as heal_spirit. "
+  "Time machine: at oldid 436973 (2026-07-31, before the 4/8/2026 -6%) hp_11 was 230; 230 x 0.94 = 216.2 -> 215. "
+  "The change had already been applied, so the KB's 215 is current and correct.",
+  [S('Ice Spirit', 437338, "P1 today hp_11 215 | TIME MACHINE oldid 436973: hp_11 = 230 | P3 '* On 4/8/2026, a "
+                           "Balance Update, decreased the Ice Spirit's hitpoints by 6%'")])
+
+A('ice_wizard', 'spawn_slow', None, None,
+  {'radius': 3.0, 'spawn_slow_duration_s': 1.0, 'slowdown_pct': -30}, None, 'split', 'escalate',
+  "The KB row carries spawn_damage 84 but none of the spawn's area or slow, so the Ice Wizard's deploy blast "
+  "currently damages nothing around it and slows nobody. Published (Spawn Damage Attributes): radius 3, spawn slow "
+  "duration 1 sec, slowdown -30%, hits air and ground. Distinct from the ATTACK slow already in the row "
+  "(slow_duration_s 2.5 / slow_pct -30, both verified matching).",
+  [S('Ice Wizard', 436741, "P2 secondary attrs 'Radius 3 | Spawn Slow Duration 1 sec | Slowdown -30% | Target Air & "
+                           "Ground'; P1 spawn_11 = 84 (matches KB spawn_damage)")])
+
+A('inferno_dragon', 'dps', 88, None, 87, None, '2of3', 'escalate',
+  "floor(35/0.4) = 87; 88 is a round(). This is stage-1 of the ramp only (damage_stages [35,120,422] all verified "
+  "matching). Same engine caveat as goblins.dps.",
+  [S('Inferno Dragon', 436733, "P1 stage-1 damage 35, atk_speed 0.4")])
+
+# ---------------------------------------------------------------- lava_hound / lava_pups
+A('lava_hound', 'dps', 41, None, 40, None, '2of3', 'escalate',
+  "floor(53/1.3) = 40 and the wiki renders 40; 41 is a round(). Same engine caveat as goblins.dps.",
+  [S('Lava Hound', 436744, "rendered L11 (live revid 436744): '11 | 3581 | 53 | 40 | 217 | 81 | 47'")])
+A('lava_pups', 'speed', 'fast', None, 'medium', None, 'split', 'escalate',
+  "Internal contradiction inside a curated verified:true row: lava_pups carries speed_tiles 1.0 (correct -- the "
+  "wiki's 'Medium (60)') alongside the categorical speed 'fast'. engine.py prefers speed_tiles so the sim moves "
+  "them correctly, but the categorical is wrong and anything reading it will disagree with the tiles. Recommend "
+  "'medium'. Also noted while here: the KB row has no projectile_speed although the Lava Pup attributes table "
+  "publishes 500 (the pups shoot).",
+  [S('Lava Hound', 436744, "P2 Lava Pup attrs '1.7 sec||1 sec||Medium (60)||Melee: Long (1.6)||500||Air & Ground||"
+                           "x6||Air'")])
+
+# ---------------------------------------------------------------- lumberjack / lumberjack_ghost
+LJ, LJR = 'Lumberjack', 436746
+A('lumberjack', 'drops_rage.duration_s', 4.5, None, 5.5, 5.5, '2of3', 'escalate',
+  "Two independent paths agree on 5.5 and differ from the KB's 4.5, which would normally be an update -- but "
+  "drops_rage is curated verified:true in cards.yaml, so per the rules this goes to owner batch review rather than "
+  "an auto-overwrite. 4.5 is not even a historical value (the pre-8/1/2025 value was 6). Recommend 5.5. Couple "
+  "this with lumberjack_ghost.ghost_life_s: the ghost lives exactly as long as this Rage pool and that field says "
+  "5.0, so the two are inconsistent with each other as well as with the wiki.",
+  [S(LJ, LJR, "P2 Rage attrs 'Radius 3 | Duration 5.5 sec | Boost +30% | Target Friendly Troops & Buildings' "
+              "(radius and boost both match the KB) | P3 '*On 8/1/2025, a Balance Update, decreased the Rage's "
+              "duration to 5.5 seconds (from 6 seconds).'")])
+A('lumberjack', 'drops_rage.damage', None, {'rage_dmg_11': 179, 'rage_crown_11': 54}, None,
+  'dated entries 9/4/2025 (-23%) and 4/8/2025 (+21%) both describe "the Rage\'s damage"', '2of3', 'escalate',
+  "The Lumberjack's dropped Rage DEALS DAMAGE in the current game (179 at L11, 54 to crown towers) and the KB's "
+  "drops_rage dict has no damage key at all, so the sim's Lumberjack death is currently damage-free. Two dated "
+  "history entries independently confirm the Rage carries a damage stat that is being balanced.",
+  [S(LJ, LJR, "P1 {{#vardefine: rage_dmg_11 | 179 }} {{#vardefine: rage_crown_11 | 54 }} | rendered L11 columns "
+              "'Rage Damage 179 | Rage Crown Tower Damage 54'")])
+A('lumberjack', 'evolution', None, None, {'Cycles': 2},
+  '9/4/2025 increased the cycles required to 2 (from 1)', '2of3', 'escalate',
+  "The Lumberjack has an Evolution (added 3/2/2025) and a lumberjack_evo key exists in the KB, but the base "
+  "lumberjack row has no `evolution` sub-dict -- unlike knight and musketeer, which both carry one. Published "
+  "cycles = 2, confirmed by both the Evolution Attributes table and a dated history entry. Recommend adding "
+  "{available: true, cycles: 2}.",
+  [S('Lumberjack/Evolution', 437284, "P2 Evolution Attributes 'Cycles: 2' | P3 '*On 9/4/2025, a Balance Update "
+                                     "increased the cycles required to 2 (from 1), but also increased the "
+                                     "Lumberjack Ghost's damage by 33%.'")])
+
+LE, LER = 'Lumberjack/Evolution', 437284
+A('lumberjack_ghost', 'hitpoints', 4000, None, None, None, 'split', 'escalate',
+  "No path publishes a hitpoint value: the Ghost Attributes table has no Hitpoints column and there is no ghost_hp "
+  "vardefine, because the page states the ghost 'has unlimited health, and can't be targeted by troops, buildings "
+  "and towers'. 4000 is therefore a hand-authored placeholder standing in for invulnerability, on a verified:false "
+  "row. Recording null on all three paths per the rules. The modelling question (finite 4000 HP versus a true "
+  "untargetable flag) is an owner call.",
+  [S(LE, LER, "prose: 'The ghost has unlimited health, and can't be targeted by troops, buildings and towers, but "
+              "can be affected by spells' | Ghost Attributes columns are Hit Speed | First Hit Speed | Speed | "
+              "Range | Target | Count | Transport -- no Hitpoints column")])
+A('lumberjack_ghost', 'range_tiles', 0.8, None, 0.7, None, '2of3', 'update',
+  "Only the attributes table carries a range for the ghost and it reads 0.7, matching the base Lumberjack (whose "
+  "KB range_tiles is already 0.7 and verified matching) -- the page says the Evolution 'spawns a Lumberjack with "
+  "identical stats to the original'. The row is verified:false and the field is not curated in cards.yaml, so it "
+  "is importable. Proposed: 0.7.",
+  [S(LE, LER, "P2 Ghost Attributes '0.8 sec||0.4 sec||Very Fast (120)||Melee: Short (0.7)||Ground||x1||Ground'")])
+A('lumberjack_ghost', 'ghost_life_s', 5.0, None, 5.5, 5.5, '2of3', 'escalate',
+  "The ghost's lifetime is defined by the mechanic as the Rage pool's duration ('his invisible Ghost seeks "
+  "vengeance as long as it's in a pool of Lumberjack's Rage'), and that duration is a hard 5.5 in the Rage "
+  "attributes table; the strategy prose independently says the ghost 'lasts for roughly 5.5 seconds, the same "
+  "duration as his Rage Spell'. Escalating rather than updating because the prose hedges with 'roughly' and "
+  "because this must be ruled together with lumberjack.drops_rage.duration_s (currently 4.5) -- the two fields "
+  "have to end up equal. Recommend 5.5 for both.",
+  [S(LE, LER, "P2 Rage attrs Duration 5.5 sec | P3 prose '*The Evolved Lumberjack's Ghost lasts for roughly 5.5 "
+              "seconds, the same duration as his Rage Spell'")])
+A('lumberjack_ghost', 'crown_tower_damage', None, 128, 128,
+  "1/6/2026 decreased the Ghost's Tower Damage by 50%", '3of3', 'escalate',
+  "The KB row has no crown_tower_damage, so the ghost currently hits crown towers for its full 256 -- exactly "
+  "double what the game does. All three paths agree on 128: the vardefine, a rendered stats column, and a dated "
+  "entry halving 256. Confirmed applied by time machine (oldid 435502, 2026-03-15, has no Ghost Crown columns at "
+  "all; today's revision added them at 128). Recommend adding crown_tower_damage 128.",
+  [S(LE, LER, "P1 {{#vardefine: ghost_crown_11 | 128 }} | rendered L11 'Ghost Crown Damage 128 | Ghost Crown "
+              "Damage per second 160' | P3 '* On 1/6/2026, a Balance Update, decreased the Ghost's Tower Damage by "
+              "50%' | TIME MACHINE oldid 435502: L11 '|11||1,282||256||{{Dps|242|0.8}}||179||54||256||"
+              "{{Dps|256|0.8}}' -- no crown columns yet")])
+A('lumberjack_ghost', 'untargetable', None, None, None, None, 'split', 'escalate',
+  "Mechanic gap rather than a number. The page is explicit that the ghost 'can't be targeted by troops, buildings "
+  "and towers, but can be affected by spells', and a 4/2/2025 entry lists the spells it IS immune to. The KB row "
+  "has always_ghost and invisibility_time_s but no untargetable flag, so the sim can body-target something the "
+  "game cannot.",
+  [S(LE, LER, "prose as quoted | P3 '* On 4/2/2025, a Balance Update made it so that Lumberjack Ghost is immune to "
+              "Earthquake, Void, Poison, Tornado, Goblin Curse, Evolved Firecracker's sparks, and Evolved Tesla's "
+              "pulse.'")])
+
+# ---------------------------------------------------------------- magic_archer
+MA, MAR = 'Magic Archer', 437369
+ma_tm = ("TIME MACHINE oldid 436854 (2026-07-21, last rev before 4/8/2026): dmg_11 = 133 -- identical to today, so "
+         "the page never applied the documented -6%.")
+A('magic_archer', 'damage', 133, 133, 133, 125, 'split', 'escalate',
+  "Page proven stale across a documented change: 133 before 4/8/2026 and still 133 now, while History records a 6% "
+  "cut. 133 x 0.94 = 125.02 -> 125. P2 is not an independent vote here -- the stats table renders straight from "
+  "the vardefine. Recommend 125. Row is verified:false.",
+  [S(MA, MAR, "P1 {{#vardefine: dmg_11 | 133 }} | rendered L11 '11 | 529 | 133 | 120' | P3 '* On 4/8/2026, a "
+              "Balance Update, decreased the Magic Archer's damage by 6%' | " + ma_tm)])
+A('magic_archer', 'dps', 121, None, 120, 113, 'split', 'escalate',
+  "Two problems stacked. (a) On today's published damage, floor(133/1.1) = 120 and the wiki renders 120; 121 is a "
+  "round(). (b) If the damage ruling above is taken, dps becomes floor(125/1.1) = 113. Do not resolve this field "
+  "before damage.",
+  [S(MA, MAR, "rendered L11 DPS column = 120")])
+A('magic_archer', 'load_time_s', 0.6, None, 0.4, None, 'split', 'escalate',
+  "Frozen-dump field. Wiki gives hit speed 1.1 / First Hit Speed 0.7 -> 0.4, and a dated entry moved the first "
+  "attack interval to 0.7 (from 0.8) on 5/3/2024 -- after the 2023-10-18 dump froze -- so the dump's 0.6 predates "
+  "a documented change to exactly this quantity. Recommend 0.4.",
+  [S(MA, MAR, "P2 attrs '4||1.1 sec||0.7 sec||Medium (60)||1 sec||7||11||0.5||1000||Air & Ground||x1||Ground||"
+              "Troop||Legendary' | P3 '*On 5/3/2024, a Balance Update, decreased the Magic Archer's first attack "
+              "time interval to 0.7 seconds (from 0.8 seconds).'")])
+
+A('mega_knight', 'dps', 158, None, 157, None, '2of3', 'escalate',
+  "floor(268/1.7) = 157 and the wiki renders 157; 158 is a round(). Same engine caveat as goblins.dps. Everything "
+  "else on this card verified clean, including the whole curated jump block: leap 3.5-5 tiles, leap_speed 4.17 "
+  "(= the wiki's Jump Speed 250 / 60), leap_splash 2.2, jump_time 0.9 s, jump_damage 537, spawn_damage 430, "
+  "splash_radius 1.3.",
+  [S('Mega Knight', 436729, "rendered L11 (live revid 436729): '11 | 3993 | 268 | 157 | 430 | 537'")])
+
+# ---------------------------------------------------------------- miner
+MI, MIR = 'Miner', 437332
+A('miner', 'crown_tower_damage', 39, 48, 48, 39, '2of3', 'pin',
+  "PIN -- the curated 39 intentionally contradicts a lagging wiki, and this is the crown-tower family re-curated "
+  "post-1/6/2026. The arithmetic closes exactly: the 6/7/2026 entry sets Miner crown damage to 20% of full damage, "
+  "and 194 x 0.20 = 38.8 -> 39. The wiki's 48 is the OLD 25% value (194 x 0.25 = 48.5 -> 48), and the time machine "
+  "proves it is stale: oldid 435490 (2026-03-14) already had crown 48 hardcoded and today's crown_11 vardefine is "
+  "still 48. Do not update -- the KB is ahead of the wiki here.",
+  [S(MI, MIR, "P1 {{#vardefine: crown_11 | 48 }} | rendered L11 '11 | 1210 | 194 | 149 | 48 | 36' | P3 '* On "
+              "6/7/2026, a Balance Update, decreased the Miner's Crown Tower damage to 20% of the full damage "
+              "(from 25%)' | TIME MACHINE oldid 435490: '|11||1,210||194||{{Dps|194|1.3}}||48||{{Dps|48|1.3}}'")])
+A('miner', 'load_time_s', 0.7, None, 0.8, None, 'split', 'escalate',
+  "Frozen-dump field. Wiki gives hit speed 1.3 / First Hit Speed 0.5 -> 0.8; dump says 0.7. Note the dump's own "
+  "cross-check field records _hit_speed_s 1.2, and a 4/8/2025 entry moved the attack interval to 1.3 (from 1.2) -- "
+  "so the dump row for this card is demonstrably pre-2025. Recommend 0.8.",
+  [S(MI, MIR, "P2 attrs '3||1.3 sec||0.5 sec||Fast (90)||1 sec||Melee: Medium (1.2)||Ground||x1||Ground||Troop||"
+              "Legendary' | card_mechanics.json miner {'load_time_s': 0.7, '_hit_speed_s': 1.2}")])
+
+# ---------------------------------------------------------------- mini_pekka
+MP, MPR = 'Mini P.E.K.K.A.', 436435
+A('mini_pekka', 'hitpoints', 1433, 1433, 1433, 1390, 'split', 'escalate',
+  "Page proven stale across a documented change: time machine oldid 433647 (2025-12-25, before 12/1/2026) has the "
+  "hardcoded L11 row '|11||1,433||755||{{Dps|755|1.6}}', and today's rendered row is still 1433, while History "
+  "records a 3% hitpoint cut. 1433 x 0.97 = 1390.0 -> 1390. Recommend 1390.",
+  [S(MP, MPR, "rendered L11 (live revid 436435): '11 | 1433 | 755 | 471' | P3 '* On 12/1/2026, a Balance Update "
+              "decreased the Mini P.E.K.K.A.'s Hitpoints by 3%' | TIME MACHINE oldid 433647: "
+              "'|11||1,433||755||{{Dps|755|1.6}}'")])
+A('mini_pekka', 'dps', 472, None, 471, None, '2of3', 'escalate',
+  "floor(755/1.6) = 471 and the wiki renders 471; 472 is a round(). Same engine caveat as goblins.dps. Independent "
+  "of the hitpoints question above -- damage 755 verified matching.",
+  [S(MP, MPR, "rendered L11 DPS column = 471")])
+
+# ---------------------------------------------------------------- minions / minion_horde
+A('minion_horde', 'hit_speed', 1.2, 1.2, 1.1, 1.2, '2of3', 'match',
+  "KB is correct, but recording the line because the two wiki pages for the same unit CONTRADICT each other and a "
+  "future pass will otherwise re-flag it. The Minion Horde page's own attributes table still reads 1.1 sec, while "
+  "that same page's atk_speed vardefine reads 1.2 and the Minions page carries the dated change. Minion Horde "
+  "spawns the same Minion unit, so 1.2 is right and the Minion Horde attributes table is the stale artefact.",
+  [S('Minion Horde', 436476, "P1 {{#vardefine: atk_speed | 1.2 }} | P2 attrs '5||1.1 sec||0.5 sec||Fast (90)||"
+                             "1 sec||2.5||1000||Air & Ground||x6||Air||Troop||Common' | cross-page P3 from Minions "
+                             "(revid 437493): '*On 2/2/2026, the February 2026 Update increased the Minions' "
+                             "Attack Period to 1.2 seconds (from 1.1 seconds)'")])
+A('minion_horde', 'load_time_s', 0.5, None, 0.6, None, 'split', 'escalate',
+  "Frozen-dump field (shared 'Minion' character row with minions). Against the Minion Horde page's stale 1.1 the "
+  "identity gives 0.6; against the correct 1.2 it gives 0.7, which is the value the minions row should also take. "
+  "Rule together with minions.load_time_s. Recommend 0.7.",
+  [S('Minion Horde', 436476, "P2 attrs First Hit Speed 0.5 sec; frozen dump load_time_s 0.5")])
+A('minions', 'load_time_s', 0.5, None, 0.7, None, 'split', 'escalate',
+  "Frozen-dump field. Wiki gives hit speed 1.2 / First Hit Speed 0.5 -> 0.7; dump says 0.5. The dump's cross-check "
+  "field records _hit_speed_s 1.0, and the attack interval has since moved 1.0 -> 1.1 (1/9/2025) -> 1.2 "
+  "(2/2/2026), so this dump row is two balance changes out of date. Recommend 0.7, ruled together with "
+  "minion_horde.",
+  [S('Minions', 437493, "P2 attrs '3||1.2 sec||0.5 sec||Fast (90)||1 sec||2.5||1000||Air & Ground||x3||Air||Troop||"
+                        "Common' | card_mechanics.json minions {'load_time_s': 0.5, '_hit_speed_s': 1.0}")])
+
+# ---------------------------------------------------------------- mother_witch_hog / musketeer
+A('mother_witch_hog', 'row (all published fields)',
+  "hp 629, dmg 53, hit_speed 1.2, dps 44, range_tiles 0.75, speed_tiles 2.0, deploy_time 0.2, targets buildings_only",
+  "hog_hp_11 629, hog_dmg_11 53, hog_atk_speed 1.2",
+  "1.2 sec||0.25 sec||Very Fast (120)||0.2 sec||Melee: Short (0.75)||Buildings||Ground",
+  "no dated entry since release touches these", '3of3', 'match',
+  "PRIORITY ROW CLEARED. mother_witch_hog is a verified:false sub-unit key with no page of its own; extracted from "
+  "the 'Cursed Hog Attributes' section of the Mother Witch page (explicitly NOT the Mother Witch's own primary "
+  "table). Every published field matches: hitpoints 629, damage 53, hit_speed 1.2, dps 44 = floor(53/1.2), "
+  "range_tiles 0.75, speed_tiles 2.0 = Very Fast (120), deploy_time 0.2, targets buildings_only, count 1. Safe to "
+  "promote to verified: true.",
+  [S('Mother Witch', 436750, "P1 hog_hp_11 629 / hog_dmg_11 53 / hog_atk_speed 1.2 | P2 Cursed Hog attrs '1.2 sec||"
+                             "0.25 sec||Very Fast (120)||0.2 sec||Melee: Short (0.75)||Buildings||Ground' | "
+                             "rendered L11 'Cursed Hog Hitpoints 629 | Cursed Hog Damage 53 | Cursed Hog Damage "
+                             "per second 44'")])
+
+MU, MUR = 'Musketeer', 436481
+A('musketeer', 'load_time_s', 0.2, None, 0.3, None, 'split', 'escalate',
+  "Three-way conflict, so no auto-import. The KB and card_mechanics.json say 0.2; the wiki gives hit speed 1 s / "
+  "First Hit Speed 0.7 s -> 0.3; and engine.py's own WEAPON LOAD TIME comment cites the game file as 'Musketeer "
+  "1.0 s'. A dated entry moved her first attack period to 0.7 (from 0.8) on 4/2/2025, after the dump froze. The "
+  "engine comment disagreeing with the dump it documents is worth fixing either way.",
+  [S(MU, MUR, "P2 attrs '4||1 sec||0.7 sec||Medium (60)||1 sec||6||1000||Air & Ground||x1||Ground||Troop||Rare' | "
+              "card_mechanics.json musketeer load_time_s 0.2 | engine.py: 'game-file load_time; Archer 0.4 s, "
+              "Knight 0.7 s, Musketeer 1.0 s'")])
+A('musketeer', 'evolution.cycles', None, None, 2, None, '2of3', 'escalate',
+  "The musketeer row's curated `evolution` dict (verified:true) carries available/effect/gains but no `cycles`, "
+  "where the comparable knight row carries cycles 2 and matches the wiki exactly. Published Evolution Attributes "
+  "give Cycles 2. Also unmodelled in that dict: the sniper shot itself -- snipe_dmg_11 390, 3 ammo, 1 s sniper hit "
+  "speed, range 6-30, width 2, projectile speed 2650 -- though a separate musketeer_evo key exists in the KB and "
+  "may be the intended home for those.",
+  [S('Musketeer/Evolution', None, "P2 Evolution Attributes 'Cycles 2 | Sniper Ammo 3 | Sniper Hit Speed 1 sec | "
+                                  "Sniper Range 6-30 | Sniper Width 2 | Sniper Projectile Speed 2650' | P1 "
+                                  "snipe_dmg_11 390, snipe_hits 3 (cached Musketeer_Evolution.wikitext)")])
+
+with open(OUT, 'w', encoding='utf-8') as f:
+    for r in R:
+        f.write(json.dumps(r, ensure_ascii=False) + '\n')
+
+from collections import Counter
+c = Counter(r['verdict'] for r in R)
+print('WROTE', len(R), 'lines ->', OUT)
+print('verdicts:', dict(c))
+print('keys with lines:', len({r['key'] for r in R}))

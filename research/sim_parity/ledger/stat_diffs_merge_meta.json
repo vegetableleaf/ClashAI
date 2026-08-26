@@ -1,0 +1,48 @@
+{
+ "rows_in": 595,
+ "rows_out": 556,
+ "dup_pairs": 39,
+ "dup_disagree": 13,
+ "verdicts": {
+  "update": 101,
+  "escalate": 316,
+  "match": 73,
+  "pin": 66
+ },
+ "escalated_by_dup": [
+  [
+   "elixir_collector",
+   "lifetime",
+   "update",
+   [
+    "escalate"
+   ],
+   [
+    "verdict"
+   ]
+  ],
+  [
+   "tombstone",
+   "spawns.interval",
+   "pin",
+   [
+    "escalate"
+   ],
+   [
+    "value",
+    "verdict"
+   ]
+  ],
+  [
+   "goblin_curse",
+   "damage",
+   "update",
+   [
+    "escalate"
+   ],
+   [
+    "verdict"
+   ]
+  ]
+ ]
+}

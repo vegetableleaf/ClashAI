@@ -1,0 +1,122 @@
+{
+ "Fire Spirit": {
+  "revid_live": 437343,
+  "revid_cached": 437343,
+  "content_identical": true,
+  "edit_war": "pass",
+  "vardefines": [
+   [
+    "hp_11",
+    "215"
+   ],
+   [
+    "dmg_11",
+    "207"
+   ]
+  ]
+ },
+ "Goblins": {
+  "revid_live": 437504,
+  "revid_cached": 437504,
+  "content_identical": true,
+  "edit_war": "pass",
+  "vardefines": [
+   [
+    "hp_11",
+    "202"
+   ],
+   [
+    "dmg_11",
+    "125"
+   ],
+   [
+    "atk_speed",
+    "1.1"
+   ]
+  ]
+ },
+ "Mortar": {
+  "revid_live": 437360,
+  "revid_cached": null,
+  "content_identical": true,
+  "edit_war": "pass",
+  "vardefines": [
+   [
+    "hp_11",
+    "1369"
+   ],
+   [
+    "dmg_11",
+    "266"
+   ],
+   [
+    "life",
+    "30"
+   ],
+   [
+    "atk_speed",
+    "5"
+   ]
+  ]
+ },
+ "Spear Goblins": {
+  "revid_live": 437502,
+  "revid_cached": null,
+  "content_identical": true,
+  "edit_war": "pass",
+  "vardefines": [
+   [
+    "hp_11",
+    "133"
+   ],
+   [
+    "dmg_11",
+    "81"
+   ],
+   [
+    "atk_speed",
+    "1.6"
+   ]
+  ]
+ },
+ "Skeletons": {
+  "revid_live": 436874,
+  "revid_cached": null,
+  "content_identical": true,
+  "edit_war": "pass",
+  "vardefines": [
+   [
+    "hp_11",
+    "81"
+   ],
+   [
+    "dmg_11",
+    "81"
+   ],
+   [
+    "atk_speed",
+    "1.1"
+   ]
+  ]
+ },
+ "Barbarians": {
+  "revid_live": 437362,
+  "revid_cached": 437362,
+  "content_identical": true,
+  "edit_war": "pass",
+  "vardefines": [
+   [
+    "hp_11",
+    "691"
+   ],
+   [
+    "dmg_11",
+    "191"
+   ],
+   [
+    "atk_speed",
+    "1.4"
+   ]
+  ]
+ }
+}

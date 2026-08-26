@@ -1,0 +1,218 @@
+<!-- revid:436552 fetched:2026-08-26 title:Goblin Cage LIVE -->
+{{DISPLAYTITLE:<span style="color: #ffa31a;">Goblin Cage</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=4|Rarity=Rare|Type=Building|Arena=Goblin Stadium|ReleaseDate=17 May 2019}}{{SubpageNavBox|Evolution=yes}}{{Quote|When the Goblin Cage is destroyed, a Goblin Brawler is unleashed into the Arena! Goblin Brawler always skips leg day.}}
+
+The Goblin Cage is a {{Rarity|Rare}} [[Cards|card]] that is unlocked from the [[Arenas|Goblin Stadium (Arena 1)]]. It spawns a [[:Category:Building Cards|building]] with moderate hitpoints. When defeated, it will spawn a Goblin Brawler, which is a fast, single-target, ground-targeting, melee, ground [[:Category:Troop Cards|troop]] with high hitpoints and high damage. It appears to be a wooden cage with four metal supports, a lock on the front, and a pair of bars at each side, while the Goblin Brawler appears as a larger, buff [[Goblins|Goblin]] with a unibrow, white bands tied on his hands, and tattoos printed on his back and arms. He is also the same as that spawned by the [[Party Hut]]. A Goblin Cage card costs 4 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Goblin Cage Card}}
+*While not immediately obvious, the Goblin Cage's hitbox is identical to a spawner [[:Category:Building Cards|building]], such as the [[Goblin Hut]], rather than a defensive building such as [[Cannon]]. This means it can pull building targeting units from a slightly farther distance than defensive buildings can. This also makes it safer to place in the middle as a passive play, as the Goblin Cage will deter most attacks while also being unrecommended to destroy it with [[:Category:Spell Cards|spells]].
+**The Goblin Cage is not a replacement for any spawner building, as their playstyles are completely different. Goblin Cage is supposed to be used to absorb hits at all times, serving the role of a distraction, while spawner buildings are better to avoid taking damage in most situations so that they can spawn more units.
+*If an enemy [[Hog Rider]] or [[Ram Rider]] is deployed, the Goblin Cage should be placed down in front of them to mitigate as much damage as possible. This placement is more effective than the general center placement as the Goblin Brawler will start attacking immediately and will not have to chase them.
+*If placed in the center of the player's side of the map, it can completely stop a [[Mega Knight]] with the help of both [[:Category:Crown Towers|Crown Towers]], allowing for a large positive [[Elixir]] trade.
+*Like a [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Royal Ghost]], [[Dark Prince]], Elite Barbarian, [[Valkyrie]], [[Lumberjack]], [[Mega Minion]], [[Phoenix]], [[Bandit]], Golden Knight, [[Cannon Cart]], [[Night Witch]], [[Monk]], and [[Prince]], the Goblin Brawler himself dishes out significant damage left alone but has only average hitpoints, so [[Skeletons]] placed in the center of the [[Arenas|Arena]] can buy the player's Crown Tower enough time eliminate him before he deals any damage to it. Similarly, spells that can slow him down can prevent him from connecting to the Crown Tower.
+*The Goblin Cage's hitpoints are enough to still survive 2 hits from heavy hitters like the [[Elite Barbarians]], as well as a single hit from a Mini P.E.K.K.A. However, If the player is doing this move as a last resort, they should place the Cage as far away as possible, but directly in front of them. This will give the player an extra 1.5 seconds to defend.
+*If placed 1 tile from the other side of the Arena, it can pull an entire [[Minion Horde]]. Once the Goblin Brawler spawns, the remaining [[Minions]] will be kited and the Goblin Brawler will get 2 hits on the foe's Crown Tower.
+*Against ranged [[:Category:Troop Cards|troops]], the Goblin Cage should be placed on top on them. This will ensure that when the Goblin Cage is destroyed, the Goblin Brawler will start attacking them immediately, instead of having to walk towards them, which would cause him to take unnecessary damage. This tactic should also be used against the [[Royal Giant]], to prevent more damage on the Crown Tower.
+*The Goblin Cage is great at absorbing attacks from troops that destroy themselves with their attack.
+**The Goblin Cage will be able to absorb the [[Battle Ram]]'s attack, regardless on whether the Battle Ram is charging or not. After that, it will withstand a few extra hits from the spawned [[Barbarians]], and when it is destroyed, the Goblin Brawler will further continue with defending against the Barbarians. A similar tactic applies to the [[Skeleton Barrel]] and [[Suspicious Bush]].
+**For a slight negative Elixir trade, it can lure both [[Wall Breakers]] and take their attack directly, saving a more potent target from being hit by them. This also works against the [[Wall Breakers/Evolution|Evolved Wall Breakers]]. However, the Goblin Cage will be destroyed in the process, forcing the Goblin Brawler to be released prematurely.
+**Although it cannot directly attack it, the Goblin Cage can be a decent tank against the spawned [[Fire Spirit|Fire Spirits]] from a [[Furnace]], and it less of an issue for it to take damage, due to its complete passivity. However, the Goblin Cage has a shorter duration than the Furnace, which will force the Goblin Brawler to absorb any remaining Fire Spirits if he travels towards the same lane, removing any opportunity for a counterattack.
+**While a large negative Elixir trade, the stun effect from the [[Ice Spirit/Evolution|Evolved Ice Spirit]]'s Ice Blast has no effect on the Goblin Cage, making it a good response for it when used in larger pushes.
+**In a pinch, the Goblin Cage can take the [[Golden Knight]]'s Dashing Dash, saving a more potent target from it. After it is destroyed, the Goblin Brawler will further assist with defending against the Golden Knight, countering him for a +1 Elixir trade.
+*The Goblin Brawler is among the few units that can escape the [[Giant Skeleton]]'s death bomb. Deploy the Goblin Cage behind the Giant Skeleton and it will absorb a few attacks from the Giant Skeleton before spawning the Goblin Brawler to defeat him.
+*The Goblin Brawler is very weak to dual lane units such as [[Royal Recruits]], split [[Royal Hogs]], split [[Zappies]], and split [[Three Musketeers]] because he does not have high enough hitpoints to withstand such as push and he only targets 1 unit at a time.
+*Additionally, the Goblin Brawler is weak to swarms so pairing him with spells such as [[Zap]], [[The Log]], [[Arrows]], [[Fireball]], or [[Poison]] can synergize with him and allow him to advance towards the Crown Tower.
+*The Goblin Cage can absorb 2 of the 3 strikes from the [[Lightning]] spell, so it can be used to tank for Lightning-vulnerable [[:Category:Troop Cards|troops]] like the [[Musketeer]], Zappies, [[Electro Wizard]], [[Little Prince]], [[Ice Wizard]], [[Wizard]], [[Magic Archer]], [[Goblinstein]], [[Flying Machine]], [[Princess]], [[Firecracker]], [[Bomber]], and [[Mother Witch]].
+*The [[Earthquake]] does enough damage to destroy a Goblin Cage by itself and release the Goblin Brawler.
+*The Goblin Cage is a good counter to the [[Electro Giant]]. Due to being unable to attack, the Electro Giant will have to break it with his regular attack, and after it breaks, the Goblin Brawler will cripple if not outright destroy the Electro Giant.
+*When used against the [[Mortar]] and [[X-Bow]], the player should place the Goblin Cage in the same lane as them, to ensure that the Goblin Brawler will defend against those buildings' defenders. This is more effective than placing it in the other lane, as the Goblin Brawler will not distract them and instead they will retarget to something else after they destroy the Goblin Cage.
+*If the player has already destroyed one Crown Tower, they can place the Goblin Cage on the opponent's side. This can be helpful in situations where an attacking troop is proceeding towards the other Crown Tower and the player wants their Goblin Cage to distract said Crown Tower.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatisticsSubheader|Goblin Cage Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Lifetime<br />{{Icon|I=Time}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||1 sec||20 sec||[[:Category:Building Cards|Building]]||{{Rarity|Rare}}
+|}
+
+{{StatisticsSubheader|Goblin Brawler Attributes}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.1 sec||0.2 sec||Fast (90)||Melee: Short (0.8)||Ground||x1||Ground
+|}
+
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+{{#vardefine: cage_hp_11 | 780 }}
+{{#vardefine: life | 20 }}
+{{#vardefine: hp_11 | 1080 }}
+{{#vardefine: dmg_11 | 337 }}
+{{#vardefine: atk_speed | 1.1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+! scope="col" |Goblin Cage Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Goblin Cage Hitpoints lost per second<br />{{Icon|I=Time}}
+! scope="col" |Goblin Brawler Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Goblin Brawler Damage<br />{{Icon|I=Damage}}
+! scope="col" |Goblin Brawler Damage per second<br />{{Icon|I=DPS}}
+|-
+| 3 || {{#expr: {{#var:cage_hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:cage_hp_11}} * (1.1^(3-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:cage_hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:cage_hp_11}} * (1.1^(4-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:cage_hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:cage_hp_11}} * (1.1^(5-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:cage_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:cage_hp_11}} * (1.1^(6-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:cage_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:cage_hp_11}} * (1.1^(7-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:cage_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:cage_hp_11}} * (1.1^(8-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:cage_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:cage_hp_11}} * (1.1^(9-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:cage_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:cage_hp_11}} * (1.1^(10-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11  || {{#var:cage_hp_11}} || {{#expr: {{#var:cage_hp_11}} / {{#var:life}} round 1 }} || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:cage_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:cage_hp_11}} * (1.1^(12-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:cage_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:cage_hp_11}} * (1.1^(13-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:cage_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:cage_hp_11}} * (1.1^(14-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:cage_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:cage_hp_11}} * (1.1^(15-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:cage_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:cage_hp_11}} * (1.1^(16-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type 
+! width="10%" |Level/Tier 
+! width="40%" |Objective 
+! width="25%" |Reward
+|-
+| rowspan="3" |Punching Bag <br> [[File:Punching Bag.png|50x50px]]
+|1
+|Receive a total of 1,650 hits from enemy [[:Category:Troop Cards|Troops]]
+|100 {{BASEPAGENAME}} cards<br>50 {{Icon|I=XP}}
+|-
+|2
+|Receive a total of 4,950 hits from enemy Troops
+|4,000 {{Icon|I=Gold}}<br>50 {{Icon|I=XP}}
+|-
+|3
+|Receive a total of 8,250 hits from enemy Troops
+|100 {{Icon|I=Gem}}<br>50 {{Icon|I=XP}}
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 135,000 Damage to enemy Troops or [[:Category:Building_Cards|buildings]]
+|6,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 385,000 Damage to enemy Troops or buildings 
+|100 {{Icon|I=Rare Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 670,000 Damage to enemy Troops or buildings
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|}
+</div>
+</center>
+
+==History==
+2019
+*The Goblin Cage was once available in the [[Tournament/Special Event Challenges|Goblin Cage Draft Challenge]], which started on 17/5/2019. In this [[Tournament|challenge]], gameplay was similar to a regular Draft Challenge, except that one of the players was able to choose who would use the Goblin Cage. If the player achieved at least 10 wins, they obtained the Goblin Cage early.
+*From 25/5/2019 through 28/5/2019, the [[Shop]] had a special offer where [[Arenas|Arena]] 12+ players could buy up to 3 special Fortune [[Chests]] at the normal price that guarantee at least 66% of the Chest's contents to be Goblin Cage. The Chest was able to generate up to 150% of its contents to be Goblin Cage.
+*The Goblin Cage [[Cards|card]] was generally released on 4/6/2019.
+*On 1/7/2019, the [[Version History#July%202019%20Update%20(1/7/2019)|July 2019 Update]], increased the Goblin Cage's lifetime to 20 seconds (from 15 seconds), increased the damage of the Goblin Brawler by 25%, and increased the Goblin Brawler's range to 0.8 tiles (from 0.75 tiles), now classified as Melee: Short. His description was also updated; previously saying "''When the Goblin Cage is destroyed, a Goblin Brawler is unleashed into the Arena! Goblin Brawler never skips leg day.''" It also added the Goblin Cage as a [[Trophies|Trophy Road]] reward.
+*On 2/9/2019, a [[Version History#Pass Royale and more (2/9/2019)|Balance Update]], decreased the Goblin Brawler's speed to 90 (from 120), now classified as Fast.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Goblin Cage's card info screen.
+2020
+*On 5/5/2020, a [[Version History#Balance Changes (5/5/2020)|Balance Update]], increased the Goblin Brawler's damage by 6%.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the [[Arenas|Arena]] to unlock the Goblin Cage from Spooky Town to Goblin Stadium.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+*On 7/12/2021, the [[Version History#Balance%20Changes%20(7/12/2021)|2021 Quarter 4 Update]], decreased Goblin Cage's hitpoints by 23%.
+2022
+*On 30/3/2022, the [[Version History#Miner%20Update%20(30/3/2022)|Miner Update]], made the Goblin Cage's rattling visual effect apply all the time. Previously it would only rattle when an enemy ground [[:Category:Troop Cards|troop]] is nearby.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+*On 3/10/2023, a [[Version History#Balance%20Changes%20(3/10/2023)|Balance Update]], increased the Goblin Brawler's hitpoints by 5.2%.
+2024
+*On 17/6/2024, the [[Version History#Goblin World Update (17/6/2024)|Goblin World Update]], increased the Goblin Cage’s hitpoints by 5.1%. It also added the Goblin Cage to the Goblin class.
+*On 5/8/2024, the [[Version History|August 2024 Update]], added the Goblin Cage’s Evolution.
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Goblin Brawler's hitpoints by 0.09%.
+
+==Gallery==
+<gallery>
+File:Goblin Cage card render.png|Current card render.
+File:Goblin Cage Preview.gif|Current card preview
+File:Goblin Cage 4.png|Goblin Cage 1
+File:Goblin Cage 1.png|Goblin Cage 2
+File:Goblin Cage 2.png|Goblin Cage 3
+</gallery>
+
+==Trivia==
+*Goblins are small, grotesque, monstrous creatures that appear in the folklore of multiple European cultures. First attested in stories from the Middle Ages, they are ascribed conflicting abilities, temperaments, and appearances depending on the story and country of origin, ranging from mischievous household spirits to malicious, bestial thieves. They often have magical abilities similar to a fairy or demon, such as the ability to shapeshift. Similar creatures include [[Wikipedia:Duende|duendes]], [[Wikipedia:Kobold|kobolds]], [[Wikipedia:Leprechaun|leprechauns]], and [[Wikipedia:Ghoul|ghouls]].
+**In the German and Dutch language settings of the game, the Goblin Cage's name translates to "Kobold Cage". In the Spanish, Italian, Russian, Arabic, and Vietnamese language settings of the game, the Goblin Cage's name translates to "Strongman's Cage", "Cage for Goblins", "Cage with Goblin", "Ghoul Cage", and "Leprechaun Cage" respectively.
+***In the Japanese language setting of the game, The Goblin Brawler's name translates to "Revenge Goblin".
+**The Goblin Cage is 1 of 17 [[cards]] associated with [[Goblins]], with the others being [[Spear Goblins]], [[Goblin Gang]], [[Baby Goblins]], [[Dart Goblin]], [[Goblin Demolisher]], [[Suspicious Bush]], [[Goblin Hut]], [[Goblin Giant]], [[Goblin Barrel]], [[Goblin Curse]], [[Goblin Drill]], [[Goblin Machine]], [[Party Rocket]], [[Party Hut]], [[Goblinstein]], and of course, Goblins.
+***The Goblins, Spear Goblins, Goblin Cage and Goblin Hut are the only cards associated with Goblins that are unlocked in Goblin Stadium.
+*The Goblin Brawler is inspired by a goblin prisoner character in the Clash-A-Rama episode "[[w:c:clasharama:%22Giant_vs._Giant_Problem%22|Giant vs. Giant Problem]]".
+**In Clash Royale, the Goblin Brawler was imprisoned by the Goblins due to being too violent, as seen in a [https://www.youtube.com/shorts/A5iYQSUkBrI short].
+*The Goblin Cage is one of the first [[:Category:Building Cards|building]] [[cards]] to receive a card render, alongside the [[Mortar]], [[Tesla]], and Goblin Hut.
+*The Goblin Cage is one of the first cards to be featured in the [[Season Shop]], alongside the Goblins and Goblin Giant.
+*The Goblin Brawler is 1 of 7 [[:Category:Troop Cards|troops]] that has had its movement speed classification changed, the others being [[Skeleton Barrel]], [[Elite Barbarians]], Suspicious Bush, [[Cannon Cart]], [[Lumberjack]], and the [[Mighty Miner]].
+*The Goblin Brawler resembles the [[w:c:clashofclans.fandom.com:Sneaky Goblin|Sneaky Goblin]] from Clash of Clans, although he has different clothing on.
+*Its [[Star Points|Star Level 3 Skin]] grants the Goblin Brawler a red mohawk similar to the Level 6 Goblin in Clash of Clans.
+*A broken Goblin Cage can be seen on the [[Trophies|Trophy Road]] as a decoration.
+*The tattoo on Goblin Brawler's back appears to be a Healer, a troop from Clash of Clans.
+*The Goblin Cage has been featured with multiple [[Buff|buffs]]. More specifically:
+**The Goblin Cage is 1 of 2 buildings that has been featured with a [[Buff#Shield Boost|Shield Boost]] buff, the other being Goblin Hut.
+**The Goblin Cage is the only building that has been featured with a [[Buff#Death Spawn|Death Spawn]] buff.
+*The Goblin Brawler, along with the [[Minions]], [[Bomber]], [[Skeletons]], [[Skeleton Dragons]], [[Ice Spirit]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Mega Minion]], [[Ice Golem]], Dart Goblin, [[Elixir Golem]], [[Guards]], [[Baby Dragon]], [[P.E.K.K.A.|P.E.K.K.A]], [[Giant Skeleton]], [[Golem]], [[Wall Breakers]], [[Bowler]], [[Executioner]], [[Mega Knight]], [[Inferno Dragon]], [[Royal Ghost]], and [[Lava Hound]], are featured as a [[w:c:squad-busters:Monsters|monster]] in [[w:c:squad-busters.fandom.com:Squad Busters|Squad Busters]].
+**In Squad Busters, he is called "Uncaged Goblin", but in Clash Royale, he is called "Goblin Brawler".
+*[[Chests|Gold Crates]] have an appearance similar to the Goblin Cage.
+*The Goblin Cage is unavailable in [[Tournament/Special Event Challenges|The Floor is Healing Challenge]], much like other building cards, as well as the [[Cannon Cart]].
+*The Goblin Cage and the Goblin Brawler are the subject of 2 [[Emotes]].
+*In the [https://www.youtube.com/watch?v=5_D51_eCAWg Season 3 reveal video], the text on screen incorrectly lists the Goblin Brawler's speed decrease as a range decrease.
+*The Goblin Cage was featured in the winning [[Battle Decks|decks]] of multiple Clash Royale Tournaments. More specifically:
+**The Goblin Cage was featured in the winning deck of the [https://www.youtube.com/live/vRrgTfqRdpw?si=YDASUydL7qNm9QZz Clash Royale League 2023 Tournament], by a player called Mugi.
+**The Goblin Cage was featured in the winning deck of the [https://www.youtube.com/live/Sa0QOSJ5AVY?si=Hlcj6efCnFhxfDYe Clash Royale League 2024 Tournament], by a player called Mohamed Light.
+*Before the Goblin Cage's card release, the Goblin Cage was supposed to be a {{Rarity|Legendary}} card. However, it was changed to a {{Rarity|Rare}} card post-release.
+
+{{Navigation|Cards}}
+
+[[fr:Cage gobeline]]
+[[de:Koboldkäfig]]
+[[es:Jaula del forzudo]]
+[[it:Gabbia per goblin]]
+[[ru:Клетка с гоблином]]
+[[zh:哥布林牢笼]]

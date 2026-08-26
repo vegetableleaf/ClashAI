@@ -1,0 +1,216 @@
+<!-- revid:436457 fetched:2026-08-26 title:Bats TIME-MACHINE evidence for r2_evos_a -->
+{{Protection}}{{MagicWords}}{{ClashofClansLink|Bat}}
+
+{{Card Infobox|Cost=2|Rarity=Common|Type=Troop|Arena=Builder's Workshop|ReleaseDate=7 July 2017}}{{SubpageNavBox|Evolution=yes}}{{Quote|Spawns a handful of tiny flying creatures. Think of them as sweet, purple... balls of DESTRUCTION!}}
+
+The Bats is a {{Rarity|Common}} [[Cards|card]] that is unlocked from the [[Arenas|Builder's Workshop (Arena 5)]]. It spawns five very fast, single-target, air-targeting, melee, air [[:Category:Troop Cards|troops]] with very low hitpoints and very low damage. Their deployment is in a star formation. They resemble small, dark purple bats with glowing blue eyes, fangs, lilac underbellies, and pink ears, snouts and wings. They are also the same as those spawned by the [[Night Witch]]. A Bats card costs 2 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Bats Card}}
+*The Bats are somewhat like faster, aerial [[Skeletons]], except they cannot be used to pull [[:Category:Troop Cards|troops]] that only target ground units.
+**Despite this, the Bats can still pull melee troops that can target air troops like the [[Mega Minion]] and the [[Phoenix]]. This can stop such cards for a positive Elixir trade.
+*The lone 5 Bats will usually be picked off by a [[Tower Princess]] before they can get in range, but depending on what formation they're in after defending, they might get one shot in. This will often happen if the Bats arrange themselves in a flat pattern, where all 5 of the Bats come into range of the [[Tower Princess]] at about the same time. However, this extra chip damage is not guaranteed even when they do form up as stated.
+**The [[Dagger Duchess]] attacks fast enough that she will destroy the 5 Bats no matter their formation that they formed after defending. However, it will deplete 5 of her daggers, leaving her somewhat weak against a follow-up attack.
+**The [[Cannoneer]] attacks very slowly, making him weak against attacking Bats. As such, they should never be ignored when using the Cannoneer.
+*They can be a replacement for [[Minions]]. However, they have significantly lower hitpoints, slightly lower damage and thus can be OHKOed by more air-targeting troops like the [[Witch]], [[Dart Goblin]], [[Firecracker]], [[Spear Goblins]] or the Tower Princess, or [[:Category:Spell Cards|spells]] like [[Zap]]. They also pose much less of a threat when used for attacking. However they come in greater numbers, cost less Elixir, and are resistant to the [[Monk]]'s ability.
+*The Bats' low hitpoints makes them weak to a large variety of spells.
+**The Zap is a neutral Elixir trade for the Bats though they may be used to bait the opponent into using their Zap for other swarms after that, essentially making for a card to be put in spell bait [[Battle Decks|decks]]. This is especially useful in decks with the [[Skeleton King]], as the relatively high amount of Bats will raise his ability bar further than other swarms.
+**The [[Giant Snowball]] does slightly less damage than Zap, but that is still enough to defeat them for a neutral Elixir trade, though it is better to use it when Bats are assisted by another [[Cards|card]], in order to make better use of the Giant Snowball's knockback and slow effects.
+**[[Rage]] is a good spell to use alongside an attacking unit in order to destroy the Bats for a neutral Elixir trade.
+**Even though a [[Barbarian Barrel]] and its [[Barbarians|Barbarian]] cannot hit them at all, the Barbarian will be able to distract the Bats long enough for the Tower Princess to defeat them for a neutral Elixir trade. This is most recommended to be used when the Bats are assisted by a ground troop.
+**Other spells like [[Arrows]] and [[Tornado]] may be able to defeat the Bats in a single hit, however they are a negative Elixir trade. As such, these spells should only be used on the Bats if they are assisted by another card.
+**The quintet can be destroyed entirely within 2 hits from the [[Void]]. This is enough to counter the Bats for a slight negative Elixir trade.
+*For a positive Elixir trade, any Spirit can hit the Bats and destroy them immediately. The [[Electro Spirit]] is especially effective against the Bats, as it can defeat them no matter the formation.
+*Bats can be used to counter ground-attacking troops like the [[Knight]], [[Valkyrie]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]] and [[Bowler]]. They can quickly defeat the troops with their high DPS if not countered by spells or splash units.
+*Bats can be used to fully counter many air-targeting troops such as [[Executioner]], [[Musketeer]], [[Electro Wizard]], and [[Hunter]], by placing them on top of the card when it comes within range of the defender's tower's firing range. In the case of area-damage troops, it is recommended to surround them to ensure that more Bats can survive to deal damage to them.
+*The [[Ice Golem]] is a reliable way to counter the Bats. For a neutral Elixir trade, the Ice Golem will be defeated to activate its death damage, wiping the Bats out.
+*They can be used to counter the [[Graveyard]] for a 3 Elixir profit. Be careful, however, because the Bats are vulnerable to spells such as Zap and [[Freeze]].
+*Even though they will not prevent all damage, they are quite effective against large [[:Category:Building Cards|building]]-targeting tanks due to them having a high Elixir cost and their inability to attack the Bats.
+**The Bats are a good counter to a [[Giant]], for a positive Elixir trade, only allowing a few hits from the Giant to hit the Tower Princess or possibly none if used with the Cannoneer. A [[Royal Giant]] can be countered in a similar way.
+**The Bats cannot counter the [[Golem]] completely because its death damage will defeat them, but they will deal significant damage to a Golem if not dealt with.
+**Unlike the Golem, the [[Lava Hound]] does not have death damage, which means that they can stop a lone Lava Hound and distract the Lava Pups afterwards. Note that the Lava Pups can OHKO the Bats so prepare with an additional cheap swarm to finish them off.
+**The [[Elixir Golem]] may be cheaper than the other tanks, reducing the profit that the Bats will gain, but he has less hitpoints and will split into multiple smaller troops, which the Bats can deal better with due to being able to split their damage on multiple Elixir Blobs.
+*The Very Fast movement speed of the Bats allows them to pair well with fast attackers like the [[Hog Rider]] and [[Royal Hogs]]. They can catch up quickly with the fast attacker, while also punishing attempts at using a [[Fisherman]] to activate the [[King's Tower|King Tower]] with them. In the case of the Royal Hogs, both of them can also be split, allowing the swarms to attack both lanes.
+*Bats have a wonderful indirect synergy with [[Balloon]] decks. Since Balloon necessitates your opponent's aerial counters, it can lead to more situations where the skies are free enough to use Bats without being immediately removed by an air-targeting troop.
+**Bats can help a Balloon bypass certain defensive [[:Category:Building Cards|building]] placements, such as a building placed one tile from the [[:Category:Crown Towers|Crown Tower]] and four tiles from the bridge. First, place the Balloon on the outer edge of the [[Arenas|Arena]], as far forward as possible. Wait exactly one second, then deploy the Bats on the bridge, staggered one tile towards the Balloon. If done correctly, the Bats spawning will push the Balloon further away from the center of the Arena. Their Very Fast movement speed will also help the Balloon connect to its target earlier.
+**On the contrary, Bats are a very effective counter to Balloon, but if the defending player does not want any bomb chip damage, they can use a knockback or stun spell such as Giant Snowball or Zap, or cheap units such as [[Spear Goblins]], [[Ice Spirit]] or [[Fire Spirit]]. However, beware of overcommitting.
+*After Bats finish defending, sending a [[Miner]] to the [[:Category:Crown Towers|Crown Tower]] ahead of the leftover Bats can make for a great surprise attack, as Bats can deal a lot of damage to a Crown Tower if they aren't being targeted by it. Though easily countered, it turns what would normally just be a Miner chip into a potentially tower-taking attack. Make sure that the Miner is placed behind the Crown Tower, to prevent the opponent from hitting both the Miner and the Bats with a spell.
+**Another way to make a Miner + Bats push is to place the Miner on the inner tiles in order to distract both Crown Towers while the Bats are split in the middle of the Arena. This is a cheap and unexpected way to attack both Crown Towers. This should not be done if the opponent has a Tornado in their deck, as a Tornado will destroy the Bats and easily activate the King Tower with the Miner.
+*Skeletons + Bats can stop a lone [[Sparky]]. The Skeletons will surround and stall the Sparky while the Bats damage her down. The combo works well in general against most ground troops. However, the player should be certain that the opponent does not have a quick spell like Arrows, Giant Snowball, or Zap to take care of the swarms.
+**They can also work separately. Both of them being cheap swarms allows one of the two to bait spells for the other to thrive.
+*Bats can be an excellent distraction for tanks. For example, if you are playing Golem or [[Giant]] and you know they have a building that would counter your tank such as [[Inferno Tower]] or [[Tesla]], you can place your Bats in the same position as you would place an [[Electro Wizard]] to counter a high-placed Inferno Tower. The Bats are way faster than the tank, which will allow the Bats to stall time for your other cards to be placed and the tank to destroy the building. This works especially well against an Inferno Tower, and this will often catch them off guard. Be warned, though, as small spells such as Zap and Giant Snowball will counter the Bats, or they can simply place the building deeper.
+**Other tanks like the Giant Skeleton and [[Mega Knight]] paired with Bats can benefit in a similar way. If the opponent has already used their weak spell, Bats can help them break through bulky troops used to counter them like the [[Valkyrie]], [[Mighty Miner]], and [[P.E.K.K.A.]], help target air troops and distract the [[Inferno Dragon]] and Inferno Tower.
+
+<center>
+<div id="unit-statistics" class="table-back">
+{{Statistics}}{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|2||1.3 sec||0.6 sec||Very Fast (120)||1 sec||Melee: Medium (1.2)||Air & Ground||x5||Air||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 81 }}
+{{#vardefine: dmg_11 | 81 }}
+{{#vardefine: atk_speed | 1.3 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" | Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 97,500 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|200 {{BASEPAGENAME}} cards<br>25 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 290,000 Damage to enemy Troops or buildings
+|2,000 {{Icon|I=Gold}}<br>25 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 485,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>25 {{Icon|I=XP}}
+|-
+| rowspan="3" |Low Blow <br> [[File:Low Blow.png|50x50px]] 
+|1
+|Hit ground Troops a total of 1,400 times
+|3,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}} 
+|-
+|2
+|Hit ground Troops a total of 4,000 times
+|200 {{Icon|I=Common Wild Card}}<br>100 {{Icon|I=XP}} 
+|-
+|3
+|Hit ground Troops a total of 7,000 times
+|5,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|}
+</div></center>
+
+== History==
+2017
+*The Bats were once available in the [[Tournament/Special Event Challenges|Bats Draft Challenge]], which started on 23/6/2017. In this challenge, gameplay was similar to a regular Draft Challenge, except that one of the players was able to choose who would use the Bats. If the player achieved at least 8 wins, they obtained the Bats early.
+*From 30/6/2017 through 3/7/2017, the [[Shop]] had a special offer where [[Arenas|Arena]] 8+ players could buy up to 6 Giant [[Chests]] at the normal price that guarantee at least 40% of the Chest's contents to be Bats.
+*The Bats [[Cards|card]] was generally released on 7/7/2017.
+*On 11/8/2017, a [[Version History#Balance Changes (11/8/2017)|Balance Update]], increased the unit count to 5 (from 4).
+*On 9/10/2017, the [[Version History#Epic Quests Update (9/10/2017)|Epic Quests Update]], changed the card description. Prior to this update, it read "''Five tiny flying creatures with big ears. Having big ears doesn't mean they'll listen when asked to stop attacking you''".
+2018 
+*On 12/1/2018, the Bats were added to the [[Touchdown]] Draft,
+*On 24/1/2018, a [[Version History#Balance Changes (24/1/2018)|Balance Update]], increased the Bats' attack time interval to 1.1 seconds (from 1 second) and increased their first attack time interval to 0.6 seconds (from 0.5 seconds).
+*On 25/4/2018, the [[Version History#Clan%20Wars%20Update%20(25/4/2018)|Clan Wars Update]], changed the description. It used to read "''Spawns a handful of tiny flying creatures with big ears. Having big ears doesn't mean they're good listeners.''"
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], moved the Arena to unlock the Bats from Frozen Peak to Spell Valley.
+2019
+*On 4/3/2019, a [[Version History#Balance Changes (4/3/2019)|Balance Update]], gave the Bats a new 0.15 seconds deploy stagger from each other.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Bats' card info screen.
+2020
+*On 2/6/2020, a [[Version History#Balance Changes (2/6/2020)|Balance Update]], decreased the deploy stagger for each Bat to 0.1 seconds (from 0.15 seconds).
+*On 4/8/2020, a [[Version History#Balance Changes (4/8/2020)|Balance Update]], increased the Bats' attack time interval to 1.3 seconds (from 1.1 seconds) and increased their first attack time interval to 0.8 seconds (from 0.6 seconds).
+*On 9/12/2020, a [[Version History#Balance Changes (9/12/2020)|Balance Update]], decreased the Bats' first attack time interval to 0.6 seconds (from 0.8 seconds).
+2021
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Bats from Spell Valley to Builder's Workshop.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+*On 2/10/2023, the [https://clashroyale.fandom.com/wiki/Version_History#Pass_Royale_and_more_(2/10/2023) October 2023 Update], added the Bats' Evolution.
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], made it so that Bats' spawn formation would be correctly mirrored depending on which side of the Arena they were placed.
+
+== Gallery==
+<gallery>
+File:Bats card render.png|Current card render.
+File:Bats Preview.gif|Current card preview
+File:Bats 2.png|Bats 1
+File:Bats 3.png|Bats 2
+File:Bats 1.png|Bats alone.
+File:Bats 5.png|A Bat flying.
+</gallery>
+
+==Trivia == 
+*The Bats resemble the in-life bat species called "''Desmodus rotundus"'' ([https://en.wikipedia.org/wiki/Common_vampire_bat common vampire bat]). The common vampire bat is a [https://en.wikipedia.org/wiki/Hematophagy hematophagous] bat species that primarily feeds on the blood of livestock, which is done by biting their prey while they are sleeping. In Clash Royale, Bats attack in a similar way by biting their enemies.
+*The Bats are 1 of 17 [[:Category:Troop Cards|troops]] that inspired a troop in Clash of Clans, the others being [[Spear Goblins]], [[Bomber]], [[Skeleton Barrel]], [[Minion Horde]], [[Firecracker]], [[Battle Ram]], [[Ice Golem]], [[Zappies]], [[Baby Dragon]], [[Giant Skeleton]], [[Ram Rider]], [[Inferno Dragon]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], and [[Night Witch]].
+**It is the only troop from Clash Royale that is only available as a sub-troop in Clash of Clans.
+*The Bats are tied with [[Skeletons]] and [[Suspicious Bush]] for the lowest hitpoint of all troops, with 119 hitpoints at Level 15, and 32 hitpoints at Level 1. [[Guards]] also have the same hitpoints, however, they come with a shield.
+*The Bats are one of the first troop [[cards]] to receive a card render, alongside the [[Archers]], [[Knight]], [[Goblins]], Bomber, Skeletons, [[Barbarians]], [[Royal Recruits]], Skeleton Barrel, [[Rascals]], [[Musketeer]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Flying Machine]], [[Hog Rider]], [[Royal Hogs]], [[Dart Goblin]], Zappies, [[Elixir Golem]], Baby Dragon, [[Skeleton Army]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], [[Prince]], [[Balloon]], Giant Skeleton, [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Mega Knight]], Ram Rider, Miner, Royal Ghost, Ice Wizard, [[Magic Archer]], [[Bandit]], [[Lava Hound]], Night Witch, and [[Fisherman]].
+*The Bats are 1 of 9 troops that have the same sprite for both players, the others are Skeletons, [[Electro Spirit]], [[Fire Spirit]], [[Ice Spirit]], [[Heal Spirit]], Elixir Blob, [[Phoenix]], and Lava Pup.
+*Even though the card spawns 5 Bats, the card render displays only 4 Bats.
+*The Bats are 1 of 4 troops which can defeat themselves in one attack, the others being Skeletons, Firecracker and Wall Breakers.
+*The Bats has been featured in multiple [[Tournament/Special Event Challenges|special game modes]] outside of the card. More specifically:
+**The Bats are 1 of 23 troops that have been featured in the [[Troop Rush]] game [[:Category:Modes|mode]], the others being Skeletons, [[Skeleton Dragons]], Fire Spirit, [[Elite Barbarians]], Firecracker, Rascal Girls, Royal Hogs, Heal Spirit, Elixir Golem, Guards, Prince, Balloon, [[Golem]], Wall Breakers, Ram Rider, [[Sparky]], Phoenix, Royal Ghost, Bandit, [[Lumberjack]], [[Santa Hog Rider]], and the [[Monk]].
+**The Bats are 1 of 3 troops that have been featured with an [[Buff#Invisibility|Invisibility]] [[buff]], the others being Goblins and Skeletons.
+*The Bats and Skeleton Dragons are the only troops which have been available outside their card before they were released as cards. In the case of the Bats, they were available as a spawned troop from a Night Witch.
+*The Bats, along with the Skeletons and Royal Recruits, are featured as a sub-character in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*The Bats are the subject of a few [[Emotes]].
+* Before the Bats' card release, the Bats' count was decreased to 4 (from 5). Despite this, the card's description had an error, mentioning that the card would spawn 4 Bats, despite spawning 5. This was addressed later when they lowered the number of Bats to 4 on 12/6/2017, in the [[Version History#June 2017 Update (12/6/2017)|June 2017 Update]].
+
+==In other languages==
+{{Other languages|jpmeaning=Swarm of Bats.|fr=Chauves-souris|de=Fledermäuse|es=Murciélagos|it=Pipistrelli|nl=Vleermuizen|no=Flaggermus|tr=Yarasalar|jp=コウモリの群れ|kr=박쥐|ru=Летучие мыши|ar=خفافيش|pt=Morcegos|cn=蝙蝠|cnt=蝙蝠|fa=خفاش‌ها|id=Kelelawar|ms=Kelawar|th=ค้างคาว|fi=Lepakot|vi=Dơi}}
+
+{{Navigation|Card}}
+
+[[fr:Chauves-souris]]
+[[de:Fledermäuse]]
+[[es:Murciélagos]]
+[[it:Pipistrelli]]
+[[ru:Летучие мыши]]
+[[zh:蝙蝠]]

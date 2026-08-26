@@ -1,0 +1,149 @@
+<!-- revid:432943 fetched:2026-08-26 title:Bomber/Evolution TIME-MACHINE evidence for r2_evos_a -->
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Bomber</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Evolved_Card_Infobox|Cost=2|CycleCost=2|Rarity=Common|Type=Troop|Arena=Bone Pit|ReleaseDate=5 February 2024}}
+{{Quote|Bomber has discovered the art of bomb bouncing. It’s like skipping stones, but much more exciting. With his new skill, Bomber will be able to hit multiple targets in a row with one attack!}}
+
+The Bomber's Evolution is a {{Rarity|Common}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns a Bomber with identical stats to the original. After the initial throw, the bomb will bounce twice, 2.5 tiles apart in a straight line, dealing the same damage as the initial hit and hitting troops in an area as large as that of the initial hit. He appears as a [[Skeletons/Evolution|Skeleton]] wearing a purple aviator hat with a gold lining and gold-rimmed team-colored aviation goggles with purple lens and gloves with golden cuffs and carries a purple-spiked black bomb. The Bomber's Evolution costs 2 [[Elixir]] and requires 2 cycle to deploy.
+
+==Strategy==
+*The Evolved Bomber is very cheap at 2 [[Elixir]], meaning he is very easy to cycle back to, possibly allowing the player to evolve him more than once or twice within a [[Basics of Battle|battle]]. This makes him fit very well inside [[Battle Decks|decks]] that rely on a quick [[Cards|card]] rotation.
+*The Evolved Bomber can take advantage of high-hitpoint [[:Category:Troop Cards|troops]], such as [[P.E.K.K.A.|P.E.K.K.A]], [[Giant]], [[Giant Skeleton]], and [[Golem]], aligned with the [[:Category:Crown Towers|Crown Tower]] as his bouncing bomb will also connect to the Crown Tower, potentially dealing massive damage if left alone. This is especially effective against the [[Cannoneer]], due to his lower hitpoints compared to other [[:Category:Tower Troop Cards|tower troops]].
+*Even though he has low hitpoints, his survivability is good for his Elixir cost, as he is able to survive any [[:Category:2-Elixir Cards|2-Elixir]] offensive spell of similar Level. Therefore, using any [[:Category:Spell Cards|spell]] that is more expensive is usually a waste of Elixir, as a [[Fireball]] or [[Arrows]] played to defeat a Bomber results in an Elixir advantage for the opponent unless the player can hit something else with the spell such as a Crown Tower or troops nearby. He has a lot of damage potential when placed safely behind high hitpoint troops such as a [[Giant]] or [[Golem]].
+**A lone Evolved Bomber can be countered with a [[Zap]], [[Giant Snowball]], [[Rage]], or [[The Log]] alongside the help of a Crown Tower without the Evolved Bomber doing any damage. The player should hold the Zap ready, and when the Evolved Bomber is within range of the Crown Tower, cast the spell. The Crown Tower's damage along with the Zap's stun time of 0.5 seconds will prevent the Bomber from throwing any bombs for a neutral Elixir trade.
+**Alternatively, if the [[Zap/Evolution|Evolved Zap]] is being used, it’s recommended to use it instead of the Arrows. This is due to it being an equal Elixir trade and having the capability to achieve similar value when placed properly.
+**[[Barbarian Barrel]] is the best 2 Elixir damaging spell to counter the Bomber behind a tank or alone on the enemies side as the Barbarian Barrel used properly will leave the Evolved Bomber on critical health, leaving the [[Barbarians|Barbarian]] that spawns to safely defeat it. However, make sure that the Barbarian is not spawned in front of the Evolved Bomber, as it could result in the Barbarian being aligned with the Crown Tower, so that the Evolved Bomber would be able to hit it while targeting the Barbarian.
+*For a further positive Elixir trade, the [[Heal Spirit]] can counter him due to the Evolved Bomber taking two hits to defeat it, allowing your Crown Tower to finish him off. Any other Spirit such as [[Ice Spirit]], [[Fire Spirit]], or [[Electro Spirit]], will not work in this scenario as the Bomber will do just enough damage to instantly defeat them.
+*Left alone, the Evolved Bomber will connect to the [[Tower Princess]], hitting it once for a slight amount of chip damage. This means that the player can safely ignore him if they are running a heavy deck. However, a Cannoneer and Dagger Duchess will completely prevent him from connecting, quickly dealing enough damage to deal with the Evolved Bomber.
+*The Evolved Bomber can easily punish opponents using a siege building, such as [[Mortar]] and [[X-Bow]], aligned with the Crown Towers. Similar to the [[Magic Archer]], the bomb he throws will hit the siege building, then hit the Crown Tower due to the bouncing ability. However, failing to use another unit to take the hits will result in the Evolved Bomber being defeated.
+*For just 2 Elixir, the Evolved Bomber deals good area damage and is one of the cheapest counters to Barbarians due to his range. In fact, it takes a Bomber just 3 throws to defeat Barbarians of the same Level. He complements tank pushes very well because of this. However, due to his somewhat slow hit speed, the Evolved Bomber will often be taken out by the Barbarians, but the player can place him in the center or slightly staggered to the opposite side to increase the Barbarians' travel time. Another method is to place protective troops such as the [[Ice Golem]] or to push them back with a card that has a knockback like The Log.
+*An effective way to counter a lone Evolved Bomber is to place a cheap unit like [[Skeletons]] or an Ice Spirit followed immediately by another cheap unit like Goblins. The first unit will distract the Evolved Bomber while the second unit destroys him. This is generally a negative Elixir trade, but can used to make an counterpush.
+*The Bomber cannot attack air units, making him vulnerable against [[Minions]], [[Bats]], and other flying troops. However, when using the Bomber, the player can place protective troops, such as the [[Goblin Giant]], [[Hunter]], [[Electro Giant]], [[Electro Dragon]], or the [[Baby Dragon]], to assist in taking these troops out.
+*Due to his low hitpoints, any mini tank placed on top of the Evolved Bomber, such as a [[Knight]], [[Valkyrie]], [[Golden Knight]], Royal Ghost, [[Monk]], [[Mighty Miner]], Mini P.E.K.K.A, [[Goblin Machine]], [[Skeleton King]], Lumberjack, Prince, Dark Prince, or [[Battle Healer]], can easily fully counter him as long as he is not aligned with the Crown Tower. This can be useful if the Evolved Bomber is used in a large push.
+*Like the [[Firecracker]], the player can lure the Evolved Bomber in an angle to activate the [[King's Tower]]. Any singular [[:Category:Troop Cards|troop]] can do this, with certain ones like the [[Fire Spirit]] and Heal Spirit also being a positive Elixir trade.
+*The [[Tornado]] has great synergy with the Evolved Bomber as it can pull opposing pushes and units together, allowing the Evolved Bomber to deal with the push easier and possibly get damage on the Crown Towers.
+**Similarly, the Evolved Bomber has great synergy with the [[Valkyrie/Evolution|Evolved Valkyrie]]. The Evolved Valkyrie's Tornado ability will pull opposing troops into her, allowing the Evolved Bomber to hit more troops every throw. If this combo is used offensively, he may also chip the Crown Tower. A similar strategy can be used with [[Fisherman]].
+*Since he is very light, the Evolved Bomber can be pushed by almost any other troop in the game. In particular, fast units like the Goblins can provide the Evolved Bomber with a major speed boost. Putting this card with [[Spear Goblins]] is a good idea since together they can engage targets within their comfortable range, making for a quick ranged point-target and splash damage backup for the player's other troops across the river, or even a quick and small push.
+*For a neutral Elixir trade, he is able to counter [[Wall Breakers]], even when split. He does enough damage to weaken them so that any [[:Category:Tower Troop Cards|tower troop]] can finish them off, and he will remain with full hitpoints for a counterattack.
+*The Evolved Bomber can be played as a response for a [[Goblin Hut]]. While he will not be able to fully deny all waves, he will prevent a lot of damage for only 2 Elixir. However, if he is aligned with the Goblin Hut, he may be able to hit the building as well. A similar strategy works against the [[Furnace]] and [[Barbarian Hut]].
+*The [[Miner]] is a decent counter to a defending Evolved Bomber, as he will 2HKO him and can be deployed anywhere around him. The defender can use swarms to reduce the likelihood that the Miner locks onto him. However, if the opponent also has [[Poison]], they may decide to fake the player out and deploy the Miner on the Crown Tower, while the Poison is placed on the Evolved Bomber. If the player uses a swarm to protect him, this will give the opponent spell value and chip damage.
+**If the Miner response is placed in a poorly position, you can use Tornado to send the Miner toward the King Tower, activating him early while also saving your Evolved Bomber.
+*The Evolved Bomber paired with the [[Prince]] is a high-risk, high reward strategy. The Prince can take out mini tanks such as the Mini P.E.K.K.A or [[Lumberjack]], while the Evolved Bomber can take out swarms such as [[Goblin Gang]] or Skeleton Army. However, the combo is countered by separating the duo, since they have different movement speeds and ranges.
+*He is able to stop a [[Princess]] at the bridge relatively well. He can survive one attack from her, and 2HKO her back, although the player should be wary of predictive troops or spells used with the Princess.
+**On the contrary, a lone Evolved Bomber can be stopped by a Princess with the help of a tower troop. Place her from a distance to avoid her taking damage from the Evolved Bomber.
+*If protected by a mini tank, the Evolved Bomber, along with the Crown Tower, can take care of mini tanks such as [[Elite Barbarians]], [[Bowler]], Knight, [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], Golden Knight, [[Bandit]], Battle Healer, [[Sparky]], [[Executioner]], Fisherman, Miner, [[Dark Prince]], Mighty Miner, Valkyrie, Lumberjack, [[Royal Ghost]], Prince, Monk, and others due to his decent damage per second.
+*The Evolved Bomber is a good counter to the [[Royal Hogs]]. The Royal Hogs are unable to attack the Evolved Bomber, and the Evolved Bomber can hit all of them and prevent a lot of damage for a +3 Elixir trade.
+*With great timing, an Evolved Bomber can prevent most damage from a [[Goblin Drill]]. He has enough damage to OHKO the [[Goblins]], and if the Bomber attacks just before the Goblin Drill expires, he will be able to finish off the death Goblins. This allows him to mostly counter it for a +2 Elixir trade.
+*A good counter for the Evolved Bomber is the Bandit. The Bandit will dash towards the Evolved Bomber, dodging the bomb thrown at her, and OHKO him with her dash, which will leave her at full health for a counter attack. This is better when the Bomber is in the middle of the opponent's territory as this will allow the Bandit to reach the Crown Tower faster. A [[Mega Knight]] can work in a similar way, though at a heavy negative Elixir trade.
+*A [[Dart Goblin]], [[Musketeer]], [[Wizard]], Magic Archer, [[Flying Machine]], [[Sparky]], [[Witch]], [[Cannon Cart]], Firecracker, [[Goblin Demolisher]], [[Archer Queen]], [[Princess]], and [[Archers/Evolution|Evolved Archers]] have a much longer range, allowing them to easily defeat a lone Evolved Bomber, even from the other lane, and prepare themselves for a potential counterattack.
+*The Evolved Bomber has great synergy with the [[Electro Giant]], as he can assist in taking out large swarms or mini tanks that would cripple the Electro Giant. His cheap Elixir cost and range allows him to support the Electro Giant, weakening defending troops enough that the Electro Giant can defeat them with his Zap Pack, and save more of his hitpoints for the attack. Additionally, if these troops are lined up with the Crown Tower, the Evolved Bomber may hit the Crown Tower, reducing the amount of damage the Electro Giant has to deal to take it out.
+
+<center>
+<div id="unit-statistics" class="table-back">
+{{Statistics}}{{StatusEffects}}
+{{StatisticsSubheader|Evolved Bomber Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|2||1.8 sec||0.2 sec||Medium (60)||1 sec||4.5||1.5||400||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+! scope="col" |Bounces<br />{{Icon|I=Dash Range}}
+! scope="col" |Bounce Range<br />{{Icon|I=Range}}
+|-
+|2
+|x2
+|2.5
+|}
+{{StatisticsSubheader|Card Statistics}}
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Area Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Bounce Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+|-
+|1||130||88||88||{{Dps|88|1.8}}
+|-
+|2||143||96||96||{{Dps|96|1.8}}
+|-
+|3||157||106||106||{{Dps|106|1.8}}
+|-
+|4||172||117||117||{{Dps|117|1.8}}
+|-
+|5||189||128||128||{{Dps|128|1.8}}
+|-
+|6||208||140||140||{{Dps|140|1.8}}
+|-
+|7||228||154||154||{{Dps|154|1.8}}
+|-
+|8||250||169||169||{{Dps|169|1.8}}
+|-
+|9||275||186||186||{{Dps|186|1.8}}
+|-
+|10||302||205||205||{{Dps|205|1.8}}
+|-
+|11||332||225||225||{{Dps|225|1.8}}
+|-
+|12||365||247||247||{{Dps|247|1.8}}
+|-
+|13||401||271||271||{{Dps|271|1.8}}
+|-
+|14||440||298||298||{{Dps|298|1.8}}
+|-
+|15||483||327||327||185
+|-
+|16
+|486
+|359
+|359
+|199
+|}
+</div></center>
+
+==History==
+2024
+*The Bomber's Evolution [[Cards|card]] was added to the game on 5/2/2024, in the [[Version History#Pass Royale and more (5/2/2024)|February 2024 Update]].
+*On 5/3/2024, a [[Version History#Balance Changes (5/3/2024)|Balance Update]], decreased the Evolved Bomber's bounce range to 2.5 tiles (from 3 tiles).
+*On 14/5/2024, a [[Version History#Balance Changes (14/5/2024)|Balance Update]], increased the cycles required to 2 (from 1).
+*On 8/10/2024, a [[Version History|Balance Update]], decreased the Evolved Bomber's damage by 2%.
+*On 16/12/2024, the [[Version History#2024 Quarter 4 Update (16/12/2024)|2024 Quarter 4 Update]], made it so that enemies hit by Evolved Bomber's attack would only take damage once. It also added a sound effect to the Evolved Bomber after death.
+
+==Gallery==
+<gallery>
+File:Evolved Bomber card render.png|Current card render.
+File:Chinese Evolved Bomber card render.png|Bomber’s card render in the Chinese version of the game.
+File:Evolved Bomber Preview.gif|Current card preview
+File:BomberEvoShard.png|Evolution Shard.
+File:Evolved Bomber.png|Evolved Bomber
+</gallery>
+
+==Trivia==
+*The word "''Bomb''" and by extension "''Bomber''" come from the Greek "''bombos''", meaning booming or buzzing, referring to the sound that bombs do when they explode. Bombs were first invented in China during the ninth century. Initially, they were made with ceramic material along with gunpowder, however, they were later changed to cast-iron shells with the [https://en.wikipedia.org/wiki/Thunder_crash_bomb Thunder crash bomb] during the twelve century.
+*The Bomber's Evolution's ability is based on Bomber's Bouncing Bomb ability from Clash of Clans.
+*In the Spanish and Finnish language settings of the game, the Bomber's name translates to "Bombardier". In the Russian language settings of the game, the Bomber's name translates to "Demoman".
+*The Bomber is 1 of 5 evolved [[cards]] associated with [[Skeletons]], with the others being [[Witch/Evolution|Witch]], [[Wall Breakers/Evolution|Wall Breakers]], and of course, [[Skeletons/Evolution|Skeletons]].
+*The Bomber's Evolution is 1 of 4 [[cards]] that has had its [[Card Evolution|Cycles]] required changed, the others being [[Skeletons/Evolution|Skeletons]], [[Ice Spirit/Evolution|Ice Spirit]], and [[Lumberjack/Evolution|Lumberjack]].
+*When deployed, the Evolved Bomber exclaims "''Boom!''".
+**The Bomber is 1 of 9 evolved [[:Category:Troop Cards|troops]] that speak distinct words when on the field, the others being [[Wizard/Evolution|Wizard]], [[Goblin Cage/Evolution|Goblin Brawler]], [[Witch/Evolution|Witch]], [[P.E.K.K.A./Evolution|P.E.K.K.A.]], [[Hunter/Evolution|Hunter]], [[Executioner/Evolution|Executioner]], [[Mega Knight/Evolution|Mega Knight]], and Lumberjack.
+***Also, the Bomber is 1 of 6 evolved troops whose regular troop do not speak distinct words when on the field, the others being Goblin Brawler, Witch, Hunter, Executioner, and Mega Knight.
+**Due to a glitch, [[Wall Breakers/Evolution|Evolved Wall Breakers]] deployed by the opponent play the Evolved Bomber's deployment sound.
+*The Bomber's Evolution is the subject of 2 [[Emotes]].
+*The Bomber's Evolution was featured in the winning [[Battle Decks|deck]] of the [https://www.youtube.com/live/Sa0QOSJ5AVY?si=Hlcj6efCnFhxfDYe Clash Royale League 2024 Tournament], by a player called Mohamed Light.
+*Before the Bomber's Evolution's release, the Evolved Bomber's hitpoints boost was removed.
+{{Navigation|Card}}

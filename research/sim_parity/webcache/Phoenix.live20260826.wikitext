@@ -1,0 +1,182 @@
+<!-- revid:437212 fetched:2026-08-26 title:Phoenix LIVE -->
+{{DISPLAYTITLE: <span class="text-legendary";">Phoenix</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}
+
+{{Card Infobox|Cost=4|Rarity=Legendary|Type=Troop|Arena=Spooky Town|ReleaseDate=26 October 2022}}
+{{Quote|This mystical creature will be reborn as an egg when destroyed. If it hatches, it returns to the fight! What an egg-cellent ability.}}
+
+The Phoenix is a {{Rarity|Legendary}} [[Cards|card]] that is unlocked from the [[Arenas|Spooky Town (Arena 12)]].  It spawns a single-target, air-targeting, melee, air [[:Category:Troop Cards|troop]] with moderate hitpoints and moderate damage. When defeated, the Phoenix explodes, dealing damage, inflicting knockback, while spawning an egg which has low hitpoints. If the egg is not defeated within 3.8 seconds, it will hatch into another Phoenix with the original's hitpoints and damage. However, a reborn Phoenix does not deal death damage or spawn an egg once it is defeated. It is a cerise bird with slate eyes, yellow sclerae, a maroon beak and legs, and amber eyebrows, remiges and rectrices. A Phoenix card costs 4 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Phoenix Card}}
+*The Phoenix synergizes quite well with [[Clone]]. Having a second Phoenix for another death explosion can provide useful offensive and defensive utility.
+**Alternatively, the Phoenix can also synergize quite well with [[Mirror]]. The unexpected second and higher-levelled Phoenix can provide additional defensive and offensive power, also being able to almost guarantee a respawn due to its increased Egg hitpoints. The mirrored Phoenix will also tank for the original's Egg, increasing the chances of the original Phoenix's revival.
+**However, air swarms or ground anti-air cards like the [[Minion Horde]], Hunter, Wizard, Executioner, and the [[Musketeer]] will counter both Phoenixes and destroy the Eggs as well, resulting in an [[Elixir]] deficit for you.
+*The Phoenix should be played in conjunction with [[cards]] that can tank even just one shot from the [[:Category:Tower Troop Cards|Crown Towers]] for the Egg when it dies. Something even as weak as [[Skeletons]] or Bats are enough to buy it all the necessary time for a successful revive.
+*The Phoenix will resurrect faster under the effects of [[Rage]], allowing it to support a large push in time.
+*If the Phoenix dies to a Crown Tower, [[Zap]] or a [[Giant Snowball]] in most scenarios can buy enough time for the Egg to revive by briefly delaying just one hit.
+*Don't underestimate its combat process. The Phoenix's damage output is significant and with great hitpoints for the cost, making it a formidable opponent against any [[:Category:Troop Cards|troop]].
+*A player can fully counter a Phoenix by kiting it with a ground targeting troop; [[Princess Towers|Crown Towers]] will take its first apparition down and the unit will destroy the Egg. However, this will not work if the troop can charge/has a very fast movement speed, can jump over the river or only targets [[:Category:Building Cards|buildings]].
+*The Phoenix's Egg is not considered a building. Because of this, [[Earthquake]] will deal its troop damage to it, meaning that it cannot destroy the egg on its own.
+**Even though it is not considered a building, a [[Tornado]] cannot pull it. As such, it is not such a good idea to use it solely for the Egg’s destruction, especially since the spell cannot destroy the Egg by itself.
+*Any spell with as much damage or higher than [[Arrows]] is able to destroy the Egg on its own. Any spell with less damage cannot destroy it on its own and requires additional support from other cards or the Crown Towers. Keep this in mind when you manage to defeat a Phoenix while on offense.
+*The Phoenix is a great counter to multiple unsupported range cards:
+**The Phoenix is a decent counter to an attacking [[Witch]], despite its seeming disadvantage due to its single-target limit. To quickly counter the Witch, the Phoenix player should deploy the card directly above the Witch just as it crosses the bridge, allowing the Phoenix to bypass the Witch’s continuous Skeleton spawns and chip it down quickly, with the possible help of a Crown Tower in cleaning up the Witch’s Skeletons.
+***An attacking Phoenix can also be used to defeat a defending Witch with the help of a Tornado spell, which should preferably draw the Witch towards the Phoenix while defeating its pesky Skeleton spawns in one shot.
+**The Phoenix is, similarly, also a good counter to an attacking [[Wizard]], [[Firecracker]], [[Executioner]], [[Electro Wizard]], or Musketeer, given that the defender places the Phoenix directly over the attacking card. Against the Executioner and Firecracker, the Phoenix should also be placed at angle to avoid the Crown Tower taking unnecessary damage.
+**Alternatively, these ranged cards can also be used to reliably counter an unsupported Phoenix at range.
+*The [[Hunter]] is a great counter to the Phoenix, being able to quickly gun it down with his superior shotgun blast.
+*Moderate-large swarms (such as [[Bats]] or Minion Horde) can similarly overwhelm an attacking Phoenix and quickly defeat it.
+*The Phoenix can be deadly when paired with an [[Electro Giant]], due to its high DPS being able to quickly shred any tanky troops placed to defend against the Electro Giant, whilst the Electro Giant tanks for and demolishes swarms for it. Tornado can preferably also be used to pull troops into the attacking radius of the duo.
+**This push, despite seemingly undefeatable and heavily damaging to towers, can be countered via the usage of a building (such as a [[Cannon]] or [[Tesla]]) and a cheap anti-air DPS card (such as [[Minions]] or [[Mega Minion]]) to distract and pull the Phoenix away from the Electro Giant, thus rendering them separated and vulnerable to attacks.
+**The [[Goblin Giant]] may also be used as a substitute for the Electro Giant in this push, providing a slightly lower cost and longer swarm-clearing range in exchange for lowered hitpoints, and less effective swarm-clearing when already locked to a target.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Spawn Speed<br />{{Icon|I=Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Death Damage Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||1 sec||0.5 sec||Medium (60)||1 sec||3.8 sec||Melee: Long (1.6)||1.5||Air & Ground||x1||Air||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1052 }}
+{{#vardefine: dmg_11 | 217 }}
+{{#vardefine: atk_speed | 1.0 }}
+{{#vardefine: death_11 | 163 }}
+{{#vardefine: egg_11 | 240 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Death Damage<br />{{Icon|I=Death Damage}}
+! scope="col" |Phoenix Egg Hitpoints<br />{{Icon|I=Hitpoint}}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:egg_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:egg_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:death_11}} || {{#var:egg_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:egg_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:egg_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:egg_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:egg_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:death_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:egg_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width: 100%; text-align: center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 125,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|2 {{BASEPAGENAME}} Cards<br>100 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 380,000 damage to enemy Troops or buildings
+|8,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 640,000 damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>100 {{Icon|I=XP}}
+|-
+| rowspan="3" |Hit Maker <br> [[File:Hit Maker.png|50x50px]]
+|1
+|Hit enemy Troops a total of 840 times
+|12,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Troops a total of 2400 times
+|2 {{Icon|I=Legendary Wild Card}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Troops a total of 4200 times
+|18,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2022
+*The Phoenix [[Cards|card]] was added to the game on 26/10/2022, in the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]] {{Balance|Add}}.
+*On 2/11/2022, a [[Version History#Maintenance Break (2/11/2022)|maintenance break]], decreased the Phoenix's damage by 10% {{Balance|Nerf}}, and increased the Phoenix Egg's lifetime to 4.3 seconds (from 4 seconds) {{Balance|Nerf}}. It also fixed the Phoenix's sound effects {{Balance|Neutral}}.
+*On 21/11/2022, a [[Version History#Maintenance Break (21/11/2022)|maintenance break]], decreased the Phoenix Egg's hitpoints by 34% {{Balance|Nerf}}.
+*On 7/12/2022, a [[Version History#Balance%20Changes%20(7/12/2022)|Balance Update]], decreased the Phoenix's hitpoints by 13% {{Balance|Nerf}}.
+2023
+*On 7/2/2023, a [[Version History#Balance Changes (7/2/2023)|Balance Update]], made it so that a reborn Phoenix would only spawn with 80% of the original Phoenix's hitpoints and damage {{Balance|Neutral}}. The reborn Phoenix's would also look slightly smaller {{Balance|Neutral}}. The update also changed its description. Previously, it read "''This mystical creature will be reborn as an egg when destroyed. If it hatches, it returns to the fight! What an egg-cellent ability. Phoenix also has a fiery personality! Just kidding, it's a very serious bird. It would disapprove of all these puns.''" {{Balance|Neutral}}.
+*On 27/3/2023, the [[Version History#Losers%20Update%20(27/3/2023)|Losers Update]], changed the Phoenix's description, replacing the word "''Pheonix''" with "''Phoenix''" {{Balance|Neutral}}.
+*On 4/4/2023, a [[Version History#Balance Changes (4/4/2023)|Balance Update]], decreased the Phoenix's death damage by 10% {{Balance|Nerf}}.
+*On 6/6/2023, a [[Version History#Balance%20Changes%20(6/6/2023)|Balance Update]], increased the Phoenix's attack time interval to 1 second (from 0.9 seconds) {{Balance|Nerf}}.
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14) {{Balance|Buff}}.
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], increased the Phoenix Egg's hitpoints by 0.41% {{Balance|Buff}}. It also fixed a bug where Phoenix Egg would not spawn after being buffed by [[Royal Chef]] {{Balance|Neutral}}.
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] removed the Phoenix's Crown Tower damage reduction {{Balance|Remove}}.
+*On 3/11/2025, a [[Version History#Balance Changes (9/4/2025)|Balance Update]], made it so a reborn Phoenix would spawn with 100% of the original Phoenix’s hitpoints and damage (instead of 80%). The reborn Phoenix would also be the same size as the original. 
+2026
+
+* On 2/3/2026, a Balance Update, increased the Phoenix Egg's hitpoints by 32%, and increased the Egg's lifetime to 4.3 seconds (from 3.8 seconds).
+
+==Gallery==
+<gallery>
+File:Phoenix card render.png|Current card render.
+File:Phoenix Preview.gif|Current card preview
+File:Phoenix.png|Phoenix 1
+File:Phoenix 2.png|Phoenix 2
+File:Phoenix 3.png|Phoenix 3
+</gallery>
+
+== Trivia==
+*The Phoenix is based on the [https://en.wikipedia.org/wiki/Phoenix_(mythology) eponymous mythological Greek creature] capable of rebirth on destruction. Associated with the sun, a phoenix obtains new life by rising from the ashes of its predecessor. Some legends say it dies in a show of flames and combustion, others that it simply dies and decomposes before being born again.
+**In the Vietnamese language settings of the game, the Phoenix's name translates to "Fire Phoenix".
+*The Phoenix is 1 of 19 [[:Category:Troop Cards|troops]] which first existed in Clash of Clans, the others being [[Minions]], [[Archers]], [[Goblins]], [[Skeletons]], [[Barbarians]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], [[Balloon]], [[Golem]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Lava Hound]], and the [[Archer Queen]].
+**It is the only troop that is available as a hero pet in Clash of Clans.
+**The Phoenix's design in Clash of Clans is slightly different from its design in Clash Royale. As in Clash of Clans, it has yellow eyes and its body appears smaller and wings larger. In Clash Royale, it has hazel eyes and the proportions seem more evenly distributed.
+**The Phoenix in Clash Royale shares the same sound effects with its Clash of Clans counterpart.
+**Unlike in Clash Royale, the Phoenix in Clash of Clans can deal area damage and does not have death damage.
+**Its ability differs from its Clash of Clans counterpart. Instead of starting off as an attacker and reviving itself once when destroyed, the Clash of Clans Phoenix assumes the form of a passive, untargetable egg, and would temporarily revive its assigned hero for 8 seconds when they have been defeated, at which point it begins attacking.
+**In Clash of Clans, the Phoenix's gender is female, as said in Phoenix's description, whereas in Clash Royale, the Phoenix is male according to [https://youtu.be/Zm0LjUBZyUY?t=240 TV Royale], but uses “it” pronouns in its description.
+*The Phoenix is the only [[Cards|card]] in the game that can revive itself.
+*The Phoenix is 1 of 9 troops that have the same sprite for both players, the others are Skeletons, [[Electro Spirit]], [[Fire Spirit]], [[Bats]], [[Ice Spirit]], [[Heal Spirit]], [[Elixir Golem|Elixir Blob]], and Lava Pup.
+*The Phoenix is 1 of 23 troops that have been featured in the [[Troop Rush]] game [[:Category:Modes|mode]], the others being Skeletons, [[Skeleton Dragons]], Fire Spirit, Bats, [[Elite Barbarians]], [[Firecracker]], [[Rascals|Rascal Girls]], [[Royal Hogs]], Heal Spirit, Elixir Golem, [[Guards]], [[Prince]], Balloon, Golem, Wall Breakers, [[Ram Rider]], [[Sparky]], [[Royal Ghost]], [[Bandit]], [[Lumberjack]], [[Santa Hog Rider]], and the [[Monk]].
+*The Phoenix, Ram Rider, Lumberjack, and the [[Fisherman]] are the only normal spawning {{Rarity|Legendary}} troops that do not fall from the sky when deployed.
+*The Phoenix is the subject of 2 [[Emotes]].
+
+{{Navigation|Card}}
+
+[[fr:Phénix]]
+[[de:Phönix]]
+[[es:Fenix]]
+[[it:Fenice]]
+[[ru:Феникс]]

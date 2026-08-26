@@ -1,0 +1,111 @@
+<!-- revid:430906 fetched:2026-08-26 title:Dart Goblin/Evolution TIME-MACHINE evidence for r2_evos_a -->
+{{Protection}}{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Dart Goblin</span>}}
+{{Evolved_Card_Infobox|Cost=3|CycleCost=2|Rarity=Rare|Arena=Jungle Arena|Type=Troop|ReleaseDate=6 January 2025}}
+{{Quote|It's time to blow darts and chew gum, and he's all out of gum. Evolved Dart Goblin's dart Poison the area around his target until they're destroyed. The more he attacks a target, the deadlier the Poison gets.}}
+
+The Dart Goblin Evolution is a {{Rarity|Rare}} [[Cards|card]] that is unlocked with 6 Evolution shards. It spawns a Dart Goblin with identical stats to the original. When attacking a target, he will leave an area of effect poison, becoming stronger after multiple attacks. He resembles a [[Goblins|Goblin]], but wears a voodoo mask with purple eyes, team-colored face paint and a rope behind, leaves with circles and purple tips, and a [[Card Evolution]] symbol on top, purple pants, team-colored bands on his arm, and brown shoes, carries a purple potion, and holds a blowgun with purple paint. The Dart Goblin's Evolution costs 3 [[Elixir]] and requires 2 cycles to deploy.
+
+==Strategy==
+*Even if the Evolved Dart Goblin is defeated, the poison will stay until that unit is defeated. So shooting high-hitpoint units like the [[Golem]], [[Giant]], [[P.E.K.K.A.|P.E.K.K.A]], [[Giant Skeleton]], [[Electro Giant]], [[Mega Knight]], [[Goblin Giant]], [[Royal Giant]], or [[Lava Hound]] will make sure that a lot of poison will be made for a long time.
+*Against Crown Towers, the poison will only remain for 1 second, and he will only deal 25% of its damage.
+*Troops that spawn other troops after death will not carry over the poison to their sub troops if the parent troop is poisoned.
+*The poison effect does not stack. For example, if two Evolved Dart Goblins attack the same troop, the second one will not increase the poison damage of the first one. Instead, both poison effects will affect the troop individually.
+
+<center><div id="unit-statistics" class="table-back">
+{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+{{StatisticsSubheader|Evolved Dart Goblin Attributes}}
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|3||0.7 sec||0.35 sec||Very Fast (120)||1 sec||6.5||800||Air & Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+! scope="col" |Poison Radius<br />{{Icon|I=Radius}}
+! scope="col" |Poison Duration<br />{{Icon|I=Time}}
+! scope="col" |Number Darts for Poison<br />{{Icon|I=Count}}
+|-
+|2||1.5||1 sec||1-4-7
+|}
+{{StatisticsSubheader|Card Statistics}}
+{| class="wikitable" id="unit-statistics-table" style="width: 100%; text-align: center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Poison Damage per second (Stage 1)<br />{{Icon|I=DPS}}
+! scope="col" |Poison Damage per second (Stage 2)<br />{{Icon|I=DPS}}
+! scope="col" |Poison Damage per second (Stage 3)<br />{{Icon|I=DPS}}
+! scope="col" |Poison Crown Tower Damage per second (Stage 1)<br />{{Icon|I=DPS}}
+! scope="col" |Poison Crown Tower Damage per second (Stage 2)<br />{{Icon|I=DPS}}
+! scope="col" |Poison Crown Tower Damage per second (Stage 3)<br />{{Icon|I=DPS}}
+|-
+|3||123||67||{{Dps|67|0.8}}||24||54||145||6||14||37
+|-
+|4||135||75||{{Dps|75|0.8}}||26||59||159||7||15||40
+|-
+|5||148||83||{{Dps|83|0.8}}||29||65||175||8||17||44
+|-
+|6||163||92||{{Dps|92|0.8}}||32||72||192||8||18||48
+|-
+|7||179||102||{{Dps|102|0.8}}||35||79||211||9||20||53
+|-
+|8||196||114||{{Dps|114|0.8}}||38||86||231||10||22||58
+|-
+|9||216||126||{{Dps|126|0.8}}||42||95||254||11||24||64
+|-
+|10||237||140||{{Dps|140|0.8}}||46||104||279||12||26||70
+|-
+|11||260||156||{{Dps|156|0.8}}||51||115||307||13||29||77
+|-
+|12||286||172||{{Dps|172|0.8}}||56||126||337||14||32||85
+|-
+|13||315||189||{{Dps|189|0.8}}||61||139||370||16||35||93
+|-
+|14||345||208||{{Dps|208|0.8}}||67||152||406||17||38||102
+|-
+|15||380||228||{{Dps|228|0.8}}||74||167||446||19||42||112
+|}
+</div>
+</center>
+==History==
+2025
+*The Dart Goblin's Evolution card was added to the game on 6/1/2025, in the [[Version History#Pass Royale and more (6/1/2025)|January 2025 Update]].
+*On 4/2/2025, a [[Version History#Balance Changes (4/2/2025)|Balance Update]], decreased the Evolved Dart Goblin's damage by 5%.
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], increased the Dart Goblin's hitpoints by 0.38%, and decreased his damage by 1.48%.
+*On 4/8/2025, a [[Version History#Balance Changes (4/8/2025)|Balance Update]], decreased the Evolved Dart Goblin's Poison Cloud Duration to 1 second (from 4 seconds), increased the Damage by 17% and increased the hit speed to 0.8 seconds (from 0.7 seconds).
+
+==Gallery==
+<gallery>
+Evolved Dart Goblin Card Render.png|Current card render.
+Evolved Dart Goblin Preview.gif|Current card preview
+DartGoblinEvoShard.png|Evolution Shard
+Evolved Dart Goblin 1.png|Evolved Dart Goblin 1
+Evolved Dart Goblin 2.png|Evolved Dart Goblin 2
+Evolved Dart Goblin concept art.png|[https://www.youtube.com/post/UgkxUnBidrbpYCDW46QG2w3megq2godnDxPy Concept art] shared by Clash Royale on YouTube.
+</gallery>
+
+==Trivia== 
+*Goblins are small, grotesque, monstrous creatures that appear in the folklore of multiple European cultures. First attested in stories from the Middle Ages, they are ascribed conflicting abilities, temperaments, and appearances depending on the story and country of origin, ranging from mischievous household spirits to malicious, bestial thieves. They often have magical abilities similar to a fairy or demon, such as the ability to shapeshift. Similar creatures include [https://en.wikipedia.org/wiki/Duende duendes], [https://en.wikipedia.org/wiki/Kobold kobolds], [https://en.wikipedia.org/wiki/Leprechaun leprechauns], and [https://en.wikipedia.org/wiki/Ghoul ghouls]. 
+**In the Italian and Japanese language setting of the game, the Dart Goblin's name translates to "Blowgun Goblin". In the French, German, Spanish, Dutch, Norwegian. Arabic, Persian, Malaysian, and Vietnamese language setting of the game, the Dart Goblin's name translates to "Blowpipe Goblin", "Blowgun Kobold", "Dart-throwing Duende", "Blowpipe Kobold", "Blowing Goblin", "Arrow-blowing Ghoul", "Blow Dart Goblin", "Greedy Goblin", and "Dart-throwing Leprechauns" respectively.
+**The Dart Goblin is 1 of 6 evolved [[cards]] associated with [[Goblins]], with the others being [[Mortar/Evolution|Mortar]], [[Goblin Cage/Evolution|Goblin Cage]], [[Goblin Giant/Evolution|Goblin Giant]], [[Goblin Barrel/Evolution|Goblin Barrel]], and [[Goblin Drill/Evolution|Goblin Drill]].
+*The Dart Goblin's Evolution might be based off the [[Buff#Poison Attack|Poison Attack]] [[buff]] that the Dart Goblin has been featured with in the [[Tournament/Special Event Challenges|10/6/2024 Goblin Buffs Challenge]].
+*The poison clouds change color depending on the number of darts hit on the target. The first stage has a blue color, the second stage changes to a purple color, and the third stage changes to an orange color. In addition, skulls appear after the second stage.
+*The Dart Goblin’s Evolution is the subject of an [[Emotes|Emote]].
+*The Evolved Dart Goblin was created when a Dart Goblin fell into a [[Miner]]'s tunnel and stumbled upon a poisonous mask in a Goblin temple, as seen in a [https://www.youtube.com/shorts/LU877q6R8k4 short].
+
+{{Navigation|Card}}

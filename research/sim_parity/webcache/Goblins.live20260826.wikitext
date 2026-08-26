@@ -1,0 +1,262 @@
+<!-- revid:437504 fetched:2026-08-26 title:Goblins LIVE -->
+{{Protection}}{{MagicWords}}{{ClashofClansLink|Goblin}}
+
+{{Card Infobox|Cost=2|Rarity=Common|Type=Troop|Arena=Goblin Stadium|ReleaseDate=4 January 2016}}{{SubpageNavBox|MergeTactics=yes|Hero=Yes}}{{Quote|Four fast, unarmored melee attackers. Small, fast, green and mean!}}
+
+The Goblins is a {{Rarity|Common}} [[Cards|card]] that is unlocked from [[Arenas|Goblin Stadium (Arena 1)]]. It spawns four very fast, single-target, ground-targeting, melee, ground [[:Category:Troop Cards|troops]] with low hitpoints and low damage. Their deployment is in a square formation. The Goblins take the appearance of small, green creatures with pointy ears, green eyes, dark green eyebrows, amber sclerae, and a large peach nose, while carrying daggers and wearing team-colored suspenders and wristbands, along with brown pants and shoes. They are also the same as those spawned by the [[Goblin Barrel]], [[Goblin Gang]], [[Goblin Drill]], [[Party Hut]], [[Goblin Curse]], [[Mortar/Evolution|Evolved Mortar]], and the [[Goblin Giant/Evolution|Evolved Goblin Giant]]. A Goblins card costs 2 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Goblins Card}}
+*Goblins are an effective distraction for high damage, single-target [[:Category:Troop Cards|troops]], such as the [[Prince]], [[Mini P.E.K.K.A.]], [[P.E.K.K.A.]], [[Mega Minion]], Giant Skeleton, [[Inferno Dragon]], or the [[Mighty Miner]], offensively and defensively. When using them defensively against the Prince, the player should wait for him to start charging, and then deploy Goblins diagonal to the center in front of him. This will absorb his charge attack and increase the distance the Prince has to travel to their [[:Category:Tower Troop Cards|Crown Tower]]. The Goblins should be deployed close enough to the Tower so that the Prince does not charge up again.
+*They can be used behind high hitpoint troops such as the [[Giant]], P.E.K.K.A., [[Giant Skeleton]], or [[Golem]], adding significant damage potential to a push if ignored. They can also work well with cheaper troops that can survive long enough to reach the Crown Towers, like the [[Ice Spirit]], [[Electro Spirit]], Miner, or the [[Ice Golem]], as they can tank for the Goblins long enough for them to do massive damage for a low cost.
+*A group of Goblins placed behind a [[Valkyrie]], Ice Golem, [[Knight]], [[Battle Healer]], [[Monk]], a group of [[Barbarians]], or even a trio of Barbarians spawned by the [[Barbarian Hut]] can quickly push these slow-moving, high hitpoint troops right onto the opponent's Crown Tower. If left ignored, this combination can easily take a Tower, despite its seemingly low damage potential.
+*Fast troops like the [[Hog Rider]] and [[Battle Ram]] also pair well with Goblins. Their speed will allow them to stay close together, and the Goblins can distract single-target melee troops used to counter the other troops. However, they are vulnerable to splash damage like the [[Wizard]], [[Executioner]], [[Bowler]], [[Firecracker]], Witch, Princess, [[Magic Archer]], and the Bomber.
+*[[:Category:Spell Cards|Spells]] are a great way to defeat the Goblins, due to their low hitpoints.
+**[[The Log]] and [[Barbarian Barrel]] are the most reliable counter to Goblins, as they counter them for an equal [[Elixir]] trade, without the need for the Crown Tower's help. However, the player should be aware of other possible swarm [[cards]] in the opponent's [[Battle Decks|deck]], such as the [[Skeleton Army]], as they may be able to get better Elixir trades with it.
+**[[Arrows]] and [[Earthquake]] are able to kill the Goblins with 2 and 3 hits respectively, and they can also do it on the opposing side of the [[Arenas|Arena]]. However, they should only be used for offensive purposes, as it is otherwise a negative Elixir trade.
+**[[Zap]] and [[Giant Snowball]] are not able to defeat them on their own. Because of this, there should only be used for defending against the Goblins when supported by the Crown Tower. However, a Zap 1 Level higher than the Goblins can fully defeat them without any additional support.
+**The quartet can be destroyed entirely within 2 hits from the [[Void]], provided that they are the only troops inside it. This is enough to counter the Goblins for a slight negative Elixir trade.
+*Due to their low Elixir cost, cheap distraction cards is the most logical way to counter Goblins, while also saving stronger counters for other cards.
+**[[Skeletons]] or any Spirit can be deployed in the center to stall them long enough for the Crown Towers to take them out. The [[Fire Spirit]] is especially effective as it can OHKO the Goblins, meaning that it can stop them even when protected by a tank.
+**Similarly, an Ice Golem can distract them enough to allow the Crown Tower to take them out. The Ice Golem's death nova will also weaken them further, and slow them down as well, further decreasing any chances for the Goblins to deal additional damage.
+**Multi-troop ranged units like [[Archers]] and [[Spear Goblins]] are effective in countering lone Goblins. Place them at a distance to conserve their hitpoints.
+**The [[Bomber]] has the same cost as the Goblins, and can hit multiple of them, making him a great counter against them, especially when he attacks a tank as well.
+*When using lone Goblins to get chip damage on the opponent's Crown Tower, they should be placed one tile to either side of the bridge rather than right in the center of the bridge. This will allow the Goblins to land extra hits on the Tower right as it is defeated. This is a very efficient way of finishing off a low-health Tower, assuming the enemy doesn't have an Elixir-efficient counter or ignores them.
+* With a quick enough reaction time, they can fully counter most [[Goblin Barrel]] placements. As soon as the Goblin Barrel is seen or heard being deployed, the defender should place the Goblins behind their Crown Tower. Even if the timing is a bit off, the enemy Goblins will only get one or two stabs on the Tower.
+* Goblins can counter a [[Graveyard]] easily as their fast attack speed and movement speed can take out the Skeletons before they can even react. However, the opponent might deploy spells like [[Poison]] and Arrows to take out the Goblins, so the defender should always have another [[Cards|card]] ready.
+*Goblins are a cheap way to deal high damage to [[:Category:Building Cards|building]]-targeting troops, such as the Giant or Hog Rider, though they will rarely be enough to fully counter these troops. Beware of splash support that may accompany them however.
+*They are the perfect counter for weak, slow, single-target troops such as the [[Battle Healer]], [[Miner]], [[Fisherman]], and the [[Archer Queen]] as they will require too much time to defeat the Goblins and thus will be overwhelmed. Against area damage units that only hit in a single direction like [[Sparky]], [[Dark Prince]], [[Royal Ghost]], Bomber, Wizard, [[Ice Wizard]], or [[Skeleton King]], the Goblins can destroy them with the help of a Crown Tower when placed on top of them with good timing to surround them.
+*When a [[Princess]] reaches the bridge, the player can deploy the Goblins to counter her. They are able to survive her first attack, and she attacks slowly, meaning that they will not be defeated by her in return.
+*If the opponent places an [[Inferno Tower]] to counter a tank, Goblins can stall the Inferno Tower for a short time, giving the defender time to place another card to counter it or reset its damage ramp-up.
+*Goblins can be used to increase the troop count for the Void, allowing the player to possible save their other troops from the spell. The card spawns enough troops that it can save any single troop with just the Goblins.
+*Depending on what the player needs, the player can replicate the Goblins' function with other cards.
+**They are very similar to Skeletons, offering better stats in every way but Elixir cost and hit speed, and are a possible substitute for them. The player should consider using them if their defense is weak against Zap or the Giant Snowball, as these spells will not fully take out Goblins and will allow them to continue defending.
+**They are also very similar to [[Guards]], being cheaper and faster, and a possible substitute for them. They can use them in place of Guards to lower the cost of their deck.
+*When combined with a [[Miner]], the Miner will act as a tank while the Goblins do most of the damage. This strategy is very cheap, quick, and can be played often, surprising the opponent. For 5 Elixir, it can be very damaging, but most of the damage can easily be mitigated with cards such as The Log.
+**On the contrary, they are very effective at stopping opposing Miners. The Miner does not deal enough damage to one-shot each Goblin, allowing them to defeat him.
+*Placing Goblins and then placing down a single grounded unit on the same tile right afterwards will cause them to spread further apart from each other while deploying, allowing them to be targeted individually by certain area damage attackers like the [[Baby Dragon]], [[Goblin Demolisher]], [[Skeleton Dragons]], Ice Wizard, Magic Archer, and the [[Witch]], therefore making them more effective at stalling these units. This tactic is most effective if the grounded unit is a ranged attacker, as it will not continue to collide with the Goblins upon deployment and will not be susceptible to area damage damage until after all of them are defeated. However, this does not work against units with a large enough area damage radius, such as the Valkyrie, [[Mega Knight]], or the Dark Prince with the middle's jump and the latter's charge attack respectively.
+*The Goblins paired with [[Spear Goblins]] can replicate the effect of the [[Goblin Gang]] for a slightly more expensive cost. However, there is 1 more Goblin than there is in the Goblin Gang, and their lower individual costs allow the player to defend more efficiently to several attacks (i.e, they are not forced to overcommit with 4 Elixir to a single attack, like with the Goblin Gang's 3 Elixir cost).
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}} 
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|2||1.1 sec||0.6 sec||Very Fast (120)||1 sec||Melee: Short (0.5)||Ground||x4||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 202 }}
+{{#vardefine: dmg_11 | 125 }}
+{{#vardefine: atk_speed | 1.1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward 
+|-
+| rowspan="3" | Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 33,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|4,000 {{Icon|I=Gold}}
+|-
+|2
+|Deal a total of 97,500 Damage to enemy Troops or buildings
+|4,000 {{Icon|I=Gold}}
+|-
+|3
+|Deal a total of 165,000 Damage to enemy Troops or buildings
+|4,000 {{Icon|I=Gold}}
+|-
+| rowspan="3" |Hit Maker <br> [[File:Hit Maker.png|50x50px]]
+|1
+|Hit enemy Troops a total of 1,050 times
+|6,000 {{Icon|I=Gold}}
+|-
+|2
+|Hit enemy Troops a total of 3,000 times
+|6,000 {{Icon|I=Gold}}
+|-
+|3
+|Hit enemy Troops a total of 5,250 times
+|6,000 {{Icon|I=Gold}}
+|}
+<center>
+The requirements may be different, thank to the [[Version History#2026 Q2 Update (26/5/2026)|update]]
+</center>
+</div>
+</center>
+
+==History==
+2016
+*The Goblins [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016{{Balance|Add}}.
+*On 29/2/2016, the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]], decreased the Goblins' sight range to 5.5 tiles (from 6 tiles){{Balance|Neutral}}.
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], increased the {{Rarity|Common}} card Level cap to 13 (from 12){{Balance|Buff}}. The update also fixed the “range bug”, which decreased the Goblins' range to 0.5 tiles (from 1 tile), but their effective range was unchanged{{Balance|Neutral}}.
+2017
+* On 12/12/2017, the [[Version History#Electrifying Update (12/12/2017)|Electrifying Update]], decreased the Goblins' damage by 6%{{Balance|Nerf}}.
+2018 
+*On 2/7/2018, a [[Version History#Balance Changes (2/7/2018)|Balance Update]], decreased the Goblins' hitpoints by 1%{{Balance|Nerf}}. This was to fix an inconsistency with [[Minions]] that could not take out Goblins in two hits at the same Level.
+2019 
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Goblins' card info screen{{Balance|Add}}.
+2020
+*On 2/6/2020, a [[Version History#Balance Changes (2/6/2020)|Balance Update]], gave the Goblins a new 0.1 second deploy stagger from each other{{Balance|Add}}.
+2021
+*On 6/9/2021, the [[Version History#2021 Quarter 3 Update (6/9/2021)|2021 Quarter 3 Update]], increased the distance between the Goblins upon deployment{{Balance|Neutral}}.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13){{Balance|Buff}}.
+2022
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], increased the unit count to 4 (from 3){{Balance|Buff}}, and increased their first attack time interval to 0.4 seconds (from 0.2 seconds){{Balance|Nerf}}. It also changed the description of the card. It used to read "''Three fast, unarmored melee attackers. Small, fast, green and mean!''"{{Balance|Neutral}}.
+2023 
+*On 6/6/2023, a [[Version History#Balance%20Changes%20(6/6/2023)|Balance Update]], increased the deploy stagger for each Goblin to 0.2 seconds (from 0.1 seconds){{Balance|Neutral}}.
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14){{Balance|Buff}}.
+2024
+*On 3/1/2024, a [[Version History#Balance Changes (3/1/2024)|Balance Update]], increased the Goblins' deployment time to 1.2 seconds (from 1 second){{Balance|Nerf}}.
+*On 17/6/2024, the [[Version History#Goblin%20World%20Update%20(17/6/2024)|Goblin World Update]], added the Goblins to the Goblin class{{Balance|Neutral}}.
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], made it so that Goblins' spawn formation would be correctly mirrored depending on which side of the [[Arenas|Arena]] they were placed{{Balance|Neutral}}.
+*On 9/4/2025, a [[Version History#Balance Changes (9/4/2025)|Balance Update]], decreased the Goblins' first attack time interval to 0.6 seconds (from 0.4 seconds){{Balance|Nerf}}, but also decreased their deployment time to 1 second (from 1.2 seconds){{Balance|Buff}}.
+* On 24/11/2025, the [[Version History#Level 16 Update (24/11/2025)|Level 16 Update]] increased the Level Cap of all cards to 16 (from 15){{Balance|Buff}}.
+2026
+* On 2/2/2026, the [[Version History#Pass Royale and more (2/2/2026)|febuary 2026 update]] added the Goblins [[Heroes|Hero]] form{{Balance|Add}}.
+* On 4/8/2026, a [[Version History#Balance Changes (4/8/2026)|Balance Update]], increased the Goblins' damage by 4%{{Balance|Buff}}.
+
+==Gallery==
+<gallery>
+File:Goblins card render.png|Current card render.
+File:Goblins Preview.gif|Current card preview
+File:Goblin 2.png|Goblin 1
+File:FullGoblinCardImage.png|Goblin 2
+File:Goblin 5.png|Goblin 3
+File:Goblins Full Body.png|Goblins Full Body. 
+File:Goblin 1.png|Goblin Alone.
+File:Goblins 2.png|Goblin shocked.
+File:Goblin 6.png|Refree Goblin 1
+File:Goblin 7.png|Refree Goblin 2 
+File:Goblin dab.png|Goblin dabbing.
+File:Goblin vibe.png|Goblin vibing.
+File:Goblin old.webp|An old Goblin render.
+</gallery>
+
+==Trivia==
+*Goblins are small, grotesque, monstrous creatures that appear in the folklore of multiple European cultures. First attested in stories from the Middle Ages, they are ascribed conflicting abilities, temperaments, and appearances depending on the story and country of origin, ranging from mischievous household spirits to malicious, bestial thieves. They often have magical abilities similar to a fairy or demon, such as the ability to shapeshift. Similar creatures include [https://en.wikipedia.org/wiki/Duende duendes], [https://en.wikipedia.org/wiki/Kobold kobolds], [https://en.wikipedia.org/wiki/Leprechaun leprechauns], and [https://en.wikipedia.org/wiki/Ghoul ghouls].
+**In the German and Dutch language setting of the game, the Goblins' name translates to "Kobolds". In the Spanish, Arabic, and Vietnamese language setting of the game, the Goblins' name translates to "Duendes", "Ghouls", and "Leprechauns" respectively.
+**The Goblins, [[Spear Goblins]], [[Goblin Cage]], and [[Goblin Hut]] are the only cards associated with Goblins that are unlocked in [[Arenas|Goblin Stadium]].
+*The Goblins are 1 of 19 [[:Category:Troop Cards|troops]] which first existed in Clash of Clans, the others being [[Minions]], [[Archers]], [[Skeletons]], [[Barbarians]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], [[Witch]], [[P.E.K.K.A.]], [[Balloon]], [[Golem]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Phoenix]], [[Lava Hound]], and the [[Archer Queen]]. 
+**In Clash of Clans, they carried a small bag which was designed to steal resources. Despite their origins, the Goblins carry daggers as weapons, rather than bags for loot as they no longer directly steal loot, nor do they prioritise [[Elixir Collector|Elixir Collectors]] over other targets.
+**Their [[Star Points|Star Level 3 Skin]] grants them a dark red mohawk similar to the Level 6 Goblin in Clash of Clans.
+*The Goblins are 1 of 3 troops which can be spawned by a troop (Goblins/[[Goblin Gang]]/[[Goblin Giant/Evolution|Evolved Goblin Giant]]), a [[:Category:Spell Cards|spell]] ([[Goblin Barrel]]), and a [[:Category:Building Cards|building]] ([[Goblin Drill]]). The others are Skeletons and Barbarians.
+*The Goblins are one of the first troops to be featured in Clash-A-Rama, alongside the Minions, Barbarians, and Giant.
+*The Goblins are one of the first troop [[cards]] to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the Minions, Archers, [[Knight]], Spear Goblins, [[Bomber]], Skeletons, Barbarians, [[Minion Horde]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Musketeer]], Giant, Valkyrie, Wizard, Hog Rider, [[Baby Dragon]], [[Skeleton Army]], Witch, P.E.K.K.A, [[Prince]], and Balloon.
+*The Goblins are one of the first troops to be featured in a [[Loading Screens|Loading Screen]], alongside the Knight, Skeletons, and Prince.
+*The Goblins are one of the first troop cards to receive a card render, alongside the Archers, Knight, Bomber, Skeletons, Barbarians, [[Bats]], [[Royal Recruits]], [[Skeleton Barrel]], [[Rascals]], Musketeer, Giant, Valkyrie, Wizard, [[Flying Machine]], Hog Rider, [[Royal Hogs]], [[Dart Goblin]], [[Zappies]], [[Elixir Golem]], Baby Dragon, Skeleton Army, Witch, P.E.K.K.A., Prince, Balloon, [[Giant Skeleton]], [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], Wall Breakers, Bowler, Cannon Cart, [[Mega Knight]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], [[Magic Archer]], [[Bandit]], Lava Hound, [[Night Witch]], and [[Fisherman]].
+*The Goblins are one of the first cards to be featured in the [[Season Shop]], alongside the Goblin Cage and Goblin Giant.
+*Even though the [[Cards|card]] spawns 4 Goblins, the card render displays only 1 Goblin.
+*In their description the word “unarmored” may be hinting at a new card. It is also a reference to the Minions and how it has the sentence and the [[Mega Minion]] was eventually released.
+*Goblins are similar to Spear Goblins. However, take note they are not ranged and have to run up to a target to melee. Goblins also have significantly more health and damage than Spear Goblins, despite not looking muscular, like the Spear Goblins do.
+*The first Trainer the player battles in the Training Camp uses 2 cards, one of them being Goblins, and the other being Skeletons.
+*The Goblins are used by more Trainers than any other card, being used by a total of 25 Trainers.
+*The Goblins are 1 of 3 troops that have been featured with an [[Buff#Invisibility|Invisibility]] [[buff]], the others being Skeletons and Bats.
+*The Goblins are featured in non-Clash games. More specifically:
+**The Goblins, along with the Archers, Barbarians, [[Elite Barbarians]], and P.E.K.K.A., were featured as a [https://pad.fandom.com/wiki/Homepage/Monster monster] in [https://pad.fandom.com/wiki/Puzzle_%26_Dragons_Wiki Puzzles and Dragons], in a [https://pad.fandom.com/wiki/Homepage/Dungeon dungeon] called [https://pad.fandom.com/wiki/Clash_of_Clans_Dungeon Clash of Clans Dungeon].
+**The Goblins, along with the Barbarians, Giant, Valkyrie, Wizard, Hog Rider, Witch, P.E.K.K.A., and the Archer Queen, were featured as a non-playable opponent in [https://www.chess.com/ Chess]. Also along with the Golem and the Archer Queen, it was also featured as a character skin for the Pawn in Chess.
+**The Goblins, along with the Archers, Barbarians, Wizard, Hog Rider, [[Battle Healer]], Witch, Miner, Ice Wizard, and the Archer Queen, are featured as a [https://squad-busters.fandom.com/wiki/Characters character] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+**The Goblins are featured as [https://brawlstars.fandom.com/wiki/Pins?file=Clash_Royale_Pin-Goblin.png a pin in Brawl Stars], resembling the Goblin This is Fine [[Emotes|Emote]].
+*The Goblins, along with the Archers, Barbarians, [[Ice Spirit]], Mini P.E.K.K.A, Musketeer, Giant, Wizard, Hog Rider, Witch, Prince, and Night Witch, are featured as a sticker in [https://en.wikipedia.org/wiki/IMessage iMessage], in a sticker pack called [https://apps.apple.com/us/app/clash-theater-stickers/id1353823484 Clash Theater]. Also, along with the Archers, Skeletons, Barbarians, Mini P.E.K.K.A, Musketeer, Wizard, Witch, Prince, and [[Princess]], they are also featured in the [https://apps.apple.com/us/app/clash-a-rama/id1182384664 Clash-A-Rama] sticker pack.
+*Before 13/12/2023, when visiting the [[Shop]], an elderly Goblin with white hair, a brown jacket, and glasses appears as the shopkeeper, holding a Fortune [[Chests|Chest]].
+**Prior to 12/12/2017, he was holding a Magical Chest; even earlier, prior to 12/6/2017, he was holding a golden chained watch.
+**This Goblin is featured in the Clash Royale [https://x.com/ClashRoyale/status/847796023091224576 Back in my Day commercial].
+*In [[Pass Royale|Fisherman's Float]], Shipwreck Island, Goblin-gendary Arena, and Island Arena, Goblins can be seen sitting in the audience.
+*In [[Touchdown]] [[:Category:Modes|mode]], a Goblin blowing a whistle acts as referee. This Goblin can be defeated before it runs off-screen with fast spells like the [[Arrows]] if the player is quick enough. [[Earthquake]], [[Lightning]], [[Freeze]], [[Poison]], and [[Tornado]] do not work.
+*The [[Rocket]]'s Star Level 3 Skin has a Goblin riding on top of it.
+*The Goblins are the subject of certain cosmetics in the game. More specifically:
+**The Goblins are the subject of a few [[Clans|Clan]] badges.
+**The Goblins are the subject of a few Emotes, for a total of 28 Emotes, the highest amount of all cards in the game.
+***The Goblin This is Fine Emote is a reference to the [https://knowyourmeme.com/memes/this-is-fine This is Fine] meme.
+***The Goblin He’ll Be Back Emote is a reference to [https://en.wikipedia.org/wiki/Terminator_(character) Terminator].
+***The Goblin Gob-arian Emote is a reference to the Clash Royale [https://youtu.be/eyni9UgGKc4 The Gob-arian commercial].
+***The Goblin Robot Dance Emote is a reference to [https://en.wikipedia.org/wiki/Daft_Punk Daft Punk].
+***The Goblin Grinch Emote is a reference to [https://en.wikipedia.org/wiki/Grinch Grinch].
+***The Third Anniversary Goblin Emote was originally going to be Exclusive. However, it ended up not being Exclusive in the game.
+**The Goblins are the subject of a few [[Battle Banners|Battle Banner]] items.
+***The Goblin decoration is identical to its card render.
+***The Red vs Blue and Music Makers frames and Goblin Drummer decoration are created by Myoho.
+*During the 1st Anniversary Offer, when the free Magical Chest is opened, a right-facing Goblin was there trying to blow out a candle. The candle would appear on a Miner's helmet if the [[Gold]] and [[Gems|Gem]] pack in the middle is purchased, and a left-facing Goblin will appear if the Gold and Super Magical Chest pack on the right is purchased.
+*The Goblins were featured in the winning decks of multiple Clash Royale Tournaments. More specifically:
+**The Goblins were featured in the winning deck of the [https://www.youtube.com/live/DVY2TndGf4U?si=ptuVz0tHkkkDIvEl Crown Championship Global Series Tournament], by a player called Sergioramos:).
+**The Goblins were featured in the winning deck of the [https://www.youtube.com/live/Sa0QOSJ5AVY?si=Hlcj6efCnFhxfDYe Clash Royale League 2024 Tournament], by a player called Mohamed Light.
+*On 4/10/2022, the Goblins was supposed to receive a unit count increase to 4 (from 3), but it was [https://royaleapi.com/blog/season-40-balance-wip pulled back] until the [[Version History#2022 Quarter 3 Update (26/10/2022)|2022 Quarter 3 Update]].
+*The initial balance change for Goblins on the [[Version History#Balance Changes (3/1/2024)|3/1/2024 balance changes]] was a first attack time interval increase to 0.5 seconds (from 0.4 seconds), but it was changed to a deployment time increase to 1.2 seconds (from 1 second) [https://royaleapi.com/blog/season-55-balance-wip last minute].
+
+==In other languages==
+{{Other languages|fr=Gobelins|de=Kobolde|es=Duendes|it=Goblin|nl=Kobolden|no=Nisser|tr=Goblinler|jp=ゴブリン|kr=고블린|ru=Гоблины|ar=غيلان|pt=Goblins|cn=哥布林|cnt=哥布林|fa=گابلین|id=Goblin|ms=Goblin|th=ก็อบลิน|fi=Hiidet|vi=Yêu tinh}}
+
+{{Navigation|Card}}
+
+[[fr:Gobelins]]
+[[de:Kobolde]]
+[[es:Duendes]]
+[[it:Goblin]]
+[[ja:ゴブリン]]
+[[ko:고블린]]
+[[ru:Гоблины]]
+[[zh:哥布林]]
+[[pl:Gobliny]]

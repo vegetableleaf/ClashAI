@@ -1,14 +1,38 @@
 {
- "keys": [
-  "knight_evo",
-  "lumberjack_evo",
-  "mega_knight_evo",
-  "minion_horde_evo"
- ],
- "fields_checked": 60,
- "matches": 46,
- "updates": 2,
- "pins": 0,
- "escalations": 13,
- "match_only_rows": 1
+  "group": "evos_b",
+  "generated": "2026-08-26",
+  "supersedes": "the 00:57 tally, which covered only the first 4 keys and was left stale by the interrupted pass",
+  "keys_assigned": 21,
+  "keys_done": 21,
+  "extra_subunit_keys": ["ghost_souldier", "lumberjack_ghost", "skarmy_general"],
+  "subunit_note": "sub-units have no wiki page of their own; extracted from their PARENT Evolution page's secondary/tertiary attribute tables (Lumberjack Ghost, Ghost Souldiers, Shadow Skeleton / Skeleton General sections)",
+  "fields_checked": 419,
+  "matches": 352,
+  "updates": 11,
+  "pins": 3,
+  "escalations": 53,
+  "ledger_rows": 80,
+  "counting_rule": "fields_checked = non-cosmetic fields on the merged DB row (display/base/evolution/kind excluded) plus any field the wiki publishes that the row is missing; matches = checked minus update/pin/escalate rows",
+  "edit_war": "pass on all 21 evolution pages and all 7 base pages re-fetched live 2026-08-26; every revid identical to the 00:52 fetchlog and every cached body byte-identical",
+  "revids": {
+    "Musketeer/Evolution": 436483, "Musketeer": 436481,
+    "Royal Recruits/Evolution": 436465, "Royal Recruits": 436459,
+    "Skeleton Barrel/Evolution": 437248, "Skeleton Barrel": 436976,
+    "Skeletons/Evolution": 436451, "Skeletons": 436874,
+    "Witch/Evolution": 437350, "Witch": 436707,
+    "Wizard/Evolution": 437069, "Wizard": 437068,
+    "Zap/Evolution": 437306, "Zap": 437305
+  },
+  "verification_scope": {
+    "fully_worked_this_pass": ["musketeer_evo", "royal_recruits_evo", "skeleton_barrel_evo", "skeletons_evo", "witch_evo", "wizard_evo", "zap_evo"],
+    "carried_from_earlier_pass": 14,
+    "spot_verified_from_earlier_pass": [
+      "mortar_evo range 3.5-11.5 (confirmed in cached wikitext)",
+      "pekka_evo atk_speed 1.8 (confirmed)",
+      "lumberjack_ghost ghost_dmg_11 256 / ghost_atk_speed 0.8 / ghost_crown_11 128 (confirmed)",
+      "princess_evo Evolved Card Infobox CycleCost=2 (confirmed; the template is line-wrapped, which is why a one-line regex misses it)",
+      "all 21 evolution-page revids re-checked live"
+    ],
+    "caveat": "the 14 carried keys were audited by spot-check, not re-derived field by field"
+  }
 }

@@ -1,0 +1,65 @@
+{
+ "group": "buildings",
+ "generated": "2026-08-26",
+ "keys_done": 12,
+ "fields_checked": 202,
+ "matches": 167,
+ "updates": 9,
+ "pins": 2,
+ "escalations": 24,
+ "lines_emitted": 35,
+ "edit_war": "pass (12/12: live revid == cached revid, exact title match, byte-identical wikitext)",
+ "per_key": {
+  "barbarian_hut": {
+   "matches": 13,
+   "escalate": 2
+  },
+  "bomb_tower": {
+   "matches": 16,
+   "escalate": 2
+  },
+  "cannon": {
+   "matches": 11,
+   "escalate": 3
+  },
+  "elixir_collector": {
+   "matches": 8,
+   "update": 3
+  },
+  "goblin_cage": {
+   "matches": 14,
+   "escalate": 2
+  },
+  "goblin_drill": {
+   "matches": 16,
+   "escalate": 1,
+   "pin": 1
+  },
+  "goblin_hut": {
+   "matches": 16
+  },
+  "inferno_tower": {
+   "matches": 10,
+   "update": 4,
+   "escalate": 2
+  },
+  "mortar": {
+   "matches": 17,
+   "escalate": 3
+  },
+  "tesla": {
+   "matches": 21,
+   "update": 1,
+   "escalate": 4
+  },
+  "tombstone": {
+   "matches": 12,
+   "update": 1,
+   "pin": 1
+  },
+  "x_bow": {
+   "matches": 13,
+   "escalate": 5
+  }
+ }
+}

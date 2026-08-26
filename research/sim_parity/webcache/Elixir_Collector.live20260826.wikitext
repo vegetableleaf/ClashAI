@@ -1,0 +1,204 @@
+<!-- revid:436522 fetched:2026-08-26 title:Elixir Collector LIVE -->
+{{DISPLAYTITLE:<span style="color: #ffa31a;">Elixir Collector</span>}}
+{{MagicWords}}{{Protection}}{{ClashofClansLink}}{{Card Infobox|Cost=6|Rarity=Rare|Type=Building|Arena=Miner's Mine|ReleaseDate=4 January 2016}}{{SubpageNavBox|MergeTactics=yes}}{{Quote|You gotta spend Elixir to make Elixir! This building makes 8 Elixir over its Lifetime. Does not appear in your starting hand.}}
+
+The Elixir Collector is a {{Rarity|Rare}} [[Cards|card]] that is unlocked from the [[Arenas|Miner's Mine (Arena 15)]]. It spawns a [[:Category:Building Cards|building]] with high hitpoints. Every 12 seconds, the Elixir Collector will passively generate 1 [[Elixir]]. When defeated, it will also generate 1 Elixir. It appears as a wooden building reinforced with team-colored seals on top and bases on the bottom, with a vertical glass vat in between two wooden slabs, in which Elixir keeps pumping up. A metal pipe, a hose, and a shutoff value with a metal axle are fixed behind it, with a small puddle of Elixir back and to the left of the collector tube, which are mounted on top of a metal base. An Elixir Collector card costs 6 Elixir to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Elixir Collector Card}}
+*Use the Elixir Collector to boost [[Elixir]] production so you can deploy your cards more quickly. The Elixir Collector generates 1 Elixir every 12 seconds.
+*The Elixir Collector can be used as a distraction for [[:Category:Building Cards|building]] targeting [[:Category:Troop Cards|troops]], such as the [[Giant]], [[Lava Hound]], [[Wall Breakers]], or the [[Golem]], but this is a last-resort option as it has relatively few hitpoints for a very high cost. Use this [[Cards|card]] on defense only when you have to defend for the last few seconds.
+**However, the Elixir Collector is surprisingly effective against a [[Electro Giant]] since it doesn’t get hit by the reflection damage, giving plenty of time for the [[:Category:Crown Towers|Crown Towers]] to defend it.
+*Using the [[Mirror]] with Elixir Collectors is a high-risk high-reward as the player can place multiple Elixir Collectors at the same time, sharply increasing the player's Elixir production. If the player continues to place them, they will always have a high amount of Elixir and will be able to defend against almost any push. You gain 16 Elixir, but you spend 13 Elixir, creating a profit of 3 Elixir overall.
+**However, this means that the player should have to have a major Elixir advantage or be very confident about defending after spending 13 Elixir.
+**Usually, this is not effective nor is it an advisable play, as the opponent will most likely take advantage of the player's lack of Elixir and send their push, doing serious damage as the player is defenseless, so have some cheap troops at the ready just in case.
+*Keep in mind that the Elixir Collector is a building, so using damaging [[:Category:Spell Cards|spells]] such as the [[Fireball]] or [[Poison]] can still damage them, reducing their lifetime to produce Elixir. In fact, a Fireball at least 2 levels higher can completely destroy an Elixir Collector for a 1-Elixir (since the Elixir Collector will then give 1 Elixir after it's destroyed, so it's like the Elixir Collector costed the player 5 Elixir) profit and the added bonus of denying the Collector any Elixir if used fast enough, effectively making your opponent waste 6 Elixir. Therefore, It's recommended not to place an Elixir Collector unless your opponent has already just used a Fireball or any spell that does high damage to it.
+**Spells also cost Elixir. When both the Elixir Collector and the Fireball at same Level, the Elixir Collector will have time to produce 2 Elixir + 1 Elixir upon destruction. Subtracting the cost of the Elixir Collector from this, the user of the Elixir Collector is left with a 3 Elixir loss, while the loss of its opponent is -4. This however turns beneficial if other troops or a Crown Tower is caught in the blast. The same goes for Poison.
+**The remaining production can still be used to quickly field troops that are countered by the Fireball. A [[Three Musketeers]] or [[Barbarians]] based attack can be game-changing without a Fireball in rotation.
+*Provided it doesn't get damaged, the Elixir Collector will give a profit of 2 Elixir over its lifetime (1 when alive and 1 after death). This is reduced to just the death Elixir when it is mirrored.
+**Although it doesn't seem like much, the player still naturally generates Elixir and will result in an Elixir advantage. This is important to note when trying to protect the Elixir Collector from threats.
+*It is an ideal card to place down if the player has full Elixir and wishes not to waste any. By putting down the Elixir Collector, not only will the player be able to continue gaining Elixir, but they will have more Elixir in the future. However, placing down this 6 Elixir building will leave the player fairly vulnerable to opponent attacks for the time being.
+*If the opponent has a card which can eliminate an Elixir Collector instantly (such as the [[Rocket]]) the Elixir Collector can probably still serve as an invaluable ally in your [[Battle Decks|deck]] for the whole game, as long as the opponent's Rocket is used elsewhere. If you have the Rocket and wish to use it on the Elixir Collector, it is important that you do so as soon as possible before the Elixir Collector generates any Elixir to make a -1 Elixir trade.
+**It is a valid option to build your deck around baiting strong spells, utilising the Elixir Collector. For example, if you have [[Wizard]], Elixir Collector and [[Sparky]] in the same deck, the opponent must choose between using their strong spell on the troops, letting you freely use the Elixir Collector to generate Elixir, or use it to minimise the elixir profit from the Elixir Collector, forcing them to defend a push with the Wizard and/or Sparky without the strong spell to effectively damage them. Such decks are less effective if the opponent has other means to damage the Elixir Collector, like the [[Miner]].
+*Although the Elixir Collector is a building, it is still effective to have another building in the deck, such as a [[Cannon]], [[Goblin Cage]], or [[Tesla]], to defend against cards such as the [[Hog Rider]], [[Battle Ram]], or [[Ram Rider]]. This is because these troops will be able to target the player's Towers directly unless they have a second building.
+*If any player holds up 10 Elixir, the Elixir Collector will not give that player 1 Elixir, but instead will hold it until the player uses a card.
+**This is valuable evidence to show that the opponent could possibly do a full-on assault, as they can play cards worth a total of 11 Elixir at once.
+**Letting the Elixir Collector hold onto the extra Elixir is generally a bad idea. If it holds on to it for too long, the player will miss out on 1 Elixir.
+**Due to the 1 second server delay, the optimal time to place a unit is at 0.5 seconds when it is holding onto an Elixir so that you will not lose any profit.
+*When the player has placed down their Elixir Collector, they can find out when their next Elixir is coming by looking at the Elixir Collector. When the next Elixir is ready, the central channel will be filled with pink Elixir, and it will then dispense the Elixir and empty itself.
+*Placement of the Elixir Collector is important in the optimal defense against certain spells, and adaptations will need to be made on the fly to maximize performance.
+**The first one is behind the Crown Tower. This is a bad position when the opponent has a Rocket since they can destroy the Elixir Collector and deal massive damage to the Crown Tower. However, this is a good location when the opponent uses the [[Poison]] and [[Earthquake]], as it gives the player more space to place their defending units.
+**The second one is in the middle. This is a good position against the [[Miner]] and the [[Goblin Drill]] as they will be targeted by both Crown Towers, and the Rocket cannot damage the Crown Tower when it destroys the Elixir Collector, but this is a bad position against the Poison and Earthquake because it can poison the player's defending troops. This is especially effective if the [[Dagger Duchess]] is in use, as both Crown Towers will almost instantly destroy the Miner and Goblin Drill before they can get much damage on the Elixir Collector.
+**These placements generally apply only to passive buildings such as spawners and, of course, the Elixir Collector, as defensive buildings generally need to be placed in between the Towers.
+*The player must address the Elixir Collector or they are risking an Elixir disadvantage. They can use a spell or the Miner to destroy the Elixir Collector. If they don't have any of those, they can pressure their opponent and be very aggressive to prevent the opponent from making strong combos.
+*If an opponent has an Elixir Collector right next to their [[King's Tower]], and its hitpoints are close to full, it is generally a good idea to send a [[Goblin Barrel]] or Miner to it, as they will deal major damage to the Collector and the Crown Towers will usually destroy the troop before it can get a chance to activate their King's Tower. In turn, this becomes a gradually less valuable play as the Elixir Collector decays, as the amount of Elixir that the counter unit can deny decreases and the likelihood of a King's Tower activation increases. The opponent could also use a [[Tornado]] to force the unit to target the King's Tower, leaving the Collector with most of its health remaining.
+*If the opponent has placed the Elixir Collector behind the Crown Tower, [[Graveyard]] can be an effective response. Place a tank like [[Knight]] or [[Baby Dragon]] at the bridge in the same lane as the Elixir Collector, then use Graveyard on the Crown Tower, adjusting its placement so that more Skeletons will spawn near the Elixir Collector and attack it. This will simultaneously damage the Elixir Collector while also threatening damage on the Crown Tower. The Elixir Collector's collision will also prevent certain counters like the Valkyrie to target either Skeletons that target the Crown Tower or the Elixir Collector.
+*Because the Elixir Collector cannot appear in the starting hand, using it in a deck can allow the player to manipulate their starting hand for a more optimal defense, as the deck would only be able to choose between 7 cards instead of 8. Using it along with Mirror can further manipulate the starting hand into being able to choose between 6 cards.
+*The Elixir Collector is affected by [[Rage]], technically allowing it to produce extra Elixir. However, it will result in no extra Elixir being produced. To produce a single extra Elixir from an Elixir Collector, 3 Rage spells are needed. This results in a massive 5 Elixir deficit, and thus is an ineffective strategy to use.
+*In the [[Tournament/Special Event Challenges|Rage Challenge]], all buildings' (including the Elixir Collector's) lifetimes are unaffected, but in Elixir Collector's case, the Elixir producing speed is, allowing it to produce up to 9 Elixir instead of the usual 7 in the challenge.
+
+<center><div id="unit-statistics" class="table-back">
+{{Statistics}}{{StatusEffects}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Production Speed<br />{{Icon|I=Time}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Lifetime<br />{{Icon|I=Time}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|6||13 sec||1 sec||1 min 33 sec||[[:Category:Building Cards|Building]]||{{Rarity|Rare}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1070 }}
+{{#vardefine: life | 93 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+! scope="col" |Hitpoints lost per second<br />{{Icon|I=Time}}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) / {{#var:life}} round 1 }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) / {{#var:life}} round 1 }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) / {{#var:life}} round 1 }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) / {{#var:life}} round 1 }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) / {{#var:life}} round 1 }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) / {{#var:life}} round 1 }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) / {{#var:life}} round 1 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) / {{#var:life}} round 1 }}
+|-
+| 11 || {{#var:hp_11}} || {{#expr: {{#var:hp_11}} / {{#var:life}} round 1 }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) / {{#var:life}} round 1 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) / {{#var:life}} round 1 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) / {{#var:life}} round 1 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) / {{#var:life}} round 1 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) / {{#var:life}} round 1 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" |Card Expert <br/ > [[File:Cards.png|50x50px]]
+|1
+|Play this [[Cards|card]] a total of 100 times
+|100 {{BASEPAGENAME}} cards<br/ >50 {{Icon|I=XP}}
+|-
+|2
+|Play this card a total of 300 times
+|4,000 {{Icon|I=Gold}}<br>50 {{Icon|I=XP}}
+|-
+|3
+|Play this card a total of 500 times
+|100 {{Icon|I=Gem}}<br>50 {{Icon|I=XP}}
+|-
+| rowspan="3" |Pump It Up! <br/ > [[File:Pump It Up!.png|50x50px]]
+|1
+|Generate 640 [[Elixir]] in battle
+|6,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Generate 1,800 Elixir in battle
+|100 {{Icon|I=Rare Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Generate 3,150 Elixir in battle
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Elixir Collector [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016.
+*On 2/2/2016, the [[Version History#February 2016 Update (2/2/2016)|February 2016 Update]], increased the Elixir Collector's production time interval to 9.8 seconds (from 9.95 seconds). This was because of a bug where it would produce 6 [[Elixir]] instead of 7.
+*On 29/2/2016, the [[Version History#March%202016%20Update%20(29/2/2016)|March 2016 Update]], moved the [[Arenas|Arena]] to unlock the Elixir Collector from Royal Arena to Builder's Workshop.
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], increased the {{Rarity|Rare}} card Level cap to 11 (from 10) and decreased the Elixir Collector's hitpoints by 20%.
+*On 18/5/2016, a [[Version History#Balance Changes (18/5/2016)|Balance Update]], decreased the Elixir Collector's hitpoints by 9%.
+*On 4/7/2016, the [[Version History#Tournaments Update (4/7/2016)|Tournaments Update]], made the Elixir Collector's production rate affected by spell effects ([[Freeze]], [[Zap]], and [[Rage]]), plus the [[Ice Wizard]]'s slowing.
+*On 20/10/2016, a [[Version History#Balance Changes (20/10/2016)|Balance Update]], increased the Elixir Collector's cost to 6 Elixir (from 5 Elixir) and increased its lifetime by 10 seconds. This increased lifetime allows it to produce up to 8 Elixir.
+*On 30/11/2016, a [[Version History#Balance Changes (30/11/2016)|Balance Update]], decreased the Elixir Collector's production time interval to 8.5 seconds (from 9.8 seconds) and decreased its lifetime to 70 seconds (from 80 seconds).
+2017
+*On 12/12/2017, the [[Version History#Electrifying Update (12/12/2017)|Electrifying Update]], decreased the Elixir Collector‘s hitpoints by 13%.
+2018
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], moved the Arena to unlock the Elixir Collector from Builder's Workshop to Frozen Peak.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Rare}} cards start at Level 3 and end at Level 13 (from 1 to 11).
+*On 5/12/2018, the [[Version History#December%202018%20Update%20(5/12/2018)|December 2018 Update]], changed the Elixir Collector such that, if used in a [[Battle Decks|deck]], will never appear as one of the cards in the player's opening hand. Its description was also changed. Previously, its description was "''You gotta spend Elixir to make Elixir!''".
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the Arena to unlock the Elixir Collector from Frozen Peak to Rascal's Hideout.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 4/4/2022, the [[Version History#April%202022%20Update%20(4/4/2022)|April 2022 Update]], decreased its lifetime to 65 seconds (from 70 seconds), increased its production time interval to 9 seconds (from 8.5 seconds), and made the Elixir Collector produce 1 additional Elixir upon death.
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Elixir Collector from Rascal's Hideout to Miner's Mine.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+*On 14/5/2024, the [[Version History#Balance Changes (14/5/2024)|Balance Update]], increased the production time interval to 12 seconds (from 9 seconds), but increased its lifetime to 86 seconds (from 65 seconds).
+*On 1/9/2025, the September 2025 Update, added a card render to the Elixir Collector's card info screen.
+2025
+*On 03/11/2025 the [[Version History#Balance Changes (3/11/2025)|Balance Update]], increased the production time interval to 13 seconds (from 12 seconds), but increased its lifetime to 93 seconds (from 86 seconds).
+
+==Gallery==
+<gallery>
+File:Elixir Collector card render.png|Current card render.
+File:Elixir Collector Preview.gif|Current card preview
+File:Elixir Collector 2.png|Elixir Collector
+File:Elixir Collector.png|Elixir Collector 2
+</gallery>
+
+==Trivia==
+*The word “''Elixir''” comes from the Arabic word "اَلْإِكْسِير" (''al iksir''), which is the word for miracle substances. Dating back to the third century BC, Elixir was rumored to change base metals into gold and prolong life indefinitely.
+**The Elixir Collector is 1 of 2 [[cards]] being associated with the [[Elixir]] mechanic, the other being [[Elixir Golem]].
+*The Elixir Collector is 1 of 7 [[:Category:Building Cards|buildings]] which first existed in Clash of Clans, the others being the [[Cannon]], [[Mortar]], [[Tesla]], [[Goblin Hut]], [[Inferno Tower]], and [[X-Bow]].
+**The Elixir Collector resembles the Level 5 Elixir Collector from Clash of Clans.
+*The Elixir Collector, along with [[Barbarian Hut]] and X-Bow, are the most expensive buildings, costing 6 [[Elixir]].
+*The Elixir Collector has the longest lifetime of all buildings, with a lifetime of 86 seconds.
+*The Elixir Collector is 1 of 2 cards that does not appear in the player's starting hand, the other being [[Mirror]].
+*The Elixir Collector is the only building in the game that neither spawns attacking troops or attacks by itself, with its effect being completely passive.
+*In the French and Italian language settings of the game, the Elixir Collector's name translates to "Elixir Extractor". In the Dutch, Norwegian, Japanese, Thai, and Finnish language settings of the game, the Elixir Collector's name translates to "Elixir Pump". In the Korean, Vietnamese, and Chinese language settings of the game, the Elixir Collector's name translates to "Elixir Refinery", "Elixir Suction Machine", and "Holy Water Collector" respectively.
+*The Elixir Collector is 1 of 23 cards that has had its Elixir cost changed, the others being [[Bomber]], [[Fire Spirit]], [[Royal Recruits]], Cannon, Mortar, [[Musketeer]], [[Three Musketeers]], [[Heal]], Goblin Hut, [[Bomb Tower]], Barbarian Hut, [[Furnace]], [[Skeleton Army]], [[P.E.K.K.A.]], [[Wall Breakers]], [[Electro Giant]], [[Bowler]], [[Goblin Barrel]], [[Barbarian Barrel]], [[Rage]], [[Fisherman]], and the [[Monk]].
+**The Elixir Collector, the Royal Recruits, the Three Musketeers, and the Monk are the only cards whose Elixir cost was increased.
+*Though not the first cards to receive balance changes, the Elixir Collector is one of the first {{Rarity|Rare}} cards to ever receive balance changes since the [[Version History#February 2016 Update (2/2/2016)|February 2016 Update]], the others are the [[Wizard]], Bomb Tower, [[Inferno Tower]], and Barbarian Hut.
+*The Elixir Collector is unavailable in multiple [[Tournament/Special Event Challenges|special gamemodes]]. More specifically:
+**It is 1 of 2 cards that is unavailable in [[Touchdown]] Draft, the other being [[Goblin Barrel]].
+**It is 1 of 20 cards that is unavailable in [[Mirror]] mode, the others being [[Minions]], Cannon, Mortar, Tesla, Goblin Hut, [[Tombstone]], Bomb Tower, Inferno Tower, Barbarian Hut, Furnace, [[Freeze]], Clone, X-Bow, [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], [[Mighty Miner]], [[Little Prince]], and the Monk.
+**It is unavailable in [[Global Spell|The Floor is Healing]] sub-[[:Category:Modes|mode]] of the Global Spell game mode, much like other building cards, as well as the [[Cannon Cart]].
+**It is 1 of 3 cards that cannot be set on Defense Towers in [[Clan Wars]], the others being Clone and Mirror.
+*The Elixir Collector is featured as a [[:Category:Crown Towers|Crown Tower]] skin used in Special Event Challenges with an increased Elixir producing rate.
+*The Elixir Collector was featured in the winning [[Battle Decks|decks]] of multiple Clash Royale Tournaments. More specifically:
+**The Elixir Collector was featured in the winning deck of the [https://www.youtube.com/watch?v=VxEzjdKQ4HA Clash Royale Helsinki Tournament], by a player called Jason.
+**The Elixir Collector was featured in the winning deck of the [https://youtu.be/LWQjS0e6iiE Super Magical Cup Tournament], by a player called CMcHugh.
+
+{{Navigation|Card}}
+
+[[fr:Extracteur d'élixir]]
+[[de:Elixiersammler]]
+[[es:Recolector de elixir]]
+[[it:Estrattore di elisir]]
+[[ja:エリクサーポンプ]]
+[[ru:Сборщик эликсира]]
+[[pt-br:Coletor de Elixir]]
+[[zh:圣水收集器]]

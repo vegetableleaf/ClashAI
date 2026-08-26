@@ -1,0 +1,86 @@
+{
+ "fetched": "2026-08-26",
+ "purpose": "r2_evos_a time-machine evidence revisions",
+ "revisions": {
+  "430906": {
+   "title": "Dart Goblin/Evolution",
+   "cache_file": "Dart_Goblin_Evolution.rev430906.wikitext",
+   "bytes": 8242
+  },
+  "430917": {
+   "title": "Executioner/Evolution",
+   "cache_file": "Executioner_Evolution.rev430917.wikitext",
+   "bytes": 11783
+  },
+  "430924": {
+   "title": "Goblin Barrel/Evolution",
+   "cache_file": "Goblin_Barrel_Evolution.rev430924.wikitext",
+   "bytes": 11274
+  },
+  "432943": {
+   "title": "Bomber/Evolution",
+   "cache_file": "Bomber_Evolution.rev432943.wikitext",
+   "bytes": 17911
+  },
+  "433598": {
+   "title": "Cannon/Evolution",
+   "cache_file": "Cannon_Evolution.rev433598.wikitext",
+   "bytes": 7648
+  },
+  "434674": {
+   "title": "Executioner",
+   "cache_file": "Executioner.rev434674.wikitext",
+   "bytes": 19026
+  },
+  "434741": {
+   "title": "Firecracker",
+   "cache_file": "Firecracker.rev434741.wikitext",
+   "bytes": 21268
+  },
+  "436234": {
+   "title": "Goblin Giant",
+   "cache_file": "Goblin_Giant.rev436234.wikitext",
+   "bytes": 23366
+  },
+  "436457": {
+   "title": "Bats",
+   "cache_file": "Bats.rev436457.wikitext",
+   "bytes": 24176
+  },
+  "436469": {
+   "title": "Ice Spirit/Evolution",
+   "cache_file": "Ice_Spirit_Evolution.rev436469.wikitext",
+   "bytes": 13378
+  },
+  "436534": {
+   "title": "Barbarians/Evolution",
+   "cache_file": "Barbarians_Evolution.rev436534.wikitext",
+   "bytes": 19422
+  },
+  "436544": {
+   "title": "Baby Dragon",
+   "cache_file": "Baby_Dragon.rev436544.wikitext",
+   "bytes": 21485
+  },
+  "436553": {
+   "title": "Goblin Cage/Evolution",
+   "cache_file": "Goblin_Cage_Evolution.rev436553.wikitext",
+   "bytes": 20345
+  },
+  "436720": {
+   "title": "Electro Dragon",
+   "cache_file": "Electro_Dragon.rev436720.wikitext",
+   "bytes": 23373
+  },
+  "436944": {
+   "title": "Barbarians",
+   "cache_file": "Barbarians.rev436944.wikitext",
+   "bytes": 26814
+  },
+  "437038": {
+   "title": "Electro Dragon",
+   "cache_file": "Electro_Dragon.rev437038.wikitext",
+   "bytes": 23374
+  }
+ }
+}

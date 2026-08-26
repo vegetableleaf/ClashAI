@@ -1,0 +1,153 @@
+<!-- revid:436534 fetched:2026-08-26 title:Barbarians/Evolution TIME-MACHINE evidence for r2_evos_a -->
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Barbarians</span>}}
+{{Protection}}{{MagicWords}}{{Evolved Card Infobox|Cost=5|CycleCost=1|Rarity=Common|Type=Troop|Arena=Barbarian Bowl|ReleaseDate=19 June 2023}}
+{{Quote|These Barbarians have grown stronger through Evolution! Not only do they now have glorious hair, but they also gain extra Speed and Hitspeed with each attack}}
+
+The Barbarians' Evolution is a {{Rarity|Common}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns 5 Barbarians with hitpoints 10% higher than the originals. Every attack, their attack speed and movement speed increases by 30% for 3 seconds. They appear as bare-chested men who wield longer swords with a purple handle, have purple eyes, longer, brighter blond eyebrows, close-cropped hair and horseshoe moustaches, and wear three purple straps with golden buttons on them, which are held by a golden ring in the center, headband with a [[Card Evolution]] symbol in the middle, kilt, golden-spiked wristbands and sandals, along with a team-colored belt. The Barbarians' Evolution costs 5 [[Elixir]] and requires 1 cycle to deploy.
+
+== Strategy==
+*When the Evolved Barbarians stack up their hit speed, their DPS is somewhat equal to the [[Elite Barbarians]]', meaning they can easily destroy tanks like the [[Mega Knight]], [[Giant Skeleton]], [[Boss Bandit]], or the [[P.E.K.K.A.]] on defense.
+*The Evolved Barbarians can be used as a substitute for [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], Monk, Lumberjack, Prince, Mighty Miner, and Elite Barbarians due to their extremely high DPS and pressure both offensively and defensively.
+*The Evolved Barbarians are notably bulkier than regular Barbarians. While they are still immediately defeated by [[Lightning]], their higher hitpoints allow them to block 3 strikes and save more units from the spell. They can also save [[Musketeer|Musketeers]], [[Ice Wizard|Ice Wizards]], [[Electro Wizard|Electro Wizards]], [[Goblinstein|Goblinsteins]], and [[Little Prince|Little Princes]], in addition to all units that regular Barbarians could save.
+*Despite their higher hitpoints, Evolved Barbarians used defensively can still be fully countered with a [[Fireball]] or [[Poison]] and a [[:Category:2-Elixir Cards|2-Elixir]] [[:Category:Spell Cards|spell]], like [[Giant Snowball]] and [[Rage]]. Offensively, a Fireball can still fully stop them if used early enough with the help of the [[Tower Princess]] or [[Dagger Duchess]]. This is not the case with the [[Cannoneer]].
+**Additionally, the Barbarians can also act as a bait for these counters, allowing you to use other [[cards]] that would be weak to Fireball and Poison, such as [[Zappies]], [[Royal Recruits]], [[Magic Archer]]. [[Flying Machine]], Ice Wizard, [[Mother Witch]], or [[Skeleton Dragons]]. 
+**If the Evolved Barbarians survive, try supporting them with a tank in front to get some use out of them.
+**A [[Rocket]] can also defeat them, however it is a negative [[Elixir]] trade. It is best to be used if the Barbarians are assisted with another card. 
+*Due to the amount of counters to Evolved Barbarians and most resulting in a positive Elixir trade for the opponent, it is ineffective to deploy a group of Barbarians without support in one lane, as they can be easily countered due to their slow speed and can leave the player vulnerable to a push in the other lane. However, if the opponent is extremely low on Elixir, or their best counters are out of rotation, they can be very effective at forcing the opponent to spend Elixir poorly, as they can quickly chop down cheap [[:Category:Troop Cards|troops]] and will completely destroy a [[:Category:Crown Towers|Crown Tower]] by themselves, regardless of [[:Category:Tower Troop Cards|tower troop]].
+*Note that the Evolved Barbarians' rage does not stack with the Rage card, nor the [[Lumberjack]]'s dropped Rage. As such, these cards should not be used alongside the Evolved Barbarians.
+*They are very effective against [[Hog Rider|Hog Riders]], [[Battle Ram|Battle Rams]], and [[Ram Rider|Ram Riders]]. Not only do they deal a lot of damage to these troops, but their high mass and slight spread forces the Hog Rider, Battle Ram, and Ram Rider to go around them, extending their distance from the Crown Tower. Because of this, the Barbarians can easily defeat these units with no damage to the Crown Tower.
+*Splitting the Barbarians in the back can discourage the opponent from attacking either Crown Tower, due to the Barbarians' defensive presence, and spells will not have as much value. However, they are slow moving and as such, the opponent might deal some unnecessary damage before the Evolved Barbarians arrive on their target.
+*If Evolved Barbarians are very close to your Crown Tower, it’s advised to not place a troop on top of them as their high DPS will easily dispose of the troop and their rage will be activated, making them reach the Crown Tower faster than if a troop wasn’t placed. Instead, a spell, such as Fireball and [[The Log]], should be used to damage them without accidentally increasing their DPS. Alternatively, the [[Ice Spirit]] and [[Electro Spirit]] can be used as they will sacrifice themselves and stun them briefly, with no risk of activating their rage.
+*A [[Bowler]] can stop them for a neutral Elixir trade. His attack will continuously knock them back, preventing them from attacking him and increasing their attack speed.
+*A mini tank, such as a [[Knight]], [[Valkyrie]], [[Golden Knight]], [[Mighty Miner]], [[Dark Prince]], [[Royal Ghost]], Lumberjack, [[Monk]], [[Skeleton King]], Mini P.E.K.K.A., or [[Prince]], placed in the top center of the player's side of the [[Arenas|Arena]] can fully stop the Evolved Barbarians placed at the bridge with the help of the Cannoneer.
+*[[:Category:Building Cards|Buildings]] and troops utilizing area damage, such as the [[Bomber]], [[Wizard]], Bowler, [[Goblin Demolisher]], [[Ice Spirit/Evolution|Evolved Ice Spirit]], Skeleton King, [[Sparky]], [[Bomb Tower]], [[Tesla/Evolution|Evolved Tesla]], Dark Prince, [[Firecracker]], [[Witch]], Valkyrie, [[Boss Bandit|Baby Dragon]], [[Skeleton Dragons]], Mega Knight, and [[Executioner]], can cripple or even completely stop the Evolved Barbarians for a neutral or positive Elixir trade. However, you must be careful as the opponent can use a [[Tornado]] or [[Freeze]] to immobilize or destroy the splash attacker, allowing the Evolved Barbarians to devastate the Crown Tower.
+*Despite being a swarm unit, Evolved Barbarians are fairly effective against an [[Electro Giant]] due to their high DPS and their moderately higher hitpoints compared to other swarm units, allowing them to survive the Electro Giant's reflected damage and defeat him for a +2 Elixir trade, but they will likely die in the process or have an insignificant amount of remaining health. Note that since the Barbarians will have little health remaining, any sort of damage dealt to them besides the Electro Giant's reflected damage will often nullify their defense, so the player should account for supporting troops or accompanying the Electro Giant as well.
+*They are very effective at defeating enemy tanks due to their numbers, high combined damage, and ability to tank most spells. Support troops will have trouble defeating them due to their combined hitpoints. If the combo happens to be any ground-based splash damage card + ground-based melee tank, wait for the troops to cross the river. As soon as they cross, immediately drop the Evolved Barbarians upon the splash card. They will surround and destroy it quickly before moving on to eliminate the now unsupported tank. This can result in a large positive Elixir trade. However, if there is more than one splash unit, the Evolved Barbarians are likely to be taken out immediately.
+*The Evolved Barbarians, if placed early enough, can surround the Crown Tower, making it less vulnerable to attacks from a [[Goblin Barrel]]. They can handle it quite well with only minimal damage done. However, this is a 5 Elixir investment so consider using it if you lack better counters.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}{{StatisticsSubheader|Evolved Barbarians Attributes}}{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}} 
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||1.3 sec||0.4 sec||Medium (60)||1 sec||Melee: Short (0.7)||Ground||x5||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%; text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+! scope="col" |Boost Duration<br />{{Icon|I=Time}}
+! scope="col" |Boost<br />{{Icon|I=Boost}}
+|-
+|1||3 sec||+30%
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 737 }}
+{{#vardefine: dmg_11 | 192 }}
+{{#vardefine: atk_speed | 1.3 }}
+{{#vardefine: rage | 0.97 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+!scope="col"|Boosted Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:rage}} }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:rage}} }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:rage}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:rage}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:rage}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:rage}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:rage}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:rage}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:rage}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:rage}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}|| {{Dps|{{#var:dmg_11}}|{{#var:rage}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:rage}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:rage}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:rage}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:rage}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}|| {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:rage}} }}
+|-
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div>
+</center>
+
+==History==
+2023
+*The Barbarians's Evolution [[Cards|card]] was added to the game on 19/6/2023, in the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]].
+*On 21/6/2023, a [[Version History#Maintenance%20Break%20(21/6/2023)|maintenance break]], fixed the deploy sound effects of the Evolved Barbarians.
+*On 24/8/2023, a [[Version History#Maintenance Break (24/8/2023)|maintenence break]], decreased the Evolved Barbarians attack speed boost to 35% (from 50%).
+*On 3/10/2023, a [[Version History#Balance%20Changes%20(3/10/2023)|Balance Update]], decreased the Evolved Barbarians' hitpoints to 125% of the originals' (from 130%) and removed the Evolved Barbarians' damage boost.
+*On 23/10/2023, the [[Version History#End of October 2023 Update (23/10/2023)|End of October 2023 Update]], fixed a bug where the [[Firecracker/Evolution|Evolved Firecracker]] would activate the Evolved Barbarians' rage with each attack.
+2024
+*On 14/5/2024, a [[Version History#Balance Changes (14/5/2024)|Balance Update]], increased the Evolved Barbarians' attack speed boost duration to 3 seconds (from 2 seconds), and decreased the Evolved Barbarians' hitpoints to 110% of the originals' (from 125%).
+*On 16/12/2024, the [[Version History#2024 Quarter 4 Update (16/12/2024)|2024 Quarter 4 Update]], added a sound effect to the Evolved Barbarians after death.
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], made it so that Evolved Barbarians' spawn formation would be correctly mirrored depending on which side of the [[Arenas|Arena]] they were placed.
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)=|Balance Update]] decreased the Rage's speed boost to 30% (from 35%).
+
+==Gallery==
+<gallery>
+File:Evolved Barbarians card render.png|Current card render.
+File:Evolved Barbarians Preview.gif|Current card preview
+File:BarbariansEvoShard.png|Evolution Shard.
+File:Evolved Barbarian.png|Evolved Barbarian
+</gallery>
+
+==Trivia==
+*The Evolved Barbarian may be based on [https://en.wikipedia.org/wiki/Samson Samson], a man that appeared in the Bible shown to have above average strength due to his longer hair.
+*The word "''Barbarian''" comes from the Greek "''βάρβαρος''" (''bárbaros''), meaning foreign. Dating back to the ancient Greek times, the Greeks referred to non-Greek people as barbarians because the language they spoke sounded to Greeks like gibberish represented by the sounds "''bar..bar..;''".
+*The Barbarian's Evolution resembles the [https://clashofclans.fandom.com/wiki/Super_Barbarian Super Barbarian] from Clash of Clans.
+*The Barbarians' Evolution was one of the first [[Card Evolution|Evolutions]] to be added in the game, alongside the [[Skeletons/Evolution|Skeletons]], [[Royal Giant/Evolution|Royal Giant]], and [[Firecracker/Evolution|Firecracker]]. It is also one of the first evolved [[:Category:Troop Cards|troops]] to be featured in a [[Loading Screens|Loading Screen]], alongside the Skeletons, Royal Giant, and Firecracker.
+*Even though the [[Cards|card]] spawns 5 Barbarians, the card render displays only 1 Barbarian.
+*Unlike other troops, when the Evolved Barbarians are under their own [[Rage]] effect, their sound effects play at a lower pitch. The Evolved Barbarians under the Rage's, [[Lumberjack]]'s, or the [[Lumberjack/Evolution|Evolved Lumberjack]]'s effects will play higher pitched sounds as normal.
+**Along with the [[Knight/Evolution|Knight]] and [[Lumberjack/Evolution|Lumberjack]], he is one of the Evolutions voice acted by [https://www.imdb.com/name/nm1423395/ John Mondelli].
+*The Barbarian's Evolution is featured on the card render of the [[Zap/Evolution|Zap's Evolution]].
+*It is said that Barbarians cannot function without their swords. This is referenced a few times:
+**The Duelist [[Battle Banners|Decoration]] saying "''Swords. Barbarians don't enter the Arena without them!''"
+**The [https://clashofclans.fandom.com/wiki/Raged_Barbarian Raged Barbarian]'s description in Clash of Clans which says "''Why is he so angry, speedy, and vicious? Nobody's brave enough to ask. Maybe it's because he can't find his sword?''"
+**In the Clash-A-Rama episode "[https://clasharama.fandom.com/wiki/%22Ballad_of_the_Barbarian%22 Ballad of the Barbarian]", a Barbarian was depressed because he lost his sword.
+*There is a [[Loading Screen Hints|Loading Screen Hint]] that says: "''Don't feed Barbarian after midnight.''" This is a reference to [https://gremlins.fandom.com/wiki/Gremlins_Wiki Gremlins].
+*The Barbarians' Evolution is the subject of 2 [[Emotes]].
+*Before the Barbarians' Evolution's release, the Evolved Barbarians' boost was decreased to 50% (from 150%).
+
+{{Navigation|Card}}
+
+[[es:Barbaros/Evolución]]
+[[ru:Варвары/Эволюция]]

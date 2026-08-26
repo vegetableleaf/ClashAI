@@ -4,7 +4,7 @@ f=sys.argv[1]
 mode=sys.argv[2] if len(sys.argv)>2 else 'all'
 t=open(os.path.join(CACHE,f),encoding='utf-8').read()
 if mode in ('all','var'):
-    vd=re.findall(r'\{\{#vardefine:\s*([A-Za-z0-9_]+)\s*\|\s*([^}]*)\}\}', t)
+    vd=re.findall(r'\{\{#vardefine:\s*([^|}]+?)\s*\|\s*([^}]*?)\s*\}\}', t)
     print('--- VARDEFINES (%d) ---'%len(vd))
     for n,v in vd: print('  %-30s %s'%(n,v.strip()))
 if mode in ('all','tab'):

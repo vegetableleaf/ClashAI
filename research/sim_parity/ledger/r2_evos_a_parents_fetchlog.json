@@ -241,6 +241,16 @@
    "cache_file": "Version_History.wikitext",
    "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Version+History&prop=wikitext%7Crevid&format=json",
    "fetched": "2026-08-26"
+  },
+  "card_evolution": {
+   "title": "Card Evolution",
+   "live_revid": 437535,
+   "prev_cached_revid": null,
+   "changed": false,
+   "bytes": 27567,
+   "cache_file": "Card_Evolution.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Card+Evolution&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
   }
  }
 }

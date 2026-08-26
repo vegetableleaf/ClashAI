@@ -1,0 +1,134 @@
+<!-- revid:437286 fetched:2026-08-26 title:Furnace/Evolution LIVE -->
+{{Protection}}{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Furnace</span>}}
+{{Evolved Card Infobox|Cost=4|CycleCost=2|Rarity=Rare|Type=Troop|Arena=Hog Mountain|ReleaseDate=4 August 2025}}
+
+{{Quote|All fired up! When it’s hot and attacking, Evolved Furnace summons Fire Spirits even faster from hat to hearth.}}
+
+The Furnace's Evolution is a {{Rarity|Rare}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It spawns a Furnace, with identical stats to the original. When the Furnace attacks, the spawn speed is decreased to 2.4sec, as well as spawn [[Fire Spirit|Fire Spirits]] to the side, instead of the front. It appears to be an amethyst cast-iron steam locomotive armor with golden spikes, limbs, and a [[Card Evolution]] symbol in the center, wearing purple gloves ane cape with golden linings, team-colored chainmail, a cracked metal witch-like hat on top with a golden band in the middle, and a golden grate in the center. It also holds a wooden staff with a cauldron placed on top that has a golden handle filled with bubbling magenta fluid in it, which resembles Elixir, along with a large amethyst knob on the bottom with golden spikes on it. The Furnace's Evolution costs 4 [[Elixir]] and requires 2 cycles to deploy.
+
+==Strategy==
+*Make sure that the Furnace attacks as much as possible, so that it spawns as many as possible.
+*The Fire Spirit from "Hot Spawns" ability spawn first to the left, then to the right, then to the left again, and so on.
+**This can be used to lure units from the other side of the [[Arenas|arena]].
+*The [[Rage]] works really well, to spawn even more Fire Spirits.
+
+<center>
+
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Furnace Attributes}}
+{|id="unit-attributes-table" class="wikitable" style="width:100%; text-align:center;"
+!scope="col"|Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+!scope="col"|Deploy Time<br />{{Icon|I=Deploy Time}}
+!scope="col"|Spawn Speed<br />{{Icon|I=Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+!scope="col"|Type<br />{{Icon|I=Type}}
+!scope="col"|Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||1.8 sec||Slow (45)||1 sec||7 sec||6||Air & Ground||1x||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Rare}}
+|}
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+!scope="col"|Hot Spawn Speed<br />{{Icon|I=Time}}
+|-
+|2||2.4 sec
+|}
+
+{{StatisticsSubheader|Fire Spirit Attributes}}
+{| id="unit-attributes-table-secondary" class="wikitable" style="width:100%;text-align:center;"
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|Very Fast (120)||2.5||Air & Ground||Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 727 }}
+{{#vardefine: dmg_11 | 179 }}
+{{#vardefine: atk_speed | 1.8 }}
+{{#vardefine: fire_hp_11 | 230 }}
+{{#vardefine: fire_dmg_11 | 207 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Furnace Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Furnace Damage<br />{{Icon|I=Damage}}
+! scope="col" |Furnace Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Fire Spirit Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Fire Spirit Area Damage<br />{{Icon|I=Area Damage}}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:fire_hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:fire_dmg_11}} * (1.1^(3-11)) round 0 }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:fire_hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:fire_dmg_11}} * (1.1^(4-11)) round 0 }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:fire_hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:fire_dmg_11}} * (1.1^(5-11)) round 0 }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:fire_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:fire_dmg_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:fire_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:fire_dmg_11}} * (1.1^(7-11)) round 0 }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:fire_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:fire_dmg_11}} * (1.1^(8-11)) round 0 }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:fire_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:fire_dmg_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:fire_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:fire_dmg_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:fire_hp_11}} || {{#var:fire_dmg_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:fire_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:fire_dmg_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:fire_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:fire_dmg_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:fire_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:fire_dmg_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:fire_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:fire_dmg_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:fire_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:fire_dmg_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div>
+</center>
+
+==History==
+2025
+*The Furnace Evolution [[Cards|card]] was added to the game on 4/8/2025, in the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]]
+*On 7/8/2025, a [[Version History#Maintenance Break (7/8/2025)|maintenance break]] reduced the Furnace's hitpoints by 19% and increased the spawn time for its Fire Spirits to 7 seconds (from 5 seconds).
+*On 1/9/2025, a [[Version History/2025|Balance Update]], increased the Evolved Furnace's Hot Spawn [[Fire Spirit]] Spawn Period to 2.4 seconds (from 1.8 seconds).
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)|Balance Update]] increased Furnace's Movement Speed to Medium (from Slow).
+2026
+
+* On 12/1/2026, a Balance Update increased Furnace's attack speed to 1.7 (from 1.8)
+* On 1/6/2026, a Balance Update, decreased the Furnace's range to 5.5 tiles (from 6 tiles)
+* On 4/8/2026, a Balance Update, decreased the Furnace's spawn duration to 5 seconds (from 7 seconds)
+
+==Gallery==
+<gallery>
+File:Evolved Furnace card render.png|Current card render.
+File:Evolved Furnace Preview.gif|Current card preview
+File:FurnaceEvoShard.png|Evolution Shard.
+File:Evolved Furnace 1.png|Evolved Furnace
+</gallery>
+
+==Trivia==
+*In the German, Turkish, Japanese and Finnish language settings of the game, the Furnace's name translates to "Oven". In the Norwegian, Korean, and Chinese language settings of the game, the Furnace's name translates to "Fireplace", "Blast Furnace", and "Furnace of Flames" respectively.
+*The Furnace Evolution is the subject of multiple [[Emotes]].
+*This [[Card Evolution|Evolution]] was obtainable for free during New Year's.
+
+{{Navigation|Card}}

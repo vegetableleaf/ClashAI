@@ -1,0 +1,152 @@
+{
+ "Goblin Cage": {
+  "revid_live": 436552,
+  "revid_cached": 436552,
+  "cached_file": "Goblin_Cage.wikitext",
+  "live_file": "Goblin_Cage.live20260826.wikitext",
+  "content_identical": true,
+  "edit_war": "pass",
+  "bytes": 24583,
+  "fetched": "2026-08-26"
+ },
+ "Goblin Cage/Evolution": {
+  "revid_live": 437374,
+  "revid_cached": 437374,
+  "cached_file": "Goblin_Cage_Evolution.wikitext",
+  "live_file": "Goblin_Cage_Evolution.live20260826.wikitext",
+  "content_identical": true,
+  "edit_war": "pass",
+  "bytes": 20630,
+  "fetched": "2026-08-26"
+ },
+ "Party Hut": {
+  "revid_live": 431993,
+  "revid_cached": null,
+  "cached_file": "Party_Hut.wikitext",
+  "live_file": "Party_Hut.live20260826.wikitext",
+  "content_identical": true,
+  "edit_war": "pass",
+  "bytes": 8366,
+  "fetched": "2026-08-26"
+ },
+ "Furnace": {
+  "revid_live": 437285,
+  "revid_cached": 437285,
+  "cached_file": "Furnace.wikitext",
+  "live_file": "Furnace.live20260826.wikitext",
+  "content_identical": true,
+  "edit_war": "pass",
+  "bytes": 24979,
+  "fetched": "2026-08-26"
+ },
+ "Furnace/Evolution": {
+  "revid_live": 437286,
+  "revid_cached": 437286,
+  "cached_file": "Furnace_Evolution.wikitext",
+  "live_file": "Furnace_Evolution.live20260826.wikitext",
+  "content_identical": true,
+  "edit_war": "pass",
+  "bytes": 10280,
+  "fetched": "2026-08-26"
+ },
+ "Goblin Hut": {
+  "revid_live": 437256,
+  "revid_cached": null,
+  "cached_file": "Goblin_Hut.wikitext",
+  "live_file": "Goblin_Hut.live20260826.wikitext",
+  "content_identical": true,
+  "edit_war": "pass",
+  "bytes": 29795,
+  "fetched": "2026-08-26"
+ },
+ "Tombstone": {
+  "revid_live": 436518,
+  "revid_cached": null,
+  "cached_file": "Tombstone.wikitext",
+  "live_file": "Tombstone.live20260826.wikitext",
+  "content_identical": true,
+  "edit_war": "pass",
+  "bytes": 31454,
+  "fetched": "2026-08-26"
+ },
+ "Barbarian Hut": {
+  "revid_live": 436519,
+  "revid_cached": null,
+  "cached_file": "Barbarian_Hut.wikitext",
+  "live_file": "Barbarian_Hut.live20260826.wikitext",
+  "content_identical": true,
+  "edit_war": "pass",
+  "bytes": 21353,
+  "fetched": "2026-08-26"
+ },
+ "Goblin Drill": {
+  "revid_live": 437382,
+  "revid_cached": 437382,
+  "cached_file": "Goblin_Drill.wikitext",
+  "live_file": "Goblin_Drill.live20260826.wikitext",
+  "content_identical": true,
+  "edit_war": "pass",
+  "bytes": 23959,
+  "fetched": "2026-08-26"
+ },
+ "Goblin Drill/Evolution": {
+  "revid_live": 437383,
+  "revid_cached": 437383,
+  "cached_file": "Goblin_Drill_Evolution.wikitext",
+  "live_file": "Goblin_Drill_Evolution.live20260826.wikitext",
+  "content_identical": true,
+  "edit_war": "pass",
+  "bytes": 17331,
+  "fetched": "2026-08-26"
+ },
+ "Elixir Collector": {
+  "revid_live": 436522,
+  "revid_cached": null,
+  "cached_file": "Elixir_Collector.wikitext",
+  "live_file": "Elixir_Collector.live20260826.wikitext",
+  "content_identical": true,
+  "edit_war": "pass",
+  "bytes": 23704,
+  "fetched": "2026-08-26"
+ },
+ "Mortar/Evolution": {
+  "revid_live": 437361,
+  "revid_cached": null,
+  "cached_file": "Mortar_Evolution.wikitext",
+  "live_file": "Mortar_Evolution.live20260826.wikitext",
+  "content_identical": true,
+  "edit_war": "pass",
+  "bytes": 19111,
+  "fetched": "2026-08-26"
+ },
+ "Phoenix": {
+  "revid_live": 437212,
+  "revid_cached": null,
+  "cached_file": "Phoenix.wikitext",
+  "live_file": "Phoenix.live20260826.wikitext",
+  "content_identical": true,
+  "edit_war": "pass",
+  "bytes": 17819,
+  "fetched": "2026-08-26"
+ },
+ "Mighty Miner": {
+  "revid_live": 437349,
+  "revid_cached": null,
+  "cached_file": "Mighty_Miner.wikitext",
+  "live_file": "Mighty_Miner.live20260826.wikitext",
+  "content_identical": true,
+  "edit_war": "pass",
+  "bytes": 24317,
+  "fetched": "2026-08-26"
+ },
+ "Little Prince": {
+  "revid_live": 437347,
+  "revid_cached": null,
+  "cached_file": "Little_Prince.wikitext",
+  "live_file": "Little_Prince.live20260826.wikitext",
+  "content_identical": true,
+  "edit_war": "pass",
+  "bytes": 27276,
+  "fetched": "2026-08-26"
+ }
+}
