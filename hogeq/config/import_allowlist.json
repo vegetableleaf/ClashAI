@@ -1,0 +1,457 @@
+{
+ "meta": {
+  "generator": "research/sim_parity/scripts/gen_allowlist.py",
+  "sources": [
+   "ledger/r1a_evolutions.json (fetched 2026-08-25)",
+   "ledger/r1b_heroes.json (fetched 2026-08-25)",
+   "ledger/registry.json (key universe cross-check)"
+  ],
+  "rule": "an _evo/_hero key the importer is about to emit must be status: live here; announced/api_forward_declared keys are excluded loudly; unknown keys are a hard error (the importer does not invent content)",
+  "pair": "byte-identical across icebow/ and hogeq/ -- regenerate with the generator and it writes both; never hand-edit one copy",
+  "counts": {
+   "live": 58,
+   "api_forward_declared_no_wiki_page": 2,
+   "announced": 2
+  }
+ },
+ "allow": {
+  "archers_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Archers/Evolution",
+   "revid": 437495,
+   "release_date": "2023-11-06"
+  },
+  "baby_dragon_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Baby Dragon/Evolution",
+   "revid": 437336,
+   "release_date": "2025-09-01"
+  },
+  "balloon_hero": {
+   "family": "hero",
+   "status": "live",
+   "page": "Balloon/Hero",
+   "revid": 437524,
+   "release_date": "2026-04-06"
+  },
+  "barbarian_barrel_hero": {
+   "family": "hero",
+   "status": "live",
+   "page": "Barbarian Barrel/Hero",
+   "revid": 437523,
+   "release_date": "2026-03-02"
+  },
+  "barbarians_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Barbarians/Evolution",
+   "revid": 437363,
+   "release_date": "2023-06-19"
+  },
+  "bats_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Bats/Evolution",
+   "revid": 437215,
+   "release_date": "2023-10-02"
+  },
+  "battle_healer_hero": {
+   "family": "hero",
+   "status": "announced",
+   "page": "Battle Healer/Hero",
+   "revid": 437239,
+   "release_date": "2026-09-07",
+   "why": "wiki subpage is a 'Coming soon' stub; not in the Heroes master table. Calendar intel only -- never auto-import stubs."
+  },
+  "battle_ram_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Battle Ram/Evolution",
+   "revid": 437079,
+   "release_date": "2024-04-01"
+  },
+  "berserker_evo": {
+   "family": "evolution",
+   "status": "api_forward_declared_no_wiki_page",
+   "page": "Berserker/Evolution",
+   "revid": null,
+   "release_date": null,
+   "why": "official CR API forward-declares it; wiki has no page (r1a negative probe, 2026-08-25). Do not import until R1 re-verifies."
+  },
+  "berserker_hero": {
+   "family": "hero",
+   "status": "live",
+   "page": "Berserker/Hero",
+   "revid": 437529,
+   "release_date": "2026-08-03"
+  },
+  "bomber_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Bomber/Evolution",
+   "revid": 436449,
+   "release_date": "2024-02-05"
+  },
+  "bowler_hero": {
+   "family": "hero",
+   "status": "live",
+   "page": "Bowler/Hero",
+   "revid": 437528,
+   "release_date": "2026-05-04"
+  },
+  "cannon_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Cannon/Evolution",
+   "revid": 437252,
+   "release_date": "2024-11-15"
+  },
+  "dark_prince_hero": {
+   "family": "hero",
+   "status": "live",
+   "page": "Dark Prince/Hero",
+   "revid": 437359,
+   "release_date": "2026-05-04"
+  },
+  "dart_goblin_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Dart Goblin/Evolution",
+   "revid": 437234,
+   "release_date": "2025-01-06"
+  },
+  "electro_dragon_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Electro Dragon/Evolution",
+   "revid": 437294,
+   "release_date": "2024-10-07"
+  },
+  "elite_barbarians_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Elite Barbarians/Evolution",
+   "revid": 436936,
+   "release_date": "2026-08-03"
+  },
+  "executioner_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Executioner/Evolution",
+   "revid": 437539,
+   "release_date": "2025-04-07"
+  },
+  "firecracker_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Firecracker/Evolution",
+   "revid": 437259,
+   "release_date": "2023-06-19"
+  },
+  "furnace_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Furnace/Evolution",
+   "revid": 437286,
+   "release_date": "2025-08-04"
+  },
+  "giant_evo": {
+   "family": "evolution",
+   "status": "api_forward_declared_no_wiki_page",
+   "page": "Giant/Evolution",
+   "revid": null,
+   "release_date": null,
+   "why": "official CR API forward-declares it; wiki has no page (r1a negative probe, 2026-08-25). Do not import until R1 re-verifies."
+  },
+  "giant_hero": {
+   "family": "hero",
+   "status": "live",
+   "page": "Giant/Hero",
+   "revid": 437510,
+   "release_date": "2025-12-01"
+  },
+  "giant_snowball_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Giant Snowball/Evolution",
+   "revid": 437371,
+   "release_date": "2024-12-02"
+  },
+  "goblin_barrel_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Goblin Barrel/Evolution",
+   "revid": 437372,
+   "release_date": "2024-06-03"
+  },
+  "goblin_cage_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Goblin Cage/Evolution",
+   "revid": 437374,
+   "release_date": "2024-08-05"
+  },
+  "goblin_drill_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Goblin Drill/Evolution",
+   "revid": 437383,
+   "release_date": "2024-07-15"
+  },
+  "goblin_giant_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Goblin Giant/Evolution",
+   "revid": 437292,
+   "release_date": "2024-07-01"
+  },
+  "goblins_hero": {
+   "family": "hero",
+   "status": "live",
+   "page": "Goblins/Hero",
+   "revid": 437513,
+   "release_date": "2026-02-02"
+  },
+  "hunter_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Hunter/Evolution",
+   "revid": 436718,
+   "release_date": "2025-03-03"
+  },
+  "ice_golem_hero": {
+   "family": "hero",
+   "status": "live",
+   "page": "Ice Golem/Hero",
+   "revid": 437514,
+   "release_date": "2026-01-05"
+  },
+  "ice_spirit_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Ice Spirit/Evolution",
+   "revid": 437339,
+   "release_date": "2023-12-04"
+  },
+  "inferno_dragon_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Inferno Dragon/Evolution",
+   "revid": 437282,
+   "release_date": "2025-06-02"
+  },
+  "knight_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Knight/Evolution",
+   "revid": 437498,
+   "release_date": "2023-08-07"
+  },
+  "knight_hero": {
+   "family": "hero",
+   "status": "live",
+   "page": "Knight/Hero",
+   "revid": 437499,
+   "release_date": "2025-12-01"
+  },
+  "lumberjack_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Lumberjack/Evolution",
+   "revid": 437284,
+   "release_date": "2025-02-03"
+  },
+  "magic_archer_hero": {
+   "family": "hero",
+   "status": "live",
+   "page": "Magic Archer/Hero",
+   "revid": 437520,
+   "release_date": "2026-03-02"
+  },
+  "mega_knight_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Mega Knight/Evolution",
+   "revid": 437281,
+   "release_date": "2024-09-14"
+  },
+  "mega_knight_hero": {
+   "family": "hero",
+   "status": "announced",
+   "page": "Mega Knight/Hero",
+   "revid": 437222,
+   "release_date": "2026-09-07",
+   "why": "wiki subpage is a 'Coming soon' stub; not in the Heroes master table. Calendar intel only -- never auto-import stubs."
+  },
+  "mega_minion_hero": {
+   "family": "hero",
+   "status": "live",
+   "page": "Mega Minion/Hero",
+   "revid": 437518,
+   "release_date": "2026-02-02"
+  },
+  "mini_pekka_hero": {
+   "family": "hero",
+   "status": "live",
+   "page": "Mini P.E.K.K.A./Hero",
+   "revid": 437522,
+   "release_date": "2025-12-01"
+  },
+  "minion_horde_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Minion Horde/Evolution",
+   "revid": 437379,
+   "release_date": "2026-04-06"
+  },
+  "mortar_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Mortar/Evolution",
+   "revid": 437361,
+   "release_date": "2023-07-03"
+  },
+  "musketeer_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Musketeer/Evolution",
+   "revid": 436483,
+   "release_date": "2024-11-04"
+  },
+  "musketeer_hero": {
+   "family": "hero",
+   "status": "live",
+   "page": "Musketeer/Hero",
+   "revid": 437512,
+   "release_date": "2025-12-01"
+  },
+  "pekka_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "P.E.K.K.A./Evolution",
+   "revid": 437337,
+   "release_date": "2024-09-02"
+  },
+  "princess_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Princess/Evolution",
+   "revid": 437368,
+   "release_date": "2026-06-01"
+  },
+  "royal_ghost_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Royal Ghost/Evolution",
+   "revid": 437237,
+   "release_date": "2025-10-17"
+  },
+  "royal_giant_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Royal Giant/Evolution",
+   "revid": 437218,
+   "release_date": "2023-06-19"
+  },
+  "royal_hogs_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Royal Hogs/Evolution",
+   "revid": 437265,
+   "release_date": "2025-11-03"
+  },
+  "royal_recruits_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Royal Recruits/Evolution",
+   "revid": 436465,
+   "release_date": "2023-09-04"
+  },
+  "skeleton_army_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Skeleton Army/Evolution",
+   "revid": 436959,
+   "release_date": "2025-10-06"
+  },
+  "skeleton_barrel_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Skeleton Barrel/Evolution",
+   "revid": 437248,
+   "release_date": "2025-07-07"
+  },
+  "skeletons_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Skeletons/Evolution",
+   "revid": 436451,
+   "release_date": "2023-06-19"
+  },
+  "tesla_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Tesla/Evolution",
+   "revid": 437289,
+   "release_date": "2024-03-04"
+  },
+  "tombstone_hero": {
+   "family": "hero",
+   "status": "live",
+   "page": "Tombstone/Hero",
+   "revid": 437388,
+   "release_date": "2026-06-01"
+  },
+  "valkyrie_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Valkyrie/Evolution",
+   "revid": 437367,
+   "release_date": "2024-01-01"
+  },
+  "valkyrie_hero": {
+   "family": "hero",
+   "status": "live",
+   "page": "Valkyrie/Hero",
+   "revid": 437412,
+   "release_date": "2026-08-03"
+  },
+  "wall_breakers_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Wall Breakers/Evolution",
+   "revid": 437358,
+   "release_date": "2024-02-14"
+  },
+  "witch_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Witch/Evolution",
+   "revid": 437350,
+   "release_date": "2025-05-05"
+  },
+  "wizard_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Wizard/Evolution",
+   "revid": 437069,
+   "release_date": "2024-05-06"
+  },
+  "wizard_hero": {
+   "family": "hero",
+   "status": "live",
+   "page": "Wizard/Hero",
+   "revid": 437515,
+   "release_date": "2026-01-05"
+  },
+  "zap_evo": {
+   "family": "evolution",
+   "status": "live",
+   "page": "Zap/Evolution",
+   "revid": 437306,
+   "release_date": "2024-03-11"
+  }
+ }
+}

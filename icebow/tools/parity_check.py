@@ -39,9 +39,11 @@ PAIR = ROOT.parent
 DECKS = ("icebow", "hogeq")
 
 # --- CONFIG: must be byte-identical. No allow-list, deliberately. -----------------------------
-# These four are pure DATA about the game and the detector, shared wholesale. A difference here is
-# never a deck opinion -- it means one deck's import or hand-edit did not reach the other.
-QUARTET = ("cards_stats.json", "card_mechanics.json", "detect_classes.yaml", "meta_decks.yaml")
+# Pure DATA about the game and the detector, shared wholesale. A difference here is never a deck
+# opinion -- it means one deck's import, generator run or hand-edit did not reach the other.
+# import_allowlist.json joined 2026-08-26 (I4): the generated evolution/hero import gate.
+QUARTET = ("cards_stats.json", "card_mechanics.json", "detect_classes.yaml", "meta_decks.yaml",
+           "import_allowlist.json")
 
 # cards.yaml is the one config file that legitimately differs, and ONLY in its `deck:` block: the
 # eight cards and their levels. Everything else in it is a card fact. Checked by stripping that

@@ -6,7 +6,9 @@ MediaWiki variables -- {{#vardefine: hp_11 | 1766 }}, dmg_11, crown_dmg_11,
 atk_speed, life -- plus a {{Card Infobox|Cost=|Rarity=|Type=}}. This enumerates
 card pages via the Troop/Building/Spell/Champion card categories -- including each
 card's ``<Card>/Evolution`` subpage (evolutions live there and are keyed
-``<base>_evo``) and the Champion (hero) cards -- parses those values, and writes
+``<base>_evo``), its ``<Card>/Hero`` subpage (keyed ``<base>_hero``; body stats and
+whatever vardefines the page publishes -- ability numerics that exist only in prose
+stay absent for curation) and the Champion (hero) cards -- parses those values, and writes
 `config/cards_stats.json` (level 11). Curated `config/cards.yaml` overlays it
 (flags, abilities, deck). Re-run after balance updates: `run.py cards-import`.
 
@@ -44,6 +46,7 @@ CATEGORIES = ["Category:Troop Cards", "Category:Building Cards", "Category:Spell
 # cards, which produced no false positives and no misses.
 EXCLUDE_CATEGORY = "Category:Removed Cards"
 _EVO = "/Evolution"
+_HERO = "/Hero"
 _NUM = re.compile(r"^-?\d+(?:\.\d+)?$")
 _VARDEF = re.compile(r"\{\{#vardefine:\s*([A-Za-z0-9_]+)\s*\|\s*([^}|]+?)\s*\}\}")
 _INFOBOX = re.compile(r"\|\s*(Cost|Rarity|Type)\s*=\s*([^\n|}]+)")
@@ -118,9 +121,13 @@ def _tiles(v):
 
 
 def _attr_rows(wt: str) -> list:
-    """Every row of every unit-attributes table on the page, as header->value dicts."""
+    """Every row of every unit-attributes table on the page, as header->value dicts.
+
+    Each row carries a private ``_table`` ordinal (which table on the page it came from) so
+    that callers can tell the card's own body table from later ability/death tables.
+    """
     rows_out = []
-    for tb in _ATTR_TABLE.findall(wt):
+    for ti, tb in enumerate(_ATTR_TABLE.findall(wt)):
         heads, rows = [], []
         for line in tb.splitlines():
             ls = line.strip()
@@ -133,7 +140,7 @@ def _attr_rows(wt: str) -> list:
                     rows[-1] += cells
                 else:
                     rows.append(cells)
-        rows_out += [dict(zip(heads, r)) for r in rows]
+        rows_out += [dict(zip(heads, r), _table=ti) for r in rows]
     return rows_out
 
 
@@ -203,7 +210,7 @@ def _row_stats(r: dict) -> dict:
     }.items() if v is not None}
 
 
-def _parse_attr_tables(wt: str) -> dict:
+def _parse_attr_tables(wt: str, hero: bool = False) -> dict:
     rows = _attr_rows(wt)
     # THE CARD'S OWN table is the one carrying Cost -- every card page leads with it. A SPAWNER page
     # then has a SECOND table for the unit it summons, which has no Cost. Keying on Cost is what
@@ -214,6 +221,13 @@ def _parse_attr_tables(wt: str) -> dict:
     # is the tell. Same for tombstone (a Skeleton), barbarian_hut (a Barbarian), goblin_drill and
     # goblin_cage.
     owns = [r for r in rows if r.get("Cost")]
+    # A HERO page's LATER Cost-bearing tables describe the ABILITY -- their Cost is the ability's
+    # elixir, not a second deploy. Balloon/Hero's Skeletrooper table carries Cost 2 + Count +
+    # Transport and read as a second body, making the hero row claim TWO balloons deploy. The
+    # hero's own body block is always the page's first Cost-bearing table.
+    if hero and owns:
+        first = owns[0]["_table"]
+        owns = [r for r in owns if r["_table"] == first]
     spawned = [r for r in rows if not r.get("Cost") and r.get("Transport")]
     units = owns or [r for r in rows if r.get("Transport") or r.get("Range") or r.get("Radius")]
     if not units:
@@ -351,8 +365,8 @@ def _members(cat: str):
             t = m["title"]
             if ":" in t:
                 continue                        # skip subcategories / namespaced pages
-            if "/" in t and not t.endswith(_EVO):
-                continue                        # skip subpages except the Evolution variant
+            if "/" in t and not (t.endswith(_EVO) or t.endswith(_HERO)):
+                continue                        # skip subpages except the Evolution/Hero variants
             out.append(t)
         cont = d.get("continue", {}).get("cmcontinue")
         if not cont:
@@ -448,7 +462,7 @@ def _parse_card(page: str, wt: str) -> dict:
         "spawn_crown_damage": _pick(vd, "spawn_crown"),
         "hits_per_attack": _lit(vd.get("dmg_hits")),   # Electro Dragon chains to 3
     }
-    entry.update(_parse_attr_tables(wt))
+    entry.update(_parse_attr_tables(wt, hero=page.endswith(_HERO)))
     if re.search(r"\b(?:jump|hop|leap)\w*\s+(?:over|across)\s+(?:the\s+)?river",
                  wt.split("==Strategy==")[0], re.I):
         entry["river_jump"] = True          # crosses the river without using a bridge
@@ -511,6 +525,72 @@ def _print_diff(diff: dict, had_existing: bool) -> None:
         print("[cards-import]   (no differences)")
 
 
+# --- content allowlist ------------------------------------------------------------------------
+# THE IMPORTER DOES NOT INVENT CONTENT. Wiki editors create subpages for announced-but-unreleased
+# content ("Coming soon... Release Date: 7th September 2026" stubs for Mega Knight/Battle Healer
+# heroes) and the channel is unmoderated -- upcoming-content stubs are calendar intel, never
+# import material (decisions.md, R1 CLOSED). config/import_allowlist.json is generated from the
+# frozen R1 registry by research/sim_parity/scripts/gen_allowlist.py; an `_evo`/`_hero` key must
+# be `status: live` there to be emitted. Announced keys are EXCLUDED loudly (the run continues);
+# a key the allowlist has never heard of is a hard stop, because it means the wiki now claims
+# content the registry has not verified.
+
+def _load_allowlist(cfg) -> dict:
+    path = cfg.path("config", "import_allowlist.json")
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))["allow"]
+    except (OSError, KeyError, ValueError) as exc:
+        raise SystemExit(f"[cards-import] cannot read {path} ({exc}) -- the allowlist gates "
+                         "evolution/hero import; regenerate it with "
+                         "research/sim_parity/scripts/gen_allowlist.py.")
+
+
+def _variant_key(title: str):
+    """`Zap/Evolution` -> 'zap_evo'; `Knight/Hero` -> 'knight_hero'; base pages -> None."""
+    for suf, tag in ((_EVO, "_evo"), (_HERO, "_hero")):
+        if title.endswith(suf):
+            return _key(title[: -len(suf)]) + tag
+    return None
+
+
+def _allowlist_gate(names: list, allow: dict):
+    """Split page titles into (importable, excluded-with-reason); an unknown variant is fatal."""
+    keep, excluded = [], []
+    for n in names:
+        key = _variant_key(n)
+        if key is None:
+            keep.append(n)
+            continue
+        row = allow.get(key)
+        st = (row or {}).get("status", "unknown")
+        if st == "live":
+            keep.append(n)
+        elif row is not None:
+            excluded.append((n, key, st, row.get("release_date")))
+        else:
+            raise SystemExit(
+                f"[cards-import] REFUSING: page '{n}' would emit key '{key}', which is not in "
+                f"config/import_allowlist.json (status: unknown). The importer does not invent "
+                f"content -- verify the release (R1 process), regenerate the allowlist with "
+                f"research/sim_parity/scripts/gen_allowlist.py, and re-run.")
+    return keep, excluded
+
+
+def _assert_emittable(key: str, allow: dict) -> None:
+    """Defense in depth at the emission site: only `status: live` variant keys become rows."""
+    if not (key.endswith("_evo") or key.endswith("_hero")):
+        return
+    row = allow.get(key)
+    if row is None:
+        raise SystemExit(f"[cards-import] REFUSING to emit '{key}': not in the allowlist "
+                         "(status: unknown) -- the importer does not invent content.")
+    if row.get("status") != "live":
+        date = row.get("release_date")
+        raise SystemExit(f"[cards-import] REFUSING to emit '{key}': allowlist status is "
+                         f"'{row.get('status')}'" + (f" (release {date})" if date else "")
+                         + " -- announced content is excluded until the registry marks it live.")
+
+
 def import_cards(cfg, write: bool = False, force_fields=()) -> None:
     print("[cards-import] scraping the Clash Royale Fandom wiki (level 11)...")
     names: list = []
@@ -528,14 +608,17 @@ def import_cards(cfg, write: bool = False, force_fields=()) -> None:
     if not names:
         print("[cards-import] no card pages found (wiki category names may have changed).")
         return
-    # FALLBACK EVOLUTION DISCOVERY. The category walk only sees `<Card>/Evolution` subpages the
-    # editors have already categorized -- a freshly created Evolution page (Elite Barbarians,
-    # Season 86: the page existed for days while `Category:Troop Cards` didn't list it) was
-    # silently invisible. Probe every base card's `/Evolution` subpage existence directly in
-    # batched title queries; anything that exists joins the import regardless of categories.
-    bases = [n for n in names if not n.endswith(_EVO)]
-    have = {n[: -len(_EVO)] for n in names if n.endswith(_EVO)}
-    probe = [b + _EVO for b in bases if b not in have]
+    # FALLBACK EVOLUTION/HERO DISCOVERY. The category walk only sees subpages the editors have
+    # already categorized -- a freshly created Evolution page (Elite Barbarians, Season 86: the
+    # page existed for days while `Category:Troop Cards` didn't list it) was silently invisible,
+    # and live `/Hero` subpages sit uncategorized the same way. Probe every base card's
+    # `/Evolution` AND `/Hero` subpage existence directly in batched title queries; anything that
+    # exists joins the import regardless of categories (the allowlist below still gates it).
+    bases = [n for n in names if "/" not in n]
+    probe = []
+    for suf in (_EVO, _HERO):
+        have = {n[: -len(suf)] for n in names if n.endswith(suf)}
+        probe += [b + suf for b in bases if b not in have]
     found = []
     for i in range(0, len(probe), 50):
         d = _api({"action": "query", "titles": "|".join(probe[i:i + 50])})
@@ -543,7 +626,8 @@ def import_cards(cfg, write: bool = False, force_fields=()) -> None:
             if "missing" not in p:
                 found.append(p["title"])
     if found:
-        print(f"[cards-import] uncategorized Evolution pages found by probe: {', '.join(sorted(found))}")
+        print(f"[cards-import] uncategorized Evolution/Hero pages found by probe: "
+              f"{', '.join(sorted(found))}")
         names = sorted(set(names) | set(found))
 
     try:
@@ -553,15 +637,22 @@ def import_cards(cfg, write: bool = False, force_fields=()) -> None:
         print(f"[cards-import] WARNING: could not read {EXCLUDE_CATEGORY} ({exc}); "
               "event-only cards may slip in.")
     if removed:
-        # an Evolution subpage is dropped with its base card
-        skipped = [n for n in names if n in removed or n.split(_EVO)[0] in removed]
+        # an Evolution/Hero subpage is dropped with its base card
+        skipped = [n for n in names if n in removed or n.split("/", 1)[0] in removed]
         names = [n for n in names if n not in skipped]
         print(f"[cards-import] skipping {len(skipped)} event-only/removed cards: "
               f"{', '.join(sorted(skipped)[:6])}{'...' if len(skipped) > 6 else ''}")
 
+    allow = _load_allowlist(cfg)
+    names, excluded = _allowlist_gate(names, allow)
+    for n, key, st, date in excluded:
+        extra = f", release {date}" if date else ""
+        print(f"[cards-import] EXCLUDED by allowlist: {n} -> {key} (status: {st}{extra}); "
+              "not imported")
+
     out: dict = {}
     fails: list = []
-    n_evo = n_champ = 0
+    n_evo = n_champ = n_hero = 0
     for i, name in enumerate(names):
         try:
             entry = _parse_card(name, _wikitext(name))
@@ -570,8 +661,19 @@ def import_cards(cfg, write: bool = False, force_fields=()) -> None:
                 entry["display"] = f"Evo {base}"
                 entry["evolution"] = True
                 entry["base"] = _key(base)
-                out[_key(base) + "_evo"] = entry
+                key = _key(base) + "_evo"
+                _assert_emittable(key, allow)
+                out[key] = entry
                 n_evo += 1
+            elif name.endswith(_HERO):
+                base = name[: -len(_HERO)]
+                entry["display"] = f"Hero {base}"
+                entry["hero"] = True
+                entry["base"] = _key(base)
+                key = _key(base) + "_hero"
+                _assert_emittable(key, allow)
+                out[key] = entry
+                n_hero += 1
             else:
                 if name in champions:
                     entry["champion"] = True
@@ -597,6 +699,7 @@ def import_cards(cfg, write: bool = False, force_fields=()) -> None:
             "count": len(out),
             "champions": n_champ,
             "evolutions": n_evo,
+            "heroes": n_hero,
         }
         path.write_text(json.dumps({"meta": meta, "cards": out}, indent=1), encoding="utf-8")
         wrote = True
@@ -610,7 +713,7 @@ def import_cards(cfg, write: bool = False, force_fields=()) -> None:
     kami = sorted(k for k, v in out.items() if v.get("kamikaze"))
     verb = "wrote" if wrote else "DRY-RUN: would write"
     print(f"[cards-import] {verb} {len(out)} cards to {path} ({hp} with hitpoints, {dmg} with "
-          f"damage; {n_champ} champions, {n_evo} evolutions).")
+          f"damage; {n_champ} champions, {n_evo} evolutions, {n_hero} heroes).")
     if not wrote:
         print("[cards-import] nothing written. Re-run with --write to apply the diff above.")
     print(f"[cards-import]   attributes table: {cnt} counts, {air} air units, "
