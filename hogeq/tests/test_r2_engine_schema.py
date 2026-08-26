@@ -17,7 +17,7 @@ for _p in (str(SRC), str(ROOT / "tests")):
 
 from test_sim_status_effects import _make_engine                     # noqa: E402
 from clashrl.sim.engine import (Unit, build_spec, replace,           # noqa: E402
-                                _TILES_Y)
+                                _TILES_X, _TILES_Y)
 
 LVL = 11
 
@@ -488,6 +488,113 @@ class LittlePrinceRampGraceTests(unittest.TestCase):
         kept, lost = dealt(3), dealt(4)
         self.assertAlmostEqual(kept, dealt(0), delta=1.0, msg="0.3 s of movement costs nothing")
         self.assertGreater(kept, lost * 2.0, "and losing the ramp has to hurt")
+
+
+class DarkPrinceSplashShadowTests(unittest.TestCase):
+    """Dark Prince splash 1.1, charge splash 1.1 -- and no field may shadow another again.
+
+    Wiki (Dark_Prince.wikitext rev 437262), secondary attributes table
+    Speed | Charge Range | Splash Radius | Target | Transport:
+    "Very Fast (120) || 3 || 1.1 || Ground || Ground". Owner: R2 #8 item 6, splash 1.1 and
+    charge splash 1.1 (r2_buckets: the curated 2.2 "is roughly double every published figure").
+
+    MEASURED BEFORE: splash_r 1.250, charge_splash_r 2.200. The 1.25 came from a curated
+    `splash_radius_tiles` SHADOWING the imported `splash_radius: 1.1` on the same merged row --
+    build_spec prefers the *_tiles spelling, so the engine swung at 1.25 while every audit that
+    read the row saw 1.1.
+    """
+
+    def test_the_published_radii(self):
+        eng = _make_engine()
+        s = build_spec(eng.db, "dark_prince", LVL)
+        self.assertAlmostEqual(s.splash_r, 1.1, delta=1e-9, msg="MEASURED BEFORE: 1.250")
+        self.assertAlmostEqual(s.charge_splash_r, 1.1, delta=1e-9, msg="MEASURED BEFORE: 2.200")
+
+    def test_the_row_now_holds_exactly_one_splash_number(self):
+        eng = _make_engine()
+        row = eng.db.get("dark_prince") or {}
+        self.assertIsNone(row.get("splash_radius_tiles"), "the stale shadowing field is gone")
+        self.assertAlmostEqual(float(row.get("splash_radius")), 1.1, delta=1e-9)
+
+    def _bystanders(self, radius_override=None, offsets=(1.05, 1.2, 2.5)):
+        """Damage taken by bystanders sitting `offsets` tiles from the PRIMARY target, which is
+        the ruler the splash loop uses (centre to centre from the unit that was struck)."""
+        eng = _make_engine()
+        s = build_spec(eng.db, "dark_prince", LVL)
+        if radius_override is not None:
+            s = replace(s, splash_r=radius_override)
+        t = build_spec(eng.db, "knight", LVL)
+        dp = Unit(spec=s, team=0, x=0.50, y=0.55, hp=s.hp)
+        prime = Unit(spec=t, team=1, x=0.50, y=0.55 - (1.0 + t.radius) / _TILES_Y, hp=t.hp * 50)
+        eng.units += [dp, prime]
+        bys = []
+        for off in offsets:
+            b = Unit(spec=t, team=1, x=prime.x + off / _TILES_X, y=prime.y, hp=t.hp * 50)
+            eng.units.append(b)
+            bys.append(b)
+        hp0 = [b.hp for b in bys]
+        dp.charge_dist = 0.0
+        eng._attack(dp, "unit", prime)
+        return [round(h - b.hp, 1) for h, b in zip(hp0, bys)]
+
+    def test_the_narrower_swing_actually_reaches_less_far(self):
+        """MEASURED at 1.05 / 1.2 / 2.5 tiles from the struck body:
+        splash 1.25 (old) -> 266.5, 266.5, 0.0
+        splash 1.10 (new) -> 266.5,   0.0, 0.0"""
+        old = self._bystanders(1.25)
+        new = self._bystanders()
+        self.assertGreater(old[1], 0.0, "the old radius caught the body at 1.2 tiles")
+        self.assertEqual(new[1], 0.0, "1.1 does not reach 1.2 tiles")
+        self.assertGreater(new[0], 0.0, "...but it still catches the body at 1.05")
+        self.assertEqual(new[2], 0.0)
+
+    def test_no_row_in_this_deck_shadows_anything(self):
+        """The guard, run over the whole KB. mortar (2.0) and wall_breakers (1.5) carry BOTH
+        spellings and agree, which is fine; a disagreement is not."""
+        import warnings as _w
+        from clashrl.sim.engine import _SHADOW_WARNED
+        eng = _make_engine()
+        with _w.catch_warnings(record=True) as caught:
+            _w.simplefilter("always")
+            _SHADOW_WARNED.clear()
+            for name in sorted(eng.db.cards):
+                try:
+                    build_spec(eng.db, name, LVL)
+                except Exception:                      # noqa: BLE001 - unbuildable rows are not our business
+                    pass
+        self.assertEqual([str(c.message) for c in caught], [])
+
+    def test_the_guard_fires_on_a_genuine_shadow_and_only_once(self):
+        import warnings as _w
+        from clashrl.sim.engine import _tiles_or, _SHADOW_WARNED
+        row = {"splash_radius_tiles": 1.25, "splash_radius": 1.1}
+        with _w.catch_warnings(record=True) as caught:
+            _w.simplefilter("always")
+            _SHADOW_WARNED.clear()
+            first = _tiles_or(row, "splash_radius", card="probe")
+            _tiles_or(row, "splash_radius", card="probe")
+        self.assertEqual(len(caught), 1, "deduped per (card, field): build_spec runs per fork")
+        self.assertIn("SHADOWS", str(caught[0].message))
+        self.assertAlmostEqual(first, 1.25, delta=1e-9, msg="precedence is unchanged on purpose")
+        _SHADOW_WARNED.clear()
+
+    def test_the_guard_is_silent_when_the_two_agree(self):
+        import warnings as _w
+        from clashrl.sim.engine import _tiles_or, _SHADOW_WARNED
+        with _w.catch_warnings(record=True) as caught:
+            _w.simplefilter("always")
+            _SHADOW_WARNED.clear()
+            v = _tiles_or({"splash_radius_tiles": 2.0, "splash_radius": 2.0}, "splash_radius",
+                          card="mortar")
+        self.assertEqual(len(caught), 0)
+        self.assertAlmostEqual(v, 2.0, delta=1e-9)
+
+    def test_other_splash_cards_are_untouched(self):
+        eng = _make_engine()
+        for name, r in (("mortar", 2.0), ("wall_breakers", 1.5), ("valkyrie", 2.0),
+                        ("mega_knight", 1.3), ("bomber", 1.5), ("wizard", 1.5)):
+            with self.subTest(card=name):
+                self.assertAlmostEqual(build_spec(eng.db, name, LVL).splash_r, r, delta=1e-9)
 
 
 if __name__ == "__main__":

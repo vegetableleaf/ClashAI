@@ -1526,7 +1526,14 @@ cards:
   # from vulnerable troops -- measured: Sparky (immune, 1451 hp) sits below Knight (vulnerable, 1766),
   # and goblin_machine / cannon_cart / mighty_miner share collision radius 0.50 with plain Goblins.
   # The Log ignores this list entirely (see its knockback_all flag).
-  dark_prince: {range: melee, flags: [splash, knockback_immune], splash_radius_tiles: 1.25, charge_splash_radius_tiles: 2.2, verified: true}   # splash swing 1.25 tiles, widened to 2.2 on a CHARGED strike (user-verified); was silently single-target
+  # DARK PRINCE splash 1.1, charge splash 1.1 (owner ruling, R2 #8 item 6). This row used to carry
+  # `splash_radius_tiles: 1.25`, which SHADOWED the imported `splash_radius: 1.1` sitting on the
+  # same merged row -- the engine prefers the *_tiles spelling, so it swung at 1.25 while every
+  # audit read 1.1. The stale field is gone and the ruling is curated on the plain field, so the
+  # row now holds exactly one splash number. `charge_splash_radius_tiles: 2.2` was roughly double
+  # every published figure (the page's own Splash Radius column reads 1.1); the owner set the
+  # charged swing equal to the plain one.
+  dark_prince: {range: melee, flags: [splash, knockback_immune], splash_radius: 1.1, charge_splash_radius_tiles: 1.1, verified: true}
   elite_barbarians: {range: melee, verified: false}
   fire_spirit: {range: melee, verified: false}
   # Fisherman (Fandom attributes): hook range 3.5-7, hook time 1.3s, hook projectile speed 800.

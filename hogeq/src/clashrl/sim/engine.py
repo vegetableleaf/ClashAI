@@ -31,6 +31,7 @@ team 0 = you (bottom/blue), team 1 = opponent (top/red).
 from __future__ import annotations
 
 import math
+import warnings
 from dataclasses import dataclass, field, replace
 from typing import List, Optional
 
@@ -512,6 +513,34 @@ class CardSpec:
         return self
 
 
+# ROWS THAT ALREADY WARNED, so a warning is emitted once per (card, field) and not once per
+# build_spec call -- the counterfactual reward forks the engine several times per match.
+_SHADOW_WARNED: set = set()
+
+
+def _tiles_or(c: dict, key: str, default: float = 0.0, *, card: str = "") -> float:
+    """Read ``<key>_tiles``, falling back to ``<key>`` -- and never let the two disagree SILENTLY.
+
+    The `*_tiles` spelling wins, and that is how dark_prince's stale curated
+    `splash_radius_tiles: 1.25` shadowed the imported `splash_radius: 1.1` for as long as it did:
+    both numbers sat on the SAME ROW, the engine read one of them and every audit read the other,
+    so nothing ever disagreed with itself out loud. Precedence is deliberately unchanged -- a
+    curated override is supposed to win -- but a disagreement is now reported instead of passing
+    unnoticed. As of 2026-08-26 no row in either deck trips this: mortar (2.0) and wall_breakers
+    (1.5) carry both spellings and they agree.
+    """
+    a, b = c.get(key + "_tiles"), c.get(key)
+    if a and b and float(a) != float(b):
+        tag = (card, key)
+        if tag not in _SHADOW_WARNED:
+            _SHADOW_WARNED.add(tag)
+            warnings.warn(
+                "card %r: %s_tiles=%s SHADOWS %s=%s on the same row; the engine uses %s. "
+                "One of the two is stale -- delete it rather than leaving both."
+                % (card or "?", key, a, key, b, a), RuntimeWarning, stacklevel=2)
+    return float(a or b or default)
+
+
 _SHIELD_FRAC = 0.5   # shielded units get a shield pool ~ this x their (level-scaled) body HP. Coarse approximation:
                      # the exact per-card CR shield HP isn't in the KB, so it's derived from the `shield` flag.
 
@@ -675,7 +704,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         # splash: the stats import OR the curated flag. Testing only db.has_splash silently
         # single-targeted witch (flag curated but unread) and every flag-only splash troop.
         splash=db.has_splash(base) or ("splash" in set(db.flags(base))),
-        splash_r=float(c.get("splash_radius_tiles") or c.get("splash_radius") or 0.0),
+        splash_r=_tiles_or(c, "splash_radius", card=key),
         reflect_dmg=float(c.get("reflect_damage") or 0.0) * sc,
         reflect_r=float(c.get("reflect_radius_tiles") or 0.0),
         reflect_stun=float(c.get("reflect_stun_s") or 0.0),
