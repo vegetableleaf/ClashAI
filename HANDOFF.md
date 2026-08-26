@@ -3285,6 +3285,36 @@ play/wait asymmetry to correct).
 gradient is necessary, not sufficient, and this can still come back null. Pre-committed: >=2 sigma
 on the paired probe or it is reported as NO MEASUREMENT.
 
+## 4s. 2026-08-26 — THE ROCKET IS NOT A WIN CONDITION: 19% land on a tower, and overtime is reached but never PLAYED
+
+Owner asked whether the 86%-own-half rocket reading meant (a) overtime is never reached or (b)
+overtime is reached but the rocket-cycle plan is not run. `scratchpad/rocket_probe.py`, 30 matches:
+
+```
+(a) REACHES overtime      18/30 (60%)   median match length 180.1s   max 255.3s
+    BUT total overtime PLAYED = 86s across all 30 matches (~4.8s per OT match)
+(b) rocket rate  OVERTIME 2.09/min   REGULATION 0.54/min   (3.9x -- the doctrine IS weakly present)
+    ON an enemy crown tower: 9 of 47 casts (19%)
+    median distance from the nearest enemy tower EDGE: 8.7 tiles (rocket radius is 2.0)
+    enemy towers still alive at match end: mean 2.60 of 3
+```
+**Both hypotheses are wrong as stated.** It DOES reach the 3-minute mark (60%) and it DOES rocket
+nearly 4x more often per minute once there — but the match RESOLVES AT THE BUZZER instead of
+playing overtime (median end 180.1s, one tick past regulation), so the rocket-cycle window barely
+exists. And the rockets that are cast are not tower-directed: **8.7 tiles from the nearest enemy
+tower edge, four times the blast radius.** Same shape as §4r: the cell head is not aiming.
+
+The number that frames all of it: **2.60 of 3 enemy towers alive at the end.** This policy almost
+never takes a tower, so overtime is entered from behind or level, not as a closing plan.
+
+⚠ METHOD CAVEAT: these probes read `data/policy_ppo_long.pt`, which the LIVE trainer overwrites
+every checkpoint. Two probes minutes apart read DIFFERENT policies — the own-half rocket share
+read 86% (n=28) in one probe and 57% (n=47) in this one. Copy the checkpoint before probing if a
+figure needs to be stable, and never compare two probes taken at different times as if they were
+the same policy.
+
+---
+
 ## 4r. 2026-08-26 — ⚠⚠ SPELL DUMPING IS REAL AND SEVERE — BUT IT DID **NOT** COME FROM THIS PPO RUN
 
 Owner report: "the model is learning to dump spells all over the place, almost never on an enemy
