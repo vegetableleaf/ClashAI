@@ -3518,8 +3518,18 @@ base-card-existence oracle only. Fandom api.php works via python urllib + custom
   zone_first_tick_now, recoil, spark_end_dmg, 4 cards.py fixes); stale `1.1**(level-11)` scaler
   still in `CardDB.deck()` BOTH decks; friendly-target spells absent entirely; drills never cycle
   evos; enemy-only cards are ~free, our-deck cards break checkpoints.
-* Phase I (worktree `ClashBot-parity`) starts only after the long PPO launches; merge only at a
-  declared PPO restart; the merge counts as that experiment's ONE training change.
+* R2 COMPLETE + ADJUDICATED (2026-08-26): 179 keys / 3,321 fields; 2,838 match, 101 updates,
+  66 pins, 316 escalations grouped into 14 decisions and ALL RULED by the owner (decisions.md
+  "R2 ADJUDICATION" is the apply spec). Research frozen at tag `research-frozen-2026-08-26`.
+  Notable owner overturns of owner rows: spark_dps_small 60→48 (§6.7 CLOSED), earthquake 84→81.
+  MM bomb radius 2.5 CONFIRMED. FURNACE IS A TROOP now (re-model). Chain arc = per-card
+  `chain_tiles`, ED family 4.0.
+* Phase I OPEN: worktree `../ClashBot-parity` (branch `sim-parity`) created at `1380c0e`.
+  Owner pulled the #8 ENGINE/SCHEMA items forward — being implemented there NOW (three_musketeers
+  Elite rework via components, furnace→troop, ram_rider slow_duration_s, rage attacks mis-parse,
+  little_prince ramp grace, dark_prince splash shadowing). Data application (I5) still follows
+  I0→I4. Merge to main only at a declared PPO restart; the merge counts as that experiment's ONE
+  training change.
 
 ---
 
