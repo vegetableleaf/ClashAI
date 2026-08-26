@@ -3342,6 +3342,41 @@ still unpunished. Measured share of dumps that escape the penalty entirely: **17
 (init)** — real, worth fixing, but 75-83% of dumps ARE being charged and the policy does them
 anyway. Do not sell this as the fix.
 
+### FULLER DRILL TABLE (15 reps, 12 spell drills) — and it REFUTES my own doctrine-prior guess
+```
+drill                          scripted doctrine  policy
+nado_king_activation              100%      0%      0%   (DOCTRINE GAP)
+log_the_ground_swarm               93%     93%      0%
+hold_the_spell_for_a_target        93%     80%      0%
+log_rolls_forward_not_backward     80%     80%      0%
+nado_clump_for_the_wizard          87%     73%     13%
+rocket_the_two_for_one             93%     93%      0%
+rocket_the_pump_on_sight           93%     93%      0%
+log_the_barrel_on_landing         100%      0%      0%   (DOCTRINE GAP)
+rocket_then_tornado                93%     20%      0%   (DOCTRINE GAP)
+nado_the_sneaky_lock               67%     93%     40%
+nado_pull_the_flock_back          100%    100%    100%
+never_rocket_their_king           100%    100%      0%
+```
+⚠ **The "doctrine prior has gaps for log/tornado" hypothesis is CONTRADICTED.** Doctrine scores
+100% on `never_rocket_their_king` and the policy still scores 0%; doctrine scores 93% on three
+drills the policy fails outright. There is no correlation between doctrine coverage and policy
+success. Do not re-derive that guess.
+
+### THE PATTERN THAT DOES HOLD — precision REQUIRED vs precision AVAILABLE
+Both drills the policy scores above zero on are **TORNADO** drills (`pull_the_flock_back` 100%,
+`sneaky_lock` 40%), and the Tornado's pull radius is **5.5 tiles**. Every Log (half-width **1.95**)
+and Rocket (radius **2.0**) drill scores 0%. A near-uniform cell head still lands inside a 5.5-tile
+pull often enough to pass; it essentially never lands inside a 2-tile blast. So the entropy
+measurement and the drill results agree: **placement precision is absent, and only the forgiving
+card survives it.**
+
+### THERE ARE TWO SEPARATE FAILURES, NOT ONE
+1. **Placement** — the cell head is near-uniform for the_log/tornado (above).
+2. **Restraint / selection** — `never_rocket_their_king` is a DO-NOT-CAST drill and the policy
+   scores 0%, i.e. it rockets their king. That is not a placement error; nothing about a sharper
+   cell head fixes it. Any fix has to address both, and they may need different levers.
+
 ### WHAT THIS DOES *NOT* ESTABLISH
 * Whether LIVE adds its own error on top (grid round-trip, aim assists) — untested here. The sim
   policy alone is bad enough to explain the owner's live observation, but that is not proof live
