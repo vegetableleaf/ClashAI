@@ -3521,6 +3521,46 @@ base-card-existence oracle only. Fandom api.php works via python urllib + custom
 * Phase I (worktree `ClashBot-parity`) starts only after the long PPO launches; merge only at a
   declared PPO restart; the merge counts as that experiment's ONE training change.
 
+#### Phase I progress — I0, I1, I3 DONE 2026-08-26 (branch `sim-parity`, worktree only)
+
+`9a57aef` **I3**. The plan's gate was unmeasurable: the battlelog's `evolutionLevel` reports a
+player's OWNED evolution level, not the fielded slot (three evolutions for 153/233 decks against a
+two-slot game; a level for `berserker`, which has none), and its 233 `evo:` declarations were
+stripped in 84e144a — leaving opponents with NO evolution at all. Nothing published names the
+slotted card (RoyaleAPI / Deck Shop / StatsRoyale all 403), so the sim no longer tries: each deck
+carries a derived `evo_candidates` (its own cards that really have an evolution, == the 42
+wiki-verified rows) and ScriptedBot draws ONE uniformly per match. MEASURED 0 → **1000/1000 decks
+field a REAL evolution**, 0 phantoms, 0 candidates failing `build_spec`, all 42 reachable, mean
+3.269 candidates/deck. `deck_import.py` no longer tallies `evolutionLevel` at all, so a re-import
+cannot recreate the bad slots.
+
+`8ca6aa5` **I1**. `sim/engine.py` and `cards.py` are now **byte-identical** between the decks and
+`config/cards.yaml` differs only in its `deck:` block. Two shared bugs fell out: `evo_cycles()`
+reported a count for **6 of 42** evolutions (gated on a curated `evolution.available` only 6 base
+cards carry) → 42/42, after taking `minion_horde_evo` (1) and `princess_evo` (2) from the wiki
+ledger, where the imported rows had none — Minion Horde was being fielded a cycle late by the
+picker's `or 2` floor. And the stale `1.1**(level-11)` in `CardDB.deck()` is gone in BOTH decks
+(worst delta −0.93% icebow, −0.76% hogeq; only `cli.py`'s display reads it). **icebow's card head
+stays at 10** — engine path only, no action-space slot, or every checkpoint breaks.
+
+`be47ddd` **I0**. `tools/parity_check.py`, byte-identical in both decks, fails on undeclared
+divergence. Baseline: config quartet byte-identical, `cards.yaml` identical apart from its
+783-byte deck block, `src/clashrl` 80 files → 60 shared identical / 20 declared / **0 unexpected**.
+The allow-list is split DECK-SPECIFIC (11 entries, should differ forever) vs **DRIFT (8 entries,
+recorded not blessed)** — including a live one: `perception.py`'s own comment says hogeq's
+threat-gate MEMORY fix raises TypeError and is swallowed, so it is silently inert there. Verified
+to FAIL on four probes, not just to pass. Run it before any commit that touches shared code.
+
+⚠ THREE TESTS WERE PASSING ON LUCK and were repaired (no doctrine/engine/reward code touched):
+`test_tesla_discipline` was testing the DEAL (hogeq had already found this and icebow never got
+the fix; the last negative test was vacuous in BOTH), `test_rocket_doctrine`'s overtime test
+depended on the randomly sampled enemy tower level, and `test_hogeq_pressure_doctrine`'s punish
+window depended on `reset()` not dealing a P.E.K.K.A deck. All three were exposed by I3 taking one
+extra draw from `env.rng`. Full write-ups in `research/sim_parity/conflicts.md`.
+
+Suites: icebow **773 OK (21 skipped)** — was 703; hogeq **796 tests, 3 failures + 39 errors**, the
+same failure NAMES as the 767-test baseline. Still parked: I2's remaining scope, I4, I5.
+
 ---
 
 ## 4. The central problem, and where it stands
