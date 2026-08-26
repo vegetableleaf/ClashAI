@@ -44,7 +44,8 @@ class ScriptedBot:
     """
 
     def __init__(self, cfg, db, rng, cards: List[str], style: str, levels: "List[int] | None" = None,
-                 adaptive: bool = False, evo: "List[str] | None" = None):
+                 adaptive: bool = False, evo: "List[str] | None" = None,
+                 evo_candidates: "List[str] | None" = None):
         self.style = style
         self.cards = list(cards)                                  # deck card keys (for matchup detection)
         self.rng = rng
@@ -78,30 +79,46 @@ class ScriptedBot:
         # against a deck with no cycle cost at all.
         self.cycle = list(range(len(self.specs)))
         rng.shuffle(self.cycle)
-        # DECLARED EVOLUTIONS (2026-08-26, I3). `evo` is the slot this deck was actually SEEN
-        # fielding on top ladder -- meta_decks.yaml carries it per deck, from 7173 battlelog
-        # sightings (research/sim_parity/ledger/meta_evo_slots.json).
+        # THE EVOLUTION SLOT (2026-08-26, I3). Two sources, in order of authority:
         #
-        # It replaces a heuristic that was silently degenerate: "the first deck card whose
-        # `<key>_evo` builds". build_spec FABRICATED a spec for any `_evo` key, so nothing ever
-        # failed to build and the pick was ALWAYS deck index 0 -- 689 of the 1000 meta decks
-        # fielded a phantom evolution (base stats under the evo's name). MEASURED by
-        # tools/evo_audit.py before this change; it now reports 0.
+        #   `evo`            -- a DECLARED slot. Authoritative if one ever exists; today none does.
+        #                       The battlelog field it used to come from turned out to report the
+        #                       player's OWNED evolution level, not the fielded slot (it yielded
+        #                       THREE evolutions for 153/233 decks against a game that allows at
+        #                       most two, and reported a level for `berserker`, which has no
+        #                       evolution), so all 233 declarations were stripped. The hook stays.
+        #   `evo_candidates` -- every card in this deck that really HAS an evolution, derived from
+        #                       the KB's 42 `_evo` rows (== the 42 wiki-verified evolutions in
+        #                       research/sim_parity/ledger/r1a_evolutions.json).
         #
-        # NO DECLARED SLOT => NO EVOLUTION. Guessing one is exactly what produced the phantoms,
-        # and an opponent fielding nothing is a smaller error than one fielding a fake.
+        # WHY A UNIFORM DRAW over the candidates rather than one fixed pick: no source identifies
+        # the slotted card, so naming one would be FALSE PRECISION -- and a fixed slot is also
+        # worse training, because the policy would overfit a single opponent evolution per deck.
+        # Drawing per match stays honest about what is unknown AND gives the agent the variety it
+        # actually faces. This is NOT the old bug returning: the old code picked "the first card
+        # whose `<key>_evo` builds", and build_spec FABRICATED a spec for any `_evo` key, so the
+        # pick was always deck index 0 and 689 of the 1000 meta decks fielded a PHANTOM (base
+        # stats wearing the evo's name). This draw ranges only over cards that provably have an
+        # evolution, so every outcome is real. MEASURED by tools/evo_audit.py: 0 phantoms.
         #
-        # ONE SLOT MODELLED, and the meta fields more: measured, 4282 of 7173 sightings fielded
-        # THREE evolutions and 2527 fielded two (only 27 fielded one). The engine's slot machinery
-        # below is single-slot, so the first DECLARED evo the KB can build takes it and the rest
-        # are recorded on `evo_declared` for whoever widens this. See conflicts.md "R4 collection".
+        # THE CAP IS ONE. The 16/3/2026 update made the loadout one Evolution + one Hero + one
+        # Wild, so at most two evolutions are legal -- but the second is the WILD slot, which is
+        # out of scope here (it also takes a Hero, and the engine has no Hero model) and the slot
+        # machinery below is single-slot regardless. Exactly one draw, one slot, never two.
         self.evo_idx, self.evo_spec, self.evo_cycles, self.evo_charge = -1, None, 2, 0
         self.evo_declared = [k for k in (evo or []) if k in self.cards]
-        for _k in self.evo_declared:
+        # RNG: the bot's OWN stream, so a seeded ScriptedBot fields a reproducible evolution while
+        # a vectorised run gets a different one per env. Drawn only when there is something to
+        # draw, so an evolution-less deck does not perturb the stream for the rest of the match.
+        self.evo_pool = [k for k in (evo_candidates or []) if k in self.cards]
+        _order = list(self.evo_declared)
+        if not _order and self.evo_pool:
+            _order = [self.evo_pool[rng.randrange(len(self.evo_pool))]]   # ONE uniform draw
+        for _k in _order:
             _i = self.cards.index(_k)
             try:
                 _ev = build_spec(db, _k + "_evo", levels[_i])
-            except KeyError:      # the meta fields it, the KB has no row for it yet -- skip, never fake
+            except KeyError:      # no KB row for it yet -- field nothing, never fake the base card
                 continue
             if _ev.hp <= 0 and _ev.kind != "spell":
                 continue
@@ -114,7 +131,7 @@ class ScriptedBot:
             _evd = (db.get(_k) or {}).get("evolution") or {}
             self.evo_cycles = int(_evd.get("cycles")
                                   or (db.get(_k + "_evo") or {}).get("evo_cycles") or 2)
-            break
+            break                                            # ONE slot, enforced
 
     def _hand_specs(self):
         """The 4 cards currently in hand (the rest are cycling)."""
@@ -337,7 +354,8 @@ def make_opponent(cfg, db, rng, pool: List[dict], level: "int | None" = None,
         levels = [int(level)] * len(deck["cards"])
     is_adaptive = adaptive and rng.random() < float(cfg.get("sim", "adaptive_prob", default=0.65))
     return ScriptedBot(cfg, db, rng, deck["cards"], deck["style"], levels, adaptive=is_adaptive,
-                       evo=deck.get("evo"))       # the deck's DECLARED evolution slot(s), or none
+                       evo=deck.get("evo"),       # a DECLARED slot, if a source ever names one
+                       evo_candidates=deck.get("evo_candidates"))   # else drawn from the legal set
 
 
 class SelfPlayOpponent:

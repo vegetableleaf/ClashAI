@@ -64,13 +64,45 @@ def _slots(d: dict, field: str, cards: List[str]) -> List[str]:
     return keys
 
 
-def load_meta_decks(cfg, db) -> List[dict]:
-    """Return [{name, weight, cards, style, evo, support}], validated against the KB.
+def has_evolution(db, base: str) -> bool:
+    """True when the KB can really build `<base>_evo` -- an imported `_evo` row or a curated block.
 
-    `evo` is the deck's DECLARED evolution slot(s) and `support` its tower troop, both measured
-    from top-ladder battlelogs (research/sim_parity/ledger/meta_evo_slots.json, R4). Empty when
-    the deck was never seen -- ScriptedBot then fields NO evolution rather than guessing one,
-    which is what used to fabricate phantom evolutions. Falls back to the built-ins.
+    The single definition of "this card has an evolution", shared by the loader, tools/evo_audit.py
+    and the tests, so they cannot drift apart. The KB's 42 `_evo` rows match the 42 wiki-verified
+    evolutions in research/sim_parity/ledger/r1a_evolutions.json exactly (zero additions, zero
+    removals), which is what makes the derived candidate list checkable rather than a guess.
+    """
+    if db.get(base + "_evo"):
+        return True
+    return isinstance((db.get(base) or {}).get("evolution"), dict)
+
+
+def evo_candidates(db, cards: List[str]) -> List[str]:
+    """Every card in this deck that really HAS an evolution, in deck order.
+
+    DERIVED DATA, not an inference about any player: no accessible source says which card a given
+    player put in their Evolution slot, so the sim does not name one. `meta_decks.yaml` carries this
+    list per deck for inspectability, but the KB is authoritative and the loader re-derives it when
+    the entry does not carry one -- a regenerated pool or a built-in fallback must not silently
+    field no evolutions at all.
+    """
+    return [c for c in cards if has_evolution(db, _base(c))]
+
+
+def load_meta_decks(cfg, db) -> List[dict]:
+    """Return [{name, weight, cards, style, evo, support, evo_candidates}], validated against the KB.
+
+    `support` is the deck's tower troop, measured from top-ladder battlelogs
+    (research/sim_parity/ledger/meta_evo_slots.json, R4) and reliable.
+
+    `evo` is a DECLARED evolution slot and is empty for every shipped deck: the battlelog field it
+    came from reports a player's OWNED evolution level, not the fielded slot, so all 233
+    declarations were stripped. The hook stays for the day a real source appears.
+
+    `evo_candidates` is what replaced it -- the deck's cards that really HAVE an evolution. Nothing
+    names the slotted card, so ScriptedBot draws one of these uniformly per match instead of
+    guessing a fixed one (which is what used to fabricate phantom evolutions). Falls back to the
+    built-ins.
 
     Cached by the file's timestamp: parsing ~1000 decks out of a 140 KB YAML and classifying
     each one is pure startup cost that a vectorised run would otherwise pay once per env.
@@ -89,7 +121,8 @@ def load_meta_decks(cfg, db) -> List[dict]:
         key = None
     if key is not None and key in _CACHE:
         return [{**d, "cards": list(d["cards"]), "evo": list(d["evo"]),
-                 "support": list(d["support"])} for d in _CACHE[key]]
+                 "support": list(d["support"]),
+                 "evo_candidates": list(d["evo_candidates"])} for d in _CACHE[key]]
 
     out: List[dict] = []
     if path.exists():
@@ -97,12 +130,18 @@ def load_meta_decks(cfg, db) -> List[dict]:
         for d in (data.get("decks") or []):
             cards = list(d.get("cards") or [])
             if len(cards) == 8 and all(db.get(_base(c)) for c in cards):
+                # `evo_candidates` is VALIDATED against the KB, never trusted blind: a stale entry
+                # can then only under-report (fewer candidates), never resurrect a phantom. Absent
+                # entirely -> derived, so a freshly imported pool is not silently evolution-less.
+                cands = ([c for c in _slots(d, "evo_candidates", cards) if has_evolution(db, _base(c))]
+                         if "evo_candidates" in d else evo_candidates(db, cards))
                 out.append({"name": str(d.get("name", "deck")), "weight": float(d.get("weight", 1.0)),
                             "cards": cards, "style": classify_style(db, cards),
-                            "evo": _slots(d, "evo", cards), "support": _slots(d, "support", cards)})
+                            "evo": _slots(d, "evo", cards), "support": _slots(d, "support", cards),
+                            "evo_candidates": cands})
     if not out:
         out = [{"name": n, "weight": 1.0, "cards": list(c), "style": classify_style(db, c),
-                "evo": [], "support": []}
+                "evo": [], "support": [], "evo_candidates": evo_candidates(db, list(c))}
                for n, c in _BUILTIN]
 
     # LADDER SKEW. meta_decks.yaml is scraped popularity across the whole population, but the bot
@@ -135,4 +174,5 @@ def load_meta_decks(cfg, db) -> List[dict]:
         _CACHE.clear()                        # only the current generation is useful
         _CACHE[key] = out
     return [{**d, "cards": list(d["cards"]), "evo": list(d["evo"]),
-             "support": list(d["support"])} for d in out]
+             "support": list(d["support"]),
+             "evo_candidates": list(d["evo_candidates"])} for d in out]

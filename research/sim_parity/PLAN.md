@@ -134,9 +134,18 @@ reconcile diverged test lists. *Gate:* both suites green; scaling test added.
 picker checks row existence. New `tests/test_no_phantom_evos.py` (berserker/giant/arrows evo raise;
 elite_barbarians_evo builds) + `tools/evo_audit.py`. *Gate:* phantoms 0/400 (was 287/400).
 
-**I3 — meta_decks evo/hero slots (0.5-1 day).** Schema gains `evo:`/`hero:` per deck from
-`meta_evo_slots.json`; `deck_import.py` stops discarding evolution info; ScriptedBot consumes
-declared slots. *Gate:* fielded-evo distribution matches the ledger.
+**I3 — meta_decks evo slots. DONE 2026-08-26, but NOT as written.** The premise failed: the
+battlelog's `evolutionLevel` reports a player's OWNED evolution level, not the fielded slot (three
+evolutions for 153/233 decks against a two-slot game; a level for `berserker`, which has no
+evolution), so `meta_evo_slots.json` cannot say which card was slotted and its 233 `evo:`
+declarations were stripped. RoyaleAPI / Deck Shop / StatsRoyale are all 403. **The stated gate --
+"fielded-evo distribution matches the ledger" -- is therefore unmeasurable and was dropped.**
+
+Shipped instead: a derived `evo_candidates:` per deck (the deck's cards that really have an
+evolution, == the 42 wiki-verified rows in `ledger/r1a_evolutions.json`), with ScriptedBot drawing
+ONE uniformly per match. `deck_import.py` stops tallying `evolutionLevel` entirely so a re-import
+cannot recreate the bad slots. *Gate, met:* 0 phantoms, 0 candidates failing `build_spec`,
+1000/1000 decks field a real evolution, all 42 reachable. See conflicts.md "I3 RESOLVED".
 
 **I4 — Importer hardening (1 day; precedes any re-import).** Hero subpage scrape → `<base>_hero`
 rows; allowlist (`config/import_allowlist.json`, generated from frozen registry) — emitting a key

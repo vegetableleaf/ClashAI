@@ -5,15 +5,20 @@ overlay merged nothing and it returned the BASE card wearing the evo name. `Scri
 evolution as "the first deck card whose `<key>_evo` builds", and since nothing ever raised, that was
 ALWAYS deck index 0. Every deck therefore fielded a PHANTOM evolution: base stats, evo label.
 
+What replaced it (I3): the deck's `evo_candidates` -- its cards that really HAVE an evolution,
+derived from the KB's 42 `_evo` rows, which match the 42 wiki-verified evolutions in
+research/sim_parity/ledger/r1a_evolutions.json exactly. No source says which of them a player
+actually slotted, so ScriptedBot draws ONE uniformly per match rather than naming one.
+
 Three verdicts per deck:
   REAL     -- the fielded evo resolves to an actual KB `<base>_evo` row (or a curated `evolution:`
               block), so the spec carries the evolution's own stats.
   PHANTOM  -- an evo was fielded for a card the KB has no evolution for. Must be 0.
-  NONE     -- the deck declares no evolution (or its declared one has no KB row yet). Correct
-              behaviour, not a defect: fielding nothing beats fielding a fake.
+  NONE     -- the deck holds no evolvable card at all, so it fields nothing. Correct behaviour.
 
-Run:  PYTHONPATH=src python tools/evo_audit.py [--verbose]
-Exit code 1 if ANY phantom is found, so this can gate a commit.
+Run:  PYTHONPATH=src python tools/evo_audit.py [--verbose] [--draws N]
+Exit code 1 if ANY phantom is found, or if any candidate fails to resolve through `build_spec`,
+so this can gate a commit.
 """
 from __future__ import annotations
 
@@ -29,7 +34,7 @@ import random  # noqa: E402
 
 from clashrl.cards import CardDB  # noqa: E402
 from clashrl.sim.engine import build_spec  # noqa: E402
-from clashrl.sim.meta_decks import load_meta_decks  # noqa: E402
+from clashrl.sim.meta_decks import has_evolution, load_meta_decks  # noqa: E402
 from clashrl.sim.opponents import ScriptedBot  # noqa: E402
 
 
@@ -50,68 +55,106 @@ class _Cfg:
         return self._root / p
 
 
-def _has_real_evo(db, base: str) -> bool:
-    """True when the KB can actually build `<base>_evo` -- an imported row or a curated block."""
-    if db.get(base + "_evo"):
-        return True
-    return isinstance((db.get(base) or {}).get("evolution"), dict)
+def _arg_int(argv, flag: str, default: int) -> int:
+    if flag in argv:
+        i = argv.index(flag)
+        if i + 1 < len(argv):
+            return int(argv[i + 1])
+    return default
 
 
 def main(argv) -> int:
     verbose = "--verbose" in argv
+    draws = _arg_int(argv, "--draws", 20)
     cfg = _Cfg(ROOT)
     db = CardDB(path=ROOT / "config" / "cards.yaml")
     pool = load_meta_decks(cfg, db)
 
     verdicts: Counter = Counter()
-    fielded: Counter = Counter()
     phantoms: list = []
+    unbuildable: list = []
+    cand_hist: Counter = Counter()
     declared_no_row: Counter = Counter()
 
+    n_cands = 0
     declared_decks = 0
-    unmodelled_extra = 0
     for deck in pool:
-        # `evo=` is what makes this an audit of the REAL picker rather than of a default: the bot
-        # fields the deck's DECLARED slot, so passing it is not optional here.
-        bot = ScriptedBot(cfg, db, random.Random(0), deck["cards"], deck["style"],
-                          [11] * len(deck["cards"]), evo=deck.get("evo"))
+        cands = list(deck.get("evo_candidates") or [])
+        cand_hist[len(cands)] += 1
+        n_cands += len(cands)
+        # EVERY candidate must resolve, not just the one this seed happened to draw -- otherwise a
+        # broken row would only surface on the run that sampled it.
+        for k in cands:
+            if not has_evolution(db, k):
+                unbuildable.append((deck["name"], k, "no KB evolution"))
+                continue
+            try:
+                build_spec(db, k + "_evo", 11)
+            except Exception as exc:                                      # noqa: BLE001
+                unbuildable.append((deck["name"], k, repr(exc)))
         declared = list(deck.get("evo") or [])
         if declared:
             declared_decks += 1
-        # A slot the meta DECLARES but the KB cannot build is a missing KB row, not a modelling
-        # choice -- counted for every deck, including ones where a different slot did build.
-        for k in declared:
-            if not _has_real_evo(db, k):
-                declared_no_row[k] += 1
-        # The engine models ONE evolution slot; top-ladder decks field 2-3 (R4). Count what the
-        # declaration asked for and the bot could not carry.
-        unmodelled_extra += max(0, sum(1 for k in declared if _has_real_evo(db, k)) - 1)
+            for k in declared:
+                if not has_evolution(db, k):
+                    declared_no_row[k] += 1
+        # `evo_candidates=` is what makes this an audit of the REAL picker rather than of a
+        # default: the bot draws from the deck's own legal set, so passing it is not optional.
+        bot = ScriptedBot(cfg, db, random.Random(0), deck["cards"], deck["style"],
+                          [11] * len(deck["cards"]), evo=declared, evo_candidates=cands)
         idx = getattr(bot, "evo_idx", -1)
         if idx < 0 or getattr(bot, "evo_spec", None) is None:
             verdicts["NONE"] += 1
             continue
         base = deck["cards"][idx]
-        if _has_real_evo(db, base):
+        if has_evolution(db, base):
             verdicts["REAL"] += 1
-            fielded[base] += 1
         else:
             verdicts["PHANTOM"] += 1
             phantoms.append((deck["name"], base))
 
     total = sum(verdicts.values())
-    print(f"decks audited: {total}   (declaring a slot: {declared_decks})")
+    print(f"decks audited: {total}   (declaring a fixed slot: {declared_decks})")
     for v in ("REAL", "PHANTOM", "NONE"):
         print(f"  {v:<8} {verdicts[v]:>4}  ({100.0 * verdicts[v] / max(1, total):.1f}%)")
-    if unmodelled_extra:
-        print(f"buildable slots the single-slot engine could not carry: {unmodelled_extra}")
-    if fielded:
-        print("fielded evolutions (top 15):")
-        for k, n in fielded.most_common(15):
-            print(f"  {k:<24} x{n}")
+    with_cands = sum(n for k, n in cand_hist.items() if k)
+    print(f"decks with >=1 evolution candidate: {with_cands}/{total} "
+          f"({100.0 * with_cands / max(1, total):.1f}%)")
+    print(f"mean candidates/deck: {n_cands / max(1, total):.3f}")
+    print("candidates-per-deck: " + "  ".join(f"{k}:{n}" for k, n in sorted(cand_hist.items())))
+    print(f"candidates failing build_spec: {len(unbuildable)}")
+
+    # THE SAMPLED DISTRIBUTION, not the seed-0 one above: the bot draws per match, so what the
+    # policy actually trains against is this spread over many draws.
+    sampled: Counter = Counter()
+    n_none = 0
+    for s in range(draws):
+        for deck in pool:
+            bot = ScriptedBot(cfg, db, random.Random(1000 + s), deck["cards"], deck["style"],
+                              [11] * len(deck["cards"]), evo=list(deck.get("evo") or []),
+                              evo_candidates=list(deck.get("evo_candidates") or []))
+            if bot.evo_idx < 0 or bot.evo_spec is None:
+                n_none += 1
+            else:
+                sampled[deck["cards"][bot.evo_idx]] += 1
+    n_draws = total * max(1, draws)
+    print(f"sampled evolutions over {draws} draws x {total} decks = {n_draws} matches "
+          f"({n_none} fielded none, {len(sampled)} distinct evolutions fielded):")
+    for k, n in sampled.most_common(None if verbose else 15):
+        print(f"  {k + '_evo':<26} x{n:<6} ({100.0 * n / max(1, n_draws):.2f}%)")
+    if not verbose and len(sampled) > 15:
+        print(f"  ... {len(sampled) - 15} more (--verbose)")
+
     if declared_no_row:
         print("DECLARED by the meta but absent from the KB (no `_evo` row -> nothing fielded):")
         for k, n in declared_no_row.most_common():
             print(f"  {k:<24} x{n} decks")
+    rc = 0
+    if unbuildable:
+        print(f"CANDIDATES THAT DO NOT RESOLVE ({len(unbuildable)}):")
+        for name, k, why in (unbuildable if verbose else unbuildable[:20]):
+            print(f"  {name}: {k}_evo -> {why}")
+        rc = 1
     if phantoms:
         print(f"PHANTOMS ({len(phantoms)}):")
         shown = phantoms if verbose else phantoms[:20]
@@ -119,8 +162,8 @@ def main(argv) -> int:
             print(f"  {name}: {base}_evo has no KB row")
         if len(shown) < len(phantoms):
             print(f"  ... {len(phantoms) - len(shown)} more (--verbose)")
-        return 1
-    return 0
+        rc = 1
+    return rc
 
 
 if __name__ == "__main__":

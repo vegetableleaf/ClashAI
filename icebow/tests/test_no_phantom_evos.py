@@ -5,14 +5,21 @@ The defect these pin (I2/I3, 2026-08-26): `build_spec` fabricated a spec for ANY
 with no evo row the overlay merged nothing and it returned the BASE card wearing the evo's name.
 `ScriptedBot` then picked its evolution as "the first deck card whose `<key>_evo` builds", and since
 nothing ever failed to build, that was ALWAYS deck index 0. MEASURED before the fix: 689 of the 1000
-meta decks fielded a phantom (arrows x188, berserker x128, barbarian_barrel x124, ...). After:
-0 phantoms, 233 decks fielding their DECLARED slot, 767 fielding none.
+meta decks fielded a phantom (arrows x188, berserker x128, barbarian_barrel x124, ...).
 
-`berserker` and `giant` are the interesting cases: they ARE evolved on live top ladder (937 and 277
-sightings in research/sim_parity/ledger/meta_evo_slots.json) but the KB has no row for either, so
-the honest answer is "cannot build", not "here is the base card". They light up by themselves once
-the importer grows those rows -- meta_decks.yaml already declares them.
+The restock (I3): each deck carries `evo_candidates` -- its own cards that really HAVE an evolution,
+derived from the KB's 42 `_evo` rows, which match the 42 wiki-verified evolutions in
+research/sim_parity/ledger/r1a_evolutions.json EXACTLY (zero additions, zero removals). The bot
+draws ONE uniformly per match. MEASURED after: 1000/1000 decks field a REAL evolution, 0 phantoms,
+0 candidates that fail to build, all 42 evolutions reachable.
+
+Why a draw and not a named slot: nothing published says which card a player put in the slot. The
+battlelog's `evolutionLevel` reports the player's OWNED level -- it yields THREE evolutions for
+153/233 decks against a game that allows at most two, and reports a level for `berserker`, which has
+no evolution at all -- so its 233 declarations were stripped. Naming one would be false precision;
+drawing from the LEGAL set is honest and trains against realistic variety.
 """
+import json
 import random
 import sys
 import unittest
@@ -27,16 +34,24 @@ from test_sim_status_effects import DummyCfg  # noqa: E402
 
 from clashrl.cards import CardDB  # noqa: E402
 from clashrl.sim.engine import build_spec  # noqa: E402
-from clashrl.sim.meta_decks import load_meta_decks  # noqa: E402
+from clashrl.sim.meta_decks import evo_candidates, has_evolution, load_meta_decks  # noqa: E402
 from clashrl.sim.opponents import ScriptedBot  # noqa: E402
 
-# Evolutions the live meta fields that the KB has no row for. Not a wish list: every key here was
-# seen evolved in the R4 battlelog sweep, so any of them gaining a row is a legitimate change --
-# the test then simply has fewer keys to guard.
+# Cards the OFFICIAL API forward-declares an `evolutionLevel` for that have NO evolution in the
+# game: the `Card Evolution` master page mentions "Berserker" zero times, and R1's probes found no
+# `/Evolution` subpage for either. If one ever ships, it gains a KB row and this list shrinks.
 NO_KB_ROW = ("berserker_evo", "giant_evo")
 # ...and one that is a phantom in the strict sense: `arrows` was never once seen evolved in 7173
 # top-ladder deck sightings, yet it was the single most-fielded fake (188 decks).
 NEVER_EVOLVED = "arrows_evo"
+
+# The wiki-verified evolution list (R1a). Lives above the deck root, so it is absent from a plain
+# deck checkout -- the cross-check skips rather than fails there.
+LEDGER = ROOT.parent / "research" / "sim_parity" / "ledger" / "r1a_evolutions.json"
+
+# Eight real cards, none of which has an evolution -- the "fields nothing" fixture.
+NO_EVO_DECK = ["fireball", "the_log", "hog_rider", "miner",
+               "poison", "rocket", "arrows", "graveyard"]
 
 
 class _Cfg(DummyCfg):
@@ -55,8 +70,8 @@ def _db():
     return CardDB(path=ROOT / "config" / "cards.yaml")
 
 
-def _has_real_evo(db, base: str) -> bool:
-    return bool(db.get(base + "_evo")) or isinstance((db.get(base) or {}).get("evolution"), dict)
+def _bot(cfg, db, cards, seed=0, **kw):
+    return ScriptedBot(cfg, db, random.Random(seed), cards, "control", [11] * len(cards), **kw)
 
 
 class BuildSpecRefusesPhantomsTests(unittest.TestCase):
@@ -99,51 +114,169 @@ class BuildSpecRefusesPhantomsTests(unittest.TestCase):
                                   msg="the evo row is not reaching the spec")
 
 
+class EvoCandidatesAreDerivedNotGuessedTests(unittest.TestCase):
+    """`evo_candidates` is DERIVED DATA. These pin that it can only ever name real evolutions."""
+
+    def test_every_candidate_in_the_pool_is_a_real_evolution_the_deck_holds(self):
+        cfg, db = _Cfg(), _db()
+        pool = load_meta_decks(cfg, db)
+        self.assertGreater(len(pool), 100, "the meta pool did not load")
+        bad = []
+        for deck in pool:
+            for k in deck["evo_candidates"]:
+                if k not in deck["cards"]:
+                    bad.append((deck["name"], k, "not in the deck"))
+                elif not has_evolution(db, k):
+                    bad.append((deck["name"], k, "no KB evolution"))
+        self.assertEqual(bad, [], f"{len(bad)} candidates are not real, held evolutions")
+
+    def test_every_candidate_resolves_through_build_spec(self):
+        """The gate: a candidate that cannot build would field NOTHING on the run that drew it."""
+        cfg, db = _Cfg(), _db()
+        pool = load_meta_decks(cfg, db)
+        seen, failed = set(), []
+        for deck in pool:
+            for k in deck["evo_candidates"]:
+                if k in seen:
+                    continue
+                seen.add(k)
+                try:
+                    spec = build_spec(db, k + "_evo", 11)
+                except Exception as exc:                                  # noqa: BLE001
+                    failed.append((k, repr(exc)))
+                    continue
+                if spec.hp <= 0.0 and spec.kind != "spell":
+                    failed.append((k, f"non-spell with hp {spec.hp}"))
+        self.assertEqual(failed, [], f"{len(failed)} candidate evolutions do not resolve")
+        self.assertGreater(len(seen), 20, "suspiciously few distinct candidates in the pool")
+
+    def test_the_kb_evolution_set_matches_the_wiki_verified_ledger(self):
+        """R1a: 42 wiki-verified evolutions, matching the KB's 42 `_evo` rows exactly.
+
+        This is what makes the derived candidate list CHECKABLE rather than a guess. If the KB
+        grows a row the wiki does not carry (or loses one it does), the candidates stop being
+        verifiable and this goes red.
+        """
+        if not LEDGER.exists():
+            self.skipTest(f"{LEDGER} not present (research/ lives above the deck root)")
+        db = _db()
+        kb = {k for k in db.cards if k.endswith("_evo")}
+        wiki = {e["key"] for e in json.loads(LEDGER.read_text(encoding="utf-8"))["evolutions"]}
+        self.assertEqual(len(wiki), 42)
+        self.assertEqual(sorted(kb), sorted(wiki),
+                         f"KB-only {sorted(kb - wiki)}, wiki-only {sorted(wiki - kb)}")
+
+    def test_a_deck_with_no_evolvable_card_has_no_candidates(self):
+        db = _db()
+        self.assertEqual(evo_candidates(db, NO_EVO_DECK), [])
+
+    def test_candidates_are_derived_when_the_entry_does_not_carry_them(self):
+        """A regenerated pool or a built-in fallback must not silently field no evolutions."""
+        db = _db()
+        cards = ["knight", "musketeer", "fireball", "skeletons",
+                 "ice_spirit", "hog_rider", "cannon", "the_log"]
+        self.assertEqual(evo_candidates(db, cards),
+                         ["knight", "musketeer", "skeletons", "ice_spirit", "cannon"])
+
+
 class ScriptedBotFieldsOnlyRealEvosTests(unittest.TestCase):
     def test_every_meta_deck_evo_pick_resolves_to_a_real_kb_row(self):
         """The gate: 0 phantoms across the whole pool (was 689/1000). Mirrors tools/evo_audit.py."""
         cfg, db = _Cfg(), _db()
         pool = load_meta_decks(cfg, db)
         self.assertGreater(len(pool), 100, "the meta pool did not load")
-        phantoms, real = [], 0
+        phantoms, real, none = [], 0, 0
         for deck in pool:
-            bot = ScriptedBot(cfg, db, random.Random(0), deck["cards"], deck["style"],
-                              [11] * len(deck["cards"]), evo=deck.get("evo"))
+            bot = _bot(cfg, db, deck["cards"], evo=deck["evo"],
+                       evo_candidates=deck["evo_candidates"])
             if bot.evo_idx < 0 or bot.evo_spec is None:
+                none += 1
+                # Fielding nothing is only correct when there was nothing legal to field.
+                self.assertEqual(deck["evo_candidates"], [],
+                                 f"{deck['name']} had candidates but fielded no evolution")
                 continue
             real += 1
             base = deck["cards"][bot.evo_idx]
-            if not _has_real_evo(db, base):
+            if not has_evolution(db, base):
                 phantoms.append((deck["name"], base))
         self.assertEqual(phantoms, [], f"{len(phantoms)} decks field a phantom evolution")
-        # NB deliberately NOT asserting real > 0. The pool currently declares NO evo slots: the
-        # battlelog's `evolutionLevel` turned out to report a player's OWNED evolution level, not
-        # which card sat in a slot (it yielded THREE evos for 153/233 decks against a two-slot
-        # game, and named berserker/giant, which have no evolution). Those declarations were
-        # removed rather than shipped wrong. Fielding NOTHING is the honest state until a real
-        # source lands; fielding a guess is what fabricated the phantoms in the first place.
+        self.assertGreater(real, 0.9 * len(pool),
+                           f"only {real}/{len(pool)} decks field an evolution (was 1000/1000)")
 
-    def test_the_fielded_evo_is_the_declared_one(self):
-        """Self-contained: builds its own declared deck rather than depending on the shipped pool,
-        which declares no slots today (see the note in the pool test). A behaviour test must not
-        go red just because production DATA changed."""
+    def test_the_draw_is_reproducible_under_a_seeded_rng(self):
         cfg, db = _Cfg(), _db()
         cards = ["knight", "musketeer", "fireball", "skeletons",
                  "ice_spirit", "hog_rider", "cannon", "the_log"]
-        declared = "musketeer"
-        self.assertTrue(_has_real_evo(db, declared), "fixture must name a REAL evolution")
-        bot = ScriptedBot(cfg, db, random.Random(0), cards, "control",
-                          [11] * 8, evo=[declared])
-        self.assertGreaterEqual(bot.evo_idx, 0, "a declared, real, held evo must be fielded")
-        self.assertEqual(cards[bot.evo_idx], declared)
+        cands = evo_candidates(db, cards)
+        for seed in (0, 1, 7, 12345):
+            a = _bot(cfg, db, cards, seed=seed, evo_candidates=cands)
+            b = _bot(cfg, db, cards, seed=seed, evo_candidates=cands)
+            with self.subTest(seed=seed):
+                self.assertEqual(a.evo_idx, b.evo_idx)
+                self.assertEqual(a.evo_spec.key, b.evo_spec.key)
 
-    def test_no_declared_slot_means_no_evolution(self):
+    def test_the_draw_actually_varies_and_reaches_every_candidate(self):
+        """A "uniform draw" that always returns index 0 is the ORIGINAL bug wearing a new name."""
+        cfg, db = _Cfg(), _db()
+        cards = ["knight", "musketeer", "fireball", "skeletons",
+                 "ice_spirit", "hog_rider", "cannon", "the_log"]
+        cands = evo_candidates(db, cards)
+        self.assertGreater(len(cands), 1, "fixture must offer a real choice")
+        got = {_bot(cfg, db, cards, seed=s, evo_candidates=cands).evo_spec.base
+               for s in range(400)}
+        self.assertEqual(sorted(got), sorted(cands),
+                         "the draw does not reach every legal candidate")
+
+    def test_only_one_evolution_slot_is_ever_fielded(self):
+        """The 16/3/2026 loadout is one Evolution + one Hero + one Wild. The engine models the
+        Evolution slot only: exactly one, never two, even when all eight cards could evolve."""
+        cfg, db = _Cfg(), _db()
+        cards = ["knight", "musketeer", "skeletons", "ice_spirit",
+                 "cannon", "valkyrie", "tesla", "archers"]
+        cands = evo_candidates(db, cards)
+        self.assertEqual(len(cands), 8, "fixture must be all-evolvable")
+        for seed in range(30):
+            bot = _bot(cfg, db, cards, seed=seed, evo_candidates=cands)
+            with self.subTest(seed=seed):
+                self.assertGreaterEqual(bot.evo_idx, 0)
+                self.assertIsNotNone(bot.evo_spec)
+                # ONE index, ONE spec: the machinery holds a scalar slot, not a list of them.
+                self.assertNotIsInstance(bot.evo_idx, (list, tuple))
+                self.assertEqual(sum(1 for s in bot.specs if s is bot.evo_spec), 0,
+                                 "the evo spec must replace the base at play time, not sit in the deck")
+
+    def test_a_deck_with_no_evolvable_card_fields_nothing(self):
+        cfg, db = _Cfg(), _db()
+        cands = evo_candidates(db, NO_EVO_DECK)
+        self.assertEqual(cands, [])
+        bot = _bot(cfg, db, NO_EVO_DECK, evo_candidates=cands)
+        self.assertEqual(bot.evo_idx, -1)
+        self.assertIsNone(bot.evo_spec)
+
+    def test_a_candidate_the_deck_does_not_hold_is_ignored(self):
+        cfg, db = _Cfg(), _db()
+        bot = _bot(cfg, db, NO_EVO_DECK, evo_candidates=["mega_knight", "wizard"])
+        self.assertEqual(bot.evo_idx, -1, "a candidate outside the deck must not be fielded")
+
+    def test_a_declared_slot_still_wins_over_the_draw(self):
+        """`evo:` is authoritative if a real source ever names a slot. No shipped deck declares
+        one today, but the hook must keep working -- and must not be silently overridden."""
+        cfg, db = _Cfg(), _db()
+        cards = ["knight", "musketeer", "fireball", "skeletons",
+                 "ice_spirit", "hog_rider", "cannon", "the_log"]
+        cands = evo_candidates(db, cards)
+        for seed in range(20):
+            bot = _bot(cfg, db, cards, seed=seed, evo=["cannon"], evo_candidates=cands)
+            with self.subTest(seed=seed):
+                self.assertEqual(cards[bot.evo_idx], "cannon")
+
+    def test_no_declared_slot_and_no_candidates_means_no_evolution(self):
         """Guessing a slot is exactly what fabricated the phantoms, so absence must field NOTHING."""
         cfg, db = _Cfg(), _db()
         cards = ["knight", "archers", "skeletons", "musketeer", "fireball", "the_log",
                  "ice_spirit", "cannon"]
-        self.assertTrue(any(_has_real_evo(db, c) for c in cards), "picked a deck with no evos")
-        bot = ScriptedBot(cfg, db, random.Random(0), cards, "cycle", [11] * 8, evo=None)
+        self.assertTrue(any(has_evolution(db, c) for c in cards), "picked a deck with no evos")
+        bot = _bot(cfg, db, cards, evo=None, evo_candidates=None)
         self.assertEqual(bot.evo_idx, -1)
         self.assertIsNone(bot.evo_spec)
 
@@ -151,15 +284,14 @@ class ScriptedBotFieldsOnlyRealEvosTests(unittest.TestCase):
         cfg, db = _Cfg(), _db()
         cards = ["knight", "archers", "skeletons", "musketeer", "fireball", "the_log",
                  "ice_spirit", "cannon"]
-        bot = ScriptedBot(cfg, db, random.Random(0), cards, "cycle", [11] * 8,
-                          evo=["mega_knight"])       # not in the deck
+        bot = _bot(cfg, db, cards, evo=["mega_knight"])       # not in the deck
         self.assertEqual(bot.evo_idx, -1)
 
     def test_a_declared_evo_with_no_kb_row_fields_nothing_rather_than_a_fake(self):
         cfg, db = _Cfg(), _db()
         cards = ["berserker", "archers", "skeletons", "musketeer", "fireball", "the_log",
                  "ice_spirit", "cannon"]
-        bot = ScriptedBot(cfg, db, random.Random(0), cards, "cycle", [11] * 8, evo=["berserker"])
+        bot = _bot(cfg, db, cards, evo=["berserker"])
         self.assertEqual(bot.evo_idx, -1, "a KB-less evolution must not fall back to the base card")
 
     def test_evo_cycles_come_from_the_evolution_row_not_a_flat_default(self):
@@ -168,8 +300,18 @@ class ScriptedBotFieldsOnlyRealEvosTests(unittest.TestCase):
         self.assertEqual(int((db.get("elite_barbarians_evo") or {}).get("evo_cycles")), 1)
         cards = ["elite_barbarians", "archers", "skeletons", "musketeer", "fireball", "the_log",
                  "ice_spirit", "cannon"]
-        bot = ScriptedBot(cfg, db, random.Random(0), cards, "control", [11] * 8,
-                          evo=["elite_barbarians"])
+        bot = _bot(cfg, db, cards, evo=["elite_barbarians"])
+        self.assertEqual(bot.evo_idx, 0)
+        self.assertEqual(bot.evo_cycles, 1)
+
+    def test_a_drawn_evo_also_takes_its_cycles_from_its_own_row(self):
+        """The same rule must hold on the DRAW path, not just the declared one."""
+        cfg, db = _Cfg(), _db()
+        cards = ["elite_barbarians", "fireball", "the_log", "hog_rider",
+                 "miner", "poison", "rocket", "graveyard"]
+        cands = evo_candidates(db, cards)
+        self.assertEqual(cands, ["elite_barbarians"], "fixture must force the draw")
+        bot = _bot(cfg, db, cards, evo_candidates=cands)
         self.assertEqual(bot.evo_idx, 0)
         self.assertEqual(bot.evo_cycles, 1)
 

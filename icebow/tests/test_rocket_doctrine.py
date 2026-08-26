@@ -50,6 +50,22 @@ class _Base(unittest.TestCase):
         self.env._defensive = False
         return e
 
+    def win_the_tiebreak(self):
+        """The OTHER half of neutralising prior rule 5, needed once a test moves into overtime.
+
+        `_defensive = False` only disarms rule 5 while `t < _double_time`; past that its second
+        trigger re-arms it, and it then bumps rocket to 4.5 whenever `op_low >= my_low`. Whether
+        that holds on a fresh board is decided by the RANDOMLY SAMPLED enemy tower level (measured:
+        ours 4424 vs theirs 4858 under one seed, the reverse under another), so an overtime test
+        that does not pin the race is really testing the deal -- it went red the moment an unrelated
+        change (I3, one extra draw from the same RNG) shifted the sampled level. Making our lowest
+        tower the healthier one puts rule 5 off for a stated reason instead of a lucky one."""
+        e = self.env.eng
+        low = min(t.hp for t in e.towers[0][:2] if t.alive)
+        for t in e.towers[1][:2]:
+            t.hp = min(t.hp, low - 1.0)
+        return e
+
     def cid(self, base):
         for i, k in enumerate(self.env.deck_keys):
             if k == base or k == base + "_evo":
@@ -182,6 +198,7 @@ class PumpGateTests(_Base):
     def test_the_pump_is_not_rocketed_in_overtime(self):
         """'Once overtime starts you stop rocketing pumps -- the tower is worth more.'"""
         e = self.fresh()
+        self.win_the_tiebreak()          # else prior rule 5 re-arms in overtime and masks this one
         self.hand("rocket", "knight", "tesla", "the_log")
         self.enemy("elixir_collector", 0.30, 0.30)
         before = self.rocket_weight()

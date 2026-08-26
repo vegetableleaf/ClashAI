@@ -372,3 +372,71 @@ error. Real evo slots need another source — an owner decision (I3 remains OPEN
   (a) curated top-20 mapping by hand (the plan's documented fallback), or
   (b) infer from per-card evolution frequency in the pool, or
   (c) leave opponents evo-less until a better source appears.
+
+### I3 RESOLVED 2026-08-26 — field every LEGAL evolution, drawn per match
+
+The open question above listed three options: (a) curate a top-20 mapping by hand, (b) infer from
+per-card evolution frequency, (c) leave opponents evo-less. **None was taken**, because all three
+still try to answer "which card did this player slot?", and nothing published answers it.
+
+Implemented instead: each deck carries `evo_candidates` -- its own cards that really HAVE an
+evolution, the deck intersected with the 42 wiki-verified evolutions in `ledger/r1a_evolutions.json`
+(which match the KB's 42 `_evo` rows exactly, zero additions, zero removals). `ScriptedBot` draws
+ONE of them uniformly per match from its own RNG. That is DERIVED, VERIFIABLE DATA, not an
+inference about a player: (a) would have been a guess with a curator's name on it, and (b) was
+already measured non-bimodal (36 of the 109 cards with >=100 sightings sit between 0.15 and 0.85
+P(evolved | in deck)), i.e. a guess wearing measured clothes. A fixed slot is also worse TRAINING
+than a draw -- the policy would overfit one opponent evolution per deck instead of facing the
+variety it meets on ladder.
+
+MEASURED, `tools/evo_audit.py`, both decks (identical output):
+```
+                        before (84e144a)   after
+decks fielding a REAL evolution      0     1000/1000 (100.0%)
+phantoms                             0     0
+candidates failing build_spec        n/a   0
+mean candidates/deck                 n/a   3.269  (hist 1:26 2:263 3:337 4:215 5:121 6:28 7:7 8:3)
+distinct evolutions fielded          0     42 of 42, over 20 draws x 1000 decks
+```
+Top of the sampled distribution: skeletons_evo 6.37%, zap_evo 6.33%, elite_barbarians_evo 4.74%,
+valkyrie_evo 4.34%, giant_snowball_evo 3.71%.
+
+`deck_import.py` no longer tallies `evolutionLevel` at all -- it wrote the 233 bad `evo:` slots and
+the next `run.py decks-import` would have re-created them. It now writes the derived
+`evo_candidates` instead, and `sim/meta_decks.py` re-derives them when an entry has none, so a
+regenerated pool cannot silently go evolution-less. A stale `evo_candidates` in the YAML is
+validated against the KB on load, so it can only ever under-report, never resurrect a phantom.
+
+The DECLARED-slot path (`evo:`) is kept and still outranks the draw, for the day a source names a
+real slot. Nothing ships one today.
+
+**Cap:** ONE evolution. The 16/3/2026 loadout is one Evolution + one Hero + one Wild, so two are
+legal, but the second is the WILD slot -- it also takes a Hero and the engine has no Hero model.
+Out of scope, noted in the code.
+
+### I3 SIDE EFFECT — three tests were passing on luck, not on logic
+
+The draw takes one value from the bot's RNG, which is `env.rng`: `reset()` builds the opponent and
+then shuffles OUR cycle from the same stream. One extra draw therefore shifts the deal, the sampled
+enemy tower level and the sampled opponent deck. Three tests went red, and NONE of them was testing
+what its name says:
+
+1. `test_tesla_discipline` (icebow) -- `doctrine_cards` only nominates HOLDABLE cards, so the whole
+   nomination half of that file was testing the deal. hogeq had already found and fixed this (its
+   `_deal()` helper says so verbatim: "passed on the IceBow deck only because that deck's opening
+   cycle happened to contain the Tesla"); icebow's copy had never been backported. Adopted hogeq's
+   version, and dealt the Tesla in the last negative test too -- it was passing VACUOUSLY in both.
+2. `test_rocket_doctrine.test_the_pump_is_not_rocketed_in_overtime` (icebow) -- `fresh()` disarms
+   prior rule 5 with `_defensive = False`, but rule 5 has a SECOND trigger (`t >= _double_time`)
+   that re-arms in overtime, and it then bumps rocket whenever `op_low >= my_low`. Whether that
+   holds on a fresh board is decided by the randomly sampled enemy tower level (MEASURED: ours 4424
+   vs theirs 4858 under one seed, the reverse under another). Added `win_the_tiebreak()`.
+3. `test_hogeq_pressure_doctrine.test_a_pump_deep_in_their_half_is_a_punish_window` -- the T1 punish
+   is VETOED when the opponent holds a P.E.K.K.A, and `reset()` deals a random meta deck. MEASURED:
+   reset #2 of a run deals a pekka deck; the shift moved it onto this test. `fresh()` now pins a
+   plain `NEUTRAL_OPPONENT` deck, putting all five deck-keyed doctrine rules
+   (pekka/tornado/earthquake/rocket + `known`) on their default branch. All 19 tests in the file
+   still pass, including the pekka veto test, which puts its P.E.K.K.A on the BOARD.
+
+These are repairs to latent test fragility that the change EXPOSED, not to behaviour it broke: no
+doctrine, engine or reward code was touched for any of the three.

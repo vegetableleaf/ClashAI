@@ -22,6 +22,17 @@ from clashrl.sim.engine import Unit, build_spec       # noqa: E402
 from clashrl.sim.env import SimMatchEnv               # noqa: E402
 
 
+# A FIXED, DELIBERATELY PLAIN opponent deck. `reset()` samples a random meta deck, and several
+# doctrine rules read it by name -- the T1 punish window is vetoed outright when the opponent holds
+# a P.E.K.K.A, and the cell rules branch on earthquake/rocket/tornado. So every assertion in this
+# file was silently a lottery over which deck the shared RNG happened to deal. MEASURED: reset #2
+# of a run deals a P.E.K.K.A deck, and `test_a_pump_deep_in_their_half_is_a_punish_window` went red
+# the moment an unrelated change (I3, one extra draw from the same stream) moved that deal onto it.
+# Holding none of the named cards, this deck puts every deck-keyed rule on its DEFAULT branch.
+NEUTRAL_OPPONENT = ["hog_rider", "musketeer", "knight", "skeletons",
+                    "ice_spirit", "cannon", "fireball", "zap"]
+
+
 def _hog_in_hand(env):
     """Cycle non-Hog plays until the Hog is in hand (the deal is deterministic per reset seed)."""
     hog = next(i for i, k in enumerate(env.deck_keys) if k == "hog_rider")
@@ -47,6 +58,7 @@ class _Base(unittest.TestCase):
         eng.projectiles.clear()
         eng.elixir[0] = float(elixir)
         eng.t = float(t)
+        env.opponent.cards = list(NEUTRAL_OPPONENT)
         return env, eng
 
     def enemy(self, eng, key, x, y, level=11):
