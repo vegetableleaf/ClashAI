@@ -50,6 +50,14 @@ SRC = ("https://raw.githubusercontent.com/RoyaleAPI/cr-api-data/master/docs/json
 TILE = 1000.0        # game distance units per arena tile
 OUT = _ROOT / "config" / "card_mechanics.json"
 
+# CARDS THIS DUMP STILL BELIEVES ARE BUILDINGS. The dump froze 2023-10-18; a card the live game
+# has since re-typed as a troop has no lifetime, but its frozen row still carries one -- and
+# card_mechanics sits ABOVE cards_stats.json in the CardDB merge, so the stale value wins. See
+# the `lifetime_s` line below.
+_NO_LIFETIME = {
+    "furnace",      # 4/8/2025: became a walking troop. Dump key: "FirespiritHut".
+}
+
 
 def _tiles(v):
     return round(float(v) / TILE, 3) if v else None
@@ -113,7 +121,15 @@ def main(argv) -> int:
             "load_time_s": _secs(ch.get("load_time")),
             "deploy_delay_s": _secs(ch.get("deploy_delay")),
             "knockback_immune": bool(ch.get("ignore_pushback")) or None,
-            "lifetime_s": _secs(ch.get("life_time")),          # buildings: X-Bow 30 s, Tesla 40 s
+            # LIFETIME IS A BALANCE VALUE, NOT A STRUCTURAL CONSTANT -- and this dump froze in 2023,
+            # so for any card the live game has since RE-TYPED it is a stale belief that outranks
+            # the wiki (card_mechanics sits above cards_stats.json in the CardDB merge). The
+            # Furnace stopped being a building on 4/8/2025; its row here still calls it
+            # "FirespiritHut" and still carried 28 s, which is what put the decay back after
+            # a7bb144 had already removed it. Owner ruling R2 #11: "FURNACE IS A TROOP NOW -- no
+            # lifetime stat." Add any further re-typed card here rather than editing the JSON.
+            "lifetime_s": None if key in _NO_LIFETIME else _secs(ch.get("life_time")),
+
             "turret_rotation": ch.get("turret_movement") or None,   # X-Bow/Mortar retarget swivel
             # cross-check only -- the sim keeps its wiki-sourced values for these
             "_speed_units": ch.get("speed"),

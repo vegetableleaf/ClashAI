@@ -183,3 +183,49 @@ Open items C1-C8 above are unchanged by the merge except where R2_REVIEW cites t
 `mighty_miner.ability_bomb_damage` 366 -> 332 fix are re-verified and still unapplied; C4 is
 resolved (goblinstein Doctor damage 92 -> 135); the `skeleton_king` and `little_prince` halves of
 C8 are resolved by dated History entries.
+
+## 2026-08-26 — R2 #8 ENGINE/SCHEMA batch: gaps found while applying
+
+Recorded per the batch rule "implement what the evidence supports and record the gap rather than
+inventing numbers". Each entry is a MEASURED side effect or a source disagreement the seven
+approved items did not cover.
+
+### E1. Furnace: dropping `lifetime` re-prices it as a THREAT, and the new price is a guess.
+
+`threat_value._spawner_cost` computes "how many waves it actually gets" as `lifetime / interval`.
+With the stale 28 s that was 28/5 = 5.6 waves; with no lifetime it falls back to the module's flat
+`_SPAWNER_WAVES = 2.0`.
+
+MEASURED `ignore_cost_frac("furnace")`: **0.2620 -> 0.0936**, i.e. the sim now treats an
+unanswered Furnace as roughly a third as costly to ignore.
+
+Neither number is sourced. The honest bound for a spawner that now WALKS is "however long it
+survives", which the pricing model cannot see: MEASURED, a Furnace deployed at y=0.80 reaches a
+crown tower and dies at **t = 18.7 s**, i.e. ~3.7 waves — between the old 5.6 and the new 2.0.
+Applying the owner's ruling was still correct (the ruling is about the card's lifetime, not about
+threat pricing), but `_SPAWNER_WAVES` is now load-bearing for this card and nothing measured it.
+**Owner decision needed**: is a flat 2 waves the right reading for a walking spawner, or should
+`_spawner_cost` bound waves by survival time instead?
+
+### E2. `lifetime_s` is imported by `card_mechanics.json` but not DECLARED by it.
+
+That file's own `meta.imports` reads "mass, sight, collision, load_time, deploy_delay,
+knockback_immune" and its docstring justifies sitting above the wiki layer on the grounds that
+only STRUCTURAL constants are imported. `lifetime_s` is neither declared nor structural — it is a
+balance value from a dump frozen 2023-10-18, and it outranks the live wiki for every card that
+carries one.
+
+Only the Furnace row was removed here, because a blanket demotion is NOT behaviour-neutral.
+MEASURED, comparing the mechanics layer against `cards_stats.json` for all 12 keys that carry
+`lifetime_s`: 10 agree exactly, `goblin_drill` differs (9.0 vs 10.0) but is overridden by curation
+anyway, and **`tesla` differs 30.0 (mechanics, live) vs 25.0 (stats)** — so demoting the field
+across the board would silently change the Tesla's lifetime. Tesla lifetime is not in any R2
+ruling; #5 rules only on its rarity and its evo's hitpoints. Left alone and flagged.
+
+### E3. `furnace_evo.speed_tiles` 0.75 is stale but INERT — the LAG row overstates the impact.
+
+r2_buckets LAG says the sim "copied the stale cell (furnace_evo 0.75 vs base furnace 1.0)". The KB
+row does say 0.75, but `build_spec` reads movement speed via `db.speed_tiles(base)` and an evo's
+base is the parent card, so MEASURED `build_spec("furnace_evo", 11).speed` is **1.0**, same as the
+base. The stale cell never reaches the engine. Correcting the row is still right for tidiness, but
+it is a data cleanup with no behavioural effect, not the sim defect the row implies.

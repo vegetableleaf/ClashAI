@@ -249,7 +249,11 @@ cards:
   # Goblin" at the mortar (spawn_on_hit with a cap that never binds -- it counts mortars).
   mortar_evo: {spawn_on_hit: goblins, spawn_on_hit_cap: 99, verified: true}
   # EVO FURNACE: "the spawn speed is decreased to 2.4 sec" (sides-vs-front is cosmetic here).
-  furnace_evo: {lifetime_s: 28.0, spawns: {unit: fire_spirit, count: 1, interval: 2.4}, verified: true}   # same building lifetime as the base Furnace; its EVO edge is the 2.4s Hot Spawn period
+  # EVO FURNACE: no lifetime either (see the base Furnace below -- it is a TROOP since 4/8/2025).
+  # This row used to carry `lifetime_s: 28.0` with the comment "same building lifetime as the base
+  # Furnace", which was true of the 2023 game-file dump and of nothing since. Its EVO edge is the
+  # 2.4 s "Hot Spawn" period, which is a separate field and stays.
+  furnace_evo: {spawns: {unit: fire_spirit, count: 1, interval: 2.4}, verified: true}
   # EVO GOBLIN GIANT: "when [his] hitpoints are lowered below 50%, every 2.2 seconds [he] will
   # passively summon a Goblin." Imported hp 3223 flows via the overlay.
   goblin_giant_evo: {spawns: {unit: goblins, count: 1}, low_hp_frac: 0.5, low_hp_interval_s: 2.2, verified: true}
@@ -1764,7 +1768,14 @@ cards:
   # has no `life` vardefine because a troop has no lifetime. An earlier curation here forced
   # `kind: building` + `lifetime: 40` on the assumption that the table was a wiki quirk -- it was not,
   # and overriding a correct live source is exactly how a 2023-era belief survives a re-import.
-  furnace: {range: long, flags: [spawner], spawns: {unit: fire_spirit, count: 1, interval: 5.0}, verified: true}   # "summon a Fire Spirit in front" every 7s -- ONE, not a pair
+  # FURNACE IS A TROOP NOW (owner ruling, R2 #11): the 4/8/2025 rework turned it from a building
+  # into a walking unit, and its attributes table no longer prints a Lifetime column at all. The
+  # KB already typed it `kind: troop` with speed 1.0 -- what survived was a stale `lifetime_s: 28.0`
+  # coming from the 2023 game-file dump (card_mechanics.json, whose key for it is still literally
+  # "FirespiritHut"), now removed there. Troops do not decay.
+  # SPAWN CADENCE 5 s (owner ruling, R2 #5). The old trailing comment on this line said "every 7s"
+  # while the value said 5.0 -- the value was right and the comment was the stale half.
+  furnace: {range: long, flags: [spawner], spawns: {unit: fire_spirit, count: 1, interval: 5.0}, verified: true}   # "summon a Fire Spirit in front" every 5s -- ONE, not a pair
   goblin_machine: {range: melee, flags: [splash, knockback_immune], verified: false}              # melee body + a locking AOE missile
   # 2026-08-15 wiki attr row: 50% -> Very Fast (120), 10 s fuse, Melee: Short (0.5), blast 2.5.
   # His "life 10" is the LIT FUSE, not a lifetime (hp must not bleed from deploy); below half
