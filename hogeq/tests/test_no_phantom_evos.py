@@ -166,6 +166,25 @@ class EvoCandidatesAreDerivedNotGuessedTests(unittest.TestCase):
         self.assertEqual(sorted(kb), sorted(wiki),
                          f"KB-only {sorted(kb - wiki)}, wiki-only {sorted(wiki - kb)}")
 
+    def test_every_evolution_carries_the_ledgers_cycle_count(self):
+        """A MISSING cycle count is not neutral: the slot asks `charge >= cycles`, so 0 is
+        satisfied from the first tick and the Evolution is presented on every lap. MEASURED before
+        the I1 backport: 6 of 42 reported a cycle count at all (the lookup was gated on a curated
+        `evolution.available` only 6 base cards carry); after it, 40, with `minion_horde_evo` (1)
+        and `princess_evo` (2) simply absent from the imported rows. Both were taken from the
+        wiki's Cycles column and curated in, so this is now 42/42."""
+        if not LEDGER.exists():
+            self.skipTest(f"{LEDGER} not present (research/ lives above the deck root)")
+        db = _db()
+        wiki = {e["key"]: e.get("evo_cycles")
+                for e in json.loads(LEDGER.read_text(encoding="utf-8"))["evolutions"]}
+        bad = []
+        for key, want in wiki.items():
+            got = db.evo_cycles(key[:-4])
+            if want and got != int(want):
+                bad.append((key, got, want))
+        self.assertEqual(bad, [], f"{len(bad)} evolutions disagree with the wiki (key, kb, wiki)")
+
     def test_a_deck_with_no_evolvable_card_has_no_candidates(self):
         db = _db()
         self.assertEqual(evo_candidates(db, NO_EVO_DECK), [])

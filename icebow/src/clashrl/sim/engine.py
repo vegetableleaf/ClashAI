@@ -83,14 +83,14 @@ _TANK_RADIUS = 0.9        # collision radius (tiles) at/above which a unit count
 _PRINCESS_HALF = 1.5
 _KING_HALF = 2.0
 
-# EVO FIRECRACKER: her lingering sparks DO chip a Crown Tower -- "the small sparks connect to
-# the Crown Tower, resulting in massive damage if not addressed properly" -- but at a reduced
-# rate, the ordinary crown-damage discount every area effect pays. The wiki's own vardefines
-# give it exactly, and identically for both spark sizes at level 11:
+# EVO FIRECRACKER: her lingering sparks DO chip a Crown Tower -- "the small sparks connect to the
+# Crown Tower, resulting in massive damage if not addressed properly" -- but at a reduced rate, the
+# ordinary crown-damage discount every area effect pays. The wiki's own vardefines give it exactly,
+# and identically for both spark sizes at level 11:
 #     Big_dmg_11   48   Big_Crown_dmg_11   15
 #     Small_dmg_11 48   Small_Crown_dmg_11 15
-# 15 / 48 = 0.3125. Applied as a FRACTION of whatever per-tick damage the zone carries rather
-# than as a second absolute number, so it keeps tracking the card's level and any rebalance.
+# 15 / 48 = 0.3125. Applied as a FRACTION of whatever per-tick damage the zone carries rather than
+# as a second absolute number, so it keeps tracking the card's level and any future rebalance.
 _SPARK_CROWN_FRAC = 0.3125
 _TOWER_CLEAR = 0.15       # tiles of daylight left when rounding a tower's shoulder
 _RIVER = 0.5              # the board is symmetric about this now that anchors are tile-derived
@@ -136,7 +136,12 @@ class CardSpec:
     spell_radius: float       # spells only
     spell_dmg: float
     spell_tower_dmg: float
-    spell_delay: float        # Royal Delivery lands after a delay; Rocket ~instant
+    # PER-HIT damage to BUILDINGS, when a spell hits them harder than it hits troops. Earthquake is
+    # the reason this exists: 287 vs 84 at level 11 ("3.5 times damage to buildings"), which is the
+    # entire point of the card -- it is how a Hog deck deletes the Tesla/Cannon/Inferno that would
+    # otherwise stop its win condition. 0 = buildings take the ordinary spell_dmg.
+    spell_build_dmg: float = 0.0
+    spell_delay: float = 0.0  # Royal Delivery lands after a delay; Rocket ~instant
     rolls: bool = False       # a ROLLING spell (The Log): a forward corridor, not a point blast
     ground_only: bool = False # hits GROUND troops only (The Log -- no air)
     # DEPLOY / SURFACE BLAST: area damage the moment the body finishes appearing. Mega Knight "will
@@ -184,6 +189,19 @@ class CardSpec:
     ability_cd: float = 0.0
     ability_invis: float = 0.0
     ability_back: float = 0.0
+    # THE OTHER ABILITY SHAPE: the Mighty Miner's "Explosive Escape", which is a PLAYER action, not
+    # the automatic reaction above. He mirrors to the opposite lane and leaves a fused bomb behind,
+    # so it needs a displacement that is a reflection rather than a nudge, plus a blast the nudge
+    # ability has no concept of. Non-zero `ability_bomb_dmg` is what marks a card as having it; see
+    # Engine.champion_ability, which the env calls from a dedicated action-space slot.
+    ability_bomb_dmg: float = 0.0
+    ability_bomb_radius: float = 0.0
+    ability_bomb_knock: float = 0.0
+    ability_delay: float = 0.0
+    # SELF-RECOIL, in tiles: the shooter shoves ITSELF backwards every time it fires. Not a
+    # knockback -- nothing is being hit, and it applies to the firer regardless of any knockback
+    # immunity. Three cards have it (Firecracker, Sparky, Super Archers); 0 = it does not recoil.
+    recoil: float = 0.0
     # PER-CARD SPLASH RADIUS (2026-08-14): splash used to be a bool + one flat _SPLASH_R for every
     # card. 0 = fall back to _SPLASH_R.
     splash_r: float = 0.0
@@ -227,8 +245,8 @@ class CardSpec:
     # -- and for Balloon and Giant Skeleton the death blast is most of what the card is for.
     death_dmg: float = 0.0
     death_radius: float = 0.0
-    # Whether this blast measures its radius to the target's hitbox EDGE rather than its
-    # centre. Set only on the FUSED bomb a death blast spawns -- see _death_blast.
+    # Whether this blast measures its radius to the target's hitbox EDGE rather than its centre.
+    # Set only on the FUSED bomb a death blast spawns -- see _death_blast / _resolve_spell.
     blast_edge: bool = False
     # Knockback carried by the DEATH blast alone, when it differs from the card's ordinary one.
     # The Bomb Tower is the case: its shots do not shove, only the bomb it drops when it dies
@@ -313,6 +331,10 @@ class CardSpec:
     # Void (3 count-tiered hits over 4 s), Graveyard (timed edge spawns). One system.
     zone_s: float = 0.0
     zone_tick_s: float = 0.0
+    # Whether the field's FIRST tick lands at cast rather than one interval later. Poison ramps in,
+    # but an Earthquake's first wave hits as it lands -- and that second matters here, because the
+    # play is casting it as the Hog crosses so the building dies before it can do its work.
+    zone_first_tick_now: bool = False
     zone_move_slow: float = 0.0
     zone_tiers: tuple = ()        # Void: ((max_targets, dmg, crown_dmg), ...) per tick
     zone_spawn_n: int = 0         # Graveyard: "a single Skeleton ... every 0.5 seconds
@@ -794,6 +816,8 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         poison_s=float(c.get("poison_s") or 0.0),
         min_range=float(c.get("min_range_tiles") or 0.0),
         top_n_targets=int(c.get("top_n_targets") or 0),
+        spell_build_dmg=_lv.scale(float(c.get("build_damage") or 0.0), level),
+        zone_first_tick_now=bool(c.get("zone_first_tick_now")),
         zone_s=float(c.get("zone_s") or 0.0),
         zone_tick_s=float(c.get("zone_tick_s") or 0.0),
         zone_move_slow=float(c.get("zone_move_slow") or 0.0),
@@ -851,6 +875,13 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         ability_cd=float(c.get("ability_cooldown_s") or 0.0),
         ability_invis=float(c.get("ability_invis_s") or 0.0),
         ability_back=float(c.get("ability_back_tiles") or 0.0),
+        # Bomb damage is a level-scaled stat like any other, so it goes through scale() rather than
+        # the flat `sc` ratio -- that is what reproduces the game's own rounding off the level table.
+        ability_bomb_dmg=_lv.scale(float(c.get("ability_bomb_damage") or 0.0), level),
+        recoil=float(c.get("recoil_tiles") or 0.0),
+        ability_bomb_radius=float(c.get("ability_bomb_radius") or 0.0),
+        ability_bomb_knock=float(c.get("ability_bomb_knockback") or 0.0),
+        ability_delay=float(c.get("ability_delay_s") or 0.0),
         # Most death-damage cards publish a splash radius; a few (Ice Golem) publish the damage but
         # not the radius, and a 0 radius would silently make the blast inert. 2.0 tiles is the modal
         # published value (the range is 1.5-3.0) -- an APPROXIMATION, not a sourced number.
@@ -1099,6 +1130,8 @@ class _Zone:
     def __init__(self, team: int, x: float, y: float, spec: CardSpec, left: float):
         self.team, self.x, self.y, self.spec, self.left = team, x, y, spec, left
         self.tick_in = spec.zone_tick_s if spec.zone_tick_s > 0.0 else (left + 1.0)
+        if spec.zone_first_tick_now and spec.zone_tick_s > 0.0:
+            self.tick_in = 0.0                    # Earthquake: wave one lands with the spell
         self.age = 0.0
         self.spawned = 0
 
@@ -1144,9 +1177,12 @@ class Projectile:
     oy: float = 0.0
     returning: bool = False    # on the return leg (Executioner's axe hits again on the way back)
     bounces_left: int = 0      # EVO BOMBER: area blasts still to chain past this impact (2.5t apart)
-    trail_next: float = 0.75   # EVO FC: tiles of flight until the next lingering spark zone drops
-    trail_dmg: float = 0.0     # EVO FC: per-0.25s tick damage of the zones THIS shot drops
-                               # (carrier = large spark 192 dps; shrapnel = small 60 dps; 0 = none)
+    # EVO FC: per-0.25s tick damage of the ONE lingering spark zone this shot leaves WHERE ITS
+    # FLIGHT ENDS -- the carrier drops a large zone on the target it hit, each shrapnel bolt drops a
+    # small one at the end of its run. It used to drop a zone every 1.25 tiles along the WHOLE path,
+    # for the carrier and all five bolts, which at 11 tiles of shrapnel range carpeted most of a lane
+    # in damage-over-time (user report: "covering too much space"). 0 = this shot leaves none.
+    spark_end_dmg: float = 0.0
 
 
 def _dist(ax, ay, bx, by) -> float:
@@ -1432,6 +1468,69 @@ class SimEngine:
 
     def can_afford(self, team: int, spec: CardSpec) -> bool:
         return self.elixir[team] >= spec.elixir
+
+    @staticmethod
+    def _ability_uses_left(u: "Unit") -> int:
+        """Activations this BODY has left. ``ability_left`` starts at -1 meaning 'not yet read from
+        the spec', which is why this cannot just compare the field: -1 is 'full', not 'empty'."""
+        return int(u.spec.ability_uses if u.ability_left < 0 else u.ability_left)
+
+    def champion_ability(self, team: int) -> bool:
+        """EXPLOSIVE ESCAPE -- the Mighty Miner's 1-elixir ability, as a PLAYER action.
+
+        Unlike the automatic invisibility reaction (see the ability block in _tick_units), this is
+        chosen: the env exposes it as its own action-space slot and calls straight through here.
+
+        The wiki's sequence, and each part matters to how it is used: after a short delay he becomes
+        intangible and moves to the HORIZONTALLY MIRRORED position -- same depth, opposite lane --
+        leaving a bomb at the position he left, which detonates for area damage to ground AND air
+        with knockback. So it is simultaneously an escape, a lane switch, and a swarm answer, which
+        is why triggering it too early is the classic way to waste it: the bomb wants their counter
+        already committed and standing on him.
+
+        The bomb is resolved through the same fused-spell path the Balloon and Giant Skeleton death
+        bombs use, so it inherits their delay, knockback and ground/air rules rather than
+        re-implementing them. Returns False when there is no champion on the board, the ability is
+        still cooling down, or the elixir is not there.
+        """
+        if self.done:
+            return False
+        # A champion of OURS must actually be standing on the arena with a use left. There is no
+        # ability without a body -- it acts on him where he is, so with no Mighty Miner out there is
+        # nothing to act on and the action must be refused rather than silently spending elixir.
+        champ = next((u for u in self.units
+                      if u.team == team and u.hp > 0 and u.spec.ability_bomb_dmg > 0.0
+                      and u.ability_cd_left <= 0.0
+                      and self._ability_uses_left(u) > 0), None)
+        if champ is None:
+            return False
+        s = champ.spec
+        if self.elixir[team] < s.ability_cost:
+            return False
+        self.elixir[team] -= s.ability_cost
+        # SINGLE USE (4/8/2026 balance): every champion but the Boss Bandit gets exactly one
+        # activation, counted per BODY -- a Mighty Miner who dies and is cycled back gets his again.
+        champ.ability_left = self._ability_uses_left(champ) - 1
+        champ.ability_cd_left = s.ability_cd
+        ox, oy = champ.x, champ.y
+        # THE BOMB, left where he was standing. Built off his own spec so it keeps his team and
+        # level scaling, with every unrelated spell behaviour explicitly cleared -- the same
+        # defensive `replace` the death-bomb path uses, because a stray `pulls`/`rolls`/`spawn_count`
+        # inherited from the source card is exactly how a bomb quietly becomes a tornado.
+        bomb = replace(s, kind="spell", spell_dmg=s.ability_bomb_dmg,
+                       spell_radius=s.ability_bomb_radius or 2.0,
+                       spell_tower_dmg=0.0,          # the escape bomb is not tower damage
+                       knockback=s.ability_bomb_knock, ground_only=False,
+                       pulls=False, rolls=False, zone_s=0.0, top_n_targets=0,
+                       spawn_count=0, decoy_mirror=False, zap_pulses=0,
+                       death_dmg=0.0, death_delay_s=0.0,
+                       stuns=False, stun_dur=0.0, slows=False, slow_dur=0.0, freezes=False)
+        self.spells.append(_Spell(team, ox, oy, bomb, max(0.0, s.ability_delay)))
+        # ...and he is gone: mirrored across the arena's centre line, untargetable for the transit.
+        champ.x = 1.0 - ox
+        champ.invis_left = max(champ.invis_left, s.ability_delay)
+        champ.target = None
+        return True
 
     def deploy(self, team: int, spec: CardSpec, x: float, y: float,
                delay_s: float = 0.0) -> bool:
@@ -2170,9 +2269,11 @@ class SimEngine:
                             e.slow_left = max(e.slow_left, 0.3)   # 15% slow while standing in it
                             e.slow_mult = 0.85
                     # ...and the SAME tick chips a Crown Tower the zone overlaps, at
-                    # _SPARK_CROWN_FRAC of the troop damage. The loop above iterates `self.units`
-                    # ONLY, so a tower sitting in a spark field took literally nothing -- MEASURED
-                    # at 0 damage from a 5 s zone placed directly on it.
+                    # _SPARK_CROWN_FRAC of the troop damage. This is the whole reason the card is
+                    # played in a Hog deck: "the small sparks connect to the Crown Tower" while she
+                    # clears the path. The loop above iterates `self.units` ONLY, so a tower sitting
+                    # in a spark field took literally nothing -- MEASURED at 0 damage from a 5 s
+                    # zone placed directly on it.
                     # Edge-based like every other area effect (`_gap` already subtracts the tower's
                     # hitbox), so a zone clipping the tower's corner still counts.
                     for tw in self._enemy_towers(z[3]):
@@ -2270,12 +2371,12 @@ class SimEngine:
                 # of reach left `focus_time` untouched, so the beam resumed at full stage 3 the
                 # instant contact returned. Resetting an Inferno by displacing it is a core
                 # interaction of the game and the sim had none of it.
-                # MEASURED before this line (hogeq, same engine): a Mighty Miner knocked back 3
-                # tiles kept focus 6.60 -> 6.70, stage 3 -> 3, and an Inferno Tower whose target
-                # walked out of its 6 tiles kept 7.60. See hogeq tests/test_ramp_and_blast_geometry.
-                # `ramp_hold` is the ONE exception: Evo Inferno Dragon deliberately keeps its stage
-                # for ramp_keep_s after a KILL, and that hold is ticked down (and cleared by a
-                # stun) elsewhere.
+                # MEASURED before this line: Mighty Miner knocked back 3 tiles kept focus 6.60 ->
+                # 6.70 (stage 3 -> 3); Inferno Tower whose target walked out of its 6 tiles kept
+                # 7.60 (stage 3). See tests/test_ramp_reset.py.
+                # `ramp_hold` is the ONE exception and is checked here rather than skipped: Evo
+                # Inferno Dragon deliberately keeps its stage for ramp_keep_s after a KILL, and
+                # that hold is ticked down (and cleared by a stun) elsewhere.
                 if u.ramp_hold <= 0.0:
                     u.focus_time = 0.0
             if u.curse_left > 0.0:
@@ -2292,11 +2393,11 @@ class SimEngine:
                 continue
             if u.stun_left > 0:                              # stunned / frozen -> can't act
                 u.stun_left = max(0.0, u.stun_left - dt)
-                # A STUN OR FREEZE RESETS THE RAMP IMMEDIATELY, and unlike the out-of-reach
-                # case above it also cancels Evo Inferno Dragon's post-kill hold -- the wiki
-                # says it keeps its damage state "unless it is stunned". Zapping an Inferno
-                # the instant it reaches stage 3 is the textbook counter; without this the
-                # stun cost it nothing but the frozen seconds.
+                # A STUN OR FREEZE RESETS THE RAMP IMMEDIATELY, and unlike the out-of-reach case
+                # above it also cancels Evo Inferno Dragon's post-kill hold -- the wiki's wording is
+                # that it keeps its damage state "unless it is stunned". Zapping an Inferno the
+                # instant it reaches stage 3 is the textbook counter; without this the stun cost it
+                # nothing but the frozen seconds.
                 u.focus_time = 0.0
                 u.ramp_hold = 0.0
                 continue
@@ -2319,6 +2420,15 @@ class SimEngine:
                         break
             if u.slow_left > 0:
                 u.slow_left = max(0.0, u.slow_left - dt)
+            # PLAYER-TRIGGERED ability cooldown + transit. The Boss Bandit block below ticks these
+            # too, but only for cards with `ability_invis` -- so a champion whose ability is chosen
+            # rather than automatic (the Mighty Miner) would fire once and never recharge, and would
+            # stay permanently untargetable after his escape. Ticked here, before that branch, and
+            # skipped for the automatic cards so their existing sequencing is untouched.
+            if u.spec.ability_bomb_dmg > 0.0 and u.spec.ability_invis <= 0.0:
+                u.ability_cd_left = max(0.0, u.ability_cd_left - dt)
+                if u.invis_left > 0.0:
+                    u.invis_left = max(0.0, u.invis_left - dt)
             # GETAWAY ABILITY (Boss Bandit). Fires automatically when she is genuinely in trouble --
             # she is invisible and untouchable for a second, then reappears `ability_back` tiles
             # further from the enemy, which is exactly the Rocket/spell dodge the card is played for.
@@ -3162,6 +3272,7 @@ class SimEngine:
                     dps = u.spec.poison_stages[min(len(u.spec.poison_stages) - 1, int(u.age // 15.0))]
                 fspec = replace(fspec, poison_dps=dps)
             self._launch(f"{u.spec.base}_projectile", u.team, u.x, u.y, ref, fspec, dmg, tower_dmg)
+            self._recoil(u, ref)
             return
         # SPLIT (Electro Wizard): "If 2 or more targets are within his range, his attack will SPLIT
         # and attack the closest 2 units." His published damage is the TOTAL for the attack, not per
@@ -3321,7 +3432,7 @@ class SimEngine:
             # never reaches _impact, so their extra hits would never fire. Both burst ON the target.
             pierce=pierce, width=spec.proj_width, dirx=dx, diry=dy, ox=x, oy=y,
             bounces_left=spec.bounce_n,
-            trail_dmg=spec.spark_dps_big * 0.25))    # Evo FC carrier drops LARGE sparks
+            spark_end_dmg=spec.spark_dps_big * 0.25))   # Evo FC: ONE large zone on the impact point
 
     def _shotgun(self, u: Unit, ref, dmg: float) -> None:
         """Fire the WHOLE shotgun: `multi_hits` separate pellets scattered across a cone.
@@ -3414,21 +3525,16 @@ class SimEngine:
                     continue
                 p.tx, p.ty = p.target.x, p.target.y  # tracking shot follows it
             step = p.speed * dt
-            if p.trail_dmg > 0.0:                    # Evo FC: "both the initial and small shrapnel
-                p.trail_next -= step                 # will leave sparks behind" along their flight
-                if p.trail_next <= 0.0:
-                    p.trail_next = 1.25
-                    self.spark_zones.append([p.x, p.y, p.spec.spark_r or 0.75, p.team,
-                                             self.t + p.spec.spark_dur, p.trail_dmg, self.t])
-                    del self.spark_zones[:-60]
             if p.pierce:
                 p.x += p.dirx * step                 # straight on along the launch heading
                 p.y += p.diry * step
                 # NOT CLAMPED TO THE ARENA. A pierce shot is a projectile in flight, not a body:
                 # clamping it pinned every bolt that reached a wall AT the wall, where it kept
-                # burning its remaining range in place and then dropped its spark zone against
-                # the edge. MEASURED: 24 of 95 bolt samples sat exactly on x=0. A shot that
-                # leaves the board carries on and expires; there is nothing out there to hit.
+                # burning its remaining range in place and then dropped its spark zone against the
+                # edge -- so a Firecracker fired near the border sprayed her shrapnel into a single
+                # pile instead of past it. MEASURED before this change: 24 of 95 bolt samples sat
+                # exactly on x=0. A shot that leaves the board simply carries on and expires; there
+                # is nothing out there for `_pierce_pass` to hit, which is the correct outcome.
                 p.left -= step
                 self._pierce_pass(p)
                 if p.left <= 0.0:
@@ -3450,6 +3556,7 @@ class SimEngine:
                         p.left = back
                         p.hit.clear()
                         continue
+                    self._drop_spark_zone(p)   # Evo FC shrapnel: one SMALL zone at the end of its run
                     self.projectiles.remove(p)
                 continue
             dxt, dyt = (p.tx - p.x) * _TILES_X, (p.ty - p.y) * _TILES_Y
@@ -3460,8 +3567,23 @@ class SimEngine:
                 p.y += (dyt / d) * move / _TILES_Y
             p.left -= step
             if d <= step or p.left <= 0.0:            # ARRIVED
+                self._drop_spark_zone(p)   # Evo FC carrier: one LARGE zone on the impact point
                 self._impact(p)
                 self.projectiles.remove(p)
+
+    def _drop_spark_zone(self, p: Projectile) -> None:
+        """EVO FIRECRACKER: leave this shot's lingering spark zone where its flight ENDED.
+
+        The card's damage-over-time is deliberately only in two places -- one large circle on the
+        primary projectile's impact point, and one small circle at the very end of each of the five
+        shrapnel bolts' flight. Dropping them along the flight path instead (the old model, every
+        1.25 tiles) painted most of a lane with DoT and made her a zoning card she is not.
+        """
+        if p.spark_end_dmg <= 0.0:
+            return
+        self.spark_zones.append([p.x, p.y, p.spec.spark_r or 0.75, p.team,
+                                 self.t + p.spec.spark_dur, p.spark_end_dmg, self.t])
+        del self.spark_zones[:-60]
 
     def _impact(self, p: Projectile) -> None:
         spark = p.spec.multi_kind == "spark" and p.label.endswith("_projectile")
@@ -3618,20 +3740,19 @@ class SimEngine:
                 ground_only=not s.attacks_air, pierce=True,
                 width=s.proj_radius or 0.4,
                 dirx=cx / _TILES_X, diry=cy / _TILES_Y, ox=p.x, oy=p.y,
-                trail_dmg=s.spark_dps_small * 0.25)  # Evo FC shrapnel drops SMALL sparks
+                spark_end_dmg=s.spark_dps_small * 0.25)  # ONE small zone at the END of each bolt
             self.projectiles.append(shard)
             # THE IMPACT BLAST, and it is the shards themselves. "Shoots a firework that EXPLODES ON
-            # IMPACT, DAMAGING THE TARGET and showering anything behind it", with the damage figure
-            # published per shard -- "totaling 320 if all shards hit the same target". Both describe
-            # one event: all five spawn on the landing point, so whatever stands there takes all
-            # five at once, the wide blast an instant before they fan out.
+            # IMPACT, DAMAGING THE TARGET and showering anything behind it" -- and the damage figure
+            # is per shard, "totaling 320 if all shards hit the same target". The two statements are
+            # the same event: all five spawn on the landing point, so whatever is standing there
+            # takes all five at once, which is the wide blast you see an instant before they fan out.
             #
-            # It landed NOTHING on the body it hit. A piercing shot moves BEFORE its first pierce
-            # check, so every shard was already ~0.8 tiles clear of the impact by the time it looked
-            # -- MEASURED, a dead-centre target took 63 of 315. One pass at the spawn point fixes
-            # it, and p.hit stops a shard damaging that body again on its way out. Measured after:
-            # dead centre 315 (5 shards), then 189 / 126 / 63 at 1.9 / 3.8 / 6.4 tiles behind, which
-            # is the published falloff ("something closer ... will be hit by more of them").
+            # It was landing NOTHING on the target it hit. A piercing shot moves BEFORE its first
+            # pierce check, so every shard was already ~0.8 tiles clear of the impact point by the
+            # time it looked -- MEASURED, a dead-centre target took 63 of 315 (one shard's worth,
+            # and only by luck of the geometry). One pass at the spawn point fixes it; p.hit means a
+            # shard cannot then damage that body a second time on its way out.
             self._pierce_pass(shard)
 
     def _can_knock(self, e: Unit, spec: CardSpec) -> bool:
@@ -3652,6 +3773,40 @@ class SimEngine:
         if spec.knockback <= 0.0 or e.spec.kind == "building":
             return False
         return spec.knockback_all or not e.spec.knockback_immune
+
+    def _recoil(self, u: Unit, ref) -> None:
+        """The shooter shoves ITSELF backwards on firing -- Firecracker's 1 tile.
+
+        Wiki, Firecracker: "After attacking, she will recoil backwards 1 tile." (7/7/2020 dropped it
+        from 1.5 to 1.) It cuts both ways, and both directions matter to how she is played: it walks
+        her out of reach of the melee troop she is shooting -- and out of a spell aimed where she was
+        standing -- but "her repeated recoil may cause her to switch to the other lane", which is
+        the reason she is placed BEHIND the engagement rather than beside it.
+
+        Straight away from the target, since that is what "backwards" means for a unit that always
+        faces what it shoots. Not routed through _knock: nothing hit her, so knockback immunity and
+        the charge/ramp resets a real shove carries must not apply -- a recoiling Sparky keeps her
+        charge, and a knockback-immune recoiler would otherwise stop recoiling entirely.
+        """
+        r = u.spec.recoil
+        if r <= 0.0 or ref is None:
+            return
+        dx, dy = (u.x - ref.x) * _TILES_X, (u.y - ref.y) * _TILES_Y
+        d = math.hypot(dx, dy)
+        if d <= 1e-6:                       # standing on top of it: recoil toward our own side
+            dx, dy, d = 0.0, (1.0 if u.team == 0 else -1.0), 1.0
+        u.x, u.y = _clamp_xy(u.x + (dx / d) * r / _TILES_X,
+                             u.y + (dy / d) * r / _TILES_Y, u.spec.radius)
+        # ...AND RE-EVALUATE IF THE RECOIL BROKE THE ENGAGEMENT. `u.locked` means "already swinging,
+        # nothing else exists", and only an aggro reset clears it -- but the recoil deliberately does
+        # not raise one (see above: that would wipe a Sparky's charge). The result was a Firecracker
+        # who shoved herself out of her own 6 tiles and then stayed locked on a target she could no
+        # longer reach, forever: MEASURED over 40 s she made ZERO retargets and finished with her
+        # target out of reach, doing nothing while a second enemy stood well inside her range.
+        # Clearing only `locked` re-opens the choice on the next tick without touching the charge /
+        # ramp state a real shove would reset.
+        if ref is not None and _gap(u.x, u.y, ref) > u.spec.reach:
+            u.locked = False
 
     def _knock(self, e: Unit, spec: CardSpec, fx: float, fy: float,
                dx: float = 0.0, dy: float = 0.0) -> None:
@@ -3858,12 +4013,13 @@ class SimEngine:
             return
         rad = s.r_override or s.spec.spell_radius
         # A FUSED DEATH BOMB measures to the hitbox EDGE; a thrown spell measures to the centre.
-        # The immediate blast in _death_blast has always been edge-based, but a card with
-        # `death_delay_s` (Balloon, Giant Skeleton, Bomb Tower) routes through this generic
-        # path, where the radius was compared centre to centre -- silently shrinking the SAME
-        # 3-tile bomb by each target's own radius. MEASURED against a crown tower: it reached
-        # 3.0 tiles from the tower's CENTRE instead of 3.0 from its hitbox, so 1.5 tiles of
-        # the published radius were simply missing.
+        # This is not cosmetic. The immediate death blast in _death_blast has always been
+        # edge-based, but a card with `death_delay_s` (Balloon, Giant Skeleton, Bomb Tower) is
+        # routed through this generic path instead -- where the radius was compared centre to
+        # centre, silently shrinking the SAME 3-tile bomb by each target's own radius. Against a
+        # Crown Tower that is the difference between reaching from 4.5 tiles out and having to land
+        # almost inside it: the Balloon's whole point is that killing it at the tower still delivers
+        # the bomb, and it very often did not.
         edge = s.spec.blast_edge
         for e in self.units:
             if s.spec.ground_only and e.spec.flying:
@@ -4032,8 +4188,13 @@ class SimEngine:
             if z.tick_in > 0.0:
                 continue
             z.tick_in += sp.zone_tick_s
+            # A ground-only field cannot touch flyers ("it is an EARTHquake, after all"), and a
+            # RETRACTED building is normally untouchable -- except to a spell that carries
+            # hits_hidden, which is precisely why Earthquake is the efficient answer to a Tesla.
             foes = [e for e in self.units if e.team != z.team and e.hp > 0
-                    and not e.hidden and _dist(e.x, e.y, z.x, z.y) <= sp.spell_radius]
+                    and (sp.hits_hidden or not e.hidden)
+                    and not (sp.ground_only and e.spec.flying)
+                    and _dist(e.x, e.y, z.x, z.y) <= sp.spell_radius]
             tws = [tw for tw in self._enemy_towers(z.team)
                    if _dist(tw.x, tw.y, z.x, z.y) <= sp.spell_radius]
             dmg, crown = sp.spell_dmg, sp.spell_tower_dmg
@@ -4047,7 +4208,11 @@ class SimEngine:
                         dmg, crown = d_, c_
                         break
             for e in foes:
-                self._hurt(e, dmg)
+                # Buildings take the spell's BUILDING damage where it has one (Earthquake 287 vs 84
+                # per wave at level 11) -- the reason the card is in a Hog deck at all.
+                self._hurt(e, (sp.spell_build_dmg if (sp.spell_build_dmg > 0.0
+                                                      and e.spec.kind == "building") else dmg),
+                           sp.hits_hidden)
                 if sp.zone_move_slow > 0.0 and (e.slow_left <= 0.0
                                                 or e.slow_mult > 1.0 - sp.zone_move_slow):
                     # POISON: "decreases the movement speed of enemy troops by 15%" -- never

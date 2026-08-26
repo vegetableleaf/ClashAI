@@ -14,6 +14,8 @@ from typing import Dict, List, Optional
 
 import yaml
 
+from . import levels
+
 
 def _key(name: str) -> str:
     return (str(name).strip().lower()
@@ -458,12 +460,18 @@ class CardDB:
                         if vv is not None and kk not in ("display", "base", "evolution", "champion"):
                             merged[kk] = vv
             lvl = entry.get("level")
-            if lvl:                                   # KB stats are level 11; scale ~10%/level
+            if lvl:
+                # THE GAME'S OWN LEVEL TABLE, not 1.1**(level-11). The percentages START as 1.1^n
+                # rounded and then stop tracking it, one-directionally: at level 16 the game says
+                # 409% of level 1 where 1.1^n gives 396%, so this method was under-reporting every
+                # levelled card in the deck -- and it is the deck that is levelled (this KB stores
+                # level 11 and the owner's cards run to 16). `build_spec` has read levels.py since
+                # it landed; only this method was left on the old scaler, so the two disagreed
+                # about the SAME card. See levels.py for the table and its provenance.
                 merged["level"] = int(lvl)
-                mult = 1.1 ** (int(lvl) - 11)
                 for kk in ("hitpoints", "damage", "crown_tower_damage", "dps", "damage_per_second"):
                     if merged.get(kk) is not None:
-                        merged[kk] = int(round(merged[kk] * mult))
+                        merged[kk] = int(round(levels.scale(merged[kk], int(lvl))))
             out.append(merged)
         return out
 

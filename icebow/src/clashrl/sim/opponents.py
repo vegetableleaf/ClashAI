@@ -126,11 +126,11 @@ class ScriptedBot:
             # CYCLES from the EVOLUTION'S OWN ROW. A curated `evolution.cycles` still wins, then
             # the wiki's Cycles column (`evo_cycles` on the `_evo` row); the old flat `or 2` was
             # simply wrong for every import-only evo -- Evo Elite Barbarians is 1, not 2.
-            # (`db.evo_cycles()` is not used here: it gates on a curated `evolution.available`
-            # that only 6 base cards carry, so it returns 0 for the other 36 imported evos.)
-            _evd = (db.get(_k) or {}).get("evolution") or {}
-            self.evo_cycles = int(_evd.get("cycles")
-                                  or (db.get(_k + "_evo") or {}).get("evo_cycles") or 2)
+            # `db.evo_cycles()` now implements exactly that order for all 42 evolutions (I1
+            # backport: it used to gate on a curated `evolution.available` that only 6 base cards
+            # carry, so it returned 0 for the other 36 and this had to duplicate the lookup).
+            # The `or 2` remains only as a floor: 0 would read as "already charged" forever.
+            self.evo_cycles = int(db.evo_cycles(_k) or 2)
             break                                            # ONE slot, enforced
 
     def _hand_specs(self):

@@ -1,10 +1,4 @@
-"""Five of the six user-reported sim defects of 2026-08-18, as they land in THIS deck.
-
-The sixth (Firecracker re-aiming after her self-recoil) is hogeq-only: this engine has no
-self-recoil mechanic at all -- `_recoil_blast` here is the Evo Royal Giant's on-attack area
-blast, an unrelated thing.
-
-Original note: Every number here was measured before the fix.
+"""Six user-reported sim defects, 2026-08-18. Every number here was measured before the fix.
 
 RAMP-UP SURVIVED EVERYTHING (Mighty Miner / Inferno Dragon / Inferno Tower). The stages only ever
 reset when the TARGET CHANGED, so a stun, a Log knockback, a Tornado drag or the target simply
@@ -17,6 +11,11 @@ EVO FIRECRACKER'S SPARKS IGNORED CROWN TOWERS. The lingering zones iterated `sel
 tower standing in a spark field took literally nothing -- measured 0 damage from a 5 s zone placed
 directly on it. The wiki's own vardefines give the reduced crown rate exactly: Big_dmg_11 48 with
 Big_Crown_dmg_11 15, Small_dmg_11 48 with Small_Crown_dmg_11 15 -- 15/48 = 0.3125 for both.
+
+FIRECRACKER NEVER RE-AIMED AFTER RECOILING. `locked` means "already swinging, nothing else exists"
+and only an aggro reset clears it -- but the recoil deliberately raises none (that would wipe a
+Sparky's charge). She shoved herself out of her own 6 tiles and stayed locked on an unreachable
+target: measured ZERO retargets over 40 s, ending out of reach.
 
 SHRAPNEL WAS SQUASHED BY THE ARENA WALL. Pierce projectiles were clamped like bodies, so a bolt
 that reached the border stopped there, burned its remaining range in place and dropped its spark
@@ -45,7 +44,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 from clashrl.config import Config                                          # noqa: E402
 from clashrl.sim.env import SimMatchEnv                                    # noqa: E402
 from clashrl.sim.engine import (Unit, build_spec, replace, _Spell, _gap,   # noqa: E402
-                                _body_radius, _TILES_Y,
+                                _body_radius, _REACH_SLOP, _TILES_Y,
                                 _SPARK_CROWN_FRAC)
 
 LVL = 11
@@ -198,6 +197,52 @@ class SparkCrownDamageTests(_Base):
     def test_our_own_tower_is_not_chipped_by_our_own_sparks(self):
         dealt, _tick = self._soak(team=0)
         self.assertEqual(0.0, dealt, "a spark zone damaged the team that cast it")
+
+
+class RecoilRetargetTests(_Base):
+    """She must re-open the choice when her own recoil breaks the engagement."""
+
+    def _run(self, key):
+        e = self.fresh()
+        f = build_spec(self.db, key, LVL)
+        k = build_spec(self.db, "knight", LVL)
+        a = Unit(spec=f, team=0, x=0.50, y=0.62, hp=f.hp * 500)   # survive, so we measure HER
+        n = Unit(spec=k, team=1, x=0.50, y=0.62 - (f.reach - 0.4) / _TILES_Y, hp=k.hp * 400)
+        e.units += [a, n]
+        stuck = shots = 0
+        prev = a.cooldown
+        for _ in range(400):
+            e.advance(0.1)
+            if a.cooldown > prev:
+                shots += 1
+            prev = a.cooldown
+            if a.locked and a.target is not None \
+                    and _gap(a.x, a.y, a.target) > f.reach + _REACH_SLOP:
+                stuck += 1
+        return shots, stuck, f
+
+    def test_she_keeps_firing_instead_of_locking_onto_an_unreachable_target(self):
+        for key in ("firecracker", "firecracker_evo"):
+            with self.subTest(card=key):
+                shots, stuck, _f = self._run(key)
+                self.assertGreater(shots, 8, "she stopped shooting altogether")
+                # one tick per shot is the recoil step itself, before the next tick re-evaluates
+                self.assertLessEqual(stuck, shots + 2,
+                                     "she is parked on a target she cannot reach")
+
+    def test_the_recoil_does_not_wipe_a_charge(self):
+        """Only `locked` is cleared -- NOT aggro_reset, which a real shove raises. Routing the
+        recoil through that would reset a Sparky's charge and every ramp, which is exactly what
+        the recoil is documented not to do."""
+        e = self.fresh()
+        f = build_spec(self.db, "firecracker_evo", LVL)
+        k = build_spec(self.db, "knight", LVL)
+        a = Unit(spec=f, team=0, x=0.50, y=0.62, hp=f.hp * 500)
+        n = Unit(spec=k, team=1, x=0.50, y=0.62 - 0.5 / _TILES_Y, hp=k.hp * 400)
+        e.units += [a, n]
+        for _ in range(80):
+            e.advance(0.1)
+            self.assertFalse(a.aggro_reset, "the recoil raised an aggro reset")
 
 
 class SparkBorderTests(_Base):

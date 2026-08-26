@@ -440,3 +440,78 @@ what its name says:
 
 These are repairs to latent test fragility that the change EXPOSED, not to behaviour it broke: no
 doctrine, engine or reward code was touched for any of the three.
+
+## I1 — hogeq -> icebow backport, 2026-08-26
+
+hogeq was strictly ahead; the two decks now share one engine, one card KB and one level scaler.
+Ported, plus one fix that belonged in BOTH decks.
+
+**`sim/engine.py` is now BYTE-IDENTICAL between the decks.** hogeq's was a strict superset: the
+only icebow-only code was the superseded `trail_dmg`/`trail_next` spark model. Ported:
+`spell_build_dmg` (+ CardSpec field, `build_damage` wiring, and the buildings branch in
+`_tick_zones`, along with that hunk's `hits_hidden` / flyer filter), `zone_first_tick_now`,
+`champion_ability()` + `_ability_uses_left()` + the four `ability_bomb_*` / `ability_delay` fields
++ the cooldown/transit tick, `recoil` + `_recoil()` + its `_launch` call site, and
+`spark_end_dmg` + `_drop_spark_zone()` replacing the every-1.25-tiles trail.
+
+**`cards.py` is now BYTE-IDENTICAL.** Ported `_ability` elixir pricing, `evo_cycles()` reading the
+evo row directly, the `deck_slots()` 0-cycle guard, and `ability_identity()` /
+`policy_identities()`.
+
+**`config/cards.yaml` now differs ONLY in the `deck:` block.** Every other difference was a CARD
+fact, not a deck fact: Earthquake's three-wave zone, Firecracker's 1-tile recoil, Evo Firecracker's
+cycle count, and the Mighty Miner's ability block. Without them the ported engine paths would have
+been dead code in icebow -- and they are not opponent-neutral there, since meta decks field all
+four cards.
+
+### MEASURED
+
+`evo_cycles()` was gated on a curated `evolution.available` that only 6 base cards carry:
+```
+  evolutions reporting a cycle count:  6 / 42  ->  40 / 42  ->  42 / 42
+```
+The last step is a DATA gap this exposed: `minion_horde_evo` and `princess_evo` carry no
+`evo_cycles` in the imported rows at all. Taken from the wiki's Cycles column via
+`ledger/r1a_evolutions.json` (1 and 2) and curated in, with a test pinning all 42 against the
+ledger. Minion Horde is the one that mattered -- 1, where the picker's `or 2` floor was fielding
+its Evolution a full cycle late. No card that already reported a count changed, and no card without
+an `_evo` row gained one (arrows / berserker / giant / hog_rider all still 0), so the wider gate
+cannot invent an evolution.
+
+`CardDB.deck()` was still on `1.1 ** (level - 11)` in BOTH decks while `build_spec` had long since
+moved to `levels.PERCENT` -- so the two disagreed about the same card. Routed through `levels.scale`:
+```
+  icebow  worst delta -0.93%  (tesla damage L15 322 -> 319)
+  hogeq   worst delta -0.76%  (mighty_miner hitpoints L15 3294 -> 3269)
+```
+Small, one-directional, and it grows with level: the table starts as 1.1^n rounded and stops
+tracking it. Only `cli.py`'s deck display consumes this method, so no training path changed.
+
+`opponents.py` no longer duplicates the cycle lookup: `db.evo_cycles()` now implements exactly the
+same precedence for all 42, and the stale comment saying it could not be used is gone. The `or 2`
+floor stays -- 0 would read as "already charged" forever.
+
+### ICEBOW'S ACTION SPACE IS UNCHANGED, deliberately
+
+icebow gets the champion_ability ENGINE path only. Its deck holds no champion, so
+`ability_identity()` returns None and `policy_identities() == deck_identities()` -- MEASURED, card
+head width 10 before and after, `env.n_cards == 10`, and `env` has no `ability_id` attribute at
+all. Widening it to 11 would make every existing checkpoint refuse to load.
+`tests/test_champion_ability_engine.py` (shared, byte-identical) pins the rule in the form that is
+true of BOTH decks: the action space grows if and only if the deck holds a champion.
+
+### Test-list reconciliation
+
+New in BOTH, byte-identical: `test_champion_ability_engine.py` (17), and hogeq's
+`test_evo_cycle_and_sparks.py` (22) made deck-agnostic -- the cycling tests now read whichever slot
+the loaded deck marks evolved (Evo Firecracker in hogeq, Evo Tesla / Evo Knight in icebow) instead
+of naming one, and the KB assertions are card facts both bases carry.
+
+New in icebow, copied from hogeq: `test_earthquake.py` (19, engine zone mechanics) and hogeq's
+`test_ramp_and_blast_geometry.py`, whose icebow copy had dropped the Firecracker recoil-retarget
+class with the note "this engine has no self-recoil mechanic at all". It does now.
+
+DELIBERATELY NOT shared, all deck doctrine or deck action space: `test_champion_ability.py`
+(hogeq -- the action-space half), `test_earthquake_placement.py`, `test_hogeq_doctrine_cells.py`,
+`test_hogeq_pressure_doctrine.py` (hogeq), `test_aim_assists.py`, `test_defensive_doctrine.py`,
+`test_rocket_doctrine.py` (icebow).
