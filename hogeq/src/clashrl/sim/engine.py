@@ -486,6 +486,15 @@ class CardSpec:
     # Spawn this card's bodies ABREAST (one row) instead of the derived sqrt grid. See the swarm
     # formation block -- this changes SPLASH GEOMETRY, not just appearance.
     line_formation: bool = False
+    # SECOND ATTACK MODE, entered by DISTANCE (Three Musketeers, 3/11/2025 "Elite Musketeers").
+    # The card publishes two attribute rows -- Ranged Attack (Range 6, Air & Ground) and Melee
+    # Attack ("Melee: Long" = 1.6, Ground) -- over ONE body: "If enemy troops are close to them,
+    # they switch to being single-target, ground-targeting, melee, ground troops with the SAME
+    # hitpoints and very high damage, and switch back to their ranged form when enemies are far
+    # from them." So this is not a mixed squad (`components`) and not a separate card: it is the
+    # same unit swinging harder up close. 0 = the card has only one attack mode.
+    melee_dmg: float = 0.0    # per-hit damage in the close-quarters mode (level-scaled)
+    melee_reach: float = 0.0  # tiles, centre -> target EDGE: inside this the melee mode is used
 
     def __deepcopy__(self, memo):
         # SHARED ACROSS ENGINE FORKS ON PURPOSE. A spec is immutable in practice: every runtime
@@ -862,6 +871,8 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         hook_max=float(c.get("hook_max_tiles") or 0.0),
         hook_time=float(c.get("hook_time_s") or 0.0),
         hook_speed=float(c.get("hook_speed_tiles") or 0.0),
+        melee_dmg=_lv.scale(float(c.get("melee_damage") or 0.0), level),
+        melee_reach=float(c.get("melee_range_tiles") or 0.0),
         proj_pierce=bool(proj.get("pierce")))
     # MIXED SQUADS. Each component is the SAME card with its own body swapped in, so it inherits
     # everything the wiki publishes once for the whole card (elixir, splash, collision radius, the
@@ -3158,6 +3169,17 @@ class SimEngine:
         mult = self._ramp_mult(u)
         dmg = u.spec.hit_dmg * u.dmg_mult * mult             # one discrete hit (DPS x hit_speed; x Royal Chef buff)
         tower_dmg = u.spec.tower_hit_dmg * u.dmg_mult * mult
+        if (u.spec.melee_dmg > 0.0 and u.spec.melee_reach > 0.0
+                and not getattr(getattr(ref, "spec", None), "flying", False)
+                and _gap(u.x, u.y, ref) <= u.spec.melee_reach):
+            # SWITCHED TO MELEE (Three Musketeers). Purely geometric, which is exactly the wiki's
+            # rule -- "if enemy troops are CLOSE to them ... switch back to their ranged form when
+            # enemies are far" -- and it needs no special case for towers or buildings: a ranged
+            # unit halts at its own `reach` (6 tiles here), so nothing it walked up to is ever
+            # inside 1.6 tiles. Only something that CLOSED on it can be, and that is a troop.
+            # Air is excluded because the melee row's Target column reads Ground.
+            dmg = u.spec.melee_dmg * u.dmg_mult * mult
+            tower_dmg = dmg * (u.spec.tower_hit_dmg / u.spec.hit_dmg if u.spec.hit_dmg else 1.0)
         if u.spec.power_mult > 0.0 and _gap(u.x, u.y, ref) >= u.spec.power_min:
             dmg *= u.spec.power_mult                         # Evo Archers' POWER SHOT: 4+ tiles out -> 1.5x
             tower_dmg *= u.spec.power_mult
