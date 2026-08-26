@@ -6,7 +6,9 @@ WHAT THIS TAKES, AND WHAT IT DELIBERATELY DOES NOT
 --------------------------------------------------
 The game files behind RoyaleAPI/cr-api-data expose the per-unit constants the wiki never
 prints: `mass`, `sight_range`, `collision_radius`, `load_time`, `deploy_delay`,
-`ignore_pushback`. Those are what this importer takes.
+`ignore_pushback`. Those are what this importer takes -- plus two more it always took but
+long failed to declare: `turret_rotation` (X-Bow/Mortar swivel) and `life_time` ->
+`lifetime_s`, which is NOT a structural constant (see the trap note at `_NO_LIFETIME`).
 
 It does NOT take hitpoints or damage. That dump was last updated 2023-10-18 and its balance
 numbers have since drifted (Archers' damage is 107 there, 112 today), so importing stats would
@@ -143,7 +145,15 @@ def main(argv) -> int:
         "meta": {
             "source": SRC,
             "source_frozen": "2023-10-18",
-            "imports": "mass, sight, collision, load_time, deploy_delay, knockback_immune",
+            # lifetime_s and turret_rotation were imported from day one but never DECLARED
+            # here, so a reader auditing "what does this dump control?" against this line
+            # missed them both -- and lifetime_s is the risky one: it is a BALANCE value in a
+            # frozen-2023 dump (see _NO_LIFETIME above; the Furnace 28 s incident). Declared
+            # 2026-08-26 (E2) so a blanket "drop the stale fields" fix cannot silently change
+            # a building's lifetime (tesla stays 30).
+            "imports": "mass, sight, collision, load_time, deploy_delay, knockback_immune, "
+                       "lifetime_s (frozen-2023 BALANCE value -- re-typed cards excluded via "
+                       "_NO_LIFETIME), turret_rotation",
             "excludes": "hitpoints/damage (stale in this dump -- see tools/stat_sweep.py), "
                         "walking_speed_tweak_percentage (walk ANIMATION, not movement)",
             "cards": len(out),
