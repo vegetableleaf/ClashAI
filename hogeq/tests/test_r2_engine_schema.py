@@ -273,5 +273,120 @@ class RamRiderSnareTests(unittest.TestCase):
         self.assertEqual(left, 0.0)
 
 
+class RageTargetingImportBugTests(unittest.TestCase):
+    """Rage is a FRIENDLY-target spell; the KB claimed it only ever hits buildings.
+
+    Wiki (Rage.wikitext rev 437309). Attributes row:
+    Cost 2 | Radius 3 | Deploy 0.5 s | Duration 4.5 s | Boost +30% |
+    Target "Friendly [[Troops]] & [[Buildings]]" | Spell | Epic.
+    Lead: "It is an area-damage, air-targeting spell with a medium radius and low damage. It
+    increases the movement speed and attack speed of allied troops and buildings by 30%."
+    The damage itself was added 12/12/2022 ("made the spell deal area damage").
+    Owner: R2 #8 item 4.
+
+    MEASURED BEFORE: attacks ['buildings'], which in the sim's schema means Hog/Rocket-style
+    "this only ever hits buildings" -- the exact opposite of what the Target column says. It came
+    from `"building" in target` matching the word inside "Friendly Troops & Buildings".
+
+    ⚠ SCOPE: the friendly BUFF (+30% move/attack speed for 4.5 s) is deliberately still not
+    modelled -- that is stage I9. This fixes only the false targeting claim.
+    """
+
+    def test_the_row_no_longer_claims_buildings_only(self):
+        eng = _make_engine()
+        row = eng.db.get("rage") or {}
+        self.assertNotEqual(row.get("attacks"), ["buildings"], "MEASURED BEFORE: ['buildings']")
+        self.assertEqual(row.get("attacks"), ["air", "ground"], "its DAMAGE is air-targeting")
+
+    def test_no_engine_path_treats_rage_as_a_buildings_spell(self):
+        eng = _make_engine()
+        s = build_spec(eng.db, "rage", LVL)
+        self.assertEqual(s.kind, "spell")
+        self.assertFalse(s.building_only, "building_only comes from flags/targets, never attacks")
+        self.assertFalse(s.ground_only)
+        self.assertFalse(s.rolls)
+        self.assertTrue(s.attacks_air, "the blast reaches air; MEASURED BEFORE: False")
+
+    def _blast(self, target, do_cast):
+        """Damage taken by a pinned enemy over 3 s, with and without a Rage on top of it.
+        Pinned and placed 12+ tiles from either crown tower so nothing else can touch it --
+        the control run proves that (0.0 damage)."""
+        eng = _make_engine()
+        t = build_spec(eng.db, target, LVL)
+        u = Unit(spec=t, team=1, x=0.50, y=0.50, hp=t.hp * 20)
+        eng.units.append(u)
+        if do_cast:
+            eng.elixir = [10.0, 10.0]
+            self.assertTrue(eng.deploy(0, build_spec(eng.db, "rage", LVL), 0.50, 0.50))
+        before, x0, y0 = u.hp, u.x, u.y
+        for _ in range(30):
+            u.x, u.y = x0, y0
+            eng.advance(0.1)
+        return before - u.hp
+
+    def test_the_blast_reaches_ground_and_air_alike(self):
+        for name in ("knight", "minions", "baby_dragon"):
+            with self.subTest(card=name):
+                self.assertEqual(self._blast(name, False), 0.0, "control: nothing else hits it")
+                self.assertAlmostEqual(self._blast(name, True), 179.0, delta=1.0)
+
+    def test_real_building_targeters_are_untouched(self):
+        eng = _make_engine()
+        for name in ("giant", "hog_rider", "ram_rider", "golem", "balloon"):
+            with self.subTest(card=name):
+                self.assertTrue(build_spec(eng.db, name, LVL).building_only)
+
+
+class TargetCellParseTests(unittest.TestCase):
+    """card_import must not turn a BUFF target into an attack target again.
+
+    The nine distinct Target cells across every archived page in
+    research/sim_parity/webcache: "Ground" (185), "Air & Ground" (152), "Buildings" (52),
+    "Friendly Troops" (4), "Friendly Troops & Buildings" (3), "Air & Ground (Troops only)" (3),
+    "Building" (3), "King's Tower" (1), "Melee" (1). The table below is therefore exhaustive,
+    not a sample.
+    """
+
+    def test_every_published_target_cell_maps_correctly(self):
+        from clashrl.card_import import _attacks_from_target
+        cases = {
+            "Ground": ["ground"],
+            "Air & Ground": ["air", "ground"],
+            "Buildings": ["buildings"],
+            "Building": ["buildings"],
+            "Air & Ground (Troops only)": ["air", "ground"],
+            "Friendly Troops": None,
+            "Friendly Troops & Buildings": None,     # MEASURED BEFORE: ['buildings']
+            "King's Tower": None,
+            "Melee": None,
+        }
+        for cell, want in cases.items():
+            with self.subTest(cell=cell):
+                self.assertEqual(_attacks_from_target(cell), want)
+
+    def test_the_archived_rage_page_no_longer_parses_as_a_buildings_card(self):
+        from clashrl.card_import import _parse_attr_tables
+        wc = ROOT.parents[0] / "research" / "sim_parity" / "webcache"
+        page = wc / "Rage.wikitext"
+        if not page.exists():
+            self.skipTest("archived wikitext not present in this checkout")
+        self.assertIsNone(_parse_attr_tables(page.read_text(encoding="utf-8")).get("attacks"),
+                          "MEASURED BEFORE: ['buildings']")
+
+    def test_the_pages_that_should_still_parse_as_buildings_do(self):
+        from clashrl.card_import import _parse_attr_tables
+        wc = ROOT.parents[0] / "research" / "sim_parity" / "webcache"
+        want = {"Giant": ["buildings"], "Hog_Rider": ["buildings"], "Ram_Rider": ["buildings"],
+                "Musketeer": ["air", "ground"], "Arrows": ["air", "ground"],
+                "Battle_Healer": ["ground"], "Lumberjack": ["ground"]}
+        for page, attacks in want.items():
+            f = wc / (page + ".wikitext")
+            if not f.exists():
+                continue
+            with self.subTest(page=page):
+                self.assertEqual(_parse_attr_tables(f.read_text(encoding="utf-8")).get("attacks"),
+                                 attacks)
+
+
 if __name__ == "__main__":
     unittest.main()

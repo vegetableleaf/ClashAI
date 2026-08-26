@@ -1188,6 +1188,17 @@ cards:
   # Giant Snowball: "slows enemies in its radius for 3 seconds and inflict knockback"; pushback range
   # 1.8 tiles per the 6/9/2021 Quarter 3 Update ("increased ... to 1.8 tiles (from 1.5 tiles)").
   giant_snowball: {kind: spell, flags: [knockback, slow], knockback_tiles: 1.8, verified: true}
+  # RAGE -- IMPORT BUG, owner ruling R2 #8 item 4. The imported row said attacks: [buildings],
+  # which in this schema means "only ever hits buildings" (Hog/Rocket-style targeting). It came
+  # from the Target cell "Friendly [[Troops]] & [[Buildings]]" being pattern-matched on the word
+  # "building" -- but that column names who Rage BUFFS, not who it attacks. Fixed at the source
+  # too (card_import._attacks_from_target now returns None for any "Friendly ..." cell), so a
+  # re-import cannot regenerate it; this row states the truth the Target column cannot.
+  # Rage's DAMAGE is air+ground: lead, "It is an area-damage, air-targeting spell with a medium
+  # radius and low damage" (12/12/2022 Clashmas Update "made the spell deal area damage").
+  # ⚠ The FRIENDLY BUFF itself (+30% move and attack speed for 4.5 s) is still NOT modelled --
+  # that is stage I9. This row fixes only the false targeting claim.
+  rage: {kind: spell, attacks: [air, ground], verified: true}
   # NB Arrows and Zap get NO knockback: neither publishes a pushback range and neither has a balance
   # entry for one. The Arrows page's "its knockback and slow effects" line is stale Strategy prose
   # describing Giant Snowball -- Arrows has no slow effect either, which is the tell.

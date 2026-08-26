@@ -153,13 +153,39 @@ def _unit_groups(wt: str) -> dict:
     return out
 
 
+def _attacks_from_target(cell: str):
+    """The wiki's Target column -> the sim's `attacks` schema, or None to assert nothing.
+
+    ⚠ A Target cell that begins "Friendly" names who the card BUFFS OR HEALS, not who it attacks
+    (Rage, Heal Spirit, Battle Healer, the Lumberjack's rage). Rage's cell reads "Friendly Troops &
+    Buildings", and a bare `"building" in cell` test turned that into attacks: ["buildings"] --
+    which in this schema means the OPPOSITE thing: "this only ever hits buildings", Hog/Rocket-style
+    targeting. Rage attacks nobody and its damage is air+ground, so the row asserted something
+    false in both directions. Return None and let curation state the truth.
+
+    Every distinct Target cell across the 200-odd archived pages, so the branches below are
+    exhaustive rather than guessed: "Ground" (185), "Air & Ground" (152), "Buildings" (52),
+    "Friendly Troops" (4), "Friendly Troops & Buildings" (3), "Air & Ground (Troops only)" (3),
+    "Building" (3), "King's Tower" (1), "Melee" (1).
+    """
+    t = (cell or "").lower()
+    if "friendly" in t:
+        return None
+    if "building" in t:
+        return ["buildings"]
+    if "air" in t and "ground" in t:
+        return ["air", "ground"]
+    if "ground" in t:
+        return ["ground"]
+    if "air" in t:
+        return ["air"]
+    return None
+
+
 def _row_stats(r: dict) -> dict:
     """The geometry half of a component, straight off its attributes row."""
     sp = _tiles(r.get("Speed"))
-    tgt = (r.get("Target") or "").lower()
-    attacks = (["buildings"] if "building" in tgt else
-               ["air", "ground"] if ("air" in tgt and "ground" in tgt) else
-               ["ground"] if "ground" in tgt else ["air"] if "air" in tgt else None)
+    attacks = _attacks_from_target(r.get("Target"))
     return {k: v for k, v in {
         "hit_speed": _tiles(r.get("Hit Speed")),
         "range_tiles": _tiles(r.get("Range")),
@@ -203,16 +229,7 @@ def _parse_attr_tables(wt: str) -> dict:
     count = sum(_n(r) for r in bodies) if (len(bodies) > 1 and not _DEATH_SPAWN.search(lead)) \
         else _n(main)
 
-    target = (main.get("Target") or "").lower()
-    attacks = None
-    if "building" in target:
-        attacks = ["buildings"]
-    elif "air" in target and "ground" in target:
-        attacks = ["air", "ground"]
-    elif "ground" in target:
-        attacks = ["ground"]
-    elif "air" in target:
-        attacks = ["air"]
+    attacks = _attacks_from_target(main.get("Target"))
 
     speed = _tiles(main.get("Speed"))
     out = {
