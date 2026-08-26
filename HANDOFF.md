@@ -3285,6 +3285,72 @@ play/wait asymmetry to correct).
 gradient is necessary, not sufficient, and this can still come back null. Pre-committed: >=2 sigma
 on the paired probe or it is reported as NO MEASUREMENT.
 
+## 4t. 2026-08-26 — ⚠⚠ THE 40k RUN PEAKED AT ~18k AND IS GIVING IT BACK. §4d's "runs never durably improve" STANDS.
+
+I called this run "the first durable improvement §4d said never happened" at 16-18k. **That claim
+is RETRACTED.** Measured on the trainer's own 150-match evals:
+```
+EVAL @ 16000  ladder 43% (avg-5 33%) | fair 24% (avg-5 20%)
+EVAL @ 18000  ladder 34% (avg-5 33%) | fair 26% (avg-5 22%)   <- PEAK
+EVAL @ 20000  ladder 21% (avg-5 30%) | fair 16% (avg-5 21%)
+EVAL @ 22000  ladder 17% (avg-5 27%) | fair 19% (avg-5 20%)
+EVAL @ 24000  ladder 18% (avg-5 27%) | fair  7% (avg-5 18%)
+EVAL @ 26000  ladder 11% (avg-5 20%) | fair  5% (avg-5 14%)
+```
+Five consecutive declining rolling points on 750-match windows (~4σ). In-training drill pass fell
+with it: 42% (@5k) -> 39% (@16k) -> **37% (@26k)**.
+**The peak policy IS banked** — the trainer saved `data/policy_ppo_long_best.pt` at the 33% ladder
+average. `policy_ppo_long.pt` is the LATEST, not the best; do not confuse them (§3's `best_wr`
+trap, again).
+
+### SPELLS: the Log really did improve; the aggregate did not
+Frozen SNAPSHOT (matches=26050 — copy the checkpoint before probing, §4s trap):
+```
+                init    16k   21.5k    26k
+ALL dumped       66%    66%     63%    61%    -5.0pp = 1.18 sigma   NOT significant
+the_log          81%    73%     77%    66%   -15.1pp = 2.84 sigma   SIGNIFICANT
+tornado          51%    58%     57%    60%    worse, ~1.3 sigma
+rocket           27%    53%     25%    33%    n~20, noise
+```
+The Log (127 casts, the biggest offender) genuinely improved. The aggregate is flat because the
+Tornado moved the other way. "Spells are being fixed" is NOT supportable; "the Log improved" is.
+
+### ⚠ THE DRILL TABLE IS THE MOST USEFUL THING HERE — foundational tier, 6 reps, snapshot
+```
+drill                              scripted doctrine  policy
+nado_king_activation                  100%      0%      0%   (DOCTRINE GAP too)
+tesla_pulls_the_wincon                 83%     83%     17%
+log_the_ground_swarm                  100%    100%      0%
+ignore_the_ignorable (restraint)         -      17%      0%
+hold_the_spell_for_a_target           100%     83%      0%
+log_rolls_forward_not_backward         83%     83%      0%
+bank_to_six_then_bow                  100%    100%      0%   <-- THE DECK'S WIN CONDITION
+knight_blocks_the_charge              100%    100%     33%
+skeletons_kill_the_miner              100%    100%    100%
+bow_never_into_the_push               100%     33%     17%
+bow_punish_the_commitment              50%     83%    100%
+bow_punishes_the_pump                 100%     83%    100%
+rocket_the_two_for_one                100%    100%      0%
+rocket_the_pump_on_sight              100%    100%      0%
+never_rocket_their_king               100%    100%     17%
+skeletons_stop_the_wall_breakers      100%     83%      0%
+```
+**9 of 16 foundational drills at 0%.** The pattern is the point:
+* It passes the two bow-PUNISH drills at **100%** — given a board where the bow is already
+  affordable and correct, it plays it well.
+* It fails **`bank_to_six_then_bow` at 0%** — it never SAVES to get there. That is the same
+  mechanism §4q measured directly (mean elixir 2.29, only 5.4% of steps at >=6 elixir). The bow is
+  not unwanted and not misplayed; the policy never accumulates the elixir to reach it.
+* `ignore_the_ignorable` 0% — the restraint failure, independent of placement (§4r's two-failure
+  split). NB the DOCTRINE scores 17% here too, so this drill is hard for the prior as well.
+
+### What this does NOT establish
+Why the decay starts around 18-20k. Candidates NOT tested: curriculum difficulty ratcheting past
+what the policy can hold, entropy floor reached, the drill/match advantage gap, value-loss drift.
+Do not attribute it without a measurement — this project has retracted four mechanism claims.
+
+---
+
 ## 4s. 2026-08-26 — THE ROCKET IS NOT A WIN CONDITION: 19% land on a tower, and overtime is reached but never PLAYED
 
 Owner asked whether the 86%-own-half rocket reading meant (a) overtime is never reached or (b)
