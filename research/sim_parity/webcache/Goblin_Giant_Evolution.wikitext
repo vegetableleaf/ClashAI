@@ -1,3 +1,4 @@
+<!-- revid:437292 fetched:2026-08-26 title:Goblin Giant/Evolution -->
 {{Protection}}
 {{DISPLAYTITLE: <span class="text-evolution";">Evolved Goblin Giant</span>}}
 {{MagicWords}}

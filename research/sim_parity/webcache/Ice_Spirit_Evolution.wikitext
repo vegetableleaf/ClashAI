@@ -1,3 +1,4 @@
+<!-- revid:437339 fetched:2026-08-26 title:Ice Spirit/Evolution -->
 {{Protection}}{{MagicWords}}
 {{DISPLAYTITLE: <span class="text-evolution";">Evolved Ice Spirit</span>}}
 {{Evolved Card Infobox|Cost=1|CycleCost=2|Rarity=Common|Type=Troop|Arena=Frozen Peak|ReleaseDate=4 December 2023}}

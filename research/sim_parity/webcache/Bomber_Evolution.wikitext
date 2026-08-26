@@ -1,3 +1,4 @@
+<!-- revid:436449 fetched:2026-08-26 title:Bomber/Evolution -->
 {{DISPLAYTITLE: <span class="text-evolution";">Evolved Bomber</span>}}
 {{Protection}}{{MagicWords}}
 

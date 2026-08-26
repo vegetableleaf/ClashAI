@@ -1,0 +1,176 @@
+{{DISPLAYTITLE: <span style="color: #b300b3;">Rune Giant</span>}}
+{{MagicWords}}{{Protection}}
+{{Card Infobox|Cost=4|Rarity=Epic|Type=Troop|Arena=Jungle Arena|ReleaseDate=6 January 2025}}
+{{Quote|Need your weapons sharpened? You've come to the right place. Rune Giant enchants Troops closest to her, having them deal Bonus Damage every third attack. Only two Troops can be enchanted at once.}}
+
+The Rune Giant is a {{Rarity|Epic}} [[Cards|card]] that is unlocked from [[Arenas|Jungle Arena (Arena 9)]]. It spawns a slow, single-target, building-targeting, melee, ground troop with high hitpoints and low damage. After a slight delay, she will throw an enhancement to a maximum of 2 allied troops on the Arena, increasing their damage for every 3rd attack. She appears as a large humanoid creature with long orange hair which covers her eyes and a large red nose, wearing a black suit, a brown apron and gloves, and a team-colored belt, and carries a pair of hammers. A Rune Giant card costs 4 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Rune Giant Common Modifier.png|45x45px]] Common: Stronger & STRONGER===
+{{Quote|Better buff}}
+Amplifies buff even further.
+
+===[[File:Rune Giant Rare Modifier.png|45x45px]] Rare: Ain't Babies, That's for Sure===
+{{Quote|+2 Berserkers}}
+Spawns with 2 [[Berserker]]s.
+
+===[[File:Rune Giant Epic Modifier.png|45x45px]] Epic: See Ya, Sucka!===
+{{Quote|Everything buffed}}
+Automatically buffs everything on the player's side.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Rune Giant Card}}
+*Unlike the [[Royal Chef]], the Rune Giant and her enhancement do not prioritize any specific troop and she will simply target the two closest troops within 8.5 tiles from her. Keep this in mind for which troops you want to receive the buff, especially if a previous troop with a buff is defeated or the buff expires after 5 seconds.
+*The Rune Giant should not be used in [[X-Bow]] or [[Mortar]] decks, as her buff will ignore any building.
+*The Rune Giant's enhancement has specific interactions with certain cards.
+**Any troop that deals area damage will be able to deal the boosted damage to all enemy troops with their attack. Piercing attackers are more effective at this, with the [[Executioner]] being further boosted, as it will affect both the "send" and "return" phases of his third throw.
+**The [[Electro Wizard]]'s attack counts as two hits, which allows the boost to activate with each third hit instead of every third full attack. Against a singular troop, this will activate more frequently.
+**The [[Electro Dragon]]'s chain attack will be boosted with every third full attack, instead of each hit for each chain. However, this can effectively make the third attack get boosted for all three hits of the chain.
+**Troops that have another troop attached to them, like the [[Goblin Giant]] and [[Goblin Machine]], will only have the primary troop receive the boost and will not affect any secondary troop.
+**The [[Hunter]] and [[Firecracker]] will have the boost split among all of their projectiles on their third shot, only dealing the bonus damage when all pellets hit. In order to make the best use of it, make sure that they are placed close to their target in order to deal maximum damage.
+**Troops with charging/dashing/jumping effects will be able to be affected by the enhancement, and can result in the charge, dash, or jump to deal increased damage. Even if the attack itself does not get the boost, it contributes towards the regular cycle, allowing the second regular attack of those troops to deal increased damage instead of the third one.
+**Interestingly, the enhancement also works with [[Golden Knight]]'s Dashing Dash ability, allowing every third troop in the chain to get hit with boosted damage.
+*The Rune Giant's bonus damage is static and is dependent on the ally's attack speed. Troops that attack slowly with high damage such as the [[P.E.K.K.A.]], [[Mini P.E.K.K.A.]], [[Sparky]], [[Prince]], [[Mega Minion]], [[Golem]], [[Bowler]], [[Battle Ram/Evolution|Evolved Battle Ram]], [[Elite Barbarians]], [[Electro Giant]], [[Night Witch]], and the [[Balloon]] will not benefit much from the extra damage, however, rapid-hitting troops like the [[Lumberjack]], [[Dart Goblin]], [[Monk]], [[Mighty Miner]], [[Inferno Dragon]], Magic Archer, [[Little Prince]], [[Bandit]], Golden Knight, [[Phoenix]], Goblin Machine, and the [[Berserker]] will benefit a lot more, since they will attack more often. Casting [[Rage]] on troops enhanced by the Rune Giant is more recommended because of this.
+*The Rune Giant has pretty good synergy with the [[Lava Hound]]. At first, she will let the Lava Hound deal bonus damage, which is really helpful because its damage is very low. Once the Lava Hound is defeated, the Rune Giant will tank for the Lava Pups and also let two of them deal bonus damage. However, this combo is quite expensive, costing 11 total Elixir, so it's recommended to use it at Double or Triple Elixir.
+*The Rune Giant has great synergy with support cards that can easily damage the [[Crown Towers]] from a distance such as the [[Magic Archer]], [[Princess]], [[Firecracker/Evolution|Evolved Firecracker]], or the [[Bomber/Evolution|Evolved Bomber]]. She will tank for them while giving them bonus damage every third hit, allowing them to chip a lot more damage from Crown Towers, especially if the opponent tries defending with cards close to their towers.
+*Pairing the Rune Giant with troops that immediately destroy themselves such as any Spirit or [[Wall Breakers]] is not recommended, as they won't be able to deal bonus damage.
+
+<center>
+<div class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||1.5 sec||0.5 sec||Medium (60)||1 sec||Melee: Medium (1.2)||Building|| x1||Ground ||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+{{StatisticsSubheader|Enchant}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Enchant Range<br />{{Icon|I=Range}}
+! scope="col" |Enchant Limit<br />{{Icon|I=Troop Count}}
+! scope="col" |Enchant Shot<br />{{Icon|I=Damage Speed}}
+! scope="col" |Enchant duration after she dies<br />{{Icon|I=Time}}
+|-
+|8.5 tiles||x2||Every 3rd Attack||5 sec
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 2662 }}
+{{#vardefine: dmg_11 | 120 }}
+{{#vardefine: atk_speed | 1.5 }}
+{{#vardefine: bonus_11 | 220 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per Second<br />{{Icon|I=DPS}}
+! scope="col" |Bonus Damage<br />{{Icon|I=Damage}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:bonus_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:bonus_11}} * (1.1^(7-11)) round 0 }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:bonus_11}} * (1.1^(8-11)) round 0 }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:bonus_11}} * (1.1^(9-11)) round 0 }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:bonus_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }} || {{#var:bonus_11}}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:bonus_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:bonus_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:bonus_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:bonus_11}} * (1.1^(15-11)) round 0 }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:bonus_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="20%" |Type
+! width="10%" |Level/Tier
+! width="45%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Tower Tapper <br> [[File:Tower Tapper.png|50x50px]]
+|1
+|Hit enemy [[:Category:Crown Towers|Crown Towers]] a total of 360 times
+|20 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Crown Towers a total of 1,100 times
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Crown Towers a total of 2,000 times
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+|-
+| rowspan="3" |Punching Bag <br/ > [[File:Punching Bag.png|50x50px]]
+|1
+|Receive a total of 3,500 hits from enemy Troops
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Receive a total of 10,000 hits from enemy Troops
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Receive a total of 17,500 hits from enemy Troops
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2025
+*The Rune Giant was added to the game on 6/1/2025, in the [[Version History#Pass Royale and more (6/1/2025)|January 2025 Update]].
+*On 21/1/2025, a [[Version History#Maintenance Break (21/1/2025)|maintenance break]], made it so the enchantment stays on troops even after Rune Giant is defeated instead of going away.
+*On 30/1/2025, a [[Version History#Maintenance Break (30/1/2025)|maintenance break]], made it so that damage boost from the Rune Giant would be split on troops with attacks with multiple projectiles instead of being granted to each projectile. It also made it so that troops that have another troop attached would no longer recieve the damage boost on the attached troop.
+*On 4/3/2025, a [[Version History#Balance Changes (4/3/2025)|Balance Update]], decreased the Rune Giant's hitpoints by 11% and made it so the enchantment expires 5 seconds after she is defeated.
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], made it so that Rune Giant would no longer be able to enchant troops if captured by [[Goblin Cage/Evolution|Evolved Goblin Cage]] and made it so that [[Electro Dragon/Evolution|Evolved Electro Dragon]]'s boost from a Rune Giant would apply every third attack instead of every third hit in each attack. It also fixed various issues related to Rune Giant’s enchantment damage.
+*On 3/6/2025, a [[Version History#Balance Changes (3/6/2025)|Balance Update]], increased the Rune Giant's hitpoints by 6%.
+
+==Gallery==
+<gallery>
+Rune Giant Card Render.png|Current card render.
+Rune Giant Preview.gif|Current card preview
+Rune Giant 1.png|Rune Giant 1
+Rune Giant 2.png|Rune Giant 2
+Rune Giant concept art 1.png|[https://www.youtube.com/post/UgkxG1-AQzbkDxiFOjVCfV4Kao9HWz_HhONR Concept art] shared by Clash Royale on YouTube.
+Rune Giant concept art 2.png|Ditto.
+</gallery>
+
+==Trivia==
+*The word "''Rune''" comes from the Old German "''rūnō''", meaning 'secret' or 'mystery'.
+*The Rune Giant is 1 of 6 [[:Category:Troop Cards|troops]] that cannot deal damage to other troops whatsoever, the others being the [[Royal Giant]], [[Giant]], [[Hog Rider]], [[Royal Hogs]], and [[Elixir Golem]].
+*The Rune Giant is 1 of 15 troops which bring an excited reaction from the audience upon spawning and brings a collective groan from the audience when defeated, as well as a concerning gasp when the opponent plays her, the others include Royal Giant, Giant, [[P.E.K.K.A.]], [[Giant Skeleton]], [[Goblin Giant]], [[Golem]], [[Bowler]], [[Electro Wizard]], [[Inferno Dragon]], [[Sparky]], [[Lava Hound]], [[Night Witch]], [[Super Lava Hound]], and the [[Monk]].
+*The [[Cards|card]] image shows 2 [[Fire Spirit|Fire Spirits]] and a [[Berserker]] on the background.
+*If a Rune Giant throws her enhancement at a Berserker, the Berserker will perform her enhanced attack with both weapons at once instead of only one of them. This is merely a visual indicator; her attack does not hit twice or deal double damage.
+*The Rune Giant is the subject of 3 [[Emotes]].
+*It is possible for a Rune Giant to enhance herself. This can happen if she throws her enhancement to a troop beside a Monk, who will deflect it back to the Rune Giant and enhance herself.
+*The Rune Giant is 1 of 2 non-Legendary or Champion troops to fall from the sky when deployed, the other being the Zappies.
+*Strangely, despite being a female, the Rune Giant is referred to as a Giant and not a Giantess.
+
+{{Navigation|Card}}

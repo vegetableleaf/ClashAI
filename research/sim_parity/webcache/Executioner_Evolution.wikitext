@@ -1,3 +1,4 @@
+<!-- revid:437539 fetched:2026-08-26 title:Executioner/Evolution -->
 {{Protection}}{{MagicWords}}
 {{DISPLAYTITLE: <span class="text-evolution";">Evolved Executioner</span>}}
 {{Evolved Card Infobox|Cost=5|CycleCost=1|Cycles=1|Rarity=Epic|Type=Troop|Arena=Serenity Peak|ReleaseDate=7 April 2025}}

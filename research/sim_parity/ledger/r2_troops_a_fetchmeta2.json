@@ -1,0 +1,334 @@
+{
+ "Archers": {
+  "cached_revid": 437494,
+  "live_revid": 437494,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 36045,
+  "cache_file": "Archers.wikitext",
+  "keys": [
+   "archers"
+  ]
+ },
+ "Baby Dragon": {
+  "cached_revid": 437335,
+  "live_revid": 437335,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 23990,
+  "cache_file": "Baby_Dragon.wikitext",
+  "keys": [
+   "baby_dragon"
+  ]
+ },
+ "Balloon": {
+  "cached_revid": 437164,
+  "live_revid": 437164,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 32587,
+  "cache_file": "Balloon.wikitext",
+  "keys": [
+   "balloon"
+  ]
+ },
+ "Bandit": {
+  "cached_revid": 436852,
+  "live_revid": 436852,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 20119,
+  "cache_file": "Bandit.wikitext",
+  "keys": [
+   "bandit"
+  ]
+ },
+ "Barbarians": {
+  "cached_revid": 437362,
+  "live_revid": 437362,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 27039,
+  "cache_file": "Barbarians.wikitext",
+  "keys": [
+   "barbarians"
+  ]
+ },
+ "Bats": {
+  "cached_revid": 437216,
+  "live_revid": 437216,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 24280,
+  "cache_file": "Bats.wikitext",
+  "keys": [
+   "bats"
+  ]
+ },
+ "Battle Healer": {
+  "cached_revid": 437490,
+  "live_revid": 437490,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 26488,
+  "cache_file": "Battle_Healer.wikitext",
+  "keys": [
+   "battle_healer"
+  ]
+ },
+ "Battle Ram": {
+  "cached_revid": 436977,
+  "live_revid": 436977,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 24909,
+  "cache_file": "Battle_Ram.wikitext",
+  "keys": [
+   "battle_ram"
+  ]
+ },
+ "Berserker": {
+  "cached_revid": 436948,
+  "live_revid": 436948,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 10544,
+  "cache_file": "Berserker.wikitext",
+  "keys": [
+   "berserker"
+  ]
+ },
+ "Bomber": {
+  "cached_revid": 436694,
+  "live_revid": 436694,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 27649,
+  "cache_file": "Bomber.wikitext",
+  "keys": [
+   "bomber"
+  ]
+ },
+ "Bowler": {
+  "cached_revid": 437377,
+  "live_revid": 437377,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 27354,
+  "cache_file": "Bowler.wikitext",
+  "keys": [
+   "bowler"
+  ]
+ },
+ "Suspicious Bush": {
+  "cached_revid": 437381,
+  "live_revid": 437381,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 18760,
+  "cache_file": "Suspicious_Bush.wikitext",
+  "keys": [
+   "bush_goblin"
+  ]
+ },
+ "Cannon Cart": {
+  "cached_revid": 436728,
+  "live_revid": 436728,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 26393,
+  "cache_file": "Cannon_Cart.wikitext",
+  "keys": [
+   "cannon_cart"
+  ]
+ },
+ "Dark Prince": {
+  "cached_revid": 437262,
+  "live_revid": 437262,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 28966,
+  "cache_file": "Dark_Prince.wikitext",
+  "keys": [
+   "dark_prince"
+  ]
+ },
+ "Dart Goblin": {
+  "cached_revid": 437213,
+  "live_revid": 437213,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 21562,
+  "cache_file": "Dart_Goblin.wikitext",
+  "keys": [
+   "dart_goblin"
+  ]
+ },
+ "Goblin Barrel/Evolution": {
+  "cached_revid": 437372,
+  "live_revid": 437372,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 16174,
+  "cache_file": "Goblin_Barrel_Evolution.wikitext",
+  "keys": [
+   "decoy_goblin"
+  ]
+ },
+ "Electro Dragon": {
+  "cached_revid": 437293,
+  "live_revid": 437293,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 23542,
+  "cache_file": "Electro_Dragon.wikitext",
+  "keys": [
+   "electro_dragon"
+  ]
+ },
+ "Electro Giant": {
+  "cached_revid": 436724,
+  "live_revid": 436724,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 24459,
+  "cache_file": "Electro_Giant.wikitext",
+  "keys": [
+   "electro_giant"
+  ]
+ },
+ "Electro Spirit": {
+  "cached_revid": 437341,
+  "live_revid": 437341,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 23213,
+  "cache_file": "Electro_Spirit.wikitext",
+  "keys": [
+   "electro_spirit"
+  ]
+ },
+ "Electro Wizard": {
+  "cached_revid": 436732,
+  "live_revid": 436732,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 30520,
+  "cache_file": "Electro_Wizard.wikitext",
+  "keys": [
+   "electro_wizard"
+  ]
+ },
+ "Elite Barbarians": {
+  "cached_revid": 436475,
+  "live_revid": 436475,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 26983,
+  "cache_file": "Elite_Barbarians.wikitext",
+  "keys": [
+   "elite_barbarians"
+  ]
+ },
+ "Elixir Golem": {
+  "cached_revid": 437532,
+  "live_revid": 437532,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 34589,
+  "cache_file": "Elixir_Golem.wikitext",
+  "keys": [
+   "elixir_golem",
+   "elixir_golemite",
+   "elixir_blob"
+  ]
+ },
+ "Executioner": {
+  "cached_revid": 437375,
+  "live_revid": 437375,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 23448,
+  "cache_file": "Executioner.wikitext",
+  "keys": [
+   "executioner"
+  ]
+ },
+ "Fire Spirit": {
+  "cached_revid": 437343,
+  "live_revid": 437343,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 18327,
+  "cache_file": "Fire_Spirit.wikitext",
+  "keys": [
+   "fire_spirit"
+  ]
+ },
+ "Firecracker": {
+  "cached_revid": 437467,
+  "live_revid": 437467,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 26502,
+  "cache_file": "Firecracker.wikitext",
+  "keys": [
+   "firecracker"
+  ]
+ },
+ "Fisherman": {
+  "cached_revid": 437257,
+  "live_revid": 437257,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 24010,
+  "cache_file": "Fisherman.wikitext",
+  "keys": [
+   "fisherman"
+  ]
+ },
+ "Flying Machine": {
+  "cached_revid": 436539,
+  "live_revid": 436539,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 21188,
+  "cache_file": "Flying_Machine.wikitext",
+  "keys": [
+   "flying_machine"
+  ]
+ },
+ "Furnace": {
+  "cached_revid": 437285,
+  "live_revid": 437285,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 24979,
+  "cache_file": "Furnace.wikitext",
+  "keys": [
+   "furnace"
+  ]
+ },
+ "Royal Ghost/Evolution": {
+  "cached_revid": 437237,
+  "live_revid": 437237,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 12591,
+  "cache_file": "Royal_Ghost_Evolution.wikitext",
+  "keys": [
+   "ghost_souldier"
+  ]
+ },
+ "Giant": {
+  "cached_revid": 437161,
+  "live_revid": 437161,
+  "edit_war": "pass",
+  "fetched": "2026-08-26",
+  "bytes": 43607,
+  "cache_file": "Giant.wikitext",
+  "keys": [
+   "giant"
+  ]
+ }
+}

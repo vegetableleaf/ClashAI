@@ -1,0 +1,235 @@
+{{DISPLAYTITLE: <span style="color: #b300b3;">X-Bow</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}{{Card Infobox|Cost=6|Rarity=Epic|Type=Building|Arena=Hog Mountain|ReleaseDate=4 January 2016}}{{SubpageNavBox|MergeTactics=yes}}{{Quote|Nice tower you got there. Would be a shame if this X-Bow whittled it down from this side of the Arena...}}
+
+The X-Bow is an {{Rarity|Epic}} [[Cards|card]] that is unlocked from the [[Arenas|Hog Mountain (Arena 10)]]. It spawns a single-target, ground-targeting, very long-ranged, [[:Category:Building Cards|building]] with high hitpoints and very low damage. It appears to be a crossbow with wooden, stone, and metallic features along with a shining steel bolt for ammunition mounted on top of a base with a metal rim and team-colored plates. An X-Bow card costs 6 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:X-Bow Common Modifier.png|45x45px]] Common: Radical Range===
+{{Quote|+50% range}}
+X-Bow range increases by 50%.
+
+===[[File:X-Bow Rare Modifier.png|45x45px]] Rare: Magically Miniscule===
+{{Quote|Piercing attacks & shorter lifetime}}
+X-Bow shoots out [[Magic Archer]] darts in return for a shorter lifetime.
+
+===[[File:X-Bow Epic Modifier.png|45x45px]] Epic: Shockingly Short===
+{{Quote|Sparky attacks & shorter lifetime}}
+X-Bow shoots out [[Sparky]] bullets in return for a shorter lifetime.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the X-bow Card}}
+*An X-Bow placed near the river should never be ignored as it can single-handedly destroy any [[:Category:Tower Troop Cards|tower troop]].
+*Placing the X-Bow one tile away from the river in front of the Crown Tower will maximize its attacking range and make enemy melee [[:Category:Troop Cards|troops]] have to walk onto the player's side. They will be chipped down more quickly as they will walk in range of the player's own Crown Tower. The X-Bow can also be staggered one tile to the left or right, but any more will cause the Crown Tower to be out of the X-Bow's attacking range.
+*An X-Bow is a powerful defensive [[:Category:Building Cards|building]] due to its extremely long range and ability to take out large numbers of weak troops such as [[Goblins]], [[Spear Goblins]], [[Archers]], [[Wall Breakers]], [[Guards]], and [[Skeletons]]. When defending, the X-Bow can be placed behind or between the player's Crown Towers as it will be well protected but still able to engage attacking enemy troops from afar.
+*If the X-Bow is placed 3 tiles from the river, cards with a 6 tile attacking range like the [[Musketeer]], [[Firecracker]], [[Flying Machine]], and [[Archers/Evolution|Evolved Archers]] can snipe it and take it out for a good trade. The player should be mindful of what [[cards]] are in their opponent's [[Battle Decks|deck]] and when they are in hand to try and block them, allowing the X-Bow to stay alive longer.
+*It can also be used offensively due to its range, being able to outrange the Crown Towers. Note that the [[Mortar]] can also outrange Crown Towers, but its significantly lower damage per second and lower overall damage over its lifetime makes it less threatening.
+*When defending against the standard offensive X-Bow, there are 3 placements for tanks.
+**The first placement and generally the most effective is to place your tank 1 tile in front of the tower being targeted by the X-bow. This will buy some time before the opponent can place troops like [[Archers]] to damage the tank and let you place ranged units behind the tank. It also forces your opponent to wait before hitting both the tank and ranged unit simultaneously with a spell if you were to use a ranged unit. This placement is particularly effective when using a heavy tank like the [[Golem]].
+**The second placement is to place the tank at the bridge, immediately putting pressure on the X-Bow. This pressures the X-Bow user to defend immediately, but also puts your tank in danger. This placement is recommended if you know the opponent using X-Bow is at an elixir deficit.
+**The third is to place the tank in the Center of the arena, slightly in the other lane. This will keep the tank safe from supporting troops, but will only temporarily distract the X-bow, necessitating placing more cards to continue dealing with the X-Bow. This is helpful if you want to put pressure opposite lane with your tank. It can also be good if you are using a combination of a tank and a ranged unit to defend the X-bow, as that limits the spell value they can get from preventing them from hitting both the tank and the ranged unit simultaneously.
+**Do note that when using the first and third placements, if the opponent has [[Tornado]], they can pull your tank away and cause the X-bow to lock onto the tower.
+*The [[Rocket]] is a decent counter to the X-Bow since they both cost 6 [[Elixir]] and the [[:Category:Spell Cards|spell]] can inflict massive damage to it, on top of also harming nearby enemy troops. However, this does not prevent the X-Bow from inflicting some damage so try to deploy a distraction card beforehand.
+**Note that the opponent may take advantage of the lack of a Rocket due to being used on the X-Bow, and place another card that would thrive due to its absense, such as an [[Elixir Collector]].
+*Building targeting troops are some of the most effective X-Bow counters as only other buildings will distract them, allowing them to pummel the X-Bow directly.
+**The [[Giant]], [[Goblin Giant]], and [[Electro Giant]] have high enough hitpoints to withstand multiple hits from the X-Bow while attacking it. The Electro Giant can even force the X-Bow to take more damage thanks to his Zap Pack, while the Goblin Giant's Spear Goblins will attack any defending allies to the X-Bow or the X-Bow itself.
+**A similar tactic can be applied to the [[Golem]] and [[Elixir Golem]]. However, unlike the previous options, the player must ensure that these troops do not get defeated in the process, as the X-Bow would then retarget onto the next closest target instead of the Golemites and Elixir Golemites.
+**The [[Hog Rider]] and [[Ram Rider]] have decent hitpoints and deal higher damage than the other options, allowing them to destroy the X-Bow faster. However, the player should avoid playing them close to the bridge, as they will jump, and the X-Bow will not target mid-air Hog Riders and Ram Riders.
+**A [[Battle Ram]] is a passable distraction card for an X-Bow. Since there is a slight time between the Battle Ram being destroyed and the Barbarians being spawned where neither unit exist, similar to [[Skeleton Barrel]], the X-Bow will proceed to lock on to the Crown Tower if there is no other troop in sight, making it a bit inconsistent as it will require more support. This is less of an issue with the [[Battle Ram/Evolution|Evolved Battle Ram]], as it will still distract the X-Bow, even if it connects, forcing the X-Bow player to defeat the Evolved Battle Ram directly.
+*In a pinch, a [[Balloon]] can be used to counter an X-Bow placed at the bridge. Its high immediate damage allows it to 2HKO the building, which only takes a few seconds, buying you time to support the Balloon, and its death bomb will also deal notable damage to any extra defenders. However, note that the Balloon is unable to take damage from the X-Bow, so place down a mini tank like an [[Ice Golem]] in range of the X-Bow to prevent all damage to your Crown Tower.
+**The player should not attempt to execute a LavaLoon push against these X-Bow setups, as the Balloon's range is shorter than the [[Lava Hound]]'s, meaning that it would end up in front of the Lava Hound, leaving it vulnerable. In this case, try to destroy those buildings first before deploying your Balloon.
+*Cheap tanks or just tanks in general that deal moderately high damage per second like the [[Knight]], [[Lumberjack]], [[Miner]], [[Golden Knight]], Valkyrie, [[Monk]], [[Skeleton King]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], and [[Dark Prince]] can be a great Elixir-efficient counter to a lone X-Bow.
+**However, air troops in turn will not be able to distract the X-Bow, so be sure to have appropriate ground troops to tank for the X-Bow.
+**Ranged troops placed at their maximum attacking range will be difficult for the X-Bow player to deal with as their units will not be able to immediately engage your defender. However, most ranged troops lack a large amount of health, so consider backing them up with a cheap tank to allow them to continue taking down the X-Bow.
+**The [[Cannon Cart]], [[Bowler]], [[Executioner]], [[Sparky]], and the [[Royal Giant]] have both the range and hitpoints to contest an X-Bow. The Royal Giant is particularly effective as he targets buildings and will have over half his health left to counterpush, demanding further response.
+**The [[Mega Knight]], [[Giant Skeleton]], [[Mighty Miner]], [[Prince]], and [[P.E.K.K.A.]] can easily decimate both the X-Bow and almost anything used to support it due to their high hitpoints and damage.
+*An X-Bow takes 3.5 seconds to deploy, giving the defender ample time to place cards to distract the X-Bow and prevent it from locking onto their Crown Towers, as well as deal with its supporting troops. With sufficient cards, this can then be turned into a punishing counterpush. Placing the distraction unit at the last second is usually the most effective way to distract the X-Bow as the opponent won't be able to react to the unit and eliminate it before the X-Bow finishes deploying. The defender can also mix up their timing and play their unit immediately to catch their opponent off guard, such as with an immediate [[Inferno Tower]].
+*It is advised to place a tank for the X-Bow so it does not take the brunt of an attack and can carry on chipping away at the Tower. Cheap tanks such as [[Ice Golem]] and Knight are the most versatile as the X-Bow has a hefty 6 Elixir cost. More frail troops should still be placed behind or beside the X-Bow, as they will otherwise die too quickly to gain any value. The exception to this are frail troops that are designed to be a distraction, such as [[Skeletons]] and [[Goblins]].
+*If the player misses their timing for a distraction and the X-Bow is locked on to their Crown Tower, using any card with a stun effect such as [[Zap]] will force the X-Bow to retarget to the nearest entity, which is helpful in denying a lot of would-be damage.
+*Casting a [[Rage]] on an X-Bow will increase its hit speed, rapidly inflicting damage to the targeted unit or Crown Tower, and will also boost the player's troops supporting the X-Bow. Note that this costs 8 Elixir, which is very risky to play and can be easily countered by a tank for a positive Elixir trade.
+*The X-Bow pairs well with other buildings placed beside it. These buildings protect the X-Bow from threats to it, tanks and swarms alike, while the X-Bow continues attacking the Crown Tower.
+**The Inferno Tower's high attack speed makes it a great choice against tanks like the Giant that would destroy an X-Bow or otherwise distract it for a long time. If the opponent puts down swarm units (ex. [[Goblin Gang]], [[Skeleton Army]] or [[Minion Horde]]), then get ready to deploy splash units, such as the [[Ice Wizard]], [[Wizard]], Executioner, [[Bomber]], Magic Archer, [[Witch]], [[Goblin Demolisher]], Bowler, [[Baby Dragon]], [[Princess]], [[Firecracker]], or spells, such as [[Arrows]], [[Zap/Evolution|Evolved Zap]], [[Giant Snowball]], or [[The Log]].
+**A cheaper, less polarizing alternative is the [[Tesla]]. It clears small swarms faster and cannot be damaged by spells unless it is attacking (with the exception of [[Earthquake]]), but isn't nearly as effective at taking out tanks.
+**The [[Bomb Tower]] can be a great supporting building for an X-Bow. It is even better than the Tesla against swarms, working even better against bulkier swarms such as Barbarians, [[Royal Hogs]], and Recruits. However, it is less effective than the other buildings, due to its slower attack speed.
+**These combos can be expensive and risky; they cost 10 Elixir to place, or 11 in the case of the Inferno Tower, and can be easily nullified using certain cards such as [[Lightning]]. Because of this, it is most recommended to be used only in Double Elixir time.
+*When facing an X-Bow, the player should always try to go for the first crown and then the 2-1 victory. If they take down a Tower, it will be very difficult for their opponent to take down the Tower that is opposite to their destroyed Tower. This is because of the extra terrain that is given to a player after destroying a Crown Tower, allowing them to place troops directly on top of the X-Bow. This works particularly well with 360° splash damage troops that have high health, such as the [[Valkyrie]], as if it is placed on top of the X-Bow, no matter what your opponent places down, the Valkyrie will start damaging the X-Bow and also tank it due to her great survivability.
+*In a situation where both players have lost a Crown Tower in opposite lanes, the X-Bow user should attack the Tower opposite to their destroyed one by placing their X-Bow in the middle. This limits the areas in which their opponent can deploy troops directly on top of the X-Bow. Going for the King's Tower is not recommended, as all four sides of the X-Bow will be vulnerable to being deployed on and the King's Tower's higher amount of hitpoints will be difficult to break through consistently.
+*An offensive X-Bow placed on the center of the bridge can be attacked from the [[Magic Archer]] while placed on the center of the bridge and 1 tile away from the river. This is enough to also hit the Crown Tower as well.
+**However, a staggered X-Bow will cause the Magic Archer to be too far away from the Crown Tower, so that it would not be able to hit it as well. In this case, the Magic Archer has to be placed one tile closer in order to hit the Crown Tower alongside the building.
+*Having an area damage spell in hand when attacking with the X-Bow is very effective, as it can allow the player to defeat low or moderate hitpoint troops nearly instantly, allowing it to lock onto a Crown Tower.
+**The Log has a low Elixir cost and also comes with a knockback effect that can push troops away from the X-Bow, buying it more time to deal damage to its target. Since the X-Bow is placed on the bridge and stays there, the downsides of using The Log as a spell like being unable to play it on the opposing side also do not come into play.
+**A Giant Snowball is a good alternative to The Log in X-Bow decks. It keeps the knockback effect and combines it with a slow effect which increases the time it takes for enemies to engage the X-Bow. This can be further amplified with the [[Giant Snowball/Evolution|Evolved Giant Snowball]], which can fully remove them from the [[Arenas|Arena]], allowing the X-Bow to get a connection to the Crown Tower.
+**If an opponent often distracts an X-Bow with a single unit that is placed somewhat far back on their side, a pre-emptive [[Tornado]] placement can allow the X-Bow to sneakily lock onto the Crown Tower by pulling the unit out of the building's range. This is most easily done by pulling the unit backwards. The player should also try to Tornado the unit to the other lane if possible, so that it does not assist in defending the X-Bow after the pull. The player should try to make the Tornado's effect begin as soon as the opponent's unit is deployed, so that the unit does not resist the Tornado's pull by walking forward. While this will activate the opponent's King's Tower, the X-Bow itself will never be affected by the activation.
+**In certain situations, a [[Barbarian Barrel]] or [[Royal Delivery]] can be helpful alongside the X-Bow. Much like the other spell, they can clear away swarms, and in addition, spawn a [[Barbarians|Barbarian]] or [[Royal Recruits|Royal Recruit]] to assist with further defense against bulkier enemies.
+**Conversely, having an area damage spell in hand when defending against an X-Bow is also effective. Due to the X-Bow's high Elixir cost, the units played alongside it are often of low Elixir cost and have low to moderate hitpoints, allowing the player to reap a large amount of spell value. However, the Royal Delivery does not have the range to reach the X-Bow itself
+*Since it is a building, it is important to note that certain cards like the [[Heal Spirit]], [[Battle Healer]], [[Royal Chef]], and [[Rune Giant]] are unable to utilize their effects on it, making them poor choices in a deck alongside the X-Bow. As such they should never be used in X-Bow decks, and it is better to seek for other alternatives.
+
+<center>
+
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Lifetime<br />{{Icon|I=Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|6||0.3 sec||0.3 sec||3.5 sec||30 sec|| 11.5||Ground||[[:Category:Building Cards|Building]]|| {{Rarity|Epic}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1600 }}
+{{#vardefine: dmg_11 | 43 }}
+{{#vardefine: life | 30 }}
+{{#vardefine: atk_speed | 0.3 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+! scope="col" |Hitpoints lost per second<br />{{Icon|I=Time}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#expr: {{#var:hp_11}} / {{#var:life}} round 1 }} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 87,500 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|20 {{BASEPAGENAME}} cards<br>75 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 265,000 Damage to enemy Troops or buildings
+|6,000 {{Icon|I=Gold}}<br>75 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 440,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>75 {{Icon|I=XP}}
+|-
+| rowspan="3" | Tower Tapper <br> [[File:Tower Tapper.png|50x50px]]
+|1
+|Hit enemy [[:Category:Crown Towers|Crown Towers]] a total of 3,500 times
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Crown Towers a total of 10,000 times
+|20 {{Icon|I=Epic Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Crown Towers a total of 18,000 times
+|15,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The X-Bow [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016.
+*On 2/2/2016, the [[Version History#February 2016 Update (2/2/2016)|February 2016 Update]], decreased the X-Bow's hitpoints by 15% and removed its ability to target air [[:Category:Troop Cards|troops]].
+*On 9/2/2016, the [[Version History#Chest Rewards & Card Balance (9/2/2016)|Chest Rewards &amp; Card Balance Update]], increased the X-Bow's deployment time to 5 seconds (from 3 seconds).
+*On 23/3/2016, a [[Version History#Balance Changes (23/3/2016)|Balance Update]], decreased the X-Bow's range to 12 tiles (from 13 tiles).
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], fixed the "range bug" and decreased the X-Bow's range to 11.5 tiles (from 12 tiles), but its effective range is unchanged.
+*On 21/6/2016, a [[Version History#Balance Changes (21/6/2016)|Balance Update]], decreased the X-Bow's deployment time to 4 seconds (from 5 seconds) and increased its hitpoints by 18%.
+2017 
+*On 16/3/2017, a [[Version History#Maintenance Break (16/3/2017)|maintenance break]], decreased the X-Bow's attack time and first attack time interval to 0.25 seconds (from 0.3 seconds). This was done to fix some unexpected behaviour that the X-Bow showed.
+*On 11/8/2017, a [[Version History#Balance Changes (11/8/2017)|Balance Update]], decreased the X-Bow's deployment time to 3.5 seconds (from 4 seconds).
+2018
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], moved the [[Arenas|Arena]] to unlock the X-Bow from Barbarian Bowl to Builder's Workshop. It also fixed a bug where the X-Bow would occasionally stop shooting at the edge of its range.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Epic}} cards start at Level 6 and end at Level 13 (from 1 to 8).
+2019
+*On 4/3/2019, a [[Version History#Balance Changes (4/3/2019)|Balance Update]], increased the X-Bow's hitpoints by 4%.
+2020
+*On 9/12/2020, a [[Version History#Balance Changes (9/12/2020)|Balance Update]], increased the X-Bow's damage by 30%, decreased its hitpoints by 4%, increased its attack time and first attack time interval to 0.3 seconds (from 0.25 seconds), and decreased its lifetime to 30 seconds (from 40 seconds).
+2021
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the X-Bow from Builder's Workshop to Hog Mountain.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the X-Bow's damage by 2.43%.
+*On 1/4/2025, a [[Version History#Maintenance Break (1/4/2025)|maintenance break]], increased the X-Bow's damage by 7.5%.
+*On 1/9/2025, the September 2025 Update, added a card render to the X-Bow's card info screen.
+
+==Gallery==
+<gallery>
+File:X-Bow card render.png|Current card render.
+File:X-Bow Preview.gif|Current card preview
+File:X-bow.png|X-Bow
+</gallery>
+
+==Trivia==
+*The name "''X-Bow''" is a pun on "''Crossbow''", which the device resembles. The letter "X" resembles a cross (十), leading to this abbreviated name.
+**In the Spanish, Russian, Chinese, and Finnish language settings of the game, the X-Bow's name translates to "Crossbow". In the Portuguese, Japanese, Korean, Arabic, and Vietnamese language setting of the game, the X-Bow's name translates to "X-Crossbow", "Giant Crossbow", "Large Crossbow", "Bow", and "Bow Tower" respectively.
+**The X-Bow 1 of 10 [[cards]] associated with archery, with the others being [[Archers]], [[Arrows]], [[Tower Princess]], [[Princess]], [[Magic Archer]], [[Super Magic Archer]], [[Super Archers]], [[Archer Queen]], and the [[Little Prince]].
+**Strangely enough, despite crossbow bolts reaching higher speed than arrows shot from regular bows and thus landing on their target with a higher force which means more damage, the X-Bow does less damage than equal-level Archers, Tower Princess, Princess, and Magic Archer. This is likely for balancing reasons.
+*The X-Bow is 1 of 7 [[:Category:Building Cards|buildings]] which first existed in Clash of Clans, the others being [[Cannon]], [[Mortar]], [[Tesla]], [[Goblin Hut]], [[Inferno Tower]], and [[Elixir Collector]]. 
+**Similar to its [http://clashofclans.wikia.com/wiki/X-Bow Clash of Clans counterpart] in ground mode, the X-Bow cannot target air troops, but boasts massive range to compensate.
+**Unlike the Clash of Clans X-Bow, the Clash Royale iteration cannot be set to target air troops and fires regular crossbow bolts instead of Elixir bolts.
+*While not available as a building in Squad Busters, the X-Bow reappears there when spawned by an [https://squad-busters.fandom.com/wiki/X-Bow_Spell X-Bow Spell].
+*The X-Bow, along with [[Barbarian Hut]] and [[Elixir Collector]], are the most expensive buildings, costing 6 [[Elixir]].
+*The X-Bow's stats are the highest or lowest among all buildings. More specifically:
+**Among all buildings that can attack, the X-Bow is tied with Mortar, [[Barbarian Launcher]], and [[Party Hut]] for the longest range of all buildings, with a range of 11.5 tiles.
+**The X-Bow is tied with Mortar, Barbarian Launcher, and Party Hut for the longest deployment time of all buildings, with a deployment time of 3.5 seconds.
+**Among all buildings that can attack, the X-Bow has the highest attack speed of all buildings, with an attack speed of 0.3 seconds.
+**Among all buildings that can attack, the X-Bow has the highest first attack speed of all buildings, with a first attack speed of 0.3 seconds.
+**Among all buildings that attack with projectiles, the X-Bow has the highest projectile speed of all buildings, with a projectile speed of 1400.
+*Out of all the cards in the game, the X-Bow is the only card to have a [https://en.wikipedia.org/wiki/Hyphen hyphen] in its name in English.
+*An empty X-Bow can be seen on the [[Trophies|Trophy Road]] as a decoration.
+*In the card's description, the "''Would be a shame if this X-Bow whittled it down from this side of the Arena...''" line is from the [https://knowyourmeme.com/memes/it-would-be-a-shame-if-something-happened-to-it old meme] that says "''It would be a shame if something happened to it.''"
+*The X-Bow is unavailable in multiple [[Tournament/Special Event Challenges|special game modes]]. More specifically:
+**It is 1 of 20 cards that is unavailable in [[Mirror]] mode, the others being [[Minions]], Cannon, Mortar, Tesla, Goblin Hut, [[Tombstone]], [[Bomb Tower]], Inferno Tower, Barbarian Hut, [[Furnace]], Elixir Collector, [[Freeze]], [[Clone]], [[Golden Knight]], [[Skeleton King]], Archer Queen, [[Mighty Miner]], Little Prince, and the [[Monk]].
+**It is unavailable in [[Global Spell|The Floor is Healing]] sub-[[:Category:Modes|mode]] of the Global Spell game mode, much like other building cards, as well as the [[Cannon Cart]].
+*On 1/4/2016, certain Content Creators were given a different version of the game, with an X-Bow that could also target friendly [[:Category:Troop Cards|troops]] and buildings if they were in range.
+*Before the X-Bow's card release, the X-Bow's hitpoints and damage were increased by 11%.
+
+{{Navigation|Card}}
+
+[[fr:Arc-X]]
+[[de:X-Bogen]]
+[[es:Ballesta]]
+[[it:Arco-X]]
+[[ja:巨大クロスボウ]]
+[[ko:대형 석궁]]
+[[ru:Арбалет]]
+[[pt-br:X-Besta]]
+[[zh:十字连弩]]
+[[pl:X-Bow]]

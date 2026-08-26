@@ -3285,6 +3285,92 @@ play/wait asymmetry to correct).
 gradient is necessary, not sufficient, and this can still come back null. Pre-committed: >=2 sigma
 on the paired probe or it is reported as NO MEASUREMENT.
 
+## 4r. 2026-08-26 — ⚠⚠ SPELL DUMPING IS REAL AND SEVERE — BUT IT DID **NOT** COME FROM THIS PPO RUN
+
+Owner report: "the model is learning to dump spells all over the place, almost never on an enemy
+target... this may be an issue that came from the PPO." **Symptom CONFIRMED. Cause CONTRADICTED.**
+
+### THE MEASUREMENT (`scratchpad/spell_probe.py`, 20 matches, same seeds, threads pinned)
+Scores GEOMETRY, not outcomes: for every spell cast, distance to the nearest enemy and how many
+enemies sit inside the spell's OWN radius. A "dump" = zero enemies in radius.
+```
+                     casts/match   hit>=1   DUMPED   median dist
+policy_ppo_long @16k     11.05      34%      66%      5.06 t
+policy_BEST init         13.55      34%      66%      3.70 t     <-- IDENTICAL dump rate
+```
+Per card (current): the_log 113 casts, **73% dumped**; tornado 89 casts, 58% dumped; rocket 19
+casts, 53% dumped. Only **5% of casts happen on an empty board** — enemies were present and simply
+not aimed at.
+
+**THE PPO DID NOT CAUSE IT.** The checkpoint this run STARTED from dumps at the same 66%, and is
+WORSE on the Log (81% vs 73%). If anything this run is very slowly improving it. Anyone re-running
+this comparison: the init is `data/policy_BEST_m26000_20260823.pt`.
+
+### MECHANISM — the CELL HEAD NEVER LEARNED A PLACEMENT FOR THE LOG OR TORNADO
+`scratchpad/cell_entropy.py`, per-card cell-head entropy (uniform over 432 cells = **6.068**):
+```
+tornado   5.790  (95% of max)  top-5 mass  7.7%   <-- essentially UNIFORM
+the_log   5.400  (89%)         top-5 mass 14.7%   <-- near uniform
+rocket    3.390  (56%)         top-5 mass 51.3%   <-- LEARNED
+x_bow     3.940  (65%)         top-5 mass 28.0%   <-- LEARNED
+ice_wizard 6.031 (99.4%)       top-5 mass  2.0%   <-- completely uniform
+```
+Placement quality tracks entropy exactly: rocket has the most concentrated head and the lowest
+dump rate; the Log/Tornado heads are near-uniform and they dump most. **The policy is not
+mis-aiming — for those cards it is not aiming at all.** This is §4.3 placement collapse, alive and
+card-specific, NOT a regression from this run.
+
+### DRILLS AGREE (`run.py drills --reps 10 --policy data/policy_ppo_long.pt`)
+```
+drill                            nothing scripted doctrine  policy
+log_the_ground_swarm                 0%      90%      90%      0%   POLICY FAILS
+hold_the_spell_for_a_target          0%      90%      90%      0%   POLICY FAILS
+log_rolls_forward_not_backward       0%      80%      80%      0%   POLICY FAILS
+nado_clump_for_the_wizard            0%      90%      70%     10%   POLICY GAP
+rocket_the_two_for_one               0%     100%      90%      0%   POLICY FAILS
+log_the_barrel_on_landing            0%     100%       0%      0%   (DOCTRINE GAP too)
+nado_pull_the_flock_back             0%     100%     100%    100%   policy OK
+never_rocket_their_king              0%     100%     100%      0%   POLICY FAILS
+```
+**6 of 8 spell drills at 0% while the scripted line passes 80-100%.** `never_rocket_their_king` is
+a RESTRAINT drill — failing it means the policy DOES rocket their king, which is dumping.
+
+### CONTRIBUTING, BUT NOT THE MAIN DRIVER — the waste tolerance is 2.3x the spell
+`sim.spell_waste_tiles: 4.5` charges a cast only when NO enemy is within **4.5 tiles**, while the
+Log's half-width is **1.95** and Rocket's radius **2.0**. So a cast can be completely useless and
+still unpunished. Measured share of dumps that escape the penalty entirely: **17% (current), 25%
+(init)** — real, worth fixing, but 75-83% of dumps ARE being charged and the policy does them
+anyway. Do not sell this as the fix.
+
+### WHAT THIS DOES *NOT* ESTABLISH
+* Whether LIVE adds its own error on top (grid round-trip, aim assists) — untested here. The sim
+  policy alone is bad enough to explain the owner's live observation, but that is not proof live
+  is clean.
+* A candidate worth testing, NOT established: the exploration doctrine prior supplies good cells
+  for rocket/x_bow but has documented GAPS for log/tornado placements (§6's 11 doctrine gaps
+  include `log_rolls_forward_not_backward`, `log_the_barrel_on_landing`, `nado_clump_for_the_wizard`),
+  so those heads may never see a concentrated positive example. The one drill the policy passes
+  (`nado_pull_the_flock_back`) is one where doctrine scores 100% — suggestive, not conclusive,
+  since other drills score 80-90% doctrine with 0% policy.
+
+### DO NOT
+Do not "fix" this by restarting the PPO — the run is not the cause, and the eval trend is the best
+this project has produced (below). Any fix is a REWARD/PRIOR change and must be A/B'd as one
+change against a matched control.
+
+### The run itself is doing well — the first durable improvement §4d said never happened
+```
+EVAL @  4000  ladder 16%  fair 12%      rolling avg-5:  ladder 12% fair  7%
+EVAL @  8000  ladder 33%  fair 15%                      ladder 17% fair  9%
+EVAL @ 10000  ladder 36%  fair 24%                      ladder 21% fair 12%
+EVAL @ 12000  ladder 33%  fair 23%                      ladder 26% fair 16%
+EVAL @ 14000  ladder 19%  fair 15%                      ladder 26% fair 17%
+```
+Rolling ladder 12% -> 26%, fair 7% -> 17%. Last point dipped; the ROLLING average is the number to
+read (§4d: raw training winrate is servo-controlled and cannot measure quality).
+
+---
+
 ## 4q. 2026-08-25 — ⚠⚠⚠ STAGE B: THE CLIP FIX FAILS ITS OWN CRITERION. REJECTED, reverted, NOT in the long run.
 
 §4o established the gate's gradient is inverted by clipping and that per_head+play_mult together

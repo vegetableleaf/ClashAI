@@ -1,3 +1,4 @@
+<!-- revid:437286 fetched:2026-08-26 title:Furnace/Evolution -->
 {{Protection}}{{MagicWords}}
 {{DISPLAYTITLE: <span class="text-evolution";">Evolved Furnace</span>}}
 {{Evolved Card Infobox|Cost=4|CycleCost=2|Rarity=Rare|Type=Troop|Arena=Hog Mountain|ReleaseDate=4 August 2025}}

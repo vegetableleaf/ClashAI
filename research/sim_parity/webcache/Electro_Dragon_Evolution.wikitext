@@ -1,3 +1,4 @@
+<!-- revid:437294 fetched:2026-08-26 title:Electro Dragon/Evolution -->
 {{Protection}}
 {{DISPLAYTITLE: <span class="text-evolution";">Evolved Electro Dragon</span>}}
 {{MagicWords}}

@@ -1,3 +1,4 @@
+<!-- revid:437282 fetched:2026-08-26 title:Inferno Dragon/Evolution -->
 {{Protection}}{{MagicWords}}{{Evolved Card Infobox|Cost=4|CycleCost=2|Cycles=2|Rarity=Legendary|Type=Troop|Arena=Electro Valley|ReleaseDate=2 June 2025}}
 {{DISPLAYTITLE: <span class="text-evolution";">Evolved Inferno Dragon</span>}}
 {{Quote|With the new and improved InfernoTank2.0™, Inferno Dragon Evolution keeps its beam charged and deadly even when it has nothing to melt. But even the best tank doesn't last forever.}}

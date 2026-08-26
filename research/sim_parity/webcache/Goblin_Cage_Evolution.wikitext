@@ -1,3 +1,4 @@
+<!-- revid:437374 fetched:2026-08-26 title:Goblin Cage/Evolution -->
 {{Protection}}
 {{MagicWords}}
 {{DISPLAYTITLE: <span class="text-evolution";">Evolved Goblin Cage</span>}}

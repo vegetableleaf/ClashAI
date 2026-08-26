@@ -1,0 +1,132 @@
+{
+ "Goblin Cage": {
+  "cached_revid": 436552,
+  "live_revid": 436552,
+  "status": "SAME"
+ },
+ "Goblin Giant": {
+  "cached_revid": 437386,
+  "live_revid": 437386,
+  "status": "SAME"
+ },
+ "Goblin Machine": {
+  "cached_revid": 437354,
+  "live_revid": 437354,
+  "status": "SAME"
+ },
+ "Goblins": {
+  "cached_revid": 437504,
+  "live_revid": 437504,
+  "status": "SAME"
+ },
+ "Golem": {
+  "cached_revid": 436719,
+  "live_revid": 436719,
+  "status": "SAME"
+ },
+ "Guards": {
+  "cached_revid": 436700,
+  "live_revid": 436700,
+  "status": "SAME"
+ },
+ "Heal Spirit": {
+  "cached_revid": 437344,
+  "live_revid": 437344,
+  "status": "SAME"
+ },
+ "Hog Rider": {
+  "cached_revid": 436540,
+  "live_revid": 436540,
+  "status": "SAME"
+ },
+ "Hunter": {
+  "cached_revid": 436717,
+  "live_revid": 436717,
+  "status": "SAME"
+ },
+ "Ice Golem": {
+  "cached_revid": 436644,
+  "live_revid": 436644,
+  "status": "SAME"
+ },
+ "Ice Spirit": {
+  "cached_revid": 437338,
+  "live_revid": 437338,
+  "status": "SAME"
+ },
+ "Ice Wizard": {
+  "cached_revid": 436741,
+  "live_revid": 436741,
+  "status": "SAME"
+ },
+ "Inferno Dragon": {
+  "cached_revid": 436733,
+  "live_revid": 436733,
+  "status": "SAME"
+ },
+ "Knight": {
+  "cached_revid": 437500,
+  "live_revid": 437500,
+  "status": "SAME"
+ },
+ "Lava Hound": {
+  "cached_revid": 436744,
+  "live_revid": 436744,
+  "status": "SAME"
+ },
+ "Lumberjack": {
+  "cached_revid": 436746,
+  "live_revid": 436746,
+  "status": "SAME"
+ },
+ "Lumberjack/Evolution": {
+  "cached_revid": 437284,
+  "live_revid": 437284,
+  "status": "SAME"
+ },
+ "Magic Archer": {
+  "cached_revid": 437369,
+  "live_revid": 437369,
+  "status": "SAME"
+ },
+ "Mega Knight": {
+  "cached_revid": 436729,
+  "live_revid": 436729,
+  "status": "SAME"
+ },
+ "Mega Minion": {
+  "cached_revid": 436530,
+  "live_revid": 436530,
+  "status": "SAME"
+ },
+ "Miner": {
+  "cached_revid": 437332,
+  "live_revid": 437332,
+  "status": "SAME"
+ },
+ "Mini P.E.K.K.A.": {
+  "cached_revid": 436435,
+  "live_revid": 436435,
+  "status": "SAME"
+ },
+ "Minion Horde": {
+  "cached_revid": 436476,
+  "live_revid": 436476,
+  "status": "SAME"
+ },
+ "Minions": {
+  "cached_revid": 437493,
+  "live_revid": 437493,
+  "status": "SAME"
+ },
+ "Mother Witch": {
+  "cached_revid": 436750,
+  "live_revid": 436750,
+  "status": "SAME"
+ },
+ "Musketeer": {
+  "cached_revid": 436481,
+  "live_revid": 436481,
+  "status": "SAME"
+ }
+}

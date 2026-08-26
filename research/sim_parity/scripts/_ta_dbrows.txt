@@ -1,0 +1,1011 @@
+========== archers
+{
+ "attacks": [
+  "air",
+  "ground"
+ ],
+ "collision": 0.5,
+ "count": 2,
+ "damage": 112,
+ "deploy_delay_s": 0.4,
+ "deploy_time": 1.0,
+ "display": "Archers",
+ "dps": 124,
+ "elixir": 3,
+ "evolution": {
+  "available": true,
+  "effect": "extra range / speed",
+  "gains": [
+   "extra_range"
+  ]
+ },
+ "flags": [
+  "ranged"
+ ],
+ "hit_speed": 0.9,
+ "hitpoints": 304,
+ "kind": "troop",
+ "load_time_s": 0.4,
+ "mass": 3,
+ "movement": "ground",
+ "projectile_speed": 600.0,
+ "range": "long",
+ "range_tiles": 5.0,
+ "rarity": "common",
+ "sight": 5.5,
+ "speed": "medium",
+ "speed_tiles": 1.0,
+ "splash": false,
+ "targets": "any",
+ "verified": true,
+ "win_condition": false
+}
+========== baby_dragon
+{
+ "attacks": [
+  "air",
+  "ground"
+ ],
+ "collision": 0.5,
+ "count": 1,
+ "damage": 168,
+ "deploy_time": 1.0,
+ "display": "Baby Dragon",
+ "dps": 112,
+ "elixir": 4,
+ "flags": [
+  "flying",
+  "splash",
+  "splash_air"
+ ],
+ "hit_speed": 1.5,
+ "hitpoints": 1152,
+ "kind": "troop",
+ "load_time_s": 1.2,
+ "mass": 5,
+ "movement": "air",
+ "projectile_speed": 500.0,
+ "range": "short",
+ "range_tiles": 3.5,
+ "rarity": "epic",
+ "sight": 5.5,
+ "speed": "fast",
+ "speed_tiles": 1.5,
+ "splash": true,
+ "splash_radius": 1.5,
+ "targets": "any",
+ "verified": true,
+ "win_condition": false
+}
+========== balloon
+{
+ "attacks": [
+  "ground"
+ ],
+ "collision": 0.5,
+ "count": 1,
+ "damage": 640,
+ "death_damage": 240.0,
+ "death_delay_s": 3.0,
+ "death_radius_tiles": 3.0,
+ "deploy_time": 1.0,
+ "display": "Balloon",
+ "dps": 320,
+ "elixir": 5,
+ "flags": [
+  "flying",
+  "building_targeting",
+  "splash",
+  "death_damage"
+ ],
+ "hit_speed": 2.0,
+ "hitpoints": 1679,
+ "kind": "troop",
+ "knockback_tiles": 1.0,
+ "load_time_s": 1.8,
+ "mass": 6,
+ "movement": "air",
+ "range": "melee",
+ "range_tiles": 0.1,
+ "rarity": "epic",
+ "sight": 7.7,
+ "speed": "medium",
+ "speed_tiles": 1.0,
+ "splash": true,
+ "targets": "buildings_only",
+ "verified": true,
+ "win_condition": true
+}
+========== bandit
+{
+ "attacks": [
+  "ground"
+ ],
+ "collision": 0.6,
+ "count": 1,
+ "damage": 194,
+ "dash_damage": 389.0,
+ "dash_time_s": 0.8,
+ "deploy_time": 1.0,
+ "display": "Bandit",
+ "dps": 194,
+ "elixir": 3,
+ "hit_speed": 1.0,
+ "hitpoints": 906,
+ "kind": "troop",
+ "leap_invulnerable": true,
+ "leap_max_tiles": 6.0,
+ "leap_min_tiles": 3.5,
+ "leap_speed_tiles": 8.33,
+ "leap_towers": true,
+ "load_time_s": 0.6,
+ "mass": 3,
+ "movement": "ground",
+ "range": "melee",
+ "range_tiles": 0.75,
+ "rarity": "legendary",
+ "sight": 6.0,
+ "spawn_unit_stats": {},
+ "speed_tiles": 1.5,
+ "verified": true
+}
+========== barbarians
+{
+ "attacks": [
+  "ground"
+ ],
+ "collision": 0.5,
+ "count": 5,
+ "damage": 191,
+ "deploy_delay_s": 0.4,
+ "deploy_time": 1.0,
+ "display": "Barbarians",
+ "dps": 136,
+ "elixir": 5,
+ "flags": [
+  "swarm"
+ ],
+ "hit_speed": 1.4,
+ "hitpoints": 691,
+ "kind": "troop",
+ "load_time_s": 0.9,
+ "mass": 4,
+ "movement": "ground",
+ "range": "melee",
+ "range_tiles": 0.7,
+ "rarity": "common",
+ "sight": 5.5,
+ "speed_tiles": 1.0,
+ "verified": false
+}
+========== bats
+{
+ "attacks": [
+  "air",
+  "ground"
+ ],
+ "collision": 0.5,
+ "count": 5,
+ "damage": 81,
+ "deploy_delay_s": 0.4,
+ "deploy_time": 1.0,
+ "display": "Bats",
+ "dps": 62,
+ "elixir": 2,
+ "hit_speed": 1.3,
+ "hitpoints": 81,
+ "kind": "troop",
+ "load_time_s": 0.7,
+ "mass": 1,
+ "movement": "air",
+ "range": "melee",
+ "range_tiles": 1.2,
+ "rarity": "common",
+ "sight": 5.5,
+ "speed_tiles": 2.0,
+ "verified": false
+}
+========== battle_healer
+{
+ "attacks": [
+  "ground"
+ ],
+ "collision": 0.5,
+ "count": 1,
+ "damage": 268,
+ "deploy_time": 1.0,
+ "display": "Battle Healer",
+ "dps": 134,
+ "elixir": 4,
+ "hit_speed": 2.0,
+ "hitpoints": 1920,
+ "kind": "troop",
+ "load_time_s": 1.2,
+ "mass": 6,
+ "movement": "ground",
+ "range": "melee",
+ "range_tiles": 1.6,
+ "rarity": "rare",
+ "sight": 5.5,
+ "speed_tiles": 1.0,
+ "verified": false
+}
+========== battle_ram
+{
+ "attacks": [
+  "buildings"
+ ],
+ "charge_damage": 573,
+ "charge_range": 3.0,
+ "charge_speed_tiles": 2.0,
+ "collision": 0.75,
+ "count": 1,
+ "damage": 286,
+ "deploy_time": 1.0,
+ "display": "Battle Ram",
+ "elixir": 4,
+ "flags": [
+  "building_targeting",
+  "charge",
+  "kamikaze"
+ ],
+ "hitpoints": 967,
+ "kind": "troop",
+ "load_time_s": 0.05,
+ "mass": 6,
+ "movement": "ground",
+ "range": "melee",
+ "range_tiles": 0.5,
+ "rarity": "rare",
+ "sight": 5.5,
+ "spawn_unit_stats": {
+  "speed_tiles": 2.0
+ },
+ "spawns": {
+  "unit": "barbarians",
+  "on_death": 2
+ },
+ "speed_tiles": 1.0,
+ "targets": "buildings_only",
+ "verified": true,
+ "win_condition": true
+}
+========== berserker
+{
+ "attacks": [
+  "ground"
+ ],
+ "count": 1,
+ "damage": 102,
+ "deploy_time": 1.0,
+ "display": "Berserker",
+ "dps": 170,
+ "elixir": 2,
+ "hit_speed": 0.6,
+ "hitpoints": 896,
+ "kind": "troop",
+ "movement": "ground",
+ "range": "melee",
+ "range_tiles": 0.8,
+ "rarity": "common",
+ "speed_tiles": 1.5,
+ "verified": false
+}
+========== bomber
+{
+ "attacks": [
+  "ground"
+ ],
+ "collision": 0.5,
+ "count": 1,
+ "damage": 225,
+ "deploy_time": 1.0,
+ "display": "Bomber",
+ "dps": 125,
+ "elixir": 2,
+ "flags": [
+  "ranged",
+  "splash",
+  "ground_only"
+ ],
+ "hit_speed": 1.8,
+ "hitpoints": 304,
+ "kind": "troop",
+ "load_time_s": 1.6,
+ "mass": 4,
+ "movement": "ground",
+ "projectile_speed": 400.0,
+ "range": "short",
+ "range_tiles": 4.5,
+ "rarity": "rare",
+ "sight": 5.5,
+ "speed": "medium",
+ "speed_tiles": 1.0,
+ "splash": true,
+ "splash_radius": 1.5,
+ "targets": "any",
+ "verified": true,
+ "win_condition": false
+}
+========== bowler
+{
+ "attacks": [
+  "ground"
+ ],
+ "collision": 0.75,
+ "count": 1,
+ "damage": 289,
+ "deploy_time": 1.0,
+ "display": "Bowler",
+ "dps": 116,
+ "elixir": 5,
+ "flags": [
+  "splash",
+  "knockback"
+ ],
+ "hit_speed": 2.5,
+ "hitpoints": 2081,
+ "kind": "troop",
+ "knockback_immune": true,
+ "load_time_s": 2.0,
+ "mass": 18,
+ "movement": "ground",
+ "projectile_range": 7.5,
+ "projectile_speed": 170.0,
+ "projectile_width_tiles": 3.6,
+ "range": "long",
+ "range_tiles": 4.0,
+ "rarity": "epic",
+ "sight": 5.5,
+ "speed_tiles": 0.75,
+ "splash": true,
+ "verified": false
+}
+========== bush_goblin
+{
+ "attacks": [
+  "ground"
+ ],
+ "count": 1,
+ "damage": 227,
+ "deploy_time": 0.2,
+ "display": "Bush Goblin",
+ "hit_speed": 1.4,
+ "hitpoints": 304,
+ "kind": "troop",
+ "movement": "ground",
+ "range": "melee",
+ "range_tiles": 0.8,
+ "rarity": "rare",
+ "speed_tiles": 1.0,
+ "splash": false,
+ "verified": true,
+ "win_condition": false
+}
+========== cannon_cart
+{
+ "attacks": [
+  "ground"
+ ],
+ "collision": 0.6,
+ "count": 1,
+ "damage": 212,
+ "deploy_delay_s": 0.4,
+ "deploy_time": 1.0,
+ "display": "Cannon Cart",
+ "dps": 236,
+ "elixir": 5,
+ "flags": [
+  "knockback_immune"
+ ],
+ "hit_speed": 0.9,
+ "hitpoints": 1809,
+ "kind": "troop",
+ "knockback_immune": true,
+ "lifetime_s": 15.0,
+ "load_time_s": 0.4,
+ "mass": 3,
+ "movement": "ground",
+ "projectile_speed": 1000.0,
+ "range": "long",
+ "range_tiles": 5.5,
+ "rarity": "epic",
+ "sight": 6.0,
+ "speed_tiles": 1.0,
+ "verified": false
+}
+========== dark_prince
+{
+ "attacks": [
+  "ground"
+ ],
+ "charge_damage": 532.0,
+ "charge_range": 3.0,
+ "charge_speed_tiles": 2.0,
+ "charge_splash_radius_tiles": 2.2,
+ "collision": 0.6,
+ "count": 1,
+ "damage": 266,
+ "deploy_time": 1.0,
+ "display": "Dark Prince",
+ "dps": 205,
+ "elixir": 4,
+ "flags": [
+  "splash",
+  "knockback_immune"
+ ],
+ "hit_speed": 1.3,
+ "hitpoints": 1200,
+ "kind": "troop",
+ "knockback_immune": true,
+ "load_time_s": 0.9,
+ "mass": 6,
+ "movement": "ground",
+ "range": "melee",
+ "range_tiles": 1.2,
+ "rarity": "epic",
+ "river_jump": true,
+ "shield_hp": 256.0,
+ "sight": 5.5,
+ "spawn_unit_stats": {
+  "speed_tiles": 2.0
+ },
+ "speed_tiles": 1.0,
+ "splash_radius": 1.1,
+ "splash_radius_tiles": 1.25,
+ "verified": true
+}
+========== dart_goblin
+{
+ "attacks": [
+  "air",
+  "ground"
+ ],
+ "collision": 0.5,
+ "count": 1,
+ "damage": 156,
+ "deploy_delay_s": 0.4,
+ "deploy_time": 1.0,
+ "display": "Dart Goblin",
+ "dps": 195,
+ "elixir": 3,
+ "flags": [
+  "ranged"
+ ],
+ "hit_speed": 0.8,
+ "hitpoints": 261,
+ "kind": "troop",
+ "load_time_s": 0.35,
+ "mass": 3,
+ "movement": "ground",
+ "projectile_speed": 800.0,
+ "range": "long",
+ "range_tiles": 6.5,
+ "rarity": "rare",
+ "sight": 7.5,
+ "speed": "fast",
+ "speed_tiles": 2.0,
+ "verified": false
+}
+========== decoy_goblin
+{
+ "attacks": [
+  "ground"
+ ],
+ "count": 1,
+ "damage": 89,
+ "deploy_time": 1.0,
+ "display": "Decoy Goblin",
+ "hit_speed": 1.1,
+ "hitpoints": 81,
+ "kind": "troop",
+ "movement": "ground",
+ "range": "melee",
+ "range_tiles": 0.5,
+ "rarity": "epic",
+ "speed_tiles": 2.0,
+ "splash": false,
+ "verified": true,
+ "win_condition": false
+}
+========== electro_dragon
+{
+ "attacks": [
+  "air",
+  "ground"
+ ],
+ "collision": 0.6,
+ "count": 1,
+ "damage": 267,
+ "deploy_time": 1.0,
+ "display": "Electro Dragon",
+ "dps": 116,
+ "elixir": 5,
+ "hit_speed": 2.3,
+ "hitpoints": 1451,
+ "hits_per_attack": 3.0,
+ "kind": "troop",
+ "load_time_s": 1.4,
+ "mass": 7,
+ "movement": "air",
+ "multi": "chain",
+ "range": "long",
+ "range_tiles": 3.5,
+ "rarity": "epic",
+ "sight": 5.5,
+ "speed_tiles": 1.0,
+ "stun_duration_s": 0.5,
+ "verified": true
+}
+========== electro_giant
+{
+ "attacks": [
+  "buildings"
+ ],
+ "collision": 0.75,
+ "count": 1,
+ "damage": 163,
+ "deploy_time": 1.0,
+ "display": "Electro Giant",
+ "dps": 78,
+ "elixir": 7,
+ "flags": [
+  "tank",
+  "building_targeting"
+ ],
+ "hit_speed": 2.1,
+ "hitpoints": 3952,
+ "kind": "troop",
+ "knockback_immune": true,
+ "load_time_s": 0.6,
+ "mass": 18,
+ "movement": "ground",
+ "range": "melee",
+ "range_tiles": 1.2,
+ "rarity": "epic",
+ "reflect_damage": 120,
+ "reflect_radius_tiles": 3.0,
+ "reflect_stun_s": 0.5,
+ "sight": 7.5,
+ "speed_tiles": 0.75,
+ "stun_duration_s": 0.5,
+ "targets": "buildings_only",
+ "verified": false,
+ "win_condition": true
+}
+========== electro_spirit
+{
+ "attacks": [
+  "air",
+  "ground"
+ ],
+ "collision": 0.4,
+ "count": 1,
+ "damage": 99,
+ "deploy_delay_s": 0.4,
+ "deploy_time": 1.0,
+ "display": "Electro Spirit",
+ "elixir": 1,
+ "hitpoints": 215,
+ "hits_per_attack": 9,
+ "kamikaze": true,
+ "kind": "troop",
+ "load_time_s": 0.1,
+ "mass": 1,
+ "movement": "ground",
+ "multi": "chain",
+ "range": "short",
+ "range_tiles": 2.5,
+ "rarity": "common",
+ "sight": 5.5,
+ "speed_tiles": 2.0,
+ "stun_duration_s": 0.5,
+ "verified": false
+}
+========== electro_wizard
+{
+ "attacks": [
+  "air",
+  "ground"
+ ],
+ "collision": 0.5,
+ "count": 1,
+ "damage": 115,
+ "deploy_time": 1.0,
+ "display": "Electro Wizard",
+ "dps": 64,
+ "elixir": 4,
+ "hit_speed": 1.8,
+ "hitpoints": 714,
+ "hits_per_attack": 2.0,
+ "kind": "troop",
+ "load_time_s": 1.2,
+ "mass": 5,
+ "movement": "ground",
+ "multi": "split",
+ "range": "long",
+ "range_tiles": 5.0,
+ "rarity": "legendary",
+ "sight": 5.5,
+ "spawn_damage": 115,
+ "spawn_radius_tiles": 3.0,
+ "speed_tiles": 1.5,
+ "stun_duration_s": 0.5,
+ "verified": true
+}
+========== elite_barbarians
+{
+ "attacks": [
+  "ground"
+ ],
+ "collision": 0.5,
+ "count": 2,
+ "damage": 384,
+ "deploy_delay_s": 0.4,
+ "deploy_time": 1.0,
+ "display": "Elite Barbarians",
+ "dps": 274,
+ "elixir": 6,
+ "hit_speed": 1.4,
+ "hitpoints": 1341,
+ "kind": "troop",
+ "load_time_s": 0.9,
+ "mass": 4,
+ "movement": "ground",
+ "range": "melee",
+ "range_tiles": 1.2,
+ "rarity": "common",
+ "sight": 6.0,
+ "speed_tiles": 1.5,
+ "verified": false
+}
+========== elixir_blob
+{
+ "attacks": [
+  "ground"
+ ],
+ "count": 1,
+ "damage": 64,
+ "display": "Elixir Blob",
+ "dps": 58,
+ "elixir_on_death": 0.5,
+ "flags": [
+  "building_targeting"
+ ],
+ "hit_speed": 1.1,
+ "hitpoints": 360,
+ "kind": "troop",
+ "movement": "ground",
+ "range": "melee",
+ "range_tiles": 0.8,
+ "rarity": "rare",
+ "speed": "fast",
+ "speed_tiles": 1.5,
+ "splash": false,
+ "targets": "buildings_only",
+ "verified": true,
+ "win_condition": false
+}
+========== elixir_golem
+{
+ "attacks": [
+  "buildings"
+ ],
+ "collision": 0.6,
+ "count": 1,
+ "damage": 253,
+ "deploy_time": 1.0,
+ "display": "Elixir Golem",
+ "dps": 230,
+ "elixir": 3,
+ "elixir_on_death": 1.0,
+ "flags": [
+  "building_targeting"
+ ],
+ "hit_speed": 1.1,
+ "hitpoints": 1569,
+ "kind": "troop",
+ "knockback_immune": true,
+ "load_time_s": 0.3,
+ "mass": 15,
+ "movement": "ground",
+ "range": "melee",
+ "range_tiles": 0.8,
+ "rarity": "rare",
+ "sight": 7.5,
+ "spawn_unit_stats": {
+  "range_tiles": 0.8,
+  "speed_tiles": 1.0,
+  "hit_speed": 1.1
+ },
+ "spawns": {
+  "unit": "elixir_golemite",
+  "on_death": 2
+ },
+ "speed_tiles": 0.75,
+ "targets": "buildings_only",
+ "verified": true,
+ "win_condition": true
+}
+========== elixir_golemite
+{
+ "attacks": [
+  "ground"
+ ],
+ "count": 1,
+ "damage": 128,
+ "display": "Elixir Golemite",
+ "dps": 116,
+ "elixir_on_death": 0.5,
+ "flags": [
+  "building_targeting"
+ ],
+ "hit_speed": 1.1,
+ "hitpoints": 762,
+ "kind": "troop",
+ "movement": "ground",
+ "range": "melee",
+ "range_tiles": 0.8,
+ "rarity": "rare",
+ "spawns": {
+  "unit": "elixir_blob",
+  "on_death": 2
+ },
+ "speed": "medium",
+ "speed_tiles": 1.0,
+ "splash": false,
+ "targets": "buildings_only",
+ "verified": true,
+ "win_condition": false
+}
+========== executioner
+{
+ "attacks": [
+  "air",
+  "ground"
+ ],
+ "collision": 0.6,
+ "count": 1,
+ "damage": 168,
+ "deploy_delay_s": 0.4,
+ "deploy_time": 1.0,
+ "display": "Executioner",
+ "dps": 70,
+ "elixir": 5,
+ "hit_speed": 2.4,
+ "hitpoints": 1280,
+ "hits_per_attack": 2.0,
+ "kind": "troop",
+ "load_time_s": 0.4,
+ "mass": 4,
+ "movement": "ground",
+ "multi": "boomerang",
+ "projectile_range": 7.5,
+ "projectile_speed": 550.0,
+ "projectile_width_tiles": 2.0,
+ "range": "long",
+ "range_tiles": 4.5,
+ "rarity": "epic",
+ "sight": 5.5,
+ "speed_tiles": 1.0,
+ "verified": true
+}
+========== fire_spirit
+{
+ "attacks": [
+  "air",
+  "ground"
+ ],
+ "collision": 0.4,
+ "count": 1,
+ "damage": 207,
+ "deploy_delay_s": 0.4,
+ "deploy_time": 1.0,
+ "display": "Fire Spirit",
+ "elixir": 1,
+ "hitpoints": 215,
+ "kamikaze": true,
+ "kind": "troop",
+ "load_time_s": 0.1,
+ "mass": 1,
+ "movement": "ground",
+ "range": "melee",
+ "range_tiles": 2.5,
+ "rarity": "common",
+ "sight": 5.5,
+ "speed_tiles": 2.0,
+ "splash_radius": 2.3,
+ "verified": false
+}
+========== firecracker
+{
+ "attacks": [
+  "air",
+  "ground"
+ ],
+ "collision": 0.5,
+ "count": 1,
+ "damage": 64,
+ "deploy_time": 1.0,
+ "display": "Firecracker",
+ "dps": 21,
+ "elixir": 3,
+ "hit_speed": 3.0,
+ "hitpoints": 304,
+ "hits_per_attack": 5.0,
+ "kind": "troop",
+ "load_time_s": 2.35,
+ "mass": 6,
+ "movement": "ground",
+ "multi": "spark",
+ "projectile_radius": 0.4,
+ "projectile_range": 11.0,
+ "projectile_speed": 550.0,
+ "range": "long",
+ "range_tiles": 6.0,
+ "rarity": "common",
+ "recoil_tiles": 1,
+ "sight": 8.5,
+ "speed_tiles": 1.5,
+ "verified": true
+}
+========== fisherman
+{
+ "attacks": [
+  "ground"
+ ],
+ "collision": 0.5,
+ "count": 1,
+ "damage": 194,
+ "deploy_delay_s": 0.3,
+ "deploy_time": 1.0,
+ "display": "Fisherman",
+ "dps": 149,
+ "elixir": 3,
+ "flags": [
+  "slow"
+ ],
+ "hit_speed": 1.3,
+ "hitpoints": 870,
+ "hook_max_tiles": 7.0,
+ "hook_min_tiles": 3.5,
+ "hook_speed_tiles": 13.33,
+ "hook_time_s": 1.3,
+ "kind": "troop",
+ "load_time_s": 1.2,
+ "mass": 10,
+ "movement": "ground",
+ "range": "melee",
+ "range_tiles": 1.2,
+ "rarity": "legendary",
+ "sight": 7.5,
+ "slow_duration_s": 1.5,
+ "slow_pct": -30,
+ "spawn_unit_stats": {},
+ "speed_tiles": 1.0,
+ "verified": true
+}
+========== flying_machine
+{
+ "attacks": [
+  "air",
+  "ground"
+ ],
+ "collision": 0.5,
+ "count": 1,
+ "damage": 171,
+ "deploy_delay_s": 0.4,
+ "deploy_time": 1.0,
+ "display": "Flying Machine",
+ "dps": 155,
+ "elixir": 4,
+ "hit_speed": 1.1,
+ "hitpoints": 614,
+ "kind": "troop",
+ "load_time_s": 0.6,
+ "mass": 3,
+ "movement": "air",
+ "projectile_speed": 800.0,
+ "range": "long",
+ "range_tiles": 6.0,
+ "rarity": "rare",
+ "sight": 6.0,
+ "speed_tiles": 1.5,
+ "verified": false
+}
+========== furnace
+{
+ "attacks": [
+  "air",
+  "ground"
+ ],
+ "collision": 1.0,
+ "count": 1,
+ "damage": 179,
+ "deploy_time": 1.0,
+ "display": "Furnace",
+ "dps": 99,
+ "elixir": 4,
+ "flags": [
+  "spawner"
+ ],
+ "hit_speed": 1.8,
+ "hitpoints": 727,
+ "kind": "troop",
+ "lifetime_s": 28.0,
+ "movement": "ground",
+ "range": "long",
+ "range_tiles": 6.0,
+ "rarity": "rare",
+ "spawn_interval_s": 7.0,
+ "spawn_unit_stats": {
+  "range_tiles": 2.5,
+  "speed_tiles": 2.0
+ },
+ "spawns": {
+  "unit": "fire_spirit",
+  "count": 1,
+  "interval": 5.0
+ },
+ "speed_tiles": 1.0,
+ "verified": true
+}
+========== ghost_souldier
+{
+ "attacks": [
+  "ground"
+ ],
+ "count": 1,
+ "damage": 261,
+ "deploy_time": 1.0,
+ "display": "Souldier",
+ "flags": [
+  "splash"
+ ],
+ "hit_speed": 1.8,
+ "hitpoints": 81,
+ "invisibility_time_s": 1.8,
+ "kind": "troop",
+ "movement": "ground",
+ "range": "melee",
+ "range_tiles": 1.2,
+ "rarity": "legendary",
+ "speed_tiles": 1.5,
+ "splash": true,
+ "verified": true,
+ "win_condition": false
+}
+========== giant
+{
+ "attacks": [
+  "ground"
+ ],
+ "collision": 0.75,
+ "count": 1,
+ "damage": 253,
+ "deploy_time": 1.0,
+ "display": "Giant",
+ "dps": 169,
+ "elixir": 5,
+ "flags": [
+  "tank",
+  "building_targeting"
+ ],
+ "hit_speed": 1.5,
+ "hitpoints": 3968,
+ "kind": "troop",
+ "knockback_immune": true,
+ "load_time_s": 1.0,
+ "mass": 18,
+ "movement": "ground",
+ "range": "melee",
+ "range_tiles": 1.2,
+ "rarity": "rare",
+ "sight": 7.5,
+ "speed": "slow",
+ "speed_tiles": 0.75,
+ "splash": false,
+ "targets": "buildings_only",
+ "verified": true,
+ "win_condition": true
+}

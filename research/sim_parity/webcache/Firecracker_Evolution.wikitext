@@ -1,3 +1,4 @@
+<!-- revid:437259 fetched:2026-08-26 title:Firecracker/Evolution -->
 {{Protection}}{{MagicWords}}
 {{DISPLAYTITLE: <span class="text-evolution";">Evolved Firecracker</span>}}
 {{Evolved Card Infobox|Cost=3|CycleCost=2|Rarity=Common|Type=Troop|Arena=Spooky Town|ReleaseDate=19 June 2023}}

@@ -1,3 +1,4 @@
+<!-- revid:437383 fetched:2026-08-26 title:Goblin Drill/Evolution -->
 {{MagicWords}}{{Protection}}
 {{DISPLAYTITLE: <span class="text-evolution";">Evolved Goblin Drill</span>}}
 {{Evolved_Card_Infobox|Cost=4|CycleCost=2|Rarity=Epic|Type=Building|Arena=Serenity Peak|ReleaseDate=15 July 2024}}

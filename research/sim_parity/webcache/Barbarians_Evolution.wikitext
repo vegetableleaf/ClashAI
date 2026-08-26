@@ -1,3 +1,4 @@
+<!-- revid:437363 fetched:2026-08-26 title:Barbarians/Evolution -->
 {{DISPLAYTITLE: <span class="text-evolution";">Evolved Barbarians</span>}}
 {{Protection}}{{MagicWords}}{{Evolved Card Infobox|Cost=5|CycleCost=1|Rarity=Common|Type=Troop|Arena=Barbarian Bowl|ReleaseDate=19 June 2023}}
 {{Quote|These Barbarians have grown stronger through Evolution! Not only do they now have glorious hair, but they also gain extra Speed and Hitspeed with each attack}}

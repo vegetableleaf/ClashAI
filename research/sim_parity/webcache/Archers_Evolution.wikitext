@@ -1,3 +1,4 @@
+<!-- revid:437495 fetched:2026-08-26 title:Archers/Evolution -->
 {{DISPLAYTITLE: <span class="text-evolution";">Evolved Archers</span>}}
 {{Protection}}{{MagicWords}}
 

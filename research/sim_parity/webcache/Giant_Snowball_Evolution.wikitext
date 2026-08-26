@@ -1,3 +1,4 @@
+<!-- revid:437371 fetched:2026-08-26 title:Giant Snowball/Evolution -->
 {{MagicWords}}{{Protection}}
 {{DISPLAYTITLE: <span class="text-evolution";">Evolved Giant Snowball</span>}}
 {{Evolved_Card_Infobox|Cost=2|CycleCost=2|Rarity=Common|Type=Spell|Arena=Frozen Peak|ReleaseDate=2 December 2024}}

@@ -1,11 +1,12 @@
 {
  "fetched": "2026-08-26",
+ "refetched_by": "r2 champions subagent",
  "pages": {
   "Archer Queen": {
    "cached_revid": 436755,
    "live_revid": 436755,
    "changed": false,
-   "bytes": 27726
+   "bytes": 27754
   },
   "Boss Bandit": {
    "cached_revid": 437146,
@@ -17,37 +18,37 @@
    "cached_revid": 437348,
    "live_revid": 437348,
    "changed": false,
-   "bytes": 17562
+   "bytes": 17574
   },
   "Golden Knight": {
    "cached_revid": 437147,
    "live_revid": 437147,
    "changed": false,
-   "bytes": 23732
+   "bytes": 23755
   },
   "Little Prince": {
    "cached_revid": 437347,
    "live_revid": 437347,
    "changed": false,
-   "bytes": 27276
+   "bytes": 27297
   },
   "Mighty Miner": {
    "cached_revid": 437349,
    "live_revid": 437349,
    "changed": false,
-   "bytes": 24317
+   "bytes": 24346
   },
   "Monk": {
    "cached_revid": 437140,
    "live_revid": 437140,
    "changed": false,
-   "bytes": 24657
+   "bytes": 24675
   },
   "Skeleton King": {
    "cached_revid": 436753,
    "live_revid": 436753,
    "changed": false,
-   "bytes": 20337
+   "bytes": 20394
   }
  }
 }

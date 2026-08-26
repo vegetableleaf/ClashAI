@@ -1,3 +1,4 @@
+<!-- revid:436718 fetched:2026-08-26 title:Hunter/Evolution -->
 {{Protection}}{{MagicWords}}
 {{DISPLAYTITLE: <span class="text-evolution";">Evolved Hunter</span>}}
 {{Evolved Card Infobox|Cost=4|CycleCost=2|Rarity=Epic|Type=Troop|Arena=Hog Mountain|ReleaseDate=3 March 2025}}

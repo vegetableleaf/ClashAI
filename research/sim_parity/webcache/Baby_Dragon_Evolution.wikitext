@@ -1,3 +1,4 @@
+<!-- revid:437336 fetched:2026-08-26 title:Baby Dragon/Evolution -->
 {{Protection}}{{MagicWords}}{{Evolved Card Infobox|Cost=4|CycleCost=2|Rarity=Epic|Type=Troop|Arena=P.E.K.K.A.'s Playhouse|ReleaseDate=1 September 2025}}
 {{DISPLAYTITLE: <span class="text-evolution";">Evolved Baby Dragon</span>}}
 {{Quote|That's a big baby! While attacking, Evo Baby Dragon creates a gust of wind that speeds up friendly troops and slows down enemies in the area. It's a wind-win situation!}}

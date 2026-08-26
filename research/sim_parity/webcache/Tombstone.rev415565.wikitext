@@ -1,0 +1,196 @@
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=3|Rarity=Rare|Type=Building|Arena=Bone Pit|ReleaseDate=4 January 2016}}
+{{Quote|Building that periodically spawns Skeletons to fight the enemy... and when destroyed, spawns 4 more Skeletons! Creepy.}}
+
+The Tombstone is a {{Rarity|Rare}} [[Cards|card]] that is unlocked from the [[Arenas|Bone Pit (Arena 2)]]. It spawns a [[:Category:Building Cards|building]] with moderate hitpoints. Every 3.5 seconds, the Tombstone will passively summon a group of two [[Skeletons]], with a 0.5 seconds delay from each other. When destroyed, it will also spawn four Skeletons. A Tombstone card costs 3 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Tombstone Card}}
+*The spawned [[Skeletons]] are very effective at distracting single-targeting, slow hit speed enemy [[:Category:Troop Cards|troops]] such as the [[P.E.K.K.A.]], the [[Prince]], the [[Mini P.E.K.K.A.]], and the [[Giant Skeleton]]. This is especially effective against units that target [[:Category:Building Cards|buildings]], such as the [[Giant]] and [[Golem]]; the Skeletons spawned after the Tombstone's destruction can heavily damage, if not completely destroy the unit.
+**In the case of the Golem, the Golem's death damage may defeat the Skeletons and the Golemites may deal some damage to the [[:Category:Tower Troop Cards|Crown Tower]].
+**It can also distract other units for a while, such as the [[Princess]] or [[Mortar]].
+**If any other ranged troop is locked onto a Tower, the player can use the Tombstone to push the troop so it retargets on to the Tombstone. This cannot be done with any defensive building as they do not have a large enough hitbox to push the troops, but the Tombstone works because the spawned Skeletons have enough hitbox space to push the troops. The Skeletons will then chip away at the troop's health.
+*As a general rule of thumb, all buildings except for the [[Elixir Collector]] should be placed near the center of the player's territory so that enemy troops are drawn further away from the player's Crown Towers, while keeping them close enough so that both Crown Towers can assist in chipping down the troops. A placement 4 tiles from the river staggered into the lane of the player's weaker Crown Tower is sufficient against building targeting troops.
+*Unlike other spawner buildings, the Tombstone should not be placed behind the Crown Towers. Its spawned Skeletons are not potent enough to justify protecting the building with the Crown Towers, and any spells that the opponent uses on it can also mildly chip the Crown Tower's health. Instead, it is more effective to be used to protect the Crown Towers from dangerous incoming troops. Despite this, it can still be effective at distracting a [[Miner]] placed next to the Crown Towers.
+*The Tombstone can spawn up to 20 Skeletons, 16 of which are spawned normally over the lifetime of the Tombstone. It then spawns 4 more when it is destroyed. A [[Skeleton Army]] costs the same amount of Elixir and spawns 5 less Skeletons, but the Tombstone is not as vulnerable to splash units or spells as the Tombstone's Skeletons spawn periodically as opposed to all at once, but cannot deal any damage to a Tower alone unlike the Skeleton Army.
+*If the opponent plays their [[Hog Rider]] at the edge of the [[Arenas|Arena]] to bypass the player's Tombstone, they can place the Tombstone 1 tile higher to catch it every time. However, this makes the Tombstone much more vulnerable to being sniped by ranged units across the river.
+*The Tombstone is useful for soaking up the [[Wall Breakers]]' powerful damage, although causing a slight negative [[Elixir]] trade.
+*The Tombstone is rather ineffective against [[Bowler|Bowlers]] and [[Executioner|Executioners]], since their projectiles have the ability to pierce which not only destroy the building but also to destroy the recently spawned Skeletons.
+*The Tombstone should not be placed when the troop you want to distract has area damage troops or spells supporting it, as the Tombstone will quickly be eliminated.
+*One should not place this card in a lane offensively without any support since the Skeletons it spawns get destroyed by Crown Towers in 1 shot and do not function well as cover troops.
+*[[The Log]] can be an excellent counter to a Tombstone placed in the center of the Arena. If it is deployed when the Tombstone's hitpoints are below 50%, it can not only destroy the Tombstone but also destroy the Skeletons that spawn upon its destruction.
+**The [[Barbarian Barrel]] can destroy the Tombstone similarly to The Log, and spawns a [[Barbarians|Barbarian]] to attack the Crown Towers. However, it cannot reach the Tombstone if it is placed too deep within the enemy's territory.
+**If the player does not have The Log, [[Arrows]] can be used to counter it for a neutral Elixir trade. However, the player must decide whether to prioritize the spawner itself or its death spawn; unlike The Log, Arrows cannot hit both.
+**[[Earthquake]] is a more powerful counter than Arrows, destroying a Tombstone in 2 hits, and defeating the spawned Skeletons on the third for the same Elixir cost.
+**[[Fireball]] can also destroy the Tombstone no matter its current health. However, it is usually a negative Elixir trade unless the player is able to hit something else too, and it cannot hit the spawned Skeletons. [[Poison]] will also destroy the Tombstone over its full duration and also take care of the death spawn.
+**Other spells like the [[Zap]] and [[Giant Snowball]], while ineffective against the Tombstone itself, are still useful for clearing the Skeletons that spawn after death. This is useful when you want to clear the path for an attacking unit that the Tombstone is used to distract, such as a Prince.
+*In the [[Global Spell|Rage Challenge]], all buildings' (including the Tombstone's) lifetimes are unaffected, but in Tombstone's case, the Troop producing speed is, allowing it to produce up to 10.5 waves of Skeletons instead of the usual 8 in the challenge.
+
+<center>
+
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Tombstone Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Spawn Speed<br />{{Icon|I=Time}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Lifetime<br />{{Icon|I=Time}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|3||4 sec||1 sec||30 sec||[[:Category:Building Cards|Building]]||{{Rarity|Rare}}
+|}
+
+{{StatisticsSubheader|Skeleton Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1 sec||0.5 sec||Fast (90)||Melee: Short (0.5)||Ground||Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Tombstone Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Tombstone Hitpoints lost per second<br />{{Icon|I=Time}}
+! scope="col" |Skeleton Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Skeleton Damage<br />{{Icon|I=Damage}}
+! scope="col" |Skeleton Damage per second<br />{{Icon|I=DPS}}
+|-
+|3||250||8.3||38||38||38
+|-
+|4||275||9.1||42||42||42
+|-
+|5||302||10||46||46||46
+|-
+|6||332||11||51||51||51
+|-
+|7||365||12.1||56||56||56 
+|-
+|8||400||13.3||61||61||61
+|-
+|9||440||14.6||67||67||67
+|-
+|10||482||16||74||74||74
+|-
+|11||530||17.6||81||81||81
+|-
+|12||582||19.4||89||89||89
+|-
+|13||640||21.3||98||98||98
+|-
+|14||702||23.4||108||108||108
+|-
+|15||772||25.7||119||119||119
+|}
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier 
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Spawner <br/ > [[File:Spawner.png|50x50px]]
+|1
+| Spawn a total of 1,700 [[:Category:Troop Cards|Troops]]
+|100 {{BASEPAGENAME}} cards<br>50 {{Icon|I=XP}}
+|-
+|2
+|Spawn a total of 5,100 Troops
+|4,000 {{Icon|I=Gold}}<br>50 {{Icon|I=XP}}
+|-
+|3
+|Spawn a total of 8,500 Troops 
+|150 {{Icon|I=Gem}}<br>50 {{Icon|I=XP}}
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 97,500 Damage to enemy Troops or [[:Category:Building Cards|buildings]] with spawned [[Skeletons]]
+|6,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 275,000 Damage to enemy Troops or buildings with spawned Skeletons
+|100 {{Icon|I=Rare Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 485,000 Damage to enemy Troops or buildings with spawned Skeletons
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Tombstone [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016.
+*On 9/2/2016, the [[Version History#Chest Rewards & Card Balance (9/2/2016)|Chest Rewards &amp; Card Balance Update]], decreased the Tombstone's [[Skeletons]] spawned upon death to 4 (from 6). Its description was also changed, previously saying "''Troop building that periodically deploys Skeletons to fight the enemy. When destroyed, spawns 6 Skeletons. Creepy!''"
+*On 19/2/2016, a [[Version History#Balance Changes (19/2/2016)|Balance Update]], decreased the Tombstone's lifetime to 40 seconds (from 60 seconds). In addition, the Skeletons' hitpoints and damage were increased by 11%.
+*On 29/2/2016, the [[Version History#March%202016%20Update%20(29/2/2016)|March 2016 Update]], decreased the Skeletons' sight range to 5.5 tiles (from 6 tiles).
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], increased the {{Rarity|Rare}} card Level cap to 11 (from 10). The update also fixed the “range bug”, which decreased the Skeletons' range to 0.5 tiles (from 0.75 tiles), but their effective range was unchanged.
+*On 18/5/2016, a [[Version History#Balance Changes (18/5/2016)|Balance Update]], increased the Tombstone's hitpoints by 10%. In addition, the Skeletons' hitpoints and damage were increased by 5%.
+*On 4/7/2016, the [[Version History#Tournaments Update (4/7/2016)|Tournaments Update]], increased the Tombstone's hitpoints by 9%.
+*On 24/8/2016, a [[Version History#Balance Changes (24/8/2016)|Balance Update]], increased the Tombstone's spawn time interval to 2.55 seconds (from 2.95 seconds).
+*On 30/11/2016, a [[Version History#Balance Changes (30/11/2016)|Balance Update]], decreased the Tombstone's spawn time interval to 2.95 seconds (from 2.55 seconds).
+2018
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Rare}} cards start at Level 3 and end at Level 13 (from 1 to 11).
+*On 24/10/2018, a maintenance break, slightly changed the Tombstone's card description. It used to read "''Building that periodically spawns Skeletons to fight the enemy... and when destroyed, spawns more Skeletons! Creepy''".
+*On 5/11/2018, a [[Version History#Balance Changes (5/11/2018)|Balance Update]], increased the Tombstone's spawn time interval to 3.1 seconds (from 2.95 seconds) and decreased the Skeletons spawned upon death to 3 (from 4).
+*On 5/12/2018, the [[Version History#December%202018%20Update%20(5/12/2018)|December 2018 Update]], changed the Tombstone's card description. It used to read "''Troop building that periodically deploys Skeletons to fight the enemy. When destroyed, spawns 4 Skeletons. Creepy!''"
+2020
+*On 3/11/2020, a [[Version History#Balance Changes (3/11/2020)|Balance Update]], increased the Tombstone's hitpoints by 4%.
+2021
+*On 6/9/2021, the [[Version History#2021%20Quarter%203%20Update%20(6/9/2021)|2021 Quarter 3 Update]], increased the Tombstone's Skeletons spawned upon death to 4 (from 3). Its description also changed slightly to account for the death spawn change.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+*On 7/12/2021, the [[Version History#Balance%20Changes%20(7/12/2021)|2021 Quarter 4 Update]], decreased the Tombstone's lifetime to 30 seconds (from 40 seconds), increase its spawn time interval to 3.3 seconds (from 3.1 seconds). It also made it so 2 Skeletons will spawn per wave (from 1).
+2022
+*On 4/4/2022, the [[Version History#April%202022%20Update%20(4/4/2022)|April 2022 Update]], increase its spawn time interval to 3.5 seconds (from 3.3 seconds).
+*On 3/6/2022, a maintenance break, added a card render to the Tombstone's card info screen.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+
+==Gallery==
+<gallery>
+File:Tombstone card render.png|Current card render.
+File:Chinese Tombstone card render.png|Tombstone’s card render in the Chinese version of the game.
+File:Tombstone 2.png|Tombstone
+</gallery>
+
+==Trivia==
+*The Tombstone's appearance is inspired by the [https://clashofclans.fandom.com/wiki/Obstacles/Home_Village?file=Headstone_Halloween_2014.png#Clash-o-Ween_Themed_Appearances Halloween Headstone obstacle] from Clash of Clans.
+*The Tombstone is 1 of 15 [[cards]] associated with [[Skeletons]], with the others being [[Bomber]], [[Skeleton Dragons]], [[Skeleton Barrel]], [[Bomb Tower]], [[Guards]], [[Skeleton Army]], [[Witch]], [[Balloon]], [[Giant Skeleton]], [[Wall Breakers]], [[Super Witch]], [[Graveyard]], [[Skeleton King]], and of course, Skeletons.
+**In the Arabic and Vietnamese language settings of the game, the Tombstone's name translates to "Headstone". In the Norwegian, Korean, Chinese, and Thai language settings of the game, the Tombstone's name translates to "Gravestone", "Skull Tomb", "Skull Tombstone", and "Grave Marker" respectively.
+**The Tombstone and Bomb Tower are the only Skeletons cards to be [[:Category:Building Cards|buildings]].
+**Despite other cards that spawn Skeletons having 3 [[Star Points|Star Levels]], the Tombstone only has 2 Star Levels. This trait is also shared with the Witch.
+*The Tombstone, along with the [[Cannon]], are the cheapest buildings, costing 3 [[Elixir]].
+*The Tombstone's stats are the highest or lowest among all buildings. More specifically:
+**The Tombstone has the lowest hitpoints of all buildings, with 772 hitpoints at Level 15, and 250 hitpoints at Level 3.
+**This Tombstone loses the least hitpoints per second of all buildings, with 25.7 hitpoints per second at Level 15, and 8.3 hitpoints per second at Level 3.
+*The Tombstone is one of the first buidling cards to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the Cannon, [[Goblin Hut]], Bomb Tower, [[Inferno Tower]], and [[Barbarian Hut]].
+*The Tombstone is the only building that has been featured in the [[Tournament/Special Event Challenges|Troop Rush game mode]].
+**The Tombstone in the Troop Rush game mode had 1,200 hitpoints (instead of 250), a spawn speed of 5 seconds (instead of 4 seconds), a first spawn speed of 2 seconds (instead of instant), a lifetime of 20 seconds (instead of 30 seconds), and it would spawn a [[Royal Ghost]] after death instead of Skeletons. There was also a larger Tombstone with 2,500 hitpoints, that did not lose hitpoints, would spawn 3 Guards every 15 seconds, and would spawn a Skeleton King after death.
+*The Tombstone is unavailable in multiple [[Tournament/Special Event Challenges|special game modes]]. More specifically:
+**It is 1 of 20 cards that is unavailable in [[Mirror]] mode, the others being [[Minions]], Cannon, [[Mortar]], [[Tesla]], Goblin Hut, Bomb Tower, Inferno Tower, Barbarian Hut, [[Furnace]], [[Elixir Collector]], [[Freeze]], [[Clone]], [[X-Bow]], [[Golden Knight]], Skeleton King, [[Archer Queen]], [[Mighty Miner]], [[Little Prince]], and the [[Monk]].
+**It is unavailable in [[Global Spell|The Floor is Healing]] sub-[[:Category:Modes|mode]] of the Global Spell game mode, much like other building cards, as well as the [[Cannon Cart]].
+*On 1/4/2016, certain Content Creators were given a different version of the game, with a Tombstone that visually looked larger and would spawn Giant Skeletons instead of Skeletons.
+*The Tombstone was featured in the winning decks of multiple Clash Royale Tournaments. More specifically:
+**The Tombstone was featured in the winning deck of the [https://www.youtube.com/live/1fuCnNBTqBU King's Cup Tournament], by a player called TMD YAOYAO.
+**The Tombstone was featured in the winning deck of the [https://www.youtube.com/live/C5qBcdcErfM?si=e37mhAgNKAA5kMJI Clash Royale League 2018 Tournament], by a player called Lciop.
+*Before the Tombstone's card release, the Tombstone's spawn time interval was decreased to 2.95 seconds (from 3.95 seconds), and its Skeletons' hitpoints and damage were increased by 8%.
+
+{{Navigation|Card}}
+
+[[fr:Pierre tombale]]
+[[de:Grabstein]]
+[[es:Lápida]]
+[[it:Lapide]]
+[[ja:墓石]]
+[[ko:해골 무덤]]
+[[ru:Надгробие]]
+[[zh:骷髅墓碑]]

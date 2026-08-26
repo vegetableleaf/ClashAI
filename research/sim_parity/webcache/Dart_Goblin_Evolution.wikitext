@@ -1,3 +1,4 @@
+<!-- revid:437234 fetched:2026-08-26 title:Dart Goblin/Evolution -->
 {{Protection}}{{MagicWords}}
 {{DISPLAYTITLE: <span class="text-evolution";">Evolved Dart Goblin</span>}}
 {{Evolved_Card_Infobox|Cost=3|CycleCost=2|Rarity=Rare|Arena=Jungle Arena|Type=Troop|ReleaseDate=6 January 2025}}

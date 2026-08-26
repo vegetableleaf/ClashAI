@@ -1,3 +1,4 @@
+<!-- revid:437079 fetched:2026-08-26 title:Battle Ram/Evolution -->
 {{Protection}}{{MagicWords}}
 {{DISPLAYTITLE: <span class="text-evolution";">Evolved Battle Ram</span>}}
 {{Evolved Card Infobox|Cost=4|CycleCost=2|Rarity=Rare|Type=Troop|Arena=Barbarian Bowl|ReleaseDate=1 April 2024}}{{Quote|These Evolved Barbarians upgraded their hardware! Evolved Battle Ram deals damage and pushes enemies back during its charge. Once it connects to a building, it won't stop charging!}}

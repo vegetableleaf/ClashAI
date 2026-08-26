@@ -1,0 +1,212 @@
+{{DISPLAYTITLE:<span style="color: #888888;">Tesla</span>}}{{Protection}}{{MagicWords}}{{ClashofClansLink|Hidden Tesla}}{{Card Infobox|Cost=4|Rarity=Common|Type=Building|Arena=Hog Mountain|ReleaseDate=4 January 2016}}{{SubpageNavBox|Evolution=yes|MergeTactics=yes}}{{Quote|Defensive building. Whenever it's not zapping the enemy, the power of Electrickery is best kept grounded.}}
+
+The Tesla is a {{Rarity|Common}} [[Cards|card]] that is unlocked from the [[Arenas|Hog Mountain (Arena 10)]]. It spawns a single-target, air-targeting, medium-ranged, [[:Category:Building Cards|building]] with high hitpoints and high damage. When there are no enemies within range, it retracts underground, making itself immune to all damage except for the [[Earthquake]] and the [[Freeze]]. It appears to be a wooden lattice structure with a metal coil, cone and sphere placed on top which is surrounded by team-colored supports, a wire coiled around one of its pillar, and a wooden trapdoor with team-colored hinges. A Tesla card costs 4 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Tesla Card}}
+*The Tesla can zap away some health from moderate hitpoint [[:Category:Troop Cards|troops]] at a decent rate. It also deals moderate damage to higher hitpoint troops such as the [[Baby Dragon]], [[Inferno Dragon]], [[Knight]], [[Goblin Demolisher]], [[Valkyrie]], [[Cannon Cart]], [[Dark Prince]], [[Lumberjack]], [[Executioner]], [[Golden Knight]], Mighty Miner, [[Battle Healer]], [[Skeleton King]], [[Prince]], [[Bowler]], [[Monk]], Sparky, [[Mini P.E.K.K.A.]], [[Royal Ghost]], [[Miner]], and can also completely take out a [[Lava Hound]] and its Lava Pups without any assistance.
+*The Tesla can defeat any unit with less health than [[Minions]] in one shot if they are of the same Level, thus making it very effective against small hordes of low-hitpoint troops. 
+**A Tesla can be a decent backup counter to a [[Graveyard]]. It attacks relatively fast, and has decent hitpoints to survive multiple attacks from the [[Skeletons]], while also being unable to be pulled away by an incoming [[Tornado]]. Do not rely on it solely however.
+*When it retreats underground, the Tesla is invulnerable to any damage-dealing [[:Category:Spell Cards|spell]] except for [[Earthquake]], and cannot be targeted by any troops. However, the retreat is not instant, enabling quick troops like [[Spear Goblins]], [[Flying Machine]], or [[Dart Goblin]] to get a hit off before it goes underground. The retreat can also be stopped with a [[Freeze]] spell, enabling the player to attack the Tesla at leisure. The Tesla can also be frozen by a Freeze spell while underground, so it won't pop up when enemies are in range while the Freeze is active on it. This allows troops such as the [[Hog Rider]], [[Ram Rider]], [[Battle Ram]], and [[Wall Breakers]] to bypass a Tesla and head straight for the [[:Category:Tower Troop Cards|Crown Tower]], as it can't be targeted while hidden underground.
+**Since the Tesla cannot be defeated while underground, its lifetime may discourage the opponent from attacking. Because of this, when it expires, it may incentivize the opponent to attack, so this is a good opportunity to prepare resistance against the post-Tesla response attack.
+*Although the Tesla has the same range as a [[Cannon]], it can still target troops that would normally outrange it due to its ability to become invulnerable when not attacking, forcing them to come into its targeting range before they can target it. Thus, when using long-range units, the player should provoke the Tesla with another troop such as [[Skeletons]] first to prevent the long-range troops from wandering into its range and being destroyed.
+*The Tesla is very effective at distracting enemy building-targeting troops, such as the [[Giant]], Lava Hound, [[Golem]], and Hog Rider. By placing it in the middle of the player's part of the [[Arenas|Arena]] (3 tiles from the bridge), the troops will target it instead of the Towers if it is not frozen. This placement will also pull regular troops to it. 
+**If the player only wants the Tesla to pull building-targeting troops, they should place it 1 more tile away from the river. The Tesla will still attack any troops that come close enough to the Crown Towers, but it will not tank any hits for them. Alternatively, the player can place the Tesla 1 tile even deeper to pull the building-targeting troop even deeper, but this will result in support troops being out of range.
+**A Hog Rider or [[Ram Rider]] placed at the edges of the Arena will bypass a Tesla that is hidden whether it is placed 3 or 4 tiles from the river. A Tesla placed 2 tiles from the river will pull them to it, but this placement makes it very easy to snipe at the bridge, by using a swarm to force the Tesla to pop up and tank its shots while a ranged troop damages it down. Another method is to simply push them closer to the Tesla by deploying a grounded troop where it lands after it jumps across the edge, which will make Teslas placed 3 or 4 tiles away from the river pull them.
+**Against building-targeting troops which are placed in such a way that they are staggered towards the center of the Arena (e.g. a [[Golem]] or a Giant placed behind the King's Tower), a Tesla reactively placed 4 tiles from the defending [[Princess Towers|Crown Tower]] and 4 tiles away from the river can distract them. This is because the unit will walk closer to the inner side of the bridge (i.e. closer to the center of the Arena), rather than the center or the outside. Although this is somewhat situational, it is more effective at separating a tank from its support units than the above middle placement, as the tank will have to walk slightly farther, and the Tesla will not draw the attention of other grounded troops.
+***This placement also works against the Giant if he is placed directly on the bridge. His sight range is enough to allow him to travel towards the Tesla. However, this placement does not work against the Golem placed similarly, due to its lower sight range.
+**If the player suspects that the opponent has an Earthquake, [[Lightning]], or [[Poison]] in their [[Battle Decks|deck]], they can place the Tesla 1 tile from the river. This will avoid the Earthquake hitting both the Crown Tower and the Tesla. However, this placement can be easily attacked by ranged troops, so use this placement if avoiding Crown Tower damage is a higher priority.
+**The Lava Hound's low sight range necessitates the Tesla being placed 5 tiles from the river and 1 tile from the Crown Tower in order to distract it. This position does not work against a Lava Hound placed on the furthest edge in the Arena; in this case, the Tesla has to be shifted a tile closer to the Princess Tower in order to distract the Lava Hound.
+***Against a LavaLoon push, it is most recommended to place the Tesla 3 tiles from the river and 2 tiles from the Crown Tower. This position allows it to distract the [[Balloon]] without distracting the Lava Hound. This forces them to separate and make addressing them easier afterwards. This placement also works against a lone Balloon or [[Skeleton Barrel]].
+**If the player wants to pull troops closer to the King's Tower and further from the second Crown Tower after losing their first one, they should place the Tesla beside the King's Tower and 3 tiles from the top of the Arena. This will pull Giants towards in regardless on whether it was placed reactively or proactively. Against the Golem and Lava Hound, it only works if placed reactively. In order to avoid this, the player can place it 4 tiles from the top of the Arena instead, which will work better, as the Tesla will start attacking the Golem during its deploy time.
+*A Tesla can be interchanged with a Cannon or an [[Inferno Tower]], depending on what the player is prioritizing in their [[Battle Decks|deck]]. The Cannon costs 1 less [[Elixir]], but doesn't target air troops, so it may be more efficient to have the Cannon if the player already has many air counters. The Inferno Tower costs 1 more Elixir and is extremely effective against high hitpoint units, but it is very volatile, being vulnerable to swarms and [[cards]] with a stun effect. If the player is not able to consistently eliminate these cards in a large push, the Tesla will allow the player to have more Elixir for other cards to damage down the support troops while also dealing more damage over its lifetime. The Inferno Tower is also a {{Rarity|Rare}} card, so it will be harder to level up for use on the ladder.
+*Unlike most other buildings, the Tesla takes up a 2x2 space as opposed to a 3×3 space. This means that it can fit in the gap between a Crown Tower and the edge of the Arena. This is a good idea to do to limit where the [[Miner]] can be placed next to the Tower. This placement is also good for when the player wants to defend the second Crown Tower once their other Crown Tower has been destroyed.
+*Its versatility against most types of troops makes it a good card for supporting siege buildings like [[X-Bow]] or [[Mortar]] from the player's side of the Arena. Generally, the Tesla should be placed beside and slightly behind the siege card so that it is protected by them while it damages down enemy units.
+**On the contrary, it is also decent against an X-Bow or Mortar. Its decent Elixir cost and hitpoints will allow it to tank a notable amount of attacks, and its high damage and fast hit speed will let it dish out plenty of hits to the building or any of its support cards.
+*The Tesla, despite having an electric theme and attack, does not stun, and thus cannot reset the Inferno Tower, Inferno Dragon, and [[Mighty Miner]]'s attack, nor it can reset the Prince, Dark Prince, Battle Ram, Ram Rider, and [[Sparky]]'s charge. It can distract and eliminate the Mighty Miner and Inferno Dragon relatively easily but will get instantly destroyed by a Sparky or Prince.
+*The Tesla is a good response to a [[Princess]] placed at the bridge. Its underground mechanic prevents spell responses against it and it may also discourage the opponent from placing the Princess to attack the Crown Tower.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Lifetime<br />{{Icon|I=Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||1.1 sec||0.5 sec||1 sec||25 sec||5.5||Air & Ground||[[:Category:Building Cards|Building]]||{{Rarity|Common}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1152 }}
+{{#vardefine: dmg_11 | 220 }}
+{{#vardefine: life | 25 }}
+{{#vardefine: atk_speed | 1.1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+! scope="col" |Hitpoints lost per second<br />{{Icon|I=Time}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#expr: {{#var:hp_11}} / {{#var:life}} round 1 }} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer  <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 75,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|200 {{BASEPAGENAME}} cards<br>25 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 220,000 Damage to enemy Troops or buildings
+|2,000 {{Icon|I=Gold}}<br>25 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 370,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>25 {{Icon|I=XP}}
+|-
+| rowspan="3" | Hit Maker <br> [[File:Hit Maker.png|50x50px]]
+|1
+|Hit enemy Troops a total of 1,050 times
+|3,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Troops a total of 3,000 times
+|200 {{Icon|I=Common Wild Card}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Troops a total of 5,250 times
+|5,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Tesla [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016.
+*On 9/2/2016, the [[Version History#Chest Rewards & Card Balance (9/2/2016)|Chest Rewards &amp; Card Balance Update]], increased the Tesla's damage by 7%.
+*On 29/2/2016, the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]], decreased the Tesla's hitpoints by 5%.
+*On 23/3/2016, a [[Version History#Balance Changes (23/3/2016)|Balance Update]], increased the Tesla's attack time interval to 0.8 seconds (from 0.7 seconds) and decreased its lifetime to 40 seconds (from 60 seconds).
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], increased the {{Rarity|Common}} card Level cap to 13 (from 12) and fixed the "range bug" and decreased the Tesla's range to 5.5 (from 6) but its effective range is unchanged.
+*On 18/5/2016, a [[Version History#Balance Changes (18/5/2016)|Balance Update]], increased the Tesla's hitpoints by 5%.
+*On 21/6/2016, a [[Version History#Balance Changes (21/6/2016)|Balance Update]], increased the Tesla's hitpoints by 8%.
+2017
+*On 9/10/2017, the [[Version History#Epic Quests Update (9/10/2017)|Epic Quests Update]], increased the Tesla's damage by 41% but increased its attack time interval to 1 second (from 0.8 seconds).
+2018
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], moved the [[Arenas|Arena]] to unlock the Tesla from P.E.K.K.A.'s Playhouse to Electro Valley. It also fixed a bug where the Tesla would occasionally stop shooting at the edge of its range.
+*On 6/8/2018, a [[Version History#Balance Changes (6/8/2018)|Balance Update]], decreased the Tesla's lifetime to 35 seconds (from 40 seconds) and increased its attack time interval to 1.1 seconds (from 1 second).
+*On 3/12/2018, a [[Version History#Balance Changes (3/12/2018)|Balance Update]], decreased the Tesla's first attack interval to 0.5 seconds (from 0.7 seconds).
+2019
+*On 15/4/2019, the [[Version History#April%202019%20Update%20(15/4/2019)|April 2019 Update]], changed the Tesla's card image.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Tesla's card info screen.
+2020
+*On 3/3/2020, a [[Version History#Balance Changes (3/3/2020)|Balance Update]], allowed the [[Earthquake]] to affect the Tesla even if it is hidden.
+2021
+*On 6/9/2021, the [[Version History#2021%20Quarter%203%20Update%20(6/9/2021)|2021 Quarter 3 Update]], decreased the Tesla's lifetime to 30 seconds (from 35 seconds).
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+*On 7/12/2021, the [[Version History#Balance%20Changes%20(7/12/2021)|2021 Quarter 4 Update]], increased the Tesla's attack time interval to 1.2 seconds (from 1.1 seconds).
+2022
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Tesla from Electro Valley to Hog Mountain.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+*On 8/8/2023, a [[Version History#Balance Changes (8/8/2023)|Balance Update]], decreased the Tesla's attack time interval to 1.1 seconds (from 1.2 seconds).
+2024
+*On 4/3/2024, the [[Version History#Pass Royale and more (4/3/2024)|March 2024 Update]], added the Tesla's Evolution.
+*On 17/6/2024, the [[Version History#Goblin World Update (17/6/2024)|Goblin World Update]], fixed a bug with Tesla's behavior when it is frozen during deployment.
+*On 2/7/2024, a [[Version History#Balance Changes (2/7/2024)|Balance Update]], decreased the Tesla’s damage by 4% and increased its Tesla’s attack time interval to 1.2 seconds (from 1.1 seconds).
+*On 8/10/2024, a [[Version History#Balance Changes (8/10/2024)|Balance Update]], decreased the Tesla’s attack time interval to 1.1 seconds (from 1.2 seconds).
+
+==Gallery==
+<gallery>
+File:TeslaCardOld.png|Tesla's card image before 15/4/2019.
+File:Tesla card render.png|Current card render.
+File:Tesla Preview.gif|Current card preview
+File:Tesla full.png|Tesla 
+</gallery>
+
+==Trivia==
+*The card's name is a reference to [https://en.wikipedia.org/wiki/Nikola_Tesla Nikola Tesla], a famous scientist known for working with electricity. It is based on one of his inventions, the [https://en.wikipedia.org/wiki/Tesla_coil Tesla coil] which wirelessly transmits electricity to the destination; the way tesla coil transmits electricity appears similar to how the Tesla attacks.
+**In the Spanish, Korean, Chinese, and Vietnamese language settings of the game, the Tesla's name translates to "Tesla Tower", "Thunderbolt Tower", "Tesla Electromagnetic Tower", and "Electric Arc Tower" respectively.
+*Electricity was first detected through electric fish from as far back as 2750 BCE where Ancient Egyptian texts described them as the "protectors" of all other fish. At around 600 BCE, Thales of Miletus made a series of observations on static electricity, from which he believed that friction rendered amber magnetic, in contrast to minerals such as magnetite, which needed no rubbing. Thales was incorrect in believing the attraction was due to a magnetic effect, but later science would prove a link between magnetism and electricity. Electricity would remain little more than an intellectual curiosity for millennia until 1600, when the English scientist William Gilbert wrote ''De Magnete'', in which he made a careful study of electricity and magnetism, distinguishing the lodestone effect from static electricity produced by rubbing amber.
+**The Tesla is 1 of 11 cards associated with electricity, with the others being [[Electro Spirit]], [[Zap]], [[Zappies]], [[Electro Dragon]], [[Electro Giant]], [[Lightning]], [[Electro Wizard]], [[Sparky]], [[Wizard Trio]], and the [[Goblinstein]].
+***The Tesla and the Sparky are the only cards associated with electricity that don't stun.
+****However, the Tesla's [[Card Evolution|Evolution]] changes this, as the pulse from revealing itself will cause it to stun any troop nearby.
+*The Tesla is 1 of 7 [[:Category:Building Cards|buildings]] which first existed in Clash of Clans, the others being [[Cannon]], [[Mortar]], [[Goblin Hut]], [[Inferno Tower]], [[Elixir Collector]], and [[X-Bow]].
+**The Tesla resembles the [https://clashofclans.fandom.com/wiki/Hidden_Tesla Level 1 Hidden Tesla] from Clash of Clans. Its [[Star Points|Star Level 2 skin]] resembles the Level 6 Hidden Tesla in Clash of Clans.
+**In Clash Royale, it is simply called "Tesla" but in Clash of Clans, it is called “Hidden Tesla”.
+**Unlike its Clash of Clans counterpart, the Tesla in Clash Royale actively retreats when there are no valid targets, and when concealed is still visible to all sides, while also being vulnerable to [[Earthquake]] and [[Freeze]]. 
+***If the Tesla is about to retreat and the Freeze is used on it, the retreating sound effect will loop.
+**The word "''electrickery''<nowiki/>" in its [[Cards|card]] description is also taken from its description from Clash of Clans.
+*Among all buildings that can attack, the Tesla is tied with Cannon for the shortest range of all buildings, with a range of 5.5 tiles.
+*The Tesla is the first building to be featured in a [[Loading Screens|Loading Screen]].
+*The Tesla is one of the first building cards to receive a card render, alongside the Mortar, [[Goblin Cage]], and Goblin Hut.
+*The Tesla is 1 of 2 buildings that has been featured with a [[Buff#Rage|Rage]] [[buff]], the other being [[Goblin Drill]].
+*The Tesla shares the first part of its description with the Cannon.
+*In [[Touchdown]], there are 4 Teslas at the corner of the [[Arenas|Arena]] which will come up and shoot confetti when a team scores.
+*The Tesla is unavailable in multiple [[Tournament/Special Event Challenges|special game modes]]. More specifically: 
+** It is 1 of 20 cards that is unavailable in [[Mirror]] mode, the others being [[Minions]], Cannon, Mortar, Goblin Hut, [[Tombstone]], [[Bomb Tower]], Inferno Tower, [[Barbarian Hut]], [[Furnace]], Elixir Collector, Freeze, [[Clone]], X-Bow, [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], [[Mighty Miner]], [[Little Prince]], and the [[Monk]].
+**It is unavailable in [[Global Spell|The Floor is Healing]] sub-[[:Category:Modes|mode]] of the Global Spell game mode, much like other building cards, as well as the [[Cannon Cart]].
+*The Tesla is the subject of an [[Emotes|Emote]].
+*Before the Tesla's card release, the Tesla's hitpoints were increased by 23%.
+
+{{Navigation|Card}}
+
+[[fr:Tesla]]
+[[de:Tesla]]
+[[es:Torre Tesla]]
+[[it:Tesla]]
+[[ja:テスラ]]
+[[ru:Тесла]]
+[[zh:特斯拉电磁塔]]
