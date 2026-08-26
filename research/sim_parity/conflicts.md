@@ -515,3 +515,51 @@ DELIBERATELY NOT shared, all deck doctrine or deck action space: `test_champion_
 (hogeq -- the action-space half), `test_earthquake_placement.py`, `test_hogeq_doctrine_cells.py`,
 `test_hogeq_pressure_doctrine.py` (hogeq), `test_aim_assists.py`, `test_defensive_doctrine.py`,
 `test_rocket_doctrine.py` (icebow).
+
+## I0 — the parity harness, 2026-08-26
+
+`tools/parity_check.py`, byte-identical in both decks and runnable from either. It fails on any
+divergence that is not on its allow-list, so the failure mode this whole pass exists to remove --
+a fix landing in one deck and never reaching the other -- is now loud instead of silent.
+
+BASELINE RECORDED TODAY (both decks report identically, exit 0):
+```
+config (must be byte-identical):
+  cards_stats.json 67,504 B | card_mechanics.json 22,438 B | detect_classes.yaml 5,542 B
+  meta_decks.yaml 195,625 B | cards.yaml identical apart from its 783-byte deck block
+src/clashrl: 80 files -- 60 shared identical, 20 declared different, 0 UNEXPECTED
+tests/  (informational): 54 in both (45 identical, 9 differ), 3 icebow-only, 4 hogeq-only
+tools/  (informational): 25 in both (23 identical, 2 differ), 5 icebow-only, 0 hogeq-only
+```
+
+`cards.yaml` is NOT allow-listed. It is checked by stripping the `deck:` block from both and
+requiring the remainder to match -- a blanket allow would have hidden exactly the Earthquake /
+Firecracker / Mighty Miner rows that were sitting in one KB and not the other before I1.
+
+THE ALLOW-LIST IS TWO LISTS, and the split is the point:
+* **DECK-SPECIFIC (11 entries, 12 files)** -- should differ forever: `sim/drills_*.py`,
+  `sim/doctrine.py`, `sim/env.py`, `sim/opponents.py`, `train_sim_ppo.py`, `vision.py`,
+  `policy_stats.py`, `llm_advisor.py`, `play.py`, `actions.py`, `cli.py`.
+* **DRIFT (8 entries)** -- recorded, NOT blessed; this list should shrink: `sim/drill_env.py`
+  (hogeq-only `_env_flag`, without which `CLASHRL_DRILL_*=0` silently selects the treatment arm),
+  `sim/remote_pool.py` (icebow-only deck-record channel), `reward.py` (icebow-only
+  `log_corridor_cell`), `train_rl.py` (two separate one-way ports), `perception.py` (hogeq's own
+  comment says its threat-gate MEMORY fix is silently inert there -- a live bug), `replay_mine.py`
+  and `env.py` (comment/docstring only, code agrees), `model.py` (icebow-only
+  CLASHRL_SINGLE_CELL_MAP A/B switch).
+
+VERIFIED TO ACTUALLY FAIL, not just to pass. Four probes, each reverted:
+```
+  shared engine.py edited          -> exit 1, "src/clashrl/sim/engine.py: contents differ"
+  detect_classes.yaml edited       -> exit 1, "config/detect_classes.yaml: bytes differ"
+  cards.yaml edited outside deck:  -> exit 1, "differs OUTSIDE the deck block"
+  new unlisted file in one deck    -> exit 1, "only in icebow"
+  clean                            -> exit 0, "PARITY OK"
+```
+It also reports allow-list entries that have since CONVERGED so the list can be pruned (`--strict`
+fails on them). Currently 0.
+
+NOT wired into the unit suites, deliberately: it would go red during any legitimate mid-work
+divergence, and after a merge into the live tree the allow-list would describe a state that branch
+has not reached yet. It is a CLI gate to run before a commit that touches shared code. Promoting it
+to a suite test or a hook is a separate decision.

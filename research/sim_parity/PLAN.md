@@ -120,10 +120,22 @@ requests, in-game confirmation queue) → owner batch session → `decisions.md`
 Every change lands in BOTH decks in the same commit; `tools/parity_check.py` (new, I0) enforces
 the byte-identical config quartet + a whitelisted src diff at every gate.
 
-**I0 — Worktree + parity harness (hours).** `git worktree add ../ClashBot-parity -b sim-parity`;
-parity_check green on the untouched tree (today's deltas become the starting whitelist).
+**I0 — Worktree + parity harness. DONE 2026-08-26.** `tools/parity_check.py`, byte-identical in
+both decks and runnable from either. Baseline: config quartet byte-identical, `cards.yaml`
+identical apart from its 783-byte `deck:` block (checked by stripping it, NOT by allow-listing the
+file), `src/clashrl` 80 files -- 60 shared identical, 20 declared, **0 unexpected**. The allow-list
+is split into DECK-SPECIFIC (11 entries, should differ forever) and DRIFT (8 entries, recorded not
+blessed, meant to shrink). Verified to FAIL, not just to pass: four probes (shared engine edit,
+config edit, `cards.yaml` edit outside the deck block, new unlisted file) each exit 1; clean exits
+0. See conflicts.md "I0".
 
-**I1 — hogeq→icebow backport (1 day; prerequisite).** Engine: `spell_build_dmg`,
+**I1 — hogeq->icebow backport. DONE 2026-08-26**: `sim/engine.py` and `cards.py` are now
+BYTE-IDENTICAL between the decks and `config/cards.yaml` differs only in its `deck:` block. Also
+fixed `evo_cycles` 6/42 -> 42/42 (two counts were missing from the imported rows and came from the
+wiki ledger) and the `1.1**` scaler in `CardDB.deck()` (worst delta -0.93% icebow, -0.76% hogeq).
+icebow's card head stays at 10: engine path only, no action-space slot. Original scope follows.
+
+**I1 (as planned) — hogeq->icebow backport (1 day; prerequisite).** Engine: `spell_build_dmg`,
 `zone_first_tick_now`, `champion_ability` + ability CardSpec/Unit fields, `recoil`,
 `spark_end_dmg` (replacing icebow's superseded spark model). cards.py: `evo_cycles()` fix,
 0-cycle guard, ability pricing, `policy_identities`. BOTH: kill the stale `1.1**` scaler in
