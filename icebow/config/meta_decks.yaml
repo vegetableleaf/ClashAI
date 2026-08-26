@@ -1,3 +1,10 @@
+# NOTE 2026-08-26: `evo:` slots were REMOVED after measurement. The battlelog's
+# `evolutionLevel` field reports the PLAYER'S OWNED evolution level for a card, NOT
+# which card occupied an evolution slot: 153/233 decks came out with THREE evolutions
+# (the game allows at most two -- one Evolution slot + one Wild, per the wiki's
+# 16/3/2026 entry), and 45 named berserker/giant, which have no evolution at all.
+# The deck-array order does not identify slots either (set positions 0/1/2 = 209/115/208,
+# not a prefix). `support:` IS reliable and is kept. Real evo slots need another source.
 # Imported from the official Clash Royale API (top-player battle logs).
 # 2026-08-07 18:49 -- 1000 decks from 120 players (path-of-legends 2026-07), 7353 deck-sightings. Regenerate with `run.py decks-import`.
 # LADDER-LEGAL ONLY: a battle log covers every mode, so decks holding event-only cards are dropped (0 sightings this run). `weight` = raw sighting count.
@@ -7,146 +14,146 @@
 # sample: the sim then fields NO evolution for it rather than guessing one. `evo` records what the META
 # does, so keys the KB has no `_evo` row for (berserker, giant, ...) stay listed and light up on import.
 decks:
-  - {name: meta_001, weight: 185, cards: [cannon, fireball, hog_rider, ice_golem, ice_spirit, musketeer, skeletons, the_log], evo: [cannon, musketeer, skeletons], support: tower_princess}
-  - {name: meta_002, weight: 165, cards: [barbarian_barrel, electro_spirit, fireball, fisherman, hunter, royal_ghost, royal_giant, skeletons], evo: [barbarian_barrel, royal_ghost, royal_giant], support: tower_princess}
-  - {name: meta_003, weight: 147, cards: [bats, bomb_tower, fire_spirit, magic_archer, miner, skeletons, the_log, wall_breakers], evo: [bats, magic_archer, wall_breakers], support: tower_princess}
-  - {name: meta_004, weight: 130, cards: [barbarian_barrel, battle_ram, giant_skeleton, mother_witch, royal_ghost, vines, wizard, zappies], evo: [battle_ram, royal_ghost, wizard], support: tower_princess}
-  - {name: meta_005, weight: 129, cards: [archer_queen, cannon, earthquake, ice_spirit, royal_delivery, royal_hogs, skeletons, the_log], evo: [cannon, royal_hogs], support: tower_princess}
-  - {name: meta_006, weight: 115, cards: [giant, heal_spirit, mini_pekka, sparky, tornado, vines, wizard, zap], evo: [mini_pekka, wizard, zap], support: tower_princess}
-  - {name: meta_007, weight: 90, cards: [dart_goblin, fire_spirit, goblin_barrel, goblins, ice_spirit, rocket, valkyrie, wall_breakers], evo: [goblin_barrel, goblins, valkyrie], support: tower_princess}
-  - {name: meta_008, weight: 85, cards: [bowler, executioner, freeze, golden_knight, graveyard, inferno_dragon, tornado, zappies], evo: [executioner, inferno_dragon], support: tower_princess}
-  - {name: meta_009, weight: 81, cards: [archers, electro_spirit, fireball, knight, skeletons, tesla, the_log, x_bow], evo: [archers, knight, tesla], support: tower_princess}
-  - {name: meta_010, weight: 76, cards: [bomber, cannon, fire_spirit, giant_snowball, goblin_drill, knight, rocket, skeletons], evo: [cannon, giant_snowball, knight], support: tower_princess}
-  - {name: meta_011, weight: 76, cards: [berserker, bomb_tower, fire_spirit, goblin_barrel, ice_spirit, magic_archer, royal_delivery, wall_breakers], evo: [goblin_barrel, magic_archer, wall_breakers], support: tower_princess}
-  - {name: meta_012, weight: 75, cards: [archers, arrows, barbarians, bowler, giant, giant_snowball, graveyard, minions], evo: [archers, bowler, giant_snowball], support: tower_princess}
-  - {name: meta_013, weight: 73, cards: [earthquake, electro_spirit, firecracker, hog_rider, mighty_miner, skeletons, tesla, the_log], evo: [firecracker, tesla], support: tower_princess}
-  - {name: meta_014, weight: 72, cards: [cannon, dart_goblin, goblin_barrel, ice_spirit, princess, skeleton_army, valkyrie, wall_breakers], evo: [goblin_barrel, skeleton_army, valkyrie], support: cannoneer}
-  - {name: meta_015, weight: 71, cards: [cannon, earthquake, electro_spirit, firecracker, hog_rider, mighty_miner, skeletons, the_log], evo: [cannon, firecracker], support: tower_princess}
-  - {name: meta_016, weight: 71, cards: [barbarian_barrel, battle_ram, elite_barbarians, giant_skeleton, mother_witch, vines, wizard, zappies], evo: [battle_ram, elite_barbarians, wizard], support: tower_princess}
-  - {name: meta_017, weight: 67, cards: [barbarian_barrel, cannon, earthquake, electro_spirit, firecracker, hog_rider, mighty_miner, skeletons], evo: [cannon, firecracker], support: tower_princess}
-  - {name: meta_018, weight: 64, cards: [berserker, goblin_curse, goblin_demolisher, inferno_dragon, little_prince, miner, rune_giant, zap], evo: [berserker, inferno_dragon], support: tower_princess}
-  - {name: meta_019, weight: 59, cards: [balloon, bomber, fireball, giant_snowball, inferno_dragon, lava_hound, minions, skeleton_army], evo: [balloon, inferno_dragon, skeleton_army], support: tower_princess}
-  - {name: meta_020, weight: 56, cards: [bomber, dark_prince, fireball, giant, mega_minion, prince, rage, zap], evo: [giant, mega_minion, zap], support: dagger_duchess}
-  - {name: meta_021, weight: 54, cards: [barbarian_barrel, berserker, cannon_cart, fireball, minions, mortar, rascals, skeleton_barrel], evo: [berserker, mortar, skeleton_barrel], support: tower_princess}
-  - {name: meta_022, weight: 52, cards: [executioner, goblins, hog_rider, ice_spirit, rocket, the_log, tornado, valkyrie], evo: [executioner, goblins, valkyrie], support: tower_princess}
-  - {name: meta_023, weight: 51, cards: [baby_dragon, balloon, barbarian_barrel, bowler, freeze, inferno_dragon, knight, tornado], evo: [baby_dragon, inferno_dragon, knight], support: tower_princess}
-  - {name: meta_024, weight: 47, cards: [berserker, bomber, cannon, fire_spirit, giant_snowball, goblin_drill, rocket, skeletons], evo: [berserker, cannon, giant_snowball], support: tower_princess}
-  - {name: meta_025, weight: 47, cards: [barbarian_barrel, cannon_cart, fireball, goblin_gang, goblinstein, ice_wizard, minion_horde, mortar], evo: [minion_horde, mortar], support: cannoneer}
-  - {name: meta_026, weight: 45, cards: [baby_dragon, barbarian_barrel, graveyard, ice_wizard, knight, poison, tombstone, tornado], evo: [baby_dragon, knight, tombstone], support: tower_princess}
-  - {name: meta_027, weight: 45, cards: [dark_prince, electro_spirit, miner, rocket, royal_delivery, skeletons, tesla, the_log], evo: [dark_prince, skeletons, tesla], support: tower_princess}
-  - {name: meta_028, weight: 41, cards: [arrows, berserker, bowler, giant, giant_snowball, graveyard, witch, zappies], evo: [berserker, giant_snowball, witch], support: tower_princess}
-  - {name: meta_029, weight: 41, cards: [bowler, executioner, freeze, golden_knight, graveyard, guards, inferno_dragon, tornado], evo: [executioner, inferno_dragon], support: tower_princess}
-  - {name: meta_030, weight: 38, cards: [arrows, bomber, fisherman, goblin_giant, goblinstein, pekka, rage, void], evo: [goblin_giant, pekka], support: tower_princess}
-  - {name: meta_031, weight: 37, cards: [balloon, fireball, lava_hound, mega_minion, skeleton_dragons, tombstone, valkyrie, zap], evo: [mega_minion, valkyrie, zap], support: tower_princess}
-  - {name: meta_032, weight: 36, cards: [arrows, bomber, elite_barbarians, golem, lumberjack, night_witch, phoenix, zap], evo: [elite_barbarians, zap], support: royal_chef}
-  - {name: meta_033, weight: 35, cards: [archers, barbarian_barrel, bomb_tower, electro_spirit, goblinstein, lightning, royal_hogs, skeletons], evo: [archers, royal_hogs], support: tower_princess}
-  - {name: meta_034, weight: 34, cards: [arrows, bowler, giant, giant_snowball, graveyard, mini_pekka, minions, witch], evo: [bowler, giant_snowball, witch], support: tower_princess}
-  - {name: meta_035, weight: 32, cards: [barbarian_barrel, berserker, electro_spirit, fireball, furnace, goblin_hut, royal_ghost, royal_hogs], evo: [berserker, royal_ghost, royal_hogs], support: tower_princess}
-  - {name: meta_036, weight: 32, cards: [balloon, barbarian_barrel, bomb_tower, giant_snowball, ice_golem, miner, musketeer, skeletons], evo: [balloon, giant_snowball, musketeer], support: tower_princess}
-  - {name: meta_037, weight: 31, cards: [arrows, barbarian_barrel, electro_spirit, flying_machine, goblin_cage, royal_hogs, royal_recruits, zappies], evo: [barbarian_barrel, goblin_cage, royal_recruits], support: tower_princess}
-  - {name: meta_038, weight: 31, cards: [arrows, barbarian_barrel, flying_machine, goblin_cage, golden_knight, royal_hogs, royal_recruits, zappies], evo: [goblin_cage, royal_recruits], support: tower_princess}
-  - {name: meta_039, weight: 31, cards: [bomb_tower, giant_snowball, goblin_demolisher, goblin_drill, knight, magic_archer, skeletons, tornado], evo: [giant_snowball, goblin_drill, magic_archer], support: tower_princess}
-  - {name: meta_040, weight: 30, cards: [archers, elite_barbarians, elixir_collector, heal_spirit, knight, monk, rage, three_musketeers], evo: [archers, elite_barbarians], support: tower_princess}
-  - {name: meta_041, weight: 30, cards: [cannon, goblin_barrel, goblins, ice_spirit, mighty_miner, princess, rocket, the_log], evo: [cannon, princess], support: tower_princess}
-  - {name: meta_042, weight: 30, cards: [bomber, dark_prince, elite_barbarians, fireball, giant, mega_minion, rage, zap], evo: [elite_barbarians, giant, mega_minion], support: dagger_duchess}
-  - {name: meta_043, weight: 30, cards: [arrows, barbarian_barrel, knight, little_prince, mega_minion, pekka, ram_rider, zap], evo: [knight, mega_minion], support: tower_princess}
-  - {name: meta_044, weight: 28, cards: [barbarian_barrel, berserker, furnace, goblin_hut, graveyard, ice_spirit, knight, poison], evo: [berserker, furnace, knight], support: tower_princess}
-  - {name: meta_045, weight: 28, cards: [barbarian_barrel, electro_spirit, fireball, flying_machine, goblin_cage, royal_hogs, royal_recruits, zappies], evo: [barbarian_barrel, goblin_cage, royal_recruits], support: tower_princess}
-  - {name: meta_046, weight: 27, cards: [arrows, bandit, battle_ram, elite_barbarians, heal_spirit, mother_witch, valkyrie, zappies], evo: [battle_ram, elite_barbarians, valkyrie], support: tower_princess}
-  - {name: meta_047, weight: 27, cards: [arrows, bowler, fisherman, giant_skeleton, mother_witch, royal_ghost, royal_hogs, zappies], evo: [bowler, royal_ghost, royal_hogs], support: tower_princess}
-  - {name: meta_048, weight: 27, cards: [bomber, elite_barbarians, elixir_collector, heal_spirit, knight, monk, rage, three_musketeers], evo: [bomber, elite_barbarians], support: tower_princess}
+  - {name: meta_001, weight: 185, cards: [cannon, fireball, hog_rider, ice_golem, ice_spirit, musketeer, skeletons, the_log], support: tower_princess}
+  - {name: meta_002, weight: 165, cards: [barbarian_barrel, electro_spirit, fireball, fisherman, hunter, royal_ghost, royal_giant, skeletons], support: tower_princess}
+  - {name: meta_003, weight: 147, cards: [bats, bomb_tower, fire_spirit, magic_archer, miner, skeletons, the_log, wall_breakers], support: tower_princess}
+  - {name: meta_004, weight: 130, cards: [barbarian_barrel, battle_ram, giant_skeleton, mother_witch, royal_ghost, vines, wizard, zappies], support: tower_princess}
+  - {name: meta_005, weight: 129, cards: [archer_queen, cannon, earthquake, ice_spirit, royal_delivery, royal_hogs, skeletons, the_log], support: tower_princess}
+  - {name: meta_006, weight: 115, cards: [giant, heal_spirit, mini_pekka, sparky, tornado, vines, wizard, zap], support: tower_princess}
+  - {name: meta_007, weight: 90, cards: [dart_goblin, fire_spirit, goblin_barrel, goblins, ice_spirit, rocket, valkyrie, wall_breakers], support: tower_princess}
+  - {name: meta_008, weight: 85, cards: [bowler, executioner, freeze, golden_knight, graveyard, inferno_dragon, tornado, zappies], support: tower_princess}
+  - {name: meta_009, weight: 81, cards: [archers, electro_spirit, fireball, knight, skeletons, tesla, the_log, x_bow], support: tower_princess}
+  - {name: meta_010, weight: 76, cards: [bomber, cannon, fire_spirit, giant_snowball, goblin_drill, knight, rocket, skeletons], support: tower_princess}
+  - {name: meta_011, weight: 76, cards: [berserker, bomb_tower, fire_spirit, goblin_barrel, ice_spirit, magic_archer, royal_delivery, wall_breakers], support: tower_princess}
+  - {name: meta_012, weight: 75, cards: [archers, arrows, barbarians, bowler, giant, giant_snowball, graveyard, minions], support: tower_princess}
+  - {name: meta_013, weight: 73, cards: [earthquake, electro_spirit, firecracker, hog_rider, mighty_miner, skeletons, tesla, the_log], support: tower_princess}
+  - {name: meta_014, weight: 72, cards: [cannon, dart_goblin, goblin_barrel, ice_spirit, princess, skeleton_army, valkyrie, wall_breakers], support: cannoneer}
+  - {name: meta_015, weight: 71, cards: [cannon, earthquake, electro_spirit, firecracker, hog_rider, mighty_miner, skeletons, the_log], support: tower_princess}
+  - {name: meta_016, weight: 71, cards: [barbarian_barrel, battle_ram, elite_barbarians, giant_skeleton, mother_witch, vines, wizard, zappies], support: tower_princess}
+  - {name: meta_017, weight: 67, cards: [barbarian_barrel, cannon, earthquake, electro_spirit, firecracker, hog_rider, mighty_miner, skeletons], support: tower_princess}
+  - {name: meta_018, weight: 64, cards: [berserker, goblin_curse, goblin_demolisher, inferno_dragon, little_prince, miner, rune_giant, zap], support: tower_princess}
+  - {name: meta_019, weight: 59, cards: [balloon, bomber, fireball, giant_snowball, inferno_dragon, lava_hound, minions, skeleton_army], support: tower_princess}
+  - {name: meta_020, weight: 56, cards: [bomber, dark_prince, fireball, giant, mega_minion, prince, rage, zap], support: dagger_duchess}
+  - {name: meta_021, weight: 54, cards: [barbarian_barrel, berserker, cannon_cart, fireball, minions, mortar, rascals, skeleton_barrel], support: tower_princess}
+  - {name: meta_022, weight: 52, cards: [executioner, goblins, hog_rider, ice_spirit, rocket, the_log, tornado, valkyrie], support: tower_princess}
+  - {name: meta_023, weight: 51, cards: [baby_dragon, balloon, barbarian_barrel, bowler, freeze, inferno_dragon, knight, tornado], support: tower_princess}
+  - {name: meta_024, weight: 47, cards: [berserker, bomber, cannon, fire_spirit, giant_snowball, goblin_drill, rocket, skeletons], support: tower_princess}
+  - {name: meta_025, weight: 47, cards: [barbarian_barrel, cannon_cart, fireball, goblin_gang, goblinstein, ice_wizard, minion_horde, mortar], support: cannoneer}
+  - {name: meta_026, weight: 45, cards: [baby_dragon, barbarian_barrel, graveyard, ice_wizard, knight, poison, tombstone, tornado], support: tower_princess}
+  - {name: meta_027, weight: 45, cards: [dark_prince, electro_spirit, miner, rocket, royal_delivery, skeletons, tesla, the_log], support: tower_princess}
+  - {name: meta_028, weight: 41, cards: [arrows, berserker, bowler, giant, giant_snowball, graveyard, witch, zappies], support: tower_princess}
+  - {name: meta_029, weight: 41, cards: [bowler, executioner, freeze, golden_knight, graveyard, guards, inferno_dragon, tornado], support: tower_princess}
+  - {name: meta_030, weight: 38, cards: [arrows, bomber, fisherman, goblin_giant, goblinstein, pekka, rage, void], support: tower_princess}
+  - {name: meta_031, weight: 37, cards: [balloon, fireball, lava_hound, mega_minion, skeleton_dragons, tombstone, valkyrie, zap], support: tower_princess}
+  - {name: meta_032, weight: 36, cards: [arrows, bomber, elite_barbarians, golem, lumberjack, night_witch, phoenix, zap], support: royal_chef}
+  - {name: meta_033, weight: 35, cards: [archers, barbarian_barrel, bomb_tower, electro_spirit, goblinstein, lightning, royal_hogs, skeletons], support: tower_princess}
+  - {name: meta_034, weight: 34, cards: [arrows, bowler, giant, giant_snowball, graveyard, mini_pekka, minions, witch], support: tower_princess}
+  - {name: meta_035, weight: 32, cards: [barbarian_barrel, berserker, electro_spirit, fireball, furnace, goblin_hut, royal_ghost, royal_hogs], support: tower_princess}
+  - {name: meta_036, weight: 32, cards: [balloon, barbarian_barrel, bomb_tower, giant_snowball, ice_golem, miner, musketeer, skeletons], support: tower_princess}
+  - {name: meta_037, weight: 31, cards: [arrows, barbarian_barrel, electro_spirit, flying_machine, goblin_cage, royal_hogs, royal_recruits, zappies], support: tower_princess}
+  - {name: meta_038, weight: 31, cards: [arrows, barbarian_barrel, flying_machine, goblin_cage, golden_knight, royal_hogs, royal_recruits, zappies], support: tower_princess}
+  - {name: meta_039, weight: 31, cards: [bomb_tower, giant_snowball, goblin_demolisher, goblin_drill, knight, magic_archer, skeletons, tornado], support: tower_princess}
+  - {name: meta_040, weight: 30, cards: [archers, elite_barbarians, elixir_collector, heal_spirit, knight, monk, rage, three_musketeers], support: tower_princess}
+  - {name: meta_041, weight: 30, cards: [cannon, goblin_barrel, goblins, ice_spirit, mighty_miner, princess, rocket, the_log], support: tower_princess}
+  - {name: meta_042, weight: 30, cards: [bomber, dark_prince, elite_barbarians, fireball, giant, mega_minion, rage, zap], support: dagger_duchess}
+  - {name: meta_043, weight: 30, cards: [arrows, barbarian_barrel, knight, little_prince, mega_minion, pekka, ram_rider, zap], support: tower_princess}
+  - {name: meta_044, weight: 28, cards: [barbarian_barrel, berserker, furnace, goblin_hut, graveyard, ice_spirit, knight, poison], support: tower_princess}
+  - {name: meta_045, weight: 28, cards: [barbarian_barrel, electro_spirit, fireball, flying_machine, goblin_cage, royal_hogs, royal_recruits, zappies], support: tower_princess}
+  - {name: meta_046, weight: 27, cards: [arrows, bandit, battle_ram, elite_barbarians, heal_spirit, mother_witch, valkyrie, zappies], support: tower_princess}
+  - {name: meta_047, weight: 27, cards: [arrows, bowler, fisherman, giant_skeleton, mother_witch, royal_ghost, royal_hogs, zappies], support: tower_princess}
+  - {name: meta_048, weight: 27, cards: [bomber, elite_barbarians, elixir_collector, heal_spirit, knight, monk, rage, three_musketeers], support: tower_princess}
   - {name: meta_049, weight: 26, cards: [bandit, boss_bandit, elite_barbarians, executioner, freeze, hog_rider, minion_horde, zap]}
-  - {name: meta_050, weight: 26, cards: [berserker, bomber, cannon, fire_spirit, giant_snowball, goblin_drill, poison, skeletons], evo: [berserker, giant_snowball, goblin_drill], support: tower_princess}
-  - {name: meta_051, weight: 25, cards: [barbarian_barrel, berserker, electro_dragon, elite_barbarians, elixir_collector, golem, skeleton_dragons, tornado], evo: [berserker, electro_dragon, elite_barbarians], support: tower_princess}
-  - {name: meta_052, weight: 25, cards: [barbarian_barrel, goblin_cage, goblinstein, graveyard, guards, ice_wizard, poison, valkyrie], evo: [goblin_cage, valkyrie], support: tower_princess}
-  - {name: meta_053, weight: 25, cards: [arrows, battle_ram, electro_wizard, golden_knight, lumberjack, mother_witch, pekka, royal_ghost], evo: [battle_ram, royal_ghost], support: tower_princess}
-  - {name: meta_054, weight: 25, cards: [bomber, cannon, fire_spirit, giant_snowball, goblin_drill, knight, poison, skeletons], evo: [giant_snowball, goblin_drill, knight], support: tower_princess}
-  - {name: meta_055, weight: 24, cards: [arrows, bomber, bowler, cannon, electro_giant, royal_recruits, spirit_empress, tornado], evo: [bomber, bowler, royal_recruits], support: tower_princess}
-  - {name: meta_056, weight: 23, cards: [arrows, bandit, battle_ram, golden_knight, mega_knight, mother_witch, royal_ghost, zappies], evo: [battle_ram, mega_knight], support: tower_princess}
+  - {name: meta_050, weight: 26, cards: [berserker, bomber, cannon, fire_spirit, giant_snowball, goblin_drill, poison, skeletons], support: tower_princess}
+  - {name: meta_051, weight: 25, cards: [barbarian_barrel, berserker, electro_dragon, elite_barbarians, elixir_collector, golem, skeleton_dragons, tornado], support: tower_princess}
+  - {name: meta_052, weight: 25, cards: [barbarian_barrel, goblin_cage, goblinstein, graveyard, guards, ice_wizard, poison, valkyrie], support: tower_princess}
+  - {name: meta_053, weight: 25, cards: [arrows, battle_ram, electro_wizard, golden_knight, lumberjack, mother_witch, pekka, royal_ghost], support: tower_princess}
+  - {name: meta_054, weight: 25, cards: [bomber, cannon, fire_spirit, giant_snowball, goblin_drill, knight, poison, skeletons], support: tower_princess}
+  - {name: meta_055, weight: 24, cards: [arrows, bomber, bowler, cannon, electro_giant, royal_recruits, spirit_empress, tornado], support: tower_princess}
+  - {name: meta_056, weight: 23, cards: [arrows, bandit, battle_ram, golden_knight, mega_knight, mother_witch, royal_ghost, zappies], support: tower_princess}
   - {name: meta_057, weight: 23, cards: [arrows, bomber, dark_prince, goblinstein, graveyard, ice_wizard, pekka, tornado]}
-  - {name: meta_058, weight: 21, cards: [barbarian_barrel, cannon_cart, fireball, goblins, minions, mortar, rascals, skeleton_barrel], evo: [goblins, mortar, skeleton_barrel], support: tower_princess}
-  - {name: meta_059, weight: 21, cards: [arrows, balloon, bats, freeze, giant_skeleton, inferno_dragon, skeleton_army, skeleton_king], evo: [balloon, inferno_dragon], support: tower_princess}
+  - {name: meta_058, weight: 21, cards: [barbarian_barrel, cannon_cart, fireball, goblins, minions, mortar, rascals, skeleton_barrel], support: tower_princess}
+  - {name: meta_059, weight: 21, cards: [arrows, balloon, bats, freeze, giant_skeleton, inferno_dragon, skeleton_army, skeleton_king], support: tower_princess}
   - {name: meta_060, weight: 21, cards: [electro_giant, freeze, goblin_cage, inferno_dragon, lumberjack, mega_minion, the_log, zappies]}
   - {name: meta_061, weight: 21, cards: [baby_dragon, barbarian_barrel, goblin_cage, graveyard, ice_wizard, knight, skeletons, void]}
-  - {name: meta_062, weight: 20, cards: [arrows, bomber, elite_barbarians, golem, lumberjack, mega_minion, night_witch, zap], evo: [elite_barbarians, lumberjack, mega_minion], support: royal_chef}
-  - {name: meta_063, weight: 20, cards: [balloon, fireball, guards, inferno_dragon, lava_hound, skeleton_dragons, valkyrie, zap], evo: [balloon, inferno_dragon, valkyrie], support: tower_princess}
+  - {name: meta_062, weight: 20, cards: [arrows, bomber, elite_barbarians, golem, lumberjack, mega_minion, night_witch, zap], support: royal_chef}
+  - {name: meta_063, weight: 20, cards: [balloon, fireball, guards, inferno_dragon, lava_hound, skeleton_dragons, valkyrie, zap], support: tower_princess}
   - {name: meta_064, weight: 20, cards: [berserker, cannon, goblin_barrel, goblin_gang, ice_spirit, princess, rocket, wall_breakers]}
-  - {name: meta_065, weight: 19, cards: [barbarian_barrel, electro_spirit, fireball, goblin_cage, heal_spirit, lumberjack, phoenix, royal_giant], evo: [barbarian_barrel, goblin_cage, lumberjack], support: tower_princess}
+  - {name: meta_065, weight: 19, cards: [barbarian_barrel, electro_spirit, fireball, goblin_cage, heal_spirit, lumberjack, phoenix, royal_giant], support: tower_princess}
   - {name: meta_066, weight: 19, cards: [battle_ram, golden_knight, minions, mother_witch, pekka, royal_ghost, void, zap]}
   - {name: meta_067, weight: 19, cards: [cannon, dart_goblin, goblin_barrel, ice_spirit, princess, skeleton_army, suspicious_bush, valkyrie]}
-  - {name: meta_068, weight: 18, cards: [cannon_cart, electro_spirit, fireball, goblins, minions, mortar, rascals, skeleton_barrel], evo: [goblins, mortar, skeleton_barrel], support: tower_princess}
-  - {name: meta_069, weight: 18, cards: [berserker, bomb_tower, goblin_gang, miner, minion_horde, princess, the_log, wall_breakers], evo: [berserker, minion_horde, wall_breakers], support: tower_princess}
+  - {name: meta_068, weight: 18, cards: [cannon_cart, electro_spirit, fireball, goblins, minions, mortar, rascals, skeleton_barrel], support: tower_princess}
+  - {name: meta_069, weight: 18, cards: [berserker, bomb_tower, goblin_gang, miner, minion_horde, princess, the_log, wall_breakers], support: tower_princess}
   - {name: meta_070, weight: 18, cards: [boss_bandit, executioner, freeze, furnace, giant_snowball, guards, hog_rider, royal_ghost]}
-  - {name: meta_071, weight: 17, cards: [berserker, cannon, furnace, giant_snowball, goblin_drill, poison, royal_delivery, skeletons], evo: [berserker, furnace, giant_snowball], support: tower_princess}
-  - {name: meta_072, weight: 17, cards: [fireball, goblins, inferno_dragon, lava_hound, miner, rune_giant, skeleton_dragons, zap], evo: [goblins, inferno_dragon, zap], support: tower_princess}
-  - {name: meta_073, weight: 17, cards: [arrows, bowler, giant, giant_snowball, graveyard, guards, minions, witch], evo: [giant, giant_snowball, witch], support: tower_princess}
-  - {name: meta_074, weight: 17, cards: [barbarians, firecracker, giant_skeleton, guards, hog_rider, lightning, minion_horde, the_log], evo: [firecracker, minion_horde], support: tower_princess}
-  - {name: meta_075, weight: 17, cards: [berserker, fireball, furnace, mega_knight, ram_rider, royal_ghost, spirit_empress, zap], evo: [berserker, mega_knight, royal_ghost], support: tower_princess}
+  - {name: meta_071, weight: 17, cards: [berserker, cannon, furnace, giant_snowball, goblin_drill, poison, royal_delivery, skeletons], support: tower_princess}
+  - {name: meta_072, weight: 17, cards: [fireball, goblins, inferno_dragon, lava_hound, miner, rune_giant, skeleton_dragons, zap], support: tower_princess}
+  - {name: meta_073, weight: 17, cards: [arrows, bowler, giant, giant_snowball, graveyard, guards, minions, witch], support: tower_princess}
+  - {name: meta_074, weight: 17, cards: [barbarians, firecracker, giant_skeleton, guards, hog_rider, lightning, minion_horde, the_log], support: tower_princess}
+  - {name: meta_075, weight: 17, cards: [berserker, fireball, furnace, mega_knight, ram_rider, royal_ghost, spirit_empress, zap], support: tower_princess}
   - {name: meta_076, weight: 17, cards: [berserker, little_prince, miner, poison, rune_giant, spear_goblins, tesla, the_log]}
   - {name: meta_077, weight: 16, cards: [barbarian_barrel, electro_spirit, goblin_hut, lightning, royal_hogs, skeletons, valkyrie, wizard]}
   - {name: meta_078, weight: 16, cards: [barbarian_barrel, battle_ram, giant_skeleton, lumberjack, royal_ghost, vines, wizard, zappies]}
   - {name: meta_079, weight: 16, cards: [freeze, goblin_gang, hog_rider, mega_knight, minions, prince, royal_giant, witch]}
-  - {name: meta_080, weight: 15, cards: [barbarian_barrel, fireball, flying_machine, goblin_cage, golden_knight, royal_hogs, royal_recruits, zappies], evo: [goblin_cage, royal_recruits], support: tower_princess}
-  - {name: meta_081, weight: 15, cards: [bomber, elite_barbarians, freeze, hog_rider, ice_golem, minions, tesla, zap], evo: [bomber, elite_barbarians, ice_golem], support: tower_princess}
-  - {name: meta_082, weight: 15, cards: [barbarian_barrel, berserker, furnace, graveyard, ice_spirit, knight, poison, tesla], evo: [berserker, knight, tesla], support: tower_princess}
+  - {name: meta_080, weight: 15, cards: [barbarian_barrel, fireball, flying_machine, goblin_cage, golden_knight, royal_hogs, royal_recruits, zappies], support: tower_princess}
+  - {name: meta_081, weight: 15, cards: [bomber, elite_barbarians, freeze, hog_rider, ice_golem, minions, tesla, zap], support: tower_princess}
+  - {name: meta_082, weight: 15, cards: [barbarian_barrel, berserker, furnace, graveyard, ice_spirit, knight, poison, tesla], support: tower_princess}
   - {name: meta_083, weight: 15, cards: [berserker, dart_goblin, ice_spirit, mortar, rocket, skeletons, the_log, tornado]}
   - {name: meta_084, weight: 14, cards: [barbarians, berserker, dart_goblin, goblin_barrel, goblin_gang, princess, the_log, wall_breakers]}
-  - {name: meta_085, weight: 14, cards: [barbarian_barrel, cannon_cart, goblinstein, lightning, minions, mortar, royal_ghost, skeletons], evo: [mortar, royal_ghost], support: tower_princess}
+  - {name: meta_085, weight: 14, cards: [barbarian_barrel, cannon_cart, goblinstein, lightning, minions, mortar, royal_ghost, skeletons], support: tower_princess}
   - {name: meta_086, weight: 14, cards: [elite_barbarians, elixir_collector, furnace, golden_knight, heal_spirit, ice_golem, three_musketeers, zap]}
-  - {name: meta_087, weight: 14, cards: [arrows, balloon, freeze, giant, minions, skeleton_army, skeleton_dragons, skeletons], evo: [balloon, skeleton_army, skeletons], support: tower_princess}
+  - {name: meta_087, weight: 14, cards: [arrows, balloon, freeze, giant, minions, skeleton_army, skeleton_dragons, skeletons], support: tower_princess}
   - {name: meta_088, weight: 14, cards: [cannon, dart_goblin, electro_spirit, fire_spirit, goblin_barrel, goblins, ice_spirit, wall_breakers]}
   - {name: meta_089, weight: 14, cards: [arrows, baby_dragon, balloon, guards, inferno_dragon, lava_hound, valkyrie, void]}
   - {name: meta_090, weight: 13, cards: [berserker, fireball, lava_hound, skeleton_dragons, spirit_empress, tombstone, valkyrie, zap]}
-  - {name: meta_091, weight: 13, cards: [battle_ram, bomber, freeze, inferno_dragon, mega_knight, mini_pekka, mother_witch, zap], evo: [battle_ram, inferno_dragon, mini_pekka], support: dagger_duchess}
+  - {name: meta_091, weight: 13, cards: [battle_ram, bomber, freeze, inferno_dragon, mega_knight, mini_pekka, mother_witch, zap], support: dagger_duchess}
   - {name: meta_092, weight: 13, cards: [berserker, earthquake, electro_spirit, furnace, hog_rider, skeletons, tesla, the_log]}
   - {name: meta_093, weight: 13, cards: [berserker, ice_spirit, mirror, rocket, royal_delivery, skeletons, tesla, the_log]}
   - {name: meta_094, weight: 13, cards: [bats, berserker, bomb_tower, fire_spirit, magic_archer, miner, the_log, wall_breakers]}
   - {name: meta_095, weight: 13, cards: [bandit, battle_ram, elite_barbarians, golden_knight, heal_spirit, mother_witch, rage, zappies]}
   - {name: meta_096, weight: 13, cards: [giant, miner, minion_horde, minions, night_witch, the_log, void, zap]}
-  - {name: meta_097, weight: 12, cards: [balloon, fireball, goblin_cage, ice_golem, inferno_dragon, mega_minion, miner, zap], evo: [balloon, inferno_dragon, mega_minion], support: tower_princess}
-  - {name: meta_098, weight: 12, cards: [archer_queen, arrows, bandit, battle_ram, elite_barbarians, elixir_collector, heal_spirit, royal_ghost], evo: [battle_ram, elite_barbarians], support: tower_princess}
-  - {name: meta_099, weight: 12, cards: [cannon, goblins, ice_spirit, mighty_miner, princess, rocket, royal_delivery, the_log], evo: [cannon, princess], support: tower_princess}
-  - {name: meta_100, weight: 12, cards: [berserker, bomber, fire_spirit, giant_snowball, goblin_drill, poison, skeletons, tesla], evo: [berserker, giant_snowball, goblin_drill], support: tower_princess}
-  - {name: meta_101, weight: 12, cards: [arrows, bandit, battle_ram, golden_knight, mother_witch, ronin, royal_ghost, zappies], evo: [battle_ram, royal_ghost], support: tower_princess}
-  - {name: meta_102, weight: 12, cards: [arrows, bomber, elite_barbarians, golem, mini_pekka, night_witch, phoenix, zap], evo: [elite_barbarians, mini_pekka, zap], support: royal_chef}
+  - {name: meta_097, weight: 12, cards: [balloon, fireball, goblin_cage, ice_golem, inferno_dragon, mega_minion, miner, zap], support: tower_princess}
+  - {name: meta_098, weight: 12, cards: [archer_queen, arrows, bandit, battle_ram, elite_barbarians, elixir_collector, heal_spirit, royal_ghost], support: tower_princess}
+  - {name: meta_099, weight: 12, cards: [cannon, goblins, ice_spirit, mighty_miner, princess, rocket, royal_delivery, the_log], support: tower_princess}
+  - {name: meta_100, weight: 12, cards: [berserker, bomber, fire_spirit, giant_snowball, goblin_drill, poison, skeletons, tesla], support: tower_princess}
+  - {name: meta_101, weight: 12, cards: [arrows, bandit, battle_ram, golden_knight, mother_witch, ronin, royal_ghost, zappies], support: tower_princess}
+  - {name: meta_102, weight: 12, cards: [arrows, bomber, elite_barbarians, golem, mini_pekka, night_witch, phoenix, zap], support: royal_chef}
   - {name: meta_103, weight: 12, cards: [ice_spirit, ice_wizard, mortar, rocket, skeletons, the_log, tornado, valkyrie]}
-  - {name: meta_104, weight: 12, cards: [arrows, bowler, giant, giant_snowball, graveyard, guards, musketeer, night_witch], evo: [bowler, giant_snowball, musketeer], support: tower_princess}
-  - {name: meta_105, weight: 11, cards: [barbarian_barrel, earthquake, electro_spirit, firecracker, hog_rider, mighty_miner, skeletons, tesla], evo: [firecracker, tesla], support: tower_princess}
-  - {name: meta_106, weight: 11, cards: [archers, barbarian_barrel, bomb_tower, goblinstein, graveyard, ice_spirit, poison, skeletons], evo: [archers, skeletons], support: tower_princess}
+  - {name: meta_104, weight: 12, cards: [arrows, bowler, giant, giant_snowball, graveyard, guards, musketeer, night_witch], support: tower_princess}
+  - {name: meta_105, weight: 11, cards: [barbarian_barrel, earthquake, electro_spirit, firecracker, hog_rider, mighty_miner, skeletons, tesla], support: tower_princess}
+  - {name: meta_106, weight: 11, cards: [archers, barbarian_barrel, bomb_tower, goblinstein, graveyard, ice_spirit, poison, skeletons], support: tower_princess}
   - {name: meta_107, weight: 11, cards: [bats, berserker, bomb_tower, miner, poison, spear_goblins, the_log, wall_breakers]}
   - {name: meta_108, weight: 11, cards: [barbarian_barrel, berserker, furnace, goblin_hut, graveyard, ice_spirit, poison, valkyrie]}
-  - {name: meta_109, weight: 11, cards: [bandit, battle_ram, electro_wizard, fireball, magic_archer, pekka, royal_ghost, zap], evo: [battle_ram, magic_archer, royal_ghost], support: tower_princess}
-  - {name: meta_110, weight: 11, cards: [arrows, bats, dark_prince, electro_wizard, giant, skeleton_army, sparky, zap], evo: [bats, giant, zap], support: tower_princess}
-  - {name: meta_111, weight: 11, cards: [cannon, dart_goblin, electro_spirit, goblin_barrel, ice_spirit, knight, skeletons, the_log], evo: [dart_goblin, goblin_barrel, knight], support: tower_princess}
-  - {name: meta_112, weight: 11, cards: [dark_prince, electro_wizard, elite_barbarians, giant, heal_spirit, rage, sparky, zap], evo: [elite_barbarians, giant, zap], support: tower_princess}
+  - {name: meta_109, weight: 11, cards: [bandit, battle_ram, electro_wizard, fireball, magic_archer, pekka, royal_ghost, zap], support: tower_princess}
+  - {name: meta_110, weight: 11, cards: [arrows, bats, dark_prince, electro_wizard, giant, skeleton_army, sparky, zap], support: tower_princess}
+  - {name: meta_111, weight: 11, cards: [cannon, dart_goblin, electro_spirit, goblin_barrel, ice_spirit, knight, skeletons, the_log], support: tower_princess}
+  - {name: meta_112, weight: 11, cards: [dark_prince, electro_wizard, elite_barbarians, giant, heal_spirit, rage, sparky, zap], support: tower_princess}
   - {name: meta_113, weight: 11, cards: [baby_dragon, balloon, berserker, bowler, freeze, inferno_dragon, lumberjack, tornado]}
-  - {name: meta_114, weight: 10, cards: [electro_spirit, goblin_barrel, knight, princess, rocket, skeletons, tesla, the_log], evo: [knight, princess, tesla], support: tower_princess}
+  - {name: meta_114, weight: 10, cards: [electro_spirit, goblin_barrel, knight, princess, rocket, skeletons, tesla, the_log], support: tower_princess}
   - {name: meta_115, weight: 10, cards: [arrows, elixir_golem, night_witch, rage, skeleton_king, skeletons, void, wizard]}
   - {name: meta_116, weight: 10, cards: [cannon, dart_goblin, electro_spirit, goblin_barrel, ice_golem, ice_spirit, skeletons, the_log]}
-  - {name: meta_117, weight: 10, cards: [archers, electro_spirit, knight, rocket, skeletons, tesla, the_log, x_bow], evo: [archers, knight, tesla], support: tower_princess}
-  - {name: meta_118, weight: 10, cards: [barbarian_barrel, fisherman, lightning, royal_giant, skeleton_king, tombstone, witch, zappies], evo: [royal_giant, witch], support: tower_princess}
-  - {name: meta_119, weight: 10, cards: [ice_wizard, knight, rocket, skeletons, tesla, the_log, tornado, x_bow], evo: [knight, tesla], support: tower_princess}
-  - {name: meta_120, weight: 10, cards: [arrows, balloon, inferno_dragon, lava_hound, skeleton_dragons, tombstone, valkyrie, void], evo: [balloon, inferno_dragon, valkyrie], support: tower_princess}
+  - {name: meta_117, weight: 10, cards: [archers, electro_spirit, knight, rocket, skeletons, tesla, the_log, x_bow], support: tower_princess}
+  - {name: meta_118, weight: 10, cards: [barbarian_barrel, fisherman, lightning, royal_giant, skeleton_king, tombstone, witch, zappies], support: tower_princess}
+  - {name: meta_119, weight: 10, cards: [ice_wizard, knight, rocket, skeletons, tesla, the_log, tornado, x_bow], support: tower_princess}
+  - {name: meta_120, weight: 10, cards: [arrows, balloon, inferno_dragon, lava_hound, skeleton_dragons, tombstone, valkyrie, void], support: tower_princess}
   - {name: meta_121, weight: 9, cards: [arrows, berserker, elite_barbarians, inferno_dragon, lava_hound, rune_giant, skeleton_dragons, zap]}
-  - {name: meta_122, weight: 9, cards: [arrows, battle_ram, cannon_cart, elite_barbarians, golden_knight, heal_spirit, mother_witch, zappies], evo: [battle_ram, elite_barbarians], support: tower_princess}
+  - {name: meta_122, weight: 9, cards: [arrows, battle_ram, cannon_cart, elite_barbarians, golden_knight, heal_spirit, mother_witch, zappies], support: tower_princess}
   - {name: meta_123, weight: 9, cards: [electro_spirit, knight, little_prince, miner, rocket, skeletons, tesla, the_log]}
-  - {name: meta_124, weight: 9, cards: [berserker, cannon_cart, electro_spirit, fireball, minions, mortar, rascals, skeleton_barrel], evo: [berserker, mortar, skeleton_barrel], support: tower_princess}
-  - {name: meta_125, weight: 9, cards: [baby_dragon, barbarian_barrel, goblin_cage, graveyard, ice_wizard, knight, poison, skeletons], evo: [barbarian_barrel, goblin_cage, knight], support: tower_princess}
-  - {name: meta_126, weight: 9, cards: [archers, arrows, barbarians, bowler, giant, giant_snowball, graveyard, guards], evo: [archers, bowler, giant_snowball], support: tower_princess}
+  - {name: meta_124, weight: 9, cards: [berserker, cannon_cart, electro_spirit, fireball, minions, mortar, rascals, skeleton_barrel], support: tower_princess}
+  - {name: meta_125, weight: 9, cards: [baby_dragon, barbarian_barrel, goblin_cage, graveyard, ice_wizard, knight, poison, skeletons], support: tower_princess}
+  - {name: meta_126, weight: 9, cards: [archers, arrows, barbarians, bowler, giant, giant_snowball, graveyard, guards], support: tower_princess}
   - {name: meta_127, weight: 8, cards: [berserker, earthquake, firecracker, hog_rider, mighty_miner, skeletons, tesla, the_log]}
-  - {name: meta_128, weight: 8, cards: [arrows, cannon_cart, goblins, miner, minion_horde, mortar, rascals, skeleton_dragons], evo: [goblins, minion_horde, mortar], support: tower_princess}
-  - {name: meta_129, weight: 8, cards: [boss_bandit, elite_barbarians, executioner, freeze, guards, hog_rider, minion_horde, zap], evo: [elite_barbarians, minion_horde], support: tower_princess}
-  - {name: meta_130, weight: 8, cards: [dart_goblin, fireball, goblin_drill, inferno_tower, skeleton_army, skeleton_king, the_log, wall_breakers], evo: [skeleton_army, wall_breakers], support: tower_princess}
-  - {name: meta_131, weight: 8, cards: [barbarian_barrel, battle_ram, elixir_collector, golden_knight, hunter, ice_golem, royal_ghost, three_musketeers], evo: [battle_ram, royal_ghost], support: tower_princess}
+  - {name: meta_128, weight: 8, cards: [arrows, cannon_cart, goblins, miner, minion_horde, mortar, rascals, skeleton_dragons], support: tower_princess}
+  - {name: meta_129, weight: 8, cards: [boss_bandit, elite_barbarians, executioner, freeze, guards, hog_rider, minion_horde, zap], support: tower_princess}
+  - {name: meta_130, weight: 8, cards: [dart_goblin, fireball, goblin_drill, inferno_tower, skeleton_army, skeleton_king, the_log, wall_breakers], support: tower_princess}
+  - {name: meta_131, weight: 8, cards: [barbarian_barrel, battle_ram, elixir_collector, golden_knight, hunter, ice_golem, royal_ghost, three_musketeers], support: tower_princess}
   - {name: meta_132, weight: 8, cards: [barbarian_barrel, berserker, goblin_demolisher, goblinstein, graveyard, poison, skeletons, tesla]}
-  - {name: meta_133, weight: 8, cards: [dart_goblin, goblin_barrel, ice_spirit, inferno_tower, knight, princess, skeleton_army, the_log], evo: [goblin_barrel, knight, skeleton_army], support: tower_princess}
-  - {name: meta_134, weight: 8, cards: [archer_queen, arrows, bandit, bats, mega_knight, prince, wall_breakers, zap], evo: [mega_knight, wall_breakers], support: dagger_duchess}
-  - {name: meta_135, weight: 8, cards: [cannon, electro_spirit, fireball, hog_rider, ice_golem, musketeer, skeletons, the_log], evo: [cannon, musketeer, skeletons], support: tower_princess}
-  - {name: meta_136, weight: 8, cards: [dark_prince, electro_wizard, elite_barbarians, goblin_giant, heal_spirit, rage, sparky, zap], evo: [dark_prince, elite_barbarians, zap], support: dagger_duchess}
-  - {name: meta_137, weight: 8, cards: [arrows, bowler, giant, giant_snowball, graveyard, guards, witch, zappies], evo: [bowler, giant_snowball, witch], support: tower_princess}
-  - {name: meta_138, weight: 8, cards: [bomber, fire_spirit, giant_snowball, goblin_drill, knight, poison, skeletons, tesla], evo: [giant_snowball, goblin_drill, knight], support: tower_princess}
+  - {name: meta_133, weight: 8, cards: [dart_goblin, goblin_barrel, ice_spirit, inferno_tower, knight, princess, skeleton_army, the_log], support: tower_princess}
+  - {name: meta_134, weight: 8, cards: [archer_queen, arrows, bandit, bats, mega_knight, prince, wall_breakers, zap], support: dagger_duchess}
+  - {name: meta_135, weight: 8, cards: [cannon, electro_spirit, fireball, hog_rider, ice_golem, musketeer, skeletons, the_log], support: tower_princess}
+  - {name: meta_136, weight: 8, cards: [dark_prince, electro_wizard, elite_barbarians, goblin_giant, heal_spirit, rage, sparky, zap], support: dagger_duchess}
+  - {name: meta_137, weight: 8, cards: [arrows, bowler, giant, giant_snowball, graveyard, guards, witch, zappies], support: tower_princess}
+  - {name: meta_138, weight: 8, cards: [bomber, fire_spirit, giant_snowball, goblin_drill, knight, poison, skeletons, tesla], support: tower_princess}
   - {name: meta_139, weight: 8, cards: [balloon, fireball, ice_golem, inferno_dragon, mega_minion, miner, tombstone, zap]}
-  - {name: meta_140, weight: 8, cards: [arrows, bomber, golem, lumberjack, mini_pekka, night_witch, phoenix, zap], evo: [lumberjack, mini_pekka, zap], support: royal_chef}
+  - {name: meta_140, weight: 8, cards: [arrows, bomber, golem, lumberjack, mini_pekka, night_witch, phoenix, zap], support: royal_chef}
   - {name: meta_141, weight: 8, cards: [berserker, cannon_cart, electro_spirit, fireball, goblin_gang, minions, mortar, skeleton_barrel]}
   - {name: meta_142, weight: 8, cards: [berserker, bomber, giant_snowball, goblin_drill, inferno_tower, poison, ronin, skeletons]}
   - {name: meta_143, weight: 8, cards: [bats, berserker, cannon, little_prince, miner, poison, rune_giant, the_log]}
@@ -155,20 +162,20 @@ decks:
   - {name: meta_146, weight: 7, cards: [berserker, bomber, cannon, fire_spirit, giant_snowball, goblin_drill, skeletons, void]}
   - {name: meta_147, weight: 7, cards: [ice_spirit, knight, little_prince, princess, rocket, skeletons, tesla, the_log]}
   - {name: meta_148, weight: 7, cards: [baby_dragon, bomber, elite_barbarians, golem, mega_minion, night_witch, tornado, zap]}
-  - {name: meta_149, weight: 7, cards: [arrows, balloon, bats, bomber, freeze, giant, minions, skeletons], evo: [balloon, bats, skeletons], support: tower_princess}
+  - {name: meta_149, weight: 7, cards: [arrows, balloon, bats, bomber, freeze, giant, minions, skeletons], support: tower_princess}
   - {name: meta_150, weight: 7, cards: [cannon, fire_spirit, fireball, goblin_drill, mighty_miner, skeletons, the_log, wall_breakers]}
-  - {name: meta_151, weight: 7, cards: [bandit, battle_ram, dark_prince, elixir_collector, ice_golem, minion_horde, three_musketeers, zap], evo: [battle_ram, ice_golem, minion_horde], support: tower_princess}
-  - {name: meta_152, weight: 7, cards: [barbarian_barrel, electro_spirit, fireball, fisherman, hunter, monk, royal_giant, skeletons], evo: [hunter, royal_giant], support: tower_princess}
+  - {name: meta_151, weight: 7, cards: [bandit, battle_ram, dark_prince, elixir_collector, ice_golem, minion_horde, three_musketeers, zap], support: tower_princess}
+  - {name: meta_152, weight: 7, cards: [barbarian_barrel, electro_spirit, fireball, fisherman, hunter, monk, royal_giant, skeletons], support: tower_princess}
   - {name: meta_153, weight: 7, cards: [arrows, balloon, barbarians, bomber, giant_snowball, inferno_dragon, lava_hound, void]}
   - {name: meta_154, weight: 7, cards: [berserker, fireball, heal_spirit, inferno_dragon, magic_archer, ram_rider, rune_giant, zap]}
-  - {name: meta_155, weight: 7, cards: [berserker, bomb_tower, dart_goblin, rascals, royal_ghost, skeleton_barrel, suspicious_bush, vines], evo: [berserker, royal_ghost, skeleton_barrel], support: tower_princess}
+  - {name: meta_155, weight: 7, cards: [berserker, bomb_tower, dart_goblin, rascals, royal_ghost, skeleton_barrel, suspicious_bush, vines], support: tower_princess}
   - {name: meta_156, weight: 7, cards: [berserker, goblin_curse, guards, inferno_dragon, lava_hound, miner, rune_giant, zap]}
-  - {name: meta_157, weight: 7, cards: [baby_dragon, balloon, bomber, dark_prince, electro_wizard, freeze, pekka, tornado], evo: [baby_dragon, balloon, pekka], support: tower_princess}
+  - {name: meta_157, weight: 7, cards: [baby_dragon, balloon, bomber, dark_prince, electro_wizard, freeze, pekka, tornado], support: tower_princess}
   - {name: meta_158, weight: 7, cards: [barbarian_barrel, electro_spirit, elite_barbarians, fireball, fisherman, hunter, royal_giant, skeletons]}
   - {name: meta_159, weight: 7, cards: [berserker, goblin_curse, inferno_dragon, lava_hound, rune_giant, skeleton_dragons, void, zap]}
   - {name: meta_160, weight: 7, cards: [electro_spirit, goblins, knight, little_prince, mortar, rocket, the_log, tornado]}
   - {name: meta_161, weight: 7, cards: [goblin_gang, inferno_tower, knight, miner, minion_horde, princess, the_log, wall_breakers]}
-  - {name: meta_162, weight: 7, cards: [arrows, barbarian_barrel, fireball, flying_machine, goblin_cage, royal_hogs, royal_recruits, zappies], evo: [barbarian_barrel, royal_hogs, royal_recruits], support: tower_princess}
+  - {name: meta_162, weight: 7, cards: [arrows, barbarian_barrel, fireball, flying_machine, goblin_cage, royal_hogs, royal_recruits, zappies], support: tower_princess}
   - {name: meta_163, weight: 7, cards: [arrows, elite_barbarians, elixir_golem, night_witch, rage, skeleton_army, skeleton_king, void]}
   - {name: meta_164, weight: 7, cards: [arrows, balloon, bomber, freeze, lava_hound, minion_horde, minions, skeletons]}
   - {name: meta_165, weight: 7, cards: [arrows, balloon, bomber, inferno_dragon, lava_hound, minions, valkyrie, void]}
@@ -178,191 +185,191 @@ decks:
   - {name: meta_169, weight: 7, cards: [arrows, electro_spirit, fireball, firecracker, fisherman, guards, mega_knight, royal_giant]}
   - {name: meta_170, weight: 6, cards: [arrows, bandit, battle_ram, electro_wizard, golden_knight, mega_knight, mother_witch, skeleton_dragons]}
   - {name: meta_171, weight: 6, cards: [battle_ram, electro_spirit, golden_knight, guards, mother_witch, pekka, royal_ghost, zap]}
-  - {name: meta_172, weight: 6, cards: [barbarian_barrel, bats, graveyard, ice_golem, mortar, musketeer, poison, skeletons], evo: [bats, ice_golem, musketeer], support: tower_princess}
-  - {name: meta_173, weight: 6, cards: [baby_dragon, cannon, electro_spirit, lightning, mighty_miner, royal_hogs, skeletons, the_log], evo: [baby_dragon, royal_hogs], support: tower_princess}
-  - {name: meta_174, weight: 6, cards: [goblin_barrel, goblin_gang, ice_spirit, inferno_tower, knight, princess, rocket, the_log], evo: [goblin_barrel, knight, princess], support: tower_princess}
-  - {name: meta_175, weight: 6, cards: [arrows, battle_ram, golden_knight, lightning, mother_witch, ronin, royal_ghost, zappies], evo: [battle_ram, royal_ghost], support: tower_princess}
+  - {name: meta_172, weight: 6, cards: [barbarian_barrel, bats, graveyard, ice_golem, mortar, musketeer, poison, skeletons], support: tower_princess}
+  - {name: meta_173, weight: 6, cards: [baby_dragon, cannon, electro_spirit, lightning, mighty_miner, royal_hogs, skeletons, the_log], support: tower_princess}
+  - {name: meta_174, weight: 6, cards: [goblin_barrel, goblin_gang, ice_spirit, inferno_tower, knight, princess, rocket, the_log], support: tower_princess}
+  - {name: meta_175, weight: 6, cards: [arrows, battle_ram, golden_knight, lightning, mother_witch, ronin, royal_ghost, zappies], support: tower_princess}
   - {name: meta_176, weight: 6, cards: [archers, elite_barbarians, elixir_collector, heal_spirit, ice_spirit, skeletons, the_log, x_bow]}
-  - {name: meta_177, weight: 6, cards: [bandit, battle_ram, electro_wizard, giant_skeleton, golden_knight, heal_spirit, mother_witch, royal_ghost], evo: [battle_ram, royal_ghost], support: tower_princess}
-  - {name: meta_178, weight: 6, cards: [barbarians, flying_machine, goblin_curse, lava_hound, miner, phoenix, tombstone, zap], evo: [barbarians, tombstone, zap], support: tower_princess}
-  - {name: meta_179, weight: 6, cards: [barbarians, bowler, fireball, goblin_barrel, goblin_gang, minion_horde, mortar, princess], evo: [bowler, minion_horde, mortar], support: tower_princess}
-  - {name: meta_180, weight: 6, cards: [arrows, fisherman, goblin_giant, goblinstein, minions, pekka, rage, void], evo: [goblin_giant, pekka], support: royal_chef}
+  - {name: meta_177, weight: 6, cards: [bandit, battle_ram, electro_wizard, giant_skeleton, golden_knight, heal_spirit, mother_witch, royal_ghost], support: tower_princess}
+  - {name: meta_178, weight: 6, cards: [barbarians, flying_machine, goblin_curse, lava_hound, miner, phoenix, tombstone, zap], support: tower_princess}
+  - {name: meta_179, weight: 6, cards: [barbarians, bowler, fireball, goblin_barrel, goblin_gang, minion_horde, mortar, princess], support: tower_princess}
+  - {name: meta_180, weight: 6, cards: [arrows, fisherman, goblin_giant, goblinstein, minions, pekka, rage, void], support: royal_chef}
   - {name: meta_181, weight: 6, cards: [barbarian_barrel, battle_ram, giant_skeleton, goblin_demolisher, royal_ghost, vines, wizard, zappies]}
   - {name: meta_182, weight: 6, cards: [cannon, electro_spirit, fireball, fisherman, giant_snowball, hunter, skeletons, the_log]}
   - {name: meta_183, weight: 6, cards: [arrows, bowler, freeze, giant_snowball, rage, skeletons, the_log, void]}
-  - {name: meta_184, weight: 6, cards: [baby_dragon, balloon, barbarian_barrel, bowler, freeze, inferno_dragon, lumberjack, tornado], evo: [baby_dragon, balloon, inferno_dragon], support: tower_princess}
-  - {name: meta_185, weight: 6, cards: [archer_queen, bomber, cannon, earthquake, ice_spirit, royal_delivery, royal_hogs, skeletons], evo: [bomber, cannon], support: tower_princess}
+  - {name: meta_184, weight: 6, cards: [baby_dragon, balloon, barbarian_barrel, bowler, freeze, inferno_dragon, lumberjack, tornado], support: tower_princess}
+  - {name: meta_185, weight: 6, cards: [archer_queen, bomber, cannon, earthquake, ice_spirit, royal_delivery, royal_hogs, skeletons], support: tower_princess}
   - {name: meta_186, weight: 6, cards: [archers, berserker, electro_spirit, fireball, skeletons, tesla, the_log, x_bow]}
-  - {name: meta_187, weight: 6, cards: [arrows, bandit, battle_ram, elite_barbarians, golden_knight, heal_spirit, mother_witch, zappies], evo: [battle_ram, elite_barbarians], support: tower_princess}
-  - {name: meta_188, weight: 6, cards: [barbarian_barrel, boss_bandit, executioner, freeze, giant_snowball, guards, hog_rider, hunter], evo: [executioner, giant_snowball], support: tower_princess}
+  - {name: meta_187, weight: 6, cards: [arrows, bandit, battle_ram, elite_barbarians, golden_knight, heal_spirit, mother_witch, zappies], support: tower_princess}
+  - {name: meta_188, weight: 6, cards: [barbarian_barrel, boss_bandit, executioner, freeze, giant_snowball, guards, hog_rider, hunter], support: tower_princess}
   - {name: meta_189, weight: 6, cards: [arrows, baby_dragon, barbarian_barrel, berserker, furnace, lightning, skeletons, tombstone]}
   - {name: meta_190, weight: 6, cards: [bandit, battle_ram, golden_knight, mega_knight, minions, mother_witch, void, zap]}
   - {name: meta_191, weight: 6, cards: [arrows, berserker, bowler, miner, minion_horde, mortar, mother_witch, rascals]}
   - {name: meta_192, weight: 6, cards: [berserker, inferno_dragon, lava_hound, rune_giant, skeleton_dragons, tombstone, void, zap]}
   - {name: meta_193, weight: 6, cards: [battle_ram, electro_wizard, fireball, golden_knight, mother_witch, pekka, royal_ghost, zap]}
-  - {name: meta_194, weight: 6, cards: [berserker, goblins, inferno_tower, miner, minion_horde, princess, the_log, wall_breakers], evo: [goblins, minion_horde, wall_breakers], support: tower_princess}
-  - {name: meta_195, weight: 6, cards: [balloon, barbarians, fireball, lava_hound, mega_minion, skeleton_dragons, tombstone, zap], evo: [barbarians, mega_minion, zap], support: tower_princess}
+  - {name: meta_194, weight: 6, cards: [berserker, goblins, inferno_tower, miner, minion_horde, princess, the_log, wall_breakers], support: tower_princess}
+  - {name: meta_195, weight: 6, cards: [balloon, barbarians, fireball, lava_hound, mega_minion, skeleton_dragons, tombstone, zap], support: tower_princess}
   - {name: meta_196, weight: 6, cards: [arrows, elite_barbarians, elixir_golem, minions, night_witch, skeleton_army, skeleton_king, void]}
   - {name: meta_197, weight: 6, cards: [berserker, electro_spirit, fireball, fisherman, hunter, royal_giant, the_log, valkyrie]}
   - {name: meta_198, weight: 6, cards: [balloon, barbarian_barrel, bowler, electro_dragon, freeze, inferno_dragon, tornado, valkyrie]}
   - {name: meta_199, weight: 6, cards: [battle_healer, bomb_tower, elixir_golem, inferno_dragon, mega_minion, valkyrie, void, zap]}
   - {name: meta_200, weight: 6, cards: [bats, bomber, fire_spirit, ice_golem, skeletons, spear_goblins, the_log, wall_breakers]}
-  - {name: meta_201, weight: 5, cards: [dart_goblin, electro_spirit, fire_spirit, goblin_barrel, inferno_tower, mighty_miner, skeletons, wall_breakers], evo: [dart_goblin, goblin_barrel], support: tower_princess}
+  - {name: meta_201, weight: 5, cards: [dart_goblin, electro_spirit, fire_spirit, goblin_barrel, inferno_tower, mighty_miner, skeletons, wall_breakers], support: tower_princess}
   - {name: meta_202, weight: 5, cards: [baby_dragon, barbarian_barrel, goblin_cage, golden_knight, golem, ice_wizard, lightning, tornado]}
-  - {name: meta_203, weight: 5, cards: [bats, berserker, bomb_tower, fire_spirit, magic_archer, miner, royal_delivery, wall_breakers], evo: [berserker, magic_archer, wall_breakers], support: tower_princess}
-  - {name: meta_204, weight: 5, cards: [dart_goblin, mother_witch, rascals, skeleton_army, skeleton_barrel, skeleton_king, suspicious_bush, vines], evo: [skeleton_army, skeleton_barrel], support: tower_princess}
-  - {name: meta_205, weight: 5, cards: [giant, heal_spirit, mini_pekka, skeletons, sparky, tornado, wizard, zap], evo: [giant, wizard, zap], support: tower_princess}
+  - {name: meta_203, weight: 5, cards: [bats, berserker, bomb_tower, fire_spirit, magic_archer, miner, royal_delivery, wall_breakers], support: tower_princess}
+  - {name: meta_204, weight: 5, cards: [dart_goblin, mother_witch, rascals, skeleton_army, skeleton_barrel, skeleton_king, suspicious_bush, vines], support: tower_princess}
+  - {name: meta_205, weight: 5, cards: [giant, heal_spirit, mini_pekka, skeletons, sparky, tornado, wizard, zap], support: tower_princess}
   - {name: meta_206, weight: 5, cards: [baby_dragon, barbarian_barrel, elite_barbarians, fireball, golem, night_witch, skeleton_dragons, tornado]}
-  - {name: meta_207, weight: 5, cards: [barbarian_barrel, fireball, fisherman, royal_giant, skeleton_king, tombstone, witch, zappies], evo: [royal_giant, witch], support: tower_princess}
-  - {name: meta_208, weight: 5, cards: [barbarian_barrel, fireball, fisherman, monk, mother_witch, royal_giant, skeleton_dragons, tombstone], evo: [royal_giant, tombstone], support: tower_princess}
-  - {name: meta_209, weight: 5, cards: [fireball, fisherman, monk, mother_witch, royal_giant, skeleton_dragons, the_log, tombstone], evo: [royal_giant, tombstone], support: tower_princess}
+  - {name: meta_207, weight: 5, cards: [barbarian_barrel, fireball, fisherman, royal_giant, skeleton_king, tombstone, witch, zappies], support: tower_princess}
+  - {name: meta_208, weight: 5, cards: [barbarian_barrel, fireball, fisherman, monk, mother_witch, royal_giant, skeleton_dragons, tombstone], support: tower_princess}
+  - {name: meta_209, weight: 5, cards: [fireball, fisherman, monk, mother_witch, royal_giant, skeleton_dragons, the_log, tombstone], support: tower_princess}
   - {name: meta_210, weight: 5, cards: [bowler, fireball, giant, goblin_gang, inferno_tower, miner, night_witch, zap]}
   - {name: meta_211, weight: 5, cards: [barbarian_barrel, battle_ram, cannon_cart, elite_barbarians, golden_knight, heal_spirit, mother_witch, zappies]}
-  - {name: meta_212, weight: 5, cards: [cannon, goblin_barrel, ice_spirit, mighty_miner, princess, rocket, skeletons, the_log], evo: [cannon, princess], support: tower_princess}
-  - {name: meta_213, weight: 5, cards: [balloon, barbarian_barrel, bowler, electro_dragon, freeze, inferno_dragon, knight, tornado], evo: [balloon, inferno_dragon, knight], support: tower_princess}
+  - {name: meta_212, weight: 5, cards: [cannon, goblin_barrel, ice_spirit, mighty_miner, princess, rocket, skeletons, the_log], support: tower_princess}
+  - {name: meta_213, weight: 5, cards: [balloon, barbarian_barrel, bowler, electro_dragon, freeze, inferno_dragon, knight, tornado], support: tower_princess}
   - {name: meta_214, weight: 5, cards: [arrows, bomber, elite_barbarians, giant_snowball, musketeer, skeletons, tombstone, void]}
   - {name: meta_215, weight: 5, cards: [battle_ram, electro_spirit, golden_knight, mother_witch, pekka, royal_ghost, void, zap]}
-  - {name: meta_216, weight: 5, cards: [arrows, elixir_golem, night_witch, rage, skeleton_army, skeleton_king, void, wizard], evo: [skeleton_army, wizard], support: tower_princess}
+  - {name: meta_216, weight: 5, cards: [arrows, elixir_golem, night_witch, rage, skeleton_army, skeleton_king, void, wizard], support: tower_princess}
   - {name: meta_217, weight: 5, cards: [berserker, electro_spirit, little_prince, miner, rocket, royal_delivery, tesla, the_log]}
   - {name: meta_218, weight: 5, cards: [dark_prince, elite_barbarians, giant, mega_minion, mother_witch, rage, sparky, zap]}
   - {name: meta_219, weight: 5, cards: [berserker, ice_wizard, miner, rocket, skeletons, tesla, the_log, wall_breakers]}
   - {name: meta_220, weight: 5, cards: [barbarian_barrel, berserker, bomb_tower, electro_spirit, lightning, royal_hogs, skeletons, wizard]}
   - {name: meta_221, weight: 5, cards: [archers, barbarian_barrel, electro_spirit, fireball, goblin_hut, monk, royal_hogs, skeleton_dragons]}
-  - {name: meta_222, weight: 5, cards: [bomb_tower, goblin_demolisher, goblin_drill, knight, magic_archer, skeletons, the_log, tornado], evo: [goblin_drill, magic_archer, skeletons], support: tower_princess}
-  - {name: meta_223, weight: 5, cards: [bomber, executioner, freeze, giant_snowball, hog_rider, monk, ronin, zappies], evo: [executioner, giant_snowball], support: tower_princess}
+  - {name: meta_222, weight: 5, cards: [bomb_tower, goblin_demolisher, goblin_drill, knight, magic_archer, skeletons, the_log, tornado], support: tower_princess}
+  - {name: meta_223, weight: 5, cards: [bomber, executioner, freeze, giant_snowball, hog_rider, monk, ronin, zappies], support: tower_princess}
   - {name: meta_224, weight: 5, cards: [fireball, goblins, inferno_dragon, lava_hound, miner, minions, rune_giant, zap]}
-  - {name: meta_225, weight: 5, cards: [bandit, battle_ram, berserker, electro_wizard, giant_skeleton, golden_knight, royal_ghost, skeleton_dragons], evo: [battle_ram, berserker], support: tower_princess}
+  - {name: meta_225, weight: 5, cards: [bandit, battle_ram, berserker, electro_wizard, giant_skeleton, golden_knight, royal_ghost, skeleton_dragons], support: tower_princess}
   - {name: meta_226, weight: 5, cards: [arrows, baby_dragon, balloon, inferno_dragon, lava_hound, tombstone, valkyrie, void]}
   - {name: meta_227, weight: 5, cards: [earthquake, elite_barbarians, heal_spirit, hunter, ice_golem, royal_hogs, the_log, three_musketeers]}
   - {name: meta_228, weight: 4, cards: [barbarian_barrel, cannon_cart, elite_barbarians, golden_knight, heal_spirit, mother_witch, royal_ghost, zappies]}
   - {name: meta_229, weight: 4, cards: [bandit, barbarian_barrel, battle_ram, elixir_collector, hunter, ice_golem, royal_ghost, three_musketeers]}
-  - {name: meta_230, weight: 4, cards: [archers, bomb_tower, electro_spirit, goblinstein, lightning, royal_hogs, skeletons, the_log], evo: [archers, royal_hogs], support: tower_princess}
+  - {name: meta_230, weight: 4, cards: [archers, bomb_tower, electro_spirit, goblinstein, lightning, royal_hogs, skeletons, the_log], support: tower_princess}
   - {name: meta_231, weight: 4, cards: [barbarian_barrel, berserker, dark_prince, furnace, goblin_hut, graveyard, ice_spirit, poison]}
   - {name: meta_232, weight: 4, cards: [balloon, lava_hound, mega_minion, skeleton_dragons, tombstone, valkyrie, void, zap]}
-  - {name: meta_233, weight: 4, cards: [baby_dragon, balloon, barbarian_barrel, freeze, ice_wizard, lumberjack, pekka, tornado], evo: [baby_dragon, balloon, pekka], support: tower_princess}
-  - {name: meta_234, weight: 4, cards: [barbarian_barrel, berserker, dart_goblin, fireball, minions, mortar, skeleton_barrel, skeletons], evo: [berserker, mortar, skeleton_barrel], support: tower_princess}
-  - {name: meta_235, weight: 4, cards: [bowler, dart_goblin, electro_spirit, fireball, minions, mortar, rascals, skeleton_barrel], evo: [bowler, mortar, skeleton_barrel], support: tower_princess}
-  - {name: meta_236, weight: 4, cards: [ice_wizard, rocket, skeletons, tesla, the_log, tornado, valkyrie, x_bow], evo: [skeletons, tesla, valkyrie], support: tower_princess}
-  - {name: meta_237, weight: 4, cards: [arrows, bowler, giant, giant_snowball, graveyard, skeletons, witch, zappies], evo: [giant, giant_snowball, witch], support: tower_princess}
-  - {name: meta_238, weight: 4, cards: [berserker, electro_spirit, little_prince, miner, poison, rune_giant, tesla, the_log], evo: [berserker, tesla], support: tower_princess}
+  - {name: meta_233, weight: 4, cards: [baby_dragon, balloon, barbarian_barrel, freeze, ice_wizard, lumberjack, pekka, tornado], support: tower_princess}
+  - {name: meta_234, weight: 4, cards: [barbarian_barrel, berserker, dart_goblin, fireball, minions, mortar, skeleton_barrel, skeletons], support: tower_princess}
+  - {name: meta_235, weight: 4, cards: [bowler, dart_goblin, electro_spirit, fireball, minions, mortar, rascals, skeleton_barrel], support: tower_princess}
+  - {name: meta_236, weight: 4, cards: [ice_wizard, rocket, skeletons, tesla, the_log, tornado, valkyrie, x_bow], support: tower_princess}
+  - {name: meta_237, weight: 4, cards: [arrows, bowler, giant, giant_snowball, graveyard, skeletons, witch, zappies], support: tower_princess}
+  - {name: meta_238, weight: 4, cards: [berserker, electro_spirit, little_prince, miner, poison, rune_giant, tesla, the_log], support: tower_princess}
   - {name: meta_239, weight: 4, cards: [arrows, bandit, battle_ram, berserker, elite_barbarians, heal_spirit, mother_witch, zappies]}
   - {name: meta_240, weight: 4, cards: [berserker, elite_barbarians, elixir_collector, ice_golem, monk, skeleton_dragons, three_musketeers, zap]}
   - {name: meta_241, weight: 4, cards: [barbarian_barrel, berserker, electro_spirit, goblin_hut, lightning, royal_hogs, skeletons, wizard]}
   - {name: meta_242, weight: 4, cards: [dark_prince, electro_dragon, elite_barbarians, elixir_collector, golem, heal_spirit, skeleton_dragons, tornado]}
-  - {name: meta_243, weight: 4, cards: [balloon, barbarian_barrel, bowler, electro_dragon, freeze, inferno_dragon, lumberjack, tornado], evo: [balloon, electro_dragon, inferno_dragon], support: tower_princess}
+  - {name: meta_243, weight: 4, cards: [balloon, barbarian_barrel, bowler, electro_dragon, freeze, inferno_dragon, lumberjack, tornado], support: tower_princess}
   - {name: meta_244, weight: 4, cards: [berserker, cannon, dart_goblin, goblin_barrel, ice_spirit, princess, skeleton_army, wall_breakers]}
   - {name: meta_245, weight: 4, cards: [baby_dragon, battle_healer, elixir_collector, golem, mini_pekka, valkyrie, vines, zappies]}
-  - {name: meta_246, weight: 4, cards: [barbarian_barrel, furnace, graveyard, ice_spirit, knight, poison, skeletons, tesla], evo: [barbarian_barrel, furnace, tesla], support: tower_princess}
-  - {name: meta_247, weight: 4, cards: [berserker, electro_spirit, miner, rocket, royal_delivery, skeletons, tesla, the_log], evo: [berserker, skeletons, tesla], support: tower_princess}
+  - {name: meta_246, weight: 4, cards: [barbarian_barrel, furnace, graveyard, ice_spirit, knight, poison, skeletons, tesla], support: tower_princess}
+  - {name: meta_247, weight: 4, cards: [berserker, electro_spirit, miner, rocket, royal_delivery, skeletons, tesla, the_log], support: tower_princess}
   - {name: meta_248, weight: 4, cards: [boss_bandit, executioner, freeze, giant_snowball, guards, hog_rider, hunter, royal_ghost]}
   - {name: meta_249, weight: 4, cards: [cannon, goblin_demolisher, ice_spirit, knight, rocket, royal_delivery, skeletons, the_log]}
-  - {name: meta_250, weight: 4, cards: [berserker, electro_spirit, goblin_barrel, princess, rocket, skeletons, tesla, the_log], evo: [berserker, princess, tesla], support: tower_princess}
+  - {name: meta_250, weight: 4, cards: [berserker, electro_spirit, goblin_barrel, princess, rocket, skeletons, tesla, the_log], support: tower_princess}
   - {name: meta_251, weight: 4, cards: [arrows, barbarians, lava_hound, skeleton_dragons, spirit_empress, tombstone, void, zap]}
   - {name: meta_252, weight: 4, cards: [archers, elite_barbarians, hog_rider, ice_spirit, skeletons, the_log, valkyrie, void]}
   - {name: meta_253, weight: 4, cards: [arrows, balloon, bats, bomber, freeze, lava_hound, minions, skeletons]}
   - {name: meta_254, weight: 4, cards: [berserker, dart_goblin, ice_spirit, rocket, skeleton_barrel, skeletons, the_log, wall_breakers]}
   - {name: meta_255, weight: 4, cards: [berserker, cannon_cart, fireball, minions, mortar, rascals, skeleton_barrel, the_log]}
   - {name: meta_256, weight: 4, cards: [berserker, cannon, furnace, giant_snowball, goblin_drill, ice_spirit, poison, royal_delivery]}
-  - {name: meta_257, weight: 4, cards: [arrows, bats, giant, mini_pekka, minion_horde, skeleton_army, sparky, zap], evo: [giant, minion_horde, zap], support: tower_princess}
+  - {name: meta_257, weight: 4, cards: [arrows, bats, giant, mini_pekka, minion_horde, skeleton_army, sparky, zap], support: tower_princess}
   - {name: meta_258, weight: 4, cards: [arrows, berserker, bowler, giant, giant_snowball, graveyard, minions, musketeer]}
   - {name: meta_259, weight: 4, cards: [archers, arrows, berserker, freeze, giant, graveyard, minions, valkyrie]}
   - {name: meta_260, weight: 4, cards: [archers, arrows, berserker, giant, graveyard, minions, valkyrie, void]}
-  - {name: meta_261, weight: 4, cards: [bandit, battle_ram, electro_wizard, golden_knight, mega_knight, mother_witch, royal_ghost, vines], evo: [battle_ram, mega_knight], support: tower_princess}
+  - {name: meta_261, weight: 4, cards: [bandit, battle_ram, electro_wizard, golden_knight, mega_knight, mother_witch, royal_ghost, vines], support: tower_princess}
   - {name: meta_262, weight: 4, cards: [arrows, baby_dragon, battle_healer, bomb_tower, elixir_golem, inferno_dragon, lightning, valkyrie]}
   - {name: meta_263, weight: 4, cards: [arrows, barbarians, battle_ram, golden_knight, musketeer, poison, ronin, zappies]}
   - {name: meta_264, weight: 3, cards: [barbarian_barrel, berserker, cannon_cart, elite_barbarians, golden_knight, heal_spirit, mother_witch, zappies]}
   - {name: meta_265, weight: 3, cards: [berserker, bomber, giant_snowball, goblin_drill, ice_spirit, poison, skeletons, tesla]}
   - {name: meta_266, weight: 3, cards: [arrows, bandit, battle_ram, electro_wizard, golden_knight, mega_knight, mother_witch, royal_ghost]}
-  - {name: meta_267, weight: 3, cards: [cannon, dart_goblin, goblin_barrel, ice_spirit, knight, princess, skeleton_army, the_log], evo: [goblin_barrel, knight, skeleton_army], support: tower_princess}
+  - {name: meta_267, weight: 3, cards: [cannon, dart_goblin, goblin_barrel, ice_spirit, knight, princess, skeleton_army, the_log], support: tower_princess}
   - {name: meta_268, weight: 3, cards: [berserker, earthquake, firecracker, hog_rider, skeletons, tesla, the_log, valkyrie]}
   - {name: meta_269, weight: 3, cards: [cannon, hog_rider, ice_golem, ice_spirit, musketeer, skeletons, the_log, void]}
-  - {name: meta_270, weight: 3, cards: [dart_goblin, goblins, rascals, rocket, royal_ghost, skeleton_barrel, suspicious_bush, the_log], evo: [goblins, royal_ghost, skeleton_barrel], support: tower_princess}
+  - {name: meta_270, weight: 3, cards: [dart_goblin, goblins, rascals, rocket, royal_ghost, skeleton_barrel, suspicious_bush, the_log], support: tower_princess}
   - {name: meta_271, weight: 3, cards: [bandit, electro_spirit, pekka, ram_rider, royal_ghost, void, wizard, zap]}
-  - {name: meta_272, weight: 3, cards: [barbarian_barrel, bats, graveyard, knight, mortar, musketeer, poison, skeletons], evo: [bats, knight, musketeer], support: tower_princess}
+  - {name: meta_272, weight: 3, cards: [barbarian_barrel, bats, graveyard, knight, mortar, musketeer, poison, skeletons], support: tower_princess}
   - {name: meta_273, weight: 3, cards: [baby_dragon, cannon, electro_giant, electro_spirit, ice_wizard, tornado, valkyrie, void]}
   - {name: meta_274, weight: 3, cards: [goblin_curse, inferno_dragon, lava_hound, miner, minions, rune_giant, tombstone, zap]}
   - {name: meta_275, weight: 3, cards: [arrows, fireball, guards, mighty_miner, minions, royal_recruits, suspicious_bush, wall_breakers]}
-  - {name: meta_276, weight: 3, cards: [archer_queen, cannon, earthquake, fire_spirit, royal_delivery, royal_hogs, skeletons, the_log], evo: [cannon, royal_hogs], support: tower_princess}
+  - {name: meta_276, weight: 3, cards: [archer_queen, cannon, earthquake, fire_spirit, royal_delivery, royal_hogs, skeletons, the_log], support: tower_princess}
   - {name: meta_277, weight: 3, cards: [balloon, bomb_tower, executioner, guards, knight, miner, tornado, zap]}
   - {name: meta_278, weight: 3, cards: [goblin_barrel, goblin_gang, ice_spirit, knight, princess, rocket, tesla, the_log]}
   - {name: meta_279, weight: 3, cards: [berserker, bomb_tower, goblinstein, magic_archer, miner, the_log, tornado, wall_breakers]}
   - {name: meta_280, weight: 3, cards: [bandit, battle_ram, dark_prince, electro_wizard, minions, pekka, poison, zap]}
   - {name: meta_281, weight: 3, cards: [arrows, bandit, battle_ram, dark_prince, electro_wizard, elite_barbarians, fireball, minions]}
   - {name: meta_282, weight: 3, cards: [bomber, elite_barbarians, freeze, hog_rider, inferno_dragon, mega_knight, mother_witch, zap]}
-  - {name: meta_283, weight: 3, cards: [balloon, bomber, giant_snowball, inferno_dragon, lava_hound, minions, skeleton_army, void], evo: [balloon, inferno_dragon, skeleton_army], support: tower_princess}
-  - {name: meta_284, weight: 3, cards: [elixir_golem, executioner, freeze, goblin_machine, mini_pekka, night_witch, skeleton_army, vines], evo: [executioner, mini_pekka, skeleton_army], support: tower_princess}
+  - {name: meta_283, weight: 3, cards: [balloon, bomber, giant_snowball, inferno_dragon, lava_hound, minions, skeleton_army, void], support: tower_princess}
+  - {name: meta_284, weight: 3, cards: [elixir_golem, executioner, freeze, goblin_machine, mini_pekka, night_witch, skeleton_army, vines], support: tower_princess}
   - {name: meta_285, weight: 3, cards: [berserker, cannon, dart_goblin, electro_spirit, goblin_barrel, ice_spirit, skeletons, the_log]}
   - {name: meta_286, weight: 3, cards: [berserker, cannon, fire_spirit, goblin_drill, skeletons, spear_goblins, the_log, void]}
   - {name: meta_287, weight: 3, cards: [cannon, electro_spirit, guards, lightning, monk, royal_hogs, skeleton_dragons, the_log]}
   - {name: meta_288, weight: 3, cards: [baby_dragon, fireball, lava_hound, skeletons, spirit_empress, tombstone, valkyrie, zap]}
   - {name: meta_289, weight: 3, cards: [giant, heal_spirit, mini_pekka, minions, sparky, tornado, wizard, zap]}
-  - {name: meta_290, weight: 3, cards: [archers, fireball, ice_spirit, knight, skeletons, tesla, the_log, x_bow], evo: [archers, knight, tesla], support: tower_princess}
+  - {name: meta_290, weight: 3, cards: [archers, fireball, ice_spirit, knight, skeletons, tesla, the_log, x_bow], support: tower_princess}
   - {name: meta_291, weight: 3, cards: [arrows, bandit, battle_ram, electro_wizard, golden_knight, mother_witch, pekka, valkyrie]}
-  - {name: meta_292, weight: 3, cards: [berserker, giant_snowball, goblin_demolisher, goblin_drill, ice_spirit, poison, skeletons, tesla], evo: [berserker, giant_snowball, goblin_drill], support: tower_princess}
+  - {name: meta_292, weight: 3, cards: [berserker, giant_snowball, goblin_demolisher, goblin_drill, ice_spirit, poison, skeletons, tesla], support: tower_princess}
   - {name: meta_293, weight: 3, cards: [arrows, bandit, battle_ram, golden_knight, mega_knight, mother_witch, ronin, zappies]}
-  - {name: meta_294, weight: 3, cards: [archer_queen, arrows, bandit, barbarians, battle_ram, elixir_collector, heal_spirit, royal_ghost], evo: [barbarians, battle_ram], support: dagger_duchess}
-  - {name: meta_295, weight: 3, cards: [baby_dragon, barbarian_barrel, furnace, golem, lightning, tombstone, tornado, valkyrie], evo: [baby_dragon, furnace, valkyrie], support: tower_princess}
+  - {name: meta_294, weight: 3, cards: [archer_queen, arrows, bandit, barbarians, battle_ram, elixir_collector, heal_spirit, royal_ghost], support: dagger_duchess}
+  - {name: meta_295, weight: 3, cards: [baby_dragon, barbarian_barrel, furnace, golem, lightning, tombstone, tornado, valkyrie], support: tower_princess}
   - {name: meta_296, weight: 3, cards: [berserker, dart_goblin, goblin_barrel, ice_spirit, inferno_tower, princess, skeleton_army, the_log]}
-  - {name: meta_297, weight: 3, cards: [berserker, giant_snowball, ice_wizard, rocket, skeletons, tesla, the_log, x_bow], evo: [berserker, giant_snowball, tesla], support: tower_princess}
+  - {name: meta_297, weight: 3, cards: [berserker, giant_snowball, ice_wizard, rocket, skeletons, tesla, the_log, x_bow], support: tower_princess}
   - {name: meta_298, weight: 3, cards: [bandit, flying_machine, goblin_barrel, magic_archer, princess, royal_ghost, royal_recruits, wall_breakers]}
   - {name: meta_299, weight: 3, cards: [bandit, barbarian_barrel, elite_barbarians, elixir_collector, heal_spirit, ice_golem, royal_ghost, three_musketeers]}
   - {name: meta_300, weight: 3, cards: [dart_goblin, goblin_gang, rascals, skeleton_barrel, skeleton_king, spear_goblins, suspicious_bush, vines]}
   - {name: meta_301, weight: 3, cards: [barbarian_barrel, berserker, cannon_cart, fireball, goblin_gang, ice_wizard, mortar, skeleton_barrel]}
   - {name: meta_302, weight: 3, cards: [dart_goblin, goblin_barrel, guards, inferno_tower, rocket, skeleton_barrel, the_log, valkyrie]}
-  - {name: meta_303, weight: 3, cards: [barbarian_barrel, boss_bandit, executioner, giant_snowball, lightning, ram_rider, ronin, royal_ghost], evo: [executioner, giant_snowball], support: tower_princess}
+  - {name: meta_303, weight: 3, cards: [barbarian_barrel, boss_bandit, executioner, giant_snowball, lightning, ram_rider, ronin, royal_ghost], support: tower_princess}
   - {name: meta_304, weight: 3, cards: [berserker, ice_spirit, miner, rocket, royal_delivery, skeletons, tesla, the_log]}
-  - {name: meta_305, weight: 3, cards: [dark_prince, elite_barbarians, giant, minions, mother_witch, sparky, vines, zap], evo: [elite_barbarians, giant, zap], support: tower_princess}
-  - {name: meta_306, weight: 3, cards: [arrows, fireball, golem, lumberjack, mini_pekka, night_witch, phoenix, zap], evo: [lumberjack, mini_pekka, zap], support: royal_chef}
-  - {name: meta_307, weight: 3, cards: [arrows, bandit, battle_ram, electro_wizard, golden_knight, mother_witch, ronin, royal_ghost], evo: [battle_ram, royal_ghost], support: tower_princess}
+  - {name: meta_305, weight: 3, cards: [dark_prince, elite_barbarians, giant, minions, mother_witch, sparky, vines, zap], support: tower_princess}
+  - {name: meta_306, weight: 3, cards: [arrows, fireball, golem, lumberjack, mini_pekka, night_witch, phoenix, zap], support: royal_chef}
+  - {name: meta_307, weight: 3, cards: [arrows, bandit, battle_ram, electro_wizard, golden_knight, mother_witch, ronin, royal_ghost], support: tower_princess}
   - {name: meta_308, weight: 3, cards: [cannon, dart_goblin, electro_spirit, fire_spirit, goblin_barrel, mighty_miner, skeletons, wall_breakers]}
   - {name: meta_309, weight: 3, cards: [bandit, barbarian_barrel, battle_ram, elixir_collector, hunter, royal_ghost, three_musketeers, zap]}
-  - {name: meta_310, weight: 3, cards: [barbarian_barrel, dart_goblin, fireball, goblins, knight, minions, mortar, skeleton_barrel], evo: [goblins, mortar, skeleton_barrel], support: tower_princess}
-  - {name: meta_311, weight: 3, cards: [balloon, electro_spirit, giant_skeleton, hunter, ice_golem, miner, minions, zap], evo: [balloon, hunter, zap], support: tower_princess}
+  - {name: meta_310, weight: 3, cards: [barbarian_barrel, dart_goblin, fireball, goblins, knight, minions, mortar, skeleton_barrel], support: tower_princess}
+  - {name: meta_311, weight: 3, cards: [balloon, electro_spirit, giant_skeleton, hunter, ice_golem, miner, minions, zap], support: tower_princess}
   - {name: meta_312, weight: 3, cards: [archers, barbarian_barrel, goblinstein, graveyard, ice_spirit, poison, skeletons, tesla]}
-  - {name: meta_313, weight: 3, cards: [baby_dragon, barbarian_barrel, golem, ice_wizard, lightning, tombstone, tornado, valkyrie], evo: [baby_dragon, tombstone, valkyrie], support: tower_princess}
-  - {name: meta_314, weight: 3, cards: [arrows, bandit, battle_ram, electro_wizard, golden_knight, pekka, vines, wizard], evo: [battle_ram, wizard], support: tower_princess}
+  - {name: meta_313, weight: 3, cards: [baby_dragon, barbarian_barrel, golem, ice_wizard, lightning, tombstone, tornado, valkyrie], support: tower_princess}
+  - {name: meta_314, weight: 3, cards: [arrows, bandit, battle_ram, electro_wizard, golden_knight, pekka, vines, wizard], support: tower_princess}
   - {name: meta_315, weight: 3, cards: [arrows, bats, dark_prince, fisherman, giant_skeleton, mother_witch, royal_hogs, zappies]}
-  - {name: meta_316, weight: 3, cards: [baby_dragon, balloon, barbarian_barrel, bowler, freeze, golden_knight, inferno_dragon, tornado], evo: [baby_dragon, inferno_dragon], support: tower_princess}
+  - {name: meta_316, weight: 3, cards: [baby_dragon, balloon, barbarian_barrel, bowler, freeze, golden_knight, inferno_dragon, tornado], support: tower_princess}
   - {name: meta_317, weight: 3, cards: [fireball, fisherman, mother_witch, royal_giant, skeleton_army, skeleton_king, the_log, zappies]}
   - {name: meta_318, weight: 3, cards: [dark_prince, electro_wizard, goblin_giant, heal_spirit, mini_pekka, rage, sparky, zap]}
-  - {name: meta_319, weight: 3, cards: [baby_dragon, bandit, barbarian_barrel, electro_wizard, giant_snowball, lightning, pekka, ram_rider], evo: [baby_dragon, barbarian_barrel, giant_snowball], support: tower_princess}
+  - {name: meta_319, weight: 3, cards: [baby_dragon, bandit, barbarian_barrel, electro_wizard, giant_snowball, lightning, pekka, ram_rider], support: tower_princess}
   - {name: meta_320, weight: 3, cards: [bandit, electro_wizard, goblin_barrel, magic_archer, princess, royal_ghost, royal_recruits, wall_breakers]}
   - {name: meta_321, weight: 3, cards: [barbarian_barrel, bowler, fireball, minions, mortar, rascals, skeleton_barrel, skeletons]}
-  - {name: meta_322, weight: 3, cards: [dark_prince, electro_dragon, fireball, giant, miner, phoenix, prince, zap], evo: [electro_dragon, giant, zap], support: tower_princess}
+  - {name: meta_322, weight: 3, cards: [dark_prince, electro_dragon, fireball, giant, miner, phoenix, prince, zap], support: tower_princess}
   - {name: meta_323, weight: 3, cards: [berserker, goblin_barrel, ice_spirit, inferno_tower, princess, rocket, skeletons, the_log]}
   - {name: meta_324, weight: 3, cards: [cannon_cart, clone, furnace, giant_skeleton, goblin_hut, skeleton_barrel, skeleton_dragons, tornado]}
-  - {name: meta_325, weight: 3, cards: [barbarian_barrel, battle_healer, electro_dragon, elixir_golem, executioner, goblin_cage, monk, tornado], evo: [electro_dragon, goblin_cage], support: tower_princess}
-  - {name: meta_326, weight: 3, cards: [baby_dragon, barbarian_barrel, battle_healer, electro_dragon, elixir_golem, goblin_cage, monk, tornado], evo: [electro_dragon, goblin_cage], support: tower_princess}
-  - {name: meta_327, weight: 3, cards: [arrows, barbarians, hog_rider, minion_horde, minions, royal_giant, sparky, zap], evo: [barbarians, royal_giant], support: tower_princess}
+  - {name: meta_325, weight: 3, cards: [barbarian_barrel, battle_healer, electro_dragon, elixir_golem, executioner, goblin_cage, monk, tornado], support: tower_princess}
+  - {name: meta_326, weight: 3, cards: [baby_dragon, barbarian_barrel, battle_healer, electro_dragon, elixir_golem, goblin_cage, monk, tornado], support: tower_princess}
+  - {name: meta_327, weight: 3, cards: [arrows, barbarians, hog_rider, minion_horde, minions, royal_giant, sparky, zap], support: tower_princess}
   - {name: meta_328, weight: 3, cards: [barbarian_barrel, battle_ram, giant_skeleton, heal_spirit, royal_ghost, vines, wizard, zappies]}
   - {name: meta_329, weight: 3, cards: [barbarian_barrel, electro_spirit, fisherman, monk, royal_giant, skeletons, void, wizard]}
   - {name: meta_330, weight: 3, cards: [berserker, cannon, dart_goblin, electro_spirit, goblin_barrel, royal_delivery, skeletons, wall_breakers]}
-  - {name: meta_331, weight: 3, cards: [arrows, bandit, battle_ram, dark_prince, electro_wizard, mega_knight, minions, zap], evo: [battle_ram, dark_prince, mega_knight], support: tower_princess}
-  - {name: meta_332, weight: 3, cards: [electro_giant, fire_spirit, goblin_cage, golden_knight, inferno_dragon, lightning, skeletons, tornado], evo: [goblin_cage, inferno_dragon], support: tower_princess}
+  - {name: meta_331, weight: 3, cards: [arrows, bandit, battle_ram, dark_prince, electro_wizard, mega_knight, minions, zap], support: tower_princess}
+  - {name: meta_332, weight: 3, cards: [electro_giant, fire_spirit, goblin_cage, golden_knight, inferno_dragon, lightning, skeletons, tornado], support: tower_princess}
   - {name: meta_333, weight: 3, cards: [berserker, electro_dragon, elite_barbarians, elixir_collector, golem, heal_spirit, skeleton_dragons, tornado]}
   - {name: meta_334, weight: 3, cards: [giant, giant_snowball, heal_spirit, mini_pekka, sparky, tornado, valkyrie, wizard]}
   - {name: meta_335, weight: 3, cards: [electro_wizard, goblin_giant, mini_pekka, minions, rage, sparky, valkyrie, zap]}
-  - {name: meta_336, weight: 3, cards: [arrows, elixir_golem, golem, inferno_dragon, night_witch, rage, skeleton_army, skeleton_king], evo: [inferno_dragon, skeleton_army], support: tower_princess}
+  - {name: meta_336, weight: 3, cards: [arrows, elixir_golem, golem, inferno_dragon, night_witch, rage, skeleton_army, skeleton_king], support: tower_princess}
   - {name: meta_337, weight: 3, cards: [bandit, boss_bandit, elite_barbarians, executioner, hog_rider, minion_horde, void, zap]}
-  - {name: meta_338, weight: 3, cards: [baby_dragon, barbarian_barrel, bowler, electro_giant, goblin_cage, knight, lightning, tornado], evo: [baby_dragon, bowler, goblin_cage], support: tower_princess}
+  - {name: meta_338, weight: 3, cards: [baby_dragon, barbarian_barrel, bowler, electro_giant, goblin_cage, knight, lightning, tornado], support: tower_princess}
   - {name: meta_339, weight: 3, cards: [dark_prince, elite_barbarians, elixir_collector, heal_spirit, ice_golem, royal_ghost, three_musketeers, zap]}
   - {name: meta_340, weight: 3, cards: [balloon, barbarian_barrel, bats, giant_snowball, goblins, ice_spirit, lumberjack, princess]}
   - {name: meta_341, weight: 3, cards: [barbarian_barrel, berserker, furnace, graveyard, knight, poison, skeletons, tesla]}
   - {name: meta_342, weight: 3, cards: [arrows, balloon, bandit, furnace, goblin_gang, goblins, lumberjack, valkyrie]}
-  - {name: meta_343, weight: 3, cards: [cannon, electro_spirit, firecracker, hog_rider, lightning, mighty_miner, skeletons, the_log], evo: [cannon, firecracker], support: tower_princess}
+  - {name: meta_343, weight: 3, cards: [cannon, electro_spirit, firecracker, hog_rider, lightning, mighty_miner, skeletons, the_log], support: tower_princess}
   - {name: meta_344, weight: 2, cards: [barbarian_barrel, berserker, furnace, graveyard, ice_spirit, poison, tesla, valkyrie]}
   - {name: meta_345, weight: 2, cards: [battle_ram, electro_wizard, fireball, golden_knight, magic_archer, pekka, royal_ghost, zap]}
   - {name: meta_346, weight: 2, cards: [archers, barbarian_barrel, berserker, cannon, electro_spirit, hog_rider, lightning, skeletons]}
   - {name: meta_347, weight: 2, cards: [barbarian_barrel, berserker, electro_spirit, goblin_hut, ice_wizard, lightning, royal_ghost, royal_hogs]}
-  - {name: meta_348, weight: 2, cards: [arrows, barbarian_barrel, bomber, cannon, electro_spirit, lava_hound, skeletons, the_log], evo: [barbarian_barrel, bomber, cannon], support: tower_princess}
-  - {name: meta_349, weight: 2, cards: [cannon, fireball, goblin_demolisher, hog_rider, ice_golem, ice_spirit, skeletons, the_log], evo: [cannon, ice_golem, ice_spirit], support: tower_princess}
-  - {name: meta_350, weight: 2, cards: [bomber, cannon, electro_spirit, fireball, giant_snowball, goblin_drill, knight, the_log], evo: [cannon, goblin_drill, knight], support: tower_princess}
+  - {name: meta_348, weight: 2, cards: [arrows, barbarian_barrel, bomber, cannon, electro_spirit, lava_hound, skeletons, the_log], support: tower_princess}
+  - {name: meta_349, weight: 2, cards: [cannon, fireball, goblin_demolisher, hog_rider, ice_golem, ice_spirit, skeletons, the_log], support: tower_princess}
+  - {name: meta_350, weight: 2, cards: [bomber, cannon, electro_spirit, fireball, giant_snowball, goblin_drill, knight, the_log], support: tower_princess}
   - {name: meta_351, weight: 2, cards: [archers, dark_prince, giant_snowball, graveyard, ice_spirit, poison, skeletons, tesla]}
   - {name: meta_352, weight: 2, cards: [archers, giant_snowball, goblin_hut, graveyard, ice_spirit, poison, skeletons, valkyrie]}
-  - {name: meta_353, weight: 2, cards: [barbarian_barrel, berserker, bomb_tower, goblinstein, magic_archer, miner, tornado, wall_breakers], evo: [berserker, wall_breakers], support: tower_princess}
+  - {name: meta_353, weight: 2, cards: [barbarian_barrel, berserker, bomb_tower, goblinstein, magic_archer, miner, tornado, wall_breakers], support: tower_princess}
   - {name: meta_354, weight: 2, cards: [arrows, elite_barbarians, elixir_golem, night_witch, rage, skeleton_king, skeletons, void]}
-  - {name: meta_355, weight: 2, cards: [barbarian_barrel, berserker, goblin_demolisher, goblinstein, graveyard, ice_spirit, poison, tesla], evo: [berserker, tesla], support: tower_princess}
-  - {name: meta_356, weight: 2, cards: [baby_dragon, balloon, berserker, bomber, electro_spirit, freeze, knight, tornado], evo: [baby_dragon, berserker, bomber], support: cannoneer}
+  - {name: meta_355, weight: 2, cards: [barbarian_barrel, berserker, goblin_demolisher, goblinstein, graveyard, ice_spirit, poison, tesla], support: tower_princess}
+  - {name: meta_356, weight: 2, cards: [baby_dragon, balloon, berserker, bomber, electro_spirit, freeze, knight, tornado], support: cannoneer}
   - {name: meta_357, weight: 2, cards: [arrows, battle_ram, elite_barbarians, furnace, giant_skeleton, skeleton_dragons, valkyrie, zappies]}
   - {name: meta_358, weight: 2, cards: [cannon_cart, executioner, goblin_barrel, goblin_gang, goblinstein, knight, rocket, the_log]}
   - {name: meta_359, weight: 2, cards: [arrows, berserker, fisherman, giant_skeleton, mother_witch, royal_ghost, royal_hogs, zappies]}
@@ -380,7 +387,7 @@ decks:
   - {name: meta_371, weight: 2, cards: [electro_spirit, fisherman, guards, hunter, lightning, monk, rage, royal_giant]}
   - {name: meta_372, weight: 2, cards: [bandit, goblin_demolisher, hog_rider, little_prince, pekka, royal_ghost, void, zap]}
   - {name: meta_373, weight: 2, cards: [arrows, berserker, electro_wizard, inferno_dragon, lumberjack, mega_knight, rage, rune_giant]}
-  - {name: meta_374, weight: 2, cards: [battle_healer, berserker, electro_dragon, elite_barbarians, elixir_collector, golem, skeleton_dragons, tornado], evo: [berserker, electro_dragon, elite_barbarians], support: tower_princess}
+  - {name: meta_374, weight: 2, cards: [battle_healer, berserker, electro_dragon, elite_barbarians, elixir_collector, golem, skeleton_dragons, tornado], support: tower_princess}
   - {name: meta_375, weight: 2, cards: [bats, elite_barbarians, fireball, firecracker, goblin_gang, ice_golem, royal_hogs, the_log]}
   - {name: meta_376, weight: 2, cards: [archers, cannon, electro_spirit, lightning, royal_hogs, skeletons, the_log, valkyrie]}
   - {name: meta_377, weight: 2, cards: [arrows, cannon_cart, goblin_gang, miner, minion_horde, monk, mortar, mother_witch]}
@@ -390,23 +397,23 @@ decks:
   - {name: meta_381, weight: 2, cards: [berserker, bomber, electro_spirit, rocket, skeletons, tesla, the_log, x_bow]}
   - {name: meta_382, weight: 2, cards: [arrows, cannon, ice_wizard, knight, lightning, mega_knight, ram_rider, zappies]}
   - {name: meta_383, weight: 2, cards: [barbarians, battle_healer, bomber, electro_dragon, elixir_collector, giant, goblinstein, tornado]}
-  - {name: meta_384, weight: 2, cards: [baby_dragon, barbarian_barrel, elite_barbarians, golem, ice_wizard, lightning, tombstone, tornado], evo: [baby_dragon, elite_barbarians, tombstone], support: tower_princess}
+  - {name: meta_384, weight: 2, cards: [baby_dragon, barbarian_barrel, elite_barbarians, golem, ice_wizard, lightning, tombstone, tornado], support: tower_princess}
   - {name: meta_385, weight: 2, cards: [berserker, electro_spirit, goblins, hog_rider, lightning, princess, tesla, the_log]}
   - {name: meta_386, weight: 2, cards: [bowler, goblin_gang, miner, minion_horde, mortar, rascals, spear_goblins, vines]}
   - {name: meta_387, weight: 2, cards: [bomber, electro_wizard, goblin_curse, goblin_giant, goblin_machine, pekka, rage, vines]}
-  - {name: meta_388, weight: 2, cards: [arrows, battle_ram, berserker, electro_wizard, elite_barbarians, mother_witch, pekka, royal_ghost], evo: [battle_ram, berserker, elite_barbarians], support: tower_princess}
+  - {name: meta_388, weight: 2, cards: [arrows, battle_ram, berserker, electro_wizard, elite_barbarians, mother_witch, pekka, royal_ghost], support: tower_princess}
   - {name: meta_389, weight: 2, cards: [archers, barbarian_barrel, goblin_hut, goblinstein, graveyard, ice_spirit, poison, skeletons]}
   - {name: meta_390, weight: 2, cards: [executioner, fireball, giant_skeleton, goblin_drill, golden_knight, skeletons, tornado, zappies]}
   - {name: meta_391, weight: 2, cards: [archer_queen, bomb_tower, fire_spirit, giant_snowball, goblin_drill, poison, ronin, skeletons]}
   - {name: meta_392, weight: 2, cards: [earthquake, electro_spirit, firecracker, goblin_cage, guards, hog_rider, mighty_miner, the_log]}
-  - {name: meta_393, weight: 2, cards: [barbarian_barrel, electro_spirit, elite_barbarians, fireball, goblin_cage, heal_spirit, phoenix, royal_giant], evo: [barbarian_barrel, elite_barbarians, royal_giant], support: tower_princess}
+  - {name: meta_393, weight: 2, cards: [barbarian_barrel, electro_spirit, elite_barbarians, fireball, goblin_cage, heal_spirit, phoenix, royal_giant], support: tower_princess}
   - {name: meta_394, weight: 2, cards: [arrows, bandit, battle_ram, goblin_demolisher, pekka, royal_ghost, void, wizard]}
-  - {name: meta_395, weight: 2, cards: [berserker, bomber, fire_spirit, giant_snowball, goblin_drill, knight, poison, tesla], evo: [giant_snowball, goblin_drill, knight], support: tower_princess}
+  - {name: meta_395, weight: 2, cards: [berserker, bomber, fire_spirit, giant_snowball, goblin_drill, knight, poison, tesla], support: tower_princess}
   - {name: meta_396, weight: 2, cards: [bomber, dark_prince, giant, lightning, mega_minion, prince, rage, zap]}
-  - {name: meta_397, weight: 2, cards: [balloon, barbarian_barrel, bats, berserker, bomb_tower, giant_snowball, miner, musketeer], evo: [bats, berserker, musketeer], support: tower_princess}
+  - {name: meta_397, weight: 2, cards: [balloon, barbarian_barrel, bats, berserker, bomb_tower, giant_snowball, miner, musketeer], support: tower_princess}
   - {name: meta_398, weight: 2, cards: [baby_dragon, barbarian_barrel, electro_spirit, goblin_cage, lumberjack, mega_minion, royal_giant, void]}
   - {name: meta_399, weight: 2, cards: [baby_dragon, barbarian_barrel, bowler, electro_giant, goblin_hut, knight, lightning, tornado]}
-  - {name: meta_400, weight: 2, cards: [barbarian_barrel, bowler, dart_goblin, fireball, minions, mortar, rascals, skeleton_barrel], evo: [bowler, mortar, skeleton_barrel], support: tower_princess}
+  - {name: meta_400, weight: 2, cards: [barbarian_barrel, bowler, dart_goblin, fireball, minions, mortar, rascals, skeleton_barrel], support: tower_princess}
   - {name: meta_401, weight: 2, cards: [baby_dragon, bomber, cannon, electro_giant, goblin_machine, goblinstein, lightning, tornado]}
   - {name: meta_402, weight: 2, cards: [baby_dragon, cannon, electro_spirit, lightning, royal_hogs, skeletons, the_log, valkyrie]}
   - {name: meta_403, weight: 2, cards: [berserker, cannon, furnace, giant_snowball, goblin_drill, poison, skeletons, valkyrie]}
@@ -417,8 +424,8 @@ decks:
   - {name: meta_408, weight: 2, cards: [bandit, battle_ram, berserker, dark_prince, elixir_collector, minion_horde, three_musketeers, zap]}
   - {name: meta_409, weight: 2, cards: [battle_healer, electro_dragon, elite_barbarians, elixir_golem, fireball, inferno_dragon, rage, valkyrie]}
   - {name: meta_410, weight: 2, cards: [baby_dragon, golem, mega_minion, mini_pekka, night_witch, tornado, valkyrie, vines]}
-  - {name: meta_411, weight: 2, cards: [arrows, freeze, hog_rider, mini_pekka, musketeer, princess, the_log, valkyrie], evo: [musketeer, valkyrie], support: tower_princess}
-  - {name: meta_412, weight: 2, cards: [berserker, earthquake, electro_spirit, firecracker, hog_rider, skeletons, tesla, the_log], evo: [berserker, firecracker, tesla], support: tower_princess}
+  - {name: meta_411, weight: 2, cards: [arrows, freeze, hog_rider, mini_pekka, musketeer, princess, the_log, valkyrie], support: tower_princess}
+  - {name: meta_412, weight: 2, cards: [berserker, earthquake, electro_spirit, firecracker, hog_rider, skeletons, tesla, the_log], support: tower_princess}
   - {name: meta_413, weight: 2, cards: [arrows, balloon, barbarians, freeze, goblins, inferno_dragon, lava_hound, skeleton_dragons]}
   - {name: meta_414, weight: 2, cards: [berserker, firecracker, goblin_gang, royal_recruits, skeleton_barrel, skeletons, void, wall_breakers]}
   - {name: meta_415, weight: 2, cards: [baby_dragon, barbarian_barrel, goblin_cage, graveyard, ice_wizard, knight, poison, tornado]}
@@ -432,8 +439,8 @@ decks:
   - {name: meta_423, weight: 2, cards: [arrows, bomber, dark_prince, elite_barbarians, golem, mega_minion, night_witch, zap]}
   - {name: meta_424, weight: 2, cards: [archers, cannon, electro_spirit, goblins, goblinstein, lightning, royal_delivery, royal_hogs]}
   - {name: meta_425, weight: 2, cards: [elixir_golem, goblin_curse, night_witch, rage, skeleton_army, skeleton_king, void, wizard]}
-  - {name: meta_426, weight: 2, cards: [archers, barbarian_barrel, electro_spirit, goblin_hut, goblinstein, lightning, royal_hogs, skeletons], evo: [archers, royal_hogs], support: tower_princess}
-  - {name: meta_427, weight: 2, cards: [boss_bandit, elite_barbarians, executioner, freeze, hog_rider, minion_horde, minions, zap], evo: [elite_barbarians, minion_horde], support: tower_princess}
+  - {name: meta_426, weight: 2, cards: [archers, barbarian_barrel, electro_spirit, goblin_hut, goblinstein, lightning, royal_hogs, skeletons], support: tower_princess}
+  - {name: meta_427, weight: 2, cards: [boss_bandit, elite_barbarians, executioner, freeze, hog_rider, minion_horde, minions, zap], support: tower_princess}
   - {name: meta_428, weight: 2, cards: [bats, dart_goblin, ice_golem, ice_spirit, miner, skeletons, the_log, wall_breakers]}
   - {name: meta_429, weight: 2, cards: [barbarians, goblin_barrel, goblin_gang, miner, minion_horde, princess, the_log, wall_breakers]}
   - {name: meta_430, weight: 2, cards: [berserker, cannon, dart_goblin, fire_spirit, goblin_barrel, ice_spirit, skeletons, wall_breakers]}
@@ -457,7 +464,7 @@ decks:
   - {name: meta_448, weight: 2, cards: [berserker, dart_goblin, rascals, rocket, royal_ghost, skeleton_barrel, suspicious_bush, the_log]}
   - {name: meta_449, weight: 2, cards: [dart_goblin, goblin_barrel, ice_spirit, inferno_tower, princess, skeleton_army, the_log, valkyrie]}
   - {name: meta_450, weight: 2, cards: [cannon_cart, freeze, goblins, lumberjack, mini_pekka, minion_horde, monk, wizard]}
-  - {name: meta_451, weight: 2, cards: [bats, goblin_gang, inferno_dragon, mega_knight, miner, skeleton_barrel, spear_goblins, zap], evo: [inferno_dragon, mega_knight], support: tower_princess}
+  - {name: meta_451, weight: 2, cards: [bats, goblin_gang, inferno_dragon, mega_knight, miner, skeleton_barrel, spear_goblins, zap], support: tower_princess}
   - {name: meta_452, weight: 2, cards: [fire_spirit, giant_snowball, goblin_drill, little_prince, poison, ronin, skeletons, tesla]}
   - {name: meta_453, weight: 2, cards: [flying_machine, goblin_giant, heal_spirit, lumberjack, valkyrie, vines, zap, zappies]}
   - {name: meta_454, weight: 2, cards: [dark_prince, furnace, giant_snowball, goblin_hut, graveyard, ice_spirit, knight, poison]}
@@ -465,7 +472,7 @@ decks:
   - {name: meta_456, weight: 2, cards: [bats, bomb_tower, fire_spirit, magic_archer, skeletons, the_log, valkyrie, wall_breakers]}
   - {name: meta_457, weight: 2, cards: [bomb_tower, dart_goblin, rascals, skeleton_army, skeleton_barrel, suspicious_bush, valkyrie, vines]}
   - {name: meta_458, weight: 2, cards: [archers, fire_spirit, goblin_hut, goblins, goblinstein, royal_hogs, the_log, void]}
-  - {name: meta_459, weight: 2, cards: [archers, electro_spirit, hog_rider, lightning, skeletons, tesla, the_log, valkyrie], evo: [archers, tesla, valkyrie], support: tower_princess}
+  - {name: meta_459, weight: 2, cards: [archers, electro_spirit, hog_rider, lightning, skeletons, tesla, the_log, valkyrie], support: tower_princess}
   - {name: meta_460, weight: 2, cards: [barbarian_barrel, electro_spirit, elite_barbarians, firecracker, hog_rider, lightning, skeletons, tesla]}
   - {name: meta_461, weight: 2, cards: [fisherman, goblin_cage, monk, mother_witch, rage, royal_giant, void, zappies]}
   - {name: meta_462, weight: 2, cards: [dark_prince, lava_hound, miner, skeleton_dragons, spirit_empress, tombstone, void, zap]}
@@ -494,11 +501,11 @@ decks:
   - {name: meta_485, weight: 2, cards: [berserker, dark_prince, fireball, goblin_cage, lava_hound, skeleton_dragons, spirit_empress, zap]}
   - {name: meta_486, weight: 2, cards: [bats, goblin_gang, goblin_giant, miner, monk, sparky, spear_goblins, zap]}
   - {name: meta_487, weight: 2, cards: [balloon, bats, ice_golem, lumberjack, musketeer, royal_delivery, tombstone, vines]}
-  - {name: meta_488, weight: 2, cards: [cannon, hog_rider, ice_golem, ice_spirit, lightning, musketeer, skeletons, the_log], evo: [cannon, ice_golem, musketeer], support: tower_princess}
+  - {name: meta_488, weight: 2, cards: [cannon, hog_rider, ice_golem, ice_spirit, lightning, musketeer, skeletons, the_log], support: tower_princess}
   - {name: meta_489, weight: 2, cards: [arrows, dark_prince, electro_wizard, elite_barbarians, goblin_giant, rage, sparky, void]}
   - {name: meta_490, weight: 2, cards: [barbarian_barrel, boss_bandit, electro_dragon, executioner, giant_snowball, lightning, ram_rider, ronin]}
   - {name: meta_491, weight: 2, cards: [battle_ram, giant_skeleton, goblin_demolisher, mother_witch, royal_ghost, vines, wizard, zappies]}
-  - {name: meta_492, weight: 2, cards: [barbarian_barrel, berserker, electro_spirit, furnace, goblin_hut, lightning, royal_ghost, royal_hogs], evo: [berserker, royal_ghost, royal_hogs], support: tower_princess}
+  - {name: meta_492, weight: 2, cards: [barbarian_barrel, berserker, electro_spirit, furnace, goblin_hut, lightning, royal_ghost, royal_hogs], support: tower_princess}
   - {name: meta_493, weight: 2, cards: [berserker, goblin_hut, heal_spirit, lightning, royal_hogs, the_log, valkyrie, witch]}
   - {name: meta_494, weight: 2, cards: [arrows, flying_machine, goblin_gang, guards, royal_recruits, skeleton_barrel, skeleton_king, suspicious_bush]}
   - {name: meta_495, weight: 2, cards: [elite_barbarians, fireball, goblins, magic_archer, miner, the_log, tombstone, wall_breakers]}
@@ -509,14 +516,14 @@ decks:
   - {name: meta_500, weight: 2, cards: [elixir_collector, elixir_golem, goblin_curse, heal_spirit, inferno_dragon, monk, rage, witch]}
   - {name: meta_501, weight: 2, cards: [berserker, earthquake, firecracker, hog_rider, ice_spirit, ronin, tesla, the_log]}
   - {name: meta_502, weight: 2, cards: [barbarian_barrel, electro_spirit, hog_rider, lightning, princess, skeletons, tesla, valkyrie]}
-  - {name: meta_503, weight: 2, cards: [cannon, fire_spirit, giant_snowball, goblin_demolisher, goblin_drill, knight, poison, skeletons], evo: [giant_snowball, goblin_drill, knight], support: tower_princess}
+  - {name: meta_503, weight: 2, cards: [cannon, fire_spirit, giant_snowball, goblin_demolisher, goblin_drill, knight, poison, skeletons], support: tower_princess}
   - {name: meta_504, weight: 2, cards: [arrows, bowler, miner, minion_horde, mortar, mother_witch, ronin, spear_goblins]}
-  - {name: meta_505, weight: 2, cards: [balloon, bats, bomber, giant_snowball, ice_golem, inferno_tower, miner, royal_delivery], evo: [balloon, bats, bomber], support: tower_princess}
-  - {name: meta_506, weight: 2, cards: [bomb_tower, dart_goblin, goblins, rascals, royal_ghost, skeleton_barrel, vines, wall_breakers], evo: [goblins, royal_ghost, skeleton_barrel], support: tower_princess}
-  - {name: meta_507, weight: 2, cards: [baby_dragon, barbarian_barrel, goblin_cage, golem, lightning, night_witch, skeleton_dragons, tornado], evo: [baby_dragon, barbarian_barrel, goblin_cage], support: tower_princess}
+  - {name: meta_505, weight: 2, cards: [balloon, bats, bomber, giant_snowball, ice_golem, inferno_tower, miner, royal_delivery], support: tower_princess}
+  - {name: meta_506, weight: 2, cards: [bomb_tower, dart_goblin, goblins, rascals, royal_ghost, skeleton_barrel, vines, wall_breakers], support: tower_princess}
+  - {name: meta_507, weight: 2, cards: [baby_dragon, barbarian_barrel, goblin_cage, golem, lightning, night_witch, skeleton_dragons, tornado], support: tower_princess}
   - {name: meta_508, weight: 2, cards: [bandit, barbarian_barrel, boss_bandit, executioner, giant_snowball, lightning, ram_rider, royal_ghost]}
-  - {name: meta_509, weight: 2, cards: [bowler, fireball, firecracker, goblin_drill, inferno_tower, knight, royal_delivery, tornado], evo: [bowler, goblin_drill, knight], support: tower_princess}
-  - {name: meta_510, weight: 2, cards: [bandit, battle_ram, dark_prince, electro_wizard, fireball, magic_archer, pekka, zap], evo: [battle_ram, dark_prince, magic_archer], support: tower_princess}
+  - {name: meta_509, weight: 2, cards: [bowler, fireball, firecracker, goblin_drill, inferno_tower, knight, royal_delivery, tornado], support: tower_princess}
+  - {name: meta_510, weight: 2, cards: [bandit, battle_ram, dark_prince, electro_wizard, fireball, magic_archer, pekka, zap], support: tower_princess}
   - {name: meta_511, weight: 2, cards: [barbarian_barrel, berserker, furnace, goblin_hut, graveyard, knight, poison, skeletons]}
   - {name: meta_512, weight: 2, cards: [barbarian_barrel, battle_healer, cannon_cart, electro_wizard, golden_knight, lumberjack, magic_archer, ram_rider]}
   - {name: meta_513, weight: 2, cards: [arrows, balloon, berserker, bomb_tower, electro_spirit, giant_snowball, miner, musketeer]}
@@ -528,8 +535,8 @@ decks:
   - {name: meta_519, weight: 2, cards: [cannon, goblin_barrel, goblins, mighty_miner, princess, rocket, royal_delivery, the_log]}
   - {name: meta_520, weight: 2, cards: [baby_dragon, elite_barbarians, goblin_hut, lightning, royal_delivery, royal_ghost, royal_giant, skeletons]}
   - {name: meta_521, weight: 2, cards: [barbarian_barrel, barbarians, executioner, giant, pekka, rocket, valkyrie, zap]}
-  - {name: meta_522, weight: 2, cards: [bowler, freeze, golden_knight, graveyard, inferno_dragon, knight, tornado, zappies], evo: [inferno_dragon, knight], support: tower_princess}
-  - {name: meta_523, weight: 2, cards: [executioner, giant_skeleton, giant_snowball, golden_knight, graveyard, tombstone, tornado, zappies], evo: [executioner, giant_snowball], support: tower_princess}
+  - {name: meta_522, weight: 2, cards: [bowler, freeze, golden_knight, graveyard, inferno_dragon, knight, tornado, zappies], support: tower_princess}
+  - {name: meta_523, weight: 2, cards: [executioner, giant_skeleton, giant_snowball, golden_knight, graveyard, tombstone, tornado, zappies], support: tower_princess}
   - {name: meta_524, weight: 1, cards: [barbarian_barrel, berserker, cannon_cart, elite_barbarians, heal_spirit, mother_witch, valkyrie, zappies]}
   - {name: meta_525, weight: 1, cards: [berserker, electro_spirit, fireball, guards, hunter, mortar, skeleton_barrel, the_log]}
   - {name: meta_526, weight: 1, cards: [arrows, baby_dragon, electro_wizard, golem, mini_pekka, night_witch, ronin, valkyrie]}
@@ -540,7 +547,7 @@ decks:
   - {name: meta_531, weight: 1, cards: [barbarian_barrel, berserker, electro_spirit, elite_barbarians, fireball, fisherman, hunter, royal_giant]}
   - {name: meta_532, weight: 1, cards: [arrows, balloon, cannon, electro_wizard, firecracker, mega_knight, mini_pekka, zap]}
   - {name: meta_533, weight: 1, cards: [berserker, cannon, dart_goblin, elite_barbarians, fireball, firecracker, skeletons, the_log]}
-  - {name: meta_534, weight: 1, cards: [arrows, cannon, cannon_cart, dart_goblin, goblin_barrel, goblin_gang, goblinstein, royal_recruits], evo: [dart_goblin, royal_recruits], support: tower_princess}
+  - {name: meta_534, weight: 1, cards: [arrows, cannon, cannon_cart, dart_goblin, goblin_barrel, goblin_gang, goblinstein, royal_recruits], support: tower_princess}
   - {name: meta_535, weight: 1, cards: [berserker, cannon, graveyard, ice_spirit, little_prince, poison, skeletons, the_log]}
   - {name: meta_536, weight: 1, cards: [arrows, dart_goblin, earthquake, goblin_cage, hog_rider, skeletons, the_log, tombstone]}
   - {name: meta_537, weight: 1, cards: [earthquake, electro_spirit, firecracker, hog_rider, skeletons, tesla, the_log, valkyrie]}
@@ -677,14 +684,14 @@ decks:
   - {name: meta_668, weight: 1, cards: [baby_dragon, berserker, elite_barbarians, elixir_collector, golem, night_witch, vines, zappies]}
   - {name: meta_669, weight: 1, cards: [arrows, ice_wizard, inferno_dragon, lava_hound, royal_delivery, royal_hogs, three_musketeers, x_bow], support: tower_princess}
   - {name: meta_670, weight: 1, cards: [elite_barbarians, fireball, goblin_drill, goblin_giant, suspicious_bush, tesla, valkyrie, wizard], support: tower_princess}
-  - {name: meta_671, weight: 1, cards: [archers, arrows, inferno_tower, magic_archer, pekka, princess, skeleton_army, skeletons], evo: [archers, magic_archer, pekka], support: royal_chef}
-  - {name: meta_672, weight: 1, cards: [bandit, battle_ram, electro_spirit, electro_wizard, golden_knight, mother_witch, pekka, zap], evo: [battle_ram, pekka], support: tower_princess}
-  - {name: meta_673, weight: 1, cards: [executioner, fire_spirit, giant_snowball, goblin_drill, inferno_tower, knight, phoenix, poison], evo: [executioner, giant_snowball, knight], support: tower_princess}
-  - {name: meta_674, weight: 1, cards: [bomber, cannon, dark_prince, earthquake, miner, rocket, skeletons, the_log], evo: [bomber, cannon, dark_prince], support: tower_princess}
-  - {name: meta_675, weight: 1, cards: [balloon, bomb_tower, bomber, fire_spirit, fireball, mighty_miner, skeletons, the_log], evo: [balloon, bomber], support: tower_princess}
-  - {name: meta_676, weight: 1, cards: [bowler, fireball, fisherman, giant_skeleton, mother_witch, royal_ghost, royal_hogs, zappies], evo: [bowler, royal_ghost, royal_hogs], support: tower_princess}
-  - {name: meta_677, weight: 1, cards: [barbarian_barrel, electro_wizard, giant_snowball, golden_knight, inferno_dragon, mega_knight, poison, ram_rider], evo: [giant_snowball, mega_knight], support: tower_princess}
-  - {name: meta_678, weight: 1, cards: [archers, barbarian_barrel, bomb_tower, electro_spirit, goblins, goblinstein, lightning, royal_hogs], evo: [archers, royal_hogs], support: tower_princess}
+  - {name: meta_671, weight: 1, cards: [archers, arrows, inferno_tower, magic_archer, pekka, princess, skeleton_army, skeletons], support: royal_chef}
+  - {name: meta_672, weight: 1, cards: [bandit, battle_ram, electro_spirit, electro_wizard, golden_knight, mother_witch, pekka, zap], support: tower_princess}
+  - {name: meta_673, weight: 1, cards: [executioner, fire_spirit, giant_snowball, goblin_drill, inferno_tower, knight, phoenix, poison], support: tower_princess}
+  - {name: meta_674, weight: 1, cards: [bomber, cannon, dark_prince, earthquake, miner, rocket, skeletons, the_log], support: tower_princess}
+  - {name: meta_675, weight: 1, cards: [balloon, bomb_tower, bomber, fire_spirit, fireball, mighty_miner, skeletons, the_log], support: tower_princess}
+  - {name: meta_676, weight: 1, cards: [bowler, fireball, fisherman, giant_skeleton, mother_witch, royal_ghost, royal_hogs, zappies], support: tower_princess}
+  - {name: meta_677, weight: 1, cards: [barbarian_barrel, electro_wizard, giant_snowball, golden_knight, inferno_dragon, mega_knight, poison, ram_rider], support: tower_princess}
+  - {name: meta_678, weight: 1, cards: [archers, barbarian_barrel, bomb_tower, electro_spirit, goblins, goblinstein, lightning, royal_hogs], support: tower_princess}
   - {name: meta_679, weight: 1, cards: [goblin_demolisher, graveyard, ice_spirit, the_log, tombstone, valkyrie, void, zappies]}
   - {name: meta_680, weight: 1, cards: [arrows, bandit, battle_ram, golden_knight, mega_knight, mother_witch, royal_ghost, skeleton_dragons]}
   - {name: meta_681, weight: 1, cards: [boss_bandit, cannon, earthquake, electro_spirit, firecracker, goblins, hog_rider, royal_delivery]}
@@ -699,7 +706,7 @@ decks:
   - {name: meta_690, weight: 1, cards: [bomber, fireball, lava_hound, skeleton_dragons, spirit_empress, tombstone, valkyrie, zap]}
   - {name: meta_691, weight: 1, cards: [fireball, lava_hound, miner, skeleton_dragons, spirit_empress, tombstone, valkyrie, zap]}
   - {name: meta_692, weight: 1, cards: [goblin_barrel, goblin_gang, inferno_tower, knight, princess, rocket, spear_goblins, the_log]}
-  - {name: meta_693, weight: 1, cards: [berserker, bomber, fire_spirit, giant_snowball, goblin_drill, poison, ronin, tesla], evo: [berserker, giant_snowball, goblin_drill], support: tower_princess}
+  - {name: meta_693, weight: 1, cards: [berserker, bomber, fire_spirit, giant_snowball, goblin_drill, poison, ronin, tesla], support: tower_princess}
   - {name: meta_694, weight: 1, cards: [archers, bomb_tower, goblinstein, ice_spirit, lightning, royal_hogs, skeletons, the_log]}
   - {name: meta_695, weight: 1, cards: [barbarian_barrel, dark_prince, electro_spirit, elite_barbarians, executioner, freeze, giant_snowball, hog_rider]}
   - {name: meta_696, weight: 1, cards: [bats, giant_snowball, goblin_curse, goblin_drill, mighty_miner, poison, spear_goblins, tesla]}
@@ -754,11 +761,11 @@ decks:
   - {name: meta_745, weight: 1, cards: [arrows, barbarian_barrel, berserker, fireball, hog_rider, inferno_dragon, mega_knight, zappies]}
   - {name: meta_746, weight: 1, cards: [arrows, berserker, hog_rider, ice_spirit, lightning, skeletons, tesla, valkyrie]}
   - {name: meta_747, weight: 1, cards: [freeze, golden_knight, inferno_dragon, mega_knight, musketeer, tesla, the_log, witch]}
-  - {name: meta_748, weight: 1, cards: [arrows, dark_prince, golem, guards, musketeer, prince, skeleton_dragons, zap], evo: [dark_prince, musketeer, zap], support: royal_chef}
+  - {name: meta_748, weight: 1, cards: [arrows, dark_prince, golem, guards, musketeer, prince, skeleton_dragons, zap], support: royal_chef}
   - {name: meta_749, weight: 1, cards: [bandit, battle_ram, electro_spirit, minions, pekka, royal_ghost, void, zap]}
-  - {name: meta_750, weight: 1, cards: [baby_dragon, barbarian_barrel, bowler, electro_giant, goblin_hut, lightning, tornado, valkyrie], evo: [baby_dragon, bowler, valkyrie], support: tower_princess}
+  - {name: meta_750, weight: 1, cards: [baby_dragon, barbarian_barrel, bowler, electro_giant, goblin_hut, lightning, tornado, valkyrie], support: tower_princess}
   - {name: meta_751, weight: 1, cards: [baby_dragon, barbarian_barrel, electro_wizard, freeze, lumberjack, pekka, tombstone, tornado]}
-  - {name: meta_752, weight: 1, cards: [bats, goblins, inferno_dragon, mega_knight, miner, skeleton_barrel, spear_goblins, zap], evo: [bats, goblins, skeleton_barrel], support: tower_princess}
+  - {name: meta_752, weight: 1, cards: [bats, goblins, inferno_dragon, mega_knight, miner, skeleton_barrel, spear_goblins, zap], support: tower_princess}
   - {name: meta_753, weight: 1, cards: [baby_dragon, freeze, ice_wizard, miner, rune_giant, tombstone, tornado, zap]}
   - {name: meta_754, weight: 1, cards: [dart_goblin, giant_skeleton, goblin_barrel, goblin_gang, rage, royal_giant, skeleton_army, wizard]}
   - {name: meta_755, weight: 1, cards: [bomber, fireball, golem, lumberjack, mini_pekka, night_witch, phoenix, zap]}
@@ -803,7 +810,7 @@ decks:
   - {name: meta_794, weight: 1, cards: [archer_queen, berserker, cannon, fire_spirit, giant_snowball, goblin_drill, poison, ronin]}
   - {name: meta_795, weight: 1, cards: [arrows, electro_spirit, elite_barbarians, giant_skeleton, hog_rider, lumberjack, void, wizard]}
   - {name: meta_796, weight: 1, cards: [bomber, fire_spirit, giant_snowball, goblin_drill, poison, tesla, valkyrie, wall_breakers]}
-  - {name: meta_797, weight: 1, cards: [berserker, fireball, guards, inferno_dragon, lava_hound, rune_giant, skeleton_dragons, zap], evo: [berserker, inferno_dragon, zap], support: tower_princess}
+  - {name: meta_797, weight: 1, cards: [berserker, fireball, guards, inferno_dragon, lava_hound, rune_giant, skeleton_dragons, zap], support: tower_princess}
   - {name: meta_798, weight: 1, cards: [balloon, barbarians, bomber, giant_snowball, inferno_dragon, lava_hound, minions, void]}
   - {name: meta_799, weight: 1, cards: [berserker, boss_bandit, electro_spirit, firecracker, hog_rider, lightning, tesla, the_log]}
   - {name: meta_800, weight: 1, cards: [bats, berserker, bomb_tower, electro_spirit, magic_archer, miner, royal_delivery, wall_breakers]}
@@ -867,7 +874,7 @@ decks:
   - {name: meta_858, weight: 1, cards: [arrows, battle_ram, golden_knight, minions, mother_witch, pekka, royal_ghost, zap]}
   - {name: meta_859, weight: 1, cards: [arrows, electro_dragon, elixir_golem, lightning, mega_minion, mini_pekka, tornado, valkyrie]}
   - {name: meta_860, weight: 1, cards: [baby_dragon, boss_bandit, cannon_cart, inferno_tower, lightning, mega_knight, mini_pekka, wizard]}
-  - {name: meta_861, weight: 1, cards: [berserker, fire_spirit, giant_snowball, goblin_demolisher, goblin_drill, poison, skeletons, tesla], evo: [berserker, giant_snowball, goblin_drill], support: tower_princess}
+  - {name: meta_861, weight: 1, cards: [berserker, fire_spirit, giant_snowball, goblin_demolisher, goblin_drill, poison, skeletons, tesla], support: tower_princess}
   - {name: meta_862, weight: 1, cards: [bomber, fireball, giant, mega_minion, mini_pekka, rage, witch, zap]}
   - {name: meta_863, weight: 1, cards: [barbarian_barrel, battle_ram, fireball, golden_knight, mother_witch, ronin, royal_ghost, zappies]}
   - {name: meta_864, weight: 1, cards: [arrows, goblin_giant, mini_pekka, night_witch, sparky, valkyrie, witch, zap]}
@@ -911,9 +918,9 @@ decks:
   - {name: meta_902, weight: 1, cards: [barbarian_barrel, berserker, bomb_tower, goblinstein, graveyard, ice_spirit, poison, skeletons]}
   - {name: meta_903, weight: 1, cards: [earthquake, goblin_demolisher, hog_rider, ice_spirit, inferno_tower, royal_delivery, skeletons, the_log]}
   - {name: meta_904, weight: 1, cards: [berserker, electro_spirit, goblin_drill, poison, skeletons, tesla, the_log, wall_breakers]}
-  - {name: meta_905, weight: 1, cards: [barbarian_barrel, berserker, cannon, earthquake, electro_spirit, firecracker, hog_rider, skeletons], evo: [berserker, cannon, firecracker], support: tower_princess}
+  - {name: meta_905, weight: 1, cards: [barbarian_barrel, berserker, cannon, earthquake, electro_spirit, firecracker, hog_rider, skeletons], support: tower_princess}
   - {name: meta_906, weight: 1, cards: [baby_dragon, barbarian_barrel, cannon_cart, electro_dragon, golem, lumberjack, mega_minion, tornado]}
-  - {name: meta_907, weight: 1, cards: [goblin_barrel, goblin_gang, inferno_tower, knight, princess, rocket, skeletons, the_log], evo: [goblin_barrel, knight, skeletons], support: tower_princess}
+  - {name: meta_907, weight: 1, cards: [goblin_barrel, goblin_gang, inferno_tower, knight, princess, rocket, skeletons, the_log], support: tower_princess}
   - {name: meta_908, weight: 1, cards: [elite_barbarians, golem, heal_spirit, lumberjack, mini_pekka, minion_horde, rage, zap]}
   - {name: meta_909, weight: 1, cards: [arrows, barbarian_barrel, barbarians, elixir_collector, giant_skeleton, graveyard, hunter, little_prince]}
   - {name: meta_910, weight: 1, cards: [berserker, bomber, elite_barbarians, golem, night_witch, phoenix, void, zap]}
@@ -929,7 +936,7 @@ decks:
   - {name: meta_920, weight: 1, cards: [berserker, giant_snowball, inferno_dragon, lava_hound, miner, rune_giant, tombstone, void]}
   - {name: meta_921, weight: 1, cards: [berserker, cannon_cart, minions, mortar, rascals, skeleton_barrel, the_log, void]}
   - {name: meta_922, weight: 1, cards: [goblin_curse, goblin_demolisher, inferno_dragon, little_prince, miner, rune_giant, void, zap]}
-  - {name: meta_923, weight: 1, cards: [balloon, bomb_tower, executioner, giant_skeleton, miner, skeleton_dragons, tornado, zap], evo: [balloon, executioner, zap], support: tower_princess}
+  - {name: meta_923, weight: 1, cards: [balloon, bomb_tower, executioner, giant_skeleton, miner, skeleton_dragons, tornado, zap], support: tower_princess}
   - {name: meta_924, weight: 1, cards: [barbarian_barrel, dart_goblin, fireball, minions, mortar, skeleton_barrel, skeletons, valkyrie]}
   - {name: meta_925, weight: 1, cards: [dart_goblin, goblin_gang, ice_spirit, rascals, skeleton_barrel, suspicious_bush, valkyrie, vines]}
   - {name: meta_926, weight: 1, cards: [berserker, electro_spirit, elite_barbarians, goblin_hut, lightning, royal_hogs, skeleton_dragons, the_log]}
@@ -963,7 +970,7 @@ decks:
   - {name: meta_954, weight: 1, cards: [archers, berserker, cannon, dark_prince, fire_spirit, giant_snowball, goblin_drill, void]}
   - {name: meta_955, weight: 1, cards: [berserker, elite_barbarians, fireball, furnace, ram_rider, royal_ghost, spirit_empress, zap]}
   - {name: meta_956, weight: 1, cards: [fireball, inferno_dragon, lava_hound, miner, rune_giant, skeleton_dragons, valkyrie, zap]}
-  - {name: meta_957, weight: 1, cards: [barbarian_barrel, electro_spirit, goblins, hog_rider, lightning, princess, tesla, valkyrie], evo: [princess, tesla, valkyrie], support: tower_princess}
+  - {name: meta_957, weight: 1, cards: [barbarian_barrel, electro_spirit, goblins, hog_rider, lightning, princess, tesla, valkyrie], support: tower_princess}
   - {name: meta_958, weight: 1, cards: [berserker, furnace, giant_skeleton, giant_snowball, goblin_hut, graveyard, poison, zappies]}
   - {name: meta_959, weight: 1, cards: [berserker, golem, skeleton_dragons, tombstone, tornado, valkyrie, void, witch]}
   - {name: meta_960, weight: 1, cards: [berserker, bomb_tower, dart_goblin, rascals, royal_ghost, skeleton_barrel, suspicious_bush, void]}
@@ -985,12 +992,12 @@ decks:
   - {name: meta_976, weight: 1, cards: [balloon, barbarian_barrel, electro_wizard, lumberjack, pekka, tornado, wizard, zap]}
   - {name: meta_977, weight: 1, cards: [barbarian_barrel, berserker, cannon_cart, giant_snowball, minion_horde, skeleton_barrel, skeletons, suspicious_bush]}
   - {name: meta_978, weight: 1, cards: [arrows, balloon, elite_barbarians, freeze, mini_pekka, mirror, skeleton_army, wizard]}
-  - {name: meta_979, weight: 1, cards: [cannon, hog_rider, ice_golem, ice_spirit, musketeer, rocket, skeletons, the_log], evo: [cannon, ice_golem, skeletons], support: tower_princess}
+  - {name: meta_979, weight: 1, cards: [cannon, hog_rider, ice_golem, ice_spirit, musketeer, rocket, skeletons, the_log], support: tower_princess}
   - {name: meta_980, weight: 1, cards: [boss_bandit, elite_barbarians, executioner, freeze, hog_rider, minion_horde, skeletons, zap]}
   - {name: meta_981, weight: 1, cards: [electro_wizard, elite_barbarians, executioner, fire_spirit, golem, miner, the_log, tornado]}
   - {name: meta_982, weight: 1, cards: [barbarian_barrel, electro_spirit, magic_archer, ronin, royal_hogs, skeletons, tesla, void]}
   - {name: meta_983, weight: 1, cards: [arrows, dark_prince, electro_wizard, elite_barbarians, goblin_giant, heal_spirit, rage, sparky]}
-  - {name: meta_984, weight: 1, cards: [baby_dragon, balloon, barbarian_barrel, electro_wizard, freeze, lumberjack, pekka, tornado], evo: [baby_dragon, balloon, pekka], support: tower_princess}
+  - {name: meta_984, weight: 1, cards: [baby_dragon, balloon, barbarian_barrel, electro_wizard, freeze, lumberjack, pekka, tornado], support: tower_princess}
   - {name: meta_985, weight: 1, cards: [baby_dragon, elite_barbarians, executioner, golden_knight, golem, skeleton_dragons, tornado, vines]}
   - {name: meta_986, weight: 1, cards: [bats, cannon_cart, guards, ice_wizard, miner, mortar, skeleton_king, vines]}
   - {name: meta_987, weight: 1, cards: [baby_dragon, balloon, battle_ram, clone, fire_spirit, giant_skeleton, rage, skeleton_barrel]}
@@ -1004,6 +1011,6 @@ decks:
   - {name: meta_995, weight: 1, cards: [archers, barbarian_barrel, fireball, fisherman, goblin_cage, monk, royal_giant, skeleton_dragons]}
   - {name: meta_996, weight: 1, cards: [cannon, dart_goblin, giant_snowball, goblin_barrel, princess, skeleton_army, skeleton_king, wall_breakers]}
   - {name: meta_997, weight: 1, cards: [arrows, bandit, battle_ram, electro_wizard, golden_knight, mega_knight, minions, mother_witch]}
-  - {name: meta_998, weight: 1, cards: [balloon, executioner, giant_skeleton, miner, tombstone, tornado, zap, zappies], evo: [balloon, executioner, zap], support: tower_princess}
+  - {name: meta_998, weight: 1, cards: [balloon, executioner, giant_skeleton, miner, tombstone, tornado, zap, zappies], support: tower_princess}
   - {name: meta_999, weight: 1, cards: [barbarian_barrel, berserker, goblin_hut, graveyard, ice_spirit, poison, valkyrie, witch]}
   - {name: meta_1000, weight: 1, cards: [berserker, bomber, dark_prince, fire_spirit, giant_snowball, goblin_drill, goblin_hut, poison]}

@@ -337,3 +337,38 @@ the 109 cards with >=100 sightings sit between 0.15 and 0.85 (cannon 0.63, mega_
 balloon 0.68) -- so a marginal rule would be a guess wearing measured clothes. `deck_import.py`
 now writes `evo:`/`support:` alongside `cards:`, so the next `run.py decks-import` regenerates
 pool and slots together at full coverage.
+
+### ⚠⚠ R4 CORRECTION 2026-08-26 — `evolutionLevel` DOES NOT MEAN "this card was in an evolution slot"
+
+The R4 collection agent read the battlelog's `evolutionLevel` as the deck's evolution slot and
+concluded (a) decks field THREE evolutions as the mode and (b) `berserker_evo`/`giant_evo` are
+real evolutions the KB lacks, seen 937/277 times. **Both conclusions are wrong.** Measured:
+
+1. **Three evolutions is not legal.** Card Evolution page, verbatim: the 16/3/2026 Mid-March Update
+   "changed the format of Evolution and Hero slots into one Evolution, one Hero and one Wild (from
+   2 evo and 2 hero)". Max two evolutions. The field yields **3 for 153/233 decks** (live re-probe:
+   3 evos ×114, 2 ×95, never 0 or 1). A field that reports an illegal state is not reporting slots.
+2. **Berserker has NO evolution.** `Card Evolution` master page: **"Berserker" appears 0 times.**
+   "Giant" appears only inside Royal Giant / Goblin Giant links; "Arrows" only as the Evo
+   Princess's "Ice Arrows" ability. This CONFIRMS R1's negative probes (no `/Evolution` subpage)
+   and refutes the collection's claim.
+3. **Slot order does not identify them either.** Set positions across 209 live decks:
+   index 0 ×209, index 1 ×115, index 2 ×208 — position 1 is LESS common than 2, so they are not a
+   prefix; only 115/209 form one.
+
+**Actual meaning:** the player's OWNED evolution level for that card (absent when they have not
+unlocked it — e.g. a barbarian_barrel with `maxEvolutionLevel: 2` but `evolutionLevel: null`).
+It cannot identify what was fielded.
+
+**Action taken:** all 233 `evo:` declarations STRIPPED from both decks' meta_decks.yaml (a header
+note records why). `support:` (tower troop, exactly one per deck — tower_princess 6455, cannoneer
+288, dagger_duchess 228, royal_chef 160) IS reliable and is KEPT. The build_spec guard and the
+opponents.py "declared slot or nothing" architecture are correct and stay; only the DATA was bad.
+
+**Consequence, stated plainly:** `evo_audit` now reports 0 phantoms AND 0 real — opponents field
+no evolution at all. That is honest but incomplete. NB the fidelity loss is smaller than it looks:
+a phantom resolved to the BASE card's stats anyway, so it was a mislabel more than a strength
+error. Real evo slots need another source — an owner decision (I3 remains OPEN):
+  (a) curated top-20 mapping by hand (the plan's documented fallback), or
+  (b) infer from per-card evolution frequency in the pool, or
+  (c) leave opponents evo-less until a better source appears.

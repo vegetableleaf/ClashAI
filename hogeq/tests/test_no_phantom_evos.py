@@ -116,15 +116,26 @@ class ScriptedBotFieldsOnlyRealEvosTests(unittest.TestCase):
             if not _has_real_evo(db, base):
                 phantoms.append((deck["name"], base))
         self.assertEqual(phantoms, [], f"{len(phantoms)} decks field a phantom evolution")
-        self.assertGreater(real, 0, "no deck fields any evolution -- the slots stopped loading")
+        # NB deliberately NOT asserting real > 0. The pool currently declares NO evo slots: the
+        # battlelog's `evolutionLevel` turned out to report a player's OWNED evolution level, not
+        # which card sat in a slot (it yielded THREE evos for 153/233 decks against a two-slot
+        # game, and named berserker/giant, which have no evolution). Those declarations were
+        # removed rather than shipped wrong. Fielding NOTHING is the honest state until a real
+        # source lands; fielding a guess is what fabricated the phantoms in the first place.
 
     def test_the_fielded_evo_is_the_declared_one(self):
+        """Self-contained: builds its own declared deck rather than depending on the shipped pool,
+        which declares no slots today (see the note in the pool test). A behaviour test must not
+        go red just because production DATA changed."""
         cfg, db = _Cfg(), _db()
-        deck = next(d for d in load_meta_decks(cfg, db)
-                    if any(_has_real_evo(db, k) for k in (d.get("evo") or [])))
-        bot = ScriptedBot(cfg, db, random.Random(0), deck["cards"], deck["style"],
-                          [11] * 8, evo=deck["evo"])
-        self.assertIn(deck["cards"][bot.evo_idx], deck["evo"])
+        cards = ["knight", "musketeer", "fireball", "skeletons",
+                 "ice_spirit", "hog_rider", "cannon", "the_log"]
+        declared = "musketeer"
+        self.assertTrue(_has_real_evo(db, declared), "fixture must name a REAL evolution")
+        bot = ScriptedBot(cfg, db, random.Random(0), cards, "control",
+                          [11] * 8, evo=[declared])
+        self.assertGreaterEqual(bot.evo_idx, 0, "a declared, real, held evo must be fielded")
+        self.assertEqual(cards[bot.evo_idx], declared)
 
     def test_no_declared_slot_means_no_evolution(self):
         """Guessing a slot is exactly what fabricated the phantoms, so absence must field NOTHING."""
