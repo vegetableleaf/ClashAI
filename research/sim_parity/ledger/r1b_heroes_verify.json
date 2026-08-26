@@ -1,0 +1,245 @@
+{
+ "meta": {
+  "task": "r1b heroes INDEPENDENT verification (original verifier cancelled mid-run; full re-derivation)",
+  "verified": "2026-08-26",
+  "verifier_method": "Derivation done BEFORE opening r1b_heroes.json. Path A: api.php full-text search list=search srsearch='Hero' srlimit=50, paginated via sroffset (319 hits, 4 pages), titles filtered for '/Hero' subpages. srsearch='intitle:Hero' returned 0 hits (intitle: syntax unsupported/empty on this Fandom backend) so title filtering of the full-text results stood in for it. Path B: parsed the 'List of Heroes' table out of the Heroes master page wikitext (action=parse, prop=wikitext|revid). Status live/announced decided by: presence in master List table + master History release date <= 2026-08-26, vs 'Coming soon' stub subpage absent from the table.",
+  "differs_from_original_method": "original r1b used existence-probing of <card>/Hero over 139 snapshot base-card titles; this verification used search + master-table parsing and never probed titles",
+  "master_page_revid_fresh": 437509,
+  "master_page_revid_matches_ledger": true
+ },
+ "path_a_search": {
+  "srsearch_Hero_hits": 319,
+  "titles_containing_Hero": 19,
+  "hero_subpages_found": [
+   "Balloon",
+   "Barbarian Barrel",
+   "Battle Healer",
+   "Berserker",
+   "Bowler",
+   "Dark Prince",
+   "Giant",
+   "Goblins",
+   "Ice Golem",
+   "Knight",
+   "Magic Archer",
+   "Mega Knight",
+   "Mega Minion",
+   "Mini P.E.K.K.A.",
+   "Musketeer",
+   "Tombstone",
+   "Valkyrie",
+   "Wizard"
+  ],
+  "count": 18,
+  "stub_subpages": [
+   "Battle Healer/Hero (48 B)",
+   "Mega Knight/Hero (47 B)"
+  ],
+  "stub_text_verbatim": "Coming soon... Release Date: 7th September 2026"
+ },
+ "path_b_master_table": {
+  "source": "Heroes master page ==List of Heroes== table, revid 437509",
+  "rows": [
+   "Knight",
+   "Giant",
+   "Mini P.E.K.K.A.",
+   "Musketeer",
+   "Ice Golem",
+   "Wizard",
+   "Goblins",
+   "Mega Minion",
+   "Barbarian Barrel",
+   "Magic Archer",
+   "Balloon",
+   "Bowler",
+   "Dark Prince",
+   "Tombstone",
+   "Berserker",
+   "Valkyrie"
+  ],
+  "count": 16,
+  "history_release_dates": {
+   "2025-12-01": [
+    "Knight",
+    "Giant",
+    "Mini P.E.K.K.A.",
+    "Musketeer"
+   ],
+   "2026-01-05": [
+    "Wizard",
+    "Ice Golem"
+   ],
+   "2026-02-02": [
+    "Goblins",
+    "Mega Minion"
+   ],
+   "2026-03-02": [
+    "Barbarian Barrel",
+    "Magic Archer"
+   ],
+   "2026-04-06": [
+    "Balloon"
+   ],
+   "2026-05-04": [
+    "Dark Prince",
+    "Bowler"
+   ],
+   "2026-06-01": [
+    "Tombstone"
+   ],
+   "2026-08-03": [
+    "Berserker",
+    "Valkyrie"
+   ]
+  },
+  "history_count_check": "4+2+2+2+2+1+2+1+2 = 16, all dates <= 2026-08-26"
+ },
+ "cross_checks": {
+  "path_a_minus_stubs_equals_path_b": true,
+  "live_subpages_stub_scan": {
+   "Knight": {
+    "bytes": 13591,
+    "coming_soon": false,
+    "has_infobox": true
+   },
+   "Giant": {
+    "bytes": 15182,
+    "coming_soon": false,
+    "has_infobox": true
+   },
+   "Mini P.E.K.K.A.": {
+    "bytes": 13580,
+    "coming_soon": false,
+    "has_infobox": true
+   },
+   "Musketeer": {
+    "bytes": 14835,
+    "coming_soon": false,
+    "has_infobox": true
+   },
+   "Ice Golem": {
+    "bytes": 11384,
+    "coming_soon": false,
+    "has_infobox": true
+   },
+   "Wizard": {
+    "bytes": 10200,
+    "coming_soon": false,
+    "has_infobox": true
+   },
+   "Goblins": {
+    "bytes": 13384,
+    "coming_soon": false,
+    "has_infobox": true
+   },
+   "Mega Minion": {
+    "bytes": 9337,
+    "coming_soon": false,
+    "has_infobox": true
+   },
+   "Barbarian Barrel": {
+    "bytes": 9059,
+    "coming_soon": false,
+    "has_infobox": true
+   },
+   "Magic Archer": {
+    "bytes": 8552,
+    "coming_soon": false,
+    "has_infobox": true
+   },
+   "Balloon": {
+    "bytes": 12282,
+    "coming_soon": false,
+    "has_infobox": true
+   },
+   "Bowler": {
+    "bytes": 8424,
+    "coming_soon": false,
+    "has_infobox": true
+   },
+   "Dark Prince": {
+    "bytes": 9302,
+    "coming_soon": false,
+    "has_infobox": true
+   },
+   "Tombstone": {
+    "bytes": 9185,
+    "coming_soon": false,
+    "has_infobox": true
+   },
+   "Berserker": {
+    "bytes": 6264,
+    "coming_soon": false,
+    "has_infobox": true
+   },
+   "Valkyrie": {
+    "bytes": 6129,
+    "coming_soon": false,
+    "has_infobox": true
+   }
+  }
+ },
+ "derived": {
+  "live_16": [
+   "balloon_hero",
+   "barbarian_barrel_hero",
+   "berserker_hero",
+   "bowler_hero",
+   "dark_prince_hero",
+   "giant_hero",
+   "goblins_hero",
+   "ice_golem_hero",
+   "knight_hero",
+   "magic_archer_hero",
+   "mega_minion_hero",
+   "mini_pekka_hero",
+   "musketeer_hero",
+   "tombstone_hero",
+   "valkyrie_hero",
+   "wizard_hero"
+  ],
+  "announced_2": [
+   "battle_healer_hero",
+   "mega_knight_hero"
+  ]
+ },
+ "claimed": {
+  "live_16": [
+   "balloon_hero",
+   "barbarian_barrel_hero",
+   "berserker_hero",
+   "bowler_hero",
+   "dark_prince_hero",
+   "giant_hero",
+   "goblins_hero",
+   "ice_golem_hero",
+   "knight_hero",
+   "magic_archer_hero",
+   "mega_minion_hero",
+   "mini_pekka_hero",
+   "musketeer_hero",
+   "tombstone_hero",
+   "valkyrie_hero",
+   "wizard_hero"
+  ],
+  "announced_2": [
+   "battle_healer_hero",
+   "mega_knight_hero"
+  ]
+ },
+ "comparison": {
+  "live_set_exact_match": true,
+  "announced_set_exact_match": true,
+  "announced_date_confirmed": "both stubs verbatim 'Release Date: 7th September 2026' > today 2026-08-26, and both absent from master List table -> not yet live, matches ledger claim",
+  "revid_diffs_ledger_vs_fresh": [],
+  "discrepancies": []
+ },
+ "caveats": [
+  "full-text search could in principle miss an unindexed page; mitigated by exact agreement with the master List table AND with the original ledger's independent 139-title existence probe -- three methods converge on the same 18 subpages",
+  "srsearch 'intitle:Hero' returned 0 hits on this backend; substituted by filtering full-text hits on title, which is a superset of what intitle: would return"
+ ],
+ "verdict": {
+  "pass": true,
+  "summary": "independently derived 16 live heroes == claimed 16 exactly; 2 announced (mega_knight_hero, battle_healer_hero, 7 Sep 2026) confirmed not yet live; zero discrepancies"
+ }
+}
