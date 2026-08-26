@@ -272,3 +272,68 @@ So the one-line data fix silently TURNS THE ROLL OFF. Fixing it properly means d
 rolling corridor from `ground_only` — expressing the ground-only part of the pull on `carry_roll`,
 as the r2_buckets row suggests — and it should land with the rest of the #5 Evo Snowball family
 (roll_tiles 4.5 -> 4.0, slow_duration_s 4.0 -> 3.0, crown_tower_damage 54 -> 45), not alone.
+
+## R4 collection 2026-08-26
+
+Official CR API, 120 path-of-legends (2026-07) players, 3605 battles, **7173 deck-sightings**,
+1771 distinct (cards, evo, support) rows -> `ledger/meta_evo_slots.json`. Comparable to the pool
+in `config/meta_decks.yaml` (7353 sightings, same season). `evolutionLevel` and `supportCards` are
+both present and usable; nothing was dropped as event-only this run.
+
+### R4-1. A deck fields TWO OR THREE evolutions, not one. `opponents.py` said one.
+
+The picker's own comment read "each deck fields ONE evolution (the 2026 slot rules)". MEASURED
+distribution of evolution slots per deck-sighting:
+
+    3 evos: 4282    2 evos: 2527    0 evos: 337    1 evo: 27
+
+So **three is the mode** and one is nearly nonexistent. 6836 of 7173 sightings fielded at least
+one. `ScriptedBot`'s slot machinery is single-slot, so it now fields the first DECLARED evolution
+it can build and records the rest on `evo_declared`; MEASURED, that leaves **246 buildable slots
+across the pool uncarried** (`tools/evo_audit.py`). **Owner decision needed**: widen the bot (and
+the engine's charge accounting) to 2-3 concurrent evolution slots, or accept one as a deliberate
+simplification of the opponent model?
+
+### R4-2. Evolutions now have LEVELS, and the KB models a single stat block.
+
+`evolutionLevel` is not a boolean. MEASURED across all card entries: level **1 x13346, 2 x4897,
+3 x5**, with `maxEvolutionLevel` up to 3 (e.g. Wizard at evolutionLevel 2 of max 3). Every KB
+`_evo` row is one undifferentiated stat block, so the sim cannot express an Evo Wizard at level 2
+vs level 1. Not acted on -- flagged for R5/I4 scope.
+
+### R4-3. TWELVE live evolutions have no KB row, and two of them are heavily played.
+
+54 distinct cards were seen evolved; the KB carries 42 `_evo` rows. All 42 were observed (no dead
+rows). MISSING, with sightings: **berserker 937**, **giant 277**, balloon 509, mega_minion 349,
+mini_pekka 254, bowler 206, tombstone 195, barbarian_barrel 430, goblins 134, dark_prince 124,
+ice_golem 71, magic_archer 79.
+
+This CORRECTS the framing of the phantom-evo bug. Of the three examples in the I2 brief,
+`arrows_evo` is a true phantom -- **arrows was never once seen evolved in 7173 sightings** -- but
+`berserker_evo` and `giant_evo` are REAL evolutions the KB simply lacks. `build_spec` raising on
+all three is still right (returning the base card under an evo name is wrong either way), but the
+consequence differs: 35 decks declare a berserker evolution and 10 a giant one, and they field
+NOTHING until the importer grows those rows. `meta_decks.yaml` already declares them, so they
+light up on their own once I4 lands. Queued for I4 (importer hardening), not patched by hand.
+
+### R4-4. Tower troops exist and the KB has no concept of them.
+
+`supportCards` is populated on 7131 of 7173 sightings: **tower_princess 6455, cannoneer 288,
+dagger_duchess 228, royal_chef 160**. None is a KB card, so all four appear in `unmapped_names` --
+that is the honest report, not a mapping bug. Captured as `support:` per deck (data only): the
+engine has one hard-coded crown-tower model, so a Cannoneer or Dagger Duchess currently plays as a
+Tower Princess. ~10% of top-ladder opponents field a non-default tower. **Owner decision needed**:
+is tower-troop variety in scope for sim parity at all?
+
+### R4-5. Slot coverage is 235/1000 decks, because the pool is 19 days older than the sweep.
+
+Joining on the exact 8-card set matches 235 of the 1000 pool decks -- but **69.3% of the pool's
+sampling weight**, since the popular decks are stable and the long tail is one-offs. 233 of the
+235 carry an evo (2 were only ever seen unevolved). The other 765 declare no slot and field no
+evolution, which is the intended failure direction.
+
+No inference was used to widen this: MEASURED, P(evolved | card in deck) is not bimodal -- 36 of
+the 109 cards with >=100 sightings sit between 0.15 and 0.85 (cannon 0.63, mega_knight 0.57,
+balloon 0.68) -- so a marginal rule would be a guess wearing measured clothes. `deck_import.py`
+now writes `evo:`/`support:` alongside `cards:`, so the next `run.py decks-import` regenerates
+pool and slots together at full coverage.
