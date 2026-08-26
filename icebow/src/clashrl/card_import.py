@@ -10,6 +10,12 @@ card's ``<Card>/Evolution`` subpage (evolutions live there and are keyed
 `config/cards_stats.json` (level 11). Curated `config/cards.yaml` overlays it
 (flags, abilities, deck). Re-run after balance updates: `run.py cards-import`.
 
+DRY-RUN IS THE DEFAULT. `run.py cards-import` scrapes, diffs against the existing
+config/cards_stats.json field by field, and writes NOTHING; `--write` applies. The
+old behaviour (always overwrite, never look at what was there) is how a stale wiki
+vardefine silently replaced a curated value -- see tools/crown_damage_audit.py for
+the measured example (Rocket crown 371 vs the game's 341).
+
 Behavioural attributes that live only in page prose (splash shape, abilities) stay
 curated; this importer fills the reliable numeric stats + elixir/rarity/type, plus
 the per-unit ATTRIBUTES TABLE (count / transport / speed / range / targets /
@@ -449,7 +455,63 @@ def _parse_card(page: str, wt: str) -> dict:
     return {k: v for k, v in entry.items() if v is not None}
 
 
-def import_cards(cfg) -> None:
+# --- dry-run / diff ---------------------------------------------------------------------------
+# The importer historically never read the file it was about to replace, so nobody saw WHAT a
+# re-import changed until a sim regressed. The diff is field-level and runs in both modes; only
+# `--write` performs the overwrite.
+
+def _load_existing(path) -> dict:
+    """The current cards_stats.json's `cards` mapping, or {} if absent/unreadable."""
+    try:
+        if path.exists():
+            return json.loads(path.read_text(encoding="utf-8")).get("cards", {})
+    except Exception as exc:  # noqa: BLE001 -- a corrupt file should not block a dry run
+        print(f"[cards-import] WARNING: could not read existing {path}: {exc}")
+    return {}
+
+
+def _diff_stats(old: dict, new: dict) -> dict:
+    """Field-level diff between two `cards` mappings.
+
+    Underscore-prefixed fields (`_src` provenance) are metadata, not stats: they change on
+    every fetch by construction, so listing them would drown the real diff.
+    """
+    added = sorted(k for k in new if k not in old)
+    removed = sorted(k for k in old if k not in new)
+    changed: dict = {}
+    for k in sorted(set(old) & set(new)):
+        fields = {}
+        for f in sorted(set(old[k]) | set(new[k])):
+            if f.startswith("_"):
+                continue
+            ov, nv = old[k].get(f), new[k].get(f)
+            if ov != nv:
+                fields[f] = (ov, nv)
+        if fields:
+            changed[k] = fields
+    return {"added": added, "removed": removed, "changed": changed}
+
+
+def _print_diff(diff: dict, had_existing: bool) -> None:
+    if not had_existing:
+        print("[cards-import] no existing cards_stats.json to diff against (first import).")
+        return
+    n_fields = sum(len(v) for v in diff["changed"].values())
+    print(f"[cards-import] diff vs existing file: +{len(diff['added'])} cards, "
+          f"-{len(diff['removed'])} cards, {len(diff['changed'])} cards changed "
+          f"({n_fields} fields).")
+    for k in diff["added"]:
+        print(f"[cards-import]   + {k}")
+    for k in diff["removed"]:
+        print(f"[cards-import]   - {k}")
+    for k, fields in diff["changed"].items():
+        for f, (ov, nv) in fields.items():
+            print(f"[cards-import]   ~ {k}.{f}: {ov!r} -> {nv!r}")
+    if not (diff["added"] or diff["removed"] or diff["changed"]):
+        print("[cards-import]   (no differences)")
+
+
+def import_cards(cfg, write: bool = False, force_fields=()) -> None:
     print("[cards-import] scraping the Clash Royale Fandom wiki (level 11)...")
     names: list = []
     champions: set = set()
@@ -522,15 +584,22 @@ def import_cards(cfg) -> None:
             print(f"[cards-import]   {i + 1}/{len(names)} pages...")
 
     path = cfg.path("config", "cards_stats.json")
-    meta = {
-        "level": 11,
-        "source": "clashroyale.fandom.com (MediaWiki, level-11 vardefines)",
-        "generated": datetime.date.today().isoformat(),
-        "count": len(out),
-        "champions": n_champ,
-        "evolutions": n_evo,
-    }
-    path.write_text(json.dumps({"meta": meta, "cards": out}, indent=1), encoding="utf-8")
+    existing = _load_existing(path)
+    diff = _diff_stats(existing, out)
+    _print_diff(diff, had_existing=bool(existing))
+
+    wrote = False
+    if write:
+        meta = {
+            "level": 11,
+            "source": "clashroyale.fandom.com (MediaWiki, level-11 vardefines)",
+            "generated": datetime.date.today().isoformat(),
+            "count": len(out),
+            "champions": n_champ,
+            "evolutions": n_evo,
+        }
+        path.write_text(json.dumps({"meta": meta, "cards": out}, indent=1), encoding="utf-8")
+        wrote = True
 
     hp = sum(1 for v in out.values() if "hitpoints" in v)
     dmg = sum(1 for v in out.values() if "damage" in v)
@@ -539,8 +608,11 @@ def import_cards(cfg) -> None:
     proj = sum(1 for v in out.values() if "projectile_speed" in v)
     jump = sorted(k for k, v in out.items() if v.get("river_jump"))
     kami = sorted(k for k, v in out.items() if v.get("kamikaze"))
-    print(f"[cards-import] wrote {len(out)} cards to {path} ({hp} with hitpoints, {dmg} with "
+    verb = "wrote" if wrote else "DRY-RUN: would write"
+    print(f"[cards-import] {verb} {len(out)} cards to {path} ({hp} with hitpoints, {dmg} with "
           f"damage; {n_champ} champions, {n_evo} evolutions).")
+    if not wrote:
+        print("[cards-import] nothing written. Re-run with --write to apply the diff above.")
     print(f"[cards-import]   attributes table: {cnt} counts, {air} air units, "
           f"{proj} with projectiles")
     print(f"[cards-import]   river-jumpers: {', '.join(jump) or 'none'}")

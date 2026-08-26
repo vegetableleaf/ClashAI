@@ -91,7 +91,8 @@ def _cmd_cards(args) -> None:
 
 def _cmd_cards_import(args) -> None:
     from .card_import import import_cards
-    import_cards(Config.load(args.config))
+    import_cards(Config.load(args.config), write=bool(getattr(args, "write", False)),
+                 force_fields=tuple(getattr(args, "force_field", None) or ()))
 
 
 def _cmd_train_bc(args) -> None:
@@ -561,7 +562,20 @@ def main() -> None:
     crd.set_defaults(func=_cmd_cards)
 
     cri = sub.add_parser("cards-import",
-                         help="import/refresh card stats from RoyaleAPI open data (game-derived)")
+                         help="import/refresh card stats from the Clash Royale Fandom wiki "
+                              "(MediaWiki level-11 vardefines); DRY-RUN by default")
+    mx = cri.add_mutually_exclusive_group()
+    mx.add_argument("--dry-run", action="store_true", dest="dry_run",
+                    help="scrape, diff against the existing config/cards_stats.json and write "
+                         "NOTHING (this is the default behaviour)")
+    mx.add_argument("--write", action="store_true",
+                    help="apply: overwrite config/cards_stats.json (guarded -- refuses if a "
+                         "pinned field would regress or a verified: true row would change)")
+    cri.add_argument("--force-field", action="append", metavar="KEY.FIELD", dest="force_field",
+                     default=None,
+                     help="let this pinned/verified field change anyway (repeatable), e.g. "
+                          "--force-field rocket.crown_tower_damage; update import_pins.json in "
+                          "the same commit or the next run refuses again")
     cri.set_defaults(func=_cmd_cards_import)
 
     tbc = sub.add_parser("train-bc", help="behaviour-cloning pretrain of the CNN policy (needs torch)")
