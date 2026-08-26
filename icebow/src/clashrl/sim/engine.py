@@ -553,6 +553,17 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         # `evolution` itself is excluded so a curated mechanics dict (our Knight/Tesla) still
         # applies through the overlay below.
         ev_row = db.get(key) or {}
+        # NO ROW => NO EVOLUTION, and say so. Without this guard the overlay below merged nothing
+        # and the function returned the BASE card wearing the evo's NAME -- a PHANTOM that every
+        # caller then treated as real. MEASURED 2026-08-26 (tools/evo_audit.py): 689 of the 1000
+        # meta decks fielded one, because ScriptedBot picked "the first deck card whose
+        # `<key>_evo` builds" and nothing ever failed to build, so it was always deck index 0.
+        # A curated `evolution:` block is the OTHER legitimate definition of an evolution (our
+        # Knight/Tesla mechanics dicts), so either one is enough -- but with neither, the key does
+        # not exist and the caller must be told rather than handed a lookalike.
+        if not ev_row and not isinstance(c.get("evolution"), dict):
+            raise KeyError(f"{key}: the KB defines no evolution for {base!r} (no `{key}` row and "
+                           f"no curated `evolution:` block)")
         if ev_row:
             c = {**c, **{k: v for k, v in ev_row.items()
                          if v is not None and k not in ("evolution", "base", "display", "rarity")}}

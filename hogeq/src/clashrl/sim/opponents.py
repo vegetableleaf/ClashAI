@@ -44,7 +44,7 @@ class ScriptedBot:
     """
 
     def __init__(self, cfg, db, rng, cards: List[str], style: str, levels: "List[int] | None" = None,
-                 adaptive: bool = False):
+                 adaptive: bool = False, evo: "List[str] | None" = None):
         self.style = style
         self.cards = list(cards)                                  # deck card keys (for matchup detection)
         self.rng = rng
@@ -78,22 +78,42 @@ class ScriptedBot:
         # against a deck with no cycle cost at all.
         self.cycle = list(range(len(self.specs)))
         rng.shuffle(self.cycle)
-        # PHASE-A EVOLUTIONS (2026-08-14): each deck fields ONE evolution (the 2026 slot rules).
-        # Heuristic pick until meta_decks carries explicit evo slots: the first deck card with a
-        # loadable `_evo` stat block. Cycle count from the KB's evolution block (default 2).
-        # T0 (stat-only) evos work end-to-end through the ordinary build_spec overlay; mechanic
-        # evos inherit whatever the engine models for their fields (pulse, DR, leap, ...).
+        # DECLARED EVOLUTIONS (2026-08-26, I3). `evo` is the slot this deck was actually SEEN
+        # fielding on top ladder -- meta_decks.yaml carries it per deck, from 7173 battlelog
+        # sightings (research/sim_parity/ledger/meta_evo_slots.json).
+        #
+        # It replaces a heuristic that was silently degenerate: "the first deck card whose
+        # `<key>_evo` builds". build_spec FABRICATED a spec for any `_evo` key, so nothing ever
+        # failed to build and the pick was ALWAYS deck index 0 -- 689 of the 1000 meta decks
+        # fielded a phantom evolution (base stats under the evo's name). MEASURED by
+        # tools/evo_audit.py before this change; it now reports 0.
+        #
+        # NO DECLARED SLOT => NO EVOLUTION. Guessing one is exactly what produced the phantoms,
+        # and an opponent fielding nothing is a smaller error than one fielding a fake.
+        #
+        # ONE SLOT MODELLED, and the meta fields more: measured, 4282 of 7173 sightings fielded
+        # THREE evolutions and 2527 fielded two (only 27 fielded one). The engine's slot machinery
+        # below is single-slot, so the first DECLARED evo the KB can build takes it and the rest
+        # are recorded on `evo_declared` for whoever widens this. See conflicts.md "R4 collection".
         self.evo_idx, self.evo_spec, self.evo_cycles, self.evo_charge = -1, None, 2, 0
-        for _i, _k in enumerate(cards):
+        self.evo_declared = [k for k in (evo or []) if k in self.cards]
+        for _k in self.evo_declared:
+            _i = self.cards.index(_k)
             try:
-                _ev = build_spec(db, _k + "_evo", (levels or [11] * len(cards))[_i])
-            except Exception:  # noqa: BLE001 -- no evolution for this card
+                _ev = build_spec(db, _k + "_evo", levels[_i])
+            except KeyError:      # the meta fields it, the KB has no row for it yet -- skip, never fake
                 continue
             if _ev.hp <= 0 and _ev.kind != "spell":
                 continue
-            _evd = (db.get(_k) or {}).get("evolution") or {}
             self.evo_idx, self.evo_spec = _i, _ev
-            self.evo_cycles = int(_evd.get("cycles") or 2)
+            # CYCLES from the EVOLUTION'S OWN ROW. A curated `evolution.cycles` still wins, then
+            # the wiki's Cycles column (`evo_cycles` on the `_evo` row); the old flat `or 2` was
+            # simply wrong for every import-only evo -- Evo Elite Barbarians is 1, not 2.
+            # (`db.evo_cycles()` is not used here: it gates on a curated `evolution.available`
+            # that only 6 base cards carry, so it returns 0 for the other 36 imported evos.)
+            _evd = (db.get(_k) or {}).get("evolution") or {}
+            self.evo_cycles = int(_evd.get("cycles")
+                                  or (db.get(_k + "_evo") or {}).get("evo_cycles") or 2)
             break
 
     def _hand_specs(self):
@@ -316,7 +336,8 @@ def make_opponent(cfg, db, rng, pool: List[dict], level: "int | None" = None,
     if level is not None:
         levels = [int(level)] * len(deck["cards"])
     is_adaptive = adaptive and rng.random() < float(cfg.get("sim", "adaptive_prob", default=0.65))
-    return ScriptedBot(cfg, db, rng, deck["cards"], deck["style"], levels, adaptive=is_adaptive)
+    return ScriptedBot(cfg, db, rng, deck["cards"], deck["style"], levels, adaptive=is_adaptive,
+                       evo=deck.get("evo"))       # the deck's DECLARED evolution slot(s), or none
 
 
 class SelfPlayOpponent:

@@ -14,6 +14,13 @@ A battle log covers EVERY mode, including limited-time events, so it offers deck
 do not exist in trophy ladder. Those cards were purged from the KB, so they no longer resolve and the
 decks holding them are dropped (and counted) -- the sim only ever trains against ladder-legal decks.
 
+Per deck it also records the SLOTS the battlelog exposes but the old parse threw away: which card
+was played as an EVOLUTION (`evolutionLevel` on the card entry) and which TOWER TROOP stood behind it
+(`supportCards` on the team entry). Card names still fold to their base key -- "Evo Wizard" and
+"Wizard" are the same deck slot -- but the evolution is now written out as `evo:` and the tower troop
+as `support:` instead of being silently lost, leaving the sim to GUESS the slot. Guessing is what
+produced phantom evolutions (research/sim_parity/conflicts.md, R4/I3).
+
 Best-effort: the rankings endpoint/season can change; on an error the message says so and the curated
 fallback keeps working. Card names are mapped to KB keys (evolutions fold to their base).
 """
@@ -27,13 +34,20 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from collections import Counter
+from collections import Counter, defaultdict
 from pathlib import Path
 
 
 def _name_to_key(name: str) -> str:
     k = name.lower().replace(".", "").replace("'", "")
     return re.sub(r"[ \-]+", "_", k).strip("_")
+
+
+def _modal(counter: Counter) -> tuple:
+    """The most-sighted loadout in a tally, ties broken lexicographically so re-runs agree."""
+    if not counter:
+        return ()
+    return sorted(counter.items(), key=lambda kv: (-kv[1], kv[0]))[0][0]
 
 
 def _get(url: str, token: str, timeout: float = 20.0):
@@ -163,6 +177,14 @@ def import_decks(cfg, limit: int = 1000, players: int = 120) -> None:
 
     # 2) their battle logs -> tally 8-card decks (both sides)
     tally: Counter = Counter()
+    # WHICH card was evolved, and which tower troop stood behind it, per 8-card set. `_name_to_key`
+    # folds "Evo Wizard" onto `wizard`, so without capturing `evolutionLevel` here the slot was lost
+    # and sim/opponents.py had to GUESS it -- which fabricated a phantom evolution in 689 of the
+    # 1000 decks this file produced (MEASURED, tools/evo_audit.py). The MODAL loadout per deck wins
+    # the slot: one deck list gets piloted with different evolutions, and the common one is the
+    # honest single answer.
+    evo_tally: dict = defaultdict(Counter)
+    sup_tally: dict = defaultdict(Counter)
     seen = 0
     n_event = 0
     for i, tag in enumerate(tags):
@@ -175,12 +197,14 @@ def import_decks(cfg, limit: int = 1000, players: int = 120) -> None:
             for side in ("team", "opponent"):
                 for entry in b.get(side, []):
                     raw = entry.get("cards", [])
-                    keys = []
+                    keys, evos = [], []
                     for c in raw:
                         k = _name_to_key(c.get("name", ""))
                         base_k = k[:-4] if k.endswith("_evo") else k
                         if db.get(base_k):
                             keys.append(base_k)
+                            if c.get("evolutionLevel"):    # set only on a card in an EVO slot
+                                evos.append(base_k)
                     # A battle log covers EVERY mode, including limited-time events, so decks
                     # holding party_*/super_*/Heal/etc. show up here. Those cards were purged from
                     # the KB, so they no longer resolve -- which means a deck containing one is
@@ -189,7 +213,13 @@ def import_decks(cfg, limit: int = 1000, players: int = 120) -> None:
                     if len(raw) == 8 and len(keys) < 8:
                         n_event += 1
                     if len(keys) == 8:
-                        tally[tuple(sorted(keys))] += 1
+                        ck = tuple(sorted(keys))
+                        tally[ck] += 1
+                        evo_tally[ck][tuple(sorted(set(evos)))] += 1
+                        # The tower troop is NOT a deck card and has no KB row, so it is recorded
+                        # by name-key with no `db.get` filter -- filtering would drop all of them.
+                        sup_tally[ck][tuple(_name_to_key(s.get("name", ""))
+                                            for s in (entry.get("supportCards") or []))] += 1
                         seen += 1
         if (i + 1) % 20 == 0:
             print(f"[decks-import] scanned {i + 1}/{len(tags)} players, {seen} decks so far...")
@@ -208,9 +238,20 @@ def import_decks(cfg, limit: int = 1000, players: int = 120) -> None:
              f"players ({source}), {seen} deck-sightings. Regenerate with `run.py decks-import`.",
              "# LADDER-LEGAL ONLY: a battle log covers every mode, so decks holding event-only cards"
              f" are dropped ({n_event} sightings this run). `weight` = raw sighting count.",
+             "# `evo` = the evolution(s) the deck was SEEN fielding (battlelog `evolutionLevel`), "
+             "`support` = its tower troop.",
+             "# Both are the deck's MODAL loadout. No `evo` = never seen evolved, and the sim fields"
+             " none rather than guessing.",
              "decks:"]
     for n, (cards, count) in enumerate(top_decks, 1):
-        lines.append(f"  - {{name: meta_{n:03d}, weight: {count}, cards: [{', '.join(cards)}]}}")
+        evo = [k for k in _modal(evo_tally[cards]) if k in cards]
+        sup = _modal(sup_tally[cards])
+        bits = [f"name: meta_{n:03d}", f"weight: {count}", f"cards: [{', '.join(cards)}]"]
+        if evo:
+            bits.append(f"evo: [{', '.join(evo)}]")
+        if sup:
+            bits.append(f"support: {sup[0]}")
+        lines.append("  - {" + ", ".join(bits) + "}")
     out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"[decks-import] wrote {len(top_decks)} decks -> {out_path} "
           f"(most common: {'/'.join(top_decks[0][0][:3])}... x{top_decks[0][1]})")

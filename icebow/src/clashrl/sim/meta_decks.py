@@ -48,8 +48,29 @@ def classify_style(db, cards: List[str]) -> str:
 _CACHE: dict = {}
 
 
+def _slots(d: dict, field: str, cards: List[str]) -> List[str]:
+    """A deck entry's declared `evo:` / `support:` slot list, normalised and validated.
+
+    Accepts a single key or a list (the importer writes `evo: [a, b]` and `support: x`). An `evo`
+    key that is not IN the deck is dropped: it can only be a data error, and silently believing it
+    would put the bot's evolution on a card it does not hold.
+    """
+    v = d.get(field)
+    if v is None:
+        return []
+    keys = [str(x) for x in (v if isinstance(v, (list, tuple)) else [v]) if x]
+    if field == "evo":
+        keys = [k for k in keys if k in cards]
+    return keys
+
+
 def load_meta_decks(cfg, db) -> List[dict]:
-    """Return [{name, weight, cards, style}], validated against the KB. Falls back to the built-ins.
+    """Return [{name, weight, cards, style, evo, support}], validated against the KB.
+
+    `evo` is the deck's DECLARED evolution slot(s) and `support` its tower troop, both measured
+    from top-ladder battlelogs (research/sim_parity/ledger/meta_evo_slots.json, R4). Empty when
+    the deck was never seen -- ScriptedBot then fields NO evolution rather than guessing one,
+    which is what used to fabricate phantom evolutions. Falls back to the built-ins.
 
     Cached by the file's timestamp: parsing ~1000 decks out of a 140 KB YAML and classifying
     each one is pure startup cost that a vectorised run would otherwise pay once per env.
@@ -67,7 +88,8 @@ def load_meta_decks(cfg, db) -> List[dict]:
     except OSError:
         key = None
     if key is not None and key in _CACHE:
-        return [{**d, "cards": list(d["cards"])} for d in _CACHE[key]]
+        return [{**d, "cards": list(d["cards"]), "evo": list(d["evo"]),
+                 "support": list(d["support"])} for d in _CACHE[key]]
 
     out: List[dict] = []
     if path.exists():
@@ -76,9 +98,11 @@ def load_meta_decks(cfg, db) -> List[dict]:
             cards = list(d.get("cards") or [])
             if len(cards) == 8 and all(db.get(_base(c)) for c in cards):
                 out.append({"name": str(d.get("name", "deck")), "weight": float(d.get("weight", 1.0)),
-                            "cards": cards, "style": classify_style(db, cards)})
+                            "cards": cards, "style": classify_style(db, cards),
+                            "evo": _slots(d, "evo", cards), "support": _slots(d, "support", cards)})
     if not out:
-        out = [{"name": n, "weight": 1.0, "cards": list(c), "style": classify_style(db, c)}
+        out = [{"name": n, "weight": 1.0, "cards": list(c), "style": classify_style(db, c),
+                "evo": [], "support": []}
                for n, c in _BUILTIN]
 
     # LADDER SKEW. meta_decks.yaml is scraped popularity across the whole population, but the bot
@@ -110,4 +134,5 @@ def load_meta_decks(cfg, db) -> List[dict]:
     if key is not None:
         _CACHE.clear()                        # only the current generation is useful
         _CACHE[key] = out
-    return [{**d, "cards": list(d["cards"])} for d in out]
+    return [{**d, "cards": list(d["cards"]), "evo": list(d["evo"]),
+             "support": list(d["support"])} for d in out]
