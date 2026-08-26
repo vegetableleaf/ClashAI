@@ -53,3 +53,21 @@ own rule text on the same revision).
 * Whether the per-page ability cooldowns (Archer Queen 17s, Skeleton King 20s, etc.) retain any
   meaning under single-use, or are simply dead numbers. None of these pages were updated for the
   4/8/2026 change.
+
+## 2026-08-26 — Owner rulings (batch 2)
+
+9. **Rarity level floors (owner; verify from wiki during R2):** commons start at level 1, rares at
+   3, epics at 6, legendaries at 9, **champions at 11**. This RESOLVES conflict C1: the old
+   "Explosive Escape 440 @ L13" reverse-derivation sought an integer LEVEL-1 base for a champion —
+   a level that does not exist for the rarity — and landed on 366@L11. Anchored at the champion
+   floor, the wiki's integer base **332 @ L11** reproduces the owner's observed 440 at L14
+   (332 -> 365 -> 402 -> 440/442). => C1 RESOLVED: `ability_bomb_damage` 366 -> **332** (@L11
+   reference), lands in Phase I stage I5. The KB comment "not published" is deleted with it.
+   FOLLOW-ON for R2: check every value in the KB that was REVERSE-DERIVED from an in-game
+   observation for the same anchor error, and check `levels.py` inversion (`base_for`) against
+   full wiki ladders per rarity — champion/legendary rows may need floor-aware anchoring.
+10. **Golden Knight Dashing Dash (owner; verify from wiki during R2):** he keeps dashing until
+    there are NO more targets in range OR the max target count is reached, whichever comes first;
+    he stops AT THE LAST TARGET'S LOCATION and then moves/attacks like a normal troop. => resolves
+    agent A's load-bearing unknown: "no targets in range" ENDS the ability (no pause-and-resume),
+    and there is no return-to-origin. Chain cap per the page: 10 dashes.

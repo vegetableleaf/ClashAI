@@ -90,7 +90,7 @@ In-game checks queued for the owner (full list in each YAML's open_questions):
 
 ## 2026-08-25 — R1c champion specs: conflicts for owner batch review
 
-### C1. ⚠ Mighty Miner Explosive Escape damage — sim 366 vs wiki 332 (@L11). NEEDS ONE ANSWER FROM OWNER.
+### C1. RESOLVED 2026-08-26 (decisions.md ruling 9): wiki 332 @L11 is correct; 366 was a reverse-derivation anchored at a nonexistent champion level 1. Fix lands in I5.
 `hogeq/config/cards.yaml` has `ability_bomb_damage: 366` with a comment asserting the value "is not
 published in the KB." **It is published**: `vardefine escape_11 = 332` (statistics column
 "Explosive Escape Damage", Mighty_Miner.wikitext archive).
