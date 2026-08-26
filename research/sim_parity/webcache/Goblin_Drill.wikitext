@@ -1,3 +1,4 @@
+<!-- revid:437382 fetched:2026-08-26T2 title:Goblin Drill -->
 {{DISPLAYTITLE: <span style="color: #b300b3;">Goblin Drill</span>}}
 {{Protection}}{{MagicWords}}
 

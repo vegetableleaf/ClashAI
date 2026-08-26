@@ -1,3 +1,4 @@
+<!-- revid:436552 fetched:2026-08-26T2 title:Goblin Cage -->
 {{DISPLAYTITLE:<span style="color: #ffa31a;">Goblin Cage</span>}}
 {{Protection}}{{MagicWords}}
 

@@ -1,3 +1,4 @@
+<!-- revid:437343 fetched:2026-08-26T2 title:Fire Spirit -->
 {{Protection}}{{MagicWords}}{{ClashofClansLink|Furnace/Firemite}}
 
 {{Card Infobox|Cost=1|Rarity=Common|Type=Troop|Arena=Spell Valley|ReleaseDate=3 May 2016}}

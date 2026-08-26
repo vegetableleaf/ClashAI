@@ -1,3 +1,4 @@
+<!-- revid:437362 fetched:2026-08-26T2 title:Barbarians -->
 {{Protection}}{{MagicWords}}{{ClashofClansLink|Barbarian}}
 
 {{Card Infobox|Cost=5|Rarity=Common|Type=Troop|Arena=Barbarian Bowl|ReleaseDate=4 January 2016}}

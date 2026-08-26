@@ -1,0 +1,235 @@
+{{DISPLAYTITLE:<span style="color: #ffa31a;">Inferno Tower</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}{{Card Infobox|Cost=5|Rarity=Rare|Type=Building|Arena=Spell Valley|ReleaseDate=4 January 2016}}{{SubpageNavBox|MergeTactics=yes}}{{Quote|Defensive building, roasts targets for damage that increases over time. Burns through even the biggest and toughest enemies!}}
+
+The Inferno Tower is a {{Rarity|Rare}} [[Cards|card]] that is unlocked from the [[Arenas|Spell Valley (Arena 4)]]. It spawns a single-target, air-targeting, long-ranged, [[:Category:Building Cards|building]] with high hitpoints and various damage stage. The Inferno Tower's damage increases over time as it remains focused on a single target. It appears as a tall, narrow building made of iron, straddling on top of a lava pool, with a glowing orange lens on top and two team-colored spokes on the sides. An Inferno Tower card costs 5 [[Elixir]] to deploy.
+
+==Modifiers==
+===[[File:Inferno Tower Common Modifier.png|45x45px]] Common: Don't Hold Back===
+{{Quote|-100% charge time}}
+Inferno Tower's charge speed is increased by 100%, for a total of 1 second.
+
+===[[File:Inferno Tower Rare Modifier.png|45x45px]] Rare: I Triple Dog Dare You===
+{{Quote|x3 Targets}}
+Inferno Tower can attack up to three targets instead of one.
+
+===[[File:Inferno Tower Epic Modifier.png|45x45px]] Epic: The Unbalanced Beam===
+{{Quote|Max beam damage}}
+Inferno Tower's attack now starts at Stage 3 instead of Stage 1.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Inferno Tower Card}}
+*The Inferno Tower is extremely effective against high hitpoint [[:Category:Troop Cards|troops]] such as [[Giant]]s, [[Balloon]]s, [[Golem]]s, [[Hog Rider]]s, [[Lava Hound]]s, [[Giant Skeleton]]s, [[Knight/Evolution|Evolved Knight]]s, [[P.E.K.K.A.|P.E.K.K.A]]s, [[Valkyrie/Evolution|Evolved Valkyrie]]s, [[Mega Knight]]s, [[Prince]]s, [[Goblin Machine]]s, [[Mighty Miner]]s, [[Skeleton King]]s, [[Royal Giant]]s, [[Battle Healer]]s, [[Monk]]s, [[Ram Rider]]s, and [[Bowler]]s due to its intensifying damage over time. If placed correctly, the Inferno Tower can counter many pushes if not specifically addressed.
+*For the first two seconds, it does 5% of its max damage, 18.75% in the next two and after that it hits for full damage.
+*One way of circumventing the Inferno Tower is to swarm it with numerous, low [[Elixir]] cost units such as [[Spear Goblins]], [[Bats]], [[Goblins]], or [[Skeletons]]. Due to the fact it can only burn one target at a time and its slow re-targeting speed, the troops will overpower the Inferno Tower and eventually destroy it.
+*In a similar way, the player can deploy [[:Category:Spell Cards|spells]] that spawn troops on the Inferno Tower to distract it, such as [[Barbarian Barrel]], [[Graveyard]], and [[Goblin Barrel]], although this is situational and can be easily addressed with spells that can immediately defeat those troops such as [[The Log]]. The [[Miner]] and [[Goblin Drill]] can be used similarly.
+*The Inferno Tower will reset its charge if it defeats a shield from a troop like a [[Dark Prince]], [[Guards]], or [[Royal Recruits]]. Knowing this, you can place these troops in front of your main offensive unit to increase the likelihood of it surviving against the Inferno Tower.
+*Another way to effectively counter the Inferno Tower is to use [[cards]] with a stun effect. [[Zap]], [[Freeze]], [[Ice Spirit]], [[Electro Spirit]], [[Electro Dragon]], [[Zappies]], [[Electro Wizard]], [[Electro Giant]], [[Goblinstein]], and [[Lightning]] will reset the Inferno Tower's damage charge, allowing for an easy opportunity to destroy it. Cards with a constant stunning effect, like the troops mentioned above, are more effective since the Inferno Tower will never be able to ramp up. When using Zap or Lightning on the Inferno Tower, they should be deployed on the fourth second to reset its damage, taking into consideration its ramp up time and the 1-second server delay.
+**On the contrary, it also pairs well with cards that have stun effects, like the Ice Spirit. The stun of those cards will keep attacking troops in place long enough for the Inferno Tower to fully charge its attack and defeat its targets before they deal damage to it. Cards with a knockback effect or [[Tornado]] can be utilized in a similar way.
+*Since the Inferno Tower is vulnerable to swarms of units such as the [[Skeleton Army]], [[Minion Horde]], and [[Goblin Gang]], use a card that deals area damage such as the [[Wizard]], [[Bomber]], [[Princess]], [[Executioner]], [[Bowler]], [[Witch]], [[Goblin Demolisher]], [[Magic Archer]], [[Ice Wizard]], or the [[Firecracker]] to protect it from swarms of low-hitpoint troops. However, this can still be countered by high damage spells such as the [[Rocket]], [[Lightning]], or [[Earthquake]]. If the opponent has such cards, try to draw them out first, or safely place your Inferno Tower where the spell won't hit both the [[:Category:Crown Towers|Crown Tower]] and Inferno Tower.
+*An [[Earthquake]] combined with a [[Zap]] can severely cripple, if not take out the Inferno Tower entirely. This is a great alternative to [[Lightning]], for 1 less Elixir. A lone Earthquake is not worth using on an Inferno Tower though, as the Inferno Tower will be able to kill any incoming tank before Earthquake destroys it.
+*[[Wizard]] + [[P.E.K.K.A.|P.E.K.K.A]] pushes can easily be countered with the Inferno Tower, as the Inferno Tower will quickly take out the P.E.K.K.A and a tanky troop like the [[Knight]], [[Valkyrie]], [[Prince]], [[Monk]], [[Battle Healer]], [[Skeleton King]], [[Goblin Machine]], [[Mighty Miner]], or the [[Golden Knight]] should be able to take out any support units after the P.E.K.K.A is gone. [[Giant Skeleton]]s can distract units and will also deal enough death damage to take out any support units behind the P.E.K.K.A.
+*Against a [[Lava Hound]] + [[Balloon]] push, it is better to place the Inferno Tower close to the bridge. The Lava Hound has a longer range than the Balloon, and because of this, it will stay untargeted by the Crown Tower, forcing the Balloon to be targeted by it instead. Together, they will be defeated by the Inferno Tower, only leaving the Lava Pups alive, which can be killed by [[Arrows]] or a backup anti-air troop like the [[Musketeer]], [[Wizard]], [[Electro Wizard]], and [[Hunter]].
+**However, the Inferno Tower will not stop a [[Lava Hound]] + [[Balloon]] push by itself if the opponent uses [[Zap]] or [[Ice Spirit|Ice Spirit.]]
+*Thanks to its high hitpoints and damage, it can a situational counter to an [[X-Bow]] or [[Mortar]] placed at the bridge. It will burn through the building and possibly any support troops for the building. If the Inferno Tower survives, it will also discourage the opponent from attacking further.
+**Conversely, deploying the Inferno Tower next to an X-Bow or Mortar can defend it from tanks like the Giant that would destroy it or otherwise distract it for a long time.
+*** If the opponent puts down swarm units (ex. [[Goblin Gang]], [[Skeleton Army]], [[Bats/Evolution|Evolved Bats]], or [[Minion Horde]]), then get ready to deploy splash units, such as the [[Ice Wizard]], or spells, such as [[Arrows]], [[The Log|The Log,]] or [[Zap/Evolution|Evolved Zap]].
+*** The combo is expensive and risky; it costs 11 Elixir to place, and can be easily nullified using certain cards such as Lightning.
+*It can act as a [[Zap]] bait allowing you to play combos that are devastating if left ignored but can easily be countered, such as Ice Spirit + [[Goblins]].
+*Similarly, it can be used as Lightning bait, since the [[Lightning]] spell deals high damage and stuns the building, while also being able to hit other units in its radius. This can allow you to place troops that would be one hit knockout by the spell, such as a [[Witch]], [[Wizard]], [[Hunter]], [[Fisherman]], [[Archer Queen]], [[Phoenix]], [[Bandit]], [[Night Witch]], or an Electro Dragon.
+*[[Minions]] and [[Bats]] can be used to distract the Inferno Tower effectively if the opponent doesn't have cards that can counter them. However, this can also be countered by a [[Fire Spirit]] or a Wizard. Players will send Minions and Bats across the river to distract your Inferno Tower from targeting their tank once they realize you have the Inferno Tower, so switching up your Inferno placement is highly recommended, so you can safely counter pushes like these.
+*A [[Rocket]] can severely cripple an Inferno Tower, and depending on when it is deployed, it may be able to fully destroy it. However, this is a negative Elixir trade, so only use this if it can hit another card alongside the Inferno Tower.
+*If an Inferno Tower survives a push with decent health to spare, you can place a Mortar or [[Princess]] at the bridge for an immediate attack. The opponent will most likely respond with a troop, which will then proceed to attack the Inferno Tower, only to be melted by it. This allows the Inferno Tower to make better use of its 30-second lifetime, and can otherwise negate the Elixir deficit the player would have from attacking.
+*Beware of [[Dart Goblin]]s, [[Magic Archer]]s, and Princesses that the opponent might place. These troops outrange the Inferno Tower, and they can weaken it enough for their offensive troop to approach it with less harm. Eliminate these threats as quickly as possible.
+*In a pinch, it can be used to defeat air troops, like [[Baby Dragon]]s, [[Flying Machine]]s, [[Mega Minion]]s, [[Phoenix]]es, [[Skeleton Dragons]], and [[Skeleton Barrel]]s. Use it as such if you lack better counters to air troops or if said counters are not in your card rotation.
+*The Inferno Tower is also a good counter to the [[Electro Giant]]. Its long range and ramp up damage will burn through most of the Electro Giant's health before he can reach it with its stun radius. Using other stun cards like Ice Spirit or Zap to stun the [[Electro Giant]] can cause the Inferno Tower to completely kill him.
+*Despite its single-target nature, the Inferno Tower can fully counter the [[Royal Hogs]] thanks to its massive health allowing it to distract the Royal Hogs for a long time for the Towers to damage them.
+*An Inferno Tower can be interchanged with a [[Cannon]] or a [[Tesla]], depending on what the player is prioritizing in their [[Battle Decks|deck]]. The Cannon costs 2 less [[Elixir]], but doesn't target air troops, so it may be more efficient to have the Cannon if the player already has many air counters. The Tesla costs 1 less Elixir and is less effective against high hitpoint units, but it is less volatile, being more reliable against swarms and [[cards]] with a stun effect. In addition, both the [[Cannon]] and the [[Tesla]] are {{Rarity|Common}} cards, so it will be easier to level up for use on the ladder.
+*The Inferno Tower is excellent in the [[Treasure Hunt]] [[:Category:Modes|game mode]]. Its gargantuan damage per second allows you to claim the treasure building before your opponent manages to do so with other cards, and its high health means that it is nearly impossible to defeat before it can claim the building.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost
+{{Icon|I=Elixir}}
+! scope="col" |Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |Deploy Time
+{{Icon|I=Deploy Time}}
+! scope="col" |Lifetime
+{{Icon|I=Time}}
+! scope="col" |Range
+{{Icon|I=Range}}
+! scope="col" |Target
+{{Icon|I=Targets}}
+! scope="col" |Type
+{{Icon|I=Type}}
+! scope="col" |Rarity
+{{Icon|I=Rarity}}
+|-
+|5
+|0.4 sec
+|1 sec
+|30 sec
+|6
+|Air & Ground
+|[[:Category:Building Cards|Building]]
+|{{Rarity|Rare}}
+|}
+{{StatusEffects}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 1748 }}
+{{#vardefine: 1_dmg_11 | 43 }}
+{{#vardefine: 2_dmg_11 | 158 }}
+{{#vardefine: 3_dmg_11 | 847 }}
+{{#vardefine: life | 30 }}
+{{#vardefine: atk_speed | 0.4 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+! scope="col"|Hitpoints lost per second<br />{{Icon|I=Time}}
+!scope="col"|1 stage Damage<br>{{Icon|I=Damage}}
+!scope="col"|1 stage Damage Per Second<br>{{Icon|I=DPS}}
+!scope="col"|2 stage Damage<br>{{Icon|I=Damage}}
+!scope="col"|2 stage Damage Per Second<br>{{Icon|I=DPS}}
+!scope="col"|3 stage Damage<br>{{Icon|I=Damage}}
+!scope="col"|3 stage Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) / {{#var:life}} round 1 }} ||{{#expr: {{#var:1_dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#expr: {{#var:hp_11}} / {{#var:life}} round 1 }} || {{#var:1_dmg_11}} || {{Dps|{{#var:1_dmg_11}}|{{#var:atk_speed}} }}|| {{#var:2_dmg_11}} || {{Dps|{{#var:2_dmg_11}}|{{#var:atk_speed}} }}|| {{#var:3_dmg_11}} || {{Dps|{{#var:3_dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:1_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:1_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:2_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:2_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }} || {{#expr: {{#var:3_dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:3_dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective 
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 110,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|100 {{BASEPAGENAME}} cards<br>50 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 330,000 Damage to enemy Troops or buildings
+|4,000 {{Icon|I=Gold}}<br>50 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 550,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>50 {{Icon|I=XP}}
+|-
+| rowspan="3" |Inferno Master <br> [[File:Inferno Master.png|50x50px]]
+|1
+|Hit Troops a total of 280 times with a fully charged Inferno beam
+|6,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|-
+|2
+|Hit Troops a total of 800 times with a fully charged Inferno beam
+|100 {{Icon|I=Rare Wild Card}}<br>125 {{Icon|I=XP}}
+|-
+|3
+|Hit Troops a total of 1,400 times with a fully charged Inferno beam
+|9,000 {{Icon|I=Gold}}<br>125 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+== History==
+2016
+*The Inferno Tower [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016.
+*On 2/2/2016, the [[Version History#February 2016 Update (2/2/2016)|February 2016 Update]], decreased the Inferno Tower's lifetime to 45 seconds (from 60 seconds) and increased the Inferno Tower's re-targeting time by 0.4 seconds.
+*On 19/2/2016, a [[Version History#Balance Changes (19/2/2016)|Balance Update]] decreased the Inferno Tower's hitpoints by 6% and lifetime to 40 seconds (from 45 seconds).
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], increased the {{Rarity|Rare}} card Level cap to 11 (from 10). The update also fixed the “range bug”, which decreased the Inferno Tower's range to 6 tiles (from 6.5 tiles), but its effective range is unchanged.
+*On 4/7/2016, the [[Version History#Tournaments Update (4/7/2016)|Tournaments Update]], increased the Inferno Tower's hitpoints by 6%. It also gave [[Zap]] and [[Freeze]] the ability to reset the damage output.
+*On 1/11/2016, the [[Version History#November 2016 Update (1/11/2016)|November 2016 Update]], decreased the Inferno Tower's hitpoints by 6%.
+2017
+*On 9/10/2017, the [[Version History#Epic%20Quests%20Update%20(9/10/2017)|Epic Quests Update]], fixed a bug where the Inferno Tower's damage did not reset after breaking a shield. This change was reverted on 11/10/2017, in a [[Version History#Maintenance%20Break%20(11/10/2017)|maintenance break]].
+*On 12/12/2017, the [[Version History#Electrifying%20Update%20(12/12/2017)|Electrifying Update]], reverted the Inferno Tower to its state on 9/10/2017. More specifically, the Inferno Tower's damage would now reset after breaking a shield.
+2018
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], fixed a bug where the Inferno Tower would occasionally stop shooting at the edge of its range.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Rare}} cards start at Level 3 and end at Level 13 (from 1 to 11).
+*On 5/11/2018, a [[Version History#Balance Changes (5/11/2018)|Balance Update]], increased the Inferno Tower's hitpoints by 3%.
+2019
+*On 1/7/2019, the [[Version History#July%202019%20Update%20(1/7/2019)|July 2019 Update]], decreased the Inferno Tower's lifetime to 30 seconds (from 40 seconds).
+2021
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 3/2/2022, a [[Version History#Balance%20Changes%20(3/2/2022)|Balance Update]], decreased the Inferno Tower's re-targeting time by 0.4 seconds.
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the [[Arenas|Arena]] to unlock the Inferno Tower from P.E.K.K.A's Playhouse to Spell Valley.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2025
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Inferno Tower's hitpoints by 0.05%.
+
+==Gallery==
+<gallery>
+File:Inferno Tower Preview.gif|Current card preview
+File:Inferno Tower 1.png|Inferno Tower 1
+File:Inferno Tower 2.png|Inferno Tower 2
+File:Inferno Tower 3.png|Inferno Tower 3
+File:Inferno tower.png|In-game sprite
+</gallery>
+
+==Trivia==
+*The word "''Inferno''" comes from the Latin "''inferus''", meaning underworld.
+**In the French, Russian, Persian, and Malaysian language settings of the game, the Inferno Tower's name translates to "Hell Tower". In the Chinese and Vietnamese language settings of the game, the Inferno Tower's name translates to "Tower of Hell". In the Turkish and Arabic language settings of the game, the Inferno Tower's name translates to "Disaster Tower" and "Fire Tower" respectively.
+*The Inferno Tower is 1 of 7 [[:Category:Building Cards|buildings]] which first existed in Clash of Clans, the others being [[Cannon]], [[Mortar]], [[Tesla]], [[Goblin Hut]], [[Elixir Collector]], and [[X-Bow]].
+**The Inferno Tower resembles the [https://clashofclans.fandom.com/wiki/Inferno_Tower Level 1 Inferno Tower] from Clash of Clans. Its [[Star Points|Star Level 2 skin]] resembles the Level 3 Inferno Tower in Clash of Clans.
+**Unlike its Clash of Clans counterpart, the Inferno Tower in Clash Royale cannot be set to attack multiple units simultaneously for constant damage.
+*The Inferno Tower is one of the first building [[cards]] to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the Cannon, Goblin Hut, [[Tombstone]], [[Bomb Tower]],  and [[Barbarian Hut]].
+*Though not the first cards to receive balance changes, the Inferno Tower is one of the first {{Rarity|Rare}} cards to ever receive balance changes since the [[Version History#February 2016 Update (2/2/2016)|February 2016 Update]], the others are the [[Wizard]], Bomb Tower, Barbarian Hut, and Elixir Collector.
+*While attacking a target, the waves around its main beam will gradually become thicker and the fire on the tip of the tower will flare more intensely.
+*A stream of thick, black smoke rises from its target.
+*The Inferno Tower is unavailable in multiple [[Tournament/Special Event Challenges|special game modes]]. More specifically:
+**It is 1 of 20 cards that is unavailable in [[Mirror]] mode, the others being [[Minions]], Cannon, Mortar, Tesla, Goblin Hut, Tombstone, Bomb Tower, Barbarian Hut, [[Furnace]], Elixir Collector, [[Freeze]], [[Clone]], X-Bow, [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], [[Mighty Miner]], [[Little Prince]], and the [[Monk]].
+**It is unavailable in [[Global Spell|The Floor is Healing]] sub-[[:Category:Modes|mode]] of the Global Spell game mode, much like other building cards, as well as the [[Cannon Cart]].
+*The Inferno Tower bears more than a passing resemblance to the [[lotr:Eye_of_Sauron|Eye of Sauron]] from [[lotr:Main_Page|The Lord of the Rings]] series. This resemblance has been referenced a few times:
+**The Inferno Tower is the subject of an [[Emotes|Emote]] where its orange lens looks similar to the Eye of Sauron.
+**The [[Merge Tactics]] [[Inferno Tower/Merge Tactics|Inferno Tower]]'s description "It may only attack an enemy, but it sees them all" is a reference to the Eye of Sauron.
+*The Inferno Tower was featured in the winning deck of the [https://youtu.be/LWQjS0e6iiE Super Magical Cup Tournament], by a player called CMcHugh.
+*On 1/10/2018, the Inferno Tower was supposed to receive a 4.5% hitpoints increase, but this change [https://x.com/ClashRoyale/status/1043051141687324672 was pulled back last minute].
+*Before the Inferno Tower's card release, the Inferno Tower's cost was decreased to 5 [[Elixir]] (from 6 Elixir) and its hitpoints were increased by 1%.
+
+{{Navigation|Card}}
+
+[[fr:Tour de l'enfer]]
+[[de:Infernoturm]]
+[[es:Torre infernal]]
+[[it:Torre infernale]]
+[[ja:インフェルノタワー]]
+[[ko:인페르노 타워]]
+[[ru:Адская башня]]
+[[zh:地狱之塔]]

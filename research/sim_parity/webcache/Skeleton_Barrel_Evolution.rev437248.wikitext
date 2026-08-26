@@ -1,0 +1,155 @@
+{{Protection}}{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Skeleton Barrel</span>}}
+{{Evolved Card Infobox|Cost=3|CycleCost=2|Cycles=2|Rarity=Common|Type=Troop|Arena=Jungle Arena|ReleaseDate=7 July 2025}}
+{{Quote|Is it a bird? Is it a plane? Is it... two Barrels full of Skeletons? When Evolved Skeleton Barrel drops its Barrels, it deals Death Damage and spawns Skeletons. Upon taking enough Damage, a Barrel will drop early.}}
+
+The Skeleton Barrel's Evolution is a {{Rarity|Common}} [[Cards|card]] unlocked with 6 Evolution Shards. It spawns a Skeleton Barrel with hitpoints 25% higher and death damage 64% higher than the original. It spawns with 2 barrels, each with 7 [[Skeletons]]: one dropped when it reaches 75% hitpoints, and another dropped when it is defeated. It is a golden-spiked, dark brown, double barrel with a [[Card Evolution]] symbol on both sides chained to a pair of team-colored balloons with a violet skull printed on them and a small spike on top of them. The Skeleton Barrel's Evolution costs 3 [[Elixir]] and requires 2 cycles to deploy.
+
+==Strategy==
+*Due to the addition of a second barrel, as well as the first one dropping early, the Evolved Skeleton Barrel becomes far more dangerous. If the opponent carries only a small [[:Category:Spell Cards|spell]] to take the card down, the opponent must either use it on the first barrel's [[Skeletons]] and the remaining barrel, which risks chip damage from the second barrel's skeletons, or wait for the surviving barrel to drop the Skeletons and defeat them all with the spell, risking chip damage from both the remaining barrel and the Skeletons from the first barrel. From this interaction, some things can be noted.
+**This is valid for [[Tower Princess]], [[Cannoneer]], and [[Royal Chef]], who will quickly trigger the Evolved Skeleton Barrel's first barrel drop, but let the second one connect. For [[Dagger Duchess]], she will defeat the Barrel quickly enough so that all of the Skeletons clump up and the small spell will make quick work of them.
+**A well timed [[Giant Snowball]] will avoid a lot of said damage, and an [[Giant Snowball/Evolution|Evolved Giant Snowball]] prevents almost all damage, all for a +1 [[Elixir]] trade. The same can be applied to the [[Tornado]] for a neutral Elixir trade.
+**A 2-Elixir spell + a Spirit card can prevent all damage when properly timed. An [[Electro Spirit]] can defeat the Skeletons from the first barrel and stun and damage the remaining barrel, leaving the spell for the second barrel, while, for the other Spirits, it's best to let the spell damage the remaining barrel + the first barrel's Skeletons, while the Spirit card defeats the remaining Skeletons.
+**A well timed [[Earthquake]] will prevent all damage done by Skeletons, only allowing the second barrel's death damage. For Dagger Duchess, it completely prevents damage for a neutral Elixir trade.
+*Since a singular Evolved Skeleton Barrel's death damage is slightly more than a normal Skeleton Barrel, their combined death damage deals more damage than a [[Rocket]]. As such, it can be good to prepare a big push or a counterpush with it, so that the Evolved Skeleton Barrel can connect both of its barrels on the [[:Category:Crown Towers|Crown Tower]] while the other cards take hits against [[:Category:Building Cards|buildings]] and anti-air units. If the Skeletons are not dealt with, then a Crown Tower is lost, and even if the death Skeletons do not connect, the Crown Tower will have suffered a lot of damage.
+*The Evolved Skeleton Barrel is also a great defensive card. Against clumped up units with some anti-air cards, one can deploy the Evolved Skeleton Barrel on top of them to let itself drop one or both barrels on the units. A single barrel's death damage can defeat up to [[Minions]], and the combined death damage can defeat [[Elixir Golem|Elixir Blobs]]. The death Skeletons may also be useful for extra damage, finishing off certain units that survive with a silver of health, or extra distraction.
+*To combat the Evolved Skeleton Barrel, anti-air units with a high hit speed or an AoE attack should help. When put at a distance so that the death damage doesn't take them out, troops who attack quickly, like [[Archers]], [[Musketeer]], [[Phoenix]], [[Little Prince]], or [[Dart Goblin]] will quickly deplete the barrels' HP and assist in defeating the Skeletons one by one, while AoE troops, like [[Firecracker]], [[Wizard]], [[Princess]], and [[Executioner]], will clear the death Skeletons all at once while dealing with the barrel.
+*Splash troops who do not target air, like [[Valkyrie]], [[Skeleton King]], [[Bomber]], [[Dark Prince]], [[Goblin Demolisher]], and [[Bowler]], can still work to take the Skeletons down, but it leaves the Crown Tower vulnerable to one barrel's death damage (or both of them).
+*A well-timed [[Furnace/Evolution|Evolved Furnace]] can be sufficient to counter all but the second barrel's death damage (or even counter all damage) when the Evolved Skeleton Barrel takes the Crown Tower damage. One must place it so that the first [[Fire Spirit]] spawned clears the first barrel's Skeletons. Then, once it attacks, the second Fire Spirit might spawn just as the second barrel deploys more Skeletons.
+*The [[Bomb Tower]] is the most reliable counter to an Evolved Skeleton Barrel for -1 Elixir. It's tanky enough to handle the barrel's death damage and the Skeletons' own damage, while having an AoE attack that quickly dispatches the card's death spawns. It can also survive an Earthquake with high enough health to still counter the Evolved Skeleton Barrel.
+*When timed correctly, the [[Cannon/Evolution|Evolved Cannon]] and the [[Tesla/Evolution|Evolved Tesla]] can clear out the first barrel's Skeletons with their abilities, cripple the second barrel, and deal with said barrel's Skeletons. The former is a neutral elixir trade, while the latter can counter the Evolved Skeleton Barrel well even with just a normal center placement.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Evolved Skeleton Barrel Attributes}}
+{|class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+!scope="col"|Cost<br/>{{Icon|I=Elixir}}
+!scope="col"|Speed<br/>{{Icon|I=Speed}}
+!scope="col"|Range<br/>{{Icon|I=Range}}
+!scope="col"|Deploy Time<br/>{{Icon|I=Deploy Time}}
+!scope="col"|Target<br/>{{Icon|I=Targets}}
+!Count
+{{Icon|I=Troop Count}}
+!scope="col"|Transport<br/>{{Icon|I=Transport}}
+!scope="col"|Type<br/>{{Icon|I=Type}}
+!scope="col"|Rarity<br/>{{Icon|I=Rarity}}
+|-
+|3||Fast (90)||Melee: Short (0.35)||1 sec||Buildings
+|2||Air||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+
+{{StatisticsSubheader|Evolution Attributes}}
+{|class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+!scope="col"|Cycles<br/>{{Icon|I=Cycles}}
+!Barrel Count
+{{Icon|I=Troop Count}}
+!scope="col"|1st Barrel Activation<br/>{{Icon|I=Activation}}
+|-
+|2||2||75%
+|}
+
+{{StatisticsSubheader|Skeleton Container Attributes}}
+{|class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+!scope="col"|Death Damage Splash Radius<br/>{{Icon|I=Radius}}
+!scope="col"|Deploy Time<br/>{{Icon|I=Deploy Time}}
+!scope="col"|Target<br/>{{Icon|I=Targets}}
+|-
+|2||0.6 sec||Air & Ground
+|}
+
+{{StatisticsSubheader|Skeleton Attributes}}
+{|class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+!scope="col"|Hit Speed<br/>{{Icon|I=Damage Speed}}
+!scope="col"|Speed<br/>{{Icon|I=Speed}}
+!scope="col"|Range<br/>{{Icon|I=Range}}
+!scope="col"|Deploy Time<br/>{{Icon|I=Deploy Time}}
+!scope="col"|Target<br/>{{Icon|I=Targets}}
+!scope="col"|Count<br/>{{Icon|I=Troop Count}}
+!scope="col"|Transport<br/>{{Icon|I=Transport}}
+|-
+|1.1 sec||Fast (90)||Melee: Short (0.5)||0.5 sec||Ground||x7||Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 665 }}
+{{#vardefine: death_11 | 238 }}
+{{#vardefine: death_hits | 2 }}
+{{#vardefine: sk_hp_11 | 81 }}
+{{#vardefine: dmg_11 | 81 }}
+{{#vardefine: atk_speed | 1.1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Skeleton Barrel Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Skeleton Barrel Death Damage<br>{{Icon|I=Death Damage}}
+!scope="col"|Skeleton Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Skeleton Damage<br>{{Icon|I=Damage}}
+!scope="col"|Skeleton Damage per second<br>{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(1-11)) round 0 }} x{{#var:death_hits}} ({{#expr: ({{#var:death_11}} * (1.1^(1-11)) round 0) * {{#var:death_hits}} }}) || {{#expr: {{#var:sk_hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(2-11)) round 0 }} x{{#var:death_hits}} ({{#expr: ({{#var:death_11}} * (1.1^(2-11)) round 0) * {{#var:death_hits}} }}) || {{#expr: {{#var:sk_hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(3-11)) round 0 }} x{{#var:death_hits}} ({{#expr: ({{#var:death_11}} * (1.1^(3-11)) round 0) * {{#var:death_hits}} }}) || {{#expr: {{#var:sk_hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(4-11)) round 0 }} x{{#var:death_hits}} ({{#expr: ({{#var:death_11}} * (1.1^(4-11)) round 0) * {{#var:death_hits}} }}) || {{#expr: {{#var:sk_hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(5-11)) round 0 }} x{{#var:death_hits}} ({{#expr: ({{#var:death_11}} * (1.1^(5-11)) round 0) * {{#var:death_hits}} }}) || {{#expr: {{#var:sk_hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(6-11)) round 0 }} x{{#var:death_hits}} ({{#expr: ({{#var:death_11}} * (1.1^(6-11)) round 0) * {{#var:death_hits}} }}) || {{#expr: {{#var:sk_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(7-11)) round 0 }} x{{#var:death_hits}} ({{#expr: ({{#var:death_11}} * (1.1^(7-11)) round 0) * {{#var:death_hits}} }}) || {{#expr: {{#var:sk_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(8-11)) round 0 }} x{{#var:death_hits}} ({{#expr: ({{#var:death_11}} * (1.1^(8-11)) round 0) * {{#var:death_hits}} }}) || {{#expr: {{#var:sk_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(9-11)) round 0 }} x{{#var:death_hits}} ({{#expr: ({{#var:death_11}} * (1.1^(9-11)) round 0) * {{#var:death_hits}} }}) || {{#expr: {{#var:sk_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(10-11)) round 0 }} x{{#var:death_hits}} ({{#expr: ({{#var:death_11}} * (1.1^(10-11)) round 0) * {{#var:death_hits}} }}) || {{#expr: {{#var:sk_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:death_11}} x{{#var:death_hits}} ({{#expr: {{#var:death_11}} * {{#var:death_hits}} }}) || {{#var:sk_hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(12-11)) round 0 }} x{{#var:death_hits}} ({{#expr: ({{#var:death_11}} * (1.1^(12-11)) round 0) * {{#var:death_hits}} }}) || {{#expr: {{#var:sk_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(13-11)) round 0 }} x{{#var:death_hits}} ({{#expr: ({{#var:death_11}} * (1.1^(13-11)) round 0) * {{#var:death_hits}} }}) || {{#expr: {{#var:sk_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(14-11)) round 0 }} x{{#var:death_hits}} ({{#expr: ({{#var:death_11}} * (1.1^(14-11)) round 0) * {{#var:death_hits}} }}) || {{#expr: {{#var:sk_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(15-11)) round 0 }} x{{#var:death_hits}} ({{#expr: ({{#var:death_11}} * (1.1^(15-11)) round 0) * {{#var:death_hits}} }}) || {{#expr: {{#var:sk_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(16-11)) round 0 }} x{{#var:death_hits}} ({{#expr: ({{#var:death_11}} * (1.1^(16-11)) round 0) * {{#var:death_hits}} }}) || {{#expr: {{#var:sk_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div>
+</center>
+
+==History==
+2025
+*The Skeleton Barrel's Evolution [[Cards|card]] was added to the game on 7/7/2025, in the [[Version History#Pass Royale and more (7/7/2025)|July 2025 Update]] {{Balance|Add}}.
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] decreased the death damage to 164% of the original's (from 176%) {{Balance|Nerf}}. It also made it so that [[Witch/Evolution|Evolved Witch]] would no longer would be healed by defeated [[Skeletons]] {{Balance|Neutral}}.
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)=|Balance Update]] increased the Skeleton's attack time interval to 1.1 seconds (from 1.0 seconds).
+2026
+*On 12/1/2026, a Balance Update decreased the Skeleton Barrel's death damage by 8%.
+*On 6/4/2026, a Balance Update, decreased the Skeleton Barrel's death damage by 13%
+
+==Gallery==
+<gallery>
+File:Evolved Skeleton Barrel card render.png|Current card render.
+File:Evolved Skeleton Barrel Preview.gif|Current card preview
+File:SkeletonBarrelEvoShard.png|Skeleton Barrel's Evolution Shard.
+File:Evolved Skeleton Barrel 1.png|Evolved Skeleton Barrel.
+</gallery>
+
+==Trivia==
+*The word "''Skeleton''" comes from the Greek "''σκελετός''" (''skeletós''), meaning dried up or withered.
+*The Skeleton Barrel is 1 of 6 evolved [[cards]] associated with [[Skeletons]], with the others being [[Bomber/Evolution|Bomber]], [[Witch/Evolution|Witch]], [[Wall Breakers/Evolution|Wall Breakers]], [[Skeleton Army/Evolution|Skeleton Army]], and of course, [[Skeletons/Evolution|Skeletons]].
+*The Skeleton Barrel is 1 of 4 evolved [[:Category:Troop Cards|troops]] to die as a part of their attack, the others being the [[Ice Spirit/Evolution|Ice Spirit]], Wall Breakers, and Runners.
+*The barrel of the Evolved Skeleton Barrel looks similar to the hull of the [[Rocket]].
+{{Navigation|Card}}

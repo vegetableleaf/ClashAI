@@ -1,3 +1,4 @@
+<!-- revid:436717 fetched:2026-08-26T2 title:Hunter -->
 {{DISPLAYTITLE: <span style="color: #b300b3;">Hunter</span>}}
 {{Protection}}{{MagicWords}}
 

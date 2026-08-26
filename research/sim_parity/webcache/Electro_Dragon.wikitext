@@ -1,3 +1,4 @@
+<!-- revid:437293 fetched:2026-08-26T2 title:Electro Dragon -->
 {{DISPLAYTITLE: <span style="color: #b300b3;">Electro Dragon</span>}}
 {{Protection}}{{MagicWords}}{{Card Infobox|Cost = 5|Rarity = Epic|Type = Troop|Arena = Spooky Town|ReleaseDate = 9 November 2018}}{{SubpageNavBox|Evolution=yes}}{{Quote|Spits out bolts of electricity hitting up to three targets. Suffers from middle child syndrome to boot.}}
 

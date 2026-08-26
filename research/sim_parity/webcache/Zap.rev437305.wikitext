@@ -1,0 +1,220 @@
+{{DISPLAYTITLE:<span style="color: #888888;">Zap</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=2|Rarity=Common|Type=Spell|Arena=Builder's Workshop|ReleaseDate=4 January 2016}}{{SubpageNavBox|Evolution=yes}}{{Quote|Zaps enemies, briefly stunning them and dealing damage inside a small radius. Reduced damage to Crown Towers.}}
+
+The Zap is a {{Rarity|Common}} [[Cards|card]] that is unlocked from the [[Arenas|Builder's Workshop (Arena 5)]]. It is an area-damage, air-targeting [[:Category:Spell Cards|spell]] with a medium radius and low damage. When used, it can stun enemies in its radius for 0.5 seconds. It is a deep blue liquid encased in a small oblong vial. It is also the same as that spawned by the [[Electro Wizard]]. A Zap card costs 2 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Zap Card}}
+*Zap inflicts area damage, similar to the [[Arrows]]. As such, the Zap can also be used as an alternative to Arrows, as it deploys instantly, has an added brief stun and costs less at 2 [[Elixir]]. However, the Zap inflicts less damage, has a rather shorter [[:Category:Spell Cards|spell]] duration and a much smaller AOE. 
+**Nevertheless, in most cases, Zap's instantly deploying ability can come in handy if the opponent has swarm [[cards]] like Bats and [[Skeleton Army]], allowing the spell to instantly kill it, as opposed to the Arrows which take a longer time to travel, allowing the swarm cards to deal some damage to the player's troops and towers.
+**Since it has a low cost, an incorrect prediction is not very punishing as the player was at an Elixir advantage. The player should take note of how the opponent uses their swarm to defend and use Zap accordingly.
+*The Zap is valuable for decimating small swarms of [[:Category:Troop Cards|troops]], as the Zap inflicts area damage.
+**While it will not defeat [[Goblins]] or [[Minions]] of equal Level, it is capable of destroying Goblins one Level lower and Minions two Levels lower than itself.
+**Pairing the Zap with the [[Ice Spirit]] or [[Ice Golem]] can easily counter Minions. The former can also be used to counter [[Archers]]. If paired with the [[Fire Spirit]], it can also counter [[Wall Breakers]].
+**A well placed Zap can destroy most or all of a Skeleton Army.
+**A well timed Zap on a [[Minion Horde]] defensively can allow the defending player's [[:Category:Tower Troop Cards|Crown Towers]] to take them out before receiving any damage.
+**A well timed Zap can also block most of the damage from the Goblins in the [[Goblin Barrel]]. Quickly placing [[Skeletons]] as well will prevent the damage entirely.
+***Against the [[Goblin Barrel]], the Zap should be deployed as early as possible, right when the Goblin Barrel lands on the Tower. This will prevent one extra hit from the Goblins, saving more of the Crown Tower's hitpoints for future attacks.
+**Zap can be used against a [[Lava Hound]], to weaken the Lava Pups spawned from it. With proper timing, it will be able to hit all of them before they split, reducing damage done to the Crown Tower significantly.
+**Zap can prevent most damage dealt by a [[Dart Goblin]] on a Crown Tower. Its damage will allow the Crown Tower to finish it off, only taking two shots from the Dart Goblin.
+**The Zap's low Elixir cost and instant deployment time make it serviceable for finishing off nearly destroyed Crown Towers.
+*Zap can be also used to briefly stun enemy troops and [[:Category:Building Cards|buildings]], reducing the enemy's damage per second.
+**[[Freeze]] has 8 times the duration compared to Zap and has a larger radius. However, it is twice as expensive and does less damage.
+**The Zap's 0.5 second stun can allow damaged troops to get one extra hit in or prevent the player's troops from taking a hit. A good example is use Zap to temporarily stun troops like [[Balloon]]s from reaching their Crown Towers, giving them and their troops a little more time to eliminate the Balloon and prevent it from causing heavy damage.
+**The Zap can also be used to reset charging attacks from cards like [[Inferno Tower]], [[Inferno Dragon]], [[Prince]], [[Dark Prince]], [[Ram Rider]], [[Battle Ram]], [[Bandit]], [[Fisherman]], [[Sparky]], and [[Mighty Miner]].
+**The Zap can be used effectively in tandem with the [[P.E.K.K.A.]] or any tank units. The attacker can let the tank absorb some damage from the Inferno Tower or Inferno Dragon before zapping it, forcing them to reset their attack. This can let the P.E.K.K.A get an extra swing and destroy the Inferno Tower. Against them, it is best to time the Zap right before they reach Tier 3 damage, to ensure that the troops stay alive for longer.
+**When used on troops that are inside a [[Poison]], the 0.5 second stun will keep them inside the radius of Poison for a longer amount of time, which allows the Poison to deal more damage to the troops. The extra damage will also finish off troops that can survive a lone Poison, such as a [[Witch]] or Wizard.
+**While not as long as the [[Archer Queen]]'s ability, the 0.5 stun can waste some time from it, buying more time for the player to defend against her.
+*Zapping units or the opposing Crown Tower can possibly change their targets. For example, if an [[X-Bow]] is targeting a Tower and the player deploys a troop or building closer to the X-Bow than the Tower before using Zap on the X-Bow, it will change its target to the deployed card.
+*The [[Hog Rider]] + Zap combo utilizes the Zap to stop most cheap troops (or to stun defending troops) that are played to take out the Hog Rider, ensuring that the Hog Rider gets some chip damage every time. This can be particularly devastating to the defender if the Zap is hovered and manages to destroy the entire Skeleton Army.
+*If the player only has multiple cheap troops cards to defend against an incoming attack, it is recommended to place them far away from each other, to prevent the opponent from getting high Elixir value with their Zap.
+*With proper timing, Zap can be used to deny a wave from troop spawners such as [[Barbarian Hut]] or [[Goblin Hut]], allowing the player to gain a small Elixir advantage. The same strategy can also be used against [[Elixir Collector]]s, as it will deny 2 Elixir if timed just correctly, but this is an even Elixir trade unless something else also gets hit.
+**Against the Goblin Hut, it is a good idea to use it right when it spawns a wave of [[Spear Goblins]], for extra value.
+*It can be used against a Witch or a [[Night Witch]] in offense, to defeat their first wave of Skeletons and [[Bats]] respectively, reducing their DPS significantly. This is especially important against the former, as it can allow fast single-target troops like a Prince to directly target the Witches, which will result in their death.
+*Similarly, it can be used on multiple Spear Goblins that were accumulated from a Goblin Hut. This is most recommended to do when the lane needs to be cleared from the Spear Goblins so that troops like a Prince can attack more potent targets.
+*Zap pairs very well with other spells, like Fireball and [[Poison]]. The extra damage that Zap does is enough to finish off units that would survive those two spells like Night Witch, [[Bandit]], [[Berserker]], [[Mega Minion]], [[Hunter]], [[Wizard]], [[Royal Hogs]], [[Fisherman]], and Witch. However, this is mostly a negative Elixir trade, so try to get additional value by hitting other units as well.
+**If the player uses a Fireball next to the Crown Tower and manages to hit a troop that survives it, it is better to wait until the enemy troop reaches the bridge and use Zap there, in hopes of hitting other troops that are used as a meatshield for the injured troop. This should not be done however if the troop has already crossed the bridge, as it would be more Elixir-efficient to let the tower finish it off.
+**If used together, make sure that the Zap hits the enemies before the Fireball does, as otherwise, the Fireball will knock them back, which could result in Zap missing the troops.
+**These combos can be an alternative to the [[Rocket]] and also shuffles the player's deck more quickly, as 2 cards are being used for the same price.
+*Try to bring cards which can perform a similar role to Zap on defense in case of enemy bait [[Battle Decks|decks]].
+**An alternative to Zap is [[The Log]]. The Log cannot hit air troops and has limited deployment area along with a different AOE and cannot stun certain troops. However, it does more damage and pushes back surviving ground troops.
+**Another alternative to Zap is [[Giant Snowball]]. The Giant Snowball has some travel time and does not stun, but it slows and knocks back most enemy troops instead, which allows it to disrupt a larger variety of them.
+**Another alternative to Zap is [[Rage]]. Rage deals similar damage to Zap for the same cost, at a larger area while also boosting the speed of any allied troops. However, it has a slight delay upon deployment, and the boost will be wasted if used alone.
+**If the player is more interested in a spell that can stun enemies over area damage, the can use [[Lightning]] as a replacement for Zap. Lightning has the same stun effect, while also doing significantly higher damage. However, it can only target 1 target at a time with no area-damage and it costs 6 Elixir as opposed to the 2 Elixir Zap.
+*When playing against a [[Graveyard]], the player should wait for a few Skeletons to group up so that they can hit as many of them as possible without taking too much damage.
+*Similarly, against the [[Tombstone]] and the [[Skeleton Barrel]], the player should wait until their protective layer is removed so that the Skeletons are the ones killed from the spell instead.
+*With a Zap, certain troops can have an easier time winning a duel against their own kind, with certain ones having a different level of practicality. This is a good way to remove them from the map, while also saving yours, forcing the opponent to use more Elixir on yours.
+**It is a good idea to use Zap on an incoming Prince to prevent him from hitting your own Prince with his charge, while yours hits the opposing one with his charge.
+**Certain troops like the [[Electro Wizard]] will result in one of the two winning the duel instead of both troops being defeated at the same time, depending on who placed the troop first. A Zap can flip the matchup to the troop that would lose the initial duel, saving the troop for additional defense.
+**A [[Firecracker]] has higher damage than hitpoints. Because of this, if the opposing Firecracker is stunned by the Zap, your Firecracker will have enough time to defeat her completely unharmed.
+**While not enough to OHKO their opposing counterparts, with the Zap's damage, a [[Bomber]], [[Princess]], Dart Goblin, or Sparky will be able to finish them off unharmed, similar to the Firecracker. This can also be done with Goblins and Minions, although the deploy stagger and spawn formation of them may still cause some casualties in the end.
+*The Zap pairs well with the [[Goblin Giant]] and the [[Ram Rider]]. Enemy troops that can survive one Zap will be slowly defeated by the additional attacks from these troops, as opposed to using a stronger, more expensive spell, allowing the player to save much Elixir. However, the player's unit will usually take more damage when doing this.
+*A Level 14 Zap is enough to OHKO Level 15 Runners. Therefore, it is not a bad idea for the player to invest their {{Rarity|Common}} [[:Category:Currencies|resources]] (i.e. [[Magic Items|Wild Cards]] or [[Trade Tokens]]) into other {{Rarity|Common}} cards first.
+
+<center>
+
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+! scope="col" |Stun Duration<br />{{Icon|I=Freeze}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|2||2.5||0.5 sec||Air & Ground||[[:Category:Spell Cards|Spell]]||{{Rarity|Common}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: dmg_11 | 192 }}
+{{#vardefine: crown_dmg_11| 58 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Area Damage<br>{{Icon|I=Area Damage}}
+!scope="col"|Crown Tower Damage<br>{{Icon|I=Tower Damage}}
+|-
+| 1 || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}||{{#expr: {{#var:crown_dmg_11}} * (1.1^(1-11)) round 0 }}
+|-
+| 2 || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}||{{#expr: {{#var:crown_dmg_11}} * (1.1^(2-11)) round 0 }} 
+|-
+| 3 || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}||{{#expr: {{#var:crown_dmg_11}} * (1.1^(3-11)) round 0 }}
+|-
+| 4 || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}||{{#expr: {{#var:crown_dmg_11}} * (1.1^(4-11)) round 0 }} 
+|-
+| 5 || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(5-11)) round 0 }}
+|-
+| 6 || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(6-11)) round 0 }}
+|-
+| 7 || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(7-11)) round 0 }} 
+|-
+| 8 || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(8-11)) round 0 }} 
+|-
+| 9 || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(9-11)) round 0 }} 
+|-
+| 10 || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(10-11)) round 0 }}
+|-
+| 11 || {{#var:dmg_11}} || {{#var:crown_dmg_11}}
+|-
+| 12 || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}  ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(12-11)) round 0 }}
+|-
+| 13 || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(13-11)) round 0 }}
+|-
+| 14 || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(14-11)) round 0 }}
+|-
+| 15 || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(15-11)) round 0 }} 
+|-
+| 16 || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(16-11)) round 0 }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 28,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|200 {{BASEPAGENAME}} cards<br/ >25 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 85,000 Damage to enemy Troops or buildings
+|2,000 {{Icon|I=Gold}}<br/ >25 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 140,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>25 {{Icon|I=XP}}
+|-
+| rowspan="3" |Hit Maker <br/ > [[File:Hit Maker.png|50x50px]]
+|1
+|Hit enemy Troops a total of 700 times
+|3,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Troops a total of 2,000 times
+|200 {{Icon|I=Common Wild Card}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Troops a total of 3,500 times
+|5,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Zap [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016.
+*On 9/2/2016, the [[Version History#Chest Rewards & Card Balance (9/2/2016)|Chest Rewards &amp; Card Balance Update]], increased the Zap's damage by 6%.
+*On 19/2/2016, a [[Version History#Balance Changes (19/2/2016)|Balance Update]], decreased the Zap’s [[:Category:Crown Towers|Crown Tower]] damage to 40% of the full damage (from 50%).
+*On 29/2/2016, the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]], allowed the Zap to stun enemies for 1 second and decreased its damage by 6%. The update also changed the description. Previously, it used to say "Lightning zaps enemies, dealing damage inside a small radius. Reduced damage to Crown Towers.".
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], increased the {{Rarity|Common}} card Level cap to 13 (from 12).
+*On 4/7/2016, the [[Version History#Tournaments Update (4/7/2016)|Tournaments Update]], allowed the Zap to stop the [[Elixir Collector]]'s [[Elixir]] generation and reset the [[Inferno Tower]]'s damage output.
+*On 24/8/2016, a [[Version History#Balance Changes (24/8/2016)|Balance Update]], decreased the Zap's stun duration to 0.5 seconds (from 1 second).
+2017
+*On 23/1/2017, a [[Version History#Balance Changes (23/1/2017)|Balance Update]], decreased the Zap’s damage by 6%.
+*On 12/12/2017, the [[Version History#Electrifying Update (12/12/2017)|Electrifying Update]], decreased the Zap’s Crown Tower damage to 35% of the full damage (from 40%).
+2018
+*On 25/4/2018, the [[Version History#Clan%20Wars%20Update%20(25/4/2018)|Clan Wars Update]], allowed the Zap to be placed on the river.
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], moved the [[Arenas|Arena]] to unlock the Zap from Spell Valley to P.E.K.K.A's Playhouse.
+*On 3/9/2018, a [[Version History#Balance Changes (3/9/2018)|Balance Update]], made it so that the Zap can no longer reset the attack of the [[Zappies]].
+*On 1/10/2018, a [[Version History#October%20Balance%20Changes%20(1/10/2018)|Balance Update]], fixed a bug where [[:Category:Troop Cards|troops]] that were spawned after their parent troops died would be immune to [[:Category:Spell Cards|spell]] damage.
+2020
+*On 4/8/2020, a [[Version History#Season 14 Balance Changes (4/8/2020)|Balance Update]], decreased the Zap's Crown Tower damage to 30% of the full damage (from 35%).
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the Arena to unlock the Zap from P.E.K.K.A's Playhouse to Spell Valley.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 28/4/2022, a maintenance break, added a card render to the Zap's card info screen.
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Zap from Spell Valley to Builder's Workshop.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+
+*On 11/3/2024, the Zap's Evolution was added to the game.
+2026
+
+* On 1/6/2026, a Balance Update, decreased the Zap's Crown Tower damage to 25% of the full damage (from 30%)
+
+==Gallery==
+<gallery>
+File:Zap card render.png|Card render
+File:Zap Preview.gif|Current card preview
+File:Zap 1.png|Zap 
+</gallery>
+
+==Trivia==
+*Electricity was first detected through electric fish from as far back as 2750 BCE where Ancient Egyptian texts described them as the "protectors" of all other fish. At around 600 BCE, Thales of Miletus made a series of observations on static electricity, from which he believed that friction rendered amber magnetic, in contrast to minerals such as magnetite, which needed no rubbing. Thales was incorrect in believing the attraction was due to a magnetic effect, but later science would prove a link between magnetism and electricity. Electricity would remain little more than an intellectual curiosity for millennia until 1600, when the English scientist William Gilbert wrote ''De Magnete'', in which he made a careful study of electricity and magnetism, distinguishing the lodestone effect from static electricity produced by rubbing amber.
+**The Zap is 1 of 11 [[cards]] associated with electricity, with the others being [[Electro Spirit]], [[Tesla]], [[Zappies]], [[Electro Dragon]], [[Electro Giant]], [[Lightning]], [[Electro Wizard]], [[Sparky]], [[Wizard Trio]], and the [[Goblinstein]].
+***In the Spanish, Italian, and Russian language settings of the game, the Zap's name translates to "Discharge". In the Thai and Finnish language settings of the game, the Zap's name translates to "Electric Shock". In the French, German, Turkish, Korean, Arabic, Chinese, Persian, Indonesian, and Vietnamese language settings of the game, the Zap's name translates to "Electrocution", "Bang", "Jolt", "Electric Shock Magic", "Detonator", "Shock Spell", "Thunder", "Stun", and "Lightning Shock" respectively.
+*The Zap is one of the first spell cards to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the [[Arrows]], [[Fireball]], and [[Rocket]].
+*The Zap is the first spell card to receive a [[Card Evolution]].
+*The container for Zap resemble spells that take only 1 housing space from Clash of Clans.
+*A [[Barbarians|Barbarian]] is featured on the Zap's card render.
+*The concept of Zap was adapted as the new iteration of the [https://clashofclans.fandom.com/wiki/Lightning_Spell Lightning Spell] in Clash of Clans.
+*Out of all cards in the game, the Zap has the shortest name in English, with only 3 letters.
+*The Zap was featured in the winning decks of multiple Clash Royale Tournaments. More specifically:
+**The Zap was featured in the winning deck of the [https://www.youtube.com/live/1fuCnNBTqBU?feature=share King's Cup Tournament], by a player called TMD YAOYAO.
+**The Zap was featured in the winning deck of the [https://www.youtube.com/watch?v=kIGdeKaT_is The Crown Duel Tournament], by a player called Backstabx.
+**The Zap was featured in the winning deck of the [https://www.youtube.com/live/DVY2TndGf4U?si=ptuVz0tHkkkDIvEl Crown Championship Global Series Tournament], by a player called Sergioramos:).
+*Before the Zap's card release, the Zap's damage was decreased by 12.5%.
+
+{{Navigation|Card}}
+
+[[fr:Électrocution]]
+[[de:Knall]]
+[[es:Descarga]]
+[[it:Scarica]]
+[[ja:ザップ]]
+[[ru:Разряд]]
+[[pt-br:Choque]]
+[[zh:电击法术]]

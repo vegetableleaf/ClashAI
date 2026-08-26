@@ -1,0 +1,246 @@
+{
+ "fetched": "2026-08-26",
+ "session": "r2_evos_a independent live re-verify",
+ "pages": {
+  "archers": {
+   "title": "Archers",
+   "live_revid": 437494,
+   "prev_cached_revid": null,
+   "changed": false,
+   "bytes": 36045,
+   "cache_file": "Archers.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Archers&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "baby_dragon": {
+   "title": "Baby Dragon",
+   "live_revid": 437335,
+   "prev_cached_revid": null,
+   "changed": false,
+   "bytes": 23990,
+   "cache_file": "Baby_Dragon.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Baby+Dragon&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "barbarians": {
+   "title": "Barbarians",
+   "live_revid": 437362,
+   "prev_cached_revid": null,
+   "changed": false,
+   "bytes": 27039,
+   "cache_file": "Barbarians.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Barbarians&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "bats": {
+   "title": "Bats",
+   "live_revid": 437216,
+   "prev_cached_revid": null,
+   "changed": false,
+   "bytes": 24280,
+   "cache_file": "Bats.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Bats&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "battle_ram": {
+   "title": "Battle Ram",
+   "live_revid": 436977,
+   "prev_cached_revid": null,
+   "changed": false,
+   "bytes": 24909,
+   "cache_file": "Battle_Ram.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Battle+Ram&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "bomber": {
+   "title": "Bomber",
+   "live_revid": 436694,
+   "prev_cached_revid": null,
+   "changed": false,
+   "bytes": 27649,
+   "cache_file": "Bomber.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Bomber&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "cannon": {
+   "title": "Cannon",
+   "live_revid": 437251,
+   "prev_cached_revid": null,
+   "changed": false,
+   "bytes": 18954,
+   "cache_file": "Cannon.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Cannon&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "dart_goblin": {
+   "title": "Dart Goblin",
+   "live_revid": 437213,
+   "prev_cached_revid": null,
+   "changed": false,
+   "bytes": 21562,
+   "cache_file": "Dart_Goblin.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Dart+Goblin&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "electro_dragon": {
+   "title": "Electro Dragon",
+   "live_revid": 437293,
+   "prev_cached_revid": null,
+   "changed": false,
+   "bytes": 23542,
+   "cache_file": "Electro_Dragon.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Electro+Dragon&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "elite_barbarians": {
+   "title": "Elite Barbarians",
+   "live_revid": 436475,
+   "prev_cached_revid": null,
+   "changed": false,
+   "bytes": 26983,
+   "cache_file": "Elite_Barbarians.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Elite+Barbarians&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "executioner": {
+   "title": "Executioner",
+   "live_revid": 437375,
+   "prev_cached_revid": null,
+   "changed": false,
+   "bytes": 23448,
+   "cache_file": "Executioner.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Executioner&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "firecracker": {
+   "title": "Firecracker",
+   "live_revid": 437467,
+   "prev_cached_revid": null,
+   "changed": false,
+   "bytes": 26502,
+   "cache_file": "Firecracker.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Firecracker&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "furnace": {
+   "title": "Furnace",
+   "live_revid": 437285,
+   "prev_cached_revid": null,
+   "changed": false,
+   "bytes": 24979,
+   "cache_file": "Furnace.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Furnace&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "giant_snowball": {
+   "title": "Giant Snowball",
+   "live_revid": 437307,
+   "prev_cached_revid": null,
+   "changed": false,
+   "bytes": 16361,
+   "cache_file": "Giant_Snowball.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Giant+Snowball&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "goblin_barrel": {
+   "title": "Goblin Barrel",
+   "live_revid": 436494,
+   "prev_cached_revid": null,
+   "changed": false,
+   "bytes": 31619,
+   "cache_file": "Goblin_Barrel.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Goblin+Barrel&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "goblin_cage": {
+   "title": "Goblin Cage",
+   "live_revid": 436552,
+   "prev_cached_revid": null,
+   "changed": false,
+   "bytes": 24583,
+   "cache_file": "Goblin_Cage.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Goblin+Cage&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "goblin_drill": {
+   "title": "Goblin Drill",
+   "live_revid": 437382,
+   "prev_cached_revid": null,
+   "changed": false,
+   "bytes": 23959,
+   "cache_file": "Goblin_Drill.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Goblin+Drill&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "goblin_giant": {
+   "title": "Goblin Giant",
+   "live_revid": 437386,
+   "prev_cached_revid": null,
+   "changed": false,
+   "bytes": 28355,
+   "cache_file": "Goblin_Giant.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Goblin+Giant&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "hunter": {
+   "title": "Hunter",
+   "live_revid": 436717,
+   "prev_cached_revid": null,
+   "changed": false,
+   "bytes": 21833,
+   "cache_file": "Hunter.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Hunter&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "ice_spirit": {
+   "title": "Ice Spirit",
+   "live_revid": 437338,
+   "prev_cached_revid": null,
+   "changed": false,
+   "bytes": 26797,
+   "cache_file": "Ice_Spirit.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Ice+Spirit&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "inferno_dragon": {
+   "title": "Inferno Dragon",
+   "live_revid": 436733,
+   "prev_cached_revid": null,
+   "changed": false,
+   "bytes": 28537,
+   "cache_file": "Inferno_Dragon.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Inferno+Dragon&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "goblins": {
+   "title": "Goblins",
+   "live_revid": 437504,
+   "prev_cached_revid": null,
+   "changed": false,
+   "bytes": 30556,
+   "cache_file": "Goblins.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Goblins&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "fire_spirit": {
+   "title": "Fire Spirit",
+   "live_revid": 437343,
+   "prev_cached_revid": null,
+   "changed": false,
+   "bytes": 18327,
+   "cache_file": "Fire_Spirit.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Fire+Spirit&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "version_history": {
+   "title": "Version History",
+   "live_revid": 437451,
+   "prev_cached_revid": null,
+   "changed": false,
+   "bytes": 55669,
+   "cache_file": "Version_History.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Version+History&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  }
+ }
+}

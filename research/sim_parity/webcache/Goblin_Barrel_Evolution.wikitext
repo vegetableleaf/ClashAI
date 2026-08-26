@@ -1,3 +1,4 @@
+<!-- revid:437372 fetched:2026-08-26T2 title:Goblin Barrel/Evolution -->
 {{Protection}}{{MagicWords}}
 {{DISPLAYTITLE: <span class="text-evolution";">Evolved Goblin Barrel</span>}}
 {{Evolved_Card_Infobox|Cost=3|Rarity=Epic|Arena=P.E.K.K.A.'s Playhouse|ReleaseDate=June 3 2024|CycleCost=2|Type=Spell}}

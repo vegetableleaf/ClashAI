@@ -1,3 +1,4 @@
+<!-- revid:437494 fetched:2026-08-26T2 title:Archers -->
 {{DISPLAYTITLE:<span style="color: #99CCFF;">Archers</span>}}{{Protection}}{{MagicWords}}{{ClashofClansLink|Archer}}{{Card Infobox|Cost=3|Rarity=Common|Type=Troop|Arena=Training Camp|ReleaseDate=4 January 2016}}
 
 {{SubpageNavBox|Evolution=yes|MergeTactics=yes|EvolutionLink=Archers/Evolution}}

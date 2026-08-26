@@ -1,3 +1,4 @@
+<!-- revid:437467 fetched:2026-08-26T2 title:Firecracker -->
 {{Protection}}{{MagicWords}}{{ClashofClansLink}}
 
 {{Card Infobox|Cost=3|Rarity=Common|Type=Troop|Arena=Spooky Town|ReleaseDate=3 February 2020}}{{SubpageNavBox|Evolution=yes}}{{Quote|Shoots a firework that explodes on impact, damaging the target and showering anything behind it with sparks. This is what happens when Archers get bored!}}

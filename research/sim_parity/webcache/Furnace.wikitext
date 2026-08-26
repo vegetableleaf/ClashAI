@@ -1,3 +1,4 @@
+<!-- revid:437285 fetched:2026-08-26T2 title:Furnace -->
 {{DISPLAYTITLE: <span style="color: #ffa31a;">Furnace</span>}}
 {{Protection}}{{MagicWords}}{{ClashofClansLink}}
 

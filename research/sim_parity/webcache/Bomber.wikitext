@@ -1,3 +1,4 @@
+<!-- revid:436694 fetched:2026-08-26T2 title:Bomber -->
 {{Protection}}{{MagicWords}}{{ClashofClansLink}}
 
 {{Card Infobox|Cost=2|Rarity=Common|Type=Troop|Arena=Bone Pit|ReleaseDate=4 January 2016}}<br><br>

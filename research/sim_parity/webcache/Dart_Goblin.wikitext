@@ -1,3 +1,4 @@
+<!-- revid:437213 fetched:2026-08-26T2 title:Dart Goblin -->
 {{DISPLAYTITLE: <span style="color: #ffa31a;">Dart Goblin</span>}}
 {{Protection}}{{MagicWords}}
 

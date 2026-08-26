@@ -1,0 +1,123 @@
+{{Protection}}{{MagicWords}}
+{{DISPLAYTITLE: <span class="text-evolution";">Evolved Zap</span>}}
+{{Evolved Card Infobox|Cost=2|CycleCost=2|Rarity=Common|Type=Spell|Arena=Builder's Workshop|ReleaseDate=11 March 2024}}
+{{Quote|This Evolution comes gently zapping, zapping at your Arena floor... Get two Zaps for the cost of one, with the second Zap hitting a larger area!}}
+
+The Zap's Evolution is a {{Rarity|Common}} [[Cards|card]] that is unlocked with 6 Evolution Shards. It is a Zap with identical stats to the original. Once the initial hit is unleashed, the radius stays in the [[Arenas|Arena]], growing 0.5 tiles while doing the same damage and stun as the initial hit. It is a deep blue liquid filled inside a thin oblong vial. The vial appears with a purple lid, a golden neck, and a [[Card Evolution]] symbol in the middle, which is secured by a golden rope. The Zap's Evolution costs 2 [[Elixir]] and requires 2 cycles to deploy.
+
+==Strategy==
+*For 2 Elixir, the Evolved Zap can be used as a powerful tool on offense and defense alike. Wiping out low-health [[:Category:Troop Cards|troops]] while consistently stunning more durable ones, crippling pushes and defenses for other cards to deal the majority of the damage.
+*Cards with charge attacks, such as [[Mighty Miner]], [[Ram Rider]], [[Battle Ram]], [[Sparky]], [[Royal Recruits/Evolution|Evolved Royal Recruits]], [[Dark Prince]], [[Prince]], [[Inferno Dragon]], and [[Inferno Tower]], can be severely affected by the Evolved Zap as it will reset their charges twice, making them a less formidable threat both offensively and defensively.
+*The Evolved Zap deals a considerable amount of damage to the [[:Category:Tower Troop Cards|Crown Towers]] for 2 Elixir, dealing slightly more than Arrows for one less Elixir, making it a good last resort for cycling onto the Crown Towers to finish them off.
+*The Evolved Zap is very effective against low health troops, such as [[Minion Horde]], [[Wall Breakers]], [[Archers]], [[Bomber]], Evolved Bats, Goblin Gang, [[Dart Goblin]], [[Princess]], and [[Firecracker]]. This is due to its double damage over time compared to the regular [[Zap]]. This allows the Evolved Zap to deal enough damage to fully counter these troops for an equal or positive Elixir trade.
+*The [[Cannoneer]] can benefit immensely from the Evolved Zap. Its double stun and damage can quickly prevent swarm cards, such as [[Goblin Gang]], [[Skeletons/Evolution|Evolved Skeletons]], Minion Horde, Evolved Bats, and [[Skeleton Army]], from connecting to the Cannoneer. If any tanks like Lava Hound, [[Goblin Giant]], [[Electro Giant]], [[P.E.K.K.A.|P.E.K.K.A]], [[Golem]], [[Giant]], and [[Giant Skeleton]] are nearby, they may be hit, allowing the Cannoneer to get more damage in before the tank connects.
+**With the Cannoneer as assistance, a properly placed Evolved Zap can counter a [[Balloon]] for a large +3 Elixir trade. This does not include the death damage. The Evolved Zap must be played 2 tiles in front of the Balloon once it enters the Cannoneer's range to get the most out of this interaction.
+*The Evolved Zap has strong offensive synergy with the [[Hog Rider]]. The Evolved Zap will constantly stun and damage opposing troops used to take out the Hog Rider, nearly guaranteeing some chip damage from the Hog Rider every time the player has the Evolved Zap in cycle. This synergy isn’t as strong when the opponent has a [[:Category:Building Cards|building]] in their deck as most properly placed buildings with the help of both Crown Towers can still take out the Hog Rider even with the Evolved Zap’s assistance. A similar strategy works with the Ram Rider.
+*The Evolved Zap can be a decent counter to a center-placed [[Goblin Barrel]]. When used, only two Goblins stabs will connect to the Crown Tower. Alternatively, if the user has another small spell, like [[The Log]], it’s recommended to save the Evolved Zap for your offensive pushes and use the other spell to counter future Goblin Barrels.
+*The [[Royal Giant/Evolution|Evolved Royal Giant]] can pair fairly well with the Evolved Zap to quickly dispatch most buildings and troop counters to the Royal Giant. This is from the Royal Giant's knockback preventing many high DPS melee attackers, such as [[Monk]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Lumberjack]], [[Barbarians/Evolution|Evolved Barbarians]], and [[Elite Barbarians]] from dealing significant damage to him. In addition to stunning these troops, the Evolved Zap can render cards like [[Bats/Evolution|Evolved Bats]], Minion Horde, Inferno Dragon, [[Mighty Miner]], and Inferno Tower useless for a cheap cost. This combination nearly guarantees damage on your opponent's Crown Tower if the Evolved Royal Giant is placed in the pocket of your opponent's side. A less effective, yet similar strategy works with the regular [[Royal Giant]].
+*The Evolved Zap is very effective at taking out the Lava Pups from a [[Lava Hound]]. The second zap will kill the Lava Pups and the radius will grow large enough to hit most of them. The same applies to the [[Elixir Golem]]'s Elixir Blobs and the [[Phoenix]]'s Egg.
+*The [[Giant Snowball]], Arrows, and [[Rage]] can be used as substitutes for the Evolved Zap based on what [[Card Evolution|Card Evolutions]] and weak [[:Category:Spell Cards|spells]] the user prefers.
+*The second pulse of the Evolved Zap can increase the damage of the spell, which can then be combined with a [[Fireball]], similar to the regular counterpart. In addition to the troops that the regular combination can defeat, it can also defeat an [[Archer Queen]] or Phoenix for a slight negative Elixir trade. This combination can be an alternative to [[Lightning]] for the same Elixir cost.
+*When placed improperly on the opposing Crown Tower, it is possible to activate your opponent’s [[King's Tower|King Tower]] due to its increasing radius, resulting in a worse offense later on in the battle. Therefore, it is highly recommended to never use the Evolved Zap anywhere near the King Tower or behind the Crown Tower for any reason.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics|Statistics}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+! scope="col" |Stun Duration<br />{{Icon|I=Freeze}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|2||2.5||0.5 sec||Air & Ground||[[:Category:Spell Cards|Spell]]||{{Rarity|Common}}
+|}
+{{StatisticsSubheader|Evolution Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Cycles<br />{{Icon|I=Cycles}}
+! scope="col" |Radius<br />{{Icon|I = Radius}}
+! scope="col" |Zap Count<br />{{Icon|I=Troop Count}}
+|-
+|2||2.5-3||x2
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: dmg_11 | 192 }}
+{{#vardefine: dmg_hits| 2 }}
+{{#vardefine: crown_dmg_11| 58 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Area Damage<br>{{Icon|I=Area Damage}}
+!scope="col"|Crown Tower Damage<br>{{Icon|I=Tower Damage}}
+|-
+| 1 || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(1-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(1-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(1-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 2 || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(2-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(2-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(2-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 3 || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(3-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(3-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(3-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 4 || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(4-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(4-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(4-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 5 || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(5-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(5-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(5-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 6 || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(6-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(6-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(6-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 7 || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(7-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(7-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(7-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 8 || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(8-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(8-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(8-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 9 || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(9-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(9-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(9-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 10 || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(10-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(10-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(10-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 11 || {{#var:dmg_11}} x{{#var:dmg_hits}} ({{#expr: {{#var:dmg_11}} * {{#var:dmg_hits}} }}) || {{#var:crown_dmg_11}} x{{#var:dmg_hits}} ({{#expr: {{#var:crown_dmg_11}} * {{#var:dmg_hits}} }})
+|-
+| 12 || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(12-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(12-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(12-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 13 || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(13-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(13-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(13-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 14 || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(14-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(14-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(14-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 15 || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(15-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(15-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(15-11)) round 0) * {{#var:dmg_hits}} }})
+|-
+| 16 || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:dmg_11}} * (1.1^(16-11)) round 0) * {{#var:dmg_hits}} }}) ||{{#expr: {{#var:crown_dmg_11}} * (1.1^(16-11)) round 0 }} x{{#var:dmg_hits}} ({{#expr: ({{#var:crown_dmg_11}} * (1.1^(16-11)) round 0) * {{#var:dmg_hits}} }})
+|}
+There will be rounding mistakes, as we have stats from level 11
+</div>
+</center>
+
+==History==
+2024
+*The Zap's Evolution [[Cards|card]] was added to the game on 11/3/2024.
+*On 14/5/2024, a [[Version History#Balance Changes (14/5/2024)|Balance Update]], decreased the damage of the second and third pulses by 50%. The same update also changed its card description. Prior to this update, it read "''This Evolution comes gently zapping, zapping at your Arena floor... Get multiple Zaps for the cost of one, with each consecutive Zap hitting a larger area''"
+*On 8/10/2024, a [[Version History#Balance Changes (8/10/2024)|Balance Update]], increased the second pulse's damage by 100%, but removed the third pulse. The same update also changed its card description. Prior to this update, it read "''This Evolution comes gently zapping, zapping at your Arena floor... Get multiple Zaps for the cost of one, with each consecutive Zap hitting a larger area but dealing less damage!''"
+2026
+
+* On 1/6/2026, a Balance Update, decreased the Zap's Crown Tower damage to 25% of the full damage (from 30%)
+
+==Gallery==
+<gallery>
+File:Evolved Zap card render.png|Current card render.
+File:Evolved Zap Preview.gif|Current card preview
+File:ZapEvoShard.png|Evolution Shard
+</gallery>
+
+==Trivia== 
+*Electricity was first detected through electric fish from as far back as 2750 BCE where Ancient Egyptian texts described them as the "protectors" of all other fish. At around 600 BCE, Thales of Miletus made a series of observations on static electricity, from which he believed that friction rendered amber magnetic, in contrast to minerals such as magnetite, which needed no rubbing. Thales was incorrect in believing the attraction was due to a magnetic effect, but later science would prove a link between magnetism and electricity. Electricity would remain little more than an intellectual curiosity for millennia until 1600, when the English scientist William Gilbert wrote ''De Magnete'', in which he made a careful study of electricity and magnetism, distinguishing the lodestone effect from static electricity produced by rubbing amber.
+**The Zap is 1 of 3 evolved [[cards]] associated with electricity, with the others being [[Tesla/Evolution|Tesla]] and [[Electro Dragon/Evolution|Electro Dragon]].
+***In the Spanish, Italian, and Russian language settings of the game, the Zap's name translates to "Discharge". In the Thai and Finnish language settings of the game, the Zap's name translates to "Electric Shock". In the French, German, Turkish, Korean, Arabic, Chinese, Persian, Indonesian, and Vietnamese language settings of the game, the Zap's name translates to "Electrocution", "Bang", "Jolt", "Electric Shock Magic", "Detonator", "Shock Spell", "Thunder", "Stun", and "Lightning Shock" respectively.
+* The Zap was the first [[:Category:Spell Cards|spell]] to receive a [[Card Evolution]].
+*The container for the Zap's Evolution resembles spells that take only 1 housing space from Clash of Clans.
+*An [[Barbarians/Evolution|Evolved Barbarian]] is featured on the Zap's Evolution's card render.
+*In the card's description, the "''gently zapping, zapping at your Arena floor''" line is from [https://en.wikipedia.org/wiki/Edgar_Allan_Poe Edgar Allan Poe]'s poem [https://en.wikipedia.org/wiki/The_Raven The Raven], saying "''gently rapping, rapping at my chamber door.''".
+*The Zap's Evolution is the subject of 2 [[Emotes]].
+**It is also 1 of 4 evolved card whose regular card is not the subject of any Emote, the others being [[Royal Recruits/Evolution|Royal Recruits]], [[Giant Snowball/Evolution|Giant Snowball]], and [[Battle Ram/Evolution|Battle Ram]].
+**From the Zap Evolution's Emotes, it is presumed that the Evolved Zap is drinkable, but comes with side effects of the consumer getting heavily electrocuted.
+
+{{Navigation|Card}}

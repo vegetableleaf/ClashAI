@@ -1,0 +1,216 @@
+{
+ "fetched": "2026-08-26",
+ "session": "r2_evos_a independent live re-verify",
+ "pages": {
+  "archers_evo": {
+   "title": "Archers/Evolution",
+   "live_revid": 437495,
+   "prev_cached_revid": 437495,
+   "changed": false,
+   "bytes": 28101,
+   "cache_file": "Archers_Evolution.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Archers%2FEvolution&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "baby_dragon_evo": {
+   "title": "Baby Dragon/Evolution",
+   "live_revid": 437336,
+   "prev_cached_revid": 437336,
+   "changed": false,
+   "bytes": 7987,
+   "cache_file": "Baby_Dragon_Evolution.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Baby+Dragon%2FEvolution&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "barbarians_evo": {
+   "title": "Barbarians/Evolution",
+   "live_revid": 437363,
+   "prev_cached_revid": 437363,
+   "changed": false,
+   "bytes": 19726,
+   "cache_file": "Barbarians_Evolution.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Barbarians%2FEvolution&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "bats_evo": {
+   "title": "Bats/Evolution",
+   "live_revid": 437215,
+   "prev_cached_revid": 437215,
+   "changed": false,
+   "bytes": 16433,
+   "cache_file": "Bats_Evolution.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Bats%2FEvolution&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "battle_ram_evo": {
+   "title": "Battle Ram/Evolution",
+   "live_revid": 437079,
+   "prev_cached_revid": 437079,
+   "changed": false,
+   "bytes": 21194,
+   "cache_file": "Battle_Ram_Evolution.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Battle+Ram%2FEvolution&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "bomber_evo": {
+   "title": "Bomber/Evolution",
+   "live_revid": 436449,
+   "prev_cached_revid": 436449,
+   "changed": false,
+   "bytes": 22038,
+   "cache_file": "Bomber_Evolution.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Bomber%2FEvolution&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "cannon_evo": {
+   "title": "Cannon/Evolution",
+   "live_revid": 437252,
+   "prev_cached_revid": 437252,
+   "changed": false,
+   "bytes": 14114,
+   "cache_file": "Cannon_Evolution.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Cannon%2FEvolution&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "dart_goblin_evo": {
+   "title": "Dart Goblin/Evolution",
+   "live_revid": 437234,
+   "prev_cached_revid": 437234,
+   "changed": false,
+   "bytes": 15973,
+   "cache_file": "Dart_Goblin_Evolution.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Dart+Goblin%2FEvolution&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "electro_dragon_evo": {
+   "title": "Electro Dragon/Evolution",
+   "live_revid": 437294,
+   "prev_cached_revid": 437294,
+   "changed": false,
+   "bytes": 15103,
+   "cache_file": "Electro_Dragon_Evolution.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Electro+Dragon%2FEvolution&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "elite_barbarians_evo": {
+   "title": "Elite Barbarians/Evolution",
+   "live_revid": 436936,
+   "prev_cached_revid": 436936,
+   "changed": false,
+   "bytes": 14,
+   "cache_file": "Elite_Barbarians_Evolution.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Elite+Barbarians%2FEvolution&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "executioner_evo": {
+   "title": "Executioner/Evolution",
+   "live_revid": 437539,
+   "prev_cached_revid": 437539,
+   "changed": false,
+   "bytes": 18843,
+   "cache_file": "Executioner_Evolution.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Executioner%2FEvolution&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "firecracker_evo": {
+   "title": "Firecracker/Evolution",
+   "live_revid": 437259,
+   "prev_cached_revid": 437259,
+   "changed": false,
+   "bytes": 35849,
+   "cache_file": "Firecracker_Evolution.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Firecracker%2FEvolution&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "furnace_evo": {
+   "title": "Furnace/Evolution",
+   "live_revid": 437286,
+   "prev_cached_revid": 437286,
+   "changed": false,
+   "bytes": 10280,
+   "cache_file": "Furnace_Evolution.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Furnace%2FEvolution&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "giant_snowball_evo": {
+   "title": "Giant Snowball/Evolution",
+   "live_revid": 437371,
+   "prev_cached_revid": 437371,
+   "changed": false,
+   "bytes": 12355,
+   "cache_file": "Giant_Snowball_Evolution.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Giant+Snowball%2FEvolution&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "goblin_barrel_evo": {
+   "title": "Goblin Barrel/Evolution",
+   "live_revid": 437372,
+   "prev_cached_revid": null,
+   "changed": false,
+   "bytes": 16174,
+   "cache_file": "Goblin_Barrel_Evolution.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Goblin+Barrel%2FEvolution&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "goblin_cage_evo": {
+   "title": "Goblin Cage/Evolution",
+   "live_revid": 437374,
+   "prev_cached_revid": 437374,
+   "changed": false,
+   "bytes": 20630,
+   "cache_file": "Goblin_Cage_Evolution.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Goblin+Cage%2FEvolution&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "goblin_drill_evo": {
+   "title": "Goblin Drill/Evolution",
+   "live_revid": 437383,
+   "prev_cached_revid": 437383,
+   "changed": false,
+   "bytes": 17331,
+   "cache_file": "Goblin_Drill_Evolution.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Goblin+Drill%2FEvolution&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "goblin_giant_evo": {
+   "title": "Goblin Giant/Evolution",
+   "live_revid": 437292,
+   "prev_cached_revid": 437292,
+   "changed": false,
+   "bytes": 23860,
+   "cache_file": "Goblin_Giant_Evolution.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Goblin+Giant%2FEvolution&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "hunter_evo": {
+   "title": "Hunter/Evolution",
+   "live_revid": 436718,
+   "prev_cached_revid": 436718,
+   "changed": false,
+   "bytes": 10651,
+   "cache_file": "Hunter_Evolution.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Hunter%2FEvolution&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "ice_spirit_evo": {
+   "title": "Ice Spirit/Evolution",
+   "live_revid": 437339,
+   "prev_cached_revid": 437339,
+   "changed": false,
+   "bytes": 13467,
+   "cache_file": "Ice_Spirit_Evolution.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Ice+Spirit%2FEvolution&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  },
+  "inferno_dragon_evo": {
+   "title": "Inferno Dragon/Evolution",
+   "live_revid": 437282,
+   "prev_cached_revid": 437282,
+   "changed": false,
+   "bytes": 14909,
+   "cache_file": "Inferno_Dragon_Evolution.wikitext",
+   "url": "https://clashroyale.fandom.com/api.php?action=parse&page=Inferno+Dragon%2FEvolution&prop=wikitext%7Crevid&format=json",
+   "fetched": "2026-08-26"
+  }
+ }
+}

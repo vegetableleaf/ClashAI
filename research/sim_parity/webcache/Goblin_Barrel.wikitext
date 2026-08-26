@@ -1,3 +1,4 @@
+<!-- revid:436494 fetched:2026-08-26T2 title:Goblin Barrel -->
 {{DISPLAYTITLE: <span style="color: #b300b3;">Goblin Barrel</span>}}
 {{Protection}}{{MagicWords}}
 

@@ -1,0 +1,240 @@
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}
+
+{{Card Infobox|Cost=3|Rarity=Common|Type=Troop|Arena=Jungle Arena|ReleaseDate=17 November 2017}}{{SubpageNavBox|Evolution=yes}}{{Quote|It's a Skeleton party in the sky, until all the balloons pop... then it's a Skeleton party on the ground!}}
+
+The Skeleton Barrel is a {{Rarity|Common}} [[Cards|card]] that is unlocked from the [[Arenas|Jungle Arena (Arena 9)]]. It spawns a fast, single-target, [[:Category:Building Cards|building]]-targeting, melee, air [[:Category:Troop Cards|troop]] with moderate hitpoints. Once it reaches a building or it is destroyed, the barrel drops, dealing area damage, inflicting knockback, and spawning seven [[Skeletons]] in a circle. It is a spiked black barrel with a white skull printed on the front tied to three team-colored balloons. A Skeleton Barrel card costs 3 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Skeleton Barrel Card}}
+*[[The Log]], [[Zap]], [[Barbarian Barrel]], [[Giant Snowball]], and [[Rage]] are the best [[:Category:Spell Cards|spells]] to counter the [[Skeletons]] from the Skeleton Barrel since its death damage does not deal too much damage, and these cheap spells can easily destroy all of the Skeletons for a positive [[Elixir]] Trade. The player must account for the 0.5 second animation where neither the Barrel nor the Skeletons are considered as entities; if the spell is cast during this phase, it will not affect the Skeletons. Since small spells are a cheap and efficient way to clean up the Skeletons, one should consider running [[cards]] to bait these spells such as [[Goblin Gang]], [[Bats]], or Skeletons to stretch the opponent's counters thin.
+*[[Arrows]] also works against the Skeleton Barrel, but it is only a neutral Elixir trade compared to the [[:Category:2-Elixir Cards|2-Elixir]] spells.
+*[[Clone]] is especially very effective with the Skeleton Barrel due to the clone's displacement away from the original making it very difficult or impossible to hit the Skeletons that spawn from both with only one spell. It will also push the original Skeleton Barrel slightly to the front, allowing it to connect to the [[:Category:Tower Troop Cards|Crown Tower]] earlier, as well as bypass certain [[:Category:Building Cards|building]] placements.
+*If the player does not have spells available, area damage [[:Category:Troop Cards|troops]] can negate most of the damage down by the spawned Skeletons. In particular, [[Magic Archer]], [[Skeleton Dragons]], [[Executioner]], [[Wizard]], [[Firecracker]], [[Princess]], [[Witch]], [[Baby Dragon]], and [[Bowler]] are effective at cleaning up most, if not all of the Skeletons in one or two attacks. Although it is usually a negative Elixir trade, the troops can be used in a counterattack.
+**A Magic Archer can pierce almost all the Skeletons from the Skeleton Barrel with a very precise timing. Deploy him behind your King's Tower in the same lane when the barrel's shadow is 5 tiles from the Crown Tower. If timed correctly, his arrow will hit the Skeletons as they are clumped up, leaving only one alive at most (which is easily defeated by the Crown Tower).
+*[[Minions]] can easily prevent it from connecting to the Crown Tower, minimizing the damage that the spawned Skeletons will do afterwards. Place them directly on the Skeleton Barrel's path to further lessen the chances of connecting.
+*During the 0.5 second animation time, the Skeleton Barrel can still be displaced by [[Tornado]]. This quirk means that the opponent/defender can pull a Skeleton Barrel close enough to their [[King's Tower]] to activate it. However, a few Skeletons will still aggro onto the Crown Tower and take up to a tenth of its health.
+*The [[Electro Spirit]] is a very good counter to the Skeleton Barrel, as it will chain onto all 7 Skeletons, providing a +2 Elixir trade. Note that the Spirit will not prevent Death Damage, and be careful with timing, as if you place it too early, the Spirit will target the Skeleton Barrel and not the Skeletons. It is also recommended to drop the Electro Spirit away from the Death Damage, to prevent it from being stunned from the knockback of the Skeleton Barrel. Fire Spirit can easily counter Skeleton Barrel if placed at the right time and right placement for a positive Elixir trade of 2.
+*Similar to the [[Goblin Barrel]], the Skeletons will only spawn when the Skeleton Barrel falls to the ground and splits open. However, unlike the Goblin Barrel, the Skeleton Barrel deals area damage when the Skeletons spawn. This damage is enough to one-shot any unit with as much or less health than Spear Goblins, which prevents the opponent from preemptively deploying these types of troops at the barrel's landing point.
+**The Skeleton Barrel synergizes well with the Goblin Barrel. When used together simultaneously, it can be very difficult or even impossible for the opponent to hit the spawned units with one spell, and may possibly force them to use another spell or to counter one of the two cards inefficiently. The Skeleton Barrel can also tank a few shots for the spawned [[Goblins]].
+*A Skeleton Barrel should almost never be ignored, as it would bring an equally levelled, fully healthy Crown Tower down below half of its hitpoints for only 3 Elixir.
+*An excellent synergy is with [[Ice Spirit]] and [[Zap]]. The Skeleton Barrel's death damage combined with an Ice Spirit will take out Goblins and Minions and with Zap, it will take out [[Archers]], Firecrackers, and [[Dart Goblin|Dart Goblins]]. If the opponent is caught off-guard, this can inflict heavy damage to their Crown Towers. This well-synchronized combination can help protect cards such as the [[Hog Rider]], [[Battle Ram]], and the [[Lava Hound]].
+*The Skeleton Barrel excels at distracting the [[Inferno Tower]] and the [[Inferno Dragon]] for a tank since the Skeleton Barrel targets buildings and drops several Skeletons which they cannot deal with independently. This can force out a card that the opponent doesn't want to play, such as a [[Valkyrie]] or Zap. However, be sure to time the tank placement; the tank may be targeted by the Inferno in the 0.5 seconds that the Skeletons do not exist, making it a less effective counter. Against the Inferno Dragon, it will also knock it back, for some extra retargeting.
+*The Skeleton Barrel has excellent synergy with [[Miner]] where the Skeleton Barrel initially tanks the Tower hits for Miner while he chips the Tower, and after the Skeleton Barrel dies, the Tower will lock onto the Miner in the 0.5 seconds that neither the barrel nor Skeletons exist (which is when the barrel is falling). Other cheap tanks such as [[Ice Golem]], [[Elixir Golem]], and [[Knight]] can tank for the Skeletons like the Miner, however, chip damage is not as guaranteed. It can also apply pressure because the two troops are attacking the Tower from the front and the back.
+*One push is to deploy the Skeleton Barrel and [[Mirror]] it. When it reaches the Crown Tower, use Clone the Skeletons and then use [[Rage]] them. The push could be prevented using splash damage cards.
+*The Skeleton Barrel works very well with a [[Balloon]] as the Skeleton Barrel can quickly push the Balloon towards a Crown Tower thanks to its melee range and Fast move speed. To do this, tap the Balloon while hovering the Skeleton Barrel, and then tap twice quickly to deploy them. The Balloon will spawn in front of the Skeleton Barrel and immediately begin rushing the Tower. If the opponent uses knockback spells on the combo, they won't have those spells to address the Skeletons spawned by the Skeleton Barrel.
+**If the Balloon is not in hand, but is next in the card queue, you can deploy the Skeleton Barrel further back and then drop the Balloon in front of it as it approaches the bridge.
+**This is less effective when the combo is done at the edges of the [[Arenas|Arena]], as the Skeleton Barrel will move past the Balloon after pushing it halfway.
+**To counter this push, the opponent should draw the Balloon and the Skeleton Barrel away with a defensive building (eg. [[Tesla]]) and use their spells on the Skeletons when they spawn over the defensive building, allowing for a clean defense.
+**A Rocket can counter this push for a positive Elixir trade of 2. However, the Rocket's slow travel speed, coupled with the fast speed of this push, could potentially mean that it would miss either or both airborne units, so it should be used with caution.
+***Lightning is a safer counter to this push. The Lightning would severely cripple the Balloon and pop the Skeleton Barrel, allowing at most the Balloon's death damage to hit the Tower. Fireball could be a good soft counter too.
+**If the player has another sufficient anti-air card for the Balloon, the [[Bomb Tower]] can be used to specifically take out the Skeleton Barrel thanks to its high health, area damage, and ground-only targeting.
+**They can also work separately. Due to sharing similar counters, the Skeleton Barrel can be used as a bait for counters so that the Balloon can be placed afterwards in the other lane without being threatened. However, a building or Tornado can easily bring them back together.
+*The [[Cannon]] or [[Tombstone]] are the most Elixir-efficient building counters to the Skeleton Barrel, neutralizing the Skeleton Barrel for an equal Elixir trade with the help of a Crown Tower. [[Bomb Tower]], [[Goblin Hut]], [[Tesla]], or [[Furnace]] can also work well, but would result in a negative Elixir trade if the Skeleton Barrel is the only card countered. However, the former three will often stay alive to defend a few other troops and the latter's [[Fire Spirit|Fire Spirits]] can chip the Tower.
+*A risky play is to start the [[Basics of Battle|match]] with a Skeleton Barrel at the bridge. The opponent might not react in time to it and the spawned Skeletons will deal a lot of damage to the Crown Tower. Even if they react quick enough, it will still allow the user to scout the opponent's [[Battle Decks|deck]].
+*A smart but dangerous play is to play [[Electro Giant]] with it, as the Electro Giant will tank and can take out swarms while the Skeleton Barrel will reach the Tower and take it down quickly.
+*A Skeleton Barrel pairs well with [[Freeze]] when the opponent attempts to counter the Skeleton Barrel with a splash damage troop, such as the Wizard, [[Bomber]], [[Dark Prince]], [[Ice Wizard]], [[Goblin Demolisher]], [[Skeleton King]], or Valkyrie, as you can freeze the troop and the Tower when the Skeleton Barrel pops, which will let the Skeletons do a lot of damage to the Tower and to the troop they deployed.
+
+<center>
+
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Skeleton Barrel Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|3||Fast (90)||Melee: Short (0.35)||1 sec||Buildings||Air||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+
+{{StatisticsSubheader|Skeleton Container Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Death Damage Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+|-
+|2||0.6 sec||Air & Ground
+|}
+
+{{StatisticsSubheader|Skeleton Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.1 sec||Fast (90)||Melee: Short (0.5)||0.5 sec||Ground||x7||Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 532 }}
+{{#vardefine: death_11 | 145 }}
+{{#vardefine: sk_hp_11 | 81 }}
+{{#vardefine: dmg_11 | 81 }}
+{{#vardefine: atk_speed | 1.1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Skeleton Barrel Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Skeleton Barrel Death Damage<br />{{Icon|I=Death Damage}}
+! scope="col" |Skeleton Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Skeleton Damage<br />{{Icon|I=Damage}}
+! scope="col" |Skeleton Damage per second<br />{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:sk_hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:sk_hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:sk_hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:sk_hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:sk_hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:sk_hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:sk_hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:sk_hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:sk_hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:sk_hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:death_11}} || {{#var:sk_hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:sk_hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:sk_hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:sk_hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:sk_hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:death_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:sk_hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 75,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|200 {{BASEPAGENAME}} cards<br>25 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 220,000 Damage to enemy Troops or buildings
+|2,000 {{Icon|I=Gold}}<br>25 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 370,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>25 {{Icon|I=XP}}
+|-
+| rowspan="3" |Tower Tapper <br> [[File:Tower Tapper.png|50x50px]]
+|1
+|Hit enemy [[:Category:Crown Towers|Crown Towers]] a total of 1,400 times
+|3,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Crown towers a total of 4,000 times
+|200 {{Icon|I=Common Wild Card}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Crown towers a total of 7,000 times
+|5,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2017
+*The Skeleton Barrel was playable in the [[Tournament/Special Event Challenges|Mirror Challenge]] on 17/10/2017, before its release date, as an unintended glitch. Supercell fixed this glitch with a [[Version History#Maintenance Break (17/10/2017)|maintenance break]].
+*On 31/10/2017, the Skeleton Barrel became obtainable by achieving 9 wins in the Halloween Draft Challenge.
+*From 11/11/2017 through 14/11/2017, the [[Shop]] had a special offer where [[Arenas|Arena 6]]+ players could buy up to 6 Giant [[Chests]] at the normal price that guarantee at least 40% of the Chest's contents to be Skeleton Barrel.
+*The Skeleton Barrel [[Cards|card]] was generally released on 17/11/2017.
+*On 23/11/2017, a [[Version History#Maintenance%20Break%20(23/11/2017)|maintenance break]], temporarily removed the Skeleton Barrel from the [[Touchdown]] [[:Category:Modes|mode]] due to a bug where scoring a touchdown did not clear flying barrels from the Arena, which break into [[Skeletons]] to score another touchdown while the opponent is unable to defend against it.
+*On 12/12/2017, the [[Version History#Electrifying Update (12/12/2017)|Electrifying Update]], allowed the Skeleton Barrel to deal Death Damage.
+2018
+*On 12/1/2018, the Skeleton Barrel was added back to the Touchdown mode, the glitch presumably fixed.
+*On 12/2/2018, a [[Version History#Balance Changes (12/2/2018)|Balance Update]], decreased the Skeleton Barrel's Skeletons spawned upon death to 6 (from 8).
+*On 25/4/2018, the [[Version History#Clan%20Wars%20Update%20(25/4/2018)|Clan Wars Update]], increased the Skeleton Barrel's Skeletons spawned upon death to 7 (from 6).
+*On 5/11/2018, a [[Version History#Balance Changes (5/11/2018)|Balance Update]], increased the Skeleton Barrel's death damage by 62%.
+2019
+*On 15/4/2019, the [[Version History#April%202019%20Update%20(15/4/2019)|April 2019 Update]], added an extra [[Star Points|Star Level]].
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Skeleton Barrel's card info screen.
+2020
+*On 7/4/2020, a [[Version History#Balance Changes (7/4/2020)|Balance Update]], decreased its the Skeleton Barrel's hitpoints by 15%, but also increased its speed to 90 (from 60), now classified as Fast.
+*On 10/9/2020, an [[Version History#Optional%20Update%20(10/9/2020)|Optional Update]], made it so that a [[Clone|cloned]] Skeleton Barrel would now function correctly.
+*On 9/12/2020, a [[Version History#Balance Changes (9/12/2020)|Balance Update]], decreased the Skeleton Barrel's hitpoints by 19%.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], moved the Arena to unlock the Skeleton Barrel from Builder's Workshop to Spooky Town.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 26/10/2022, the [[Version History#2022%20Quarter%203%20Update%20(26/10/2022)|2022 Quarter 3 Update]], moved the Arena to unlock the Skeleton Barrel from Spooky Town to Jungle Arena.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+*On 8/10/2024, a [[Version History#Balance Changes (8/10/2024)|Balance Update]], increased the Skeleton Barrel’s death damage by 9%.
+2025
+* On 7/7/2025, the [[Version History#Pass Royale and more (7/7/2025)|July 2025 Update]], added the Skeleton Barrel's Evolution.
+* On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] made it so that the [[Witch/Evolution|Evolved Witch]] would no longer be healed by defeated Skeletons.
+* On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)=|Balance Update]] increased the Skeleton's attack time interval to 1.1 seconds (from 1.0 seconds).
+
+==Gallery==
+<gallery>
+File:Skeleton Barrel card render.png|Current card render.
+File:Chinese Skeleton Barrel card render.png|Skeleton Barrel’s card render in the Chinese version of the game.
+File:Skeleton Barrel Preview.gif|Current card preview
+File:Skeleton Barrel.png|Skeleton Barrel
+File:Skeleton Barrel 2.png|Skeleton Barrel red
+</gallery>
+
+==Trivia==
+*The word "''Skeleton''" comes from the Greek "''σκελετός''" (''skeletós''), meaning dried up or withered.
+**The Skeleton Barrel is 1 of 15 [[cards]] associated with [[Skeletons]], with the others being [[Bomber]], [[Skeleton Dragons]], [[Tombstone]], [[Bomb Tower]], [[Guards]], [[Skeleton Army]], [[Witch]], [[Balloon]], [[Giant Skeleton]], [[Wall Breakers]], [[Super Witch]], [[Graveyard]], [[Skeleton King]], and of course, Skeletons.
+*The Skeleton Barrel could be inspired by Clash of Clans' Builder Base Troop, [[w:c:clashofclans:Drop Ship|Drop Ship]], which also does damage and summons Skeletons when destroyed.
+*The Skeleton Barrel is 1 of 17 [[:Category:Troop Cards|troops]] that inspired a troop in Clash of Clans, the others being [[Spear Goblins]], Bomber, [[Bats]], [[Minion Horde]], [[Firecracker]], [[Battle Ram]], [[Ice Golem]], [[Zappies]], [[Baby Dragon]], Giant Skeleton, [[Ram Rider]], [[Inferno Dragon]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], and [[Night Witch]].
+**In Clash of Clans, the Skeleton Barrel in battle looks identical to an enemy Skeleton Barrel in Clash Royale. Unlike its [https://clashofclans.fandom.com/wiki/Skeleton_Barrel Clash of Clans counterpart], the Skeleton Barrel in Clash Royale attacks only buildings.
+**The Skeleton Barrel's visual appearance resembles Clash of Clans' [[w:c:clashofclans:Air Bombs|Air Bombs]] and its projectiles. The barrel itself is stylized very similarly to Level 6 and 7 Balloons from Clash of Clans.
+*The Skeleton Barrel is 1 of 8 troops to die as a part of their attack, the others being the [[Electro Spirit]], [[Fire Spirit]], [[Ice Spirit]], [[Battle Ram]], [[Heal Spirit]], [[Suspicious Bush]], and Wall Breakers.
+*The Skeleton Barrel is one of the first troop cards to receive a card render, alongside the [[Archers]], [[Knight]], [[Goblins]], Bomber, Skeletons, [[Barbarians]], Bats, [[Royal Recruits]], [[Rascals]], [[Musketeer]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Flying Machine]], [[Hog Rider]], [[Royal Hogs]], [[Dart Goblin]], Zappies, [[Elixir Golem]], Baby Dragon, Skeleton Army, Witch, [[P.E.K.K.A.|P.E.K.K.A]], [[Prince]], Balloon, Giant Skeleton, [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], Wall Breakers, [[Bowler]], [[Cannon Cart]], [[Mega Knight]], Ram Rider, Miner, Royal Ghost, Ice Wizard, [[Magic Archer]], [[Bandit]], [[Lava Hound]], Night Witch, and [[Fisherman]].
+*In the Italian, Korean, Russian, Chinese, Thai, and Vietnamese language settings of the game, the Skeleton Barrel's name translates to "Bone Barrel", "Skull Barrel", "Barrel with Skeletons", "Skull Balloon", "Skeleton Tank", and "Skeleton Box" respectively.
+*The Skeleton Barrel is 1 of 7 troops that has had its movement speed classification changed, the others being [[Elite Barbarians]], Suspicious Bush, [[Goblin Cage|Goblin Brawler]], Cannon Cart, [[Lumberjack]], and the [[Mighty Miner]].
+*The barrel of the Skeleton Barrel looks similar to the hull of the [[Rocket]].
+*The Skeleton Barrel has the same deploying sound as the Balloon, but with a higher pitch.
+*The Skeleton Barrel has been featured in multiple [[Tournament/Special Event Challenges|special game modes]] outside of the card. More specifically:
+**The Skeleton Barrel is the only troop that has been featured with a [[Buff#Death Damage|Death Damage]] [[buff]].
+**The Skeleton Barrel is 1 of 10 troops that has been featured under the [[Ruler Ability#Special Delivery|Special Delivery]] [[Ruler Ability|ruler ability]], the others being Knight, [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], Musketeer, Wizard, P.E.K.K.A, Giant Skeleton, [[Golem]], [[Sparky]], and Royal Ghost.
+*Although not available as a troop, the Skeleton Barrel reappears as [https://squad-busters.fandom.com/wiki/Witch Witch]'s active ability in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*In the [[Tournament/Special Event Challenges|Mirror Challenge]] and in its [https://youtu.be/U3io23q-Gk8?si=XG1uDOI5S-T_f_z1 reveal trailer], the Skeleton Barrel was shown to spawn all Skeletons in a random pattern. However, this was changed after its general release to spawn the Skeletons in a circular formation.
+*The Skeleton Barrel loses 1 balloon for each third of its total hitpoints depleted. A [[Clone]]d Skeleton Barrel does not follow this rule, however, and always has 3 balloons. These balloons do not regenerate if the Skeleton Barrel is healed up to at least one-third (or two-thirds) health.
+
+{{Navigation|Card}}
+
+[[fr:Fût à squelettes]]
+[[de:Skelettfass]]
+[[es:Barril de esqueletos]]
+[[it:Barile d'ossa]]
+[[ru:Бочка со скелетами]]
+[[zh:骷髅气球]]
+[[Category:Kamikaze Cards]]

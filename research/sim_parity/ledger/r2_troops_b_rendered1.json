@@ -1,0 +1,292 @@
+{
+ "Giant Skeleton": {
+  "revid": 436713,
+  "fetched": "2026-08-26",
+  "level_tables": [
+   {
+    "hdr": [
+     "Level",
+     "Hitpoints",
+     "Damage",
+     "Damage per Second",
+     "Death Damage"
+    ],
+    "l11": [
+     "11",
+     "3361",
+     "276",
+     "197",
+     "688"
+    ],
+    "l1": [
+     "6",
+     "2087",
+     "171",
+     "122",
+     "427"
+    ]
+   }
+  ]
+ },
+ "Goblin Cage": {
+  "revid": 436552,
+  "fetched": "2026-08-26",
+  "level_tables": [
+   {
+    "hdr": [
+     "Level",
+     "Goblin Cage Hitpoints",
+     "Goblin Cage Hitpoints lost per second",
+     "Goblin Brawler Hitpoints",
+     "Goblin Brawler Damage",
+     "Goblin Brawler Damage per second"
+    ],
+    "l11": [
+     "11",
+     "780",
+     "39",
+     "1080",
+     "337",
+     "306"
+    ],
+    "l1": [
+     "3",
+     "364",
+     "18.2",
+     "504",
+     "157",
+     "142"
+    ]
+   }
+  ]
+ },
+ "Goblin Demolisher": {
+  "revid": 437137,
+  "fetched": "2026-08-26",
+  "level_tables": [
+   {
+    "hdr": [
+     "Level",
+     "Hitpoints",
+     "Area Damage",
+     "Damage Per Second",
+     "Kamikaze Goblin Demolisher Hitpoints lost per second",
+     "Death Damage"
+    ],
+    "l11": [
+     "11",
+     "1300",
+     "186",
+     "155",
+     "65",
+     "404"
+    ],
+    "l1": [
+     "3",
+     "606",
+     "87",
+     "72",
+     "30.3",
+     "188"
+    ]
+   }
+  ]
+ },
+ "Hog Rider": {
+  "revid": 436540,
+  "fetched": "2026-08-26",
+  "level_tables": [
+   {
+    "hdr": [
+     "Level",
+     "Hitpoints",
+     "Damage",
+     "Damage Per Second"
+    ],
+    "l11": [
+     "11",
+     "1697",
+     "317",
+     "198"
+    ],
+    "l1": [
+     "3",
+     "792",
+     "148",
+     "92"
+    ]
+   }
+  ]
+ },
+ "Hunter": {
+  "revid": 436717,
+  "fetched": "2026-08-26",
+  "level_tables": [
+   {
+    "hdr": [
+     "Level",
+     "Hitpoints",
+     "Damage",
+     "Damage per second"
+    ],
+    "l11": [
+     "11",
+     "885",
+     "84 x10 (840)",
+     "380"
+    ],
+    "l1": [
+     "6",
+     "550",
+     "52 x10 (520)",
+     "230"
+    ]
+   }
+  ]
+ },
+ "Ice Spirit": {
+  "revid": 437338,
+  "fetched": "2026-08-26",
+  "level_tables": [
+   {
+    "hdr": [
+     "Level",
+     "Hitpoints",
+     "Damage"
+    ],
+    "l11": [
+     "11",
+     "215",
+     "110"
+    ],
+    "l1": [
+     "1",
+     "83",
+     "42"
+    ]
+   }
+  ]
+ },
+ "Ice Wizard": {
+  "revid": 436741,
+  "fetched": "2026-08-26",
+  "level_tables": [
+   {
+    "hdr": [
+     "Level",
+     "Hitpoints",
+     "Area Damage",
+     "Damage per second",
+     "Spawn Damage"
+    ],
+    "l11": [
+     "11",
+     "688",
+     "89",
+     "52",
+     "84"
+    ],
+    "l1": [
+     "9",
+     "569",
+     "74",
+     "43",
+     "69"
+    ]
+   }
+  ]
+ },
+ "Knight": {
+  "revid": 437500,
+  "fetched": "2026-08-26",
+  "level_tables": [
+   {
+    "hdr": [
+     "Level",
+     "Hitpoints",
+     "Damage",
+     "Damage Per Second"
+    ],
+    "l11": [
+     "11",
+     "1766",
+     "202",
+     "168"
+    ],
+    "l1": [
+     "1",
+     "681",
+     "78",
+     "65"
+    ]
+   }
+  ]
+ },
+ "Lava Hound": {
+  "revid": 436744,
+  "fetched": "2026-08-26",
+  "level_tables": [
+   {
+    "hdr": [
+     "Level",
+     "Lava Hound Hitpoints",
+     "Lava Hound Damage",
+     "Lava Hound Damage per second",
+     "Lava Pup Hitpoints",
+     "Lava Pup Damage",
+     "Lava Pup Damage per second"
+    ],
+    "l11": [
+     "11",
+     "3581",
+     "53",
+     "40",
+     "217",
+     "81",
+     "47"
+    ],
+    "l1": [
+     "9",
+     "2960",
+     "44",
+     "33",
+     "179",
+     "67",
+     "39"
+    ]
+   }
+  ]
+ },
+ "Lumberjack": {
+  "revid": 436746,
+  "fetched": "2026-08-26",
+  "level_tables": [
+   {
+    "hdr": [
+     "Level",
+     "Hitpoints",
+     "Lumberjack Damage",
+     "Lumberjack Damage per second",
+     "Rage Damage",
+     "Rage Crown Tower Damage"
+    ],
+    "l11": [
+     "11",
+     "1282",
+     "256",
+     "320",
+     "179",
+     "54"
+    ],
+    "l1": [
+     "9",
+     "1060",
+     "212",
+     "265",
+     "148",
+     "45"
+    ]
+   }
+  ]
+ }
+}

@@ -1,3 +1,4 @@
+<!-- revid:436475 fetched:2026-08-26T2 title:Elite Barbarians -->
 {{Protection}}{{MagicWords}}
 
 {{Card Infobox|Cost=6|Rarity=Common|Type=Troop|Arena=Hog Mountain|ReleaseDate=25 November 2016}}

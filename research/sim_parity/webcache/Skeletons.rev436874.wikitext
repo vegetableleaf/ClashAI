@@ -1,0 +1,230 @@
+{{Protection}}{{MagicWords}}{{ClashofClansLink|Skeleton}}
+
+{{Card Infobox|Cost=1|Rarity=Common|Type=Troop|Arena=Bone Pit|ReleaseDate=4 January 2016}}<br>
+
+{{SubpageNavBox|Evolution=yes|MergeTactics=yes}}
+
+<br>{{Quote|Three fast, very weak melee fighters. Surround your enemies with this pile of bones!}}
+
+The Skeletons is a {{Rarity|Common}} [[Cards|card]] that is unlocked from the [[Arenas|Bone Pit (Arena 2)]]. It spawns three fast, single-target, ground-targeting, melee, ground [[:Category:Troop Cards|troops]] with very low hitpoints and very low damage. Their deployment is in a triangle formation. They appear as small undead creatures with a skull that lacks a lower jaw and wield short swords. They are also the same as those spawned by the [[Witch]], [[Tombstone]], [[Skeleton Barrel]], [[Skeleton Army]], [[Graveyard]], and the [[Super Witch]]. A Skeletons card costs 1 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Skeletons Card}}
+*The Skeletons are most effectively used as a disposable distraction for medium to high-hitpoint units, such as the [[Prince]], [[Inferno Dragon]], [[P.E.K.K.A.]], [[Mighty Miner]], [[Sparky]], and [[Mini P.E.K.K.A.|Mini P.E.K.KA.]], since they can stop charged up abilities and distract enemies. Against [[:Category:Building Cards|building]]-targeting [[:Category:Troop Cards|troops]] unable to fight them, they provide a high amount of damage per second for 1 [[Elixir]], and they can stall single-targeting troops for a relatively long time considering their Elixir cost. Although they will often not counter units by themselves, the support and time they provide for other units is valuable. However, they will quickly be defeated by ranged area damage units like the [[Wizard]], [[Bowler]], Executioner, [[Witch]], and [[Bomber]], so the player should try to defeat or distract these types of units beforehand.
+*Generally, it is risky to use a [[:Category:Spell Cards|spell]] on Skeletons, as their 1 Elixir cost means any spell will be a negative Elixir trade. Plus, even a Level 1 [[:Category:Tower Troop Cards|Crown Tower]] can fully take them down without taking any damage. However, if the opponent is relying on Skeletons in order to defend, a quick spell can allow for major damage to the opposing Crown Tower. If the player knows that the opponent will use Skeletons against a remaining Prince, they can use a [[Zap]] spell as soon as they see the Skeletons, potentially allowing the Prince to deal damage it would not have done otherwise or forcing the opponent to use another [[Cards|card]], making up for the Elixir deficit.
+*The Skeletons can be used to counter a lone [[Princess]]. If played just after the Princess fires, the Skeletons will eliminate her quickly. Be careful, as if they are deployed with bad timing, the Princess will easily eliminate the Skeletons with one hit. The Princess player may also quickly react with a spell on the Skeletons, allowing her to continue firing at the Tower, so be prepared to follow up if necessary.
+*With the help of a Crown Tower, Skeletons can counter medium-health troops like the [[Musketeer]], [[Night Witch]], [[Hunter]], Miner, Bandit, [[Executioner]], [[Goblin Cage|Goblin Brawler]], and Mini P.E.K.K.A.. Against single-targeting ranged troops, one should place the Skeletons on top of the troop to negate the range advantage, Against melee troops, the Skeletons should be placed in the center so that the troop has to walk farther, giving the Crown Tower more time to chip it down and the Skeletons time to deploy.
+*Their 1 Elixir cost makes them an effective distraction against a [[Sparky]], leaving the player with more Elixir to deploy other units to destroy her. Skeletons can also be deployed directly on top of her to surround her, which will counter her for a 5 Elixir advantage with the help of a Crown Tower. However, an adept Sparky player may preemptively Zap on top of their own Sparky as it crosses the bridge. Players relying on Skeletons to surround and counter her in this situation this will suffer major damage to their Crown Tower, so the player should switch up their tactics.
+*If the opponent places an [[Inferno Tower]] to counter a tank, Skeletons can stall the Inferno Tower for a short time, giving the defender time to place another card to counter it or reset its damage ramp-up. This also works against the [[Inferno Dragon]].
+*Since it costs only 1 Elixir, it can shuffle the player's [[Battle Decks|deck]] quickly and add a significant damage boost to an attack. Better yet, since they are also easily defeated by many cards and Crown Towers, not many players are willing to play cards to only take out Skeletons, given that their 1 Elixir cost will almost always result in a negative Elixir trade for the player countering them. They are very good to be split behind the [[King's Tower|King Tower]] while shuffling the player's deck, as it can discourage the opponent from immediately attacking either lane slightly.
+*Skeletons can provide a cheap, but threatening boost to a small attack due to their Fast move speed and high combined damage. For example, a [[Miner]] accompanied by Skeletons will be much more threatening as the opponent will take much more damage if they ignore it, as opposed to ignoring a single Miner.
+*Skeletons can be used along with certain other cards like [[Knight]], [[Valkyrie]], or Mini P.E.K.K.A. to easily counter high damage single-targeting troops like [[Elite Barbarians]], Mighty Miner, P.E.K.K.A, and Prince. Use the Skeletons to pull them into the center while absorbing some of the damage then place down Knight or Mini P.E.K.K.A. to finish them off. This can then assist in a counterattack.
+*If the player thinks their opponent will try and send a [[Goblin Barrel]] far behind their Crown Tower, they can try and activate their King's Tower. The Skeletons should be split behind the player's King's Tower a few tiles before the barrel's shadow crosses the river. 1 Skeleton should go in the lane of the barrel while the 2 go in the other lane. If the opponent does send the barrel to the back of the player's Crown Tower, the [[Goblins]] will defeat the Skeletons and 1 Goblin will head towards the King's Tower afterwards instead of towards the Crown Tower. Even if the opponent does not send the barrel behind the Tower, the player will have sufficient Elixir to counter the regular placement.
+*Against an offensive [[Mortar]] on the center of the bridge, meet the Mortar vertically and play the Skeletons on the first tile in front of the King's Tower slightly before the Mortar's deploy timer is three fourths of the way finished. The Mortar will fire its shell at the Skeletons just as they are deployed, and the area damage effect will clip the King's Tower, activating it.
+*Skeletons can fully counter a [[Bandit]]. Before the Bandit is about to dash, place the Skeletons on the third tile vertically from the King's Tower and the third tile horizontally from the Crown Tower. The front Skeleton should appear to be slightly more forward than the Crown Tower. If executed correctly, the Bandit will be in range of both Crown Towers after her dash, resulted in her being whittled down quickly and getting no hits on the player's Tower.
+*Skeletons have very high DPS/Cost ratio. A strategy is to place an [[Ice Golem]] to distract a troop, and Skeletons behind the attacking troop to severely cripple them, if not, destroy them.
+*Skeletons can be used as a cheap way to kite air troops placed at the center of the [[Arenas|Arena]]. Split the Skeletons so that one goes into the lane the air troops is staggered towards, and two go into the other lane. The single Skeleton will tank an attack and buy time for the two Skeletons in the other lane to distance themselves from the air unit, allowing them to live longer. However, this will not work against the [[Flying Machine]], as its sight range is equal to its attack range, meaning that if an enemy walks out of its attack range, it won't try to follow them. To counteract this, players should place Skeletons in front of the Flying Machine to distract it.
+*Placing Skeletons and then placing down a single grounded unit on the same tile right afterwards will cause them to spread further apart from each other while deploying, allowing them to be targeted individually by certain area damage attackers like the [[Baby Dragon]] and [[Skeleton Dragons]], making them more effective at stalling these units.
+**This tactic is most effective if the grounded unit is a ranged attacker, as it will not continue to collide with the Skeletons upon deployment and will not be susceptible to area damage damage until after all of them are defeated.
+**This tactic is ineffective against cards with a large enough area damage radius, such as the [[Mega Knight]] and the [[Dark Prince]] with their jump and charge attacks respectively.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|1||1.1 sec||0.5 sec||Fast (90)||1 sec||Melee: Short (0.5)||Ground||x3||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Common}}
+|}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 81 }}
+{{#vardefine: dmg_11 | 81 }}
+{{#vardefine: atk_speed | 1.1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 20,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|200 {{BASEPAGENAME}} cards<br/ >25 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 60,000 Damage to enemy Troops or buildings
+|2,000 {{Icon|I=Gold}}<br>25 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 100,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>25 {{Icon|I=XP}}
+|-
+| rowspan="3" |Hit Maker <br/ > [[File:Hit Maker.png|50x50px]]
+|1
+|Hit enemy Troops a total of 700 times
+|3,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|2
+|Hit enemy Troops a total of 2,000 times
+|200 {{Icon|I=Common Wild Card}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Hit enemy Troops a total of 3,500 times
+|5,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Skeletons [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016.
+*On 19/2/2016, the [[Version History#Balance Changes (19/2/2016)|Balance Update]], increased the Skeletons' hitpoints and damage by 11%.
+*On 29/2/2016, the [[Version History#March 2016 Update (29/2/2016)|March 2016 Update]], decreased the Skeletons' sight range to 5.5 tiles (from 6 tiles).
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], increased the {{Rarity|Common}} card Level cap to 13 (from 12). The update also fixed the “range bug”, which decreased the Skeletons' range to 0.5 tiles (from 0.75 tiles), but their effective range was unchanged.
+*On 18/5/2016, a [[Version History#Balance Changes (18/5/2016)|Balance Update]], increased the Skeletons' hitpoints and damage by 5%.
+*On 21/6/2016, a [[Version History#Balance Changes (21/6/2016)|Balance Update]], decreased the number of Skeletons spawned to 3 (from 4). This also changed the numeral "Four" to "Three" in the description and replaced "swarm" with "surround" due to the lower number of Skeletons.
+2017
+*On 13/2/2017, a [[Version History#Balance Changes (13/2/2017)|Balance Update]], increased the number of Skeletons spawned to 4 (from 3). This also changed the numeral "Three" to "Four" in the description.
+*On 12/6/2017, the [[Version History#June 2017 Update (12/6/2017)|June 2017 Update]], decreased the number of Skeletons spawned to 3 (from 4). It also increased the distance between the Skeletons upon deployment. This changed the numeral "Four" to "Three" in the description.
+2019
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Skeletons' card info screen.
+2021
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14), and added the Skeletons' Evolution. It also changed the Skeletons' card image.
+2025
+*On 4/8/2025, the [[Version History/2025#Pass Royale and more (4/8/2025)|August 2025 Update]] made it so that the [[Witch/Evolution|Evolved Witch]] would no longer be healed by defeated Skeletons.
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)=|Balance Update]] increased the Skeleton's attack time interval to 1.1 seconds (from 1 second).
+
+==Gallery==
+<gallery>
+File:SkeletonsCardOld.png|Skeletons’ card image before 19/6/2023.
+File:Skeletons card render.png|Current card render.
+File:Chinese Skeletons card render.png|Skeletons’ card render in the Chinese version of the game.
+File:Skeletons Preview.gif|Current card preview.
+File:Skeletons 3.png|Skeletons Full Body.
+File:Skeletons 2.png|Skeletons 1
+File:Skeleton 3.png|Skeletons 2
+File:Skeletons 5.png|Skeletons 3
+File:Skeleton 1.png|Skeletons 4
+File:Skeletons 6.png|Skeletons 5
+File:Skeletons 7.png|Skeletons 6
+File:Skeletons 1.png|Skeletons 7
+File:Skeletons 9.png|A Skeleton carrying a bunch of swords.
+</gallery>
+
+==Trivia==
+*The word "''Skeleton''" comes from the Greek "''σκελετός''" (''skeletós''), meaning dried up or withered.
+**The Skeletons, [[Bomber]], and [[Tombstone]] are the only cards associated with Skeletons that are unlocked in [[Arenas|Bone Pit]].
+*The Skeletons are 1 of 19 [[:Category:Troop Cards|troops]] which first existed in Clash of Clans, the others being [[Minions]], [[Archers]], [[Goblins]], [[Barbarians]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Hog Rider]], [[Witch]], [[P.E.K.K.A.]], [[Balloon]], [[Golem]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Phoenix]], [[Lava Hound]], and the [[Archer Queen]].
+**It is the only troop that is only available as a sub-troop in Clash of Clans.
+*The Skeletons are 1 of 3 troops which can be spawned by a troop (Skeletons/[[Skeleton Army]]), a [[:Category:Spell Cards|spell]] ([[Graveyard]]), and a [[:Category:Building Cards|building]] (Tombstone). The others are Goblins and Barbarians.
+**Skeletons spawn from more [[cards]] than any other troop, being able to spawn from a total of 8 cards.
+*The Skeletons, along with [[Electro Spirit]], [[Fire Spirit]], [[Ice Spirit]], [[Warmth]], [[Heal Spirit]], and [[Heal]], are the cheapest cards, costing 1 [[Elixir]].
+**The Skeletons were the first [[:Category:1-Elixir Cards|1-Elixir]] card to be added in the game.
+*The Skeletons are tied with [[Bats]] and [[Suspicious Bush]] for the lowest hitpoints of all troops, with 119 hitpoints at Level 15, and 32 hitpoints at Level 1. [[Guards]] also have the same hitpoints, however, they come with a shield.
+*The Skeletons are one of the first troop cards to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the Minions, Archers, [[Knight]], [[Spear Goblins]], Goblins, Bomber, Barbarians, [[Minion Horde]], [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Musketeer]], Giant, Valkyrie, Wizard, Hog Rider, [[Baby Dragon]], Skeleton Army, Witch, P.E.K.K.A, [[Prince]], and Balloon.
+*The Skeletons are one of the first troops to be featured in a [[Loading Screens|Loading Screen]], alongside the Knight, Goblins, and Prince.
+*The Skeletons are one of the first troop cards to receive a card render, alongside the Archers, Knight, Goblins, Bomber, Barbarians, Bats, [[Royal Recruits]], [[Skeleton Barrel]], [[Rascals]], Musketeer, Giant, Valkyrie, Wizard, [[Flying Machine]], Hog Rider, [[Royal Hogs]], [[Dart Goblin]], [[Zappies]], [[Elixir Golem]], Baby Dragon, Skeleton Army, Witch, P.E.K.K.A, Prince, Balloon, [[Giant Skeleton]], [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], Wall Breakers, Bowler, Cannon Cart, [[Mega Knight]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], [[Magic Archer]], [[Bandit]], Lava Hound, [[Night Witch]], and [[Fisherman]].
+*The Skeletons are one of the first troop cards to receive a [[Card Evolution]], alongside the Barbarians, [[Royal Giant]], and [[Firecracker]].
+*The Skeletons are 1 of 9 troops that have the same sprite for both players, the others are Electro Spirit, Fire Spirit, Bats, Ice Spirit, Heal Spirit, Elixir Blob, Phoenix, and Lava Pup.
+*Even though the card spawns 3 Skeletons, the card render displays only 1 Skeleton.
+*The Skeletons are 1 of 4 troops which can defeat themselves in one attack, the others being Bats, Firecracker and Wall Breakers.
+*Along with the Skeleton Army and [[Wizard Trio]], the Skeletons are the only swarm card whose members spawn all at the exact same time.
+*The Skeletons has been featured in multiple [[Tournament/Special Event Challenges|special game modes]] outside of the card. More specifically:
+**The Skeletons are 1 of 23 troops that have been featured in the [[Troop Rush]] game [[:Category:Modes|mode]], the others being [[Skeleton Dragons]], Fire Spirit, Bats, [[Elite Barbarians]], Firecracker, Rascal Girls, Royal Hogs, Heal Spirit, Elixir Golem, Guards, Prince, Balloon, Golem, Wall Breakers, Ram Rider, [[Sparky]], Phoenix, Royal Ghost, Bandit, [[Lumberjack]], [[Santa Hog Rider]], and the [[Monk]].
+**The Skeletons have been featured with multiple [[Buff|buffs]]. More specifically:
+***The Skeletons are 1 of 3 troops that have been featured with an [[Buff#Invisibility|Invisibility]] buff, the others being Goblins and Bats.
+***The Skeletons are the only troop that has been featured with a [[Buff#Shield Boost|Shield Boost]] buff.
+*The Skeletons, along with the Minions, Bomber, Skeleton Dragons, Ice Spirit, Mini P.E.K.K.A, [[Mega Minion]], Dart Goblin, [[Ice Golem]], Elixir Golem, [[Goblin Cage|Goblin Brawler]], Guards, Baby Dragon, P.E.K.K.A, Giant Skeleton, [[Golem]], Wall Breakers, Bowler, [[Executioner]], Mega Knight, [[Inferno Dragon]], Royal Ghost, and Lava Hound, are featured as a [https://squad-busters.fandom.com/wiki/Monsters monster] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+**An [https://squad-busters.fandom.com/wiki/Ice_Skeleton ice variant] and a [https://squad-busters.fandom.com/wiki/Lava_Skeleton lava variant] for the Skeleton are also featured as a monster in Squad Buster.
+**Also along with the Bats and Royal Recruits, it is also featured as a sub-character in Squad Busters.
+*The Skeletons, along with the Archers, Goblins, Barbarians, Mini P.E.K.K.A, Musketeer, Wizard, Witch, Prince, and [[Princess]], are featured as a sticker in [https://en.wikipedia.org/wiki/IMessage iMessage], in a sticker pack called [https://apps.apple.com/us/app/clash-a-rama/id1182384664 Clash-A-Rama].
+*According to a Clash-A-Rama comic [https://clasharama.fandom.com/wiki/Clash-A-Rama!_Comic_Strips?file=BRING-YOUR-CHILD-TO-WORK-DAY_Final.jpg strip], a Skeleton is the Giant Skeleton's child.
+*In Royal Crypt, Skeletons can be seen sitting in the audience.
+*Using the Skeletons card to summon 15 Skeletons would cost 5 Elixir, whereas using the Skeleton Army card to summon 15 Skeletons costs 3 Elixir.
+*The first Trainer the player battles in the Training Camp uses 2 cards, one of them being Skeletons, and the other being Goblins.
+*The Skeletons are the subject of certain cosmetics in the game. More specifically:
+**The Skeletons are the subject of a few [[Clans|Clan]] badges.
+**The Skeletons are the subject of a few [[Emotes]].
+***The Skeleton Mariachi Emote may possibly be a reference to [https://brawlstars.fandom.com/wiki/Poco Poco] from Brawl Stars, another Supercell game.
+**The Skeletons are the subject of a few [[Battle Banners|Battle Banner]] items.
+***The Red vs Blue frame is created by Myoho.
+***In the [https://youtu.be/Q5e94mUB7Mc?si=GCn1Mhk7dIPe4ih2 Raise your Battle Banners trailer], there was a Battle Banner decoration that showed a Skeleton riding a tusk like a snowboard. However, this Battle Banner decoration never made it to the game.
+*In the Thai language setting of the game, the card description incorrectly states that the card spawns 4 Skeletons. This is likely due to the fact that the card used to spawn 4 Skeletons.
+*The Skeletons were featured in the winning deck of the [https://youtu.be/LWQjS0e6iiE Super Magical Cup Tournament], by a player called CMcHugh.
+*Before the Skeletons' card release, the Skeletons' hitpoints and damage were increased by 8%.
+
+==In other languages==
+<center>
+<div id="unit-statistics" class="table-back">
+{{Other languages|frmeaning=Same as its English name.|demeaning=Same as its English name.|esmeaning=Same as its English name.|itmeaning=Same as its English name.|nlmeaning=Same as its English name.|nomeaning=Same as its English name.|trmeaning=Same as its English name.|jpmeaning=Same as its English name.|krmeaning=Skeleton Soldiers.|rumeaning=Same as its English name.|armeaning=Same as its English name.|ptmeaning=Same as its English name.|cnmeaning=Same as its English name.|cntmeaning=Same as its English name.|fameaning=Same as its English name.|idmeaning=Same as its English name.|msmeaning=Same as its English name.|thmeaning=Same as its English name.|fimeaning=Same as its English name.|vimeaning=Same as its English name.|fr=Squelettes|de=Skelette|es=Esqueletos|it=Scheletri|nl=Skeletten|no=Skjeletter|tr=İskeletler|jp=スケルトン|kr=해골 병사|ru=Скелеты|ar=هياكل عظمية|pt=Esqueletos|cn=骷髅兵|cnt=骷髏兵|fa=اسکلت|id=Jerangkong|ms=Rangka|th=โครงกระดูก|fi=Luurangot|vi=Bộ xương}}
+</div></center>
+
+{{Navigation|Card}}
+
+[[fr:Squelettes]]
+[[de:Skelette]]
+[[es:Esqueletos]]
+[[it:Scheletri]]
+[[ja:スケルトン]]
+[[ru:Скелеты]]
+[[zh:骷髅兵]]

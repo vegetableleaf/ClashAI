@@ -1,0 +1,201 @@
+{{DISPLAYTITLE:<span style="color: #888888;">Cannon</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}
+
+{{Card Infobox|Cost=3|Rarity=Common|Type=Building|Arena=Barbarian Bowl|ReleaseDate=4 January 2016}}{{SubpageNavBox|Evolution=yes}}
+
+
+{{Quote|Defensive building. Shoots cannonballs with deadly effect, but cannot target flying troops.}}
+
+The Cannon is a {{Rarity|Common}} [[Cards|card]] that is unlocked from the [[Arenas|Barbarian Bowl (Arena 3)]]. It spawns a single-target, ground-targeting, medium-ranged, [[:Category:Building Cards|building]] with moderate hitpoints and moderate damage. It appears as a large dark metal barrel mounted on a four-legged wooden mount with a metal plate and a crude, with two team-colored ridges, one midway and the other at the rear. A Cannon card costs 3 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Cannon Card}}
+*The Cannon can be used defensively behind or beside [[:Category:Tower Troop Cards|Crown Towers]] to help defend against melee troops.
+*As with any defense, it is generally not wise to play the Cannon proactively, as this may, for example, allow an opposing [[Magic Archer]], [[Dart Goblin]], [[Princess]], [[Archers/Evolution|Evolved Archers]], [[Furnace]], or [[Musketeer]] to outrange it, destroy it, and then proceed to attack the player's Tower, gaining both an [[Elixir]] and damage advantage. The player can, however, place the Cannon while the ranged troop is in the range of the Cannon to prevent ranged troops from out-ranging it.
+*Since Cannons cannot attack air troops, ranged units like [[Flying Machine]], [[Skeleton Dragons]], [[Electro Dragon]], Inferno Dragon, or [[Baby Dragon]] can destroy it somewhat safely. However, given its low 3 Elixir cost, the Cannon can be used as a distraction against air troops, which gives your tower more time to shoot them down.
+*The Cannon is often best placed in the radius of the user's Crown Towers, to prevent flying troops such as [[Minions]], [[Bats]], [[Phoenix]], or [[Mega Minion]] from destroying it without any issues. As such, if a Cannon is ever placed out of range of the Crown Towers, the attacking player can use air troops to destroy the Cannon unhindered.
+*The Cannon can take down [[Barbarians]], [[Royal Recruits]], Dark Prince, [[Skeleton Army]], [[Goblin Gang]], and Hog Rider when placed in the center of the player's side, gaining an Elixir advantage. A Cannon combined with a [[Mini P.E.K.K.A.]], [[Lumberjack]], [[Mighty Miner]], [[Monk]], [[Night Witch]], [[Hunter]], or [[Inferno Dragon]] can wreak havoc on high-hitpoint troops.
+*The Cannon can also be a great cheap distraction for dangerous troops like the [[Prince]], [[Elite Barbarians]], [[P.E.K.K.A]], [[Mega Knight]], [[Royal Giant]], [[Sparky]], [[Giant Skeleton]], [[Golem]], and the [[Balloon]].
+*It is best used against tanks; place it 4 tiles away from the river and two tiles away from the Crown Tower to pull it with the maximum distance.
+**For troops that only target [[:Category:Building Cards|buildings]] except for the [[Battle Ram]], place it 4 tiles from the river and 3 tiles away from the Crown Tower.
+***The building will need to be placed 4 tiles from the river and 2 tiles from the Crown Tower if the opponent executes an edge jump with a [[Hog Rider]], [[Royal Hogs]], Prince, [[Dark Prince]], or a [[Ram Rider]].
+***The player can use it to aggro building-target only troops after it crosses the bridge, but only if it hasn't travelled more than 2 tiles from the bridge, or it will go straight to the Crown Tower.
+***If a Balloon is placed on the very edge, you have to place it 4 tiles from the river and 1 tile from the Crown Tower. If a Balloon is placed on the very edge in front, you can place it 3 tiles away from the river and 2 tiles away from the Crown Tower. If a Balloon is placed right on the path, you can do the usual building place (4 tiles from the river and 3 tiles from the Crown Tower). The [[Lava Hound]] behaves slightly different: if it's placed on the very edge it has to be 3 tiles away from the river and 1 tile from the Crown Tower. And if it is placed on the path the player must place it 4 tiles away from the river and 2 tiles away from the Crown Tower.
+***These building placement rules apply to all buildings; even though the [[Tesla]] is smaller than most buildings, the same rules still apply.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Lifetime<br />{{Icon|I=Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|3||1 sec||1 sec||1 sec||30 sec||5.5||1000||Ground||[[:Category:Building Cards|Building]]||{{Rarity|Common}}
+|}
+{{StatisticsSubheader|Card Statistics}}
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 824 }}
+{{#vardefine: dmg_11 | 212 }}
+{{#vardefine: life | 30 }}
+{{#vardefine: atk_speed | 1 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+! scope="col" |Hitpoints lost per second<br />{{Icon|I=Time}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+| 1 || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(1-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(1-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 2 || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(2-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(2-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 3 || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(3-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(3-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 4 || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(4-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(4-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 5 || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(5-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(5-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 6 || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(6-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 7 || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(7-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 8 || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(8-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}} || {{#expr: {{#var:hp_11}} / {{#var:life}} round 1 }} || {{#var:dmg_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) / {{#var:life}} round 1 }} || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Reward
+|-
+| rowspan="3" |Damage Dealer <br/ > [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 67,500 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|200 {{BASEPAGENAME}} cards<br>25 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 200,000 Damage to enemy Troops or buildings
+|2,000 {{Icon|I=Gold}}<br/ >25 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 335,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>25 {{Icon|I=XP}}
+|-
+| rowspan="3" |Troop Destroyer <br/ > [[File:Troop Destroyer.png|50x50px]]
+|1
+|Destroy 210 enemy Troops
+|3,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|2
+|Destroy 600 enemy Troops
+|200 {{Icon|I=Common Wild Card}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Destroy 1,050 enemy Troops
+|5,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2016
+*The Cannon [[Cards|card]] was added with Clash Royale's game launch on 4/1/2016.
+*On 2/2/2016, the [[Version History#February 2016 Update (2/2/2016)|February 2016 Update]], decreased the Cannon's cost to 3 [[Elixir]] (from 6 Elixir), decreased its range to 6 tiles (from 7 tiles), decreased its lifetime to 40 seconds (from 60 seconds), and decreased its hitpoints by 55%.
+*On 23/3/2016, a [[Version History#Balance Changes (23/3/2016)|Balance Update]], decreased the Cannon's lifetime to 30 seconds (from 40 seconds).
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], increased the {{Rarity|Common}} card Level cap to 13 (from 12) and decreased its hitpoints by 11%. The update also fixed the “range bug”, which decreased the Cannon's range to 5.5 tiles (from 6 tiles) but its effective range was unchanged.
+*On 18/5/2016, a [[Version History#Balance Changes (18/5/2016)|Balance Update]], decreased the Cannon's hitpoints by 5%.
+*On 21/6/2016, a [[Version History#Balance Changes (21/6/2016)|Balance Update]], decreased the Cannon's hitpoints by 8%.
+2018
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], fixed a bug where the Cannon would occasionally stop shooting at the edge of its range.
+2019
+*On 1/7/2019, the [[Version History#July%202019%20Update%20(1/7/2019)|July 2019 Update]], increased the Cannon's damage by 32%, but increased its attack time interval to 1 second (from 0.8 seconds) and its first attack interval to 1 second (from 0.8 seconds).
+*On 30/9/2019, the [[Version History#End%20of%20September%202019%20Update%20(30/9/2019)|End of September 2019 Update]], added an extra [[Star Points|Star Level]].
+2020
+*On 3/3/2020, a [[Version History#Balance Changes (3/3/2020)|Balance Update]], increased the Cannon's damage by 5%.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], decreased the Cannon's attack time interval to 0.9 seconds (from 1 second) and its first attack time interval to 0.9 seconds (from 1 second).
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 4/10/2022, a [[Version History#Balance%20Changes%20(4/10/2022)|Balance Update]], decreased the Cannon's hitpoints by 8%.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+2024
+*On 30/10/2024, a maintenance break, added a card render to the Cannon's card info screen.
+*On 15/11/2024. the Cannon's Evolution was added.
+2025
+*On 4/3/2025, a [[Version History#Balance Changes (4/3/2025)|Balance Update]], increased the Cannon's attack time interval to 1 second (from 0.9 second).
+
+==Gallery==
+<gallery>
+File:Cannon card render.png|Current card render.
+File:Cannon Preview.gif|Current card preview
+File:Cannon 1.png|Cannon 1
+File:Cannon2.png|Cannon 2
+File:Cannonfinish.png|Cannon 3
+File:Cannon4.png|Cannon 4
+</gallery>
+
+==Trivia==
+*The word "''Cannon''" comes from the Akkadian word "''𒄀''" (''qanû''), meaning reed. Cannons were invented in China during the twelvth century. It was most likely developed in parallel or as an evolution of an earlier gunpowder weapon called the fire lance. Cannons were used for warfare by the late thirteenth century in the Yuan dynasty and spread throughout Eurasia in the fourteenth century. During the late Middle Ages, large and small cannons were developed for siege and field battles. The cannon replaced prior siege weapons such as the trebuchet. After the late Middle Ages, most large cannons were abandoned in favor of greater numbers of lighter, more maneuverable field artillery.
+**The Cannon is 1 of 4 [[cards]] associated with cannonry, with the others being [[Royal Giant]], [[Cannon Cart]], and [[Cannoneer]].
+*The Cannon is 1 of 7 [[:Category:Building Cards|buildings]] which first existed in Clash of Clans, the others being [[Mortar]], [[Tesla]], [[Goblin Hut]], [[Inferno Tower]], [[Elixir Collector]], and [[X-Bow]].
+**The Cannon resembles the old Level 4 Cannon from Clash of Clans.
+*While not available as a building in Squad Busters, the Cannon reappears there when spawned by a [https://squad-busters.fandom.com/wiki/Cannon_Spell Cannon Spell].
+*The Cannon, along with the [[Tombstone]], are the cheapest buildings, costing 3 [[Elixir]].
+*Among all buildings that can attack, the Cannon is tied with Tesla for the shortest range of all buildings, with a range of 5.5 tiles.
+*The Cannon is one of the first building cards to be featured in a [[Training Camp|Trainer]]'s [[Battle Decks|deck]], alongside the Goblin Hut, Tombstone, [[Bomb Tower]], Inferno Tower, and [[Barbarian Hut]].
+*The Cannon is 1 of 23 cards that has had its Elixir cost changed, the others being [[Bomber]], [[Fire Spirit]], [[Royal Recruits]], Mortar, [[Musketeer]], [[Three Musketeers]], [[Heal]], Goblin Hut, Bomb Tower, Barbarian Hut, [[Furnace]], Elixir Collector, [[Skeleton Army]], [[P.E.K.K.A.]], [[Wall Breakers]], [[Electro Giant]], [[Bowler]], [[Goblin Barrel]], [[Barbarian Barrel]], [[Rage]], [[Fisherman]], and the [[Monk]].
+**The Cannon, the Mortar, and the P.E.K.K.A were the first cards whose Elixir cost was changed since the [[Version History#February 2016 Update (2/2/2016)|February 2016 Update]].
+**Out of all cards whose Elixir cost was changed, the Cannon has had the largest change in Elixir, with a change of 3 Elixir.
+*The Cannon shares the first part of its description with the Tesla.
+*Although Cannons themselves can only target ground [[:Category:Troop Cards|troops]], the [[King's Tower|King Tower]]'s cannon can target both air and ground troops. This might be because the cannon is elevated on the tower.
+*The Cannon is unavailable in multiple [[Tournament/Special Event Challenges|special game modes]]. More specifically:
+**It is 1 of 20 cards that is unavailable in [[Mirror]] mode, the others being [[Minions]], Mortar, Tesla, Goblin Hut, Tombstone, Bomb Tower, Inferno Tower, Barbarian Hut, Furnace, Elixir Collector, [[Freeze]], [[Clone]], X-Bow, [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], [[Mighty Miner]], [[Little Prince]], and the Monk.
+**It is unavailable in [[Global Spell|The Floor is Healing]] sub-[[:Category:Modes|mode]] of the Global Spell game mode, much like other building cards, as well as the Cannon Cart.
+*The Cannon has received the largest percentage debuff to a singular upgradeable stat out of all cards in the game, with a 55% hitpoints decrease in the February 2016 Update.
+*The Cannon has had balance changes that were planned for it but were not added to the game. More specifically:
+**The initial balance change for Cannon on the [[Version History#Balance Changes (4/10/2022)|4/10/2022 balance changes]] was a 14% hitpoints decrease, but it was lowered to 8% [https://royaleapi.com/blog/season-40-balance-wip last minute].
+**The initial balance change for Cannon on the [[Version History#Balance Changes (4/3/2025)|4/3/2025 balance changes]] was a 6% damage decrease, but it was changed to an attack time interval increase to 1 second (from 0.9 seconds) [https://royaleapi.com/blog/season-69-balance-wip-march-2025 last minute].
+*Before the Cannon's card release, the Cannon's hitpoints were increased by 42%.
+{{Navigation|Card}}
+
+[[fr:Canon]]
+[[de:Kanone]]
+[[es:Cañón]]
+[[it:Cannone]]
+[[ja:大砲]]
+[[ko:대포]]
+[[ru:Пушка]]
+[[zh:加农炮]]

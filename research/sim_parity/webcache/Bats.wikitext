@@ -1,3 +1,4 @@
+<!-- revid:437216 fetched:2026-08-26T2 title:Bats -->
 {{Protection}}{{MagicWords}}{{ClashofClansLink|Bat}}
 
 {{Card Infobox|Cost=2|Rarity=Common|Type=Troop|Arena=Builder's Workshop|ReleaseDate=7 July 2017}}{{SubpageNavBox|Evolution=yes}}{{Quote|Spawns a handful of tiny flying creatures. Think of them as sweet, purple... balls of DESTRUCTION!}}

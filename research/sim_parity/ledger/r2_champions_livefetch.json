@@ -1,0 +1,90 @@
+{
+ "Archer Queen": {
+  "title_returned": "Archer Queen",
+  "revid_live": 436755,
+  "revid_archive": 436755,
+  "edit_war": "pass",
+  "content_identical_to_archive": true,
+  "bytes": 27726,
+  "sha1": "3d341d90a9fe",
+  "fetched": "2026-08-26",
+  "file": "Archer_Queen.wikitext"
+ },
+ "Boss Bandit": {
+  "title_returned": "Boss Bandit",
+  "revid_live": 437146,
+  "revid_archive": 437146,
+  "edit_war": "pass",
+  "content_identical_to_archive": true,
+  "bytes": 18525,
+  "sha1": "51985a765cc7",
+  "fetched": "2026-08-26",
+  "file": "Boss_Bandit.wikitext"
+ },
+ "Goblinstein": {
+  "title_returned": "Goblinstein",
+  "revid_live": 437348,
+  "revid_archive": 437348,
+  "edit_war": "pass",
+  "content_identical_to_archive": true,
+  "bytes": 17562,
+  "sha1": "30d1161b43cc",
+  "fetched": "2026-08-26",
+  "file": "Goblinstein.wikitext"
+ },
+ "Golden Knight": {
+  "title_returned": "Golden Knight",
+  "revid_live": 437147,
+  "revid_archive": 437147,
+  "edit_war": "pass",
+  "content_identical_to_archive": true,
+  "bytes": 23732,
+  "sha1": "708cad32b8c6",
+  "fetched": "2026-08-26",
+  "file": "Golden_Knight.wikitext"
+ },
+ "Little Prince": {
+  "title_returned": "Little Prince",
+  "revid_live": 437347,
+  "revid_archive": 437347,
+  "edit_war": "pass",
+  "content_identical_to_archive": true,
+  "bytes": 27276,
+  "sha1": "81794d032fb3",
+  "fetched": "2026-08-26",
+  "file": "Little_Prince.wikitext"
+ },
+ "Mighty Miner": {
+  "title_returned": "Mighty Miner",
+  "revid_live": 437349,
+  "revid_archive": 437349,
+  "edit_war": "pass",
+  "content_identical_to_archive": true,
+  "bytes": 24317,
+  "sha1": "72807e18fb6c",
+  "fetched": "2026-08-26",
+  "file": "Mighty_Miner.wikitext"
+ },
+ "Monk": {
+  "title_returned": "Monk",
+  "revid_live": 437140,
+  "revid_archive": 437140,
+  "edit_war": "pass",
+  "content_identical_to_archive": true,
+  "bytes": 24657,
+  "sha1": "a18fea4a3bf0",
+  "fetched": "2026-08-26",
+  "file": "Monk.wikitext"
+ },
+ "Skeleton King": {
+  "title_returned": "Skeleton King",
+  "revid_live": 436753,
+  "revid_archive": 436753,
+  "edit_war": "pass",
+  "content_identical_to_archive": true,
+  "bytes": 20337,
+  "sha1": "743c8f29b39b",
+  "fetched": "2026-08-26",
+  "file": "Skeleton_King.wikitext"
+ }
+}

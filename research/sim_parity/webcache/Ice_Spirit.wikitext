@@ -1,3 +1,4 @@
+<!-- revid:437338 fetched:2026-08-26T2 title:Ice Spirit -->
 {{Protection}}{{MagicWords}}
 
 {{Card Infobox|Cost=1|Rarity=Common|Type=Troop|Arena=Frozen Peak|ReleaseDate=4 July 2016}}{{SubpageNavBox|Evolution=yes}}{{Quote|Spawns one lively little Ice Spirit to freeze a group of enemies. Stay frosty.}}

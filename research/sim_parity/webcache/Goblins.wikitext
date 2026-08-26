@@ -1,3 +1,4 @@
+<!-- revid:437504 fetched:2026-08-26T2 title:Goblins -->
 {{Protection}}{{MagicWords}}{{ClashofClansLink|Goblin}}
 
 {{Card Infobox|Cost=2|Rarity=Common|Type=Troop|Arena=Goblin Stadium|ReleaseDate=4 January 2016}}{{SubpageNavBox|MergeTactics=yes|Hero=Yes}}{{Quote|Four fast, unarmored melee attackers. Small, fast, green and mean!}}

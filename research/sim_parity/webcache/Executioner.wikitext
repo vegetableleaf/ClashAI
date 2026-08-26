@@ -1,3 +1,4 @@
+<!-- revid:437375 fetched:2026-08-26T2 title:Executioner -->
 {{DISPLAYTITLE: <span style="color: #b300b3;">Executioner</span>}}
 {{Protection}}{{MagicWords}}
 
