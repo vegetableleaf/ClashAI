@@ -1,238 +1,221 @@
-# Sim Parity — evolutions, heroes, champions, stat refresh (both decks)
+# Sim Parity — Phase I completion: I4 → I5 → features (I6-I10)
 
 ## Context
 
-The owner wants the simulator brought to parity with the current game. Today's three-audit sweep
-plus live source probes established the ground truth this plan is built on:
+Research is frozen (`research-frozen-2026-08-26`) and adjudicated (all 14 R2 decisions + rulings
+1-10 in `research/sim_parity/decisions.md`). Done on branch `sim-parity` (worktree
+`C:\Users\benpe\ClashBot-parity`): the 7 pulled-forward engine items (`50a15de`..`9f0e19d`), E1 by
+measurement (`c460939`), I3 evolution restock — 1000/1000 decks field a real evo, 0 phantoms, 42/42
+in rotation (`9a57aef`), I1 backport — `engine.py`/`cards.py` now **byte-identical** across decks
+(`8ca6aa5`), I0 parity harness verified-to-fail (`be47ddd`). Suites: icebow **773 OK**, hogeq at its
+exact 42-failure baseline. The live tree still runs the PPO untouched.
 
-- **Phantom evolutions are real and worse than reported.** `build_spec`
-  (icebow [engine.py:501-518](icebow/src/clashrl/sim/engine.py#L501-L518)) fabricates a spec for
-  ANY `<x>_evo` key — a missing evo row merges nothing and returns the base card wearing the evo
-  name. `opponents.py:81-97`'s evo picker's guards never fire, so the opponent's "evolution" is
-  always deck slot 0. Measured: **287/400 meta decks field a phantom** (arrows_evo ×80,
-  berserker_evo ×56, giant_evo ×6). sim_view labels units by spec key — that is the debugger
-  sighting.
-- **Heroes are a wholly missing card class.** The 2026 game has hero variants of existing cards
-  (`<Card>/Hero` wiki subpages, ≥18 candidates; champion-style elixir-costed abilities; occupy the
-  champion/wild slots). The detector taxonomy already carries 16 `_hero` + 16 `_hero_ability`
-  classes, but the KB, importer (`card_import.py:29-30` — no Hero category), and engine have zero
-  hero support.
-- **Champions are mostly cosmetic.** 8 in KB with stats; only mighty_miner has a player-triggered
-  ability (hogeq only), boss_bandit an auto-trigger; the other 6 have nothing. icebow lacks the
-  entire ability plumbing (`ability_identity`/`policy_identities`/engine path).
-- **The importer is a footgun.** `cards-import` is a destructive, diffless full overwrite, and the
-  wiki's vardefines lag its own balance history — a naive re-run reverts a month of curated fixes
-  (Rocket 341, Lightning 264, Zap 48, Log 35, Poison 21…).
-- **Source reliability, measured today:** the official CR API forward-declares unreleased evos
-  (claims Berserker/Giant evos that don't exist) AND lags real ones (missing Elite Barbarians evo,
-  which is live with a wiki page). The API is an existence oracle for base cards only. Fandom
-  api.php works via urllib (page fetches 402; api.php doesn't).
-- **hogeq is strictly ahead of icebow** (champion ability path, spell_build_dmg,
-  zone_first_tick_now, recoil, superseded spark model, four cards.py fixes incl. the
-  evo_cycles/0-cycle guard). A stale `1.1**(level-11)` scaler survives in `CardDB.deck()` in BOTH.
-- **Electro Dragon chain verified working** (3 targets, stun carried) — but `_CHAIN_TILES = 3.0`
-  is one global constant for all chain cards; the evo's KB comment says 3.5. Per-card chain range
-  is a stat-parity item, and marginal arcs dying at 3.0 would look exactly like "the chain doesn't
-  work" on real boards.
+**Owner sequencing rule (this session):** the PPO is NOT restarted until implementation is 100%
+complete. When the 40k run finishes on its own: final eval + Discord report, then training sits
+idle. Merge `sim-parity` → `main` only at 100%; the merged restart is that experiment's ONE change.
 
-**Owner rulings (locked):** heroes/champions are **enemy-side only** (no action-space change, no
-checkpoint break); stat conflicts against `verified:true`/curated rows are **flagged for batch
-review**, never auto-overturned; all ~24 abilities get **full engine fidelity** — no simplified
-approximations anywhere; meta-frequency sets build ORDER only. **Champions are no longer removed
-from the hand while their body is alive** (owner-confirmed rework) — do NOT build a hand-lock;
-current lifecycle semantics (multi-body? which body the ability drives? per-body uses? refunds)
-are ANSWERED by the owner in-game (see `research/sim_parity/decisions.md` items 4-8): two
-bodies coexist and the button drives the MOST RECENTLY PLAYED body; single use is PER BODY; the
-elixir refund applies to champions; Skeleton King stops accruing souls after use. The Champion
-Rework is dated **29/9/2025** (not 2026) — that is the staleness cutoff for lifecycle text; the
-4/8/2026 single-use change sits on top of it.
+**New owner rulings folded in:** Boss Bandit's Getaway Grenade becomes an opponent-AI decision
+(the engine's HP auto-trigger models a rule the game removed); heroes are ALWAYS fielded when a
+deck has a candidate; the WILD slot gets a chance of a second evo, a second hero, or neither
+(distribution mine to choose — see I8); hogeq's 42-failure test debt is IN scope (I10).
 
-**Timing:** Phase R (research) starts immediately on approval and changes no pipeline code.
-Phase I (implementation) starts only after the long PPO run is launched, and happens in an
-isolated git worktree — the live icebow tree re-reads config on worker respawn and must never be
-touched mid-run. Discord reports at every stage transition and major discovery (standing rule).
-
-## Pipeline interleave (unchanged directives, run alongside Phase R)
-
-1. Stage B (`ARM_clipfix.pt`) finishes → paired eval vs `ARM_control4.pt` (n=30,
-   `PYTHONHASHSEED=0`, pre-committed ≥2σ or NO MEASUREMENT).
-2. Card upgrades in `icebow/config/cards.yaml`: tesla/evo 14→15, ice_wizard 12→13 (HANDOFF §4i).
-3. Launch the long PPO with watcher armed. Phase I may then begin (worktree).
-4. Sim-parity merge lands ONLY at a declared PPO restart point and counts as that experiment's one
-   training change.
+Everything below happens in the worktree. Two-deck discipline enforced by `tools/parity_check.py`
+at every gate. Never stage `*/data/`. One commit per coherent step, measured before/after in the
+body. Discord report at each stage transition.
 
 ---
 
-## Phase R — Research (multi-agent, now; writes only `research/sim_parity/`)
+## I4 — Importer hardening (before ANY re-import; ~1 day)
 
-Run via Workflow fan-outs; web access = python urllib against api.php (the proven path), custom
-UA, throttled; webcache under `research/sim_parity/webcache/`. Never write inside either deck tree.
+File `src/clashrl/card_import.py` (byte-identical pair; keep it so). Exact hooks (explored):
 
-**R0 — Ledger scaffold + snapshot (2-3 h).** `research/sim_parity/{ledger,abilities,api_samples,
-webcache,scripts}/`, `conflicts.md`, `decisions.md`. Dump the **merged** loader output (what the
-sim actually sees, via `cards.py:139-174` from the hogeq tree) → `ledger/current_db_snapshot.json`.
-Seed `ledger/registry.json` (evo/hero/champion tables, all rows `status: unconfirmed`).
-*Gate:* snapshot reconciles with cards_stats.json meta (164/8/42).
+* **CLI**: `cli.py:563` has NO arguments today; add `--dry-run` (default when interactive),
+  `--write`, `--force-field key.field`. Fix the stale help string ("RoyaleAPI open data" → Fandom).
+* **Dry-run/diff**: before the write at `card_import.py:524-533` — the importer never reads the
+  existing file; load it (guarded `path.exists()`) and print a field-level diff; `--write` gates
+  the overwrite. Extend the existing `:535-547` summary idiom.
+* **Allowlist**: `config/import_allowlist.json` (byte-identical pair), generated from the frozen
+  registry (42 evos + 16 live heroes + announced set with dates). Hook after the removed-cards
+  subtraction at `:498` where the page set is last a plain list. Emitting a key outside it = hard
+  error naming the key. Announced content (mega_knight/battle_healer heroes 7 Sep 2026; the
+  API-forward-declared berserker/giant evos) present with `status: announced` so the error message
+  can say *why*.
+* **Hero scrape**: extend the walk with `/Hero` subpages (mirror the `_EVO` filter at `:348-349`
+  and the uncategorized probe at `:469-485` — remember the Elite-Barbarians trap: live subpages
+  can be UNCATEGORIZED, so probe `<base>/Hero` for every base). Emit `<base>_hero` rows (body
+  deltas + whatever vardefines exist; ability numerics that only exist in prose stay null for
+  I8 curation).
+* **Pins**: `config/import_pins.json` (byte-identical pair) from the adjudicated ledger — the 5
+  balance-lag pins + everything `verdict: pin` (66 rows) + owner-verified values (MM
+  `ability_bomb_damage: 332`, spark 48 family...). Applied as a post-pass over `out` between
+  `:517` and `:533`; refuses `--write` if a pinned field would regress or a `verified:true`-backed
+  value changes without `--force-field`.
+* **Provenance**: widen `_wikitext()` (`:356-357`) to `prop=wikitext|revid`; attach
+  `_src: {revid, fetched}` per row AFTER the `:449` non-null filter. Two caveats from exploration:
+  add `_src` to `CardDB.deck()`'s evo-overlay skip tuple (`cards.py:453-461`) so base provenance
+  survives, and write the file ONCE + copy to the other deck (parity_check demands byte-identity —
+  no per-deck regeneration of `fetched`).
+* **E2 closed here**: declare `lifetime_s` properly in the mechanics import instead of the
+  undeclared pass-through (`tools/import_mechanics.py`), so a blanket fix can't silently change
+  tesla 30→25.
+* **crown_damage_audit.py**: fix the regex (`of (?:the|its) full damage`), extend `CARDS` with the
+  evolutions, and port the tool to hogeq (it is icebow-only). It must FAIL on the known-stale set
+  before I5 and pass after — that's its negative control.
+* **Offline fixtures**: follow the established idiom (`test_r2_engine_schema.py:373-394` reads
+  `research/sim_parity/webcache/` with skipTest-on-missing — no new fixtures dir). Required
+  negative control: an announced-but-unreleased Evolution page must NOT produce a row.
 
-**R1 — Enumeration (3 parallel agents).**
-- *R1a evolutions:* wiki category walk + Evolution master list + release docs. Negative probes:
-  Berserker/Giant/Arrows `/Evolution` must come back absent; positive: Elite Barbarians. Output:
-  per-evo `status: live|announced|absent`, cycles, URL+revid+date.
-- *R1b heroes:* "Heroes" master page + every `<Card>/Hero` subpage (≥18 candidates vs taxonomy's
-  16 — adjudicate the delta in `conflicts.md`). Per hero: `abilities/<base>_hero.yaml` — body
-  deltas, ability name/cost/uses/cooldown, mechanic prose verbatim + citation, every extractable
-  number, proposed `ability_kind`.
-- *R1c champions:* verify the 8 vs `Category:Champion Cards` + 2026 additions. Per champion:
-  ability spec file (6 unmodeled + re-verify mighty_miner/boss_bandit). **Lifecycle rules from
-  current master pages + newest balance notes ONLY** — no hand-lock assumed; resolve multi-body
-  semantics, ability-target selection, per-body uses, refund rule; queue in-game checks for the
-  owner where prose is ambiguous.
-*Gate:* all tables closed, every row sourced (URL+revid+date), deltas adjudicated.
+*Gate:* fixture suite green; live `--dry-run` diff reconciles with `stat_diffs.jsonl` verdicts
+(any surprise = stop, investigate); crown audit red-then-green demonstrated; parity_check green.
 
-**R2 — Stat diff sweep (2 days, deliberately slow; agents split by card family).** Compare merged
-snapshot vs fresh wiki via THREE paths: level-11 vardefines, attr-table/infobox, balance-history
-reconstruction (generalizing `tools/crown_damage_audit.py`). 2-of-3 agree → verdict; else
-`conflicts.md`. Mandatory adversarial cross-checks from past incidents: crown/troop field mix-up
-check (the spark_dps_small 60-vs-48 shape), building-vs-spawned-unit check, edit-war check
-(re-fetch ≥48 h later, compare revids, quarantine changed pages). Priority: 5 real null-hitpoint
-rows, evo hit_speed family, 45 `verified:false`, 17 `[verify]` markers, elite_barbarians_evo full
-re-source, formal provenance for the 5 balance-lag pins. Output: `ledger/stat_diffs.jsonl`, one
-claim per (card, field) with sources, cross-check results, verdict ∈ {match, update, pin, escalate}.
-*Gate:* verdict-complete, zero unresolved escalations.
+## I5 — Data application from the adjudicated ledger (~1 day)
 
-**R3 — Mechanic parameters.** Per-card chain ranges/target counts (replaces the `_CHAIN_TILES`
-global), friendly-spell numbers (Rage/Heal Spirit/Clone/Mirror + meta-frequency), hero/champion
-slot rules re-verified from current sources. Output: `ledger/mechanics.json`.
+Apply script `research/sim_parity/scripts/i5_apply.py` consuming `ledger/stat_diffs.jsonl` +
+`ledger/r2_buckets.json` + the decisions.md row rulings. NB bucket rows carry a REDUCED schema
+(no `proposed`/`verdict`, renamed probe fields) — re-join to stat_diffs on `(key, field)`.
 
-**R4 — Battlelog API probe (2-4 h).** Does `/players/{tag}/battlelog` / `currentDeck` expose
-per-card `evolutionLevel` / hero indicators? (`deck_import.py:34` currently discards this.) If yes:
-collect over the 120-player set → `ledger/meta_evo_slots.json` (real per-deck evo+hero slots). If
-no: curated top-20 fallback, provenance-marked.
+* The **101 `update` verdicts** + adjudicated buckets: KBGAP 110 (additions incl. three_musketeers
+  damage — already partly landed by the engine batch; ram_rider slow duration landed; apply the
+  rest), LAG 77, CROWN 15, PARENT 7, ROUNDING 10 (adopt wiki floor()), DUP 13 (merge's pick),
+  NAMING 2. Route: guarded `cards-import --write` for import-owned fields; direct `cards.yaml`
+  edits for curated/prose values using the house citation styles (dated comment + superseded value
+  named + `verified: true`; shrink the `[verify]` marker set — that is the established idiom).
+* **Row rulings** (decisions.md "#5/#9/#10/#12/#14" lists are the spec): tesla common +
+  tesla_evo hp 1182; earthquake 81; bomber common; MM 332 (+ delete the false "not published"
+  comment); firecracker_evo wiki values incl. spark 48 + split durations; giant_snowball_evo
+  air+ground **with** the `rolls` derivation fix (E4 — flip `attacks` and the ground_only-derived
+  roll together, tests proving roll_len stays 4.5); cannon_evo 281; mortar/mortar_evo 4.7s;
+  phoenix 3.8s; royal_ghost 1.8s re-cloak; fisherman slow REMOVED; royal_delivery crown damage
+  DISCARDED + 12% on spawn damage; goblin_cage sight→lifetime semantics; lumberjack_ghost 4.5s
+  rage-pool lifetime + untargetable/damage-immune-but-knockbackable (engine flags exist);
+  goblin_curse 35/s × 6s zone; UNPUB rows tagged `unsourced: true` (keep sim values).
+* **Per-card `chain_tiles`**: new KB field + CardSpec plumb; `_CHAIN_TILES = 3.0` becomes the
+  fallback; ED family = 4.0 per the three-page evidence (decision #6).
+* **stat_sweep --all**: implement (iterate `env.db.cards`, not the pool union — `:101-108`);
+  harden `page_for()` for full-DB coverage; sync `EXPECTED` (`:64-71`) to the pins file so pins
+  are the single source of deliberate deviation; fix the `and ours_hp` truthiness skip that hides
+  legitimate zeros. `cards.yaml` meta block bumped (updated/stats_source, both stale since 07-24).
 
-**R5 — Adjudication + freeze.** Consolidate `conflicts.md` (escalations, verified-row overturn
-requests, in-game confirmation queue) → owner batch session → `decisions.md` → commit + tag
-`research-frozen-<date>`. **Phase I consumes only the frozen ledger — no re-fetching.**
+*Gate:* `stat_sweep.py --all` green in BOTH decks (0 unexplained at 2%); crown audit green; real
+null-hitpoint gaps = 0; suites at baseline; parity_check green.
+
+## I6 — New evolutions (0.5 day)
+
+R1a found zero missing evos beyond the KB's 42; the work is `elite_barbarians_evo` re-sourced from
+its live (stub) page replacing the announcement-authored row — pull what exists, keep the rest
+null+`[verify]`. Allowlist updated in the same commit. `tests/test_evo_wave4.py` per house style.
+
+## I7 — Champion abilities, enemy-side, full fidelity (~2-3 days)
+
+* **`ability_kind` dispatch**: CardSpec gains `ability_kind` + the ~10 generic params; engine
+  registry `ABILITY_KINDS: {kind: handler}`; `champion_ability()` becomes the dispatcher. Today's
+  truthiness dispatch (`ability_bomb_dmg > 0` at `:1502/:2428`, `ability_invis > 0` at `:2435`)
+  migrates: mighty_miner → `bomb`, boss_bandit → `movement_flight`.
+* **Ruling-5 fix (live bug)**: `champion_ability` (`engine.py:1501-1504`) picks the OLDEST body
+  (`next()` over append-ordered `self.units`). Fix: select the NEWEST living champion body FIRST
+  (deploy-sequence tag on Unit), then test cd/uses/elixir — a spent newest body must NOT fall back
+  to an older one (that fallback is exactly what ruling 5 forbids). Test with two coexisting bodies.
+* **Ruling-7**: elixir refund when the body dies between activation and effect resolution (during
+  `ability_delay`) — currently absent.
+* **Boss Bandit (new ruling)**: remove the engine HP auto-trigger; the ability becomes a normal
+  button; `ScriptedBot._try_ability(eng)` decides — per-kind default heuristics (defensive kinds:
+  body under threat / ≥3 enemies within 4t; escape kinds: HP low OR overextended past the river;
+  offensive kinds: mid-push near a tower), KB-overridable via `ability_ai:`.
+* **The 6 unmodeled champions** from frozen `abilities/*.yaml` at FULL fidelity: archer_queen
+  `stealth` (+attack buff — resolve the three-way buff conflict by the level-table formula, the
+  file documents all three), golden_knight `dash_chain` (THREE terminators incl. Crown-Tower stop;
+  analog dash speed 500 marked untested), skeleton_king `soul_bank` (souls stop accruing post-use,
+  ruling 8), little_prince `guardian` (Royal Rescue — Guardienne fully specified: 1600/217/1.2s,
+  ground-only, permanent), monk `reflect` (real projectile reflection per the structured
+  reflection_rules block; 25% crown rule + Barbarian Barrel exception), goblinstein `zone`
+  (Lightning Link; stats flagged stale post-4/8/2026 — apply the I5-corrected numbers).
+* No hand-lock (ruling 4). Head shapes pinned unchanged (icebow 10, hogeq 11) — enemy-side only.
+* One bare-engine test per champion, wiki + ruling cited. Open geometry questions (Goblinstein
+  link "2 tiles from what") get implemented from the recorded evidence with the choice documented
+  in the test docstring, or land on the owner's in-game queue if genuinely undecidable.
+
+*Gate:* all 8 champions work in enemy hands via `_try_ability`; hogeq's existing ability tests
+green; checkpoints still load (head-shape assertion).
+
+## I8 — Heroes, enemy-side, full fidelity (~4-6 days, the largest block)
+
+* **KB rows**: `<base>_hero` via the I4 scrape + curation from the 16 frozen spec YAMLs (numbers
+  with sources; prose-only params curated with citations; open_questions → `[verify]` markers).
+* **Slot model (owner ruling, this session)**: dedicated Evolution slot = current I3 behavior
+  (always one, uniform over candidates). Dedicated Hero slot = ALWAYS field one when the deck has
+  a candidate (uniform). **Wild slot** = second evo / second hero / neither at **1/3 each**
+  (renormalized over what remains available; wild-evo ≠ slot-evo, wild-hero ≠ slot-hero), drawn
+  from the bot RNG per match; knobs `sim.wild_evo_prob`/`sim.wild_hero_prob` (documented as
+  UNMEASURED choice, tunable when a source exists). Mirror the I3 wiring exactly:
+  `meta_decks.py` gains `has_hero`/`hero_candidates` beside `has_evolution`/`evo_candidates`
+  (`:67-90`), loader validate-don't-trust, `opponents.py` constructor + factory (`:418-419`).
+* **Engine handlers by shape family**, ordered by candidate frequency, all full fidelity:
+  summon ×5 (banner reinforcements, auto-turret, tombstone queen...), dash_chain ×3, buff_self ×3,
+  zone ×2 (blizzard slow), taunt_shield ×2, movement_flight ×2 (fire tornadoes reuse the vortex
+  machinery), stealth, throw_displace (throw-heaviest reuses hook/knock machinery),
+  transform_levelup (pancakes), guardian/bomb/reflect/soul_bank shared with I7 kinds. Refund rule
+  applies (Heroes page documents it; ruling 7 extends it).
+* `_try_ability` covers hero kinds. `support:` (tower troop — measured per deck, currently INERT)
+  gets consumed in the same pass: `opponents`/tower-roll wiring to field the deck's measured tower
+  troop instead of the config-level random roll, since the machinery (`Tower.troop` variants)
+  already exists.
+* Detector taxonomy already lists all 16 heroes + abilities; detector RETRAINING stays out of
+  scope (flagged).
+
+*Gate:* every live hero implemented + tested (per-family tests + slot tests: always-one-hero,
+wild distribution reproducible under seed, caps respected); evo_audit extended to hero slots;
+suites at baseline.
+
+## I9 — Cross-cutting gaps (~1-2 days)
+
+Friendly-target spells: `_resolve_spell` own-team path — rage buff (now that its KB row is
+honest), heal_spirit heal, clone per meta frequency (mirror only if the pool fields it — measure,
+decide, record). `drill_env.py` evo cycling mirroring env.py's machinery. sim_view draws chain
+arcs + ability projectiles (the debugger-invisibility that fed the original chain report).
+perception.py hogeq TypeError (the DRIFT-list live bug: threat-gate memory fix silently inert).
+
+## I10 — Closeout + hogeq debt + landing (~1 day)
+
+* **hogeq test debt to ZERO** (owner: in scope): the 42 pre-existing failures are icebow-card
+  lookups + inert `xbow_*`/`rocket_*`/`nado` reward terms (§6.9). Port/parameterize the tests,
+  strip the dead terms. Both suites end green — hogeq's baseline stops being "42 knowns".
+* Full gates: both suites, `stat_sweep --all` both decks, parity_check, evo_audit (+hero),
+  crown audit, negative controls, head-shape assertions.
+* Docs: EVOLUTIONS.md / SIM_FIDELITY.md status sections; HANDOFF gets the Phase-I ledger;
+  decisions.md deferred items reviewed with the owner.
+* **Landing (owner rule)**: merge `sim-parity` → `main` ONLY when everything above is done AND the
+  40k PPO has finished on its own. No new PPO before the merge; the merged restart = the ONE
+  training change. When the 40k waiter fires mid-implementation: final eval (bench + spell/rocket
+  probes on a COPIED checkpoint), Discord report, leave training idle.
 
 ---
 
-## Phase I — Implementation (worktree `ClashBot-parity`, after PPO launch)
+## Verification summary
 
-Every change lands in BOTH decks in the same commit; `tools/parity_check.py` (new, I0) enforces
-the byte-identical config quartet + a whitelisted src diff at every gate.
+| Proof | Mechanism | Stage |
+|---|---|---|
+| Importer cannot invent content | allowlist hard-error + announced-page fixture control | I4 |
+| Curated values survive import | pins + refuse-on-regression + round-trip fixture | I4 |
+| Crown audit actually detects | red on known-stale set, green after apply | I4→I5 |
+| Stats correct everywhere | stat_sweep --all, pins = only deviations, both decks | I5 |
+| Ability per wiki+ruling | bare-engine test per champion/hero, citations in docstring | I7/I8 |
+| Newest-body + refund rules | two-body coexistence tests | I7 |
+| Slot model honest | seeded-RNG distribution tests; caps respected | I8 |
+| No checkpoint break | head-shape assertions (icebow 10 / hogeq 11) | I7/I8 |
+| Two-deck parity | parity_check at every gate | all |
+| No PPO contamination | all work in worktree; live tree `git status` clean | all |
+| hogeq suite green | 42 → 0 pre-existing failures | I10 |
 
-**I0 — Worktree + parity harness. DONE 2026-08-26.** `tools/parity_check.py`, byte-identical in
-both decks and runnable from either. Baseline: config quartet byte-identical, `cards.yaml`
-identical apart from its 783-byte `deck:` block (checked by stripping it, NOT by allow-listing the
-file), `src/clashrl` 80 files -- 60 shared identical, 20 declared, **0 unexpected**. The allow-list
-is split into DECK-SPECIFIC (11 entries, should differ forever) and DRIFT (8 entries, recorded not
-blessed, meant to shrink). Verified to FAIL, not just to pass: four probes (shared engine edit,
-config edit, `cards.yaml` edit outside the deck block, new unlisted file) each exit 1; clean exits
-0. See conflicts.md "I0".
+## Risks
 
-**I1 — hogeq->icebow backport. DONE 2026-08-26**: `sim/engine.py` and `cards.py` are now
-BYTE-IDENTICAL between the decks and `config/cards.yaml` differs only in its `deck:` block. Also
-fixed `evo_cycles` 6/42 -> 42/42 (two counts were missing from the imported rows and came from the
-wiki ledger) and the `1.1**` scaler in `CardDB.deck()` (worst delta -0.93% icebow, -0.76% hogeq).
-icebow's card head stays at 10: engine path only, no action-space slot. Original scope follows.
-
-**I1 (as planned) — hogeq->icebow backport (1 day; prerequisite).** Engine: `spell_build_dmg`,
-`zone_first_tick_now`, `champion_ability` + ability CardSpec/Unit fields, `recoil`,
-`spark_end_dmg` (replacing icebow's superseded spark model). cards.py: `evo_cycles()` fix,
-0-cycle guard, ability pricing, `policy_identities`. BOTH: kill the stale `1.1**` scaler in
-`CardDB.deck()` → `levels.py`. Port `test_champion_ability.py` + `test_evo_cycle_and_sparks.py`;
-reconcile diverged test lists. *Gate:* both suites green; scaling test added.
-
-**I2 — Phantom-evo kill (2-4 h).** `build_spec` raises KeyError on unknown `_evo`; opponents' evo
-picker checks row existence. New `tests/test_no_phantom_evos.py` (berserker/giant/arrows evo raise;
-elite_barbarians_evo builds) + `tools/evo_audit.py`. *Gate:* phantoms 0/400 (was 287/400).
-
-**I3 — meta_decks evo slots. DONE 2026-08-26, but NOT as written.** The premise failed: the
-battlelog's `evolutionLevel` reports a player's OWNED evolution level, not the fielded slot (three
-evolutions for 153/233 decks against a two-slot game; a level for `berserker`, which has no
-evolution), so `meta_evo_slots.json` cannot say which card was slotted and its 233 `evo:`
-declarations were stripped. RoyaleAPI / Deck Shop / StatsRoyale are all 403. **The stated gate --
-"fielded-evo distribution matches the ledger" -- is therefore unmeasurable and was dropped.**
-
-Shipped instead: a derived `evo_candidates:` per deck (the deck's cards that really have an
-evolution, == the 42 wiki-verified rows in `ledger/r1a_evolutions.json`), with ScriptedBot drawing
-ONE uniformly per match. `deck_import.py` stops tallying `evolutionLevel` entirely so a re-import
-cannot recreate the bad slots. *Gate, met:* 0 phantoms, 0 candidates failing `build_spec`,
-1000/1000 decks field a real evolution, all 42 reachable. See conflicts.md "I3 RESOLVED".
-
-**I4 — Importer hardening (1 day; precedes any re-import).** Hero subpage scrape → `<base>_hero`
-rows; allowlist (`config/import_allowlist.json`, generated from frozen registry) — emitting a key
-outside it is a hard error; `--dry-run` default with field-level diff, `--write` to save;
-`config/import_pins.json` (balance-corrected values) — refuses to regress a pin or change a
-verified-backed field without `--force-field`; per-row `_src: {revid, fetched}`. Offline wikitext
-fixtures in `tests/fixtures/wikitext/`; **negative control: an announced-but-unreleased Evolution
-fixture must NOT produce a row.** *Gate:* fixture suite green; live `--dry-run` diff matches
-`stat_diffs.jsonl` verdicts (any surprise = stop).
-
-**I5 — Stat fixes from the ledger (1 day).** Apply `update` claims (guarded import or cards.yaml
-with dated citations), `pin` claims → pins file, verified:false flips only on 2-of-3 agreement.
-New `chain_tiles` KB+CardSpec field (`_CHAIN_TILES` becomes fallback). Implement
-`stat_sweep.py --all` (advertised, never built); sync its EXPECTED dict to the pins file. *Gate:*
-`stat_sweep --all` green both decks; real null-hitpoint gaps = 0.
-
-**I6 — New evolutions (0.5-1 day each).** elite_barbarians_evo re-sourced from its live page +
-anything R1a found, via the established CardSpec-field/generic-path/KB-row pattern.
-`tests/test_evo_wave4.py`, wiki-cited docstrings. Allowlist updated in the same commit.
-
-**I7 — Champion abilities, enemy-side (2-3 days).** `ability_kind` dispatch registry in the
-engine (~10 generic param fields reusing the existing ability block); mighty_miner becomes
-`ability_kind: "bomb"` (hogeq action slot unchanged — head shapes asserted against pre-change
-checkpoints); boss_bandit folds in as an auto-cast kind. Implement the 6 missing champions at
-full fidelity from frozen specs (incl. Monk's actual projectile reflection — no simplified
-window). Champion lifecycle per R1c findings — **no hand-lock**; whatever multi-body/ability-
-target semantics research confirmed. Opponent AI: `ScriptedBot._try_ability` with per-kind
-default triggers, KB-overridable. One bare-engine test per champion. *Gate:* all 8 work in enemy
-hands; hogeq's existing ability tests still green.
-
-**I8 — Heroes, enemy-side (4-6 days; largest block).** KB rows + curation from frozen specs.
-Engine handlers by shape family, ordered by meta frequency, all full-fidelity: buff, taunt+shield,
-summon/spawn (banner/turret), zone (blizzard), movement/flight (+fire tornadoes via tornado
-machinery), throw/displacement, transform/level-up, stealth. Slot + refund rules per R1b.
-`hero:` slots go live in ScriptedBot. Taxonomy additions if R1b found live heroes missing from
-`detect_classes.yaml` (detector retrain flagged as separate later work).
-`tests/test_hero_abilities.py` per family + `test_hero_slots.py`. *Gate:* every `status: live`
-hero implemented+tested or explicitly owner-deferred in `decisions.md`.
-
-**I9 — Cross-cutting gaps (1-2 days).** Friendly-target spells (`_resolve_spell` own-team path:
-Rage, Heal Spirit, Clone; Mirror per ledger scope); `drill_env.py` evo cycling mirroring env.py's
-machinery; sim_view draws chain/ability projectiles so working mechanics are visible in the
-debugger. *Gate:* suites green both decks.
-
-**I10 — Closeout (0.5 day).** Full suites + `stat_sweep --all` + parity_check + evo_audit +
-negative controls; EVOLUTIONS.md/SIM_FIDELITY.md updated; HANDOFF updated. **Landing:** merge at
-the declared PPO restart only; owner stops run → merge → fresh PPO (= that experiment's one
-change). Never touch the live icebow tree mid-run.
-
----
-
-## Verification (proof per claim)
-
-| Proof | Mechanism |
-|---|---|
-| Phantoms dead | build_spec raises; evo_audit 0/400 |
-| Importer can't invent content | allowlist hard-error + announced-page negative control |
-| Curated values survive import | pins + refuse-on-regression + round-trip fixture |
-| Stats correct | stat_sweep --all, 2% tolerance, pins = only deviations |
-| Abilities per wiki | bare-SimEngine test per champion/hero, wiki-cited docstring |
-| No checkpoint break | head-shape assertion vs pre-change checkpoints |
-| Two-deck parity | parity_check at every gate |
-| No PPO contamination | worktree-only writes; live tree `git status` stays clean |
-
-## Key risks
-
-Import reverting curated fixes (pins+dry-run); wiki edit wars (revid + 48 h re-fetch + 2-of-3
-vote); crown/troop + building/spawn mix-ups recurring (dedicated cross-checks); battlelog lacking
-evo fields (curated fallback); ability scope explosion (shape families + frequency ordering +
-owner-approved deferral list — depth is never cut, only order); champion lifecycle mis-modeled
-from stale sources (current-sources-only rule + owner arbitration).
+Import regression reverting curated values (pins + dry-run default); hero ability scope (16 novel
+mechanics — family handlers + frequency order; fidelity never cut, only order); wild-slot
+distribution is an unmeasured choice (knobs + documented); Goblinstein/AQ intra-page conflicts
+(implement from recorded evidence, document the choice, owner queue if undecidable); champion
+two-body edge cases (dedicated tests); the 40k PPO finishing mid-work (handled: eval + idle).
 
 ## Sizing
 
-Phase R ~4-5 elapsed days (parallel; owner-latency on R5). Phase I ~2.5-3.5 weeks.
-Deferred (owner-optional): our-deck heroes/champions (checkpoint break — next deck redesign);
-waypoint pathing; detector retraining for hero classes; hero drills; `import_mechanics.py`
-modernization (source dead since 2023).
+I4 ~1d · I5 ~1d · I6 ~0.5d · I7 ~2-3d · I8 ~4-6d · I9 ~1-2d · I10 ~1d ≈ **10-14 working days**.
+Deferred (unchanged): our-deck heroes/champions, waypoint pathing, detector retraining for hero
+classes, hero drills, `import_mechanics.py` modernization beyond the E2 declaration fix.
