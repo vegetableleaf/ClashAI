@@ -110,7 +110,7 @@ observed?** (HANDOFF records him at 15 since 2026-08-19, so 14 is plausible for 
 * If **L13** -> the owner's reading stands, 366 is kept, and the wiki row is pinned as contradicted.
 NOT CHANGED PENDING THE ANSWER (ruling 2: never auto-overturn an owner-sourced value).
 
-### C2. Mighty Miner bomb RADIUS — still unsourced after a full page sweep.
+### C2. RESOLVED 2026-08-26 (R2 adjudication #10): owner confirms 2.5 tiles. The sim's guess was right.
 The archived page publishes NO blast radius: not in prose ("medium area damage"), not in the
 Explosive Escape attributes table (only Cost / Deploy Time / Cast Time / Cooldown), not in History
 or Trivia. The sim's **2.5 tiles remains a guess**. ⚠ The only published tile figure is the

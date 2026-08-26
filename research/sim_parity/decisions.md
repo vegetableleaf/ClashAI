@@ -97,3 +97,64 @@ UNCATEGORIZED — a category-only walk undercounts evos at 41. Card Evolution#Hi
 authority. Upcoming-content stubs (Werewolf + Dark Spirit 4/10/2026, Ghost Spirit 6/11/2026,
 Ice Sorceress + Ice Dragon 5/12/2026, ...) are calendar intel ONLY — the channel is unmoderated;
 never auto-import from stubs.
+
+## 2026-08-26 — R2 ADJUDICATION (owner, all 14 decisions). THE APPLY SPEC.
+
+Bulk approvals per recommendation: **#1** KBGAP 110 apply · **#2** LAG 77 apply · **#3** CROWN 15
+apply + FIX crown_damage_audit.py regex ("of ITS full damage") · **#4** PARENT 7 apply · **#6**
+GLOBAL chain arc: per-card `chain_tiles` from the wiki (ED family = 4.0 tiles; supersedes the 3.0
+global AND cards.yaml's 3.5 comment) · **#7** ROUNDING: adopt wiki floor() for derived DPS ·
+**#12** DUP: merge's pick stands (note: goblin_curse 35 = damage PER SECOND, spell lasts 6 s →
+total 210). Plus the 101 sweep `update` verdicts and 66 pins stand.
+
+**#8 ENGINE/SCHEMA — owner: do these NOW (pulled forward from Phase I)** so implementation isn't
+blocked later. In the WORKTREE, never the live tree.
+
+### #5 — verified:true rows, row rulings (each of these is the new spec)
+* tesla is COMMON rarity; **tesla_evo hitpoints = base = 1182 @ L11** (evo hp same as base).
+* boss_bandit's passive dash triggers on **every ground unit INCLUDING crown towers** (ground-
+  targeting troops can hit crowns, so the dash can too). NB contrast Golden Knight: his CHAIN
+  merely ENDS at a crown tower.
+* baby_dragon_evo: wiki correct. * bats_evo heal per hit = **76** (wiki).
+* firecracker_evo: **wiki correct for ALL its entries** → this RESOLVES the long-flagged
+  `spark_dps_small` conflict: **60 → 48** (the owner's old verified row is overturned by the
+  owner). Split spark durations apply too (big 3.0 s / small 2.5 s). §6.7 is CLOSED.
+* giant_snowball_evo: roll range **4.0 tiles**, hits **air AND ground** — and VERIFY the base
+  giant_snowball also hits both (KB may say ground-only).
+* **earthquake damage = 81 @ L11, not 84** (overrides the 2026-08 HANDOFF card-data row).
+* bomber rarity = **common**.
+* decoy goblins deploy time = normal goblin-barrel goblins (1.1 s confirmed correct).
+* lava_pups speed: wiki. * spirit_empress: **309** is correct.
+* suspicious_bush: **1.6 tiles = the POP distance** — the bush releases its goblins 1.6 tiles from
+  its target when it arrives (engine semantic, not a plain stat).
+* furnace spawn speed **5 s**.
+
+### #9 — page-self-contradictions, row rulings
+* inferno_dragon_evo keeps ramp damage **7 s** (wiki). * royal_delivery: the 12% cut applies to
+  the **SPAWN damage**, not the recruit's own damage. * fisherman: **NO slow anymore** (remove).
+* phoenix spawn interval **3.8 s** (not 4.3). * royal_ghost: **1.8 s** to re-cloak.
+* cannon_evo volley damage **281 @ L11** (nerfed); crown-tower damage: use the most up-to-date
+  published number.
+
+### #10 — split votes, row rulings
+* ALL wiki load_time entries correct. * **Mighty Miner ability bomb radius 2.5 CONFIRMED**
+  (conflicts.md C2 CLOSED — the sim's guess was right). * mortar AND mortar_evo hit speed
+  **4.7 s**. * ghost_souldier invisibility time = royal_ghost's. * giant_skeleton collision: sweep
+  recommendation accepted. * phoenix_egg → revival **3.8 s**. * ram_rider hit speed: most
+  up-to-date entry.
+
+### #11 — unpublished values, row rulings
+* goblin_cage: **NO sight stat** (cannot attack while the cage stands); the "20" is LIFETIME.
+* lumberjack_ghost: **untargetable and damage-immune** (no troop/building can target it, no
+  damage from any source), but spells CAN still knock it back; it dies shortly after leaving its
+  rage pool, or when the rage expires.
+* royal_delivery: **cannot hit crown towers** — discard crown_tower_damage entirely.
+* **FURNACE IS A TROOP NOW** — no lifetime stat. ⚠ ENGINE ITEM: the sim models it as a spawner
+  BUILDING with lifetime decay; re-model as a troop that spawns (movement, targeting, no decay).
+* Everything else in #11: keep sim values, tag `unsourced: true` per recommendation.
+
+### #13 / #14
+* little_prince: **implement Royal Rescue** (guardian ability, I7 scope); `royal_rescue_damage`
+  field is real and stays. goblinstein row kept as-is.
+* lumberjack_ghost lifetime **4.5 s = the rage duration**, conditional on staying inside the pool
+  (leaves early → dies early). firecracker_evo `spark_dps_large` 192: wiki correct.
