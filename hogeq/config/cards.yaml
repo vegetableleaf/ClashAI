@@ -253,7 +253,7 @@ cards:
   # This row used to carry `lifetime_s: 28.0` with the comment "same building lifetime as the base
   # Furnace", which was true of the 2023 game-file dump and of nothing since. Its EVO edge is the
   # 2.4 s "Hot Spawn" period, which is a separate field and stays.
-  furnace_evo: {spawns: {unit: fire_spirit, count: 1, interval: 2.4}, verified: true}
+  furnace_evo: {spawns: {unit: fire_spirit, count: 1, interval: 2.4}, effective_life_s: 19.1, verified: true}   # effective_life_s MEASURED 2026-08-26 (E1): it is a TROOP now, so it has no lifetime -- it dies to our towers. n=60 deploys x4 enemy levels x15 placements, median 19.1s (p25 18.1, p75 22.0) -> 7.96 waves at 2.4s, against the unmeasured flat 2.0 the fallback gave.
   # EVO GOBLIN GIANT: "when [his] hitpoints are lowered below 50%, every 2.2 seconds [he] will
   # passively summon a Goblin." Imported hp 3223 flows via the overlay.
   goblin_giant_evo: {spawns: {unit: goblins, count: 1}, low_hp_frac: 0.5, low_hp_interval_s: 2.2, verified: true}
@@ -1806,7 +1806,7 @@ cards:
   # "FirespiritHut"), now removed there. Troops do not decay.
   # SPAWN CADENCE 5 s (owner ruling, R2 #5). The old trailing comment on this line said "every 7s"
   # while the value said 5.0 -- the value was right and the comment was the stale half.
-  furnace: {range: long, flags: [spawner], spawns: {unit: fire_spirit, count: 1, interval: 5.0}, verified: true}   # "summon a Fire Spirit in front" every 5s -- ONE, not a pair
+  furnace: {range: long, flags: [spawner], spawns: {unit: fire_spirit, count: 1, interval: 5.0}, effective_life_s: 19.4, verified: true}   # effective_life_s MEASURED 2026-08-26 (E1): n=60, median 19.4s (p25 17.0, p75 21.2) -> 3.87 waves at 5s.   # "summon a Fire Spirit in front" every 5s -- ONE, not a pair
   goblin_machine: {range: melee, flags: [splash, knockback_immune], verified: false}              # melee body + a locking AOE missile
   # 2026-08-15 wiki attr row: 50% -> Very Fast (120), 10 s fuse, Melee: Short (0.5), blast 2.5.
   # His "life 10" is the LIT FUSE, not a lifetime (hp must not bleed from deploy); below half

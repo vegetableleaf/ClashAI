@@ -639,5 +639,51 @@ class GiantSnowballBaseTargetingTests(unittest.TestCase):
                 self.assertGreater(slow, 0.0)
 
 
+class TestE1WalkingSpawnerPricing(unittest.TestCase):
+    """E1 (owner-approved, MEASURED 2026-08-26): a spawner that WALKS is priced by how long it
+    SURVIVES, not by an unmeasured flat constant.
+
+    Owner ruling #11 made the Furnace a troop, which removed its `lifetime`. `threat_value`
+    computes waves as lifetime/interval, so it fell through to the flat `_SPAWNER_WAVES = 2.0`
+    and repriced the card by a third (ignore_cost_frac 0.2620 -> 0.0936) on a number nobody
+    measured. Measured instead: an enemy Furnace deployed across 4 enemy levels x 15 placements
+    (n=60) survives a median 19.4 s against our towers = 3.87 waves at its 5 s cadence; the Evo
+    survives 19.1 s = 7.96 waves at 2.4 s. Those go in the KB as `effective_life_s`.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        from clashrl.cards import CardDB
+        from clashrl.config import Config
+        cls.db = CardDB(Config.load())
+
+    def test_walking_spawner_carries_a_measured_effective_life(self):
+        for key in ("furnace", "furnace_evo"):
+            row = self.db.get(key) or {}
+            self.assertIsNone(row.get("lifetime"), "%s is a troop now: no lifetime" % key)
+            self.assertGreater(float(row.get("effective_life_s") or 0.0), 0.0,
+                               "%s must carry the measured survival" % key)
+
+    def test_the_flat_fallback_no_longer_prices_the_furnace(self):
+        """2.0 waves was the unmeasured fallback; the measurement puts it near 3.87."""
+        from clashrl.threat_value import ignore_cost_frac
+        self.assertGreater(ignore_cost_frac(self.db, "furnace"), 0.15)
+
+    def test_the_evo_outranks_the_base(self):
+        """The Evo spawns at 2.4 s against the base's 5.0 s. Under the flat fallback BOTH got
+        exactly 2 waves, so the faster spawner priced identically to the slower one -- the same
+        class of bug the 2026-08 spawn-interval fix removed. Surviving time restores the order."""
+        from clashrl.threat_value import ignore_cost_frac
+        self.assertGreater(ignore_cost_frac(self.db, "furnace_evo"),
+                           ignore_cost_frac(self.db, "furnace"))
+
+    def test_a_real_lifetime_still_wins_over_the_measurement(self):
+        """`effective_life_s` is the LAST fallback: a stationary hut keeps using its own lifetime."""
+        from clashrl.threat_value import ignore_cost_frac
+        row = self.db.get("goblin_hut") or {}
+        self.assertTrue(row.get("lifetime") or row.get("lifetime_s"))
+        self.assertGreater(ignore_cost_frac(self.db, "goblin_hut"), 0.0)
+
+
 if __name__ == "__main__":
     unittest.main()

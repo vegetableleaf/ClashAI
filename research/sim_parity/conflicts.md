@@ -190,7 +190,26 @@ Recorded per the batch rule "implement what the evidence supports and record the
 inventing numbers". Each entry is a MEASURED side effect or a source disagreement the seven
 approved items did not cover.
 
-### E1. Furnace: dropping `lifetime` re-prices it as a THREAT, and the new price is a guess.
+### E1. RESOLVED 2026-08-26 by MEASUREMENT (owner-approved). Was: dropping `lifetime` re-priced the Furnace on a guess.
+
+**Fix:** `threat_value` now reads a third key, `effective_life_s`, after `lifetime`/`lifetime_s`.
+A real lifetime still wins; the measured value only applies to a spawner that WALKS and therefore
+has none. MEASURED by deploying an ENEMY spawner (the direction `ignore_cost_frac` models) across
+4 enemy levels x 15 placements, n=60 each, and timing death to our towers:
+```
+furnace      median 19.4s (p25 17.0, p75 21.2) -> 3.87 waves at 5.0s
+furnace_evo  median 19.1s (p25 18.1, p75 22.0) -> 7.96 waves at 2.4s
+```
+`ignore_cost_frac("furnace")` **0.0936 -> 0.1815** (the stale-28s value was 0.2620, so the measured
+answer lands between the two, as the measurement predicted it would).
+
+⚠ It also fixed an ordering bug the flat fallback had reintroduced: under `_SPAWNER_WAVES = 2.0`
+BOTH furnace rows got exactly 2 waves, so the Evo -- which spawns at 2.4s against the base's 5.0s
+-- priced IDENTICALLY to the base. That is the same defect the 2026-08 spawn-interval fix removed
+(HANDOFF §5: "correctly ranking the evo ABOVE the base for the first time"). Now
+**furnace_evo 0.3724 > furnace 0.1815** again. 4 tests, both decks.
+
+### E1-original (kept for the record).
 
 `threat_value._spawner_cost` computes "how many waves it actually gets" as `lifetime / interval`.
 With the stale 28 s that was 28/5 = 5.6 waves; with no lifetime it falls back to the module's flat
