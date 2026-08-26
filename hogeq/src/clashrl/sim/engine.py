@@ -2373,7 +2373,7 @@ class SimEngine:
                 # interaction of the game and the sim had none of it.
                 # MEASURED before this line: Mighty Miner knocked back 3 tiles kept focus 6.60 ->
                 # 6.70 (stage 3 -> 3); Inferno Tower whose target walked out of its 6 tiles kept
-                # 7.60 (stage 3). See tests/test_ramp_reset.py.
+                # 7.60 (stage 3). See tests/test_ramp_and_blast_geometry.py (test_ramp_reset.py never existed).
                 # `ramp_hold` is the ONE exception and is checked here rather than skipped: Evo
                 # Inferno Dragon deliberately keeps its stage for ramp_keep_s after a KILL, and
                 # that hold is ticked down (and cleared by a stun) elsewhere.
