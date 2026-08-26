@@ -1,0 +1,228 @@
+key: skeleton_king
+page: Skeleton King
+source: webcache/Skeleton_King.wikitext        # offline archive; revid unknown from file alone -> null
+revid: null
+fetched: "2026-08-25"
+
+body_stats:
+  # Level 11 = the wiki's reference level. vardefine name given for each value that has one;
+  # values with no vardefine come from the "Skeleton King Attributes" table.
+  hp: 2298                    # vardefine hp_11
+  damage: 204                 # vardefine dmg_11 (AREA damage -- splash radius 1.3, see numbers)
+  hit_speed: 1.6              # vardefine atk_speed; Skeleton King Attributes table "Hit Speed 1.6 sec"
+  speed: "Medium (60)"        # Skeleton King Attributes table "Speed" (no vardefine)
+  range: 1.2                  # Skeleton King Attributes table "Range: Melee: Medium (1.2)" (no vardefine)
+  targets: "Ground"           # Skeleton King Attributes table "Target" (no vardefine)
+  count: 1                    # Skeleton King Attributes table "Count x1" (no vardefine)
+
+ability:
+  name: Soul Summoning
+  elixir_cost: 2              # infobox AbilityCost=2; Soul Summoning Attributes table Cost=2
+  uses: 1                     # NOT stated on this page (its History stops at 24/10/2025).
+                              # From webcache/Version_History.wikitext, Balance Changes (4/8/2026):
+                              # "Champions and Heroes (minus Boss Bandit): Will no longer have
+                              # multi-use abilities. Instead, they will be single use."
+                              # See open_questions -- the subject page is stale here.
+  cooldown_s: null            # page prints 20 s (table AND ability prose); superseded by the 4/8/2026
+                              # single-use change. BOTH values recorded in `numbers`.
+  cast_delay_s: 0.933         # Soul Summoning Attributes table "Cast Time 0.933 sec".
+                              # Ability prose separately says "After a 1-second delay". Both recorded.
+  duration_s: null            # NOT PUBLISHED as a field. DERIVABLE from the spawn sequence: skeletons
+                              # appear one at a time every 0.25 s, so 6 skeletons = 1.5 s and 16 = 4.0 s
+                              # of spawn time. The page never labels this a "duration"; see open_questions.
+
+# ---------------------------------------------------------------------------------------------
+# THE SUMMONED UNIT. The ability spawns SKELETONS -- but a special variant with 1 HP that behaves
+# like CLONED Skeletons. It has its own attributes table and its own vardefines.
+# ---------------------------------------------------------------------------------------------
+summoned_unit:
+  identity: "Skeletons (clone-variant)"
+  hp: 1                       # Soul Summoning Attributes table col "Skeleton Hitpoints" = 1;
+                              # corroborated by prose "they only have 1 hitpoint"
+  damage: 81                  # vardefine skel_dmg_11 (statistics table col "Skeleton Damage")
+  hit_speed: 1.1              # vardefine skel_atk_speed; Skeleton Attributes table "Hit Speed"
+  first_hit_speed: 0.5        # Skeleton Attributes table "First Hit Speed" (no vardefine)
+  speed: "Fast (90)"          # Skeleton Attributes table "Speed"
+  range: 0.5                  # Skeleton Attributes table "Range: Melee: Short (0.5)"
+  targets: "Ground"           # Skeleton Attributes table "Target"
+  transport: "Ground"         # Skeleton Attributes table "Transport"
+  count: "6 to 16"            # Soul Summoning Attributes table col "Skeleton Count" = "6-16"
+  clone_semantics: true       # prose "behave identically to cloned Skeletons, which means you can't
+                              # clone them further with said card, and they only have 1 hitpoint"
+  # NOTE: no Deploy Time column exists for the summoned Skeletons.
+
+# ---------------------------------------------------------------------------------------------
+# SOUL ECONOMY -- the whole point of the card. Fully enumerated from prose; every line is sourced.
+# ---------------------------------------------------------------------------------------------
+soul_rules:
+  gain: "One soul per TROOP death while the Skeleton King is deployed, from EITHER side. Source: prose 'The number of Skeletons spawned is based on how many troops die (either from the player or the opponent) while he is deployed' and 'When a troop is vanquished while the Skeleton King is in the Arena, the Skeleton King gains a soul'."
+  mapping: "0 souls -> 6 Skeletons; 10 souls (the cap) -> 16 Skeletons. Source: prose 'With no souls, the Skeleton King will spawn 6 Skeletons, but with a maximum of 10 souls, he can summon 16 Skeletons.' Implies exactly +1 Skeleton per soul."
+  display: "Blue bar above his hitpoint bar. Source: prose. Trivia adds 'He gets more bluish the more souls he collects.'"
+  do_NOT_count:
+    - "Cloned troops. Source: prose 'Cloned troops do not count as souls to him when they are defeated'."
+    - "The Skeletons summoned by the ability itself. Source: prose, same sentence."
+    - "Sub-troops -- Elixir Golem, Golem, Lava Hound, Battle Ram: 'cards that make sub-troops ... do not count as a soul to it, but only the final forms of the troop, with Goblin Giant as an exception'. Source: prose."
+    - "Buildings. Source: prose 'Buildings also do not count as souls when vanquished, making Cannon Cart the only troop that cannot count as a soul'."
+  DO_count:
+    - "Kamikaze/self-destructing cards -- Spirits, Wall Breakers, Goblin Demolisher: 'however do count as souls when they defeat themselves'. Source: prose."
+    - "Friendly troops. Source: prose 'either from the player or the opponent' + Strategy 'Since friendly troops will count as a soul to him'."
+  reset: "The soul bar RESETS when the ability is transferred to a newly-placed Champion. Source: webcache/Version_History_2025.wikitext, 2025 Q3 Update (29/9/2025), Champion Rework: 'Skeleton King's soul bar resets during ability transference.' NOT on the subject page."
+
+mechanic_prose: |
+  [section "Ability: Soul Summoning", tagline quote, verbatim]
+  "Collect souls of the fallen and bring them back from the dead!"
+
+  [section "Ability: Soul Summoning", body, verbatim, all four paragraphs]
+  "The Skeleton King has a special ability, accessible from the rightmost side of the screen just
+  above the player's card slots in battle. After a 1-second delay, the Skeleton King activates his
+  'Soul Summoning', stopping in place momentarily before summoning a varied amount of Skeletons in a
+  4-tile radius around himself. The Skeletons spawn 1 at a time at random positions in the circle
+  every 0.25 seconds. The number of Skeletons spawned is based on how many troops die (either from
+  the player or the opponent) while he is deployed. It continues, even if the Skeleton King dies."
+
+  "When a troop is vanquished while the Skeleton King is in the Arena, the Skeleton King gains a
+  'soul', which spawns an additional Skeleton when his ability is used. With no souls, the Skeleton
+  King will spawn 6 Skeletons, but with a maximum of 10 souls, he can summon 16 Skeletons. The
+  amount of souls the Skeleton King has can be seen in a blue bar above his hitpoint bar. The
+  ability goes on a 20 second cooldown after the duration ends. The Soul Summoning ability costs 2
+  Elixir to activate."
+
+  "The Skeletons he summons have a bluish tint and behave identically to cloned Skeletons, which
+  means you can't clone them further with said card, and they only have 1 hitpoint. Cloned troops do
+  not count as souls to him when they are defeated, and neither do the Skeletons summoned from the
+  ability."
+
+  "It is also important to note that cards that make 'sub-troops' (e.g., Elixir Golem, Golem, Lava
+  Hound, and Battle Ram) do not count as a soul to it, but only the final forms of the troop, with
+  Goblin Giant as an exception. Buildings also do not count as souls when vanquished, making Cannon
+  Cart the only troop that cannot count as a soul. 'Kamikaze cards' such as Spirits, Wall Breakers,
+  and the Goblin Demolisher however do count as souls when they defeat themselves."
+
+  [lead section (untitled intro paragraph), verbatim, ability sentences only]
+  "The Skeleton King's ability spawns Skeletons in a radius around him. While the Skeleton King is
+  on the field, any troops which die will be turned into 'souls' which are collected by him. The
+  number of souls that the Skeleton King collects determines the number of Skeletons that the
+  ability will spawn."
+
+  [section "Strategy", verbatim, mechanically load-bearing bullets only]
+  "Since friendly troops will count as a soul to him, you can place a swarm such as a Skeleton Army
+  while he is around and punish whenever the army gets countered with a small spell."
+  "He has a suspiciously large hitbox, and can bodyblock the Hog Rider more easily than other tanks."
+  "He also has a suspiciously high mass, and he can even push large troops such as a Giant, Electro
+  Giant, or Golem."
+  "The Mother Witch can take out his Skeletons easily, distracting him with a flow of Cursed Hogs
+  ... Beware, the Mother Witch will also make them a cloned Cursed Hog with 1 Hitpoint."
+  "On the contrary, Skeleton King is also great against the Graveyard, as he can summon a full flock
+  of 16 Skeletons as a threatening counter push."
+  "Do not use the ability, unless you have something tanking for the leftover Skeletons from the
+  ability in the lane they are going to go in, otherwise it is a waste of 2 Elixir."
+  "The Skeleton King can be placed as a defender in Boat Battles. However, much like other Champion
+  cards, he is unable to use his ability."
+
+  [section "History", verbatim, ability-relevant entries]
+  "On 4/11/2021, a maintenance break, increased his damage by 14%, area radius to 1.3 tiles (from 1
+  tile), and gave him knockback immunity."
+  "On 30/3/2022, the Miner Update, fixed an issue where cloning Skeleton King during the Soul
+  Summoning animation would cancel it. It also fixed a stats rounding issue with the Skeleton King's
+  summoned Skeletons."
+  "On 7/6/2022, a Balance Update, decreased the Skeletons spawned by Soul Summoning to 18 (from 20)."
+  "On 2/8/2022, a Balance Update, decreased the Skeletons spawned by Soul Summoning to 16 (from 18)."
+  "On 26/10/2022, the 2022 Quarter 3 Update ... There was also an unannounced change to the Skeleton
+  King, a decrease to his collision radius to 1 tile (from 1.2 tiles)."
+  "On 6/10/2025, a Balance Update increased the Skeleton's attack time interval to 1.1 seconds (from
+  1.0 seconds)."
+  "On 24/10/25,  a maintenance break, decreased Soul Summoning's skeleton spawn radius to 3.5 tiles
+  (from 4 tiles)."
+  [NOTE: this page's History ENDS at 24/10/2025 -- it carries NO 4/8/2026 entry, unlike the Mighty
+  Miner and Little Prince pages. See open_questions.]
+
+  [section "Trivia", verbatim, mechanically relevant]
+  "He gets more bluish the more souls he collects."
+  "The Skeleton King is 1 of 2 troops that have been featured with an Initial Spawn buff, the other
+  being Mother Witch."
+
+numbers:
+  deploy_cost_elixir:            {value: 4,             source: "infobox Cost=4; Skeleton King Attributes table Cost"}
+  ability_cost_elixir:           {value: 2,             source: "infobox AbilityCost=2; Soul Summoning Attributes table Cost"}
+
+  # ---- body ----
+  hp_lvl11:                      {value: 2298,          source: "vardefine hp_11"}
+  damage_lvl11:                  {value: 204,           source: "vardefine dmg_11"}
+  body_hit_speed_s:              {value: 1.6,           source: "vardefine atk_speed; Skeleton King Attributes table 'Hit Speed 1.6 sec'"}
+  first_hit_speed_s:             {value: 0.3,           source: "Skeleton King Attributes table 'First Hit Speed'"}
+  body_speed:                    {value: "Medium (60)", source: "Skeleton King Attributes table Speed"}
+  body_deploy_time_s:            {value: 1,             source: "Skeleton King Attributes table Deploy Time"}
+  body_range_tiles:              {value: 1.2,           source: "Skeleton King Attributes table Range 'Melee: Medium (1.2)'"}
+  body_splash_radius_tiles:      {value: 1.3,           source: "Skeleton King Attributes table col 'Splash Radius' = 1.3; corroborated by History 4/11/2021 'area radius to 1.3 tiles (from 1 tile)'"}
+  target:                        {value: "Ground",      source: "Skeleton King Attributes table Target"}
+  count:                         {value: 1,             source: "Skeleton King Attributes table Count x1"}
+  transport:                     {value: "Ground",      source: "Skeleton King Attributes table Transport"}
+  body_collision_radius_tiles:   {value: 1,             source: "prose (History 26/10/2022) 'a decrease to his collision radius to 1 tile (from 1.2 tiles)' -- NOT in any stat table"}
+  dps_lvl11:                     {value: 127.5,         source: "statistics table col 'Skeleton King Damage per second', computed by {{Dps|dmg_11|atk_speed}} = 204/1.6"}
+
+  # ---- ability ----
+  skeleton_count_min:            {value: 6,             source: "Soul Summoning Attributes table col 'Skeleton Count' = '6-16'; corroborated by prose 'With no souls, the Skeleton King will spawn 6 Skeletons'"}
+  skeleton_count_max:            {value: 16,            source: "Soul Summoning Attributes table col 'Skeleton Count' = '6-16'; corroborated by prose 'with a maximum of 10 souls, he can summon 16 Skeletons'"}
+  soul_cap:                      {value: 10,            source: "prose (Ability) 'with a maximum of 10 souls'"}
+  skeletons_per_soul:            {value: 1,             source: "derived from prose: 6 base + 10 souls = 16 max, so exactly +1 per soul. The page states the 6, the 10, and the 16 but not the per-soul rate."}
+  spawn_radius_tiles_prose:      {value: 4,             source: "prose (Ability) 'summoning a varied amount of Skeletons in a 4-tile radius around himself'"}
+  spawn_radius_tiles_history:    {value: 3.5,           source: "prose (History 24/10/2025) 'decreased Soul Summoning's skeleton spawn radius to 3.5 tiles (from 4 tiles)' -- CONFLICTS with the ability prose; see open_questions"}
+  spawn_interval_s:              {value: 0.25,          source: "prose (Ability) 'The Skeletons spawn 1 at a time at random positions in the circle every 0.25 seconds'"}
+  spawn_sequence_duration_s:     {value: "1.5 to 4.0",  source: "derived: spawn_interval_s 0.25 x skeleton_count 6..16. The page publishes the interval and the count but never prints the total."}
+  spawn_pattern:                 {value: "1 at a time, random positions in the circle", source: "prose (Ability)"}
+  ability_cast_time_s:           {value: 0.933,         source: "Soul Summoning Attributes table col 'Cast Time' = '0.933 sec'"}
+  ability_activation_delay_s:    {value: 1,             source: "prose (Ability) 'After a 1-second delay'"}
+  ability_cooldown_s_published:  {value: 20,            source: "Soul Summoning Attributes table col 'Ability Cooldown' = '20 sec'; ALSO ability prose 'goes on a 20 second cooldown'. STALE -- see open_questions."}
+  ability_cooldown_s_current:    {value: 0,             source: "NOT ON THIS PAGE. webcache/Version_History.wikitext 'Balance Changes (4/8/2026)': 'Champions and Heroes (minus Boss Bandit): Will no longer have multi-use abilities. Instead, they will be single use.'"}
+  ability_uses_current:          {value: 1,             source: "NOT ON THIS PAGE. webcache/Version_History.wikitext 'Balance Changes (4/8/2026)', same entry."}
+
+  # ---- summoned Skeletons ----
+  skeleton_hp:                   {value: 1,             source: "Soul Summoning Attributes table col 'Skeleton Hitpoints' = 1; corroborated by prose 'they only have 1 hitpoint'. LEVEL-INDEPENDENT -- the statistics table has no Skeleton Hitpoints column."}
+  skeleton_damage_lvl11:         {value: 81,            source: "vardefine skel_dmg_11 (statistics table col 'Skeleton Damage')"}
+  skeleton_hit_speed_s:          {value: 1.1,           source: "vardefine skel_atk_speed; Skeleton Attributes table 'Hit Speed'"}
+  skeleton_first_hit_speed_s:    {value: 0.5,           source: "Skeleton Attributes table 'First Hit Speed'"}
+  skeleton_speed:                {value: "Fast (90)",   source: "Skeleton Attributes table Speed"}
+  skeleton_range_tiles:          {value: 0.5,           source: "Skeleton Attributes table Range 'Melee: Short (0.5)'"}
+  skeleton_target:               {value: "Ground",      source: "Skeleton Attributes table Target"}
+  skeleton_transport:            {value: "Ground",      source: "Skeleton Attributes table Transport"}
+  skeleton_dps_lvl11:            {value: 73.6,          source: "statistics table col 'Skeleton Damage per second', computed by {{Dps|skel_dmg_11|skel_atk_speed}} = 81/1.1"}
+
+  # ---- balance deltas (provenance only) ----
+  skeleton_count_max_previous_1: {value: 20,            source: "prose (History 7/6/2022) 'decreased the Skeletons spawned by Soul Summoning to 18 (from 20)'"}
+  skeleton_count_max_previous_2: {value: 18,            source: "prose (History 2/8/2022) 'decreased the Skeletons spawned by Soul Summoning to 16 (from 18)'"}
+  skeleton_hit_speed_s_previous: {value: 1.0,           source: "prose (History 6/10/2025) 'increased the Skeleton's attack time interval to 1.1 seconds (from 1.0 seconds)'"}
+  body_splash_radius_previous:   {value: 1,             source: "prose (History 4/11/2021) 'area radius to 1.3 tiles (from 1 tile)'"}
+  body_collision_radius_previous: {value: 1.2,          source: "prose (History 26/10/2022) 'to 1 tile (from 1.2 tiles)'"}
+
+  # ---- scaling ----
+  level_scaling_per_level:       {value: 1.1,           source: "statistics table formula '(1.1^(L-11))' -- applied to SK hp/damage and Skeleton Damage. NOT applied to Skeleton Hitpoints, which is a flat 1."}
+  stats_reference_level:         {value: 11,            source: "statistics table editor comment 'THAT WILL BE LEVEL 11'"}
+
+proposed_ability_kind: soul_bank
+# A death-counting resource (souls, cap 10) that converts on activation into a summon of 6-16
+# clone-variant 1-HP Skeletons, sequenced one per 0.25 s in a circle around the caster.
+
+open_questions:
+  - "SPAWN RADIUS CONFLICT WITHIN THIS PAGE: the ability prose says 'in a 4-tile radius around himself', but History 24/10/2025 says 'decreased Soul Summoning's skeleton spawn radius to 3.5 tiles (from 4 tiles)'. The History entry is the later edit, so 3.5 is likely current and the prose was never updated -- but the archive does not settle it. Both values recorded above."
+  - "THIS PAGE IS STALE ON SINGLE-USE. Its History ends at 24/10/2025 and carries NO 4/8/2026 entry, unlike the Mighty Miner and Little Prince pages. Both the Soul Summoning Attributes table and the ability prose still say 20 s cooldown. webcache/Version_History.wikitext, Balance Changes (4/8/2026), covers 'Champions and Heroes (minus Boss Bandit)' as a class, so the Skeleton King IS single-use -- but the subject page never says so. Both values recorded."
+  - "WHAT DOES 'It continues, even if the Skeleton King dies' REFER TO? The sentence closes the paragraph about counting troop deaths, so it could mean (a) the SPAWN SEQUENCE finishes even if he is killed mid-summon, or (b) soul accrual continues after his death -- which is incoherent, since the lead paragraph scopes accrual to 'While the Skeleton King is on the field'. Reading (a) is the only sensible one, and it is corroborated by History 30/3/2022 having had to FIX a case where the summoning animation could be cancelled. But the page is genuinely ambiguous here and this is a real engine decision."
+  - "THE GOBLIN GIANT EXCEPTION IS UNEXPLAINED: 'cards that make sub-troops ... do not count as a soul to it, but only the final forms of the troop, with Goblin Giant as an exception.' Exception in which direction -- do the Goblin Giant's backpack Spear Goblins DO grant souls (unlike other sub-troops), or does the Goblin Giant itself NOT grant one? The sentence supports either reading."
+  - "DO THE SUMMONED SKELETONS HAVE A LIFETIME? Nothing on the page gives them a decay or despawn timer, and Strategy refers to 'leftover Skeletons from the ability' pushing into a lane, implying they persist until killed. Never stated as a rule."
+  - "DO TOWER TROOPS / CROWN TOWERS COUNT AS SOULS WHEN DESTROYED? The rule is scoped to 'troops' and buildings are excluded, but Tower Troops (Tower Princess, Cannoneer, Dagger Duchess) sit in both categories. Not addressed."
+  - "IS THE 1-HP SKELETON KILLED BY ANY NONZERO DAMAGE INCLUDING DOT TICKS AND ZERO-DAMAGE EFFECTS? Not stated. Their clone semantics ('behave identically to cloned Skeletons') pushes the question onto the Clone card, which is not in scope here."
+  - "'random positions in the circle' -- uniform over the AREA of the disc, or on the RING at the radius? The word 'circle' is used, the word 'radius' is used, and the two readings give very different clustering. No distribution is specified. Also unspecified: whether spawn points avoid occupied tiles, water, or tower footprints."
+  - "HOW LONG IS 'stopping in place momentarily'? The page gives a 1 s activation delay, a 0.933 s cast time, and a 0.25 s per-skeleton spawn cadence, but never says which of these he is immobilised for, nor whether he stops ATTACKING as well as moving."
+  - "DOES THE SOUL BAR RESET ON ACTIVATION? Nothing on this page says. The only reset rule in the archive is from webcache/Version_History_2025.wikitext (29/9/2025): 'Skeleton King's soul bar resets during ability transference' -- i.e. when the ability moves to a newly-placed Champion. Whether spending the ability itself zeroes the bank is unstated (largely moot under single-use, but it decides whether souls keep accruing on a spent body)."
+  - "IS THE CANNON CART CLAIM STILL TRUE? Prose calls the Cannon Cart 'the only troop that cannot count as a soul' because it becomes a building. That was written before later card releases and this page's History has not been touched since 24/10/2025."
+  - "THREE TIMING NUMBERS WITH NO STATED RELATIONSHIP: prose 'After a 1-second delay', table 'Cast Time 0.933 sec', and the 0.25 s spawn cadence. Does the first Skeleton appear at t=0.933, t=1.0, or t=1.25? Cards.wikitext notes 'The abilities adhere to the server's 1 second deployment delay', which may explain the 1 s but not the 0.933 s."
+  - "DOES THE BODY'S SPLASH DAMAGE FALL OFF WITH DISTANCE inside the 1.3-tile radius? Not stated (no page in this archive states a falloff rule for any card)."
+  - "MASS / PUSH FORCE IS NOT QUANTIFIED. Strategy asserts 'a suspiciously large hitbox' and 'a suspiciously high mass, and he can even push large troops such as a Giant, Electro Giant, or Golem', but the only number anywhere is the collision radius of 1 tile, and that appears only in History, not in a stat table."
+  - "KNOCKBACK IMMUNITY: granted by History 4/11/2021 ('gave him knockback immunity') and never revoked in this page's History. It is NOT listed in any attributes table or in the ability section, so it is a permanent body trait sourced only from a History line."
+  - "'Initial Spawn buff' (Trivia) is named but never explained -- no numbers, no duration, no effect described."
+  - "Ability uses: per BODY or per MATCH? Not stated by this page or Version_History.wikitext."
+  - "CHAMPION HAND/CYCLE STATE -- NOT AN ISSUE HERE: this page contains no hand-lock text. For the record, the archived source for the rework is webcache/Version_History_2025.wikitext, '2025 Quarter 3 Update (29/9/2025)', section 'Champion Rework': 'Champions will not bring 3-card cycle anymore: they come back to the player's cycle like any other card.' NOTE the date -- 29/9/2025, NOT 2026. The caller's framing of this as a '2026 rework' does not match the archive; the 4/8/2026 update was a separate change (multi-use -> single-use abilities). That same 29/9/2025 rework is also the ONLY archived source for the Skeleton King's soul-bar reset on ability transference."
+
+sources_secondary:
+  - {file: "webcache/Version_History.wikitext", section: "Balance Changes (4/8/2026)", used_for: "the ONLY archived source making the Skeleton King single-use -- his own page has no 2026 History entry"}
+  - {file: "webcache/Version_History_2025.wikitext", section: "2025 Quarter 3 Update (29/9/2025) -- Champion Rework", used_for: "3-card-cycle removal dated 29/9/2025; 'Skeleton King's soul bar resets during ability transference'; 'Only the most recent placed Champion has the ability'; 'Cooldowns are reset when the ability is transferred between Champions'; 'Mirror now works on Champions'"}
+  - {file: "webcache/Cards.wikitext", section: "Champion Cards", used_for: "'The abilities adhere to the server's 1 second deployment delay'; 'The cooldown will instantly reset if the player's Champion dies, or if a new Champion gets placed'; 'Cloned Champion troops cannot use abilities'"}

@@ -85,3 +85,68 @@ In-game checks queued for the owner (full list in each YAML's open_questions):
 - barbarian_barrel_hero: hit speed 1.3 vs 1.4; meaning of 116 (reroll damage vs crown tower
   damage); heal basis (damage taken vs damage dealt); reroll direction/start point;
   one-use-only?
+
+---
+
+## 2026-08-25 — R1c champion specs: conflicts for owner batch review
+
+### C1. ⚠ Mighty Miner Explosive Escape damage — sim 366 vs wiki 332 (@L11). NEEDS ONE ANSWER FROM OWNER.
+`hogeq/config/cards.yaml` has `ability_bomb_damage: 366` with a comment asserting the value "is not
+published in the KB." **It is published**: `vardefine escape_11 = 332` (statistics column
+"Explosive Escape Damage", Mighty_Miner.wikitext archive).
+
+Scaling both bases through `levels.py` PERCENT (L11=256, L13=309, L14=339):
+```
+366 @L11 -> L12 402  L13 442  L14 485
+332 @L11 -> L12 364  L13 401  L14 440   <-- 440 EXACTLY at L14
+```
+HANDOFF §5 records the owner's in-game observation as **440 @ L13**, and 366 was REVERSE-DERIVED
+from it — the same note conceding "No integer level-1 base gives exactly that", which was the tell.
+The wiki's 332 reproduces 440 **exactly at L14**.
+
+**The single question that resolves this: was Mighty Miner level 13 or level 14 when 440 was
+observed?** (HANDOFF records him at 15 since 2026-08-19, so 14 is plausible for an earlier reading.)
+* If **L14** -> the wiki is right, `366 -> 332`, and the "not published" comment is deleted.
+* If **L13** -> the owner's reading stands, 366 is kept, and the wiki row is pinned as contradicted.
+NOT CHANGED PENDING THE ANSWER (ruling 2: never auto-overturn an owner-sourced value).
+
+### C2. Mighty Miner bomb RADIUS — still unsourced after a full page sweep.
+The archived page publishes NO blast radius: not in prose ("medium area damage"), not in the
+Explosive Escape attributes table (only Cost / Deploy Time / Cast Time / Cooldown), not in History
+or Trivia. The sim's **2.5 tiles remains a guess**. ⚠ The only published tile figure is the
+**1.8-tile knockback**, which is a DISPLACEMENT — do not let a later pass conflate the two.
+Resolution path: owner in-game measurement, or leave flagged.
+
+### C3. Monk combo damage IS published — `cards.yaml` says it is not.
+`vardefine combo_11 = 422`. The KB comment claims "The 3rd hit's EXTRA DAMAGE is not published, so
+only the shove is modelled." Same error class as C1. Wiki leaves ambiguous whether 422 REPLACES or
+ADDS TO the 140 base hit — needs a ruling before implementation.
+
+### C4. Goblinstein stats possibly stale after 4/8/2026.
+That update gives no-cooldown/single-use PLUS Doctor damage **+47%** and ability DPS **-12%**, but
+the KB still carries `dmg_11 = 92` / `link_11 = 107`. Recompute or re-source at R2; not changed.
+
+### C5. Boss Bandit — the sim's AUTO-TRIGGER is not in the source.
+Getaway Grenade is documented only as a manual button; History 8/7/2025 says it may be used twice
+"independent on Boss Bandit's hitpoints", i.e. an HP-gated model was REMOVED. The sim fires it
+automatically below a rolled HP fraction (`ability_hp_frac`). Enemy champions still need SOME
+trigger, so the fix is likely to move it from an engine rule to an opponent-AI heuristic.
+Owner ruling requested.
+
+### C6. Champion pages are stale on single-use (class-wide).
+Monk (History ends 12/12/2025) and Skeleton King (24/10/2025) still print 17s / 20s cooldowns;
+only the master Version_History carries the 4/8/2026 "Champions and Heroes (minus Boss Bandit)"
+single-use line. Treat per-page cooldowns as unreliable.
+
+### C7. Timing boilerplate, all four pages.
+Each publishes THREE unreconciled figures (prose 1s delay, table Cast Time ~0.933-0.944s, table
+Deploy Time), and prose says the cooldown starts "after the duration ends" while three of four
+publish no duration at all. Likely copied boilerplate. Engine needs one chosen convention.
+
+### C8. Intra-page contradictions recorded with BOTH values (see each ability YAML).
+Archer Queen attack-speed buff stated three ways (+80% prose / +180% table / "to 180% from 200%"
+History); Little Prince pushback (prose 0-2 tiles vs History 1/9/2025 2.5 tiles); Skeleton King
+spawn radius (prose 4 tiles vs History 24/10/2025 3.5 tiles); Monk knockback immunity
+(ability-scoped vs unqualified); Golden Knight has NO duration and NO dash travel speed, so chain
+timing is not simulatable from the page alone; Goblinstein link geometry ("2 tiles" from the
+Doctor, the Monster, or the line between them — never stated).
