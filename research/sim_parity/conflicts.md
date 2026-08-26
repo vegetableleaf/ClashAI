@@ -229,3 +229,27 @@ row does say 0.75, but `build_spec` reads movement speed via `db.speed_tiles(bas
 base is the parent card, so MEASURED `build_spec("furnace_evo", 11).speed` is **1.0**, same as the
 base. The stale cell never reaches the engine. Correcting the row is still right for tidiness, but
 it is a data cleanup with no behavioural effect, not the sim defect the row implies.
+
+### E4. giant_snowball_evo is still GROUND-ONLY, and flipping one field would break its roll.
+
+Item 7 of the #8 batch asked me to verify the BASE Giant Snowball hits air and ground. It does:
+`attacks ['air', 'ground']`, no cards.yaml override, and MEASURED 179.0 damage plus a slow applied
+to knight, minions and bats alike. **No change was needed.**
+
+But the item's stated premise — "the evo hits air+ground" — is FALSE of the current KB, and the
+same is true of owner ruling #5, which says the Evo hits air AND ground. cards.yaml still reads
+`giant_snowball_evo: {..., attacks: [ground], ...}`. MEASURED, Evo Snowball cast directly on top
+of the target: knight 179.0 damage, **minions 0.0, bats 0.0** — the Evo cannot answer air at all
+while the plain Snowball can.
+
+Left unapplied ON PURPOSE, for a reason the ledger row anticipated but did not measure:
+`rolls` is derived in build_spec as `kind == "spell" and "rolls" in flags and ground_only`, and
+`ground_only` is `attacks == ["ground"]`. MEASURED by flipping the row in memory:
+
+    attacks ['ground']         -> ground_only True,  rolls True,  roll_len 4.5
+    attacks ['air','ground']   -> ground_only False, rolls False, roll_len 0.0
+
+So the one-line data fix silently TURNS THE ROLL OFF. Fixing it properly means decoupling the
+rolling corridor from `ground_only` — expressing the ground-only part of the pull on `carry_roll`,
+as the r2_buckets row suggests — and it should land with the rest of the #5 Evo Snowball family
+(roll_tiles 4.5 -> 4.0, slow_duration_s 4.0 -> 3.0, crown_tower_damage 54 -> 45), not alone.

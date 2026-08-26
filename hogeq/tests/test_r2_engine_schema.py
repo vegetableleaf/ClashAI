@@ -597,5 +597,47 @@ class DarkPrinceSplashShadowTests(unittest.TestCase):
                 self.assertAlmostEqual(build_spec(eng.db, name, LVL).splash_r, r, delta=1e-9)
 
 
+class GiantSnowballBaseTargetingTests(unittest.TestCase):
+    """The BASE Giant Snowball hits air and ground. Owner ruling R2 #5, item 7 of the #8 batch.
+
+    Wiki: both the base and the Evolution pages print Target "Air & Ground".
+
+    VERIFIED, no change was needed: the base row already reads attacks ['air', 'ground'] and the
+    curated cards.yaml row does not override it. This class exists to LOCK that, because the
+    Evolution row overrides it to ['ground'] on the very next line of the same file.
+
+    ⚠ The EVO is still ground-only and that contradicts the same ruling -- see conflicts.md E4.
+    It is deliberately not fixed here: `rolls` is derived as ("rolls" in flags AND ground_only),
+    so flipping the Evo's attacks alone silently turns its ROLL off. That belongs with the rest
+    of the #5 data batch, not in this engine/schema one.
+    """
+
+    def _cast(self, card, target):
+        eng = _make_engine()
+        t = build_spec(eng.db, target, LVL)
+        u = Unit(spec=t, team=1, x=0.50, y=0.50, hp=t.hp * 20)
+        eng.units.append(u)
+        eng.elixir = [10.0, 10.0]
+        self.assertTrue(eng.deploy(0, build_spec(eng.db, card, LVL), 0.50, 0.50))
+        before, x0, y0 = u.hp, u.x, u.y
+        for _ in range(30):
+            u.x, u.y = x0, y0
+            eng.advance(0.1)
+        return before - u.hp, u.slow_left
+
+    def test_the_base_row_targets_air_and_ground(self):
+        eng = _make_engine()
+        self.assertEqual((eng.db.get("giant_snowball") or {}).get("attacks"), ["air", "ground"])
+        self.assertFalse(build_spec(eng.db, "giant_snowball", LVL).ground_only)
+
+    def test_it_damages_and_slows_air_as_well_as_ground(self):
+        """MEASURED: 179.0 damage and a slow applied to knight, minions and bats alike."""
+        for name in ("knight", "minions", "bats"):
+            with self.subTest(card=name):
+                dealt, slow = self._cast("giant_snowball", name)
+                self.assertAlmostEqual(dealt, 179.0, delta=1.0)
+                self.assertGreater(slow, 0.0)
+
+
 if __name__ == "__main__":
     unittest.main()
