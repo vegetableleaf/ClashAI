@@ -1,0 +1,80 @@
+{{DISPLAYTITLE:<span style="color: #888888;">Warmth</span>}}
+{{Protection}}{{MagicWords}}{{EventCard}}
+
+{{Card Infobox|Cost=1|Rarity=Common|Type=Spell|ReleaseDate=11 December 2023}}{{Quote|They're nice and toasty now!}}
+
+The Warmth was a temporary {{Rarity|Common}} [[Cards|card]], only available in certain Events. It was an area-damage, air-targeting [[:Category:Spell Cards|spell]] with a large radius that healed friendly [[:Category:Troop Cards|troops]]. It is also able to unfreeze troops. It appears as a flaming red chunk of coal. A Warmth card costs 1 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Warmth Card}}
+*This [[Cards|card]] is mainly used to warmth or unfreeze your cards during the Snowstorm event.
+*It also does a small amount of healing towards the [[:Category:Troop Cards|troops]] that it affects, although it is not enough to change any interactions.
+*It should be casted next to [[:Category:Building Cards|buildings]] immediately after getting frozen, as their lifetime will keep decaying even when frozen. This will ensure that spawner buildings will not lose any waves of troops.
+*Since the [[Electro Giant]] cannot hit enemies while he is frozen, it is important to use Warmth on him to allow his Zap Pack to affect enemies. A similar principle applies to the [[Goblin Giant/Evolution|Evolved Goblin Giant]].
+*A good strategy is to use it when a player has accumulated a lot of troops, especially high-hitpoints ones like the [[Giant]], [[P.E.K.K.A]], [[Mega Knight]], [[Giant Skeleton]], Electro Giant, [[Goblin Giant]], or [[Golem]]. The player will amass a large push and then deploy the Warmth to unfreeze all of them and create an almost unstoppable push.
+**This strategy becomes much riskier with troops that can be defeated from [[:Category:Spell Cards|spells]], as the opponent will be easily able to hit them with no way for them to escape. This is notable with the [[Rocket]] due to its higher damage, especially if said troop is next to the [[:Category:Crown Towers|Crown Tower]].
+**This tactic can also be neutralized by utilizing piercing or chain attacks like the [[Magic Archer]], [[Firecracker]], [[Bowler]], [[Executioner]], [[Bomber/Evolution|Evolved Bomber]], and [[Electro Dragon/Evolution|Evolved Electro Dragon]] to hit through frozen troops and hit the Crown Tower for free damage.
+*Since it costs only 1 [[Elixir]], it can shuffle the player's [[Battle Decks|deck]] quickly, which allows the player to rotate to more expensive cards sooner. However, using it on Crown Towers is unrecommended, as they cannot be frozen in the Snowstorm event, nor can they be healed by Warmth, making it a waste of 1 Elixir.
+
+
+<center><div id="unit-statistics" class="table-back">
+{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|1||4||[[:Category:Spell Cards|Spell]]||{{Rarity|Common}}
+|}
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Healing per second<br />{{Icon|I=HPS}}
+|-
+|1||10
+|-
+|2||11
+|-
+|3||12
+|-
+|4||13
+|-
+|5||14
+|-
+|6||16
+|-
+|7||17
+|-
+|8||19
+|-
+|9||21
+|-
+|10||23
+|-
+|11||25
+|-
+|12||28
+|-
+|13||30
+|-
+|14||33
+|-
+|15||37
+|}
+</div>
+</center>
+
+==History==
+2023
+*The Warmth [[Cards|card]] was made available in the Snowstorm event on 11/12/2023.
+*On 18/12/2023, the Warmth was removed from the game.
+2024
+*On 9/12/2024, the Warmth was readded to the game in the Snowstorm event.
+*On 16/12/2024, the Warmth was removed from the game.
+
+==Trivia==
+*The Warmth, along with [[Skeletons]], [[Electro Spirit]], [[Fire Spirit]], [[Ice Spirit]], [[Heal Spirit]], and [[Heal]], are the cheapest [[cards]], costing 1 [[Elixir]]. Also, along with the Heal, the Warmth is the cheapest [[:Category:Spell Cards|spell]] card.
+
+{{Navigation|Card}}
+[[Category:Removed Cards]]

@@ -1,0 +1,102 @@
+{{DISPLAYTITLE:<span style="color: #ffa31a;">Heal</span>}}
+{{Protection}}{{MagicWords}}{{ClashofClansLink|Healing Spell}}{{RemovedContent|Page=true}}
+{{Card Infobox|Cost=1|Rarity=Rare|Type=Spell|ReleaseDate=1 May 2017}}
+
+{{Quote|Heal your troops to keep them in the fight! Friendly troops are healed over time while in the target area. Doesn't affect buildings.}}
+The Heal was a {{Rarity|Rare}} [[Cards|card]] that was unlocked from the [[Arenas|Hog Mountain (Arena 10)]]. It was an area-damage, air-targeting [[:Category:Spell Cards|spell]] with a large radius that healed friendly [[:Category:Troop Cards|troops]]. The Heal regenerated the player's units' hitpoints every 0.5 seconds for 2 seconds. It was a lemon-colored potion packed in a large bottle. It was also the same as that spawned by the [[Santa Hog Rider]]. A Heal card costs 1 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Heal Card}}
+*It could heal back a part of the damage done by the opponent's [[Poison]], allowing the [[:Category:Troop Cards|troops]] to live longer.
+*The Heal spell was also effective against the [[Fireball]] or [[Zap]] if it did not OHKO the player's troops.
+*The Heal spell could heal middle to low health troops while they were targeting a [[:Category:Crown Towers|Crown Tower]] such as a [[Wizard]], [[Dark Prince]], [[Rascals|Rascal Girls]], [[Ice Wizard]], [[Royal Ghost]], [[Miner]], [[Electro Wizard]], [[Hunter]], [[Cannon Cart]], [[Mega Minion]], [[Lumberjack]], [[Goblin Cage|Goblin Brawler]], [[Musketeer]], [[Baby Dragon]], [[Bandit]], [[Electro Dragon]], [[Witch]], [[Night Witch]], [[Fisherman]], [[Executioner]], [[Mini P.E.K.K.A]], [[Royal Hogs]], [[Barbarians]], [[Royal Recruits]], [[Elite Barbarians]], [[Magic Archer]], [[Flying Machine]], [[Zappies]], [[Princess]], [[Bomber]], [[Archers]], [[Dart Goblin]], [[Firecracker]], or [[Inferno Dragon]], allowing them continue dealing heavy damage towards the Tower. It could be effective as a surprise to the opponent if it remained unused up until then. This was especially deadly when used with an Inferno Dragon, as this could also give it enough time to reach maximum damage and must be countered very quickly.
+*If the opponent used Zap on the Lava Pups from a [[Lava Hound]], Heal could be used to heal the Lava Pups and they would continue to do heavy damage to the opponent's tower.
+*Healing troops that the opponent would normally ignore and let the Crown Tower defeat could catch the opponent off guard and result in the Tower taking significant damage.
+* While the Heal had healing capabilities, it did not heal any troops that have been destroyed. Also, it could not heal troops over their original health. Once the troop had been fully healed, it would not be affected by the Heal. If the troop was eliminated by a particular attack in one hit, the Heal would be incapable of doing anything. For example, [[Skeletons]] or [[Bats]] that are under an enemy [[Poison]] could not be kept alive using a Heal unless the Skeletons or Bats were sufficiently leveled such that they did not die in one pulse of the Poison.
+*A potentially deadly strategy was to use a [[Miner]] and a [[Minion Horde]] with a Heal, but only if the opponent does not have [[Arrows]] or any other high-damage [[:Category:Spell Cards|spell]], excluding [[Lightning]]. If the enemy used a Zap, a [[Princess]], or an [[Ice Spirit]], the Heal would keep the [[Minions]] alive while attacking the Tower. This would work with a [[Goblin Barrel]] too if the opponent did not have a direct counter to the [[Goblins]].
+
+<center>
+<div id="unit-statistics" class="table-back">
+{{Statistics}}
+{|class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+! scope="col" |Duration<br />{{Icon|I=Time}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|1||4||2 sec||Friendly Troops||[[:Category:Spell Cards|Spell]]||{{Rarity|Rare}}
+|}
+{| class="wikitable" id="unit-statistics-table" style="width: 100%; text-align: center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Healing per second<br />{{Icon|I=HPS}}
+|-
+|3||37
+|-
+|4||40
+|-
+|5||44
+|-
+|6||49
+|-
+|7||54
+|-
+|8||59
+|-
+|9||65
+|-
+|10||71
+|-
+|11||78
+|-
+|12||86
+|-
+|13||94
+|}
+</div>
+</center>
+
+==History==
+2017
+*The Heal was once available in the [[Tournament/Special Event Challenges|Heal Draft Challenge]], which started on 28/4/2017. In this [[Tournament|challenge]], gameplay was similar to a regular Draft Challenge, except that one of the players was able to choose who would use the Heal. If the player achieved at least 6 wins, they obtained the Heal early {{Balance|Add}}.
+*The Heal [[Cards|card]] was generally released on 1/5/2017 {{Balance|Add}}.
+*On 12/6/2017, the [[Version History#June 2017 Update (12/6/2017)|June 2017 Update]], allowed multiple Heal [[:Category:Spell Cards|spells]] to stack {{Balance|Neutral}}.
+*On 11/8/2017, a [[Version History#Balance Changes (11/8/2017)|Balance Update]], decreased its duration to 2.5 seconds (from 3.05 seconds) {{Balance|Nerf}}. This also fixed inconsistencies where the Heal healed either six pulses or seven pulses; it will now pulse exactly five times, in effect decreasing its effectiveness by two-sevenths {{Balance|Neutral}}.
+2018
+*On 25/4/2018, the [[Version History#Clan%20Wars%20Update%20(25/4/2018)|Clan Wars Update]], allowed the Heal to be placed on the river {{Balance|Neutral}}.
+*On 20/6/2018, the [[Version History#Summer%202018%20Update%20(20/6/2018)|Summer 2018 Update]], increased the Heal's area radius to 4 tiles (from 3 tiles) {{Balance|Buff}}. It also moved the [[Arenas|Arena]] to unlock the Heal from Hog Mountain to Royal Arena {{Balance|Buff}}.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Rare}} cards start at Level 3 and end at Level 13 (from 1 to 11) {{Balance|Neutral}}.
+2019
+*On 7/1/2019, a [[Version History#Balance Changes (7/1/2019)|Balance Update]], decreased the Heal’s cost to 1 [[Elixir]] (from 3 Elixir) {{Balance|Buff}}, decreased its duration to 2 seconds (from 2.5 seconds) {{Balance|Nerf}}, and decreased its healing by 63% {{Balance|Nerf}}.
+*On 1/7/2019, the [[Version History#July%202019%20Update%20(1/7/2019)|July 2019 Update]], removed the Heal from all [[Tournament/Special Event Challenges|Draft]] selections {{Balance|Remove}}.
+*On 4/11/2019, a [[Version History#Pass Royale and more (4/11/2019)|Balance Update]], moved the Arena to unlock the Heal from Royal Arena to Hog Mountain {{Balance|Nerf}}.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], removed the Heal from [[Touchdown]] Draft {{Balance|Remove}}.
+2020
+*On 2/4/2020, a [[Version History#Maintenance%20Break%20(2/4/2020)|maintenance break]], replaced the Heal with the [[Heal Spirit]] {{Balance|Remove}}.
+
+==Trivia==
+*The Heal is 1 of 7 [[:Category:Spell Cards|spells]] which first existed in Clash of Clans, the others being [[Earthquake]], [[Lightning]], [[Freeze]], [[Poison]], [[Rage]], and [[Clone]].
+**In Clash Royale, it is simply just called "Heal" but in Clash of Clans, it is called "Healing".
+*The Heal, along with [[Skeletons]], [[Electro Spirit]], [[Fire Spirit]], [[Ice Spirit]], [[Warmth]], and [[Heal Spirit]], are the cheapest [[cards]], costing 1 [[Elixir]]. Also, along with the Warmth, the Heal is the cheapest spell card, and along with Heal Spirit, the cheapest {{Rarity|Rare}} card.
+*In the French, German, Spanish, Norwegian, Russian, Arabic, Portuguese, Persian and Vietnamese language settings of the game, the Heal's name translates to "Healing". In the Italian, Turkish, Korean, Chinese, and Malaysian language settings of the game, the Heal's name translates to "Treatment", "Restoration", "Healing Magic", "Healing Spell", and "Healer" respectively.
+*The Heal has been featured in multiple [[Tournament/Special Event Challenges|special game modes]] outside of the card. More specifically:
+**The Heal is 1 of 4 spells that have been featured in the [[Global Spell]] game [[:Category:Modes|mode]], the others being Lightning, Freeze, and Rage.
+**The Heal is 1 of 3 spells that has been featured in the Boost Fields game mode, the others being Rage and Clone.
+**The Heal is 1 of 5 spells that have been featured in the [[Treasure Hunt#Spell%20Cauldron|Spell Cauldron]] sub-mode of the [[Treasure Hunt]] game [[:Category:Modes|mode]], the others being Lightning, Freeze, Rage, and Clone.
+*The Heal is 1 of 23 cards that has had its Elixir cost changed, the others being [[Bomber]], Fire Spirit, [[Royal Recruits]], [[Cannon]], [[Mortar]], [[Musketeer]], [[Three Musketeers]], [[Goblin Hut]], [[Bomb Tower]], [[Barbarian Hut]], [[Furnace]], [[Elixir Collector]], [[Skeleton Army]], [[P.E.K.K.A.]], [[Wall Breakers]], [[Electro Giant]], [[Bowler]], [[Goblin Barrel]], [[Barbarian Barrel]], Rage, [[Fisherman]], and the [[Monk]].
+*The icon of the "Healer" [[Card Mastery]] task resembles a Heal spell.
+*The Heal, along with the Lightning, Freeze, Rage, and [[The Log]], are featured as a [https://squad-busters.fandom.com/wiki/Spells spell] in [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters].
+*It is the first card to be [[:Category:Removed Cards|removed]] from the game.
+**The replacement card, the Heal Spirit, references that in a line of text below the description which reads "''R.I.P. Heal. 2017 - 2020. Alas, we hardly used ye.''", referring to the Heal's extremely low usage rate in both casual and competitive play.
+
+{{Navigation|Card}}
+
+[[fr:Guérison]]
+[[de:Heilung]]
+[[es:Curación]]
+[[it:Cura]]
+[[ru:Исцеление]]
+[[zh:治疗法术]]
+
+[[Category:Removed Cards]]

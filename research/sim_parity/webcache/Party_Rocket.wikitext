@@ -1,0 +1,112 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Party Rocket</span>}}
+{{Protection}}{{MagicWords}}{{EventCard}}
+{{Card Infobox|Cost=5|Rarity=Legendary|Type=Spell|ReleaseDate=27 March 2023}}
+{{Quote|Deals high damage to a small area. Looks really awesome doing it. Reduced damage to Crown Towers.}}
+
+The Party Rocket was a temporary {{Rarity|Legendary}} [[Cards|card]], only available in certain Events. It was an area-damage, air-targeting [[:Category:Spell Cards|spell]] with a large radius that immediately defeated all [[:Category:Troop Cards|troops]] in its area, converting them into [[Goblins]]. It could convert both players' troops. A Party Rocket card costs 5 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Party Rocket Card}}
+*Unlike the [[Rocket]], the Party Rocket does not deal any damage to [[:Category:Crown Towers|Crown Towers]], so it should not be used with the intention to deal damage to them.
+*A good combo with the Party Rocket is with the [[Skeleton Army]]. The player can deploy the Skeleton Army and then deploy the Party Rocket on them. This would result in the [[Skeletons]] being "promoted" into [[Goblins]], making a more threatening push.
+**A similar strategy works with the [[Graveyard]] and [[Skeleton Barrel]]. When they reach the Crown Tower, placing the Party Rocket where the Skeletons are placed will promote them into Goblins, making them more threatening. This may also convert any [[:Category:Troop Cards|troop]] used to defend against them.
+*In a pinch, a threatening push can be nullified with a Party Rocket for only 5 [[Elixir]]. While there will not be a good counterattack afterwards, it can ensure that the player will take no damage on their Crown Towers.
+**Compared to the regular Rocket, certain troops like the [[Sparky]], [[Elite Barbarians]], [[Three Musketeers]], [[Spirit Empress]], and [[Super Witch]] are a better Elixir trade while others like the [[Electro Dragon]], [[Executioner]], [[Royal Hogs]], [[Wizard]], [[Witch]], [[Super Mini P.E.K.K.A.|Super Mini P.E.K.K.A]], [[Archer Queen]], [[Minion Horde]], and [[Barbarians/Evolution|Evolved Barbarians]] are at worst a neutral Elixir trade.
+*The Party Rocket is difficult to aim and target at fast moving troops, as the spell has a considerable cast time, but can be overcome by an experienced player. However, it is less risky compared to the Rocket, due to its larger area radius.
+**Because of this, Party Rocket pairs very nicely with [[Tornado]]. The Tornado will drag most, if not all, desired targets into the Party Rocket's blast radius, allowing for the annihilating of large groups of troops. Make sure that the Party Rocket is launched before the Tornado, and the Tornado's center overlaps with the Party Rocket's radius. Remember that certain units resist a Tornado more than others, including charging units such as [[Prince]], [[Dark Prince]], [[Royal Recruits/Evolution|Evolved Royal Recruits]], [[Battle Ram]], and [[Ram Rider]] and heavy units such as [[Giant]], [[Lava Hound]], [[Golem]], Sparky, Dark Prince, [[Goblin Machine]], [[Mega Knight]], [[Mighty Miner]], Prince, [[Giant Skeleton]], [[Skeleton King]], [[Bowler]], and [[P.E.K.K.A.]], so this tactic may not always work. It also costs a hefty 8 Elixir, leaving you very defenseless, though it may be worth it if you are against a large push as it will nuke the push completely.
+***Aim the Rocket considerably in front of the target or at the shadow in order to hit them properly.
+***The combination is most recommended to be used when the troops that are being targeted move at different movement speeds. A good example is against a [[Lumberjack]] and [[Balloon]] combination, where the Tornado will prevent the faster Lumberjack from moving away from the slower Balloon, allowing the Party Rocket to hit both.
+*The player should be careful when aiming the Party Rocket. Using it towards troops that are close to the enemy's [[King's Tower|King Tower]] would result in the spawned Goblins attacking the King Tower and activating it, which could severely affect future pushes.
+*The Party Rocket is completely ineffective against troops that have shields, as their shields will prevent the Party Rocket from converting the troops into Goblins. Because of this, it is better to remove their shield with another card, which is worsen the Elixir trade against it. This is especially futile against Evolved Royal Recruits, as removing their shields will allow them to charge and possibly dodge the Party Rocket.
+*The Party Rocket is effective at destroying [[:Category:Building Cards|buildings]], such as the [[Barbarian Hut]], as they cannot move from their position, making the Party Rocket deal a guaranteed hit. This is quite useful for hindering the opponent and also make way for a push. Using Rocket on the Barbarian Hut is also a positive Elixir trade.
+**Against spawner buildings, such as the [[Tombstone]] and Barbarian Hut, always place it when a wave of troops is spawned when it lands. This will convert the newly spawned troops into Goblins which will then attack any nearby target, which could be a Crown Tower.
+**A Party Rocket can destroy an [[Inferno Tower]], and depending on when it is deployed, it be able to save any tank that is affected by it. This is a neutral Elixir trade and and can be beneficial for letting tanks break through.
+**A Party Rocket can deny all Elixir from being generated by an [[Elixir Collector]], though the Elixir Collector will still generate one Elixir when it is destroyed. Unlike the Rocket, it is better to place the Elixir Collector behind the Crown Tower as it cannot deal damage to the Crown Tower and it would minimize the chances of hitting another troop with it.
+**The Party Rocket is a fairly reliable counter to [[X-Bow]]. The Rocket will completely destroy it no matter the Level. Since it has a large area, it can also eliminate any support units played alongside the X-Bow, giving the player an Elixir advantage. However, an X-Bow will still deal around 5% of the player's Crown Tower's hitpoints if reacted late so using a cheap unit to distract it for a bit longer is recommended.
+***If the opponent executes a [[Tesla]] + X-Bow or [[Mortar]] combination, it is a great idea to place a distracting unit to allow the Tesla to unveil itself and get destroyed by the incoming Party Rocket. In addition to the destroyed Tesla, the Mortar and X-Bow will be fully destroyed, and a Goblin might also spawn from the distraction unit to help with offense.
+**Note that the Party Rocket will not convert any building into a Goblin even if the building is destroyed. Because of this, do not expect a counterpush out of destroying a building.
+**Even though the Party Rocket is one of the best ways to destroy buildings, in most cases it is a negative Elixir trade. Therefore, it is important to know when it is a good time to deploy a Party Rocket. This also applies to troops. If you are only hitting 1 or 2 troops, it usually results in a negative Elixir trade. If you purely want to destroy just buildings, you can consider bringing [[Earthquake]], which costs 2 less Elixir.
+*The Party Rocket is impractical to use against a [[Goblin Barrel]] since it is a negative Elixir trade. However, if the defending player is ahead in a match and their Tower is at low health, they can use it to clear out a Goblin Barrel in the final seconds of a match.
+**If the player expects the opponent to use troops to counter their Goblin Barrel, they can cast the Party Rocket alongside it. It will convert those troops into Goblins, largely negating most of the defensive play, while the player's Goblins will be refreshed. If they were hit by something that is not enough to OHKO them, like the [[Electro Wizard]]'s spawn damage, the Party Rocket will replace the Goblin Barrel's damaged Goblins with fully-healed ones, although they will still have to start attacking again.
+*Since it has a larger area, using [[Rage]] or [[Clone]] to allow troops to dodge the Party Rocket is ineffective, making it a waste of Elixir.
+<center><div id="unit-statistics" class="table-back">
+{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Party Rocket Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||4||[[:Category:Spell Cards|Spell]]||{{Rarity|Legendary}}
+|}
+
+{{StatisticsSubheader|Goblin Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.1 sec||0.4 sec||Very Fast (120)||0.5 (Melee: Short)||Ground||Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Goblin Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Goblin Damage<br />{{Icon|I=Damage}}
+! scope="col" |Goblin Damage per second<br />{{Icon|I=DPS}}
+|-
+|9||167||99||90
+|-
+|10||184||109||99
+|-
+|11||202||120||109
+|-
+|12||221||132||120
+|-
+|13||244||145||131
+|-
+|14||267||159||144
+|-
+|15||293||175||159
+|}
+</div>
+</center>
+
+==History==
+2023
+*The Party Rocket [[Cards|card]] was made available in the Goblin Party Rocket Event on 27/3/2023.
+*On 3/4/2023, the Party Rocket was removed from the game.
+2024
+* On 11/3/2024, the Party Rocket was readded to the game in the Goblin Party Rocket Event.
+*On 18/3/2024, the Party Rocket was removed from the game.
+*On 19/8/2024, the Party Rocket was readded to the game in the Super Cards Draft Event.
+*On 26/8/2024, the Party Rocket was removed from the game.
+2025
+*On 27/1/2025, the Party Rocket was readded to the game in the Super Cards Draft Event.
+*On 3/2/2025, the Party Rocket was removed from the game.
+*On 28/7/2025, the Party Rocket was readded to the game in the Goblin Party Rocket Event.
+*On 4/8/2025, the Party Rocket was removed from the game.
+
+==Trivia==
+*Goblins are small, grotesque, monstrous creatures that appear in the folklore of multiple European cultures. First attested in stories from the Middle Ages, they are ascribed conflicting abilities, temperaments, and appearances depending on the story and country of origin, ranging from mischievous household spirits to malicious, bestial thieves. They often have magical abilities similar to a fairy or demon, such as the ability to shapeshift. Similar creatures include [https://en.wikipedia.org/wiki/Duende duendes], [https://en.wikipedia.org/wiki/Kobold kobolds], [https://en.wikipedia.org/wiki/Leprechaun leprechauns], and [https://en.wikipedia.org/wiki/Ghoul ghouls].
+**The Party Rocket is 1 of 17 [[cards]] associated with [[Goblins]], with the others being [[Spear Goblins]], [[Goblin Gang]], [[Baby Goblins]], [[Dart Goblin]], [[Goblin Demolisher]], [[Suspicious Bush]], [[Goblin Cage]], [[Goblin Hut]], [[Goblin Giant]], [[Goblin Barrel]], [[Goblin Curse]], [[Goblin Drill]], [[Goblin Machine]], [[Party Hut]], [[Goblinstein]], and of course, Goblins.
+*The first use of rockets were in 1232, when reports appeared describing fire arrows and 'iron pots' that could be heard for 25 kilometers when they exploded upon impact, causing devastation for a radius of 600 meters, apparently due to shrapnel. A "flying fire-lance" that had reusable barrels was also mentioned to have been used by the Jin dynasty. Rockets are recorded to have been used by the Song navy in a military exercise dated to 1245. Rockets are still used to this day for multiple purposes, whether that is military, science, and entertainment.
+**The Party Rocket is 1 of 5 cards associated with rocketry, with the others being [[Firecracker]], [[Rocket]], [[Goblin Machine]], and [[Rocket Silo]].
+*The Party Rocket is inspired by the [[Star Points|Star Level]] 3 of the Rocket.
+*It is the first spell card to be temporary, not counting the [[:Category:Removed Cards|removed]] [[Heal]].
+*When the Party Rocket lands on the ground, you can hear multiple voices singing "''Goblin party, goblin party, goblin party, goblin party!''"
+**The Party Rocket is 1 of 3 spells that speak distinct words when on the field, the others being [[Goblin Curse]] and [[The Log]].
+*The description of the Party Rocket incorrectly states that it deals damage. This is because the description is copied from the Rocket.
+
+{{Navigation|Card}}
+
+[[fr:Roquette de fête]]
+[[ru:Праздничная ракета]]
+
+[[Category:Removed Cards]]

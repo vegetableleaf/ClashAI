@@ -1,0 +1,68 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Rocket Silo</span>}}
+{{Protection}}{{MagicWords}}{{RemovedContent}}
+
+{{Card Infobox|Cost=7|Rarity=Legendary|Type=Building|ReleaseDate=8 July 2024}}
+{{Quote|Rocket Silo}}
+
+The Rocket Silo was a temporary {{Rarity|Legendary}} [[Cards|card]], only available in certain Events. It spawned an area-damage, [[King's Tower|King Tower]]-targeting, very long-ranged, [[:Category:Building Cards|building]] with high hitpoints and very high damage. It appears as a large, rocket-shaped building with a nose cone, a wooden hull, fins, and a [[Goblins|Goblin]] emblem printed on it. A Rocket Silo card costs 7 [[Elixir]] to deploy. 
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Rocket Silo Card}}
+*Any [[King's Tower|King Tower]] can be destroyed with 4 placements of the Rocket Silo, which is enough to win a [[Basics of Battle|match]]. However, the third Rocket Silo will leave the King Tower with very low hitpoints, allowing any follow-up damage, such as that of a [[:Category:Spell Cards|spell]] to fully destroy it, without requiring the use of a fourth Rocket Silo.
+*The Rocket Silo is very vulnerable when a [[:Category:Crown Towers|Crown Tower]] has been already destroyed. The opponent will be able to place [[:Category:Troop Cards|troops]] on top of it, and destroy it before it launches the rocket. Because of this, the player should make sure that they do not lose a Crown Tower before using it.
+*Using the [[Monk]] ability at the right time & placement, you can cancel the rocket from reaching the King Tower. While it will not deflect it back, it will still completely block it. However, this can be countered by pushing the Monk away with spells that have a knockback effect, or by stunning him with a [[Zap]], [[Lightning]], or [[Freeze]].
+*Since it can only target the King Tower, it means that it is guaranteed to activate within a match. Because of this, it is inadvisable to use offensive [[cards]] that are weak to an activated King Tower, such as a [[Graveyard]].
+*Even though it only targets the King Tower, it can deal area damage similarly to a [[Mortar]]. The damage is high enough to fully destroy any troop with as many hitpoints as an [[Elixir Golem]], [[Little Prince|Guardienne]], or a [[Sparky]]. As such these troops should never be deployed next to the King Tower when the Rocket Silo launches a rocket.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Lifetime<br />{{Icon|I=Time}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|7||1 sec||12 sec||2|| 350||[[King's Tower]]||[[:Category:Building Cards|Building]]||{{Rarity|Legendary}}
+|}
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" | Damage<br />{{Icon|I=Damage}}
+|-
+|9||1,655||1,325
+|-
+|10||1,819||1,456
+|-
+|11||1,999||1,600
+|-
+|12||2,194||1,756
+|-
+|13|| 2,413||1,931
+|-
+|14||2,647||2,118
+|-
+|15||2,905||2,325
+|}
+</div>
+</center>
+
+==History==
+2024
+*The Rocket Silo [[Cards|card]] was made available in the [[Tournament/Special Event Challenges|Rocket Silo Challenge]], which started on 8/7/2024.
+*On 15/7/2024, the Rocket Silo was removed from the game.
+
+==Trivia==
+*The first use of rockets were in 1232, when reports appeared describing fire arrows and 'iron pots' that could be heard for 25 kilometers when they exploded upon impact, causing devastation for a radius of 600 meters, apparently due to shrapnel. A "flying fire-lance" that had reusable barrels was also mentioned to have been used by the Jin dynasty. Rockets are recorded to have been used by the Song navy in a military exercise dated to 1245. Rockets are still used to this day for multiple purposes, whether that is military, science, and entertainment.
+**The Rocket Silo is 1 of 5 [[cards]] associated with rocketry, with the others being [[Firecracker]], [[Rocket]], [[Goblin Machine]], and [[Party Rocket]].
+*The Rocket Silo's stats are the highest or lowest among all [[:Category:Building Cards|buildings]]. More specifically:
+**The Rocket Silo has the highest hitpoints of all buildings, with 2,905 hitpoints at Level 15.
+**Among all buildings that can attack, the Rocket Silo has the highest damage of all buildings, with 2,325 damage at Level 15.
+*The Rocket Silo is the only building that does not decay its hitpoints, despite having a lifetime stat.
+
+{{Navigation|Card}}
+
+[[Category:Removed Cards]]

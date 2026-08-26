@@ -1,0 +1,86 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Super Knight</span>}}
+{{EventCard}}{{MagicWords}}{{Protection}}
+{{Card_Infobox|Cost=4|Rarity=Legendary|Type=Troop|ReleaseDate=30 September 2024}}
+
+{{Quote|A tough melee fighter. The Barbarian's handsome, cultured cousin. Rumor has it that he was knighted based on the sheer awesomeness of his mustache alone.}}
+
+The Super Knight was a temporary {{Rarity|Legendary}} [[Cards|card]], only available in certain Events. It spawned a single-target, ground-targeting, melee, ground troop with high hitpoints and moderate damage. When he moves forward and doesn't attack, he and any allies within an 8 tiles radius around himself receive 1 damage from all sources. A Super Knight card cost 4 [[Elixir]] to deploy.
+
+== Strategy ==
+
+* Unlike the [[Knight/Evolution|Evolved Knight]], which reduces damage done to himself from all sources by 60%, all forms of damage done to the Super Knight and all nearby friendly troops, including towers, will be reduced to 1, making the card and whatever surrounds him within a 6 tile radius essentially unkillable when moving.
+** Units with a very high attack speed like [[Mighty Miner]], [[Little Prince]], [[Inferno Dragon]], [[Dart Goblin]], [[Lumberjack]], [[Three Musketeers]], [[Barbarians/Evolution|Evolved Barbarians]], [[Golden Knight]], [[Monk]], and [[Berserker]] are slightly more effective at dealing damage to troops protected by the Super Knight, but unless they're at critical health, it's still very ineffective. Even a [[Skeletons|Skeleton]] will still take multiple minutes to destroy.
+** [[Clone|Cloned]] troops and the [[Skeleton King]]'s Skeletons will always have 1 HP. From this, the Super Knight’s damage reduction will not change any interactions, allowing these troops to still die in one hit from anything.
+* The Super Knight's damage reduction will deactivate once he starts attacking and reactivates once there aren't any enemies in range and he starts moving again. Because of this, it's better to play the Super Knight at the back of a push. Thus, it will take longer for the Knight to reach the enemies and ensure his protection lasts longer.
+* Light ground swarms, like [[Guards]], [[Skeletons/Evolution|Evolved Skeletons]], [[Goblin Gang]], and [[Skeleton Army]] synergize very effectively with the Super Knight. Due to the Super Knight's protection making it impossible to eliminate them in one hit, these swarms can more easily take advantage of their high DPS. This damage reduction can significantly assist them in taking out unprotected enemy troops, preventing the Super Knight from attacking anything.
+* To counter the Super Knight, it’s essential to deploy a ground card with high DPS directly on top of him to deactivate his damage reduction as soon as possible.
+** The [[Mini P.E.K.K.A.|Mini P.E.K.K.A]] and [[Super Mini P.E.K.K.A.|Super Mini P.E.K.K.A]] are perfect examples of reliable counters to the Super Knight. Not only will they deactivate his damage reduction, but will also destroy him and counterattack with nearly full hitpoints leftover for a respectable cost.
+** Light ground swarms like [[Skeleton Army]] are unreliable, but effective counters to him. Their low hitpoints makes them extremely susceptible to [[Rage]], a common synergy with the Super Knight, that will instantly destroy the swarm and keep the Super Knight alive. However, if a small spell isn’t used, they can take him out for a positive Elixir trade.
+** Air cards, even [[Inferno Dragon]], are completely incapable of dealing with the Super Knight in any way while he’s moving. Their flying status keeps them from distracting the Super Knight, which in turn keeps his damage reduction from deactivating.
+*In the scenario that the player has cycled back to a Super Knight, it’s highly recommended to deploy the two Super Knights within range of each other's damage reduction. Once one Super Knight starts attacking, the other Super Knight will continue to protect him as long as he stays moving, buying the other Super Knight more time to reactivate his damage reduction.
+*If a Super Mini P.E.K.K.A. reaches a [[:Category:Crown Towers|Crown Tower]], the Super Knight could be played as a last ditch effort to protect the Crown Tower from being instantly destroyed. Even then, his chance of survival is still low as the Knight's damage reduction will soon be lifted from the Crown Tower if he moves out of range or starts attacking an enemy unit.
+*The [[Goblin Curse]] is the only card capable of mitigating the Super Knight's damage reduction, allowing you to deal 20% damage to them. High DPS troops should be used to take advantage of the Goblin Curse because of this. For example, If the attacking Super Knight is surrounded by a Skeleton Army, you can counter it by playing your own Super Knight and Skeleton Army in addition to deploying the Goblin Curse on the enemy's Skeletons. This allows your own Skeletons to take out the enemy Skeletons without taking as much damage, which in turn transform into your own Goblins. These Goblins then will help intensify your counterattack.
+** Due to the Goblin Curse transforming opposing troops into Goblins, there’s a good chance that the enemy Super Knight will start attacking the spawned Goblins. This will deactivate his damage reduction and allow for him to be quickly defeated.
+
+<center><div id="unit-statistics" class="table-back">
+{{Statistics}}{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Damage Reduction Radius<br />{{Icon|I=Radius}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||1.2 sec||0.5 sec||Medium (60)||1 sec||Melee: Medium (1.2)||8||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+|-
+|9||1,681||190||{{Dps|190|1.2}}
+|-
+|10||1,847||209||{{Dps|209|1.2}}
+|-
+|11||2,030||230||{{Dps|230|1.2}}
+|-
+|12||2,228||252||{{Dps|252|1.2}}
+|-
+|13||2,450||278||{{Dps|279|1.2}}
+|-
+|14||2,688||305||{{Dps|305|1.2}}
+|-
+|15||2,949||334||{{Dps|334|1.2}}
+|}
+</div>
+</center>
+
+==History==
+2024
+*The Super Knight [[Cards|card]] was made available in the Super Welterweight Event on 30/9/2024.
+*On 7/10/2024, the Super Knight was removed from the game.
+2025
+*On 27/1/2025, the Super Knight was readded to the game in the Super Cards Draft Event.
+*On 3/2/2025, the Super Knight was removed from the game.
+
+== Trivia ==
+*The word "Knight" comes from the German "Knecht", meaning servant or vassal. Originally, knights were associated with mounted warriors, later being considered a class of lower nobility, until eventually, knighthood had become associated with the ideals of [https://en.wikipedia.org/wiki/Chivalry chivalry], a code of conduct for the perfect courtly Christian warrior. Often, a knight was a vassal who served as an elite fighter or a bodyguard for a lord, with payment in the form of land holdings.
+**The Super Knight is 1 of 20 [[cards]] associated with nobility, with the others being [[Knight]], [[Royal Recruits]], [[Royal Giant]], [[Royal Delivery]], [[Tower Princess]], [[Royal Hogs]], [[Dark Prince]], [[Prince]], [[Raging Prince]], [[Mega Knight]], [[Princess]], [[Royal Ghost]], [[Spirit Empress]], [[Dagger Duchess]], [[Royal Chef]], [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], and the [[Little Prince]].
+*From his description, it is implied that Super Knight and the [[Barbarians]] are distant cousins, due to their physical similarities, especially their mustaches and hair color. Coincidentally, both the Super Knight and Barbarians are voice acted by [https://www.imdb.com/name/nm1423395/ John Mondelli].
+**However, in the Dutch language setting of the game, the Super Knight is said to be the Barbarian's nephew.
+**According to John Mondelli, the Super Knight has a French accent.
+**The [[Electro Wizard]] and the [[Lumberjack]] are also voice acted by John Mondelli.
+*While not available as a character, the Super Knight's sounds, along with the Barbarians, [[Wizard]], and Dark Prince, are featured in the [https://beatstar.fandom.com/wiki/Clash_Royale_Theme Clash Royale Theme] [https://beatstar.fandom.com/wiki/Songs song] in Beatstar.
+*When the Super Knight is defeated, his metallic sword falls to the ground. The other units that drop items upon death are the Knight, [[Rascals|Rascal Boy]], [[Mega Minion]], Dark Prince, [[Executioner]], [[Mega Knight]], [[Sparky]], [[Fisherman]], Golden Knight, and the Little Prince.
+
+{{Navigation|Card}}
+
+[[Category:Removed Cards]]

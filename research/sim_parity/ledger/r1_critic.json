@@ -1,0 +1,90 @@
+{
+  "meta": {
+    "task": "R1 completeness critic -- hunt for what is MISSING from the r1a/r1b/r1c enumeration (original critic was cancelled; full job redone)",
+    "run_date": "2026-08-26",
+    "method": "fresh api.php fetches (urllib recipe) of the newest Version History / season / master pages + full 4-category card walk + allpages subpage-prefix probes + 'Coming soon' stub search; every cited page archived to webcache/",
+    "fresh_fetches": {
+      "Version History": {"revid": 437451, "identical_to_2026_08_25_archive": true},
+      "Version History/2025": {"revid": 436887, "identical_to_2026_08_25_archive": true},
+      "Cards": {"revid": 437053, "identical_to_2026_08_25_archive": true},
+      "Card Evolution": {"revid": 437535, "same_revid_as_r1a_master": true},
+      "Heroes": {"revid": 437509, "same_revid_as_r1b_master": true},
+      "Pass Royale": {"revid": 437449, "newest_listed_season": "85. K.H.A.O.S -- August 2026; no September 2026 season page yet"},
+      "Princess Towers": {"revid": 433528},
+      "Goblin Queen Tower": {"revid": 432808, "marker": "RemovedContent"}
+    }
+  },
+  "pass": true,
+  "verdict": "No LIVE content is missing from the enumeration. Every live base card, evolution, hero, champion, and tower troop on the wiki today is covered by the 179-key snapshot + r1a/r1b/r1c ledger rows. The wiki has not changed since the 2026-08-25 enumeration (all master revids identical). Announced future content found (below) is a note, not a failure.",
+  "checks": [
+    {
+      "id": "a_new_base_cards",
+      "question": "any NEW BASE CARDS the 179-key snapshot lacks?",
+      "method": "fresh categorymembers walk of Troop/Building/Spell/Champion Cards (196 unique titles, same count as r1a) diffed both directions against snapshot keys; every unmatched title's page fetched and classified by RemovedContent/EventCard markers; new-card lines grepped out of Version History 2025+2026",
+      "result": "NONE MISSING. 122 live deck cards on the wiki, all 122 present in the snapshot. The 17 category titles absent from the snapshot are all EventCard or RemovedContent: Barbarian Launcher, Heal, Party Hut, Party Rocket, Raging Prince, Rocket Silo, Santa Hog Rider, Super Archers, Super Ice Golem, Super Knight, Super Lava Hound, Super Magic Archer, Super Mini P.E.K.K.A., Super Witch, Terry (removed champion, matches r1c), Warmth, Wizard Trio. Release-note cross-check: 2025 additions Vines, Spirit Empress, Boss Bandit, Berserker, Rune Giant and the only 2026 addition Ronin (6/7/2026) are all snapshot keys. The 15 snapshot base keys with no wiki card page are all spawned sub-units (lava_pups, golemite, phoenix_egg, royal_recruit, skarmy_general, ghost_souldier, decoy_goblin, goblin_barrel_decoy, bush_goblin, elixir_blob, elixir_golemite, goblin_brawler, lumberjack_ghost, mother_witch_hog, spirit_empress_air) -- expected, not stale entries."
+    },
+    {
+      "id": "b_tower_troops",
+      "question": "tower troops newer than Dagger Duchess / Royal Chef / Cannoneer?",
+      "method": "categorymembers of Category:Tower Troop Cards + Princess Towers page + Version History 2025/2026 grepped for tower-troop additions",
+      "result": "NO NEWER TOWER TROOPS. Full category roster: Tower Princess (default), Cannoneer, Dagger Duchess, Royal Chef, plus Baby Goblins. Baby Goblins is the spawned unit of the Goblin Queen Tower, a REMOVED temporary event tower (Goblin Queen Tower page carries {{RemovedContent|Page=true}}) -- categorized as a tower troop card but not selectable live content. No tower-troop addition appears in the 2025 or 2026 Version History.",
+      "note_for_sim": "the modeled trio + default Tower Princess is the complete live roster"
+    },
+    {
+      "id": "c_release_notes_vs_ledger",
+      "question": "any evo/hero/champion in the newest release notes with no ledger row?",
+      "method": "every Balance|Add line in Version History (2026, newest entry 3-4/8/2026) and Version History/2025 (incl. the Heroes feature launch: 4 New Heroes Knight/Giant/Mini P.E.K.K.A./Musketeer) checked against r1a (42 evos), r1b (16 live + 2 announced heroes), r1c (8 live champions + Terry absent), registry.json",
+      "result": "FULLY COVERED. Newest release notes (3/8/2026): Berserker + Valkyrie heroes -> r1b/registry rows exist; Elite Barbarians evolution -> r1a/registry row exists (live, stub subpage, not yet categorized on the wiki -- the ledger is AHEAD of the category walk, which finds only 41 categorized evo subpages). All 12 heroes added across 2026 plus the 4 launch heroes from the 2025 feature launch = the 16 live r1b rows. No champion added since Boss Bandit (2025-04-07); Champion Cards category = 8 live + removed Terry, matching r1c. abilities/ has 24 yaml = 16 hero abilities + 8 champions, matching the live rosters."
+    },
+    {
+      "id": "d_third_variant_class",
+      "question": "any THIRD variant class besides evolution/hero?",
+      "method": "allpages subpage-prefix probes over 14 representative cards (Knight, Musketeer, Valkyrie, Wizard, Mega Knight, Goblins, Giant, Archers, Boss Bandit, Skeleton King, Balloon, Berserker, Elite Barbarians, Battle Healer) + subpage titles appearing in the 4 card categories",
+      "result": "NO THIRD LADDER VARIANT CLASS. Only three subpage families exist: /Evolution, /Hero, and /Merge Tactics. Merge Tactics is a separate auto-battler game mode (golden elixir, traits, Rulers such as Echo Sage / Tomb Queen / Dagger Duchess) -- its variants never enter 1v1 ladder decks and are correctly out of scope for the sim. Tower troops are a distinct card CLASS (covered in check b), not a variant of a base card."
+    },
+    {
+      "id": "e_announced_upcoming",
+      "question": "upcoming announced content with dates, for the import allowlist to anticipate",
+      "method": "existence probes of API-forward-declared titles + full 'Coming soon' wiki search (28 hits, all classified) + Pass Royale season table",
+      "announced": [
+        {"title": "Battle Healer/Hero", "kind": "hero", "date": "2026-09-07", "revid": 437239, "confidence": "high -- stub + official-API forward-declaration + monthly hero cadence; already an r1b row (status=announced)"},
+        {"title": "Mega Knight/Hero", "kind": "hero", "date": "2026-09-07", "revid": 437222, "confidence": "high -- same; already an r1b row (status=announced)"},
+        {"title": "Berserker evolution", "kind": "evolution", "date": null, "confidence": "medium -- official CR API forward-declares it (r1a conflict); wiki page still absent 2026-08-26; NOTE: phantom meta decks include berserker_evo x56, so the import allowlist must keep REJECTING it until a wiki subpage or release note lands"},
+        {"title": "Giant evolution", "kind": "evolution", "date": null, "confidence": "medium -- same (API forward-declared, wiki absent)"},
+        {"title": "Arrows evolution", "kind": "evolution", "date": null, "confidence": "low -- wiki absent; appears only as phantom in meta decks (x80); no API forward-declaration recorded in r1a"},
+        {"title": "Werewolf", "kind": "base card stub", "date": "2026-10-04", "revid": 437316, "confidence": "low-medium -- uncategorized 1-line stub"},
+        {"title": "Dark Spirit", "kind": "base card stub", "date": "2026-10-04", "revid": 437233, "confidence": "low-medium"},
+        {"title": "Ghost Spirit", "kind": "base card stub", "date": "2026-11-06", "revid": 437314, "confidence": "low-medium"},
+        {"title": "Ice Sorceress", "kind": "base card stub", "date": "2026-12-05", "revid": 437320, "confidence": "low-medium"},
+        {"title": "Ice Dragon", "kind": "base card stub", "date": "2026-12-05", "revid": 437236, "confidence": "low-medium"},
+        {"title": "Crystal Dragon", "kind": "base card stub", "date": "2027-01-06", "revid": 437271, "confidence": "low-medium"},
+        {"title": "Serpent", "kind": "base card stub", "date": "2027-02-02", "revid": 437317, "confidence": "low-medium"},
+        {"title": "Minion Giant", "kind": "base card stub", "date": "2027-04", "revid": 437244, "confidence": "low"},
+        {"title": "Electro Witch", "kind": "base card stub", "date": "2027-05", "revid": 437273, "confidence": "low"},
+        {"title": "Posion Spirit", "kind": "base card stub", "date": "2027-07", "revid": 437279, "confidence": "low -- note the 'Posion' typo in the page title"},
+        {"title": "Posion Witch", "kind": "base card stub", "date": "2027-07", "revid": 437278, "confidence": "low"},
+        {"title": "Medusa", "kind": "base card stub", "date": "2027-08", "revid": 437280, "confidence": "low"}
+      ],
+      "stub_channel_reliability": "The 'Coming soon' base-card stubs are UNMODERATED: all are uncategorized (zero categories), two ('Water spirit' revid 437323, 'Water Wizard' revid 437322) carry a release date of 4th June 2026 that has already PASSED with no release-note entry, 'Dark Princess' (revid 437232) is fan-quality prose with no date, and 'Tomb Queen' (revid 436352) is actually the Merge Tactics Ruler added 1/6/2026, not a ladder card. Treat stubs as intel only; the import allowlist must NOT auto-admit a key until it has a release-note entry or a categorized card page. The two 7-Sept hero stubs are the only ones corroborated by a second source (official-API forward-declaration pattern per r1b)."
+    }
+  ],
+  "notes": [
+    "Wiki is byte-stable since the 2026-08-25 enumeration: fresh Version History / Version History 2025 / Cards fetches are identical to the archived copies; Card Evolution and Heroes revids unchanged (437535 / 437509). The enumeration is not stale as of 2026-08-26.",
+    "Elite Barbarians/Evolution is live (Version History 3/8/2026) but its subpage is an uncategorized stub -- a category-walk-only importer would UNDERCOUNT evolutions at 41; r1a's master-page cross-check already caught this. Keep the master-page (Card Evolution #History) as the authority, not the category.",
+    "registry.json intentionally holds live-only rosters (42/16/8); the two announced heroes live in r1b with status=announced. When 2026-09-07 arrives, battle_healer_hero and mega_knight_hero need registry rows, taxonomy entries (currently absent from the 16 _hero/_hero_ability classes), and abilities/ yamls.",
+    "Next expected wiki events for the allowlist calendar: 2026-09-07 season (Battle Healer + Mega Knight heroes; September evo unknown -- Berserker/Giant are the API-forward-declared candidates), then Werewolf/Dark Spirit stubs claim 2026-10-04.",
+    "Concurrent-session note: another agent was re-fetching webcache/ pages (with '<!-- fetched ... -->' comment headers) while this critic ran; content matched the committed archives, so no interference."
+  ],
+  "everything_checked": [
+    "fresh parse: Version History (437451), Version History/2025 (436887), Cards (437053), Card Evolution (437535), Heroes (437509), Pass Royale (437449), Princess Towers (433528), Goblin Queen Tower (432808)",
+    "categorymembers: Troop Cards (147), Building Cards (21), Spell Cards (28), Champion Cards (9), Tower Troop Cards (5), Hero Cards (empty), Heroes (empty)",
+    "both-direction diff of 196 category titles vs 179 snapshot keys (137 base + 42 evo)",
+    "17 unmatched titles fetched + classified (all EventCard/RemovedContent)",
+    "existence probes: Berserker/Giant/Arrows/Rune Giant/Ronin/Void Evolution (absent), Ronin/Spirit Empress Hero (absent), Battle Healer/Mega Knight Hero (live stubs), Tower Troop(s) (absent), Seasons (absent), Pass Royale (live)",
+    "allpages prefix probes on 14 cards for variant subpage families",
+    "full 'Coming soon' search (28 hits) with every non-ledger hit fetched and dated",
+    "Pass Royale List of Seasons through season 85 (Aug 2026) -- no September page",
+    "Version History 2025+2026 grepped for every New Card / New Hero / New Evolution / tower troop addition line",
+    "abilities/ count (24 = 16 hero + 8 champion) vs live rosters"
+  ]
+}

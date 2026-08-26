@@ -1,0 +1,659 @@
+Update history in 2022.
+
+== December (12) 2022 ==
+
+=== Maintenance Break (22/12/2022) ===
+'''[[Cards|Card]] Balancing'''
+
+* {{Balance|Neutral}}[[Mighty Miner]]:
+**{{Balance|Buff}}Hitpoints increased by 5%
+**{{Balance|Nerf}}Speed decreased to Medium from Fast (to 60 from 90).
+
+'''Other Changes'''
+
+* {{Balance|Neutral}}Next season preparation.
+* {{Balance|Neutral}}Matchmaking improvements.
+* {{Balance|Neutral}}Minor bugs fixing.
+
+=== Maintenance Break (15/12/2022) ===
+
+* {{Balance|Neutral}}Fixed [[Bandit]] Dash Damage inconsistencies.
+* {{Balance|Remove}}Removed Daily Tasks that players are unable to complete.
+
+=== Maintenance Break (12/12/2022) ===
+
+* {{Balance|Neutral}} Fixed a bug affecting [[:Category:Troop Cards|troops]]' deployment.
+
+=== Clashmas Update (12/12/2022) ===
+'''Emote Management'''
+
+* {{Balance|Add}} You can now select your favorite [[Emotes]], which will be put at the start of your expanded Emote selector during [[Basics of Battle|Battles]] and [[Clans|Clan]] Chat.
+* {{Balance|Add}} Waiting for a particular Emote to arrive in the [[Shop]]? Add an Emote that you don’t own to your Wish List (by favoriting it) and get notified when it appears in the Shop!
+
+'''Updated Leaderboards'''
+
+* {{Balance|Neutral}} Clan and friend leaderboards are now based on [[Ranked]] Rating, [[Trophies]], and League.
+* {{Balance|Neutral}} Players who have not yet reached Ultimate Champion League will still be ranked by Trophies. Players with a ranked Rating will have that displayed instead.
+* {{Balance|Neutral}} Top Player leaderboard now displays the Path of Legends leaderboard.
+* {{Balance|Neutral}} We have added a “Clan Legend Score”, which uses Clan members’ ranked Ratings to determine the Clans' rating. There is a toggle for both of these scores.
+* {{Balance|Neutral}} Local leaderboards have returned.
+
+'''Card Boost Potion'''
+
+* {{Balance|Add}} A [[Magic Items|Card Boost Potion]] will temporarily boost one of your [[Cards|Card]] Levels to match your [[:Category:Crown Towers|Tower]] Power.
+* Boosted cards are highlighted in your Card Collection.
+* Tapping a Boosted card shows much time remains on the Boost.
+* Card Boosts apply in all game modes that use your own Card Collection.
+* Boost Duration: 1 hour.
+* Max Inventory limit: 8.
+* Gives 500 [[Gold]] if Inventory is maxed.
+
+'''Card Balancing'''
+
+* {{Balance|Neutral}}[[Rage]] (affects [[Lumberjack]]):
+**{{Balance|Add}}[[:Category:Spell Cards|Spell]] Damage added
+**{{Balance|Add}}0.5 Deploy Timer added
+**{{Balance|Nerf}}Radius decreased to 3 tiles (from 5 tiles)
+**{{Balance|Neutral}} Duration Set to 6 seconds every level.
+
+'''Other Changes'''
+
+* {{Balance|Neutral}} Visual changes to Seasonal [[Pass Royale|Card Boosts]].
+* {{Balance|Add}} Clan Gifts can be purchased for the player's Clanmates to claim.
+
+'''Bug Fixes'''
+
+* {{Balance|Neutral}} Replays now work correctly.
+* {{Balance|Neutral}} Fixed a rare issue in [[Training Camp]].
+* {{Balance|Neutral}} Android News Royale now displays correctly.
+* {{Balance|Remove}} Daily Tasks no longer include Tasks that a player cannot complete (Request Cards, Play a [[Tournament|Challenge]]).
+
+=== Balance Changes (7/12/2022) ===
+
+* {{Balance|Neutral}} [[Goblin Hut]]: [[Spear Goblins|Spear Goblin]]
+**{{Balance|Nerf}} Spawn Period increased to 10 seconds (from 4 seconds)
+**{{Balance|Nerf}} Lifetime decreased to 29 seconds (from 31 seconds)
+**{{Balance|Buff}} Spear Goblin Count increased to 3 (from 1).
+* {{Balance|Buff}} [[Mighty Miner]]: Movement Speed increased to Fast from Medium (to 90 from 60).
+* {{Balance|Buff}} [[Minions]] (affects [[Minion Horde]]): Damage increased by 15%.
+* {{Balance|Neutral}} [[Minion Horde]]: Minion Spawn Distance increased.
+* {{Balance|Nerf}} [[Phoenix]]: Hitpoints decreased by 13%.
+* {{Balance|Nerf}} [[Monk]]: Cost increased to 5 [[Elixir]] (from 4).
+
+=== [[Pass Royale]] and more (5/12/2022) ===
+'''Clashmas (Season 42)'''
+
+* {{Balance|Add}} New [[:Category:Removed Cards|Temporary]] [[Cards|Card]]: [[Santa Hog Rider]].
+* {{Balance|Add}} New [[King's Tower|Tower Skin]]: Clashmas Cake. Two other Tower Skin can be bought in the [[Shop]]. These are: Nutcraker & Clashmas Tree. One Tower Skin is going to be on the free side of Pass Royale: Clashmas Sweater.
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: [[Royal Hogs|Hog]] Gingerbread. Many other Emotes will be available. These are: Hog Reindeer Fly, Santa Hog Rider Santa Sack, [[Hog Rider]] Santa Snowball, King Pixelated Laugh & [[Valkyrie]] Tree Cut. You also get a random Emote choice for free between [[Fire Spirit]] Coal Naughty & Fire Spirit Coal Nice (you have to pay for the other one).
+* {{Balance|Add}} [[Arenas|Arena]]: [https://cdn.royaleapi.com/static/img/blog/2022-12-season42/s42-arena-01.jpg?t=c8107179c Clashmas Arena].
+* {{Balance|Add}} 28 new [[Battle Banners|Banner]] Items are coming. 16 in Banner Box & 12 in the Shop.
+* {{Balance|Add}} New game [[:Category:Modes|mode]]: Mega Draft: Take turns with your opponent drafting from an open selection of cards, then battle it out". ''[https://cdn.royaleapi.com/static/img/blog/2022-11-season41/s41-mega-draft-01-sm.jpg?t=2a25c147c picture].'' The order of picking cards is player: 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1, 1, 2, 2, 1.
+* {{Balance|Neutral}} Changes to the Path of Legends are coming. Leagues 7, 8, and 9 were increased by 2 steps each, matchmaking in League 10 was adjusted.
+
+'''New [[Cards|Card]] & Level Boosts'''
+
+* {{Balance|Temp}} 1 New {{Rarity|Legendary}} card: [[Santa Hog Rider]]. This is a temporary card that only appears in certain events.
+* {{Balance|Temp}} Level Boosts: [[Giant Snowball]], [[Hog Rider]], and [[Ice Spirit]].
+
+== November (11) 2022 ==
+
+=== Maintenance Break (21/11/2022) ===
+'''[[Cards|Card]] Balancing'''
+
+* {{Balance|Nerf}} [[Phoenix]]: Egg Hitpoints decreased by 34%.
+
+'''Other Changes'''
+
+* {{Balance|Neutral}} Fixed the leaderboards showing outdated info.
+
+=== [[Pass Royale]] and more (7/11/2022) ===
+'''Silent Sanctuary (Season 41)'''
+
+* {{Balance|Add}} New [[King's Tower|Tower Skins]]: Monk's Mantlet (available at Tier 10 of paid Pass Royale). Another Tower Skin (Ram-part) will be in the [[Shop]] for purchase.
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: [[Monk]] Arrow (available at Tier 20 of paid Pass Royale). Many other Emotes will be available. These are: King Emperor, [[Ram Rider|Ram]] Scream, Monk Defense, Monk Ready and [[Phoenix]] Bowling,
+* {{Balance|Add}} [[Arenas|Arena]]: Silent Sanctuary (Arena 18).
+* {{Balance|Add}} 22 new [[Battle Banners|Banner]] Items are coming! 16 in the Banner Box & 6 in the Shop.
+
+'''Level Boosts'''
+
+* {{Balance|Temp}} A card will be boosted for every week of the season. These cards are:
+** [[Skeleton King]] (from November 7 to November 14).
+** [[Golden Knight]] (from November 14 to November 21).
+** [[Archer Queen]] (from November 21 to November 28).
+** [[Mighty Miner]] (from November 28 to December 4).
+
+=== Maintenance Break (4/11/2022) ===
+
+* {{Balance|Neutral}} Fixed Legendary [[Chests]] not unlocking {{Rarity|Legendary}} [[Cards]].
+
+=== Maintenance Break (2/11/2022) ===
+'''[[Cards|Card]] Balancing'''
+
+* {{Balance|Neutral}} [[Phoenix]]: 
+**{{Balance|Nerf}} Damage decreased by 10%
+**{{Balance|Buff}} Egg Lifetime increased to 4.3 seconds (from 4 seconds).
+* {{Balance|Nerf}} [[Monk]]: Pensive Protection Cooldown increased to 17 seconds (from 15 seconds).
+
+'''Other Changes'''
+
+* {{Balance|Neutral}} Fixed Legendary [[Chests]] not unlocking {{Rarity|Legendary}} Cards.
+* {{Balance|Neutral}} Fixed Level Up Chest at Level 42 not unlocking {{Rarity|Champion}} Cards.
+* {{Balance|Neutral}} Fixed [[Phoenix]] sound effects.
+* {{Balance|Neutral}} Adding extra Friendly Battle mode.
+
+== October (10) 2022 ==
+
+=== Maintenance Break (29/10/2022) ===
+
+* {{Balance|Neutral}}Fixed the [[:Category:Tower Troop Cards|Crown Tower]] Level in the [[Tournament|Royal Tournament]] to the correct levels.
+
+=== Maintenance Break (28/10/2022) ===
+
+* {{Balance|Neutral}} Fixed players not moving up steps in the [[Ranked]].
+
+=== Maintenance Break (27/10/2022) ===
+
+* {{Balance|Neutral}} Fixed not moving up steps in the [[Ranked]]
+* {{Balance|Neutral}} Reduced the animation delay when earning Crowns after a ranked [[Basics of Battle|battle]].
+* {{Balance|Neutral}} Replaced missing video effects for [[Arrows]]' [[Star Points|Star Levels]].
+* {{Balance|Neutral}} More backend stuff to keep the game running smoothly for everybody.
+
+=== 2022 Quarter 3 Update (26/10/2022) ===
+'''King Level Rework + Champions Unlock'''
+
+* {{Balance|Buff}} [[Experience|King Level]] now go up to Level 50.
+* The Level-up [[Chests]] are smaller, but you get more (50 compared to 14).
+* {{Balance|Neutral}} The [[:Category:Tower Troop Cards|Crown Tower]] Level will still be capped at Level 14.
+* {{Balance|Buff}} You now unlock {{Rarity|Champion|}} [[Cards]] from [[Arenas]] and their [[Chests]].
+
+'''Trophy Road'''
+
+* {{Balance|Add}} In [[Trophies|Trophy]] Road, there are 6 new [[Arenas]] (up to Arena 20 at 7,500 trophies). These arenas are: Miner's Mine, Executioner's Kitchen, Royal Crypt, Silent Sanctuary, & Dragon Spa.
+* {{Balance|Add}} Besides the Trophy requirement, there is also going to be a King Level requirement.
+* {{Balance|Neutral}} It will not reset, and you can't go higher than 7,500 Trophies.
+
+'''Path of Legends'''
+
+* {{Balance|Add}} You can now switch in between Trophy Road & [[Ranked|Path of Legends]].
+* Path of Legends unlocks at [[Arenas|Arena 15]] (5,000 trophies).
+* There are 10 Leagues, each having a Level cap.
+* Every time you win, you go up a step. Every time you lose, you go down a step.
+* There are golden steps, where you can't drop down (like a checkpoint). The higher the League, the less golden steps.
+* After Ultimate Champion, there are no steps. Instead, there are player ratings.
+* You will be reset to Challenger 1 after the Season ends. However, the higher League you were before the reset, the higher the step multiplier at the next season.
+
+'''Daily Tasks'''
+
+* {{Balance|Add}} Each day, you have 3 tasks. You get a small reward from completing each.
+* You can get a daily bonus if you complete all 3 tasks.
+* Doing it 7 days in a row unlocks you a weekly bonus.
+
+'''New Cards'''
+
+* {{Balance|Add}} 1 New {{Rarity|Legendary}} card: [[Phoenix]].
+* {{Balance|Add}} 1 New {{Rarity|Champion}} card: [[Monk]].
+
+'''Hoggy Bank'''
+
+* {{Balance|Add}} Hoggy Bank is a new premium feature that will cost money to unlock. It will appear on the home screen from time to time and will hold either [[Gems]] or [[Gold]].
+* After purchasing the Hoggy Bank, the bank will enable you to receive additional Gold or Gems (depending on the type that you have purchased) that will be stored in the Hoggy Bank.
+* Additionally, during the time period that the Hoggy Bank is active, there will be additional milestones that you can complete and then be able to smash the bank to empty the bank and reap the reward!
+
+'''Card Balancing'''
+
+* {{Balance|Buff}} [[Knight]]: Hitpoints increased by 3%.
+* {{Balance|Neutral}} [[Goblins]]:
+**{{Balance|Buff}} Count increased to 4 (from 3)
+**{{Balance|Nerf}} (affects [[Goblin Gang]], [[Goblin Barrel]], [[Goblin Drill]]) First Attack Period increased to 0.4 seconds (from 0.2 seconds).
+* {{Balance|Remove}} [[Mirror]]: Greyed out (not playable) after playing a {{Rarity|Champion}} (from skipping the {{Rarity|Champion}}).
+
+'''Miscellaneous'''
+
+* {{Balance|Add}} New [[Chests|Chest]]: {{Rarity|Champion}} Chest.
+* {{Balance|Add}} New [[Magic Items|Magic Item]]: {{Rarity|Champion}} Wild Card.
+* {{Balance|Neutral}} The chest cycle has been changed to [https://cdn.royaleapi.com/static/img/blog/2022-q3-update/chest/2022q3-chest-table-01-sm.jpg?t=54264816c this cycle].
+* {{Balance|Neutral}} The player profile will be changed [https://cdn.royaleapi.com/static/img/blog/2022-q3-update/2022q3-leaderboard-01.jpg?t=2d9eb619c to this].
+* {{Balance|Neutral}} All of the cards have been re-arranged.
+* {{Balance|Neutral}} The [[Tournament/Special Event Challenges|Party]] button is moved up to the burger menu.
+* {{Balance|Add}} 10 cards are getting 3 more levels in the [[Card Mastery]]. These are: [[Flying Machine]], [[Hog Rider]], [[Valkyrie]], [[Mini P.E.K.K.A.]], [[Baby Dragon]], [[Dart Goblin]], [[Firecracker]], [[Bowler]], [[Graveyard]], and [[Fire Spirit]].
+* {{Balance|Add}} Deck Explorer to more easily find new [[Battle Decks|decks]].
+
+'''Bug Fixes'''
+
+* {{Balance|Neutral}} Fixed ‘Drag Glitch’ (Fixed an issue where placing two cards in quick succession would fail to play one of the cards).
+* {{Balance|Neutral}} Fixed mystery numbers appearing on the opponent's Decks during the Ban phase in Ban Pick Duels.
+* {{Balance|Neutral}} Fixed [[Battle Banners|Banner Token]] ‘Collect’ button incorrectly directing players to the [[Shop]] when their Banner Token inventory was full.
+* {{Balance|Neutral}} Fixed [[Royal Recruits]] being able to be placed on the opposing player's side.
+* {{Balance|Neutral}} Fixed [[Golden Knight]] dashing to an empty space with no target.
+* {{Balance|Neutral}} Fixed [[Sparky]] resetting when hit by [[Electro Spirit]] at the same time she was being hooked by [[Fisherman]].
+* {{Balance|Neutral}} Fixed new event text for [[Events|Crown/Gold Rush]] blocking the ability to access the [[Supercell ID]] quick-switch button.
+* {{Balance|Neutral}} Fixed an issue where trying to place a {{Rarity|Champion}} into an invalid slot in your Deck canceled the placement, forcing a player to re-select the {{Rarity|Champion}}.
+* {{Balance|Neutral}} Removed ‘Gold Discount’ briefly image appearing after applying a Wild Card.
+* {{Balance|Neutral}} Fixed an issue where unlocking [[Mini P.E.K.K.A.]] caused all card previews to be stuck with a loading spinner.
+* {{Balance|Neutral}} Fixed an android-specific issue where a Gem animation would not appear after a Shop purchase.
+* {{Balance|Neutral}} Fixed an android specific issue where the keyboard would load twice.
+* {{Balance|Neutral}} Fixed an android specific issue where emojis were displaying incorrectly.
+* {{Balance|Neutral}} Added missing particle effects to [[Goblin Drill]]’s [[Star Points|Star Level]] 1.
+* {{Balance|Neutral}} Fixed a crash that could occur on the Battle Banner edit screen.
+
+=== Balance Changes (4/10/2022) ===
+
+*{{Balance|Neutral}} [[Barbarian Hut]]:
+**{{Balance|Buff}}Cost decreased to 6 [[Elixir]] (from 7)
+**{{Balance|Nerf}}[[Barbarians|Barbarian]] Spawn Period increased to 14 seconds (from 10 seconds)
+**{{Balance|Buff}}Barbarian Spawn Count increased to 3 (from 2)
+**{{Balance|Nerf}}Lifetime decreased to 30 seconds (from 40 seconds)
+**{{Balance|Nerf}}Death Barbarian Count decreased to 1 (from 2).
+* {{Balance|Buff}}[[Goblin Gang]]: [[Spear Goblins|Spear Goblin]] Count increased to 3 (from 2).
+* {{Balance|Buff}}[[Elixir Golem]]: Attack Period decreased to 1.1 seconds (from 1.3 seconds).
+* {{Balance|Nerf}}[[Cannon]]: Hitpoints decreased by 8%.
+* {{Balance|Nerf}}[[Cannon Cart]]: Hitpoints decreased by 8%.
+* {{Balance|Nerf}}[[Royal Hogs]]: First Attack Period increased to 0.4 seconds (from 0.25 seconds).
+* {{Balance|Nerf}}[[Mortar]]: Hitpoints decreased by 7%.
+* {{Balance|Nerf}}[[Mighty Miner]]: Hitpoints decreased by 8%.
+
+=== [[Pass Royale]] and more (3/10/2022) ===
+'''Clash-o-ween (Season 40)'''
+
+* {{Balance|Add}} New [[King's Tower|Tower Skins]]: Night Witch (available at Tier 10 of paid Pass Royale). Another Tower Skin (Spooky Town) will be in the [[Shop]].
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: [[Night Witch]] Moonrise (available at Tier 20 of paid Pass Royale). Many other Emotes will be available. These are: [[Bats|Bat]] Dance, [[Mother Witch]] I Made You This Sweater, Mother Witch Hog Charge and Night Witch Rocking.
+* {{Balance|Add}} [[Arenas|Arena]]: Spooky Town (Arena 12).
+* {{Balance|Add}} 22 new [[Battle Banners|Banner]] Items are coming! 16 in the Banner Box & 8 in the Shop.
+
+'''Level Boosts'''
+
+* {{Balance|Temp}} Level Boosts: Night Witch and Bats.
+
+== September (9) 2022 ==
+
+=== Maintenance Break (12/9/2022) ===
+
+* {{Balance|Nerf}} [[Giant Skeleton]]: Hitpoints decreased by 5%
+* {{Balance|Nerf}} [[Mirror]]: Mirrored [[Cards|card]] level decreased to +1 (from +2).
+
+=== Pass Royale and more (5/9/2022) ===
+'''Clash Fest (Season 39)'''
+
+* {{Balance|Add}} New [[King's Tower|Tower Skin]]: Clash Fest. Another Tower Skin (Royal Arena) coming (it was possible to obtain by predicting winners on [https://event.clashofclans.com/en/clash-royale Clash Fest Website]).
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: King TV Royale. Many other Emotes will be available. These are: [[Barbarians|Barbarian]] Watching You, [[Battle Healer]] Self Heal, [[Goblins|Goblin]] Carnival, Hands Epic High Five, [[Lumberjack]] All Seeing and [[Tesla]] High Voltage.
+* {{Balance|Add}}[[Arenas|Arena]]: [https://cdn.royaleapi.com/static/img/blog/2022-09-season39/s39-arena-01-sm.jpg?t=6c24b990c Clash Fest], a reskin of Legendary Arena becomes the main visual arena above 5,000 [[Trophies]] and before 8,000 Trophies.
+* {{Balance|Add}} 22 new [[Battle Banners|Banner]] Items are coming!
+* {{Balance|Temp}} Throughout the whole season, "Clash Fest" was occuring. Learn more in this [https://www.youtube.com/watch?v=GyZzmASPU4c video].
+* {{Balance|Temp}} [[Esports|CRL]] World Finals happened from September 23 to September 25.
+
+'''Level Boosts'''
+
+* {{Balance|Temp}} Level Boosts: [[Mortar]] and [[Flying Machine]].
+
+== August (8) 2022 ==
+
+=== Maintenance Break (11/8/2022) ===
+
+* {{Balance|Neutral}} Adjusted [[Tournament/Special Event Challenges|Party mode]] matchmaking to better match players based on [[Cards|card]] levels and [[Experience|King Level]].
+
+=== Balance Changes (2/8/2022) ===
+
+* {{Balance|Neutral}} [[Elixir Golem]]:
+**{{Balance|Buff}} Elixir Golem Hitpoints increased by 9%
+**{{Balance|Buff}} Elixir Golemite Hitpoints increased by 6%
+**{{Balance|Nerf}} Death [[Elixir]] changed to 1 for Elixir Golem, 0.5 for Elixir Golemite, and 0.5 for Elixir Blob (from 0 for Elixir Golem, 0 for Elixir Golemite, and 1 for Elixir Blob).
+* {{Balance|Buff}} [[Prince]]: Charge Distance Requirement decreased to 3 tiles (from 3.5 tiles).
+* {{Balance|Buff}} [[Ram Rider]]: Charge Distance Requirement decreased to 3 tiles (from 3.5 tiles).
+* {{Balance|Buff}} [[Mega Knight]]: Charge Time decreased to 0.9 seconds (from 1.1 seconds).
+* {{Balance|Buff}} [[Executioner]]: Maximum Range increased to 7.5 tiles (from 6.5 tiles).
+* {{Balance|Buff}} [[Ice Golem]]: Slow Effect Duration increased to 1.5 seconds (from 1 second).
+* {{Balance|Nerf}} [[Golden Knight]]: Hitpoints decreased by 10%.
+* {{Balance|Nerf}} [[Skeleton King]]: Max [[Skeletons|Skeleton]] Count decreased to 16 (from 18).
+* {{Balance|Nerf}} [[Electro Giant]]: Zap Pack [[:Category:Crown Towers|Crown Tower]] Damage decreased by 33%.
+* {{Balance|Nerf}} [[Fireball]]: Pushback decreased to 1 tile (from 1.8 tiles).
+* {{Balance|Nerf}} [[Fire Spirit]] (affects [[Furnace]]): Damage decreased by 9%.
+
+=== Pass Royale and more (1/8/2022) ===
+'''Clash from the past (Season 38)'''
+
+* {{Balance|Add}} New [[King's Tower|Tower Skins]]: Pixel (available at Tier 10 of paid Pass Royale). Another Tower Skin (Arcade) will be available for purchase in the [[Shop]].
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: [[Barbarians|Barbarian]] Pixel Up (available at Tier 20 of paid Pass Royale). Many other Emotes will be available. These are: Barbarian Back in time, Barbarian Pixel frenzy, King Pixel Crown and King Pixel Tower.
+* {{Balance|Add}} [[Arenas|Arena]]: [https://cdn.royaleapi.com/static/img/blog/2022-08-season38/s38-arena-01-sm.jpg?t=03abdd3ec Pixel Arena], a reskin of Legendary Arena becomes the main visual arena above 5,000 [[Trophies]] and before 8,000 Trophies.
+* {{Balance|Add}} 16 new [[Battle Banners|Banner]] Items are coming!
+* {{Balance|Temp}} The [[Esports|Clash Royale League]] 20-win [[Tournament|Challenge]] is coming, where you can get a badge and get an entry to CRL!
+* {{Balance|Add}} 2 other badges will come in the game, 1 for reaching Top 128 in the ladder phase of "CRL Summer Qualifiers, stage 2", and 1 for watching the finals.
+* {{Balance|Temp}} The Classic Decks have come back, in a challenge. Here are the [https://i.redd.it/t7w6imwhi9j91.png decks].
+
+'''New [[Cards]] & Level Boosts'''
+
+* {{Balance|Temp}} 1 New {{Rarity|Common}} card: [[Barbarian Launcher]]. This is a temporary card that only appears in certain events.
+* {{Balance|Temp}} Level Boosts: Barbarians, [[Barbarian Barrel]], and [[Barbarian Hut]].
+
+== July (7) 2022 ==
+
+=== Pass Royale and more (4/7/2022) ===
+'''Mini Pekka's Dream (Season 37)'''
+
+* {{Balance|Add}} New [[King's Tower|Tower Skin]]: Pancake.
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: [[Mini P.E.K.K.A.]] Pancake Suit. Many other Emotes will be available. These are: Mini P.E.K.K.A. Rage, Mini P.E.K.K.A. Battlefly & P.E.K.K.A. Activate.
+* {{Balance|Add}} [[Arenas|Arena]]: [https://cdn.royaleapi.com/static/img/blog/2022-07-season37/s37-arena-sm.jpg?t=2ee19c0ec Mini Pekka's Dream Arena], a reskin of Legendary Arena becomes the main visual arena above 5,000 [[Trophies]] and before 8,000 Trophies.
+
+'''New [[Cards]] & Level Boosts'''
+
+* {{Balance|Temp}} 1 New {{Rarity|Legendary}} card: [[Super Mini P.E.K.K.A.]]. This is a temporary card that only appears in certain events.
+* {{Balance|Temp}} Level Boosts: Mini P.E.K.K.A. and [[Battle Healer]].
+
+=== Maintenance Break (1/7/2022) ===
+
+* {{Balance|Neutral}} Changed [[Mini P.E.K.K.A.]]'s card image.
+
+== June (6) 2022 ==
+
+=== Optional Update (30/6/2022) ===
+
+* {{Balance|Neutral}} Fixed crash that some users experienced when attempting to edit the [[Player Profile|badges]] on their [[Battle Banners|Battle Banner]].
+* {{Balance|Neutral}} Fixed rare crash at the end of a [[Touchdown]] round.
+* {{Balance|Neutral}} Fixed some [[Clans]] not progressing to the next [[Clan Wars]] week.
+
+=== Maintenance Break (28/6/2022) ===
+
+* {{Balance|Neutral}} Fixed some [[Emotes]] being switched.
+
+=== Summer 2022 Update (27/6/2022) ===
+'''[[Battle Banners]]'''
+
+* Banners are something you can design.
+* {{Balance|Add}} The Banner has 3 elements:
+** Frame (background).
+** Decoration (foreground).
+** [[Player Profile|Badges]] (up to 3 can be selected).
+* The Banners can appear in your profile & in [[Basics of Battle|battle]] before it starts.
+* {{Balance|Add}} You can unlock Banner parts in the Banner Box.
+** The Banner Box can be accessed directly from the home screen.
+** The Banner Box cost 100 Banner Tokens or [[Gems]] (starts at 50 & goes up by 50 with each Gem purchase, price resets after every season) & gives 1 Banner element.
+
+'''Profile Redesign'''
+
+* {{Balance|Add}} Your Battle Banner is visible and can be tapped to access your Player Profile.
+* You can enter your Battle Log (only on your own profile).
+* You can chose up to 8 badges to show. If you want to see them all, click on "Show Collection".
+* Battle Deck now shows the latest [[Battle Decks|deck]] played by the player.
+* The rest (League, Stats and Challenge Stats) are the same as normal.
+* {{Balance|Neutral}} The Pass Royale Banner has been moved and resized.
+
+'''New Badges'''
+
+* {{Balance|Add}} Win [[Clan Wars|Clan War]] matches. 8 upgrades (10, 25, 50, 100, 250, 500, 1000, 2500).
+* {{Balance|Add}} [[Clans|Donate]] [[cards]]. Progress depend on rarity ({{Rarity|Common}} = 1 card, {{Rarity|Rare}} & {{Rarity|Epic}}= 10 cards). 8 upgrades (100, 500, 1000, 5000, 10000, 25000, 50000, 100000).
+* {{Balance|Add}} Collect/upgrade cards. The progress is the sum of all of the cards' Levels. 8 upgrades (100, 200, 400, 600, 800, 1000, 1200).
+* {{Balance|Add}} Collect Battle Banner Items. 8 upgrades (15, 30, 50, 100, 150, 200, 300, 400).
+* {{Balance|Add}} Win [[2v2|2v2 battles]]. 7 upgrades (10, 25, 50, 100, 200, 500, 1000).
+* {{Balance|Add}} Collect [[Emotes]]. 8 upgrades (0, 25, 50, 100, 150, 200, 250, 300).
+* {{Balance|Add}} Be a Supercell Creator.
+* {{Balance|Add}} Watch the credits to the end.
+
+'''Other Changes'''
+
+* {{Balance|Add}} 10 cards are getting 3 more levels in the [[Card Mastery]] feature. The rewards are: 100, 125 and 150 Banner Tokens.
+** The 10 cards are: [[Arrows]], [[Earthquake]], [[Electro Spirit]], [[Mega Knight]], [[Mortar]], [[P.E.K.K.A.|P.E.K.K.A]], [[Princess]], [[The Log]], [[Wall Breakers]], [[Wizard]].
+* {{Balance|Add}} You can play duels outside of Clan Wars. The duel deck slots are accessible via a toggle button at your deck slot panel.
+* There are 2 modes for this:
+** Duel: Best of 3, where you chose a deck before each round. You can not play the same deck 2 times
+** Ban Pick Duel: Best of 1, where you can first see the opponent's 4 decks & ban 2 of their decks. Then, you have to choose 1 of your remaining 2 decks to play.
+* {{Balance|Add}} There is a slider for music and sound effects.
+* {{Balance|Neutral}} The [[Trade Tokens|Trader]] has been moved to the [[Shop]]. You can also reroll both "Give" and "Get" and trade as many times as you want (given you have enough Trade Tokens/rerolls).
+
+'''Quality of Life changes'''
+
+* {{Balance|Neutral}} [[Card Mastery|Mastery]] tasks are now faster & you can skip it by swiping up.
+* {{Balance|Add}} There’s now a delete deck button in [[Tournament/Special Event Challenges|Special Challenges]].
+* {{Balance|Add}} In Special Challenges, your last deck will be remembered (compared to deleted & you having to build it again).
+* {{Balance|Buff}} [[Pass Royale|Season Pass]] gift limit increased from 10 to 20.
+
+'''Miscellaneous & Bug Fixes'''
+
+* {{Balance|Neutral}} AI and bots improvements.
+* {{Balance|Neutral}} Fixed a bug where Mastery progress notifications canceled [[tournament]] matchmaking.
+* {{Balance|Neutral}} Fixed a crash that could occur in the Private Tournament UI.
+* {{Balance|Neutral}} Fixed a rare crash with the main deck builders.
+* {{Balance|Neutral}} Fixed a crash in the Challenge deck builders.
+* {{Balance|Neutral}} Fixed an issue with the name change dialog that could potentially cause a disconnect.
+* {{Balance|Neutral}} Fixed some special characters not being displayed correctly.
+* {{Balance|Neutral}} Fixed inconsistency with Boat Battle deployment zones.
+* {{Balance|Neutral}} Fixed Draft choices giving cards that were outside of the specified Draft sets.
+* {{Balance|Neutral}} Fixed Private Tournament creation 'randomly' failing.
+* {{Balance|Neutral}} Fixed magical Deck Wizard trying to assign more than one {{Rarity|Champion}} to a deck.
+* {{Balance|Neutral}} Fixed iOS native copy option removing the URL from the "invite to clan" message.
+* {{Balance|Neutral}} Fixed deck builder behaving erratically if the user switched decks in the middle of editing.
+*  {{Balance|Neutral}}Fixed personal best scores displaying incorrectly on some Player Profiles.
+* {{Balance|Neutral}}Fixed players sometimes being awarded a [[Chests|Chest]] that is not from their [[Arenas|Arena]].
+*  {{Balance|Neutral}} Fixed decks showing incorrectly when skipping past the 'Pick' phase in a Draft replay.
+* {{Balance|Neutral}} [[Star Points|Star Levels]] are now hidden when viewing card info screens from the Clan UI.
+* {{Balance|Neutral}} Removed the ability to upgrade your own cards when viewing a Clanmate's cards.
+* {{Balance|Neutral}} Removed Trophy values from the spectator view.
+* {{Balance|Neutral}} Removed the ability to tap on the 'Clan' button in the Player Profile of a player who does not belong to a Clan.
+* {{Balance|Neutral}} Implemented a change to Legendary Chests when the player has not yet reached an Arena that unlocks {{Rarity|Legendary}} Cards.
+* {{Balance|Neutral}} Added a number of Challenge events to the list of modes that can level up Badges.
+* {{Balance|Neutral}} Numerous UI improvements (making things look pretty).
+* {{Balance|Neutral}} Various new loading screen tips have been added.
+
+=== Balance Changes (7/6/2022) ===
+
+* {{Balance|Buff}} [[Barbarians]] (affects [[Battle Ram]], [[Barbarian Hut]], [[Barbarian Barrel]]): Attack Period decreased to 1.3 seconds (from 1.4 seconds).
+* Barbarian Barrel: Distance decreased to 4.5 tiles (from 5 tiles).
+* {{Balance|Buff}} [[Mother Witch]]: Attack Period decreased to 1 second (from 1.1 seconds).
+* {{Balance|Buff}} [[Night Witch]]: Attack Period decreased to 1.3 seconds (from 1.5 seconds).
+* {{Balance|Buff}} [[Electro Giant]]: Hitpoints increased by 9%.
+* {{Balance|Nerf}} [[The Log]]: [[:Category:Tower Troop Cards|Crown Tower]] Damage decreased by 33%.
+* {{Balance|Nerf}} [[Royal Ghost]]: Invisibility Delay increased to 1.8 seconds (from 1.6 seconds).
+* {{Balance|Nerf}} [[Skeleton King]]: Max [[Skeletons|Skeleton]] Spawn Count decreased to 18 (from 20).
+* {{Balance|Neutral}} [[Goblin Drill]]: Speed decreased to 300 (from 400).
+
+=== Pass Royale and more (6/6/2022) ===
+'''Bone Pit (Season 36)'''
+
+* {{Balance|Add}} New [[King's Tower|Tower Skin]]: Bone Pit. Another Tower Skin (Giant Skeleton) will be in the [[Shop]].
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: [[Giant Skeleton]] Clueless. Many other Emotes will be available. These are: Giant Skeleton Loose Jaw, [[Goblins|Goblin]] Bone Ritual, [[Skeletons|Skeleton]] Dancing & Gob-arian.
+* {{Balance|Add}} [[Arenas|Arena]]: Bone Pit (Arena 2).
+
+'''Level Boosts'''
+
+* {{Balance|Temp}} Level Boosts: certain [[cards]] will be boosted in consecutive weeks:
+** Giant Skeleton (from June 6 to June 13).
+** Goblins, [[Spear Goblins]], and [[Goblin Giant]] (from June 13 to June 20).
+** [[Skeleton Dragons]] (from June 20 to June 27).
+** [[Skeleton Army]] (from June 27 to July 4).
+
+== May (5) 2022 ==
+
+=== Pass Royale and more (2/5/2022) ===
+'''Bewitched (Season 35)'''
+
+* {{Balance|Add}} New [[King's Tower|Tower Skin]]: "Crystal Cauldron" (available at Tier 10 of paid Pass Royale).
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: [[Witch]] [[Skeletons|Skeleton]] Love (available at Tier 20 of paid Pass Royale). Some other Emotes will be: [[Mother Witch|Cursed Hog]] Booty Dance, Hog Morph and the Witch Skeleton Rise.
+* {{Balance|Add}} [[Arenas|Arena]]: Spell Valley (Arena 5).
+
+'''New [[Cards]] & Level Boosts'''
+
+* {{Balance|Temp}} 1 New {{Rarity|Legendary}} card: [[Super Witch]]. This is a temporary card that only appears in certain events.
+* {{Balance|Temp}} Three cards will be boosted in 3 of the 4 weeks of the season. These cards are:
+** Witch (from May 2 to May 9).
+** [[Night Witch]] (From May 9 to May 16).
+** [[Mother Witch]] (from May 16 to May 23).
+
+== April (4) 2022 ==
+
+=== Maintenance Break (21/4/2022) ===
+
+* {{Balance|Buff}} [[Mighty Miner]]: Explosive Escape Bomb Time decreased to 1 second (from 3 seconds).
+
+=== Maintenance Break (8/4/2022) ===
+'''[[Cards|Card]] Balancing:'''
+
+* {{Balance|Buff}} [[Mighty Miner]]:
+**{{Balance|Buff}} Explosive Escape Cost decreased to 1 [[Elixir]] (from 3)
+**{{Balance|Add}} Pushback immunity added.
+* {{Balance|Nerf}} [[Earthquake]]: [[:Category:Tower Troop Cards|Crown Tower]] Damage decreased to 65% of the full [[:Category:Troop Cards|troop]] damage (from 85%).
+
+'''Bug Fixes'''
+
+* {{Balance|Neutral}} Fixed an issue where invisible troops were not receiving splash damage.
+
+=== [[Pass Royale]] and more (4/4/2022) ===
+'''Mighty Mine (Season 34)'''
+
+* {{Balance|Add}} New [[King's Tower|Tower Skin]]: Mighty Miner. Another Tower Skin (Mine Cart) will be in the [[Shop]].
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: [[Mighty Miner]] Bomb. Many other Emotes will be available. These are: Mighty Miner Almighty, [[Miner]] Buried, Miner Shovel & [[Royal Giant]] Gorgeous (got from Royal Crown Down).
+* {{Balance|Add}} [[Arenas|Arena]]: Miner's Mine, a reskin of Legendary Arena becomes the main visual arena above 5,000 [[Trophies]] and before 8,000 Trophies.
+
+'''Level Boosts'''
+
+* {{Balance|Temp}} Level Boosts: Miner & Mighty Miner.
+
+'''[[Cards|Card]] Balancing'''
+
+* {{Balance|Neutral}} [[Elixir Collector]]:
+**{{Balance|Nerf}} Lifetime decreased to 65 seconds (from 70 seconds)
+**{{Balance|Nerf}} Elixir Generation Period decreased to 9 seconds (from 8.5 seconds)
+**{{Balance|Add}} 1 [[Elixir]] Death Generation added.
+* {{Balance|Neutral}} [[Electro Giant]]:
+**{{Balance|Nerf}} Damage decreased by 15%
+**{{Balance|Nerf}} Hitpoints decreased by 15%
+**{{Balance|Buff}} Cost decreased to 7 Elixir (from 8).
+* {{Balance|Buff}} [[Mirror]]: Mirrored Card Level increased to +2 (from +1).
+* {{Balance|Buff}} [[Golden Knight]]: Dashing Dash Maximum Range increased to 6 tiles (from 5 tiles).
+* {{Balance|Buff}} [[Giant Skeleton]]:
+**{{Balance|Buff}} Hitpoints increased by 7%
+**{{Balance|Buff}} Attack Period decreased to 1.4 seconds (from 1.5 seconds).
+* {{Balance|Buff}} [[Archers]]: Attack Period decreased to 1.1 seconds (from 1.2 seconds).
+* {{Balance|Buff}} [[Ice Spirit]]: Freeze Duration increased to 1.3 seconds (from 1 second).
+* {{Balance|Buff}} [[Tombstone]]: [[Skeletons|Skeleton]] Spawn Period increased to 3.5 seconds (from 3.3 seconds).
+* {{Balance|Nerf}} [[Ram Rider]]: Snare Movement Speed Reduction decreased to 70% (from 85%).
+* {{Balance|Nerf}} [[Archer Queen]]: Attack Period Boost decreased to +180% (from +200%).
+* {{Balance|Nerf}} [[Graveyard]]: Duration decreased to 9.5 seconds (from 10 seconds).
+* {{Balance|Nerf}} [[Valkyrie]]: Hitpoints decreased by 4%.
+* {{Balance|Nerf}} [[Mega Knight]]: Spawn Damage decreased by 20%.
+
+=== Optional Update (1/4/2022) ===
+
+* {{Balance|Neutral}} Fixed an issue where [[Mighty Miner]] was not being targeted correctly.
+* {{Balance|Neutral}} Fixed incorrect achievement progress on [[Player Profile|Badges]].
+* {{Balance|Neutral}} Fixed a visual bug showing the wrong amount of [[Gold]] after completing a [[Card Mastery|Mastery]] Task.
+* {{Balance|Neutral}} Minor UI fixes and improvements.
+
+== March (3) 2022 ==
+
+=== Miner Update (30/3/2022) ===
+'''Badge System Reworked'''
+
+* {{Balance|Add}} The [[Player Profile|badges]] have Levels, which can be leveled up.
+* The max Level is different (some are level 7, some are level 10).
+* The badges also have a different design.
+
+'''[[Card Mastery]]'''
+
+* {{Balance|Add}} Each [[Cards|card]] has a Mastery.
+* Mastery behaves like [[achievements]] for each card.
+* When completed, one will get: [[Gems]], [[Gold]], cards & badges.
+* When launch, only 2 types of tasks are available. The third type of task will be available at a later date.
+
+'''Quality of Life'''
+
+* {{Balance|Neutral}} Hiding the Crown counter during [[Basics of Battle|battle]] and only showing it when a [[:Category:Tower Troop Cards|Crown Tower]] is destroyed.
+* {{Balance|Add}} Permanent 1v1 showdown.
+* {{Balance|Add}} Added the paste [[Battle Decks|deck]] option for [[Tournament|Tournaments]] and Challenges.
+* {{Balance|Add}} Added visual area of effect for the [[Lightning]] Card.
+* {{Balance|Neutral}} 120Hz mode toggle has been enabled for all supported devices.
+* {{Balance|Neutral}} Further improvements for UI layout on various screen resolutions and ratios.
+* {{Balance|Neutral}} The [[Goblin Cage]] always shakes with great vengeance and furious anger.
+
+'''New Cards'''
+
+* {{Balance|Add}} 1 New {{Rarity|Champion}} card: [[Mighty Miner]].
+
+'''Bug Fixes'''
+
+* {{Balance|Neutral}}Fixed the issue where [[Bandit]] became invisible and untargetable before dashing.
+* {{Balance|Neutral}}Fixed the issue where Bandit could be damaged at the end of her dash.
+* {{Balance|Neutral}}Fixed an issue where [[Fisherman]] would become stuck after his target dies during being hooked.
+* {{Balance|Neutral}}Fixed an issue where [[Golden Knight]] did not dash properly while targeting a moving unit.
+* {{Balance|Neutral}}Fixed an issue where cloning [[Skeleton King]] during his ability animation would cancel the ability.
+* {{Balance|Neutral}}Fixed a rare crash when players in lower [[Arenas]] are using strikes on their [[Chests|Chest]] rewards.
+* {{Balance|Neutral}}Fixed deploy sound effects for [[Electro Giant]] and [[Mother Witch]].
+* {{Balance|Neutral}}Fixed a rare crash when Electro Giant received certain types of damage.
+* {{Balance|Neutral}}Fixed an issue with Electro Giant’s Zap Pack behaving inconsistently.
+* {{Balance|Neutral}}Fixed an issue where units could sometimes ignore the pull effect of [[Tornado]].
+* {{Balance|Neutral}}Fixed a crash that could occur in [[Tournament/Special Event Challenges|Mega Deck]] [[:Category:Modes|modes]].
+* {{Balance|Neutral}}Fixed issues with name creation/changes that could cause the player to disconnect.
+* {{Balance|Neutral}}Fixed issues when viewing [[Clans|clan]] mates' cards in the clan chat.
+* {{Balance|Neutral}}Fixed a stats rounding issue with the Skeleton King's summoned [[Skeletons]].
+* {{Balance|Neutral}}Fixed a number of rare crash occurrences.
+* {{Balance|Neutral}}Numerous back-end improvements and optimizations.
+
+=== [[Pass Royale]] and more (7/3/2022) ===
+'''Season 33: Birthday Royale'''
+
+* {{Balance|Add}} New [[King's Tower|Tower Skins]]: Piñata (available at Tier 10 of paid Pass Royale).
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: [[Heal Spirit]] Love Face (available at Tier 20 of paid Pass Royale). Multiple other Emotes will come.
+* {{Balance|Add}} [[Arenas|Arena]]: [https://cdn.royaleapi.com/static/img/blog/2022-03-season33/s33-master-arena-field-sm.jpg?t=657fb8bfc Birthday Cake Arena].
+
+'''Level Boosts'''
+
+* {{Balance|Temp}} A card was boosted every week of the season. Those cards were:
+** [[Dark Prince]] (from March 7 to March 14).
+** [[Fire Spirit]] (from March 14 to March 21).
+** [[Electro Spirit]] (from March 21 to March 28).
+** Heal Spirit (from March 28 to April 4).
+
+=== Maintenance Break (2/3/2022) ===
+
+* {{Balance|Neutral}} Fixed billing issues.
+
+== February (2) 2022 ==
+
+=== Pass Royale and more (7/2/2022) ===
+'''Lava Hound (Season 32)'''
+
+* {{Balance|Add}} New [[King's Tower|Tower Skins]]: Lava (available at Tier 10 of paid Pass Royale).
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: [[Lava Hound]] Dizzy (available at Tier 20 of paid Pass Royale).
+
+'''New [[Cards|Card]] & Level Boost'''
+
+* {{Balance|Temp}} 1 New {{Rarity|Legendary}} card: [[Super Lava Hound]]. This is a [[:Category:Removed Cards|temporary card]] that only appears in certain events.
+* {{Balance|Temp}} Level Boost: Lava Hound.
+
+=== Maintenance Break (3/2/2022) ===
+
+* {{Balance|Buff}} [[Three Musketeers]]: Attack Period decreased to 1 second (from 1.1 seconds) after the latest [[Musketeer]] buff strangely didn't affect them.
+
+=== Balance Changes (3/2/2022) ===
+
+* {{Balance|Neutral}}[[Balloon]]:
+**{{Balance|Nerf}}Damage decreased by 33%
+**{{Balance|Buff}}Attack Period decreased to 2 seconds (from 3 seconds).
+* {{Balance|Neutral}}[[Prince]]:
+**{{Balance|Nerf}}Hitpoints decreased by 4%
+**{{Balance|Add}}River Jumping added.
+* {{Balance|Neutral}}[[Dark Prince]]:
+**{{Balance|Nerf}}Hitpoints decreased by 3%
+**{{Balance|Add}}River Jumping added.
+* {{Balance|Buff}}[[Giant]]: Hitpoints increased by 4%.
+* {{Balance|Buff}}[[Mini P.E.K.K.A.]]: Attack Period decreased to 1.6 seconds (from 1.7 seconds).
+* {{Balance|Buff}}[[Inferno Tower]]: Re-Targeting decreased by 0.4 seconds.
+* {{Balance|Buff}}[[Musketeer]]: Attack Period decreased to 1 second (from 1.1 seconds).
+* {{Balance|Buff}}[[Hunter]]: First Attack Period decreased to 0.8 seconds (from 0.9 seconds).
+* {{Balance|Nerf}}[[Archer Queen]]: Cloaking Cape Speed decreased to Slow from Medium (to 45 from 60).
+* {{Balance|Nerf}}[[Golden Knight]]:
+**{{Balance|Nerf}}Dashing Dash Cooldown increased to 11 seconds (from 8 seconds)
+**{{Balance|Nerf}}Dashing Dash Maximum Dash Range decreased to 5 tiles (from 6 tiles).
+* {{Balance|Nerf}}[[Royal Hogs]]: Damage decreased by 3%.
+* {{Balance|Remove}}[[Ram Rider]]: Snare no longer affects Troop Spawn Period.
+
+== January (1) 2022 ==
+
+=== [[Pass Royale]] and more (3/1/2022) ===
+'''Season 31: New Year'''
+
+* {{Balance|Add}} New [[King's Tower|Tower Skins]]: Golden Knight (available at Tier 10 of paid Pass Royale) and Tiger (available in the [[Shop]]).
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: [[Golden Knight]] Fail (available at Tier 20 of paid Pass Royale). Another Emote ([[Rocket]] [[Goblins|Goblin]] Ride) will be in a [[Tournament|Challenge]].
+* {{Balance|Add}} [[Arenas|Arena]]: Serenity Peak (Arena 14).
+
+'''Level Boost'''
+
+* {{Balance|Temp}} Level Boost: [[Ram Rider]].

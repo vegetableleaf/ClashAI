@@ -1,0 +1,91 @@
+{
+  "ruling": "OWNER RULING 10 -- Golden Knight Dashing Dash semantics",
+  "ruling_text": "He keeps dashing until NO more targets in range OR max target count reached, whichever first; STOPS AT THE LAST TARGET'S LOCATION and then behaves as a normal troop (no return-to-origin, no pause-and-resume).",
+  "status": "PARTIALLY CONTRADICTED -- the wiki documents a THIRD stop condition the ruling's 'whichever first' enumeration omits (dash ends when the last target hit is a Crown Tower, in force since 4/4/2022). Every other part of the ruling is supported or wiki-silent; nothing anywhere suggests return-to-origin or pause-and-resume.",
+  "verified": "2026-08-26",
+  "clauses": [
+    {
+      "clause": "keeps dashing until no more targets in range",
+      "verdict": "SUPPORTED (with a refinement)",
+      "evidence": [
+        "Golden Knight (revid 437147), Ability section: 'Once a unit is in range, he dashes to it quickly, then dashes towards the closest enemy unit within a 5.5-tile radius (even if the previous unit was not destroyed).'",
+        "Same sentence set: 'He will stop dashing after dashing 10 times, if no other valid targets are within range, or if the last target hit is a Crown Tower.'",
+        "Refinement for 'valid target': 'He cannot dash into the same troop per ability use.' -- so 'no more targets' means no more NOT-YET-DASHED ground targets within 5.5 tiles.",
+        "Version History/2021 (revid 436787), 1/11/2021: 'Stopped Golden Knight's ability from ending if his target dies before executed.' -- chain does NOT end on mid-dash target death."
+      ]
+    },
+    {
+      "clause": "OR max target count reached, whichever first",
+      "verdict": "SUPPORTED for the count itself (max = 10 dashes); CONTRADICTED as an exhaustive two-condition list",
+      "evidence": [
+        "Golden Knight (revid 437147), Dashing Dash Attributes table: 'Maximum Dashes | 10'.",
+        "CONTRADICTING QUOTE (Ability section, verbatim): 'He will stop dashing after dashing 10 times, if no other valid targets are within range, or if the last target hit is a [[:Category:Crown Towers|Crown Tower]].'",
+        "CONTRADICTING QUOTE (History, 4/4/2022, verbatim): 'increased the Dashing Dash's maximum dash range to 6 tiles (from 5 tiles) but made it so that the dash would end if a [[:Category:Crown Towers|Crown Tower]] is hit.'",
+        "Corroborating strategy text (same page): buildings placed '3 tiles from the river and 2 tiles from the Crown Tower ... will ensure that the Golden Knight will not dash towards the Crown Tower and will stay distracted by the building', and cheap cycle cards 'at most 5 tiles away from the river, to prevent the Golden Knight from connecting to the Crown Tower with his dash.'",
+        "Note: Version History/2022 (revid 436786) lists only the range buff for 4/4/2022; the Crown-Tower terminator is documented on the card page (ability text + its History section)."
+      ],
+      "sim_impact": "A sim implementing only the ruling's two terminators lets GK keep chaining off a Crown Tower hit; per the wiki he must stop there even with valid targets left and fewer than 10 dashes done. The tower CAN be a dash target (takes dash damage) -- it just always ends the chain."
+    },
+    {
+      "clause": "stops at the last target's location",
+      "verdict": "SUPPORTED (indirectly; no verbatim sentence, but all positional text assumes it)",
+      "evidence": [
+        "Golden Knight (revid 437147), Strategy: 'he can dash onto multiple targets, like a Knight and Crown Tower, and still attack the original target ... if a Golden Knight is approaching and the defender places a Knight close to the Tower, he will dash onto the Tower, making the defensive play less valuable.' -- he ends at the tower and attacks from there.",
+        "Strategy: building pulls 'will ensure that the Golden Knight ... will stay distracted by the building' -- post-dash he fights where he landed.",
+        "Strategy: 'surrounding him with swarms like Guards is an effective way to neutralize his dash, allowing those swarms to defeat him' -- after the chain he is in the middle of them, fighting normally.",
+        "Strategy: 'The Golden Knight's dash is able to cross the river. Knowing this, he can be effective at taking out ranged troops that are placed near it ... only requiring two more regular attacks to completely defeat them.' -- he keeps attacking the last target from its location with regular attacks."
+      ]
+    },
+    {
+      "clause": "then behaves as a normal troop; no pause-and-resume",
+      "verdict": "SILENT-CONSISTENT (owner ruling stands, owner-sourced)",
+      "evidence": [
+        "Golden Knight (revid 437147), Ability: 'The ability goes on an 12 second cooldown after the duration ends.' -- once ended it cannot resume; re-activation costs 1 Elixir after cooldown (12 s since the 12/1/2026 balance change, cross-checked in Version History main archive revid 437451: 'Ability cooldown increased to 12 seconds (from 8 seconds)').",
+        "Ability: 'his movement speed boost cannot be reset or cancelled by The Log, Zap, Freeze or other things that will normally stop a charge.'",
+        "Strategy: 'The Golden Knight will still be able to finish his dash, even if a Fisherman pulls him.' -- individual dashes complete rather than pause/resume."
+      ]
+    },
+    {
+      "clause": "no return-to-origin",
+      "verdict": "SILENT (owner ruling stands, owner-sourced)",
+      "evidence": [
+        "No sentence on any fetched page mentions returning to the pre-dash position; every strategy paragraph (pulls, tower-connection prevention, swarm surrounds, river crossing) presumes he advances hop-by-hop and stays at the final hop."
+      ]
+    }
+  ],
+  "gap_A_dash_travel_speed": {
+    "status": "PARTIALLY CLOSED (analog-sourced figure; GK page itself is silent on a number)",
+    "gk_page": "Dashing Dash Attributes table lists 'Speed | Very Fast (120)' -- reading this as the DASH speed is almost certainly wrong: 120 is a standard WALK-speed tier and matches the ability's stated 'movement speed boost if he is not within 5.5 tiles of an enemy unit' (base GK walks Medium (60)). At 120 (~2 tiles/s) a 5.5-tile dash would take ~2.75 s, incompatible with 'he dashes to it quickly' and 'He dashes fast enough that he can defeat the Goblins [from a Goblin Barrel] for no damage.'",
+    "analog": "Bandit (revid 436852) and Boss Bandit (revid 437146) both carry a dedicated 'Dash Attributes' table: Dash Speed 500, Dash Time 0.8 sec over a 3.5-6 tile dash range (500 speed-units ~= 8.3 tiles/s; 6 tiles / 8.3 ~= 0.72 s, consistent with the 0.8 s figure). The GK page ties his dash to the Bandit's only for invulnerability and bonus damage ('His dashes have invulnerability and deal increased damage, like the Bandit'), NOT for speed.",
+    "recommendation": "Use dash speed 500 (~8.3 tiles/s) as the analog placeholder and boosted walk speed 120 between chases; flag plausible-but-untested and frame-measure a real GK dash if parity demands it."
+  },
+  "gap_B_dashing_dash_delay_0p05s": {
+    "status": "OPEN ON WIKI (term used, never defined)",
+    "balance_note_verbatim": "Version History/2025 (archived revid 436887), Pass Royale and more (3/11/2025): '{{Balance|Buff}}[[Golden Knight]]: Dashing Dash Delay decreased to 0.05 seconds (from 0.2 seconds).' Same fact on Golden Knight History: 'On 3/11/2025, a Balance Update, decreased Dashing Dash Delay to 0.05 seconds (from 0.2 seconds).'",
+    "wiki_coverage": "Full-text search for 'Dashing Dash Delay' hits exactly these two pages; no page defines the stat.",
+    "ruled_out": [
+      "Ability activation delay: stated as '1 second delay' with table Cast Time 0.766 sec -- neither is 0.2 s and neither changed on 3/11/2025.",
+      "First Hit Speed: GK's main table lists First Hit Speed 0.2 sec and STILL lists 0.2 sec in the current revision (437147, post-change), so the delay stat is not that field."
+    ],
+    "best_interpretation": "Per-dash launch delay -- the wind-up between acquiring the next chain target and the dash firing (equivalently the pause between chain hops). It is classified {{Balance|Buff}}, so it must be dead time somewhere in the ability; the only remaining dead time is intra-chain. UNTESTED -- frame-measure two consecutive hops to confirm.",
+    "ruling_10_interaction": "Whatever it is, 0.05 s is an intra-chain mechanic; it does not conflict with 'no pause-and-resume', which describes post-chain behavior."
+  },
+  "extra_sim_notes": [
+    "Since 5/5/2025 the dash can move him BACKWARDS: GK History 'allowed Dashing Dash to move Golden Knight backwards'; Version History/2025 (5/5/2025 section): 'Golden Knight: Now dashes to enemies behind his Field of Vision.' Chain target selection is simply 'closest enemy unit within a 5.5-tile radius'.",
+    "Dash crosses the river (13/11/2023 bug fix made this reliable).",
+    "Ground-only, single-target; dash damage is a separate stat (335 at lvl 11 vs 161 normal damage); invulnerable during each dash.",
+    "'Unlike the Electro Spirit, the Golden Knight cannot be forced to activate the King Tower while using the ability.'",
+    "Royal Chef buffs apply to a dashing GK since 31/3/2025."
+  ],
+  "sources": [
+    {"page": "Golden Knight", "revid": 437147, "archive": "research/sim_parity/webcache/Golden_Knight.wikitext", "note": "live re-fetch 2026-08-26 byte-identical to the 2026-08-25 archive; no newer revision"},
+    {"page": "Bandit", "revid": 436852, "archive": "research/sim_parity/webcache/Bandit.wikitext", "note": "fetched+archived 2026-08-26 for Dash Speed 500 / Dash Time 0.8s analog"},
+    {"page": "Boss Bandit", "revid": 437146, "archive": "research/sim_parity/webcache/Boss_Bandit.wikitext", "note": "second analog, identical Dash Attributes (500 / 0.8s / 3.5-6)"},
+    {"page": "Version History/2025", "revid": 436887, "archive": "research/sim_parity/webcache/Version_History_2025.wikitext", "note": "3/11/2025 Dashing Dash Delay line; 5/5/2025 field-of-vision removal"},
+    {"page": "Version History/2022", "revid": 436786, "archive": "research/sim_parity/webcache/Version_History_2022.wikitext", "note": "fetched+archived 2026-08-26; 4/4/2022 entry lists only the range buff -- Crown-Tower terminator lives on the card page"},
+    {"page": "Version History/2021", "revid": 436787, "archive": "research/sim_parity/webcache/Version_History_2021.wikitext", "note": "fetched+archived 2026-08-26; 1/11/2021 no-end-on-target-death fix"},
+    {"page": "Version History", "revid": 437451, "archive": "research/sim_parity/webcache/Version_History.wikitext", "note": "12/1/2026 cooldown 8s -> 12s"},
+    {"page": "Golden Knight/Merge Tactics", "revid": 431979, "archive": "research/sim_parity/webcache/Golden_Knight_Merge_Tactics.wikitext", "note": "fetched+archived 2026-08-26; DIFFERENT game mode (3-dash cap etc.) -- do not use for main-game sim"}
+  ],
+  "excluded_paths": "Dash / Dashing Dash / Charge / Abilities / Champions mechanics pages: all MISSING on the wiki (existence-probed 2026-08-26). RoyaleAPI blog not consulted (outside the approved api.php fetch path)."
+}

@@ -1,0 +1,198 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Bandit</span>}}
+{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=3|Rarity=Legendary|Type=Troop|Arena=Rascal's Hideout|ReleaseDate= 24 March 2017}}{{SubpageNavBox|MergeTactics=yes}}{{Quote|The Bandit dashes to her target and delivers an extra big hit! While dashing, she can't be touched. The mask keeps her identity safe, and gives her bonus cool points!}}
+
+The Bandit is a {{Rarity|Legendary}} [[Cards|card]] that is unlocked from the [[Arenas|Rascal's Hideout (Arena 13)]]. It spawns a fast, single target, ground-targeting, melee, ground [[:Category:Troop Cards|troop]] with moderate hitpoints and moderate damage. If there are ground units between 3.5 and 6 tiles of her, she will stop moving and begin charging a dash attack which takes 0.8 seconds to execute, and will deal double damage. She is immune to damage during her dash. She appears similar to an [[Archers|Archer]], except that she has white hair, wears a mask, a forest green cloak with a team-colored patch, a brown belt and gloves, and a team-colored tunic, and wields a blackjack. A Bandit card costs 3 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Bandit Card}}
+*The Bandit functions well as a cheap punishment or dual lane push [[Cards|card]] due to her dash mechanic and fast speed making her an immediate threat. Completely ignoring a Bandit is often fatal as she will take the [[:Category:Tower Troop Cards|Crown Tower]]'s health to 50% for just 3 [[Elixir]].
+*The defender can force the Bandit to target weak units, such as [[Skeletons]] or [[Goblins]], by placing the weak units in front of their stronger units in order to soak up her dash attack. This must be done, at the latest, right before the Bandit dashes.
+*The Bandit cannot dash towards targets that are within 3 tiles of her. Take advantage of this and place melee [[:Category:Troop Cards|troops]] directly in front of her to prevent her from initiating her dash and dealing high damage. Without the dash, she cannot one shot any mini-swarm units with hitpoints higher than or equivalent to a Goblin. Knowing this, the Goblins can easily shut down the Bandit for a positive Elixir trade.
+*The Bandit's dash is able to cross the river. Knowing this, she can be effective at taking out ranged troops that are placed near it. Her dash damage is enough to one-shot equivalently levelled [[Dart Goblin|Dart Goblins]], [[Archers]], [[Bomber|Bombers]], [[Wall Breakers]], [[Firecracker|Firecrackers]], [[Rascals|Rascal Girls]], and [[Princess|Princesses]], and it will take down troops like the [[Musketeer]], [[Electro Wizard]], or [[Wizard]] to half health, only requiring two more regular attacks to completely defeat them.
+*When there is a single troop that is one shot by the Bandit's dash between the bridge and the Crown Tower, place the Bandit down so that she will dash onto the troop, then dash onto the [[:Category:Crown Towers|Tower]]. This lets her get to the Tower faster while countering a troop.
+*She pairs well with the [[Dark Prince]]. They are able to keep up with each other while not colliding too much, and the Dark Prince's splash will eliminate swarms like a [[Goblin Gang]] and [[Skeleton Army]]. When this damage is combined with the Bandit's dash, they can take out glass cannons like a [[Lumberjack]]. However, this combo is susceptible to air units, such as the [[Minion Horde]], so be sure to have proper supports.
+*The Bandit's dash is affected by [[Rage]], meaning that while under Rage, she will be able to dash quicker. Knowing this, she pairs well with the Lumberjack, as not only will the Lumberjack weaken swarms and mini-tanks for the Bandit to finish off, but after he is defeated, the Bandit will also dash to her next target faster.
+*The Bandit has relatively low DPS without her dash, so cheap swarm units like Skeletons and Goblins can be used to soak it up, protecting more important troops such as the Dart Goblin or Princess.
+*It is best to put Bandit at a range while defending as her relatively low hitpoints and damage without her dash will cause her to lose most one-on-one interactions. However, her powerful and quick dash can be highly threatening on offense, making her more of an offensive card.
+*The Bandit is very effective against units that are spread out as her dash attack can easily cover the distance between the troops and deal double damage.
+*If the Bandit dashes while being targeted by an [[Inferno Tower]] or [[Inferno Dragon]], their ramp up damage will reset, allowing her to distract them for an extended period of time. This makes her an effective distraction for both, although the Bandit will still get incinerated.
+*The cheapest but riskiest counter to the Bandit is the [[Ice Spirit]]. Release it on the fourth tile and one tile in the other lane 1.3 seconds before it is in the Bandit's aggro range. This allows the Ice Spirit to escape her dash and freeze her, completely denying the Bandit.
+*A lone Bandit can be countered completely with just Skeletons. When she is charging up her dash, the player should place Skeletons 2 tiles from the centre to the Bandit’s attack side and 3 tiles from the [[King's Tower|King Tower]]. She will dash into the attacking range of both towers and be defeated right before she is about to attack the Crown Tower.
+*The Bandit is great at being a card that can bait out counters. She is usually countered with cards like [[Mini P.E.K.K.A.]] or Lumberjack, but their absence would mean that other similar cards like [[Hog Rider]] can be used in the other lane without having to worry of being countered by that Mini P.E.K.K.A. She is the best at this tactic compared to other similar cards because of her great mobility and low Elixir cost.
+*When defending against the Bandit, you can activate your King Tower using precise placements of 2 low-hitpoints cards such as [[Ice Spirit]] and Dart Goblin.
+*When using her defensively, place her at a distance from the opposing troop, similarly to how you would place a ranged troop. This allows her to dash for the extra damage, which can allow her to preserve more of her hitpoints for a counterattack.
+*When defending against a Bandit with a melee mini-tank, place that troop close to her so that she does not dash and deal unnecessary damage.
+*A risky play is deploying Bandit as soon as the [[Basics of Battle|battle]] begins. If the opponent does not react fast enough, the Bandit will dash onto the Tower and deal massive damage. This can also allow the player to quickly scout the opponent's deck if they happen to react to her fast enough.
+*The Bandit's long dash range and fast dash initiation makes her effective at reactively punishing the opponent for overcommitting.
+*The Bandit is an effective counter to the [[Prince]] and [[Dark Prince]]. She can dash towards them, dealing damage and absorbing the charge thanks to the invulnerability.
+**The [[Miner]] can be used to force the Bandit to walk, leaving the Bandit user helpless.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Bandit Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|3||1 sec||0.4 sec||Fast (90)||1 sec||Melee: Short (0.75)||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+
+{{StatisticsSubheader|Dash Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%; text-align:center;"
+! scope="col" |Dash Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Dash Speed<br />{{Icon|I=Speed}}
+! scope="col" |Dash Range<br />{{Icon|I=Dash Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|0.8 sec||500||3.5-6||Ground||Ground
+|}
+
+<!--
+this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================
+-->
+
+{{#vardefine: hp_11 | 906 }}
+{{#vardefine: dmg_11 | 194 }}
+{{#vardefine: dash_11 | 389 }}
+{{#vardefine: atk_speed | 1.0 }}
+
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Dash Damage<br />{{Icon|I=Boost}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+|-
+| 9 || {{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0 }}  || {{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }} || {{#expr: {{#var:dash_11}} * (1.1^(9-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 10 || {{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0 }}  || {{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }} || {{#expr: {{#var:dash_11}} * (1.1^(10-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 11 || {{#var:hp_11}}  || {{#var:dmg_11}} || {{#var:dash_11}} || {{Dps|{{#var:dmg_11}}|{{#var:atk_speed}} }}
+|-
+| 12 || {{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0 }}  || {{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }} || {{#expr: {{#var:dash_11}} * (1.1^(12-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 13 || {{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0 }}  || {{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }} || {{#expr: {{#var:dash_11}} * (1.1^(13-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 14 || {{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0 }}  || {{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }} || {{#expr: {{#var:dash_11}} * (1.1^(14-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 15 || {{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0 }}  || {{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }} || {{#expr: {{#var:dash_11}} * (1.1^(15-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}} }}
+|-
+| 16 || {{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0 }}  || {{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }} || {{#expr: {{#var:dash_11}} * (1.1^(16-11)) round 0 }} || {{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}} }}
+|}
+There will be rounding mistakes, as we have stats from level 11
+
+{{StatisticsSubheader|Card Mastery}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! width="25%" |Type
+! width="10%" |Level/Tier
+! width="40%" |Objective
+! width="25%" |Rewards
+|-
+| rowspan="3" |Damage Dealer <br> [[File:Damage Dealer.png|50x50px]]
+|1
+|Deal a total of 160,000 Damage to enemy [[:Category:Troop Cards|Troops]] or [[:Category:Building Cards|buildings]]
+|2 {{BASEPAGENAME}} cards<br>100 {{Icon|I=XP}}
+|-
+|2
+|Deal a total of 475,000 Damage to enemy Troops or buildings
+|8,000 {{Icon|I=Gold}}<br>100 {{Icon|I=XP}}
+|-
+|3
+|Deal a total of 790,000 Damage to enemy Troops or buildings
+|100 {{Icon|I=Gem}}<br>100 {{Icon|I=XP}}
+|-
+| rowspan="3" | CHARGE!!! <br> [[File:CHARGE!!!.png|50x50px]]
+|1
+|Hit a total of 280 Troops or buildings with the Charge ability 
+|12,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|-
+|2
+|Hit a total of 800 Troops or buildings with the Charge ability
+|2 {{Icon|I=Legendary Wild Card}}<br>150 {{Icon|I=XP}}
+|-
+|3
+|Hit a total of 1,400 Troops or buildings with the Charge ability
+|18,000 {{Icon|I=Gold}}<br>150 {{Icon|I=XP}}
+|}
+</div>
+</center>
+
+==History==
+2017
+*The Bandit was once available in the [[Tournament/Special Event Challenges|Bandit Draft Challenge]] which started on 17/3/2017. In this [[Tournament|challenge]], gameplay was similar to a regular Draft Challenge, except that one of the players was able to choose who would use the Bandit. If the player achieved 12 wins, they obtained the Bandit early.
+*The Bandit [[Cards|card]] was generally released on 24/3/2017.
+*On 12/6/2017, the [[Version History#June 2017 Update (12/6/2017)|June 2017 Update]], decreased the time required for charging her dash to 0.8 seconds (from 1 second).
+*On 13/6/2017, a [[Version History#Maintenance Break (13/6/2017)|maintenance break]], increased the Bandit's hitpoints by 4%. This was supposed to happen the previous day in the mentioned balance changes, but it did not make it to the game. This got fixed.
+*On 9/10/2017, the [[Version History#Epic Quests Update (9/10/2017)|Epic Quests Update]], fixed a bug where she dashed a shorter distance than she normally should have.
+2018
+*On 12/2/2018, a [[Version History#Balance Changes (12/2/2018)|Balance Update]], decreased her minimum dash range to 3.5 tiles (from 4 tiles).
+*On 25/4/2018, the [[Version History#Clan%20Wars%20Update%20(25/4/2018)|Clan Wars Update]], made a small change to the Bandit's card description.
+*On 5/9/2018, the [[Version History#September%202018%20Update%20(5/9/2018)|September 2018 Update]], changed it so that {{Rarity|Legendary}} cards start at Level 9 and end at Level 13 (from 1 to 5). It also made the Bandit immune to damage while dashing, instead of untargetable.
+2019
+*On 1/4/2019, a [[Version History#Balance Changes (1/4/2019)|Balance Update]], decreased the Bandit's hitpoints by 4%.
+*On 26/11/2019, the [[Version History#End%20of%20November%202019%20Update%20(26/11/2019)|End of November 2019 Update]], added a card render to the Bandit's card info screen.
+2021
+*On 7/6/2021, the [[Version History#Summer%202021%20Update%20(7/6/2021)|Summer 2021 Update]], fixed a bug where the Bandit's dash would continue after the timer reaches zero. It also moved the [[Arenas|Arena]] to unlock the Bandit from Jungle Arena to Rascal's Hideout.
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Level cap of all cards to 14 (from 13).
+2022
+*On 30/3/2022, the [[Version History#Miner%20Update%20(30/3/2022)|Miner Update]], fixed an issue where the Bandit would become untargetable before dashing. It also fixed an issue where the Bandit could be damaged at the end of her dash.
+*On 15/12/2022, a [[Version History#Maintenance Break (15/12/2022)|maintenance break]], fixed various damage inconsistencies with the damage of the Bandit's dash.
+2023
+*On 19/6/2023, the [[Version History#Card%20Evolution%20Update%20(19/6/2023)|Card Evolution Update]], increased the Level cap of all cards to 15 (from 14).
+*On 13/11/2023, a [[Version History#Minor%20Update%20(13/11/2023)|Minor Update]], fixed a bug where Bandit could not hit targets across the river with her dash.
+2025
+*On 31/3/2024, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]], decreased the Bandit's hitpoints by 0.11%, and increased her damage and dash damage by 0.51%. It also allowed a dashing Bandit to be affected by [[Royal Chef]].
+
+==Gallery==
+<gallery>
+File:Bandit card render.png|Current card render.
+File:Bandit Preview.gif|Current card preview
+File:Bandit 1.png|Bandit swinging her club.
+File:Bandit render.png|Bandit's full body render.
+</gallery>
+
+==Trivia==
+*The word "''Bandit''" comes from the Latin "''bannio''", meaning 'to ban'.
+**In the French and Korean language settings of the game, the Bandit's name translates to "Thief". In the Italian, Dutch, Japanese, Chinese, Finnish, and Vietnamese language settings of the game, the Bandit's name translates to "Outlaw", "Highwaywoman", "Assassin", "Phantom Assassin", "Robber", and "Pirate" respectively.
+**The Bandit is 1 of 4 [[cards]] associated with outlawry, with the others being [[Goblin Gang]], [[Rascals]], and the [[Boss Bandit]].
+**Along with the [[Firecracker]], Rascals, [[Magic Archer]], and the Boss Bandit, the Bandit belongs to the Forest Gang.
+*The Bandit is one of the first [[:Category:Troop Cards|troop]] cards to receive a card render, alongside the [[Archers]], [[Knight]], [[Goblins]], [[Bomber]], [[Skeletons]], [[Barbarians]], [[Bats]], [[Royal Recruits]], [[Skeleton Barrel]], Rascals, [[Musketeer]], [[Giant]], [[Valkyrie]], [[Wizard]], [[Flying Machine]], [[Hog Rider]], [[Royal Hogs]], [[Dart Goblin]], [[Zappies]], [[Elixir Golem]], [[Baby Dragon]], [[Skeleton Army]], [[Witch]], [[P.E.K.K.A.|P.E.K.K.A]], [[Prince]], [[Balloon]], [[Giant Skeleton]], [[Goblin Giant]], [[Hunter]], [[Electro Dragon]], [[Wall Breakers]], [[Bowler]], [[Cannon Cart]], [[Mega Knight]], [[Ram Rider]], [[Miner]], [[Royal Ghost]], [[Ice Wizard]], Magic Archer, [[Lava Hound]], [[Night Witch]], and [[Fisherman]].
+*The Bandit is 1 of 23 troops that has been featured in the [[Troop Rush]] game [[:Category:Modes|mode]], the others being Skeletons, [[Skeleton Dragons|Skeleton Dragons,]] [[Fire Spirit]], Bats, [[Elite Barbarians]], Firecracker, Rascal Girls, Royal Hogs, [[Heal Spirit]], Elixir Golem, [[Guards]], Prince, Balloon, [[Golem]], Wall Breakers, Ram Rider, [[Sparky]], [[Phoenix]], Royal Ghost, [[Lumberjack]], [[Santa Hog Rider]], and the [[Monk]].
+*In the Japanese language setting of the game, the Bandit's personal name is revealed to be "''Juno''".
+*The Bandit will whistle before dashing and often says “''Ha!''” when attacking.
+*If the Boss Bandit takes down an opposing Bandit, she may say "''This is why I'm the boss!''". If the Boss Bandit is taken down by an opposing Bandit, she may say "''Beaten by you?''". If the Boss Bandit is played when an allied Bandit is on the field, she may say "''Bandit, watch and learn!''".
+*The Bandit is the subject of 3 [[Emotes]].
+*When 2 Bandits face each other, they will charge at each other, but neither side would be damaged by the other's dash. In a one-on-one duel between them, the Bandit that was placed second will survive, instead of both being defeated at the same time.
+*A [[Clone|cloned]] Bandit does not fall from the sky when deployed.
+*In the Chinese language setting of the game, the card description incorrectly mentions that the Bandit does double damage with her dash, as at some Levels, she deals 1 more than double.
+*The Bandit was featured in the winning [[Battle Decks|deck]] of the [https://www.youtube.com/live/DVY2TndGf4U?si=ptuVz0tHkkkDIvEl Crown Championship Global Series Tournament], by a player called Sergioramos:).
+*On 27/3/2023, a [[Training Camp|Trainer]] was added to the game called Boss Cheddar, and used a Level 18 Bandit in their deck, despite the highest Level being Level 14 at the time. This Trainer was removed on 18/4/2023.
+*The original concept of the Bandit was the Royal Ghost, with an invisibility and dash mechanic, along with a stun. However, the stun mechanic was dropped, and the dash mechanic lead to the creation of the Bandit. Ultimately, the Royal Ghost was added in one of Clash Royale's updates.
+*The 17/3/2017 Bandit Draft Challenge was originally going to reward players with 100 [[Gems]] after reaching 2 victories. However, this was changed to a Golden [[Chests|Chest]] [https://www.reddit.com/r/ClashRoyale/comments/5zio9d/bandit_draft_challenge_entry_cost_reward_changes/?utm_source=share&utm_medium=web2x&context=3 last minute]. It was also changed to have a free first entry fee instead of a 100 Gem entry free.
+
+{{Navigation|Card}}
+
+[[fr:Voleuse]]
+[[de:Banditin]]
+[[es:Bandida]]
+[[it:Fuorilegge]]
+[[ru:Бандитка]]
+[[zh:幻影刺客]]
+[[pl:Bandit]]

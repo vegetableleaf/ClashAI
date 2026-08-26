@@ -1,0 +1,121 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Super Mini P.E.K.K.A.</span>}}
+{{Protection}}{{MagicWords}}{{EventCard}}
+
+{{Card Infobox|Cost=5|Rarity=Legendary|Type=Troop|ReleaseDate=15 July 2022}}
+{{Quote|The Arena is a certified butterfly-free zone. No distractions for P.E.K.K.A, only destruction.}}
+
+The Super Mini P.E.K.K.A was a temporary {{Rarity|Legendary}} [[Cards|card]], only available in certain Events. It spawned a fast, single-target, ground-targeting, melee, ground [[:Category:Troop Cards|troop]] with high hitpoints and extremely high damage. Every 5 seconds, the Super Mini P.E.K.K.A would passively summon a pancake that heals himself and all friendly troops within a small radius. He would also spawn a pancake every time he managed to defeat an enemy troop. A Super Mini P.E.K.K.A card cost 5 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Super Mini P.E.K.K.A. Card}}
+*The Super Mini P.E.K.K.A deals damage that vastly outnumbers every unit in the game, essentially being able to OHKO everything including the [[King's Tower]], meaning he must never be ignored under any circumstances.
+*The Super Mini P.E.K.K.A's pancakes can be used to heal damaged support [[:Category:Troop Cards|troops]], helping to strengthen a push.
+*Like the Mini P.E.K.K.A, [[Skeleton Army]], [[Goblin Gang]], [[Guards]], [[Skeletons/Evolution|Evolved Skeletons]], [[Barbarians/Evolution|Evolved Barbarians]], and [[Royal Recruits]] do well against him, but additional support may be needed because of the Super Mini P.E.K.K.A's healing ability.
+**[[Graveyard]], however, may be the best counter against him, due to the Super Mini P.E.K.K.A having a slow hit speed and being unable to inflict area damage, and its ability to spawn Skeletons for long enough to kill the Super Mini P.E.K.K.A despite his healing ability.
+*Freezing a Super Mini P.E.K.K.A will prevent him from spawning any pancakes.
+*In a 1v1 situation between two Super Mini P.E.K.K.As, a stun or a slowing effect can be used to stall the enemy Super Mini P.E.K.K.A. for long enough for the player's one to destroy him without taking any damage. While this would be a negative [[Elixir]] trade, your surviving Super Mini P.E.K.K.A would gain more value afterwards from a counterattack.
+*[[Freeze]] also works with the Super Mini P.E.K.K.A as when deployed, Freeze can be used to freeze surrounding threatening troops like [[Super Archers]] and the [[Super Magic Archer]] who the Super Mini P.E.K.K.A will clear off and then probably the [[:Category:Tower Troop Cards|Crown Tower]].
+
+<center>
+<div class="table-back" id="unit-statistics">{{Statistics}}
+{{StatusEffects}}{{StatisticsSubheader|Super Mini P.E.K.K.A. Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||1.6 sec||0.5 sec||Fast (90)||1 sec||Melee: Short (0.8)||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+
+{{StatisticsSubheader|Pancake Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Heal Speed<br />{{Icon|I=Hitpoint}}
+! scope="col" |Time Between Pulses<br />{{Icon|I = Time}}
+! scope="col" |Radius<br />{{Icon|I = Radius}}
+! scope="col" |Target<br />{{Icon|I = Targets}}
+|-
+|4 pulses every 1 sec||0.25 sec||2.5||Air & Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Super Mini P.E.K.K.A. Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Super Mini P.E.K.K.A. Damage<br />{{Icon|I=Damage}}
+! scope="col" |Super Mini P.E.K.K.A. Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Pancake healing per pulse<br />{{Icon|I=Hitpoint}}
+! scope="col" |Pancake healing per second<br />{{Icon|I=HPS}}
+|-
+|9||1,300||99,999||{{Dps|99999|1.6}}||25||{{Dps|25|0.25}}
+|-
+|10||1,430||109,998||{{Dps|109998|1.6}}||27.5||{{Dps|27.5|0.25}}
+|-
+|11||1,573||120,998||{{Dps|120998|1.6}}||30.25||{{Dps|30.25|0.25}}
+|-
+|12||1,729||132,998||{{Dps|132998|1.6}}||33.25||{{Dps|33.25|0.25}}
+|-
+|13||1,898||145,998||{{Dps|145998|1.6}}||36.5||{{Dps|36.5|0.25}}
+|-
+|14||2,080||159,998||{{Dps|159998|1.6}}||40||{{Dps|40|0.25}}
+|-
+|15
+|2,288
+|175,998
+|109,998
+|43.5
+|174
+|}
+</div>
+</center>
+
+==History==
+2022
+*The Super Mini P.E.K.K.A [[Cards|card]] was made available in the [[Tournament/Special Event Challenges|Super Mini P.E.K.K.A Challenge]] on 15/7/2022.
+*On 21/7/2022, the Super Mini P.E.K.K.A was removed from the game.
+2023
+*On 10/4/2023, the Super Mini P.E.K.K.A was readded to the game in the Super Cards Triple Draft Event.
+*On 18/4/2023, the Super Mini P.E.K.K.A was removed from the game.
+2024
+
+* On 19/8/2024, the Super Mini P.E.K.K.A was readded to the game in the Super Cards Draft Event.
+* On 26/8/2024, the Super Mini P.E.K.K.A was removed from the game.
+* On 30/9/2024, the Super Mini P.E.K.K.A was readded to the game in the Super Welterweight Event.
+* On 7/10/2024, the Super Mini P.E.K.K.A was removed from the game.
+2025
+*On 27/1/2025, the Super Mini P.E.K.K.A was readded to the game in the Super Cards Draft Event.
+*On 3/2/2025, the Super Mini P.E.K.K.A was removed from the game.
+
+==Gallery==
+<gallery>
+File:SuperMiniPEKKAConcept.jpg|Concept art of Super Mini P.E.K.K.A.
+</gallery>
+
+==Trivia==
+*The Super Mini P.E.K.K.A's name derives from the Finnish name for "''Peter''", which in turn comes from the Greek name "''Petros''", meaning stone.
+*The acronym for P.E.K.K.A doesn't officially stand for anything in particular originally. Supercell held a Facebook contest on 22 August 2012 to see who could come up with the best written-out name for P.E.K.K.A as judged by the number of likes the comment received. The name "''Perfectly Enraged Knight Killer of Assassins''" was the winner. The person who submitted the acronym was called Víctor in the [https://www.facebook.com/ClashofClans/photos/478339952190333 Facebook announcement].
+*The Super Mini P.E.K.K.A is likely inspired from [https://youtu.be/aFrk-wDjJ4w?t=500 a scrapped card concept] called Mega P.E.K.K.A. In particular, it resembles the first iteration of the Mega P.E.K.K.A, which had infinite damage.
+*The Super Mini P.E.K.K.A's stats are the highest or lowest among all [[:Category:Troop Cards|troops]]. More specifically:
+**The Super Mini P.E.K.K.A has the highest damage of all troops, with 175,998 damage at Level 15.
+***It is theoretically possible to win a [[Basics of Battle|battle]] with just a Super Mini P.E.K.K.A, due to his ability to OHKO [[:Category:Crown Towers|Crown Towers]] and spawning pancakes overtime to heal, and is 1 of 2 troops that can do a 3-Crown victory by himself at even Levels, along with the [[Princess]].
+**Among all troops that attack with projectiles, the Super Mini P.E.K.K.A has the highest projectile speed of all troops, with a projectile speed of 3000.
+*In the Arabic, Thai, and Finnish language settings of the game, the Super Mini P.E.K.K.A's name translates to "Super Small P.E.K.K.A", "Super Tiny P.E.K.K.A", and "Super Little P.E.K.K.A" respectively.
+*His description is a reference to the Clash of Clans [https://www.youtube.com/watch?v=nmlIkSvezkU P.E.K.K.A commercial].
+**Even though his description states that the [[Arenas|Arena]] is a butterfly-free zone, a butterfly can be seen flying in the [[Training Camp]] picture.
+*According to the [https://youtu.be/44vl4-o6z1U?si=C0lXmAKd49tyqfJq Super Mini P.E.K.K.A trailer], the Super Mini P.E.K.K.A gained his powers by eating a pancake.
+*The Super Mini P.E.K.K.A has the same attack and deploy sound as the [[Mini P.E.K.K.A.|Mini P.EK.K.A]], but with a lower pitch. His pancakes have a unique sound, with a choir singing “''Pancakes''”.
+**The Super Mini P.E.K.K.A is 1 of 24 troops that speak distinct words when on the field, the others being Mini P.E.K.K.A., [[Mega Minion]], [[Wizard]], [[Hog Rider]], [[P.E.K.K.A.]], [[Dark Prince]], [[Bowler]], [[Ram Rider]], [[Electro Wizard]], Princess, [[Ice Wizard]], [[Magic Archer]], [[Lumberjack]], [[Mother Witch]], [[Fisherman]], [[Goblin Machine]], [[Santa Hog Rider]], [[Super Magic Archer]], [[Golden Knight]], [[Boss Bandit]], [[Archer Queen]], [[Little Prince]], and the [[Terry]].
+*The Super Mini P.E.K.K.A. has the longest name in English, with 21 characters (including the empty space characters in the name).
+
+{{Navigation|Card}}
+
+[[ru:Супермини-П.Е.К.К.А.]]
+
+[[Category:Removed Cards]]

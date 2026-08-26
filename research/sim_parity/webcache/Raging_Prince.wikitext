@@ -1,0 +1,125 @@
+{{DISPLAYTITLE: <span style="color: #b300b3;">Raging Prince</span>}}
+{{Protection}}{{MagicWords}}{{EventCard}}
+{{Card Infobox|Cost=5|Rarity=Epic|Type=Troop|Arena=|ReleaseDate=25 September 2023}}
+{{Quote|Don't let the little pony fool you. Once the Prince gets a running start, you WILL be trampled. Deals double damage once he gets charging.}}
+
+The Raging Prince was a temporary {{Rarity|Epic}} [[Cards|card]], only available in certain 1 week [[Tournament|Challenges]]. It spawned a single-target, ground-targeting, melee, ground [[:Category:Troop Cards|troop]] with high hitpoints and very high damage. After he traveled 3 tiles, he would begin to charge towards his target and deal double damage if he hit the target whilst charging. He was able to jump over the river. After attacking twice, he would become raged, attacking and moving faster. Every 2 extra hits, his rage effect would increase more, being able to stack up to 3 times. He resembled a man in heavy, golden armor, who wields a striped team-colored lance tied with a team-colored ribbon on top, wears a helmet with a visor and a team-colored feather on it, a team-colored belt and brown shoes with golden plates on them, has a brown goatee, mustache, hair, eyebrows and eyes, and rides a pony with team-colored reins and a saddle on its back. A Raging Prince card costed 5 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Raging Prince Card}}
+*The Raging Prince is best used as a counterattacking [[:Category:Troop Cards|troop]]. With his increased speed and damage while charging, the Prince can stop ground pushes fairly quickly and threaten enemy [[:Category:Tower Troop Cards|Crown Towers]] with ease.
+**Due to the Raging Prince's speed when he is charging, he is effective for early offensive attacks, or as a punish to an opponent's [[Elixir]] investment.
+**He is a great [[Cards|card]] to deploy when the opponent has little Elixir left to counter him or their counters are out of rotation, as he will quickly get to the opposing [[Princess Towers|Crown Tower]]. However, during the double Elixir period, the opponent will likely be able to counter him due to the rapid Elixir generation rate.
+*On defense, he deals high damage with his attack, making him decent against [[:Category:Building Cards|building]]-targeting troops like the [[Hog Rider]], [[Battle Ram]], and the [[Ram Rider]]. If the troop happens to be slow as well, try to place the Raging Prince closer to the Tower, to allow him to charge and hit the slow troop for more damage.
+*If the player has a medium sized push going on one lane, they can drop a Raging Prince in the opposite lane. The opponent will have to defend both, otherwise their Towers take massive damage. This may also spread their counters to the Raging Prince thin. For example, they may only have one swarm card but would need it to defend both pushes.
+*The Raging Prince can be paired with high hitpoint troops such as the [[Giant]] or the [[Golem]]. The Giant/Golem will soak up the hits while the Prince inflicts damage. However, without support from air targeting splash damage troops or spells, this combo can easily be taken down by large swarms or air troops.
+*The Raging Prince's massive charge damage can be mitigated with weak troops such as [[Skeletons]]. As the attacker, one should bring proper supporting cards like [[:Category:Spell Cards|spells]] or area damage units if they wish to have the Prince connect to a Crown Tower.
+*Strong and durable troops such as a [[P.E.K.K.A.]], Giant Skeleton, [[Mighty Miner]], or a [[Mega Knight]] are effective one-card counters to a Raging Prince, and are more consistent in doing so if they have the help of a Crown Tower. Players should not use weaker, single-unit glass cannons on their own, as they will quickly be defeated, resulting in a waste of Elixir. However, if these cards are alone and walk onto the player's side of the [[Arenas|Arena]], the Raging Prince can still deal a hefty amount of damage to them with the help of the Crown Tower.
+*The Raging Prince can be used in conjunction with the [[Miner]] in a counterattack to try and get the Prince to connect to the Tower, by using the Miner to distract their support troops. For example, if they rely on a [[Bandit]] to soak the Prince's charge attack, the Miner can be preemptively placed near the Bandit so that it will walk behind the Tower, leaving their Crown Tower with no defenders in front of it. However, this combo is also weak to swarms.
+*Pairing the Dark Prince with the Raging Prince is a deadly strategy. The Raging Prince can take out more powerful single troops while the Dark Prince takes out weaker units that come in large numbers. This is a strategy that was known as the Double Prince combo and is also frequently used with a tank like the Giant. However, this combo is weak to air units like [[Minion Horde]] so be sure to bring some spells.
+**This strategy cannot be defeated by surrounding the group. When charging, the Dark Prince has a 360° splash attack, similar to a Valkyrie or a jumping Mega Knight, and can therefore defeat most, if not all of a swarm with one charge attack. His regular attack also deals splash damage, so swarms have nearly no effect on this combo.
+**The P.E.K.K.A. and the Mega Knight are hard counters to this strategy. They can counter the Princes for a positive Elixir trade, and will still have a decent amount of health left over for a counterpush.
+**The most effective way to counter this push is with an [[Inferno Dragon]] or a Minion Horde alongside a tank to distract the two units, due to the lack of anti-air and the amount of Elixir required to start this attack. However, the Inferno Dragon can easily be knocked out of range and forced to restart its ramp up attack, while the Minion Horde is very vulnerable to spells and area damage such as [[Arrows]]. The defender should try to bait out these counters with their other units so that the opponent will not have them on hand when on the offense.
+**Luring the two Princes away from the Tower with a cheap moderately high health troop such as the [[Ice Golem]] can work. The Princes will stop charging once they hit the Ice Golem and will be distracted by him, giving the player enough time to drop a swarm or another unit behind the Princes to take them out.
+**Pairing [[The Log]] with a Sparky can deal significant damage to the Prince duo. The Log must be casted before the Sparky attacks so that it takes out the Dark Prince's shield, then Sparky will finish off the Dark Prince and significantly weaken the Raging Prince. The knockback from The Log will also reset the charge of the Prince, allowing Sparky to blast a second time if needed.
+**Since this combo costs a lot of Elixir, attacking in the other lane can be a good way to prevent the opponent from effectively executing it.
+**Pairing the Double Prince push with the P.E.K.K.A. or Mega Knight. is a potentially devastating strategy, as it amplifies the strong points of the push, but also its weak points. Their high hitpoints and damage can allow the Princes to shred through units even faster, but cards that output a large damage, such as [[Rocket]] or Minion Horde, can deal with it.
+**This combo is very expensive and it can lead to a counterattack which you cannot defend. So, only place it if you're sure your opponent is very low on Elixir. Alternative, one of the two cards can be used defensively, and then the second one can be used afterwards in a counterpush.
+*If a troop is placed in front of the Raging Prince, he will be able to push them while charging and speed them up. They will both reach the Crown Towers faster and can be used as mutual shields for each other.
+**This works best when used with bulky melee troops, especially the Valkyrie. The Valkyrie can tank hits for the Raging Prince while also removing swarms which are often the bane of the Prince. However, similar to the Raging Prince + Dark Prince combo, this is also hard countered by P.E.K.K.A. and Mega Knight.
+**However, this trick is not effective with small, light troops, as they typically cannot tank well for the Raging Prince and will often end up being shoved to the side anyways.
+*The Raging Prince, being a single target troop, is most often countered with swarms like the [[Skeleton Army]] for a positive Elixir trade or [[Barbarians]], as it is simple and cost-effective to do so. Therefore, it is beneficial for the player to pair cheap area damage spells with the Raging Prince to quickly clear these units out on offense.
+*The Raging Prince is weak to spawning cards, as they will constantly spawn troops, preventing him from charging.
+**The [[Witch]] is an amazing counter against the Raging Prince. She will constantly spawn Skeletons, preventing him from charging up, and spells are less effective against her than they are against a swarm card. However, spelling away the Witch's Skeletons preemptively will cause the Raging Prince to defeat the Witch.
+**The [[Tombstone]] is a great counters to the Raging Prince. It can withstand multiple Prince attacks, stop his charge effectively and is a positive Elixir trade against him.
+**The [[Goblin Hut]] and [[Barbarian Hut]] are less effective, however, they will spawn more troops to distract the Raging Prince, meaning that they will deal more damage to him.
+*Troops with a shield are a great way absorb the Raging Prince's charge and have the troop keep their hitpoints for a counterpush. The [[Guards]] and [[Royal Recruits]] are particularly effective, because they come in multiple numbers, distracting the Prince for longer. An [[Knight/Evolution|Evolved Knight]] can work in a similar way.
+*A good way to counter a lone Raging Prince is to lure him closer to the center with cheap cards like Spear Goblins and Skeletons. Both Crown Towers will attack him and deal significant damage to him, eventually defeating him.
+*The [[Executioner]] paired with the Raging Prince is a high-risk, high reward strategy. The Raging Prince can take out mini tanks such as the Mini P.E.K.K.A and [[Lumberjack]], while the Executioner can take out swarms such as Minion Horde, [[Goblin Gang]], or Skeleton Army. The [[Bomber]], [[Firecracker]], [[Baby Dragon]], [[Bowler]], [[Sparky]], [[Goblin Demolisher]], [[Princess]], and [[Wizard]] can work in a similar way with the Raging Prince. However, the combo is countered by separating the duo, since they have different movement speeds and ranges.
+*If the Raging Prince does not manage to charge in time, a [[Mini P.E.K.K.A.]] can defeat him for a positive Elixir trade.
+*[[Freeze]] is useful to assist in countering a Raging Prince push, as the Raging Prince's charge attack will be disabled and allow the player to deploy units to eliminate him without having the Prince's backup troops attacking their defenders. The opposite holds true also, allowing a Raging Prince to do massive damage to, if not defeat a Mega Knight or P.E.K.K.A.
+*Cards like The Log, [[Zap]], [[Lightning]], [[Goblinstein]], [[Zappies]], [[Electro Spirit]], or the [[Ice Spirit]] can be useful since they all can reset his charge ability.
+*An [[Electro Wizard]] can stop the Raging Prince's charge with his stun attack, preventing him from charging and will eventually finish him off with the help of a Crown Tower. A [[Giant Snowball]] can temporarily knock back the Electro Wizard and slow him down, letting the Raging Prince connect his charge on him and defeat him instantly. The same combination also works against the [[Hunter]], saving a lot of the Raging Prince's hitpoints on offense.
+*The Raging Prince has a slightly higher range than most other melee troops. When he approaches a distracted Valkyrie from a distance, he can safely attack her without taking damage.
+**Because of his longer melee range and relatively large hitbox, it is possible for a Raging Prince to hit a [[Giant Skeleton]], Bowler, Sparky, [[Golden Knight]], or [[Skeleton King]] from across the river. However, this is hard to emulate and will likely not happen very often.
+*Unlike the [[Battle Ram]], the Raging Prince has an immunity to all forms of knockback, except for The Log and Monk. Because of this, it is not effective to use spells like [[Fireball]], [[Rocket]], or Giant Snowball to reset the Raging Prince's charge, nor is it a good idea to use a [[Bowler]] against the Raging Prince.
+*The Raging Prince is able to jump over the river. This is useful for attacking ranged units that are attacking a tank like a Giant or a Golem.
+
+<center><div class="table-back" id="unit-statistics">
+{{Statistics}}{{StatusEffects}}{{StatisticsSubheader|Prince Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||1.4 sec||0.5 sec||Medium (60)||1 sec||Melee: Long (1.6)||Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Epic}}
+|}
+
+{{StatisticsSubheader|Charge Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%; text-align:center;"
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Charge Range<br />{{Icon|I=Radius}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|Very Fast (120)||3||Ground||Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Charge Damage<br />{{Icon|I=Boost}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+|-
+|6||1,440||245||490||{{Dps|245|1.4}}
+|-
+|7||1,584||269||539||{{Dps|269|1.4}}
+|-
+|8||1,742||296||592||{{Dps|296|1.4}}
+|-
+|9||1,915||325||651||{{Dps|325|1.4}}
+|-
+|10||2,102||357||715||{{Dps|357|1.4}}
+|-
+|11||2,304||392||784||{{Dps|392|1.4}}
+|-
+|12||2,534||431||862||{{Dps|431|1.4}}
+|-
+|13||2,779||472||945||{{Dps|472|1.4}}
+|-
+|14||3,052||519||1,038||{{Dps|519|1.4}}
+|-
+|15||3,355||570||1,141||{{Dps|570|1.4}}
+|}
+</div></center>
+
+==History==
+2023
+*The Raging Prince [[Cards|card]] was made available in the [[Tournament|Raging Prince Event]] on 25/9/2023.
+*On 3/10/2023, the Raging Prince was removed from the game.
+
+== Trivia==
+*The word "''Prince''" comes from the Latin word "''prīnceps''", meaning first head.
+**The Raging Prince is 1 of 20 [[cards]] associated with nobility, with the others being [[Knight]], [[Royal Recruits]], [[Royal Giant]], [[Royal Delivery]], [[Tower Princess]], [[Royal Hogs]], [[Dark Prince]], [[Prince]], [[Mega Knight]], [[Princess]], [[Royal Ghost]], [[Spirit Empress]], [[Super Knight]], [[Dagger Duchess]], [[Royal Chef]], [[Golden Knight]], [[Skeleton King]], [[Archer Queen]], and the [[Little Prince]].
+*The Raging Prince is shown to make the practice of [https://en.wikipedia.org/wiki/Jousting jousting]. Jousting is a medieval and renaissance martial game or hastilude between two combatants either on horse or on foot. The joust became an iconic characteristic of the knight in Romantic medievalism. The participants of a joust on horseback experience close to three and a quarter times their body weight in G-forces when the lances collide with their armour. Originally, it started as the military use of lances by heavy cavalry, but was transformed into a specialized sport during the Late Middle Ages.
+**He is 1 of 5 [[:Category:Troop Cards|troops]] that have a charge, the others being [[Battle Ram]], Dark Prince, Prince, and [[Ram Rider]].
+***The Battle Ram's charge shares the same sound effects as the Raging Prince's, only at a lower pitch.
+*The Raging Prince's pony resembles a [https://en.wikipedia.org/wiki/Shetland_pony Shetland pony], a breed of ponies that has a compact body with short legs and a long mane, and is commonly ridden in horse shows.
+*The Raging Prince is 1 of 8 troops that can jump over the river, the others being [[Hog Rider]], Royal Hogs, Dark Prince, Prince, Ram Rider, [[Mother Witch|Cursed Hog]], and [[Santa Hog Rider]].
+*The grill covering the [[Mega Minion]]'s mouth is very similar to the visor on the Raging Prince's helmet.
+*The [[Ranked|Champion League]] badge resembles the Raging Prince's helmet.
+*In [https://squad-busters.fandom.com/wiki/Squad_Busters_Wiki Squad Busters], the [https://squad-busters.fandom.com/wiki/Pi%C3%B1ata Piñata] resembles a piñata version of the Raging Prince's pony.
+*The description incorrectly mentions that the Raging Prince does double damage with his charge, as at some Levels, he deals 1 more than double.
+
+{{Navigation|Card}}
+[[Category:Removed Cards]]

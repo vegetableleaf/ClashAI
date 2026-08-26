@@ -1,0 +1,83 @@
+{{DISPLAYTITLE:Golden Knight (Merge Tactics)}}{{Protection}}{{MagicWords}}{{Merge Tactics Infobox|Cost=5|Trait1=Noble|Trait2=Assassin|Type=Troop|ReleaseDate=30 June 2025}}{{Quote|Dashes to the lowest HP enemy after defeating an enemy and deals bonus Damage}}
+
+The Golden Knight is a [[Cards|card]] that belongs in the {{Trait|Noble}} and {{Trait|Assassin}} [[:Category:Cards by Trait|traits]]. It spawns a single-target melee [[:Category:Merge Tactics Troop Cards|troop]] with high hitpoints, damage, and attack speed. Upon defeating an enemy troop, he dashes to the troop with the lowest hitpoints, dealing bonus damage. The Golden Knight takes the appearance of a man who has blue eyes, golden hair and eyebrows, is outfitted in gilded breastplate, gauntlets, chainmail and a brown belt, and wields a large sword. A Golden Knight card costs 5 {{Icon|I=Golden Elixir}} to deploy.
+
+==Strategy==
+*Golden Knight is a very deadly [[:Category:Merge Tactics Troop Cards|troop]], as his dashes can easily shred a player's defenses due to it targeting the weakest troops first. At higher merge levels, his dash bonus damage scales exponentially, dealing extremely high damage at 3 or 4 stars. A chain dash attack occurs when the Golden Knight repeatedly defeats enemies with his dash.
+**One way to counter the Golden Knight is to have him locked onto a tank, such as the [[Skeleton King/Merge Tactics|Skeleton King]], and defeat him quickly, mitigating his dash. Stun effects are also a good way of preventing him initiate his dash or stop his chain dash attack.
+**Because of this, great ways to increase Golden Knight's performance include troops with stun attacks, {{Trait|Noble}}'s damage increase (the player must play him in the backline), and {{Trait|Undead}}'s enemy hitpoint reduction. The former also allows the player to access other [[:Category:Cards by Trait|traits]] that can benefit the player's team in another way.
+*His {{Trait|Noble}} trait allows him to take less damage when placed in the frontline, increasing his survivability, or deal more damage when placed in the backline, increasing his chances of activating his dash, defeating an unit with his dash, and causing chain attacks with his dash.
+*His {{Trait|Assassin}} trait allows him to target backline troops, which are usually frailer units, allowing him to use his dash effectively. The critical chance and critical damage increases also aid him in dashing more times, as well as defeating enemies with the dash to cause chain attacks. Due to this, he and other {{Trait|Assassin}} troops are great counters to set-ups who rely on backline troops as their main source of damage, as well as [[Elixir Collector/Merge Tactics|Elixir Collector]] and [[X-Bow/Merge Tactics|X-Bow]].
+**When both of those traits are active, the player can play Golden Knight in the backline to significantly increase his damage. However, he can also be played in the frontline to increase his survivability, as he'll take less damage.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+!scope="col"|Cost<br>{{Icon|I=Elixir}}
+!scope="col"|Attack Period<br>{{Icon|I=Damage Speed}}
+!scope="col"|Speed<br>{{Icon|I=Speed}}
+!scope="col"|Range<br>{{Icon|I=Range}}
+!scope="col"|Critical Chance<br>{{Icon|I=Damage Speed}}
+|-
+|5||1.25 seconds||Medium||1||15%
+|}
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Star Level<br>{{Icon|I=Level}}
+!scope="col"|Dash Bonus Damage<br>{{Icon|I=Boost}}
+!scope="col"|Dash Troop Limit<br>{{Icon|I=Troop Count}}
+|-
+|★||50%||rowspan="4"|3
+|-
+|★★||80%
+|-
+|★★★||150%
+|-
+|★★★★||500%
+|}
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints (★)<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage (★)<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second (★)<br>{{Icon|I=DPS}}
+!scope="col"|Hitpoints (★★)<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage (★★)<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second (★★)<br>{{Icon|I=DPS}}
+!scope="col"|Hitpoints (★★★)<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage (★★★)<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second (★★★)<br>{{Icon|I=DPS}}
+!scope="col"|Hitpoints (★★★★)<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage (★★★★)<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second (★★★★)<br>{{Icon|I=DPS}}
+|-
+|11||1,200||140||{{Dps|140|1.25}}||2,400||224||{{Dps|224|1.25}}||4,800||358||{{Dps|358|1.25}}||9,600||573||{{Dps|573|1.25}}
+|-
+|12||1,220||142||{{Dps|142|1.25}}||2,440||228||{{Dps|228|1.25}}||4,880||364||{{Dps|364|1.25}}||9,760||583||{{Dps|583|1.25}}
+|-
+|13||1,240||145||{{Dps|145|1.25}}||2,480||231||{{Dps|231|1.25}}||4,960||370||{{Dps|370|1.25}}||9,920||592||{{Dps|592|1.25}}
+|-
+|14||1,260||147||{{Dps|147|1.25}}||2,520||235||{{Dps|235|1.25}}||5,040||376||{{Dps|376|1.25}}||10,080||602||{{Dps|602|1.25}}
+|-
+|15||1,280||149||{{Dps|149|1.25}}||2,560||239||{{Dps|239|1.25}}||5,120||382||{{Dps|382|1.25}}||10,240||611||{{Dps|611|1.25}}
+|-
+|16||1,300||152||{{Dps|152|1.25}}||2,600||243||{{Dps|243|1.25}}||5,200||388||{{Dps|388|1.25}}||10,400||621||{{Dps|621|1.25}}
+|}
+</div></center>
+
+==History==
+2025
+*The Golden Knight [[:Category:Merge Tactics Troop Cards|troop]] was added with [[Merge Tactics]]' launch in the [[Version_History#2025 Quarter 2 Update (30/6/2025)|2025 Quarter 2 Update]] on 30/6/2025, belonging to the {{Trait|Noble}} and {{Trait|Assassin}} [[:Category:Cards by Trait|traits]].
+*On 29/9/2025, the [[Version History#2025 Quarter 3 Update (29/9/2025)|2025 Quarter 3 Update]] increased the Golden Knight's Damage by 0.72% and his Hitpoints by 0.76%. It also made {{Trait|Assassin}} have bonus effects for 2 and 4 {{Trait|Assassin}} troops and made {{Trait|Noble}} have bonus effects for 6 {{Trait|Noble}} troops, but decreased the 4/4 {{Trait|Noble}} Damage Reduction/Increase to 30% (from 40%) and removed {{Trait|Noble}}'s effects to non-{{Trait|Noble}} troops.
+*On 15/10/2025, a [[Version History#Merge Tactics Balance Changes (15/10/2025)|Balance Update]] increased the {{Trait|Noble}} Damage Reduction/Increase to 25%/40%/60% (from 20%/30%/45%). It also decreased the 4/4 {{Trait|Assassin}} Critical Chance and Critical Damage to 45% (from 50%).
+*On 3/11/2025, a [[Version History#Balance Changes (3/11/2025)|Balance Update]] made Golden Knight able to only dash to up to 3 [[:Category:Troop Cards|troops]] in one round.
+
+==Gallery==
+<gallery>
+Golden Knight card render.png|Current card render.
+</gallery>
+
+==Trivia==
+*The word "''Knight''" comes from the German "''Knecht''", meaning servant or vassal. Originally, knights were associated with mounted warriors, later being considered a class of lower nobility, until eventually, knighthood had become associated with the ideals of [https://en.wikipedia.org/wiki/Chivalry chivalry], a code of conduct for the perfect courtly Christian warrior. Often, a knight was a vassal who served as an elite fighter or a bodyguard for a lord, with payment in the form of land holdings.
+**In the Vietnamese language settings of the game, the Golden Knight's name translates to "Golden Armored Knight".
+**The Golden Knight is 1 of 10 [[Merge Tactics]] [[:Category:Merge Tactics Troop Cards|troops]] associated with nobility, with the others being [[Knight/Merge Tactics|Knight]], [[Musketeer/Merge Tactics|Musketeer]], [[Royal Giant/Merge Tactics|Royal Giant]], [[Prince/Merge Tactics|Prince]], [[Mega Knight/Merge Tactics|Mega Knight]], [[Princess/Merge Tactics|Princess]], [[Royal Ghost/Merge Tactics|Royal Ghost]],  [[Skeleton King/Merge Tactics|Skeleton King]], and the [[Archer Queen/Merge Tactics|Archer Queen]].
+*The Golden Knight is tied with [[Mini P.E.K.K.A./Merge Tactics|Mini P.E.K.K.A.]], [[Goblins/Merge Tactics|Goblin]], [[Barbarians/Merge Tactics|Barbarian]], [[Valkyrie/Merge Tactics|Valkyrie]], [[P.E.K.K.A./Merge Tactics|P.E.K.K.A.]], Prince, [[Electro Giant/Merge Tactics|Electro Giant]], Mega Knight, Royal Ghost, [[Bandit/Merge Tactics|Bandit]], [[Goblin Machine/Merge Tactics|Goblin Machine]], Skeleton King, [[Monk/Merge Tactics|Monk]], and the [[Skeletons/Merge Tactics|Skeleton]] for the shortest range out of all Merge Tactics troops, with a range of 1 hex.
+
+{{Navigation|Card}}

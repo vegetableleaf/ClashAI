@@ -1,0 +1,141 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Super Lava Hound</span>}}
+{{Protection}}{{MagicWords}}{{EventCard}}
+
+{{Card Infobox|Cost=8|Rarity=Legendary|Type=Troop|ReleaseDate=7 February 2022}}
+{{Quote|The Lava Hound is a majestic flying beast that attacks buildings. The Lava Pups are less majestic angry babies that attack anything.}}
+
+The Super Lava Hound was a temporary {{Rarity|Legendary}} [[Cards|card]], only available in certain Events. It spawned a slow, single-target, [[:Category:Building Cards|building]]-targeting, short-ranged, air [[:Category:Troop Cards|troop]] with very high hitpoints and very low damage. when defeated, three fireballs were dropped, dealing high damage, and it also bursted into 2 spread-out smaller Lava Hounds which had the same amount of damage but much lower hitpoints. Like their larger counterpart, when defeated, they would also burst into 4 spread-out [[Lava Hound|Lava Pups]] which had slightly higher damage but much lower hitpoints. The Super Lava Hound appears to be a flying, burning rock beast with an underbite, short wings, small rocky dog ears, team-colored spikes on its back, and small limbs. A Super Lava Hound card costs 8 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Super Lava Hound Card}}
+*Like the Lava Hound, the Super Lava Hound is a great air tank with high hitpoints. It is best used as a shield for air [[:Category:Troop Cards|troops]] with higher damage and fewer hitpoints like [[Bats/Evolution|Evolved Bats]], [[Minion Horde]], [[Mega Minion]], [[Phoenix]], [[Flying Machine]], or the [[Inferno Dragon]]. It is less effective to use the Super Lava Hound as a shield for ground troops as the opponent can use troops with ground-only targeting to bypass the Super Lava Hound.
+*The Super Lava Hound has a lower sight range compared to other troops that only target [[:Category:Building Cards|buildings]]. Its sight range matches that of most non-building-targeting troops, like the [[Knight]]. This means that it can bypass certain building placements, as opposed to a [[Golem]] or a [[Balloon]].
+*Unlike the Lava Hound, the Super Lava Hound has death damage, which means that certain [[cards]] can be severely damaged or possibly killed from the death damage. As such, ranged troops should be placed at a distance from the Super Lava Hound, to prevent them from taking unnecessary damage.
+*Destroying one Mini Lava Hound will result in the other one tanking for the Lava Pups. In this case, make sure that the Lava Pups are defeated before the other Mini Lava Hound, otherwise, more Lava Pups will spawn, and the [[:Category:Tower Troop Cards|Crown Tower]] will struggle to keep up.
+*The [[Tornado]] and [[Executioner]] combo is very effective in destroying the Super Lava Hound and its support troops. The Tornado brings all the troops to the same spot, so the Executioner can hit all of them at once. If the Executioner defeats the Lava Hound, he can also hit the generated Mini Lava Hounds at once. Similarly, every Mini Lava Hound defeated by the Executioner will result in the spawned Lava Pups being hit as well. The Tornado can also pull things back, giving your Executioner more time to defeat them, as well as positioning the Super Lava Hound in such a way as to avoid the death damage from affecting the Crown Tower or the Executioner.
+*The [[Firecracker]]/[[Executioner]]/[[Wizard]] and the Super Lava Hound are a good partnership. The Firecracker/Executioner/Wizard defends the Lava Hound from defending units, but the combination costs 11 and 13 [[Elixir]]. The Firecracker can also act as bait for [[Arrows]], to ensure that the Lava Pups can attack unharmed.
+*The LavaLoon is a popular strategy where the Super Lava Hound tanks for a Balloon while it wreaks havoc on the Towers.
+**However, this strategy is easily countered if the troops have no support, as the Balloon can be destroyed before the Super Lava Hound. For example, the [[Minion Horde]] or [[Bats]] can easily destroy the Balloon before it deals damage to the Tower and proceed to destroy the Super Lava Hound. So a support unit behind them like a [[Baby Dragon]], [[Skeleton Dragons]], or an [[Electro Dragon/Evolution|Evolved Electro Dragon]] is crucial to protect the Balloon from swarm units, although this would make the combo very costly.
+**It can also be easily defeated by the [[Wizard]] or the [[Executioner]]. Place the Wizard or Executioner correctly so that he targets the Balloon. When the Balloon dies, support the Wizard or Executioner with other troops to finish off the Super Lava Hound and its Lava Pups. Thus having a [[Mega Minion]] or a [[Flying Machine]] supporting them could also come in handy.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Super Lava Hound Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%;text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|8||1.3 sec||1 sec||Slow (45)||1 sec||3.5||400||Buildings||x1||Air||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+
+{{StatisticsSubheader|Mini Lava Hound Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|0.9 sec||0.6 sec||Slow (45)||3.5||400||Buildings||x2||Air
+|}
+
+{{StatisticsSubheader|Lava Pup Attributes}}
+{| class="wikitable" id="unit-attributes-table-tertiary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.7 sec||1 sec||Medium (60)||Melee: Long (1.6)||500||Air & Ground||x8||Air
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+{| class="wikitable" id="unit-statistics-table" style="width:100%;text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Super Lava Hound Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Super Lava Hound Damage<br />{{Icon|I=Damage}}
+! scope="col" |Super Lava Hound Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Super Lava Hound Death Damage<br />{{Icon|I=Death Damage}}
+! scope="col" |Mini Lava Hound Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Mini Lava Hound Damage<br />{{Icon|I=Damage}}
+! scope="col" |Mini Lava Hound Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Lava Pup Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Lava Pup Damage<br />{{Icon|I=Damage}}
+! scope="col" |Lava Pup Damage per second<br />{{Icon|I=DPS}}
+|-
+|9||2,800||45||{{Dps|45|1.3}}||120 x3 (360)||1,500||45||{{Dps|45|0.9}}||179||75||{{Dps|75|1.7}}
+|-
+|10||3,080||49||{{Dps|49|1.3}}||132 x3 (396)||1,650||49||{{Dps|49|0.9}}||196||82||{{Dps|82|1.7}}
+|-
+|11||3,388||54||{{Dps|54|1.3}}||145 x3 (435)||1,815||54||{{Dps|55|0.9}}||216||90||{{Dps|90|1.7}}
+|-
+|12||3,724||59||{{Dps|59|1.3}}||159 x3 (477)||1,995||59||{{Dps|59|0.9}}||238||99||{{Dps|99|1.7}}
+|-
+|13||4,088||65||{{Dps|65|1.3}}||175 x3 (525)||2,190||65||{{Dps|65|0.9}}||261||109||{{Dps|109|1.7}}
+|-
+|14||4,480||72||{{Dps|72|1.3}}||192 x3 (576)||2,400||72||{{Dps|72|0.9}}||286||120||{{Dps|120|1.7}}
+|-
+|15
+|4928
+|79
+|60
+|210 x3
+(630)
+|2640
+|79
+|87
+|315
+|132
+|77
+|}
+</div>
+</center>
+
+==History==
+2022
+*The Super Lava Hound [[Cards|card]] was made available in the [[Tournament/Special Event Challenges|Super Lava Hound Challenge]] on 7/2/2022.
+*On 13/2/2022, the Super Lava Hound was removed from the game.
+2023
+*On 10/4/2023, the Super Lava Hound was readded to the game in the Super Cards Triple Draft Event.
+*On 18/4/2023, the Super Lava Hound was removed from the game.
+2024
+*On 19/8/2024, the Super Lava Hound was readded to the game in the Super Cards Draft Event.
+*On 26/8/2024, the Super Lava Hound was removed from the game.
+2025
+*On 27/1/2025, the Super Lava Hound was readded to the game in the Super Cards Draft Event.
+*On 3/2/2025, the Super Lava Hound was removed from the game.
+
+==Trivia==
+*The Super Lava Hound may likely be based on the Grandpa Hound from [https://www.youtube.com/watch?v=xsbXqDQfuWs ClashCon]. In particular, the Grandpa Hound splits into [[Lava Hound|Lava Hounds]] instead of Lava Pups and then each Lava Hound spawned from Grandpa Hound splits into Lava Pups upon death.
+*It is the most expensive {{Rarity|Legendary}} [[Cards|card]], costing 8 [[Elixir]].
+*The Super Lava Hound is tied with the [[Elixir Golem]] for the highest amount of forms and divisions of any card – it has 3 forms and divides 3 times.
+*It was the first Super Troop to be introduced in the game.
+*In the Italian and Russian language settings of the game, the Super Lava Hound's name translates to "Super Lava Mastiff" and "Super Hell Hound" respectively.
+*The Super Lava Hound bears more than a passing resemblance to [https://bulbapedia.bulbagarden.net/wiki/Heatran_(Pok%C3%A9mon) Heatran] from [https://en.wikipedia.org/wiki/Pok%C3%A9mon Pokemon].
+*While the Super Lava Hound and the Mini Lava Hound appear to be made of both molten lava and solid rock, the Lava Pup seems to be a pure lava being. Fans theorize that the lava cools into rocks as the Lava Pups mature.
+*It appears to have an underbite, similar to the [[Minions]], [[Guards]], [[Giant Skeleton]], and Lava Hound.
+*A large part of the Super Lava Hound's card description is used as a [[Loading Screen Hints|Loading Screen Hint]].
+*The Super Lava Hound is 1 of 15 [[:Category:Troop Cards|troops]] which bring an excited reaction from the audience upon spawning and brings a collective groan from the audience when defeated, as well as a concerning gasp when the opponent plays him, the others include the [[Royal Giant]], [[Giant]], [[P.E.K.K.A.|P.E.K.K.A]], Giant Skeleton, [[Rune Giant]], [[Goblin Giant]], [[Golem]], [[Bowler]], [[Electro Wizard]], [[Inferno Dragon]], [[Sparky]], Lava Hound, [[Night Witch]], and the [[Monk]].
+
+{{Navigation|Card}}
+
+[[ru:Супер-адская гончая]]
+
+[[Category:Removed Cards]]

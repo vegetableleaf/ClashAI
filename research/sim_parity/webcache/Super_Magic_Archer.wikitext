@@ -1,0 +1,98 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Super Magic Archer</span>}}
+{{Protection}}{{MagicWords}}{{EventCard}}
+
+{{Card Infobox|Cost=5|Rarity=Legendary|Type=Troop|ReleaseDate=13 February 2023}}
+{{Quote|Not quite a Wizard, nor an Archer - he shoots a magic arrow that passes through and damages all enemies in its path. It's not a trick, it's magic!}}
+
+The Super Magic Archer was a temporary {{Rarity|Legendary}} [[Cards|card]], only available in certain Events. It spawned an area-damage, air-targeting, long-ranged, ground [[:Category:Troop Cards|troop]] with moderate hitpoints and extremely low damage. The Magic Archer launched an attack that traveled up to its maximum range, and hypnotized enemies, while piercing through enemies. Hypnotized enemies acted identically to friendly troops, meaning they could not be hit by them and could be damaged and killed by enemy troops and spells. A Super Magic Archer card cost 5 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Super Magic Archer Card}}
+*When building a [[Battle Decks|deck]], try to include a counter for the main offensive [[Cards|card]] you are using (for example, [[Cannon]] if you are using a [[Battle Ram]] or [[Hog Rider]]). This will make defending easier in case the troop gets hypnotized by the Super Magic Archer.
+*It is recommended to save a big push until after the opponent deploys their Super Magic Archer. Since the Super Magic Archer pierces his targets, he can convert an entire push with just one arrow, and he can do it again even after the effect wears off, unless the Super Magic Archer is killed or is redirected to something else.
+*[[Lightning]] is an effective way to remove him from the [[Arenas|Arena]]. Not only can it defeat him outright, but its deployment is instant, meaning that it is not as easy to react against it. However, beware of opponents that block it with [[Royal Hogs]], [[Three Musketeers]], or [[Barbarians/Evolution|Evolved Barbarians]], as their hitpoints are slightly higher than that of the Super Magic Archer.
+**[[Rocket]] is also a good spell to use against the Super Magic Archer and any possible surrounding units, and unlike Lightning, the damage cannot be blocked. However, a poorly-aimed Rocket could just become useless and cause you to be low on [[Elixir]], possibly unable to defend the opponent's push.
+**[[Fireball]] is not as effective against the Super Magic Archer, compared to his normal version, because of his higher hitpoints. But it will bring the Super Magic Archer's hitpoints really low, able to be OHKOed by any troop.
+***[[Poison]] is a viable alternative instead, as it can completely destroy the Super Magic Archer, unlike Fireball. However, he must be standing on the Poison for the entire duration, so try to place it, so the Super Magic Archer will walk through the entire radius.
+*He is less effective at hypnotizing kamikaze troops like the [[Fire Spirit]] and [[Wall Breakers]], as they will not be able to make full use of the hypnotism mechanic.
+*Since [[:Category:Tower Troop Cards|Crown Towers]] can also be hypnotized, after attacking them, he will proceed to attack the [[King's Tower]], unless there are other opposing units nearby. Because of this, it is inadvisable to use cards that are weak against an activated King's Tower, such as a [[Graveyard]]. 
+*The [[Monk]] is an excellent troop to use against the Super Magic Archer. A properly timed ability can reflect an enemy Magic Archer projectile, making him hypnotize himself and other troops deployed to support him. 
+**Do not rely on this solely, however. Since the hypnotism is temporary, the hypnotized troops will eventually turn around and engage the Monk, who will not have the ability ready again. Try to save this trick to hypnotize fast, threatening troops, which will force the opponent to react, or to prevent your Crown Tower from being hypnotized. In addition, a poorly timed ability will result in the Monk getting hypnotized anyway, due to the delay before activation.
+*The [https://clashroyale.fandom.com/wiki/Mini_P.E.K.K.A.?so=search Mini P.E.K.K.A] is also a good counter to Super Magic Archer, as he can OHKO him. But make sure to place the Mini P.E.K.K.A right on top of Super Magic Archer to avoid giving him time to shoot his projectile. The [[P.E.K.K.A.|P.E.K.K.A]] and [[Elite Barbarians]] can work in similar way, though they will result in a negative Elixir trade. The [[Prince]] can also OHKO the Super Magic Archer if he manages to charge against him.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Range<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Width<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||2 sec||1.5 sec||Medium (60)||1 sec||7||11||0.5||1000||Air & Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Area Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+|-
+|9||580||1||{{Dps|1|2}}
+|-
+|10||638||1||{{Dps|1|2}}
+|-
+|11||701||1||{{Dps|1|2}}
+|-
+|12||771||1||{{Dps|1|2}}
+|-
+|13||846||1||{{Dps|1|2}}
+|-
+|14||928||1||{{Dps|1|2}}
+|-
+|15||1,020||1||{{Dps|1|2}}
+|}
+</div>
+</center>
+
+==History==
+2023
+*The Super Magic Archer [[Cards|card]] was made available in the [[Tournament/Special Event Challenges|Super Magic Archer Challenge]] on 13/2/2023.
+*On 20/2/2023, the Super Magic Archer was removed from the game.
+*On 10/4/2023, the Super Magic Archer was readded to the game in the Super Cards Triple Draft Event.
+*On 18/4/2023, the Super Magic Archer was removed from the game.
+2024
+*On 19/8/2024, the Super Magic Archer was readded to the game in the Super Cards Draft Event.
+*On 26/8/2024, the Super Magic Archer was removed from the game.
+2025
+*On 27/1/2025, the Super Magic Archer was readded to the game in the Super Cards Draft Event.
+*On 3/2/2025, the Super Magic Archer was removed from the game.
+
+==Trivia==
+*The word “Archer” comes from the Latin “''arcus”'', meaning bow. The practice of archery was first developed in Africa by the later Middle Stone Age (approx. 70,000 years ago). It is documented as part of warfare and hunting from the classical period until the late medieval period when it was made obsolete by the increased use of firearms.
+**The bow that Super Magic Archer uses in [[Basics of Battle|battle]] is a magical [https://en.wikipedia.org/wiki/Recurve_bow recurve bow].
+**In the Persian language setting of the game, the Super Magic Archer's name translates to "Super Magic Shooter".
+**The Super Magic Archer is 1 of 10 [[cards]] associated with archery, with the others being [[Archers]], [[Arrows]], [[Tower Princess]], [[X-Bow]], [[Princess]], [[Magic Archer]], [[Super Archers]], [[Archer Queen]], and the [[Little Prince]].
+*The Super Magic Archer's stats are the highest or lowest among all [[:Category:Troop Cards|troops]]. More specifically:
+**The Super Magic Archer has the lowest damage of all troops, with 1 damage at Levels 9 and 15.
+**The Super Magic Archer is tied with [[Electro Giant]] for the lowest first attack speed of all troops, with a first attack speed of 1.5 seconds.
+**Among all troops with area damage, the Super Magic Archer is tied with Magic Archer and Super Archers for the smallest area damage radius of all troops, with a radius of 0.25 tiles.
+*When deployed, the Super Magic Archer will say "''好的 (Hǎo de)''"'','' and when attacking, often says “''爆炸 (Bàozhà)''” which mean "''Ok''" and ''“Explode''“ in Chinese.
+**The Super Magic Archer is 1 of 24 troops that speak distinct words when on the field, the others being [[Mini P.E.K.K.A.]], [[Mega Minion]], [[Wizard]], [[Hog Rider]], [[P.E.K.K.A.]], [[Dark Prince]], [[Bowler]], [[Ram Rider]], [[Electro Wizard]], Princess, [[Ice Wizard]], Magic Archer, [[Lumberjack]], [[Mother Witch]], [[Fisherman]], [[Goblin Machine]], [[Super Mini P.E.K.K.A.]], [[Santa Hog Rider]], [[Golden Knight]], [[Boss Bandit]], Archer Queen, Little Prince, and the [[Terry]].
+*Hypnotized [[Princess Towers|Crown Towers]] will change their Tower Skin to the one of the user that hypnotized them.
+*Hypnotized troops or Crown Towers will have hearts coming out of them to signal they have been turned. The [[King's Tower]] will show this effect if it gets hit by a Super Magic Archer's attack, but will not actually be hypnotized.
+
+{{Navigation|Card}}
+
+[[ru:упермагический лучник]]
+
+[[Category:Removed Cards]]

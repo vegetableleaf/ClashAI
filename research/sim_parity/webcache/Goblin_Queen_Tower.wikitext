@@ -1,0 +1,145 @@
+{{RemovedContent|Page=true}}{{MergeTacticsLink|Goblin Queen}}
+
+{{Quote|The Goblin Queen launches her brood of Baby Goblins across the river!}}
+{|style="text-align:center; margin:auto;"
+|-
+|[[File:Goblin Queen.png|200x200px]]
+|}
+
+==Summary==
+*Each player has a 4×4 Goblin Queen Tower, located at the center back of their side of the [[Arenas|Arena]], 1 tile from the back.
+*Destroying it automatically grants the player who destroys it the remaining Crowns and ends the [[Basics of Battle|battle]].
+*The power of the player's Goblin Queen Tower (referred to in-game as "Tower Power") will be capped by the player's [[Experience|King's Level]]. The Goblin Queen Tower's damage and hitpoints are both increased by roughly 10% per Level.
+*The Goblin Queen Tower is not able to attack until it is damaged or either of the player's [[:Category:Crown Towers|Crown Towers]] are destroyed. When one of these events happen, the Goblin Queen activates her defense by getting out of a slouching position and shooting green magic blasts, which targets both air and ground enemies. Activation takes 4 seconds to complete - it takes 3.3 seconds for the Goblin Queen to prepare herself, and another 0.7 seconds before she shoots her first magic blast.
+*The Goblin Queen's Tower is classified as a [[:Category:Building Cards|building]] and will be targeted by building-targeting [[:Category:Troop Cards|troops]].
+*There are certain [[cards]] that will deal reduced damage to Crown Towers. More specifically:
+**[[The Log]] and [[Void]]'s single target and 2-4 targets beams will deal 15% of their full damage.
+**The [[Goblin Curse]] and Void's 5+ targets beam will deal 20% of their full damage.
+**[[Rocket]], [[Arrows]], and [[Poison]] will deal 25% of their full damage.
+***The [[Miner]], [[Cannon/Evolution|Evolved Cannon]]'s Barrage Damage, and [[Dart Goblin/Evolution|Evolved Dart Goblin]]'s Poison Damage will also deal 25% of their full damage.
+**The [[Zap]], [[Giant Snowball]], [[Fireball]], [[Lightning]], [[Freeze]], and [[Rage]] will deal 30% of their full damage.
+***Due to spawning a Rage after death, the [[Lumberjack]]'s death Rage will also deal 30% of its full damage to Crown Towers.
+***The [[Goblin Drill]] will also deal 30% of its full damage to Crown Towers on spawn (although the spawned Goblins deal full damage to it).
+***The [[Firecracker/Evolution|Evolved Firecracker]]'s Sparks will also deal 30% of their full damage to Crown Towers.
+**The [[Goblin Machine]]'s Rocket will deal 33% of its full damage.
+**The [[Tornado]] will deal 35% of its full damage.
+***The [[Goblinstein]]'s ability will also deal 35% of its full damage.
+**The [[Valkyrie/Evolution|Evolved Valkyrie]]'s Tornado will deal 44% of its full damage.
+**The [[Earthquake]] will deal 65% of its full troop damage.
+**The [[Electro Giant]]'s Reflected Damage and [[Wall Breakers/Evolution|Evolved Wall Breakers]]' death damage will deal 66% of their full damage.
+**On the contrary, the [[Giant Skeleton]]'s death bomb will deal double damage to Crown Towers.
+*The Goblin Queen Tower is affected by Rage, just like all [[:Category:Tower Troop Cards|tower troops]]. It can also be slowed down by slowing attacks.
+
+==Ability==
+After spending 20 Elixir on cards classified as "Goblins", such as [[Goblins]], [[Spear Goblins]], and [[Goblin Barrel]], the next Goblin card will trigger the ability. The ability will spawn 8 [[Baby Goblins]] in a straight line on the opponent's side of the Arena after they are shown flying through the air for approximately 3 seconds, with the same statistics as a Goblin.
+
+==Strategy==
+*Due to the ability requiring Goblin cards, the ability can be best utilized with a deck of mostly Goblins. However, this will severely restrict synergies and deck composition, so the player is advised to use a few non-Goblin cards to maintain the deck's balance.
+*Since the ability activates at 20 Elixir or more, bringing cheaper Goblin cards, such as [[Spear Goblins]] and [[Goblin Curse]], can be useful to push the bar over the edge without having to waste extra Elixir and activate the ability quicker once 20 Elixir has been achieved.
+*Using a cheap mini tank, like a [[Knight]], in the pocket of the Arena can provide a great way to get more value out of the 8 Baby Goblins by getting both leftover Crown Towers to target the Knight, allowing for the Baby Goblins to do immense DPS.
+*When using area damage [[:Category:Spell Cards|spells]] like the Fireball and Arrows, the player should generally avoid hitting the Goblin Queen Tower, as doing so will activate the Queen before destroying a Crown Tower. An activated Goblin Queen Tower will be targeting and attacking troops, helping the opponent defend attacks more easily. However, if the opponent's Goblin Queen Tower is already activated, hitting it with spells to damage it along with any nearby troops that you're targeting is free chip damage, though this strategy is inefficient as the Goblin Queen Tower’s health is much higher compared to all other [[:Category:Tower Troop Cards|tower troops]].
+
+<center><div id="unit-statistics" class="table-back">
+{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Goblin Queen attributes}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+!scope="col"|Hit Speed<br>{{Icon|I=Damage Speed}}
+!scope="col"|Range<br>{{Icon|I=Range}}
+!scope="col"|Target<br>{{Icon|I=Targets}}
+|-
+|1 sec||7||Air & Ground
+|}
+{{StatisticsSubheader|Ability Attributes}}
+{|class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+!scope="col"|Cost<br>{{Icon|I=Elixir}}
+!scope="col"|Baby Goblins Count<br>{{Icon|I=Count}}
+|-
+|20||8
+|}
+{{StatisticsSubheader|Baby Goblin Attributes}}
+{|class="wikitable" id="unit-attributes-table-tertiary" style="width:100%;text-align:center;"
+!scope="col"|Hit Speed<br>{{Icon|I=Damage Speed}}
+!scope="col"|Speed<br>{{Icon|I=Speed}} 
+!scope="col"|Deploy Time<br>{{Icon|I=Deploy Time}} 
+!scope="col"|Range<br>{{Icon|I=Range}}
+!scope="col"|Target<br>{{Icon|I=Targets}} 
+!scope="col"|Transport<br>{{Icon|I=Transport}}
+|-
+|0.9 sec|| Very Fast (120)||3 sec||Melee: Short (0.5)||Ground||Ground
+|}
+{|class="wikitable" id="unit-statistics-table" style="width: 100%; text-align: center;"
+!scope="col" |Level<br>{{Icon|I=Level}}
+!scope="col" |Goblin Queen Tower Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col" |Goblin Gueen Tower Damage<br>{{Icon|I=Damage}}
+!scope="col" |Goblin Queen Tower Damage Per Second<br>{{Icon|I=DPS}}
+!scope="col" |Baby Goblin Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col" |Baby Goblin Damage<br>{{Icon|I=Damage}}
+!scope="col" |Baby Goblin Damage Per Second<br>{{Icon|I=DPS}}
+|-
+|1||2,400||50||50||59||34||37
+|-
+|2||2,568||54||54||63||36||40
+|-
+|3||2,736||58||58||68||39||43
+|-
+|4||2,904||62||62||73||42||46
+|-
+|5||3,096||67||67||79||45||50
+|-
+|6||3,312||72||72||85||49||54
+|-
+|7||3,528||78||78||92||53||58
+|-
+|8||3,768||84||84||99||57||63
+|-
+|9||4,008||90||90||106||61||67
+|-
+|10||4,392||99||99||117||67||74
+|-
+|11||4,824||109||109||128||74||82
+|-
+|12||5,304||119||119||141||81||90
+|-
+|13||5,832||131||131||154||89||98
+|-
+|14||6,408||144||144||169||97||107
+|-
+|15||7,032||158||158||186||107||118
+|}
+</div></center>
+
+==Voicelines==
+When fully charged:
+*''"Ah, Green is great"''
+*''"Green is my favorite color."''
+*''"Queeny is greeny."''
+*''*Laughing*''
+When activated ability:
+*''"Green Goblins of greatness!"''
+*''"Aww, look at them go."''
+*''"Mommy loves you!"''
+*''"You are all my children!"''
+*''"Behold, my delightfully devious darlings!"''
+*''"Mommy believes in you!"''
+
+==History== 
+*The Goblin Queen Tower was added to the game on 17/6/2024, in the [[Version History#Goblin World Update (17/6/2024)|Goblin World Update]].
+*On 30/7/2024, the [[Version History#Goblin Queen's Journey Changes Update (30/7/2024)|Goblin Queen's Journey Changes Update]] changed the Goblin Queen Tower’s level to depend on the [[King's Tower]]'s evel instead of the [[Baby Goblins]]' level.
+*On 30/10/2024, the [[Version History#Removal of Goblin Queen's Journey Update (30/10/2024)|Removal of Goblin Queen's Journey Update]] removed the Goblin Queen Tower alongside [[Goblin Queen's Journey]].
+
+==Gallery==
+<gallery>
+File:Goblin Queen Tower.png|Goblin Queen Tower.
+File:Goblin Queen Tower2.png|Goblin Queen Tower 2.
+</gallery>
+
+==Trivia==
+*The Goblin Queen Tower is the first and currently only [[King's Tower|King Tower]] replacement.
+*The Goblin Queen's ability is actually given to her by the [[Baby Goblins]] [[:Category:Tower Troop Cards|tower troop]] and not herself, as she comes automatically selected with the tower troop.
+*According to a [[Loading Screen Hints|Loading Screen Hint]], Goblin Queen is a great pastry chef, but being a queen gets more money.
+*The Goblin Queen is the subject of 4 [[Emotes]].
+
+{{Navigation|Card}}
+
+[[Category:Crown Towers]]

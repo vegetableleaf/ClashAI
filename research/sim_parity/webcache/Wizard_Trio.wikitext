@@ -1,0 +1,144 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Wizard Trio</span>}}
+{{Protection}}{{MagicWords}}{{EventCard}}
+
+{{Card Infobox|Cost=7|Rarity=Legendary|Type=Troop|ReleaseDate=27 May 2024}}
+{{Quote|All three Wizards in one neat package.}}
+The Wizard Trio was a temporary {{Rarity|Legendary}} [[Cards|card]] only available in certain Events. It spawned a [[Wizard]], an [[Ice Wizard]], and an [[Electro Wizard]] in a horizontal formation immediately after being deployed without any deploy time. The Wizard will spawn between the Ice Wizard from the left, and the Electro Wizard from the right. A Wizard Trio card costs 7 [[Elixir]] to deploy.
+
+==Strategy==
+*Like the individual Wizards, the Wizard Trio is very weak to medium [[:Category:Spell Cards|spells]], such as the [[Poison]] and [[Fireball]]. If both the spells hit all three Wizards, the damage will result in a large positive Elixir trade.
+*The Wizard Trio has an incredibly high DPS, easily being able to decimate many tanks due to the Wizard, while heavily slowing them down and stunning them due to the Ice Wizard and Electro Wizard respectively. Additionally, the amount of splash damage from the Wizard and Ice Wizard can dispose off swarms, such as [[Bats/Evolution|Evolved Bats]], [[Rascals]], [[Elite Barbarians]], [[Goblin Gang]], [[Minion Horde]], [[Skeleton Army]], [[Zappies]], [[Royal Hogs]], [[Royal Recruits/Evolution|Evolved Royal Recruits]], [[Three Musketeers]], [[Skeleton Dragons]], and [[Barbarians/Evolution|Evolved Barbarians]] with ease, and with the amount of stun from the Electro Wizard, they can take down troops such as [[Dark Prince]], [[Sparky]], [[Mighty Miner]], [[Prince]], [[Inferno Dragon]], [[Battle Ram/Evolution|Evolved Battle Ram]], and [[Bowler]].
+*The [[Mega Knight]] is a very effective defensive counter to the Wizard Trio. His spawn damage is able to hit all 3 Wizards at once and with the help of the [[:Category:Crown Towers|Crown Tower]], he can easily destroy them, leaving the Mega Knight almost untouched for a counterattack.
+*The [[Royal Delivery]], with the help of the [[Cannoneer]] or [[Dagger Duchess]] can fully counter the Wizard Trio for a large +4 positive Elixir trade. However, the [[Royal Recruits|Royal Recruit]] will get destroyed in the process, so there will be no counterattack.
+*Since the Ice Wizard and the Electro Wizard deal spawn damage, deploying the Wizard Trio directly onto on small swarms and [[:Category:Building Cards|building]]-targeting tanks may be beneficial in certain situations, such as with [[Giant]], [[Lava Hound]], [[Golem]], or [[Skeleton Army]].
+
+<center><div id="unit-statistics" class="table-back">
+{{Statistics}}{{StatusEffects}}
+{{StatisticsSubheader|Wizard Trio Attributes}}
+{| class="wikitable" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|7||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+{{StatisticsSubheader|Electro Wizard Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Stun Duration<br />{{Icon|I=Freeze}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+|-
+|1.8 sec||0.6 sec||0.5 sec||Fast (90)||1 sec||5||Air & Ground||Ground||x1
+|}
+{{StatisticsSubheader|Electro Wizard Spawn Zap Attributes}}
+{| class="wikitable" style="width: 100%; text-align: center;"
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+! scope="col" |Stun Duration<br />{{Icon|I=Freeze}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+|-
+|2.5||0.5 sec||Air & Ground
+|}
+{{StatisticsSubheader|Wizard Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width: 100%; text-align: center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+|-
+|1.4 sec||0.4 sec||Medium (60)||1 sec||5.5||1.5||600||Air & Ground||Ground||x1
+|}
+{{StatisticsSubheader|Ice Wizard Attributes}}
+{| class="wikitable" id="unit-attributes-table-tertiary" style="width: 100%; text-align: center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Slow Duration<br />{{Icon|I=Freeze}}
+! scope="col" |Slowdown<br />{{Icon|I=Freeze}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+|-
+|1.7 sec||0.5 sec||2.5 sec||-35%||Medium (60)||1 sec||5.5||1||700||Air & Ground||Ground||x1
+|}
+{{StatisticsSubheader|Ice Wizard Spawn Damage Attributes}}
+{| class="wikitable" style="width:100%; text-align:center;"
+! scope="col" |Radius<br />{{Icon|I=Radius}}
+! scope="col" |Spawn Slow Duration<br />{{Icon|I=Freeze}}
+! scope="col" |Slowdown<br />{{Icon|I=Freeze}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+|-
+|3||1 sec||-35%||Air & Ground
+|}
+{{StatisticsSubheader|Card Statistics}}
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Electro Wizard Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Electro Wizard Damage<br />{{Icon|I=Damage}}
+! scope="col" |Electro Wizard Zap Damage<br />{{Icon|I=Damage}}
+! scope="col" |Electro Wizard Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Wizard Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Wizard Area Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Wizard Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Ice Wizard Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Ice Wizard Area Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Ice Wizard Spawn Damage<br />{{Icon|I=Damage}}
+! scope="col" |Ice Wizard Damage per second<br />{{Icon|I=DPS}}
+|-
+|9||590||91 x2 (182)||159||{{Dps|182|1.8}}||598||234||{{Dps|234|1.4}}||569||75||69||{{Dps|75|1.8}}
+|-
+|10||649||100 x2 (200)||174||{{Dps|200|1.8}}||656||256||{{Dps|256|1.4}}||625||82||75||{{Dps|82|1.8}}
+|-
+|11||713||110 x2 (220)||192||{{Dps|220|1.8}}||720||281||{{Dps|281|1.4}}||688||90||83||{{Dps|90|1.8}}
+|-
+|12||784||121 x2 (242)||211||{{Dps|242|1.8}}||792||309||{{Dps|309|1.4}}||756||99||91||{{Dps|99|1.8}}
+|-
+|13||861||132 x2 (264)||232||{{Dps|264|1.8}}||870||340||{{Dps|340|1.4}}||830||109||100||{{Dps|109|1.8}}
+|-
+|14||944||145 x2 (290)||254||{{Dps|290|1.8}}||955||373||{{Dps|374|1.4}}||910||120||110||{{Dps|120|1.8}}
+|-
+|15||1,038||160 x2 (320)||279||{{Dps|320|1.8}}||1,050||410||{{Dps|410|1.4}}||1,001||132||121||{{Dps|132|1.8}}
+|}
+</div>
+</center>
+
+==History==
+2024
+*The Wizard Trio card was made available in the Wizard Trio Event on 27/5/2024.
+*On 3/6/2024, the Wizard Trio was removed from the game.
+*On 19/8/2024, the Wizard Trio was readded to the game in the Super Cards Draft Event.
+*On 26/8/2024, the Wizard Trio was removed from the game.
+2025
+*On 27/1/2025, the Wizard Trio was readded to the game in the Super Cards Draft Event.
+*On 3/2/2025, the Wizard Trio was removed from the game.
+*On 16/6/2025, the Wizard Trio was readded to the game in the Wizard Trio Event.
+*On 23/6/2025, the Wizard Trio was removed from the game.
+
+==Trivia==
+*The word "''Wizard''" comes from the Middle English "''wys''", meaning wise.
+*Electricity was first detected through electric fish from as far back as 2750 BCE where Ancient Egyptian texts described them as the "protectors" of all other fish. At around 600 BCE, Thales of Miletus made a series of observations on static electricity, from which he believed that friction rendered amber magnetic, in contrast to minerals such as magnetite, which needed no rubbing. Thales was incorrect in believing the attraction was due to a magnetic effect, but later science would prove a link between magnetism and electricity. Electricity would remain little more than an intellectual curiosity for millennia until 1600, when the English scientist William Gilbert wrote ''De Magnete'', in which he made a careful study of electricity and magnetism, distinguishing the lodestone effect from static electricity produced by rubbing amber.
+**The Wizard Trio is 1 of 11 cards associated with electricity, with the others being [[Electro Spirit]], [[Zap]], [[Tesla]], [[Zappies]], [[Electro Dragon]], [[Electro Giant]], [[Lightning]], [[Electro Wizard]], [[Sparky]], and the [[Goblinstein]].
+*The Wizard Trio is 1 of 7 [[cards]] associated with ice, with the others being [[Ice Spirit]], [[Giant Snowball]], [[Ice Golem]], [[Freeze]], [[Ice Wizard]], and [[Super Ice Golem]].
+*It is 1 of 4 cards that spawns different [[:Category:Troop Cards|troops]] at once, the others being [[Goblin Gang]], [[Rascals]], and the Goblinstein.
+**It spawns the most unique troops out of all cards that spawn different troops at once, spawning a total of 3 troops.
+*Along with the [[Skeletons]] and [[Skeleton Army]], the Wizard Trio are the only swarm card whose members spawn all at the exact same time.
+*The Wizard Trio is 1 of 2 "value pack" troop card that has a different rarity with its corresponding "basic" troop card, the other being Skeleton Army (the [[Wizard]] is a {{Rarity|Rare}} card while the Wizard Trio is a {{Rarity|Legendary}} card).
+
+{{Navigation|Card}}
+
+[[Category:Removed Cards]]

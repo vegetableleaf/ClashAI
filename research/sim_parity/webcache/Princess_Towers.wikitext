@@ -1,0 +1,131 @@
+{{Protection}}{{MagicWords}}{{RemovedContent}}
+[[File:Princesstower.png|center|x200px]]
+
+==General Information==
+*The Princess Tower is a ranged [[:Category:Crown Towers|Tower]] that attacks opposing [[:Category:Troop Cards|troops]] and can attack both air and ground units.
+**Princess Towers are classified as [[:Category:Building Cards|buildings]] and because of this, they will be directly targeted by troops like [[Giant]]s, [[Hog Rider]]s, [[Golem]]s, and [[Wall Breakers]].
+**Each player has a pair of 3×3 size Princess Towers on their respective side of the map, one on the left and one on the right of the [[King's Tower]].
+*Destroying an opposing Princess Tower awards a player a Crown and grants the player additional territory across the river (commonly called a “pocket”) where [[cards]] can be cast upon (the [[Royal Recruits]] card needs both Princess Towers to be destroyed to be deployed in the pocket)
+*There are certain [[cards]] that will deal reduced damage to Crown Towers. More specifically:
+**[[Arrows]], [[Zap]], [[Giant Snowball]], [[Fireball]], [[Lightning]], [[Freeze]], [[Poison]], and [[Rage]] will deal 30% of their full damage.
+***Due to spawning a Rage after death, the [[Lumberjack]]'s death Rage will also deal 30% of its full damage Crown Towers.
+***[[Goblin Drill]] will also deal 30% of their full damage to Crown Towers.
+***The [[Phoenix]]'s Death Damage and the [[Firecracker/Evolution|Evolved Firecracker]]'s Spark Damage will also deal 30% of their full damage to Crown Towers.
+**Rocket will deal 25% of its full damage.
+***[[Miner]] will also deal 25% of his full damage to Crown Towers.
+**[[Tornado]] will deal 35% of its full damage.
+**[[The Log]] will deal 20% of its full damage.
+**[[Earthquake]] will deal 65% of its full troop damage.
+**The [[Electro Giant]]'s reflected damage will deal 66% of its full damage.
+**On the contrary, the [[Giant Skeleton]]'s death bomb will deal double damage to Crown Towers.
+*The Princess Tower's hitpoints and damage are increased by roughly +8% per level when upgrading from level 1 to level 9 and roughly +10% per level from level 9 to level 13.
+**Since cards' damage, hitpoints and healing increase by +10% per level, max level gameplay is practically identical to tournament standard gameplay. At lower levels, Princess Towers are slightly stronger compared to cards.
+** For example, a Princess Tower will two-shot a certain same level [[Fire Spirit]] at Level 8 or below, but not at Level 9 or above. Also, a Level 3 [[Rocket]] will take 17.2% of the health of a Level 3 Princess Tower while a maxed Rocket will take 19.5% of the health of a maxed Princess Tower.
+*The Princess Towers' attack speed can be increased by a Rage [[:Category:Spell Cards|spell]] like all other offensive buildings and troops.
+*The Princess Towers have an attack range that is 0.5 tiles longer and a hit speed that is 0.2 seconds faster than the King's Tower, however, their projectiles are slightly slower.
+
+==History==
+2016
+*The Arena Towers were added with Clash Royale's game launch on 4/1/2016.
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]], increased the Arena Tower Level cap to 13 (from 12) and made it so that the Arena Tower's hitpoints and damage would increase by 10% with each Level at Levels 9-12 (from 8%). The update also decreased the Arena Tower's range to 7.5 tiles (from 8.5 tiles), but its effective range was unchanged.
+*On 1/11/2016, the [[Version History#November 2016 Update (1/11/2016)|November 2016 Update]], slightly modified the shooting animation of the [[Princess]] atop the Princess Tower. The animation now appears smoother and the Princess now leans backward more clearly before shooting. The appearance also changed, so now it looks like a normal Princess.
+*On 3/11/2016, Supercell released special offers for iOS only, known as the (HERO PACK)<sup>RED</sup> and (POUCH OF GEMS)<sup>RED</sup>. Players who purchased either of these offers would gain red decorations around their [[:Category:Crown Towers|Crown Towers]] until 6/12/2016.
+2017
+*On 16/3/2017, a [[Version History#Maintenance%20Break%20(16/3/2017)|maintenance break]], increased the Arena Towers' projectile speed to 600 (from 400). This was done to fix some unexpected behaviour that the Arena Towers showed.
+*On 12/6/2017, the [[Version History#June 2017 Update (12/6/2017)|June 2017 Update]], renamed them to “Princess Towers”.
+*On 9/10/2017, the [[Version History#Epic%20Quests%20Update%20(9/10/2017)|Epic Quests Update]], added a Crown Tower skin to make Crown Towers have the [[Elixir Collector]]'s producing animation. This skin is used in [[Tournament/Special Event Challenges|Special Event Challenges]] with higher [[Elixir]] producing rate. It also added 2 Crown Tower skins that would appear in the Gold Rush and Gem Rush [[Events]] respectively.
+*On 12/12/2017, the [[Version History#Electrifying Update (12/12/2017)|Electrifying Update]], changed their crowns from gold to silver.
+*On 22/12/2017, a Crown Tower Skin was added that had holiday-themed decorations. This Crown Tower Skin would appear exclusively in the  Royal Ghost Mirror Challenge.
+2018
+*On 5/12/2018, the [[Version History#December 2018 Update (5/12/2018)|December 2018 Update]], added a new button in the [[Cards|Card]] tab which when tapped, shows the Princess Tower's stats.
+2019
+*On 1/7/2019, the [[Version History#July%202019%20Update%20(1/7/2019)|July 2019 Update]], added Tower Skins unlockable through [[Pass Royale]].
+*On 7/10/2019, a [[Version History#Maintenance%20Break%20(7/10/2019)|maintenance break]], made some animation fixed for an opposing Princess Tower's destruction.
+*On 17/10/2019, an [[Version History#Optional%20Update%20(17/10/2019)|Optional Update]], added correct destroyed Princess Tower effects.
+*Starting with the 2/12/2019 [[Version History#Pass%20Royale%20and%20more%2034|Balance Update]], certain Tower Skins would now appear in the [[Shop]].
+2021
+*On 30/3/2021, the [[Version History#2021%20Quarter%201%20Update%20(30/3/2021)|2021 Quarter 1 Update]], moved the Tower skins to a new tab, alongside [[Emotes]].
+*On 7/6/2021, the [[Version History#Summer 2021 Update (7/6/2021)|Summer 2021 Update]], allowed players to randomize their Princess Tower skin when entering a [[Basics of Battle|battle]].
+*On 27/10/2021, the [[Version History#Champions%20Update%20(27/10/2021)|Champions Update]], increased the Princess Tower Level cap to 14 (from 13).
+2023
+*On 19/6/2023, the [[Version History#Card Evolution Update (19/6/2023)|Card Evolution Update]], increased the Princess Tower Level cap to 15 (from 14).
+*On 13/12/2023, the [[Version History#Tower Troop Update (13/12/2023)|Tower Troop Update]] changed the Princess Tower into a [[:Category:Tower Troop Cards|tower troop]] (called [[Tower Princess]])
+
+==Trivia==
+*According to one of the [[Loading Screen Hints]], the Princess Towers are guarded by the King's [[Princess]]es.
+**However, they have decreased range versus a normal Princess, have a faster hit speed, deal less damage, and don't have splash damage as they don't appear to have multiple arrows when shot. It is possible that the Princesses on the Princess Towers deal less damage than normal Princesses because their arrows aren't on fire.
+**Before the [[Version History#November 2016 Update (1/11/2016)|November 2016 Update]], they had a different appearance than the Princess.
+*Oddly, the [[King's Tower]]'s cannon did less damage than the Princess Towers' bows at all Levels except Level 1. However, this was fixed in the [[Version History#Balance Changes (6/8/2018)|6/8/2018 balance changes]].
+*The first 3 Trainers in the [[Training Camp]] have reduced Princess Tower statistics. Trainers 1-3 have Princess Towers with 20%, 30%, and 40% of the hitpoints of a level 1 Princess Tower respectively.
+*The Princess Tower resembles the Level 1 [https://clashofclans.fandom.com/wiki/Clan_Castle Clan Castle] from Clash of Clans.
+*According to [https://www.youtube.com/watch?v=L6grys552go&list=WL&index=26&pp=gAQBiAQB TV Royale], the number of Crown Towers that were destroyed in 2018 was 89 billion.
+*The Princess Tower's hitpoints for all levels are divisible by 14.
+
+<center>
+
+<div class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" | Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" | Range<br />{{Icon|I=Range}}
+! scope="col" | Target<br />{{Icon|I=Targets}}
+|-
+|0.8 sec||7.5||Air & Ground
+|}
+{| class="wikitable" id="unit-statistics-table" style="width: 100%; text-align: center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Experience Level Required<br />{{Icon|I=XP}}
+|-
+|1||1,400||50||62||1
+|-
+|2||1,512||54||67||2
+|-
+|3||1,624||58||72||3
+|-
+|4||1,750||62||77||5
+|-
+|5||1,890||67||83||7
+|-
+|6||2,030||72||90||10
+|-
+|7||2,184||78||97||14
+|-
+|8||2,352||84||105||18
+|-
+|9||2,534||90||112||22
+|-
+|10||2,786||99||123||26
+|-
+|11||3,052||109||136||30
+|-
+|12||3,346||119||148||34
+|-
+|13||3,668||131||163||38
+|-
+|14||4,032||144||180||42
+|-
+|15||4,424||158||197||54
+|-
+|16
+|4,858
+|173
+|216
+|75
+|}
+</div>
+</center>
+
+{{Navigation|Battle}}
+
+[[fr:Tours des princesses]]
+[[de:Prinzessinnentürme]]
+[[es:Torres de coronas]]
+[[it:Torri della corona]]
+[[ko:아레나 타워]]
+[[ru:Башни принцесс]]
+[[zh:公主塔]]
+
+[[Category:Crown Towers]]

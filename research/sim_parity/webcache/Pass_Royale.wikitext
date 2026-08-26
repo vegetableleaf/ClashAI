@@ -1,0 +1,997 @@
+{{Protection}}{{MagicWords}}{{ClashofClansLink|Season Challenges}}
+{{Head Image|Pass_Royale_Icon.png|180px}}
+{{Quote|Pass Royale unlocks rewards and instant perks!}}
+
+==Rewards & Perks for All Seasons==
+*'''Unlimited Special Challenge Retries''': Enter & re-enter [[Tournament/Special Event Challenges|Special Challenges]] without paying a standard re-entry fee (usually with [[Gems]]).
+*'''Golden Name Cosmetic''': The player's name becomes golden and animated.
+*'''Battle Pass Rewards''': Get [[Lucky Chests]], [[Chests]], [[Magic Items]], and [[Gems]] from Battle Pass Tiers. In each typical season;
+** For players under arena 15:
+***Free players get x2 Wild Shards, x100 Gems, x1 Banner (Frame & Decoration), x26 Gold Crates, x27 1-Star Magic Lucky Chests, x18 2-Star Magic Lucky Chests, x1 3-Star Magic Lucky Chest, x1 5-Star Magic Lucky Chest, x4 Card Boost Potions
+***Diamond Pass owners get x6 Wild Shards, x225 Gems, x1 Tower Skin, x1 Emote, x4 Overflowing Gold Crates, x2500 Common Wild Cards, x480 Rare Wild Cards, x90 Epic Wild Cards, x7 Legendary Wild Cards, x3 Champion Wild Cards, x5 3-Star Magic Lucky Chests, x1 5-Star Magic Lucky Chest, and everything from the free pass!
+**For players above arena 15:
+***Free players get x2 Wild Shards, x100 Gems, x1 Banner (Frame & Decoration), x26 Gold Crates, x28 1-Star Magic Lucky Chests, x13 2-Star Magic Lucky Chests, x1 5-Star Magic Lucky Chest, x5 Hero Boxes, and x4 Card Boost Potions.
+***Diamond Pass owners get x1 Seasonal Hero,  x225 Gems, x1 Tower Skin, x1 Emote, x4 Overflowing Gold Crates, x2500 Common Wild Cards, x480 Rare Wild Cards,  x90 Epic Wild Cards, x7 Legendary Wild Cards, x3 Champion Wild Cards, x5 3-Star Magic Lucky Chests, x1 5-Star Magic Lucky Chest.
+*'''Clan Gift''': When a player purchases Pass Royale, their [[Clans|Clanmates]] each can claim a gift of 1,600 Gold (or less, depending on [[Experience|King Level]]). Players have to be in a Clan before a clanmate purchases the Pass Royale to be eligible for the gift. Each player can claim up to 10 gifts each season.
+*'''Exclusive Emote, Tower Skin, and Battle Banner''': Each Season has at least one Tower Skin, Emote, and animated Battle Banner exclusively obtainable for that Season.
+*'''Bonus Bank''': After completing all Battle Pass tiers, for every further crowns gained, the players get a 1-Star Lucky Drop. You can get a maximum of 1 per day (however, Bonus Bank Lucky Drops not unlocked yet will stack). The number of crowns required for a single Lucky Drop unlock is 20.
+{{RemovedContent}}
+*'''Automatic Chest Unlocking''': Queue up another [[Chests|Chest]] to start unlocking automatically when the first Chest finishes unlocking.
+*'''Lightning Strikes''': Strikes down unwanted [[Cards]] from chests to other Cards of the same amount and rarity. Note that after the Strikes are unlocked, every single remaining Pass Royale Chest and Crown Chest will have that number of Strikes, instead of having a total of that number of Strikes. Each player has 7 Strikes unlocked in each Season, the first of which is automatically unlocked upon purchasing Pass Royale.
+
+==Pass Royale Chests==
+{{RemovedContent}}
+*Pass Royale [[Chests]] do not contain any [[Gold]] by themselves.
+*For players who have bought the Pass Royale, all these Chests, along with the Crown Chests, have Strikes unlocked through the rewards.
+*The Rare and Epic Pass Royale Chests usually only contain [[Cards]] of a single rarity, but can contain one {{Rarity|Legendary}} Card at [[Arenas|Builder's Workshop (Arena 6)]] or above. This is in contrast to the normal Epic Chest, which never contains a {{Rarity|Legendary}} Card.
+*At Builder's Workshop (Arena 6) or above, the Legendary Pass Royale Chest replaces the final Crown Chest of each Season, even available to free players (however, free players do not get the Strikes and just get one random {{Rarity|Legendary}} Card). At Spell Valley (Arena 5) or below, the final Crown Chest is replaced by the Epic Pass Royale Chest instead.
+*Players have to reach Builder's Workshop (Arena 6) before the beginning of this Season to be eligible for the higher tier Pass Royale Chests, like Legendary Chests. If a player reaches Builder's Workshop during a Season, the rewards remain at the lower tier.
+
+{|class="wikitable" style="width: 100%; text-align: center;"
+!scope="col"style="width: 20%;"|[[Chests|Chest]]
+!scope="col"style="width: 20%;"|[[Arenas|Arena]]
+!scope="col"style="width: 5%;"|Total [[Cards]]
+!scope="col"style="width: 40%;"|Guaranteed Cards
+|-
+!rowspan="2" style="padding: 10px;"|[[File:Common Pass Royale Chest.png|120px]]
+|Goblin Stadium ~ Spell Valley||80||5 {{Rarity|Rare}}
+|-
+|Builder's Workshop ~ Legendary Arena||120||8 {{Rarity|Rare}}
+|-
+!rowspan="2" style="padding: 10px;"|[[File:Rare Pass Royale Chest.png|120px]]
+|Goblin Stadium ~ Spell Valley||25||rowspan="2"|All cards are {{Rarity|Rare}} cards
+|-
+|Builder's Workshop ~ Legendary Arena||35
+|-
+!rowspan="2" style="padding: 10px;"|[[File:Epic Pass Royale Chest.png|120px]]
+|Goblin Stadium ~ Spell Valley||9||rowspan="2"|All cards are {{Rarity|Epic}} cards
+|-
+|Builder's Workshop ~ Legendary Arena||18
+|-
+![[File:Legendary Pass Royale Chest.png|160px]]
+|Builder's Workshop ~ Legendary Arena||1||1 {{Rarity|Legendary}}
+|}
+<nowiki>*</nowiki> Have small chance to contain 1 {{Rarity|Legendary}} Card at Builder's Workshop through Legendary Arena.
+
+==List of Seasons==
+{|class="sortable mw-collapsible mw-collapsed fandom-table" style="width: 100%; margin: auto; text-align: center;"
+|+
+|-style="vertical-align: bottom; height: 100px;"
+!Season
+!Tower Skin
+!Emote
+!Battle Banner
+!Seasonal Arenas (Trophy Road)
+!Seasonal Arena (Ranked & Events)
+!Soundtracks
+!Seasonal [[Lucky Chests]]
+!New Cards/Evolutions/Heroes
+!Boosted Cards
+|-
+|1. '''The Flood'''<br>July 2019
+|[[File:Shark_Tank Tower.png|50px|center]]
+|[[File:Fish_Slap.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Fisherman's_Float.png|100px|center]] Fisherman's Float
+|[[File:Fisherman's Float Intro.mp3]] (Intro)
+|N/A
+|{{Card|Name=Fisherman|Scale=.25|Position=middle}}
+|N/A
+|-
+|2. '''Shipwrecked'''<br>August 2019
+|[[File:Sandcastle Tower.png|50px|center]]
+|[[File:Pirate_King.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Shipwreck_Island.png|100px|center]] Shipwreck Island
+|[[File:Fisherman's Float Intro.mp3]] (Intro)
+|colspan="3"|N/A
+|-
+|3. '''Be Legendary'''<br>September 2019
+|[[File:Fortress Tower.png|50px|center]]
+|[[File:Deal_with_it_Princess.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Legendary_Arena.png|100px|center]] Legendary Arena 
+|[[File:Legendary Arena Intro.mp3]] (Intro)
+|colspan="3"|N/A
+|-
+|4. '''Shocktober'''<br>October 2019
+|[[File:Jack-o'-Lantern Tower.png|50px|center]]
+|[[File:Skeleton Mariachi.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Shocktober_Arena.png|100px|center]] Shocktober Arena
+|[[File:Legendary Arena Intro.mp3]] (Intro)
+|N/A
+|{{Card|Name=Elixir Golem|Scale=.25|Position=middle}}
+|N/A
+|-
+|5. '''Great Goblin Feast'''<br>November 2019
+|[[File:Party_Hut Tower.png|50px|center]]
+|[[File:Confetti_Goblin.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Goblin-gendary_Arena.png|100px|center]] Goblin-gendary Arena
+|[[File:Legendary Arena Intro.mp3]] (Intro)
+|colspan="3"|N/A 
+|-
+|6. '''Clashmas'''<br>December 2019
+|[[File:Clashmas Tower.png|50px|center]] <br>
+[[File:Igloo Tower.png|50px|center]] (Free)
+|[[File:Tree_Royal Hog.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Clashmas_Arena.png|100px|center]] Clashmas Arena
+|[[File:Clashmas Intro.mp3]] (Intro)
+|N/A
+|colspan="2" rowspan="1"|{{Card|Name=Battle Healer|Scale=.25|Position=middle}}
+|-
+|7. '''Lunar Festival'''<br>January 2020
+|[[File:Lunar_Lantern Tower.png|50px|center]]
+|[[File:Firecracker_Confetti.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Serenity_Peak.png|100px|center]] Serenity Peak
+|[[File:Serenity Peak Intro.mp3]] (Intro)
+|N/A
+|colspan="2" rowspan="1"|{{Card|Name=Firecracker|Scale=.25|Position=middle}}
+|-
+|8. '''Return to Log-endary'''<br>Februaty 2020
+|[[File:Log-endary_Tower.png|50px|center]]
+|[[File:Crying_Royale_Ghost.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Legendary_Arena.png|100px|center]] Legendary Arena
+|[[File:Legendary Arena Intro.mp3]] (Intro)
+|colspan="2"|N/A
+|{{Card|Name=Ram Rider|Scale=.25|Position=middle}}
+|-
+|9. '''Birthday Royale'''<br>March 2020
+|[[File:Fondant Fortress_Tower.png|50px|center]]
+|[[File:4th Birthday Battle Healer.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Birthday_Battlefield.png|100px|center]] Birthday Battlefield
+|[[File:Birthday Battlefield Intro.mp3]] (Intro)
+|N/A
+|colspan="2" rowspan="1"|{{Card|Name=Royal Delivery|Scale=.25|Position=middle}}
+|-
+|10. '''The Heist'''<br>April 2020
+|[[File:Treehouse Tower.png|50px|center]]
+|[[File:Dissent_Magic_Archer.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Rascal's Hideout.png|100px|center]] Rascal's Hideout
+|[[File:Hog Mountain Intro.mp3]] (Intro)
+|N/A
+|colspan="2" rowspan="1"|{{Card|Name=Heal Spirit|Scale=.25|Position=middle}}
+|-
+|11. '''Here Be Dragons'''<br>May 2020
+|[[File:Dragon_Tower.png|50px|center]]
+|[[File:Knight_Sweating.png|50px|center]]<br>[[File:King with 10 sign.png|50px|center]](Free)
+|colspan="2"|N/A
+|[[File:Dragon_Spa.png|100px|center]] Dragon Spa
+|[[File:Hog Mountain Intro.mp3]] (Intro)
+|colspan="2"|N/A
+|{{Card|Name=Electro Dragon|Scale=.25|Position=middle}}
+|-
+|12. '''Prince's Dream'''<br>June 2020
+|[[File:The Tower of Dreams Tower.png|50px|center]]
+|[[File:Prince_Rainbows.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Prince's_Dream_Arena.png|100px|center]] Prince's Dream Arena
+|[[File:Prince's Dream Arena Intro.mp3]] (Intro)
+|N/A
+|{{Card|Name=Skeleton Dragons|Scale=.25|Position = middle}}
+|{{Card|Name=Prince|Scale=.25|Position=middle}}<br>{{Card|Name=Skeleton Dragons|Scale=.25|Position=middle}}
+|-
+|13. '''Beach Battle'''<br>July 2020
+|[[File:Tropical_Turret Tower.png|50px|center]]
+|[[File:Summer_PEKKA.png|50px|center]]
+|colspan="2"|N/A
+|[[File:The_Beach.png|100px|center]] Island Arena
+|[[File:Fisherman's Float Intro.mp3]] (Intro)
+|colspan="2"|N/A
+|{{Card|Name=Ice Wizard|Scale=.25|Position=middle}}
+|-
+|14. '''Prepare for War'''<br>August 2020
+|[[File:Mega_Knight_Tower.png|50px|center]]
+|[[File:Slowmo_Archer.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Legendary_Arena.png|100px|center]] Legendary Arena
+|[[File:Legendary Arena Intro.mp3]] (Intro)
+|colspan="2"|N/A
+|{{Card|Name=Mega Knight|Scale=.25|Position=middle}}
+|-
+|15. '''Set Sail for War'''<br>September 2020
+|[[File:Colossal_Castle Tower.png|50px|center]]<br>[[File:Clan_Boat_Bastion Tower.png|50px|center]] (Free) 
+|[[File:Goblin He’ll Be Back.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Fisherman's_Float.png|100px|center]] Fisherman's Float
+|[[File:Fisherman's Float Intro.mp3]] (Intro)
+|colspan="2"|N/A
+|{{Card|Name=Guards|Scale=.25|Position=middle}}
+|-
+|16. '''Shocktober'''<br>October 2020
+|[[File:Electro_Tower.png|50px|center]]
+|[[File:Electro_Giant_Disco.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Electro_Shocktober_Arena.png|100px|center]] Shocktober Valley
+|[[File:Electro Valley Intro.mp3]] (Intro)
+|N/A
+|colspan="2"|{{Card|Name=Electro Giant|Scale=.25|Position=middle}}<br>{{Card|Name=Electro Spirit|Scale=.25|Position=middle}}
+|-
+|17. '''Treasures of the Old King'''<br>November 2020
+|[[File:Ghostly Treasure Tower.png|50px|center]]
+|[[File:Mega Knight Ball Clash.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Royal Crypt.png|100px|center]] Royal Crypt
+|[[File:Hog Mountain Intro.mp3]] (Intro)
+|colspan="2"|N/A
+|{{Card|Name=Royal Ghost|Scale=.25|Position = middle}}<br>{{Card|Name=Electro Giant|Scale=.25|Position=middle}}
+|-
+|18. '''Logmas'''<br>December 2020
+|[[File:Clashmas Sled Tower.png|50px|center]]
+|[[File:Bowler Gift.png|50px|center]]<br>[[File:Logmas.png|50px|center]] (Free)
+|colspan="2"|N/A
+|[[File:Logmas Arena.png|100px|center]] Logmas Arena
+|[[File:Clashmas Intro.mp3]] (Intro)<br>[[File:Royal Ghost Clashmas.ogg]] ([[Royal Ghost]] Mirror Challenge Battle)
+|N/A
+|{{Card|Name=Mother Witch|Scale=.25|Position=middle}}
+|{{Card|Name=The Log|Scale=.25|Position=middle}}<br>{{Card|Name=Mother Witch|Scale=.25|Position=middle}}
+|-
+|19. '''Stay Cool'''<br>January 2021
+|[[File:Frozen Tower.png|50px|center]]
+|[[File:Ice Wizard Dancer.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Frozen Peak.png|center|100px]] Frozen Peak
+|[[File:Frozen Peak Intro.mp3]] (Intro)
+|colspan="2"|N/A
+|{{Card|Name=Ice Wizard|Scale=.25|Position=middle}}<br>{{Card|Name=Mother Witch|Scale=.25|Position=middle}}
+|-
+|20. '''The Forbidden Palace'''<br>February 2021
+|[[File:Forbidden Palace Tower.png|50px|center]]
+|[[File:Elite Barbarian Kiss.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Forbidden Palace.png|center|100px]] Forbidden Palace
+|[[File:Forbidden Palace Intro.wav]] (Intro)<br>[[File:Forbidden Palace.ogg]] (Battle)
+|colspan="2"|N/A
+|{{Card|Name=Prince|Scale=.25|Position=middle}}<br>{{Card|Name=Princess|Scale=.25|Position=middle}}
+|-
+|21. '''Birthday Royale'''<br>March 2021
+|[[File:Birthday Card Tower.png|50px|center]]
+|[[File:Sparky New Surprise.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Birthday_Battlefield.png|100px|center]] Birthday Battlefield
+|[[File:Birthday Battlefield Intro.mp3]] (Intro)
+|colspan="2"|N/A
+|{{Card|Name=Elixir Golem|Scale=.25|Position=middle}}<br>(Monthly)<br>{{Card|Name=Valkyrie|Scale=.15|Position=middle}}{{Card|Name=Baby Dragon|Scale=.15|Position=middle}}<br>{{Card|Name=Magic Archer|Scale=.15|Position=middle}}{{Card|Name=Zap|Scale=.15|Position=middle}}<br>(Weekly)
+|-
+|22. '''P.E.K.K.A.'s Playhouse'''<br>April 2021
+|[[File:PEKKA Tower.png|50px|center]]
+|[[File:PEKKA Blossom.png|50px|center]]
+|colspan="2"|N/A
+|[[File:P.E.K.K.A.'s Playhouse.png|100px|center]] P.E.K.K.A.'s Playhouse
+|[[File:P.E.K.K.A.'s Playhouse Intro.mp3]] (Intro)
+|colspan="2"|N/A
+|{{Card|Name=P.E.K.K.A.|Scale=.25|Position=middle}}
+|-
+|23. '''Golden Dragon Spa'''<br>May 2021
+|[[File:Thermal Baths Tower.png|50px|center]]
+|[[File:Mortar Tower Destroyed.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Dragon_Spa.png|100px|center]] Dragon Spa
+|[[File:Hog Mountain Intro.mp3]] (Intro)
+|colspan="2"|N/A
+|{{Card|Name=Inferno Dragon|Scale=.25|Position=middle}}
+|-
+|24. '''Rumble in the Jungle'''<br>June 2021
+|[[File:Jungle Tower.png|50px|center]]
+|[[File:Dart Goblin Backfire.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Jungle_Arena.png|100px|center]] Jungle Arena
+|[[File:Jungle Arena Intro.mp3]] (Intro)
+|N/A
+|{{Card|Name=Goblin Drill|Scale=.25|Position=middle}}
+|{{Card|Name=Goblin Giant |Scale=.25|Position=middle}}<br>{{Card|Name=Goblin Drill|Scale=.25|Position=middle}}
+|-
+|25. '''Vacation Royale'''<br>July 2021
+|[[File:Boom Tower.png|50px|center]]
+|[[File:Bowler Basketball.png|50px|center]]
+|colspan="2"|N/A
+|[[File:The_Beach.png|100px|center]] Island Arena
+|[[File:Fisherman's Float Intro.mp3]] (Intro)
+|colspan="2"|N/A
+|{{Card|Name=Bowler|Scale=.25|Position = middle}}<br>{{Card|Name=Goblin Drill|Scale=.25|Position=middle}}
+|-
+|26. '''Cruise Royale'''<br>August 2021
+|[[File:Fisherman Tower.jpg|50px|center]]
+|[[File:Ice Wizard Melt Sweat.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Fisherman's Float.png|100px|center]] Fisherman's Float
+|[[File:Fisherman's Float Intro.mp3]] (Intro)
+|colspan="2"|N/A
+|{{Card|Name=Fisherman|Scale=.25|Position=middle}}<br>(Monthly)<br>{{Card|Name=Firecracker|Scale=.15|Position=middle}}{{Card|Name=Dart Goblin|Scale=.15|Position=middle}}<br>{{Card|Name=Witch|Scale=.15|Position=middle}}{{Card|Name=Electro Wizard|Scale=.15|Position=middle}}<br>(Weekly)
+|-
+|27. '''Executioner’s Kitchen'''<br>September 2021
+|[[File:Kitchen Pot Tower.png|50px|center]]
+|[[File:Executioner Chef's Kiss.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Executioner's Kitchen.png|100px|center]] Executioner’s Kitchen
+|[[File:Executioner's Kitchen Intro.mp3]] (Intro)
+|colspan="2"|N/A
+|{{Card|Name=Executioner|Scale=.25|Position=middle}}
+|-
+|28. '''Shocktober'''<br>October 2021
+|[[File:Electro Wizard Tower.png|50px|center]]
+|[[File:Bat Embrace.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Electro_Shocktober_Arena.png|100px|center]] Shocktober Valley
+|[[File:Electro Valley Intro.mp3]] (Intro)
+|N/A
+|{{Card|Name=Archer Queen|Scale=.25|Position=middle}}<br>{{Card|Name=Golden Knight|Scale=.25|Position=middle}}<br>{{Card|Name=Skeleton King|Scale=.25|Position=middle}}
+|{{Card|Name=Electro Wizard|Scale=.25|Position=middle}}
+|-
+|29. '''Champions Season'''<br>November 2021
+|[[File:Skeleton King Tower.jpg|50px|center]]
+|[[File:Arrows 3 Crowns.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Royal Arena.png|100px|center]] Royal Arena
+|[[File:Royal Arena Intro.mp3]] (Intro)
+|colspan="2"|N/A
+|{{Card|Name=Royal Recruits|Scale=.25|Position=middle}}
+|-
+|30. '''Clashmas'''<br>December 2021
+|[[File:Archer Queen Tower.png|50px|center]]
+|[[File:Archer Queen Fast Aim.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Logmas Arena.png|100px|center]] Logmas Arena
+|[[File:Clashmas Intro.mp3]] (Intro)
+|colspan="2"|N/A
+|{{Card|Name=Giant Snowball|Scale=.15|Position=middle}}{{Card|Name=Hog Rider|Scale=.15|Position=middle}}<br>{{Card|Name=Barbarians|Scale=.15|Position=middle}}{{Card|Name=Inferno Tower|Scale=.15|Position=middle}}<br>(Weekly)
+|-
+|31. '''New Year'''<br>January 2022
+|[[File:Golden Knight Tower.jpeg|50px|center]]
+|[[File:Golden Knight Fail.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Serenity Peak.png|100px|center]] Serenity Peak
+|[[File:Serenity Peak Intro.mp3]] (Intro)
+|colspan="2"|N/A
+|{{Card|Name=Ram Rider|Scale=.25|Position=middle}}
+|-
+|32. '''Lava Hound'''<br>February 2022
+|[[File:Lava Tower.jpeg|50px|center]]
+|[[File:Lava Hound Dizzy.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Legendary_Arena.png|100px|center]] Legendary Arena
+|[[File:Legendary Arena Intro.mp3]] (Intro)
+|N/A
+|{{Card|Name=Super Lava Hound|Scale=.25|Position|middle}} (Temp.)
+|{{Card|Name=Lava Hound|Scale=.25|Position=middle}}
+|-
+|33. '''Birthday Royale'''<br>March 2022
+|[[File:Pinata Tower.png|50px|center]]
+|[[File:Heal Spirit Love Face.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Birthday Battlefield.png|100px|center]] Birthday Battlefield
+|[[File:Birthday Battlefield Intro.mp3]]
+|N/A
+|{{Card|Name=Mighty Miner|Scale=.25|Position|middle}}
+|{{Card|Name=Dark Prince|Scale=.15|Position=middle}}{{Card|Name=Fire Spirit|Scale=.15|Position=middle}}<br>{{Card|Name=Electro Spirit|Scale=.15|Position=middle}}{{Card|Name=Heal Spirit|Scale=.15|Position=middle}}<br>(Weekly)
+|-
+|34. '''Mighty Mine'''<br>April 2022
+|[[File:Mighty Miner Tower.jpeg|50px|center]]
+|[[File:Mighty Miner Bomb.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Miner's Mine.png|100px|center]] Miner's Mine
+|[[File:Miner's Mine Intro.mp3]] (Intro)
+|colspan="2"|N/A
+|{{Card|Name=Mighty Miner|Scale=.25|Position=middle}}<br>{{Card|Name=Miner|Scale=.25|Position=middle}}
+|-
+|35. '''Bewitched'''<br>May 2022
+|[[File:Crystal Cauldron Tower.jpg|50px|center]]
+|[[File:Witch Skeleton Love.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Spell Valley.png|100px|center]] Spell Valley
+|[[File:Spell Valley Intro.mp3]] (Intro)
+|N/A
+|{{Card|Name=Super Witch|Scale=.25|Position|middle}} (Temp.)
+|{{Card|Name=Witch|Scale=.25|Position=middle}}<br>{{Card|Name=Night Witch|Scale=.25|Position=middle}}<br>{{Card|Name=Mother Witch|Scale=.25|Position=middle}}
+|-
+|36. '''Bone Pit'''<br>June 2022
+|[[File:Bone Pit Tower.png|50px|center]]
+|[[File:Giant Skeleton Clueless.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Bone Pit.png|center|100px]] Bone Pit
+|[[File:Bone Pit Intro.mp3]] (Intro)
+|colspan="2"|N/A
+|{{Card|Name=Giant Skeleton|Scale=.15|Position=middle}}{{Card|Name=Goblins|Scale=.15|Position=middle}}<br>{{Card|Name=Spear Goblins|Scale=.15|Position=middle}}{{Card|Name=Goblin Giant|Scale=.15|Position=middle}}<br>{{Card|Name=Skeleton Dragons|Scale=.15|Position=middle}}{{Card|Name=Skeleton Army|Scale=.15|Position=middle}}<br>(Weekly)
+|-
+|37. '''Mini P.E.K.K.A.'s Dream'''<br>July 2022
+|[[File:Pancake Tower.jpeg|50px|center]]
+|[[File:Pancake Suit Mini PEKKA.png|50px|center]]
+|colspan="2"|N/A
+|[[File:PANCAKES!.png|100px|center]] PANCAKES!
+|[[File:PANCAKES! Intro.mp3]] (Intro)
+|N/A
+|{{Card|Name=Super Mini P.E.K.K.A.|Scale=.25|Position=middle}} (Temp.)
+|{{Card|Name=Mini P.E.K.K.A.|Scale=.25|Position=middle}}<br>{{Card|Name=Battle Healer|Scale=.25|Position=middle}}
+|-
+|38. '''Clash from the Past'''<br>August 2022
+|[[File:Pixel Tower.jpeg|50px|center]]
+|[[File:Barbarian Pixel Up.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Pixel Arena.png|100px|center]] Pixel Arena
+|[[File:Clash from the Past Menu.ogg]] (Menu)<br>[[File:Clash from the Past Intro.wav]] (Intro)<br>[[File:Clash from the Past.ogg]] (Battle)<br>[[File:Clash from the Past Sudden Death.ogg]] (Sudden Death)
+|N/A
+|{{Card|Name=Barbarian Launcher|Scale=.25|Position=middle}} (Temp.)
+|{{Card|Name=Barbarians|Scale=.25|Position=middle}}<br>{{Card|Name=Barbarian Hut|Scale = .25|Position = middle}}<br>{{Card|Name=Battle Ram|Scale=.25|Position=middle}}
+|-
+|39. '''Clash Fest'''<br>September 2022
+|[[File:Clash Fest Tower.png|50px|center]]
+|[[File:King TV Royale.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Clash Fest.png|100px|center]] Clash Fest
+|[[File:Hog Mountain Intro.mp3]] (Intro)
+|colspan="2"|N/A
+|{{Card|Name=Mortar|Scale=.25|Position=middle}}<br>{{Card|Name=Flying Machine|Scale=.25|Position=middle}}
+|-
+|40. '''Clash-o-ween'''<br>October 2022
+|[[File:Night Witch Tower.jpeg|50px|center]]
+|[[File:Moonrise Night Witch.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Spooky Town.png|100px|center]] Spooky Town
+|[[File:Spooky Town Intro.mp3]] (Intro)
+|N/A
+|{{Card|Name=Monk|Scale=.25|Position=middle}}<br>{{Card|Name=Phoenix|Scale=.25|Position=middle}}
+|{{Card|Name=Night Witch|Scale=.25|Position=middle}}<br>{{Card|Name=Bats|Scale=.25|Position=middle}}
+|-
+|41. '''Silent Sanctuary'''<br>November 2022
+|[[File:Monk’s Mantlet Tower.jpeg|50px|center]]
+|[[File:Monk Arrow.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Silent Sanctuary.png|100px|center]] Silent Sanctuary
+|[[File:Hog Mountain Intro.mp3]] (Intro)
+|colspan="2"|N/A
+|{{Card|Name=Archer Queen|Scale=.15|Position=middle}}{{Card|Name=Golden Knight|Scale=.15|Position=middle}}<br>{{Card|Name=Mighty Miner|Scale=.15|Position=middle}}{{Card|Name=Skeleton King|Scale=.15|Position=middle}}<br>(Weekly)
+|-
+|42. '''Clashmas'''<br>December 2022
+|[[File:Clashmas Cake Tower.png|50px|center]]<br>[[File:Clashmas Sweater Tower.png|50px|center]] (Free)
+|[[File:Royal Hog Gingerbread.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Clashmas_Arena.png|100px|center]] Clashmas Arena
+|[[File:Clashmas Intro.mp3]] (Intro)
+|N/A
+|{{Card|Name=Santa Hog Rider|Scale=.25|Position=middle}} (Temp.)
+|{{Card|Name=Giant Snowball|Scale=.25|Position=middle}}<br>{{Card|Name=Hog Rider|Scale=.25|Position=middle}}<br>{{Card|Name=Ice Spirit|Scale=.25|Position=middle}}
+|-
+|43. '''Frost Festival'''<br>January 2023
+|[[File:Ice Golem Tower.jpeg|50px|center]]
+|[[File:Ice Golem Snow Pile.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Frozen Peak.png|100px|center]] Frozen Peak
+|[[File:Frozen Peak Intro.mp3]] (Intro)
+|N/A
+|{{Card|Name=Super Ice Golem|Scale=.25|Position=middle}} (Temp.)
+|{{Card|Name=Ice Golem|Scale=.25|Position=middle}}<br>{{Card|Name=Freeze|Scale=.25|Position=middle}}<br>{{Card|Name=Ice Wizard|Scale=.25|Position=middle}}
+|-
+|44. '''Love and Magic'''<br>February 2023
+|[[File:Valentines Tower.jpg|50px|center]]
+|[[File:Sparky Love Box.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Prince's_Dream_Arena.png|100px|center]] Prince's Dream Arena
+|[[File:Prince's Dream Arena Intro.mp3]] (Intro)
+|N/A
+|{{Card|Name=Super Magic Archer|Scale=.25|Position=middle}} (Temp.)
+|{{Card|Name=Magic Archer|Scale=.25|Position=middle}}<br>{{Card|Name=Golem|Scale=.25|Position=middle}}<br>{{Card|Name=Sparky|Scale=.25|Position=middle}}
+|-
+|45. '''Goblin Party'''<br>March 2023
+|[[File:Party Protector Tower.jpg|50px|center]]
+|[[File:Wizard Disco Dance.png|50px|center]]
+|colspan="2"|N/A
+|[[File:Goblin-gendary_Arena.png|100px|center]] Goblin-gendary Arena
+|[[File:Legendary Arena Intro.mp3]] (Intro)
+|N/A
+|{{Card|Name=Party Hut|Scale=.25|Position=middle}} (Temp.)<br>{{Card|Name=Party Rocket|Scale=.25|Position=middle}} (Temp.)
+|{{Card|Name=Goblins|Scale = .25|Position = middle}}<br>{{Card|Name=Goblin Hut|Scale=.25|Position=middle}}<br>{{Card|Name=Dart Goblin|Scale=.25|Position=middle}}
+|-
+|46. '''Boot Camp'''<br>April 2023
+|[[File:Archer Tower.jpeg|50px|center]]
+|[[File:Archer Arrow Fail.png|50px|center]]
+|[[File:...Fire! Frame.png|150px|center]]<br>[[File:Take Aim... Decoration.png|150px|center]]
+|N/A
+|[[File:Boot Camp.png|100px|center]] Boot Camp
+|[[File:Hog Mountain Intro.mp3]] (Intro)
+|N/A
+|{{Card|Name=Super Archers|Scale=.25|Position=middle}} (Temp.)
+|{{Card|Name=Archers|Scale=.25|Position=middle}}<br>{{Card|Name=Arrows|Scale=.25|Position middle}}<br>{{Card|Name=Archer Queen|Scale=.25|Position=middle}}
+|-
+|47. '''Books of Clash'''<br>May 2023
+|[[File:Hog Head Tower.jpeg|50px|center]]
+|[[File:Rokkus Angry.png|50px|center]]
+|[[File:Training Stones Frame.png|150px|center]]<br>[[File:It's Monkin' Time Decoration.png|150px|center]]
+|N/A
+|[[File:Hog Mountain.png|100px|center]] Hog Mountain
+|[[File:Hog Mountain Intro.mp3]] (Intro)
+|N/A
+|{{Card|Name=Terry|Scale=.25|Position=middle}} (Temp.)
+|{{Card|Name=Hog Rider|Scale=.25|Position=middle}}<br>{{Card|Name=Ram Rider|Scale=.25|Position=middle}}<br>{{Card|Name=Monk|Scale=.25|Position=middle}}
+|-
+|48. '''Get Ready for Evolution'''<br>June 2023
+|[[File:Heavy Metal Tower.png|50px|center]]
+|[[File:Golden Knight Hairspin.png|50px|center]]
+|[[File:Crowd Pleaser Frame.png|150px|center]]<br>[[File:Good Knight Decoration.png|150px|center]]
+|N/A
+|[[File:Royal Rock Arena.png|100px|center]] Royal Rock
+|[[File:Royal Rock Intro.wav]] (Intro)<br>[[File:Royal Rock.ogg]] (Battle)<br>[[File:Royal Rock Sudden Death.ogg]] (Sudden Death)
+|N/A
+|{{CardEvolution|Name=Barbarians|Scale=.25|Position=middle}}<br>{{CardEvolution|Name=Firecracker|Scale=.25|Position=middle}}<br>{{CardEvolution|Name=Royal Giant|Scale=.25|Position=middle}}<br>{{CardEvolution|Name=Skeletons|Scale=.25|Position=middle}}
+|{{Card|Name=Barbarians|Scale=.15|Position=middle}}{{Card|Name=Firecracker|Scale=.15|Position=middle}}<br>{{Card|Name=Royal Giant|Scale=.15|Position=middle}}{{Card|Name=Skeletons|Scale=.15|Position=middle}}
+|-
+|49. '''Evolution Origins'''<br>July 2023
+|[[File:Dark Elixer Tower.png|50px|center]]
+|[[File:Evolved Mortar Goblin.png|50px|center]]
+|[[File:Grassy Ground Frame.png|150px|center]]<br>[[File:Flying Gobbo Decoration.png|150px|center]]
+|N/A
+|[[File:Dark Elixir Chasm Arena.png|100px|center]] Dark Elixir Chasm
+|[[File:Royal Rock Intro.wav]] (Intro)<br>[[File:Royal Rock.ogg]] (Battle)<br>[[File:Royal Rock Sudden Death.ogg]] (Sudden Death)
+|N/A
+|{{CardEvolution|Name=Mortar|Scale=.25|Position=middle}}
+|{{Card|Name=Mortar|Scale=.15|Position=middle}}{{Card|Name=Goblins|Scale=.15|Position=middle}}<br>{{Card|Name=Musketeer|Scale=.15|Position=middle}}{{Card|Name=The Log|Scale=.15|Position=middle}}
+|-
+|50. '''Clash A Rama'''<br>August 2023
+|[[File:Clash-A-Rama King Tower.png|50px|center]]
+|[[File:Evolved Knight Arrow.png|50px|center]]
+|[[File:Banner Evolution Frame.png|150px|center]]<br>[[File:Knight Evolution Decoration.png|150px|center]]
+|N/A
+|[[File:Royal Arena.png|100px|center]] Clash-A-Rena
+|[[File:Royal Arena Intro.mp3]] (Intro)
+|N/A
+|{{CardEvolution|Name=Knight|Scale=.25|Position=middle}}
+|{{Card|Name=Knight|Scale=.15|Position=middle}}{{Card|Name=P.E.K.K.A.|Scale=.15|Position=middle}}<br>{{Card|Name=Hog Rider|Scale=.15|Position=middle}}{{Card|Name=Mega Minion|Scale=.15|Position=middle}}
+|-
+|51. '''King’s Gambit'''<br>September 2023
+|[[File:Castling Castle Tower.png|50px|center]]
+|[[File:Evolved Royal Recruit Wake Up.png|50px|center]]
+|[[File:Warzone Frame.png|150px|center]]<br>
+[[File:Royal Reinforcements Decoration.png|150px|center]]
+|N/A
+|[[File:Checkmate Arena.png|100px|center]] Checkmate
+|[[File:Royal Arena Intro.mp3]] (Intro)
+|N/A
+|{{CardEvolution|Name=Royal Recruits|Scale=.25|Position=middle}}<br>{{Card|Name=Raging Prince|Scale=.25|Position=middle}} (Temp.)
+|{{Card|Name=Royal Recruits|Scale=.15|Position=middle}}{{Card|Name=Prince|Scale=.15|Position=middle}}<br>{{Card|Name=Magic Archer|Scale=.15|Position=middle}}{{Card|Name=Archer Queen|Scale=.15|Position=middle}}
+|-
+|52. '''Clash-O-Ween''' <br>October 2023
+|[[File:Bat-tlements Tower.png|50px|center]]
+|[[File:Evolved Bat Spin.png|50px|center]]
+|[[File:Creepy Kingdom Frame.png|150px|center]]<br>[[File:Bat Hangs Decoration.png|150px|center]]
+|N/A
+|[[File:Clash-O-Ween Town Arena.png|100px|center]] Clash-O-Ween Town
+|[[File:Royal Arena Intro.mp3]] (Intro)
+|N/A
+|{{CardEvolution|Name=Bats|Scale=.25|Position=middle}}
+|{{Card|Name=Bats|Scale=.15|Position=middle}}{{Card|Name=Tombstone|Scale=.15|Position=middle}}<br/>{{Card|Name=Giant Skeleton|Scale=.15|Position=middle}}{{Card|Name=Night Witch|Scale=.15|Position=middle}}
+|-
+|53. '''Little Prince, Big Trouble''' <br>November 2023
+|[[File:Tavern Table Tower.png|50px|center]]
+|[[File:Evolved Archer Braid.png|50px|center]]
+|[[File:Tavern Trouble Frame.png|150px|center]]<br>[[File:Attack! Decoration.png|150px|center]]
+|N/A
+|[[File:Little Prince's Tavern Arena.png|100px|center]] Little Prince's Tavern
+|[[File:Little Prince Intro.wav]] (Intro)<br>[[File:Little Prince.ogg]] (Battle)<br>[[File:Little Prince Sudden Death.ogg]] (Sudden Death)
+|N/A
+|{{CardEvolution|Name=Archers|Scale=.25|Position=middle}}<br>{{Card|Name=Little Prince|Scale=.25|Position=middle}}
+|{{Card|Name=Archers|Scale=.15|Position=middle}}{{Card|Name=Rascals|Scale=.15|Position=middle}}<br>{{Card|Name=Dark Prince|Scale=.15|Position=middle}}{{Card|Name=Princess|Scale=.15|Position=middle}}
+|-
+|54. '''Naughty or Nice''' <br>December 2023
+|[[File:Snoglobe Tower.png|50px|center]]
+|[[File:Evolved Ice Spirit Sword Freeze.png|61x61px]]
+|[[File:Snowy Scape Frame.png|150px|center]]<br>[[File:Stay Frosty Decoration.png|150px|center]]
+|N/A
+|[[File:Clashmas Arena.png|100px|center]] Clashmas Arena
+|[[File:Clashmas Intro.mp3]] (Intro)
+|N/A
+|{{CardEvolution|Name=Ice Spirit|Scale=.25|Position=middle}}<br>{{Card|Name=Tower Princess|Scale=.25|Position=middle}}<br>{{Card|Name= Warmth|Scale=.25|Position=middle}} (Temp.)
+|{{Card|Name=Giant Snowball|Scale=.15|Position=middle}}{{Card|Name=Fireball|Scale=.15|Position=middle}}<br>{{Card|Name=Fire Spirit|Scale=.15|Position=middle}}{{Card|Name=Ice Spirit|Scale=.15|Position=middle}}
+|-
+|55. '''Valhalla''' <br>January 2024
+|[[File:Longboat Tower.png|50px|center]]
+|[[File:Evolved Valkyrie Axe Rise.png|61x61px]]
+|[[File:Valkhalla Frame.png|150px|center]]<br>[[File:Tornado Axe Decoration.png|150px|center]]
+|N/A
+|[[File:Valkalla Arena.png|100px|center]] Valkalla
+|[[File:Royal Arena Intro.mp3]] (Intro)<br>[[File:Little Prince Sudden Death.ogg]] (Sudden Death)
+|N/A
+|{{CardEvolution|Name=Valkyrie|Scale=.25|Position=middle}}<br>{{Card|Name=Cannoneer|Scale=.25|Position=middle}}
+|{{Card|Name=Valkyrie|Scale=.15|Position=middle}}{{Card|Name=Zappies|Scale=.15|Position=middle}}<br>{{Card|Name=Battle Healer|Scale=.15|Position=middle}}{{Card|Name=Three Musketeers|Scale=.15|Position=middle}}
+|-
+|56. '''Explosive Valentine''' <br>February 2024
+|[[File:Explosive Valentine Tower.png|50px|center]]
+|[[File:Evolved Bomber Heart.png|61x61px]]
+|[[File:Castle Cut Frame.png|150px|center]]<br>[[File:Baller Decoration.png|150px|center]]
+|N/A
+|[[File:Explosive Valentines Arena.png|100px|center]] Explosive Valentines Arena
+|[[File:Royal Arena Intro.mp3]] (Intro)
+|N/A
+|{{CardEvolution|Name=Bomber|Scale=.25|Position=middle}}<br>{{CardEvolution|Name=Wall Breakers|Scale=.25|Position=middle}}
+|{{Card|Name=Bomber|Scale=.15|Position=middle}}{{Card|Name=Wall Breakers|Scale=.15|Position=middle}}<br>{{Card|Name=Skeleton Dragons|Scale=.15|Position=middle}}{{Card|Name=Witch|Scale=.15|Position=middle}}
+|-
+|57. '''Electro Birthday''' <br>March 2024
+|[[File:DJ Defense Tower.png|50px|center]]
+|[[File:Electro Giant Zap Drink.png|61x61px]]
+|[[File:Neon Nights Frame.png|150px|center]]<br>[[File:DJ Giant Decoration.png|150px|center]]
+|N/A
+|[[File:Electro Birthday Arena.png|100px|center]] Electro Birthday Arena
+|[[File:Electro Valley Intro.mp3]] (Intro)
+|N/A
+|{{CardEvolution|Name=Tesla|Scale=.25|Position=middle}}<br>{{CardEvolution|Name=Zap|Scale=.25|Position=middle}}
+|{{Card|Name=Electro Giant|Scale=.15|Position=middle}}{{Card|Name=Tesla|Scale=.15|Position=middle}}<br>{{Card|Name=Lightning|Scale=.15|Position=middle}}{{Card|Name=Zap|Scale=.15|Position=middle}}
+|-
+|58. '''Dagger Duchess''' <br>April 2024
+|[[File:House of Daggers Tower.png|50px|center]]
+|[[File:Evolved Battle Ram Breaking In.png|61x61px]]
+|[[File:The Slicing Frame.png|150px|center]]<br>[[File:The Duchess Decoration.png|150px|center]]
+|N/A
+|[[File:Royal Arena.png|100px|center]] Royal Arena
+|[[File:Royal Arena Intro.mp3]] (Intro)
+|N/A
+|{{CardEvolution|Name=Battle Ram|Scale=.25|Position=middle}}<br>{{Card|Name=Dagger Duchess|Scale=.15|Position=middle}}
+|{{Card|Name=Battle Ram|Scale=.15|Position=middle}}{{Card|Name=Prince|Scale=.15|Position=middle}}<br>{{Card|Name=Barbarian Barrel|Scale=.15|Position=middle}}{{Card|Name=Princess|Scale=.15|Position=middle}}
+|-
+|59. '''Magic Mayhem'''<br>May 2024
+|[[File:Cluckingham Tower.png|50px|center]]
+|[[File:Evolved Wizard Kame.png|61x61px]]
+|[[File:Fanning the Flames Frame.png|150px|center]]<br>[[File:Fire Bolt Decoration.png|150px|center]]
+|N/A
+|[[File:Magic Academy Arena.png|100px|center]] Magic Academy
+|[[File:Royal Arena Intro.mp3]] (Intro)
+|N/A
+|{{CardEvolution|Name=Wizard|Scale=.25|Position=middle}}<br>{{Card|Name=Void|Scale=.25|Position=middle}}<br>{{Card|Name=Wizard Trio|Scale=.25|Position=middle}} (Temp.)
+|{{Card|Name=Wizard|Scale=.15|Position=middle}}{{Card|Name=Ice Wizard|Scale=.15|Position=middle}}<br>{{Card|Name=Electro Wizard|Scale=.15|Position=middle}}{{Card|Name=Poison|Scale=.15|Position=middle}}
+|-
+|60. '''Goblin's Gambit'''<br>June 2024
+|[[File:Gold Goblin Tower.png|50px|center]]
+|[[File:Evolved Goblin Barrel Dance.png|61x61px]]
+|[[File:Birds Eye View Frame.png|150px|center]]<br>[[File:Faux Barrel Decoration.png|150px|center]]
+|N/A
+|[[File:Jungle Arena.png|100px|center]] Jungle Arena
+|[[File:Jungle Arena Intro.mp3]] (Intro)
+|N/A
+|{{CardEvolution|Name=Goblin Barrel|Scale=.25|Position=middle}}<br>{{Card|Name=Goblin Demolisher|Scale=.25|Position=middle}}<br>{{Card|Name=Goblin Curse|Scale=.25|Position=middle}}<br>{{Card|Name=Goblin Machine|Scale=.25|Position=middle}}<br>{{Card|Name=Baby Goblins|Scale=.25|Position=middle}}
+|{{Card|Name=Goblin Barrel|Scale=.15|Position=middle}}{{Card|Name=Valkyrie|Scale=.15|Position=middle}}<br>{{Card|Name=Goblin Gang|Scale=.15|Position=middle}}{{Card|Name=The Log|Scale=.15|Position=middle}}
+|-
+|61. '''Goblin Revolution''' <br>July 2024
+|[[File:Goblin Queen Throne Tower.png|50px|center]]
+|[[File:Evolved Goblin Giant Parade.png|61x61px]]
+|[[File:Dig Dug Frame.png|150px|center]]<br>[[File:It's Drillin' Time! Decoration.png|150px|center]]
+|N/A
+|[[File:Scrap Yard Arena.png|100px|center]] Scrap Yard
+|[[File:Goblin Queen Intro.wav]] (Intro)
+|N/A
+|{{CardEvolution|Name=Goblin Giant|Scale=.25|Position=middle}}<br>{{CardEvolution|Name=Goblin Drill|Scale=.25|Position=middle}}<br>{{Card|Name=Suspicious Bush|Scale=.25|Position=middle}}<br>{{Card|Name=Rocket Silo|Scale=.25|Position=middle}} (Temp.)
+|{{Card|Name=Goblin Giant|Scale=.15|Position=middle}}{{Card|Name=Goblin Drill|Scale=.15|Position=middle}}<br>{{Card|Name=Sparky|Scale=.15|Position=middle}}{{Card|Name=Goblins|Scale=.15|Position=middle}}
+|-
+|62. '''Goblin Bonanza'''<br>August 2024
+|[[File:Tiki Tower.png|50px|center]]
+|[[File:Evolved Goblin Cage Break Free.png|61x61px]]
+|[[File:In the Jungle Frame.png|150px|center]]<br>[[File:Am-bush! Decoration.png|150px|center]]
+|N/A
+|[[File:Party Beach Arena.png|100px|center]] Party Beach
+|[[File:Goblin Queen Intro.mp3]] (Intro)
+|N/A
+|{{CardEvolution|Name=Goblin Cage|Scale=.25|Position=middle}}
+|{{Card|Name=Goblin Cage|Scale=.15|Position=middle}}{{Card|Name=Dart Goblin|Scale=.15|Position=middle}}<br>{{Card|Name=Miner|Scale=.15|Position=middle}}{{Card|Name=Baby Dragon|Scale=.15|Position=middle}}
+|-
+|63. '''Fight Night''' <br>September 2024
+|[[File:Fight Night Tower.png|50px|center]]
+|[[File:Evolved PEKKA Slash.png|61x61px]]
+|[[File:Ring of Champions Frame.png|150px|center]]<br>[[File:Clash of Titans Decoration.png|150px|center]]
+|N/A
+|[[File:Ultimate Clash Arena.png|100px|center]] Ultimate Clash
+|[[File:Ultimate Clash Intro.wav]] (Intro)<br>[[File:Ultimate Clash.ogg]] (Battle)<br>[[File:Ultimate Clash Sudden Death.ogg]] (Sudden Death)
+|N/A
+|{{CardEvolution|Name=P.E.K.K.A.|Scale=.25|Position=middle}}<br>{{CardEvolution|Name=Mega Knight|Scale=.25|Position=middle}}<br>{{Card|Name=Super Knight|Scale=.25|Position=middle}} (Temp.)
+|{{Card|Name=P.E.K.K.A|Scale=.15|Position=middle}}{{Card|Name=Mini P.E.K.K.A|Scale=.15|Position=middle}}<br>{{Card|Name=Mega Knight|Scale=.15|Position=middle}}{{Card|Name=Knight|Scale=.15|Position=middle}}
+|-
+|64. '''Shocktober 2''' <br>October 2024
+|[[File:Halloween 2024.png|50px|center]]
+|[[File:Evolved Electro Dragon Sparky Play.png|61x61px]]
+|[[File:Doctor's Laboratory Frame.png|150px|center]]<br>[[File:Shocking Revelation Decoration.png|150px|center]]
+|N/A
+|[[File:Dr. Goblinstein's Lab Arena.png|100px|center]] Dr. Goblinstein's Lab
+|[[File:Shocktober 2 Intro.wav]] (Intro)<br>[[File:Shocktober 2.ogg]] (Battle)<br>[[File:Shocktober 2 Sudden Death.ogg]] (Sudden Death)
+|N/A
+|{{CardEvolution|Name=Electro Dragon|Scale=.25|Position=middle}}<br>{{Card|Name=Goblinstein|Scale=.25|Position=middle}}
+|{{Card|Name=Electro Dragon|Scale=.15|Position=middle}}{{Card|Name=Witch|Scale=.15|Position=middle}}<br>{{Card|Name=Executioner|Scale=.15|Position=middle}}{{Card|Name=Skeleton Barrel|Scale=.15|Position=middle}}
+|-
+|65. '''Muskets at Dawn''' <br>November 2024
+|[[File:Western Sheriff.png|50px|center]]
+|[[File:Evolved Musketeer Shooting Range.png|61x61px]]
+|[[File:High Noon Frame.png|150px|center]]<br>[[File:Down the Barrel Decoration.png|150px|center]]
+|N/A
+|[[File:Wild West Arena.png|100px|center]] Wild West
+|[[File:Muskets At Dawn Intro.wav]] (Intro)<br>[[File:Muskets At Dawn.ogg]] (Battle)<br>[[File:Muskets At Dawn Sudden Death.ogg]] (Sudden Death)
+|N/A
+|{{CardEvolution|Name=Musketeer|Scale=.25|Position=middle}}<br>{{CardEvolution|Name=Cannon|Scale=.25|Position=middle}}
+|{{Card|Name=Musketeer|Scale=.15|Position=middle}}{{Card|Name=Cannon|Scale=.15|Position=middle}}<br>{{Card|Name=Hog Rider|Scale=.15|Position=middle}}{{Card|Name=Ice Golem|Scale=.15|Position=middle}}
+|-
+|66. '''Cozy Clashmas''' <br>December 2024
+|[[File:Cozy Castle.png|50px|center]]
+|[[File:Evolved Giant Snowball Rolling Down.png|61x61px]]
+|[[File:Snowy Season Frame.png|150px|center]]<br>[[File:Family Time Decoration.png|150px|center]]
+|N/A
+|[[File:Cozy Arena.png|100px|center]] Cozy Arena
+|TBA (Startup)<br>[[File:Cozy Clashmas Menu.ogg]] (Menu)<br>[[File:Cozy Clashmas Intro.wav]] (Intro)<br>[[File:Cozy Clashmas.ogg]] (Battle)<br>[[File:Cozy Clashmas Sudden Death.ogg]] (Sudden Death)
+|N/A
+|{{CardEvolution|Name=Giant Snowball|Scale=.25|Position=middle}}<br>{{Card|Name=Royal Chef|Scale=.25|Position=middle}}
+|{{Card|Name=Giant Snowball|Scale=.15|Position=middle}}{{Card|Name=Lava Hound|Scale=.15|Position=middle}}<br>{{Card|Name=Ice Spirit|Scale=.15|Position=middle}}{{Card|Name=Fireball|Scale=.15|Position=middle}}
+|-
+|67. '''Runic Mountain''' <br>January 2025
+|[[File:Forge Tower.png|50px|center]]
+|[[File:Evolved Dart Goblin Poison Fireworks.png|61x61px]]
+|[[File:Blacksmith Station Frame.png|150px|center]]<br>[[File:Forging Iron Decoration.png|150px|center]]
+|N/A
+|[[File:Rune Reliquary Arena.png|100px|center]] Rune Reliquary
+|[[File:Royal Arena Intro.mp3]] (Intro)
+|N/A
+|{{CardEvolution|Name=Dart Goblin|Scale=.25|Position=middle}}<br>{{Card|Name=Rune Giant|Scale=.25|Position=middle}}
+|{{Card|Name=Dart Goblin|Scale=.15|Position=middle}}{{Card|Name=Little Prince|Scale=.15|Position=middle}}<br>{{Card|Name=Cannon Cart|Scale=.15|Position=middle}}{{Card|Name=Goblin Cage|Scale=.15|Position=middle}}
+|-
+|68. '''Lumber Love''' <br>February 2025
+|[[File:Valentines.png|50px|center]]
+|[[File:Evolved Lumberjack Drinking.png|61x61px]]
+|[[File:Forces of Green Frame.png|150px|center]]<br>[[File:Slice and Dice Decoration.png|150px|center]]
+|N/A
+|[[File:Lumberlove Cabin Arena.png|100px|center]] Lumberlove
+|[[File:Royal Arena Intro.mp3]] (Intro)
+|N/A
+|{{CardEvolution|Name=Lumberjack|Scale=.25|Position=middle}}<br>{{Card|Name=Berserker|Scale=.25|Position=middle}}
+|{{Card|Name=Lumberjack|Scale=.15|Position=middle}}{{Card|Name=Mighty Miner|Scale=.15|Position=middle}}<br>{{Card|Name=Rage|Scale=.15|Position=middle}}{{Card|Name=The Log|Scale=.15|Position=middle}}
+|-
+|69. '''Royale’s 9th Birthday''' <br>March 2025
+|[[File:Crown Tower Skin.png|50px|center]]
+|[[File:Evolved Hunter Net Drop.png|61x61px]]
+|[[File:Celebration Day Frame.png|150px|center]]<br>[[File:Birthday Balloon Festival Decoration.png|150px|center]]
+|N/A
+|[[File:9th Birthday Arena.png|100px|center]] 9th Birthday Arena
+|[[File:Royal Arena Intro.mp3]] (Intro)
+|N/A
+|{{CardEvolution|Name=Hunter|Scale=.25|Position=middle}}
+|{{Card|Name=Hunter|Scale=.15|Position=middle}}{{Card|Name=Royal Giant|Scale=.15|Position=middle}}<br/>{{Card|Name=Fisherman|Scale=.15|Position=middle}}{{Card|Name=Lightning|Scale=.15|Position=middle}}
+|-
+|70. '''A Tale of Thieves''' <br>April 2025
+|[[File:Royal Delivery Tower.png|50px|center]]
+|[[File:Evolved Executioner Axe Lick.png|61x61px]]
+|[[File:Cover of Night Frame.png|150px|center]]<br>[[File:Smoke Screen Decoration.png|150px|center]]
+|N/A
+|[[File:Royal Road Arena.png|100px|center]] Royal Road
+|[[File:Boss Bandit Menu.mp3]] (Menu)<br>[[File:Royal Arena Intro.mp3]] (Intro)
+|N/A
+|{{CardEvolution|Name=Executioner|Scale=.25|Position=middle}}<br>{{Card|Name=Boss Bandit|Scale=.25|Position=middle}}
+|{{Card|Name=Executioner|Scale=.15|Position=middle}}{{Card|Name=Bandit|Scale=.15|Position=middle}}<br>{{Card|Name=Firecracker|Scale=.15|Position=middle}}{{Card|Name=Rascals|Scale=.15|Position=middle}}
+|-
+|71. '''The Undead March''' <br>May 2025
+|[[File:Witch Evo Tower.png|50px|center]]
+|[[File:Evolved Witch Scary Shadow.png|61x61px]]
+|[[File:Night of the Living Bones Frame.png|150px|center]]<br>[[File:Return of the Dead Decoration.png|150px|center]]
+|N/A
+|[[File: Witch's Hollow Arena.png|100px|center]] Witch's Hollow
+|[[File:Undead March Menu.ogg]] (Menu)<br>[[File:Royal Arena Intro.mp3]] (Intro)
+|N/A
+|{{CardEvolution|Name=Witch|Scale=.25|Position=middle}}
+|{{Card|Name=Witch|Scale=.15|Position=middle}}{{Card|Name=Skeletons|Scale=.15|Position=middle}}<br>{{Card|Name=Skeleton Army|Scale=.15|Position=middle}}{{Card|Name=Tombstone|Scale=.15|Position=middle}}
+|-
+|72. '''How to Evolve Your Dragon''' <br>June 2025
+|[[File:Inferno Dragon Tower.png|50px|center]]
+|[[File:Evolved Inferno Dragon Inferno Sign.png|61x61px]]
+|[[File:Hog Relaxing Frame.png|150px|center]]<br>[[File:Bacon Escape Decoration.png|150px|center]]
+|N/A
+|[[File:Dragon Island Arena.png|80px|center]] Dragon Island
+|[[File:Inferno Dragon Menu.mp3]] (Menu)<br>[[File:Royal Arena Intro.mp3]] (Intro)<br>[[File:Inferno Dragon.mp3]] (Battle)
+|N/A
+|{{CardEvolution|Name=Inferno Dragon|Scale=.25|Position=middle}}
+|{{Card|Name=Inferno Dragon|Scale=.15|Position=middle}}{{Card|Name=Baby Dragon|Scale=.15|Position=middle}}<br>{{Card|Name=Electro Dragon|Scale=.15|Position=middle}}{{Card|Name=Skeleton Dragons|Scale=.15|Position=middle}}
+|-
+|73. '''Dress to Empress''' <br>July 2025
+|[[File:Spirit Empress Tower.png|50px|center]]
+|[[File:Text Hi.png|61x61px]]
+|[[File:Arrival of the Empress Frame.png|150px|center]]<br>[[File:Celestial Descent Decoration.png|150px|center]]
+|[[File:Lumberlove Cabin Arena.png|50px|center]] (10000-10999 {{Icon|I=Trophy}})<br>[[File:Magic Academy Arena.png|50px|center]] (11000-11999 {{Icon|I=Trophy}})<br>[[File:Rune Reliquary Arena.png|50px|center]] (12000-13499 {{Icon|I=Trophy}})<br>[[File:Ultimate Clash Arena.png|50px|center]] (13500-14999 {{Icon|I=Trophy}})<br>[[File:Queen's Palace Arena.png|50px|center]] (15000 {{Icon|I=Trophy}})
+|[[File:Spirit Square Arena.png|80px|center]] Spirit Square
+|[[File:Dress to Empress Menu.mp3]] (Menu)<br>[[File:Royal Arena Intro.mp3]] (Intro)
+|N/A
+|{{CardEvolution|Name=Skeleton Barrel|Scale=.25|Position=middle}}<br>{{Card|Name=Spirit Empress|Scale=.25|Position=middle}}
+|{{Card|Name=Skeleton Barrel|Scale=.15|Position=middle}}{{Card|Name=Bats|Scale=.15|Position=middle}}<br>{{Card|Name=Goblin Gang|Scale=.15|Position=middle}}{{Card|Name=Skeleton King|Scale=.15|Position=middle}}
+|-
+|74. '''Fired Up''' <br>August 2025
+|[[File:Furnace Tower.png|50px|center]]
+|[[File:Furnace Lava Tears.png|61x61px]]
+|[[File:Furnace Fortress Frame.png|150px|center]]<br>[[File:Ready for Anything Decoration.png|150px|center]]
+|[[File:Goblin Gold Mine Arena.png|50px|center]] (10000-10999 {{Icon|I=Trophy}})<br>[[File:Little Prince's Tavern Arena.png|50px|center]] (11000-11999 {{Icon|I=Trophy}})<br>[[File:Royal Road Arena.png|50px|center]] (12000-13499 {{Icon|I=Trophy}})<br>[[File:Wild West Arena.png|50px|center]] (13500-14999 {{Icon|I=Trophy}})<br>[[File:Checkmate Arena.png|50px|center]] (15000 {{Icon|I=Trophy}})
+|[[File:Furnace Arena.png|100px|center]] Furnace Arena
+|[[File:Furnace Menu.mp3]] (Menu)<br>[[File:Royal Arena Intro.mp3]] (Intro)<br>[[File:Furnace.mp3]] (Battle)
+|N/A
+|{{CardEvolution|Name=Furnace|Scale=.25|Position=middle}}
+|{{Card|Name=Furnace|Scale=.15|Position=middle}}{{Card|Name=Battle Ram|Scale=.15|Position=middle}}<br>{{Card|Name=Mega Knight|Scale=.15|Position=middle}}{{Card|Name=P.E.K.K.A.|Scale=.15|Position=middle}}
+|-
+|75. '''Back to Drool''' <br>September 2025
+|[[File:Dragon Fest Tower.png|50px|center]]
+|[[File:Baby Dragon Evo Cute Yawn Emote.png|61x61px]]
+|[[File:Menace from the Sky Frame.png|150px|center]]<br>[[File:Burning Operation Decoration.png|150px|center]]
+|[[File:Mud Pit Arena.png|50px|center]] (10000-10999 {{Icon|I=Trophy}})<br>[[File:Spirit Square Arena.png|50px|center]] (11000-11999 {{Icon|I=Trophy}})<br>[[File:Dragon Island Arena.png|50px|center]] (12000-13499 {{Icon|I=Trophy}})<br>[[File:Party Beach Arena.png|50px|center]] (13500-14999 {{Icon|I=Trophy}})<br>[[File:Magic Academy Arena.png|50px|center]] (15000 {{Icon|I=Trophy}})
+|[[File:Dragon Fest Arena.png|100px|center]] Dragon Fest Arena
+|[[File:Back to Drool Menu.mp3]] (Menu)<br>[[File:Royal Arena Intro.mp3]] (Intro)<br>[[File:Back to Drool.mp3]] (Battle)
+|N/A
+|{{CardEvolution|Name=Baby Dragon|Scale=.25|Position=middle}}<br>{{Card|Name=Vines|Scale=.25|Position=middle}}
+|{{Card|Name=Baby Dragon|Scale=.15|Position=middle}}{{Card|Name=Balloon|Scale=.15|Position=middle}}<br>{{Card|Name=Golem|Scale=.15|Position=middle}}{{Card|Name=Tornado|Scale=.15|Position=middle}}
+|-
+|76. '''Rock and Rule''' <br>October 2025
+|[[File:Rock Tower.png|50px|center]]
+|[[File:Barbarian Hornshand Emote.png|61x61px]]
+|[[File:SKiss Frame.png|150px|center]]
+[[File:Crypt Concert Decoration.png|150px|center]]
+|[[File:Dr. Goblinstein's Lab Arena.png|50px|center]] (10000-10999 {{Icon|I=Trophy}})<br>[[File:Dark Elixir Chasm Arena.png|50px|center]] (11000-11999 {{Icon|I=Trophy}})<br>[[File:Goblin Swamp Arena.png|50px|center]] (12000-13499 {{Icon|I=Trophy}})<br>[[File:Witch's Hollow Arena.png|50px|center]] (13500-14999 {{Icon|I=Trophy}})<br>[[File:Clash-O-Ween Town Arena.png|50px|center]] (15000 {{Icon|I=Trophy}})
+|[[File:Rock and Rule Arena.png|100px|center]] Rock and Rule Arena
+|[[File:Rock and Rule Startup.mp3]] (Startup)<br>[[File:Rock and Rule Menu.mp3]] (Ranked Menu)<br>[[File:Royal Arena Intro.mp3]] (Intro)<br>[[File:Rock and Rule.mp3]] (Battle)<br>[[File:60 Seconds Rock and Rule.mp3]] (60 seconds)<br>[[File:30 Seconds Rock and Rule.mp3]] (30 seconds)<br>[[File:Rock and Rule Sudden Death.mp3]] (Sudden Death)
+|[[File:Haunted Lucky Chest.png|50px|center]][[File:Phantom Lucky Chest.png|50px|center]]
+|{{CardEvolution|Name=Skeleton Army|Scale=.25|Position=middle}}<br>{{CardEvolution|Name=Royal Ghost|Scale=.25|Position=middle}}
+|{{Card|Name=Skeleton Army|Scale=.15|Position=middle}}{{Card|Name=Royal Ghost|Scale=.15|Position=middle}}<br>{{Card|Name=Skeleton King|Scale=.15|Position=middle}}{{Card|Name=Graveyard|Scale=.15|Position=middle}}
+|-
+|77. '''When Hogs Fly''' <br>November 2025
+|[[File:Musketeer Street Tower.png|50px|center]]
+|[[File:Royal Hogs Evo Rainbow Emote.png|61x61px]]
+|[[File:Photon Speed Frame.png|150px|center]]
+[[File:Lightning Hogs Decoration.png|150px|center]]
+|[[File:Royal Road Arena.png|50px|center]] (10000-10999 {{Icon|I=Trophy}})<br>[[File:Wild West Arena.png|50px|center]] (11000-11999 {{Icon|I=Trophy}})<br>[[File:Magic Academy Arena.png|50px|center]] (12000-13499 {{Icon|I=Trophy}})<br>[[File:Rune Reliquary Arena.png|50px|center]] (13500-14999 {{Icon|I=Trophy}})<br>[[File:Little Prince's Tavern Arena.png|50px|center]] (15000 {{Icon|I=Trophy}})
+|[[File:Musketeer Street Arena.png|100px|center]] Musketeer Street Arena
+|[[File:When Hogs Fly Menu.mp3]] (Menu)<br>[[File:Royal Arena Intro.mp3]] (Intro)
+|[[File:Triple Threat Lucky Chest.png|50px|center]]
+|{{CardEvolution|Name=Royal Hogs|Scale=.25|Position=middle}}
+|{{Card|Name=Royal Recruits|Scale=.15|Position=middle}}{{Card|Name=Royal Hogs|Scale=.15|Position=middle}}<br>{{Card|Name=Electro Dragon|Scale=.15|Position=middle}}{{Card|Name=Mother Witch|Scale=.15|Position=middle}}
+|-
+|78. '''Heroic Holidays''' <br>December 2025
+|[[File:Heroic Clashmas Tower.png|50px|center]]
+|[[File:Hero Mini Pekka Pancakes.png|61x61px]]
+|[[File:Shining Troops Frame.png|150px|center]]
+[[File:Heroic Quartet Decoration.png|150px|center]]
+|N/A
+|[[File:Heroic Holidays Arena.png|100px|center]] Heroic Holidays Arena
+|[[File:Hero Menu.mp3]] (Menu)<br>[[File:Royal Arena Intro.mp3]] (Intro)<br>[[File:Hero Battle.mp3]] (Battle)
+|[[File:Gingerbread Lucky Chest.png|50px|center]]
+|{{HeroCard|Name=Giant|Scale=.25|Position=middle}}<br>{{HeroCard|Name=Knight|Scale=.25|Position=middle}}<br>{{HeroCard|Name=Mini P.E.K.K.A.|Scale=.25|Position=middle}}<br>{{HeroCard|Name=Musketeer|Scale=.25|Position=middle}}
+|{{Card|Name=Giant|Scale=.15|Position=middle}}{{Card|Name=Knight|Scale=.15|Position=middle}}<br>{{Card|Name=Mini P.E.K.K.A.|Scale=.15|Position=middle}}{{Card|Name=Musketeer|Scale=.15|Position=middle}}
+|-
+|79. '''Fire and Ice''' <br>January 2026
+|[[File:Ice and Fire Tower.png|50px|center]]
+|[[File:Hero Wizard Fire.png|61x61px]]
+|[[File:Chaos and Carnage Frame.png|150px|center]]
+[[File:Flaming Siege Decoration.png|150px|center]]
+|N/A
+|[[File:Fire and Ice.png|100px|center]] Fire and Ice Arena
+|[[File:Fire and Ice Menu.mp3]] (Menu)<br>[[File:Royal Arena Intro.mp3]] (Intro)
+|[[File:Frostfire Lucky Chest.png|50px|center]]
+|{{HeroCard|Name=Ice Golem|Scale=.25|Position=middle}}<br>{{HeroCard|Name=Wizard|Scale=.25|Position=middle}}
+|{{Card|Name=Ice Golem|Scale=.15|Position=middle}}{{Card|Name=Wizard|Scale=.15|Position=middle}}<br>{{Card|Name=Skeletons|Scale=.15|Position=middle}}{{Card|Name=Tornado|Scale=.15|Position=middle}}
+|-
+|80. '''Midnight Mischief''' <br>February 2026
+|[[File:Love Temple Tower.png|50px|center]]
+|[[File:Hero Goblin Knife.png|61x61px]]
+|[[File:Total Domination Frame.png|150px|center]]
+[[File:Dark Storm Decoration.png|150px|center]]
+|N/A
+|[[File:Love Temple.png|100px|center]] Love Temple Arena
+|[[File:Midnight Mischief Menu.mp3]] (Menu)<br>[[File:Royal Arena Intro.mp3]] (Intro)
+|[[File:Valentines Lucky Chest.png|50px|center]]
+|{{HeroCard|Name=Goblins|Scale=.25|Position=middle}}<br>{{HeroCard|Name=Mega Minion|Scale=.25|Position=middle}}
+|{{Card|Name=Goblins|Scale=.15|Position=middle}}{{Card|Name=Mega Minion|Scale=.15|Position=middle}}<br>{{Card|Name=Princess|Scale=.15|Position=middle}}{{Card|Name=Zap|Scale=.15|Position=middle}}
+|-
+|81. '''10th Anniversary''' <br>March 2026
+|[[File:10th Birthday Tower.png|50px|center]]
+|[[File:Hero Barbarian Barrel Popup.png|61x61px]]
+|[[File:Royale 10 Year's Celebration! Frame.png|150px|center]]
+[[File:The Mad Crowd Decoration.png|150px|center]]
+|N/A
+|[[File:10th Birthday.png|100px|center]] 10th Birthday Arena
+|[[File:10th Anniversary Menu.mp3]] (Menu)<br>[[File:Royal Arena Intro.mp3]] (Intro)
+|[[File:Anniversary Lucky Chest.png|50px|center]]
+|{{HeroCard|Name=Barbarian Barrel|Scale=.25|Position=middle}}<br>{{HeroCard|Name=Magic Archer|Scale=.25|Position=middle}}
+|{{Card|Name=Barbarian Barrel|Scale=.15|Position=middle}}{{Card|Name=Magic Archer|Scale=.15|Position=middle}}<br>{{Card|Name=Battle Ram|Scale=.15|Position=middle}}{{Card|Name=Knight|Scale=.15|Position=middle}}
+|-
+|82. '''Balloon Festival''' <br>April 2026
+|[[File:War Balloon Tower.png|50px|center]]
+|[[File:Hero Balloon Mind Blown.png|61x61px]]
+|[[File:Balloon Battle Frame.png|150px|center]]
+[[File:Apocalypse Downfall Decoration.png|150px|center]]
+|N/A
+|[[File:Balloon Festival.png|100px|center]] Balloon Festival Arena
+|[[File:Balloon Festival Menu.mp3]] (Menu)<br>[[File:Royal Arena Intro.mp3]] (Intro)
+|N/A
+|{{CardEvolution|Name=Minion Horde|Scale=.25|Position=middle}}<br>{{HeroCard|Name=Balloon|Scale=.25|Position=middle}}(Hero Balloon)
+|{{Card|Name=Minion Horde|Scale=.15|Position=middle}}{{Card|Name=Balloon|Scale=.15|Position=middle}}<br>{{Card|Name=Baby Dragon|Scale=.15|Position=middle}}{{Card|Name=Freeze|Scale=.15|Position=middle}}
+|-
+|83. '''Siege & Swish''' <br>May 2026
+|[[File:Dark Prince Tower.png|50px|center]]
+|[[File:Hero Dark Prince Rhino Flirt.png|61x61px]]
+|[[File:Raging Rhino Frame.png|150px|center]]
+[[File:Rush Daily Decoration.png|150px|center]]
+|N/A
+|[[File:Dark Prince Arena.png|100px|center]] Dark Prince Arena
+|[[File:Siege & Swish Menu.mp3]] (Menu)<br>[[File:Royal Arena Intro.mp3]] (Intro)
+|N/A
+|{{HeroCard|Name=Bowler|Scale=.25|Position=middle}}<br>{{HeroCard|Name=Dark Prince|Scale=.25|Position=middle}}
+|{{Card|Name=Bowler|Scale=.15|Position=middle}}{{Card|Name=Dark Prince|Scale=.15|Position=middle}}<br>{{Card|Name=Miner|Scale=.15|Position=middle}}{{Card|Name=Tornado|Scale=.15|Position=middle}}
+|-
+|84. '''Stone Cold''' <br>June 2026
+|[[File:Frozen Lair Tower.png|50px|center]]
+|[[File:Princess Evolution Nail File.png|61x61px]]
+|[[File:Ice Power! Frame.png|150px|center]]
+[[File:Freeze Bait Decoration.png|150px|center]]
+|colspan="2"|[[File:Frozen Lair.png|100px|center]] Frozen Lair Arena
+|[[File:Stone Cold Menu.mp3]] (Menu)<br>[[File:Royal Arena Intro.mp3]] (Intro)
+|N/A
+|{{CardEvolution|Name=Princess|Scale=.25|Position=middle}}<br>{{HeroCard|Name=Tombstone|Scale=.25|Position=middle}}
+|{{Card|Name=Princess|Scale=.15|Position=middle}}{{Card|Name=Tombstone|Scale=.15|Position=middle}}<br>{{Card|Name=Goblin Barrel|Scale=.15|Position=middle}}{{Card|Name=Goblin Gang|Scale=.15|Position=middle}}
+|-
+|85. '''Honor and Exile''' <br>July 2026
+|[[File:Sage Echo Monk Tower.png|50px|center]]
+|[[File:Ronin Chill Tea.png|61x61px]]
+|[[File:Memories of Life Past Frame.png|150px|center]]
+[[File:Way of the Sword Decoration.png|150px|center]]
+|colspan="2"|[[File:Ancient Japan.png|100px|center]] Ancient Japan Arena
+||[[File:Honor and Exile Startup.mp3]] (Startup)<br>[[File:Honor and Exile Menu.mp3]] (Menu)<br>[[File:Royal Arena Intro.mp3]] (Intro)
+|N/A
+|{{Card|Name=Ronin|Scale=.25|Position=middle}}(Ronin)
+|{{Card|Name=Mega Knight|Scale=.15|Position=middle}}{{Card|Name=P.E.K.K.A|Scale=.15|Position=middle}}<br>{{Card|Name=Boss Bandit|Scale=.15|Position=middle}}{{Card|Name=Prince|Scale=.15|Position=middle}}
+|-
+|85. '''K.H.A.O.S''' <br>August 2026
+|[[File: Viking Rune Tower.png|50px|center]]
+|[[File:Hero Valkyrie Super Warrior.png|61x61px]]
+|[[File:Barbarian Menace Frame.png|150px|center]]
+[[File:Electric Explosion Decoration.png|150px|center]]
+|colspan="2"|[[File:Viking Rune.png|100px|center]] Viking Rune Arena
+||[[File:K.H.A.O.S Menu.mp3]] (Menu)<br>[[File:Royal Arena Intro.mp3]] (Intro)
+|N/A
+|{{CardEvolution|Name=Elite Barbarians|Scale=.25|Position=middle}}(Evolved Elite Barbarians)<br>{{HeroCard|Name=Berserker|Scale=.25|Position=middle}}(Hero Berserker)<br>{{HeroCard|Name=Valkyrie|Scale=.25|Position=middle}}(Hero Valkyrie)
+|{{Card|Name=Elite Barbarians|Scale=.15|Position=middle}}{{Card|Name=Berserker|Scale=.15|Position=middle}}<br>{{Card|Name=Valkyrie|Scale=.15|Position=middle}}{{Card|Name=Rune Giant|Scale=.15|Position=middle}}
+|}
+
+==History==
+2019 
+*Pass Royale was introduced with Season 1 on 1/7/2019, in the [[Version History#Pass Royale and more (1/7/2019)|July 2019 Update]].
+*On 5/7/2019, an [[Version History#Optional Update (5/7/2019)|Optional Update]] fixed some display issues. It also made Crowns from [[Tournament|Private Tournaments]] not contribute towards Pass Royale.
+*On 1/8/2019, a [[Version History#Minor Update (1/8/2019)|Minor Update]] fixed an issue where a queued [[Chests|Chest]]'s timer would sometimes reset before the Chest had finished unlocking.
+*On 30/9/2019, the [[Version History#End of September 2019 Update (30/9/2019)|End of September 2019 Update]] slightly tweaked Pass Royale's UI. It also fixed a crash that would happen after skipping Pass Royale tiers with [[Gems]] and fixed an issue where the UI did not refresh correctly on the Pass reward track after closing the [[Trophies|Trophy Road]].
+*Starting from the [[Version History#Pass Royale and more (7/10/2019)|October 2019 Update]] on 7/10/2019, new perks were added to Pass Royale (Clan Gifts and the Bonus Bank)  and moved the higher reward tier threshold down one [[Arenas|Arena]].
+*On 17/10/2019, an [[Version History#Optional Update (17/10/2019)|Optional Update]] fixed some Shocktober Arena visuals.
+*Starting from the [[Version History#Pass Royale and more (2/12/2019)|December 2019 Update]] on 2/12/2019, the Card Booster perk was added, which would level up the featured [[Cards|Card]] to the player's [[Experience|King's Level]].
+2020  
+*In the [[Version History#Pass Royale and more (2/3/2020)|March 2020 Update]] on 2/3/2020, the Birthday Battlefield was originally an "arena on wheels" that moved in-game, but it was made stationary due to player feedback. The moving feature was then added back in [[2v2]] [[:Category:Modes|modes]], although slowed down. This was reused in some anniversary Seasons.
+*On 6/4/2020, the [[Version History#Pass Royale and more (6/4/2020)|April 2020 Update]], increased the Bonus Bank to 25,000 [[Gold]] (from 10,000 Gold). This change was reverted on 4/5/2020 in the [[Version History#Pass Royale and more (4/5/2020)|May 2020 Update]].
+*Starting from the [[Version History#Pass Royale and more (1/6/2020)|June 2020 Update]] on 1/6/2020, more than one Card could be boosted during the same season.
+*On 10/9/2020, an [[Version History#Optional Update (10/9/2020)|Optional Update]] improved the UI of Pass Royale Queue Chests and Open Now buttons. It also made Lightning Strikes appear correctly on the Pass Royale free Tower Skin Reward Tier, and checkmark would no longer appears under Pass Royale free Tower Skin Reward Tier.
+*On 18/11/2020, the [[Version History#Clan Wars Improvement Update (18/11/2020)|Clan Wars Improvement Update]] made it so that Pass Royale color codes will now displayed correctly for spectators in 2v2 [[Basics of Battle|battles]].
+2021   
+*Starting from the [[Version History#Pass Royale and more (1/3/2021)|March 2021 Update]] in 1/3/2021, during some Seasons, players could vote for a second Card to be boosted each week for that week out of 4 Cards. The main Card is boosted for the entire season.
+*On 30/3/2021, a [[Version History#Maintenance Break (30/3/2021)|maintenance break]] fixed a bug where the game could crash if the player opened their Tier 35 Chest from Pass Royale.
+*Starting from the [[Version History#Pass Royale and more (5/4/2021)|April 2021 Update]] on 5/4/2021, [[Magic Items]] were made available on both sides of Pass Royale. Magic Items on the free side come alongside Crown Chests, and do not replace them. However, Pass Royale Chests and Lightning Strikes were removed. It also made it so that Pass Royale is now unlocked at Level 4.
+*On 7/6/2021, the [[Version History#Summer 2021 Update (7/6/2021)|Summer 2021 Update]] decreased the amount of Crowns required in most tiers from 10 to 5, and the Bonus Bank storage size increased from 10,000 [[Gold]] to 25,000 (previously a temporary feature in Season 10). It also removed the Strike icon from Pass Royale.
+*On 1/11/2021, the [[Version History#Pass Royale and more (1/11/2021)|November 2021 Update]] added the Royal Wild Chest to the free side of Pass Royale. It guarantees a {{Rarity|Champion}} to anyone in Arena 16 or higher.
+*Starting from the [[Version History#Pass Royale and more (6/12/2021)|Season 30]] on 6/12/2022, the main boosted Card can be completely replaced by weekly Cards.
+2022  
+*Starting from the [[Version History#Pass Royale and more (7/2/2022)|February 2022 Update]] on 7/2/2022, new temporary Cards, have been introduced.
+*On 12/12/2022, the [[Version History#Clashmas Update (12/12/2022)|Clashmas Update]] made visual changes to the Boosted Cards of the Season.
+2023   
+*Starting from the [[Version History#Pass Royale and more (3/4/2023)|April 2023 Update]] on 3/4/2023, Pass Royale was changed to two tiers: Gold Pass and Diamond Pass, with the Diamond Pass having an animated [[Battle Banners|Battle Banner]]. The tiers of the pass were increased to 121 (from 35) and all tiers required 5 Crowns to complete, However, the Bonus Bank and certain Magic Items were removed from Pass Royale.
+*On 19/6/2023, the [[Version History#Card Evolution Update (19/6/2023)|Card Evolution Update]] added [[Card Evolution|Evolution]] Shards were introduced to the Pass Royale.
+2024
+*On 2/10/2024, the [[Version History#Lucky Drops 2.0 Update (2/10/2024)|Lucky Drops 2.0 Update]] removed Gold Pass, decreased the amount of Tiers to 60 (from 121), added [[Lucky Chests|Lucky Drops]] to Pass Royale, and made both Free and Diamond Pass have rewards for every tier. The seasonal [[Battle Banners|Battle Banner]] bundle was moved to the Free Pass, while the seasonal [[Emotes|Emote]] and [[King's Tower|Tower Skin]] was moved to the Diamond Pass. The amount of crowns per tier and the rewards got heavily changed on both the free and the paid sides.
+2025
+*Starting from the [[Version History#Pass Royale and more (6/1/2025)|January 2025 Update]] on 6/1/2025, the number of crowns for the bonus bank got changed, but made 1 Lucky Drop available per day. This also changed the rewards in the Diamond Pass: Chest Keys were removed and Boost Potions were decreased to 4 (from 12), but added 9 1-Star Lucky Drops.
+*Starting from the [[Version History#Pass Royale and more (3/2/2025)|February 2025 Update]] on 3/2/2025, the 100 Crown bonus when buying Diamond Pass was removed.
+*On 31/3/2025, the [[Version History#2025 Quarter 1 Update (31/3/2025)|2025 Quarter 1 Update]] increased the number of Tiers to 90 (from 60), but removed the Chest Queue Feature. It also changed the rewards for both Free and Diamond Pass.
+*On 1/12/2025, the [[Version History#Pass Royale and more (1/12/2025)|December 2025 Update]] added the Hero Pass Royale for players above [[Arenas|Arena]] 15. This also modified rewards for every existing Pass Royale.
+
+==Trivia==  
+*The Pass Royale's cost is close to the Bucket of [[Gems]]' cost (1200 {{Icon|I=Gem}}) equivalent to the player's region.
+*While Pass Royale is active, the player will be unable to use their free name change, should they still have it.
+*If Pass Royale is bought when some tiers have been progressed, all rewards on prior Pass Royale tiers will also be unlocked.
+*Even though the [[Heist|Safe]] is a single [[:Category:Building Cards|building]], destroying the opponent's Safe counts as 3 Crowns for Pass Royale.
+
+{{Navigation|Gameplay}}
+
+[[fr:Pass Royale]]
+
+[[Category:Features]]

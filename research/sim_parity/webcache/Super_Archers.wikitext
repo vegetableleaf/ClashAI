@@ -1,0 +1,90 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Super Archers</span>}}
+{{Protection}}{{MagicWords}}{{EventCard}}
+
+{{Card Infobox|Cost=3|Rarity=Legendary|Type=Troop|Arena=Special Event|ReleaseDate=3 April 2023}}
+{{Quote|A pair of lightly armored ranged attackers. They'll help you take down ground and air units, but you're on your own with hair coloring advice.}}
+The Super Archers was a temporary {{Rarity|Legendary}} [[Cards|card]], only available in certain Events. It spawned 2 area-damage, air-targeting, medium-ranged, ground [[:Category:Troop Cards|troops]] with moderate hitpoints and moderate damage. The Super Archers launched an attack that traveled up to its maximum range, and pulled enemies with a singularity effect, similarly to a [[Tornado]], while piercing through enemies. A Super Archers card costs 3 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Super Archers Card}}
+*The Super Archers can easily handle melee units, particularly slow ones, as their attack will prevent the units from ever hitting them. Even fast melee units like a charging [[Prince]], [[Dark Prince]], or an [[Battle Ram/Evolution|Evolved Battle Ram]] can be rendered useless by the Super Archers’ continuous tornado effect.
+*Ranged [[:Category:Troop Cards|troops]] like the [[Flying Machine]], [[Wizard]], [[Musketeer]], [[Dart Goblin]], [[Firecracker]], [[Magic Archer]], [[Witch]], [[Princess]], [[Cannon Cart]], and [[Archers/Evolution|Evolved Archers]] are less prone to the tornado effect. Their range will allow them to get a hit on the Super Archers before they are pushed back. This allows them to constantly chip on the Super Archers, eventually defeating them.
+** Avoid doing this if there are melee troops in front of the ranged troops. The Super Archers will target the melee troop instead and this will also push the ranged troop, preventing them from connecting to the Super Archers.
+*Splitting the Super Archers behind of or in front of the [[King's Tower]] is a good way to cheaply cover both lanes while denying the opponent of the most possible [[:Category:Spell Cards|spell]] damage value. If the opponent decides to ignore them, they might also deal some chip damage on the opposing [[:Category:Tower Troop Cards|Crown Towers]].
+* Split Super Archers are very effective at countering split [[Wall Breakers]], but for a negative [[Elixir]] trade. However, both Super Archers will survive and can possibly be used for a counterattack. This is especially true in [[Elite Barbarians]] and [[Royal Recruits]] [[Battle Decks|decks]], possibly setting up for a powerful dual lane push.
+*The Archers pair well with the [[X-Bow]] and the [[Mortar]] because they can consistently chip away at things attacking the building whilst not taking much damage themselves, due to their long range. Their tornado effect will also keep melee troops further away from the [[:Category:Building Cards|building]] or themselves, buying the defender more time.
+*You can take advantage of the Super Archers' tornado effect by placing threatening troops behind them. The Super Archers will push them out of range and into the opponent's side, close to their [[Princess Towers|Crown Towers]]. This is a great way to send in a [[Giant Skeleton]], [[Valkyrie]], [[Mighty Miner]], or a [[P.E.K.K.A.]] and deal massive damage, as they would otherwise struggle to reach them on their own.
+*Buildings are unaffected by the tornado effect, making them great counters. The [[Cannon]] can stop them for a neutral Elixir trade, while the [[Bomb Tower]] can hit both of them if they are not split. Other buildings like the [[Goblin Hut]], [[Tombstone]], and [[Furnace]] are less recommended, however, the spawned troops can be used later for a counterattack.
+*[[Lightning]] is an effective way to remove them from the [[Arenas|Arena]]. Not only can it defeat them outright, but its deployment is instant, meaning that it is not as easy to react against it. However, it costs 6 Elixir, and it can be blocked with [[Royal Hogs]] or [[Barbarians/Evolution|Evolved Barbarians]] as their hitpoints are slightly higher than that of the Super Archers.
+**[[Fireball]] is not as effective against the Super Archers, compared to their normal version, because of their higher hitpoints. But it will bring the Super Archers' hitpoints really low, able to be OHKOed by any troop.
+***[[Poison]] is a viable alternative instead, as it can completely destroy the Super Archers, unlike Fireball. However, they must be standing on the Poison for the entire duration, so try and place it so the Super Archers will walk through the entire radius. Try to also take advantage of the recoil when they attack if possible.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Range<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Width<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|3||2 sec||0.5 sec||Medium (60)||1 sec||5||10||0.5||400||Air & Ground||x2||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Area Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+|-
+|9||580||100 x2 (200)||{{Dps|100|2}}
+|-
+|10||638||110 x2 (220)||{{Dps|110|2}}
+|-
+|11||701||121 x2 (242)||{{Dps|121|2}}
+|-
+|12||771||133 x2 (266)||{{Dps|133|2}}
+|-
+|13||846||146 x2 (292)||{{Dps|146|2}}
+|-
+|14||928||160 x2 (320)||{{Dps|160|2}}
+|-
+|15||1,020||176 x2 (350)||{{Dps|176|2}}
+|}
+</div>
+</center>
+
+==History==
+2023
+*The Super Archers [[Cards|card]] was made available in the Super Archers Event, which started on 3/4/2023.
+*On 25/4/2023, the Super Archers were removed from the game.
+2024
+*On 19/8/2024, the Super Archers were readded to the game in the Super Cards Draft Event. Their sound effects were also changed.
+*On 26/8/2024, the Super Archers were removed from the game.
+2025
+*On 27/1/2025, the Super Archers was readded to the game in the Super Cards Draft Event.
+*On 3/2/2025, the Super Archers was removed from the game.
+
+==Trivia==
+*The word "''Archer''" comes from the Latin "''arcus"'', meaning bow. The practice of archery was first developed in Africa by the later Middle Stone Age (approx. 70,000 years ago). It is documented as part of warfare and hunting from the classical period until the late medieval period when it was made obsolete by the increased use of firearms. 
+**The bow that Super Archers use in [[Basics of Battle|battle]] is a [https://en.wikipedia.org/wiki/Recurve_bow recurve bow].
+**The Super Archers are 1 of 10 [[cards]] associated with archery, with the others being [[Archers]], [[Arrows]], [[Tower Princess]], [[X-Bow]], [[Princess]], [[Magic Archer]], [[Super Magic Archer]], [[Archer Queen]], and the [[Little Prince]].
+*The Super Archers are a reference to the [https://clashofclans.fandom.com/wiki/Super_Archer eponymous troop] in Clash of Clans.
+**However, the Super Archers in Clash Royale can push back troops with their attack, and recoil when attacking.
+**The Super Archer performs the same pose in her card image as her Clash of Clans counterpart.
+*Among all [[:Category:Troop Cards|troops]] with area damage, the Super Archers are tied with Magic Archer and Super Magic Archer for the smallest area damage radius of all troops, with a radius of 0.25 tiles.
+*The Super Archers are 1 of 3 troops to recoil when attacking, the others being [[Firecracker]] and [[Sparky]].
+*The Super Archers' card image is indentical to the [[Archers/Merge Tactics|Archer's Merge Tactics counterpart]]'s card image.
+*It's unknown why the Super Archer has a small pouch on her belt, though it's most likely there to store supplies such as bowstrings and water.
+*Despite wearing a quiver filled with arrows, the Super Archer doesn't take the arrows out of her quiver when performing an attack.
+
+{{Navigation|Card}}
+[[Category:Removed Cards]]

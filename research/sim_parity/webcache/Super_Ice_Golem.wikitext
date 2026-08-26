@@ -1,0 +1,81 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Super Ice Golem</span>}}
+{{EventCard}}{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=4|Rarity=Legendary|Type=Troop|ReleaseDate=9 January 2023}}
+{{Quote|He's tough, targets buildings and explodes when destroyed, slowing nearby enemies. Made entirely out of ice... or is he?! Yes.}}
+
+The Super Ice Golem was a temporary {{Rarity|Legendary}} [[Cards|card]], only available in certain Events. It spawned a very slow, single-target, [[:Category:Building Cards|building]]-targeting, melee, ground [[:Category:Troop Cards|troop]] with very high hitpoints and low damage. When defeated, the Super Ice Golem exploded, dealing damage, while additionally stunning anything for 4 seconds. The Ice Golem takes the appearance of a large creature made out of snow with glowing team-colored eyes and ice shards on his head, with his hands being mostly made of ice, and his nose and rocks on his spine being in the form of coal. A Super Ice Golem card cost 4 [[Elixir]] to deploy.
+
+==Strategy==
+*If your opponent defeats a Super Ice Golem, their [[King's Tower|King Tower]] will immediately activate from the freeze damage, and vice versa. This makes decks that revolve around cards such as [[Graveyard]] and [[Goblin Barrel]] much less effective, since the King's Tower will also be available to shoot at the spawned troops.
+**However, timing the Graveyard after a Super Ice Golem freeze can be devastating, since it forces the opponent to react to it and will usually do huge damage, especially if the opponent does not have proper Graveyard counters. A similar strategy works for Goblin Barrel.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|4||2.5 sec||1 sec||Very Slow (30)||1 sec||Melee: Short (0.75)||Buildings||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+{| class="wikitable" id="unit-statistics-table" style="width: 100%; text-align: center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Death Damage<br />{{Icon|I=Death Damage}}
+! scope="col" |Crown Tower Death Damage<br />{{Icon|I=Tower Damage}}
+|-
+|9||3,000||100||{{Dps|100|2.5}}||72||22
+|-
+|10||3,300||110||{{Dps|110|2.5}}||79||24
+|-
+|11||3,630||121||{{Dps|121|2.5}}||87||27
+|-
+|12||3,990||133||{{Dps|133|2.5}}||95||29
+|-
+|13||4,380||146||{{Dps|146|2.5}}||105||32
+|-
+|14||4,800||160||{{Dps|160|2.5}}||115||35
+|-
+|15||5,280||176||{{Dps|176|2.5}}||126||38
+|}
+</div>
+</center>
+
+==History==
+2023
+*The Super Ice Golem [[Cards|card]] was made available in the [[Tournament/Special Event Challenges|Super Ice Golem Challenge]] on 9/1/2023.
+*On 15/1/2023, the Super Ice Golem was removed from the game.
+*On 10/4/2023, the Super Ice Golem was readded to the game in the Super Cards Triple Draft Event.
+*On 18/4/2023, the Super Ice Golem was removed from the game.
+2024
+*On 19/8/2024, the Super Ice Golem was readded to the game in the Super Cards Draft Event.
+*On 26/8/2024, the Super Ice Golem was removed from the game.
+2025
+*On 27/1/2025, the Super Ice Golem was readded to the game in the Super Cards Draft Event.
+*On 3/2/2025, the Super Ice Golem was removed from the game.
+
+==Trivia==
+*The word "Golem" occurs once in the Bible in Psalm 139:16, which uses the word "''golmi''", that means "my light form", "raw" material, connoting the unfinished human being. A golem is an animated, anthropomorphic being in [https://en.wikipedia.org/wiki/Jewish_folklore Jewish folklore], which is entirely created from inanimate matter, usually clay or mud. The most famous golem narrative involves [https://en.wikipedia.org/wiki/Judah_Loew_ben_Bezalel Judah Loew ben Bezalel], the late 16th-century rabbi of Prague.
+*The Super Ice Golem is 1 of 7 [[cards]] associated with ice, with the others being [[Ice Spirit]], [[Giant Snowball]], [[Ice Golem]], [[Freeze]], [[Ice Wizard]], and [[Wizard Trio]].
+**In the Finnish language setting of the game, the Ice Golem's name translates to "Super Freezing Golem".
+*The Super Ice Golem has the lowest speed of all [[:Category:Troop Cards|troops]], with a speed of 30.
+*Unlike the [[Golem]], the Super Ice Golem attacks with both hands, whereas the Golem only punches with one hand. The [[Elixir Golem]] attacks with both hands, but the Elixir Golemites use one hand and the Elixir Blobs appear to bite.
+*Unlike the Golem and Elixir Golem, the Super Ice Golem doesn't spawn his smaller versions upon death.
+*The description of the Super Ice Golem incorrectly states that he slows nearby troops upon death. This is because the description is copied from the Ice Golem.
+
+{{Navigation|Card}}
+
+[[ru:Ледяной суперголем]]
+
+[[Category:Removed Cards]]

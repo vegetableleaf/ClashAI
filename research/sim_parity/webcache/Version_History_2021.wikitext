@@ -1,0 +1,604 @@
+Update history of 2021.
+
+== December (12) 2021 ==
+
+=== Balance Changes (7/12/2021) ===
+
+* {{Balance|Nerf}} [[Fire Spirit]] (affects [[Furnace]]): Range decreased to 2 tiles (from 2.5).
+* {{Balance|Neutral}} Furnace:
+**{{Balance|Buff}} Lifetime decreased to 33 seconds (from 49 seconds)
+**{{Balance|Nerf}} Fire Spirit Spawn Period decreased to 6 seconds (from 7 second)
+**{{Balance|Nerf}} Hitpoints decreased 17%
+**{{Balance|Add}} Fire Spirit Death Spawn added.
+* {{Balance|Neutral}} [[Goblin Hut]]:
+**{{Balance|Nerf}} Hitpoints decreased by 17%
+**{{Balance|Nerf}} Lifetime decreased to 31 seconds (from 40 seconds)
+**{{Balance|Buff}} [[Spear Goblins|Spear Goblin]] Spawn Period decreased to 4 seconds (from 4.5 seconds).
+* {{Balance|Neutral}} [[Barbarian Hut]]:
+**{{Balance|Nerf}} Hitpoints decreased by 15%
+**{{Balance|Nerf}} Lifetime decreased to 40 seconds (from 50 seconds)
+**{{Balance|Buff}} [[Barbarians|Barbarian]] Spawn Period decreased to 11 seconds (from 12.5 seconds).
+* {{Balance|Neutral}} [[Tombstone]]:
+**{{Balance|Nerf}} Lifetime decreased to 30 seconds (from 40 seconds)
+**{{Balance|Nerf}} [[Skeletons|Skeleton]] Spawn Period increased to 3.8 seconds (from 3.1 seconds)
+**{{Balance|Buff}} Skeleton Count increased to 2 (from 1).
+* {{Balance|Buff}} [[Executioner]]: Hitpoints increased by 5%.
+* {{Balance|Buff}} [[Rascals]]: Girl Attack Period decreased to 1 second (from 1.1 seconds).
+* {{Balance|Nerf}} [[Dart Goblin]]: Damage decreased by 9%.
+* {{Balance|Buff}} [[Battle Ram]]:
+**{{Balance|Buff}}Damage increased by 8%
+**{{Balance|Buff}} Charge Damage increased by 8%.
+* {{Balance|Add}} [[Ice Wizard]]: Spawn Damage and Slow Effect added.
+* {{Balance|Nerf}} [[Goblin Cage]]: Hitpoints decreased by 23%.
+* {{Balance|Nerf}} [[Mother Witch]]: Hitpoints decreased by 18%.
+* {{Balance|Buff}} [[Tesla]]: Attack Period increased to 1.2 seconds (from 1.1 seconds).
+
+=== [[Pass Royale]] and more (6/12/2021) ===
+'''Clashmas (Season 30)'''
+
+* {{Balance|Add}} New [[King's Tower|Tower Skins]]: Archer Queen (available at Tier 10 of paid Pass Royale). Another Tower Skin (Clashmas Tavern) will be able to be purchased in the [[Shop]].
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: [[Archer Queen]] Fast Aim (available at Tier 20 of paid Pass Royale). Another Emote coming is the [[Mother Witch|Cursed Hog]] with a Hammer (Spooky Hog), able to be obtained from a challenge.
+* {{Balance|Add}}[[Arenas|Arena]]: [https://cdn.royaleapi.com/static/img/blog/2021-12-season30/s30-arena-sm.jpg?t=d32fa326c Clashmas Arena].
+* {{Balance|Temp}} From December 14 to December 25, there will be a special daily free gift in the Shop, which is different each day.
+* {{Balance|Neutral}} Supercell will no longer officially number seasons.
+
+'''Level Boosts'''
+
+* {{Balance|Temp}} 4 cards get a level boost every week of the season. Those cards are:
+** [[Giant Snowball]] (from December 6 to December 13).
+** [[Hog Rider]] (from December 13 to December 20).
+** [[Barbarians]] (from December 20 to December 27).
+** [[Inferno Tower]] (from December 27 to January 3, 2022).
+
+== November (11) 2021 ==
+
+=== Minor Update (15/11/2021) ===
+
+* {{Balance|Neutral}} [[Tornado]] will now cause damage when {{Rarity|Champion|}} [[cards]] activate their ability.
+* {{Balance|Neutral}} [[Mega Knight]] will now damage [[Archer Queen]] if she's cloaked during the jump.
+* {{Balance|Neutral}} [[Electro Giant]]'s Zap Pack now correctly causes damage to enemy units.
+* {{Balance|Remove}} Removed {{Rarity|Champion|}} card from players' [[Battle Decks|decks]] if they're under [[Experience|King Level]] 14.
+* {{Balance|Neutral}} {{Rarity|Champion|}} cards will now correctly return to your card cycle at the end of a [[Touchdown]] round.
+* {{Balance|Neutral}} Fixed some players' names displaying incorrectly.
+* {{Balance|Neutral}} Fixed some loading issues.
+* {{Balance|Neutral}} Fixed Facebook connection.
+* {{Balance|Neutral}} Fixed some localization errors.
+* {{Balance|Neutral}} Other small fixes.
+
+=== Maintenance Break (4/11/2021) ===
+'''[[Cards|Card]] Balancing'''
+
+* {{Balance|Nerf}} [[Archer Queen]]:
+**{{Balance|Nerf}} Cloaking Cape Cooldown increased to 15 seconds (from 11 seconds)
+**{{Balance|Nerf}} Cloaking Cape Duration decreased to 3 seconds (from 3.5 seconds).
+* {{Balance|Buff}} [[Skeleton King]]:
+**{{Balance|Buff}}Damage increased by 14%
+**{{Balance|Buff}} Attack Radius increased to 1.3 tiles (from 1)
+**{{Balance|Add}} Pushback immunity added.
+
+'''Other Changes'''
+
+* {{Balance|Neutral}} Fixed the migration bug that caused some low Level players to migrate directly to [[Experience|King Level]] 14.
+
+=== Optional Update (1/11/2021) ===
+
+* {{Balance|Neutral}} Fixed issues related to [[Clone]].
+* {{Balance|Neutral}} Changed the way {{Rarity|Champion|}} cards are returned to the cycle to make the behavior consistent.
+* {{Balance|Neutral}} Fixed an issue where [[Electro Giant]] could not stun some enemies.
+* {{Balance|Neutral}} Fixed some [[Archer Queen]] invisibility issues.
+* {{Balance|Buff}} Stopped [[Mega Knight]] from being forever stunned by [[Zappies]] or [[Electro Wizard]].
+* {{Balance|Buff}} Stopped [[Golden Knight]]'s ability from ending if his target dies before executed.
+* {{Balance|Neutral}} Fixed a crash when attempting to connect to Facebook.
+* {{Balance|Neutral}} Fixed some localization errors.
+* {{Balance|Neutral}} Other miscellaneous small fixes.
+
+=== [[Pass Royale]] and more (1/11/2021) ===
+'''Season 29: Champions Season'''
+
+* {{Balance|Add}} New [[King's Tower|Tower Skin]]: Skeleton King Tower
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: [[Arrows]] 3 Crowns. 3 other Emotes are also coming with 1 for each {{Rarity|Champion}} [[Cards|card]].
+* {{Balance|Add}} [[Arenas|Arena]]: Royal Arena (Arena 7).
+
+'''Level Boost'''
+
+* {{Balance|Temp}} Level Boost: [[Royal Recruits]].
+
+== October (10) 2021 ==
+
+=== Maintenance Break (29/10/2021) ===
+
+* {{Balance|Neutral}} Adding servers due to many players playing!
+* {{Balance|Neutral}} Chat filter improvements.
+
+=== Maintenance Break (27/10/2021) ===
+
+* {{Balance|Neutral}} Fixed billing issues.
+* {{Balance|Neutral}} Fixed loading issues.
+
+=== [[:Category:Champion Cards|Champions]] Update (27/10/2021) ===
+'''King Level 14'''
+
+* {{Balance|Add}} [[Cards]] and [[:Category:Crown Towers|Crown Towers]] can now be upgraded to [[Experience|Level 14]].
+* {{Balance|Buff}} Experience requirements for certain King Levels have been reduced:
+** The upgrade from King Level 13 to 14 costs the same amount of EXP as the old Level 12 to 13 upgrade.
+** King Level 13 players gained further EXP based on their card upgrades and donations after reaching Level 13.
+* {{Balance|Buff}} Card requirements for certain levels have been reduced.
+* {{Balance|Neutral}} Players who previously upgraded these card rarities at these levels were compensated with the card difference between the old and new values. For example, a Level 12 {{Rarity|Common}} Card before the update received 500 more copies after the update (2000 - 1500).
+* {{Balance|Buff}} [[Gold]] requirements for certain levels have been reduced.
+* {{Balance|Neutral}} Upgrading from Level 13 to 14 costs the same amount of Cards and Gold as the old Level 12 to 13 upgrade.
+
+'''Champions'''
+
+* {{Balance|Add}} {{Rarity|Champion}} is a new rarity, unlocked at King Level 14.
+* There can be only 1 {{Rarity|Champion}} card in your [[Battle Decks|deck]] and in play.
+* There are 3 {{Rarity|Champion}} cards. Those are: [[Skeleton King]], [[Archer Queen]] & [[Golden Knight]].
+* For a more detailed analysis, see the page for {{Rarity|Champion}} cards in general.
+
+'''[[Star Points]]'''
+
+* {{Balance|Neutral}} Star Points can now be spent starting from King Level 6.
+* {{Balance|Neutral}} Star Points now accumulate from King Level 1. As a result, Star Points have been separated from EXP, though they are still gained at the same rate in the same manner.
+* {{Balance|Add}} Star Levels now unlock based on a card's level:
+** Star Level 1 unlocks for Cards at Level 7.
+** Star Level 2 unlocks for Cards at Level 10.
+** Star Level 3 unlocks for Cards at Level 13.
+* {{Balance|Buff}} The cost to upgrade a Star Level has been decreased.
+* {{Balance|Add}} During a card's preview you may click on the top left to show the card at Star Levels 1, 2 and 3.
+
+'''King's Journey'''
+
+* {{Balance|Add}} King's Journey is a progression road based on Experience (like [[Trophies|Trophy Road]]), but for your King Level.
+* Each time you unlock a new King Level, you will get a Level-Up [[Chests|Chest]]. This can only be obtained here.
+* {{Balance|Add}} At King Level 14, the Level-Up Chest will have a guaranteed {{Rarity|Champion}} card.
+* {{Balance|Neutral}} When the update went live, Level-Up Chests prior to a player's King Level were able to receive those Level-Up Chests.
+
+'''[[Tournament|Tournaments]]'''
+
+* {{Balance|Neutral}} The level cap is increased to Level 11 due to the addition of {{Rarity|Champion}} cards.
+* {{Balance|Neutral}} All players joining Classic & Grand Challenges, [[Tournament/Special Event Challenges|Special Challenges]] & Global Tournaments will have every card at Level 11 (even if they don't have the card, or don‘t have the card at Level 11), and will be able to build their own deck from scratch, even with {{Rarity|Champion}} cards.
+
+'''Miscellaneous'''
+
+* {{Balance|Add}} There is a new Chest cycle containing Gold Crates, at King Level 10.
+* {{Balance|Neutral}} {{Rarity|Legendary}} Cards appear more often. {{Rarity|Champion}} Card drop rate will be similar to how {{Rarity|Legendary}} Cards used to drop before the update.
+* {{Balance|Neutral}} Players can now rearrange their decks by holding and dragging cards.
+* {{Balance|Neutral}} Increased cooldown time between [[Emotes]] used in [[Basics of Battle|battle]].
+* {{Balance|Neutral}} Increased required Trophies in [[Clans]] to reflect changes to Trophy Road.
+* {{Balance|Neutral}} Fixed [[TV Royale]] showing the incorrect [[Arenas|Arena]] number.
+* {{Balance|Neutral}} Fixed unintended interaction with [[Goblin Drill]] and [[Clone]].
+* {{Balance|Neutral}} Changed the trail for Goblin Drill to make it more distinctive from [[Miner]].
+* {{Balance|Neutral}} Fixed an issue with Replays becoming stuck.
+* {{Balance|Neutral}} Miscellaneous UI fixes.
+* {{Balance|Neutral}} Miscellaneous crash fixes.
+* {{Balance|Neutral}} Miscellaneous minor improvements.
+
+=== Maintenance Break (8/10/2021) ===
+
+* {{Balance|Neutral}} Fixed a bug where non-Chinese players get filtered names at the [[Basics of Battle|battle]] end when playing against a Chinese opponent.
+
+=== [[Pass Royale]] and more (4/10/2021) ===
+'''Season 28: Shocktober'''
+
+* {{Balance|Add}} New [[King's Tower|Tower Skins]]: Electro Wizard (available at Tier 10 of paid Pass Royale).
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: [[Bats|Bat]] Embrace (available at Tier 20 of paid Pass Royale).
+* {{Balance|Add}} Multiple previously released Emotes will now be available in the [[Shop]]. These Emotes are [[Night Witch]] Lunar New Year, Night Witch Scare, [[Goblins|Goblin]] Halloween, [[Goblin Cage]] Frankenstein, [[Giant]] Cookie, [[Barbarians|Barbarian]] Nutcracker, [[Firecracker]] Pose, [[Mega Knight]] Smash, Mega Knight Thumbs Up, [[Bowler]] Sad, [[Mother Witch]] Laugh, [[Lumberjack]] Log, and [[Ice Wizard]] Popcorn (Emotes 131, 128, 130, 129, 138, 137, 139, 181, 179, 203, 202, 184 and 186 on the Emotes page respectively).
+* {{Balance|Add}} [[Arenas|Arena]]: Electro Valley (Arena 11).
+* {{Balance|Temp}} Slash Royale is here from the 18 to 26 October. [[Gold]] upgrade cost & [[Star Points|Star Point]] cost is 50% cheaper & there will be more Gold gifts.
+
+'''Level Boost'''
+
+* {{Balance|Temp}} Level Boost: [[Electro Wizard]].
+
+== September (9) 2021 ==
+
+=== Maintenance Break (29/9/2021) ===
+
+* {{Balance|Neutral}} Fixed some graphical errors that occurred for some players.
+
+=== Pass Royale and more (6/9/2021) ===
+'''Season 27: Executioner's Kitchen'''
+
+* {{Balance|Add}} New [[King's Tower|Tower Skins]]: Kitchen (available at Tier 10 of paid Pass Royale).
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: [[Executioner]] Chef's Kiss (available at Tier 20 of paid Pass Royale).
+* {{Balance|Add}} [[Arenas|Arena]]: Executioner's Kitchen, a reskin of Legendary Arena becomes the main visual arena above 5,000 [[Trophies]] and before 8,000 Trophies.
+* {{Balance|Temp}} Players can vote for a [[Tournament/Special Event Challenges|Party]] [[:Category:Modes|mode]] each week to be active for one week. The weekly vote-ins are as follows:
+** Double [[Elixir]] Draft (chosen out of itself, Sudden Death and Ramp Up Challenge) from September 6 to September 13.
+** [[Wall Breakers]] Draft (chosen out of itself, [[Royal Ghost|Ghost]] Parade and [[Firecracker]]'s Fireworks Show) from September 13 to September 20.
+** Dragon Hunt (chosen out of itself, Elixir Capture and [[Mortar]] Time) from September 20 to September 27.
+** 2v2 Triple Elixir (chosen out of itself, 2v2 Hog Race and 2v2 Touchdown) from September 27 to October 4.
+
+'''Level Boost'''
+
+* {{Balance|Temp}} Level Boost: Executioner.
+
+'''[[Cards|Card]] Balancing'''
+
+* {{Balance|Neutral}} [[Night Witch]]:
+**{{Balance|Remove}} Death [[Bats|Bat]] Spawn Count removed
+**{{Balance|Buff}} First Bat Spawn Delay decreased to 1 second (from 3.5 seconds)
+**{{Balance|Buff}} Bat Spawn Period decreased to 5 seconds (from 7 seconds).
+* {{Balance|Neutral}} [[Goblins]]: Goblin Spawn Distance increased.
+* {{Balance|Buff}} [[Bomb Tower]]: Lifetime increased to 30 seconds (from 25 seconds).
+* {{Balance|Buff}} [[Guards]]: Damage increased by 12%.
+* {{Balance|Buff}} [[Tombstone]]: Death [[Skeletons|Skeleton]] Count increased to 4 (from 3).
+* {{Balance|Add}} [[Poison]]: 15% Movement Speed Debuff effect added.
+* {{Balance|Buff}} [[Hunter]]: First Attack Period decreased to 0.9 seconds (from 1.1 seconds).
+* {{Balance|Buff}} [[Giant Snowball]]: Knockback increased to 1.8 tiles (from 1.5 tiles).
+* {{Balance|Buff}} [[Royal Hogs]]: Damage increased by 6%.
+* {{Balance|Nerf}} [[Tesla]]: Lifetime decreased to 30 seconds (from 35 seconds).
+* {{Balance|Nerf}} [[Mother Witch]]: Hitpoints decreased by 4%.
+* {{Balance|Nerf}} [[Electro Giant]]: Hitpoints decreased by 4%.
+* {{Balance|Nerf}} [[Bomber]]: Range decreased to 4.5 tiles (from 5 tiles).
+* {{Balance|Nerf}} [[Fire Spirit]] (affects [[Furnace]]): Attack Radius decreased to 2.3 tiles (from 2.5 tiles).
+* {{Balance|Nerf}}[[Royal Giant]]: First Attack Period increased to 0.9 seconds (from 0.7 seconds).
+* {{Balance|Nerf}} [[Goblin Drill]]: Death Goblin Spawn Count decreased to 2 (from 3).
+
+== August (8) 2021 ==
+
+=== [[Pass Royale]] and more (2/8/2021) ===
+'''Season 26: Cruise Royale'''
+
+* {{Balance|Add}} New [[King's Tower|Tower Skins]]: Fisherman (available at Tier 10 of paid Pass Royale).
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: [[Ice Wizard]] Melt Sweat (available at Tier 20 of paid Pass Royale).
+* {{Balance|Add}} [[Arenas|Arena]]: [[:File:Fisherman's Float.png|Fisherman's Float]] returns from Season 1.
+
+'''Level Boosts'''
+
+* {{Balance|Temp}} Seasonal Level Boost: [[Fisherman]].
+** {{Balance|Temp}} Other cards will be boosted in each week of the season, voted by the community. Those are:
+** [[Firecracker]] (from August 9 to August 16).
+** [[Dart Goblin]] (from August 16 to August 23).
+** [[Witch]] (from August 23 to August 30).
+** [[Electro Wizard]] (from August 30 to September 6).
+
+== July (7) 2021 ==
+
+=== Maintenance Break (29/7/2021) ===
+
+* {{Balance|Neutral}} Fixing certain [[Clan Wars]] getting stuck at the end of a week.
+* {{Balance|Neutral}} Miscellaneous Clan Wars fixes.
+
+=== [[Pass Royale]] and more (5/7/2021) ===
+'''Season 25: Vacation Royale'''
+
+* {{Balance|Add}} New [[King's Tower|Tower Skins]]: Boom (available at Tier 10 of paid Pass Royale).
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: [[Bowler]] Basketball (available at Tier 20 of paid Pass Royale).
+* {{Balance|Add}}[[Arenas|Arena]]: [https://cdn.royaleapi.com/static/img/blog/2021-06-season25/s25-arena-sm.jpg?t=bdc685ebc Island Arena].
+
+'''Level Boosts'''
+
+* {{Balance|Temp}} Level Boosts: [[Goblin Drill]] and Bowler.
+
+== June (6) 2021 ==
+
+=== Maintenance Break (29/6/2021) ===
+
+* {{Balance|Neutral}} Fixing a participation issue in [[Clan Wars]].
+
+=== Maintenance Break (24/6/2021) ===
+
+* {{Balance|Neutral}} Fixing a participation issue in [[Clan Wars]].
+
+=== Maintenance Break (18/6/2021) ===
+
+* {{Balance|Neutral}} Fixed an issue preventing some players from logging in.
+* {{Balance|Neutral}} Added an optimised version of the [[Royal Giant]] [[Emotes|Emote]].
+
+=== Maintenance Break (17/6/2021) ===
+'''[[Cards|Card]] Balancing'''
+
+* {{Balance|Nerf}} [[Goblin Drill]]:
+**{{Balance|Add}} First [[Goblins|Goblin]] Spawn Delay added
+**{{Balance|Neutral}} Goblins spawn in a small circle when the Drill is destroyed
+**{{Balance|Nerf}} Emerge Knockback decreased.
+
+'''Bug Fixes'''
+
+* {{Balance|Neutral}} Server-side improvements.
+
+=== Maintenance Break (11/6/2021) ===
+
+* {{Balance|Neutral}} Fixed an issue where individual player participation was not displayed.
+* {{Balance|Neutral}} Fixed a bug where [[Clan Wars|Medals]] were not reset.
+
+=== Maintenance Break (10/6/2021) ===
+
+* {{Balance|Neutral}} Fixed [[Ice Wizard]] Level 12 Hitpoints to keep the interaction against [[Fireball]] consistent.
+* {{Balance|Neutral}} Fixed some localizations errors.
+* {{Balance|Neutral}} Removed the drop glitch fix that doesn't work as intended.
+* {{Balance|Neutral}} Fixed other small issues.
+
+=== Summer 2021 Update (7/6/2021) ===
+'''[[Clan Wars]] 2 Changes'''
+
+* {{Balance|Neutral}} Fame has been renamed to Medals.
+* {{Balance|Neutral}} Boats now move on the river at the end of each day, as opposed to moving immediately upon gaining Medals. Players will move a certain distance based on how many Medals they have in relation to the other clans (1st - 5th).
+* {{Balance|Add}} The first 3 days of each Clan War are now "Training Days", where only [[Gold]] can be gained from War Tasks, and opposing Clan Boats cannot be attacked. The remaining days are "Battle Days", where Gold and Medals can be gained from War Tasks, and Clan Boats will be vulnerable to attack.
+
+'''Chest Changes'''
+
+* {{Balance|Add}} A new type of [[Chests|Chest]] which can be gained from winning ladder or [[Tournament/Special Event Challenges|Party]] [[:Category:Modes|mode]] matches has been introduced, which will only reward Gold. There are 3 types of Gold Crates, which award different amounts of Gold and have different unlocking times:
+** Gold Crate (3 hours to unlock).
+** Plentiful Gold Crate (8 hours to unlock).
+** Overflowing Gold Crate (12 hours to unlock).
+* {{Balance|Neutral}} Gold Crates will replace Silver and Gold Chests in the [[Chests#Chest Cycle|Chest Cycle]].
+* {{Balance|Add}} [[Experience|King Level]] 11, 12, and 13 will now have different Chest cycles, as opposed to King Levels 1-10.
+
+'''[[Trophies|Trophy Road]] Changes'''
+
+* {{Balance|Add}} [[Trophies#Leagues|Leagues]] now begin at 5,000 Trophies. Between 4,000 and 5,000 Trophies, two new [[Arenas]] have been added:
+** Rascal's Hideout (Season 10 Arena - 4,200 Trophies).
+** Serenity Peak (Season 7 Arena - 4,600 trophies).
+* {{Balance|Buff}} Victory Gold now scales to Arena 14 (Serenity Peak).
+* {{Balance|Buff}} Chest contents now scale to Arena 15 (Legendary Arena).
+* {{Balance|Nerf}}The amount of Trophies lost when losing a Battle in the Challenger Leagues has been greatly increased.
+* {{Balance|Buff}} In higher Leagues, the percentage of Trophies lost from the seasonal reset has been reduced:
+** In the Challenger Leagues, Trophy counts will be reset by 50%, the previous amount for all players in Leagues.
+** In the Master Leagues, Trophy counts will be reset by 40%.
+** In the Champion Leagues, Trophy counts will be reset by 30%.
+* {{Balance|Neutral}} The Legendary League, and Trophy Road, now extend to 8,000 Trophies.
+* {{Balance|Neutral}} Trophy Road rewards above 3,300 trophies have been renewed and become available to collect again.
+* {{Balance|Neutral}} [[Cards|Card]] unlocks have been shuffled around to accommodate for the new Arenas.
+
+'''Other Changes'''
+
+*{{Balance|Add}} Players who are at King Level 8 or higher can access 10 [[Battle Decks|Deck]] slots.
+* {{Balance|Add}} Replays can now be fast forwarded and rewinded.
+* {{Balance|Add}}Players can now choose to randomize their [[King's Tower|Tower Skin]] upon entering a [[Basics of Battle|Battle]].
+* {{Balance|Buff}}Trophy Road rewards above 5,000 Trophies now contain more [[Magic Items#Wild Card|Wild Cards]] and be more frequent overall.
+* {{Balance|Add}} [[Friendly Battle|Friendly Battles]] now have 15 game modes that will always be available.
+
+'''Bug Fixes'''
+
+* {{Balance|Neutral}} A bug which allowed more than 50 members to participate in a Clan War was fixed.
+* {{Balance|Neutral}} A bug related to the Magic Coin and [[Trade Tokens|trades]] was fixed. An exploit which allowed players to receive Card overflow Gold upon cancelling a trade was removed.
+* {{Balance|Neutral}} A bug where a card's deployment would lag if it was played as soon as it was dealt to the player's hand was fixed.
+* {{Balance|Add}} Players are now able spectate [[Supercell ID]] friends.
+* {{Balance|Neutral}} Fixed some issues related to [[Fisherman]].
+* {{Balance|Nerf}}[[Bandit]]’s dash no longer continues after the timer reaches zero.
+* {{Balance|Neutral}} The strike icon from [[Pass Royale]] was removed.
+* {{Balance|Neutral}} Fixed missing [[Mirror]] deployment animation.
+* {{Balance|Neutral}} Minor improvements were made to the localization and UI.
+
+'''Pass Royale and more'''
+
+'''Season 24: Rumble in the Jungle'''
+
+* {{Balance|Add}} New Tower Skin: Jungle Tower.
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: "[[Dart Goblin]] Backfire". Other emotes being "Goblin Drill Drive" and "[[Skeleton Dragons|Skeleton Dragon]] Jaw Drop" will appear throughout the season.
+* {{Balance|Add}} Arena: Jungle Arena (Arena 9).
+* {{Balance|Buff}}Tiers will require 5 or 10 Crowns to unlock, as opposed to always requiring 10. The total amount of Crowns required to complete [[Pass Royale]] has decreased to 200 (from 350).
+* {{Balance|Buff}} The Bonus Bank capacity will be increased to 25,000 [[Gold]] (from 10,000 Gold).
+
+'''New [[Cards]] & Level Boost'''
+
+* {{Balance|Add}} 1 New {{Rarity|Epic}} card: [[Goblin Drill]].
+* {{Balance|Temp}} Level Boost: Goblin Drill.
+
+'''Card Balancing'''
+
+* {{Balance|Neutral}} [[Fire Spirit]]:
+**{{Balance|Buff}} Cost decreased to 1 [[Elixir]] (from 2)
+**{{Balance|Nerf}} Count decreased to 1 (from 3)
+**(affects [[Furnace]])
+**{{Balance|Buff}} Damage increased by 6%
+**{{Balance|Buff}} Hitpoints increased by 109%
+**{{Balance|Buff}} Range increased to 2.5 tiles (from 2 tiles)
+**{{Balance|Buff}} Attack Radius increased to 2.5 tiles (from 1.7 toles).
+* {{Balance|Neutral}} [[Furnace]]:
+**{{Balance|Buff}} Fire Spirit Spawn Period decreased to 7 seconds (from 9 seconds)
+**{{Balance|Nerf}} Fire Spirit Count decreased to 1 (from 2)
+**{{Balance|Nerf}} Lifetime decreased to 49 seconds (from 50 seconds).
+* {{Balance|Buff}} [[Rascals]]: Girl First Attack Period decreased to 0.8 seconds (from 1 second).
+* {{Balance|Buff}}[[Cannon]]:
+**{{Balance|Buff}} Attack Period decreased to 0.9 seconds (from 1 second)
+**{{Balance|Buff}} First Attack Period decreased to 0.9 seconds (from 1 second).
+* {{Balance|Buff}} [[Cannon Cart]]:
+**{{Balance|Buff}} Attack Period decreased to 0.9 seconds (from 1 second)
+**{{Balance|Buff}} First Attack Period decreased to 0.5 seconds (from 0.6 seconds).
+* {{Balance|Buff}} [[Giant Skeleton]]: Death Damage dealt to [[:Category:Tower Troop Cards|Crown Towers]] increased by 100%.
+* {{Balance|Neutral}} [[Elite Barbarians]]: Sight Range increased to 6 tiles (from 5.5 tiles).
+* {{Balance|Nerf}} [[Golem]]: Death Damage decreased by 28%.
+* {{Balance|Nerf}} [[Ice Wizard]]: Hitpoints decreased by 3%.
+
+== May (5) 2021 ==
+
+=== Maintenance Break (27/5/2021) ===
+
+* {{Balance|Neutral}} Improved matchmaking for [[2v2]] battles and [[Clan Wars]].
+
+=== [[Pass Royale]] and more (3/5/2021) ===
+'''SEASON 23: Golden Dragon Spa'''
+
+* {{Balance|Add}} New [[King's Tower|Tower Skin]]: Thermal Baths (available at Tier 10 of paid Pass Royale).
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: a broken [[Mortar]]. Another Mortar Emote will be available in the [[Shop]].
+* {{Balance|Add}} [[Arenas|Arena]]: [https://cdn.royaleapi.com/static/img/blog/2021-05-season23/s23-arena-sm.jpg?t=bbff4d69c Dragon Spa], returning from Season 11.
+
+'''Level Boost'''
+
+* {{Balance|Temp}} Level Boost: [[Inferno Dragon]].
+
+== April (4) 2021 ==
+
+=== Maintenance Break (7/4/2021) ===
+'''[[Cards|Card]] Balancing'''
+
+* {{Balance|Nerf}} [[Elite Barbarians]]: First Attack Period increased to 0.5 seconds (from 0.4 seconds).
+
+'''Bug Fixes'''
+
+* {{Balance|Neutral}} Fixed an issue related to [[Supercell ID]] [[Friendly Battle|friendly battles]].
+* {{Balance|Neutral}} Fixed an issue related to spectating [[Basics of Battle|battles]] for Supercell ID friends.
+* {{Balance|Neutral}} Fixed the nudge push notification.
+* {{Balance|Neutral}} Various small bug fixes.
+
+=== [[Pass Royale]] and more (5/4/2021) ===
+'''SEASON 22: P.E.K.K.A.'s Playhouse'''
+
+* {{Balance|Add}} New [[King's Tower|Tower Skin]]: [[P.E.K.K.A.]] (available at Tier 10 of paid Pass Royale).
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: A half-buried P.E.K.K.A. covered in foliage powering on. Another Emote of the King opening a book will be available in the [[Shop]].
+* {{Balance|Add}} Two previously released Emotes will now be available in the Shop. These emotes are a [[Goblins|Goblin]] blowing a horn & a [[Giant]] eating cake (Emotes 83 and 84 on the Emotes page respectively).
+* {{Balance|Add}} [[Arenas|Arena]]: P.E.K.K.A.'s Playhouse (Arena 4).
+* {{Balance|Nerf}} Pass Royale will unlock at [[Experience|King Level]] 4, as opposed to being available from the beginning of the game.
+* {{Balance|Buff}} [[Magic Items]] will be available on both the free and paid sides of Pass Royale.
+* {{Balance|Temp}} Classic Decks have returned and have been updated to [https://i.redd.it/tsqsitwuniv61.png this] list.
+
+'''Level Boost'''
+
+* {{Balance|Temp}} Level Boost: [[P.E.K.K.A.]].
+
+== March (3) 2021 ==
+
+=== Maintenance Break (30/3/2021) ===
+
+* {{Balance|Neutral}} Fixed a bug where the game could crash if the player opened their Tier 35 [[Chests|Chest]] from [[Pass Royale]] after the update.
+
+=== 2021 Quarter 1 Update (30/3/2021) ===
+'''[[Magic Items]]'''
+
+* {{Balance|Neutral}} A new category of items has been introduced, allowing players to upgrade [[cards]] more quickly as well as have more choice over which cards they receive. They are as follows:
+* {{Balance|Add}} Wild Card - comes in the four card rarities. These can be converted into any card of its rarity that the player owns. When opening a [[Chests|Chest]] above [[Arenas|Arena]] 4, there is a chance that the player will receive a Wild Card in lieu of a regular card.
+* {{Balance|Add}} Book of Cards - instantly gives the player the amount of cards needed to upgrade a card to its next Level. Like Wild Cards, these come in four rarities. There is also a "Book of Books", which can be used for any card rarity.
+* {{Balance|Add}} Magic Coin - allows the player to upgrade a card to its next level without spending any of their current [[Gold]].
+* {{Balance|Add}} Chest Key - allows the player to immediately open a chest won via the ladder, as opposed to having to spend [[Gems]].
+* {{Balance|Neutral}} Magic Items are available via Chests, [[Trophies|Trophy Road]], paid offers in the [[Shop]], [[Tournament/Special Event Challenges|Special Challenges]], and [[Pass Royale]] (note that not all Magic Items are available through all methods).
+* {{Balance|Neutral}} Wild Card information has been added to the Shop chest, Chest slot, Chest content, and Shop confirm pop-ups.
+
+'''[[Clan Wars]] 2 and UI changes'''
+
+* {{Balance|Add}} Leaders and Co-leaders can now 'nudge' players to remind them to do their [[Basics of Battle|battles]]!
+* {{Balance|Add}} "Decks Remaining Today" is now visible on the UI.
+* {{Balance|Add}} War [[Battle Decks|deck]] cooldowns are synchronized with each individual [[Clans|Clan]]’s war week start. There is no longer a delay where some Clans can use an ‘extra set’ of War Deck attacks before the War Decks reset for everyone.
+* {{Balance|Neutral}} Fame rewards have been simplified - Card Levels will no longer impact the amount of Fame gained from performing River Tasks.
+* {{Balance|Neutral}} The Battle Deck UI has been updated.
+* {{Balance|Neutral}} The context menu for Battle Decks has been updated - The "Magic" button will be available, which was previously only available in War Decks.
+* {{Balance|Neutral}} [[Emotes]] and [[King's Tower|Tower Skins]] now have separate sections, with Magic Items receiving their own section.
+
+'''[[Cards|Card]] Balancing'''
+
+* {{Balance|Buff}} [[Mother Witch]]:
+**{{Balance|Buff}} Damage increased by 14%
+**{{Balance|Buff}} Attack Period decreased to 1.1 seconds (from 1.2 seconds)
+**{{Balance|Buff}} First Attack Period decreased to 0.4 seconds (from 0.5 seconds).
+* {{Balance|Buff}} [[Witch]]: Range increased to 5.5 tiles (from 5 tiles).
+* {{Balance|Buff}} [[Three Musketeers]]: Deployment Time decreased to 1 second (from 2 seconds).
+* {{Balance|Buff}} [[Elite Barbarians]]:
+**{{Balance|Buff}} Attack Period decreased to 1.4 seconds (from 1.5 seconds)
+**{{Balance|Buff}} First Attack Period decreased to 0.4 seconds (from 0.5 seconds).
+* {{Balance|Neutral}} [[Heal Spirit]]:
+**{{Balance|Buff}} Damage increased by 225%
+**{{Balance|Nerf}} Radius decreased to 2.5 tiles (from 3.5 tiles).
+* {{Balance|Neutral}} [[Bomber]]:
+**{{Balance|Nerf}} Damage decreased by 32%
+**{{Balance|Nerf}} Hitpoints decreased by 31%
+**{{Balance|Buff}} Cost decreased to 2 [[Elixir]] (from 3).
+* {{Balance|Neutral}} [[Giant Skeleton]]:
+**{{Balance|Buff}} Damage increased by 29%
+**{{Balance|Nerf}}Death Damage decreased by 54%.
+* {{Balance|Nerf}} [[Bomb Tower]]: Death Damage decreased by 50%.
+* {{Balance|Nerf}} [[Balloon]]: Death Damage decreased by 27%.
+* {{Balance|Nerf}} [[Hunter]]: First Attack Period increased to 1.1 seconds (from 0.7 seconds).
+* {{Balance|Nerf}} [[Zappies]]: First Attack Period increased to 1.1 seconds (from 0.9 seconds).
+* {{Balance|Nerf}} [[Knight]]: Hitpoints decreased by 5%.
+* {{Balance|Neutral}} [[Cannon Cart]]: Speed decreased to Medium from Fast (to 60 from 90).
+
+'''Bug Fixes'''
+
+* {{Balance|Neutral}} Copying and pasting decks now works properly. Previously, sometimes a few Cards would fail to copy correctly, resulting in visual glitches during battle.
+* {{Balance|Neutral}} Fixed an issue that could be used to enter battles with duplicate cards.
+* {{Balance|Neutral}} Fixed an issue where Boat Defenses could get into a state where it was no longer possible to attack them.
+* {{Balance|Neutral}} Fixed Activity Log entries for Mega Deck game modes.
+* {{Balance|Neutral}} Fixed issues with overtime effects persisting between individual battles in Duels.
+* {{Balance|Neutral}} Diamond background pattern updated to an even more diamond-y background-y pattern.
+* {{Balance|Neutral}} Player Support ‘self help portal’ now available in China.
+* {{Balance|Neutral}} Fixed a crash that could occur when players are navigating away from an expired challenge screen.
+* {{Balance|Neutral}} Removed 'old' wooden card selection design in most places.
+* {{Balance|Neutral}} Performance improvements.
+* {{Balance|Neutral}} Server-side fixes and improvements.
+* {{Balance|Neutral}} More behind-the-scenes fun to keep the game optimized for players on all devices.
+
+=== Maintenance Break (17/3/2021) ===
+
+* {{Balance|Neutral}} Reduced the number of tutorial bots below 4,000 [[Trophies]].
+* {{Balance|Neutral}} Fixed minor problems related to [[Clans]] getting stuck in [[Clan Wars]].
+* {{Balance|Neutral}} The matchmaking change released in February 2021 stops applying above 5,000 Trophies.
+
+=== [[Pass Royale]] and more (1/3/2021) ===
+'''SEASON 21: Birthday Royale'''
+
+* {{Balance|Add}} New [[King's Tower|Tower Skin]]: Birthday Card (available at Tier 10 of paid Pass Royale).
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: [[Sparky]] Surprise (available at Tier 20 of paid Pass Royale). Other birthday themed Emotes will be available through in-game [[Tournament/Special Event Challenges|Special Event Challenges]] or the [[Shop]]. Another Emote, featuring a [[Battle Healer]] throwing a cake, will be given away by Clash Royale content creators throughout the month.
+* {{Balance|Add}} Four previously released Emotes will now be available in the Shop. These emotes are: [[Ram Rider]] screaming, [[Miner]] holding Red Pocket, [[Archers|Archer]] tacking her hood on & Archer cleaning her arrow (Emotes 74, 142, 168 and 169 on the Emotes page respectively).
+* {{Balance|Add}} Arena: [https://cdn.royaleapi.com/static/img/blog/2021-03-season21/s21-arena-sm.jpg?t=0e6ba1f3c Birthday Cake on Wheels].
+
+'''Level Boosts'''
+
+* {{Balance|Temp}} Seasonal Level Boost: [[Elixir Golem]].
+* {{Balance|Temp}} Other 4 cards were boosted every week, as voted by the community. Those cards were the following:
+** [[Valkyrie]] (from March 8 to March 14).
+** [[Baby Dragon]] (from March 15 to March 21).
+** [[Magic Archer]] (from March 22 to March 28).
+** [[Zap]] (from March 31 to April 5).
+
+== February (2) 2021 ==
+
+=== Maintenance Break (25/2/2021) ===
+
+* {{Balance|Neutral}} Fixed [[Clan Wars|Colosseum]] Duel [[Basics of Battle|matches]] & a potential bug where [[Clans]] could get stuck in a River Race if there was an overtime Boat Battle ongoing at the end.
+** {{Balance|Neutral}} This also changed matchmaking for all players in 1v1 Ladder, with the game highly prioritizing battles against players with a [[Experience|King Level]] one Level below, equal to, or one Level above the player. However, if the player waits on the loading-screen for too long, the Level limit can increase to up to three Levels higher or lower of the player's King level.
+
+=== Maintenance Break (18/2/2021) ===
+
+* {{Balance|Neutral}} [[Clan Wars|Clan Wars Colosseum]] matchmaking is now faster.
+
+=== Maintenance Break (11/2/2021) ===
+'''[[Cards|Card]] Balancing'''
+
+* {{Balance|Neutral}}[[Earthquake]]:
+**{{Balance|Add}} [[:Category:Tower Troop Cards|Crown Tower]] Damage Reduction added
+**{{Balance|Buff}} [[:Category:Building Cards|Building]] Damage increased by 16%.
+
+'''Other Changes'''
+
+* {{Balance|Neutral}}Fixed issues related to the [[Clans|Clan]] chat filter & player names not displaying in [[Clan Wars|Clan War]] logs.
+
+=== [[Pass Royale]] and more (1/2/2021) ===
+'''SEASON 20: The Forbidden Palace'''
+
+* {{Balance|Add}} New [[King's Tower|Tower Skin]]: Forbidden Palace (available at Tier 10 of paid Pass Royale).
+* {{Balance|Add}} New Exclusive [[Emotes|Emote]]: [[Elite Barbarians|Elite Barbarian]] kissing. Another Emote of an Elite Barbarian eating candy will be available in the [[Shop]].
+* {{Balance|Add}} Two previously released Emotes will now be available in the Shop. These emotes are the [[Lava Hound]] popping & the [[Dark Prince]] crying (Emotes 159 and 162 on the Emotes page respectively).
+* {{Balance|Add}} [[Arenas|Arena]]: [https://cdn.royaleapi.com/static/img/blog/2021-02-season20/s20-arena-sm.jpg?t=1a228b8cc The Forbidden Palace]. A new song will play instead of one of the three regular battle themes.
+* {{Balance|Temp}} The seasonal [[Trophies|Trophy]] reset will be reduced to 25% of one's total Trophies above 4,000 as opposed to the usual 50%.
+
+'''Level Boosts'''
+
+* {{Balance|Temp}} Level Boosts: [[Prince]] and [[Princess]].
+
+== January (1) 2021 ==
+
+=== Maintenance Break (21/1/2021) ===
+
+* {{Balance|Neutral}}Fixed issues related to [[Clan Wars|Boat Battle]] defenses not saving/staying empty.
+* {{Balance|Neutral}} Added a fix for Clan Boat repair exploits.
+
+=== Maintenance Break (7/1/2021) ===
+
+* {{Balance|Buff}} [[Trophies|Trophy]] changes from Season 18 partially reverted: between 4,000 to 6,000 Trophies, players lose less trophies than they gain from victories.
+
+=== Maintenance Break (4/1/2021) ===
+
+* {{Balance|Neutral}} Fixed players receiving incorrect [[Chests]] from battles.
+* {{Balance|Neutral}} Fixed new [[Clan Wars]] not starting for some [[Clans]].
+
+=== [[Pass Royale]] and more (4/1/2021) ===
+'''SEASON 19: Stay Cool'''
+
+* {{Balance|Add}}New [[King's Tower|Tower Skin]]: Frozen Tower (available at Tier 10 of paid Pass Royale).
+* {{Balance|Add}}New Exclusive [[Emotes|Emote]]: An [[Ice Wizard]] dancing. Another Emote of an Ice Wizard eating popcorn will be available in the [[Shop]].
+* {{Balance|Temp}}The [[Tournament/Special Event Challenges|Sudden Death]], Mini Collection, Draft, Triple Draft, and [[Mirror]] Battle [[:Category:Modes|game modes]] will be featured throughout the season.
+* {{Balance|Add}}[[Arenas|Arena]]: Frozen Peak (Arena 8).
+
+'''Level Boosts'''
+
+* {{Balance|Temp}}Level Boosts: [[Mother Witch]] and Ice Wizard.

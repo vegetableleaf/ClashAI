@@ -1,0 +1,159 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Super Witch</span>}}
+{{EventCard}}{{Protection}}{{MagicWords}} 
+
+{{Card Infobox|Cost=6|Rarity=Legendary|Type=Troop|ReleaseDate=13 May 2022}}
+{{Quote|Summons Skeletons, shoots destructo beams, has glowing pink eyes that unfortunately don't shoot lasers.}}
+
+The Super Witch was a temporary {{Rarity|Legendary}} [[Cards|card]], only available in certain Events. It spawned a single damage, air-targeting, medium-ranged, ground [[:Category:Troop Cards|troop]] with high hitpoints and moderate damage. Every 7 seconds, the Super Witch would alternate between passively summoning a group of 4 [[Skeletons]] or 4 [[Bats]] surrounding her. The first wave of troops spawned would always be Skeletons, and they would be spawned 1 second after the Super Witch's deployment time finishes. She would also put a curse on troops and if that troop was defeated, it would become a Cursed Hog similar to the effect of the [[Mother Witch]]. A Super Witch card cost 6 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Super Witch Card}}
+*Since she would always spawn the [[Skeletons]] as the first wave, she was effective at stopping the charge of an incoming [[Prince]]. However, after the Skeletons were defeated, she would be left vulnerable since she would spawn Bats afterwards.
+*Her first Skeleton spawn has a notable delay. This means that against fast moving [[:Category:Troop Cards|troops]], like the [[Mini P.E.K.K.A.]], [[Elite Barbarians]], [[Royal Ghost]], [[Berserker]], [[Bandit]], and the [[Lumberjack]], the Skeletons may not spawn in time to protect her on reaction.
+*Placing the Super Witch behind the [[King's Tower|King Tower]] will have 1 of the Skeletons spawn in the other lane. This can discourage the opponent from attacking that lane due to the single Skeleton's defensive presence.
+*Any troops that spawn sub-troops (smaller variants) upon death would not spawn a [[Mother Witch|Cursed Hog]]. For example, [[Elixir Golem|Elixir Golems]], Elixir Golemites, and [[Golem|Golems]] do not turn into Cursed Hogs (they do not even show the tint of being cursed), but Elixir Blobs and Golemites do. Only a troop's final stage can turn into a Cursed Hog. As such, the [[Cannon Cart]] could never get cursed since its final form is a [[:Category:Building Cards|building]]. The [[Battle Ram]] and [[Skeleton Barrel]] also could not turn into a Cursed Hog, but the [[Barbarians]] and Skeletons which spawn after its destruction can be turned into Cursed Hogs. The [[Goblin Giant]] is an exception to this, as both him and his 2 [[Spear Goblins]] can be turned into Cursed Hogs.
+*Cursed Hogs cannot be inflicted with a curse, but the Super Witch herself is vulnerable to being cursed.
+*The cursed effect does not stack. If two Super Witches attacked a single unit, and it triggered the curse's effect, only one Cursed Hog would spawn.
+*The [[Ice Spirit]] and the like, along with the [[Wall Breakers]] will not transform into Cursed Hogs if they are destroyed as part of their attack, even if they are cursed.
+*Effects that activate after death will still activate even if the Super Witch successfully converts a troop into a Cursed Hog. For example, the [[Ice Golem]] will still deal his full death damage, and will slow down nearby units, as well as the Cursed Hog that spawns after he is defeated. As such, she is slightly less effective against these units.
+*Pairing the Super Witch with the [[Skeleton King]] is a good option. Together, with the Skeleton King's ability, they can overwhelm the opponent and get a 3-Crown victory. However, only activate when you know that the opponent doesn't have the Super Witch in rotation or doesn't have enough [[Elixir]] to deploy her, since the Skeletons from the ability can be transformed into Cursed Hogs easily, and it can be quite difficult to defend if you don't have an elixir advantage.
+**Since the Skeleton King's Skeletons are considered [[Clone|cloned]] troops, if a Super Witch attacks them, the Cursed Hogs that spawn from them will spawn as Cloned Cursed Hogs.
+*The [[Electro Giant]] is able to counter her pretty easily, since the reflected damage destroys the Bats and the Skeletons in a single hit, and can also hit the Super Witch. Pairing him with [[Tornado]] is also a good option, either to push everything into the reflected radius of the Electro Giant or to just counter the Skeletons/Bats of the Super Witch for a low Elixir cost.
+**On the contrary, the Electro Giant synergizes well with the Super Witch, as his reflected damage can allow the Super Witch's curse to take effect more easily. However, they cost 13 Elixir together.
+*The Super Witch can be countered with cards like [[Magic Archer]], [[Executioner]], [[Wizard]], [[Baby Dragon]], [[Skeleton Dragons]], [[Firecracker]], and [[Princess]], since not only can they deal splash damage, allowing them to defeat multiple spawned troops, but also they can target air, which means that they can defeat either spawned wave of Skeletons or [[Bats]].
+*The [[Valkyrie]], [[Dark Prince]], [[Sparky]], [[Bowler]], [[Goblin Demolisher]], and [[Skeleton King]] are less effective against her, as the Super Witch can spawn Bats that they cannot hit. The Bats might also finish them quickly enough that a Cursed Hog will spawn from them.
+*Unlike the [[Ram Rider]], she cannot switch her attack to other troops, meaning she can be easily distracted by a tank or a mini tank.
+*The Super Witch is good against swarm units because she has a fairly fast attack speed and can easily take them out and curse all of them to create a huge army of Cursed Hogs. She is particularly effective against Skeletons, Bats, and [[Spear Goblins]] as she is able to one-shot them (i.e., immediately create Cursed Hogs out of them). However, she still fares well against [[Minions]] or [[Goblins]], which will get two-shot, but the Cursed Hogs may be damaged down more due to the swarm staying alive for longer. She also gets countered by mini-tanks like the [[Knight]], [[Battle Healer]], [[Monk]], [[Goblin Machine]], and the [[Golden Knight]] as she cannot do enough damage.
+*Underneath the effect of a [[Rage]] [[:Category:Spell Cards|spell]], the Super Witch will not only move and attack faster, but she will also spawn Skeletons or Bats slightly faster. Those Skeletons and Bats will also benefit from the Rage spell, making her a more valuable troop to use Rage on and more likely to result in a snowball effect on a counterattack.
+*The Super Witch is notably bulkier than a regular [[Witch]]. Because of this, using the Tornado in conjunction with a hit from a [[P.E.K.K.A.]] or Mini P.E.K.K.A. is not enough to defeat her outright.
+*Compared to the [[Mother Witch]], the Super Witch is notably better against tanks. Her low DPS is counteracted by the additional DPS by her Skeletons and Bats and it can otherwise prevent the [[:Category:Crown Towers|Crown Tower]] from taking too much damage.
+*The Super Witch will survive a [[Lightning]] strike, but a [[Rocket]] is a great way to take her out, especially if other troops or the Crown Tower are hit as well. It is also an equal Elixir trade. 
+**To work around this, the player can play the Witch in the other lane to split their overall spell damage, or they can play her closer to the river and deny their opponent of any opportunity for spell damage on their Tower.
+*The Super Witch is very effective at baiting spells from the opponent. She can either bait weaker spells like [[Zap]], [[Giant Snowball]], and [[Arrows]] that are used against her Skeletons or Bats or she can bait stronger spells like [[Rocket]], Lightning, [[Poison]], and [[Fireball]] that are used to directly target her. This allows the user to deploy other cards that are weak to those spells such as [[Dart Goblin]] and [[Sparky]] respectively.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Super Witch Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Spawn Speed<br />{{Icon|I = Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||1.1 sec||0.4 sec||Medium (60)||1 sec||7 sec||5.5||600||Air & Ground||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+
+{{StatisticsSubheader|Skeleton Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.1 sec||0.5 sec||Fast (90)||Melee: Short (0.5)|| Ground||Ground
+|}
+
+{{StatisticsSubheader|Bat Attributes}}
+{| class="wikitable" id="unit-attributes-table-tertiary" style="width: 100%; text-align: center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.3 sec||0.6 sec||Very Fast (120)||Melee: Medium (1.2)||Air & Ground||Air
+|}
+
+{{StatisticsSubheader|Cursed Hog Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width: 100%; text-align: center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.2 sec||0.25 sec||Very Fast (120)||Melee: Short (0.75)||Buildings||Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Super Witch Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Super Witch Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Super Witch Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Skeleton Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Skeleton Damage<br />{{Icon|I=Damage}}
+! scope="col" |Skeleton Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Bat Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Bat Damage<br />{{Icon|I=Damage}}
+! scope="col" |Bat Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Cursed Hog Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Cursed Hog Damage<br />{{Icon|I=Damage}}
+! scope="col" |Cursed Hog Damage per second<br />{{Icon|I=DPS}}
+|-
+|9||880||110||{{Dps|110|1.1}}||67||67||{{Dps|67|1}}||67||67||{{Dps|67|1.3}}||520||44||{{Dps|44|1.2}}
+|-
+|10||968||121||{{Dps|121|1.1}}||74||74||{{Dps|74|1}}||74||74||{{Dps|74|1.3}}||572||48||{{Dps|48|1.2}}
+|-
+|11||1064||133||{{Dps|133|1.1}}||81||81||{{Dps|81|1}}||81||81||{{Dps|81|1.3}}||629||53||{{Dps|53|1.2}}
+|-
+|12||1170||146||{{Dps|146|1.1}}||89||89||{{Dps|89|1}}||89||89||{{Dps|89|1.3}}||691||58||{{Dps|58|1.2}}
+|-
+|13||1284||160||{{Dps|110|1.1}}||98||98||{{Dps|98|1}}||98||98||{{Dps|98|1.3}}||759||64||{{Dps|64|1.2}}
+|-
+|14||1408||176||{{Dps|176|1.1}}||108||108||{{Dps|108|1}}||108||108||{{Dps|108|1.3}}||832||70||{{Dps|70|1.2}}
+|-
+|15||1548||193||{{Dps|193|1.1}}||119||119||{{Dps|119|1}}||119||119||{{Dps|119|1.3}}||915||77||{{Dps|77|1.2}}
+|}
+</div>
+</center>
+
+==History==
+2022
+*The Super Witch [[Cards|card]] was made available in the [[Tournament/Special Event Challenges|Super Witch Challenge]] on 13/5/2022.
+*On 22/5/2022, the Super Witch was removed from the game.
+2023
+*On 31/7/2023, the Super Witch was readded to the game in the Super Witch Event.
+*On 8/8/2023, the Super Witch was removed from the game.
+2024
+*On 19/8/2024, the Super Witch was readded to the game in the Super Cards Draft Event.
+*On 26/8/2024, the Super Witch was removed from the game.
+2025
+*On 27/1/2025, the Super Witch was readded to the game in the Super Cards Draft Event.
+*On 3/2/2025, the Super Witch was removed from the game.
+*On 19/5/2025, the Super Witch was readded to the game in the Hexed Havoc Event.
+*On 26/5/2025, the Super Witch was removed from the game.
+*On 6/10/2025, a [[Version History#Balance Changes (6/10/2025)=|Balance Update]] increased the Skeleton's attack time interval to 1.1 seconds (from 1.0 seconds).
+
+==Trivia==
+*The Super Witch is shown to make the practice of [https://en.wikipedia.org/wiki/Necromancy necromancy]. Necromancy is a form of magic involving communication with the deceased; either by summoning their spirit as an apparition or raising them bodily.
+**In the Japanese language setting of the game, the Super Witch's name translates to "Super Necromancer". In the Malaysian language setting of the game, the Super Witch's name translates to "Super Magic Girl".
+*The [[Bats]] that the Super Witch spawns resemble the in-life bat species called "''Desmodus rotundus"'' ([https://en.wikipedia.org/wiki/Common_vampire_bat common vampire bat]). The common vampire bat is a [https://en.wikipedia.org/wiki/Hematophagy hematophagous] bat species that primarily feeds on the blood of livestock, which is done by biting their prey while they are sleeping. In Clash Royale, Bats attack in a similar way by biting their enemies.
+*The Super Witch is a reference to the [https://clashofclans.fandom.com/wiki/Super_Witch eponymous troop] in Clash of Clans. 
+**However, the Super Witch in Clash Royale alternates between spawning [[Skeletons]] and [[Bats]], instead of spawning [https://clashofclans.fandom.com/wiki/Super_Witch/Big_Boy Big Boys].
+**Unlike in Clash of Clans, the Super Witch in Clash Royale shares an identical design with the [[Witch]].
+*The Super Witch is 1 of 15 [[cards]] associated with Skeletons, with the others being [[Bomber]], [[Skeleton Dragons]], [[Skeleton Barrel]], [[Tombstone]], [[Bomb Tower]], [[Guards]], [[Skeleton Army]], Witch, [[Balloon]], [[Giant Skeleton]], [[Wall Breakers]], [[Graveyard]], [[Skeleton King]], and of course, Skeletons. 
+**It is the only Skeleton-related card to be released as a temporary card.
+*The Super Witch's card image is indentical to the [[Witch/Merge Tactics|Witch's Merge Tactics counterpart]]'s card image.
+*It is rumored that the Super Witch has been summoned from all the other 3 Witches, as demonstrated in the [https://www.youtube.com/watch?v=VQf90EQVeX8 Super Witch trailer], hence explaining the combination of all the other Witches' abilities.
+*The Super Witch is the subject of a [[Battle Banners|Battle Banner]] item.
+**The Super Witch is one of the first troops to be the subject of a Battle Banner item, along with the [[Mini P.E.K.K.A.|Mini P.E.K.K.A]], [[Dart Goblin]], [[P.E.K.K.A.|P.E.K.K.A]], [[Prince]], Giant Skeleton, [[Mega Knight]], and the [[Golden Knight]].
+
+{{Navigation|Card}}
+
+[[ru:Суперведьма]]
+
+[[Category:Removed Cards]]

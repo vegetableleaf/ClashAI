@@ -71,3 +71,29 @@ own rule text on the same revision).
     he stops AT THE LAST TARGET'S LOCATION and then moves/attacks like a normal troop. => resolves
     agent A's load-bearing unknown: "no targets in range" ENDS the ability (no pause-and-resume),
     and there is no return-to-origin. Chain cap per the page: 10 dashes.
+
+### Ruling 10 AMENDED by wiki verification (2026-08-26)
+The dash chain has a documented THIRD terminator the ruling omitted. Golden Knight page (revid
+437147), Ability section, verbatim: "He will stop dashing after dashing 10 times, if no other
+valid targets are within range, **or if the last target hit is a Crown Tower**" (introduced
+4/4/2022). The tower can still BE a dash target and take dash damage; the chain just always ends
+there. Everything else in ruling 10 is supported (10-dash cap, no same-troop repeat, chain
+continues past a dead target since 1/11/2021) or silent-but-consistent (stops at last target,
+no return-to-origin). Engine spec: THREE terminators.
+GK extras for I7, wiki-sourced: dash damage 335@11 vs 161 normal; backwards dashes legal since
+5/5/2025; dash crosses the river; cannot force King Tower activation; dash TRAVEL SPEED is
+unpublished — analog 500 (Bandit / Boss Bandit tables) as a placeholder marked untested; the
+0.05s "Dashing Dash Delay" (3/11/2025) is defined nowhere — best reading is an intra-chain
+wind-up, still open.
+
+### R1 CLOSED 2026-08-26 — gate met
+Lint 24/24 specs schema-complete; hero set independently re-derived and exact (16 live, 2
+announced 7 Sep 2026); rarity floors confirmed verbatim from the Cards page (Common 1 / Rare 3 /
+Epic 6 / Legendary 9 / Champion 11) and 440=L14 is EXACT and UNIQUE under levels.py (366
+corresponds to NO level under any model); critic: no live content missing, no third variant
+class (Merge Tactics out of scope), no new tower troops.
+⚠ IMPORTER TRAP (critic): Elite Barbarians/Evolution is live but its stub subpage is
+UNCATEGORIZED — a category-only walk undercounts evos at 41. Card Evolution#History is the
+authority. Upcoming-content stubs (Werewolf + Dark Spirit 4/10/2026, Ghost Spirit 6/11/2026,
+Ice Sorceress + Ice Dragon 5/12/2026, ...) are calendar intel ONLY — the channel is unmoderated;
+never auto-import from stubs.

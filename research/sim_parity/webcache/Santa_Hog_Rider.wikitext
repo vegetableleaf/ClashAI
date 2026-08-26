@@ -1,0 +1,121 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Santa Hog Rider</span>}}
+{{Protection}}{{MagicWords}}{{EventCard}}
+
+{{Card Infobox|Cost=5|Rarity=Legendary|Type=Troop|ReleaseDate=19 December 2022}}
+{{Quote|Fast melee troop that targets buildings and can jump over the river. He followed the echoing call of "Hog Riderrrrr" all the way through the Arena doors.}}
+
+The Santa Hog Rider was a temporary {{Rarity|Legendary}} [[Cards|card]], only available in certain Events. It spawned a very fast, single-target, [[:Category:Building Cards|building]]-targeting, melee, ground [[:Category:Troop Cards|troop]] with high hitpoints and high damage. He is able to jump over the river. Every 3 seconds, the Santa Hog Rider would spawn presents behind him. When a troop walked over the presents, they would spawn a random spell: [[Heal]], [[Rage]], [[Clone]], or Invisibility. However, his first wave of presents would spawn 1 second after he was deployed. A Santa Hog Rider card cost 5 [[Elixir]] to deploy.
+
+==Strategy== 
+*When he is jumping over the river, he cannot be targeted by any ground attacking units. [[The Log]] and [[Earthquake]] will fail to damage a Santa Hog Rider while he is jumping. Air [[:Category:Troop Cards|troops]] can still attack him though, and the [[Inferno Tower]] and [[Inferno Dragon]] will continue to ramp up their damage.
+*When countering Santa Hog Riders, obviously use [[:Category:Building Cards|buildings]]. But be wary as the offender would usually play around him with [[cards]] such as Earthquake. Air swarms such as [[Minion Horde]] can help due to the Santa Hog Rider's usual support tools not countering them. 
+**On the offender's side, a powerful move is to accompany him with an Earthquake, obliterating almost every building, and also grounded swarms. To a lesser extent, [[Lightning]] could also be used, retaining the same point of almost destroying every building while also crippling troops such as the [[Wizard]], [[Mega Minion]], [[Witch]], Electro Dragon, [[Bandit]], [[Berserker]], [[Electro Wizard]], [[Ice Wizard]], Fisherman, [[Night Witch]], [[Musketeer]], [[Archer Queen]], or the [[Hunter]].
+*The Log could also be an effective first play as a cycle, but it only kills swarms and sometimes a non-center-placed [[Tombstone]]. However, its knockback could reset the attack of heavy hitters like [[Mini P.E.K.K.A.]] and [[Elite Barbarians]], allowing the Santa Hog Rider to pass for a hit before he is hit hard.
+*A fast and deadly combination is the Santa Hog Rider and Mini P.E.K.K.A combo. Both units are fast but the Mini P.E.K.K.A does much more damage and does not attack only buildings so the Mini P.E.K.K.A. can deal with troops like the [[Executioner]], Wizard, Hunter, Bandit, Fisherman, Archer Queen, and [[Musketeer]]. However, this combo can be defeated with swarms like [[Skeleton Army]], as the Mini P.E.K.K.A cannot handle swarms. They are also unable to target air troops, so the Minion Horde can stop this easily.
+*A Santa Hog Rider combined with a [[Goblin Barrel]] can be awkward for the opponent to defend against. Timing it so that the Hog Rider is tanking the tower shots for the [[Goblins]] is the most effective way to deal damage. The [[:Category:Spell Cards|spells]] that come from the Santa Hog Rider can also assist the Goblins in dealing more damage.
+**A [[Barbarian Barrel]] can shut this down with minimal Tower damage for a positive Elixir trade, as long as the Goblin Barrel was placed directly on the [[:Category:Tower Troop Cards|Crown Tower]]. Use another card to counter the Santa Hog Rider if it is necessary.
+*His fast move speed can boost forward mini tanks like an [[Ice Golem]], [[Knight]], Executioner, [[Elixir Golem]], [[Battle Healer]], or a [[Valkyrie]] in a push. At the same time, they can also function as a tank for lower hitpoint troops such as Goblins, [[Guards]], and Skeletons as they still have a fair amount of health. However, the Santa Hog Rider struggles with swarms if there is nothing to collect his gifts, as they can damage him down and defeat him quickly while obstructing his path, due to his inability to target troops. Barbarians in particular can fully counter him without very strict timing on the defender's part, though they are vulnerable to spells like [[Fireball]]. Swarm cards like Skeleton Army, [[Goblin Gang]], Bats, and Minion Horde can also very easily counter him.
+**Use this to your advantage by placing a bulky swarm dealer in front of the Hog Rider (eg. Ice Golem, Valkyrie) so that the Hog Rider can transport it to the Tower faster and also get protection from swarms.
+*Most cheap swarms complement the Santa Hog Rider well, as they are nearly as fast as him and usually force more than one card out of the opponent's hand.
+*The Santa Hog Rider in conjunction with the [[Freeze]] can surprise the opponent and allow the Hog Rider to deal much more damage than anticipated, especially if the opponent's go-to counter is a swarm. [[Skeletons]] and [[Bats]] will immediately be defeated by the spell, while [[Spear Goblins]], Goblins, and [[Minions]] will be at low enough health to be defeated by a follow up weak spell. 
+**Against non-swarm troops, it can deal a lot of damage during the freeze time, but this can allow the opponent to set up a massive counterpush. For this reason, players should either only go for a Santa Hog Rider + Freeze when they have other units backing it up from a counterattack, or if the match is about to end and they need to deal as much damage as possible. The exception to this is an [[Elixir Collector]] placed in front of the [[King's Tower]]. If a Santa Hog Rider placed at the bridge, he can destroy the Collector for a positive Elixir trade, though the damage from both [[Princess Towers|Crown Towers]] will usually mean he does not survive to deal any damage to them. However, if the opponent sends in defending troops, it can be an opportunity to gain spell damage value.
+*It is obviously not a good idea to send in a Santa Hog Rider simply to destroy a building, especially if he is the only building targeting unit available, as defeating Crown Towers becomes substantially more difficult. Spells or simply waiting out the lifetime of the building are more effective.
+**In a [[Battle Decks|deck]] with several low-cost cards, it might be worth it to simply send the Santa Hog Rider against one building. These decks shuffle their card rotation quick enough, that they will arrive to their next Santa Hog Rider before the next Santa Hog Rider counter arrives in the opponent's card rotation.
+*When there are buildings placed in the middle to counter the Santa Hog Rider, understanding the placement of the Santa Hog Rider and the type of building placed can help the Santa Hog Rider to bypass certain buildings. 
+**Passive buildings such as spawners have a larger hitbox than defensive buildings; this means that if a passive building was placed 3 tiles away from the river in the middle of the opponent's side, then it is impossible for the Santa Hog Rider to bypass that placement.
+**Defensive buildings have a smaller hitbox than a passive building, which means that if a defensive building was placed three tiles away from the river in the middle of the opponent's side, a Santa Hog Rider placed at the very left or right side of the Arena may be able to bypass it due to its smaller hitbox.
+**If the player has a building already placed down in the center of the [[Arenas|Arena]], and the opponent tries to bypass it with a Santa Hog Rider at the edge of the Arena, they can use certain air troops to push the Santa Hog Rider towards the building as it jumps over the river, effectively denying the bypass attempt. They must be already hovering over the correct placement, as very quick reflexes are required to correctly perform this technique.
+***For [[Bats]], [[Skeleton Dragons]], and Minion Horde, they should be placed right in front of the Hog Rider as soon as it is deployed.
+***For [[Minions]], [[Skeleton Barrel]], Mega Minion, [[Flying Machine]], [[Electro Dragon]], [[Baby Dragon]], [[Inferno Dragon]], [[Balloon]], and [[Lava Hound]], stagger the above placement one tile to the right if the Hog Rider is placed on the left side of the Arena, and vice versa.
+**They can also use ground troops to achieve the same result. Something like an Ice Golem deployed at the Hog Rider’s landing spot will obstruct his path and force him to go around the unit, which causes him to be closer to the building instead of the Crown Tower.
+*The Santa Hog Rider can kite Very Fast non-building targeting troops due to his own Very Fast speed and building-only targeting if he is placed on the fourth tile from the bridge, slightly into the opposite lane. He can also stall grounded units when placed right at the bridge. He will pull them towards him while deploying, and then be untargetable by them when he jumps over the bridge. After landing, he will pull them back. This can be useful when the player needs to deal damage in the same lane they are defending. It will also help separate troops behind a tank in a large push.
+*A very powerful combo is the Santa Hog Rider, the Musketeer, and the [[Valkyrie]]. The Musketeer will defend against most troops, while the Valkyrie can protect her and the Santa Hog Rider from swarms or high damage units. The Santa Hog Rider is used to deal damage to the Tower. However, this is for a whopping 13 Elixir.
+**This can be effectively countered by Lightning, one-shotting the Musketeer and severely damaging both the Valkyrie and Hog Rider. The Minion Horde is also effective, but the enemy can Zap them and the Musketeer will one-shot them all. Even if the Musketeer is defeated, the Hog Rider and Valkyrie will have enough time to severely damage the Tower. [[P.E.K.K.A.|P.E.K.K.A]] can hard counter this strategy allowing relatively low damage and being able to start a counterpush for a 6 elixir advantage.
+**The Santa Hog Rider should be placed behind the Valkyrie to give it a boost so that it stays in front of the Santa Hog Rider, protecting it.
+*Pairing the Santa Hog Rider with the [[Balloon]] can deal devastating damage. If executed properly, the Hog Rider will act as a tank while the Balloon threatens to deal massive damage. The Santa Hog Rider can also destroy any buildings attempting to slow down the combo, as well as deliver Rage to the Balloon, making it much more deadly. However, this combo is very vulnerable to swarms and anti-air cards as they only target buildings. Additionally, they are easy to separate, due to the disparity in move speeds. Alternatively, the Santa Hog Rider and the Balloon can be played in different lanes to spread the opponent's defenses thin. However, a building or Tornado can bring them back together for an easier defense.
+*A solid play is to deploy the Santa Hog Rider at the bridge as soon as the [[Basics of Battle|match]] starts or when you reach 10 [[Elixir]] which is safer. If the opponent does not react fast enough or has a bad starting hand, the Santa Hog Rider will deal a significant amount of damage to the [[Princess Towers|Crown Tower]]. This can also allow the player to quickly scout the opponent's deck if they happen to react to him fast enough.
+*A good placement and timing with [[Guards]] and The Log will fully counter the Santa Hog Rider, canceling all hits.
+*A [[Tornado]] placed on the second tile front of the player's [[King's Tower]] and staggered two tiles towards the Crown Tower will activate it without any damage dealt to the Crown Tower, helping them in defending future pushes. This can also be a method of mitigating all damage dealt to a Crown Tower, but doing this more than three times may result in the King's Tower's health being low enough to be targeted directly, opening up the possible threat of a back door three crown, especially if the Santa Hog Rider goes invisible. A better alternative is to pull the Santa Hog Rider away from the Crown Tower into the attacking range of all three Crown Towers, which will negate all damage as long as none of them are already distracted.
+*A [[Fisherman]] timed perfectly can pull a Santa Hog Rider without him dealing damage, activating the King's Tower. When it has already been activated, put the Fisherman closer to the river rather than the King's Tower so the Santa Hog Rider will be pulled to a safer location for you.
+*Using The Log to predict a Skeleton Army or even a Goblin Gang will let your Santa Hog Rider keep most if not all of his hitpoints and your opponent may not answer in time, letting your Santa Hog Rider connect to the Tower.
+*A Santa Hog Rider is much harder to counter with swarms than a normal Hog Rider, as he has access to [[Rage]], killing Skeletons, Bats, and Spear Goblins, and Invisibility, forcing the swarms to ignore him. The best counters to him are stronger swarms such as [[Barbarians]] and [[Royal Recruits]], and buildings such as [[Inferno Tower]] and [[Tesla/Evolution|Evolved Tesla]].
+*Santa Hog Rider should never be ignored, even if he's low on health. He may unexpectedly drop a [[Heal]] or Invisibility gift, greatly increasing the amount of damage he does. Even deploying a cheap cycle card can do enough damage to defeat the Santa Hog Rider before he can use one of these spells.
+
+<center>
+<div id="unit-statistics" class="table-back">
+{{Statistics}}{{StatusEffects}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}} 
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Count<br />{{Icon|I=Troop Count}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||1.6 sec||0.6 sec||Very Fast (120)||1 sec||Melee: Short (0.8)||Buildings||x1||Ground||[[:Category:Troop Cards|Troop]]||{{Rarity|Legendary}}
+|}
+
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Damage<br />{{Icon|I=Damage}}
+! scope="col" |Damage per second<br />{{Icon|I=DPS}}
+|-
+|9||1,400||265||{{Dps|265|1.6}}
+|-
+|10||1,540||291||{{Dps|291|1.6}}
+|-
+|11||1,694||320||{{Dps|320|1.6}}
+|-
+|12||1,862||352||{{Dps|352|1.6}}
+|-
+|13||2,044||386||{{Dps|386|1.6}}
+|-
+|14||2,240||424||{{Dps|423|1.6}}
+|-
+|15
+|2462
+|466
+|291
+|}
+</div>
+</center>
+
+== History==
+2022
+*The Santa Hog Rider [[Cards|card]] was made available in the [[Tournament/Special Event Challenges|Santa Hog Rider Challenge]] on 19/12/2022.
+*On 26/12/2022, the Santa Hog Rider was removed from the game.
+2023
+*On 10/4/2023, the Santa Hog Rider was readded to the game in the Super Cards Triple Draft Event.
+*On 18/4/2023, the Santa Hog Rider was removed from the game.
+2024
+*On 19/8/2024, the Santa Hog Rider was readded to the game in the Super Cards Draft Event.
+*On 26/8/2024, the Santa Hog Rider was removed from the game.
+2025
+*On 27/1/2025, the Santa Hog Rider was readded to the game in the Super Cards Draft Event.
+*On 3/2/2025, the Santa Hog Rider was removed from the game.
+
+==Trivia==
+*The hog that he rides is most likely a "''Phacochoerus africanus''" ([https://en.wikipedia.org/wiki/Common_warthog common warthog]). Common Warthogs are smaller than boars but more agile which might explain why the Santa Hog Rider can move particularly fast. Warthogs also have tusks, which is like the Santa Hog Rider's hog in Clash Royale.
+*The Santa Hog Rider is tied with [[Hog Rider]], [[Royal Hogs]], [[Princess]], [[Mother Witch|Cursed Hog]], and the [[Terry]] for the longest sight range of all [[:Category:Troop Cards|troops]], with a sight range of 9.5 tiles.
+*The Santa Hog Rider is 1 of 8 troops that can jump over the river, the others being Hog Rider, Royal Hogs, [[Dark Prince]], [[Prince]], [[Raging Prince]], [[Ram Rider]], and Cursed Hog.
+*In the French, German, Spanish, Dutch, Turkish, Arabic, Portuguese, Persian, Indonesian, and Malaysian language settings of the game, the Santa Hog Rider's name translates to "Santa Pig Rider". In the Italian, Portuguese, Thai, Finnish and Vietnamese language settings of the game, the Santa Hog Rider's name translates to "Santa Wild Boar Tamer", "Santa Runner", "Santa Wild Boar Rider", and "Santa Hog Knight" respectively.
+*The Santa Hog Rider bears more than a passing resemblance to [[wikipedia:Mr._T|Mr. T]] and [https://streetfighter.fandom.com/wiki/Zangief Zangief] from Street Fighter.
+*His description is based on the Clash of Clans [https://youtu.be/XH3Xu1-cvII Ride of the Hog Riders commercial].
+**From his description, it is implied that the [[Arenas|Arena]] has doors leading to it.
+*The Santa Hog Rider is 1 of 23 [[:Category:Troop Cards|troops]] that have been featured in the [[Troop Rush]] game [[:Category:Modes|mode]], the others being [[Skeletons]], [[Skeleton Dragons]], [[Fire Spirit]], [[Bats]], [[Elite Barbarians]], [[Firecracker]], [[Rascals|Rascal Girls]], Royal Hogs, [[Heal Spirit]], [[Elixir Golem]], [[Guards]], Prince, [[Balloon]], [[Golem]], [[Wall Breakers]], Ram Rider, [[Sparky]], [[Phoenix]], [[Royal Ghost]], [[Bandit]], [[Lumberjack]], and the [[Monk]].
+*When the Santa Hog Rider is deployed, he will occasionally yell "''Hog Riderrrrr!''"
+**The Santa Hog Rider is 1 of 24 troops that speak distinct words when on the field, the others being [[Mini P.E.K.K.A.]], [[Mega Minion]], [[Wizard]], Hog Rider, [[P.E.K.K.A.]], Dark Prince, [[Bowler]], Ram Rider, [[Electro Wizard]], Princess, [[Ice Wizard]], [[Magic Archer]], Lumberjack, Mother Witch, [[Fisherman]], [[Goblin Machine]], [[Super Mini P.E.K.K.A.]], [[Super Magic Archer]], [[Golden Knight]], [[Boss Bandit]], [[Archer Queen]], [[Little Prince]], and the Terry.
+*Unlike the [[Royal Ghost]], troops affected by the Invisibility [[:Category:Spell Cards|spell]] do not reveal themselves when attacking, meaning the only way to damage them is via spells or through indirect means (e.g the [[Electro Spirit|Electro Spirit's]] chain attack).
+*The Santa Hog Rider is the subject of 2 [[Emotes]].
+
+{{Navigation|Card}}
+
+[[ru:Санта на кабане]]
+
+[[Category:Removed Cards]]

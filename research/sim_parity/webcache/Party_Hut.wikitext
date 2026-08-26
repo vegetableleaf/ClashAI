@@ -1,0 +1,128 @@
+{{DISPLAYTITLE: <span class="text-legendary";">Party Hut</span>}}
+{{Protection}}{{MagicWords}}{{EventCard}}
+
+{{Card Infobox|Cost=5|Rarity=Legendary|Type=Building|ReleaseDate=13 March 2023}}
+{{Quote|Building that spawns Spear Goblins. Don't look inside... You don't want to see how they're made.}}
+
+The Party Hut was a temporary {{Rarity|Legendary}} [[Cards|card]], only available in a 1 week Challenge. It spawned a single-target, air-targeting, very long-ranged, [[:Category:Building Cards|building]] with moderate hitpoints and low damage. When defeated, it also spawned 3 [[Goblins]], 3 [[Spear Goblins]], and a [[Goblin Cage|Goblin Brawler]]. A Party Hut card costs 5 [[Elixir]] to deploy. 
+
+==Strategy ==
+*Unlike the [[X-Bow]], the Party Hut cannot attack the tower unit unless it is exactly faced towards the tower unit when it is installed under one river. So, the range is slightly shorter than that of the X-Bow.
+*The [[Bowler]] is an effective counter to the Party Hut. His high hitpoints allows him to survive its attacks, and his piercing attack will not only destroy the Party Hut but also immediately defeat the spawned [[Goblins]] and [[Spear Goblins]], as well as dealing decent damage to the [[Goblin Cage|Goblin Brawler]]. While this is only a neutral [[Elixir]] trade, it will set up the player for a counterattack. The [[Executioner]] and the [[Bomber/Evolution|Evolved Bomber]] can also work in a similar way.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}
+{{StatisticsSubheader|Party Hut Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Lifetime<br />{{Icon|I=Time}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||0.7 sec||0.35 sec||3.5 sec||20 sec||Air & Ground||[[:Category:Building Cards|Building]]||{{Rarity|Legendary}}
+|}
+
+{{StatisticsSubheader|Goblin Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%; text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.1 sec||0.4 sec||Very Fast (120)||Melee: Short (0.5)||Ground||Ground
+|}
+
+{{StatisticsSubheader|Spear Goblin Attributes}}
+{| class="wikitable" id="unit-attributes-table-tertiary" style="width:100%; text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.7 sec||0.4 sec||Very Fast (120)||5||Air & Ground||Ground
+|}
+
+{{StatisticsSubheader|Goblin Brawler Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.1 sec||0.2 sec||Fast (90)||Melee: Short (0.8)||Ground||Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Party Hut Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Party Hut Damage<br />{{Icon|I=Damage}}
+! scope="col" |Party Hut Damage per Second <br />{{Icon|I=DPS}}
+! scope="col" |Goblin Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Goblin Damage<br />{{Icon|I=Damage}}
+! scope="col" |Goblin Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Spear Goblin Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Spear Goblin Damage<br />{{Icon|I=Damage}}
+! scope="col" |Spear Goblin Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Goblin Brawler Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Goblin Brawler Damage<br />{{Icon|I=Damage}}
+! scope="col" |Goblin Brawler Damage per second<br />{{Icon|I=DPS}}
+|-
+|9||704||109||{{Dps|109|0.7}}||167||99||{{Dps|99|1.1}}||110||67||{{Dps|67|1.7}}||897||279||{{Dps|279|1.1}}
+|-
+|10||774||119||{{Dps|119|0.7}}||184||109||{{Dps|109|1.1}}||121||73||{{Dps|73|1.7}}||948||306||{{Dps|306|1.1}}
+|-
+|11||851||131||{{Dps|131|0.7}}||202||120||{{Dps|120|1.1}}||133||81||{{Dps|81|1.7}}||1,081||337||{{Dps|337|1.1}}
+|-
+|12||936||144||{{Dps|144|0.7}}||221||132||{{Dps|132|1.1}}||146||89||{{Dps|89|1.7}}||1,188||370||{{Dps|370|1.1}}
+|-
+|13||1,027||159||{{Dps|159|0.7}}||244||145||{{Dps|145|1.1}}||160||97||{{Dps|97|1.7}}||1,305||407||{{Dps|407|1.1}}
+|-
+|14||1,126||174||{{Dps|174|0.7}}||267||159||{{Dps|159|1.1}}||176||107||{{Dps|107|1.7}}||1,433||446||{{Dps|446|1.1}}
+|-
+|15||1239||191||{{Dps|191|0.7}}||293||174||{{Dps|174|1.1}}||193||117||{{Dps|117|1.7}}||1,575||491||{{Dps|491|1.1}}
+|}
+</div>
+</center>
+
+==History==
+2023
+*The Party Hut [[Cards|card]] was made available in the [[Tournament/Special Event Challenges|Goblin Party Hut Challenge]], which started on 13/3/2023.
+*On 20/3/2023, the Party Hut was removed from the game.
+
+2024
+*On 26/6/2024, the Party Hut was readded to the game in the Party Hut Event.
+*On 1/7/2024, the Party Hut was removed from the game.
+*On 19/8/2024, the Party Hut was readded to the game in the Super Cards Draft Event.
+*On 26/8/2024, the Party Hut was removed from the game.
+2025
+*On 27/1/2025, the Party Hut was readded to the game in the Super Cards Draft Event.
+*On 3/2/2025, the Party Hut was removed from the game.
+
+==Trivia==
+*Goblins are small, grotesque, monstrous creatures that appear in the folklore of multiple European cultures. First attested in stories from the Middle Ages, they are ascribed conflicting abilities, temperaments, and appearances depending on the story and country of origin, ranging from mischievous household spirits to malicious, bestial thieves. They often have magical abilities similar to a fairy or demon, such as the ability to shapeshift. Similar creatures include [https://en.wikipedia.org/wiki/Duende duendes], [https://en.wikipedia.org/wiki/Kobold kobolds], [https://en.wikipedia.org/wiki/Leprechaun leprechauns], and [https://en.wikipedia.org/wiki/Ghoul ghouls]. 
+**The Party Hut is 1 of 17 [[cards]] associated with [[Goblins]], with the others being [[Spear Goblins]], [[Goblin Gang]], [[Baby Goblins]], [[Dart Goblin]], [[Goblin Demolisher]], [[Suspicious Bush]], [[Goblin Cage]], [[Goblin Hut]], [[Goblin Giant]], [[Goblin Barrel]], [[Goblin Curse]], [[Goblin Drill]], [[Goblin Machine]], [[Party Rocket]], [[Goblinstein]], and of course, Goblins.
+*The Party Hut's stats are the highest or lowest among all buildings. More specifically:
+**Among all buildings that can attack, the Party Hut is tied with [[Mortar]], [[Barbarian Launcher]], and [[X-Bow]] for the longest range of all buildings, with a range of 11.5 tiles.
+**The Party Hut is tied with Mortar, Barbarian Launcher, and X-Bow for the longest deployment time of all buildings, with a deployment time of 3.5 seconds.
+*In the Norwegian, Finnish, and Vietnamese language settings of the game, the Party Hut's name translates to "Party Cabin", "Party Lodge", and "Party Tent" respectively.
+*When deployed, you can hear multiple voices singing "''Ain't no party, like a goblin party!''", and when destroyed, these voices will sing "''Goblin party, goblin party, goblin party, goblin party!''"
+**The Party Hut's voices come from the [https://youtu.be/VXupxIAAEuQ?si=Y2h9NFKioDT_OzLw Party Hut song].
+**The Party Hut is the only building that speak distinct words when on the field.
+*There used to be a bug where using a [[Star Points|Star Level 1]] [[Mirror]] on a Party Hut would cause the Party Hut to become visually invisible for the player.
+
+{{Navigation|Card}}
+
+[[ru:Праздничная хижина]]
+
+[[Category:Removed Cards]]

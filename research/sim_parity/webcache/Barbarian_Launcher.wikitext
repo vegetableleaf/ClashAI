@@ -1,0 +1,135 @@
+{{DISPLAYTITLE:<span style="color: #888888;">Barbarian Launcher</span>}}
+{{EventCard}}{{Protection}}{{MagicWords}}
+
+{{Card Infobox|Cost=5|Rarity=Common|Type=Building|ReleaseDate=1 August 2022}}
+{{Quote|Defensive building with a long range. Shoots big boulders that deal area damage, but cannot hit targets that get very close!}}
+
+The Barbarian Launcher was a temporary {{Rarity|Common}} [[Cards|card]], only available in certain 1 week [[Tournament|Challenges]]. It spawned an area-damage, ground-targeting, very long-ranged, [[:Category:Building Cards|building]] with high hitpoints and extremely low damage. It had a blind spot, preventing it from attacking enemies inside it. Every attack that it did would also spawn a [[Barbarians|Barbarian]]. It appears to be a gold and crimson-colored [[Mortar]] with stars on it, a steel blue gimbal on each side with a stud on top and a sword hoisted on the side, and has a Barbarian mounted on top of its muzzle. A Barbarian Launcher card cost 5 [[Elixir]] to deploy.
+
+==Strategy==
+{{Battle Deck with Card|:Category:Battle Decks using the Barbarian Launcher Card}}
+*Like the [[Mortar]], the Barbarian Launcher is able to target the enemy's [[:Category:Tower Troop Cards|Crown Towers]] from the player's own side, making it an effective offensive [[:Category:Building Cards|building]]. It can deal more damage than the Mortar, due to the [[Barbarians]] being spawned, and the higher attack speed. However, its immediate damage is significantly lower.
+*The Barbarian Launcher is also able to damage enemy defensive [[:Category:Building Cards|buildings]] and [[:Category:Troop Cards|troops]] from the player's side of the [[Arenas|Arena]] to make way for a push. The Barbarians spawned from them can also help tank for other troops.
+*As a defense, the Barbarian Launcher can be placed in the center of the player's territory, preferably closer to the [[King's Tower]], so opposing troops cannot get to the Crown Towers without defensive resistance.
+*Because the Barbarians can attack all ground troops, using the [[Royal Giant]] to tank shots from it is ineffective, as the Barbarians will slowly defeat the Royal Giant, and then proceed towards the Crown Tower. It is more effective to distract it with troops that target ground troops, especially ones that deal area damage and has a pushback effect, such as the [[Bowler]].
+*When facing the Barbarian Launcher, try to place slow building targeting troops like the [[Ice Golem]] one tile into the other lane. This will distract the Barbarian Launcher completely, due to its low DPS and Ice Golem's high hitpoints.
+*Generally, the player should consider attacking in the other lane with their main offensive [[cards]], in order to prevent the Barbarian Launcher from attacking their Crown Tower.
+*A Barbarian Launcher takes 3.5 seconds to deploy, giving the defender ample time to place cards to distract the Barbarian Launcher and prevent it from locking onto their Crown Towers, as well as deal with its supporting troops. With sufficient cards, this can then be turned into a punishing counterpush. Placing the distraction unit at the last second is usually the most effective way to distract the Barbarian Launcher as the opponent won't be able to react to the unit and eliminate it before the Barbarian Launcher finishes deploying. The defender can also mix up their timing and play their unit immediately to catch their opponent off guard, such as with an immediate [[Inferno Tower]].
+*If the player misses their timing for a distraction and the Barbarian Launcher is locked on to their Crown Tower, using any card with a stun effect such as [[Zap]], [[Electro Spirit]], [[Ice Spirit]], [[Lightning]], [[Electro Dragon]], [[Zappies]], [[Goblinstein]], or [[Electro Wizard]] will force the Barbarian Launcher to retarget to the nearest entity, which is helpful in denying a lot of would-be damage.
+*In a situation where both players have lost a Crown Tower in opposite lanes, the Barbarian Launcher user should attack the Tower opposite to their destroyed one by placing their Barbarian Launcher in the middle. This limits the areas in which their opponent can deploy troops directly on top of the Barbarian Launcher. Going for the King's Tower is not recommended, as all four sides of the Barbarian Launcher will be vulnerable to being deployed on and the King’s Tower’s higher amount of hitpoints will be difficult to break through consistently.
+*Having an area damage [[:Category:Spell Cards|spell]] in hand when attacking with the Barbarian Launcher is very effective, as it can allow the player to defeat low or moderate-hitpoint troops nearly instantly, allowing it to lock onto a Crown Tower.
+*Conversely, having an area damage spell in hand when defending against a Barbarian Launcher is also effective. Due to the Barbarian Launcher's high Elixir cost, the units played alongside it are often of low Elixir cost and have low to moderate hitpoints, allowing the player to reap a large amount of spell value.
+*The [[Bomb Tower]] is very effective against the Barbarian Launcher. It can deal area damage, allowing it to handle multiple Barbarians, and the Barbarian Launcher will do barely any damage to it. However, it will expire before the Barbarian Launcher expires, so make sure that there is something else that attacks the Barbarian Launcher while the Bomb Tower distracts it.
+*Even though it does extremely low damage per impact, it is still decent against [[Clone|cloned]] units, as the drop damage will kill them instantly.
+
+<center>
+<div id="unit-statistics" class="table-back">{{Statistics}}
+{{StatusEffects}}{{StatisticsSubheader|Barbarian Launcher Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost<br />{{Icon|I=Elixir}}
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Deploy Time<br />{{Icon|I=Deploy Time}}
+! scope="col" |Lifetime<br />{{Icon|I=Time}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Splash Radius<br />{{Icon|I=Radius}}
+! scope="col" |Projectile Speed<br />{{Icon|I=Speed}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Type<br />{{Icon|I=Type}}
+! scope="col" |Rarity<br />{{Icon|I=Rarity}}
+|-
+|5||3 sec||1 sec||3.5 sec||30 sec||3.5-11.5||2||300||Ground||[[:Category:Building Cards|Building]]||{{Rarity|Common}}
+|}
+
+{{StatisticsSubheader|Barbarian Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed<br />{{Icon|I=Damage Speed}}
+! scope="col" |Speed<br />{{Icon|I=Speed}}
+! scope="col" |Range<br />{{Icon|I=Range}}
+! scope="col" |Target<br />{{Icon|I=Targets}}
+! scope="col" |Transport<br />{{Icon|I=Transport}}
+|-
+|1.3 sec||0.4 sec||Medium (60)||Melee: Short (0.7)||Ground||Ground
+|}
+
+{{StatisticsSubheader|Card Statistics}}
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level<br />{{Icon|I=Level}}
+! scope="col" |Barbarian Launcher Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Barbarian Launcher Area Damage<br />{{Icon|I=Area Damage}}
+! scope="col" |Barbarian Launcher Damage per second<br />{{Icon|I=DPS}}
+! scope="col" |Barbarian Launcher Hitpoints lost per second<br />{{Icon|I=Time}}
+! scope="col" |Barbarian Hitpoints<br />{{Icon|I=Hitpoint}}
+! scope="col" |Barbarian Damage<br />{{Icon|I=Damage}}
+! scope="col" |Barbarian Damage per second<br />{{Icon|I=DPS}}
+|-
+|1||575||1||{{Dps|1|3}}||19.1||262||75||{{Dps|75|1.3}}
+|-
+|2||632||1||{{Dps|1|3}}||21||288||82||{{Dps|82|1.3}}
+|-
+|3||695||1||{{Dps|1|3}}||23.1||317||90||{{Dps|90|1.3}}
+|-
+|4||764||1||{{Dps|1|3}}||25.4||348||99||{{Dps|99|1.3}}
+|-
+|5||839||1||{{Dps|1|3}}||27.9||382||109||{{Dps|109|1.3}}
+|-
+|6||920||1||{{Dps|1|3}}||30.6||419||120||{{Dps|120|1.3}}
+|-
+|7||1,012||1||{{Dps|1|3}}||33.7||461||132||{{Dps|132|1.3}}
+|-
+|8||1,109||1||{{Dps|1|3}}||36.9||505||144||{{Dps|144|1.3}}
+|-
+|9||1,219||2||{{Dps|2|3}}||40.6||555||159||{{Dps|159|1.3}}
+|-
+|10||1,339||2||{{Dps|2|3}}||44.6||610||174||{{Dps|174|1.3}}
+|-
+|11||1,472||2||{{Dps|2|3}}||49||670||192||{{Dps|192|1.3}}
+|-
+|12||1,615||2||{{Dps|2|3}}||53.8||736||210||{{Dps|210|1.3}}
+|-
+|13||1,776||3||{{Dps|3|3}}||59.2||809||231||{{Dps|231|1.3}}
+|-
+|14||1,949||3||{{Dps|3|3}}||64.9||888||254||{{Dps|254|1.3}}
+|}
+</div>
+</center>
+
+==History==
+2022
+*The Barbarian Launcher [[Cards|card]] was made available in the [[Tournament|Barbarian Launcher Challenge]] on 1/8/2022.
+*On 6/8/2022, the Barbarian Launcher was removed from the game.
+*On 10/10/2022, the Barbarian Launcher was readded to the game in the Mega Deck Challenge.
+*On 17/10/2022, the Barbarian Launcher was removed from the game.
+2024
+*On 19/8/2024, the Barbarian Launcher was readded to the game in the Super Cards Draft Event.
+*On 26/8/2024, the Barbarian Launcher was removed from the game.
+2025
+*On 27/1/2025, the Barbarian Launcher was readded to the game in the Super Cards Draft Event.
+*On 3/2/2025, the Barbarian Launcher was removed from the game.
+
+==Gallery==
+<gallery>
+File:BarbarianLauncherConcept.jpeg|Concept art of Barbarian Launcher.
+</gallery>
+
+==Trivia ==
+*The word "''Barbarian''" comes from the Greek "''βάρβαρος''" (''bárbaros''), meaning foreign. Dating back to the ancient Greek times, the Greeks referred to non-Greek people as barbarians because the language they spoke sounded to Greeks like gibberish represented by the sounds “''bar…bar…;''”.
+**In the German, Spanish, Norwegian, and Persian language setting of the game, the Barbarian Launcher's name translates to "Barbarian Thrower". In the Italian and Dutch language setting of the game, the Barbarian Launcher's name translates to "Barbarian Shooter". In the Thai and Finnish language setting of the game, the Barbarian Launcher's name translates to "Barbarian Shooting Machine" and "Barbarian Cannon" respectively.
+**The Barbarian Launcher is 1 of 6 [[cards]] associated with [[Barbarians]], with the others being [[Elite Barbarians]], [[Battle Ram]], [[Barbarian Hut]], [[Barbarian Barrel]], and of course, Barbarians.
+*The Barbarian Launcher was meant to be scrapped, but was added in a [[Tournament/Special Event Challenges|Challenge]].
+*It is the first [[:Category:Building Cards|building]] card to be temporary.
+*The Barbarian Launcher's stats are the highest or lowest among all buildings. More specifically:
+**Among all buildings that can attack, the Barbarian Launcher has the lowest damage of all buildings, with 3 damage at Level 14 and 1 damage at Level 1.
+**Among all buildings that can attack, the Barbarian Launcher is tied with [[Mortar]], [[X-Bow]], and [[Party Hut]] for the longest range of all buildings, with a range of 11.5 tiles.
+**The Barbarian Launcher is tied with Mortar, X-Bow, and Party Hut for the longest deployment time of all buildings, with a deployment time of 3.5 seconds.
+**Among all buildings that can attack, the Barbarian Launcher is tied with Mortar for the lowest first attack speed of all buildings, with a first attack speed of 1 second.
+**Among all buildings with area damage, the Barbarian Launcher is tied with Mortar for the largest area damage radius of all buildings, with a radius of 2 tiles.
+**Among all buildings that attack with projectiles, the Barbarian Launcher is tied with Mortar for the lowest projectile speed of all buildings, with a projectile speed of 300.
+*Despite not being labeled as a {{Rarity|Legendary}}, it’s still classified as a "Super Card", since it has appeared in multiple Super Card Draft Challenges.
+
+{{Navigation|Card}}
+
+[[ru:Варварская пусковая установка]]
+
+[[Category:Removed Cards]]
