@@ -457,7 +457,9 @@ class CardDB:
                 evo = self.cards.get(_key(key) + "_evo")
                 if evo:
                     for kk, vv in evo.items():
-                        if vv is not None and kk not in ("display", "base", "evolution", "champion"):
+                        # `_src` stays the BASE row's: the overlay changes stats, not provenance
+                        if vv is not None and kk not in ("display", "base", "evolution",
+                                                         "champion", "_src"):
                             merged[kk] = vv
             lvl = entry.get("level")
             if lvl:

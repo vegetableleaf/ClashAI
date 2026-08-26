@@ -1,0 +1,537 @@
+{
+ "meta": {
+  "generator": "research/sim_parity/scripts/gen_pins.py",
+  "sources": [
+   "ledger/stat_diffs.jsonl (66 verdict:pin rows)",
+   "decisions.md 2026-08-26 R2 ADJUDICATION (owner rulings)"
+  ],
+  "semantics": "the importer applies pins as a post-pass over the scraped rows and --write refuses if a pinned field would regress; value null = the field must not be imported; fields the importer does not emit are advisory (curated layer / stat_sweep EXPECTED sync)",
+  "pair": "byte-identical across icebow/ and hogeq/ -- regenerate with the generator and it writes both; never hand-edit one copy",
+  "counts": {
+   "total": 74,
+   "from_stat_diffs": 66,
+   "from_decisions": 12,
+   "overlapping": 4
+  }
+ },
+ "pins": [
+  {
+   "key": "archer_queen",
+   "field": "ability_cooldown_s",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_champions.jsonl:7, family champions)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "archer_queen",
+   "field": "damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:41, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "archer_queen",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:42, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "archers",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:2, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "baby_dragon",
+   "field": "damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:17, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "baby_dragon",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:18, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "barbarian_hut",
+   "field": "spawn_unit_stats",
+   "value": "670/192/1.3",
+   "source": "stat_diffs.jsonl verdict:pin (r2_crosscheck_spawn_anchor.jsonl:25, family xc_spawn_anchor)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "bomber",
+   "field": "area_damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:3, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "bomber",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:4, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "cannon_evo",
+   "field": "volley_damage",
+   "value": 281,
+   "source": "decisions.md #9: cannon_evo volley damage 281 @ L11 (nerfed; wiki vardefine lags at 304)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "earthquake",
+   "field": "crown_tower_damage",
+   "value": 49,
+   "source": "stat_diffs.jsonl verdict:pin (r2_spells.jsonl:13, family spells)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "earthquake",
+   "field": "damage",
+   "value": 81,
+   "source": "decisions.md #5: earthquake damage = 81 @ L11, not 84 (overrides the 2026-08 HANDOFF card-data row)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "electro_wizard",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:32, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "electro_wizard",
+   "field": "zap_damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:33, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "firecracker_evo",
+   "field": "spark_dps_small",
+   "value": 48,
+   "source": "decisions.md #5: wiki correct for ALL firecracker_evo entries; owner overturned the old verified 60 (closes the long-flagged spark_dps_small conflict)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "furnace",
+   "field": "kind",
+   "value": "troop",
+   "source": "stat_diffs.jsonl verdict:pin (r2_crosscheck_spawn_anchor.jsonl:15, family xc_spawn_anchor)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "goblin_cage",
+   "field": "hitpoints",
+   "value": 780,
+   "source": "stat_diffs.jsonl verdict:pin (r2_crosscheck_spawn_anchor.jsonl:9, family xc_spawn_anchor)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "goblin_drill",
+   "field": "spawns.delay",
+   "value": 1.0,
+   "source": "stat_diffs.jsonl verdict:pin (r2_buildings.jsonl:14, family buildings)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "goblins",
+   "field": "damage",
+   "value": 125,
+   "source": "stat_diffs.jsonl verdict:pin (r2_crosscheck_spawn_anchor.jsonl:24, family xc_spawn_anchor)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "goblinstein",
+   "field": "ability_cooldown_s",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_champions.jsonl:21, family champions)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "golden_knight",
+   "field": "ability_cooldown_s",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_champions.jsonl:34, family champions)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "golden_knight",
+   "field": "damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:43, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "golden_knight",
+   "field": "dashing_dash_damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:44, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "golden_knight",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:45, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "golem",
+   "field": "golem_damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:19, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "golem",
+   "field": "golem_death_damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:20, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "golem",
+   "field": "golem_hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:21, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "golem",
+   "field": "golemite_hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:24, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "hog_rider",
+   "field": "damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:9, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "hog_rider",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:10, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "knight",
+   "field": "damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:5, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "knight",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:6, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "lightning",
+   "field": "crown_tower_damage",
+   "value": 264,
+   "source": "stat_diffs.jsonl verdict:pin (r2_spells.jsonl:25, family spells) + decisions.md balance-lag pin (post-1/6/2026)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "little_prince",
+   "field": "ability_cooldown_s",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_champions.jsonl:47, family champions)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "little_prince",
+   "field": "hitpoints/damage",
+   "value": "698/104",
+   "source": "stat_diffs.jsonl verdict:pin (r2_crosscheck_spawn_anchor.jsonl:38, family xc_spawn_anchor)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "mighty_miner",
+   "field": "2_stage_damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:47, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "mighty_miner",
+   "field": "3_stage_damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:48, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "mighty_miner",
+   "field": "ability_bomb_damage",
+   "value": 332,
+   "source": "decisions.md #9: rarity-floor anchor, wiki integer base 332 @ L11 reproduces the owner's observed 440 @ L14; replaces the 366 reverse-derivation",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "mighty_miner",
+   "field": "ability_cooldown_s",
+   "value": 0.0,
+   "source": "stat_diffs.jsonl verdict:pin (r2_champions.jsonl:58, family champions)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "mighty_miner",
+   "field": "explosive_escape_damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:49, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "mighty_miner",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:50, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "miner",
+   "field": "crown_tower_damage",
+   "value": 39,
+   "source": "stat_diffs.jsonl verdict:pin (r2_crosscheck_crown.jsonl:23, family xc_crown)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "miner",
+   "field": "damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:35, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "miner",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:36, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "monk",
+   "field": "ability_cooldown_s",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_champions.jsonl:66, family champions)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "mortar",
+   "field": "hit_speed",
+   "value": 4.7,
+   "source": "decisions.md #10: mortar AND mortar_evo hit speed 4.7 s",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "mortar_evo",
+   "field": "hit_speed",
+   "value": 4.7,
+   "source": "decisions.md #10: mortar AND mortar_evo hit speed 4.7 s",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "musketeer",
+   "field": "damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:11, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "musketeer",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:12, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "pekka",
+   "field": "damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:25, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "pekka",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:26, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "poison",
+   "field": "crown_tower_damage",
+   "value": 21,
+   "source": "stat_diffs.jsonl verdict:pin (r2_spells.jsonl:28, family spells) + decisions.md balance-lag pin (post-1/6/2026)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "princess",
+   "field": "area_damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:37, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "princess",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:38, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "rocket",
+   "field": "crown_tower_damage",
+   "value": 341,
+   "source": "decisions.md balance-lag pin: 1/6/2026 set 23% of full; 1484 * 0.23 = 341.32 -> 341 (cards.yaml's 342 is off by one against this pin -- I5 applies 341)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "skeleton_barrel_evo",
+   "field": "count",
+   "value": 1,
+   "source": "stat_diffs.jsonl verdict:pin (r2_evos_b.jsonl:60, family evos_b)",
+   "date": "2026-08-26 live refetch; revid identical to the 00:52 evos_b fetchlog and cache byte-identical"
+  },
+  {
+   "key": "skeleton_barrel_evo",
+   "field": "damage",
+   "value": 0,
+   "source": "stat_diffs.jsonl verdict:pin (r2_evos_b.jsonl:61, family evos_b)",
+   "date": "2026-08-26 live refetch; revid identical to the 00:52 evos_b fetchlog and cache byte-identical"
+  },
+  {
+   "key": "skeleton_barrel_evo",
+   "field": "dps",
+   "value": 0,
+   "source": "stat_diffs.jsonl verdict:pin (r2_evos_b.jsonl:62, family evos_b)",
+   "date": "2026-08-26 live refetch; revid identical to the 00:52 evos_b fetchlog and cache byte-identical"
+  },
+  {
+   "key": "skeleton_king",
+   "field": "ability_cooldown_s",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_champions.jsonl:77, family champions)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "skeleton_king",
+   "field": "skeleton_king_damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:52, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "skeleton_king",
+   "field": "skeleton_king_hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:53, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "sparky",
+   "field": "area_damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:39, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "sparky",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:40, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "spirit_empress",
+   "field": "hitpoints",
+   "value": 1121,
+   "source": "stat_diffs.jsonl verdict:pin (r2_troops_c.jsonl:22, family troops_c)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "spirit_empress_air",
+   "field": "hit_speed",
+   "value": 1.4,
+   "source": "stat_diffs.jsonl verdict:pin (r2_troops_c.jsonl:26, family troops_c)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "spirit_empress_air",
+   "field": "hitpoints",
+   "value": 1121,
+   "source": "stat_diffs.jsonl verdict:pin (r2_troops_c.jsonl:24, family troops_c)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "tesla_evo",
+   "field": "hitpoints",
+   "value": 1182,
+   "source": "decisions.md #5: tesla_evo hitpoints = base = 1182 @ L11 (evo hp same as base)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "the_log",
+   "field": "crown_tower_damage",
+   "value": 35,
+   "source": "stat_diffs.jsonl verdict:pin (r2_spells.jsonl:40, family spells) + decisions.md balance-lag pin (post-1/6/2026)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "valkyrie",
+   "field": "area_damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:13, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "valkyrie",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:14, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "witch",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:28, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "wizard",
+   "field": "damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:15, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "wizard",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:16, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "zap",
+   "field": "crown_tower_damage",
+   "value": 48,
+   "source": "stat_diffs.jsonl verdict:pin (r2_spells.jsonl:50, family spells) + decisions.md balance-lag pin (post-1/6/2026)",
+   "date": "2026-08-26"
+  }
+ ]
+}
