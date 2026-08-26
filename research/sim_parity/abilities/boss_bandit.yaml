@@ -1,0 +1,147 @@
+key: boss_bandit
+page: Boss Bandit
+source: webcache/Boss_Bandit.wikitext
+revid: null
+fetched: "2026-08-25"
+
+body_stats:
+  # Level 11 is the vardefine base; the page's level table scales every stat by 1.1^(level-11).
+  hp:         {value: 2624, source: "vardefine hp_11"}
+  damage:     {value: 244, source: "vardefine dmg_11 (a separate vardefine dash_11 = 489 carries dash damage)"}
+  hit_speed:  {value: 1.1, source: "vardefine atk_speed (= 1.1); same value in attribute table col 'Hit Speed' (1.1 sec)"}
+  speed:      {value: "Fast (90)", source: "attribute table col 'Speed' (Boss Bandit Attributes) - NO vardefine exists for speed"}
+  range:      {value: "Melee: Short (0.8)", source: "attribute table col 'Range' (Boss Bandit Attributes) - NO vardefine"}
+  targets:    {value: "Ground", source: "attribute table col 'Target' (Boss Bandit Attributes) - NO vardefine"}
+  count:      {value: 1, source: "attribute table col 'Count' (x1) (Boss Bandit Attributes) - NO vardefine"}
+
+ability:
+  name: Getaway Grenade
+  elixir_cost: 1
+  uses: 2              # prose 'it can only be activated twice' + Getaway Grenade Attributes col 'Ability Count' = 2;
+                       # Strategy prose elsewhere says 'three ability activations' - CONFLICT, see open_questions
+  cooldown_s: 3
+  cast_delay_s: 0.933  # attribute table 'Cast Time'; ability prose says 1 second - CONFLICT, see open_questions
+  duration_s: 1        # the invisibility window; the page never labels anything else a 'duration'
+
+mechanic_prose: |
+  [Section "Ability: Getaway Grenade" - VERBATIM]
+  {{Quote|Briefly becomes invisible and teleports backwards!}}
+  {{Champion Ability}}
+  The Boss Bandit has a special ability, accessible from the rightmost side of the screen just above
+  the player's [[Cards|card]] slots in [[Basics of Battle|battle]]. After a 1 second delay, the Boss
+  Bandit becomes invisible for 1 second, then teleports 6 tiles behind her original position. This
+  allows her to escape any form of damage, as well as give her another dash if the troops are far
+  away enough. The ability goes on a 3 second cooldown after the duration ends, but it can only be
+  activated twice. The Getaway Grenade ability costs 1 Elixir to activate.
+
+  [Lead section (card quote + intro paragraph) - VERBATIM]
+  {{Quote|The boss of the Forest Gang finally shows her face...kind of. Boss Bandit dashes to her
+  targets and is invulnerable while dashing. When things get tough, her pair of grenades are at the
+  ready.}}
+  "It spawns a single-target, ground-targeting, melee, ground [[:Category:Troop Cards|troop]] with
+  high hitpoints and high damage. If there are ground units between 3.5 and 6 tiles of her, she will
+  stop moving and begin charging a dash attack which takes 0.8 seconds to execute, and will deal
+  double damage. The Boss Bandit's ability allows her to get invisible for one second, then teleport
+  6 tiles behind her current spot."
+
+  [Section "Strategies" - VERBATIM, engine-relevant edge cases only]
+  "Her dash invulnerability will allow her to nullify charge damage from the [[Dark Prince]] and the
+  [[Prince]], as well as the first attack of the [[Valkyrie]] and the [[Fisherman]], since they hit
+  during the Boss Bandit's dash time, allowing her to be more efficient against them."
+  "Even though anti-tank cards like the [[Mini P.E.K.K.A.]] and the Lumberjack are able to cripple
+  her hitpoints quick enough, the Boss Bandit can use her ability to escape the troop and dash
+  towards them again, easily taking the anti-tank card down. It can also be used preemptively, and
+  can even be activated a second time if another anti-tank card is used."
+  "When using cheaper anti-tank cards, an [[Ice Spirit]] can be used to stall the Boss Bandit for 1.2
+  seconds, stopping her from dealing damage and use her ability in the meantime, possibly shutting
+  down her first ability usage. If positioned at the right time, it may even cause her to dash into
+  it while still freezing her."
+  "Alone, a [[Skeleton Army]] is the cheapest counter to her, as the [[Skeletons]] spawned from the
+  card is enough to keep her distracted and take her down even with her three ability activations."
+  "The [[Rage]] is a good tool when removing swarms, as it will also boost the Boss Bandit's attack
+  speed and reduce the dash time, allowing her to use her ability and dash faster."
+  "If the Golden Knight is taking the role of mini-tank, his own ability will be able to nullify her
+  dash when timed properly and at a distance from her, but Boss Bandit's dash also nullifies the
+  Golden Knight's ability, making a pretty cool interaction. The Skeleton King can also nullify her
+  dash by activating his ability."
+  "For a -1 Elixir trade, the Boss Bandit can escape a [[Rocket]] when timed right, allowing her
+  hitpoints to be preserved. If she was targeting something, she'll be able to dash into the target
+  again. This is easy to time, as the Rocket moves slowly, but one must also note that it takes 1
+  second to activate her ability, and she also takes around 0.9 seconds to teleport backwards."
+  "The Boss Bandit can be placed as a defender in [[Clan Wars|Boat Battles]]. However, much like
+  other {{Rarity|Champion}} cards, she is unable to use her ability."
+
+  [Section "History" - VERBATIM, mechanics-bearing entries only]
+  "On 8/7/2025, a Balance Update, changed the way the Getaway Grenade operates. The Getaway Grenade
+  can be activated a total of 2 times independent on Boss Bandit's hitpoints, with a 3-second
+  cooldown between its uses. The same update also decreased the Boss Bandit's hitpoints by 4%."
+  "On 12/1/2026, a Balance Update, decreased the Boss Bandit's damage and dash damage by 9%, and
+  increased it's attack speed to 1.1 (from 1.2)"
+
+  [Section "Trivia" - VERBATIM, mechanics-bearing entries only]
+  "The Boss Bandit is the first {{Rarity|Champion}} to have a limited number of ability uses, with a
+  maximum of two uses per deployment."
+  "If the Boss Bandit's ability is used up, the crown symbol is currently not automatically removed."
+  "The initial balance change for Boss Bandit on the 8/7/2025 balance changes was an addition of a
+  5-second cooldown to Getaway Grenade, but it was lowered to 3 seconds last minute."
+
+numbers:
+  deploy_cost_elixir:          {value: 6, source: "infobox Cost=6; attribute table col 'Cost'; prose"}
+  ability_cost_elixir:         {value: 1, source: "infobox AbilityCost=1; Getaway Grenade Attributes table col 'Cost'; prose"}
+  body_hp_lvl11:               {value: 2624, source: "vardefine hp_11"}
+  body_damage_lvl11:           {value: 244, source: "vardefine dmg_11"}
+  body_dash_damage_lvl11:      {value: 489, source: "vardefine dash_11; level table col 'Dash Damage'"}
+  dash_damage_multiplier:      {value: 2, source: "prose (lead) 'will deal double damage'; note 244*2 = 488 vs the 489 vardefine - 1-point rounding gap"}
+  body_hit_speed_s:            {value: 1.1, source: "vardefine atk_speed; attribute table col 'Hit Speed'"}
+  body_first_hit_speed_s:      {value: 0.4, source: "attribute table col 'First Hit Speed'"}
+  body_speed:                  {value: "Fast (90)", source: "attribute table col 'Speed'"}
+  body_deploy_time_s:          {value: 1, source: "attribute table col 'Deploy Time'"}
+  body_range_tiles:            {value: 0.8, source: "attribute table col 'Range' ('Melee: Short (0.8)')"}
+  body_targets:                {value: "Ground", source: "attribute table col 'Target'"}
+  body_count:                  {value: 1, source: "attribute table col 'Count' (x1)"}
+  body_transport:              {value: "Ground", source: "attribute table col 'Transport'"}
+  dash_time_s:                 {value: 0.8, source: "Dash Attributes table col 'Dash Time'; prose 'takes 0.8 seconds to execute'"}
+  dash_speed:                  {value: 500, source: "Dash Attributes table col 'Dash Speed' - units not stated on page"}
+  dash_trigger_min_tiles:      {value: 3.5, source: "Dash Attributes table col 'Dash Range' ('3.5-6'); prose 'between 3.5 and 6 tiles of her'"}
+  dash_trigger_max_tiles:      {value: 6, source: "Dash Attributes table col 'Dash Range' ('3.5-6'); prose 'between 3.5 and 6 tiles of her'"}
+  dash_targets:                {value: "Ground", source: "Dash Attributes table col 'Target'"}
+  dash_transport:              {value: "Ground", source: "Dash Attributes table col 'Transport'"}
+  ability_cast_time_s:         {value: 0.933, source: "Getaway Grenade Attributes table col 'Cast Time'"}
+  ability_cast_delay_prose_s:  {value: 1, source: "prose (Ability section) 'After a 1 second delay'; Strategy repeats 'it takes 1 second to activate her ability' - CONFLICTS with the 0.933 table value"}
+  ability_invisibility_s:      {value: 1, source: "Getaway Grenade Attributes table col 'Invisibility Duration'; prose 'becomes invisible for 1 second'"}
+  ability_teleport_tiles:      {value: 6, source: "Getaway Grenade Attributes table col 'Teleport Range'; prose 'teleports 6 tiles behind her original position'"}
+  ability_teleport_time_prose_s: {value: 0.9, source: "prose (Strategy) 'she also takes around 0.9 seconds to teleport backwards' - approximate wording; may restate the 0.933 cast time or may be a second, separate delay"}
+  ability_cooldown_s:          {value: 3, source: "Getaway Grenade Attributes table col 'Ability Cooldown'; prose '3 second cooldown after the duration ends'; History 8/7/2025 '3-second cooldown between its uses'"}
+  ability_uses:                {value: 2, source: "Getaway Grenade Attributes table col 'Ability Count' = 2; prose 'it can only be activated twice'; Trivia 'a maximum of two uses per deployment'; History 8/7/2025 'a total of 2 times'"}
+  ability_uses_conflicting:    {value: 3, source: "prose (Strategies) 'even with her three ability activations' - CONFLICTS with every other statement of 2"}
+  ice_spirit_stall_s:          {value: 1.2, source: "prose (Strategies) 'stall the Boss Bandit for 1.2 seconds' - an Ice Spirit freeze duration, not a Boss Bandit stat; recorded because the page states it"}
+  level_scaling:               {value: "stat * 1.1^(level-11)", source: "level table #expr formulas; page warns 'There will be rounding mistakes, as we have stats from level 11'"}
+  historical_cooldown_s:       {value: 5, source: "Trivia: the 8/7/2025 change initially shipped a 5-second cooldown, 'lowered to 3 seconds last minute' - 5 is NOT live"}
+  historical_hit_speed_s:      {value: 1.2, source: "History 12/1/2026 'increased it's attack speed to 1.1 (from 1.2)' - 1.2 no longer live"}
+  historical_hp_changes_pct:   {value: [-3, -4], source: "History 3/6/2025 (-3%) and 8/7/2025 (-4%); whether hp_11 = 2624 already includes both is not stated"}
+  historical_damage_change_pct: {value: -9, source: "History 12/1/2026 'decreased the Boss Bandit's damage and dash damage by 9%'"}
+
+proposed_ability_kind: movement_flight
+# Self-displacement escape: a backwards teleport of a fixed 6 tiles preceded by a 1 s invisibility
+# window. 'stealth' is the co-component and the runner-up label; nothing is summoned and no damage
+# is dealt by the ability itself. Flag for the owner if a dedicated 'teleport'/'escape' kind is
+# added (mega_minion_hero's blink was filed under dash_chain, which does not fit a backwards
+# non-damaging relocation).
+
+open_questions:
+  - "TRIGGER (the sim currently models this as AUTO): the page describes Getaway Grenade ONLY as a manual button - 'accessible from the rightmost side of the screen just above the player's card slots'. Nothing on the page describes an automatic or HP-threshold trigger in current behaviour. The single hint of any HP coupling is History 8/7/2025, which says the ability 'can be activated a total of 2 times INDEPENDENT ON Boss Bandit's hitpoints' - i.e. an HP-gated activation model was REMOVED on 8/7/2025. The sim's auto-trigger is therefore contradicted by the archived page; owner ruling needed."
+  - "Use count: 2 (ability prose + Ability Count column + Trivia + History) vs 3 (Strategies prose 'even with her three ability activations'). Both recorded; 2 has four independent supports on the page and 3 has one, but the rule is to record both."
+  - "Activation timeline is stated three ways and never reconciled: prose '1 second delay' then '1 second invisible' then teleport; table Cast Time 0.933 s + Invisibility Duration 1 s; Strategy '1 second to activate ... around 0.9 seconds to teleport backwards'. Is the sequence cast(0.933) -> invisible(1.0) -> teleport (total ~1.93 s from press), or cast(0.933) -> teleport(0.9) with invisibility overlapping? The engine needs the exact instant the position changes."
+  - "Teleport reference point: the Ability section says 6 tiles behind her ORIGINAL position; the lead says 6 tiles behind her CURRENT spot. If she moves during the 1 s invisibility these differ. Both recorded."
+  - "Definition of 'behind': relative to her facing, her lane direction, or straight back toward her own King Tower? Unstated. Also unstated: what happens if the destination is off-board, inside the river, or on the far side of it - is the teleport clamped, cancelled, or does it place her in an illegal tile?"
+  - "Invisible vs invulnerable: the ability quote says 'Briefly becomes invisible' but the prose says 'This allows her to escape any form of damage', and Strategy uses it to dodge a Rocket. Rockets are spells, and on the Archer Queen page spells explicitly still hit invisible units. So does the 1 s window grant untargetability only (the Rocket being dodged by the displacement, not the cloak), or genuine damage immunity?"
+  - "Cooldown anchor: '3 second cooldown after the duration ends'. Which duration - the 1 s invisibility, or the whole cast+teleport sequence? Total gap between use 1 and use 2 is therefore ~3 s or ~5 s from press."
+  - "Dash is a passive charge, NOT the ability: triggered when a ground unit is 3.5-6 tiles away, 0.8 s execution, double damage, invulnerable throughout. Unstated: does the dash re-target or abort if the target dies mid-dash (the Golden Knight page documents such a fix for HIS dash, this page says nothing)? Is the dash charge cancellable by Zap/Log/knockback like a Prince charge? Can it cross the river?"
+  - "Ability/dash coupling: prose says the teleport 'give[s] her another dash if the troops are far away enough' - i.e. relocating past 3.5 tiles re-arms the dash. Does the ability itself reset any dash cooldown, or is re-arming purely a function of the new distance?"
+  - "Dash Speed = 500 with no unit on the page; the Dash Range column mixes a trigger band (3.5-6) with what the engine would call max dash distance. Which is which is not stated."
+  - "Rage interaction: Strategy says Rage 'will also boost the Boss Bandit's attack speed and reduce the dash time' - the dash-time scaling factor under Rage is not given."
+  - "Golden Knight / Skeleton King mutual-nullification of dashes is asserted qualitatively with no rule for which effect wins."
+  - "Release date conflict: infobox ReleaseDate=7 April 2025, History says 'added to the game on 7/4/2024' under a 2025 heading linking the April 2025 Update. The History year looks like a typo; both recorded."
+  - "UI bug recorded in Trivia: the crown symbol is not removed when both uses are spent - cosmetic, but it means the crown icon is not a reliable 'ability available' signal for a screen-reading agent."
+  - "Hand-lock: this page never states the Boss Bandit leaves the hand while her body lives, so nothing here contradicts the 2026 rework."
+  - "revid unknown - the archive is a bare wikitext dump carrying no revision metadata."

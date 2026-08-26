@@ -1,0 +1,126 @@
+key: archer_queen
+page: Archer Queen
+source: webcache/Archer_Queen.wikitext
+revid: null
+fetched: "2026-08-25"
+
+body_stats:
+  # Level 11 is the vardefine base; the page's level table scales every stat by 1.1^(level-11).
+  hp:         {value: 1000, source: "vardefine hp_11"}
+  damage:     {value: 225, source: "vardefine dmg_11"}
+  hit_speed:  {value: 1.2, source: "vardefine atk_speed (= 1.2); same value in attribute table col 'Hit Speed' (1.2 sec)"}
+  speed:      {value: "Medium (60)", source: "attribute table col 'Speed' (Archer Queen Attributes) - NO vardefine exists for speed"}
+  range:      {value: 5, source: "attribute table col 'Range' (Archer Queen Attributes) - NO vardefine"}
+  targets:    {value: "Air & Ground", source: "attribute table col 'Target' (Archer Queen Attributes) - NO vardefine"}
+  count:      {value: 1, source: "attribute table col 'Count' (x1) (Archer Queen Attributes) - NO vardefine"}
+
+ability:
+  name: Cloaking Cape
+  elixir_cost: 1
+  uses: null           # not stated on the page; a 17 s cooldown implies unlimited re-use but is never said
+  cooldown_s: 17
+  cast_delay_s: 0.933  # attribute table 'Cast Time'; ability prose says 1 second - CONFLICT, see open_questions
+  duration_s: 3.5
+
+mechanic_prose: |
+  [Section "Ability: Cloaking Cape" - VERBATIM]
+  {{Quote|Activates stealth mode and shoots her arrows faster!}}
+  {{Champion Ability}}
+  The Archer Queen has a special ability, accessible from the rightmost side of the screen just
+  above the player's [[Cards|card]] slots in [[Basics of Battle|battle]]. After a 1-second delay,
+  the Archer Queen activates her "Cloaking Cape", becoming invisible (untargetable by enemy
+  [[:Category:Troop Cards|troops]]), having a 80% increase in attack speed, and a massive decrease
+  in movement speed for the entire 3.5-second duration of the ability. The ability goes on a
+  17-second cooldown after the duration ends. The Cloaking Cape ability costs 1 [[Elixir]] to
+  activate.
+
+  [Lead section (intro paragraph) - VERBATIM, relevant clause]
+  "The Archer Queen's ability makes her invisible, like the [[Royal Ghost]] and increases her attack
+  speed significantly for a short time."
+
+  [Section "Strategy" - VERBATIM, engine-relevant edge cases only]
+  "An Archer Queen deals exactly 7 shots for the full duration of her ability, assuming no shots are
+  wasted."
+  "This can backfire against area-damage [[:Category:Troop Cards|troops]], as she is still vulnerable
+  to area-damage attacks that could hit a troop in front of her."
+  "When her ability is active, you can use [[Giant Snowball]] or [[The Log]] to knock her, wasting a
+  few seconds worth of heavy damaging shots. Stun effects like Zap and [[Freeze]] also work in a
+  similar way."
+  "With her ability, the Archer Queen can completely bypass the Tesla and go straight to the Tower if
+  she is alone, as the Tesla will not reveal itself against invisible targets."
+  "Additionally, since it is a spell, the player can reliably hit the Archer Queen even while her
+  ability is active."
+  "In certain situation, the ability can be used to divert troops towards the other lane." (i.e.
+  enemy troops already locked onto her retarget when she cloaks)
+  "Do not use her ability when combating an [[X-Bow]] or a [[Mortar]] which is targeting her, unless
+  you have a distraction or if it is a very desperate case. It will target the next closest thing,
+  which can be your Tower."
+  "Beware of using the Archer Queen's ability when alongside other troops. It can potentially waste
+  some of her shots while your supporting troops kill any enemies, and she will also be slowed down
+  afterwards, effectively making the ability a waste of 1 Elixir."
+  "Stunning troops like [[Electro Wizard]], Electro Dragon, and [[Zappies]] are good counters to the
+  Archer Queen, as they will prevent her from using her ability."
+  "A [[Monk]] with the Pensive Protection ability active works in a similar way, causing the Archer
+  Queen to use her ability to her disadvantage, as the shots will be reflected back to her"
+  "The Archer Queen can be placed as a defender in [[Clan Wars|Boat Battles]]. However, much like
+  other {{Rarity|Champion}} cards, she is unable to use his ability."
+
+  [Section "History" - VERBATIM, mechanics-bearing entries only]
+  "On 15/11/2021, a Minor Update, allowed the [[Mega Knight]] to deal damage to an Archer Queen if
+  she begins cloaking during his jump."
+  "On 3/2/2022, a Balance Update, made it so that Cloaking Cape would decrease her speed to 45 (now
+  classified as Slow) when active."
+  "On 4/4/2022, the April 2022 Update, decreased the Cloaking Cape's attack speed buff to 180% (from
+  200%)."
+  "On 8/4/2022, a maintenance break, fixed an issue where an invisible Archer Queen was not receiving
+  splash damage."
+
+numbers:
+  deploy_cost_elixir:            {value: 5, source: "infobox Cost=5; attribute table col 'Cost'; prose"}
+  ability_cost_elixir:           {value: 1, source: "infobox AbilityCost=1; Cloaking Cape Attributes table col 'Cost'; prose"}
+  body_hp_lvl11:                 {value: 1000, source: "vardefine hp_11"}
+  body_damage_lvl11:             {value: 225, source: "vardefine dmg_11"}
+  body_hit_speed_s:              {value: 1.2, source: "vardefine atk_speed; attribute table col 'Hit Speed'"}
+  body_first_hit_speed_s:        {value: 0.3, source: "attribute table col 'First Hit Speed'"}
+  body_speed:                    {value: "Medium (60)", source: "attribute table col 'Speed'"}
+  body_deploy_time_s:            {value: 1, source: "attribute table col 'Deploy Time'"}
+  body_range_tiles:              {value: 5, source: "attribute table col 'Range'"}
+  body_projectile_speed:         {value: 800, source: "attribute table col 'Projectile Speed' - units not stated on page"}
+  body_targets:                  {value: "Air & Ground", source: "attribute table col 'Target'"}
+  body_count:                    {value: 1, source: "attribute table col 'Count' (x1)"}
+  body_transport:                {value: "Ground", source: "attribute table col 'Transport'"}
+  ability_duration_s:            {value: 3.5, source: "Cloaking Cape Attributes table col 'Duration'; prose 'entire 3.5-second duration'"}
+  ability_cast_time_s:           {value: 0.933, source: "Cloaking Cape Attributes table col 'Cast Time'"}
+  ability_cast_delay_prose_s:    {value: 1, source: "prose (Ability section) 'After a 1-second delay' - CONFLICTS with the 0.933 table value"}
+  ability_cooldown_s:            {value: 17, source: "Cloaking Cape Attributes table col 'Ability Cooldown'; prose '17-second cooldown after the duration ends'"}
+  ability_speed_during:          {value: "Slow (45)", source: "Cloaking Cape Attributes table col 'Speed'; History 3/2/2022 'decrease her speed to 45 (now classified as Slow)'; prose says only 'a massive decrease in movement speed'"}
+  ability_attack_speed_boost_table_pct: {value: 180, source: "Cloaking Cape Attributes table col 'Boost' (+180%)"}
+  ability_attack_speed_boost_prose_pct: {value: 80, source: "prose (Ability section) 'a 80% increase in attack speed' - CONFLICTS with the table's +180%"}
+  ability_dps_multiplier:        {value: 1.80, source: "level table col 'Damage per second (with Cloaking Cape)' formula Dps(dmg_11*1.80, atk_speed) - the wiki models the buff as 1.8x DPS at an UNCHANGED 1.2 s hit speed"}
+  ability_dps_lvl11_with_cape:   {value: 337.5, source: "DERIVED from that table formula: 225*1.80/1.2; unbuffed DPS is 225/1.2 = 187.5"}
+  ability_shot_count_prose:      {value: 7, source: "prose (Strategy) 'deals exactly 7 shots for the full duration of her ability' - does not reconcile with either buff reading, see open_questions"}
+  level_scaling:                 {value: "stat * 1.1^(level-11)", source: "level table #expr formulas; page warns 'There will be rounding mistakes, as we have stats from level 11'"}
+  historical_cooldown_s:         {value: [11, 15, 17], source: "History: 11 s at release -> 15 s (4/11/2021) -> 17 s (8/1/2025); 17 is current"}
+  historical_duration_s:         {value: [3.5, 3, 3.5], source: "History: 3.5 -> 3 s (4/11/2021) -> 3.5 s (3/1/2024); 3.5 is current"}
+  historical_boost_pct:          {value: 200, source: "History 4/4/2022 'decreased ... to 180% (from 200%)' - 200 no longer live"}
+  historical_first_hit_speed_s:  {value: 0.1, source: "History 7/2/2023 'increased ... first attack time interval to 0.3 seconds (from 0.1 seconds)' - 0.1 no longer live"}
+
+proposed_ability_kind: stealth
+# Self-cloak + attack-speed buff + movement-speed penalty over a fixed 3.5 s window; no summon, no
+# displacement, no zone. 'buff_self' is the runner-up (it IS a timed self-buff whose headline
+# component happens to be untargetability) - flag for owner if the registry folds stealth into
+# buff_self.
+
+open_questions:
+  - "Cast delay: prose says 'After a 1-second delay'; the Cloaking Cape Attributes table says Cast Time 0.933 sec. Both recorded. Which gates the buff start, and does the 3.5 s duration begin at button press or after the cast completes?"
+  - "Attack-speed buff magnitude is stated three ways on one page: prose 'a 80% increase', table Boost '+180%', History 'attack speed buff to 180% (from 200%)'. The level table's own formula multiplies DAMAGE by 1.80 at an unchanged 1.2 s hit speed, i.e. 1.8x DPS (= +80%). The engine needs the hit interval during the ability: 1.2/1.8 = 0.667 s, or 1.2/2.8 = 0.4286 s?"
+  - "Prose (Strategy) claims 'exactly 7 shots for the full duration'. Neither reading reproduces 7 over 3.5 s: a 1.8x multiplier gives ~5.25 shots (0.667 s interval) and a 2.8x multiplier gives ~8.2 shots (0.4286 s interval); 7 shots in 3.5 s implies a ~0.5 s interval (2.4x). That arithmetic is DERIVED here, not on the page. Needs an in-game count."
+  - "Invisibility semantics: the page says 'untargetable by enemy troops'. It also states that area/splash damage still hits her (History 8/4/2022), that spells hit her reliably (Strategy), that Tesla will not pop up for her, that X-Bow/Mortar and locked-on troops retarget to the next closest thing, and that Mega Knight CAN damage her if she cloaks mid-jump (History 15/11/2021). Undefined: do Crown Towers drop their lock? Does firing break invisibility? Do already-deployed buildings retarget or merely stop firing?"
+  - "Does the Slow (45) movement penalty end exactly with the 3.5 s duration? Strategy says 'she will also be slowed down afterwards', which could mean 'later during the ability' or 'after it ends'."
+  - "Cooldown start point: prose says the 17 s cooldown begins 'after the duration ends'. Does the 0.933 s cast count toward it? Total lockout from button press is therefore ~17 s or ~21.4 s - unstated."
+  - "Uses per body: not stated anywhere on the page. The 17 s cooldown implies unlimited re-use, but unlike Boss Bandit there is no 'Ability Count' column to confirm it."
+  - "Activation gating: Strategy says stunning troops 'will prevent her from using her ability'. Is activation blocked while stunned/frozen, and is an in-flight cast cancelled by a stun (with or without an elixir refund)?"
+  - "Reflect interactions (Monk Pensive Protection, Electro Giant) are described qualitatively only - no reflected-damage numbers appear on this page."
+  - "Boat Battles disable champion abilities ('she is unable to use his ability') - recorded, out of scope for the ladder sim."
+  - "Hand-lock: this page never states that the Archer Queen leaves the hand while her body lives, so nothing here contradicts the 2026 rework. Recorded for completeness only."
+  - "revid unknown - the archive is a bare wikitext dump carrying no revision metadata."

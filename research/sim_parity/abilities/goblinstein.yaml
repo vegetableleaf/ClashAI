@@ -1,0 +1,167 @@
+key: goblinstein
+page: Goblinstein
+source: webcache/Goblinstein.wikitext
+revid: null
+fetched: "2026-08-25"
+
+body_stats:
+  # This card deploys TWO bodies. The Doctor is the Champion proper (he owns the ability and the
+  # card slot); the Monster is a second body deployed with him. Level 11 is the vardefine base and
+  # the level table scales every stat by 1.1^(level-11).
+  doctor:
+    hp:         {value: 721, source: "vardefine hp_11"}
+    damage:     {value: 92, source: "vardefine dmg_11 - MAY BE STALE, see open_questions (History 4/8/2026 says Doctor damage +47%)"}
+    hit_speed:  {value: 1.8, source: "vardefine atk_speed (= 1.8); same value in Doctor Attributes table col 'Hit Speed' (1.8 sec)"}
+    speed:      {value: "Medium (60)", source: "Doctor Attributes table col 'Speed' - NO vardefine exists for speed"}
+    range:      {value: 5.5, source: "Doctor Attributes table col 'Range' - NO vardefine"}
+    targets:    {value: "Air & Ground", source: "Doctor Attributes table col 'Target' - NO vardefine"}
+    count:      {value: 1, source: "Doctor Attributes table col 'Count' (x1) - NO vardefine"}
+  monster:
+    hp:         {value: 2393, source: "vardefine monster_hp_11"}
+    damage:     {value: 128, source: "vardefine monster_dmg_11"}
+    hit_speed:  {value: 1.5, source: "vardefine monster_atk_speed (= 1.5); same value in Monster Attributes table col 'Hit Speed' (1.5 sec)"}
+    speed:      {value: "Medium (60)", source: "Monster Attributes table col 'Speed' - NO vardefine"}
+    range:      {value: "Melee: Medium (1.2)", source: "Monster Attributes table col 'Range' - NO vardefine"}
+    targets:    {value: "Buildings", source: "Monster Attributes table col 'Target' - NO vardefine"}
+    count:      {value: 1, source: "Monster Attributes table col 'Count' (x1) - NO vardefine"}
+
+ability:
+  name: Lightning Link
+  elixir_cost: 2
+  uses: null           # UNRESOLVED: the ability table gives a 17 s cooldown (implying repeat use),
+                       # but History 4/8/2026 says the ability is now single use with no cooldown.
+  cooldown_s: 17       # Lightning Link Attributes table; History 4/8/2026 says the cooldown was REMOVED - CONFLICT
+  cast_delay_s: 0.933  # attribute table 'Cast Time'; ability prose says 1 second - CONFLICT
+  duration_s: 4
+
+mechanic_prose: |
+  [Section "Ability: Lightning Link" - VERBATIM]
+  {{Quote|Electrifies the link, damaging any enemies that get near. Shocking!}}
+  {{Champion Ability}}
+  The Goblinstein has a special ability, accessible from the rightmost side of the screen just above
+  the player's [[Cards|card]] slots in [[Basics of Battle|battle]]. After a 1-second delay, the
+  Goblinstein activates his "Lightning Link", creating an electric link between him and Monster. It
+  damages by shocking nearby targets every 0.5 seconds up to 2 tiles away. This ability deals reduced
+  damage to the [[:Category:Tower Troop Cards|Crown Tower]]. If the Monster has already been
+  defeated, it will drop an antenna on the ground which is what the Goblinstein's electric link will
+  target when the ability is activated. The Lightning Link ability costs 2 [[Elixir]] to activate.
+
+  [Lead section (card quote + intro paragraph) - VERBATIM]
+  {{Quote|It's ALIVE! Monster lumbers towards enemy buildings while Doctor waits to spring the trap.
+  At the press of a button, Doctor electrifies the link between himself and Monster, frying nearby
+  enemies!}}
+  "It spawns a single-target, air-targeting, medium-ranged, ground [[:Category:Troop Cards|troop]]
+  with moderate hitpoints and low damage, and a single target, building-targeting, melee, ground
+  troop with high hitpoints and low damage. The Goblinstein's attacks will stun a targeted unit for
+  0.5 seconds. Being a Champion card, they will stay out of the player's card cycle, and only return
+  once they are defeated. The Goblinstein's ability has him shoot an electric spark towards an
+  antenna that is typically located on the Monster's head."
+  [NOTE: the 'stay out of the player's card cycle' sentence is the hand-lock text; per the 2026
+  rework this page may be STALE on that point - see open_questions. It is quoted, not asserted.]
+
+  [Section "Strategy" - VERBATIM, engine-relevant entries only]
+  "The Doctor always spawns 1 tile in the opposite direction of the side of the [[Arenas|Arena]] in
+  which the Monster is placed in. This allows for the Doctor and the Monster to be split into both
+  lanes if played in the middle."
+  "The Doctor can stun units like the [[Miner]] to get him to retarget to the Monster, saving hp on
+  the tower."
+  "Since the Doctor is the specific Champion, killing him would remove the 3 card cycle, and the
+  ability."
+  "However, when the Monster is defeated, an antenna is dropped in the Arena, what will be connected
+  if the ability is used. This allows the ability to be used after the Monster is initially
+  defeated."
+  "Similarly to cards with area damage, the Lightning Link ability can hit infinite targets, and will
+  hit everything within a 2 tile radius."
+  "The [[Fisherman]] and [[Tornado]] can be a good way to puling the Monster quickly away, so the
+  ability won't get too much damage on for example, the tower."
+  "The Goblinstein can be placed as a defender in [[Clan Wars|Boat Battles]]. However, much like
+  other {{Rarity|Champion}} cards, he is unable to use his ability."
+
+  [Section "History" - VERBATIM, mechanics-bearing entries only]
+  "On 17/10/2024, a maintenance break, decreased the Lightning Link's duration to 4 seconds (from 5
+  seconds), its [[:Category:Crown Towers|Crown Tower]] Damage by 36%, and increased its cooldown to
+  17 seconds (from 15 seconds)."
+  "On 16/12/2024, the 2024 Quarter 4 Update, fixed a bug where Lightning Link would not deal reduced
+  damage to the King Tower."
+  "On 4/8/2026, a Balance Update, made it so that the Goblinstein would no longer have a cooldown
+  timer in-between abilities. Instead, his ability will no be single use. The doctor's damage was
+  increased by 47% and the ability DPS was decreased by 12%"
+
+  [Section "Trivia" - VERBATIM, mechanics-bearing entries only]
+  "The Goblinstein's Lightning Link does not inflict a stun on the enemies despite being an attack
+  involving electricity. However, his regular attack is able to stun."
+  "After the September 2025 update, a player can have multiple copies of the same Champion with the
+  current active Champion having a crown symbol. However, the active Monster currently has no
+  indicator."
+
+numbers:
+  deploy_cost_elixir:            {value: 5, source: "infobox Cost=5; Card Attributes table col 'Cost'; prose"}
+  ability_cost_elixir:           {value: 2, source: "infobox AbilityCost=2; Lightning Link Attributes table col 'Cost'; prose"}
+  deploy_time_s:                 {value: 1, source: "Card Attributes table col 'Deploy Time' (one value for the whole card, both bodies)"}
+  doctor_hp_lvl11:               {value: 721, source: "vardefine hp_11"}
+  doctor_damage_lvl11:           {value: 92, source: "vardefine dmg_11 - possibly pre-4/8/2026, see open_questions"}
+  doctor_hit_speed_s:            {value: 1.8, source: "vardefine atk_speed; Doctor Attributes table col 'Hit Speed'"}
+  doctor_first_hit_speed_s:      {value: 0.5, source: "Doctor Attributes table col 'First Hit Speed'"}
+  doctor_speed:                  {value: "Medium (60)", source: "Doctor Attributes table col 'Speed'"}
+  doctor_stun_duration_s:        {value: 0.5, source: "Doctor Attributes table col 'Stun Duration'; prose (lead) 'will stun a targeted unit for 0.5 seconds'"}
+  doctor_range_tiles:            {value: 5.5, source: "Doctor Attributes table col 'Range'"}
+  doctor_targets:                {value: "Air & Ground", source: "Doctor Attributes table col 'Target'"}
+  doctor_count:                  {value: 1, source: "Doctor Attributes table col 'Count' (x1)"}
+  doctor_transport:              {value: "Ground", source: "Doctor Attributes table col 'Transport'"}
+  doctor_dps_lvl11:              {value: 51.1, source: "DERIVED from the level table formula Dps(dmg_11, atk_speed) = 92/1.8"}
+  monster_hp_lvl11:              {value: 2393, source: "vardefine monster_hp_11"}
+  monster_damage_lvl11:          {value: 128, source: "vardefine monster_dmg_11"}
+  monster_hit_speed_s:           {value: 1.5, source: "vardefine monster_atk_speed; Monster Attributes table col 'Hit Speed'"}
+  monster_first_hit_speed_s:     {value: 0.8, source: "Monster Attributes table col 'First Hit Speed'"}
+  monster_speed:                 {value: "Medium (60)", source: "Monster Attributes table col 'Speed'"}
+  monster_range_tiles:           {value: 1.2, source: "Monster Attributes table col 'Range' ('Melee: Medium (1.2)')"}
+  monster_targets:               {value: "Buildings", source: "Monster Attributes table col 'Target'"}
+  monster_count:                 {value: 1, source: "Monster Attributes table col 'Count' (x1)"}
+  monster_transport:             {value: "Ground", source: "Monster Attributes table col 'Transport'"}
+  monster_dps_lvl11:             {value: 85.3, source: "DERIVED from the level table formula Dps(monster_dmg_11, monster_atk_speed) = 128/1.5"}
+  doctor_spawn_offset_tiles:     {value: 1, source: "prose (Strategy) 'The Doctor always spawns 1 tile in the opposite direction of the side of the Arena in which the Monster is placed in'"}
+  ability_duration_s:            {value: 4, source: "Lightning Link Attributes table col 'Duration'; History 17/10/2024 'decreased ... to 4 seconds (from 5 seconds)'"}
+  ability_tick_interval_s:       {value: 0.5, source: "Lightning Link Attributes table col 'Hit Speed'; prose 'shocking nearby targets every 0.5 seconds'"}
+  ability_radius_tiles:          {value: 2, source: "Lightning Link Attributes table col 'Radius'; prose 'up to 2 tiles away'; Strategy 'everything within a 2 tile radius'"}
+  ability_targets:               {value: "Air & Ground", source: "Lightning Link Attributes table col 'Target'"}
+  ability_cast_time_s:           {value: 0.933, source: "Lightning Link Attributes table col 'Cast Time'"}
+  ability_cast_delay_prose_s:    {value: 1, source: "prose (Ability section) 'After a 1-second delay' - CONFLICTS with the 0.933 table value"}
+  ability_cooldown_s:            {value: 17, source: "Lightning Link Attributes table col 'Ability Cooldown'; History 17/10/2024 'increased its cooldown to 17 seconds (from 15 seconds)' - but History 4/8/2026 says the cooldown was removed entirely, see open_questions"}
+  ability_damage_per_tick_lvl11: {value: 107, source: "vardefine link_11; level table col 'Lightning Link Damage' - possibly pre-4/8/2026 (-12% ability DPS), see open_questions"}
+  ability_crown_tower_damage_lvl11: {value: 23, source: "vardefine crown_11; level table col 'Lightning Link Crown Tower Damage'"}
+  ability_crown_tower_ratio:     {value: 0.215, source: "DERIVED: crown_11 / link_11 = 23/107; the page states only 'reduced damage to the Crown Tower' with no percentage"}
+  ability_max_ticks:             {value: 8, source: "DERIVED: 4 s duration / 0.5 s hit speed; the page never states a tick count and does not say whether t=0 fires a tick"}
+  ability_max_targets:           {value: "unlimited", source: "prose (Strategy) 'the Lightning Link ability can hit infinite targets'"}
+  ability_inflicts_stun:         {value: false, source: "prose (Trivia) 'Lightning Link does not inflict a stun on the enemies'"}
+  level_scaling:                 {value: "stat * 1.1^(level-11)", source: "level table #expr formulas; page warns 'There will be rounding mistakes, as we have stats from level 11'"}
+  historical_duration_s:         {value: 5, source: "History 17/10/2024 'to 4 seconds (from 5 seconds)' - 5 no longer live"}
+  historical_cooldown_s:         {value: 15, source: "History 17/10/2024 'to 17 seconds (from 15 seconds)' - 15 no longer live"}
+  historical_crown_damage_change_pct: {value: -36, source: "History 17/10/2024 'its Crown Tower Damage by 36%'"}
+  historical_2026_doctor_damage_change_pct: {value: 47, source: "History 4/8/2026 'The doctor's damage was increased by 47%'"}
+  historical_2026_ability_dps_change_pct: {value: -12, source: "History 4/8/2026 'the ability DPS was decreased by 12%'"}
+  historical_monster_hp_changes_pct: {value: [-6, -8, -4, 4], source: "History 14/11/2024, 4/2/2025, 9/4/2025, 1/9/2025 - whether monster_hp_11 = 2393 includes all four is not stated"}
+  historical_doctor_hp_change_pct: {value: -19, source: "History 8/1/2025 'decreased the Doctor's hitpoints by 19%'"}
+
+proposed_ability_kind: zone
+# A tethered, persistent damage aura: for 4 s it ticks every 0.5 s against everything within 2 tiles
+# of the Doctor-Monster link, hits unlimited targets, air and ground, with a reduced crown-tower
+# value and no stun. Not a summon (the antenna is a fallback anchor left by the Monster's death, not
+# something the ability creates) and not a buff. Nearest runner-up would be 'auto' only if the link
+# geometry turns out to be an attached emitter rather than an area.
+
+open_questions:
+  - "COOLDOWN vs SINGLE-USE (the biggest one): the Lightning Link Attributes table says Ability Cooldown 17 sec, implying repeated use; the page's own History 4/8/2026 says Goblinstein 'would no longer have a cooldown timer in-between abilities. Instead, his ability will no [now] be single use.' Both values recorded (cooldown_s: 17, uses: null). If the History line is live, the engine wants uses: 1, cooldown: null. Owner ruling / in-game check needed."
+  - "Are the vardefines pre- or post-4/8/2026? That update states Doctor damage +47% and ability DPS -12%, but dmg_11 is still 92 and link_11 still 107. If 92 already includes the buff the pre-change value was ~63; if it does not, the live value is ~135. Unresolvable from the file. The same doubt applies to link_11 (107 vs ~94 post -12%). Do NOT assume either."
+  - "LINK GEOMETRY - the single most load-bearing unknown for the engine. Prose says the ability creates 'an electric link between him and Monster' and damages 'nearby targets ... up to 2 tiles away'. Two tiles from WHAT: (a) the line segment joining Doctor and Monster (a capsule), (b) each endpoint separately (two circles), or (c) only the Monster/antenna end? The Strategy line 'will hit everything within a 2 tile radius' reads like a circle but never names the centre. Is there a maximum link length beyond which the tether breaks?"
+  - "Antenna fallback: on Monster death 'it will drop an antenna on the ground' which the link targets instead. Unstated - does the antenna drop always, or only if the ability has not yet been used? Does it have hitpoints / can it be destroyed or pulled? Is it targetable by enemies? Does it persist for the rest of the match? Does it drop exactly at the Monster's death position? Can Tornado/Fisherman move it?"
+  - "What happens if the DOCTOR dies mid-ability - does the link end immediately? Strategy says killing the Doctor 'would remove ... the ability', but that is about future activations, not an active one."
+  - "Tick timing: does the first shock land at activation (after the 0.933/1 s cast) or one full 0.5 s interval later? 8 ticks vs 9 over the 4 s window is a ~12% damage swing. The 8-tick figure in numbers is DERIVED, not stated."
+  - "Cast delay conflict: prose '1-second delay' vs table Cast Time 0.933 sec. Does the 4 s duration start at button press or after the cast?"
+  - "Crown Tower reduction: the page gives only the absolute pair 107 / 23 (a ~21.5% ratio, derived). No percentage is stated anywhere, and History 16/12/2024 shows the King Tower was once exempt from the reduction by bug. Confirm the reduction applies to King Tower and Princess Towers alike."
+  - "Does Lightning Link damage friendly units, or enemy buildings/spawners? The page says 'any enemies that get near' and 'infinite targets' but never enumerates valid target classes beyond 'Air & Ground'."
+  - "Doctor's 0.5 s stun: does it apply to buildings and Crown Towers, does it refresh on every hit (one stun per 1.8 s attack), and does it interrupt charges/abilities? Strategy only shows it forcing a Miner to retarget."
+  - "Monster targets Buildings only - does it ever retarget onto troops (standard building-targeter behaviour, e.g. when blocked), and does it have any death effect? The page states none."
+  - "Deploy geometry: 'The Doctor always spawns 1 tile in the opposite direction of the side of the Arena in which the Monster is placed in' - which body lands on the drop tile, and which axis is 'opposite direction'? Needed to reproduce the split-lane placement."
+  - "HAND-LOCK / STALE TEXT: the lead says 'Being a Champion card, they will stay out of the player's card cycle, and only return once they are defeated' and Strategy says killing the Doctor 'would remove the 3 card cycle'. THIS PAGE MAY PREDATE THE 2026 REWORK in which champions are no longer removed from the hand while their body is alive. Recorded as quoted text only; do NOT implement a hand-lock from it."
+  - "Multiple-copy handling (Trivia, September 2025 update): a player can have multiple copies of the same Champion on the field, the active one marked by a crown, and the active Monster has no indicator at all. Relevant to the sim's champion-instance bookkeeping and to any screen-reading agent."
+  - "revid unknown - the archive is a bare wikitext dump carrying no revision metadata."

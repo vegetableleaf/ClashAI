@@ -1,0 +1,271 @@
+key: monk
+page: Monk
+source: webcache/Monk.wikitext        # offline archive; revid unknown from file alone -> null
+revid: null
+fetched: "2026-08-25"
+
+body_stats:
+  # Level 11 = the wiki's reference level. vardefine name given for each value that has one;
+  # values with no vardefine come from the "Monk Attributes" table.
+  hp: 2214                    # vardefine hp_11
+  damage: 140                 # vardefine dmg_11 (normal hit; the 3rd combo hit is separate, see below)
+  hit_speed: 0.8              # vardefine atk_speed; Monk Attributes table "Hit Speed 0.8 sec"
+  speed: "Medium (60)"        # Monk Attributes table "Speed" (no vardefine)
+  range: 1.2                  # Monk Attributes table "Range: Melee: Medium (1.2)" (no vardefine)
+  targets: "Ground"           # Monk Attributes table "Target" (no vardefine)
+  count: 1                    # Monk Attributes table "Count x1" (no vardefine)
+
+ability:
+  name: Pensive Protection
+  elixir_cost: 1              # infobox AbilityCost=1; Pensive Protection Attributes table Cost=1
+  uses: 1                     # NOT stated on this page (its History stops at 12/12/2025).
+                              # From webcache/Version_History.wikitext, Balance Changes (4/8/2026):
+                              # "Champions and Heroes (minus Boss Bandit): Will no longer have
+                              # multi-use abilities. Instead, they will be single use."
+                              # See open_questions -- the subject page is stale here.
+  cooldown_s: null            # page prints 17 s (table AND ability prose); superseded by the 4/8/2026
+                              # single-use change. BOTH values recorded in `numbers`.
+  cast_delay_s: 0.933         # Pensive Protection Attributes table "Cast Time 0.933 sec".
+                              # Ability prose separately says "After a 1-second delay". Both recorded.
+  duration_s: 4               # Pensive Protection Attributes table col "Invulnerability Duration" = "4 sec".
+                              # NOTE the column is MISNAMED -- he is not invulnerable, he takes -65%
+                              # damage. See open_questions on whether this 4 s also bounds the
+                              # reflection window and the knockback immunity.
+
+# ---------------------------------------------------------------------------------------------
+# REFLECTION RULESET -- assembled from the ability section and the Strategy/Trivia bullets. Every
+# line below is sourced; nothing here is inferred from general knowledge.
+# ---------------------------------------------------------------------------------------------
+reflection_rules:
+  what_is_reflected:
+    - "ALL incoming projectile-based ranged attacks, returned to the attacker. Source: ability prose 'reflect all incoming projectile-based ranged attacks back to the said offender'."
+    - "SPELLS are reflected, but NOT at the caster -- they always go to the closest opposing Crown Tower. Source: ability prose 'Spells are always reflected to the closest opposing Crown Tower'."
+    - "Crown Tower arrows are reflectable. Source: Strategy 'The Monk can deflect arrows from Crown Towers.'"
+    - "Piercing projectiles (Bowler, Executioner, Firecracker, Evolved Bomber, Magic Archer) are reflected at full damage and keep piercing. Source: Strategy."
+    - "Royal Giant projectiles are reflectable even though the Royal Giant cannot target the Monk, if the Monk is near the projectile path. Source: Strategy."
+    - "Non-damage projectiles are also reflected: Ram Rider's snare (slows her), Ice Wizard's slow (slows him and units next to him), Royal Chef's pancake (goes to the opposing King Tower and raises its Level by 1), Rune Giant's enhancement (enhances the Rune Giant herself). Source: Strategy + Trivia."
+  what_is_NOT_reflected:
+    - "Melee attacks. Source: ability prose 'He cannot protect nearby allies from melee attacks'."
+    - "Non-projectile ranged attacks and non-projectile spells. Source: ability prose, same sentence."
+    - "Inferno beams -- Inferno Dragon and Inferno Tower: 'neither their beams count as projectiles'. Source: Strategy."
+    - "Instant/hitscan electric attacks -- Tesla, Zappies, Electro Dragon, Electro Wizard: 'their attacks are instant and not counted as projectiles'. Source: Strategy."
+    - "Spirit cards: 'Spirit cards cannot be reflected by the Monk, despite being projectiles when attacking.' Source: Strategy. Corroborated by History 12/12/2022 for the Heal Spirit specifically."
+    - "Fisherman's hook is not reflected but is NULLIFIED: 'fully stifled until the ability ends, forcing him to repeatedly charge his hook'. Source: Strategy."
+    - "Firecracker's shrapnel: only her INITIAL projectile is reflected; the shrapnel is a separate second phase, so she deals no damage to the Monk. Source: Strategy."
+  damage_of_reflected_projectiles:
+    - "Reflected projectiles keep the ORIGINAL SOURCE's damage and do not rescale to the Monk's level. Source: Strategy 'Any projectile the Monk reflects with Pensive Protection will have the same damage as the initial source of the projectile, and will not scale up nor down to the Monk's level.'"
+    - "Against CROWN TOWERS, reflected projectiles that splash or do not seek deal 25% of normal damage. Source: Strategy 'All reflected projectiles that can splash or don't seek after a target do 25% of their normal damage to Crown Towers.' Same 25% restated for reflected Crown Tower arrows."
+    - "Reflected projectiles deal FULL damage to the original TROOP: 'if a Sparky shot is reflected and splashes the tower, the Tower will take 25% damage but the Sparky will take full damage.' Source: Strategy."
+    - "EXCEPTION -- reflected Barbarian Barrel deals FULL Crown Tower damage: 'Unlike other spells, it will not deal reduced damage.' Source: Trivia. This contradicts the general 25% rule; see open_questions."
+  ownership_and_travel:
+    - "The Log and Barbarian Barrel, once reflected, 'are converted to fight for you, retain their full range and can even go further back than normal'. A reflected Barbarian Barrel spawns a FRIENDLY Barbarian. Source: Strategy."
+    - "Reflection protects nothing standing in front of the Monk: 'anything placed in front of the Monk will not be saved from the reflection.' Source: Strategy."
+    - "Reflected projectiles CAN activate the King Tower. Source: Strategy."
+    - "Arrows are only fully reflected if the Monk is within 2 tiles of the exact center of the spell's casting area; otherwise 'some arrows may still kill some of the troops he is nearby'. Source: Strategy."
+    - "Hunter's shot at point-blank is fully reflected and kills him regardless of level; at range 'he will not take any damage from the reflected projectiles because the projectiles de-spawn after a couple tiles'. Source: Strategy. No tile number is given for 'a couple'."
+    - "In the arena corner, a reflected Log or Barbarian Barrel travels out of bounds; the Barbarian still spawns inside the arena. Source: Trivia."
+    - "Two Monks reflecting the same spell: it is FULLY ABSORBED when it returns to the Monk who reflected first. Source: Trivia."
+  other_effects_of_the_ability:
+    - "-65% incoming damage from ALL sources for the duration, not just projectiles. Source: ability prose 'reducing all incoming damage he takes by 65%' + Pensive Protection Attributes table col 'Damage Reduced' = '-65%'."
+    - "Immune to all knockback and to Tornado's pull for the duration. Source: ability prose 'The Monk is impervious to all forms of knockback and the Tornado's pull during Pensive Protection's duration.' See open_questions -- History 12/12/2025 may have made knockback immunity permanent."
+    - "A cloned Monk 'will actually start walking with its ability activated'. Source: Strategy. (Cards.wikitext separately says cloned Champions cannot ACTIVATE abilities.)"
+    - "If the Mother Witch is killed by the reflection, 'she ends up turning herself into a friendly Cursed Hog'. Source: Strategy."
+    - "Reflection forces a Cannon Cart into its building phase. Source: Strategy."
+
+# ---------------------------------------------------------------------------------------------
+# BODY COMBO -- not the ability, but engine-relevant and its damage IS published.
+# ---------------------------------------------------------------------------------------------
+combo_rules:
+  - "3-hit combo: hits 1 and 2 deal normal damage (140 @ L11); hit 3 deals COMBO DAMAGE (422 @ L11, vardefine combo_11) plus knockback."
+  - "The 3rd hit's knockback lands 'even if the targeted troop is normally immune to knockback'. Source: lead paragraph."
+  - "Killing a troop does NOT reset the combo counter. Source: Strategy, with the Rascals worked example."
+  - "The combo knockback resets the Mighty Miner's damage ramp every third hit. Source: Strategy."
+
+mechanic_prose: |
+  [section "Ability: Pensive Protection", tagline quote, verbatim]
+  "Takes less Damage while deflecting projectiles back at the opponent!"
+
+  [section "Ability: Pensive Protection", body, verbatim]
+  "The Monk has a special ability, accessible from the rightmost side of the screen just above the
+  player's card slots in battle. After a 1-second delay, the Monk activates his 'Pensive
+  Protection', reducing all incoming damage he takes by 65% and reflect all incoming
+  projectile-based ranged attacks back to the said offender. Spells are always reflected to the
+  closest opposing Crown Tower. He cannot protect nearby allies from melee attacks, non-projectile
+  ranged attacks and non-projectile spells. The Monk is impervious to all forms of knockback and the
+  Tornado's pull during Pensive Protection's duration. The ability goes on a 17-second cooldown
+  after the duration ends. The Pensive Protection ability costs 1 Elixir to activate."
+
+  [lead section (untitled intro paragraph), verbatim]
+  "The Monk uses a 3-hit combo: the first 2 attacks deal normal damage, while the 3rd strike deals
+  extra damage and knockback, even if the targeted troop is normally immune to knockback. Monk's
+  ability reflects projectiles back to their source, as well as granting himself a large damage
+  reduction for a short time."
+
+  [section "Strategy", verbatim, the load-bearing reflection rules]
+  "Although he can reflect Arrows, he will not fully reflect the spell unless he is in or within 2
+  tiles of the exact center of the casting area for the spell; if this isn't the case, some arrows
+  may still kill some of the troops he is nearby."
+  "When The Log or Barbarian Barrel are reflected by his ability, they're converted to fight for
+  you, retain their full range and can even go further back than normal. In the case of the
+  Barbarian Barrel, a friendly Barbarian will spawn to assist. However, note that anything placed in
+  front of the Monk will not be saved from the reflection."
+  "All reflected projectiles that can splash or don't seek after a target do 25% of their normal
+  damage to Crown Towers. For example, if a Sparky shot is reflected and splashes the tower, the
+  Tower will take 25% damage but the Sparky will take full damage."
+  "The Hunter's shot at point-blank will be fully reflected back at him by Pensive Protection,
+  Instantly killing him regardless of level. However, if he is placed at a distance, he will not
+  take any damage from the reflected projectiles because the projectiles de-spawn after a couple
+  tiles"
+  "The Firecracker's projectiles deal no damage to the Monk as he reflects them. This is because the
+  projectiles themselves are split into two phases. The initial projectile and the shrapnel that
+  explodes out of it afterward."
+  "The Fisherman's hook is fully stifled until the ability ends, forcing him to repeatedly charge
+  his hook."
+  "The Ram Rider's snare gets reflected back and slows her."
+  "The Ice Wizard will be slowed down by his own attack, as well as any unit next to him."
+  "Even though the Royal Giant cannot target the Monk, his projectiles can still be reflected back,
+  provided that the Monk is placed close to the path of the projectile."
+  "Projectiles with piercing capabilities from the Bowler, Executioner, Firecracker, Evolved Bomber,
+  and Magic Archer are reflected back at them for full damage and can damage the opposing Crown
+  Towers if their positioning is used against them."
+  "But keep in mind that these reflected projectiles can be used to activate the King Tower."
+  "The Monk can deflect arrows from Crown Towers. However, Crown Tower projectiles being deflected
+  back have their damage reduced to only 25%."
+  "Both the Inferno Dragon and Inferno Tower can counter a Monk for positive or neutral trade, as
+  neither their beams count as projectiles."
+  "Cards such as Tesla, Zappies, Electro Dragon and Electro Wizard will not take reflected damage,
+  since their attacks are instant and not counted as projectiles."
+  "Spirit cards cannot be reflected by the Monk, despite being projectiles when attacking."
+  "Unlike other air troops, Bats and the Phoenix do not attack with projectiles. Since the Monk
+  cannot attack air troops, they will be able to defeat him unharmed."
+  "If a Monk is cloned, the clone will actually start walking with its ability activated."
+  "Any projectile the Monk reflects with Pensive Protection will have the same damage as the initial
+  source of the projectile, and will not scale up nor down to the Monk's level."
+  "Note that killing a troop does not reset the combo. This means that if he defeats 2 troops with a
+  non-combo attack, the next attack will be a combo attack."
+  "The Monk can be placed as a defender in Boat Battles. However, much like other Champion cards, he
+  is unable to use his ability."
+
+  [section "Trivia", verbatim, mechanically load-bearing]
+  "Strangely, if both players had a Monk and used their abilities at the same time when a projectile
+  spell is in-play, the time it goes back to the Monk who reflected it first will cause it to get
+  fully absorbed."
+  "If a Monk activates Pensive Protection in the corner of the Arena, then an opposing The Log or
+  Barbarian Barrel will be deflected out of the Arena's bounds. However, in the case of the
+  Barbarian Barrel, the Barbarian will spawn inside the Arena."
+  "Thanks to the Monk, it is possible for a Barbarian Barrel to deal damage to Crown Towers by
+  itself. Unlike other spells, it will not deal reduced damage."
+  "It is possible for a Monk to deflect a pancake from a Royal Chef with his ability if the Monk is
+  beside the troop targeted by the Royal Chef. The pancake will be deflected back to the opposing
+  King's Tower, raising its Level by 1."
+  "It is possible for a Monk to deflect an enhancement from a Rune Giant with his ability if the
+  Monk is beside the troop targeted by the Rune Giant. The enhancement will be deflected back to the
+  Rune Giant, enhancing herself."
+  "The Monk in the Troop Rush game mode would appear visually larger, had a 2 Elixir ability, and
+  the ability would also apply the damage reduction to any allied troops in a 4-tile radius around
+  him. He had 3,800 hitpoints (instead of 2,000), an attack speed of 1.2 seconds (instead of 0.8
+  seconds), a first attack speed of 0.4 seconds (instead of 0.2 seconds), and a Slow speed (instead
+  of Medium)."
+
+  [section "History", verbatim, ability-relevant entries]
+  "On 2/11/2022, a maintenance break, increased the Pensive Protection's cooldown time to 17 seconds
+  (from 15 seconds)."
+  "On 12/12/2022, the Clashmas Update, made it so that the Heal Spirit's projectile can no longer be
+  deflected by the Monk."
+  "On 17/6/2024, the Goblin World Update, increased the Monk's combo damage by 0.47%. It also fixed
+  certain issues with damage multipliers on the Monk."
+  "On 31/3/2025, the 2025 Quarter 1 Update, fixed various issues related to Pensive Protection."
+  "On 8/7/2025, a Balance Update, increased the Monk's hitpoints by 3%, and decreased the Pensive
+  Protection's damage reduction boost to 65% (from 80%)."
+  "On 24/11/2025, a Balance Update made Monk no longer immune to the knockback effects of Evolved
+  Mega Knight and another Monk. He is also no longer immune to Fireball and Giant Snowball's
+  knockbacks if those spells hit the Monk on the corner of their Area of Effect."
+  "On 12/12/2025, a Balance Update made Monk immune to any knockback."
+  [NOTE: this page's History ENDS at 12/12/2025 -- it carries NO 4/8/2026 entry, unlike the Mighty
+  Miner and Little Prince pages. See open_questions.]
+
+numbers:
+  deploy_cost_elixir:            {value: 5,             source: "infobox Cost=5; Monk Attributes table Cost"}
+  ability_cost_elixir:           {value: 1,             source: "infobox AbilityCost=1; Pensive Protection Attributes table Cost"}
+
+  # ---- body ----
+  hp_lvl11:                      {value: 2214,          source: "vardefine hp_11"}
+  damage_lvl11:                  {value: 140,           source: "vardefine dmg_11"}
+  combo_damage_lvl11:            {value: 422,           source: "vardefine combo_11 (statistics table col 'Combo Damage')"}
+  # ^^ THE 3rd-HIT DAMAGE IS PUBLISHED. hogeq/config/cards.yaml comments that "The 3rd hit's EXTRA
+  #    DAMAGE is not published, so only the shove is modelled" -- that is contradicted here.
+  #    Scales x1.1 per level: L11 422 | L12 464 | L13 511 | L14 562 | L15 618 | L16 680.
+  body_hit_speed_s:              {value: 0.8,           source: "vardefine atk_speed; Monk Attributes table 'Hit Speed 0.8 sec'"}
+  first_hit_speed_s:             {value: 0.2,           source: "Monk Attributes table 'First Hit Speed'"}
+  body_speed:                    {value: "Medium (60)", source: "Monk Attributes table Speed"}
+  body_deploy_time_s:            {value: 1,             source: "Monk Attributes table Deploy Time"}
+  body_range_tiles:              {value: 1.2,           source: "Monk Attributes table Range 'Melee: Medium (1.2)'"}
+  target:                        {value: "Ground",      source: "Monk Attributes table Target"}
+  count:                         {value: 1,             source: "Monk Attributes table Count x1"}
+  transport:                     {value: "Ground",      source: "Monk Attributes table Transport"}
+  dps_lvl11:                     {value: 175,           source: "statistics table col 'Damage per second', computed by {{Dps|dmg_11|atk_speed}} = 140/0.8"}
+  combo_hits_required:           {value: 3,             source: "prose (lead) 'a 3-hit combo: the first 2 attacks deal normal damage, while the 3rd strike deals extra damage and knockback'"}
+
+  # ---- ability ----
+  ability_duration_s:            {value: 4,             source: "Pensive Protection Attributes table col 'Invulnerability Duration' = '4 sec' (column name is a misnomer; see open_questions)"}
+  damage_reduction_pct:          {value: -65,           source: "Pensive Protection Attributes table col 'Damage Reduced' = '-65%'; corroborated by ability prose 'reducing all incoming damage he takes by 65%'"}
+  ability_cast_time_s:           {value: 0.933,         source: "Pensive Protection Attributes table col 'Cast Time' = '0.933 sec'"}
+  ability_activation_delay_s:    {value: 1,             source: "prose (Ability: Pensive Protection) 'After a 1-second delay'"}
+  ability_cooldown_s_published:  {value: 17,            source: "Pensive Protection Attributes table col 'Ability Cooldown' = '17 sec'; ALSO ability prose 'goes on a 17-second cooldown'. STALE -- see open_questions."}
+  ability_cooldown_s_current:    {value: 0,             source: "NOT ON THIS PAGE. webcache/Version_History.wikitext 'Balance Changes (4/8/2026)': 'Champions and Heroes (minus Boss Bandit): Will no longer have multi-use abilities. Instead, they will be single use.'"}
+  ability_uses_current:          {value: 1,             source: "NOT ON THIS PAGE. webcache/Version_History.wikitext 'Balance Changes (4/8/2026)', same entry."}
+
+  # ---- reflection parameters ----
+  reflected_crown_tower_damage_pct: {value: 25,         source: "prose (Strategy) 'All reflected projectiles that can splash or don't seek after a target do 25% of their normal damage to Crown Towers'; restated for reflected Crown Tower arrows: 'have their damage reduced to only 25%'"}
+  reflected_troop_damage_pct:    {value: 100,           source: "prose (Strategy) 'the Sparky will take full damage'; and 'reflected back at them for full damage' for piercing projectiles"}
+  reflected_damage_scaling:      {value: "source level, not Monk level", source: "prose (Strategy) 'will have the same damage as the initial source of the projectile, and will not scale up nor down to the Monk's level'"}
+  arrows_full_reflect_radius_tiles: {value: 2,          source: "prose (Strategy) 'unless he is in or within 2 tiles of the exact center of the casting area for the spell'"}
+  hunter_projectile_despawn_tiles: {value: null,        source: "NOT PUBLISHED. prose says only 'the projectiles de-spawn after a couple tiles' -- no number."}
+  spell_reflect_destination:     {value: "closest opposing Crown Tower", source: "prose (Ability) 'Spells are always reflected to the closest opposing Crown Tower'"}
+
+  # ---- balance deltas (provenance only) ----
+  damage_reduction_pct_previous: {value: -80,           source: "prose (History 8/7/2025) 'decreased the Pensive Protection's damage reduction boost to 65% (from 80%)'"}
+  ability_cooldown_s_previous:   {value: 15,            source: "prose (History 2/11/2022) 'increased the Pensive Protection's cooldown time to 17 seconds (from 15 seconds)'"}
+  body_hit_speed_s_previous:     {value: 0.9,           source: "prose (History 7/2/2023) 'decreased the Monk's attack time interval to 0.8 seconds (from 0.9 seconds)'"}
+  deploy_cost_elixir_previous:   {value: 4,             source: "prose (History 7/12/2022) 'increased the Monk's cost to 5 Elixir (from 4 Elixir)'"}
+  combo_damage_buff_pct_2024:    {value: 0.47,          source: "prose (History 17/6/2024) 'increased the Monk's combo damage by 0.47%'"}
+
+  # ---- Troop Rush game-mode variant (NOT the ladder card; recorded because it conflicts) ----
+  troop_rush_hp:                 {value: 3800,          source: "prose (Trivia) 'He had 3,800 hitpoints (instead of 2,000)' -- game-mode variant only"}
+  troop_rush_baseline_hp_quoted: {value: 2000,          source: "prose (Trivia), same sentence -- CONFLICTS with vardefine hp_11 = 2214; see open_questions"}
+  troop_rush_hit_speed_s:        {value: 1.2,           source: "prose (Trivia) 'an attack speed of 1.2 seconds (instead of 0.8 seconds)'"}
+  troop_rush_first_hit_speed_s:  {value: 0.4,           source: "prose (Trivia) 'a first attack speed of 0.4 seconds (instead of 0.2 seconds)'"}
+  troop_rush_ability_cost:       {value: 2,             source: "prose (Trivia) 'had a 2 Elixir ability'"}
+  troop_rush_ally_aura_radius:   {value: 4,             source: "prose (Trivia) 'apply the damage reduction to any allied troops in a 4-tile radius around him' -- Troop Rush ONLY; the ladder ability has NO ally aura"}
+
+  # ---- scaling ----
+  level_scaling_per_level:       {value: 1.1,           source: "statistics table formula '(1.1^(L-11))' -- applied to hp, damage, and Combo Damage"}
+  stats_reference_level:         {value: 11,            source: "statistics table editor comment 'THAT WILL BE LEVEL 11'"}
+
+proposed_ability_kind: reflect
+
+open_questions:
+  - "THIS PAGE IS STALE ON SINGLE-USE. Its History ends at 12/12/2025 and carries NO 4/8/2026 entry, unlike the Mighty Miner and Little Prince pages. Both the Pensive Protection Attributes table and the ability prose still say 17 s cooldown. webcache/Version_History.wikitext, Balance Changes (4/8/2026), covers 'Champions and Heroes (minus Boss Bandit)' as a class, so the Monk IS single-use -- but the subject page never says so. Both values recorded above."
+  - "THE DURATION COLUMN IS MISNAMED: 'Invulnerability Duration 4 sec'. The Monk is NOT invulnerable -- he takes 65% reduced damage. Does the 4 s bound (a) the damage reduction, (b) the projectile reflection, and (c) the knockback/Tornado immunity all together, or are they separately timed? The prose treats them as one window ('during Pensive Protection's duration') but never ties that to the 4 s figure."
+  - "KNOCKBACK IMMUNITY CONFLICT: the ability prose scopes it to the ability ('impervious to all forms of knockback and the Tornado's pull DURING Pensive Protection's duration'), but History 12/12/2025 reads 'made Monk immune to any knockback' with no duration qualifier -- which, following the 24/11/2025 entry that stripped specific immunities, reads like a PERMANENT body trait restored. Both recorded; the archive does not settle whether knockback immunity is ability-scoped or always-on."
+  - "NO GENERAL DEFINITION OF 'PROJECTILE'. The page gives an enumerated exception list (inferno beams, instant electric attacks, Spirits, Fisherman's hook, Firecracker shrapnel) but no rule. An engine needs a per-card is_reflectable_projectile flag; this page supplies only the exceptions it happens to mention, so the flag cannot be derived exhaustively."
+  - "THE 25% CROWN-TOWER RULE HAS AN UNRESOLVED SCOPE AND AN EXPLICIT EXCEPTION. The rule is stated as applying to 'reflected projectiles that can splash or don't seek after a target'. What happens when a SEEKING SINGLE-TARGET projectile is reflected into a Crown Tower -- full damage, or 25%? Never stated. And Trivia explicitly exempts the Barbarian Barrel: 'Unlike other spells, it will not deal reduced damage.' Two rules in direct tension."
+  - "ARROWS PARTIAL REFLECTION IS NOT QUANTIFIED. 'he will not fully reflect the spell unless he is in or within 2 tiles of the exact center of the casting area; if this isn't the case, some arrows may still kill some of the troops he is nearby.' Is this a binary all-or-nothing gate at 2 tiles, or a per-arrow geometric test? 'Some arrows' implies the spell is modelled as multiple sub-projectiles, but no count or falloff is given."
+  - "HUNTER DESPAWN DISTANCE IS NOT PUBLISHED: 'the projectiles de-spawn after a couple tiles'. No number. This is the general question of whether REFLECTED projectiles inherit the source's range budget, restart it, or keep the remaining distance -- none of which the page states."
+  - "REFLECTED PROJECTILE ORIGIN AND RETARGETING: does a reflected projectile spawn at the Monk's position and travel back along the incoming vector, and can it acquire NEW targets en route? Piercing ones evidently can ('In the case of the Bowler, the knockback will be used against his fellow troops'), but the general rule is unstated."
+  - "IS THE PROJECTILE CONSUMED OR DUPLICATED BY REFLECTION? The two-Monk Trivia case ('it goes back to the Monk who reflected it first will cause it to get fully absorbed') implies a single travelling entity that can be absorbed, but the page never states this as a rule."
+  - "DOES THE -65% APPLY TO DAMAGE THE MONK STILL TAKES FROM PARTIALLY-REFLECTED SOURCES, e.g. Firecracker shrapnel or off-center Arrows? Prose says 'all incoming damage', so presumably yes, but the reflection and reduction interaction is never spelled out."
+  - "CAN THE MONK ATTACK AND MOVE DURING PENSIVE PROTECTION? Never stated. Nothing on the page says he stops, and the cloned-Monk Trivia ('will actually start walking with its ability activated') implies movement is allowed -- but that is an inference from a Clone edge case, not a rule."
+  - "COMBO DAMAGE SEMANTICS: is 422 a REPLACEMENT for the 140 on the 3rd hit, or is it 140 + 422? The statistics table lists 'Damage' and 'Combo Damage' as separate columns with no relation stated. (Replacement is the natural reading of 'the 3rd strike deals extra damage', but 'extra' is exactly the ambiguous word.)"
+  - "COMBO COUNTER PERSISTENCE: killing a troop does not reset it (stated). Not stated: whether it resets on TARGET SWITCH, on the Monk being stunned/knocked back, on the ability being used, or on him losing his target and re-acquiring."
+  - "TROOP RUSH TRIVIA QUOTES A BASE HP OF 2,000, but the current vardefine hp_11 is 2214. The 2,000 is almost certainly the Monk's HP at the time that game mode ran (pre-5/3/2024 +7.5% and pre-8/7/2025 +3%), not a live value. Both recorded; do NOT use the Troop Rush block for ladder stats -- it also has a 4-tile ALLY damage-reduction aura that the ladder ability does not have."
+  - "CLONE INTERACTION IS CONTRADICTORY ACROSS PAGES: this page's Strategy says a cloned Monk 'will actually start walking with its ability activated', while webcache/Cards.wikitext says 'Cloned Champion troops cannot use abilities. Activating an ability while a cloned Champion is on the arena will only trigger it for the original troop.' Reconcilable if the clone INHERITS an already-active buff rather than activating one, but neither page says that."
+  - "AIR TARGETING: the Monk cannot ATTACK air, but can he REFLECT projectiles from air units? Strategy implies yes for projectile-firing air troops and specifically notes Bats and Phoenix are safe only because they do not use projectiles. Not stated as a rule."
+  - "Collision radius / mass: not published on this page."
+  - "Ability uses: per BODY or per MATCH? Not stated by this page or Version_History.wikitext."
+  - "CHAMPION HAND/CYCLE STATE -- NOT AN ISSUE HERE: this page contains no hand-lock text. For the record, the archived source for the rework is webcache/Version_History_2025.wikitext, '2025 Quarter 3 Update (29/9/2025)', section 'Champion Rework': 'Champions will not bring 3-card cycle anymore: they come back to the player's cycle like any other card.' NOTE the date -- 29/9/2025, NOT 2026. The caller's framing of this as a '2026 rework' does not match the archive; the 4/8/2026 update was a separate change (multi-use -> single-use abilities)."
+
+sources_secondary:
+  - {file: "webcache/Version_History.wikitext", section: "Balance Changes (4/8/2026)", used_for: "the ONLY archived source making the Monk single-use -- his own page has no 2026 History entry"}
+  - {file: "webcache/Version_History_2025.wikitext", section: "2025 Quarter 3 Update (29/9/2025) -- Champion Rework", used_for: "3-card-cycle removal dated 29/9/2025; 'Only the most recent placed Champion has the ability'; 'Cooldowns are reset when the ability is transferred between Champions'; 'Mirror now works on Champions'"}
+  - {file: "webcache/Cards.wikitext", section: "Champion Cards", used_for: "'The abilities adhere to the server's 1 second deployment delay'; 'The cooldown will instantly reset if the player's Champion dies, or if a new Champion gets placed'; 'Cloned Champion troops cannot use abilities'"}

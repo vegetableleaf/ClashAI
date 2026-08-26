@@ -1,0 +1,158 @@
+key: golden_knight
+page: Golden Knight
+source: webcache/Golden_Knight.wikitext
+revid: null
+fetched: "2026-08-25"
+
+body_stats:
+  # Level 11 is the vardefine base; the page's level table scales every stat by 1.1^(level-11).
+  hp:         {value: 1799, source: "vardefine hp_11"}
+  damage:     {value: 161, source: "vardefine dmg_11 (a separate vardefine dash_11 = 335 carries Dashing Dash damage)"}
+  hit_speed:  {value: 0.9, source: "vardefine atk_speed (= 0.9); same value in attribute table col 'Hit Speed' (0.9 sec)"}
+  speed:      {value: "Medium (60)", source: "attribute table col 'Speed' (Golden Knight Attributes) - NO vardefine exists for speed"}
+  range:      {value: "Melee: Medium (1.2)", source: "attribute table col 'Range' (Golden Knight Attributes) - NO vardefine"}
+  targets:    {value: "Ground", source: "attribute table col 'Target' (Golden Knight Attributes) - NO vardefine"}
+  count:      {value: 1, source: "attribute table col 'Count' (x1) (Golden Knight Attributes) - NO vardefine"}
+
+ability:
+  name: Dashing Dash
+  elixir_cost: 1
+  uses: null           # not stated; a 12 s cooldown implies unlimited re-use, but the page never says so
+  cooldown_s: 12
+  cast_delay_s: 0.766  # attribute table 'Cast Time'; ability prose says 1 second; History 3/11/2025 quotes a
+                       # third figure ('Dashing Dash Delay ... 0.05 seconds') - see open_questions
+  duration_s: null     # NEVER STATED. Prose says the cooldown starts 'after the duration ends' but no
+                       # duration value exists anywhere on the page; the ability appears to end on a
+                       # stop condition (10 dashes / no targets / Crown Tower hit) rather than a timer.
+
+mechanic_prose: |
+  [Section "Ability: Dashing Dash" - VERBATIM]
+  {{Quote|Dashes towards his enemies and chain attacks everything in his path!}}
+  {{Champion Ability}}
+  The Golden Knight has a special ability, accessible from the rightmost side of the screen just
+  above the player's [[Cards|card]] slots in [[Basics of Battle|battle]]. After a 1 second delay, the
+  Golden Knight activates his "Dashing Dash", gaining a movement speed boost if he is not within 5.5
+  tiles of an enemy unit. Once a unit is in range, he dashes to it quickly, then dashes towards the
+  closest enemy unit within a 5.5-tile radius (even if the previous unit was not destroyed). His
+  dashes have invulnerability and deal increased damage, like the [[Bandit]]. He cannot dash into the
+  same troop per ability use. He will stop dashing after dashing 10 times, if no other valid targets
+  are within range, or if the last target hit is a [[:Category:Crown Towers|Crown Tower]]. It is
+  important to note that his movement speed boost cannot be reset or cancelled by [[The Log]],
+  [[Zap]], [[Freeze]] or other things that will normally stop a charge. The ability goes on an 12
+  second cooldown after the duration ends. The Dashing Dash ability costs 1 [[Elixir]] to activate.
+
+  [Lead section (intro paragraph) - VERBATIM, relevant clause]
+  "The Golden Knight's ability increases his movement speed when no enemies are nearby, and causes
+  him to dash onto enemies in sequence, similar to the [[Electro Spirit]]'s attack."
+
+  [Section "Strategy" - VERBATIM, engine-relevant edge cases only]
+  "Unlike the [[Electro Spirit]], the Golden Knight cannot be forced to activate the [[King's
+  Tower|King Tower]] while using the ability."
+  "The number of dashes from the Golden Knight during the ability is not enough to destroy an entire
+  [[Skeleton Army]], leaving some Skeletons still alive"
+  "Make sure that they are at most 5 tiles away from the river, to prevent the Golden Knight from
+  connecting to the Crown Tower with his dash."
+  "When using [[:Category:Building Cards|buildings]] to pull the Golden Knight, they should be placed
+  3 tiles from the river and 2 tiles from the Crown Tower. This will ensure that the Golden Knight
+  will not dash towards the Crown Tower and will stay distracted by the building."
+  "The Golden Knight is unique in the fact that he can dash onto multiple targets, like a [[Knight]]
+  and Crown Tower, and still attack the original target."
+  "Once the Golden Knight uses his ability, he will not target any units behind him unless they are
+  in his range. In other words, Dashing Dash only chains to the troops that the Golden Knight can
+  see. Because of this, surrounding him with swarms like [[Guards]] is an effective way to neutralize
+  his dash"
+  "When dashing, he is immune to all forms of damage like the Bandit. This immunity can be extended
+  by having him dash multiple times."
+  "If the Golden Knight dashes while being targeted by an [[Inferno Tower]] or [[Inferno Dragon]],
+  their ramp up damage will reset, allowing him to distract them for an extended period of time."
+  "The Golden Knight will still be able to finish his dash, even if a [[Fisherman]] pulls him."
+  "The Golden Knight's dash is able to cross the river."
+  "His dash damage is enough to OHKO equivalently levelled [[Wall Breakers]] and [[Bomber|Bombers]],
+  and it will take down troops like the [[Musketeer]], Electro Wizard, [[Goblinstein]], Little
+  Prince, [[Ice Wizard]], and [[Wizard]] to half health"
+  "When using the ability, the Golden Knight's momentum increases significantly. This can allow him
+  to push friendly troops closer to their target."
+  "A Golden Knight can use his ability to hit the [[Goblins]] from a [[Goblin Barrel]]. He dashes
+  fast enough that he can defeat the Goblins for no damage."
+  "The Golden Knight can be placed as a defender in [[Clan Wars|Boat Battles]]. However, much like
+  other {{Rarity|Champion}} cards, he is unable to use his ability."
+
+  [Section "History" - VERBATIM, mechanics-bearing entries only]
+  "On 1/11/2021, an Optional Update, fixed Dashing Dash so that it does not end if the Golden
+  Knight's target dies before the dash connects with it."
+  "On 30/3/2022, the Miner Update, fixed an issue with Golden Knight not dashing properly while
+  targeting a moving unit."
+  "On 4/4/2022, the April 2022 Update, increased the Dashing Dash's maximum dash range to 6 tiles
+  (from 5 tiles) but made it so that the dash would end if a Crown Tower is hit."
+  "On 26/10/2022 ... It also fixed an issue where Golden Knight dashed to an empty space with no
+  target."
+  "On 13/11/2023, a Minor Update, fixed a bug where Golden Knight could not hit targets across the
+  river with Dashing Dash."
+  "On 31/3/2025, the 2025 Quarter 1 Update, allowed a dashing Golden Knight to be affected by [[Royal
+  Chef]]."
+  "On 5/5/2025, the May 2025 Update, allowed Dashing Dash to move Golden Knight backwards."
+  "On 3/11/2025, a Balance Update, decreased Dashing Dash Delay to 0.05 seconds (from 0.2 seconds)."
+  "On 12/1/2026, a Balance Update, decreased the cooldown of Dashing Dash to 12 seconds (from 8
+  seconds)."
+
+  [Section "Trivia" - VERBATIM, mechanics-bearing entry]
+  "He sings 'Golden Knight!' if Dashing Dash is activated while there are no enemies in its range, as
+  well as making a laugh."
+
+numbers:
+  deploy_cost_elixir:           {value: 4, source: "infobox Cost=4; attribute table col 'Cost'; prose"}
+  ability_cost_elixir:          {value: 1, source: "infobox AbilityCost=1; Dashing Dash Attributes table col 'Cost'; prose"}
+  body_hp_lvl11:                {value: 1799, source: "vardefine hp_11"}
+  body_damage_lvl11:            {value: 161, source: "vardefine dmg_11"}
+  body_hit_speed_s:             {value: 0.9, source: "vardefine atk_speed; attribute table col 'Hit Speed'"}
+  body_first_hit_speed_s:       {value: 0.2, source: "attribute table col 'First Hit Speed'"}
+  body_speed:                   {value: "Medium (60)", source: "attribute table col 'Speed'"}
+  body_deploy_time_s:           {value: 1, source: "attribute table col 'Deploy Time'"}
+  body_range_tiles:             {value: 1.2, source: "attribute table col 'Range' ('Melee: Medium (1.2)')"}
+  body_targets:                 {value: "Ground", source: "attribute table col 'Target'"}
+  body_count:                   {value: 1, source: "attribute table col 'Count' (x1)"}
+  body_transport:               {value: "Ground", source: "attribute table col 'Transport'"}
+  body_dps_lvl11:               {value: 178.9, source: "DERIVED from the level table formula Dps(dmg_11, atk_speed) = 161/0.9"}
+  ability_dash_damage_lvl11:    {value: 335, source: "vardefine dash_11; level table col 'Dashing Dash Damage'"}
+  ability_dash_damage_multiplier: {value: 2.081, source: "DERIVED: 335/161. The page says only 'deal increased damage, like the Bandit' - no multiplier is printed anywhere"}
+  ability_speed_during:         {value: "Very Fast (120)", source: "Dashing Dash Attributes table col 'Speed'; prose calls it 'a movement speed boost if he is not within 5.5 tiles of an enemy unit' (base is Medium (60), i.e. 2x)"}
+  ability_max_dash_distance_tiles: {value: 5.5, source: "Dashing Dash Attributes table col 'Maximum Dash Distance'; prose 'the closest enemy unit within a 5.5-tile radius' and 'if he is not within 5.5 tiles of an enemy unit'"}
+  ability_max_dashes:           {value: 10, source: "Dashing Dash Attributes table col 'Maximum Dashes'; prose 'He will stop dashing after dashing 10 times'"}
+  ability_cast_time_s:          {value: 0.766, source: "Dashing Dash Attributes table col 'Cast Time'"}
+  ability_cast_delay_prose_s:   {value: 1, source: "prose (Ability section) 'After a 1 second delay' - CONFLICTS with the 0.766 table value"}
+  ability_dash_delay_history_s: {value: 0.05, source: "History 3/11/2025 'decreased Dashing Dash Delay to 0.05 seconds (from 0.2 seconds)' - a THIRD delay figure; the page never says which delay this names (most plausibly the pause between chained dashes), see open_questions"}
+  ability_cooldown_s:           {value: 12, source: "Dashing Dash Attributes table col 'Ability Cooldown'; prose 'an 12 second cooldown after the duration ends'; History 12/1/2026"}
+  ability_duration_s:           {value: null, source: "NOT STATED anywhere on the page - see open_questions"}
+  ability_dash_travel_speed:    {value: null, source: "NOT STATED - the table's 'Speed' column is the out-of-combat movement boost, not the dash travel speed (contrast Boss Bandit, whose page prints a Dash Speed of 500)"}
+  level_scaling:                {value: "stat * 1.1^(level-11)", source: "level table #expr formulas; page warns 'There will be rounding mistakes, as we have stats from level 11'"}
+  historical_max_dash_range_tiles: {value: [6, 5, 6, 5.5], source: "History: 6 at release -> 5 (3/2/2022) -> 6 (4/4/2022) -> 5.5 (4/4/2023); 5.5 is current"}
+  historical_cooldown_s:        {value: [8, 11, 8, 12], source: "History: 8 at release -> 11 (3/2/2022) -> 8 (5/3/2024) -> 12 (12/1/2026); 12 is current"}
+  historical_cooldown_shipped_alt_s: {value: 7, source: "Trivia: the 5/3/2024 change was initially a cut to 7 s, 'raised to 8 seconds last minute' - 7 was never live"}
+  historical_dash_delay_s:      {value: 0.2, source: "History 3/11/2025 '(from 0.2 seconds)' - 0.2 no longer live"}
+  historical_dash_damage_change_pct: {value: 8, source: "History 3/1/2024 'increased the Dashing Dash's damage by 8%'"}
+  historical_hp_change_pct:     {value: [-10, -0.05], source: "History 2/8/2022 (-10%) and 17/6/2024 (-0.05%)"}
+  historical_damage_change_pct: {value: 0.625, source: "History 17/6/2024 'increased his damage by 0.625%'"}
+
+proposed_ability_kind: dash_chain
+# Textbook chain-dash: a movement-speed boost while out of range, then up to 10 sequential
+# invulnerable dashes to the nearest enemy within 5.5 tiles, each dealing dash damage (335 at L11),
+# no repeat target within one activation, terminating on 10 dashes / no valid target / Crown Tower
+# hit. No summon, no zone, no self-stat buff beyond the movement boost.
+
+open_questions:
+  - "ABILITY DURATION IS NEVER STATED. Prose says the 12 s cooldown starts 'after the duration ends', but no duration value exists on the page and the listed stop conditions are all event-based (10 dashes, no valid target in range, Crown Tower hit). Does the ability run until a stop condition fires with no time cap at all? If he activates with nothing in range and the enemy walks up 8 s later, is the ability still armed?"
+  - "'He will stop dashing ... if no other valid targets are within range' - does that END the ability (starting the cooldown and dropping the speed boost), or does he keep the boost and resume chaining when a target enters the 5.5-tile radius? This is the single most load-bearing ambiguity for the engine, and it interacts directly with the missing duration."
+  - "Three different delay numbers, none reconciled: prose 'After a 1 second delay', table Cast Time 0.766 sec, and History 3/11/2025 'Dashing Dash Delay ... 0.05 seconds (from 0.2 seconds)'. The 0.05 s figure most plausibly names the gap between chained dashes, but the page never says so. The engine needs both the activation delay and the inter-dash delay."
+  - "Dash travel speed / per-dash duration is not given (Boss Bandit's page prints Dash Speed 500; this page prints only the out-of-combat movement boost Very Fast (120)). Without it, chain-clear timing cannot be simulated - Strategy claims he clears Goblin Barrel goblins 'for no damage', which is a timing claim with no number behind it."
+  - "Dash damage multiplier: 335 vs 161 body damage is 2.081x (DERIVED), but the page says only 'increased damage, like the Bandit'. Does dash damage apply at full value to Crown Towers, or is there a crown-tower reduction? No crown-tower column exists in this level table."
+  - "Target eligibility for the chain: the body targets Ground only. Can a dash chain to an AIR unit? Prose says 'the closest enemy unit within a 5.5-tile radius' without qualifying transport, but Strategy stresses 'The Golden Knight cannot attack air troops'. Also unstated: do buildings, spawners and Tower Troops count as chain targets, and is the Crown Tower a target he actively seeks or only a terminal one?"
+  - "Chain measurement origin: is 'closest enemy within 5.5 tiles' measured from his position AFTER the previous dash, and is the field of view restricted? Strategy says 'he will not target any units behind him unless they are in his range ... Dashing Dash only chains to the troops that the Golden Knight can see' - implying an arc/facing restriction that is never defined in degrees, while History 5/5/2025 explicitly 'allowed Dashing Dash to move Golden Knight backwards'. Those two read as contradictory; both recorded."
+  - "'He cannot dash into the same troop per ability use' - does that exclusion cover Crown Towers and buildings too? (Moot for towers, since hitting one ends the chain.) Does a dash that lands on a target which dies mid-flight still consume one of the 10?"
+  - "Does a Crown Tower dash count toward the 10-dash budget, and does the ability end immediately on that hit or after the damage resolves?"
+  - "Invulnerability window: 'immune to all forms of damage' during a dash, extendable by chaining. Is he immune at the moment of impact, and is he immune during the inter-dash gap (0.05 s?) or only in flight? Strategy notes the immunity absorbs a Sparky hit, Bandit dash, Prince/Dark Prince charges, and resets Inferno ramp-up."
+  - "Displacement immunity: the movement speed boost 'cannot be reset or cancelled by The Log, Zap, Freeze or other things that will normally stop a charge', and a Fisherman pull does not interrupt an in-flight dash. Does a knockback still move him physically while the dash resolves? Royal Chef CAN affect a dashing Golden Knight (History 31/3/2025)."
+  - "'The Golden Knight's momentum increases significantly ... can push friendly troops closer to their target' - a physical push effect on allies with no magnitude given. Unimplementable as stated."
+  - "River crossing: the dash crosses the river (Strategy + History 13/11/2023 bugfix). Does it ignore all pathing, or only the river?"
+  - "Uses per body: not stated. The 12 s cooldown implies unlimited re-use but, unlike Boss Bandit, there is no 'Ability Count' column."
+  - "Hand-lock: this page never states the Golden Knight leaves the hand while his body lives, so nothing here contradicts the 2026 rework."
+  - "revid unknown - the archive is a bare wikitext dump carrying no revision metadata."

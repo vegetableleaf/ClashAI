@@ -1,0 +1,216 @@
+key: little_prince
+page: Little Prince
+source: webcache/Little_Prince.wikitext        # offline archive; revid unknown from file alone -> null
+revid: null
+fetched: "2026-08-25"
+
+body_stats:
+  # Level 11 = the wiki's reference level. vardefine name given for each value that has one;
+  # values with no vardefine come from the "Little Prince Attributes" table.
+  hp: 698                     # vardefine hp_11
+  damage: 104                 # vardefine dmg_11 (one damage value; only the HIT SPEED ramps)
+  hit_speed:                  # RAMP-UP attack speed -- 3 stages, faster while he stands still
+    stage_1: 1.2              # vardefine 1_atk_speed; Little Prince Attributes "Hit Speed (Stage 1)"
+    stage_2: 0.6              # vardefine 2_atk_speed; Little Prince Attributes "Hit Speed (Stage 2)"
+    stage_3: 0.4              # vardefine 3_atk_speed; Little Prince Attributes "Hit Speed (Stage 3)"
+  speed: "Medium (60)"        # Little Prince Attributes table "Speed" (no vardefine)
+  range: 5.5                  # Little Prince Attributes table "Range" (no vardefine)
+  targets: "Air & Ground"     # Little Prince Attributes table "Target" (no vardefine)
+  count: 1                    # Little Prince Attributes table "Count x1" (no vardefine)
+
+ability:
+  name: Royal Rescue
+  elixir_cost: 3              # infobox AbilityCost=3; Royal Rescue Attributes table Cost=3
+  uses: 1                     # page History 4/8/2026 + Version_History.wikitext 4/8/2026
+  cooldown_s: null            # page prints 30 s (table AND ability prose); superseded by the 4/8/2026
+                              # single-use change. BOTH values recorded in `numbers`; see open_questions.
+  cast_delay_s: 0.944         # Royal Rescue Attributes table "Cast Time 0.944 sec".
+                              # Ability prose separately says "After a 1-second delay". Both recorded.
+  duration_s: null            # NOT PUBLISHED, and arguably N/A: Guardienne is PERMANENT --
+                              # "After the charge is completed, Guardienne stays in the arena until
+                              # she's taken out." Prose still says the cooldown starts "after the
+                              # duration ends", but no duration number exists on the page.
+
+# THE ABILITY SUMMONS A SECOND BODY. Guardienne has her own attributes table and her own vardefine
+# block; both are captured in full below and in `numbers`.
+guardian:
+  name: Guardienne
+  hp: 1600                    # vardefine guard_hp_11
+  damage: 217                 # vardefine guard_dmg_11
+  hit_speed: 1.2              # vardefine guard_atk_speed; Guardienne Attributes table "Hit Speed"
+  first_hit_speed: 0.5        # Guardienne Attributes table "First Hit Speed" (no vardefine)
+  speed: "Medium (60)"        # Guardienne Attributes table "Speed"
+  deploy_time_s: 0.3          # Guardienne Attributes table "Deploy Time"
+  range: 1.2                  # Guardienne Attributes table "Range: Melee: Medium (1.2)"
+  targets: "Ground"           # Guardienne Attributes table "Target" -- GROUND ONLY, confirmed by
+                              # Strategy prose: Minions "are immune to Guardienne's damage and
+                              # cannot be targeted by Guardienne"
+  transport: "Ground"         # Guardienne Attributes table "Transport"
+  collision_radius: 0.8       # prose (Strategy) "the Guardienne has an extra 0.8 tile collision radius"
+  persistence: "permanent"    # prose "stays in the arena until she's taken out"
+  # NOTE: dps at L11 = 217 / 1.2 = 180.8 (the statistics table computes this via {{Dps|...}}).
+
+mechanic_prose: |
+  [section "Ability: Royal Rescue", tagline quote, verbatim]
+  "Guardienne charges into battle, dealing Charge Damage and pushing enemies back!"
+
+  [section "Ability: Royal Rescue", body, verbatim]
+  "The Little Prince has a special ability, accessible from the rightmost side of the screen just
+  above the player's card slots in battle. After a 1-second delay, the Little Prince activates his
+  'Royal Rescue',  causing Guardienne to charge directly in front of the Little Prince and knock
+  opposing ground troops away by 0-2 tiles (depends on how close the unit is to the sweet spot)
+  while also doing moderate damage. After the charge is completed, Guardienne stays in the arena
+  until she's taken out. Guardienne's stats are comparable to a Knight, having slightly less health
+  and slightly less damage with their rest of their stats being identical. The ability goes on a
+  30-second cooldown after the duration ends. The Royal Rescue ability costs 3 Elixir to activate."
+
+  [lead section (untitled intro paragraph), verbatim, ability sentence only]
+  "The Little Prince's ability has him call upon a tank named Guardienne."
+
+  [section "Strategy", verbatim, mechanically load-bearing bullets only]
+  "Like The Log and the Monk, the knockback effect caused by the Royal Rescue ability can affect all
+  ground troops. This makes him very effective against large tanks and can prevent a lot of damage
+  done to Crown Towers."
+  "Strangely enough, the Mega Knight's jump can be completely interrupted while mid-air, unlike
+  other cards with knockback effects. ... However, if the Mega Knight is already halfway through the
+  trajectory to jump onto the Little Prince, the Guardienne will knock him back, and he will
+  erratically travel forward while mid-air onto the Little Prince."
+  "It can also be used to reset the Mighty Miner's ramp up attack, saving a large tank from certain
+  death, as well as sending the Mighty Miner in a less favorable position in case he wants to use
+  his ability."
+  "Cards with knockback and stun effects like The Log, Zap, Fireball, and Giant Snowball can reset
+  his attack speed ramp up, making them good last-resort assist cards."
+  "Although the Royal Rescue's range is 4 tiles, the Guardienne has an extra 0.8 tile collision
+  radius, allowing her to reach slightly further, similar to an attack from the Executioner. This
+  can allow her to reach certain ranged troops such as the Bowler and deal damage to them with the
+  ability."
+  "Minions can also work even if he activates his ability, as they are immune to Guardienne's damage
+  and cannot be targeted by Guardienne."
+  "The Little Prince can be used as a situation counter to the Goblin Barrel as activating his
+  ability at the proper time and position will allow Guardienne to take out all three Goblins at
+  once due to her charge."
+  "The Little Prince can be placed as a defender in Boat Battles. However, much like other Champion
+  cards, he is unable to use his ability."
+
+  [section "History", 2026, verbatim]
+  "On 4/8/2026, a Balance Update, made it so that the Little Prince would no longer have a cooldown
+  timer in-between abilities. Instead, his ability will no be single use. The Little Prince will now
+  maintain his charged-up Hit Speed for up to 0.3 seconds while moving. The Guardian Melee Damage
+  was also increased by 7%"
+
+  [section "History", ability-relevant entries, verbatim]
+  "On 13/11/2023, a Minor Update, decreased the Royal Rescue's dash range to 4.5 tiles (from 5
+  tiles). It also fixed a bug where Royal Rescue could hit troops underground and made it so that
+  Clone no longer creates two full health Guardiennes when used at the right moment that Little
+  Prince activates Royal Rescue."
+  "On 17/11/2023, a maintenance break, increased the number of attacks required to change stages to
+  3 (from 2) and decreased the Royal Rescue's pushback to 2.5 tiles (from 3.5 tiles)."
+  "On 14/12/2023, a maintenance break, fixed a bug where the Little Prince's hit speed would not
+  reset after moving."
+  "On 3/1/2024, a Balance Update, decreased the Little Prince's damage by 9% and decreased the
+  Guardienne's hitpoints by 11%."
+  "On 5/3/2024, a Balance Update, decreased the Little Prince's range to 5.5 tiles (from 6 tiles).
+  It also decreased the Royal Rescue's dash range to 4 tiles (from 4.5 tiles)."
+  "On 17/6/2024, the Goblin World Update, decreased the Little Prince's hitpoints by 0.28% and his
+  damage by 1%, decreased the Royal Rescue damage by 48.1%, its pushback to 2 tiles (from 2.5
+  tiles), increased Guardienne's first attack time interval to 0.5 seconds (from 0.2 seconds), and
+  decreased her damage by 0.5%."
+  "On 3/6/2025, a Balance Update, increased the Guardienne's damage by 1%. It also increased the
+  Royal Rescue's damage by 11%."
+  "On 1/9/2025, a Balance Update, increased the Royal Rescue's pushback to 2.5 tiles (from 2 tiles).
+  It also increased the Royal Rescue's damage by 11%."
+  "On 3/11/2025, a Balance Update, increased the Guardienne's damage by 7%."
+  "On 12/1/2026, a Balance Update, increased the Little Prince's damage by 5%."
+
+  [section "Card Mastery", verbatim -- the ONLY statement that the charge can hit BUILDINGS]
+  "Hit a total of 500 Troops or buildings with Guardian's Charge Damage"
+
+numbers:
+  deploy_cost_elixir:            {value: 3,             source: "infobox Cost=3; Little Prince Attributes table Cost"}
+  ability_cost_elixir:           {value: 3,             source: "infobox AbilityCost=3; Royal Rescue Attributes table Cost"}
+
+  # ---- Little Prince body ----
+  hp_lvl11:                      {value: 698,           source: "vardefine hp_11"}
+  damage_lvl11:                  {value: 104,           source: "vardefine dmg_11"}
+  hit_speed_stage1_s:            {value: 1.2,           source: "vardefine 1_atk_speed; Little Prince Attributes table 'Hit Speed (Stage 1)'"}
+  hit_speed_stage2_s:            {value: 0.6,           source: "vardefine 2_atk_speed; Little Prince Attributes table 'Hit Speed (Stage 2)'"}
+  hit_speed_stage3_s:            {value: 0.4,           source: "vardefine 3_atk_speed; Little Prince Attributes table 'Hit Speed (Stage 3)'"}
+  first_hit_speed_s:             {value: 0.4,           source: "Little Prince Attributes table 'First Hit Speed'"}
+  body_speed:                    {value: "Medium (60)", source: "Little Prince Attributes table Speed"}
+  body_deploy_time_s:            {value: 1,             source: "Little Prince Attributes table Deploy Time"}
+  body_range_tiles:              {value: 5.5,           source: "Little Prince Attributes table Range"}
+  projectile_speed:              {value: 800,           source: "Little Prince Attributes table 'Projectile Speed'"}
+  target:                        {value: "Air & Ground", source: "Little Prince Attributes table Target"}
+  count:                         {value: 1,             source: "Little Prince Attributes table Count x1"}
+  transport:                     {value: "Ground",      source: "Little Prince Attributes table Transport"}
+  attacks_per_stage:             {value: 3,             source: "prose (History 17/11/2023) 'increased the number of attacks required to change stages to 3 (from 2)' -- NOT in any stat table"}
+  ramp_move_grace_s:             {value: 0.3,           source: "prose (History 4/8/2026) 'maintain his charged-up Hit Speed for up to 0.3 seconds while moving' -- NOT in any stat table"}
+
+  # ---- Royal Rescue (the ability itself) ----
+  dash_range_tiles:              {value: 4,             source: "Royal Rescue Attributes table col 'Dash Range' = 4; corroborated by Strategy prose 'the Royal Rescue's range is 4 tiles' and History 5/3/2024"}
+  ability_target:                {value: "Ground",      source: "Royal Rescue Attributes table col 'Target' = 'Ground'"}
+  ability_cast_time_s:           {value: 0.944,         source: "Royal Rescue Attributes table col 'Cast Time' = '0.944 sec'"}
+  ability_activation_delay_s:    {value: 1,             source: "prose (Ability: Royal Rescue) 'After a 1-second delay'"}
+  ability_cooldown_s_published:  {value: 30,            source: "Royal Rescue Attributes table col 'Ability Cooldown' = '30 sec'; ALSO ability prose 'goes on a 30-second cooldown'. STALE -- see open_questions."}
+  ability_cooldown_s_current:    {value: 0,             source: "prose (History 4/8/2026) 'would no longer have a cooldown timer in-between abilities'"}
+  ability_uses_current:          {value: 1,             source: "prose (History 4/8/2026) 'his ability will no be single use' [sic]; corroborated by webcache/Version_History.wikitext 'Balance Changes (4/8/2026)': 'Champions and Heroes (minus Boss Bandit): Will no longer have multi-use abilities. Instead, they will be single use'"}
+  charge_damage_lvl11:           {value: 256,           source: "vardefine charge_11 (statistics table col 'Royal Rescue Damage')"}
+  charge_pushback_tiles_prose:   {value: "0-2 (scaled by distance to the 'sweet spot')", source: "prose (Ability: Royal Rescue) 'knock opposing ground troops away by 0-2 tiles (depends on how close the unit is to the sweet spot)'"}
+  charge_pushback_tiles_history: {value: 2.5,           source: "prose (History 1/9/2025) 'increased the Royal Rescue's pushback to 2.5 tiles (from 2 tiles)' -- CONFLICTS with the 0-2 figure in the ability prose; see open_questions"}
+  charge_effective_reach_tiles:  {value: 4.8,           source: "derived from prose (Strategy): dash range 4 + Guardienne's 0.8 collision radius; the page states the 4 and the 0.8 but does not print the sum"}
+
+  # ---- Guardienne (the summoned second body) ----
+  guardienne_hp_lvl11:           {value: 1600,          source: "vardefine guard_hp_11 (statistics table col 'Guardienne Hitpoints')"}
+  guardienne_damage_lvl11:       {value: 217,           source: "vardefine guard_dmg_11 (statistics table col 'Guardienne Damage')"}
+  guardienne_hit_speed_s:        {value: 1.2,           source: "vardefine guard_atk_speed; Guardienne Attributes table 'Hit Speed'"}
+  guardienne_first_hit_speed_s:  {value: 0.5,           source: "Guardienne Attributes table 'First Hit Speed'"}
+  guardienne_speed:              {value: "Medium (60)", source: "Guardienne Attributes table Speed"}
+  guardienne_deploy_time_s:      {value: 0.3,           source: "Guardienne Attributes table Deploy Time"}
+  guardienne_range_tiles:        {value: 1.2,           source: "Guardienne Attributes table Range 'Melee: Medium (1.2)'"}
+  guardienne_target:             {value: "Ground",      source: "Guardienne Attributes table Target; corroborated by Strategy prose about Minions"}
+  guardienne_transport:          {value: "Ground",      source: "Guardienne Attributes table Transport"}
+  guardienne_collision_radius:   {value: 0.8,           source: "prose (Strategy) 'the Guardienne has an extra 0.8 tile collision radius'"}
+  guardienne_count:              {value: 1,             source: "prose (Ability) -- singular throughout; no Count column exists in the Guardienne Attributes table"}
+  guardienne_dps_lvl11:          {value: 180.8,         source: "statistics table col 'Guardienne Damage per Second', computed by {{Dps|guard_dmg_11|guard_atk_speed}} = 217/1.2"}
+
+  # ---- balance deltas (provenance only) ----
+  dash_range_tiles_previous_1:   {value: 5,             source: "prose (History 13/11/2023) 'decreased the Royal Rescue's dash range to 4.5 tiles (from 5 tiles)'"}
+  dash_range_tiles_previous_2:   {value: 4.5,           source: "prose (History 5/3/2024) 'decreased the Royal Rescue's dash range to 4 tiles (from 4.5 tiles)'"}
+  guardian_damage_buff_pct_2026: {value: 7,             source: "prose (History 4/8/2026) 'The Guardian Melee Damage was also increased by 7%'; corroborated by Version_History.wikitext 4/8/2026 'Guardian Melee Damage +7%'"}
+  body_damage_buff_pct_2026:     {value: 5,             source: "prose (History 12/1/2026) 'increased the Little Prince's damage by 5%'"}
+  charge_damage_nerf_pct_2024:   {value: -48.1,         source: "prose (History 17/6/2024) 'decreased the Royal Rescue damage by 48.1%'"}
+
+  # ---- scaling ----
+  level_scaling_per_level:       {value: 1.1,           source: "statistics table formula '(1.1^(L-11))' -- applied to LP hp/damage, Royal Rescue Damage, and both Guardienne columns"}
+  stats_reference_level:         {value: 11,            source: "statistics table editor comment 'THAT WILL BE LEVEL 11'"}
+
+proposed_ability_kind: guardian
+# Royal Rescue is a summon whose summoned unit (Guardienne) is PERMANENT and arrives via a damaging,
+# knocking-back charge. `guardian` captures the persistent-second-body semantics; the charge itself
+# is a dash_chain/throw_displace-shaped sub-event bolted onto the front of it.
+
+open_questions:
+  - "PUSHBACK CONFLICT WITHIN THIS PAGE: the ability prose says the charge knocks ground troops 'away by 0-2 tiles (depends on how close the unit is to the sweet spot)', but History 1/9/2025 says 'increased the Royal Rescue's pushback to 2.5 tiles (from 2 tiles)'. Both recorded above. The History entry is the later edit and 2.5 is likely current, meaning the prose's '0-2' was never updated -- but the archive does not settle it."
+  - "The 'SWEET SPOT' IS NEVER DEFINED. Prose makes the pushback distance a function of 'how close the unit is to the sweet spot' but never says where that spot is (Guardienne's start? her end position? the midpoint of the 4-tile dash?) nor what the falloff curve is. An implementer cannot reproduce a graded 0-to-max knockback from this page."
+  - "DOES THE CHARGE HIT BUILDINGS? The Royal Rescue Attributes table says Target = 'Ground', but the Card Mastery objective reads 'Hit a total of 500 Troops or buildings with Guardian's Charge Damage'. These are in tension. Buildings are ground entities, so it is likely yes, but the ability prose only ever says 'opposing ground troops'."
+  - "CHARGE TRAVEL SPEED IS NOT PUBLISHED. The dash covers 4 tiles, but no dash speed or dash duration appears anywhere (the Royal Rescue Attributes table has only Cost, Dash Range, Target, Cast Time, Ability Cooldown). Cannot model how long enemies are exposed to the charge hitbox."
+  - "GUARDIENNE'S SPAWN POSITION IS ONLY QUALITATIVE: 'charge directly in front of the Little Prince'. No offset in tiles, and no rule for what 'in front' means when he has no current target or is facing backwards. Nor is it stated where she ends up after the 4-tile dash -- at the far end, or back at the Prince."
+  - "IS THE CHARGE DAMAGE ONE HIT PER ENEMY, OR CAN IT MULTI-HIT? Prose implies a single sweep, and the Goblin Barrel bullet says she can 'take out all three Goblins at once due to her charge', confirming multi-TARGET. But whether an individual unit can be hit twice by one charge is not stated."
+  - "COOLDOWN CONFLICT WITHIN THIS PAGE: the Royal Rescue Attributes table and the ability prose both say 30 s, but the page's own History (4/8/2026) and Version_History.wikitext say the cooldown was removed and the ability is single use. Both values recorded; treat 30 s as stale."
+  - "Does vardefine guard_dmg_11 = 217 already include the 4/8/2026 '+7% Guardian Melee Damage'? And does dmg_11 = 104 include the 12/1/2026 '+5%'? The page never states which side of a balance change its stat table sits on."
+  - "ABILITY DURATION IS NOT PUBLISHED. Prose says the cooldown starts 'after the duration ends' but Guardienne is explicitly permanent ('stays in the arena until she's taken out'), so there is no duration to read. The phrase is likely boilerplate copied across all four champion pages."
+  - "TWO TIMING NUMBERS WITH NO STATED RELATIONSHIP: prose 'After a 1-second delay' vs table 'Cast Time 0.944 sec'. Cards.wikitext notes 'The abilities adhere to the server's 1 second deployment delay', which may explain the 1 s, but the relationship to 0.944 s is unstated. Guardienne separately has her own 0.3 s Deploy Time -- is that additive on top?"
+  - "WHAT HAPPENS TO GUARDIENNE WHEN THE LITTLE PRINCE DIES? The prose says only that she 'stays in the arena until she's taken out'. Strategy bullets describe killing the Prince and then luring Guardienne to a Mini P.E.K.K.A, which strongly implies she OUTLIVES him -- but this is never stated as a rule."
+  - "SECOND ACTIVATION WHILE GUARDIENNE IS ALIVE: what happens? Largely moot under the single-use rule, but the Clone interaction is documented (History 13/11/2023 fixed 'Clone no longer creates two full health Guardiennes'), so the two-Guardienne state was reachable and its resolution is unspecified."
+  - "GUARDIENNE'S HIT-SPEED / RAMP: she has a flat 1.2 s hit speed with a 0.5 s first hit -- no ramp. Confirmed by the single guard_atk_speed vardefine. No open issue, recorded for completeness."
+  - "HIT-SPEED RAMP RESET RULES for the Little Prince are scattered and incomplete: prose says knockback and stun cards (The Log, Zap, Fireball, Giant Snowball, Bowler) reset it, History 14/12/2023 fixed 'hit speed would not reset after moving', and History 4/8/2026 grants a 0.3 s grace while moving. Not stated: whether a TARGET SWITCH resets it, whether the ramp decays gradually or drops straight to stage 1, and whether the 0.3 s grace resets or merely pauses the decay."
+  - "MEGA KNIGHT MID-AIR INTERRUPT (Strategy): 'the Mega Knight's jump can be completely interrupted while mid-air, unlike other cards with knockback effects', but if he is 'already halfway through the trajectory ... he will erratically travel forward while mid-air onto the Little Prince'. Two different outcomes gated on an unstated fraction of the jump. Not implementable from this text."
+  - "The charge 'could hit troops underground' was a BUG fixed on 13/11/2023 -- so underground units (Miner, Goblin Drill, Mighty Miner mid-escape) are NOT valid charge targets. Recorded as a negative rule; the current-state phrasing is absent."
+  - "The Little Prince's OWN collision radius is not published (only Guardienne's 0.8)."
+  - "Ability uses: per BODY or per MATCH? Not stated by this page or Version_History.wikitext."
+  - "CHAMPION HAND/CYCLE STATE -- NOT AN ISSUE HERE: this page contains no hand-lock text. For the record, the archived source for the rework is webcache/Version_History_2025.wikitext, '2025 Quarter 3 Update (29/9/2025)', section 'Champion Rework': 'Champions will not bring 3-card cycle anymore: they come back to the player's cycle like any other card.' NOTE the date -- 29/9/2025, NOT 2026. The caller's framing of this as a '2026 rework' does not match the archive; the 4/8/2026 update was a separate change (multi-use -> single-use abilities)."
+
+sources_secondary:
+  - {file: "webcache/Version_History.wikitext", section: "Balance Changes (4/8/2026)", used_for: "global Champion single-use rule; 'Little Prince will now maintain his charged-up Hit Speed for up to 0.3 seconds while moving'; 'Guardian Melee Damage +7%'"}
+  - {file: "webcache/Version_History_2025.wikitext", section: "2025 Quarter 3 Update (29/9/2025) -- Champion Rework", used_for: "3-card-cycle removal dated 29/9/2025; 'Only the most recent placed Champion has the ability'; 'Cooldowns are reset when the ability is transferred between Champions'; 'Mirror now works on Champions'"}
+  - {file: "webcache/Cards.wikitext", section: "Champion Cards", used_for: "'The abilities adhere to the server's 1 second deployment delay'; 'The cooldown will instantly reset if the player's Champion dies, or if a new Champion gets placed'; 'Cloned Champion troops cannot use abilities'"}
