@@ -41,8 +41,11 @@ review**, never auto-overturned; all ~24 abilities get **full engine fidelity** 
 approximations anywhere; meta-frequency sets build ORDER only. **Champions are no longer removed
 from the hand while their body is alive** (owner-confirmed rework) — do NOT build a hand-lock;
 current lifecycle semantics (multi-body? which body the ability drives? per-body uses? refunds)
-are a research item with the owner as final authority. Anything transcribed from pre-March-2026
-sources (incl. DOCTRINE.md's slot-rule note) is suspect until re-verified.
+are ANSWERED by the owner in-game (see `research/sim_parity/decisions.md` items 4-8): two
+bodies coexist and the button drives the MOST RECENTLY PLAYED body; single use is PER BODY; the
+elixir refund applies to champions; Skeleton King stops accruing souls after use. The Champion
+Rework is dated **29/9/2025** (not 2026) — that is the staleness cutoff for lifecycle text; the
+4/8/2026 single-use change sits on top of it.
 
 **Timing:** Phase R (research) starts immediately on approval and changes no pipeline code.
 Phase I (implementation) starts only after the long PPO run is launched, and happens in an
