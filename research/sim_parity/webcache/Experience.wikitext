@@ -1,0 +1,257 @@
+<!-- fetched 2026-08-26 via api.php parse; title=Experience; revid=436294 -->
+{{Protection}}{{MagicWords}}{{ClashofClansLink}}{{RemovedContent}}{{Head Image|Experience.jpg|270px}}{{Quote|King Level indicates the strength of your king and towers.}}
+
+The amount of Experience points a player has determines their [[King's Tower|King]] Level. Experience cannot be gained by simply [[Basics of Battle|battling]]. Experience is gained by upgrading [[Cards]] and donating cards to [[Clans|clanmates]]. Experience gained from donations vary based on the card type donated (1 {{Rarity|Common}} Card is worth 1 {{Icon|I=XP}}, while 1 {{Rarity|Rare}} or {{Rarity|Epic}} Card is worth 10 {{Icon|I=XP}}). Experience gained from upgrading Cards varies from the rarity to the amount of times the player has upgraded them. You will earn more {{Icon|I=XP}} from upgrading higher level Cards. The amount that you earn depends on the level of the card you upgrade.
+
+==Unlockables==
+<center><div class="table-back">{{Statistics|Experience Levels}}</div></center>
+*Every time a player levels up, they are rewarded with a Level-Up [[Chests|Chest]]. A Level-Up Chest contains [[Gold]], [[Gems]], [[Cards]], and [[Magic Items|Wild Cards]].
+*Level 2 unlocks more deck slots. It also increases the level of your [[King's Tower|King Tower]] to 2, and allows access to the Bone Pit [[Arenas|Arena]].
+*Level 3 unlocks card donations with [[Clans|clanmates]]. It also increases the level of your King Tower to 3, and allows access to the Barbarian Bowl Arena.
+*Level 4 allows access to the Spell Valley Arena.
+*Level 5 unlocks name changing that can be done at any time afterwards in the Settings menu, with the first time being free. It also increases the level of your King Tower to 4, and allows access to the Builder's Workshop Arena.
+*Level 6 allows access to the P.E.K.K.A's Playhouse Arena.
+*Level 7 unlocks [[Pass Royale]]. It also increases the level of your King Tower to 5.
+*Level 8 unlocks [[Tournament|Tournaments]] and [[Tournament/Special Event Challenges|Events]]. It also allows access to the Royal Arena Arena.
+*Level 9 unlocks [[Star Points]].
+*Level 10 unlocks [[Clan Wars]] and the ability to use Duel Decks. It also increases the level of your King Tower to 6, and allows access to the Frozen Peak Arena.
+*Level 12 allows access to the Jungle Arena Arena.
+*Level 14 unlocks [[Card Mastery]]. It also increases the level of your King Tower to 7, and allows access to the Hog Mountain Arena.
+*Level 16 unlocks the ability to use [[Trade Tokens]] to exchange cards with clanmates. It also allows access to the Electro Valley Arena.
+*Level 18 unlocks Classic and Grand Challenges, and Royal Tournaments. It also increases the level of your King Tower to 8, and allows access to the Spooky Town Arena.
+*Level 20 allows access to the Rascal's Hideout Arena.
+*Level 22 increases the level of your King Tower to 9, and allows access to the Serenity Peak Arena.
+*Level 24 allows access to the Miner's Mine, Executioner's Kitchen, Royal Crypt, Silent Sanctuary, Dragon Spa, Boot Camp, Clash Fest, PANCAKES!, Valkalla and Legendary Arena Arenas.
+*Level 26 increases the level of your King Tower to 10.
+*Level 30 increases the level of your King Tower to 11.
+*Level 34 increases the level of your King Tower to 12.
+*Level 38 increases the level of your King Tower to 13.
+*Level 42 increases the level of your King Tower to 14.
+*Starting from Level 51, a random Evolution Shard will be given as a reward, replacing the Level-Up Chest. This is repeated every 2 Levels, representing the odds, with each other Level, representing the evens, still rewarding the player with Level-Up Chests.
+*Level 54 increases the level of your King Tower to 15.
+*Level 75 increases the level of your King Tower to 16.
+
+==History==
+2016
+*12 [[King's Tower|King]] Levels were present during Clash Royale's game launch on 4/1/2016.
+*On 11/1/2016, the [[Version History#The First Update (11/1/2016)|First Update]], increased the Experience needed to reach Level 9 from Level 8 by 25%.
+*King Level 13 was added in 3/5/2016, in the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]]. Experience required for level 11 and 12 were adjusted.
+2018
+*On 5/12/2018, the [[Version History#December 2018 Update (5/12/2018)|December 2018 Update]], added [[Star Points]] for excess Experience when players reach Level 13, and retroactively awarded Star Points for previously leftover Experience.
+2021
+*King Level 14 was added in 27/10/2021, the [[Version History#Champions Update (27/10/2021)|Champions Update]]. Experience required for level 11, 12, and 13 were adjusted. The King's Journey was also added.
+*On 4/11/2021, a [[Version History#Maintenance Break (4/11/2021)|maintenance break]], fixed the migration bug that caused some low-Level players to migrate directly to King Level 14.
+2022
+*On 26/10/2022, the [[Version History#2022 Quarter 3 Update (26/10/2022)|2022 Quarter 3 Update]] revamped the King Level system by making it no longer tied to the [[:Category:Crown Towers|Crown Towers]]' levels, and the highest King Level no longer determines the highest [[Cards|Card]] Level. King Levels 15-50 were added, with the Experience required for Levels 1-14 being decreased. The highest Card level and King Tower level remained at 14.
+2023
+*On 19/6/2023, the [[Version History#Card Evolution Update (19/6/2023)|Card Evolution Update]] added King Levels 51-70. It also added an [[Card Evolution|Evolution]] slot unlockable at King Level 7.
+2024
+*On 6/2/2024, a [[Version History#Maintenance Break (6/2/2024)|mainetannce break]] added King Levels 51-70. It also added the 2nd Evolution slot unlockable at King Level 54.
+*On 2/10/2024, the [[Version History#Lucky Drops 2.0 Update (2/10/2024)|Lucky Drops 2.0 Update]] moved the 2nd Evolution slot to King Level 30 (from 54).
+2025
+*On 24/11/2025, the [[Version History#Level 16 Update (24/11/2025)|Level 16 Update]] added King Levels 71-90, with the Experience required for levels 50-69 decreased. It also made Evolutions unlockable by reaching certain [[Arenas]] rather than by reaching certain King levels.
+
+==Trivia==
+*Since the release of the [[Monk]] [[Cards|Card]], if a player upgraded every Card to Level 14, they would reach King Level 50 with 208,553 [[Star Points]], assuming they have never donated or completed any [[Achievements]] before their removal or [[Card Mastery]] Tasks.
+
+<center><div class="table-back">{{Statistics}}
+{|class="wikitable" style="width:100%; text-align:center;"
+!scope="col"|Experience Level<br/>{{Icon|I=Level}}
+!scope="col"|Experience Needed for the Next Level<br/>{{Icon|I=XP}}
+!scope="col"|Cumulative Experience Needed for This Level<br/>{{Icon|I=XP}}
+|-
+|1||20||0
+|-
+|2||50||20
+|-
+|3||50||70
+|-
+|4||50||120
+|-
+|5||80||170
+|-
+|6||120||250
+|-
+|7||125||370
+|-
+|8||130||495
+|-
+|9||145||625
+|-
+|10||200||770
+|-
+|11||220||970
+|-
+|12||280||1,190
+|-
+|13||300||1,470
+|-
+|14||350||1,770
+|-
+|15||450||2,120
+|-
+|16||550||2,570
+|-
+|17||650||3,120
+|-
+|18||800||3,770
+|-
+|19||1,200||4,570
+|-
+|20||1,400||5,770
+|-
+|21||1,600||7,170
+|-
+|22||2,000||8,770
+|-
+|23||2,300||10,770
+|-
+|24||2,700||13,070
+|-
+|25||3,000||15,770
+|-
+|26||4,000||18,770
+|-
+|27||4,600||22,770
+|-
+|28||5,400||27,370
+|-
+|29||6,000||32,770
+|-
+|30||7,000||38,770
+|-
+|31||8,000||45,770
+|-
+|32||9,000||53,770
+|-
+|33||11,000||62,770
+|-
+|34||12,500||73,770
+|-
+|35||12,500||86,270
+|-
+|36||12,500||98,770
+|-
+|37||12,500||111,270
+|-
+|38||15,000||123,770
+|-
+|39||18,000||138,770
+|-
+|40||22,000||156,770
+|-
+|41||25,000||178,770
+|-
+|42||25,000||203,770
+|-
+|43||25,000||228,770
+|-
+|44||25,000||253,770
+|-
+|45||25,000||278,770
+|-
+|46||25,000||303,770
+|-
+|47||25,000||328,770
+|-
+|48||25,000||353,770
+|-
+|49||25,000||378,770
+|-
+|50||25,000||403,770
+|-
+|51||40,000||428,770
+|-
+|52||55,000||468,770
+|-
+|53||70,000||523,770
+|-
+|54||85,000||593,770
+|-
+|55||100,000||678,770
+|-
+|56||115,000||778,770
+|-
+|57||130,000||893,770
+|-
+|58||145,000||1,023,770
+|-
+|59||160,000||1,168,770
+|-
+|60||180,000||1,328,770
+|-
+|61||200,000||1,508,770
+|-
+|62||220,000||1,708,770
+|-
+|63||240,000||1,928,770
+|-
+|64||260,000||2,168,770
+|-
+|65||280,000||2,428,770
+|-
+|66||300,000||2,708,770
+|-
+|67||320,000||2,908,770
+|-
+|68||340,000||3,228,770
+|-
+|69||360,000||3,568,770
+|-
+|70||390,000||3,928,770
+|-
+|71||420,000||4,138,770
+|-
+|72||450,000||3,353,770
+|-
+|73||550,000||4,738,770
+|-
+|74||600,000||5,288,770
+|-
+|75||700,000||5,988,770
+|-
+|76||800,000||6,688,770
+|-
+|77||900,000||7,488,770
+|-
+|78||1,000,000||8,388,770
+|-
+|79||1,100,000||9,388,770
+|-
+|80||1,200,000||10,488,770
+|-
+|81||1,300,000||11,688,770
+|-
+|82||1,400,000||12,988,770
+|-
+|83||1,500,000||14,388,770
+|-
+|84||1,600,000||15,888,770
+|-
+|85||1,700,000||17,488,770
+|-
+|86||1,800,000||19,188,770
+|-
+|87||1,900,000||20,988,770
+|-
+|88||2,000,000||22,888,770
+|-
+|89||2,100,000||24,888,770
+|-
+|90||-||26,988,770
+|}
+</div></center>
+
+{{Navigation|Gameplay}}
+
+[[fr:Expérience]]
+[[de:Erfahrungspunkte]]
+[[es:Experiencia]]
+[[it:Esperienza]]
+[[nl:Koningslevel]]
+[[ja:キングレベル]]
+[[ko:XP]]
+[[ru:Опыт]]
+[[zh:经验值]]
+
+[[Category:Currencies]]

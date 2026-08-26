@@ -1,0 +1,125 @@
+{
+  "ruling": "OWNER RULING 9 — rarity level floors",
+  "status": "CONFIRMED",
+  "verified": "2026-08-26",
+  "floor_table": {
+    "Common": {
+      "floor": 1,
+      "cap": 16,
+      "n_levels": 16
+    },
+    "Rare": {
+      "floor": 3,
+      "cap": 16,
+      "n_levels": 14
+    },
+    "Epic": {
+      "floor": 6,
+      "cap": 16,
+      "n_levels": 11
+    },
+    "Legendary": {
+      "floor": 9,
+      "cap": 16,
+      "n_levels": 8
+    },
+    "Champion": {
+      "floor": 11,
+      "cap": 16,
+      "n_levels": 6
+    }
+  },
+  "sources": [
+    {
+      "page": "Cards",
+      "revid": 437053,
+      "archive": "research/sim_parity/webcache/Cards.wikitext",
+      "verbatim": [
+        "*{{Rarity|Common}} cards have 16 different Levels, ranging from Level 1 to Level 16.",
+        "*{{Rarity|Rare}} cards have 14 different Levels, ranging from Level 3 to Level 16.",
+        "*{{Rarity|Epic}} cards have 11 different Levels, ranging from Level 6 to Level 16.",
+        "*{{Rarity|Legendary}} cards have 8 different Levels, ranging from Level 9 to Level 16.",
+        "*{{Rarity|Champion}} cards have 6 different Levels, ranging from Level 11 to Level 16."
+      ],
+      "note": "Internally consistent: cap 16 minus floor plus 1 equals the stated level count for every rarity. History section (same revid) dates the floors to the 5/9/2018 level renumbering (Rare 3 / Epic 6 / Legendary 9) and the 27/10/2021 Champions update (Champion floor 11 = new Tournament Standard); 24/11/2025 update raised the cap to 16 without touching floors."
+    },
+    {
+      "page": "Experience",
+      "revid": 436294,
+      "archive": "research/sim_parity/webcache/Experience.wikitext",
+      "note": "Checked and ruled out as a floor source: this page is player/King Level XP, not card levels. The floor table lives on Cards."
+    },
+    {
+      "page": "Mighty Miner",
+      "revid": 437349,
+      "archive": "research/sim_parity/webcache/Mighty_Miner.wikitext",
+      "note": "Champion floor applied to the statistics table; see mighty_miner_check."
+    }
+  ],
+  "mighty_miner_check": {
+    "ladder_starts_at": 11,
+    "table_rows": [
+      11,
+      12,
+      13,
+      14,
+      15,
+      16
+    ],
+    "editor_comment_verbatim": "ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.",
+    "vardefines": {
+      "hp_11": 2250,
+      "1_dmg_11": 40,
+      "2_dmg_11": 204,
+      "3_dmg_11": 409,
+      "atk_speed": 0.4,
+      "escape_11": 332
+    },
+    "wiki_formula": "value(L) = escape_11 * 1.1^(L-11) round 0",
+    "explosive_escape_ladder_wiki_rendered": {
+      "11": 332,
+      "12": 365,
+      "13": 402,
+      "14": 442,
+      "15": 486,
+      "16": 535
+    },
+    "explosive_escape_ladder_game_model": {
+      "method": "levels.py percent-table model: base_for(332 @ L11) = 130 (unique inversion, floor(130*2.56)=332); at_level(130, L) = floor(130*PERCENT[L]/100)",
+      "ladder": {
+        "11": 332,
+        "12": 365,
+        "13": 401,
+        "14": 440,
+        "15": 483,
+        "16": 531
+      }
+    },
+    "observation_mapping": {
+      "440_441": {
+        "level": 14,
+        "confidence": "exact under the game model",
+        "detail": "at_level(130,14) = floor(130*3.39) = 440 — the ONLY level in 1..19 producing 440 or 441. Wiki's 1.1^n rendering gives 442 at L14 (exact 441.892); the 2-point gap is the wiki's known 1.1^n-vs-percent-table drift, not a level ambiguity. Neighbours L13=401/402 and L15=483/486 are far away."
+      },
+      "366": {
+        "level": null,
+        "detail": "No level in 1..19 produces 366 under either model (wiki L12 = 365, game L12 = 365). 366 is the L12 exact value 365.2 rounded UP (ceil) instead of round-half-up, or an equivalently mis-anchored derivation. Any pipeline emitting 366 is not reading a published or game value."
+      }
+    }
+  },
+  "impact_on_other_rarities": {
+    "L11_vardefine_interpretation": "UNCHANGED for every rarity. Measured: all 78 archived card pages anchor every leveled stat vardefine at the absolute suffix _11 (47x hp_11, 47x dmg_11, plus escape_11, death_11, etc.); zero pages anchor at 1, 3, 6, 9, or 13. The vardefine name carries the absolute level, so rarity floors cannot shift what an L11 vardefine means — floor-anchoring changes no stored KB reference value.",
+    "where_floors_DO_matter": [
+      "Reverse-deriving a level from an in-game observation: the candidate level set must be clamped to [floor, 16] for the card's rarity. For Champions only 6 published rows exist (11-16); an inferred level below the rarity floor is impossible and signals a mis-anchored derivation (the 366 case).",
+      "levels.py base_for() inversion to L1: for Rare/Epic/Legendary/Champion the L1 base is fictional in gameplay terms (no such card can exist below its floor) but is exactly the game's internal storage model (level-1 stat + shared percent table), so the arithmetic stays valid. The caveat is interpretive: never treat the inverted L1 base as an observable stat, and never query at_level() below the rarity floor when validating against real matches.",
+      "Breakpoint tables built per level: rows below a rarity's floor describe matchups that cannot occur on ladder and must be excluded rather than trained on."
+    ]
+  },
+  "levels_py": {
+    "path": [
+      "hogeq/src/clashrl/levels.py",
+      "icebow/src/clashrl/levels.py"
+    ],
+    "note": "Both copies byte-identical (diff clean). REF_LEVEL=11, PERCENT[11]=256, MAX_LEVEL=19."
+  }
+}

@@ -1,3 +1,4 @@
+<!-- fetched 2026-08-26 via api.php parse; title=Mighty Miner; revid=437349 -->
 {{Protection}}{{MagicWords}}
 {{DISPLAYTITLE: <span class="text-champion";">Mighty Miner</span>}}
 
