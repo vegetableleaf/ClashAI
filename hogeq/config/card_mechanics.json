@@ -322,8 +322,7 @@
    "_deploy_time_s": 1.0,
    "_hit_speed_s": 6.0,
    "character": "FirespiritHut",
-   "collision": 1.0,
-   "lifetime_s": 28.0
+   "collision": 1.0
   },
   "giant": {
    "_deploy_time_s": 1.0,
