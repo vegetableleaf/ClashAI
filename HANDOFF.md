@@ -3299,6 +3299,55 @@ play/wait asymmetry to correct).
 gradient is necessary, not sufficient, and this can still come back null. Pre-committed: >=2 sigma
 on the paired probe or it is reported as NO MEASUREMENT.
 
+## 4z. 2026-08-27 — THE SPELL CARD VETO SHIPPED, IN THE OWNER'S VALUE FORM (default OFF). RULING 30.
+
+§4y/§7.5 recommended the veto at **K=3 bodies**. **The owner rejected the count form** — this
+deck's best casts are single-body (`nado_king_activation` = ONE Hog, `nado_the_sneaky_lock` = ONE
+Knight, `rocket_the_two_for_one` = ONE Witch, `rocket_the_pump_on_sight` = ONE building; K=3
+refuses all four). Shipped instead, both decks:
+
+* **Criterion**: `sim.ppo_spell_min_value` in TOWER FRACTIONS via NEW `threat_value.catch_value_frac`
+  (`bodies_ignore_frac` reads `inf` for kamikaze/spirit bodies — wall_breakers/fire_spirit/ice_spirit
+  measured inf vs true 0.14/0.047/0.025 — and a veto reading inf as "valuable" would wave those
+  casts through; the new function sums the per-card burst price for what the pooled model cannot hold).
+* **Exemptions** for casts whose value is NOT the bodies — `SimMatchEnv.spell_veto_exempt`, every
+  entry sourced to a drill/doctrine line in **decisions.md RULING 30** (the durable artefact):
+  `king_activation` (path-crossing test from `doctrine._king_spots`), `lock_break` (sneaky lock +
+  the `nado_retarget_min_worth`-gated tower retarget), `charge_reset` (knockback spells only — the
+  VORTEX does not clear `charge_dist` in this engine, so the tornado does not get it; guarded by
+  `trade_sane` or a 6-elixir Rocket became unrefusable on any charging body), `tower_lethal` /
+  `tower_finish` (3 casts, DOCTRINE_RESEARCH §3.4) / `tower_chip` (OVERTIME+behind only — ⚠
+  `_defensive` is True at t=0 under a split-lane opponent and `_tiebreak_gap` is -0.098 at t=0 on
+  level disadvantage alone; an ungated version exempted the Rocket on 300/300 steps),
+  `two_for_one`, `building` (pump/tombstone/siege), `incoming_spawn` (pre-log the barrel; gated on
+  the landing point being reachable). Hit test mirrors the ENGINE (corridor/pull/blast, §4v) and
+  drops HIDDEN buildings for spells without `hits_hidden`.
+* **⚠ THE GREEDY ASYMMETRY IS FIXED**: `choose_greedy` applied NO spell mask before this change, so
+  eval and live always cast unmasked while sampling ran masked. The veto now applies in
+  `choose_sample`, `choose_greedy` (new `envs=` arg), and the drill report's greedy adapter
+  (`run.py drills --spell-min-value`). The annealed CELL mask stays sampling-only on purpose (it is
+  a training wheel; the veto is a rule).
+* **⚠ DEFAULT `0.0` = OFF, deliberately**: the 8k run was live in this tree and its workers
+  re-read config (§3n's seam). Verified inert by BEHAVIOUR (41 casts refused at 0.20 all castable at
+  shipped default). **Enable the next run with `0.45`** — highest bar that keeps every owner-named
+  single-target reference line (probe: `scratchpad/ref_line_probe.py`).
+
+**MEASURED** (n=300 paired GREEDY, seeds 5M..5M+299, `_rs_policy.pt`, tree `1143af2`+this change;
+baseline re-measured, reproduces §4y's board-exact `bx` arm 300/300):
+```
+value 0.45 NO exemptions  +0.239 towerd (3.91σ)  = count-form k3 (+0.252, 3.80σ; diff 0.22σ)
+                          beats volume-matched random-ban control +0.149 (2.14σ)  -- the bar holds
+value 0.45 WITH the ruling-30 exemptions  +0.036 (0.65σ)  NO MEASUREMENT; does not beat controls
+```
+**The exemption set costs +0.203 (3.82σ) and that is the honest price of protecting the
+single-target plays** — no threshold resolves it (the protected lines sit at 0.070-0.340, below
+any bar that moves the metric). The owner asked for the smaller correct rule; ruling 30.4 records
+both forms and enables neither by default. Full sweep: ledger §8.
+
+Gates: icebow **1136 OK** (was 1109 + 27 new), hogeq **1159 OK** (was 1132 + 27 new), parity OK,
+`stat_sweep --all` exit 0 MISMATCHES: 0, drills before/after in the commit. Tests
+`test_spell_card_veto.py` byte-identical in both decks.
+
 ## 4y. 2026-08-27 — ⚠⚠ THE SPELL EXPERIMENTS: THE SPELLS ARE NET-NEGATIVE, PLACEMENT IS WORTH NOTHING, AND THE SIM'S ACTION SPACE WAS CLAMPED BY SCREEN CONSTANTS
 
 Owner's standing request (§6-PRIORITY), rescoped by `rollout_search.md` §5.1/§6.2/§7a.
@@ -4256,11 +4305,73 @@ configured but **have never run** — BC has not been retrained since the soft-t
 
 ---
 
-## 6-PRIORITY. ✅ THE SPELL EXPERIMENTS — DONE 2026-08-27 (§4y). READ §4y AND `research/sim_parity/ledger/spell_experiments.md`, NOT THE SPEC BELOW.
-
-⚠ The spec below is kept for provenance and its labelling is now WRONG: it calls placement "EXPERIMENT A" and restraint "EXPERIMENT B", while §4y runs restraint first (as the evidence demanded) and calls it A. Its two named levers were both measured and both are DO-NOTs: the cell head has a ceiling of +0.106 tower fractions, and the card-level form of `spell_waste_tiles` tightening reads -0.69σ. What DID clear the bar is a state-conditioned CARD veto at a >=3-body clump. The baselines it says not to re-measure are the SAMPLED policy's (rollout_search.md §7a) and must not be used to grade an arm.
-
-### ORIGINAL SPEC (superseded)
+## 6-PRIORITY-B. ⏳ DISTILLATION — OWNER-REQUIRED FOR THE LONG RUN. Runnable spec.
+
+Owner (2026-08-27, twice): the long run is **PPO + distillation**, not PPO alone. This is that spec,
+written to be executed rather than re-derived. Source: `research/sim_parity/ledger/rollout_search.md`.
+
+### WHY — the measurement that licenses it
+Flat rollout search over the SAME frozen policy, same weights/observation/opponent/seeds:
+```
+policy alone                        37.0% win   tower -0.928
+search H=12, every decision         80.7%             +0.484   (+19.9 sigma)
+   + cell search (cells=3)          85.7%             +0.651   (+20.7 sigma)
+```
+**The information needed to play twice as well is already in the policy's own action ranking; the
+policy does not use it.** Six controls failed to explain it away (scoring heuristic, playing more,
+opponent oracle, perfect perception, crown weight, gate threshold). The cheap alternative is DEAD:
+the gate threshold was swept 0.02->0.60 and the shipped 0.25 is already optimal, worse in BOTH
+directions — search's restraint is STATE-DEPENDENT and no scalar reproduces it.
+
+### THE SPEC — decisions already measured, do not re-litigate
+* **Teacher = H 12 s, N 1 (EVERY decision), K 4, cells 3.** H is a measured optimum (16/20/30 are
+  indistinguishable; FULL-remainder is 5.14 sigma WORSE — the cap is the idle rollout default, not
+  search). K is INERT (2/4/8 within 0.3 sigma; K=4 already is all-affordable). **N is the only
+  lever** (N=10 +0.451, N=5 +0.694, N=3 +0.729, N=1 +1.412).
+* ⚠ **N MUST BE 1.** At N=5 the targets are contaminated by the unsearched policy decisions that
+  follow them, and the restraint signal comes out with the WRONG SIGN (search appears to play MORE;
+  at N=1 it plays LESS). Distilling N=5 targets would teach the opposite lesson.
+* **Target the GATE and CARD heads, NOT the cell head.** Card+gate search alone is +22.0pp; adding
+  cell search adds +3.3pp. Placement is separately measured as worth ~nothing (the perfect-aim arm
+  is +0.07 sigma), so a cell-distillation arm is not worth its own risk.
+* **Corpus, not search-in-the-loop.** Search inside PPO is ~100x and infeasible. Labelling runs at
+  ~1250 decisions/min/process, ~20k/min on 16 cores; the N=1 arm produced 53,954 labelled decisions
+  in 41 min, so an 18k-match-equivalent target set is ~2 h. That is the version that is affordable.
+
+### ⚠ MEASURE THIS FIRST — the privileged-teacher gap
+The teacher sees ENGINE GROUND TRUTH; the student sees the degraded observation. If the targets
+depend on information the student cannot see, distillation cannot reproduce them and the whole
+thing caps out early. **Encouraging but not sufficient**: handing the policy PERFECT perception
+bought it +0.00 sigma on winrate, so its limitation is not information ACCESS — but that is a fact
+about the current policy's ability to USE clean input, not proof the targets are learnable.
+Cheapest test: hold out a slice of the corpus and check the student's top-1 agreement with the
+teacher on states it never trained on, BEFORE committing to a full run.
+
+### TRAPS THAT WILL BITE THIS
+* **The search harness is NOT reproducible as written.** `PYTHONHASHSEED` is set via
+  `os.environ.setdefault` AFTER interpreter start — a no-op. Two runs of the IDENTICAL N=1 config
+  gave 78.7% and 80.7%. Export `PYTHONHASHSEED=0` in the environment before any labelling run, and
+  re-measure the baseline if you re-run anything.
+* **Baselines drift with the tree.** `rs_base.json` no longer reproduces: commit `d9b20d6` moved
+  the same checkpoint on the same seeds from 37.0% to 43.0%. Re-measure the baseline on the tree the
+  corpus is generated from, and name the commit.
+* **Corpus and student must share a code tree** (§4q's confound, in a new place).
+* The long run also carries the SPELL VETO switched on (`ppo_spell_min_value`, shipped at 0.0=OFF).
+  That is a SECOND change — decide deliberately whether to bundle it with distillation or sequence
+  it, and say which in the run's own notes.
+
+---
+
+## 6-PRIORITY. ✅ THE SPELL EXPERIMENTS — DONE 2026-08-27 (§4y). READ §4y AND `research/sim_parity/ledger/spell_experiments.md`, NOT THE SPEC BELOW.
+
+
+
+⚠ The spec below is kept for provenance and its labelling is now WRONG: it calls placement "EXPERIMENT A" and restraint "EXPERIMENT B", while §4y runs restraint first (as the evidence demanded) and calls it A. Its two named levers were both measured and both are DO-NOTs: the cell head has a ceiling of +0.106 tower fractions, and the card-level form of `spell_waste_tiles` tightening reads -0.69σ. What DID clear the bar is a state-conditioned CARD veto at a >=3-body clump. The baselines it says not to re-measure are the SAMPLED policy's (rollout_search.md §7a) and must not be used to grade an arm.
+
+
+
+### ORIGINAL SPEC (superseded)
+
 
 
 Owner (2026-08-26): "don't forget to run the spell cast experiments after implementation is done
