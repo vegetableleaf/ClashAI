@@ -747,6 +747,368 @@ owner-approved. Hero-summon bodies are priced at their ABILITY cost by owner ins
 would make the arms inconsistent. Apply in BOTH decks with pins immediately after; also re-run
 `tools/evo_audit.py` and spot-check `ignore_cost_frac` orderings, since 20 threat prices move.
 
+## 2026-08-27 — RULING 30 (owner): the spell veto is on VALUE, not on a BODY COUNT — and the enumerated exemption class
+
+`spell_experiments.md` §7.5 recommended a **card veto at K=3 bodies**: refuse a spell when no legal
+cell catches >=3 enemy bodies under the engine's own hit test. Measured, n=300 paired, GREEDY:
+monotone in K, +0.383 tower fractions at K=7 (5.82σ), +9.0pp winrate, and at K=3 it beats a
+volume-matched random spell ban by +0.207 (2.98σ).
+
+**THE OWNER REJECTED THE BODY-COUNT FORM, and he is right.** A single-body cast is routinely the
+highest-value play this deck owns, and the drills say so in their own reference lines:
+
+| drill | board | reference line | bodies |
+|---|---|---|---|
+| `nado_king_activation` | ONE Hog Rider | `("tornado", 0.472, 0.771, 3.6)` | 1 |
+| `nado_the_sneaky_lock` | ONE enemy Knight on our X-Bow | `("tornado", 0.26, 0.40, 1.2)` | 1 |
+| `rocket_the_two_for_one` | ONE Witch beside their princess | `("rocket", 0.194, 0.229, 0.6)` | 1 |
+| `rocket_the_pump_on_sight` | ONE Elixir Collector | `("rocket", 0.30, 0.16, 1.2)` | 1 |
+| `eq_the_pump_on_sight` (hogeq) | ONE Elixir Collector | `("earthquake", 0.30, 0.16, 0.6)` | 1 |
+| `eq_clears_the_hogs_building` (hogeq) | ONE Cannon | `("earthquake", 0.20, 0.28, 0.0)` | 1 |
+| `log_resets_the_charge` (hogeq) | ONE Battle Ram | `("the_log", ...)`, scored in TOWER HITS | 1 |
+
+A K=3 threshold refuses every one of them. **So the criterion is a VALUE threshold in TOWER
+FRACTIONS** — `threat_value.catch_value_frac`, the project's own measured triage model, the same
+currency the rollout-search scorer used — **plus the exemption set enumerated below.** The
+`nado_king_activation` board is the argument in one line: a count says `1`, the value model says
+**0.340**, and three whole Skeletons together say **0.0038**.
+
+### 30.0 A new function was needed, and the measurement says why
+`bodies_ignore_frac` routes everything through `_bodies`, which returns `None` for any card the
+crown tower cannot model as a clearing queue — a kamikaze body, every Spirit, a siege building —
+and `group_ignore_frac` turns one `None` into `inf` for the WHOLE group. MEASURED on the sim's own
+ladder pool:
+
+```
+                        bodies_ignore_frac    ignore_cost_frac
+wall_breakers                 inf                 0.1415
+fire_spirit                   inf                 0.0468
+ice_spirit                    inf                 0.0249
+```
+
+A veto reading `inf` as "enormously valuable" would wave through every cast on a board holding one
+Ice Spirit — worth half the ignore threshold. `threat_value.catch_value_frac` pools what the clearing
+model covers and SUMS the per-card burst/economy price for what it cannot (right for those: a Wall
+Breaker's cost is burst damage that does not queue). `inf` still propagates for a genuinely
+unresolvable card (a Mortar, an X-Bow), because the tower cannot answer those at all.
+
+### 30.1 THE ENUMERATED EXEMPTION CLASS — every play whose value is NOT the bodies caught
+
+Read out of `icebow/DOCTRINE.md`, `DOCTRINE_RESEARCH.md`, `sim/drills_icebow.py`,
+`sim/drills_hogeq.py`, `sim/doctrine.py`, `config/counters.yaml` and `reward.py`, in both decks.
+**STATUS** is one of: **SHIPPED** (a named branch of `SimMatchEnv.spell_veto_exempt`),
+**VALUE** (no exemption needed — the value term already clears it), **NOT SHIPPED** (with the reason).
+
+| # | play | source | engine precondition | deck / card | status |
+|---|---|---|---|---|---|
+| 1 | **King activation** — the pull wakes our King for the match; the body is incidental | drill `nado_king_activation`; DOCTRINE.md rows 3/16/51 ("the classic activation — highest-value single play the deck owns"); `doctrine.py:646-667` | `doctrine._king_spots(env,u)` non-empty (which itself requires `_path_enters_pull`) AND `not eng.towers[0][2].active` AND `not _pull_resistant(u)` | icebow / tornado | **SHIPPED** `king_activation` |
+| 2 | **Sneaky lock** — drag the lone defender off our X-Bow so it re-locks the tower | drill `nado_the_sneaky_lock` (ONE Knight); `doctrine.py:685-700` quotes the guide verbatim; counters.yaml:233 | enemy `locked` with `target` = one of OUR BUILDING units | icebow / tornado (log via the same branch) | **SHIPPED** `lock_break` |
+| 3 | **Retarget a tower-locked wincon** onto the Tesla | `env._nado_catch`: *"most wincons pulled this way are worth less than one"* rocket; `nado_retarget_min_worth` 2.0, deliberately below `rocket_min_worth` 4.0 | `u.spec.building_only` AND `u.locked` on one of OUR TOWERS AND per-body worth >= `nado_retarget_min_worth` | icebow / tornado | **SHIPPED** `lock_break` |
+| 4 | **Charge / ramp reset** — a logged Prince, Ram, Dark Prince, Bandit, Little Prince | drill `log_resets_the_charge`, scored in TOWER HITS TAKEN and explicitly not in bodies (*"a Battle Ram ALWAYS dies, it is kamikaze"*); DOCTRINE.md rows 4/28/67; `engine._knock` sets `charge_dist = 0`, `ramp_shots = 0` | spell `knockback > 0` AND (`u.spec.charge_range > 0` OR `u.ramp_shots > 0`) AND `threat_value.trade_sane` | both / the_log | **SHIPPED** `charge_reset` |
+| 5 | **Tower lethal** — the cast finishes a Crown Tower; ZERO bodies by definition | DOCTRINE_RESEARCH R8 "ROCKET RANGE"; `_rocket_value`'s `on_tower` branch | a legal cell within `spell_aim_radius` of a live princess AND `t.hp <= spec.spell_tower_dmg` | icebow / rocket; hogeq / earthquake | **SHIPPED** `tower_lethal` |
+| 6 | **Endgame tower finish** — 3-4 casts end a low tower | DOCTRINE_RESEARCH §3.4 (*"3-4 EQ casts finish a low tower in x2"*; the deck page's switch point is an enemy tower at <=773 HP) | `t.hp <= 3 * spec.spell_tower_dmg` | both / rocket, earthquake | **SHIPPED** `tower_finish` |
+| 7 | **Tiebreak chip in overtime** | DOCTRINE.md rows 56/57 (rocket-cycle the weaker princess); hogeq doctrine's "PURE CHIP"; `rocket_chip_behind` 1.2 vs `rocket_chip_early` 0.25 | `eng.t >= _double_time` AND `_tiebreak_gap() <= 0` AND a legal cell on a live princess | both | **SHIPPED** `tower_chip` |
+| 8 | **The 2-for-1** — tower chip plus a one-shottable support in one blast | drill `rocket_the_two_for_one` (ONE Witch); `env._rocket_combo`; DOCTRINE.md row 35 | a live princess in aim radius AND a 4-6 elixir troop with `hp <= spec.spell_dmg * rocket_combo_hp_frac` within `rocket_combo_radius` of it | icebow / rocket | **SHIPPED** `two_for_one` |
+| 9 | **Pump punish** — a fresh Elixir Collector is one body and six elixir | drills `rocket_the_pump_on_sight`, `eq_the_pump_on_sight`; DOCTRINE.md row 50; `env._pump_rocket`; counters.yaml:744 | an enemy BUILDING in the footprint | both / rocket, earthquake | **SHIPPED** `building` |
+| 10 | **The building holding the Hog** — success is the HOG CONNECTING, not the building dying | drill `eq_clears_the_hogs_building` (`success = enemy_tower_hp_lost(...)`); `hogeq/env._hog_synergy`; hogeq counters.yaml x11 | same as 9 | hogeq / earthquake | **SHIPPED** `building` |
+| 11 | **The Tombstone rule** — *"always Log a Tombstone at half hp"*, two cards from a 2-elixir spell | `doctrine.py:708-714` (verbatim guide quote); counters.yaml:749 | same as 9 | both / the_log | **SHIPPED** `building` |
+| 12 | **Their seated siege** — kill the bow/mortar before it fires | DOCTRINE.md rows 48/49; counters.yaml:218; hogeq counters.yaml:440/642 | same as 9 (siege is a building) — and `catch_value_frac` reads `inf` for a Mortar/X-Bow anyway | icebow / rocket; hogeq / earthquake | **SHIPPED** `building` (also **VALUE**) |
+| 13 | **The retracted Tesla** — Earthquake is the one damage spell that reaches it | hogeq DOCTRINE.md:48/51; `engine._hurt`'s `if u.hidden and not hits_hidden: return` | `spec.hits_hidden` | hogeq / earthquake | **SHIPPED** — as a hit-test CORRECTION, not an exemption: `_spell_footprint` now DROPS a hidden building for a spell without `hits_hidden`. Without it a Rocket "caught" a Tesla it deals zero damage to and the veto waved that cast through |
+| 14 | **Pre-log the barrel / the drill pop / a Skeleton-Barrel's skeletons** — the bodies do not exist at cast time | drill `log_the_barrel_on_landing` (barrel spawns at t=4.0); DOCTRINE.md rows 19/21 (*"pre-log beats post-log"*); `env._resnap_spell_check` exists for exactly this on the reward side | an enemy spell with `spawn_spec` in `eng.spells` whose landing point a legal cell can reach | both / the_log | **SHIPPED** `incoming_spawn` |
+| 15 | **Lead / intercept casts** — aim where they WILL be | `reward.spell_intercept_cell` / `lead_point`; `train_sim_ppo`'s own note: *"a 'whiff' at empty ground that a Hog is about to walk into is a real technique"* | count bodies at `cast + spell_delay`, not at cast | both / all | **NOT SHIPPED.** It is a change to the HIT TEST, not an exemption, and it would move every arm's criterion at once. §4q: one change at a time. See 30.4 |
+| 16 | **Tornado-back an air flock** | drill `nado_pull_the_flock_back` | >=2 flying bodies past y 0.55 | icebow / tornado | **VALUE** — measured 0.372 on the drill's own board, above every threshold at or below 0.45 |
+| 17 | **Clump for the Ice Wizard** — *"scored in TOWER HP, not in bodies; counting corpses measured nothing"* | drill `nado_clump_for_the_wizard` | `env._nado_catch`'s clump gate (>=2 bodies worth `nado_clump_medium_worth`) | icebow / tornado | **VALUE** — 0.372 on the drill board. ⚠ vetoed at 0.65 and above; that is one of the two costs of going past 0.45 |
+| 18 | **Rocket-then-Tornado** — the blast lands into a clump that does not exist at cast | drill `rocket_then_tornado`; `env._rocket_value`'s `eta` branch; `doctrine._live_nado` | — | icebow / rocket+tornado | **VALUE** — 0.924 on the drill board, clears every threshold |
+| 19 | **Mitigation, not removal** (R1/R3): the rocket is the cheapest SUFFICIENT answer when Knight and Tesla are out of cycle | DOCTRINE_RESEARCH:479-484 — *"R1 and R3 are damage-MITIGATION rules, not removal rules, which is why they deliberately carry no lethality check"*; `doctrine.py:1167-1183`; `_rocket_value`'s `rocket_emergency` | `_holdable("knight")` and `_holdable("tesla")` both None, or `cheapest_stack >= 7.0` | icebow / rocket | **NOT SHIPPED.** The bodies it answers are heavy by construction (`u.spec.elixir >= 4`, past the river), so `catch_value_frac` already clears any threshold tested: a Prince is 0.551, a Balloon 0.543, a Mini P.E.K.K.A. 0.644. Adding it would be an exemption with no measured work to do |
+| 20 | **Rocket a target it cannot kill** (Royal Giant, Prince, Bowler) | DOCTRINE_RESEARCH:170-171 — *"the Rocket does not kill him... do not file it as removal"* | — | icebow / rocket | **VALUE** — `catch_value_frac` prices the THREAT, not the kill, so a target too big to kill scores HIGH (royal_giant, prince, bowler all >= 0.249). The value form gets this right by construction where a lethality test would not |
+| 21 | **Rocket the Balloon mid-flight, last resort** | DOCTRINE.md row 15 | — | icebow / rocket | **VALUE** — balloon 0.543 |
+| 22 | **Log as chip + pushback that is explicitly NOT a kill** (Royal Hogs, Recruits, E-Barbs, Zappies...) | counters.yaml:136 *"not a kill: chip plus pushback buys the tower time"*, :387, :408, :416, :430; hogeq counters.yaml:26/151/650 | — | both / the_log | **VALUE** — every named target is >= 0.14 (royal_hogs 0.535, e-barbs 1.139, barbarians 1.523); plus `charge_reset` where a run-up is armed |
+| 23 | **Earthquake's 50% slow as the value** | hogeq DOCTRINE_RESEARCH:308-310; `zone_move_slow: 0.5` | `spec.zone_move_slow > 0` | hogeq / earthquake | **NOT SHIPPED.** It applies to a big ground push, which scores high on value anyway; an unconditional slow exemption would exempt the Earthquake on every board that has any ground body |
+| 24 | **Prediction EQ around the crossing Hog** — the swarm dies as it deploys | hogeq DOCTRINE_RESEARCH:258-261 | our `hog_rider` past the bridge | hogeq / earthquake | **NOT SHIPPED** — same family as 15 (judge over `spec.zone_s`, not at the cast instant). Untested |
+| 25 | **The rocket-mirror bait** — cast at their tower on an EMPTY board to buy their rocket | DOCTRINE_RESEARCH:195-197, flagged **[H] NEW** in the research itself | none exists | icebow / rocket | **NOT SHIPPED.** No engine-checkable precondition, and the research marks it as an unverified hypothesis |
+
+**⚠ ONE OWNER-NAMED EXEMPTION IS NOT MECHANICALLY REAL IN THIS ENGINE.** The brief asked for
+"charge/dash reset (log, **tornado**)". `engine._tick_vortex` breaks a target LOCK when the pull
+takes a body out of reach, but it never touches `charge_dist` — only `_knock` (knockback) and
+`_apply_status` (stun/freeze) do. So the tornado gets `lock_break` and NOT `charge_reset`, and the
+exemption is written against the mechanic rather than against the card.
+
+**⚠ AND ONE EXEMPTION HAD TO BE GUARDED BY `trade_sane`.** The Rocket also carries 1.0 tiles of
+knockback and `_knock` disarms a charge for it too, so an unguarded reset exemption made a
+SIX-elixir cast unrefusable on any charging body — the exact trade `trade_sane` was written for
+after the owner's *"rocketing wall breakers (a horrible elixir trade)"* report. Doctrine names the
+LOG for charge resets, never the Rocket.
+
+### 30.2 TWO EXEMPTIONS WERE MEASURED WRONG BEFORE THEY WERE MEASURED RIGHT
+
+Both were found by the numbers, not by reading.
+
+* **`tower_chip` fired on 300 of 300 sampled steps.** An anywhere-spell can always reach a live
+  princess, so "a legal cell touches a live tower" is not a criterion — it exempted the Rocket
+  permanently. The gate is now `_rocket_value`'s own: LETHAL, or FINISHABLE, or overtime-and-behind.
+  ⚠ `_defensive` cannot carry it either: MEASURED `_defensive == True` at **t = 0.0** whenever the
+  opponent holds a split-lane counter, and `env.py`'s own note above `_punish_window` records that
+  locking it on put **93.5%** of steps in the defensive phase. Nor can `_tiebreak_gap() <= 0` alone:
+  MEASURED **-0.098 at t=0** on a level disadvantage (our 4424-HP towers against their 4858).
+* **`lock_break` fired on 21% of every veto evaluation** — an enemy is nearly always chewing on
+  *something* — and on its own it took the value form from a working veto to a null (casts/match
+  7.83 -> 6.15 against the count form's 4.25). Two gates were missing and the project already
+  states both: `env._nado_catch`'s `targeters` are `building_only` bodies on our TOWERS gated at
+  `nado_retarget_min_worth`, and the sneaky lock is a defender on one of our BUILDINGS. An enemy
+  merely fighting one of our TROOPS is an ordinary scrap and buys nothing worth a card.
+
+### 30.3 THE FIRST MEASUREMENT — ⚠ SUPERSEDED BY 30.6. KEPT AS THE RECORD OF WHAT WAS RUN.
+
+> ⚠ **THESE ARMS RAN UNDER THE WRONG INTERPRETER, AND IT IS WORTH MORE THAN MOST EFFECTS THIS
+> PROJECT MEASURES.** The wave scripts launch `scratchpad/spell_arms_valueform.py` as bare
+> `python`, which on this box is the ROOT `.venv` — **torch 2.13.0+cpu**. HANDOFF §2's standing
+> rule is "always use the venv python of the folder you are in", and the trainer, the drill
+> report, the eval benchmark and live play all run the deck venv's **torch 2.11.0+cu128**.
+> ISOLATED, 2026-08-27, n=300 paired, same seeds, same checkpoint, **same tree**: root venv
+> **43.0% / -0.8303**, icebow's own venv **37.0% / -0.9348** — **-6.0pp winrate (2.62σ) and
+> -0.105 tower fractions (1.86σ) from the interpreter alone.** Within-block comparisons below
+> stay internally valid (every arm in a block shared the interpreter); the ARM-VS-CONTROL claim
+> in statement 2 does not survive re-measurement, and statement 1 is contradicted. See 30.6.
+
+All arms n=300, seeds 5_000_000..5_000_299, paired, GREEDY, `_rs_policy.pt`
+(md5 `9dd42804fdf6709d5387ec61f188cb83`), on **tree 1143af2 + this change**. The baseline was
+RE-MEASURED here and reproduces `sx_bx.json` on **300 of 300 matches** — i.e. today's tree is the
+old `base2` plus the action-space fix `51f34fb`, exactly as expected. `rs_base.json` and the
+pre-51f34fb arms are not comparable and are not quoted.
+
+```
+arm                       win%   towerd   casts/m  dump%  |  vs BASE (paired)     sigma
+base (= bx)               43.0   -0.835     7.83    36.5  |      --                --
+k3   count veto, K=3      48.7   -0.583     4.25    18.4  |    +0.252            +3.80  SIG
+value 0.45, NO exemptions 48.7   -0.596     4.33    21.4  |    +0.239            +3.91  SIG
+value 0.65, NO exemptions 46.7   -0.618     3.35    21.5  |    +0.217            +3.30  SIG
+value 0.45, exemptions    45.3   -0.799     5.83    25.9  |    +0.036            +0.65  NO MEAS.
+value 0.65, exemptions    45.7   -0.764     5.51    26.6  |    +0.071            +1.26  NO MEAS.
+value 0.20, exemptions    38.7   -0.864     6.83    30.6  |    -0.029            -0.58  NO MEAS.
+```
+
+```
+ARM AGAINST ARM, paired on the same 300 seeds. ctl(r) = random spell bans, independent
+per-playable-spell probability r, the ledger's own control design.
+k3         -> value0.45 no-exempt   4.25 -> 4.33 casts/m   -0.013   0.22σ   NO MEASUREMENT
+ctl(0.83)  -> value0.45 no-exempt   4.36 -> 4.33 casts/m   +0.149   2.14σ   SIG
+ctl(0.83)  -> k3                    4.36 -> 4.25 casts/m   +0.162   2.31σ   SIG
+value0.45 exempt -> no-exempt       5.83 -> 4.33 casts/m   +0.203   3.82σ   SIG
+value0.65 exempt -> no-exempt       5.51 -> 3.35 casts/m   +0.147   2.44σ   SIG
+-- and the EXEMPTED arms against THEIR volume-matched controls --
+ctl(0.30)  -> value0.45 exempt      7.03 -> 5.83 casts/m   +0.068   1.16σ   NO MEASUREMENT
+ctl(0.40)  -> value0.65 exempt      6.45 -> 5.51 casts/m   +0.080   1.27σ   NO MEASUREMENT
+ctl(0.50)  -> value0.65 exempt      6.49 -> 5.51 casts/m   +0.002   0.03σ   NO MEASUREMENT
+```
+(The 0.30-0.50-rate controls land ABOVE the exempted arms' volume — a bias in the ARM's favour,
+since the control is forced to keep more bad casts — and the exempted form still does not clear
+2σ against any of them.)
+
+Three statements, and the third is the one that matters:
+
+1. **The VALUE criterion is exactly as good as the COUNT criterion.** k3 -> value0.45 is
+   **-0.013 at 0.22σ** with winrate identical, at matched volume (4.25 vs 4.33 casts/match). The
+   owner's re-formulation costs nothing in aggregate outcome.
+2. **It clears the pre-committed bar against its VOLUME-MATCHED control**: +0.149 at **2.14σ**,
+   against the count form's +0.162 at 2.31σ. The criterion, not the volume cut, is doing that part.
+3. **⚠ BUT ONLY WITH THE EXEMPTIONS OFF.** Turning the enumerated exemption set on costs
+   **+0.203 (3.82σ)** at 0.45 and **+0.147 (2.44σ)** at 0.65, and the exempted arm does NOT beat
+   its volume-matched control. The exemptions authorise ~20.6% of veto evaluations and put ~1.5-2.2
+   casts per match back on the board.
+
+**This is a real trade-off and it is not resolvable by tuning the threshold.** A value bar low
+enough to admit the deck's single-target reference lines unaided is **<= 0.070** (the pump), and at
+0.10/0.20 the arm is a null (-0.018 / -0.041). A bar high enough to move the metric is **>= 0.45**,
+and at 0.45 the unaided rule refuses `nado_king_activation` (0.340), `nado_the_sneaky_lock` (0.302),
+`rocket_the_two_for_one` (the Witch alone, 0.090) and `rocket_the_pump_on_sight` (0.070) — the
+owner's objection to K=3, at a different bar. **The exemption set is the bridge, and its price is
+measured above.**
+
+Per-drill, the exemptions do the job they were written for. Evaluating each drill's OWN reference
+line against the shipped rule (`scratchpad/ref_line_probe.py`, deterministic, one rep, judged over
+the first 1.8 s from the reference cast because every drill's spawns land ~1.2 s after t=0):
+
+```
+icebow                          value    exemption        0.05  0.20  0.45  0.65  0.90
+nado_king_activation           0.3400  king_activation     ok    ok    ok    ok    ok
+nado_the_sneaky_lock           0.3022  lock_break          ok    ok    ok    ok    ok
+rocket_the_two_for_one         0.5578  two_for_one         ok    ok    ok    ok    ok
+rocket_the_pump_on_sight       0.0704  building            ok    ok    ok    ok    ok
+log_the_barrel_on_landing         inf  incoming_spawn      ok    ok    ok    ok    ok
+never_rocket_their_king        0.4391  two_for_one         ok    ok    ok    ok    ok
+rocket_then_tornado            0.9235  -                   ok    ok    ok    ok    ok
+nado_clump_for_the_wizard      0.3720  -                   ok    ok    ok  VETO  VETO
+nado_pull_the_flock_back       0.3720  -                   ok    ok    ok    ok    ok
+log_the_ground_swarm           0.5823  -                   ok    ok    ok  VETO  VETO
+hold_the_spell_for_a_target    0.3817  -                   ok    ok  VETO  VETO  VETO
+log_rolls_forward_not_backward 0.1702  -                   ok  VETO  VETO  VETO  VETO
+hogeq
+eq_clears_the_hogs_building    0.1441  building            ok    ok    ok    ok    ok
+eq_kills_the_spawner           0.0367  building            ok    ok    ok    ok    ok
+eq_the_pump_on_sight           0.0704  building            ok    ok    ok    ok    ok
+log_resets_the_charge          0.3384  charge_reset        ok    ok    ok    ok    ok
+hog_then_eq_in_order           0.1441  building            ok    ok    ok    ok    ok
+log_the_ground_swarm           0.5823  -                   ok    ok    ok  VETO  VETO
+```
+
+**Every single-target reference line the owner named survives at every threshold**, and it is an
+exemption that saves each one. What 0.45 costs instead is two LOG drills whose reference lines are
+low-value boards: `hold_the_spell_for_a_target` (0.382) and `log_rolls_forward_not_backward`
+(0.170). At 0.65 a third (`log_the_ground_swarm`, 0.582) and `nado_clump_for_the_wizard` go too.
+
+### 30.6 RE-MEASURED AT HEAD, UNDER THE DECK'S OWN VENV, ON TWO SEED BLOCKS
+
+`icebow/.venv/Scripts/python.exe` (torch 2.11.0+cu128), `_rs_policy.pt`
+(md5 `9dd42804fdf6709d5387ec61f188cb83`), **tree = commit `cb05236` + ruling 31c + the veto
+change** — the tree these commits create. n=300 paired per arm, GREEDY.
+
+**BLOCK 1, seeds 5_000_000..299:**
+```
+arm                          win%   towerd   casts/m  |  vs BASE (paired)   sigma
+base                         37.0  -0.9348    7.80    |      --               --
+count veto K=3               46.7  -0.5857    4.20    |    +0.349           +5.15  SIG
+value 0.45, NO exemptions    45.7  -0.6916    4.18    |    +0.243           +3.72  SIG
+value 0.45, exemptions       43.0  -0.7814    5.74    |    +0.153           +2.65  SIG
+ctl(0.83) RANDOM spell ban   46.3  -0.6342    4.34    |    +0.301           +4.54  SIG
+ctl(0.30) RANDOM spell ban   40.7  -0.8014    7.26    |    +0.133           +3.06  SIG
+
+ctl(0.83) -> count K=3              4.34 -> 4.20 casts/m   +0.048   0.69σ   NO MEASUREMENT
+ctl(0.83) -> value 0.45 no-exempt   4.34 -> 4.18 casts/m   -0.057  -0.82σ   NO MEASUREMENT
+ctl(0.30) -> value 0.45 exempt      7.26 -> 5.74 casts/m   +0.020   0.32σ   NO MEASUREMENT
+count K=3 -> value 0.45 no-exempt   4.20 -> 4.18 casts/m   -0.106  -1.72σ   NO MEASUREMENT
+```
+
+**BLOCK 2, seeds 6_000_000..299** — run because a sign flip on one block is not a result:
+```
+base 34.0% -1.0828 7.75 | K=3 46.0% -0.7327 3.87 | value0.45 41.3% -0.8802 4.22
+ctl(0.83) 34.7% -1.0318 4.24
+
+base      -> count K=3              +0.350   5.43σ   SIG
+base      -> value 0.45 no-exempt   +0.203   3.12σ   SIG
+base      -> ctl(0.83)              +0.051   0.76σ   NO MEASUREMENT   <-- THE CONTROL MOVED
+ctl(0.83) -> value 0.45 no-exempt   +0.152   2.32σ   SIG              <-- opposite sign to block 1
+ctl(0.83) -> count K=3              +0.299   4.63σ   SIG
+```
+
+⚠ **THE TWO BLOCKS DISAGREE, AND THE REASON IS THE CONTROL, NOT THE ARM.** `ctl(0.83)` against
+the same baseline is **+0.301 (4.54σ)** on block 1 and **+0.051 (0.76σ)** on block 2. A
+random-ban control is ONE DRAW of a ban pattern: n=300 measures that draw precisely and says
+nothing about the spread over draws, so a single block's arm-vs-control σ is not the test it
+looks like. **This is why 30.3's +0.149 (2.14σ) should never have carried the ruling on its own,
+and why block 1's -0.057 must not either.** The honest number is the pooled one.
+
+**POOLED, 600 paired matches (both blocks), `scratchpad/sx_pool.py`:**
+```
+comparison                          n   towerd    sem   sigma  win pp  verdict
+ctl(0.83)          vs base        600   +0.176  0.047   +3.71    +5.0  SIG
+value 0.45 no-exmpt vs base       600   +0.223  0.046   +4.84    +8.0  SIG
+count K=3          vs base        600   +0.350  0.047   +7.48   +10.8  SIG
+value 0.45 no-exmpt vs ctl(0.83)  600   +0.047  0.048   +0.98    +3.0  NO MEASUREMENT
+count K=3          vs ctl(0.83)   600   +0.174  0.048   +3.64    +5.8  SIG
+value 0.45 no-exmpt vs count K=3  600   -0.127  0.042   -2.99    -2.8  SIG
+```
+
+**FOUR STATEMENTS, AND TWO OF THEM RETRACT 30.3.**
+
+1. **Every veto form beats the baseline, and so does banning spells at random.** ctl(0.83) — an
+   independent per-playable-spell coin flip, no state, no criterion — is **+0.176 (3.71σ)**.
+   Most of what a veto buys this policy is simply casting fewer spells.
+2. **⚠ RETRACTS 30.3 STATEMENT 2. The VALUE form does not beat its volume-matched control:
+   +0.047 at 0.98σ over 600 paired matches.** The +0.149 (2.14σ) that justified "the criterion,
+   not the volume cut, is doing the work" was one block under the wrong interpreter.
+3. **⚠ RETRACTS 30.3 STATEMENT 1. The value form is not "exactly as good as" the count form —
+   it is measurably WORSE: -0.127 at 2.99σ at matched volume**, and the count form is the only
+   arm here that beats its own volume-matched control (**+0.174, 3.64σ**). 30.3 read this as
+   -0.013 at 0.22σ on 300 matches under the root venv.
+4. **The exempted form is unchanged in status**: +0.153 (2.65σ) over base, and a null against its
+   volume-matched control (+0.020, 0.32σ). 30.3 already said this and it reproduces.
+
+**SO THE TWO FORMS FAIL IN OPPOSITE WAYS, AND THAT IS THE RESULT.** The COUNT form has a real,
+measured criterion effect and is doctrinally unacceptable — it refuses `nado_king_activation`,
+`nado_the_sneaky_lock`, `rocket_the_two_for_one` and `rocket_the_pump_on_sight`, which is exactly
+why the owner rejected it and that objection is untouched by any of this. The VALUE form protects
+every one of those plays and has no measured criterion effect beyond the volume cut. Neither is
+ready to be a training run's one attributable change.
+
+### 30.7 WHAT STILL STANDS, AND IT IS NOT NOTHING
+
+* **The owner's objection to the count form is confirmed and quantified.** One Hog Rider is
+  **0.340** tower fractions, one Mini P.E.K.K.A. **0.644**, a whole Skeletons card **0.0038**.
+  A count cannot express that; `catch_value_frac` can.
+* **The exemption set does exactly what it was written for.** Re-run at HEAD in BOTH decks
+  (`scratchpad/ref_line_probe.py`): **every owner-named single-target reference line survives at
+  every threshold tested** — `nado_king_activation` 0.3400 (`king_activation`),
+  `nado_the_sneaky_lock` 0.3022 (`lock_break`), `rocket_the_two_for_one` 0.5578 (`two_for_one`),
+  `never_rocket_their_king` 0.4391 (`two_for_one`), `rocket_the_pump_on_sight` 0.0704
+  (`building`), `log_the_barrel_on_landing` inf (`incoming_spawn`), and hogeq's
+  `log_resets_the_charge` 0.3384 (`charge_reset`) plus its three Earthquake building drills. At
+  0.45 exactly two reference lines are refused, both LOW-VALUE LOG boards:
+  `hold_the_spell_for_a_target` (0.382) and `log_rolls_forward_not_backward` (0.170); 0.65 adds
+  `log_the_ground_swarm` (0.582).
+  ⚠ **TWO ROWS OF 30.3's TABLE ARE WRONG**: `nado_clump_for_the_wizard` and
+  `nado_pull_the_flock_back` are carried by `king_activation` (both drills start with our King
+  asleep), not by value, so neither is vetoed at 0.65/0.90 as 30.3 claimed.
+* **The eval/train asymmetry is fixed either way**: `choose_greedy` applied no spell restriction
+  of any kind before this change, so the benchmark graded behaviour training never produced.
+* **Rulings 31a/31b/31c cost nothing at eval**, measured rather than assumed: root venv, same
+  seeds, same checkpoint, pre-31 tree **43.0% / -0.8349** vs post-31 tree **43.0% / -0.8303**.
+
+### 30.4 THE RULING
+
+1. **The criterion is `catch_value_frac` in TOWER FRACTIONS**, not a body count. Config knob
+   `sim.ppo_spell_min_value`.
+2. **It is applied in the SAMPLING path, in `train_sim_ppo.choose_greedy`, and in the drill
+   report's own greedy adapter.** ⚠ Before this change `choose_greedy` applied NO spell
+   restriction of any kind, so eval and live cast spells unmasked while sampling ran masked — a
+   defect `spell_experiments.md` §7.5 flagged and this ruling fixes. The annealed CELL mask stays
+   sampling-only ON PURPOSE: its own docstring calls it a training wheel that decays to
+   `ppo_spell_mask_end`, and putting a wheel into the benchmark would grade the scaffold.
+3. **⚠ SHIPPED AT `0.0` = OFF, DELIBERATELY.** An 8k training run was live in this tree when the
+   veto landed, and its workers call `Config.load()` in their own processes — a non-zero default
+   would propagate into a RESPAWNED worker and contaminate that arm (HANDOFF §3n's seam, in the
+   other direction). Verified INERT by behaviour, not by banner: 41 casts a 0.20 bar refused were
+   all still castable at the shipped default. The next run turns it on explicitly so the veto is
+   that run's one attributable change.
+4. **⚠ AMENDED 2026-08-27 (close-out). DO NOT SPEND THE NEXT RUN'S ONE ATTRIBUTABLE CHANGE ON
+   THIS.** 30.6 re-measured every arm at HEAD under the deck's own venv over two seed blocks
+   (600 paired matches): the value form **does not beat its volume-matched random control**
+   (+0.047, 0.98σ) and is **worse than the count form at matched volume** (-0.127, 2.99σ). The
+   +0.149 (2.14σ) that justified the criterion in 30.3 was one block under torch 2.13.0+cpu and
+   does not reproduce under the 2.11.0+cu128 everything else runs. `0.45` remains the right NUMBER
+   if the knob is ever switched on — it is still the highest threshold no owner-named
+   single-target reference line trips — but switching it on is now an OPEN QUESTION, not a
+   measured recommendation.
+5. **DO NOT enable the exemption-free form, and DO NOT go back to the count form either**, however
+   they measure. Both refuse the four plays this ruling exists to protect, and §4.1 already showed
+   that most of what a high threshold buys is the VOLUME cut, which `knever` gets for free by
+   deleting the cards. 30.6 turns that caution into the finding: the only arm with a criterion
+   effect beyond the volume cut is the one the owner ruled out on doctrine.
+6. **⚠ THE VETO MUST BE EVALUATED IN THE WORKER, NOT IN THE PARENT.** The first implementation
+   guarded the sampling path with `and not remote`, and `remote = workers > 1` — so under this
+   project's own `--workers 12` command the veto would have been ON at eval and in the drill report
+   and OFF in training: this ruling's asymmetry inverted, and invisible, because the banner still
+   prints. `remote_pool.spell_veto_ids` now decides it worker-side and ships it in the per-step
+   payload, and the threshold is passed DOWN as a resolved float rather than re-read from disk —
+   the same rule `--drill-frac` had to learn. Measured end-to-end through a real `RemotePool`
+   (`scratchpad/remote_veto_smoke.py`): at a 5.0 bar the worker returns the refused card ids; at
+   the shipped 0.0 it returns none and never touches the env. conflicts.md 2026-08-27.
+
+### 30.5 UNTESTED, worth one arm each, DO NOT BUNDLE
+* **Judge the footprint at IMPACT, not at cast** (entry 15/24). Every predictive cast the doctrine
+  names — pre-log a swarm, EQ around a crossing Hog, lead a marching push — is empty at the cast
+  instant, and `env._resnap_spell_check` already does this on the REWARD side. It would change the
+  criterion for every arm at once, so it is its own experiment.
+* **AVERAGE THE RANDOM CONTROL OVER SEVERAL DRAWS.** 30.6's whole difficulty is that `ctl(r)`
+  is one ban pattern, and its own effect against the baseline swung +0.176 ± a lot between blocks.
+  `spell_arms_valueform.py` hardcodes `random.Random(770011)`; a `--veto-control-seed` and 5-10
+  draws would turn arm-vs-control from a coin flip into a test. **This is the prerequisite for
+  ever re-opening the question, not an optional refinement.**
+* **Scale the threshold by the SPELL'S OWN COST.** A 2-elixir Log should not need the same tower
+  fraction as a 6-elixir Rocket, and both drills 0.45 breaks are Log drills. `min_value *
+  spec.elixir / 4.0` is the obvious form. NOT TESTED — stated so it is not mistaken for a result.
+* **Exempt-with-a-floor** rather than exempt-outright: an exempted cast could still be required to
+  clear a much lower bar. Nothing here measures whether that recovers the +0.15 the exemptions cost.
+
 ## 2026-08-27 -- RULING 31 (owner): three sim corrections before the long run
 
 ### 31a -- Electro Giant: the Zap Pack answers EVERY attacker, including buildings and crown towers

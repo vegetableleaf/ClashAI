@@ -113,8 +113,17 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         import torch as _t
         _t.set_num_threads(max(2, 4))
         from .sim.remote_pool import RemotePool
-        rpool = RemotePool(K, workers, seed=seed,
-                           drill_frac=float(cfg.get("sim", "drill_frac", default=0.0)) or None)
+        # ALWAYS PASS THE RESOLVED FLOAT. `float(...) or None` was here, and `0.0 or None`
+        # is None -- RemotePool's "no override, re-read config.yaml in the worker" sentinel --
+        # so an explicit 0.0 evaporated on the way out and each worker went back to disk. Fixed
+        # in icebow when it cost two `--drill-frac 0.0` runs (HANDOFF §3q); a no-op while disk
+        # and parent agree, which is why it survived here unnoticed.
+        rpool = RemotePool(
+            K, workers, seed=seed,
+            drill_frac=float(cfg.get("sim", "drill_frac", default=0.0)),
+            # the same rule for the spell veto: a resolved float, never a sentinel, so the
+            # workers refuse exactly what this process thinks they refuse (ruling 30).
+            spell_min_value=float(cfg.get("sim", "ppo_spell_min_value", default=0.0)))
         pool = []                                   # rollout envs live in the workers
         e0 = SimMatchEnv(cfg, seed=seed + 10_000)   # local metadata/mask twin (never stepped)
         print(f"[train-sim-ppo] ROLLOUT WORKERS: {len(rpool.procs)} processes x "
@@ -392,6 +401,46 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         sel = ceq.gather(1, card_idx.view(-1, 1, 1).expand(-1, 1, ceq.shape[-1])).squeeze(1)
         return cq_m, sel.masked_fill(~cellmask, _NEG), gq_m, playable
 
+    # ------------------------------------------------------------------ SPELL CARD VETO
+    # `research/sim_parity/ledger/spell_experiments.md` §7.5: promote the spell mask from a CELL
+    # mask to a CARD veto. Measured at eval on icebow, n=300 paired GREEDY, the >=3-body clump form
+    # is +0.233 tower fractions (3.58σ) over the baseline and +0.207 (2.98σ) over a VOLUME-MATCHED
+    # random spell ban, so the criterion and not merely the volume cut is doing the work. The
+    # BODY-COUNT form was rejected by the owner -- it refuses every single-body reference line the
+    # deck owns -- so the shipped criterion is on VALUE in tower fractions plus an exemption set:
+    # SimMatchEnv.spell_card_ok, enumerated in decisions.md ruling 30.
+    #
+    # ⚠ APPLIED IN BOTH `choose_sample` AND `choose_greedy`. Until now `choose_greedy` applied no
+    # spell restriction of any kind, so eval graded behaviour that training never produced.
+    spell_min_value = float(cfg.get("sim", "ppo_spell_min_value", default=0.0))
+    spell_ids_all = {i for i in range(n_cards)
+                     if getattr(e0.specs[i], "kind", "") == "spell"}
+
+    def _spell_veto(env, playable_row, cellmask_of):
+        """Card ids this board refuses, as a list. Empty when the knob is off or unavailable."""
+        if spell_min_value <= 0.0 or env is None or not spell_ids_all:
+            return ()
+        out = []
+        for si in spell_ids_all:
+            if not bool(playable_row[si]):
+                continue
+            try:
+                ok, _why = env.spell_card_ok(int(si), spell_min_value,
+                                             legal=cellmask_of(si).detach().cpu().numpy())
+            except Exception:                     # noqa: BLE001 -- never break a rollout
+                continue
+            if not ok:
+                out.append(int(si))
+        return out
+
+    def _apply_veto(cq_m, gq_m, playable, i, banned):
+        """Strike the vetoed cards out of row `i` and send the gate to WAIT if nothing is left."""
+        for si in banned:
+            cq_m[i, si] = _NEG
+            playable[i, si] = False
+        if not bool(playable[i].any()):
+            gq_m[i, 1] = _NEG
+
     def choose_sample(obs_b, hand_b, nxt_b, elx_b, thr_b):
         """Sample (gate, card, cell) from the factored policy for all K envs; return acts, logps, values."""
         net.eval()
@@ -402,6 +451,25 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             cq, ceq, gq, val = net(obs_t, hand_t, torch.stack([to_vec_t(n) for n in nxt_b]),
                                    elx_t, torch.stack([to_vec_t(t) for t in thr_b]))
             cq_m, _, gq_m, playable = masked_logits(cq, ceq, gq, hand_t, elx_t)
+            # CARD VETO, before the gate is sampled: a board on which every remaining card is
+            # refused must be able to reach WAIT, and the gate is drawn first. Struck HERE, before
+            # p_c is formed, so the STORED log-prob is the vetoed behaviour policy's -- mu is what
+            # actually sampled, and the PPO ratio pi_new/mu stays exact importance sampling (the
+            # same convention the exploration floors document below; the update deliberately
+            # recomputes the PURE policy, never the scaffolding).
+            if spell_min_value > 0.0:
+                cq_m, playable = cq_m.clone(), playable.clone()
+                for i in range(len(obs_b)):
+                    # REMOTE IS THE NORMAL CASE. `remote = workers > 1` and every real run is
+                    # --workers 12, where `pool` is EMPTY -- so a parent-side-only veto would
+                    # train UNMASKED while eval and the drill report ran masked, which is
+                    # ruling 30's own asymmetry inverted. The worker decides it against its
+                    # own env (remote_pool.spell_veto_ids) and ships it in the payload.
+                    _apply_veto(cq_m, gq_m, playable, i,
+                                rpool.spell_veto(i) if remote else _spell_veto(
+                                    pool[i], playable[i],
+                                    lambda si: (allcells_mask if si in anywhere_ids
+                                                else yourhalf_mask)))
             # GATE SAMPLING, with a DRILL TIMING PRIOR mixed in. Same shape as the card and cell
             # floors below and for the same reason: a head that never samples an action gets no
             # gradient for it. Here the unsampled action is HOLDING -- the gate sits near 50/50
@@ -518,7 +586,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         except Exception:  # noqa: BLE001 -- a bad reference must not break the rollout
             return None
 
-    def choose_greedy(obs_b, hand_b, nxt_b, elx_b, thr_b):
+    def choose_greedy(obs_b, hand_b, nxt_b, elx_b, thr_b, envs=None):
         """Deterministic mode of the policy (benchmark): gate by LOGIT compare, argmax card/cell."""
         net.eval()
         obs_t = torch.stack([to_obs_t(o) for o in obs_b])
@@ -528,6 +596,14 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             cq, ceq, gq, _ = net(obs_t, hand_t, torch.stack([to_vec_t(n) for n in nxt_b]),
                                  elx_t, torch.stack([to_vec_t(t) for t in thr_b]))
         cq_m, _, gq_m, playable = masked_logits(cq, ceq, gq, hand_t, elx_t)
+        # THE SAME CARD VETO THE SAMPLER APPLIES -- see the note above. `envs` is the caller's
+        # pool, in the same row order.
+        if spell_min_value > 0.0 and envs is not None:
+            cq_m, playable = cq_m.clone(), playable.clone()
+            for i in range(len(obs_b)):
+                _apply_veto(cq_m, gq_m, playable, i, _spell_veto(
+                    envs[i], playable[i],
+                    lambda si: allcells_mask if si in anywhere_ids else yourhalf_mask))
         acts = []
         for i in range(len(obs_b)):
             # Threshold the gate PROBABILITY, not a raw logit compare. `gq[0] >= gq[1]` is tau=0.5,
@@ -678,7 +754,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         ee = [e.elixir_vec.copy() for e in eval_pool]; et = [e.threat_vec.copy() for e in eval_pool]
         wins = played = 0
         while played < eval_matches:
-            acts = choose_greedy(eo, eh, en, ee, et)
+            acts = choose_greedy(eo, eh, en, ee, et, envs=eval_pool)
             for i, e in enumerate(eval_pool):
                 nobs, _r, done, info = e.step(acts[i])
                 if done:

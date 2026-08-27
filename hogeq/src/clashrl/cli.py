@@ -224,7 +224,11 @@ def _cmd_drills(args) -> None:
         names = [s.name for s in _sc.by_tier(args.tier) if not names or s.name in names]
     pol = None
     if args.policy:
-        pol = _drill_policy_from_checkpoint(args.policy, args.device)
+        _smv = getattr(args, "spell_min_value", None)
+        if _smv is None:
+            _smv = Config.load(args.config).get("sim", "ppo_spell_min_value", default=0.0)
+        pol = _drill_policy_from_checkpoint(args.policy, args.device,
+                                           spell_min_value=float(_smv or 0.0))
     rows = _report(Config.load(args.config), names=names, reps=args.reps, seed=args.seed,
                    policy=pol, level=args.level, reward_mode=bool(getattr(args, "reward", False)))
     if getattr(args, "outcomes", False):
@@ -250,7 +254,7 @@ def _cmd_drills(args) -> None:
                   % (r["name"], 100 * r["baseline"], 100 * r["doctrine"]))
 
 
-def _drill_policy_from_checkpoint(path: str, device: str = None):
+def _drill_policy_from_checkpoint(path: str, device: str = None, spell_min_value: float = 0.0):
     """Wrap a trained checkpoint as a drill policy (obs, env) -> action, or None if torch is absent.
 
     GREEDY, and masked exactly the way training masks: a card must be in hand and affordable. An
@@ -313,6 +317,22 @@ def _drill_policy_from_checkpoint(path: str, device: str = None):
                         and float(env.eng.elixir[0]) >= float(env.specs[i].elixir)]
             if not playable:
                 return (0, 0, 0)
+            # SPELL CARD VETO -- the same rule train_sim_ppo applies in sampling and in its greedy
+            # benchmark. It has to be HERE too: this is a THIRD greedy implementation (the drill
+            # report's own), and a drill run that skipped the veto would grade a policy the shipped
+            # one does not play. Off at 0.0, which is the shipped default.
+            if spell_min_value > 0.0 and hasattr(env, "spell_card_ok"):
+                kept = []
+                for _ci in playable:
+                    try:
+                        _ok, _w = env.spell_card_ok(int(_ci), spell_min_value)
+                    except Exception:  # noqa: BLE001 -- never break a drill
+                        _ok = True
+                    if _ok:
+                        kept.append(_ci)
+                playable = kept
+                if not playable:
+                    return (0, 0, 0)
             # THE GATE DECIDES WHETHER TO PLAY AT ALL, exactly as the trainer's greedy benchmark
             # does: threshold the play PROBABILITY at sim.ppo_gate_threshold. Without this the
             # column measured a policy that plays on every affordable step, which is not what any
@@ -677,6 +697,9 @@ def main() -> None:
                      help="repetitions per drill per policy (more = tighter pass-rate estimate)")
     drl.add_argument("--seed", type=int, default=5, help="RNG seed, the same for every policy")
     drl.add_argument("--only", default=None, help="comma list of drill names (default: all)")
+    drl.add_argument("--spell-min-value", type=float, default=None,
+                     help="override sim.ppo_spell_min_value for THIS report (tower fractions; "
+                          "0 = no spell CARD veto). Default: whatever config says.")
     drl.add_argument("--tier", default=None,
                      help="only this tier: foundational | compound | matchup")
     # DEFAULT None = roll each enemy's level from the ladder distribution the full sim uses

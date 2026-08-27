@@ -323,6 +323,46 @@ def bodies_ignore_frac(db, bases, tower_level: int = 15, enemy_level: int = 11) 
                              tower_level=tower_level, enemy_level=enemy_level)
 
 
+def catch_value_frac(db, bases, tower_level: int = 15, enemy_level: int = 11) -> float:
+    """Tower fractions a set of enemy BODIES is worth REMOVING -- the value of catching them.
+
+    This is :func:`bodies_ignore_frac`'s currency and almost its answer, but it may not BE
+    ``bodies_ignore_frac``, and the reason is measured. That function routes everything through
+    ``_bodies``, which returns ``None`` for any card the crown tower cannot model as a clearing
+    queue -- a kamikaze body (Wall Breakers, every Spirit), a spell-summoned barrel, a siege
+    building -- and ``group_ignore_frac`` turns a single ``None`` into ``inf`` for the WHOLE
+    group. MEASURED on the sim's own ladder pool, 2026-08-27:
+
+        bodies_ignore_frac(['wall_breakers'])  inf     ignore_cost_frac('wall_breakers')  0.1415
+        bodies_ignore_frac(['fire_spirit'])    inf     ignore_cost_frac('fire_spirit')    0.0468
+        bodies_ignore_frac(['ice_spirit'])     inf     ignore_cost_frac('ice_spirit')     0.0249
+
+    A veto that reads ``inf`` as "enormously valuable" would wave through every cast on a board
+    holding one Ice Spirit, which is the opposite of the truth (0.0249 is half the ignore
+    threshold). So the pooled model is used where it applies and the per-card burst/economy price
+    is SUMMED for the bodies it cannot model -- summing is right for those, because a Wall Breaker's
+    cost is burst damage that does not queue behind anything.
+
+    ``inf`` still propagates when a card is genuinely unresolvable (a Mortar, an X-Bow, an unknown
+    card): the tower cannot answer it at all, so no threshold should ever refuse to.
+    """
+    cards = cards_from_bodies(db, bases, enemy_level)
+    pooled, extra = [], 0.0
+    for c in cards:
+        if _bodies(db, c, enemy_level) is not None:
+            pooled.append(c)
+            continue
+        f = ignore_cost_frac(db, c, tower_level=tower_level, enemy_level=enemy_level)
+        if not math.isfinite(f):
+            return float("inf")            # unresolvable by the tower -> never veto the answer
+        extra += f
+    base = (group_ignore_frac(db, pooled, tower_level=tower_level, enemy_level=enemy_level)
+            if pooled else 0.0)
+    if not math.isfinite(base):
+        return float("inf")
+    return base + extra
+
+
 # ---------------------------------------------------------------------------------------------
 # CAN THIS CARD EVEN ANSWER THAT? (2026-08-20, user report: "the advisor is suggesting unrealistic
 # counters... placing knight on a balloon (knight can't even see the balloon) or rocketing wall

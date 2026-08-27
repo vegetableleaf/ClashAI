@@ -1677,6 +1677,33 @@ sim:
   # +33pp over the old rule (SE of the difference 5.8pp at n=150). The elixir column is the tell: the
   # old rule hoarded to 6.2/10 because it kept refusing to spend. Used by the eval benchmark, the
   # self-play sparring snapshots AND play.py, so training, benchmark and live deploy all agree.
+  # ---- SPELL CARD VETO (spell_experiments.md §7.5, owner's VALUE form; decisions.md ruling 30) --
+  # A SPELL card is UNPLAYABLE when no legal cell would catch at least this many TOWER FRACTIONS of
+  # enemy value under the engine's own hit test (corridor for a roll, pull disc, blast disc) AND no
+  # exemption applies. Currency is `threat_value.catch_value_frac` -- the project's own triage
+  # model -- not a body COUNT, because this deck's best casts are single-body: one Hog Rider is
+  # 0.340, one Knight 0.302, one Mini P.E.K.K.A. 0.644, while THREE Skeletons together are 0.0038.
+  # Exemptions (tower lethal/chip, 2-for-1, building/pump, king activation, lock break, charge
+  # reset, incoming spawn) are in SimMatchEnv.spell_veto_exempt, each with its doctrine source.
+  #
+  # ⚠ SHIPPED AT 0.0 = OFF, AND THAT IS DELIBERATE -- DO NOT "FIX" IT.
+  # An 8k training run was live in this tree when the veto landed, and its workers call
+  # Config.load() in their own processes, so a non-zero default here would propagate into a
+  # RESPAWNED worker and silently contaminate that arm (HANDOFF §3n's seam, in the other
+  # direction).
+  #
+  # ⚠ AND IT IS NO LONGER "the next run's one attributable change" EITHER (ruling 30.6,
+  # 2026-08-27). Re-measured at HEAD under the DECK's own venv over two seed blocks, 600 paired
+  # matches: this value form does NOT beat a volume-matched RANDOM spell ban (+0.047, 0.98σ) and
+  # is WORSE than the rejected body-count form at matched volume (-0.127, 2.99σ). The +0.149
+  # (2.14σ) that once justified the criterion was measured under the ROOT .venv's torch
+  # 2.13.0+cpu -- worth -6.0pp winrate on its own against the 2.11.0+cu128 this deck runs.
+  # If it is ever switched on, 0.45 is still the right number: the highest bar at which no
+  # owner-named single-target reference drill is refused (ref_line_probe, both decks, HEAD).
+  # ⚠ SETTING IT HERE IS THE ONLY WAY TO SET IT for training: the parent ships this resolved
+  # float to every rollout worker (RemotePool(spell_min_value=...)), because a veto evaluated in
+  # the parent does not exist under --workers > 1, which is every real run.
+  ppo_spell_min_value: 0.0
   ppo_gate_threshold: 0.25
   # COUNTERFACTUAL FORK: judge a play by what actually followed it instead of classifying it at the
   # moment it was made. On a play the env deep-copies (engine + opponent) into an ISOLATED branch,

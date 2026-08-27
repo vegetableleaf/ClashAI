@@ -23,7 +23,34 @@ from pathlib import Path
 _SRC = str(Path(__file__).resolve().parents[2])
 
 
-def _worker(conn, n_envs: int, seed0: int, drill_frac=None) -> None:
+def spell_veto_ids(env, min_value: float):
+    """Spell card ids in this env's HAND that the veto refuses -- computed WHERE THE ENV IS.
+
+    THE PARENT CANNOT ASK. `train_sim_ppo` sets `remote = workers > 1` and then keeps its own
+    env list EMPTY in that mode (`for e in (pool if not remote else [])`), so a veto evaluated
+    parent-side is a veto that does nothing in every real run -- and every real run of this
+    project is `--workers 12`. That is the same seam this module already records for the
+    deck-PFSP record below, and the same seam as HANDOFF SS3n's `--drill-frac`. The envs live
+    in the worker, so the refusal is decided in the worker and shipped in the payload.
+
+    `min_value <= 0.0` (the shipped default) returns an empty list without touching the env,
+    so an un-opted run pays nothing and behaves exactly as it did before.
+    """
+    if float(min_value) <= 0.0 or not hasattr(env, "spell_card_ok"):
+        return []
+    out = []
+    for ci in (env._hand_ids() if hasattr(env, "_hand_ids") else []):
+        try:
+            ok, _why = env.spell_card_ok(int(ci), float(min_value))
+        except Exception:                    # noqa: BLE001 -- never break a rollout
+            continue
+        if not ok:
+            out.append(int(ci))
+    return out
+
+
+def _worker(conn, n_envs: int, seed0: int, drill_frac=None,
+            spell_min_value=None) -> None:
     if _SRC not in sys.path:
         sys.path.insert(0, _SRC)
     import random
@@ -87,6 +114,14 @@ def _worker(conn, n_envs: int, seed0: int, drill_frac=None) -> None:
     for e in envs:
         e.opponent_provider = provider
 
+    # SPELL CARD VETO (decisions.md ruling 30), resolved ONCE. The PARENT's value wins: it is
+    # the process that decides whether to apply the veto at all, and this one re-reads
+    # config.yaml from disk (see the drill_frac note above), so letting the two disagree would
+    # put "veto ON in the parent, nothing refused in the worker" one level below the seam this
+    # whole path exists to close. None = started without one, fall back to the disk. 0.0 = off.
+    spell_min_value = (float(cfg.get("sim", "ppo_spell_min_value", default=0.0))
+                       if spell_min_value is None else float(spell_min_value))
+
     def payload(i, env, obs, rew=0.0, done=False, outcome=None, pfsp=None,
                 drill=None, verdict=None, deck=None):
         hand = env._hand_ids() if hasattr(env, "_hand_ids") else []
@@ -114,6 +149,9 @@ def _worker(conn, n_envs: int, seed0: int, drill_frac=None) -> None:
             # PER-DRILL SCAFFOLDING STRENGTH: up where the policy cannot reach a success at all,
             # down where the prior is winning the drill for it. See DrillEnv.drill_floor_scale.
             "dfloor": (env.drill_floor_scale() if hasattr(env, "drill_floor_scale") else 1.0),
+            # WHICH SPELL CARDS THIS BOARD REFUSES (ruling 30). Empty list at the shipped
+            # 0.0 default; see spell_veto_ids for why it cannot be decided in the parent.
+            "veto": spell_veto_ids(env, spell_min_value),
         }
 
     obs_cache = [e.reset() for e in envs]
@@ -168,7 +206,8 @@ def _worker(conn, n_envs: int, seed0: int, drill_frac=None) -> None:
 class RemotePool:
     """Parent-side handle: the trainer's env surface, sharded over worker processes."""
 
-    def __init__(self, n_envs: int, workers: int, seed: int = 0, drill_frac=None):
+    def __init__(self, n_envs: int, workers: int, seed: int = 0, drill_frac=None,
+                 spell_min_value=None):
         ctx = mp.get_context("spawn")
         self.K = int(n_envs)
         workers = max(1, min(int(workers), self.K))
@@ -182,7 +221,9 @@ class RemotePool:
             if n <= 0:
                 continue
             parent_c, child_c = ctx.Pipe()
-            pr = ctx.Process(target=_worker, args=(child_c, n, s0, drill_frac), daemon=True)
+            pr = ctx.Process(target=_worker,
+                             args=(child_c, n, s0, drill_frac, spell_min_value),
+                             daemon=True)
             pr.start()
             self.shards.append(n)
             self.conns.append(parent_c)
@@ -247,6 +288,13 @@ class RemotePool:
         """Multiplier on the drill exploration floors for this env's current drill."""
         v = (self.last[i] or {}).get("dfloor")
         return 1.0 if v is None else float(v)
+
+    def spell_veto(self, i: int):
+        """Spell card ids this env's board refuses, decided worker-side (ruling 30).
+
+        Empty whenever `sim.ppo_spell_min_value` is 0.0, which is what ships.
+        """
+        return (self.last[i] or {}).get("veto") or ()
 
     def drill_gate(self, i: int):
         """P(play) the current drill's reference line would use, or None outside a drill."""

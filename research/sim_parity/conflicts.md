@@ -1940,6 +1940,39 @@ now 3.0 in both decks; the 4 stays recorded here. NOTE the same owner report als
 vortex to the fireball's LANDING point (it spawned on the Wizard at swing time) -- that half
 was a plain bug, not an evidence conflict; measured in decisions.md ruling 31c.
 
+## 2026-08-27 -- THE SPELL VETO WOULD HAVE BEEN INERT IN EVERY REAL TRAINING RUN (measured, fixed)
+
+Not an evidence conflict -- a **wrong premise in the change itself**, caught during the ruling-30
+close-out and recorded here because it is the third instance of one seam.
+
+The card veto's sampling path was written as `if spell_min_value > 0.0 and not remote:`, and
+`train_sim_ppo` sets `remote = workers > 1`. The shipped training command in HANDOFF SS2 is
+`--workers 12`. In that mode the trainer's own env list is EMPTY by construction --
+`for e in (pool if not remote else [])` -- so there was no env to ask, and the guard silently
+skipped the veto. The effect would have been: veto ON in `choose_greedy` (eval) and in the drill
+report, veto OFF in training. That is exactly the eval/train asymmetry ruling 30 exists to remove,
+inverted, and it would have been INVISIBLE -- the banner still prints, `ppo_spell_min_value` still
+reads back non-zero, and the winrate column would simply have measured a policy trained without
+the rule and graded with it.
+
+**THE SAME SEAM, THREE TIMES NOW**, which is why it is worth a conflicts.md row rather than a
+commit message:
+* `sim/remote_pool.py`'s own deck-PFSP comment: *"a worker has its OWN cfg copy that the parent's
+  record never reaches -- so deck exploiters silently did nothing whenever --workers > 0, which is
+  every real run."*
+* HANDOFF SS3n: `--drill-frac 0.0` printed its banner while every worker trained at 0.3.
+* this.
+
+FIX: the refusal is decided WHERE THE ENV IS. `remote_pool.spell_veto_ids(env, min_value)` runs in
+the worker, ships in the per-step payload as `"veto"`, and the parent reads it back through
+`RemotePool.spell_veto(i)`; the local path is unchanged. Guarded by four tests
+(`test_spell_card_veto.RemoteWorkerPathTests`), including that the worker helper returns the SAME
+list as `spell_card_ok` on the same board, and that at the shipped `0.0` it never touches the env
+at all (asserted against a sentinel that raises on any attribute access).
+
+**RULE OF THUMB, for the next feature that reads env state at decision time:** if it lives in
+`train_sim_ppo` and touches `pool[i]`, it does not exist under `--workers > 1`. Check `remote`.
+
 ## 2026-08-27 -- THE SPAWNED-BODY ELIXIR RULING IS FILED UNDER TWO DIFFERENT NUMBERS
 
 Documentation defect found while adding the pins-generator check, recorded rather than renumbered.

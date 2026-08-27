@@ -494,6 +494,98 @@ flat penalty for the total whiff. **NOT TESTED. Stated so it is not mistaken for
 
 ---
 
+## 8. THE VALUE-FORM SWEEP (2026-08-27, post-§7.5; the shipped rule). OWNER REJECTED THE COUNT FORM.
+
+§7.5 recommended the card veto at K=3 BODIES. **The owner rejected the body-count form**: this
+deck's highest-value casts are routinely SINGLE-body (`nado_king_activation` pulls exactly one Hog,
+`nado_the_sneaky_lock` one Knight, `rocket_the_two_for_one` one Witch, `rocket_the_pump_on_sight`
+one building), and K=3 refuses every one of them. The shipped criterion is a VALUE threshold in
+TOWER FRACTIONS (`threat_value.catch_value_frac`, a new function -- `bodies_ignore_frac` reads
+`inf` for kamikaze/spirit bodies and would wave those casts through) plus an exemption set for
+casts whose payoff is not the bodies. Full enumeration with per-entry sources:
+**decisions.md ruling 30.** Harness `scratchpad/spell_arms_valueform.py` (spell_arms.py + a
+`--veto value` arm that calls `env.spell_card_ok` -- the arm grades SOURCE code, not a copy).
+
+### 8.1 ⚠ Baseline re-measured AGAIN (tree 1143af2 + this change): 43.0% / -0.835
+`vbase` reproduces `sx_bx.json` -- §3.6's board-exact arm -- on **300 of 300 matches**: today's
+tree IS the action-space-fixed baseline. §2's -0.841 (pre-51f34fb) is close but not identical
+(255/300); nothing here is compared across that boundary.
+⚠ Commit **b4be2b7** (ruling 31a, Electro Giant reflection) landed at 17:55 the same day, DURING
+the drill gates but AFTER every §8 arm below was launched (last launch 17:23; the decisive pairs
+all launched <= 16:47). Drift RE-MEASURED on the post-31a/31b tree: 12-match repro vs `vbase` =
+**11/12 byte-identical**, the one difference 0.004 tower fractions on seed 5000007 -- two orders
+below the 0.05-0.07 sems here, so no §8 comparison is re-run. §4q's rule is the reason this
+paragraph exists.
+
+### 8.2 The sweep. n=300, seeds 5_000_000..299, paired, GREEDY, same bar
+⚠ **RUN UNDER THE ROOT `.venv` (torch 2.13.0+cpu), NOT THE DECK'S (2.11.0+cu128).** Every wave
+script in this ledger launches the harness as bare `python`. Isolated 2026-08-27 on the same
+seeds, same checkpoint and same tree: **43.0% / -0.8303 root venv vs 37.0% / -0.9348 deck venv**,
+-6.0pp winrate (2.62σ). Within-block comparisons below are unaffected; the arm-vs-control lines
+are re-measured in §8.5 and two of §8.3's findings do not survive it.
+```
+arm                          win%  towerd  casts/m  dump%  | vs base   sigma
+vbase                        43.0  -0.835    7.83    36.5  |    --       --
+k3    (count form, re-run)   48.7  -0.583    4.25    18.4  |  +0.252   +3.80  SIG
+value 0.45  NO exemptions    48.7  -0.596    4.33    21.4  |  +0.239   +3.91  SIG
+value 0.65  NO exemptions    46.7  -0.618    3.35    21.5  |  +0.217   +3.30  SIG
+value 0.90  NO exemptions    47.3  -0.600    2.48    18.1  |  +0.235   +3.40  SIG
+value 0.10  NO exemptions    41.3  -0.853    7.04    31.4  |  -0.018   -0.42  NO MEAS.
+value 0.20  NO exemptions    39.3  -0.876    6.25    28.2  |  -0.041   -0.78  NO MEAS.
+value 0.45  WITH exemptions  45.3  -0.799    5.83    25.9  |  +0.036   +0.65  NO MEAS.
+value 0.65  WITH exemptions  45.7  -0.764    5.51    26.6  |  +0.071   +1.26  NO MEAS.
+```
+Controls (random spell bans at matched rate, §0.4's `ctl` design):
+```
+ctl(0.83) -> value0.45 no-exempt   4.36 -> 4.33 casts/m   +0.149   2.14σ   SIG
+ctl(0.83) -> k3                    4.36 -> 4.25 casts/m   +0.162   2.31σ   SIG
+k3        -> value0.45 no-exempt   4.25 -> 4.33 casts/m   -0.013   0.22σ   NO MEAS. (equal)
+ctl(0.30) -> value0.45 exempt      7.03 -> 5.83 casts/m   +0.068   1.16σ   NO MEAS.
+ctl(0.50) -> value0.65 exempt      6.49 -> 5.51 casts/m   +0.002   0.03σ   NO MEAS.
+```
+### 8.3 The three findings
+1. **The value criterion equals the count criterion** at matched volume (-0.013, 0.22σ) and beats
+   its volume-matched control at **2.14σ**. The owner's re-formulation costs nothing in aggregate.
+2. **⚠ The enumerated exemption set costs +0.203 (3.82σ) at 0.45** and the exempted compound rule
+   does NOT clear 2σ against base or its controls. Two exemption bugs were measured out during
+   calibration (an ungated tower-chip exempted the Rocket on 300/300 steps; an ungated lock-break
+   fired on 21% of evaluations) -- the shipped gates are `_rocket_value`'s and `_nado_catch`'s own.
+   What remains is the honest price of protecting the single-target plays.
+3. **No threshold resolves the trade-off**: the single-target reference lines sit at 0.070-0.340,
+   below any bar that moves the metric (>=0.45). The exemptions are the bridge; ruling 30 records
+   the drill-by-drill acceptance table (`scratchpad/ref_line_probe.py`) -- every owner-named
+   single-target line survives at every threshold, and 0.45 is the highest bar that keeps all but
+   two low-value LOG drills.
+
+### 8.5 RE-MEASURED UNDER THE DECK'S OWN VENV, TWO SEED BLOCKS, 600 PAIRED MATCHES
+
+Full tables in decisions.md 30.6. The three lines that matter:
+```
+value 0.45 no-exempt vs ctl(0.83)   +0.047   0.98σ   NO MEASUREMENT   (§8.2 read +0.149, 2.14σ)
+count K=3           vs ctl(0.83)   +0.174   3.64σ   SIG
+value 0.45 no-exempt vs count K=3   -0.127  -2.99σ   SIG              (§8.2 read -0.013, 0.22σ)
+```
+* **§8.3 finding 1 is CONTRADICTED**: the value form is not equal to the count form, it is worse
+  at matched volume.
+* **§8.3's "beats its volume-matched control at 2.14σ" is NOT SUPPORTED**: 0.98σ pooled. The
+  control's own effect against base swung **+0.301 (4.54σ) to +0.051 (0.76σ)** between blocks,
+  because `ctl(r)` is ONE DRAW of a ban pattern -- which is the methodological lesson here, and it
+  applies to every `ctl` line in §§4-7 of this ledger.
+* **§8.3 finding 2 (the exemptions cost what the criterion buys) REPRODUCES.**
+* What survives: the owner's objection to the count form (quantified in 30.7), the exemption set
+  doing its job on every owner-named reference line, and the choose_greedy asymmetry being fixed.
+
+### 8.4 What shipped (default OFF -- an 8k run was live in this tree; §3n's config seam)
+`sim.ppo_spell_min_value` (0.0 = off; **0.45 is the drill-safe threshold IF it is ever enabled --
+§8.5 withdrew the recommendation to enable it**), applied in
+`choose_sample`, **`choose_greedy` (which applied NO spell mask before -- §7.5's asymmetry, now
+fixed: eval/live and training see the same rule)**, and the drill report's `--spell-min-value`.
+Tests `test_spell_card_veto.py`, byte-identical in both decks; hogeq's exemption set derives from
+its own spec flags (earthquake gets `building`/`tower_*`/`hits_hidden`; no pull spell, so no
+king-activation branch fires).
+
+---
+
 *Harness `scratchpad/spell_arms.py`; analysis `scratchpad/sx_analyze.py`, `scratchpad/sx_pair.py`;
 live probes `scratchpad/live_grid_probe2.py`, `scratchpad/live_assist_probe.py`,
 `scratchpad/king_mask_probe.py`, `scratchpad/cellcenter_probe.py`. None is in the repo tree. Raw

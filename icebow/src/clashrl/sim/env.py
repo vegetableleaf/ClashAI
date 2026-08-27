@@ -11,6 +11,7 @@ range, Miner on the enemy tower). Medium fidelity -> a sim-trained policy is a P
 from __future__ import annotations
 
 import copy
+import math
 import random
 from typing import Optional, Tuple
 
@@ -86,6 +87,12 @@ def _board_action_space(cfg) -> ActionSpace:
         ("label", "arena_bottom"): 1.0,
         ("buttons", "chat_avoid_box"): None,
     }))
+
+
+# How many casts of one spell count as "this tower is finishable" for the veto's endgame
+# exemption. DOCTRINE_RESEARCH §3.4: "3-4 EQ casts finish a low tower in x2", and the deck
+# page's own switch point is an enemy tower at <=773 HP.
+_TOWER_FINISH_CASTS = 3.0
 
 
 class SimMatchEnv:
@@ -2601,6 +2608,322 @@ class SimMatchEnv:
     def deploy_mask(self, anywhere: bool, team: int = 0):
         """Deployability for the CURRENT board, pocket included."""
         return self.actions.deployable_mask(bool(anywhere), self.pocket_state(team))
+
+    # ---------------------------------------------------------------------------------- CARD VETO
+    #
+    # WHY A CARD VETO AND NOT A CELL MASK, AND WHY VALUE AND NOT A BODY COUNT.
+    # `research/sim_parity/ledger/spell_experiments.md` measured, n=300 paired, GREEDY, that this
+    # policy's spells are net-negative at the volume it casts them, and that a state-conditioned
+    # CARD-level refusal is the lever: at a >=3-body clump test it is +0.233 tower fractions
+    # (3.58 sigma) over the baseline and +0.207 (2.98 sigma) over a VOLUME-MATCHED random spell
+    # ban, so the targeting criterion -- not merely "cast less" -- is doing the work.
+    #
+    # The body COUNT form was rejected by the owner and he is right: this deck's highest-value
+    # casts are routinely SINGLE-body. `nado_king_activation` pulls exactly one Hog Rider;
+    # `nado_the_sneaky_lock` drags exactly one Knight; `rocket_the_two_for_one` kills one Witch;
+    # `rocket_the_pump_on_sight` hits one building. A count threshold at K=3 refuses every one of
+    # them. So the threshold is on VALUE, in the project's own measured currency
+    # (`threat_value.catch_value_frac`, tower fractions), plus an explicit exemption set for casts
+    # whose payoff is not the bodies at all. Full enumeration with sources: decisions.md ruling 30.
+    _ROLL_BACK_SLOP = 1.0                 # engine._LOG_BACK_SLOP
+
+    def _cell_xy(self):
+        """Cell centres, cached. The same cache `spell_target_mask` builds."""
+        cc = getattr(self, "_cell_xy_cache", None)
+        if cc is None:
+            gw = int(self.actions.gw)
+            pts = [self.actions.cell_center(c % gw, c // gw)
+                   for c in range(int(self.actions.n_cells))]
+            cc = self._cell_xy_cache = (np.asarray([p[0] for p in pts], np.float32),
+                                        np.asarray([p[1] for p in pts], np.float32))
+        return cc
+
+    def _clamped_xy(self, anywhere: bool):
+        """Cell centres AFTER `deploy_clamp` -- where the cast would actually land. The Log is
+        `own_half_only`, so its cells clamp and its true footprint is not the unclamped one."""
+        key = bool(anywhere)
+        cache = getattr(self, "_clamp_xy_cache", None)
+        if cache is None:
+            cache = self._clamp_xy_cache = {}
+        if key not in cache:
+            cx, cy = self._cell_xy()
+            idx = np.asarray([self.actions.deploy_clamp(key, c) for c in range(cx.shape[0])],
+                             np.int64)
+            cache[key] = (cx[idx].astype(np.float64), cy[idx].astype(np.float64))
+        return cache[key]
+
+    def _spell_footprint(self, card_id: int):
+        """(hit, units): (n_cells, n_units) bool of what a cast at each cell would ACTUALLY touch.
+
+        MIRRORS THE ENGINE, and that is load-bearing -- spell_experiments.md 4v retracted a whole
+        finding for treating a rolling spell as a disc. `spell_radius` is a roll's HALF-WIDTH:
+
+            roll   engine._tick_roll      -BACK_SLOP <= (uy-cy)*fdir*TY <= roll_len
+                                          AND |ux-cx|*TX <= spell_radius,  ground only
+            pull   engine._tick_vortex    hypot((dx)*TX, (dy)*TY) <= pull_radius
+            blast  engine._resolve_spell  hypot(...) <= spell_radius, ground_only skips flyers
+
+        A HIDDEN (retracted) building is excluded unless the spell carries `hits_hidden` -- the
+        engine's own `_hurt` guard. Without it a Rocket "catches" a retracted Tesla it deals zero
+        damage to, and the veto would wave that cast through.
+        """
+        spec = self.specs[int(card_id)]
+        us = [u for u in self.eng.units if u.team == 1 and u.hp > 0
+              and not (getattr(u, "hidden", False) and not getattr(spec, "hits_hidden", False))]
+        cx, cy = self._clamped_xy(int(card_id) in self.anywhere_ids)
+        if not us:
+            return np.zeros((cx.shape[0], 0), bool), us
+        tx, ty = float(self.eng.tiles_x), float(self.eng.tiles_y)
+        ux = np.asarray([u.x for u in us], np.float64)
+        uy = np.asarray([u.y for u in us], np.float64)
+        fly = np.asarray([bool(getattr(u.spec, "flying", False))
+                          or bool(getattr(u, "airborne_left", 0.0) > 0.0) for u in us], bool)
+        if getattr(spec, "rolls", False) and float(getattr(spec, "roll_len", 0.0)) > 0.0:
+            dy = (uy[None, :] - cy[:, None]) * -1.0 * ty          # team 0 rolls toward -y
+            dx = np.abs(ux[None, :] - cx[:, None]) * tx
+            hit = ((dy >= -self._ROLL_BACK_SLOP) & (dy <= float(spec.roll_len))
+                   & (dx <= float(spec.spell_radius)))
+        else:
+            rad = (float(spec.pull_radius) if (getattr(spec, "pulls", False)
+                                               and float(spec.pull_radius or 0.0) > 0.0)
+                   else float(spec.spell_radius or 2.0))
+            d = np.hypot((ux[None, :] - cx[:, None]) * tx, (uy[None, :] - cy[:, None]) * ty)
+            hit = d <= rad
+        if getattr(spec, "ground_only", False) and not getattr(spec, "pulls", False):
+            hit = hit & ~fly[None, :]
+        return hit, us
+
+    def _veto_legal(self, card_id: int, legal=None):
+        """The cell mask the veto judges over -- the caller's own, or the env's deploy mask.
+
+        CACHED on (anywhere, pocket). `deployable_mask` rebuilds `no_king_mask` from 432 fresh
+        `cell_center` calls, which PROFILED at 0.9 of the 1.0 s this veto spent over 180
+        evaluations -- 87% of the cost was recomputing a mask that changes only when a tower
+        falls. The trainer passes its own mask in and never reaches this path at all.
+        """
+        if legal is not None:
+            return np.asarray(legal, bool)
+        anywhere = bool(int(card_id) in self.anywhere_ids)
+        if hasattr(self, "pocket_state"):
+            key = (anywhere,) + tuple(self.pocket_state(0))
+        else:
+            key = (anywhere,)
+        cache = getattr(self, "_veto_legal_cache", None)
+        if cache is None:
+            cache = self._veto_legal_cache = {}
+        m = cache.get(key)
+        if m is None:
+            m = cache[key] = np.asarray(
+                self.deploy_mask(anywhere, 0) if hasattr(self, "deploy_mask")
+                else self.actions.deployable_mask(anywhere), bool)
+        return m
+
+    def spell_cast_value(self, card_id: int, legal=None) -> float:
+        """Best TOWER FRACTIONS of enemy value any legal cell would catch with this spell.
+
+        The currency is the project's own measured triage model
+        (`threat_value.catch_value_frac`), not a body COUNT -- which is the whole point of the
+        value form. A count cannot say that one Mini P.E.K.K.A. (0.644) outvalues three Skeletons
+        (0.0038 together, since three bodies collapse to one card), and this deck's best casts are
+        routinely single-body.
+        """
+        hit, us = self._spell_footprint(card_id)
+        if not us:
+            return 0.0
+        rows = hit[self._veto_legal(card_id, legal)]
+        if rows.size == 0 or not rows.any():
+            return 0.0
+        bases = [u.spec.base for u in us]
+        best = 0.0
+        for r in np.unique(rows, axis=0):          # distinct CAUGHT SETS, not distinct cells
+            if not r.any():
+                continue
+            v = threat_value.catch_value_frac(
+                self.db, [b for b, k in zip(bases, r) if k],
+                tower_level=self._tower_level_for_triage)
+            if v > best:
+                best = v
+                if not math.isfinite(best):
+                    break
+        return float(best)
+
+    def spell_veto_exempt(self, card_id: int, legal=None):
+        """Why this spell may be cast REGARDLESS of the value it catches, or None.
+
+        Every entry is a play whose payoff is not the bodies in the footprint, enumerated from the
+        doctrine files, the drills and the counter tables in decisions.md ruling 30. Each is
+        decided from ENGINE STATE, and each names the source it comes from. The set is derived
+        from the DECK'S OWN CARDS (spec flags: `pulls`, `knockback`, `spell_dmg`, `hits_hidden`),
+        never from card names, so hogeq's Earthquake and Log take the entries that apply to them.
+        """
+        spec = self.specs[int(card_id)]
+        anywhere = int(card_id) in self.anywhere_ids
+        eng = self.eng
+        pulls = bool(getattr(spec, "pulls", False))
+        lg = self._veto_legal(card_id, legal)
+        # --- 1. TOWER TARGET. A cast that chips or finishes a Crown Tower catches ZERO bodies by
+        # definition. This is `spell_target_mask`'s own rule promoted from the cell to the card:
+        # "a live enemy princess is a valid chip target for a DAMAGE spell (never for a pull)".
+        # Sources: DOCTRINE.md rows 56/57 (rocket-cycle the weaker princess), drill
+        # `rocket_the_two_for_one`, hogeq doctrine's "PURE CHIP", env._rocket_value's `on_tower`.
+        if not pulls and float(getattr(spec, "spell_tower_dmg", 0.0) or 0.0) > 0.0:
+            cx, cy = self._clamped_xy(anywhere)
+            tx, ty = float(eng.tiles_x), float(eng.tiles_y)
+            # ⚠ "A LEGAL CELL TOUCHES A LIVE TOWER" IS NOT ENOUGH, and it was measured: an
+            # anywhere-spell can always reach a live princess, so an ungated version exempted the
+            # Rocket on 300 of 300 sampled steps and the veto could never refuse it at all. The
+            # gate is `_rocket_value`'s OWN: it pays `rocket_chip_early` 0.25 for a regulation
+            # chip against `rocket_chip_behind` 1.2 once late and level-or-behind, i.e. the
+            # project already prices an early chip as a quarter of a win-condition play, not as a
+            # licence. So only the branches that pay are exempt: LETHAL, the TIEBREAK chip, and
+            # the 2-for-1 (drill `rocket_the_two_for_one`, one Witch beside their princess).
+            # ⚠ "LATE" IS OVERTIME, NOT `_defensive`. MEASURED: `_defensive` is already True at
+            # t=0.0 whenever the opponent holds a split-lane counter, and env.py's own note above
+            # `_punish_window` records that locking it on put 93.5% of steps in the defensive
+            # phase -- so `_defensive or overtime` exempted the Rocket from the opening tick. And
+            # `_tiebreak_gap` is NEGATIVE at t=0 on a level disadvantage alone (measured -0.098,
+            # our 4424 HP towers against their 4858), so `gap <= 0` cannot carry the gate either.
+            # DOCTRINE_RESEARCH §3.4 is explicit: "pure tower chip is a x2/OT and endgame tool
+            # only", plus the endgame rule that 3-4 casts finish a low tower.
+            late = float(eng.t) >= self._double_time
+            gap = self._tiebreak_gap() if hasattr(self, "_tiebreak_gap") else 0.0
+            hp_frac = float(getattr(self, "rocket_combo_hp_frac", 1.5))
+            combo_r = float(getattr(self, "rocket_combo_radius", 3.5))
+            for t in eng.towers[1][:2]:
+                if not t.alive:
+                    continue
+                d = np.hypot((cx - float(t.x)) * tx, (cy - float(t.y)) * ty)
+                if not bool((lg & (d <= self.spell_aim_radius)).any()):
+                    continue
+                if float(t.hp) <= float(spec.spell_tower_dmg):
+                    return "tower_lethal"            # this cast finishes the tower: 0 bodies, a crown
+                if float(t.hp) <= _TOWER_FINISH_CASTS * float(spec.spell_tower_dmg):
+                    return "tower_finish"            # DOCTRINE_RESEARCH §3.4: 3-4 casts end it
+                if late and gap <= 0.0:
+                    return "tower_chip"              # in overtime the chip race IS the win condition
+                # 2-FOR-1: a support THIS spell can (almost) one-shot standing beside that tower.
+                # env._rocket_combo's rule, but scaled by the CASTING card's own damage rather
+                # than by the deck's rocket, so a 240-damage Log cannot claim a rocket's kill.
+                for u in eng.units:
+                    if (u.team == 1 and u.hp > 0 and getattr(u.spec, "kind", "") == "troop"
+                            and not u.spec.building_only and 4 <= float(u.spec.elixir) <= 6
+                            and float(u.spec.hp) <= float(spec.spell_dmg) * hp_frac
+                            and tile_dist(u.x, u.y, t.x, t.y) <= combo_r):
+                        return "two_for_one"
+        hit, us = self._spell_footprint(card_id)
+        if us and hit.size:
+            reach = hit[lg].any(0)
+            knocks = float(getattr(spec, "knockback", 0.0) or 0.0) > 0.0
+            for u, ok in zip(us, reach):
+                if not ok:
+                    continue
+                # --- 2. BUILDING / ECONOMY TARGET. A building is exactly ONE body and killing it
+                # IS the play: the pump (drills `rocket_the_pump_on_sight`, `eq_the_pump_on_sight`),
+                # the building holding the Hog (`eq_clears_the_hogs_building`), the Tombstone at
+                # half HP (doctrine.py's verbatim guide rule), their seated siege. A pull cannot
+                # move a building at all (engine._tick_vortex skips them), so it is not exempted.
+                if getattr(u.spec, "kind", "") == "building" and not pulls:
+                    return "building"
+                # --- 3. CHARGE / RAMP RESET. `engine._knock` zeroes `charge_dist` and `ramp_shots`
+                # for anything a knockback spell shoves -- drill `log_resets_the_charge` is scored
+                # in TOWER HITS TAKEN and explicitly not in bodies ("a Battle Ram ALWAYS dies, it
+                # is kamikaze"). WARNING KNOCKBACK ONLY: the vortex displaces but does NOT clear
+                # `charge_dist` in this engine (only `_knock` and `_apply_status` do), so the
+                # tornado gets no charge-reset exemption. That is an engine fact, not a policy.
+                # ⚠ BOTH GUARDED BY `trade_sane`. The Rocket also carries 1.0 tiles of knockback
+                # and `_knock` disarms a charge for it too, so an unguarded reset exemption made a
+                # SIX-elixir cast unrefusable on any charging body -- which is the exact trade
+                # `trade_sane` was written for after the owner reported "rocketing wall breakers
+                # (a horrible elixir trade)". Doctrine names the LOG for charge resets, never the
+                # Rocket (DOCTRINE.md rows 4/28/67).
+                if (knocks and threat_value.trade_sane(self.db, spec.base, [u.spec.base])
+                        and (float(getattr(u.spec, "charge_range", 0.0) or 0.0) > 0.0
+                             or int(getattr(u, "ramp_shots", 0) or 0) > 0)):
+                    return "charge_reset"
+                # --- 4. LOCK BREAK / RETARGET. Dragging or shoving a body off what it is chewing
+                # is worth a card whatever that body is worth -- env._nado_catch says so in its own
+                # comment ("most wincons pulled this way are worth less than one" rocket), and the
+                # SNEAKY LOCK drill (`nado_the_sneaky_lock`, ONE Knight on our X-Bow) is exactly
+                # this play. Both mechanics set `aggro_reset`: `_tick_vortex` when the pull takes a
+                # body out of reach of its target, `_resolve_roll` on every shove.
+                #
+                # ⚠ TWO GATES, BOTH MEASURED INTO EXISTENCE. A first version asked only "is this
+                # body locked onto something of ours", and it fired on 21% of every veto
+                # evaluation -- an enemy is nearly always chewing on SOMETHING -- which on its own
+                # took the value form from a working veto to a null (casts/match 7.83 -> 6.15
+                # against the count form's 4.25). Two conditions were missing, and the project
+                # already states both:
+                #   * env._nado_catch's `targeters` are `building_only` bodies locked onto one of
+                #     OUR TOWERS, gated at `nado_retarget_min_worth` (2.0) -- deliberately BELOW
+                #     rocket_min_worth, because a pulled wincon is usually worth less than a rocket.
+                #   * the sneaky lock is a defender on one of our BUILDINGS (the X-Bow), which is a
+                #     unit, not a tower -- doctrine.py: "drag their DEFENDER off, not the building".
+                # An enemy merely fighting one of our TROOPS is an ordinary defensive scrap and
+                # buys nothing that a card should be spent on.
+                tgt = getattr(u, "target", None)
+                if (tgt is not None and bool(getattr(u, "locked", False))
+                        and (pulls or knocks)
+                        and threat_value.trade_sane(self.db, spec.base, [u.spec.base])):
+                    tspec = getattr(tgt, "spec", None)
+                    ours_building = (tspec is not None and int(getattr(tgt, "team", 1)) == 0
+                                     and getattr(tspec, "kind", "") == "building")
+                    on_our_tower = any(tgt is t for t in eng.towers[0])
+                    worth = float(u.spec.elixir) / max(1, u.spec.squad_count or u.spec.count or 1)
+                    if ours_building or (on_our_tower and bool(u.spec.building_only)
+                                         and worth >= float(getattr(
+                                             self, "nado_retarget_min_worth", 2.0))):
+                        return "lock_break"
+        # --- 5. KING ACTIVATION. The pull's value is waking our King Tower for the rest of the
+        # match, not the single body it drags. The precondition is the doctrine's own and it is a
+        # question about the attacker's PATH, not its current tile: `_king_spots` emits a spot only
+        # when `_path_enters_pull` says the walk crosses the pull radius while the vortex lives.
+        # Source: drill `nado_king_activation` (ONE Hog Rider), DOCTRINE.md rows 3/16/51.
+        if pulls and not eng.towers[0][2].active:
+            try:
+                from . import doctrine as _doc
+                for u in eng.units:
+                    if (u.team == 1 and u.hp > 0 and not _doc._pull_resistant(u)
+                            and (u.spec.building_only or u.y > 0.55) and u.y > 0.52
+                            and _doc._king_spots(self, u)):
+                        return "king_activation"
+            except Exception:                      # noqa: BLE001 -- never break a rollout
+                pass
+        # --- 6. A TROOP-SPAWNING SPELL IS IN FLIGHT. Those bodies do not exist yet, so the
+        # cast-time footprint is empty BY CONSTRUCTION: "pre-log beats post-log" (DOCTRINE.md rows
+        # 19/21) and drill `log_the_barrel_on_landing`, whose barrel is still in the air at the
+        # moment the reference line rolls. env._resnap_spell_check exists for exactly this problem
+        # on the reward side ("every pre-emptive cast resolved against an empty list").
+        inc = [s for s in (getattr(eng, "spells", None) or ())
+               if int(getattr(s, "team", 0)) == 1
+               and getattr(s.spec, "spawn_spec", None) is not None]
+        if inc:
+            # ...and the cast has to be able to REACH where those bodies will land. Without the
+            # reach test this exempted every spell anywhere on the board for as long as any barrel
+            # was in the air, which is not the play the doctrine describes ("Log the LANDING").
+            cx, cy = self._clamped_xy(anywhere)
+            tx, ty = float(eng.tiles_x), float(eng.tiles_y)
+            reach_r = (float(spec.roll_len) if getattr(spec, "rolls", False)
+                       else max(float(spec.spell_radius or 2.0), float(spec.pull_radius or 0.0)))
+            for s in inc:
+                d = np.hypot((cx - float(s.x)) * tx, (cy - float(s.y)) * ty)
+                if bool((lg & (d <= reach_r)).any()):
+                    return "incoming_spawn"
+        return None
+
+    def spell_card_ok(self, card_id: int, min_value: float, legal=None):
+        """May this SPELL be chosen AT ALL on this board? -> (ok, reason).
+
+        `min_value` is in TOWER FRACTIONS; <= 0.0 disables the veto entirely.
+        """
+        if float(min_value) <= 0.0:
+            return True, "off"
+        if getattr(self.specs[int(card_id)], "kind", "") != "spell":
+            return True, "not_a_spell"
+        ex = self.spell_veto_exempt(int(card_id), legal=legal)
+        if ex is not None:
+            return True, ex
+        v = self.spell_cast_value(int(card_id), legal=legal)
+        return (v >= float(min_value)), ("value %.4f" % v)
 
     def step(self, action: Action):
         play, card_id, cell = action
