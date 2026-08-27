@@ -3285,6 +3285,26 @@ play/wait asymmetry to correct).
 gradient is necessary, not sufficient, and this can still come back null. Pre-committed: >=2 sigma
 on the paired probe or it is reported as NO MEASUREMENT.
 
+## 4w. ⏳ PENDING CARD UPGRADE — apply on the sim-parity branch before the merge
+
+Owner 2026-08-27: **tornado upgraded 14 -> 15** (real account level).
+
+`config/cards.yaml` deck block, icebow only (hogeq's deck has no tornado):
+```
+    - {card: tornado, level: 14}   ->   level: 15
+```
+House style for this edit (see the 2026-08-16 and 2026-08-25 examples on the same rows):
+`# upgraded 14 -> 15 on 2026-08-27 (real account level, confirmed)`
+
+NOT applied immediately because an agent held those files at the time; apply on `sim-parity`
+BEFORE the merge so the new PPO trains at the correct level. A deck level change shifts the
+training distribution, so it belongs with the parity merge (that merge is deliberately the ONE
+bundled change for the next experiment) rather than landing separately afterwards.
+
+⚠ Do NOT edit this in the LIVE tree — it is the merge target and must stay clean.
+
+---
+
 ## 4v. 2026-08-26 — ⚠⚠ RETRACTION: "THE LOG'S PLACEMENT IMPROVED" WAS MY OWN MEASUREMENT BUG
 
 Owner: "log is wider than 1.95 tiles, I thought we established this in the past." They were right,
