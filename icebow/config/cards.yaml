@@ -2129,7 +2129,7 @@ cards:
   #   first_hit_speed_s: SUPERSEDED ABSENT -> 0.4. KB row lacks the field.
   #     load_time_s/mass/sight/collision do NOT come from the wiki: import_mechanics.py reads
   #     RoyaleAPI cr-api-data cards_stats.json, meta.source_frozen=2023-10-18
-  boss_bandit: {range: melee, leap_min_tiles: 3.5, leap_max_tiles: 6.0, leap_speed_tiles: 8.33, leap_towers: true, ability_cost: 1, ability_uses: 2, ability_cooldown_s: 3.0, ability_invis_s: 1.0, ability_back_tiles: 6.0, leap_invulnerable: true, first_hit_speed_s: 0.4, verified: true}
+  boss_bandit: {range: melee, leap_min_tiles: 3.5, leap_max_tiles: 6.0, leap_speed_tiles: 8.33, leap_towers: true, ability_kind: movement_flight, ability_delay_s: 1.0, ability_cost: 1, ability_uses: 2, ability_cooldown_s: 3.0, ability_invis_s: 1.0, ability_back_tiles: 6.0, leap_invulnerable: true, first_hit_speed_s: 0.4, verified: true}
   # KNOCKBACK-IMMUNE HEAVIES. Sourced from the Bowler page, whose pushback "functions identically to
   # a Fireball, Giant Snowball, or Rocket, pushing back small to medium sized ground troops, and
   # minimally damaging heavy troops such as the Prince, Sparky, Dark Prince, Skeleton King, Giant
@@ -2290,7 +2290,7 @@ cards:
   #   damage_charge_speed_s: SUPERSEDED ABSENT -> 2.0. The KB models the stage ramp with
   #     damage_ramp {damages, hit_speed} and has NO stage-advance timer, so nothing in the sim
   #     governs WHEN a stage steps. Table and history agree at 2 s
-  mighty_miner: {range: melee, flags: [knockback_immune], damage_ramp: {damages: [40, 204, 409], hit_speed: 0.4}, ability_cost: 1, ability_uses: 1, ability_cooldown_s: 0.0, ability_delay_s: 1.0, ability_bomb_damage: 332, ability_bomb_radius: 2.5, ability_bomb_knockback: 1.8, damage: 43, damage_charge_speed_s: 2.0, damage_stages: [43, 204.0, 409.0], verified: false}
+  mighty_miner: {range: melee, flags: [knockback_immune], damage_ramp: {damages: [40, 204, 409], hit_speed: 0.4}, ability_kind: bomb, ability_cost: 1, ability_uses: 1, ability_cooldown_s: 0.0, ability_delay_s: 1.0, ability_bomb_damage: 332, ability_bomb_radius: 2.5, ability_bomb_knockback: 1.8, damage: 43, damage_charge_speed_s: 2.0, damage_stages: [43, 204.0, 409.0], verified: false}
   # "the first 2 attacks deal normal damage, while the 3rd strike deals extra damage and knockback,
   # EVEN IF the targeted troop is normally immune to knockback" -> combo_every 3 + knockback_all.
   # The 3rd hit's EXTRA DAMAGE is not published, so only the shove is modelled.

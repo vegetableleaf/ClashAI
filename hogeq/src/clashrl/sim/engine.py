@@ -30,6 +30,7 @@ team 0 = you (bottom/blue), team 1 = opponent (top/red).
 """
 from __future__ import annotations
 
+import itertools
 import math
 import warnings
 from dataclasses import dataclass, field, replace
@@ -186,25 +187,53 @@ class CardSpec:
     # evidence that his base jump cannot hit a tower -- the upgrade is the AT ANY DISTANCE part,
     # which lifts the 3.5-5 tile band. He does jump crown towers in game.
     leap_towers: bool = False
-    # SELF-PRESERVATION ABILITY (Boss Bandit's "Getaway Grenade", 1 elixir): "get invisible for one
-    # second, then teleport 6 tiles behind her current spot", 3 s cooldown after the duration, and
-    # it "can only be activated twice". Modelled as an AUTOMATIC reaction rather than a player
-    # action: exposing it to the policy would need a whole new action type (and a retrain), while
-    # the opponents who actually field her do need to use it or she is strictly worse than she reads.
+    # ---- CHAMPION / HERO ABILITIES ------------------------------------------------------
+    # Shared bookkeeping for every ability, whichever shape it is. `ability_delay` is the
+    # ACTIVATION delay: the window between pressing the button and the effect resolving, which
+    # is also the window ruling 7's elixir refund covers.
     ability_cost: float = 0.0
     ability_uses: int = 0
     ability_cd: float = 0.0
+    ability_delay: float = 0.0
+    # WHICH SHAPE. Until I7 this was answered by TRUTHINESS on a shape-specific number --
+    # `ability_bomb_dmg > 0` meant Explosive Escape, `ability_invis > 0` meant Getaway Grenade.
+    # That does not extend past two cards: the 8 champions need 8 shapes and I8's heroes add
+    # ~16 more, and two cards whose numbers happened to overlap would have silently inherited
+    # each other's behaviour (a hero with a bomb AND a cloak was unrepresentable). `ability_kind`
+    # NAMES the shape, `ABILITY_KINDS` dispatches on it, and the parameters below are
+    # deliberately GENERIC so a new ability reuses them instead of adding a field per card.
+    ability_kind: str = ""
+    ability_dmg: float = 0.0            # the ability's OWN damage (GK dash 335, LP charge 256,
+                                        # Goblinstein link tick 107) -- never the body's swing
+    ability_crown_dmg: float = 0.0      # ...against crown towers, where it is published apart
+    ability_radius_tiles: float = 0.0   # area of effect (SK spawn circle 3.5, link radius 2.0)
+    ability_duration_s: float = 0.0     # how long the EFFECT runs (AQ 3.5, Monk 4, link 4)
+    ability_range_tiles: float = 0.0    # the ability's own reach (GK dash 5.5, LP charge 4)
+    ability_tick_s: float = 0.0         # cadence of a repeating sub-event (link 0.5, SK spawn 0.25)
+    ability_max_hits: int = 0           # cap on those repeats (GK: 10 dashes)
+    ability_speed_mult: float = 0.0     # ATTACK-speed multiplier while active (AQ 1.8)
+    ability_move_speed: float = 0.0     # MOVE speed in tiles/s while active (AQ 0.75, GK 2.0)
+    ability_spawn: Optional["CardSpec"] = None   # the body it summons, prebuilt (SK Skeleton,
+                                        # LP Guardienne) -- same idiom as `spawner_spec`
+    ability_spawn_count: int = 0        # how many (SK's floor of 6; souls add on top)
+    ability_shield_hp: float = 0.0      # I8 (taunt_shield heroes); no champion uses it
+    ability_heal: float = 0.0           # I8 (heal-shaped hero abilities); no champion uses it
+    ability_dmg_reduction: float = 0.0  # incoming damage negated while active (Monk 0.65)
+    ability_ai: tuple = ()              # KB-tunable opponent-AI knobs as sorted (key, value)
+                                        # pairs -- see ScriptedBot._try_ability
+    # BOSS BANDIT's "Getaway Grenade" (kind `movement_flight`): "get invisible for one second,
+    # then teleport 6 tiles behind her current spot". Until I7 the ENGINE fired this itself below
+    # a rolled HP fraction -- a model of an HP-gated trigger the game REMOVED on 8/7/2025 ("can be
+    # activated a total of 2 times INDEPENDENT ON Boss Bandit's hitpoints"). It is a button now,
+    # and the opponent AI decides; see ScriptedBot._try_ability.
     ability_invis: float = 0.0
     ability_back: float = 0.0
-    # THE OTHER ABILITY SHAPE: the Mighty Miner's "Explosive Escape", which is a PLAYER action, not
-    # the automatic reaction above. He mirrors to the opposite lane and leaves a fused bomb behind,
-    # so it needs a displacement that is a reflection rather than a nudge, plus a blast the nudge
-    # ability has no concept of. Non-zero `ability_bomb_dmg` is what marks a card as having it; see
-    # Engine.champion_ability, which the env calls from a dedicated action-space slot.
+    # MIGHTY MINER's "Explosive Escape" (kind `bomb`): he mirrors to the opposite lane and leaves
+    # a fused bomb behind, so it needs a displacement that is a reflection rather than a nudge,
+    # plus a blast the nudge ability has no concept of.
     ability_bomb_dmg: float = 0.0
     ability_bomb_radius: float = 0.0
     ability_bomb_knock: float = 0.0
-    ability_delay: float = 0.0
     # SELF-RECOIL, in tiles: the shooter shoves ITSELF backwards every time it fires. Not a
     # knockback -- nothing is being hit, and it applies to the firer regardless of any knockback
     # immunity. Three cards have it (Firecracker, Sparky, Super Archers); 0 = it does not recoil.
@@ -732,6 +761,23 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
             spawner_spec = build_spec(db, spw["unit"], level)
         except Exception:                                     # noqa: BLE001 - unknown key: not a spawner
             spawner_spec = None
+    # ABILITY SUMMONS (I7). Same idiom as `spawner_spec`: the body an ABILITY summons is resolved
+    # once here rather than looked up mid-match. `ability_spawn_unit` names a real KB row (the
+    # Skeleton King's clone-variant Skeleton, the Little Prince's Guardienne are both curated
+    # rows of their own), so the summoned body carries real collision/mass/targeting instead of
+    # a `replace()` guess wearing the champion's own chassis.
+    ability_kind = str(c.get("ability_kind") or "")
+    ability_spawn = None
+    _asu = c.get("ability_spawn_unit")
+    if ability_kind and _asu and _asu != base:
+        try:
+            ability_spawn = build_spec(db, str(_asu), level)
+        except Exception:                                     # noqa: BLE001 - unknown key: no summon
+            ability_spawn = None
+    # KB-TUNABLE OPPONENT AI. A tuple of pairs rather than a dict so the spec stays copyable by
+    # `replace()` without sharing mutable state between every body of the card.
+    _aai = c.get("ability_ai")
+    ability_ai = tuple(sorted((str(k), v) for k, v in _aai.items())) if isinstance(_aai, dict) else ()
     spec = CardSpec(
         key=key, base=base, kind=kind, elixir=elixir, hp=hp, dps=dps, reach=reach, speed=speed,
         line_formation=line_formation,
@@ -907,6 +953,27 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         ability_bomb_radius=float(c.get("ability_bomb_radius") or 0.0),
         ability_bomb_knock=float(c.get("ability_bomb_knockback") or 0.0),
         ability_delay=float(c.get("ability_delay_s") or 0.0),
+        # ---- the generic ability parameters (I7). Every one is read off a NAMED KB field, so
+        # a card without an `ability_kind` gets nothing and a card with one says exactly which
+        # numbers it is using. Damage-shaped values scale with level; geometry and timing do not.
+        ability_kind=ability_kind,
+        ability_dmg=_lv.scale(float(c.get("ability_damage") or 0.0), level),
+        ability_crown_dmg=_lv.scale(float(c.get("ability_crown_tower_damage") or 0.0), level),
+        ability_radius_tiles=float(c.get("ability_radius_tiles") or 0.0),
+        ability_duration_s=float(c.get("ability_duration_s") or 0.0),
+        ability_range_tiles=float(c.get("ability_range_tiles") or 0.0),
+        ability_tick_s=float(c.get("ability_tick_s") or 0.0),
+        ability_max_hits=int(c.get("ability_max_hits") or 0),
+        ability_speed_mult=float(c.get("ability_attack_speed_boost") or 0.0),
+        ability_move_speed=float(c.get("ability_move_speed_tiles") or 0.0),
+        ability_spawn=ability_spawn,
+        ability_spawn_count=int(c.get("ability_spawn_count") or 0),
+        ability_shield_hp=_lv.scale(float(c.get("ability_shield_hp") or 0.0), level),
+        ability_heal=_lv.scale(float(c.get("ability_heal") or 0.0), level),
+        # Published as a NEGATIVE percentage on the Monk's page ("Damage Reduced -65%"); the
+        # engine wants a positive fraction of damage negated, like Evo Knight's.
+        ability_dmg_reduction=abs(float(c.get("ability_damage_reduction") or 0.0)) / 100.0,
+        ability_ai=ability_ai,
         # Most death-damage cards publish a splash radius; a few (Ice Golem) publish the damage but
         # not the radius, and a 0 radius would silently make the blast inert. 2.0 tiles is the modal
         # published value (the range is 1.5-3.0) -- an APPROXIMATION, not a sourced number.
@@ -990,10 +1057,24 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
                 # A component never nests further, and its shield is its own body's -- a flat
                 # fraction of the parent's HP would hand the Rascal girls the boy's shield.
                 components=(),
+                # ONE COMPONENT OWNS THE ABILITY, and it is the FIRST -- the KB's component list
+                # is the page's own order, and every champion page puts the ability's owner
+                # first (Goblinstein: the Doctor, who "is the specific Champion", then Monster).
+                # Without this every component inherits `ability_kind` through `replace` and the
+                # Monster becomes a second champion body -- which would then win ruling 5's
+                # newest-body selection about half the time and fire the Doctor's ability off
+                # the wrong body.
+                ability_kind=(ability_kind if ci == 0 else ""),
                 shield_hp=(c_hp * _SHIELD_FRAC if "shield" in flags else 0.0)))
         if subs:
             spec = replace(spec, components=tuple(subs))
     return spec
+
+
+# MONOTONIC BODY ORDER. Bumped once per Unit construction (see Unit.__post_init__ and ruling 5).
+# A plain counter rather than a timestamp because two bodies CAN be created in the same tick and
+# "most recently placed" still has to be a total order.
+_UNIT_SEQ = itertools.count(1)
 
 
 @dataclass(slots=True)
@@ -1059,6 +1140,29 @@ class Unit:
     ability_cd_left: float = 0.0  # seconds until the ability can be used again
     ability_hp_frac: float = 0.0  # HP fraction that triggers the next ability use -- ROLLED per unit
                                   # (and re-rolled lower after each use) so the trigger timing varies
+    # RULING 5 (owner, in-game; corroborated by Version_History_2025 "2025 Quarter 3 Update
+    # (29/9/2025) -- Champion Rework": "Only the most recent placed Champion has the ability").
+    # Two bodies of one champion CAN coexist, and the button drives the NEWEST. That needs a
+    # total order over bodies, and `self.units` cannot supply it: it is append-ordered, so
+    # `next(...)` over it finds the OLDEST. Stamped in __post_init__ from a module counter so
+    # EVERY construction path is covered -- engine deploys, spawner output, death spawns and the
+    # hand-placed bodies the bare-engine tests build -- without touching a single call site.
+    deploy_seq: int = 0
+    # ACTIVE ABILITY EFFECT (I7). One timer and one cadence, shared by every kind that runs for a
+    # while: the Archer Queen's cloak, the Monk's reflection, Goblinstein's link.
+    ability_active_s: float = 0.0
+    ability_tick_left: float = 0.0
+    souls: int = 0               # SKELETON KING: banked troop deaths (cap 10), +1 Skeleton each
+    # GOLDEN KNIGHT's dash chain. `dash_hit` is a TUPLE of id()s -- ruling 10 / the page's "He
+    # cannot dash into the same troop per ability use" -- rebuilt rather than mutated so a
+    # dataclass with __slots__ needs no mutable default.
+    dash_left: int = 0
+    dash_hit: tuple = ()
+    dash_go: bool = False
+    dash_tx: float = 0.0
+    dash_ty: float = 0.0
+    dash_time_left: float = 0.0
+    dash_ref: object = None
     spawn_cd: float = 0.0        # time until this spawner's next production tick
     focus_time: float = 0.0      # seconds locked on the CURRENT target -- drives ramp-up damage
     slow_mult: float = 1.0       # movement/attack multiplier from whatever slowed this unit
@@ -1087,6 +1191,8 @@ class Unit:
 
     def __post_init__(self):
         self.shield_left = self.spec.shield_hp
+        if not self.deploy_seq:
+            self.deploy_seq = next(_UNIT_SEQ)
 
 
 @dataclass(slots=True)
@@ -1395,6 +1501,10 @@ class SimEngine:
         self._pending: list = []                 # (fire_t, team, spec, x, y) action-latency queue
         self._volleys: list = []                 # (land_t, team, x, y, spec): Evo Cannon barrage rings
         self._late_spawns: list = []             # (due_t, spec, team, x, y, n): barrel-limbo bodies
+        # CHAMPION/HERO ACTIVATIONS IN FLIGHT (I7): [team, unit, cost, seconds_left, kind].
+        # A mutable list per record rather than a tuple because the countdown is edited in place.
+        # An empty `kind` means "already resolved, this record only carries the ruling-7 refund".
+        self._ability_pending: list = []
         self.projectiles: List[Projectile] = []  # shots in flight (travel time is real)
         self.elixir = {0: 5.0, 1: 5.0}
         self.towers = {}
@@ -1502,61 +1612,96 @@ class SimEngine:
         return int(u.spec.ability_uses if u.ability_left < 0 else u.ability_left)
 
     def champion_ability(self, team: int) -> bool:
-        """EXPLOSIVE ESCAPE -- the Mighty Miner's 1-elixir ability, as a PLAYER action.
+        """Fire `team`'s champion ability. The ONE entry point, for the policy and the bot alike.
 
-        Unlike the automatic invisibility reaction (see the ability block in _tick_units), this is
-        chosen: the env exposes it as its own action-space slot and calls straight through here.
+        This used to be Explosive Escape and nothing else, selected by truthiness
+        (`ability_bomb_dmg > 0`). It is now a DISPATCHER: the body's `ability_kind` names a
+        handler in `ABILITY_KINDS`, so every champion (and, in I8, every hero) goes through the
+        same activation, accounting and refund rules and differs only in its effect.
 
-        The wiki's sequence, and each part matters to how it is used: after a short delay he becomes
-        intangible and moves to the HORIZONTALLY MIRRORED position -- same depth, opposite lane --
-        leaving a bomb at the position he left, which detonates for area damage to ground AND air
-        with knockback. So it is simultaneously an escape, a lane switch, and a swarm answer, which
-        is why triggering it too early is the classic way to waste it: the bomb wants their counter
-        already committed and standing on him.
+        RULING 5 (owner, verified in-game; corroborated verbatim by Version_History_2025, "2025
+        Quarter 3 Update (29/9/2025) -- Champion Rework": *"Only the most recent placed Champion
+        has the ability"*). THE NEWEST LIVING BODY IS SELECTED FIRST, and only then tested for
+        cooldown / uses / elixir. The old code did the opposite -- it filtered on "has a use left"
+        and took `next()` over `self.units`, which is append-ordered, so with two bodies out it
+        fired from the OLDEST one. A spent newest body must NOT fall back to an older one: that
+        fallback is exactly what ruling 5 forbids, and it is why the two tests are ordered this
+        way rather than folded into one comprehension.
 
-        The bomb is resolved through the same fused-spell path the Balloon and Giant Skeleton death
-        bombs use, so it inherits their delay, knockback and ground/air rules rather than
-        re-implementing them. Returns False when there is no champion on the board, the ability is
-        still cooling down, or the elixir is not there.
+        RULING 7 (owner): the elixir is REFUNDED if the body dies between activation and the
+        effect resolving. `ability_delay` is that window (see `_ability_pending`).
+
+        Returns False -- spending nothing -- when there is no champion body, when the newest one
+        has no use or is cooling down, when the elixir is not there, or when the card names a
+        kind this engine does not implement.
         """
         if self.done:
             return False
-        # A champion of OURS must actually be standing on the arena with a use left. There is no
-        # ability without a body -- it acts on him where he is, so with no Mighty Miner out there is
-        # nothing to act on and the action must be refused rather than silently spending elixir.
-        champ = next((u for u in self.units
-                      if u.team == team and u.hp > 0 and u.spec.ability_bomb_dmg > 0.0
-                      and u.ability_cd_left <= 0.0
-                      and self._ability_uses_left(u) > 0), None)
-        if champ is None:
+        # A champion of OURS must actually be standing on the arena. There is no ability without
+        # a body -- every kind acts on him where he is -- so with none out the action is refused
+        # rather than silently spending elixir.
+        bodies = [u for u in self.units
+                  if u.team == team and u.hp > 0 and u.spec.ability_kind]
+        if not bodies:
             return False
+        champ = max(bodies, key=lambda u: u.deploy_seq)       # ruling 5: NEWEST, then test it
         s = champ.spec
+        if champ.ability_cd_left > 0.0 or self._ability_uses_left(champ) <= 0:
+            return False
         if self.elixir[team] < s.ability_cost:
+            return False
+        handler = ABILITY_KINDS.get(s.ability_kind)
+        if handler is None:                                   # unknown kind: refuse, never guess
             return False
         self.elixir[team] -= s.ability_cost
         # SINGLE USE (4/8/2026 balance): every champion but the Boss Bandit gets exactly one
-        # activation, counted per BODY -- a Mighty Miner who dies and is cycled back gets his again.
+        # activation, counted per BODY (ruling 6) -- a champion who dies and is cycled back gets
+        # his again.
         champ.ability_left = self._ability_uses_left(champ) - 1
         champ.ability_cd_left = s.ability_cd
-        ox, oy = champ.x, champ.y
-        # THE BOMB, left where he was standing. Built off his own spec so it keeps his team and
-        # level scaling, with every unrelated spell behaviour explicitly cleared -- the same
-        # defensive `replace` the death-bomb path uses, because a stray `pulls`/`rolls`/`spawn_count`
-        # inherited from the source card is exactly how a bomb quietly becomes a tornado.
-        bomb = replace(s, kind="spell", spell_dmg=s.ability_bomb_dmg,
-                       spell_radius=s.ability_bomb_radius or 2.0,
-                       spell_tower_dmg=0.0,          # the escape bomb is not tower damage
-                       knockback=s.ability_bomb_knock, ground_only=False,
-                       pulls=False, rolls=False, zone_s=0.0, top_n_targets=0,
-                       spawn_count=0, decoy_mirror=False, zap_pulses=0,
-                       death_dmg=0.0, death_delay_s=0.0,
-                       stuns=False, stun_dur=0.0, slows=False, slow_dur=0.0, freezes=False)
-        self.spells.append(_Spell(team, ox, oy, bomb, max(0.0, s.ability_delay)))
-        # ...and he is gone: mirrored across the arena's centre line, untargetable for the transit.
-        champ.x = 1.0 - ox
-        champ.invis_left = max(champ.invis_left, s.ability_delay)
-        champ.target = None
+        # THE ACTIVATION DELAY. Two shapes, and the difference is historical rather than
+        # principled: `bomb` and `movement_flight` were built before the registry existed and
+        # carry their own delay INSIDE the effect (the Mighty Miner's fuse, the Boss Bandit's
+        # invisibility window), so they resolve at once and keep every behaviour their tests
+        # pin. Every kind added since resolves when the delay expires, which is what makes the
+        # ruling-7 refund reachable for them: they are still targetable while the cast runs.
+        deferred = s.ability_kind not in _ABILITY_AT_ONCE and s.ability_delay > 0.0
+        if s.ability_delay > 0.0:
+            self._ability_pending.append(
+                [team, champ, float(s.ability_cost), float(s.ability_delay),
+                 s.ability_kind if deferred else ""])
+        if not deferred:
+            handler(self, champ)
         return True
+
+    def _tick_ability_pending(self, dt: float) -> None:
+        """Drain the activation queue: resolve what is due, REFUND what died first (ruling 7).
+
+        The refund is the elixir only. Nothing an at-once kind already committed is rolled back --
+        the Mighty Miner has already mirrored and his bomb is already fused -- and in practice
+        neither at-once kind can reach the refund at all, because both make their body
+        untargetable for exactly this window. That is the correct outcome, not an oversight:
+        ruling 7 pays back a champion who was killed before his ability went off, and those two
+        cannot be.
+        """
+        if not self._ability_pending:
+            return
+        still = []
+        for rec in self._ability_pending:
+            team, champ, cost, left, kind = rec
+            if champ.hp <= 0.0:
+                self.elixir[team] = min(10.0, self.elixir[team] + cost)
+                continue
+            left -= dt
+            if left > 0.0:
+                rec[3] = left
+                still.append(rec)
+                continue
+            if kind:
+                handler = ABILITY_KINDS.get(kind)
+                if handler is not None:
+                    handler(self, champ)
+        self._ability_pending = still
 
     def deploy(self, team: int, spec: CardSpec, x: float, y: float,
                delay_s: float = 0.0) -> bool:
@@ -2227,6 +2372,7 @@ class SimEngine:
                 self._pending = [p for p in self._pending if p[0] > self.t]
                 for _, tm_, sp_, px_, py_ in due:
                     self._finish_deploy(tm_, sp_, px_, py_)
+        self._tick_ability_pending(dt)
         if self._late_spawns:
             # SKELETON BARREL LIMBO: the bodies were promised when the barrel broke and only
             # arrive now. Nothing exists in between -- which is exactly why a spell cast during
@@ -2446,12 +2592,15 @@ class SimEngine:
                         break
             if u.slow_left > 0:
                 u.slow_left = max(0.0, u.slow_left - dt)
-            # PLAYER-TRIGGERED ability cooldown + transit. The Boss Bandit block below ticks these
-            # too, but only for cards with `ability_invis` -- so a champion whose ability is chosen
-            # rather than automatic (the Mighty Miner) would fire once and never recharge, and would
-            # stay permanently untargetable after his escape. Ticked here, before that branch, and
-            # skipped for the automatic cards so their existing sequencing is untouched.
-            if u.spec.ability_bomb_dmg > 0.0 and u.spec.ability_invis <= 0.0:
+            # ABILITY cooldown + transit, for every kind EXCEPT the invisibility one. The Boss
+            # Bandit block below ticks these too, but only for cards with `ability_invis` -- so a
+            # champion whose ability is any other shape (the Mighty Miner's escape, the Archer
+            # Queen's cloak, ...) would fire once and never recharge, and would stay permanently
+            # untargetable after it. Ticked here, before that branch, and skipped for the
+            # invisibility shape so its existing sequencing is untouched.
+            # I7: the test was `ability_bomb_dmg > 0.0` -- one card's number standing in for
+            # "has an ability at all". `ability_kind` says it directly.
+            if u.spec.ability_kind and u.spec.ability_invis <= 0.0:
                 u.ability_cd_left = max(0.0, u.ability_cd_left - dt)
                 if u.invis_left > 0.0:
                     u.invis_left = max(0.0, u.invis_left - dt)
@@ -4386,3 +4535,89 @@ class SimEngine:
             if u.team != team and ((team == 0 and u.y >= _RIVER) or (team == 1 and u.y <= _RIVER)):
                 m += min(1.0, u.hp / 800.0)
         return m
+
+
+# =================================================================================================
+# CHAMPION / HERO ABILITY HANDLERS
+# =================================================================================================
+# One function per SHAPE, dispatched by `CardSpec.ability_kind` from `SimEngine.champion_ability`.
+# Every handler takes `(eng, u)` -- the engine and the champion BODY the ability fires from -- and
+# returns nothing; activation cost, single-use accounting, the cooldown and ruling 7's refund are
+# all handled by the dispatcher, so a handler only has to produce the EFFECT.
+#
+# Why a registry instead of `if spec.base == ...`: meta decks field champions we do not, I8 adds
+# ~16 hero kinds on top, and several kinds are shared between a champion and a hero (bomb,
+# guardian, reflect, soul_bank). Naming the shape lets one implementation serve both and lets a
+# KB row declare which shape it wants without an engine edit.
+#
+# Every number a handler uses comes off the spec, never a literal: the KB is the single place a
+# published figure lives, and `research/sim_parity/abilities/*.yaml` is where each one is sourced.
+
+def _ability_bomb(eng: "SimEngine", u: "Unit") -> None:
+    """MIGHTY MINER -- Explosive Escape (Mighty_Miner.wikitext, revid 437349).
+
+    Wiki: "After a 1-second delay, the Mighty Miner changes his position to the horizontally
+    mirrored position of himself. He is intangible while changing positions. He also drops a bomb
+    in the position he originally was ... dealing medium area damage to enemies around it after 1
+    second. His bomb affects both ground and air units and will also knock them back 1.8 tiles."
+
+    So it is simultaneously an escape, a lane switch and a swarm answer -- which is why firing it
+    early is the classic way to waste it: the bomb wants their counter already committed and
+    standing on him. The bomb is resolved through the same fused-spell path the Balloon and Giant
+    Skeleton death bombs use, so it inherits their delay, knockback and ground/air rules rather
+    than re-implementing them.
+    """
+    s = u.spec
+    ox, oy = u.x, u.y
+    # Built off his own spec so it keeps his team and level scaling, with every unrelated spell
+    # behaviour explicitly cleared -- the same defensive `replace` the death-bomb path uses,
+    # because a stray `pulls`/`rolls`/`spawn_count` inherited from the source card is exactly how
+    # a bomb quietly becomes a tornado.
+    bomb = replace(s, kind="spell", spell_dmg=s.ability_bomb_dmg,
+                   spell_radius=s.ability_bomb_radius or 2.0,
+                   spell_tower_dmg=0.0,          # the escape bomb is not tower damage
+                   knockback=s.ability_bomb_knock, ground_only=False,
+                   pulls=False, rolls=False, zone_s=0.0, top_n_targets=0,
+                   spawn_count=0, decoy_mirror=False, zap_pulses=0,
+                   death_dmg=0.0, death_delay_s=0.0,
+                   stuns=False, stun_dur=0.0, slows=False, slow_dur=0.0, freezes=False)
+    eng.spells.append(_Spell(u.team, ox, oy, bomb, max(0.0, s.ability_delay)))
+    # ...and he is gone: mirrored across the arena's centre line, untargetable for the transit.
+    u.x = 1.0 - ox
+    u.invis_left = max(u.invis_left, s.ability_delay)
+    u.target = None
+
+
+def _ability_movement_flight(eng: "SimEngine", u: "Unit") -> None:
+    """BOSS BANDIT -- Getaway Grenade (Boss_Bandit.wikitext, revid 437146).
+
+    Wiki: "After a 1 second delay, the Boss Bandit becomes invisible for 1 second, then teleports
+    6 tiles behind her original position. This allows her to escape any form of damage, as well as
+    give her another dash if the troops are far away enough."
+
+    The invisibility window is started here; the reappearance (and the backwards teleport itself)
+    is ticked in `_tick_units`, which is also where she re-acquires. The dash wind-up is dropped
+    on purpose and it is HER OWN doing, not the defender's -- she vanishes and reappears further
+    back, so there is nothing left standing there to finish the dash into.
+
+    NB she is the ONE champion exempt from the 4/8/2026 single-use change ("Champions and Heroes
+    (minus Boss Bandit)"), so her KB row keeps `ability_uses: 2` and a 3 s cooldown.
+    """
+    u.invis_left = u.spec.ability_invis
+    u.leap_left = 0.0
+
+
+# THE REGISTRY. `ability_kind` -> handler. A card whose KB row names a kind that is not in here
+# gets its activation REFUSED (see champion_ability) rather than silently doing nothing, so a
+# typo in the KB is loud.
+ABILITY_KINDS = {
+    "bomb": _ability_bomb,
+    "movement_flight": _ability_movement_flight,
+}
+
+# KINDS THAT RESOLVE AT ACTIVATION rather than when `ability_delay` expires. Both predate the
+# registry and carry the delay inside their own effect (the Mighty Miner's 1 s fuse and 1 s
+# intangible transit; the Boss Bandit's 1 s invisibility before the teleport), so deferring them
+# would double-count the wait and move behaviour their tests pin. Everything added since is
+# deferred, which is what makes ruling 7's refund reachable.
+_ABILITY_AT_ONCE = frozenset({"bomb", "movement_flight"})
