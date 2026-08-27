@@ -8,16 +8,18 @@
    "decisions.md ruling 19 (owner 2026-08-27, spawned-body elixir)",
    "decisions.md ruling 22 (owner 2026-08-27, the barrel's roll speed)",
    "decisions.md ruling 25 (owner IN-GAME 2026-08-27, the Barbarian's 716 hp)",
-   "decisions.md ruling 27 (owner 2026-08-27, the barrel's crown damage)"
+   "decisions.md ruling 27 (owner 2026-08-27, the barrel's crown damage)",
+   "decisions.md ruling 31a (owner 2026-08-27, the Electro Giant's reflected crown damage)",
+   "decisions.md ruling 31b (OWNER 2026-08-27, the Evo Firecracker's two spark radii)"
   ],
   "semantics": "the importer applies pins as a post-pass over the scraped rows and --write refuses if a pinned field would regress; value null = the field must not be imported; fields the importer does not emit are advisory (curated layer / stat_sweep EXPECTED sync); an explicit advisory:true pin is recorded for the sweep and never imported",
   "pair": "byte-identical across icebow/ and hogeq/ -- regenerate with the generator and it writes both; never hand-edit one copy",
   "counts": {
-   "total": 195,
+   "total": 197,
    "from_stat_diffs": 66,
-   "from_decisions": 34,
+   "from_decisions": 36,
    "from_i5_plan": 78,
-   "advisory": 22,
+   "advisory": 24,
    "overlapping": 5
   }
  },
@@ -361,14 +363,6 @@
   },
   {
    "key": "electro_giant",
-   "field": "reflect_crown_damage",
-   "value": 97,
-   "source": "I5 apply (CROWN, curated) re-plumbed by ruling 31a 2026-08-27: crown_11 = 97 is the page's 'Reflected Tower Damage' column -- the ZAP PACK's reduced figure, not his swing's. Parked on the generic crown_tower_damage it fed build_spec's tower_hit_dmg and crown-reduced his NORMAL swing to 97 (measured, vs hit_dmg 163.8 @ L11); it now lives on reflect_crown_damage, consumed only by SimEngine._zap_pack's tower branch",
-   "date": "2026-08-27",
-   "advisory": true
-  },
-  {
-   "key": "electro_giant",
    "field": "dps",
    "value": 91.0,
    "source": "I5 apply (UPDATE): Consequential on the hit_speed update: damage 163 (unchanged, P1-confirmed) / 1.8 s = 90.6 -> 91. current_db 78 is 163/2.1 and only stays correct while hit_speed stays 2.1.",
@@ -380,6 +374,14 @@
    "value": 1.8,
    "source": "I5 apply (UPDATE): P1 vardefine still carries the pre-4/5/2026 value 2.1; P2 table and P3 history both give 1.8, and P3 names 2.1 as the OLD value, which is exactly what P1 and current_db still hold. Textbook vardefine lag",
    "date": "2026-08-26"
+  },
+  {
+   "key": "electro_giant",
+   "field": "reflect_crown_damage",
+   "value": 97,
+   "advisory": true,
+   "source": "I5 apply (CROWN, curated) re-plumbed by ruling 31a 2026-08-27: crown_11 = 97 is the page's 'Reflected Tower Damage' column -- the ZAP PACK's reduced figure, not his swing's. Parked on the generic crown_tower_damage it fed build_spec's tower_hit_dmg and crown-reduced his NORMAL swing to 97 (measured, vs hit_dmg 163.8 @ L11); it now lives on reflect_crown_damage, consumed only by SimEngine._zap_pack's tower branch",
+   "date": "2026-08-27"
   },
   {
    "key": "electro_wizard",
@@ -451,6 +453,22 @@
    "value": 48,
    "source": "decisions.md #5: wiki correct for ALL firecracker_evo entries; owner overturned the old verified 60 (closes the long-flagged spark_dps_small conflict)",
    "date": "2026-08-26"
+  },
+  {
+   "key": "firecracker_evo",
+   "field": "spark_radius_large_tiles",
+   "value": 2.5,
+   "advisory": true,
+   "source": "decisions.md ruling 31b (OWNER 2026-08-27): the PRIMARY spark, at the main projectile's impact point, has radius 2.5 tiles -- larger than the shrapnel sparks. Owner-supplied and matched by the page's Evolution Attributes table (Big Spark Radius 2.5). ABSENT FROM THE VARDEFINES -- table cell only -- so an import drops it and the engine falls back to 0.75",
+   "date": "2026-08-27"
+  },
+  {
+   "key": "firecracker_evo",
+   "field": "spark_radius_tiles",
+   "value": 1.2,
+   "advisory": true,
+   "source": "decisions.md ruling 31b (OWNER 2026-08-27): the SECONDARY shrapnel sparks are 1.2 tiles. Owner-supplied and matched by the page's Evolution Attributes table (Small Spark Radius 1.2). SUPERSEDES the curated 0.75, a relic of the old zones-along-the-path model, which made every secondary zone 2.56x too small in area as well. Table cell only, so pinned",
+   "date": "2026-08-27"
   },
   {
    "key": "freeze",

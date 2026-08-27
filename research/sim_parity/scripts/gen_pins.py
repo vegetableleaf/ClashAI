@@ -1,6 +1,15 @@
 """Generate config/import_pins.json (both decks) from the adjudicated R2 ledger.
 
-    python research/sim_parity/scripts/gen_pins.py
+    python research/sim_parity/scripts/gen_pins.py            # write both decks' copies
+    python research/sim_parity/scripts/gen_pins.py --check    # exit 1 if they disagree
+
+`--check` writes nothing and FAILS when a committed pins file differs from what this
+script produces. It exists because ruling 31a hand-edited config/import_pins.json and did
+NOT touch this generator: the value looked set, and the next gen_pins.py run would have
+silently reverted it. That failure class -- a value that looks set, behind a regeneration
+step that quietly undoes it -- has cost this project repeatedly, so the disagreement is now
+an exit code and a unit test (tests/test_card_import_guards.py,
+PinTests.test_the_generator_reproduces_the_committed_pins) instead of a convention.
 
 A PIN is a curated value the wiki is known to lag or contradict: the importer applies
 pins as a post-pass over the scraped rows, and `--write` refuses if a pinned field
@@ -114,6 +123,11 @@ DECISION_PINS = [
 DECISION_DATE = "2026-08-26"
 
 # decisions.md ruling 19 (OWNER, 2026-08-27) -- SPAWNED-BODY ELIXIR PRICES.
+# ⚠ THE POINTER DOES NOT RESOLVE, and the values are fine: decisions.md heads this ruling
+# "RULING 29" (and commit d9b20d6 calls it 29), while conflicts.md, this block and the `source`
+# string of all three pins below call it 19. There is no "ruling 19" heading in decisions.md.
+# Same ruling, two numbers; recorded in conflicts.md 2026-08-27 rather than renumbered, because
+# renumbering rewrites three GENERATED source strings for a labelling error. Prefer 29 in new text.
 # 25 KB keys carry no `elixir` and every one of them fell through to the engine's default of 4, so
 # a Goblin Barrel decoy goblin and a Golemite each read as 4 elixir of enemy investment -- the same
 # as a Knight -- through the ~30 `spec.elixir` reads in the reward and triage layers. The owner
@@ -158,6 +172,54 @@ RULING22_PINS = [
      "back to an instant one for this card only"),
 ]
 RULING22_DATE = "2026-08-27"
+
+# RULING 31a (owner, 2026-08-27) -- the Electro Giant's "Reflected Tower Damage" is the ZAP PACK's
+# figure, not his swing's. I5 parked the page's crown_11 = 97 on the generic `crown_tower_damage`,
+# where build_spec fed it to `tower_hit_dmg` and crown-reduced his NORMAL swing to 97 (measured,
+# against hit_dmg 163.8 @ L11). It now lives on its own `reflect_crown_damage`, consumed only by
+# SimEngine._zap_pack's tower branch.
+#
+# ⚠ RECORDED HERE 2026-08-27 BECAUSE b4be2b7 HAND-EDITED import_pins.json AND DID NOT TOUCH THIS
+# GENERATOR. Running gen_pins.py silently reverted ruling 31a's pin to the I5 row; the pair only
+# stays honest if every ruling lands in the generator, which is what the file's own meta claims
+# ("never hand-edit one copy"). Found by regenerating for ruling 31b.
+RULING31A_PINS = [
+    ("electro_giant", "reflect_crown_damage", 97,
+     "I5 apply (CROWN, curated) re-plumbed by ruling 31a 2026-08-27: crown_11 = 97 is the page's "
+     "'Reflected Tower Damage' column -- the ZAP PACK's reduced figure, not his swing's. Parked "
+     "on the generic crown_tower_damage it fed build_spec's tower_hit_dmg and crown-reduced his "
+     "NORMAL swing to 97 (measured, vs hit_dmg 163.8 @ L11); it now lives on "
+     "reflect_crown_damage, consumed only by SimEngine._zap_pack's tower branch"),
+]
+RULING31A_DATE = "2026-08-27"
+# The I5 row ruling 31a RETIRES: the field itself is gone from cards.yaml, so the pin must not
+# come back on the old name.
+RULING31A_DROPS = {("electro_giant", "crown_tower_damage")}
+
+# RULING 31b (owner, 2026-08-27) -- the Evo Firecracker's PRIMARY spark (the zone left at the MAIN
+# projectile's impact point) is 2.5 tiles; the SECONDARY shrapnel sparks are 1.2. OWNER-SUPPLIED,
+# and they agree exactly with the wiki's own Evolution Attributes table row (Firecracker/Evolution
+# revid 437259: Big Spark Radius 2.5 / Small Spark Radius 1.2). The agreement is why both numbers
+# ship; the OWNER is the recorded authority, per the project's order (owner in-game > wiki > API).
+#
+# WHY A PIN AND NOT ONLY A CURATION. Those radii live in a wikitext TABLE CELL, not in a
+# `{{#vardefine:}}`, and the importer reads vardefines -- so a re-import emits the row with no
+# radius at all and both fields silently vanish, returning every zone to the engine's hardcoded
+# 0.75 fallback. ADVISORY because the importer cannot act on a field it never emits; recording
+# them here is what lets tools/stat_sweep.py read ONE registry of deliberate values.
+RULING31B_PINS = [
+    ("firecracker_evo", "spark_radius_large_tiles", 2.5,
+     "decisions.md ruling 31b (OWNER 2026-08-27): the PRIMARY spark, at the main projectile's "
+     "impact point, has radius 2.5 tiles -- larger than the shrapnel sparks. Owner-supplied and "
+     "matched by the page's Evolution Attributes table (Big Spark Radius 2.5). ABSENT FROM THE "
+     "VARDEFINES -- table cell only -- so an import drops it and the engine falls back to 0.75"),
+    ("firecracker_evo", "spark_radius_tiles", 1.2,
+     "decisions.md ruling 31b (OWNER 2026-08-27): the SECONDARY shrapnel sparks are 1.2 tiles. "
+     "Owner-supplied and matched by the page's Evolution Attributes table (Small Spark Radius "
+     "1.2). SUPERSEDES the curated 0.75, a relic of the old zones-along-the-path model, which "
+     "made every secondary zone 2.56x too small in area as well. Table cell only, so pinned"),
+]
+RULING31B_DATE = "2026-08-27"
 
 # RULING 25 (owner, IN-GAME 2026-08-27) -- a Barbarian has 716 hitpoints at level 11, and the body
 # the Barbarian Barrel drops is a NORMAL Barbarian.
@@ -235,7 +297,13 @@ MODEL_PINS = [
 ]
 
 
-def main() -> int:
+def render():
+    """Build the pins file's exact text from the ledger + the rulings. WRITES NOTHING.
+
+    Split out of `main` so --check and the deck test suites can ask what the generator
+    WOULD produce without touching the tree: a check that had to write first could not be
+    used as a guard. Returns (text, counts).
+    """
     rows = [json.loads(line) for line in
             (LEDGER / "stat_diffs.jsonl").read_text(encoding="utf-8").splitlines() if line]
     pin_rows = [r for r in rows if r.get("verdict") == "pin"]
@@ -257,6 +325,7 @@ def main() -> int:
         }
 
     dup = 0
+    adv31b = 0
     for key, field, value, why in DECISION_PINS:
         if (key, field) in pins:
             got = pins[(key, field)]["value"]
@@ -299,6 +368,28 @@ def main() -> int:
             pins[(key, field)] = {"key": key, "field": field, "value": value,
                                   "source": why, "date": RULING22_DATE}
 
+    # ADVISORY: cards.yaml-curated. The importer emits NO spark radius at all (the
+    # values are a table cell, not a vardefine), so these are recorded for stat_sweep
+    # and never pushed into cards_stats.json.
+    for key, field, value, why in RULING31A_PINS:
+        pins[(key, field)] = {"key": key, "field": field, "value": value,
+                              "advisory": True, "source": why,
+                              "date": RULING31A_DATE}
+        adv31b += 1
+
+    for key, field, value, why in RULING31B_PINS:
+        if (key, field) in pins:
+            got = pins[(key, field)]["value"]
+            assert got == value, \
+                f"pin disagreement for {key}.{field}: existing {got!r} vs ruling 31b {value!r}"
+            pins[(key, field)]["source"] += " + " + why
+            dup += 1
+        else:
+            pins[(key, field)] = {"key": key, "field": field, "value": value,
+                                  "advisory": True, "source": why,
+                                  "date": RULING31B_DATE}
+            adv31b += 1
+
     # 3. I5: everything routed to the import layer, PLUS every curated value that lands in a
     #    column tools/stat_sweep.py compares (those are advisory -- recorded, never imported).
     i5 = adv = 0
@@ -311,7 +402,7 @@ def main() -> int:
             value = None if row["after"] == _DROP else row["after"]
             why = "I5 apply (%s%s): %s" % (row["bucket"], ", curated" if advisory else "",
                                            row["ruling"])
-            if (key, field) in RULING25_OVERRIDES:
+            if (key, field) in RULING25_OVERRIDES or (key, field) in RULING31A_DROPS:
                 continue                    # an owner ruling supersedes the recorded I5 value
             if (key, field) in pins:
                 got = pins[(key, field)]["value"]
@@ -344,7 +435,9 @@ def main() -> int:
                         "decisions.md ruling 19 (owner 2026-08-27, spawned-body elixir)",
                         "decisions.md ruling 22 (owner 2026-08-27, the barrel's roll speed)",
                         "decisions.md ruling 25 (owner IN-GAME 2026-08-27, the Barbarian's 716 hp)",
-                        "decisions.md ruling 27 (owner 2026-08-27, the barrel's crown damage)"],
+                        "decisions.md ruling 27 (owner 2026-08-27, the barrel's crown damage)",
+                        "decisions.md ruling 31a (owner 2026-08-27, the Electro Giant's reflected crown damage)",
+                        "decisions.md ruling 31b (OWNER 2026-08-27, the Evo Firecracker's two spark radii)"],
             "semantics": "the importer applies pins as a post-pass over the scraped rows and "
                          "--write refuses if a pinned field would regress; value null = the "
                          "field must not be imported; fields the importer does not emit are "
@@ -355,22 +448,98 @@ def main() -> int:
             "counts": {"total": len(ordered),
                        "from_stat_diffs": len(pin_rows),
                        "from_decisions": (len(DECISION_PINS) + len(RULING19_PINS)
-                                          + len(RULING22_PINS) + len(RULING25_PINS)),
+                                          + len(RULING22_PINS) + len(RULING25_PINS)
+                                          + len(RULING31B_PINS)),
                        "from_i5_plan": i5,
-                       "advisory": adv,
+                       "advisory": adv + adv31b,
                        "overlapping": dup},
         },
         "pins": ordered,
     }
     text = json.dumps(payload, indent=1, sort_keys=False) + "\n"
-    outs = [ROOT / d / "config" / "import_pins.json" for d in DECKS]
-    for o in outs:
+    decisions = (len(DECISION_PINS) + len(RULING19_PINS) + len(RULING22_PINS)
+                 + len(RULING25_PINS) + len(RULING31B_PINS))
+    return text, {"total": len(ordered), "stat_diffs": len(pin_rows), "decisions": decisions,
+                  "i5": i5, "advisory": adv + adv31b, "overlapping": dup}
+
+
+OUTS = [ROOT / d / "config" / "import_pins.json" for d in DECKS]
+
+
+def _norm(s: str) -> str:
+    r"""Newline-normalised text.
+
+    NOT COSMETIC. This repo runs `core.autocrlf=true` over an LF index, so a fresh checkout
+    hands you a CRLF working copy of import_pins.json while this generator writes LF -- and
+    a byte comparison would then FAIL on a file whose `git diff` is empty. That exact trap
+    already cost the project a day on `tools/parity_check.py --strict` (HANDOFF SS8). The
+    check compares CONTENT and leaves line endings to git.
+    """
+    return s.replace("\r\n", "\n").replace("\r", "\n")
+
+
+def check() -> int:
+    """Exit 1 when a committed pins file disagrees with what this generator produces.
+
+    Reports the disagreement PER PIN -- (key, field), generator value vs the file's --
+    because the failure being guarded against is ONE silently-lost owner value (ruling
+    31a's electro_giant.reflect_crown_damage, ruling 31b's two Firecracker radii, ruling
+    29's elixir prices), and "the files differ" would not name it.
+    """
+    text, counts = render()
+    mine = {(p["key"], p["field"]): p for p in json.loads(text)["pins"]}
+    bad = 0
+    for out in OUTS:
+        if not out.exists():
+            print(f"MISSING  {out}")
+            bad += 1
+            continue
+        raw = _norm(out.read_text(encoding="utf-8"))
+        if raw == _norm(text):
+            print(f"OK       {out}  ({counts['total']} pins reproduce)")
+            continue
+        bad += 1
+        print(f"STALE    {out}")
+        got = {(p["key"], p["field"]): p for p in json.loads(raw)["pins"]}
+        named = 0
+        for k in sorted(set(mine) | set(got)):
+            a, c = mine.get(k), got.get(k)
+            if a is None:
+                print(f"  ONLY IN THE FILE   {k[0]}.{k[1]} = {c['value']!r}"
+                      "   <- hand-edited; express it in gen_pins.py")
+            elif c is None:
+                print(f"  ONLY IN GENERATOR  {k[0]}.{k[1]} = {a['value']!r}"
+                      "   <- re-run gen_pins.py")
+            elif (a["value"] != c["value"]
+                  or bool(a.get("advisory")) != bool(c.get("advisory"))):
+                print(f"  DISAGREE           {k[0]}.{k[1]}: generator {a['value']!r}"
+                      f" vs file {c['value']!r}")
+            else:
+                continue
+            named += 1
+        if not named:
+            print("  the PIN VALUES all agree -- the difference is in meta/counts/source "
+                  "text; re-run gen_pins.py")
+    if bad:
+        print()
+        print("A PIN THAT ONLY EXISTS IN THE FILE IS A PIN THE NEXT GENERATOR RUN DELETES.")
+        print("Fix it by expressing the value in gen_pins.py (a RULING*_PINS block), never")
+        print("by editing config/import_pins.json -- that is the defect this check exists for.")
+    return 1 if bad else 0
+
+
+def main(argv=None) -> int:
+    argv = list(sys.argv[1:] if argv is None else argv)
+    if "--check" in argv:
+        return check()
+    text, counts = render()
+    for o in OUTS:
         o.write_text(text, encoding="utf-8", newline="\n")
-    same = outs[0].read_bytes() == outs[1].read_bytes()
-    print(f"wrote {len(ordered)} pins ({len(pin_rows)} stat_diffs + "
-          f"{len(DECISION_PINS) + len(RULING19_PINS) + len(RULING22_PINS) + len(RULING25_PINS)}"
-          f" decisions + {i5} I5-plan + {adv} advisory, {dup} overlapping) to:")
-    for o in outs:
+    same = OUTS[0].read_bytes() == OUTS[1].read_bytes()
+    print(f"wrote {counts['total']} pins ({counts['stat_diffs']} stat_diffs + "
+          f"{counts['decisions']} decisions + {counts['i5']} I5-plan + "
+          f"{counts['advisory']} advisory, {counts['overlapping']} overlapping) to:")
+    for o in OUTS:
         print(f"  {o}")
     print(f"pair byte-identical: {same}")
     return 0 if same else 1
