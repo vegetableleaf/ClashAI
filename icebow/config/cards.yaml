@@ -36,7 +36,7 @@ meta:
 deck:
   name: "Icebow X-Bow Control (Classic 1v1)"
   cards:
-    - {card: tornado, level: 14}      # swapped in for royal_delivery 2026-08-04; upgraded 13 -> 14 on 2026-08-16 (real account level, confirmed)
+    - {card: tornado, level: 15}      # swapped in for royal_delivery 2026-08-04; upgraded 13 -> 14 on 2026-08-16 (real account level, confirmed); upgraded 14 -> 15 on 2026-08-27 (real account level, confirmed)
     - {card: tesla,     evolved: true, level: 15}   # upgraded 14 -> 15 on 2026-08-25 (real account level, confirmed)
     - {card: ice_wizard, level: 13}   # upgraded 12 -> 13 on 2026-08-25 (real account level, confirmed)
     - {card: x_bow, level: 16}
