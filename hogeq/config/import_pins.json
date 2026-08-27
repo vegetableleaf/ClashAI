@@ -6,17 +6,19 @@
    "decisions.md 2026-08-26 R2 ADJUDICATION (owner rulings)",
    "ledger/i5_plan.json (rows i5_apply.py routed to the import layer)",
    "decisions.md ruling 19 (owner 2026-08-27, spawned-body elixir)",
-   "decisions.md ruling 22 (owner 2026-08-27, the barrel's roll speed)"
+   "decisions.md ruling 22 (owner 2026-08-27, the barrel's roll speed)",
+   "decisions.md ruling 25 (owner IN-GAME 2026-08-27, the Barbarian's 716 hp)",
+   "decisions.md ruling 27 (owner 2026-08-27, the barrel's crown damage)"
   ],
   "semantics": "the importer applies pins as a post-pass over the scraped rows and --write refuses if a pinned field would regress; value null = the field must not be imported; fields the importer does not emit are advisory (curated layer / stat_sweep EXPECTED sync); an explicit advisory:true pin is recorded for the sweep and never imported",
   "pair": "byte-identical across icebow/ and hogeq/ -- regenerate with the generator and it writes both; never hand-edit one copy",
   "counts": {
-   "total": 185,
+   "total": 195,
    "from_stat_diffs": 66,
-   "from_decisions": 22,
-   "from_i5_plan": 79,
+   "from_decisions": 34,
+   "from_i5_plan": 78,
    "advisory": 22,
-   "overlapping": 4
+   "overlapping": 5
   }
  },
  "pins": [
@@ -71,6 +73,13 @@
   },
   {
    "key": "barbarian_barrel",
+   "field": "crown_tower_damage",
+   "value": 116,
+   "source": "decisions.md ruling 27 (OWNER 2026-08-27): the barrel row published NO crown value, so build_spec's `dmg if _td is None` fallback handed it its FULL 230 against a tower. The hero page's `rerolldmg_11` 116 is the Crown Tower Damage column -- 116/232 is the ordinary 50% reduction, and the variable name is misleading",
+   "date": "2026-08-27"
+  },
+  {
+   "key": "barbarian_barrel",
    "field": "damage",
    "value": 230,
    "source": "I5 apply (RULING): PARENT bucket: the two fields are SWAPPED. 'Barbarian Barrel Area Damage' renders from spawn_11 (230); dmg_11 191 is the spawned Barbarian's swing",
@@ -107,9 +116,16 @@
   {
    "key": "barbarian_hut",
    "field": "spawn_unit_stats",
-   "value": "670/192/1.3",
-   "source": "stat_diffs.jsonl verdict:pin (r2_crosscheck_spawn_anchor.jsonl:25, family xc_spawn_anchor)",
-   "date": "2026-08-26"
+   "value": "716/191/1.4",
+   "source": "decisions.md ruling 25 (OWNER IN-GAME 2026-08-27): a Barbarian has 716 hp at L11 and the barrel drops a NORMAL Barbarian. The base page's own history carries a 4/8/2026 +4% hp buff its hp_11 never received, while Barbarians/Evolution and Barbarian Barrel/Hero both print 716; 2/3/2026 moved the attack speed to 1.4 s and neither barrel page followed -- the hut spawns `barbarians` x3, so its spawned-body anchor moves with them. SUPERSEDES the stat_diffs pin '670/192/1.3'",
+   "date": "2026-08-27"
+  },
+  {
+   "key": "barbarians",
+   "field": "hitpoints",
+   "value": 716,
+   "source": "decisions.md ruling 25 (OWNER IN-GAME 2026-08-27): a Barbarian has 716 hp at L11 and the barrel drops a NORMAL Barbarian. The base page's own history carries a 4/8/2026 +4% hp buff its hp_11 never received, while Barbarians/Evolution and Barbarian Barrel/Hero both print 716; 2/3/2026 moved the attack speed to 1.4 s and neither barrel page followed",
+   "date": "2026-08-27"
   },
   {
    "key": "barbarians_evo",
@@ -128,9 +144,65 @@
   {
    "key": "barbarians_evo",
    "field": "hitpoints",
-   "value": 691,
-   "source": "I5 apply (LAG): WIKI IS SELF-INCONSISTENT. The 4/8/2026 rule is 'Evo HP = base HP', yet the Evo page says 716 and the base page says 691; both cannot be right",
-   "date": "2026-08-26"
+   "value": 716,
+   "source": "decisions.md ruling 25 (OWNER IN-GAME 2026-08-27): a Barbarian has 716 hp at L11 and the barrel drops a NORMAL Barbarian. The base page's own history carries a 4/8/2026 +4% hp buff its hp_11 never received, while Barbarians/Evolution and Barbarian Barrel/Hero both print 716; 2/3/2026 moved the attack speed to 1.4 s and neither barrel page followed -- this SUPERSEDES I5's 691, which was held only because the tie could not be broken; at 716 both pages agree and 4/8/2026's 'Evo HP = base HP' holds",
+   "date": "2026-08-27"
+  },
+  {
+   "key": "barrel_barbarian",
+   "field": "damage",
+   "value": 191,
+   "source": "decisions.md ruling 25 (OWNER IN-GAME 2026-08-27): a Barbarian has 716 hp at L11 and the barrel drops a NORMAL Barbarian. The base page's own history carries a 4/8/2026 +4% hp buff its hp_11 never received, while Barbarians/Evolution and Barbarian Barrel/Hero both print 716; 2/3/2026 moved the attack speed to 1.4 s and neither barrel page followed (was 192, the hero page's own vardefine)",
+   "date": "2026-08-27"
+  },
+  {
+   "key": "barrel_barbarian",
+   "field": "dps",
+   "value": 136,
+   "source": "decisions.md ruling 25 (OWNER IN-GAME 2026-08-27): a Barbarian has 716 hp at L11 and the barrel drops a NORMAL Barbarian. The base page's own history carries a 4/8/2026 +4% hp buff its hp_11 never received, while Barbarians/Evolution and Barbarian Barrel/Hero both print 716; 2/3/2026 moved the attack speed to 1.4 s and neither barrel page followed -- consequential: 191 / 1.4 = 136.4 -> 136",
+   "date": "2026-08-27"
+  },
+  {
+   "key": "barrel_barbarian",
+   "field": "hit_speed",
+   "value": 1.4,
+   "source": "decisions.md ruling 25 (OWNER IN-GAME 2026-08-27): a Barbarian has 716 hp at L11 and the barrel drops a NORMAL Barbarian. The base page's own history carries a 4/8/2026 +4% hp buff its hp_11 never received, while Barbarians/Evolution and Barbarian Barrel/Hero both print 716; 2/3/2026 moved the attack speed to 1.4 s and neither barrel page followed (was 1.3 from the page's Barbarian Attributes table, against its own atk_speed vardefine)",
+   "date": "2026-08-27"
+  },
+  {
+   "key": "barrel_barbarian",
+   "field": "hitpoints",
+   "value": 716,
+   "source": "decisions.md ruling 25 (OWNER IN-GAME 2026-08-27): a Barbarian has 716 hp at L11 and the barrel drops a NORMAL Barbarian. The base page's own history carries a 4/8/2026 +4% hp buff its hp_11 never received, while Barbarians/Evolution and Barbarian Barrel/Hero both print 716; 2/3/2026 moved the attack speed to 1.4 s and neither barrel page followed (already 716; the owner's reading confirms it)",
+   "date": "2026-08-27"
+  },
+  {
+   "key": "base_barrel_barbarian",
+   "field": "damage",
+   "value": 191,
+   "source": "decisions.md ruling 25 (OWNER IN-GAME 2026-08-27): a Barbarian has 716 hp at L11 and the barrel drops a NORMAL Barbarian. The base page's own history carries a 4/8/2026 +4% hp buff its hp_11 never received, while Barbarians/Evolution and Barbarian Barrel/Hero both print 716; 2/3/2026 moved the attack speed to 1.4 s and neither barrel page followed",
+   "date": "2026-08-27"
+  },
+  {
+   "key": "base_barrel_barbarian",
+   "field": "dps",
+   "value": 136,
+   "source": "decisions.md ruling 25 (OWNER IN-GAME 2026-08-27): a Barbarian has 716 hp at L11 and the barrel drops a NORMAL Barbarian. The base page's own history carries a 4/8/2026 +4% hp buff its hp_11 never received, while Barbarians/Evolution and Barbarian Barrel/Hero both print 716; 2/3/2026 moved the attack speed to 1.4 s and neither barrel page followed -- consequential: 191 / 1.4 = 136.4 -> 136",
+   "date": "2026-08-27"
+  },
+  {
+   "key": "base_barrel_barbarian",
+   "field": "hit_speed",
+   "value": 1.4,
+   "source": "decisions.md ruling 25 (OWNER IN-GAME 2026-08-27): a Barbarian has 716 hp at L11 and the barrel drops a NORMAL Barbarian. The base page's own history carries a 4/8/2026 +4% hp buff its hp_11 never received, while Barbarians/Evolution and Barbarian Barrel/Hero both print 716; 2/3/2026 moved the attack speed to 1.4 s and neither barrel page followed",
+   "date": "2026-08-27"
+  },
+  {
+   "key": "base_barrel_barbarian",
+   "field": "hitpoints",
+   "value": 716,
+   "source": "decisions.md ruling 25 (OWNER IN-GAME 2026-08-27): a Barbarian has 716 hp at L11 and the barrel drops a NORMAL Barbarian. The base page's own history carries a 4/8/2026 +4% hp buff its hp_11 never received, while Barbarians/Evolution and Barbarian Barrel/Hero both print 716; 2/3/2026 moved the attack speed to 1.4 s and neither barrel page followed (was 670, two balance updates behind)",
+   "date": "2026-08-27"
   },
   {
    "key": "bats_evo",

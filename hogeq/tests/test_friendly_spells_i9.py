@@ -401,9 +401,15 @@ class BaseBarbarianBarrelTests(unittest.TestCase):
     Barbarian!", lead "Once the spell reaches its destination, it spawns a single Barbarian" --
     and the Strategy section is built on the body: it "can follow up and attack anything while
     alive", and "the spell can be used to separate a building-targeting troop from a regular
-    troop". Barbarian Attributes: Hit Speed 1.3 / First Hit Speed 0.4 / Speed Medium (60) /
-    Deploy Time 0.5 / Range Melee: Short (0.5) / Ground / x1, with vardefines hp_11 670,
-    dmg_11 191.
+    troop". Barbarian Attributes: First Hit Speed 0.4 / Speed Medium (60) / Deploy Time 0.5 /
+    Range Melee: Short (0.5) / Ground / x1.
+
+    ⚠ THE BODY'S NUMBERS MOVED UNDER RULING 25 (owner, in-game 2026-08-27): "the barbarian spawned
+    by the barrel should have the same stats as normal barbarians", and a Barbarian is 716 hp at
+    L11. This page's own hp_11 670 / Hit Speed 1.3 are TWO balance updates behind -- 2/3/2026 (+3%
+    hp, hit speed 1.4 from 1.3) and 4/8/2026 (+4% hp) -- and neither was ever applied here. The two
+    barrel bodies are now numerically one `barbarians`: 716 / 190.4 / 1.4. See
+    `test_barbarian_stats_r25.py`, which owns the evidence and the before/after.
     """
 
     def test_the_base_card_declares_its_barbarian(self):
@@ -412,28 +418,31 @@ class BaseBarbarianBarrelTests(unittest.TestCase):
         self.assertIsNotNone(sp.spawn_spec, "the base card leaves a Barbarian")
         self.assertEqual(sp.spawn_count, 1, "x1")
         b = sp.spawn_spec
-        self.assertAlmostEqual(b.hp, 670.0, places=1)          # hp_11
+        self.assertAlmostEqual(b.hp, 716.0, places=1)          # ruling 25 (MEASURED BEFORE: 670)
         # `hit_dmg` is DERIVED as dps x hit_speed engine-wide, so a KB row whose `dps` is the
-        # wiki's rounded 147 lands at 191.1 rather than exactly 191. The hero's row carries the
-        # same 0.4 offset (192.4 vs 192) -- a pre-existing convention, not this card's doing.
-        self.assertAlmostEqual(b.hit_dmg, 191.0, delta=0.25)   # dmg_11
-        self.assertAlmostEqual(b.hit_speed, 1.3, places=3)
+        # wiki's rounded 136 lands at 190.4 rather than exactly 191 -- a pre-existing convention,
+        # and now the SAME 190.4 the `barbarians` card itself builds to.
+        self.assertAlmostEqual(b.hit_dmg, 191.0, delta=0.7)    # dmg_11
+        self.assertAlmostEqual(b.hit_speed, 1.4, places=3)     # ruling 25 (MEASURED BEFORE: 1.3)
         self.assertAlmostEqual(b.reach, 0.5, places=3)
         self.assertAlmostEqual(b.speed, 1.0, places=3)
         self.assertAlmostEqual(b.deploy_time, 0.5, places=3)
         self.assertFalse(b.attacks_air, "Target Ground")
 
-    def test_the_hero_barrel_keeps_its_own_heavier_barbarian(self):
-        """A separate row on purpose: reusing the hero's `barrel_barbarian` (716 / 192, from the
-        hero page's own vardefines) would have handed the base card a 6.9% hitpoint buff that
-        nobody published."""
+    def test_the_hero_barrel_keeps_its_own_ROW_even_though_the_numbers_now_match(self):
+        """I9 kept these as two rows because reusing the hero's `barrel_barbarian` (716 / 192)
+        would have handed the base card a 6.9% hitpoint buff nobody published. RULING 25 then ruled
+        that the base card's 670 was simply stale -- so the numbers ARE the same now, and the rows
+        stay separate for a different reason: two wiki pages, two revids, two provenances, and a
+        hero page that has diverged before and was the RIGHT one when it did. What still differs is
+        the BUTTON."""
         db = _make_engine().db
         base = build_spec(db, "barbarian_barrel", LVL).spawn_spec
         hero = build_spec(db, "barbarian_barrel_hero", LVL).spawn_spec
         self.assertEqual(base.key, "base_barrel_barbarian")
         self.assertEqual(hero.key, "barrel_barbarian")
         self.assertAlmostEqual(hero.hp, 716.0, places=1)
-        self.assertNotAlmostEqual(base.hp, hero.hp, places=1)
+        self.assertAlmostEqual(base.hp, hero.hp, places=1, msg="ruling 25: one Barbarian")
         self.assertEqual(base.ability_kind, "",
                          "only the HERO's barbarian carries the Rowdy Reroll button")
         self.assertEqual(hero.ability_kind, "reroll")
@@ -447,7 +456,7 @@ class BaseBarbarianBarrelTests(unittest.TestCase):
         bodies = [u for u in eng.units if u.team == 1]
         self.assertEqual(len(bodies), 1, "MEASURED 0 -> 1")
         self.assertEqual(bodies[0].spec.key, "base_barrel_barbarian")
-        self.assertAlmostEqual(bodies[0].hp, 670.0, places=1)
+        self.assertAlmostEqual(bodies[0].hp, 716.0, places=1)  # ruling 25 (MEASURED BEFORE: 670)
 
     def test_the_roll_still_damages_along_its_corridor(self):
         """The body is an addition, not a replacement: the corridor is what the card is FOR.

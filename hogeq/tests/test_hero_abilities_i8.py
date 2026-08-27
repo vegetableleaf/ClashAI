@@ -171,10 +171,12 @@ class HeroRowTests(unittest.TestCase):
         tb = build_spec(eng.db, "tombstone_hero", LVL)
         self.assertAlmostEqual(tb.hp, 529.0, places=1)
         self.assertAlmostEqual(build_spec(eng.db, "tomb_queen", LVL).hp, 4224.0, places=1)
-        # barbarian_barrel_hero's `damage:` is the ROLL's, not the Barbarian's melee
+        # barbarian_barrel_hero's `damage:` is the ROLL's, not the Barbarian's melee. The BODY's
+        # own swing moved to the `barbarians` card's 191 under ruling 25 (was 192.4 from this
+        # page's dmg_11 192) -- see test_barbarian_stats_r25.py.
         bb = build_spec(eng.db, "barbarian_barrel_hero", LVL)
         self.assertAlmostEqual(bb.spell_dmg, 232.0, places=1)
-        self.assertAlmostEqual(build_spec(eng.db, "barrel_barbarian", LVL).hit_dmg, 192.4, places=1)
+        self.assertAlmostEqual(build_spec(eng.db, "barrel_barbarian", LVL).hit_dmg, 190.4, places=1)
 
 
 class BuffSelfTests(unittest.TestCase):

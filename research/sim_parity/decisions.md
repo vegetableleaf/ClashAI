@@ -616,3 +616,102 @@ experiments -> new PPO, without waiting for approval between stages.
     0.3 → 0.2 s (MEASURED, delay → goblins alive: 0.0/0.1/0.2 → 3, and 0 for every delay from 0.3
     to 4.0 s — at 0.2 s the edge is 2.00 tiles along when they spawn 1.92 tiles ahead, already past
     them; at 0.3 s it is 1.67 and still arriving).
+
+25 / 27. **One Barbarian, 716 hitpoints — and the barrel's missing crown damage.**
+
+    Owner, IN-GAME 2026-08-27: *"a Barbarian has 716 hp at level 11"*, and *"the barbarian spawned
+    by the barrel should have the same stats as normal barbarians."*
+
+    ⚠ **THE BRIEF'S FRAMING WAS WRONG, and the correction matters for how much weight the in-game
+    check has to carry.** It said this was *"the same shape as the Electro Dragon 267-vs-192
+    correction: the wiki agrees with the stale number, so `stat_sweep` reported these rows as
+    MATCHING and could never have flagged them."* It did flag them. `stat_sweep` has been printing
+
+    ```
+    barbarians_evo  hp  ours 691.0  wiki 716.0  -- I5 apply (LAG): WIKI IS SELF-INCONSISTENT.
+        The 4/8/2026 rule is 'Evo HP = base HP', yet the Evo page says 716 and the base page
+        says 691; both cannot be right
+    ```
+
+    since I5. The number was surfaced and pinned; what was missing was the **tie-break**. Three
+    published facts all point at 716:
+
+    | page | revid | `hp_11` | its own history |
+    |---|---|---|---|
+    | Barbarians | 437362 | **691** | *"On 4/8/2026 … increased the Barbarians' hitpoints by 4%"* — never applied to the vardefine |
+    | Barbarians/Evolution | 437363 | **716** | *"On 4/8/2026 … REMOVED the Evolved Barbarians' Extra Hitpoints"* → Evo HP == base HP |
+    | Barbarian Barrel/Hero | 437523 | **716** | (the body it drops) |
+
+    **716 for both is the only assignment that satisfies the 4/8/2026 rule**, and once applied the
+    evo row stops being a deviation at all — `stat_sweep --all` now reports **MISMATCHES: 0** with
+    `barbarians_evo` gone from the known-deviation list entirely and `barbarians hp ours 716 / wiki
+    691` in its place, sourced to the ruling.
+
+    **MEASURED BEFORE → AFTER** (level 11):
+
+    ```
+    key                      hp          damage       hit_speed   built hit_dmg
+    barbarians               691 -> 716   191 (kept)   1.4 (kept)   190.4
+    barbarians_evo           691 -> 716   191 (kept)   1.4 (kept)   191.0
+    base_barrel_barbarian    670 -> 716   191 (kept)   1.3 -> 1.4   191.1 -> 190.4
+    barrel_barbarian (hero)  716 (kept)   192 -> 191   1.3 -> 1.4   192.4 -> 190.4
+    barbarian_hut's spawned body:  691 -> 716 each, x3   (INHERITED -- no direct edit, and pinned
+                                                          by a test, because "it inherits" is a
+                                                          claim about resolution order)
+    ```
+
+    The 1.3 → 1.4 is the 2/3/2026 entry on the Barbarians page (*"increased their attack speed to
+    1.4 seconds (from 1.3 seconds)"*) that **neither barrel page ever applied**. The base barrel
+    row's old comment read *"the vardefine `atk_speed` on this page says 1.3 too, so unlike the hero
+    row there is nothing to reconcile here"* — true, and stale together. The hero row's old comment
+    picked 1.3 under rule (b) because the page's Barbarian Attributes **table** says 1.3 against its
+    own `atk_speed` vardefine's 1.4, and read the base barrel's agreement as corroboration; that was
+    two stale tables agreeing. **damage stays 191**, the `barbarians` card's own value, so the
+    barrel drops a *normal* Barbarian and not a 0.5%-stronger one — the 192 on the Evo and Hero
+    pages is level-ladder rounding between independently maintained vardefines, and I5 already
+    pinned `barbarians_evo.damage` to 191 for that exact reason.
+
+    ⚠ **`spawn_unit_stats.hit_speed` is a SECOND copy of the same number, and the hero has its own.**
+    Curating the base row did not reach the hero, whose block comes from `cards_stats.json`
+    (hit_speed 1.3); a stale copy left there would silently override the fix. Both are 1.4 now, and
+    a test checks them separately from the body rows.
+
+    **THE TWO BARREL-BODY ROWS ARE NOT MERGED**, though they are now numerically identical. They are
+    sourced from two different wiki pages with their own revids, `_src` provenance and `verified`
+    flags; the import layer reconciles them per page; and the hero page **has diverged before and
+    was the right one when it did** (it carried 716 while the base carried 670). One row would make
+    the next divergence invisible instead of loud. I9's
+    `test_the_hero_barrel_keeps_its_own_heavier_barbarian` is renamed and rewritten to say so.
+
+    **RULING 27 (same rows, same commit): the barrel's crown damage is 116.** The base
+    `barbarian_barrel` row published **no crown value at all**, so `build_spec`'s `dmg if _td is
+    None` fallback handed it its FULL damage against a Crown Tower — MEASURED **230.0**, and the
+    hero inherited the same fallback at 230.0 against its own 232 roll. The published figure is
+    `rerolldmg_11` **116**: ⚠ that vardefine is the **Crown Tower Damage** column, not a second-roll
+    penalty (116/232 is the ordinary 50% crown reduction; the name is misleading, the same trap
+    class as `spell_radius` meaning corridor HALF-width for a rolling spell). MEASURED after: a
+    barrel rolled over a Crown Tower takes **116.0**, both forms.
+
+    **PINS: 185 → 195**, byte-identical pair, via `gen_pins.py`'s new `RULING25_PINS`. One of them
+    **supersedes an I5 pin** (`barbarians_evo.hitpoints` 691 → 716), which the generator's I5 loop
+    would otherwise refuse with `assert got == value`. That assertion is the right default —
+    silent disagreement between two pin sources is how a curated value gets quietly reverted — so
+    the override is declared **explicitly** in `RULING25_OVERRIDES` rather than by weakening the
+    assertion for everyone. `barbarian_hut.spawn_unit_stats` moves from the stat_diffs pin
+    `'670/192/1.3'` to `'716/191/1.4'` for the same reason.
+
+    **DRILLS: small and mixed, every move ≤ 12 pp**, which is what a 3.6% tougher / 6.7% faster
+    Barbarian should do to matchup drills where the opponent holds Barbarians, Barbarian Hut or
+    Battle Ram.
+
+    ```
+    icebow  log_the_ground_swarm 80/80 -> 76/76   ignore_the_ignorable doctrine 8 -> 16
+            bow_punish_the_commitment 92/84 -> 88/88   nado_the_sneaky_lock doctrine 100 -> 96
+            hold_the_tesla_for_their_wincon 48 -> 44   split_lane scripted 80 -> 84
+    hogeq   log_the_ground_swarm 84/84 -> 92/92   log_the_barrel_on_landing 64 -> 60
+            firecracker_answers_the_air 80 -> 88  hold_the_cheap_answers 20 -> 32
+            mm_blocks_the_tank 40/52 -> 52/48     matchup_lavaloon 60 -> 48
+    ```
+
+    11 new tests (`test_barbarian_stats_r25.py`, byte-identical in both decks); four existing
+    assertions moved to the new numbers, each with its before/after in the line.

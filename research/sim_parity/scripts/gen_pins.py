@@ -159,6 +159,59 @@ RULING22_PINS = [
 ]
 RULING22_DATE = "2026-08-27"
 
+# RULING 25 (owner, IN-GAME 2026-08-27) -- a Barbarian has 716 hitpoints at level 11, and the body
+# the Barbarian Barrel drops is a NORMAL Barbarian.
+#
+# THIS IS NOT THE OWNER AGAINST THE WIKI. It is the owner breaking a tie the wiki has with itself,
+# and I5 recorded that tie without being able to settle it: `barbarians_evo.hitpoints` is pinned
+# 691 with the note "WIKI IS SELF-INCONSISTENT. The 4/8/2026 rule is 'Evo HP = base HP', yet the
+# Evo page says 716 and the base page says 691; both cannot be right." Three pieces of published
+# evidence line up behind 716:
+#   * Barbarians history: "On 4/8/2026, a Balance Update, increased the Barbarians' hitpoints by
+#     4%" -- a buff its own `hp_11` vardefine (691) never received;
+#   * Barbarians/Evolution (revid 437363) `hp_11 716`, with "On 4/8/2026 ... REMOVED the Evolved
+#     Barbarians' Extra Hitpoints", i.e. Evo HP == base HP from that date;
+#   * Barbarian Barrel/Hero (revid 437523) `hp_11 716` for the body it drops.
+# Setting BOTH to 716 is the only assignment that satisfies the 4/8/2026 rule.
+#
+# The barrel bodies also carry the 2/3/2026 attack-speed buff their own pages never applied
+# ("increased their attack speed to 1.4 seconds (from 1.3 seconds)"), and take the `barbarians`
+# card's damage 191 so the barrel drops a Barbarian and not a 0.5%-stronger one.
+_R25 = ("decisions.md ruling 25 (OWNER IN-GAME 2026-08-27): a Barbarian has 716 hp at L11 and the "
+        "barrel drops a NORMAL Barbarian. The base page's own history carries a 4/8/2026 +4% hp "
+        "buff its hp_11 never received, while Barbarians/Evolution and Barbarian Barrel/Hero both "
+        "print 716; 2/3/2026 moved the attack speed to 1.4 s and neither barrel page followed")
+RULING25_PINS = [
+    ("barbarians", "hitpoints", 716, _R25),
+    ("barbarians_evo", "hitpoints", 716,
+     _R25 + " -- this SUPERSEDES I5's 691, which was held only because the tie could not be "
+            "broken; at 716 both pages agree and 4/8/2026's 'Evo HP = base HP' holds"),
+    ("base_barrel_barbarian", "hitpoints", 716, _R25 + " (was 670, two balance updates behind)"),
+    ("base_barrel_barbarian", "damage", 191, _R25),
+    ("base_barrel_barbarian", "dps", 136, _R25 + " -- consequential: 191 / 1.4 = 136.4 -> 136"),
+    ("base_barrel_barbarian", "hit_speed", 1.4, _R25),
+    ("barrel_barbarian", "hitpoints", 716, _R25 + " (already 716; the owner's reading confirms it)"),
+    ("barrel_barbarian", "damage", 191, _R25 + " (was 192, the hero page's own vardefine)"),
+    ("barrel_barbarian", "dps", 136, _R25 + " -- consequential: 191 / 1.4 = 136.4 -> 136"),
+    ("barrel_barbarian", "hit_speed", 1.4, _R25 + " (was 1.3 from the page's Barbarian Attributes "
+                                                  "table, against its own atk_speed vardefine)"),
+    ("barbarian_hut", "spawn_unit_stats", "716/191/1.4",
+     _R25 + " -- the hut spawns `barbarians` x3, so its spawned-body anchor moves with them. "
+            "SUPERSEDES the stat_diffs pin '670/192/1.3'"),
+    # RULING 27 (owner, 2026-08-27), same commit because it is the same row.
+    ("barbarian_barrel", "crown_tower_damage", 116,
+     "decisions.md ruling 27 (OWNER 2026-08-27): the barrel row published NO crown value, so "
+     "build_spec's `dmg if _td is None` fallback handed it its FULL 230 against a tower. The hero "
+     "page's `rerolldmg_11` 116 is the Crown Tower Damage column -- 116/232 is the ordinary 50% "
+     "reduction, and the variable name is misleading"),
+]
+RULING25_DATE = "2026-08-27"
+# (key, field) pairs ruling 25 OVERRIDES. The I5 loop below asserts that an earlier pin agrees with
+# the plan it is replaying, which is the right default -- silent disagreement between two pin
+# sources is how a curated value gets quietly reverted. An owner ruling that supersedes a recorded
+# I5 value has to say so EXPLICITLY, here, rather than by weakening that assertion for everyone.
+RULING25_OVERRIDES = {(k, f) for k, f, _v, _w in RULING25_PINS}
+
 I5_PLAN = LEDGER / "i5_plan.json"
 _DROP = "__DROP__"
 
@@ -226,6 +279,15 @@ def main() -> int:
             pins[(key, field)] = {"key": key, "field": field, "value": value,
                                   "source": why, "date": RULING19_DATE}
 
+    for key, field, value, why in RULING25_PINS:
+        if (key, field) in pins:
+            pins[(key, field)] = {"key": key, "field": field, "value": value,
+                                  "source": why, "date": RULING25_DATE}
+            dup += 1
+        else:
+            pins[(key, field)] = {"key": key, "field": field, "value": value,
+                                  "source": why, "date": RULING25_DATE}
+
     for key, field, value, why in RULING22_PINS:
         if (key, field) in pins:
             got = pins[(key, field)]["value"]
@@ -249,6 +311,8 @@ def main() -> int:
             value = None if row["after"] == _DROP else row["after"]
             why = "I5 apply (%s%s): %s" % (row["bucket"], ", curated" if advisory else "",
                                            row["ruling"])
+            if (key, field) in RULING25_OVERRIDES:
+                continue                    # an owner ruling supersedes the recorded I5 value
             if (key, field) in pins:
                 got = pins[(key, field)]["value"]
                 assert got == value, ("pin disagreement for %s.%s: existing %r vs I5 plan %r"
@@ -278,7 +342,9 @@ def main() -> int:
                         "decisions.md 2026-08-26 R2 ADJUDICATION (owner rulings)",
                         "ledger/i5_plan.json (rows i5_apply.py routed to the import layer)",
                         "decisions.md ruling 19 (owner 2026-08-27, spawned-body elixir)",
-                        "decisions.md ruling 22 (owner 2026-08-27, the barrel's roll speed)"],
+                        "decisions.md ruling 22 (owner 2026-08-27, the barrel's roll speed)",
+                        "decisions.md ruling 25 (owner IN-GAME 2026-08-27, the Barbarian's 716 hp)",
+                        "decisions.md ruling 27 (owner 2026-08-27, the barrel's crown damage)"],
             "semantics": "the importer applies pins as a post-pass over the scraped rows and "
                          "--write refuses if a pinned field would regress; value null = the "
                          "field must not be imported; fields the importer does not emit are "
@@ -289,7 +355,7 @@ def main() -> int:
             "counts": {"total": len(ordered),
                        "from_stat_diffs": len(pin_rows),
                        "from_decisions": (len(DECISION_PINS) + len(RULING19_PINS)
-                                          + len(RULING22_PINS)),
+                                          + len(RULING22_PINS) + len(RULING25_PINS)),
                        "from_i5_plan": i5,
                        "advisory": adv,
                        "overlapping": dup},
@@ -302,8 +368,8 @@ def main() -> int:
         o.write_text(text, encoding="utf-8", newline="\n")
     same = outs[0].read_bytes() == outs[1].read_bytes()
     print(f"wrote {len(ordered)} pins ({len(pin_rows)} stat_diffs + "
-          f"{len(DECISION_PINS) + len(RULING19_PINS) + len(RULING22_PINS)} decisions + "
-          f"{i5} I5-plan + {adv} advisory, {dup} overlapping) to:")
+          f"{len(DECISION_PINS) + len(RULING19_PINS) + len(RULING22_PINS) + len(RULING25_PINS)}"
+          f" decisions + {i5} I5-plan + {adv} advisory, {dup} overlapping) to:")
     for o in outs:
         print(f"  {o}")
     print(f"pair byte-identical: {same}")

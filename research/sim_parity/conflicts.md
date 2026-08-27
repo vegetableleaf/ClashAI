@@ -1841,3 +1841,53 @@ same class as `spell_radius` meaning corridor half-width (RS-1).
 after normalisation, so `git diff` was empty in both decks while `parity_check` reported UNEXPECTED
 DIVERGENCE and exited 1. This is exactly the `core.autocrlf=true` trap already recorded at I10.
 Both are CRLF now (which is what git checks out), and parity went 1 → 0.
+
+### ⚠ RS-10 (PREMISE IN THE BRIEF THAT WAS WRONG). `stat_sweep` HAD flagged the Barbarian's hitpoints.
+
+The ruling-25 brief said the wiki agreed with the stale number and *"only the in-game check finds
+this class of error"*. `stat_sweep --all` had been printing `barbarians_evo hp ours 691.0 wiki
+716.0` since I5, pinned with the note *"WIKI IS SELF-INCONSISTENT … both cannot be right"*. The
+number was flagged; the **tie-break** was missing, and that is what the owner supplied. The
+distinction matters: the sweep is not blind to this class of error, so the right lesson is
+"a self-inconsistent wiki needs an owner to break the tie", not "the sweep cannot see it".
+
+The base Barbarians page's own history also carries the buff the vardefine never received — *"On
+4/8/2026, a Balance Update, increased the Barbarians' hitpoints by 4%"* — so a **history-vs-
+vardefine** cross-check would find this class of staleness without any in-game reading at all.
+**OWNER / FOLLOW-UP: no such check exists.** `stat_sweep` compares our KB against the wiki's
+vardefines; nothing compares a page's vardefines against its own balance history. Three of the four
+stale numbers in this ruling (base hp, base barrel hp, both hit speeds) would have been caught.
+
+⚠ The arithmetic does not close exactly: 691 x 1.04 = 718.6, not 716, and 716/691 = +3.6% rather
+than the stated +4%. Supercell's ladder is level-1-based and rounded there before scaling, which is
+where the point or two goes — the same reason `hit_dmg` lands at 190.4 for a published 191.
+
+### ⚠ RS-11 (RECORDED). The barrel's Barbarian damage: 191 or 192?
+
+Shipped **191**, the `barbarians` card's value, on the ruling's own logic ("the same stats as normal
+barbarians"). The Barbarians/Evolution and Barbarian Barrel/Hero pages both print `dmg_11` **192**.
+The gap is 0.5% — level-ladder rounding between three independently maintained vardefines — and I5
+had already pinned `barbarians_evo.damage` to 191 for exactly this, noting *"since 3/10/2023 the Evo
+has NO damage boost, so its damage must equal the base's, yet the Evo page says 192 and the base
+page says 191 -- 1-point drift"*. Recorded because the hero body moved 192 -> 191 as a consequence,
+which is a change **against** its own page.
+
+### ⚠ RS-12 (RECORDED). The two barrel-body rows are now identical and are deliberately NOT merged.
+
+`base_barrel_barbarian` and `barrel_barbarian` build to the same 716 / 190.4 / 1.4 / count 1. Kept
+as two rows: two wiki pages, two revids, two `_src` provenances and two `verified` flags; the import
+layer reconciles per page; and the hero page has diverged before **and was the correct one when it
+did** (716 against the base's 670). Merging would make the next divergence invisible rather than
+loud, and would require re-pointing `spawns_troop` on both cards. What still genuinely differs is
+the ability button: only `barrel_barbarian` carries `ability_kind: reroll`.
+
+### ⚠ RS-13 (FIXED, and it was a live bug). A missing `crown_tower_damage` is not zero — it is FULL damage.
+
+`build_spec`: `tower_dmg = float(dmg if _td is None else _td)`. The base `barbarian_barrel` row
+published no crown value, so the barrel chipped a Crown Tower for its **full 230** — MEASURED — and
+`barbarian_barrel_hero` inherited the same fallback against its 232. The published figure is 116.
+This is the mirror image of the bug the same line already carries a comment about (I5's Royal
+Delivery, where a published **0** was being treated as missing and falling back to full damage):
+the fallback is correct for a genuinely missing value and wrong whenever the value is merely
+un-imported. **FOLLOW-UP: how many other spells reach `spell_tower_dmg == spell_dmg` through this
+fallback rather than by publishing it?** Not swept here.

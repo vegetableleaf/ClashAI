@@ -214,7 +214,15 @@ cards:
   # provenance in research/sim_parity/ledger/i5_applied.jsonl).
   #   hit_rage_s: SUPERSEDED 3.0 -> 5.0. CURATED verified:true (3.0) so flagged, not overwritten
   #     -- but every available path says 5 s. Recommend 5.0
-  barbarians_evo: {hit_rage_s: 5.0, hit_rage_boost: 0.3, verified: true}
+  # RULING 25 (owner, IN-GAME 2026-08-27) closes I5's recorded self-inconsistency, and closes it in
+  # the direction that makes BOTH pages agree:
+  #   hitpoints: SUPERSEDED 691 -> 716. The Evo page's own `hp_11` says 716 and its history says
+  #   "On 4/8/2026, a Balance Update, REMOVED the Evolved Barbarians' Extra Hitpoints" -- i.e. from
+  #   that date Evo HP == base HP. I5 held 691 because the base page said 691 and could not tell
+  #   which side was stale; with the base now ruled to 716 the two are equal, which is exactly what
+  #   the 4/8/2026 entry requires. `stat_sweep` HAD been reporting this row (ours 691 / wiki 716)
+  #   as a known deviation all along -- it flagged the number and only the tie-break was missing.
+  barbarians_evo: {hitpoints: 716, hit_rage_s: 5.0, hit_rage_boost: 0.3, verified: true}
   # EVO VALKYRIE: "every time [she] attacks, a Tornado appears for half a second, pulling all
   # units towards her" -- 5.5-tile radius, 76 tornado damage, ground AND air (reuses the vortex).
   # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
@@ -1807,7 +1815,13 @@ cards:
   # table or history entry, unlike The Log, whose 20/10/2016 entry set it to 200 -- so it is PINNED
   # in config/import_pins.json and a re-import cannot null it back out. At 200 (= 3.333 tiles/s)
   # the barrel's 4.5 tiles sweep in 1.35 s, a little under half The Log's 2.88 s for 9.6.
-  barbarian_barrel: {kind: spell, flags: [rolls, splash, own_half_only], roll_tiles: 4.5, width_tiles: 2.6, roll_speed: 200, spawns_troop: {unit: base_barrel_barbarian, count: 1}, spawn_unit_stats: {range_tiles: 0.5, speed_tiles: 1.0, hit_speed: 1.3, deploy_time: 0.5}, verified: true}
+  # RULING 25: `spawn_unit_stats.hit_speed` 1.3 -> 1.4 with the body row. It is a SECOND copy of
+  # the same number and would have silently overridden the fix if left behind.
+  # RULING 27: crown_tower_damage 116. The row published NO crown value at all, so `build_spec`'s
+  # `dmg if _td is None` fallback handed the barrel its FULL 230 against a tower -- measured. The
+  # hero page's `rerolldmg_11` 116 is the Crown Tower Damage column (116/232 is the ordinary 50%
+  # reduction; the variable name is misleading), and 230 * 0.5 = 115 -> the published 116.
+  barbarian_barrel: {kind: spell, flags: [rolls, splash, own_half_only], roll_tiles: 4.5, width_tiles: 2.6, roll_speed: 200, crown_tower_damage: 116, spawns_troop: {unit: base_barrel_barbarian, count: 1}, spawn_unit_stats: {range_tiles: 0.5, speed_tiles: 1.0, hit_speed: 1.4, deploy_time: 0.5}, verified: true}
   # Giant Snowball: "slows enemies in its radius for 3 seconds and inflict knockback"; pushback range
   # 1.8 tiles per the 6/9/2021 Quarter 3 Update ("increased ... to 1.8 tiles (from 1.5 tiles)").
   giant_snowball: {kind: spell, flags: [knockback, slow], knockback_tiles: 1.8, verified: true}
@@ -2175,7 +2189,15 @@ cards:
   #     the correct evo_cycles=1
   #   unsourced: true -- decisions.md #11: no path publishes these; the sim's own values are kept
   #     and MARKED rather than replaced by a guess.
-  barbarians: {range: melee, attacks: [ground], count: 5, flags: [swarm], unsourced: true, evolution: {available: true}, verified: false}
+  # RULING 25 (owner, IN-GAME 2026-08-27): a Barbarian has 716 hitpoints at level 11.
+  #   hitpoints: SUPERSEDED 691 -> 716. The card page's OWN history carries the buff -- "On
+  #   4/8/2026, a Balance Update, increased the Barbarians' hitpoints by 4%" -- and its `hp_11`
+  #   vardefine was never updated to match (691 * 1.04 = 718.6). Two OTHER pages already print the
+  #   post-buff figure: Barbarians/Evolution (revid 437363) and Barbarian Barrel/Hero (revid
+  #   437523) both say hp_11 716. So this is not the owner against the wiki; it is the owner
+  #   breaking a tie the wiki has with itself, which I5 recorded and could not settle -- see the
+  #   `barbarians_evo` pin, "WIKI IS SELF-INCONSISTENT ... both cannot be right".
+  barbarians: {range: melee, attacks: [ground], count: 5, flags: [swarm], hitpoints: 716, unsourced: true, evolution: {available: true}, verified: false}
   # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
   # provenance in research/sim_parity/ledger/i5_applied.jsonl).
   #   unsourced: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11: no path
@@ -3329,11 +3351,23 @@ cards:
                                    # published.
     count: 1
     win_condition: false
-    hitpoints: 670
+    # RULING 25 (owner, 2026-08-27): "the barbarian spawned by the barrel should have the same
+    # stats as normal barbarians." So this row is now a single `barbarians` body:
+    #   hitpoints: SUPERSEDED 670 -> 716 (the ruled Barbarian hp; the barrel page's hp_11 670 is
+    #     TWO balance updates behind -- it predates both 2/3/2026's +3% and 4/8/2026's +4%)
+    #   hit_speed: SUPERSEDED 1.3 -> 1.4, and dps 147 -> 136 with it. 2/3/2026: "increased their
+    #     attack speed to 1.4 seconds (from 1.3 seconds)" on the Barbarians page. The comment that
+    #     used to sit here said this page's `atk_speed` agreed at 1.3 and there was "nothing to
+    #     reconcile" -- true, and both were simply stale together.
+    #   damage stays 191, the `barbarians` card's own value. The Evo and Hero pages print 192; the
+    #     0.5% gap is level-ladder rounding between independently maintained vardefines and I5
+    #     already pinned `barbarians_evo.damage` to 191 for the same reason.
+    # 136 * 1.4 = 190.4, which is EXACTLY what `barbarians` builds to -- the two bodies are now
+    # numerically one Barbarian, which is the whole of the ruling.
+    hitpoints: 716
     damage: 191
-    dps: 147
-    hit_speed: 1.3                 # the vardefine `atk_speed` on this page says 1.3 too, so
-                                   # unlike the hero row there is nothing to reconcile here.
+    dps: 136
+    hit_speed: 1.4
     range_tiles: 0.5
     speed_tiles: 1.0
     first_hit_speed_s: 0.4
@@ -3350,13 +3384,23 @@ cards:
     range: melee
     count: 1
     win_condition: false
+    # RULING 25 (owner, 2026-08-27): the same normal Barbarian as the base row -- 716 / 191 / 1.4.
+    #   hitpoints 716 was already right, and is now corroborated by the owner's in-game reading.
+    #   hit_speed: SUPERSEDED 1.3 -> 1.4. The old comment chose 1.3 under rule (b) because the
+    #     page's Barbarian Attributes TABLE says 1.3 while its `atk_speed` vardefine says 1.4, and
+    #     took the table's agreement with the base barrel as corroboration. Both tables were stale:
+    #     2/3/2026 moved the Barbarians to 1.4 and neither barrel page followed. The vardefine wins.
+    #   damage: SUPERSEDED 192 -> 191, the `barbarians` card's value, so the barrel drops a NORMAL
+    #     Barbarian rather than a 0.5%-stronger one. dps 148 -> 136 with it (136 * 1.4 = 190.4).
+    # NOT MERGED with `base_barrel_barbarian` even though the two rows are now identical: they are
+    # sourced from two different wiki pages with their own revids, `_src` provenance and `verified`
+    # flags, the import layer reconciles them per page, and the hero page has diverged before (it
+    # carried 716 while the base carried 670 -- and it was the RIGHT one). One row would make the
+    # next divergence invisible instead of loud.
     hitpoints: 716
-    damage: 192
-    dps: 148
-    hit_speed: 1.3                 # rule (b): the Barbarian Attributes table says 1.3 s, the
-                                   # vardefine atk_speed says 1.4. The table is this page's own
-                                   # statement about the body and it agrees with the base card's
-                                   # barrel-barbarian (1.3); recorded in conflicts.md.
+    damage: 191
+    dps: 136
+    hit_speed: 1.4
     range_tiles: 0.5
     speed_tiles: 1.0
     first_hit_speed_s: 0.4
@@ -3580,4 +3624,7 @@ cards:
   #     roll's damage (the base card carries 230 there). The scrape put the BARBARIAN's 192 on it,
   #     which would have made the hero barrel roll for LESS than the base card; 192 is on the
   #     `barrel_barbarian` row, where the page puts it.
-  barbarian_barrel_hero: {damage: 232, spawns_troop: {unit: barrel_barbarian, count: 1}, ability_kind: reroll, ability_cost: 1, ability_uses: 1, ability_delay_s: 1.0, ability_range_tiles: 3.0, ability_radius_tiles: 1.3, ability_damage: 232, ability_crown_tower_damage: 116, ability_heal_frac: 0.50, ability_ai: {family: defensive, crowd_n: 1, crowd_tiles: 4.0}, verified: false}
+  # RULING 25: the hero row carries its OWN imported `spawn_unit_stats` (from cards_stats.json,
+  # hit_speed 1.3), so curating the base row did NOT reach it -- a second stale copy of exactly the
+  # number the ruling moves. Written out in full because the curated layer replaces the block.
+  barbarian_barrel_hero: {damage: 232, spawn_unit_stats: {range_tiles: 0.5, speed_tiles: 1.0, hit_speed: 1.4, deploy_time: 0.5}, spawns_troop: {unit: barrel_barbarian, count: 1}, ability_kind: reroll, ability_cost: 1, ability_uses: 1, ability_delay_s: 1.0, ability_range_tiles: 3.0, ability_radius_tiles: 1.3, ability_damage: 232, ability_crown_tower_damage: 116, ability_heal_frac: 0.50, ability_ai: {family: defensive, crowd_n: 1, crowd_tiles: 4.0}, verified: false}
