@@ -1642,6 +1642,9 @@ class Projectile:
     spark_end_dmg: float = 0.0
     spark_end_r: float = 0.0     # that zone's radius -- the carrier's LARGE circle vs a bolt's
     spark_end_dur: float = 0.0   # small one -- and its lifetime (ruling 31b: 2.5t/3s vs 1.2t/2.5s)
+    # HERO WIZARD (ruling 31c): the ability-fireball's tornado rides the shot and spins up
+    # where the flight ENDS -- the vortex spec to spawn there, or None for every other shot.
+    nado_spec: object = None
     # WHO FIRED IT (Unit or Tower), for the Zap Pack (ruling 31a): the Electro Giant zaps back at
     # whatever DAMAGED him from inside his radius, and a shot that lands is its shooter's hit --
     # without this the reflection only ever saw melee attackers, because the projectile paths
@@ -4131,16 +4134,27 @@ class SimEngine:
         # T1 EVO on-swing effects: fire once per ATTACK (the swing), independent of what it lands on
         if u.spec.recoil_dmg > 0.0:                          # Evo Royal Giant's recoil blast
             self._recoil_blast(u)
+        pending_nado = None
         if u.spec.attack_nado_s > 0.0 and (not u.spec.attack_nado_ability
                                            or u.ability_active_s > 0.0):
             # Evo Valkyrie's whirlwind -- and, gated on the ability, the Hero Wizard's, which his
             # own page tells us to model this way: "his fireballs also create 3 tile radius
             # tornadoes, which does its own damage (reduced against crown towers), SIMILAR TO THE
             # EVOLVED VALKYRIE". Same mechanic, same vortex, one flag for the gate.
+            #
+            # WHERE it spins up depends on the attack's own delivery shape (ruling 31c, owner
+            # report 2026-08-27): "his FIREBALLS create ... tornadoes", so a PROJECTILE
+            # attack's tornado rides the shot and spawns where it LANDS -- while the
+            # Valkyrie's melee spin is the whirl of her own axe and stays centred on her.
+            # proj_speed > 0 is the same field that routes the swing through _launch, so the
+            # two cannot drift apart.
             nspec = replace(u.spec, pull_radius=u.spec.attack_nado_r,
                             pull_duration=u.spec.attack_nado_s, spell_dmg=u.spec.attack_nado_dmg,
                             spell_tower_dmg=(u.spec.attack_nado_crown or u.spec.attack_nado_dmg))
-            self.vortices.append(_Vortex(u.team, u.x, u.y, nspec, u.spec.attack_nado_s))
+            if u.spec.proj_speed > 0.0:
+                pending_nado = nspec
+            else:
+                self.vortices.append(_Vortex(u.team, u.x, u.y, nspec, u.spec.attack_nado_s))
         if u.spec.ability_charge_hit_s > 0.0:
             # THE PANCAKE BAR: "he can also get 10 seconds of progress with every attack" -- on the
             # SWING, whatever it lands on, which is why it is counted here and not in `_land_hit`.
@@ -4219,7 +4233,7 @@ class SimEngine:
                     dps = u.spec.poison_stages[min(len(u.spec.poison_stages) - 1, int(u.age // 15.0))]
                 fspec = replace(fspec, poison_dps=dps)
             self._launch(f"{u.spec.base}_projectile", u.team, u.x, u.y, ref, fspec, dmg, tower_dmg,
-                         shooter=u)
+                         shooter=u, nado=pending_nado)
             self._recoil(u, ref)
             return
         # SPLIT (Electro Wizard): "If 2 or more targets are within his range, his attack will SPLIT
@@ -4406,7 +4420,8 @@ class SimEngine:
             attacker.stun_left = max(attacker.stun_left, victim.spec.reflect_stun)
 
     def _launch(self, label: str, team: int, x: float, y: float, ref, spec: CardSpec,
-                dmg: float, tower_dmg: float, shooter: "Unit | None" = None) -> None:
+                dmg: float, tower_dmg: float, shooter: "Unit | None" = None,
+                nado: "CardSpec | None" = None) -> None:
         radius = spec.proj_radius
         rng = spec.proj_range or (spec.reach + _REACH_SLOP)
         pierce = spec.proj_pierce and spec.multi_kind not in ("spark", "shotgun")
@@ -4427,7 +4442,7 @@ class SimEngine:
             # SPARK and SHOTGUN shots must not pierce: a piercing shot is deleted at max range and
             # never reaches _impact, so their extra hits would never fire. Both burst ON the target.
             pierce=pierce, width=spec.proj_width, dirx=dx, diry=dy, ox=x, oy=y,
-            bounces_left=spec.bounce_n, shooter=shooter,
+            bounces_left=spec.bounce_n, shooter=shooter, nado_spec=nado,
             spark_end_dmg=spec.spark_dps_big * 0.25,    # Evo FC: ONE large zone on the impact point
             spark_end_r=spec.spark_r_big or spec.spark_r,
             spark_end_dur=spec.spark_dur_big or spec.spark_dur))
@@ -4556,6 +4571,7 @@ class SimEngine:
                         p.hit.clear()
                         continue
                     self._drop_spark_zone(p)   # Evo FC shrapnel: one SMALL zone at the end of its run
+                    self._drop_nado(p)         # Hero Wizard: the fireball's tornado, where it died
                     self.projectiles.remove(p)
                 continue
             dxt, dyt = (p.tx - p.x) * _TILES_X, (p.ty - p.y) * _TILES_Y
@@ -4567,8 +4583,21 @@ class SimEngine:
             p.left -= step
             if d <= step or p.left <= 0.0:            # ARRIVED
                 self._drop_spark_zone(p)   # Evo FC carrier: one LARGE zone on the impact point
+                self._drop_nado(p)         # Hero Wizard: the tornado spins up ON the landing point
                 self._impact(p)
                 self.projectiles.remove(p)
+
+    def _drop_nado(self, p: "Projectile") -> None:
+        """HERO WIZARD'S FIERY FLIGHT (ruling 31c; Wizard/Hero revid 437515; owner report
+        2026-08-27): "his fireballs also create 3 tile radius tornadoes" -- the tornado
+        belongs to the FIREBALL, so it spawns where the shot's flight ends (its landing
+        point), not where the Wizard stood when he threw it. Before this the vortex was
+        appended at swing time on (u.x, u.y): a fireball thrown 5 tiles downrange pulled
+        troops around the WIZARD, which both misplaces the pull and reads as an oversized
+        radius from the receiving side."""
+        if p.nado_spec is not None:
+            self.vortices.append(_Vortex(p.team, p.x, p.y, p.nado_spec,
+                                         p.nado_spec.pull_duration))
 
     def _drop_spark_zone(self, p: Projectile) -> None:
         """EVO FIRECRACKER: leave this shot's lingering spark zone where its flight ENDED.
@@ -6621,9 +6650,13 @@ def _ability_flight_nado(eng: "SimEngine", u: "Unit") -> None:
     tornadoes are the Evo Valkyrie's `attack_nado_*` vortex behind an ability gate, which is what
     the page itself asks for by naming her.
 
-    TORNADO RADIUS 4, not the prose's 3, and ability cost 1, not the infobox's 2: rule (b) both
-    times. The cost is a genuine 2-vs-2 split (infobox + prose twice against the on-page ability
-    table + the Heroes master table) and is recorded in conflicts.md.
+    TORNADO RADIUS 3 (ruling 31c, 2026-08-27, superseding I8-8's rule-(b) call of 4): the
+    owner watched the live ability and reported the pull "unusually large", which sides with
+    the prose's "3 tile radius tornadoes" against the lone on-page ability-table Radius of 4
+    -- and an owner in-game check outranks both (the same table family carried the Evo
+    Valkyrie's stale 5.5-vs-5 radius). Ability cost 1, not the infobox's 2: rule (b), a
+    genuine 2-vs-2 split (infobox + prose twice against the on-page ability table + the
+    Heroes master table), recorded in conflicts.md.
     """
     s = u.spec
     u.ability_active_s = s.ability_duration_s

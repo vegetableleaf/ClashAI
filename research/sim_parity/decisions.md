@@ -820,3 +820,42 @@ life **3.0 s** / tick 48, FIVE at the bolt ends with radius **1.2** / life **2.5
 spark and missed by the shrapnel sparks, exactly the owner's reported asymmetry.
 
 Test: tests/test_spark_radius_r31b.py (3 tests, byte-identical both decks).
+
+### 31c -- Hero Wizard: tornado radius 3 (not 4), centred on the fireball's LANDING point
+
+Owner report: "Wizard hero's ability pull seems to have an unusually large radius, check to
+see if it's correct. also, the pull center should be at his projectile's landing position,
+not starting position."
+
+**RADIUS -- what each source says** (Wizard/Hero revid 437515, re-fetched live 2026-08-27,
+identical to cache): the prose says "his fireballs also create 3 TILE RADIUS tornadoes"; the
+page's Tornado Ability Attributes table says Radius 4; the Heroes master table (revid on
+file) carries no radius at all. I8-8 took 4 under rule (b) (table beats prose). The owner's
+in-game look now sides with the prose, and an owner check outranks a lone table column --
+the same table family holds the Evo Valkyrie's tornado radius at 5.5 against her own
+History's 1/12/2025 nerf to 5, so these ability tables demonstrably go stale.
+`attack_nado_radius_tiles` 4.0 -> **3.0**, I8-8 marked superseded in conflicts.md, the 4
+recorded there.
+
+**CENTRE, MEASURED BEFORE** (engine at the 31b commit): Hero Wizard, ability up, target 5.0
+tiles downrange -- the vortex appeared at the SWING, centred **dy=0.00 tiles from the
+Wizard** (his own position), and the fireball's flight changed nothing. His page ties the
+tornado to the FIREBALL ("his fireballs also create ... tornadoes"), so the pull belongs at
+its landing point.
+
+**CHANGE**: a projectile-delivered attack_nado rides the shot (`Projectile.nado_spec`,
+spawned by `_drop_nado` where the flight ends -- the same two sites that drop the Evo
+Firecracker's spark zones); an instant/melee attack_nado keeps the old swing-time,
+own-position spawn. The two are told apart by `spec.proj_speed > 0` -- the attack's own
+delivery shape, the same field that routes a swing through `_launch` -- never by card name.
+Only two cards carry attack_nado today: wizard_hero (proj_speed 10 -> landing point) and
+valkyrie_evo (proj_speed 0 -> unchanged).
+
+**MEASURED AFTER**: same board -- no vortex at the swing; after the flight, ONE vortex at
+**dy=5.0 tiles** (the landing point, within a body radius), pull_radius **3.0**, duration
+2.0 unchanged. Evo Valkyrie regression: her swing still spawns the vortex immediately at
+**dy=0.00 from her own centre**, radius **5.5** untouched. The two owner complaints were one
+mechanism: a 4-tile pull centred up to 5.5 tiles behind the fireball reads as an enormous
+radius from the receiving side.
+
+Test: tests/test_wizard_nado_landing_r31c.py (4 tests, byte-identical both decks).

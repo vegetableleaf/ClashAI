@@ -812,8 +812,10 @@ class FlightNadoTests(unittest.TestCase):
         SIMILAR TO THE EVOLVED VALKYRIE."
 
         The page names the mechanic we already have, so the tornado IS the Evo Valkyrie's vortex
-        behind an ability gate -- `attack_nado_ability`. Radius 4 not the prose's 3 (rule (b)), and
-        the crown value is 43 x 0.36 from History 23/2/2026's published -64%.
+        behind an ability gate -- `attack_nado_ability`. Radius 3 (ruling 31c, superseding
+        I8-8's rule-(b) 4: the owner watched the live pull and sided with the prose), spawned
+        at the FIREBALL'S LANDING POINT -- see test_wizard_nado_landing_r31c -- and the crown
+        value is 43 x 0.36 from History 23/2/2026's published -64%.
         """
         eng = _quiet(_make_engine())
         wz = _hero(eng, "wizard", 0.5, 0.45, mute=False)

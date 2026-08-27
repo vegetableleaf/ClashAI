@@ -1927,3 +1927,16 @@ a spell on an E-Giant standing at a King Tower zaps (and stuns, and can ACTIVATE
 spells carry none, so the sim's spells neither zap back nor stun the caster's King. Marginal for
 1v1 (the trick is framed for 2v2 King activation), and implementing it would mean inventing a
 spell-owner->King mapping the engine does not otherwise need. Revisit if an owner report names it.
+
+## 2026-08-27 -- Ruling 31c supersedes I8-8 (Hero Wizard tornado radius)
+
+I8-8 ("Tornado radius: prose 3, table 4 -> 4, rule (b)") is SUPERSEDED by an owner in-game
+check: the live pull looked "unusually large", which sides with the prose's "3 tile radius
+tornadoes". Rule (b) was the right call on the evidence it had -- a machine-readable table
+against prose -- but the table column stands alone (the Heroes master table carries no radius),
+and the same ability-table family holds the Evo Valkyrie's radius at 5.5 against her own
+History's 1/12/2025 "decreased ... to 5", a documented staleness. attack_nado_radius_tiles is
+now 3.0 in both decks; the 4 stays recorded here. NOTE the same owner report also moved the
+vortex to the fireball's LANDING point (it spawned on the Wizard at swing time) -- that half
+was a plain bug, not an evidence conflict; measured in decisions.md ruling 31c.
+

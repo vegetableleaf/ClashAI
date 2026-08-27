@@ -3537,7 +3537,13 @@ cards:
   #   attack_nado_crown_damage 15.5 = 43 x 0.36, History 23/2/2026 "decreased the hero wizards
   #     crown tower damage by 64%" applied to tor_11. Derived from a published rule, like the
   #     Skeletrooper's -90%.
-  wizard_hero: {ability_kind: flight_nado, ability_cost: 1, ability_uses: 1, ability_delay_s: 1.0, ability_duration_s: 5.0, ability_move_speed_tiles: 1.5, attack_nado_radius_tiles: 4.0, attack_nado_duration_s: 2.0, attack_nado_damage: 43, attack_nado_crown_damage: 15.5, attack_nado_ability: true, ability_ai: {family: offensive, tower_tiles: 9.0}, verified: false}
+  # ruling 31c (2026-08-27): attack_nado_radius_tiles SUPERSEDED 4.0 -> 3.0. I8-8 picked the
+  # ability table's 4 over the prose's "3 tile radius tornadoes" under rule (b); the owner
+  # then watched the live pull and reported it "unusually large", and an owner in-game check
+  # outranks a lone table column (the same table family carries the Evo Valkyrie's stale
+  # 5.5-vs-5 radius). The vortex also now spawns at the FIREBALL'S LANDING POINT, not on the
+  # Wizard (engine._drop_nado).
+  wizard_hero: {ability_kind: flight_nado, ability_cost: 1, ability_uses: 1, ability_delay_s: 1.0, ability_duration_s: 5.0, ability_move_speed_tiles: 1.5, attack_nado_radius_tiles: 3.0, attack_nado_duration_s: 2.0, attack_nado_damage: 43, attack_nado_crown_damage: 15.5, attack_nado_ability: true, ability_ai: {family: offensive, tower_tiles: 9.0}, verified: false}
 
   # ICE GOLEM -- Snowstorm (Ice Golem/Hero, revid 437514). "generates a 4-tile aura radius that has
   # 3 pulses, with each one slowing down enemy troops and dealing damage."
