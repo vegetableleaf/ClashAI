@@ -792,7 +792,18 @@ train:
   counter_table: config/counters.yaml  # (2026-08-20) researched threat -> ordered response (card/when/where). Consumed by the live advisor path (veto fallback + advisor-silent fallback) and the sim's card prior, so both sides answer a push identically. Missing file = empty table = previous behaviour.
   training_wheels: true
   offense_leak_guard: 9.5             # (2026-08-20) on a QUIET board at this elixir, a greedy WAIT becomes the pressure play (icebow: X-Bow; hogeq: Hog) -- the punish/outcycle window; leaking is never doctrine               # (2026-08-19) doctrine aim-correction for LIVE spells whose aim covers no tracked enemy: log -> corridor cell, tornado -> king-activation cell else the clump, anything else -> nearest enemy. Cell-only -- the card is never changed and a play is never converted to a wait.
-  llm_advisor: true
+  # ⚠ OFF 2026-08-27 (owner). It has NEVER ANSWERED IN LIVE PLAY: the owner's last session
+  # logged `10 calls, 0 answered (0%), 10 failed, mean 565 ms` against llm_advisor_timeout_s
+  # 0.55 -- every call misses by ~15 ms and falls through to the counter table. Worse, it is
+  # SYNCHRONOUS (llm_advisor_async: false), so the bot was BLIND for ~565 ms of a 600 ms
+  # act_period waiting on an answer that never came. Root cause was config drift: the budget
+  # was sized for a 1.0 s act_period, which dropped to 0.6 on 2026-08-20 (SS3m) and this was
+  # never revisited. See HANDOFF SS3y.
+  # NOT proven worthless -- given a CORRECT board it answered both reported cases right
+  # (SS3y), and ASYNC mode was never actually tried. Parked with that option open.
+  # Turning it off also returns 4.7 GB of VRAM to the DETECTOR, which matters for live
+  # rollout search: search would roll out from the detector's perceived board.
+  llm_advisor: false
   llm_advisor_model: qwen2.5:latest
   # ⚠ CORRECTED 2026-08-23. This comment used to read "gemma3:4b scores better (8/10 vs 6/10)".
   # That was the 10-case eval set. On the 20-case set -- which now includes the owner's two
