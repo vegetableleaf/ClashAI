@@ -41,6 +41,23 @@ DECKS = ("icebow", "hogeq")
 
 # decisions.md 2026-08-26 R2 ADJUDICATION -- owner-verified values that must survive
 # any re-import. (key, field, value, which ruling).
+# Shared source for the four Electro Dragon pins below. Long, because the whole case for holding
+# a number against a live wiki value has to travel with the pin.
+_ED15 = (
+    "decisions.md ruling 15 (OWNER, in-game 2026-08-26): the Electro Dragon deals 192 @L11, not "
+    "the 267 both wiki pages publish. Three independent supports: (a) the Evolution page's own "
+    "`late_dmg_11 = 64` -- its level table's 'Damage after 5 chains' column -- reproduces exactly "
+    "from 192 through its two dated chain nerfs (192 x 0.67 on 8/1/2025 'damage after the first "
+    "3 chains -33%' x 0.50 on 2/3/2026 'chain damage -50%' = 64.3 -> 64) and NOT from 267 "
+    "(-> 89); (b) webcache/Electro_Dragon.rev436720.wikitext publishes `dmg_11 | 192`, so 192 is "
+    "this page's own older value rather than an unsourced reading; (c) the page's stat block has "
+    "drifted far past what its History documents -- hp_11 949 -> 1383 -> 1451 (+53%) against "
+    "History entries recording only two +5% buffs. The competing reading (267 live, late_dmg_11 "
+    "stale) is recorded in conflicts.md, not discarded. dps is the quotient 192/2.3 because "
+    "build_spec rebuilds per-hit damage as dps * hit_speed"
+)
+
+
 DECISION_PINS = [
     ("mighty_miner", "ability_bomb_damage", 332,
      "decisions.md #9: rarity-floor anchor, wiki integer base 332 @ L11 reproduces the "
@@ -77,8 +94,16 @@ DECISION_PINS = [
      "cell 'Friendly Troops & Buildings' names who Rage BUFFS, not who it attacks (root cause "
      "fixed in card_import by d8fc808). Released with --force-field rage.attacks on the I5 "
      "--write and pinned null here"),
+    # I7 / decisions.md ruling 15 (owner, in-game 2026-08-26). The wiki publishes dmg_11 267 on
+    # BOTH the base and the Evolution page and the R2 sweep re-fetched it live, so these four are
+    # a deliberate deviation and the importer must never pull them back.
+    ("electro_dragon", "damage", 192, _ED15),
+    ("electro_dragon", "dps", 83.478, _ED15),
+    ("electro_dragon_evo", "damage", 192, _ED15),
+    ("electro_dragon_evo", "dps", 83.478, _ED15),
 ]
 DECISION_DATE = "2026-08-26"
+
 I5_PLAN = LEDGER / "i5_plan.json"
 _DROP = "__DROP__"
 

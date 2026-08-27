@@ -9,9 +9,9 @@
   "semantics": "the importer applies pins as a post-pass over the scraped rows and --write refuses if a pinned field would regress; value null = the field must not be imported; fields the importer does not emit are advisory (curated layer / stat_sweep EXPECTED sync); an explicit advisory:true pin is recorded for the sweep and never imported",
   "pair": "byte-identical across icebow/ and hogeq/ -- regenerate with the generator and it writes both; never hand-edit one copy",
   "counts": {
-   "total": 176,
+   "total": 180,
    "from_stat_diffs": 66,
-   "from_decisions": 13,
+   "from_decisions": 17,
    "from_i5_plan": 79,
    "advisory": 22,
    "overlapping": 4
@@ -241,6 +241,34 @@
    "field": "damage",
    "value": 81,
    "source": "decisions.md #5: earthquake damage = 81 @ L11, not 84 (overrides the 2026-08 HANDOFF card-data row)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "electro_dragon",
+   "field": "damage",
+   "value": 192,
+   "source": "decisions.md ruling 15 (OWNER, in-game 2026-08-26): the Electro Dragon deals 192 @L11, not the 267 both wiki pages publish. Three independent supports: (a) the Evolution page's own `late_dmg_11 = 64` -- its level table's 'Damage after 5 chains' column -- reproduces exactly from 192 through its two dated chain nerfs (192 x 0.67 on 8/1/2025 'damage after the first 3 chains -33%' x 0.50 on 2/3/2026 'chain damage -50%' = 64.3 -> 64) and NOT from 267 (-> 89); (b) webcache/Electro_Dragon.rev436720.wikitext publishes `dmg_11 | 192`, so 192 is this page's own older value rather than an unsourced reading; (c) the page's stat block has drifted far past what its History documents -- hp_11 949 -> 1383 -> 1451 (+53%) against History entries recording only two +5% buffs. The competing reading (267 live, late_dmg_11 stale) is recorded in conflicts.md, not discarded. dps is the quotient 192/2.3 because build_spec rebuilds per-hit damage as dps * hit_speed",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "electro_dragon",
+   "field": "dps",
+   "value": 83.478,
+   "source": "decisions.md ruling 15 (OWNER, in-game 2026-08-26): the Electro Dragon deals 192 @L11, not the 267 both wiki pages publish. Three independent supports: (a) the Evolution page's own `late_dmg_11 = 64` -- its level table's 'Damage after 5 chains' column -- reproduces exactly from 192 through its two dated chain nerfs (192 x 0.67 on 8/1/2025 'damage after the first 3 chains -33%' x 0.50 on 2/3/2026 'chain damage -50%' = 64.3 -> 64) and NOT from 267 (-> 89); (b) webcache/Electro_Dragon.rev436720.wikitext publishes `dmg_11 | 192`, so 192 is this page's own older value rather than an unsourced reading; (c) the page's stat block has drifted far past what its History documents -- hp_11 949 -> 1383 -> 1451 (+53%) against History entries recording only two +5% buffs. The competing reading (267 live, late_dmg_11 stale) is recorded in conflicts.md, not discarded. dps is the quotient 192/2.3 because build_spec rebuilds per-hit damage as dps * hit_speed",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "electro_dragon_evo",
+   "field": "damage",
+   "value": 192,
+   "source": "decisions.md ruling 15 (OWNER, in-game 2026-08-26): the Electro Dragon deals 192 @L11, not the 267 both wiki pages publish. Three independent supports: (a) the Evolution page's own `late_dmg_11 = 64` -- its level table's 'Damage after 5 chains' column -- reproduces exactly from 192 through its two dated chain nerfs (192 x 0.67 on 8/1/2025 'damage after the first 3 chains -33%' x 0.50 on 2/3/2026 'chain damage -50%' = 64.3 -> 64) and NOT from 267 (-> 89); (b) webcache/Electro_Dragon.rev436720.wikitext publishes `dmg_11 | 192`, so 192 is this page's own older value rather than an unsourced reading; (c) the page's stat block has drifted far past what its History documents -- hp_11 949 -> 1383 -> 1451 (+53%) against History entries recording only two +5% buffs. The competing reading (267 live, late_dmg_11 stale) is recorded in conflicts.md, not discarded. dps is the quotient 192/2.3 because build_spec rebuilds per-hit damage as dps * hit_speed",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "electro_dragon_evo",
+   "field": "dps",
+   "value": 83.478,
+   "source": "decisions.md ruling 15 (OWNER, in-game 2026-08-26): the Electro Dragon deals 192 @L11, not the 267 both wiki pages publish. Three independent supports: (a) the Evolution page's own `late_dmg_11 = 64` -- its level table's 'Damage after 5 chains' column -- reproduces exactly from 192 through its two dated chain nerfs (192 x 0.67 on 8/1/2025 'damage after the first 3 chains -33%' x 0.50 on 2/3/2026 'chain damage -50%' = 64.3 -> 64) and NOT from 267 (-> 89); (b) webcache/Electro_Dragon.rev436720.wikitext publishes `dmg_11 | 192`, so 192 is this page's own older value rather than an unsourced reading; (c) the page's stat block has drifted far past what its History documents -- hp_11 949 -> 1383 -> 1451 (+53%) against History entries recording only two +5% buffs. The competing reading (267 live, late_dmg_11 stale) is recorded in conflicts.md, not discarded. dps is the quotient 192/2.3 because build_spec rebuilds per-hit damage as dps * hit_speed",
    "date": "2026-08-26"
   },
   {

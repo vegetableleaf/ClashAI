@@ -461,6 +461,19 @@ class CardSpec:
     # introduced with the comment "not published by the wiki"; the R2 sweep showed that premise is
     # FALSE (decisions.md #6), so the arc is a card fact like any other and belongs in the KB.
     chain_tiles: float = 0.0
+    # LATE-CHAIN FALLOFF (decisions.md ruling 12, I7). A chain is not uniform: the Evolved Electro
+    # Dragon deals FULL damage WITH its stun for the first `chain_full_hits` bodies and a REDUCED
+    # damage with NO stun for every bounce after that. Both halves are published on
+    # Electro_Dragon_Evolution.wikitext as their own level-table columns -- `dmg_hits` (3) and
+    # `late_dmg_11` (64, headed "Damage after 5 chains").
+    #   chain_falloff    fraction of full damage a LATE bounce deals. 0 = no falloff, which is
+    #                    the base Electro Dragon and every other chain card: all hops are full.
+    #   chain_full_hits  how many bodies (INCLUDING the first) take the full hit. 0 = all of them.
+    # The RULE is stored, not the constant: the reduced number then follows whatever the card's
+    # damage turns out to be, which is exactly the failure mode `late_dmg_11` itself shows -- it
+    # sat at 64 across three revisions while `dmg_11` moved 192 -> 268 -> 267 above it.
+    chain_falloff: float = 0.0
+    chain_full_hits: int = 0
                               # this the sim let Miner chip towers at FULL damage -> king-snipe exploit.
     deploy_time: float = 1.0  # seconds before a freshly-placed unit can act (spells = 0)
     # WEAPON LOAD TIME: the wind-up between acquiring a target and the FIRST hit landing
@@ -991,6 +1004,8 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         multi_kind=str((db.get(base) or {}).get("multi") or ""),
         multi_hits=int(c.get("hits_per_attack") or 0),
         chain_tiles=float(c.get("chain_tiles") or 0.0),
+        chain_falloff=float(c.get("chain_falloff_frac") or 0.0),
+        chain_full_hits=int(c.get("chain_full_hits") or 0),
         damage_reduction=dmg_reduc,
         pulls=pulls,
         pull_radius=(_TORNADO_RADIUS if pulls else 0.0),
@@ -3852,10 +3867,28 @@ class SimEngine:
             # target.
             if not isinstance(ref, Unit):
                 return
+            # RULING 11 (owner, 2026-08-26): one chain attack can NEVER hit the same body twice.
+            # `seen` is what enforces it, and it is also what bounds the Evolution's "infinite"
+            # chain on a finite board. The 533.6 the arc measurement reported was TWO SEPARATE
+            # ATTACK CYCLES, not one chain double-hitting.
             seen = {id(ref)}
             cur = ref
             arc = s.chain_tiles or _CHAIN_TILES        # published per card; global is the fallback
-            for _ in range(n - 1):
+            # RULING 12: the first `chain_full_hits` bodies -- `ref` included, which is why the
+            # hop index below starts at 1 -- take the full hit AND the stun; everything after
+            # takes `chain_falloff` of it and NO status. 0 means "no falloff declared", i.e. the
+            # uniform chain every other card has.
+            full_n = s.chain_full_hits or n
+            late_dmg = dmg * s.chain_falloff if s.chain_falloff > 0.0 else dmg
+            # The arc projectile is COSMETIC (dmg 0) but it still lands, and `_impact` ->
+            # `_land_hit` re-applies the spec's status when it does. For a full hop that is
+            # harmless -- re-setting `stun_left` to the same 0.5 s is idempotent -- but a late
+            # bounce would have been stunned by the trail after `_multi_hit` deliberately withheld
+            # the stun. MEASURED before this: all 12 bodies stunned, exactly as before the ruling.
+            # Built once per attack rather than per hop; `replace` on a 200-field spec is not free.
+            late_spec = replace(s, stuns=False, stun_dur=0.0, slows=False, slow_dur=0.0,
+                                freezes=False, freeze_dur=0.0) if full_n < n else s
+            for hop in range(1, n):
                 near = [e for e in self.units
                         if e.team != team and e.hp > 0 and id(e) not in seen
                         and _dist(cur.x, cur.y, e.x, e.y) <= arc
@@ -3863,11 +3896,14 @@ class SimEngine:
                 if not near:
                     break
                 e = min(near, key=lambda x: _dist(cur.x, cur.y, x.x, x.y))
-                self._hurt(e, dmg)
-                self._apply_status(team, s, e)
+                late = hop >= full_n
+                self._hurt(e, late_dmg if late else dmg)
+                if not late:
+                    self._apply_status(team, s, e)         # the stun rides the FULL hits only
                 self.projectiles.append(Projectile(
-                    label=f"{s.base}_chain", team=team, x=cur.x, y=cur.y, tx=e.x, ty=e.y,
-                    target=e, spec=s, dmg=0.0, tower_dmg=0.0, radius=0.0,
+                    label=f"{s.base}_chain_late" if late else f"{s.base}_chain",
+                    team=team, x=cur.x, y=cur.y, tx=e.x, ty=e.y,
+                    target=e, spec=(late_spec if late else s), dmg=0.0, tower_dmg=0.0, radius=0.0,
                     speed=max(s.proj_speed, 20.0), left=_dist(cur.x, cur.y, e.x, e.y),
                     ground_only=not s.attacks_air))
                 seen.add(id(e))

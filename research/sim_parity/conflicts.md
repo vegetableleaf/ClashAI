@@ -737,3 +737,96 @@ hit_speed 1.4 (the curated javelin block is untouched). Real null-hitpoint gaps 
 KB are now **0** -- the only two rows with a null hitpoints CELL are princess_evo and
 minion_horde_evo, and build_spec resolves both through the base card (261 and 230), which is the
 protocol those rows were left under.
+
+## I7 — the Electro Dragon chain, 2026-08-26
+
+### ⚠ ED-1. RULING 15 RESOLVES the 267-vs-192 question — and the "192/3 = 64" arithmetic that reached it is a coincidence, not the mechanism.
+
+The brief that opened I7 flagged ruling 12's `64` as an unexplained discrepancy: "the KB has
+damage=267 (267/3 = 89, not 64; 64 implies a base of 192)". Owner ruling 15 then settled it by
+in-game confirmation — **192 @L11** — citing `192 / 3 = 64` as corroboration.
+
+**64 is not derived. It is PUBLISHED, in its own level-table column.**
+`webcache/Electro_Dragon_Evolution.wikitext` (live revid 437294):
+
+```
+{{#vardefine: dmg_11       | 267 }}
+{{#vardefine: dmg_hits     | 3   }}
+{{#vardefine: late_dmg_11  | 64  }}      <- column header: "Damage after 5 chains"
+```
+
+and its own History gives the derivation:
+* 8/1/2025 — "decreased the Evolved Electro Dragon's damage **after the first 3 chains** by 33%"
+* 2/3/2026 — "decreased it's **chain damage by 50%**" (Version_History.wikitext: "Evolved
+  Electro Dragon: Chain Damage -50%")
+
+192 × 0.67 × 0.50 = **64.3 → 64** ✓ · 267 × 0.67 × 0.50 = **89.4** ✗
+
+So the true falloff is 0.335, and 1/3 falls out of it numerically (0.3333 vs 0.335, a 0.5% gap
+that both round to 64 at L11). The owner's two statements are therefore not two independent
+observations of the same fact — the second one ("64 at level 11") is the wiki's own published
+`late_dmg_11`. That does not weaken ruling 15; it changes which evidence carries it.
+
+**What actually supports 192, recorded so a later pass does not re-litigate it:**
+1. `late_dmg_11 = 64` reproduces from 192 through two DATED nerfs and does not reproduce from 267.
+2. `webcache/Electro_Dragon.rev436720.wikitext` publishes `dmg_11 | 192` — 192 is this page's OWN
+   older value, not an unsourced reading.
+3. The page's stat block has drifted far past what its History documents: `hp_11` 949 → 1383 →
+   1451 (+53%) across the three archived revisions, against History entries recording only two
+   +5% hitpoint buffs. `atk_speed` moved 2.1 → 2.4 → 2.3 with no History entry at all.
+4. Owner in-game observation, which decisions.md puts above wiki prose.
+
+**THE COMPETING READING, not discarded.** I5 concluded the opposite: that 267 is live and
+`late_dmg_11 = 64` is the STALE field, computed off a pre-buff 192 and never updated, so the live
+late-chain damage should be ~89 (conflicts.md, "RECORDED, NOT APPLIED"). Under that reading the
+sim now under-models the base Electro Dragon by 28%. Ruling 15 retires it, but the fact that the
+two readings differ by exactly one stale-vardefine judgement — the single most common failure mode
+this project has documented — is worth an in-game re-check of the BASE card's per-hit damage.
+**OWNER: one number settles it — what does a level-11 Electro Dragon's first bolt hit for?**
+
+Applied: `electro_dragon` and `electro_dragon_evo` damage 267 → **192**, dps 116 → **83.478**,
+both decks, `verified: true`, four pins in `config/import_pins.json` (via
+`scripts/gen_pins.py`, the documented regeneration path), and `stat_sweep --all` reports them as
+KNOWN DEVIATIONS rather than mismatches (MISMATCHES: 0, exit 0).
+
+### ED-2. `hits_per_attack: 12` was a MODEL error and is now a budget, not twelve full hits.
+
+MEASURED, one Evo swing into a line of 13 knights 3 tiles apart, towers disarmed:
+
+```
+                       total     shape                                   stunned
+before  (267 x 12)     3204.0    12 bodies, every one at full damage     all 12
+after   (ruling 12)    1151.9    3 x 192.0 full  +  9 x 63.99 reduced    first 3 only
+```
+
+Implemented as a RULE, per ruling 12: `chain_full_hits: 3` (published as `dmg_hits` on BOTH the
+base and the Evolution page) and `chain_falloff_frac: 0.3333`, so the reduced number follows the
+card's damage instead of freezing a constant that has already gone stale once. `hits_per_attack:
+12` is kept and re-read as the TOTAL bounce budget — the page calls the chain infinite, and
+ruling 11's no-repeat rule bounds it on a real board anyway.
+
+One engine trap found while doing it: `_multi_hit` withheld the stun from late bounces correctly,
+but the **cosmetic arc projectile** (damage 0, drawn for sim_view) still lands, and
+`_impact` → `_land_hit` re-applies the spec's status when it does. MEASURED: all 12 bodies stunned
+even after the damage split was right. Late hops now carry a status-stripped copy of the spec.
+
+### ⚠ ED-3. The Evolution page says the EVO chain CAN repeat targets. Ruling 11 says it cannot. Not acted on.
+
+Ruling 11 (owner): "Electro Dragon chain cannot hit the same target twice in one attack",
+verified as already correct in the engine (`seen = {id(ref)}`). Pinned by
+`ChainFalloffAndNoRepeatTests.test_ONE_chain_attack_can_never_hit_the_same_body_twice`.
+
+The Evolution page contradicts it, for the EVO specifically, in two places:
+* card quote (infobox): "Evolved Electro Dragon's attack will chain between targets infinitely
+  **and can hit the same target more than once**";
+* Strategy: "If it's within the chain range, the lightning will bounce off the Crown Tower and hit
+  the troop again. In this case, the Evolved Electro Dragon would've hit the Crown Tower twice."
+
+This reads as a genuine BASE-vs-EVO difference — the base page says the opposite of itself
+("The chain lightning will merely hit three individual troops... the chain lightning will only hit
+three units"), which is consistent with only the Evolution having the repeat.
+
+NOT IMPLEMENTED. Owner rulings outrank wiki prose, and unlimited repeats would be a large
+unmeasured buff on top of a card the sim has just been corrected DOWN by 64%. **OWNER: does the
+Evolved Electro Dragon's chain re-hit the same body within one attack? If yes, ruling 11 is a
+base-card rule and the Evolution needs its own `seen` exemption.**

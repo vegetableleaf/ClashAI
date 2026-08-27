@@ -807,5 +807,132 @@ class TestE1WalkingSpawnerPricing(unittest.TestCase):
         self.assertGreater(ignore_cost_frac(self.db, "goblin_hut"), 0.0)
 
 
+class ChainFalloffAndNoRepeatTests(unittest.TestCase):
+    """decisions.md rulings 11, 12 and 15 -- the Electro Dragon chain, finally the right shape.
+
+    A chain is NOT uniform. Electro_Dragon_Evolution.wikitext (live revid 437294) publishes three
+    separate level-table columns for it:
+        #vardefine: dmg_11       | 267   <- superseded by ruling 15, see below
+        #vardefine: dmg_hits     | 3     <- bodies that take the FULL hit
+        #vardefine: late_dmg_11  | 64    <- column "Damage after 5 chains"
+    and the History that produced the third: 8/1/2025 "decreased the Evolved Electro Dragon's
+    damage after the first 3 chains by 33%", 2/3/2026 "decreased it's chain damage by 50%".
+
+    RULING 12 (owner): implement the RULE, not the constant. `chain_falloff_frac` = 0.3333 with
+    `chain_full_hits` = 3, so the reduced number follows the card's damage instead of being frozen
+    at a figure that has already gone stale once -- `late_dmg_11` sat at 64 across three archived
+    revisions while `dmg_11` above it moved 192 -> 268 -> 267.
+
+    RULING 15 (owner, in-game 2026-08-26): the damage is 192 @L11, not the 267 both wiki pages
+    publish. 64 / 192 = 0.3333 exactly, so the published constant and the ruled fraction agree;
+    against 267 the same fraction would give 89 and the wiki would contradict its own column.
+    Pinned in config/import_pins.json; the competing reading is recorded in conflicts.md.
+
+    MEASURED, one swing into a line of 13 knights 3 tiles apart (inside the published 4-tile arc),
+    towers disarmed so nothing else enters the ledger:
+        before   3204.0 total, 12 bodies at 267.0, EVERY one stunned
+        after    1151.9 total, 3 at 192.0 stunned + 9 at 63.99 NOT stunned
+    3204 was the single largest overstatement of enemy strength the R2 sweep found: the engine
+    read `hits_per_attack: 12` as twelve FULL hits.
+    """
+
+    def _swing(self, key, n_bodies=13, spacing=3.0):
+        """One attack cycle into a pinned line of bodies. Returns (per-body damage, stun flags)."""
+        eng = _make_engine()
+        for side in (eng.towers[0], eng.towers[1]):
+            for tw in side:
+                tw.hit_dmg = 0.0                      # tower fire would read as chain damage
+        s = build_spec(eng.db, key, LVL)
+        t = build_spec(eng.db, "knight", LVL)
+        ax, ay = 0.50, 0.60 - 3.0 / _TILES_Y
+        ed = Unit(spec=s, team=0, x=0.50, y=0.60, hp=s.hp)
+        bodies = [Unit(spec=t, team=1, x=ax + (i * spacing) / _TILES_X, y=ay, hp=t.hp * 800)
+                  for i in range(n_bodies)]
+        eng.units.append(ed)
+        eng.units.extend(bodies)
+        pos = [(b.x, b.y) for b in bodies]
+        start = [b.hp for b in bodies]
+        for _ in range(400):
+            for b, (px, py) in zip(bodies, pos):
+                b.x, b.y = px, py                     # pinned: this is a chain-SHAPE test
+            ed.x, ed.y = 0.50, 0.60
+            eng.advance(0.05)
+            if sum(start) - sum(b.hp for b in bodies) > 0:
+                for _ in range(3):                    # let the arcs finish, stop before swing 2
+                    for b, (px, py) in zip(bodies, pos):
+                        b.x, b.y = px, py
+                    eng.advance(0.05)
+                break
+        return ([h0 - b.hp for h0, b in zip(start, bodies)],
+                [b.stun_left > 0.0 for b in bodies])
+
+    def test_the_first_three_bodies_take_the_full_hit_WITH_the_stun(self):
+        dmg, stun = self._swing("electro_dragon_evo")
+        for i in range(3):
+            with self.subTest(body=i):
+                self.assertAlmostEqual(192.0, dmg[i], delta=0.5)
+                self.assertTrue(stun[i], "the stun rides the full hits")
+
+    def test_every_bounce_after_the_third_takes_a_THIRD_and_no_stun(self):
+        """64 at level 11 -- the wiki's own `late_dmg_11`, and 192/3 under ruling 15."""
+        dmg, stun = self._swing("electro_dragon_evo")
+        for i in range(3, 12):
+            with self.subTest(body=i):
+                self.assertAlmostEqual(64.0, dmg[i], delta=0.5)
+                self.assertFalse(stun[i], "a late bounce carries no stun")
+        self.assertEqual(0.0, dmg[12], "hits_per_attack 12 is the total bounce budget")
+
+    def test_the_swing_total_is_a_third_of_what_it_was(self):
+        dmg, _ = self._swing("electro_dragon_evo")
+        self.assertAlmostEqual(1152.0, sum(dmg), delta=2.0,
+                               msg="MEASURED BEFORE: 3204.0 = 12 x 267")
+
+    def test_the_base_card_chains_three_bodies_at_full_damage(self):
+        """`chain_falloff` 0 means the uniform chain every OTHER chain card has: the base Electro
+        Dragon's three hops are all full, all stunning. Only the Evolution declares a falloff."""
+        eng = _make_engine()
+        self.assertEqual(0.0, build_spec(eng.db, "electro_dragon", LVL).chain_falloff)
+        dmg, stun = self._swing("electro_dragon")
+        self.assertEqual([True, True, True], stun[:3])
+        for i in range(3):
+            self.assertAlmostEqual(192.0, dmg[i], delta=0.5)
+        self.assertEqual(0.0, dmg[3], "the base card stops at its published dmg_hits of 3")
+
+    def test_the_full_hit_count_is_the_base_cards_own_published_number(self):
+        """`dmg_hits | 3` is published on BOTH pages. Pinning the identity stops the two drifting:
+        ruling 12's "the first `multi_hits` targets (3, matching the base card)" is only true
+        while they agree."""
+        eng = _make_engine()
+        base = build_spec(eng.db, "electro_dragon", LVL)
+        evo = build_spec(eng.db, "electro_dragon_evo", LVL)
+        self.assertEqual(3, base.multi_hits)
+        self.assertEqual(3, evo.chain_full_hits)
+        self.assertEqual(base.multi_hits, evo.chain_full_hits)
+        self.assertAlmostEqual(0.3333, evo.chain_falloff, places=4)
+
+    def test_ONE_chain_attack_can_never_hit_the_same_body_twice(self):
+        """RULING 11 (owner, 2026-08-26), pinned so it cannot regress. The engine was already
+        correct -- `_multi_hit` keeps `seen = {id(ref)}` -- and the 533.6 in the original arc
+        measurement was TWO SEPARATE ATTACK CYCLES, not one chain double-hitting.
+
+        Two bodies and a twelve-bounce budget: without `seen` the bolt would ping-pong between
+        them for all 12 hops. With it, each takes exactly one full hit and the chain runs out of
+        targets.
+
+        RECORDED CONFLICT (conflicts.md, owner queue): the Evolution page's own card quote says
+        the opposite for the EVO specifically -- "Evolved Electro Dragon's attack will chain
+        between targets infinitely and can hit the same target more than once" -- as does its
+        Strategy note about bouncing off a Crown Tower and back onto a nearby troop. Ruling 11 is
+        an owner in-game ruling and owner rulings outrank wiki prose, and implementing unlimited
+        repeats on prose alone would be a large unmeasured buff, so the ruling stands and the
+        contradiction is queued rather than acted on.
+        """
+        dmg, _ = self._swing("electro_dragon_evo", n_bodies=2)
+        self.assertAlmostEqual(192.0, dmg[0], delta=0.5)
+        self.assertAlmostEqual(192.0, dmg[1], delta=0.5)
+        self.assertAlmostEqual(384.0, sum(dmg), delta=1.0,
+                               msg="a repeat-hitting chain would have dealt far more")
+
+
 if __name__ == "__main__":
     unittest.main()

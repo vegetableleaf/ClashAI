@@ -318,12 +318,27 @@ cards:
   #   NEITHER the constant nor the wiki. Three independent statements say 4 (Electro Dragon,
   #   Electro Dragon/Evolution, Card Evolution), and the constant's own comment claiming the arc
   #   is "not published by the wiki" is what let the estimate stand for so long.
-  # ⚠ STILL OPEN (conflicts.md, I5): hits_per_attack 12 is a MODEL error, not just a number. The
-  #   engine reads it as 12 hits at the FULL 267 -> 3204 per swing. The wiki's shape is 3 hits at
-  #   full damage WITH the stun, then unlimited SLOWER bounces at a reduced ~89 and NO stun.
-  #   Splitting it needs an engine change (late_chain_damage + an unlimited-bounce flag), so the
-  #   number is left as it stands and recorded rather than half-corrected.
-  electro_dragon_evo: {hits_per_attack: 12, chain_tiles: 4.0, verified: true}
+  # I7 2026-08-26, decisions.md rulings 12 + 15: the chain is NOT uniform, and the engine now
+  #   stores the RULE rather than either constant.
+  #   chain_full_hits: SUPERSEDED ABSENT -> 3. PUBLISHED as `#vardefine: dmg_hits | 3` on BOTH
+  #     Electro_Dragon.wikitext and Electro_Dragon_Evolution.wikitext -- the first three bodies
+  #     take the full hit and carry the 0.5 s stun.
+  #   chain_falloff_frac: SUPERSEDED ABSENT -> 0.3333. Every bounce AFTER those three takes a
+  #     third of the damage and NO stun. The evo page publishes the reduced number outright, as
+  #     its own level-table column headed "Damage after 5 chains": `#vardefine: late_dmg_11 | 64`.
+  #     64 / 192 = 0.3333, so rule and published constant agree; the wiki's own derivation is the
+  #     two dated chain nerfs, 192 x 0.67 (8/1/2025, "damage after the first 3 chains -33%")
+  #     x 0.50 (2/3/2026, "chain damage -50%") = 64.3 -> 64. Stored as the FRACTION because
+  #     `late_dmg_11` is exactly the field that goes stale: it sat at 64 across three archived
+  #     revisions while `dmg_11` above it moved 192 -> 268 -> 267.
+  #   hits_per_attack 12 KEPT, and it is now the TOTAL bounce budget rather than 12 full hits.
+  #     The card quote says the chain is infinite; ruling 11's no-repeat rule bounds it on a real
+  #     board anyway, and 12 is this KB's practical cap on an 18x32 arena.
+  #   MEASURED, one swing into a line of 13 bodies 3 tiles apart:
+  #     before  3204.0 = 12 x 267, EVERY body stunned  (the largest overstatement of enemy
+  #             strength the R2 sweep found)
+  #     after   1152.0 = 3 x 192 full + 9 x 64 reduced, only the first 3 stunned
+  electro_dragon_evo: {hits_per_attack: 12, chain_tiles: 4.0, chain_full_hits: 3, chain_falloff_frac: 0.3333, damage: 192, dps: 83.478, verified: true}
   # EVO INFERNO DRAGON: "once [it] defeats a troop on whatever damage stage it was in, it
   # remains on that damage state until 9 seconds ... or it is reset by a stun. After 20 seconds
   # of damage, [it] will reach a 4th damage stage which deals twice the damage of the 3rd."
@@ -2528,7 +2543,27 @@ cards:
   # I5 2026-08-26, decisions.md #6: chain_tiles 4.0, SUPERSEDING the engine's flat 3.0 estimate.
   #   The bolt "arcs and strikes up to 2 OTHER targets" within 4 tiles (attributes table); the
   #   target COUNT (1 + 2 = hits_per_attack 3) was already right, only the reach was wrong.
-  electro_dragon: {range: long, multi: chain, chain_tiles: 4.0, evolution: {available: true}, verified: true}
+  # I7 2026-08-26, decisions.md ruling 15 (OWNER, in-game confirmed 2026-08-26):
+  #   damage: SUPERSEDED 267 -> 192 @L11, and dps 116 -> 83.478 with it. The wiki publishes
+  #     `#vardefine: dmg_11 | 267` on both the base and the Evolution page and the R2 sweep
+  #     re-fetched it live, so this is a DELIBERATE deviation, pinned in config/import_pins.json
+  #     and declared to tools/stat_sweep.py through that pin.
+  #     Why the owner's number wins beyond the standing authority order (owner in-game > wiki):
+  #       * the Evolution page's own `late_dmg_11 = 64` reproduces EXACTLY from 192 through its
+  #         two dated chain nerfs (192 x 0.67 x 0.50 = 64.3 -> 64) and NOT from 267 (-> 89);
+  #       * research/sim_parity/webcache/Electro_Dragon.rev436720.wikitext publishes
+  #         `dmg_11 | 192` -- 192 is this page's OWN older value, not an unsourced reading;
+  #       * the page's stat block has drifted far past what its History documents (hp_11 949 ->
+  #         1383 -> 1451, +53%, against History entries that record only two +5% buffs).
+  #     The competing reading -- that 267 is live and `late_dmg_11` 64 is the stale field -- is
+  #     recorded in conflicts.md rather than discarded.
+  #   dps is written as the quotient 192/2.3 rather than the wiki's integer convention because
+  #     build_spec rebuilds per-hit damage as dps * hit_speed (the DERIVE-DON'T-STORE defect
+  #     recorded in conflicts.md/I5). MEASURED: the integer 83 the wiki convention would give
+  #     lands the hit on 190.9 and the late bounce on 63.6 instead of the published 64; 83.478
+  #     lands it on 191.999 (the Evolution row lands on 192.000 exactly, because a curated
+  #     `evolution:` block re-derives dps from damage at build_spec:721).
+  electro_dragon: {range: long, multi: chain, chain_tiles: 4.0, chain_full_hits: 3, damage: 192, dps: 83.478, evolution: {available: true}, verified: true}
   # "If 2 or more targets are within his range, his attack will SPLIT and attack the closest 2
   # units" -- his 115 damage is the TOTAL (115 / 1.8 hit speed == his published dps 64), so it is
   # halved when two things are in range. Contrast the Electro Dragon, whose bolt "arcs and strikes
