@@ -291,6 +291,47 @@ class BuffSelfTests(unittest.TestCase):
         self.assertGreater(base.sight, 0.0)
         self.assertLess(base.proj_range, 11.5)               # the body's own is 7.0
 
+    def _bowler_elixir(self, kill_at, seconds=4.0, start=5.0):
+        """Elixir after `seconds`, with the Stone Swish pressed at t=0 and the body killed at
+        `kill_at` (None = never). ELIXIR REGENERATES, so a bare number proves nothing -- these
+        tests compare against a twin run instead. Starting at 5 rather than 10 keeps the cap out
+        of the measurement: at 10 a refund is invisible because the pool is already full."""
+        eng = _quiet(_make_engine())
+        b = _hero(eng, "bowler", 0.5, 0.5, still=True)
+        eng.elixir[1] = start
+        self.assertTrue(eng.champion_ability(1))
+        self.assertAlmostEqual(eng.elixir[1], start - 2.0, places=3)   # published 2-elixir cost
+        t = 0.0
+        while t < seconds - 1e-9:
+            eng.advance(0.1)
+            t += 0.1
+            if kill_at is not None and b.hp > 0.0 and t >= kill_at:
+                b.hp = 0.0
+        return eng.elixir[1], b
+
+    def test_ruling_7_refunds_a_hero_who_dies_mid_cast(self):
+        """decisions.md ruling 7 (owner): "if the body dies before the ability goes off, the
+        ability's elixir is refunded" -- and the Heroes page says it for heroes in its own words:
+        "When a Hero activates their ability, but did not start casting it before they are
+        defeated, the Elixir spent on the ability will be refunded once they are defeated."
+
+        The Hero Bowler is the case worth pinning, because his published 2.5 s Cast Time makes his
+        refund window two and a half times every other hero's -- the widest hole in the stage.
+        """
+        died, b = self._bowler_elixir(kill_at=1.0)          # killed INSIDE the 2.5 s cast
+        lived, _ = self._bowler_elixir(kill_at=None)
+        self.assertAlmostEqual(died - lived, 2.0, places=2,
+                               msg="the whole ability cost has to come back, and only that")
+
+    def test_a_hero_that_survives_the_cast_keeps_paying_for_it(self):
+        """The negative control: the refund is for a body that DIED inside the window, not for
+        every activation -- and not for one that dies AFTER the stance has already started."""
+        late, b = self._bowler_elixir(kill_at=3.0)          # killed AFTER the cast resolved
+        lived, _ = self._bowler_elixir(kill_at=None)
+        self.assertAlmostEqual(late - lived, 0.0, places=2)
+        self.assertAlmostEqual(b.spec.reach, 11.5, places=3,
+                               msg="he lived long enough for the stance to start")
+
 
 class ZonePulseTests(unittest.TestCase):
 
@@ -967,6 +1008,79 @@ class SupportTowerTroopTests(unittest.TestCase):
             honoured += (env.eng.tower_setup[1][0] == want)
         self.assertGreater(declared, 40, "the shipped pool must still name some")
         self.assertEqual(honoured, declared, "every declared tower troop must be fielded")
+
+
+class EnemySideTests(unittest.TestCase):
+    """decisions.md ruling 1: heroes are ENEMY-SIDE ONLY -- full engine effects and opponent AI,
+    but NO action-space change, so every existing checkpoint keeps loading."""
+
+    def test_every_live_hero_fires_in_ENEMY_hands(self):
+        """Through `ScriptedBot._try_ability`, which is what actually decides in a match: the
+        engine handler is only reachable if the bot's per-family predicate says yes. Each hero's
+        KB row names its own family and knobs, so this is a test of the DATA as much as the code --
+        a row whose `ability_ai` never matches any board is a hero that never uses its ability.
+
+        The board below satisfies every family at once: the hero is hurt, deep in our half, beside
+        a crown tower, and surrounded by four bodies inside two tiles.
+        """
+        import random
+        from clashrl.config import Config
+        from clashrl.sim.opponents import ScriptedBot
+        for base in HERO_KINDS:
+            with self.subTest(hero=base):
+                eng = _quiet(_make_engine())
+                deck = [base, "knight", "musketeer", "skeletons",
+                        "ice_spirit", "cannon", "fireball", "zap"]
+                bot = ScriptedBot(Config.load(), eng.db, random.Random(3), deck, "control")
+                bot.reaction_s = 0.0
+                eng.elixir[1] = 10.0
+                tw = eng.towers[0][0]
+                x, y = tw.x, tw.y - 3.0 / _TILES_Y
+                spell = build_spec(eng.db, base + "_hero", LVL)
+                if spell.kind == "spell":
+                    # the Hero Barbarian Barrel's button belongs to the Barbarian it leaves
+                    self.assertTrue(eng.deploy(1, spell, x, y))
+                    _run(eng, 1.5)
+                    eng.elixir[1] = 10.0
+                    u = [b for b in eng.units if b.team == 1 and b.spec.ability_kind][0]
+                    # ...and he ends up at the END of the roll, not at the cast point, so the
+                    # crowd has to be put around HIM or his family predicate sees an empty board
+                    x, y = u.x, u.y
+                elif spell.ability_kind == "summon_banner":
+                    # ...and the Hero Goblins' belongs to the banner, which only exists once they
+                    # are all dead. The bot has to reach it through the same bodyless path.
+                    g = _hero(eng, base, x, y)
+                    g.hp = 0.0
+                    _run(eng, 0.2)
+                    u = None
+                else:
+                    u = _hero(eng, base, x, y)
+                    u.hp = u.spec.hp * 0.25
+                for i in range(4):
+                    _dummy(eng, 0, x + 0.004 * i, y, base="skeletons", still=False)
+                self.assertTrue(bot._try_ability(eng),
+                                "%s_hero never fired in enemy hands" % base)
+                if u is not None:
+                    self.assertEqual(eng._ability_uses_left(u), 0,
+                                     "%s_hero: the single use has to be spent" % base)
+
+    def test_no_hero_reaches_the_action_space(self):
+        """A checkpoint refuses to load against a different head width, so this is the assertion
+        that keeps every existing one loadable. icebow's deck holds no champion (10 identities);
+        hogeq's holds the Mighty Miner (10 cards + 1 ability = 11). Neither holds a HERO, and a
+        hero has no ability identity even if one were slotted -- `<base>_hero` is a card VARIANT
+        like `<base>_evo`, not a separate card."""
+        from clashrl.cards import CardDB
+        from clashrl.config import Config
+        db = CardDB(Config.load())
+        ids = db.policy_identities()
+        self.assertIn(len(ids), (10, 11), "head width moved: %d identities %s" % (len(ids), ids))
+        for base in HERO_KINDS:
+            self.assertNotIn(base + "_hero", ids)
+            self.assertNotIn(base + "_hero_ability", ids)
+        for k in ids:
+            self.assertFalse(str(k).endswith("_hero"),
+                             "%s reached the action space: heroes are enemy-side only" % k)
 
 
 if __name__ == "__main__":                                   # pragma: no cover

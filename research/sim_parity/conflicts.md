@@ -906,3 +906,184 @@ this section is the ledger.
   chains to the troops that the Golden Knight can see", while History 5/5/2025 "allowed Dashing
   Dash to move Golden Knight backwards". The two read as contradictory, no arc is given in
   degrees, and the chain is implemented as omnidirectional within 5.5 tiles.
+
+## I8 — heroes, enemy-side, 2026-08-27
+
+Sixteen live heroes, twelve `ability_kind` handlers, the three-slot loadout and the tower-troop
+wiring. Below is every place a page forced a CHOICE, every premise in the I8 brief that turned out
+to be wrong, every measured bug the stage surfaced, and every question that needs the owner in a
+client rather than another sweep. The choices themselves are argued in the KB comment beside each
+number and in the test docstrings (`tests/test_hero_abilities_i8.py`); this section is the ledger.
+
+THREE RULES settled most of it, each with an I7 precedent, and they are stated once so the table
+below can just name them:
+  (a) a dated HISTORY entry that names the OLD value supersedes an un-updated table or prose (I7-6);
+  (b) an attributes table / level-table column beats PROSE, because it is the page's only
+      machine-readable statement (I7-2);
+  (c) the activation delay is 1 s unless the page publishes an agreed one (I7-1).
+
+### CHOICES MADE FROM CONTRADICTORY EVIDENCE (implemented, argued, reversible)
+
+| # | Card | The conflict | Taken | Why |
+|---|---|---|---|---|
+| I8-1 | ALL | Activation delay: every page either says "After a 1-second delay" or prints a Cast Time (0.933) or says nothing at all | **1 s** | Rule (c). The ONE exception is the Hero Bowler, whose table AND prose agree on 2.5 s — a published, self-consistent value, so rule (c) never applies to him. It also makes his ruling-7 refund window 2.5x everyone else's. |
+| I8-2 | Knight | Taunt radius: prose AND table say 7.5; History 2/3/2026 says "decreased ... to 6.5 tiles (from 7.5 tiles)" | **6.5** | Rule (a): the History entry is later and names 7.5 as the OLD value, so both un-updated statements are the stale ones. |
+| I8-3 | Knight | Shield: vardefine `Shild_11` 512, then two later nerfs (-6% 12/1/2026, -33% 6/7/2026) | **512** | Neither nerf publishes a new absolute, so there is nothing to substitute. Computing 512 x 0.94 x 0.67 = 322 would be inventing a number from two rounded percentages. See I8-19 for the ONE case where an equivalent computation WAS applied, and why. |
+| I8-4 | Knight | Does the taunt grab units ENTERING the radius during the 5 s? And what does "still target him afterwards" mean? | **Snapshot at cast; forced for 5 s; then permanent until he dies** | The prose reads as one event ("taunting every enemy troop and building in a ... range"), and a re-sweep would need an invented cadence. The persistence is the page's own final clause, "until he is defeated" — and it has to be a REFERENCE rather than a re-aim: MEASURED, releasing it at 5 s and merely pointing the Hog at him lasted ONE TICK, because a building-targeter drops any lock on a body that is not a building. |
+| I8-5 | Balloon | Soar range: table 6.5, prose "within 6 tiles" | **6.5** | Rule (b). |
+| I8-6 | Balloon | Landing damage radius | **Single-target** | No radius is published anywhere on the page. The Skeletrooper lands ON the body he soars to and hits it once; a blast would need a circle nobody printed. |
+| I8-7 | Wizard | Ability cost: infobox 2 + prose twice ("an additional 2 Elixir", "costs 2 Elixir") vs the on-page Tornado table 1 AND the Heroes master table 1 (5+1=6) | **1** | A GENUINE 2-vs-2 SPLIT, and the least comfortable call in the stage. Rule (b) breaks it: the two tables are machine-readable and they are on DIFFERENT pages, so they are two independent statements, where the infobox and the prose are one page's editor writing the same claim twice. **Owner: it is one button press — what does Fiery Flight cost?** |
+| I8-8 | Wizard | Tornado radius: prose 3, table 4 | **4** | Rule (b). |
+| I8-9 | Ice Golem | Pulse interval | **2.0 s [verify]** | PUBLISHED NOWHERE. This is the one genuinely invented cadence in I8. 2.0 is the ability's OWN published Slowdown Duration — the only cadence on the page — and it is the value that makes the slow continuous across the three pulses without stacking. The aura window follows from it (3 x 2.0) rather than being a second guess, and the pulse COUNT is enforced separately so a retuned interval can never buy a fourth blast. |
+| I8-10 | Ice Golem | Slow duration: table 2 s vs History 2/3/2026 "decreased Freeze duration to 1.5sec (from 2sec)" | **2 s** | Rule (a) does NOT apply, because the History entry's subject is a FREEZE and the 3rd blast's freeze is exactly what History 4/8/2026 removed ("went from being a freeze effect to a slowdown effect"). The nerf reads as having hit an effect that no longer exists. |
+| I8-11 | Ice Golem | Crown-tower damage: none published | **None dealt** | Silence read as "it does not", never as "full damage". Every hero ability that DOES hit a tower publishes a crown value; a bare fallback would have handed the Snowstorm its full 69 per pulse — which is precisely the trap I5 hit with Royal Delivery, where "discard its crown_tower_damage" gave it FULL crown damage. |
+| I8-12 | Berserker | `bear_dmg_11` 167: the level table publishes it and the page NEVER SAYS WHAT IT IS (the subject page has no prose at all) | **Her per-hit damage while the ability runs** | Rule (b): the ability's attributes table publishes a Hit Speed of its own (0.2 s) and the level table publishes exactly one ability-damage column beside it. A cadence plus a damage is an attack profile. The alternative — her normal 102 at the faster cadence, with 167 meaning something else — is 510 dps against this reading's 835. **Owner: hit something for one second with Savage Survival up.** |
+| I8-13 | Valkyrie | Is Ability Damage 97 PER TICK (0.25 s, 3.5 s = 14 ticks) or the total spread over the duration? | **Per tick** | "Hit Speed" means a cadence of hits everywhere else on the wiki. MEASURED so the size of the choice is visible rather than buried: **1358 area damage and 679 crown damage per activation**, for a 3-elixir ability on a body already on the board. If that is wrong the card is over-modelled by 14x. **Owner: this is the biggest single number I8 chose.** |
+| I8-14 | Valkyrie | Does the spin REPLACE her normal 1.5 s swing or stack with it? | **Replaces** | A body spinning is not also swinging on its own cadence, and stacking would double-count. Not stated either way. |
+| I8-15 | Bowler | Prose "a total of 3 shots" vs table 7.3 s / 1.9 s cadence, which allows 4 | **Both, and they reconcile** | 7.3 / 1.9 gives FOUR shots if the first lands at t=0 and exactly THREE (1.9 / 3.8 / 5.7) if the stance pays one of its own hit-speeds before its first shot. So no shot cap is curated anywhere: the published numbers produce the published count. MEASURED at 6.6 / 8.5 / 10.4 with his 2.5 s cast in front. |
+| I8-16 | Barbarian Barrel | `rerolldmg_11` 116: the VARIABLE is named for reroll damage, the level-table column it feeds is headed "Crown Tower Damage" | **Crown tower damage** | Rule (b): the rendered column header is what the page actually says. 116 is exactly half of the barrel's 232 under either reading, so the two differ only in WHERE it lands. |
+| I8-17 | Barbarian Barrel | "healling the barbarian for 50% of the damage" / table "Damage Healed 50%" | **Lifesteal on the reroll's own damage** | The label names DAMAGE as the thing being converted; a heal of damage TAKEN would read "Health Restored". The competing reading is a real one and is not discarded. |
+| I8-18 | Mega Minion | "the lowest hitpoint target" — current or max hitpoints? And is the marker tracked from deployment? | **Current hp, computed at activation** | A marker defined as "the lowest-hitpoint enemy, moving on when that one dies" always points at the lowest-hitpoint enemy alive right now, so computing it at the press is the same object. Max-hp would make the choice a static property of the card and blind to the fight. |
+| I8-19 | Mini P.E.K.K.A. | Body hp: vardefine `hp_base` 1433 vs History 12/1/2026 "decreased the it's Hitpoints by 3%" | **1390** | The ONE percentage in I8 that IS applied, and only because an INDEPENDENT absolute corroborates it: I5 already took the base card 1433 -> 1390 with a dated stale-page proof (time machine oldid 433647, 2025-12-25, still carrying the hardcoded L11 row "\\|11\\|\\|1,433\\|\\|755\\|" from before the change), and 1433 x 0.97 = 1390.01 reproduces it exactly. Same body, same staleness. Contrast I8-3 and I8-20, where no such absolute exists and nothing is computed. |
+| I8-20 | Giant | Body hp: vardefine 3968 (= base) vs History 2/2/2026 "reduced hero giants hitpoints by 3%" | **3968 kept** | Identical wording to I8-19 and the OPPOSITE outcome, deliberately: the base Giant carries no post-nerf absolute, so there is nothing to corroborate 3849 and it would be a bare computation. Flagged, not applied. |
+| I8-21 | Giant | "highest HP enemy troop"; the untargetable flight window | **Current hp; instant displacement; 2 s of AIR** | The flight is instant, which is the engine's standing convention for a carried displacement (Evo Snowball's Snow Bowling folds its untargetable window into the sweep the same way). The 2 s is the table's own Unit Stun Duration, which is the only duration the ability publishes — the page's own open question is whether that number IS the flight time. |
+| I8-22 | Dark Prince | Body hit speed: attributes table 1.4 (= the base card) vs the page's own vardefine `atk_speed` 1.3 | **1.4** | Rule (b), and the spec file's own conclusion is "body_stat_deltas: none stated". An unstated hero-only 7% attack-speed buff is the less likely reading of a page that contradicts itself. |
+| I8-23 | Magic Archer | Three arrows: no spread pattern, no pierce statement | **One attack carrying 3 x 48 down his existing piercing line** | The page publishes a count and a per-arrow damage and nothing about geometry. Total 144 against his normal 135, which is what "3 arrows ... with less damage" describes. |
+| I8-24 | Magic Archer | Body damage: hero page `dmg_11` 135 vs base card 125 | **135 kept** | decisions.md ruling 2: stat conflicts are FLAGGED, never auto-overturned. Nothing reconciles: I5 took the base 133 -> 125 for the SAME 4/8/2026 -6% the hero page records, and 135 x 0.94 = 127, not 125. The hero page's number is left standing and the discrepancy is here. |
+| I8-25 | Tombstone | Is the Tombstone consumed when the Queen rises? | **Not consumed** | The page never says it is, and it has a 30 s lifetime of its own that keeps running. |
+| I8-26 | Musketeer | Turret deploy time: table 1 s vs History 12/1/2026 "increased turret deploy time to 2 seconds (from 1 second)" | **2 s** | Rule (a); no revert is recorded. |
+| I8-27 | Goblins | The ability is pressed when every body is DEAD | **Engine state (`SimEngine._banner`), not a Unit** | The banner cannot be targeted, cannot die, and has to keep the ability pressable with no body on the board — so `champion_ability` gains one documented bodyless branch, and the banner is CONSUMED by the press, which is what enforces the single use with nothing to count on. |
+
+### ⚠ THE ONE STRUCTURAL CONFLICT THE SLOT MODEL DOES NOT MODEL
+
+The owner's slot ruling (Evolution + Hero + Wild) is implemented exactly as given. The Heroes page
+says something the ruling does not mention, and it is recorded here rather than acted on:
+
+> "Only two Heroes can be in a deck at a time, and only in the Hero and Wild slots. **Those slots
+> are also shared with Champion cards**, which means that the player can have 1 Hero and 1 Champion
+> at the same time." — Heroes, revid 437509
+
+So a CHAMPION occupies a hero-family slot. In the sim a champion is an ordinary deck card that
+carries its own `ability_kind`, so a deck holding e.g. `archer_queen` AND `knight` currently fields
+BOTH the Archer Queen's ability and a Hero Knight — three ability-bearing slots where the page
+allows two. MEASURED over the shipped pool: **137 of 1000 decks (15.3% of deck weight)** hold a
+champion card AND at least one hero candidate, so it is not an edge case (meta_008 golden_knight +
+bowler, meta_017 mighty_miner + barbarian_barrel, meta_018 little_prince + berserker, ...). Not
+acted on because the owner's ruling is explicit and final, and because capping it would silently
+delete either the champion's ability or the hero from those 137 decks.
+**OWNER: should a deck holding a Champion card lose its Hero slot?**
+
+### ⚠ PREMISES IN THE I8 BRIEF THAT WERE WRONG
+
+1. **"dash_chain x3, zone x2, movement_flight x2, taunt_shield x2"** — that family census counted
+   the spec files' `proposed_ability_kind` fields, which were first guesses at extraction time and
+   are wrong in three places. NO hero uses `dash_chain`: the Hero Barbarian Barrel's Rowdy Reroll
+   is a rolling-spell corridor and the Hero Mega Minion's Wounding Warp is an infinite-range
+   teleport, and both spec files say so in their own rationale comments ("closest existing bucket
+   ... flag for owner"). `zone` and `movement_flight` were counted x2 by including I7's Goblinstein
+   and Boss Bandit.
+2. **"movement_flight (fire tornadoes — reuse the existing `_Vortex`/tornado machinery)"** — the
+   NAME was already taken: `movement_flight` is the Boss Bandit's Getaway Grenade, a teleport, and
+   the registry dispatches on the string. The Hero Wizard's is a separate kind (`flight_nado`). The
+   INSTRUCTION was right and is exactly what happened: his tornado is the Evo Valkyrie's vortex
+   behind an ability gate, which is what his own page asks for by naming her.
+3. **"ordered by how often each hero appears as a candidate in the meta pool: summon (…), dash_chain,
+   buff_self, …"** — MEASURED, the order is different and `summon` is third:
+   `buff_self` 38.6% > reroll+warp 29.5% > summon 28.4% > taunt+decoy 17.1% > throw 9.1% >
+   flight 8.1% > zone_pulse 6.2% > levelup 4.6% (share of deck weight holding the candidate).
+4. **"I4's `/Hero` scrape landed 16 `<base>_hero` BODY rows"** — it did, and three of them carry
+   the WRONG TABLE. See below.
+
+### ⚠ MEASURED BUGS THIS STAGE SURFACED (all fixed, all with a before/after)
+
+* **I4 import, musketeer_hero**: hitpoints 1536 / damage 140 / hit speed 0.5 are the TURRET's
+  vardefines (`tur_hp_11` / `tur_dmg_11` / `tur_atk_speed`) — the scrape took the page's LAST
+  attributes table. A 1536 hp, 280 dps Musketeer is more than twice the card. Corrected to
+  721 / 217 / 1.0.
+* **I4 import, tombstone_hero**: hitpoints 4224 / damage 422 are the TOMB QUEEN's. The building's
+  own vardefine is `tomb_hp_11` 529 and a Tombstone has no attack. Corrected to 529 / 0.
+* **I4 import, barbarian_barrel_hero**: `damage` 192 is the spawned Barbarian's melee. On a SPELL
+  row `damage:` is the roll's area damage (the base card carries 230 there), so the hero barrel
+  rolled for LESS than the base card. Corrected to 232 (`spawn_11`) and pinned, which also took
+  stat_sweep from MISMATCHES 1 to 0.
+* **`_resolve_roll` never dropped a rolling spell's `spawn_spec`**, so the BASE Barbarian Barrel
+  leaves NO BARBARIAN in this sim at all — MEASURED as 0 bodies from a full deploy. See the
+  deliberate non-implementation below.
+* **`_late_spawns` ignored `ghost_life_s`** where `_spawn_from` honoured it, which would have left
+  the Hero Magic Archer's 7-second decoy standing for the whole match.
+* **A stance that extends REACH is inert without SIGHT and PROJECTILE flight**: the Hero Bowler at
+  his published 11.5 tiles fired ZERO shots at a tower 10 tiles away, because `_acquire` only
+  notices bodies inside `spec.sight` (5.5 for him) and, once it did, his boulder expired in mid-air
+  at the body's published 7-tile Projectile Range.
+* **The Hero Giant's 2 s stun and 2 s of flight ran in SERIES** — 4 s airborne from a published 2 —
+  because the airborne timer sat below the stun early-out in `_tick_units`.
+* **The hero slot went unfilled for 194 of 4982 decks (3.9%)** on the first pass, because the
+  Evolution slot took the deck's only hero-capable card. The Evolution now moves when that
+  collision is what blocks the hero; the residue is 8 in 4988 (0.16%), decks whose ONE card is the
+  sole candidate for both slots and where the two "always" rulings cannot both hold.
+* **evo_audit's own sampling was biased**: re-seeding the RNG per deck made every deck in a pass
+  draw from the same position in the same stream, and the wild slot's three-way split read
+  43.9 / 30.0 / 26.1. Sharing one stream across the sweep lands it on 34.2 / 33.2 / 32.5.
+
+### ⚠ IN-GAME CHECKS QUEUED FOR THE OWNER (each one is a single observation)
+
+Ordered by how much the answer would move, biggest first.
+
+1. **Hero Valkyrie's spin damage.** Is Ability Damage 97 per 0.25 s tick, or the total for the
+   3.5 s? The sim now deals 1358 area / 679 crown per activation (I8-13). Spin her into a Crown
+   Tower once and read the health bar.
+2. **Hero Berserker's "Bear Damage" 167.** Is that her per-hit damage during Savage Survival, or
+   does she keep her 102? 835 dps vs 510 (I8-12).
+3. **Hero Wizard's ability cost: 1 or 2?** Two tables against one page's infobox-plus-prose (I8-7).
+4. **Hero Ice Golem's blizzard pulse interval.** Time the three blasts (I8-9) — the only invented
+   cadence in the stage.
+5. **Hero Knight's shield.** 512, or ~322 after the two undated-absolute nerfs (I8-3)? And is the
+   taunt radius 6.5 or 7.5 (I8-2)?
+6. **Hero Giant's hitpoints.** 3968 or 3849 (I8-20)? One number settles it, and the answer also
+   tells us whether the Mini P.E.K.K.A. precedent (I8-19) generalises.
+7. **Hero Magic Archer's damage.** 135 or 125 (I8-24)?
+8. **Tomb Queen's combat profile.** Hit speed, movement speed, attack range, lifetime — the page
+   publishes NONE of them, so she currently fights on the engine's bare defaults. Everything else
+   about her is real.
+9. **Hero Barbarian Barrel**: is `rerolldmg_11` 116 the reroll's damage or its crown damage
+   (I8-16), and is "Damage Healed 50%" lifesteal or a heal of damage taken (I8-17)?
+10. **Trusty Turret's spawn-damage radius** and **the Rhino's** (the table literally prints
+    "unknown") — both currently fall back to the engine's splash default.
+11. **Does a deck holding a Champion CARD still get a Hero slot?** (the structural conflict above).
+
+### NOT IMPLEMENTED, DELIBERATELY (recorded so a later pass does not read a gap as an oversight)
+
+* **The BASE Barbarian Barrel's Barbarian.** `_resolve_roll` now drops a rolling spell's
+  `spawn_spec`, and `spawns_troop` is curated on the HERO row only. Giving the base card its
+  Barbarian is a real fidelity fix and a pool-wide change to the 198 decks that hold it, with no
+  measurement behind it yet — so it belongs to its own commit under the owner's one-change rule,
+  not to this one.
+* **The Hero Valkyrie's move-speed boost.** The Heroes blurb claims one; her ability table prints
+  Speed "Medium (60)", identical to her body. Rule (b): the table is the machine-readable
+  statement, so no boost.
+* **The Hero Valkyrie's "Dash Distance 5.5".** A lone table cell that no prose on either page
+  mentions at all. There is nothing to implement — no trigger, no direction, no target.
+* **"Plants his feet" (Hero Bowler).** A card QUOTE, not a rule, and the page's own open question
+  is whether he is rooted during the 7.3 s. He keeps moving. His mortar shot's splash radius and
+  any Mortar-style minimum range are likewise unpublished.
+* **The Knight's "Taunt Trigger Window" (0.1 s, History 6/4/2026, "from 0.7s").** The term is
+  defined NOWHERE on the page.
+* **The Rhino's "first charge distance 2.5 tiles" (History 1/6/2026, "from 0 tiles").** A different
+  quantity from the Charge Range 3 the table prints — the run-up he starts with — and the engine
+  has no first-charge concept to hang it on.
+* **Whether the Hero Magic Archer's decoy attacks.** The page gives it a hitpoint value and a
+  duration and nothing else: no damage, no hit speed, no range. It is inert.
+* **A hero body's `range_tiles` delta.** `build_spec` takes `reach` from the BASE card for every
+  variant (this is pre-existing, and true of evolutions too), so a hero page's own Range is not
+  read. It matters in exactly one place today: `ice_golem_hero` prints "Melee: Medium (1.2)" where
+  the base row says 0.75, and the spec file itself calls that at least as likely a snapshot error
+  as a real delta. Left at the base value, which is the conservative outcome.
+* **The tower-troop FALLBACK weights.** `sim.opponent_tower_weights` (6/2/2/1) gives the Princess
+  Tower 54.5% where the pool MEASURES 90.5% (tower_princess 6455 / cannoneer 288 / dagger_duchess
+  228 / royal_chef 160). Wiring `support:` lifts the fielded share to 83.7%; the rest is the 765
+  of 1000 decks whose battlelog predates the R4 slot sweep and names none. FLAGGED rather than
+  changed: those weights are also the frozen eval benchmark's, so retuning them makes every run
+  incomparable with every previous one. **OWNER: re-weight to the measurement, and re-baseline?**
+* **Detector RETRAINING for the 16 hero classes + 16 hero abilities.** `detect_classes.yaml`
+  already lists all 32 (I4), so the taxonomy is complete and nothing here needs a change. Training
+  a detector that can SEE them is explicitly out of Phase I scope (PLAN.md, "Deferred").
