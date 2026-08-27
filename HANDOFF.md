@@ -3285,6 +3285,24 @@ play/wait asymmetry to correct).
 gradient is necessary, not sufficient, and this can still come back null. Pre-committed: >=2 sigma
 on the paired probe or it is reported as NO MEASUREMENT.
 
+## 4u. 2026-08-26 — THE 40k RUN WAS STOPPED AT 26,600. Reference policy = `policy_BEST_m18000_20260826.pt`.
+
+Owner's call, on the §4t degradation. Stopped via PowerShell process lifecycle (Git-Bash `pkill`
+cannot see Windows processes and fails SILENTLY — §2): **16 processes killed, recount verified 0.**
+
+* **`data/policy_BEST_m18000_20260826.pt`** (copy of `policy_ppo_long_best.pt`) is the REFERENCE
+  POLICY from here. It is at **matches=18000**, which is exactly where the rolling eval peaked
+  (ladder avg-5 33% / fair 22%) — the trainer's own best-gate and our independent eval reading
+  agree, which is a useful cross-check on both.
+* `data/policy_ppo_long.pt` (matches=26600) is the LAST policy, ~13pp of ladder worse. Do not use
+  it as a baseline by accident — the filename does not say "worse".
+* 7 "new BEST" saves happened over the run; the last was the 33% one.
+
+**NO new PPO until sim-parity implementation is 100% complete** (owner). The merged restart, from
+this reference policy, is that experiment's ONE change.
+
+---
+
 ## 4t. 2026-08-26 — ⚠⚠ THE 40k RUN PEAKED AT ~18k AND IS GIVING IT BACK. §4d's "runs never durably improve" STANDS.
 
 I called this run "the first durable improvement §4d said never happened" at 16-18k. **That claim
