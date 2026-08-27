@@ -1,0 +1,1 @@
+[pp2] wr=66.7%  towerdelta=-0.1291  searched=228 disagree=96 wait->play=67 play->wait=24  wall=19.8s -> rs_pp2.json

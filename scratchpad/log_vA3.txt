@@ -1,0 +1,1 @@
+[vA3] wr=66.7%  towerdelta=-0.0594  searched=129 disagree=54 wait->play=38 play->wait=15  wall=11.3s -> rs_vA3.json

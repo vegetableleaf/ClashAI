@@ -1,0 +1,7 @@
+  [cl12] 10/60  wr=60.0%  5.29 s/match
+  [cl12] 20/60  wr=40.0%  5.25 s/match
+  [cl12] 30/60  wr=43.3%  5.54 s/match
+  [cl12] 40/60  wr=45.0%  5.34 s/match
+  [cl12] 50/60  wr=48.0%  5.26 s/match
+  [cl12] 60/60  wr=51.7%  4.90 s/match
+[cl12] wr=51.7%  towerdelta=-0.4068  searched=2211 disagree=894 wait->play=640 play->wait=213  wall=294.0s -> rs_cl12.json

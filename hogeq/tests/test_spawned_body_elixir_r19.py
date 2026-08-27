@@ -50,6 +50,31 @@ from clashrl.config import Config                                      # noqa: E
 from clashrl.sim.engine import build_spec                              # noqa: E402
 
 LVL = 11
+
+# RULING 29 (owner 2026-08-27): the prices that closed the 4-elixir default. Module level so
+# BOTH the pinning tests and the integrality test can see it.
+RULED = {
+    'barrel_barbarian': 1,
+    'base_barrel_barbarian': 1,
+    'brigade_goblin': 0.5,
+    'bush_goblin': 1,
+    'decoy_goblin': 0.5,
+    'elixir_blob': 0.5,
+    'elixir_golemite': 1.5,
+    'ghost_souldier': 0.5,
+    'goblin_brawler': 3,
+    'golemite': 2,
+    'lava_pups': 0.5,
+    'lumberjack_ghost': 3,
+    'mother_witch_hog': 1,
+    'phoenix_egg': 0.5,
+    'rhino': 3,
+    'royal_recruit': 1.5,
+    'skarmy_general': 0.5,
+    'skeletrooper': 1,
+    'tomb_queen': 5,
+    'trusty_turret': 3,
+}
 _SOUL_CAP = 10          # engine constant; re-imported below so a change to it breaks this loudly
 
 
@@ -118,7 +143,11 @@ class IntegerCostsAreUnaffectedTests(unittest.TestCase):
                 continue
             checked += 1
             self.assertAlmostEqual(float(want), got, places=6, msg=key)
-            if key not in ("magic_archer_decoy", "guardienne"):
+            # INTEGRALITY IS A RULE ABOUT PLAYABLE CARDS, NOT SPAWNED BODIES. A body is
+            # never dealt, so `can_afford` never evaluates it -- its cost is used only for
+            # VALUATION, where a fractional price is meaningful (half a Lava Pup is a real
+            # quantity; half a Rocket is not). Ruling 29 prices 20 bodies, several at 0.5.
+            if key not in RULED and key not in ("magic_archer_decoy", "guardienne"):
                 self.assertEqual(int(got), got, "%s: a card cost must stay integral" % key)
         self.assertGreater(checked, 150, "the sweep must actually cover the KB")
 
@@ -150,23 +179,31 @@ class TheRemainingHoleTests(unittest.TestCase):
         "skarmy_general", "skeletrooper", "tomb_queen", "trusty_turret",
     }
 
-    def test_exactly_the_twenty_two_listed_in_conflicts_md_still_default(self):
+    def test_no_ruled_body_ever_loses_its_price(self):
+        """Guards COVERAGE: a ruled body must never fall back to null."""
         db = _db()
-        got = {k for k, v in db.cards.items() if v.get("elixir") is None}
-        self.assertEqual(self.EXPECT, got,
-                         "the conflicts.md owner checklist must be updated with this diff")
+        lost = {k for k in RULED if (db.get(k) or {}).get("elixir") is None}
+        self.assertEqual(set(), lost, "ruled bodies lost their price: %s" % sorted(lost))
 
-    def test_they_all_still_read_as_four(self):
+    def test_they_all_carry_their_ruled_price_now(self):
+        """RULING 29 (owner 2026-08-27) closed the 4-elixir default. This test was the
+        INVERSE -- it pinned the broken state so it could not be forgotten. Its job is
+        done; it now pins the ruling. goblin_brawler/rhino/trusty_turret 3 and
+        tomb_queen 5 are OWNER OVERRIDES of the assistant's suggestions."""
         db = _db()
-        for k in sorted(self.EXPECT):
+        for k, want in sorted(RULED.items()):
             with self.subTest(card=k):
-                try:
-                    s = build_spec(db, k, LVL)
-                except Exception:                                      # noqa: BLE001
-                    continue
-                self.assertAlmostEqual(4.0, s.elixir, places=6,
-                                       msg="%s: still the engine default" % k)
+                self.assertAlmostEqual(want, build_spec(db, k, LVL).elixir, places=6,
+                                       msg="%s: ruling 29 price" % k)
 
+    def test_nothing_falls_through_to_the_engine_default_any_more(self):
+        """The point of ruling 29: no body is priced by an accident of a missing field."""
+        db = _db()
+        left = {k for k, v in db.cards.items()
+                if v.get("elixir") is None and v.get("kind") != "spell"
+                and not k.endswith("_evo")}
+        self.assertEqual(set(), left,
+                         "still defaulting to 4, needs an owner ruling: %s" % sorted(left))
     def test_a_zero_elixir_row_would_no_longer_fall_through_to_four(self):
         """The latent bug the widening closed. `int(c.get("elixir") or ... or 4)` treated a
         declared 0 as MISSING, so the one value that could not be expressed was the one I9's Clone

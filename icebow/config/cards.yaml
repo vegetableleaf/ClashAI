@@ -561,7 +561,7 @@ cards:
     verified: true                 # collision radius" -- not in any attributes table
   ghost_souldier:                  # the Evo Royal Ghost's two escorts -- spawned, NOT a card.
     display: "Souldier"            # Level-11 per the wiki: 81 hp (a skeleton's), 261 area damage
-    elixir: null                   # (the Ghost's own swing), 1.8 s cadence, ghost-style stealth.
+    elixir: 0.5                   # ruling 29 (2026-08-27): was null -> silently 4. (the Ghost's own swing), 1.8 s cadence, ghost-style stealth.
     kind: troop
     rarity: legendary
     attacks: [ground]
@@ -600,7 +600,7 @@ cards:
   #     confirmed exactly: hitpoints 81
   skarmy_general:                  # Gerry -- wiki vardefines (api.php): a SKELETON with a
     display: "Skeleton General"    # shield: 81 hp + 81 shield + 81 dmg at 1.0 s
-    elixir: null
+    elixir: 0.5                   # ruling 29 (2026-08-27): was null -> silently 4. 
     kind: troop
     rarity: epic
     attacks: [ground]
@@ -721,7 +721,7 @@ cards:
   #     and MARKED rather than replaced by a guess.
   lumberjack_ghost:                # the Evo Lumberjack's death ghost -- spawned, NOT a card
     display: "Lumberjack Ghost"
-    elixir: null
+    elixir: 3                     # ruling 29 (2026-08-27): was null -> silently 4. 
     kind: troop
     rarity: legendary
     attacks: [ground]
@@ -1475,7 +1475,7 @@ cards:
   #     goblins deploy time = normal goblin-barrel goblins (1.1 s)
   decoy_goblin:                    # "single-target, ground-targeting, melee, ground troops" --
     display: "Decoy Goblin"        # USER-VERIFIED 2026-08-14: 81 hp / 89 damage at level 11,
-    elixir: null                   # goblin hit speed (1.1 s)
+    elixir: 0.5                   # ruling 29 (2026-08-27): was null -> silently 4. goblin hit speed (1.1 s)
     kind: troop
     rarity: epic
     attacks: [ground]
@@ -1981,7 +1981,7 @@ cards:
     # cannot resolve this on its own" -> INF -> must_answer at any cost. A single recruit was
     # therefore an infinite threat to every triage gate in the project, which is the same
     # "spend a card on a small threat" failure the triage tier exists to prevent.
-    elixir: null
+    elixir: 1.5                   # ruling 29 (2026-08-27): was null -> silently 4. 
     kind: troop
     rarity: common
     hitpoints: 547
@@ -2004,7 +2004,7 @@ cards:
 
   mother_witch_hog:                # the cursed HOGS Mother Witch spawns (distinct from Royal Hogs) -- fast,
     display: "Mother Witch Hog"    # building-targeting; a spawned unit, NOT a deployable card (no elixir/stats in the KB)
-    elixir: null
+    elixir: 1                     # ruling 29 (2026-08-27): was null -> silently 4. 
     kind: troop
     rarity: legendary
     attacks: [ground]
@@ -2033,7 +2033,7 @@ cards:
   #     never applied -- not a published number, so not applied
   phoenix_egg:                     # the EGG a dying Phoenix leaves behind -- a spawned body, NOT a
     display: "Phoenix Egg"         # deployable card. Stationary and harmless; its whole job is to
-    elixir: null                   # survive 3.8 s (see phoenix `egg:`). 239 hp at level 11 per the
+    elixir: 0.5                   # ruling 29 (2026-08-27): was null -> silently 4. survive 3.8 s (see phoenix `egg:`). 239 hp at level 11 per the
     kind: troop                    # wiki. A TROOP (not a building) so The Log shoves it and the
     rarity: legendary              # Tornado drags it, both as in game.
     attacks: [ground]
@@ -2059,7 +2059,7 @@ cards:
 
   golemite:                        # the 2 smaller golems Golem splits into on death (they also deal death damage)
     display: "Golemite"
-    elixir: null
+    elixir: 2                     # ruling 29 (2026-08-27): was null -> silently 4. 
     kind: troop
     rarity: epic
     attacks: [ground]
@@ -2089,7 +2089,7 @@ cards:
 
   elixir_golemite:                 # the 2 mid units Elixir Golem splits into on death (each then splits into blobs)
     display: "Elixir Golemite"
-    elixir: null
+    elixir: 1.5                   # ruling 29 (2026-08-27): was null -> silently 4. 
     kind: troop
     rarity: rare
     attacks: [ground]
@@ -2116,7 +2116,7 @@ cards:
 
   elixir_blob:                     # the smallest Elixir Golem split (gives the OPPONENT elixir when it dies)
     display: "Elixir Blob"
-    elixir: null
+    elixir: 0.5                   # ruling 29 (2026-08-27): was null -> silently 4. 
     kind: troop
     rarity: rare
     attacks: [ground]
@@ -2143,7 +2143,7 @@ cards:
 
   lava_pups:                       # the small FLYING units Lava Hound splits into on death (6 pups); UNLIKE
     display: "Lava Pups"           # the Hound (buildings_only) they attack troops too -> targets any, air+ground
-    elixir: null
+    elixir: 0.5                   # ruling 29 (2026-08-27): was null -> silently 4. 
     kind: troop
     rarity: legendary
     attacks: [air, ground]
@@ -2572,7 +2572,7 @@ cards:
   #     says 1 sec. Curated verified:true -> escalate
   bush_goblin:                     # the two goblins the bush breaks into -- a spawned body, NOT a
     display: "Bush Goblin"         # deployable card. Wiki: 304 hp / 227 damage at level 11,
-    elixir: null                   # single-target melee ground troops; cadence + reach + speed
+    elixir: 1                     # ruling 29 (2026-08-27): was null -> silently 4. single-target melee ground troops; cadence + reach + speed
     kind: troop                    # from the import's spawn_unit_stats row (1.4s / 0.8t / 1.0t-s).
     rarity: rare
     attacks: [ground]
@@ -2926,6 +2926,7 @@ cards:
   # from the Goblin Cage attribute table's second row. "He is also the same as that spawned by the
   # Party Hut." Speed Fast (90) = 1.5 tiles/s at the wiki's 60 units = 1 tile/s.
   goblin_brawler:
+    elixir: 3   # ruling 29 (2026-08-27): was ABSENT -> silently 4. OWNER OVERRIDE.
     display: "Goblin Brawler"
     kind: troop
     rarity: rare
@@ -3197,7 +3198,7 @@ cards:
   # ---- summoned bodies. Spawned, NOT cards -- same house idiom as soul_skeleton / guardienne. ----
   trusty_turret:                   # Hero Musketeer's Trusty Turret (Musketeer/Hero, revid 437512).
     display: "Trusty Turret"       # vardefines tur_hp_11 1536, tur_dmg_11 140, tur_atk_speed 0.5,
-    elixir: null                   # tur_life 10, tur_spawn_11 204; table Turret Range 4.0,
+    elixir: 3                     # ruling 29 (2026-08-27): was null -> silently 4. OWNER OVERRIDE. tur_life 10, tur_spawn_11 204; table Turret Range 4.0,
     kind: building                 # Target Air & Ground.
     rarity: rare
     attacks: [air, ground]
@@ -3226,7 +3227,7 @@ cards:
     verified: false
   tomb_queen:                      # Hero Tombstone's Regal Revive summon (Tombstone/Hero, revid 437388).
     display: "Tomb Queen"          # THE THINNEST ROW IN THIS FILE, and deliberately so: the page
-    elixir: null                   # has NO Queen attributes table. Only four numbers exist --
+    elixir: 5                     # ruling 29 (2026-08-27): was null -> silently 4. OWNER OVERRIDE. has NO Queen attributes table. Only four numbers exist --
     kind: troop                    # queen_hp_11 4224, queen_dmg_11 422, sight 7 tiles (History
     rarity: rare                   # 4/8/2026, "from 5.5 tiles"), and "targeting buildings"
     attacks: [ground]              # (Heroes revid 437509, List of Heroes).
@@ -3245,7 +3246,7 @@ cards:
     verified: false
   skeletrooper:                    # Hero Balloon's Coffin Cadets summon (Balloon/Hero, revid 437524).
     display: "Skeletrooper"        # vardefines skelhp_11 473, skeldmg_11 204, skelatk_speed 1.1
-    elixir: null                   # (History 6/7/2026 raised it from 0.9); table Speed Very Fast
+    elixir: 1                     # ruling 29 (2026-08-27): was null -> silently 4. (History 6/7/2026 raised it from 0.9); table Speed Very Fast
     kind: troop                    # (120), Range Melee: Short, Target Ground, Count x1.
     rarity: epic
     attacks: [ground]
@@ -3267,7 +3268,7 @@ cards:
     verified: false
   rhino:                           # Hero Dark Prince's Destructive Dismount mount (Dark Prince/Hero,
     display: "Rhino"               # revid 437359). vardefines rhp_11 1356, rdmg_11 179,
-    elixir: null                   # rcharge_11 358, spawndmg_11 307; table Hit Speed 1.6,
+    elixir: 3                     # ruling 29 (2026-08-27): was null -> silently 4. OWNER OVERRIDE. rcharge_11 358, spawndmg_11 307; table Hit Speed 1.6,
     kind: troop                    # Range 0.8, Charge Range 3, Target Buildings, Speed Medium.
     rarity: epic
     attacks: [ground]
@@ -3296,7 +3297,7 @@ cards:
     verified: false
   brigade_goblin:                  # Hero Goblins' Banner Brigade reinforcements (Goblins/Hero, revid
     display: "Brigade Goblin"      # 437513). "Brigade Goblins has the exact stats as the original
-    elixir: null                   # goblins", and the level table reuses hp_11/dmg_11 for the
+    elixir: 0.5                   # ruling 29 (2026-08-27): was null -> silently 4. goblins", and the level table reuses hp_11/dmg_11 for the
     kind: troop                    # Brigade columns -- so this row IS the hero goblin, count 1.
     rarity: common
     attacks: [ground]
@@ -3340,7 +3341,7 @@ cards:
     verified: false
   base_barrel_barbarian:           # the Barbarian the BASE Barbarian Barrel leaves behind
     display: "Barrel Barbarian"    # (Barbarian Barrel, revid 437163). Lead: "Once the spell
-    elixir: null                   # reaches its destination, it spawns a single Barbarian."
+    elixir: 1                     # ruling 29 (2026-08-27): was null -> silently 4. reaches its destination, it spawns a single Barbarian."
     kind: troop                    # vardefines hp_11 670 / dmg_11 191; Barbarian Attributes table
     rarity: epic                   # Hit Speed 1.3 / First Hit Speed 0.4 / Speed Medium (60) /
     attacks: [ground]              # Deploy Time 0.5 / Range Melee: Short (0.5) / Ground / x1.
@@ -3374,7 +3375,7 @@ cards:
     verified: false
   barrel_barbarian:                # the Barbarian the Hero Barbarian Barrel leaves behind
     display: "Barrel Barbarian"    # (Barbarian Barrel/Hero, revid 437523). vardefines hp_11 716,
-    elixir: null                   # dmg_11 192; table First Hit Speed 0.4, Speed Medium (60),
+    elixir: 1                     # ruling 29 (2026-08-27): was null -> silently 4. dmg_11 192; table First Hit Speed 0.4, Speed Medium (60),
     kind: troop                    # Deploy Time 0.5, Range Melee: Short (0.5), Target Ground.
     rarity: epic
     attacks: [ground]
