@@ -1160,6 +1160,42 @@ cloning time from History).
   Found while deciding whether Clone should fall through to the enemy pass — it must not, and
   the general rule is the fix.
 
+### ⚠ PREMISES IN THE I9 BRIEF THAT WERE WRONG
+
+1. **"`drill_env.py` evolution cycling. Drills currently have NO evo cycling at all —
+   `evo_charge`/`slot_cycles` do not exist there, so evolutions are ALWAYS ON in drills while
+   matches cycle them properly."** Both halves are wrong, and the second is backwards.
+   `DrillEnv` EXTENDS `SimMatchEnv`, so `evo_charge`, `slot_cycles`, `slot_evo_id`,
+   `_slot_card_id` and `_play_slot` are all inherited and all work; `DrillEnv.reset()` calls
+   `super().reset()`, which zeroes the charge exactly as a match does. A `grep` inside
+   `drill_env.py` finds nothing, which is presumably where the premise came from.
+   The REAL gap runs the other way: evolutions are permanently **OFF** in a restricted-hand
+   drill, because `DrillEnv._play_slot` removes a played slot from the cycle (deliberately —
+   a drill dealt one card could otherwise replay it forever), so the charge reaches 1 and never
+   the 2 an Evolution needs. MEASURED: an evolution was presented in **0 of 26 icebow drills and
+   0 of 24 hogeq drills**, against a match that first presents one after **9 plays**. Matchup
+   drills (3 per deck, no declared hand) keep the full 8-slot cycle and already charge like a
+   match. Implemented as `Scenario.evo_charged`, defaulting to match behaviour — with the flag on,
+   10 of 26 icebow and 10 of 24 hogeq drills change.
+2. **"`perception.py` hogeq TypeError ... the fix is SILENTLY INERT in that deck."** See the
+   perception section below: MEASURED, it is not.
+
+### ⚠ MORE MEASURED BUGS
+
+* **A drill that named an `<base>_evo` key in its `hand` was silently dealt the BASE card.**
+  `_restrict_hand` matches a declaration against `_slot_card_id(slot)` — the identity the slot
+  CURRENTLY presents — which at charge 0 is always the base. So `hand: ('tesla_evo',)` dealt a
+  plain Tesla under the evolution's name, and the drill would then fail for a reason that is not
+  its own, which is the exact failure `_restrict_hand`'s docstring exists to prevent. No shipped
+  drill in either deck names an `_evo` today (0 of 29 icebow, 0 of 27 hogeq), so this was latent.
+  Naming one now charges its slot, whatever `evo_charged` says.
+* **A compound drill's hand outlived its episode.** `_compound_hand` was assigned in
+  `_place_components` and never cleared, and `_restrict_hand` reads `_compound_hand or
+  scenario.hand` — so after one compound episode, every later single-scenario drill in the same
+  env was dealt the compound hand instead of its own. Latent today (`sim.drill_compound_frac` is
+  **0.0** in both decks) and found while adding the evolution twin beside it. Both are now cleared
+  at the top of every `reset`.
+
 ### NOT IMPLEMENTED, DELIBERATELY (I9 item 1)
 
 * **The Clone's forward shove of the ORIGINAL body.** "When a troop is cloned, the original troop

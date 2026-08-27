@@ -93,6 +93,20 @@ class Scenario:
     # Measured need: bank_to_six_then_bow passes 2/40 because it wants ~19 consecutive holds THEN a
     # play; from 6 elixir the only thing left to learn is the play.
     subgoals: Sequence[dict] = ()
+    # EVOLUTION CHARGE AT t=0 (I9). A match runs an 8-CARD cycle and a slot presents its Evolution
+    # only once it has banked `cycles` base plays (env.py `_slot_card_id` / `_play_slot`); a
+    # restricted-hand drill deals one or two cards and spends them, so it could NEVER reach the
+    # two plays an Evolution needs. MEASURED before this existed: an evolution was presented in
+    # 0 of 26 icebow drills and 0 of 24 hogeq drills, while a match first shows one after 9 plays.
+    #   None  = MATCH BEHAVIOUR, and the default: every slot starts uncharged, exactly as a match
+    #           begins. A drill whose reference line was written for the BASE card keeps it.
+    #   True  = every evo-capable slot in the deck starts CHARGED, so it presents its Evolution.
+    #   (keys) = only these slots, named by base or by `<base>_evo`.
+    # A drill that names an `<base>_evo` key in `hand` is charged automatically whatever this says
+    # -- otherwise the declaration is silently ignored and the drill is dealt the base card under
+    # the evolution's name, which is the "fails for the wrong reason" trap `_restrict_hand` exists
+    # to prevent.
+    evo_charged: Optional[object] = None
     notes: str = ""
 
     def __post_init__(self):
