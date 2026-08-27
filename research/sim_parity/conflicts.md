@@ -1145,6 +1145,21 @@ existing spell path in ~30 lines and because the brief asked for it explicitly i
 published — they are, all four of them (Clone Hitpoints, Clone Shield Hitpoints, Radius, and the
 cloning time from History).
 
+### ⚠ MEASURED BUGS THIS STAGE SURFACED
+
+* **A zero-damage tower "hit" woke the King.** `_damage_tower` set `tw.active = True` on ANY
+  call, including calls carrying 0 damage, and five spells reach it with none: `goblin_barrel`,
+  `goblin_barrel_evo`, `goblin_barrel_decoy`, `royal_delivery` and `mirror` all publish no Crown
+  Tower damage, because on those cards the BODIES do the work. MEASURED, casting each directly on
+  the enemy King Tower, time until he activates — **goblin_barrel 0.0 s at 0 chip -> 1.2 s at
+  372.9; goblin_barrel_evo 0.0 s -> 1.2 s; royal_delivery 0.0 s at 0 chip -> 1.2 s at 132.6;
+  mirror 0.0 s -> never.** Royal Delivery is the sharpest case: decisions.md #11 ruled it "cannot
+  hit crown towers" and I5 discarded its `crown_tower_damage` for exactly that reason, which
+  handed it a free king activation instead. Graveyard and Void are NOT affected (Graveyard never
+  reaches the call; Void's crown figure comes from its `zone_tiers`, so it is real damage).
+  Found while deciding whether Clone should fall through to the enemy pass — it must not, and
+  the general rule is the fix.
+
 ### NOT IMPLEMENTED, DELIBERATELY (I9 item 1)
 
 * **The Clone's forward shove of the ORIGINAL body.** "When a troop is cloned, the original troop

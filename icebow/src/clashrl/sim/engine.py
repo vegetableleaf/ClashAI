@@ -5321,6 +5321,25 @@ class SimEngine:
     def _damage_tower(self, tw: Tower, dmg: float, by_team: int) -> None:
         if not tw.alive:
             return
+        if dmg <= 0.0:
+            # A ZERO-DAMAGE HIT IS NOT A HIT (I9). The King wakes on DAMAGE, and five spells
+            # reach this line carrying none -- goblin_barrel, goblin_barrel_evo,
+            # goblin_barrel_decoy, royal_delivery and mirror all publish no Crown Tower damage,
+            # because on those cards it is the BODIES that do the work.
+            # MEASURED, casting each one directly on the enemy King Tower, time until he activates:
+            #     goblin_barrel      0.0 s at 0 chip  ->  1.2 s at 372.9 (the goblins land)
+            #     goblin_barrel_evo  0.0 s at 0 chip  ->  1.2 s at 372.9
+            #     royal_delivery     0.0 s at 0 chip  ->  1.2 s at 132.6 (the recruit swings)
+            #     mirror             0.0 s at 0 chip  ->  never
+            # A free king activation off a Goblin Barrel is a real edge, and Royal Delivery is the
+            # sharpest case of all: decisions.md #11 ruled that it "cannot hit crown towers" and
+            # I5 discarded its crown_tower_damage for exactly that reason -- which handed it this
+            # instead. (Graveyard and Void are NOT affected: Graveyard never reaches this call at
+            # all, and Void's crown figure comes from its count-tiered `zone_tiers`, not from
+            # `spell_tower_dmg`, so it is real damage and does wake him.)
+            # Status is untouched: `_apply_status` is a separate call at every site, so a spell
+            # that stuns a tower without chipping it still stuns it.
+            return
         if tw.king:
             tw.active = True                                 # ANY hit on the king wakes it (Miner / spell chip) -- real CR
         dmg = min(dmg, tw.hp)

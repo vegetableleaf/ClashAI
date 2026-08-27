@@ -327,5 +327,67 @@ class MirrorMeasurementTests(unittest.TestCase):
                          "and the pool does not field it (conflicts.md, I9)")
 
 
+class ZeroDamageTowerHitTests(unittest.TestCase):
+    """A ZERO-DAMAGE HIT IS NOT A HIT (I9, measured while routing Clone).
+
+    `_damage_tower` woke the King Tower on ANY call, including calls carrying 0 damage. Five
+    spells publish no Crown Tower damage at all -- goblin_barrel, goblin_barrel_evo,
+    goblin_barrel_decoy, royal_delivery and mirror -- because on those cards the BODIES do the
+    work, and every one of them was activating the enemy King the instant it landed, for nothing.
+    Royal Delivery is the sharpest case: decisions.md #11 ruled that it "cannot hit crown towers"
+    and I5 discarded its `crown_tower_damage` for exactly that reason.
+    """
+
+    ZERO_CROWN = ("goblin_barrel", "goblin_barrel_evo", "royal_delivery", "mirror")
+
+    def _king_asleep(self, eng):
+        king = next(tw for tw in eng.towers[1] if tw.king)
+        king.active = False
+        return king
+
+    def test_the_landing_itself_never_wakes_the_king(self):
+        for key in self.ZERO_CROWN:
+            with self.subTest(card=key):
+                eng = _quiet(_make_engine())
+                king = self._king_asleep(eng)
+                sp = build_spec(eng.db, key, LVL)
+                self.assertAlmostEqual(sp.spell_tower_dmg, 0.0, places=6,
+                                       msg="%s publishes no crown damage" % key)
+                eng._resolve_spell(_Spell(0, king.x, king.y, sp, 0.0))
+                self.assertFalse(king.active,
+                                 "%s landing on the King must not activate him for 0 chip" % key)
+                self.assertAlmostEqual(eng.chip[0], 0.0, places=6)
+
+    def test_the_bodies_it_leaves_still_wake_him(self):
+        """The guard removes a FREE activation, not the card's real one: MEASURED, the Goblin
+        Barrel now wakes him at 1.2 s with 372.9 chip on the board instead of at 0.0 s with none."""
+        eng = _quiet(_make_engine())
+        king = self._king_asleep(eng)
+        eng._resolve_spell(_Spell(0, king.x, king.y, build_spec(eng.db, "goblin_barrel", LVL), 0.0))
+        for _ in range(60):
+            eng.advance(0.1)
+            if king.active:
+                break
+        self.assertTrue(king.active, "the goblins themselves must still activate him")
+        self.assertGreater(eng.chip[0], 0.0, "...and only once they have actually hit something")
+
+    def test_a_spell_that_does_publish_crown_damage_is_untouched(self):
+        eng = _quiet(_make_engine())
+        king = self._king_asleep(eng)
+        sp = build_spec(eng.db, "fireball", LVL)
+        self.assertGreater(sp.spell_tower_dmg, 0.0)
+        eng._resolve_spell(_Spell(0, king.x, king.y, sp, 0.0))
+        self.assertTrue(king.active)
+
+    def test_a_zero_damage_spell_can_still_apply_its_status(self):
+        """`_apply_status` is a separate call at every site, so the guard removes the phantom
+        activation without touching a tower stun."""
+        eng = _quiet(_make_engine())
+        tw = eng.towers[1][0]
+        zap = build_spec(eng.db, "zap", LVL)
+        eng._apply_status(0, zap, tw)
+        self.assertGreater(tw.stun_left, 0.0)
+
+
 if __name__ == "__main__":
     unittest.main()
