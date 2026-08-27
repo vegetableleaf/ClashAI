@@ -158,3 +158,27 @@ blocked later. In the WORKTREE, never the live tree.
   field is real and stays. goblinstein row kept as-is.
 * lumberjack_ghost lifetime **4.5 s = the rage duration**, conditional on staying inside the pool
   (leaves early → dies early). firecracker_evo `spark_dps_large` 192: wiki correct.
+
+## 2026-08-26 late — Owner rulings (batch 3), given before going offline
+
+11. **Electro Dragon chain cannot hit the same target twice** in one attack. VERIFIED ALREADY
+    CORRECT: `_multi_hit` keeps `seen = {id(ref)}` and filters `id(e) not in seen`. The 533.6 seen
+    in the arc measurement was TWO SEPARATE ATTACK CYCLES, not one chain double-hitting. Add a test
+    pinning the rule so it cannot regress.
+12. **Evo Electro Dragon's extra chain damage is 1/3 of the original damage** — owner gave "64 at
+    level 11". ⚠ DISCREPANCY TO RESOLVE, DO NOT SILENTLY PICK EITHER NUMBER: the KB carries
+    `electro_dragon_evo.damage = 267` @L11, and 267/3 = **89**, not 64. 64 implies a base of 192.
+    IMPLEMENT THE RULE, NOT THE CONSTANT: add `chain_falloff_frac: 0.3333` so extra hits deal
+    damage/3 whatever the card's damage turns out to be, and the first 3 targets keep FULL damage
+    WITH the stun while later bounces deal the reduced damage with NO stun (the researched shape).
+    Then the absolute number follows the KB automatically. Flag the 267-vs-192 question for the
+    owner; if 192 is right, that is a separate damage correction.
+13. **New PPO: target ~20k with an auto-stop on decline** — stop if the rolling eval average falls
+    for 3 consecutive checkpoints. The stopped run peaked at 18k and then decayed for 8k more; a
+    40k target mostly buys decline. Best-checkpoint gate stays on regardless.
+14. **Spell A/B experiments run BEFORE the long PPO**, on the finished parity sim. They are short
+    (~90 min/arm) and would otherwise contend for CPU with a long run (§2's contention trap). Their
+    results feed the long run's reward settings.
+
+**Autonomous mandate (owner, going to bed):** proceed I7 -> I8 -> I9 -> I10 -> merge -> spell
+experiments -> new PPO, without waiting for approval between stages.
