@@ -299,7 +299,17 @@ class ActionSpace:
         out = []
         for c in range(gw * gh):
             cx, cy = self.cell_center(c % gw, c // gw)
-            d = ((cx - kx) * tx) ** 2 + ((cy - ky) * ty) ** 2
+            # ⚠ UNITS, and it was WRONG in live. `cell_center` returns FRAME coordinates in the
+            # LIVE space (it runs `warp.board_to_frame` to produce a tap point), while `king_xy` is
+            # BOARD-space by construction -- `sim.board.king_tile` divided by the tile counts.
+            # Comparing the two directly is the RS-4 trap in SHIPPED code rather than in a probe.
+            # MEASURED 2026-08-27: live blocked 12 of 432 cells where the sim's board-space
+            # ActionSpace blocked 22, leaving TEN cells whose TRUE distance to the enemy king is
+            # 1.54-2.69 tiles selectable in live and never selectable in the sim -- four of them
+            # inside a Rocket's own 2.0-tile blast. In the SIM the warp is exactly the identity, so
+            # `frame_to_board` is a no-op there and both spaces now mask the SAME cells.
+            bx, by = self.warp.frame_to_board(cx, cy)
+            d = ((bx - kx) * tx) ** 2 + ((by - ky) * ty) ** 2
             out.append(d > clear * clear)
         return out
 

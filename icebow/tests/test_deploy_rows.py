@@ -138,9 +138,20 @@ class KingKeepOutTests(unittest.TestCase):
         from clashrl.actions import ActionSpace
         self.acts = ActionSpace(Config.load())
 
+    # ⚠ UNITS. `king_xy` is BOARD-space (it is `sim.board.king_tile` over the tile counts) while
+    # `cell_center` returns FRAME coordinates here -- so every comparison has to go through
+    # `warp.frame_to_board` first. Both tests below USED TO OMIT THAT, in exactly the same way
+    # `no_king_mask` itself did, which is why they passed against a mask that was blocking 12 cells
+    # where the sim blocked 22 and leaving ten cells 1.54-2.69 true tiles from the king selectable.
+    # A test written in the same wrong units as its subject can never catch the subject's bug.
+    # conflicts.md RS-4, third sighting.
+    def _board(self, c):
+        return self.acts.warp.frame_to_board(
+            *self.acts.cell_center(c % self.acts.gw, c // self.acts.gw))
+
     def test_king_cell_is_not_selectable_by_anywhere_cards(self):
         m = self.acts.deployable_mask(True)
-        gx, gy = self.acts.coords_to_grid(*self.acts.king_xy)
+        gx, gy = self.acts.coords_to_grid(*self.acts.warp.board_to_frame(*self.acts.king_xy))
         self.assertFalse(m[gy * self.acts.gw + gx], "their king's own cell must be masked out")
 
     def test_keep_out_has_real_clearance(self):
@@ -148,8 +159,7 @@ class KingKeepOutTests(unittest.TestCase):
         m = self.acts.deployable_mask(True)
         tx, ty = self.acts.king_tiles
         kx, ky = self.acts.king_xy
-        closest = min(math.hypot((self.acts.cell_center(c % self.acts.gw, c // self.acts.gw)[0] - kx) * tx,
-                                 (self.acts.cell_center(c % self.acts.gw, c // self.acts.gw)[1] - ky) * ty)
+        closest = min(math.hypot((self._board(c)[0] - kx) * tx, (self._board(c)[1] - ky) * ty)
                       for c in range(self.acts.gw * self.acts.gh) if m[c])
         self.assertGreaterEqual(closest, self.acts.king_clear,
                                 "every legal cell must clear the king by the configured margin")
