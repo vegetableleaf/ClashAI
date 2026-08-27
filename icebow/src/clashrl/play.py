@@ -205,6 +205,18 @@ def play(cfg) -> None:
     anywhere_ids = {i for i, key in enumerate(vision.deck_keys)
                     if ((_pdb.get(card_threat.base_key(key)) or {}).get("kind") == "spell"
                         or card_threat.base_key(key) in ("miner", "goblin_drill"))} - _own_half_ids
+    # A PULL SPELL MUST NOT BE SNAPPED ONTO A TOWER. `weaker_princess_cell` exists so a ROCKET
+    # finishes the weaker princess instead of splitting damage -- but the branch that calls it is
+    # gated on `anywhere_ids`, which is EVERY anywhere-spell, and for this deck that set is
+    # {rocket, TORNADO}. A Tornado centred on a Crown Tower pulls nothing (buildings are anchored,
+    # engine `_tick_vortex`) and chips it for a rounding error, so the snap converts a chosen cast
+    # into a guaranteed whiff. MEASURED 2026-08-27: 80 of 432 cells (18.5% of the board) sit inside
+    # the +/- env.spell_tower_aim_radius box of an enemy princess, i.e. roughly one tornado cast in
+    # five was being redirected onto a building. The sim's own `spell_target_mask` already states
+    # the rule -- "a live enemy princess is a valid chip target for a DAMAGE spell (never for a
+    # pull)" -- it simply never reached live.
+    _pull_ids = {i for i, key in enumerate(vision.deck_keys)
+                 if "pull" in set((_pdb.get(card_threat.base_key(key)) or {}).get("flags") or ())}
     xbow_ids = {i for i, key in enumerate(vision.deck_keys)
                 if (key[:-4] if key.endswith("_evo") else key) == "x_bow"}
     xbow_range = float(cfg.get("env", "xbow_range", default=0.36))
@@ -576,7 +588,8 @@ def play(cfg) -> None:
                 if wait:
                     return
             cell = int(cell_logits_m.argmax(1).item())
-        if card_id in anywhere_ids:           # a rocket / offensive miner at a princess -> aim the weaker one
+        if card_id in anywhere_ids and card_id not in _pull_ids:   # DAMAGE spell / miner at a
+            # princess -> aim the weaker one. Pull spells are excluded (see _pull_ids).
             gx, gy = cell % gw, cell // gw
             cx, cy = actions.cell_center(gx, gy)
             tgt = None
