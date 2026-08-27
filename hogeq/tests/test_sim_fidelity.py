@@ -829,7 +829,17 @@ class BarrelTimingTests(unittest.TestCase):
                     env.eng.deploy(0, build_spec(env.eng.db, "the_log", 11), 0.25, 0.76)
                     thrown = True
             return sum(1 for u in env.eng.units if u.spec.base == "goblins" and u.hp > 0)
-        self.assertEqual(trial(0.3), 3, "logging while the barrel is still high hits nothing")
+        # RULING 21 MOVED THIS WINDOW, and understanding why is the point of keeping the test.
+        # When the roll resolved in one frame, "too early" meant "the corridor fired before the
+        # goblins had hitboxes" and any delay under the barrel's flight time missed. Now the roll
+        # SWEEPS for 2.88 s, so a Log thrown early is still travelling when they land and its
+        # leading edge catches them -- which is what the Log page describes: "deploy their The Log
+        # so that it will roll over the units ONCE THEIR HITBOX SPAWNS".
+        # MEASURED, delay -> goblins left alive: 0.0 -> 3, 0.1 -> 3, 0.2 -> 3, 0.3 -> 0,
+        # and 0 for every delay from 0.3 s to 4.0 s. So the miss window narrowed 0.3 -> 0.2 s:
+        # at 0.2 s the edge is 2.00 tiles along when they spawn 1.92 tiles ahead (already past
+        # them), at 0.3 s it is only 1.67 (still short of them, so it arrives).
+        self.assertEqual(trial(0.2), 3, "the roll has already passed the spawn point")
         self.assertEqual(trial(0.9), 0, "timed to land as they spawn, it clears all three")
 
     def test_skeleton_barrel_has_a_limbo_where_nothing_is_hittable(self):

@@ -2237,8 +2237,20 @@ class SimMatchEnv:
         # on their side is offence and is priced by the chip / win-condition terms.
         worth = {u.deploy_seq: str(u.spec.base) for u in caught if float(u.y) > 0.5}
         towers = {id(t): float(t.hp) for t in self.eng.towers[1] if getattr(t, "hp", 0) > 0}
+        # HOW LONG THE EFFECT LASTS, so the verdict is taken after it, never during it. A Poison
+        # zone and a Tornado vortex were already covered; RULING 21 made a rolling spell the third
+        # case and it would otherwise have been judged mid-roll. MEASURED: The Log's corridor now
+        # sweeps for roll_len / (roll_speed/60) = 9.6 / 3.333 = 2.88 s, while the old settle fired
+        # at land + 0.35 = 0.75 s after the cast -- with the leading edge only 1.17 of 9.6 tiles
+        # along. Every Log that killed anything past that first tile would have been billed
+        # `spell_waste` for damage it had not dealt YET. This is the same bug §5 records for LIVE
+        # spells ("judged before they arrived", which is why `spell_eval_time` went to 4.0), now
+        # closed on the sim side too.
+        _lasts = float(getattr(spec, "zone_s", 0.0) or spec.pull_duration or 0.0)
+        if getattr(spec, "rolls", False) and float(getattr(spec, "roll_speed", 0.0) or 0.0) > 0.0:
+            _lasts = max(_lasts, float(spec.roll_len) / float(spec.roll_speed))
         self._pending_spell_checks.append(
-            {"t": land + float(getattr(spec, "zone_s", 0.0) or spec.pull_duration or 0.0) + 0.35,
+            {"t": land + _lasts + 0.35,
              "hp": hp, "tw": towers, "worth": worth,
              # RE-SNAPSHOT AT LANDING. The cast-time picture cannot contain a body that has not
              # spawned yet, so every pre-emptive cast -- pre-Log a swarm, Log the barrel as it

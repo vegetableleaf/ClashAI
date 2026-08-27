@@ -1740,3 +1740,104 @@ that needs its own measurement. It is also the more general finding: **the sim's
 entirely in the ACTION SPACE, so nothing constrains a scripted opponent's placement**, and any
 future own-half card has the same hole. **OWNER: should the river rule move into `SimEngine.deploy`,
 where it would bind both sides?**
+
+---
+
+## Rulings 20-28 — the rolling spells, 2026-08-27
+
+### ⚠ RS-1 (FOUND, NOT FIXED). EVERY rolling spell uses The Log's corridor width, and the KB's own per-card `width_tiles` is ignored.
+
+`build_spec` line ~854: `if rolls: spell_radius = _LOG_ROLL_HALFW` — a flat **1.95** half-width
+(3.90 tiles wide) for the whole family, regardless of what the card publishes. MEASURED, all four:
+
+```
+the_log                width_tiles 3.9  -> halfw 1.95   correct
+barbarian_barrel       width_tiles 2.6  -> halfw 1.95   should be 1.30  (50% too wide)
+barbarian_barrel_hero  width_tiles 2.6  -> halfw 1.95   should be 1.30
+giant_snowball_evo     (none published) -> halfw 1.95   unknown
+```
+
+The Barbarian Barrel page says it outright: *"despite appearances, the Barbarian Barrel's radius is
+thinner than The Log, so some Skeletons may seem like they are in range of the Barbarian Barrel when
+they are not"*, and The Log's own page agrees from the other side: *"The Log is wider compared to
+the Barbarian Barrel. As such, placing the Goblin Barrel 1 tile on the side of the Tower will not
+work against a player with The Log, as it will be able to hit all 3 Goblins."* The hero page's Rowdy
+Reroll table publishes Width 2.6 as well. So the barrel is currently a 50%-wider counter than the
+card is, and the reroll likewise.
+
+NOT FIXED HERE under the one-change rule: it changes what a card in **both** shipped decks kills,
+and the barrel is in 198/1000 pool decks (24.95% of match weight). It is a one-line data-driven fix
+(`width_tiles / 2` where published, `_LOG_ROLL_HALFW` otherwise) and it belongs in its own measured
+commit. ⚠ Note the trap in the field name: for a rolling spell `CardSpec.spell_radius` is a
+corridor **HALF-WIDTH**, not a blast radius — the same misleading-name class as `rerolldmg_11`.
+**OWNER: confirm, and should the Evo Snowball keep the Log's width or take the barrel's?**
+
+### ⚠ RS-2 (RECORDED). The Log rolls 9.6 tiles here; the wiki says 10.1.
+
+`_LOG_ROLL_LEN = 9.6`, and `the_log` publishes no `roll_tiles`, so 9.6 is what every Log uses. The
+attributes table's Range cell reads **10.1**, and the 4/8/2020 balance entry says *"decreased The
+Log's rolling distance to 10.1 tiles (from 11.1 tiles)"* with nothing after it. The sim is one
+balance update stale — a 5.2% shorter corridor, and with ruling 21 also a 0.15 s shorter sweep. Not
+changed here: ruling 21's whole before/after is quoted against 9.6 and moving the distance in the
+same commit would make the sweep measurement unattributable. **OWNER: 10.1?**
+
+### ⚠ RS-3 (OWNER IN-GAME CHECK). Rowdy Reroll's heal: half the damage TAKEN, or lifesteal on the damage DEALT?
+
+Shipped: **half the missing hitpoints** (a Barbarian at 179/716 comes back at 448). The prose is
+*"healling the barbarian for 50% of the damage"* — which damage is not said — and the attributes
+table's column header is *"Damage Healed 50%"*. Supporting the shipped reading: the Strategy line
+*"The ability can get the barbarian closer to the crown tower while healing some hp"* promises hp
+unconditionally, whereas lifesteal pays **nothing** when the corridor is empty, which is exactly
+when a player presses this to save a dying Barbarian. The previous implementation was the lifesteal
+reading and its test has been rewritten. **OWNER: press it with an empty corridor and say whether
+he heals.**
+
+### ⚠ RS-4 (RECORDED). Does the redeployed Barbarian pay a deploy delay?
+
+Ruling 28 says he "redeploys at the endpoint". Shipped: **no new deploy delay** — he is the same
+body continuing, and inventing a 0.5 s helpless window is an unpublished nerf the page never
+mentions. The alternative (treat it as a real deploy, `deploy_left = 0.5`) is a one-line change if
+the owner prefers it.
+
+### ⚠ RS-5 (FOLLOW-UP, MEASURED, NOT ACTED ON). `log_the_barrel_on_landing`'s reference line is now 0.2-0.5 s late.
+
+Ruling 21 took its scripted column from 100% to **56%** (icebow) / **64%** (hogeq). The engine is
+right and the drill is stale: the reference casts the Log 3.2 tiles behind where the goblins land,
+so the swept edge needs ~0.6 s to arrive and they get one more volley in — MEASURED, goblins land
+at 5.40 s in both runs, last one dies **6.00 s → 6.60 s**, princess HP conceded **534 → 1076**
+against a `< 1000` pass bar. Re-timing the cast fixes it completely: **3.8 / 4.0 / 4.1 s → 100%**,
+today's 4.3 s → 84%, 3.4 / 3.6 → 96%; moving the cast POINT does nothing (y 0.84 / 0.86 / 0.88 all
+84%), so it is the clock and not the placement. A drill-calibration change, deliberately its own
+commit. `log_the_ground_swarm` (92 → 80 icebow, 88 → 84 hogeq) has the same cause.
+
+### ⚠ RS-6 (PREMISE IN THE BRIEF THAT WAS WRONG). The barrel's Barbarian was ALREADY spawning at the corridor end, and not at t=0.
+
+The brief asked for `before: Barbarian appears at the CAST POINT at t=0` → `after: cast point + 4.5
+tiles`. MEASURED, a team-1 barrel cast at (0.500, 0.450): **before** (0.528, 0.594) = 4.60 tiles
+forward at **t=0.45 s**; **after** the identical position at **t=1.80 s**. `_resolve_roll` has used
+`ey = s.y + fdir * roll_len` since I8, and 0.45 s is the spell's cast delay, not zero. Ruling 23
+therefore changed the TIME only — by exactly the 1.35 s sweep.
+
+### ⚠ RS-7 (PREMISE THAT WAS WRONG, AND A MEASUREMENT TRAP). Ruling 20's clamp numbers must be read in the SIM'S board space.
+
+The ruling-20 brief quoted cast ny=0.562 and reach ny=0.263, and both are right — but only through
+`sim.env._board_action_space`. Built through the plain `ActionSpace(cfg)` (the LIVE space, whose
+`arena_box` is the screen rectangle and whose `cell_center` runs the perspective warp), the same
+gy=13 comes back as **ny=0.4788** — already past a river the sim puts at 0.5, which reads as the
+clamp having failed. Same shape as the detector-audit trap: an offline check reading live-screen
+coordinates. Stated at the top of `test_log_own_half_r20.py`.
+
+### ⚠ RS-8 (RECORDED). `rerolldmg_11` is the CROWN damage, not the reroll's damage.
+
+`Barbarian_Barrel_Hero.live.wikitext` vardefines `spawn_11 232`, `rerolldmg_11 116`. The name says
+"reroll damage"; the statistics table's column computed from it is **Crown Tower Damage**, and
+116/232 is exactly the ordinary 50% crown reduction rather than a second-roll penalty. Both rolls
+deal 232. Recorded because the variable name will mislead the next reader of that page too — the
+same class as `spell_radius` meaning corridor half-width (RS-1).
+
+### ⚠ RS-9 (FIXED IN PASSING). A pre-existing `parity_check --strict` failure with an EMPTY `git diff`.
+
+`icebow/src/clashrl/config.py` was LF-only while hogeq's was CRLF; contents were byte-identical
+after normalisation, so `git diff` was empty in both decks while `parity_check` reported UNEXPECTED
+DIVERGENCE and exited 1. This is exactly the `core.autocrlf=true` trap already recorded at I10.
+Both are CRLF now (which is what git checks out), and parity went 1 → 0.

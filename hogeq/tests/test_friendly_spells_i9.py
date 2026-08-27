@@ -30,6 +30,7 @@ for _p in (str(ROOT / "src"), str(ROOT / "tests")):
         sys.path.insert(0, _p)
 
 from test_sim_status_effects import _make_engine                        # noqa: E402
+from dataclasses import replace                                          # noqa: E402
 from clashrl.sim.engine import (Unit, _Spell, build_spec, _RAGE_FALLOFF_S,   # noqa: E402
                                 _TILES_X, _TILES_Y)
 
@@ -449,12 +450,24 @@ class BaseBarbarianBarrelTests(unittest.TestCase):
         self.assertAlmostEqual(bodies[0].hp, 670.0, places=1)
 
     def test_the_roll_still_damages_along_its_corridor(self):
-        """The body is an addition, not a replacement: the corridor is what the card is FOR."""
+        """The body is an addition, not a replacement: the corridor is what the card is FOR.
+
+        RULING 21 made the corridor SWEEP, so `_resolve_spell` now only LAUNCHES it and the damage
+        arrives as the leading edge reaches the body -- this used to assert immediately, and the
+        advance loop below is the whole of the change. MEASURED: the foe sits 0.96 tiles ahead of
+        the cast and takes the hit 0.30 s in, where before it took it at t=0.
+        """
         eng = _quiet(_make_engine())
         sp = build_spec(eng.db, "barbarian_barrel", LVL)
-        foe = Unit(spec=build_spec(eng.db, "knight", LVL), team=0, x=0.5, y=0.42, hp=3000.0)
+        foe = Unit(spec=replace(build_spec(eng.db, "knight", LVL), speed=0.0),
+                   team=0, x=0.5, y=0.42, hp=3000.0)
         eng.units.append(foe)
         eng._resolve_spell(_Spell(1, 0.5, 0.45, sp, 0.0))
+        self.assertAlmostEqual(3000.0 - foe.hp, 0.0, places=3, msg="not at t=0 any more")
+        for _ in range(40):
+            eng.advance(0.05)
+            if foe.hp < 3000.0:
+                break
         self.assertAlmostEqual(3000.0 - foe.hp, sp.spell_dmg, places=3)
         self.assertGreater(sp.spell_dmg, 0.0)
 

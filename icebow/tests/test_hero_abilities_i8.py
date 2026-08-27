@@ -756,34 +756,49 @@ class RerollTests(unittest.TestCase):
         self.assertEqual(base.spawn_spec.ability_kind, "",
                          "and only the hero's barbarian carries the Rowdy Reroll button")
 
-    def test_rowdy_reroll_rolls_a_second_corridor_and_lifesteals_half_of_it(self):
+    def test_rowdy_reroll_rolls_a_second_corridor_and_heals_half_the_damage_taken(self):
         """Barbarian Barrel/Hero 437523: "the Barbarian Barrel will roll for a second time, while
-        healling the barbarian for 50% of the damage." Reroll Range 3 (History 4/5/2026, from 4),
-        Width 2.6, Damage Healed 50%, and the roll's own damage is spawn_11 232.
+        healling the barbarian for 50% of the damage." Reroll Range 3 (History 4/5/2026, "decreased
+        the reroll range to 3 tiles (from 4 tiles)"), Width 2.6, Damage Healed 50%.
 
-        THE HEAL IS LIFESTEAL on what the roll actually took off, measured rather than assumed. The
-        competing reading ("50% of the damage he has taken") is in conflicts.md.
+        REWRITTEN FOR RULINGS 24 / 26 / 27 / 28 -- see `test_rolling_spells_swept_r21.py`, which
+        owns the reroll's own measurements. Three things this file used to assert are now wrong:
+
+          * THE DAMAGE. `rerolldmg_11` 116 was read as the second roll's damage; it is the
+            barrel's CROWN TOWER damage (116/232 is exactly the ordinary 50% crown reduction).
+            Both rolls deal the same 232.
+          * THE HEAL. Read here as LIFESTEAL on what the roll took off; ruling 27 rules it is 50%
+            of the damage the Barbarian HAS TAKEN, i.e. half his missing hitpoints. The readings
+            differ whenever the corridor is empty, which is exactly when a player presses this.
+          * THE BODY. Ruling 28: the Barbarian is ABSORBED into the second roll and REDEPLOYS at
+            its endpoint -- there is never a second Barbarian, and never zero at the end.
         """
         eng = _quiet(_make_engine())
         spell = build_spec(eng.db, "barbarian_barrel_hero", LVL)
         eng.elixir[1] = 10.0
         self.assertTrue(eng.deploy(1, spell, 0.5, 0.45))
-        _run(eng, 1.5)
+        _run(eng, 2.6)                                  # cast 0.4 + sweep 1.35 + deploy 0.5
         bb = [u for u in eng.units if u.team == 1 and u.spec.key == "barrel_barbarian"]
         self.assertEqual(len(bb), 1)
         b = bb[0]
         b.spec = replace(b.spec, hit_dmg=0.0, tower_hit_dmg=0.0, speed=0.0)   # mute HIS swing
         b.hp = b.spec.hp * 0.3
-        hp0 = b.hp
+        hp0, seq0 = b.hp, b.deploy_seq
         near = _dummy(eng, 0, b.x, b.y + 2.0 / _TILES_Y, hp=1e6)
         past = _dummy(eng, 0, b.x, b.y + 5.0 / _TILES_Y, hp=1e6)
         n0, p0 = near.hp, past.hp
         eng.elixir[1] = 10.0
         self.assertTrue(eng.champion_ability(1))
-        _run(eng, 1.3)
+        _run(eng, 2.0)                                  # 1.0 s activation delay + 0.9 s of roll
         self.assertAlmostEqual(n0 - near.hp, 232.0, places=1)   # spawn_11, inside the 3-tile roll
         self.assertAlmostEqual(p0 - past.hp, 0.0, places=3)     # 5 tiles is past its end
-        self.assertAlmostEqual(b.hp - hp0, 232.0 * 0.5, places=1)
+        # RULING 27: half the damage he had TAKEN, i.e. half his missing hp.
+        self.assertAlmostEqual(b.hp, hp0 + (b.spec.hp - hp0) * 0.5, places=1)
+        # RULING 28: the SAME body, redeployed -- one Barbarian, never two, never none.
+        bb2 = [u for u in eng.units if u.team == 1 and u.spec.key == "barrel_barbarian"]
+        self.assertEqual(len(bb2), 1)
+        self.assertIs(bb2[0], b)
+        self.assertEqual(bb2[0].deploy_seq, seq0, "identity survives the absorb")
 
 
 class FlightNadoTests(unittest.TestCase):
@@ -1057,9 +1072,12 @@ class EnemySideTests(unittest.TestCase):
                 x, y = tw.x, tw.y - 3.0 / _TILES_Y
                 spell = build_spec(eng.db, base + "_hero", LVL)
                 if spell.kind == "spell":
-                    # the Hero Barbarian Barrel's button belongs to the Barbarian it leaves
+                    # the Hero Barbarian Barrel's button belongs to the Barbarian it leaves.
+                    # RULING 21/23: that body now appears when the SWEEP COMPLETES rather than
+                    # when the spell lands -- 0.4 s cast delay + 4.5 / 3.333 = 1.35 s of roll +
+                    # 0.5 s deploy = 2.25 s, so the old 1.5 s wait found an empty board.
                     self.assertTrue(eng.deploy(1, spell, x, y))
-                    _run(eng, 1.5)
+                    _run(eng, 2.6)
                     eng.elixir[1] = 10.0
                     u = [b for b in eng.units if b.team == 1 and b.spec.ability_kind][0]
                     # ...and he ends up at the END of the roll, not at the cast point, so the

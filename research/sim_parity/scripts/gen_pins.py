@@ -142,6 +142,23 @@ RULING19_PINS = [
 ]
 RULING19_DATE = "2026-08-27"
 
+# RULING 22 (owner, 2026-08-27) -- the Barbarian Barrel's ROLL SPEED is 200, the same as The Log's.
+# Ruling 21 made `roll_speed` load-bearing: a rolling spell now SWEEPS its corridor over time at
+# roll_speed / 60 tiles per second instead of resolving it in one frame, so a card that publishes
+# no speed falls back to the old instantaneous behaviour. The Log publishes 200 (20/10/2016, "its
+# projectile speed to 200 (from 170)") and the Evo Snowball 300; the Barbarian Barrel page
+# publishes NOTHING -- no speed cell in either attributes table and no history entry that ever set
+# one -- which is exactly why this has to be a pin rather than a curation. An import would emit the
+# row without the field and silently return the barrel to an instant corridor.
+RULING22_PINS = [
+    ("barbarian_barrel", "roll_speed", 200,
+     "decisions.md ruling 22 (OWNER 2026-08-27): the Barbarian Barrel rolls at 200, as The Log "
+     "does. ABSENT UPSTREAM -- the card page publishes no roll/projectile speed at all -- so "
+     "without this pin a re-import would drop it and ruling 21's swept corridor would degrade "
+     "back to an instant one for this card only"),
+]
+RULING22_DATE = "2026-08-27"
+
 I5_PLAN = LEDGER / "i5_plan.json"
 _DROP = "__DROP__"
 
@@ -209,6 +226,17 @@ def main() -> int:
             pins[(key, field)] = {"key": key, "field": field, "value": value,
                                   "source": why, "date": RULING19_DATE}
 
+    for key, field, value, why in RULING22_PINS:
+        if (key, field) in pins:
+            got = pins[(key, field)]["value"]
+            assert got == value, \
+                f"pin disagreement for {key}.{field}: existing {got!r} vs ruling 22 {value!r}"
+            pins[(key, field)]["source"] += " + " + why
+            dup += 1
+        else:
+            pins[(key, field)] = {"key": key, "field": field, "value": value,
+                                  "source": why, "date": RULING22_DATE}
+
     # 3. I5: everything routed to the import layer, PLUS every curated value that lands in a
     #    column tools/stat_sweep.py compares (those are advisory -- recorded, never imported).
     i5 = adv = 0
@@ -249,7 +277,8 @@ def main() -> int:
             "sources": ["ledger/stat_diffs.jsonl (66 verdict:pin rows)",
                         "decisions.md 2026-08-26 R2 ADJUDICATION (owner rulings)",
                         "ledger/i5_plan.json (rows i5_apply.py routed to the import layer)",
-                        "decisions.md ruling 19 (owner 2026-08-27, spawned-body elixir)"],
+                        "decisions.md ruling 19 (owner 2026-08-27, spawned-body elixir)",
+                        "decisions.md ruling 22 (owner 2026-08-27, the barrel's roll speed)"],
             "semantics": "the importer applies pins as a post-pass over the scraped rows and "
                          "--write refuses if a pinned field would regress; value null = the "
                          "field must not be imported; fields the importer does not emit are "
@@ -259,7 +288,8 @@ def main() -> int:
                     "generator and it writes both; never hand-edit one copy",
             "counts": {"total": len(ordered),
                        "from_stat_diffs": len(pin_rows),
-                       "from_decisions": len(DECISION_PINS) + len(RULING19_PINS),
+                       "from_decisions": (len(DECISION_PINS) + len(RULING19_PINS)
+                                          + len(RULING22_PINS)),
                        "from_i5_plan": i5,
                        "advisory": adv,
                        "overlapping": dup},
@@ -272,8 +302,8 @@ def main() -> int:
         o.write_text(text, encoding="utf-8", newline="\n")
     same = outs[0].read_bytes() == outs[1].read_bytes()
     print(f"wrote {len(ordered)} pins ({len(pin_rows)} stat_diffs + "
-          f"{len(DECISION_PINS) + len(RULING19_PINS)} decisions + {i5} I5-plan + {adv} advisory, "
-          f"{dup} overlapping) to:")
+          f"{len(DECISION_PINS) + len(RULING19_PINS) + len(RULING22_PINS)} decisions + "
+          f"{i5} I5-plan + {adv} advisory, {dup} overlapping) to:")
     for o in outs:
         print(f"  {o}")
     print(f"pair byte-identical: {same}")

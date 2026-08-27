@@ -5,14 +5,15 @@
    "ledger/stat_diffs.jsonl (66 verdict:pin rows)",
    "decisions.md 2026-08-26 R2 ADJUDICATION (owner rulings)",
    "ledger/i5_plan.json (rows i5_apply.py routed to the import layer)",
-   "decisions.md ruling 19 (owner 2026-08-27, spawned-body elixir)"
+   "decisions.md ruling 19 (owner 2026-08-27, spawned-body elixir)",
+   "decisions.md ruling 22 (owner 2026-08-27, the barrel's roll speed)"
   ],
   "semantics": "the importer applies pins as a post-pass over the scraped rows and --write refuses if a pinned field would regress; value null = the field must not be imported; fields the importer does not emit are advisory (curated layer / stat_sweep EXPECTED sync); an explicit advisory:true pin is recorded for the sweep and never imported",
   "pair": "byte-identical across icebow/ and hogeq/ -- regenerate with the generator and it writes both; never hand-edit one copy",
   "counts": {
-   "total": 184,
+   "total": 185,
    "from_stat_diffs": 66,
-   "from_decisions": 21,
+   "from_decisions": 22,
    "from_i5_plan": 79,
    "advisory": 22,
    "overlapping": 4
@@ -81,6 +82,13 @@
    "value": 177,
    "source": "I5 apply (RULING): consequential on the PARENT swap: 230/1.3 = 176.9 -> 177",
    "date": "2026-08-26"
+  },
+  {
+   "key": "barbarian_barrel",
+   "field": "roll_speed",
+   "value": 200,
+   "source": "decisions.md ruling 22 (OWNER 2026-08-27): the Barbarian Barrel rolls at 200, as The Log does. ABSENT UPSTREAM -- the card page publishes no roll/projectile speed at all -- so without this pin a re-import would drop it and ruling 21's swept corridor would degrade back to an instant one for this card only",
+   "date": "2026-08-27"
   },
   {
    "key": "barbarian_barrel",

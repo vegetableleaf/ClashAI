@@ -251,6 +251,27 @@ def render_frame(eng, width: int = 460, note: str = "", acts=None) -> np.ndarray
         cv2.putText(img, f"{_short(s.spec.key)} {s.t:.1f}s", (c[0] + 8, c[1] - 6),
                     cv2.FONT_HERSHEY_PLAIN, 0.7, _SPELL, 1)
 
+    # --- rolling spells MID-SWEEP (ruling 21) ------------------------------------------------
+    # A roll is no longer instantaneous: `SimEngine.rolls` holds the live `_Roll` objects and the
+    # corridor GROWS. Drawing only the pending-spell rectangle above would show the full 9.6 tiles
+    # at cast and then nothing at all for the 2.88 s the roll is actually working -- the debugger
+    # would say the Log had already finished while it was still halfway up the lane. Two shapes:
+    # the SWEPT part (solid, what has been damaged) and the LEADING EDGE (a bar at r.dist).
+    for r in getattr(eng, "rolls", []):
+        fdir = -1.0 if r.team == 0 else 1.0
+        halfw = r.spec.spell_radius
+        y_back = r.y - fdir * _LOG_BACK_SLOP / _TILES_Y
+        y_edge = r.y + fdir * r.dist / _TILES_Y
+        y_full = r.y + fdir * r.spec.roll_len / _TILES_Y
+        cv2.rectangle(img, px(r.x - halfw / _TILES_X, y_back),        # what it has SWEPT so far
+                      px(r.x + halfw / _TILES_X, y_edge), _SPELL, 1)
+        cv2.rectangle(img, px(r.x - halfw / _TILES_X, y_edge),        # what is still to come
+                      px(r.x + halfw / _TILES_X, y_full), _DIM, 1)
+        cv2.line(img, px(r.x - halfw / _TILES_X, y_edge),             # the leading EDGE itself
+                 px(r.x + halfw / _TILES_X, y_edge), _SPELL, 2)
+        cv2.putText(img, f"{_short(r.spec.key)} {r.dist:.1f}/{r.spec.roll_len:.1f}t",
+                    px(r.x + halfw / _TILES_X, y_edge), cv2.FONT_HERSHEY_PLAIN, 0.7, _SPELL, 1)
+
     # --- units -------------------------------------------------------------------------------
     for u in eng.units:
         if u.hp <= 0:

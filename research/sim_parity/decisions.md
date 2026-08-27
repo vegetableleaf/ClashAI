@@ -428,3 +428,191 @@ experiments -> new PPO, without waiting for approval between stages.
     attributes table's Range cell reads **10.1** and the 4/8/2020 balance entry says *"decreased
     The Log's rolling distance to 10.1 tiles (from 11.1 tiles)"*. The sim is one balance update
     stale. Not touched here under the one-change rule — see conflicts.md.
+
+21. **A rolling spell SWEEPS its corridor over time.** Owner, 2026-08-27: *"the log doesn't damage
+    everything in the corridor at once, it takes time to roll the entire 9.6 tiles, damaging a
+    smaller area as it sweeps across the corridor."*
+
+    **WHAT WAS ACTUALLY WRONG.** `_resolve_roll` was called once from the spell-resolution path and
+    damaged the whole corridor in a single frame — and **`roll_speed` was DEAD DATA**: the KB
+    published it for `the_log` (200) and `giant_snowball_evo` (300), and `build_spec` never read it,
+    so the number that governs the entire mechanic reached nothing. A rolling spell is now a live
+    `_Roll` object ticked by `advance()`, the same shape `_Vortex` and `_Zone` already use.
+
+    **THE SPEED CONVERSION, verified rather than assumed.** CR quotes speeds as a rating in units —
+    "Very Fast (120)", "Medium (60)" — and `card_import._SPEED_UNITS_PER_TILE = 60.0` is the divisor
+    every troop's `speed_tiles` already goes through. The engine now carries the same constant (it
+    must not import the scraper) and a test asserts the two agree, so a rolling corridor and a
+    walking Barbarian can never end up on different scales.
+
+    | card | tiles | raw | tiles/s | sweep |
+    |---|---|---|---|---|
+    | `the_log` | 9.6 | 200 | 3.3333 | **2.88 s** |
+    | `barbarian_barrel` | 4.5 | 200 | 3.3333 | **1.35 s** |
+    | `barbarian_barrel_hero` | 4.5 | 200 (inherited) | 3.3333 | **1.35 s** |
+    | `giant_snowball_evo` | 4.0 | 300 | 5.0000 | **0.80 s** |
+
+    The Evo Snowball is much the fastest — a higher speed over a shorter distance — and the barrel
+    is just under half The Log.
+
+    **MEASURED BEFORE → AFTER**, one Log, bodies pinned in place:
+
+    ```
+    whole corridor damaged at t=0    ->   swept over 2.88 s
+    body 0.5 tiles ahead   t=0.00 -> 0.15 s      body 4.0 tiles ahead  t=0.00 -> 1.20 s
+    body 8.0 tiles ahead   t=0.00 -> 2.40 s      body 9.5 tiles ahead  t=0.00 -> 2.85 s
+    a body 8 tiles ahead that steps clear at 1.5 s:  266 damage -> 0
+    a body outside the lane that steps in at 1.5 s:    0 damage -> 266
+    ```
+
+    ⚠ **THE HIT RULE TOOK THREE TRIES, and the two wrong ones are worth recording.**
+    * this frame's **band** `[prev_dist, dist]` **TUNNELS**: an enemy walking toward us closes at up
+      to ~5.3 tiles/s while a 0.05 s frame's band is 0.167 tiles wide, so a body can cross the whole
+      band inside one tick and never be tested against it;
+    * the cumulative **swept region** `[-back_slop, dist]` cannot tunnel but hits things the roll
+      has already gone past. MEASURED: a Goblin Barrel's goblins landing 3 tiles **behind** a Log's
+      edge took the Log's damage from a roll that had passed that tile a second earlier.
+    * what ships is **"the leading edge sweeps past you"**: `_Roll.ahead` enrols a body the first
+      tick it is seen at or beyond the edge (or, on the launch tick, anywhere inside the back slop),
+      and only an enrolled body can be hit. `_Roll.hit` — keyed on `deploy_seq`, never `id()`,
+      because CPython recycles a dead body's address — holds each to one hit per cast.
+
+    Knockback now lands **as the edge reaches each body** rather than to the whole corridor at once,
+    the `_LOG_BACK_SLOP` origin tolerance still applies, a tower is chipped once when the edge
+    arrives, and Snow Bowling's carried bodies **travel** with the roll instead of teleporting (the
+    old code carried an apology in its comment for exactly that).
+
+    **THE SPELL VERDICT HAD TO MOVE WITH IT.** `_arm_spell_check` scheduled the whiff/credit
+    settle at `land + 0.35 s`, i.e. **0.75 s** after a Log's cast — with the leading edge **1.17 of
+    9.6 tiles** along. Every Log that killed anything past that first tile would have been billed
+    `spell_waste` for damage it had not dealt yet. The settle now adds the roll's own duration
+    (0.75 → **3.63 s**), the same fix §5 records for LIVE spells ("judged before they arrived",
+    which is why `spell_eval_time` went to 4.0). A blast spell's timing is untouched, and pinned.
+
+    `sim_view` draws the live roll: the swept part, the part still to come, and the leading edge
+    with `dist/roll_len` — before this the debugger showed the full corridor at cast and then
+    **nothing at all** for the 2.88 s the roll was working.
+
+    **DRILL PASS RATES — the expected change, and it is a finding about the DRILLS, not the engine.**
+
+    ```
+    icebow  log_the_barrel_on_landing  scripted 100% -> 56%     log_the_ground_swarm  92/92 -> 80/80
+            hold_the_spell_for_a_target 92/80 -> 88/100         ignore_the_ignorable  doctrine 20% -> 8%
+            matchup_bridge_spam 20 -> 36   matchup_hog_cycle 84 -> 100   matchup_lavaloon 56 -> 68
+    hogeq   log_the_barrel_on_landing  scripted 100% -> 64%     log_the_ground_swarm  88/88 -> 84/84
+            hog_over_the_ignorable doctrine 40 -> 24            matchup_logbait 60 -> 40
+            matchup_beatdown_golem 88 -> 100                    hold_the_cheap_answers 16 -> 20
+    ```
+
+    MEASURED MECHANISM for the big one, `log_the_barrel_on_landing`, on its own reference line:
+
+    ```
+    goblins land at t=5.40 s in both runs
+    BEFORE: last goblin dies 6.00 s (alive 0.60 s), princess HP conceded  534   -- bar is < 1000
+    AFTER : last goblin dies 6.60 s (alive 1.20 s), princess HP conceded 1076   -- just over it
+    ```
+
+    The reference casts the Log **3.2 tiles behind** where the goblins land; an instant roll killed
+    them the moment it resolved, and the swept edge needs another ~0.6 s to arrive, which buys them
+    one more volley. **The drill is still fully winnable — the reference line is simply 0.2-0.5 s
+    LATE now.** MEASURED by re-timing it: cast at 3.8 / 4.0 / 4.1 s → **100% / 100% / 100%**, at
+    4.3 s (today's value) → 84%, at 3.4 / 3.6 → 96%. Moving the cast point does nothing (0.84 /
+    0.86 / 0.88 all score 84%), so it is the CLOCK. Re-tuning the reference is a drill-calibration
+    change and is deliberately **not** bundled here under the one-change rule.
+
+    `ignore_the_ignorable` 20% → 8% is an IMPROVEMENT — it is a restraint drill where the correct
+    play is none, so a lower doctrine number is less wasted elixir.
+
+22. **The Barbarian Barrel's roll speed is 200**, the same as The Log's (owner, 2026-08-27). The
+    field is **absent upstream** — the card page publishes no roll or projectile speed in either
+    attributes table and no history entry ever set one, unlike The Log, whose 20/10/2016 entry says
+    *"its projectile speed to 200 (from 170)"*. So it is curated in `cards.yaml` **and PINNED** in
+    `config/import_pins.json` (184 → **185** pins, byte-identical pair, via `gen_pins.py`'s new
+    `RULING22_PINS`): without the pin a re-import would drop the field and silently return this one
+    card to an instant corridor. At 200 the barrel's 4.5 tiles sweep in **1.35 s**.
+
+23. **The barrel's Barbarian appears at the corridor END, when the sweep COMPLETES** (owner,
+    2026-08-27). ⚠ **THE BRIEF'S PREMISE WAS WRONG ABOUT THE POSITION.** It said "before: Barbarian
+    appears at the CAST POINT at t=0". It did not: `_resolve_roll` already spawned at
+    `ey = s.y + fdir * roll_len`, and not at t=0 either. MEASURED, a team-1 barrel cast at
+    (0.500, 0.450):
+
+    ```
+    BEFORE:  body at (0.528, 0.594) = 4.60 tiles forward, at t=0.45 s   (the spell's cast delay)
+    AFTER:   body at (0.528, 0.594) = 4.60 tiles forward, at t=1.80 s   (0.45 + the 1.35 s sweep)
+    ```
+
+    So **only the timing moved, by exactly the sweep.** The wiki states the destination three
+    times: *"Once the spell reaches its DESTINATION, it spawns a single Barbarian"*; *"AFTER IT
+    FINISHES ROLLING, the Barbarian will help take out and tank some of the Skeletons"*; and the
+    checkable one, *"If the Barbarian Barrel is placed at most 2 tiles from the river, the Barbarian
+    will spawn at the OPPOSING SIDE of the Arena"*. The spawn point is `_clamp_xy`ed, so a barrel
+    cast at the board edge still leaves its body, at the last legal point.
+
+    **23a — the HERO barrel inherits all of it.** `barbarian_barrel_hero` is a minimal overlay
+    (`{damage, spawns_troop, ability_*}`) and picks up `rolls`, `roll_len`, `own_half_only` and now
+    `roll_speed` from the base row: measured, its sweep is the same 1.35 s and its body appears at
+    the same t=1.80 s — but it is `barrel_barbarian`, its own row, not the base's. There is **no
+    evo Barbarian Barrel** in the 42-evo set; the four rolling cards are the complete list.
+
+24 / 26 / 27 / 28. **Rowdy Reroll is a LITERAL second roll of the same barrel.**
+
+    Owner (24): *"the barbarian barrel hero's ability is to roll again, so all the roll mechanics
+    carry over."* It goes through the same `_Roll` path — same tiles/s, same corridor test, same
+    per-body-once damage — so everything ruling 21 fixed applies to it by construction. The
+    Barbarian is a TROOP whose own `rolls` is False, so `build_spec`'s spell→body ability transfer
+    now carries the barrel's `roll_speed` onto him as well; without that the reroll would fall into
+    the no-speed branch and resolve instantly, i.e. ruling 21 undone on the one card that rolls
+    twice.
+
+    **THE CORRIDOR IS SHORTER, and it would have been easy to miss.** History, 4/5/2026:
+    *"decreased the reroll range to 3 tiles (from 4 tiles)"*, against the barrel's own Range of 4.5.
+    The engine already used `ability_range_tiles` (3.0) rather than `roll_len`, and a test now pins
+    that it must. MEASURED: **3.0 tiles at 3.3333 tiles/s = 0.90 s.**
+
+    **THE DAMAGE IS NOT REDUCED.** The reroll deals the same **232 area / 116 crown** as the first
+    roll. ⚠ `rerolldmg_11 = 116` is **not** a second-roll damage despite the variable name — it is
+    the barrel's CROWN TOWER damage column (116/232 is exactly the ordinary 50% crown reduction).
+    Same trap class as `spell_radius` meaning corridor HALF-width for a rolling spell.
+
+    **ORIGIN (26): the LIVING Barbarian's current position, read at activation.** Not where the
+    first roll stopped — he lands at the first corridor's end and then WALKS, and a stored
+    coordinate falls further behind the longer the player waits. MEASURED: after 3 s of marching he
+    is **2.38 tiles** past the first roll's end, and the second roll starts at him. Which body, if
+    there were several, is ruling 5's `max(deploy_seq)` in `champion_ability`, reused rather than
+    reinvented. The second roll is **not** a cast, so the own-half clamp does not apply to it —
+    pinned with an enemy-half origin, which is where this button is usually pressed.
+
+    **ABSORB AND REDEPLOY (28): there is NO second Barbarian.** Owner: *"The ability does not spawn
+    a second barbarian. The first barbarian disappears into the second roll when the ability casts,
+    and redeploys at the endpoint of the second roll."* The wiki agrees — it heals *"the barbarian"*,
+    singular. So `spawn_count = 0` on the reroll, the existing body goes through a new `_despawn`
+    (removed from `units` WITHOUT dying, so no death damage, no death spawn, no trade-ledger kill
+    credit — and every `target` reference to it cleared, because the engine validates targets by
+    `hp > 0` and not by list membership, so a live body outside the list is a phantom that locked
+    attackers keep swinging at), and `_finish_roll` puts **the same Unit object** back at the
+    corridor's end. `deploy_seq`, level, ability counters and accumulated damage all survive by
+    construction. MEASURED: absorbed at ny=0.5938, redeployed at ny=0.6875 — **3.00 tiles up** —
+    with **zero** Barbarians on the board during the roll and **exactly one** afterwards.
+
+    **THE HEAL (27) is 50% of the damage he has TAKEN**, i.e. half his missing hitpoints, capped at
+    full. MEASURED: a Barbarian at **179 / 716 hp comes back at 448**. The prose is loose
+    (*"healling the barbarian for 50% of the damage"*), so the competing lifesteal reading — 50% of
+    what the reroll deals — was considered and rejected: it pays **nothing when the corridor is
+    empty**, which is precisely when a player presses this to save a dying Barbarian, and it does
+    not match the Strategy line *"while healing some hp"*. Recorded in conflicts.md as an owner
+    in-game check. This **replaced** the previous lifesteal implementation, whose test is rewritten.
+
+    **REFUND (26 q1 / 27): if he dies first, the elixir comes back**, and it needs no new path.
+    Two halves, both existing machinery: with no living body `champion_ability` refuses and never
+    charges (MEASURED: elixir unchanged at 5.000); a body killed **during** the 1.0 s activation
+    delay hits ruling 7's refund in `_tick_ability_pending` (MEASURED: 1 elixir returned, and no
+    roll launched).
+
+    37 new tests (`test_rolling_spells_swept_r21.py`, byte-identical in both decks). Four existing
+    tests changed, each because the behaviour genuinely changed: the i9 corridor test now advances
+    instead of asserting at t=0, two i8 hero tests wait 2.6 s instead of 1.5 for a body that now
+    arrives 1.35 s later, and `test_a_log_thrown_too_early_misses_the_goblins` moved its early bound
+    0.3 → 0.2 s (MEASURED, delay → goblins alive: 0.0/0.1/0.2 → 3, and 0 for every delay from 0.3
+    to 4.0 s — at 0.2 s the edge is 2.00 tiles along when they spawn 1.92 tiles ahead, already past
+    them; at 0.3 s it is 1.67 and still arriving).

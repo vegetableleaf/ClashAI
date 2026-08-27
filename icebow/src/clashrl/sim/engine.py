@@ -138,6 +138,12 @@ _LOG_ROLL_HALFW = 1.95    # corridor HALF-width (tiles) -> 3.90 wide. Was 2.2
                           # wiki carries no usable published width. LIVE uses the
                           # same figure via env.log_half_width (normalised).
 _LOG_BACK_SLOP = 1.0      # tiles BEHIND the cast point still caught by the corridor
+# CR publishes every speed as a rating in "units" -- "Very Fast (120)", "Medium (60)" -- and 60 of
+# them is 1 tile/second. This is the SAME divisor `card_import._SPEED_UNITS_PER_TILE` uses to turn
+# a troop's Speed cell into `speed_tiles`, kept here rather than imported because card_import is a
+# scraper and the engine must not depend on it. So The Log's published `roll_speed: 200` is
+# 3.333 tiles/s and its 9.6-tile corridor takes 2.88 s to sweep.
+_SPEED_UNITS_PER_TILE = 60.0
 # KNOCKBACK fallback for a card the wiki says HAS pushback but publishes no range for (Rocket).
 # 1 tile is Fireball's CURRENT published value (2/8/2022 balance: "decreased the Fireball's pushback
 # range to 1 tile (from 1.8 tiles)"), so it is the measured value of the nearest documented sibling
@@ -325,6 +331,15 @@ class CardSpec:
     # have masses from 1 to 6.
     mass: Optional[float] = None
     roll_len: float = 0.0     # forward length of the roll corridor (tiles)
+    roll_speed: float = 0.0   # TILES/SECOND the corridor sweeps forward (KB `roll_speed` / 60).
+                              # RULING 21 (owner, 2026-08-27): "the log doesn't damage everything
+                              # in the corridor at once, it takes time to roll the entire 9.6
+                              # tiles, damaging a smaller area as it sweeps across the corridor."
+                              # Was DEAD DATA -- the KB published it for the_log (200) and
+                              # giant_snowball_evo (300) and `build_spec` never read it, so every
+                              # roll resolved its whole corridor in one frame. 0 = no published
+                              # speed: the corridor still resolves at once, which is the old
+                              # behaviour and the only safe degradation.
     hit_speed: float = 1.0    # seconds between attacks (discrete hits)
     hit_dmg: float = 0.0      # damage per hit (= dps * hit_speed; preserves average DPS)
     tower_hit_dmg: float = 0.0  # damage per hit vs CROWN TOWERS -- reduced when the KB carries a
@@ -958,6 +973,14 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
             ability_range_tiles=float(c.get("ability_range_tiles") or 0.0),
             ability_radius_tiles=float(c.get("ability_radius_tiles") or 0.0),
             ability_heal_frac=float(c.get("ability_heal_frac") or 0.0),
+            # ...AND THE BARREL'S ROLL SPEED (ruling 24: "the barbarian barrel hero's ability is
+            # to roll again, so all the roll mechanics carry over"). Rowdy Reroll is another roll
+            # of the SAME barrel, so its corridor must sweep at the same tiles/s as the first --
+            # and the Barbarian carrying the button is a TROOP, whose own `rolls` is False, so
+            # this field is otherwise unused on him and free to carry it. Without it the second
+            # roll would fall into `_resolve_roll`'s no-speed branch and resolve instantly, i.e.
+            # exactly the bug ruling 21 removes, surviving on the one card that rolls twice.
+            roll_speed=(float(c.get("roll_speed") or 0.0) / _SPEED_UNITS_PER_TILE),
             ability_ai=(tuple(sorted((str(k), v) for k, v in c["ability_ai"].items()))
                         if isinstance(c.get("ability_ai"), dict) else ()))
         ability_kind = ""                 # ...and the spell itself keeps none of it
@@ -1004,6 +1027,9 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         mass=db.mass(base),
         load_time=float(c.get("load_time_s") or 0.0),
         roll_len=(float(c.get("roll_tiles") or _LOG_ROLL_LEN) if rolls else 0.0),
+        # ...and how fast it gets there (ruling 21). Guarded by `rolls` exactly like `roll_len`,
+        # so a non-rolling card can never acquire a sweep from a stray KB field.
+        roll_speed=((float(c.get("roll_speed") or 0.0) / _SPEED_UNITS_PER_TILE) if rolls else 0.0),
         hit_speed=hit, hit_dmg=hit_dmg, tower_hit_dmg=tower_hit_dmg, deploy_time=deploy_time, radius=radius,
         dmg_stages=tuple(float(x) * sc for x in (c.get("damage_stages") or ())),
         stage_time=float(c.get("stage_time_s") or 2.0),
@@ -1499,6 +1525,40 @@ class _Vortex:
     left: float                   # active seconds remaining
 
 
+@dataclass   # NOT slots: custom __init__ assigns undeclared attrs (hit sets etc.)
+class _Roll:
+    """A ROLLING SPELL IN MOTION -- The Log, the Barbarian Barrel, the Evo Snowball.
+
+    RULING 21 (owner, 2026-08-27): "the log doesn't damage everything in the corridor at once, it
+    takes time to roll the entire 9.6 tiles, damaging a smaller area as it sweeps across the
+    corridor." Before this the whole 9.6-tile corridor resolved in a single frame at t=0, so a body
+    that stepped clear a second later was hit anyway and a body that stepped IN was not -- the two
+    cases that make the card a skill card.
+
+    Same shape as `_Vortex`/`_Zone`: the spell RESOLVES into a live object that `advance()` ticks,
+    rather than into an instantaneous effect. `dist` is the leading edge's distance from the origin
+    in tiles; everything between `-_LOG_BACK_SLOP` and `dist` has been swept.
+
+    ⚠ `hit` IS KEYED ON `Unit.deploy_seq`, NOT `id(u)`. CPython recycles a dead body's address, so
+    a victim this roll KILLED could be matched against a NEWER unit that reused the address and
+    silently made it immune -- and the better the roll, the likelier that is. `_arm_spell_check`
+    was corrupted by exactly this and was pinned to `deploy_seq` for exactly this reason. Towers
+    are the one safe `id()`: they are created once per match and never freed.
+    """
+
+    def __init__(self, team: int, x: float, y: float, spec: CardSpec):
+        self.team, self.x, self.y, self.spec = team, x, y, spec
+        self.dist = 0.0               # leading edge, TILES from the origin
+        self.hit = set()              # deploy_seq of bodies already damaged (at most once per cast)
+        self.ahead = set()            # ...and of bodies the leading edge has yet to PASS, so it
+                                      # still can. See `_tick_roll` for why this is not optional.
+        self.hit_tw = set()           # id() of towers already chipped -- see the docstring
+        self.carried = []             # EVO SNOWBALL: bodies being bowled along to the corridor end
+        self.body = None              # HERO REROLL: the Barbarian absorbed into this roll (ruling 28)
+        self.heal_frac = 0.0          # ...and the fraction of its MISSING hp it emerges with healed
+        self.done = False
+
+
 @dataclass   # NOT slots: custom __init__ assigns undeclared attrs (tick_in etc.)
 class _Zone:
     """A lingering AREA effect pinned to the ground: Poison's 8 s damage-over-time field,
@@ -1785,6 +1845,7 @@ class SimEngine:
         self.units: List[Unit] = []
         self.spells: List[_Spell] = []
         self.vortices: List[_Vortex] = []        # landed tornadoes (active pull areas)
+        self.rolls: List[_Roll] = []             # rolling spells MID-SWEEP (ruling 21)
         self.zones: List[_Zone] = []             # lingering areas: Poison / Void / Graveyard
         self._pending: list = []                 # (fire_t, team, spec, x, y) action-latency queue
         self._volleys: list = []                 # (land_t, team, x, y, spec): Evo Cannon barrage rings
@@ -2893,6 +2954,12 @@ class SimEngine:
             v.left -= dt
             if v.left <= 0:
                 self.vortices.remove(v)
+        # rolling spells MID-SWEEP (ruling 21). Ticked AFTER the landing block above, so a roll
+        # cast this frame gets its first advance this frame rather than idling for one tick.
+        for r in list(self.rolls):
+            self._tick_roll(r, dt)
+            if r.done:
+                self.rolls.remove(r)
         # units act (deploy delay -> stun/freeze -> slow-aware move + discrete cooldown attacks)
         for u in list(self.units):
             if u.hp <= 0:
@@ -5318,71 +5385,208 @@ class SimEngine:
                 self._damage_tower(tw, crown, z.team)
         self.zones = [z for z in self.zones if z.left > 0.0]
 
-    def _resolve_roll(self, s: _Spell) -> None:
-        """A ROLLING spell (The Log): a forward CORRIDOR from the cast point that damages + KNOCKS BACK
-        ground troops in its path (no air). 'Forward' = toward the enemy (up for team 0, down for team 1),
-        so a defensive Log shoves the enemy push back UP the arena, away from your tower (buying time). A
-        Log whose corridor reaches an enemy tower chips it (poor crown damage) -- the bridge cycle-chip."""
-        fdir = -1.0 if s.team == 0 else 1.0
-        halfw = s.spec.spell_radius                           # tiles
+    def _resolve_roll(self, s: _Spell) -> "_Roll":
+        """A ROLLING spell (The Log): a forward CORRIDOR from the cast point that damages + KNOCKS
+        BACK ground troops in its path (no air). 'Forward' = toward the enemy (up for team 0, down
+        for team 1), so a defensive Log shoves the enemy push back UP the arena, away from your
+        tower (buying time). A Log whose corridor reaches an enemy tower chips it (poor crown
+        damage) -- the bridge cycle-chip.
+
+        RULING 21 (owner, 2026-08-27): "the log doesn't damage everything in the corridor at once,
+        it takes time to roll the entire 9.6 tiles, damaging a smaller area as it sweeps across the
+        corridor." THIS IS NOW THE LAUNCHER, not the effect: it hands the spell to a live `_Roll`
+        that `advance()` drives forward at `roll_speed` tiles/second, exactly the way `_resolve_spell`
+        hands a Tornado to `_Vortex` and a Poison to `_Zone`. The work happens in `_tick_roll`.
+
+        BEFORE: the whole 9.6-tile corridor resolved in ONE frame at t=0.
+        AFTER:  it sweeps over 2.88 s (200 / 60 = 3.333 tiles/s), so a body that steps clear
+                survives and a body that steps IN is caught -- see `_tick_roll`.
+        """
+        r = _Roll(s.team, s.x, s.y, s.spec)
+        self.rolls.append(r)
+        if s.spec.roll_speed <= 0.0:
+            # NO PUBLISHED SPEED -> resolve at once, which is byte-for-byte the pre-ruling-21
+            # behaviour. Every rolling card in the KB publishes one today (the_log 200,
+            # barbarian_barrel 200 by ruling 22, giant_snowball_evo 300), so this is a guard
+            # against a future card, not a live path -- and the safe degradation is the OLD
+            # behaviour, never a division by zero and never a corridor that does nothing.
+            self._tick_roll(r, 0.0)
+            if r.done:
+                self.rolls.remove(r)
+        return r
+
+    def _tick_roll(self, r: "_Roll", dt: float) -> None:
+        """Advance one rolling spell's corridor and damage what its leading edge has reached.
+
+        THE RULE IS "THE LEADING EDGE SWEEPS PAST YOU", and getting there took two wrong shapes:
+
+          * this frame's BAND `[prev_dist, r.dist]` TUNNELS. An enemy walking toward us closes on
+            the corridor at its own speed plus the roll's -- up to ~5.3 tiles/s -- while a 0.05 s
+            frame's band is only 0.167 tiles wide, so a body can cross the entire band inside one
+            tick and never be tested against it.
+          * the cumulative SWEPT REGION `[-_LOG_BACK_SLOP, r.dist]` cannot tunnel but hits things
+            the roll has already gone past. MEASURED: a Goblin Barrel's goblins landing 3 tiles
+            behind a Log's edge took the Log's damage, from a roll that had passed that tile a
+            second earlier.
+
+        So eligibility is tracked explicitly. `r.ahead` enrolls a body the first tick it is seen AT
+        OR BEYOND the edge -- or, on the launch tick only, anywhere inside the back slop, which is
+        what `_LOG_BACK_SLOP` is for -- and only an enrolled body can be hit. A body that appears
+        behind the edge is never enrolled and the roll ignores it; a body that walks back out in
+        front of the edge is enrolled again and can be caught a second time... except that `r.hit`
+        holds it to at most one hit per cast.
+
+        The BEHAVIOURAL POINT of the ruling lives here: `dy` is re-read from the unit every tick, so
+        a body that walks INTO the corridor ahead of the edge is hit when the edge arrives, and one
+        that walks OUT (sideways past the half-width, or backwards behind the slop) is not.
+        """
+        fdir = -1.0 if r.team == 0 else 1.0
+        halfw = r.spec.spell_radius                           # corridor HALF-width (tiles)
+        launch = r.dist <= 0.0                                # ...the frame the roll starts moving
+        # A missing speed sweeps the whole corridor in one step (see `_resolve_roll`).
+        step = (r.spec.roll_speed * dt) if r.spec.roll_speed > 0.0 else r.spec.roll_len
+        r.dist = min(r.spec.roll_len, r.dist + step)
         for e in self.units:
-            if e.team == s.team or (s.spec.ground_only and _airborne(e)):
+            if e.team == r.team or e.hp <= 0 or e.deploy_seq in r.hit:
                 continue
-            dy = (e.y - s.y) * fdir * _TILES_Y                # forward distance along the roll (tiles)
-            if -_LOG_BACK_SLOP <= dy <= s.spec.roll_len and abs(e.x - s.x) * _TILES_X <= halfw:
-                self._hurt(e, s.spec.spell_dmg)
-                if self._can_knock(e, s.spec):
-                    # BUILDINGS ARE ANCHORED and HEAVIES RESIST -- except the Log, which is the one
-                    # spell documented to push back ALL ground troops (see _can_knock). Damage still
-                    # lands on everything the corridor covers.
-                    e.x, e.y = _clamp_xy(e.x, e.y + fdir * s.spec.knockback / _TILES_Y, e.spec.radius)
-                    e.aggro_reset = True                       # the shove breaks its lock -- it re-picks from
-                                                               # where it LANDS, so a Log can pull a locked
-                                                               # attacker onto whatever is now nearest
-                    e.charge_dist = 0.0                        # ...and DISARMS a charge (2026-08-15): a
-                                                               # logged Prince/Ram drops to walking pace and
-                                                               # must re-earn the run-up tiles
-        if s.spec.carry_roll:
-            # EVO SNOWBALL'S SNOW BOWLING: "the affected troops get pulled into it and [it] rolls
-            # for 4.5 tiles ... when it finishes its roll, the troops are freed" -- every ground
-            # body the corridor touched is swept to the corridor's END and slowed 4 s. (While
-            # carried they are untargetable in game; at our tick size the sweep is instant, so
-            # the untargetable window is folded into the displacement.)
-            endy = s.y + fdir * s.spec.roll_len / _TILES_Y
+            if r.spec.ground_only and _airborne(e):
+                continue
+            dy = (e.y - r.y) * fdir * _TILES_Y                # forward distance along the roll (tiles)
+            if e.deploy_seq not in r.ahead:
+                if dy >= r.dist or (launch and dy >= -_LOG_BACK_SLOP):
+                    r.ahead.add(e.deploy_seq)                 # the edge has yet to reach it
+                else:
+                    continue                                  # it appeared BEHIND the edge: gone by
+            if not (-_LOG_BACK_SLOP <= dy <= r.dist and abs(e.x - r.x) * _TILES_X <= halfw):
+                continue
+            r.hit.add(e.deploy_seq)                           # AT MOST ONCE per cast, keyed on the
+                                                              # monotonic seq and never on id()
+            self._hurt(e, r.spec.spell_dmg)
+            if self._can_knock(e, r.spec):
+                # BUILDINGS ARE ANCHORED and HEAVIES RESIST -- except the Log, which is the one
+                # spell documented to push back ALL ground troops (see _can_knock). Damage still
+                # lands on everything the corridor covers. The shove now happens AS THE ROLL
+                # REACHES each body rather than to the whole corridor at t=0.
+                e.x, e.y = _clamp_xy(e.x, e.y + fdir * r.spec.knockback / _TILES_Y, e.spec.radius)
+                e.aggro_reset = True                          # the shove breaks its lock -- it re-picks from
+                                                              # where it LANDS, so a Log can pull a locked
+                                                              # attacker onto whatever is now nearest
+                e.charge_dist = 0.0                           # ...and DISARMS a charge (2026-08-15): a
+                                                              # logged Prince/Ram drops to walking pace and
+                                                              # must re-earn the run-up tiles
+            if r.spec.carry_roll and not e.spec.flying and e.spec.kind != "building" and e.hp > 0:
+                # EVO SNOWBALL'S SNOW BOWLING: "the affected troops get pulled into it and [it]
+                # rolls for 4.5 tiles ... when it finishes its roll, the troops are freed". The
+                # instant model had to apologise for folding the untargetable window into a
+                # teleport; now the pickup is when the roll REACHES the body and the carry is a
+                # real journey to the corridor's end.
+                r.carried.append(e)
+                e.slow_left = max(e.slow_left, r.spec.slow_dur or self.slow_dur)
+                e.slow_mult = r.spec.slow_mult or self.slow_factor
+                e.aggro_reset = True
+                e.charge_dist = 0.0                           # being bowled certainly resets a run-up
+        if r.carried:                                         # ...and they TRAVEL WITH IT
             k = 0
-            for e in self.units:
-                if e.team == s.team or e.spec.flying or e.hp <= 0 or e.spec.kind == "building":
+            for e in list(r.carried):
+                if e.hp <= 0:
+                    r.carried.remove(e)
                     continue
-                dy = (e.y - s.y) * fdir * _TILES_Y
-                if -_LOG_BACK_SLOP <= dy <= s.spec.roll_len and abs(e.x - s.x) * _TILES_X <= halfw:
-                    e.x, e.y = _clamp_xy(s.x + ((k % 3) - 1) * 0.6 / _TILES_X,
-                                         endy + (k // 3) * 0.5 / _TILES_Y, e.spec.radius)
-                    e.slow_left = max(e.slow_left, s.spec.slow_dur or self.slow_dur)
-                    e.slow_mult = s.spec.slow_mult or self.slow_factor
-                    e.aggro_reset = True
-                    e.charge_dist = 0.0                        # being bowled certainly resets a run-up
-                    k += 1
-        for tw in self._enemy_towers(s.team):
-            dy = (tw.y - s.y) * fdir * _TILES_Y
-            if -_LOG_BACK_SLOP <= dy <= s.spec.roll_len and abs(tw.x - s.x) * _TILES_X <= halfw:
-                self._damage_tower(tw, s.spec.spell_tower_dmg, s.team)
-                self._apply_status(s.team, s.spec, tw)
-        # ...and the body it leaves where the roll BREAKS. `_resolve_spell` has always done this
-        # for a blast spell (Royal Delivery's Recruit); the ROLL path never did, which is why the
-        # Barbarian Barrel spawns no Barbarian in this sim at all -- MEASURED as 0 bodies, and
-        # recorded in conflicts.md as a pre-existing base-card gap. Only a rolling spell whose KB
-        # row declares `spawns_troop` is affected, which today is the HERO barrel and nothing else:
-        # the base card carries `spawn_unit_stats` (a stat table) but no spawn declaration, so its
-        # behaviour is untouched and fixing it stays its own measured commit.
-        sp = s.spec.spawn_spec
-        if sp is not None and s.spec.spawn_count > 0:
-            ey = s.y + fdir * s.spec.roll_len / _TILES_Y
-            for i in range(s.spec.spawn_count):
-                ox = (0.64 * ((i % 3) - 1) / _TILES_X) if s.spec.spawn_count > 1 else 0.0
-                bx, by = _clamp_xy(s.x + ox, ey, sp.radius)
-                nu = Unit(sp, s.team, bx, by, sp.hp)
+                e.x, e.y = _clamp_xy(r.x + ((k % 3) - 1) * 0.6 / _TILES_X,
+                                     r.y + fdir * (r.dist + (k // 3) * 0.5) / _TILES_Y,
+                                     e.spec.radius)
+                k += 1
+        for tw in self._enemy_towers(r.team):
+            if id(tw) in r.hit_tw:                            # towers are created once per match and
+                continue                                      # never freed, so id() is safe HERE
+            dy = (tw.y - r.y) * fdir * _TILES_Y
+            if -_LOG_BACK_SLOP <= dy <= r.dist and abs(tw.x - r.x) * _TILES_X <= halfw:
+                r.hit_tw.add(id(tw))
+                self._damage_tower(tw, r.spec.spell_tower_dmg, r.team)
+                self._apply_status(r.team, r.spec, tw)
+        if r.dist >= r.spec.roll_len:
+            self._finish_roll(r)
+
+    def _finish_roll(self, r: "_Roll") -> None:
+        """The roll BREAKS at the end of its corridor: bodies are released, and bodies are made.
+
+        RULING 23 (owner, 2026-08-27): the Barbarian Barrel's Barbarian appears "at the far end of
+        the swept corridor ... when the sweep COMPLETES". The wiki says the same thing three times
+        over -- lead: "Once the spell reaches its DESTINATION, it spawns a single Barbarian";
+        Strategy: "AFTER IT FINISHES ROLLING, the Barbarian will help take out and tank some of the
+        Skeletons"; and the number that makes it checkable, "If the Barbarian Barrel is placed at
+        most 2 tiles from the river, the Barbarian will spawn at the OPPOSING SIDE of the Arena".
+        The POSITION was already the corridor end before ruling 21; what changes is the TIME.
+        """
+        fdir = -1.0 if r.team == 0 else 1.0
+        endy = r.y + fdir * r.spec.roll_len / _TILES_Y
+        for k, e in enumerate(r.carried):                     # Snow Bowling: "the troops are freed"
+            if e.hp <= 0:
+                continue
+            e.x, e.y = _clamp_xy(r.x + ((k % 3) - 1) * 0.6 / _TILES_X,
+                                 endy + (k // 3) * 0.5 / _TILES_Y, e.spec.radius)
+            e.slow_left = max(e.slow_left, r.spec.slow_dur or self.slow_dur)
+            e.slow_mult = r.spec.slow_mult or self.slow_factor
+            e.aggro_reset = True
+        r.carried = []
+        # ...and the body it leaves where the roll breaks. `_resolve_spell` has always done this
+        # for a blast spell (Royal Delivery's Recruit); the ROLL path gained it in I8 and now drops
+        # it at the END OF THE SWEEP rather than at t=0 (ruling 23).
+        sp = r.spec.spawn_spec
+        if sp is not None and r.spec.spawn_count > 0:
+            for i in range(r.spec.spawn_count):
+                ox = (0.64 * ((i % 3) - 1) / _TILES_X) if r.spec.spawn_count > 1 else 0.0
+                bx, by = _clamp_xy(r.x + ox, endy, sp.radius)
+                nu = Unit(sp, r.team, bx, by, sp.hp)
                 nu.deploy_left = sp.deploy_time
                 self.units.append(nu)
+        if r.body is not None:
+            # HERO BARBARIAN BARREL, RULING 28: "The first barbarian disappears into the second
+            # roll when the ability casts, and redeploys at the endpoint of the second roll." It is
+            # the SAME Unit object -- so `deploy_seq`, the ability counters, the level and the
+            # accumulated damage all survive by construction, and nothing that watches for a body
+            # dying ever fired, because `_despawn` is not a kill.
+            u = r.body
+            u.x, u.y = _clamp_xy(r.x, endy, u.spec.radius)
+            if r.heal_frac > 0.0:
+                # RULING 27: "healling the barbarian for 50% of the damage" -- read as 50% of the
+                # damage it HAS TAKEN, i.e. half its missing hitpoints, capped at full. The
+                # Strategy line "while healing some hp" and the table's "Damage Healed 50%" both
+                # fit; the competing lifesteal reading (50% of the reroll's own 232) is recorded in
+                # conflicts.md and is weaker, because it pays nothing when the corridor is empty --
+                # which is precisely when the player presses this to save a dying Barbarian.
+                u.hp = min(u.spec.hp, u.hp + (u.spec.hp - u.hp) * r.heal_frac)
+            u.target, u.locked, u.aggro_reset = None, False, True
+            self.units.append(u)
+            r.body = None
+        r.done = True
+
+    def _despawn(self, u: Unit) -> None:
+        """Take a LIVING body off the board without killing it (ruling 28's absorb).
+
+        Nothing else in this engine needed it: every other removal is a DEATH. Going through
+        `hp = 0` would fire death damage, death spawns, the egg hatch, the trade ledger's kill
+        credit and the reward's -- for a Barbarian who is merely inside a barrel.
+
+        ⚠ Membership of `self.units` is NOT what makes a body targetable: targets are validated by
+        `hp > 0` (`_valid_foe`, the locked-target checks, `Projectile.target`), so a body pulled out
+        of the list while still alive is a PHANTOM that locked attackers keep swinging at. The
+        references have to be cleared by hand, which is what the rest of this does.
+        """
+        try:
+            self.units.remove(u)
+        except ValueError:
+            return
+        for e in self.units:
+            if e.target is u:
+                e.target, e.locked = None, False
+        for side in self.towers.values():
+            for tw in side:
+                if getattr(tw, "target", None) is u:
+                    tw.target = None
+        for p in self.projectiles:
+            if p.target is u:
+                p.target = None                               # a tracking shot fizzles, as it does
+                                                              # when its target dies mid-flight
 
     def _damage_tower(self, tw: Tower, dmg: float, by_team: int) -> None:
         if not tw.alive:
@@ -6256,49 +6460,69 @@ def _ability_warp(eng: "SimEngine", u: "Unit") -> None:
 
 
 def _ability_reroll(eng: "SimEngine", u: "Unit") -> None:
-    """HERO BARBARIAN BARREL -- Rowdy Reroll (Barbarian Barrel/Hero, revid 437523).
+    """HERO BARBARIAN BARREL -- Rowdy Reroll (Barbarian Barrel/Hero, revid 437523, archived as
+    `research/sim_parity/webcache/Barbarian_Barrel_Hero.live.wikitext`).
 
     Wiki: "When activatet, the Barbarian Barrel will roll for a second time, while healling the
-    barbarian for 50% of the damage." Table: Range 3 (History 4/5/2026, "from 4 tiles"), Width 2.6,
-    Damage Healed 50%.
+    barbarian for 50% of the damage." Rowdy Reroll Attributes: Cost 1 | Range 3 | Width 2.6 |
+    Damage Healed 50% | Target Ground. Strategy: "The ability can get the barbarian closer to the
+    crown tower while healing some hp" and "The roll can also kill more swarms, or get behind
+    troops."
 
-    `u` IS THE BARBARIAN. The card is a spell and a spell has no body to press a button from, so
-    build_spec hands a spell's ability block to the troop it leaves behind. The second roll
-    therefore starts where HE is and runs forward -- the page never says where it starts, and his
-    position is the only anchor it leaves. Recorded.
+    RULING 24 -- IT IS A LITERAL SECOND ROLL, not a bespoke effect, so it goes through the SAME
+    `_Roll` path as any other rolling spell: same tiles/s, same corridor test, same per-body-once
+    damage, same knockback timing. Everything ruling 21 fixed applies to it by construction.
 
-    THE ROLL IS THE ENGINE'S OWN ROLLING-SPELL CORRIDOR (`_resolve_roll`), so it inherits the
-    Log-family geometry, the ground-only rule and the tower chip rather than reimplementing them.
-    Barbarian Barrel knockback was REMOVED on 3/9/2018 and stays removed here.
+    RULING 26 -- THE ORIGIN IS THE LIVING BARBARIAN, `u.x, u.y`, read AT ACTIVATION. Not where the
+    first roll stopped: the Barbarian lands at the first corridor's end and then WALKS, and the
+    ability launches from wherever he has got to, which is what "gets the barbarian closer to the
+    crown tower" means. A coordinate stored when the first roll ended would put the second roll
+    further and further behind him the longer the player waits. `u` is chosen by
+    `champion_ability`'s `max(bodies, key=deploy_seq)` -- ruling 5's newest-body rule, reused
+    rather than reinvented -- and if he is dead there is no body at all, so the activation is
+    refused and ruling 7's `_ability_pending` refund returns the elixir.
 
-    THE HEAL IS LIFESTEAL on the damage this roll deals, measured by diffing what it took off. The
-    table's label is "Damage Healed", which names DAMAGE as the thing being converted; the
-    competing reading ("50% of the damage he has taken") is recorded in conflicts.md.
+    RULING 28 -- THE ABSORB. "The ability does not spawn a second barbarian. The first barbarian
+    disappears into the second roll when the ability casts, and redeploys at the endpoint of the
+    second roll." So `spawn_count = 0` (there is never a second body, and the wiki agrees: it heals
+    "THE barbarian", singular), the existing body is `_despawn`ed -- taken off the board WITHOUT
+    dying, so no death effect fires -- and `_finish_roll` puts the SAME Unit object back at the
+    corridor's end. Identity is preserved by construction: `deploy_seq`, level, ability counters and
+    accumulated damage all ride on the object.
 
-    ONE PRE-EXISTING GAP, MEASURED and recorded: the BASE Barbarian Barrel spawns no barbarian at
-    all in this sim, so `spawns_troop` is curated on the hero row only -- fixing the base card is a
-    pool-wide change to 198 decks and belongs to its own measured commit, not to this one.
+    THE CORRIDOR IS SHORTER THAN THE FIRST ROLL and it would have been easy to miss: History,
+    "On 4/5/2026, a Balance Update, decreased the reroll range to 3 tiles (from 4 tiles)". The
+    barrel's own Range is 4.5. Hence `roll_len = ability_range_tiles` (3.0) and never `roll_len`.
+    The DAMAGE is not reduced: `spawn_11` 232 is the barrel's area damage for BOTH rolls and
+    `rerolldmg_11` 116 is its CROWN damage, not a second-roll penalty (116/232 is exactly the
+    ordinary 50% crown reduction; the variable name is misleading).
+
+    THE HEAL is 50% of the damage he has TAKEN -- half his missing hitpoints -- applied at
+    redeploy in `_finish_roll`. The alternative lifesteal reading is recorded in conflicts.md.
+
+    NOT RE-CLAMPED: the own-half rule is about a CAST, and this is not one. The Barbarian may well
+    be standing in the enemy half when the button is pressed, and the roll launches from there --
+    the same way an ordinary Log's corridor crosses the river from a legal cast (ruling 20).
     """
     s = u.spec
     roll = replace(s, kind="spell", spell_dmg=s.ability_dmg,
                    spell_tower_dmg=s.ability_crown_dmg or s.ability_dmg,
                    spell_radius=s.ability_radius_tiles, roll_len=s.ability_range_tiles,
+                   roll_speed=s.roll_speed,           # ruling 24: the same barrel, the same speed
                    ground_only=True, knockback=0.0, knockback_all=False, carry_roll=False,
                    pulls=False, rolls=True, zone_s=0.0, spawn_count=0, spawn_spec=None,
                    decoy_mirror=False, zap_pulses=0, death_dmg=0.0, death_delay_s=0.0,
                    stuns=False, stun_dur=0.0, slows=False, slow_dur=0.0, freezes=False,
                    ability_kind="")
-    hp0 = sum(e.hp for e in eng.units if e.team != u.team)
-    chip0 = eng.chip[u.team]
-    eng._resolve_roll(_Spell(u.team, u.x, u.y, roll, 0.0))
-    # what the roll actually took off: enemy hitpoints plus tower chip, which is where
-    # `_damage_tower` books it. Measured rather than assumed, so the heal follows the corridor's
-    # real coverage instead of its nominal damage.
-    dealt = max(0.0, hp0 - sum(e.hp for e in eng.units if e.team != u.team)) \
-        + max(0.0, eng.chip[u.team] - chip0)
-    if s.ability_heal_frac > 0.0 and dealt > 0.0:
-        u.hp = min(s.hp, u.hp + dealt * s.ability_heal_frac)
-
+    r = _Roll(u.team, u.x, u.y, roll)
+    r.body = u                                        # ruling 28: absorbed, not accompanied
+    r.heal_frac = s.ability_heal_frac
+    eng._despawn(u)
+    eng.rolls.append(r)
+    if roll.roll_speed <= 0.0:                        # same degradation as `_resolve_roll`
+        eng._tick_roll(r, 0.0)
+        if r.done:
+            eng.rolls.remove(r)
 
 def _ability_flight_nado(eng: "SimEngine", u: "Unit") -> None:
     """HERO WIZARD -- Fiery Flight (Wizard/Hero, revid 437515).
