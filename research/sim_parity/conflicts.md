@@ -72,6 +72,21 @@ slot sweep and names no tower troop. FLAGGED rather than changed because those w
 frozen eval benchmark's — retuning them makes every run incomparable with every previous one.
 → *I8, "NOT IMPLEMENTED, DELIBERATELY"*
 
+**4b. Flag the OTHER two own-half spells — and is it a clamp or a roll origin?** ⚠ NEW, ruling 18.
+Cards revid 437053 names THREE exceptions to "spells can be cast anywhere": The Log, Barbarian
+Barrel and Royal Delivery. Ruling 18 covered the third. **The Log is in BOTH shipped decks**
+(221/1000 pool decks, 25.24% of weight; Barbarian Barrel 198/1000, 24.95%), so flagging it deletes
+the enemy half from the action space of a card the policy plays constantly. Also worth deciding:
+The Log is ROLLED from your own side, so "own half only" may describe the roll's ORIGIN rather than
+a reticle restriction — a different engine change from a deploy clamp. → *RD-1*
+
+**4c. Should the river rule move into `SimEngine.deploy`?** ⚠ NEW, ruling 18, and it is general.
+The own-half rule lives entirely in the ACTION SPACE (`anywhere_ids` + `deploy_clamp`), so nothing
+constrains a SCRIPTED OPPONENT's placement at all. MEASURED: `ScriptedBot._try_anti_siege` casts any
+spell with `spell_dmg >= 300` at the agent's X-Bow across the river, Royal Delivery's is 385, and 55
+of 1000 pool decks (6.36% of match weight) hold it. Every future own-half card has the same hole.
+→ *RD-2*
+
 **5. Which spells does the Monk reflect?**
 Projectile reflection is implemented in full. SPELL reflection is not, and the reason is that the
 page never enumerates which spells count as "projectile spells" — it only carves out
@@ -1625,3 +1640,54 @@ which it was not before.
 
 Same bug CLASS as the Fire Spirit test that counted bodies by `id()` (I7) — `id()` is never a
 stable identity in this engine.
+
+## Ruling 18 — Royal Delivery, 2026-08-27
+
+Owner ruling 18 is implemented (decisions.md). Two things surfaced while doing it that the ruling
+does not cover, and both are recorded rather than acted on.
+
+### ⚠ RD-1. The wiki names THREE own-half spells. The ruling names one, and one of the others is in BOTH shipped decks.
+
+Cards revid 437053, verbatim: *"Generally, spells are temporary and can be cast anywhere in the
+battlefield (**with the exception of The Log, Barbarian Barrel, and Royal Delivery**), including on
+top of buildings, while buildings ... and troops ... can only be spawned on the player's territory
+(with the exception of Miner and Goblin Drill)."*
+
+So `the_log` and `barbarian_barrel` are own-half-only by the same sentence that justifies Royal
+Delivery. NOT FLAGGED, and the reason is the size of the change rather than any doubt about the
+source:
+
+| card | in a shipped deck? | pool decks | pool weight |
+|---|---|---|---|
+| royal_delivery | no | 55/1000 | 378/5947 = **6.36%** |
+| the_log | **YES — BOTH icebow and hogeq** | 221/1000 | 1501/5947 = **25.24%** |
+| barbarian_barrel | no | 198/1000 | 1484/5947 = **24.95%** |
+
+**The Log is in both decks at level 14.** Flagging it removes the whole enemy half from the action
+space of a card the policy plays constantly — the offensive Log at the bridge, the Log onto a
+Princess behind the tower. That is a pool-wide behaviour change to our OWN play with no measurement
+behind it, and §5's history is that getting this rule wrong in the other direction silently deleted
+three real tactics. Under the one-change rule it is its own commit with its own before/after.
+
+⚠ Worth a second look before implementing: in the live game The Log is *rolled from your own side*,
+so "own half only" may describe where the ROLL STARTS rather than a placement restriction the
+reticle enforces — which is a different engine change (a corridor origin) from a deploy clamp.
+The same question applies to Barbarian Barrel. **OWNER: flag the other two, and is it a placement
+clamp or a roll origin?**
+
+### ⚠ RD-2. `ScriptedBot` never calls `deploy_clamp` at all, so the OPPONENT'S Royal Delivery is still unclamped.
+
+`anywhere_ids` / `deploy_clamp` govern the AGENT's action space and `SelfPlayOpponent`. The scripted
+opponent deploys straight through `SimEngine.deploy(1, spec, x, y)` with raw engine coordinates,
+and `SimEngine.deploy` enforces field SHAPE (ledges, king platforms, tile snap) but NOT the river
+rule. MEASURED consequence: `ScriptedBot._try_anti_siege` picks the biggest spell with
+`spell_dmg >= 300` and casts it AT the agent's most forward X-Bow — `self._play(eng, s, xb.x, xb.y)`
+— which is across the river from the bot. Royal Delivery's `spell_dmg` is **385**, so it qualifies,
+and **55 of 1000 pool decks (6.36% of match weight)** hold it.
+
+NOT FIXED HERE: ruling 18 is scoped to `anywhere_ids`, and adding a river clamp to the scripted bot
+changes opponent placement for every card it holds, not just this one — a pool-wide behaviour change
+that needs its own measurement. It is also the more general finding: **the sim's own-half rule lives
+entirely in the ACTION SPACE, so nothing constrains a scripted opponent's placement**, and any
+future own-half card has the same hole. **OWNER: should the river rule move into `SimEngine.deploy`,
+where it would bind both sides?**

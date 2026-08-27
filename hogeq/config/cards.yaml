@@ -901,6 +901,16 @@ cards:
     unsourced: true
     radius_tiles: 3.0
     verified: true
+    # OWNER RULING 18 (2026-08-27): Royal Delivery "can only be cast on the caster's half of the
+    # map (and whatever pocket presents itself)". It is a SPELL that DROPS A TROOP, so it is placed
+    # like a troop rather than aimed like a spell -- and the wiki says so independently. Cards
+    # revid 437053, verbatim: "spells are temporary and can be cast anywhere in the battlefield
+    # (WITH THE EXCEPTION OF The Log, Barbarian Barrel, and Royal Delivery)". The `own_half_only`
+    # flag is the general mechanism; the ruling names this one card, and the other two the wiki
+    # names are recorded in conflicts.md rather than flagged here -- The Log is in BOTH shipped
+    # decks, so flagging it changes the agent's own action space and belongs in its own measured
+    # commit under the one-change rule.
+    flags: [own_half_only]
 
   # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
   # provenance in research/sim_parity/ledger/i5_applied.jsonl).

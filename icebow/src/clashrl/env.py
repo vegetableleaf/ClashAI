@@ -191,6 +191,7 @@ class LiveMatchEnv:
         self.royal_delivery_ids = set()
         self.tornado_ids = set()
         self.miner_ids = set()
+        self.own_half_spell_ids = set()                 # RULING 18: spells placed like TROOPS
         self.xbow_ids = set()
         self.tesla_ids = set()                          # centre-pull assist target (see _lane_wincon)
         self.defensive_kind = {}                        # id -> defender kind (Tesla / Ice Wizard) for reactive_ids
@@ -199,6 +200,8 @@ class LiveMatchEnv:
             c = db.get(base)
             if c and c.get("kind") == "spell":
                 self.spell_ids.add(i)
+            if c and "own_half_only" in set(c.get("flags") or ()):
+                self.own_half_spell_ids.add(i)          # RULING 18, see anywhere_ids below
             if base == "rocket":
                 self.rocket_ids.add(i)
             elif base == "royal_delivery":          # defensive area spell on your half (long fixed delay)
@@ -220,7 +223,12 @@ class LiveMatchEnv:
         # Tornado sneaky-lock at the river and the whole Hog+Earthquake combo were unreachable
         # actions rather than merely unlearned ones. `spell_ids` is already computed above from the
         # card DB's own `kind`, so the rule now comes from the cards instead of a literal.
-        self.anywhere_ids = self.spell_ids | self.miner_ids
+        # RULING 18 (owner, 2026-08-27) carves ONE card back out, by KB flag rather than by literal:
+        # Royal Delivery is a spell that DROPS A TROOP and is own-half-only (wiki Cards revid
+        # 437053 names it, The Log and Barbarian Barrel as the three exceptions). Everything the
+        # fix above rescued stays rescued -- see sim/env.py for the same carve-out and the tests
+        # that pin it.
+        self.anywhere_ids = (self.spell_ids | self.miner_ids) - self.own_half_spell_ids
         # cards played only to REACT to a threat (defenders + Royal Delivery / Tornado); on a QUIET board they're premature.
         self.reactive_ids = set(self.defensive_kind) | self.royal_delivery_ids | self.tornado_ids
         # --- perception geometry the reward + spell-impact timing still use ---

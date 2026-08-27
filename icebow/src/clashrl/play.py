@@ -196,9 +196,15 @@ def play(cfg) -> None:
     # EVERY SPELL GOES ANYWHERE (the game's rule); Miner / Goblin Drill are the deploy-anywhere
     # troops. The old literal {rocket, miner} clamped Tornado, Log and Earthquake back to our own
     # half, which deleted the offensive Log, the river sneaky-lock and the Hog+EQ combo outright.
+    # RULING 18 (owner, 2026-08-27): a spell carrying `own_half_only` is placed like a TROOP --
+    # Royal Delivery drops a Recruit, it does not land an effect. Same carve-out as sim/env.py and
+    # env.py, from the same KB flag, so the three cannot drift.
+    _own_half_ids = {i for i, key in enumerate(vision.deck_keys)
+                     if "own_half_only" in set(
+                         (_pdb.get(card_threat.base_key(key)) or {}).get("flags") or ())}
     anywhere_ids = {i for i, key in enumerate(vision.deck_keys)
                     if ((_pdb.get(card_threat.base_key(key)) or {}).get("kind") == "spell"
-                        or card_threat.base_key(key) in ("miner", "goblin_drill"))}
+                        or card_threat.base_key(key) in ("miner", "goblin_drill"))} - _own_half_ids
     xbow_ids = {i for i, key in enumerate(vision.deck_keys)
                 if (key[:-4] if key.endswith("_evo") else key) == "x_bow"}
     xbow_range = float(cfg.get("env", "xbow_range", default=0.36))

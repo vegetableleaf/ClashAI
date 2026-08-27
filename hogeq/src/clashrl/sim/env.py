@@ -192,9 +192,22 @@ class SimMatchEnv:
         # hogeq's Earthquake could not be put on an enemy building at all, which made the deck's
         # signature Hog+EQ combo an action the policy was incapable of taking. Miner (and Goblin
         # Drill) stay in on their own merit: deploy-anywhere TROOPS, not spells.
+        #
+        # ...WITH ONE EXCEPTION, and it is a KB flag rather than another literal so the next one is
+        # data (RULING 18, owner 2026-08-27): Royal Delivery "can only be cast on the caster's half
+        # of the map (and whatever pocket presents itself)". It is a spell that DROPS A TROOP, so
+        # it is placed like a troop. Cards revid 437053 says the same independently: "spells ... can
+        # be cast anywhere in the battlefield (with the exception of The Log, Barbarian Barrel, and
+        # Royal Delivery)".
+        # THE 2026-08 FIX ABOVE IS NOT BEING UNDONE. Only cards that carry `own_half_only` leave the
+        # set; every genuine anywhere-spell (rocket, tornado, the log, earthquake, fireball, ...)
+        # stays in it, and a test asserts exactly that so this cannot silently regress to the old
+        # "every spell was forbidden from the enemy half" bug.
+        self.own_half_spell_ids = {i for i in range(len(self.deck_keys))
+                                   if self.specs[i].own_half_only}
         self.anywhere_ids = {i for i, k in enumerate(self.deck_keys)
                              if (self.specs[i].kind == "spell"
-                                 or _base(k) in ("miner", "goblin_drill"))}
+                                 or _base(k) in ("miner", "goblin_drill"))} - self.own_half_spell_ids
         self.miner_ids = {i for i, k in enumerate(self.deck_keys) if _base(k) == "miner"}
         # Stage 3: your deck's KB profiles (played-card role) + the last identity block, for the
         # role-based COUNTER reward (played the right answer to a RECOGNISED threat). Off unless use_detector.

@@ -570,6 +570,13 @@ class CardSpec:
     radius: float = 0.64      # collision radius, TILES (soft body-block)
     deploy_anywhere: bool = False   # KB flag: tunnels/drills to ANY tile (Miner, Goblin Drill) -- it does not
                                     # walk the lane, so it is placed straight onto the defender's tower
+    own_half_only: bool = False     # KB flag: a SPELL that is nonetheless placed like a troop, so the
+                                    # deploy clamp applies to it (RULING 18: Royal Delivery, which
+                                    # drops a Recruit rather than landing an effect). The inverse of
+                                    # `deploy_anywhere`, and it exists because "kind == spell" is
+                                    # otherwise the whole of the cast-anywhere rule -- see the
+                                    # `anywhere_ids` comment in sim/env.py for what that rule fixed
+                                    # and must keep fixing.
     slows: bool = False       # applies a SLOW on hit (Ice Wizard)
     stuns: bool = False       # applies a brief STUN (Zap / Tesla-evo pulse / Electro)
     freezes: bool = False     # applies a FREEZE -- a longer stun (Ice Spirit / Freeze)
@@ -952,6 +959,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         reflect_stun=float(c.get("reflect_stun_s") or 0.0),
         building_only=building_only, siege=siege,
         deploy_anywhere=("deploy_anywhere" in flags),
+        own_half_only=("own_half_only" in flags),
         kamikaze=("kamikaze" in flags or bool(db.is_kamikaze(base))), lifetime=lifetime,
         spell_radius=spell_radius, spell_dmg=dmg,
         spell_tower_dmg=tower_dmg, spell_delay=spell_delay,

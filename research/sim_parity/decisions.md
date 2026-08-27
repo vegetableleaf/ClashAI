@@ -285,3 +285,38 @@ experiments -> new PPO, without waiting for approval between stages.
     over the cap). `meta_decks.yaml` gains only a header comment: unlike an evolution or a hero, a
     champion is not a hidden variant — it is visible in `cards:` — so there is nothing to declare
     and nothing that can go stale. The `champion_candidates:` key is still honoured if present.
+
+18. **Royal Delivery is own-half only.** Owner: it *"can only be cast on the caster's half of the
+    map (and whatever pocket presents itself)"*. It is a SPELL that DROPS A TROOP, so it is placed
+    like a troop rather than aimed like a spell.
+
+    **VERIFIED ON THE WIKI, and the page is more specific than the ruling.** Cards revid 437053,
+    verbatim: *"Generally, spells are temporary and can be cast anywhere in the battlefield (**with
+    the exception of The Log, Barbarian Barrel, and Royal Delivery**), including on top of
+    buildings, while buildings ... and troops ... can only be spawned on the player's territory
+    (with the exception of Miner and Goblin Drill)."* **THREE exceptions, not one.** See the
+    conflicts.md entry — the other two are recorded, not flagged.
+
+    Implemented as a KB FLAG (`flags: [own_half_only]`) rather than another literal, so the next
+    one is data: `CardSpec.own_half_only` feeds the `anywhere_ids` carve-out in all three places
+    that build it (`sim/env.py`, `env.py`, `play.py`), in both decks.
+
+    **MEASURED clamp distance** (icebow's 18x24 board grid, deploy line at row 13 of 24): a Royal
+    Delivery aimed at the enemy BACK row lands at row 13 — **13 grid rows / tiles moved**, and the
+    LANE is never moved. Every enemy-half row clamps to the deploy line; a pocket placement is
+    still legal (`deployable_mask(anywhere, pocket=...)` adds cells and every added cell is across
+    the river).
+
+    **THE REGRESSION THIS MUST NOT CAUSE.** An earlier fix (§5) had to undo the exact opposite bug:
+    `anywhere_ids` was the literal `{rocket, miner}`, so EVERY other spell was forbidden from the
+    enemy half — the offensive Log, the Tornado river lock and hogeq's whole Hog+Earthquake combo
+    were actions the policy could not take at all. `test_every_OTHER_spell_still_goes_anywhere`
+    asserts rocket / tornado / the_log / earthquake / fireball / arrows / zap all stay in the set,
+    so this cannot come back through the new door.
+
+    **SCOPE, stated plainly: this is currently INERT for both shipped decks.** Neither icebow
+    (tornado, tesla_evo, ice_wizard, x_bow, rocket, knight_evo, the_log, skeletons) nor hogeq
+    (hog_rider, firecracker_evo, mighty_miner, tesla_evo, the_log, earthquake, skeletons,
+    ice_spirit) holds Royal Delivery, so no checkpoint's behaviour changes — pinned by
+    `test_the_shipped_deck_is_UNCHANGED_by_this_ruling`. The ruling is a correctness fix to the
+    RULE, and two follow-ons where it would bite are recorded in conflicts.md.
