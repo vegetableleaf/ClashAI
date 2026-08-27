@@ -1,10 +1,67 @@
 # Evolutions — research catalog + sim implementation plan
 
-**Status: PLAN for user review (2026-08-14).** Covers (0) the engine-fidelity audit that gates this
-work, (1) all 42 current evolutions and what each changes, (2) the phased plan for putting evos
-into the opponent pool. Stats for 41 evos are ALREADY imported (`cards_stats.json` `<base>_evo`
-keys — `cards-import` scrapes the Evolution pages); what the sim lacks is (a) opponents ever
-*fielding* them and (b) the special mechanics beyond stats.
+**Status: SHIPPED (2026-08-27, Phase I / branch `sim-parity`).** This document began as a plan and
+is now a catalog plus a record. Both things it said the sim lacked are done, and the slot model
+around them grew twice.
+
+### What is modeled now — measured, `tools/evo_audit.py`, identical output in both decks
+
+| | before | now |
+|---|---|---|
+| decks fielding a REAL evolution | 0 | **1000 / 1000 (100.0%)** |
+| phantom evolutions (a slot naming a card the deck cannot evolve) | 0 | **0** |
+| distinct evolutions fielded over 20 draws x 1000 decks | 0 | **42 of 42** |
+| evolutions reporting a cycle count | 6 / 42 | **42 / 42** |
+| `<base>_evo` rows in `cards_stats.json` | 41 | **42** |
+
+The evolution is DRAWN PER MATCH from every candidate the deck legally holds, not pinned to one
+card. ⚠ The RoyaleAPI battlelog field `evolutionLevel` was tried as the source and then STRIPPED:
+it reports card OWNERSHIP, not which slot was fielded (`conflicts.md`, R4 CORRECTION).
+
+### The three-slot loadout (I8, owner ruling 2026-08-26)
+
+A deck now carries an **Evolution** slot, a **Hero** slot and a **WILD** slot that takes a second
+evolution, a second hero, or neither. Measured over the shipped pool:
+
+```
+hero slot        REAL 841/1000 (84.1%)   PHANTOM 0   UNFILLED 1 (0.1%)
+                 16 of 16 live heroes fielded; 842/1000 decks hold >= 1 candidate
+wild slot        where BOTH categories were legal:  evo 34.6%  hero 33.1%  none 32.3%  (n=6511)
+                 over all decks:                    none 45.2%  evo 42.9%  hero 11.9%
+```
+
+The 1/3 split is an UNMEASURED CHOICE, not a game rule — the owner set the shape and the exact
+weights are ours. ⚠ One structural conflict is recorded and deliberately NOT acted on: the wiki
+says the Hero slot is SHARED with the Champion slot, and 137 of 1000 decks now field three
+ability-bearing slots where the page allows two. It is item 1 of the owner checklist at the top
+of `conflicts.md`.
+
+### Abilities (I7 + I8)
+
+24 cards carry an `ability_kind` — **8 champions** (archer_queen, boss_bandit, goblinstein,
+golden_knight, little_prince, mighty_miner, monk, skeleton_king) and **16 heroes** — dispatched
+through **20 distinct handlers**. All enemy-side (ruling 1): our decks keep their identities and
+every existing checkpoint keeps loading (card head icebow 10 / hogeq 11, unchanged).
+
+### Also landed in Phase I, adjacent to this document
+
+* **Per-card chain ranges.** `chain_tiles` is a card field now (Electro Dragon and its evolution
+  at 4.0 tiles), superseding the 3.0 global AND `cards.yaml`'s 3.5 comment. The evolution's later
+  bounces carry `chain_falloff_frac: 0.3333` — ruling 12 asked for the RULE, not the constant.
+* **Friendly-target spells.** `_resolve_spell` grew an own-team path; `rage` and `clone` are
+  `spell_targets: friendly`. Before this, no card could act on the caster's own army at all.
+* **Drill evolution cycling.** Drills inherit `SimMatchEnv`, and evolutions were permanently OFF
+  in every one of them (0 of 26 icebow, 0 of 24 hogeq) — the opposite of what was assumed.
+
+Full argument for every choice, plus the evidence conflicts and the deliberate
+non-implementations, is in `research/sim_parity/conflicts.md`. The stage-by-stage record with
+commit ranges is `research/sim_parity/PHASE_I_LEDGER.md`.
+
+---
+
+**Original framing, kept for the record (2026-08-14):** Covers (0) the engine-fidelity audit that
+gates this work, (1) all 42 current evolutions and what each changes, (2) the phased plan for
+putting evos into the opponent pool.
 
 ---
 

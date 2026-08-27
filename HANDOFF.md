@@ -22,7 +22,7 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-08-25**, at commit `HEAD` (DRILLS: the segmented mini-sim framework is in and
+Last updated: **2026-08-27**, branch `sim-parity` (**I9 CROSS-CUTTING GAPS DONE** -- the engine had NO own-team spell path at all (`_resolve_spell` iterated `e.team != s.team` in all five branches), so Rage was a bare blast with its whole buff missing, Clone was a 3-elixir no-op and the Heal Spirit did not heal: all three now measured (a raged Knight covers +26.0% more ground, 4 skeletons become 8 at 1 hp and 0 elixir, an ally goes 100 -> 501.00 hp). MIRROR measured and SKIPPED (5/1000 decks, 0.29% of deck weight, and a hand mechanic rather than a board effect). Three engine bugs found and fixed with before/afters: a ZERO-DAMAGE hit woke the enemy King (goblin_barrel / royal_delivery / mirror all activated him at 0.0 s for 0 chip), drills could NEVER present an evolution (0 of 26 icebow / 0 of 24 hogeq, the OPPOSITE of the brief's premise), and a chain hop never survived a physics frame so sim_view showed NOTHING while the Electro Dragon chained for 192/960/1152/576/576. The base Barbarian Barrel now leaves its Barbarian (0 -> 1 body). perception's DRIFT entry was STALE -- measured, the TypeError does not fire in either deck -- and parity's declared-different list shrank 20 -> 18. 62 new tests; head shapes unchanged (icebow 10 / hogeq 11). See conflicts.md's I9 section. Previously **I8 HEROES DONE** -- all 16 LIVE heroes fire ENEMY-SIDE, twelve new `ability_kind` shapes on I7's registry, the 16/3/2026 three-slot loadout (Evolution + Hero + Wild at 1/3, an UNMEASURED choice behind `sim.wild_evo_prob`/`wild_hero_prob`), and `support:` finally consumed -- the opponent's princess-tower share went 54.6% -> 83.7% against a measured 90.5%. THREE I4 import bugs corrected (the turret's stats were on the Musketeer, the Tomb Queen's on the Tombstone, the Barbarian's melee on the barrel). 45 new tests; head shapes unchanged (icebow 10 / hogeq 11), so every checkpoint still loads. See research/sim_parity/conflicts.md's I8 section for 27 evidence conflicts, 4 wrong brief premises, 9 measured bugs, 11 owner in-game checks and 10 deliberate non-implementations -- the two biggest open numbers are the Hero Valkyrie's spin (1358 damage per activation under the per-tick reading) and the Hero Berserker's "Bear Damage". Previously **I7 CHAMPION ABILITIES DONE** -- `ability_kind` dispatch + a 16-field generic ability schema, all 8 live champions firing ENEMY-SIDE through `ScriptedBot._try_ability`, ruling 5's newest-body bug fixed, ruling 7's refund added, the Boss Bandit's HP auto-trigger DELETED, and the Evo Electro Dragon's swing corrected 3204 -> 1152; head shapes unchanged, icebow 890 OK / hogeq at its exact 42-known baseline. See SS5's I7 rows and research/sim_parity/conflicts.md's I7 section for the 12 evidence conflicts, 3 wrong brief premises and 5 owner in-game checks. Previously I5 DATA APPLICATION DONE -- 340 adjudicated ledger rows applied and verified 340/340, 81 pins + 258 curated cards.yaml fields, E4 closed, per-card chain_tiles, stat_sweep --all green in both decks, crown audit RED->GREEN after being RETARGETED at our KB; previously I4 importer hardening DONE -- dry-run-default cards-import, hero scrape, allowlist + pins guards, provenance, crown audit RED negative control, dry-run reconciled 0 surprises; see Phase I progress in SS3's sim-parity block). Previous: **2026-08-25** (DRILLS: the segmented mini-sim framework is in and
 validated in BOTH decks -- `sim/scenarios.py` + `sim/drill_env.py` + 4 icebow / 5 hogeq drills, each
 measured baseline-vs-oracle, plus `run.py drills` and a `sim.drill_frac` mixing ratio into PPO (default
 0.0, so an un-opted run is unchanged). Building it surfaced FIVE real bugs, all fixed, all cross-deck:
@@ -3707,6 +3707,148 @@ base-card-existence oracle only. Fandom api.php works via python urllib + custom
   I0→I4. Merge to main only at a declared PPO restart; the merge counts as that experiment's ONE
   training change.
 
+#### Phase I progress — I0, I1, I3 DONE 2026-08-26 (branch `sim-parity`, worktree only)
+
+`9a57aef` **I3**. The plan's gate was unmeasurable: the battlelog's `evolutionLevel` reports a
+player's OWNED evolution level, not the fielded slot (three evolutions for 153/233 decks against a
+two-slot game; a level for `berserker`, which has none), and its 233 `evo:` declarations were
+stripped in 84e144a — leaving opponents with NO evolution at all. Nothing published names the
+slotted card (RoyaleAPI / Deck Shop / StatsRoyale all 403), so the sim no longer tries: each deck
+carries a derived `evo_candidates` (its own cards that really have an evolution, == the 42
+wiki-verified rows) and ScriptedBot draws ONE uniformly per match. MEASURED 0 → **1000/1000 decks
+field a REAL evolution**, 0 phantoms, 0 candidates failing `build_spec`, all 42 reachable, mean
+3.269 candidates/deck. `deck_import.py` no longer tallies `evolutionLevel` at all, so a re-import
+cannot recreate the bad slots.
+
+`8ca6aa5` **I1**. `sim/engine.py` and `cards.py` are now **byte-identical** between the decks and
+`config/cards.yaml` differs only in its `deck:` block. Two shared bugs fell out: `evo_cycles()`
+reported a count for **6 of 42** evolutions (gated on a curated `evolution.available` only 6 base
+cards carry) → 42/42, after taking `minion_horde_evo` (1) and `princess_evo` (2) from the wiki
+ledger, where the imported rows had none — Minion Horde was being fielded a cycle late by the
+picker's `or 2` floor. And the stale `1.1**(level-11)` in `CardDB.deck()` is gone in BOTH decks
+(worst delta −0.93% icebow, −0.76% hogeq; only `cli.py`'s display reads it). **icebow's card head
+stays at 10** — engine path only, no action-space slot, or every checkpoint breaks.
+
+`be47ddd` **I0**. `tools/parity_check.py`, byte-identical in both decks, fails on undeclared
+divergence. Baseline: config quartet byte-identical, `cards.yaml` identical apart from its
+783-byte deck block, `src/clashrl` 80 files → 60 shared identical / 20 declared / **0 unexpected**.
+The allow-list is split DECK-SPECIFIC (11 entries, should differ forever) vs **DRIFT (8 entries,
+recorded not blessed)** — including a live one: `perception.py`'s own comment says hogeq's
+threat-gate MEMORY fix raises TypeError and is swallowed, so it is silently inert there. Verified
+to FAIL on four probes, not just to pass. Run it before any commit that touches shared code.
+
+⚠ THREE TESTS WERE PASSING ON LUCK and were repaired (no doctrine/engine/reward code touched):
+`test_tesla_discipline` was testing the DEAL (hogeq had already found this and icebow never got
+the fix; the last negative test was vacuous in BOTH), `test_rocket_doctrine`'s overtime test
+depended on the randomly sampled enemy tower level, and `test_hogeq_pressure_doctrine`'s punish
+window depended on `reset()` not dealing a P.E.K.K.A deck. All three were exposed by I3 taking one
+extra draw from `env.rng`. Full write-ups in `research/sim_parity/conflicts.md`.
+
+Suites: icebow **773 OK (21 skipped)** — was 703; hogeq **796 tests, 3 failures + 39 errors**, the
+same failure NAMES as the 767-test baseline. Still parked: I2's remaining scope, I4, I5.
+
+#### Phase I progress — I4 importer hardening DONE 2026-08-26 (5 commits, worktree only)
+
+`cards-import` is now safe to point at the live wiki. Dry-run is the DEFAULT (field-level diff vs
+the existing file; `--write` gates the overwrite; stale "RoyaleAPI" help fixed); `/Hero` subpages
+join the walk+probe and emit `<base>_hero` body rows (Balloon/Hero's ability table read as a
+second body — count 2 → 1, the one field any of the 16 live hero pages changed);
+`config/import_allowlist.json` (generated, 42 evos + 16 heroes live / 2 announced 2026-09-07 / 2
+API-forward-declared ghosts) makes inventing content impossible — announced stubs excluded loudly,
+unknown keys hard-stop; `config/import_pins.json` (generated: 66 stat_diffs `pin` rows + 12
+decisions.md owner values, 74 total) is force-applied over the scrape and `--write` REFUSES a
+pinned regression or a `verified: true` change without `--force-field`; every row carries
+`_src {revid, fetched}` (file written ONCE, copied to the sibling — parity_check gates byte-
+identity and its config list grew to include both new files). `crown_damage_audit.py` finally
+detects: regex tolerates its/their/linked-prefix/troop-damage phrasings + spawn-crown family +
+spell evos, ported to hogeq, exit 1 on stale — live negative control 2026-08-26: **15 stale
+vardefines RED** incl. the full known-stale set (fireball 207→172, arrows 31→24, freeze 35→29,
+snowball(+evo) 54→45, rage 54→45, vines 39→35, zap_evo 58→48, goblin_drill(+evo) 26→0). E2:
+`import_mechanics.py` declares `lifetime_s`/`turret_rotation` (declaration only; tesla stays 30,
+card_mechanics.json 0-line diff). Live `--dry-run` reconciled against the ledger
+(`i4_reconcile_dryrun.py`, exit 0): +16 = exactly the live heroes, −0, 24 field changes = 15
+pin-enforced + 8 catalogued update/escalate rows + 1 KBGAP rider (inferno_tower.count); guard
+would refuse 3 verified-row fields (mortar/mortar_evo dps from the 4.7 s pin recompute,
+rage.attacks false-assertion drop) — I5's problem, by design. NOTHING was written; DB data
+untouched. Suites: icebow **790 OK (21 skipped)** (was 773 + 17 new guard fixtures); hogeq **813
+tests, 3 failures + 39 errors — same NAMES** (test_cr_web live-fetch + 2× DEPLOYABLE_cell).
+⚠ for I5: the earthquake pins are mutually inconsistent (crown 49 = 58% of the OLD 84, damage 81
+→ 58% would give 47) — both are owner rulings, recorded as-is; flag when applying.
+
+#### Phase I progress — I5 data application DONE 2026-08-26 (4 commits, worktree only)
+
+The adjudicated R2 ledger is **applied**: 340 changes, `research/sim_parity/ledger/i5_applied.jsonl`
+carries one row each (key, field, before, after, route, source, ruling). 50 recorded-not-applied
+(21 already correct, **29 the sweep itself declined** — "I am NOT updating on a mis-worded entry",
+"Report only", null on all three paths), 23 deferred with reasons (C7 cast-time convention, the
+champion `ability_kind` schema I7 owns, three model-not-number rows).
+
+`research/sim_parity/scripts/i5_apply.py` is the machine. `plan` routes every row against a
+CardDB rebuilt from **0905104** (`git show` of the three config files), so BEFORE is reproducible
+after the edits have landed and a re-plan cannot silently re-baseline. `edit` writes cards.yaml as
+TEXT — surgical line rewrites plus a dated house-style comment block per entry naming the
+superseded value and the ruling — and REFUSES to write unless the PARSED mapping before/after
+differs by exactly the planned set. `verify` re-reads the merged DB: **340/340 present**.
+
+Split: **81 pins** (`gen_pins.py` 74 → 176, now sourced from stat_diffs + decisions + the I5 plan,
+with `advisory: true` for the curated/modelling ones so ONE file is the whole registry of
+deliberate deviation) and **258 curated cards.yaml fields** across 112 entries + 6 rows that had no
+curated entry at all. `cards-import --write`: +16 live hero rows, 58 cards changed (99 fields), 91
+pin enforcements, `i4_reconcile_dryrun.py` exit 0 / 0 surprises; re-running the dry-run afterwards
+prints "(no differences)". Written ONCE and copied. cards.yaml meta bumped (both stale since 07-24).
+
+**The three --force-field releases** (each individually, each cited): mortar.dps 53→57 and
+mortar_evo.dps 66→57 (decisions #10, 266/4.7), rage.attacks ['buildings']→ABSENT (a FALSE
+buildings-only assertion; the Target cell names who Rage BUFFS). All three pinned in the same
+commit per cli.py's own instruction. ⚠ Only TWO were load-bearing — the LAG bucket pins mortar.dps,
+and pins outrank verified. The guard first refused TWELVE: ten more verified rows whose `dps` moves
+only as a consequence of an adjudicated damage/hit_speed. Those were DECLARED as pins, not forced.
+
+**Engine changes that had to land with the data:**
+* **E4 CLOSED.** `rolls` was derived as ("rolls" in flags AND ground_only), so decisions #5's Evo
+  Snowball air+ground flip would have DELETED the roll. MEASURED before: ['air','ground'] → rolls
+  False, roll_len 4.5→0.0, minions 0.0 / bats 0.0. After: rolls True, roll_len 4.0, minions 179.0,
+  bats 179.0. Both directions pinned by tests.
+* **Per-card `chain_tiles`** (decisions #6) — the owner's original "the chain doesn't work" report,
+  measured at last. ED swinging at A with B 3.5 tiles away: **arc 3.0 → A 533.6, B 0.0** (two
+  swings on A precisely because the hop failed); **arc 4.0 → A 266.8, B 266.8**. `_CHAIN_TILES` is
+  now a documented FALLBACK; electro_dragon + electro_dragon_evo = 4.0.
+* **`tower_dmg = float(db.tower_damage(base) or dmg)` was falsy-broken.** decisions #11 says Royal
+  Delivery cannot hit crown towers; DELETING its crown value took spell_tower_dmg **40 → 385**. The
+  KB now carries an explicit 0 and the fallback only fires on a MISSING value.
+* `_apply_pins` no longer lets the derived dps recompute clobber a key's own `dps` pin (pins apply
+  in (key, field) order, so "hit_speed" landed after "dps" — an alphabetical accident deciding an
+  adjudicated value). `_NO_SIGHT` in import_mechanics.py, because goblin_cage's dump "sight" 20 is
+  its LIFETIME (decisions #11) and CardDB.sight_range_tiles feeds the win-condition pull geometry.
+
+**Gates.** `stat_sweep.py --all` implemented (iterates the whole merged DB; `page_for` handles
+`_evo`/`_hero` and refuses to invent a title; EXPECTED derived from import_pins.json; the
+`if theirs and ours` truthiness skip fixed, which is what exposed eight spawner rows and
+tombstone_hero at +5115%): **174 cards, 0 mismatches, 38 known deviations, 21 unmapped, exit 0 in
+BOTH decks.** `crown_damage_audit.py` **RED → GREEN** — see the ⚠ below for what that took.
+parity_check PARITY OK. Real null-hitpoint gaps **0** (only princess_evo and minion_horde_evo carry
+a null cell and build_spec resolves both through the base card). Suites: icebow **799 OK (21
+skipped)**; hogeq **822 tests, 3 failures + 39 errors, same NAMES**.
+
+⚠⚠ **The crown-audit gate was unachievable as written, and that is the most useful thing this
+stage found.** The tool compared the wiki's vardefine against the wiki's OWN balance history — a
+statement about Fandom. We do not edit the wiki, so no amount of data application could turn it
+green. It now audits OUR KB against the wiki-derived percentage, with `--kb <path>` so the negative
+control is reproducible: pre-I5 configs **exit 1, 9 stale IN OUR KB**; post-I5 **exit 0**. The
+wiki-vs-wiki finding still prints as CONTEXT because it is the whole reason import_pins.json exists.
+
+⚠ **Open for the owner** (all in `research/sim_parity/conflicts.md`, "I5" section, with evidence):
+is decisions #7's floor() a KB-wide convention or a ruling on the ten ROUNDING rows? (a global flip
+moves **47 of 122** dps rows, 38 unadjudicated, and contradicts two approved `update` rows);
+barbarian_hut spawns.interval 15 vs 14; valkyrie_evo nado crown 37 vs ~18; goblinstein link damage
+107 vs 94; electro_spirit's own published 4.0 chain arc, left on the fallback because #6 rules the
+ED family. **RECORDED NOT FIXED:** `electro_dragon_evo.hits_per_attack: 12` is a MODEL error the
+engine reads as 3204 damage per swing — the largest overstatement of enemy strength in the sweep;
+it needs `late_chain_damage` + an unlimited-bounce flag (I7/I9). **Do not revert:** earthquake
+crown 49 and tesla 1182 are knowing owner overrides against the wiki; little_prince's Guardienne is
+232, not the 217 PLAN.md's I7 line still quotes. I6 note: elite_barbarians_evo is no longer null
+(1341/384/1.4 off its live stub).
+
 ---
 
 ## 4. The central problem, and where it stands
@@ -3775,6 +3917,20 @@ configured but **have never run** — BC has not been retrained since the soft-t
 
 | commit | fix | measured |
 |---|---|---|
+| `fc48814` | **I9 -- the engine had NO own-team spell path.** `_resolve_spell` had five branches and every one iterated `e.team != s.team`, so no spell could touch the caster's own army. `spell_targets: friendly` is the KB declaration; the friendly pass runs first, then a card that publishes damage still blasts (Rage: its Target column names who it BUFFS while its lead calls it "an area-damage, air-targeting spell") and a card that publishes none stops there (Clone). ONE rage model: the spell feeds the same `rage_zones` the Lumberjack's bottle does, which brought the published 1 s FALLOFF with it ("duration after leaving the radius", 4/3/2025). | **Rage**: a Knight's travel over 3.0 s **2.52 -> 3.18 tiles (+26.0%)** -- under +30% because the card's own 0.5 s deploy timer eats the first sixth. **Clone**: 4 skeletons in radius -> **4 bodies become 8**, each at 1 hp with `spec.elixir == 0` (load-bearing: the reward layer prices bodies at `spec.elixir` in eight places). **Heal Spirit**: an ally at 100 hp ends the field at **501.00 (+401.00 = 4 x 100.25)**, centred on the body it jumped ON, not on itself. **Mirror MEASURED and SKIPPED**: 5/1000 decks, **17/5947 deck weight = 0.29%**, and a HAND mechanic (last card, +1 elixir, +1 level, never in the opening hand), so the pool does not justify a second cost model. |
+| `8d6180d` | **I9 -- a zero-damage hit is not a hit: five spells woke the enemy King for free.** `_damage_tower` set `tw.active = True` on ANY call, including calls carrying 0 damage, and goblin_barrel / goblin_barrel_evo / goblin_barrel_decoy / royal_delivery / mirror all publish no Crown Tower damage because on those cards the BODIES do the work. Found while deciding whether Clone should fall through to the enemy pass -- it must not, and the general rule is the fix. | Casting each on the enemy King Tower, time until he activates and the chip on the board at that moment: **goblin_barrel 0.0 s at 0 chip -> 1.2 s at 372.9**; **goblin_barrel_evo 0.0 s -> 1.2 s**; **royal_delivery 0.0 s at 0 chip -> 1.2 s at 132.6**; **mirror 0.0 s -> never**. Royal Delivery is the sharpest: decisions.md #11 ruled it "cannot hit crown towers" and I5 discarded its crown value for that reason, which handed it a free activation instead. NOT affected, checked rather than assumed: Graveyard never reaches the call, and Void's crown figure comes from `zone_tiers`, so it is real damage. |
+| `a10d32c` | **I9 -- drills could NEVER present an evolution, which is the OPPOSITE of the brief's premise.** `DrillEnv` EXTENDS `SimMatchEnv`, so `evo_charge`/`slot_cycles` are inherited and work; but `DrillEnv._play_slot` removes a played slot from the cycle (deliberately), so a restricted-hand drill banks 1 play and never the 2 an Evolution needs. `Scenario.evo_charged` is the opt-in and DEFAULTS to match behaviour, because every recorded reference line was written against the base card. | **icebow 0 of 26 drills, hogeq 0 of 24** presented an evolution, against a match that first presents one after **9 plays**. With the flag on, **10 of 26 / 10 of 24** change -- the drills that deal an evo-capable card, named in the commit. TWO LATENT BUGS fixed with it: a drill naming an `<base>_evo` in `hand` was silently dealt the BASE (the identity a slot presents at charge 0), and `_compound_hand` was never cleared, so one compound episode's hand leaked into every later single-scenario drill in the same env. |
+| `d817cb1` | **I9 -- the perception TypeError does NOT fire: the DRIFT entry was the stale thing.** The brief and `parity_check`'s DRIFT list both said hogeq's `PerceptionLoop.enemy_tracks` raises TypeError on `with_base=True`, that train_rl's gate swallows it, and that the threat-gate memory fix is silently inert there. | MEASURED in BOTH decks against a real tracker: both signatures are `(self, now, with_base=False, max_age=None)` and both return `[(0.5, 0.6, 0.0, 0.12, 'hog_rider')]`. `git show main:` carries the same code -- the fix landed and only the COMMENT survived, which is its own bug because the DRIFT list is what the project reads to decide what still needs fixing. **declared-different 20 -> 18** (perception.py and replay_mine.py both converged), and the bare `except TypeError: pass` became `_memory_gate_inert`, which warns once and counts, so the path can never again be both taken and quiet. Regression test VERIFIED TO FAIL: dropping `with_base` turns it red with 2 failures + 4 errors. |
+| `2f7150d` | **I9 -- the chain was invisible BY CONSTRUCTION, so the debugger needed a RECORD, not a renderer.** A chain hop is created and consumed inside one `advance(dt)` call. `SimEngine.arc_events` + `ability_events` (the `splash_events` idiom), and sim_view draws arcs, ability activations, casts inside their activation delay, per-body ability state, LINGERING ZONES (not drawn at all before -- a Poison was an invisible area doing invisible damage), arming rage zones, the Goblins' banner, Goblinstein's antenna and link, and a `'` on a cloned body. | **ZERO frames** in 12 s where a `<base>_chain` projectile was alive, while the same run landed **192 / 960 / 1152 / 576 / 576** across the row -- the owner's original "the chain doesn't work" report was partly this. Drawing the arcs UNDER the bodies gave **0 changed pixels** (an arc joins two body centres), so they go over. 15 PIXEL tests: render, then assert the frame changed. |
+| `62f484e` | **I9 -- the base Barbarian Barrel's Barbarian, the one item I8 left open.** I8 fixed `_resolve_roll` to drop a rolling spell's `spawn_spec` and held back the data half because it changes 198 of 1000 pool decks (24.95% of deck weight). Its own row, `base_barrel_barbarian`, and NOT the hero's 716/192 -- reusing that would have been a 6.9% hitpoint buff nobody published. | A full deploy of the base card: **0 bodies -> 1 x base_barrel_barbarian at 670 hp**. Barbarian Barrel revid 437163 says it twice and its whole Strategy section is built on the body. Also verified here: **all four** I8 engine bugs landed AND pinned, with a negative control on the Hero Giant's stun/flight parallelism (moving the `flying_left` decay back below the stun early-out turns the test red). RECORDED not acted on: every spawned body with `elixir: null` is priced at **4 elixir** (barrel_barbarian, base_barrel_barbarian, magic_archer_decoy, soul_skeleton, guardienne alike) and the reward layer reads `spec.elixir` in eight places -- pool-wide, its own measured commit. |
+| `e40637d` | **I8 -- the 16 hero KB rows, the three-slot loadout, and THREE I4 IMPORT BUGS.** `build_spec` gains a `_hero` overlay mirroring `_evo`, so a hero row is a DELTA over its base card and the base's curated mechanics carry through. The 16/3/2026 loadout ("one Evolution, one Hero and one Wild") is implemented as three slots: Evolution unchanged from I3, Hero ALWAYS filled when the deck has a candidate, Wild = second evo / second hero / neither at 1/3 each (UNMEASURED choice, knobs `sim.wild_evo_prob` / `sim.wild_hero_prob`). | The scrape put the **TURRET's** vardefines on `musketeer_hero` (1536 hp / 140 dmg / 0.5 s -> 721 / 217 / 1.0 -- more than twice the card), the **TOMB QUEEN's** on `tombstone_hero` (4224 / 422 -> 529 / 0) and the **BARBARIAN's melee** on `barbarian_barrel_hero` (192 -> 232, so the hero barrel rolled for LESS than the base card). Slots, 6000 seeded draws: hero filled **4980 of 4988 (99.84%)**, wild **evo 32.8 / hero 34.7 / none 32.5** where both were legal, duplicate slot cards **0**, evo phantoms **0**. A first pass left 194 of 4982 (3.9%) hero-less because the Evolution slot took the deck's only hero-capable card. |
+| `e36a18a` | **I8 -- twelve hero ability shapes on I7's registry, all sixteen live heroes firing.** No parallel framework; four heroes needed no new engine path beyond their KB row. Built in MEASURED pool-weight order, which is NOT the order the brief gave: `buff_self` 38.6% > reroll+warp 29.5% > summon 28.4% > taunt+decoy 17.1% > throw 9.1% > flight 8.1% > zone_pulse 6.2% > levelup 4.6%. | Berserker **0.6->0.2 s, 102->167/hit, 3108 damage in 4 s**, and 1e6 damage into 896 hp leaves exactly **1.0** (published Minimum Hitpoints). Valkyrie **14 spin ticks x 97 = 1358 area / 679 crown**. Bowler shots at **6.6 / 8.5 / 10.4 -- EXACTLY the page's "3 shots in 7.3 s"**, which only reconciles if the stance pays one of its own hit-speeds first. Ice Golem **3 x 69 = the page's 207**, air and ground, **zero** crown damage. Giant **9.0 tiles horizontally, -135, 2 s stun, 2 s AIR**. Knight drags a **HOG RIDER** off the tower. Mini P.E.K.K.A. **+1/+2/+3/+5 levels** off the pancake bar. Mega Minion warps **across the whole board** to a 500-hp body past a 9000-hp one 1.8 tiles away, crown **312 -> 78 permanently**. ⚠ FOUR ENGINE FINDINGS: a stance that extends REACH is inert without SIGHT and PROJECTILE flight (**the Bowler fired ZERO shots** at his published 11.5); the Giant's stun and flight ran in **SERIES, 4 s from a published 2**; `_resolve_roll` never dropped a rolling spell's `spawn_spec`, so **the BASE Barbarian Barrel leaves no Barbarian at all** (recorded, fixed for the hero row only); `_late_spawns` ignored `ghost_life_s`. |
+| `f96acfa` | **I8 -- `support:` was INERT for weeks, and the audit only covered one of three slots.** Every meta deck carries a MEASURED tower troop from R4 battlelogs -- parsed, carried, validated, read by NOBODY -- while `eng.reset()` rolled one from a config weight table. `SimEngine.set_tower_troop` consumes it from `env.reset()`. `tools/evo_audit.py` now audits the whole loadout and exits 1 on a hero phantom or a cap violation too. | Opponent tower troop over 3000 seeded matches, **princess 54.6% -> 83.7%** against a pool MEASUREMENT of **90.5%**; all 284 declared-support matches in a 400-match probe fielded the named troop, **0 ignored**. The residual is the 765 of 1000 decks whose battlelog predates the R4 sweep -- their fallback weights give the princess 54.5% and are FLAGGED, not changed (they are the frozen eval benchmark's too). Audit: hero slot **REAL 841 / PHANTOM 0 / NONE 158 / UNFILLED 1**, all 16 heroes fielded, **0 cap violations**. One audit trap fixed: re-seeding per deck made the wild split read **43.9 / 30.0 / 26.1** -- an artefact of the seeding, not the model; one shared stream lands it on **34.2 / 33.2 / 32.5**. |
+| `1a746e6` | **I7 -- `ability_kind` dispatch, and RULING 5 WAS A LIVE BUG.** The engine answered "which ability does this card have" by truthiness on a shape-specific number (`ability_bomb_dmg > 0` = Explosive Escape, `ability_invis > 0` = Getaway Grenade): two cards, two numbers, no room for a third. `ability_kind` now NAMES the shape, `ABILITY_KINDS` dispatches, CardSpec carries 16 generic ability params. `champion_ability` also picked the OLDEST body -- `next()` over append-ordered `self.units` -- against ruling 5 and against Version_History_2025's "Only the most recent placed Champion has the ability". Ruling 7's elixir refund was absent entirely. | Two Mighty Miners at x=0.25 (older) and x=0.75 (newer): **before, the OLD body mirrored and a SPENT newest body fell back to it; after, the newest fires, the older keeps its own use, and a spent newest refuses at 0 elixir.** Refund: **10.0 -> 9.0 on activation -> 10.0 when the body dies inside the 1 s window.** Body order from a monotonic `Unit.deploy_seq` stamped in `__post_init__`, so every construction path is covered without touching a call site. icebow 799 -> 814. |
+| `3cb4fff` | **I7 -- the Electro Dragon chain was not uniform, and `hits_per_attack: 12` was a MODEL error.** The engine read the Evolution's 12 as twelve FULL hits. Its page publishes three separate columns for one attack: `dmg_hits` 3 (full hits), `dmg_11` (that damage), `late_dmg_11` 64 ("Damage after 5 chains"). Rulings 12 + 15 applied. | **One swing into 13 knights 3 tiles apart: 3204.0 (12 x 267, ALL stunned) -> 1151.9 (3 x 192 full + stun, then 9 x 63.99 with NO stun).** Ruling 15: `electro_dragon(_evo).damage` 267 -> **192**, dps 116 -> 83.478, four pins, `stat_sweep --all` exit 0. ⚠ 64 is NOT 192/3 -- it is PUBLISHED, and the wiki's own derivation is 192 x 0.67 (8/1/2025 "-33% after the first 3 chains") x 0.50 (2/3/2026 "chain damage -50%") = 64.3. Trap found: the COSMETIC arc projectile (damage 0) still lands and `_land_hit` re-applied the stun, so all 12 stayed stunned after the damage split was already right. |
+| `e6e317f` | **I7 -- the Boss Bandit's grenade was fired by the ENGINE below a rolled HP fraction, modelling a rule the game REMOVED** (History 8/7/2025: activatable twice "INDEPENDENT ON Boss Bandit's hitpoints"; conflicts.md C5). Replaced by `ScriptedBot._try_ability`, built as a FRAMEWORK keyed on the ability's SHAPE -- escape / defensive / offensive families, KB-overridable per card via `ability_ai:` -- because I8 adds ~16 hero kinds on top. | **Before: a chipped Boss Bandit vanished on her own with no decision anywhere. After: 2% HP for 20 s, 2 uses intact, 0 elixir spent unless something presses the button.** `ability_hp_frac` deleted outright, not left inert. Also fixed hogeq `env._ability_ready`: it masked the slot with `any(...)` over every body, so an OLDER champion lit up a slot the engine would then refuse. |
+| `07685ee` | **I7 -- Archer Queen / Golden Knight / Skeleton King, full fidelity.** AQ's attack buff is stated THREE ways on one page (+80% prose, "+180%" table, "to 180% from 200%" History); resolved by the page's own level-table formula, `Dps(dmg_11*1.80, atk_speed)`. GK gets all THREE ruling-10 terminators including the Crown-Tower stop. SK gets the soul bank with ruling 8. | AQ **5.2 shots cloaked vs 2.9 plain over the published 3.5 s (ratio 1.79)** and **0.75x movement**. GK **10 dashes x 335.0**; two bodies take exactly one dash each; a tower dash ends the chain with 8 unspent. SK **6 Skeletons at 0 souls, 16 at the cap**, and the summon survives his death. ⚠ TWO ENGINE DEFECTS FOUND: soft collision applied to a body IN FLIGHT (the GK's second dash converged on an asymptote 0.06 tiles short and never arrived -- one dash of ten, forever), and `_late_spawns` ringed a SINGLE body 1.25 tiles into +x, putting the SK's summons **4.75 tiles out against a published 3.5**. |
+| `9a7a660` | **I7 -- Little Prince / Monk / Goblinstein, and the completion gate.** All 8 champions declare a kind, reach a handler and fire in ENEMY hands through `_try_ability`. Guardienne is a real curated row and PERMANENT. Monk reflects projectiles per the page's own exclusion list. Goblinstein's link is a capsule between Doctor and Monster, with the antenna fallback. | Monk **1000 -> 350 damage taken (-65%)**; a reflected Musketeer shot lands on HER at source damage and 0 on him. Goblinstein **8 x 107 to troops, 8 x 23 to a crown tower**, no stun, and a body at the link's MIDPOINT (3 tiles from each endpoint) is hit -- which is what falsifies the two-circles reading. ⚠ THE BRIEF AND PLAN.md BOTH SAY Guardienne does 217; **it is 232** (I5 applied 217 x 1.07 for the 4/8/2026 +7% and warned in writing that I7 must not revert it). Off-by-one found: the active-effect tick fired BEFORE the expiry check, giving the link 9 shocks over a 4 s / 0.5 s window instead of 8. |
 | `(this)` | **The long-red `test_budget_caps_and_hysteresis_refills` was a STALE TEST, not a code bug — and it was masking regressions in the defensive-reward path.** It has been failing for days in the same path `threat_miss_idle` and `restraint_hold` live in, so the suite could not be trusted to catch anything there. `a925d88` deliberately changed the threat-response budget from a flat 2 to `max(1, min(threat_credit_budget, n_cards))`, because a flat 2 funded a SECOND credit for a second card thrown at a ONE-card threat — over-answering out-earned the cheapest sufficient answer, measured on `skeletons_kill_the_miner` at **+1.130 for the over-spending episodes against +0.556 for the passes**. The test fields a lone Knight and asserts two credits, which that change made unreachable by design. ⚠ I first misread the traceback and reported the FIRST assertion failing; it was the second — "no credit at all" and "only one credit" point at completely different causes. | Fixed by giving the fixture a real two-card push (`_lit_env(cards=2)`), which is what the change's own comment promised would "fund exactly what it funded before": **verified 1.0, 1.0, then 0.0 — funds exactly 2, caps at 2**. Rationale written into the fixture docstring so it is not "fixed" back. **icebow 625 tests OK (0 failures) — first green suite in days.** |
 | `(this)` | **THE REAL BLOCKER, after four wrong diagnoses: nine drills never produce a positive example, and one PAYS MORE FOR DOING NOTHING.** Fixing `--policy` (it had never worked) let me look at the trained policy instead of guessing. Findings, all measured: (1) the aggregate pass rate was a **bad metric** — it averages 28 drills that trade off, so `bow_defends_from_the_centre` reaching **94%** was hidden by others regressing; per-tier, compound is **31%** and foundational **7%**, i.e. the SIMPLEST drills are the hardest because a restricted hand makes them pure cell-precision tests. (2) **Nine of 28 drills produce ZERO passes in 60 exploratory episodes** — exactly the nine the trained policy scores 0% on. RL cannot learn from experience it never generates, so no mixing ratio, entropy schedule or truncation fix could ever have moved them. (3) Two drills have **negative** signal-to-noise (`knight_blocks_the_charge` −0.21, `knight_guards_the_bow` −0.48): passing pays LESS than failing. (4) On `nado_king_activation`, **timeout +0.24 > pass −0.28** — the reward actively teaches the policy to run the clock, which is why its pass rate CLIMBS to 32% under exploration then DECAYS to 22% as it learns. | Fixes shipped and verified: each drill's **reference cell is merged into the exploration prior** (before `doctrine_cells`' no-rule early return, since 8 of the 9 are DOCTRINE GAPs where the rule table has nothing), and drills get their **own exploration floor** (`ppo_drill_cell_floor` 0.75 vs the match's 0.15 — a drill exists to make a rare state common). Single-drill experiment: pass rate **16–17% flat → starts at 32%**. It still decays, because of (4). **OPEN DESIGN QUESTION for the owner: drills currently carry NO terminal reward of their own** — the stated principle was that a drill is scored by the match's own terms so the objective never changes. The evidence says that principle is what blocks them: the match reward does not value these interactions enough, and in at least one case values them negatively. Either each interaction's reward gets fixed individually (slow, real work — `spell_defence` was one), or drills carry a modest terminal bonus for success. |
 | `(this)` | **THE CELL HEAD WAS BEING HELD UNIFORM BY ITS OWN ENTROPY BONUS — it never learned a placement at all.** Three fixes had not moved the drill pass rate off the 16.7% random baseline. Loading the live checkpoint and looking at what it DOES settles it: **card distribution is healthy** (7 cards, 8–20% each, no collapse), but the **cell head's entropy is 8.36 of 8.37 max after 500 matches — identical to an untrained net**. It is not collapsed; it is PINNED at maximum entropy, and its concentrated argmax (28 of 432 cells on early decisions, 62% in three) is just noise in a flat distribution read consistently. **WHY:** the entropy bonus is per-head and the two are not comparable — card `0.02 × ln(10) = 0.046`/step vs cell `0.05 × ln(432) = 0.303`/step, **6.6× the pressure**, against drill advantages measured at +0.2 to +3. Staying uniform pays better than being right. The 0.05 was not arbitrary (the code comment records a collapse to 3 cells of 432 at 0.01) — it worked and over-corrected. Those are the two failure modes of a FIXED coefficient and the drills are unlearnable in either, so it now **anneals 0.05 → 0.008 over 3000 episodes**; the floor gives 0.049/step, matching the card head's 0.046, i.e. equal entropy pressure per head. | Also fixed: **`run.py drills --policy` had NEVER worked** — it imported `clashrl.policy`, which does not exist, and failed SOFT to "baseline + doctrine only", so the missing column looked like a choice. That diagnostic is what finally answered this, three rounds late. Trainer now prints the **STEP share** beside the episode share (`drills 23 (9% pass, 92% of eps, 39% of STEPS)`) — the two differ by an order of magnitude and only the second is what the optimiser sees. icebow 616 (1 network flake), hogeq at its 42 baseline |
@@ -3827,7 +3983,7 @@ configured but **have never run** — BC has not been retrained since the soft-t
 * Explosive Escape bomb **440 @L13** (user-supplied). No integer level-1 base gives exactly that;
   base 143 gives **441** = 366 at the KB's L11 reference, 484 @L14.
   **The blast radius 2.5 tiles is the one unsourced guess in the card** — worth measuring.
-* Mighty Miner ability: 1 elixir, **single use, no cooldown**.
+* Mighty Miner ability: 1 elixir, **single use, no cooldown**. (I7: every champion ability is now a KB `ability_kind` + generic params -- see `research/sim_parity/conflicts.md` I7 for the per-card evidence and the 5 in-game checks still open.)
 * Firecracker evo: `evo_cycles: 2`.
 
 ---

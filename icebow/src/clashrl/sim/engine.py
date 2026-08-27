@@ -30,7 +30,9 @@ team 0 = you (bottom/blue), team 1 = opponent (top/red).
 """
 from __future__ import annotations
 
+import itertools
 import math
+import warnings
 from dataclasses import dataclass, field, replace
 from typing import List, Optional
 
@@ -82,20 +84,49 @@ _TANK_RADIUS = 0.9        # collision radius (tiles) at/above which a unit count
 _PRINCESS_HALF = 1.5
 _KING_HALF = 2.0
 
-# EVO FIRECRACKER: her lingering sparks DO chip a Crown Tower -- "the small sparks connect to
-# the Crown Tower, resulting in massive damage if not addressed properly" -- but at a reduced
-# rate, the ordinary crown-damage discount every area effect pays. The wiki's own vardefines
-# give it exactly, and identically for both spark sizes at level 11:
+# EVO FIRECRACKER: her lingering sparks DO chip a Crown Tower -- "the small sparks connect to the
+# Crown Tower, resulting in massive damage if not addressed properly" -- but at a reduced rate, the
+# ordinary crown-damage discount every area effect pays. The wiki's own vardefines give it exactly,
+# and identically for both spark sizes at level 11:
 #     Big_dmg_11   48   Big_Crown_dmg_11   15
 #     Small_dmg_11 48   Small_Crown_dmg_11 15
-# 15 / 48 = 0.3125. Applied as a FRACTION of whatever per-tick damage the zone carries rather
-# than as a second absolute number, so it keeps tracking the card's level and any rebalance.
+# 15 / 48 = 0.3125. Applied as a FRACTION of whatever per-tick damage the zone carries rather than
+# as a second absolute number, so it keeps tracking the card's level and any future rebalance.
 _SPARK_CROWN_FRAC = 0.3125
 _TOWER_CLEAR = 0.15       # tiles of daylight left when rounding a tower's shoulder
 _RIVER = 0.5              # the board is symmetric about this now that anchors are tile-derived
-# MULTI-HIT geometry, in TILES. Neither is published by the wiki, so both are estimates: how far a
-# chain bolt will arc to its next target, and how far Firecracker's sparks spray from the impact.
+# MULTI-HIT geometry, in TILES: how far a chain bolt arcs to its next target, and how far
+# Firecracker's sparks spray from the impact.
+#
+# `_CHAIN_TILES` is now a FALLBACK, not the answer. It was introduced as an estimate with the note
+# "not published by the wiki" -- and the R2 sweep disproved that premise on three independent
+# pages (Electro Dragon, Electro Dragon/Evolution, Card Evolution) plus a fourth for the Electro
+# Spirit, all saying 4 tiles. decisions.md #6 makes the arc a PER-CARD KB field (`chain_tiles`),
+# because a single shared constant cannot be corrected for one card without silently moving every
+# other chain card with it. Cards that publish nothing still land here.
 _CHAIN_TILES = 3.0
+# SKELETON KING's soul bar: "with a maximum of 10 souls, he can summon 16 Skeletons" against a
+# floor of 6, so exactly +1 Skeleton per soul. The 6 and the 16 are published in the Soul
+# Summoning Attributes table ("Skeleton Count 6-16"); the per-soul rate is the arithmetic between
+# them and the page never prints it.
+_SOUL_CAP = 10
+# PENSIVE PROTECTION reflects "all incoming projectile-based ranged attacks", and the Monk page
+# then spends its Strategy section enumerating the attacks that are NOT projectiles. THAT LIST IS
+# THE RULE, and this is the one place it can live, because the exclusions are stated by CARD NAME
+# and nothing in a card's stats distinguishes an instant electric hit from a fired one:
+#   "Both the Inferno Dragon and Inferno Tower ... neither their beams count as projectiles"
+#   "Cards such as Tesla, Zappies, Electro Dragon and Electro Wizard will not take reflected
+#    damage, since their attacks are instant and not counted as projectiles"
+#   "Spirit cards cannot be reflected by the Monk, despite being projectiles when attacking"
+#    (+ History 12/12/2022, the Heal Spirit specifically)
+#   "The Fisherman's hook is fully stifled until the ability ends"
+# Evolutions inherit their base's physics, so each `_evo` is listed with its parent.
+_NO_REFLECT_BASES = frozenset({
+    "inferno_dragon", "inferno_dragon_evo", "inferno_tower",
+    "tesla", "tesla_evo", "zappies", "electro_dragon", "electro_dragon_evo", "electro_wizard",
+    "electro_spirit", "fire_spirit", "ice_spirit", "heal_spirit",
+    "fisherman",
+})
 _SPARK_TILES = 2.5
 _SKELETON_BASES = {"skeletons", "skeleton_army", "guards"}   # Evo Witch's Healing Bones triggers
 _SPLASH_R = 1.9           # splash radius, tiles
@@ -112,6 +143,12 @@ _LOG_BACK_SLOP = 1.0      # tiles BEHIND the cast point still caught by the corr
 # range to 1 tile (from 1.8 tiles)"), so it is the measured value of the nearest documented sibling
 # rather than a guess. Per-card values live in the KB as `knockback_tiles`.
 _KNOCKBACK_DEFAULT = 1.0
+# RAGE FALLOFF (I9). Seconds a body keeps the rage boost after leaving the zone. A PROPERTY OF THE
+# RAGE EFFECT, not of the card that laid it: the Rage page publishes the number ("decreased the
+# Rage's duration after leaving the radius to 1 second (from 2 seconds)", 4/3/2025) and says in the
+# same breath that the effect "is also the same as that spawned by the Lumberjack and the Santa Hog
+# Rider", so the Lumberjack's dropped bottle inherits it rather than needing a second constant.
+_RAGE_FALLOFF_S = 1.0
 
 
 @dataclass(slots=True)
@@ -119,7 +156,10 @@ class CardSpec:
     key: str
     base: str
     kind: str                 # troop | building | spell
-    elixir: int
+    elixir: float           # FLOAT since ruling 19: a spawned body is priced as its SHARE of the
+                            # parent activation (soul_skeleton = 3/16 of a 3-elixir full-charge
+                            # summon = 0.1875), which int() truncated to 0. Integer card costs are
+                            # unaffected -- 4 and 4.0 compare equal everywhere this is read.
     hp: float
     dps: float
     reach: float
@@ -135,7 +175,12 @@ class CardSpec:
     spell_radius: float       # spells only
     spell_dmg: float
     spell_tower_dmg: float
-    spell_delay: float        # Royal Delivery lands after a delay; Rocket ~instant
+    # PER-HIT damage to BUILDINGS, when a spell hits them harder than it hits troops. Earthquake is
+    # the reason this exists: 287 vs 84 at level 11 ("3.5 times damage to buildings"), which is the
+    # entire point of the card -- it is how a Hog deck deletes the Tesla/Cannon/Inferno that would
+    # otherwise stop its win condition. 0 = buildings take the ordinary spell_dmg.
+    spell_build_dmg: float = 0.0
+    spell_delay: float = 0.0  # Royal Delivery lands after a delay; Rocket ~instant
     rolls: bool = False       # a ROLLING spell (The Log): a forward corridor, not a point blast
     ground_only: bool = False # hits GROUND troops only (The Log -- no air)
     # DEPLOY / SURFACE BLAST: area damage the moment the body finishes appearing. Mega Knight "will
@@ -173,16 +218,84 @@ class CardSpec:
     # evidence that his base jump cannot hit a tower -- the upgrade is the AT ANY DISTANCE part,
     # which lifts the 3.5-5 tile band. He does jump crown towers in game.
     leap_towers: bool = False
-    # SELF-PRESERVATION ABILITY (Boss Bandit's "Getaway Grenade", 1 elixir): "get invisible for one
-    # second, then teleport 6 tiles behind her current spot", 3 s cooldown after the duration, and
-    # it "can only be activated twice". Modelled as an AUTOMATIC reaction rather than a player
-    # action: exposing it to the policy would need a whole new action type (and a retrain), while
-    # the opponents who actually field her do need to use it or she is strictly worse than she reads.
+    # ---- CHAMPION / HERO ABILITIES ------------------------------------------------------
+    # Shared bookkeeping for every ability, whichever shape it is. `ability_delay` is the
+    # ACTIVATION delay: the window between pressing the button and the effect resolving, which
+    # is also the window ruling 7's elixir refund covers.
     ability_cost: float = 0.0
     ability_uses: int = 0
     ability_cd: float = 0.0
+    ability_delay: float = 0.0
+    # WHICH SHAPE. Until I7 this was answered by TRUTHINESS on a shape-specific number --
+    # `ability_bomb_dmg > 0` meant Explosive Escape, `ability_invis > 0` meant Getaway Grenade.
+    # That does not extend past two cards: the 8 champions need 8 shapes and I8's heroes add
+    # ~16 more, and two cards whose numbers happened to overlap would have silently inherited
+    # each other's behaviour (a hero with a bomb AND a cloak was unrepresentable). `ability_kind`
+    # NAMES the shape, `ABILITY_KINDS` dispatches on it, and the parameters below are
+    # deliberately GENERIC so a new ability reuses them instead of adding a field per card.
+    ability_kind: str = ""
+    ability_dmg: float = 0.0            # the ability's OWN damage (GK dash 335, LP charge 256,
+                                        # Goblinstein link tick 107) -- never the body's swing
+    ability_crown_dmg: float = 0.0      # ...against crown towers, where it is published apart
+    ability_radius_tiles: float = 0.0   # area of effect (SK spawn circle 3.5, link radius 2.0)
+    ability_duration_s: float = 0.0     # how long the EFFECT runs (AQ 3.5, Monk 4, link 4)
+    ability_range_tiles: float = 0.0    # the ability's own reach (GK dash 5.5, LP charge 4)
+    ability_tick_s: float = 0.0         # cadence of a repeating sub-event (link 0.5, SK spawn 0.25)
+    ability_max_hits: int = 0           # cap on those repeats (GK: 10 dashes)
+    ability_speed_mult: float = 0.0     # ATTACK-speed multiplier while active (AQ 1.8)
+    ability_move_speed: float = 0.0     # MOVE speed in tiles/s while active (AQ 0.75, GK 2.0)
+    ability_spawn: Optional["CardSpec"] = None   # the body it summons, prebuilt (SK Skeleton,
+                                        # LP Guardienne) -- same idiom as `spawner_spec`
+    ability_spawn_count: int = 0        # how many (SK's floor of 6; souls add on top)
+    ability_shield_hp: float = 0.0      # Hero Knight's Triumphant Taunt shield (512 @ L11)
+    ability_heal: float = 0.0           # ABSOLUTE heal, level-scaled; no card uses it yet
+    ability_dmg_reduction: float = 0.0  # incoming damage negated while active (Monk 0.65)
+    ability_knock: float = 0.0          # tiles the ability shoves ground bodies (LP charge 2.5;
+                                        # Hero Giant's 9-tile Throwback Range)
+    ability_ai: tuple = ()              # KB-tunable opponent-AI knobs as sorted (key, value)
+                                        # pairs -- see ScriptedBot._try_ability
+    # ---- I8. Same rule as I7's sixteen: GENERIC shapes, never a field per card. Each one below
+    # either serves more than one hero or is the only way to hold a published number that the
+    # existing parameters cannot.
+    ability_hit_speed: float = 0.0      # SECONDS between hits while the ability is active. The
+                                        # hero pages publish an absolute ability Hit Speed
+                                        # (Berserker 0.2, Bowler 1.9) where the Archer Queen's
+                                        # page published a multiplier, so this holds the published
+                                        # figure and the engine derives the multiplier from it.
+    ability_min_hp: float = 0.0         # HP FLOOR while active (Berserker "Minimum Hitpoints 1")
+    ability_stun_s: float = 0.0         # stun the ability applies to what it hits (Giant hurl 2 s)
+    ability_slow_mult: float = 0.0      # move/attack multiplier this ability's slow imposes, and
+    ability_slow_s: float = 0.0         # how long. The Ice Golem's Snowstorm publishes its own
+                                        # pair (0.70 / 2 s) rather than using the engine-wide
+                                        # slow_factor + slow_duration.
+    ability_heal_frac: float = 0.0      # heal as a FRACTION (Mini P.E.K.K.A. 0.30 of max hp;
+                                        # Barbarian Barrel 0.50 of the reroll's own damage)
+    ability_tower_mult: float = 0.0     # crown-tower damage multiplier the ability LEAVES BEHIND
+                                        # (Mega Minion's permanent x0.25 after Wounding Warp)
+    # A CHARGING METER: seconds to fill one charge, seconds of progress one attack is worth, the
+    # cap, and what each filled charge buys. Mini P.E.K.K.A.'s pancake bar today.
+    ability_charge_s: float = 0.0
+    ability_charge_hit_s: float = 0.0
+    ability_max_charges: int = 0
+    ability_levels: tuple = ()          # levels gained, INDEXED BY filled charges (the page's own
+                                        # table: 0 bars -> +1, 1 -> +2, 2 -> +3, 3 -> +5)
+    # BOSS BANDIT's "Getaway Grenade" (kind `movement_flight`): "get invisible for one second,
+    # then teleport 6 tiles behind her current spot". Until I7 the ENGINE fired this itself below
+    # a rolled HP fraction -- a model of an HP-gated trigger the game REMOVED on 8/7/2025 ("can be
+    # activated a total of 2 times INDEPENDENT ON Boss Bandit's hitpoints"). It is a button now,
+    # and the opponent AI decides; see ScriptedBot._try_ability.
     ability_invis: float = 0.0
     ability_back: float = 0.0
+    # MIGHTY MINER's "Explosive Escape" (kind `bomb`): he mirrors to the opposite lane and leaves
+    # a fused bomb behind, so it needs a displacement that is a reflection rather than a nudge,
+    # plus a blast the nudge ability has no concept of.
+    ability_bomb_dmg: float = 0.0
+    ability_bomb_radius: float = 0.0
+    ability_bomb_knock: float = 0.0
+    # SELF-RECOIL, in tiles: the shooter shoves ITSELF backwards every time it fires. Not a
+    # knockback -- nothing is being hit, and it applies to the firer regardless of any knockback
+    # immunity. Three cards have it (Firecracker, Sparky, Super Archers); 0 = it does not recoil.
+    recoil: float = 0.0
     # PER-CARD SPLASH RADIUS (2026-08-14): splash used to be a bool + one flat _SPLASH_R for every
     # card. 0 = fall back to _SPLASH_R.
     splash_r: float = 0.0
@@ -226,8 +339,8 @@ class CardSpec:
     # -- and for Balloon and Giant Skeleton the death blast is most of what the card is for.
     death_dmg: float = 0.0
     death_radius: float = 0.0
-    # Whether this blast measures its radius to the target's hitbox EDGE rather than its
-    # centre. Set only on the FUSED bomb a death blast spawns -- see _death_blast.
+    # Whether this blast measures its radius to the target's hitbox EDGE rather than its centre.
+    # Set only on the FUSED bomb a death blast spawns -- see _death_blast / _resolve_spell.
     blast_edge: bool = False
     # Knockback carried by the DEATH blast alone, when it differs from the card's ordinary one.
     # The Bomb Tower is the case: its shots do not shove, only the bomb it drops when it dies
@@ -257,6 +370,13 @@ class CardSpec:
     attack_nado_r: float = 0.0   # EVO VALKYRIE: every swing spins up a 0.5 s whirlwind that
     attack_nado_s: float = 0.0   # pulls ground AND air toward her (5.5 tiles) and deals its
     attack_nado_dmg: float = 0.0 # damage spread over the duration -- the tornado vortex, reused
+    attack_nado_crown: float = 0.0   # ...and this much to a Crown Tower, where the card publishes
+                                 # a reduced figure (Hero Wizard's -64%). 0 = the same damage.
+    attack_nado_ability: bool = False  # I8: the whirlwind spins ONLY while the card's ability is
+                                 # active. Evo Valkyrie's is permanent; the Hero Wizard's fireballs
+                                 # "also create ... tornadoes" for the 5 s of Fiery Flight and not
+                                 # otherwise, and the page names Evo Valkyrie as the model, so it
+                                 # is the same mechanic behind a gate rather than a second one.
     zap_pulses: int = 0          # EVO ZAP: total pulses (3), ~1 s apart, ring GROWING by
     zap_step: float = 0.0        # zap_step tiles each pulse (2.5 -> 3.0 -> 3.5)
     kill_heal: float = 0.0       # EVO PEKKA: flat heal per troop/building KILL (12.5% = 470)...
@@ -312,6 +432,10 @@ class CardSpec:
     # Void (3 count-tiered hits over 4 s), Graveyard (timed edge spawns). One system.
     zone_s: float = 0.0
     zone_tick_s: float = 0.0
+    # Whether the field's FIRST tick lands at cast rather than one interval later. Poison ramps in,
+    # but an Earthquake's first wave hits as it lands -- and that second matters here, because the
+    # play is casting it as the Hog crosses so the building dies before it can do its work.
+    zone_first_tick_now: bool = False
     zone_move_slow: float = 0.0
     zone_tiers: tuple = ()        # Void: ((max_targets, dmg, crown_dmg), ...) per tick
     zone_spawn_n: int = 0         # Graveyard: "a single Skeleton ... every 0.5 seconds
@@ -360,6 +484,11 @@ class CardSpec:
     # (1.2s -> 0.8s -> 0.4s = 1x/1.5x/3x). ANY movement or displacement resets it.
     atk_ramp_per: int = 0
     atk_ramp_mults: tuple = ()
+    # LITTLE PRINCE, 4/8/2026: "will now maintain his charged-up Hit Speed for up to 0.3 seconds
+    # while moving". Seconds of CONTINUOUS movement the ramp survives before it resets. 0 = the
+    # base behaviour the 14/12/2023 maintenance break established ("fixed a bug where the Little
+    # Prince's hit speed would not reset after moving"), i.e. any step at all resets it.
+    ramp_move_grace: float = 0.0
     # ELIXIR PAID TO THE OPPONENT WHEN THIS UNIT DIES -- the Elixir Golem line's defining drawback
     # (Golem 1, each Golemite 0.5, each Blob 0.5 => up to 4 elixir back if the whole chain is
     # cleared, which is why a 3-elixir tank is not free value). Without it the sim modelled only
@@ -393,6 +522,46 @@ class CardSpec:
     # for all of them), so these cards were 2-10x too weak -- a point-blank Hunter should land 10 x 84.
     multi_kind: str = ""
     multi_hits: int = 0
+    # PER-CARD CHAIN ARC, in tiles. 0 = fall back to the module's `_CHAIN_TILES`. The global was
+    # introduced with the comment "not published by the wiki"; the R2 sweep showed that premise is
+    # FALSE (decisions.md #6), so the arc is a card fact like any other and belongs in the KB.
+    chain_tiles: float = 0.0
+    # ---- I9 FRIENDLY-TARGET SPELLS ------------------------------------------------------
+    # WHOSE side a spell's effects land on. Every spell in this engine had exactly one audience
+    # -- `_resolve_spell` only ever iterated `e.team != s.team` -- so no card could act on the
+    # caster's own army at all. "friendly" routes the spell through `_resolve_friendly_spell`
+    # FIRST; the ordinary enemy pass still runs afterwards when the card publishes damage, which
+    # is what Rage needs (its Target column names who it BUFFS while its own lead calls it "an
+    # area-damage, air-targeting spell") and what Clone must not have (it publishes none).
+    spell_targets: str = ""
+    # CLONE (Clone revid 436842): "spawns fragile duplicates of all troops within its area of
+    # effect BEHIND the originals ... each cloned unit has just 1 hitpoint, with buildings and
+    # existing clones not subject to the effect". Clone Shield Hitpoints 1 is its own published
+    # column: "Shields can be cloned if they are still on the original unit."
+    clone_hp: float = 0.0
+    clone_shield_hp: float = 0.0
+    clone_time_s: float = 0.0     # 0.5 s (History 12/6/2017, "from 0.8s")
+    # HEAL FIELD (Heal Spirit revid 437344): the kamikaze leap "creates a small glowing
+    # restoration field that heals allied troops nearby". Healing Attributes table: "4 pulses
+    # every 1 second", Time Between Pulses 0.25 s, Radius 2.5, Target Air & Ground; `heal_11`
+    # 100.25 per pulse. TROOPS ONLY -- "the healing has no effect on buildings" (Strategy).
+    heal_amount: float = 0.0
+    heal_pulses: int = 0
+    heal_tick_s: float = 0.0
+    heal_radius: float = 0.0
+    # LATE-CHAIN FALLOFF (decisions.md ruling 12, I7). A chain is not uniform: the Evolved Electro
+    # Dragon deals FULL damage WITH its stun for the first `chain_full_hits` bodies and a REDUCED
+    # damage with NO stun for every bounce after that. Both halves are published on
+    # Electro_Dragon_Evolution.wikitext as their own level-table columns -- `dmg_hits` (3) and
+    # `late_dmg_11` (64, headed "Damage after 5 chains").
+    #   chain_falloff    fraction of full damage a LATE bounce deals. 0 = no falloff, which is
+    #                    the base Electro Dragon and every other chain card: all hops are full.
+    #   chain_full_hits  how many bodies (INCLUDING the first) take the full hit. 0 = all of them.
+    # The RULE is stored, not the constant: the reduced number then follows whatever the card's
+    # damage turns out to be, which is exactly the failure mode `late_dmg_11` itself shows -- it
+    # sat at 64 across three revisions while `dmg_11` moved 192 -> 268 -> 267 above it.
+    chain_falloff: float = 0.0
+    chain_full_hits: int = 0
                               # this the sim let Miner chip towers at FULL damage -> king-snipe exploit.
     deploy_time: float = 1.0  # seconds before a freshly-placed unit can act (spells = 0)
     # WEAPON LOAD TIME: the wind-up between acquiring a target and the FIRST hit landing
@@ -404,6 +573,13 @@ class CardSpec:
     radius: float = 0.64      # collision radius, TILES (soft body-block)
     deploy_anywhere: bool = False   # KB flag: tunnels/drills to ANY tile (Miner, Goblin Drill) -- it does not
                                     # walk the lane, so it is placed straight onto the defender's tower
+    own_half_only: bool = False     # KB flag: a SPELL that is nonetheless placed like a troop, so the
+                                    # deploy clamp applies to it (RULING 18: Royal Delivery, which
+                                    # drops a Recruit rather than landing an effect). The inverse of
+                                    # `deploy_anywhere`, and it exists because "kind == spell" is
+                                    # otherwise the whole of the cast-anywhere rule -- see the
+                                    # `anywhere_ids` comment in sim/env.py for what that rule fixed
+                                    # and must keep fixing.
     slows: bool = False       # applies a SLOW on hit (Ice Wizard)
     stuns: bool = False       # applies a brief STUN (Zap / Tesla-evo pulse / Electro)
     freezes: bool = False     # applies a FREEZE -- a longer stun (Ice Spirit / Freeze)
@@ -464,6 +640,15 @@ class CardSpec:
     # Spawn this card's bodies ABREAST (one row) instead of the derived sqrt grid. See the swarm
     # formation block -- this changes SPLASH GEOMETRY, not just appearance.
     line_formation: bool = False
+    # SECOND ATTACK MODE, entered by DISTANCE (Three Musketeers, 3/11/2025 "Elite Musketeers").
+    # The card publishes two attribute rows -- Ranged Attack (Range 6, Air & Ground) and Melee
+    # Attack ("Melee: Long" = 1.6, Ground) -- over ONE body: "If enemy troops are close to them,
+    # they switch to being single-target, ground-targeting, melee, ground troops with the SAME
+    # hitpoints and very high damage, and switch back to their ranged form when enemies are far
+    # from them." So this is not a mixed squad (`components`) and not a separate card: it is the
+    # same unit swinging harder up close. 0 = the card has only one attack mode.
+    melee_dmg: float = 0.0    # per-hit damage in the close-quarters mode (level-scaled)
+    melee_reach: float = 0.0  # tiles, centre -> target EDGE: inside this the melee mode is used
 
     def __deepcopy__(self, memo):
         # SHARED ACROSS ENGINE FORKS ON PURPOSE. A spec is immutable in practice: every runtime
@@ -474,6 +659,34 @@ class CardSpec:
         # instance is semantically identical and removes most of that. Unit/Tower/engine state is
         # NOT given this hook -- forks must copy every mutable object exactly as before.
         return self
+
+
+# ROWS THAT ALREADY WARNED, so a warning is emitted once per (card, field) and not once per
+# build_spec call -- the counterfactual reward forks the engine several times per match.
+_SHADOW_WARNED: set = set()
+
+
+def _tiles_or(c: dict, key: str, default: float = 0.0, *, card: str = "") -> float:
+    """Read ``<key>_tiles``, falling back to ``<key>`` -- and never let the two disagree SILENTLY.
+
+    The `*_tiles` spelling wins, and that is how dark_prince's stale curated
+    `splash_radius_tiles: 1.25` shadowed the imported `splash_radius: 1.1` for as long as it did:
+    both numbers sat on the SAME ROW, the engine read one of them and every audit read the other,
+    so nothing ever disagreed with itself out loud. Precedence is deliberately unchanged -- a
+    curated override is supposed to win -- but a disagreement is now reported instead of passing
+    unnoticed. As of 2026-08-26 no row in either deck trips this: mortar (2.0) and wall_breakers
+    (1.5) carry both spellings and they agree.
+    """
+    a, b = c.get(key + "_tiles"), c.get(key)
+    if a and b and float(a) != float(b):
+        tag = (card, key)
+        if tag not in _SHADOW_WARNED:
+            _SHADOW_WARNED.add(tag)
+            warnings.warn(
+                "card %r: %s_tiles=%s SHADOWS %s=%s on the same row; the engine uses %s. "
+                "One of the two is stale -- delete it rather than leaving both."
+                % (card or "?", key, a, key, b, a), RuntimeWarning, stacklevel=2)
+    return float(a or b or default)
 
 
 _SHIELD_FRAC = 0.5   # shielded units get a shield pool ~ this x their (level-scaled) body HP. Coarse approximation:
@@ -499,8 +712,13 @@ _TOWER_SHOT = CardSpec(
 
 
 def build_spec(db, key: str, level: int = 11) -> CardSpec:
-    base = key[:-4] if key.endswith("_evo") else key
+    # A card has up to two VARIANT forms and both are `<base>_<suffix>` rows overlaid on the base
+    # card: `_evo` (I3) and, since I8, `_hero`. Resolving `base` here rather than treating the
+    # variant key as a card of its own is what lets every db accessor below (flags, sight, mass,
+    # collision, air-targeting) answer for the BODY, which a hero shares with its base card.
     is_evo = key.endswith("_evo")
+    is_hero = key.endswith("_hero")
+    base = key[:-4] if is_evo else (key[:-5] if is_hero else key)
     c = db.get(base) or {}
     if is_evo:
         # The import writes each evolution as its OWN `<base>_evo` row whose top-level fields ARE
@@ -510,19 +728,67 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         # `evolution` itself is excluded so a curated mechanics dict (our Knight/Tesla) still
         # applies through the overlay below.
         ev_row = db.get(key) or {}
+        # NO ROW => NO EVOLUTION, and say so. Without this guard the overlay below merged nothing
+        # and the function returned the BASE card wearing the evo's NAME -- a PHANTOM that every
+        # caller then treated as real. MEASURED 2026-08-26 (tools/evo_audit.py): 689 of the 1000
+        # meta decks fielded one, because ScriptedBot picked "the first deck card whose
+        # `<key>_evo` builds" and nothing ever failed to build, so it was always deck index 0.
+        # A curated `evolution:` block is the OTHER legitimate definition of an evolution (our
+        # Knight/Tesla mechanics dicts), so either one is enough -- but with neither, the key does
+        # not exist and the caller must be told rather than handed a lookalike.
+        if not ev_row and not isinstance(c.get("evolution"), dict):
+            raise KeyError(f"{key}: the KB defines no evolution for {base!r} (no `{key}` row and "
+                           f"no curated `evolution:` block)")
         if ev_row:
             c = {**c, **{k: v for k, v in ev_row.items()
                          if v is not None and k not in ("evolution", "base", "display", "rarity")}}
+    if is_hero:
+        # I8: a HERO is the same body with an ability bolted on. Its page publishes the whole
+        # attributes table but its `body_stat_deltas` are almost always "none stated", so the row
+        # is written as a DELTA over the base card and overlaid exactly like an evolution --
+        # which is also what makes the base card's curated mechanics (the Dark Prince's charge,
+        # the Balloon's death bomb, the Ice Golem's death slow) carry through instead of being
+        # silently dropped by a self-contained row.
+        hr_row = db.get(key) or {}
+        if not hr_row:
+            raise KeyError(f"{key}: the KB defines no hero form for {base!r} (no `{key}` row). "
+                           f"Only the 16 LIVE heroes have one; the 2 announced (7/9/2026) must "
+                           f"never be fielded.")
+        c = {**c, **{k: v for k, v in hr_row.items()
+                     if v is not None and k not in ("evolution", "base", "display", "rarity")}}
     flags = set(db.flags(base))
-    if is_evo:
-        flags |= set((db.get(key) or {}).get("flags") or ())   # evo-only flags (Evo Snowball ROLLS)
+    if is_evo or is_hero:
+        flags |= set((db.get(key) or {}).get("flags") or ())   # variant-only flags (Evo Snowball ROLLS)
     kind = c.get("kind", "troop")
-    elixir = int(c.get("elixir") or db.elixir(base) or 4)
+    # ELIXIR IS A FLOAT since ruling 19 (2026-08-27), and the widening is the ruling. A spawned
+    # BODY is priced as its share of what the parent activation was worth -- a Skeleton King's
+    # Skeleton is 3/16 of a 3-elixir full-charge summon, 0.1875 -- and `int()` truncated every such
+    # share to zero. Every consumer is a comparison or float arithmetic (`can_afford`, and the
+    # `spec.elixir` reads in the trade / counterfactual / threat-triage reward terms), so this is
+    # inert for the ~178 cards whose value is a published integer: 4 and 4.0 compare equal.
+    # THE `or` CHAIN ALSO HAD TO GO, and that is a latent-bug fix rather than a style change: a KB
+    # row declaring `elixir: 0` is FALSY, so it fell straight through to the base card and then to
+    # the default 4 -- the one value that cannot be expressed was the one I9's Clone needed, which
+    # is why the clone sets `elixir = 0` on the built SPEC instead. No shipped row carries 0 today,
+    # so nothing changes; the hole is closed before something falls in it.
+    # THE DEFAULT 4 IS STILL A GUESS, and a measured one: 25 KB keys carry no elixir and every one
+    # of them reads as 4 elixir of enemy investment. Ruling 19 prices three; the other 22 are in
+    # conflicts.md's owner checklist.
+    _elixir = c.get("elixir")
+    if _elixir is None:
+        _elixir = db.elixir(base)
+    elixir = float(_elixir) if _elixir is not None else 4.0
     hp = float(c.get("hitpoints") or 300)
     dmg = float(c.get("damage") or 0.0)
     hit = float(c.get("hit_speed") or 1.0)
     dps = float(c.get("dps") or (dmg / hit if hit else dmg))
-    tower_dmg = float(db.tower_damage(base) or dmg)
+    # `or dmg` was WRONG for a card that deals ZERO to crown towers -- 0 is falsy, so the fallback
+    # fired and handed it its FULL damage instead. Found by I5: decisions.md #11 rules that Royal
+    # Delivery "cannot hit crown towers", and DELETING its crown_tower_damage (the literal reading
+    # of "discard it entirely") took spell_tower_dmg from 40 to 385, the exact opposite of the
+    # ruling. A published 0 has to survive; only a MISSING value may fall back.
+    _td = db.tower_damage(base)
+    tower_dmg = float(dmg if _td is None else _td)
     reach = float(db.attack_range_tiles(base))                 # TILES, attacker centre -> target EDGE
     # Move speed: the wiki publishes an exact rating per card ("Very Fast (120)", 60 units = 1 tile/s),
     # imported as `speed_tiles`. The categorical bucket is only a fallback for cards that parse missed.
@@ -540,12 +806,41 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     spell_radius = float(c.get("radius_tiles") or (3.5 if base == "royal_delivery" else 2.9))
     spell_delay = 3.0 if base == "royal_delivery" else 0.4
     ground_only = kind == "spell" and c.get("attacks") == ["ground"]
-    # a ROLLING spell (The Log / Barbarian Barrel) = a forward ground-only CORRIDOR. This used to be
-    # derived as "has knockback AND ground_only", which COUPLED two independent facts: Barbarian
-    # Barrel still rolls but its pushback was REMOVED on 3/9/2018, so it was being modelled as a
-    # POINT BLAST, and adding/removing a knockback flag silently changed whether a spell rolled.
-    rolls = kind == "spell" and "rolls" in flags and ground_only
+    # a ROLLING spell (The Log / Barbarian Barrel / Evo Snowball) = a forward CORRIDOR. The
+    # derivation has now been decoupled TWICE, from two different unrelated facts:
+    #   * "has knockback" (fixed earlier): Barbarian Barrel still rolls but its pushback was
+    #     REMOVED on 3/9/2018, so it was modelled as a POINT BLAST, and adding or removing a
+    #     knockback flag silently changed whether a spell rolled at all;
+    #   * "AND ground_only" (conflicts.md E4, fixed here): whether a corridor exists is not the
+    #     same question as what it can damage. decisions.md #5 rules that the Evo Giant Snowball
+    #     hits AIR and ground, and MEASURED before the fix, flipping only its `attacks` list took
+    #     roll_len 4.5 -> 0.0 and turned the roll off -- the one-line data fix would have deleted
+    #     the card's whole mechanic. `ground_only` still decides what the corridor HURTS
+    #     (_resolve_roll skips flying bodies when it is set) and Snow Bowling still only CARRIES
+    #     ground bodies, which is what the page describes.
+    rolls = kind == "spell" and "rolls" in flags
     pulls = kind == "spell" and "pull" in flags               # Tornado: an active pulling vortex
+    # ---- I9: THE OWN-TEAM AUDIENCE -------------------------------------------------------
+    # `spell_targets` is stated by the KB and by nothing else. It is NOT derived from `attacks`
+    # or from the wiki's Target column: that column is exactly what mis-imported Rage as
+    # attacks:['buildings'] (I5), because "Friendly Troops & Buildings" names who a spell BUFFS
+    # and the schema's `attacks` names what it HURTS. Two different questions, two fields.
+    spell_targets = str(c.get("spell_targets") or "")
+    # ONE RAGE MODEL. The Lumberjack's dropped bottle already fed `rage_zones` through
+    # `drops_rage`; the Rage SPELL publishes the same four quantities in its own attributes
+    # table (Radius 3 / Deploy Time 0.5 sec / Duration 4.5 sec / Boost +30%) and its lead says
+    # the effect "is also the same as that spawned by the Lumberjack". So a buff spell fills the
+    # same four fields instead of getting a second mechanism -- `_rage_mult` reads `rage_zones`
+    # and does not care which of the two filled it.
+    _rage = dict(c.get("drops_rage") or {})
+    if kind == "spell" and float(c.get("boost") or 0.0) > 0.0:
+        _rage.setdefault("radius_tiles", spell_radius)
+        _rage.setdefault("duration_s", float(c.get("duration_s") or 0.0))
+        _rage.setdefault("boost", float(c.get("boost") or 0.0))
+        # The 0.5 s "Deploy Time" of a spell IS its arm delay (12/12/2022 "added a 0.5 second
+        # deploy timer to Rage"); `spell_delay` above is the throw, which is a separate wait.
+        _rage.setdefault("delay_s", float(c.get("deploy_time") or 0.0))
+    _heal = dict(c.get("heal_ability") or {})
     # PUSHBACK RANGE, sourced per card from the wiki's balance history rather than one constant:
     # The Log 0.7 (7/2/2023, from 1), Giant Snowball 1.8 (6/9/2021, from 1.5), Fireball 1.0
     # (2/8/2022, from 1.8), Barbarian Barrel 0 (REMOVED 3/9/2018). Arrows and Zap publish no
@@ -631,6 +926,45 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
             spawner_spec = build_spec(db, spw["unit"], level)
         except Exception:                                     # noqa: BLE001 - unknown key: not a spawner
             spawner_spec = None
+    # ABILITY SUMMONS (I7). Same idiom as `spawner_spec`: the body an ABILITY summons is resolved
+    # once here rather than looked up mid-match. `ability_spawn_unit` names a real KB row (the
+    # Skeleton King's clone-variant Skeleton, the Little Prince's Guardienne are both curated
+    # rows of their own), so the summoned body carries real collision/mass/targeting instead of
+    # a `replace()` guess wearing the champion's own chassis.
+    ability_kind = str(c.get("ability_kind") or "")
+    ability_spawn = None
+    _asu = c.get("ability_spawn_unit")
+    if ability_kind and _asu and _asu != base:
+        try:
+            ability_spawn = build_spec(db, str(_asu), level)
+        except Exception:                                     # noqa: BLE001 - unknown key: no summon
+            ability_spawn = None
+    # A SPELL'S ABILITY BUTTON BELONGS TO THE BODY IT LEAVES BEHIND (I8). The Hero Barbarian
+    # Barrel is the only card in the game whose hero form is a SPELL, and a spell has no body to
+    # press a button from: `champion_ability` selects the newest living UNIT with an
+    # `ability_kind`, and a `_Spell` is never one. So a spell hands its whole ability block to the
+    # troop it drops -- the Barbarian is who Rowdy Reroll heals and who the second roll starts
+    # from, which is exactly what the page describes. Stated as a rule rather than a card check so
+    # any future spell-hero inherits it.
+    if ability_kind and kind == "spell" and spawn_spec is not None:
+        spawn_spec = replace(
+            spawn_spec, ability_kind=ability_kind,
+            ability_cost=float(c.get("ability_cost") or 0.0),
+            ability_uses=int(c.get("ability_uses") or 0),
+            ability_cd=float(c.get("ability_cooldown_s") or 0.0),
+            ability_delay=float(c.get("ability_delay_s") or 0.0),
+            ability_dmg=_lv.scale(float(c.get("ability_damage") or 0.0), level),
+            ability_crown_dmg=_lv.scale(float(c.get("ability_crown_tower_damage") or 0.0), level),
+            ability_range_tiles=float(c.get("ability_range_tiles") or 0.0),
+            ability_radius_tiles=float(c.get("ability_radius_tiles") or 0.0),
+            ability_heal_frac=float(c.get("ability_heal_frac") or 0.0),
+            ability_ai=(tuple(sorted((str(k), v) for k, v in c["ability_ai"].items()))
+                        if isinstance(c.get("ability_ai"), dict) else ()))
+        ability_kind = ""                 # ...and the spell itself keeps none of it
+    # KB-TUNABLE OPPONENT AI. A tuple of pairs rather than a dict so the spec stays copyable by
+    # `replace()` without sharing mutable state between every body of the card.
+    _aai = c.get("ability_ai")
+    ability_ai = tuple(sorted((str(k), v) for k, v in _aai.items())) if isinstance(_aai, dict) else ()
     spec = CardSpec(
         key=key, base=base, kind=kind, elixir=elixir, hp=hp, dps=dps, reach=reach, speed=speed,
         line_formation=line_formation,
@@ -639,15 +973,24 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         # splash: the stats import OR the curated flag. Testing only db.has_splash silently
         # single-targeted witch (flag curated but unread) and every flag-only splash troop.
         splash=db.has_splash(base) or ("splash" in set(db.flags(base))),
-        splash_r=float(c.get("splash_radius_tiles") or c.get("splash_radius") or 0.0),
+        splash_r=_tiles_or(c, "splash_radius", card=key),
         reflect_dmg=float(c.get("reflect_damage") or 0.0) * sc,
         reflect_r=float(c.get("reflect_radius_tiles") or 0.0),
         reflect_stun=float(c.get("reflect_stun_s") or 0.0),
         building_only=building_only, siege=siege,
         deploy_anywhere=("deploy_anywhere" in flags),
+        own_half_only=("own_half_only" in flags),
         kamikaze=("kamikaze" in flags or bool(db.is_kamikaze(base))), lifetime=lifetime,
         spell_radius=spell_radius, spell_dmg=dmg,
         spell_tower_dmg=tower_dmg, spell_delay=spell_delay,
+        spell_targets=spell_targets,
+        clone_hp=float(c.get("clone_hitpoints") or 0.0),
+        clone_shield_hp=float(c.get("clone_shield_hitpoints") or 0.0),
+        clone_time_s=float(c.get("cloning_time_s") or 0.0),
+        heal_amount=float(_heal.get("heal_per_pulse") or 0.0) * sc,
+        heal_pulses=int(_heal.get("pulses") or 0),
+        heal_tick_s=float(_heal.get("pulse_interval_s") or 0.0),
+        heal_radius=float(_heal.get("radius_tiles") or 0.0),
         rolls=rolls, ground_only=ground_only,
         # PUBLISHED pushback range per card (KB `knockback_tiles`), falling back to the nearest
         # documented sibling for a card that has the effect with no stated range. The old code hard-
@@ -680,10 +1023,10 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         shield_hp=(float(db.shield_hp(base)) * sc if db.shield_hp(base)
                    else (hp * _SHIELD_FRAC if "shield" in flags else 0.0)),
         death_dmg=float(c.get("death_damage") or 0.0) * sc,
-        rage_r=float((c.get("drops_rage") or {}).get("radius_tiles") or 0.0),
-        rage_dur=float((c.get("drops_rage") or {}).get("duration_s") or 0.0),
-        rage_boost=float((c.get("drops_rage") or {}).get("boost") or 0.0),
-        rage_delay=float((c.get("drops_rage") or {}).get("delay_s") or 0.0),
+        rage_r=float(_rage.get("radius_tiles") or 0.0),
+        rage_dur=float(_rage.get("duration_s") or 0.0),
+        rage_boost=float(_rage.get("boost") or 0.0),
+        rage_delay=float(_rage.get("delay_s") or 0.0),
         egg_hatch=float((c.get("egg") or {}).get("hatch_s") or 0.0),
         egg_frac=float((c.get("egg") or {}).get("reborn_frac") or 0.0),
         recoil_dmg=float(c.get("recoil_damage") or 0.0) * sc,
@@ -696,6 +1039,8 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         attack_nado_r=float(c.get("attack_nado_radius_tiles") or 0.0),
         attack_nado_s=float(c.get("attack_nado_duration_s") or 0.0),
         attack_nado_dmg=float(c.get("attack_nado_damage") or 0.0) * sc,
+        attack_nado_crown=float(c.get("attack_nado_crown_damage") or 0.0) * sc,
+        attack_nado_ability=bool(c.get("attack_nado_ability")),
         zap_pulses=int(c.get("zap_pulses") or 0),
         zap_step=float(c.get("zap_radius_step_tiles") or 0.0),
         kill_heal=float(c.get("kill_heal") or 0.0) * sc,
@@ -704,6 +1049,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         hit_heal=float(c.get("hit_heal") or 0.0) * sc,
         atk_ramp_per=int((c.get("attack_ramp") or {}).get("per_stage") or 0),
         atk_ramp_mults=tuple(float(m) for m in (c.get("attack_ramp") or {}).get("mults") or ()),
+        ramp_move_grace=float(c.get("ramp_move_grace_s") or 0.0),
         sniper_shots=int(c.get("sniper_shots") or 0),
         sniper_mult=float(c.get("sniper_mult") or 0.0),
         power_mult=float(c.get("power_mult") or 0.0),
@@ -739,6 +1085,8 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         poison_s=float(c.get("poison_s") or 0.0),
         min_range=float(c.get("min_range_tiles") or 0.0),
         top_n_targets=int(c.get("top_n_targets") or 0),
+        spell_build_dmg=_lv.scale(float(c.get("build_damage") or 0.0), level),
+        zone_first_tick_now=bool(c.get("zone_first_tick_now")),
         zone_s=float(c.get("zone_s") or 0.0),
         zone_tick_s=float(c.get("zone_tick_s") or 0.0),
         zone_move_slow=float(c.get("zone_move_slow") or 0.0),
@@ -796,6 +1144,49 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         ability_cd=float(c.get("ability_cooldown_s") or 0.0),
         ability_invis=float(c.get("ability_invis_s") or 0.0),
         ability_back=float(c.get("ability_back_tiles") or 0.0),
+        # Bomb damage is a level-scaled stat like any other, so it goes through scale() rather than
+        # the flat `sc` ratio -- that is what reproduces the game's own rounding off the level table.
+        ability_bomb_dmg=_lv.scale(float(c.get("ability_bomb_damage") or 0.0), level),
+        recoil=float(c.get("recoil_tiles") or 0.0),
+        ability_bomb_radius=float(c.get("ability_bomb_radius") or 0.0),
+        ability_bomb_knock=float(c.get("ability_bomb_knockback") or 0.0),
+        ability_delay=float(c.get("ability_delay_s") or 0.0),
+        # ---- the generic ability parameters (I7). Every one is read off a NAMED KB field, so
+        # a card without an `ability_kind` gets nothing and a card with one says exactly which
+        # numbers it is using. Damage-shaped values scale with level; geometry and timing do not.
+        ability_kind=ability_kind,
+        ability_dmg=_lv.scale(float(c.get("ability_damage") or 0.0), level),
+        ability_crown_dmg=_lv.scale(float(c.get("ability_crown_tower_damage") or 0.0), level),
+        ability_radius_tiles=float(c.get("ability_radius_tiles") or 0.0),
+        ability_duration_s=float(c.get("ability_duration_s") or 0.0),
+        ability_range_tiles=float(c.get("ability_range_tiles") or 0.0),
+        ability_tick_s=float(c.get("ability_tick_s") or 0.0),
+        ability_max_hits=int(c.get("ability_max_hits") or 0),
+        ability_speed_mult=float(c.get("ability_attack_speed_boost") or 0.0),
+        ability_move_speed=float(c.get("ability_move_speed_tiles") or 0.0),
+        ability_spawn=ability_spawn,
+        ability_spawn_count=int(c.get("ability_spawn_count") or 0),
+        ability_shield_hp=_lv.scale(float(c.get("ability_shield_hp") or 0.0), level),
+        ability_heal=_lv.scale(float(c.get("ability_heal") or 0.0), level),
+        # ---- I8 generics. Timing and geometry never scale with level; damage-shaped values do,
+        # and the only one here (`ability_min_hp`) is a published FLOOR of 1 hitpoint, which the
+        # Berserker's page states as a rule rather than a level-table column -- so it does not.
+        ability_hit_speed=float(c.get("ability_hit_speed_s") or 0.0),
+        ability_min_hp=float(c.get("ability_min_hp") or 0.0),
+        ability_stun_s=float(c.get("ability_stun_s") or 0.0),
+        ability_slow_mult=float(c.get("ability_slow_mult") or 0.0),
+        ability_slow_s=float(c.get("ability_slow_s") or 0.0),
+        ability_heal_frac=float(c.get("ability_heal_frac") or 0.0),
+        ability_tower_mult=float(c.get("ability_tower_mult") or 0.0),
+        ability_charge_s=float(c.get("ability_charge_s") or 0.0),
+        ability_charge_hit_s=float(c.get("ability_charge_hit_s") or 0.0),
+        ability_max_charges=int(c.get("ability_max_charges") or 0),
+        ability_levels=tuple(int(v) for v in (c.get("ability_levels") or ())),
+        # Published as a NEGATIVE percentage on the Monk's page ("Damage Reduced -65%"); the
+        # engine wants a positive fraction of damage negated, like Evo Knight's.
+        ability_dmg_reduction=abs(float(c.get("ability_damage_reduction") or 0.0)) / 100.0,
+        ability_knock=float(c.get("ability_knockback_tiles") or 0.0),
+        ability_ai=ability_ai,
         # Most death-damage cards publish a splash radius; a few (Ice Golem) publish the damage but
         # not the radius, and a 0 radius would silently make the blast inert. 2.0 tiles is the modal
         # published value (the range is 1.5-3.0) -- an APPROXIMATION, not a sourced number.
@@ -812,6 +1203,9 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         bounce_tiles=float(c.get("bounce_tiles") or 0.0),
         multi_kind=str((db.get(base) or {}).get("multi") or ""),
         multi_hits=int(c.get("hits_per_attack") or 0),
+        chain_tiles=float(c.get("chain_tiles") or 0.0),
+        chain_falloff=float(c.get("chain_falloff_frac") or 0.0),
+        chain_full_hits=int(c.get("chain_full_hits") or 0),
         damage_reduction=dmg_reduc,
         pulls=pulls,
         pull_radius=(_TORNADO_RADIUS if pulls else 0.0),
@@ -831,6 +1225,8 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         hook_max=float(c.get("hook_max_tiles") or 0.0),
         hook_time=float(c.get("hook_time_s") or 0.0),
         hook_speed=float(c.get("hook_speed_tiles") or 0.0),
+        melee_dmg=_lv.scale(float(c.get("melee_damage") or 0.0), level),
+        melee_reach=float(c.get("melee_range_tiles") or 0.0),
         proj_pierce=bool(proj.get("pierce")))
     # MIXED SQUADS. Each component is the SAME card with its own body swapped in, so it inherits
     # everything the wiki publishes once for the whole card (elixir, splash, collision radius, the
@@ -876,10 +1272,24 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
                 # A component never nests further, and its shield is its own body's -- a flat
                 # fraction of the parent's HP would hand the Rascal girls the boy's shield.
                 components=(),
+                # ONE COMPONENT OWNS THE ABILITY, and it is the FIRST -- the KB's component list
+                # is the page's own order, and every champion page puts the ability's owner
+                # first (Goblinstein: the Doctor, who "is the specific Champion", then Monster).
+                # Without this every component inherits `ability_kind` through `replace` and the
+                # Monster becomes a second champion body -- which would then win ruling 5's
+                # newest-body selection about half the time and fire the Doctor's ability off
+                # the wrong body.
+                ability_kind=(ability_kind if ci == 0 else ""),
                 shield_hp=(c_hp * _SHIELD_FRAC if "shield" in flags else 0.0)))
         if subs:
             spec = replace(spec, components=tuple(subs))
     return spec
+
+
+# MONOTONIC BODY ORDER. Bumped once per Unit construction (see Unit.__post_init__ and ruling 5).
+# A plain counter rather than a timestamp because two bodies CAN be created in the same tick and
+# "most recently placed" still has to be a total order.
+_UNIT_SEQ = itertools.count(1)
 
 
 @dataclass(slots=True)
@@ -909,6 +1319,7 @@ class Unit:
     rage_self_left: float = 0.0  # EVO BARBARIANS: seconds of self-rage left (refreshed per swing)
     mid_drop_done: bool = False  # EVO SKEL BARREL: the 75%-hp barrel has been spent
     ramp_shots: int = 0          # LITTLE PRINCE: attacks landed since he last moved/was displaced
+    ramp_move_t: float = 0.0     # ...and seconds of CONTINUOUS movement since, against ramp_move_grace
     sniper_left: int = 0         # EVO MUSKETEER: infinite-range rounds remaining
     javelin_left: float = 0.0    # EVO E-BARBS: cooldown until the next spear
     net_left: float = 0.0        # EVO HUNTER: cooldown until the next net
@@ -942,8 +1353,50 @@ class Unit:
     invis_left: float = 0.0      # seconds of ability invisibility left (untargetable + immune)
     ability_left: int = -1       # activations remaining (-1 = not initialised from the spec yet)
     ability_cd_left: float = 0.0  # seconds until the ability can be used again
-    ability_hp_frac: float = 0.0  # HP fraction that triggers the next ability use -- ROLLED per unit
-                                  # (and re-rolled lower after each use) so the trigger timing varies
+    # RULING 5 (owner, in-game; corroborated by Version_History_2025 "2025 Quarter 3 Update
+    # (29/9/2025) -- Champion Rework": "Only the most recent placed Champion has the ability").
+    # Two bodies of one champion CAN coexist, and the button drives the NEWEST. That needs a
+    # total order over bodies, and `self.units` cannot supply it: it is append-ordered, so
+    # `next(...)` over it finds the OLDEST. Stamped in __post_init__ from a module counter so
+    # EVERY construction path is covered -- engine deploys, spawner output, death spawns and the
+    # hand-placed bodies the bare-engine tests build -- without touching a single call site.
+    deploy_seq: int = 0
+    # ACTIVE ABILITY EFFECT (I7). One timer and one cadence, shared by every kind that runs for a
+    # while: the Archer Queen's cloak, the Monk's reflection, Goblinstein's link.
+    ability_active_s: float = 0.0
+    ability_tick_left: float = 0.0
+    # ---- I8 hero-ability state. Four fields, each shared by more than one kind.
+    ability_hits: int = 0        # sub-events this activation has spent: the Ice Golem's 3 blizzard
+                                 # pulses, the Hero Magic Archer's 3 triple-shot arrows
+    cook_s: float = 0.0          # MINI P.E.K.K.A.'s pancake bar, in SECONDS of progress (22 s per
+                                 # meter, +10 s per attack) -- one clock rather than a meter count,
+                                 # because the page's two accrual rules are both stated in seconds
+    flying_left: float = 0.0     # counts as AIR TRANSPORT for this long. Two heroes need exactly
+                                 # this and nothing more: the Hero Wizard while Fiery Flight runs,
+                                 # and whoever the Hero Giant has thrown ("untargetable by
+                                 # ground-targeting troops and the Earthquake, but can still take
+                                 # damage from other spells" -- which is what being AIR already
+                                 # means here, so it is one field, not a new immunity class)
+    base_spec: object = None     # the spec this body had before an ability SWAPPED it (the
+                                 # Berserker's and Hero Bowler's stances). Swapping the whole spec
+                                 # rather than threading an override through the attack path is
+                                 # what makes a stance change damage, cadence, reach AND crown
+                                 # value at once, through the code that already reads them.
+    taunt_ref: object = None     # HERO KNIGHT: the body Triumphant Taunt locked me onto. It
+                                 # outlives the 5 s window -- "enemy troops and buildings will
+                                 # still target him afterwards until he is defeated" -- so it is a
+                                 # reference that clears on HIS death, not a timer
+    souls: int = 0               # SKELETON KING: banked troop deaths (cap 10), +1 Skeleton each
+    # GOLDEN KNIGHT's dash chain. `dash_hit` is a TUPLE of id()s -- ruling 10 / the page's "He
+    # cannot dash into the same troop per ability use" -- rebuilt rather than mutated so a
+    # dataclass with __slots__ needs no mutable default.
+    dash_left: int = 0
+    dash_hit: tuple = ()
+    dash_go: bool = False
+    dash_tx: float = 0.0
+    dash_ty: float = 0.0
+    dash_time_left: float = 0.0
+    dash_ref: object = None
     spawn_cd: float = 0.0        # time until this spawner's next production tick
     focus_time: float = 0.0      # seconds locked on the CURRENT target -- drives ramp-up damage
     slow_mult: float = 1.0       # movement/attack multiplier from whatever slowed this unit
@@ -969,9 +1422,22 @@ class Unit:
     cursed_by: int = -1          # team that cursed this unit (-1 = none)
     curse_level: int = 11        # level to use for the spawned Mother Witch Hog
     fisherman_slowed: bool = False
+    # I9 CLONE: this body was made by the Clone spell. Three published rules read it -- "existing
+    # clones not subject to the effect", "any heroic troop can be cloned, but only the non-cloned
+    # one will activate its ability", and the Skeleton King's own Skeletons "cannot be cloned as
+    # they are considered cloned troops themselves" (Clone, revid 436842).
+    cloned: bool = False
+    # I9 RAGE FALLOFF: seconds of rage still owed after LEAVING the zone, and the boost it carries.
+    # "added a falloff effect to Rage, causing troops to lose the bonus if they are out of its
+    # effect for 2 seconds" (29/2/2016), cut to 1 second on 4/3/2025. Without it a 3-tile bubble
+    # buffs a marching push only on the ticks it happens to be standing inside.
+    rage_left: float = 0.0
+    rage_boost: float = 0.0
 
     def __post_init__(self):
         self.shield_left = self.spec.shield_hp
+        if not self.deploy_seq:
+            self.deploy_seq = next(_UNIT_SEQ)
 
 
 @dataclass(slots=True)
@@ -1041,8 +1507,11 @@ class _Zone:
     def __init__(self, team: int, x: float, y: float, spec: CardSpec, left: float):
         self.team, self.x, self.y, self.spec, self.left = team, x, y, spec, left
         self.tick_in = spec.zone_tick_s if spec.zone_tick_s > 0.0 else (left + 1.0)
+        if spec.zone_first_tick_now and spec.zone_tick_s > 0.0:
+            self.tick_in = 0.0                    # Earthquake: wave one lands with the spell
         self.age = 0.0
         self.spawned = 0
+        self.healed = 0               # I9: heal pulses SPENT (the Heal Spirit's published 4)
 
 
 @dataclass(slots=True)
@@ -1086,9 +1555,30 @@ class Projectile:
     oy: float = 0.0
     returning: bool = False    # on the return leg (Executioner's axe hits again on the way back)
     bounces_left: int = 0      # EVO BOMBER: area blasts still to chain past this impact (2.5t apart)
-    trail_next: float = 0.75   # EVO FC: tiles of flight until the next lingering spark zone drops
-    trail_dmg: float = 0.0     # EVO FC: per-0.25s tick damage of the zones THIS shot drops
-                               # (carrier = large spark 192 dps; shrapnel = small 60 dps; 0 = none)
+    # EVO FC: per-0.25s tick damage of the ONE lingering spark zone this shot leaves WHERE ITS
+    # FLIGHT ENDS -- the carrier drops a large zone on the target it hit, each shrapnel bolt drops a
+    # small one at the end of its run. It used to drop a zone every 1.25 tiles along the WHOLE path,
+    # for the carrier and all five bolts, which at 11 tiles of shrapnel range carpeted most of a lane
+    # in damage-over-time (user report: "covering too much space"). 0 = this shot leaves none.
+    spark_end_dmg: float = 0.0
+
+
+def _seg_dist(ax, ay, bx, by, px, py) -> float:
+    """Distance in TILES from (px, py) to the SEGMENT (ax, ay)-(bx, by).
+
+    A capsule rather than a circle, for the two abilities whose area is a line between two points:
+    Goblinstein's Doctor-to-Monster link and Guardienne's charge corridor. Measured in tile space,
+    like every other distance here, because the axes have different tile scales.
+    """
+    axt, ayt = ax * _TILES_X, ay * _TILES_Y
+    bxt, byt = bx * _TILES_X, by * _TILES_Y
+    pxt, pyt = px * _TILES_X, py * _TILES_Y
+    dx, dy = bxt - axt, byt - ayt
+    den = dx * dx + dy * dy
+    if den < 1e-12:
+        return math.hypot(pxt - axt, pyt - ayt)
+    t = max(0.0, min(1.0, ((pxt - axt) * dx + (pyt - ayt) * dy) / den))
+    return math.hypot(pxt - (axt + t * dx), pyt - (ayt + t * dy))
 
 
 def _dist(ax, ay, bx, by) -> float:
@@ -1108,6 +1598,20 @@ def _clamp_xy(x: float, y: float, r: float):
     """
     mx, my = r / _TILES_X, r / _TILES_Y
     return min(max(x, mx), 1.0 - mx), min(max(y, my), 1.0 - my)
+
+
+def _airborne(e) -> bool:
+    """Is this body AIR right now -- by its card, or because an ability has put it there?
+
+    Two heroes need exactly this and nothing more, and they need the SAME thing:
+      * the Hero Wizard's Fiery Flight -- "makes him take flight for 5 seconds";
+      * whoever the Hero Giant has thrown -- "While on the air, these troops are untargetable by
+        ground-targeting troops and the Earthquake, but can still take damage from other spells".
+    That second sentence is a definition of being AIR in this engine (ground-targeting attackers
+    cannot reach it, ground-only spells skip it, everything else still lands), so it is one
+    temporary flag rather than a new immunity class with its own rules to keep consistent.
+    """
+    return e.spec.flying or getattr(e, "flying_left", 0.0) > 0.0
 
 
 def _body_radius(ref) -> float:
@@ -1202,6 +1706,16 @@ class SimEngine:
         self._empress_cache: dict = {}   # (key, level) -> CardSpec; see _empress_form
         self.rng = rng
         self.splash_events: list = []   # (x, y, radius_tiles, t) of recent splash hits -- sim_view
+        # I9 -- TWO MORE DEBUGGER RECORDS, and they exist because the effects are otherwise
+        # UNOBSERVABLE rather than merely fiddly to draw. MEASURED: an Electro Dragon chaining
+        # into six Barbarians for 12 s produced ZERO frames in which a `<base>_chain` projectile
+        # was alive, because a chain hop is created and consumed inside one `advance(dt)` call --
+        # so at the debugger's 0.1 s physics resolution there was never anything on screen. The
+        # owner's original "the electro dragon chain doesn't work" report was partly that: the
+        # chain was landing 192 / 960 / 1152 / 576 / 576 across the row while the picture showed
+        # nothing. Same for an ability press, which resolves and leaves no trace on any body.
+        self.arc_events: list = []      # (x0, y0, x1, y1, team, t, kind) chain/bounce hops
+        self.ability_events: list = []  # (x, y, team, t, kind, base) ability activations
         self.rage_zones: list = []      # (x, y, r_tiles, team, t_on, t_off, boost) -- Lumberjack's bottle
         self.spark_zones: list = []     # [x, y, r, team, t_end, tick_dmg, next_tick_t] -- Evo FC trails
                                         # flashes each as a brief AOE circle (~0.15 s), capped at 40
@@ -1275,6 +1789,21 @@ class SimEngine:
         self._pending: list = []                 # (fire_t, team, spec, x, y) action-latency queue
         self._volleys: list = []                 # (land_t, team, x, y, spec): Evo Cannon barrage rings
         self._late_spawns: list = []             # (due_t, spec, team, x, y, n): barrel-limbo bodies
+        # CHAMPION/HERO ACTIVATIONS IN FLIGHT (I7): [team, unit, cost, seconds_left, kind].
+        # A mutable list per record rather than a tuple because the countdown is edited in place.
+        # An empty `kind` means "already resolved, this record only carries the ruling-7 refund".
+        self._ability_pending: list = []
+        # GOBLINSTEIN's antenna: where each team's Monster died. "If the Monster has already been
+        # defeated, it will drop an antenna on the ground which is what the Goblinstein's electric
+        # link will target when the ability is activated." Per team, last one wins, and it
+        # persists -- the page gives it no lifetime, no hitpoints and no way to remove it.
+        self._antenna: dict = {}
+        # HERO GOBLINS' BANNER (I8): [expiry_t, x, y, spec] per team. "The ability will be disabeld
+        # until the last goblin is killed. When the last goblin dies, a banner will be deployed
+        # that last 5sec." It is the ONE ability in the game with no body to press it from, so the
+        # banner has to be engine state rather than a Unit -- it is not targetable, has no
+        # hitpoints, and the ability has to remain pressable when every body is dead.
+        self._banner: dict = {}
         self.projectiles: List[Projectile] = []  # shots in flight (travel time is real)
         self.elixir = {0: 5.0, 1: 5.0}
         self.towers = {}
@@ -1323,6 +1852,57 @@ class SimEngine:
             tw.buff_mult = float(prof.get("buff_mult", 1.1))
             tw.buff_min_frac = float(prof.get("buff_min_frac", 0.33))
         return tw
+
+    # THE POOL'S OWN NAMES for the tower troops, mapped to the profile keys `tower_troops` uses.
+    # The battlelog writes `tower_princess`; the config block has always called it `princess`, and
+    # the other three agree on both sides. A name this table does not know is IGNORED rather than
+    # guessed, so a renamed or newly released tower troop degrades to the rolled default instead
+    # of silently fielding a Princess Tower under another card's name.
+    _SUPPORT_KEYS = {
+        "tower_princess": "princess",
+        "princess": "princess",
+        "cannoneer": "cannoneer",
+        "dagger_duchess": "dagger_duchess",
+        "royal_chef": "royal_chef",
+    }
+
+    def set_tower_troop(self, team: int, troop: str) -> bool:
+        """Field `troop` on `team`'s two princess towers, keeping the level already rolled.
+
+        WHY THIS EXISTS (I8). Every meta deck carries a MEASURED `support:` -- its owner's real
+        tower troop, read off top-ladder battlelogs in R4 -- and it was parsed, carried, validated
+        and then read by nothing at all: the engine rolled a troop per match from a config-level
+        weight table while the pool held the answer per deck. This is the one line that consumes
+        it, called from `env.reset()` once the opponent (and therefore its deck) is known.
+        Reset order forces the shape: `eng.reset()` builds the towers BEFORE `make_opponent` picks
+        a deck, so the roll stands until it is overridden here.
+
+        The LEVEL is deliberately untouched. `support` names a troop, never a level; the ladder
+        level stays the one `_roll_opponent_tower` drew, which is what keeps enemy tower HP
+        distributed the way `enemy_levels` says it should be.
+
+        Returns False (changing nothing) for an unknown name or a side whose towers are already
+        gone -- rebuilding a dead tower would resurrect it.
+        """
+        key = self._SUPPORT_KEYS.get(str(troop or "").strip().lower())
+        if key is None or key not in self.tower_troops:
+            return False
+        cur, lvl = self.tower_setup.get(team, (key, self.tower_ref_level))
+        if cur == key:
+            return True
+        row = self.towers.get(team)
+        if not row:
+            return False
+        for i in (0, 1):                                  # the KING keeps its own profile
+            tw = row[i]
+            if not tw.alive:
+                return False
+            fresh = self._make_tower(tw.x, tw.y, key, lvl, king=False)
+            frac = (tw.hp / tw.max_hp) if tw.max_hp > 0.0 else 1.0
+            fresh.hp = fresh.max_hp * frac                # carry damage across, in case it is late
+            row[i] = fresh
+        self.tower_setup[team] = (key, lvl)
+        return True
 
     def _roll_opponent_tower(self) -> "tuple[str, int]":
         """Sample the opponent's tower troop (weighted, princess most common) + a ladder level (enemy_levels)."""
@@ -1374,6 +1954,146 @@ class SimEngine:
 
     def can_afford(self, team: int, spec: CardSpec) -> bool:
         return self.elixir[team] >= spec.elixir
+
+    @staticmethod
+    def _ability_uses_left(u: "Unit") -> int:
+        """Activations this BODY has left. ``ability_left`` starts at -1 meaning 'not yet read from
+        the spec', which is why this cannot just compare the field: -1 is 'full', not 'empty'."""
+        return int(u.spec.ability_uses if u.ability_left < 0 else u.ability_left)
+
+    def champion_ability(self, team: int) -> bool:
+        """Fire `team`'s champion ability. The ONE entry point, for the policy and the bot alike.
+
+        This used to be Explosive Escape and nothing else, selected by truthiness
+        (`ability_bomb_dmg > 0`). It is now a DISPATCHER: the body's `ability_kind` names a
+        handler in `ABILITY_KINDS`, so every champion (and, in I8, every hero) goes through the
+        same activation, accounting and refund rules and differs only in its effect.
+
+        RULING 5 (owner, verified in-game; corroborated verbatim by Version_History_2025, "2025
+        Quarter 3 Update (29/9/2025) -- Champion Rework": *"Only the most recent placed Champion
+        has the ability"*). THE NEWEST LIVING BODY IS SELECTED FIRST, and only then tested for
+        cooldown / uses / elixir. The old code did the opposite -- it filtered on "has a use left"
+        and took `next()` over `self.units`, which is append-ordered, so with two bodies out it
+        fired from the OLDEST one. A spent newest body must NOT fall back to an older one: that
+        fallback is exactly what ruling 5 forbids, and it is why the two tests are ordered this
+        way rather than folded into one comprehension.
+
+        RULING 7 (owner): the elixir is REFUNDED if the body dies between activation and the
+        effect resolving. `ability_delay` is that window (see `_ability_pending`).
+
+        Returns False -- spending nothing -- when there is no champion body, when the newest one
+        has no use or is cooling down, when the elixir is not there, or when the card names a
+        kind this engine does not implement.
+        """
+        if self.done:
+            return False
+        # A champion of OURS must actually be standing on the arena. There is no ability without
+        # a body -- every kind acts on him where he is -- so with none out the action is refused
+        # rather than silently spending elixir.
+        bodies = [u for u in self.units
+                  if u.team == team and u.hp > 0 and u.spec.ability_kind
+                  # I9: "any heroic troop can be cloned, but only the NON-CLONED one will
+                  # activate its ability" / "Champion cards can be cloned, but when you use its
+                  # ability, only the non-cloned one will activate" (Clone, revid 436842). A
+                  # clone is always the NEWER body, so without this it would win ruling 5's
+                  # newest-body selection and take the button away from the real champion.
+                  and not u.cloned
+                  # ...EXCEPT a kind that can only be pressed once its bodies are DEAD. Banner
+                  # Brigade "will be disabeld until the last goblin is killed", so a living Hero
+                  # Goblin must not satisfy the has-a-body test below -- it would fire the ability
+                  # off a goblin who is still standing, which is the opposite of the card.
+                  and u.spec.ability_kind not in _ABILITY_BODYLESS]
+        if not bodies:
+            # ...WITH ONE EXCEPTION, and it is the Hero Goblins'. Banner Brigade is pressed AFTER
+            # every one of them is dead ("When the last goblin dies, a banner will be deployed
+            # that last 5sec. When the ability is pressed during that time, 2 Brigade Goblins will
+            # spawn"), so the no-body refusal above would make the card's only ability
+            # unreachable. The banner is not a body: it cannot be targeted, cannot die, and
+            # therefore can never reach ruling 7's refund -- the throwaway Unit below exists only
+            # to carry the spec and the position into the handler. Spending it CONSUMES the
+            # banner, which is what enforces the single use.
+            rec = self._banner.get(team)
+            if not rec or rec[0] <= self.t:
+                self._banner.pop(team, None)
+                return False
+            _bx, _by, _bs = rec[1], rec[2], rec[3]
+            if self.elixir[team] < _bs.ability_cost:
+                return False
+            handler = ABILITY_KINDS.get(_bs.ability_kind)
+            if handler is None:
+                return False
+            self.elixir[team] -= _bs.ability_cost
+            self._banner.pop(team, None)
+            ghost = Unit(_bs, team, _bx, _by, 1.0)
+            ghost.ability_left = 0
+            self.ability_events.append((_bx, _by, team, self.t, _bs.ability_kind, _bs.base))
+            del self.ability_events[:-40]
+            if _bs.ability_delay > 0.0:
+                self._ability_pending.append([team, ghost, float(_bs.ability_cost),
+                                              float(_bs.ability_delay), _bs.ability_kind])
+            else:
+                handler(self, ghost)
+            return True
+        champ = max(bodies, key=lambda u: u.deploy_seq)       # ruling 5: NEWEST, then test it
+        s = champ.spec
+        if champ.ability_cd_left > 0.0 or self._ability_uses_left(champ) <= 0:
+            return False
+        if self.elixir[team] < s.ability_cost:
+            return False
+        handler = ABILITY_KINDS.get(s.ability_kind)
+        if handler is None:                                   # unknown kind: refuse, never guess
+            return False
+        self.elixir[team] -= s.ability_cost
+        self.ability_events.append((champ.x, champ.y, team, self.t, s.ability_kind, s.base))
+        del self.ability_events[:-40]
+        # SINGLE USE (4/8/2026 balance): every champion but the Boss Bandit gets exactly one
+        # activation, counted per BODY (ruling 6) -- a champion who dies and is cycled back gets
+        # his again.
+        champ.ability_left = self._ability_uses_left(champ) - 1
+        champ.ability_cd_left = s.ability_cd
+        # THE ACTIVATION DELAY. Two shapes, and the difference is historical rather than
+        # principled: `bomb` and `movement_flight` were built before the registry existed and
+        # carry their own delay INSIDE the effect (the Mighty Miner's fuse, the Boss Bandit's
+        # invisibility window), so they resolve at once and keep every behaviour their tests
+        # pin. Every kind added since resolves when the delay expires, which is what makes the
+        # ruling-7 refund reachable for them: they are still targetable while the cast runs.
+        deferred = s.ability_kind not in _ABILITY_AT_ONCE and s.ability_delay > 0.0
+        if s.ability_delay > 0.0:
+            self._ability_pending.append(
+                [team, champ, float(s.ability_cost), float(s.ability_delay),
+                 s.ability_kind if deferred else ""])
+        if not deferred:
+            handler(self, champ)
+        return True
+
+    def _tick_ability_pending(self, dt: float) -> None:
+        """Drain the activation queue: resolve what is due, REFUND what died first (ruling 7).
+
+        The refund is the elixir only. Nothing an at-once kind already committed is rolled back --
+        the Mighty Miner has already mirrored and his bomb is already fused -- and in practice
+        neither at-once kind can reach the refund at all, because both make their body
+        untargetable for exactly this window. That is the correct outcome, not an oversight:
+        ruling 7 pays back a champion who was killed before his ability went off, and those two
+        cannot be.
+        """
+        if not self._ability_pending:
+            return
+        still = []
+        for rec in self._ability_pending:
+            team, champ, cost, left, kind = rec
+            if champ.hp <= 0.0:
+                self.elixir[team] = min(10.0, self.elixir[team] + cost)
+                continue
+            left -= dt
+            if left > 0.0:
+                rec[3] = left
+                still.append(rec)
+                continue
+            if kind:
+                handler = ABILITY_KINDS.get(kind)
+                if handler is not None:
+                    handler(self, champ)
+        self._ability_pending = still
 
     def deploy(self, team: int, spec: CardSpec, x: float, y: float,
                delay_s: float = 0.0) -> bool:
@@ -1611,7 +2331,7 @@ class SimEngine:
         if u.spec.min_range > 0.0 and _gap(u.x, u.y, e) < u.spec.min_range:
             return False                       # SIEGE DEAD ZONE: too close to shell (Mortar)
         return e.hp > 0 and e.invis_left <= 0.0 and not e.hidden and not e.ghost \
-            and (not e.spec.flying or u.spec.attacks_air or u.spec.flying)
+            and (not _airborne(e) or u.spec.attacks_air or u.spec.flying)
 
     def _march_gap(self, u: Unit, ref) -> float:
         """Distance in tiles to an enemy building/tower the way this unit actually TRAVELS:
@@ -1649,6 +2369,17 @@ class SimEngine:
 
         All ranges are measured to the target's hitbox EDGE (:func:`_gap`), so a big body is noticed
         and engaged from further out than a skeleton standing in the same spot."""
+        # TRIUMPHANT TAUNT outranks every rule below it, including the building-targeter branch
+        # -- "taunting every enemy troop AND BUILDING in a 7.5-tiles range, causing them to attack
+        # him" is the whole point of the card: it drags a committed Hog or Ram off your tower.
+        # It is a REFERENCE rather than a timer because the page scopes its release to his death:
+        # "enemy troops and buildings will still target him afterwards until he is defeated".
+        tr = u.taunt_ref
+        if tr is not None:
+            if getattr(tr, "hp", 0.0) > 0.0 and getattr(tr, "team", u.team) != u.team:
+                u.target = tr
+                return ("unit", tr)
+            u.taunt_ref = None
         towers = self._enemy_towers(u.team)
         if u.spec.building_only:
             # BUILDING-TARGETERS (Hog Rider, Royal Hogs, Battle Ram, Ram Rider, Miner...) ignore
@@ -1853,7 +2584,20 @@ class SimEngine:
         step = min(spd * spd_mult * dt, d)
         u.charge_dist += step                                # tiles covered without swinging -> arms a charge
         if step > 1e-9 and u.ramp_shots:
-            u.ramp_shots = 0                                 # Little Prince: MOVING resets the ramp
+            # MOVING RESETS THE RAMP -- but not instantly any more. 4/8/2026: "The Little Prince will
+            # now maintain his charged-up Hit Speed for up to 0.3 seconds while moving." The clock
+            # counts CONTINUOUS movement and is zeroed the moment he plants and swings again (see
+            # the attacking branch), so a shuffle keeps the ramp and a real walk still loses it.
+            # A card with no grace (every other ramper) behaves exactly as before: the first
+            # non-zero step trips it. DISPLACEMENT stays a HARD reset regardless of grace -- the
+            # page's own strategy prose lists Log/Zap/Fireball/Snowball as ramp resets.
+            u.ramp_move_t += dt
+            # Tolerance, not decoration: three 0.1 s ticks sum to 0.30000000000000004, so a bare
+            # `>` made a 0.3 s grace expire one whole tick early. "Up to 0.3 seconds" has to
+            # INCLUDE 0.3.
+            if u.ramp_move_t > u.spec.ramp_move_grace + 1e-9:
+                u.ramp_shots = 0
+                u.ramp_move_t = 0.0
         u.x += (dxt / d) * step / _TILES_X
         u.y += (dyt / d) * step / _TILES_Y
 
@@ -1884,7 +2628,13 @@ class SimEngine:
         """Soft collision so units can't stack -- approximate body-blocking: a wall of troops physically
         holds up a tank because it can't pass straight through them. Gentle (push apart by the overlap);
         buildings + still-spawning units don't move; air and ground don't collide."""
-        us = [u for u in self.units if u.hp > 0 and u.deploy_left <= 0]
+        # A DASHING BODY IS IN FLIGHT and does not collide. MEASURED without this: the Golden
+        # Knight's second dash had to pass THROUGH the body he had just dashed onto, soft
+        # collision shoved him back a shrinking amount every tick, and he converged on an
+        # asymptote 0.06 tiles short of his target and never arrived -- one dash of a ten-dash
+        # chain, forever. It is also what the page describes: the dash "is able to cross the
+        # river", he "can dash onto multiple targets", and he is immune throughout.
+        us = [u for u in self.units if u.hp > 0 and u.deploy_left <= 0 and not u.dash_go]
         for i in range(len(us)):
             a = us[i]
             for j in range(i + 1, len(us)):
@@ -2031,6 +2781,7 @@ class SimEngine:
                 self._pending = [p for p in self._pending if p[0] > self.t]
                 for _, tm_, sp_, px_, py_ in due:
                     self._finish_deploy(tm_, sp_, px_, py_)
+        self._tick_ability_pending(dt)
         if self._late_spawns:
             # SKELETON BARREL LIMBO: the bodies were promised when the barrel broke and only
             # arrive now. Nothing exists in between -- which is exactly why a spell cast during
@@ -2040,6 +2791,24 @@ class SimEngine:
                 self._late_spawns = [q for q in self._late_spawns if q[0] > self.t]
                 for _t, sp_, tm_, px_, py_, n_ in due:
                     for i in range(n_):
+                        # ONE body lands ON the queued point. The ring below is a FORMATION for a
+                        # group; with n_ == 1 it degenerates to a fixed 1.25-tile shove in +x,
+                        # which is not a formation, it is a bias. It matters now that the Skeleton
+                        # King queues his Skeletons ONE AT A TIME at their own sampled points --
+                        # MEASURED, the ring pushed them to 4.75 tiles from him against a
+                        # published 3.5-tile spawn radius.
+                        if n_ == 1:
+                            sx, sy = _clamp_xy(px_, py_, sp_.radius)
+                            nu = Unit(sp_, tm_, sx, sy, sp_.hp)
+                            nu.deploy_left = sp_.deploy_time
+                            if sp_.ghost_life_s > 0.0:
+                                # a TIMED, SILENT removal (no death effects) -- the same field the
+                                # Lumberjack's ghost and the Souldiers use. `_spawn_from` already
+                                # applied it and this path did not, which would have left the Hero
+                                # Magic Archer's decoy standing for the whole match.
+                                nu.hatch_left = sp_.ghost_life_s
+                            self.units.append(nu)
+                            continue
                         ang = 2.0 * math.pi * (i / max(1, n_))
                         rr = sp_.radius * 2.0 + 0.25
                         sx, sy = _clamp_xy(px_ + math.cos(ang) * rr / _TILES_X,
@@ -2099,9 +2868,11 @@ class SimEngine:
                             e.slow_left = max(e.slow_left, 0.3)   # 15% slow while standing in it
                             e.slow_mult = 0.85
                     # ...and the SAME tick chips a Crown Tower the zone overlaps, at
-                    # _SPARK_CROWN_FRAC of the troop damage. The loop above iterates `self.units`
-                    # ONLY, so a tower sitting in a spark field took literally nothing -- MEASURED
-                    # at 0 damage from a 5 s zone placed directly on it.
+                    # _SPARK_CROWN_FRAC of the troop damage. This is the whole reason the card is
+                    # played in a Hog deck: "the small sparks connect to the Crown Tower" while she
+                    # clears the path. The loop above iterates `self.units` ONLY, so a tower sitting
+                    # in a spark field took literally nothing -- MEASURED at 0 damage from a 5 s
+                    # zone placed directly on it.
                     # Edge-based like every other area effect (`_gap` already subtracts the tower's
                     # hitbox), so a zone clipping the tower's corner still counts.
                     for tw in self._enemy_towers(z[3]):
@@ -2128,8 +2899,21 @@ class SimEngine:
                 continue
             u.age += dt
             u.cooldown = max(0.0, u.cooldown - dt)
+            if u.flying_left > 0.0:
+                # AIRBORNE: the Hero Wizard in Fiery Flight, or a body the Hero Giant has thrown.
+                # TICKED HERE, ahead of the stun/deploy early-outs, and it has to be: the hurl
+                # applies a 2 s stun and 2 s in the air TOGETHER, and a decay below the stun gate
+                # would run them in SERIES -- MEASURED at 4 s of untargetability from a published
+                # 2, because the timer only started moving once the stun let go.
+                u.flying_left = max(0.0, u.flying_left - dt)
             if u.rage_self_left > 0.0:
                 u.rage_self_left = max(0.0, u.rage_self_left - dt)
+            if u.rage_left > 0.0:
+                # RAGE FALLOFF, decayed here and REFRESHED by `_rage_mult` further down the same
+                # iteration whenever the body is still inside a zone -- so a unit standing in the
+                # bottle never runs the timer down, and one that walks out keeps the boost for the
+                # published second and then loses it.
+                u.rage_left = max(0.0, u.rage_left - dt)
             if u.iframes_left > 0.0:
                 u.iframes_left = max(0.0, u.iframes_left - dt)
             if (u.spec.enrage_frac > 0.0 and not u.enraged and u.hp > 0.0
@@ -2199,12 +2983,12 @@ class SimEngine:
                 # of reach left `focus_time` untouched, so the beam resumed at full stage 3 the
                 # instant contact returned. Resetting an Inferno by displacing it is a core
                 # interaction of the game and the sim had none of it.
-                # MEASURED before this line (hogeq, same engine): a Mighty Miner knocked back 3
-                # tiles kept focus 6.60 -> 6.70, stage 3 -> 3, and an Inferno Tower whose target
-                # walked out of its 6 tiles kept 7.60. See hogeq tests/test_ramp_and_blast_geometry.
-                # `ramp_hold` is the ONE exception: Evo Inferno Dragon deliberately keeps its stage
-                # for ramp_keep_s after a KILL, and that hold is ticked down (and cleared by a
-                # stun) elsewhere.
+                # MEASURED before this line: Mighty Miner knocked back 3 tiles kept focus 6.60 ->
+                # 6.70 (stage 3 -> 3); Inferno Tower whose target walked out of its 6 tiles kept
+                # 7.60 (stage 3). See tests/test_ramp_and_blast_geometry.py (test_ramp_reset.py never existed).
+                # `ramp_hold` is the ONE exception and is checked here rather than skipped: Evo
+                # Inferno Dragon deliberately keeps its stage for ramp_keep_s after a KILL, and
+                # that hold is ticked down (and cleared by a stun) elsewhere.
                 if u.ramp_hold <= 0.0:
                     u.focus_time = 0.0
             if u.curse_left > 0.0:
@@ -2221,24 +3005,26 @@ class SimEngine:
                 continue
             if u.stun_left > 0:                              # stunned / frozen -> can't act
                 u.stun_left = max(0.0, u.stun_left - dt)
-                # A STUN OR FREEZE RESETS THE RAMP IMMEDIATELY, and unlike the out-of-reach
-                # case above it also cancels Evo Inferno Dragon's post-kill hold -- the wiki
-                # says it keeps its damage state "unless it is stunned". Zapping an Inferno
-                # the instant it reaches stage 3 is the textbook counter; without this the
-                # stun cost it nothing but the frozen seconds.
+                # A STUN OR FREEZE RESETS THE RAMP IMMEDIATELY, and unlike the out-of-reach case
+                # above it also cancels Evo Inferno Dragon's post-kill hold -- the wiki's wording is
+                # that it keeps its damage state "unless it is stunned". Zapping an Inferno the
+                # instant it reaches stage 3 is the textbook counter; without this the stun cost it
+                # nothing but the frozen seconds.
                 u.focus_time = 0.0
                 u.ramp_hold = 0.0
                 continue
             if u.hook_left > 0.0:
                 self._tick_hook(u, dt)
                 continue
+            if u.dash_left > 0 and self._tick_dash(u, dt):
+                continue                                     # mid-chain: no walking, no swinging
             if u.spec.pulse_interval > 0:                    # periodic area-shock (none ship with this today)
                 u.pulse_cd -= dt
                 if u.pulse_cd <= 0:
                     self._pulse(u)
                     u.pulse_cd = u.spec.pulse_interval
             spd = u.slow_mult if u.slow_left > 0 else 1.0
-            if self.rage_zones or u.rage_self_left > 0.0:
+            if self.rage_zones or u.rage_self_left > 0.0 or u.rage_left > 0.0:
                 spd *= self._rage_mult(u)                   # rage: +30% move AND attack speed, no stacking
             if self._auras:
                 for (ax, ay, at, ar, aslow, aboost) in self._auras:
@@ -2248,18 +3034,65 @@ class SimEngine:
                         break
             if u.slow_left > 0:
                 u.slow_left = max(0.0, u.slow_left - dt)
-            # GETAWAY ABILITY (Boss Bandit). Fires automatically when she is genuinely in trouble --
-            # she is invisible and untouchable for a second, then reappears `ability_back` tiles
-            # further from the enemy, which is exactly the Rocket/spell dodge the card is played for.
+            # ACTIVE ABILITY EFFECT (I7). One timer serves every kind that runs for a while --
+            # the Archer Queen's cloak, the Monk's protection, Goblinstein's link -- and one
+            # cadence serves every kind with a repeating sub-event.
+            #
+            # TWO SEPARATE SPEED CHANNELS, because `spd` above is a SINGLE multiplier applied to
+            # both movement and attack cadence (it models Rage, which moves them together) and an
+            # ability routinely moves them OPPOSITE ways: Cloaking Cape shoots at 1.8x while
+            # walking at Slow (45) against her own Medium (60).
+            atk_spd = mv_spd = spd
+            if u.ability_active_s > 0.0:
+                u.ability_active_s = max(0.0, u.ability_active_s - dt)
+                if u.spec.ability_speed_mult > 0.0:
+                    atk_spd *= u.spec.ability_speed_mult
+                if u.ability_active_s <= 0.0:
+                    end = ABILITY_ENDS.get(u.spec.ability_kind)
+                    if end is not None:
+                        end(self, u)
+                elif u.spec.ability_tick_s > 0.0:
+                    # EXPIRY IS CHECKED FIRST, so the tick that lands exactly ON the end of the
+                    # window does not fire. MEASURED with the order reversed: Goblinstein's link
+                    # dealt 9 x 107 over its published 4 s / 0.5 s, which is a free extra shock
+                    # (+12.5%) bought by an off-by-one.
+                    u.ability_tick_left -= dt
+                    if u.ability_tick_left <= 0.0:
+                        u.ability_tick_left += u.spec.ability_tick_s
+                        tick = ABILITY_TICKS.get(u.spec.ability_kind)
+                        if tick is not None:
+                            tick(self, u)
+            # The movement override applies while the ability is active OR while a dash chain is
+            # running -- the Golden Knight's boost has no published duration and ends on one of
+            # ruling 10's three terminators instead, so it cannot hang off `ability_active_s`.
+            if u.spec.ability_move_speed > 0.0 and u.spec.speed > 0.0 \
+                    and (u.ability_active_s > 0.0 or u.dash_left > 0):
+                mv_spd *= u.spec.ability_move_speed / u.spec.speed
+            # ABILITY cooldown + transit, for every kind EXCEPT the invisibility one. The Boss
+            # Bandit block below ticks these too, but only for cards with `ability_invis` -- so a
+            # champion whose ability is any other shape (the Mighty Miner's escape, the Archer
+            # Queen's cloak, ...) would fire once and never recharge, and would stay permanently
+            # untargetable after it. Ticked here, before that branch, and skipped for the
+            # invisibility shape so its existing sequencing is untouched.
+            # I7: the test was `ability_bomb_dmg > 0.0` -- one card's number standing in for
+            # "has an ability at all". `ability_kind` says it directly.
+            if u.spec.ability_kind and u.spec.ability_invis <= 0.0:
+                u.ability_cd_left = max(0.0, u.ability_cd_left - dt)
+                if u.invis_left > 0.0:
+                    u.invis_left = max(0.0, u.invis_left - dt)
+            # GETAWAY GRENADE TRANSIT (Boss Bandit, kind `movement_flight`). She is invisible and
+            # untouchable for a second, then reappears `ability_back` tiles further from the enemy
+            # -- exactly the Rocket/spell dodge the card is played for.
+            #
+            # THE ENGINE NO LONGER DECIDES WHEN (I7). This branch used to fire the ability itself
+            # below a per-unit rolled HP fraction, which modelled an HP-gated trigger THE GAME
+            # REMOVED: Boss_Bandit.wikitext History 8/7/2025 says the grenade "can be activated a
+            # total of 2 times INDEPENDENT ON Boss Bandit's hitpoints", and the page describes it
+            # only as a button "accessible from the rightmost side of the screen" (conflicts.md
+            # C5). It is a normal button now, `champion_ability` activates it like every other
+            # kind, and the OPPONENT decides -- ScriptedBot._try_ability. All that is left here is
+            # the transit.
             if u.spec.ability_invis > 0.0:
-                if u.ability_left < 0:
-                    u.ability_left = u.spec.ability_uses
-                    # VARIED TRIGGER (2026-08-14). The threshold was a flat 0.6 -- every Boss
-                    # Bandit vanished at exactly 60% HP, so a policy could learn the one timing
-                    # that games a constant (the user's exact concern). Each unit now rolls its
-                    # own trigger, and each USE re-rolls a meaningfully lower one, spreading the
-                    # two grenades across her HP bar and across matches.
-                    u.ability_hp_frac = self.rng.uniform(0.35, 0.80)
                 u.ability_cd_left = max(0.0, u.ability_cd_left - dt)
                 if u.invis_left > 0.0:
                     u.invis_left -= dt
@@ -2270,18 +3103,6 @@ class SimEngine:
                         u.ability_cd_left = u.spec.ability_cd
                         u.aggro_reset = True
                     continue                                 # invisible: no walking, no attacking
-                if u.ability_left > 0 and u.ability_cd_left <= 0.0 \
-                        and u.hp < u.spec.hp * u.ability_hp_frac \
-                        and self.elixir[u.team] >= u.spec.ability_cost:
-                    self.elixir[u.team] -= u.spec.ability_cost
-                    u.ability_left -= 1
-                    u.invis_left = u.spec.ability_invis
-                    u.ability_hp_frac = self.rng.uniform(0.15, max(0.16, u.ability_hp_frac * 0.75))
-                    # The only thing that drops a wind-up, and it is HER OWN doing, not the
-                    # defender's -- she vanishes and reappears further back, so there is nothing
-                    # left standing there to finish the dash.
-                    u.leap_left = 0.0
-                    continue
             prev_target = u.target
             kind, ref = self._acquire(u)
             # HIDDEN TESLA. "When there are no enemies within range, it retracts underground, making
@@ -2424,6 +3245,7 @@ class SimEngine:
             if gap <= reach + slop:
                 u.attacking = True                          # engaged (in reach) -> Evo Knight's damage reduction is OFF
                 u.locked = True                             # ...and committed: only an aggro reset breaks it now
+                u.ramp_move_t = 0.0                         # planted again: the move-grace clock restarts
                 u.focus_time += dt                          # ...and the beam charges while it is actually firing
                 if self.load_time_on and not u.loaded and u.spec.load_time > 0.0:
                     # WEAPON WIND-UP, paid once per engagement. A Musketeer that has just walked
@@ -2432,7 +3254,7 @@ class SimEngine:
                     # TARGET that starts the clock -- a unit that walks the lane unopposed and
                     # then meets a defender still pays it.
                     u.loaded = True
-                    u.cooldown = max(u.cooldown, u.spec.load_time / spd)
+                    u.cooldown = max(u.cooldown, u.spec.load_time / atk_spd)
                 if u.cooldown <= 0:                          # one discrete hit, then wait hit_speed (slow -> longer)
                     self._attack(u, kind, ref)
                     u.charge_dist = 0.0                      # the charge is SPENT (and stopping cancels a run-up)
@@ -2443,7 +3265,7 @@ class SimEngine:
                         rm = u.spec.atk_ramp_mults[min(u.ramp_shots // u.spec.atk_ramp_per,
                                                        len(u.spec.atk_ramp_mults) - 1)]
                         u.ramp_shots += 1
-                    u.cooldown = u.spec.hit_speed / spd / rm
+                    u.cooldown = u.spec.hit_speed / atk_spd / rm
                     if u.spec.ram_bounce:
                         # EVO BATTLE RAM'S SUPER CHARGE: it "charges and bounces multiple times
                         # against buildings and towers until its HP is depleted" -- the landing
@@ -2454,11 +3276,16 @@ class SimEngine:
                         u.charge_dist = 0.0
                         u.locked = False
                     elif u.spec.kamikaze:
+                        if u.spec.heal_amount > 0.0:
+                            # HEAL SPIRIT. The field is left by the LEAP, so it is created on the
+                            # connecting swing and not in the death path: a spirit killed before
+                            # it lands heals nothing.
+                            self._heal_field(u, ref)
                         u.hp = 0.0
             elif u.spec.sniper_shots > 0 and self._try_snipe(u):
                 pass                                         # Evo Musketeer STANDS to take the shot
             elif u.spec.kind != "building":                  # buildings are stationary
-                self._move_toward(u, rx, ry, dt, spd)
+                self._move_toward(u, rx, ry, dt, mv_spd)
         # ROYAL GHOST'S STEALTH. "Upon deployment, he will spawn invisible, and will only turn
         # visible once he attacks... When he is not fighting any unit for 1.8 seconds, he will
         # become invisible again." `u.attacking` is already exactly "has a target in reach", so
@@ -2516,6 +3343,41 @@ class SimEngine:
                         nu.parent = gen
                         nu.from_egg = True                   # ghosts die quietly, no re-ghosting
                         self.units.append(nu)
+                # SOUL SUMMONING's bank. "When a troop is vanquished while the Skeleton King is
+                # in the Arena, the Skeleton King gains a soul", from EITHER side, capped at 10.
+                # The page's exclusions are implemented, each from its own sentence:
+                #   * buildings ("Buildings also do not count as souls when vanquished")
+                #   * the ability's own Skeletons and cloned troops ("neither do the Skeletons
+                #     summoned from the ability")
+                # RULING 8 (owner): a body that has SPENT its use stops accruing.
+                # The sub-troop rule (Golem/Lava Hound/Battle Ram parts do not count, "with
+                # Goblin Giant as an exception") is NOT implemented: the page's own sentence
+                # supports both readings of the exception -- see the YAML's open_questions -- and
+                # guessing a direction would silently move the card's output by up to 4 Skeletons.
+                if u.spec.kind == "troop" and u.spec.base != "soul_skeleton" \
+                        and not u.cloned:
+                    for k in self.units:
+                        if (k.hp > 0 and k.spec.ability_kind == "soul_bank"
+                                and k.souls < _SOUL_CAP
+                                and self._ability_uses_left(k) > 0):
+                            k.souls += 1
+                if u.spec.ability_kind == "" and u.spec.building_only \
+                        and any(k.spec.ability_kind == "zone" and k.spec.base == u.spec.base
+                                for k in self.units):
+                    # ...the Monster half of a two-body zone champion. Its component row carries
+                    # the card's own base and the building-targeting flag, and its ability_kind was
+                    # cleared by build_spec because only component 0 owns the ability.
+                    self._antenna[u.team] = (u.x, u.y)
+                if u.spec.ability_kind == "summon_banner" and not u.cloned:
+                    # "The last Goblin standing drops a banner that calls in reinforcements." The
+                    # LAST one: with a sibling still alive nothing is dropped, which is what makes
+                    # the ability unavailable until the squad is wiped. Counted over living bodies
+                    # of the same card on the same team, excluding the one dying here -- and
+                    # excluding CLONES, which never carry the ability (I9).
+                    if not any(k is not u and k.hp > 0 and k.team == u.team and not k.cloned
+                               and k.spec.key == u.spec.key for k in self.units):
+                        self._banner[u.team] = [self.t + u.spec.ability_duration_s,
+                                                u.x, u.y, u.spec]
                 if u.spec.base == "skarmy_general":
                     for g in self.units:
                         if g.parent is u and g.invis_left > 9000.0:
@@ -2604,6 +3466,13 @@ class SimEngine:
             return
         # Troops are yanked TOWARD Fisherman over time.
         u.hook_mode = "target"
+
+    def _hook_blocked(self, e) -> bool:
+        """"The Fisherman's hook is fully stifled until the ability ends, forcing him to
+        repeatedly charge his hook." Not reflected -- NULLIFIED, which is a different outcome and
+        the page is explicit about it."""
+        return (isinstance(e, Unit) and e.ability_active_s > 0.0
+                and e.spec.ability_kind == "reflect")
 
     def _tick_hook(self, u: "Unit", dt: float) -> None:
         """Advance one active Fisherman hook-pull phase, landing damage at completion."""
@@ -2817,13 +3686,27 @@ class SimEngine:
     def _rage_mult(self, u: "Unit") -> float:
         """1 + boost when the unit is raged -- by a friendly Rage zone OR its own Evo-Barbarian
         self-rage. Rage does not stack ("does not stack with another Rage spell, the Lumberjack's
-        dropped Rage, or the Rage effect of the Evolved Barbarians"): the strongest source wins."""
+        dropped Rage, or the Rage effect of the Evolved Barbarians"): the strongest source wins.
+
+        I9 -- THE FALLOFF IS PART OF THE MECHANIC, not a nicety. Rage has had one since 29/2/2016
+        ("added a falloff effect to Rage, causing troops to lose the bonus if they are OUT of its
+        effect for 2 seconds"), cut to 1 second on 4/3/2025. Without it a 3-tile bubble only ever
+        buffs a body on the ticks it is standing inside, which for a marching push is a fraction
+        of the spell. Refreshed HERE rather than in a second sweep because this is the one place
+        that already computes, per unit per tick, whether it is inside a zone; the decay sits at
+        the top of `_tick_units`, so a unit inside a zone can never run it down.
+        """
         best = u.spec.hit_rage_boost if u.rage_self_left > 0.0 else 0.0
+        inside = 0.0
         for (zx, zy, zr, zt, t0, t1, boost) in self.rage_zones:
             if zt == u.team and t0 <= self.t < t1 \
                     and _dist(u.x, u.y, zx, zy) <= zr + u.spec.radius:
-                best = max(best, boost)
-        return 1.0 + best
+                inside = max(inside, boost)
+        if inside > 0.0:
+            u.rage_left, u.rage_boost = _RAGE_FALLOFF_S, inside
+        elif u.rage_left > 0.0:
+            best = max(best, u.rage_boost)          # walked out: the published second of grace
+        return 1.0 + max(best, inside)
 
     def _try_snipe(self, u: "Unit") -> bool:
         """EVO MUSKETEER's Sniper Ammo: 3 infinite-range rounds, spent ONLY when nothing is in her
@@ -2937,6 +3820,112 @@ class SimEngine:
                    and _dist(u.x, u.y, e.x, e.y) <= tiles
                    for e in self.units)
 
+    def _dash_targets(self, u: "Unit"):
+        """Everything the chain may dash into from where he is standing NOW.
+
+        Measured from his position AFTER the previous dash, which is what "the closest enemy unit
+        within a 5.5-tile radius" means once he has moved. GROUND only: the body targets Ground
+        and Strategy stresses "The Golden Knight cannot attack air troops", so an air unit is not
+        a valid dash target either -- the page never qualifies "enemy unit" but it never shows him
+        reaching one.
+
+        CROWN TOWERS ARE CANDIDATES, not merely terminal. The page's own counter-advice --
+        "Make sure that they are at most 5 tiles away from the river, to prevent the Golden Knight
+        from connecting to the Crown Tower with his dash" -- only makes sense if he seeks them.
+        """
+        s = u.spec
+        arc = s.ability_range_tiles or 5.5
+        out = []
+        for e in self.units:
+            if e.team == u.team or e.hp <= 0 or e.spec.flying or id(e) in u.dash_hit:
+                continue
+            if not self._valid_foe(u, e):
+                continue
+            d = _dist(u.x, u.y, e.x, e.y)
+            if d <= arc:
+                out.append((d, e))
+        for tw in self._enemy_towers(u.team):
+            if id(tw) in u.dash_hit:
+                continue
+            d = _gap(u.x, u.y, tw)
+            if d <= arc:
+                out.append((d, tw))
+        return out
+
+    def _tick_dash(self, u: "Unit", dt: float) -> bool:
+        """Advance one step of a Dashing Dash chain. True = this tick is spent (no walk, no swing).
+
+        Three states, in the order the page describes them: in flight, waiting out the 0.05 s
+        inter-dash beat, or picking the next target.
+        """
+        s = u.spec
+        if u.dash_go:
+            spd = s.leap_speed or 8.33                       # tiles/s; see _ability_dash_chain
+            dx = (u.dash_tx - u.x) * _TILES_X
+            dy = (u.dash_ty - u.y) * _TILES_Y
+            d = math.hypot(dx, dy)
+            step = spd * dt
+            if d <= step or d < 1e-9:
+                u.x, u.y = _clamp_xy(u.dash_tx, u.dash_ty, s.radius)
+                u.dash_go = False
+                self._dash_land(u)
+                return True
+            u.x += (dx / d) * step / _TILES_X
+            u.y += (dy / d) * step / _TILES_Y
+            return True
+        if u.dash_time_left > 0.0:
+            u.dash_time_left = max(0.0, u.dash_time_left - dt)
+            return True
+        cands = self._dash_targets(u)
+        if not cands:
+            self._dash_end(u)                                # TERMINATOR 2: no valid target
+            return False
+        _, ref = min(cands, key=lambda t: t[0])
+        u.dash_ref = ref
+        # Land AT the target, one reach short of its body -- "he stops at the last target's
+        # location" (ruling 10), not inside it.
+        gap = s.reach + _body_radius(ref)
+        dx = (ref.x - u.x) * _TILES_X
+        dy = (ref.y - u.y) * _TILES_Y
+        d = math.hypot(dx, dy)
+        if d > gap:
+            u.dash_tx = u.x + (dx / d) * (d - gap) / _TILES_X
+            u.dash_ty = u.y + (dy / d) * (d - gap) / _TILES_Y
+        else:
+            u.dash_tx, u.dash_ty = u.x, u.y
+        u.dash_go = True
+        return True
+
+    def _dash_land(self, u: "Unit") -> None:
+        """The dash connects: dash damage, then the terminator tests."""
+        s = u.spec
+        ref = u.dash_ref
+        u.dash_ref = None
+        u.dash_left -= 1
+        u.dash_time_left = s.ability_tick_s                  # the 0.05 s beat before the next one
+        dmg = s.ability_dmg or s.hit_dmg
+        was_tower = isinstance(ref, Tower)
+        if ref is not None:
+            u.dash_hit = u.dash_hit + (id(ref),)             # "cannot dash into the same troop"
+            if was_tower:
+                if ref.alive:
+                    self._damage_tower(ref, dmg, u.team)
+            elif ref.hp > 0:
+                # A target that died before the dash connected still consumes the dash: History
+                # 1/11/2021 "fixed Dashing Dash so that it does not end if the Golden Knight's
+                # target dies before the dash connects with it".
+                self._land_hit(u.team, "unit", ref, s, dmg, dmg)
+        if was_tower or u.dash_left <= 0:
+            self._dash_end(u)                                # TERMINATORS 3 and 1
+
+    def _dash_end(self, u: "Unit") -> None:
+        u.dash_left = 0
+        u.dash_hit = ()
+        u.dash_go = False
+        u.dash_ref = None
+        u.dash_time_left = 0.0
+        u.aggro_reset = True                                 # "then moves/attacks like a normal troop"
+
     def _spawn_from(self, u: "Unit", n: int) -> None:
         """Drop `n` of this spawner's troop around it, on the side it is pushing toward."""
         sp = u.spec.spawner_spec
@@ -2983,6 +3972,11 @@ class SimEngine:
         # "She is immune to damage during her dash" -- the WHOLE dash, charge and flight alike.
         if (u.leap_left > 0.0 or u.leap_go) and u.spec.leap_invuln:
             return
+        # DASHING DASH: "His dashes have invulnerability", "When dashing, he is immune to all
+        # forms of damage like the Bandit. This immunity can be extended by having him dash
+        # multiple times." `dash_go` is only ever set by a dash chain, so no flag is needed.
+        if u.dash_go:
+            return
         if u.invis_left > 0.0:               # invisible = untouchable, not merely unseen
             return
         # RETRACTED TESLA: "immune to all damage except for the Earthquake". The exception is a
@@ -2997,6 +3991,20 @@ class SimEngine:
             self._air_drop(u)                                # Evo Royal Hogs FALL when first hurt
         if u.spec.damage_reduction > 0.0 and not u.attacking:
             dmg *= (1.0 - u.spec.damage_reduction)           # Evo Knight: 60% less while moving/approaching
+        if u.ability_active_s > 0.0 and u.spec.ability_min_hp > 0.0:
+            # SAVAGE SURVIVAL: "preventing her health from going below 1 HP" (Heroes revid 437509).
+            # A FLOOR, not immunity -- everything still lands, she just cannot be finished while
+            # it runs, and the moment it ends she is at 1 hitpoint. Applied before the reduction
+            # and the shield so no later step can take her under it.
+            dmg = min(dmg, max(0.0, u.hp - u.spec.ability_min_hp))
+            if dmg <= 0.0:
+                return
+        if u.ability_active_s > 0.0 and u.spec.ability_dmg_reduction > 0.0:
+            # PENSIVE PROTECTION: "reducing all incoming damage he takes by 65%" -- ALL sources,
+            # not only the projectiles he reflects. (The Pensive Protection Attributes column is
+            # headed "Invulnerability Duration"; he is not invulnerable, and the -65% is published
+            # in its own "Damage Reduced" column on the same table.)
+            dmg *= (1.0 - u.spec.ability_dmg_reduction)
         if u.shield_left > 0.0:
             u.shield_left = max(0.0, u.shield_left - dmg)
             if u.shield_left <= 0.0 and u.spec.shield_burst_dmg > 0.0:
@@ -3013,6 +4021,14 @@ class SimEngine:
             u.iframes_left = u.spec.first_hit_immune_s
 
     def _attack(self, u: Unit, kind: str, ref) -> None:
+        # WILD WHIRLWIND: while the Hero Valkyrie is spinning, the spin IS her attack. Her ability
+        # table publishes its own Hit Speed (0.25 s), Radius (2.5) and Damage (97), which is a
+        # complete attack profile, and letting her ALSO swing on her normal 1.5 s cadence would
+        # double-count her output. The page does not say either way -- recorded in conflicts.md.
+        # Keyed on the SHAPE (a buff_self with a repeating area tick), not on the card.
+        if (u.ability_active_s > 0.0 and u.spec.ability_kind == "buff_self"
+                and u.spec.ability_tick_s > 0.0):
+            return
         if u.spec.min_range > 0.0 and _gap(u.x, u.y, ref) < u.spec.min_range:
             # SIEGE DEAD ZONE: the target slipped under the barrel -- drop the lock so the
             # next acquisition picks something it CAN shell (or idles, exactly like the game).
@@ -3022,10 +4038,20 @@ class SimEngine:
         # T1 EVO on-swing effects: fire once per ATTACK (the swing), independent of what it lands on
         if u.spec.recoil_dmg > 0.0:                          # Evo Royal Giant's recoil blast
             self._recoil_blast(u)
-        if u.spec.attack_nado_s > 0.0:                       # Evo Valkyrie's whirlwind
+        if u.spec.attack_nado_s > 0.0 and (not u.spec.attack_nado_ability
+                                           or u.ability_active_s > 0.0):
+            # Evo Valkyrie's whirlwind -- and, gated on the ability, the Hero Wizard's, which his
+            # own page tells us to model this way: "his fireballs also create 3 tile radius
+            # tornadoes, which does its own damage (reduced against crown towers), SIMILAR TO THE
+            # EVOLVED VALKYRIE". Same mechanic, same vortex, one flag for the gate.
             nspec = replace(u.spec, pull_radius=u.spec.attack_nado_r,
-                            pull_duration=u.spec.attack_nado_s, spell_dmg=u.spec.attack_nado_dmg)
+                            pull_duration=u.spec.attack_nado_s, spell_dmg=u.spec.attack_nado_dmg,
+                            spell_tower_dmg=(u.spec.attack_nado_crown or u.spec.attack_nado_dmg))
             self.vortices.append(_Vortex(u.team, u.x, u.y, nspec, u.spec.attack_nado_s))
+        if u.spec.ability_charge_hit_s > 0.0:
+            # THE PANCAKE BAR: "he can also get 10 seconds of progress with every attack" -- on the
+            # SWING, whatever it lands on, which is why it is counted here and not in `_land_hit`.
+            u.cook_s += u.spec.ability_charge_hit_s
         if u.spec.hit_rage_s > 0.0:                          # Evo Barbarians rage themselves
             u.rage_self_left = u.spec.hit_rage_s
         if u.spec.hit_heal > 0.0:                            # Evo Bats drink on every swing
@@ -3048,6 +4074,27 @@ class SimEngine:
         mult = self._ramp_mult(u)
         dmg = u.spec.hit_dmg * u.dmg_mult * mult             # one discrete hit (DPS x hit_speed; x Royal Chef buff)
         tower_dmg = u.spec.tower_hit_dmg * u.dmg_mult * mult
+        if u.spec.ability_kind == "decoy_blink" and u.ability_hits > 0:
+            # TRIPLE THREAT: "The next attack now shots 3 arrows that travel longer, but with less
+            # damage." One attack carries all three, at the published per-arrow triple_dmg_11 (48)
+            # rather than his normal 135 -- and they go out along the SAME piercing line he already
+            # fires, because the page gives a count and a per-arrow damage and no spread pattern
+            # at all. Recorded in conflicts.md, together with whether they pierce.
+            n = u.ability_hits
+            u.ability_hits = 0
+            dmg = u.spec.ability_dmg * n * u.dmg_mult * mult
+            tower_dmg = dmg
+        if (u.spec.melee_dmg > 0.0 and u.spec.melee_reach > 0.0
+                and not getattr(getattr(ref, "spec", None), "flying", False)
+                and _gap(u.x, u.y, ref) <= u.spec.melee_reach):
+            # SWITCHED TO MELEE (Three Musketeers). Purely geometric, which is exactly the wiki's
+            # rule -- "if enemy troops are CLOSE to them ... switch back to their ranged form when
+            # enemies are far" -- and it needs no special case for towers or buildings: a ranged
+            # unit halts at its own `reach` (6 tiles here), so nothing it walked up to is ever
+            # inside 1.6 tiles. Only something that CLOSED on it can be, and that is a troop.
+            # Air is excluded because the melee row's Target column reads Ground.
+            dmg = u.spec.melee_dmg * u.dmg_mult * mult
+            tower_dmg = dmg * (u.spec.tower_hit_dmg / u.spec.hit_dmg if u.spec.hit_dmg else 1.0)
         if u.spec.power_mult > 0.0 and _gap(u.x, u.y, ref) >= u.spec.power_min:
             dmg *= u.spec.power_mult                         # Evo Archers' POWER SHOT: 4+ tiles out -> 1.5x
             tower_dmg *= u.spec.power_mult
@@ -3079,6 +4126,7 @@ class SimEngine:
                     dps = u.spec.poison_stages[min(len(u.spec.poison_stages) - 1, int(u.age // 15.0))]
                 fspec = replace(fspec, poison_dps=dps)
             self._launch(f"{u.spec.base}_projectile", u.team, u.x, u.y, ref, fspec, dmg, tower_dmg)
+            self._recoil(u, ref)
             return
         # SPLIT (Electro Wizard): "If 2 or more targets are within his range, his attack will SPLIT
         # and attack the closest 2 units." His published damage is the TOTAL for the attack, not per
@@ -3238,7 +4286,7 @@ class SimEngine:
             # never reaches _impact, so their extra hits would never fire. Both burst ON the target.
             pierce=pierce, width=spec.proj_width, dirx=dx, diry=dy, ox=x, oy=y,
             bounces_left=spec.bounce_n,
-            trail_dmg=spec.spark_dps_big * 0.25))    # Evo FC carrier drops LARGE sparks
+            spark_end_dmg=spec.spark_dps_big * 0.25))   # Evo FC: ONE large zone on the impact point
 
     def _shotgun(self, u: Unit, ref, dmg: float) -> None:
         """Fire the WHOLE shotgun: `multi_hits` separate pellets scattered across a cone.
@@ -3331,21 +4379,16 @@ class SimEngine:
                     continue
                 p.tx, p.ty = p.target.x, p.target.y  # tracking shot follows it
             step = p.speed * dt
-            if p.trail_dmg > 0.0:                    # Evo FC: "both the initial and small shrapnel
-                p.trail_next -= step                 # will leave sparks behind" along their flight
-                if p.trail_next <= 0.0:
-                    p.trail_next = 1.25
-                    self.spark_zones.append([p.x, p.y, p.spec.spark_r or 0.75, p.team,
-                                             self.t + p.spec.spark_dur, p.trail_dmg, self.t])
-                    del self.spark_zones[:-60]
             if p.pierce:
                 p.x += p.dirx * step                 # straight on along the launch heading
                 p.y += p.diry * step
                 # NOT CLAMPED TO THE ARENA. A pierce shot is a projectile in flight, not a body:
                 # clamping it pinned every bolt that reached a wall AT the wall, where it kept
-                # burning its remaining range in place and then dropped its spark zone against
-                # the edge. MEASURED: 24 of 95 bolt samples sat exactly on x=0. A shot that
-                # leaves the board carries on and expires; there is nothing out there to hit.
+                # burning its remaining range in place and then dropped its spark zone against the
+                # edge -- so a Firecracker fired near the border sprayed her shrapnel into a single
+                # pile instead of past it. MEASURED before this change: 24 of 95 bolt samples sat
+                # exactly on x=0. A shot that leaves the board simply carries on and expires; there
+                # is nothing out there for `_pierce_pass` to hit, which is the correct outcome.
                 p.left -= step
                 self._pierce_pass(p)
                 if p.left <= 0.0:
@@ -3367,6 +4410,7 @@ class SimEngine:
                         p.left = back
                         p.hit.clear()
                         continue
+                    self._drop_spark_zone(p)   # Evo FC shrapnel: one SMALL zone at the end of its run
                     self.projectiles.remove(p)
                 continue
             dxt, dyt = (p.tx - p.x) * _TILES_X, (p.ty - p.y) * _TILES_Y
@@ -3377,10 +4421,89 @@ class SimEngine:
                 p.y += (dyt / d) * move / _TILES_Y
             p.left -= step
             if d <= step or p.left <= 0.0:            # ARRIVED
+                self._drop_spark_zone(p)   # Evo FC carrier: one LARGE zone on the impact point
                 self._impact(p)
                 self.projectiles.remove(p)
 
+    def _drop_spark_zone(self, p: Projectile) -> None:
+        """EVO FIRECRACKER: leave this shot's lingering spark zone where its flight ENDED.
+
+        The card's damage-over-time is deliberately only in two places -- one large circle on the
+        primary projectile's impact point, and one small circle at the very end of each of the five
+        shrapnel bolts' flight. Dropping them along the flight path instead (the old model, every
+        1.25 tiles) painted most of a lane with DoT and made her a zoning card she is not.
+        """
+        if p.spark_end_dmg <= 0.0:
+            return
+        self.spark_zones.append([p.x, p.y, p.spec.spark_r or 0.75, p.team,
+                                 self.t + p.spec.spark_dur, p.spark_end_dmg, self.t])
+        del self.spark_zones[:-60]
+
+    def _reflects(self, u: "Unit", p: Projectile) -> bool:
+        """Does this body bounce this shot back? (Monk, Pensive Protection.)
+
+        THE ONE GENUINE CONTRADICTION ON THE PAGE, and the choice made here: the ability prose
+        says he reflects "ALL incoming projectile-based ranged attacks", while Strategy exempts
+        Spirit cards "DESPITE BEING PROJECTILES when attacking" -- the same sentence concedes they
+        are projectiles and then excludes them. The SPECIFIC list wins over the general claim:
+        it is dated (the Heal Spirit exemption is a 12/12/2022 History entry, i.e. a change TO the
+        blanket rule), it is enumerated card by card, and reading the prose literally instead
+        would hand the Monk four extra matchups the page says he loses.
+        """
+        if u.ability_active_s <= 0.0 or u.spec.ability_kind != "reflect":
+            return False
+        s = p.spec
+        if s.base in _NO_REFLECT_BASES:
+            return False
+        if s.dmg_stages:
+            return False                    # an inferno BEAM ramps; it is not a fired projectile
+        if p.label.endswith("_spark"):
+            # "The Firecracker's projectiles deal no damage to the Monk as he reflects them. This
+            # is because the projectiles themselves are split into two phases." Only phase one is
+            # reflected; the shrapnel is a separate event and simply never happens to him.
+            return False
+        if p.label.endswith("_reflect"):
+            return False                    # a reflected shot cannot be reflected again
+        return True
+
+    def _reflect_projectile(self, p: Projectile, u: "Unit") -> None:
+        """Send it back at the offender. "Any projectile the Monk reflects will have the same
+        damage as the initial source of the projectile, and will not scale up nor down to the
+        Monk's level" -- so the damage is carried over untouched.
+
+        The offender is whoever was standing at the shot's ORIGIN: Projectile records `ox, oy` but
+        not the shooter, and the origin is exactly where the shooter was when it fired. If nothing
+        is there any more (it died, or it was a crown tower) the shot goes to the closest opposing
+        Crown Tower, which is the same fallback the page states for spells.
+
+        CROWN TOWER DAMAGE: "All reflected projectiles that can splash or don't seek after a target
+        do 25% of their normal damage to Crown Towers." A seeking single-target shot keeps its own
+        published crown value instead.
+        """
+        foes = [e for e in self.units
+                if e.team != u.team and e.hp > 0 and _dist(e.x, e.y, p.ox, p.oy) <= 2.0]
+        back = min(foes, key=lambda e: _dist(e.x, e.y, p.ox, p.oy)) if foes else None
+        if back is None:
+            tws = self._enemy_towers(u.team)
+            if not tws:
+                return
+            back = min(tws, key=lambda t: _gap(u.x, u.y, t))
+        spread = p.spec.splash or p.radius > 0.0 or p.pierce
+        tower_dmg = p.dmg * 0.25 if spread else p.tower_dmg
+        self.projectiles.append(Projectile(
+            label=f"{p.spec.base}_reflect", team=u.team, x=u.x, y=u.y,
+            tx=back.x, ty=back.y, target=back, spec=p.spec,
+            dmg=p.dmg, tower_dmg=tower_dmg, radius=p.radius,
+            speed=max(p.speed, 20.0), left=_dist(u.x, u.y, back.x, back.y),
+            ground_only=p.ground_only, ox=u.x, oy=u.y))
+
     def _impact(self, p: Projectile) -> None:
+        # PENSIVE PROTECTION, before anything else this shot would have done. A reflected shot
+        # never lands on him at all -- not even the splash of an area shot aimed at him, which is
+        # the point of "anything placed in front of the Monk will not be saved from the reflection".
+        if isinstance(p.target, Unit) and p.target.hp > 0 and self._reflects(p.target, p):
+            self._reflect_projectile(p, p.target)
+            return
         spark = p.spec.multi_kind == "spark" and p.label.endswith("_projectile")
         if spark:
             # The rocket is only the CARRIER. Firecracker's published damage is PER SHRAPNEL --
@@ -3472,21 +4595,67 @@ class SimEngine:
             # target.
             if not isinstance(ref, Unit):
                 return
+            # RULING 11 (owner, 2026-08-26), NARROWED BY RULING 16 (owner, 2026-08-27): "one chain
+            # attack can never hit the same body twice" is a rule about the PRIMARY chain only.
+            # `seen` is what enforces it there. The SECONDARY (falloff) bounces MAY return to a
+            # body they already hit, but only after bouncing to a DIFFERENT body first -- they
+            # alternate, they never repeat immediately -- which resolves the ED-3 conflict between
+            # ruling 11 and the Evolution page's "can hit the same target more than once".
+            #
+            # So the exclusion set differs by half of the chain, and `block` below is that split:
+            #   primary hop   -> `seen`, every body hit so far (ruling 11, unique-forever);
+            #   secondary hop -> `{id(cur)}`, the immediately previous node and nothing else.
+            # ONE consequence worth naming: with a single enemy in arc range a secondary bounce has
+            # nowhere to alternate TO, so the chain ends there rather than re-hitting it.
             seen = {id(ref)}
             cur = ref
-            for _ in range(n - 1):
+            arc = s.chain_tiles or _CHAIN_TILES        # published per card; global is the fallback
+            # RULING 12: the first `chain_full_hits` bodies -- `ref` included, which is why the
+            # hop index below starts at 1 -- take the full hit AND the stun; everything after
+            # takes `chain_falloff` of it and NO status. 0 means "no falloff declared", i.e. the
+            # uniform chain every other card has.
+            full_n = s.chain_full_hits or n
+            late_dmg = dmg * s.chain_falloff if s.chain_falloff > 0.0 else dmg
+            # The arc projectile is COSMETIC (dmg 0) but it still lands, and `_impact` ->
+            # `_land_hit` re-applies the spec's status when it does. For a full hop that is
+            # harmless -- re-setting `stun_left` to the same 0.5 s is idempotent -- but a late
+            # bounce would have been stunned by the trail after `_multi_hit` deliberately withheld
+            # the stun. MEASURED before this: all 12 bodies stunned, exactly as before the ruling.
+            # Built once per attack rather than per hop; `replace` on a 200-field spec is not free.
+            late_spec = replace(s, stuns=False, stun_dur=0.0, slows=False, slow_dur=0.0,
+                                freezes=False, freeze_dur=0.0) if full_n < n else s
+            for hop in range(1, n):
+                late = hop >= full_n
+                # RULING 16's split exclusion. A PRIMARY hop may only take a body nothing has hit
+                # yet (`seen`); a SECONDARY hop may take any body except the one it is standing on.
                 near = [e for e in self.units
-                        if e.team != team and e.hp > 0 and id(e) not in seen
-                        and _dist(cur.x, cur.y, e.x, e.y) <= _CHAIN_TILES
+                        if e.team != team and e.hp > 0
+                        and (id(e) != id(cur) if late else id(e) not in seen)
+                        and _dist(cur.x, cur.y, e.x, e.y) <= arc
                         and not (not s.attacks_air and e.spec.flying)]
                 if not near:
                     break
-                e = min(near, key=lambda x: _dist(cur.x, cur.y, x.x, x.y))
-                self._hurt(e, dmg)
-                self._apply_status(team, s, e)
+                # FRESH BODIES FIRST, revisits only once the bolt has run out of them. Ruling 16
+                # PERMITS a secondary bounce to return to an earlier target; it does not ask the
+                # bolt to prefer one. Reading it as a bare "exclude the previous node" makes the
+                # nearest-target rule oscillate between the two closest bodies forever -- MEASURED
+                # on the 13-knight line, the chain collapsed from 12 bodies hit to 3 (total
+                # unchanged at 1151.9, but bodies 3..12 took nothing), which is a large unmeasured
+                # NERF to the card's spread and the opposite of the Evolution page's "will chain
+                # between targets infinitely". Preferring fresh targets keeps the spread, and the
+                # revisit then fires exactly where the chain used to DIE for lack of one.
+                pool = [e for e in near if id(e) not in seen] or near
+                e = min(pool, key=lambda x: _dist(cur.x, cur.y, x.x, x.y))
+                self._hurt(e, late_dmg if late else dmg)
+                if not late:
+                    self._apply_status(team, s, e)         # the stun rides the FULL hits only
+                self.arc_events.append((cur.x, cur.y, e.x, e.y, team, self.t,
+                                        "chain_late" if late else "chain"))
+                del self.arc_events[:-60]
                 self.projectiles.append(Projectile(
-                    label=f"{s.base}_chain", team=team, x=cur.x, y=cur.y, tx=e.x, ty=e.y,
-                    target=e, spec=s, dmg=0.0, tower_dmg=0.0, radius=0.0,
+                    label=f"{s.base}_chain_late" if late else f"{s.base}_chain",
+                    team=team, x=cur.x, y=cur.y, tx=e.x, ty=e.y,
+                    target=e, spec=(late_spec if late else s), dmg=0.0, tower_dmg=0.0, radius=0.0,
                     speed=max(s.proj_speed, 20.0), left=_dist(cur.x, cur.y, e.x, e.y),
                     ground_only=not s.attacks_air))
                 seen.add(id(e))
@@ -3535,20 +4704,19 @@ class SimEngine:
                 ground_only=not s.attacks_air, pierce=True,
                 width=s.proj_radius or 0.4,
                 dirx=cx / _TILES_X, diry=cy / _TILES_Y, ox=p.x, oy=p.y,
-                trail_dmg=s.spark_dps_small * 0.25)  # Evo FC shrapnel drops SMALL sparks
+                spark_end_dmg=s.spark_dps_small * 0.25)  # ONE small zone at the END of each bolt
             self.projectiles.append(shard)
             # THE IMPACT BLAST, and it is the shards themselves. "Shoots a firework that EXPLODES ON
-            # IMPACT, DAMAGING THE TARGET and showering anything behind it", with the damage figure
-            # published per shard -- "totaling 320 if all shards hit the same target". Both describe
-            # one event: all five spawn on the landing point, so whatever stands there takes all
-            # five at once, the wide blast an instant before they fan out.
+            # IMPACT, DAMAGING THE TARGET and showering anything behind it" -- and the damage figure
+            # is per shard, "totaling 320 if all shards hit the same target". The two statements are
+            # the same event: all five spawn on the landing point, so whatever is standing there
+            # takes all five at once, which is the wide blast you see an instant before they fan out.
             #
-            # It landed NOTHING on the body it hit. A piercing shot moves BEFORE its first pierce
-            # check, so every shard was already ~0.8 tiles clear of the impact by the time it looked
-            # -- MEASURED, a dead-centre target took 63 of 315. One pass at the spawn point fixes
-            # it, and p.hit stops a shard damaging that body again on its way out. Measured after:
-            # dead centre 315 (5 shards), then 189 / 126 / 63 at 1.9 / 3.8 / 6.4 tiles behind, which
-            # is the published falloff ("something closer ... will be hit by more of them").
+            # It was landing NOTHING on the target it hit. A piercing shot moves BEFORE its first
+            # pierce check, so every shard was already ~0.8 tiles clear of the impact point by the
+            # time it looked -- MEASURED, a dead-centre target took 63 of 315 (one shard's worth,
+            # and only by luck of the geometry). One pass at the spawn point fixes it; p.hit means a
+            # shard cannot then damage that body a second time on its way out.
             self._pierce_pass(shard)
 
     def _can_knock(self, e: Unit, spec: CardSpec) -> bool:
@@ -3569,6 +4737,40 @@ class SimEngine:
         if spec.knockback <= 0.0 or e.spec.kind == "building":
             return False
         return spec.knockback_all or not e.spec.knockback_immune
+
+    def _recoil(self, u: Unit, ref) -> None:
+        """The shooter shoves ITSELF backwards on firing -- Firecracker's 1 tile.
+
+        Wiki, Firecracker: "After attacking, she will recoil backwards 1 tile." (7/7/2020 dropped it
+        from 1.5 to 1.) It cuts both ways, and both directions matter to how she is played: it walks
+        her out of reach of the melee troop she is shooting -- and out of a spell aimed where she was
+        standing -- but "her repeated recoil may cause her to switch to the other lane", which is
+        the reason she is placed BEHIND the engagement rather than beside it.
+
+        Straight away from the target, since that is what "backwards" means for a unit that always
+        faces what it shoots. Not routed through _knock: nothing hit her, so knockback immunity and
+        the charge/ramp resets a real shove carries must not apply -- a recoiling Sparky keeps her
+        charge, and a knockback-immune recoiler would otherwise stop recoiling entirely.
+        """
+        r = u.spec.recoil
+        if r <= 0.0 or ref is None:
+            return
+        dx, dy = (u.x - ref.x) * _TILES_X, (u.y - ref.y) * _TILES_Y
+        d = math.hypot(dx, dy)
+        if d <= 1e-6:                       # standing on top of it: recoil toward our own side
+            dx, dy, d = 0.0, (1.0 if u.team == 0 else -1.0), 1.0
+        u.x, u.y = _clamp_xy(u.x + (dx / d) * r / _TILES_X,
+                             u.y + (dy / d) * r / _TILES_Y, u.spec.radius)
+        # ...AND RE-EVALUATE IF THE RECOIL BROKE THE ENGAGEMENT. `u.locked` means "already swinging,
+        # nothing else exists", and only an aggro reset clears it -- but the recoil deliberately does
+        # not raise one (see above: that would wipe a Sparky's charge). The result was a Firecracker
+        # who shoved herself out of her own 6 tiles and then stayed locked on a target she could no
+        # longer reach, forever: MEASURED over 40 s she made ZERO retargets and finished with her
+        # target out of reach, doing nothing while a second enemy stood well inside her range.
+        # Clearing only `locked` re-opens the choice on the next tick without touching the charge /
+        # ramp state a real shove would reset.
+        if ref is not None and _gap(u.x, u.y, ref) > u.spec.reach:
+            u.locked = False
 
     def _knock(self, e: Unit, spec: CardSpec, fx: float, fy: float,
                dx: float = 0.0, dy: float = 0.0) -> None:
@@ -3591,6 +4793,7 @@ class SimEngine:
                              e.y + (dy / d) * spec.knockback / _TILES_Y, e.spec.radius)
         e.aggro_reset = True
         e.ramp_shots = 0                                 # displacement resets the Little Prince ramp too
+        e.ramp_move_t = 0.0                              # ...and it is a HARD reset, grace or not
         e.charge_dist = 0.0                              # ...and DISARMS a charge (2026-08-15): a Log/
                                                          # Snowball hit drops a Prince/Ram back to walking
                                                          # pace; the run-up tiles must be earned again
@@ -3737,6 +4940,24 @@ class SimEngine:
         u.dmg_mult *= tw.buff_mult
 
     def _resolve_spell(self, s: _Spell) -> None:
+        if s.spec.spell_targets == "friendly":
+            # I9 -- THE OWN-TEAM PATH. Every branch below this one iterates `e.team != s.team`,
+            # so before this existed no spell in the engine could touch the caster's own army:
+            # Rage was a bare 179-damage blast with its whole buff missing, and Clone was a
+            # 3-elixir no-op. The friendly effects land FIRST, and then:
+            #   * a card that publishes NO damage stops here. Clone's attributes table has no
+            #     damage column at all, and falling through would run `_damage_tower(tw, 0.0)`
+            #     against every enemy tower in radius -- which is not free, because a zero-damage
+            #     hit on the King still ACTIVATES him.
+            #   * a card that DOES publish damage falls through and blasts as usual. That is Rage:
+            #     its Target column ("Friendly Troops & Buildings") names who it BUFFS, while its
+            #     own lead calls it "an area-damage, air-targeting spell with a medium radius and
+            #     low damage" (179 / 45 crown at L11). The two are not in conflict, they are two
+            #     halves of one card -- and reading that Target column as TARGETING is exactly the
+            #     import bug I5 had to undo.
+            self._resolve_friendly_spell(s)
+            if s.spec.spell_dmg <= 0.0 and s.spec.spell_tower_dmg <= 0.0:
+                return
         if s.spec.rolls:
             self._resolve_roll(s)
             return
@@ -3774,12 +4995,13 @@ class SimEngine:
             return
         rad = s.r_override or s.spec.spell_radius
         # A FUSED DEATH BOMB measures to the hitbox EDGE; a thrown spell measures to the centre.
-        # The immediate blast in _death_blast has always been edge-based, but a card with
-        # `death_delay_s` (Balloon, Giant Skeleton, Bomb Tower) routes through this generic
-        # path, where the radius was compared centre to centre -- silently shrinking the SAME
-        # 3-tile bomb by each target's own radius. MEASURED against a crown tower: it reached
-        # 3.0 tiles from the tower's CENTRE instead of 3.0 from its hitbox, so 1.5 tiles of
-        # the published radius were simply missing.
+        # This is not cosmetic. The immediate death blast in _death_blast has always been
+        # edge-based, but a card with `death_delay_s` (Balloon, Giant Skeleton, Bomb Tower) is
+        # routed through this generic path instead -- where the radius was compared centre to
+        # centre, silently shrinking the SAME 3-tile bomb by each target's own radius. Against a
+        # Crown Tower that is the difference between reaching from 4.5 tiles out and having to land
+        # almost inside it: the Balloon's whole point is that killing it at the tower still delivers
+        # the bomb, and it very often did not.
         edge = s.spec.blast_edge
         for e in self.units:
             if s.spec.ground_only and e.spec.flying:
@@ -3808,6 +5030,104 @@ class SimEngine:
             u.deploy_left = sp.deploy_time
             u.pulse_cd = sp.pulse_interval
             self.units.append(u)
+
+    def _resolve_friendly_spell(self, s: _Spell) -> None:
+        """The OWN-TEAM half of a friendly-target spell (I9).
+
+        Two effects ship today and both are declared entirely by the KB, so a third friendly
+        spell is a data row rather than a new branch:
+
+          * a RAGE ZONE, when the card publishes a `boost`. It is appended to the SAME
+            `rage_zones` list the Lumberjack's dropped bottle uses -- the Rage page's own lead
+            says the effect "is also the same as that spawned by the Lumberjack", so a second
+            buff system would have been two models of one mechanic. Radius 3 / Deploy Time 0.5 s
+            / Duration 4.5 s / Boost +30% is its published attributes table (revid 437309), and
+            `_rage_mult` already applies a zone to move AND attack speed, for troops and building
+            bodies alike, which is exactly what the card claims.
+          * CLONES, when the card publishes `clone_hitpoints`.
+        """
+        sp = s.spec
+        if sp.rage_boost > 0.0:
+            self.rage_zones.append((s.x, s.y, sp.rage_r, s.team,
+                                    self.t + sp.rage_delay,
+                                    self.t + sp.rage_delay + sp.rage_dur,
+                                    sp.rage_boost))
+        if sp.clone_hp > 0.0:
+            self._clone_troops(s)
+
+    def _clone_troops(self, s: _Spell) -> None:
+        """CLONE (revid 436842): "spawns fragile duplicates of all troops within its area of
+        effect BEHIND the originals ... each cloned unit has just 1 hitpoint, with buildings and
+        existing clones not subject to the effect".
+
+        THE CLONE'S SPEC IS THE ORIGINAL'S WITH THREE FIELDS REPLACED, which is what makes every
+        downstream system correct at once rather than card by card:
+          * `hp` -> Clone Hitpoints 1. The hp BAR then reads full on a 1-hp body (right), and the
+            hp-threshold transforms the page rules out come along for free -- "any troop that
+            activates a special mode when they reach a certain hitpoint threshold will not be able
+            to utilize these special modes", because 50% of 1 hp is unreachable while alive.
+          * `shield_hp` -> Clone Shield Hitpoints 1, but ONLY if the original still carries a
+            shield: "Shields can be cloned if they are still on the original unit."
+          * `elixir` -> 0. This is the "cloned units have no elixir value" semantics, and it is
+            load-bearing rather than cosmetic: the reward layer prices bodies at `spec.elixir`
+            (trade potential, spell value, the overcommit ledgers), so a cloned Skeleton Army
+            would otherwise have read as another 3 elixir of enemy investment worth paying to
+            kill. Zeroing it on the SPEC fixes every one of those call sites at once.
+
+        NOT IMPLEMENTED, deliberately: the forward shove of the ORIGINAL ("when a troop is cloned,
+        the original troop will be displaced forward slightly"). The DIRECTION is published and
+        the magnitude is not, and the magnitude is what decides whether a Balloon ends up inside
+        a Crown Tower's reach. Recorded in conflicts.md rather than guessed.
+        """
+        sp = s.spec
+        fwd = -1.0 if s.team == 0 else 1.0            # team 0 attacks toward y = 0
+        cache: dict = {}
+        made = []
+        for u in self.units:
+            if u.team != s.team or u.hp <= 0.0 or u.cloned:
+                continue                              # "existing clones not subject to the effect"
+            if u.spec.kind == "building":
+                continue                              # "Doesn't affect buildings" (card text)
+            if _dist(u.x, u.y, s.x, s.y) > sp.spell_radius:
+                continue
+            cs = cache.get(u.spec.key)
+            if cs is None:
+                cs = replace(u.spec, elixir=0, hp=sp.clone_hp,
+                             shield_hp=(sp.clone_shield_hp if u.spec.shield_hp > 0.0 else 0.0))
+                cache[u.spec.key] = cs
+            # BEHIND the original = one body-length back toward our own king.
+            cx, cy = _clamp_xy(u.x, u.y - fwd * (2.0 * u.spec.radius) / _TILES_Y, u.spec.radius)
+            nu = Unit(cs, s.team, cx, cy, sp.clone_hp)
+            nu.cloned = True
+            nu.deploy_left = sp.clone_time_s          # "decreased the cloning time to 0.5s" (12/6/2017)
+            made.append(nu)
+        self.units.extend(made)
+
+    def _heal_field(self, u: "Unit", ref) -> None:
+        """HEAL SPIRIT (revid 437344): the leap "creates a small glowing restoration field that
+        heals allied troops nearby", and the Strategy section pins WHERE -- "the Heal Spirit's
+        healing radius will spawn around the ENEMY TROOP THAT IT JUMPS ON", so it is centred on
+        the target, which is up to its own 2.5-tile reach away from the body.
+
+        A `_Zone` carries it, because a zone is already a timed field with a tick cadence; the
+        only thing this adds is a tick that heals its OWN team instead of hurting the other one.
+        Published: "4 pulses every 1 second", Time Between Pulses 0.25 sec, Radius 2.5, Target
+        Air & Ground, `heal_11` 100.25 per pulse. The pulse COUNT is enforced by the zone rather
+        than implied by the arithmetic (the I8 Ice Golem discipline), so a retuned interval can
+        never buy a fifth pulse.
+
+        Fired ONLY from the kamikaze swing. A Heal Spirit killed before it connects heals nothing,
+        which is the counterplay the page itself describes ("it is important that the barrel
+        itself defeats the Heal Spirit before the Barbarian spawns").
+        """
+        s = u.spec
+        hx = float(getattr(ref, "x", u.x))
+        hy = float(getattr(ref, "y", u.y))
+        fs = replace(s, spell_radius=s.heal_radius, zone_tick_s=s.heal_tick_s,
+                     zone_first_tick_now=True, spell_dmg=0.0, spell_tower_dmg=0.0,
+                     spell_build_dmg=0.0, zone_move_slow=0.0, zone_tiers=(),
+                     zone_spawn_n=0, spawn_spec=None)
+        self.zones.append(_Zone(u.team, hx, hy, fs, s.heal_tick_s * s.heal_pulses))
 
     def _tick_vortex(self, v: _Vortex, dt: float) -> None:
         """One step of an active tornado: drag every enemy unit toward the centre and deal the
@@ -3948,8 +5268,28 @@ class SimEngine:
             if z.tick_in > 0.0:
                 continue
             z.tick_in += sp.zone_tick_s
+            if sp.heal_amount > 0.0:
+                # I9 HEAL FIELD -- the one zone that acts on its OWN team. TROOPS ONLY: the Heal
+                # Spirit page's Strategy says outright that "the healing has no effect on
+                # buildings", which is also why the card "should not be used in X-Bow or Mortar
+                # decks". Crown towers are not troops either and take nothing. Air & Ground per
+                # the Healing Attributes table, so there is no flying test.
+                if z.healed >= sp.heal_pulses:
+                    continue
+                z.healed += 1
+                for f in self.units:
+                    if f.team != z.team or f.hp <= 0.0 or f.spec.kind == "building":
+                        continue
+                    if _dist(f.x, f.y, z.x, z.y) <= sp.spell_radius:
+                        f.hp = min(f.spec.hp, f.hp + sp.heal_amount)
+                continue
+            # A ground-only field cannot touch flyers ("it is an EARTHquake, after all"), and a
+            # RETRACTED building is normally untouchable -- except to a spell that carries
+            # hits_hidden, which is precisely why Earthquake is the efficient answer to a Tesla.
             foes = [e for e in self.units if e.team != z.team and e.hp > 0
-                    and not e.hidden and _dist(e.x, e.y, z.x, z.y) <= sp.spell_radius]
+                    and (sp.hits_hidden or not e.hidden)
+                    and not (sp.ground_only and e.spec.flying)
+                    and _dist(e.x, e.y, z.x, z.y) <= sp.spell_radius]
             tws = [tw for tw in self._enemy_towers(z.team)
                    if _dist(tw.x, tw.y, z.x, z.y) <= sp.spell_radius]
             dmg, crown = sp.spell_dmg, sp.spell_tower_dmg
@@ -3963,7 +5303,11 @@ class SimEngine:
                         dmg, crown = d_, c_
                         break
             for e in foes:
-                self._hurt(e, dmg)
+                # Buildings take the spell's BUILDING damage where it has one (Earthquake 287 vs 84
+                # per wave at level 11) -- the reason the card is in a Hog deck at all.
+                self._hurt(e, (sp.spell_build_dmg if (sp.spell_build_dmg > 0.0
+                                                      and e.spec.kind == "building") else dmg),
+                           sp.hits_hidden)
                 if sp.zone_move_slow > 0.0 and (e.slow_left <= 0.0
                                                 or e.slow_mult > 1.0 - sp.zone_move_slow):
                     # POISON: "decreases the movement speed of enemy troops by 15%" -- never
@@ -3982,7 +5326,7 @@ class SimEngine:
         fdir = -1.0 if s.team == 0 else 1.0
         halfw = s.spec.spell_radius                           # tiles
         for e in self.units:
-            if e.team == s.team or (s.spec.ground_only and e.spec.flying):
+            if e.team == s.team or (s.spec.ground_only and _airborne(e)):
                 continue
             dy = (e.y - s.y) * fdir * _TILES_Y                # forward distance along the roll (tiles)
             if -_LOG_BACK_SLOP <= dy <= s.spec.roll_len and abs(e.x - s.x) * _TILES_X <= halfw:
@@ -4023,9 +5367,44 @@ class SimEngine:
             if -_LOG_BACK_SLOP <= dy <= s.spec.roll_len and abs(tw.x - s.x) * _TILES_X <= halfw:
                 self._damage_tower(tw, s.spec.spell_tower_dmg, s.team)
                 self._apply_status(s.team, s.spec, tw)
+        # ...and the body it leaves where the roll BREAKS. `_resolve_spell` has always done this
+        # for a blast spell (Royal Delivery's Recruit); the ROLL path never did, which is why the
+        # Barbarian Barrel spawns no Barbarian in this sim at all -- MEASURED as 0 bodies, and
+        # recorded in conflicts.md as a pre-existing base-card gap. Only a rolling spell whose KB
+        # row declares `spawns_troop` is affected, which today is the HERO barrel and nothing else:
+        # the base card carries `spawn_unit_stats` (a stat table) but no spawn declaration, so its
+        # behaviour is untouched and fixing it stays its own measured commit.
+        sp = s.spec.spawn_spec
+        if sp is not None and s.spec.spawn_count > 0:
+            ey = s.y + fdir * s.spec.roll_len / _TILES_Y
+            for i in range(s.spec.spawn_count):
+                ox = (0.64 * ((i % 3) - 1) / _TILES_X) if s.spec.spawn_count > 1 else 0.0
+                bx, by = _clamp_xy(s.x + ox, ey, sp.radius)
+                nu = Unit(sp, s.team, bx, by, sp.hp)
+                nu.deploy_left = sp.deploy_time
+                self.units.append(nu)
 
     def _damage_tower(self, tw: Tower, dmg: float, by_team: int) -> None:
         if not tw.alive:
+            return
+        if dmg <= 0.0:
+            # A ZERO-DAMAGE HIT IS NOT A HIT (I9). The King wakes on DAMAGE, and five spells
+            # reach this line carrying none -- goblin_barrel, goblin_barrel_evo,
+            # goblin_barrel_decoy, royal_delivery and mirror all publish no Crown Tower damage,
+            # because on those cards it is the BODIES that do the work.
+            # MEASURED, casting each one directly on the enemy King Tower, time until he activates:
+            #     goblin_barrel      0.0 s at 0 chip  ->  1.2 s at 372.9 (the goblins land)
+            #     goblin_barrel_evo  0.0 s at 0 chip  ->  1.2 s at 372.9
+            #     royal_delivery     0.0 s at 0 chip  ->  1.2 s at 132.6 (the recruit swings)
+            #     mirror             0.0 s at 0 chip  ->  never
+            # A free king activation off a Goblin Barrel is a real edge, and Royal Delivery is the
+            # sharpest case of all: decisions.md #11 ruled that it "cannot hit crown towers" and
+            # I5 discarded its crown_tower_damage for exactly that reason -- which handed it this
+            # instead. (Graveyard and Void are NOT affected: Graveyard never reaches this call at
+            # all, and Void's crown figure comes from its count-tiered `zone_tiers`, not from
+            # `spell_tower_dmg`, so it is real damage and does wake him.)
+            # Status is untouched: `_apply_status` is a separate call at every site, so a spell
+            # that stuns a tower without chipping it still stuns it.
             return
         if tw.king:
             tw.active = True                                 # ANY hit on the king wakes it (Miner / spell chip) -- real CR
@@ -4110,3 +5489,894 @@ class SimEngine:
             if u.team != team and ((team == 0 and u.y >= _RIVER) or (team == 1 and u.y <= _RIVER)):
                 m += min(1.0, u.hp / 800.0)
         return m
+
+
+# =================================================================================================
+# CHAMPION / HERO ABILITY HANDLERS
+# =================================================================================================
+# One function per SHAPE, dispatched by `CardSpec.ability_kind` from `SimEngine.champion_ability`.
+# Every handler takes `(eng, u)` -- the engine and the champion BODY the ability fires from -- and
+# returns nothing; activation cost, single-use accounting, the cooldown and ruling 7's refund are
+# all handled by the dispatcher, so a handler only has to produce the EFFECT.
+#
+# Why a registry instead of `if spec.base == ...`: meta decks field champions we do not, I8 adds
+# ~16 hero kinds on top, and several kinds are shared between a champion and a hero (bomb,
+# guardian, reflect, soul_bank). Naming the shape lets one implementation serve both and lets a
+# KB row declare which shape it wants without an engine edit.
+#
+# Every number a handler uses comes off the spec, never a literal: the KB is the single place a
+# published figure lives, and `research/sim_parity/abilities/*.yaml` is where each one is sourced.
+
+def _ability_bomb(eng: "SimEngine", u: "Unit") -> None:
+    """MIGHTY MINER -- Explosive Escape (Mighty_Miner.wikitext, revid 437349).
+
+    Wiki: "After a 1-second delay, the Mighty Miner changes his position to the horizontally
+    mirrored position of himself. He is intangible while changing positions. He also drops a bomb
+    in the position he originally was ... dealing medium area damage to enemies around it after 1
+    second. His bomb affects both ground and air units and will also knock them back 1.8 tiles."
+
+    So it is simultaneously an escape, a lane switch and a swarm answer -- which is why firing it
+    early is the classic way to waste it: the bomb wants their counter already committed and
+    standing on him. The bomb is resolved through the same fused-spell path the Balloon and Giant
+    Skeleton death bombs use, so it inherits their delay, knockback and ground/air rules rather
+    than re-implementing them.
+    """
+    s = u.spec
+    ox, oy = u.x, u.y
+    # Built off his own spec so it keeps his team and level scaling, with every unrelated spell
+    # behaviour explicitly cleared -- the same defensive `replace` the death-bomb path uses,
+    # because a stray `pulls`/`rolls`/`spawn_count` inherited from the source card is exactly how
+    # a bomb quietly becomes a tornado.
+    bomb = replace(s, kind="spell", spell_dmg=s.ability_bomb_dmg,
+                   spell_radius=s.ability_bomb_radius or 2.0,
+                   spell_tower_dmg=0.0,          # the escape bomb is not tower damage
+                   knockback=s.ability_bomb_knock, ground_only=False,
+                   pulls=False, rolls=False, zone_s=0.0, top_n_targets=0,
+                   spawn_count=0, decoy_mirror=False, zap_pulses=0,
+                   death_dmg=0.0, death_delay_s=0.0,
+                   stuns=False, stun_dur=0.0, slows=False, slow_dur=0.0, freezes=False)
+    eng.spells.append(_Spell(u.team, ox, oy, bomb, max(0.0, s.ability_delay)))
+    # ...and he is gone: mirrored across the arena's centre line, untargetable for the transit.
+    u.x = 1.0 - ox
+    u.invis_left = max(u.invis_left, s.ability_delay)
+    u.target = None
+
+
+def _ability_movement_flight(eng: "SimEngine", u: "Unit") -> None:
+    """BOSS BANDIT -- Getaway Grenade (Boss_Bandit.wikitext, revid 437146).
+
+    Wiki: "After a 1 second delay, the Boss Bandit becomes invisible for 1 second, then teleports
+    6 tiles behind her original position. This allows her to escape any form of damage, as well as
+    give her another dash if the troops are far away enough."
+
+    The invisibility window is started here; the reappearance (and the backwards teleport itself)
+    is ticked in `_tick_units`, which is also where she re-acquires. The dash wind-up is dropped
+    on purpose and it is HER OWN doing, not the defender's -- she vanishes and reappears further
+    back, so there is nothing left standing there to finish the dash into.
+
+    NB she is the ONE champion exempt from the 4/8/2026 single-use change ("Champions and Heroes
+    (minus Boss Bandit)"), so her KB row keeps `ability_uses: 2` and a 3 s cooldown.
+    """
+    u.invis_left = u.spec.ability_invis
+    u.leap_left = 0.0
+
+
+def _ability_stealth(eng: "SimEngine", u: "Unit") -> None:
+    """ARCHER QUEEN -- Cloaking Cape (Archer_Queen.wikitext, revid 436755).
+
+    Wiki: "the Archer Queen activates her 'Cloaking Cape', becoming invisible (untargetable by
+    enemy troops), having a 80% increase in attack speed, and a massive decrease in movement speed
+    for the entire 3.5-second duration".
+
+    THE ATTACK-SPEED BUFF IS STATED THREE WAYS ON ONE PAGE and they do not agree:
+      prose    "a 80% increase in attack speed"          -> x1.8
+      table    Boost "+180%"                             -> x2.8
+      History  "attack speed buff to 180% (from 200%)"   -> x1.8
+    Resolved by the page's OWN level-table formula, which is machine-readable where the prose is
+    not: the "Damage per second (with Cloaking Cape)" column computes `Dps(dmg_11*1.80,
+    atk_speed)` -- damage x1.80 at an UNCHANGED 1.2 s hit speed, i.e. 1.8x DPS. Two of the three
+    statements land there and the table's leading "+" is the outlier. `ability_attack_speed_boost:
+    1.8` in the KB; hit interval 1.2 / 1.8 = 0.667 s.
+    (Neither reading reproduces the Strategy prose's "exactly 7 shots for the full duration" --
+    1.8x gives ~5.25 and 2.8x gives ~8.2, and 7 would need ~2.4x. That is an in-game count, queued
+    in conflicts.md, and it is not evidence for a THIRD multiplier.)
+
+    INVISIBILITY is the Royal Ghost's, not the Boss Bandit's: `ghost`, which blocks TARGETING only
+    and leaves splash and spells landing on her. The page says so from four directions -- an
+    invisible Archer Queen was FIXED to receive splash damage (8/4/2022), "since it is a spell, the
+    player can reliably hit the Archer Queen even while her ability is active", the Tesla will not
+    pop up for her, and locked-on troops retarget. `_valid_foe`'s own comment already names her.
+    Crown towers drop their lock too (they share `_valid_foe`'s rule) -- the page does not say
+    either way, and one consistent rule beats a second invisibility class.
+    """
+    s = u.spec
+    u.ability_active_s = s.ability_duration_s
+    u.ghost = True
+    u.aggro_reset = True          # "the ability can be used to divert troops towards the other lane"
+
+
+def _ability_stealth_end(eng: "SimEngine", u: "Unit") -> None:
+    u.ghost = False
+
+
+def _ability_dash_chain(eng: "SimEngine", u: "Unit") -> None:
+    """GOLDEN KNIGHT -- Dashing Dash (Golden_Knight.wikitext, revid 437147).
+
+    Wiki: "Once a unit is in range, he dashes to it quickly, then dashes towards the closest enemy
+    unit within a 5.5-tile radius (even if the previous unit was not destroyed). His dashes have
+    invulnerability and deal increased damage, like the Bandit. He cannot dash into the same troop
+    per ability use. He will stop dashing after dashing 10 times, if no other valid targets are
+    within range, or if the last target hit is a Crown Tower."
+
+    THREE TERMINATORS (owner ruling 10 as AMENDED by wiki verification): the 10-dash cap, no
+    valid target in range, and hitting a Crown Tower. Ruling 10 also settles the page's biggest
+    ambiguity -- "no targets in range" ENDS the ability; there is no pause-and-resume and no
+    return-to-origin. He stops AT THE LAST TARGET'S LOCATION and behaves as a normal troop from
+    there, which is why `_dash_end` only resets aggro.
+
+    DASH TRAVEL SPEED IS UNPUBLISHED. The table's "Very Fast (120)" is the out-of-combat movement
+    boost, not the flight. The Bandit / Boss Bandit analog of 500 (8.33 tiles/s) is used and
+    marked UNTESTED in the KB comment; the 0.05 s "Dashing Dash Delay" (3/11/2025) is read as the
+    beat BETWEEN chained dashes, which is the only reading the page leaves room for.
+    """
+    s = u.spec
+    u.dash_left = int(s.ability_max_hits or 10)
+    u.dash_hit = ()
+    u.dash_go = False
+    u.dash_ref = None
+    u.dash_time_left = 0.0
+
+
+def _ability_soul_bank(eng: "SimEngine", u: "Unit") -> None:
+    """SKELETON KING -- Soul Summoning (Skeleton_King.wikitext, revid 436753).
+
+    Wiki: "summoning a varied amount of Skeletons in a 4-tile radius around himself. The Skeletons
+    spawn 1 at a time at random positions in the circle every 0.25 seconds... With no souls, the
+    Skeleton King will spawn 6 Skeletons, but with a maximum of 10 souls, he can summon 16."
+
+    SPAWN RADIUS: 3.5, not the 4 in that sentence. The page contradicts itself and History
+    24/10/2025 is the later edit -- "decreased Soul Summoning's skeleton spawn radius to 3.5 tiles
+    (from 4 tiles)" -- so the ability prose was simply never updated. Already applied in I5.
+
+    "It continues, even if the Skeleton King dies" is honoured for free: the whole sequence is
+    queued into the engine's `_late_spawns`, which holds positions and specs rather than a
+    reference to him, so killing him mid-summon changes nothing. That reading is the only coherent
+    one (the lead paragraph scopes soul ACCRUAL to "while the Skeleton King is on the field") and
+    History 30/3/2022 corroborates it by having had to FIX a case where the summon could cancel.
+
+    "random positions in the circle" is read as uniform over the DISC, not the ring -- hence
+    sqrt(u) on the radius. The page uses both words and specifies no distribution; a ring would
+    put every Skeleton at maximum distance from him, which no screenshot of the card shows.
+
+    RULING 8 (owner): souls stop accruing once this body has spent its use. Enforced at the
+    accrual site, not here.
+    """
+    s = u.spec
+    sp = s.ability_spawn
+    if sp is None:
+        return
+    n = int(s.ability_spawn_count or 6) + int(u.souls)
+    r = s.ability_radius_tiles or 3.5
+    gap = s.ability_tick_s or 0.25
+    for i in range(n):
+        ang = eng.rng.uniform(0.0, 2.0 * math.pi)
+        rad = r * math.sqrt(eng.rng.random())               # uniform over the DISC
+        x, y = _clamp_xy(u.x + math.cos(ang) * rad / _TILES_X,
+                         u.y + math.sin(ang) * rad / _TILES_Y, sp.radius)
+        eng._late_spawns.append((eng.t + i * gap, sp, u.team, x, y, 1))
+
+
+def _ability_guardian(eng: "SimEngine", u: "Unit") -> None:
+    """LITTLE PRINCE -- Royal Rescue (Little_Prince.wikitext, revid 437347; decisions.md #13).
+
+    Wiki: "causing Guardienne to charge directly in front of the Little Prince and knock opposing
+    ground troops away by 0-2 tiles (depends on how close the unit is to the sweet spot) while
+    also doing moderate damage. After the charge is completed, Guardienne stays in the arena until
+    she's taken out."
+
+    SHE IS PERMANENT. That is stated outright and it is what makes this a `guardian` rather than a
+    timed summon -- a 3-elixir ability that leaves a 1600 HP body on the board for the rest of the
+    match. She also outlives the Prince: the page never says she dies with him, and its Strategy
+    describes killing him and then dealing with her separately.
+
+    PUSHBACK 2.5 TILES, FLAT. The page states it twice and disagrees with itself: ability prose
+    says "0-2 tiles (depends on how close the unit is to the sweet spot)", History 1/9/2025 says
+    "increased the Royal Rescue's pushback to 2.5 tiles (from 2 tiles)". The History entry is
+    later and its chain is complete and monotone (3.5 -> 2.5 -> 2 -> 2.5), so the prose is stale.
+    The graded 0-to-max version is unimplementable anyway: the page never says where the "sweet
+    spot" is or what the falloff curve looks like.
+
+    CHARGE CORRIDOR: 4 tiles of dash range plus Guardienne's 0.8-tile collision radius, which the
+    page's own Strategy adds up for you -- "Although the Royal Rescue's range is 4 tiles, the
+    Guardienne has an extra 0.8 tile collision radius, allowing her to reach slightly further".
+    Its HALF-WIDTH is not published; her collision radius is used, which is the only body-sized
+    number the page gives. Multi-target ("take out all three Goblins at once due to her charge"),
+    once each. GROUND only (Royal Rescue Attributes Target = Ground; "Minions ... are immune to
+    Guardienne's damage"), and not Crown Towers -- the Card Mastery objective's "Troops or
+    buildings" is the only hint they might be included and it does not mention towers.
+    """
+    s = u.spec
+    sp = s.ability_spawn
+    fwd = -1.0 if u.team == 0 else 1.0                   # team 0 attacks toward y = 0
+    half = (sp.radius if sp is not None else 0.8)
+    reach = (s.ability_range_tiles or 4.0) + half
+    # "directly in front" = toward whatever he is shooting at, else down his own lane. The page
+    # does not define it when he has no target, and a lane heading is the only other direction
+    # the arena gives him.
+    tx, ty = u.x, u.y + fwd * reach / _TILES_Y
+    if isinstance(u.target, Unit) and u.target.hp > 0:
+        dx = (u.target.x - u.x) * _TILES_X
+        dy = (u.target.y - u.y) * _TILES_Y
+        d = math.hypot(dx, dy)
+        if d > 1e-9:
+            tx = u.x + (dx / d) * reach / _TILES_X
+            ty = u.y + (dy / d) * reach / _TILES_Y
+    tx, ty = _clamp_xy(tx, ty, half)
+    charge = replace(s, knockback=s.ability_knock, knockback_all=True)
+    for e in list(eng.units):
+        if e.team == u.team or e.hp <= 0 or e.spec.flying:
+            continue
+        if _seg_dist(u.x, u.y, tx, ty, e.x, e.y) > half + e.spec.radius:
+            continue
+        eng._hurt(e, s.ability_dmg)
+        eng._knock(e, charge, u.x, u.y)
+    if sp is not None:
+        for _ in range(max(1, s.ability_spawn_count)):
+            eng._late_spawns.append((eng.t, sp, u.team, tx, ty, 1))
+
+
+def _ability_reflect(eng: "SimEngine", u: "Unit") -> None:
+    """MONK -- Pensive Protection (Monk.wikitext, revid 437140).
+
+    Wiki: "reducing all incoming damage he takes by 65% and reflect all incoming projectile-based
+    ranged attacks back to the said offender. Spells are always reflected to the closest opposing
+    Crown Tower. He cannot protect nearby allies from melee attacks, non-projectile ranged attacks
+    and non-projectile spells. The Monk is impervious to all forms of knockback and the Tornado's
+    pull during Pensive Protection's duration."
+
+    The three effects live in three places, because they are three different mechanics: the -65%
+    is in `_hurt` beside Evo Knight's reduction, projectile reflection is in `_impact`
+    (`_reflects` / `_reflect_projectile`, and `_NO_REFLECT_BASES` carries the page's own list of
+    what does NOT bounce), and the Fisherman's hook is NULLIFIED rather than reflected in
+    `_hook_blocked`. All this handler does is start the window.
+
+    The duration column is headed "Invulnerability Duration" and he is NOT invulnerable -- the
+    same table publishes "Damage Reduced -65%" next to it. The header is a misnomer; 4 s is the
+    number.
+    """
+    u.ability_active_s = u.spec.ability_duration_s
+
+
+def _ability_zone(eng: "SimEngine", u: "Unit") -> None:
+    """GOBLINSTEIN -- Lightning Link (Goblinstein.wikitext, revid 437348).
+
+    Wiki: "creating an electric link between him and Monster. It damages by shocking nearby
+    targets every 0.5 seconds up to 2 tiles away. This ability deals reduced damage to the Crown
+    Tower. If the Monster has already been defeated, it will drop an antenna on the ground which
+    is what the Goblinstein's electric link will target when the ability is activated."
+
+    THE FIRST SHOCK LANDS AT ACTIVATION, which makes 8 ticks over the 4 s window rather than 9.
+    The page publishes the duration and the interval and never says whether t=0 fires; 8 is the
+    figure the research file derives (4 / 0.5) and it is the reading in which the published
+    duration is the whole ability rather than the duration plus a free tick.
+    """
+    u.ability_active_s = u.spec.ability_duration_s
+    u.ability_tick_left = 0.0
+
+
+def _ability_zone_tick(eng: "SimEngine", u: "Unit") -> None:
+    """One shock. Everything within 2 tiles of the LINK, air and ground, unlimited targets, no
+    stun, with the published reduced value against Crown Towers.
+
+    ⚠ LINK GEOMETRY IS UNDEFINED ON THE PAGE and this is the choice, recorded in conflicts.md for
+    an in-game check. Three readings were available: 2 tiles from the SEGMENT joining Doctor and
+    Monster (a capsule), 2 tiles from each endpoint (two circles), or 2 tiles from the Monster end
+    alone. The capsule is taken, because the prose makes the LINK the damaging object -- "creating
+    an electric link between him and Monster. It damages by shocking nearby targets ... up to 2
+    tiles away" -- and the Strategy line that sounds like a circle ("will hit everything within a
+    2 tile radius") never names a centre, so it cannot be the deciding one. Two circles would
+    leave a hole in the middle of a tether that is drawn as a continuous arc; the Monster-only
+    reading contradicts "between him and Monster".
+
+    With the Monster dead the far end is its ANTENNA, at the position it fell. With neither, the
+    capsule degenerates to a circle on the Doctor, which is the only thing left to anchor to.
+    """
+    s = u.spec
+    ax, ay = u.x, u.y
+    far = next((e for e in eng.units
+                if e.team == u.team and e.hp > 0 and e is not u
+                and e.spec.base == s.base and e.spec.building_only), None)
+    if far is not None:
+        bx, by = far.x, far.y
+    else:
+        bx, by = eng._antenna.get(u.team, (ax, ay))
+    r = s.ability_radius_tiles or 2.0
+    for e in list(eng.units):
+        if e.team == u.team or e.hp <= 0:
+            continue
+        if _seg_dist(ax, ay, bx, by, e.x, e.y) <= r + e.spec.radius:
+            eng._hurt(e, s.ability_dmg)          # Trivia: "does not inflict a stun on the enemies"
+    for tw in eng._enemy_towers(u.team):
+        if _seg_dist(ax, ay, bx, by, tw.x, tw.y) <= r + tw.radius:
+            eng._damage_tower(tw, s.ability_crown_dmg or s.ability_dmg, u.team)
+
+
+# =================================================================================================
+# I8 -- HERO ABILITY HANDLERS
+# =================================================================================================
+# Sixteen live heroes, twelve shapes. Sources are `research/sim_parity/abilities/<key>.yaml` (the
+# frozen prose + the revid of the live revision it was read from); every conflict resolved below is
+# argued in the KB comment beside the number and recorded in conflicts.md under "I8".
+
+
+def _ability_buff_self(eng: "SimEngine", u: "Unit") -> None:
+    """A TEMPORARY SELF STANCE. Three heroes, one shape:
+
+    * BERSERKER -- Savage Survival (Berserker/Hero revid 437529 + Heroes revid 437509): "A Bear
+      spirit emerges through her, making her attacks go rapid and preventing her health from going
+      below 1 HP while dealing reduced damage to Crown Towers." 0.6 s -> 0.2 s hit speed, Fast (90)
+      -> Ultra Fast (135), a 1-hitpoint floor, -75% to crowns, 4 s.
+    * VALKYRIE -- Wild Whirlwind (Valkyrie/Hero revid 437412 + Heroes revid 437509): "Spins
+      rapidly, dealing damage and increasing her movement speed while taking less damage." An AREA
+      TICK (0.25 s, 2.5 tiles, 97) plus 15% damage reduction, 3.5 s.
+    * BOWLER -- Stone Swish (Bowler/Hero revid 437528): "the bowler will change the attack to a
+      long-ranged mortar attack for 7.3sec. Getting a total of 3 shots during that duration."
+
+    THE STANCE IS A SPEC SWAP. `ability_hit_speed` / `ability_dmg` / `ability_crown_dmg` /
+    `ability_range_tiles` are published as ABSOLUTES on these pages -- an attack profile, not a
+    modifier -- so the body wears a spec carrying them and every existing path (cadence, projectile
+    travel, crown reduction, reach, load time) reads the new numbers with no new branch. The old
+    spec is parked on `Unit.base_spec` and restored when the window closes.
+
+    THE FIRST SHOT COSTS ONE OF THE STANCE'S OWN HIT-SPEEDS, and that is what RECONCILES the Hero
+    Bowler's page with itself: 7.3 s at 1.9 s gives FOUR shots if the first lands at t=0, and
+    exactly the THREE the prose claims (1.9 / 3.8 / 5.7) if the stance pays a beat first. For the
+    Berserker the same rule costs 0.2 s of a 4 s window, which is immaterial.
+
+    A stance with a `ability_tick_s` is an AREA one instead (the Valkyrie); see the tick handler,
+    and note `_attack` suppresses her normal swing for exactly that case.
+    """
+    s = u.spec
+    u.ability_active_s = s.ability_duration_s
+    u.ability_tick_left = 0.0
+    u.ability_hits = 0
+    if s.ability_tick_s > 0.0:
+        return                                   # an AREA stance: nothing about her swing changes
+    if s.ability_hit_speed <= 0.0 and s.ability_dmg <= 0.0 and s.ability_range_tiles <= 0.0:
+        return                                   # a pure move-speed / damage-reduction stance
+    hit = s.ability_hit_speed or s.hit_speed
+    dmg = s.ability_dmg if s.ability_dmg > 0.0 else s.hit_dmg
+    if u.base_spec is None:
+        u.base_spec = s
+    reach = s.ability_range_tiles or s.reach
+    u.spec = replace(s, hit_speed=hit, hit_dmg=dmg,
+                     tower_hit_dmg=(s.ability_crown_dmg if s.ability_crown_dmg > 0.0 else dmg),
+                     dps=(dmg / hit if hit > 0.0 else dmg),
+                     reach=reach,
+                     # SIGHT GOES WITH REACH, or the stance is inert. MEASURED: the Hero Bowler
+                     # took his 11.5-tile stance and fired ZERO shots in 13 s, because `_acquire`
+                     # only notices bodies inside `spec.sight` (5.5 for him) -- he could out-range
+                     # everything and see none of it. A weapon that shoots 11.5 tiles has to look
+                     # 11.5 tiles; this is the same relationship `reach_extra` gives a siege
+                     # building. Never SHRINKS it: a stance that shortens reach keeps his eyes.
+                     sight=max(s.sight, reach),
+                     # ...and so does the PROJECTILE's flight. MEASURED: with sight and reach at
+                     # 11.5 the Hero Bowler still hit nothing at 9.5 tiles, because his boulder is
+                     # a travelling projectile capped at his body's published Projectile Range of
+                     # 7 and expired in mid-air. A stance's Range is the range of the shot it
+                     # fires, so the flight is raised with it (never lowered).
+                     proj_range=(max(s.proj_range, reach) if s.proj_speed > 0.0 else s.proj_range))
+    u.cooldown = max(u.cooldown, hit)             # the stance pays one beat before its first shot
+    u.loaded = False
+
+
+def _ability_buff_self_tick(eng: "SimEngine", u: "Unit") -> None:
+    """ONE TURN OF THE WHIRLWIND. Everything within the published radius takes the published
+    Ability Damage, ground only (her body's Target is Ground and the base card's is too), plus the
+    Crown Tower value the ability table publishes separately.
+
+    WARNING -- THE MAGNITUDE IS THE OPEN QUESTION, not the mechanic: 97 every 0.25 s for 3.5 s is 14
+    ticks, and the page never says whether Ability Damage is PER TICK or the total spread over the
+    duration. Per-tick is the reading taken -- "Hit Speed" means a cadence of hits everywhere else
+    on the wiki -- and the total it produces is MEASURED and recorded in conflicts.md so the size
+    of the choice is visible rather than buried.
+    """
+    s = u.spec
+    r = s.ability_radius_tiles
+    if r <= 0.0:
+        return
+    u.ability_hits += 1
+    for e in list(eng.units):
+        if e.team == u.team or e.hp <= 0 or e.spec.flying:
+            continue
+        if _gap(u.x, u.y, e) <= r:
+            eng._hurt(e, s.ability_dmg)
+    for tw in eng._enemy_towers(u.team):
+        if _gap(u.x, u.y, tw) <= r:
+            eng._damage_tower(tw, s.ability_crown_dmg or s.ability_dmg, u.team)
+
+
+def _ability_buff_self_end(eng: "SimEngine", u: "Unit") -> None:
+    """The stance ends: the body goes back to the spec it had. Restoring rather than rebuilding
+    from the KB is deliberate -- the parked spec carries this body's LEVEL and any other swap
+    already applied to it, and rebuilding would quietly undo them."""
+    if u.base_spec is not None:
+        u.spec, u.base_spec = u.base_spec, None
+        u.loaded = False
+
+
+def _ability_zone_pulse(eng: "SimEngine", u: "Unit") -> None:
+    """HERO ICE GOLEM -- Snowstorm (Ice Golem/Hero, revid 437514).
+
+    Wiki: "After a 1-second delay, the Hero Ice Golem activates his 'Blizzard' ability, which
+    generates a 4-tile aura radius that has 3 pulses, with each one slowing down enemy troops and
+    dealing damage."
+
+    THE AURA IS ATTACHED TO HIM, not pinned where it was cast -- "aura" is the page's own word and
+    an Ice Golem walks. Not stated either way; recorded.
+
+    THE PULSE INTERVAL IS PUBLISHED NOWHERE and this is the one genuinely invented cadence in I8,
+    which is why it is `[verify]`-marked in the KB and queued for an in-game count. 2.0 s is the
+    ability's OWN published slow duration -- the only cadence on the page -- and the window follows
+    from it (3 pulses x 2.0 s) instead of being a second guess. The pulse COUNT is enforced here as
+    well as by the window, so a retuned interval can never buy a fourth blast.
+
+    It does NOT damage Crown Towers. The ability table's Target is "Air & Ground" and publishes no
+    crown value at all, where every hero ability that does hit a tower publishes one -- so silence
+    is read as "it does not", not as "full damage" (which is what a bare fallback would give it).
+    """
+    s = u.spec
+    n = max(1, int(s.ability_max_hits or 1))
+    u.ability_hits = 0
+    u.ability_tick_left = 0.0
+    u.ability_active_s = (s.ability_tick_s or 0.0) * n
+
+
+def _ability_zone_pulse_tick(eng: "SimEngine", u: "Unit") -> None:
+    """One blast: damage plus the published slow, air AND ground, around him."""
+    s = u.spec
+    if s.ability_max_hits and u.ability_hits >= int(s.ability_max_hits):
+        return
+    u.ability_hits += 1
+    r = s.ability_radius_tiles
+    for e in list(eng.units):
+        if e.team == u.team or e.hp <= 0:
+            continue
+        if _gap(u.x, u.y, e) > r:
+            continue
+        eng._hurt(e, s.ability_dmg)
+        if s.ability_slow_s > 0.0:
+            # the ability's OWN slow pair (30% for 2 s), not the engine-wide slow_factor: a
+            # Snowstorm pulse is a weaker slow than an Ice Wizard's and the page prints both halves.
+            e.slow_left = max(e.slow_left, s.ability_slow_s)
+            e.slow_mult = s.ability_slow_mult or eng.slow_factor
+
+
+def _ability_summon(eng: "SimEngine", u: "Unit") -> None:
+    """A BODY, PLACED. Three heroes, one shape, and they differ only in the published offset:
+
+    * MUSKETEER -- Trusty Turret (Musketeer/Hero revid 437512): "placing a turret 3 tiles forward
+      of the Musketeer, which is used either as a distraction for regular troops, and as a building
+      to attract win conditions." 10 s lifetime, decaying, which the turret's own row carries.
+    * DARK PRINCE -- Destructive Dismount (Dark Prince/Hero revid 437359): "Dismount doing damage,
+      attacking on foot while Rhino charges buildings." Offset 0: the Rhino appears under him, and
+      its 307 spawn damage IS the "dismount doing damage" -- the page never separates the two.
+    * TOMBSTONE -- Regal Revive (Heroes revid 437509): "Tomb Queen rises from the earth, targeting
+      buildings." Offset 0, and the Tombstone is NOT consumed: the page never says it is.
+
+    Everything about the summoned body -- its stats, its lifetime, its spawn damage, its targeting
+    -- lives on its own curated row, so this handler only has to decide WHERE. Queued through
+    `_late_spawns` like the Skeleton King's Skeletons, which is what makes the summon survive its
+    summoner: the queue holds a position and a spec, never a reference to him.
+    """
+    s = u.spec
+    sp = s.ability_spawn
+    if sp is None:
+        return
+    fwd = -1.0 if u.team == 0 else 1.0                   # team 0 attacks toward y = 0
+    tx, ty = _clamp_xy(u.x, u.y + fwd * s.ability_range_tiles / _TILES_Y, sp.radius)
+    for _ in range(max(1, s.ability_spawn_count)):
+        eng._late_spawns.append((eng.t, sp, u.team, tx, ty, 1))
+
+
+def _ability_summon_seek(eng: "SimEngine", u: "Unit") -> None:
+    """HERO BALLOON -- Coffin Cadets (Balloon/Hero, revid 437524).
+
+    Wiki: "A Skeletrooper soars to the nearest enemy on the ground, dealing landing damage." /
+    "a skeletropper will fly towards the closest ground unit within 6 tiles, deling spawn damage.
+    The skeletropper will the attack, dealing less damage to the crown tower."
+
+    RANGE 6.5, not the prose's 6: rule (b), the ability table is the machine-readable statement.
+
+    THE LANDING DAMAGE IS SINGLE-TARGET, on the body he lands on. No radius is published anywhere
+    on the page, and inventing one is exactly what this stage does not do -- so it lands as one
+    hit rather than as a blast with a made-up circle. Recorded in conflicts.md.
+
+    "THE NEAREST ENEMY ON THE GROUND" includes BUILDINGS -- Strategy says the ability kills "units
+    like Musketeer and Wizard, or buildings" -- and Crown Towers, which is why the page publishes
+    a separate `crownlanddmg_11` at all. With nothing in range he simply drops beside the Balloon;
+    the page does not say what happens and the elixir is not refunded (ruling 7 covers a DEAD
+    body, not a wasted one).
+    """
+    s = u.spec
+    sp = s.ability_spawn
+    if sp is None:
+        return
+    r = s.ability_range_tiles
+    best, best_g, best_is_tower = None, float("inf"), False
+    for e in eng.units:
+        if e.team == u.team or e.hp <= 0 or _airborne(e) or not eng._valid_foe(u, e):
+            continue
+        g = _gap(u.x, u.y, e)
+        if g <= r and g < best_g:
+            best, best_g, best_is_tower = e, g, False
+    for tw in eng._enemy_towers(u.team):
+        g = _gap(u.x, u.y, tw)
+        if g <= r and g < best_g:
+            best, best_g, best_is_tower = tw, g, True
+    if best is None:
+        tx, ty = u.x, u.y
+    else:
+        tx, ty = best.x, best.y
+        if best_is_tower:
+            eng._damage_tower(best, s.ability_crown_dmg or s.ability_dmg, u.team)
+        else:
+            eng._hurt(best, s.ability_dmg)
+    tx, ty = _clamp_xy(tx, ty, sp.radius)
+    for _ in range(max(1, s.ability_spawn_count)):
+        eng._late_spawns.append((eng.t, sp, u.team, tx, ty, 1))
+
+
+def _ability_summon_banner(eng: "SimEngine", u: "Unit") -> None:
+    """HERO GOBLINS -- Banner Brigade (Goblins/Hero, revid 437513).
+
+    Wiki: "The ability will be disabeld until the last goblin is killed. When the last goblin dies,
+    a banner will be deployed that last 5sec. When the ability is pressed during that time, 2
+    Brigade Goblins will spawn a little behind. Brigade Goblins has the exact stats as the original
+    goblins."
+
+    `u` here is the throwaway body `champion_ability` builds at the BANNER's position -- see the
+    bodyless branch there for why. "A little behind" is quantified by History 7/4/2026: "the
+    brigade goblins now spawn a tile back from where the banner is dropped at", where BACK is
+    toward their own king.
+    """
+    s = u.spec
+    sp = s.ability_spawn
+    if sp is None:
+        return
+    back = 1.0 if u.team == 0 else -1.0                  # away from the enemy: team 0 attacks to y=0
+    n = max(1, s.ability_spawn_count)
+    for i in range(n):
+        ox = ((i % 2) * 2 - 1) * (sp.radius + 0.05) / _TILES_X   # side by side, not stacked
+        x, y = _clamp_xy(u.x + ox, u.y + back * s.ability_range_tiles / _TILES_Y, sp.radius)
+        eng._late_spawns.append((eng.t, sp, u.team, x, y, 1))
+
+
+def _ability_throw_displace(eng: "SimEngine", u: "Unit") -> None:
+    """HERO GIANT -- Heroic Hurl (Giant/Hero, revid 437510).
+
+    Wiki: "grabbing the highest HP enemy troop within 2 tiles around him and throws them
+    horizontally, also dealing damage to them when they land. While on the air, these troops are
+    untargetable by ground-targeting troops and the Earthquake, but can still take damage from
+    other spells. Air troops can be affected by the ability, but will take no damage when they
+    land." Table: Throwback Range 9, Units Affected 1, Unit Stun Duration 2 secs, Impact Damage
+    (imp_dmg_11) 135, Ability Target Air & Ground.
+
+    BUILDINGS ARE IMMUNE, which the page states from the other side: Strategy says of them "the
+    ability will do nothing against them".
+
+    "HIGHEST HP" is read as CURRENT hitpoints -- a grab that picks the biggest thing still standing
+    -- because max-hp would make the choice a static property of the card and blind to the fight
+    in front of him. Not stated; recorded.
+
+    THE FLIGHT IS INSTANT HERE, which is the engine's standing convention for a carried
+    displacement (Evo Snowball's Snow Bowling folds its untargetable window into the sweep the same
+    way). What survives is what the page attaches consequences to: 2 s of being AIR, the 2 s stun,
+    and the landing damage -- which therefore cannot be dodged in flight.
+    """
+    s = u.spec
+    r = s.ability_range_tiles
+    cands = [e for e in eng.units
+             if e.team != u.team and e.hp > 0 and e.spec.kind == "troop" and _gap(u.x, u.y, e) <= r]
+    if not cands:
+        return                        # nothing in reach: the page gates the hurl on "when a unit
+                                      # gets in range", and the bot's own AI gate asks the same
+    cands.sort(key=lambda e: -e.hp)
+    for e in cands[:max(1, int(s.ability_max_hits or 1))]:
+        # HORIZONTALLY, "across the Arena": along x, away from him, so the throw takes a defender
+        # out of the lane rather than up or down it.
+        d = 1.0 if e.x >= u.x else -1.0
+        if abs(e.x - u.x) < 1e-9:
+            d = 1.0 if u.x < 0.5 else -1.0
+        e.x, e.y = _clamp_xy(e.x + d * s.ability_knock / _TILES_X, e.y, e.spec.radius)
+        e.aggro_reset = True
+        e.charge_dist = 0.0           # a thrown Prince lands walking, not charging
+        e.stun_left = max(e.stun_left, s.ability_stun_s)
+        e.flying_left = max(e.flying_left, s.ability_stun_s)
+        if not e.spec.flying:         # "Air troops ... will take no damage when they land"
+            eng._hurt(e, s.ability_dmg)
+
+
+def _ability_taunt_shield(eng: "SimEngine", u: "Unit") -> None:
+    """HERO KNIGHT -- Triumphant Taunt (Knight/Hero, revid 437499).
+
+    Wiki: "taunting every enemy troop and building in a 7.5-tiles range, causing them to attack
+    him. He also gains a shield. Both the shield and the taunt effect last for 5 seconds, unless
+    the former is destroyed, although enemy troops and buildings will still target him afterwards
+    until he is defeated."
+
+    RADIUS 6.5, not the 7.5 the prose AND the table print: rule (a), History 2/3/2026 "decreased
+    the radius of Triumphant Taunt to 6.5 tiles (from 7.5 tiles)" names 7.5 as the old value.
+
+    A SNAPSHOT AT CAST, not a field that keeps grabbing. The page's own open question is whether a
+    unit entering the radius during the 5 s is taunted, and the prose reads as one event
+    ("taunting every enemy troop and building in a ... range"). The snapshot needs no invented
+    re-sweep cadence; the alternative is recorded in conflicts.md.
+
+    THE TWO CLAUSES ARE TWO MECHANISMS, which is what the odd "although ..." sentence is telling
+    you: for 5 s the taunt is FORCED (`taunt_ref` outranks every targeting rule), and when the
+    window closes the force is released but they are left locked onto him, so ordinary target
+    stickiness carries them "until he is defeated".
+
+    SHIELD 512 = vardefine Shild_11, the page's only absolute. Two later nerfs give no new
+    absolute, so nothing is computed from them -- flagged for an in-game read.
+    """
+    s = u.spec
+    u.ability_active_s = s.ability_duration_s
+    if s.ability_shield_hp > 0.0:
+        u.shield_left = max(u.shield_left, s.ability_shield_hp)
+    r = s.ability_radius_tiles
+    for e in list(eng.units):
+        if e.team == u.team or e.hp <= 0 or _gap(u.x, u.y, e) > r:
+            continue
+        e.taunt_ref = u
+        e.target = u
+        e.locked = False              # it has to WALK to him before it is engaged
+        e.aggro_reset = False
+
+
+def _ability_taunt_shield_end(eng: "SimEngine", u: "Unit") -> None:
+    """The 5 s window closes and THE SHIELD GOES WITH IT ("Both the shield and the taunt effect
+    last for 5 seconds") -- but the taunt does not, because the same sentence finishes "although
+    enemy troops and buildings will still target him afterwards UNTIL HE IS DEFEATED".
+
+    That final clause is the observable rule, so `taunt_ref` is left in place and cleared by his
+    death instead (lazily, in `_acquire`). Releasing it here and merely re-aiming them was tried
+    and is WRONG: MEASURED, a taunted Hog Rider re-acquired the tower on the very next tick,
+    because a building-targeter drops any lock on a body that is not a building -- so "still
+    target him afterwards" lasted one frame.
+    """
+    u.shield_left = min(u.shield_left, u.spec.shield_hp)
+
+
+def _ability_transform_levelup(eng: "SimEngine", u: "Unit") -> None:
+    """HERO MINI P.E.K.K.A. -- Breakfast Boost (Mini P.E.K.K.A./Hero, revid 437522).
+
+    Wiki: "immediately eats all the pancakes he cooked, granting him extra Levels and healing
+    himself for 30%. ... He will need 22 seconds to get one pancake meter filled, but he can also
+    get 10 seconds of progress with every attack. Every filled pancake meter increases the Levels
+    gained when his ability is used by 1, except the last meter grants 2 extra Levels. With no
+    meters, the Heroic Mini P.E.K.K.A. will gain 1 Level, but with a maximum of 3 meters, he can
+    gain 5 Levels."
+
+    ONE CLOCK, in seconds, because the page states BOTH accrual rules in seconds: time passes at
+    1x and every swing is worth another 10. Meters are that clock floor-divided by 22, capped at 3.
+
+    THE LEVELS ARE REAL LEVELS: the spec is rebuilt at `level + gain` so hitpoints and damage move
+    on the game's own percentage table (levels.py), not on a multiplier. His maximum hp therefore
+    RISES, and the heal is 30% of the new maximum -- "healing 30% of his hitpoints" (Strategy).
+    His CURRENT hitpoints are carried across unchanged, because a level-up in this game is not
+    itself a heal; the 30% is the heal, and it is applied on top.
+
+    The cap is levels.py's own (MAX_LEVEL 19) rather than the page's table, which stops at 21 --
+    the engine has no percentage row past 19 and inventing two would be inventing damage.
+    """
+    s = u.spec
+    meters = 0
+    if s.ability_charge_s > 0.0:
+        meters = min(int(s.ability_max_charges or 0), int(u.cook_s // s.ability_charge_s))
+    gain = int(s.ability_levels[min(meters, len(s.ability_levels) - 1)]) if s.ability_levels else 0
+    if gain > 0:
+        try:
+            ns = build_spec(eng.db, s.key, min(_lv.MAX_LEVEL, s.level + gain))
+        except Exception:                                  # noqa: BLE001 - never lose the heal
+            ns = None
+        if ns is not None:
+            u.spec = ns
+    if s.ability_heal_frac > 0.0:
+        u.hp = min(u.spec.hp, u.hp + u.spec.hp * s.ability_heal_frac)
+
+
+def _ability_decoy_blink(eng: "SimEngine", u: "Unit") -> None:
+    """HERO MAGIC ARCHER -- Triple Threat (Magic Archer/Hero, revid 437520).
+
+    Wiki: "the Magic Archer will teleport back, while leaving a decoy in his place. The next attack
+    now shots 3 arrows that travel longer, but with less damage." Strategy: "The ability can be
+    used to avoid damage from spells like Fireball or units like Mini P.E.K.K.A., thanks to the
+    pull back and decoy."
+
+    THE TELEPORT REUSES THE BOSS BANDIT'S FIELD (`ability_back_tiles`) because it is the same
+    mechanic. "Back" is toward his own king -- the page does not define it, and the Strategy's
+    worked example (stepping out of a Fireball aimed at the front of his push) only works that way.
+
+    THE DECOY IS INERT. The page gives it a hitpoint value and a duration and nothing else: no
+    damage, no hit speed, no range. It stands where he was -- a body to shoot at -- and vanishes
+    silently after 7 s. Whether it attacks is an open question, recorded.
+
+    THE THREE ARROWS ride ONE attack: `ability_hits` arms it and `_attack` spends it. They land as
+    one 3 x 48 hit down his existing PIERCING line rather than as three separately-aimed shots,
+    because the page publishes a count and a per-arrow damage and no spread pattern at all --
+    recorded, along with whether they pierce.
+    """
+    s = u.spec
+    ox, oy = u.x, u.y
+    back = 1.0 if u.team == 0 else -1.0
+    u.x, u.y = _clamp_xy(u.x, u.y + back * s.ability_back / _TILES_Y, s.radius)
+    u.aggro_reset = True
+    sp = s.ability_spawn
+    if sp is not None:
+        for _ in range(max(1, s.ability_spawn_count)):
+            eng._late_spawns.append((eng.t, sp, u.team, ox, oy, 1))
+    u.ability_hits = max(1, int(s.ability_max_hits or 1))     # the next attack is the triple shot
+
+
+def _ability_warp(eng: "SimEngine", u: "Unit") -> None:
+    """HERO MEGA MINION -- Wounding Warp (Mega Minion/Hero, revid 437518).
+
+    Wiki: "a marker will be deployed to the lowest hitpoint target. When that unit dies, the mark
+    will move to the next unit. When the ability is preased, Mega Minion will teleport to that
+    tile, dealing damage. Afterwards the Mega Minion will behave normally, but with -75% on the
+    tower." Table: Teleport Range Infinite, Crown Tower Damage 25%, warpdmg_11 399.
+
+    THE MARK IS COMPUTED AT ACTIVATION rather than tracked from deployment, and the two are the
+    same thing: a marker defined as "the lowest-hitpoint enemy, moving on when that one dies" is
+    always pointing at the lowest-hitpoint enemy alive right now. CURRENT hitpoints, not max --
+    "lowest hitpoint target" of a marker that follows deaths is a reading of the board. Recorded.
+
+    NO RANGE CHECK, because the table publishes "Infinite" -- the KB carries no range for it at all.
+
+    THE TOWER PENALTY IS PERMANENT and lands here: History 4/8/2026 says the reduction "is now
+    permanent" (implying it used to expire) and the prose scopes it to "afterwards", i.e. from the
+    warp on. The 1.5 s "first target delay" (History 7/4/2026: "could no longer instantly spawn to
+    targeted troop when ability is activated") is the beat he pays before he can swing on arrival.
+    """
+    s = u.spec
+    foes = [e for e in eng.units
+            if e.team != u.team and e.hp > 0 and e.spec.kind == "troop" and eng._valid_foe(u, e)]
+    if not foes:
+        return
+    tgt = min(foes, key=lambda e: e.hp)
+    u.x, u.y = _clamp_xy(tgt.x, tgt.y, s.radius)
+    eng._hurt(tgt, s.ability_dmg)
+    if s.ability_tower_mult > 0.0:
+        u.spec = replace(s, tower_hit_dmg=s.tower_hit_dmg * s.ability_tower_mult)
+    u.target, u.locked, u.aggro_reset = tgt, False, True
+    u.cooldown = max(u.cooldown, s.ability_tick_s)
+    u.loaded = False
+
+
+def _ability_reroll(eng: "SimEngine", u: "Unit") -> None:
+    """HERO BARBARIAN BARREL -- Rowdy Reroll (Barbarian Barrel/Hero, revid 437523).
+
+    Wiki: "When activatet, the Barbarian Barrel will roll for a second time, while healling the
+    barbarian for 50% of the damage." Table: Range 3 (History 4/5/2026, "from 4 tiles"), Width 2.6,
+    Damage Healed 50%.
+
+    `u` IS THE BARBARIAN. The card is a spell and a spell has no body to press a button from, so
+    build_spec hands a spell's ability block to the troop it leaves behind. The second roll
+    therefore starts where HE is and runs forward -- the page never says where it starts, and his
+    position is the only anchor it leaves. Recorded.
+
+    THE ROLL IS THE ENGINE'S OWN ROLLING-SPELL CORRIDOR (`_resolve_roll`), so it inherits the
+    Log-family geometry, the ground-only rule and the tower chip rather than reimplementing them.
+    Barbarian Barrel knockback was REMOVED on 3/9/2018 and stays removed here.
+
+    THE HEAL IS LIFESTEAL on the damage this roll deals, measured by diffing what it took off. The
+    table's label is "Damage Healed", which names DAMAGE as the thing being converted; the
+    competing reading ("50% of the damage he has taken") is recorded in conflicts.md.
+
+    ONE PRE-EXISTING GAP, MEASURED and recorded: the BASE Barbarian Barrel spawns no barbarian at
+    all in this sim, so `spawns_troop` is curated on the hero row only -- fixing the base card is a
+    pool-wide change to 198 decks and belongs to its own measured commit, not to this one.
+    """
+    s = u.spec
+    roll = replace(s, kind="spell", spell_dmg=s.ability_dmg,
+                   spell_tower_dmg=s.ability_crown_dmg or s.ability_dmg,
+                   spell_radius=s.ability_radius_tiles, roll_len=s.ability_range_tiles,
+                   ground_only=True, knockback=0.0, knockback_all=False, carry_roll=False,
+                   pulls=False, rolls=True, zone_s=0.0, spawn_count=0, spawn_spec=None,
+                   decoy_mirror=False, zap_pulses=0, death_dmg=0.0, death_delay_s=0.0,
+                   stuns=False, stun_dur=0.0, slows=False, slow_dur=0.0, freezes=False,
+                   ability_kind="")
+    hp0 = sum(e.hp for e in eng.units if e.team != u.team)
+    chip0 = eng.chip[u.team]
+    eng._resolve_roll(_Spell(u.team, u.x, u.y, roll, 0.0))
+    # what the roll actually took off: enemy hitpoints plus tower chip, which is where
+    # `_damage_tower` books it. Measured rather than assumed, so the heal follows the corridor's
+    # real coverage instead of its nominal damage.
+    dealt = max(0.0, hp0 - sum(e.hp for e in eng.units if e.team != u.team)) \
+        + max(0.0, eng.chip[u.team] - chip0)
+    if s.ability_heal_frac > 0.0 and dealt > 0.0:
+        u.hp = min(s.hp, u.hp + dealt * s.ability_heal_frac)
+
+
+def _ability_flight_nado(eng: "SimEngine", u: "Unit") -> None:
+    """HERO WIZARD -- Fiery Flight (Wizard/Hero, revid 437515).
+
+    Wiki: "makes him take flight for 5 seconds. While he is flying, not only he will get a 50%
+    movement speed increase (now classified as fast), his fireballs also create 3 tile radius
+    tornadoes, which does its own damage (reduced against crown towers), similar to the Evolved
+    Valkyrie."
+
+    THREE EFFECTS, NONE OF THEM NEW CODE. Flight is `flying_left` (the same field a thrown body
+    gets); the speed boost is the existing `ability_move_speed` branch in `_tick_units`; the
+    tornadoes are the Evo Valkyrie's `attack_nado_*` vortex behind an ability gate, which is what
+    the page itself asks for by naming her.
+
+    TORNADO RADIUS 4, not the prose's 3, and ability cost 1, not the infobox's 2: rule (b) both
+    times. The cost is a genuine 2-vs-2 split (infobox + prose twice against the on-page ability
+    table + the Heroes master table) and is recorded in conflicts.md.
+    """
+    s = u.spec
+    u.ability_active_s = s.ability_duration_s
+    u.flying_left = max(u.flying_left, s.ability_duration_s)
+
+
+def _ability_flight_nado_end(eng: "SimEngine", u: "Unit") -> None:
+    u.flying_left = 0.0
+
+
+# THE REGISTRY. `ability_kind` -> handler. A card whose KB row names a kind that is not in here
+# gets its activation REFUSED (see champion_ability) rather than silently doing nothing, so a
+# typo in the KB is loud.
+ABILITY_KINDS = {
+    "bomb": _ability_bomb,
+    "movement_flight": _ability_movement_flight,
+    "stealth": _ability_stealth,
+    "dash_chain": _ability_dash_chain,
+    "soul_bank": _ability_soul_bank,
+    "guardian": _ability_guardian,
+    "reflect": _ability_reflect,
+    "zone": _ability_zone,
+    # ---- I8 heroes ----
+    "buff_self": _ability_buff_self,          # berserker, valkyrie, bowler
+    "zone_pulse": _ability_zone_pulse,        # ice_golem
+    "summon": _ability_summon,                # musketeer, dark_prince, tombstone
+    "summon_seek": _ability_summon_seek,      # balloon
+    "summon_banner": _ability_summon_banner,  # goblins
+    "throw_displace": _ability_throw_displace,    # giant
+    "taunt_shield": _ability_taunt_shield,        # knight
+    "transform_levelup": _ability_transform_levelup,   # mini_pekka
+    "decoy_blink": _ability_decoy_blink,      # magic_archer
+    "warp": _ability_warp,                    # mega_minion
+    "reroll": _ability_reroll,                # barbarian_barrel
+    "flight_nado": _ability_flight_nado,      # wizard
+}
+
+# Optional per-kind hooks for an ability that RUNS for a while: `ABILITY_TICKS` fires every
+# `ability_tick_s` while it is active, `ABILITY_ENDS` once when the duration expires. Sparse on
+# purpose -- most kinds resolve at activation and need neither.
+ABILITY_TICKS = {
+    "zone": _ability_zone_tick,
+    "buff_self": _ability_buff_self_tick,     # the Hero Valkyrie's whirlwind; the other two
+                                              # buff_self heroes carry no tick and never fire it
+    "zone_pulse": _ability_zone_pulse_tick,
+}
+ABILITY_ENDS = {
+    "stealth": _ability_stealth_end,
+    "buff_self": _ability_buff_self_end,      # put the pre-stance spec back
+    "taunt_shield": _ability_taunt_shield_end,
+    "flight_nado": _ability_flight_nado_end,
+}
+
+# KINDS THAT ONLY EXIST WITHOUT A BODY. Banner Brigade is the only one: it is pressed from the
+# banner the last dying Goblin drops, so a living body must NOT satisfy champion_ability's
+# has-a-body test. See the bodyless branch there and `SimEngine._banner`.
+_ABILITY_BODYLESS = frozenset({"summon_banner"})
+
+# KINDS THAT RESOLVE AT ACTIVATION rather than when `ability_delay` expires. Both predate the
+# registry and carry the delay inside their own effect (the Mighty Miner's 1 s fuse and 1 s
+# intangible transit; the Boss Bandit's 1 s invisibility before the teleport), so deferring them
+# would double-count the wait and move behaviour their tests pin. Everything added since is
+# deferred, which is what makes ruling 7's refund reachable.
+_ABILITY_AT_ONCE = frozenset({"bomb", "movement_flight"})

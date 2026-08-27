@@ -192,11 +192,23 @@ class SimMatchEnv:
         # hogeq's Earthquake could not be put on an enemy building at all, which made the deck's
         # signature Hog+EQ combo an action the policy was incapable of taking. Miner (and Goblin
         # Drill) stay in on their own merit: deploy-anywhere TROOPS, not spells.
+        #
+        # ...WITH ONE EXCEPTION, and it is a KB flag rather than another literal so the next one is
+        # data (RULING 18, owner 2026-08-27): Royal Delivery "can only be cast on the caster's half
+        # of the map (and whatever pocket presents itself)". It is a spell that DROPS A TROOP, so
+        # it is placed like a troop. Cards revid 437053 says the same independently: "spells ... can
+        # be cast anywhere in the battlefield (with the exception of The Log, Barbarian Barrel, and
+        # Royal Delivery)".
+        # THE 2026-08 FIX ABOVE IS NOT BEING UNDONE. Only cards that carry `own_half_only` leave the
+        # set; every genuine anywhere-spell (rocket, tornado, the log, earthquake, fireball, ...)
+        # stays in it, and a test asserts exactly that so this cannot silently regress to the old
+        # "every spell was forbidden from the enemy half" bug.
+        self.own_half_spell_ids = {i for i in range(len(self.deck_keys))
+                                   if self.specs[i].own_half_only}
         self.anywhere_ids = {i for i, k in enumerate(self.deck_keys)
                              if (self.specs[i].kind == "spell"
-                                 or _base(k) in ("miner", "goblin_drill"))}
+                                 or _base(k) in ("miner", "goblin_drill"))} - self.own_half_spell_ids
         self.miner_ids = {i for i, k in enumerate(self.deck_keys) if _base(k) == "miner"}
-        self.xbow_ids = {i for i, k in enumerate(self.deck_keys) if _base(k) == "x_bow"}
         # Stage 3: your deck's KB profiles (played-card role) + the last identity block, for the
         # role-based COUNTER reward (played the right answer to a RECOGNISED threat). Off unless use_detector.
         self._deck_profiles = [card_threat.profile(self.db, _base(k)) for k in self.deck_keys]
@@ -262,7 +274,6 @@ class SimMatchEnv:
         self.tower_chip_scale = r("tower_chip_scale", 0.3)   # convex chip POOL per tower (small; the crown is the jump)
         self.chip_power = float(cfg.get("env", "tower_chip_power", default=2.0))   # >1 -> partial chip sub-proportional
         # --- doctrine GEOMETRY (kept: the win-condition / counter checks the correctness terms use) ---
-        self.combo_mult = float(cfg.get("rewards", "rocket_combo_mult", default=3.0))   # rocket 2-for-1 = wincon_exec x this
         self.intercept_lane = float(cfg.get("env", "intercept_lane", default=0.15))     # same-lane tolerance for an intercept
         self.quiet_board_free_elixir = float(cfg.get("env", "quiet_board_free_elixir", default=8.0))
         # Wincon-bank parameters, mirrored for the threat_miss_idle waiver (see that method): the
@@ -282,9 +293,12 @@ class SimMatchEnv:
             if _missing:
                 raise ValueError("sim.wincon_cards names %s, which are not in the deck (%s)"
                                  % (sorted(_missing), ", ".join(sorted({_base(k) for k in self.deck_keys}))))
-        else:   # back-compat: the IceBow derivation, kept so existing configs behave identically
-            self.wincon_ids = ({i for i, k in enumerate(self.deck_keys) if _base(k) == "x_bow"}
-                               | {i for i, k in enumerate(self.deck_keys) if _base(k) == "rocket"})
+        else:   # I10: this was the IceBow derivation (x_bow | rocket), which is the EMPTY SET
+            # for this deck -- exactly the silent trap the comment above describes. hogeq sets
+            # sim.wincon_cards, so the fallback is unreachable and is now the error it should
+            # always have been.
+            raise ValueError("sim.wincon_cards is not set: this deck has no declared win "
+                             "condition, so every wincon term would silently price nothing")
         self._bank_wincon_ids = set(self.wincon_ids)
         self._bank_wincon_cost = min((float(self.specs[i].elixir) for i in self.wincon_ids), default=0.0)
         # Tower level for the triage waiver in _threat_miss_idle (clashrl.threat_value).
@@ -298,43 +312,12 @@ class SimMatchEnv:
         self.punish_opp_elixir = float(cfg.get("env", "punish_opp_elixir", default=4.0))
         self.punish_elixir_gap = float(cfg.get("env", "punish_elixir_gap", default=4.0))
         self.punish_blocker_min_hp = float(cfg.get("env", "punish_blocker_min_hp", default=600.0))
-        self.xbow_punish_mult = float(cfg.get("rewards", "xbow_punish_mult", default=1.5))
-        # X-BOW LEDGER REPAIR (2026-08-14, user-directed; findings in log). The bow's value is
-        # DELAYED (chip over 10-30 s at (gamma*lambda)^dt = 0.94^dt reach-back: +15 s arrives at
-        # 0.40 strength) and INSTRUMENTAL (a thwarted bow that drew a 9-elixir answer did its
-        # job). The old ledger paid geometry once (+0.8) and billed the death (-0.6 Phi), while
-        # the convex chip pool muted the bow's whole product (20-30% chip ~ +0.01-0.03) -- so a
-        # bow play netted <= 0 in essentially every line and the head RATIONALLY learned
-        # never-bow (raw logit -7 within minutes of the repair). Three dense-but-capped lanes +
-        # doctrine context modifiers fix the ledger. Sources: the 3.5 IceBow + 3.0 X-Bow deck
-        # guides (Hunter-lineage doctrine): "never X-Bow the bridge first play", "if they invest
-        # a high cost tank at the back, immediately X-Bow opposite lane" (SAME lane vs a Lava
-        # Hound), "Little Prince/Evolved Bomber ... wrecks a X-Bow" -> discount when seen.
         # FIX 6 (2026-08-25): the CHEAP ANSWER IN THE OTHER LANE. Scaled by that lane's own danger
         # relative to the primary's, so "cheapest sufficient answer" is priced rather than ruled.
         self.w_threat_2nd = r("threat_response_secondary", 1.0)
-        self.w_bow_over = r("xbow_overcommit", 0.08)          # per enemy elixir drawn beyond the bow's 6
-        # A FORWARD BOW PLANTED INTO A COMMITTED PUSH. See _xbow_into_push for the measurement that
-        # forced this: nothing anywhere priced the bow dying to the push it was dropped on top of,
-        # so the leak penalty alone made it a GOOD play at high elixir.
-        self.w_bow_into_push = r("xbow_into_push", -4.0)
-        self.bow_push_radius = float(cfg.get("sim", "xbow_push_radius_tiles", default=5.0))
-        # How far from the river still counts as a FORWARD (win-condition) bow. 4.0 tiles
-        # covers the two frontmost deployable rows; the defensive centre band starts beyond.
-        self.bow_forward_tiles = float(cfg.get("sim", "xbow_forward_tiles", default=4.0))
-        # A forward bow that leaves the defence unable to answer a live push. See
-        # _xbow_overaggression -- it covers the window where threat_miss_idle goes silent.
-        self.w_bow_overaggro = r("xbow_overaggression", -3.0)
         # Share of a push a card must be able to remove to count as a real ANSWER rather
         # than support. See _counter_contribution.
         self.counter_min_share = float(cfg.get("sim", "counter_min_share", default=0.35))
-        self.bow_over_cap = float(cfg.get("rewards", "xbow_overcommit_cap", default=0.5))
-        self.w_bow_lock = r("xbow_lock_tick", 0.02)           # per second the bow is TOWER-LOCKED...
-        self.bow_lock_cap = float(cfg.get("rewards", "xbow_lock_cap", default=0.4))   # ...capped per bow
-        self.w_bow_chip = r("xbow_chip_linear", 0.15)         # LINEAR chip lane while a bow stands
-        self.bow_first_frac = float(cfg.get("rewards", "xbow_first_play_frac", default=0.25))
-        self.bow_hostile_frac = float(cfg.get("rewards", "xbow_hostile_frac", default=0.6))
-        self._bow_hostile_keys = {"little_prince", "bomber_evo"}
         self.value_norm = float(cfg.get("env", "value_norm", default=10.0))             # elixir-value normaliser for the trade term
         self.trade_cap = float(cfg.get("env", "trade_cap", default=1.0))
         self.trade_deadband = float(cfg.get("rewards", "sim_trade_deadband", default=0.05))  # (v3 ledger: unused)
@@ -366,28 +349,11 @@ class SimMatchEnv:
         self._cf_watch: list = []
         # NB the sim's geometry lives under `sim.*` in TILES, not the `env.*` keys the LIVE env uses:
         # those are screen-space normalised distances on a foreshortened phone frame.
-        self.xbow_range = float(cfg.get("sim", "xbow_range_tiles", default=11.5))       # siege sight
-        self.xbow_front = float(cfg.get("sim", "xbow_defense_front", default=0.56))     # normalised y band
-        self.xbow_back = float(cfg.get("sim", "xbow_defense_back", default=0.66))
-        self.xbow_deep_frac = float(cfg.get("rewards", "xbow_deep_frac", default=0.25))
-        self.xbow_lane_frac = float(cfg.get("rewards", "xbow_lane_frac", default=0.35))
-        self.rocket_ids = {i for i, k in enumerate(self.deck_keys) if _base(k) == "rocket"}
-        self.xbow_success_frac = float(cfg.get("env", "xbow_success_frac", default=0.30))
-        self.rocket_combo_hp_frac = float(cfg.get("env", "rocket_combo_hp_frac", default=1.5))  # support ~one-shot
-        self.rocket_combo_radius = float(cfg.get("sim", "rocket_combo_tiles", default=3.5))   # support near the aimed tower
-        self.pump_window = float(cfg.get("env", "pump_rocket_window_s", default=12.0))  # rocket the pump within this of its deploy
-        # CONDITIONAL ROCKET VALUE (see _rocket_value). A rocket is not worth a fixed amount: the
-        # same cast is a game-winning tiebreak chip or six elixir thrown at three Skeletons
-        # depending entirely on the board and the clock.
-        self.rocket_min_worth = float(cfg.get("env", "rocket_min_worth", default=4.0))   # elixir in the blast to count as VALUE
-        self.rocket_nado_mult = float(cfg.get("rewards", "rocket_nado_mult", default=3.0))   # tornado-bundled rocket = 2-for-1 class
-        self.rocket_nado_s = float(cfg.get("env", "rocket_nado_window_s", default=2.5))      # combo timing window
-        self.rocket_chip_behind = float(cfg.get("rewards", "rocket_chip_behind", default=1.2))  # losing/level the tiebreak race
-        self.rocket_chip_ahead = float(cfg.get("rewards", "rocket_chip_ahead", default=0.35))   # already ahead on it
-        self.rocket_chip_early = float(cfg.get("rewards", "rocket_chip_early", default=0.25))   # regulation, bow still the plan
-        self.rocket_emergency = float(cfg.get("rewards", "rocket_emergency", default=0.8))      # only answer left in hand
-        self.rocket_waste_mult = float(cfg.get("rewards", "rocket_waste_mult", default=0.5))    # x wincon_misplace for cheap bodies
-        self._rocket_dmg = float(self.specs[next(iter(self.rocket_ids))].spell_dmg) if self.rocket_ids else 0.0
+        # WIN-CONDITION SUCCESS GAUGE. Deck-neutral and LIVE for this deck: the overtime phase
+        # switch at the end of step() reads it against our cumulative enemy-tower chip. The
+        # config key keeps its historical `env.xbow_success_frac` name so no deck's tuning
+        # file has to move; only the attribute is renamed off the X-Bow.
+        self.wincon_success_frac = float(cfg.get("env", "xbow_success_frac", default=0.30))
         self.spell_aim_radius = float(cfg.get("sim", "spell_tower_aim_tiles", default=3.8))
         # (soft) discourage a DAMAGE spell cast into emptiness (no unit in its blast + not aimed at a tower)
         self.damage_spell_ids = {i for i in range(self.n_cards)
@@ -402,25 +368,6 @@ class SimMatchEnv:
         # a good offensive rocket earns +10 -- the policy was being told defending does not matter.
         self.w_spell_defence = r("spell_defence", 1.0)
         self.spell_defence_cap = float(cfg.get("rewards", "spell_defence_cap", default=1.5))
-        # TORNADO execution shaping (positive-only, soft, inside the correctness cap): the pull's value
-        # is COMPOSITE + DELAYED (clump -> splash/rocket, king activation, dragging a wincon off a
-        # tower), which plain outcome terms barely see -- so a WELL-EXECUTED pull is credited by its
-        # MECHANICAL effect, measured from engine ground truth a couple of steps after the cast.
-        # n_step >= 3 carries the delayed credit back to the cast action.
-        self.w_nado_clump = r("nado_clump", 0.25)          # per extra enemy clumped at the vortex centre
-        self.w_nado_combo = r("nado_combo", 0.6)           # >=2 pulled enemies dead shortly after (splash/rocket payoff)
-        self.w_nado_king = r("nado_king_activate", 0.5)    # pull activated your sleeping king (once/match)
-        # BAD PULL (2026-08-19, user request): a tornado whose pulled units SURVIVE the window,
-        # earned no kill combo and no king activation, and ended up CLOSER to our princess towers
-        # than where the pull found them -- the cast actively improved the enemy's position.
-        # Ground truth from the engine, the live twin approximates via the team tracker.
-        self.w_nado_bad = r("nado_bad", -0.3)
-        self.w_nado_retarget = r("nado_retarget", 0.4)     # dragged a tower-locked wincon off your tower
-        # HOW LONG THE VORTEX KEEPS CATCHING. A tornado pulls continuously rather than snapping
-        # once, so membership accrues across this window instead of being snapshotted at the cast
-        # -- see _nado_catch, where a cast-time snapshot was measuring the board one agent step
-        # before the pull it was meant to describe.
-        self.nado_pull_window = float(cfg.get("sim", "nado_pull_window", default=1.0))
         # SIEGE WINDOW (2026-08-15, user doctrine): the offensive phase now runs until OVERTIME
         # begins, not until double elixir does. Flipping at 2x (regulation - 60 s) surrendered
         # the siege a full minute early -- exactly the minute where DOUBLE elixir makes a
@@ -494,9 +441,18 @@ class SimMatchEnv:
         Single use (4/8/2026 balance) is counted per BODY, so a Mighty Miner who dies and is cycled
         back brings a fresh activation with him.
         """
-        return any(u.team == 0 and u.hp > 0 and u.spec.ability_bomb_dmg > 0.0
-                   and u.ability_cd_left <= 0.0 and self.eng._ability_uses_left(u) > 0
-                   for u in self.eng.units)
+        # RULING 5 (I7): the button belongs to the NEWEST living champion body, so the MASK has
+        # to ask the same body the engine will act on. `any(...)` over every body would light the
+        # slot up because an OLDER champion still had a use, the policy would spend the action,
+        # and `champion_ability` would refuse it -- a legal-looking action that can never work.
+        # `ability_kind` replaces the `ability_bomb_dmg > 0` truthiness test for the same reason
+        # the engine dropped it: it is one card's number standing in for "has an ability".
+        bodies = [u for u in self.eng.units
+                  if u.team == 0 and u.hp > 0 and u.spec.ability_kind]
+        if not bodies:
+            return False
+        newest = max(bodies, key=lambda u: u.deploy_seq)
+        return newest.ability_cd_left <= 0.0 and self.eng._ability_uses_left(newest) > 0
 
     def _play_slot(self, card_id: int) -> None:
         """Consume a played identity: bank/spend its slot's Evolution charge, then send the slot to
@@ -599,6 +555,16 @@ class SimMatchEnv:
         self.domain_rand.resample()      # a new 'arena look' each match (stable within the match)
         self.opponent = (self.opponent_provider(self) if self.opponent_provider is not None
                          else make_opponent(self.cfg, self.db, self.rng, self.meta_pool))
+        # THE OPPONENT'S TOWER TROOP IS THE DECK'S, not a roll (I8). `support:` is MEASURED per
+        # deck from top-ladder battlelogs (R4) and had been inert since it was imported -- parsed,
+        # carried, validated and read by nobody, while `eng.reset()` rolled one from a config
+        # weight table. It has to happen HERE rather than in reset(): the towers are built before
+        # the opponent exists, so the roll stands as the fallback and this overrides it for the
+        # 235 decks whose battlelog actually named one. A SelfPlayOpponent carries no deck entry
+        # and keeps the roll.
+        _sup = getattr(self.opponent, "support", None)
+        if _sup:
+            self.eng.set_tower_troop(1, _sup[0] if isinstance(_sup, (list, tuple)) else _sup)
         self.cycle = list(range(self.n_slots))
         self.rng.shuffle(self.cycle)
         self.evo_charge = [0] * self.n_slots     # match starts with every Evolution UNCHARGED
@@ -612,11 +578,8 @@ class SimMatchEnv:
         self._prev_chip_prog_def = 0.0   # convex own-tower chip progress (defense)
         self._prev_my_crowns = 0
         self._prev_op_crowns = 0
-        self._defensive = False          # icebow phase: False = offensive X-Bow win-condition; True = defence + rocket-cycle
-        self._enemy_chip_total = 0.0     # cumulative enemy-tower HP the X-Bow/rocket has chipped (X-Bow success gauge)
-        self._ally_xbow_standing = False  # pre-deploy read for the wincon repeat-credit gate
-        self._bow_ledger = {}             # id(bow) -> {ids, cost, lock}: overcommit + uptime ledgers
-        self._enemy_seen = set()          # enemy spec.keys fielded this match (context modifiers)
+        self._defensive = False          # phase: False = press the win condition; True = defend the lead
+        self._enemy_chip_total = 0.0     # cumulative enemy-tower HP we have chipped (win-condition success gauge)
         self._ev_enemy, self._ev_own, self._ev_spells = {}, {}, []   # trade event ledger
         self._threat_credits = 0          # threat-response credits paid this episode (budgeted)
         self._pending_spell_checks = []   # damage-spell casts awaiting their impact verdict
@@ -656,8 +619,6 @@ class SimMatchEnv:
             if p.kind == "troop" and not p.swarm
             and (p.tank or float(p.hitpoints or 0.0) >= self.punish_blocker_min_hp)
         }
-        self._nado_watch = []            # in-flight tornado casts awaiting their delayed execution credit
-        self._nado_king_credited = False
         self._reset_vectors()
         self._update_vectors()
         return self._last_obs
@@ -1027,16 +988,6 @@ class SimMatchEnv:
         return ((opp < self._opp_block_cost)
                 or (mine - opp >= self.punish_elixir_gap))
 
-    def _bow_split_punish(self, nx: float) -> bool:
-        """The guide's tank-investment punish: a heavy enemy tank committed DEEP in their own
-        territory means an immediate bow is answered late -- OPPOSITE lane for ground tanks
-        (splits their push), SAME lane for a Lava Hound (forces the ground answer early)."""
-        for u in self.eng.units:
-            if (u.team == 1 and u.hp > 0 and u.spec.kind == "troop"
-                    and u.spec.elixir >= 5 and u.spec.hp >= 2000 and u.y < 0.25):
-                same = (u.x - 0.5) * (nx - 0.5) > 0.0
-                return same if u.spec.flying else not same
-        return False
 
     def _support_alone(self, card_id: int, nx: float, ny: float) -> float:
         """A SUPPORT troop played with nothing to support and nothing to defend is a misplace.
@@ -1167,8 +1118,7 @@ class SimMatchEnv:
         thrown away. Non-win-condition cards return 0 (they're scored by threat_response / the trade term)."""
         princesses = [t for t in self.eng.towers[1][:2] if t.alive]
         d = min((tile_dist(nx, ny, t.x, t.y) for t in princesses), default=99.0)   # tiles
-        if card_id in getattr(self, "wincon_ids", ()) and card_id not in self.xbow_ids \
-                and card_id not in self.rocket_ids and card_id not in self.miner_ids:
+        if card_id in getattr(self, "wincon_ids", ()) and card_id not in self.miner_ids:
             return self._hog_wincon(card_id, nx, ny)
         _syn = self._hog_synergy(card_id, nx, ny)
         if _syn:
@@ -1176,63 +1126,6 @@ class SimMatchEnv:
         _alone = self._support_alone(card_id, nx, ny)
         if _alone:
             return _alone                                # a support troop out on its own
-        if card_id in self.xbow_ids:
-            # "back-centre" = the CENTER INTERCEPT band behind the bridge (where a Tesla would sit), NOT
-            # behind the princess towers. In-band = full credit; DEEPER than the towers = a small fraction
-            # (soft shaping: rarely useful, but not punished like a true misplace).
-            central = abs(nx - 0.5) <= 0.18
-            in_band = central and self.xbow_front <= ny <= self.xbow_back
-            behind = central and ny > self.xbow_back
-            frac = 1.0 if in_band else (self.xbow_deep_frac if behind else 0.0)
-            if frac == 0.0 and self.xbow_front <= ny <= self.xbow_back + 0.10:
-                # LANE-BOW SOFTENING (2026-08-15): an off-centre bow at defensive depth is a
-                # SUBOPTIMAL spot, not a thrown-away card -- but it fell off the `central`
-                # cliff to frac 0 and ate the full w_wincon_mis. MEASURED: 32/32 bow plays
-                # (rows 15-18, mostly lane-side) scored -1.00 in a 20-match probe -- a 100%
-                # tax on the deck's win condition that xbow_lock/chip_linear (+0.07/match)
-                # could never repay. Same doctrine as xbow_deep_frac: soft fraction, so the
-                # gradient still points at the centre band without deleting the card. True
-                # dumps (enemy half unreachable, back corners) still miss in full.
-                frac = self.xbow_lane_frac
-            # PUNISH OVERRIDE, checked BEFORE the phase gate. An opponent who has just overcommitted
-            # cannot answer a siege before it starts firing, and that is worth breaking defensive
-            # posture for -- "immediately punish" is conditional on the ELIXIR RACE, not on the matchup
-            # doctrine. Without this the clause was unreachable: _defensive is set on sight of a cycle
-            # or beatdown deck (most of the meta pool), so MEASURED 145 of 152 X-Bow plays took the
-            # defensive branch and only 5 were ever offensive AND in a punish window.
-            if d <= self.xbow_range and self._punish_window(self.specs[card_id].elixir):
-                val = self.w_wincon * self.xbow_punish_mult
-            elif self._defensive:                            # DEFENSIVE phase: centre-band only; forward is wrong now
-                val = self.w_wincon * frac if frac > 0.0 else self.w_wincon_mis
-            elif d <= self.xbow_range:                        # OFFENSIVE: forward, in tower range = win condition set
-                val = self.w_wincon
-                if self.eng.t < 30.0:
-                    val *= self.bow_first_frac               # "never X-Bow the bridge first play"
-                elif self._bow_split_punish(nx):
-                    val = self.w_wincon * self.xbow_punish_mult   # back-tank invested -> split-push bow
-            else:
-                val = self.w_wincon * 0.4 * frac if frac > 0.0 else self.w_wincon_mis
-            # REPEAT-CREDIT GATE (2026-08-12): NO placement credit while an allied X-Bow is ALREADY
-            # standing. Without it the credit was renewable by re-placement: MEASURED on the 21:48
-            # snapshot of the from-scratch run, wincon_exec fired 374/374 positive (~6/match,
-            # saturating correctness_cap) while six cards collapsed onto one central tile -- the
-            # constant-cell attractor re-formed around farming this term. The gate nulls only the
-            # POSITIVE side: a misplace while one stands still costs (a wasted 6-elixir drop is not
-            # made free), and a double-bow is neutral, never punished (a real play at triple elixir).
-            # SEQUENTIAL re-placement -- the defensive X-Bow cadence icebow leans on at 2x/3x, one
-            # bow at a time -- re-credits every time, because the previous bow is dead when it fires.
-            # `_ally_xbow_standing` is read PRE-deploy in step(), so the just-placed bow never gates
-            # its own credit.
-            if (val > 0.0 and d <= self.xbow_range
-                    and (self._bow_hostile_keys & self._enemy_seen)):
-                val *= self.bow_hostile_frac                 # their deck wrecks bows (Little Prince /
-                                                             # Evo Bomber seen) -> tempered credit on
-                                                             # EVERY positive offensive branch
-            if val > 0.0 and self._ally_xbow_standing:
-                val = 0.0
-            return val
-        if card_id in self.rocket_ids:
-            return self._rocket_value(nx, ny, d)
         if card_id in self.miner_ids:
             king = self.eng.towers[1][2]                     # [L princess, R princess, KING]
             if king.alive and tile_dist(nx, ny, king.x, king.y) <= 2.9:
@@ -1241,183 +1134,11 @@ class SimMatchEnv:
                 return self.w_wincon                          # Miner chipping the princess
         return 0.0
 
-    def _fresh_pump(self):
-        """The enemy ELIXIR COLLECTOR while it is still WORTH rocketing: within env.pump_rocket_window_s
-        of its deploy. Past that it has paid most of its value back and the rocket is better spent
-        elsewhere. None when no fresh pump is on the field."""
-        return next((u for u in self.eng.units
-                     if u.team == 1 and u.spec.base == "elixir_collector" and u.hp > 0
-                     and u.age <= self.pump_window), None)
 
-    def _pump_rocket(self, nx: float, ny: float) -> float:
-        """PUMP PUNISH: a rocket whose blast covers an enemy Elixir Collector. A FRESH pump (inside the
-        window) = full win-condition credit -- an unanswered pump out-economies a control deck; the
-        2-for-1 multiplier when the blast ALSO clips an alive princess tower (the ideal aim); the
-        MISPLACE penalty when the blast would clip the enemy KING (activating it costs more than any
-        pump). A STALE pump earns nothing (the elixir already flowed). 0.0 = no pump in the blast ->
-        the ordinary rocket logic applies."""
-        R = _ROCKET_RADIUS                                   # tiles
-        pump = next((u for u in self.eng.units
-                     if u.team == 1 and u.spec.base == "elixir_collector" and u.hp > 0
-                     and tile_dist(nx, ny, u.x, u.y) <= R + 0.3), None)
-        if pump is None:
-            return 0.0
-        king = self.eng.towers[1][2]
-        if king.alive and tile_dist(nx, ny, king.x, king.y) <= R + 0.6:
-            return self.w_wincon_mis                         # never wake the king for a pump
-        if pump.age <= self.pump_window:
-            both = any(t.alive and tile_dist(nx, ny, t.x, t.y) <= R + 0.3
-                       for t in self.eng.towers[1][:2])
-            return self.w_wincon * (self.combo_mult if both else 1.0)
-        return 0.0
 
-    def _rocket_blast(self, nx: float, ny: float):
-        """Enemy TROOPS a rocket at (nx, ny) would cover, and the elixir they are worth."""
-        hit = [u for u in self.eng.units
-               if u.team == 1 and u.hp > 0 and u.spec.kind == "troop"
-               and tile_dist(nx, ny, u.x, u.y) <= _ROCKET_RADIUS + 0.3]
-        worth = sum(float(u.spec.elixir) / max(1, u.spec.squad_count or u.spec.count) for u in hit)
-        return hit, worth
 
-    def _tiebreak_gap(self) -> float:
-        """(our lowest princess HP) - (their lowest princess HP), as a fraction of a full tower.
 
-        NEGATIVE means we are LOSING the tiebreak -- our weakest tower is the lower one, so a draw
-        at time-out hands them the win. This is the quantity an icebow match in overtime is really
-        being played for, and nothing in the reward saw it before.
-        """
-        ours = [t for t in self.eng.towers[0][:2] if t.alive]
-        theirs = [t for t in self.eng.towers[1][:2] if t.alive]
-        if not ours or not theirs:
-            return 0.0
-        full = max(1.0, float(self.eng.towers[0][0].max_hp))
-        return (min(t.hp for t in ours) - min(t.hp for t in theirs)) / full
 
-    def _rocket_value(self, nx: float, ny: float, d: float) -> float:
-        """What THIS rocket is worth, conditionally -- the card's value is entirely situational.
-
-        The old branch was three flat cases (pump / 2-for-1 / any chip once defensive, else zero),
-        which priced a rocket by WHERE it landed and never by what the match needed. Rebuilt
-        2026-08-16 from the user's doctrine plus published Rocket guides, in priority order,
-        because several of these can be true at once and the best reading should win:
-
-          PUMP        an unanswered Elixir Collector out-economies a control deck (unchanged).
-          TORNADO     the deck's signature combo. A rocket-sized bundle almost never forms by
-                      itself -- the Tornado MAKES one, and the rocket is the second half. Guides
-                      are blunt that it is a timing play ("place both cards fast or the Rocket
-                      will miss"), so this only pays while a cast is still gathering.
-          2-FOR-1     tower chip + a 4-6 elixir support kill in one blast (unchanged).
-          TIEBREAK    the win condition an icebow match in overtime actually has. Chip is worth
-                      most when our weakest tower is the lower one, because that is the game we
-                      lose on a draw; it is worth much less when we are already ahead on the
-                      race and the elixir is better kept for defence.
-          EMERGENCY   a heavy threat is across the river and nothing else in hand answers it.
-                      An inefficient answer beats taking the whole push.
-          WASTE       six elixir spent on cheap bodies a 1-3 cost card would have handled.
-                      Guides call out "lone tanks" and single low-value units; the user names
-                      Skeletons and Goblins. Priced as a misplace, not merely as zero.
-        """
-        # NEVER THE KING (2026-08-20, user: "there's no reason for an icebow player to
-        # intentionally rocket cycle the king tower"). This measured 0.0 -- not rewarded, but not
-        # charged either, while it still dodged the leak penalty, so dumping six elixir into the
-        # king was a FREE cycle and the policy duly learned it. The king has roughly twice a
-        # princess's HP, the chip is worth nothing on the tiebreak (which reads princess HP), and
-        # it wakes the tower. Priced as a misplace, like every other six-elixir throwaway.
-        king = self.eng.towers[1][2]
-        if tile_dist(nx, ny, king.x, king.y) <= self.spell_aim_radius:
-            return self.w_wincon_mis
-        pr = self._pump_rocket(nx, ny)                       # PUMP PUNISH: fresh elixir collector
-        if pr != 0.0:
-            return pr
-        hit, worth = self._rocket_blast(nx, ny)
-        on_tower = d <= self.spell_aim_radius
-
-        # ROCKET + TORNADO -- the blast must land INSIDE a live pull, on the same spot.
-        #
-        # This used to pay any rocket cast within rocket_nado_s of a tornado, i.e. the TORNADO
-        # -> ROCKET order, which is the one the mechanics forbid: a pull lasts pull_duration
-        # (~1.05 s) while a rocket's cast+travel is 0.4 s + distance (~1.4 s at range), so the
-        # clump is released before the blast arrives. DOCTRINE_RESEARCH.md R6 resolved the order
-        # from mechanics AND from Hunter correcting a student -- "play the rocket first and then
-        # tornado everything" -- and flagged this exact rule for inversion.
-        #
-        # Rather than encode an order, check the physical condition the order exists to produce:
-        # the sim knows a vortex's remaining pull (_Vortex.left) and a rocket's remaining flight,
-        # so ask whether THIS rocket will still find a pull running when it lands. The doctrinal
-        # order satisfies that; the reverse order satisfies it only in the narrow case where the
-        # tornado was cast so late that its pull outlives the flight, which is a correct play too.
-        eta = 0.4 + tile_dist(nx, ny, 0.5, 1.0) / 32.0       # mirrors the engine's spell delay
-        nado = None
-        for v in (self.eng.vortices or ()):
-            if v.team != 0 or v.left < eta:
-                continue                                     # pull ends before the blast lands
-            if tile_dist(nx, ny, v.x, v.y) <= _ROCKET_RADIUS + 1.0:
-                nado = [u for u in self.eng.units
-                        if u.team == 1 and u.hp > 0 and u.spec.kind == "troop"
-                        and tile_dist(u.x, u.y, v.x, v.y) <= _ROCKET_RADIUS + 1.0]
-                if nado:
-                    break
-                nado = None
-        if nado is not None and worth >= self.rocket_min_worth:
-            # Deliberately NOT multiplied by combo_mult as well: stacking the two multipliers
-            # priced a tornado-bundled rocket at 18.0, six times an X-Bow play, which would have
-            # taught the policy that the combo is worth more than winning the tower. The bundle
-            # IS the engineered 2-for-1, so it is worth the same class, plus a bounded uplift when
-            # the same blast also reaches a tower.
-            val = self.w_wincon * self.rocket_nado_mult
-            return val + (self.w_wincon * self.rocket_chip_behind * 0.5 if on_tower else 0.0)
-
-        if self._rocket_combo(nx, ny):                       # tower + valuable support = 2-for-1
-            return self.w_wincon * self.combo_mult
-
-        if on_tower:
-            # TIEBREAK RACE. Behind or level -> this chip is the win condition; ahead -> it is a
-            # luxury. Scaled rather than gated so the policy learns the gradient, not a cliff.
-            gap = self._tiebreak_gap()
-            late = self._defensive or self.eng.t >= self._double_time
-            if late:
-                mult = self.rocket_chip_behind if gap <= 0.0 else self.rocket_chip_ahead
-            else:
-                mult = self.rocket_chip_early
-            return self.w_wincon * mult + (self.w_wincon * self.rocket_chip_behind * 0.5
-                                           if worth >= self.rocket_min_worth else 0.0)
-
-        if worth >= self.rocket_min_worth:
-            return self.w_wincon * min(1.0, worth / 10.0) * self.combo_mult
-
-        threat = next((u for u in self.eng.units
-                       if u.team == 1 and u.hp > 0 and u.spec.kind == "troop"
-                       and u.y > 0.52 and u.spec.elixir >= 4), None)
-        if threat is not None and any(tile_dist(nx, ny, u.x, u.y) <= _ROCKET_RADIUS + 0.3
-                                      for u in (threat,)):
-            cheaper = [i for i in self._hand_ids()
-                       if i in self.rocket_ids or i < 0 or self.specs[i].kind == "spell"
-                       or self.eng.elixir[0] < self.specs[i].elixir]
-            if len(cheaper) >= len(self._hand_ids()):        # nothing non-spell + affordable left
-                return self.w_wincon * self.rocket_emergency
-
-        if hit and worth < self.rocket_min_worth:
-            return self.w_wincon_mis * self.rocket_waste_mult   # six elixir on cheap bodies
-        return 0.0
-
-    def _rocket_combo(self, nx: float, ny: float) -> bool:
-        """True when a rocket aimed at (nx, ny) hits an alive enemy PRINCESS tower AND catches a VALUABLE
-        (4-6 elixir), rocket-(almost)-one-shottable enemy support troop in the same blast -- the classic
-        'rocket the Musketeer behind the tower' 2-for-1 (tower chip + a card-advantage kill). The engine
-        already applies the damage to both; this just REWARDS lining the two up so the policy learns it."""
-        if self._rocket_dmg <= 0.0:
-            return False
-        tgt = next((t for t in self.eng.towers[1][:2]
-                    if t.alive and tile_dist(nx, ny, t.x, t.y) <= self.spell_aim_radius), None)
-        if tgt is None:
-            return False
-        for u in self.eng.units:
-            if (u.team == 1 and u.spec.kind == "troop" and not u.spec.building_only
-                    and 4 <= u.spec.elixir <= 6
-                    and u.spec.hp <= self._rocket_dmg * self.rocket_combo_hp_frac
-                    and tile_dist(u.x, u.y, tgt.x, tgt.y) <= self.rocket_combo_radius):
-                return True
-        return False
 
     def _defending_now(self) -> bool:
         """True when an enemy TROOP has crossed onto OUR half, i.e. there is something a defensive
@@ -1669,60 +1390,6 @@ class SimMatchEnv:
         d = (credit - debit) / self.value_norm
         return float(np.clip(d, -self.trade_cap, self.trade_cap)) * self.w_elixir_trade
 
-    def _xbow_overaggression(self, card_id: int, nx: float, ny: float) -> float:
-        """A forward X-Bow that spends the elixir the DEFENCE still needed.
-
-        The opposite-lane bow is the legitimate version of the aggressive play -- it survives, it
-        chips, and against an overcommitted opponent it is the punish this deck is built on. What
-        it must not be is a way to trade a live push for chip damage the tower pays for.
-
-        And the reward had a hole exactly there. MEASURED on a live Giant push with the counters
-        still in hand: ``threat_miss_idle`` charges -1.0 a step at 3 elixir or more, and **goes
-        silent below 3** -- the cheapest counter's cost. So spending down to 2 elixir does not
-        merely fail to answer the push, it STOPS THE PENALTY FOR NOT ANSWERING IT. A 6-elixir bow
-        from 8 elixir buys that silence outright. Over-aggression was an escape hatch from the
-        defensive term, which is the opposite of what that term is for.
-
-        So this charges the case the silence covers: a real committed push, and after paying for
-        the bow there is no counter left in hand we can afford. Exempt when ``_punish_window``
-        says they cannot answer it -- that is the counterattack, not over-aggression, and the
-        deck's whole plan depends on still being allowed to make it.
-        """
-        if card_id not in self.xbow_ids:
-            return 0.0
-        if (ny - 0.5) * 32.0 > self.bow_forward_tiles:
-            return 0.0                                   # defensive bow: it is part of the defence
-        tid = self._threat_id_true
-        if tid is None or len(tid) < card_threat.IDENTITY_DIM or tid[0] < 0.5:
-            return 0.0                                   # nothing recognised to defend against
-        committed = [u for u in self.eng.units
-                     if u.team == 1 and u.hp > 0 and u.spec.kind != "spell" and u.y > 0.42]
-        if not committed:
-            return 0.0
-        if threat_value.bodies_ignore_frac(
-                self.db, [u.spec.base for u in committed],
-                tower_level=self._tower_level_for_triage) < threat_value.IGNORE_FRAC:
-            return 0.0                                   # the tower handles it; spending is fine
-        # `spend` is added back because elixir is already deducted here -- the same correction
-        # _punish_window documents, or the test needs a 10-elixir lead and never fires.
-        if self._punish_window(spend=float(self.specs[card_id].elixir)):
-            return 0.0                                   # they cannot punish it: the real counterattack
-        # DOES AN ANSWER EVEN EXIST? The identity vector can be LIT but ROLELESS -- every role flag
-        # zero -- and then card_threat.counters matches nothing, so "no affordable answer" would be
-        # true no matter how much elixir was left. MEASURED on a Giant + Musketeer push: exactly
-        # that, because the Giant is not in observation.detector_cards (the labelling blind spot)
-        # and a lone Musketeer lights no role. Charging there would blame the model for failing to
-        # cast an answer the role table cannot name, so the term abstains instead.
-        answers = [cid for cid in self._hand_ids()
-                   if cid != card_id
-                   and card_threat.counters(self._deck_profiles[cid], tid)
-                   and self._counter_contribution(cid, committed) >= self.counter_min_share]
-        if not answers:
-            return 0.0                                   # no real answer was in hand to spend away
-        left = float(self.eng.elixir[0])                 # POST-spend: what the defence has left
-        if any(self.specs[cid].elixir <= left for cid in answers):
-            return 0.0                                   # a real answer is still affordable
-        return self.w_bow_overaggro
 
     def _counter_contribution(self, cid: int, committed) -> float:
         """How much of a push can this card actually remove -- as a fraction of the push's HP.
@@ -1777,54 +1444,6 @@ class SimMatchEnv:
             share += max(0.0, 1.0 - float(spec.slow_mult))
         return share
 
-    def _xbow_into_push(self, card_id: int, nx: float, ny: float) -> float:
-        """A FORWARD X-Bow dropped on top of a committed push. Six elixir that never fires.
-
-        MEASURED (2026-08-16), the same board branched three ways over ~24 steps -- a Giant,
-        Musketeer and Knight committed into our left lane at 10 elixir:
-
-            bow ON the push      -25.56      leak -1.6, wincon_exec +0.42
-            hold                 -29.15      leak -4.8
-            bow OPPOSITE lane    -25.34      leak -1.6, wincon_exec +0.42
-
-        So planting into the push beat holding by +3.59, and the CORRECT lane beat the wrong one
-        by 0.22. Almost the entire gap is `leak`: sitting at capacity bleeds -0.2 a step and
-        playing anything stops it, so the 6-elixir bow was simply the biggest leak-stopper in
-        hand. threat_miss_idle was -23.0 in all three branches -- identical -- so wasting the bow
-        while the push killed us cost exactly what holding it did.
-
-        The reward was therefore teaching "play something" at +3.2 and "play the right thing in
-        the right place" at +/-0.4, about 8:1 the wrong way. That does not fade with training; it
-        sharpens, because more training means more confidence in the DOMINANT signal.
-
-        Deliberately not fixed by weakening `leak`, which exists for a good reason and would move
-        every other decision at capacity. This prices the specific mistake instead.
-
-        Not charged for a DEFENSIVE bow (behind ``xbow_front`` it IS the answer, a second pull
-        building), nor when the nearby enemies are too slight to kill it -- a couple of Skeletons
-        near a bow is not the failure this describes, so the same triage decides.
-        """
-        # FORWARD IS MEASURED FROM THE RIVER, not against xbow_front, and the difference is not
-        # cosmetic: the reward sees the POST-CLAMP position, and the clamp pushes every legal
-        # forward bow onto row 13 at y = 0.5625 -- already past xbow_front (0.56). Gating on that
-        # threshold made this branch unreachable, so the term read 0.0 for exactly the placement
-        # it exists to price. Caught because the fix did not change the measurement it was built
-        # from. Rows 13-14 (2.0 and 3.3 tiles out) are the offensive lock attempt; row 15+ is the
-        # defensive centre band the doctrine aims at.
-        if card_id not in self.xbow_ids:
-            return 0.0
-        if (ny - 0.5) * 32.0 > self.bow_forward_tiles:
-            return 0.0                                   # a defensive bow: it IS a pull building
-        near = [u for u in self.eng.units
-                if u.team == 1 and u.hp > 0 and u.spec.kind == "troop"
-                and tile_dist(nx, ny, u.x, u.y) <= self.bow_push_radius]
-        if not near:
-            return 0.0
-        cost = threat_value.bodies_ignore_frac(
-            self.db, [u.spec.base for u in near], tower_level=self._tower_level_for_triage)
-        if cost < threat_value.IGNORE_FRAC:
-            return 0.0                                   # too slight to kill a bow
-        return self.w_bow_into_push
 
     def _building_waste(self, card_id: int) -> float:
         """A defensive BUILDING spent with nothing to defend against.
@@ -1918,11 +1537,18 @@ class SimMatchEnv:
         else:
             caught = [u for u in self.eng.units
                       if u.team == 1 and u.hp > 0 and tile_dist(nx, ny, u.x, u.y) <= rad]
-        hp = {id(u): float(u.hp) for u in caught}
+        # ⚠ KEYED ON `deploy_seq`, NOT `id(u)`. CPython recycles a dead body's address, so a
+        # victim this spell KILLED could be matched against a NEWER unit that reused the
+        # address and read as alive at full hp -- billing a good cast `spell_waste` instead
+        # of crediting `spell_defence`. The better the cast, the likelier the victim is gone
+        # and its address reused, so the corruption is BIASED AGAINST correct play. Measured
+        # (I10): 3 of 24 seeds diverged run-to-run on identical code; 0 of 24 once pinned.
+        # `deploy_seq` is a monotonic counter stamped in Unit.__post_init__ (added in I7).
+        hp = {u.deploy_seq: float(u.hp) for u in caught}
         # WHAT each catch would COST US if it lived, kept alongside the HP so the settle can pay
         # for damage prevented. Only bodies already on OUR half count as defence -- killing things
         # on their side is offence and is priced by the chip / win-condition terms.
-        worth = {id(u): str(u.spec.base) for u in caught if float(u.y) > 0.5}
+        worth = {u.deploy_seq: str(u.spec.base) for u in caught if float(u.y) > 0.5}
         towers = {id(t): float(t.hp) for t in self.eng.towers[1] if getattr(t, "hp", 0) > 0}
         self._pending_spell_checks.append(
             {"t": land + float(getattr(spec, "zone_s", 0.0) or spec.pull_duration or 0.0) + 0.35,
@@ -1952,9 +1578,9 @@ class SimMatchEnv:
             caught = [u for u in self.eng.units
                       if u.team == 1 and u.hp > 0 and tile_dist(nx, ny, u.x, u.y) <= rad]
         for u in caught:
-            p["hp"].setdefault(id(u), float(u.hp))          # keep the earlier hp if already known
+            p["hp"].setdefault(u.deploy_seq, float(u.hp))   # keep the earlier hp if already known
             if float(u.y) > 0.5:
-                p.setdefault("worth", {}).setdefault(id(u), str(u.spec.base))
+                p.setdefault("worth", {}).setdefault(u.deploy_seq, str(u.spec.base))
 
     def _settle_spell_casts(self) -> float:
         """Charge spell_waste for casts that, once resolved, damaged NOTHING.
@@ -1977,7 +1603,7 @@ class SimMatchEnv:
         if not due:
             return 0.0
         self._pending_spell_checks = [p for p in self._pending_spell_checks if p["t"] > now]
-        live = {id(u): float(u.hp) for u in self.eng.units if u.hp > 0}
+        live = {u.deploy_seq: float(u.hp) for u in self.eng.units if u.hp > 0}
         tw_now = {id(t): float(t.hp) for t in self.eng.towers[1]}
         total = 0.0
         for p in due:
@@ -2059,124 +1685,8 @@ class SimMatchEnv:
                 prog += d ** self.chip_power
         return prog
 
-    def _register_nado(self, nx: float, ny: float, spec) -> None:
-        """Record a just-cast agent tornado so its EXECUTION can be credited once the pull has
-        played out: which enemies it can catch, whether the king was still asleep, and which
-        enemy building-targeters were tower-locked at cast time (retarget candidates)."""
-        pulled = [u for u in self.eng.units
-                  if u.team == 1 and u.hp > 0
-                  and tile_dist(u.x, u.y, nx, ny) <= spec.pull_radius]
-        targeters = []
-        for u in pulled:
-            if not u.spec.building_only:
-                continue
-            for tw in self.eng.towers[0]:
-                if tw.alive and tile_dist(u.x, u.y, tw.x, tw.y) <= u.spec.reach + 1.0:
-                    targeters.append((u, tw, float(tile_dist(u.x, u.y, tw.x, tw.y))))
-                    break
-        self._nado_watch.append({
-            "t0": self.eng.t, "cx": nx, "cy": ny,
-            "pulled": pulled, "targeters": targeters,
-            "pulled_at": [(u.x, u.y) for u in pulled],   # capture positions, for the bad-pull check
-            "king_was_asleep": not self.eng.towers[0][2].active,
-            "early_done": False,
-            "rad": float(spec.pull_radius),
-        })
 
-    def _nado_catch(self, w) -> None:
-        """Add enemies the vortex is catching RIGHT NOW to its watch.
 
-        Membership cannot be a cast-time snapshot. The engine applies the pull on the advance AFTER
-        the decision, so a unit walking toward the centre is measured a step early -- on this
-        drill's own reference line the hog sat at 5.53 tiles when the snapshot was taken and 5.09
-        when the vortex actually applied, against a radius of 5.5. It was recorded as uncaught,
-        `pulled` was empty, and since every credit here iterates `pulled`, the play that passes the
-        drill 100% of the time earned nothing.
-
-        Accruing over the vortex's life also matches what a tornado DOES: it pulls continuously for
-        its duration rather than snapping once, so a unit that walks in late is caught too. Each
-        unit's position and tower lock are recorded AT CAPTURE, which is what the bad-pull and
-        retarget checks measure movement against.
-        """
-        have = {id(u) for u in w["pulled"]}
-        for u in self.eng.units:
-            if (u.team != 1 or u.hp <= 0 or id(u) in have
-                    or tile_dist(u.x, u.y, w["cx"], w["cy"]) > w["rad"]):
-                continue
-            w["pulled"].append(u)
-            w["pulled_at"].append((u.x, u.y))
-            if u.spec.building_only:
-                for tw in self.eng.towers[0]:
-                    if tw.alive and tile_dist(u.x, u.y, tw.x, tw.y) <= u.spec.reach + 1.0:
-                        w["targeters"].append((u, tw, float(tile_dist(u.x, u.y, tw.x, tw.y))))
-                        break
-
-    def _nado_shaping(self) -> float:
-        """Delayed tornado-execution credit, from engine ground truth. At ~2s after the cast:
-        CLUMP (enemies actually gathered at the centre) + RETARGET (a tower-locked wincon dragged
-        off the tower). At ~3.5s: COMBO (>=2 pulled enemies died -- the splash/rocket payoff) +
-        KING ACTIVATION (a pull woke your sleeping king; once per match). Positive-only and inside
-        the correctness cap, so it shapes exploration without becoming farmable."""
-        credit = 0.0
-        keep = []
-        for w in self._nado_watch:
-            age = self.eng.t - w["t0"]
-            if age <= self.nado_pull_window:
-                self._nado_catch(w)                      # the vortex pulls for its DURATION
-            # KING ACTIVATION, CHECKED EVERY TICK. Two reasons it cannot wait for the 3.5s
-            # window below. First, the event is "the attacker is now going for the KING", which is
-            # an identity test on `u.target` -- the old test asked whether the king was AWAKE and
-            # whether anything was NEAR it, and waking is a consequence of the king taking damage,
-            # which happens strictly later. Second, a DRILL ends the instant its success predicate
-            # fires, so the episode was over before the 3.5s window opened and the credit was never
-            # paid at all: measured, a passing episode scored -0.28 while timing out scored +0.24,
-            # and the policy correctly learned to run the clock.
-            kt = self.eng.towers[0][2]
-            if (w["king_was_asleep"] and not self._nado_king_credited
-                    and any(getattr(u, "target", None) is kt
-                            for u in w["pulled"] if u.hp > 0)):
-                credit += self.w_nado_king
-                self._nado_king_credited = True
-                w["king_done"] = True
-            if age >= 2.0 and not w["early_done"]:
-                w["early_done"] = True
-                alive_close = [u for u in w["pulled"]
-                               if u.hp > 0 and tile_dist(u.x, u.y, w["cx"], w["cy"]) <= 2.2]
-                if len(alive_close) >= 2:
-                    credit += self.w_nado_clump * (min(len(alive_close), 4) - 1)
-                for u, tw, d0 in w["targeters"]:
-                    if u.hp > 0 and tile_dist(u.x, u.y, tw.x, tw.y) >= d0 + 1.6:
-                        credit += self.w_nado_retarget
-                        break                                    # one retarget credit per cast
-            if age >= 3.5:
-                dead = sum(1 for u in w["pulled"] if u.hp <= 0)
-                # ...the activation itself is credited above, per tick, on `u.target`. All that
-                # is left here is to remember whether it happened, so the bad-pull bill below does
-                # not charge a cast that DID activate the king.
-                king_hit = bool(w.get("king_done"))
-                if dead >= 2:
-                    credit += self.w_nado_combo
-                if dead < 2 and not king_hit:
-                    # THE BAD PULL: nothing died, no activation -- did the cast leave survivors
-                    # CLOSER to our princess towers than where it found them? Doctrine's good
-                    # pulls all cash out inside this window (clump kill, king wake, retarget was
-                    # credited at 2 s); a pull that only relocated the push toward us made the
-                    # enemy's walk shorter for 3 elixir. Mean over survivors, gated at 1 tile so
-                    # incidental drift is free.
-                    mine = [t for t in self.eng.towers[0][:2] if getattr(t, "hp", 0) > 0]
-                    gains = []
-                    for u, (x0, y0) in zip(w["pulled"], w.get("pulled_at", ())):
-                        if u.hp <= 0 or not mine:
-                            continue
-                        d_then = min(tile_dist(x0, y0, t.x, t.y) for t in mine)
-                        d_now = min(tile_dist(u.x, u.y, t.x, t.y) for t in mine)
-                        gains.append(d_then - d_now)
-                    if gains and (sum(gains) / len(gains)) >= 1.0:
-                        credit += self.rw_stats.add("nado_bad", self.w_nado_bad)
-                continue                                         # fully evaluated -> drop
-            keep.append(w)
-        self._nado_watch = keep
-        return credit
 
     def step(self, action: Action):
         play, card_id, cell = action
@@ -2194,10 +1704,6 @@ class SimMatchEnv:
             spec = self.specs[card_id]
             cell = self.actions.deploy_clamp(card_id in self.anywhere_ids, cell)
             nx, ny = self.actions.cell_center(cell % self.gw, cell // self.gw)
-            # Read BEFORE deploy so a just-placed X-Bow cannot gate its own wincon credit
-            # (the repeat-credit gate in _wincon_exec keys off this flag).
-            self._ally_xbow_standing = any(
-                u.team == 0 and u.spec.base == "x_bow" and u.hp > 0 for u in self.eng.units)
             if self.eng.deploy(0, spec, nx, ny,
                                delay_s=self.action_latency):   # affordable + placed (lands when the live tap would)
                 placed_id = card_id
@@ -2221,12 +1727,6 @@ class SimMatchEnv:
                     # on DAMAGE ACTUALLY DEALT once it lands -- see _settle_spell_casts.
                     self._arm_spell_check(nx, ny, spec)
                 reward += self.rw_stats.add("building_waste", self._building_waste(card_id))   # a Tesla spent on a quiet board while their wincon is still in hand
-                reward += self.rw_stats.add("xbow_into_push",
-                                            self._xbow_into_push(card_id, nx, ny))   # a forward bow dropped onto a committed push
-                reward += self.rw_stats.add("xbow_overaggression",
-                                            self._xbow_overaggression(card_id, nx, ny))
-                if spec.kind == "spell" and getattr(spec, "pulls", False):
-                    self._register_nado(nx, ny, spec)           # tornado: watch the pull -> delayed execution credit
                 self._cf_open()             # ...and fork the alternative branch where we HELD this card
                 self._play_slot(card_id)                        # bank/spend the Evo charge + cycle the slot back
         else:
@@ -2246,61 +1746,20 @@ class SimMatchEnv:
         # (2) ELIXIR-TRADE correctness: the step's change in the two-sided RESOURCE BALANCE (both
         # boards + both elixir bars), so committing elixir is neutral and only its consequence scores.
         reward += self.rw_stats.add("elixir_trade", self._trade_reward())
-        reward += self.rw_stats.add("nado", self._bonus(self._nado_shaping()))    # delayed tornado-execution credit
         reward += self.rw_stats.add("counterfactual", self._cf_shaping())   # did playing beat holding? (zero-mean)
-        # X-BOW LEDGER (see __init__): uptime ticks while TOWER-LOCKED, one-shot overcommit
-        # credit when a bow dies, and the enemy-cards-seen set the context modifiers read.
-        bow_alive = set()
-        for u in self.eng.units:
-            if u.team == 1 and u.hp > 0:
-                self._enemy_seen.add(u.spec.key)
-                continue
-            if u.team != 0 or u.spec.base != "x_bow" or u.hp <= 0:
-                continue
-            bid = id(u)
-            bow_alive.add(bid)
-            led = self._bow_ledger.setdefault(bid, {"ids": set(), "cost": 0.0, "lock": 0.0})
-            for e in self.eng.units:                      # enemies the opponent SPENT to answer this bow
-                # `e.age < u.age` = deployed AFTER the bow. Without it the term counted any enemy
-                # whose current target happened to be the bow, which is not the same thing at all:
-                # drop a bow into a push that is already committed and every body in it retargets,
-                # so the whole push's elixir booked as "drawn to answer the bow", the bow died, and
-                # the overcommit credit paid out. That rewarded planting bows on top of big pushes
-                # -- exactly the behaviour seen in sim view (user, 2026-08-16) -- and it is the one
-                # X-Bow habit no amount of further training would unlearn, because the gradient
-                # pointed at it. Troops already on the board were paid for before the bow existed.
-                # `<=`, not `<`: an answer deployed in the SAME tick as the bow is still an answer
-                # (and the opponent model can act on the step the bow lands), so only a body that
-                # is strictly OLDER than the bow -- i.e. already marching before it existed --
-                # is excluded.
-                if (e.team == 1 and e.hp > 0 and e.target is u and id(e) not in led["ids"]
-                        and e.age <= u.age):
-                    led["ids"].add(id(e))
-                    led["cost"] += float(e.spec.elixir) / max(1, e.spec.squad_count or e.spec.count)
-            if (u.deploy_left <= 0.0 and u.attacking and hasattr(u.target, "king")
-                    and led["lock"] < self.bow_lock_cap):
-                tick = min(self.w_bow_lock * self.agent_dt, self.bow_lock_cap - led["lock"])
-                led["lock"] += tick
-                reward += self.rw_stats.add("xbow_lock", tick)
-        for bid in [b for b in self._bow_ledger if b not in bow_alive]:
-            led = self._bow_ledger.pop(bid)
-            over = max(0.0, led["cost"] - 6.0)            # "they paid more than the bow to stop it"
-            if over > 0.0:
-                reward += self.rw_stats.add("xbow_overcommit",
-                                            min(self.bow_over_cap, over * self.w_bow_over))
         # (5) leak: sitting at capacity with nothing played this step wastes elixir.
         if placed_id < 0 and self.eng.elixir[0] >= 9.99:
             reward += self.rw_stats.add("leak", self.w_leak)
         self.rw_stats.step(placed_id >= 0)
-        # OFFENSIVE -> DEFENSIVE phase (icebow): once you've TAKEN a tower (defend the lead), OR OVERTIME
-        # arrives and the X-Bow never broke through (cumulative enemy chip < xbow_success_frac of a tower),
-        # flip to defence -- rocket-cycle becomes the tower damage; the X-Bow reward moves to back-centre.
+        # OFFENSIVE -> DEFENSIVE phase: once you have TAKEN a tower (defend the lead), OR OVERTIME
+        # arrives and the win condition never broke through (cumulative enemy chip <
+        # env.xbow_success_frac of a tower). Both disjuncts are live for this deck.
         my_c, op_c = self.eng.crowns(0), self.eng.crowns(1)
         self._enemy_chip_total += chip0
         if not self._defensive and (
                 my_c >= 1
                 or (self.eng.t >= self._double_time
-                    and self._enemy_chip_total < self.eng.towers[1][0].max_hp * self.xbow_success_frac)):
+                    and self._enemy_chip_total < self.eng.towers[1][0].max_hp * self.wincon_success_frac)):
             self._defensive = True
         # --- OUTCOME compass (DEMOTED: winning is not the objective, just a faint direction) ---
         # CONVEX tower-chip proxy: partial chip is worth sub-proportionally little; the CROWN below is the
@@ -2309,12 +1768,6 @@ class SimMatchEnv:
         ep = self._chip_progress(self.eng.towers[1])
         reward += self.rw_stats.add("chip_offence", (ep - self._prev_chip_prog) * self.tower_chip_scale)
         self._prev_chip_prog = ep
-        if bow_alive and chip0 > 0.0:
-            # LINEAR bow-chip lane: while a bow stands, its DoT is the deck's entire plan -- the
-            # convex pool above (power 2, crown-weighted) pays a bow's typical 20-30% chip
-            # ~ +0.01-0.03 total, i.e. nothing. Full-tower equivalent here = w_bow_chip.
-            reward += self.rw_stats.add(
-                "chip_linear", self.w_bow_chip * chip0 / max(1.0, self.eng.towers[1][0].max_hp))
         mp = self._chip_progress(self.eng.towers[0])
         reward -= self.rw_stats.add("chip_defence", (mp - self._prev_chip_prog_def) * self.tower_chip_scale)
         self._prev_chip_prog_def = mp

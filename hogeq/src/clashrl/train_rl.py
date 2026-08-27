@@ -30,6 +30,26 @@ from pathlib import Path
 import numpy as np
 
 
+# A SWALLOWED EXCEPTION MUST NOT READ AS WORKING (I9). The threat gate below calls
+# `enemy_tracks(..., with_base=True)` and catches TypeError, so a tracker whose signature loses
+# `with_base` does not fail -- the gate simply stops triaging REMEMBERED enemies and keeps
+# returning an answer. That is precisely how the hogeq PerceptionLoop passthrough was recorded as
+# "silently inert" for weeks. The catch stays (a perception hiccup must never break training), but
+# it now says so once, and it counts, so a test can prove the path is cold.
+_MEMORY_GATE_INERT = 0
+
+
+def _memory_gate_inert(tracker) -> None:
+    """One loud line the first time the gate's memory half goes dark, then a counter."""
+    global _MEMORY_GATE_INERT
+    _MEMORY_GATE_INERT += 1
+    if _MEMORY_GATE_INERT == 1:
+        print("[train-rl]   WARNING: %s.enemy_tracks() rejected with_base=True -- the threat "
+              "gate's REMEMBERED-enemy half is inert for the rest of this run, and it will "
+              "still return an answer. See tests/test_perception_with_base_i9.py."
+              % type(tracker).__name__, flush=True)
+
+
 def _pick_device(cfg):
     import torch
     dev = cfg.get("train", "device", default="cuda")
@@ -441,7 +461,7 @@ def train_rl(cfg, init: str | None = None) -> None:
                 bases.append(b)
                 seen.append((x, y, b))
         except TypeError:
-            pass                     # tracker variant without with_base: live dets only
+            _memory_gate_inert(tracker)   # never silent: see `_memory_gate_inert` above
         except Exception:  # noqa: BLE001 -- perception hiccup must not break the gate
             pass
         if _group_only:

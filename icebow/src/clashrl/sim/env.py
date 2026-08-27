@@ -166,9 +166,22 @@ class SimMatchEnv:
         # hogeq's Earthquake could not be put on an enemy building at all, which made the deck's
         # signature Hog+EQ combo an action the policy was incapable of taking. Miner (and Goblin
         # Drill) stay in on their own merit: deploy-anywhere TROOPS, not spells.
+        #
+        # ...WITH ONE EXCEPTION, and it is a KB flag rather than another literal so the next one is
+        # data (RULING 18, owner 2026-08-27): Royal Delivery "can only be cast on the caster's half
+        # of the map (and whatever pocket presents itself)". It is a spell that DROPS A TROOP, so
+        # it is placed like a troop. Cards revid 437053 says the same independently: "spells ... can
+        # be cast anywhere in the battlefield (with the exception of The Log, Barbarian Barrel, and
+        # Royal Delivery)".
+        # THE 2026-08 FIX ABOVE IS NOT BEING UNDONE. Only cards that carry `own_half_only` leave the
+        # set; every genuine anywhere-spell (rocket, tornado, the log, earthquake, fireball, ...)
+        # stays in it, and a test asserts exactly that so this cannot silently regress to the old
+        # "every spell was forbidden from the enemy half" bug.
+        self.own_half_spell_ids = {i for i in range(len(self.deck_keys))
+                                   if self.specs[i].own_half_only}
         self.anywhere_ids = {i for i, k in enumerate(self.deck_keys)
                              if (self.specs[i].kind == "spell"
-                                 or _base(k) in ("miner", "goblin_drill"))}
+                                 or _base(k) in ("miner", "goblin_drill"))} - self.own_half_spell_ids
         self.miner_ids = {i for i, k in enumerate(self.deck_keys) if _base(k) == "miner"}
         self.xbow_ids = {i for i, k in enumerate(self.deck_keys) if _base(k) == "x_bow"}
         # Stage 3: your deck's KB profiles (played-card role) + the last identity block, for the
@@ -604,6 +617,16 @@ class SimMatchEnv:
         self.domain_rand.resample()      # a new 'arena look' each match (stable within the match)
         self.opponent = (self.opponent_provider(self) if self.opponent_provider is not None
                          else make_opponent(self.cfg, self.db, self.rng, self.meta_pool))
+        # THE OPPONENT'S TOWER TROOP IS THE DECK'S, not a roll (I8). `support:` is MEASURED per
+        # deck from top-ladder battlelogs (R4) and had been inert since it was imported -- parsed,
+        # carried, validated and read by nobody, while `eng.reset()` rolled one from a config
+        # weight table. It has to happen HERE rather than in reset(): the towers are built before
+        # the opponent exists, so the roll stands as the fallback and this overrides it for the
+        # 235 decks whose battlelog actually named one. A SelfPlayOpponent carries no deck entry
+        # and keeps the roll.
+        _sup = getattr(self.opponent, "support", None)
+        if _sup:
+            self.eng.set_tower_troop(1, _sup[0] if isinstance(_sup, (list, tuple)) else _sup)
         self.cycle = list(range(self.n_slots))
         self.rng.shuffle(self.cycle)
         self.evo_charge = [0] * self.n_slots     # match starts with every Evolution UNCHARGED
@@ -2201,11 +2224,18 @@ class SimMatchEnv:
         else:
             caught = [u for u in self.eng.units
                       if u.team == 1 and u.hp > 0 and tile_dist(nx, ny, u.x, u.y) <= rad]
-        hp = {id(u): float(u.hp) for u in caught}
+        # ⚠ KEYED ON `deploy_seq`, NOT `id(u)`. CPython recycles a dead body's address, so a
+        # victim this spell KILLED could be matched against a NEWER unit that reused the
+        # address and read as alive at full hp -- billing a good cast `spell_waste` instead
+        # of crediting `spell_defence`. The better the cast, the likelier the victim is gone
+        # and its address reused, so the corruption is BIASED AGAINST correct play. Measured
+        # (I10): 3 of 24 seeds diverged run-to-run on identical code; 0 of 24 once pinned.
+        # `deploy_seq` is a monotonic counter stamped in Unit.__post_init__ (added in I7).
+        hp = {u.deploy_seq: float(u.hp) for u in caught}
         # WHAT each catch would COST US if it lived, kept alongside the HP so the settle can pay
         # for damage prevented. Only bodies already on OUR half count as defence -- killing things
         # on their side is offence and is priced by the chip / win-condition terms.
-        worth = {id(u): str(u.spec.base) for u in caught if float(u.y) > 0.5}
+        worth = {u.deploy_seq: str(u.spec.base) for u in caught if float(u.y) > 0.5}
         towers = {id(t): float(t.hp) for t in self.eng.towers[1] if getattr(t, "hp", 0) > 0}
         self._pending_spell_checks.append(
             {"t": land + float(getattr(spec, "zone_s", 0.0) or spec.pull_duration or 0.0) + 0.35,
@@ -2235,9 +2265,9 @@ class SimMatchEnv:
             caught = [u for u in self.eng.units
                       if u.team == 1 and u.hp > 0 and tile_dist(nx, ny, u.x, u.y) <= rad]
         for u in caught:
-            p["hp"].setdefault(id(u), float(u.hp))          # keep the earlier hp if already known
+            p["hp"].setdefault(u.deploy_seq, float(u.hp))   # keep the earlier hp if already known
             if float(u.y) > 0.5:
-                p.setdefault("worth", {}).setdefault(id(u), str(u.spec.base))
+                p.setdefault("worth", {}).setdefault(u.deploy_seq, str(u.spec.base))
 
     def _settle_spell_casts(self) -> float:
         """Charge spell_waste for casts that, once resolved, damaged NOTHING.
@@ -2260,7 +2290,7 @@ class SimMatchEnv:
         if not due:
             return 0.0
         self._pending_spell_checks = [p for p in self._pending_spell_checks if p["t"] > now]
-        live = {id(u): float(u.hp) for u in self.eng.units if u.hp > 0}
+        live = {u.deploy_seq: float(u.hp) for u in self.eng.units if u.hp > 0}
         tw_now = {id(t): float(t.hp) for t in self.eng.towers[1]}
         total = 0.0
         for p in due:

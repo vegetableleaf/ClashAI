@@ -116,7 +116,7 @@ class TeslaDisciplineTests(unittest.TestCase):
                                  "tesla should outrank every other card vs a win condition")
 
     def test_a_non_wincon_troop_does_not_summon_the_tesla_rule(self):
-        env = self._scene([("knight", 0.55)], opp=NO_WINCON_DECK)
+        env = self._scene([("knight", 0.55)], opp=NO_WINCON_DECK, hand=("tesla",))
         self.assertNotIn("tesla", self._nominations(env))
 
 

@@ -23,9 +23,30 @@ the KB if applied. The wiki's field layout varies by card SHAPE:
 
 So the mapping below is per-shape, and anything it cannot map confidently is REPORTED as
 unmapped rather than silently compared.
+
+MODES
+-----
+  (no flag)  the DECK plus the meta-deck pool -- what actually gets played.
+  --evo      the same, plus every `_evo` row.
+  --all      EVERY key in the merged CardDB (I5). That is the honest gate: a card only the
+             opponent pool fields, or a row nobody has slotted yet, is still a card the sim can
+             build a spec for. It also means dozens of keys with no wiki page of their own --
+             spawned sub-units (ghost_souldier, decoy_goblin, goblin_brawler, phoenix_egg ...),
+             the second form of a two-form card, the ability pseudo-cards. Those come back
+             UNMAPPED and are LISTED, never guessed at: an invented page title is how a sweep
+             starts reporting one card's numbers against another card's page.
+
+DELIBERATE DEVIATIONS LIVE IN ONE FILE
+--------------------------------------
+`EXPECTED` used to be a hand-written dict here, which meant the sweep had its own private
+opinion about which disagreements were fine. Since I5 it is DERIVED from
+`config/import_pins.json`: a pin is exactly "a value we hold on purpose against what the wiki
+prints", the importer already refuses to overwrite one, and having two lists would let them
+drift. Anything that disagrees with the wiki and is NOT pinned is a finding.
 """
 from __future__ import annotations
 
+import json
 import re
 import sys
 from pathlib import Path
@@ -54,21 +75,50 @@ PREFIXED = {
     "minions": ("Minions", "hp_base", "dmg_base"),
     "minion_horde": ("Minion Horde", "hp_base", "dmg_base"),
 }
-# the building's OWN hitpoints are not published per level -- skip hp, keep damage.
+# SPAWNERS publish the SPAWNED BODY under the headline hp_11/dmg_11 -- goblin_hut's 133/81 is a
+# Spear Goblin, tombstone's 81/81 is a Skeleton, barbarian_hut's 670/192 is a Barbarian. Neither
+# column describes the card, so BOTH are skipped. (Until I5 only hp was skipped, and the damage
+# comparison was saved from firing purely by a truthiness bug: our body deals 0, and `if wdmg and
+# ours_dmg` skipped every row where either side was zero. Fixing the bug exposed eight of these.)
 SPAWNERS = {"goblin_hut", "barbarian_hut", "tombstone", "furnace", "goblin_drill",
-            "skeleton_barrel", "goblinstein", "suspicious_bush"}
-NO_STATS = {"clone", "mirror", "rage", "freeze", "graveyard", "goblin_curse", "void", "vines"}
-
-# KNOWN, DELIBERATE deviations -- recorded so a re-run surfaces only NEW problems. Each says
-# what we model and why, because "the sweep is clean" is worthless if it hides real choices.
-EXPECTED = {
-    ("vines", "damage"): "we apply both hits at once (dmg_hits 2 x 153 = 306); the 1.25 s "
-                         "between them is below the sim's decision resolution",
-    ("vines", "crown_dmg"): "same: 2 x 39 = 78",
-    ("goblinstein", "damage"): "two-body champion modelled as ONE merged unit -- the wiki's "
-                               "dmg_11 92 is the Doctor alone, monster_dmg_11 is 128. Splitting "
-                               "them is the deferred item in SIM_FIDELITY.md",
+            "skeleton_barrel", "goblinstein", "suspicious_bush",
+            # spell-shaped spawners: the payload's numbers under the spell's own field names
+            "graveyard", "goblin_barrel"}
+# SPELLS whose own damage is NOT dmg_11. Royal Delivery's dmg_11 133 is the spawned Recruit's
+# melee and the landing blast is spawn_11; Goblin Curse's dmg_11 120 is the GOBLIN a cursed
+# victim becomes, while the curse itself is curse_dmg_11 (decisions.md #12).
+SPELL_FIELDS = {
+    "royal_delivery": ("spawn_11", "spawn_crown_11"),
+    "goblin_curse": ("curse_dmg_11", None),
 }
+
+# KNOWN, DELIBERATE deviations. DERIVED from config/import_pins.json (I5) so that pins are the
+# single registry of "we hold this on purpose"; see the module docstring. The mapping from a pin's
+# field to a sweep column is not one-to-one, because the sweep compares what the ENGINE ends up
+# with: `hit_dmg` is rebuilt as dps * hit_speed, so a pin on either of those is a pin on `damage`.
+_PIN_FIELD_TO_COL = {
+    "hitpoints": "hp",
+    "damage": "damage", "dps": "damage", "hit_speed": "damage",
+    "crown_tower_damage": "crown_dmg",
+}
+
+
+def _expected(root=None) -> dict:
+    path = (root or Path(__file__).resolve().parents[1]) / "config" / "import_pins.json"
+    try:
+        pins = json.loads(path.read_text(encoding="utf-8"))["pins"]
+    except (OSError, KeyError, ValueError) as exc:  # noqa: BLE001
+        print("WARNING: could not read %s (%s) -- every deviation will report as NEW" % (path, exc))
+        return {}
+    out = {}
+    for p in pins:
+        col = _PIN_FIELD_TO_COL.get(p.get("field"))
+        if col:
+            out.setdefault((p.get("key"), col), p.get("source", "pinned"))
+    return out
+
+
+EXPECTED = _expected()
 
 
 # EVOLUTIONS repeat the shape problem on their own pages: the headline hp_11/dmg_11 belong to
@@ -82,10 +132,62 @@ EVO_FIELDS = {
 }
 
 
-def page_for(key: str) -> str:
+def no_page_keys(db) -> set:
+    """Keys that are BODIES, not cards -- derived, never hand-listed.
+
+    `cards-import` walks every card category on the wiki, so a base key the importer did not
+    emit is by construction not a card: it is a spawned body (ghost_souldier, goblin_brawler,
+    decoy_goblin, golemite...), a second form (spirit_empress_air), or a curated fragment
+    (phoenix_egg). MEASURED 2026-08-26: exactly 15 of 137 base keys. Deriving it from the
+    imported set means a card released tomorrow moves out of this set by itself.
+    """
+    try:
+        gen = json.loads((Path(db.path).parent / "cards_stats.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):  # noqa: BLE001
+        return set()
+    have = set(gen.get("cards") or {})
+    return {k for k in db.cards
+            if not k.endswith(("_evo", "_hero")) and k not in have and k not in PREFIXED}
+
+
+def page_for(key: str, db=None, no_page=frozenset()) -> str:
+    """The wiki page title for a card key, or "" when there is no page to guess at.
+
+    Hardened for --all. The base-card guess ("goblin_hut" -> "Goblin Hut") is safe for a deck and
+    a meta pool, which only ever hold real cards; over the WHOLE db it would invent "Ghost
+    Souldier" and "Phoenix Egg" and then compare a spawned body against whatever page happened to
+    answer. Returning "" makes the caller REPORT those as unmapped, which is the honest answer.
+    """
     if key in PREFIXED:
         return PREFIXED[key][0]
+    if key in no_page:
+        return ""
+    for suf, sub in (("_evo", "Evolution"), ("_hero", "Hero")):
+        if key.endswith(suf):
+            base = key[: -len(suf)]
+            # PREFIXED first: it carries the titles the key cannot produce, and the trailing dot
+            # is one of them -- the merged row's display is "Mini P.E.K.K.A" while the page is
+            # "Mini P.E.K.K.A./Hero", so a display-first guess 404s on exactly the cards the
+            # module docstring already warned about.
+            disp = (PREFIXED[base][0] if base in PREFIXED else
+                    ((db.get(base) or {}).get("display") if db else None) or
+                    page_for(base, db, no_page))
+            return "%s/%s" % (disp, sub) if disp else ""
     return " ".join(w.capitalize() for w in key.split("_")).replace("X Bow", "X-Bow")
+
+
+def _base_of(key: str) -> str:
+    """The base card behind an `_evo` / `_hero` key.
+
+    A variant inherits its parent's PAGE SHAPE: Tombstone/Hero publishes hp_11 81 / dmg_11 81 --
+    the Skeleton it spawns -- exactly as the base Tombstone page does, while the Hero Tombstone's
+    own 4224/422 live in the attribute table. MEASURED: without this, --all reported
+    tombstone_hero as +5115% hp.
+    """
+    for suf in ("_evo", "_hero"):
+        if key.endswith(suf):
+            return key[: -len(suf)]
+    return key
 
 
 def num(st: dict, field):
@@ -97,15 +199,38 @@ def num(st: dict, field):
         return None
 
 
+_BAND = 0.02        # relative tolerance; the wiki rounds and we scale, so exact equality is noise
+
+
+def _off(theirs, ours) -> bool:
+    """Is OUR value outside the band around the WIKI's?
+
+    The comparison used to be written `if theirs and ours and abs(...)`, which silently skipped
+    any row where either side was legitimately ZERO -- the exact case worth catching. A card the
+    KB says deals 0 damage while the wiki publishes a number, or vice versa, is not agreement; it
+    is the largest possible disagreement. Only a MISSING value (None) is a reason to skip.
+    """
+    if theirs is None or ours is None:
+        return False
+    return abs(float(theirs) - float(ours)) / max(1.0, abs(float(theirs))) > _BAND
+
+
 def main(argv) -> int:
     cfg = Config.load()
     env = SimMatchEnv(cfg, seed=0)
-    cards = set(env.deck_keys)
-    for d in env.meta_pool:
-        cards.update(d if isinstance(d, (list, tuple)) else d.get("cards", []))
-    base_cards = sorted(c for c in cards if not c.endswith("_evo"))
-    evos = sorted(k for k in env.db.cards if k.endswith("_evo")) if "--evo" in argv else []
-    cards = base_cards + evos
+    all_keys = "--all" in argv
+    no_page = no_page_keys(env.db) if all_keys else frozenset()
+    if all_keys:
+        # EVERY row in the merged KB, not the deck + meta-pool union. A card the pool does not
+        # happen to field is still a card the sim builds a spec for.
+        cards = sorted(env.db.cards)
+    else:
+        pool = set(env.deck_keys)
+        for d in env.meta_pool:
+            pool.update(d if isinstance(d, (list, tuple)) else d.get("cards", []))
+        cards = sorted(c for c in pool if not c.endswith("_evo"))
+        if "--evo" in argv:
+            cards += sorted(k for k in env.db.cards if k.endswith("_evo"))
 
     bad, unmapped, checked = [], [], 0
     for key in cards:
@@ -114,31 +239,36 @@ def main(argv) -> int:
         except Exception:  # noqa: BLE001
             continue
         if key.endswith("_evo"):
-            base = key[:-4]
-            disp = (env.db.get(base) or {}).get("display") or page_for(base)
-            page = "%s/Evolution" % disp
+            page = page_for(key, env.db, no_page)
             hf, df = EVO_FIELDS.get(key, ("hp_11", "dmg_11"))
+        elif key.endswith("_hero"):
+            page, hf, df = page_for(key, env.db, no_page), "hp_11", "dmg_11"
         else:
-            page, hf, df = PREFIXED.get(key, (page_for(key), "hp_11", "dmg_11"))
-        st = cr_web.card_stats(page)
+            page, hf, df = PREFIXED.get(key, (page_for(key, env.db, no_page), "hp_11", "dmg_11"))
+        st = cr_web.card_stats(page) if page else {}
         if not st:
-            unmapped.append("%s (no vardefines on %r)" % (key, page))
+            why = "no wiki page of its own -- spawned body / second form" if key in no_page \
+                else "no vardefines on %r" % page
+            unmapped.append("%s (%s)" % (key, why))
             continue
         checked += 1
         if spec.kind == "spell":
-            whp, wdmg = None, num(st, "dmg_11")
+            sdf, scf = SPELL_FIELDS.get(key, ("dmg_11", "crown_dmg_11"))
+            whp, wdmg = None, num(st, sdf)
             ours_hp, ours_dmg = None, spec.spell_dmg
-            wc, ours_c = num(st, "crown_dmg_11"), spec.spell_tower_dmg
-            if wc and ours_c and abs(wc - ours_c) / max(1.0, wc) > 0.02:
+            wc, ours_c = num(st, scf), spec.spell_tower_dmg
+            if _base_of(key) in SPAWNERS:
+                wdmg = wc = None                 # the payload's numbers, not the spell's
+            if _off(wc, ours_c):
                 bad.append((key, "crown_dmg", ours_c, wc))
         else:
             whp, wdmg = num(st, hf), num(st, df)
             ours_hp, ours_dmg = spec.hp, spec.hit_dmg
-            if key in SPAWNERS:
-                whp = None                       # hp_11 is the SPAWNED troop, not the building
-        if whp and ours_hp and abs(whp - ours_hp) / max(1.0, whp) > 0.02:
+            if _base_of(key) in SPAWNERS:
+                whp = wdmg = None                # BOTH columns are the SPAWNED body's
+        if _off(whp, ours_hp):
             bad.append((key, "hp", ours_hp, whp))
-        if wdmg and ours_dmg and abs(wdmg - ours_dmg) / max(1.0, wdmg) > 0.02:
+        if _off(wdmg, ours_dmg):
             bad.append((key, "damage", ours_dmg, wdmg))
 
     known = [b for b in bad if (b[0], b[1]) in EXPECTED]

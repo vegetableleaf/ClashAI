@@ -15,6 +15,12 @@ from clashrl.sim.env import SimMatchEnv    # noqa: E402
 from clashrl.sim.engine import build_spec  # noqa: E402
 
 
+try:                                     # discovered as a package (python -m unittest discover)
+    from ._deckcards import requires_cards
+except ImportError:                      # ...or run as a plain script
+    from _deckcards import requires_cards
+
+
 def _quiet(seed=42):
     env = SimMatchEnv(Config.load(), seed=seed)
     env.reset()
@@ -39,6 +45,12 @@ def _silence_towers(env):
     for side in (0, 1):
         for tw in env.eng.towers[side]:
             tw.stun_left = 999.0
+
+
+try:                                     # discovered as a package (python -m unittest discover)
+    from ._deckcards import a_damage_spell, a_ground_only_troop
+except ImportError:                      # ...or run as a plain script
+    from _deckcards import a_damage_spell, a_ground_only_troop
 
 
 class SiegeTests(unittest.TestCase):
@@ -491,7 +503,10 @@ class RocketRefereeTests(unittest.TestCase):
     trade ledger + chip; spell_waste still bills empty casts), same logic as the pull-spell
     exemption that saved tornado."""
 
-    def test_defensive_rocket_on_tank_push_is_not_a_misread(self):
+    def test_defensive_damage_spell_on_tank_push_is_not_a_misread(self):
+        """The spell is picked by ROLE, not by name: icebow answers with the Rocket and hogeq
+        with the Earthquake, and the rule under test -- damage spells are exempt from the
+        misread penalty -- is the same rule in both decks."""
         from clashrl.sim.engine import build_spec
         env = _quiet(seed=5)
         env.eng.elixir[1] = 10.0
@@ -501,10 +516,12 @@ class RocketRefereeTests(unittest.TestCase):
         env.step((False, 0, 0))
         tx, _ = env._threat_pos()
         env._threat_credits = 0
-        r = env._threat_response(env.deck_keys.index("rocket"), tx, 0.60)
+        r = env._threat_response(a_damage_spell(env), tx, 0.60)
         self.assertEqual(r, 0.0, "a damage spell is judged by the trade ledger, never -1.0")
 
     def test_wrong_role_troop_is_still_a_misread(self):
+        """Same rule, other side: a troop that cannot reach a flying threat is still a misread.
+        icebow picks the Knight here, hogeq the Hog Rider -- whichever ground-only troop it holds."""
         from clashrl.sim.engine import build_spec
         env = _quiet(seed=8)
         env.eng.elixir[1] = 10.0
@@ -513,10 +530,11 @@ class RocketRefereeTests(unittest.TestCase):
         env._threat_id_true[7] = 0.40                    # inside the depth window
         tx, _ = env._threat_pos()
         env._threat_credits = 0
-        r = env._threat_response(env.deck_keys.index("knight"), tx, 0.60)
+        r = env._threat_response(a_ground_only_troop(env), tx, 0.60)
         self.assertLess(r, 0.0, "a ground-only troop against a flying threat stays a misread")
 
 
+@requires_cards("rocket", why="end-to-end Rocket value (clump vs swarm payout)")
 class RocketValueTests(unittest.TestCase):
     """The pull toward good rockets, end-to-end (real env.step -> flight -> deaths ->
     ledger): meaty clumps pay big, swarms pay little, nothing punishes the attempt."""
@@ -739,12 +757,23 @@ class AirReachabilityTests(unittest.TestCase):
                         "skeletons/goblins on the ground are exactly what the log is for")
 
     def test_air_capable_cards_still_counter_air(self):
-        for key in ("tornado", "rocket", "ice_wizard", "tesla"):
+        """Was a hard-coded icebow card list. Now every card THIS deck holds whose profile says
+        it reaches air must be credited against a flying swarm -- which is both deck-agnostic
+        and strictly wider coverage than the four names it replaces.
+
+        MEASURED across both decks (21 deck identities): `counters(profile, flying)` agrees with
+        `profile.attacks_air` for every single one, so the invariant is exact, not approximate."""
+        air = [k for k in self.env.deck_keys if self.ct.profile(self.env.db, k).attacks_air]
+        self.assertTrue(air, "a deck with no air answer at all would be a deck bug")
+        for key in air:
             self.assertTrue(self.ct.counters(self._prof(key), self.flying),
                             "%s reaches air and must still count" % key)
 
     def test_ground_only_troops_never_counter_air(self):
-        for key in ("knight", "skeletons", "x_bow"):
+        """The other half of the same invariant, over this deck's own ground-only cards."""
+        ground = [k for k in self.env.deck_keys if not self.ct.profile(self.env.db, k).attacks_air]
+        self.assertTrue(ground, "a deck with no ground-only card would make this test vacuous")
+        for key in ground:
             self.assertFalse(self.ct.counters(self._prof(key), self.flying),
                              "%s cannot hit air" % key)
 

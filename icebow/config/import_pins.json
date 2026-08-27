@@ -1,0 +1,1333 @@
+{
+ "meta": {
+  "generator": "research/sim_parity/scripts/gen_pins.py",
+  "sources": [
+   "ledger/stat_diffs.jsonl (66 verdict:pin rows)",
+   "decisions.md 2026-08-26 R2 ADJUDICATION (owner rulings)",
+   "ledger/i5_plan.json (rows i5_apply.py routed to the import layer)",
+   "decisions.md ruling 19 (owner 2026-08-27, spawned-body elixir)"
+  ],
+  "semantics": "the importer applies pins as a post-pass over the scraped rows and --write refuses if a pinned field would regress; value null = the field must not be imported; fields the importer does not emit are advisory (curated layer / stat_sweep EXPECTED sync); an explicit advisory:true pin is recorded for the sweep and never imported",
+  "pair": "byte-identical across icebow/ and hogeq/ -- regenerate with the generator and it writes both; never hand-edit one copy",
+  "counts": {
+   "total": 184,
+   "from_stat_diffs": 66,
+   "from_decisions": 21,
+   "from_i5_plan": 79,
+   "advisory": 22,
+   "overlapping": 4
+  }
+ },
+ "pins": [
+  {
+   "key": "archer_queen",
+   "field": "ability_cooldown_s",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_champions.jsonl:7, family champions)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "archer_queen",
+   "field": "damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:41, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "archer_queen",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:42, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "archers",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:2, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "arrows",
+   "field": "crown_tower_damage",
+   "value": 24,
+   "source": "I5 apply (CROWN): 1/6/2026 cut Arrows crown damage to 20% of full; 122*0.20=24.4 -> 24. Vardefine 31 is the pre-1/6/2026 25% value (122*0.25=30.5 -> 31) and is what the sim imported",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "baby_dragon",
+   "field": "damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:17, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "baby_dragon",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:18, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "barbarian_barrel",
+   "field": "damage",
+   "value": 230,
+   "source": "I5 apply (RULING): PARENT bucket: the two fields are SWAPPED. 'Barbarian Barrel Area Damage' renders from spawn_11 (230); dmg_11 191 is the spawned Barbarian's swing",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "barbarian_barrel",
+   "field": "dps",
+   "value": 177,
+   "source": "I5 apply (RULING): consequential on the PARENT swap: 230/1.3 = 176.9 -> 177",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "barbarian_barrel",
+   "field": "spawn_damage",
+   "value": 191,
+   "source": "I5 apply (RULING): PARENT bucket: mirror of the damage row -- the spawned Barbarian swings 191",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "barbarian_barrel_hero",
+   "field": "damage",
+   "value": 232,
+   "source": "I8: parent/child swap, same as the base card's pin -- 'Barbarian Barrel Area Damage' renders from spawn_11 (232); dmg_11 192 is the spawned Barbarian's swing",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "barbarian_hut",
+   "field": "spawn_unit_stats",
+   "value": "670/192/1.3",
+   "source": "stat_diffs.jsonl verdict:pin (r2_crosscheck_spawn_anchor.jsonl:25, family xc_spawn_anchor)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "barbarians_evo",
+   "field": "damage",
+   "value": 191,
+   "source": "I5 apply (LAG): Small but real: since 3/10/2023 the Evo has NO damage boost, so its damage must equal the base's, yet the Evo page says 192 and the base page says 191 -- 1-point drift between two independently maintained vardefines. The sim mirrors the wiki's inconsistency (b",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "barbarians_evo",
+   "field": "dps",
+   "value": 136,
+   "source": "I5 apply (RULING): consequential on the LAG damage 191: 191/1.4 = 136.4 -> 136",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "barbarians_evo",
+   "field": "hitpoints",
+   "value": 691,
+   "source": "I5 apply (LAG): WIKI IS SELF-INCONSISTENT. The 4/8/2026 rule is 'Evo HP = base HP', yet the Evo page says 716 and the base page says 691; both cannot be right",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "bats_evo",
+   "field": "dps",
+   "value": 68,
+   "source": "I5 apply (RULING): consequential on the LAG hit_speed 1.2: 81/1.2 = 67.5 -> 68",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "bats_evo",
+   "field": "hit_speed",
+   "value": 1.2,
+   "source": "I5 apply (LAG): CLASSIC VARDEFINE-LAGS-HISTORY CASE, so do not read the raw 2-1 count as support for 1.3. The two 1.3s are one page's stat block (the vardefine and the hand-typed cell, both maintained by the same editor, and the base page's block is provably unmaintained for",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "bomber",
+   "field": "area_damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:3, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "bomber",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:4, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "bomber_evo",
+   "field": "hitpoints",
+   "value": 304,
+   "source": "I5 apply (LAG): Both the Evo page's own intro and the Card Evolution table say the Evo Bomber has IDENTICAL stats, and the Evo page's History logs no hitpoint boost since the 14/5/2024-era ones -- yet the two pages have published 332 vs 304 side by side since at least 2025-12",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "bowler",
+   "field": "projectile_range",
+   "value": 7.0,
+   "source": "I5 apply (UPDATE): P2 still prints 7.5, which is precisely the value P3 names as the pre-change one -- the table lags rather than genuinely disagreeing. Attack range 4.0 and projectile width 3.6 both still match.",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "bush_goblin",
+   "field": "damage",
+   "value": 256,
+   "source": "I5 apply (LAG, curated): 227 * 1.12 = 254.2 and the page's current vardefine is 256, so current_db looks like the pre-9/4/2025 value. Confirmed this is the right vardefine for this key: on this page bush_hp_11=81 is the Suspicious Bush itself and hp_11/dmg_11/atk_speed are the Bush Go",
+   "date": "2026-08-26",
+   "advisory": true
+  },
+  {
+   "key": "cannon",
+   "field": "damage",
+   "value": 201,
+   "source": "I5 apply (LAG): VARDEFINE PROVABLY STALE. A revision walk shows dmg_11=212 is byte-identical to the level-11 damage in the 2025-12-22 revision, i.e",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "cannon",
+   "field": "dps",
+   "value": 201,
+   "source": "I5 apply (LAG): Follows damage: dps = damage / hit_speed = 201 / 1.0 = 201 if the 6/4/2026 -5% is applied. Same rounding caveat as the damage line.",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "cannon_evo",
+   "field": "damage",
+   "value": 201,
+   "source": "I5 apply (LAG): VARDEFINE PROVABLY LAGS. Do not read this as 2-of-3 for 212: the level table is generated from the same vardefine, so P1 and P2 are one witness, and the time machine shows that witness predates the change it is supposed to reflect",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "cannon_evo",
+   "field": "dps",
+   "value": 201,
+   "source": "I5 apply (RULING): consequential on the LAG damage 201: 201/1.0 = 201",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "cannon_evo",
+   "field": "volley_damage",
+   "value": 281,
+   "source": "decisions.md #9: cannon_evo volley damage 281 @ L11 (nerfed; wiki vardefine lags at 304)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "dark_prince",
+   "field": "dps",
+   "value": 190.0,
+   "source": "I5 apply (UPDATE): Consequential: damage 266 (P1-confirmed, unchanged) / 1.4 s = 190. current_db 205 is 266/1.3.",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "dark_prince",
+   "field": "hit_speed",
+   "value": 1.4,
+   "source": "I5 apply (UPDATE): Same lag pattern as electro_giant, dated the same day. NOTE the 2018 entry ('decreased his attack time interval to 1.3 seconds (from 1.4)') argues for 1.3 and is what P1 still holds -- it is superseded by 4/5/2026",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "dart_goblin_evo",
+   "field": "damage",
+   "value": 144,
+   "source": "I5 apply (LAG): Both the base and the Evo page carry 156 and both log the 12/1/2026 -8% in their History, but the time machine shows 156 was already there in Nov 2025 and never moved -- the number lags its own changelog. Derived current ~144 (156*0.92 = 143.5), with dps ~180",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "dart_goblin_evo",
+   "field": "dps",
+   "value": 180,
+   "source": "I5 apply (RULING): consequential on the LAG damage 144: 144/0.8 = 180",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "earthquake",
+   "field": "crown_tower_damage",
+   "value": 49,
+   "source": "stat_diffs.jsonl verdict:pin (r2_spells.jsonl:13, family spells)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "earthquake",
+   "field": "damage",
+   "value": 81,
+   "source": "decisions.md #5: earthquake damage = 81 @ L11, not 84 (overrides the 2026-08 HANDOFF card-data row)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "electro_dragon",
+   "field": "damage",
+   "value": 192,
+   "source": "decisions.md ruling 15 (OWNER, in-game 2026-08-26): the Electro Dragon deals 192 @L11, not the 267 both wiki pages publish. Three independent supports: (a) the Evolution page's own `late_dmg_11 = 64` -- its level table's 'Damage after 5 chains' column -- reproduces exactly from 192 through its two dated chain nerfs (192 x 0.67 on 8/1/2025 'damage after the first 3 chains -33%' x 0.50 on 2/3/2026 'chain damage -50%' = 64.3 -> 64) and NOT from 267 (-> 89); (b) webcache/Electro_Dragon.rev436720.wikitext publishes `dmg_11 | 192`, so 192 is this page's own older value rather than an unsourced reading; (c) the page's stat block has drifted far past what its History documents -- hp_11 949 -> 1383 -> 1451 (+53%) against History entries recording only two +5% buffs. The competing reading (267 live, late_dmg_11 stale) is recorded in conflicts.md, not discarded. dps is the quotient 192/2.3 because build_spec rebuilds per-hit damage as dps * hit_speed",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "electro_dragon",
+   "field": "dps",
+   "value": 83.478,
+   "source": "decisions.md ruling 15 (OWNER, in-game 2026-08-26): the Electro Dragon deals 192 @L11, not the 267 both wiki pages publish. Three independent supports: (a) the Evolution page's own `late_dmg_11 = 64` -- its level table's 'Damage after 5 chains' column -- reproduces exactly from 192 through its two dated chain nerfs (192 x 0.67 on 8/1/2025 'damage after the first 3 chains -33%' x 0.50 on 2/3/2026 'chain damage -50%' = 64.3 -> 64) and NOT from 267 (-> 89); (b) webcache/Electro_Dragon.rev436720.wikitext publishes `dmg_11 | 192`, so 192 is this page's own older value rather than an unsourced reading; (c) the page's stat block has drifted far past what its History documents -- hp_11 949 -> 1383 -> 1451 (+53%) against History entries recording only two +5% buffs. The competing reading (267 live, late_dmg_11 stale) is recorded in conflicts.md, not discarded. dps is the quotient 192/2.3 because build_spec rebuilds per-hit damage as dps * hit_speed",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "electro_dragon_evo",
+   "field": "damage",
+   "value": 192,
+   "source": "decisions.md ruling 15 (OWNER, in-game 2026-08-26): the Electro Dragon deals 192 @L11, not the 267 both wiki pages publish. Three independent supports: (a) the Evolution page's own `late_dmg_11 = 64` -- its level table's 'Damage after 5 chains' column -- reproduces exactly from 192 through its two dated chain nerfs (192 x 0.67 on 8/1/2025 'damage after the first 3 chains -33%' x 0.50 on 2/3/2026 'chain damage -50%' = 64.3 -> 64) and NOT from 267 (-> 89); (b) webcache/Electro_Dragon.rev436720.wikitext publishes `dmg_11 | 192`, so 192 is this page's own older value rather than an unsourced reading; (c) the page's stat block has drifted far past what its History documents -- hp_11 949 -> 1383 -> 1451 (+53%) against History entries recording only two +5% buffs. The competing reading (267 live, late_dmg_11 stale) is recorded in conflicts.md, not discarded. dps is the quotient 192/2.3 because build_spec rebuilds per-hit damage as dps * hit_speed",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "electro_dragon_evo",
+   "field": "dps",
+   "value": 83.478,
+   "source": "decisions.md ruling 15 (OWNER, in-game 2026-08-26): the Electro Dragon deals 192 @L11, not the 267 both wiki pages publish. Three independent supports: (a) the Evolution page's own `late_dmg_11 = 64` -- its level table's 'Damage after 5 chains' column -- reproduces exactly from 192 through its two dated chain nerfs (192 x 0.67 on 8/1/2025 'damage after the first 3 chains -33%' x 0.50 on 2/3/2026 'chain damage -50%' = 64.3 -> 64) and NOT from 267 (-> 89); (b) webcache/Electro_Dragon.rev436720.wikitext publishes `dmg_11 | 192`, so 192 is this page's own older value rather than an unsourced reading; (c) the page's stat block has drifted far past what its History documents -- hp_11 949 -> 1383 -> 1451 (+53%) against History entries recording only two +5% buffs. The competing reading (267 live, late_dmg_11 stale) is recorded in conflicts.md, not discarded. dps is the quotient 192/2.3 because build_spec rebuilds per-hit damage as dps * hit_speed",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "electro_giant",
+   "field": "crown_tower_damage",
+   "value": 97,
+   "source": "I5 apply (CROWN, curated): Missing field: the Zap Pack's reflected damage to crown towers (crown_11 = 97) has no KB counterpart. Deliberately NOT proposing a write -- the brief pins the crown-tower damage family as re-curated post-1/6/2026, and the 4/5/2026 entry moved this number again",
+   "date": "2026-08-26",
+   "advisory": true
+  },
+  {
+   "key": "electro_giant",
+   "field": "dps",
+   "value": 91.0,
+   "source": "I5 apply (UPDATE): Consequential on the hit_speed update: damage 163 (unchanged, P1-confirmed) / 1.8 s = 90.6 -> 91. current_db 78 is 163/2.1 and only stays correct while hit_speed stays 2.1.",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "electro_giant",
+   "field": "hit_speed",
+   "value": 1.8,
+   "source": "I5 apply (UPDATE): P1 vardefine still carries the pre-4/5/2026 value 2.1; P2 table and P3 history both give 1.8, and P3 names 2.1 as the OLD value, which is exactly what P1 and current_db still hold. Textbook vardefine lag",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "electro_wizard",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:32, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "electro_wizard",
+   "field": "zap_damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:33, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "executioner",
+   "field": "projectile_range",
+   "value": 7.0,
+   "source": "I5 apply (UPDATE): Same 4/8/2026 update that cut the Bowler's projectile range; P2 still shows the stated old value 7.5.",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "executioner_evo",
+   "field": "damage",
+   "value": 180,
+   "source": "I5 apply (LAG): Both the base and Evo pages log a 2/3/2026 +7% damage buff in their History and neither applied it to the number. Derived current ~180 (168*1.07 = 179.8)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "executioner_evo",
+   "field": "dps",
+   "value": 75,
+   "source": "I5 apply (RULING): consequential on the LAG damage 180: 180/2.4 = 75",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "executioner_evo",
+   "field": "projectile_range",
+   "value": 7.0,
+   "source": "I5 apply (LAG): Imported field, and the two History paths (Evo page + Version History master) both date the 7.5 -> 7.0 cut to 4/8/2026 while the hand-typed attributes cell still says 7.5. Recommend 7.0 for executioner_evo AND base executioner",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "fireball",
+   "field": "crown_tower_damage",
+   "value": 172,
+   "source": "I5 apply (LAG): HIGHEST-TRAFFIC MISS IN THE GROUP. TWO independent 2026 history entries agree the value is now 172 -- one states the arithmetic outright ('207-172', linked to Supercell's June 2026 release notes), the other states the rule (25% of full: 688*0.25 = 172)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "firecracker_evo",
+   "field": "hit_speed",
+   "value": 3.0,
+   "source": "I5 apply (UPDATE, curated): PRIORITY FLAG from the brief (evo rows missing hit_speed) -- RESOLVED. firecracker_evo has no hit_speed at all today, so it also has no dps, while the base firecracker row correctly carries 3.0/21",
+   "date": "2026-08-26",
+   "advisory": true
+  },
+  {
+   "key": "firecracker_evo",
+   "field": "projectile_speed",
+   "value": 500.0,
+   "source": "I5 apply (LAG): UNRESOLVABLE FROM THE WIKI, recorded with all raws. The changelog says the value went 400 -> 500 on 6-7/4/2026, but the attributes cell said 550 both before and after and has never been edited, so the table cannot be a stale copy of the pre-change value either",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "firecracker_evo",
+   "field": "spark_dps_small",
+   "value": 48,
+   "source": "decisions.md #5: wiki correct for ALL firecracker_evo entries; owner overturned the old verified 60 (closes the long-flagged spark_dps_small conflict)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "freeze",
+   "field": "crown_tower_damage",
+   "value": 29,
+   "source": "I5 apply (CROWN): 1/6/2026 cut Freeze crown damage to 25% of full: 115*0.25 = 28.75 -> 29. Vardefine 35 is the 30% value",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "furnace",
+   "field": "dps",
+   "value": 105,
+   "source": "I5 apply (RULING): consequential on the LAG hit_speed 1.7: 179/1.7 = 105.3 -> 105",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "furnace",
+   "field": "hit_speed",
+   "value": 1.7,
+   "source": "I5 apply (RULING): LAG bucket: the same page's table is demonstrably stale in BOTH of its other 2026 entries (range and spawn interval, both applied as updates), so table agreement is not evidence of currency for this field either",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "furnace",
+   "field": "kind",
+   "value": "troop",
+   "source": "stat_diffs.jsonl verdict:pin (r2_crosscheck_spawn_anchor.jsonl:15, family xc_spawn_anchor)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "furnace",
+   "field": "range_tiles",
+   "value": 5.5,
+   "source": "I5 apply (UPDATE): P2 prints 6, the value P3 names as the old one. The Furnace became a walking troop on 4/8/2025, so its attack range is live in the sim.",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "furnace",
+   "field": "spawn_interval_s",
+   "value": 5.0,
+   "source": "I5 apply (UPDATE): Full timeline reconstructed: 5 s (4/4/2023) -> 7 s (7/8/2025) -> 5 s (4/8/2026). Current = 5",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "furnace_evo",
+   "field": "dps",
+   "value": 105,
+   "source": "I5 apply (RULING): consequential on the LAG hit_speed 1.7: 179/1.7 = 105.3 -> 105",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "furnace_evo",
+   "field": "hit_speed",
+   "value": 1.7,
+   "source": "I5 apply (LAG): Third stale field on the same card. Recommend hit_speed 1.7 with dps 105 (179/1.7) instead of 99",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "furnace_evo",
+   "field": "speed_tiles",
+   "value": 1.0,
+   "source": "I5 apply (LAG): The Evo page's Speed cell was never updated for the 6/10/2025 Slow -> Medium change that its own History records and that the base page's cell already reflects; the sim copied the stale cell (furnace_evo 0.75 vs base furnace 1.0). Recommend 1.0",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "ghost_souldier",
+   "field": "damage",
+   "value": 81,
+   "source": "I5 apply (PARENT, curated): PARENT-STAT CONTAMINATION. current_db 261 is EXACTLY the Royal Ghost's own dmg_11 on the same page; the Souldier's own vardefine is soul_dmg_11 = 81",
+   "date": "2026-08-26",
+   "advisory": true
+  },
+  {
+   "key": "giant_skeleton",
+   "field": "dps",
+   "value": 212.0,
+   "source": "I5 apply (UPDATE): Derived field, follows the hit_speed 1.4->1.3 update: 276/1.3 = 212.3 -> 212. The wiki's own DPS column renders 197 only because it is computed from the stale atk_speed vardefine",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "giant_skeleton",
+   "field": "hit_speed",
+   "value": 1.3,
+   "source": "I5 apply (UPDATE): P1 vardefine atk_speed is still 1.4 and was ALSO 1.4 at oldid 435951, i.e. it never moved for the 12/1/2026 change; the hand-typed attributes table and the dated history both read 1.3",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "giant_snowball",
+   "field": "crown_tower_damage",
+   "value": 45,
+   "source": "I5 apply (CROWN): 1/6/2026 cut it to 25% of full: 179*0.25 = 44.75 -> 45; vardefine 54 is the 30% value. Missed by the audit tool for a THIRD distinct reason: this page wraps the phrase in a category link ('[[:Category:Crown Towers|Crown Tower]] damage to 25% of the full damage",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "giant_snowball_evo",
+   "field": "crown_tower_damage",
+   "value": 45,
+   "source": "I5 apply (RULING, curated): decisions.md 2026-08-26 R2 ADJUDICATION #3 CROWN: 1/6/2026 cut it to 25% of full; 179*0.25 = 44.75 -> 45",
+   "date": "2026-08-26",
+   "advisory": true
+  },
+  {
+   "key": "goblin_barrel_evo",
+   "field": "damage",
+   "value": 125,
+   "source": "I5 apply (LAG): The Goblin Barrel/Evolution page's copy of the Goblin stat block lags the 4/8/2026 +4% that the Goblins page already applied -- and here the direction of staleness is provable because the two numbers differ by exactly the documented 4%. Recommend damage 125 wi",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "goblin_barrel_evo",
+   "field": "dps",
+   "value": 114,
+   "source": "I5 apply (RULING): consequential on the LAG damage 125: 125/1.1 = 113.6 -> 114",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "goblin_cage",
+   "field": "hit_speed",
+   "value": null,
+   "source": "I5 apply (RULING): PARENT bucket: 1.1 s is the Goblin BRAWLER's period from the secondary table; the cage never attacks and publishes no hit-speed column. Already carried where it belongs, in spawn_unit_stats.hit_speed",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "goblin_cage",
+   "field": "hitpoints",
+   "value": 780,
+   "source": "stat_diffs.jsonl verdict:pin (r2_crosscheck_spawn_anchor.jsonl:9, family xc_spawn_anchor)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "goblin_cage_evo",
+   "field": "dps",
+   "value": 337.0,
+   "source": "I5 apply (UPDATE): NEW CASE of exactly the defect class 95e9879 fixed, on an EVOLUTION page that commit never touched. Follows from the wrong hit_speed: 337/1.1 = 306 is the Brawler's DPS column, where the page's 'Goblin Cage Damage per second' column is 337/1 = 337",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "goblin_cage_evo",
+   "field": "hit_speed",
+   "value": 1.0,
+   "source": "I5 apply (DUP): Same root cause as the hitpoints row and recorded separately because it is a separately dated fact: the cage's trap attack has been 1.0 s since 8/10/2024, and 1.1 s is the Brawler's period. All three paths agree on 1.0",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "goblin_cage_evo",
+   "field": "hitpoints",
+   "value": 780,
+   "source": "I5 apply (DUP): THE SPAWNED-UNIT SUBSTITUTION THE BRIEF WARNED ABOUT, caught in this group. goblin_cage_evo's hitpoints 1080 / hit_speed 1.1 / dps 306 are the GOBLIN BRAWLER's numbers, not the cage's",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "goblin_curse",
+   "field": "damage",
+   "value": 35,
+   "source": "I5 apply (RULING, curated): decisions.md 2026-08-26 R2 ADJUDICATION #12: goblin_curse 35 = damage PER SECOND; the spell lasts 6 s -> 210 total. The KB's 120 was the GOBLIN the curse converts victims into",
+   "date": "2026-08-26",
+   "advisory": true
+  },
+  {
+   "key": "goblin_demolisher",
+   "field": "dps",
+   "value": 169,
+   "source": "I5 apply (ROUNDING): adopt the wiki's floor() for derived DPS: floor(damage/hit_speed)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "goblin_demolisher",
+   "field": "hit_speed",
+   "value": 1.1,
+   "source": "I5 apply (RULING): LAG bucket: the two paths saying 1.2 are two renderings of ONE page whose stat block provably did not move across 1/12/2025; the two saying 1.1 are the change record (this page's History and the independent Version History)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "goblin_drill",
+   "field": "spawn_crown_damage",
+   "value": 0,
+   "source": "I5 apply (LAG): HIGH CONFIDENCE that the current value is 0. The 4/8/2026 entry says the tower spawn damage was removed 'entirely (from 30% of the full spawn damage)', and 26/84 = 30.95% identifies spawn_crown_11 = 26 as exactly the pre-change 30% figure that entry describes",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "goblin_drill",
+   "field": "spawns.delay",
+   "value": 1.0,
+   "source": "stat_diffs.jsonl verdict:pin (r2_buildings.jsonl:14, family buildings)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "goblin_drill_evo",
+   "field": "spawn_crown_damage",
+   "value": 0,
+   "source": "I5 apply (CROWN): STALE CROWN, and the most recent of the batch -- 4/8/2026, three weeks ago. 26/84 = 31% is precisely the fraction that update REMOVED; the correct value is now 0",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "goblin_giant_evo",
+   "field": "hitpoints",
+   "value": 3113,
+   "source": "I5 apply (LAG): Two problems at once. (1) The Card Evolution table says the Evo has identical stats, yet the two pages have published 3223 vs 3022 for months",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "goblin_machine",
+   "field": "damage",
+   "value": 231,
+   "source": "I5 apply (LAG): Page proven stale across the same change. 212 x 1.09 = 231.1, so ~231 -- same estimate caveat as the hitpoints line above.",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "goblin_machine",
+   "field": "dps",
+   "value": 192,
+   "source": "I5 apply (RULING): decisions.md 2026-08-26 R2 ADJUDICATION #7: adopt the wiki's floor() for derived DPS -- floor(231/1.2) = 192 on the LAG-corrected damage 231. (On today's 212 the floor is 176; the stored 177 is a round().)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "goblin_machine",
+   "field": "hitpoints",
+   "value": 2258,
+   "source": "I5 apply (LAG): Page proven stale across a documented change. 2150 x 1.05 = 2257.5, so ~2258",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "goblins",
+   "field": "damage",
+   "value": 125,
+   "source": "stat_diffs.jsonl verdict:pin (r2_crosscheck_spawn_anchor.jsonl:24, family xc_spawn_anchor)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "goblins",
+   "field": "dps",
+   "value": 113,
+   "source": "I5 apply (ROUNDING): adopt the wiki's floor() for derived DPS: floor(damage/hit_speed)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "goblinstein",
+   "field": "ability_cooldown_s",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_champions.jsonl:21, family champions)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "goblinstein",
+   "field": "damage",
+   "value": 128,
+   "advisory": true,
+   "source": "MODELLING: a two-body champion held as ONE merged unit -- the wiki's dmg_11 92 is the Doctor alone and monster_dmg_11 is 128. Splitting them is the SIM_FIDELITY deferred item",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "golden_knight",
+   "field": "ability_cooldown_s",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_champions.jsonl:34, family champions)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "golden_knight",
+   "field": "damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:43, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "golden_knight",
+   "field": "dashing_dash_damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:44, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "golden_knight",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:45, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "golem",
+   "field": "dps",
+   "value": 124,
+   "source": "I5 apply (ROUNDING): adopt the wiki's floor() for derived DPS: floor(damage/hit_speed)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "golem",
+   "field": "golem_damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:19, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "golem",
+   "field": "golem_death_damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:20, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "golem",
+   "field": "golem_hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:21, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "golem",
+   "field": "golemite_hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:24, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "guardienne",
+   "field": "elixir",
+   "value": 3,
+   "source": "decisions.md ruling 19 (OWNER 2026-08-27): the Little Prince's Royal Rescue guardian is worth 3 elixir. ONE body per activation, so the per-body price is the activation price",
+   "date": "2026-08-27"
+  },
+  {
+   "key": "hog_rider",
+   "field": "damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:9, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "hog_rider",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:10, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "ice_golem",
+   "field": "dps",
+   "value": 33,
+   "source": "I5 apply (ROUNDING): adopt the wiki's floor() for derived DPS: floor(damage/hit_speed)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "inferno_dragon",
+   "field": "dps",
+   "value": 87,
+   "source": "I5 apply (ROUNDING): adopt the wiki's floor() for derived DPS: floor(damage/hit_speed)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "knight",
+   "field": "damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:5, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "knight",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:6, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "lava_hound",
+   "field": "dps",
+   "value": 40,
+   "source": "I5 apply (ROUNDING): adopt the wiki's floor() for derived DPS: floor(damage/hit_speed)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "lightning",
+   "field": "crown_tower_damage",
+   "value": 264,
+   "source": "stat_diffs.jsonl verdict:pin (r2_spells.jsonl:25, family spells) + decisions.md balance-lag pin (post-1/6/2026)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "little_prince",
+   "field": "ability_cooldown_s",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_champions.jsonl:47, family champions)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "little_prince",
+   "field": "hitpoints/damage",
+   "value": "698/104",
+   "source": "stat_diffs.jsonl verdict:pin (r2_crosscheck_spawn_anchor.jsonl:38, family xc_spawn_anchor)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "lumberjack_ghost",
+   "field": "crown_tower_damage",
+   "value": 128,
+   "source": "I5 apply (DUP, curated): The KB row has no crown_tower_damage, so the ghost currently hits crown towers for its full 256 -- exactly double what the game does. All three paths agree on 128: the vardefine, a rendered stats column, and a dated entry halving 256",
+   "date": "2026-08-26",
+   "advisory": true
+  },
+  {
+   "key": "magic_archer",
+   "field": "damage",
+   "value": 125,
+   "source": "I5 apply (LAG): Page proven stale across a documented change: 133 before 4/8/2026 and still 133 now, while History records a 6% cut. 133 x 0.94 = 125.02, so ~125 (ESTIMATE -- the quoted percentage is rounded)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "magic_archer",
+   "field": "dps",
+   "value": 113,
+   "source": "I5 apply (ROUNDING): adopt the wiki's floor() for derived DPS: floor(damage/hit_speed)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "magic_archer_decoy",
+   "field": "elixir",
+   "value": 2,
+   "source": "decisions.md ruling 19 (OWNER 2026-08-27): the Hero Magic Archer's Triple Threat decoy is worth 2 elixir. ONE decoy per activation, so the per-body price is the activation price",
+   "date": "2026-08-27"
+  },
+  {
+   "key": "mega_knight",
+   "field": "dps",
+   "value": 157,
+   "source": "I5 apply (ROUNDING): adopt the wiki's floor() for derived DPS: floor(damage/hit_speed)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "mighty_miner",
+   "field": "2_stage_damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:47, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "mighty_miner",
+   "field": "3_stage_damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:48, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "mighty_miner",
+   "field": "ability_bomb_damage",
+   "value": 332,
+   "source": "decisions.md #9: rarity-floor anchor, wiki integer base 332 @ L11 reproduces the owner's observed 440 @ L14; replaces the 366 reverse-derivation",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "mighty_miner",
+   "field": "ability_cooldown_s",
+   "value": 0.0,
+   "source": "stat_diffs.jsonl verdict:pin (r2_champions.jsonl:58, family champions)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "mighty_miner",
+   "field": "damage",
+   "value": 43,
+   "source": "I5 apply (RULING, curated): stat_diffs verdict:update: stage 1 = the base damage; the KB duplicates it in damage, damage_stages[0] and damage_ramp",
+   "date": "2026-08-26",
+   "advisory": true
+  },
+  {
+   "key": "mighty_miner",
+   "field": "explosive_escape_damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:49, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "mighty_miner",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:50, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "miner",
+   "field": "crown_tower_damage",
+   "value": 39,
+   "source": "stat_diffs.jsonl verdict:pin (r2_crosscheck_crown.jsonl:23, family xc_crown)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "miner",
+   "field": "damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:35, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "miner",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:36, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "mini_pekka",
+   "field": "dps",
+   "value": 471,
+   "source": "I5 apply (ROUNDING): adopt the wiki's floor() for derived DPS: floor(damage/hit_speed)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "mini_pekka",
+   "field": "hitpoints",
+   "value": 1390,
+   "source": "I5 apply (LAG, curated): Page proven stale across a documented change: time machine oldid 433647 (2025-12-25, before 12/1/2026) has the hardcoded L11 row '|11||1,433||755||{{Dps|755|1.6}}', and today's rendered row is still 1433, while History records a 3% hitpoint cut. 1433 x 0.97 =",
+   "date": "2026-08-26",
+   "advisory": true
+  },
+  {
+   "key": "monk",
+   "field": "ability_cooldown_s",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_champions.jsonl:66, family champions)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "mortar",
+   "field": "dps",
+   "value": 57,
+   "source": "I5 apply (LAG): Follows hit_speed: 266/5 = 53.2 -> 53 (current) versus 266/4.7 = 56.6 -> 57 once the 4/8/2026 change is applied. Same reasoning and same caveat as the hit_speed line.",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "mortar",
+   "field": "hit_speed",
+   "value": 4.7,
+   "source": "decisions.md #10: mortar AND mortar_evo hit speed 4.7 s",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "mortar_evo",
+   "field": "dps",
+   "value": 57,
+   "source": "I5 apply (RULING): decisions.md 2026-08-26 R2 ADJUDICATION #10 consequence: 266/4.7 = 56.6 -> 57. One of the three refusals I4's dry-run predicted -- released with --force-field mortar_evo.dps on the I5 --write and pinned here so the next import does not refuse again (cli.py's own instruction)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "mortar_evo",
+   "field": "hit_speed",
+   "value": 4.7,
+   "source": "decisions.md #10: mortar AND mortar_evo hit speed 4.7 s",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "musketeer",
+   "field": "damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:11, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "musketeer",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:12, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "pekka",
+   "field": "damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:25, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "pekka",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:26, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "pekka_evo",
+   "field": "hit_speed",
+   "value": 1.8,
+   "source": "I5 apply (UPDATE, curated): PRIORITY missing-hit_speed row resolved: merged row has dps 468 but no hit_speed (curated yaml re-curated hp/dmg/dps and dropped it). All three paths give 1.8; 842/1.8=467.8 -> the curated dps 468 is self-consistent",
+   "date": "2026-08-26",
+   "advisory": true
+  },
+  {
+   "key": "phoenix_egg",
+   "field": "hitpoints",
+   "value": 240,
+   "source": "I5 apply (RULING, curated): DUP bucket (merge's pick): the wiki moved to 240 and the KB kept 239. The 317 in P3 is the sweep's own reconstruction of a 2/3/2026 +32% the wiki never applied -- not a published number, so not applied",
+   "date": "2026-08-26",
+   "advisory": true
+  },
+  {
+   "key": "poison",
+   "field": "crown_tower_damage",
+   "value": 21,
+   "source": "stat_diffs.jsonl verdict:pin (r2_spells.jsonl:28, family spells) + decisions.md balance-lag pin (post-1/6/2026)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "princess",
+   "field": "area_damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:37, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "princess",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:38, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "rage",
+   "field": "attacks",
+   "value": null,
+   "source": "I5: the imported ['buildings'] was a FALSE buildings-only assertion -- the wiki's Target cell 'Friendly Troops & Buildings' names who Rage BUFFS, not who it attacks (root cause fixed in card_import by d8fc808). Released with --force-field rage.attacks on the I5 --write and pinned null here",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "rage",
+   "field": "crown_tower_damage",
+   "value": 45,
+   "source": "I5 apply (CROWN): 1/6/2026 -> 25% of full: 179*0.25 = 44.75 -> 45; vardefine 54 is the 30% value. Like Freeze, Rage is absent from crown_damage_audit.py's CARDS list, so it was never checked",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "ram_rider",
+   "field": "hitpoints",
+   "value": 1765,
+   "source": "I5 apply (LAG): PROVEN LAG: the pre-change revision already carried today's value, so the wiki never applied the balance entry. P1/P2 are NOT independent here -- the statistics table is generated from the vardefine, so they are one source",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "rascals",
+   "field": "hitpoints",
+   "value": 1824,
+   "source": "I5 apply (LAG): PROVEN LAG: the pre-change revision already carried today's value, so the wiki never applied the balance entry. P1/P2 are NOT independent here -- the statistics table is generated from the vardefine, so they are one source",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "rocket",
+   "field": "crown_tower_damage",
+   "value": 341,
+   "source": "decisions.md balance-lag pin: 1/6/2026 set 23% of full; 1484 * 0.23 = 341.32 -> 341 (cards.yaml's 342 is off by one against this pin -- I5 applies 341)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "royal_delivery",
+   "field": "crown_tower_damage",
+   "value": 0,
+   "source": "I5 apply (RULING, curated): decisions.md 2026-08-26 R2 ADJUDICATION #11: royal_delivery CANNOT hit crown towers. Written as an explicit 0, NOT deleted: MEASURED, removing the field took spell_tower_dmg 40 -> 385, because build_spec fell back to the card's full damage when the KB carried none. build_spec's falsy `or dmg` was fixed in the same commit so a published 0 survives",
+   "date": "2026-08-26",
+   "advisory": true
+  },
+  {
+   "key": "royal_delivery",
+   "field": "damage",
+   "value": 385,
+   "source": "I5 apply (RULING, curated): decisions.md 2026-08-26 R2 ADJUDICATION #9: the 12% cut applies to the SPAWN damage. The landing damage is spawn_11 437 (dmg_11 133 is the spawned Recruit's melee); 437*0.88 = 384.6 -> 385",
+   "date": "2026-08-26",
+   "advisory": true
+  },
+  {
+   "key": "royal_recruit",
+   "field": "dps",
+   "value": 102,
+   "source": "I5 apply (KBGAP, curated): PRIORITY / MISSING FIELD. Derived exactly as on the sibling row royal_recruits.dps (102), which matches",
+   "date": "2026-08-26",
+   "advisory": true
+  },
+  {
+   "key": "rune_giant",
+   "field": "damage",
+   "value": 154,
+   "source": "I5 apply (LAG): PROVEN LAG: the pre-change revision already carried today's value, so the wiki never applied the balance entry. P1/P2 are NOT independent here -- the statistics table is generated from the vardefine, so they are one source",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "rune_giant",
+   "field": "dps",
+   "value": 103,
+   "source": "I5 apply (RULING): consequential on the LAG damage 154: 154/1.5 = 102.7 -> 103",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "rune_giant",
+   "field": "hitpoints",
+   "value": 2822,
+   "source": "I5 apply (LAG): PROVEN LAG: the pre-change revision already carried today's value, so the wiki never applied the balance entry. P1/P2 are NOT independent here -- the statistics table is generated from the vardefine, so they are one source",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "skeleton_barrel_evo",
+   "field": "count",
+   "value": 1,
+   "source": "stat_diffs.jsonl verdict:pin (r2_evos_b.jsonl:60, family evos_b)",
+   "date": "2026-08-26 live refetch; revid identical to the 00:52 evos_b fetchlog and cache byte-identical"
+  },
+  {
+   "key": "skeleton_barrel_evo",
+   "field": "damage",
+   "value": 0,
+   "source": "stat_diffs.jsonl verdict:pin (r2_evos_b.jsonl:61, family evos_b)",
+   "date": "2026-08-26 live refetch; revid identical to the 00:52 evos_b fetchlog and cache byte-identical"
+  },
+  {
+   "key": "skeleton_barrel_evo",
+   "field": "dps",
+   "value": 0,
+   "source": "stat_diffs.jsonl verdict:pin (r2_evos_b.jsonl:62, family evos_b)",
+   "date": "2026-08-26 live refetch; revid identical to the 00:52 evos_b fetchlog and cache byte-identical"
+  },
+  {
+   "key": "skeleton_dragons",
+   "field": "damage",
+   "value": 151,
+   "source": "I5 apply (LAG): PROVEN LAG: the pre-change revision already carried today's value, so the wiki never applied the balance entry. P1/P2 are NOT independent here -- the statistics table is generated from the vardefine, so they are one source",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "skeleton_king",
+   "field": "ability_cooldown_s",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_champions.jsonl:77, family champions)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "skeleton_king",
+   "field": "skeleton_king_damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:52, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "skeleton_king",
+   "field": "skeleton_king_hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:53, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "soul_skeleton",
+   "field": "elixir",
+   "value": 0.1875,
+   "source": "decisions.md ruling 19 (OWNER 2026-08-27): the Skeleton King's Skeletons are worth 3 elixir AT FULL CHARGE -- for the WHOLE summon, not each body. Full charge = ability_spawn_count 6 + _SOUL_CAP 10 = 16 Skeletons, so 3 / 16 = 0.1875 per body and the full summon MEASURES exactly 3.0000. NOT 3 / max_souls (0.3), which would total 4.80",
+   "date": "2026-08-27"
+  },
+  {
+   "key": "sparky",
+   "field": "area_damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:39, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "sparky",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:40, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "spear_goblins",
+   "field": "dps",
+   "value": 51.0,
+   "source": "I5 apply (UPDATE): Consequence of the hit_speed update above, not an independent finding. current_db 48 is exactly 81/1.7 = 47.6, which confirms the KB dps was computed from the stale 1.7",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "spear_goblins",
+   "field": "hit_speed",
+   "value": 1.6,
+   "source": "I5 apply (DUP): THE CONTAMINATION RUNS BOTH WAYS, and this is the one instance that leaked. The KB holds 1.7, which is the GOBLIN HUT page's copy of the Spear Goblin, not the Spear Goblins card page's own 1.6",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "spirit_empress",
+   "field": "damage",
+   "value": 309,
+   "source": "I5 apply (RULING, curated): decisions.md 2026-08-26 R2 ADJUDICATION #5: spirit_empress 309 is correct",
+   "date": "2026-08-26",
+   "advisory": true
+  },
+  {
+   "key": "spirit_empress",
+   "field": "hitpoints",
+   "value": 1121,
+   "source": "stat_diffs.jsonl verdict:pin (r2_troops_c.jsonl:22, family troops_c)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "spirit_empress_air",
+   "field": "damage",
+   "value": 309,
+   "source": "I5 apply (RULING, curated): decisions.md 2026-08-26 R2 ADJUDICATION #5: spirit_empress 309 is correct",
+   "date": "2026-08-26",
+   "advisory": true
+  },
+  {
+   "key": "spirit_empress_air",
+   "field": "hit_speed",
+   "value": 1.4,
+   "source": "stat_diffs.jsonl verdict:pin (r2_troops_c.jsonl:26, family troops_c)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "spirit_empress_air",
+   "field": "hitpoints",
+   "value": 1121,
+   "source": "stat_diffs.jsonl verdict:pin (r2_troops_c.jsonl:24, family troops_c)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "tesla",
+   "field": "hitpoints",
+   "value": 1182,
+   "source": "I5 apply (RULING): decisions.md 2026-08-26 R2 ADJUDICATION #5: tesla_evo hitpoints = base = 1182 @ L11 (evo hp same as base). OWNER OVERRIDE: the live wiki publishes 1152 on BOTH the base and the Evolution page, and the 1/6/2026 '+3%' reconstruction gives 1187; the RULE (evo hp == base hp) is wiki-confirmed, the VALUE 1182 is the owner's",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "tesla_evo",
+   "field": "hitpoints",
+   "value": 1182,
+   "source": "decisions.md #5: tesla_evo hitpoints = base = 1182 @ L11 (evo hp same as base)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "the_log",
+   "field": "crown_tower_damage",
+   "value": 35,
+   "source": "stat_diffs.jsonl verdict:pin (r2_spells.jsonl:40, family spells) + decisions.md balance-lag pin (post-1/6/2026)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "tombstone",
+   "field": "spawn_interval_s",
+   "value": 3.5,
+   "source": "I5 apply (UPDATE): The attribute table's '4 sec' Spawn Speed cell is stale and is contradicted three ways on its own page: the prose says 3.5, the Common modifier's arithmetic ('doubled, for a total of 1.75 seconds') implies 3.5, and the last dated change (4/4/2022) set 3.5. spa",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "valkyrie",
+   "field": "area_damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:13, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "valkyrie",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:14, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "vines",
+   "field": "crown_tower_damage",
+   "value": 70,
+   "source": "I5 apply (LAG, curated): 1/6/2026 -> 23% of full. Per hit: 153*0.23 = 35.19 -> 35, x2 hits = 70",
+   "date": "2026-08-26",
+   "advisory": true
+  },
+  {
+   "key": "vines",
+   "field": "damage",
+   "value": 306,
+   "advisory": true,
+   "source": "MODELLING: we apply both hits at once (dmg_hits 2 x 153 = 306); the 1.25 s between them is below the sim's decision resolution",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "wall_breakers",
+   "field": "damage",
+   "value": 313,
+   "source": "I5 apply (LAG): PROVEN LAG: the pre-change revision already carried today's value, so the wiki never applied the balance entry. P1/P2 are NOT independent here -- the statistics table is generated from the vardefine, so they are one source",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "witch",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:28, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "witch_evo",
+   "field": "damage",
+   "value": 135,
+   "source": "I5 apply (RULING, curated): stat_diffs verdict:update: dmg_11 = 135, 3-of-3 (evo vardefine, evo attributes table, base Witch under the 'identical stats' clause)",
+   "date": "2026-08-26",
+   "advisory": true
+  },
+  {
+   "key": "witch_evo",
+   "field": "dps",
+   "value": 123,
+   "source": "I5 apply (RULING, curated): stat_diffs verdict:update: 135/1.1 = 122.7 -> 123. The ledger row's `proposed` field reads 11.0, which is a scalar-extraction bug in the emitter, not the value",
+   "date": "2026-08-26",
+   "advisory": true
+  },
+  {
+   "key": "witch_evo",
+   "field": "hit_speed",
+   "value": 1.1,
+   "source": "I5 apply (RULING, curated): stat_diffs verdict:update: her own atk_speed is 1.1 on both pages; the 6/10/2025 'attack time interval to 1.1s' entry is the SKELETON's",
+   "date": "2026-08-26",
+   "advisory": true
+  },
+  {
+   "key": "wizard",
+   "field": "damage_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:15, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "wizard",
+   "field": "hitpoints_ladder",
+   "value": null,
+   "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:16, family xc_ladder)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "x_bow",
+   "field": "damage",
+   "value": 58,
+   "source": "I5 apply (LAG): Same 4/8/2026 entry: '+35% damage'. dmg_11=43 is the pre-change value - the hit-speed clause of that same entry proves the row it sits in had not been updated",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "x_bow",
+   "field": "dps",
+   "value": 145,
+   "source": "I5 apply (LAG): Follows damage and hit_speed: 43/0.3 = 143.3 -> 143 (current) versus 58/0.4 = 145 after the 4/8/2026 change. Note the change is close to DPS-neutral, so the sim's headline DPS is nearly right while both underlying numbers are wrong - per-shot damage and cadenc",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "x_bow",
+   "field": "hit_speed",
+   "value": 0.4,
+   "source": "I5 apply (LAG): VARDEFINE AND TABLE BOTH LAG THE 4/8/2026 ENTRY, which states 0.4 'from 0.3 seconds' - exactly what both still publish, proving neither absorbed the change. x_bow is curated verified:true, so it must not be auto-overwritten regardless",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "zap",
+   "field": "crown_tower_damage",
+   "value": 48,
+   "source": "stat_diffs.jsonl verdict:pin (r2_spells.jsonl:50, family spells) + decisions.md balance-lag pin (post-1/6/2026)",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "zap_evo",
+   "field": "crown_tower_damage",
+   "value": 48,
+   "source": "I5 apply (RULING): DUP bucket: THE OWNER PIN LANDED ON THE PARENT AND MISSED THE EVOLUTION. zap.crown_tower_damage is 48 = round(192*0.25), correct post-1/6/2026; zap_evo held 58, the stale 30% vardefine, off IDENTICAL damage 192. Caught by stat_sweep --all: the bucket's own probe order puts p1 (the stale vardefine) first, so the derivation alone would have kept 58",
+   "date": "2026-08-26"
+  }
+ ]
+}

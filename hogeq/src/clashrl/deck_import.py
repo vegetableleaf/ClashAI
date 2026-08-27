@@ -14,6 +14,18 @@ A battle log covers EVERY mode, including limited-time events, so it offers deck
 do not exist in trophy ladder. Those cards were purged from the KB, so they no longer resolve and the
 decks holding them are dropped (and counted) -- the sim only ever trains against ladder-legal decks.
 
+Per deck it also records the TOWER TROOP that stood behind it (`supportCards` on the team entry) as
+`support:`, plus a derived `evo_candidates:` -- the deck's cards that really have an evolution.
+
+It deliberately does NOT write an `evo:` slot. `evolutionLevel` on a card entry looks like "this
+card was in an evolution slot" and is not: MEASURED, it reports the player's OWNED evolution level,
+yielding THREE evolutions for 153/233 decks against a game that allows at most two (one Evolution +
+one Hero + one Wild, wiki 16/3/2026) and a level for `berserker`, which has no evolution at all.
+233 declarations built from it were stripped again in 84e144a. No accessible source names the
+slotted card (RoyaleAPI / Deck Shop / StatsRoyale are all 403), so the sim draws uniformly from the
+LEGAL set instead of guessing one -- guessing is what produced phantom evolutions in the first
+place (research/sim_parity/conflicts.md, R4/I3).
+
 Best-effort: the rankings endpoint/season can change; on an error the message says so and the curated
 fallback keeps working. Card names are mapped to KB keys (evolutions fold to their base).
 """
@@ -27,13 +39,20 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
-from collections import Counter
+from collections import Counter, defaultdict
 from pathlib import Path
 
 
 def _name_to_key(name: str) -> str:
     k = name.lower().replace(".", "").replace("'", "")
     return re.sub(r"[ \-]+", "_", k).strip("_")
+
+
+def _modal(counter: Counter) -> tuple:
+    """The most-sighted loadout in a tally, ties broken lexicographically so re-runs agree."""
+    if not counter:
+        return ()
+    return sorted(counter.items(), key=lambda kv: (-kv[1], kv[0]))[0][0]
 
 
 def _get(url: str, token: str, timeout: float = 20.0):
@@ -163,6 +182,12 @@ def import_decks(cfg, limit: int = 1000, players: int = 120) -> None:
 
     # 2) their battle logs -> tally 8-card decks (both sides)
     tally: Counter = Counter()
+    # WHICH tower troop stood behind each 8-card set. The MODAL one per deck wins: one deck list
+    # gets piloted with different towers, and the common one is the honest single answer.
+    #
+    # NOT tallied: `evolutionLevel`. It is the one field that looks like an evolution SLOT and is
+    # not (module docstring), and a tally of it is how 233 wrong `evo:` declarations got shipped.
+    sup_tally: dict = defaultdict(Counter)
     seen = 0
     n_event = 0
     for i, tag in enumerate(tags):
@@ -189,7 +214,12 @@ def import_decks(cfg, limit: int = 1000, players: int = 120) -> None:
                     if len(raw) == 8 and len(keys) < 8:
                         n_event += 1
                     if len(keys) == 8:
-                        tally[tuple(sorted(keys))] += 1
+                        ck = tuple(sorted(keys))
+                        tally[ck] += 1
+                        # The tower troop is NOT a deck card and has no KB row, so it is recorded
+                        # by name-key with no `db.get` filter -- filtering would drop all of them.
+                        sup_tally[ck][tuple(_name_to_key(s.get("name", ""))
+                                            for s in (entry.get("supportCards") or []))] += 1
                         seen += 1
         if (i + 1) % 20 == 0:
             print(f"[decks-import] scanned {i + 1}/{len(tags)} players, {seen} decks so far...")
@@ -208,9 +238,26 @@ def import_decks(cfg, limit: int = 1000, players: int = 120) -> None:
              f"players ({source}), {seen} deck-sightings. Regenerate with `run.py decks-import`.",
              "# LADDER-LEGAL ONLY: a battle log covers every mode, so decks holding event-only cards"
              f" are dropped ({n_event} sightings this run). `weight` = raw sighting count.",
+             "# `support` = the deck's MODAL tower troop (battlelog `supportCards`), measured.",
+             "# `evo_candidates` = the deck's cards that really HAVE an evolution (the KB's `_evo`"
+             " rows, == the 42 wiki-verified evolutions in ledger/r1a_evolutions.json). DERIVED, not"
+             " observed:",
+             "# no source says which card a player slotted -- `evolutionLevel` reports OWNED level,"
+             " not the slot -- so the sim draws ONE candidate uniformly per match instead of"
+             " guessing a fixed one.",
              "decks:"]
     for n, (cards, count) in enumerate(top_decks, 1):
-        lines.append(f"  - {{name: meta_{n:03d}, weight: {count}, cards: [{', '.join(cards)}]}}")
+        # DERIVED from the KB, never from `evolutionLevel` (see the module docstring for why that
+        # field cannot identify a slot). `sim.meta_decks` re-derives this if the key is absent, so
+        # writing it is for inspectability -- a reader can see what each deck may field.
+        cands = [k for k in cards if db.get(k + "_evo")
+                 or isinstance((db.get(k) or {}).get("evolution"), dict)]
+        sup = _modal(sup_tally[cards])
+        bits = [f"name: meta_{n:03d}", f"weight: {count}", f"cards: [{', '.join(cards)}]",
+                f"evo_candidates: [{', '.join(cands)}]"]
+        if sup:
+            bits.append(f"support: {sup[0]}")
+        lines.append("  - {" + ", ".join(bits) + "}")
     out_path.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"[decks-import] wrote {len(top_decks)} decks -> {out_path} "
           f"(most common: {'/'.join(top_decks[0][0][:3])}... x{top_decks[0][1]})")

@@ -6,7 +6,9 @@ WHAT THIS TAKES, AND WHAT IT DELIBERATELY DOES NOT
 --------------------------------------------------
 The game files behind RoyaleAPI/cr-api-data expose the per-unit constants the wiki never
 prints: `mass`, `sight_range`, `collision_radius`, `load_time`, `deploy_delay`,
-`ignore_pushback`. Those are what this importer takes.
+`ignore_pushback`. Those are what this importer takes -- plus two more it always took but
+long failed to declare: `turret_rotation` (X-Bow/Mortar swivel) and `life_time` ->
+`lifetime_s`, which is NOT a structural constant (see the trap note at `_NO_LIFETIME`).
 
 It does NOT take hitpoints or damage. That dump was last updated 2023-10-18 and its balance
 numbers have since drifted (Archers' damage is 107 there, 112 today), so importing stats would
@@ -49,6 +51,24 @@ SRC = ("https://raw.githubusercontent.com/RoyaleAPI/cr-api-data/master/docs/json
        "cards_stats.json")
 TILE = 1000.0        # game distance units per arena tile
 OUT = _ROOT / "config" / "card_mechanics.json"
+
+# CARDS THIS DUMP STILL BELIEVES ARE BUILDINGS. The dump froze 2023-10-18; a card the live game
+# has since re-typed as a troop has no lifetime, but its frozen row still carries one -- and
+# card_mechanics sits ABOVE cards_stats.json in the CardDB merge, so the stale value wins. See
+# the `lifetime_s` line below.
+_NO_LIFETIME = {
+    "furnace",      # 4/8/2025: became a walking troop. Dump key: "FirespiritHut".
+}
+
+# CARDS WHOSE DUMP `sight_range` IS NOT A SIGHT RANGE. Same class of error as _NO_LIFETIME, found
+# by the R2 sweep and ruled on in decisions.md #11: the Goblin Cage "cannot attack while the cage
+# stands", so it has no aggro radius at all -- and the 20 the dump carries is its LIFETIME, which
+# the row already holds correctly as lifetime_s 20.0. Importing it as `sight` gave a building that
+# never attacks a 20-tile aggro radius, four times the 5.5 baseline, and CardDB.sight_range_tiles
+# feeds the win-condition pull geometry off exactly that number.
+_NO_SIGHT = {
+    "goblin_cage",  # decisions.md #11: no sight stat; the 20 is the lifetime.
+}
 
 
 def _tiles(v):
@@ -108,12 +128,20 @@ def main(argv) -> int:
         m = {
             "character": chr_row.get("name") or row.get("name"),
             "mass": ch.get("mass") or None,
-            "sight": _tiles(ch.get("sight_range")),
+            "sight": None if key in _NO_SIGHT else _tiles(ch.get("sight_range")),
             "collision": _tiles(ch.get("collision_radius")),
             "load_time_s": _secs(ch.get("load_time")),
             "deploy_delay_s": _secs(ch.get("deploy_delay")),
             "knockback_immune": bool(ch.get("ignore_pushback")) or None,
-            "lifetime_s": _secs(ch.get("life_time")),          # buildings: X-Bow 30 s, Tesla 40 s
+            # LIFETIME IS A BALANCE VALUE, NOT A STRUCTURAL CONSTANT -- and this dump froze in 2023,
+            # so for any card the live game has since RE-TYPED it is a stale belief that outranks
+            # the wiki (card_mechanics sits above cards_stats.json in the CardDB merge). The
+            # Furnace stopped being a building on 4/8/2025; its row here still calls it
+            # "FirespiritHut" and still carried 28 s, which is what put the decay back after
+            # a7bb144 had already removed it. Owner ruling R2 #11: "FURNACE IS A TROOP NOW -- no
+            # lifetime stat." Add any further re-typed card here rather than editing the JSON.
+            "lifetime_s": None if key in _NO_LIFETIME else _secs(ch.get("life_time")),
+
             "turret_rotation": ch.get("turret_movement") or None,   # X-Bow/Mortar retarget swivel
             # cross-check only -- the sim keeps its wiki-sourced values for these
             "_speed_units": ch.get("speed"),
@@ -127,7 +155,16 @@ def main(argv) -> int:
         "meta": {
             "source": SRC,
             "source_frozen": "2023-10-18",
-            "imports": "mass, sight, collision, load_time, deploy_delay, knockback_immune",
+            # lifetime_s and turret_rotation were imported from day one but never DECLARED
+            # here, so a reader auditing "what does this dump control?" against this line
+            # missed them both -- and lifetime_s is the risky one: it is a BALANCE value in a
+            # frozen-2023 dump (see _NO_LIFETIME above; the Furnace 28 s incident). Declared
+            # 2026-08-26 (E2) so a blanket "drop the stale fields" fix cannot silently change
+            # a building's lifetime (tesla stays 30).
+            "imports": "mass, sight (except _NO_SIGHT), collision, load_time, deploy_delay, "
+                       "knockback_immune, "
+                       "lifetime_s (frozen-2023 BALANCE value -- re-typed cards excluded via "
+                       "_NO_LIFETIME), turret_rotation",
             "excludes": "hitpoints/damage (stale in this dump -- see tools/stat_sweep.py), "
                         "walking_speed_tweak_percentage (walk ANIMATION, not movement)",
             "cards": len(out),

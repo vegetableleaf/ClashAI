@@ -1290,6 +1290,34 @@ sim:
   # config editor, and it opened fire 1.5 tiles early across the river.
   king_range: 8.5               # TILES: king-tower reach -- LONGER than a princess by its extra bulk
   tower_first_hit: 0.8          # delay before the FIRST shot after (re)acquiring a target (capped by hit_speed)
+  # --- Loadout slots: Evolution / Hero / Wild (I8, 2026-08-27) --------------------------------
+  # The 16/3/2026 update made the deck loadout "one Evolution, one Hero and one Wild (from 2 evo
+  # and 2 hero)" (Heroes wiki page, revid 437509). The scripted opponent fills the Evolution slot
+  # and the Hero slot ALWAYS, drawing uniformly over the deck's real candidates -- no source names
+  # the card a player slotted, so it draws instead of guessing (see sim/opponents.py).
+  #
+  # THE WILD SLOT IS THE UNMEASURED PART, and these two knobs are why it is a knob rather than a
+  # constant: the wild slot takes a SECOND evolution, a SECOND hero, or NOTHING, and nothing
+  # publishes how often it is which. The battlelog does not carry slots at all, and RoyaleAPI /
+  # Deck Shop / StatsRoyale are all 403. 1/3 each is the least-assuming prior over three outcomes,
+  # not a measurement. Whatever these two leave over is the chance the wild slot stays EMPTY, and
+  # the split is renormalised per deck over the categories that still have a candidate left.
+  wild_evo_prob: 0.3333         # UNMEASURED: chance the wild slot takes a second Evolution
+  wild_hero_prob: 0.3333        # UNMEASURED: chance it takes a second Hero (rest = empty)
+  # THE THIRD OCCUPANT (owner ruling 17, 2026-08-27). The Hero and Wild slots are SHARED with
+  # CHAMPION cards -- "Those slots are also shared with Champion card, which means that the player
+  # can have 1 Hero and 1 Champion at the same time" (Heroes, revid 437509) -- capped at 2 champion
+  # cards per deck (Cards, revid 437053, rule text; that page's trivia says 1 and is the stale
+  # half, per decisions.md).
+  # THIS KNOB IS NOT AN EVEN SHARE, and that is deliberate. A champion is not a VARIANT the player
+  # opts into like an evolution or a hero -- it is one of the deck's own 8 cards, and holding it
+  # spends the slot unconditionally. There is no free choice to put a prior over, so the default is
+  # 1.0 (forced) rather than 1/3, and the evo/hero/empty split above only runs on the slots the
+  # champions have not already taken. Set it to 0 to switch the sharing off for an ablation; that
+  # models a loadout the real game does not permit.
+  # MEASURED over the shipped pool: 241 of 1000 decks (28.2% of match weight) hold exactly one
+  # champion and NONE holds two, so the wild-slot champion branch is unexercised by today's data.
+  wild_champion_prob: 1.0       # UNMEASURED-BUT-FORCED: a champion card always holds its slot
   opponent_tower_weights:       # relative odds of each OPPONENT tower troop (princess most common in live matches)
     princess: 6
     dagger_duchess: 2

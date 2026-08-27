@@ -99,7 +99,9 @@ class EvoT1Tests(unittest.TestCase):
     def test_barbarians_self_rage(self):
         eng = _make_engine()
         bb = build_spec(eng.db, "barbarians_evo", 11)
-        self.assertEqual((bb.hit_rage_s, bb.hit_rage_boost), (3.0, 0.30))
+        # I5, R2 LAG bucket: 5 s, not 3. Every available path says 5; the page's own INTRO PROSE
+        # ("increases by 30% for 3 seconds") is the stale one, and the curated 3.0 quoted it.
+        self.assertEqual((bb.hit_rage_s, bb.hit_rage_boost), (5.0, 0.30))
         eng.elixir = [10.0, 10.0]
         self.assertTrue(eng.deploy(1, bb, 0.50, 0.55))
         eng.elixir = [10.0, 10.0]
@@ -114,9 +116,9 @@ class EvoT1Tests(unittest.TestCase):
         self.assertIsNotNone(barb, "a swing must self-rage the barbarian")
         self.assertAlmostEqual(eng._rage_mult(barb), 1.30, places=6)
         barb.x, barb.y = 0.10, 0.20                          # drag him away from everything
-        for _ in range(40):
+        for _ in range(60):                                  # > the I5-corrected 5 s window
             eng.advance(0.1)
-        self.assertEqual(barb.rage_self_left, 0.0, "rage must expire 3 s after the last swing")
+        self.assertEqual(barb.rage_self_left, 0.0, "rage must expire 5 s after the last swing")
 
     def test_valkyrie_whirlwind(self):
         eng = _make_engine()
@@ -141,10 +143,13 @@ class EvoT1Tests(unittest.TestCase):
         self.assertLess(d1, d0 - 0.5, "the whirlwind must PULL the air unit toward her")
         self.assertLess(air.hp, hp0, "the whirlwind deals its tornado damage")
 
-    def test_zap_triple_pulse(self):
+    def test_zap_double_pulse(self):
         eng = _make_engine()
         zp = build_spec(eng.db, "zap_evo", 11)
-        self.assertEqual(zp.zap_pulses, 3)
+        # I5, R2 LAG bucket, 3-of-3: TWO pulses. 8/10/2024 "increased the second pulse's damage
+        # by 100%, but REMOVED THE THIRD PULSE"; dmg_hits = 2 and the infobox says "TWO Zaps".
+        # The curated 3 quoted the retired pre-8/10/2024 card text.
+        self.assertEqual(zp.zap_pulses, 2)
         eng.elixir = [10.0, 10.0]
         self.assertTrue(eng.deploy(0, build_spec(eng.db, "x_bow", 11), 0.50, 0.55))
         near = [u for u in eng.units if u.team == 0][-1]
@@ -156,17 +161,17 @@ class EvoT1Tests(unittest.TestCase):
         # and the 0.1-tile y offset was enough to push the far body just outside the 3.5 ring.
         self.assertTrue(eng.deploy(1, zp, near.x, near.y))
         hits_near = hits_far = 0
-        for _ in range(70):                                  # 3.5 s: all three pulses
+        for _ in range(70):                                  # 3.5 s: both pulses
             pn, pf = near.hp, far.hp
             eng.advance(0.05)
             if pn - near.hp > 100:
                 hits_near += 1
             if pf - far.hp > 100:
                 hits_far += 1
-        self.assertEqual(hits_near, 3, "centre body is inside all three rings")
-        # Tile-snap puts the far body at EXACTLY 3.0 tiles: the 2.5 first ring misses it, the
-        # growing 3.0 and 3.5 rings both reach -- 2 hits proves the ring actually grows.
-        self.assertEqual(hits_far, 2, "3 tiles out: first ring misses, both echoes reach")
+        self.assertEqual(hits_near, 2, "centre body is inside both rings")
+        # Tile-snap puts the far body at EXACTLY 3.0 tiles: the 2.5 first ring misses it and the
+        # grown 3.0 ring reaches -- one hit, which is still what proves the ring grows at all.
+        self.assertEqual(hits_far, 1, "3 tiles out: the first ring misses, the echo reaches")
 
     def test_pekka_kill_heal_overheal(self):
         eng = _make_engine()
@@ -191,7 +196,10 @@ class EvoT1Tests(unittest.TestCase):
         self.assertEqual(sb.count, 1)                        # imported 2 was BARRELS carried
         self.assertEqual(sb.hit_dmg, 0.0)
         self.assertEqual(sb.mid_drop_frac, 0.75)
-        self.assertAlmostEqual(sb.death_dmg, 238.0, delta=1)
+        # I5, R2 PARENT bucket: 190, not 238. P1 (death_11) and P2 (the rendered table + the
+        # lead's "64% higher") are ONE 4/8/2025 snapshot, not two witnesses, and two dated 2026
+        # nerfs postdate it: 238 * 0.92 * 0.87 = 190.5 -> 190.
+        self.assertAlmostEqual(sb.death_dmg, 190.0, delta=1)
         # (a) damaged mid-flight -> first barrel at 75%, second on death: 14 skeletons total
         eng.elixir = [10.0, 10.0]
         self.assertTrue(eng.deploy(1, sb, eng.towers[0][0].x, 0.40))

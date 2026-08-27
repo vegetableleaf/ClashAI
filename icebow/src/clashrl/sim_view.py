@@ -16,6 +16,24 @@ shields, stuns, tower target acquisition, elixir flow.
 It is a DEBUGGER, not a training input. Nothing here feeds the policy; `view.render_obs` remains the
 only thing the CNN ever sees.
 
+WHAT I9 ADDED, AND WHY IT WAS NOT COSMETIC. The owner's "the electro dragon chain doesn't work"
+report was partly a DRAWING bug: the chain was landing and the picture showed nothing. MEASURED --
+an Electro Dragon chaining into six Barbarians for 12 s produced **zero frames** in which a
+`<base>_chain` projectile was alive, because a chain hop is created and consumed inside one
+`advance(dt)` call and never survives a frame boundary. Two engine records fixed that
+(`arc_events`, `ability_events`, both in the `splash_events` idiom), and this file now draws:
+
+  * CHAIN ARCS, one line per hop, dimmer for a late (reduced-damage, no-stun) bounce;
+  * ABILITY ACTIVATIONS -- a flash at the press point, labelled with the `ability_kind`;
+  * CASTS IN FLIGHT (`_ability_pending`) -- the ruling-7 refund window, drawn as a ring with the
+    countdown, so a champion killed mid-cast is visible as a champion killed mid-cast;
+  * RUNNING ABILITIES on the body (`ability_active_s`), plus stealth, airborne, taunt, souls and
+    dash-chain state;
+  * LINGERING ZONES (`eng.zones`) -- Poison, Void, Graveyard and the Heal Spirit's field, none of
+    which were drawn at all, so a Poison was an invisible area doing invisible damage;
+  * the GOBLINSTEIN LINK capsule, the Hero Goblins' BANNER and the Goblinstein ANTENNA, which are
+    engine state with no body to hang a marker on.
+
 OPEN FIDELITY QUESTION this view makes visible: the engine stores positions as x,y in 0..1 and
 measures range with `hypot` -- i.e. it treats the arena as SQUARE -- while the real CR board is
 ~18 tiles wide by ~32 tall. So one normalized unit is a different number of tiles on each axis, and
@@ -63,6 +81,16 @@ _GRID = (58, 118, 64)          # faint cell lines
 _GRID_EDGE = (80, 150, 88)     # arena_box border + the deploy line
 _PLAYABLE = (60, 170, 235)     # the ACTUALLY-placeable area's border (river-ledge notches)
 _TILE_G = (46, 104, 52)        # the board's REAL 18x32 tile lattice (under the action grid)
+# I9 additions. BGR, like everything above -- (B, G, R), not (R, G, B).
+_ARC = (70, 230, 255)          # chain hop, full damage + stun: bright amber
+_ARC_LATE = (60, 150, 175)     # ...and a LATE bounce: reduced damage, no stun (ruling 12), dull
+_ABIL = (255, 120, 255)        # ability activation / running ability: magenta, unused elsewhere
+_ABIL_CAST = (200, 90, 200)    # ...still in its activation delay (the ruling-7 refund window)
+_ZONE = (170, 90, 220)         # lingering damage field (Poison / Void / Graveyard)
+_ZONE_HEAL = (120, 240, 160)   # ...and a HEALING one (Heal Spirit)
+_LINK = (60, 200, 255)         # Goblinstein's electric link, and its antenna
+_RAGE = (200, 0, 200)          # a rage zone; DIM while it is still arming (see below)
+_RAGE_ARM = (110, 0, 110)
 
 _HUD_TOP = 54
 _HUD_BOT = 58
@@ -161,6 +189,18 @@ def render_frame(eng, width: int = 460, note: str = "", acts=None) -> np.ndarray
         cv2.putText(img, f"pull {v.left:.1f}s", (c[0] - 22, c[1] - semi[1] - 4),
                     cv2.FONT_HERSHEY_PLAIN, 0.7, _VORTEX, 1)
 
+    # --- lingering ZONES (Poison / Void / Graveyard / the Heal Spirit's field) -------------------
+    # These were not drawn at all, which made a whole class of card invisible: a Poison is an
+    # 8-second area doing damage nothing on screen accounted for, and after I9 a Heal Spirit's
+    # field is an area doing the opposite. Drawn under the bodies, because they are ground effects.
+    for z in getattr(eng, "zones", []):
+        heals = getattr(z.spec, "heal_amount", 0.0) > 0.0
+        col = _ZONE_HEAL if heals else _ZONE
+        c = px(z.x, z.y)
+        cv2.ellipse(img, c, rad_px(z.spec.spell_radius), 0, 0, 360, col, 1)
+        cv2.putText(img, "%s %.1fs" % ("heal" if heals else _short(z.spec.key), max(0.0, z.left)),
+                    (c[0] - 20, c[1] + 4), cv2.FONT_HERSHEY_PLAIN, 0.7, col, 1)
+
     # --- splash flashes: each splash HIT draws its true AOE circle for ~0.15 s (user request:
     # a brief flash at the moment of attack, not a continuous ring) -------------------------------
     for (sx, sy, sr, st) in getattr(eng, "splash_events", []):
@@ -234,18 +274,83 @@ def render_frame(eng, width: int = 460, note: str = "", acts=None) -> np.ndarray
         if getattr(u, "attacking", False):
             cv2.drawMarker(img, (c[0], c[1] - r - 7), (60, 220, 255), cv2.MARKER_TRIANGLE_DOWN, 7, 1)
         _hp_bar(img, c[0], c[1] - r - 6, max(12, 2 * r), u.hp / max(1.0, u.spec.hp), 2)
-        cv2.putText(img, _short(u.spec.key), (c[0] - r - 2, c[1] + r + 10),
+        label = _short(u.spec.key)
+        if getattr(u, "cloned", False):
+            label += "'"                              # a 1-hp Clone, worth no elixir (I9)
+        cv2.putText(img, label, (c[0] - r - 2, c[1] + r + 10),
                     cv2.FONT_HERSHEY_PLAIN, 0.7, _TXT, 1)
+        # --- ABILITY STATE ON THE BODY (I9). An I7/I8 ability leaves no mark of its own: the
+        # handler fires, timers run, and the picture is identical to a body doing nothing. Every
+        # flag below is engine state the handlers actually read, so what is drawn is what runs.
+        tags = []
+        if getattr(u, "ability_active_s", 0.0) > 0.0:
+            tags.append("%s %.1fs" % (u.spec.ability_kind or "abil", u.ability_active_s))
+        if getattr(u, "invis_left", 0.0) > 0.0:
+            tags.append("cloak %.1f" % u.invis_left)   # Archer Queen / Boss Bandit: untargetable
+        if getattr(u, "flying_left", 0.0) > 0.0:
+            tags.append("air %.1f" % u.flying_left)    # thrown by the Hero Giant, or Fiery Flight
+        if getattr(u, "dash_left", 0) > 0:
+            tags.append("dash x%d" % u.dash_left)      # Golden Knight's chain, dashes remaining
+        if getattr(u, "souls", 0) > 0:
+            tags.append("souls %d" % u.souls)          # Skeleton King's bank
+        if getattr(u, "taunt_ref", None) is not None:
+            tags.append("taunted")                     # locked onto the Hero Knight until he dies
+        if u.spec.ability_kind and getattr(u, "ability_left", -1) > 0 \
+                and not getattr(u, "cloned", False):
+            tags.append("[ABIL]")                      # a use is still available on this body
+        if tags:
+            cv2.putText(img, " ".join(tags)[:26], (c[0] - r - 2, c[1] + r + 20),
+                        cv2.FONT_HERSHEY_PLAIN, 0.6, _ABIL, 1)
+        if getattr(u, "ability_active_s", 0.0) > 0.0:
+            cv2.circle(img, c, r + 8, _ABIL, 1)
+        # GOBLINSTEIN'S LINK: the capsule its zone tick actually damages along (conflicts.md I7-11),
+        # from the Doctor to the living Monster or, once that is dead, to the antenna it dropped.
+        if u.spec.ability_kind == "zone" and getattr(u, "ability_active_s", 0.0) > 0.0:
+            far = next((e for e in eng.units
+                        if e.team == u.team and e.hp > 0 and e is not u
+                        and e.spec.base == u.spec.base and e.spec.building_only), None)
+            end = (far.x, far.y) if far is not None \
+                else getattr(eng, "_antenna", {}).get(u.team, (u.x, u.y))
+            cv2.line(img, c, px(end[0], end[1]), _LINK, 2)
+
+    # --- CHAIN ARCS (I9), OVER the bodies ------------------------------------------------------
+    # A chain hop lives for less than one physics frame, so without this record the Electro Dragon
+    # family had NOTHING on screen while it worked. Drawn AFTER the units and not before them,
+    # which is not a style choice: an arc joins two body CENTRES, so under the bodies it is
+    # entirely covered by them -- MEASURED as 0 changed pixels in the first version of this. A
+    # late bounce (reduced damage, no stun -- decisions.md ruling 12) is dimmer and carries no
+    # stun ring, so the two halves of an evolved chain read apart at a glance.
+    for (ax, ay, bx, by, at, ast, kind) in getattr(eng, "arc_events", []):
+        age = eng.t - ast
+        if not (0.0 <= age <= 0.25):
+            continue
+        late = kind == "chain_late"
+        col = _ARC_LATE if late else _ARC
+        p0, p1 = px(ax, ay), px(bx, by)
+        cv2.line(img, p0, p1, col, 1)
+        cv2.circle(img, p1, 3, col, -1)
+        if not late:
+            cv2.circle(img, p1, 6, col, 1)          # the stun rides the FULL hits only
 
     # --- projectiles in flight ---------------------------------------------------------------
     # Shots are real entities with real travel time, so they are drawn: a Mortar shell crawling at
     # 5 tiles/s next to a Musketeer bullet at 16.7 is the clearest way to see that. AREA shots
     # (radius > 0) also show the blast they will make, so you can watch a push walk out of one --
     # and a hollow marker means the shot cannot touch air.
-    # Lumberjack's dropped Rage: magenta ring while the zone is live (arm delay excluded)
-    for (zx, zy, zr, zt, t0, t1, _boost) in getattr(eng, "rage_zones", []):
-        if t0 <= eng.t < t1:
-            cv2.ellipse(img, px(zx, zy), rad_px(zr), 0, 0, 360, (200, 0, 200), 1)
+    # RAGE ZONES: the Lumberjack's dropped bottle AND, since I9, the Rage SPELL. Both feed the
+    # same list. Drawn DIM while the zone is still arming -- the Rage spell publishes a 0.5 s
+    # deploy timer of its own, and a debugger that shows nothing for that half-second is exactly
+    # the "it did not work" trap this file exists to close.
+    for (zx, zy, zr, zt, t0, t1, boost) in getattr(eng, "rage_zones", []):
+        if eng.t >= t1:
+            continue
+        armed = t0 <= eng.t
+        col = _RAGE if armed else _RAGE_ARM
+        c = px(zx, zy)
+        cv2.ellipse(img, c, rad_px(zr), 0, 0, 360, col, 1)
+        cv2.putText(img, "rage +%d%% %.1fs" % (round(boost * 100), max(0.0, t1 - eng.t))
+                    if armed else "rage arms %.1fs" % max(0.0, t0 - eng.t),
+                    (c[0] - 26, c[1] - 4), cv2.FONT_HERSHEY_PLAIN, 0.7, col, 1)
 
     # Evo Firecracker's lingering sparks: small orange rings while the patch burns
     for z in getattr(eng, "spark_zones", []):
@@ -258,6 +363,19 @@ def render_frame(eng, width: int = 460, note: str = "", acts=None) -> np.ndarray
             w = getattr(p, "width", 0.0) or 0.4           # tiny corridor circle, no label spam
             cv2.ellipse(img, c, rad_px(w), 0, 0, 360, col, 1)
             continue
+        # ABILITY / MECHANIC SHOTS. Each of these is emitted under its own label precisely so the
+        # debugger can tell them from an ordinary attack (`_multi_hit`'s docstring says so), and
+        # every one of them is a LINE between two bodies rather than a lobbed shot -- so draw the
+        # line. Without it a Monk reflecting a Musketeer bullet and a Musketeer firing one are the
+        # same two pixels.
+        _kind = next((k for k in ("_chain_late", "_chain", "_reflect", "_snipe", "_javelin",
+                                  "_bounce") if p.label.endswith(k)), "")
+        if _kind:
+            kc = _ARC_LATE if _kind == "_chain_late" else (_ARC if "_chain" in _kind else _ABIL)
+            cv2.line(img, c, px(p.tx, p.ty), kc, 1)
+            cv2.circle(img, c, 3, kc, -1)
+            cv2.putText(img, _kind[1:], (c[0] + 5, c[1] - 4), cv2.FONT_HERSHEY_PLAIN, 0.6, kc, 1)
+            continue
         if p.radius > 0:
             cv2.ellipse(img, c, rad_px(p.radius), 0, 0, 360, col, 1)
         if p.pierce:                                      # keeps going past its target
@@ -268,6 +386,48 @@ def render_frame(eng, width: int = 460, note: str = "", acts=None) -> np.ndarray
             cv2.circle(img, c, 2, col, -1)
         cv2.putText(img, _short(p.label.removesuffix("_projectile")) + "*", (c[0] + 5, c[1] - 4),
                     cv2.FONT_HERSHEY_PLAIN, 0.6, col, 1)
+
+    # --- ABILITY ACTIVATIONS, CASTS IN FLIGHT, and the two bodiless pieces of engine state -------
+    # A press used to leave nothing on screen at all, which is the same invisibility the chain had.
+    for (ax, ay, at, ast, kind, base) in getattr(eng, "ability_events", []):
+        age = eng.t - ast
+        if not (0.0 <= age <= 0.6):
+            continue
+        c = px(ax, ay)
+        rr = 8 + int(age * 34)                        # an expanding ring, so the press reads as an event
+        cv2.circle(img, c, rr, _ABIL, 1)
+        cv2.putText(img, "%s:%s" % (_short(base), kind or "?"), (c[0] + 10, c[1] - 10),
+                    cv2.FONT_HERSHEY_PLAIN, 0.7, _ABIL, 1)
+    # THE ACTIVATION DELAY (ruling 7): the elixir is spent, the effect has not landed, and a body
+    # killed in this window gets it refunded. Drawing it is how "he died mid-cast" becomes visible.
+    for rec in getattr(eng, "_ability_pending", []):
+        try:
+            _tm, body, _cost, left, kind = rec
+        except (TypeError, ValueError):                # noqa: PERF203 -- a debugger never crashes
+            continue
+        if getattr(body, "hp", 0.0) <= 0.0:
+            continue
+        c = px(body.x, body.y)
+        cv2.circle(img, c, 11, _ABIL_CAST, 1)
+        cv2.putText(img, "cast %.2fs" % max(0.0, float(left)), (c[0] + 12, c[1] + 4),
+                    cv2.FONT_HERSHEY_PLAIN, 0.7, _ABIL_CAST, 1)
+    # THE HERO GOBLINS' BANNER: engine state, not a body -- the one ability pressed with every
+    # body dead, so there is nothing else on the board to hang it on.
+    for team, rec in getattr(eng, "_banner", {}).items():
+        try:
+            expiry, bx, by, _bs = rec
+        except (TypeError, ValueError):                # noqa: PERF203
+            continue
+        if expiry <= eng.t:
+            continue
+        c = px(bx, by)
+        cv2.drawMarker(img, c, _TEAM[team], cv2.MARKER_DIAMOND, 11, 2)
+        cv2.putText(img, "banner %.1fs" % (expiry - eng.t), (c[0] + 9, c[1] - 8),
+                    cv2.FONT_HERSHEY_PLAIN, 0.7, _TEAM[team], 1)
+    # GOBLINSTEIN'S ANTENNA: where the Monster fell. Permanent, untargetable, and the far end of
+    # the link once the Monster is gone.
+    for team, (ax, ay) in getattr(eng, "_antenna", {}).items():
+        cv2.drawMarker(img, px(ax, ay), _LINK, cv2.MARKER_TRIANGLE_UP, 9, 1)
 
     # --- HUD ---------------------------------------------------------------------------------
     reg, ot = eng.regulation, eng.overtime

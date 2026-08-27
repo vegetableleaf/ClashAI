@@ -324,6 +324,43 @@ class DrillEnv(SimMatchEnv):
         if slot is not None and slot in self.cycle:
             self.cycle.remove(slot)
 
+    def _apply_evo_charge(self) -> None:
+        """Bank each slot's Evolution charge for THIS drill, before the hand is restricted.
+
+        WHY IT HAS TO EXIST. `SimMatchEnv` presents a slot's Evolution once `evo_charge` reaches
+        `slot_cycles` (env.py `_slot_card_id`), and `reset()` starts every slot at zero -- which
+        is right for a match, where 8 cards cycle and the second lap arrives on its own. A
+        restricted-hand drill deals one or two cards and `DrillEnv._play_slot` then REMOVES the
+        slot from the cycle (deliberately: see its docstring), so the charge can reach 1 and never
+        the 2 an Evolution needs. MEASURED: an evolution was presented in 0 of 26 icebow drills
+        and 0 of 24 hogeq drills, against a match that first presents one after 9 plays.
+
+        The default is unchanged and stays unchanged on purpose: every existing reference line was
+        written against the BASE card, and silently swapping in an Evolution would change what a
+        drill's answer IS while leaving its recorded answer in place. `Scenario.evo_charged` is
+        the opt-in; naming an `<base>_evo` key in `hand` is the other, because that declaration
+        was previously ignored -- `_restrict_hand` matches on the identity the slot CURRENTLY
+        presents, which at charge 0 is the base.
+        """
+        want = getattr(self, "_compound_evo", None)
+        if want is None:
+            want = getattr(self.scenario, "evo_charged", None) if self.scenario is not None else None
+        # ...plus any slot whose EVOLUTION is named outright in the hand this drill will be dealt.
+        named = {str(b) for b in (getattr(self, "_compound_hand", None)
+                                  or (self.scenario.hand if self.scenario is not None else ())
+                                  or ()) if str(b).endswith("_evo")}
+        if want is None and not named:
+            return
+        keys = None if want is True else {str(k) for k in (want or ())} | named
+        for slot in range(self.n_slots):
+            evo = self.slot_evo_id[slot]
+            if evo < 0:
+                continue
+            ekey = str(self.deck_keys[evo])
+            if keys is not None and ekey not in keys and ekey.replace("_evo", "") not in keys:
+                continue
+            self.evo_charge[slot] = int(self.slot_cycles[slot])
+
     def _enemy_level(self) -> int:
         """A ladder opponent's card level, rolled the way `make_opponent` rolls it.
 
@@ -515,11 +552,20 @@ class DrillEnv(SimMatchEnv):
         self.eng.units.clear()                         # a drill starts from ITS board, not a match
         self._subgoal_skip = 0.0
         self._components = self._pick_components()
+        # A COMPOUND EPISODE'S DECLARATIONS MUST NOT OUTLIVE IT. `_compound_hand` was assigned in
+        # `_place_components` and never cleared, so after one compound episode every later
+        # single-scenario drill in the same env was dealt the compound hand instead of its own --
+        # `_restrict_hand` reads `_compound_hand or scenario.hand`, and the stale value wins.
+        # Latent today (`sim.drill_compound_frac` is 0.0 in both decks) and found while adding the
+        # evolution twin beside it.
+        self._compound_hand = None
+        self._compound_evo = None
         if self._components:
             self._place_components()
         else:
             self._place_scenario()
-        self._restrict_hand()
+        self._apply_evo_charge()      # BEFORE the hand: _restrict_hand matches on the
+        self._restrict_hand()         # identity a slot currently presents, base or Evolution
         self._apply_subgoal()
         if self.scenario is not None and self.scenario.setup is not None:
             # After the board, so a setup can reach the bodies it just placed by name.
@@ -579,6 +625,14 @@ class DrillEnv(SimMatchEnv):
         self._drill_lane = None                        # a compound board spans both lanes
         # The union of the components' hands, so every interaction on the board is answerable.
         self._compound_hand = tuple(dict.fromkeys(our_hand))
+        # ...and the union of their evolution declarations, read by `_apply_evo_charge` exactly as
+        # `_compound_hand` is read by `_restrict_hand`. True from any component wins outright.
+        _evos = [getattr(c["scenario"], "evo_charged", None) for c in self._components]
+        if any(e is True for e in _evos):
+            self._compound_evo = True
+        else:
+            _keys = tuple(dict.fromkeys(k for e in _evos if e for k in e))
+            self._compound_evo = _keys or None
         self.eng.elixir[0] = min(10.0, max(float(c["scenario"].elixir) for c in self._components))
         self.eng.elixir[1] = 10.0
 

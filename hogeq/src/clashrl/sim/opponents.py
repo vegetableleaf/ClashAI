@@ -14,7 +14,7 @@ from typing import List
 
 import numpy as np
 
-from .engine import build_spec
+from .engine import _dist, build_spec
 from ..cycle import cycle_vector
 from .. import card_threat
 from .. import detect_obs
@@ -23,6 +23,98 @@ from . import view
 
 _NEG = -1e9   # finite mask value (matches train_sim_ppo; -inf can NaN through a softmax)
 
+
+# =================================================================================================
+# ABILITY AI -- when an OPPONENT presses its champion/hero button.
+# =================================================================================================
+# Boss Bandit's Getaway Grenade used to be fired by the ENGINE, below a per-unit rolled HP
+# fraction. That modelled a rule the game removed: Boss_Bandit.wikitext History 8/7/2025 says the
+# grenade "can be activated a total of 2 times INDEPENDENT ON Boss Bandit's hitpoints", and the
+# page describes it only as a button (conflicts.md C5). Owner ruling: it becomes a normal button
+# and the OPPONENT decides.
+#
+# This is the framework EVERY champion and hero ability uses, so it is keyed on the ability's
+# SHAPE rather than on the card. Three families, and each one is a different question about the
+# board:
+#   escape     is this body in trouble, or too far forward to survive being answered?
+#   defensive  is it about to be swarmed?
+#   offensive  is it deep enough that the ability buys tower damage?
+# I8 adds ~16 hero kinds on top; a new kind picks a family here (or the KB overrides it per card)
+# and needs no new bot code.
+_ABILITY_FAMILY = {
+    # Getaway Grenade IS the escape ability: invisible, then 6 tiles backwards, "This allows her
+    # to escape any form of damage".
+    "movement_flight": "escape",
+    # Cloaking Cape reads as offence (a 1.8x attack-speed buff) but every worked example on the
+    # page is a save -- dodging an X-Bow/Mortar lock, diverting troops, walking past a Tesla.
+    # Untargetable-while-shooting is a defensive tool that happens to deal damage.
+    "stealth": "escape",
+    # Explosive Escape is BOTH, and the page says which one to plan around: "One of his weaknesses
+    # are swarms, and Explosive Escape's bomb mitigates that."
+    "bomb": "defensive",
+    # Soul Summoning answers a push with 6-16 bodies; the page warns against firing it with
+    # nothing to tank for the Skeletons.
+    "soul_bank": "defensive",
+    # Royal Rescue: "This makes him very effective against large tanks and can prevent a lot of
+    # damage done to Crown Towers."
+    "guardian": "defensive",
+    # Pensive Protection is -65% incoming damage plus reflection. It is only worth elixir while
+    # something is actually shooting him.
+    "reflect": "defensive",
+    # Dashing Dash chains through their defence; it needs targets in range to do anything at all.
+    "dash_chain": "offensive",
+    # Lightning Link is 4 s of area damage around a tether -- a push tool, and its crown-tower
+    # column says it is meant to be on the tower.
+    "zone": "offensive",
+    # ---- I8 hero kinds. These are FALLBACKS: every one of the 16 hero rows carries an explicit
+    # `ability_ai: {family: ...}` with its own knobs, because the right moment for a Trusty Turret
+    # (something is coming) is not the right moment for a Tomb Queen (we are on their tower). The
+    # table stays complete anyway so a new card naming one of these shapes is never family-less.
+    "buff_self": "defensive",       # two of the three are swarm answers; the Bowler's row overrides
+    "zone_pulse": "defensive",      # Snowstorm is 3 slowing blasts around himself
+    "taunt_shield": "defensive",    # Triumphant Taunt exists to pull a committed push off the tower
+    "throw_displace": "defensive",  # Heroic Hurl needs a body within 2 tiles to do anything at all
+    "summon": "defensive",          # a turret / a Rhino / a Queen; the offensive ones override
+    "summon_seek": "defensive",     # the Skeletrooper flies at the nearest ground body
+    "summon_banner": "defensive",   # reinforcements, and it only exists once they are all dead
+    "transform_levelup": "escape",  # Breakfast Boost is a 30% heal first and a level-up second
+    "decoy_blink": "escape",        # "used to avoid damage from spells like Fireball ... thanks to
+                                    # the pull back and decoy" is the page's own worked example
+    "warp": "defensive",            # Wounding Warp finishes the lowest-hitpoint body on the board
+    "reroll": "defensive",          # a second Barbarian Barrel roll, which is a defensive card
+    "flight_nado": "offensive",     # Fiery Flight is 5 s of tornado-throwing over their half
+}
+
+# Per-family defaults. Every one is a CHOICE, not a published number -- no page states when to
+# press the button -- so they live in one table, are overridable per card through a KB `ability_ai`
+# dict, and are named rather than buried in the branch that reads them.
+_ABILITY_AI_DEFAULTS = {
+    "escape": {"hp_frac": 0.55, "over_river": True},
+    "defensive": {"crowd_n": 3, "crowd_tiles": 4.0},
+    "offensive": {"tower_tiles": 7.0, "min_enemies": 0},
+}
+
+
+# KINDS WITH NO BODY TO PRESS THEM. Banner Brigade fires from the banner the last dying Hero
+# Goblin drops, so the has-a-body scan in `_try_ability` has to skip it exactly as
+# `champion_ability` does -- otherwise a living goblin would be asked whether to fire an ability
+# its own page says is "disabeld until the last goblin is killed".
+_BODYLESS_KINDS = frozenset({"summon_banner"})
+
+
+
+# THE HERO-FAMILY SLOT CAPS (owner ruling 17, 2026-08-27), stated once so the constructor can just
+# name them.
+#   * Heroes, revid 437509: "Only two Heroes can be in a deck at a time, and only in the Hero and
+#     Wild slots. Those slots are also shared with Champion card, which means that the player can
+#     have 1 Hero and 1 Champion at the same time."  -> TWO ability-bearing slots, total.
+#   * Cards, revid 437053: "Up to 2 Champion cards can be present in a deck at any time."
+#     The same page's TRIVIA section says "a deck can only have 1 Champion Card at a time" -- that
+#     section is already recorded in decisions.md as the stale one ("Cards page trivia, contradicts
+#     its own rule text on the same revision"), so the rule text wins.
+# Enforced here and audited by tools/evo_audit.py, which FAILS on any deck exceeding either.
+_ABILITY_SLOT_CAP = 2       # Hero slot + Wild slot, shared between heroes and champions
+_CHAMPION_CARD_CAP = 2      # champion CARDS a deck may hold
 
 class ScriptedBot:
     """One heuristic action per agent step: defend the deepest threat in our half, else apply
@@ -44,7 +136,11 @@ class ScriptedBot:
     """
 
     def __init__(self, cfg, db, rng, cards: List[str], style: str, levels: "List[int] | None" = None,
-                 adaptive: bool = False):
+                 adaptive: bool = False, evo: "List[str] | None" = None,
+                 evo_candidates: "List[str] | None" = None,
+                 hero_candidates: "List[str] | None" = None,
+                 champion_candidates: "List[str] | None" = None,
+                 support: "List[str] | None" = None):
         self.style = style
         self.cards = list(cards)                                  # deck card keys (for matchup detection)
         self.rng = rng
@@ -72,29 +168,338 @@ class ScriptedBot:
         self._seen_deploy_t = -1.0
         self._punish_cd = 0.0
         self._flip = rng.random() < 0.5  # split-push lane alternator
+        self._ability_armed_t = None     # engine time the ability window opened (reaction delay)
         # HAND + CYCLE. A real opponent holds 4 of its 8 cards and must cycle the rest before it can
         # repeat one. Without this the bot chose from the WHOLE deck every step, so it could open the
         # same card twice in a row (and never ran out of its best answer) -- the agent was training
         # against a deck with no cycle cost at all.
         self.cycle = list(range(len(self.specs)))
         rng.shuffle(self.cycle)
-        # PHASE-A EVOLUTIONS (2026-08-14): each deck fields ONE evolution (the 2026 slot rules).
-        # Heuristic pick until meta_decks carries explicit evo slots: the first deck card with a
-        # loadable `_evo` stat block. Cycle count from the KB's evolution block (default 2).
-        # T0 (stat-only) evos work end-to-end through the ordinary build_spec overlay; mechanic
-        # evos inherit whatever the engine models for their fields (pulse, DR, leap, ...).
+        # THE EVOLUTION SLOT (2026-08-26, I3). Two sources, in order of authority:
+        #
+        #   `evo`            -- a DECLARED slot. Authoritative if one ever exists; today none does.
+        #                       The battlelog field it used to come from turned out to report the
+        #                       player's OWNED evolution level, not the fielded slot (it yielded
+        #                       THREE evolutions for 153/233 decks against a game that allows at
+        #                       most two, and reported a level for `berserker`, which has no
+        #                       evolution), so all 233 declarations were stripped. The hook stays.
+        #   `evo_candidates` -- every card in this deck that really HAS an evolution, derived from
+        #                       the KB's 42 `_evo` rows (== the 42 wiki-verified evolutions in
+        #                       research/sim_parity/ledger/r1a_evolutions.json).
+        #
+        # WHY A UNIFORM DRAW over the candidates rather than one fixed pick: no source identifies
+        # the slotted card, so naming one would be FALSE PRECISION -- and a fixed slot is also
+        # worse training, because the policy would overfit a single opponent evolution per deck.
+        # Drawing per match stays honest about what is unknown AND gives the agent the variety it
+        # actually faces. This is NOT the old bug returning: the old code picked "the first card
+        # whose `<key>_evo` builds", and build_spec FABRICATED a spec for any `_evo` key, so the
+        # pick was always deck index 0 and 689 of the 1000 meta decks fielded a PHANTOM (base
+        # stats wearing the evo's name). This draw ranges only over cards that provably have an
+        # evolution, so every outcome is real. MEASURED by tools/evo_audit.py: 0 phantoms.
+        #
+        # THE LOADOUT IS THREE SLOTS (16/3/2026, Heroes revid 437509: the format became "one
+        # Evolution, one Hero and one Wild (from 2 evo and 2 hero)"). I3 shipped the Evolution
+        # slot; I8 adds the other two, and the WILD slot is what makes a second evolution legal
+        # again -- which is why the old "exactly one draw, one slot, never two" note is gone.
         self.evo_idx, self.evo_spec, self.evo_cycles, self.evo_charge = -1, None, 2, 0
-        for _i, _k in enumerate(cards):
-            try:
-                _ev = build_spec(db, _k + "_evo", (levels or [11] * len(cards))[_i])
-            except Exception:  # noqa: BLE001 -- no evolution for this card
+        self.evo_declared = [k for k in (evo or []) if k in self.cards]
+        # RNG: the bot's OWN stream, so a seeded ScriptedBot fields a reproducible loadout while a
+        # vectorised run gets a different one per env. Every draw below is skipped when there is
+        # nothing to draw, so a deck with no candidate does not perturb the stream.
+        self.evo_pool = [k for k in (evo_candidates or []) if k in self.cards]
+        self.hero_pool = [k for k in (hero_candidates or []) if k in self.cards]
+        # ---- CHAMPION CARDS SHARE THE HERO-FAMILY SLOTS (owner ruling 17, 2026-08-27) ------
+        # Heroes, revid 437509: "Only two Heroes can be in a deck at a time, and only in the Hero
+        # and Wild slots. Those slots are also shared with Champion card, which means that the
+        # player can have 1 Hero and 1 Champion at the same time." Cards, revid 437053: "Up to 2
+        # Champion cards can be present in a deck at any time." (The same page's TRIVIA says "only
+        # 1"; decisions.md already records that section as the stale one, and the rule text wins.)
+        #
+        # A champion is NOT drawn. An evolution and a hero are VARIANTS of a card the deck holds,
+        # so a slot picks one; a champion IS one of the deck's 8 cards, so holding it has already
+        # spent the slot. That is why there is no probability here -- the occupancy is forced by
+        # the deck list, and `sim.wild_champion_prob` exists only to switch the rule off for an
+        # ablation (see the wild slot below).
+        #
+        # MEASURED BEFORE THIS (conflicts.md I8, "THE ONE STRUCTURAL CONFLICT"): 137 of 1000 decks
+        # (948 of 5947 weight, 15.9%) held a champion card AND at least one hero candidate, and
+        # every one of them fielded the champion's ability AND a hero -- THREE ability-bearing
+        # slots where the game allows two. Those opponents were stronger than legal.
+        self.champion_pool = [k for k in (champion_candidates or []) if k in self.cards]
+        self.champion_idxs = sorted(self.cards.index(k)
+                                    for k in self.champion_pool)[:_CHAMPION_CARD_CAP]
+        # How many of the two hero-family slots the champions have already taken. The hero draw and
+        # the wild draw below each consume one of what is left, in that order.
+        self.ability_slots_left = max(0, _ABILITY_SLOT_CAP - len(self.champion_idxs))
+        # THE DECK'S MEASURED TOWER TROOP (I8). Parsed and carried since R4 and completely INERT
+        # until now: the engine rolled one per match from a config-level weight table while the
+        # pool held the real answer per deck. `support` arrives as a list because the loader
+        # normalises every slot field to one; a deck names at most one tower troop.
+        self.support = list(support or [])
+        _order = list(self.evo_declared)
+        if not _order and self.evo_pool:
+            _order = [self.evo_pool[rng.randrange(len(self.evo_pool))]]   # ONE uniform draw
+        _taken = set()                        # deck INDICES already spoken for by a slot
+        for _k in _order:
+            _i = self.cards.index(_k)
+            _ev = self._build_evo(db, _k, levels[_i])
+            if _ev is None:
                 continue
-            if _ev.hp <= 0 and _ev.kind != "spell":
-                continue
-            _evd = (db.get(_k) or {}).get("evolution") or {}
             self.evo_idx, self.evo_spec = _i, _ev
-            self.evo_cycles = int(_evd.get("cycles") or 2)
-            break
+            # CYCLES from the EVOLUTION'S OWN ROW. A curated `evolution.cycles` still wins, then
+            # the wiki's Cycles column (`evo_cycles` on the `_evo` row); the old flat `or 2` was
+            # simply wrong for every import-only evo -- Evo Elite Barbarians is 1, not 2.
+            # `db.evo_cycles()` now implements exactly that order for all 42 evolutions (I1
+            # backport: it used to gate on a curated `evolution.available` that only 6 base cards
+            # carry, so it returned 0 for the other 36 and this had to duplicate the lookup).
+            # The `or 2` remains only as a floor: 0 would read as "already charged" forever.
+            self.evo_cycles = int(db.evo_cycles(_k) or 2)
+            _taken.add(_i)
+            break                                            # ONE card in the Evolution slot
+
+        # ---- THE HERO SLOT (I8, owner ruling 2026-08-26) -----------------------------------
+        # ALWAYS field one when the deck has a candidate, uniform over `hero_candidates`. Same
+        # honesty argument as the evolution draw: no accessible source names the slotted card, so
+        # naming one would be false precision AND worse training (the policy would overfit a fixed
+        # opponent hero per deck). MEASURED over the shipped pool: 842 of 1000 decks qualify.
+        #
+        # A HERO IS NOT A CHARGE MECHANIC. An evolution must be cycled `evo_cycles` times before it
+        # appears; the card in the Hero slot simply IS the hero from its first play. So the slot is
+        # applied by swapping the spec ONCE here rather than being resolved on every `_play`.
+        self.hero_idx, self.hero_spec = -1, None
+        # RULING 17: the Hero slot is the FIRST of the two shared slots, so a champion card sitting
+        # in it leaves nothing for this draw to fill -- and the "ALWAYS field one" ruling above
+        # applies to the slot, not to the deck. A one-champion deck can still field a hero, but it
+        # has to come from the WILD slot below, which is a DRAW rather than an always: that is
+        # exactly the "1 Hero and 1 Champion at the same time" the Heroes page describes, and it is
+        # why those decks now field a hero about a third of the time instead of every match. A
+        # two-champion deck has spent both slots and fields no hero at all.
+        _hero_choices = ([k for k in self.hero_pool if self.cards.index(k) not in _taken]
+                         if not self.champion_idxs else [])
+        if not _hero_choices and self.hero_pool and not self.champion_idxs:
+            # COLLISION: the Evolution slot took the deck's only hero-capable card. The two owner
+            # rulings ("always field one evolution", "always field one hero") can only conflict
+            # here, and only when a SINGLE card is the sole candidate for both -- so the fix is to
+            # move the EVOLUTION, which by construction still has somewhere else to go whenever
+            # this branch is reachable (`_hero_choices` is empty with a non-empty `hero_pool`
+            # exactly when the pool is that one card). MEASURED before the fix: 194 of 4982 decks
+            # with a hero candidate (3.9%) fielded no hero at all.
+            _alt = [k for k in self.evo_pool if self.cards.index(k) != self.evo_idx]
+            if _alt:
+                _k = _alt[rng.randrange(len(_alt))]
+                _i = self.cards.index(_k)
+                _ev = self._build_evo(db, _k, levels[_i])
+                if _ev is not None:
+                    _taken.discard(self.evo_idx)
+                    self.evo_idx, self.evo_spec = _i, _ev
+                    self.evo_cycles = int(db.evo_cycles(_k) or 2)
+                    _taken.add(_i)
+                    _hero_choices = [k for k in self.hero_pool if self.cards.index(k) not in _taken]
+        if _hero_choices:
+            _k = _hero_choices[rng.randrange(len(_hero_choices))]      # ONE uniform draw
+            _i = self.cards.index(_k)
+            _hs = self._build_hero(db, _k, levels[_i])
+            if _hs is not None:
+                self.hero_idx, self.hero_spec, self.specs[_i] = _i, _hs, _hs
+                _taken.add(_i)
+                self.ability_slots_left -= 1
+
+        # ---- THE WILD SLOT (I8, owner ruling 2026-08-26; extended by ruling 17) ------------
+        # A second evolution, a second hero, a CHAMPION, or NEITHER -- an even split renormalised
+        # over whatever is still legal: a wild evo must differ from the slot evo, a wild hero from
+        # the slot hero, and a category with no candidate left redistributes its share over the
+        # rest.
+        #
+        # THE EVEN SPLIT IS AN UNMEASURED CHOICE. No source publishes how often players fill the
+        # Wild slot or with what -- the battlelog does not carry slots at all (conflicts.md, R4
+        # CORRECTION), and RoyaleAPI / Deck Shop / StatsRoyale are all 403. A flat split is the
+        # least-assuming prior over "evo / hero / empty", not a measurement, and it is a CONFIG
+        # KNOB (sim.wild_evo_prob, sim.wild_hero_prob) exactly so a real source can replace it
+        # without touching this file.
+        #
+        # THE CHAMPION CATEGORY IS THE EXCEPTION, AND DELIBERATELY SO (ruling 17). It carries a
+        # knob of its own -- sim.wild_champion_prob -- but its default is 1.0 rather than an even
+        # share, because a second champion card is not something the player OPTS INTO here: it is
+        # already one of the deck's 8 cards, and the game gives it the slot unconditionally. There
+        # is no free choice to put a prior over. The knob exists so the rule can be switched off
+        # for an ablation, and it is documented in config.yaml as UNMEASURED-BUT-FORCED.
+        # MEASURED over the shipped pool: 241 of 1000 decks hold a champion and NONE holds two, so
+        # the champion branch of the wild draw is unexercised by today's data -- it is implemented
+        # for the cap, not for the frequency.
+        self.wild_evo_idx, self.wild_evo_spec = -1, None
+        self.wild_evo_cycles, self.wild_evo_charge = 2, 0
+        self.wild_hero_idx, self.wild_hero_spec = -1, None
+        self.wild_kind = ""      # "evo" | "hero" | "champion" | "" -- what the wild slot took
+        self.wild_choices = (0, 0, 0)   # (legal wild evos, heroes, champions) at draw time
+        _p_evo = float(cfg.get("sim", "wild_evo_prob", default=1.0 / 3.0))
+        _p_hero = float(cfg.get("sim", "wild_hero_prob", default=1.0 / 3.0))
+        _p_champ = float(cfg.get("sim", "wild_champion_prob", default=1.0))
+        _wild_evo = [k for k in self.evo_pool if self.cards.index(k) not in _taken]
+        _wild_hero = [k for k in self.hero_pool if self.cards.index(k) not in _taken]
+        # The SECOND champion, if the deck has one: it takes the wild slot outright.
+        _wild_champ = self.champion_idxs[1:]
+        # What was LEGAL when the wild draw was taken, recorded so the distribution can be audited
+        # against the even split without re-deriving legality from the outcome (which is circular:
+        # a deck whose only spare evo candidate is the hero's card has no legal wild evo, and
+        # counting it as one makes an unbiased draw look skewed).
+        self.wild_choices = (len(_wild_evo), len(_wild_hero), len(_wild_champ))
+        if _wild_champ and _p_champ > 0.0:
+            # FORCED, not drawn -- see above. The champion is already in the deck; the slot merely
+            # records that it is spent, so no evo or hero can also take it.
+            self.wild_kind = "champion"
+            _taken.add(_wild_champ[0])
+            self.ability_slots_left = max(0, self.ability_slots_left - 1)
+        elif self.ability_slots_left <= 0 and not _wild_evo:
+            pass                 # both shared slots gone to champions and no evolution to field
+        elif (_wild_evo or _wild_hero):
+            # "neither" keeps whatever the other two do not claim, so the three shares always sum
+            # to 1 and dropping a category cannot silently RAISE the chance of an empty slot.
+            # A wild HERO needs a free ability slot; a wild EVOLUTION does not -- an evolution is
+            # not ability-bearing, and the Wild slot holding one is what the cap is about, not the
+            # Evolution slot. So a one-champion deck can still field a wild evo.
+            _w = [(_p_evo if _wild_evo else 0.0),
+                  (_p_hero if (_wild_hero and self.ability_slots_left > 0) else 0.0),
+                  max(0.0, 1.0 - _p_evo - _p_hero)]
+            _tot = sum(_w)
+            _r = rng.random() * _tot if _tot > 0.0 else 0.0
+            if _wild_evo and _r < _w[0]:
+                _k = _wild_evo[rng.randrange(len(_wild_evo))]
+                _i = self.cards.index(_k)
+                _ev = self._build_evo(db, _k, levels[_i])
+                if _ev is not None:
+                    self.wild_evo_idx, self.wild_evo_spec = _i, _ev
+                    self.wild_evo_cycles = int(db.evo_cycles(_k) or 2)
+                    self.wild_kind = "evo"
+                    _taken.add(_i)
+            elif _wild_hero and _r < _w[0] + _w[1]:
+                _k = _wild_hero[rng.randrange(len(_wild_hero))]
+                _i = self.cards.index(_k)
+                _hs = self._build_hero(db, _k, levels[_i])
+                if _hs is not None:
+                    self.wild_hero_idx, self.wild_hero_spec, self.specs[_i] = _i, _hs, _hs
+                    self.wild_kind = "hero"
+                    _taken.add(_i)
+                    self.ability_slots_left -= 1
+        # The held siege answer is chosen by HP and a hero body can be the biggest thing in the
+        # deck, so it is re-derived AFTER the swaps -- and it MUST be: `_play` finds a card by
+        # object identity in `self.specs`, so a stale spec object would resolve to index -1 and
+        # quietly bypass the cycle.
+        troops = [s for s in self.specs if s.kind == "troop" and not s.building_only and not s.flying]
+        self._reserved = max(troops, key=lambda s: s.hp) if troops else None
+
+    @staticmethod
+    def _build_evo(db, key: str, level: int):
+        """The `<key>_evo` spec, or None when the KB cannot really build one.
+
+        Shared by the Evolution slot and the Wild slot so the two cannot diverge -- and these
+        guards are why phantoms stay at 0: a missing row RAISES (I3) instead of handing back the
+        base card wearing the evolution's name, and a row that builds to nothing is refused too.
+        """
+        try:
+            spec = build_spec(db, key + "_evo", level)
+        except KeyError:          # no KB row for it yet -- field nothing, never fake the base card
+            return None
+        return None if (spec.hp <= 0 and spec.kind != "spell") else spec
+
+    @staticmethod
+    def _build_hero(db, key: str, level: int):
+        """The `<key>_hero` spec, or None when the KB cannot really build one.
+
+        Same contract as `_build_evo`, for the same reason: `build_spec` raises for a key with no
+        hero row, so a stale `hero_candidates` list can only field FEWER heroes -- never a phantom
+        one wearing the base card's stats.
+        """
+        try:
+            spec = build_spec(db, key + "_hero", level)
+        except KeyError:
+            return None
+        return None if (spec.hp <= 0 and spec.kind != "spell") else spec
+
+    def _try_ability(self, eng, team: int = 1) -> bool:
+        """Press this deck's champion/hero ability button, if the board says to.
+
+        One decision per bot step, taken BEFORE the card action, because an ability spends its own
+        elixir and does not leave the hand -- a real player does both in the same beat.
+
+        RULING 5 is respected here as well as in the engine: the button belongs to the NEWEST
+        living body, so the bot asks whether THAT body wants to fire rather than scanning for any
+        body that would. Asking the wrong body would make the bot fire a Boss Bandit's grenade
+        because an older, forgotten one was cornered.
+
+        Returns True if the ability actually went off.
+        """
+        bodies = [u for u in eng.units
+                  if u.team == team and u.hp > 0 and u.spec.ability_kind and u.deploy_left <= 0.0
+                  and u.spec.ability_kind not in _BODYLESS_KINDS]
+        if not bodies:
+            # THE HERO GOBLINS' BANNER is the one ability with no body to ask (I8): it only exists
+            # once every goblin is dead, and it expires on its own 5 s clock. There is no board
+            # read worth making -- reinforcements that vanish in five seconds are worth pressing
+            # whenever they are available -- so it goes straight through the reaction delay.
+            rec = getattr(eng, "_banner", {}).get(team)
+            if not rec or rec[0] <= eng.t or eng.elixir[team] < rec[3].ability_cost:
+                self._ability_armed_t = None
+                return False
+            if self._ability_armed_t is None:
+                self._ability_armed_t = float(eng.t)
+            if eng.t - self._ability_armed_t < self.reaction_s:
+                return False
+            self._ability_armed_t = None
+            return bool(eng.champion_ability(team))
+        u = max(bodies, key=lambda b: b.deploy_seq)
+        s = u.spec
+        # Cheap refusals first -- these are the same tests champion_ability applies, and asking
+        # them here keeps a hopeless board from paying the reaction-delay bookkeeping below.
+        if u.ability_cd_left > 0.0 or eng._ability_uses_left(u) <= 0:
+            return False
+        if eng.elixir[team] < s.ability_cost:
+            return False
+        ai = dict(s.ability_ai)
+        family = str(ai.get("family") or _ABILITY_FAMILY.get(s.ability_kind, "defensive"))
+        knobs = dict(_ABILITY_AI_DEFAULTS.get(family, {}))
+        knobs.update(ai)
+        if not self._ability_wants(eng, u, family, knobs):
+            self._ability_armed_t = None            # the window closed: the next one pays again
+            return False
+        # HUMAN REACTION. Without it the bot fires on the exact tick the condition flips, which is
+        # both inhuman and unlearnable -- the policy would face a perfectly-timed grenade every
+        # time. The delay is the bot's own rolled `reaction_s`, the same population knob the
+        # adaptive behaviours use, so a match faces one opponent's timing rather than the mean.
+        if self._ability_armed_t is None:
+            self._ability_armed_t = float(eng.t)
+        if eng.t - self._ability_armed_t < self.reaction_s:
+            return False
+        self._ability_armed_t = None
+        return bool(eng.champion_ability(team))
+
+    def _ability_wants(self, eng, u, family: str, k: dict) -> bool:
+        """The per-family predicate. Split out so a test can drive it without a whole match."""
+        if family == "escape":
+            # In trouble, or too deep to walk back. `_RIVER` is y = 0.5 and team 1 attacks
+            # DOWNWARD, so "past the river" is y > 0.5 for them and y < 0.5 for us.
+            if u.hp <= u.spec.hp * float(k.get("hp_frac", 0.55)):
+                return True
+            if k.get("over_river"):
+                return u.y > 0.5 if u.team == 1 else u.y < 0.5
+            return False
+        if family == "defensive":
+            n = int(k.get("crowd_n", 3))
+            r = float(k.get("crowd_tiles", 4.0))
+            near = sum(1 for e in eng.units
+                       if e.team != u.team and e.hp > 0 and e.spec.kind == "troop"
+                       and _dist(u.x, u.y, e.x, e.y) <= r)
+            return near >= n
+        if family == "offensive":
+            r = float(k.get("tower_tiles", 7.0))
+            if not any(_dist(u.x, u.y, t.x, t.y) <= r for t in eng.towers[1 - u.team] if t.alive):
+                return False
+            need = int(k.get("min_enemies", 0))
+            if need <= 0:
+                return True
+            return sum(1 for e in eng.units
+                       if e.team != u.team and e.hp > 0
+                       and _dist(u.x, u.y, e.x, e.y) <= r) >= need
+        return False
 
     def _hand_specs(self):
         """The 4 cards currently in hand (the rest are cycling)."""
@@ -102,20 +507,31 @@ class ScriptedBot:
 
     def _play(self, eng, spec, x: float, y: float) -> bool:
         """Deploy + send that card to the back of the cycle. EVERY deploy goes through here, so no
-        branch can bypass the cycle. The deck's EVOLUTION slot charges by playing the base card
-        `evo_cycles` times; the next play of that card fields the `_evo` spec instead."""
+        branch can bypass the cycle.
+
+        An EVOLUTION slot charges by playing its base card `evo_cycles` times; the next play of
+        that card fields the `_evo` spec instead. There are now up to TWO such slots -- the
+        dedicated one and the Wild slot (I8) -- and they charge independently, because they are
+        different cards with their own Cycles numbers.
+
+        A HERO slot needs nothing here: the card in it IS the hero from its first play, so
+        `__init__` swapped the spec once and every path below already carries it.
+        """
         idx = next((i for i, s in enumerate(self.specs) if s is spec), -1)
-        if (idx == self.evo_idx and self.evo_spec is not None
-                and self.evo_charge >= self.evo_cycles
-                and eng.elixir[1] >= self.evo_spec.elixir):
-            spec = self.evo_spec                              # the charged Evolution takes the slot
+        for _sidx, _spec, _cyc, _chg in ((self.evo_idx, self.evo_spec, self.evo_cycles, "evo_charge"),
+                                         (self.wild_evo_idx, self.wild_evo_spec,
+                                          self.wild_evo_cycles, "wild_evo_charge")):
+            if idx != _sidx or _spec is None:
+                continue
+            if getattr(self, _chg) >= _cyc and eng.elixir[1] >= _spec.elixir:
+                spec = _spec                                  # the charged Evolution takes the slot
+            break
         if not eng.deploy(1, spec, x, y):
             return False
-        if idx == self.evo_idx:
-            if spec is self.evo_spec:
-                self.evo_charge = 0                           # spent -> recharge from scratch
-            else:
-                self.evo_charge += 1
+        if idx == self.evo_idx and self.evo_spec is not None:
+            self.evo_charge = 0 if spec is self.evo_spec else self.evo_charge + 1
+        elif idx == self.wild_evo_idx and self.wild_evo_spec is not None:
+            self.wild_evo_charge = 0 if spec is self.wild_evo_spec else self.wild_evo_charge + 1
         if idx >= 0 and idx in self.cycle:
             self.cycle.remove(idx)
             self.cycle.append(idx)
@@ -201,6 +617,12 @@ class ScriptedBot:
         team = 1
         if self.adaptive:
             self._observe(eng)
+        # THE ABILITY BUTTON. Not gated on `adaptive`: an enemy champion that never uses its
+        # ability is a different card, and the eval benchmark runs non-adaptive bots. It also does
+        # not `return` -- the ability spends its own elixir and leaves the hand alone, so the bot
+        # still takes its card action this step. Read `elix` AFTER, or the affordability list
+        # would be computed against elixir the ability has already spent.
+        self._try_ability(eng, team)
         elix = eng.elixir[team]
         affordable = [s for s in self._hand_specs() if s.elixir <= elix]
         if not affordable:
@@ -316,7 +738,13 @@ def make_opponent(cfg, db, rng, pool: List[dict], level: "int | None" = None,
     if level is not None:
         levels = [int(level)] * len(deck["cards"])
     is_adaptive = adaptive and rng.random() < float(cfg.get("sim", "adaptive_prob", default=0.65))
-    return ScriptedBot(cfg, db, rng, deck["cards"], deck["style"], levels, adaptive=is_adaptive)
+    return ScriptedBot(cfg, db, rng, deck["cards"], deck["style"], levels, adaptive=is_adaptive,
+                       evo=deck.get("evo"),       # a DECLARED slot, if a source ever names one
+                       evo_candidates=deck.get("evo_candidates"),   # else drawn from the legal set
+                       hero_candidates=deck.get("hero_candidates"),  # I8: the Hero + Wild slots
+                       # ruling 17: champion CARDS occupy those same two slots
+                       champion_candidates=deck.get("champion_candidates"),
+                       support=deck.get("support"))                  # I8: the measured tower troop
 
 
 class SelfPlayOpponent:

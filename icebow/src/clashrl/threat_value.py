@@ -226,7 +226,11 @@ def _spawner_cost(db, base: str, tower_level: int, enemy_level: int):
     # `_SPAWNER_WAVES` survives only as the fallback for a spawner whose interval is still unknown.
     spawn = (db.get(base) or {}).get("spawns") or {}
     every = _num(spawn, "interval")
-    life = _num(db.get(base) or {}, "lifetime", "lifetime_s")
+    # A spawner that WALKS has no lifetime, so this used to fall through to the flat
+    # `_SPAWNER_WAVES`. Its honest bound is how long it SURVIVES, which the sim can
+    # measure: `effective_life_s` carries that measurement (see the cards.yaml comment
+    # for n and spread). Real lifetimes still win -- this is only for the walking case.
+    life = _num(db.get(base) or {}, "lifetime", "lifetime_s", "effective_life_s")
     waves = (float(life) / float(every)) if (every and life) else _SPAWNER_WAVES
     return min(_SPAWNER_CAP, unit_cost * max(1.0, waves))
 

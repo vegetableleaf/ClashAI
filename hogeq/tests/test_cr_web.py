@@ -59,13 +59,41 @@ class LiveSourceTests(unittest.TestCase):
         self.assertAlmostEqual(float(st["hp_11"]), spec.hp, delta=2.0)
         self.assertAlmostEqual(float(st["dmg_11"]), spec.hit_dmg, delta=2.0)
 
-    def test_previously_blocked_sources_now_fetch(self):
-        """Fandom card PAGES used to 402 and the community stat sites sat behind Cloudflare."""
-        for url in ("https://clashroyale.fandom.com/wiki/Hog_Rider",
-                    "https://royaleapi.com/card/hog-rider"):
-            r = cr_web.fetch(url)
-            self.assertTrue(r["html"], "no body from %s" % url)
-            self.assertFalse(cr_web._looks_blocked(r["html"]), "blocked by %s" % url)
+    def test_the_sources_THIS_PIPELINE_READS_still_fetch(self):
+        """Both Fandom routes the importer depends on must come back with a real body.
+
+        This test used to also assert that `royaleapi.com/card/hog-rider` fetches, under the name
+        `test_previously_blocked_sources_now_fetch`. That premise expired. MEASURED 2026-08-27:
+
+            https://clashroyale.fandom.com/wiki/Hog_Rider          461,770 bytes   not blocked
+            https://clashroyale.fandom.com/api.php?...&prop=wikitext 33,161 bytes  not blocked
+            https://royaleapi.com/card/hog-rider                         0 bytes   BLOCKED
+
+        RoyaleAPI, Deck Shop and StatsRoyale are behind Cloudflare again and the sim-parity
+        research confirmed it independently. The right response is not to assert that a third
+        party stays blocked -- that is just as brittle in the other direction, and would go red
+        the day Cloudflare relaxes. It is to assert what we actually depend on. NOTHING in
+        card_import.py reads RoyaleAPI: the importer walks Fandom pages and api.php, which is why
+        api.php is asserted here and was not before."""
+        # ⚠ ONLY api.php IS ASSERTED, and that is deliberate. An earlier version of this test
+        # also asserted the PAGE route (/wiki/Hog_Rider). It measured 461,770 bytes at the time,
+        # but that reading came from a WARM webcache: `data/` is git-ignored, so the worktree and
+        # the live tree carry different caches, and the same test went green in one and red in
+        # the other on IDENTICAL code -- which is how this was caught, at the merge gate.
+        # Cold, the page route returns an empty body, which is the project's own long-standing
+        # finding (SS2: "Fandom page fetches return 402 to scripts; api.php does not"). It only
+        # succeeds when Scrapling's browser impersonation happens to get through, so asserting
+        # it is a coin flip dressed as a regression test.
+        # What the pipeline ACTUALLY depends on is api.php: card_import.py calls `_api()` for the
+        # category walk, the /Evolution and /Hero probes, and every wikitext parse. That is what
+        # is pinned here. `fetch_raw` is the stdlib route api.php needs (Scrapling corrupts its
+        # JSON -- see cr_web.fetch_raw's docstring).
+        url = ("https://clashroyale.fandom.com/api.php?action=parse&page=Hog_Rider"
+               "&prop=wikitext&format=json")
+        body = cr_web.fetch_raw(url)
+        self.assertTrue(body, "no body from api.php -- the importer's only real source")
+        self.assertIn("wikitext", body, "api.php returned something that is not a parse payload")
+        self.assertFalse(cr_web._looks_blocked(body), "blocked by api.php")
 
 
 if __name__ == "__main__":

@@ -23,6 +23,12 @@ from clashrl.sim.engine import build_spec      # noqa: E402
 from clashrl.sim.env import SimMatchEnv        # noqa: E402
 
 
+try:                                     # discovered as a package (python -m unittest discover)
+    from ._deckcards import requires_cards
+except ImportError:                      # ...or run as a plain script
+    from _deckcards import requires_cards
+
+
 class _Unit:
     def __init__(self, spec, x, y, hp=1000):
         self.x, self.y, self.hp, self.team, self.spec = x, y, hp, 1, spec
@@ -137,6 +143,7 @@ class TestShapingIsApplied(unittest.TestCase):
         self.assertEqual(w, {5: 1.0})
 
 
+@requires_cards("x_bow", why="bow-defence placement geometry (defenders placed relative to an X-Bow)")
 class TestBowDefence(unittest.TestCase):
     """Keeping a standing X-Bow alive: knight tanks, skeletons distract, ice wizard stalls,
     tesla holds. A bow that fires its whole life is worth about a tower; one that dies at three

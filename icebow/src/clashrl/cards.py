@@ -14,6 +14,8 @@ from typing import Dict, List, Optional
 
 import yaml
 
+from . import levels
+
 
 def _key(name: str) -> str:
     return (str(name).strip().lower()
@@ -197,6 +199,14 @@ class CardDB:
         return self.cards.get(_key(name)) if name else None
 
     def elixir(self, name: str) -> Optional[int]:
+        # A CHAMPION ABILITY costs its own elixir, not the champion's. `mighty_miner_ability` is an
+        # action-space identity with no card row of its own, so this used to return None and the
+        # callers' `or 0.0` fallback made the ability read as FREE to the affordability mask --
+        # while folding the suffix to the base card would have priced it at the champion's 4.
+        if str(name).endswith("_ability"):
+            champ = self.get(str(name)[: -len("_ability")]) or {}
+            cost = champ.get("ability_cost")
+            return int(cost) if cost else None
         c = self.get(name)
         return c.get("elixir") if c else None
 
@@ -290,11 +300,15 @@ class CardDB:
         """
         c = self.get(name) or {}
         ev = c.get("evolution") or {}
-        if not isinstance(ev, dict) or not ev.get("available"):
-            return 0
-        if ev.get("cycles"):
+        if isinstance(ev, dict) and ev.get("cycles"):
             return int(ev["cycles"])
-        evo = self.get(f"{_key(name)}_evo") or {}     # the wiki's Cycles column lives on the EVO page
+        # The wiki's Cycles column lives on the EVO page, so a `<card>_evo` row carrying evo_cycles
+        # is itself proof the card evolves. This used to be gated behind the BASE card declaring
+        # `evolution.available`, which only holds for cards curated inline -- Firecracker's base row
+        # comes from the importer and has no evolution block, so the gate returned 0 and the sim
+        # treated its Evolution as permanently charged. Reading the evo row directly cannot produce
+        # a false positive: a card with no evolution has no `<card>_evo` entry to read.
+        evo = self.get(f"{_key(name)}_evo") or {}
         return int(evo.get("evo_cycles") or 0)
 
     def shield_hp(self, name: str) -> float:
@@ -443,15 +457,23 @@ class CardDB:
                 evo = self.cards.get(_key(key) + "_evo")
                 if evo:
                     for kk, vv in evo.items():
-                        if vv is not None and kk not in ("display", "base", "evolution", "champion"):
+                        # `_src` stays the BASE row's: the overlay changes stats, not provenance
+                        if vv is not None and kk not in ("display", "base", "evolution",
+                                                         "champion", "_src"):
                             merged[kk] = vv
             lvl = entry.get("level")
-            if lvl:                                   # KB stats are level 11; scale ~10%/level
+            if lvl:
+                # THE GAME'S OWN LEVEL TABLE, not 1.1**(level-11). The percentages START as 1.1^n
+                # rounded and then stop tracking it, one-directionally: at level 16 the game says
+                # 409% of level 1 where 1.1^n gives 396%, so this method was under-reporting every
+                # levelled card in the deck -- and it is the deck that is levelled (this KB stores
+                # level 11 and the owner's cards run to 16). `build_spec` has read levels.py since
+                # it landed; only this method was left on the old scaler, so the two disagreed
+                # about the SAME card. See levels.py for the table and its provenance.
                 merged["level"] = int(lvl)
-                mult = 1.1 ** (int(lvl) - 11)
                 for kk in ("hitpoints", "damage", "crown_tower_damage", "dps", "damage_per_second"):
                     if merged.get(kk) is not None:
-                        merged[kk] = int(round(merged[kk] * mult))
+                        merged[kk] = int(round(levels.scale(merged[kk], int(lvl))))
             out.append(merged)
         return out
 
@@ -491,6 +513,45 @@ class CardDB:
                 out.append(k + "_evo")
         return out
 
+    def ability_identity(self) -> Optional[str]:
+        """The deck's player-triggered champion ability as its own action identity, or None.
+
+        A champion ability costs elixir and is a real decision, but it has no placement -- it acts on
+        the champion wherever he already stands. Giving it an identity is what makes it reachable by
+        a policy whose action space is (wait/play, card, cell); the cell is then ignored.
+
+        THIS MUST BE THE SINGLE SOURCE for both the sim and the live vision deck, because the two
+        action spaces have to agree exactly or a checkpoint trained in the sim cannot be loaded to
+        play live -- and the failure is silent, a shape mismatch on a head nobody prints.
+
+        Keyed off `ability_bomb_damage`, which marks the PLAYER-triggered shape specifically; the
+        automatic Boss-Bandit reaction (`ability_invis_s`) is opponent behaviour and gets no slot.
+        """
+        for entry in self._deck.get("cards", []):
+            k = _key(entry.get("card"))
+            if float((self.get(k) or {}).get("ability_bomb_damage") or 0.0) > 0.0:
+                return k + "_ability"
+        return None
+
+    def policy_identities(self) -> List[str]:
+        """The POLICY'S ACTION SPACE: the deck's card identities plus a champion ability if the deck
+        has one. This is the list every card head, hand vector and checkpoint width must agree on.
+
+        Deliberately separate from :meth:`deck_identities`, which is the PHYSICAL cards -- what the
+        detector expects to see on screen and what the cycle deals. The ability is an action, not a
+        card: it never appears in hand, never rotates the cycle, and is never detected as a unit, so
+        the detector-side callers must keep using deck_identities and would be wrong to include it.
+
+        Getting this wrong is silent in the worst way: the sim trains an 11-output policy while a
+        consumer builds a 10-name deck, and the mismatch surfaces either as a refusal to start or as
+        card ids that quietly mean different cards.
+        """
+        out = list(self.deck_identities())
+        ability = self.ability_identity()
+        if ability:
+            out.append(ability)
+        return out
+
     def deck_levels(self) -> List[int]:
         """Per-identity card levels, PARALLEL to deck_identities() (an evolved slot repeats the level)."""
         out: List[int] = []
@@ -516,10 +577,23 @@ class CardDB:
         for entry in self._deck.get("cards", []):
             k = _key(entry.get("card"))
             evolved = bool(entry.get("evolved"))
+            cycles = self.evo_cycles(k) if evolved else 0
+            # 0 CYCLES ON AN EVOLVED SLOT IS NOT A DEFAULT, IT IS A CONTRADICTION. evo_cycles returns
+            # 0 to mean "this card has no evolution", but the sim's slot asks `charge >= cycles`, and
+            # 0 satisfies that from the first tick -- so the slot presents the EVOLUTION on every
+            # cycle and the base card never appears again. That is what happened to Evo Firecracker
+            # here: the KB simply had no evo_cycles for it, and a missing number silently became an
+            # infinitely-charged Evolution rather than an error. Refuse it instead.
+            if evolved and cycles <= 0:
+                raise ValueError(
+                    "deck card %r is marked evolved but the card KB gives it %d evolution cycles. "
+                    "0 would make the slot PERMANENTLY evolved (the base card could never be "
+                    "played). Add `evo_cycles: <n>` to the %s_evo entry in cards.yaml, or drop "
+                    "`evolved: true` from the deck." % (k, cycles, k))
             out.append({
                 "base": k,
                 "evo": (k + "_evo") if evolved else None,
-                "cycles": self.evo_cycles(k) if evolved else 0,
+                "cycles": cycles,
                 "level": int(entry.get("level", 11)),
             })
         return out

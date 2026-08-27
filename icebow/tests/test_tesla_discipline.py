@@ -31,7 +31,7 @@ class TeslaDisciplineTests(unittest.TestCase):
         cls.env = SimMatchEnv(Config.load())
         cls.env.reset()
 
-    def _scene(self, units, opp=WINCON_DECK):
+    def _scene(self, units, opp=WINCON_DECK, hand=()):
         env = self.env
         env.eng.units.clear()
         for base, y in units:
@@ -39,7 +39,28 @@ class TeslaDisciplineTests(unittest.TestCase):
             env.eng.units.append(Unit(spec=sp, team=1, x=0.5, y=y, hp=sp.hp))
         env.opponent.cards = list(opp)
         env.eng.elixir[0] = 10.0
+        self._deal(hand)
         return env
+
+    def _deal(self, bases):
+        """Force these cards into the four-card hand.
+
+        The nomination rules go through ``_holdable``, which requires the card to be IN HAND -- so a
+        scene that does not pin the hand is really testing the deal. This suite passed on the IceBow
+        deck only because that deck's opening cycle happened to contain the Tesla; on Hog EQ the deal
+        is hog/skeletons/ice_spirit/firecracker_evo and every Tesla assertion failed against a
+        doctrine that was working correctly.
+        """
+        env = self.env
+        for base in reversed(list(bases)):
+            cid = next(i for i, k in enumerate(env.deck_keys) if k == base)
+            slot = env.slot_of[cid]
+            env.cycle.remove(slot)
+            env.cycle.insert(0, slot)
+        if bases:
+            in_hand = {env.deck_keys[i] for i in env._hand_ids()}
+            missing = set(bases) - in_hand
+            assert not missing, "failed to deal %s (hand is %s)" % (sorted(missing), sorted(in_hand))
 
     def _tesla_id(self):
         return next(i for i, k in enumerate(self.env.deck_keys) if k == "tesla")
@@ -82,20 +103,20 @@ class TeslaDisciplineTests(unittest.TestCase):
 
     # -- and it gets priority for the win condition -----------------------------------
     def test_tesla_is_not_nominated_on_a_quiet_board(self):
-        env = self._scene([])
+        env = self._scene([], hand=("tesla",))
         self.assertNotIn("tesla", self._nominations(env))
 
     def test_tesla_tops_the_table_against_a_win_condition(self):
         for wincon in ("hog_rider", "giant", "balloon"):
             with self.subTest(wincon=wincon):
-                env = self._scene([(wincon, 0.55)])
+                env = self._scene([(wincon, 0.55)], hand=("tesla",))
                 nom = self._nominations(env)
                 self.assertIn("tesla", nom)
                 self.assertEqual(max(nom.values()), nom["tesla"],
                                  "tesla should outrank every other card vs a win condition")
 
     def test_a_non_wincon_troop_does_not_summon_the_tesla_rule(self):
-        env = self._scene([("knight", 0.55)], opp=NO_WINCON_DECK)
+        env = self._scene([("knight", 0.55)], opp=NO_WINCON_DECK, hand=("tesla",))
         self.assertNotIn("tesla", self._nominations(env))
 
 
