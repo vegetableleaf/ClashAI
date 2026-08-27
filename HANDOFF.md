@@ -3285,6 +3285,55 @@ play/wait asymmetry to correct).
 gradient is necessary, not sufficient, and this can still come back null. Pre-committed: >=2 sigma
 on the paired probe or it is reported as NO MEASUREMENT.
 
+## 4x. 2026-08-27 — QUEUED EXPERIMENT: EVAL-ONLY ROLLOUT SEARCH (owner's idea, scoped by measurement)
+
+Owner asked whether MCTS belongs in the sim: clone the state every Nth decision, play out a few
+seconds per candidate action, take the best. Measured before answering, on the CURRENT engine:
+```
+                 clone      tick      5s rollout + clone
+quiet (5 units)  0.45 ms   0.071 ms        4.0 ms / candidate
+busy (72 units)  3.55 ms   0.572 ms       32.1 ms / candidate
+20 candidates, every 10th of ~300 decisions  ->  ~19 s per match (busy board)
+```
+**The engine deep-copies cleanly** — that was the thing most likely to kill it outright.
+
+### The verdict, and why it is split
+* **TRAINING-time search is infeasible.** A match costs ~20-170 ms of engine time today; +19 s is a
+  ~100x slowdown, and this project is already CPU-bound (40k episodes = 28 h). That becomes months.
+* **EVAL-time search is cheap** — a 150-match eval is ~45 min. **THIS IS WHAT WE RUN.**
+* ⚠ Note the owner's proposal is FLAT ROLLOUT SEARCH, not MCTS — no tree, no reuse across
+  iterations. The cost above is for the flat version; a real tree gets more from the same budget.
+
+### ⚠ THE OBJECTION THAT SHAPES THE DESIGN
+**Search optimises whatever objective it is given, harder and more consistently.** This project
+spent a week finding that objective to be wrong (spell casts billed `spell_waste` by an `id()`
+recycling bug; `threat_miss_idle` a step function; `bank_to_six_then_bow` at 0%). Search over the
+SHAPED reward would have pursued those defects harder.
+**So the rollout is scored on ACTUAL OUTCOME — net tower-HP delta over the horizon — NOT on the
+shaped reward terms.** That is the version worth running, and it sidesteps every reward bug we
+have been fixing.
+
+### It does NOT obviously address the §4t decay, and should not be sold as doing so
+The owner's hypothesis was that search would prevent the eval decay (rolling ladder 33% -> 20%).
+The decay was MEASURED but never DIAGNOSED; every candidate cause (curriculum ratcheting, entropy
+floor, drill/match advantage gap, value-loss drift) is a TRAINING dynamic, and decision-time search
+touches none of them.
+
+### What it actually buys: a headroom measurement we cannot currently make
+policy+search vs policy alone, same reference checkpoint, same seeds:
+* **search >> policy** -> the bottleneck is the policy's judgement, and AlphaZero-style
+  distillation (search generates targets, policy learns them) becomes worth costing out.
+* **search ~= policy** -> either the objective is misleading or a few seconds of outcome does not
+  discriminate. Both are worth knowing BEFORE spending weeks on architecture.
+
+⚠ Only viable since 2026-08-27: before the `deploy_seq` attribution fix the sim was not
+reproducible run-to-run, so rollouts would have been comparing noise.
+
+**ORDER (owner):** rolling-spell changes merge -> **eval-only rollout search** -> spell experiments
+-> new 20k PPO.
+
+---
+
 ## 4w. ⏳ PENDING CARD UPGRADE — apply on the sim-parity branch before the merge
 
 Owner 2026-08-27: **tornado upgraded 14 -> 15** (real account level).
