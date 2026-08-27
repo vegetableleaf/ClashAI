@@ -66,6 +66,23 @@ _ABILITY_FAMILY = {
     # Lightning Link is 4 s of area damage around a tether -- a push tool, and its crown-tower
     # column says it is meant to be on the tower.
     "zone": "offensive",
+    # ---- I8 hero kinds. These are FALLBACKS: every one of the 16 hero rows carries an explicit
+    # `ability_ai: {family: ...}` with its own knobs, because the right moment for a Trusty Turret
+    # (something is coming) is not the right moment for a Tomb Queen (we are on their tower). The
+    # table stays complete anyway so a new card naming one of these shapes is never family-less.
+    "buff_self": "defensive",       # two of the three are swarm answers; the Bowler's row overrides
+    "zone_pulse": "defensive",      # Snowstorm is 3 slowing blasts around himself
+    "taunt_shield": "defensive",    # Triumphant Taunt exists to pull a committed push off the tower
+    "throw_displace": "defensive",  # Heroic Hurl needs a body within 2 tiles to do anything at all
+    "summon": "defensive",          # a turret / a Rhino / a Queen; the offensive ones override
+    "summon_seek": "defensive",     # the Skeletrooper flies at the nearest ground body
+    "summon_banner": "defensive",   # reinforcements, and it only exists once they are all dead
+    "transform_levelup": "escape",  # Breakfast Boost is a 30% heal first and a level-up second
+    "decoy_blink": "escape",        # "used to avoid damage from spells like Fireball ... thanks to
+                                    # the pull back and decoy" is the page's own worked example
+    "warp": "defensive",            # Wounding Warp finishes the lowest-hitpoint body on the board
+    "reroll": "defensive",          # a second Barbarian Barrel roll, which is a defensive card
+    "flight_nado": "offensive",     # Fiery Flight is 5 s of tornado-throwing over their half
 }
 
 # Per-family defaults. Every one is a CHOICE, not a published number -- no page states when to
@@ -76,6 +93,13 @@ _ABILITY_AI_DEFAULTS = {
     "defensive": {"crowd_n": 3, "crowd_tiles": 4.0},
     "offensive": {"tower_tiles": 7.0, "min_enemies": 0},
 }
+
+
+# KINDS WITH NO BODY TO PRESS THEM. Banner Brigade fires from the banner the last dying Hero
+# Goblin drops, so the has-a-body scan in `_try_ability` has to skip it exactly as
+# `champion_ability` does -- otherwise a living goblin would be asked whether to fire an ability
+# its own page says is "disabeld until the last goblin is killed".
+_BODYLESS_KINDS = frozenset({"summon_banner"})
 
 
 class ScriptedBot:
@@ -331,9 +355,23 @@ class ScriptedBot:
         Returns True if the ability actually went off.
         """
         bodies = [u for u in eng.units
-                  if u.team == team and u.hp > 0 and u.spec.ability_kind and u.deploy_left <= 0.0]
+                  if u.team == team and u.hp > 0 and u.spec.ability_kind and u.deploy_left <= 0.0
+                  and u.spec.ability_kind not in _BODYLESS_KINDS]
         if not bodies:
-            return False
+            # THE HERO GOBLINS' BANNER is the one ability with no body to ask (I8): it only exists
+            # once every goblin is dead, and it expires on its own 5 s clock. There is no board
+            # read worth making -- reinforcements that vanish in five seconds are worth pressing
+            # whenever they are available -- so it goes straight through the reaction delay.
+            rec = getattr(eng, "_banner", {}).get(team)
+            if not rec or rec[0] <= eng.t or eng.elixir[team] < rec[3].ability_cost:
+                self._ability_armed_t = None
+                return False
+            if self._ability_armed_t is None:
+                self._ability_armed_t = float(eng.t)
+            if eng.t - self._ability_armed_t < self.reaction_s:
+                return False
+            self._ability_armed_t = None
+            return bool(eng.champion_ability(team))
         u = max(bodies, key=lambda b: b.deploy_seq)
         s = u.spec
         # Cheap refusals first -- these are the same tests champion_ability applies, and asking

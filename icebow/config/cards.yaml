@@ -3290,11 +3290,12 @@ cards:
   # While on the air, these troops are untargetable by ground-targeting troops and the Earthquake,
   # but can still take damage from other spells. Air troops can be affected by the ability, but
   # will take no damage when they land."
-  #   ability_knock 9.0 = the table's "Throwback Range" (unitless there; tiles is the only unit the
-  #     page uses). ability_range_tiles 2.0 = the grab radius, prose-only.
+  #   ability_knockback_tiles 9.0 = the table's "Throwback Range" (unitless there; tiles is the
+  #     only unit the page uses), on the SAME field the Little Prince's Royal Rescue pushback uses.
+  #     ability_range_tiles 2.0 = the grab radius, prose-only.
   #   ability_stun_s 2.0 = the table's "Unit Stun Duration"; the prose never mentions a stun.
   #   ability_max_hits 1 = the table's "Units Affected".
-  giant_hero: {ability_kind: throw_displace, ability_cost: 2, ability_uses: 1, ability_delay_s: 1.0, ability_range_tiles: 2.0, ability_knock: 9.0, ability_damage: 135, ability_stun_s: 2.0, ability_max_hits: 1, ability_ai: {family: defensive, crowd_n: 1, crowd_tiles: 2.0}, verified: false}
+  giant_hero: {ability_kind: throw_displace, ability_cost: 2, ability_uses: 1, ability_delay_s: 1.0, ability_range_tiles: 2.0, ability_knockback_tiles: 9.0, ability_damage: 135, ability_stun_s: 2.0, ability_max_hits: 1, ability_ai: {family: defensive, crowd_n: 1, crowd_tiles: 2.0}, verified: false}
 
   # MINI P.E.K.K.A. -- Breakfast Boost (Mini P.E.K.K.A./Hero, revid 437522). "immediately eats all
   # the pancakes he cooked, granting him extra Levels and healing himself for 30%. ... He will need
@@ -3305,7 +3306,17 @@ cards:
   #   ability_levels IS the page's own "Level Increase from Pancake Bar" table, indexed by filled
   #     meters: 0 -> +1, 1 -> +2, 2 -> +3, 3 -> +5.
   #   ability_heal_frac 0.30 = the table's "Heal Percentage" (History 12/1/2026, "from 40%").
-  mini_pekka_hero: {ability_kind: transform_levelup, ability_cost: 1, ability_uses: 1, ability_delay_s: 1.0, ability_heal_frac: 0.30, ability_charge_s: 22.0, ability_charge_hit_s: 10.0, ability_max_charges: 3, ability_levels: [1, 2, 3, 5], ability_ai: {family: escape, hp_frac: 0.6, over_river: false}, verified: false}
+  #   BODY: hitpoints 1390, not the page's own vardefine hp_base 1433. This is I5's OWN RULING
+  #     applied to the hero row, not a new judgement: I5 took base mini_pekka 1433 -> 1390 with a
+  #     dated stale-page proof (time machine oldid 433647, 2025-12-25, still carries the hardcoded
+  #     L11 row "|11||1,433||755|" from BEFORE the 12/1/2026 balance change), and 1433 x 0.97 =
+  #     1390.01 reproduces it exactly. The Hero page's History records the same -3% ("decreased
+  #     the it's Hitpoints by 3%", 12/1/2026) while its vardefine still prints the pre-nerf 1433 --
+  #     the identical staleness, on the identical body ("body_stat_deltas: none stated").
+  #   CONTRAST the Hero GIANT, whose History records a -3% too and whose row is NOT corrected:
+  #     there the base card carries no independent post-nerf absolute, so there is nothing to
+  #     corroborate the arithmetic and nothing is computed. Recorded in conflicts.md.
+  mini_pekka_hero: {hitpoints: 1390, ability_kind: transform_levelup, ability_cost: 1, ability_uses: 1, ability_delay_s: 1.0, ability_heal_frac: 0.30, ability_charge_s: 22.0, ability_charge_hit_s: 10.0, ability_max_charges: 3, ability_levels: [1, 2, 3, 5], ability_ai: {family: escape, hp_frac: 0.6, over_river: false}, verified: false}
 
   # MUSKETEER -- Trusty Turret (Musketeer/Hero, revid 437512). "After a 1-second delay ... placing
   # a turret 3 tiles forward of the Musketeer, which is used either as a distraction for regular
