@@ -29,28 +29,77 @@ meta_018 (little_prince + berserker), and 134 more. **Those opponents are strong
 Not acted on because capping it silently deletes either the champion's ability or the hero from
 those 137 decks, and your ruling is explicit and final. → *I8 section, "THE ONE STRUCTURAL CONFLICT"*
 
-**2. Should a spawned body cost 4 elixir?** ⚠ STRUCTURAL, and it distorts threat pricing pool-wide.
-A KB row with no `elixir` value falls through to the engine's default, and MEASURED that default is
-**4** for all **25** such keys:
+**2. PRICE THE OTHER 22 SPAWNED BODIES.** ⚠ PARTLY RESOLVED 2026-08-27 by ruling 19 — three down,
+22 to go, and it still distorts threat pricing pool-wide.
 
-    barrel_barbarian  base_barrel_barbarian  brigade_goblin  bush_goblin  decoy_goblin
-    elixir_blob  elixir_golemite  ghost_souldier  goblin_barrel_decoy  goblin_brawler
-    golemite  guardienne  lava_pups  lumberjack_ghost  magic_archer_decoy  mirror
-    mother_witch_hog  phoenix_egg  rhino  royal_recruit  skarmy_general  skeletrooper
-    soul_skeleton  tomb_queen  trusty_turret
+A KB row with no `elixir` falls through `build_spec`'s default, and MEASURED that default is **4**.
+So a Golemite and a Goblin Barrel decoy goblin each read as 4 elixir of enemy investment — the same
+as a Knight. **Blast radius: 30 reads of `spec.elixir` in icebow and 27 in hogeq**, across
+`sim/env.py` (11 / 5), `sim/doctrine.py` (11), `sim/engine.py` (5), `sim/opponents.py` (2),
+`sim/drill_env.py` (1). The reward terms that read it are `_trade_reward` (**elixir_trade**),
+`_side_value` (**counterfactual**), `_hog_wincon` (lane mass), `_ability_value`, and in icebow
+additionally `_rocket_blast` / `_rocket_value` / `_rocket_combo` / `_nado_shaping` / the bow
+overcommit ledger. It also reaches the TRIAGE model: `threat_value` prices a fully-ignored card at
+0.120 tower per elixir, so an overpriced body inflates what it costs to ignore.
 
-So a Skeleton King's Skeleton, a Goblin Barrel decoy goblin and a Golemite each read as 4 elixir of
-enemy investment — the same as a Knight. **Blast radius: 30 reads of `spec.elixir` in icebow and 27
-in hogeq**, across `sim/env.py` (11 / 5), `sim/doctrine.py` (11), `sim/engine.py` (5),
-`sim/opponents.py` (2), `sim/drill_env.py` (1). The reward terms that read it are
-`_trade_reward` (**elixir_trade**), `_side_value` (**counterfactual**), `_hog_wincon` (lane mass),
-`_ability_value`, and in icebow additionally `_rocket_blast` / `_rocket_value` / `_rocket_combo` /
-`_nado_shaping` / the bow overcommit ledger. It also reaches the TRIAGE model: `threat_value` prices
-a fully-ignored card at 0.120 tower per elixir, so an overpriced body inflates what it costs to
-ignore. Pre-existing and pool-wide, so it is a measured commit of its own, not a side effect.
-I9's clones sidestep it by setting `elixir = 0` on the clone's spec explicitly.
-**The question is what the right default is** — 0 (the body was already paid for by its parent
-card), the parent's cost divided by the spawn count, or a per-body curation. → *I9, "RECORDED, NOT ACTED ON"*
+PRICED BY RULING 19 (2026-08-27): `magic_archer_decoy` **2**, `guardienne` **3**, `soul_skeleton`
+**0.1875** (= 3 / 16, so a full-charge Soul Summoning totals exactly 3.0000 — the 3 prices the
+WHOLE activation, and 16 = `ability_spawn_count` 6 + `_SOUL_CAP` 10). All three pinned.
+
+**THE REMAINING 22, with what each one is, so they can be ruled in one pass.** Grouped by the
+shape of the question, because the groups probably want different answers:
+
+*(a) ABILITY SUMMONS — one body per activation, so the body price IS the activation price. This is
+the group ruling 19 already answered twice (guardienne 3, magic_archer_decoy 2), so the rest are
+likely quick.*
+
+| key | what it is | summoner | per activation |
+|---|---|---|---|
+| `brigade_goblin` | Goblin Brigade | goblins_hero ability (1 elixir) | **x2** |
+| `rhino` | the Dark Prince Hero's Rhino | dark_prince_hero ability (3 elixir) | x1 |
+| `skeletrooper` | the Balloon Hero's Skeletrooper | balloon_hero ability (2 elixir) | x1 |
+| `tomb_queen` | the Tombstone Hero's Tomb Queen | tombstone_hero ability (5 elixir) | x1 |
+| `trusty_turret` | the Musketeer Hero's turret (a BUILDING) | musketeer_hero ability (3 elixir) | x1 |
+
+*(b) DEATH SPLITS — the parent card was already paid for in full, so 0 is a defensible answer for
+the whole group; the competing reading is "the parent's cost divided by the split count".*
+
+| key | what it is | parent | count | parent elixir |
+|---|---|---|---|---|
+| `golemite` | Golem's death split | golem | x2 | 8 |
+| `elixir_golemite` | Elixir Golem's first split | elixir_golem | x2 | 3 |
+| `elixir_blob` | the Golemite's OWN split | elixir_golemite | x2 | (3, two levels down) |
+| `lava_pups` | Lava Hound's pups | lava_hound | x6 | 7 |
+| `bush_goblin` | Suspicious Bush's goblins | suspicious_bush | x2 | 2 |
+| `goblin_brawler` | Goblin Cage's Brawler | goblin_cage | x1 | 4 |
+| `lumberjack_ghost` | Evo Lumberjack's ghost | lumberjack_evo | x1 | 4 |
+| `phoenix_egg` | the revival egg | phoenix | x1 | 4 |
+
+*(c) DEPLOY COMPANIONS AND CARD SUB-BODIES — part of the card you paid for, arriving with it.*
+
+| key | what it is | parent | count | parent elixir |
+|---|---|---|---|---|
+| `ghost_souldier` | Evo Royal Ghost's Souldiers | royal_ghost_evo | x2 | 3 |
+| `skarmy_general` | Evo Skeleton Army's General | skeleton_army_evo | x1 | 3 |
+| `barrel_barbarian` | the HERO barrel's Barbarian | barbarian_barrel_hero | x1 | 2 (+1 ability) |
+| `base_barrel_barbarian` | the BASE barrel's Barbarian | barbarian_barrel | x1 | 2 |
+| `royal_recruit` | one Recruit body | royal_recruits (x6, 7 elixir) and royal_delivery (x1, 3) | | |
+| `decoy_goblin` | Evo Goblin Barrel's decoy goblins | goblin_barrel_decoy | x3 | (see below) |
+| `goblin_barrel_decoy` | the mirrored barrel itself — a **SPELL**, damage 0 | goblin_barrel_evo | x1 | 3 |
+
+*(d) THE TWO THAT ARE NOT SPAWNED BODIES AT ALL, and want their own answer.*
+
+* **`mirror`** — ⚠ this is a REAL DECK CARD, not a spawn. Its cost is *"your last card played +1
+  Elixir"*, so it is genuinely variable and 4 is arbitrary. The row already carries
+  `mirrored_level_delta: 1.0`. I9 measured the pool at 5 decks / 17 weight = **0.29% of matches**
+  and deliberately did not implement the card, so this may be moot until it is.
+* **`mother_witch_hog`** — the Hog an enemy troop BECOMES when cursed. Its "cost" is whatever the
+  cursed troop cost, which the engine does not carry through the transform. Arguably 0 (the
+  opponent paid nothing for it) or the victim's cost (it is our loss, not their investment).
+
+**OWNER: rule group (b) and (c) as groups if you can — the individual numbers matter far less than
+whether a body the parent already paid for is worth 0, a share of the parent, or its own value.**
+→ *I9 "RECORDED, NOT ACTED ON"; decisions.md ruling 19*
 
 **3. The sim is not reproducible, and spell reward attribution is sometimes wrong.** ⚠ NEW in I10.
 `_settle_spell_casts` keys a spell's before-picture on `id(Unit)` (`p["hp"]`, and

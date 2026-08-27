@@ -4,14 +4,15 @@
   "sources": [
    "ledger/stat_diffs.jsonl (66 verdict:pin rows)",
    "decisions.md 2026-08-26 R2 ADJUDICATION (owner rulings)",
-   "ledger/i5_plan.json (rows i5_apply.py routed to the import layer)"
+   "ledger/i5_plan.json (rows i5_apply.py routed to the import layer)",
+   "decisions.md ruling 19 (owner 2026-08-27, spawned-body elixir)"
   ],
   "semantics": "the importer applies pins as a post-pass over the scraped rows and --write refuses if a pinned field would regress; value null = the field must not be imported; fields the importer does not emit are advisory (curated layer / stat_sweep EXPECTED sync); an explicit advisory:true pin is recorded for the sweep and never imported",
   "pair": "byte-identical across icebow/ and hogeq/ -- regenerate with the generator and it writes both; never hand-edit one copy",
   "counts": {
-   "total": 181,
+   "total": 184,
    "from_stat_diffs": 66,
-   "from_decisions": 18,
+   "from_decisions": 21,
    "from_i5_plan": 79,
    "advisory": 22,
    "overlapping": 4
@@ -684,6 +685,13 @@
    "date": "2026-08-26"
   },
   {
+   "key": "guardienne",
+   "field": "elixir",
+   "value": 3,
+   "source": "decisions.md ruling 19 (OWNER 2026-08-27): the Little Prince's Royal Rescue guardian is worth 3 elixir. ONE body per activation, so the per-body price is the activation price",
+   "date": "2026-08-27"
+  },
+  {
    "key": "hog_rider",
    "field": "damage_ladder",
    "value": null,
@@ -774,6 +782,13 @@
    "value": 113,
    "source": "I5 apply (ROUNDING): adopt the wiki's floor() for derived DPS: floor(damage/hit_speed)",
    "date": "2026-08-26"
+  },
+  {
+   "key": "magic_archer_decoy",
+   "field": "elixir",
+   "value": 2,
+   "source": "decisions.md ruling 19 (OWNER 2026-08-27): the Hero Magic Archer's Triple Threat decoy is worth 2 elixir. ONE decoy per activation, so the per-body price is the activation price",
+   "date": "2026-08-27"
   },
   {
    "key": "mega_knight",
@@ -1096,6 +1111,13 @@
    "value": null,
    "source": "stat_diffs.jsonl verdict:pin (r2_ladder_check.jsonl:53, family xc_ladder)",
    "date": "2026-08-26"
+  },
+  {
+   "key": "soul_skeleton",
+   "field": "elixir",
+   "value": 0.1875,
+   "source": "decisions.md ruling 19 (OWNER 2026-08-27): the Skeleton King's Skeletons are worth 3 elixir AT FULL CHARGE -- for the WHOLE summon, not each body. Full charge = ability_spawn_count 6 + _SOUL_CAP 10 = 16 Skeletons, so 3 / 16 = 0.1875 per body and the full summon MEASURES exactly 3.0000. NOT 3 / max_souls (0.3), which would total 4.80",
+   "date": "2026-08-27"
   },
   {
    "key": "sparky",

@@ -113,6 +113,35 @@ DECISION_PINS = [
 ]
 DECISION_DATE = "2026-08-26"
 
+# decisions.md ruling 19 (OWNER, 2026-08-27) -- SPAWNED-BODY ELIXIR PRICES.
+# 25 KB keys carry no `elixir` and every one of them fell through to the engine's default of 4, so
+# a Goblin Barrel decoy goblin and a Golemite each read as 4 elixir of enemy investment -- the same
+# as a Knight -- through the ~30 `spec.elixir` reads in the reward and triage layers. The owner
+# priced three of them; the other 22 are in conflicts.md's owner checklist.
+# THE SKELETON KING'S IS A TOTAL, NOT A PER-BODY PRICE, and that is the whole trap in the ruling:
+# 3 elixir buys the WHOLE full-charge activation. A full charge is `ability_spawn_count` 6 plus
+# `_SOUL_CAP` 10 = 16 Skeletons, so the per-body share is 3 / 16 = 0.1875 and MEASURED the full
+# summon totals exactly 3.0000. (Not 3 / max_souls = 0.3, which the ruling offered as a formula:
+# 16 x 0.3 = 4.80, 60% over the intended number. The divisor is the spawn COUNT, not the bar.)
+# These are pinned rather than merely curated because a re-import that emitted an elixir for a
+# spawned body would otherwise silently take them back to null -> 4. Pins outrank `verified`, which
+# is what lets magic_archer_decoy keep `verified: false` on a row whose damage and hit speed are
+# still open questions while its elixir is owner-ruled.
+RULING19_PINS = [
+    ("magic_archer_decoy", "elixir", 2,
+     "decisions.md ruling 19 (OWNER 2026-08-27): the Hero Magic Archer's Triple Threat decoy is "
+     "worth 2 elixir. ONE decoy per activation, so the per-body price is the activation price"),
+    ("guardienne", "elixir", 3,
+     "decisions.md ruling 19 (OWNER 2026-08-27): the Little Prince's Royal Rescue guardian is "
+     "worth 3 elixir. ONE body per activation, so the per-body price is the activation price"),
+    ("soul_skeleton", "elixir", 0.1875,
+     "decisions.md ruling 19 (OWNER 2026-08-27): the Skeleton King's Skeletons are worth 3 elixir "
+     "AT FULL CHARGE -- for the WHOLE summon, not each body. Full charge = ability_spawn_count 6 "
+     "+ _SOUL_CAP 10 = 16 Skeletons, so 3 / 16 = 0.1875 per body and the full summon MEASURES "
+     "exactly 3.0000. NOT 3 / max_souls (0.3), which would total 4.80"),
+]
+RULING19_DATE = "2026-08-27"
+
 I5_PLAN = LEDGER / "i5_plan.json"
 _DROP = "__DROP__"
 
@@ -169,6 +198,17 @@ def main() -> int:
             pins[(key, field)] = {"key": key, "field": field, "value": value,
                                   "source": why, "date": DECISION_DATE}
 
+    for key, field, value, why in RULING19_PINS:
+        if (key, field) in pins:
+            got = pins[(key, field)]["value"]
+            assert got == value, \
+                f"pin disagreement for {key}.{field}: existing {got!r} vs ruling 19 {value!r}"
+            pins[(key, field)]["source"] += " + " + why
+            dup += 1
+        else:
+            pins[(key, field)] = {"key": key, "field": field, "value": value,
+                                  "source": why, "date": RULING19_DATE}
+
     # 3. I5: everything routed to the import layer, PLUS every curated value that lands in a
     #    column tools/stat_sweep.py compares (those are advisory -- recorded, never imported).
     i5 = adv = 0
@@ -208,7 +248,8 @@ def main() -> int:
             "generator": "research/sim_parity/scripts/gen_pins.py",
             "sources": ["ledger/stat_diffs.jsonl (66 verdict:pin rows)",
                         "decisions.md 2026-08-26 R2 ADJUDICATION (owner rulings)",
-                        "ledger/i5_plan.json (rows i5_apply.py routed to the import layer)"],
+                        "ledger/i5_plan.json (rows i5_apply.py routed to the import layer)",
+                        "decisions.md ruling 19 (owner 2026-08-27, spawned-body elixir)"],
             "semantics": "the importer applies pins as a post-pass over the scraped rows and "
                          "--write refuses if a pinned field would regress; value null = the "
                          "field must not be imported; fields the importer does not emit are "
@@ -218,7 +259,7 @@ def main() -> int:
                     "generator and it writes both; never hand-edit one copy",
             "counts": {"total": len(ordered),
                        "from_stat_diffs": len(pin_rows),
-                       "from_decisions": len(DECISION_PINS),
+                       "from_decisions": len(DECISION_PINS) + len(RULING19_PINS),
                        "from_i5_plan": i5,
                        "advisory": adv,
                        "overlapping": dup},
@@ -231,7 +272,7 @@ def main() -> int:
         o.write_text(text, encoding="utf-8", newline="\n")
     same = outs[0].read_bytes() == outs[1].read_bytes()
     print(f"wrote {len(ordered)} pins ({len(pin_rows)} stat_diffs + "
-          f"{len(DECISION_PINS)} decisions + {i5} I5-plan + {adv} advisory, "
+          f"{len(DECISION_PINS) + len(RULING19_PINS)} decisions + {i5} I5-plan + {adv} advisory, "
           f"{dup} overlapping) to:")
     for o in outs:
         print(f"  {o}")

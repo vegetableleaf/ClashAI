@@ -156,7 +156,10 @@ class CardSpec:
     key: str
     base: str
     kind: str                 # troop | building | spell
-    elixir: int
+    elixir: float           # FLOAT since ruling 19: a spawned body is priced as its SHARE of the
+                            # parent activation (soul_skeleton = 3/16 of a 3-elixir full-charge
+                            # summon = 0.1875), which int() truncated to 0. Integer card costs are
+                            # unaffected -- 4 and 4.0 compare equal everywhere this is read.
     hp: float
     dps: float
     reach: float
@@ -757,7 +760,24 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     if is_evo or is_hero:
         flags |= set((db.get(key) or {}).get("flags") or ())   # variant-only flags (Evo Snowball ROLLS)
     kind = c.get("kind", "troop")
-    elixir = int(c.get("elixir") or db.elixir(base) or 4)
+    # ELIXIR IS A FLOAT since ruling 19 (2026-08-27), and the widening is the ruling. A spawned
+    # BODY is priced as its share of what the parent activation was worth -- a Skeleton King's
+    # Skeleton is 3/16 of a 3-elixir full-charge summon, 0.1875 -- and `int()` truncated every such
+    # share to zero. Every consumer is a comparison or float arithmetic (`can_afford`, and the
+    # `spec.elixir` reads in the trade / counterfactual / threat-triage reward terms), so this is
+    # inert for the ~178 cards whose value is a published integer: 4 and 4.0 compare equal.
+    # THE `or` CHAIN ALSO HAD TO GO, and that is a latent-bug fix rather than a style change: a KB
+    # row declaring `elixir: 0` is FALSY, so it fell straight through to the base card and then to
+    # the default 4 -- the one value that cannot be expressed was the one I9's Clone needed, which
+    # is why the clone sets `elixir = 0` on the built SPEC instead. No shipped row carries 0 today,
+    # so nothing changes; the hole is closed before something falls in it.
+    # THE DEFAULT 4 IS STILL A GUESS, and a measured one: 25 KB keys carry no elixir and every one
+    # of them reads as 4 elixir of enemy investment. Ruling 19 prices three; the other 22 are in
+    # conflicts.md's owner checklist.
+    _elixir = c.get("elixir")
+    if _elixir is None:
+        _elixir = db.elixir(base)
+    elixir = float(_elixir) if _elixir is not None else 4.0
     hp = float(c.get("hitpoints") or 300)
     dmg = float(c.get("damage") or 0.0)
     hit = float(c.get("hit_speed") or 1.0)

@@ -496,7 +496,16 @@ cards:
   #     Ghost's own dmg_11 on the same page; the Souldier's own vardefine is soul_dmg_11 = 81
   soul_skeleton:                   # the Skeleton King's SUMMONED Skeleton -- spawned, NOT a card.
     display: "Soul Skeleton"       # Soul Summoning Attributes + vardefines (Skeleton_King.wikitext,
-    elixir: null                   # revid 436753): "Skeleton Hitpoints 1", skel_dmg_11 81,
+    # OWNER RULING 19 (2026-08-27): the Skeleton King's Skeletons are worth 3 elixir AT FULL
+    # CHARGE -- and 3 prices the WHOLE activation, not each body. A full-charge Soul Summoning is
+    # `ability_spawn_count` 6 + `_SOUL_CAP` 10 = 16 Skeletons (the page: "With no souls, the
+    # Skeleton King will spawn 6 Skeletons, but with a maximum of 10 souls, he can summon 16"), so
+    # the per-body share is 3 / 16 = 0.1875 and a full summon totals exactly 3.00.
+    # ⚠ NOT 3 / max_souls. The ruling suggested that formula; it gives 0.3, and 16 x 0.3 = 4.80,
+    # which is 60% over the number the ruling set. The divisor is the SPAWN COUNT, not the bar.
+    # A partial summon is worth proportionally less (6 bodies = 1.125), which is the point: an
+    # uncharged King has invested less.
+    elixir: 0.1875                 # revid 436753): "Skeleton Hitpoints 1", skel_dmg_11 81,
     kind: troop                    # skel_atk_speed 1.1, First Hit Speed 0.5, Fast (90), Melee:
     rarity: champion               # Short (0.5), Ground. It is NOT the Skeletons card: prose says
     attacks: [ground]              # these "behave identically to cloned Skeletons ... and they
@@ -516,7 +525,10 @@ cards:
                                    # own 0.25 s sequencing is on top of it, not instead of it
   guardienne:                      # the Little Prince's Royal Rescue summon -- spawned, NOT a card.
     display: "Guardienne"          # Guardienne Attributes + vardefines (Little_Prince.wikitext,
-    elixir: null                   # revid 437347): guard_hp_11 1600, hit speed 1.2, First Hit
+    elixir: 3                      # revid 437347): guard_hp_11 1600, hit speed 1.2, First Hit
+                                   # OWNER RULING 19 (2026-08-27): 3 elixir. ONE body per Royal
+                                   # Rescue, so the per-body price IS the activation price and no
+                                   # division is needed -- contrast soul_skeleton above.
     kind: troop                    # Speed 0.5, Medium (60), Deploy Time 0.3, Melee: Medium (1.2),
     rarity: champion               # Target Ground, Transport Ground.
     attacks: [ground]              # GROUND ONLY, and the page proves it twice -- the attributes
@@ -3275,7 +3287,9 @@ cards:
     verified: false
   magic_archer_decoy:              # Hero Magic Archer's Triple Threat decoy (Magic Archer/Hero,
     display: "Magic Archer Decoy"  # revid 437520). vardefine decoy_hp_11 271 (History 6/7/2026,
-    elixir: null                   # "decreased the decoy hitpoints by 57%"); Decoy Duration 7 s.
+    elixir: 2                      # "decreased the decoy hitpoints by 57%"); Decoy Duration 7 s.
+                                   # OWNER RULING 19 (2026-08-27): 2 elixir. ONE decoy per Triple
+                                   # Threat, so the per-body price is the activation price.
     kind: troop
     rarity: legendary
     attacks: [ground]

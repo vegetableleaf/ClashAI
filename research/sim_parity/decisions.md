@@ -320,3 +320,51 @@ experiments -> new PPO, without waiting for approval between stages.
     ice_spirit) holds Royal Delivery, so no checkpoint's behaviour changes — pinned by
     `test_the_shipped_deck_is_UNCHANGED_by_this_ruling`. The ruling is a correctness fix to the
     RULE, and two follow-ons where it would bite are recorded in conflicts.md.
+
+19. **Spawned-body elixir prices — three of the twenty-five.** I10 measured the hole: 25 KB keys
+    carry no `elixir`, and every one falls through `build_spec`'s `or 4` to read as **4 elixir of
+    enemy investment** — a Goblin Barrel decoy goblin, a Golemite and a Skeleton King's Skeleton
+    each priced like a Knight. That number is read ~30 times in icebow and ~27 in hogeq, by
+    `_trade_reward` (elixir_trade), `_side_value` (counterfactual), `_hog_wincon`,
+    `_ability_value`, icebow's rocket / nado / bow-overcommit terms, and by `threat_value`, which
+    prices a fully-ignored card at 0.120 tower per elixir — so an overpriced body also inflates
+    what it costs to IGNORE it.
+
+    Owner prices:
+    * `magic_archer_decoy` → **2** — one decoy per Triple Threat, so per-body = per-activation.
+    * `guardienne` → **3** — one body per Royal Rescue, likewise.
+    * Skeleton King's Skeletons → **3 AT FULL CHARGE**, for the WHOLE summon.
+
+    **THE SKELETON KING'S NUMBER IS A TOTAL.** A full charge is `ability_spawn_count` 6 plus
+    `_SOUL_CAP` 10 = **16 Skeletons** (the page: *"With no souls, the Skeleton King will spawn 6
+    Skeletons, but with a maximum of 10 souls, he can summon 16"*), so the per-body share is
+    **3 / 16 = 0.1875** and MEASURED a full summon totals **exactly 3.0000**. An uncharged 6-body
+    summon comes to **1.1250**, which is the point — an uncharged King has invested less.
+
+    ⚠ **NOT `3 / max_souls`.** The ruling offered that formula. It gives 0.3, and 16 x 0.3 =
+    **4.80** — 60% over the number the ruling set. The divisor is the SPAWN COUNT, not the soul
+    bar. Pinned by a test so the wrong divisor cannot be reintroduced from the ruling text alone.
+
+    **WHY PER-BODY rather than "price the activation, leave the bodies at 0"** (the ruling's other
+    option): the reward layer has no concept of an activation's value. `ability_cost` is what the
+    PLAYER PAYS — the Skeleton King's is 2, a published number the engine deducts — which is a
+    different quantity from what the summoned bodies are WORTH in the opponent's ledger, and all
+    ~57 call sites read `spec.elixir` on a BODY. Pricing per body reaches every one of them at
+    once and cannot be forgotten by a 58th, and it degrades correctly for a partial charge.
+
+    That required widening `CardSpec.elixir` **int → float**: `int(0.1875)` is 0. Inert for the
+    ~178 cards whose cost is a published integer (4 == 4.0 everywhere it is read), and pinned by
+    a test that sweeps every KB row. It also closed a latent bug in the same expression — the
+    `or` chain treated a declared `elixir: 0` as MISSING and fell through to 4, so the one value
+    that could not be expressed was the one I9's Clone needed (which is why the clone sets
+    `elixir = 0` on the built SPEC instead). No shipped row carries 0, so nothing changed.
+
+    All three PINNED in `config/import_pins.json` (181 → **184** pins, byte-identical pair) via
+    `gen_pins.py`'s new `RULING19_PINS`, so a re-import cannot take them back to null → 4.
+    ⚠ `magic_archer_decoy` keeps **`verified: false`**, deliberately: `verified` is a WHOLE-ROW
+    import guard, and that row's damage / hit speed / range are explicitly open questions
+    (conflicts.md I8). Flipping it would freeze an unverified guess against future correction.
+    The pin is the per-FIELD mechanism, and `import_pins.json`'s own semantics say pins outrank
+    `verified` — so the elixir is protected without asserting anything about the rest of the row.
+
+    **THE OTHER 22 ARE STILL AT 4** and are listed for the owner in conflicts.md's checklist.
