@@ -830,3 +830,79 @@ NOT IMPLEMENTED. Owner rulings outrank wiki prose, and unlimited repeats would b
 unmeasured buff on top of a card the sim has just been corrected DOWN by 64%. **OWNER: does the
 Evolved Electro Dragon's chain re-hit the same body within one attack? If yes, ruling 11 is a
 base-card rule and the Evolution needs its own `seen` exemption.**
+
+## I7 — champion abilities, 2026-08-26
+
+Eight champions, eight `ability_kind` handlers, enemy-side only (decisions.md ruling 1). Below is
+every place a page forced a CHOICE, every premise in the brief that turned out to be wrong, and
+every question that needs the owner in a client rather than another sweep. The choices themselves
+are argued in the test docstrings (`tests/test_champion_abilities_i7.py`) and in the KB comments;
+this section is the ledger.
+
+### CHOICES MADE FROM CONTRADICTORY EVIDENCE (implemented, argued, reversible)
+
+| # | Card | The conflict | Taken | Why |
+|---|---|---|---|---|
+| I7-1 | ALL | Activation delay: prose "1 second" vs table Cast Time 0.933 / 0.944 / 0.766 s (C7) | **1 s** | The standing `mighty_miner.ability_delay_s: 1.0` precedent, and the only figure stated as a RULE anywhere: `Cards.wikitext`, "The abilities adhere to the server's 1 second deployment delay". The tables disagree with the prose AND with each other on all seven pages. This closes the seven `ability_cast_time_s` rows I5 deferred to I7. |
+| I7-2 | Archer Queen | Attack-speed buff stated THREE ways: prose +80% (x1.8), table Boost "+180%" (x2.8), History "to 180% (from 200%)" (x1.8) | **x1.8** | The page's own level table is the only machine-readable statement: its "Damage per second (with Cloaking Cape)" column computes `Dps(dmg_11*1.80, atk_speed)`. Two of three land there; the table's leading "+" is the outlier. |
+| I7-3 | Archer Queen | Invisibility class: "untargetable by troops" vs splash/spells/Tesla/retargeting behaviour | **Royal Ghost class** (`ghost`: targeting only) | Four independent page statements: 8/4/2022 FIXED her to RECEIVE splash, "since it is a spell, the player can reliably hit the Archer Queen", the Tesla stays down, X-Bow/Mortar retarget. `_valid_foe`'s own comment already named her. |
+| I7-4 | Golden Knight | "no targets in range" — does it END the ability or pause it? | **ENDS it** | Owner ruling 10, explicitly. |
+| I7-5 | Golden Knight | Chain targets: air? towers? | **Ground troops + Crown Towers** | His body is Ground and Strategy stresses he "cannot attack air troops"; towers must be seekable or the page's own counter-advice ("at most 5 tiles away from the river, to prevent the Golden Knight from connecting to the Crown Tower with his dash") is meaningless. |
+| I7-6 | Skeleton King | Spawn radius: ability prose 4 tiles vs History 24/10/2025 3.5 | **3.5** | The History entry is the later edit and names 4 as the OLD value. |
+| I7-7 | Skeleton King | "It continues, even if the Skeleton King dies" — the summon, or soul accrual? | **The summon** | Accrual is scoped to "while the Skeleton King is on the field" two paragraphs earlier, so the other reading is incoherent; History 30/3/2022 had to FIX a case where the summon could cancel. |
+| I7-8 | Skeleton King | "random positions in the circle" — disc or ring? | **Disc** (uniform by area) | The page uses both words and specifies no distribution. A ring puts every Skeleton at maximum distance, which is not what the card looks like. |
+| I7-9 | Little Prince | Pushback: prose "0-2 tiles ... sweet spot" vs History 1/9/2025 "2.5 tiles (from 2)" | **2.5 flat** | Later edit, and its chain is complete and monotone (3.5 → 2.5 → 2 → 2.5). The graded version is unimplementable regardless: the "sweet spot" is never located and no falloff curve is given. |
+| I7-10 | Monk | Ability prose "reflect ALL incoming projectile-based ranged attacks" vs Strategy exempting Spirits "DESPITE BEING PROJECTILES" | **The specific list** | It is dated (the Heal Spirit exemption is History 12/12/2022, i.e. a change TO the blanket rule), enumerated card by card, and the literal reading would hand the Monk four matchups the same page says he loses. |
+| I7-11 | Goblinstein | Link geometry: 2 tiles from the SEGMENT, from each endpoint, or from the Monster? | **The segment (a capsule)** | The prose makes the LINK the damaging object; the Strategy line that sounds like a circle never names a centre. **QUEUED for the owner — see below.** |
+| I7-12 | Goblinstein | First shock at t=0 or after one interval (8 ticks vs 9, a 12.5% swing) | **At activation, 8 ticks** | The reading in which the published 4 s duration IS the ability rather than the duration plus a free tick. |
+
+### ⚠ PREMISES IN THE I7 BRIEF THAT WERE WRONG
+
+1. **"little_prince `guardian` — the Guardienne is fully specified: 1600 hp / 217 dmg / ..."**
+   Her damage is **232**, not 217. I5 applied 217 × 1.07 = 232 for the 4/8/2026 "Guardian Melee
+   Damage +7%" (217 is byte-identical at revid 436758 and live, so it predates the buff) and left
+   an explicit warning that *"I7 must not revert it to 217"*. PLAN.md's I7 line repeats the stale
+   217 as well. Implemented as 232, pinned by a test.
+2. **"~10 generic params"** — 16 were needed, and every one is load-bearing (`ability_kind`,
+   `_dmg`, `_crown_dmg`, `_radius_tiles`, `_duration_s`, `_range_tiles`, `_tick_s`, `_max_hits`,
+   `_speed_mult`, `_move_speed`, `_spawn`, `_spawn_count`, `_shield_hp`, `_heal`,
+   `_dmg_reduction`, `_knock`, `_ai`). Cutting to ten would have meant per-card fields for the
+   difference, which is the thing the schema exists to remove.
+3. **Ruling 15's supporting arithmetic** — see the Electro Dragon section above (ED-1).
+
+### ⚠ IN-GAME CHECKS QUEUED FOR THE OWNER (each one is a single observation)
+
+* **Goblinstein link geometry.** Stand the Doctor and Monster far apart and put a troop at the
+  MIDPOINT, ~3 tiles from each and well inside the tether. Does it take damage? Yes = the capsule
+  (what is implemented); no = two circles, and the handler needs to change.
+* **Archer Queen shot count.** Strategy claims "exactly 7 shots for the full duration". Neither
+  candidate multiplier reproduces it: x1.8 gives ~5.25 shots over 3.5 s and x2.8 gives ~8.2; 7
+  would need ~2.4x, which nothing on the page states. Count them once in a training battle.
+* **Golden Knight dash travel speed.** UNPUBLISHED. 8.33 tiles/s (the Bandit / Boss Bandit Dash
+  Speed 500 analog) is in the KB marked untested. Time one full 10-dash chain and the constant
+  follows.
+* **Evolved Electro Dragon repeat targets** (ED-3 above) and **the base Electro Dragon's per-hit
+  damage** (ED-1 above).
+* **Skeleton King sub-troop souls.** "cards that make sub-troops ... do not count as a soul to it,
+  but only the final forms of the troop, WITH GOBLIN GIANT AS AN EXCEPTION." The sentence supports
+  both directions of the exception, so the sub-troop rule is NOT implemented at all — every troop
+  death banks a soul except buildings, cloned bodies and his own Skeletons. Guessing the direction
+  would move his output by up to 4 Skeletons. Kill a Golem in front of him and count the bar.
+
+### NOT IMPLEMENTED, DELIBERATELY (recorded so a later pass does not read the gap as an oversight)
+
+* **Monk SPELL reflection** ("Spells are always reflected to the closest opposing Crown Tower", at
+  25% for splash/non-seeking, with the Barbarian Barrel exception at FULL crown damage, and The
+  Log / Barbarian Barrel converting to fight for the reflector). PROJECTILE reflection is
+  implemented in full; spells are not, and the reason is that the page never enumerates which
+  spells count as "projectile spells" — it only carves out "non-projectile spells" without saying
+  which those are. Zap and Lightning are instant electric by the same Strategy paragraph that
+  exempts Tesla; Earthquake and Poison are zones; Arrows is named as reflectable; Fireball, Rocket
+  and Snowball are lobbed. That is a four-way judgement call on an unstated boundary, and getting
+  it wrong redirects real damage onto a Crown Tower. **OWNER: name the spells that bounce.**
+* **The graded 0-to-2-tile Royal Rescue pushback** (I7-9): no sweet spot, no curve.
+* **Skeleton King sub-troop soul exclusions** (above).
+* **Golden Knight's facing arc.** Strategy says "he will not target any units behind him ... only
+  chains to the troops that the Golden Knight can see", while History 5/5/2025 "allowed Dashing
+  Dash to move Golden Knight backwards". The two read as contradictory, no arc is given in
+  degrees, and the chain is implemented as omnidirectional within 5.5 tiles.

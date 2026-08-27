@@ -512,8 +512,34 @@ cards:
     first_hit_speed_s: 0.5
     range_tiles: 0.5
     speed_tiles: 1.5
-    deploy_time: 0.0               # no Deploy Time column exists for them; they arrive already
-    verified: true                 # sequenced one per 0.25 s, which IS the arrival delay
+    verified: true                 # NO Deploy Time column exists for them, so they take the
+                                   # engine's standard 1 s like every other body -- the ability's
+                                   # own 0.25 s sequencing is on top of it, not instead of it
+  guardienne:                      # the Little Prince's Royal Rescue summon -- spawned, NOT a card.
+    display: "Guardienne"          # Guardienne Attributes + vardefines (Little_Prince.wikitext,
+    elixir: null                   # revid 437347): guard_hp_11 1600, hit speed 1.2, First Hit
+    kind: troop                    # Speed 0.5, Medium (60), Deploy Time 0.3, Melee: Medium (1.2),
+    rarity: champion               # Target Ground, Transport Ground.
+    attacks: [ground]              # GROUND ONLY, and the page proves it twice -- the attributes
+    movement: ground               # table AND Strategy: "Minions ... are immune to Guardienne's
+    range: melee                   # damage and cannot be targeted by Guardienne".
+    count: 1
+    win_condition: false
+    hitpoints: 1600
+    # 232, NOT the 217 vardefine. 217 is byte-identical at revid 436758 and live, so it predates
+    # the 4/8/2026 "Guardian Melee Damage +7%": 217 x 1.07 -> 232. Applied in I5 with that note,
+    # and I5 left an explicit warning that I7 must not revert it.
+    damage: 232
+    dps: 193
+    hit_speed: 1.2
+    first_hit_speed_s: 0.5
+    range_tiles: 1.2
+    speed_tiles: 1.0
+    deploy_time_s: 0.3             # Guardienne Attributes "Deploy Time" -- a THIRD of the 1 s
+                                   # every other body pays (build_spec reads `deploy_time_s`; the
+                                   # imported `deploy_time` key is the stats layer's own)
+    collision: 0.8                 # prose (Strategy): "the Guardienne has an extra 0.8 tile
+    verified: true                 # collision radius" -- not in any attributes table
   ghost_souldier:                  # the Evo Royal Ghost's two escorts -- spawned, NOT a card.
     display: "Souldier"            # Level-11 per the wiki: 81 hp (a skeleton's), 261 area damage
     elixir: null                   # (the Ghost's own swing), 1.8 s cadence, ghost-style stealth.
@@ -2370,7 +2396,16 @@ cards:
   #   first_hit_speed_s: SUPERSEDED ABSENT -> 0.2. KB row lacks the field.
   #     load_time_s/mass/sight/collision do NOT come from the wiki: import_mechanics.py reads
   #     RoyaleAPI cr-api-data cards_stats.json, meta.source_frozen=2023-10-18
-  monk: {range: melee, flags: [knockback, knockback_all], combo_every: 3, combo_damage: 422, knockback_immune: true, ability_damage_reduction: -65.0, ability_duration_s: 4.0, ability_reflect: true, ability_cost: 1.0, ability_uses: 1, first_hit_speed_s: 0.2, verified: false}
+  # I7 2026-08-26: `ability_reflect: true` dropped -- the KIND says it, and a bool nothing
+  #   reads is the truthiness dispatch this stage removed. ability_damage_reduction and
+  #   ability_duration_s were already on the generic names and are unchanged (the Pensive
+  #   Protection table's column is headed "Invulnerability Duration" and he is NOT
+  #   invulnerable -- the same table publishes "Damage Reduced -65%" beside it).
+  #   What does NOT reflect is a LIST OF CARD NAMES, because that is how the page states it
+  #   (inferno beams, instant electric attacks, Spirits, the Fisherman's hook, Firecracker
+  #   shrapnel); it lives in engine.py's `_NO_REFLECT_BASES` with the quotes beside it,
+  #   since nothing in a card's stats distinguishes an instant hit from a fired one.
+  monk: {range: melee, flags: [knockback, knockback_all], combo_every: 3, combo_damage: 422, knockback_immune: true, ability_kind: reflect, ability_damage_reduction: -65.0, ability_duration_s: 4.0, ability_delay_s: 1.0, ability_cost: 1.0, ability_uses: 1, first_hit_speed_s: 0.2, verified: false}
   night_witch: {range: melee, flags: [spawner], spawns: {unit: bats, count: 2, on_death: 1, delay: 1.0}, verified: true}   # "a group of two Bats" every 5s, first wave 1s; "when defeated, she will also spawn a single Bat"
   pekka: {range: melee, attacks: [ground], flags: [tank, knockback_immune], verified: false}     # 7e single-target bruiser, GROUND only -> swarm it, or chip it with a building while it walks
   prince: {range: melee, flags: [knockback_immune], verified: false}
@@ -2717,6 +2752,30 @@ cards:
     verified: true
     royal_rescue_damage: 256
     royal_rescue_dash_range_tiles: 4.0
+    # I7 2026-08-26 -- Royal Rescue on the GENERIC ability schema. The two royal_rescue_* fields
+    # above are kept as the sourced originals (stat_sweep and the ledger read them); the
+    # ability_* pair below is what the engine dispatches on.
+    #   ability_damage 256 = vardefine charge_11, the level table's "Royal Rescue Damage".
+    #   ability_range_tiles 4.0 = the Royal Rescue Attributes "Dash Range". The corridor the
+    #     engine sweeps is 4.8 -- the page's own Strategy adds the two: "Although the Royal
+    #     Rescue's range is 4 tiles, the Guardienne has an extra 0.8 tile collision radius,
+    #     allowing her to reach slightly further".
+    #   ability_knockback_tiles 2.5 -- RESOLVES the little_prince half of conflicts.md C8, and
+    #     the row I5 marked "ready to apply". The page states the pushback twice and disagrees:
+    #     ability prose "0-2 tiles (depends on how close the unit is to the sweet spot)" vs
+    #     History 1/9/2025 "increased the Royal Rescue's pushback to 2.5 tiles (from 2 tiles)".
+    #     The History chain is complete and monotone (3.5 -> 2.5 -> 2 -> 2.5) and is the later
+    #     edit; the prose was never updated. The graded version is unimplementable anyway -- the
+    #     "sweet spot" is never located and no falloff curve is given.
+    #   ability_spawn_unit -> the curated `guardienne` row. She is PERMANENT: "After the charge is
+    #     completed, Guardienne stays in the arena until she's taken out."
+    ability_kind: guardian
+    ability_damage: 256
+    ability_range_tiles: 4.0
+    ability_knockback_tiles: 2.5
+    ability_spawn_unit: guardienne
+    ability_spawn_count: 1
+    ability_delay_s: 1.0
     ability_cost: 3
     ability_uses: 1
     first_hit_speed_s: 0.4
@@ -2903,7 +2962,24 @@ cards:
   #   deploy_time: SUPERSEDED ABSENT -> 1.0. Goblinstein is the ONLY key in the group whose KB row
   #     omits deploy_time (the other seven all carry 1.0). Caught by the match-verifier, not by
   #     the diff -- a field that is absent cannot mismatch
-  goblinstein: {range: melee, flags: [tank, building_targeting, stun], lightning_link_crown_tower_damage: 23, lightning_link_damage: 107, ability_radius_tiles: 2.0, range_tiles: 1.2, ability_cost: 2.0, ability_duration_s: 4.0, ability_hit_speed_s: 0.5, ability_uses: 1, deploy_time: 1.0, components: [{count: 1, hit_speed: 1.8, range_tiles: 5.5, speed_tiles: 1.0, attacks: [air, ground], movement: ground, hitpoints: 721.0, damage: 135}, {count: 1, hit_speed: 1.5, range_tiles: 1.2, speed_tiles: 1.0, attacks: [buildings], movement: ground, hitpoints: 2393.0, damage: 128.0}], verified: false}   # front melee tank (NOT a win condition); rear ranged + stun
+  # I7 2026-08-26 -- Lightning Link on the GENERIC ability schema:
+  #     ability_hit_speed_s -> ability_tick_s              (0.5, table "Hit Speed")
+  #     lightning_link_damage -> ability_damage            (107, vardefine link_11) and
+  #     lightning_link_crown_tower_damage -> ability_crown_tower_damage (23, crown_11).
+  #   Both original fields are KEPT above as the sourced originals. The pair is ~21.5% and
+  #   the page states no percentage, which is why the absolute values are carried rather
+  #   than a ratio. 107 is provably pre-4/8/2026 ("ability DPS -12%") and was applied as
+  #   published with the OWNER flag recorded in i5_applied.jsonl -- unchanged here.
+  #   The link ticks 8 times over 4 s, first shock AT activation: the page publishes the
+  #   duration and the interval and never says whether t=0 fires, and 8 is the reading in
+  #   which the published duration is the whole ability rather than duration plus a tick.
+  #   NO STUN, per Trivia: "The Goblinstein's Lightning Link does not inflict a stun on the
+  #   enemies despite being an attack involving electricity. However, his regular attack is
+  #   able to stun."
+  #   ⚠ LINK GEOMETRY IS UNDEFINED ON THE PAGE. The engine takes the CAPSULE reading -- 2
+  #   tiles from the SEGMENT joining Doctor and Monster -- justified in
+  #   engine.py:_ability_zone_tick and queued for an in-game check in conflicts.md.
+  goblinstein: {range: melee, flags: [tank, building_targeting, stun], lightning_link_crown_tower_damage: 23, lightning_link_damage: 107, ability_kind: zone, ability_radius_tiles: 2.0, ability_damage: 107, ability_crown_tower_damage: 23, ability_tick_s: 0.5, range_tiles: 1.2, ability_cost: 2.0, ability_duration_s: 4.0, ability_delay_s: 1.0, ability_uses: 1, deploy_time: 1.0, components: [{count: 1, hit_speed: 1.8, range_tiles: 5.5, speed_tiles: 1.0, attacks: [air, ground], movement: ground, hitpoints: 721.0, damage: 135}, {count: 1, hit_speed: 1.5, range_tiles: 1.2, speed_tiles: 1.0, attacks: [buildings], movement: ground, hitpoints: 2393.0, damage: 128.0}], verified: false}   # front melee tank (NOT a win condition); rear ranged + stun
   # SPIRIT EMPRESS, curated 2026-08-19 (both forms; engine.deploy picks by caster elixir:
   # under 3 uncastable, [3,6) ground, >=6 air -- exactly 6.0 is AIR). The imported stats
   # were poisoned: the 2026-08-14 wiki import caught the Fandom page mid-edit-war (hp

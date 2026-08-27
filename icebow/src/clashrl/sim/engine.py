@@ -110,6 +110,23 @@ _CHAIN_TILES = 3.0
 # Summoning Attributes table ("Skeleton Count 6-16"); the per-soul rate is the arithmetic between
 # them and the page never prints it.
 _SOUL_CAP = 10
+# PENSIVE PROTECTION reflects "all incoming projectile-based ranged attacks", and the Monk page
+# then spends its Strategy section enumerating the attacks that are NOT projectiles. THAT LIST IS
+# THE RULE, and this is the one place it can live, because the exclusions are stated by CARD NAME
+# and nothing in a card's stats distinguishes an instant electric hit from a fired one:
+#   "Both the Inferno Dragon and Inferno Tower ... neither their beams count as projectiles"
+#   "Cards such as Tesla, Zappies, Electro Dragon and Electro Wizard will not take reflected
+#    damage, since their attacks are instant and not counted as projectiles"
+#   "Spirit cards cannot be reflected by the Monk, despite being projectiles when attacking"
+#    (+ History 12/12/2022, the Heal Spirit specifically)
+#   "The Fisherman's hook is fully stifled until the ability ends"
+# Evolutions inherit their base's physics, so each `_evo` is listed with its parent.
+_NO_REFLECT_BASES = frozenset({
+    "inferno_dragon", "inferno_dragon_evo", "inferno_tower",
+    "tesla", "tesla_evo", "zappies", "electro_dragon", "electro_dragon_evo", "electro_wizard",
+    "electro_spirit", "fire_spirit", "ice_spirit", "heal_spirit",
+    "fisherman",
+})
 _SPARK_TILES = 2.5
 _SKELETON_BASES = {"skeletons", "skeleton_army", "guards"}   # Evo Witch's Healing Bones triggers
 _SPLASH_R = 1.9           # splash radius, tiles
@@ -1337,6 +1354,24 @@ class Projectile:
     spark_end_dmg: float = 0.0
 
 
+def _seg_dist(ax, ay, bx, by, px, py) -> float:
+    """Distance in TILES from (px, py) to the SEGMENT (ax, ay)-(bx, by).
+
+    A capsule rather than a circle, for the two abilities whose area is a line between two points:
+    Goblinstein's Doctor-to-Monster link and Guardienne's charge corridor. Measured in tile space,
+    like every other distance here, because the axes have different tile scales.
+    """
+    axt, ayt = ax * _TILES_X, ay * _TILES_Y
+    bxt, byt = bx * _TILES_X, by * _TILES_Y
+    pxt, pyt = px * _TILES_X, py * _TILES_Y
+    dx, dy = bxt - axt, byt - ayt
+    den = dx * dx + dy * dy
+    if den < 1e-12:
+        return math.hypot(pxt - axt, pyt - ayt)
+    t = max(0.0, min(1.0, ((pxt - axt) * dx + (pyt - ayt) * dy) / den))
+    return math.hypot(pxt - (axt + t * dx), pyt - (ayt + t * dy))
+
+
 def _dist(ax, ay, bx, by) -> float:
     """Distance in TILES between two normalised points (the axes have different tile scales)."""
     return math.hypot((ax - bx) * _TILES_X, (ay - by) * _TILES_Y)
@@ -1525,6 +1560,11 @@ class SimEngine:
         # A mutable list per record rather than a tuple because the countdown is edited in place.
         # An empty `kind` means "already resolved, this record only carries the ruling-7 refund".
         self._ability_pending: list = []
+        # GOBLINSTEIN's antenna: where each team's Monster died. "If the Monster has already been
+        # defeated, it will drop an antenna on the ground which is what the Goblinstein's electric
+        # link will target when the ability is activated." Per team, last one wins, and it
+        # persists -- the page gives it no lifetime, no hitpoints and no way to remove it.
+        self._antenna: dict = {}
         self.projectiles: List[Projectile] = []  # shots in flight (travel time is real)
         self.elixir = {0: 5.0, 1: 5.0}
         self.towers = {}
@@ -2645,17 +2685,21 @@ class SimEngine:
                 u.ability_active_s = max(0.0, u.ability_active_s - dt)
                 if u.spec.ability_speed_mult > 0.0:
                     atk_spd *= u.spec.ability_speed_mult
-                if u.spec.ability_tick_s > 0.0:
+                if u.ability_active_s <= 0.0:
+                    end = ABILITY_ENDS.get(u.spec.ability_kind)
+                    if end is not None:
+                        end(self, u)
+                elif u.spec.ability_tick_s > 0.0:
+                    # EXPIRY IS CHECKED FIRST, so the tick that lands exactly ON the end of the
+                    # window does not fire. MEASURED with the order reversed: Goblinstein's link
+                    # dealt 9 x 107 over its published 4 s / 0.5 s, which is a free extra shock
+                    # (+12.5%) bought by an off-by-one.
                     u.ability_tick_left -= dt
                     if u.ability_tick_left <= 0.0:
                         u.ability_tick_left += u.spec.ability_tick_s
                         tick = ABILITY_TICKS.get(u.spec.ability_kind)
                         if tick is not None:
                             tick(self, u)
-                if u.ability_active_s <= 0.0:
-                    end = ABILITY_ENDS.get(u.spec.ability_kind)
-                    if end is not None:
-                        end(self, u)
             # The movement override applies while the ability is active OR while a dash chain is
             # running -- the Golden Knight's boost has no published duration and ends on one of
             # ruling 10's three terminators instead, so it cannot hang off `ability_active_s`.
@@ -2949,6 +2993,13 @@ class SimEngine:
                                 and k.souls < _SOUL_CAP
                                 and self._ability_uses_left(k) > 0):
                             k.souls += 1
+                if u.spec.ability_kind == "" and u.spec.building_only \
+                        and any(k.spec.ability_kind == "zone" and k.spec.base == u.spec.base
+                                for k in self.units):
+                    # ...the Monster half of a two-body zone champion. Its component row carries
+                    # the card's own base and the building-targeting flag, and its ability_kind was
+                    # cleared by build_spec because only component 0 owns the ability.
+                    self._antenna[u.team] = (u.x, u.y)
                 if u.spec.base == "skarmy_general":
                     for g in self.units:
                         if g.parent is u and g.invis_left > 9000.0:
@@ -3037,6 +3088,13 @@ class SimEngine:
             return
         # Troops are yanked TOWARD Fisherman over time.
         u.hook_mode = "target"
+
+    def _hook_blocked(self, e) -> bool:
+        """"The Fisherman's hook is fully stifled until the ability ends, forcing him to
+        repeatedly charge his hook." Not reflected -- NULLIFIED, which is a different outcome and
+        the page is explicit about it."""
+        return (isinstance(e, Unit) and e.ability_active_s > 0.0
+                and e.spec.ability_kind == "reflect")
 
     def _tick_hook(self, u: "Unit", dt: float) -> None:
         """Advance one active Fisherman hook-pull phase, landing damage at completion."""
@@ -3953,7 +4011,71 @@ class SimEngine:
                                  self.t + p.spec.spark_dur, p.spark_end_dmg, self.t])
         del self.spark_zones[:-60]
 
+    def _reflects(self, u: "Unit", p: Projectile) -> bool:
+        """Does this body bounce this shot back? (Monk, Pensive Protection.)
+
+        THE ONE GENUINE CONTRADICTION ON THE PAGE, and the choice made here: the ability prose
+        says he reflects "ALL incoming projectile-based ranged attacks", while Strategy exempts
+        Spirit cards "DESPITE BEING PROJECTILES when attacking" -- the same sentence concedes they
+        are projectiles and then excludes them. The SPECIFIC list wins over the general claim:
+        it is dated (the Heal Spirit exemption is a 12/12/2022 History entry, i.e. a change TO the
+        blanket rule), it is enumerated card by card, and reading the prose literally instead
+        would hand the Monk four extra matchups the page says he loses.
+        """
+        if u.ability_active_s <= 0.0 or u.spec.ability_kind != "reflect":
+            return False
+        s = p.spec
+        if s.base in _NO_REFLECT_BASES:
+            return False
+        if s.dmg_stages:
+            return False                    # an inferno BEAM ramps; it is not a fired projectile
+        if p.label.endswith("_spark"):
+            # "The Firecracker's projectiles deal no damage to the Monk as he reflects them. This
+            # is because the projectiles themselves are split into two phases." Only phase one is
+            # reflected; the shrapnel is a separate event and simply never happens to him.
+            return False
+        if p.label.endswith("_reflect"):
+            return False                    # a reflected shot cannot be reflected again
+        return True
+
+    def _reflect_projectile(self, p: Projectile, u: "Unit") -> None:
+        """Send it back at the offender. "Any projectile the Monk reflects will have the same
+        damage as the initial source of the projectile, and will not scale up nor down to the
+        Monk's level" -- so the damage is carried over untouched.
+
+        The offender is whoever was standing at the shot's ORIGIN: Projectile records `ox, oy` but
+        not the shooter, and the origin is exactly where the shooter was when it fired. If nothing
+        is there any more (it died, or it was a crown tower) the shot goes to the closest opposing
+        Crown Tower, which is the same fallback the page states for spells.
+
+        CROWN TOWER DAMAGE: "All reflected projectiles that can splash or don't seek after a target
+        do 25% of their normal damage to Crown Towers." A seeking single-target shot keeps its own
+        published crown value instead.
+        """
+        foes = [e for e in self.units
+                if e.team != u.team and e.hp > 0 and _dist(e.x, e.y, p.ox, p.oy) <= 2.0]
+        back = min(foes, key=lambda e: _dist(e.x, e.y, p.ox, p.oy)) if foes else None
+        if back is None:
+            tws = self._enemy_towers(u.team)
+            if not tws:
+                return
+            back = min(tws, key=lambda t: _gap(u.x, u.y, t))
+        spread = p.spec.splash or p.radius > 0.0 or p.pierce
+        tower_dmg = p.dmg * 0.25 if spread else p.tower_dmg
+        self.projectiles.append(Projectile(
+            label=f"{p.spec.base}_reflect", team=u.team, x=u.x, y=u.y,
+            tx=back.x, ty=back.y, target=back, spec=p.spec,
+            dmg=p.dmg, tower_dmg=tower_dmg, radius=p.radius,
+            speed=max(p.speed, 20.0), left=_dist(u.x, u.y, back.x, back.y),
+            ground_only=p.ground_only, ox=u.x, oy=u.y))
+
     def _impact(self, p: Projectile) -> None:
+        # PENSIVE PROTECTION, before anything else this shot would have done. A reflected shot
+        # never lands on him at all -- not even the splash of an area shot aimed at him, which is
+        # the point of "anything placed in front of the Monk will not be saved from the reflection".
+        if isinstance(p.target, Unit) and p.target.hp > 0 and self._reflects(p.target, p):
+            self._reflect_projectile(p, p.target)
+            return
         spark = p.spec.multi_kind == "spark" and p.label.endswith("_projectile")
         if spark:
             # The rocket is only the CARRIER. Firecracker's published damage is PER SHRAPNEL --
@@ -4926,6 +5048,141 @@ def _ability_soul_bank(eng: "SimEngine", u: "Unit") -> None:
         eng._late_spawns.append((eng.t + i * gap, sp, u.team, x, y, 1))
 
 
+def _ability_guardian(eng: "SimEngine", u: "Unit") -> None:
+    """LITTLE PRINCE -- Royal Rescue (Little_Prince.wikitext, revid 437347; decisions.md #13).
+
+    Wiki: "causing Guardienne to charge directly in front of the Little Prince and knock opposing
+    ground troops away by 0-2 tiles (depends on how close the unit is to the sweet spot) while
+    also doing moderate damage. After the charge is completed, Guardienne stays in the arena until
+    she's taken out."
+
+    SHE IS PERMANENT. That is stated outright and it is what makes this a `guardian` rather than a
+    timed summon -- a 3-elixir ability that leaves a 1600 HP body on the board for the rest of the
+    match. She also outlives the Prince: the page never says she dies with him, and its Strategy
+    describes killing him and then dealing with her separately.
+
+    PUSHBACK 2.5 TILES, FLAT. The page states it twice and disagrees with itself: ability prose
+    says "0-2 tiles (depends on how close the unit is to the sweet spot)", History 1/9/2025 says
+    "increased the Royal Rescue's pushback to 2.5 tiles (from 2 tiles)". The History entry is
+    later and its chain is complete and monotone (3.5 -> 2.5 -> 2 -> 2.5), so the prose is stale.
+    The graded 0-to-max version is unimplementable anyway: the page never says where the "sweet
+    spot" is or what the falloff curve looks like.
+
+    CHARGE CORRIDOR: 4 tiles of dash range plus Guardienne's 0.8-tile collision radius, which the
+    page's own Strategy adds up for you -- "Although the Royal Rescue's range is 4 tiles, the
+    Guardienne has an extra 0.8 tile collision radius, allowing her to reach slightly further".
+    Its HALF-WIDTH is not published; her collision radius is used, which is the only body-sized
+    number the page gives. Multi-target ("take out all three Goblins at once due to her charge"),
+    once each. GROUND only (Royal Rescue Attributes Target = Ground; "Minions ... are immune to
+    Guardienne's damage"), and not Crown Towers -- the Card Mastery objective's "Troops or
+    buildings" is the only hint they might be included and it does not mention towers.
+    """
+    s = u.spec
+    sp = s.ability_spawn
+    fwd = -1.0 if u.team == 0 else 1.0                   # team 0 attacks toward y = 0
+    half = (sp.radius if sp is not None else 0.8)
+    reach = (s.ability_range_tiles or 4.0) + half
+    # "directly in front" = toward whatever he is shooting at, else down his own lane. The page
+    # does not define it when he has no target, and a lane heading is the only other direction
+    # the arena gives him.
+    tx, ty = u.x, u.y + fwd * reach / _TILES_Y
+    if isinstance(u.target, Unit) and u.target.hp > 0:
+        dx = (u.target.x - u.x) * _TILES_X
+        dy = (u.target.y - u.y) * _TILES_Y
+        d = math.hypot(dx, dy)
+        if d > 1e-9:
+            tx = u.x + (dx / d) * reach / _TILES_X
+            ty = u.y + (dy / d) * reach / _TILES_Y
+    tx, ty = _clamp_xy(tx, ty, half)
+    charge = replace(s, knockback=s.ability_knock, knockback_all=True)
+    for e in list(eng.units):
+        if e.team == u.team or e.hp <= 0 or e.spec.flying:
+            continue
+        if _seg_dist(u.x, u.y, tx, ty, e.x, e.y) > half + e.spec.radius:
+            continue
+        eng._hurt(e, s.ability_dmg)
+        eng._knock(e, charge, u.x, u.y)
+    if sp is not None:
+        for _ in range(max(1, s.ability_spawn_count)):
+            eng._late_spawns.append((eng.t, sp, u.team, tx, ty, 1))
+
+
+def _ability_reflect(eng: "SimEngine", u: "Unit") -> None:
+    """MONK -- Pensive Protection (Monk.wikitext, revid 437140).
+
+    Wiki: "reducing all incoming damage he takes by 65% and reflect all incoming projectile-based
+    ranged attacks back to the said offender. Spells are always reflected to the closest opposing
+    Crown Tower. He cannot protect nearby allies from melee attacks, non-projectile ranged attacks
+    and non-projectile spells. The Monk is impervious to all forms of knockback and the Tornado's
+    pull during Pensive Protection's duration."
+
+    The three effects live in three places, because they are three different mechanics: the -65%
+    is in `_hurt` beside Evo Knight's reduction, projectile reflection is in `_impact`
+    (`_reflects` / `_reflect_projectile`, and `_NO_REFLECT_BASES` carries the page's own list of
+    what does NOT bounce), and the Fisherman's hook is NULLIFIED rather than reflected in
+    `_hook_blocked`. All this handler does is start the window.
+
+    The duration column is headed "Invulnerability Duration" and he is NOT invulnerable -- the
+    same table publishes "Damage Reduced -65%" next to it. The header is a misnomer; 4 s is the
+    number.
+    """
+    u.ability_active_s = u.spec.ability_duration_s
+
+
+def _ability_zone(eng: "SimEngine", u: "Unit") -> None:
+    """GOBLINSTEIN -- Lightning Link (Goblinstein.wikitext, revid 437348).
+
+    Wiki: "creating an electric link between him and Monster. It damages by shocking nearby
+    targets every 0.5 seconds up to 2 tiles away. This ability deals reduced damage to the Crown
+    Tower. If the Monster has already been defeated, it will drop an antenna on the ground which
+    is what the Goblinstein's electric link will target when the ability is activated."
+
+    THE FIRST SHOCK LANDS AT ACTIVATION, which makes 8 ticks over the 4 s window rather than 9.
+    The page publishes the duration and the interval and never says whether t=0 fires; 8 is the
+    figure the research file derives (4 / 0.5) and it is the reading in which the published
+    duration is the whole ability rather than the duration plus a free tick.
+    """
+    u.ability_active_s = u.spec.ability_duration_s
+    u.ability_tick_left = 0.0
+
+
+def _ability_zone_tick(eng: "SimEngine", u: "Unit") -> None:
+    """One shock. Everything within 2 tiles of the LINK, air and ground, unlimited targets, no
+    stun, with the published reduced value against Crown Towers.
+
+    ⚠ LINK GEOMETRY IS UNDEFINED ON THE PAGE and this is the choice, recorded in conflicts.md for
+    an in-game check. Three readings were available: 2 tiles from the SEGMENT joining Doctor and
+    Monster (a capsule), 2 tiles from each endpoint (two circles), or 2 tiles from the Monster end
+    alone. The capsule is taken, because the prose makes the LINK the damaging object -- "creating
+    an electric link between him and Monster. It damages by shocking nearby targets ... up to 2
+    tiles away" -- and the Strategy line that sounds like a circle ("will hit everything within a
+    2 tile radius") never names a centre, so it cannot be the deciding one. Two circles would
+    leave a hole in the middle of a tether that is drawn as a continuous arc; the Monster-only
+    reading contradicts "between him and Monster".
+
+    With the Monster dead the far end is its ANTENNA, at the position it fell. With neither, the
+    capsule degenerates to a circle on the Doctor, which is the only thing left to anchor to.
+    """
+    s = u.spec
+    ax, ay = u.x, u.y
+    far = next((e for e in eng.units
+                if e.team == u.team and e.hp > 0 and e is not u
+                and e.spec.base == s.base and e.spec.building_only), None)
+    if far is not None:
+        bx, by = far.x, far.y
+    else:
+        bx, by = eng._antenna.get(u.team, (ax, ay))
+    r = s.ability_radius_tiles or 2.0
+    for e in list(eng.units):
+        if e.team == u.team or e.hp <= 0:
+            continue
+        if _seg_dist(ax, ay, bx, by, e.x, e.y) <= r + e.spec.radius:
+            eng._hurt(e, s.ability_dmg)          # Trivia: "does not inflict a stun on the enemies"
+    for tw in eng._enemy_towers(u.team):
+        if _seg_dist(ax, ay, bx, by, tw.x, tw.y) <= r + tw.radius:
+            eng._damage_tower(tw, s.ability_crown_dmg or s.ability_dmg, u.team)
+
+
 # THE REGISTRY. `ability_kind` -> handler. A card whose KB row names a kind that is not in here
 # gets its activation REFUSED (see champion_ability) rather than silently doing nothing, so a
 # typo in the KB is loud.
@@ -4935,12 +5192,17 @@ ABILITY_KINDS = {
     "stealth": _ability_stealth,
     "dash_chain": _ability_dash_chain,
     "soul_bank": _ability_soul_bank,
+    "guardian": _ability_guardian,
+    "reflect": _ability_reflect,
+    "zone": _ability_zone,
 }
 
 # Optional per-kind hooks for an ability that RUNS for a while: `ABILITY_TICKS` fires every
 # `ability_tick_s` while it is active, `ABILITY_ENDS` once when the duration expires. Sparse on
 # purpose -- most kinds resolve at activation and need neither.
-ABILITY_TICKS: dict = {}
+ABILITY_TICKS = {
+    "zone": _ability_zone_tick,
+}
 ABILITY_ENDS = {
     "stealth": _ability_stealth_end,
 }
