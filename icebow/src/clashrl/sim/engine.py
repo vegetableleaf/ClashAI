@@ -616,11 +616,19 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     spell_radius = float(c.get("radius_tiles") or (3.5 if base == "royal_delivery" else 2.9))
     spell_delay = 3.0 if base == "royal_delivery" else 0.4
     ground_only = kind == "spell" and c.get("attacks") == ["ground"]
-    # a ROLLING spell (The Log / Barbarian Barrel) = a forward ground-only CORRIDOR. This used to be
-    # derived as "has knockback AND ground_only", which COUPLED two independent facts: Barbarian
-    # Barrel still rolls but its pushback was REMOVED on 3/9/2018, so it was being modelled as a
-    # POINT BLAST, and adding/removing a knockback flag silently changed whether a spell rolled.
-    rolls = kind == "spell" and "rolls" in flags and ground_only
+    # a ROLLING spell (The Log / Barbarian Barrel / Evo Snowball) = a forward CORRIDOR. The
+    # derivation has now been decoupled TWICE, from two different unrelated facts:
+    #   * "has knockback" (fixed earlier): Barbarian Barrel still rolls but its pushback was
+    #     REMOVED on 3/9/2018, so it was modelled as a POINT BLAST, and adding or removing a
+    #     knockback flag silently changed whether a spell rolled at all;
+    #   * "AND ground_only" (conflicts.md E4, fixed here): whether a corridor exists is not the
+    #     same question as what it can damage. decisions.md #5 rules that the Evo Giant Snowball
+    #     hits AIR and ground, and MEASURED before the fix, flipping only its `attacks` list took
+    #     roll_len 4.5 -> 0.0 and turned the roll off -- the one-line data fix would have deleted
+    #     the card's whole mechanic. `ground_only` still decides what the corridor HURTS
+    #     (_resolve_roll skips flying bodies when it is set) and Snow Bowling still only CARRIES
+    #     ground bodies, which is what the page describes.
+    rolls = kind == "spell" and "rolls" in flags
     pulls = kind == "spell" and "pull" in flags               # Tornado: an active pulling vortex
     # PUSHBACK RANGE, sourced per card from the wiki's balance history rather than one constant:
     # The Log 0.7 (7/2/2023, from 1), Giant Snowball 1.8 (6/9/2021, from 1.5), Fireball 1.0

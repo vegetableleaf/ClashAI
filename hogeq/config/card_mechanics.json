@@ -354,8 +354,7 @@
    "_range_tiles": 5.0,
    "character": "GoblinCage",
    "collision": 1.0,
-   "lifetime_s": 20.0,
-   "sight": 20.0
+   "lifetime_s": 20.0
   },
   "goblin_drill": {
    "_deploy_time_s": 1.0,
@@ -1018,7 +1017,7 @@
  "meta": {
   "cards": 90,
   "excludes": "hitpoints/damage (stale in this dump -- see tools/stat_sweep.py), walking_speed_tweak_percentage (walk ANIMATION, not movement)",
-  "imports": "mass, sight, collision, load_time, deploy_delay, knockback_immune",
+  "imports": "mass, sight (except _NO_SIGHT), collision, load_time, deploy_delay, knockback_immune",
   "source": "https://raw.githubusercontent.com/RoyaleAPI/cr-api-data/master/docs/json/cards_stats.json",
   "source_frozen": "2023-10-18"
  }

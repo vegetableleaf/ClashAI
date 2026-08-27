@@ -50,10 +50,19 @@ class EvoCycleTests(unittest.TestCase):
         self.assertEqual(2, CardDB(self.cfg).evo_cycles("firecracker"))
 
     def test_evo_cycles_reads_the_evo_row_without_a_base_evolution_block(self):
-        """Firecracker's base row is imported and has no `evolution` key; the cycle count lives on
-        the `_evo` row. Requiring the base block is what silently produced 0."""
+        """The cycle count lives on the `_evo` row; requiring it on the BASE produced 0.
+
+        I5 restated: the base Firecracker row used to have no `evolution` key at all, which was
+        the sharpest possible version of this probe. The R2 KBGAP bucket then found that the
+        MISSING key was itself the bug -- `evo_cycles()` short-circuits on the parent's
+        `evolution.available` and reported "never evolves" for ten cards whose `_evo` rows were
+        fully populated -- so ten parents (Firecracker among them) gained
+        `evolution: {available: true}`. The property under test is unchanged and still fails
+        without the fix: the parent block carries NO `cycles`, so the 2 can only come from the
+        `_evo` row.
+        """
         db = CardDB(self.cfg)
-        self.assertNotIn("evolution", db.get("firecracker") or {})
+        self.assertNotIn("cycles", (db.get("firecracker") or {}).get("evolution") or {})
         self.assertEqual(2, db.evo_cycles("firecracker"))
 
     def test_a_card_with_no_evolution_still_reports_zero(self):

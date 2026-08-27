@@ -606,10 +606,7 @@ class GiantSnowballBaseTargetingTests(unittest.TestCase):
     curated cards.yaml row does not override it. This class exists to LOCK that, because the
     Evolution row overrides it to ['ground'] on the very next line of the same file.
 
-    ⚠ The EVO is still ground-only and that contradicts the same ruling -- see conflicts.md E4.
-    It is deliberately not fixed here: `rolls` is derived as ("rolls" in flags AND ground_only),
-    so flipping the Evo's attacks alone silently turns its ROLL off. That belongs with the rest
-    of the #5 data batch, not in this engine/schema one.
+    The EVO half landed in I5 -- see EvoSnowballAirAndRollTests below.
     """
 
     def _cast(self, card, target):
@@ -637,6 +634,74 @@ class GiantSnowballBaseTargetingTests(unittest.TestCase):
                 dealt, slow = self._cast("giant_snowball", name)
                 self.assertAlmostEqual(dealt, 179.0, delta=1.0)
                 self.assertGreater(slow, 0.0)
+
+
+class EvoSnowballAirAndRollTests(unittest.TestCase):
+    """conflicts.md E4, CLOSED in I5: the Evo Giant Snowball hits AIR and still ROLLS.
+
+    decisions.md #5 rules the Evo "roll range 4.0 tiles, hits air AND ground". The data half of
+    that is one word in cards.yaml -- and on its own it would have DELETED the card's mechanic.
+
+    MEASURED BEFORE, by flipping the row in memory on the pre-I5 tree:
+        attacks ['ground']        -> ground_only True,  rolls True,  roll_len 4.5
+        attacks ['air','ground']  -> ground_only False, rolls False, roll_len 0.0
+    because build_spec derived `rolls` as ("rolls" in flags AND ground_only). The engine half of
+    I5 decouples them: whether a corridor EXISTS is not the same question as what it may damage.
+
+    MEASURED AFTER (this file): rolls True, roll_len 4.0 (the ruled range), ground_only False,
+    and the roll damages minions and bats where before it dealt them 0.0.
+    """
+
+    def _cast(self, target):
+        eng = _make_engine()
+        t = build_spec(eng.db, target, LVL)
+        u = Unit(spec=t, team=1, x=0.50, y=0.50, hp=t.hp * 20)
+        eng.units.append(u)
+        eng.elixir = [10.0, 10.0]
+        self.assertTrue(eng.deploy(0, build_spec(eng.db, "giant_snowball_evo", LVL), 0.50, 0.50))
+        before, x0, y0 = u.hp, u.x, u.y
+        for _ in range(30):
+            u.x, u.y = x0, y0
+            eng.advance(0.1)
+        return before - u.hp
+
+    def test_the_roll_survives_the_air_and_ground_flip(self):
+        eng = _make_engine()
+        s = build_spec(eng.db, "giant_snowball_evo", LVL)
+        self.assertEqual((eng.db.get("giant_snowball_evo") or {}).get("attacks"),
+                         ["air", "ground"])
+        self.assertFalse(s.ground_only)
+        self.assertTrue(s.rolls, "MEASURED BEFORE: False -- the flip turned the roll off")
+        self.assertTrue(s.carry_roll)
+        self.assertAlmostEqual(s.roll_len, 4.0, delta=1e-9,
+                               msg="MEASURED BEFORE: 0.0 (was 4.5 while ground-only)")
+
+    def test_rolls_no_longer_depends_on_ground_only_in_either_direction(self):
+        """The decoupling has to hold BOTH ways, or it is just a differently-placed coupling."""
+        eng = _make_engine()
+        row = dict(eng.db.get("giant_snowball_evo") or {})
+        row["attacks"] = ["ground"]
+        eng.db.cards["giant_snowball_evo"] = row
+        try:
+            s = build_spec(eng.db, "giant_snowball_evo", LVL)
+            self.assertTrue(s.ground_only)
+            self.assertTrue(s.rolls)
+            self.assertAlmostEqual(s.roll_len, 4.0, delta=1e-9)
+        finally:
+            eng.db.cards["giant_snowball_evo"] = dict(row, attacks=["air", "ground"])
+
+    def test_it_now_damages_air_and_still_damages_ground(self):
+        """MEASURED BEFORE: knight 179.0, minions 0.0, bats 0.0 -- it could not answer air."""
+        for name in ("knight", "minions", "bats"):
+            with self.subTest(card=name):
+                self.assertAlmostEqual(self._cast(name), 179.0, delta=1.0)
+
+    def test_the_base_spell_does_not_roll(self):
+        """The base Snowball is a point blast; only the Evolution carries the `rolls` flag, and
+        the decoupling must not hand a corridor to every air-and-ground spell."""
+        eng = _make_engine()
+        self.assertFalse(build_spec(eng.db, "giant_snowball", LVL).rolls)
+        self.assertFalse(build_spec(eng.db, "fireball", LVL).rolls)
 
 
 class TestE1WalkingSpawnerPricing(unittest.TestCase):

@@ -202,7 +202,9 @@ class EvoWave3Tests(unittest.TestCase):
         for _ in range(14):
             eng.advance(0.1)
         self.assertGreater(kn.y, y0 + 2.5 / 32.0, "Snow Bowling sweeps the knight to the roll's end")
-        self.assertGreater(kn.slow_left, 2.0, "and slows for 4 s")
+        # I5, decisions.md #5: the 4/5/2026 change REMOVED the Evo's bonus slow duration, so it is
+        # the base spell's 3 s. 1.4 s of the window has already elapsed in the loop above.
+        self.assertGreater(kn.slow_left, 1.0, "and slows for 3 s")
 
     def test_battle_ram_bounces_and_breaks_into_evo_barbs(self):
         eng = _make_engine()

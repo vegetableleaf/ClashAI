@@ -69,10 +69,19 @@ class ChampionAbilityEngineTests(unittest.TestCase):
         self.assertEqual(0.0, build_spec(self.env.db, CHAMP, 14).ability_invis)
 
     def test_the_bomb_damage_matches_the_published_figure(self):
-        """440 at level 13 (user-supplied). No integer level-1 base gives exactly that; base 143 --
-        the nearest real entry on the game's table -- gives 441, stored as 366 at the KB's L11."""
-        self.assertAlmostEqual(build_spec(self.env.db, CHAMP, 13).ability_bomb_dmg,
-                               441.0, delta=1.0)
+        """440 at level FOURTEEN, off the published base 332 @ L11. conflicts.md C1, RESOLVED.
+
+        The old reading of this test was the bug. It sought an integer LEVEL-1 base to reproduce
+        the owner's observed 440 -- a level CHAMPIONS DO NOT HAVE. decisions.md ruling 9 fixed the
+        rarity floors from the Cards page (Common 1 / Rare 3 / Epic 6 / Legendary 9 / CHAMPION 11),
+        and anchored there the wiki's own integer base 332 @ L11 walks 332 -> 365 -> 402 -> 440 and
+        lands on the observation exactly. The reverse-derived 366 corresponds to no level under any
+        model; it was an artefact of anchoring at a nonexistent level 1.
+        """
+        self.assertAlmostEqual(build_spec(self.env.db, CHAMP, 11).ability_bomb_dmg,
+                               332.0, delta=1.0)
+        self.assertAlmostEqual(build_spec(self.env.db, CHAMP, 14).ability_bomb_dmg,
+                               440.0, delta=2.0)
 
     # -- refusals ----------------------------------------------------------------------
     def test_the_engine_refuses_it_with_no_champion(self):

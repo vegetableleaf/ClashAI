@@ -60,6 +60,16 @@ _NO_LIFETIME = {
     "furnace",      # 4/8/2025: became a walking troop. Dump key: "FirespiritHut".
 }
 
+# CARDS WHOSE DUMP `sight_range` IS NOT A SIGHT RANGE. Same class of error as _NO_LIFETIME, found
+# by the R2 sweep and ruled on in decisions.md #11: the Goblin Cage "cannot attack while the cage
+# stands", so it has no aggro radius at all -- and the 20 the dump carries is its LIFETIME, which
+# the row already holds correctly as lifetime_s 20.0. Importing it as `sight` gave a building that
+# never attacks a 20-tile aggro radius, four times the 5.5 baseline, and CardDB.sight_range_tiles
+# feeds the win-condition pull geometry off exactly that number.
+_NO_SIGHT = {
+    "goblin_cage",  # decisions.md #11: no sight stat; the 20 is the lifetime.
+}
+
 
 def _tiles(v):
     return round(float(v) / TILE, 3) if v else None
@@ -118,7 +128,7 @@ def main(argv) -> int:
         m = {
             "character": chr_row.get("name") or row.get("name"),
             "mass": ch.get("mass") or None,
-            "sight": _tiles(ch.get("sight_range")),
+            "sight": None if key in _NO_SIGHT else _tiles(ch.get("sight_range")),
             "collision": _tiles(ch.get("collision_radius")),
             "load_time_s": _secs(ch.get("load_time")),
             "deploy_delay_s": _secs(ch.get("deploy_delay")),
@@ -151,7 +161,8 @@ def main(argv) -> int:
             # frozen-2023 dump (see _NO_LIFETIME above; the Furnace 28 s incident). Declared
             # 2026-08-26 (E2) so a blanket "drop the stale fields" fix cannot silently change
             # a building's lifetime (tesla stays 30).
-            "imports": "mass, sight, collision, load_time, deploy_delay, knockback_immune, "
+            "imports": "mass, sight (except _NO_SIGHT), collision, load_time, deploy_delay, "
+                       "knockback_immune, "
                        "lifetime_s (frozen-2023 BALANCE value -- re-typed cards excluded via "
                        "_NO_LIFETIME), turret_rotation",
             "excludes": "hitpoints/damage (stale in this dump -- see tools/stat_sweep.py), "

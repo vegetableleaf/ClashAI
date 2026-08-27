@@ -50,7 +50,7 @@ class FormStatsTests(_Base):
         g = build_spec(self.env.eng.db, "spirit_empress", 11)
         self.assertEqual(3, g.elixir)
         self.assertAlmostEqual(1121, g.hp, delta=1)
-        self.assertAlmostEqual(307, g.hit_dmg, delta=1)
+        self.assertAlmostEqual(309, g.hit_dmg, delta=1)   # I5, decisions.md #5: 309 is correct
         self.assertAlmostEqual(1.2, g.hit_speed, places=2)
         self.assertAlmostEqual(1.2, g.reach, places=2)     # melee: medium
         self.assertFalse(g.flying)
@@ -61,7 +61,7 @@ class FormStatsTests(_Base):
         a = build_spec(self.env.eng.db, "spirit_empress_air", 11)
         self.assertEqual(6, a.elixir)
         self.assertAlmostEqual(1121, a.hp, delta=1)        # equal to ground since 2026-05-04
-        self.assertAlmostEqual(307, a.hit_dmg, delta=1)    # same damage as ground (RoyaleAPI)
+        self.assertAlmostEqual(309, a.hit_dmg, delta=1)    # same as ground; I5 #5: 309, not 307
         self.assertAlmostEqual(1.4, a.hit_speed, places=2)  # 1.5 -> 1.4 on 2025-07-10
         self.assertAlmostEqual(5.0, a.reach, places=2)     # 4.5 -> 5 on 2025-08-04
         self.assertTrue(a.flying)

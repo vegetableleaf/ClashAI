@@ -43,7 +43,10 @@ class EvoPhaseBTests(unittest.TestCase):
         self.assertLess(drop, 200, "no fourth round exists")
 
     def test_archers_power_shot_band(self):
-        for tiles, want in ((5.0, 168.0), (2.0, 112.0)):     # >=4 tiles -> 1.5x, close -> normal
+        # I5, R2 LAG bucket, 3-of-3 (vardefine Pow dmg_11 140 = 1.25 x dmg_11 112, the attributes
+        # table and the dated history): the Power Shot is x1.25, not x1.5. The cards.yaml comment
+        # still quoted the pre-4/8/2026 wording "deals 50% bonus damage".
+        for tiles, want in ((5.0, 140.0), (2.0, 112.0)):     # >=4 tiles -> 1.25x, close -> normal
             eng = _make_engine()
             ar = build_spec(eng.db, "archers_evo", 11)
             eng.elixir = [10.0, 10.0]
@@ -66,9 +69,13 @@ class EvoPhaseBTests(unittest.TestCase):
     def test_firecracker_spark_zones(self):
         eng = _make_engine()
         fc = build_spec(eng.db, "firecracker_evo", 11)
-        self.assertAlmostEqual(fc.spark_dps_big, 192.0, delta=1)     # carrier's LARGE spark (user-verified)
-        self.assertAlmostEqual(fc.spark_dps_small, 60.0, delta=1)    # shrapnel's SMALL sparks
-        self.assertEqual(fc.spark_dur, 2.5)
+        self.assertAlmostEqual(fc.spark_dps_big, 192.0, delta=1)     # carrier's LARGE spark (wiki, upheld)
+        # I5, decisions.md #5: 48, not 60. The owner OVERTURNED their own verified 60 -- the R2
+        # sweep showed 60 = Small_Crown_dmg_11(15) / spark_atk_speed(0.25), i.e. the wiki's SPARK
+        # CROWN TOWER damage-per-second column landing in a troop-facing DPS field. Closes the
+        # long-standing SIM_FIDELITY 6.7 conflict.
+        self.assertAlmostEqual(fc.spark_dps_small, 48.0, delta=1)    # shrapnel's SMALL sparks
+        self.assertEqual(fc.spark_dur, 2.5)                          # small sparks; big is 3.0
         eng.elixir = [10.0, 10.0]
         self.assertTrue(eng.deploy(0, build_spec(eng.db, "x_bow", 11), 0.45, 0.55))
         wall = [u for u in eng.units if u.team == 0][-1]

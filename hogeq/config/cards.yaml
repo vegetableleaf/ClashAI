@@ -16,11 +16,18 @@
 meta:
   level: 11
   mode: "1v1"
-  updated: "2026-07-24"
-  stats_source: null        # e.g. "RoyaleAPI" once combat stats are imported
+  updated: "2026-08-26"     # I5: the adjudicated R2 ledger applied (both stale since 2026-07-24)
+  stats_source: "clashroyale.fandom.com (MediaWiki level-11 vardefines) via `cards-import`,
+    corrected by the R2 sweep + owner adjudications in research/sim_parity/decisions.md.
+    Deliberate deviations from the wiki live in config/import_pins.json and NOWHERE else --
+    tools/stat_sweep.py reads that file as its EXPECTED set, so a value that disagrees with
+    the wiki and is not pinned is a finding, not a preference."
   notes: >
-    Elixir + categorical fields populated. Combat stats (hitpoints/damage/
-    hit_speed) pending import from a stats source (see README refresh note).
+    Combat stats are imported (config/cards_stats.json, level 11) and overlaid by the curated
+    rows below; the game-file structural constants sit between them (config/card_mechanics.json).
+    Every curated number that contradicts the wiki carries a dated comment naming the superseded
+    value and the ruling; row-by-row provenance for the I5 application is in
+    research/sim_parity/ledger/i5_applied.jsonl.
 
 # Your deck (icebow / X-Bow 2.9 control: defend + cycle; X-Bow is the WIN CONDITION, placed
 # forward to lock the enemy princess tower; Knight tanks / defends / body-blocks; Rocket
@@ -69,6 +76,17 @@ deck:
 cards:
 
   # ---- opponent-only curated entries ------------------------------
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   lifetime: SUPERSEDED 70 -> REMOVED. DUP bucket (merge's pick): the curated `lifetime: 70` is
+  #     the PRE-4/4/2022 value and the SAME row already carries the correct lifetime_s 93. Delete
+  #     the stale key rather than keep two disagreeing lifetimes on one row
+  #   gen_every_s: SUPERSEDED 8.5 -> 13.0. HIGH IMPACT. The curated 8.5 (flagged '# VERIFY' in
+  #     cards.yaml) is the PRE-4/4/2022 value - three balance changes have landed since (8.5 -> 9
+  #     -> 12 -> 13)
+  #   on_death_elixir: SUPERSEDED ABSENT -> 1.0. PRIORITY/gap: field absent. The prose and the
+  #     4/4/2022 history entry both give the collector +1 elixir on death, so in the sim
+  #     destroying a pump denies one elixir more than it actually does.
   elixir_collector:            # OPPONENT pump (never in your deck) -- curated for the sim's PUMP ECONOMY:
     display: "Elixir Collector"   # the engine pays its owner +1 elixir every gen_every_s while it stands,
     elixir: 6                     # so rocketing a FRESH pump denies real production (see sim/engine.py).
@@ -79,10 +97,20 @@ cards:
     win_condition: false
     targets: none
     flags: []
-    lifetime: 70               # seconds on the field -- VERIFY vs current balance (stats import has no lifetime)
-    gen_every_s: 8.5           # +1 owner elixir every ~8.5s (~8 over its life, +2 net) -- VERIFY
+    gen_every_s: 13.0   # +1 owner elixir every ~8.5s (~8 over its life, +2 net) -- VERIFY
+    on_death_elixir: 1.0
+    verified: true
 
   # ---- your deck --------------------------------------------------
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   load_time_s: SUPERSEDED 0.2 -> 0.3. decisions.md 2026-08-26 R2 ADJUDICATION #10: ALL wiki
+  #     load_time entries correct -- this settles the three-way conflict (KB/dump 0.2, wiki 0.3,
+  #     engine comment 1.0) in the wiki's favour
+  #   evolution.cycles: SUPERSEDED ABSENT -> 2. The musketeer row's curated `evolution` dict
+  #     (verified:true) carries available/effect/gains but no `cycles`, where the comparable
+  #     knight row carries cycles 2 and matches the wiki exactly. Published Evolution Attributes
+  #     give Cycles 2
   musketeer:
     display: "Musketeer"
     elixir: 4
@@ -97,17 +125,24 @@ cards:
     win_condition: false
     targets: any
     flags: [ranged]
-    evolution: {available: true, effect: "charged long-range shot with knockback", gains: [knockback, extra_range]}
+    evolution: {available: true, effect: charged long-range shot with knockback, gains: [knockback, extra_range], cycles: 2}
     verified: true
     hitpoints: null
     damage: null
     hit_speed: null
+    load_time_s: 0.3
 
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   rarity: SUPERSEDED 'rare' -> 'common'. decisions.md 2026-08-26 R2 ADJUDICATION #5: tesla is
+  #     COMMON rarity
+  #   evolution.hitpoints: SUPERSEDED 1152 -> 1182. decisions.md 2026-08-26 R2 ADJUDICATION #5:
+  #     tesla_evo hitpoints = base = 1182 @ L11
   tesla:
     display: "Tesla"
     elixir: 4
     kind: building
-    rarity: rare
+    rarity: common
     attacks: [air, ground]
     movement: none
     speed: null
@@ -117,34 +152,24 @@ cards:
     win_condition: false
     targets: any
     flags: [ranged, hides]
-    evolution:
-      available: true
-      cycles: 2            # VERIFIED in-game 2026-08-08: 2-cycle -> every 3rd Tesla played is the Evo
-      effect: "electric pulse on deploy and on every surfacing: damages and briefly stuns nearby enemies"
-      gains: [stun, area_shock]
-      # "It spawns a Tesla with IDENTICAL STATS to the original" -- the Evo's hitpoint boost was
-      # REMOVED on 14/5/2024, so hp/damage are the base Tesla's published level-11 values (1152/220)
-      # rather than the boosted pair this file used to carry.
-      hitpoints: 1152
-      damage: 220
-      hit_speed: 1.1
-      dps: 200               # 220 / 1.1
-      lifetime: 25           # seconds (a normal building is ~40)
-      # PULSE. Not on a timer: "after surfacing and deployment". Its death pulse existed only
-      # between 14/5/2024 and 8/10/2024 and is gone, so deploy + every surfacing is the whole set.
-      pulse_damage: 174      # published level-11 Pulse Damage (147 here was the pre-9/4/2025 value)
-      pulse_radius: 6        # published Pulse Radius, tiles
-      pulse_stun: 0.5        # published Pulse Stun Duration
+    evolution: {available: true, cycles: 2, effect: 'electric pulse on deploy and on every surfacing: damages and briefly stuns nearby enemies', gains: [stun, area_shock], hitpoints: 1182, damage: 220, hit_speed: 1.1, dps: 200, lifetime: 25, pulse_damage: 174, pulse_radius: 6, pulse_stun: 0.5}
     verified: true
     hitpoints: null
     damage: null
     hit_speed: null
 
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   rarity: SUPERSEDED 'rare' -> 'common'. decisions.md 2026-08-26 R2 ADJUDICATION #5: bomber
+  #     rarity = common
+  #   evolution.available: SUPERSEDED ABSENT -> True. SYSTEMIC GATE BUG -- 10 of my 32 keys. The
+  #     parent row has evolution:null while a fully populated bomber_evo row exists carrying the
+  #     correct evo_cycles=2
   bomber:
     display: "Bomber"
     elixir: 2
     kind: troop
-    rarity: rare
+    rarity: common
     attacks: [ground]
     movement: ground
     speed: medium
@@ -154,7 +179,7 @@ cards:
     win_condition: false
     targets: any
     flags: [ranged, splash, ground_only]
-    evolution: null
+    evolution: {available: true}
     verified: true
     hitpoints: null
     damage: null
@@ -165,7 +190,11 @@ cards:
   # 2.5 tiles apart in a straight line, dealing the same damage as the initial hit" (2.5 since
   # 5/3/2024, from 3). Since 16/12/2024 enemies hit by the attack take damage only ONCE -- the
   # three blasts share a hit set. The bounces are how it chips the crown tower from the bridge.
-  bomber_evo: {bounces: 2, bounce_tiles: 2.5, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   bounce_no_repeat_target: SUPERSEDED ABSENT -> True. MISSING FIELD (flag, not a number).
+  #     Since 16/12/2024 a unit inside two overlapping bounce radii takes the 225 ONCE, not twice
+  bomber_evo: {bounces: 2, bounce_tiles: 2.5, bounce_no_repeat_target: true, verified: true}
 
   # ---- T1 EVO MECHANICS (2026-08-14 verify sweep; stats flow from the imported _evo rows) ----
   # EVO ROYAL GIANT: "every time [he] attacks, it deals damage in a 2.5 tile radius around it and
@@ -181,25 +210,63 @@ cards:
   # EVO BARBARIANS: "every attack, their attack speed and movement speed increases by 30% for
   # 3 seconds" (3 s since 14/5/2024; 30% since the 6/10/2025 global rage nerf). Does not stack
   # with other rage. Their +10% hp / 1.4 s hit speed flow from the imported row.
-  barbarians_evo: {hit_rage_s: 3.0, hit_rage_boost: 0.30, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   hit_rage_s: SUPERSEDED 3.0 -> 5.0. CURATED verified:true (3.0) so flagged, not overwritten
+  #     -- but every available path says 5 s. Recommend 5.0
+  barbarians_evo: {hit_rage_s: 5.0, hit_rage_boost: 0.3, verified: true}
   # EVO VALKYRIE: "every time [she] attacks, a Tornado appears for half a second, pulling all
   # units towards her" -- 5.5-tile radius, 76 tornado damage, ground AND air (reuses the vortex).
-  valkyrie_evo: {attack_nado_radius_tiles: 5.5, attack_nado_duration_s: 0.5, attack_nado_damage: 76, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   attack_nado_crown_damage: SUPERSEDED ABSENT -> 37. CROWN bucket: tor_crown_11 = 37 is what
+  #     the wiki publishes. UNRESOLVED and recorded in conflicts.md: if the 4/8/2026 -50% also
+  #     halved the crown chip it would be ~18, but no entry says so and the vardefine is undated
+  #   attack_nado_damage: SUPERSEDED 76 -> 42. LAG bucket: the curated 76 is the LAUNCH value
+  #     (pre-14/5/2024). Chain fit 76 -> x1.11 = 84 (the vardefine) -> 4/8/2026 x0.5 = 42
+  valkyrie_evo: {attack_nado_radius_tiles: 5.5, attack_nado_duration_s: 0.5, attack_nado_damage: 42, attack_nado_crown_damage: 37, verified: true}
   # EVO ZAP: "the ring grows and zaps every target inside 2 more times" -- 3 pulses ~1 s apart at
   # radii 2.5 -> 3.0 -> 3.5, each a full zap (damage/stun/crown chip from the imported row).
-  zap_evo: {zap_pulses: 3, zap_radius_step_tiles: 0.5, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   zap_pulses: SUPERSEDED 3 -> 2. LAG bucket, 3-of-3: 8/10/2024 'increased the second pulse's
+  #     damage by 100%, but REMOVED THE THIRD PULSE'; dmg_hits = 2 and the infobox says 'TWO
+  #     Zaps'. The curated 3 quotes the retired pre-8/10/2024 card text
+  zap_evo: {zap_pulses: 2, zap_radius_step_tiles: 0.5, verified: true}
   # EVO PEKKA: the imported hitpoints 5640 is the OVERHEAL CAP (3760 x 1.5), not deploy hp, and
   # the damage row is missing -- both re-curated from the base card. Post-rework heal: "each kill
   # heals the same amount ... always 12.5% of the core HP" = 470 at L11, overheal to 150%.
-  pekka_evo: {hitpoints: 3760, damage: 842, dps: 468, kill_heal: 470, overheal_frac: 1.5, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   hit_speed: SUPERSEDED ABSENT -> 1.8. PRIORITY missing-hit_speed row resolved: merged row has
+  #     dps 468 but no hit_speed (curated yaml re-curated hp/dmg/dps and dropped it). All three
+  #     paths give 1.8; 842/1.8=467.8 -> the curated dps 468 is self-consistent
+  pekka_evo: {hitpoints: 3760, damage: 842, dps: 468, kill_heal: 470, overheal_frac: 1.5, hit_speed: 1.8, verified: true}
   # ---- PHASE B WAVE 3 (2026-08-14 sweep 3): the 17 remaining evos ----
   # EVO MEGA KNIGHT: "every time [he] attacks, [he] will do an uppercut, launching the targeted
   # troop back 4 tiles towards the nearest enemy Crown Tower", weight-independent (buildings
   # excepted, as always). The shove re-enters his own jump band -- the uppercut-jump loop.
-  mega_knight_evo: {uppercut_tiles: 4.0, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   uppercut_every_hits: SUPERSEDED ABSENT -> 2. KBGAP/P3: the 2026-08-14 curation modelled the
+  #     uppercut on EVERY attack; since 4/8/2026 it fires every 2nd hit (uppercut_tiles 4.0 is
+  #     current-correct)
+  mega_knight_evo: {uppercut_tiles: 4.0, uppercut_every_hits: 2, verified: true}
   # EVO EXECUTIONER: "the Axe Smash ability ... pushes foes back two tiles. The range for this
   # attack is 3.5 tiles, and it is effective on Ground and Air"; the shove resets charges.
-  executioner_evo: {smash_range_tiles: 3.5, smash_knockback_tiles: 2.0, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   smash_damage: SUPERSEDED ABSENT -> 241. KBGAP: close_11 = 294 is provably stale by two nerfs
+  #     -- 294*0.91*0.90 = 240.9 -> 241. The axe hits for close_11 instead of dmg_11 inside the
+  #     smash band, on both the outward and the return pass
+  #   smash_range_tiles: SUPERSEDED 3.5 -> 2.5. CURATED verified:true (3.5) so flagged, but four
+  #     independent statements say 2.5, and the page's edit comment on the live revision is
+  #     literally 'Evo Exec now says the Close Quarters range is 2.5 instead of saying 3.5' (revid
+  #     437539, 2026-08-24 -- ten days AFTER
+  #   smash_knockback_tiles: SUPERSEDED 2.0 -> 1.0. CURATED verified:true, and the current 2.0
+  #     matches NO source. Two independent History paths date a 1.5 -> 1.0 nerf to 2/3/2026; the
+  #     Card Evolution table still says 1.5, i.e
+  executioner_evo: {smash_range_tiles: 2.5, smash_knockback_tiles: 1.0, smash_damage: 241, verified: true}
   # EVO HUNTER: "throws a net at the closest unit every 5 seconds, freezing the troop in place
   # and rendering it unable to move or attack for 3 seconds" (root -- still hittable). Net range
   # curated to his sight [verify].
@@ -216,7 +283,33 @@ cards:
   # hp_11 839 is "Hitpoints", maks_hp_11 1039 is "Max Hitpoints" (the overheal cap, 1039/839 =
   # 1.238), heal_11 76 is "Skeleton Death Heal" -- not the 109 we carried. Her base hitpoints are
   # simply the base Witch's 839, which is the cross-check that the 796 never had.
-  witch_evo: {hitpoints: 839, spawn_death_heal: 76, overheal_frac: 1.238, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   damage: SUPERSEDED ABSENT -> 135. stat_diffs verdict:update: dmg_11 = 135, 3-of-3 (evo
+  #     vardefine, evo attributes table, base Witch under the 'identical stats' clause)
+  #   hit_speed: SUPERSEDED ABSENT -> 1.1. stat_diffs verdict:update: her own atk_speed is 1.1 on
+  #     both pages; the 6/10/2025 'attack time interval to 1.1s' entry is the SKELETON's
+  #   dps: SUPERSEDED ABSENT -> 123. stat_diffs verdict:update: 135/1.1 = 122.7 -> 123. The ledger
+  #     row's `proposed` field reads 11.0, which is a scalar-extraction bug in the emitter, not
+  #     the value
+  #   speed_tiles: SUPERSEDED ABSENT -> 1.0. stat_diffs verdict:update: Medium (60) = 1.0 tiles/s
+  #   overheal_frac: SUPERSEDED 1.238 -> 1.73. LAG bucket: 4/8/2026 'increased her overheal ratio
+  #     to x1.73 (from x1.24)'. P1 and P2 are one stale snapshot -- maks_hp_11/hp_11 is still
+  #     exactly the old x1.24
+  #   spawn_death_heal: SUPERSEDED 76 -> 220. LAG bucket: heal chain -12%/-12%/+36%/-21%/-11% then
+  #     4/8/2026 '+189%'; 76*2.89 = 219.6 -> 220. Must land WITH heal_source_cap 4, which partly
+  #     offsets it
+  #   max_hitpoints: SUPERSEDED ABSENT -> 1452. KBGAP: two independent derivations agree --
+  #     1039*1.40 = 1455 (the 4/8/2026 '+40% max hitpoints') and 839*1.73 = 1452 (base x the new
+  #     ratio). Cross-check that base hitpoints 839 did NOT move on 4/8/2026
+  #   heal_source_cap: SUPERSEDED ABSENT -> 4. KBGAP: 4/8/2026 'made it to where she can only be
+  #     healed by the first 4 skeletons that she spawns' -- without it the sim heals her off every
+  #     skeleton she ever spawns
+  #   spawn_count_per_wave: SUPERSEDED ABSENT -> 4. KBGAP: base Witch lead -- 'Every 7 seconds ...
+  #     a group of four Skeletons'
+  #   spawn_first_wave_s: SUPERSEDED ABSENT -> 1.0. KBGAP: 'her first wave of Skeletons will spawn
+  #     1 second after she is deployed', not after the generic 7 s interval
+  witch_evo: {hitpoints: 839, spawn_death_heal: 220, overheal_frac: 1.73, damage: 135, hit_speed: 1.1, dps: 123, speed_tiles: 1.0, max_hitpoints: 1452, heal_source_cap: 4, spawn_count_per_wave: 4, spawn_first_wave_s: 1.0, verified: true}
   # EVO ELECTRO DRAGON: "bolts chain indefinitely between multiple targets within a 3.5-tile
   # radius, provided there is more than one enemy in range" -- hits_per_attack raised to 12 as
   # the practical infinity on a 18x32 board.
@@ -227,7 +320,12 @@ cards:
   inferno_dragon_evo: {ramp_keep_s: 9.0, ramp_stage4_s: 20.0, ramp_stage4_mult: 2.0, verified: true}
   # EVO BABY DRAGON: "produces a 8x9 square area of a gust of wind around it that slows enemy
   # troops by 30% and speeds up allies by 30%" -- modeled as a 4-tile moving aura.
-  baby_dragon_evo: {aura_radius_tiles: 4.0, aura_slow_frac: 0.30, aura_boost_frac: 0.30, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   aura_linger_after_death_s: SUPERSEDED ABSENT -> 2.0. MISSING FIELD: the KB row has no post-
+  #     death aura lifetime. Wiki prose says the wind persists ~2 s after the Evo Baby Dragon dies
+  #     (prose hedges with 'about'; no table column, no vardefine)
+  baby_dragon_evo: {aura_radius_tiles: 4.0, aura_slow_frac: 0.3, aura_boost_frac: 0.3, aura_linger_after_death_s: 2.0, verified: true}
   # EVO PRINCESS: "her first shot will slow down enemies within a 3-tile radius for 7 seconds.
   # After this first shot, she will fire two normal shots, and the third one will slow them."
   # evo_cycles from the wiki's Cycles column (research/sim_parity/ledger/r1a_evolutions.json,
@@ -235,41 +333,143 @@ cards:
   # evolution" to the slot -- `charge >= cycles` is satisfied from tick one, so it would present
   # the Evolution on every lap. The opponent picker's `or 2` floor hid it; the number is 2 anyway
   # here, but Evo Minion Horde below is 1 and was being fielded a cycle late.
-  princess_evo: {evo_cycles: 2, volley_slow_every: 3, volley_slow_s: 7.0, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   volley_slow_every: SUPERSEDED 3 -> 2. LAG bucket: the 4/8/2026 nerfset moved the cadence to
+  #     every 2nd hit; the stub's Ability section was never rewritten
+  #   volley_slow_s: SUPERSEDED 7.0 -> 5.5. LAG bucket: same 4/8/2026 entry cut the slowdown
+  #     duration to 5.5 s
+  #   volley_slow_radius_tiles: SUPERSEDED ABSENT -> 3.0. KBGAP: the ability prose publishes a
+  #     3-tile slow radius (single path, stub page)
+  #   volley_slow_pct: SUPERSEDED ABSENT -> 30. KBGAP: slow magnitude 30% (single-path prose on a
+  #     stub page)
+  princess_evo: {evo_cycles: 2, volley_slow_every: 2, volley_slow_s: 5.5, volley_slow_radius_tiles: 3.0, volley_slow_pct: 30, verified: true}
   # EVO MINION HORDE: "Horde Immunity makes a minion invincible for 3 seconds after taking the
   # initial hit. Only the Minions that receive a hit become invincible."
-  minion_horde_evo: {evo_cycles: 1, first_hit_immune_s: 3.0, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   unsourced: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11: no path
+  #     publishes the flagged value on this row -- the sim's own number is KEPT and the row
+  #     marked, rather than replaced by a reconstruction
+  #   unsourced: true -- decisions.md #11: no path publishes these; the sim's own values are kept
+  #     and MARKED rather than replaced by a guess.
+  minion_horde_evo: {evo_cycles: 1, first_hit_immune_s: 3.0, unsourced: true, verified: true}
   # EVO DART GOBLIN: "Poisonous Darts, which inflict poison damage on impact. This poison
   # becomes stronger the longer the Dart Goblin remains alive." Base dps + the x2-by-30s growth
   # curve are curated [verify] -- no published numbers anywhere scrapeable.
   # Wiki vardefines: 3-STAGE poison, 51/115/307 dps by his time alive (stage thresholds not
   # published -- 15 s steps [verify]); crown towers take it 1 s at 25% (13/29/77).
-  dart_goblin_evo: {poison_dps: 51, poison_stages: [51, 115, 307], poison_s: 2.0, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   poison_stages: SUPERSEDED [51, 115, 307] -> [64, 128, 307]. CROWN bucket: the time machine
+  #     shows 51/115/307 predate the 1/6/2026 buff and never moved. Reconstructed 51*1.25 -> 64,
+  #     115*1.11 -> 128, stage 3 unchanged
+  #   poison_stage_thresholds: SUPERSEDED ABSENT -> [1, 4, 7]. MISSING FIELD, AND THE CURATED
+  #     MODEL IS WRONG IN KIND. cards.yaml says the poison 'becomes stronger the longer the Dart
+  #     Goblin remains alive' and guesses '15 s steps [verify]'
+  #   poison_radius_tiles: SUPERSEDED ABSENT -> 1.5. MISSING FIELD: the poison is an AREA effect
+  #     with a published 1.5-tile radius; the KB models poison_dps/poison_stages with no radius,
+  #     so the sim currently applies it single-target. cards.yaml's comment claims 'no published
+  #     numbers anywhere scrapeable' for this
+  #   poison_s: SUPERSEDED 2.0 -> 1.0. CURATED verified:true (2.0) so flagged only, but three
+  #     independent statements say 1 second, and the change that produced it is dated 4/8/2025 --
+  #     more than a year before the KB row was written. Doubling the tick window doubles the Evo
+  #     Dart Goblin's area damage
+  dart_goblin_evo: {poison_dps: 51, poison_stages: [64, 128, 307], poison_s: 1.0, poison_stage_thresholds: [1, 4, 7], poison_radius_tiles: 1.5, verified: true}
   # EVO CANNON: "after deployment, the Cannon shoots 9 cannonballs in 2 rows, 5 on the top row
   # and 4 on the bottom, which deals area damage and inflicts knockback". Per-ball damage is not
   # published anywhere scrapeable: 87 [verify].
   # Wiki vardefines (api.php harvest 2026-08-14): each cannonball 304 dmg / 89 crown.
-  cannon_evo: {deploy_volley: 9, volley_damage: 304, volley_crown_damage: 89, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   volley_damage: SUPERSEDED 304 -> 281. decisions.md 2026-08-26 R2 ADJUDICATION #9: cannon_evo
+  #     volley damage 281 @ L11 (nerfed; the vardefine lags at 304)
+  #   volley_radius_tiles: SUPERSEDED ABSENT -> 2.0. MISSING FIELD. The KB has deploy_volley 9 /
+  #     volley_damage 304 / volley_crown_damage 89 but no splash radius for the barrage, even
+  #     though the wiki publishes it in a named column AND the intro says the barrage 'deals area
+  #     damage and inflicts knockback'
+  cannon_evo: {deploy_volley: 9, volley_damage: 281, volley_crown_damage: 89, volley_radius_tiles: 2.0, verified: true}
   # EVO MORTAR: hit speed 4 s (imported; 1 s faster) + "every attack that it does also spawns a
   # Goblin" at the mortar (spawn_on_hit with a cap that never binds -- it counts mortars).
-  mortar_evo: {spawn_on_hit: goblins, spawn_on_hit_cap: 99, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   first_hit_speed_s: SUPERSEDED ABSENT -> 1.0. KBGAP: 8/10/2024 'added a 1 second delay in the
+  #     Evolved Mortar's first attack', matching the attributes table; the base Mortar has no such
+  #     delay
+  #   spawn_goblin_deploy_time_s: SUPERSEDED ABSENT -> 0.5. KBGAP: the spawned Goblins take 0.5 s
+  #     to deploy since 1/6/2026 (the tertiary table still says 0.2)
+  #   range_tiles: SUPERSEDED 3.5 -> 11.5. stat_diffs verdict:update: THE SAME PARSE BUG THE BASE
+  #     CARD WAS FIXED FOR, left unfixed on the evo row -- the importer takes the leading number
+  #     of the '3.5-11.5' band, the DEAD-ZONE MINIMUM, as the reach. Curated here exactly as the
+  #     base mortar is
+  #   min_range_tiles: SUPERSEDED ABSENT -> 3.5. Companion to the range_tiles fix: merged evo row
+  #     lost the min-range field entirely. Propose min_range_tiles 3.5.
+  mortar_evo: {spawn_on_hit: goblins, spawn_on_hit_cap: 99, first_hit_speed_s: 1.0, spawn_goblin_deploy_time_s: 0.5, range_tiles: 11.5, min_range_tiles: 3.5, verified: true}
   # EVO FURNACE: "the spawn speed is decreased to 2.4 sec" (sides-vs-front is cosmetic here).
   # EVO FURNACE: no lifetime either (see the base Furnace below -- it is a TROOP since 4/8/2025).
   # This row used to carry `lifetime_s: 28.0` with the comment "same building lifetime as the base
   # Furnace", which was true of the 2023 game-file dump and of nothing since. Its EVO edge is the
   # 2.4 s "Hot Spawn" period, which is a separate field and stays.
-  furnace_evo: {spawns: {unit: fire_spirit, count: 1, interval: 2.4}, effective_life_s: 19.1, verified: true}   # effective_life_s MEASURED 2026-08-26 (E1): it is a TROOP now, so it has no lifetime -- it dies to our towers. n=60 deploys x4 enemy levels x15 placements, median 19.1s (p25 18.1, p75 22.0) -> 7.96 waves at 2.4s, against the unmeasured flat 2.0 the fallback gave.
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   unsourced: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11: no path
+  #     publishes the flagged value on this row -- the sim's own number is KEPT and the row
+  #     marked, rather than replaced by a reconstruction
+  #   unsourced: true -- decisions.md #11: no path publishes these; the sim's own values are kept
+  #     and MARKED rather than replaced by a guess.
+  furnace_evo: {spawns: {unit: fire_spirit, count: 1, interval: 2.4}, effective_life_s: 19.1, unsourced: true, verified: true}   # effective_life_s MEASURED 2026-08-26 (E1): it is a TROOP now, so it has no lifetime -- it dies to our towers. n=60 deploys x4 enemy levels x15 placements, median 19.1s (p25 18.1, p75 22.0) -> 7.96 waves at 2.4s, against the unmeasured flat 2.0 the fallback gave.
   # EVO GOBLIN GIANT: "when [his] hitpoints are lowered below 50%, every 2.2 seconds [he] will
   # passively summon a Goblin." Imported hp 3223 flows via the overlay.
-  goblin_giant_evo: {spawns: {unit: goblins, count: 1}, low_hp_frac: 0.5, low_hp_interval_s: 2.2, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   backpack_spear_goblins: SUPERSEDED ABSENT -> {'count': 2, 'hitpoints': 133, 'damage': 81,
+  #     'hit_speed': 1.6, 'range_tiles': 5.0, 'projectile_speed': 500, 'attacks': ['air',
+  #     'ground']}. KBGAP: the Evo row's spawn_unit_stats describes the low-hp Goblin trickle;
+  #     there was nowhere for the TWO backpack Spear Goblins the card always carries. p3 1.6 s is
+  #     their hit speed, not the whole sub-unit
+  #   low_hp_spawn_offset_tiles: SUPERSEDED ABSENT -> 2.5. MISSING FIELD, minor but concrete: the
+  #     trickle of Goblins appears 2.5 tiles BEHIND the Giant, not at his feet, so they arrive at
+  #     a defender later than the sim assumes and are harder to catch with the same splash. Only
+  #     the Card Evolution page publishes it
+  goblin_giant_evo: {spawns: {unit: goblins, count: 1}, low_hp_frac: 0.5, low_hp_interval_s: 2.2, backpack_spear_goblins: {count: 2, hitpoints: 133, damage: 81, hit_speed: 1.6, range_tiles: 5.0, projectile_speed: 500, attacks: [air, ground]}, low_hp_spawn_offset_tiles: 2.5, verified: true}
   # EVO WALL BREAKERS: "rolling on a large, explosive barrel, and the barrel deals DEATH
   # damage" -- imported death_damage 291 flows via the overlay + the death-blast machinery.
   # (No curation needed; row kept for the audit trail.)
-  wall_breakers_evo: {verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   death_damage: SUPERSEDED 291.0 -> 233. CROWN bucket: the +50%/+11%/-10% chain closes exactly
+  #     on 291, so 291 is the 3/11/2025 value and the 4/8/2026 -20% is missing from it: 291*0.80 =
+  #     232.8 -> 233
+  #   death_crown_damage: SUPERSEDED ABSENT -> 154. CROWN bucket: 8/1/2025 fixed death damage at
+  #     66% of full against Crown Towers; the published crown_11 193 is 66% of the SUPERSEDED 291.
+  #     Against the applied 233: 233*0.66 = 153.8 -> 154
+  #   runner_spawn: SUPERSEDED ABSENT -> {'unit': 'wall_breaker_runner', 'count': 2, 'hitpoints':
+  #     164, 'damage': 196, 'speed_tiles': 2.0, 'range_tiles': 0.5, 'splash_radius': 1.5,
+  #     'deploy_time': 1.0, 'attacks': ['buildings'], 'movement': 'ground'}. KBGAP, 3-of-3:
+  #     run_hp_11 = 164 / run_dmg_11 = 196 plus the 'Runner Attributes' tertiary table. Each evo
+  #     Wall Breaker spawns a Runner on death -- the row had spawn_unit_stats geometry but no
+  #     spawn declaration, so nothing spawned
+  wall_breakers_evo: {death_damage: 233, death_crown_damage: 154, runner_spawn: {unit: wall_breaker_runner, count: 2, hitpoints: 164, damage: 196, speed_tiles: 2.0, range_tiles: 0.5, splash_radius: 1.5, deploy_time: 1.0, attacks: [buildings], movement: ground}, verified: true}
   # EVO ROYAL GHOST: "summons two Souldiers upon deployment. Souldiers have the Hit Points of a
   # Skeleton, but deal Damage like a Royal Ghost. They also inherit the invisibility ability."
-  royal_ghost_evo: {deploy_spawn: ghost_souldier, deploy_spawn_n: 2, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   invisibility_time_s: SUPERSEDED ABSENT -> 1.8. decisions.md 2026-08-26 R2 ADJUDICATION #9:
+  #     royal_ghost 1.8 s to re-cloak -- the self-contradictory 2/3/2026 2.0 s entry is what the
+  #     ruling settles
+  royal_ghost_evo: {deploy_spawn: ghost_souldier, deploy_spawn_n: 2, invisibility_time_s: 1.8, verified: true}
 
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   deploy_time: SUPERSEDED 1.0 -> 0.2. decisions.md 2026-08-26 R2 ADJUDICATION #5 pairs with
+  #     decoy_goblin: the two keys held each other's published values (one transposition at
+  #     curation time); the Souldier's own table says 0.2
+  #   spawn_damage: SUPERSEDED ABSENT -> 81. Missing field: the Souldier deals a spawn burst
+  #     (spawn_11 = 81 at level 11) that the KB does not carry at all, and P3 confirms it is a
+  #     separately tracked quantity. Curated row is verified:true, so flagging rather than
+  #     writing.
+  #   damage: SUPERSEDED 261 -> 81. PARENT-STAT CONTAMINATION. current_db 261 is EXACTLY the Royal
+  #     Ghost's own dmg_11 on the same page; the Souldier's own vardefine is soul_dmg_11 = 81
   ghost_souldier:                  # the Evo Royal Ghost's two escorts -- spawned, NOT a card.
     display: "Souldier"            # Level-11 per the wiki: 81 hp (a skeleton's), 261 area damage
     elixir: null                   # (the Ghost's own swing), 1.8 s cadence, ghost-style stealth.
@@ -283,21 +483,32 @@ cards:
     count: 1
     win_condition: false
     hitpoints: 81
-    damage: 261
+    damage: 81
     hit_speed: 1.8
     range_tiles: 1.2
     speed_tiles: 1.5
-    deploy_time: 1.0
+    deploy_time: 0.2
     invisibility_time_s: 1.8
     verified: true
+    spawn_damage: 81
 
   # EVO SKELETON ARMY: "15 skeletons + a shielded General [Gerry] ... if a skeleton is
   # destroyed while the General is alive, the skeleton turns into a ghost. Skeleton ghosts can
   # keep dealing damage, but they are invisible and indestructible. Once the shielded General
   # is destroyed, the ghosts disappear with him." General stats unpublished -- guard-like
   # curation [verify].
-  skeleton_army_evo: {deploy_spawn: skarmy_general, deploy_spawn_n: 1, army_ghosts: true, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   shadow_skeleton_speed_tiles: SUPERSEDED ABSENT -> 1.0. KBGAP: the Shadow Skeletons move at
+  #     1.0 tiles/s since 12/01/2026; inheriting the skeleton 1.5 makes them 50% too fast
+  skeleton_army_evo: {deploy_spawn: skarmy_general, deploy_spawn_n: 1, army_ghosts: true, shadow_skeleton_speed_tiles: 1.0, verified: true}
 
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   range_tiles: SUPERSEDED 0.5 -> 1.6. RESOLVES A STANDING [verify] MARKER. cards.yaml says
+  #     'General stats unpublished -- guard-like curation [verify]', but the Evolution page now
+  #     publishes them in section 'General Gerry Attributes', and every other curated guess is
+  #     confirmed exactly: hitpoints 81
   skarmy_general:                  # Gerry -- wiki vardefines (api.php): a SKELETON with a
     display: "Skeleton General"    # shield: 81 hp + 81 shield + 81 dmg at 1.0 s
     elixir: null
@@ -312,7 +523,7 @@ cards:
     hitpoints: 81
     damage: 81
     hit_speed: 1.0
-    range_tiles: 0.5
+    range_tiles: 1.6
     speed_tiles: 1.5
     deploy_time: 1.0
     shield_hp: 81
@@ -323,30 +534,102 @@ cards:
   # to the end of the roll]. When it finishes its roll, the troops are freed" + 4 s slow
   # (4/3/2025 balance). Modeled as a Log-style roll whose victims are carried to the corridor's
   # end. Roll is ground-only (air is not gathered).
-  giant_snowball_evo: {flags: [rolls], roll_tiles: 4.5, carry_roll: true, slow_duration_s: 4.0, attacks: [ground], verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   roll_tiles: SUPERSEDED 4.5 -> 4.0. decisions.md 2026-08-26 R2 ADJUDICATION #5:
+  #     giant_snowball_evo roll range 4.0 tiles
+  #   attacks: SUPERSEDED ['ground'] -> ['air', 'ground']. decisions.md 2026-08-26 R2 ADJUDICATION
+  #     #5: giant_snowball_evo hits air AND ground. conflicts.md E4: flipping this alone would
+  #     turn the ROLL OFF, because build_spec derived rolls from ground_only -- applied together
+  #     with that decoupling
+  #   slow_duration_s: SUPERSEDED 4.0 -> 3.0. decisions.md 2026-08-26 R2 ADJUDICATION #5 family:
+  #     4/5/2026 removed the Evo's bonus slow duration, so it equals the base spell's 3 s
+  #   crown_tower_damage: SUPERSEDED 54 -> 45. decisions.md 2026-08-26 R2 ADJUDICATION #3 CROWN:
+  #     1/6/2026 cut it to 25% of full; 179*0.25 = 44.75 -> 45
+  #   roll_speed: SUPERSEDED ABSENT -> 300. MISSING FIELD. The KB has carry_roll/roll_tiles but no
+  #     roll SPEED, so the sim has no duration for the pull
+  giant_snowball_evo: {flags: [rolls], roll_tiles: 4.0, carry_roll: true, slow_duration_s: 3.0, attacks: [air, ground], crown_tower_damage: 45, roll_speed: 300, verified: true}
   # EVO GOBLIN CAGE: "when a ground troop comes within 3 tiles of the building, they get pulled
   # into the cage and attacked directly" -- the Fisherman's hook machinery on a building body
   # (prep + reel timings fisherman-like [verify]).
-  goblin_cage_evo: {hook_max_tiles: 3.0, hook_time_s: 1.2, hook_speed_tiles: 8.0, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   ability_cooldown_s: SUPERSEDED ABSENT -> 0.3. MISSING FIELD: the re-grab cooldown between
+  #     one troop being released and the next being pulled in. The KB models hook_time_s 1.2 /
+  #     hook_speed_tiles 8.0 / hook_max_tiles 3.0 but has no cooldown, so the sim has no gap
+  #     between grabs at all
+  goblin_cage_evo: {hook_max_tiles: 3.0, hook_time_s: 1.2, hook_speed_tiles: 8.0, ability_cooldown_s: 0.3, verified: true}
   # EVO GOBLIN DRILL: "submerges and reappears around the tower as it takes damage, spawning
   # Goblins each time" -- every 25% hp lost it resurfaces on a new side with a fresh goblin.
-  goblin_drill_evo: {drill_relocate: true, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   relocate_thresholds: SUPERSEDED ABSENT -> [0.66, 0.33]. MISSING FIELDS behind a bare
+  #     boolean. `drill_relocate: true` carries none of the mechanism: the two hp thresholds (66%,
+  #     33%), the goblin counts per submerge (2 then 1 -- consistent with the 4/5/2026 change
+  #     'Goblins on second submerge decreased to 1 (from 2)')
+  goblin_drill_evo: {drill_relocate: true, relocate_thresholds: [0.66, 0.33], verified: true}
   # EVO BATTLE RAM: "Super Charge: charge and bounce multiple times against buildings and towers
   # until its HP is depleted", breaking into EVOLVED Barbarians ("the only evolution to spawn
   # another evolved troop").
-  battle_ram_evo: {ram_bounce: true, spawns: {unit: barbarians_evo, on_death: 2}, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   charge_pushback_damage: SUPERSEDED ABSENT -> 212. MISSING FIELD. The Evo Battle Ram damages
+  #     everything it ploughs through on the way to its target -- 212 at level 11, published as
+  #     its own vardefine with a named table column
+  #   self_pushback_tiles: SUPERSEDED ABSENT -> 2.0. MISSING FIELD: `ram_bounce` is a bare
+  #     boolean; the wiki publishes the bounce distance (2 tiles), which sets the re-ram period
+  #     together with the 2.0-tile/s charge speed. Useful confirmation while here: charge_damage
+  #     573 = exactly 2 x the 286 connection damage
+  #   spawn_unit_stats.speed_tiles: SUPERSEDED 2.0 -> 1.0. IMPORTED field (not curated), and two
+  #     independent pages agree: the Barbarians the ram carries move at Medium (60) = 1.0 tiles/s,
+  #     not 2.0. 2.0 is Very Fast (120), the speed of Goblins -- every other spawner row that
+  #     carries 2.0 really does spawn Goblins or Spir
+  battle_ram_evo: {ram_bounce: true, spawns: {unit: barbarians_evo, on_death: 2}, charge_pushback_damage: 212, self_pushback_tiles: 2.0, spawn_unit_stats: {speed_tiles: 1.0}, verified: true}
   # EVO ROYAL HOGS: "deploy as flying troops ... upon attacking or getting hurt, the hogs will
   # fall to the ground, dealing low area damage on impact" (fall damage [verify]).
   # Wiki vardefines: landing damage 115 (post 2/3/2026 -27% nerf); their swing is 74.
-  royal_hogs_evo: {movement: air, air_drop: true, air_drop_damage: 115, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   air_drop_damage: SUPERSEDED 115 -> 59. LAG bucket: the 2026-08-14 curation note itself reads
+  #     '115 (post 2/3/2026 -27% nerf)' and missed the 4/5/2026 -49%: 115*0.51 = 58.65 -> 59
+  royal_hogs_evo: {movement: air, air_drop: true, air_drop_damage: 59, verified: true}
   # EVO LUMBERJACK: the base death-Rage stays, and "when [he] dies, his ghost will spawn. The
   # ghost has unlimited health, and can't be targeted by troops, buildings and towers, but can
   # be affected by spells, and will disappear after a short time." Lifetime [verify] 5 s;
   # spell-vulnerability approximated by a big-but-finite hp pool.
   # Wiki vardefines: the EVO's dropped rage also DAMAGES on the drop (179, crown 54 --
   # modeled via the death blast at the rage radius); ghost confirmed 256 dmg / 0.8 s / ~5 s.
-  lumberjack_evo: {spawns: {unit: lumberjack_ghost, on_death: 1}, death_damage: 179, death_radius_tiles: 3.0, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   death_crown_damage: SUPERSEDED ABSENT -> 54. CROWN bucket: rage_crown_11 = 54 -- the sim
+  #     models the rage-drop blast via death_damage 179 but carried no crown figure, so it chipped
+  #     towers at full
+  lumberjack_evo: {spawns: {unit: lumberjack_ghost, on_death: 1}, death_damage: 179, death_radius_tiles: 3.0, death_crown_damage: 54, verified: true}
 
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   untargetable: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11: no
+  #     troop, building or tower can target the ghost
+  #   damage_immune: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11: no
+  #     source damages it -- but spells CAN still knock it back
+  #   spell_knockback_ok: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11:
+  #     spells can still knock the ghost back
+  #   ghost_life_s: SUPERSEDED 5.0 -> 4.5. decisions.md 2026-08-26 R2 ADJUDICATION #14:
+  #     lumberjack_ghost lifetime 4.5 s = the rage duration, conditional on staying inside the
+  #     pool (leaves early -> dies early)
+  #   unsourced: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11: no path
+  #     publishes the flagged value on this row -- the sim's own number is KEPT and the row
+  #     marked, rather than replaced by a reconstruction
+  #   crown_tower_damage: SUPERSEDED ABSENT -> 128. The KB row has no crown_tower_damage, so the
+  #     ghost currently hits crown towers for its full 256 -- exactly double what the game does.
+  #     All three paths agree on 128: the vardefine, a rendered stats column, and a dated entry
+  #     halving 256
+  #   range_tiles: SUPERSEDED 0.8 -> 0.7. Only the attributes table carries a range for the ghost
+  #     and it reads 0.7, matching the base Lumberjack (whose KB range_tiles is already 0.7 and
+  #     verified matching) -- the page says the Evolution 'spawns a Lumberjack with identical
+  #     stats to the original'. The ro
+  #   unsourced: true -- decisions.md #11: no path publishes these; the sim's own values are kept
+  #     and MARKED rather than replaced by a guess.
   lumberjack_ghost:                # the Evo Lumberjack's death ghost -- spawned, NOT a card
     display: "Lumberjack Ghost"
     elixir: null
@@ -361,19 +644,32 @@ cards:
     hitpoints: 4000
     damage: 256
     hit_speed: 0.8
-    range_tiles: 0.8
+    range_tiles: 0.7
     speed_tiles: 2.0
     deploy_time: 0.5
     invisibility_time_s: 1.8
     always_ghost: true
-    ghost_life_s: 5.0
+    ghost_life_s: 4.5
     verified: false
+    untargetable: true
+    damage_immune: true
+    spell_knockback_ok: true
+    unsourced: true
+    crown_tower_damage: 128
 
   # EVO SKEL BARREL: imported count 2 is the BARRELS-carried attribute, not bodies -- one flying
   # unit with 665 hp (125% of base) and 238 death damage per barrel. First barrel drops at 75%
   # hp (blast + 7 skeletons); the second on death; both at once if it reaches the tower unspent.
   # Contact damage zeroed like the base barrel (the imported damage row is the skeleton's swing).
-  skeleton_barrel_evo: {count: 1, damage: 0, dps: 0, mid_drop_frac: 0.75, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   death_damage: SUPERSEDED 238.0 -> 190. PARENT bucket: 238 is the 4/8/2025 snapshot (P1 and
+  #     P2 are one witness, not two). Two dated 2026 nerfs postdate it: 238*0.92*0.87 = 190.5 ->
+  #     190. Reading (a), evo-specific -- the entries appear ONLY on the Evolution page
+  #   spawn_count: SUPERSEDED ABSENT -> 7. KBGAP: '2 barrels, each with 7 Skeletons' (14 total);
+  #     the base card's per-barrel count has been 7 since 25/4/2018 and the evo page never changed
+  #     it
+  skeleton_barrel_evo: {count: 1, damage: 0, dps: 0, mid_drop_frac: 0.75, death_damage: 190, spawn_count: 7, verified: true}
 
   # ---- PHASE B EVO MECHANICS (2026-08-14 sweep 2) ----
   # EVO MUSKETEER: "gains 3 infinite-range attacks that target the closest troop or building from
@@ -383,7 +679,13 @@ cards:
   musketeer_evo: {sniper_shots: 3, sniper_mult: 1.8, verified: true}
   # EVO ARCHERS: "if there are units between 4 and 6 tiles ... they will shoot their Power Shot,
   # which deals 50% bonus damage"; their reach is 6 (one further than base) via the imported row.
-  archers_evo: {power_mult: 1.5, power_min: 4.0, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   power_mult: SUPERSEDED 1.5 -> 1.25. CURATED verified:true (power_mult 1.5) so flagged, never
+  #     auto-overwritten -- but ALL THREE paths agree on 1.25, including a dedicated vardefine
+  #     (Pow dmg_11 140 = 1.25 x dmg_11 112). The cards.yaml comment still quotes the pre-4/8/2026
+  #     wording ('deals 50% bonus
+  archers_evo: {power_mult: 1.25, power_min: 4.0, verified: true}
   # EVO FIRECRACKER: "both the initial and small shrapnel will leave sparks behind, which will
   # deal damage every 0.25 seconds and slow down enemy troops on them, similar to a Poison" --
   # 15% slow (imported slow_pct -15; Theria's "does not slow" prose loses to the attributes
@@ -395,12 +697,32 @@ cards:
   # MISSING, and missing did not mean "no evolution" -- CardDB.evo_cycles returns 0, and the sim's
   # slot reads 0 as "charged already", so the slot presented Evo Firecracker on EVERY cycle and the
   # base card became unplayable. deck_slots() now refuses an evolved slot that resolves to 0.
-  firecracker_evo: {evo_cycles: 2, spark_dps_large: 192, spark_dps_small: 60, spark_duration_s: 2.5, spark_radius_tiles: 0.75, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   spark_dps_small: SUPERSEDED 60 -> 48. decisions.md 2026-08-26 R2 ADJUDICATION #5:
+  #     firecracker_evo wiki correct for ALL entries -- the owner OVERTURNED their own verified
+  #     60, closing the long-flagged SIM_FIDELITY 6.7 conflict
+  #   spark_duration_large_s: SUPERSEDED ABSENT -> 3.0. decisions.md 2026-08-26 R2 ADJUDICATION
+  #     #5: split spark durations -- big 3.0 s
+  #   hit_speed: SUPERSEDED ABSENT -> 3.0. PRIORITY FLAG from the brief (evo rows missing
+  #     hit_speed) -- RESOLVED. firecracker_evo has no hit_speed at all today, so it also has no
+  #     dps, while the base firecracker row correctly carries 3.0/21
+  firecracker_evo: {evo_cycles: 2, spark_dps_large: 192, spark_dps_small: 48, spark_duration_s: 2.5, spark_radius_tiles: 0.75, spark_duration_large_s: 3.0, hit_speed: 3.0, verified: true}
   # EVO ELITE BARBARIANS (Season 86 -- the wiki page is STILL not scrapeable, so the whole row is
   # curated from the announcement; cards-import will supersede the stats when the page lands):
   # "each Elite Barbarian can throw a spear every 5 seconds, and each spear deals 284 damage" at
   # "an enemy troop or Crown Tower", and "the javelins create a glowing Rage trail" that buffs
   # any friendly inside. Base-stat copies + evo_cycles 1 from the announcement; deltas [verify].
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   unsourced: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11: no path
+  #     publishes the flagged value on this row -- the sim's own number is KEPT and the row
+  #     marked, rather than replaced by a reconstruction
+  #   javelin_trigger_band_tiles: SUPERSEDED ABSENT -> [3.5, 5.0]. MISSING FIELD, newly available.
+  #     The KB has a cooldown but no throw condition, so the sim has no rule for when a spear is
+  #     released
+  #   unsourced: true -- decisions.md #11: no path publishes these; the sim's own values are kept
+  #     and MARKED rather than replaced by a guess.
   elite_barbarians_evo:
     display: "Evo Elite Barbarians"
     elixir: 6
@@ -422,7 +744,15 @@ cards:
     javelin_damage: 284
     javelin_cd_s: 5.0
     verified: false
+    unsourced: true
+    javelin_trigger_band_tiles: [3.5, 5.0]
 
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   spawn_slow: SUPERSEDED ABSENT -> {'radius_tiles': 3.0, 'duration_s': 1.0, 'slow_pct': -30,
+  #     'targets': ['air', 'ground']}. KBGAP: the row carried spawn_damage 84 but none of the
+  #     spawn's area or slow, so the deploy blast damaged nothing around it and slowed nobody.
+  #     Distinct from the ATTACK slow already on the row (slow_duration_s 2.5)
   ice_wizard:
     display: "Ice Wizard"
     elixir: 3
@@ -442,7 +772,17 @@ cards:
     hitpoints: null
     damage: null
     hit_speed: null
+    spawn_slow: {radius_tiles: 3.0, duration_s: 1.0, slow_pct: -30, targets: [air, ground]}
 
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   zone_s: SUPERSEDED ABSENT -> 1.05. MISSING FIELD AND THE PATHS DISAGREE. The attributes
+  #     table gives Duration = 1.05 sec and the lead agrees ('for 1.05 seconds'), but the last
+  #     duration entry in the balance history is 25/4/2018 'decreased the duration to 2.05 seconds
+  #     (from 2.55 seconds)' with no
+  #   zone_tick_s: SUPERSEDED ABSENT -> 0.55. MISSING FIELD. Tornado is a damage-over-time zone --
+  #     the lead says damage 'is dealt every 0.55 seconds', and 9/4/2025 set the attack interval
+  #     to 0.55 (from 0.5)
   tornado:
     display: "Tornado"
     elixir: 3
@@ -462,14 +802,39 @@ cards:
     hitpoints: null
     damage: null
     hit_speed: null
+    zone_s: 1.05
+    zone_tick_s: 0.55
 
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   damage: SUPERSEDED 133 -> 385. decisions.md 2026-08-26 R2 ADJUDICATION #9: the 12% cut
+  #     applies to the SPAWN damage. The landing damage is spawn_11 437 (dmg_11 133 is the spawned
+  #     Recruit's melee); 437*0.88 = 384.6 -> 385
+  #   spawn_damage: SUPERSEDED 437.0 -> 385. decisions.md 2026-08-26 R2 ADJUDICATION #9: the
+  #     4/8/2026 -12% lands on the SPAWN damage: 437*0.88 -> 385
+  #   crown_tower_damage: SUPERSEDED 40 -> REMOVED. decisions.md 2026-08-26 R2 ADJUDICATION #11:
+  #     royal_delivery CANNOT hit crown towers -- discard crown_tower_damage entirely
+  #   unsourced: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11: no path
+  #     publishes the flagged value on this row -- the sim's own number is KEPT and the row
+  #     marked, rather than replaced by a reconstruction
+  #   radius_tiles: SUPERSEDED ABSENT -> 3.0. MISSING FIELD. The attributes table publishes Radius
+  #     3; the DB row has no radius at all, so the landing blast has no area
+  #   unsourced: true -- decisions.md #11: no path publishes these; the sim's own values are kept
+  #     and MARKED rather than replaced by a guess.
   royal_delivery:              # overlay only: imported stats carry the rest (curated wins on set keys)
-    crown_tower_damage: 40     # L11 basis: the spell's 133 impact damage is REDUCED vs crown towers like
-                               # every damage spell (~30%; USER VERIFY exact). Without it the sim gave RD
-                               # full tower damage. The spawned Recruit still hits towers at full melee.
+    damage: 385
+    spawn_damage: 385
+    unsourced: true
+    radius_tiles: 3.0
+    verified: true
 
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   crown_tower_damage: SUPERSEDED 342 -> 341. DUP bucket (merge's pick) + the crown-damage pin
+  #     family: 1484*0.23 = 341.32 -> 341. cards.yaml carried 342, which needs a ceil where the
+  #     rest of the family rounds, and disagrees with the crown_damage_audit output it cites
   rocket:
-    crown_tower_damage: 342   # post-1/6/2026 (see crown_damage_audit.py)
+    crown_tower_damage: 341   # post-1/6/2026 (see crown_damage_audit.py)
     display: "Rocket"
     elixir: 6
     kind: spell
@@ -598,6 +963,10 @@ cards:
     damage: null
     hit_speed: null
 
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   load_time_s: SUPERSEDED 0.5 -> 0.7. Frozen-dump field. Wiki gives hit speed 1.2 / First Hit
+  #     Speed 0.5 -> 0.7; dump says 0.5
   minions:
     display: "Minions"
     elixir: 3
@@ -617,6 +986,7 @@ cards:
     hitpoints: null
     damage: null
     hit_speed: null
+    load_time_s: 0.7
 
   hog_rider:
     display: "Hog Rider"
@@ -678,6 +1048,12 @@ cards:
     damage: null
     hit_speed: null
 
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   hitpoints: SUPERSEDED 1433 -> 1390. Page proven stale across a documented change: time
+  #     machine oldid 433647 (2025-12-25, before 12/1/2026) has the hardcoded L11 row
+  #     '|11||1,433||755||{{Dps|755|1.6}}', and today's rendered row is still 1433, while History
+  #     records a 3% hitpoint cut. 1433 x 0.97 =
   mini_pekka:
     display: "Mini P.E.K.K.A"
     elixir: 4
@@ -694,7 +1070,7 @@ cards:
     flags: [high_damage]
     evolution: null
     verified: true
-    hitpoints: null
+    hitpoints: 1390
     damage: null
     hit_speed: null
 
@@ -718,6 +1094,11 @@ cards:
     damage: null
     hit_speed: null
 
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   evolution.available: SUPERSEDED ABSENT -> True. SYSTEMIC GATE BUG -- 10 of my 32 keys. The
+  #     parent row has evolution:null while a fully populated baby_dragon_evo row exists carrying
+  #     the correct evo_cycles=2
   baby_dragon:
     display: "Baby Dragon"
     elixir: 4
@@ -732,7 +1113,7 @@ cards:
     win_condition: false
     targets: any
     flags: [flying, splash, splash_air]
-    evolution: null
+    evolution: {available: true}
     verified: true
     hitpoints: null
     damage: null
@@ -758,6 +1139,13 @@ cards:
     damage: null
     hit_speed: null
 
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   unsourced: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11: no path
+  #     publishes the flagged value on this row -- the sim's own number is KEPT and the row
+  #     marked, rather than replaced by a reconstruction
+  #   unsourced: true -- decisions.md #11: no path publishes these; the sim's own values are kept
+  #     and MARKED rather than replaced by a guess.
   balloon:
     display: "Balloon"
     elixir: 5
@@ -781,6 +1169,7 @@ cards:
     hitpoints: null
     damage: null
     hit_speed: null
+    unsourced: true
 
   skeleton_army:
     display: "Skeleton Army"
@@ -837,8 +1226,14 @@ cards:
   # that are targeted are always the three that have the highest hitpoints within its radius."
   # dmg 153 x2 hits collapsed to one application (306, crown 39 x2 = 78): total right, the
   # 1.25 s split between the two ticks is below the sim's decision resolution.
-  vines: {kind: spell, flags: [stun], stun_duration_s: 2.5, top_n_targets: 3,
-          damage: 306, crown_tower_damage: 78, radius_tiles: 2.5, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   stun_duration_s: SUPERSEDED 2.5 -> 2. PROSE LAGS HISTORY, AND THE CURATOR QUOTED THE PROSE.
+  #     The attributes table gives Duration = 2 sec AND 8/10/2025 'decreased duration to 2 seconds
+  #     (from 2.5 seconds)' -- two independent paths at 2.0
+  #   crown_tower_damage: SUPERSEDED 78 -> 70. 1/6/2026 -> 23% of full. Per hit: 153*0.23 = 35.19
+  #     -> 35, x2 hits = 70
+  vines: {kind: spell, flags: [stun], stun_duration_s: 2, top_n_targets: 3, damage: 306, crown_tower_damage: 70, radius_tiles: 2.5, verified: true}
   # POISON (2026-08-15 wiki): "low damage that is dealt every second for 8 seconds ...
   # decreases the movement speed of enemy troops by 15%". It was resolving as a ONE-TIME
   # 92-damage blast -- 12% of its real output, in 10% of ladder decks. KB's per-tick values
@@ -846,14 +1241,30 @@ cards:
   # attacks: the wiki calls both "air-targeting" spells; the imported KB rows had them as
   # ground-only, which (with the 2026-08-16 air guard in card_threat.counters) would have made
   # them look like non-counters against any flying threat.
-  poison: {crown_tower_damage: 21, kind: spell, zone_s: 8.0, zone_tick_s: 1.0, zone_move_slow: 0.15,
-           radius_tiles: 3.5, attacks: [air, ground], verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   unsourced: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11: no path
+  #     publishes the flagged value on this row -- the sim's own number is KEPT and the row
+  #     marked, rather than replaced by a reconstruction
+  #   unsourced: true -- decisions.md #11: no path publishes these; the sim's own values are kept
+  #     and MARKED rather than replaced by a guess.
+  poison: {crown_tower_damage: 21, kind: spell, zone_s: 8.0, zone_tick_s: 1.0, zone_move_slow: 0.15, radius_tiles: 3.5, attacks: [air, ground], unsourced: true, verified: true}
 
   # VOID (2026-08-15 wiki vardefines): 3 hits over 4 s; per-hit damage tiers by how many
   # targets share the zone -- 1 target: 696/97 crown; 2-3: 294/51; 4+: 153/35 (level 11).
   # "dealing more damage to them the fewer there are inside its radius".
-  void: {kind: spell, zone_s: 4.0, zone_tick_s: 1.333, radius_tiles: 2.5,
-         zone_tiers: [[1, 696, 97], [3, 294, 51], [99, 153, 35]], verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   first_strike_delay_s: SUPERSEDED ABSENT -> 1.0. MISSING FIELD, history path only. 17/6/2024
+  #     'increased the Void's first strike interval to 1 second (from 0.5 seconds)'
+  #   zone_tiers: SUPERSEDED [[1, 696, 97], [3, 294, 51], [99, 153, 35]] -> [[1, 696, 97], [4,
+  #     294, 51], [99, 153, 35]]. TIER BOUNDARY OFF BY ONE -- read from the vardefine NAME instead
+  #     of the column LABEL. The vardefines are named 1_/3_/5_, but the table headers they feed
+  #     are 'Single Target', '2-4 Targets' and '5 Or More Targets', and the 4/8/2026 balance entry
+  #     uses exactly the
+  #   zone_tick_s: SUPERSEDED 1.333 -> 1.2. STALE BY TWO BALANCE UPDATES. The strike interval went
+  #     1.3 -> 1.0 (4/3/2025) -> 1.2 (4/8/2026)
+  void: {kind: spell, zone_s: 4.0, zone_tick_s: 1.2, radius_tiles: 2.5, zone_tiers: [[1, 696, 97], [4, 294, 51], [99, 153, 35]], first_strike_delay_s: 1.0, verified: true}
 
   zap:
     crown_tower_damage: 48   # post-1/6/2026 (see crown_damage_audit.py)
@@ -899,6 +1310,11 @@ cards:
   # GOBLIN BARREL (base-card bug found during Phase B): the sim resolved it as a bare 120-damage
   # blast that spawned NOTHING -- the imported damage row is the GOBLIN's swing, and the real
   # barrel drops 3 Goblins with ZERO impact damage. Every logbait deck in the pool was toothless.
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   spawn_unit_stats.deploy_time: SUPERSEDED ABSENT -> 1.1. MISSING FIELD, both paths agree on
+  #     1.1s. cards.yaml's own comment already argues this matters ('The Goblins then take their
+  #     own deploy time ..
   goblin_barrel:
     display: "Goblin Barrel"
     elixir: 3
@@ -926,11 +1342,17 @@ cards:
     dps: 0
     hit_speed: null
     spawns_troop: {unit: goblins, count: 3}
+    spawn_unit_stats: {range_tiles: 0.5, speed_tiles: 2.0, hit_speed: 1.1, deploy_time: 1.1}
 
   # EVO GOBLIN BARREL: "a second Goblin Barrel is launched alongside the first one, which lands
   # on its mirroring tile in the other lane. Once [it] has hit the ground, it spawns three Decoy
   # Goblins" -- dual-lane pressure, indistinguishable in the air.
-  goblin_barrel_evo: {decoy_mirror: goblin_barrel_decoy, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   decoy_goblin.damage: SUPERSEDED ABSENT -> 66. CLEAN RECONSTRUCTION, two nerfs deep. 120 ->
+  #     (-26%) -> 89 is visible in the time machine; the second -26% (4/8/2026) was never applied,
+  #     giving 89*0.74 = 65.9 -> ~66
+  goblin_barrel_evo: {decoy_mirror: goblin_barrel_decoy, decoy_goblin: {damage: 66}, verified: true}
 
   goblin_barrel_decoy:             # the mirrored DECOY barrel -- a spawned spell, NOT a card
     display: "Decoy Goblin Barrel"
@@ -944,6 +1366,10 @@ cards:
     spawns_troop: {unit: decoy_goblin, count: 3}
     verified: true
 
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   deploy_time: SUPERSEDED 1.0 -> 1.1. decisions.md 2026-08-26 R2 ADJUDICATION #5: decoy
+  #     goblins deploy time = normal goblin-barrel goblins (1.1 s)
   decoy_goblin:                    # "single-target, ground-targeting, melee, ground troops" --
     display: "Decoy Goblin"        # USER-VERIFIED 2026-08-14: 81 hp / 89 damage at level 11,
     elixir: null                   # goblin hit speed (1.1 s)
@@ -960,7 +1386,7 @@ cards:
     hit_speed: 1.1
     range_tiles: 0.5
     speed_tiles: 2.0
-    deploy_time: 1.0
+    deploy_time: 1.1
     verified: true
 
   # ---- pre-filled win conditions + siege (2026-07-26) -----------------------------
@@ -1013,6 +1439,13 @@ cards:
   # That global happens to be 2.0 today, so this is not a behaviour change at the current config;
   # it is the card asserting its own published number instead of borrowing the Ice Wizard's.
   # Retune sim.slow_duration and her snare no longer moves with it.
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   rider_attack: SUPERSEDED ABSENT -> {'damage': 104, 'hit_speed': 1.1, 'range_tiles': 5.5,
+  #     'projectile_speed': 600, 'attacks': ['air', 'ground'], 'targets': 'troops'}.
+  #     KBGAP/PRIORITY: the KB modelled only the Ram and the snare. The RIDER's own attack -- 104
+  #     every 1.1 s at 5.5 tiles, projectile 600, hitting AIR as well as ground, troops only --
+  #     was absent, so in the sim a Ram Rider did no ranged chip and could not touch air at all
   ram_rider:
     display: "Ram Rider"
     win_condition: true
@@ -1021,14 +1454,29 @@ cards:
     range: melee
     slow_duration_s: 2.0
     verified: true
+    rider_attack: {damage: 104, hit_speed: 1.1, range_tiles: 5.5, projectile_speed: 600, attacks: [air, ground], targets: troops}
 
   # 2026-08-15 wiki: "When defeated, it drops a bomb which explodes after 3 seconds."
   # Its SHOTS do not shove -- only the bomb it drops when it dies does (user, 2026-08-16). The
   # single knockback_tiles field applied to both, so every lobbed shell was pushing the push back
   # and the tower defended far better than the real one. Split: 0 on the attack, 1.0 on the death
   # blast, which is the "drops a bomb which explodes after 3 seconds" the wiki describes.
-  bomb_tower: {death_delay_s: 3.0, knockback_tiles: 0, death_knockback_tiles: 1.0, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   death_damage_targets: SUPERSEDED ABSENT -> ['air', 'ground']. KBGAP: attacks:[ground]
+  #     describes only the turret; the wiki gives the DEATH blast Air & Ground, so today a Bomb
+  #     Tower death cannot kill the Bats it should
+  bomb_tower: {death_delay_s: 3.0, knockback_tiles: 0, death_knockback_tiles: 1.0, death_damage_targets: [air, ground], verified: true}
 
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   evolution.available: SUPERSEDED ABSENT -> True. SYSTEMIC GATE BUG -- 10 of my 32 keys. The
+  #     parent row has evolution:null while a fully populated battle_ram_evo row exists carrying
+  #     the correct evo_cycles=2
+  #   spawn_unit_stats.speed_tiles: SUPERSEDED 2.0 -> 1.0. The Battle Ram page's TERTIARY
+  #     attributes table (its death-spawn Barbarians) gives Medium (60) = 1.0 tiles/s, and the
+  #     Barbarians card page independently agrees. current_db 2.0 is Very-Fast and looks copied
+  #     from the ram's CHARGE speed (charge_speed_tiles=2.0; t
   battle_ram:
     display: "Battle Ram"
     win_condition: true
@@ -1043,6 +1491,8 @@ cards:
     spawns: {unit: barbarians, on_death: 2}
     range: melee
     verified: true
+    evolution: {available: true}
+    spawn_unit_stats: {speed_tiles: 1.0}
 
   wall_breakers:
     display: "Wall Breakers"
@@ -1055,6 +1505,12 @@ cards:
     range: melee
     verified: true
 
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   spawn_unit_stats.hit_speed: SUPERSEDED 1.7 -> 1.6. Confirmed stale by time machine: at oldid
+  #     436715 (2026-07-16, before the 4/8/2026 update) spear_atk_speed was already 1.7 and it is
+  #     still 1.7 today, so the page never applied the documented change. Both 1.7 paths are the
+  #     same lagging card page
   goblin_giant:
     display: "Goblin Giant"
     win_condition: true
@@ -1062,6 +1518,7 @@ cards:
     flags: [tank, building_targeting, spawner]
     range: melee
     verified: false
+    spawn_unit_stats: {range_tiles: 5.0, speed_tiles: 2.0, hit_speed: 1.6}
 
   elixir_golem:
     display: "Elixir Golem"
@@ -1091,6 +1548,20 @@ cards:
     range: melee
     verified: false
 
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   unsourced: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11: no path
+  #     publishes the flagged value on this row -- the sim's own number is KEPT and the row
+  #     marked, rather than replaced by a reconstruction
+  #   crown_tower_damage: SUPERSEDED ABSENT -> 97. Missing field: the Zap Pack's reflected damage
+  #     to crown towers (crown_11 = 97) has no KB counterpart. Deliberately NOT proposing a write
+  #     -- the brief pins the crown-tower damage family as re-curated post-1/6/2026, and the
+  #     4/5/2026 entry moved this number again
+  #   reflect_damage: SUPERSEDED 120 -> 192.0. The level-11 statistics row maps reflect_11 to the
+  #     'Reflect Damage' column, so P1 and P2 are the same published number: 192. current_db 120
+  #     is 37.5% low
+  #   unsourced: true -- decisions.md #11: no path publishes these; the sim's own values are kept
+  #     and MARKED rather than replaced by a guess.
   electro_giant:
     display: "Electro Giant"
     win_condition: true
@@ -1099,10 +1570,12 @@ cards:
     range: melee
     # ZAP PACK (wiki): units damaging him within 3 tiles take ~120 (L11) back + a 0.5s stun; off
     # while frozen/stunned. This is what makes the ranged-only counter-doctrine learnable in sim.
-    reflect_damage: 120
+    reflect_damage: 192.0
     reflect_radius_tiles: 3.0
     reflect_stun_s: 0.5
     verified: false
+    unsourced: true
+    crown_tower_damage: 97
 
   skeleton_barrel:
     display: "Skeleton Barrel"
@@ -1144,6 +1617,13 @@ cards:
     lifetime_s: 10.0
     verified: true
 
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   zone_spawn_edge: SUPERSEDED True -> False. LAG bucket: the spawn RING is 3.3 tiles, not the
+  #     4-tile edge. 2/2/2026 moved it to 3.3 (from 2.9) and 14/1/2026 only moved them 'closer to'
+  #     the edge, never onto it
+  #   zone_spawn_radius_tiles: SUPERSEDED ABSENT -> 3.3. LAG bucket companion: the live spawn
+  #     radius, against the KB's edge-of-4.0 model
   graveyard:
     display: "Graveyard"
     win_condition: true
@@ -1161,10 +1641,19 @@ cards:
     zone_spawn_n: 12
     zone_spawn_start_s: 2.2
     zone_spawn_gap_s: 0.5
-    zone_spawn_edge: true
+    zone_spawn_edge: false
     spawn_unit: skeletons     # per-body stats (81/81 @11, the card's hp/dmg ARE per body)
     verified: true
+    zone_spawn_radius_tiles: 3.3
 
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   roll_speed: SUPERSEDED ABSENT -> 200. MISSING FIELD, history path only. 20/10/2016 set The
+  #     Log's projectile speed to 200 (from 170) and its casting speed to 360 (from 300), and
+  #     neither has changed since
+  #   width_tiles: SUPERSEDED ABSENT -> 3.9. MISSING FIELD. The Log is explicitly a rectangle --
+  #     the attributes table publishes Range 10.1 AND Width 3.9, and the lead calls it 'a very
+  #     long rectangular area'
   the_log:
     crown_tower_damage: 35   # post-1/6/2026 (see crown_damage_audit.py)
     display: "The Log"
@@ -1183,13 +1672,27 @@ cards:
     knockback_tiles: 0.7
     verified: true
     # cast point is YOUR half only (it ROLLS to the enemy side); L11 stats: damage 266, crown_tower_damage 40 (poor tower chip)
+    roll_speed: 200
+    width_tiles: 3.9
 
   # -- ROLLING / KNOCKBACK spells that were not otherwise curated --
   # Barbarian Barrel still ROLLS but has NO pushback: the 3/9/2018 Balance Update "decreased its
   # rolling distance to 5 tiles (from 7 tiles), decreased its damage by 9%, and REMOVED ITS PUSHBACK".
   # It was previously modelled as a point blast, because `rolls` used to be derived from the
   # knockback flag -- so removing the pushback also silently removed the corridor.
-  barbarian_barrel: {kind: spell, flags: [rolls, splash], roll_tiles: 5.0, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   spawn_unit_stats.deploy_time: SUPERSEDED ABSENT -> 0.5. MISSING FIELD AND THE PATHS
+  #     DISAGREE. The spawned Barbarian's deploy time is 1.0s per the 1/12/2025 balance entry, but
+  #     the secondary attributes table still reads 0.5 sec (never updated)
+  #   roll_tiles: SUPERSEDED 5.0 -> 4.5. STALE BY ONE BALANCE UPDATE. cards.yaml pins roll_tiles
+  #     5.0 quoting the 3/9/2018 entry ('decreased its rolling distance to 5 tiles (from 7
+  #     tiles)'), but 7/6/2022 cut it again to 4.5, and the attributes table's Range cell agrees
+  #     at 4.5
+  #   width_tiles: SUPERSEDED ABSENT -> 2.6. MISSING FIELD. The barrel is a rectangular corridor,
+  #     not a point: the attributes table publishes Width 2.6 and 1/7/2019 set it to 2.6 (from
+  #     3.9)
+  barbarian_barrel: {kind: spell, flags: [rolls, splash], roll_tiles: 4.5, width_tiles: 2.6, spawn_unit_stats: {range_tiles: 0.5, speed_tiles: 1.0, hit_speed: 1.3, deploy_time: 0.5}, verified: true}
   # Giant Snowball: "slows enemies in its radius for 3 seconds and inflict knockback"; pushback range
   # 1.8 tiles per the 6/9/2021 Quarter 3 Update ("increased ... to 1.8 tiles (from 1.5 tiles)").
   giant_snowball: {kind: spell, flags: [knockback, slow], knockback_tiles: 1.8, verified: true}
@@ -1203,7 +1706,14 @@ cards:
   # radius and low damage" (12/12/2022 Clashmas Update "made the spell deal area damage").
   # ⚠ The FRIENDLY BUFF itself (+30% move and attack speed for 4.5 s) is still NOT modelled --
   # that is stage I9. This row fixes only the false targeting claim.
-  rage: {kind: spell, attacks: [air, ground], verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   duration_s: SUPERSEDED ABSENT -> 4.5. MISSING FIELD -- the card's whole point. Table
+  #     Duration 4.5 sec, and 4/8/2025 set it to 4.5 (from 5.5)
+  #   boost: SUPERSEDED ABSENT -> 0.3. MISSING FIELD. Table Boost +30%; 6/10/2025 cut the speed
+  #     boost to 30% (from 35%); lead: 'It increases the movement speed and attack speed of allied
+  #     troops and buildings by 30%.' Same 0.30 the Lumberjack drops_rage entry already uses.
+  rage: {kind: spell, attacks: [air, ground], duration_s: 4.5, boost: 0.3, verified: true}
   # NB Arrows and Zap get NO knockback: neither publishes a pushback range and neither has a balance
   # entry for one. The Arrows page's "its knockback and slow effects" line is stale Strategy prose
   # describing Giant Snowball -- Arrows has no slow effect either, which is the tell.
@@ -1217,10 +1727,18 @@ cards:
   # and crown damage and about a tenth of its building damage -- gutting the one card whose whole
   # job is deleting the building that stops the Hog. Routed through the Poison-style zone: the
   # cast itself lands nothing and the field does the work over its 3 s.
-  earthquake: {crown_tower_damage: 49, damage: 81, kind: spell, flags: [hits_hidden, slow], attacks: [ground],
-               build_damage: 283, zone_s: 3.0, zone_tick_s: 1.0, zone_first_tick_now: true,
-               zone_move_slow: 0.5, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   build_damage: SUPERSEDED 283 -> 287. Same stale-curation as `damage`: vardefine build_dmg_11
+  #     = 287 vs DB 283. Ratio sanity check against the lead's 'doing 3.5 times damage to
+  #     buildings': 287/84 = 3.42, 283/81 = 3.49 -- both approximate, but 287 is the published
+  #     integer
+  earthquake: {crown_tower_damage: 49, damage: 81, kind: spell, flags: [hits_hidden, slow], attacks: [ground], build_damage: 287, zone_s: 3.0, zone_tick_s: 1.0, zone_first_tick_now: true, zone_move_slow: 0.5, verified: true}
 
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   load_time_s: SUPERSEDED 0.7 -> 0.8. Frozen-dump field. Wiki gives hit speed 1.3 / First Hit
+  #     Speed 0.5 -> 0.8; dump says 0.7
   miner:
     display: "Miner"
     win_condition: true
@@ -1242,7 +1760,13 @@ cards:
                                # (wiki-style reduced value; USER VERIFY exact number). Without it the sim
                                # let him chip towers at full damage -> the king-snipe exploit.
     verified: false
+    load_time_s: 0.8
 
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   load_time_s: SUPERSEDED ABSENT -> 0.3. PRIORITY/gap: field absent from the KB row. The table
+  #     publishes First Hit Speed 0.3, but that cell is part of the same stale pre-4/8/2026 row as
+  #     Hit Speed, so it most likely tracks to 0.4
   x_bow:
     display: "X-Bow"
     win_condition: true
@@ -1251,6 +1775,7 @@ cards:
     range: long
     deploy_time_s: 3.5        # wiki attr table: 0.3s hit / 0.3s load / 3.5s DEPLOY / 30s life
     verified: true            # 2026-08-15 wiki sweep (range 11.5, lifetime 30 already correct)
+    load_time_s: 0.3
 
   mortar:
     display: "Mortar"
@@ -1304,6 +1829,13 @@ cards:
   # royal_recruit = the SINGLE shielded troop spawned by Royal Delivery (and one of the
   # several individual recruits packed into the "royal_recruits" card). Its own class on
   # purpose; NOT the same as royal_recruits. Not in cards_stats.json, so fuller entry here.
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   range_tiles: SUPERSEDED ABSENT -> 1.6. PRIORITY / MISSING FIELD on a sub-unit row. Sourced
+  #     from the PARENT spell page Royal Delivery, section 'Royal Recruit Attributes' --
+  #     royal_recruit has no wiki page of its own
+  #   dps: SUPERSEDED ABSENT -> 102. PRIORITY / MISSING FIELD. Derived exactly as on the sibling
+  #     row royal_recruits.dps (102), which matches
   royal_recruit:
     display: "Royal Recruit"
     # THE SINGLE recruit dropped by Royal Delivery -- NOT the six-body Royal Recruits card. Same
@@ -1333,6 +1865,8 @@ cards:
     flags: [shield]
     evolution: null
     verified: true
+    range_tiles: 1.6
+    dps: 102
 
   mother_witch_hog:                # the cursed HOGS Mother Witch spawns (distinct from Royal Hogs) -- fast,
     display: "Mother Witch Hog"    # building-targeting; a spawned unit, NOT a deployable card (no elixir/stats in the KB)
@@ -1358,6 +1892,11 @@ cards:
     evolution: null
     verified: false
 
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   hitpoints: SUPERSEDED 239 -> 240. DUP bucket (merge's pick): the wiki moved to 240 and the
+  #     KB kept 239. The 317 in P3 is the sweep's own reconstruction of a 2/3/2026 +32% the wiki
+  #     never applied -- not a published number, so not applied
   phoenix_egg:                     # the EGG a dying Phoenix leaves behind -- a spawned body, NOT a
     display: "Phoenix Egg"         # deployable card. Stationary and harmless; its whole job is to
     elixir: null                   # survive 3.8 s (see phoenix `egg:`). 239 hp at level 11 per the
@@ -1374,7 +1913,7 @@ cards:
     splash: false
     count: 1
     win_condition: false
-    hitpoints: 239
+    hitpoints: 240
     damage: 0
     dps: 0
     hit_speed: 1.0
@@ -1505,24 +2044,79 @@ cards:
   # the immunity live in the lead PROSE, so they are curated.) Balance history confirms the minimum:
   # 12/2/2018 "decreased her minimum dash range to 3.5 tiles (from 4 tiles)".
   bandit: {range: melee, leap_min_tiles: 3.5, leap_max_tiles: 6.0, leap_speed_tiles: 8.33, leap_invulnerable: true, leap_towers: true, verified: true}
-  barbarians: {range: melee, attacks: [ground], count: 5, flags: [swarm], verified: false}
-  bats: {range: melee, verified: false}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   unsourced: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11: no path
+  #     publishes the flagged value on this row -- the sim's own number is KEPT and the row
+  #     marked, rather than replaced by a reconstruction
+  #   evolution.available: SUPERSEDED ABSENT -> True. SYSTEMIC GATE BUG -- 10 of my 32 keys. The
+  #     parent row has evolution:null while a fully populated barbarians_evo row exists carrying
+  #     the correct evo_cycles=1
+  #   unsourced: true -- decisions.md #11: no path publishes these; the sim's own values are kept
+  #     and MARKED rather than replaced by a guess.
+  barbarians: {range: melee, attacks: [ground], count: 5, flags: [swarm], unsourced: true, evolution: {available: true}, verified: false}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   unsourced: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11: no path
+  #     publishes the flagged value on this row -- the sim's own number is KEPT and the row
+  #     marked, rather than replaced by a reconstruction
+  #   evolution.available: SUPERSEDED ABSENT -> True. SYSTEMIC GATE BUG -- 10 of my 32 keys. The
+  #     parent row has evolution:null while a fully populated bats_evo row exists carrying the
+  #     correct evo_cycles=2
+  #   unsourced: true -- decisions.md #11: no path publishes these; the sim's own values are kept
+  #     and MARKED rather than replaced by a guess.
+  bats: {range: melee, unsourced: true, evolution: {available: true}, verified: false}
   # EVO BATS: "every time they attack, [they] heal themselves, having two healing pulses with a
   # 0.5 second interval. The healing can OVERHEAL them ... up to double their initial hitpoints."
   # 76 hp/s at the level-11 row x 1.3 s hit speed = ~99 per attack (both pulses folded into the
   # swing on our 0.1 s grid); cap 244 = 2 x their 122 deploy hp. Spawn hp 150% flows from import.
-  bats_evo: {hit_heal: 99, overheal_frac: 2.0, verified: true}
-  battle_healer: {range: melee, verified: false}
-  berserker: {range: melee, verified: false}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   hit_heal: SUPERSEDED 99 -> 76. decisions.md 2026-08-26 R2 ADJUDICATION #5: bats_evo heal per
+  #     hit = 76 (wiki)
+  bats_evo: {hit_heal: 76, overheal_frac: 2.0, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   unsourced: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11: no path
+  #     publishes the flagged value on this row -- the sim's own number is KEPT and the row
+  #     marked, rather than replaced by a reconstruction
+  #   heal_per_pulse: SUPERSEDED ABSENT -> 25.0. The whole heal mechanic is absent from the KB row
+  #     -- Battle Healer's defining behaviour is unmodelled. P1 heal_11 = 25 per pulse at level
+  #     11.
+  #   heal_interval_s: SUPERSEDED ABSENT -> 0.25. P1 and P2 agree: 4 pulses per second, 0.25 s
+  #     between pulses.
+  #   heal_radius_tiles: SUPERSEDED ABSENT -> 3.0. The page carries TWO heal tables that disagree
+  #     (3 vs 2.5). Resolved by arithmetic rather than majority: pi*3^2 = 28.27 = the stated 28.3
+  #     sq tiles, and pi*4^2 = 50.27 = the stated old 50.3 sq tiles
+  #   spawn_heal: SUPERSEDED ABSENT -> 50.0. One-off heal burst on deploy, 50 at level 11; absent
+  #     from the KB row. P3 confirms spawn healing is a distinct tracked quantity.
+  #   unsourced: true -- decisions.md #11: no path publishes these; the sim's own values are kept
+  #     and MARKED rather than replaced by a guess.
+  battle_healer: {range: melee, unsourced: true, heal_per_pulse: 25.0, heal_interval_s: 0.25, heal_radius_tiles: 3.0, spawn_heal: 50.0, verified: false}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   unsourced: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11: no path
+  #     publishes the flagged value on this row -- the sim's own number is KEPT and the row
+  #     marked, rather than replaced by a reconstruction
+  #   unsourced: true -- decisions.md #11: no path publishes these; the sim's own values are kept
+  #     and MARKED rather than replaced by a guess.
+  berserker: {range: melee, unsourced: true, verified: false}
   # SAME dash as the Bandit, word for word: "If there are ground units between 3.5 and 6 tiles of
   # her, she will stop moving and begin charging a dash attack which takes 0.8 seconds to execute,
   # and will deal double damage" (dash_damage 489 / dash_time_s 0.8 are imported). NOTE she is NOT
   # described as immune during it -- that line is the Bandit's alone -- so no leap_invulnerable.
   # ABILITY "Getaway Grenade", 1 elixir: "get invisible for one second, then teleport 6 tiles behind
   # her current spot", 3 s cooldown after the duration, ONLY TWICE per deployment.
-  boss_bandit: {range: melee, leap_min_tiles: 3.5, leap_max_tiles: 6.0, leap_speed_tiles: 8.33, leap_towers: true,
-                ability_cost: 1, ability_uses: 2, ability_cooldown_s: 3.0,
-                ability_invis_s: 1.0, ability_back_tiles: 6.0, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   leap_invulnerable: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #5 +
+  #     KBGAP: revid 437146 describes her dash invulnerability in the official card quote and
+  #     twice in strategy prose, contradicting the curated 'she is NOT described as immune'
+  #     comment
+  #   first_hit_speed_s: SUPERSEDED ABSENT -> 0.4. KB row lacks the field.
+  #     load_time_s/mass/sight/collision do NOT come from the wiki: import_mechanics.py reads
+  #     RoyaleAPI cr-api-data cards_stats.json, meta.source_frozen=2023-10-18
+  boss_bandit: {range: melee, leap_min_tiles: 3.5, leap_max_tiles: 6.0, leap_speed_tiles: 8.33, leap_towers: true, ability_cost: 1, ability_uses: 2, ability_cooldown_s: 3.0, ability_invis_s: 1.0, ability_back_tiles: 6.0, leap_invulnerable: true, first_hit_speed_s: 0.4, verified: true}
   # KNOCKBACK-IMMUNE HEAVIES. Sourced from the Bowler page, whose pushback "functions identically to
   # a Fireball, Giant Snowball, or Rocket, pushing back small to medium sized ground troops, and
   # minimally damaging heavy troops such as the Prince, Sparky, Dark Prince, Skeleton King, Giant
@@ -1539,16 +2133,36 @@ cards:
   # every published figure (the page's own Splash Radius column reads 1.1); the owner set the
   # charged swing equal to the plain one.
   dark_prince: {range: melee, flags: [splash, knockback_immune], splash_radius: 1.1, charge_splash_radius_tiles: 1.1, verified: true}
-  elite_barbarians: {range: melee, verified: false}
-  fire_spirit: {range: melee, verified: false}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   unsourced: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11: no path
+  #     publishes the flagged value on this row -- the sim's own number is KEPT and the row
+  #     marked, rather than replaced by a reconstruction
+  #   unsourced: true -- decisions.md #11: no path publishes these; the sim's own values are kept
+  #     and MARKED rather than replaced by a guess.
+  elite_barbarians: {range: melee, unsourced: true, verified: false}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   unsourced: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11: no path
+  #     publishes the flagged value on this row -- the sim's own number is KEPT and the row
+  #     marked, rather than replaced by a reconstruction
+  #   range: SUPERSEDED 'melee' -> 'short'. P2 prints a bare '2.5' with no 'Melee:' prefix, i.e. a
+  #     ranged attacker
+  #   unsourced: true -- decisions.md #11: no path publishes these; the sim's own values are kept
+  #     and MARKED rather than replaced by a guess.
+  fire_spirit: {range: short, unsourced: true, verified: false}
   # Fisherman (Fandom attributes): hook range 3.5-7, hook time 1.3s, hook projectile speed 800.
   # Lead quote: his ranged hook pulls ENEMY TROOPS toward him and pulls HIMSELF to enemy buildings.
   # Current history also lists his slow as 1.5s at -30%.
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   slow_pct: SUPERSEDED -30 -> REMOVED. decisions.md 2026-08-26 R2 ADJUDICATION #9: fisherman
+  #     has NO slow anymore
+  #   slow_duration_s: SUPERSEDED 1.5 -> REMOVED. decisions.md 2026-08-26 R2 ADJUDICATION #9:
+  #     fisherman has NO slow anymore
   fisherman:
     range: melee
     flags: [slow]
-    slow_duration_s: 1.5
-    slow_pct: -30
     hook_min_tiles: 3.5
     hook_max_tiles: 7.0
     hook_time_s: 1.3
@@ -1557,15 +2171,68 @@ cards:
   giant_skeleton: {range: melee, attacks: [ground], targets: any, flags: [tank, death_damage, knockback, knockback_immune],
                    death_delay_s: 3.0, death_crown_mult: 2.0, verified: true}   # 6e GROUND-targeting tank (Fandom: Target=Ground -- it fights troops, it is NOT building-targeting); the DEATH BOMB is the real threat, so kill it away from your tower -- and it "explodes ... dealing damage ... and inflicting knockback"
   goblins: {range: melee, verified: false}
-  goblin_gang: {range: melee, verified: false}
-  golden_knight: {range: melee, verified: false}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   load_time_s: SUPERSEDED 0.7 -> 0.5. decisions.md 2026-08-26 R2 ADJUDICATION #10: ALL wiki
+  #     load_time entries correct. First Hit Speed 0.6 against hit speed 1.1 gives 0.5; the 2023
+  #     dump's 0.7 predates the 9/4/2025 goblin first-hit move
+  goblin_gang: {range: melee, load_time_s: 0.5, verified: false}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   ability_dash_delay_s: SUPERSEDED ABSENT -> 0.05. KBGAP: sourced and dated (0.2 -> 0.05 on
+  #     3/11/2025), but its SEMANTICS are defined nowhere on revid 437147 -- best reading is an
+  #     intra-chain wind-up (decisions.md ruling 10 amendment). Distinct from the 0.766 s cast
+  #     time
+  #   ability_move_speed_tiles: SUPERSEDED ABSENT -> 2.0. stat_diffs verdict:update, UNIT
+  #     CORRECTED: 'Very Fast (120)' is 120 speed units = 2.0 tiles/s, not 120 tiles. This is the
+  #     movement boost that applies while NO target is within 5.5 tiles -- a DIFFERENT quantity
+  #     from the unpublished dash travel speed
+  #   ability_dash_range_tiles: SUPERSEDED ABSENT -> 5.5. Table, prose and the last dated history
+  #     entry all land on 5.5. Doubles as the chain re-target search radius.
+  #   ability_max_dashes: SUPERSEDED ABSENT -> 10.0. Matches decisions.md ruling 10 (10-dash cap)
+  #     and its amendment (THREE terminators).
+  #   ability_cost: SUPERSEDED ABSENT -> 1.0. KB row has no ability block; only dash_damage 335 is
+  #     present.
+  #   dash_invulnerable: SUPERSEDED ABSENT -> True. Sim models dash_damage 335 but not the
+  #     i-frames.
+  #   ability_no_repeat_target: SUPERSEDED ABSENT -> True. Chain-selection constraint; the sim has
+  #     no dash chain at all.
+  #   ability_uses: SUPERSEDED ABSENT -> 1. Master Version History only.
+  #   first_hit_speed_s: SUPERSEDED ABSENT -> 0.2. KB row lacks the field.
+  #     load_time_s/mass/sight/collision do NOT come from the wiki: import_mechanics.py reads
+  #     RoyaleAPI cr-api-data cards_stats.json, meta.source_frozen=2023-10-18
+  golden_knight: {range: melee, ability_dash_delay_s: 0.05, ability_move_speed_tiles: 2.0, ability_dash_range_tiles: 5.5, ability_max_dashes: 10.0, ability_cost: 1.0, dash_invulnerable: true, ability_no_repeat_target: true, ability_uses: 1, first_hit_speed_s: 0.2, verified: false}
   guards: {range: melee, verified: false}
-  heal_spirit: {range: melee, verified: false}
-  ice_golem: {range: melee, attacks: [ground], targets: buildings_only, flags: [mini_tank, death_damage], verified: false}   # 2e kiting mini-tank, death SLOW
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   heal_ability: SUPERSEDED ABSENT -> {'heal_per_pulse': 100.25, 'pulses': 4,
+  #     'pulse_interval_s': 0.25, 'radius_tiles': 2.5, 'targets': ['air', 'ground']}. KBGAP: a
+  #     Heal Spirit that does not heal. Published 100.25 per pulse at L11, 4 pulses every 1 second
+  #     (0.25 s interval), radius 2.5, friendly air and ground
+  heal_spirit: {range: melee, heal_ability: {heal_per_pulse: 100.25, pulses: 4, pulse_interval_s: 0.25, radius_tiles: 2.5, targets: [air, ground]}, verified: false}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   death_radius_tiles: SUPERSEDED ABSENT -> 2.0. KB row carries death_damage 84 but no radius
+  #     for it, so the death blast currently has no area. Published radius 2
+  ice_golem: {range: melee, attacks: [ground], targets: buildings_only, flags: [mini_tank, death_damage], death_radius_tiles: 2.0, verified: false}   # 2e kiting mini-tank, death SLOW
   # LUMBERJACK. "Upon death, he drops a bottle of Rage" boosting friendly troops' AND buildings'
   # move + attack speed. Balance log: radius 3 tiles + duration 4.5 s (Aug 2025), boost +30%
   # (10/6/2025, down from 35%), 0.5 s deploy timer before the zone takes effect.
-  lumberjack: {range: melee, drops_rage: {radius_tiles: 3.0, duration_s: 4.5, boost: 0.30, delay_s: 0.5}, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   evolution: SUPERSEDED ABSENT -> {'available': True, 'cycles': 2}. KBGAP: the Lumberjack has
+  #     an Evolution (3/2/2025) and a lumberjack_evo row exists, but the base row had no
+  #     `evolution` dict -- so cards.py evo_cycles() short-circuits on the PARENT and reports
+  #     'never evolves'. Published cycles 2
+  #   drops_rage.damage: SUPERSEDED ABSENT -> 179. KBGAP: rage_dmg_11 = 179 -- the dropped Rage
+  #     DEALS damage in the current game and the KB's drops_rage dict had no damage key, so the
+  #     sim's Lumberjack death was damage-free
+  #   drops_rage.crown_damage: SUPERSEDED ABSENT -> 54. KBGAP companion: rage_crown_11 = 54
+  #   drops_rage.duration_s: SUPERSEDED 4.5 -> 5.5. Two independent paths agree on 5.5 and differ
+  #     from the KB's 4.5, which would normally be an update -- but drops_rage is curated
+  #     verified:true in cards.yaml, so per the rules this goes to owner batch review rather than
+  #     an auto-overwrite. 4.5 is not even a histo
+  lumberjack: {range: melee, drops_rage: {radius_tiles: 3.0, duration_s: 5.5, boost: 0.3, delay_s: 0.5, damage: 179, crown_damage: 54}, evolution: {available: true, cycles: 2}, verified: true}
   # "If there are ground units between 3.5 and 5 tiles of him, he will stop moving and begin charging
   # a jump attack which takes 0.9 seconds to execute, and will deal double damage, and inflict
   # knockback." Same mechanic as the Bandit's dash, narrower band, no immunity.
@@ -1595,15 +2262,50 @@ cards:
   # once he is stage 3. The KB's published `damage`/`dps` are stage ONE, which made the deck's
   # tank-melter read as a 100-dps chip unit in the ROLE layer (card_threat reads `damage_ramp`;
   # sim/engine.py does not, so its combat model is unchanged).
-  mighty_miner: {range: melee, flags: [knockback_immune],
-                 damage_ramp: {damages: [40, 204, 409], hit_speed: 0.4},
-                 ability_cost: 1, ability_uses: 1, ability_cooldown_s: 0.0, ability_delay_s: 1.0,
-                 ability_bomb_damage: 366, ability_bomb_radius: 2.5, ability_bomb_knockback: 1.8,
-                 verified: false}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   ability_bomb_damage: SUPERSEDED 366 -> 332. decisions.md ruling 9 (2026-08-26): rarity
+  #     floors put champions at level 11, so the wiki's integer base 332 @ L11 reproduces the
+  #     owner's observed 440 @ L14 (332->365->402->440). The old 366 was reverse-derived from a
+  #     champion level 1 that does not exist. conflicts.md C1 RESOLVED, and the 'not published in
+  #     the KB' comment with it -- it IS published, as escape_11
+  #   damage_stages.0: SUPERSEDED 40.0 -> 43. stat_diffs verdict:update: 1_dmg_11 = 40 is byte-
+  #     identical across three revisions and predates the 4/8/2026 '+8% base damage': 40*1.08 =
+  #     43.2 -> 43. The ledger `proposed` reads 1.0 (emitter bug)
+  #   damage: SUPERSEDED 40 -> 43. stat_diffs verdict:update: stage 1 = the base damage; the KB
+  #     duplicates it in damage, damage_stages[0] and damage_ramp
+  #   damage_charge_speed_s: SUPERSEDED ABSENT -> 2.0. The KB models the stage ramp with
+  #     damage_ramp {damages, hit_speed} and has NO stage-advance timer, so nothing in the sim
+  #     governs WHEN a stage steps. Table and history agree at 2 s
+  mighty_miner: {range: melee, flags: [knockback_immune], damage_ramp: {damages: [40, 204, 409], hit_speed: 0.4}, ability_cost: 1, ability_uses: 1, ability_cooldown_s: 0.0, ability_delay_s: 1.0, ability_bomb_damage: 332, ability_bomb_radius: 2.5, ability_bomb_knockback: 1.8, damage: 43, damage_charge_speed_s: 2.0, damage_stages: [43, 204.0, 409.0], verified: false}
   # "the first 2 attacks deal normal damage, while the 3rd strike deals extra damage and knockback,
   # EVEN IF the targeted troop is normally immune to knockback" -> combo_every 3 + knockback_all.
   # The 3rd hit's EXTRA DAMAGE is not published, so only the shove is modelled.
-  monk: {range: melee, flags: [knockback, knockback_all], combo_every: 3, verified: false}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   combo_damage: SUPERSEDED ABSENT -> 422. KBGAP, 3-of-3, conflicts.md C3 CONFIRMED: combo_11 =
+  #     422 IS published. The cards.yaml comment 'the 3rd hit's EXTRA DAMAGE is not published' is
+  #     factually wrong -- the same error class as C1. The sim gives 140 on the 3rd hit instead of
+  #     ~422
+  #   knockback_immune: SUPERSEDED ABSENT -> True. HIGHEST-IMPACT ROW IN THE GROUP. The KB monk
+  #     row has flags [knockback, knockback_all] -- those describe the knockback he DEALS on the
+  #     3rd combo hit -- and carries NO knockback_immune flag, unlike skeleton_king and
+  #     mighty_miner which carry both the flag and kno
+  #   ability_damage_reduction: SUPERSEDED ABSENT -> -65.0. Clean 3-of-3. KB has no ability block
+  #     for the Monk.
+  #   ability_duration_s: SUPERSEDED ABSENT -> 4.0. Value 4 s is solid; the COLUMN LABEL is a
+  #     misnomer. He is not invulnerable, he takes 35% damage -- the header conflicts with both
+  #     the adjacent "Damage Reduced -65%" cell and the prose
+  #   ability_reflect: SUPERSEDED ABSENT -> True. decisions.md ruling 3 explicitly requires FULL
+  #     fidelity here ("including Monk's projectile reflection"), and the KB carries nothing.
+  #     Three distinct rules to encode: projectiles -> back to the shooter; spells -> nearest
+  #     enemy Crown Tower regardless of source; m
+  #   ability_cost: SUPERSEDED ABSENT -> 1.0. r2 sweep, see stat_diffs.jsonl
+  #   ability_uses: SUPERSEDED ABSENT -> 1. Master Version History only.
+  #   first_hit_speed_s: SUPERSEDED ABSENT -> 0.2. KB row lacks the field.
+  #     load_time_s/mass/sight/collision do NOT come from the wiki: import_mechanics.py reads
+  #     RoyaleAPI cr-api-data cards_stats.json, meta.source_frozen=2023-10-18
+  monk: {range: melee, flags: [knockback, knockback_all], combo_every: 3, combo_damage: 422, knockback_immune: true, ability_damage_reduction: -65.0, ability_duration_s: 4.0, ability_reflect: true, ability_cost: 1.0, ability_uses: 1, first_hit_speed_s: 0.2, verified: false}
   night_witch: {range: melee, flags: [spawner], spawns: {unit: bats, count: 2, on_death: 1, delay: 1.0}, verified: true}   # "a group of two Bats" every 5s, first wave 1s; "when defeated, she will also spawn a single Bat"
   pekka: {range: melee, attacks: [ground], flags: [tank, knockback_immune], verified: false}     # 7e single-target bruiser, GROUND only -> swarm it, or chip it with a building while it walks
   prince: {range: melee, flags: [knockback_immune], verified: false}
@@ -1625,14 +2327,43 @@ cards:
   # row: Medium (60) / Melee: Medium (1.2) / Building). The thin KB import had no targeting
   # data, so the sim's Rune Giant was brawling troops on the way in. Her ally damage-buff
   # ability stays unmodeled (documented in SIM_FIDELITY.md deferrals).
-  rune_giant: {range: melee, targets: buildings_only, flags: [building_targeting], verified: true}
-  skeleton_king: {range: melee, attacks: [ground], flags: [mini_tank, splash, knockback_immune], verified: false}   # splash slash; radius 1.3 flows from the stats import; was silently single-target
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   enchant: SUPERSEDED ABSENT -> {'bonus_damage': 220, 'range_tiles': 6.0, 'limit': 2,
+  #     'every_nth': 3, 'duration_after_death_s': 3.0}. KBGAP/PRIORITY: the card's entire identity
+  #     was unmodelled -- a Rune Giant was just a weak 4-elixir building-targeting body granting
+  #     nothing. Published: +220 bonus damage at L11 on every 3rd attack, to the 2 nearest troops
+  rune_giant: {range: melee, targets: buildings_only, flags: [building_targeting], enchant: {bonus_damage: 220, range_tiles: 6.0, limit: 2, every_nth: 3, duration_after_death_s: 3.0}, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   spawn_unit_stats.hitpoints: SUPERSEDED ABSENT -> 1.0. MAJOR FIDELITY GAP, and the value
+  #     looks like a typo but is not -- table and prose independently state 1 HP, and the absence
+  #     of any skel_hp vardefine (while skel_dmg_11 exists) is the third corroboration: the stat
+  #     does not scale with level, so the auto-calculat
+  #   spawn_unit_stats.damage: SUPERSEDED ABSENT -> 81.0. Missing from spawn_unit_stats. 81 @L11,
+  #     scales x1.1^(L-11) like the body.
+  #   ability_spawn_radius_tiles: SUPERSEDED ABSENT -> 3.5. RESOLVES the skeleton_king half of
+  #     conflicts.md C8. The history entry POSTDATES the prose and names the prose value as the
+  #     old one ("from 4 tiles"), so 3.5 is current and the 4-tile prose is stale -- a textbook P3
+  #     catch
+  #   ability_spawn_interval_s: SUPERSEDED ABSENT -> 0.25. 16 skeletons therefore take ~4 s to
+  #     fully materialise -- not an instant burst. KB has no field.
+  #   ability_cost: SUPERSEDED ABSENT -> 2.0. The only 2-elixir ability in the group besides
+  #     Goblinstein's; KB has no ability block.
+  #   ability_uses: SUPERSEDED ABSENT -> 1. Master Version History only. Interacts with
+  #     decisions.md ruling 8 (the soul bar stops filling once a body has spent its use).
+  skeleton_king: {range: melee, attacks: [ground], flags: [mini_tank, splash, knockback_immune], ability_spawn_radius_tiles: 3.5, ability_spawn_interval_s: 0.25, ability_cost: 2.0, ability_uses: 1, spawn_unit_stats: {range_tiles: 0.5, speed_tiles: 1.5, hit_speed: 1.1, hitpoints: 1.0, damage: 81.0}, verified: false}   # splash slash; radius 1.3 flows from the stats import; was silently single-target
   # SUSPICIOUS BUSH. The imported row was the BUSH GOBLINS' stats pinned on the parent -- the bush
   # itself has 81 hp (skeleton-tier), never attacks, and "spawns invisible as it moves towards the
   # nearest building ... invisible to troops, like the Royal Ghost" (towers ignore ghosts too;
   # splash and spells still connect). "Once the Suspicious Bush either reaches a building or is
   # defeated, it will spawn two Bush Goblins" -- kamikaze arrival, same shape as Skeleton Barrel.
   # It stays invisible for life because the ghost refade rule keys on fighting, and it never fights.
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   pop_distance_tiles: SUPERSEDED ABSENT -> 1.6. decisions.md 2026-08-26 R2 ADJUDICATION #5:
+  #     the 1.6 tiles is the POP distance -- the bush releases its goblins 1.6 tiles from its
+  #     target when it arrives (an engine semantic, not a plain stat)
   suspicious_bush:
     display: "Suspicious Bush"
     targets: buildings_only
@@ -1647,7 +2378,16 @@ cards:
     speed_tiles: 1.0
     spawns: {unit: bush_goblin, on_death: 2}
     verified: true
+    pop_distance_tiles: 1.6
 
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   damage: SUPERSEDED 227 -> 256. 227 * 1.12 = 254.2 and the page's current vardefine is 256,
+  #     so current_db looks like the pre-9/4/2025 value. Confirmed this is the right vardefine for
+  #     this key: on this page bush_hp_11=81 is the Suspicious Bush itself and
+  #     hp_11/dmg_11/atk_speed are the Bush Go
+  #   deploy_time: SUPERSEDED 0.2 -> 1.0. P2's SECONDARY table -- the Bush Goblin's own row --
+  #     says 1 sec. Curated verified:true -> escalate
   bush_goblin:                     # the two goblins the bush breaks into -- a spawned body, NOT a
     display: "Bush Goblin"         # deployable card. Wiki: 304 hp / 227 damage at level 11,
     elixir: null                   # single-target melee ground troops; cadence + reach + speed
@@ -1660,15 +2400,28 @@ cards:
     count: 1
     win_condition: false
     hitpoints: 304
-    damage: 227
+    damage: 256
     hit_speed: 1.4
     range_tiles: 0.8
     speed_tiles: 1.0
-    deploy_time: 0.2
+    deploy_time: 1.0
     evolution: null
     verified: true
   # -- short --
-  electro_spirit: {range: short, multi: chain, hits_per_attack: 9, verified: false}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   unsourced: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11: no path
+  #     publishes the flagged value on this row -- the sim's own number is KEPT and the row
+  #     marked, rather than replaced by a reconstruction
+  #   projectile_speed: SUPERSEDED ABSENT -> 1000.0. Field absent from the KB row entirely; P3
+  #     gives an unambiguous current value. Row verified:false.
+  #   chain_period_s: SUPERSEDED ABSENT -> 0.25. Field absent from the KB row. This is the delay
+  #     between chain hops; engine.py's _multi_hit currently resolves every hop in the same
+  #     instant, so there is nothing for the value to drive yet -- record it, then decide whether
+  #     to model the delay.
+  #   unsourced: true -- decisions.md #11: no path publishes these; the sim's own values are kept
+  #     and MARKED rather than replaced by a guess.
+  electro_spirit: {range: short, multi: chain, hits_per_attack: 9, unsourced: true, projectile_speed: 1000.0, chain_period_s: 0.25, verified: false}
   # HUNTER: 10 pellets of 84 (published as "84 x10"), each an individual hit, scattered across a
   # cone -- the damage falloff is what the cone DOES to a target of fixed size, not a rule. The
   # half-angle is the one number the wiki never prints (24/1/2018 only says it "slightly decreased
@@ -1676,34 +2429,126 @@ cards:
   # published DPS of 84 x 10 / 2.2 assumes, and so his maximum range still lands what the previous
   # hardcoded falloff produced -- a mechanic fix, not a rebalance.
   hunter: {range: short, attacks: [air, ground], flags: [ranged], multi: shotgun, spread_degrees: 18, verified: true}
-  minion_horde: {range: short, movement: air, attacks: [air, ground], speed: fast, count: 6, flags: [flying, swarm, ranged], verified: false}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   load_time_s: SUPERSEDED 0.5 -> 0.6. Frozen-dump field (shared 'Minion' character row with
+  #     minions). Against the Minion Horde page's stale 1.1 the identity gives 0.6; against the
+  #     correct 1.2 it gives 0.7, which is the value the minions row should also take
+  minion_horde: {range: short, movement: air, attacks: [air, ground], speed: fast, count: 6, flags: [flying, swarm, ranged], load_time_s: 0.6, verified: false}
   # PHOENIX. "When defeated, the Phoenix explodes, dealing damage, inflicting knockback" (death
   # blast 163/1.5 from the import) -- AND drops an EGG once. "If the egg is not defeated within
   # 3.8 seconds, it will hatch into another Phoenix"; since 7/2/2023 the reborn spawns with 80%
   # of the original's hitpoints and damage, deals NO death damage and drops NO second egg.
-  phoenix: {range: short, flags: [knockback], egg: {hatch_s: 3.8, reborn_frac: 0.8}, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   egg.reborn_frac: SUPERSEDED 0.8 -> 1.0. STRONGEST SINGLE FINDING IN THE GROUP. P2 (prose)
+  #     and P3 (dated 2025-11-03 entry) agree on 1.0 against current_db 0.8, and no path supports
+  #     0.8 -- the sim is giving reborn Phoenixes 80% of hitpoints AND damage where the game gives
+  #     100%
+  phoenix: {range: short, flags: [knockback], egg: {hatch_s: 3.8, reborn_frac: 1.0}, verified: true}
   skeleton_dragons: {range: short, verified: false}
   # -- long --
-  archer_queen: {range: long, verified: false}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   ability_attack_speed_boost: SUPERSEDED ABSENT -> 1.8. KBGAP: history ('to 180% from 200%')
+  #     and prose ('80% increase') BOTH describe a x1.8 multiplier -> hit speed 1.2/1.8 = 0.667 s.
+  #     The table's leading '+' is the outlier (it would mean x2.8)
+  #   ability_move_speed_tiles: SUPERSEDED ABSENT -> 0.75. stat_diffs verdict:update, UNIT
+  #     CORRECTED: the ledger's `proposed` 45 is in WIKI SPEED UNITS ('Slow (45)') on a field
+  #     named _tiles. 45/60 = 0.75 tiles/s, confirmed on the same page (her body Medium (60) ==
+  #     the KB's speed_tiles 1.0)
+  #   first_hit_speed_s: SUPERSEDED ABSENT -> 0.3. KB row carries no first-hit field.
+  #     load_time_s/mass/sight/collision do NOT come from the wiki: import_mechanics.py reads
+  #     RoyaleAPI cr-api-data cards_stats.json, meta.source_frozen=2023-10-18
+  #   ability_cost: SUPERSEDED ABSENT -> 1.0. Archer Queen KB row has NO ability block at all
+  #     (contrast boss_bandit/mighty_miner which do). decisions.md ruling 3: all abilities get
+  #     full engine fidelity.
+  #   ability_duration_s: SUPERSEDED ABSENT -> 3.5. Table and history agree at 3.5 s.
+  #   ability_uses: SUPERSEDED ABSENT -> 1. Master Version History only; the Archer Queen page
+  #     History has NO 4/8/2026 entry (conflicts.md C6, class-wide staleness). Matches
+  #     decisions.md ruling 6 (single use PER BODY).
+  #   ability_invisible: SUPERSEDED ABSENT -> True. Untargetable by TROOPS; still takes splash and
+  #     spell damage (8/4/2022 fix). Same invisibility class as Royal Ghost per the intro
+  archer_queen: {range: long, ability_attack_speed_boost: 1.8, ability_move_speed_tiles: 0.75, first_hit_speed_s: 0.3, ability_cost: 1.0, ability_duration_s: 3.5, ability_uses: 1, ability_invisible: true, verified: false}
   # "The Bowler launches an attack that travels up to its maximum range, and inflicts knockback,
   # while piercing through enemies" -- the ONLY card here whose knockback is its NORMAL ATTACK
   # rather than a death blast, so it rides the piercing projectile and shoves along the roll line.
   # The Bowler page is also the source of the knockback-immune list (see dark_prince).
-  bowler: {range: long, attacks: [ground], splash: true, flags: [splash, knockback], verified: false}
-  cannon_cart: {range: long, flags: [knockback_immune], verified: false}
-  dart_goblin: {range: long, attacks: [air, ground], speed: fast, flags: [ranged], verified: false}
-  electro_dragon: {range: long, multi: chain, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   unsourced: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11: no path
+  #     publishes the flagged value on this row -- the sim's own number is KEPT and the row
+  #     marked, rather than replaced by a reconstruction
+  #   unsourced: true -- decisions.md #11: no path publishes these; the sim's own values are kept
+  #     and MARKED rather than replaced by a guess.
+  bowler: {range: long, attacks: [ground], splash: true, flags: [splash, knockback], unsourced: true, verified: false}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   unsourced: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11: no path
+  #     publishes the flagged value on this row -- the sim's own number is KEPT and the row
+  #     marked, rather than replaced by a reconstruction
+  #   building_activation_pct: SUPERSEDED ABSENT -> 50.0. Missing field. P2's secondary table has
+  #     an explicit 'Activation 50%' column and the prose agrees
+  #   unsourced: true -- decisions.md #11: no path publishes these; the sim's own values are kept
+  #     and MARKED rather than replaced by a guess.
+  cannon_cart: {range: long, flags: [knockback_immune], unsourced: true, building_activation_pct: 50.0, verified: false}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   unsourced: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11: no path
+  #     publishes the flagged value on this row -- the sim's own number is KEPT and the row
+  #     marked, rather than replaced by a reconstruction
+  #   speed: SUPERSEDED 'fast' -> 'very_fast'. Categorical label only: P2 says Very Fast (120).
+  #     current_db speed_tiles=2.0 is already the correct Very-Fast number, so the sim moves him
+  #     at the right speed; the 'fast' label simply contradicts it
+  #   evolution.available: SUPERSEDED ABSENT -> True. SYSTEMIC GATE BUG -- 10 of my 32 keys. The
+  #     parent row has evolution:null while a fully populated dart_goblin_evo row exists carrying
+  #     the correct evo_cycles=2
+  #   unsourced: true -- decisions.md #11: no path publishes these; the sim's own values are kept
+  #     and MARKED rather than replaced by a guess.
+  dart_goblin: {range: long, attacks: [air, ground], speed: very_fast, flags: [ranged], unsourced: true, evolution: {available: true}, verified: false}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   evolution.available: SUPERSEDED ABSENT -> True. SYSTEMIC GATE BUG -- 10 of my 32 keys. The
+  #     parent row has evolution:null while a fully populated electro_dragon_evo row exists
+  #     carrying the correct evo_cycles=1
+  electro_dragon: {range: long, multi: chain, evolution: {available: true}, verified: true}
   # "If 2 or more targets are within his range, his attack will SPLIT and attack the closest 2
   # units" -- his 115 damage is the TOTAL (115 / 1.8 hit speed == his published dps 64), so it is
   # halved when two things are in range. Contrast the Electro Dragon, whose bolt "arcs and strikes
   # up to 2 OTHER targets" for full damage each.
-  electro_wizard: {range: long, multi: split, spawn_damage: 115, spawn_radius_tiles: 3.0, verified: true}   # SPAWN ZAP: damages + STUNS around him on deploy (115 dmg / 3.0 tiles, USER-VERIFIED); the stun rides via his `stuns` flag now that _deploy_blast applies status
-  executioner: {range: long, multi: boomerang, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   spawn_damage: SUPERSEDED 115 -> 192. Same contamination shape as ghost_souldier: current_db
+  #     spawn_damage 115 is EXACTLY the Electro Wizard's own per-bolt damage on the same page. The
+  #     level-11 statistics row puts zap_11 under the 'Zap Damage' column = 192, and the prose
+  #     says the spawn damage behav
+  electro_wizard: {range: long, multi: split, spawn_damage: 192, spawn_radius_tiles: 3.0, verified: true}   # SPAWN ZAP: damages + STUNS around him on deploy (115 dmg / 3.0 tiles, USER-VERIFIED); the stun rides via his `stuns` flag now that _deploy_blast applies status
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   evolution.available: SUPERSEDED ABSENT -> True. SYSTEMIC GATE BUG -- 10 of my 32 keys. The
+  #     parent row has evolution:null while a fully populated executioner_evo row exists carrying
+  #     the correct evo_cycles=1
+  executioner: {range: long, multi: boomerang, evolution: {available: true}, verified: true}
   # RECOIL 1 tile: "After attacking, she will recoil backwards 1 tile" (wiki). The commonly-quoted
   # 1.5 is STALE -- the 7/7/2020 balance update "decreased her recoil range to 1 tile (from 1.5)".
   # The Evolution does not change it. She is 1 of only 3 recoiling troops (Sparky, Super Archers).
-  firecracker: {range: long, multi: spark, recoil_tiles: 1, verified: true}
-  flying_machine: {range: long, verified: false}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   evolution.available: SUPERSEDED ABSENT -> True. SYSTEMIC GATE BUG -- 10 of my 32 keys. The
+  #     parent row has evolution:null while a fully populated firecracker_evo row exists carrying
+  #     the correct evo_cycles=2
+  #   sight: SUPERSEDED 8.5 -> 8.0. current_db 8.5 is exactly the pre-4/8/2025 value P3 names. The
+  #     same entry's other half (recoil 1 tile) IS already correct in the KB (recoil_tiles=1),
+  #     which corroborates that this entry was applied only half-way
+  firecracker: {range: long, multi: spark, recoil_tiles: 1, sight: 8.0, evolution: {available: true}, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   unsourced: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11: no path
+  #     publishes the flagged value on this row -- the sim's own number is KEPT and the row
+  #     marked, rather than replaced by a reconstruction
+  #   unsourced: true -- decisions.md #11: no path publishes these; the sim's own values are kept
+  #     and MARKED rather than replaced by a guess.
+  flying_machine: {range: long, unsourced: true, verified: false}
   inferno_dragon: {range: long, targets: any, flags: [ranged, flying], verified: false}   # 4e FLYING tank-melter (ramping single-target) -> needs AIR defence; a swarm or a reset stops the ramp
   # LITTLE PRINCE (user bug report): the imported row carried the GUARDIAN's stats -- hp 1600,
   # damage 217, and his dash's charge_damage 256 -- so the sim's Little Prince hit like the
@@ -1712,6 +2557,37 @@ cards:
   # 1.2 s -> 0.8 s -> 0.4 s (dps 82 -> 123 -> 247, the published anchors; 3-attack stages since
   # 17/11/2023), and ANY movement or displacement (knockback/stun shove) resets it (14/12/2023
   # fix). The Guardian ability itself remains unmodeled (champion abilities are out of scope).
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   royal_rescue_damage: SUPERSEDED ABSENT -> 256. decisions.md 2026-08-26 R2 ADJUDICATION
+  #     #13/#14 + NAMING: royal_rescue_damage is real and stays. charge_11 = 256 is the ABILITY
+  #     dash damage (column 'Royal Rescue Damage'), NOT a Prince-style charge -- charge_damage: 0
+  #     is correct curation and must never be fed from charge_*
+  #   attack_ramp.mults.1: SUPERSEDED 1.5 -> 2.0. LAG bucket, REAL SIM ERROR quantified: engine.py
+  #     applies the ramp mults as a CADENCE divisor, so 1.5 gives stage 2 = 1.2/1.5 = 0.800 s
+  #     where the wiki publishes 0.600 s on two paths. Stages 1 and 3 are already exact; mults[1]
+  #     must be 2.0
+  #   spawn_unit_stats.hitpoints: SUPERSEDED ABSENT -> 1600. KBGAP: guard_hp_11 = 1600, unaffected
+  #     by the 4/8/2026 note (damage only). The Guardienne had NO hitpoints in the KB -- the sim's
+  #     summoned tank was statless
+  #   spawn_unit_stats.damage: SUPERSEDED ABSENT -> 232. KBGAP: guard_dmg_11 = 217 is byte-
+  #     identical at revid 436758 (the edit that installed the vardefine block) and at live revid
+  #     437347, so it predates the 4/8/2026 'Guardian Melee Damage +7%': 217*1.07 = 232.2 -> 232.
+  #     NB PLAN.md's I7 line still quotes the published 217 -- 232 is the post-4/8/2026 value, do
+  #     not 'fix' it back
+  #   spawn_unit_stats.deploy_time: SUPERSEDED ABSENT -> 0.3. KBGAP: Guardienne Attributes Deploy
+  #     Time 0.3 sec
+  #   royal_rescue_dash_range_tiles: SUPERSEDED ABSENT -> 4.0. KBGAP: the attributes table and the
+  #     strategy prose both say 4 against a 13/11/2023 entry of 4.5. Here the history is the OLDER
+  #     reading, so an undocumented 4.5 -> 4 happened; 2 of 3 favour 4
+  #   ability_cost: SUPERSEDED ABSENT -> 3. KBGAP: Royal Rescue Attributes Cost 3 -- the most
+  #     expensive champion ability in the group (3 elixir on a 3-elixir card)
+  #   ability_uses: SUPERSEDED ABSENT -> 1. KBGAP + decisions.md ruling 6: single use PER BODY
+  #     since 4/8/2026
+  #   first_hit_speed_s: SUPERSEDED ABSENT -> 0.4. KBGAP: the wiki's First Hit Speed is 0.4 s. NB
+  #     this is a DIFFERENT metric from the frozen dump's load_time_s -- Archer Queen's first-
+  #     attack interval moved on 7/2/2023, before the 2023-10-18 freeze, and the dump still
+  #     disagrees
   little_prince:
     # 2026-08-16 wiki sweep: hp_11 698 / dmg_11 104. The curated row carried 653/98 -- one
     # scaling step low, because CHAMPIONS start at level 11 while the import treated the row as
@@ -1722,14 +2598,26 @@ cards:
     dps: 87
     hit_speed: 1.2
     charge_damage: 0
-    attack_ramp: {per_stage: 3, mults: [1.0, 1.5, 3.0]}
+    attack_ramp: {per_stage: 3, mults: [1.0, 2.0, 3.0]}
     # 4/8/2026 Balance Update: "The Little Prince will now maintain his charged-up Hit Speed for up
     # to 0.3 seconds while moving." A GRACE WINDOW on the 14/12/2023 reset-on-move, not a removal
     # of it -- and displacement (Log/Zap/Fireball/Snowball, per this page's own strategy prose)
     # is still a hard reset that ignores the grace.
     ramp_move_grace_s: 0.3
     verified: true
-  magic_archer: {range: long, flags: [splash], verified: false}                # 4e PIERCING line hit (damages everything behind the target)
+    royal_rescue_damage: 256
+    royal_rescue_dash_range_tiles: 4.0
+    ability_cost: 3
+    ability_uses: 1
+    first_hit_speed_s: 0.4
+    spawn_unit_stats: {range_tiles: 1.2, speed_tiles: 1.0, hit_speed: 1.2, hitpoints: 1600, damage: 232, deploy_time: 0.3}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   load_time_s: SUPERSEDED 0.6 -> 0.4. Frozen-dump field. Wiki gives hit speed 1.1 / First Hit
+  #     Speed 0.7 -> 0.4, and a dated entry moved the first attack interval to 0.7 (from 0.8) on
+  #     5/3/2024 -- after the 2023-10-18 dump froze -- so the dump's 0.6 predates a documented
+  #     change to exactly this quant
+  magic_archer: {range: long, flags: [splash], load_time_s: 0.4, verified: false}   # 4e PIERCING line hit (damages everything behind the target)
   # Mother Witch page carries two unit rows (witch + cursed hog). The importer currently binds the
   # hog row's hp/dmg onto the card body, so the witch herself is corrected here from the page's
   # level-11 vardefines (hp_11=529, dmg_11=133, atk_speed=1.0) and keeps her own 5 s curse timer.
@@ -1770,13 +2658,33 @@ cards:
   # Tombstone: the attribute table says 4s but the prose says 3.5s AND the Common modifier says
   # "spawn speed is doubled, for a total of 1.75 seconds" -- 3.5/2 = 1.75, so the TABLE is stale.
   tombstone: {kind: building, flags: [spawner], spawns: {unit: skeletons, count: 2, on_death: 4, interval: 3.5}, verified: true}   # "a group of two Skeletons, with a 0.5 seconds delay from each other"
-  barbarian_hut: {kind: building, flags: [spawner], lifetime_s: 30.0, spawns: {unit: barbarians, count: 3, on_death: 1, interval: 13.5}, verified: true}   # "a group of three Barbarians"; spawn speed 13.5s (wiki: "the lowest of all buildings") -- the old 15s in this comment was stale. "when defeated, it will also spawn a Barbarian"
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   spawns.interval: SUPERSEDED 13.5 -> 15.0. LAG bucket: the curated 13.5 is the pre-4/2/2020
+  #     trivia line and is refuted by every path. Two LIVE surfaces (attribute table + intro
+  #     prose) say 15 against a history RECONSTRUCTION of 14; the same row already carries
+  #     spawn_interval_s 15.0, so 15 also stops the row holding two disagreeing values. The 14
+  #     reading is in conflicts.md
+  #   spawn_delay_s: SUPERSEDED ABSENT -> 0.5. PRIORITY/gap: field absent from the KB row. The
+  #     intra-wave stagger is published in prose only (this page's attribute table has no Spawn
+  #     Delay column, unlike Goblin Hut)
+  barbarian_hut: {kind: building, flags: [spawner], lifetime_s: 30.0, spawns: {unit: barbarians, count: 3, on_death: 1, interval: 15.0}, spawn_delay_s: 0.5, verified: true}   # "a group of three Barbarians"; spawn speed 13.5s (wiki: "the lowest of all buildings") -- the old 15s in this comment was stale. "when defeated, it will also spawn a Barbarian"
   # GOBLIN CAGE. "When defeated, it will spawn a Goblin Brawler." The importer folded the BRAWLER's
   # stats into the cage -- hitpoints 1080 / damage 337 are his, and a cage does not attack at all.
   # The wiki keeps them apart as `cage_hp_11 = 780` and `hp_11 = 1080`, so the cage is the 780-hp
   # body and the Brawler is curated below as a spawn-only unit. Its lifetime expiry releases him too,
   # because a lifetime is modelled as hp decay and therefore runs through the same death path.
-  goblin_cage: {kind: building, hitpoints: 780, damage: 0, dps: 0, spawns: {unit: goblin_brawler, on_death: 1}, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   sight: SUPERSEDED 20.0 -> REMOVED. decisions.md 2026-08-26 R2 ADJUDICATION #11: goblin_cage
+  #     has NO sight stat (it cannot attack while the cage stands); the '20' is the LIFETIME,
+  #     which the row already carries as lifetime_s
+  #   unsourced: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11: no path
+  #     publishes the flagged value on this row -- the sim's own number is KEPT and the row
+  #     marked, rather than replaced by a reconstruction
+  #   unsourced: true -- decisions.md #11: no path publishes these; the sim's own values are kept
+  #     and MARKED rather than replaced by a guess.
+  goblin_cage: {kind: building, hitpoints: 780, damage: 0, dps: 0, spawns: {unit: goblin_brawler, on_death: 1}, unsourced: true, verified: true}
   # Goblin Brawler: not a playable card, so there is no import to merge with -- every number here is
   # from the Goblin Cage attribute table's second row. "He is also the same as that spawned by the
   # Party Hut." Speed Fast (90) = 1.5 tiles/s at the wiki's 60 units = 1 tile/s.
@@ -1798,7 +2706,13 @@ cards:
     win_condition: false
     verified: true
   # -- clarified dual / special-attack troops (user-provided) --
-  cannon: {kind: building, range: short, attacks: [ground], targets: any, flags: [ranged], verified: false}   # 3e defensive building, GROUND only (cannot touch air); the cheap pull vs ground win conditions
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   load_time_s: SUPERSEDED ABSENT -> 1.0. PRIORITY/gap: field absent from the KB row while
+  #     every other turret building in the group carries it. The table says 1.0; the last dated
+  #     history entry that names the FIRST attack interval leaves it at 0.9 (4/3/2025 raised only
+  #     the regular interval)
+  cannon: {kind: building, range: short, attacks: [ground], targets: any, flags: [ranged], load_time_s: 1.0, verified: false}   # 3e defensive building, GROUND only (cannot touch air); the cheap pull vs ground win conditions
   # FURNACE IS A TROOP, not a building: the 4/8/2025 update "changed the Furnace into a troop that
   # can walk and deal damage". Its wiki table reads Type: Troop, Speed Medium (60), Range 6, and it
   # has no `life` vardefine because a troop has no lifetime. An earlier curation here forced
@@ -1811,8 +2725,21 @@ cards:
   # "FirespiritHut"), now removed there. Troops do not decay.
   # SPAWN CADENCE 5 s (owner ruling, R2 #5). The old trailing comment on this line said "every 7s"
   # while the value said 5.0 -- the value was right and the comment was the stale half.
-  furnace: {range: long, flags: [spawner], spawns: {unit: fire_spirit, count: 1, interval: 5.0}, effective_life_s: 19.4, verified: true}   # effective_life_s MEASURED 2026-08-26 (E1): n=60, median 19.4s (p25 17.0, p75 21.2) -> 3.87 waves at 5s.   # "summon a Fire Spirit in front" every 5s -- ONE, not a pair
-  goblin_machine: {range: melee, flags: [splash, knockback_immune], verified: false}              # melee body + a locking AOE missile
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   evolution.available: SUPERSEDED ABSENT -> True. SYSTEMIC GATE BUG -- 10 of my 32 keys. The
+  #     parent row has evolution:null while a fully populated furnace_evo row exists carrying the
+  #     correct evo_cycles=2
+  furnace: {range: long, flags: [spawner], spawns: {unit: fire_spirit, count: 1, interval: 5.0}, effective_life_s: 19.4, evolution: {available: true}, verified: true}   # effective_life_s MEASURED 2026-08-26 (E1): n=60, median 19.4s (p25 17.0, p75 21.2) -> 3.87 waves at 5s.   # "summon a Fire Spirit in front" every 5s -- ONE, not a pair
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   rocket_ability: SUPERSEDED ABSENT -> {'damage': 304, 'crown_tower_damage': 152,
+  #     'radius_tiles': 1.5, 'min_range_tiles': 2.5, 'range_tiles': 5.0, 'hit_speed': 3.5,
+  #     'projectile_speed': 250, 'first_hit_s': 1.5, 'attacks': ['air', 'ground']}. KBGAP: the
+  #     Goblin Machine's locking AOE missile is unmodelled -- the row carries no rocket at all.
+  #     Hit speed and projectile speed are contested by the same 4/8/2026 lag (page 3.5 s / 250 vs
+  #     history 5 s and +40% = 350); the page values are taken and the conflict recorded
+  goblin_machine: {range: melee, flags: [splash, knockback_immune], rocket_ability: {damage: 304, crown_tower_damage: 152, radius_tiles: 1.5, min_range_tiles: 2.5, range_tiles: 5.0, hit_speed: 3.5, projectile_speed: 250, first_hit_s: 1.5, attacks: [air, ground]}, verified: false}   # melee body + a locking AOE missile
   # 2026-08-15 wiki attr row: 50% -> Very Fast (120), 10 s fuse, Melee: Short (0.5), blast 2.5.
   # His "life 10" is the LIT FUSE, not a lifetime (hp must not bleed from deploy); below half
   # he sprints at the nearest building and detonates on connect or when the fuse runs out.
@@ -1838,17 +2765,131 @@ cards:
   #                   Deliberately left undeclared: setting ability_invis_s here would not
   #                   approximate the ability, it would give our own Mighty Miner the Bandit's
   #                   behaviour at a random HP threshold we never chose.
-  goblinstein: {range: melee, flags: [tank, building_targeting, stun], verified: false}  # front melee tank (NOT a win condition); rear ranged + stun
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   lightning_link_crown_tower_damage: SUPERSEDED ABSENT -> 23. CROWN bucket: crown_11 = 23
+  #     published. Pre-4/8/2026 like every other vardefine on this page; a post-nerf value depends
+  #     on resolving the link damage first
+  #   components.0.damage: SUPERSEDED 92.0 -> 135. stat_diffs verdict:update + conflicts.md C4
+  #     RESOLVED: dmg_11 92 is byte-identical at revid 436759 (2026-07-16) and live, so it
+  #     predates the 4/8/2026 '+47% Doctor damage': 92*1.47 = 135.2 -> 135. The ledger `proposed`
+  #     reads 11.0 (emitter bug)
+  #   lightning_link_damage: SUPERSEDED ABSENT -> 107. KBGAP: link_11 = 107 published, with the
+  #     same proven vardefine lag as the Doctor row. The 4/8/2026 note nerfs 'Ability DPS' -12%,
+  #     which could land on damage (-> 94) or on hit speed (-> 0.568 s); recorded in conflicts.md,
+  #     published value applied
+  #   ability_radius_tiles: SUPERSEDED ABSENT -> 2.0. KBGAP: Radius 2 is published; conflicts.md
+  #     C8 geometry (measured from the Doctor, the Monster, or the line between them) is still
+  #     unresolved on revid 437348
+  #   range_tiles: SUPERSEDED 5.5 -> 1.2. NAMING bucket, snapshot hygiene: the card-level row's
+  #     hitpoints/damage/hit_speed are the MONSTER's, so its range must be the Monster's melee 1.2
+  #     -- 5.5 is the DOCTOR's and contradicts the row's own range: melee. Both component rows are
+  #     already correct
+  #   ability_cost: SUPERSEDED ABSENT -> 2.0. KB row has no ability block.
+  #   ability_duration_s: SUPERSEDED ABSENT -> 4.0. r2 sweep, see stat_diffs.jsonl
+  #   ability_hit_speed_s: SUPERSEDED ABSENT -> 0.5. 8 ticks over the 4 s duration.
+  #   ability_uses: SUPERSEDED ABSENT -> 1. Goblinstein is one of only 3 in-group pages that
+  #     actually logged the 4/8/2026 change.
+  #   deploy_time: SUPERSEDED ABSENT -> 1.0. Goblinstein is the ONLY key in the group whose KB row
+  #     omits deploy_time (the other seven all carry 1.0). Caught by the match-verifier, not by
+  #     the diff -- a field that is absent cannot mismatch
+  goblinstein: {range: melee, flags: [tank, building_targeting, stun], lightning_link_crown_tower_damage: 23, lightning_link_damage: 107, ability_radius_tiles: 2.0, range_tiles: 1.2, ability_cost: 2.0, ability_duration_s: 4.0, ability_hit_speed_s: 0.5, ability_uses: 1, deploy_time: 1.0, components: [{count: 1, hit_speed: 1.8, range_tiles: 5.5, speed_tiles: 1.0, attacks: [air, ground], movement: ground, hitpoints: 721.0, damage: 135}, {count: 1, hit_speed: 1.5, range_tiles: 1.2, speed_tiles: 1.0, attacks: [buildings], movement: ground, hitpoints: 2393.0, damage: 128.0}], verified: false}   # front melee tank (NOT a win condition); rear ranged + stun
   # SPIRIT EMPRESS, curated 2026-08-19 (both forms; engine.deploy picks by caster elixir:
   # under 3 uncastable, [3,6) ground, >=6 air -- exactly 6.0 is AIR). The imported stats
   # were poisoned: the 2026-08-14 wiki import caught the Fandom page mid-edit-war (hp
   # cycled 1697->2046->2023->1798 across Aug 9-14 with no balance change behind it).
   # Values from Supercell's own balance posts chained to 2026-05-04, cross-checked live.
-  spirit_empress: {elixir: 3, hitpoints: 1121, damage: 307, hit_speed: 1.2,
-                   range_tiles: 1.2, speed_tiles: 1.5, movement: ground,
-                   attacks: [ground], count: 1, verified: true}
-  spirit_empress_air: {display: "Spirit Empress (air)", rarity: legendary, kind: troop,
-                      elixir: 6, hitpoints: 1121, damage: 307, hit_speed: 1.4,
-                      range_tiles: 5.0, speed_tiles: 1.0, movement: air,
-                      attacks: [air, ground], count: 1, flags: [ranged, flying],
-                      verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   damage: SUPERSEDED 307 -> 309. decisions.md 2026-08-26 R2 ADJUDICATION #5: spirit_empress
+  #     309 is correct
+  spirit_empress: {elixir: 3, hitpoints: 1121, damage: 309, hit_speed: 1.2, range_tiles: 1.2, speed_tiles: 1.5, movement: ground, attacks: [ground], count: 1, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   damage: SUPERSEDED 307 -> 309. decisions.md 2026-08-26 R2 ADJUDICATION #5: spirit_empress
+  #     309 is correct
+  spirit_empress_air: {display: Spirit Empress (air), rarity: legendary, kind: troop, elixir: 6, hitpoints: 1121, damage: 309, hit_speed: 1.4, range_tiles: 5.0, speed_tiles: 1.0, movement: air, attacks: [air, ground], count: 1, flags: [ranged, flying], verified: true}
+
+
+  # ====================================================================
+  # I5 2026-08-26 -- cards with NO curated row until now. Every field below is a
+  # value the importer does not emit for this key, so it can only live here.
+  # ====================================================================
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   damage: SUPERSEDED 120 -> 35. decisions.md 2026-08-26 R2 ADJUDICATION #12: goblin_curse 35 =
+  #     damage PER SECOND; the spell lasts 6 s -> 210 total. The KB's 120 was the GOBLIN the curse
+  #     converts victims into
+  #   spawns_troop: SUPERSEDED ABSENT -> {'unit': 'goblins', 'hitpoints': 202, 'damage': 120,
+  #     'hit_speed': 1.1}. stat_diffs verdict:update: the card's defining effect -- cursed enemies
+  #     that die become Goblins for the caster -- was not represented at all, so the sim priced
+  #     Goblin Curse as pure chip. Per-Goblin stats are the hp_11/dmg_11/atk_speed the KB had
+  #     mistakenly put in the SPELL's own damage field
+  #   zone_s: SUPERSEDED ABSENT -> 6.0. MISSING FIELD. Goblin Curse is a 6-second damage-over-time
+  #     zone (table Duration 6 sec; lead 'dealt every second for 6 seconds'), but unlike
+  #     poison/void/earthquake the DB row has no zone_s/zone_tick_s -- it resolves as an instant
+  #     6x multi-hit, so nothing can wa
+  #   zone_tick_s: SUPERSEDED ABSENT -> 1.0. MISSING FIELD, pairs with zone_s: 6 hits over 6
+  #     seconds = a 1.0s tick (vardefine dmg_hits = 6).
+  goblin_curse: {damage: 35, spawns_troop: {unit: goblins, hitpoints: 202, damage: 120, hit_speed: 1.1}, zone_s: 6.0, zone_tick_s: 1.0, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   pulse_damage: SUPERSEDED ABSENT -> 174. KBGAP, 3-of-3: pulse_dmg_11 = 174, and the balance
+  #     chain (227 -> -22.9% -> +17% -> -15%) lands on it. The death pulse was REMOVED 8/10/2024
+  #     -- do not model one
+  #   pulse_radius_tiles: SUPERSEDED ABSENT -> 6.0. KBGAP: Evolution Attributes give 6 tiles
+  #   pulse_stun_s: SUPERSEDED ABSENT -> 0.5. KBGAP: 0.5 s stun; the Lumberjack Ghost has been
+  #     immune to it since 4/2/2025
+  tesla_evo: {pulse_damage: 174, pulse_radius_tiles: 6.0, pulse_stun_s: 0.5, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   targets: SUPERSEDED ABSENT -> 'friendly_troops'. stat_diffs verdict:update: table Target =
+  #     'Friendly Troops' and the card text says 'Doesn't affect buildings'. The row had no
+  #     attacks/targets key at all, so nothing constrained what Clone may be cast on
+  #   cloning_time_s: SUPERSEDED ABSENT -> 0.5. MISSING FIELD, history path only. 12/6/2017
+  #     decreased the cloning time to 0.5s (from 0.8s) and nothing later changes it; no table cell
+  #     corroborates, so this is escalate rather than update.
+  #   clone_hitpoints: SUPERSEDED ABSENT -> 1.0. MISSING FIELD on a verified:false row (clone has
+  #     no icebow/config/cards.yaml entry at all). The card's entire identity is that clones have
+  #     1 HP; the DB row carries only elixir/radius/rarity/count, so a cloned push is
+  #     indistinguishable from a real one to the si
+  #   clone_shield_hitpoints: SUPERSEDED ABSENT -> 1.0. MISSING FIELD. The attributes table
+  #     publishes Clone Shield Hitpoints = 1 (a cloned Dark Prince / Royal Recruit keeps a 1 HP
+  #     shield).
+  clone: {targets: friendly_troops, cloning_time_s: 0.5, clone_hitpoints: 1.0, clone_shield_hitpoints: 1.0, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   blast_repeat_delay_s: SUPERSEDED ABSENT -> 3.0. KBGAP: the Evo Ice Spirit hits TWICE -- the
+  #     initial 110 + 1.1 s freeze, then a SECOND identical hit three seconds later. p1 (110) is
+  #     the BLAST DAMAGE, not the delay
+  #   blast_damage: SUPERSEDED ABSENT -> 110. KBGAP companion: dedicated vardefine Blast_11 = 110
+  #     for the second hit
+  ice_spirit_evo: {blast_repeat_delay_s: 3.0, blast_damage: 110, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   unsourced: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11: no path
+  #     publishes the flagged value on this row -- the sim's own number is KEPT and the row
+  #     marked, rather than replaced by a reconstruction
+  #   charge_time_s: SUPERSEDED ABSENT -> 2.0. PRIORITY/gap: the row has damage_stages [43, 158,
+  #     847] but nothing saying how long each stage takes, so the sim cannot model the ramp or a
+  #     stun/shield reset - the single most important mechanic of this card, and the whole reason
+  #     Zap/Freeze/Electro counter it.
+  #   attacks: SUPERSEDED ABSENT -> ['air', 'ground']. PRIORITY: inferno_tower is one of the
+  #     group's unverified rows (no `verified` key, and no entry at all in
+  #     icebow/config/cards.yaml) and is the thinnest row in the group. The Target column says
+  #     'Air & Ground' and the intro says 'air-targeting', but the KB row ha
+  #   range_tiles: SUPERSEDED ABSENT -> 6.0. PRIORITY: field absent; the row carries only sight
+  #     6.0. The attribute table publishes Range 6, and every other turret building in the group
+  #     carries range_tiles
+  #   deploy_time: SUPERSEDED ABSENT -> 1.0. PRIORITY: field absent; the attribute table publishes
+  #     Deploy Time 1 sec. Corroborated by card_mechanics.json _deploy_time_s 1.0.
+  #   targets: SUPERSEDED ABSENT -> 'any'. PRIORITY: field absent. The tower is not building-
+  #     restricted, and every comparable building row in the group carries targets: any.
+  inferno_tower: {unsourced: true, charge_time_s: 2.0, attacks: [air, ground], range_tiles: 6.0, deploy_time: 1.0, targets: any, verified: true}
+  # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
+  # provenance in research/sim_parity/ledger/i5_applied.jsonl).
+  #   mirrored_level_delta: SUPERSEDED ABSENT -> 1.0. MISSING FIELD. The statistics table maps
+  #     every Mirror level N to mirrored level N+1 across all five rarities (rows 6->7, 7->8,
+  #     8->9, 9->10) -- the mirrored copy is one level higher, which is the card's second mechanic
+  #     after the +1 elixir
+  mirror: {mirrored_level_delta: 1.0, verified: true}

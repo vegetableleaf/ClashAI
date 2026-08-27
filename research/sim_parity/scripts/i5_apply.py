@@ -706,6 +706,13 @@ SKIP = {
     ("furnace", "lifetime_s"):
         "already applied on this branch (commit 1409b36): the Furnace is a TROOP since 4/8/2025 "
         "and carries no lifetime",
+    ("dark_prince", "splash_radius_tiles"):
+        "ALREADY RESOLVED, and re-adding it would REGRESS commit ba71b8f. That commit deleted the "
+        "stale curated `splash_radius_tiles: 1.25` precisely because `_tiles_or` reads the "
+        "*_tiles spelling in PREFERENCE to `splash_radius`, so two numbers on one row let the "
+        "engine and every audit read different values in silence. The row's imported "
+        "splash_radius is already the LAG bucket's 1.1; writing the *_tiles twin back would "
+        "restore the shadow (tests/test_r2_engine_schema.DarkPrinceSplashShadowTests pins it)",
     ("tesla", "lifetime_s"):
         "conflicts.md E2: the mechanics layer (live, 30.0) and cards_stats (25.0) disagree and "
         "the field is imported-but-undeclared. The 3-of-3 wiki answer is 25; applied through the "
@@ -718,6 +725,20 @@ for _k in ("hitpoints", "damage", "hit_speed", "dps", "count", "range_tiles", "s
                                   "it through the base princess row (protocol: keep null + open)")
     SKIP[("minion_horde_evo", _k)] = ("wiki stub publishes no stats on any path; build_spec "
                                       "resolves it through the base minion_horde row")
+
+# decisions.md #11 tail: "Everything else in #11: keep sim values, tag `unsourced: true`".
+# These are the 21 UNPUB bucket rows -- fields (and, for 13 of them, whole rows) that NO path
+# publishes. The sim's number is kept because replacing it would be a guess; the row is MARKED so
+# the next sweep can tell "nobody publishes this" apart from "nobody checked".
+UNSOURCED_ROWS = ("balloon", "berserker", "elite_barbarians", "flying_machine", "barbarians",
+                  "bowler", "cannon_cart", "electro_spirit", "battle_healer", "dart_goblin",
+                  "fire_spirit", "electro_giant", "bats", "lumberjack_ghost", "goblin_cage",
+                  "inferno_tower", "poison", "royal_delivery", "elite_barbarians_evo",
+                  "minion_horde_evo", "furnace_evo")
+for _k in UNSOURCED_ROWS:
+    OVERRIDE[(_k, "unsourced")] = (
+        True, _DEC + " #11: no path publishes the flagged value on this row -- the sim's own "
+        "number is KEPT and the row marked, rather than replaced by a reconstruction", "y")
 
 # Fields the importer emits (card_import._parse_card). Anything else is curated by hand.
 IMPORT_FIELDS = {
@@ -735,6 +756,18 @@ IMPORT_FIELDS = {
 
 
 # --------------------------------------------------------------------------------------------
+def _why(notes: str) -> str:
+    """The first two sentences of a sweep note -- enough to say WHY in a cards.yaml comment.
+
+    One sentence was too little: several notes open with a bare label ("HIGH IMPACT",
+    "SYSTEMIC GATE BUG -- 10 of my 32 keys") and the evidence is in the sentence after it.
+    """
+    flat = " ".join((notes or "").split())
+    parts = [p for p in flat.split(". ") if p.strip()]
+    out = ". ".join(parts[:2]).strip()
+    return (out[:260].rstrip(" ,;") if out else "r2 sweep, see stat_diffs.jsonl")
+
+
 def _load():
     rows = [json.loads(l) for l in
             (LEDGER / "stat_diffs.jsonl").read_text(encoding="utf-8").splitlines() if l.strip()]
@@ -897,8 +930,7 @@ def build_plan():
                                  "reason": "every probe is prose, not a value the KB can hold",
                                  "p1": r.get("p1"), "p2": r.get("p2"), "p3": r.get("p3")})
                 continue
-            emit(key, field, val, "r2_buckets.json %s" % bucket,
-                 (r.get("notes") or "").split(". ")[0][:220], bucket)
+            emit(key, field, val, "r2_buckets.json %s" % bucket, _why(r.get("notes")), bucket)
 
     # 3. the 101 verdict:update rows
     for r in rows:
@@ -914,8 +946,7 @@ def build_plan():
                              "reason": "the ledger's `proposed` is prose, not a value the KB can "
                                        "hold", "proposed": prop})
             continue
-        emit(key, field, val, "stat_diffs.jsonl verdict:update",
-             (r.get("notes") or "").split(". ")[0][:220], "UPDATE")
+        emit(key, field, val, "stat_diffs.jsonl verdict:update", _why(r.get("notes")), "UPDATE")
 
     return {"plan": plan, "skipped": skipped, "deferred": deferred}
 
@@ -979,10 +1010,297 @@ def cmd_verify(argv):
     return 0
 
 
+# --------------------------------------------------------------------------------------------
+# The curated half: a SURGICAL cards.yaml editor.
+#
+# Not a YAML round-trip. Every curated number in that file carries a dated citation naming the
+# superseded value and the source, and safe_load/dump would delete all of it. This walks the
+# file as TEXT: it rewrites only the lines it must, keeps every other byte, and prefixes each
+# touched entry with a dated house-style comment block naming the superseded value and the
+# ruling. The safety net is in cmd_edit: the parsed `cards` mapping before and after must differ
+# by EXACTLY the planned set -- so however clumsy the text handling, a stray edit is caught.
+# --------------------------------------------------------------------------------------------
+_KEYLINE = __import__("re").compile(r"^  ([A-Za-z0-9_]+):")
+_DATE = "2026-08-26"
+
+
+def _yv(v):
+    """A value as YAML would write it inline.
+
+    safe_dump closes a bare-scalar document with a "..." marker line, which is not part of the
+    value -- emitting it wrote `gen_every_s: 13.0` followed by a stray `...` and broke the parse.
+    """
+    import yaml
+    t = yaml.safe_dump(v, default_flow_style=True, width=10 ** 6,
+                       allow_unicode=True, sort_keys=False)
+    return "\n".join(l for l in t.split("\n") if l.strip() != "...").strip()
+
+
+def _entries(lines):
+    """{key: (start, end)} spans of the top-level card entries."""
+    start = next(i for i, l in enumerate(lines) if l.rstrip() == "cards:")
+    hits = [(i, m.group(1)) for i, l in enumerate(lines[start + 1:], start + 1)
+            if (m := _KEYLINE.match(l))]
+    out = {}
+    for n, (i, key) in enumerate(hits):
+        out[key] = (i, hits[n + 1][0] if n + 1 < len(hits) else len(lines))
+    return out
+
+
+def _own_end(lines, start, end):
+    """Where the entry REALLY ends.
+
+    A key's span runs to the next key line, which drags along the blank line and the indent-2
+    comment block that introduce the NEXT entry. Appending a field there puts it after a comment
+    that belongs to somebody else -- and, measured on elixir_collector, after a section header,
+    which is how `verified: true` ended up outside the mapping entirely.
+    """
+    j = end
+    while j > start + 1 and (not lines[j - 1].strip()
+                             or (lines[j - 1].startswith("  #")
+                                 and not lines[j - 1].startswith("    "))):
+        j -= 1
+    return j
+
+
+def _flow_span(lines, i):
+    """(last_line_index, inner_text, trailing_comment) for a `key: {...}` entry, or None."""
+    head = lines[i]
+    if "{" not in head.split(":", 1)[1][:2].strip() and not head.split(":", 1)[1].lstrip().startswith("{"):
+        return None
+    j, depth, buf = i, 0, []
+    while j < len(lines):
+        seg = lines[j] if j > i else lines[i].split(":", 1)[1]
+        buf.append(seg)
+        depth += seg.count("{") - seg.count("}")
+        if depth == 0:
+            break
+        j += 1
+    text = "\n".join(buf)
+    close = text.rindex("}")
+    return j, text[text.index("{") + 1:close], text[close + 1:].strip()
+
+
+def _edit_entry(lines, span, changes, merged, key):
+    """Rewrite one entry's lines for `changes` = [(field, value), ...]. Returns new lines."""
+    import yaml
+    i, end = span
+    own = _own_end(lines, i, end)
+    body = lines[i:own]
+    tail_lines = lines[own:end]
+    flow = _flow_span(lines, i)
+
+    # Fields whose parent is a dict/list: cards.yaml curation REPLACES the whole value (CardDB
+    # merges per top-level field, not deeply), so the parent has to be written out in full from
+    # the merged row or the imported siblings are silently dropped.
+    # Several dotted changes can share one parent (little_prince writes three
+    # spawn_unit_stats.* fields). Each has to fold into the SAME copy -- rebuilding the parent
+    # per change made the last write win and silently dropped the earlier two.
+    flat, parents = [], {}
+    for field, value in changes:
+        if "." not in field:
+            flat.append((field, value))
+            continue
+        head, rest = field.split(".", 1)
+        if head not in parents:
+            parents[head] = json.loads(json.dumps(merged.get(head) or {}))   # deep copy
+        node, parts = parents[head], rest.split(".")
+        for p in parts[:-1]:
+            if isinstance(node, list):
+                node = node[int(p)]
+            else:
+                node = node.setdefault(p, {})
+        leaf = parts[-1]
+        if value == _DROP:
+            (node.pop(int(leaf)) if isinstance(node, list) else node.pop(leaf, None))
+        elif isinstance(node, list):
+            node[int(leaf)] = value
+        else:
+            node[leaf] = value
+    flat += list(parents.items())
+
+    if flow:
+        last, inner, tail = flow
+        row = yaml.safe_load("{" + inner + "}") or {}
+        for field, value in flat:
+            if value == _DROP:
+                row.pop(field, None)
+            else:
+                row[field] = value
+        row.setdefault("verified", True)
+        ver = row.pop("verified")
+        row["verified"] = ver                                  # keep `verified` last, house style
+        new = ["  %s: {%s}%s" % (key, ", ".join("%s: %s" % (k, _yv(v)) for k, v in row.items()),
+                                 ("   " + tail) if tail else "")]
+        return new + lines[last + 1:end]
+
+    # block entry: touch only the affected lines
+    out = list(body)
+    for field, value in flat:
+        pat = __import__("re").compile(r"^    %s\s*:" % __import__("re").escape(field))
+        at = next((n for n, l in enumerate(out) if pat.match(l)), None)
+        # A block field can own CHILD lines (tesla's `evolution:` is a nested mapping at indent
+        # 6). Replacing only the header line leaves the children orphaned and the file stops
+        # parsing, so the whole sub-block goes with it.
+        stop = at + 1 if at is not None else None
+        while stop is not None and stop < len(out) and out[stop].startswith("      "):
+            stop += 1
+        if value == _DROP:
+            if at is not None:
+                del out[at:stop]
+            continue
+        old_c = ""
+        if at is not None:
+            rest = out[at].split(":", 1)[1]
+            if "#" in rest:
+                old_c = rest.split("#", 1)[1].strip()
+        line = "    %s: %s" % (field, _yv(value))
+        if old_c:
+            line += "   # " + old_c
+        if at is None:
+            out.append(line)
+        else:
+            out[at:stop] = [line]
+    if not any(__import__("re").match(r"^    verified\s*:", l) for l in out):
+        out.append("    verified: true")
+    return out + tail_lines
+
+
+def _comment_block(key, changes, unsourced=False):
+    import textwrap
+    head = ("  # I5 %s -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; "
+            "row-by-row provenance in research/sim_parity/ledger/i5_applied.jsonl)." % _DATE)
+    out = textwrap.wrap(head, 98, initial_indent="", subsequent_indent="  # ")
+    for c in changes:
+        was = "ABSENT" if c["before"] == "<ABSENT>" else repr(c["before"])
+        now = "REMOVED" if c["after"] == _DROP else repr(c["after"])
+        out += textwrap.wrap("%s: SUPERSEDED %s -> %s. %s" % (c["field"], was, now, c["ruling"]),
+                             98, initial_indent="  #   ", subsequent_indent="  #     ")
+    if unsourced:
+        out += textwrap.wrap("unsourced: true -- decisions.md #11: no path publishes these; the "
+                             "sim's own values are kept and MARKED rather than replaced by a "
+                             "guess.", 98, initial_indent="  #   ", subsequent_indent="  #     ")
+    return out
+
+
+_META_OLD = """meta:
+  level: 11
+  mode: "1v1"
+  updated: "2026-07-24"
+  stats_source: null        # e.g. "RoyaleAPI" once combat stats are imported
+  notes: >
+    Elixir + categorical fields populated. Combat stats (hitpoints/damage/
+    hit_speed) pending import from a stats source (see README refresh note)."""
+
+_META_NEW = """meta:
+  level: 11
+  mode: "1v1"
+  updated: "2026-08-26"     # I5: the adjudicated R2 ledger applied (both stale since 2026-07-24)
+  stats_source: "clashroyale.fandom.com (MediaWiki level-11 vardefines) via `cards-import`,
+    corrected by the R2 sweep + owner adjudications in research/sim_parity/decisions.md.
+    Deliberate deviations from the wiki live in config/import_pins.json and NOWHERE else --
+    tools/stat_sweep.py reads that file as its EXPECTED set, so a value that disagrees with
+    the wiki and is not pinned is a finding, not a preference."
+  notes: >
+    Combat stats are imported (config/cards_stats.json, level 11) and overlaid by the curated
+    rows below; the game-file structural constants sit between them (config/card_mechanics.json).
+    Every curated number that contradicts the wiki carries a dated comment naming the superseded
+    value and the ruling; row-by-row provenance for the I5 application is in
+    research/sim_parity/ledger/i5_applied.jsonl."""
+
+
+def _bump_meta(text: str) -> str:
+    """PLAN.md I5: `updated` and `stats_source` have both been stale since 2026-07-24.
+
+    Folded into `edit` rather than done by hand so the whole application is one repeatable
+    command; a second run is a no-op because the old block is gone.
+    """
+    return text.replace(_META_OLD, _META_NEW, 1)
+
+
+def cmd_edit(argv):
+    import copy
+    import yaml
+    plan = json.loads((LEDGER / "i5_plan.json").read_text(encoding="utf-8"))["plan"]
+    rows = [p for p in plan if p["route"] == "curated"]
+    by_key = collections.OrderedDict()
+    for p in rows:
+        by_key.setdefault(p["key"], []).append(p)
+    merged_db = _db()
+
+    for deck in ("icebow", "hogeq"):
+        path = ROOT / deck / "config" / "cards.yaml"
+        text = path.read_text(encoding="utf-8")
+        before = yaml.safe_load(text)["cards"]
+        lines = text.split("\n")
+        spans = _entries(lines)
+        missing = [k for k in by_key if k not in spans]
+
+        for key in sorted(by_key, key=lambda k: spans.get(k, (10 ** 9,))[0], reverse=True):
+            if key not in spans:
+                continue
+            ch = by_key[key]
+            merged = merged_db.get(key) or {}
+            new = _edit_entry(lines, spans[key], [(c["field"], c["after"]) for c in ch],
+                              merged, key)
+            i, end = spans[key]
+            lines[i:end] = _comment_block(key, ch, unsourced=key in UNSOURCED_ROWS) + new
+
+        if missing:
+            lines += ["", "  # " + "=" * 68,
+                      "  # I5 %s -- cards with NO curated row until now. Every field below is a"
+                      % _DATE,
+                      "  # value the importer does not emit for this key, so it can only live"
+                      " here.",
+                      "  # " + "=" * 68]
+            for key in missing:
+                ch = by_key[key]
+                row = {}
+                for c in ch:
+                    if c["after"] != _DROP:
+                        row[c["field"]] = c["after"]
+                row["verified"] = True
+                lines += _comment_block(key, ch)
+                lines.append("  %s: {%s}" % (key, ", ".join("%s: %s" % (k, _yv(v))
+                                                            for k, v in row.items())))
+
+        # UNSOURCED marker for rows decisions.md #11 leaves at their sim values
+        out = "\n".join(lines)
+        after = yaml.safe_load(out)["cards"]
+
+        # SAFETY NET: the parsed mapping must differ by EXACTLY the planned set.
+        want = {}
+        for p in rows:
+            want.setdefault(p["key"], []).append(p)
+        stray = []
+        for k in set(before) | set(after):
+            b, a = before.get(k), after.get(k)
+            if b == a:
+                continue
+            fields = {f for f in set(b or {}) | set(a or {})
+                      if (b or {}).get(f) != (a or {}).get(f)}
+            planned = {p["field"].split(".")[0] for p in want.get(k, [])} | {"verified"}
+            extra = fields - planned
+            if extra:
+                stray.append("%s: %s" % (k, sorted(extra)))
+        if stray:
+            print("REFUSING to write %s -- %d stray field change(s):" % (path, len(stray)))
+            for s in stray:
+                print("   " + s)
+            return 1
+        out = _bump_meta(out)
+        path.write_text(out.rstrip("\n") + "\n", encoding="utf-8", newline="")
+        print("edited %s: %d entries, %d fields (%d new rows)"
+              % (path, len(by_key), len(rows), len(missing)))
+    return 0
+
+
 def main(argv) -> int:
     cmd = argv[1] if len(argv) > 1 else "plan"
     if cmd == "plan":
         return cmd_plan(argv)
+    if cmd == "edit":
+        return cmd_edit(argv)
     if cmd == "verify":
         return cmd_verify(argv)
     print(__doc__)

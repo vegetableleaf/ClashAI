@@ -1375,13 +1375,223 @@
    "bucket": "RULING"
   },
   {
+   "key": "balloon",
+   "field": "unsourced",
+   "before": "<ABSENT>",
+   "after": true,
+   "route": "curated",
+   "source": "decisions.md",
+   "ruling": "decisions.md 2026-08-26 R2 ADJUDICATION #11: no path publishes the flagged value on this row -- the sim's own number is KEPT and the row marked, rather than replaced by a reconstruction",
+   "bucket": "RULING"
+  },
+  {
+   "key": "berserker",
+   "field": "unsourced",
+   "before": "<ABSENT>",
+   "after": true,
+   "route": "curated",
+   "source": "decisions.md",
+   "ruling": "decisions.md 2026-08-26 R2 ADJUDICATION #11: no path publishes the flagged value on this row -- the sim's own number is KEPT and the row marked, rather than replaced by a reconstruction",
+   "bucket": "RULING"
+  },
+  {
+   "key": "elite_barbarians",
+   "field": "unsourced",
+   "before": "<ABSENT>",
+   "after": true,
+   "route": "curated",
+   "source": "decisions.md",
+   "ruling": "decisions.md 2026-08-26 R2 ADJUDICATION #11: no path publishes the flagged value on this row -- the sim's own number is KEPT and the row marked, rather than replaced by a reconstruction",
+   "bucket": "RULING"
+  },
+  {
+   "key": "flying_machine",
+   "field": "unsourced",
+   "before": "<ABSENT>",
+   "after": true,
+   "route": "curated",
+   "source": "decisions.md",
+   "ruling": "decisions.md 2026-08-26 R2 ADJUDICATION #11: no path publishes the flagged value on this row -- the sim's own number is KEPT and the row marked, rather than replaced by a reconstruction",
+   "bucket": "RULING"
+  },
+  {
+   "key": "barbarians",
+   "field": "unsourced",
+   "before": "<ABSENT>",
+   "after": true,
+   "route": "curated",
+   "source": "decisions.md",
+   "ruling": "decisions.md 2026-08-26 R2 ADJUDICATION #11: no path publishes the flagged value on this row -- the sim's own number is KEPT and the row marked, rather than replaced by a reconstruction",
+   "bucket": "RULING"
+  },
+  {
+   "key": "bowler",
+   "field": "unsourced",
+   "before": "<ABSENT>",
+   "after": true,
+   "route": "curated",
+   "source": "decisions.md",
+   "ruling": "decisions.md 2026-08-26 R2 ADJUDICATION #11: no path publishes the flagged value on this row -- the sim's own number is KEPT and the row marked, rather than replaced by a reconstruction",
+   "bucket": "RULING"
+  },
+  {
+   "key": "cannon_cart",
+   "field": "unsourced",
+   "before": "<ABSENT>",
+   "after": true,
+   "route": "curated",
+   "source": "decisions.md",
+   "ruling": "decisions.md 2026-08-26 R2 ADJUDICATION #11: no path publishes the flagged value on this row -- the sim's own number is KEPT and the row marked, rather than replaced by a reconstruction",
+   "bucket": "RULING"
+  },
+  {
+   "key": "electro_spirit",
+   "field": "unsourced",
+   "before": "<ABSENT>",
+   "after": true,
+   "route": "curated",
+   "source": "decisions.md",
+   "ruling": "decisions.md 2026-08-26 R2 ADJUDICATION #11: no path publishes the flagged value on this row -- the sim's own number is KEPT and the row marked, rather than replaced by a reconstruction",
+   "bucket": "RULING"
+  },
+  {
+   "key": "battle_healer",
+   "field": "unsourced",
+   "before": "<ABSENT>",
+   "after": true,
+   "route": "curated",
+   "source": "decisions.md",
+   "ruling": "decisions.md 2026-08-26 R2 ADJUDICATION #11: no path publishes the flagged value on this row -- the sim's own number is KEPT and the row marked, rather than replaced by a reconstruction",
+   "bucket": "RULING"
+  },
+  {
+   "key": "dart_goblin",
+   "field": "unsourced",
+   "before": "<ABSENT>",
+   "after": true,
+   "route": "curated",
+   "source": "decisions.md",
+   "ruling": "decisions.md 2026-08-26 R2 ADJUDICATION #11: no path publishes the flagged value on this row -- the sim's own number is KEPT and the row marked, rather than replaced by a reconstruction",
+   "bucket": "RULING"
+  },
+  {
+   "key": "fire_spirit",
+   "field": "unsourced",
+   "before": "<ABSENT>",
+   "after": true,
+   "route": "curated",
+   "source": "decisions.md",
+   "ruling": "decisions.md 2026-08-26 R2 ADJUDICATION #11: no path publishes the flagged value on this row -- the sim's own number is KEPT and the row marked, rather than replaced by a reconstruction",
+   "bucket": "RULING"
+  },
+  {
+   "key": "electro_giant",
+   "field": "unsourced",
+   "before": "<ABSENT>",
+   "after": true,
+   "route": "curated",
+   "source": "decisions.md",
+   "ruling": "decisions.md 2026-08-26 R2 ADJUDICATION #11: no path publishes the flagged value on this row -- the sim's own number is KEPT and the row marked, rather than replaced by a reconstruction",
+   "bucket": "RULING"
+  },
+  {
+   "key": "bats",
+   "field": "unsourced",
+   "before": "<ABSENT>",
+   "after": true,
+   "route": "curated",
+   "source": "decisions.md",
+   "ruling": "decisions.md 2026-08-26 R2 ADJUDICATION #11: no path publishes the flagged value on this row -- the sim's own number is KEPT and the row marked, rather than replaced by a reconstruction",
+   "bucket": "RULING"
+  },
+  {
+   "key": "lumberjack_ghost",
+   "field": "unsourced",
+   "before": "<ABSENT>",
+   "after": true,
+   "route": "curated",
+   "source": "decisions.md",
+   "ruling": "decisions.md 2026-08-26 R2 ADJUDICATION #11: no path publishes the flagged value on this row -- the sim's own number is KEPT and the row marked, rather than replaced by a reconstruction",
+   "bucket": "RULING"
+  },
+  {
+   "key": "goblin_cage",
+   "field": "unsourced",
+   "before": "<ABSENT>",
+   "after": true,
+   "route": "curated",
+   "source": "decisions.md",
+   "ruling": "decisions.md 2026-08-26 R2 ADJUDICATION #11: no path publishes the flagged value on this row -- the sim's own number is KEPT and the row marked, rather than replaced by a reconstruction",
+   "bucket": "RULING"
+  },
+  {
+   "key": "inferno_tower",
+   "field": "unsourced",
+   "before": "<ABSENT>",
+   "after": true,
+   "route": "curated",
+   "source": "decisions.md",
+   "ruling": "decisions.md 2026-08-26 R2 ADJUDICATION #11: no path publishes the flagged value on this row -- the sim's own number is KEPT and the row marked, rather than replaced by a reconstruction",
+   "bucket": "RULING"
+  },
+  {
+   "key": "poison",
+   "field": "unsourced",
+   "before": "<ABSENT>",
+   "after": true,
+   "route": "curated",
+   "source": "decisions.md",
+   "ruling": "decisions.md 2026-08-26 R2 ADJUDICATION #11: no path publishes the flagged value on this row -- the sim's own number is KEPT and the row marked, rather than replaced by a reconstruction",
+   "bucket": "RULING"
+  },
+  {
+   "key": "royal_delivery",
+   "field": "unsourced",
+   "before": "<ABSENT>",
+   "after": true,
+   "route": "curated",
+   "source": "decisions.md",
+   "ruling": "decisions.md 2026-08-26 R2 ADJUDICATION #11: no path publishes the flagged value on this row -- the sim's own number is KEPT and the row marked, rather than replaced by a reconstruction",
+   "bucket": "RULING"
+  },
+  {
+   "key": "elite_barbarians_evo",
+   "field": "unsourced",
+   "before": "<ABSENT>",
+   "after": true,
+   "route": "curated",
+   "source": "decisions.md",
+   "ruling": "decisions.md 2026-08-26 R2 ADJUDICATION #11: no path publishes the flagged value on this row -- the sim's own number is KEPT and the row marked, rather than replaced by a reconstruction",
+   "bucket": "RULING"
+  },
+  {
+   "key": "minion_horde_evo",
+   "field": "unsourced",
+   "before": "<ABSENT>",
+   "after": true,
+   "route": "curated",
+   "source": "decisions.md",
+   "ruling": "decisions.md 2026-08-26 R2 ADJUDICATION #11: no path publishes the flagged value on this row -- the sim's own number is KEPT and the row marked, rather than replaced by a reconstruction",
+   "bucket": "RULING"
+  },
+  {
+   "key": "furnace_evo",
+   "field": "unsourced",
+   "before": "<ABSENT>",
+   "after": true,
+   "route": "curated",
+   "source": "decisions.md",
+   "ruling": "decisions.md 2026-08-26 R2 ADJUDICATION #11: no path publishes the flagged value on this row -- the sim's own number is KEPT and the row marked, rather than replaced by a reconstruction",
+   "bucket": "RULING"
+  },
+  {
    "key": "ghost_souldier",
    "field": "spawn_damage",
    "before": "<ABSENT>",
    "after": 81,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "Missing field: the Souldier deals a spawn burst (spawn_11 = 81 at level 11) that the KB does not carry at all, and P3 confirms it is a separately tracked quantity",
+   "ruling": "Missing field: the Souldier deals a spawn burst (spawn_11 = 81 at level 11) that the KB does not carry at all, and P3 confirms it is a separately tracked quantity. Curated row is verified:true, so flagging rather than writing.",
    "bucket": "KBGAP"
   },
   {
@@ -1391,7 +1601,7 @@
    "after": true,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "SYSTEMIC GATE BUG -- 10 of my 32 keys",
+   "ruling": "SYSTEMIC GATE BUG -- 10 of my 32 keys. The parent row has evolution:null while a fully populated baby_dragon_evo row exists carrying the correct evo_cycles=2",
    "bucket": "KBGAP"
   },
   {
@@ -1401,7 +1611,7 @@
    "after": true,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "SYSTEMIC GATE BUG -- 10 of my 32 keys",
+   "ruling": "SYSTEMIC GATE BUG -- 10 of my 32 keys. The parent row has evolution:null while a fully populated battle_ram_evo row exists carrying the correct evo_cycles=2",
    "bucket": "KBGAP"
   },
   {
@@ -1411,7 +1621,7 @@
    "after": true,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "SYSTEMIC GATE BUG -- 10 of my 32 keys",
+   "ruling": "SYSTEMIC GATE BUG -- 10 of my 32 keys. The parent row has evolution:null while a fully populated bomber_evo row exists carrying the correct evo_cycles=2",
    "bucket": "KBGAP"
   },
   {
@@ -1421,7 +1631,7 @@
    "after": true,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "SYSTEMIC GATE BUG -- 10 of my 32 keys",
+   "ruling": "SYSTEMIC GATE BUG -- 10 of my 32 keys. The parent row has evolution:null while a fully populated electro_dragon_evo row exists carrying the correct evo_cycles=1",
    "bucket": "KBGAP"
   },
   {
@@ -1431,7 +1641,7 @@
    "after": true,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "SYSTEMIC GATE BUG -- 10 of my 32 keys",
+   "ruling": "SYSTEMIC GATE BUG -- 10 of my 32 keys. The parent row has evolution:null while a fully populated executioner_evo row exists carrying the correct evo_cycles=1",
    "bucket": "KBGAP"
   },
   {
@@ -1441,7 +1651,7 @@
    "after": true,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "SYSTEMIC GATE BUG -- 10 of my 32 keys",
+   "ruling": "SYSTEMIC GATE BUG -- 10 of my 32 keys. The parent row has evolution:null while a fully populated firecracker_evo row exists carrying the correct evo_cycles=2",
    "bucket": "KBGAP"
   },
   {
@@ -1451,7 +1661,7 @@
    "after": true,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "SYSTEMIC GATE BUG -- 10 of my 32 keys",
+   "ruling": "SYSTEMIC GATE BUG -- 10 of my 32 keys. The parent row has evolution:null while a fully populated furnace_evo row exists carrying the correct evo_cycles=2",
    "bucket": "KBGAP"
   },
   {
@@ -1461,7 +1671,7 @@
    "after": 2.0,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "KB row carries death_damage 84 but no radius for it, so the death blast currently has no area",
+   "ruling": "KB row carries death_damage 84 but no radius for it, so the death blast currently has no area. Published radius 2",
    "bucket": "KBGAP"
   },
   {
@@ -1471,7 +1681,7 @@
    "after": 2,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "The musketeer row's curated `evolution` dict (verified:true) carries available/effect/gains but no `cycles`, where the comparable knight row carries cycles 2 and matches the wiki exactly",
+   "ruling": "The musketeer row's curated `evolution` dict (verified:true) carries available/effect/gains but no `cycles`, where the comparable knight row carries cycles 2 and matches the wiki exactly. Published Evolution Attributes give Cycles 2",
    "bucket": "KBGAP"
   },
   {
@@ -1481,7 +1691,7 @@
    "after": 1.6,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "PRIORITY / MISSING FIELD on a sub-unit row",
+   "ruling": "PRIORITY / MISSING FIELD on a sub-unit row. Sourced from the PARENT spell page Royal Delivery, section 'Royal Recruit Attributes' -- royal_recruit has no wiki page of its own",
    "bucket": "KBGAP"
   },
   {
@@ -1491,7 +1701,7 @@
    "after": 102,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "PRIORITY / MISSING FIELD",
+   "ruling": "PRIORITY / MISSING FIELD. Derived exactly as on the sibling row royal_recruits.dps (102), which matches",
    "bucket": "KBGAP"
   },
   {
@@ -1501,7 +1711,7 @@
    "after": 0.5,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "PRIORITY/gap: field absent from the KB row",
+   "ruling": "PRIORITY/gap: field absent from the KB row. The intra-wave stagger is published in prose only (this page's attribute table has no Spawn Delay column, unlike Goblin Hut)",
    "bucket": "KBGAP"
   },
   {
@@ -1511,7 +1721,7 @@
    "after": 1.0,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "PRIORITY/gap: field absent from the KB row while every other turret building in the group carries it",
+   "ruling": "PRIORITY/gap: field absent from the KB row while every other turret building in the group carries it. The table says 1.0; the last dated history entry that names the FIRST attack interval leaves it at 0.9 (4/3/2025 raised only the regular interval)",
    "bucket": "KBGAP"
   },
   {
@@ -1521,7 +1731,7 @@
    "after": 2.0,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "PRIORITY/gap: the row has damage_stages [43, 158, 847] but nothing saying how long each stage takes, so the sim cannot model the ramp or a stun/shield reset - the single most important mechanic of this card, and the whol",
+   "ruling": "PRIORITY/gap: the row has damage_stages [43, 158, 847] but nothing saying how long each stage takes, so the sim cannot model the ramp or a stun/shield reset - the single most important mechanic of this card, and the whole reason Zap/Freeze/Electro counter it.",
    "bucket": "KBGAP"
   },
   {
@@ -1531,7 +1741,7 @@
    "after": 0.3,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "PRIORITY/gap: field absent from the KB row",
+   "ruling": "PRIORITY/gap: field absent from the KB row. The table publishes First Hit Speed 0.3, but that cell is part of the same stale pre-4/8/2026 row as Hit Speed, so it most likely tracks to 0.4",
    "bucket": "KBGAP"
   },
   {
@@ -1541,7 +1751,7 @@
    "after": 0.5,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "MISSING FIELD AND THE PATHS DISAGREE",
+   "ruling": "MISSING FIELD AND THE PATHS DISAGREE. The spawned Barbarian's deploy time is 1.0s per the 1/12/2025 balance entry, but the secondary attributes table still reads 0.5 sec (never updated)",
    "bucket": "KBGAP"
   },
   {
@@ -1551,7 +1761,7 @@
    "after": 0.5,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "MISSING FIELD, history path only",
+   "ruling": "MISSING FIELD, history path only. 12/6/2017 decreased the cloning time to 0.5s (from 0.8s) and nothing later changes it; no table cell corroborates, so this is escalate rather than update.",
    "bucket": "KBGAP"
   },
   {
@@ -1561,7 +1771,7 @@
    "after": 200,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "MISSING FIELD, history path only",
+   "ruling": "MISSING FIELD, history path only. 20/10/2016 set The Log's projectile speed to 200 (from 170) and its casting speed to 360 (from 300), and neither has changed since",
    "bucket": "KBGAP"
   },
   {
@@ -1571,7 +1781,7 @@
    "after": 1.05,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "MISSING FIELD AND THE PATHS DISAGREE",
+   "ruling": "MISSING FIELD AND THE PATHS DISAGREE. The attributes table gives Duration = 1.05 sec and the lead agrees ('for 1.05 seconds'), but the last duration entry in the balance history is 25/4/2018 'decreased the duration to 2.05 seconds (from 2.55 seconds)' with no",
    "bucket": "KBGAP"
   },
   {
@@ -1581,7 +1791,7 @@
    "after": 1.0,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "MISSING FIELD, history path only",
+   "ruling": "MISSING FIELD, history path only. 17/6/2024 'increased the Void's first strike interval to 1 second (from 0.5 seconds)'",
    "bucket": "KBGAP"
   },
   {
@@ -1591,7 +1801,7 @@
    "after": 2.0,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "MISSING FIELD: the KB row has no post-death aura lifetime",
+   "ruling": "MISSING FIELD: the KB row has no post-death aura lifetime. Wiki prose says the wind persists ~2 s after the Evo Baby Dragon dies (prose hedges with 'about'; no table column, no vardefine)",
    "bucket": "KBGAP"
   },
   {
@@ -1601,7 +1811,7 @@
    "after": 212,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "MISSING FIELD",
+   "ruling": "MISSING FIELD. The Evo Battle Ram damages everything it ploughs through on the way to its target -- 212 at level 11, published as its own vardefine with a named table column",
    "bucket": "KBGAP"
   },
   {
@@ -1611,7 +1821,7 @@
    "after": 2.0,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "MISSING FIELD: `ram_bounce` is a bare boolean; the wiki publishes the bounce distance (2 tiles), which sets the re-ram period together with the 2.0-tile/s charge speed",
+   "ruling": "MISSING FIELD: `ram_bounce` is a bare boolean; the wiki publishes the bounce distance (2 tiles), which sets the re-ram period together with the 2.0-tile/s charge speed. Useful confirmation while here: charge_damage 573 = exactly 2 x the 286 connection damage",
    "bucket": "KBGAP"
   },
   {
@@ -1621,7 +1831,7 @@
    "after": true,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "MISSING FIELD (flag, not a number)",
+   "ruling": "MISSING FIELD (flag, not a number). Since 16/12/2024 a unit inside two overlapping bounce radii takes the 225 ONCE, not twice",
    "bucket": "KBGAP"
   },
   {
@@ -1631,7 +1841,7 @@
    "after": 2.0,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "MISSING FIELD",
+   "ruling": "MISSING FIELD. The KB has deploy_volley 9 / volley_damage 304 / volley_crown_damage 89 but no splash radius for the barrage, even though the wiki publishes it in a named column AND the intro says the barrage 'deals area damage and inflicts knockback'",
    "bucket": "KBGAP"
   },
   {
@@ -1645,7 +1855,7 @@
    ],
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "MISSING FIELD, AND THE CURATED MODEL IS WRONG IN KIND",
+   "ruling": "MISSING FIELD, AND THE CURATED MODEL IS WRONG IN KIND. cards.yaml says the poison 'becomes stronger the longer the Dart Goblin remains alive' and guesses '15 s steps [verify]'",
    "bucket": "KBGAP"
   },
   {
@@ -1655,7 +1865,7 @@
    "after": 1.5,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "MISSING FIELD: the poison is an AREA effect with a published 1.5-tile radius; the KB models poison_dps/poison_stages with no radius, so the sim currently applies it single-target",
+   "ruling": "MISSING FIELD: the poison is an AREA effect with a published 1.5-tile radius; the KB models poison_dps/poison_stages with no radius, so the sim currently applies it single-target. cards.yaml's comment claims 'no published numbers anywhere scrapeable' for this",
    "bucket": "KBGAP"
   },
   {
@@ -1668,7 +1878,7 @@
    ],
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "MISSING FIELD, newly available",
+   "ruling": "MISSING FIELD, newly available. The KB has a cooldown but no throw condition, so the sim has no rule for when a spear is released",
    "bucket": "KBGAP"
   },
   {
@@ -1678,7 +1888,7 @@
    "after": 300,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "MISSING FIELD",
+   "ruling": "MISSING FIELD. The KB has carry_roll/roll_tiles but no roll SPEED, so the sim has no duration for the pull",
    "bucket": "KBGAP"
   },
   {
@@ -1688,7 +1898,7 @@
    "after": 0.3,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "MISSING FIELD: the re-grab cooldown between one troop being released and the next being pulled in",
+   "ruling": "MISSING FIELD: the re-grab cooldown between one troop being released and the next being pulled in. The KB models hook_time_s 1.2 / hook_speed_tiles 8.0 / hook_max_tiles 3.0 but has no cooldown, so the sim has no gap between grabs at all",
    "bucket": "KBGAP"
   },
   {
@@ -1701,7 +1911,7 @@
    ],
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "MISSING FIELDS behind a bare boolean",
+   "ruling": "MISSING FIELDS behind a bare boolean. `drill_relocate: true` carries none of the mechanism: the two hp thresholds (66%, 33%), the goblin counts per submerge (2 then 1 -- consistent with the 4/5/2026 change 'Goblins on second submerge decreased to 1 (from 2)')",
    "bucket": "KBGAP"
   },
   {
@@ -1711,18 +1921,8 @@
    "after": 2.5,
    "route": "curated",
    "source": "r2_buckets.json KBGAP",
-   "ruling": "MISSING FIELD, minor but concrete: the trickle of Goblins appears 2.5 tiles BEHIND the Giant, not at his feet, so they arrive at a defender later than the sim assumes and are harder to catch with the same splash",
+   "ruling": "MISSING FIELD, minor but concrete: the trickle of Goblins appears 2.5 tiles BEHIND the Giant, not at his feet, so they arrive at a defender later than the sim assumes and are harder to catch with the same splash. Only the Card Evolution page publishes it",
    "bucket": "KBGAP"
-  },
-  {
-   "key": "dark_prince",
-   "field": "splash_radius_tiles",
-   "before": "<ABSENT>",
-   "after": 1.1,
-   "route": "curated",
-   "source": "r2_buckets.json LAG",
-   "ruling": "P2 and P3 both give 1.1",
-   "bucket": "LAG"
   },
   {
    "key": "bush_goblin",
@@ -1731,7 +1931,7 @@
    "after": 256,
    "route": "curated",
    "source": "r2_buckets.json LAG",
-   "ruling": "227 * 1.12 = 254.2 and the page's current vardefine is 256, so current_db looks like the pre-9/4/2025 value",
+   "ruling": "227 * 1.12 = 254.2 and the page's current vardefine is 256, so current_db looks like the pre-9/4/2025 value. Confirmed this is the right vardefine for this key: on this page bush_hp_11=81 is the Suspicious Bush itself and hp_11/dmg_11/atk_speed are the Bush Go",
    "bucket": "LAG"
   },
   {
@@ -1741,7 +1941,7 @@
    "after": 1.0,
    "route": "curated",
    "source": "r2_buckets.json LAG",
-   "ruling": "P2's SECONDARY table -- the Bush Goblin's own row -- says 1 sec",
+   "ruling": "P2's SECONDARY table -- the Bush Goblin's own row -- says 1 sec. Curated verified:true -> escalate",
    "bucket": "LAG"
   },
   {
@@ -1751,7 +1951,7 @@
    "after": 1.6,
    "route": "curated",
    "source": "r2_buckets.json LAG",
-   "ruling": "Confirmed stale by time machine: at oldid 436715 (2026-07-16, before the 4/8/2026 update) spear_atk_speed was already 1.7 and it is still 1.7 today, so the page never applied the documented change",
+   "ruling": "Confirmed stale by time machine: at oldid 436715 (2026-07-16, before the 4/8/2026 update) spear_atk_speed was already 1.7 and it is still 1.7 today, so the page never applied the documented change. Both 1.7 paths are the same lagging card page",
    "bucket": "LAG"
   },
   {
@@ -1761,7 +1961,7 @@
    "after": 2258,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "Page proven stale across a documented change",
+   "ruling": "Page proven stale across a documented change. 2150 x 1.05 = 2257.5, so ~2258",
    "bucket": "LAG"
   },
   {
@@ -1771,7 +1971,7 @@
    "after": 231,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "Page proven stale across the same change",
+   "ruling": "Page proven stale across the same change. 212 x 1.09 = 231.1, so ~231 -- same estimate caveat as the hitpoints line above.",
    "bucket": "LAG"
   },
   {
@@ -1781,7 +1981,7 @@
    "after": 5.5,
    "route": "curated",
    "source": "r2_buckets.json LAG",
-   "ruling": "Two independent paths agree on 5.5 and differ from the KB's 4.5, which would normally be an update -- but drops_rage is curated verified:true in cards.yaml, so per the rules this goes to owner batch review rather than an",
+   "ruling": "Two independent paths agree on 5.5 and differ from the KB's 4.5, which would normally be an update -- but drops_rage is curated verified:true in cards.yaml, so per the rules this goes to owner batch review rather than an auto-overwrite. 4.5 is not even a histo",
    "bucket": "LAG"
   },
   {
@@ -1791,7 +1991,7 @@
    "after": 125,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "Page proven stale across a documented change: 133 before 4/8/2026 and still 133 now, while History records a 6% cut",
+   "ruling": "Page proven stale across a documented change: 133 before 4/8/2026 and still 133 now, while History records a 6% cut. 133 x 0.94 = 125.02, so ~125 (ESTIMATE -- the quoted percentage is rounded)",
    "bucket": "LAG"
   },
   {
@@ -1801,7 +2001,7 @@
    "after": 0.4,
    "route": "curated",
    "source": "r2_buckets.json LAG",
-   "ruling": "Frozen-dump field",
+   "ruling": "Frozen-dump field. Wiki gives hit speed 1.1 / First Hit Speed 0.7 -> 0.4, and a dated entry moved the first attack interval to 0.7 (from 0.8) on 5/3/2024 -- after the 2023-10-18 dump froze -- so the dump's 0.6 predates a documented change to exactly this quant",
    "bucket": "LAG"
   },
   {
@@ -1811,7 +2011,7 @@
    "after": 0.8,
    "route": "curated",
    "source": "r2_buckets.json LAG",
-   "ruling": "Frozen-dump field",
+   "ruling": "Frozen-dump field. Wiki gives hit speed 1.3 / First Hit Speed 0.5 -> 0.8; dump says 0.7",
    "bucket": "LAG"
   },
   {
@@ -1821,7 +2021,7 @@
    "after": 1390,
    "route": "curated",
    "source": "r2_buckets.json LAG",
-   "ruling": "Page proven stale across a documented change: time machine oldid 433647 (2025-12-25, before 12/1/2026) has the hardcoded L11 row '|11||1,433||755||{{Dps|755|1.6}}', and today's rendered row is still 1433, while History r",
+   "ruling": "Page proven stale across a documented change: time machine oldid 433647 (2025-12-25, before 12/1/2026) has the hardcoded L11 row '|11||1,433||755||{{Dps|755|1.6}}', and today's rendered row is still 1433, while History records a 3% hitpoint cut. 1433 x 0.97 =",
    "bucket": "LAG"
   },
   {
@@ -1831,7 +2031,7 @@
    "after": 0.6,
    "route": "curated",
    "source": "r2_buckets.json LAG",
-   "ruling": "Frozen-dump field (shared 'Minion' character row with minions)",
+   "ruling": "Frozen-dump field (shared 'Minion' character row with minions). Against the Minion Horde page's stale 1.1 the identity gives 0.6; against the correct 1.2 it gives 0.7, which is the value the minions row should also take",
    "bucket": "LAG"
   },
   {
@@ -1841,7 +2041,7 @@
    "after": 0.7,
    "route": "curated",
    "source": "r2_buckets.json LAG",
-   "ruling": "Frozen-dump field",
+   "ruling": "Frozen-dump field. Wiki gives hit speed 1.2 / First Hit Speed 0.5 -> 0.7; dump says 0.5",
    "bucket": "LAG"
   },
   {
@@ -1851,7 +2051,7 @@
    "after": 1.0,
    "route": "curated",
    "source": "r2_buckets.json LAG",
-   "ruling": "STRONGEST SINGLE FINDING IN THE GROUP",
+   "ruling": "STRONGEST SINGLE FINDING IN THE GROUP. P2 (prose) and P3 (dated 2025-11-03 entry) agree on 1.0 against current_db 0.8, and no path supports 0.8 -- the sim is giving reborn Phoenixes 80% of hitpoints AND damage where the game gives 100%",
    "bucket": "LAG"
   },
   {
@@ -1861,7 +2061,7 @@
    "after": 1765,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "PROVEN LAG: the pre-change revision already carried today's value, so the wiki never applied the balance entry",
+   "ruling": "PROVEN LAG: the pre-change revision already carried today's value, so the wiki never applied the balance entry. P1/P2 are NOT independent here -- the statistics table is generated from the vardefine, so they are one source",
    "bucket": "LAG"
   },
   {
@@ -1871,7 +2071,7 @@
    "after": 1824,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "PROVEN LAG: the pre-change revision already carried today's value, so the wiki never applied the balance entry",
+   "ruling": "PROVEN LAG: the pre-change revision already carried today's value, so the wiki never applied the balance entry. P1/P2 are NOT independent here -- the statistics table is generated from the vardefine, so they are one source",
    "bucket": "LAG"
   },
   {
@@ -1881,7 +2081,7 @@
    "after": 2822,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "PROVEN LAG: the pre-change revision already carried today's value, so the wiki never applied the balance entry",
+   "ruling": "PROVEN LAG: the pre-change revision already carried today's value, so the wiki never applied the balance entry. P1/P2 are NOT independent here -- the statistics table is generated from the vardefine, so they are one source",
    "bucket": "LAG"
   },
   {
@@ -1891,7 +2091,7 @@
    "after": 154,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "PROVEN LAG: the pre-change revision already carried today's value, so the wiki never applied the balance entry",
+   "ruling": "PROVEN LAG: the pre-change revision already carried today's value, so the wiki never applied the balance entry. P1/P2 are NOT independent here -- the statistics table is generated from the vardefine, so they are one source",
    "bucket": "LAG"
   },
   {
@@ -1901,7 +2101,7 @@
    "after": 151,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "PROVEN LAG: the pre-change revision already carried today's value, so the wiki never applied the balance entry",
+   "ruling": "PROVEN LAG: the pre-change revision already carried today's value, so the wiki never applied the balance entry. P1/P2 are NOT independent here -- the statistics table is generated from the vardefine, so they are one source",
    "bucket": "LAG"
   },
   {
@@ -1911,7 +2111,7 @@
    "after": 313,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "PROVEN LAG: the pre-change revision already carried today's value, so the wiki never applied the balance entry",
+   "ruling": "PROVEN LAG: the pre-change revision already carried today's value, so the wiki never applied the balance entry. P1/P2 are NOT independent here -- the statistics table is generated from the vardefine, so they are one source",
    "bucket": "LAG"
   },
   {
@@ -1921,7 +2121,7 @@
    "after": 201,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "VARDEFINE PROVABLY STALE",
+   "ruling": "VARDEFINE PROVABLY STALE. A revision walk shows dmg_11=212 is byte-identical to the level-11 damage in the 2025-12-22 revision, i.e",
    "bucket": "LAG"
   },
   {
@@ -1931,7 +2131,7 @@
    "after": 201,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "Follows damage: dps = damage / hit_speed = 201 / 1.0 = 201 if the 6/4/2026 -5% is applied",
+   "ruling": "Follows damage: dps = damage / hit_speed = 201 / 1.0 = 201 if the 6/4/2026 -5% is applied. Same rounding caveat as the damage line.",
    "bucket": "LAG"
   },
   {
@@ -1941,7 +2141,7 @@
    "after": 0,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "HIGH CONFIDENCE that the current value is 0",
+   "ruling": "HIGH CONFIDENCE that the current value is 0. The 4/8/2026 entry says the tower spawn damage was removed 'entirely (from 30% of the full spawn damage)', and 26/84 = 30.95% identifies spawn_crown_11 = 26 as exactly the pre-change 30% figure that entry describes",
    "bucket": "LAG"
   },
   {
@@ -1951,7 +2151,7 @@
    "after": 57,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "Follows hit_speed: 266/5 = 53.2 -> 53 (current) versus 266/4.7 = 56.6 -> 57 once the 4/8/2026 change is applied",
+   "ruling": "Follows hit_speed: 266/5 = 53.2 -> 53 (current) versus 266/4.7 = 56.6 -> 57 once the 4/8/2026 change is applied. Same reasoning and same caveat as the hit_speed line.",
    "bucket": "LAG"
   },
   {
@@ -1961,7 +2161,7 @@
    "after": 0.4,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "VARDEFINE AND TABLE BOTH LAG THE 4/8/2026 ENTRY, which states 0.4 'from 0.3 seconds' - exactly what both still publish, proving neither absorbed the change",
+   "ruling": "VARDEFINE AND TABLE BOTH LAG THE 4/8/2026 ENTRY, which states 0.4 'from 0.3 seconds' - exactly what both still publish, proving neither absorbed the change. x_bow is curated verified:true, so it must not be auto-overwritten regardless",
    "bucket": "LAG"
   },
   {
@@ -1971,7 +2171,7 @@
    "after": 58,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "Same 4/8/2026 entry: '+35% damage'",
+   "ruling": "Same 4/8/2026 entry: '+35% damage'. dmg_11=43 is the pre-change value - the hit-speed clause of that same entry proves the row it sits in had not been updated",
    "bucket": "LAG"
   },
   {
@@ -1981,7 +2181,7 @@
    "after": 145,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "Follows damage and hit_speed: 43/0.3 = 143.3 -> 143 (current) versus 58/0.4 = 145 after the 4/8/2026 change",
+   "ruling": "Follows damage and hit_speed: 43/0.3 = 143.3 -> 143 (current) versus 58/0.4 = 145 after the 4/8/2026 change. Note the change is close to DPS-neutral, so the sim's headline DPS is nearly right while both underlying numbers are wrong - per-shot damage and cadenc",
    "bucket": "LAG"
   },
   {
@@ -1991,7 +2191,7 @@
    "after": 4.5,
    "route": "curated",
    "source": "r2_buckets.json LAG",
-   "ruling": "STALE BY ONE BALANCE UPDATE",
+   "ruling": "STALE BY ONE BALANCE UPDATE. cards.yaml pins roll_tiles 5.0 quoting the 3/9/2018 entry ('decreased its rolling distance to 5 tiles (from 7 tiles)'), but 7/6/2022 cut it again to 4.5, and the attributes table's Range cell agrees at 4.5",
    "bucket": "LAG"
   },
   {
@@ -2001,7 +2201,7 @@
    "after": 287,
    "route": "curated",
    "source": "r2_buckets.json LAG",
-   "ruling": "Same stale-curation as `damage`: vardefine build_dmg_11 = 287 vs DB 283",
+   "ruling": "Same stale-curation as `damage`: vardefine build_dmg_11 = 287 vs DB 283. Ratio sanity check against the lead's 'doing 3.5 times damage to buildings': 287/84 = 3.42, 283/81 = 3.49 -- both approximate, but 287 is the published integer",
    "bucket": "LAG"
   },
   {
@@ -2011,7 +2211,7 @@
    "after": 172,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "HIGHEST-TRAFFIC MISS IN THE GROUP",
+   "ruling": "HIGHEST-TRAFFIC MISS IN THE GROUP. TWO independent 2026 history entries agree the value is now 172 -- one states the arithmetic outright ('207-172', linked to Supercell's June 2026 release notes), the other states the rule (25% of full: 688*0.25 = 172)",
    "bucket": "LAG"
   },
   {
@@ -2021,7 +2221,7 @@
    "after": 2,
    "route": "curated",
    "source": "r2_buckets.json LAG",
-   "ruling": "PROSE LAGS HISTORY, AND THE CURATOR QUOTED THE PROSE",
+   "ruling": "PROSE LAGS HISTORY, AND THE CURATOR QUOTED THE PROSE. The attributes table gives Duration = 2 sec AND 8/10/2025 'decreased duration to 2 seconds (from 2.5 seconds)' -- two independent paths at 2.0",
    "bucket": "LAG"
   },
   {
@@ -2031,7 +2231,7 @@
    "after": 70,
    "route": "curated",
    "source": "r2_buckets.json LAG",
-   "ruling": "1/6/2026 -> 23% of full",
+   "ruling": "1/6/2026 -> 23% of full. Per hit: 153*0.23 = 35.19 -> 35, x2 hits = 70",
    "bucket": "LAG"
   },
   {
@@ -2073,7 +2273,7 @@
    ],
    "route": "curated",
    "source": "r2_buckets.json LAG",
-   "ruling": "TIER BOUNDARY OFF BY ONE -- read from the vardefine NAME instead of the column LABEL",
+   "ruling": "TIER BOUNDARY OFF BY ONE -- read from the vardefine NAME instead of the column LABEL. The vardefines are named 1_/3_/5_, but the table headers they feed are 'Single Target', '2-4 Targets' and '5 Or More Targets', and the 4/8/2026 balance entry uses exactly the",
    "bucket": "LAG"
   },
   {
@@ -2083,7 +2283,7 @@
    "after": 1.25,
    "route": "curated",
    "source": "r2_buckets.json LAG",
-   "ruling": "CURATED verified:true (power_mult 1.5) so flagged, never auto-overwritten -- but ALL THREE paths agree on 1.25, including a dedicated vardefine (Pow dmg_11 140 = 1.25 x dmg_11 112)",
+   "ruling": "CURATED verified:true (power_mult 1.5) so flagged, never auto-overwritten -- but ALL THREE paths agree on 1.25, including a dedicated vardefine (Pow dmg_11 140 = 1.25 x dmg_11 112). The cards.yaml comment still quotes the pre-4/8/2026 wording ('deals 50% bonus",
    "bucket": "LAG"
   },
   {
@@ -2093,7 +2293,7 @@
    "after": 5.0,
    "route": "curated",
    "source": "r2_buckets.json LAG",
-   "ruling": "CURATED verified:true (3.0) so flagged, not overwritten -- but every available path says 5 s",
+   "ruling": "CURATED verified:true (3.0) so flagged, not overwritten -- but every available path says 5 s. Recommend 5.0",
    "bucket": "LAG"
   },
   {
@@ -2103,7 +2303,7 @@
    "after": 691,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "WIKI IS SELF-INCONSISTENT",
+   "ruling": "WIKI IS SELF-INCONSISTENT. The 4/8/2026 rule is 'Evo HP = base HP', yet the Evo page says 716 and the base page says 691; both cannot be right",
    "bucket": "LAG"
   },
   {
@@ -2113,7 +2313,7 @@
    "after": 191,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "Small but real: since 3/10/2023 the Evo has NO damage boost, so its damage must equal the base's, yet the Evo page says 192 and the base page says 191 -- 1-point drift between two independently maintained vardefines",
+   "ruling": "Small but real: since 3/10/2023 the Evo has NO damage boost, so its damage must equal the base's, yet the Evo page says 192 and the base page says 191 -- 1-point drift between two independently maintained vardefines. The sim mirrors the wiki's inconsistency (b",
    "bucket": "LAG"
   },
   {
@@ -2123,7 +2323,7 @@
    "after": 1.2,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "CLASSIC VARDEFINE-LAGS-HISTORY CASE, so do not read the raw 2-1 count as support for 1.3",
+   "ruling": "CLASSIC VARDEFINE-LAGS-HISTORY CASE, so do not read the raw 2-1 count as support for 1.3. The two 1.3s are one page's stat block (the vardefine and the hand-typed cell, both maintained by the same editor, and the base page's block is provably unmaintained for",
    "bucket": "LAG"
   },
   {
@@ -2133,7 +2333,7 @@
    "after": 304,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "Both the Evo page's own intro and the Card Evolution table say the Evo Bomber has IDENTICAL stats, and the Evo page's History logs no hitpoint boost since the 14/5/2024-era ones -- yet the two pages have published 332 vs",
+   "ruling": "Both the Evo page's own intro and the Card Evolution table say the Evo Bomber has IDENTICAL stats, and the Evo page's History logs no hitpoint boost since the 14/5/2024-era ones -- yet the two pages have published 332 vs 304 side by side since at least 2025-12",
    "bucket": "LAG"
   },
   {
@@ -2143,7 +2343,7 @@
    "after": 201,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "VARDEFINE PROVABLY LAGS",
+   "ruling": "VARDEFINE PROVABLY LAGS. Do not read this as 2-of-3 for 212: the level table is generated from the same vardefine, so P1 and P2 are one witness, and the time machine shows that witness predates the change it is supposed to reflect",
    "bucket": "LAG"
   },
   {
@@ -2153,7 +2353,7 @@
    "after": 1.0,
    "route": "curated",
    "source": "r2_buckets.json LAG",
-   "ruling": "CURATED verified:true (2.0) so flagged only, but three independent statements say 1 second, and the change that produced it is dated 4/8/2025 -- more than a year before the KB row was written",
+   "ruling": "CURATED verified:true (2.0) so flagged only, but three independent statements say 1 second, and the change that produced it is dated 4/8/2025 -- more than a year before the KB row was written. Doubling the tick window doubles the Evo Dart Goblin's area damage",
    "bucket": "LAG"
   },
   {
@@ -2163,7 +2363,7 @@
    "after": 144,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "Both the base and the Evo page carry 156 and both log the 12/1/2026 -8% in their History, but the time machine shows 156 was already there in Nov 2025 and never moved -- the number lags its own changelog",
+   "ruling": "Both the base and the Evo page carry 156 and both log the 12/1/2026 -8% in their History, but the time machine shows 156 was already there in Nov 2025 and never moved -- the number lags its own changelog. Derived current ~144 (156*0.92 = 143.5), with dps ~180",
    "bucket": "LAG"
   },
   {
@@ -2173,7 +2373,7 @@
    "after": 2.5,
    "route": "curated",
    "source": "r2_buckets.json LAG",
-   "ruling": "CURATED verified:true (3.5) so flagged, but four independent statements say 2.5, and the page's edit comment on the live revision is literally 'Evo Exec now says the Close Quarters range is 2.5 instead of saying 3.5' (re",
+   "ruling": "CURATED verified:true (3.5) so flagged, but four independent statements say 2.5, and the page's edit comment on the live revision is literally 'Evo Exec now says the Close Quarters range is 2.5 instead of saying 3.5' (revid 437539, 2026-08-24 -- ten days AFTER",
    "bucket": "LAG"
   },
   {
@@ -2183,7 +2383,7 @@
    "after": 1.0,
    "route": "curated",
    "source": "r2_buckets.json LAG",
-   "ruling": "CURATED verified:true, and the current 2.0 matches NO source",
+   "ruling": "CURATED verified:true, and the current 2.0 matches NO source. Two independent History paths date a 1.5 -> 1.0 nerf to 2/3/2026; the Card Evolution table still says 1.5, i.e",
    "bucket": "LAG"
   },
   {
@@ -2193,7 +2393,7 @@
    "after": 180,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "Both the base and Evo pages log a 2/3/2026 +7% damage buff in their History and neither applied it to the number",
+   "ruling": "Both the base and Evo pages log a 2/3/2026 +7% damage buff in their History and neither applied it to the number. Derived current ~180 (168*1.07 = 179.8)",
    "bucket": "LAG"
   },
   {
@@ -2203,7 +2403,7 @@
    "after": 7.0,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "Imported field, and the two History paths (Evo page + Version History master) both date the 7.5 -> 7.0 cut to 4/8/2026 while the hand-typed attributes cell still says 7.5",
+   "ruling": "Imported field, and the two History paths (Evo page + Version History master) both date the 7.5 -> 7.0 cut to 4/8/2026 while the hand-typed attributes cell still says 7.5. Recommend 7.0 for executioner_evo AND base executioner",
    "bucket": "LAG"
   },
   {
@@ -2213,7 +2413,7 @@
    "after": 500.0,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "UNRESOLVABLE FROM THE WIKI, recorded with all raws",
+   "ruling": "UNRESOLVABLE FROM THE WIKI, recorded with all raws. The changelog says the value went 400 -> 500 on 6-7/4/2026, but the attributes cell said 550 both before and after and has never been edited, so the table cannot be a stale copy of the pre-change value either",
    "bucket": "LAG"
   },
   {
@@ -2223,7 +2423,7 @@
    "after": 1.7,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "Third stale field on the same card",
+   "ruling": "Third stale field on the same card. Recommend hit_speed 1.7 with dps 105 (179/1.7) instead of 99",
    "bucket": "LAG"
   },
   {
@@ -2233,7 +2433,7 @@
    "after": 1.0,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "The Evo page's Speed cell was never updated for the 6/10/2025 Slow -> Medium change that its own History records and that the base page's cell already reflects; the sim copied the stale cell (furnace_evo 0.75 vs base fur",
+   "ruling": "The Evo page's Speed cell was never updated for the 6/10/2025 Slow -> Medium change that its own History records and that the base page's cell already reflects; the sim copied the stale cell (furnace_evo 0.75 vs base furnace 1.0). Recommend 1.0",
    "bucket": "LAG"
   },
   {
@@ -2243,7 +2443,7 @@
    "after": 66,
    "route": "curated",
    "source": "r2_buckets.json LAG",
-   "ruling": "CLEAN RECONSTRUCTION, two nerfs deep",
+   "ruling": "CLEAN RECONSTRUCTION, two nerfs deep. 120 -> (-26%) -> 89 is visible in the time machine; the second -26% (4/8/2026) was never applied, giving 89*0.74 = 65.9 -> ~66",
    "bucket": "LAG"
   },
   {
@@ -2253,7 +2453,7 @@
    "after": 125,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "The Goblin Barrel/Evolution page's copy of the Goblin stat block lags the 4/8/2026 +4% that the Goblins page already applied -- and here the direction of staleness is provable because the two numbers differ by exactly th",
+   "ruling": "The Goblin Barrel/Evolution page's copy of the Goblin stat block lags the 4/8/2026 +4% that the Goblins page already applied -- and here the direction of staleness is provable because the two numbers differ by exactly the documented 4%. Recommend damage 125 wi",
    "bucket": "LAG"
   },
   {
@@ -2263,7 +2463,7 @@
    "after": 3113,
    "route": "pin",
    "source": "r2_buckets.json LAG",
-   "ruling": "Two problems at once",
+   "ruling": "Two problems at once. (1) The Card Evolution table says the Evo has identical stats, yet the two pages have published 3223 vs 3022 for months",
    "bucket": "LAG"
   },
   {
@@ -2273,7 +2473,7 @@
    "after": 97,
    "route": "curated",
    "source": "r2_buckets.json CROWN",
-   "ruling": "Missing field: the Zap Pack's reflected damage to crown towers (crown_11 = 97) has no KB counterpart",
+   "ruling": "Missing field: the Zap Pack's reflected damage to crown towers (crown_11 = 97) has no KB counterpart. Deliberately NOT proposing a write -- the brief pins the crown-tower damage family as re-curated post-1/6/2026, and the 4/5/2026 entry moved this number again",
    "bucket": "CROWN"
   },
   {
@@ -2283,7 +2483,7 @@
    "after": 24,
    "route": "pin",
    "source": "r2_buckets.json CROWN",
-   "ruling": "1/6/2026 cut Arrows crown damage to 20% of full; 122*0.20=24.4 -> 24",
+   "ruling": "1/6/2026 cut Arrows crown damage to 20% of full; 122*0.20=24.4 -> 24. Vardefine 31 is the pre-1/6/2026 25% value (122*0.25=30.5 -> 31) and is what the sim imported",
    "bucket": "CROWN"
   },
   {
@@ -2293,7 +2493,7 @@
    "after": 29,
    "route": "pin",
    "source": "r2_buckets.json CROWN",
-   "ruling": "1/6/2026 cut Freeze crown damage to 25% of full: 115*0.25 = 28.75 -> 29",
+   "ruling": "1/6/2026 cut Freeze crown damage to 25% of full: 115*0.25 = 28.75 -> 29. Vardefine 35 is the 30% value",
    "bucket": "CROWN"
   },
   {
@@ -2303,7 +2503,7 @@
    "after": 45,
    "route": "pin",
    "source": "r2_buckets.json CROWN",
-   "ruling": "1/6/2026 cut it to 25% of full: 179*0.25 = 44.75 -> 45; vardefine 54 is the 30% value",
+   "ruling": "1/6/2026 cut it to 25% of full: 179*0.25 = 44.75 -> 45; vardefine 54 is the 30% value. Missed by the audit tool for a THIRD distinct reason: this page wraps the phrase in a category link ('[[:Category:Crown Towers|Crown Tower]] damage to 25% of the full damage",
    "bucket": "CROWN"
   },
   {
@@ -2313,7 +2513,7 @@
    "after": 45,
    "route": "pin",
    "source": "r2_buckets.json CROWN",
-   "ruling": "1/6/2026 -> 25% of full: 179*0.25 = 44.75 -> 45; vardefine 54 is the 30% value",
+   "ruling": "1/6/2026 -> 25% of full: 179*0.25 = 44.75 -> 45; vardefine 54 is the 30% value. Like Freeze, Rage is absent from crown_damage_audit.py's CARDS list, so it was never checked",
    "bucket": "CROWN"
   },
   {
@@ -2323,7 +2523,7 @@
    "after": 1.2,
    "route": "curated",
    "source": "r2_buckets.json CROWN",
-   "ruling": "STALE BY TWO BALANCE UPDATES",
+   "ruling": "STALE BY TWO BALANCE UPDATES. The strike interval went 1.3 -> 1.0 (4/3/2025) -> 1.2 (4/8/2026)",
    "bucket": "CROWN"
   },
   {
@@ -2333,7 +2533,7 @@
    "after": 0,
    "route": "pin",
    "source": "r2_buckets.json CROWN",
-   "ruling": "STALE CROWN, and the most recent of the batch -- 4/8/2026, three weeks ago",
+   "ruling": "STALE CROWN, and the most recent of the batch -- 4/8/2026, three weeks ago. 26/84 = 31% is precisely the fraction that update REMOVED; the correct value is now 0",
    "bucket": "CROWN"
   },
   {
@@ -2343,7 +2543,7 @@
    "after": 81,
    "route": "curated",
    "source": "r2_buckets.json PARENT",
-   "ruling": "PARENT-STAT CONTAMINATION",
+   "ruling": "PARENT-STAT CONTAMINATION. current_db 261 is EXACTLY the Royal Ghost's own dmg_11 on the same page; the Souldier's own vardefine is soul_dmg_11 = 81",
    "bucket": "PARENT"
   },
   {
@@ -2353,7 +2553,7 @@
    "after": 192,
    "route": "curated",
    "source": "r2_buckets.json PARENT",
-   "ruling": "Same contamination shape as ghost_souldier: current_db spawn_damage 115 is EXACTLY the Electro Wizard's own per-bolt damage on the same page",
+   "ruling": "Same contamination shape as ghost_souldier: current_db spawn_damage 115 is EXACTLY the Electro Wizard's own per-bolt damage on the same page. The level-11 statistics row puts zap_11 under the 'Zap Damage' column = 192, and the prose says the spawn damage behav",
    "bucket": "PARENT"
   },
   {
@@ -2453,7 +2653,7 @@
    "after": 128,
    "route": "curated",
    "source": "r2_buckets.json DUP",
-   "ruling": "The KB row has no crown_tower_damage, so the ghost currently hits crown towers for its full 256 -- exactly double what the game does",
+   "ruling": "The KB row has no crown_tower_damage, so the ghost currently hits crown towers for its full 256 -- exactly double what the game does. All three paths agree on 128: the vardefine, a rendered stats column, and a dated entry halving 256",
    "bucket": "DUP"
   },
   {
@@ -2463,7 +2663,7 @@
    "after": 1.6,
    "route": "pin",
    "source": "r2_buckets.json DUP",
-   "ruling": "THE CONTAMINATION RUNS BOTH WAYS, and this is the one instance that leaked",
+   "ruling": "THE CONTAMINATION RUNS BOTH WAYS, and this is the one instance that leaked. The KB holds 1.7, which is the GOBLIN HUT page's copy of the Spear Goblin, not the Spear Goblins card page's own 1.6",
    "bucket": "DUP"
   },
   {
@@ -2473,7 +2673,7 @@
    "after": 780,
    "route": "pin",
    "source": "r2_buckets.json DUP",
-   "ruling": "THE SPAWNED-UNIT SUBSTITUTION THE BRIEF WARNED ABOUT, caught in this group",
+   "ruling": "THE SPAWNED-UNIT SUBSTITUTION THE BRIEF WARNED ABOUT, caught in this group. goblin_cage_evo's hitpoints 1080 / hit_speed 1.1 / dps 306 are the GOBLIN BRAWLER's numbers, not the cage's",
    "bucket": "DUP"
   },
   {
@@ -2483,7 +2683,7 @@
    "after": 1.0,
    "route": "pin",
    "source": "r2_buckets.json DUP",
-   "ruling": "Same root cause as the hitpoints row and recorded separately because it is a separately dated fact: the cage's trap attack has been 1.0 s since 8/10/2024, and 1.1 s is the Brawler's period",
+   "ruling": "Same root cause as the hitpoints row and recorded separately because it is a separately dated fact: the cage's trap attack has been 1.0 s since 8/10/2024, and 1.1 s is the Brawler's period. All three paths agree on 1.0",
    "bucket": "DUP"
   },
   {
@@ -2493,7 +2693,7 @@
    "after": 1.8,
    "route": "pin",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "P1 vardefine still carries the pre-4/5/2026 value 2.1; P2 table and P3 history both give 1.8, and P3 names 2.1 as the OLD value, which is exactly what P1 and current_db still hold",
+   "ruling": "P1 vardefine still carries the pre-4/5/2026 value 2.1; P2 table and P3 history both give 1.8, and P3 names 2.1 as the OLD value, which is exactly what P1 and current_db still hold. Textbook vardefine lag",
    "bucket": "UPDATE"
   },
   {
@@ -2503,7 +2703,7 @@
    "after": 91.0,
    "route": "pin",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "Consequential on the hit_speed update: damage 163 (unchanged, P1-confirmed) / 1.8 s = 90.6 -> 91",
+   "ruling": "Consequential on the hit_speed update: damage 163 (unchanged, P1-confirmed) / 1.8 s = 90.6 -> 91. current_db 78 is 163/2.1 and only stays correct while hit_speed stays 2.1.",
    "bucket": "UPDATE"
   },
   {
@@ -2513,7 +2713,7 @@
    "after": 1.4,
    "route": "pin",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "Same lag pattern as electro_giant, dated the same day",
+   "ruling": "Same lag pattern as electro_giant, dated the same day. NOTE the 2018 entry ('decreased his attack time interval to 1.3 seconds (from 1.4)') argues for 1.3 and is what P1 still holds -- it is superseded by 4/5/2026",
    "bucket": "UPDATE"
   },
   {
@@ -2523,7 +2723,7 @@
    "after": 190.0,
    "route": "pin",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "Consequential: damage 266 (P1-confirmed, unchanged) / 1.4 s = 190",
+   "ruling": "Consequential: damage 266 (P1-confirmed, unchanged) / 1.4 s = 190. current_db 205 is 266/1.3.",
    "bucket": "UPDATE"
   },
   {
@@ -2533,7 +2733,7 @@
    "after": 7.0,
    "route": "pin",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "P2 still prints 7.5, which is precisely the value P3 names as the pre-change one -- the table lags rather than genuinely disagreeing",
+   "ruling": "P2 still prints 7.5, which is precisely the value P3 names as the pre-change one -- the table lags rather than genuinely disagreeing. Attack range 4.0 and projectile width 3.6 both still match.",
    "bucket": "UPDATE"
   },
   {
@@ -2553,7 +2753,7 @@
    "after": 5.5,
    "route": "pin",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "P2 prints 6, the value P3 names as the old one",
+   "ruling": "P2 prints 6, the value P3 names as the old one. The Furnace became a walking troop on 4/8/2025, so its attack range is live in the sim.",
    "bucket": "UPDATE"
   },
   {
@@ -2563,7 +2763,7 @@
    "after": 5.0,
    "route": "pin",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "Full timeline reconstructed: 5 s (4/4/2023) -> 7 s (7/8/2025) -> 5 s (4/8/2026)",
+   "ruling": "Full timeline reconstructed: 5 s (4/4/2023) -> 7 s (7/8/2025) -> 5 s (4/8/2026). Current = 5",
    "bucket": "UPDATE"
   },
   {
@@ -2573,7 +2773,7 @@
    "after": 8.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "current_db 8.5 is exactly the pre-4/8/2025 value P3 names",
+   "ruling": "current_db 8.5 is exactly the pre-4/8/2025 value P3 names. The same entry's other half (recoil 1 tile) IS already correct in the KB (recoil_tiles=1), which corroborates that this entry was applied only half-way",
    "bucket": "UPDATE"
   },
   {
@@ -2583,7 +2783,7 @@
    "after": "very_fast",
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "Categorical label only: P2 says Very Fast (120)",
+   "ruling": "Categorical label only: P2 says Very Fast (120). current_db speed_tiles=2.0 is already the correct Very-Fast number, so the sim moves him at the right speed; the 'fast' label simply contradicts it",
    "bucket": "UPDATE"
   },
   {
@@ -2593,7 +2793,7 @@
    "after": "short",
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "P2 prints a bare '2.5' with no 'Melee:' prefix, i.e",
+   "ruling": "P2 prints a bare '2.5' with no 'Melee:' prefix, i.e. a ranged attacker",
    "bucket": "UPDATE"
   },
   {
@@ -2603,7 +2803,7 @@
    "after": 1.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "The Battle Ram page's TERTIARY attributes table (its death-spawn Barbarians) gives Medium (60) = 1.0 tiles/s, and the Barbarians card page independently agrees",
+   "ruling": "The Battle Ram page's TERTIARY attributes table (its death-spawn Barbarians) gives Medium (60) = 1.0 tiles/s, and the Barbarians card page independently agrees. current_db 2.0 is Very-Fast and looks copied from the ram's CHARGE speed (charge_speed_tiles=2.0; t",
    "bucket": "UPDATE"
   },
   {
@@ -2613,7 +2813,7 @@
    "after": 1000.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "Field absent from the KB row entirely; P3 gives an unambiguous current value",
+   "ruling": "Field absent from the KB row entirely; P3 gives an unambiguous current value. Row verified:false.",
    "bucket": "UPDATE"
   },
   {
@@ -2623,7 +2823,7 @@
    "after": 0.25,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "Field absent from the KB row",
+   "ruling": "Field absent from the KB row. This is the delay between chain hops; engine.py's _multi_hit currently resolves every hop in the same instant, so there is nothing for the value to drive yet -- record it, then decide whether to model the delay.",
    "bucket": "UPDATE"
   },
   {
@@ -2633,7 +2833,7 @@
    "after": 50.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "Missing field",
+   "ruling": "Missing field. P2's secondary table has an explicit 'Activation 50%' column and the prose agrees",
    "bucket": "UPDATE"
   },
   {
@@ -2643,7 +2843,7 @@
    "after": 25.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "The whole heal mechanic is absent from the KB row -- Battle Healer's defining behaviour is unmodelled",
+   "ruling": "The whole heal mechanic is absent from the KB row -- Battle Healer's defining behaviour is unmodelled. P1 heal_11 = 25 per pulse at level 11.",
    "bucket": "UPDATE"
   },
   {
@@ -2663,7 +2863,7 @@
    "after": 3.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "The page carries TWO heal tables that disagree (3 vs 2.5)",
+   "ruling": "The page carries TWO heal tables that disagree (3 vs 2.5). Resolved by arithmetic rather than majority: pi*3^2 = 28.27 = the stated 28.3 sq tiles, and pi*4^2 = 50.27 = the stated old 50.3 sq tiles",
    "bucket": "UPDATE"
   },
   {
@@ -2673,7 +2873,7 @@
    "after": 50.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "One-off heal burst on deploy, 50 at level 11; absent from the KB row",
+   "ruling": "One-off heal burst on deploy, 50 at level 11; absent from the KB row. P3 confirms spawn healing is a distinct tracked quantity.",
    "bucket": "UPDATE"
   },
   {
@@ -2683,7 +2883,7 @@
    "after": 192.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "The level-11 statistics row maps reflect_11 to the 'Reflect Damage' column, so P1 and P2 are the same published number: 192",
+   "ruling": "The level-11 statistics row maps reflect_11 to the 'Reflect Damage' column, so P1 and P2 are the same published number: 192. current_db 120 is 37.5% low",
    "bucket": "UPDATE"
   },
   {
@@ -2693,7 +2893,7 @@
    "after": true,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "SYSTEMIC GATE BUG -- 10 of my 32 keys",
+   "ruling": "SYSTEMIC GATE BUG -- 10 of my 32 keys. The parent row has evolution:null while a fully populated barbarians_evo row exists carrying the correct evo_cycles=1",
    "bucket": "UPDATE"
   },
   {
@@ -2703,7 +2903,7 @@
    "after": true,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "SYSTEMIC GATE BUG -- 10 of my 32 keys",
+   "ruling": "SYSTEMIC GATE BUG -- 10 of my 32 keys. The parent row has evolution:null while a fully populated bats_evo row exists carrying the correct evo_cycles=2",
    "bucket": "UPDATE"
   },
   {
@@ -2713,7 +2913,7 @@
    "after": true,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "SYSTEMIC GATE BUG -- 10 of my 32 keys",
+   "ruling": "SYSTEMIC GATE BUG -- 10 of my 32 keys. The parent row has evolution:null while a fully populated dart_goblin_evo row exists carrying the correct evo_cycles=2",
    "bucket": "UPDATE"
   },
   {
@@ -2723,7 +2923,7 @@
    "after": 1.3,
    "route": "pin",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "P1 vardefine atk_speed is still 1.4 and was ALSO 1.4 at oldid 435951, i.e",
+   "ruling": "P1 vardefine atk_speed is still 1.4 and was ALSO 1.4 at oldid 435951, i.e. it never moved for the 12/1/2026 change; the hand-typed attributes table and the dated history both read 1.3",
    "bucket": "UPDATE"
   },
   {
@@ -2733,7 +2933,7 @@
    "after": 212.0,
    "route": "pin",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "Derived field, follows the hit_speed 1.4->1.3 update: 276/1.3 = 212.3 -> 212",
+   "ruling": "Derived field, follows the hit_speed 1.4->1.3 update: 276/1.3 = 212.3 -> 212. The wiki's own DPS column renders 197 only because it is computed from the stale atk_speed vardefine",
    "bucket": "UPDATE"
   },
   {
@@ -2743,7 +2943,7 @@
    "after": 0.7,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "Only the attributes table carries a range for the ghost and it reads 0.7, matching the base Lumberjack (whose KB range_tiles is already 0.7 and verified matching) -- the page says the Evolution 'spawns a Lumberjack with ",
+   "ruling": "Only the attributes table carries a range for the ghost and it reads 0.7, matching the base Lumberjack (whose KB range_tiles is already 0.7 and verified matching) -- the page says the Evolution 'spawns a Lumberjack with identical stats to the original'. The ro",
    "bucket": "UPDATE"
   },
   {
@@ -2753,7 +2953,7 @@
    "after": 1.6,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "RESOLVES A STANDING [verify] MARKER",
+   "ruling": "RESOLVES A STANDING [verify] MARKER. cards.yaml says 'General stats unpublished -- guard-like curation [verify]', but the Evolution page now publishes them in section 'General Gerry Attributes', and every other curated guess is confirmed exactly: hitpoints 81",
    "bucket": "UPDATE"
   },
   {
@@ -2763,7 +2963,7 @@
    "after": 51.0,
    "route": "pin",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "Consequence of the hit_speed update above, not an independent finding",
+   "ruling": "Consequence of the hit_speed update above, not an independent finding. current_db 48 is exactly 81/1.7 = 47.6, which confirms the KB dps was computed from the stale 1.7",
    "bucket": "UPDATE"
   },
   {
@@ -2773,7 +2973,7 @@
    "after": 13.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "HIGH IMPACT",
+   "ruling": "HIGH IMPACT. The curated 8.5 (flagged '# VERIFY' in cards.yaml) is the PRE-4/4/2022 value - three balance changes have landed since (8.5 -> 9 -> 12 -> 13)",
    "bucket": "UPDATE"
   },
   {
@@ -2783,7 +2983,7 @@
    "after": 1.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "PRIORITY/gap: field absent",
+   "ruling": "PRIORITY/gap: field absent. The prose and the 4/4/2022 history entry both give the collector +1 elixir on death, so in the sim destroying a pump denies one elixir more than it actually does.",
    "bucket": "UPDATE"
   },
   {
@@ -2796,7 +2996,7 @@
    ],
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "PRIORITY: inferno_tower is one of the group's unverified rows (no `verified` key, and no entry at all in icebow/config/cards.yaml) and is the thinnest row in the group",
+   "ruling": "PRIORITY: inferno_tower is one of the group's unverified rows (no `verified` key, and no entry at all in icebow/config/cards.yaml) and is the thinnest row in the group. The Target column says 'Air & Ground' and the intro says 'air-targeting', but the KB row ha",
    "bucket": "UPDATE"
   },
   {
@@ -2806,7 +3006,7 @@
    "after": 6.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "PRIORITY: field absent; the row carries only sight 6.0",
+   "ruling": "PRIORITY: field absent; the row carries only sight 6.0. The attribute table publishes Range 6, and every other turret building in the group carries range_tiles",
    "bucket": "UPDATE"
   },
   {
@@ -2816,7 +3016,7 @@
    "after": 1.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "PRIORITY: field absent; the attribute table publishes Deploy Time 1 sec",
+   "ruling": "PRIORITY: field absent; the attribute table publishes Deploy Time 1 sec. Corroborated by card_mechanics.json _deploy_time_s 1.0.",
    "bucket": "UPDATE"
   },
   {
@@ -2826,7 +3026,7 @@
    "after": "any",
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "PRIORITY: field absent",
+   "ruling": "PRIORITY: field absent. The tower is not building-restricted, and every comparable building row in the group carries targets: any.",
    "bucket": "UPDATE"
   },
   {
@@ -2836,7 +3036,7 @@
    "after": 3.5,
    "route": "pin",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "The attribute table's '4 sec' Spawn Speed cell is stale and is contradicted three ways on its own page: the prose says 3.5, the Common modifier's arithmetic ('doubled, for a total of 1.75 seconds') implies 3.5, and the l",
+   "ruling": "The attribute table's '4 sec' Spawn Speed cell is stale and is contradicted three ways on its own page: the prose says 3.5, the Common modifier's arithmetic ('doubled, for a total of 1.75 seconds') implies 3.5, and the last dated change (4/4/2022) set 3.5. spa",
    "bucket": "UPDATE"
   },
   {
@@ -2846,7 +3046,7 @@
    "after": 2.6,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "MISSING FIELD",
+   "ruling": "MISSING FIELD. The barrel is a rectangular corridor, not a point: the attributes table publishes Width 2.6 and 1/7/2019 set it to 2.6 (from 3.9)",
    "bucket": "UPDATE"
   },
   {
@@ -2856,7 +3056,7 @@
    "after": 1.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "MISSING FIELD on a verified:false row (clone has no icebow/config/cards.yaml entry at all)",
+   "ruling": "MISSING FIELD on a verified:false row (clone has no icebow/config/cards.yaml entry at all). The card's entire identity is that clones have 1 HP; the DB row carries only elixir/radius/rarity/count, so a cloned push is indistinguishable from a real one to the si",
    "bucket": "UPDATE"
   },
   {
@@ -2866,7 +3066,7 @@
    "after": 1.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "MISSING FIELD",
+   "ruling": "MISSING FIELD. The attributes table publishes Clone Shield Hitpoints = 1 (a cloned Dark Prince / Royal Recruit keeps a 1 HP shield).",
    "bucket": "UPDATE"
   },
   {
@@ -2876,7 +3076,7 @@
    "after": 1.1,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "MISSING FIELD, both paths agree on 1.1s",
+   "ruling": "MISSING FIELD, both paths agree on 1.1s. cards.yaml's own comment already argues this matters ('The Goblins then take their own deploy time ..",
    "bucket": "UPDATE"
   },
   {
@@ -2886,7 +3086,7 @@
    "after": 6.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "MISSING FIELD",
+   "ruling": "MISSING FIELD. Goblin Curse is a 6-second damage-over-time zone (table Duration 6 sec; lead 'dealt every second for 6 seconds'), but unlike poison/void/earthquake the DB row has no zone_s/zone_tick_s -- it resolves as an instant 6x multi-hit, so nothing can wa",
    "bucket": "UPDATE"
   },
   {
@@ -2906,7 +3106,7 @@
    "after": 1.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "MISSING FIELD",
+   "ruling": "MISSING FIELD. The statistics table maps every Mirror level N to mirrored level N+1 across all five rarities (rows 6->7, 7->8, 8->9, 9->10) -- the mirrored copy is one level higher, which is the card's second mechanic after the +1 elixir",
    "bucket": "UPDATE"
   },
   {
@@ -2916,7 +3116,7 @@
    "after": 4.5,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "MISSING FIELD -- the card's whole point",
+   "ruling": "MISSING FIELD -- the card's whole point. Table Duration 4.5 sec, and 4/8/2025 set it to 4.5 (from 5.5)",
    "bucket": "UPDATE"
   },
   {
@@ -2926,7 +3126,7 @@
    "after": 0.3,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "MISSING FIELD",
+   "ruling": "MISSING FIELD. Table Boost +30%; 6/10/2025 cut the speed boost to 30% (from 35%); lead: 'It increases the movement speed and attack speed of allied troops and buildings by 30%.' Same 0.30 the Lumberjack drops_rage entry already uses.",
    "bucket": "UPDATE"
   },
   {
@@ -2936,7 +3136,7 @@
    "after": 3.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "MISSING FIELD",
+   "ruling": "MISSING FIELD. The attributes table publishes Radius 3; the DB row has no radius at all, so the landing blast has no area",
    "bucket": "UPDATE"
   },
   {
@@ -2946,7 +3146,7 @@
    "after": 3.9,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "MISSING FIELD",
+   "ruling": "MISSING FIELD. The Log is explicitly a rectangle -- the attributes table publishes Range 10.1 AND Width 3.9, and the lead calls it 'a very long rectangular area'",
    "bucket": "UPDATE"
   },
   {
@@ -2956,7 +3156,7 @@
    "after": 0.55,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "MISSING FIELD",
+   "ruling": "MISSING FIELD. Tornado is a damage-over-time zone -- the lead says damage 'is dealt every 0.55 seconds', and 9/4/2025 set the attack interval to 0.55 (from 0.5)",
    "bucket": "UPDATE"
   },
   {
@@ -2966,7 +3166,7 @@
    "after": 1.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "IMPORTED field (not curated), and two independent pages agree: the Barbarians the ram carries move at Medium (60) = 1.0 tiles/s, not 2.0",
+   "ruling": "IMPORTED field (not curated), and two independent pages agree: the Barbarians the ram carries move at Medium (60) = 1.0 tiles/s, not 2.0. 2.0 is Very Fast (120), the speed of Goblins -- every other spawner row that carries 2.0 really does spawn Goblins or Spir",
    "bucket": "UPDATE"
   },
   {
@@ -2976,7 +3176,7 @@
    "after": 3.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "PRIORITY FLAG from the brief (evo rows missing hit_speed) -- RESOLVED",
+   "ruling": "PRIORITY FLAG from the brief (evo rows missing hit_speed) -- RESOLVED. firecracker_evo has no hit_speed at all today, so it also has no dps, while the base firecracker row correctly carries 3.0/21",
    "bucket": "UPDATE"
   },
   {
@@ -2986,7 +3186,7 @@
    "after": 3.5,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "Companion to the range_tiles fix: merged evo row lost the min-range field entirely",
+   "ruling": "Companion to the range_tiles fix: merged evo row lost the min-range field entirely. Propose min_range_tiles 3.5.",
    "bucket": "UPDATE"
   },
   {
@@ -2996,7 +3196,7 @@
    "after": 1.8,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "PRIORITY missing-hit_speed row resolved: merged row has dps 468 but no hit_speed (curated yaml re-curated hp/dmg/dps and dropped it)",
+   "ruling": "PRIORITY missing-hit_speed row resolved: merged row has dps 468 but no hit_speed (curated yaml re-curated hp/dmg/dps and dropped it). All three paths give 1.8; 842/1.8=467.8 -> the curated dps 468 is self-consistent",
    "bucket": "UPDATE"
   },
   {
@@ -3006,7 +3206,7 @@
    "after": 0.3,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "KB row carries no first-hit field",
+   "ruling": "KB row carries no first-hit field. load_time_s/mass/sight/collision do NOT come from the wiki: import_mechanics.py reads RoyaleAPI cr-api-data cards_stats.json, meta.source_frozen=2023-10-18",
    "bucket": "UPDATE"
   },
   {
@@ -3016,7 +3216,7 @@
    "after": 1.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "Archer Queen KB row has NO ability block at all (contrast boss_bandit/mighty_miner which do)",
+   "ruling": "Archer Queen KB row has NO ability block at all (contrast boss_bandit/mighty_miner which do). decisions.md ruling 3: all abilities get full engine fidelity.",
    "bucket": "UPDATE"
   },
   {
@@ -3036,7 +3236,7 @@
    "after": 1,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "Master Version History only; the Archer Queen page History has NO 4/8/2026 entry (conflicts.md C6, class-wide staleness)",
+   "ruling": "Master Version History only; the Archer Queen page History has NO 4/8/2026 entry (conflicts.md C6, class-wide staleness). Matches decisions.md ruling 6 (single use PER BODY).",
    "bucket": "UPDATE"
   },
   {
@@ -3046,7 +3246,7 @@
    "after": true,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "Untargetable by TROOPS; still takes splash and spell damage (8/4/2022 fix)",
+   "ruling": "Untargetable by TROOPS; still takes splash and spell damage (8/4/2022 fix). Same invisibility class as Royal Ghost per the intro",
    "bucket": "UPDATE"
   },
   {
@@ -3056,7 +3256,7 @@
    "after": 0.4,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "KB row lacks the field",
+   "ruling": "KB row lacks the field. load_time_s/mass/sight/collision do NOT come from the wiki: import_mechanics.py reads RoyaleAPI cr-api-data cards_stats.json, meta.source_frozen=2023-10-18",
    "bucket": "UPDATE"
   },
   {
@@ -3076,7 +3276,7 @@
    "after": 4.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "",
+   "ruling": "r2 sweep, see stat_diffs.jsonl",
    "bucket": "UPDATE"
   },
   {
@@ -3106,7 +3306,7 @@
    "after": 1.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "Goblinstein is the ONLY key in the group whose KB row omits deploy_time (the other seven all carry 1.0)",
+   "ruling": "Goblinstein is the ONLY key in the group whose KB row omits deploy_time (the other seven all carry 1.0). Caught by the match-verifier, not by the diff -- a field that is absent cannot mismatch",
    "bucket": "UPDATE"
   },
   {
@@ -3116,7 +3316,7 @@
    "after": 5.5,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "Table, prose and the last dated history entry all land on 5.5",
+   "ruling": "Table, prose and the last dated history entry all land on 5.5. Doubles as the chain re-target search radius.",
    "bucket": "UPDATE"
   },
   {
@@ -3176,7 +3376,7 @@
    "after": 0.2,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "KB row lacks the field",
+   "ruling": "KB row lacks the field. load_time_s/mass/sight/collision do NOT come from the wiki: import_mechanics.py reads RoyaleAPI cr-api-data cards_stats.json, meta.source_frozen=2023-10-18",
    "bucket": "UPDATE"
   },
   {
@@ -3186,7 +3386,7 @@
    "after": 2.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "The KB models the stage ramp with damage_ramp {damages, hit_speed} and has NO stage-advance timer, so nothing in the sim governs WHEN a stage steps",
+   "ruling": "The KB models the stage ramp with damage_ramp {damages, hit_speed} and has NO stage-advance timer, so nothing in the sim governs WHEN a stage steps. Table and history agree at 2 s",
    "bucket": "UPDATE"
   },
   {
@@ -3196,7 +3396,7 @@
    "after": true,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "HIGHEST-IMPACT ROW IN THE GROUP",
+   "ruling": "HIGHEST-IMPACT ROW IN THE GROUP. The KB monk row has flags [knockback, knockback_all] -- those describe the knockback he DEALS on the 3rd combo hit -- and carries NO knockback_immune flag, unlike skeleton_king and mighty_miner which carry both the flag and kno",
    "bucket": "UPDATE"
   },
   {
@@ -3206,7 +3406,7 @@
    "after": -65.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "Clean 3-of-3",
+   "ruling": "Clean 3-of-3. KB has no ability block for the Monk.",
    "bucket": "UPDATE"
   },
   {
@@ -3216,7 +3416,7 @@
    "after": 4.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "Value 4 s is solid; the COLUMN LABEL is a misnomer",
+   "ruling": "Value 4 s is solid; the COLUMN LABEL is a misnomer. He is not invulnerable, he takes 35% damage -- the header conflicts with both the adjacent \"Damage Reduced -65%\" cell and the prose",
    "bucket": "UPDATE"
   },
   {
@@ -3226,7 +3426,7 @@
    "after": true,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "decisions.md ruling 3 explicitly requires FULL fidelity here (\"including Monk's projectile reflection\"), and the KB carries nothing",
+   "ruling": "decisions.md ruling 3 explicitly requires FULL fidelity here (\"including Monk's projectile reflection\"), and the KB carries nothing. Three distinct rules to encode: projectiles -> back to the shooter; spells -> nearest enemy Crown Tower regardless of source; m",
    "bucket": "UPDATE"
   },
   {
@@ -3236,7 +3436,7 @@
    "after": 1.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "",
+   "ruling": "r2 sweep, see stat_diffs.jsonl",
    "bucket": "UPDATE"
   },
   {
@@ -3256,7 +3456,7 @@
    "after": 0.2,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "KB row lacks the field",
+   "ruling": "KB row lacks the field. load_time_s/mass/sight/collision do NOT come from the wiki: import_mechanics.py reads RoyaleAPI cr-api-data cards_stats.json, meta.source_frozen=2023-10-18",
    "bucket": "UPDATE"
   },
   {
@@ -3266,7 +3466,7 @@
    "after": 1.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "MAJOR FIDELITY GAP, and the value looks like a typo but is not -- table and prose independently state 1 HP, and the absence of any skel_hp vardefine (while skel_dmg_11 exists) is the third corroboration: the stat does no",
+   "ruling": "MAJOR FIDELITY GAP, and the value looks like a typo but is not -- table and prose independently state 1 HP, and the absence of any skel_hp vardefine (while skel_dmg_11 exists) is the third corroboration: the stat does not scale with level, so the auto-calculat",
    "bucket": "UPDATE"
   },
   {
@@ -3276,7 +3476,7 @@
    "after": 81.0,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "Missing from spawn_unit_stats",
+   "ruling": "Missing from spawn_unit_stats. 81 @L11, scales x1.1^(L-11) like the body.",
    "bucket": "UPDATE"
   },
   {
@@ -3286,7 +3486,7 @@
    "after": 3.5,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "RESOLVES the skeleton_king half of conflicts.md C8",
+   "ruling": "RESOLVES the skeleton_king half of conflicts.md C8. The history entry POSTDATES the prose and names the prose value as the old one (\"from 4 tiles\"), so 3.5 is current and the 4-tile prose is stale -- a textbook P3 catch",
    "bucket": "UPDATE"
   },
   {
@@ -3296,7 +3496,7 @@
    "after": 0.25,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "16 skeletons therefore take ~4 s to fully materialise -- not an instant burst",
+   "ruling": "16 skeletons therefore take ~4 s to fully materialise -- not an instant burst. KB has no field.",
    "bucket": "UPDATE"
   },
   {
@@ -3316,7 +3516,7 @@
    "after": 1,
    "route": "curated",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "Master Version History only",
+   "ruling": "Master Version History only. Interacts with decisions.md ruling 8 (the soul bar stops filling once a body has spent its use).",
    "bucket": "UPDATE"
   },
   {
@@ -3326,7 +3526,7 @@
    "after": 337.0,
    "route": "pin",
    "source": "stat_diffs.jsonl verdict:update",
-   "ruling": "NEW CASE of exactly the defect class 95e9879 fixed, on an EVOLUTION page that commit never touched",
+   "ruling": "NEW CASE of exactly the defect class 95e9879 fixed, on an EVOLUTION page that commit never touched. Follows from the wrong hit_speed: 337/1.1 = 306 is the Brawler's DPS column, where the page's 'Goblin Cage Damage per second' column is 337/1 = 337",
    "bucket": "UPDATE"
   }
  ],
@@ -3606,6 +3806,13 @@
    "bucket": "KBGAP",
    "after": null,
    "reason": "null on all three paths; decisions.md ruling 10 amendment records the analog 500 (Bandit / Boss Bandit) as an UNTESTED placeholder, not a value to write"
+  },
+  {
+   "key": "dark_prince",
+   "field": "splash_radius_tiles",
+   "bucket": "LAG",
+   "after": null,
+   "reason": "ALREADY RESOLVED, and re-adding it would REGRESS commit ba71b8f. That commit deleted the stale curated `splash_radius_tiles: 1.25` precisely because `_tiles_or` reads the *_tiles spelling in PREFERENCE to `splash_radius`, so two numbers on one row let the engine and every audit read different values in silence. The row's imported splash_radius is already the LAG bucket's 1.1; writing the *_tiles twin back would restore the shadow (tests/test_r2_engine_schema.DarkPrinceSplashShadowTests pins it)"
   },
   {
    "key": "bats",
