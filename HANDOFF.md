@@ -3285,6 +3285,48 @@ play/wait asymmetry to correct).
 gradient is necessary, not sufficient, and this can still come back null. Pre-committed: >=2 sigma
 on the paired probe or it is reported as NO MEASUREMENT.
 
+## 4v. 2026-08-26 — ⚠⚠ RETRACTION: "THE LOG'S PLACEMENT IMPROVED" WAS MY OWN MEASUREMENT BUG
+
+Owner: "log is wider than 1.95 tiles, I thought we established this in the past." They were right,
+and chasing it found an error in MY probe, not in the KB.
+
+**The KB is correct.** `_LOG_ROLL_HALFW = 1.95` is the corridor HALF-width -> **3.90 tiles wide**
+(the owner's own number from §4n), and `roll_len = 9.6` tiles FORWARD. So the Log covers a
+**3.9 x 9.6 tile corridor**, not a circle.
+
+**`scratchpad/spell_probe.py` judged EVERY spell as a circle of radius `spell_radius`.** For the
+Log that is a 1.95-tile circle — it threw away ~9.6 tiles of forward sweep and scored good casts
+as wasted. **This is the SAME circle-vs-corridor bug the engine's own whiff snapshot had and
+fixed** (§5: "A rolling spell's whiff snapshot was a CIRCLE"). I reintroduced it in the
+instrument after it had been fixed in the engine.
+
+### What changes when the probe mirrors `_resolve_roll` instead
+```
+                              init     26k     delta   sigma
+the_log  OLD probe (circle)    81%     66%   -15.1pp    2.84   <- REPORTED AS A REAL IMPROVEMENT
+the_log  FIXED (corridor)      60%     59%    -0.7pp    0.11   <- FLAT. No improvement at all.
+tornado  (circle, correct)     51%     60%    +9.3pp    1.34
+ALL      FIXED                 54%     57%    +2.7pp    0.62
+```
+**RETRACTED: "the Log's dump rate genuinely improved 81% -> 66% (2.84 sigma)" (§4r, §4t).** With
+correct geometry it is 60% -> 59%, i.e. nothing. The apparent gain was the policy drifting its
+casts in a way the CIRCLE test rewarded and the corridor test already counted.
+
+**What still stands:** spells are wasted at a high rate (57% of casts land with nothing in their
+real hit area), and the cell-head entropy measurement (tornado 5.790 / the_log 5.400 vs a 6.068
+uniform maximum) is untouched by this — it never used spell geometry. The two-failure split
+(placement + restraint) also stands: the restraint evidence is drill-based, not geometry-based.
+
+**What is now FALSE:** any claim that spell placement improved over the run. It did not.
+
+### TRAP (§8): an instrument can carry a bug the code already fixed
+The engine knew the Log is a corridor. The probe did not. When writing a measurement tool, mirror
+the ENGINE'S OWN hit test (`_resolve_roll` here) rather than re-deriving geometry from a spec
+field whose meaning you assumed — `spell_radius` means RADIUS for a blast and HALF-WIDTH for a
+roll, and nothing in the name says so.
+
+---
+
 ## 4u. 2026-08-26 — THE 40k RUN WAS STOPPED AT 26,600. Reference policy = `policy_BEST_m18000_20260826.pt`.
 
 Owner's call, on the §4t degradation. Stopped via PowerShell process lifecycle (Git-Bash `pkill`
