@@ -143,6 +143,12 @@ _LOG_BACK_SLOP = 1.0      # tiles BEHIND the cast point still caught by the corr
 # range to 1 tile (from 1.8 tiles)"), so it is the measured value of the nearest documented sibling
 # rather than a guess. Per-card values live in the KB as `knockback_tiles`.
 _KNOCKBACK_DEFAULT = 1.0
+# RAGE FALLOFF (I9). Seconds a body keeps the rage boost after leaving the zone. A PROPERTY OF THE
+# RAGE EFFECT, not of the card that laid it: the Rage page publishes the number ("decreased the
+# Rage's duration after leaving the radius to 1 second (from 2 seconds)", 4/3/2025) and says in the
+# same breath that the effect "is also the same as that spawned by the Lumberjack and the Santa Hog
+# Rider", so the Lumberjack's dropped bottle inherits it rather than needing a second constant.
+_RAGE_FALLOFF_S = 1.0
 
 
 @dataclass(slots=True)
@@ -517,6 +523,29 @@ class CardSpec:
     # introduced with the comment "not published by the wiki"; the R2 sweep showed that premise is
     # FALSE (decisions.md #6), so the arc is a card fact like any other and belongs in the KB.
     chain_tiles: float = 0.0
+    # ---- I9 FRIENDLY-TARGET SPELLS ------------------------------------------------------
+    # WHOSE side a spell's effects land on. Every spell in this engine had exactly one audience
+    # -- `_resolve_spell` only ever iterated `e.team != s.team` -- so no card could act on the
+    # caster's own army at all. "friendly" routes the spell through `_resolve_friendly_spell`
+    # FIRST; the ordinary enemy pass still runs afterwards when the card publishes damage, which
+    # is what Rage needs (its Target column names who it BUFFS while its own lead calls it "an
+    # area-damage, air-targeting spell") and what Clone must not have (it publishes none).
+    spell_targets: str = ""
+    # CLONE (Clone revid 436842): "spawns fragile duplicates of all troops within its area of
+    # effect BEHIND the originals ... each cloned unit has just 1 hitpoint, with buildings and
+    # existing clones not subject to the effect". Clone Shield Hitpoints 1 is its own published
+    # column: "Shields can be cloned if they are still on the original unit."
+    clone_hp: float = 0.0
+    clone_shield_hp: float = 0.0
+    clone_time_s: float = 0.0     # 0.5 s (History 12/6/2017, "from 0.8s")
+    # HEAL FIELD (Heal Spirit revid 437344): the kamikaze leap "creates a small glowing
+    # restoration field that heals allied troops nearby". Healing Attributes table: "4 pulses
+    # every 1 second", Time Between Pulses 0.25 s, Radius 2.5, Target Air & Ground; `heal_11`
+    # 100.25 per pulse. TROOPS ONLY -- "the healing has no effect on buildings" (Strategy).
+    heal_amount: float = 0.0
+    heal_pulses: int = 0
+    heal_tick_s: float = 0.0
+    heal_radius: float = 0.0
     # LATE-CHAIN FALLOFF (decisions.md ruling 12, I7). A chain is not uniform: the Evolved Electro
     # Dragon deals FULL damage WITH its stun for the first `chain_full_hits` bodies and a REDUCED
     # damage with NO stun for every bounce after that. Both halves are published on
@@ -764,6 +793,27 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     #     ground bodies, which is what the page describes.
     rolls = kind == "spell" and "rolls" in flags
     pulls = kind == "spell" and "pull" in flags               # Tornado: an active pulling vortex
+    # ---- I9: THE OWN-TEAM AUDIENCE -------------------------------------------------------
+    # `spell_targets` is stated by the KB and by nothing else. It is NOT derived from `attacks`
+    # or from the wiki's Target column: that column is exactly what mis-imported Rage as
+    # attacks:['buildings'] (I5), because "Friendly Troops & Buildings" names who a spell BUFFS
+    # and the schema's `attacks` names what it HURTS. Two different questions, two fields.
+    spell_targets = str(c.get("spell_targets") or "")
+    # ONE RAGE MODEL. The Lumberjack's dropped bottle already fed `rage_zones` through
+    # `drops_rage`; the Rage SPELL publishes the same four quantities in its own attributes
+    # table (Radius 3 / Deploy Time 0.5 sec / Duration 4.5 sec / Boost +30%) and its lead says
+    # the effect "is also the same as that spawned by the Lumberjack". So a buff spell fills the
+    # same four fields instead of getting a second mechanism -- `_rage_mult` reads `rage_zones`
+    # and does not care which of the two filled it.
+    _rage = dict(c.get("drops_rage") or {})
+    if kind == "spell" and float(c.get("boost") or 0.0) > 0.0:
+        _rage.setdefault("radius_tiles", spell_radius)
+        _rage.setdefault("duration_s", float(c.get("duration_s") or 0.0))
+        _rage.setdefault("boost", float(c.get("boost") or 0.0))
+        # The 0.5 s "Deploy Time" of a spell IS its arm delay (12/12/2022 "added a 0.5 second
+        # deploy timer to Rage"); `spell_delay` above is the throw, which is a separate wait.
+        _rage.setdefault("delay_s", float(c.get("deploy_time") or 0.0))
+    _heal = dict(c.get("heal_ability") or {})
     # PUSHBACK RANGE, sourced per card from the wiki's balance history rather than one constant:
     # The Log 0.7 (7/2/2023, from 1), Giant Snowball 1.8 (6/9/2021, from 1.5), Fireball 1.0
     # (2/8/2022, from 1.8), Barbarian Barrel 0 (REMOVED 3/9/2018). Arrows and Zap publish no
@@ -905,6 +955,14 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         kamikaze=("kamikaze" in flags or bool(db.is_kamikaze(base))), lifetime=lifetime,
         spell_radius=spell_radius, spell_dmg=dmg,
         spell_tower_dmg=tower_dmg, spell_delay=spell_delay,
+        spell_targets=spell_targets,
+        clone_hp=float(c.get("clone_hitpoints") or 0.0),
+        clone_shield_hp=float(c.get("clone_shield_hitpoints") or 0.0),
+        clone_time_s=float(c.get("cloning_time_s") or 0.0),
+        heal_amount=float(_heal.get("heal_per_pulse") or 0.0) * sc,
+        heal_pulses=int(_heal.get("pulses") or 0),
+        heal_tick_s=float(_heal.get("pulse_interval_s") or 0.0),
+        heal_radius=float(_heal.get("radius_tiles") or 0.0),
         rolls=rolls, ground_only=ground_only,
         # PUBLISHED pushback range per card (KB `knockback_tiles`), falling back to the nearest
         # documented sibling for a card that has the effect with no stated range. The old code hard-
@@ -937,10 +995,10 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         shield_hp=(float(db.shield_hp(base)) * sc if db.shield_hp(base)
                    else (hp * _SHIELD_FRAC if "shield" in flags else 0.0)),
         death_dmg=float(c.get("death_damage") or 0.0) * sc,
-        rage_r=float((c.get("drops_rage") or {}).get("radius_tiles") or 0.0),
-        rage_dur=float((c.get("drops_rage") or {}).get("duration_s") or 0.0),
-        rage_boost=float((c.get("drops_rage") or {}).get("boost") or 0.0),
-        rage_delay=float((c.get("drops_rage") or {}).get("delay_s") or 0.0),
+        rage_r=float(_rage.get("radius_tiles") or 0.0),
+        rage_dur=float(_rage.get("duration_s") or 0.0),
+        rage_boost=float(_rage.get("boost") or 0.0),
+        rage_delay=float(_rage.get("delay_s") or 0.0),
         egg_hatch=float((c.get("egg") or {}).get("hatch_s") or 0.0),
         egg_frac=float((c.get("egg") or {}).get("reborn_frac") or 0.0),
         recoil_dmg=float(c.get("recoil_damage") or 0.0) * sc,
@@ -1336,6 +1394,17 @@ class Unit:
     cursed_by: int = -1          # team that cursed this unit (-1 = none)
     curse_level: int = 11        # level to use for the spawned Mother Witch Hog
     fisherman_slowed: bool = False
+    # I9 CLONE: this body was made by the Clone spell. Three published rules read it -- "existing
+    # clones not subject to the effect", "any heroic troop can be cloned, but only the non-cloned
+    # one will activate its ability", and the Skeleton King's own Skeletons "cannot be cloned as
+    # they are considered cloned troops themselves" (Clone, revid 436842).
+    cloned: bool = False
+    # I9 RAGE FALLOFF: seconds of rage still owed after LEAVING the zone, and the boost it carries.
+    # "added a falloff effect to Rage, causing troops to lose the bonus if they are out of its
+    # effect for 2 seconds" (29/2/2016), cut to 1 second on 4/3/2025. Without it a 3-tile bubble
+    # buffs a marching push only on the ticks it happens to be standing inside.
+    rage_left: float = 0.0
+    rage_boost: float = 0.0
 
     def __post_init__(self):
         self.shield_left = self.spec.shield_hp
@@ -1414,6 +1483,7 @@ class _Zone:
             self.tick_in = 0.0                    # Earthquake: wave one lands with the spell
         self.age = 0.0
         self.spawned = 0
+        self.healed = 0               # I9: heal pulses SPENT (the Heal Spirit's published 4)
 
 
 @dataclass(slots=True)
@@ -1884,6 +1954,12 @@ class SimEngine:
         # rather than silently spending elixir.
         bodies = [u for u in self.units
                   if u.team == team and u.hp > 0 and u.spec.ability_kind
+                  # I9: "any heroic troop can be cloned, but only the NON-CLONED one will
+                  # activate its ability" / "Champion cards can be cloned, but when you use its
+                  # ability, only the non-cloned one will activate" (Clone, revid 436842). A
+                  # clone is always the NEWER body, so without this it would win ruling 5's
+                  # newest-body selection and take the button away from the real champion.
+                  and not u.cloned
                   # ...EXCEPT a kind that can only be pressed once its bodies are DEAD. Banner
                   # Brigade "will be disabeld until the last goblin is killed", so a living Hero
                   # Goblin must not satisfy the has-a-body test below -- it would fire the ability
@@ -2790,6 +2866,12 @@ class SimEngine:
                 u.flying_left = max(0.0, u.flying_left - dt)
             if u.rage_self_left > 0.0:
                 u.rage_self_left = max(0.0, u.rage_self_left - dt)
+            if u.rage_left > 0.0:
+                # RAGE FALLOFF, decayed here and REFRESHED by `_rage_mult` further down the same
+                # iteration whenever the body is still inside a zone -- so a unit standing in the
+                # bottle never runs the timer down, and one that walks out keeps the boost for the
+                # published second and then loses it.
+                u.rage_left = max(0.0, u.rage_left - dt)
             if u.iframes_left > 0.0:
                 u.iframes_left = max(0.0, u.iframes_left - dt)
             if (u.spec.enrage_frac > 0.0 and not u.enraged and u.hp > 0.0
@@ -2900,7 +2982,7 @@ class SimEngine:
                     self._pulse(u)
                     u.pulse_cd = u.spec.pulse_interval
             spd = u.slow_mult if u.slow_left > 0 else 1.0
-            if self.rage_zones or u.rage_self_left > 0.0:
+            if self.rage_zones or u.rage_self_left > 0.0 or u.rage_left > 0.0:
                 spd *= self._rage_mult(u)                   # rage: +30% move AND attack speed, no stacking
             if self._auras:
                 for (ax, ay, at, ar, aslow, aboost) in self._auras:
@@ -3152,6 +3234,11 @@ class SimEngine:
                         u.charge_dist = 0.0
                         u.locked = False
                     elif u.spec.kamikaze:
+                        if u.spec.heal_amount > 0.0:
+                            # HEAL SPIRIT. The field is left by the LEAP, so it is created on the
+                            # connecting swing and not in the death path: a spirit killed before
+                            # it lands heals nothing.
+                            self._heal_field(u, ref)
                         u.hp = 0.0
             elif u.spec.sniper_shots > 0 and self._try_snipe(u):
                 pass                                         # Evo Musketeer STANDS to take the shot
@@ -3225,7 +3312,8 @@ class SimEngine:
                 # Goblin Giant as an exception") is NOT implemented: the page's own sentence
                 # supports both readings of the exception -- see the YAML's open_questions -- and
                 # guessing a direction would silently move the card's output by up to 4 Skeletons.
-                if u.spec.kind == "troop" and u.spec.base != "soul_skeleton":
+                if u.spec.kind == "troop" and u.spec.base != "soul_skeleton" \
+                        and not u.cloned:
                     for k in self.units:
                         if (k.hp > 0 and k.spec.ability_kind == "soul_bank"
                                 and k.souls < _SOUL_CAP
@@ -3238,12 +3326,13 @@ class SimEngine:
                     # the card's own base and the building-targeting flag, and its ability_kind was
                     # cleared by build_spec because only component 0 owns the ability.
                     self._antenna[u.team] = (u.x, u.y)
-                if u.spec.ability_kind == "summon_banner":
+                if u.spec.ability_kind == "summon_banner" and not u.cloned:
                     # "The last Goblin standing drops a banner that calls in reinforcements." The
                     # LAST one: with a sibling still alive nothing is dropped, which is what makes
                     # the ability unavailable until the squad is wiped. Counted over living bodies
-                    # of the same card on the same team, excluding the one dying here.
-                    if not any(k is not u and k.hp > 0 and k.team == u.team
+                    # of the same card on the same team, excluding the one dying here -- and
+                    # excluding CLONES, which never carry the ability (I9).
+                    if not any(k is not u and k.hp > 0 and k.team == u.team and not k.cloned
                                and k.spec.key == u.spec.key for k in self.units):
                         self._banner[u.team] = [self.t + u.spec.ability_duration_s,
                                                 u.x, u.y, u.spec]
@@ -3555,13 +3644,27 @@ class SimEngine:
     def _rage_mult(self, u: "Unit") -> float:
         """1 + boost when the unit is raged -- by a friendly Rage zone OR its own Evo-Barbarian
         self-rage. Rage does not stack ("does not stack with another Rage spell, the Lumberjack's
-        dropped Rage, or the Rage effect of the Evolved Barbarians"): the strongest source wins."""
+        dropped Rage, or the Rage effect of the Evolved Barbarians"): the strongest source wins.
+
+        I9 -- THE FALLOFF IS PART OF THE MECHANIC, not a nicety. Rage has had one since 29/2/2016
+        ("added a falloff effect to Rage, causing troops to lose the bonus if they are OUT of its
+        effect for 2 seconds"), cut to 1 second on 4/3/2025. Without it a 3-tile bubble only ever
+        buffs a body on the ticks it is standing inside, which for a marching push is a fraction
+        of the spell. Refreshed HERE rather than in a second sweep because this is the one place
+        that already computes, per unit per tick, whether it is inside a zone; the decay sits at
+        the top of `_tick_units`, so a unit inside a zone can never run it down.
+        """
         best = u.spec.hit_rage_boost if u.rage_self_left > 0.0 else 0.0
+        inside = 0.0
         for (zx, zy, zr, zt, t0, t1, boost) in self.rage_zones:
             if zt == u.team and t0 <= self.t < t1 \
                     and _dist(u.x, u.y, zx, zy) <= zr + u.spec.radius:
-                best = max(best, boost)
-        return 1.0 + best
+                inside = max(inside, boost)
+        if inside > 0.0:
+            u.rage_left, u.rage_boost = _RAGE_FALLOFF_S, inside
+        elif u.rage_left > 0.0:
+            best = max(best, u.rage_boost)          # walked out: the published second of grace
+        return 1.0 + max(best, inside)
 
     def _try_snipe(self, u: "Unit") -> bool:
         """EVO MUSKETEER's Sniper Ammo: 3 infinite-range rounds, spent ONLY when nothing is in her
@@ -4771,6 +4874,24 @@ class SimEngine:
         u.dmg_mult *= tw.buff_mult
 
     def _resolve_spell(self, s: _Spell) -> None:
+        if s.spec.spell_targets == "friendly":
+            # I9 -- THE OWN-TEAM PATH. Every branch below this one iterates `e.team != s.team`,
+            # so before this existed no spell in the engine could touch the caster's own army:
+            # Rage was a bare 179-damage blast with its whole buff missing, and Clone was a
+            # 3-elixir no-op. The friendly effects land FIRST, and then:
+            #   * a card that publishes NO damage stops here. Clone's attributes table has no
+            #     damage column at all, and falling through would run `_damage_tower(tw, 0.0)`
+            #     against every enemy tower in radius -- which is not free, because a zero-damage
+            #     hit on the King still ACTIVATES him.
+            #   * a card that DOES publish damage falls through and blasts as usual. That is Rage:
+            #     its Target column ("Friendly Troops & Buildings") names who it BUFFS, while its
+            #     own lead calls it "an area-damage, air-targeting spell with a medium radius and
+            #     low damage" (179 / 45 crown at L11). The two are not in conflict, they are two
+            #     halves of one card -- and reading that Target column as TARGETING is exactly the
+            #     import bug I5 had to undo.
+            self._resolve_friendly_spell(s)
+            if s.spec.spell_dmg <= 0.0 and s.spec.spell_tower_dmg <= 0.0:
+                return
         if s.spec.rolls:
             self._resolve_roll(s)
             return
@@ -4843,6 +4964,104 @@ class SimEngine:
             u.deploy_left = sp.deploy_time
             u.pulse_cd = sp.pulse_interval
             self.units.append(u)
+
+    def _resolve_friendly_spell(self, s: _Spell) -> None:
+        """The OWN-TEAM half of a friendly-target spell (I9).
+
+        Two effects ship today and both are declared entirely by the KB, so a third friendly
+        spell is a data row rather than a new branch:
+
+          * a RAGE ZONE, when the card publishes a `boost`. It is appended to the SAME
+            `rage_zones` list the Lumberjack's dropped bottle uses -- the Rage page's own lead
+            says the effect "is also the same as that spawned by the Lumberjack", so a second
+            buff system would have been two models of one mechanic. Radius 3 / Deploy Time 0.5 s
+            / Duration 4.5 s / Boost +30% is its published attributes table (revid 437309), and
+            `_rage_mult` already applies a zone to move AND attack speed, for troops and building
+            bodies alike, which is exactly what the card claims.
+          * CLONES, when the card publishes `clone_hitpoints`.
+        """
+        sp = s.spec
+        if sp.rage_boost > 0.0:
+            self.rage_zones.append((s.x, s.y, sp.rage_r, s.team,
+                                    self.t + sp.rage_delay,
+                                    self.t + sp.rage_delay + sp.rage_dur,
+                                    sp.rage_boost))
+        if sp.clone_hp > 0.0:
+            self._clone_troops(s)
+
+    def _clone_troops(self, s: _Spell) -> None:
+        """CLONE (revid 436842): "spawns fragile duplicates of all troops within its area of
+        effect BEHIND the originals ... each cloned unit has just 1 hitpoint, with buildings and
+        existing clones not subject to the effect".
+
+        THE CLONE'S SPEC IS THE ORIGINAL'S WITH THREE FIELDS REPLACED, which is what makes every
+        downstream system correct at once rather than card by card:
+          * `hp` -> Clone Hitpoints 1. The hp BAR then reads full on a 1-hp body (right), and the
+            hp-threshold transforms the page rules out come along for free -- "any troop that
+            activates a special mode when they reach a certain hitpoint threshold will not be able
+            to utilize these special modes", because 50% of 1 hp is unreachable while alive.
+          * `shield_hp` -> Clone Shield Hitpoints 1, but ONLY if the original still carries a
+            shield: "Shields can be cloned if they are still on the original unit."
+          * `elixir` -> 0. This is the "cloned units have no elixir value" semantics, and it is
+            load-bearing rather than cosmetic: the reward layer prices bodies at `spec.elixir`
+            (trade potential, spell value, the overcommit ledgers), so a cloned Skeleton Army
+            would otherwise have read as another 3 elixir of enemy investment worth paying to
+            kill. Zeroing it on the SPEC fixes every one of those call sites at once.
+
+        NOT IMPLEMENTED, deliberately: the forward shove of the ORIGINAL ("when a troop is cloned,
+        the original troop will be displaced forward slightly"). The DIRECTION is published and
+        the magnitude is not, and the magnitude is what decides whether a Balloon ends up inside
+        a Crown Tower's reach. Recorded in conflicts.md rather than guessed.
+        """
+        sp = s.spec
+        fwd = -1.0 if s.team == 0 else 1.0            # team 0 attacks toward y = 0
+        cache: dict = {}
+        made = []
+        for u in self.units:
+            if u.team != s.team or u.hp <= 0.0 or u.cloned:
+                continue                              # "existing clones not subject to the effect"
+            if u.spec.kind == "building":
+                continue                              # "Doesn't affect buildings" (card text)
+            if _dist(u.x, u.y, s.x, s.y) > sp.spell_radius:
+                continue
+            cs = cache.get(u.spec.key)
+            if cs is None:
+                cs = replace(u.spec, elixir=0, hp=sp.clone_hp,
+                             shield_hp=(sp.clone_shield_hp if u.spec.shield_hp > 0.0 else 0.0))
+                cache[u.spec.key] = cs
+            # BEHIND the original = one body-length back toward our own king.
+            cx, cy = _clamp_xy(u.x, u.y - fwd * (2.0 * u.spec.radius) / _TILES_Y, u.spec.radius)
+            nu = Unit(cs, s.team, cx, cy, sp.clone_hp)
+            nu.cloned = True
+            nu.deploy_left = sp.clone_time_s          # "decreased the cloning time to 0.5s" (12/6/2017)
+            made.append(nu)
+        self.units.extend(made)
+
+    def _heal_field(self, u: "Unit", ref) -> None:
+        """HEAL SPIRIT (revid 437344): the leap "creates a small glowing restoration field that
+        heals allied troops nearby", and the Strategy section pins WHERE -- "the Heal Spirit's
+        healing radius will spawn around the ENEMY TROOP THAT IT JUMPS ON", so it is centred on
+        the target, which is up to its own 2.5-tile reach away from the body.
+
+        A `_Zone` carries it, because a zone is already a timed field with a tick cadence; the
+        only thing this adds is a tick that heals its OWN team instead of hurting the other one.
+        Published: "4 pulses every 1 second", Time Between Pulses 0.25 sec, Radius 2.5, Target
+        Air & Ground, `heal_11` 100.25 per pulse. The pulse COUNT is enforced by the zone rather
+        than implied by the arithmetic (the I8 Ice Golem discipline), so a retuned interval can
+        never buy a fifth pulse.
+
+        Fired ONLY from the kamikaze swing. A Heal Spirit killed before it connects heals nothing,
+        which is the counterplay the page itself describes ("it is important that the barrel
+        itself defeats the Heal Spirit before the Barbarian spawns").
+        """
+        s = u.spec
+        hx = float(getattr(ref, "x", u.x))
+        hy = float(getattr(ref, "y", u.y))
+        fs = replace(s, spell_radius=s.heal_radius, zone_tick_s=s.heal_tick_s,
+                     zone_first_tick_now=True, spell_dmg=0.0, spell_tower_dmg=0.0,
+                     spell_build_dmg=0.0, zone_move_slow=0.0, zone_tiers=(),
+                     zone_spawn_n=0, spawn_spec=None)
+        self.zones.append(_Zone(u.team, hx, hy, fs, s.heal_tick_s * s.heal_pulses))
 
     def _tick_vortex(self, v: _Vortex, dt: float) -> None:
         """One step of an active tornado: drag every enemy unit toward the centre and deal the
@@ -4983,6 +5202,21 @@ class SimEngine:
             if z.tick_in > 0.0:
                 continue
             z.tick_in += sp.zone_tick_s
+            if sp.heal_amount > 0.0:
+                # I9 HEAL FIELD -- the one zone that acts on its OWN team. TROOPS ONLY: the Heal
+                # Spirit page's Strategy says outright that "the healing has no effect on
+                # buildings", which is also why the card "should not be used in X-Bow or Mortar
+                # decks". Crown towers are not troops either and take nothing. Air & Ground per
+                # the Healing Attributes table, so there is no flying test.
+                if z.healed >= sp.heal_pulses:
+                    continue
+                z.healed += 1
+                for f in self.units:
+                    if f.team != z.team or f.hp <= 0.0 or f.spec.kind == "building":
+                        continue
+                    if _dist(f.x, f.y, z.x, z.y) <= sp.spell_radius:
+                        f.hp = min(f.spec.hp, f.hp + sp.heal_amount)
+                continue
             # A ground-only field cannot touch flyers ("it is an EARTHquake, after all"), and a
             # RETRACTED building is normally untouchable -- except to a spell that carries
             # hits_hidden, which is precisely why Earthquake is the efficient answer to a Tesla.

@@ -1778,8 +1778,14 @@ cards:
   # re-import cannot regenerate it; this row states the truth the Target column cannot.
   # Rage's DAMAGE is air+ground: lead, "It is an area-damage, air-targeting spell with a medium
   # radius and low damage" (12/12/2022 Clashmas Update "made the spell deal area damage").
-  # ⚠ The FRIENDLY BUFF itself (+30% move and attack speed for 4.5 s) is still NOT modelled --
-  # that is stage I9. This row fixes only the false targeting claim.
+  # I9 2026-08-27 -- THE FRIENDLY BUFF IS NOW MODELLED. `spell_targets: friendly` routes the
+  # spell through the engine's own-team path, which lays a rage ZONE from this row's published
+  # attributes table (revid 437309: Radius 3 / Deploy Time 0.5 sec / Duration 4.5 sec / Boost
+  # +30%, Target "Friendly Troops & Buildings"). It is the SAME `rage_zones` list the Lumberjack's
+  # dropped bottle feeds -- the page's lead says the effect "is also the same as that spawned by
+  # the Lumberjack" -- so there is one rage model, not two. The DAMAGE half still runs: the Target
+  # column names who the spell BUFFS, while the lead calls it "an area-damage, air-targeting spell
+  # ... with low damage", and both are true of the same card.
   # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
   # provenance in research/sim_parity/ledger/i5_applied.jsonl).
   #   duration_s: SUPERSEDED ABSENT -> 4.5. MISSING FIELD -- the card's whole point. Table
@@ -1787,7 +1793,7 @@ cards:
   #   boost: SUPERSEDED ABSENT -> 0.3. MISSING FIELD. Table Boost +30%; 6/10/2025 cut the speed
   #     boost to 30% (from 35%); lead: 'It increases the movement speed and attack speed of allied
   #     troops and buildings by 30%.' Same 0.30 the Lumberjack drops_rage entry already uses.
-  rage: {kind: spell, attacks: [air, ground], duration_s: 4.5, boost: 0.3, verified: true}
+  rage: {kind: spell, spell_targets: friendly, attacks: [air, ground], duration_s: 4.5, boost: 0.3, verified: true}
   # NB Arrows and Zap get NO knockback: neither publishes a pushback range and neither has a balance
   # entry for one. The Arrows page's "its knockback and slow effects" line is stale Strategy prose
   # describing Giant Snowball -- Arrows has no slow effect either, which is the tell.
@@ -3042,7 +3048,19 @@ cards:
   #   clone_shield_hitpoints: SUPERSEDED ABSENT -> 1.0. MISSING FIELD. The attributes table
   #     publishes Clone Shield Hitpoints = 1 (a cloned Dark Prince / Royal Recruit keeps a 1 HP
   #     shield).
-  clone: {targets: friendly_troops, cloning_time_s: 0.5, clone_hitpoints: 1.0, clone_shield_hitpoints: 1.0, verified: true}
+  # I9 2026-08-27 -- IMPLEMENTED. `spell_targets: friendly` is what the engine dispatches on;
+  # `targets: friendly_troops` above is the imported Target-column string and stays as the
+  # provenance for it. Clone publishes NO damage column, so the own-team path is the whole card
+  # and the enemy blast is skipped entirely (a zero-damage pass would still have activated the
+  # enemy King Tower). Sourced from Clone revid 436842: "spawns fragile duplicates of all troops
+  # within its area of effect BEHIND the originals ... each cloned unit has just 1 hitpoint, with
+  # buildings and existing clones not subject to the effect"; "Shields can be cloned if they are
+  # still on the original unit. They will retain one hitpoint"; "any heroic troop can be cloned,
+  # but only the non-cloned one will activate its ability".
+  # NOT MODELLED (recorded in conflicts.md, not guessed): the forward shove of the ORIGINAL body
+  # ("the original troop will be displaced forward slightly") -- the direction is published and
+  # the distance is not, and the distance is the whole tactic.
+  clone: {targets: friendly_troops, spell_targets: friendly, cloning_time_s: 0.5, clone_hitpoints: 1.0, clone_shield_hitpoints: 1.0, verified: true}
   # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
   # provenance in research/sim_parity/ledger/i5_applied.jsonl).
   #   blast_repeat_delay_s: SUPERSEDED ABSENT -> 3.0. KBGAP: the Evo Ice Spirit hits TWICE -- the
@@ -3078,6 +3096,13 @@ cards:
   #     every Mirror level N to mirrored level N+1 across all five rarities (rows 6->7, 7->8,
   #     8->9, 9->10) -- the mirrored copy is one level higher, which is the card's second mechanic
   #     after the +1 elixir
+  # I9 2026-08-27 -- MEASURED AND DELIBERATELY NOT IMPLEMENTED. Mirror is a HAND mechanic
+  # ("Mirrors your last card played for +1 Elixir", one level higher), not a board effect, and the
+  # meta pool barely fields it: 5 of 1000 decks, 17 of 5947 deck weight = 0.29% of matches, and
+  # `clone` is thinner still at 0.12%. Building the replay path -- a second cost model, a
+  # +1-level rebuild, and a starting-hand exclusion the cycle has no concept of -- to exercise it
+  # in 3 matches per 1000 is unexercised code. The engine already carries the hook it would need
+  # (`SimEngine.last_deploy[team]`). Recorded in conflicts.md; re-measure if the pool moves.
   mirror: {mirrored_level_delta: 1.0, verified: true}
 
 

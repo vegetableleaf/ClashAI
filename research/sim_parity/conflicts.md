@@ -1087,3 +1087,82 @@ Ordered by how much the answer would move, biggest first.
 * **Detector RETRAINING for the 16 hero classes + 16 hero abilities.** `detect_classes.yaml`
   already lists all 32 (I4), so the taxonomy is complete and nothing here needs a change. Training
   a detector that can SEE them is explicitly out of Phase I scope (PLAN.md, "Deferred").
+
+## I9 — cross-cutting gaps, 2026-08-27
+
+Friendly-target spells, drill evolution cycling, the sim-view debugger, the perception DRIFT
+entry, and the I8 carry-overs. Below is every choice forced by contradictory or ABSENT evidence,
+every premise in the I9 brief that turned out to be wrong, every bug the stage measured, and
+every question that needs the owner in a client. Choices are argued in the test docstrings
+(`tests/test_friendly_spells_i9.py`) and in the KB comments; this section is the ledger.
+
+### ⚠ THE GAP ITSELF, measured
+
+`SimEngine._resolve_spell` had FIVE branches and every one of them iterated `e.team != s.team`.
+There was no own-team path at all, so:
+
+| Card | Before | After |
+|---|---|---|
+| rage | a bare 179-damage blast; the buff the card is played FOR did not exist | +30% move and attack speed in a 3-tile zone for 4.5 s. MEASURED: a Knight covers **2.52 tiles in 3 s unraged, 3.18 raged (+26.0%)** — under 30% because the 0.5 s deploy timer eats the first sixth of the window, which is the card |
+| clone | a 3-elixir NO-OP | MEASURED: 4 skeletons in radius -> **4 bodies become 8**, every clone at 1 hp and `spec.elixir == 0` |
+| heal_spirit | a kamikaze troop whose heal was unmodelled | MEASURED: an ally at 100 hp ends the field at **501.00 hp (+401.00 = 4 x 100.25)** |
+
+### CHOICES MADE FROM CONTRADICTORY OR ABSENT EVIDENCE (implemented, argued, reversible)
+
+| # | Card | The conflict | Taken | Why |
+|---|---|---|---|---|
+| I9-1 | Rage | Target column "Friendly Troops & Buildings" vs the lead "It is an area-damage, air-targeting spell with a medium radius and low damage" | **BOTH, and they are not in conflict** | The Target column names who the spell BUFFS and `attacks` names what it HURTS — two different questions, and reading the first as the second is exactly the import bug I5 had to undo (`attacks: ['buildings']`). So `spell_targets: friendly` runs the own-team pass and the card still blasts for its published 179 / 45. The 12/12/2022 Clashmas Update "made the spell deal area damage" outright. |
+| I9-2 | Rage | Should the buff be a SECOND system beside the Lumberjack's `drops_rage`? | **The same `rage_zones` list** | The page's own lead: the bottle "is also the same as that spawned by the Lumberjack and the Santa Hog Rider". Two models of one mechanic is how `evo_cycles()` and `CardDB.deck()` drifted (parity_check's own examples). One consequence worth naming: `_rage_mult` was already written to buff move AND attack speed for troops and building bodies alike, which is verbatim what the Rage card claims, so the spell needed no new effect code at all. |
+| I9-3 | Rage | The FALLOFF — implemented, and it moves the Lumberjack too | **1 s, engine-wide** | Published twice: "added a falloff effect to Rage, causing troops to lose the bonus if they are out of its effect for 2 seconds" (29/2/2016) and "decreased the Rage's duration after leaving the radius to 1 second (from 2 seconds)" (4/3/2025). It is a property of the RAGE EFFECT, not of the card that laid it, so `_RAGE_FALLOFF_S` is one constant and the Lumberjack's bottle inherits it. Without it a 3-tile bubble buffs a marching body only on the ticks it happens to be standing inside, which for the card's whole purpose (a raged push) is a fraction of the spell. |
+| I9-4 | Clone | Does the enemy blast run? | **No — it RETURNS** | Clone's attributes table has no damage column at all. Falling through would call `_damage_tower(tw, 0.0)` on every enemy tower in radius, and a zero-damage hit on the King still ACTIVATES him (see the measured bug below). The rule implemented is general: a friendly-target spell that publishes no damage stops at the friendly pass. |
+| I9-5 | Clone | Where the elixir goes | **`elixir = 0` on the clone's SPEC** | This is the "cloned units have no elixir value" semantics the brief flagged as messy, and the mess is real: the reward layer prices bodies at `spec.elixir` in at least eight places (trade potential, spell value, the bow overcommit ledger, the wincon bank). Zeroing it on the spec fixes every call site at once and cannot be forgotten by a ninth. `spec.key` is untouched, so identity, counters and doctrine still see the card. |
+| I9-6 | Clone | 1 hp on the UNIT or on the SPEC? | **The spec (`hp = 1`)** | The hp BAR then reads full on a 1-hp body, which is what the game shows, and the page's own rule about hp-threshold transforms comes along for free: "any troop that activates a special mode when they reach a certain hitpoint threshold will not be able to utilize these special modes" is automatic when 50% of 1 hp is unreachable while alive. |
+| I9-7 | Clone | Placement | **One body-length BEHIND, published direction only** | "spawns fragile duplicates of all troops within its area of effect BEHIND the originals". The distance is not published; one collision diameter is the smallest choice that does not overlap the original. |
+| I9-8 | Heal Spirit | WHERE the field lands — on the spirit or on its victim? | **On the victim** | Strategy, verbatim: "The Heal Spirit's healing radius will spawn around the enemy troop that it jumps on." With a 2.5-tile reach and a 2.5-tile radius those two centres differ by up to a full radius. |
+| I9-9 | Heal Spirit | Does a spirit killed before it connects still heal? | **No** | The field is left by the LEAP, so it is created on the connecting kamikaze swing and not in the death path. The page describes exactly this counterplay: "it is important that the barrel itself defeats the Heal Spirit before the Barbarian spawns, otherwise it may result in the Heal Spirit jumping onto the Barbarian". |
+| I9-10 | Heal Spirit | Buildings | **Not healed** | "the healing has no effect on buildings", which is also the page's reason the card "should not be used in X-Bow or Mortar decks". Crown towers are not troops either and take nothing. |
+
+### ⚠ MIRROR — MEASURED, AND DELIBERATELY NOT IMPLEMENTED
+
+The brief said to measure the pool first and skip it if the pool does not field it. MEASURED over
+the shipped `config/meta_decks.yaml` (1000 decks, 5947 total weight, byte-identical in both decks):
+
+    mirror   5 decks / 1000   17 weight / 5947  = 0.29% of matches
+    clone    5 decks / 1000    7 weight / 5947  = 0.12% of matches
+    rage    64 decks / 1000  321 weight / 5947  = 5.40%
+    heal_spirit 64 decks     413 weight / 5947  = 6.94%
+
+Mirror is skipped. It is not a board effect at all — "Mirrors your last card played for +1
+Elixir", at one level higher, and "Does not appear in your starting hand" — so implementing it
+means a second cost model, a +1-level spec rebuild and a starting-hand exclusion the cycle has no
+concept of, to be exercised in 3 matches per 1000. The engine already carries the hook it would
+need (`SimEngine.last_deploy[team]`, which records `(spec, x, y, t)` per team). `tests/
+test_friendly_spells_i9.py::MirrorMeasurementTests` pins the measurement at <1% so a pool that
+moves makes the decision loud instead of leaving a silent gap.
+
+Clone at 0.12% was implemented anyway, because unlike Mirror it is a board effect that fits the
+existing spell path in ~30 lines and because the brief asked for it explicitly if the numbers were
+published — they are, all four of them (Clone Hitpoints, Clone Shield Hitpoints, Radius, and the
+cloning time from History).
+
+### NOT IMPLEMENTED, DELIBERATELY (I9 item 1)
+
+* **The Clone's forward shove of the ORIGINAL body.** "When a troop is cloned, the original troop
+  will be displaced forward slightly ... This displacement can allow Clone to be used with
+  building-targeting troops to bypass certain defensive building placements, by shoving the
+  original troop so that it is closer to a Crown Tower." The DIRECTION is published and the
+  MAGNITUDE is not — and the magnitude is the entire tactic, because it decides whether a Balloon
+  ends up inside a Crown Tower's reach. **OWNER: clone a Balloon at the bridge and see how far it
+  jumps.**
+* **Cloning a champion or hero body.** Clones are created and are excluded from the ability
+  ("Champion cards can be cloned, but when you use its ability, only the non-cloned one will
+  activate its ability"; "any heroic troop can be cloned, but only the non-cloned one will
+  activate its ability") — a clone is always the NEWER body, so without the exclusion it would win
+  ruling 5's newest-body selection and take the button away from the real champion. What is NOT
+  modelled is Goblinstein's "Lightning Link will always target the non-cloned Monster, and if
+  destroyed, it will not retarget to the cloned Monster", which needs a second anchor concept.
+* **Whether a CLONED body's death banks a Skeleton King soul.** The page says his own summoned
+  Skeletons "cannot be cloned as they are considered cloned troops themselves", which reads as
+  cloned bodies being soul-exempt, so clones are excluded from the bank — the same sentence the
+  existing soul_skeleton exclusion comes from. If the exception runs the other way this is 1 soul
+  per clone, which is the same undecidable shape as the I7 sub-troop question.
