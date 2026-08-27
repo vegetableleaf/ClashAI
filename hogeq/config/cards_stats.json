@@ -4418,7 +4418,7 @@
    "rarity": "common",
    "kind": "spell",
    "damage": 192,
-   "crown_tower_damage": 58,
+   "crown_tower_damage": 48,
    "hits_per_attack": 2.0,
    "count": 1,
    "attacks": [

@@ -82,6 +82,25 @@ DECISION_DATE = "2026-08-26"
 I5_PLAN = LEDGER / "i5_plan.json"
 _DROP = "__DROP__"
 
+# The three columns tools/stat_sweep.py compares against the wiki. Any I5 value in one of these
+# is a DELIBERATE DEVIATION and has to appear in this file, even when its home is cards.yaml --
+# otherwise the sweep would have to keep a second, drifting list of "known" disagreements.
+# Curated ones are marked `advisory: true`: recorded here, never pushed into cards_stats.json.
+SWEPT_FIELDS = ("hitpoints", "damage", "dps", "hit_speed", "crown_tower_damage")
+
+# ENGINE-MODELLING deviations. Not corrections and not import material -- the KB deliberately
+# holds a number the wiki does not print, because the sim resolves the mechanic differently.
+MODEL_PINS = [
+    ("vines", "damage", 306,
+     "MODELLING: we apply both hits at once (dmg_hits 2 x 153 = 306); the 1.25 s between them is "
+     "below the sim's decision resolution"),
+    ("vines", "crown_tower_damage", 70,
+     "MODELLING: same doubling on the crown chip -- 2 x 35 after the 1/6/2026 cut to 23%"),
+    ("goblinstein", "damage", 128,
+     "MODELLING: a two-body champion held as ONE merged unit -- the wiki's dmg_11 92 is the "
+     "Doctor alone and monster_dmg_11 is 128. Splitting them is the SIM_FIDELITY deferred item"),
+]
+
 
 def main() -> int:
     rows = [json.loads(line) for line in
@@ -116,23 +135,38 @@ def main() -> int:
             pins[(key, field)] = {"key": key, "field": field, "value": value,
                                   "source": why, "date": DECISION_DATE}
 
-    # 3. I5: everything i5_apply.py routed to the import layer.
-    i5 = 0
+    # 3. I5: everything routed to the import layer, PLUS every curated value that lands in a
+    #    column tools/stat_sweep.py compares (those are advisory -- recorded, never imported).
+    i5 = adv = 0
     if I5_PLAN.exists():
         for row in json.loads(I5_PLAN.read_text(encoding="utf-8"))["plan"]:
-            if row["route"] != "pin":
-                continue
             key, field = row["key"], row["field"]
+            advisory = row["route"] != "pin"
+            if advisory and field not in SWEPT_FIELDS:
+                continue
             value = None if row["after"] == _DROP else row["after"]
-            why = "I5 apply (%s): %s" % (row["bucket"], row["ruling"])
+            why = "I5 apply (%s%s): %s" % (row["bucket"], ", curated" if advisory else "",
+                                           row["ruling"])
             if (key, field) in pins:
                 got = pins[(key, field)]["value"]
                 assert got == value, ("pin disagreement for %s.%s: existing %r vs I5 plan %r"
                                       % (key, field, got, value))
                 continue
-            pins[(key, field)] = {"key": key, "field": field, "value": value,
-                                  "source": why, "date": DECISION_DATE}
-            i5 += 1
+            entry = {"key": key, "field": field, "value": value,
+                     "source": why, "date": DECISION_DATE}
+            if advisory:
+                entry["advisory"] = True
+                adv += 1
+            else:
+                i5 += 1
+            pins[(key, field)] = entry
+
+    for key, field, value, why in MODEL_PINS:
+        if (key, field) in pins:
+            continue
+        pins[(key, field)] = {"key": key, "field": field, "value": value, "advisory": True,
+                              "source": why, "date": DECISION_DATE}
+        adv += 1
 
     ordered = [pins[k] for k in sorted(pins)]
     payload = {
@@ -144,13 +178,15 @@ def main() -> int:
             "semantics": "the importer applies pins as a post-pass over the scraped rows and "
                          "--write refuses if a pinned field would regress; value null = the "
                          "field must not be imported; fields the importer does not emit are "
-                         "advisory (curated layer / stat_sweep EXPECTED sync)",
+                         "advisory (curated layer / stat_sweep EXPECTED sync); an explicit "
+                         "advisory:true pin is recorded for the sweep and never imported",
             "pair": "byte-identical across icebow/ and hogeq/ -- regenerate with the "
                     "generator and it writes both; never hand-edit one copy",
             "counts": {"total": len(ordered),
                        "from_stat_diffs": len(pin_rows),
                        "from_decisions": len(DECISION_PINS),
                        "from_i5_plan": i5,
+                       "advisory": adv,
                        "overlapping": dup},
         },
         "pins": ordered,
@@ -161,7 +197,8 @@ def main() -> int:
         o.write_text(text, encoding="utf-8", newline="\n")
     same = outs[0].read_bytes() == outs[1].read_bytes()
     print(f"wrote {len(ordered)} pins ({len(pin_rows)} stat_diffs + "
-          f"{len(DECISION_PINS)} decisions + {i5} I5-plan, {dup} overlapping) to:")
+          f"{len(DECISION_PINS)} decisions + {i5} I5-plan + {adv} advisory, "
+          f"{dup} overlapping) to:")
     for o in outs:
         print(f"  {o}")
     print(f"pair byte-identical: {same}")

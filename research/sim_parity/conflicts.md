@@ -563,3 +563,177 @@ NOT wired into the unit suites, deliberately: it would go red during any legitim
 divergence, and after a merge into the live tree the allow-list would describe a state that branch
 has not reached yet. It is a CLI gate to run before a commit that touches shared code. Promoting it
 to a suite test or a hook is a separate decision.
+
+## I5 — applying the adjudicated ledger, 2026-08-26
+
+340 changes applied (`ledger/i5_applied.jsonl`, one row each with key/field/before/after/route/
+source/ruling), 50 recorded-not-applied, 23 deferred. Everything below is a place where the brief,
+the ledger or a premise turned out to be wrong, or where a value was applied with a caveat that a
+later pass must not silently "fix".
+
+### ⚠ P1. `crown_damage_audit.py` could never have gone green. It audited the WIKI, not us.
+
+The stage gate was "the crown audit is RED before I5 and GREEN after". As written the tool
+compared the wiki's `crown_dmg_11` against the percentage in the wiki's OWN balance history --
+a statement about Fandom. We do not edit the wiki, so applying data to our KB cannot change its
+output: the 15 stale vardefines it printed are still there and always will be.
+
+RETARGETED at our KB: same wiki-derived percentage (the only place the live figure exists),
+but the number CHECKED is `build_spec(...).spell_tower_dmg` against `round(our full damage x
+pct)`. The wiki-vs-wiki finding still prints as CONTEXT, because it is the entire justification
+for `config/import_pins.json`, but it no longer drives the exit code. `--kb <path>` audits
+another checkout so the negative control is reproducible rather than a story:
+
+    pre-I5 configs (0905104)  exit 1, 9 stale IN OUR KB: fireball 207->172, arrows 31->24,
+                              freeze 35->29, rage 54->45, vines 78->70, giant_snowball 54->45,
+                              giant_snowball_evo 54->45, goblin_drill 26->0, goblin_drill_evo 26->0
+    post-I5                   exit 0, "no discrepancies in our KB"
+
+### ⚠ P2. "Discard royal_delivery's crown_tower_damage entirely" gave it FULL crown damage.
+
+decisions.md #11 rules that Royal Delivery cannot hit crown towers. Deleting the field is the
+literal reading and it does the opposite: `build_spec` had `tower_dmg = float(db.tower_damage(base)
+or dmg)`, and with no crown value the fallback hands the card its full damage.
+MEASURED: spell_tower_dmg 40 -> **385**. Fixed both ways -- the KB carries an explicit `0`, and the
+falsy `or dmg` became `dmg if _td is None else _td` so a published 0 survives. Nothing else in the
+KB was relying on the old behaviour (graveyard's 0 sat next to a damage of 0).
+
+### ⚠ P3. The LAG bucket asks for a field whose DELETION was a fix (dark_prince).
+
+`dark_prince.splash_radius_tiles: 1.1`. Commit ba71b8f deleted the curated
+`splash_radius_tiles: 1.25` precisely because `_tiles_or` prefers the `*_tiles` spelling, so two
+numbers on one row let the engine and every audit read different values in silence. The row's
+imported `splash_radius` is already the bucket's 1.1. NOT APPLIED; recorded as a skip with the
+reason. Caught by `tests/test_r2_engine_schema.DarkPrinceSplashShadowTests`.
+
+### ⚠ P4. Five `verdict: update` rows carry a CORRUPT `proposed` in stat_diffs.jsonl.
+
+The emitter took the first number out of the note instead of the value. Recovered from the notes
+and applied from there; the ledger rows themselves are left as they are (the research is frozen):
+
+    witch_evo.dps                     proposed 11.0   real 123  ("135/1.1 = 122.7 -> 123")
+    witch_evo.damage                  proposed 135.0  real 135  (correct by luck)
+    goblinstein.components[0].damage  proposed 11.0   real 135  ("92 x 1.47 = 135.24 -> 135")
+    mighty_miner.damage_stages[0]     proposed 1.0    real 43   ("40 x 1.08 = 43.2 -> 43")
+    skeleton_king.spawn_unit_stats.hitpoints  proposed 1.0  real 1  -- NOT corrupt: the summoned
+        skeletons genuinely have 1 HP (table, prose, and the absence of any skel_hp vardefine).
+
+### ⚠ P5. `ability_move_speed_tiles` was proposed in WIKI SPEED UNITS on a field named `_tiles`.
+
+archer_queen 45 and golden_knight 120 are "Slow (45)" and "Very Fast (120)" -- 60 units = 1
+tile/s. Applied as 0.75 and 2.0. Left as published they would have made the Archer Queen's cloak
+a 45-tile-per-second sprint.
+
+### ⚠ P6. The DUP bucket's probe order would have kept a stale value (zap_evo).
+
+`zap_evo.crown_tower_damage`: p1 58 / p2 58 / p3 48, and the bucket's rule ("merge's pick", p1
+first) lands on 58 -- the stale 30% vardefine -- while the row's own note says outright that
+"THE OWNER PIN LANDED ON THE PARENT AND MISSED THE EVOLUTION" and zap's 48 is correct off the
+IDENTICAL damage 192. Caught by `stat_sweep --all`, which is the first instrument in this project
+that could have caught it. Applied as 48 via an OVERRIDE.
+
+### ⚠ P7. Only TWO of the three predicted --force-field refusals were load-bearing.
+
+I4 predicted refusals on mortar.dps, mortar_evo.dps and rage.attacks. After the LAG bucket
+created a pin for mortar.dps, its refusal is absorbed (pins outrank verified), so the dry-run
+refuses on two. All three were still forced individually and cited; forcing mortar.dps only
+disables its own pin for that run and the importer's recompute lands on the same 57.
+
+Separately, the guard first refused TWELVE, not two: ten more `verified: true` rows whose `dps`
+moves only because an adjudicated damage or hit_speed landed above (barbarian_barrel 147->177,
+furnace/furnace_evo 99->105, rune_giant 80->103, ...). Those were DECLARED as pins rather than
+force-released -- blanket-forcing ten fields to land two would have discarded exactly the
+protection I4 built.
+
+### R2 rows applied WITH A CAVEAT (do not "correct" these back)
+
+* `earthquake` crown 49 -- OWNER OVERRIDE, knowingly inconsistent. 49 is 58% of the SUPERSEDED
+  damage 84; against the ruled 81 the same 58% gives 47, and 49/81 = 60.5%. The wiki says 53. All
+  three were put to the owner. Written into the cards.yaml comment, the pin, and the crown audit's
+  OVERRIDES so three separate tools state it.
+* `tesla` / `tesla_evo` hitpoints 1182 -- the live wiki publishes 1152 on BOTH pages and the
+  1/6/2026 "+3%" reconstruction gives 1187. The RULE (evo hp == base hp) is wiki-confirmed; the
+  VALUE is the owner's. Both rows pinned so a re-import cannot pull them to 1152.
+* `barbarian_hut` spawns.interval 15.0 -- the curated 13.5 is refuted by every path, but the two
+  LIVE surfaces (table + prose) say 15 while the history RECONSTRUCTION says 14, and no dated entry
+  documents 14 -> 15. 15 also makes the row self-consistent (it already carried spawn_interval_s
+  15.0). **OWNER: 14 is the alternative and nothing here settles it.**
+* `valkyrie_evo` attack_nado_crown_damage 37 -- published, but undated. If the 4/8/2026 -50% also
+  halved the crown chip it is ~18. No entry says so. **OWNER.**
+* `goblinstein` lightning_link_damage 107 -- published and provably pre-4/8/2026. That update
+  nerfs "Ability DPS" -12%, which could land on damage (-> 94) or on hit speed (0.5 -> 0.568 s).
+  Applied the published number. **OWNER.**
+* `little_prince` spawn_unit_stats.damage 232 -- PLAN.md's I7 line still quotes the Guardienne as
+  "1600/217/1.2s". 217 is the vardefine, byte-identical at revid 436758 and live, so it predates
+  the 4/8/2026 "+7% Guardian Melee Damage": 217 x 1.07 -> 232. **I7 must not revert it to 217.**
+* `x_bow` damage 43 -> 58, hit_speed 0.3 -> 0.4, dps 143 -> 145. Our own deck's WIN CONDITION.
+  Classic vardefine lag: the 4/8/2026 entry states 0.4 "from 0.3 seconds", which is exactly what
+  both surfaces still publish, proving neither absorbed it. Nearly DPS-neutral, but per-shot
+  damage and cadence matter separately for a card that wins by chip rate.
+* `witch_evo` spawn_death_heal 76 -> 220 lands WITH heal_source_cap 4 and overheal_frac 1.73. The
+  cap partly offsets the heal; applying the 220 alone would have been a large sustain buff.
+
+### RECORDED, NOT APPLIED
+
+* **`electro_dragon_evo.hits_per_attack: 12` is a MODEL error, and the largest overstatement of
+  enemy strength the sweep found.** The engine reads it as 12 hits at the full 267 = 3204 damage
+  per swing. The wiki's shape is 3 hits at full damage WITH the 0.5 s stun, then unlimited SLOWER
+  bounces at a reduced ~89 with NO stun (267 x 0.67 x 0.50; the published 64 is that chain applied
+  to the pre-2026-08-09 base of 192). Needs `late_chain_damage` + an unlimited-bounce flag in the
+  engine, so it is written into the cards.yaml comment and left for I7/I9.
+* `electro_spirit.chain_tiles` -- its own page publishes 4 tiles, independently of the Electro
+  Dragon's three. decisions.md #6 rules the ED FAMILY, so it stays on the 3.0 fallback. **OWNER:
+  one word to move it, and the evidence is the same evidence.**
+* `little_prince.royal_rescue_pushback_tiles: 2.5` -- resolves the little_prince half of C8 (the
+  history chain 3.5 -> 2.5 -> 2 -> 2.5 is complete and monotone; the prose is stale). GLOBAL bucket
+  was not in the approved apply set and the field is I7's Royal Rescue work. Ready to apply.
+* **decisions.md #7 (adopt the wiki's floor() for derived DPS) was applied to the TEN adjudicated
+  ROUNDING rows only, not as a global convention.** MEASURED: flipping the importer's `round()` to
+  `floor()` moves **47 of 122 rows** that carry a dps, 38 of them never adjudicated -- and it
+  CONTRADICTS two approved `update` rows (electro_giant.dps 91 vs floor 90, spear_goblins.dps 51
+  vs floor 50). **OWNER: is #7 a convention for the whole KB, or a ruling on those ten rows?**
+* The engine's DERIVE-DON'T-STORE defect, which is why the above matters at all: `build_spec`
+  rebuilds per-hit damage as `hit_dmg = dps * hit_speed` even when the KB carries the exact
+  integer `damage`. A floored dps therefore makes per-hit damage LOW by up to one hit_speed
+  (measured worst case ~0.9%, inside stat_sweep's 2% band, but wrong in a way nothing else is).
+* **23 deferred rows**, each with its reason in `ledger/i5_plan.json`: the seven champion
+  `ability_cast_time_s` rows (C7 -- prose says 1 s, the tables say 0.933/0.944/0.766, and the
+  engine needs ONE convention; mighty_miner's `ability_delay_s: 1.0` is the standing precedent, so
+  I7 rules it), `boss_bandit.ability_delay_s` (same, and load-bearing for the ruling-7 refund
+  window), `pekka_evo.kill_heal` (a 3-tier heal by victim max-hp, a model change not a number),
+  `wall_breakers_evo.damage_vs_troops` (damage now splits by target class),
+  `skeleton_king.ability_spawn_count` (a 6-16 RANGE driven by the soul bank, ruling 8 / I7),
+  per-body `first_hit_speed_s` for goblinstein and skeleton_king, and
+  `minion_horde_evo.invisible_hit_speed_mult` (0.67, direction undecidable from the stub).
+* **30 rows the sweep itself declined** and this stage did not overrule: bats.hit_speed ("I am NOT
+  updating on a mis-worded entry"), firecracker.projectile_speed ("no majority"),
+  three_musketeers.hit_speed ("treat this History entry with suspicion"),
+  goblin_barrel_decoy...damage ("I do NOT recommend acting on it" -- the 4/8/2026 line is a
+  verbatim duplicate of the 8/7/2024 one and the owner user-verified 89 in game ten days after
+  it), giant_skeleton.death_crown_mult ("Report only"), tombstone.spawns.interval (curation
+  confirmed), fire_spirit.hitpoints (already the right surface), the five null-on-every-path rows,
+  and the 14 princess_evo / minion_horde_evo stub-page stats.
+
+### `stat_sweep --all`: 21 UNMAPPED, and that is the honest answer
+
+15 of them are keys the importer never emits, so by construction they are not cards -- spawned
+bodies (ghost_souldier, goblin_brawler, decoy_goblin, golemite, elixir_golemite, elixir_blob,
+bush_goblin, royal_recruit, skarmy_general, lumberjack_ghost, phoenix_egg, mother_witch_hog,
+goblin_barrel_decoy, lava_pups) and one second form (spirit_empress_air). The remaining 6 are real
+pages that publish no `#vardefine` at all: Clone and Mirror (no stats to publish), the Elite
+Barbarians / Minion Horde / Princess Evolution STUBS, and Ronin (a newer page whose numbers live
+only in the attribute table, which is where cards-import gets them). The set is DERIVED from the
+imported key set, so a card released tomorrow leaves it by itself.
+
+Two page-shape bugs the full sweep exposed and the tool now handles: `tombstone_hero` reported
++5115% hp because a `_hero` page inherits its parent's shape (hp_11 is the Skeleton it spawns), and
+`mini_pekka_hero` 404'd because the merged row's display drops the trailing dot the page keeps.
+
+### I6 note: elite_barbarians_evo is no longer null
+
+PLAN.md I6 expected it to still be an announcement-authored row. The I4 uncategorized-subpage
+probe found the live stub and the import took what exists: hitpoints 1341, damage 384,
+hit_speed 1.4 (the curated javelin block is untouched). Real null-hitpoint gaps across the whole
+KB are now **0** -- the only two rows with a null hitpoints CELL are princess_evo and
+minion_horde_evo, and build_spec resolves both through the base card (261 and 230), which is the
+protocol those rows were left under.

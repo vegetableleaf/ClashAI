@@ -209,10 +209,10 @@
    "key": "royal_delivery",
    "field": "crown_tower_damage",
    "before": 40,
-   "after": "__DROP__",
+   "after": 0,
    "route": "curated",
    "source": "decisions.md",
-   "ruling": "decisions.md 2026-08-26 R2 ADJUDICATION #11: royal_delivery CANNOT hit crown towers -- discard crown_tower_damage entirely",
+   "ruling": "decisions.md 2026-08-26 R2 ADJUDICATION #11: royal_delivery CANNOT hit crown towers. Written as an explicit 0, NOT deleted: MEASURED, removing the field took spell_tower_dmg 40 -> 385, because build_spec fell back to the card's full damage when the KB carried none. build_spec's falsy `or dmg` was fixed in the same commit so a published 0 survives",
    "bucket": "RULING"
   },
   {
@@ -481,6 +481,16 @@
    "route": "curated",
    "source": "decisions.md",
    "ruling": "DUP bucket (merge's pick) + the crown-damage pin family: 1484*0.23 = 341.32 -> 341. cards.yaml carried 342, which needs a ceil where the rest of the family rounds, and disagrees with the crown_damage_audit output it cites",
+   "bucket": "RULING"
+  },
+  {
+   "key": "zap_evo",
+   "field": "crown_tower_damage",
+   "before": 58,
+   "after": 48,
+   "route": "pin",
+   "source": "decisions.md",
+   "ruling": "DUP bucket: THE OWNER PIN LANDED ON THE PARENT AND MISSED THE EVOLUTION. zap.crown_tower_damage is 48 = round(192*0.25), correct post-1/6/2026; zap_evo held 58, the stale 30% vardefine, off IDENTICAL damage 192. Caught by stat_sweep --all: the bucket's own probe order puts p1 (the stale vardefine) first, so the derivation alone would have kept 58",
    "bucket": "RULING"
   },
   {
@@ -3869,13 +3879,6 @@
    "bucket": "DUP",
    "after": null,
    "reason": "DUP bucket: CURATION CONFIRMED CORRECT against the live page -- keep, do not re-open"
-  },
-  {
-   "key": "zap_evo",
-   "field": "crown_tower_damage",
-   "bucket": "DUP",
-   "after": 58,
-   "reason": "already correct in the merged DB"
   },
   {
    "key": "tesla",

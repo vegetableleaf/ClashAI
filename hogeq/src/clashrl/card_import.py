@@ -619,11 +619,19 @@ def _load_pins(cfg) -> list:
 def _pin_target(out: dict, pin: dict):
     """The row a pin can mechanically act on, or None if the pin is advisory here.
 
-    Advisory: composite field names (`spawns.delay`, `hitpoints/damage`), keys the import
-    does not produce, and fields whose imported value is structured (dict/list) while the
-    pin holds a scalar shorthand (barbarian_hut's `670/192/1.3`).
+    Advisory: pins carrying `advisory: true`, composite field names (`spawns.delay`,
+    `hitpoints/damage`), keys the import does not produce, and fields whose imported value is
+    structured (dict/list) while the pin holds a scalar shorthand (barbarian_hut's `670/192/1.3`).
+
+    `advisory: true` is the explicit form, added in I5. It marks a value that is deliberately
+    ours but must NOT be pushed into cards_stats.json -- an engine-MODELLING choice (Vines
+    applies both of its hits at once, so the KB's 306 is 2 x the wiki's per-hit 153) or a curated
+    correction whose home is cards.yaml. Recording them here anyway is what lets
+    tools/stat_sweep.py read ONE registry of deliberate deviations instead of keeping its own.
     """
     key, field = pin.get("key"), pin.get("field")
+    if pin.get("advisory"):
+        return None
     if not key or not field or "." in field or "/" in field:
         return None
     row = out.get(key)
@@ -692,7 +700,7 @@ def _write_guard(new: dict, existing: dict, pins: list, verified: set, force=fro
     pinned = {}
     for p in pins:
         key, field, val = p.get("key"), p.get("field"), p.get("value")
-        if "." in (field or "") or "/" in (field or ""):
+        if p.get("advisory") or "." in (field or "") or "/" in (field or ""):
             continue
         pinned[(key, field)] = val
         if f"{key}.{field}" in force:

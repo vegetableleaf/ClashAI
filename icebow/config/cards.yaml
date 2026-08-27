@@ -821,8 +821,11 @@ cards:
   #     Recruit's melee); 437*0.88 = 384.6 -> 385
   #   spawn_damage: SUPERSEDED 437.0 -> 385. decisions.md 2026-08-26 R2 ADJUDICATION #9: the
   #     4/8/2026 -12% lands on the SPAWN damage: 437*0.88 -> 385
-  #   crown_tower_damage: SUPERSEDED 40 -> REMOVED. decisions.md 2026-08-26 R2 ADJUDICATION #11:
-  #     royal_delivery CANNOT hit crown towers -- discard crown_tower_damage entirely
+  #   crown_tower_damage: SUPERSEDED 40 -> 0. decisions.md 2026-08-26 R2 ADJUDICATION #11:
+  #     royal_delivery CANNOT hit crown towers. Written as an explicit 0, NOT deleted -- MEASURED,
+  #     removing the field took spell_tower_dmg 40 -> 385, because build_spec fell back to the
+  #     card's full damage when the KB carried none. That falsy `or dmg` was fixed in the same
+  #     commit so a published 0 survives.
   #   unsourced: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11: no path
   #     publishes the flagged value on this row -- the sim's own number is KEPT and the row
   #     marked, rather than replaced by a reconstruction
@@ -831,6 +834,7 @@ cards:
   #   unsourced: true -- decisions.md #11: no path publishes these; the sim's own values are kept
   #     and MARKED rather than replaced by a guess.
   royal_delivery:              # overlay only: imported stats carry the rest (curated wins on set keys)
+    crown_tower_damage: 0
     damage: 385
     spawn_damage: 385
     unsourced: true

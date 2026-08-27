@@ -193,8 +193,10 @@ OVERRIDE = {
     ("royal_delivery", "spawn_damage"): (
         385, _DEC + " #9: the 4/8/2026 -12% lands on the SPAWN damage: 437*0.88 -> 385", "y"),
     ("royal_delivery", "crown_tower_damage"): (
-        _DROP, _DEC + " #11: royal_delivery CANNOT hit crown towers -- discard "
-        "crown_tower_damage entirely", "y"),
+        0, _DEC + " #11: royal_delivery CANNOT hit crown towers. Written as an explicit 0, NOT "
+        "deleted: MEASURED, removing the field took spell_tower_dmg 40 -> 385, because "
+        "build_spec fell back to the card's full damage when the KB carried none. build_spec's "
+        "falsy `or dmg` was fixed in the same commit so a published 0 survives", "y"),
     ("fisherman", "slow_pct"): (_DROP, _DEC + " #9: fisherman has NO slow anymore", "y"),
     ("fisherman", "slow_duration_s"): (_DROP, _DEC + " #9: fisherman has NO slow anymore", "y"),
     ("phoenix", "spawn_interval_s"): (3.8, _DEC + " #9: phoenix spawn interval 3.8 s", "y"),
@@ -297,6 +299,12 @@ OVERRIDE = {
         341, "DUP bucket (merge's pick) + the crown-damage pin family: 1484*0.23 = 341.32 -> "
         "341. cards.yaml carried 342, which needs a ceil where the rest of the family rounds, "
         "and disagrees with the crown_damage_audit output it cites", "y"),
+    ("zap_evo", "crown_tower_damage"): (
+        48, "DUP bucket: THE OWNER PIN LANDED ON THE PARENT AND MISSED THE EVOLUTION. "
+        "zap.crown_tower_damage is 48 = round(192*0.25), correct post-1/6/2026; zap_evo held 58, "
+        "the stale 30% vardefine, off IDENTICAL damage 192. Caught by stat_sweep --all: the "
+        "bucket's own probe order puts p1 (the stale vardefine) first, so the derivation alone "
+        "would have kept 58", "p"),
     ("goblin_cage_evo", "damage"): (
         337, "DUP bucket (merge's pick): the kept claim proposes NO auto-update -- 367 assumes "
         "the 4/8/2026 +9% trapped DPS landed on damage, and it cannot be ruled out that the trap "

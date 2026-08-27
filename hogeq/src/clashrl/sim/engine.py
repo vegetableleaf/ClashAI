@@ -609,7 +609,13 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     dmg = float(c.get("damage") or 0.0)
     hit = float(c.get("hit_speed") or 1.0)
     dps = float(c.get("dps") or (dmg / hit if hit else dmg))
-    tower_dmg = float(db.tower_damage(base) or dmg)
+    # `or dmg` was WRONG for a card that deals ZERO to crown towers -- 0 is falsy, so the fallback
+    # fired and handed it its FULL damage instead. Found by I5: decisions.md #11 rules that Royal
+    # Delivery "cannot hit crown towers", and DELETING its crown_tower_damage (the literal reading
+    # of "discard it entirely") took spell_tower_dmg from 40 to 385, the exact opposite of the
+    # ruling. A published 0 has to survive; only a MISSING value may fall back.
+    _td = db.tower_damage(base)
+    tower_dmg = float(dmg if _td is None else _td)
     reach = float(db.attack_range_tiles(base))                 # TILES, attacker centre -> target EDGE
     # Move speed: the wiki publishes an exact rating per card ("Very Fast (120)", 60 units = 1 tile/s),
     # imported as `speed_tiles`. The categorical bucket is only a fallback for cards that parse missed.

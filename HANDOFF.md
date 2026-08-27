@@ -22,7 +22,7 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-08-26**, branch `sim-parity` (I4 importer hardening DONE -- dry-run-default cards-import, hero scrape, allowlist + pins guards, provenance, crown audit RED negative control, dry-run reconciled 0 surprises; see Phase I progress in SS3's sim-parity block). Previous: **2026-08-25** (DRILLS: the segmented mini-sim framework is in and
+Last updated: **2026-08-26**, branch `sim-parity` (I5 DATA APPLICATION DONE -- 340 adjudicated ledger rows applied and verified 340/340, 81 pins + 258 curated cards.yaml fields, E4 closed, per-card chain_tiles, stat_sweep --all green in both decks, crown audit RED->GREEN after being RETARGETED at our KB; previously I4 importer hardening DONE -- dry-run-default cards-import, hero scrape, allowlist + pins guards, provenance, crown audit RED negative control, dry-run reconciled 0 surprises; see Phase I progress in SS3's sim-parity block). Previous: **2026-08-25** (DRILLS: the segmented mini-sim framework is in and
 validated in BOTH decks -- `sim/scenarios.py` + `sim/drill_env.py` + 4 icebow / 5 hogeq drills, each
 measured baseline-vs-oracle, plus `run.py drills` and a `sim.drill_frac` mixing ratio into PPO (default
 0.0, so an un-opted run is unchanged). Building it surfaced FIVE real bugs, all fixed, all cross-deck:
@@ -3588,6 +3588,80 @@ untouched. Suites: icebow **790 OK (21 skipped)** (was 773 + 17 new guard fixtur
 tests, 3 failures + 39 errors — same NAMES** (test_cr_web live-fetch + 2× DEPLOYABLE_cell).
 ⚠ for I5: the earthquake pins are mutually inconsistent (crown 49 = 58% of the OLD 84, damage 81
 → 58% would give 47) — both are owner rulings, recorded as-is; flag when applying.
+
+#### Phase I progress — I5 data application DONE 2026-08-26 (4 commits, worktree only)
+
+The adjudicated R2 ledger is **applied**: 340 changes, `research/sim_parity/ledger/i5_applied.jsonl`
+carries one row each (key, field, before, after, route, source, ruling). 50 recorded-not-applied
+(21 already correct, **29 the sweep itself declined** — "I am NOT updating on a mis-worded entry",
+"Report only", null on all three paths), 23 deferred with reasons (C7 cast-time convention, the
+champion `ability_kind` schema I7 owns, three model-not-number rows).
+
+`research/sim_parity/scripts/i5_apply.py` is the machine. `plan` routes every row against a
+CardDB rebuilt from **0905104** (`git show` of the three config files), so BEFORE is reproducible
+after the edits have landed and a re-plan cannot silently re-baseline. `edit` writes cards.yaml as
+TEXT — surgical line rewrites plus a dated house-style comment block per entry naming the
+superseded value and the ruling — and REFUSES to write unless the PARSED mapping before/after
+differs by exactly the planned set. `verify` re-reads the merged DB: **340/340 present**.
+
+Split: **81 pins** (`gen_pins.py` 74 → 176, now sourced from stat_diffs + decisions + the I5 plan,
+with `advisory: true` for the curated/modelling ones so ONE file is the whole registry of
+deliberate deviation) and **258 curated cards.yaml fields** across 112 entries + 6 rows that had no
+curated entry at all. `cards-import --write`: +16 live hero rows, 58 cards changed (99 fields), 91
+pin enforcements, `i4_reconcile_dryrun.py` exit 0 / 0 surprises; re-running the dry-run afterwards
+prints "(no differences)". Written ONCE and copied. cards.yaml meta bumped (both stale since 07-24).
+
+**The three --force-field releases** (each individually, each cited): mortar.dps 53→57 and
+mortar_evo.dps 66→57 (decisions #10, 266/4.7), rage.attacks ['buildings']→ABSENT (a FALSE
+buildings-only assertion; the Target cell names who Rage BUFFS). All three pinned in the same
+commit per cli.py's own instruction. ⚠ Only TWO were load-bearing — the LAG bucket pins mortar.dps,
+and pins outrank verified. The guard first refused TWELVE: ten more verified rows whose `dps` moves
+only as a consequence of an adjudicated damage/hit_speed. Those were DECLARED as pins, not forced.
+
+**Engine changes that had to land with the data:**
+* **E4 CLOSED.** `rolls` was derived as ("rolls" in flags AND ground_only), so decisions #5's Evo
+  Snowball air+ground flip would have DELETED the roll. MEASURED before: ['air','ground'] → rolls
+  False, roll_len 4.5→0.0, minions 0.0 / bats 0.0. After: rolls True, roll_len 4.0, minions 179.0,
+  bats 179.0. Both directions pinned by tests.
+* **Per-card `chain_tiles`** (decisions #6) — the owner's original "the chain doesn't work" report,
+  measured at last. ED swinging at A with B 3.5 tiles away: **arc 3.0 → A 533.6, B 0.0** (two
+  swings on A precisely because the hop failed); **arc 4.0 → A 266.8, B 266.8**. `_CHAIN_TILES` is
+  now a documented FALLBACK; electro_dragon + electro_dragon_evo = 4.0.
+* **`tower_dmg = float(db.tower_damage(base) or dmg)` was falsy-broken.** decisions #11 says Royal
+  Delivery cannot hit crown towers; DELETING its crown value took spell_tower_dmg **40 → 385**. The
+  KB now carries an explicit 0 and the fallback only fires on a MISSING value.
+* `_apply_pins` no longer lets the derived dps recompute clobber a key's own `dps` pin (pins apply
+  in (key, field) order, so "hit_speed" landed after "dps" — an alphabetical accident deciding an
+  adjudicated value). `_NO_SIGHT` in import_mechanics.py, because goblin_cage's dump "sight" 20 is
+  its LIFETIME (decisions #11) and CardDB.sight_range_tiles feeds the win-condition pull geometry.
+
+**Gates.** `stat_sweep.py --all` implemented (iterates the whole merged DB; `page_for` handles
+`_evo`/`_hero` and refuses to invent a title; EXPECTED derived from import_pins.json; the
+`if theirs and ours` truthiness skip fixed, which is what exposed eight spawner rows and
+tombstone_hero at +5115%): **174 cards, 0 mismatches, 38 known deviations, 21 unmapped, exit 0 in
+BOTH decks.** `crown_damage_audit.py` **RED → GREEN** — see the ⚠ below for what that took.
+parity_check PARITY OK. Real null-hitpoint gaps **0** (only princess_evo and minion_horde_evo carry
+a null cell and build_spec resolves both through the base card). Suites: icebow **799 OK (21
+skipped)**; hogeq **822 tests, 3 failures + 39 errors, same NAMES**.
+
+⚠⚠ **The crown-audit gate was unachievable as written, and that is the most useful thing this
+stage found.** The tool compared the wiki's vardefine against the wiki's OWN balance history — a
+statement about Fandom. We do not edit the wiki, so no amount of data application could turn it
+green. It now audits OUR KB against the wiki-derived percentage, with `--kb <path>` so the negative
+control is reproducible: pre-I5 configs **exit 1, 9 stale IN OUR KB**; post-I5 **exit 0**. The
+wiki-vs-wiki finding still prints as CONTEXT because it is the whole reason import_pins.json exists.
+
+⚠ **Open for the owner** (all in `research/sim_parity/conflicts.md`, "I5" section, with evidence):
+is decisions #7's floor() a KB-wide convention or a ruling on the ten ROUNDING rows? (a global flip
+moves **47 of 122** dps rows, 38 unadjudicated, and contradicts two approved `update` rows);
+barbarian_hut spawns.interval 15 vs 14; valkyrie_evo nado crown 37 vs ~18; goblinstein link damage
+107 vs 94; electro_spirit's own published 4.0 chain arc, left on the fallback because #6 rules the
+ED family. **RECORDED NOT FIXED:** `electro_dragon_evo.hits_per_attack: 12` is a MODEL error the
+engine reads as 3204 damage per swing — the largest overstatement of enemy strength in the sweep;
+it needs `late_chain_damage` + an unlimited-bounce flag (I7/I9). **Do not revert:** earthquake
+crown 49 and tesla 1182 are knowing owner overrides against the wiki; little_prince's Guardienne is
+232, not the 217 PLAN.md's I7 line still quotes. I6 note: elite_barbarians_evo is no longer null
+(1341/384/1.4 off its live stub).
 
 ---
 
