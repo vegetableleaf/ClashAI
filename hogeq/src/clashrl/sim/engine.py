@@ -1745,6 +1745,57 @@ class SimEngine:
             tw.buff_min_frac = float(prof.get("buff_min_frac", 0.33))
         return tw
 
+    # THE POOL'S OWN NAMES for the tower troops, mapped to the profile keys `tower_troops` uses.
+    # The battlelog writes `tower_princess`; the config block has always called it `princess`, and
+    # the other three agree on both sides. A name this table does not know is IGNORED rather than
+    # guessed, so a renamed or newly released tower troop degrades to the rolled default instead
+    # of silently fielding a Princess Tower under another card's name.
+    _SUPPORT_KEYS = {
+        "tower_princess": "princess",
+        "princess": "princess",
+        "cannoneer": "cannoneer",
+        "dagger_duchess": "dagger_duchess",
+        "royal_chef": "royal_chef",
+    }
+
+    def set_tower_troop(self, team: int, troop: str) -> bool:
+        """Field `troop` on `team`'s two princess towers, keeping the level already rolled.
+
+        WHY THIS EXISTS (I8). Every meta deck carries a MEASURED `support:` -- its owner's real
+        tower troop, read off top-ladder battlelogs in R4 -- and it was parsed, carried, validated
+        and then read by nothing at all: the engine rolled a troop per match from a config-level
+        weight table while the pool held the answer per deck. This is the one line that consumes
+        it, called from `env.reset()` once the opponent (and therefore its deck) is known.
+        Reset order forces the shape: `eng.reset()` builds the towers BEFORE `make_opponent` picks
+        a deck, so the roll stands until it is overridden here.
+
+        The LEVEL is deliberately untouched. `support` names a troop, never a level; the ladder
+        level stays the one `_roll_opponent_tower` drew, which is what keeps enemy tower HP
+        distributed the way `enemy_levels` says it should be.
+
+        Returns False (changing nothing) for an unknown name or a side whose towers are already
+        gone -- rebuilding a dead tower would resurrect it.
+        """
+        key = self._SUPPORT_KEYS.get(str(troop or "").strip().lower())
+        if key is None or key not in self.tower_troops:
+            return False
+        cur, lvl = self.tower_setup.get(team, (key, self.tower_ref_level))
+        if cur == key:
+            return True
+        row = self.towers.get(team)
+        if not row:
+            return False
+        for i in (0, 1):                                  # the KING keeps its own profile
+            tw = row[i]
+            if not tw.alive:
+                return False
+            fresh = self._make_tower(tw.x, tw.y, key, lvl, king=False)
+            frac = (tw.hp / tw.max_hp) if tw.max_hp > 0.0 else 1.0
+            fresh.hp = fresh.max_hp * frac                # carry damage across, in case it is late
+            row[i] = fresh
+        self.tower_setup[team] = (key, lvl)
+        return True
+
     def _roll_opponent_tower(self) -> "tuple[str, int]":
         """Sample the opponent's tower troop (weighted, princess most common) + a ladder level (enemy_levels)."""
         w = self.opp_tower_weights or {"princess": 1}

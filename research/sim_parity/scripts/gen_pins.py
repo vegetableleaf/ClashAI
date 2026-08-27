@@ -73,6 +73,15 @@ DECISION_PINS = [
     ("cannon_evo", "volley_damage", 281,
      "decisions.md #9: cannon_evo volley damage 281 @ L11 (nerfed; wiki vardefine "
      "lags at 304)"),
+    # I8 (2026-08-27): the SAME parent/child field swap I5 already pinned on the BASE barbarian
+    # barrel, now on its hero row. On a spell row `damage:` is the ROLL's area damage, which the
+    # page renders from spawn_11 (232 on Barbarian Barrel/Hero, revid 437523); dmg_11 192 is the
+    # spawned Barbarian's own swing and lives on the curated `barrel_barbarian` row. Without this
+    # pin the hero barrel would roll for LESS than the base card, and stat_sweep reported it as a
+    # live MISMATCH (ours 232 vs wiki 192) rather than the known deviation it is.
+    ("barbarian_barrel_hero", "damage", 232,
+     "I8: parent/child swap, same as the base card's pin -- 'Barbarian Barrel Area Damage' "
+     "renders from spawn_11 (232); dmg_11 192 is the spawned Barbarian's swing"),
     ("mortar", "hit_speed", 4.7, "decisions.md #10: mortar AND mortar_evo hit speed 4.7 s"),
     ("mortar_evo", "hit_speed", 4.7,
      "decisions.md #10: mortar AND mortar_evo hit speed 4.7 s"),

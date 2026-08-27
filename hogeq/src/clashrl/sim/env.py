@@ -608,6 +608,16 @@ class SimMatchEnv:
         self.domain_rand.resample()      # a new 'arena look' each match (stable within the match)
         self.opponent = (self.opponent_provider(self) if self.opponent_provider is not None
                          else make_opponent(self.cfg, self.db, self.rng, self.meta_pool))
+        # THE OPPONENT'S TOWER TROOP IS THE DECK'S, not a roll (I8). `support:` is MEASURED per
+        # deck from top-ladder battlelogs (R4) and had been inert since it was imported -- parsed,
+        # carried, validated and read by nobody, while `eng.reset()` rolled one from a config
+        # weight table. It has to happen HERE rather than in reset(): the towers are built before
+        # the opponent exists, so the roll stands as the fallback and this overrides it for the
+        # 235 decks whose battlelog actually named one. A SelfPlayOpponent carries no deck entry
+        # and keeps the roll.
+        _sup = getattr(self.opponent, "support", None)
+        if _sup:
+            self.eng.set_tower_troop(1, _sup[0] if isinstance(_sup, (list, tuple)) else _sup)
         self.cycle = list(range(self.n_slots))
         self.rng.shuffle(self.cycle)
         self.evo_charge = [0] * self.n_slots     # match starts with every Evolution UNCHARGED

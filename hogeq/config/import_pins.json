@@ -9,9 +9,9 @@
   "semantics": "the importer applies pins as a post-pass over the scraped rows and --write refuses if a pinned field would regress; value null = the field must not be imported; fields the importer does not emit are advisory (curated layer / stat_sweep EXPECTED sync); an explicit advisory:true pin is recorded for the sweep and never imported",
   "pair": "byte-identical across icebow/ and hogeq/ -- regenerate with the generator and it writes both; never hand-edit one copy",
   "counts": {
-   "total": 180,
+   "total": 181,
    "from_stat_diffs": 66,
-   "from_decisions": 17,
+   "from_decisions": 18,
    "from_i5_plan": 79,
    "advisory": 22,
    "overlapping": 4
@@ -86,6 +86,13 @@
    "field": "spawn_damage",
    "value": 191,
    "source": "I5 apply (RULING): PARENT bucket: mirror of the damage row -- the spawned Barbarian swings 191",
+   "date": "2026-08-26"
+  },
+  {
+   "key": "barbarian_barrel_hero",
+   "field": "damage",
+   "value": 232,
+   "source": "I8: parent/child swap, same as the base card's pin -- 'Barbarian Barrel Area Damage' renders from spawn_11 (232); dmg_11 192 is the spawned Barbarian's swing",
    "date": "2026-08-26"
   },
   {

@@ -896,5 +896,78 @@ class HeroSlotModelTests(unittest.TestCase):
             self.assertEqual(b.wild_hero_idx, -1)
 
 
+class SupportTowerTroopTests(unittest.TestCase):
+    """`support:` -- the deck's MEASURED tower troop, read off top-ladder battlelogs in R4, parsed
+    and carried and validated since, and read by NOTHING until I8. The engine rolled one per match
+    from a config weight table while the pool held the real answer per deck."""
+
+    def test_the_engine_can_field_each_tower_troop_with_its_own_specials(self):
+        """The machinery already existed -- ammo for the Dagger Duchess, the cook clock for the
+        Royal Chef -- so this only has to check that the swap reaches all of it."""
+        for name, want, ammo, cook in (("tower_princess", "princess", 0.0, 0.0),
+                                       ("cannoneer", "cannoneer", 0.0, 0.0),
+                                       ("dagger_duchess", "dagger_duchess", 8.0, 0.0),
+                                       ("royal_chef", "royal_chef", 0.0, 30.0)):
+            with self.subTest(support=name):
+                eng = _make_engine()
+                eng.tower_setup[1] = ("princess", 13)
+                for i in (0, 1):
+                    t = eng.towers[1][i]
+                    eng.towers[1][i] = eng._make_tower(t.x, t.y, "princess", 13, king=False)
+                self.assertTrue(eng.set_tower_troop(1, name))
+                for i in (0, 1):
+                    self.assertEqual(eng.towers[1][i].troop, want)
+                    self.assertAlmostEqual(eng.towers[1][i].ammo_max, ammo, places=3)
+                    self.assertAlmostEqual(eng.towers[1][i].cook_period, cook, places=3)
+                self.assertEqual(eng.towers[1][2].troop, "king", "the KING keeps its own profile")
+
+    def test_an_unknown_support_name_changes_nothing(self):
+        """A name the map does not know is IGNORED, never guessed: a renamed or newly released
+        tower troop must degrade to the rolled default rather than silently field a Princess Tower
+        wearing another card's name."""
+        eng = _make_engine()
+        before = eng.tower_setup[1]
+        self.assertFalse(eng.set_tower_troop(1, "ice_wizard_tower"))
+        self.assertFalse(eng.set_tower_troop(1, ""))
+        self.assertEqual(eng.tower_setup[1], before)
+
+    def test_the_swap_keeps_the_rolled_LEVEL(self):
+        """`support` names a troop, never a level. The ladder level stays the one the roll drew,
+        which is what keeps enemy tower HP distributed the way `enemy_levels` says."""
+        eng = _make_engine()
+        eng.tower_setup[1] = ("princess", 16)
+        for i in (0, 1):
+            t = eng.towers[1][i]
+            eng.towers[1][i] = eng._make_tower(t.x, t.y, "princess", 16, king=False)
+        hp16 = eng.towers[1][0].max_hp
+        self.assertTrue(eng.set_tower_troop(1, "cannoneer"))
+        self.assertEqual(eng.tower_setup[1][1], 16)
+        self.assertGreater(hp16, eng._make_tower(0.5, 0.5, "princess", 13, king=False).max_hp)
+
+    def test_a_deck_that_names_a_tower_troop_actually_fields_it(self):
+        """End to end through `env.reset()`, which is the only place the deck and the engine meet.
+
+        MEASURED over 3000 seeded matches, princess share: 54.6% rolled -> 83.7% wired, against a
+        90.5% MEASUREMENT of the pool itself (tower_princess 6455 / cannoneer 288 / dagger_duchess
+        228 / royal_chef 160). The residual is the 765 of 1000 decks whose battlelog predates the
+        slot sweep and names none, which still fall back to the config roll -- recorded.
+        """
+        from clashrl.config import Config
+        from clashrl.sim.env import SimMatchEnv
+        cfg = Config.load(str(ROOT / "config" / "config.yaml"))
+        env = SimMatchEnv(cfg, seed=7)
+        declared = honoured = 0
+        for _ in range(120):
+            env.reset()
+            sup = getattr(env.opponent, "support", None)
+            if not sup:
+                continue
+            declared += 1
+            want = env.eng._SUPPORT_KEYS.get(sup[0] if isinstance(sup, (list, tuple)) else sup)
+            honoured += (env.eng.tower_setup[1][0] == want)
+        self.assertGreater(declared, 40, "the shipped pool must still name some")
+        self.assertEqual(honoured, declared, "every declared tower troop must be fielded")
+
+
 if __name__ == "__main__":                                   # pragma: no cover
     unittest.main()
