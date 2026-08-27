@@ -866,7 +866,14 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     if knockback_tiles <= 0.0 and "knockback" in flags:
         knockback_tiles = _KNOCKBACK_DEFAULT
     if rolls:
-        spell_radius = _LOG_ROLL_HALFW                        # corridor HALF-WIDTH for a rolling spell
+        # CORRIDOR HALF-WIDTH, PER CARD (RS-1). This used to be the Log's 1.95 for EVERY rolling
+        # spell, which made the Barbarian Barrel 50% wider than its own card: the KB publishes
+        # width_tiles 2.6 (half-width 1.30) and both wiki pages say so explicitly. `width_tiles` is
+        # the FULL width, so halve it; the Log's own 3.9 reproduces the old 1.95 exactly, which is
+        # why this is a no-op for it. The fallback stays the Log's value for any rolling card whose
+        # width has not been sourced yet.
+        _w = float(c.get("width_tiles") or 0.0)
+        spell_radius = (_w / 2.0) if _w > 0.0 else _LOG_ROLL_HALFW
     # BUILDING LIFETIME. Precedence: a curated override, then the wiki's own `life` vardefine
     # (imported as `lifetime_s`), then a generic building default. The imported key was NEVER being
     # read -- build_spec looked for `lifetime` while card_import writes `lifetime_s` -- so every

@@ -1891,3 +1891,28 @@ Delivery, where a published **0** was being treated as missing and falling back 
 the fallback is correct for a genuinely missing value and wrong whenever the value is merely
 un-imported. **FOLLOW-UP: how many other spells reach `spell_tower_dmg == spell_dmg` through this
 fallback rather than by publishing it?** Not swept here.
+
+
+### RS-4 RESOLVED 2026-08-27 — the "clamp looks broken in the live ActionSpace" is a UNITS confusion, not a bug
+
+The rolling-spells agent flagged that ruling 20's measurement (gy=13 -> ny=0.5625, own half) only
+holds in `sim.env`'s board action space, while the live `ActionSpace(cfg)` reads **ny=0.4788** for
+the same cell — apparently past the river at 0.5, i.e. the clamp looking broken in live.
+
+**It is not.** `ActionSpace.cell_center` returns FRAME coordinates (where to TAP on the screen,
+via `warp.board_to_frame`); the 0.5 river threshold is a BOARD coordinate. Converting back closes
+it exactly:
+```
+gy=11  frame 0.4258 -> board 0.4792   ENEMY half
+gy=12  frame 0.4546 -> board 0.5208   own half
+gy=13  frame 0.4788 -> board 0.5625   own half   <- identical to the sim
+```
+And the clamp never touches ny at all — it works on CELLS:
+```
+anywhere=False  aim rows [0,5,11,13,20] -> [13,13,13,13,20]
+anywhere=True   aim rows [0,5,11,13,20] -> [ 0, 5,11,13,20]
+```
+⚠ TRAP (same family as `spell_radius` meaning half-width for a roll, and `rerolldmg_11` being the
+crown column): **`ny` means different things in the two action spaces.** Never compare a live
+`cell_center` output against a board-space threshold without `warp.frame_to_board` first. This is
+the third naming/units trap on this project in two days.

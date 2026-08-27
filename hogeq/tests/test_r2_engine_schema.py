@@ -1099,5 +1099,41 @@ class EvoChainSecondaryRepeatRuling16Tests(unittest.TestCase):
         self.assertEqual(len(dst), len(set(dst)), "every hop unique, ruling 11 unmodified")
 
 
+class TestRollCorridorWidthIsPerCard(unittest.TestCase):
+    """RS-1: a rolling spell's corridor half-width comes from ITS OWN card, not The Log's.
+
+    `build_spec` hard-coded `spell_radius = _LOG_ROLL_HALFW` (1.95) for every `rolls` card, so the
+    Barbarian Barrel swept a 3.9-tile corridor when its own KB row and both wiki pages publish
+    width_tiles 2.6 -- 50% wider than the card. The Log is unaffected (3.9 / 2 == 1.95 exactly),
+    which is what makes this safe to change: it is a no-op for the card the constant was named for.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        from clashrl.cards import CardDB
+        from clashrl.config import Config
+        cls.db = CardDB(Config.load())
+
+    def _hw(self, key):
+        from clashrl.sim.engine import build_spec
+        return build_spec(self.db, key, 11).spell_radius
+
+    def test_the_log_is_unchanged_by_the_switch_to_per_card_width(self):
+        self.assertAlmostEqual(self._hw("the_log"), 1.95, places=4)
+
+    def test_the_barrel_uses_its_own_narrower_width(self):
+        row = self.db.get("barbarian_barrel") or {}
+        self.assertAlmostEqual(float(row["width_tiles"]), 2.6, places=4)
+        self.assertAlmostEqual(self._hw("barbarian_barrel"), 1.30, places=4)
+
+    def test_the_hero_barrel_inherits_the_narrower_corridor(self):
+        """The hero row publishes no width of its own -- it must overlay the base, not the Log."""
+        self.assertAlmostEqual(self._hw("barbarian_barrel_hero"), 1.30, places=4)
+
+    def test_an_unsourced_rolling_card_falls_back_to_the_log_value(self):
+        """giant_snowball_evo has no width_tiles yet; the fallback must be documented, not silent."""
+        self.assertAlmostEqual(self._hw("giant_snowball_evo"), 1.95, places=4)
+
+
 if __name__ == "__main__":
     unittest.main()
