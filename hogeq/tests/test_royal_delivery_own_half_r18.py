@@ -12,11 +12,14 @@ ruling. Cards revid 437053, verbatim:
      while buildings ... and troops ... can only be spawned on the player's territory (with the
      exception of Miner and Goblin Drill)."
 
-THREE exceptions, not one. The ruling names Royal Delivery and that is what ships here; The Log and
-Barbarian Barrel are RECORDED IN conflicts.md instead, because The Log is in BOTH shipped decks and
-flagging it changes the agent's own action space on a card it plays constantly -- a real fidelity
-fix, but a pool-wide behaviour change that belongs in its own measured commit under the owner's
-one-change rule.
+THREE exceptions, not one. Ruling 18 shipped Royal Delivery alone and recorded the other two in
+conflicts.md, because The Log is in BOTH shipped decks and flagging it changes the agent's own
+action space on a card it plays constantly.
+
+RULING 20 (owner, 2026-08-27) then shipped them: "The Log's CAST POINT is restricted to the
+caster's own half (plus pockets), but its CORRIDOR still rolls across the river." So the flagged
+set is now the wiki's full three, and the assertions below moved from one card to three.
+`test_log_own_half_r20.py` owns the Log's own measurements.
 
 THE HALF OF THIS THAT IS A TRAP. An earlier fix (2026-08, recorded in the `anywhere_ids` comments)
 had to undo exactly the opposite bug: `anywhere_ids` was the literal {rocket, miner}, so EVERY other
@@ -58,18 +61,22 @@ def _cfg_db():
 class RoyalDeliveryIsOwnHalfOnlyTests(unittest.TestCase):
     """The KB flag and the spec field it feeds."""
 
-    def test_royal_delivery_carries_the_flag_and_nothing_else_does(self):
+    def test_exactly_the_wikis_THREE_exceptions_carry_the_flag(self):
+        """Cards revid 437053 names three and only three. Ruling 18 shipped one of them, ruling 20
+        the other two; a FOURTH card appearing here would be the 2026-08 "every spell is forbidden
+        from the enemy half" regression coming back through the DATA instead of the code."""
         _, db = _cfg_db()
         flagged = sorted(k for k in db.cards
                          if "own_half_only" in set((db.get(k) or {}).get("flags") or ()))
-        self.assertEqual(["royal_delivery"], flagged,
-                         "exactly one card is own-half-only today; The Log and Barbarian Barrel "
-                         "are recorded in conflicts.md, deliberately not flagged")
+        self.assertEqual(["barbarian_barrel", "royal_delivery", "the_log"], flagged,
+                         "the wiki names exactly The Log, Barbarian Barrel and Royal Delivery")
 
     def test_the_flag_reaches_the_spec(self):
         _, db = _cfg_db()
-        self.assertTrue(build_spec(db, "royal_delivery", LVL).own_half_only)
-        for k in ("rocket", "the_log", "tornado", "earthquake", "fireball", "arrows", "zap"):
+        for k in ("royal_delivery", "the_log", "barbarian_barrel"):
+            with self.subTest(card=k):
+                self.assertTrue(build_spec(db, k, LVL).own_half_only)
+        for k in ("rocket", "tornado", "earthquake", "fireball", "arrows", "zap"):
             with self.subTest(card=k):
                 self.assertFalse(build_spec(db, k, LVL).own_half_only)
 
@@ -164,7 +171,7 @@ class AnywhereIdsTests(unittest.TestCase):
         deck = ["royal_delivery", "rocket", "knight", "x_bow",
                 "tesla", "the_log", "skeletons", "tornado"]
         ids, own_half = self._ids(deck, db)
-        self.assertEqual({0}, own_half)
+        self.assertEqual({0, 5}, own_half, "royal_delivery (0) and, since ruling 20, the_log (5)")
         self.assertNotIn(0, ids, "Royal Delivery must clamp like a troop")
 
     def test_every_OTHER_spell_still_goes_anywhere(self):
@@ -174,11 +181,11 @@ class AnywhereIdsTests(unittest.TestCase):
         from the action space entirely. Ruling 18 removes ONE flagged card and must not touch a
         single other one."""
         _, db = _cfg_db()
-        deck = ["rocket", "tornado", "the_log", "earthquake", "fireball",
-                "arrows", "zap", "royal_delivery"]
+        deck = ["rocket", "tornado", "earthquake", "fireball", "arrows", "zap",
+                "royal_delivery", "the_log"]
         ids, _ = self._ids(deck, db)
-        self.assertEqual(set(range(7)), ids,
-                         "every spell but the flagged one goes anywhere; "
+        self.assertEqual(set(range(6)), ids,
+                         "every spell but the FLAGGED ones goes anywhere; "
                          "got %r for %r" % (sorted(ids), deck))
 
     def test_the_deploy_anywhere_troops_are_untouched(self):
@@ -188,19 +195,23 @@ class AnywhereIdsTests(unittest.TestCase):
         ids, _ = self._ids(deck, db)
         self.assertIn(0, ids, "Miner tunnels anywhere")
         self.assertIn(1, ids, "Goblin Drill drills anywhere")
+        self.assertNotIn(5, ids, "ruling 20: The Log's CAST POINT is own-half too")
         self.assertNotIn(7, ids)
 
-    def test_the_shipped_deck_is_UNCHANGED_by_this_ruling(self):
-        """Neither shipped deck holds Royal Delivery, so the id set the policy trains against must
-        be exactly what it was -- every spell in the deck, plus nothing. Stated so the commit's
-        'no behaviour change for the current checkpoints' claim is a test rather than a claim."""
+    def test_the_shipped_deck_own_half_set_is_EXACTLY_the_flagged_cards(self):
+        """Ruling 18 could claim "no behaviour change for the current checkpoints" because neither
+        shipped deck held Royal Delivery. RULING 20 CANNOT: both decks play The Log, so this deck's
+        own action space really does change -- and the honest test is that it changes by EXACTLY
+        the flagged cards and by nothing else."""
         _, db = _cfg_db()
         deck = db.deck_names()
         ids, own_half = self._ids(deck, db)
-        self.assertEqual(set(), own_half, "no shipped deck card is own-half-only")
+        expect_own = {i for i, k in enumerate(deck)
+                      if "own_half_only" in set((db.get(k) or {}).get("flags") or ())}
+        self.assertEqual(expect_own, own_half)
         expect = {i for i, k in enumerate(deck)
                   if build_spec(db, k, LVL).kind == "spell"
-                  or (k[:-4] if k.endswith("_evo") else k) in ("miner", "goblin_drill")}
+                  or (k[:-4] if k.endswith("_evo") else k) in ("miner", "goblin_drill")} - own_half
         self.assertEqual(expect, ids)
 
 

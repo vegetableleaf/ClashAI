@@ -368,3 +368,63 @@ experiments -> new PPO, without waiting for approval between stages.
     `verified` — so the elixir is protected without asserting anything about the rest of the row.
 
     **THE OTHER 22 ARE STILL AT 4** and are listed for the owner in conflicts.md's checklist.
+
+20. **The Log and the Barbarian Barrel: the CAST POINT is own-half, the CORRIDOR still crosses the
+    river.** Owner, 2026-08-27: *"The Log's cast point is restricted to the caster's own half (plus
+    pockets), but its corridor still rolls across the river."* This finishes ruling 18, which named
+    the same wiki sentence and deliberately shipped only one of its three cards.
+
+    Cards revid 437053: *"spells ... can be cast anywhere in the battlefield (WITH THE EXCEPTION OF
+    The Log, Barbarian Barrel, and Royal Delivery)"*. Two independent per-card confirmations, both
+    archived: `Barbarian_Barrel.wikitext` — *"It can only be deployed on the player's own side"* —
+    and `Barbarian_Barrel_Hero.live.wikitext` (revid 437523), which repeats it verbatim for the
+    hero form. `own_half_only` added to both KB rows; no engine change was needed, because ruling
+    18 had already built the machinery (`sim/env.own_half_spell_ids` subtracts from `anywhere_ids`,
+    `Actions.deploy_clamp` does the work).
+
+    **MEASURED**, in the SIM'S BOARD SPACE (18x24 grid, river at ny 0.5, deploy line gy=13 of 24):
+
+    | card | aimed at | clamps to | cast ny | corridor reaches | past the river |
+    |---|---|---|---|---|---|
+    | `the_log` (9.6 t) | gy=0 | gy=13 | 0.5625 | 0.2625 | **7.60 tiles** |
+    | `barbarian_barrel` (4.5 t) | gy=0 | gy=13 | 0.5625 | 0.4219 | **2.50 tiles** |
+    | `rocket` / `tornado` | gy=0 | gy=0 (unclamped) | 0.1000 | — | — |
+
+    So the OFFENSIVE Log survives the clamp with 7.6 tiles to spare, which is the half of the
+    ruling that makes it non-trivial: a test that asserted only the cast point would pass against a
+    corridor of length zero. Executed as well as computed — a Log cast at the clamped deploy line
+    took a Knight standing 4.0 tiles beyond the river from **3000 → 2734 hp**.
+
+    The barrel's 2.50 tiles is independently predicted by its own page: *"If the Barbarian Barrel
+    is placed at most 2 tiles from the river, the Barbarian will spawn at the opposing side of the
+    Arena."*
+
+    ⚠ **MEASUREMENT TRAP, and it cost a pass.** `ActionSpace(cfg)` is the LIVE action space: its
+    `arena_box` is the screen rectangle and `cell_center` runs the perspective warp, so gy=13 comes
+    back as **ny=0.4788** — already "past" a river the sim puts at 0.5, which reads as the clamp
+    having FAILED. The sim re-anchors the same grid through `sim.env._board_action_space`, where
+    every anchor is an identity point and gy=13 is a board-true 0.5625. This is the same shape as
+    the detector-audit trap (an offline tool reading live-screen coordinates); it is now stated at
+    the top of `test_log_own_half_r20.py`.
+
+    ⚠ **SCOPE — unlike ruling 18, this is NOT inert.** Both shipped decks play The Log, so both
+    policies' action spaces change: the Log's legal cells drop from all 432 to the 198 on our own
+    half (plus pockets). Ruling 18's `test_the_shipped_deck_is_UNCHANGED_by_this_ruling` could not
+    survive that and was replaced by
+    `test_the_shipped_deck_own_half_set_is_EXACTLY_the_flagged_cards`, which asserts the honest
+    thing: the set changes by exactly the flagged cards and by nothing else.
+
+    ⚠ **THE REGRESSION THIS MUST NOT REOPEN.** §5's "every spell was forbidden from the enemy half"
+    bug (`anywhere_ids` was the literal `{rocket, miner}`) deleted the offensive Log, the river
+    Tornado lock and hogeq's whole Hog+Earthquake combo from the action space. Ruling 20 adds
+    exactly TWO cards BY KB FLAG and narrows no rule; `NothingElseWasClampedTests` pins rocket,
+    tornado, earthquake, fireball, arrows, zap and goblin_barrel as unclamped, and the flagged set
+    as exactly the wiki's three.
+
+    11 new tests, byte-identical in both decks (`test_log_own_half_r20.py`); ruling 18's file
+    updated from one flagged card to three.
+
+    **OPEN, recorded not fixed:** the engine rolls The Log **9.6 tiles** (`_LOG_ROLL_LEN`), but the
+    attributes table's Range cell reads **10.1** and the 4/8/2020 balance entry says *"decreased
+    The Log's rolling distance to 10.1 tiles (from 11.1 tiles)"*. The sim is one balance update
+    stale. Not touched here under the one-change rule — see conflicts.md.

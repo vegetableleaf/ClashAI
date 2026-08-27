@@ -1,0 +1,202 @@
+{{Heroic Card Infobox|Cost=2|AbilityCost=1|Rarity=Epic|Type=Spell|Arena=Jungle Arena|ReleaseDate=2 March 2026}}{{Quote|They see him rollin', they hatin'! No one clears the path like Hero Barbarian Barrel, who willingly gave up his rock music career for the resilience of a second roll.}}
+The Heroic Barbarian is a {{Rarity|Epic}} [[Cards|card]] that is unlocked with 200 {{Icon|I=Hero Shard}}. It is an area-damage, ground-targeting [[:Category:Spell Cards|spell]] with a short rectangular area and moderate damage. It can only be deployed on the player's own side. Once the spell reaches its destination, it spawns a single [[Barbarians|Barbarian]]. It is a spiked barrel with a Barbarian inside it.A Heroic Barbarian Barrel card costs 2 {{Icon|I=Elixir}} to deploy.
+
+== '''Ability: Rowdy Reroll''' ==
+{{Quote|Barrels down the lane a second time for maximum impact.}}{{Hero Ability|1=Rowdy Reroll}}
+The Hero Knight has a special ability accessible from whatever side of the screen was put in, just above the player's [[Cards|card]] slots in [[Basics of Battle|battle]]. When activatet, the Barbarian Barrel will roll for a second time, while healling the barbarian for 50% of the damage. The Rowdy Reroll ability costs 1 [[Elixir]] to activate.
+
+== '''Strategy''' ==
+*The ability can get the barbarian closer to the crown tower while healing some hp, forcing more elixir on defense.
+*The roll can also kill more swarms, or get behind troops.
+
+<center><div id="unit-statistics" class="table-back">{{Statistics}}{{StatusEffects}}
+{{StatisticsSubheader|Barbarian Barrel Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost
+{{Icon|I=Elixir}}
+! scope="col" |Range
+{{Icon|I=Range}}
+! scope="col" |Width
+{{Icon|I=Radius}}
+! scope="col" |Target
+{{Icon|I=Targets}}
+! scope="col" |Type
+{{Icon|I=Type}}
+! scope="col" |Rarity
+{{Icon|I=Rarity}}
+|-
+|2
+|4.5
+|2.6
+|Ground
+|[[:Category:Spell Cards|Spell]]
+|{{Rarity|Epic}}
+|}
+{{StatisticsSubheader|Barbarian Attributes}}
+{| class="wikitable" id="unit-attributes-table-secondary" style="width:100%;text-align:center;"
+! scope="col" |Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |First Hit Speed
+{{Icon|I=Damage Speed}}
+! scope="col" |Speed
+{{Icon|I=Speed}}
+! scope="col" |Deploy Time
+{{Icon|I=Deploy Time}}
+! scope="col" |Range
+{{Icon|I=Range}}
+! scope="col" |Target
+{{Icon|I=Targets}}
+! scope="col" |Count
+{{Icon|I=Troop Count}}
+! scope="col" |Transport
+{{Icon|I=Transport}}
+|-
+|1.3 sec
+|0.4 sec
+|Medium (60)
+|0.5 sec
+|Melee: Short (0.5)
+|Ground
+|x1
+|Ground
+|}
+{{StatisticsSubheader|Rowdy Reroll Attributes}}
+{| class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+! scope="col" |Cost
+{{Icon|I=Elixir}}
+! scope="col" |Range
+{{Icon|I=Range}}
+! scope="col" |Width
+{{Icon|I=Radius}}
+!Damage Healed
+{{Icon|I=Activation}}
+! scope="col" |Target
+{{Icon|I=Targets}}
+|-
+|1
+|3
+|2.6
+|50%
+|Ground
+|}
+{{StatisticsSubheader|Card Statistics}}<!--this will not be shown
+================================================================
+ATTENTION EDITORS: DO NOT MANUALLY UPDATE THE TABLE CELLS! This table calculates all levels automatically using formulas.
+To change the stats for a different unit, ONLY change the numbers in the three variables directly below (hp_lvl1, dmg_lvl1, atk_speed), THAT WILL BE LEVEL 11.
+Because of this, there will be rounding mistakes, but thats better than manually tiping it in every time. ================================================================--> {{#vardefine: spawn_11|232}} {{#vardefine: hp_11|716}} {{#vardefine: dmg_11|192}} {{#vardefine: atk_speed|1.4}} {{#vardefine: rerolldmg_11|116}}
+{| class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+! scope="col" |Level
+{{Icon|I=Level}}
+! scope="col" |Barbarian Barrel Area Damage
+{{Icon|I=Area Damage}}
+! scope="col" |Hitpoints
+{{Icon|I=Hitpoint}}
+! scope="col" |Damage
+{{Icon|I=Damage}}
+! scope="col" |Damage Per Second
+{{Icon|I=DPS}}
+!Crown Tower Damage
+{{Icon|I=Tower Damage}}
+|-
+|6
+|{{#expr: {{#var:spawn_11}} * (1.1^(6-11)) round 0}}
+|{{#expr: {{#var:hp_11}} * (1.1^(6-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(6-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:rerolldmg_11}} * (1.1^(6-11)) round 0}}
+|-
+|7
+|{{#expr: {{#var:spawn_11}} * (1.1^(7-11)) round 0}}
+|{{#expr: {{#var:hp_11}} * (1.1^(7-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(7-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:rerolldmg_11}} * (1.1^(7-11)) round 0}}
+|-
+|8
+|{{#expr: {{#var:spawn_11}} * (1.1^(8-11)) round 0}}
+|{{#expr: {{#var:hp_11}} * (1.1^(8-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(8-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:rerolldmg_11}} * (1.1^(8-11)) round 0}}
+|-
+|9
+|{{#expr: {{#var:spawn_11}} * (1.1^(9-11)) round 0}}
+|{{#expr: {{#var:hp_11}} * (1.1^(9-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(9-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:rerolldmg_11}} * (1.1^(9-11)) round 0}}
+|-
+|10
+|{{#expr: {{#var:spawn_11}} * (1.1^(10-11)) round 0}}
+|{{#expr: {{#var:hp_11}} * (1.1^(10-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(10-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:rerolldmg_11}} * (1.1^(10-11)) round 0}}
+|-
+|11
+|{{#var:spawn_11}}
+|{{#var:hp_11}}
+|{{#var:dmg_11}}
+|{{Dps|{{#var:dmg_11}}|{{#var:atk_speed}}}}
+|{{#var:rerolldmg_11}}
+|-
+|12
+|{{#expr: {{#var:spawn_11}} * (1.1^(12-11)) round 0}}
+|{{#expr: {{#var:hp_11}} * (1.1^(12-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(12-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:rerolldmg_11}} * (1.1^(12-11)) round 0}}
+|-
+|13
+|{{#expr: {{#var:spawn_11}} * (1.1^(13-11)) round 0}}
+|{{#expr: {{#var:hp_11}} * (1.1^(13-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(13-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:rerolldmg_11}} * (1.1^(13-11)) round 0}}
+|-
+|14
+|{{#expr: {{#var:spawn_11}} * (1.1^(14-11)) round 0}}
+|{{#expr: {{#var:hp_11}} * (1.1^(14-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(14-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:rerolldmg_11}} * (1.1^(14-11)) round 0}}
+|-
+|15
+|{{#expr: {{#var:spawn_11}} * (1.1^(15-11)) round 0}}
+|{{#expr: {{#var:hp_11}} * (1.1^(15-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(15-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:rerolldmg_11}} * (1.1^(15-11)) round 0}}
+|-
+|16
+|{{#expr: {{#var:spawn_11}} * (1.1^(16-11)) round 0}}
+|{{#expr: {{#var:hp_11}} * (1.1^(16-11)) round 0}}
+|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0}}
+|{{Dps|{{#expr: {{#var:dmg_11}} * (1.1^(16-11)) round 0 }}|{{#var:atk_speed}}}}
+|{{#expr: {{#var:rerolldmg_11}} * (1.1^(16-11)) round 0}}
+|}
+There will be rounding mistakes, .as we have stats from level 11
+</div></center>
+
+== History ==
+* On 2/3/2026, along with the [[Version History#Pass Royale and more (2/3/2026)|March 2026 Update]] the Hero Barbarian Barrel was added into the game, along with [[Magic Archer/Hero|Hero Magic Archer]]{{Balance|Add}}.
+* On 4/5/2026, a [[Version History#Pass Royale and more (4/5/2026)|Balance Update]], decreased the reroll range to 3 tiles (from 4 tiles){{Balance|Nerf}}.
+*On 4/8/2026, a [[Version History#Balance Changes (4/8/2026)|Balance Update]] increased the barbarian's hitpoint by 4%{{Balance|Buff}}.
+
+==Gallery==
+<gallery>
+File:Heroic Barbarian Barrel Card Render.png|Current card render.
+File:BarbarianBarrelHeroShard.png|Heroic Barbarian Barrel Shard.
+</gallery>
+
+==Trivia==
+*This is the only hero, that is a spell
+* The word "''Barbarian''" comes from the Greek "''βάρβαρος''" (''bárbaros''), meaning foreign. Dating back to the ancient Greek times, the Greeks referred to non-Greek people as barbarians because the language they spoke sounded to Greeks like gibberish represented by the sounds "''bar..bar..;''".
+** In the Japanese and Thai language setting of the game, the Barbarian Barrel's name translates to "Rolling Barbarian" and "Barbarian Tank" respectively.
+** The Barbarian Barrel is 1 of 6 [[cards]] associated with [[Barbarians]], with the others being [[Elite Barbarians]], [[Barbarian Launcher]], [[Battle Ram]], [[Barbarian Hut]], and of course, Barbarians.
+*** It is the only Barbarian-related card to be [[:Category:Epic Cards|'''Epic''']].
+*** It is the only Barbarian-related card to be a [[:Category:Spell Cards|spell]].
+*** It is the only Barbarian-related card to spawn only 1 Barbarian instead of more than 1.
+** According to a Clash-A-Rama comic strip, the Barbarians follow a career path, with the one in the Barbarian Barrel being the lowest-ranking one.
+
+{{Navigation|Card}}
