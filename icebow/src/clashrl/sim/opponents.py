@@ -102,6 +102,20 @@ _ABILITY_AI_DEFAULTS = {
 _BODYLESS_KINDS = frozenset({"summon_banner"})
 
 
+
+# THE HERO-FAMILY SLOT CAPS (owner ruling 17, 2026-08-27), stated once so the constructor can just
+# name them.
+#   * Heroes, revid 437509: "Only two Heroes can be in a deck at a time, and only in the Hero and
+#     Wild slots. Those slots are also shared with Champion card, which means that the player can
+#     have 1 Hero and 1 Champion at the same time."  -> TWO ability-bearing slots, total.
+#   * Cards, revid 437053: "Up to 2 Champion cards can be present in a deck at any time."
+#     The same page's TRIVIA section says "a deck can only have 1 Champion Card at a time" -- that
+#     section is already recorded in decisions.md as the stale one ("Cards page trivia, contradicts
+#     its own rule text on the same revision"), so the rule text wins.
+# Enforced here and audited by tools/evo_audit.py, which FAILS on any deck exceeding either.
+_ABILITY_SLOT_CAP = 2       # Hero slot + Wild slot, shared between heroes and champions
+_CHAMPION_CARD_CAP = 2      # champion CARDS a deck may hold
+
 class ScriptedBot:
     """One heuristic action per agent step: defend the deepest threat in our half, else apply
     pressure per the deck's style (beatdown saves to ~full then commits; the rest chip more freely).
@@ -125,6 +139,7 @@ class ScriptedBot:
                  adaptive: bool = False, evo: "List[str] | None" = None,
                  evo_candidates: "List[str] | None" = None,
                  hero_candidates: "List[str] | None" = None,
+                 champion_candidates: "List[str] | None" = None,
                  support: "List[str] | None" = None):
         self.style = style
         self.cards = list(cards)                                  # deck card keys (for matchup detection)
@@ -193,6 +208,29 @@ class ScriptedBot:
         # nothing to draw, so a deck with no candidate does not perturb the stream.
         self.evo_pool = [k for k in (evo_candidates or []) if k in self.cards]
         self.hero_pool = [k for k in (hero_candidates or []) if k in self.cards]
+        # ---- CHAMPION CARDS SHARE THE HERO-FAMILY SLOTS (owner ruling 17, 2026-08-27) ------
+        # Heroes, revid 437509: "Only two Heroes can be in a deck at a time, and only in the Hero
+        # and Wild slots. Those slots are also shared with Champion card, which means that the
+        # player can have 1 Hero and 1 Champion at the same time." Cards, revid 437053: "Up to 2
+        # Champion cards can be present in a deck at any time." (The same page's TRIVIA says "only
+        # 1"; decisions.md already records that section as the stale one, and the rule text wins.)
+        #
+        # A champion is NOT drawn. An evolution and a hero are VARIANTS of a card the deck holds,
+        # so a slot picks one; a champion IS one of the deck's 8 cards, so holding it has already
+        # spent the slot. That is why there is no probability here -- the occupancy is forced by
+        # the deck list, and `sim.wild_champion_prob` exists only to switch the rule off for an
+        # ablation (see the wild slot below).
+        #
+        # MEASURED BEFORE THIS (conflicts.md I8, "THE ONE STRUCTURAL CONFLICT"): 137 of 1000 decks
+        # (948 of 5947 weight, 15.9%) held a champion card AND at least one hero candidate, and
+        # every one of them fielded the champion's ability AND a hero -- THREE ability-bearing
+        # slots where the game allows two. Those opponents were stronger than legal.
+        self.champion_pool = [k for k in (champion_candidates or []) if k in self.cards]
+        self.champion_idxs = sorted(self.cards.index(k)
+                                    for k in self.champion_pool)[:_CHAMPION_CARD_CAP]
+        # How many of the two hero-family slots the champions have already taken. The hero draw and
+        # the wild draw below each consume one of what is left, in that order.
+        self.ability_slots_left = max(0, _ABILITY_SLOT_CAP - len(self.champion_idxs))
         # THE DECK'S MEASURED TOWER TROOP (I8). Parsed and carried since R4 and completely INERT
         # until now: the engine rolled one per match from a config-level weight table while the
         # pool held the real answer per deck. `support` arrives as a list because the loader
@@ -229,8 +267,16 @@ class ScriptedBot:
         # appears; the card in the Hero slot simply IS the hero from its first play. So the slot is
         # applied by swapping the spec ONCE here rather than being resolved on every `_play`.
         self.hero_idx, self.hero_spec = -1, None
-        _hero_choices = [k for k in self.hero_pool if self.cards.index(k) not in _taken]
-        if not _hero_choices and self.hero_pool:
+        # RULING 17: the Hero slot is the FIRST of the two shared slots, so a champion card sitting
+        # in it leaves nothing for this draw to fill -- and the "ALWAYS field one" ruling above
+        # applies to the slot, not to the deck. A one-champion deck can still field a hero, but it
+        # has to come from the WILD slot below, which is a DRAW rather than an always: that is
+        # exactly the "1 Hero and 1 Champion at the same time" the Heroes page describes, and it is
+        # why those decks now field a hero about a third of the time instead of every match. A
+        # two-champion deck has spent both slots and fields no hero at all.
+        _hero_choices = ([k for k in self.hero_pool if self.cards.index(k) not in _taken]
+                         if not self.champion_idxs else [])
+        if not _hero_choices and self.hero_pool and not self.champion_idxs:
             # COLLISION: the Evolution slot took the deck's only hero-capable card. The two owner
             # rulings ("always field one evolution", "always field one hero") can only conflict
             # here, and only when a SINGLE card is the sole candidate for both -- so the fix is to
@@ -256,36 +302,63 @@ class ScriptedBot:
             if _hs is not None:
                 self.hero_idx, self.hero_spec, self.specs[_i] = _i, _hs, _hs
                 _taken.add(_i)
+                self.ability_slots_left -= 1
 
-        # ---- THE WILD SLOT (I8, owner ruling 2026-08-26) -----------------------------------
-        # A second evolution, a second hero, or NEITHER, at 1/3 each, renormalised over whatever is
-        # still legal: a wild evo must differ from the slot evo, a wild hero from the slot hero,
-        # and a category with no candidate left redistributes its share over the rest.
+        # ---- THE WILD SLOT (I8, owner ruling 2026-08-26; extended by ruling 17) ------------
+        # A second evolution, a second hero, a CHAMPION, or NEITHER -- an even split renormalised
+        # over whatever is still legal: a wild evo must differ from the slot evo, a wild hero from
+        # the slot hero, and a category with no candidate left redistributes its share over the
+        # rest.
         #
-        # THE 1/3 IS AN UNMEASURED CHOICE. No source publishes how often players fill the Wild slot
-        # or with what -- the battlelog does not carry slots at all (conflicts.md, R4 CORRECTION),
-        # and RoyaleAPI / Deck Shop / StatsRoyale are all 403. A flat three-way split is the
+        # THE EVEN SPLIT IS AN UNMEASURED CHOICE. No source publishes how often players fill the
+        # Wild slot or with what -- the battlelog does not carry slots at all (conflicts.md, R4
+        # CORRECTION), and RoyaleAPI / Deck Shop / StatsRoyale are all 403. A flat split is the
         # least-assuming prior over "evo / hero / empty", not a measurement, and it is a CONFIG
         # KNOB (sim.wild_evo_prob, sim.wild_hero_prob) exactly so a real source can replace it
         # without touching this file.
+        #
+        # THE CHAMPION CATEGORY IS THE EXCEPTION, AND DELIBERATELY SO (ruling 17). It carries a
+        # knob of its own -- sim.wild_champion_prob -- but its default is 1.0 rather than an even
+        # share, because a second champion card is not something the player OPTS INTO here: it is
+        # already one of the deck's 8 cards, and the game gives it the slot unconditionally. There
+        # is no free choice to put a prior over. The knob exists so the rule can be switched off
+        # for an ablation, and it is documented in config.yaml as UNMEASURED-BUT-FORCED.
+        # MEASURED over the shipped pool: 241 of 1000 decks hold a champion and NONE holds two, so
+        # the champion branch of the wild draw is unexercised by today's data -- it is implemented
+        # for the cap, not for the frequency.
         self.wild_evo_idx, self.wild_evo_spec = -1, None
         self.wild_evo_cycles, self.wild_evo_charge = 2, 0
         self.wild_hero_idx, self.wild_hero_spec = -1, None
-        self.wild_kind = ""                   # "evo" | "hero" | "" -- what the wild slot took
-        self.wild_choices = (0, 0)            # (legal wild evos, legal wild heroes) at draw time
+        self.wild_kind = ""      # "evo" | "hero" | "champion" | "" -- what the wild slot took
+        self.wild_choices = (0, 0, 0)   # (legal wild evos, heroes, champions) at draw time
         _p_evo = float(cfg.get("sim", "wild_evo_prob", default=1.0 / 3.0))
         _p_hero = float(cfg.get("sim", "wild_hero_prob", default=1.0 / 3.0))
+        _p_champ = float(cfg.get("sim", "wild_champion_prob", default=1.0))
         _wild_evo = [k for k in self.evo_pool if self.cards.index(k) not in _taken]
         _wild_hero = [k for k in self.hero_pool if self.cards.index(k) not in _taken]
+        # The SECOND champion, if the deck has one: it takes the wild slot outright.
+        _wild_champ = self.champion_idxs[1:]
         # What was LEGAL when the wild draw was taken, recorded so the distribution can be audited
-        # against the 1/3 without re-deriving legality from the outcome (which is circular: a deck
-        # whose only spare evo candidate is the hero's card has no legal wild evo, and counting it
-        # as one makes an unbiased draw look skewed).
-        self.wild_choices = (len(_wild_evo), len(_wild_hero))
-        if _wild_evo or _wild_hero:
+        # against the even split without re-deriving legality from the outcome (which is circular:
+        # a deck whose only spare evo candidate is the hero's card has no legal wild evo, and
+        # counting it as one makes an unbiased draw look skewed).
+        self.wild_choices = (len(_wild_evo), len(_wild_hero), len(_wild_champ))
+        if _wild_champ and _p_champ > 0.0:
+            # FORCED, not drawn -- see above. The champion is already in the deck; the slot merely
+            # records that it is spent, so no evo or hero can also take it.
+            self.wild_kind = "champion"
+            _taken.add(_wild_champ[0])
+            self.ability_slots_left = max(0, self.ability_slots_left - 1)
+        elif self.ability_slots_left <= 0 and not _wild_evo:
+            pass                 # both shared slots gone to champions and no evolution to field
+        elif (_wild_evo or _wild_hero):
             # "neither" keeps whatever the other two do not claim, so the three shares always sum
             # to 1 and dropping a category cannot silently RAISE the chance of an empty slot.
-            _w = [(_p_evo if _wild_evo else 0.0), (_p_hero if _wild_hero else 0.0),
+            # A wild HERO needs a free ability slot; a wild EVOLUTION does not -- an evolution is
+            # not ability-bearing, and the Wild slot holding one is what the cap is about, not the
+            # Evolution slot. So a one-champion deck can still field a wild evo.
+            _w = [(_p_evo if _wild_evo else 0.0),
+                  (_p_hero if (_wild_hero and self.ability_slots_left > 0) else 0.0),
                   max(0.0, 1.0 - _p_evo - _p_hero)]
             _tot = sum(_w)
             _r = rng.random() * _tot if _tot > 0.0 else 0.0
@@ -306,6 +379,7 @@ class ScriptedBot:
                     self.wild_hero_idx, self.wild_hero_spec, self.specs[_i] = _i, _hs, _hs
                     self.wild_kind = "hero"
                     _taken.add(_i)
+                    self.ability_slots_left -= 1
         # The held siege answer is chosen by HP and a hero body can be the biggest thing in the
         # deck, so it is re-derived AFTER the swaps -- and it MUST be: `_play` finds a card by
         # object identity in `self.specs`, so a stale spec object would resolve to index -1 and
@@ -729,6 +803,8 @@ def make_opponent(cfg, db, rng, pool: List[dict], level: "int | None" = None,
                        evo=deck.get("evo"),       # a DECLARED slot, if a source ever names one
                        evo_candidates=deck.get("evo_candidates"),   # else drawn from the legal set
                        hero_candidates=deck.get("hero_candidates"),  # I8: the Hero + Wild slots
+                       # ruling 17: champion CARDS occupy those same two slots
+                       champion_candidates=deck.get("champion_candidates"),
                        support=deck.get("support"))                  # I8: the measured tower troop
     _bot.deck_name = _deck_name          # so a result can be attributed back to the deck (deck PFSP)
     return _bot

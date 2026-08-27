@@ -14,7 +14,10 @@ deliberately not implemented with the gap recorded — no item is a silent guess
 
 ## Rulings (no observation needed)
 
-**1. Does a deck holding a CHAMPION card still get a Hero slot?** ⚠ STRUCTURAL.
+**1. ~~Does a deck holding a CHAMPION card still get a Hero slot?~~** RESOLVED 2026-08-27 by
+ruling 17: NO -- the champion holds it, cap 2 champion cards / 2 ability-bearing slots (Cards page
+rule text; its trivia is the stale half). Over-cap loadouts 1.30% -> 0.00%; hero-slot fill 84.1% ->
+70.4%; 241 of 1000 pool decks hold a champion and none holds two. The original text follows.
 The Heroes page (revid 437509) says: *"Only two Heroes can be in a deck at a time, and only in the
 Hero and Wild slots. Those slots are also shared with Champion cards, which means that the player
 can have 1 Hero and 1 Champion at the same time."* Your slot ruling (Evolution + Hero + Wild) does
@@ -1129,7 +1132,7 @@ below can just name them:
 | I8-26 | Musketeer | Turret deploy time: table 1 s vs History 12/1/2026 "increased turret deploy time to 2 seconds (from 1 second)" | **2 s** | Rule (a); no revert is recorded. |
 | I8-27 | Goblins | The ability is pressed when every body is DEAD | **Engine state (`SimEngine._banner`), not a Unit** | The banner cannot be targeted, cannot die, and has to keep the ability pressable with no body on the board — so `champion_ability` gains one documented bodyless branch, and the banner is CONSUMED by the press, which is what enforces the single use with nothing to count on. |
 
-### ⚠ THE ONE STRUCTURAL CONFLICT THE SLOT MODEL DOES NOT MODEL
+### THE ONE STRUCTURAL CONFLICT — RESOLVED 2026-08-27 (decisions.md ruling 17)
 
 The owner's slot ruling (Evolution + Hero + Wild) is implemented exactly as given. The Heroes page
 says something the ruling does not mention, and it is recorded here rather than acted on:
@@ -1144,9 +1147,20 @@ BOTH the Archer Queen's ability and a Hero Knight — three ability-bearing slot
 allows two. MEASURED over the shipped pool: **137 of 1000 decks (15.3% of deck weight)** hold a
 champion card AND at least one hero candidate, so it is not an edge case (meta_008 golden_knight +
 bowler, meta_017 mighty_miner + barbarian_barrel, meta_018 little_prince + berserker, ...). Not
-acted on because the owner's ruling is explicit and final, and because capping it would silently
-delete either the champion's ability or the hero from those 137 decks.
-**OWNER: should a deck holding a Champion card lose its Hero slot?**
+RESOLVED by owner ruling 17 (2026-08-27): yes, and the Cards page's rule text sets the cap at TWO
+champion cards / two ability-bearing slots (its own trivia section says one and is the stale half,
+already recorded as such in decisions.md). The Hero slot takes the first champion, the Wild slot the
+second; a one-champion deck can still reach a hero, but only through the WILD draw, which is the
+"1 Hero and 1 Champion at the same time" the Heroes page describes.
+
+⚠ AND THE 137 FIGURE MEANT SOMETHING NARROWER THAN IT READ. Those 137 decks were not fielding three
+slots; they were fielding TWO (champion + a GUARANTEED hero) where the second should have been a
+1/3 draw. MEASURED over 20 draws x 1000 decks: only 261 of 20000 loadouts (1.30%, 0.86% of match
+weight; 19 of 1000 decks at seed 0) actually reached THREE. After the ruling: 0 of 20000, and the
+hero-slot fill rate drops 84.1% -> 70.4%. Nothing was deleted from those decks -- the hero was
+re-priced from free to drawn. Pinned by `ChampionSharesTheHeroSlotRuling17Tests`
+(`tests/test_hero_abilities_i8.py`) and gated by `tools/evo_audit.py`, which now FAILS on any deck
+over the cap.
 
 ### ⚠ PREMISES IN THE I8 BRIEF THAT WERE WRONG
 
@@ -1224,7 +1238,7 @@ Ordered by how much the answer would move, biggest first.
    (I8-16), and is "Damage Healed 50%" lifesteal or a heal of damage taken (I8-17)?
 10. **Trusty Turret's spawn-damage radius** and **the Rhino's** (the table literally prints
     "unknown") — both currently fall back to the engine's splash default.
-11. **Does a deck holding a Champion CARD still get a Hero slot?** (the structural conflict above).
+11. ~~**Does a deck holding a Champion CARD still get a Hero slot?**~~ RESOLVED by ruling 17.
 
 ### NOT IMPLEMENTED, DELIBERATELY (recorded so a later pass does not read a gap as an oversight)
 

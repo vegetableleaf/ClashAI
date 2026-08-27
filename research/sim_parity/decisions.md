@@ -225,3 +225,63 @@ experiments -> new PPO, without waiting for approval between stages.
     nothing has hit yet and revisits only once it has run out — the revisit then fires exactly
     where the chain used to DIE. Both readings satisfy every test the ruling asked for.
     **OWNER: if the oscillation was intended, it is a one-line change (drop the `pool` line).**
+
+17. **Heroes and CHAMPIONS share the slot — the Hero slot IS the Champion slot.** Owner, confirming
+    the wiki, and the structural conflict I8 recorded is now closed.
+    * Heroes revid 437509: *"Only two Heroes can be in a deck at a time, and only in the Hero and
+      Wild slots. **Those slots are also shared with Champion card**, which means that the player
+      can have 1 Hero and 1 Champion at the same time."*
+    * Cards revid 437053, RULE TEXT: *"Up to 2 Champion cards can be present in a deck at any
+      time."* ⚠ The SAME revision's TRIVIA says *"a deck can only have 1 Champion Card at a
+      time"* — and decisions.md already records that section as the stale half ("Cards page
+      trivia, contradicts its own rule text on the same revision"), so the rule text wins.
+      **CAP VERIFIED: 2 champion cards, 2 ability-bearing slots.** The pool never exercises the
+      difference — no deck in it holds two champions.
+
+    THE STRUCTURAL DIFFERENCE that makes this unlike I3 and I8: an evolution and a hero are
+    VARIANTS of a card the deck already holds, so the slot DRAWS one of the deck's 8. A champion IS
+    one of the deck's 8. Holding it has already spent the slot — there is nothing to draw and no
+    probability to put a prior over. So the model is:
+    * **Champion/Hero slot** — the first champion card if the deck holds one, else the always-fills
+      hero draw over `hero_candidates`.
+    * **Wild slot** — the second champion card if the deck holds one, else the even split over
+      {second evo, hero, nothing}, renormalised over whatever is still legal. A wild EVOLUTION does
+      not consume an ability slot (an evolution is not ability-bearing), so a one-champion deck can
+      still field one.
+    * `sim.wild_champion_prob` is the new knob, default **1.0 rather than an even share**, and
+      documented in config.yaml as UNMEASURED-BUT-FORCED for exactly the reason above. Setting it
+      to 0 models a loadout the game does not permit and exists only for ablation.
+
+    **MEASURED, 20 draws x 1000 decks = 20000 loadouts, one shared RNG stream:**
+
+    | ability-bearing slots | BEFORE | AFTER |
+    |---|---|---|
+    | 0 | 1100 (5.5%) | 1100 (5.5%) |
+    | 1 | 14048 (70.2%) | **15872 (79.4%)** |
+    | 2 | 4591 (23.0%) | **3028 (15.1%)** |
+    | 3 | **261 (1.3%)** | **0 (0.0%)** |
+    | over the cap | 261/20000 = 1.30% (0.86% of match weight) | **0/20000 = 0.00%** |
+    | hero slot filled | 16820 (84.1%) | **14080 (70.4%)** |
+    | wild hero | 2373 (11.9%) | **3028 (15.1%)** |
+
+    **POOL CENSUS (the count the owner asked for):** **241 of 1000 decks hold a champion card**
+    (1675/5947 raw weight = **28.2%** of matches; **29.0%** after the config's ladder skew), and
+    **none holds two** — histogram 0:759 1:241. By card: golden_knight 69, goblinstein 37, monk 31,
+    mighty_miner 24, skeleton_king 23, little_prince 22, boss_bandit 21, archer_queen 14.
+
+    ⚠ **THE BRIEF'S PREMISE WAS OFF, and the correction matters.** "137/1000 decks (15.3% of deck
+    weight) get THREE ability-bearing slots" is not what was measured. **137 decks (948/5947 =
+    15.9% of weight, not 15.3%)** hold a champion AND a hero candidate, and those fielded the
+    champion's ability PLUS a GUARANTEED hero — that is TWO slots, at the cap, but with the hero
+    handed over free instead of being drawn. Only the subset that ALSO won a wild hero reached
+    three, and that is **1.30% of loadouts (19 of 1000 decks at seed 0, 0.86% of match weight)**.
+    Both were real bugs — the free hero is the bigger one by volume, the cap violation is the
+    illegal one — and ruling 17 fixes both. The visible training effect is the hero-slot fill rate
+    falling **84.1% → 70.4%**.
+
+    Wiring mirrors I3/I8 exactly: `sim/meta_decks.py` (`has_champion` / `champion_candidates`,
+    validate-never-trust in the loader), `sim/opponents.py` (constructor + `make_opponent`),
+    `tools/evo_audit.py` (champion census, ability-slot histogram, and it now FAILS on any deck
+    over the cap). `meta_decks.yaml` gains only a header comment: unlike an evolution or a hero, a
+    champion is not a hidden variant — it is visible in `cards:` — so there is nothing to declare
+    and nothing that can go stale. The `champion_candidates:` key is still honoured if present.

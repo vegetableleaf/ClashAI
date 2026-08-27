@@ -31,7 +31,8 @@ for _p in (str(ROOT / "src"), str(ROOT / "tests")):
 from test_sim_status_effects import _make_engine                       # noqa: E402
 from clashrl.sim.engine import (ABILITY_KINDS, Unit, build_spec,       # noqa: E402
                                 replace, _gap, _TILES_X, _TILES_Y)
-from clashrl.sim.meta_decks import (has_hero, hero_candidates,         # noqa: E402
+from clashrl.sim.meta_decks import (has_champion, champion_candidates,  # noqa: E402
+                                    has_hero, hero_candidates,
                                     load_meta_decks)
 
 LVL = 11
@@ -844,7 +845,8 @@ class HeroSlotModelTests(unittest.TestCase):
         from clashrl.sim.opponents import ScriptedBot
         return ScriptedBot(cfg, db, rng, d["cards"], d["style"], [LVL] * len(d["cards"]),
                            evo=d["evo"], evo_candidates=d["evo_candidates"],
-                           hero_candidates=d["hero_candidates"], support=d["support"])
+                           hero_candidates=d["hero_candidates"],
+                           champion_candidates=d["champion_candidates"], support=d["support"])
 
     def test_hero_candidates_are_derived_and_validated_never_trusted(self):
         eng = _make_engine()
@@ -855,15 +857,19 @@ class HeroSlotModelTests(unittest.TestCase):
         self.assertFalse(has_hero(eng.db, "mega_knight"))
 
     def test_a_deck_with_a_candidate_ALWAYS_fields_a_hero(self):
-        """The owner ruling is unconditional. MEASURED over the shipped pool: 842 of 1000 decks
-        hold a candidate, and the slot fills in all but the handful whose ONE card is the sole
-        candidate for the Evolution slot as well -- for those two "always" rulings cannot both
-        hold, and the Evolution keeps the card."""
+        """The owner ruling is unconditional FOR THE SLOT -- and since ruling 17 the slot is only
+        available when no champion card is already sitting in it.
+
+        MEASURED over the shipped pool: 842 of 1000 decks hold a hero candidate. Of those, the
+        ones with NO champion card fill the Hero slot in all but the handful whose ONE card is the
+        sole candidate for the Evolution slot as well (there the two "always" rulings cannot both
+        hold and the Evolution keeps the card). Decks that DO hold a champion are excluded here:
+        their hero can only come from the Wild draw, which is a 1/3 and not an always."""
         import random
         cfg, db, pool = self._cfg_and_pool()
         rng = random.Random(11)
-        have = [d for d in pool if d["hero_candidates"]]
-        self.assertGreater(len(have), 800)
+        have = [d for d in pool if d["hero_candidates"] and not d["champion_candidates"]]
+        self.assertGreater(len(have), 700)
         filled = 0
         for _ in range(600):
             d = have[rng.randrange(len(have))]
@@ -890,7 +896,9 @@ class HeroSlotModelTests(unittest.TestCase):
         for _ in range(4000):
             d = pool[rng.randrange(len(pool))]
             b = self._bot(cfg, db, rng, d)
-            if b.wild_choices[0] > 0 and b.wild_choices[1] > 0:
+            # ruling 17: only decks whose wild slot is NOT already spent on a champion, and where
+            # a wild hero is still legal (a champion in the Hero slot leaves the budget for one).
+            if b.wild_choices[0] > 0 and b.wild_choices[1] > 0 and not b.wild_choices[2]:
                 got[b.wild_kind] += 1
                 n += 1
         self.assertGreater(n, 800, "not enough decks with both categories legal to measure")
@@ -910,6 +918,10 @@ class HeroSlotModelTests(unittest.TestCase):
                              "one deck card cannot occupy two loadout slots")
             self.assertLessEqual(sum(1 for i in (b.evo_idx, b.wild_evo_idx) if i >= 0), 2)
             self.assertLessEqual(sum(1 for i in (b.hero_idx, b.wild_hero_idx) if i >= 0), 2)
+            # RULING 17: champion CARDS share those slots, so the three together cap at two.
+            self.assertLessEqual(
+                len(b.champion_idxs) + sum(1 for i in (b.hero_idx, b.wild_hero_idx) if i >= 0), 2,
+                "champion cards + heroes may never exceed the two shared slots")
             if b.wild_kind == "evo":
                 self.assertNotEqual(b.wild_evo_idx, b.evo_idx)
             if b.wild_kind == "hero":
@@ -926,7 +938,8 @@ class HeroSlotModelTests(unittest.TestCase):
                 self._i = inner
 
             def get(self, *keys, **kw):
-                if keys[:2] in (("sim", "wild_evo_prob"), ("sim", "wild_hero_prob")):
+                if keys[:2] in (("sim", "wild_evo_prob"), ("sim", "wild_hero_prob"),
+                                ("sim", "wild_champion_prob")):
                     return 0.0
                 return self._i.get(*keys, **kw)
 
@@ -1088,6 +1101,225 @@ class EnemySideTests(unittest.TestCase):
             self.assertFalse(str(k).endswith("_hero"),
                              "%s reached the action space: heroes are enemy-side only" % k)
 
+
+class ChampionSharesTheHeroSlotRuling17Tests(unittest.TestCase):
+    """decisions.md ruling 17 -- the Hero slot IS the Champion slot.
+
+    Owner, confirming the wiki. Heroes revid 437509: "Only two Heroes can be in a deck at a time,
+    and only in the Hero and Wild slots. **Those slots are also shared with Champion card**, which
+    means that the player can have 1 Hero and 1 Champion at the same time." Cards revid 437053,
+    rule text: "Up to 2 Champion cards can be present in a deck at any time." (The same page's
+    TRIVIA says "only 1 Champion Card"; decisions.md already records that section as the stale one
+    -- "Cards page trivia, contradicts its own rule text on the same revision" -- so the rule text
+    wins. The pool never exercises the difference: no deck in it holds two champions.)
+
+    THE STRUCTURAL DIFFERENCE that makes this unlike I3 and I8: an evolution and a hero are
+    VARIANTS of a card the deck already holds, so a slot DRAWS one of the deck's 8. A champion IS
+    one of the deck's 8. Holding it has already spent the slot, so there is nothing to draw and no
+    probability to tune -- which is why `sim.wild_champion_prob` defaults to 1.0 rather than to an
+    even share, and is documented in config.yaml as UNMEASURED-BUT-FORCED.
+
+    MEASURED, 20 draws x 1000 decks = 20000 loadouts, one shared RNG stream:
+
+        ability-bearing slots   BEFORE                    AFTER
+              0                 1100  ( 5.5%)             1100  ( 5.5%)
+              1                14048  (70.2%)            15872  (79.4%)
+              2                 4591  (23.0%)             3028  (15.1%)
+              3                  261  ( 1.3%)                0  ( 0.0%)
+        over the cap            261/20000 (1.30%)            0/20000 (0.00%)
+                                weighted 0.86% of matches    0.00%
+        hero slot filled      16820 (84.1%)              14080 (70.4%)
+        wild hero              2373 (11.9%)               3028 (15.1%)
+
+    ⚠ THE BRIEF'S PREMISE WAS OFF, and the correction is the point of the table. "137/1000 decks
+    get THREE ability-bearing slots" is not what was happening. 137 decks (948/5947 weight = 15.9%,
+    not 15.3%) hold a champion AND a hero candidate, and those fielded the champion's ability PLUS
+    a GUARANTEED hero -- two slots, at the cap, but with the hero handed over for free instead of
+    being drawn. Only the subset that ALSO won a wild hero reached three, and that is 1.30% of
+    loadouts (19 of 1000 decks at seed 0). Both are real bugs; the second is the cap violation and
+    the first is the free hero. Ruling 17 fixes both, and the visible effect on training is the
+    hero-slot fill rate dropping 84.1% -> 70.4%.
+    """
+
+    @staticmethod
+    def _cfg_and_pool():
+        from clashrl.config import Config
+        from clashrl.cards import CardDB
+        cfg = Config.load(str(ROOT / "config" / "config.yaml"))
+        db = CardDB(cfg)
+        return cfg, db, load_meta_decks(cfg, db)
+
+    @staticmethod
+    def _bot(cfg, db, rng, d, champs=None):
+        from clashrl.sim.opponents import ScriptedBot
+        return ScriptedBot(cfg, db, rng, d["cards"], d["style"], [LVL] * len(d["cards"]),
+                           evo=d["evo"], evo_candidates=d["evo_candidates"],
+                           hero_candidates=d["hero_candidates"],
+                           champion_candidates=(d["champion_candidates"] if champs is None
+                                                else champs),
+                           support=d["support"])
+
+    def test_has_champion_names_the_eight_cards_and_not_the_spawned_bodies(self):
+        """`champion: true` is the importer's flag off the wiki's Champion category. The `elixir`
+        half of the condition is load-bearing: `guardienne` and `soul_skeleton` carry
+        `rarity: champion` because they inherit their summoner's rarity, and neither is a card
+        anybody can put in a deck."""
+        eng = _make_engine()
+        eight = {"archer_queen", "boss_bandit", "goblinstein", "golden_knight",
+                 "little_prince", "mighty_miner", "monk", "skeleton_king"}
+        got = {k for k in eng.db.cards if has_champion(eng.db, k)}
+        self.assertEqual(eight, got)
+        for spawned in ("guardienne", "soul_skeleton"):
+            self.assertFalse(has_champion(eng.db, spawned),
+                             "%s is a spawned body, not a champion CARD" % spawned)
+
+    def test_champion_candidates_are_derived_and_validated_never_trusted(self):
+        eng = _make_engine()
+        cards = ["mighty_miner", "knight", "hog_rider", "tesla", "the_log",
+                 "earthquake", "skeletons", "ice_spirit"]
+        self.assertEqual(["mighty_miner"], champion_candidates(eng.db, cards))
+        self.assertEqual([], champion_candidates(eng.db, ["knight", "tesla"]))
+
+    def test_a_deck_holding_a_champion_does_NOT_also_get_the_hero_slot(self):
+        """THE FIX. Every pool deck that holds a champion card AND a hero candidate -- 137 of
+        1000, 15.9% of match weight -- used to field both unconditionally. The Hero slot is the
+        Champion slot, so it can no longer fill."""
+        import random
+        cfg, db, pool = self._cfg_and_pool()
+        both = [d for d in pool if d["champion_candidates"] and d["hero_candidates"]]
+        self.assertEqual(137, len(both), "the pool's champion+hero overlap, pinned")
+        rng = random.Random(17)
+        for _ in range(400):
+            d = both[rng.randrange(len(both))]
+            b = self._bot(cfg, db, rng, d)
+            self.assertEqual(-1, b.hero_idx,
+                             "%s holds %r: the champion IS the hero slot"
+                             % (d["name"], d["champion_candidates"]))
+
+    def test_a_one_champion_deck_can_still_reach_a_hero_through_the_WILD_slot(self):
+        """"the player can have 1 Hero and 1 Champion at the same time" (Heroes revid 437509).
+        The hero is no longer free -- it comes from the wild DRAW -- but it must still be
+        reachable, or the ruling would have deleted the hero from 137 decks instead of re-pricing
+        it."""
+        import random
+        cfg, db, pool = self._cfg_and_pool()
+        both = [d for d in pool if d["champion_candidates"] and d["hero_candidates"]]
+        rng = random.Random(23)
+        seen = 0
+        for _ in range(900):
+            d = both[rng.randrange(len(both))]
+            b = self._bot(cfg, db, rng, d)
+            if b.wild_hero_idx >= 0:
+                seen += 1
+                self.assertIn(b.cards[b.wild_hero_idx], d["hero_candidates"])
+                self.assertEqual(1, len(b.champion_idxs))
+        self.assertGreater(seen, 100, "a one-champion deck must still draw wild heroes")
+
+    def test_NO_deck_ever_fields_more_than_two_ability_bearing_slots(self):
+        """THE GATE. champion cards + heroes, capped at two, over the whole pool and many draws.
+        MEASURED BEFORE: 261 of 20000 loadouts (1.30%) were at three."""
+        import random
+        cfg, db, pool = self._cfg_and_pool()
+        rng = random.Random(2000)
+        worst = 0
+        for _ in range(6):
+            for d in pool:
+                b = self._bot(cfg, db, rng, d)
+                n = len(b.champion_idxs) + sum(1 for i in (b.hero_idx, b.wild_hero_idx) if i >= 0)
+                worst = max(worst, n)
+                self.assertLessEqual(n, 2, "%s fielded %d ability-bearing slots" % (d["name"], n))
+        self.assertEqual(2, worst, "the cap must actually be REACHED, not just respected")
+
+    def test_the_champion_card_cap_is_two_not_one(self):
+        """Cards revid 437053 rule text against its own trivia. The pool holds no two-champion
+        deck, so this is exercised on a synthetic one -- and it is the case that proves the Wild
+        slot is spent as well: two champions leave no hero anywhere."""
+        import random
+        cfg, db, pool = self._cfg_and_pool()
+        d = dict(pool[0])
+        d["cards"] = ["mighty_miner", "archer_queen", "knight", "tesla",
+                      "the_log", "earthquake", "skeletons", "ice_spirit"]
+        d["evo_candidates"] = ["knight", "tesla", "skeletons", "ice_spirit"]
+        d["hero_candidates"] = ["knight"]
+        d["champion_candidates"] = ["mighty_miner", "archer_queen"]
+        d["evo"], d["support"] = [], []
+        for s in range(60):
+            b = self._bot(cfg, db, random.Random(s), d)
+            self.assertEqual(2, len(b.champion_idxs))
+            self.assertEqual(-1, b.hero_idx, "both shared slots are spent on champions")
+            self.assertEqual(-1, b.wild_hero_idx, "both shared slots are spent on champions")
+            self.assertEqual("champion", b.wild_kind)
+            self.assertEqual(-1, b.wild_evo_idx, "a champion in the wild slot leaves no wild evo")
+        # A THIRD champion cannot be held at all -- the cap truncates.
+        d["cards"] = ["mighty_miner", "archer_queen", "monk", "tesla",
+                      "the_log", "earthquake", "skeletons", "ice_spirit"]
+        d["champion_candidates"] = ["mighty_miner", "archer_queen", "monk"]
+        b = self._bot(cfg, db, random.Random(1), d)
+        self.assertEqual(2, len(b.champion_idxs), "the champion CARD cap is 2")
+
+    def test_the_evolution_slot_is_NOT_taken_by_a_champion(self):
+        """The Evolution slot is a THIRD slot and is not shared -- "one Evolution, one Hero and
+        one Wild". A champion deck must still field its evolution, or the ruling would have cost
+        those 241 decks their evo as well."""
+        import random
+        cfg, db, pool = self._cfg_and_pool()
+        champ = [d for d in pool if d["champion_candidates"] and d["evo_candidates"]]
+        self.assertGreater(len(champ), 200)
+        rng = random.Random(31)
+        for _ in range(300):
+            d = champ[rng.randrange(len(champ))]
+            b = self._bot(cfg, db, rng, d)
+            self.assertGreaterEqual(b.evo_idx, 0, "%s lost its evolution slot" % d["name"])
+
+    def test_the_pool_champion_census(self):
+        """The measurement the owner asked for, pinned so a re-import makes a change LOUD.
+
+        TWO weight figures, and they differ for a reason worth stating: 1675/5947 = 28.2% is the
+        RAW scraped popularity, which is what tools/evo_audit.py reports (it runs on a bare cfg);
+        29.0% is the same set after `load_meta_decks` applies the config's LADDER SKEW
+        (`sim.meta_deck_boost` + `sim.meta_deck_top_n`), which is what training actually faces.
+        This test loads the real config, so it pins the second."""
+        _, _, pool = self._cfg_and_pool()
+        tot_w = sum(d["weight"] for d in pool)
+        have = [d for d in pool if d["champion_candidates"]]
+        w = sum(d["weight"] for d in have)
+        self.assertEqual(241, len(have), "decks holding >=1 champion card")
+        self.assertAlmostEqual(29.0, 100.0 * w / tot_w, delta=0.2,
+                               msg="champion decks as a share of LADDER-SKEWED match weight")
+        self.assertEqual(0, sum(1 for d in have if len(d["champion_candidates"]) > 1),
+                         "no pool deck holds two champions, so the cap-2 branch is untested data")
+
+    def test_the_champion_knob_can_switch_the_sharing_off(self):
+        """A knob nothing reads is the thing this project keeps finding. At 0 the champion releases
+        its slots and the pre-ruling behaviour comes back -- which is exactly the ablation the
+        default 1.0 exists to be contrasted with."""
+        import random
+        cfg, db, pool = self._cfg_and_pool()
+        d = dict(pool[0])
+        d["cards"] = ["mighty_miner", "archer_queen", "knight", "tesla",
+                      "the_log", "earthquake", "skeletons", "ice_spirit"]
+        d["evo_candidates"] = ["knight", "tesla", "skeletons", "ice_spirit"]
+        d["hero_candidates"] = ["knight"]
+        d["champion_candidates"] = ["mighty_miner", "archer_queen"]
+        d["evo"], d["support"] = [], []
+
+        class _Off:
+            def __init__(self, inner):
+                self._i = inner
+
+            def get(self, *keys, **kw):
+                if keys[:2] == ("sim", "wild_champion_prob"):
+                    return 0.0
+                return self._i.get(*keys, **kw)
+
+            def path(self, p):
+                return self._i.path(p)
+
+        got = set()
+        for s in range(40):
+            b = self._bot(_Off(cfg), db, random.Random(s), d)
+            got.add(b.wild_kind)
+        self.assertNotIn("champion", got, "the knob must actually release the wild slot")
 
 if __name__ == "__main__":                                   # pragma: no cover
     unittest.main()

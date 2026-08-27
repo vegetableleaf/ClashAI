@@ -26,6 +26,20 @@
 # neither at 1/3 each. That 1/3 is an UNMEASURED CHOICE -- no source publishes wild-slot
 # frequencies -- and is tunable as sim.wild_evo_prob / sim.wild_hero_prob.
 #
+# CHAMPION CARDS SHARE THOSE TWO SLOTS (owner ruling 17, 2026-08-27). Heroes revid 437509: "Only
+# two Heroes can be in a deck at a time, and only in the Hero and Wild slots. Those slots are also
+# shared with Champion card, which means that the player can have 1 Hero and 1 Champion at the same
+# time." Cards revid 437053, rule text: "Up to 2 Champion cards can be present in a deck at any
+# time." So a deck holding a champion has ALREADY spent its Hero slot on it and can only reach a
+# hero through the Wild draw. There is no `champion_candidates:` key in this file and there does
+# not need to be one: unlike an evolution or a hero, a champion is not a hidden VARIANT of a card
+# -- it is one of the 8 cards in `cards:` itself, so the loader derives the list and nothing can go
+# stale. (A declared key is still honoured and validated, for symmetry with the other two.)
+# MEASURED over this pool: 241 of the 1000 decks hold a champion card (1675 of 5947 weight, 28.2%
+# of matches) and NONE holds two. Before the ruling, 137 of them also held a hero candidate and so
+# fielded the champion's ability AND a guaranteed hero; 1.30% of sampled loadouts reached THREE
+# ability-bearing slots. After it, 0 of 20000 sampled loadouts exceed the cap of two.
+#
 # `support:` (the tower troop) IS measured per deck and is kept. Since I8 it is also USED: the
 # opponent fields the deck's measured tower troop instead of rolling one (sim/opponents.py).
 # Imported from the official Clash Royale API (top-player battle logs).

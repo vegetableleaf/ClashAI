@@ -126,8 +126,40 @@ def hero_candidates(db, cards: List[str]) -> List[str]:
     return [c for c in cards if has_hero(db, _base(c))]
 
 
+def has_champion(db, base: str) -> bool:
+    """True when this card IS a Champion -- the third occupant of the hero-family slots.
+
+    The single definition, shared by the loader, tools/evo_audit.py and the tests, exactly as
+    `has_evolution` and `has_hero` are. TWO conditions, both required, and the second one is not
+    decoration: `champion: true` is set by the importer off the wiki's Champion category and marks
+    the 8 champion CARDS, while `rarity: champion` also appears on `guardienne` and `soul_skeleton`
+    -- spawned bodies that inherit their summoner's rarity and can never be in anyone's deck. The
+    `elixir` requirement is what keeps those two out: a spawned body has none.
+
+    NOTE THE STRUCTURAL DIFFERENCE from the other two (owner ruling 17). An evolution and a hero
+    are VARIANTS of a card the deck already holds, so the slot picks one of the deck's 8. A
+    CHAMPION *is* one of the deck's 8. That is why this function takes no draw and why the slot
+    model below cannot "choose" a champion: holding the card IS occupying the slot.
+    """
+    c = db.get(base) or {}
+    return bool(c.get("champion")) and c.get("elixir") is not None
+
+
+def champion_candidates(db, cards: List[str]) -> List[str]:
+    """Every CHAMPION CARD this deck holds, in deck order.
+
+    Not a candidate list in the sense the other two are -- there is nothing unknown here and
+    nothing to draw. It is named for symmetry with `evo_candidates` / `hero_candidates` so the
+    loader, the audit and the bot can wire all three the same way, but the cards it returns are
+    FORCED into the hero-family slots: a player who puts the Archer Queen in their deck has spent
+    a Champion slot on her, and cannot spend it again on a Hero.
+    """
+    return [c for c in cards if has_champion(db, _base(c))]
+
+
 def load_meta_decks(cfg, db) -> List[dict]:
-    """Return [{name, weight, cards, style, evo, support, evo_candidates, hero_candidates}].
+    """Return [{name, weight, cards, style, evo, support, evo_candidates, hero_candidates,
+    champion_candidates}].
 
     `support` is the deck's tower troop, measured from top-ladder battlelogs
     (research/sim_parity/ledger/meta_evo_slots.json, R4) and reliable.
@@ -144,6 +176,15 @@ def load_meta_decks(cfg, db) -> List[dict]:
     `hero_candidates` (I8) is the same derivation for the HERO slot: the deck's cards that have one
     of the 16 LIVE hero forms. Same reasoning, same validation, same per-match draw -- see
     `sim/opponents.py` for the three-slot model the two lists feed.
+
+    `champion_candidates` (ruling 17, 2026-08-27) is the third list, and the one that is NOT a
+    draw: the Hero and Wild slots are SHARED with Champion cards ("Those slots are also shared
+    with Champion card, which means that the player can have 1 Hero and 1 Champion at the same
+    time" -- Heroes, revid 437509), and a champion is a card the deck already holds rather than a
+    variant of one. So holding a champion SPENDS a hero-family slot, and `sim/opponents.py` gives
+    the remaining slots to the hero and wild draws. Derived rather than declared -- unlike the
+    other two there is nothing hidden to declare, the champion is visible in `cards:` itself --
+    but a declared list is still honoured and validated, so the hook matches its two siblings.
 
     Cached by the file's timestamp: parsing ~1000 decks out of a 140 KB YAML and classifying
     each one is pure startup cost that a vectorised run would otherwise pay once per env.
@@ -164,7 +205,8 @@ def load_meta_decks(cfg, db) -> List[dict]:
         return [{**d, "cards": list(d["cards"]), "evo": list(d["evo"]),
                  "support": list(d["support"]),
                  "evo_candidates": list(d["evo_candidates"]),
-                 "hero_candidates": list(d["hero_candidates"])} for d in _CACHE[key]]
+                 "hero_candidates": list(d["hero_candidates"]),
+                 "champion_candidates": list(d["champion_candidates"])} for d in _CACHE[key]]
 
     out: List[dict] = []
     if path.exists():
@@ -184,14 +226,24 @@ def load_meta_decks(cfg, db) -> List[dict]:
                 # silently hero-less.
                 hcands = ([c for c in _slots(d, "hero_candidates", cards) if has_hero(db, _base(c))]
                           if "hero_candidates" in d else hero_candidates(db, cards))
+                # ...and the CHAMPION cards (ruling 17), by the identical validate-never-trust
+                # rule. A declared entry for a card that is not a champion is dropped, so a stale
+                # pool can only under-report -- and under-reporting a champion is the SAFE
+                # direction here, because a champion consumes a hero-family slot: inventing one
+                # would silently delete a legal hero.
+                ccands = ([c for c in _slots(d, "champion_candidates", cards)
+                           if has_champion(db, _base(c))]
+                          if "champion_candidates" in d else champion_candidates(db, cards))
                 out.append({"name": str(d.get("name", "deck")), "weight": float(d.get("weight", 1.0)),
                             "cards": cards, "style": classify_style(db, cards),
                             "evo": _slots(d, "evo", cards), "support": _slots(d, "support", cards),
-                            "evo_candidates": cands, "hero_candidates": hcands})
+                            "evo_candidates": cands, "hero_candidates": hcands,
+                            "champion_candidates": ccands})
     if not out:
         out = [{"name": n, "weight": 1.0, "cards": list(c), "style": classify_style(db, c),
                 "evo": [], "support": [], "evo_candidates": evo_candidates(db, list(c)),
-                "hero_candidates": hero_candidates(db, list(c))}
+                "hero_candidates": hero_candidates(db, list(c)),
+                "champion_candidates": champion_candidates(db, list(c))}
                for n, c in _BUILTIN]
 
     # LADDER SKEW. meta_decks.yaml is scraped popularity across the whole population, but the bot
@@ -226,4 +278,5 @@ def load_meta_decks(cfg, db) -> List[dict]:
     return [{**d, "cards": list(d["cards"]), "evo": list(d["evo"]),
              "support": list(d["support"]),
              "evo_candidates": list(d["evo_candidates"]),
-             "hero_candidates": list(d["hero_candidates"])} for d in out]
+             "hero_candidates": list(d["hero_candidates"]),
+             "champion_candidates": list(d["champion_candidates"])} for d in out]
