@@ -449,9 +449,12 @@ class TeamTracker:
         Young tracks (<0.5s of history) report zero velocity; speeds are clamped to sane troop pace
         so a bad link jump can't produce a wild lead. Feeds the spell-intercept aim assist.
 
-        ``with_base`` appends the track's CARD NAME (ported from icebow 2026-08-19: the threat
-        gate triages remembered enemies by base, and an aim assist needs the name whenever the
-        spell cannot hit everything). Off by default so existing callers are untouched."""
+        ``with_base`` appends the track's CARD NAME. Two callers need it and they are why the
+        parameter must never be dropped again: the threat gate triages its REMEMBERED enemies by
+        base, and an aim assist needs the name whenever the spell cannot hit everything (the Log
+        rolls along the ground and must not be aimed at a Minion Horde it would pass straight
+        under). Off by default so callers that want positions only are untouched.
+        """
         out = []
         for tr in self._tracks:
             if tr["team"] != "enemy" or now - tr["t"] > self.forget_s:

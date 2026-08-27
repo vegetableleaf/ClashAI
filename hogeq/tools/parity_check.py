@@ -84,10 +84,6 @@ DRIFT = {
                  "specific but engine-shaped; hogeq holds the_log too and has no assist for it",
     "train_rl.py": "icebow-only async LLM advisor; hogeq-only policy_identities() for the live "
                    "deck. Two separate one-way ports",
-    "perception.py": "hogeq's own comment: enemy_tracks(with_base=True) raises TypeError in this "
-                     "passthrough and the caller swallows it, so the threat-gate MEMORY fix is "
-                     "silently inert there. A live bug, recorded not blessed",
-    "replay_mine.py": "same `with_base` port, docstring only -- the code agrees",
     "model.py": "icebow-only CLASHRL_SINGLE_CELL_MAP escape hatch for the single-map vs per-card "
                 "cell-head A/B",
     "env.py": "comment wording only on the air_bases fix; the code agrees",

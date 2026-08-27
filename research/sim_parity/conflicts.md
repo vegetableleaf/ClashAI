@@ -1196,6 +1196,35 @@ cloning time from History).
   **0.0** in both decks) and found while adding the evolution twin beside it. Both are now cleared
   at the top of every `reset`.
 
+### ⚠ perception.py: THE TYPEERROR DOES NOT FIRE — the DRIFT entry was the stale thing
+
+The brief and `tools/parity_check.py`'s DRIFT list both said hogeq's `PerceptionLoop.enemy_tracks`
+raises TypeError on `with_base=True`, that `train_rl`'s gate swallows it, and that the threat-gate
+MEMORY fix is therefore silently inert in that deck.
+
+MEASURED 2026-08-27, in BOTH decks, against a real `TeamTracker` holding one remembered enemy:
+
+    TeamTracker.enemy_tracks    (self, now, with_base=False, max_age=None)
+    PerceptionLoop.enemy_tracks (self, now, with_base=False, max_age=None)
+    loop.enemy_tracks(now, with_base=True) -> [(0.5, 0.6, 0.0, 0.12, 'hog_rider')]   both decks
+
+No TypeError, keyword or positional, in either deck. A `git show main:` confirms the same code on
+`main`: the signature had been fixed and the COMMENT was never deleted, so the DRIFT entry has
+been describing a bug that no longer exists — which is its own failure, because the DRIFT list is
+what the project reads to decide what still needs fixing.
+
+What was genuinely missing is that NOTHING PINNED IT, and the swallow that hid it is still there
+and still has to be (a perception hiccup must not break training). So:
+
+* the stale comment is replaced with a CONTRACT note in both decks, and the two files are now
+  byte-identical — as is `replay_mine.py`, whose DRIFT entry was "docstring only";
+* `parity_check.py`'s DRIFT list loses both entries (**20 declared-different files -> 18**);
+* `train_rl.py`'s bare `except TypeError: pass` becomes `_memory_gate_inert(tracker)`, which
+  prints once and counts, so the path can never again be BOTH taken and quiet;
+* `tests/test_perception_with_base_i9.py` (9 cases, byte-identical) pins the signature, the
+  keyword call, the positional call, the `max_age` forward and the counter. VERIFIED TO FAIL:
+  deleting `with_base` from the passthrough turns it red with 2 failures and 4 errors.
+
 ### NOT IMPLEMENTED, DELIBERATELY (I9 item 1)
 
 * **The Clone's forward shove of the ORIGINAL body.** "When a troop is cloned, the original troop

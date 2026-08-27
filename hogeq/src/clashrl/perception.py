@@ -76,10 +76,12 @@ class PerceptionLoop:
             self._tracker.set_towers(mine_alive, enemy_alive)
 
     def enemy_tracks(self, now: float, with_base: bool = False, max_age=None):
-        # with_base was ported to hogeq's TeamTracker but NOT to this passthrough (found
-        # 2026-08-20): train_rl's gate calls enemy_tracks(..., with_base=True), which raised
-        # TypeError here and was swallowed by the gate's own except -- so the threat-gate MEMORY
-        # fix has been silently inert in this deck the whole time the perception loop is running.
+        # `with_base` is part of the CONTRACT of this passthrough, not an optional extra: the
+        # threat gate's remembered-enemy half calls `enemy_tracks(..., with_base=True)` and
+        # swallows a TypeError, so a signature that drops it goes SILENTLY INERT rather than
+        # failing. It was recorded as doing exactly that in hogeq (2026-08-20) and MEASURED as
+        # fixed in both decks on 2026-08-27 -- pinned since by
+        # tests/test_perception_with_base_i9.py, which is what stops it going quiet again.
         with self._lock:
             return self._tracker.enemy_tracks(now, with_base, max_age)
 
