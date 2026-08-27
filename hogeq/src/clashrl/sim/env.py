@@ -494,9 +494,18 @@ class SimMatchEnv:
         Single use (4/8/2026 balance) is counted per BODY, so a Mighty Miner who dies and is cycled
         back brings a fresh activation with him.
         """
-        return any(u.team == 0 and u.hp > 0 and u.spec.ability_bomb_dmg > 0.0
-                   and u.ability_cd_left <= 0.0 and self.eng._ability_uses_left(u) > 0
-                   for u in self.eng.units)
+        # RULING 5 (I7): the button belongs to the NEWEST living champion body, so the MASK has
+        # to ask the same body the engine will act on. `any(...)` over every body would light the
+        # slot up because an OLDER champion still had a use, the policy would spend the action,
+        # and `champion_ability` would refuse it -- a legal-looking action that can never work.
+        # `ability_kind` replaces the `ability_bomb_dmg > 0` truthiness test for the same reason
+        # the engine dropped it: it is one card's number standing in for "has an ability".
+        bodies = [u for u in self.eng.units
+                  if u.team == 0 and u.hp > 0 and u.spec.ability_kind]
+        if not bodies:
+            return False
+        newest = max(bodies, key=lambda u: u.deploy_seq)
+        return newest.ability_cd_left <= 0.0 and self.eng._ability_uses_left(newest) > 0
 
     def _play_slot(self, card_id: int) -> None:
         """Consume a played identity: bank/spend its slot's Evolution charge, then send the slot to

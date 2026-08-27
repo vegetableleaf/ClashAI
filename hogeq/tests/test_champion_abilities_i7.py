@@ -267,3 +267,206 @@ class Ruling7RefundTests(unittest.TestCase):
             with self.subTest(champion=key):
                 eng, champ = self._cast(key)
                 self.assertGreater(champ.invis_left, 0.0)
+
+
+class BossBanditIsAButtonNowTests(unittest.TestCase):
+    """Getaway Grenade -- the engine's HP auto-trigger DELETED (owner ruling, conflicts.md C5).
+
+    Boss_Bandit.wikitext (revid 437146) describes the ability ONLY as a button "accessible from
+    the rightmost side of the screen just above the player's card slots", and its History
+    8/7/2025 says it "can be activated a total of 2 times INDEPENDENT ON Boss Bandit's
+    hitpoints" -- i.e. an HP-gated model was REMOVED from the game. The sim fired it
+    automatically below a rolled `ability_hp_frac`, so it modelled a rule that no longer exists.
+
+    MEASURED BEFORE: a Boss Bandit chipped below her rolled threshold vanished on her own, with
+    no decision anywhere. AFTER: she sits at 1 HP forever unless somebody presses the button.
+
+    She is also the ONE champion exempt from the 4/8/2026 single-use change ("Champions and
+    Heroes (minus Boss Bandit)"), so 2 uses and the 3 s cooldown between them stay.
+    """
+
+    def _bandit(self, hp_mult=1.0, y=0.45):
+        # y=0.45 on purpose: 6 tiles back from 0.30 lands her on top of her own King Tower, and
+        # the collision shove then hides the teleport under a footprint push.
+        eng = _quiet(_make_engine())
+        eng.elixir[1] = 10.0
+        bb = _place(eng, "boss_bandit", 1, 0.50, y, hp_mult=hp_mult)
+        return eng, bb
+
+    def test_the_engine_no_longer_fires_it_on_its_own(self):
+        eng, bb = self._bandit(hp_mult=0.02)             # far below any old rolled threshold
+        before = eng.elixir[1]
+        for _ in range(200):                             # 20 s
+            eng.advance(0.1)
+        self.assertEqual(2, eng._ability_uses_left(bb), "nothing pressed the button")
+        self.assertLessEqual(bb.invis_left, 0.0)
+        self.assertGreaterEqual(eng.elixir[1], before - 1e-9, "no elixir was spent on her behalf")
+
+    def test_the_hp_threshold_field_is_gone_entirely(self):
+        """Left behind, it would be dead state that a later pass could revive by accident."""
+        _eng, bb = self._bandit()
+        self.assertFalse(hasattr(bb, "ability_hp_frac"))
+
+    def test_the_button_still_does_the_whole_grenade(self):
+        eng, bb = self._bandit()
+        y0 = bb.y
+        self.assertTrue(eng.champion_ability(1))
+        self.assertAlmostEqual(bb.spec.ability_invis, bb.invis_left, places=6)
+        for _ in range(40):
+            eng.advance(0.05)
+            if bb.invis_left <= 0.0:
+                break                                   # she has just reappeared; read it now,
+        # ...before she walks the distance back. "teleports 6 tiles behind her original position",
+        # and team 1 attacks toward larger y, so back is up the board.
+        self.assertLessEqual(bb.invis_left, 0.0)
+        self.assertAlmostEqual(y0 - bb.spec.ability_back / _TILES_Y, bb.y, delta=0.01)
+
+    def test_she_keeps_TWO_uses_and_the_three_second_cooldown(self):
+        eng, bb = self._bandit()
+        s = build_spec(eng.db, "boss_bandit", LVL)
+        self.assertEqual(2, s.ability_uses)
+        self.assertAlmostEqual(3.0, s.ability_cd, places=6)
+        self.assertTrue(eng.champion_ability(1))
+        self.assertFalse(eng.champion_ability(1), "the 3 s cooldown gates the second grenade")
+        for _ in range(60):
+            eng.advance(0.1)
+        eng.elixir[1] = 10.0
+        self.assertTrue(eng.champion_ability(1), "the second use is hers once the cooldown ends")
+        self.assertEqual(0, eng._ability_uses_left(bb))
+
+    def test_she_is_untargetable_while_the_grenade_runs(self):
+        eng, bb = self._bandit()
+        eng.champion_ability(1)
+        mine = _place(eng, "knight", 0, 0.50, 0.30)
+        self.assertFalse(eng._valid_foe(mine, bb), "invisible = not merely unseen")
+
+
+class AbilityAIFrameworkTests(unittest.TestCase):
+    """`ScriptedBot._try_ability` -- the decision the engine used to make for the Boss Bandit.
+
+    Deliberately built as a FRAMEWORK, keyed on the ability's SHAPE rather than on the card,
+    because I8 adds ~16 hero kinds on top of these 8. Three families, each a different question
+    about the board: `escape` (this body is in trouble or too deep), `defensive` (it is about to
+    be swarmed), `offensive` (it is deep enough that the ability buys tower damage). Every knob
+    is a CHOICE -- no page states when to press the button -- so they sit in one named table and
+    a KB `ability_ai:` dict overrides them per card.
+    """
+
+    def _bot(self, cards=("boss_bandit", "knight", "archers", "fireball",
+                          "musketeer", "minions", "zap", "hog_rider")):
+        from clashrl.config import Config
+        from clashrl.sim.opponents import ScriptedBot
+        import random
+        eng = _quiet(_make_engine())
+        bot = ScriptedBot(Config.load(), eng.db, random.Random(7), list(cards), "control")
+        bot.reaction_s = 0.0                    # the delay has its own test
+        return eng, bot
+
+    def test_a_healthy_bandit_in_her_own_half_does_not_burn_the_grenade(self):
+        eng, bot = self._bot()
+        eng.elixir[1] = 10.0
+        _place(eng, "boss_bandit", 1, 0.50, 0.30)
+        self.assertFalse(bot._try_ability(eng))
+
+    def test_a_LOW_bandit_escapes(self):
+        eng, bot = self._bot()
+        eng.elixir[1] = 10.0
+        bb = _place(eng, "boss_bandit", 1, 0.50, 0.30, hp_mult=0.20)
+        self.assertTrue(bot._try_ability(eng))
+        self.assertGreater(bb.invis_left, 0.0)
+
+    def test_an_OVEREXTENDED_bandit_escapes_at_full_health(self):
+        """"escape" is not only about hitpoints. Past the river she is inside the defender's
+        answer range with no way back, which is the other half of what the ability is for."""
+        eng, bot = self._bot()
+        eng.elixir[1] = 10.0
+        bb = _place(eng, "boss_bandit", 1, 0.50, 0.72)     # team 1 attacks DOWNWARD
+        self.assertTrue(bot._try_ability(eng))
+        self.assertGreater(bb.invis_left, 0.0)
+
+    def test_a_DEFENSIVE_kind_waits_for_the_swarm(self):
+        eng, bot = self._bot(cards=("mighty_miner", "knight", "archers", "fireball",
+                                    "musketeer", "minions", "zap", "hog_rider"))
+        eng.elixir[1] = 10.0
+        mm = _place(eng, "mighty_miner", 1, 0.50, 0.30)
+        self.assertFalse(bot._try_ability(eng), "two bodies is not a swarm")
+        for i in range(2):
+            _place(eng, "skeletons", 0, 0.50 + 0.004 * i, 0.30)
+        self.assertFalse(bot._try_ability(eng))
+        _place(eng, "skeletons", 0, 0.51, 0.30)
+        self.assertTrue(bot._try_ability(eng), "3 enemies within 4 tiles is the default threshold")
+        self.assertEqual(0, eng._ability_uses_left(mm))
+
+    def test_an_OFFENSIVE_kind_waits_until_it_is_near_a_TOWER(self):
+        """Driven through `ability_ai` rather than through one of the offensive CARDS, so the
+        family predicate is tested on its own -- the cards that declare it (`dash_chain`, `zone`)
+        each have their own end-to-end test."""
+        eng, bot = self._bot()
+        eng.elixir[1] = 10.0
+        s = replace(build_spec(eng.db, "boss_bandit", LVL),
+                    ability_ai=(("family", "offensive"), ("tower_tiles", 7.0)))
+        u = _place(eng, None, 1, 0.50, 0.40, spec=s)      # mid-board: no tower within 7 tiles
+        self.assertFalse(bot._try_ability(eng))
+        u.x, u.y = eng.towers[0][0].x, eng.towers[0][0].y - 4.0 / _TILES_Y
+        self.assertTrue(bot._try_ability(eng))
+
+    def test_the_KB_can_override_the_family_and_the_knobs(self):
+        """`ability_ai:` is the escape hatch: a card whose shape says one thing and whose page
+        says another does not need engine or bot code to say so."""
+        eng, bot = self._bot()
+        eng.elixir[1] = 10.0
+        s = replace(build_spec(eng.db, "boss_bandit", LVL),
+                    ability_ai=(("family", "escape"), ("hp_frac", 0.95), ("over_river", False)))
+        bb = _place(eng, None, 1, 0.50, 0.30, spec=s, hp_mult=0.90)
+        self.assertTrue(bot._try_ability(eng), "the KB raised her escape threshold to 95%")
+        self.assertGreater(bb.invis_left, 0.0)
+
+    def test_a_reaction_delay_stops_the_bot_firing_on_the_exact_tick(self):
+        """Without it the ability lands the instant the condition flips -- inhuman, and
+        unlearnable: the policy would face perfect timing every match."""
+        eng, bot = self._bot()
+        bot.reaction_s = 0.8
+        eng.elixir[1] = 10.0
+        _place(eng, "boss_bandit", 1, 0.50, 0.30, hp_mult=0.20)
+        self.assertFalse(bot._try_ability(eng), "the window only just opened")
+        for _ in range(12):
+            eng.advance(0.1)
+        self.assertTrue(bot._try_ability(eng))
+
+    def test_the_bot_asks_the_NEWEST_body_not_any_body(self):
+        """Ruling 5 again, on the bot side. Scanning for "a body that wants to fire" would press
+        the button because an OLDER, cornered body wanted it -- and the engine would then fire
+        the newest one, which did not."""
+        eng, bot = self._bot()
+        eng.elixir[1] = 10.0
+        old = _place(eng, "boss_bandit", 1, 0.50, 0.30, hp_mult=0.05)   # desperate
+        new = _place(eng, "boss_bandit", 1, 0.20, 0.30, hp_mult=1.00)   # fine
+        self.assertFalse(bot._try_ability(eng))
+        self.assertLessEqual(old.invis_left, 0.0)
+        self.assertLessEqual(new.invis_left, 0.0)
+
+    def test_it_never_fires_without_the_elixir(self):
+        eng, bot = self._bot()
+        eng.elixir[1] = 0.0
+        _place(eng, "boss_bandit", 1, 0.50, 0.30, hp_mult=0.20)
+        self.assertFalse(bot._try_ability(eng))
+
+    def test_a_body_still_landing_does_not_fire(self):
+        eng, bot = self._bot()
+        eng.elixir[1] = 10.0
+        bb = _place(eng, "boss_bandit", 1, 0.50, 0.72)
+        bb.deploy_left = 1.0
+        self.assertFalse(bot._try_ability(eng))
+
+    def test_every_implemented_kind_has_a_family(self):
+        """A new `ability_kind` with no family silently never fires. Cheap to pin, and I8 adds
+        sixteen more."""
+        from clashrl.sim.opponents import _ABILITY_FAMILY, _ABILITY_AI_DEFAULTS
+        for kind in sorted(ABILITY_KINDS):
+            with self.subTest(kind=kind):
+                self.assertIn(kind, _ABILITY_FAMILY)
+                self.assertIn(_ABILITY_FAMILY[kind], _ABILITY_AI_DEFAULTS)
+
+
+if __name__ == "__main__":
+    unittest.main()

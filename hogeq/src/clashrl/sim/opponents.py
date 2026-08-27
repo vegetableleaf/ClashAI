@@ -14,7 +14,7 @@ from typing import List
 
 import numpy as np
 
-from .engine import build_spec
+from .engine import _dist, build_spec
 from ..cycle import cycle_vector
 from .. import card_threat
 from .. import detect_obs
@@ -22,6 +22,60 @@ from .. import interactions
 from . import view
 
 _NEG = -1e9   # finite mask value (matches train_sim_ppo; -inf can NaN through a softmax)
+
+
+# =================================================================================================
+# ABILITY AI -- when an OPPONENT presses its champion/hero button.
+# =================================================================================================
+# Boss Bandit's Getaway Grenade used to be fired by the ENGINE, below a per-unit rolled HP
+# fraction. That modelled a rule the game removed: Boss_Bandit.wikitext History 8/7/2025 says the
+# grenade "can be activated a total of 2 times INDEPENDENT ON Boss Bandit's hitpoints", and the
+# page describes it only as a button (conflicts.md C5). Owner ruling: it becomes a normal button
+# and the OPPONENT decides.
+#
+# This is the framework EVERY champion and hero ability uses, so it is keyed on the ability's
+# SHAPE rather than on the card. Three families, and each one is a different question about the
+# board:
+#   escape     is this body in trouble, or too far forward to survive being answered?
+#   defensive  is it about to be swarmed?
+#   offensive  is it deep enough that the ability buys tower damage?
+# I8 adds ~16 hero kinds on top; a new kind picks a family here (or the KB overrides it per card)
+# and needs no new bot code.
+_ABILITY_FAMILY = {
+    # Getaway Grenade IS the escape ability: invisible, then 6 tiles backwards, "This allows her
+    # to escape any form of damage".
+    "movement_flight": "escape",
+    # Cloaking Cape reads as offence (a 1.8x attack-speed buff) but every worked example on the
+    # page is a save -- dodging an X-Bow/Mortar lock, diverting troops, walking past a Tesla.
+    # Untargetable-while-shooting is a defensive tool that happens to deal damage.
+    "stealth": "escape",
+    # Explosive Escape is BOTH, and the page says which one to plan around: "One of his weaknesses
+    # are swarms, and Explosive Escape's bomb mitigates that."
+    "bomb": "defensive",
+    # Soul Summoning answers a push with 6-16 bodies; the page warns against firing it with
+    # nothing to tank for the Skeletons.
+    "soul_bank": "defensive",
+    # Royal Rescue: "This makes him very effective against large tanks and can prevent a lot of
+    # damage done to Crown Towers."
+    "guardian": "defensive",
+    # Pensive Protection is -65% incoming damage plus reflection. It is only worth elixir while
+    # something is actually shooting him.
+    "reflect": "defensive",
+    # Dashing Dash chains through their defence; it needs targets in range to do anything at all.
+    "dash_chain": "offensive",
+    # Lightning Link is 4 s of area damage around a tether -- a push tool, and its crown-tower
+    # column says it is meant to be on the tower.
+    "zone": "offensive",
+}
+
+# Per-family defaults. Every one is a CHOICE, not a published number -- no page states when to
+# press the button -- so they live in one table, are overridable per card through a KB `ability_ai`
+# dict, and are named rather than buried in the branch that reads them.
+_ABILITY_AI_DEFAULTS = {
+    "escape": {"hp_frac": 0.55, "over_river": True},
+    "defensive": {"crowd_n": 3, "crowd_tiles": 4.0},
+    "offensive": {"tower_tiles": 7.0, "min_enemies": 0},
+}
 
 
 class ScriptedBot:
@@ -73,6 +127,7 @@ class ScriptedBot:
         self._seen_deploy_t = -1.0
         self._punish_cd = 0.0
         self._flip = rng.random() < 0.5  # split-push lane alternator
+        self._ability_armed_t = None     # engine time the ability window opened (reaction delay)
         # HAND + CYCLE. A real opponent holds 4 of its 8 cards and must cycle the rest before it can
         # repeat one. Without this the bot chose from the WHOLE deck every step, so it could open the
         # same card twice in a row (and never ran out of its best answer) -- the agent was training
@@ -132,6 +187,78 @@ class ScriptedBot:
             # The `or 2` remains only as a floor: 0 would read as "already charged" forever.
             self.evo_cycles = int(db.evo_cycles(_k) or 2)
             break                                            # ONE slot, enforced
+
+    def _try_ability(self, eng, team: int = 1) -> bool:
+        """Press this deck's champion/hero ability button, if the board says to.
+
+        One decision per bot step, taken BEFORE the card action, because an ability spends its own
+        elixir and does not leave the hand -- a real player does both in the same beat.
+
+        RULING 5 is respected here as well as in the engine: the button belongs to the NEWEST
+        living body, so the bot asks whether THAT body wants to fire rather than scanning for any
+        body that would. Asking the wrong body would make the bot fire a Boss Bandit's grenade
+        because an older, forgotten one was cornered.
+
+        Returns True if the ability actually went off.
+        """
+        bodies = [u for u in eng.units
+                  if u.team == team and u.hp > 0 and u.spec.ability_kind and u.deploy_left <= 0.0]
+        if not bodies:
+            return False
+        u = max(bodies, key=lambda b: b.deploy_seq)
+        s = u.spec
+        # Cheap refusals first -- these are the same tests champion_ability applies, and asking
+        # them here keeps a hopeless board from paying the reaction-delay bookkeeping below.
+        if u.ability_cd_left > 0.0 or eng._ability_uses_left(u) <= 0:
+            return False
+        if eng.elixir[team] < s.ability_cost:
+            return False
+        ai = dict(s.ability_ai)
+        family = str(ai.get("family") or _ABILITY_FAMILY.get(s.ability_kind, "defensive"))
+        knobs = dict(_ABILITY_AI_DEFAULTS.get(family, {}))
+        knobs.update(ai)
+        if not self._ability_wants(eng, u, family, knobs):
+            self._ability_armed_t = None            # the window closed: the next one pays again
+            return False
+        # HUMAN REACTION. Without it the bot fires on the exact tick the condition flips, which is
+        # both inhuman and unlearnable -- the policy would face a perfectly-timed grenade every
+        # time. The delay is the bot's own rolled `reaction_s`, the same population knob the
+        # adaptive behaviours use, so a match faces one opponent's timing rather than the mean.
+        if self._ability_armed_t is None:
+            self._ability_armed_t = float(eng.t)
+        if eng.t - self._ability_armed_t < self.reaction_s:
+            return False
+        self._ability_armed_t = None
+        return bool(eng.champion_ability(team))
+
+    def _ability_wants(self, eng, u, family: str, k: dict) -> bool:
+        """The per-family predicate. Split out so a test can drive it without a whole match."""
+        if family == "escape":
+            # In trouble, or too deep to walk back. `_RIVER` is y = 0.5 and team 1 attacks
+            # DOWNWARD, so "past the river" is y > 0.5 for them and y < 0.5 for us.
+            if u.hp <= u.spec.hp * float(k.get("hp_frac", 0.55)):
+                return True
+            if k.get("over_river"):
+                return u.y > 0.5 if u.team == 1 else u.y < 0.5
+            return False
+        if family == "defensive":
+            n = int(k.get("crowd_n", 3))
+            r = float(k.get("crowd_tiles", 4.0))
+            near = sum(1 for e in eng.units
+                       if e.team != u.team and e.hp > 0 and e.spec.kind == "troop"
+                       and _dist(u.x, u.y, e.x, e.y) <= r)
+            return near >= n
+        if family == "offensive":
+            r = float(k.get("tower_tiles", 7.0))
+            if not any(_dist(u.x, u.y, t.x, t.y) <= r for t in eng.towers[1 - u.team] if t.alive):
+                return False
+            need = int(k.get("min_enemies", 0))
+            if need <= 0:
+                return True
+            return sum(1 for e in eng.units
+                       if e.team != u.team and e.hp > 0
+                       and _dist(u.x, u.y, e.x, e.y) <= r) >= need
+        return False
 
     def _hand_specs(self):
         """The 4 cards currently in hand (the rest are cycling)."""
@@ -238,6 +365,12 @@ class ScriptedBot:
         team = 1
         if self.adaptive:
             self._observe(eng)
+        # THE ABILITY BUTTON. Not gated on `adaptive`: an enemy champion that never uses its
+        # ability is a different card, and the eval benchmark runs non-adaptive bots. It also does
+        # not `return` -- the ability spends its own elixir and leaves the hand alone, so the bot
+        # still takes its card action this step. Read `elix` AFTER, or the affordability list
+        # would be computed against elixir the ability has already spent.
+        self._try_ability(eng, team)
         elix = eng.elixir[team]
         affordable = [s for s in self._hand_specs() if s.elixir <= elix]
         if not affordable:

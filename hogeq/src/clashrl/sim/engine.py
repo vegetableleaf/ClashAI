@@ -1153,8 +1153,6 @@ class Unit:
     invis_left: float = 0.0      # seconds of ability invisibility left (untargetable + immune)
     ability_left: int = -1       # activations remaining (-1 = not initialised from the spec yet)
     ability_cd_left: float = 0.0  # seconds until the ability can be used again
-    ability_hp_frac: float = 0.0  # HP fraction that triggers the next ability use -- ROLLED per unit
-                                  # (and re-rolled lower after each use) so the trigger timing varies
     # RULING 5 (owner, in-game; corroborated by Version_History_2025 "2025 Quarter 3 Update
     # (29/9/2025) -- Champion Rework": "Only the most recent placed Champion has the ability").
     # Two bodies of one champion CAN coexist, and the button drives the NEWEST. That needs a
@@ -2619,18 +2617,19 @@ class SimEngine:
                 u.ability_cd_left = max(0.0, u.ability_cd_left - dt)
                 if u.invis_left > 0.0:
                     u.invis_left = max(0.0, u.invis_left - dt)
-            # GETAWAY ABILITY (Boss Bandit). Fires automatically when she is genuinely in trouble --
-            # she is invisible and untouchable for a second, then reappears `ability_back` tiles
-            # further from the enemy, which is exactly the Rocket/spell dodge the card is played for.
+            # GETAWAY GRENADE TRANSIT (Boss Bandit, kind `movement_flight`). She is invisible and
+            # untouchable for a second, then reappears `ability_back` tiles further from the enemy
+            # -- exactly the Rocket/spell dodge the card is played for.
+            #
+            # THE ENGINE NO LONGER DECIDES WHEN (I7). This branch used to fire the ability itself
+            # below a per-unit rolled HP fraction, which modelled an HP-gated trigger THE GAME
+            # REMOVED: Boss_Bandit.wikitext History 8/7/2025 says the grenade "can be activated a
+            # total of 2 times INDEPENDENT ON Boss Bandit's hitpoints", and the page describes it
+            # only as a button "accessible from the rightmost side of the screen" (conflicts.md
+            # C5). It is a normal button now, `champion_ability` activates it like every other
+            # kind, and the OPPONENT decides -- ScriptedBot._try_ability. All that is left here is
+            # the transit.
             if u.spec.ability_invis > 0.0:
-                if u.ability_left < 0:
-                    u.ability_left = u.spec.ability_uses
-                    # VARIED TRIGGER (2026-08-14). The threshold was a flat 0.6 -- every Boss
-                    # Bandit vanished at exactly 60% HP, so a policy could learn the one timing
-                    # that games a constant (the user's exact concern). Each unit now rolls its
-                    # own trigger, and each USE re-rolls a meaningfully lower one, spreading the
-                    # two grenades across her HP bar and across matches.
-                    u.ability_hp_frac = self.rng.uniform(0.35, 0.80)
                 u.ability_cd_left = max(0.0, u.ability_cd_left - dt)
                 if u.invis_left > 0.0:
                     u.invis_left -= dt
@@ -2641,18 +2640,6 @@ class SimEngine:
                         u.ability_cd_left = u.spec.ability_cd
                         u.aggro_reset = True
                     continue                                 # invisible: no walking, no attacking
-                if u.ability_left > 0 and u.ability_cd_left <= 0.0 \
-                        and u.hp < u.spec.hp * u.ability_hp_frac \
-                        and self.elixir[u.team] >= u.spec.ability_cost:
-                    self.elixir[u.team] -= u.spec.ability_cost
-                    u.ability_left -= 1
-                    u.invis_left = u.spec.ability_invis
-                    u.ability_hp_frac = self.rng.uniform(0.15, max(0.16, u.ability_hp_frac * 0.75))
-                    # The only thing that drops a wind-up, and it is HER OWN doing, not the
-                    # defender's -- she vanishes and reappears further back, so there is nothing
-                    # left standing there to finish the dash.
-                    u.leap_left = 0.0
-                    continue
             prev_target = u.target
             kind, ref = self._acquire(u)
             # HIDDEN TESLA. "When there are no enemies within range, it retracts underground, making
