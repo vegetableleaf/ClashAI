@@ -715,3 +715,34 @@ experiments -> new PPO, without waiting for approval between stages.
 
     11 new tests (`test_barbarian_stats_r25.py`, byte-identical in both decks); four existing
     assertions moved to the new numbers, each with its before/after in the line.
+
+## 2026-08-27 — RULING 29 (owner): elixir prices for ALL remaining spawned bodies
+
+Closes the 4-elixir-default problem entirely (I10 measured 30/27 reads of `spec.elixir` across the
+reward + threat layers). Owner overrides in bold; the rest are the assistant's suggestions,
+owner-approved. Hero-summon bodies are priced at their ABILITY cost by owner instruction.
+
+| body | elixir | note |
+|---|---|---|
+| **goblin_brawler** | **3** | owner override (suggested 2) |
+| **rhino** | **3** | owner override (suggested 2) |
+| **tomb_queen** | **5** | owner: the ability cost |
+| **trusty_turret** | **3** | owner: the ability cost |
+| barrel_barbarian, base_barrel_barbarian | 1 | one-fifth of Barbarians-for-5 |
+| royal_recruit | 1.5 | |
+| golemite | 2 | half the Golemites pair |
+| elixir_golemite | 1.5 | refunds on death |
+| elixir_blob | 0.5 | refunds on death |
+| lava_pups | 0.5 | each |
+| mother_witch_hog | 1 | |
+| phoenix_egg | 0.5 | |
+| bush_goblin | 1 | each |
+| decoy_goblin, ghost_souldier, skarmy_general | 0.5 | |
+| lumberjack_ghost | 3 | untargetable body |
+| skeletrooper | 1 | |
+| brigade_goblin | 0.5 | |
+
+⚠ APPLICATION DEFERRED until the rollout-search experiment completes: its scoring function reads
+`spec.elixir` (via `bodies_ignore_frac` and the elixir term), so changing prices mid-experiment
+would make the arms inconsistent. Apply in BOTH decks with pins immediately after; also re-run
+`tools/evo_audit.py` and spot-check `ignore_cost_frac` orderings, since 20 threat prices move.
