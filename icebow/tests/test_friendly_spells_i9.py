@@ -389,5 +389,75 @@ class ZeroDamageTowerHitTests(unittest.TestCase):
         self.assertGreater(tw.stun_left, 0.0)
 
 
+class BaseBarbarianBarrelTests(unittest.TestCase):
+    """THE BASE BARBARIAN BARREL'S BARBARIAN (I9). The card's whole second half.
+
+    I8 fixed `_resolve_roll` to drop a rolling spell's `spawn_spec` and deliberately left the data
+    half alone, because declaring it changes 198 pool decks (24.95% of deck weight). MEASURED
+    before this: a full deploy of the base card left **0 bodies**.
+
+    Barbarian Barrel revid 437163 states it twice -- card text "then breaks open and out pops a
+    Barbarian!", lead "Once the spell reaches its destination, it spawns a single Barbarian" --
+    and the Strategy section is built on the body: it "can follow up and attack anything while
+    alive", and "the spell can be used to separate a building-targeting troop from a regular
+    troop". Barbarian Attributes: Hit Speed 1.3 / First Hit Speed 0.4 / Speed Medium (60) /
+    Deploy Time 0.5 / Range Melee: Short (0.5) / Ground / x1, with vardefines hp_11 670,
+    dmg_11 191.
+    """
+
+    def test_the_base_card_declares_its_barbarian(self):
+        sp = build_spec(_make_engine().db, "barbarian_barrel", LVL)
+        self.assertTrue(sp.rolls, "it is still a rolling corridor")
+        self.assertIsNotNone(sp.spawn_spec, "the base card leaves a Barbarian")
+        self.assertEqual(sp.spawn_count, 1, "x1")
+        b = sp.spawn_spec
+        self.assertAlmostEqual(b.hp, 670.0, places=1)          # hp_11
+        # `hit_dmg` is DERIVED as dps x hit_speed engine-wide, so a KB row whose `dps` is the
+        # wiki's rounded 147 lands at 191.1 rather than exactly 191. The hero's row carries the
+        # same 0.4 offset (192.4 vs 192) -- a pre-existing convention, not this card's doing.
+        self.assertAlmostEqual(b.hit_dmg, 191.0, delta=0.25)   # dmg_11
+        self.assertAlmostEqual(b.hit_speed, 1.3, places=3)
+        self.assertAlmostEqual(b.reach, 0.5, places=3)
+        self.assertAlmostEqual(b.speed, 1.0, places=3)
+        self.assertAlmostEqual(b.deploy_time, 0.5, places=3)
+        self.assertFalse(b.attacks_air, "Target Ground")
+
+    def test_the_hero_barrel_keeps_its_own_heavier_barbarian(self):
+        """A separate row on purpose: reusing the hero's `barrel_barbarian` (716 / 192, from the
+        hero page's own vardefines) would have handed the base card a 6.9% hitpoint buff that
+        nobody published."""
+        db = _make_engine().db
+        base = build_spec(db, "barbarian_barrel", LVL).spawn_spec
+        hero = build_spec(db, "barbarian_barrel_hero", LVL).spawn_spec
+        self.assertEqual(base.key, "base_barrel_barbarian")
+        self.assertEqual(hero.key, "barrel_barbarian")
+        self.assertAlmostEqual(hero.hp, 716.0, places=1)
+        self.assertNotAlmostEqual(base.hp, hero.hp, places=1)
+        self.assertEqual(base.ability_kind, "",
+                         "only the HERO's barbarian carries the Rowdy Reroll button")
+        self.assertEqual(hero.ability_kind, "reroll")
+
+    def test_a_full_deploy_leaves_exactly_one_body(self):
+        eng = _quiet(_make_engine())
+        eng.elixir[1] = 10.0
+        self.assertTrue(eng.deploy(1, build_spec(eng.db, "barbarian_barrel", LVL), 0.5, 0.45))
+        for _ in range(30):
+            eng.advance(0.1)
+        bodies = [u for u in eng.units if u.team == 1]
+        self.assertEqual(len(bodies), 1, "MEASURED 0 -> 1")
+        self.assertEqual(bodies[0].spec.key, "base_barrel_barbarian")
+        self.assertAlmostEqual(bodies[0].hp, 670.0, places=1)
+
+    def test_the_roll_still_damages_along_its_corridor(self):
+        """The body is an addition, not a replacement: the corridor is what the card is FOR."""
+        eng = _quiet(_make_engine())
+        sp = build_spec(eng.db, "barbarian_barrel", LVL)
+        foe = Unit(spec=build_spec(eng.db, "knight", LVL), team=0, x=0.5, y=0.42, hp=3000.0)
+        eng.units.append(foe)
+        eng._resolve_spell(_Spell(1, 0.5, 0.45, sp, 0.0))
+        self.assertAlmostEqual(3000.0 - foe.hp, sp.spell_dmg, places=3)
+        self.assertGreater(sp.spell_dmg, 0.0)
+
+
 if __name__ == "__main__":
     unittest.main()

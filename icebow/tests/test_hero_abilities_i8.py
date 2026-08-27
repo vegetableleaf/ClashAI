@@ -736,9 +736,11 @@ class RerollTests(unittest.TestCase):
         `ability_kind`, and a `_Spell` is never one. build_spec therefore hands a spell's whole
         ability block to the troop it drops, as a RULE rather than a card check.
 
-        MEASURED, and recorded in conflicts.md: the BASE barbarian_barrel spawns no Barbarian at
-        all in this sim. `spawns_troop` is curated on the hero row only, so fixing the hero does
-        not silently buff the 198 pool decks holding the base card.
+        The BASE barbarian_barrel spawned no Barbarian at all when this test was written -- a
+        pre-existing gap I8 recorded rather than fixed, because declaring it changes 198 pool
+        decks. I9 fixed it in its own measured commit, so the base card now leaves its OWN
+        `base_barrel_barbarian` (670 / 191, the base page's vardefines) and NOT the hero's
+        heavier one, and that body carries no button.
         """
         eng = _quiet(_make_engine())
         spell = build_spec(eng.db, "barbarian_barrel_hero", LVL)
@@ -747,7 +749,11 @@ class RerollTests(unittest.TestCase):
         self.assertIsNotNone(spell.spawn_spec)
         self.assertEqual(spell.spawn_spec.ability_kind, "reroll")
         base = build_spec(eng.db, "barbarian_barrel", LVL)
-        self.assertIsNone(base.spawn_spec, "the base card's gap is recorded, not fixed here")
+        self.assertIsNotNone(base.spawn_spec, "the base card leaves a Barbarian too (I9)")
+        self.assertEqual(base.spawn_spec.key, "base_barrel_barbarian",
+                         "its OWN row: the hero's 716/192 belong to the hero page")
+        self.assertEqual(base.spawn_spec.ability_kind, "",
+                         "and only the hero's barbarian carries the Rowdy Reroll button")
 
     def test_rowdy_reroll_rolls_a_second_corridor_and_lifesteals_half_of_it(self):
         """Barbarian Barrel/Hero 437523: "the Barbarian Barrel will roll for a second time, while

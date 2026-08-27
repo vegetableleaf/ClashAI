@@ -1255,6 +1255,47 @@ So the debugger needed a RECORD, not a renderer: `SimEngine.arc_events` and
   plus the Goblinstein LINK capsule its zone tick actually damages along, and a `'` suffix on a
   cloned body.
 
+### THE I8 CARRY-OVERS: all four landed, all four pinned, and the one open item closed
+
+I8 reported fixing four measured engine bugs and leaving one data gap. VERIFIED here:
+
+| Bug | Landed | Pinned by |
+|---|---|---|
+| `_resolve_roll` never dropped a rolling spell's `spawn_spec` | yes (`engine.py`, the `sp = s.spec.spawn_spec` block) | `test_hero_abilities_i8.py::test_rowdy_reroll_...` deploys the hero barrel and asserts exactly one `barrel_barbarian` body |
+| `_late_spawns` ignored `ghost_life_s` | yes (the `n_ == 1` branch) | `test_triple_threat_blinks_back_...` asserts the Magic Archer's decoy is gone at its published 7 s |
+| a reach-extending stance is inert without SIGHT and PROJECTILE flight | yes (`_ability_buff_self`) | `test_a_stance_that_extends_REACH_extends_sight_and_the_projectile_with_it` |
+| the Hero Giant's 2 s stun and 2 s of flight ran in SERIES | yes (`flying_left` ticks ABOVE the stun early-out) | `test_a_thrown_body_is_AIR_while_it_flies_...`. **VERIFIED TO FAIL**: moving the decay back below the stun gate turns it red ("...and can again once it lands"), so the test really does pin the parallelism and not just the flags |
+
+**THE OPEN ITEM IS NOW CLOSED.** The base Barbarian Barrel left no Barbarian (MEASURED: **0 bodies
+from a full deploy**), which is the card's whole second half — Barbarian Barrel revid 437163 says
+it twice ("then breaks open and out pops a Barbarian!", "Once the spell reaches its destination,
+it spawns a single Barbarian") and its Strategy section is built on the body ("can follow up and
+attack anything while alive"; "the spell can be used to separate a building-targeting troop from a
+regular troop"). I8 held it back for its own measured commit because it changes **198 of 1000 pool
+decks (24.95% of deck weight)** — that commit is `i9: the base barbarian barrel's barbarian`, and
+the measurement is 0 -> 1 body at 670 hp.
+
+A SEPARATE KB ROW, `base_barrel_barbarian`, and not the hero's `barrel_barbarian`: the hero page's
+own vardefines are 716 / 192 against the base page's 670 / 191, so reusing the hero's row would
+have handed the base card a 6.9% hitpoint buff nobody published. The base card's row was already
+carrying `spawn_unit_stats` — the Barbarian's combat profile with nothing to attach it to — so the
+only thing missing was the declaration. Neither deck plays the card, so this is enemy-side only,
+which is the scope of the whole phase.
+
+One I8 test had to change with it: `test_a_SPELL_hero_hands_its_button_to_the_body_it_leaves_behind`
+asserted "the base card's gap is recorded, not fixed here". It now asserts the base card leaves its
+OWN barbarian and that only the hero's carries the Rowdy Reroll button.
+
+### RECORDED, NOT ACTED ON (I9)
+
+* **Every spawned body is priced at 4 elixir.** A KB row with `elixir: null` falls through to the
+  engine's default, and MEASURED that is **4** for `barrel_barbarian`, `base_barrel_barbarian`,
+  `magic_archer_decoy`, `soul_skeleton` and `guardienne` alike. The reward layer prices bodies at
+  `spec.elixir` in at least eight places, so a Skeleton King's Skeleton currently reads as 4 elixir
+  of enemy investment. Pre-existing, pool-wide, and touching a dozen cards' reward values at once —
+  so it is a measured commit of its own, not a side effect of this one. (I9's clones sidestep it by
+  setting `elixir = 0` on the clone's spec explicitly.)
+
 ### NOT IMPLEMENTED, DELIBERATELY (I9 item 1)
 
 * **The Clone's forward shove of the ORIGINAL body.** "When a troop is cloned, the original troop

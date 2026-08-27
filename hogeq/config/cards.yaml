@@ -1766,7 +1766,19 @@ cards:
   #   width_tiles: SUPERSEDED ABSENT -> 2.6. MISSING FIELD. The barrel is a rectangular corridor,
   #     not a point: the attributes table publishes Width 2.6 and 1/7/2019 set it to 2.6 (from
   #     3.9)
-  barbarian_barrel: {kind: spell, flags: [rolls, splash], roll_tiles: 4.5, width_tiles: 2.6, spawn_unit_stats: {range_tiles: 0.5, speed_tiles: 1.0, hit_speed: 1.3, deploy_time: 0.5}, verified: true}
+  # I9 2026-08-27 -- THE BARBARIAN. The card's whole second half, unmodelled until now: MEASURED,
+  # a full deploy of the base Barbarian Barrel left 0 bodies. Barbarian Barrel revid 437163, lead:
+  # "Once the spell reaches its destination, it spawns a single Barbarian" -- and the card text
+  # says it twice ("then breaks open and out pops a Barbarian!"). The Strategy section is built
+  # entirely on the body: it "can follow up and attack anything while alive", it distracts a tank,
+  # it separates a building-targeter from its push, and "the spell can be used to separate a
+  # building-targeting troop from a regular troop".
+  # `spawn_unit_stats` below was already carrying the Barbarian's combat profile -- a stat table
+  # with nothing to attach it to -- so the only thing missing was the declaration. It points at
+  # `base_barrel_barbarian` and NOT at the hero's `barrel_barbarian`, whose 716/192 belong to the
+  # hero page (see that row). I8 fixed `_resolve_roll` to drop a rolling spell's spawn; this is
+  # the data half of the same gap, held back to its own commit because it changes 198 pool decks.
+  barbarian_barrel: {kind: spell, flags: [rolls, splash], roll_tiles: 4.5, width_tiles: 2.6, spawns_troop: {unit: base_barrel_barbarian, count: 1}, spawn_unit_stats: {range_tiles: 0.5, speed_tiles: 1.0, hit_speed: 1.3, deploy_time: 0.5}, verified: true}
   # Giant Snowball: "slows enemies in its radius for 3 seconds and inflict knockback"; pushback range
   # 1.8 tiles per the 6/9/2021 Quarter 3 Update ("increased ... to 1.8 tiles (from 1.5 tiles)").
   giant_snowball: {kind: spell, flags: [knockback, slow], knockback_tiles: 1.8, verified: true}
@@ -3273,6 +3285,28 @@ cards:
                                    # (a SILENT timed removal, no death effects) rather than
                                    # `lifetime`, which the engine decays only for buildings and
                                    # which would also have made it pull building-targeters.
+    verified: false
+  base_barrel_barbarian:           # the Barbarian the BASE Barbarian Barrel leaves behind
+    display: "Barrel Barbarian"    # (Barbarian Barrel, revid 437163). Lead: "Once the spell
+    elixir: null                   # reaches its destination, it spawns a single Barbarian."
+    kind: troop                    # vardefines hp_11 670 / dmg_11 191; Barbarian Attributes table
+    rarity: epic                   # Hit Speed 1.3 / First Hit Speed 0.4 / Speed Medium (60) /
+    attacks: [ground]              # Deploy Time 0.5 / Range Melee: Short (0.5) / Ground / x1.
+    movement: ground               # A SEPARATE ROW from `barrel_barbarian`, which is the HERO's
+    speed: medium                  # and carries the hero page's own 716 / 192 -- reusing it would
+    range: melee                   # have handed the base card a 6.9% hitpoint buff nobody
+                                   # published.
+    count: 1
+    win_condition: false
+    hitpoints: 670
+    damage: 191
+    dps: 147
+    hit_speed: 1.3                 # the vardefine `atk_speed` on this page says 1.3 too, so
+                                   # unlike the hero row there is nothing to reconcile here.
+    range_tiles: 0.5
+    speed_tiles: 1.0
+    first_hit_speed_s: 0.4
+    deploy_time_s: 0.5
     verified: false
   barrel_barbarian:                # the Barbarian the Hero Barbarian Barrel leaves behind
     display: "Barrel Barbarian"    # (Barbarian Barrel/Hero, revid 437523). vardefines hp_11 716,
