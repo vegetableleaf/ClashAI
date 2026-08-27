@@ -24,7 +24,7 @@ for _p in (str(ROOT / "src"), str(ROOT / "tests")):
 
 from test_sim_status_effects import _make_engine                    # noqa: E402
 from clashrl.sim.engine import (ABILITY_KINDS, Unit, build_spec,    # noqa: E402
-                                replace, _TILES_X, _TILES_Y)
+                                replace, _dist, _TILES_X, _TILES_Y)
 
 LVL = 11
 
@@ -466,6 +466,431 @@ class AbilityAIFrameworkTests(unittest.TestCase):
             with self.subTest(kind=kind):
                 self.assertIn(kind, _ABILITY_FAMILY)
                 self.assertIn(_ABILITY_FAMILY[kind], _ABILITY_AI_DEFAULTS)
+
+
+class ArcherQueenStealthTests(unittest.TestCase):
+    """CLOAKING CAPE -- kind `stealth` (Archer_Queen.wikitext, revid 436755; decisions.md ruling 6).
+
+    Wiki: "the Archer Queen activates her 'Cloaking Cape', becoming invisible (untargetable by
+    enemy troops), having a 80% increase in attack speed, and a massive decrease in movement speed
+    for the entire 3.5-second duration of the ability."
+
+    THE ATTACK-SPEED BUFF IS STATED THREE WAYS ON THE SAME PAGE, and this is the resolution:
+        prose    "a 80% increase in attack speed"                 -> x1.8   ACCEPTED
+        table    Boost "+180%"                                    -> x2.8   rejected
+        History  "attack speed buff to 180% (from 200%)"          -> x1.8   accepted
+    Resolved by the page's OWN level table, which is the only machine-readable statement of the
+    three: its "Damage per second (with Cloaking Cape)" column computes `Dps(dmg_11*1.80,
+    atk_speed)` -- damage x1.80 at an UNCHANGED 1.2 s hit speed, i.e. 1.8x DPS. Two of the three
+    prose statements land on the same number and the table's leading "+" is the outlier; read as
+    +180% it would mean x2.8, which no other line on the page supports. Hit interval 1.2 / 1.8 =
+    0.667 s.
+    Neither reading reproduces the Strategy claim of "exactly 7 shots for the full duration"
+    (1.8x gives ~5.25, 2.8x ~8.2, and 7 would need ~2.4x). That is an in-game count, queued in
+    conflicts.md; it is not evidence for a third multiplier.
+
+    The movement penalty is the table's Slow (45) = 0.75 tiles/s against her body's Medium (60).
+    """
+
+    def _cloaked(self, cloak=True):
+        eng = _quiet(_make_engine())
+        eng.elixir[0] = 10.0
+        aq = _place(eng, "archer_queen", 0, 0.50, 0.60)
+        if cloak:
+            self.assertTrue(eng.champion_ability(0))
+            for _ in range(11):                     # burn the 1 s activation delay
+                eng.advance(0.1)
+        return eng, aq
+
+    def test_the_cloak_makes_her_untargetable_by_TROOPS(self):
+        eng, aq = self._cloaked()
+        self.assertGreater(aq.ability_active_s, 0.0)
+        foe = _place(eng, "knight", 1, 0.50, 0.58)
+        self.assertFalse(eng._valid_foe(foe, aq))
+
+    def test_but_splash_and_spells_still_reach_her(self):
+        """History 8/4/2022 FIXED an invisible Archer Queen to receive splash damage, and Strategy
+        says "since it is a spell, the player can reliably hit the Archer Queen even while her
+        ability is active". That is the Royal Ghost's invisibility class, not the Boss Bandit's
+        untouchable one -- `ghost`, not `invis_left`."""
+        eng, aq = self._cloaked()
+        self.assertTrue(aq.ghost)
+        self.assertEqual(0.0, aq.invis_left, "she is UNSEEN, not immune")
+        before = aq.hp
+        eng.elixir[1] = 10.0
+        eng.deploy(1, build_spec(eng.db, "fireball", LVL), aq.x, aq.y)
+        for _ in range(40):
+            eng.advance(0.1)
+        self.assertLess(aq.hp, before, "a spell must still land on a cloaked Archer Queen")
+
+    def test_she_shoots_1_point_8_times_faster_while_it_runs(self):
+        out = {}
+        for cloak in (False, True):
+            eng, aq = self._cloaked(cloak=cloak)
+            t = build_spec(eng.db, "knight", LVL)
+            foe = Unit(spec=t, team=1, x=0.50, y=0.60 - 3.0 / _TILES_Y, hp=t.hp * 500)
+            foe.deploy_left = 0.0
+            eng.units.append(foe)
+            fx, fy = foe.x, foe.y
+            h0 = foe.hp
+            for _ in range(35):                      # 3.5 s, the published duration
+                foe.x, foe.y, aq.x, aq.y = fx, fy, 0.50, 0.60
+                eng.advance(0.1)
+            out[cloak] = (h0 - foe.hp) / build_spec(eng.db, "archer_queen", LVL).hit_dmg
+        self.assertGreater(out[True], out[False])
+        self.assertAlmostEqual(1.8, out[True] / max(out[False], 1e-9), delta=0.35,
+                               msg="shots in 3.5 s: %.2f cloaked vs %.2f plain" % (out[True], out[False]))
+
+    def test_and_walks_at_Slow_45_while_it_runs(self):
+        moved = {}
+        for cloak in (False, True):
+            eng, aq = self._cloaked(cloak=cloak)
+            y0 = aq.y
+            for _ in range(30):                      # 3 s, inside the 3.5 s window
+                eng.advance(0.1)
+            moved[cloak] = abs(aq.y - y0) * _TILES_Y
+        self.assertAlmostEqual(0.75, moved[True] / max(moved[False], 1e-9), delta=0.12,
+                               msg="tiles walked: %.2f cloaked vs %.2f plain"
+                                   % (moved[True], moved[False]))
+
+    def test_it_ends_after_the_published_3_point_5_seconds(self):
+        eng, aq = self._cloaked()
+        for _ in range(45):
+            eng.advance(0.1)
+        self.assertEqual(0.0, aq.ability_active_s)
+        self.assertFalse(aq.ghost, "the cloak has to come off, or she is permanently unseen")
+
+    def test_ruling_7_is_REACHABLE_for_a_deferred_kind(self):
+        """The refund case that actually happens in a match: she is still targetable during the
+        1 s cast, so a stun or a kill inside it takes the ability with it and returns the elixir.
+        (The two at-once kinds cannot get here -- both go untargetable for that exact window.)"""
+        eng = _quiet(_make_engine())
+        eng.elixir[0] = 10.0
+        aq = _place(eng, "archer_queen", 0, 0.50, 0.60)
+        self.assertTrue(eng.champion_ability(0))
+        self.assertAlmostEqual(9.0, eng.elixir[0], places=6)
+        aq.hp = 0.0
+        eng.advance(0.1)
+        self.assertAlmostEqual(10.0, eng.elixir[0], places=6)
+        self.assertFalse(aq.ghost, "the cloak never went up")
+
+
+class GoldenKnightDashChainTests(unittest.TestCase):
+    """DASHING DASH -- kind `dash_chain` (Golden_Knight.wikitext, revid 437147; owner ruling 10).
+
+    Wiki, verbatim: "Once a unit is in range, he dashes to it quickly, then dashes towards the
+    closest enemy unit within a 5.5-tile radius (even if the previous unit was not destroyed). His
+    dashes have invulnerability and deal increased damage, like the Bandit. He cannot dash into
+    the same troop per ability use. He will stop dashing after dashing 10 times, if no other valid
+    targets are within range, or if the last target hit is a Crown Tower."
+
+    THREE TERMINATORS, per ruling 10 as amended by that last clause (which the ruling omitted and
+    wiki verification restored): the 10-dash cap, no valid target in range, and a Crown Tower hit.
+    Ruling 10 also settles the page's most load-bearing ambiguity -- "no targets in range" ENDS
+    the ability. There is no pause-and-resume and no return-to-origin: he stops AT THE LAST
+    TARGET'S LOCATION and behaves as a normal troop from there.
+
+    ⚠ DASH TRAVEL SPEED IS UNPUBLISHED and 8.33 tiles/s is the Bandit / Boss Bandit analog (their
+    Dash Speed 500 at 60 units = 1 tile/s), marked untested in the KB. Every timing below is
+    therefore a consequence of an unmeasured constant; the SHAPE tests are not.
+    """
+
+    def _chain(self, n_bodies=12, spacing=1.3, y=0.55, x0=0.06):
+        # 1.3 tiles apart, so twelve of them span 15.6 tiles and FIT: the arena is 18 tiles wide,
+        # and at the 3.0-tile spacing the first draft used, bodies 6-11 sat off the board and the
+        # chain "ended early" for a reason that had nothing to do with the card.
+        eng = _quiet(_make_engine())
+        eng.elixir[0] = 10.0
+        gk = _place(eng, "golden_knight", 0, x0, y)
+        t = build_spec(eng.db, "knight", LVL)
+        bodies = []
+        for i in range(n_bodies):
+            b = Unit(spec=t, team=1, x=x0 + ((i + 1) * spacing) / _TILES_X, y=y, hp=t.hp * 50)
+            b.deploy_left = 0.0
+            bodies.append(b)
+            eng.units.append(b)
+        return eng, gk, bodies
+
+    def _run(self, eng, gk, bodies, steps=200):
+        """Damage dealt by the CHAIN, and by nothing else.
+
+        The ledger is opened when the chain STARTS and closed the tick it ends. Both ends matter:
+        before it starts he spends the 1 s activation delay walking up and swinging normally, and
+        after it ends he swings at whatever he stopped beside -- MEASURED, both leak 161.1 per hit
+        into a column that is supposed to read 335.
+        """
+        pos = [(b.x, b.y) for b in bodies]
+        self.assertTrue(eng.champion_ability(0))
+        start, started = None, False
+        for _ in range(steps):
+            for b, (px, py) in zip(bodies, pos):
+                b.x, b.y = px, py                    # pinned: this is a CHAIN test, not a race
+            eng.advance(0.05)
+            if not started and gk.dash_left > 0:
+                started = True
+                start = [b.hp for b in bodies]       # the chain is armed: open the ledger here
+            elif started and gk.dash_left <= 0:
+                break
+        self.assertTrue(started, "the chain never armed")
+        return [h0 - b.hp for h0, b in zip(start, bodies)]
+
+    def test_he_dashes_the_published_TEN_times_and_stops(self):
+        eng, gk, bodies = self._chain(n_bodies=12)
+        dmg = self._run(eng, gk, bodies)
+        hit = [d for d in dmg if d > 0]
+        self.assertEqual(10, len(hit), "table 'Maximum Dashes' = 10; got %s" % dmg)
+        self.assertEqual(0, gk.dash_left)
+
+    def test_each_dash_lands_the_published_dash_damage(self):
+        eng, gk, bodies = self._chain(n_bodies=12)
+        dmg = self._run(eng, gk, bodies)
+        s = build_spec(eng.db, "golden_knight", LVL)
+        self.assertAlmostEqual(335.0, s.ability_dmg, delta=0.5, msg="vardefine dash_11")
+        for i, d in enumerate(dmg[:10]):
+            with self.subTest(body=i):
+                self.assertAlmostEqual(335.0, d, delta=1.0)
+
+    def test_he_never_dashes_the_same_body_twice(self):
+        """"He cannot dash into the same troop per ability use." Two bodies and a ten-dash budget:
+        without the exclusion he would bounce between them until the cap."""
+        eng, gk, bodies = self._chain(n_bodies=2)
+        dmg = self._run(eng, gk, bodies)
+        for i, d in enumerate(dmg):
+            with self.subTest(body=i):
+                self.assertAlmostEqual(335.0, d, delta=1.0, msg="exactly one dash each")
+
+    def test_no_valid_target_in_range_ENDS_it(self):
+        """Ruling 10's second terminator, and the answer to the page's biggest unknown: this is an
+        END, not a pause. Two bodies inside 5.5 tiles and a third far outside it -- he takes the
+        two and stops rather than waiting for the third to walk in."""
+        eng, gk, bodies = self._chain(n_bodies=2)
+        far = build_spec(eng.db, "knight", LVL)
+        stray = Unit(spec=far, team=1, x=0.90, y=0.55, hp=far.hp * 50)
+        stray.deploy_left = 0.0
+        eng.units.append(stray)
+        h0 = stray.hp
+        self._run(eng, gk, bodies)
+        self.assertEqual(0, gk.dash_left)
+        self.assertAlmostEqual(h0, stray.hp, delta=1.0, msg="he must not have waited for it")
+
+    def test_a_CROWN_TOWER_hit_ends_the_chain_even_with_dashes_left(self):
+        """The third terminator, introduced 4/4/2022 and omitted by ruling 10 until wiki
+        verification restored it: "or if the last target hit is a Crown Tower". The tower can
+        still BE a dash target and take dash damage -- the chain simply always ends there."""
+        eng = _quiet(_make_engine())
+        eng.elixir[0] = 10.0
+        tw = eng.towers[1][0]
+        gk = _place(eng, "golden_knight", 0, tw.x, tw.y + 4.0 / _TILES_Y)
+        t = build_spec(eng.db, "knight", LVL)
+        # A second body PAST the tower, still inside the 5.5-tile arc from it, so the only reason
+        # it can survive is the terminator.
+        behind = Unit(spec=t, team=1, x=tw.x + 3.0 / _TILES_X, y=tw.y - 2.0 / _TILES_Y,
+                      hp=t.hp * 50)
+        behind.deploy_left = 0.0
+        eng.units.append(behind)
+        hp0, bx, by = tw.hp, behind.x, behind.y
+        self.assertTrue(eng.champion_ability(0))
+        started, bh = False, None
+        for _ in range(120):
+            behind.x, behind.y = bx, by
+            eng.advance(0.05)
+            if not started and gk.dash_left > 0:
+                started, bh = True, behind.hp
+            elif started and gk.dash_left <= 0:
+                break
+        self.assertTrue(started)
+        self.assertLess(tw.hp, hp0, "a crown tower IS a dash target")
+        self.assertEqual(0, gk.dash_left, "and hitting one ends the chain")
+        self.assertGreater(gk.spec.ability_max_hits, 2, "with dashes still on the clock")
+        self.assertAlmostEqual(bh, behind.hp, delta=1.0,
+                               msg="nothing after the tower may be dashed")
+
+    def test_he_is_immune_to_damage_in_flight(self):
+        """Wiki: "When dashing, he is immune to all forms of damage like the Bandit."""
+        eng, gk, bodies = self._chain(n_bodies=12)
+        self.assertTrue(eng.champion_ability(0))
+        for _ in range(60):
+            eng.advance(0.05)
+            if gk.dash_go:
+                break
+        self.assertTrue(gk.dash_go, "he should be mid-dash by now")
+        hp0 = gk.hp
+        eng._hurt(gk, 5000.0)
+        self.assertEqual(hp0, gk.hp)
+
+    def test_he_stops_where_the_last_target_was_and_does_not_return(self):
+        """Ruling 10: "he stops AT THE LAST TARGET'S LOCATION and then moves/attacks like a normal
+        troop". No return-to-origin anywhere on the page or in the ruling. Wide spacing here so
+        the three landing points are far apart and "where he stopped" is unambiguous."""
+        eng, gk, bodies = self._chain(n_bodies=3, spacing=3.0)
+        x0 = gk.x
+        self._run(eng, gk, bodies)
+        self.assertGreater(gk.x, x0 + 5.0 / _TILES_X,
+                           "he ended back near where he started -- that is a return-to-origin")
+        self.assertAlmostEqual(bodies[-1].x, gk.x, delta=2.5 / _TILES_X,
+                               msg="he should be standing on the LAST body he dashed")
+
+    def test_the_movement_boost_only_runs_while_the_chain_does(self):
+        eng, gk, _bodies = self._chain(n_bodies=0)
+        s = build_spec(eng.db, "golden_knight", LVL)
+        self.assertAlmostEqual(2.0, s.ability_move_speed, places=6)   # Very Fast (120)
+        self.assertAlmostEqual(1.0, s.speed, places=6)                # his body is Medium (60)
+        self.assertEqual(0, gk.dash_left)
+
+
+class SkeletonKingSoulBankTests(unittest.TestCase):
+    """SOUL SUMMONING -- kind `soul_bank` (Skeleton_King.wikitext, revid 436753; owner ruling 8).
+
+    Wiki: "The number of Skeletons spawned is based on how many troops die (either from the player
+    or the opponent) while he is deployed... With no souls, the Skeleton King will spawn 6
+    Skeletons, but with a maximum of 10 souls, he can summon 16." The Skeletons "behave identically
+    to cloned Skeletons... they only have 1 hitpoint" -- a curated `soul_skeleton` row, not the
+    Skeletons card. Spawn radius 3.5 (History 24/10/2025; the ability prose's 4 was never
+    updated), one every 0.25 s.
+
+    RULING 8 (owner): a body that has spent its use stops banking souls.
+    """
+
+    def _king(self, souls=0):
+        eng = _quiet(_make_engine())
+        eng.elixir[0] = 10.0
+        sk = _place(eng, "skeleton_king", 0, 0.50, 0.60)
+        sk.souls = souls
+        return eng, sk
+
+    def _summon(self, eng, sk, steps=120):
+        self.assertTrue(eng.champion_ability(0))
+        for _ in range(steps):
+            eng.advance(0.05)
+        return [u for u in eng.units
+                if u.team == 0 and u.hp > 0 and u.spec.base == "soul_skeleton"]
+
+    def test_no_souls_summons_the_published_floor_of_six(self):
+        eng, sk = self._king(souls=0)
+        self.assertEqual(6, len(self._summon(eng, sk)))
+
+    def test_a_full_bar_summons_the_published_sixteen(self):
+        eng, sk = self._king(souls=10)
+        self.assertEqual(16, len(self._summon(eng, sk)))
+
+    def test_they_are_ONE_hitpoint_clone_variant_skeletons(self):
+        eng, sk = self._king()
+        for u in self._summon(eng, sk):
+            self.assertAlmostEqual(1.0, u.spec.hp, places=6)
+            self.assertAlmostEqual(81.0, u.spec.hit_dmg, delta=1.0)   # vardefine skel_dmg_11
+        self.assertNotEqual("skeletons", build_spec(eng.db, "skeleton_king", LVL).ability_spawn.base)
+
+    def test_they_land_inside_the_published_radius_one_at_a_time(self):
+        """Positions are read the tick each Skeleton APPEARS. They are Fast (90) and march off
+        immediately, so measuring at the end of the run measures where they walked to -- MEASURED,
+        6.45 tiles from him after 6 s, against a 3.5-tile spawn radius."""
+        eng, sk = self._king(souls=10)
+        self.assertTrue(eng.champion_ability(0))
+        seen, first_at, counts, cx, cy = set(), [], [], None, None
+        for _ in range(120):
+            eng.advance(0.05)
+            if cx is None and eng._late_spawns:
+                cx, cy = sk.x, sk.y                  # where he stood when the summon queued
+            for u in eng.units:
+                if u.spec.base == "soul_skeleton" and id(u) not in seen:
+                    seen.add(id(u))
+                    first_at.append(_dist(u.x, u.y, cx, cy))
+            counts.append(len(seen))
+        self.assertEqual(16, len(first_at))
+        self.assertLess(counts[4], 16, "0.25 s apart -- they cannot all be out immediately")
+        # Sixteen 0.5-radius bodies inside a 3.5-tile disc overlap heavily, so soft collision has
+        # already shoved them by the tick after each one appears -- MEASURED, up to 0.6 tiles.
+        # The ABILITY's own choice is asserted strictly below, off the queued points; this bound
+        # is on where physics leaves them.
+        for i, d in enumerate(first_at):
+            with self.subTest(skeleton=i):
+                self.assertLessEqual(d, 3.5 + 1.0)
+
+    def test_the_summon_points_themselves_are_inside_the_published_radius(self):
+        """The ability's own geometry, read off the spawn queue before any physics touches it.
+        History 24/10/2025: "decreased Soul Summoning's skeleton spawn radius to 3.5 tiles (from
+        4 tiles)" -- the later edit, against an ability prose paragraph still saying 4.
+
+        Measured from where he stood when the ability RESOLVED, not from where he was placed: he
+        walks during the 1 s activation delay, and reading from the placement point instead put
+        the queued points up to 4.09 tiles out -- a full tile of his own movement, not spread.
+        """
+        eng, sk = self._king(souls=10)
+        self.assertTrue(eng.champion_ability(0))
+        cx = cy = None
+        for _ in range(21):                          # burn the 1 s activation delay
+            eng.advance(0.05)
+            if cx is None and eng._late_spawns:
+                cx, cy = sk.x, sk.y
+        pts = [(q[3], q[4]) for q in eng._late_spawns]
+        self.assertEqual(16, len(pts) + sum(1 for u in eng.units
+                                            if u.spec.base == "soul_skeleton"))
+        for i, (px, py) in enumerate(pts):
+            with self.subTest(point=i):
+                self.assertLessEqual(_dist(px, py, cx, cy), 3.5 + 1e-6)
+
+    def test_a_troop_death_on_EITHER_side_banks_a_soul(self):
+        eng, sk = self._king()
+        mine = _place(eng, "knight", 0, 0.40, 0.60)
+        theirs = _place(eng, "knight", 1, 0.60, 0.60)
+        mine.hp = 0.0
+        theirs.hp = 0.0
+        eng.advance(0.05)
+        self.assertEqual(2, sk.souls, 'wiki: "either from the player or the opponent"')
+
+    def test_a_BUILDING_death_banks_nothing(self):
+        """Wiki: "Buildings also do not count as souls when vanquished."""
+        eng, sk = self._king()
+        b = _place(eng, "cannon", 1, 0.60, 0.60)
+        self.assertEqual("building", b.spec.kind)
+        b.hp = 0.0
+        eng.advance(0.05)
+        self.assertEqual(0, sk.souls)
+
+    def test_the_bar_stops_at_the_published_cap_of_ten(self):
+        eng, sk = self._king(souls=10)
+        v = _place(eng, "knight", 1, 0.60, 0.60)
+        v.hp = 0.0
+        eng.advance(0.05)
+        self.assertEqual(10, sk.souls)
+
+    def test_RULING_8_a_spent_body_stops_accruing(self):
+        eng, sk = self._king(souls=2)
+        self._summon(eng, sk, steps=40)
+        self.assertEqual(0, eng._ability_uses_left(sk))
+        before = sk.souls
+        v = _place(eng, "knight", 1, 0.60, 0.60)
+        v.hp = 0.0
+        eng.advance(0.05)
+        self.assertEqual(before, sk.souls, "ruling 8: a spent body banks nothing more")
+
+    def test_his_own_summoned_skeletons_do_not_bank_souls(self):
+        """"neither do the Skeletons summoned from the ability" -- and without the exclusion a
+        Skeleton King on a swarm board would feed his own bar off his own bodies."""
+        eng, sk = self._king()
+        skels = self._summon(eng, sk, steps=40)
+        sk.ability_left = 1                       # re-arm ONLY the accrual gate, not a second use
+        before = sk.souls
+        for u in skels:
+            u.hp = 0.0
+        eng.advance(0.05)
+        self.assertEqual(before, sk.souls)
+
+    def test_the_summon_finishes_even_if_he_dies_mid_sequence(self):
+        """"It continues, even if the Skeleton King dies." Queued into the engine's timed-spawn
+        list, which holds positions rather than a reference to him, so his death cannot cancel
+        it -- and History 30/3/2022 had to FIX a case where it could."""
+        eng, sk = self._king(souls=10)
+        self.assertTrue(eng.champion_ability(0))
+        for _ in range(30):                        # 1.5 s: past the cast, mid-sequence
+            eng.advance(0.05)
+        out = sum(1 for u in eng.units if u.spec.base == "soul_skeleton")
+        self.assertGreater(out, 0)
+        self.assertLess(out, 16, "still summoning")
+        sk.hp = 0.0
+        for _ in range(120):
+            eng.advance(0.05)
+        self.assertEqual(16, sum(1 for u in eng.units if u.spec.base == "soul_skeleton"))
 
 
 if __name__ == "__main__":

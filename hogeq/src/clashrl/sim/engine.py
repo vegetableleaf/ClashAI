@@ -105,6 +105,11 @@ _RIVER = 0.5              # the board is symmetric about this now that anchors a
 # because a single shared constant cannot be corrected for one card without silently moving every
 # other chain card with it. Cards that publish nothing still land here.
 _CHAIN_TILES = 3.0
+# SKELETON KING's soul bar: "with a maximum of 10 souls, he can summon 16 Skeletons" against a
+# floor of 6, so exactly +1 Skeleton per soul. The 6 and the 16 are published in the Soul
+# Summoning Attributes table ("Skeleton Count 6-16"); the per-soul rate is the arithmetic between
+# them and the page never prints it.
+_SOUL_CAP = 10
 _SPARK_TILES = 2.5
 _SKELETON_BASES = {"skeletons", "skeleton_army", "guards"}   # Evo Witch's Healing Bones triggers
 _SPLASH_R = 1.9           # splash radius, tiles
@@ -219,6 +224,7 @@ class CardSpec:
     ability_shield_hp: float = 0.0      # I8 (taunt_shield heroes); no champion uses it
     ability_heal: float = 0.0           # I8 (heal-shaped hero abilities); no champion uses it
     ability_dmg_reduction: float = 0.0  # incoming damage negated while active (Monk 0.65)
+    ability_knock: float = 0.0          # tiles the ability shoves ground bodies (LP charge 2.5)
     ability_ai: tuple = ()              # KB-tunable opponent-AI knobs as sorted (key, value)
                                         # pairs -- see ScriptedBot._try_ability
     # BOSS BANDIT's "Getaway Grenade" (kind `movement_flight`): "get invisible for one second,
@@ -986,6 +992,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         # Published as a NEGATIVE percentage on the Monk's page ("Damage Reduced -65%"); the
         # engine wants a positive fraction of damage negated, like Evo Knight's.
         ability_dmg_reduction=abs(float(c.get("ability_damage_reduction") or 0.0)) / 100.0,
+        ability_knock=float(c.get("ability_knockback_tiles") or 0.0),
         ability_ai=ability_ai,
         # Most death-damage cards publish a splash radius; a few (Ice Golem) publish the damage but
         # not the radius, and a 0 radius would silently make the blast inert. 2.0 tiles is the modal
@@ -2238,7 +2245,13 @@ class SimEngine:
         """Soft collision so units can't stack -- approximate body-blocking: a wall of troops physically
         holds up a tank because it can't pass straight through them. Gentle (push apart by the overlap);
         buildings + still-spawning units don't move; air and ground don't collide."""
-        us = [u for u in self.units if u.hp > 0 and u.deploy_left <= 0]
+        # A DASHING BODY IS IN FLIGHT and does not collide. MEASURED without this: the Golden
+        # Knight's second dash had to pass THROUGH the body he had just dashed onto, soft
+        # collision shoved him back a shrinking amount every tick, and he converged on an
+        # asymptote 0.06 tiles short of his target and never arrived -- one dash of a ten-dash
+        # chain, forever. It is also what the page describes: the dash "is able to cross the
+        # river", he "can dash onto multiple targets", and he is immune throughout.
+        us = [u for u in self.units if u.hp > 0 and u.deploy_left <= 0 and not u.dash_go]
         for i in range(len(us)):
             a = us[i]
             for j in range(i + 1, len(us)):
@@ -2395,6 +2408,18 @@ class SimEngine:
                 self._late_spawns = [q for q in self._late_spawns if q[0] > self.t]
                 for _t, sp_, tm_, px_, py_, n_ in due:
                     for i in range(n_):
+                        # ONE body lands ON the queued point. The ring below is a FORMATION for a
+                        # group; with n_ == 1 it degenerates to a fixed 1.25-tile shove in +x,
+                        # which is not a formation, it is a bias. It matters now that the Skeleton
+                        # King queues his Skeletons ONE AT A TIME at their own sampled points --
+                        # MEASURED, the ring pushed them to 4.75 tiles from him against a
+                        # published 3.5-tile spawn radius.
+                        if n_ == 1:
+                            sx, sy = _clamp_xy(px_, py_, sp_.radius)
+                            nu = Unit(sp_, tm_, sx, sy, sp_.hp)
+                            nu.deploy_left = sp_.deploy_time
+                            self.units.append(nu)
+                            continue
                         ang = 2.0 * math.pi * (i / max(1, n_))
                         rr = sp_.radius * 2.0 + 0.25
                         sx, sy = _clamp_xy(px_ + math.cos(ang) * rr / _TILES_X,
@@ -2589,6 +2614,8 @@ class SimEngine:
             if u.hook_left > 0.0:
                 self._tick_hook(u, dt)
                 continue
+            if u.dash_left > 0 and self._tick_dash(u, dt):
+                continue                                     # mid-chain: no walking, no swinging
             if u.spec.pulse_interval > 0:                    # periodic area-shock (none ship with this today)
                 u.pulse_cd -= dt
                 if u.pulse_cd <= 0:
@@ -2605,6 +2632,36 @@ class SimEngine:
                         break
             if u.slow_left > 0:
                 u.slow_left = max(0.0, u.slow_left - dt)
+            # ACTIVE ABILITY EFFECT (I7). One timer serves every kind that runs for a while --
+            # the Archer Queen's cloak, the Monk's protection, Goblinstein's link -- and one
+            # cadence serves every kind with a repeating sub-event.
+            #
+            # TWO SEPARATE SPEED CHANNELS, because `spd` above is a SINGLE multiplier applied to
+            # both movement and attack cadence (it models Rage, which moves them together) and an
+            # ability routinely moves them OPPOSITE ways: Cloaking Cape shoots at 1.8x while
+            # walking at Slow (45) against her own Medium (60).
+            atk_spd = mv_spd = spd
+            if u.ability_active_s > 0.0:
+                u.ability_active_s = max(0.0, u.ability_active_s - dt)
+                if u.spec.ability_speed_mult > 0.0:
+                    atk_spd *= u.spec.ability_speed_mult
+                if u.spec.ability_tick_s > 0.0:
+                    u.ability_tick_left -= dt
+                    if u.ability_tick_left <= 0.0:
+                        u.ability_tick_left += u.spec.ability_tick_s
+                        tick = ABILITY_TICKS.get(u.spec.ability_kind)
+                        if tick is not None:
+                            tick(self, u)
+                if u.ability_active_s <= 0.0:
+                    end = ABILITY_ENDS.get(u.spec.ability_kind)
+                    if end is not None:
+                        end(self, u)
+            # The movement override applies while the ability is active OR while a dash chain is
+            # running -- the Golden Knight's boost has no published duration and ends on one of
+            # ruling 10's three terminators instead, so it cannot hang off `ability_active_s`.
+            if u.spec.ability_move_speed > 0.0 and u.spec.speed > 0.0 \
+                    and (u.ability_active_s > 0.0 or u.dash_left > 0):
+                mv_spd *= u.spec.ability_move_speed / u.spec.speed
             # ABILITY cooldown + transit, for every kind EXCEPT the invisibility one. The Boss
             # Bandit block below ticks these too, but only for cards with `ability_invis` -- so a
             # champion whose ability is any other shape (the Mighty Miner's escape, the Archer
@@ -2791,7 +2848,7 @@ class SimEngine:
                     # TARGET that starts the clock -- a unit that walks the lane unopposed and
                     # then meets a defender still pays it.
                     u.loaded = True
-                    u.cooldown = max(u.cooldown, u.spec.load_time / spd)
+                    u.cooldown = max(u.cooldown, u.spec.load_time / atk_spd)
                 if u.cooldown <= 0:                          # one discrete hit, then wait hit_speed (slow -> longer)
                     self._attack(u, kind, ref)
                     u.charge_dist = 0.0                      # the charge is SPENT (and stopping cancels a run-up)
@@ -2802,7 +2859,7 @@ class SimEngine:
                         rm = u.spec.atk_ramp_mults[min(u.ramp_shots // u.spec.atk_ramp_per,
                                                        len(u.spec.atk_ramp_mults) - 1)]
                         u.ramp_shots += 1
-                    u.cooldown = u.spec.hit_speed / spd / rm
+                    u.cooldown = u.spec.hit_speed / atk_spd / rm
                     if u.spec.ram_bounce:
                         # EVO BATTLE RAM'S SUPER CHARGE: it "charges and bounces multiple times
                         # against buildings and towers until its HP is depleted" -- the landing
@@ -2817,7 +2874,7 @@ class SimEngine:
             elif u.spec.sniper_shots > 0 and self._try_snipe(u):
                 pass                                         # Evo Musketeer STANDS to take the shot
             elif u.spec.kind != "building":                  # buildings are stationary
-                self._move_toward(u, rx, ry, dt, spd)
+                self._move_toward(u, rx, ry, dt, mv_spd)
         # ROYAL GHOST'S STEALTH. "Upon deployment, he will spawn invisible, and will only turn
         # visible once he attacks... When he is not fighting any unit for 1.8 seconds, he will
         # become invisible again." `u.attacking` is already exactly "has a target in reach", so
@@ -2875,6 +2932,23 @@ class SimEngine:
                         nu.parent = gen
                         nu.from_egg = True                   # ghosts die quietly, no re-ghosting
                         self.units.append(nu)
+                # SOUL SUMMONING's bank. "When a troop is vanquished while the Skeleton King is
+                # in the Arena, the Skeleton King gains a soul", from EITHER side, capped at 10.
+                # The page's exclusions are implemented, each from its own sentence:
+                #   * buildings ("Buildings also do not count as souls when vanquished")
+                #   * the ability's own Skeletons and cloned troops ("neither do the Skeletons
+                #     summoned from the ability")
+                # RULING 8 (owner): a body that has SPENT its use stops accruing.
+                # The sub-troop rule (Golem/Lava Hound/Battle Ram parts do not count, "with
+                # Goblin Giant as an exception") is NOT implemented: the page's own sentence
+                # supports both readings of the exception -- see the YAML's open_questions -- and
+                # guessing a direction would silently move the card's output by up to 4 Skeletons.
+                if u.spec.kind == "troop" and u.spec.base != "soul_skeleton":
+                    for k in self.units:
+                        if (k.hp > 0 and k.spec.ability_kind == "soul_bank"
+                                and k.souls < _SOUL_CAP
+                                and self._ability_uses_left(k) > 0):
+                            k.souls += 1
                 if u.spec.base == "skarmy_general":
                     for g in self.units:
                         if g.parent is u and g.invis_left > 9000.0:
@@ -3296,6 +3370,112 @@ class SimEngine:
                    and _dist(u.x, u.y, e.x, e.y) <= tiles
                    for e in self.units)
 
+    def _dash_targets(self, u: "Unit"):
+        """Everything the chain may dash into from where he is standing NOW.
+
+        Measured from his position AFTER the previous dash, which is what "the closest enemy unit
+        within a 5.5-tile radius" means once he has moved. GROUND only: the body targets Ground
+        and Strategy stresses "The Golden Knight cannot attack air troops", so an air unit is not
+        a valid dash target either -- the page never qualifies "enemy unit" but it never shows him
+        reaching one.
+
+        CROWN TOWERS ARE CANDIDATES, not merely terminal. The page's own counter-advice --
+        "Make sure that they are at most 5 tiles away from the river, to prevent the Golden Knight
+        from connecting to the Crown Tower with his dash" -- only makes sense if he seeks them.
+        """
+        s = u.spec
+        arc = s.ability_range_tiles or 5.5
+        out = []
+        for e in self.units:
+            if e.team == u.team or e.hp <= 0 or e.spec.flying or id(e) in u.dash_hit:
+                continue
+            if not self._valid_foe(u, e):
+                continue
+            d = _dist(u.x, u.y, e.x, e.y)
+            if d <= arc:
+                out.append((d, e))
+        for tw in self._enemy_towers(u.team):
+            if id(tw) in u.dash_hit:
+                continue
+            d = _gap(u.x, u.y, tw)
+            if d <= arc:
+                out.append((d, tw))
+        return out
+
+    def _tick_dash(self, u: "Unit", dt: float) -> bool:
+        """Advance one step of a Dashing Dash chain. True = this tick is spent (no walk, no swing).
+
+        Three states, in the order the page describes them: in flight, waiting out the 0.05 s
+        inter-dash beat, or picking the next target.
+        """
+        s = u.spec
+        if u.dash_go:
+            spd = s.leap_speed or 8.33                       # tiles/s; see _ability_dash_chain
+            dx = (u.dash_tx - u.x) * _TILES_X
+            dy = (u.dash_ty - u.y) * _TILES_Y
+            d = math.hypot(dx, dy)
+            step = spd * dt
+            if d <= step or d < 1e-9:
+                u.x, u.y = _clamp_xy(u.dash_tx, u.dash_ty, s.radius)
+                u.dash_go = False
+                self._dash_land(u)
+                return True
+            u.x += (dx / d) * step / _TILES_X
+            u.y += (dy / d) * step / _TILES_Y
+            return True
+        if u.dash_time_left > 0.0:
+            u.dash_time_left = max(0.0, u.dash_time_left - dt)
+            return True
+        cands = self._dash_targets(u)
+        if not cands:
+            self._dash_end(u)                                # TERMINATOR 2: no valid target
+            return False
+        _, ref = min(cands, key=lambda t: t[0])
+        u.dash_ref = ref
+        # Land AT the target, one reach short of its body -- "he stops at the last target's
+        # location" (ruling 10), not inside it.
+        gap = s.reach + _body_radius(ref)
+        dx = (ref.x - u.x) * _TILES_X
+        dy = (ref.y - u.y) * _TILES_Y
+        d = math.hypot(dx, dy)
+        if d > gap:
+            u.dash_tx = u.x + (dx / d) * (d - gap) / _TILES_X
+            u.dash_ty = u.y + (dy / d) * (d - gap) / _TILES_Y
+        else:
+            u.dash_tx, u.dash_ty = u.x, u.y
+        u.dash_go = True
+        return True
+
+    def _dash_land(self, u: "Unit") -> None:
+        """The dash connects: dash damage, then the terminator tests."""
+        s = u.spec
+        ref = u.dash_ref
+        u.dash_ref = None
+        u.dash_left -= 1
+        u.dash_time_left = s.ability_tick_s                  # the 0.05 s beat before the next one
+        dmg = s.ability_dmg or s.hit_dmg
+        was_tower = isinstance(ref, Tower)
+        if ref is not None:
+            u.dash_hit = u.dash_hit + (id(ref),)             # "cannot dash into the same troop"
+            if was_tower:
+                if ref.alive:
+                    self._damage_tower(ref, dmg, u.team)
+            elif ref.hp > 0:
+                # A target that died before the dash connected still consumes the dash: History
+                # 1/11/2021 "fixed Dashing Dash so that it does not end if the Golden Knight's
+                # target dies before the dash connects with it".
+                self._land_hit(u.team, "unit", ref, s, dmg, dmg)
+        if was_tower or u.dash_left <= 0:
+            self._dash_end(u)                                # TERMINATORS 3 and 1
+
+    def _dash_end(self, u: "Unit") -> None:
+        u.dash_left = 0
+        u.dash_hit = ()
+        u.dash_go = False
+        u.dash_ref = None
+        u.dash_time_left = 0.0
+        u.aggro_reset = True                                 # "then moves/attacks like a normal troop"
+
     def _spawn_from(self, u: "Unit", n: int) -> None:
         """Drop `n` of this spawner's troop around it, on the side it is pushing toward."""
         sp = u.spec.spawner_spec
@@ -3342,6 +3522,11 @@ class SimEngine:
         # "She is immune to damage during her dash" -- the WHOLE dash, charge and flight alike.
         if (u.leap_left > 0.0 or u.leap_go) and u.spec.leap_invuln:
             return
+        # DASHING DASH: "His dashes have invulnerability", "When dashing, he is immune to all
+        # forms of damage like the Bandit. This immunity can be extended by having him dash
+        # multiple times." `dash_go` is only ever set by a dash chain, so no flag is needed.
+        if u.dash_go:
+            return
         if u.invis_left > 0.0:               # invisible = untouchable, not merely unseen
             return
         # RETRACTED TESLA: "immune to all damage except for the Earthquake". The exception is a
@@ -3356,6 +3541,12 @@ class SimEngine:
             self._air_drop(u)                                # Evo Royal Hogs FALL when first hurt
         if u.spec.damage_reduction > 0.0 and not u.attacking:
             dmg *= (1.0 - u.spec.damage_reduction)           # Evo Knight: 60% less while moving/approaching
+        if u.ability_active_s > 0.0 and u.spec.ability_dmg_reduction > 0.0:
+            # PENSIVE PROTECTION: "reducing all incoming damage he takes by 65%" -- ALL sources,
+            # not only the projectiles he reflects. (The Pensive Protection Attributes column is
+            # headed "Invulnerability Duration"; he is not invulnerable, and the -65% is published
+            # in its own "Damage Reduced" column on the same table.)
+            dmg *= (1.0 - u.spec.ability_dmg_reduction)
         if u.shield_left > 0.0:
             u.shield_left = max(0.0, u.shield_left - dmg)
             if u.shield_left <= 0.0 and u.spec.shield_burst_dmg > 0.0:
@@ -4630,12 +4821,128 @@ def _ability_movement_flight(eng: "SimEngine", u: "Unit") -> None:
     u.leap_left = 0.0
 
 
+def _ability_stealth(eng: "SimEngine", u: "Unit") -> None:
+    """ARCHER QUEEN -- Cloaking Cape (Archer_Queen.wikitext, revid 436755).
+
+    Wiki: "the Archer Queen activates her 'Cloaking Cape', becoming invisible (untargetable by
+    enemy troops), having a 80% increase in attack speed, and a massive decrease in movement speed
+    for the entire 3.5-second duration".
+
+    THE ATTACK-SPEED BUFF IS STATED THREE WAYS ON ONE PAGE and they do not agree:
+      prose    "a 80% increase in attack speed"          -> x1.8
+      table    Boost "+180%"                             -> x2.8
+      History  "attack speed buff to 180% (from 200%)"   -> x1.8
+    Resolved by the page's OWN level-table formula, which is machine-readable where the prose is
+    not: the "Damage per second (with Cloaking Cape)" column computes `Dps(dmg_11*1.80,
+    atk_speed)` -- damage x1.80 at an UNCHANGED 1.2 s hit speed, i.e. 1.8x DPS. Two of the three
+    statements land there and the table's leading "+" is the outlier. `ability_attack_speed_boost:
+    1.8` in the KB; hit interval 1.2 / 1.8 = 0.667 s.
+    (Neither reading reproduces the Strategy prose's "exactly 7 shots for the full duration" --
+    1.8x gives ~5.25 and 2.8x gives ~8.2, and 7 would need ~2.4x. That is an in-game count, queued
+    in conflicts.md, and it is not evidence for a THIRD multiplier.)
+
+    INVISIBILITY is the Royal Ghost's, not the Boss Bandit's: `ghost`, which blocks TARGETING only
+    and leaves splash and spells landing on her. The page says so from four directions -- an
+    invisible Archer Queen was FIXED to receive splash damage (8/4/2022), "since it is a spell, the
+    player can reliably hit the Archer Queen even while her ability is active", the Tesla will not
+    pop up for her, and locked-on troops retarget. `_valid_foe`'s own comment already names her.
+    Crown towers drop their lock too (they share `_valid_foe`'s rule) -- the page does not say
+    either way, and one consistent rule beats a second invisibility class.
+    """
+    s = u.spec
+    u.ability_active_s = s.ability_duration_s
+    u.ghost = True
+    u.aggro_reset = True          # "the ability can be used to divert troops towards the other lane"
+
+
+def _ability_stealth_end(eng: "SimEngine", u: "Unit") -> None:
+    u.ghost = False
+
+
+def _ability_dash_chain(eng: "SimEngine", u: "Unit") -> None:
+    """GOLDEN KNIGHT -- Dashing Dash (Golden_Knight.wikitext, revid 437147).
+
+    Wiki: "Once a unit is in range, he dashes to it quickly, then dashes towards the closest enemy
+    unit within a 5.5-tile radius (even if the previous unit was not destroyed). His dashes have
+    invulnerability and deal increased damage, like the Bandit. He cannot dash into the same troop
+    per ability use. He will stop dashing after dashing 10 times, if no other valid targets are
+    within range, or if the last target hit is a Crown Tower."
+
+    THREE TERMINATORS (owner ruling 10 as AMENDED by wiki verification): the 10-dash cap, no
+    valid target in range, and hitting a Crown Tower. Ruling 10 also settles the page's biggest
+    ambiguity -- "no targets in range" ENDS the ability; there is no pause-and-resume and no
+    return-to-origin. He stops AT THE LAST TARGET'S LOCATION and behaves as a normal troop from
+    there, which is why `_dash_end` only resets aggro.
+
+    DASH TRAVEL SPEED IS UNPUBLISHED. The table's "Very Fast (120)" is the out-of-combat movement
+    boost, not the flight. The Bandit / Boss Bandit analog of 500 (8.33 tiles/s) is used and
+    marked UNTESTED in the KB comment; the 0.05 s "Dashing Dash Delay" (3/11/2025) is read as the
+    beat BETWEEN chained dashes, which is the only reading the page leaves room for.
+    """
+    s = u.spec
+    u.dash_left = int(s.ability_max_hits or 10)
+    u.dash_hit = ()
+    u.dash_go = False
+    u.dash_ref = None
+    u.dash_time_left = 0.0
+
+
+def _ability_soul_bank(eng: "SimEngine", u: "Unit") -> None:
+    """SKELETON KING -- Soul Summoning (Skeleton_King.wikitext, revid 436753).
+
+    Wiki: "summoning a varied amount of Skeletons in a 4-tile radius around himself. The Skeletons
+    spawn 1 at a time at random positions in the circle every 0.25 seconds... With no souls, the
+    Skeleton King will spawn 6 Skeletons, but with a maximum of 10 souls, he can summon 16."
+
+    SPAWN RADIUS: 3.5, not the 4 in that sentence. The page contradicts itself and History
+    24/10/2025 is the later edit -- "decreased Soul Summoning's skeleton spawn radius to 3.5 tiles
+    (from 4 tiles)" -- so the ability prose was simply never updated. Already applied in I5.
+
+    "It continues, even if the Skeleton King dies" is honoured for free: the whole sequence is
+    queued into the engine's `_late_spawns`, which holds positions and specs rather than a
+    reference to him, so killing him mid-summon changes nothing. That reading is the only coherent
+    one (the lead paragraph scopes soul ACCRUAL to "while the Skeleton King is on the field") and
+    History 30/3/2022 corroborates it by having had to FIX a case where the summon could cancel.
+
+    "random positions in the circle" is read as uniform over the DISC, not the ring -- hence
+    sqrt(u) on the radius. The page uses both words and specifies no distribution; a ring would
+    put every Skeleton at maximum distance from him, which no screenshot of the card shows.
+
+    RULING 8 (owner): souls stop accruing once this body has spent its use. Enforced at the
+    accrual site, not here.
+    """
+    s = u.spec
+    sp = s.ability_spawn
+    if sp is None:
+        return
+    n = int(s.ability_spawn_count or 6) + int(u.souls)
+    r = s.ability_radius_tiles or 3.5
+    gap = s.ability_tick_s or 0.25
+    for i in range(n):
+        ang = eng.rng.uniform(0.0, 2.0 * math.pi)
+        rad = r * math.sqrt(eng.rng.random())               # uniform over the DISC
+        x, y = _clamp_xy(u.x + math.cos(ang) * rad / _TILES_X,
+                         u.y + math.sin(ang) * rad / _TILES_Y, sp.radius)
+        eng._late_spawns.append((eng.t + i * gap, sp, u.team, x, y, 1))
+
+
 # THE REGISTRY. `ability_kind` -> handler. A card whose KB row names a kind that is not in here
 # gets its activation REFUSED (see champion_ability) rather than silently doing nothing, so a
 # typo in the KB is loud.
 ABILITY_KINDS = {
     "bomb": _ability_bomb,
     "movement_flight": _ability_movement_flight,
+    "stealth": _ability_stealth,
+    "dash_chain": _ability_dash_chain,
+    "soul_bank": _ability_soul_bank,
+}
+
+# Optional per-kind hooks for an ability that RUNS for a while: `ABILITY_TICKS` fires every
+# `ability_tick_s` while it is active, `ABILITY_ENDS` once when the duration expires. Sparse on
+# purpose -- most kinds resolve at activation and need neither.
+ABILITY_TICKS: dict = {}
+ABILITY_ENDS = {
+    "stealth": _ability_stealth_end,
 }
 
 # KINDS THAT RESOLVE AT ACTIVATION rather than when `ability_delay` expires. Both predate the

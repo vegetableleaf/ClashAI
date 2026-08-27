@@ -494,6 +494,25 @@ cards:
   #     writing.
   #   damage: SUPERSEDED 261 -> 81. PARENT-STAT CONTAMINATION. current_db 261 is EXACTLY the Royal
   #     Ghost's own dmg_11 on the same page; the Souldier's own vardefine is soul_dmg_11 = 81
+  soul_skeleton:                   # the Skeleton King's SUMMONED Skeleton -- spawned, NOT a card.
+    display: "Soul Skeleton"       # Soul Summoning Attributes + vardefines (Skeleton_King.wikitext,
+    elixir: null                   # revid 436753): "Skeleton Hitpoints 1", skel_dmg_11 81,
+    kind: troop                    # skel_atk_speed 1.1, First Hit Speed 0.5, Fast (90), Melee:
+    rarity: champion               # Short (0.5), Ground. It is NOT the Skeletons card: prose says
+    attacks: [ground]              # these "behave identically to cloned Skeletons ... and they
+    movement: ground               # only have 1 hitpoint".
+    range: melee
+    count: 1
+    win_condition: false
+    hitpoints: 1                   # LEVEL-INDEPENDENT: the statistics table has no hitpoint column
+    damage: 81                     # for them, only a Skeleton Damage one. 81 IS level-scaled.
+    dps: 74
+    hit_speed: 1.1
+    first_hit_speed_s: 0.5
+    range_tiles: 0.5
+    speed_tiles: 1.5
+    deploy_time: 0.0               # no Deploy Time column exists for them; they arrive already
+    verified: true                 # sequenced one per 0.25 s, which IS the arrival delay
   ghost_souldier:                  # the Evo Royal Ghost's two escorts -- spawned, NOT a card.
     display: "Souldier"            # Level-11 per the wiki: 81 hp (a skeleton's), 261 area damage
     elixir: null                   # (the Ghost's own swing), 1.8 s cadence, ghost-style stealth.
@@ -2229,7 +2248,24 @@ cards:
   #   first_hit_speed_s: SUPERSEDED ABSENT -> 0.2. KB row lacks the field.
   #     load_time_s/mass/sight/collision do NOT come from the wiki: import_mechanics.py reads
   #     RoyaleAPI cr-api-data cards_stats.json, meta.source_frozen=2023-10-18
-  golden_knight: {range: melee, ability_dash_delay_s: 0.05, ability_move_speed_tiles: 2.0, ability_dash_range_tiles: 5.5, ability_max_dashes: 10.0, ability_cost: 1.0, dash_invulnerable: true, ability_no_repeat_target: true, ability_uses: 1, first_hit_speed_s: 0.2, verified: false}
+  # I7 2026-08-26: the I5-curated ability fields renamed onto the GENERIC schema the engine
+  #   dispatches on, so one set of names serves all 8 champions and I8's 16 heroes:
+  #     ability_dash_range_tiles -> ability_range_tiles   (5.5, table "Maximum Dash Distance")
+  #     ability_max_dashes       -> ability_max_hits      (10,  table "Maximum Dashes")
+  #     ability_dash_delay_s     -> ability_tick_s        (0.05, History 3/11/2025 "Dashing
+  #       Dash Delay" -- read as the beat BETWEEN chained dashes, the only reading the page
+  #       leaves room for; it names three unreconciled delays and defines this one nowhere)
+  #     dash_invulnerable / ability_no_repeat_target dropped -- both are intrinsic to the
+  #       `dash_chain` KIND ("His dashes have invulnerability", "He cannot dash into the same
+  #       troop per ability use"), and a flag nothing reads is the dispatch this stage removed.
+  #   ability_damage 335 = vardefine dash_11, the level table's "Dashing Dash Damage"
+  #     (2.081x his 161 body damage; the page says only "increased damage, like the Bandit").
+  #   ⚠ leap_speed_tiles 8.33 is the DASH TRAVEL SPEED and it is UNTESTED. The page publishes
+  #     none -- its Speed column is the out-of-combat movement boost, Very Fast (120) -- so
+  #     this is the Bandit / Boss Bandit analog (Dash Speed 500, 60 units = 1 tile/s) reused
+  #     through the field those two already use for exactly this quantity. He has no leap_min
+  #     or leap_max, so it arms no passive charge; it is only read by the dash chain.
+  golden_knight: {range: melee, ability_kind: dash_chain, ability_tick_s: 0.05, ability_move_speed_tiles: 2.0, ability_range_tiles: 5.5, ability_max_hits: 10, ability_damage: 335, leap_speed_tiles: 8.33, ability_cost: 1.0, ability_delay_s: 1.0, ability_uses: 1, first_hit_speed_s: 0.2, verified: false}
   guards: {range: melee, verified: false}
   # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
   # provenance in research/sim_parity/ledger/i5_applied.jsonl).
@@ -2380,7 +2416,21 @@ cards:
   #     Goblinstein's; KB has no ability block.
   #   ability_uses: SUPERSEDED ABSENT -> 1. Master Version History only. Interacts with
   #     decisions.md ruling 8 (the soul bar stops filling once a body has spent its use).
-  skeleton_king: {range: melee, attacks: [ground], flags: [mini_tank, splash, knockback_immune], ability_spawn_radius_tiles: 3.5, ability_spawn_interval_s: 0.25, ability_cost: 2.0, ability_uses: 1, spawn_unit_stats: {range_tiles: 0.5, speed_tiles: 1.5, hit_speed: 1.1, hitpoints: 1.0, damage: 81.0}, verified: false}   # splash slash; radius 1.3 flows from the stats import; was silently single-target
+  # I7 2026-08-26: the I5-curated ability fields renamed onto the GENERIC schema:
+  #     ability_spawn_radius_tiles -> ability_radius_tiles  (3.5; the ability PROSE says 4
+  #       and History 24/10/2025 is the later edit -- "decreased Soul Summoning's skeleton
+  #       spawn radius to 3.5 tiles (from 4 tiles)" -- so the prose was never updated)
+  #     ability_spawn_interval_s   -> ability_tick_s        (0.25, "1 at a time ... every
+  #       0.25 seconds")
+  #   ability_spawn_count 6 = the FLOOR ("With no souls ... 6 Skeletons"); souls add one each
+  #     to a cap of 10, giving the table's published "Skeleton Count 6-16". The count is the
+  #     one champion number the KB cannot hold as a constant -- I5 deferred it here for that
+  #     reason -- so it lives as floor + engine-side bank instead.
+  #   ability_spawn_unit -> the curated `soul_skeleton` row: a CLONE-VARIANT Skeleton with 1
+  #     hitpoint, not the Skeletons card ("behave identically to cloned Skeletons ... they
+  #     only have 1 hitpoint"). spawn_unit_stats is kept: it is what that row is built from
+  #     and what stat_sweep reads.
+  skeleton_king: {range: melee, attacks: [ground], flags: [mini_tank, splash, knockback_immune], ability_kind: soul_bank, ability_radius_tiles: 3.5, ability_tick_s: 0.25, ability_spawn_count: 6, ability_spawn_unit: soul_skeleton, ability_cost: 2.0, ability_delay_s: 1.0, ability_uses: 1, spawn_unit_stats: {range_tiles: 0.5, speed_tiles: 1.5, hit_speed: 1.1, hitpoints: 1.0, damage: 81.0}, verified: false}   # splash slash; radius 1.3 flows from the stats import; was silently single-target
   # SUSPICIOUS BUSH. The imported row was the BUSH GOBLINS' stats pinned on the parent -- the bush
   # itself has 81 hp (skeleton-tier), never attacks, and "spawns invisible as it moves towards the
   # nearest building ... invisible to troops, like the Royal Ghost" (towers ignore ghosts too;
@@ -2497,7 +2547,15 @@ cards:
   #     decisions.md ruling 6 (single use PER BODY).
   #   ability_invisible: SUPERSEDED ABSENT -> True. Untargetable by TROOPS; still takes splash and
   #     spell damage (8/4/2022 fix). Same invisibility class as Royal Ghost per the intro
-  archer_queen: {range: long, ability_attack_speed_boost: 1.8, ability_move_speed_tiles: 0.75, first_hit_speed_s: 0.3, ability_cost: 1.0, ability_duration_s: 3.5, ability_uses: 1, ability_invisible: true, verified: false}
+  # I7 2026-08-26: ability_kind + the 1 s activation delay this stage rules for every
+  #   champion (conflicts.md C7 -- the table's 0.933 s Cast Time is the rejected alternative).
+  #   `ability_invisible` is dropped: the KIND says it, and a bool nothing reads is the
+  #   truthiness dispatch this stage removed. Cloaking Cape is modelled as the Royal Ghost's
+  #   invisibility class -- untargetable by troops, still hit by splash and spells -- which is
+  #   what the page describes from four directions (8/4/2022 fixed her to RECEIVE splash;
+  #   "since it is a spell, the player can reliably hit the Archer Queen"; the Tesla stays
+  #   down; X-Bow/Mortar retarget).
+  archer_queen: {range: long, ability_kind: stealth, ability_attack_speed_boost: 1.8, ability_move_speed_tiles: 0.75, first_hit_speed_s: 0.3, ability_cost: 1.0, ability_duration_s: 3.5, ability_delay_s: 1.0, ability_uses: 1, verified: false}
   # "The Bowler launches an attack that travels up to its maximum range, and inflicts knockback,
   # while piercing through enemies" -- the ONLY card here whose knockback is its NORMAL ATTACK
   # rather than a death blast, so it rides the piercing projectile and shoves along the roll line.
