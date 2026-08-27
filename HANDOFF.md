@@ -3770,6 +3770,56 @@ configured but **have never run** — BC has not been retrained since the soft-t
 
 ---
 
+## 6-PRIORITY. ⏳ THE SPELL EXPERIMENTS — OWNER-REQUESTED, RUN AFTER THE PARITY MERGE + NEW PPO
+
+Owner (2026-08-26): "don't forget to run the spell cast experiments after implementation is done
+and a new PPO is started." This is that reminder, written to be RUNNABLE rather than a note.
+
+### The two failures are SEPARATE and must be TWO experiments (§4r)
+Bundling them makes the result unattributable — the standing one-change-per-experiment rule.
+
+**EXPERIMENT A — PLACEMENT.** The cell head is near-uniform for the Log and Tornado, so those
+spells land essentially at random: cell entropy tornado 5.790 / the_log 5.400 against a uniform
+maximum of 6.068, versus rocket 3.390 and x_bow 3.940 which DID learn. Dump rate tracks entropy
+exactly. The candidate lever, and the one concrete thing already identified:
+`sim.spell_waste_tiles: 4.5` charges a cast as wasted only when NO enemy is within 4.5 tiles,
+while the Log's half-width is **1.95** and Rocket's radius **2.0** — so a completely useless cast
+often costs nothing. Measured: that tolerance explains only **17-25%** of dumps, so tightening it
+alone is NOT expected to be sufficient. Treat it as arm 1, not as the fix.
+
+**EXPERIMENT B — RESTRAINT.** Independent of placement: `never_rocket_their_king` is a
+DO-NOT-CAST drill and the policy scores 0-17% on it, i.e. it really does rocket their king. A
+sharper cell head cannot fix this. Lever unidentified — design it when A reports.
+
+### Baselines that already exist (do not re-measure)
+```
+spell dump rate (0 enemies inside the spell's OWN radius), frozen snapshots, same seeds:
+                init    16k   21.5k    26k
+ALL              66%    66%     63%    61%
+the_log          81%    73%     77%    66%   <- improved 2.84 sigma over the run
+tornado          51%    58%     57%    60%
+```
+Tools, all working: `scratchpad/spell_probe.py` (geometry, per-card, dump rate),
+`scratchpad/cell_entropy.py` (per-card cell-head entropy — the mechanism read),
+`scratchpad/rocket_probe.py` (tower-directed casts + overtime), `run.py drills --policy`.
+
+### Method (the traps this project already paid for)
+* **Copy the checkpoint before probing.** A live trainer overwrites `*.pt` and two probes minutes
+  apart read DIFFERENT policies — that is how the 86%-vs-57% rocket reading happened (§4s).
+* **Matched control, same code tree.** §4q: two arms trained hours apart on `main` differ by every
+  commit between them. Diff `git log` across the training windows and name the variables.
+* Pre-commit the bar: **>=2 sigma on the paired comparison, or report NO MEASUREMENT.**
+* Paired, same seeds, `PYTHONHASHSEED=0`, `torch.set_num_threads(1)`.
+
+### ⚠ SEQUENCING NOTE FOR WHOEVER RUNS THIS
+The owner's order is: parity merge -> new long PPO -> spell experiments. The A/B arms are SHORT
+(~2600 episodes each, ~1.5 h) and will CONTEND FOR CPU with a long run — this project has already
+lost time to that (a 12-run sweep crawling at 0.1 ep/s against zombie processes, §2). Either pause
+the long run for the arms, or accept the slower wall-clock; do not let a contended arm read as a
+slow one.
+
+---
+
 ## 6. Open work
 
 0. **DRILLS — segmented mini-sims (owner's idea, 2026-08-20).** Framework is IN and validated;
