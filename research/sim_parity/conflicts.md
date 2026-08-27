@@ -1561,3 +1561,35 @@ another checkout. If parity ever fails on a file git says is clean, this is why.
   so an expensive play can BUY its way out of the defensive penalty. hogeq has no equivalent term.
   Writing one is a new reward, not a port, and belongs to a training experiment under the
   one-change rule; the 24 skipped tests record the shape it would take.
+
+### ⚠⚠ I10-FOLLOWUP (FIXED): spell attribution was keyed on `id(Unit)`, and the corruption was BIASED AGAINST GOOD PLAY
+
+I10 could not measure its own strip because three runs of IDENTICAL code in three processes gave
+three different reward digests (`PYTHONHASHSEED=0` did not help). Root cause, in `env.py`
+`_settle_spell_casts` / `_arm_spell_check` / `_resnap_spell_check`: the before-picture and the
+after-picture were both keyed on `id(u)`. **CPython recycles a dead body's address**, so a victim
+the spell KILLED could be matched against a NEWER unit that reused that address and read as alive
+at full hp -> `dealt` computes 0 -> the cast is billed **`spell_waste`** instead of credited
+**`spell_defence`**.
+
+**The bias is the important part: the BETTER the cast, the likelier its victim is dead and its
+address reused.** So the reward layer was randomly punishing exactly the casts it should pay for.
+
+FIXED by keying on `Unit.deploy_seq` (a monotonic counter stamped in `__post_init__`, added by I7
+for ruling 5) in all five sites, both decks. MEASURED:
+```
+run-to-run reward-ledger divergence, 12 seeds, identical code, separate processes
+  before (id-keyed):   3 of 24 seeds diverged   (I10's measurement)
+  after (deploy_seq):  0 of 12 seeds diverged
+```
+icebow 993 OK / hogeq 1016 OK, 0F/0E both, after the change.
+
+⚠ **THIS LANDS BEFORE THE SPELL EXPERIMENTS ON PURPOSE.** The owner's queued spell A/Bs measure
+spell placement against `spell_waste` / `spell_defence`. Running them on the id-keyed ledger would
+have measured a signal that was corrupt in a direction correlated with the thing being tested. It
+is also a live HYPOTHESIS for §4r's core finding — a cell head cannot learn placement from a reward
+that randomly bills good placements as waste. NOT yet established as the cause; it is now testable,
+which it was not before.
+
+Same bug CLASS as the Fire Spirit test that counted bodies by `id()` (I7) — `id()` is never a
+stable identity in this engine.

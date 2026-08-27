@@ -2211,11 +2211,18 @@ class SimMatchEnv:
         else:
             caught = [u for u in self.eng.units
                       if u.team == 1 and u.hp > 0 and tile_dist(nx, ny, u.x, u.y) <= rad]
-        hp = {id(u): float(u.hp) for u in caught}
+        # ⚠ KEYED ON `deploy_seq`, NOT `id(u)`. CPython recycles a dead body's address, so a
+        # victim this spell KILLED could be matched against a NEWER unit that reused the
+        # address and read as alive at full hp -- billing a good cast `spell_waste` instead
+        # of crediting `spell_defence`. The better the cast, the likelier the victim is gone
+        # and its address reused, so the corruption is BIASED AGAINST correct play. Measured
+        # (I10): 3 of 24 seeds diverged run-to-run on identical code; 0 of 24 once pinned.
+        # `deploy_seq` is a monotonic counter stamped in Unit.__post_init__ (added in I7).
+        hp = {u.deploy_seq: float(u.hp) for u in caught}
         # WHAT each catch would COST US if it lived, kept alongside the HP so the settle can pay
         # for damage prevented. Only bodies already on OUR half count as defence -- killing things
         # on their side is offence and is priced by the chip / win-condition terms.
-        worth = {id(u): str(u.spec.base) for u in caught if float(u.y) > 0.5}
+        worth = {u.deploy_seq: str(u.spec.base) for u in caught if float(u.y) > 0.5}
         towers = {id(t): float(t.hp) for t in self.eng.towers[1] if getattr(t, "hp", 0) > 0}
         self._pending_spell_checks.append(
             {"t": land + float(getattr(spec, "zone_s", 0.0) or spec.pull_duration or 0.0) + 0.35,
@@ -2245,9 +2252,9 @@ class SimMatchEnv:
             caught = [u for u in self.eng.units
                       if u.team == 1 and u.hp > 0 and tile_dist(nx, ny, u.x, u.y) <= rad]
         for u in caught:
-            p["hp"].setdefault(id(u), float(u.hp))          # keep the earlier hp if already known
+            p["hp"].setdefault(u.deploy_seq, float(u.hp))   # keep the earlier hp if already known
             if float(u.y) > 0.5:
-                p.setdefault("worth", {}).setdefault(id(u), str(u.spec.base))
+                p.setdefault("worth", {}).setdefault(u.deploy_seq, str(u.spec.base))
 
     def _settle_spell_casts(self) -> float:
         """Charge spell_waste for casts that, once resolved, damaged NOTHING.
@@ -2270,7 +2277,7 @@ class SimMatchEnv:
         if not due:
             return 0.0
         self._pending_spell_checks = [p for p in self._pending_spell_checks if p["t"] > now]
-        live = {id(u): float(u.hp) for u in self.eng.units if u.hp > 0}
+        live = {u.deploy_seq: float(u.hp) for u in self.eng.units if u.hp > 0}
         tw_now = {id(t): float(t.hp) for t in self.eng.towers[1]}
         total = 0.0
         for p in due:
