@@ -1,5 +1,15 @@
 # Sim Fidelity Audit — 2026-08-15 overnight session
 
+> **STATUS 2026-08-27.** Superseded in large part by Phase I on branch `sim-parity`. Several
+> items this document deferred with reasons have since been implemented, and the deferral
+> entries below are struck through in place rather than deleted, so the reasoning stays
+> readable next to the outcome. What Phase I added on top of everything here:
+> **8 champions and 16 heroes** with 20 ability handlers (enemy-side only — no action-space
+> change, card head still icebow 10 / hogeq 11); **42 of 42 evolutions** cycling in the
+> opponent pool with a three-slot loadout; **friendly-target spells** (rage, clone);
+> **per-card chain ranges**; 174 cards cross-checked live at **0 mismatches**.
+> The stage-by-stage record is `research/sim_parity/PHASE_I_LEDGER.md`; the evidence conflicts
+> and the owner's open questions are `research/sim_parity/conflicts.md`.
 Goal: raise sim ↔ real-CR parity for the next training startup, under one hard constraint —
 the overnight PPO checkpoint must resume cleanly (no observation/action-space changes; the
 running trainer was never touched). Every number below was confirmed against the wiki via
@@ -42,13 +52,19 @@ said blobs refund 1 each; the wiki says golem 1 / golemites & blobs 0.5 — memo
 
 ## Considered and rejected/deferred (with reasons)
 
-- **Champion actives** (Golden Knight dash 6.9%, Skeleton King ult, AQ cloak, Mighty Miner,
-  Boss Bandit, Monk deflect): opponent scripts wouldn't trigger them intelligently, so
-  modeling buys little distribution shift for high cost. Passive stats are correct. Deferred.
-- **Goblinstein two-body** (3.7%): monster-vs-doctor split needs per-body HP the wiki page
-  doesn't publish cleanly; current merged approximation keeps total stats sane. Deferred.
-- **Rune Giant buff** (3.8%), **Spirit Empress forms** (2.4%), **goblin_curse** (2.1%),
-  **clone/mirror** (0.5%): frequency × effect too small this round.
+- ~~**Champion actives** (Golden Knight dash 6.9%, Skeleton King ult, AQ cloak, Mighty Miner,
+  Boss Bandit, Monk deflect)~~ **DONE 2026-08-27 (Phase I / I7).** The stated reason for
+  deferring — "opponent scripts wouldn't trigger them intelligently" — was addressed rather
+  than assumed away: each ability carries an `ability_ai` row naming the board condition that
+  fires it, and `ScriptedBot._try_ability` is tested against a board satisfying every family at
+  once. All **8 champions** fire enemy-side at full fidelity (ruling 3: no simplifications).
+- ~~**Goblinstein two-body** (3.7%)~~ **DONE 2026-08-27 (I7).** The per-body split the wiki
+  "doesn't publish cleanly" was resolved from the evidence and the choice recorded; the
+  Lightning Link tether is a capsule between the two bodies. ⚠ Its GEOMETRY is owner-checklist
+  item 2 — capsule vs two circles changes who takes damage at the midpoint.
+- **Rune Giant buff** (3.8%), **Spirit Empress forms** (2.4%), **goblin_curse** (2.1%): still
+  deferred, frequency x effect too small. **clone** is DONE (I9, friendly-target spell path);
+  **mirror** was measured and deliberately left out — see `conflicts.md`, I9.
 - **Unit-level first-attack load times**: the engine's combat was calibrated against
   reference interactions (e.g. Bomber-vs-tower lands exactly one bomb) WITHOUT them; adding
   a universal load would silently break those calibrations. Rejected pending re-calibration.

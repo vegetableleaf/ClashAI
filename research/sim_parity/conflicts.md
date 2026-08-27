@@ -1,5 +1,162 @@
 # Sim-parity conflicts — every escalation, verified-row overturn request, and in-game check queued for the owner
 
+---
+
+# ⭐ OWNER CHECKLIST — the open questions, consolidated (I10, 2026-08-27)
+
+Everything in this file that needs YOU is gathered here, once, in one numbered list. Items 1-5 are
+RULINGS (nothing to observe — they need a decision). Items 6-23 are IN-GAME OBSERVATIONS, one
+battle each, ordered by how much the answer moves the sim. Every item says what to check and why it
+matters; the argument and the evidence are in the stage sections below.
+
+Nothing here blocks the merge. Each item is either implemented one way with the choice recorded, or
+deliberately not implemented with the gap recorded — no item is a silent guess.
+
+## Rulings (no observation needed)
+
+**1. Does a deck holding a CHAMPION card still get a Hero slot?** ⚠ STRUCTURAL.
+The Heroes page (revid 437509) says: *"Only two Heroes can be in a deck at a time, and only in the
+Hero and Wild slots. Those slots are also shared with Champion cards, which means that the player
+can have 1 Hero and 1 Champion at the same time."* Your slot ruling (Evolution + Hero + Wild) does
+not mention the sharing, and it is implemented exactly as you gave it. The consequence, MEASURED
+over the shipped pool: **137 of 1000 decks (15.3% of deck weight)** hold a champion card AND at
+least one hero candidate, so those opponents field THREE ability-bearing slots where the page
+allows two — meta_008 (golden_knight + bowler), meta_017 (mighty_miner + barbarian_barrel),
+meta_018 (little_prince + berserker), and 134 more. **Those opponents are stronger than legal.**
+Not acted on because capping it silently deletes either the champion's ability or the hero from
+those 137 decks, and your ruling is explicit and final. → *I8 section, "THE ONE STRUCTURAL CONFLICT"*
+
+**2. Should a spawned body cost 4 elixir?** ⚠ STRUCTURAL, and it distorts threat pricing pool-wide.
+A KB row with no `elixir` value falls through to the engine's default, and MEASURED that default is
+**4** for all **25** such keys:
+
+    barrel_barbarian  base_barrel_barbarian  brigade_goblin  bush_goblin  decoy_goblin
+    elixir_blob  elixir_golemite  ghost_souldier  goblin_barrel_decoy  goblin_brawler
+    golemite  guardienne  lava_pups  lumberjack_ghost  magic_archer_decoy  mirror
+    mother_witch_hog  phoenix_egg  rhino  royal_recruit  skarmy_general  skeletrooper
+    soul_skeleton  tomb_queen  trusty_turret
+
+So a Skeleton King's Skeleton, a Goblin Barrel decoy goblin and a Golemite each read as 4 elixir of
+enemy investment — the same as a Knight. **Blast radius: 30 reads of `spec.elixir` in icebow and 27
+in hogeq**, across `sim/env.py` (11 / 5), `sim/doctrine.py` (11), `sim/engine.py` (5),
+`sim/opponents.py` (2), `sim/drill_env.py` (1). The reward terms that read it are
+`_trade_reward` (**elixir_trade**), `_side_value` (**counterfactual**), `_hog_wincon` (lane mass),
+`_ability_value`, and in icebow additionally `_rocket_blast` / `_rocket_value` / `_rocket_combo` /
+`_nado_shaping` / the bow overcommit ledger. It also reaches the TRIAGE model: `threat_value` prices
+a fully-ignored card at 0.120 tower per elixir, so an overpriced body inflates what it costs to
+ignore. Pre-existing and pool-wide, so it is a measured commit of its own, not a side effect.
+I9's clones sidestep it by setting `elixir = 0` on the clone's spec explicitly.
+**The question is what the right default is** — 0 (the body was already paid for by its parent
+card), the parent's cost divided by the spawn count, or a per-body curation. → *I9, "RECORDED, NOT ACTED ON"*
+
+**3. The sim is not reproducible, and spell reward attribution is sometimes wrong.** ⚠ NEW in I10.
+`_settle_spell_casts` keys a spell's before-picture on `id(Unit)` (`p["hp"]`, and
+`live = {id(u): u.hp ...}`), and CPython **reuses the address of a dead body** for a newly allocated
+one. When that happens the settle reads a killed victim as "still alive at full HP", `dealt` comes
+back 0, and the cast is billed `spell_waste` instead of credited `spell_defence`. MEASURED: three
+runs of identical code in three processes give three different digests; pinning every Unit so no
+address can be recycled takes 7 diverging seeds to 0. **Consequences:** any seeded A/B on this sim
+has a noise floor of ~2-3 matches in 12, the frozen eval benchmark is not exactly reproducible, and
+a spell that killed something occasionally scores as a whiff. The fix is to key on a stable
+per-unit id instead of `id()`. Not done here — one change at a time, and it is not what I10 was
+for. → *`scripts/i10_reward_probe.py`, and the I10 section*
+
+**4. Re-weight the tower-troop fallback, and re-baseline?**
+`sim.opponent_tower_weights` (6/2/2/1) gives the Princess Tower 54.5% where the pool MEASURES 90.5%
+(tower_princess 6455 / cannoneer 288 / dagger_duchess 228 / royal_chef 160). Wiring `support:` in I8
+lifted the fielded share to 83.7%; the rest is the 765 of 1000 decks whose battlelog predates the R4
+slot sweep and names no tower troop. FLAGGED rather than changed because those weights are also the
+frozen eval benchmark's — retuning them makes every run incomparable with every previous one.
+→ *I8, "NOT IMPLEMENTED, DELIBERATELY"*
+
+**5. Which spells does the Monk reflect?**
+Projectile reflection is implemented in full. SPELL reflection is not, and the reason is that the
+page never enumerates which spells count as "projectile spells" — it only carves out
+"non-projectile spells" without saying which those are. Zap and Lightning are instant electric by
+the same Strategy paragraph that exempts Tesla; Earthquake and Poison are zones; Arrows is named as
+reflectable; Fireball, Rocket and Snowball are lobbed. That is a four-way judgement call on an
+unstated boundary, and getting it wrong redirects real damage onto a Crown Tower. Name the spells
+that bounce and it is a small change. → *I7, "NOT IMPLEMENTED, DELIBERATELY"*
+
+## In-game observations — one battle each, biggest effect first
+
+**6. Hero Valkyrie's spin damage.** Is `abdmg_11` 97 damage PER 0.25 s TICK, or the TOTAL for the
+3.5 s spin? The sim currently reads it per-tick and deals **1358 area / 679 crown per activation**.
+Spin her into a Crown Tower once and read the health bar. This is the largest single unresolved
+number in the whole project. → *I8-13*
+
+**7. Hero Berserker's "Bear Damage" 167.** Is that her per-hit damage DURING Savage Survival, or
+does she keep her normal 102? **835 dps against 510** — a 64% swing on the most-fielded hero in the
+pool (17.2% of hero draws). → *I8-12*
+
+**8. Archer Queen — "exactly 7 shots".** The Strategy section claims the ability gives exactly 7
+shots over its full duration. Neither candidate multiplier reproduces it: x1.8 gives ~5.25 shots
+over 3.5 s and x2.8 gives ~8.2; 7 would need ~2.4x, which nothing on the page states. Count them
+once in a training battle and the multiplier follows. → *I7*
+
+**9. Skeleton King — do sub-troops bank souls?** The page: *"cards that make sub-troops ... do not
+count as a soul to it, but only the final forms of the troop, WITH GOBLIN GIANT AS AN EXCEPTION."*
+The sentence supports BOTH directions of the exception, so the sub-troop rule is not implemented at
+all — every troop death banks a soul except buildings, cloned bodies and his own Skeletons. Guessing
+the direction moves his output by up to 4 Skeletons. Kill a Golem in front of him and count the bar.
+→ *I7*
+
+**10. Golden Knight dash travel SPEED.** Unpublished. The KB carries 8.33 tiles/s (the Bandit /
+Boss Bandit "Dash Speed 500" analog) marked untested. Time one full 10-dash chain and the constant
+follows. Separately, the 0.05 s "Dashing Dash Delay" (3/11/2025) is defined nowhere on the page;
+best reading is an intra-chain wind-up, still open. → *I7, decisions.md ruling 10*
+
+**11. Goblinstein link geometry.** Stand the Doctor and the Monster far apart and put a troop at the
+MIDPOINT, ~3 tiles from each and well inside the tether. Does it take damage? **Yes** = the capsule,
+which is what is implemented. **No** = two circles, and the handler needs to change. → *I7*
+
+**12. Evolved Electro Dragon — can the chain hit the same target twice?** The Evolution page says
+the EVO chain CAN repeat targets; ruling 11 says it cannot. Ruling 11 is implemented (and was
+already correct in code). Not acted on, because overturning a ruling on a wiki line is exactly what
+decisions.md forbids. → *ED-3*
+
+**13. Base Electro Dragon's per-hit damage: 267 or 192?** Ruling 12 gave "64 at level 11" for the
+evo's reduced chain damage, which implies a base of 192 — but the KB carries 267 @L11 and 267/3 = 89.
+The RULE was implemented rather than the constant (`chain_falloff_frac: 0.3333`), so the absolute
+number follows the KB automatically. If 192 is right, that is a separate damage correction. → *ED-1*
+
+**14. Hero Wizard's ability cost: 1 or 2?** Two tables say one thing, the page's infobox plus prose
+say the other. → *I8-7*
+
+**15. Hero Ice Golem's blizzard pulse interval.** Time the three blasts. This is the ONLY invented
+cadence in I8 — every other timing came off a page. → *I8-9*
+
+**16. Hero Knight's shield: 512, or ~322 after the two undated absolute nerfs?** And is the taunt
+radius **6.5 or 7.5**? → *I8-3, I8-2*
+
+**17. Hero Giant's hitpoints: 3968 or 3849?** One number settles it, and the answer also tells us
+whether the Mini P.E.K.K.A. precedent (I8-19) generalises to the rest of the hero rows. → *I8-20*
+
+**18. Hero Magic Archer's damage: 135 or 125?** → *I8-24*
+
+**19. Tomb Queen's combat profile.** The page publishes NO hit speed, movement speed, attack range
+or lifetime, so she currently fights on the engine's bare defaults. Everything else about her is
+real. → *I8-8*
+
+**20. Hero Barbarian Barrel — two questions on one card.** Is `rerolldmg_11` 116 the reroll's
+DAMAGE or its CROWN damage? And is "Damage Healed 50%" lifesteal, or a heal of damage TAKEN?
+→ *I8-16, I8-17*
+
+**21. Trusty Turret's spawn-damage radius, and the Rhino's.** The table literally prints "unknown"
+for both; they currently fall back to the engine's splash default. → *I8-10*
+
+**22. How far does Clone shove the original body forward?** The DIRECTION is published and the
+MAGNITUDE is not — and the magnitude IS the tactic, because it decides whether a cloned Balloon
+ends up inside a Crown Tower's reach. Clone a Balloon at the bridge and see how far it jumps.
+→ *I9, "NOT IMPLEMENTED, DELIBERATELY"*
+
+**23. Does a CLONED body's death bank a Skeleton King soul?** The page says his summoned Skeletons
+*"cannot be cloned as they are considered cloned troops themselves"*, which reads as cloned bodies
+being soul-exempt, so clones are excluded from the bank. If the exception runs the other way this is
+1 soul per clone — the same undecidable shape as item 9. → *I9*
+
+---
+
 
 ## 2026-08-25 — hero ability extraction (bowler_hero, tombstone_hero, berserker_hero)
 
@@ -1317,3 +1474,90 @@ OWN barbarian and that only the hero's carries the Rowdy Reroll button.
   cloned bodies being soul-exempt, so clones are excluded from the bank — the same sentence the
   existing soul_skeleton exclusion comes from. If the exception runs the other way this is 1 soul
   per clone, which is the same undecidable shape as the I7 sub-troop question.
+
+## I10 — closeout: the hogeq debt, the strip, and a reproducibility bug, 2026-08-27
+
+### ⚠ PREMISES IN THE I10 BRIEF THAT WERE WRONG
+
+1. **"the 39 errors are icebow-doctrine module imports" (HANDOFF §6.9).** There is no ImportError
+   anywhere in the run, and no module fails to load. All 39 are card lookups: `StopIteration` out of
+   `next(i for i, k in enumerate(deck_keys) if k.startswith("x_bow"))` (25 of them) and
+   `ValueError: 'rocket'/'tornado'/'knight' is not in list` (14). The distinction matters because it
+   changes the fix: a broken import is one shared module to repair, whereas 42 card lookups are 42
+   tests asking the wrong deck a question, which is what they turned out to be.
+2. **"the 3 failures ... 2 `test_every_role_lands_on_a_DEPLOYABLE_cell` cases (knight/ice_wizard)".**
+   Accurate, but incomplete as a description of the file: `TestBowDefence` contributes 5 of the 42
+   (3 errors + 2 failures), and all five are about placing a defender relative to an X-BOW, not
+   about the knight or the ice wizard as cards.
+3. **The 42 were not the whole debt.** Stripping the inert reward terms took the count to 54: twelve
+   more tests were passing only because the dead icebow code was still present to be called
+   (`test_xbow_rewards` 4, `test_rocket_value` 7, `test_live_spell_verification.SimNadoBadTests` 2 —
+   and one of those, `test_wincon_context_modifiers`, was already in the 42). A test that passes only
+   because unreachable code exists is not coverage.
+
+### ⚠ THE MEASUREMENT METHOD THAT WAS INVALID, AND THE BUG BEHIND IT
+
+The brief asked for a before/after on a fixed-seed rollout to prove the strip changed nothing. The
+obvious form of that -- run, strip, run again, diff -- **does not work on this sim, and fails
+silently in the direction of a false positive.** Three runs of the SAME code in three processes:
+
+    71ec0b4a...   a1bd93f7...   244aa3fe...
+
+`PYTHONHASHSEED=0` does not fix it. Inside one process, two identically-seeded runs agree.
+
+⚠ **CAUSE, and it is a real pre-existing bug.** `_settle_spell_casts` keys a spell's before-picture
+on `id(Unit)` -- `p["hp"]` at cast time, `live = {id(u): float(u.hp) ...}` at settle -- and CPython
+**recycles the address of a dead body for a newly allocated one**. On a collision the settle reads a
+killed victim as still alive at full HP, `dealt` comes back 0.0, and the cast is billed
+`spell_waste` instead of credited `spell_defence`. Confirmed by pinning every Unit for the life of
+the run so no address can be reused: of 7 seeds that diverged, **0 diverge pinned, 2 unpinned**.
+
+Consequences beyond this stage, which is why it is checklist item 3: any seeded A/B on this sim has
+a noise floor of ~2-3 matches in 12; the frozen eval benchmark is not exactly reproducible; and a
+spell that killed something occasionally scores as a whiff. NOT FIXED HERE -- one change at a time,
+and I10 is a closeout, not a reward change. The fix is a stable per-unit id instead of `id()`.
+
+With pinning, the strip A/B is exact -- and note that the unpinned columns are EQUAL, i.e. the
+apparent divergence is the noise floor and not the strip:
+
+                                  pinned      unpinned
+    before vs after                0 / 24       3 / 24
+    before vs BEFORE (control)     0 / 24       3 / 24     24 x 400 = 9,600 decisions
+
+### ⚠ A TRAP FOR THE MERGE: `core.autocrlf=true` vs byte-parity
+
+Nine shared source files live as **LF** in the working tree (`engine.py`, `cli.py`,
+`card_import.py`, `perception.py`, `replay_mine.py`, `sim_view.py`, `train_rl.py`,
+`sim/scenarios.py`, `sim/drill_env.py`) while the other ~140 live as CRLF. Each is LF in BOTH decks,
+so every pair matches and `parity_check` is happy. But this worktree has `core.autocrlf=true`, so a
+`git checkout` of ONE deck's copy rewrites it as CRLF and parity fails **on a file whose `git diff`
+is empty** -- git considers it unmodified because it normalises on read, while parity_check compares
+bytes. Hit once during I10 (a negative-control revert) and fixed by rewriting the bytes, not by
+another checkout. If parity ever fails on a file git says is clean, this is why.
+
+### RECORDED, NOT ACTED ON (I10)
+
+* **`stat_sweep --all` UNMAPPED went 21 -> 31**, and that is the expected shape rather than a
+  regression. The 6 real pages that publish no `#vardefine` are unchanged (Clone, Mirror, the Elite
+  Barbarians / Minion Horde / Princess Evolution stubs, Ronin). All 10 new entries are spawned
+  bodies with no page of their own, introduced by the champion and hero work: `barrel_barbarian`,
+  `base_barrel_barbarian`, `brigade_goblin`, `guardienne`, `magic_archer_decoy`, `rhino`,
+  `skeletrooper`, `soul_skeleton`, `tomb_queen`, `trusty_turret`. The set is derived from the
+  imported key set, so it maintains itself.
+* **`_tiebreak_gap` and `_fresh_pump` were removed as collateral of the rocket strip.** The first is
+  deck-neutral in shape (princess-HP tiebreak differential) but `_rocket_value` was its only caller;
+  the second already had NO caller at all before I10. Both are recoverable from git if a future
+  hogeq overtime term wants them.
+* **hogeq's `config/config.yaml` still carries the `xbow_*` / `rocket_*` / `nado_*` reward keys**
+  whose code is gone. Left in place deliberately: removing them is a second change with its own
+  (tiny) risk, and an orphaned config key is inert, whereas a MISSING key would change a default if
+  the code ever came back. Named here so the next reader does not mistake them for live tuning.
+
+### NOT IMPLEMENTED, DELIBERATELY (I10)
+
+* **The id()-reuse fix** (checklist item 3) -- measured, understood, and left for its own commit.
+* **Porting hogeq an X-Bow-shaped over-aggression term.** `_xbow_overaggression` prices a real and
+  deck-neutral idea -- spending down past the cheapest counter's cost silences `threat_miss_idle`,
+  so an expensive play can BUY its way out of the defensive penalty. hogeq has no equivalent term.
+  Writing one is a new reward, not a port, and belongs to a training experiment under the
+  one-change rule; the 24 skipped tests record the shape it would take.
