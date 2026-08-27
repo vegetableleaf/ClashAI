@@ -22,7 +22,7 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-08-25**, at commit `HEAD` (DRILLS: the segmented mini-sim framework is in and
+Last updated: **2026-08-26**, branch `sim-parity` (I4 importer hardening DONE -- dry-run-default cards-import, hero scrape, allowlist + pins guards, provenance, crown audit RED negative control, dry-run reconciled 0 surprises; see Phase I progress in SS3's sim-parity block). Previous: **2026-08-25** (DRILLS: the segmented mini-sim framework is in and
 validated in BOTH decks -- `sim/scenarios.py` + `sim/drill_env.py` + 4 icebow / 5 hogeq drills, each
 measured baseline-vs-oracle, plus `run.py drills` and a `sim.drill_frac` mixing ratio into PPO (default
 0.0, so an un-opted run is unchanged). Building it surfaced FIVE real bugs, all fixed, all cross-deck:
@@ -3560,6 +3560,34 @@ extra draw from `env.rng`. Full write-ups in `research/sim_parity/conflicts.md`.
 
 Suites: icebow **773 OK (21 skipped)** — was 703; hogeq **796 tests, 3 failures + 39 errors**, the
 same failure NAMES as the 767-test baseline. Still parked: I2's remaining scope, I4, I5.
+
+#### Phase I progress — I4 importer hardening DONE 2026-08-26 (5 commits, worktree only)
+
+`cards-import` is now safe to point at the live wiki. Dry-run is the DEFAULT (field-level diff vs
+the existing file; `--write` gates the overwrite; stale "RoyaleAPI" help fixed); `/Hero` subpages
+join the walk+probe and emit `<base>_hero` body rows (Balloon/Hero's ability table read as a
+second body — count 2 → 1, the one field any of the 16 live hero pages changed);
+`config/import_allowlist.json` (generated, 42 evos + 16 heroes live / 2 announced 2026-09-07 / 2
+API-forward-declared ghosts) makes inventing content impossible — announced stubs excluded loudly,
+unknown keys hard-stop; `config/import_pins.json` (generated: 66 stat_diffs `pin` rows + 12
+decisions.md owner values, 74 total) is force-applied over the scrape and `--write` REFUSES a
+pinned regression or a `verified: true` change without `--force-field`; every row carries
+`_src {revid, fetched}` (file written ONCE, copied to the sibling — parity_check gates byte-
+identity and its config list grew to include both new files). `crown_damage_audit.py` finally
+detects: regex tolerates its/their/linked-prefix/troop-damage phrasings + spawn-crown family +
+spell evos, ported to hogeq, exit 1 on stale — live negative control 2026-08-26: **15 stale
+vardefines RED** incl. the full known-stale set (fireball 207→172, arrows 31→24, freeze 35→29,
+snowball(+evo) 54→45, rage 54→45, vines 39→35, zap_evo 58→48, goblin_drill(+evo) 26→0). E2:
+`import_mechanics.py` declares `lifetime_s`/`turret_rotation` (declaration only; tesla stays 30,
+card_mechanics.json 0-line diff). Live `--dry-run` reconciled against the ledger
+(`i4_reconcile_dryrun.py`, exit 0): +16 = exactly the live heroes, −0, 24 field changes = 15
+pin-enforced + 8 catalogued update/escalate rows + 1 KBGAP rider (inferno_tower.count); guard
+would refuse 3 verified-row fields (mortar/mortar_evo dps from the 4.7 s pin recompute,
+rage.attacks false-assertion drop) — I5's problem, by design. NOTHING was written; DB data
+untouched. Suites: icebow **790 OK (21 skipped)** (was 773 + 17 new guard fixtures); hogeq **813
+tests, 3 failures + 39 errors — same NAMES** (test_cr_web live-fetch + 2× DEPLOYABLE_cell).
+⚠ for I5: the earthquake pins are mutually inconsistent (crown 49 = 58% of the OLD 84, damage 81
+→ 58% would give 47) — both are owner rulings, recorded as-is; flag when applying.
 
 ---
 
