@@ -3079,3 +3079,404 @@ cards:
   #     8->9, 9->10) -- the mirrored copy is one level higher, which is the card's second mechanic
   #     after the +1 elixir
   mirror: {mirrored_level_delta: 1.0, verified: true}
+
+
+  # ====================================================================
+  # I8 2026-08-27 -- HEROES, enemy-side only (decisions.md ruling 1).
+  # ====================================================================
+  # A `<base>_hero` row is a VARIANT of its base card, exactly like `<base>_evo`: build_spec
+  # overlays it on the base row, so a row here states only what the hero page states DIFFERENTLY
+  # plus the ability block. All 16 live heroes (research/sim_parity/ledger/r1b_heroes.json;
+  # Heroes master page revid 437509) are here; the 2 ANNOUNCED ones (mega_knight, battle_healer,
+  # 7/9/2026) are deliberately absent and must never be fielded.
+  #
+  # PROVENANCE. Every number below is `research/sim_parity/abilities/<key>.yaml`, which carries
+  # the verbatim prose and the revid of the live revision it was read from. The BODY stats come
+  # from config/cards_stats.json (I4's /Hero scrape, same revids); a `hitpoints:` or `damage:`
+  # here is a CORRECTION to that scrape, argued in the comment above it.
+  #
+  # THREE RULES SETTLE MOST OF THE CONFLICTS, and each one has an I7 precedent:
+  #   (a) a dated HISTORY entry that names the OLD value supersedes an un-updated table or prose
+  #       (I7-6, Skeleton King's spawn radius);
+  #   (b) an attributes table / level-table column beats PROSE, because it is the page's only
+  #       machine-readable statement (I7-2, the Archer Queen's attack-speed buff);
+  #   (c) the activation delay is 1 s unless the page publishes an agreed one (I7-1:
+  #       Cards.wikitext, "The abilities adhere to the server's 1 second deployment delay"). Only
+  #       the Hero Bowler publishes an agreed value of its own (2.5 s, table AND prose).
+  # `ability_uses: 1` is CLASS-WIDE: Heroes revid 437509, History 4/8/2026 "made every ability
+  # single-use". Eight subject pages never say it; the master page says it for all of them.
+  # Unresolved conflicts and every deliberate non-implementation are in conflicts.md, section I8.
+
+  # ---- summoned bodies. Spawned, NOT cards -- same house idiom as soul_skeleton / guardienne. ----
+  trusty_turret:                   # Hero Musketeer's Trusty Turret (Musketeer/Hero, revid 437512).
+    display: "Trusty Turret"       # vardefines tur_hp_11 1536, tur_dmg_11 140, tur_atk_speed 0.5,
+    elixir: null                   # tur_life 10, tur_spawn_11 204; table Turret Range 4.0,
+    kind: building                 # Target Air & Ground.
+    rarity: rare
+    attacks: [air, ground]
+    movement: none
+    range: long
+    count: 1
+    win_condition: false
+    hitpoints: 1536                # the LEVEL-11 row of the page's own statistics table renders
+                                   # this cell from musk_hp_11 (721) -- a template bug. The
+                                   # vardefine tur_hp_11 is what the column is DEFINED from.
+    damage: 140
+    dps: 280
+    hit_speed: 0.5
+    range_tiles: 4.0               # table "Turret Range 4.0"; History 2/2/2026 nerfed it from 5.5
+    lifetime_s: 10.0               # "lifetime of 10 seconds ... unless the building is destroyed
+                                   # before the Decay kills it" -- 1536/10 = the page's own
+                                   # "Turret Hitpoints lost per second" column (153.6)
+    deploy_time_s: 2.0             # rule (a): the table says 1 s, History 12/1/2026 "increased
+                                   # turret deploy time to 2 seconds (from 1 second)" names the
+                                   # old value and no revert is recorded
+    spawn_damage: 204              # tur_spawn_11, the "Turret Spawn Damage" column (the Heroes
+                                   # master table calls it landing damage). ITS RADIUS IS
+                                   # UNPUBLISHED [verify]: none is given anywhere, so the row
+                                   # carries none and the engine's own splash default applies.
+    targets: any
+    verified: false
+  tomb_queen:                      # Hero Tombstone's Regal Revive summon (Tombstone/Hero, revid 437388).
+    display: "Tomb Queen"          # THE THINNEST ROW IN THIS FILE, and deliberately so: the page
+    elixir: null                   # has NO Queen attributes table. Only four numbers exist --
+    kind: troop                    # queen_hp_11 4224, queen_dmg_11 422, sight 7 tiles (History
+    rarity: rare                   # 4/8/2026, "from 5.5 tiles"), and "targeting buildings"
+    attacks: [ground]              # (Heroes revid 437509, List of Heroes).
+    movement: ground
+    count: 1
+    win_condition: true
+    hitpoints: 4224
+    damage: 422
+    targets: buildings_only
+    sight: 7.0
+    # [verify] UNPUBLISHED, every one of them: hit speed, movement speed, attack range, deploy
+    # time, lifetime, crown-tower modifier. They are ABSENT rather than guessed, so the engine's
+    # own documented defaults apply (hit_speed 1.0, the melee range bucket, medium speed) and the
+    # gap stays visible instead of dressed up as data. Queued for the owner in conflicts.md.
+    # History 6/7/2026 "her continuous skeleton spawn was removed entirely" -- she does NOT spawn.
+    verified: false
+  skeletrooper:                    # Hero Balloon's Coffin Cadets summon (Balloon/Hero, revid 437524).
+    display: "Skeletrooper"        # vardefines skelhp_11 473, skeldmg_11 204, skelatk_speed 1.1
+    elixir: null                   # (History 6/7/2026 raised it from 0.9); table Speed Very Fast
+    kind: troop                    # (120), Range Melee: Short, Target Ground, Count x1.
+    rarity: epic
+    attacks: [ground]
+    movement: ground
+    speed: very_fast
+    range: melee
+    count: 1
+    win_condition: false
+    hitpoints: 473
+    damage: 204
+    dps: 185
+    hit_speed: 1.1
+    range_tiles: 0.5
+    speed_tiles: 2.0               # "Very Fast (120)" = 120/60 tiles/s
+    crown_tower_damage: 20.4       # DERIVED from the page's published RULE, not invented: the
+                                   # ability table's "Crown Tower Damage -90%" applied to his own
+                                   # 204. The separate crownlanddmg_11 27 is the LANDING damage's
+                                   # crown value and lives on the hero row, not here.
+    verified: false
+  rhino:                           # Hero Dark Prince's Destructive Dismount mount (Dark Prince/Hero,
+    display: "Rhino"               # revid 437359). vardefines rhp_11 1356, rdmg_11 179,
+    elixir: null                   # rcharge_11 358, spawndmg_11 307; table Hit Speed 1.6,
+    kind: troop                    # Range 0.8, Charge Range 3, Target Buildings, Speed Medium.
+    rarity: epic
+    attacks: [ground]
+    movement: ground
+    speed: medium
+    range: melee
+    count: 1
+    win_condition: true
+    hitpoints: 1356
+    damage: 179
+    dps: 112
+    hit_speed: 1.6
+    range_tiles: 0.8
+    speed_tiles: 1.0
+    targets: buildings_only        # table Target "Buildings"; the blurb agrees ("Rhino charges buildings")
+    charge_damage: 358             # rcharge_11
+    charge_range: 3.0              # table "Charge Range 3". History 1/6/2026's "first charge
+                                   # distance increased to 2.5 tiles (from 0 tiles)" is a
+                                   # DIFFERENT quantity -- the run-up he starts with -- and the
+                                   # engine has no first-charge concept; recorded, not implemented.
+    spawn_damage: 307              # spawndmg_11, dealt where he lands
+    spawn_crown_damage: 0          # History 1/6/2026: "the rhino spawn damage to crown towers was
+                                   # completely removed (307 to 0 at level 11)". A published ZERO,
+                                   # which build_spec is careful to keep (I5's royal_delivery trap).
+                                   # [verify] SPAWN RADIUS: the table literally prints "unknown".
+    verified: false
+  brigade_goblin:                  # Hero Goblins' Banner Brigade reinforcements (Goblins/Hero, revid
+    display: "Brigade Goblin"      # 437513). "Brigade Goblins has the exact stats as the original
+    elixir: null                   # goblins", and the level table reuses hp_11/dmg_11 for the
+    kind: troop                    # Brigade columns -- so this row IS the hero goblin, count 1.
+    rarity: common
+    attacks: [ground]
+    movement: ground
+    speed: very_fast
+    range: melee
+    count: 1
+    win_condition: false
+    hitpoints: 202
+    damage: 125
+    dps: 114
+    hit_speed: 1.1
+    range_tiles: 0.5
+    speed_tiles: 2.0
+    deploy_time_s: 1.0             # table "Deploy Time 1 sec"; History 4/8/2026 "decreased ... to
+                                   # 1 second (from 1.3 seconds)"
+    verified: false
+  magic_archer_decoy:              # Hero Magic Archer's Triple Threat decoy (Magic Archer/Hero,
+    display: "Magic Archer Decoy"  # revid 437520). vardefine decoy_hp_11 271 (History 6/7/2026,
+    elixir: null                   # "decreased the decoy hitpoints by 57%"); Decoy Duration 7 s.
+    kind: troop
+    rarity: legendary
+    attacks: [ground]
+    movement: ground
+    speed: null
+    range: melee
+    count: 1
+    win_condition: false
+    hitpoints: 271
+    damage: 0                      # INERT, and that is the honest reading: the page gives the
+    dps: 0                         # decoy a hitpoint value and a duration and NOTHING else -- no
+    hit_speed: 1.0                 # damage, no hit speed, no range, no movement. "Summons a decoy"
+    speed_tiles: 0.0               # is all the prose says. It stands where he was: a body to shoot
+    ghost_life_s: 7.0              # at. Whether it attacks at all is an open question (conflicts.md).
+                                   # 7 s = the table's "Decoy Duration", carried on `ghost_life_s`
+                                   # (a SILENT timed removal, no death effects) rather than
+                                   # `lifetime`, which the engine decays only for buildings and
+                                   # which would also have made it pull building-targeters.
+    verified: false
+  barrel_barbarian:                # the Barbarian the Hero Barbarian Barrel leaves behind
+    display: "Barrel Barbarian"    # (Barbarian Barrel/Hero, revid 437523). vardefines hp_11 716,
+    elixir: null                   # dmg_11 192; table First Hit Speed 0.4, Speed Medium (60),
+    kind: troop                    # Deploy Time 0.5, Range Melee: Short (0.5), Target Ground.
+    rarity: epic
+    attacks: [ground]
+    movement: ground
+    speed: medium
+    range: melee
+    count: 1
+    win_condition: false
+    hitpoints: 716
+    damage: 192
+    dps: 148
+    hit_speed: 1.3                 # rule (b): the Barbarian Attributes table says 1.3 s, the
+                                   # vardefine atk_speed says 1.4. The table is this page's own
+                                   # statement about the body and it agrees with the base card's
+                                   # barrel-barbarian (1.3); recorded in conflicts.md.
+    range_tiles: 0.5
+    speed_tiles: 1.0
+    first_hit_speed_s: 0.4
+    deploy_time_s: 0.5
+    verified: false
+
+  # ---- the 16 live heroes ----------------------------------------------------------------
+  # KNIGHT -- Triumphant Taunt (Knight/Hero, revid 437499). "taunting every enemy troop and
+  # building in a 7.5-tiles range, causing them to attack him. He also gains a shield. Both the
+  # shield and the taunt effect last for 5 seconds".
+  #   ability_radius_tiles 6.5, NOT the 7.5 that the prose AND the table both print: rule (a),
+  #     History 2/3/2026 "decreased the radius of Triumphant Taunt to 6.5 tiles (from 7.5 tiles)"
+  #     is the later edit and names 7.5 as the OLD value.
+  #   ability_shield_hp 512 = vardefine Shild_11, the page's only absolute. Two later nerfs
+  #     (-6% 12/1/2026, -33% 6/7/2026) give no new absolute, so there is nothing to substitute and
+  #     nothing is computed from them -- flagged in conflicts.md for an in-game read.
+  #   "Taunt Trigger Window 0.1s" (History 6/4/2026) is defined NOWHERE and is not implemented.
+  knight_hero: {ability_kind: taunt_shield, ability_cost: 2, ability_uses: 1, ability_delay_s: 1.0, ability_radius_tiles: 6.5, ability_shield_hp: 512, ability_duration_s: 5.0, ability_ai: {family: defensive, crowd_n: 2, crowd_tiles: 6.5}, verified: false}
+
+  # GIANT -- Heroic Hurl (Giant/Hero, revid 437510). "grabbing the highest HP enemy troop within 2
+  # tiles around him and throws them horizontally, also dealing damage to them when they land.
+  # While on the air, these troops are untargetable by ground-targeting troops and the Earthquake,
+  # but can still take damage from other spells. Air troops can be affected by the ability, but
+  # will take no damage when they land."
+  #   ability_knock 9.0 = the table's "Throwback Range" (unitless there; tiles is the only unit the
+  #     page uses). ability_range_tiles 2.0 = the grab radius, prose-only.
+  #   ability_stun_s 2.0 = the table's "Unit Stun Duration"; the prose never mentions a stun.
+  #   ability_max_hits 1 = the table's "Units Affected".
+  giant_hero: {ability_kind: throw_displace, ability_cost: 2, ability_uses: 1, ability_delay_s: 1.0, ability_range_tiles: 2.0, ability_knock: 9.0, ability_damage: 135, ability_stun_s: 2.0, ability_max_hits: 1, ability_ai: {family: defensive, crowd_n: 1, crowd_tiles: 2.0}, verified: false}
+
+  # MINI P.E.K.K.A. -- Breakfast Boost (Mini P.E.K.K.A./Hero, revid 437522). "immediately eats all
+  # the pancakes he cooked, granting him extra Levels and healing himself for 30%. ... He will need
+  # 22 seconds to get one pancake meter filled, but he can also get 10 seconds of progress with
+  # every attack. Every filled pancake meter increases the Levels gained ... by 1, except the last
+  # meter grants 2 extra Levels. With no meters ... 1 Level, but with a maximum of 3 meters, he can
+  # gain 5 Levels."
+  #   ability_levels IS the page's own "Level Increase from Pancake Bar" table, indexed by filled
+  #     meters: 0 -> +1, 1 -> +2, 2 -> +3, 3 -> +5.
+  #   ability_heal_frac 0.30 = the table's "Heal Percentage" (History 12/1/2026, "from 40%").
+  mini_pekka_hero: {ability_kind: transform_levelup, ability_cost: 1, ability_uses: 1, ability_delay_s: 1.0, ability_heal_frac: 0.30, ability_charge_s: 22.0, ability_charge_hit_s: 10.0, ability_max_charges: 3, ability_levels: [1, 2, 3, 5], ability_ai: {family: escape, hp_frac: 0.6, over_river: false}, verified: false}
+
+  # MUSKETEER -- Trusty Turret (Musketeer/Hero, revid 437512). "After a 1-second delay ... placing
+  # a turret 3 tiles forward of the Musketeer, which is used either as a distraction for regular
+  # troops, and as a building to attract win conditions."
+  #   BODY CORRECTION (I4 import bug, MEASURED): cards_stats.json carried hitpoints 1536 / damage
+  #   140 / hit_speed 0.5 for the MUSKETEER -- those are the TURRET's vardefines (tur_hp_11 /
+  #   tur_dmg_11 / tur_atk_speed); the scrape took the page's LAST attributes table. Hers are
+  #   musk_hp_11 721 / musk_dmg_11 217 / musk_atk_speed 1, identical to the base card
+  #   ("body_stat_deltas: none stated"). A 1536 hp, 280 dps Musketeer is more than twice the card.
+  musketeer_hero: {hitpoints: 721, damage: 217, hit_speed: 1.0, dps: 217, ability_kind: summon, ability_cost: 3, ability_uses: 1, ability_delay_s: 1.0, ability_range_tiles: 3.0, ability_spawn_unit: trusty_turret, ability_spawn_count: 1, ability_ai: {family: defensive, crowd_n: 2, crowd_tiles: 6.0}, verified: false}
+
+  # TOMBSTONE -- Regal Revive (Tombstone/Hero, revid 437388 + Heroes revid 437509). The subject
+  # page has NO ability section at all; the name and blurb are the master page's: "Tomb Queen rises
+  # from the earth, targeting buildings."
+  #   BODY CORRECTION (I4 import bug, MEASURED): the scrape put queen_hp_11 4224 / queen_dmg_11 422
+  #   on the TOMBSTONE. The building's own vardefine is tomb_hp_11 529 (= the base card), and a
+  #   Tombstone has no attack of its own -- damage 0 reproduces the base row exactly. The Queen's
+  #   two numbers live on the `tomb_queen` row, where they belong.
+  #   ability_range_tiles 0: she "rises from the earth" AT the tomb. The building is NOT consumed
+  #   -- the page never says it is; flagged in conflicts.md.
+  tombstone_hero: {hitpoints: 529, damage: 0, ability_kind: summon, ability_cost: 5, ability_uses: 1, ability_delay_s: 1.0, ability_range_tiles: 0.0, ability_spawn_unit: tomb_queen, ability_spawn_count: 1, ability_ai: {family: offensive, tower_tiles: 12.0}, verified: false}
+
+  # BALLOON -- Coffin Cadets (Balloon/Hero, revid 437524). "a skeletropper will fly towards the
+  # closest ground unit within 6 tiles, deling spawn damage. The skeletropper will the attack,
+  # dealing less damage to the crown tower."
+  #   ability_range_tiles 6.5 by rule (b): the ability table says 6.5, the prose says 6.
+  #   ability_damage 263 = landdmg_11 ("Landing Damage"; History 1/6/2026 cut it 14%);
+  #     ability_crown_tower_damage 27 = crownlanddmg_11, published separately.
+  #   THE LANDING DAMAGE IS SINGLE-TARGET, on the body he soars to: no radius is published
+  #     anywhere, so none is invented ([verify] in conflicts.md).
+  balloon_hero: {ability_kind: summon_seek, ability_cost: 2, ability_uses: 1, ability_delay_s: 1.0, ability_range_tiles: 6.5, ability_damage: 263, ability_crown_tower_damage: 27, ability_spawn_unit: skeletrooper, ability_spawn_count: 1, ability_ai: {family: defensive, crowd_n: 1, crowd_tiles: 6.5}, verified: false}
+
+  # DARK PRINCE -- Destructive Dismount (Dark Prince/Hero, revid 437359). "Dismount doing damage,
+  # attacking on foot while Rhino charges buildings." The Rhino is the new body; the Dark Prince
+  # keeps fighting with the one stat table the page prints.
+  #   ability_delay_s 1.0 is PUBLISHED here, not defaulted: History 1/6/2026 "the ability deploy
+  #     time decreased to 1 second (from 2 seconds)".
+  #   BODY: hit_speed 1.4 (the page's attributes table, = the base card) rather than the page's own
+  #     vardefine atk_speed 1.3. Rule (b), and the spec file's own conclusion is "body_stat_deltas:
+  #     none stated" -- an unstated hero-only 7% attack-speed buff is the less likely reading of a
+  #     page that contradicts itself. Recorded in conflicts.md.
+  dark_prince_hero: {hit_speed: 1.4, dps: 190.0, ability_kind: summon, ability_cost: 3, ability_uses: 1, ability_delay_s: 1.0, ability_range_tiles: 0.0, ability_spawn_unit: rhino, ability_spawn_count: 1, ability_ai: {family: offensive, tower_tiles: 14.0}, verified: false}
+
+  # GOBLINS -- Banner Brigade (Goblins/Hero, revid 437513). "The ability will be disabeld until the
+  # last goblin is killed. When the last goblin dies, a banner will be deployed that last 5sec.
+  # When the ability is pressed during that time, 2 Brigade Goblins will spawn a little behind."
+  #   THE ONLY BODYLESS ABILITY IN THE GAME: it fires from the BANNER, after every goblin is dead.
+  #   ability_duration_s 5.0 = the banner's lifetime (History 23/2/2026, "from 7 seconds");
+  #     ability_spawn_count 2 (History 4/8/2026, "from 3"); ability_range_tiles 1.0 = History
+  #     7/4/2026, "the brigade goblins now spawn a tile back from where the banner is dropped at".
+  goblins_hero: {ability_kind: summon_banner, ability_cost: 1, ability_uses: 1, ability_delay_s: 1.0, ability_duration_s: 5.0, ability_range_tiles: 1.0, ability_spawn_unit: brigade_goblin, ability_spawn_count: 2, ability_ai: {family: defensive, crowd_n: 0, crowd_tiles: 6.0}, verified: false}
+
+  # WIZARD -- Fiery Flight (Wizard/Hero, revid 437515). "makes him take flight for 5 seconds. While
+  # he is flying, not only he will get a 50% movement speed increase (now classified as fast), his
+  # fireballs also create 3 tile radius tornadoes, which does its own damage (reduced against crown
+  # towers), similar to the Evolved Valkyrie."
+  #   THE PAGE NAMES THE MECHANIC WE ALREADY HAVE ("similar to the Evolved Valkyrie"), so the
+  #     tornado reuses `attack_nado_*` and the engine's _Vortex wholesale. `attack_nado_ability`
+  #     is the only new bit: the whirlwind spins only while the ability is up, where Evo Valkyrie's
+  #     is permanent.
+  #   ability_cost 1, NOT the infobox's 2: the on-page ability attributes table says 1 AND the
+  #     Heroes master table says 1 (5+1=6). Two independent tables against one page's
+  #     infobox-plus-prose; rule (b). Recorded in conflicts.md -- it is a genuine 2-vs-2 split.
+  #   attack_nado_radius_tiles 4.0, NOT the prose's 3: rule (b) again.
+  #   ability_move_speed_tiles 1.5 = medium (1.0) x 1.5, which the page confirms twice ("+50%" and
+  #     "now classified as fast" -- Fast is 90/60 = 1.5 tiles/s).
+  #   attack_nado_crown_damage 15.5 = 43 x 0.36, History 23/2/2026 "decreased the hero wizards
+  #     crown tower damage by 64%" applied to tor_11. Derived from a published rule, like the
+  #     Skeletrooper's -90%.
+  wizard_hero: {ability_kind: flight_nado, ability_cost: 1, ability_uses: 1, ability_delay_s: 1.0, ability_duration_s: 5.0, ability_move_speed_tiles: 1.5, attack_nado_radius_tiles: 4.0, attack_nado_duration_s: 2.0, attack_nado_damage: 43, attack_nado_crown_damage: 15.5, attack_nado_ability: true, ability_ai: {family: offensive, tower_tiles: 9.0}, verified: false}
+
+  # ICE GOLEM -- Snowstorm (Ice Golem/Hero, revid 437514). "generates a 4-tile aura radius that has
+  # 3 pulses, with each one slowing down enemy troops and dealing damage."
+  #   ability_damage 69 = bliz_11, the "Blizzard Pulse Damage" column (x3 = 207 on the page).
+  #   ability_slow_mult 0.70 = the table's "Slowdown 30%"; ability_slow_s 2.0 = the table's
+  #     "Slowdown Duration 2 seconds". History 2/3/2026's "decreased Freeze duration to 1.5sec" is
+  #     NOT applied to it: that entry says FREEZE, and the 3rd blast's freeze is exactly what
+  #     History 4/8/2026 removed ("went from being a freeze effect to a slowdown effect"), so the
+  #     nerf reads as having hit an effect that no longer exists. Recorded in conflicts.md.
+  #   ability_tick_s 2.0 [verify]: THE PULSE INTERVAL IS PUBLISHED NOWHERE. 2.0 is the ability's
+  #     own slow duration -- the only cadence the page states -- chosen because it is the one value
+  #     that makes the slow continuous across the three pulses without stacking. Flagged for an
+  #     in-game count; the aura window follows from it (3 x 2.0) rather than from a second guess.
+  ice_golem_hero: {ability_kind: zone_pulse, ability_cost: 2, ability_uses: 1, ability_delay_s: 1.0, ability_radius_tiles: 4.0, ability_damage: 69, ability_max_hits: 3, ability_tick_s: 2.0, ability_slow_mult: 0.70, ability_slow_s: 2.0, ability_ai: {family: defensive, crowd_n: 2, crowd_tiles: 4.0}, verified: false}
+
+  # BERSERKER -- Savage Survival (Berserker/Hero, revid 437529 + Heroes revid 437509). The subject
+  # page has NO PROSE AT ALL; the blurb is the master page's: "A Bear spirit emerges through her,
+  # making her attacks go rapid and preventing her health from going below 1 HP while dealing
+  # reduced damage to Crown Towers."
+  #   ability_damage 167 = bear_dmg_11, the level table's "Bear Damage" column. THE PAGE NEVER SAYS
+  #     WHAT IT IS, and this is the argued reading (rule (b)): the ability's attributes table
+  #     publishes a Hit Speed of its own (0.2 s) and the level table publishes exactly one
+  #     ability-damage column next to it, so the pair is an attack profile. The alternative -- her
+  #     normal 102 at the faster cadence, with 167 meaning something else -- is in conflicts.md;
+  #     the two readings differ by 510 vs 835 dps.
+  #   ability_min_hp 1.0 = the table's "Minimum Hitpoints"; ability_move_speed_tiles 2.25 = "Ultra
+  #     Fast (135)"; ability_crown_tower_damage 41.75 = 167 x 0.25 ("Crown Tower Damage -75%").
+  berserker_hero: {ability_kind: buff_self, ability_cost: 3, ability_uses: 1, ability_delay_s: 1.0, ability_duration_s: 4.0, ability_hit_speed_s: 0.2, ability_damage: 167, ability_crown_tower_damage: 41.75, ability_move_speed_tiles: 2.25, ability_min_hp: 1.0, ability_ai: {family: defensive, crowd_n: 2, crowd_tiles: 3.0}, verified: false}
+
+  # VALKYRIE -- Wild Whirlwind (Valkyrie/Hero, revid 437412 + Heroes revid 437509). "Spins rapidly,
+  # dealing damage and increasing her movement speed while taking less damage."
+  #   ability_damage 97 = abdmg_11; ability_tick_s 0.25 + ability_radius_tiles 2.5 are the ability
+  #     table's own Hit Speed and Radius, so the spin is an AoE tick. IT REPLACES HER NORMAL SWING
+  #     while it runs (a body spinning is not also swinging on its own 1.5 s cadence, and stacking
+  #     both would double-count); the page does not say either way -- recorded in conflicts.md.
+  #   ability_dmg_reduction 15.0 = the table's "Damage reduction 15%".
+  #   ability_crown_tower_damage 48.5 = 97 x 0.5 (table "Crown Tower Damage -50%").
+  #   NOT IMPLEMENTED, deliberately: the move-speed boost the BLURB claims (the ability table
+  #     prints Speed Medium (60), identical to her body, and the table is the machine-readable
+  #     statement), and the table's lone "Dash Distance 5.5", which no prose on either page
+  #     mentions at all. Both in conflicts.md.
+  valkyrie_hero: {ability_kind: buff_self, ability_cost: 3, ability_uses: 1, ability_delay_s: 1.0, ability_duration_s: 3.5, ability_tick_s: 0.25, ability_radius_tiles: 2.5, ability_damage: 97, ability_crown_tower_damage: 48.5, ability_dmg_reduction: 15.0, ability_ai: {family: defensive, crowd_n: 2, crowd_tiles: 2.5}, verified: false}
+
+  # BOWLER -- Stone Swish (Bowler/Hero, revid 437528). "After 2.5sec of the ability pressed, the
+  # bowler will change the attack to a long-ranged mortar attack for 7.3sec. Getting a total of 3
+  # shots during that duration."
+  #   ability_delay_s 2.5 is THE ONE published activation delay in this file (table "Cast Time 2.5
+  #     sec" AND the prose agree), so rule (c)'s 1 s default does not apply to him. It also makes
+  #     his ruling-7 refund window two and a half times everyone else's.
+  #   THE PROSE'S "3 shots" RECONCILES WITH THE TABLE, which is why no shot cap is curated: 7.3 s
+  #     at a 1.9 s cadence gives 4 shots if the first lands at t=0 and exactly 3 (1.9 / 3.8 / 5.7)
+  #     if the stance pays one hit-speed before its first shot. The engine does the latter.
+  #   ability_damage 508 = abdmg_11; ability_crown_tower_damage 254 = ctdmg_11 (published outright,
+  #     not derived); ability_range_tiles 11.5 = the table's Range.
+  #   NOT IMPLEMENTED: "Plants his feet" is a card quote, not a rule, and the page's own open
+  #     question is whether he is rooted. No splash radius is published for the mortar shot either.
+  bowler_hero: {ability_kind: buff_self, ability_cost: 2, ability_uses: 1, ability_delay_s: 2.5, ability_duration_s: 7.3, ability_hit_speed_s: 1.9, ability_damage: 508, ability_crown_tower_damage: 254, ability_range_tiles: 11.5, ability_ai: {family: offensive, tower_tiles: 13.0}, verified: false}
+
+  # MAGIC ARCHER -- Triple Threat (Magic Archer/Hero, revid 437520). "the Magic Archer will teleport
+  # back, while leaving a decoy in his place. The next attack now shots 3 arrows that travel longer,
+  # but with less damage."
+  #   ability_back_tiles 3.5 -- the SAME field the Boss Bandit's Getaway Grenade uses, because it is
+  #     the same mechanic (a backwards teleport). History 6/7/2026 cut it from 5.
+  #   ability_max_hits 3 arrows x ability_damage 48 (triple_dmg_11), out to ability_range_tiles 13.5
+  #     (History 6/7/2026, from 15.4) instead of his normal 11. ONE attack carries them.
+  #   ability_duration_s 7.0 = the decoy's lifetime; the decoy body is `magic_archer_decoy`.
+  magic_archer_hero: {ability_kind: decoy_blink, ability_cost: 2, ability_uses: 1, ability_delay_s: 1.0, ability_back_tiles: 3.5, ability_duration_s: 7.0, ability_max_hits: 3, ability_damage: 48, ability_range_tiles: 13.5, ability_spawn_unit: magic_archer_decoy, ability_spawn_count: 1, ability_ai: {family: escape, hp_frac: 0.7, over_river: false}, verified: false}
+
+  # MEGA MINION -- Wounding Warp (Mega Minion/Hero, revid 437518). "a marker will be deployed to the
+  # lowest hitpoint target. When that unit dies, the mark will move to the next unit. When the
+  # ability is preased, Mega Minion will teleport to that tile, dealing damage. Afterwards the Mega
+  # Minion will behave normally, but with -75% on the tower."
+  #   ability_damage 399 = warpdmg_11. NO range is curated at all, because the table publishes
+  #     "Teleport Range: Infinite" -- the marker can be anywhere on the board.
+  #   ability_tower_mult 0.25 = the table's "Crown Tower Damage 25%" (History 4/8/2026, "tower
+  #     multiplier to x0.25 (from x0.5)"), applied AFTER the warp and permanently: History 4/8/2026
+  #     says the reduction "is now permanent" and the prose scopes it to "afterwards".
+  #   ability_tick_s 1.5 = History 7/4/2026's "first target delay of 1.5s ... could no longer
+  #     instantly spawn to targeted troop", the beat he must pay before attacking on arrival.
+  mega_minion_hero: {ability_kind: warp, ability_cost: 2, ability_uses: 1, ability_delay_s: 1.0, ability_damage: 399, ability_tower_mult: 0.25, ability_tick_s: 1.5, ability_ai: {family: defensive, crowd_n: 1, crowd_tiles: 20.0}, verified: false}
+
+  # BARBARIAN BARREL -- Rowdy Reroll (Barbarian Barrel/Hero, revid 437523). "When activatet, the
+  # Barbarian Barrel will roll for a second time, while healling the barbarian for 50% of the
+  # damage."
+  #   THE BUTTON BELONGS TO THE BARBARIAN, because the card is a SPELL and a spell has no body to
+  #     press it from -- build_spec hands a spell's ability parameters to the troop it leaves behind.
+  #   /!\ The BASE barbarian_barrel spawns no barbarian at all in this sim (MEASURED: 0 bodies) --
+  #     a pre-existing base-card gap recorded in conflicts.md. `spawns_troop` is curated on the HERO
+  #     row only, so fixing the hero does not silently buff the 198 pool decks holding the base card.
+  #   ability_range_tiles 3.0 = the reroll's own Range (History 4/5/2026, "from 4 tiles"), not the
+  #     barrel's 4.5, and ability_radius_tiles 1.3 = half its published Width of 2.6 (a rolling
+  #     spell's `spell_radius` IS the corridor half-width here, so the two are the same quantity).
+  #     ability_damage 232 = spawn_11, the barrel's area damage.
+  #   ability_crown_tower_damage 116 = rerolldmg_11. The VARIABLE is named for reroll damage but the
+  #     level-table column it feeds is headed "Crown Tower Damage"; the rendered column header wins
+  #     (rule (b)), and 116 is exactly half of 232 under either reading. Recorded in conflicts.md.
+  #   ability_heal_frac 0.50 = the table's "Damage Healed 50%", read as lifesteal on the reroll's
+  #     own damage. The alternative ("50% of the damage he has taken") is in conflicts.md.
+  #   damage 232 = spawn_11, the barrel's own AREA damage, because on a spell row `damage:` IS the
+  #     roll's damage (the base card carries 230 there). The scrape put the BARBARIAN's 192 on it,
+  #     which would have made the hero barrel roll for LESS than the base card; 192 is on the
+  #     `barrel_barbarian` row, where the page puts it.
+  barbarian_barrel_hero: {damage: 232, spawns_troop: {unit: barrel_barbarian, count: 1}, ability_kind: reroll, ability_cost: 1, ability_uses: 1, ability_delay_s: 1.0, ability_range_tiles: 3.0, ability_radius_tiles: 1.3, ability_damage: 232, ability_crown_tower_damage: 116, ability_heal_frac: 0.50, ability_ai: {family: defensive, crowd_n: 1, crowd_tiles: 4.0}, verified: false}

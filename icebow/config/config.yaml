@@ -1519,6 +1519,20 @@ sim:
   king_range: 8.5               # TILES: king-tower reach -- LONGER than a princess by its extra bulk
                                 # (the +0.5 is a measurement correction, so it applies to both)
   tower_first_hit: 0.8          # delay before the FIRST shot after (re)acquiring a target (capped by hit_speed)
+  # --- Loadout slots: Evolution / Hero / Wild (I8, 2026-08-27) --------------------------------
+  # The 16/3/2026 update made the deck loadout "one Evolution, one Hero and one Wild (from 2 evo
+  # and 2 hero)" (Heroes wiki page, revid 437509). The scripted opponent fills the Evolution slot
+  # and the Hero slot ALWAYS, drawing uniformly over the deck's real candidates -- no source names
+  # the card a player slotted, so it draws instead of guessing (see sim/opponents.py).
+  #
+  # THE WILD SLOT IS THE UNMEASURED PART, and these two knobs are why it is a knob rather than a
+  # constant: the wild slot takes a SECOND evolution, a SECOND hero, or NOTHING, and nothing
+  # publishes how often it is which. The battlelog does not carry slots at all, and RoyaleAPI /
+  # Deck Shop / StatsRoyale are all 403. 1/3 each is the least-assuming prior over three outcomes,
+  # not a measurement. Whatever these two leave over is the chance the wild slot stays EMPTY, and
+  # the split is renormalised per deck over the categories that still have a candidate left.
+  wild_evo_prob: 0.3333         # UNMEASURED: chance the wild slot takes a second Evolution
+  wild_hero_prob: 0.3333        # UNMEASURED: chance it takes a second Hero (rest = empty)
   opponent_tower_weights:       # relative odds of each OPPONENT tower troop (princess most common in live matches)
     princess: 6
     dagger_duchess: 2

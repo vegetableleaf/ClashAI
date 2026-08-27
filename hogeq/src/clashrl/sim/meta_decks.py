@@ -89,8 +89,45 @@ def evo_candidates(db, cards: List[str]) -> List[str]:
     return [c for c in cards if has_evolution(db, _base(c))]
 
 
+# THE 16 LIVE HEROES, and only those (research/sim_parity/ledger/r1b_heroes.json, read off the
+# Heroes master page revid 437509 and independently re-derived at the R1 gate). The 2 ANNOUNCED
+# heroes -- mega_knight and battle_healer, both dated 7/9/2026 -- are deliberately NOT here: their
+# subpages exist only as "Coming soon" stubs, they are absent from the master List of Heroes table,
+# and decisions.md's importer trap ("never auto-import from stubs") is about exactly this class of
+# forward declaration.
+_LIVE_HEROES = frozenset({
+    "balloon", "barbarian_barrel", "berserker", "bowler", "dark_prince", "giant", "goblins",
+    "ice_golem", "knight", "magic_archer", "mega_minion", "mini_pekka", "musketeer", "tombstone",
+    "valkyrie", "wizard",
+})
+
+
+def has_hero(db, base: str) -> bool:
+    """True when this base card really has a LIVE hero form the KB can build.
+
+    The single definition of "this card has a hero", shared by the loader, tools/evo_audit.py and
+    the tests, so they cannot drift apart -- the same contract `has_evolution` holds for
+    evolutions. TWO conditions, both required: the card is one of the 16 live heroes AND the KB
+    carries the `<base>_hero` row `build_spec` needs. An announced hero passes neither, and
+    neither list alone can resurrect a card the other does not have.
+    """
+    return base in _LIVE_HEROES and bool(db.get(base + "_hero"))
+
+
+def hero_candidates(db, cards: List[str]) -> List[str]:
+    """Every card in this deck that really HAS a live hero form, in deck order.
+
+    DERIVED, exactly like `evo_candidates` and for exactly the same reason: no accessible source
+    says which card a given player put in their Hero slot. The battlelog does not carry it, and the
+    `evolutionLevel` field that looked like it might turned out to report OWNERSHIP rather than the
+    fielded slot (conflicts.md, R4 CORRECTION). So the sim draws one uniformly per match instead of
+    naming one, and `meta_decks.yaml` carries the list only for inspectability.
+    """
+    return [c for c in cards if has_hero(db, _base(c))]
+
+
 def load_meta_decks(cfg, db) -> List[dict]:
-    """Return [{name, weight, cards, style, evo, support, evo_candidates}], validated against the KB.
+    """Return [{name, weight, cards, style, evo, support, evo_candidates, hero_candidates}].
 
     `support` is the deck's tower troop, measured from top-ladder battlelogs
     (research/sim_parity/ledger/meta_evo_slots.json, R4) and reliable.
@@ -103,6 +140,10 @@ def load_meta_decks(cfg, db) -> List[dict]:
     names the slotted card, so ScriptedBot draws one of these uniformly per match instead of
     guessing a fixed one (which is what used to fabricate phantom evolutions). Falls back to the
     built-ins.
+
+    `hero_candidates` (I8) is the same derivation for the HERO slot: the deck's cards that have one
+    of the 16 LIVE hero forms. Same reasoning, same validation, same per-match draw -- see
+    `sim/opponents.py` for the three-slot model the two lists feed.
 
     Cached by the file's timestamp: parsing ~1000 decks out of a 140 KB YAML and classifying
     each one is pure startup cost that a vectorised run would otherwise pay once per env.
@@ -122,7 +163,8 @@ def load_meta_decks(cfg, db) -> List[dict]:
     if key is not None and key in _CACHE:
         return [{**d, "cards": list(d["cards"]), "evo": list(d["evo"]),
                  "support": list(d["support"]),
-                 "evo_candidates": list(d["evo_candidates"])} for d in _CACHE[key]]
+                 "evo_candidates": list(d["evo_candidates"]),
+                 "hero_candidates": list(d["hero_candidates"])} for d in _CACHE[key]]
 
     out: List[dict] = []
     if path.exists():
@@ -135,13 +177,21 @@ def load_meta_decks(cfg, db) -> List[dict]:
                 # entirely -> derived, so a freshly imported pool is not silently evolution-less.
                 cands = ([c for c in _slots(d, "evo_candidates", cards) if has_evolution(db, _base(c))]
                          if "evo_candidates" in d else evo_candidates(db, cards))
+                # ...and the HERO slot's candidates, by the identical rule (I8). VALIDATE, never
+                # trust: a declaration for a card that has no live hero row is dropped, so a stale
+                # or hand-edited pool can only under-report, never field a hero that does not
+                # exist. Absent entirely -> derived from the KB, so a freshly imported pool is not
+                # silently hero-less.
+                hcands = ([c for c in _slots(d, "hero_candidates", cards) if has_hero(db, _base(c))]
+                          if "hero_candidates" in d else hero_candidates(db, cards))
                 out.append({"name": str(d.get("name", "deck")), "weight": float(d.get("weight", 1.0)),
                             "cards": cards, "style": classify_style(db, cards),
                             "evo": _slots(d, "evo", cards), "support": _slots(d, "support", cards),
-                            "evo_candidates": cands})
+                            "evo_candidates": cands, "hero_candidates": hcands})
     if not out:
         out = [{"name": n, "weight": 1.0, "cards": list(c), "style": classify_style(db, c),
-                "evo": [], "support": [], "evo_candidates": evo_candidates(db, list(c))}
+                "evo": [], "support": [], "evo_candidates": evo_candidates(db, list(c)),
+                "hero_candidates": hero_candidates(db, list(c))}
                for n, c in _BUILTIN]
 
     # LADDER SKEW. meta_decks.yaml is scraped popularity across the whole population, but the bot
@@ -175,4 +225,5 @@ def load_meta_decks(cfg, db) -> List[dict]:
         _CACHE[key] = out
     return [{**d, "cards": list(d["cards"]), "evo": list(d["evo"]),
              "support": list(d["support"]),
-             "evo_candidates": list(d["evo_candidates"])} for d in out]
+             "evo_candidates": list(d["evo_candidates"]),
+             "hero_candidates": list(d["hero_candidates"])} for d in out]

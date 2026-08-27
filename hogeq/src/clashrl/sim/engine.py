@@ -238,12 +238,38 @@ class CardSpec:
     ability_spawn: Optional["CardSpec"] = None   # the body it summons, prebuilt (SK Skeleton,
                                         # LP Guardienne) -- same idiom as `spawner_spec`
     ability_spawn_count: int = 0        # how many (SK's floor of 6; souls add on top)
-    ability_shield_hp: float = 0.0      # I8 (taunt_shield heroes); no champion uses it
-    ability_heal: float = 0.0           # I8 (heal-shaped hero abilities); no champion uses it
+    ability_shield_hp: float = 0.0      # Hero Knight's Triumphant Taunt shield (512 @ L11)
+    ability_heal: float = 0.0           # ABSOLUTE heal, level-scaled; no card uses it yet
     ability_dmg_reduction: float = 0.0  # incoming damage negated while active (Monk 0.65)
-    ability_knock: float = 0.0          # tiles the ability shoves ground bodies (LP charge 2.5)
+    ability_knock: float = 0.0          # tiles the ability shoves ground bodies (LP charge 2.5;
+                                        # Hero Giant's 9-tile Throwback Range)
     ability_ai: tuple = ()              # KB-tunable opponent-AI knobs as sorted (key, value)
                                         # pairs -- see ScriptedBot._try_ability
+    # ---- I8. Same rule as I7's sixteen: GENERIC shapes, never a field per card. Each one below
+    # either serves more than one hero or is the only way to hold a published number that the
+    # existing parameters cannot.
+    ability_hit_speed: float = 0.0      # SECONDS between hits while the ability is active. The
+                                        # hero pages publish an absolute ability Hit Speed
+                                        # (Berserker 0.2, Bowler 1.9) where the Archer Queen's
+                                        # page published a multiplier, so this holds the published
+                                        # figure and the engine derives the multiplier from it.
+    ability_min_hp: float = 0.0         # HP FLOOR while active (Berserker "Minimum Hitpoints 1")
+    ability_stun_s: float = 0.0         # stun the ability applies to what it hits (Giant hurl 2 s)
+    ability_slow_mult: float = 0.0      # move/attack multiplier this ability's slow imposes, and
+    ability_slow_s: float = 0.0         # how long. The Ice Golem's Snowstorm publishes its own
+                                        # pair (0.70 / 2 s) rather than using the engine-wide
+                                        # slow_factor + slow_duration.
+    ability_heal_frac: float = 0.0      # heal as a FRACTION (Mini P.E.K.K.A. 0.30 of max hp;
+                                        # Barbarian Barrel 0.50 of the reroll's own damage)
+    ability_tower_mult: float = 0.0     # crown-tower damage multiplier the ability LEAVES BEHIND
+                                        # (Mega Minion's permanent x0.25 after Wounding Warp)
+    # A CHARGING METER: seconds to fill one charge, seconds of progress one attack is worth, the
+    # cap, and what each filled charge buys. Mini P.E.K.K.A.'s pancake bar today.
+    ability_charge_s: float = 0.0
+    ability_charge_hit_s: float = 0.0
+    ability_max_charges: int = 0
+    ability_levels: tuple = ()          # levels gained, INDEXED BY filled charges (the page's own
+                                        # table: 0 bars -> +1, 1 -> +2, 2 -> +3, 3 -> +5)
     # BOSS BANDIT's "Getaway Grenade" (kind `movement_flight`): "get invisible for one second,
     # then teleport 6 tiles behind her current spot". Until I7 the ENGINE fired this itself below
     # a rolled HP fraction -- a model of an HP-gated trigger the game REMOVED on 8/7/2025 ("can be
@@ -335,6 +361,13 @@ class CardSpec:
     attack_nado_r: float = 0.0   # EVO VALKYRIE: every swing spins up a 0.5 s whirlwind that
     attack_nado_s: float = 0.0   # pulls ground AND air toward her (5.5 tiles) and deals its
     attack_nado_dmg: float = 0.0 # damage spread over the duration -- the tornado vortex, reused
+    attack_nado_crown: float = 0.0   # ...and this much to a Crown Tower, where the card publishes
+                                 # a reduced figure (Hero Wizard's -64%). 0 = the same damage.
+    attack_nado_ability: bool = False  # I8: the whirlwind spins ONLY while the card's ability is
+                                 # active. Evo Valkyrie's is permanent; the Hero Wizard's fireballs
+                                 # "also create ... tornadoes" for the 5 s of Fiery Flight and not
+                                 # otherwise, and the page names Evo Valkyrie as the model, so it
+                                 # is the same mechanic behind a gate rather than a second one.
     zap_pulses: int = 0          # EVO ZAP: total pulses (3), ~1 s apart, ring GROWING by
     zap_step: float = 0.0        # zap_step tiles each pulse (2.5 -> 3.0 -> 3.5)
     kill_heal: float = 0.0       # EVO PEKKA: flat heal per troop/building KILL (12.5% = 470)...
@@ -640,8 +673,13 @@ _TOWER_SHOT = CardSpec(
 
 
 def build_spec(db, key: str, level: int = 11) -> CardSpec:
-    base = key[:-4] if key.endswith("_evo") else key
+    # A card has up to two VARIANT forms and both are `<base>_<suffix>` rows overlaid on the base
+    # card: `_evo` (I3) and, since I8, `_hero`. Resolving `base` here rather than treating the
+    # variant key as a card of its own is what lets every db accessor below (flags, sight, mass,
+    # collision, air-targeting) answer for the BODY, which a hero shares with its base card.
     is_evo = key.endswith("_evo")
+    is_hero = key.endswith("_hero")
+    base = key[:-4] if is_evo else (key[:-5] if is_hero else key)
     c = db.get(base) or {}
     if is_evo:
         # The import writes each evolution as its OWN `<base>_evo` row whose top-level fields ARE
@@ -665,9 +703,23 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         if ev_row:
             c = {**c, **{k: v for k, v in ev_row.items()
                          if v is not None and k not in ("evolution", "base", "display", "rarity")}}
+    if is_hero:
+        # I8: a HERO is the same body with an ability bolted on. Its page publishes the whole
+        # attributes table but its `body_stat_deltas` are almost always "none stated", so the row
+        # is written as a DELTA over the base card and overlaid exactly like an evolution --
+        # which is also what makes the base card's curated mechanics (the Dark Prince's charge,
+        # the Balloon's death bomb, the Ice Golem's death slow) carry through instead of being
+        # silently dropped by a self-contained row.
+        hr_row = db.get(key) or {}
+        if not hr_row:
+            raise KeyError(f"{key}: the KB defines no hero form for {base!r} (no `{key}` row). "
+                           f"Only the 16 LIVE heroes have one; the 2 announced (7/9/2026) must "
+                           f"never be fielded.")
+        c = {**c, **{k: v for k, v in hr_row.items()
+                     if v is not None and k not in ("evolution", "base", "display", "rarity")}}
     flags = set(db.flags(base))
-    if is_evo:
-        flags |= set((db.get(key) or {}).get("flags") or ())   # evo-only flags (Evo Snowball ROLLS)
+    if is_evo or is_hero:
+        flags |= set((db.get(key) or {}).get("flags") or ())   # variant-only flags (Evo Snowball ROLLS)
     kind = c.get("kind", "troop")
     elixir = int(c.get("elixir") or db.elixir(base) or 4)
     hp = float(c.get("hitpoints") or 300)
@@ -810,6 +862,28 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
             ability_spawn = build_spec(db, str(_asu), level)
         except Exception:                                     # noqa: BLE001 - unknown key: no summon
             ability_spawn = None
+    # A SPELL'S ABILITY BUTTON BELONGS TO THE BODY IT LEAVES BEHIND (I8). The Hero Barbarian
+    # Barrel is the only card in the game whose hero form is a SPELL, and a spell has no body to
+    # press a button from: `champion_ability` selects the newest living UNIT with an
+    # `ability_kind`, and a `_Spell` is never one. So a spell hands its whole ability block to the
+    # troop it drops -- the Barbarian is who Rowdy Reroll heals and who the second roll starts
+    # from, which is exactly what the page describes. Stated as a rule rather than a card check so
+    # any future spell-hero inherits it.
+    if ability_kind and kind == "spell" and spawn_spec is not None:
+        spawn_spec = replace(
+            spawn_spec, ability_kind=ability_kind,
+            ability_cost=float(c.get("ability_cost") or 0.0),
+            ability_uses=int(c.get("ability_uses") or 0),
+            ability_cd=float(c.get("ability_cooldown_s") or 0.0),
+            ability_delay=float(c.get("ability_delay_s") or 0.0),
+            ability_dmg=_lv.scale(float(c.get("ability_damage") or 0.0), level),
+            ability_crown_dmg=_lv.scale(float(c.get("ability_crown_tower_damage") or 0.0), level),
+            ability_range_tiles=float(c.get("ability_range_tiles") or 0.0),
+            ability_radius_tiles=float(c.get("ability_radius_tiles") or 0.0),
+            ability_heal_frac=float(c.get("ability_heal_frac") or 0.0),
+            ability_ai=(tuple(sorted((str(k), v) for k, v in c["ability_ai"].items()))
+                        if isinstance(c.get("ability_ai"), dict) else ()))
+        ability_kind = ""                 # ...and the spell itself keeps none of it
     # KB-TUNABLE OPPONENT AI. A tuple of pairs rather than a dict so the spec stays copyable by
     # `replace()` without sharing mutable state between every body of the card.
     _aai = c.get("ability_ai")
@@ -879,6 +953,8 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         attack_nado_r=float(c.get("attack_nado_radius_tiles") or 0.0),
         attack_nado_s=float(c.get("attack_nado_duration_s") or 0.0),
         attack_nado_dmg=float(c.get("attack_nado_damage") or 0.0) * sc,
+        attack_nado_crown=float(c.get("attack_nado_crown_damage") or 0.0) * sc,
+        attack_nado_ability=bool(c.get("attack_nado_ability")),
         zap_pulses=int(c.get("zap_pulses") or 0),
         zap_step=float(c.get("zap_radius_step_tiles") or 0.0),
         kill_heal=float(c.get("kill_heal") or 0.0) * sc,
@@ -1006,6 +1082,20 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         ability_spawn_count=int(c.get("ability_spawn_count") or 0),
         ability_shield_hp=_lv.scale(float(c.get("ability_shield_hp") or 0.0), level),
         ability_heal=_lv.scale(float(c.get("ability_heal") or 0.0), level),
+        # ---- I8 generics. Timing and geometry never scale with level; damage-shaped values do,
+        # and the only one here (`ability_min_hp`) is a published FLOOR of 1 hitpoint, which the
+        # Berserker's page states as a rule rather than a level-table column -- so it does not.
+        ability_hit_speed=float(c.get("ability_hit_speed_s") or 0.0),
+        ability_min_hp=float(c.get("ability_min_hp") or 0.0),
+        ability_stun_s=float(c.get("ability_stun_s") or 0.0),
+        ability_slow_mult=float(c.get("ability_slow_mult") or 0.0),
+        ability_slow_s=float(c.get("ability_slow_s") or 0.0),
+        ability_heal_frac=float(c.get("ability_heal_frac") or 0.0),
+        ability_tower_mult=float(c.get("ability_tower_mult") or 0.0),
+        ability_charge_s=float(c.get("ability_charge_s") or 0.0),
+        ability_charge_hit_s=float(c.get("ability_charge_hit_s") or 0.0),
+        ability_max_charges=int(c.get("ability_max_charges") or 0),
+        ability_levels=tuple(int(v) for v in (c.get("ability_levels") or ())),
         # Published as a NEGATIVE percentage on the Monk's page ("Damage Reduced -65%"); the
         # engine wants a positive fraction of damage negated, like Evo Knight's.
         ability_dmg_reduction=abs(float(c.get("ability_damage_reduction") or 0.0)) / 100.0,
@@ -1189,6 +1279,22 @@ class Unit:
     # while: the Archer Queen's cloak, the Monk's reflection, Goblinstein's link.
     ability_active_s: float = 0.0
     ability_tick_left: float = 0.0
+    # ---- I8 hero-ability state. Four fields, each shared by more than one kind.
+    ability_hits: int = 0        # sub-events this activation has spent: the Ice Golem's 3 blizzard
+                                 # pulses, the Hero Magic Archer's 3 triple-shot arrows
+    cook_s: float = 0.0          # MINI P.E.K.K.A.'s pancake bar, in SECONDS of progress (22 s per
+                                 # meter, +10 s per attack) -- one clock rather than a meter count,
+                                 # because the page's two accrual rules are both stated in seconds
+    flying_left: float = 0.0     # counts as AIR TRANSPORT for this long. Two heroes need exactly
+                                 # this and nothing more: the Hero Wizard while Fiery Flight runs,
+                                 # and whoever the Hero Giant has thrown ("untargetable by
+                                 # ground-targeting troops and the Earthquake, but can still take
+                                 # damage from other spells" -- which is what being AIR already
+                                 # means here, so it is one field, not a new immunity class)
+    taunt_ref: object = None     # HERO KNIGHT: the body Triumphant Taunt locked me onto. It
+                                 # outlives the 5 s window -- "enemy troops and buildings will
+                                 # still target him afterwards until he is defeated" -- so it is a
+                                 # reference that clears on HIS death, not a timer
     souls: int = 0               # SKELETON KING: banked troop deaths (cap 10), +1 Skeleton each
     # GOLDEN KNIGHT's dash chain. `dash_hit` is a TUPLE of id()s -- ruling 10 / the page's "He
     # cannot dash into the same troop per ability use" -- rebuilt rather than mutated so a

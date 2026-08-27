@@ -99,7 +99,9 @@ class ScriptedBot:
 
     def __init__(self, cfg, db, rng, cards: List[str], style: str, levels: "List[int] | None" = None,
                  adaptive: bool = False, evo: "List[str] | None" = None,
-                 evo_candidates: "List[str] | None" = None):
+                 evo_candidates: "List[str] | None" = None,
+                 hero_candidates: "List[str] | None" = None,
+                 support: "List[str] | None" = None):
         self.style = style
         self.cards = list(cards)                                  # deck card keys (for matchup detection)
         self.rng = rng
@@ -156,26 +158,30 @@ class ScriptedBot:
         # stats wearing the evo's name). This draw ranges only over cards that provably have an
         # evolution, so every outcome is real. MEASURED by tools/evo_audit.py: 0 phantoms.
         #
-        # THE CAP IS ONE. The 16/3/2026 update made the loadout one Evolution + one Hero + one
-        # Wild, so at most two evolutions are legal -- but the second is the WILD slot, which is
-        # out of scope here (it also takes a Hero, and the engine has no Hero model) and the slot
-        # machinery below is single-slot regardless. Exactly one draw, one slot, never two.
+        # THE LOADOUT IS THREE SLOTS (16/3/2026, Heroes revid 437509: the format became "one
+        # Evolution, one Hero and one Wild (from 2 evo and 2 hero)"). I3 shipped the Evolution
+        # slot; I8 adds the other two, and the WILD slot is what makes a second evolution legal
+        # again -- which is why the old "exactly one draw, one slot, never two" note is gone.
         self.evo_idx, self.evo_spec, self.evo_cycles, self.evo_charge = -1, None, 2, 0
         self.evo_declared = [k for k in (evo or []) if k in self.cards]
-        # RNG: the bot's OWN stream, so a seeded ScriptedBot fields a reproducible evolution while
-        # a vectorised run gets a different one per env. Drawn only when there is something to
-        # draw, so an evolution-less deck does not perturb the stream for the rest of the match.
+        # RNG: the bot's OWN stream, so a seeded ScriptedBot fields a reproducible loadout while a
+        # vectorised run gets a different one per env. Every draw below is skipped when there is
+        # nothing to draw, so a deck with no candidate does not perturb the stream.
         self.evo_pool = [k for k in (evo_candidates or []) if k in self.cards]
+        self.hero_pool = [k for k in (hero_candidates or []) if k in self.cards]
+        # THE DECK'S MEASURED TOWER TROOP (I8). Parsed and carried since R4 and completely INERT
+        # until now: the engine rolled one per match from a config-level weight table while the
+        # pool held the real answer per deck. `support` arrives as a list because the loader
+        # normalises every slot field to one; a deck names at most one tower troop.
+        self.support = list(support or [])
         _order = list(self.evo_declared)
         if not _order and self.evo_pool:
             _order = [self.evo_pool[rng.randrange(len(self.evo_pool))]]   # ONE uniform draw
+        _taken = set()                        # deck INDICES already spoken for by a slot
         for _k in _order:
             _i = self.cards.index(_k)
-            try:
-                _ev = build_spec(db, _k + "_evo", levels[_i])
-            except KeyError:      # no KB row for it yet -- field nothing, never fake the base card
-                continue
-            if _ev.hp <= 0 and _ev.kind != "spell":
+            _ev = self._build_evo(db, _k, levels[_i])
+            if _ev is None:
                 continue
             self.evo_idx, self.evo_spec = _i, _ev
             # CYCLES from the EVOLUTION'S OWN ROW. A curated `evolution.cycles` still wins, then
@@ -186,7 +192,130 @@ class ScriptedBot:
             # carry, so it returned 0 for the other 36 and this had to duplicate the lookup).
             # The `or 2` remains only as a floor: 0 would read as "already charged" forever.
             self.evo_cycles = int(db.evo_cycles(_k) or 2)
-            break                                            # ONE slot, enforced
+            _taken.add(_i)
+            break                                            # ONE card in the Evolution slot
+
+        # ---- THE HERO SLOT (I8, owner ruling 2026-08-26) -----------------------------------
+        # ALWAYS field one when the deck has a candidate, uniform over `hero_candidates`. Same
+        # honesty argument as the evolution draw: no accessible source names the slotted card, so
+        # naming one would be false precision AND worse training (the policy would overfit a fixed
+        # opponent hero per deck). MEASURED over the shipped pool: 842 of 1000 decks qualify.
+        #
+        # A HERO IS NOT A CHARGE MECHANIC. An evolution must be cycled `evo_cycles` times before it
+        # appears; the card in the Hero slot simply IS the hero from its first play. So the slot is
+        # applied by swapping the spec ONCE here rather than being resolved on every `_play`.
+        self.hero_idx, self.hero_spec = -1, None
+        _hero_choices = [k for k in self.hero_pool if self.cards.index(k) not in _taken]
+        if not _hero_choices and self.hero_pool:
+            # COLLISION: the Evolution slot took the deck's only hero-capable card. The two owner
+            # rulings ("always field one evolution", "always field one hero") can only conflict
+            # here, and only when a SINGLE card is the sole candidate for both -- so the fix is to
+            # move the EVOLUTION, which by construction still has somewhere else to go whenever
+            # this branch is reachable (`_hero_choices` is empty with a non-empty `hero_pool`
+            # exactly when the pool is that one card). MEASURED before the fix: 194 of 4982 decks
+            # with a hero candidate (3.9%) fielded no hero at all.
+            _alt = [k for k in self.evo_pool if self.cards.index(k) != self.evo_idx]
+            if _alt:
+                _k = _alt[rng.randrange(len(_alt))]
+                _i = self.cards.index(_k)
+                _ev = self._build_evo(db, _k, levels[_i])
+                if _ev is not None:
+                    _taken.discard(self.evo_idx)
+                    self.evo_idx, self.evo_spec = _i, _ev
+                    self.evo_cycles = int(db.evo_cycles(_k) or 2)
+                    _taken.add(_i)
+                    _hero_choices = [k for k in self.hero_pool if self.cards.index(k) not in _taken]
+        if _hero_choices:
+            _k = _hero_choices[rng.randrange(len(_hero_choices))]      # ONE uniform draw
+            _i = self.cards.index(_k)
+            _hs = self._build_hero(db, _k, levels[_i])
+            if _hs is not None:
+                self.hero_idx, self.hero_spec, self.specs[_i] = _i, _hs, _hs
+                _taken.add(_i)
+
+        # ---- THE WILD SLOT (I8, owner ruling 2026-08-26) -----------------------------------
+        # A second evolution, a second hero, or NEITHER, at 1/3 each, renormalised over whatever is
+        # still legal: a wild evo must differ from the slot evo, a wild hero from the slot hero,
+        # and a category with no candidate left redistributes its share over the rest.
+        #
+        # THE 1/3 IS AN UNMEASURED CHOICE. No source publishes how often players fill the Wild slot
+        # or with what -- the battlelog does not carry slots at all (conflicts.md, R4 CORRECTION),
+        # and RoyaleAPI / Deck Shop / StatsRoyale are all 403. A flat three-way split is the
+        # least-assuming prior over "evo / hero / empty", not a measurement, and it is a CONFIG
+        # KNOB (sim.wild_evo_prob, sim.wild_hero_prob) exactly so a real source can replace it
+        # without touching this file.
+        self.wild_evo_idx, self.wild_evo_spec = -1, None
+        self.wild_evo_cycles, self.wild_evo_charge = 2, 0
+        self.wild_hero_idx, self.wild_hero_spec = -1, None
+        self.wild_kind = ""                   # "evo" | "hero" | "" -- what the wild slot took
+        self.wild_choices = (0, 0)            # (legal wild evos, legal wild heroes) at draw time
+        _p_evo = float(cfg.get("sim", "wild_evo_prob", default=1.0 / 3.0))
+        _p_hero = float(cfg.get("sim", "wild_hero_prob", default=1.0 / 3.0))
+        _wild_evo = [k for k in self.evo_pool if self.cards.index(k) not in _taken]
+        _wild_hero = [k for k in self.hero_pool if self.cards.index(k) not in _taken]
+        # What was LEGAL when the wild draw was taken, recorded so the distribution can be audited
+        # against the 1/3 without re-deriving legality from the outcome (which is circular: a deck
+        # whose only spare evo candidate is the hero's card has no legal wild evo, and counting it
+        # as one makes an unbiased draw look skewed).
+        self.wild_choices = (len(_wild_evo), len(_wild_hero))
+        if _wild_evo or _wild_hero:
+            # "neither" keeps whatever the other two do not claim, so the three shares always sum
+            # to 1 and dropping a category cannot silently RAISE the chance of an empty slot.
+            _w = [(_p_evo if _wild_evo else 0.0), (_p_hero if _wild_hero else 0.0),
+                  max(0.0, 1.0 - _p_evo - _p_hero)]
+            _tot = sum(_w)
+            _r = rng.random() * _tot if _tot > 0.0 else 0.0
+            if _wild_evo and _r < _w[0]:
+                _k = _wild_evo[rng.randrange(len(_wild_evo))]
+                _i = self.cards.index(_k)
+                _ev = self._build_evo(db, _k, levels[_i])
+                if _ev is not None:
+                    self.wild_evo_idx, self.wild_evo_spec = _i, _ev
+                    self.wild_evo_cycles = int(db.evo_cycles(_k) or 2)
+                    self.wild_kind = "evo"
+                    _taken.add(_i)
+            elif _wild_hero and _r < _w[0] + _w[1]:
+                _k = _wild_hero[rng.randrange(len(_wild_hero))]
+                _i = self.cards.index(_k)
+                _hs = self._build_hero(db, _k, levels[_i])
+                if _hs is not None:
+                    self.wild_hero_idx, self.wild_hero_spec, self.specs[_i] = _i, _hs, _hs
+                    self.wild_kind = "hero"
+                    _taken.add(_i)
+        # The held siege answer is chosen by HP and a hero body can be the biggest thing in the
+        # deck, so it is re-derived AFTER the swaps -- and it MUST be: `_play` finds a card by
+        # object identity in `self.specs`, so a stale spec object would resolve to index -1 and
+        # quietly bypass the cycle.
+        troops = [s for s in self.specs if s.kind == "troop" and not s.building_only and not s.flying]
+        self._reserved = max(troops, key=lambda s: s.hp) if troops else None
+
+    @staticmethod
+    def _build_evo(db, key: str, level: int):
+        """The `<key>_evo` spec, or None when the KB cannot really build one.
+
+        Shared by the Evolution slot and the Wild slot so the two cannot diverge -- and these
+        guards are why phantoms stay at 0: a missing row RAISES (I3) instead of handing back the
+        base card wearing the evolution's name, and a row that builds to nothing is refused too.
+        """
+        try:
+            spec = build_spec(db, key + "_evo", level)
+        except KeyError:          # no KB row for it yet -- field nothing, never fake the base card
+            return None
+        return None if (spec.hp <= 0 and spec.kind != "spell") else spec
+
+    @staticmethod
+    def _build_hero(db, key: str, level: int):
+        """The `<key>_hero` spec, or None when the KB cannot really build one.
+
+        Same contract as `_build_evo`, for the same reason: `build_spec` raises for a key with no
+        hero row, so a stale `hero_candidates` list can only field FEWER heroes -- never a phantom
+        one wearing the base card's stats.
+        """
+        try:
+            spec = build_spec(db, key + "_hero", level)
+        except KeyError:
+            return None
+        return None if (spec.hp <= 0 and spec.kind != "spell") else spec
 
     def _try_ability(self, eng, team: int = 1) -> bool:
         """Press this deck's champion/hero ability button, if the board says to.
@@ -266,20 +395,31 @@ class ScriptedBot:
 
     def _play(self, eng, spec, x: float, y: float) -> bool:
         """Deploy + send that card to the back of the cycle. EVERY deploy goes through here, so no
-        branch can bypass the cycle. The deck's EVOLUTION slot charges by playing the base card
-        `evo_cycles` times; the next play of that card fields the `_evo` spec instead."""
+        branch can bypass the cycle.
+
+        An EVOLUTION slot charges by playing its base card `evo_cycles` times; the next play of
+        that card fields the `_evo` spec instead. There are now up to TWO such slots -- the
+        dedicated one and the Wild slot (I8) -- and they charge independently, because they are
+        different cards with their own Cycles numbers.
+
+        A HERO slot needs nothing here: the card in it IS the hero from its first play, so
+        `__init__` swapped the spec once and every path below already carries it.
+        """
         idx = next((i for i, s in enumerate(self.specs) if s is spec), -1)
-        if (idx == self.evo_idx and self.evo_spec is not None
-                and self.evo_charge >= self.evo_cycles
-                and eng.elixir[1] >= self.evo_spec.elixir):
-            spec = self.evo_spec                              # the charged Evolution takes the slot
+        for _sidx, _spec, _cyc, _chg in ((self.evo_idx, self.evo_spec, self.evo_cycles, "evo_charge"),
+                                         (self.wild_evo_idx, self.wild_evo_spec,
+                                          self.wild_evo_cycles, "wild_evo_charge")):
+            if idx != _sidx or _spec is None:
+                continue
+            if getattr(self, _chg) >= _cyc and eng.elixir[1] >= _spec.elixir:
+                spec = _spec                                  # the charged Evolution takes the slot
+            break
         if not eng.deploy(1, spec, x, y):
             return False
-        if idx == self.evo_idx:
-            if spec is self.evo_spec:
-                self.evo_charge = 0                           # spent -> recharge from scratch
-            else:
-                self.evo_charge += 1
+        if idx == self.evo_idx and self.evo_spec is not None:
+            self.evo_charge = 0 if spec is self.evo_spec else self.evo_charge + 1
+        elif idx == self.wild_evo_idx and self.wild_evo_spec is not None:
+            self.wild_evo_charge = 0 if spec is self.wild_evo_spec else self.wild_evo_charge + 1
         if idx >= 0 and idx in self.cycle:
             self.cycle.remove(idx)
             self.cycle.append(idx)
@@ -488,7 +628,9 @@ def make_opponent(cfg, db, rng, pool: List[dict], level: "int | None" = None,
     is_adaptive = adaptive and rng.random() < float(cfg.get("sim", "adaptive_prob", default=0.65))
     return ScriptedBot(cfg, db, rng, deck["cards"], deck["style"], levels, adaptive=is_adaptive,
                        evo=deck.get("evo"),       # a DECLARED slot, if a source ever names one
-                       evo_candidates=deck.get("evo_candidates"))   # else drawn from the legal set
+                       evo_candidates=deck.get("evo_candidates"),   # else drawn from the legal set
+                       hero_candidates=deck.get("hero_candidates"),  # I8: the Hero + Wild slots
+                       support=deck.get("support"))                  # I8: the measured tower troop
 
 
 class SelfPlayOpponent:
