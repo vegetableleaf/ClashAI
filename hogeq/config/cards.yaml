@@ -797,7 +797,15 @@ cards:
   #   hit_speed: SUPERSEDED ABSENT -> 3.0. PRIORITY FLAG from the brief (evo rows missing
   #     hit_speed) -- RESOLVED. firecracker_evo has no hit_speed at all today, so it also has no
   #     dps, while the base firecracker row correctly carries 3.0/21
-  firecracker_evo: {evo_cycles: 2, spark_dps_large: 192, spark_dps_small: 48, spark_duration_s: 2.5, spark_radius_tiles: 0.75, spark_duration_large_s: 3.0, hit_speed: 3.0, verified: true}
+  #   ruling 31b (2026-08-27, owner report: the impact spark is LARGER than the shrapnel
+  #     sparks): radii are PUBLISHED in the page's Evolution Attributes table (revid 437259)
+  #     -- Big Spark Radius 2.5 / Small Spark Radius 1.2 -- and the sim carried a single
+  #     curated 0.75 for both zones (pre-dating the table read). spark_radius_tiles
+  #     SUPERSEDED 0.75 -> 1.2 (the SMALL zone; it was never adjudicated in R2, which
+  #     covered dps/durations/hit_speed only); spark_radius_large_tiles ADDED 2.5; and the
+  #     long-unplumbed spark_duration_large_s 3.0 is finally consumed (big zone lived the
+  #     small zone's 2.5 s before this).
+  firecracker_evo: {evo_cycles: 2, spark_dps_large: 192, spark_dps_small: 48, spark_duration_s: 2.5, spark_radius_tiles: 1.2, spark_radius_large_tiles: 2.5, spark_duration_large_s: 3.0, hit_speed: 3.0, verified: true}
   # EVO ELITE BARBARIANS (Season 86 -- the wiki page is STILL not scrapeable, so the whole row is
   # curated from the announcement; cards-import will supersede the stats when the page lands):
   # "each Elite Barbarian can throw a spear every 5 seconds, and each spear deals 284 damage" at

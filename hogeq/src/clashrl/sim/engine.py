@@ -409,10 +409,15 @@ class CardSpec:
                                  # She can never snipe a crown tower.
     power_mult: float = 0.0      # EVO ARCHERS: POWER SHOT -- swings at gap >= power_min tiles
     power_min: float = 0.0       # (4.0) deal power_mult x damage (1.5); their reach is 6.
-    spark_dps_big: float = 0.0   # EVO FC: shots leave LINGERING SPARK ZONES along their paths --
-    spark_dps_small: float = 0.0 # the CARRIER trails LARGE sparks (192 dps), the shrapnel SMALL
-    spark_dur: float = 0.0       # ones (60 dps); tick every 0.25 s + 15% move slow, zone lives
-    spark_r: float = 0.0         # spark_dur (2.5 s). Values USER-VERIFIED at level 11.
+    spark_dps_big: float = 0.0   # EVO FC: shots leave LINGERING SPARK ZONES where they END --
+    spark_dps_small: float = 0.0 # the CARRIER drops ONE LARGE zone (192 dps), each shrapnel a
+    spark_dur: float = 0.0       # SMALL one (48 dps); tick every 0.25 s + 15% move slow. dps
+    spark_r: float = 0.0         # USER-VERIFIED at L11; durations + radii are the page's own
+    # Evolution Attributes table (revid 437259): Big Spark 2.5 tiles / 3 s, Small Spark 1.2
+    # tiles / 2.5 s. spark_dur/spark_r are the SMALL zone's; the big zone's pair below (ruling
+    # 31b -- the impact spark is LARGER than the shrapnel sparks, owner report 2026-08-27).
+    spark_r_big: float = 0.0
+    spark_dur_big: float = 0.0
     javelin_dmg: float = 0.0     # EVO E-BARBS: rage-tipped spear at the current target (troop OR
     javelin_cd: float = 0.0      # crown tower) every javelin_cd seconds, leaving a rage TRAIL
     decoy_mirror: str = ""       # EVO GOBLIN BARREL: also throw this spell at the MIRRORED tile
@@ -1096,6 +1101,8 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         spark_dps_small=float(c.get("spark_dps_small") or 0.0) * sc,
         spark_dur=float(c.get("spark_duration_s") or 0.0),
         spark_r=float(c.get("spark_radius_tiles") or 0.0),
+        spark_r_big=float(c.get("spark_radius_large_tiles") or 0.0),
+        spark_dur_big=float(c.get("spark_duration_large_s") or 0.0),
         javelin_dmg=float(c.get("javelin_damage") or 0.0) * sc,
         javelin_cd=float(c.get("javelin_cd_s") or 0.0),
         decoy_mirror=str(c.get("decoy_mirror") or ""),
@@ -1633,6 +1640,8 @@ class Projectile:
     # for the carrier and all five bolts, which at 11 tiles of shrapnel range carpeted most of a lane
     # in damage-over-time (user report: "covering too much space"). 0 = this shot leaves none.
     spark_end_dmg: float = 0.0
+    spark_end_r: float = 0.0     # that zone's radius -- the carrier's LARGE circle vs a bolt's
+    spark_end_dur: float = 0.0   # small one -- and its lifetime (ruling 31b: 2.5t/3s vs 1.2t/2.5s)
     # WHO FIRED IT (Unit or Tower), for the Zap Pack (ruling 31a): the Electro Giant zaps back at
     # whatever DAMAGED him from inside his radius, and a shot that lands is its shooter's hit --
     # without this the reflection only ever saw melee attackers, because the projectile paths
@@ -4419,7 +4428,9 @@ class SimEngine:
             # never reaches _impact, so their extra hits would never fire. Both burst ON the target.
             pierce=pierce, width=spec.proj_width, dirx=dx, diry=dy, ox=x, oy=y,
             bounces_left=spec.bounce_n, shooter=shooter,
-            spark_end_dmg=spec.spark_dps_big * 0.25))   # Evo FC: ONE large zone on the impact point
+            spark_end_dmg=spec.spark_dps_big * 0.25,    # Evo FC: ONE large zone on the impact point
+            spark_end_r=spec.spark_r_big or spec.spark_r,
+            spark_end_dur=spec.spark_dur_big or spec.spark_dur))
 
     def _shotgun(self, u: Unit, ref, dmg: float) -> None:
         """Fire the WHOLE shotgun: `multi_hits` separate pellets scattered across a cone.
@@ -4569,8 +4580,9 @@ class SimEngine:
         """
         if p.spark_end_dmg <= 0.0:
             return
-        self.spark_zones.append([p.x, p.y, p.spec.spark_r or 0.75, p.team,
-                                 self.t + p.spec.spark_dur, p.spark_end_dmg, self.t])
+        self.spark_zones.append([p.x, p.y, p.spark_end_r or p.spec.spark_r or 0.75, p.team,
+                                 self.t + (p.spark_end_dur or p.spec.spark_dur), p.spark_end_dmg,
+                                 self.t])
         del self.spark_zones[:-60]
 
     def _reflects(self, u: "Unit", p: Projectile) -> bool:
@@ -4842,7 +4854,8 @@ class SimEngine:
                 ground_only=not s.attacks_air, pierce=True,
                 width=s.proj_radius or 0.4,
                 dirx=cx / _TILES_X, diry=cy / _TILES_Y, ox=p.x, oy=p.y, shooter=p.shooter,
-                spark_end_dmg=s.spark_dps_small * 0.25)  # ONE small zone at the END of each bolt
+                spark_end_dmg=s.spark_dps_small * 0.25,  # ONE small zone at the END of each bolt
+                spark_end_r=s.spark_r, spark_end_dur=s.spark_dur)
             self.projectiles.append(shard)
             # THE IMPACT BLAST, and it is the shards themselves. "Shoots a firework that EXPLODES ON
             # IMPACT, DAMAGING THE TARGET and showering anything behind it" -- and the damage figure

@@ -789,3 +789,34 @@ implemented (recorded): direct-damage spells counting as King-Tower attacks for 
 (the page's 2v2 spell-origin trick) -- no spell carries an attacker body; noted in conflicts.md.
 
 Test: tests/test_zap_pack_r31a.py (8 tests, byte-identical both decks).
+
+### 31b -- Evo Firecracker: the impact spark zone is 2.5 tiles / 3 s, the shrapnel zones 1.2 / 2.5
+
+Owner report: the PRIMARY spark at the main projectile's impact has a LARGER radius than the
+secondary sparks. The wiki agrees and publishes BOTH geometries -- Firecracker/Evolution revid
+437259 (re-fetched live 2026-08-27, identical to cache), Evolution Attributes table: Big Spark
+Duration 3 sec / **Big Spark Radius 2.5** / Small Spark Duration 2.5 sec / **Small Spark
+Radius 1.2** / Small Spark Count x5 / Spark Hit Speed 0.25 sec.
+
+**MEASURED BEFORE** (engine at the 31a commit; one real attack at a target 6.0 tiles out): six
+zones -- the carrier's impact zone and all five shrapnel-end zones -- every one radius
+**0.75** and lifetime **2.5 s**. `spark_radius_tiles: 0.75` was an old curated value from the
+zones-along-the-path model, never adjudicated (R2 #5 covered dps / durations / hit_speed
+only), and `spark_duration_large_s: 3.0` sat in the KB CONSUMED BY NOTHING -- the I5 apply
+wrote it and no engine field ever read it. So the impact zone was 1/11th of its published
+area (0.75^2 vs 2.5^2) and died 0.5 s early. The damage split was already correct: impact
+zone ticking 48/0.25 s (192 dps), shrapnel 12 (48 dps).
+
+**CHANGE**: `spark_r_big` / `spark_dur_big` on CardSpec (KB: `spark_radius_large_tiles: 2.5`
+ADDED, `spark_duration_large_s: 3.0` finally plumbed, `spark_radius_tiles` SUPERSEDED 0.75 ->
+1.2 = the published SMALL radius); each shot carries its own zone geometry
+(`Projectile.spark_end_r/_dur`, seeded big at `_launch` for the carrier, small at
+`_spark_burst` for the bolts) and `_drop_spark_zone` consumes it.
+
+**MEASURED AFTER** (same attack): six zones -- ONE at the impact point with radius **2.5** /
+life **3.0 s** / tick 48, FIVE at the bolt ends with radius **1.2** / life **2.5 s** / tick
+12. Edge-gating probed with bodies: at zone-edge minus 0.2 tiles a body takes ticks, at plus
+0.3 it takes 0.0 -- so a body 1.2+r..2.5+r tiles from the landing point is hit by the impact
+spark and missed by the shrapnel sparks, exactly the owner's reported asymmetry.
+
+Test: tests/test_spark_radius_r31b.py (3 tests, byte-identical both decks).
