@@ -110,10 +110,10 @@ best reading is an intra-chain wind-up, still open. → *I7, decisions.md ruling
 MIDPOINT, ~3 tiles from each and well inside the tether. Does it take damage? **Yes** = the capsule,
 which is what is implemented. **No** = two circles, and the handler needs to change. → *I7*
 
-**12. Evolved Electro Dragon — can the chain hit the same target twice?** The Evolution page says
-the EVO chain CAN repeat targets; ruling 11 says it cannot. Ruling 11 is implemented (and was
-already correct in code). Not acted on, because overturning a ruling on a wiki line is exactly what
-decisions.md forbids. → *ED-3*
+**12. ~~Evolved Electro Dragon — can the chain hit the same target twice?~~** RESOLVED 2026-08-27
+by ruling 16: the PRIMARY chain cannot, the SECONDARY (falloff) bounces can, but only alternating.
+Implemented and measured (3 bodies 576.0 -> 1151.9). One flagged deviation from the ruling's literal
+wording, argued and reversible in one line. → *ED-3*
 
 **13. Base Electro Dragon's per-hit damage: 267 or 192?** Ruling 12 gave "64 at level 11" for the
 evo's reduced chain damage, which implies a base of 192 — but the KB carries 267 @L11 and 267/3 = 89.
@@ -967,7 +967,7 @@ but the **cosmetic arc projectile** (damage 0, drawn for sim_view) still lands, 
 `_impact` → `_land_hit` re-applies the spec's status when it does. MEASURED: all 12 bodies stunned
 even after the damage split was right. Late hops now carry a status-stripped copy of the spec.
 
-### ⚠ ED-3. The Evolution page says the EVO chain CAN repeat targets. Ruling 11 says it cannot. Not acted on.
+### ED-3. RESOLVED 2026-08-27 (decisions.md ruling 16): the SECONDARY chain may repeat, the PRIMARY may not.
 
 Ruling 11 (owner): "Electro Dragon chain cannot hit the same target twice in one attack",
 verified as already correct in the engine (`seen = {id(ref)}`). Pinned by
@@ -983,10 +983,28 @@ This reads as a genuine BASE-vs-EVO difference — the base page says the opposi
 ("The chain lightning will merely hit three individual troops... the chain lightning will only hit
 three units"), which is consistent with only the Evolution having the repeat.
 
-NOT IMPLEMENTED. Owner rulings outrank wiki prose, and unlimited repeats would be a large
-unmeasured buff on top of a card the sim has just been corrected DOWN by 64%. **OWNER: does the
-Evolved Electro Dragon's chain re-hit the same body within one attack? If yes, ruling 11 is a
-base-card rule and the Evolution needs its own `seen` exemption.**
+RESOLVED by owner ruling 16 (2026-08-27), and the answer was neither side: the rule differs by
+HALF of the chain. The PRIMARY hops (the `chain_full_hits` = 3 full-damage-with-stun bounces) keep
+ruling 11 unchanged; the SECONDARY hops (the 9 falloff bounces) may return to a body they already
+hit, but only after bouncing to a DIFFERENT body first. `_multi_hit` now switches its exclusion set
+on `late`: `seen` for a primary hop, `{id(cur)}` for a secondary one.
+
+MEASURED re-baseline (line of knights 3 tiles apart, arc 4.0, towers disarmed): 3 bodies
+576.0 -> 1151.9 (+99.98%), 4 bodies 640.0 -> 1151.9 (+80.0%), 6 bodies 768.0 -> 1151.9 (+50.0%);
+1, 2 and 13 bodies unchanged. The card now always spends its full 12-hit budget once it has three
+bodies to alternate between. `electro_dragon_evo` is the ONLY card the ruling can reach (the only
+KB row with `hits_per_attack` > `chain_full_hits`); the base card and the Electro Spirit are pinned
+unchanged. Pinned by `EvoChainSecondaryRepeatRuling16Tests` in `tests/test_r2_engine_schema.py`.
+
+⚠ ONE DEVIATION FROM THE RULING'S LITERAL WORDING, MEASURED AND LEFT FOR THE OWNER. "Exclude only
+the immediately previous node", implemented literally, makes the nearest-target rule OSCILLATE
+between the two closest bodies for the whole remaining budget. MEASURED on the 13-knight line: the
+total stayed at 1151.9 but the chain hit THREE bodies instead of twelve -- a large unmeasured nerf
+to the card's spread, the opposite of the page line that motivated the ruling, and it yields no
+total-damage re-baseline at any body count (the ruling asked for one). The shipped implementation
+therefore prefers an unhit body and revisits only when it has run out, so the revisit fires exactly
+where the chain used to die. Both readings pass every test the ruling specified.
+**OWNER: if the oscillation was intended, delete the `pool = [...] or near` line in `_multi_hit`.**
 
 ## I7 — champion abilities, 2026-08-26
 

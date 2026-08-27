@@ -4567,10 +4567,18 @@ class SimEngine:
             # target.
             if not isinstance(ref, Unit):
                 return
-            # RULING 11 (owner, 2026-08-26): one chain attack can NEVER hit the same body twice.
-            # `seen` is what enforces it, and it is also what bounds the Evolution's "infinite"
-            # chain on a finite board. The 533.6 the arc measurement reported was TWO SEPARATE
-            # ATTACK CYCLES, not one chain double-hitting.
+            # RULING 11 (owner, 2026-08-26), NARROWED BY RULING 16 (owner, 2026-08-27): "one chain
+            # attack can never hit the same body twice" is a rule about the PRIMARY chain only.
+            # `seen` is what enforces it there. The SECONDARY (falloff) bounces MAY return to a
+            # body they already hit, but only after bouncing to a DIFFERENT body first -- they
+            # alternate, they never repeat immediately -- which resolves the ED-3 conflict between
+            # ruling 11 and the Evolution page's "can hit the same target more than once".
+            #
+            # So the exclusion set differs by half of the chain, and `block` below is that split:
+            #   primary hop   -> `seen`, every body hit so far (ruling 11, unique-forever);
+            #   secondary hop -> `{id(cur)}`, the immediately previous node and nothing else.
+            # ONE consequence worth naming: with a single enemy in arc range a secondary bounce has
+            # nowhere to alternate TO, so the chain ends there rather than re-hitting it.
             seen = {id(ref)}
             cur = ref
             arc = s.chain_tiles or _CHAIN_TILES        # published per card; global is the fallback
@@ -4589,14 +4597,27 @@ class SimEngine:
             late_spec = replace(s, stuns=False, stun_dur=0.0, slows=False, slow_dur=0.0,
                                 freezes=False, freeze_dur=0.0) if full_n < n else s
             for hop in range(1, n):
+                late = hop >= full_n
+                # RULING 16's split exclusion. A PRIMARY hop may only take a body nothing has hit
+                # yet (`seen`); a SECONDARY hop may take any body except the one it is standing on.
                 near = [e for e in self.units
-                        if e.team != team and e.hp > 0 and id(e) not in seen
+                        if e.team != team and e.hp > 0
+                        and (id(e) != id(cur) if late else id(e) not in seen)
                         and _dist(cur.x, cur.y, e.x, e.y) <= arc
                         and not (not s.attacks_air and e.spec.flying)]
                 if not near:
                     break
-                e = min(near, key=lambda x: _dist(cur.x, cur.y, x.x, x.y))
-                late = hop >= full_n
+                # FRESH BODIES FIRST, revisits only once the bolt has run out of them. Ruling 16
+                # PERMITS a secondary bounce to return to an earlier target; it does not ask the
+                # bolt to prefer one. Reading it as a bare "exclude the previous node" makes the
+                # nearest-target rule oscillate between the two closest bodies forever -- MEASURED
+                # on the 13-knight line, the chain collapsed from 12 bodies hit to 3 (total
+                # unchanged at 1151.9, but bodies 3..12 took nothing), which is a large unmeasured
+                # NERF to the card's spread and the opposite of the Evolution page's "will chain
+                # between targets infinitely". Preferring fresh targets keeps the spread, and the
+                # revisit then fires exactly where the chain used to DIE for lack of one.
+                pool = [e for e in near if id(e) not in seen] or near
+                e = min(pool, key=lambda x: _dist(cur.x, cur.y, x.x, x.y))
                 self._hurt(e, late_dmg if late else dmg)
                 if not late:
                     self._apply_status(team, s, e)         # the stun rides the FULL hits only

@@ -911,27 +911,192 @@ class ChainFalloffAndNoRepeatTests(unittest.TestCase):
         self.assertAlmostEqual(0.3333, evo.chain_falloff, places=4)
 
     def test_ONE_chain_attack_can_never_hit_the_same_body_twice(self):
-        """RULING 11 (owner, 2026-08-26), pinned so it cannot regress. The engine was already
-        correct -- `_multi_hit` keeps `seen = {id(ref)}` -- and the 533.6 in the original arc
-        measurement was TWO SEPARATE ATTACK CYCLES, not one chain double-hitting.
+        """RULING 11 (owner, 2026-08-26), NARROWED BY RULING 16 (owner, 2026-08-27) to the PRIMARY
+        chain, and pinned here so that half cannot regress. The engine was already correct --
+        `_multi_hit` keeps `seen = {id(ref)}` -- and the 533.6 in the original arc measurement was
+        TWO SEPARATE ATTACK CYCLES, not one chain double-hitting.
 
-        Two bodies and a twelve-bounce budget: without `seen` the bolt would ping-pong between
-        them for all 12 hops. With it, each takes exactly one full hit and the chain runs out of
-        targets.
+        Two bodies and a twelve-bounce budget. `chain_full_hits` is 3, so hops 1 and 2 are both
+        PRIMARY: hop 1 takes the second body and hop 2 has no unhit body left, so the chain dies
+        before the falloff bounces ever begin. Each body takes exactly one full hit. This is the
+        case ruling 16 deliberately does NOT touch -- the secondary chain's revisit permission
+        cannot rescue a chain that never reaches its secondary half.
 
-        RECORDED CONFLICT (conflicts.md, owner queue): the Evolution page's own card quote says
-        the opposite for the EVO specifically -- "Evolved Electro Dragon's attack will chain
-        between targets infinitely and can hit the same target more than once" -- as does its
-        Strategy note about bouncing off a Crown Tower and back onto a nearby troop. Ruling 11 is
-        an owner in-game ruling and owner rulings outrank wiki prose, and implementing unlimited
-        repeats on prose alone would be a large unmeasured buff, so the ruling stands and the
-        contradiction is queued rather than acted on.
+        ED-3 RESOLVED (conflicts.md): the Evolution page's card quote -- "Evolved Electro Dragon's
+        attack will chain between targets infinitely and can hit the same target more than once"
+        -- is now implemented, for the SECONDARY bounces only. See
+        `EvoChainSecondaryRepeatRuling16Tests` below.
         """
         dmg, _ = self._swing("electro_dragon_evo", n_bodies=2)
         self.assertAlmostEqual(192.0, dmg[0], delta=0.5)
         self.assertAlmostEqual(192.0, dmg[1], delta=0.5)
         self.assertAlmostEqual(384.0, sum(dmg), delta=1.0,
-                               msg="a repeat-hitting chain would have dealt far more")
+                               msg="a repeat-hitting PRIMARY chain would have dealt far more")
+
+
+class EvoChainSecondaryRepeatRuling16Tests(unittest.TestCase):
+    """decisions.md ruling 16 -- the Evo Electro Dragon's SECONDARY chain may revisit a target.
+
+    Resolves conflict ED-3. The Evolution page contradicted ruling 11 in two places -- the card
+    quote ("will chain between targets infinitely **and can hit the same target more than once**")
+    and the Strategy note about the bolt bouncing off a Crown Tower back onto a troop it already
+    hit. The owner split the difference rather than picking a side:
+
+      * PRIMARY chain (the first `chain_full_hits` = 3 full-damage-with-stun hops): ruling 11
+        stands unchanged -- it can NEVER hit the same body twice.
+      * SECONDARY chain (the 9 falloff bounces, damage x `chain_falloff_frac`, no stun): MAY
+        return to a body it already hit, but only after bouncing to a DIFFERENT body first. No
+        immediate self-repeat; it must alternate.
+
+    IMPLEMENTATION NOTE, and it is a deliberate reading of the ruling rather than a literal one.
+    "Exclude only the immediately previous node" taken literally makes the nearest-target rule
+    OSCILLATE: from the third body the two nearest are the first and the fourth, `min` breaks the
+    tie toward the first, and the bolt then ping-pongs between two adjacent bodies for its whole
+    remaining budget. MEASURED on the 13-knight line under that literal reading: total unchanged
+    at 1151.9 but only THREE bodies took anything, against twelve before the ruling -- a large
+    unmeasured nerf to the card's spread and the exact opposite of the page line that motivated
+    the ruling. So `_multi_hit` prefers a body nothing has hit yet and revisits only when it has
+    run out, which makes the revisit fire precisely where the chain used to DIE. Recorded in
+    conflicts.md for the owner to overrule in one line if the oscillation was intended.
+
+    MEASURED, one swing into a line of knights 3 tiles apart (arc 4.0), towers disarmed:
+
+        bodies in arc |  before (ruling 11 only) |  after (ruling 16) |  change
+              1       |        192.0             |       192.0        |    --
+              2       |        384.0             |       384.0        |    --   (primary only)
+              3       |        576.0             |      1151.9        |  +99.98%
+              4       |        640.0             |      1151.9        |  +80.0%
+              6       |        768.0             |      1151.9        |  +50.0%
+             13       |       1151.9             |      1151.9        |    --   (never ran dry)
+
+    The card now always spends its full 12-hit budget once it has three bodies to alternate
+    between, instead of stopping when it runs out of fresh ones. The base Electro Dragon is
+    untouched at every count (it declares no falloff, so it has no secondary chain at all).
+    """
+
+    ARC_SPACING = 3.0        # tiles, inside the ED family's published 4.0-tile arc
+
+    def _swing_nodes(self, key, n_bodies, spacing=ARC_SPACING):
+        """One attack cycle. Returns (per-body damage, hop sequence as body indices).
+
+        The hop sequence is reconstructed from `eng.arc_events`, which records every chain hop as
+        (from_x, from_y, to_x, to_y, team, t, label) -- so it is the engine's own account of where
+        the bolt went, not an inference from the damage.
+        """
+        eng = _make_engine()
+        for side in (eng.towers[0], eng.towers[1]):
+            for tw in side:
+                tw.hit_dmg = 0.0
+        s = build_spec(eng.db, key, LVL)
+        t = build_spec(eng.db, "knight", LVL)
+        ax, ay = 0.50, 0.60 - 3.0 / _TILES_Y
+        ed = Unit(spec=s, team=0, x=0.50, y=0.60, hp=s.hp)
+        bodies = [Unit(spec=t, team=1, x=ax + (i * spacing) / _TILES_X, y=ay, hp=t.hp * 800)
+                  for i in range(n_bodies)]
+        eng.units.append(ed)
+        eng.units.extend(bodies)
+        pos = [(b.x, b.y) for b in bodies]
+        start = [b.hp for b in bodies]
+        eng.arc_events.clear()
+        for _ in range(400):
+            for b, (px, py) in zip(bodies, pos):
+                b.x, b.y = px, py
+            ed.x, ed.y = 0.50, 0.60
+            eng.advance(0.05)
+            if sum(start) - sum(b.hp for b in bodies) > 0:
+                for _ in range(3):
+                    for b, (px, py) in zip(bodies, pos):
+                        b.x, b.y = px, py
+                    eng.advance(0.05)
+                break
+
+        def _idx(x, y):
+            """Map an arc endpoint back to the body standing on it (-1 = the dragon itself)."""
+            for i, (px, py) in enumerate(pos):
+                if abs(x - px) < 1e-6 and abs(y - py) < 1e-6:
+                    return i
+            return -1
+
+        hops = [(_idx(a[0], a[1]), _idx(a[2], a[3]), a[6]) for a in eng.arc_events]
+        hops = [h for h in hops if h[1] >= 0]
+        return [h0 - b.hp for h0, b in zip(start, bodies)], hops
+
+    def test_a_secondary_bounce_CAN_revisit_a_body_the_chain_already_hit(self):
+        """THE RULING'S POINT. Three bodies, twelve-hit budget: the primary chain uses all three
+        and the nine falloff bounces have no fresh target left, so under ruling 11 the chain died
+        at 576.0. Ruling 16 lets them alternate back over bodies already hit."""
+        dmg, hops = self._swing_nodes("electro_dragon_evo", 3)
+        late = [h for h in hops if h[2] == "chain_late"]
+        self.assertTrue(late, "the falloff bounces must run at all")
+        visited = [h[1] for h in hops]
+        self.assertGreater(len(visited), len(set(visited)),
+                           "at least one body was hit more than once in ONE attack")
+        self.assertAlmostEqual(1151.9, sum(dmg), delta=2.0,
+                               msg="MEASURED BEFORE ruling 16: 576.0, the chain ran out of targets")
+
+    def test_a_secondary_bounce_never_hits_the_SAME_body_twice_in_a_row(self):
+        """The other half of the ruling: it must ALTERNATE. Every hop's destination differs from
+        its origin, so no bounce can sit on one body and farm it."""
+        for n in (3, 4, 6, 13):
+            with self.subTest(bodies=n):
+                _, hops = self._swing_nodes("electro_dragon_evo", n)
+                for src, dst, label in hops:
+                    self.assertNotEqual(src, dst,
+                                        "a %s hop returned to its own origin immediately" % label)
+
+    def test_the_PRIMARY_hops_still_never_repeat(self):
+        """Ruling 11 survives ruling 16 for the full-damage half. The first `chain_full_hits`
+        bodies are distinct, every one at full damage."""
+        dmg, hops = self._swing_nodes("electro_dragon_evo", 13)
+        primary = [h[1] for h in hops if h[2] == "chain"]
+        self.assertEqual(len(primary), len(set(primary)), "a PRIMARY hop repeated a body")
+        evo = build_spec(_make_engine().db, "electro_dragon_evo", LVL)
+        self.assertEqual(2, len(primary),
+                         "chain_full_hits 3 = the initial target plus two primary hops")
+        for i in range(evo.chain_full_hits):
+            self.assertAlmostEqual(192.0, dmg[i], delta=0.5)
+
+    def test_ONE_enemy_in_range_stops_the_secondary_chain(self):
+        """It cannot bounce to a DIFFERENT body, so it cannot come back -- the alternation rule is
+        what bounds an otherwise 'infinite' chain on a one-body board. A literal 'may repeat'
+        reading would have farmed a lone body for all twelve hits (192 + 11 x 64 = 896)."""
+        dmg, hops = self._swing_nodes("electro_dragon_evo", 1)
+        self.assertAlmostEqual(192.0, sum(dmg), delta=0.5,
+                               msg="a lone body takes the initial hit and nothing else")
+        self.assertEqual([], hops, "no hop can leave the only body on the board")
+
+    def test_the_spread_is_not_sacrificed_to_the_revisit(self):
+        """The fresh-body preference, pinned. On a full line the chain must still march across
+        twelve distinct bodies exactly as it did before ruling 16 -- the revisit is a fallback for
+        a chain that has run dry, not a new default. Under the literal 'exclude only the previous
+        node' reading this MEASURED 3 bodies hit instead of 12."""
+        dmg, _ = self._swing_nodes("electro_dragon_evo", 13)
+        hit = [i for i, d in enumerate(dmg) if d > 0]
+        self.assertEqual(list(range(12)), hit,
+                         "12 distinct bodies, the same spread as before the ruling")
+        self.assertAlmostEqual(1151.9, sum(dmg), delta=2.0)
+
+    def test_the_BASE_electro_dragon_is_untouched_by_ruling_16(self):
+        """It declares no `chain_falloff_frac`, so `full_n == n` and every hop is PRIMARY: there
+        is no secondary chain for the revisit rule to apply to. Pinned at every body count that
+        moved for the Evolution."""
+        for n, expect in ((1, 192.0), (2, 384.0), (3, 576.0), (4, 576.0), (6, 576.0), (13, 576.0)):
+            with self.subTest(bodies=n):
+                dmg, _ = self._swing_nodes("electro_dragon", n)
+                self.assertAlmostEqual(expect, sum(dmg), delta=1.0)
+
+    def test_the_electro_SPIRIT_is_untouched_by_ruling_16(self):
+        """`hits_per_attack` 9 with no `chain_full_hits`, so `full_n` falls back to n and all nine
+        hops are primary. The ruling can only reach a card that declares a falloff, and the Evo
+        Electro Dragon is the only one in the KB that does."""
+        eng = _make_engine()
+        sp = build_spec(eng.db, "electro_spirit", LVL)
+        self.assertEqual(0, sp.chain_full_hits)
+        self.assertEqual(0.0, sp.chain_falloff)
+        _, hops = self._swing_nodes("electro_spirit", 13)
+        self.assertTrue(all(h[2] == "chain" for h in hops), "no falloff bounces exist for it")
+        dst = [h[1] for h in hops]
+        self.assertEqual(len(dst), len(set(dst)), "every hop unique, ruling 11 unmodified")
 
 
 if __name__ == "__main__":

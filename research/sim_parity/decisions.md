@@ -182,3 +182,46 @@ blocked later. In the WORKTREE, never the live tree.
 
 **Autonomous mandate (owner, going to bed):** proceed I7 -> I8 -> I9 -> I10 -> merge -> spell
 experiments -> new PPO, without waiting for approval between stages.
+
+## 2026-08-27 — Owner rulings (batch 4)
+
+16. **Evo Electro Dragon's chain repeats — the two halves get DIFFERENT rules.** Resolves the
+    ED-3 conflict (the Evolution page's "can hit the same target more than once" against ruling 11).
+    * **PRIMARY chain** (the first `chain_full_hits` = 3 full-damage-with-stun hops): ruling 11
+      STANDS. It can never hit the same body twice.
+    * **SECONDARY chain** (the 9 falloff bounces at damage x `chain_falloff_frac`, no stun): MAY
+      return to a body it already hit, but only after bouncing to a DIFFERENT body first. No
+      immediate self-repeat — it must alternate.
+    Implemented in `_multi_hit`'s chain branch: the exclusion set is `seen` for a primary hop and
+    `{id(cur)}` for a secondary one.
+
+    **MEASURED re-baseline**, one swing into a line of knights 3 tiles apart (published arc 4.0),
+    towers disarmed so nothing else enters the ledger:
+
+    | bodies in arc | before (ruling 11 only) | after (ruling 16) | change |
+    |---|---|---|---|
+    | 1 | 192.0 | 192.0 | — |
+    | 2 | 384.0 | 384.0 | — (the chain never reaches its secondary half) |
+    | 3 | 576.0 | **1151.9** | **+99.98%** |
+    | 4 | 640.0 | **1151.9** | **+80.0%** |
+    | 6 | 768.0 | **1151.9** | **+50.0%** |
+    | 13 | 1151.9 | 1151.9 | — (never ran out of fresh targets) |
+
+    So the card now always spends its full 12-hit budget once it has three bodies to alternate
+    between, instead of dying when it runs out of fresh ones. SCOPE: `electro_dragon_evo` is the
+    only card in the KB with `n > chain_full_hits`, so it is the only card the ruling can reach —
+    the base Electro Dragon (`full_n == n == 3`) and the Electro Spirit (`chain_full_hits` 0, so
+    `full_n` falls back to n = 9) are byte-for-byte unaffected, and both are pinned by tests.
+
+    ⚠ **ONE DELIBERATE DEVIATION FROM THE LITERAL WORDING, measured and flagged.** "Exclude only
+    the immediately previous node" taken literally makes the nearest-target rule OSCILLATE: from
+    the third body the two nearest are the first and the fourth, `min` breaks the tie toward the
+    first, and the bolt ping-pongs between two adjacent bodies for its whole remaining budget.
+    MEASURED under that literal reading on the 13-knight line: the total stayed at 1151.9 but only
+    THREE bodies took anything, against twelve before the ruling — a large unmeasured NERF to the
+    card's spread, and the opposite of the page line ("will chain between targets infinitely") that
+    motivated the ruling. It also produces NO total-damage re-baseline in any configuration, which
+    contradicts the ruling's own instruction to report one. So the implementation prefers a body
+    nothing has hit yet and revisits only once it has run out — the revisit then fires exactly
+    where the chain used to DIE. Both readings satisfy every test the ruling asked for.
+    **OWNER: if the oscillation was intended, it is a one-line change (drop the `pool` line).**
