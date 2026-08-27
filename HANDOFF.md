@@ -22,7 +22,25 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-08-27**, branch `main` (**ROLLING SPELLS DONE, rulings 20-28** -- The Log and the
+Last updated: **2026-08-27**, branch `main` (**RULING 30 + RULING 31c DONE, AND THE PINS GENERATOR
+NO LONGER REVERTS ITS OWN RULINGS** -- the spell CARD VETO ships in both decks at
+`sim.ppo_spell_min_value: 0.0` = OFF, and the close-out measurement is why it stays off: re-run at
+HEAD under the DECK's own venv over 600 paired matches, the owner's VALUE form does **not** beat a
+volume-matched RANDOM spell ban (+0.047, 0.98σ) and is measurably **worse** than the body-count
+form it replaced (-0.127, 2.99σ). Two confounds were each worth more than the effect under test:
+every earlier arm ran under the ROOT `.venv`'s torch 2.13.0+cpu instead of the deck's 2.11.0+cu128
+(**-6.0pp winrate on the same seeds, same tree, same checkpoint**), and the random-ban control is
+ONE DRAW whose own effect swung +0.301 (4.54σ) to +0.051 (0.76σ) between seed blocks. What
+survives: every owner-named single-target reference drill still plays at 0.45, `choose_greedy`
+applied NO spell mask before this (eval graded behaviour training never produced), and the veto
+now reaches a `--workers 12` run at all -- it was guarded by `and not remote`, which is every real
+run. **Ruling 31c**: the Hero Wizard's tornado is 3 tiles, not 4, and spawns at his FIREBALL'S
+LANDING POINT (measured dy 0.00 -> 5.00 tiles); the Evo Valkyrie's melee spin is unchanged at
+dy=0.00 / radius 5.5. Rulings 31a+31b+31c together move the eval baseline by NOTHING (43.0% ->
+43.0%). **Pins**: ruling 31a hand-edited `import_pins.json` without the generator, which would
+have silently reverted it plus ruling 31b's two owner-supplied radii -- `gen_pins.py --check` now
+exits 1 on any disagreement, with a per-pin report, a run negative control and 4 suite tests.
+icebow 1159 OK / hogeq 1182 OK. Previously **ROLLING SPELLS DONE, rulings 20-28** -- The Log and the
 Barbarian Barrel now CAST own-half while their corridors still cross the river (a clamped Log reaches
 7.60 tiles past it, measured), and a rolling spell SWEEPS instead of resolving its whole corridor in
 one frame: the_log 2.88 s, barbarian_barrel 1.35 s, giant_snowball_evo 0.80 s, from a `roll_speed`
@@ -4228,6 +4246,9 @@ configured but **have never run** — BC has not been retrained since the soft-t
 
 | commit | fix | measured |
 |---|---|---|
+| `3caad3a` | **RULING 30 -- the spell CARD VETO, and the honest finding that its CRITERION buys nothing.** A spell is unplayable when no legal cell catches >= `ppo_spell_min_value` TOWER FRACTIONS of enemy value under the engine's own hit test, plus an enumerated exemption set (tower lethal/finish/chip, 2-for-1, building, charge reset, lock break, king activation, incoming spawn), each with a doctrine source. New `threat_value.catch_value_frac`, because `bodies_ignore_frac` reads `inf` for kamikaze/spirit bodies and a veto reading inf as "valuable" waves through every cast on a board holding one Ice Spirit. ⚠ **THE VETO WAS DISABLED IN EVERY REAL TRAINING RUN**: the sampling path was guarded `and not remote`, and `remote = workers > 1` -- so with `--workers 12` it was ON at eval and in the drill report and OFF in training, this ruling's own asymmetry inverted and invisible. Now decided worker-side (`remote_pool.spell_veto_ids`, shipped in the per-step payload) with the threshold passed DOWN as a resolved float. | **600 paired matches, two seed blocks, deck venv, HEAD:** ctl(0.83) RANDOM ban vs base **+0.176 (3.71σ)**; value 0.45 vs base **+0.223 (4.84σ)**; count K=3 vs base **+0.350 (7.48σ)**; **value 0.45 vs ctl(0.83) +0.047 (0.98σ) NO MEASUREMENT**; count K=3 vs ctl(0.83) **+0.174 (3.64σ)**; **value 0.45 vs count K=3 -0.127 (-2.99σ)** -- the value form is WORSE at matched volume. Retracts the prior +0.149 (2.14σ) and the "value == count" -0.013 (0.22σ). Drill acceptance re-run at HEAD in BOTH decks: **every owner-named single-target reference line survives at every threshold** (nado_king_activation 0.3400 `king_activation`, nado_the_sneaky_lock 0.3022 `lock_break`, rocket_the_two_for_one 0.5578 `two_for_one`, rocket_the_pump_on_sight 0.0704 `building`, log_the_barrel_on_landing inf `incoming_spawn`, log_resets_the_charge 0.3384 `charge_reset`); 0.45 refuses exactly two, both low-value LOG boards (hold_the_spell_for_a_target 0.382, log_rolls_forward_not_backward 0.170). Remote path verified end-to-end through a real `RemotePool`: 5.0 bar -> `[[8],[8]]` icebow / `[[7],[6]]` hogeq; shipped 0.0 -> `[[],[]]` and the env is never touched. **31 new tests.** |
+| `710c5b2` | **THE PINS GENERATOR SILENTLY REVERTED AN OWNER RULING.** `b4be2b7` hand-edited `config/import_pins.json` for ruling 31a and did not touch `research/sim_parity/scripts/gen_pins.py` -- on a file whose own meta says *"never hand-edit one copy"*. `gen_pins.py --check` now writes nothing and exits 1 when the generator and the committed file disagree, naming it PER PIN; wired into both suites (`GeneratorReproducesTheCommittedPinsTests`, 4 tests) with its own negative control. Newlines are normalised before comparison -- `core.autocrlf=true` over an LF index means a fresh checkout is CRLF while the generator writes LF, so a byte compare would fail on a file whose `git diff` is empty. | BEFORE: a `gen_pins.py` run dropped **electro_giant.reflect_crown_damage 97** and restored the RETIRED `crown_tower_damage` row in its place (the row that crown-reduced his normal swing to 97), and never emitted **firecracker_evo.spark_radius_large_tiles 2.5 / spark_radius_tiles 1.2** at all -- both fall back to the engine's hardcoded **0.75**, i.e. the primary spark **2.56x too small in area** and the secondary 2.56x too large. AFTER: **197 pins reproduce byte for byte**, md5 `948b943c822d6e9259bfd24561551e02`, pair identical. Negative control RUN: mutating 2.5 -> 0.75 prints `DISAGREE firecracker_evo.spark_radius_large_tiles: generator 2.5 vs file 0.75` and exits 1. |
+| `c192d17` | **RULING 31c -- the Hero Wizard's tornado is 3 tiles and spins up where his FIREBALL LANDS.** Owner: the pull "seems unusually large", and "the pull center should be at his projectile's landing position". One mechanism, both halves. Radius **4.0 -> 3.0** (I8-8's rule-(b) table pick superseded by an owner in-game check; the same table family carries the Evo Valkyrie's stale 5.5 against her own History's nerf to 5). A projectile-delivered `attack_nado` now rides the shot (`Projectile.nado_spec` -> `_drop_nado`, the two sites that already drop the Evo Firecracker's spark zones); a melee one keeps the swing-time spawn, told apart by `spec.proj_speed > 0`, never by card name. | BEFORE, ability up, target 5.0 tiles downrange: the vortex appeared **AT THE SWING, dy=0.00 tiles from the Wizard** -- the pull happened around the thrower. AFTER: **no vortex at the swing**; after the flight ONE vortex at **dy=5.00 tiles** (the landing point), dx=0.00, **pull_radius 3.00**, duration 2.00. **Evo Valkyrie regression guard**: still spawns at the swing, dy=0.00, dx=0.00, **radius 5.50**, `proj_speed 0.0`. **Rulings 31a+31b+31c cost NOTHING at eval**, measured not assumed: n=300 paired, same seeds/checkpoint/interpreter, pre-31 tree **43.0% / -0.8349** vs this tree **43.0% / -0.8303**. |
 | `51f34fb` | **THE SIM'S ACTION SPACE WAS CLAMPED BY THREE LIVE-SCREEN CONSTANTS.** `_board_action_space` overrode `arena_box`, `deploy_top`, the tower anchors and the board edges, but never `label.arena_top` / `label.arena_bottom` (keep a TAP off the card tray) or `buttons.chat_avoid_box` (keep it off the emote icon) -- and `cell_center` applies them to whatever space it is in. The mirror image of the §4.2 trap: not an offline tool reading live coordinates, but a live-screen constant applied to the board. | **96 of 432 cells (22.2%) deployed somewhere other than their own board centre, worst by 6.37 tiles; only 372 DISTINCT deploy points existed, so 60 cells were EXACT DUPLICATES** (grid rows 19-23 of column 0 all deployed at board tile 0.50, 24.96); **board tile-y outside 3.20..27.52 was UNREACHABLE** against an 0..32 arena; the emote-icon box alone displaced 15 cells. After: **0 displaced, 432 distinct, 0.67..31.33**. Identical in both decks. ⚠ **All 36 cells of grid rows 0-1 clamped to tile-y 3.20 and the enemy king is at 3.0**, so 8.3% of the action space landed on the king while `train_sim_ppo.py:199` masks none of it (`allcells_mask = torch.ones`) -- a structural explanation for `never_rocket_their_king` at 0-17%. MEASURED SAFE on the current checkpoint: n=300 paired at eval, **+0.006 tower fractions (0.24σ)**, winrate identical 43.0%. ⚠⚠ **REQUIRES A RETRAIN** before any placement number is quoted again. |
 | `84bd0a7` | **LIVE: the enemy-king keep-out compared FRAME coordinates to a BOARD anchor.** `no_king_mask` builds `king_xy` from `sim.board.king_tile` (board-space, unconditionally) and compared it against `cell_center`, which returns FRAME coordinates in the live space. conflicts.md **RS-4 in shipped code**. `test_deploy_rows.KingKeepOutTests` had the SAME units bug, which is exactly why it never caught it -- updated, not deleted. | **Live blocked 12 of 432 cells; the sim's board space blocked 22.** The ten extra sit **1.54-2.69 TRUE tiles** from the enemy king, inside the 2.6-tile clearance the mask exists to enforce, and four of them are inside a Rocket's own **2.0-tile blast** -- so live could pick a rocket cell that lands on the king and wakes it, the one thing the mask was written to make impossible. After: both spaces block the same 22. In the sim the warp is the identity, so the conversion is a no-op there. ⚠ Scope stated plainly: **2.3% of cells. Real, and NOT the explanation of the owner's report.** |
 | `8476a1e` | **LIVE: the TORNADO was being snapped onto Crown Towers by a rocket aim assist.** `play.py` gates `reward.weaker_princess_cell` on `anywhere_ids`, which is every anywhere-spell -- for icebow **{rocket, TORNADO}**. A Tornado centred on a Crown Tower pulls nothing (`engine._tick_vortex` refuses to drag a building) and chips it for a rounding error, so the assist turned a chosen cast into a guaranteed whiff. The rule already existed in `sim/env.py::spell_target_mask` ("a valid chip target for a DAMAGE spell, never for a pull") and simply never reached live. Fix is data-driven off the KB's `pull` flag. | **80 of 432 cells = 18.5% of the board** lie inside the ± `spell_tower_aim_radius` (0.12) box of an enemy princess, spanning board tile-y **0.7 .. 10.0 in BOTH lanes** -- so roughly **one tornado cast in five** was being redirected onto a building it cannot affect. A live-only dumping mechanism the sim never sees, on top of the policy's own placement. hogeq's deck has no pull spell, so the code lands in both and the behaviour changes only in icebow. |
@@ -4412,6 +4433,12 @@ Tools, all working: `scratchpad/spell_probe.py` (geometry, per-card, dump rate),
   commit between them. Diff `git log` across the training windows and name the variables.
 * Pre-commit the bar: **>=2 sigma on the paired comparison, or report NO MEASUREMENT.**
 * Paired, same seeds, `PYTHONHASHSEED=0`, `torch.set_num_threads(1)`.
+* **⚠ AND THE DECK'S OWN `python.exe`, in scratchpad harnesses too.** Bare `python` is the ROOT
+  `.venv` (torch 2.13.0+cpu) and is worth **-6.0pp winrate on the same seeds and the same tree**
+  against the deck's 2.11.0+cu128 — measured 2026-08-27, §8. Every arm in `spell_experiments.md`
+  §§4-8 was run under the wrong one.
+* **A random-ban control is ONE DRAW.** Average it over several seeds before quoting an
+  arm-vs-control sigma; a single draw's own effect swung 4.54σ -> 0.76σ between seed blocks (§8).
 
 ### ⚠ SEQUENCING NOTE FOR WHOEVER RUNS THIS
 The owner's order is: parity merge -> new long PPO -> spell experiments. The A/B arms are SHORT
@@ -4423,6 +4450,25 @@ slow one.
 ---
 
 ## 6. Open work
+
+0a. **THE SPELL CARD VETO IS SHIPPED AND OFF, AND RE-OPENING IT HAS A PREREQUISITE.** `ruling 30`
+   is complete: the enumerated exemption class with a doctrine source per entry, the value
+   criterion in `SimMatchEnv.spell_card_ok`, the veto applied in `choose_sample`, `choose_greedy`
+   and the drill report, and worker-side evaluation so it survives `--workers > 1`.
+   `sim.ppo_spell_min_value: 0.0`. **Do not turn it on as the next run's one attributable change**:
+   over 600 paired matches at HEAD the value criterion does not beat a volume-matched RANDOM ban
+   (+0.047, 0.98σ). What is actually open:
+   * **Average the random control over several draws** (`spell_arms_valueform.py` hardcodes
+     `random.Random(770011)`; it needs a `--veto-control-seed`). This is the PREREQUISITE for any
+     further arm-vs-control claim — see §8.
+   * **The drill PASS-RATE diff was not run**, only the reference-line probe (which passed in both
+     decks) and a refusal screen. `run.py drills --reps 25 --policy ... --spell-min-value 0.45`
+     costs ~25 min PER DRILL against a live training run (measured: 2 reps of one drill = 60 s
+     under contention, 4 policy runs per drill row) — ~11 h for the 26-drill report. Run it on a
+     quiet box. The screen says **18 of 29 icebow drills / 13 of 27 hogeq drills** see at least one
+     refusal at 0.45, so the rest are provably unchanged and only those need the diff.
+   * **Judge the footprint at IMPACT, not at cast** and **scale the threshold by the spell's own
+     cost** — both stated in ruling 30.5, both untested, neither bundled.
 
 0. **DRILLS — segmented mini-sims (owner's idea, 2026-08-20).** Framework is IN and validated;
    the curriculum is drafted and mostly unbuilt.
@@ -4644,6 +4690,29 @@ slow one.
 ---
 
 ## 8. Measurement traps (each of these produced a wrong conclusion first)
+
+* **⚠ BARE `python` IS THE ROOT `.venv`, AND IT CHANGES THE ANSWER.** Every arm in
+  `spell_experiments.md` was launched as `python scratchpad/spell_arms*.py`, which resolves to
+  `ClashBot/.venv` — **torch 2.13.0+cpu**, not the deck venv's **2.11.0+cu128** that the trainer,
+  the drill report, the eval benchmark and live play all use. ISOLATED 2026-08-27, n=300 paired,
+  same seeds, same checkpoint, **same tree**: root venv **43.0% / -0.8303**, icebow's own venv
+  **37.0% / -0.9348** — **-6.0pp winrate (2.62σ)** from the interpreter alone, larger than most
+  effects this project measures. It also produced a phantom "the tree drifted" story: the tree had
+  not moved at all. **Always `./.venv/Scripts/python.exe` from inside the deck**, in scratchpad
+  harnesses as much as in `run.py` (§2's rule, which the wave scripts did not follow).
+* **⚠ A RANDOM-BAN CONTROL IS ONE DRAW, NOT A DISTRIBUTION.** `ctl(r)` bans each playable spell
+  with probability r from a hardcoded `random.Random(770011)`. n=300 measures THAT ban pattern
+  precisely and says nothing about the spread over patterns: against the same baseline it read
+  **+0.301 (4.54σ)** on seeds 5_000_000.. and **+0.051 (0.76σ)** on 6_000_000..., which flipped the
+  sign of every arm-vs-control comparison between blocks. Pool the blocks, and average the control
+  over several draws before quoting an arm-vs-control σ at all.
+* **⚠ IF IT READS `pool[i]` IN `train_sim_ppo`, IT DOES NOT EXIST UNDER `--workers > 1`.**
+  `remote = workers > 1` and the trainer then keeps its own env list EMPTY
+  (`for e in (pool if not remote else [])`). The spell veto's first version guarded its sampling
+  path with `and not remote` and would have been ON at eval and OFF in training, with the banner
+  still printing. Third instance of this seam: deck PFSP (`remote_pool.py`'s own comment) and
+  `--drill-frac 0.0` (below) were the first two. Decide it in the worker and ship it in the
+  payload; pass any threshold DOWN as a resolved float, never let the worker re-read the disk.
 
 * **Buildings bleed HP over their lifetime.** Raw HP loss counts decay as spell damage — the first
   Earthquake measurement appeared to show it hitting a Tesla 30 times. **Always difference against
