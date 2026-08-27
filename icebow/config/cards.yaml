@@ -1656,10 +1656,13 @@ cards:
   #   unsourced: SUPERSEDED ABSENT -> True. decisions.md 2026-08-26 R2 ADJUDICATION #11: no path
   #     publishes the flagged value on this row -- the sim's own number is KEPT and the row
   #     marked, rather than replaced by a reconstruction
-  #   crown_tower_damage: SUPERSEDED ABSENT -> 97. Missing field: the Zap Pack's reflected damage
-  #     to crown towers (crown_11 = 97) has no KB counterpart. Deliberately NOT proposing a write
-  #     -- the brief pins the crown-tower damage family as re-curated post-1/6/2026, and the
-  #     4/5/2026 entry moved this number again
+  #   crown_tower_damage: SUPERSEDED ABSENT -> 97 -- THEN RE-PLUMBED by ruling 31a (2026-08-27).
+  #     crown_11 = 97 is the page's "Reflected Tower Damage" column, i.e. the ZAP PACK's reduced
+  #     figure -- but parking it in the generic crown_tower_damage field fed build_spec's
+  #     tower_hit_dmg, which crown-reduced his NORMAL SWING to 97 (measured tower_hit_dmg 97.0 vs
+  #     hit_dmg 163.8 @ L11). The page's Trivia says only his REFLECTING damage is reduced ("In
+  #     the case of the Electro Giant, his reflecting damage deals [reduced] damage"), so the 97
+  #     now lives on reflect_crown_damage and his swing hits towers at full value again.
   #   reflect_damage: SUPERSEDED 120 -> 192.0. The level-11 statistics row maps reflect_11 to the
   #     'Reflect Damage' column, so P1 and P2 are the same published number: 192. current_db 120
   #     is 37.5% low
@@ -1671,14 +1674,18 @@ cards:
     targets: buildings_only
     flags: [tank, building_targeting]
     range: melee
-    # ZAP PACK (wiki): units damaging him within 3 tiles take ~120 (L11) back + a 0.5s stun; off
-    # while frozen/stunned. This is what makes the ranged-only counter-doctrine learnable in sim.
+    # ZAP PACK (revid 436724; ruling 31a 2026-08-27): ANY attacker damaging him from within 3
+    # tiles -- troop, building, or crown tower -- takes 192 (L11) back + a 0.5s stun, per hit;
+    # crown towers take the separately published reduced 97 (the "Reflected Tower Damage"
+    # column); off while frozen/stunned. Owner report: "electro giant's reflection stun/damage
+    # applies to anything inside the reflection radius. this includes buildings and crown
+    # towers." This is what makes the ranged-only counter-doctrine learnable in sim.
     reflect_damage: 192.0
     reflect_radius_tiles: 3.0
     reflect_stun_s: 0.5
+    reflect_crown_damage: 97.0
     verified: false
     unsourced: true
-    crown_tower_damage: 97
 
   skeleton_barrel:
     display: "Skeleton Barrel"

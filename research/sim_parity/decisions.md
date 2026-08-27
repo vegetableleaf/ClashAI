@@ -746,3 +746,46 @@ owner-approved. Hero-summon bodies are priced at their ABILITY cost by owner ins
 `spec.elixir` (via `bodies_ignore_frac` and the elixir term), so changing prices mid-experiment
 would make the arms inconsistent. Apply in BOTH decks with pins immediately after; also re-run
 `tools/evo_audit.py` and spot-check `ignore_cost_frac` orderings, since 20 threat prices move.
+
+## 2026-08-27 -- RULING 31 (owner): three sim corrections before the long run
+
+### 31a -- Electro Giant: the Zap Pack answers EVERY attacker, including buildings and crown towers
+
+Owner report: "electro giant's reflection stun/damage applies to anything inside the reflection
+radius. this includes buildings and crown towers." Clarified 2026-08-27 (superseding an
+intermediate all-of-zone reading relayed mid-task): the reflection is **PER-ATTACKER, ON DAMAGE**
+-- each hit from inside `reflect_r` zaps ITS OWN attacker; a bystander in the zone who is not
+hitting him takes nothing; there is no zone blast. Matches the page prose exactly (revid 436724:
+"Enemy units who damage the Electro Giant while being within a 3-tile radius of him will be
+damaged and stunned for 0.5 seconds with each hit").
+
+**MEASURED BEFORE (1143af2)**: the per-attacker melee shape already existed -- three Knights
+hitting him each took 192 + 0.5 s stun, bystander 0, out-of-zone 0. The gaps were every
+projectile path discarding the firer: a Musketeer firing from 2.0 tiles took **0.0** back, a
+Cannon (building) firing from 2.0 tiles took **0.0**, a Princess Tower shooting him point-blank
+took **0.0** and was never stunned. His NORMAL swing was also crown-reduced to **97.0** per hit
+(vs hit_dmg 163.8 @ L11): I5 parked the page's "Reflected Tower Damage" figure (crown_11 = 97) on
+the generic `crown_tower_damage`, which `build_spec` routes into `tower_hit_dmg` -- but the
+page's Trivia reduces only his REFLECTING damage, so the parked figure was silently nerfing his
+swing.
+
+**CHANGE**: `Projectile.shooter` carries the firer (units AND towers) through every shot --
+launch, tower arrows, shotgun pellets, spark shards, bounce/boomerang continuations -- and a new
+`SimEngine._zap_pack(victim, attacker)` fires on every damage path with a known attacker body:
+melee/instant (unchanged), tracking impact, area blast, pierce sweep, splash-secondary. Towers
+take the published reduced `reflect_crown_damage: 97` (new KB field) through `_damage_tower` --
+so a zap can activate a King, the page's own 2v2 trick -- plus the 0.5 s stun with a lock reset.
+Zone membership is centre-to-EDGE: History 16/12/2024 requires the King to be zappable, and his
+4x4 body keeps his centre ~3.2 tiles out. A zapped unit keeps lock + charge (the page's Sparky
+note). `electro_giant.crown_tower_damage: 97` DELETED; the advisory pin re-plumbed to
+`reflect_crown_damage` in both decks.
+
+**MEASURED AFTER** (same boards): swing on towers 97.0 -> **163.8**; melee attackers unchanged
+(192 + 0.5 s each, bystander 0.0, out-of-zone 0.0); Musketeer at 2.0 tiles 0.0 -> **192.0 +
+0.5 s stun**; Cannon 0.0 -> **192.0 + 0.5 s stun**; Princess Tower 0.0 -> **291.0 over 3 s (3
+shots x 97) + stunned 0.5 s per landed shot** -- and the Electro Giant consequently took 630.4 ->
+472.8 from that tower over the same window, the real card's tower-crippling effect. NOT
+implemented (recorded): direct-damage spells counting as King-Tower attacks for the reflection
+(the page's 2v2 spell-origin trick) -- no spell carries an attacker body; noted in conflicts.md.
+
+Test: tests/test_zap_pack_r31a.py (8 tests, byte-identical both decks).

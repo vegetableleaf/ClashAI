@@ -1916,3 +1916,14 @@ anywhere=True   aim rows [0,5,11,13,20] -> [ 0, 5,11,13,20]
 crown column): **`ny` means different things in the two action spaces.** Never compare a live
 `cell_center` output against a board-space threshold without `warp.frame_to_board` first. This is
 the third naming/units trap on this project in two days.
+
+## 2026-08-27 -- Ruling 31a (Zap Pack): deliberate non-implementation
+
+**Direct-damage spells do not trigger the Zap Pack in sim.** The page's 2v2 strategy note says
+damage from Arrows/Fireball/Rocket/The Log/Barbarian Barrel/Giant Snowball on an Electro Giant
+"originates from the King Tower and technically counts as an attack by it" -- so in the real game
+a spell on an E-Giant standing at a King Tower zaps (and stuns, and can ACTIVATE) that King.
+`_zap_pack` fires only on damage paths carrying an attacker BODY (units, buildings, towers);
+spells carry none, so the sim's spells neither zap back nor stun the caster's King. Marginal for
+1v1 (the trick is framed for 2v2 King activation), and implementing it would mean inventing a
+spell-owner->King mapping the engine does not otherwise need. Revisit if an owner report names it.

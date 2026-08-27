@@ -361,10 +361,10 @@
   },
   {
    "key": "electro_giant",
-   "field": "crown_tower_damage",
+   "field": "reflect_crown_damage",
    "value": 97,
-   "source": "I5 apply (CROWN, curated): Missing field: the Zap Pack's reflected damage to crown towers (crown_11 = 97) has no KB counterpart. Deliberately NOT proposing a write -- the brief pins the crown-tower damage family as re-curated post-1/6/2026, and the 4/5/2026 entry moved this number again",
-   "date": "2026-08-26",
+   "source": "I5 apply (CROWN, curated) re-plumbed by ruling 31a 2026-08-27: crown_11 = 97 is the page's 'Reflected Tower Damage' column -- the ZAP PACK's reduced figure, not his swing's. Parked on the generic crown_tower_damage it fed build_spec's tower_hit_dmg and crown-reduced his NORMAL swing to 97 (measured, vs hit_dmg 163.8 @ L11); it now lives on reflect_crown_damage, consumed only by SimEngine._zap_pack's tower branch",
+   "date": "2026-08-27",
    "advisory": true
   },
   {

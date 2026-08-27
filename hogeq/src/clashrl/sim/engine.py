@@ -305,13 +305,17 @@ class CardSpec:
     # PER-CARD SPLASH RADIUS (2026-08-14): splash used to be a bool + one flat _SPLASH_R for every
     # card. 0 = fall back to _SPLASH_R.
     splash_r: float = 0.0
-    # ZAP-PACK REFLECT (Electro Giant, 2026-08-14): a unit that DAMAGES this card from within
-    # reflect_r tiles takes reflect_dmg back (+ reflect_stun seconds). Wiki: 3 tiles, ~120 @ L11,
-    # 0.5 s stun per hit. Ranged attackers outside the radius are untouched -- which is exactly
-    # the ranged-only counter-doctrine this makes learnable.
+    # ZAP-PACK REFLECT (Electro Giant, 2026-08-14; ruling 31a 2026-08-27): an ATTACKER that
+    # DAMAGES this card from within reflect_r tiles takes reflect_dmg back (+ reflect_stun
+    # seconds), per hit -- and the attacker can be a troop, a BUILDING or a CROWN TOWER (owner
+    # report; towers take the page's separate published reflect_crown, its "Reflected Tower
+    # Damage" column). Wiki: 3 tiles, 192 @ L11 (crown 97), 0.5 s stun per hit. Ranged attackers
+    # outside the radius are untouched -- which is exactly the ranged-only counter-doctrine this
+    # makes learnable. See SimEngine._zap_pack.
     reflect_dmg: float = 0.0
     reflect_r: float = 0.0
     reflect_stun: float = 0.0
+    reflect_crown: float = 0.0
     knockback: float = 0.0    # a rolling spell pushes ground troops this far in the roll direction
     # KNOCKBACK REACHES EVERY TROOP, not just the light ones. The Log's 19/9/2016 entry -- "allowed
     # The Log to push back ALL ground troops. This allowed The Log to reset the charge attacks of the
@@ -1007,6 +1011,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         reflect_dmg=float(c.get("reflect_damage") or 0.0) * sc,
         reflect_r=float(c.get("reflect_radius_tiles") or 0.0),
         reflect_stun=float(c.get("reflect_stun_s") or 0.0),
+        reflect_crown=float(c.get("reflect_crown_damage") or 0.0) * sc,
         building_only=building_only, siege=siege,
         deploy_anywhere=("deploy_anywhere" in flags),
         own_half_only=("own_half_only" in flags),
@@ -1628,6 +1633,11 @@ class Projectile:
     # for the carrier and all five bolts, which at 11 tiles of shrapnel range carpeted most of a lane
     # in damage-over-time (user report: "covering too much space"). 0 = this shot leaves none.
     spark_end_dmg: float = 0.0
+    # WHO FIRED IT (Unit or Tower), for the Zap Pack (ruling 31a): the Electro Giant zaps back at
+    # whatever DAMAGED him from inside his radius, and a shot that lands is its shooter's hit --
+    # without this the reflection only ever saw melee attackers, because the projectile paths
+    # discard the firer. None for derived/cosmetic shots (chain arcs), which reflect nothing.
+    shooter: object = None
 
 
 def _seg_dist(ax, ay, bx, by, px, py) -> float:
@@ -3802,7 +3812,7 @@ class SimEngine:
         if best is None:
             return False
         self._launch(f"{u.spec.base}_snipe", u.team, u.x, u.y, best, u.spec,
-                     u.spec.hit_dmg * u.dmg_mult * u.spec.sniper_mult, 0.0)
+                     u.spec.hit_dmg * u.dmg_mult * u.spec.sniper_mult, 0.0, shooter=u)
         u.sniper_left -= 1
         u.cooldown = u.spec.hit_speed
         return True
@@ -3815,7 +3825,7 @@ class SimEngine:
         jspec = replace(u.spec, proj_speed=10.0, proj_radius=0.0,   # the SPEAR flies; the barb is
                         splash=False, multi_kind="", multi_hits=1)  # melee, so his spec has no shot
         self._launch(f"{u.spec.base}_javelin", u.team, u.x, u.y, ref, jspec,
-                     u.spec.javelin_dmg * u.dmg_mult, u.spec.javelin_dmg * u.dmg_mult)
+                     u.spec.javelin_dmg * u.dmg_mult, u.spec.javelin_dmg * u.dmg_mult, shooter=u)
         for f in (0.3, 0.6, 0.9):                            # trail segments toward the target
             zx = u.x + (ref.x - u.x) * f
             zy = u.y + (ref.y - u.y) * f
@@ -4199,7 +4209,8 @@ class SimEngine:
                 if u.spec.poison_stages:
                     dps = u.spec.poison_stages[min(len(u.spec.poison_stages) - 1, int(u.age // 15.0))]
                 fspec = replace(fspec, poison_dps=dps)
-            self._launch(f"{u.spec.base}_projectile", u.team, u.x, u.y, ref, fspec, dmg, tower_dmg)
+            self._launch(f"{u.spec.base}_projectile", u.team, u.x, u.y, ref, fspec, dmg, tower_dmg,
+                         shooter=u)
             self._recoil(u, ref)
             return
         # SPLIT (Electro Wizard): "If 2 or more targets are within his range, his attack will SPLIT
@@ -4315,13 +4326,7 @@ class SimEngine:
             # post-rework flat butterfly, 470 at level 11), overhealing up to 150% of deploy hp.
             attacker.hp = min(attacker.spec.hp * attacker.spec.overheal_frac,
                               attacker.hp + attacker.spec.kill_heal)
-        if (attacker is not None and getattr(ref, "spec", None) is not None
-                and ref.spec.reflect_dmg > 0.0 and attacker.hp > 0
-                and ref.stun_left <= 0.0                       # the Zap Pack is off while frozen/stunned
-                and _dist(attacker.x, attacker.y, ref.x, ref.y) <= ref.spec.reflect_r):
-            self._hurt(attacker, ref.spec.reflect_dmg)
-            if ref.spec.reflect_stun > 0.0:
-                attacker.stun_left = max(attacker.stun_left, ref.spec.reflect_stun)
+        self._zap_pack(ref, attacker)
         if spec.splash:
             rad = splash_r or spec.splash_r or _SPLASH_R      # charged override, per-card, flat fallback
             self.splash_events.append((ref.x, ref.y, rad, self.t))
@@ -4332,13 +4337,67 @@ class SimEngine:
                     self._apply_status(team, spec, e)
                     if spec.kind != "tower":
                         e.last_unit_hit_t = self.t
+                    self._zap_pack(e, attacker)    # splashing an Electro Giant from inside his zone zaps back too
             for tw in self._enemy_towers(team):
                 if tw is not ref and _dist(tw.x, tw.y, ref.x, ref.y) <= rad:
                     self._damage_tower(tw, tower_dmg, team)
                     self._apply_status(team, spec, tw)
 
+    def _zap_pack(self, victim, attacker) -> None:
+        """ELECTRO GIANT'S ZAP PACK, per hit (Electro_Giant.wikitext revid 436724; owner report +
+        clarification 2026-08-27, ruling 31a).
+
+        "Enemy units who damage the Electro Giant while being within a 3-tile radius of him will
+        be damaged and stunned for 0.5 seconds with each hit." PER-ATTACKER, ON DAMAGE: each hit
+        that lands on him from inside the zone zaps ITS OWN attacker back -- three attackers mean
+        three reflections, each to its own offender -- and a bystander standing in the zone who is
+        not hitting him takes nothing. There is no zone blast (owner clarification, superseding an
+        earlier all-of-zone reading).
+
+        THE ATTACKER CAN BE A CROWN TOWER OR A BUILDING, not only a troop (owner report: "this
+        includes buildings and crown towers"). Towers take the page's own published REDUCED figure
+        (its "Reflected Tower Damage" column, crown_11 97 vs reflect_11 192) through the
+        tower-damage path -- so a reflected zap can activate a King, exactly the page's 2v2
+        King-activation trick -- and the stun breaks their lock the way _apply_status does.
+
+        Zone membership is CENTRE-TO-EDGE (any part of the attacker's body inside reflect_r).
+        Centre-to-centre could never reach a King Tower: its 4x4 footprint keeps its centre ~3.2
+        tiles from an adjacent Electro Giant, yet the page REQUIRES the King to be zappable
+        (History 16/12/2024, "fixed a bug where Electro Giant's Zap Pack would not deal reduced
+        damage to the King Tower").
+
+        A zapped UNIT keeps its target lock and its charge -- "even if the Sparky is in the zap
+        radius, her attack would still charge up and not be reset by the reflect damage" -- so
+        unlike _apply_status's stun, no aggro_reset and no charge_dist wipe. The Zap Pack is off
+        while he is frozen/stunned ("does not inflict any reflected damage if he is frozen"), and
+        a killing blow still zaps: "their attack will take priority over the stun, even though
+        both effects happen simultaneously."
+        """
+        if attacker is None or getattr(victim, "spec", None) is None:
+            return
+        if victim.spec.reflect_dmg <= 0.0 or victim.stun_left > 0.0:
+            return
+        if isinstance(attacker, Tower):
+            if not attacker.alive:
+                return
+            if _dist(attacker.x, attacker.y, victim.x, victim.y) - attacker.radius > victim.spec.reflect_r:
+                return
+            self._damage_tower(attacker, victim.spec.reflect_crown or victim.spec.reflect_dmg,
+                               victim.team)
+            if victim.spec.reflect_stun > 0.0:
+                attacker.stun_left = max(attacker.stun_left, victim.spec.reflect_stun)
+                attacker.aggro_reset = True
+            return
+        if not isinstance(attacker, Unit) or attacker.hp <= 0:
+            return
+        if _dist(attacker.x, attacker.y, victim.x, victim.y) - attacker.spec.radius > victim.spec.reflect_r:
+            return
+        self._hurt(attacker, victim.spec.reflect_dmg)
+        if victim.spec.reflect_stun > 0.0:
+            attacker.stun_left = max(attacker.stun_left, victim.spec.reflect_stun)
+
     def _launch(self, label: str, team: int, x: float, y: float, ref, spec: CardSpec,
-                dmg: float, tower_dmg: float) -> None:
+                dmg: float, tower_dmg: float, shooter: "Unit | None" = None) -> None:
         radius = spec.proj_radius
         rng = spec.proj_range or (spec.reach + _REACH_SLOP)
         pierce = spec.proj_pierce and spec.multi_kind not in ("spark", "shotgun")
@@ -4359,7 +4418,7 @@ class SimEngine:
             # SPARK and SHOTGUN shots must not pierce: a piercing shot is deleted at max range and
             # never reaches _impact, so their extra hits would never fire. Both burst ON the target.
             pierce=pierce, width=spec.proj_width, dirx=dx, diry=dy, ox=x, oy=y,
-            bounces_left=spec.bounce_n,
+            bounces_left=spec.bounce_n, shooter=shooter,
             spark_end_dmg=spec.spark_dps_big * 0.25))   # Evo FC: ONE large zone on the impact point
 
     def _shotgun(self, u: Unit, ref, dmg: float) -> None:
@@ -4399,7 +4458,7 @@ class SimEngine:
                 target=None, spec=s, dmg=dmg, tower_dmg=dmg, radius=0.0, speed=s.proj_speed,
                 left=rng, ground_only=not s.attacks_air, pierce=True, width=_PELLET_R,
                 dirx=math.cos(ang) / _TILES_X, diry=math.sin(ang) / _TILES_Y,
-                stop_on_hit=True, ox=u.x, oy=u.y))
+                stop_on_hit=True, ox=u.x, oy=u.y, shooter=u))
 
     def _pierce_pass(self, p: Projectile) -> None:
         """One tick of a piercing shot's damage: everything it is currently overlapping, once each.
@@ -4426,6 +4485,7 @@ class SimEngine:
                 # support behind it is the card's entire job, and it was landing damage with
                 # no push at all because knockback only ever ran on the SPELL paths.
                 self._knock(e, p.spec, p.x, p.y, p.dirx * _TILES_X, p.diry * _TILES_Y)
+                self._zap_pack(e, p.shooter)   # ruling 31a (the Executioner hits himself twice)
                 if p.stop_on_hit:
                     p.left = 0.0          # a PELLET buries itself in the first body it reaches
                     return
@@ -4602,6 +4662,7 @@ class SimEngine:
                     self._hurt(e, p.dmg)
                     self._apply_status(p.team, p.spec, e)
                     self._knock(e, p.spec, p.x, p.y)      # area shot: radial from where it landed
+                    self._zap_pack(e, p.shooter)          # ruling 31a: his zone answers every hit
             for tw in self._enemy_towers(p.team):
                 if _gap(p.x, p.y, tw) <= p.radius:
                     if chain:
@@ -4627,7 +4688,7 @@ class SimEngine:
                     label=f"{p.spec.base}_bounce", team=p.team, x=p.x, y=p.y, tx=nx, ty=ny,
                     target=None, spec=p.spec, dmg=p.dmg, tower_dmg=p.tower_dmg, radius=p.radius,
                     speed=p.speed, left=step * 1.5, ground_only=p.ground_only,
-                    ox=p.x, oy=p.y, bounces_left=p.bounces_left - 1)
+                    ox=p.x, oy=p.y, bounces_left=p.bounces_left - 1, shooter=p.shooter)
                 nb.hit = p.hit
                 self.projectiles.append(nb)
             return
@@ -4646,6 +4707,9 @@ class SimEngine:
             return
         if ref.hp > 0:
             self._land_hit(p.team, "unit", ref, p.spec, p.dmg, p.tower_dmg)
+            self._zap_pack(ref, p.shooter)   # ruling 31a: a landed shot is its SHOOTER's hit --
+            #   a crown tower or building firing into his zone takes the Zap Pack back, which the
+            #   melee-only attacker plumbing never delivered (measured 0.0 back before this).
             if primary:
                 self._multi_hit(p.spec, p.team, p.ox, p.oy, ref, p.dmg)
 
@@ -4777,7 +4841,7 @@ class SimEngine:
                 speed=max(s.proj_speed, 8.0), left=left,
                 ground_only=not s.attacks_air, pierce=True,
                 width=s.proj_radius or 0.4,
-                dirx=cx / _TILES_X, diry=cy / _TILES_Y, ox=p.x, oy=p.y,
+                dirx=cx / _TILES_X, diry=cy / _TILES_Y, ox=p.x, oy=p.y, shooter=p.shooter,
                 spark_end_dmg=s.spark_dps_small * 0.25)  # ONE small zone at the END of each bolt
             self.projectiles.append(shard)
             # THE IMPACT BLAST, and it is the shards themselves. "Shoots a firework that EXPLODES ON
@@ -4986,7 +5050,7 @@ class SimEngine:
             label=f"{tw.troop}_projectile", team=team, x=tw.x, y=tw.y, tx=tgt.x, ty=tgt.y,
             target=tgt, spec=_TOWER_SHOT, dmg=tw.hit_dmg, tower_dmg=tw.hit_dmg,
             radius=0.0, speed=self.tower_proj_speed,
-            left=rng + 2.0, ground_only=False))
+            left=rng + 2.0, ground_only=False, shooter=tw))
         # accumulate (+=) rather than reset (=) the cooldown so the fractional remainder carries and the
         # AVERAGE cadence stays exact on the 0.1s physics grid (a reset would round every shot up a tick).
         if tw.ammo_max > 0.0 and tw.ammo >= 1.0:                # Dagger Duchess: fast while the clip has daggers
