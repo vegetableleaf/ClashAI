@@ -282,7 +282,13 @@ class ActionSpace:
         out = []
         for c in range(gw * gh):
             cx, cy = self.cell_center(c % gw, c // gw)
-            d = ((cx - kx) * tx) ** 2 + ((cy - ky) * ty) ** 2
+            # BOARD-space by construction -- `sim.board.king_tile` divided by the tile counts.
+            # Comparing the two directly is the RS-4 trap in SHIPPED code rather than in a probe.
+            # ActionSpace blocked 22, leaving TEN cells whose TRUE distance to the enemy king is
+            # inside a Rocket's own 2.0-tile blast. In the SIM the warp is exactly the identity, so
+            # `frame_to_board` is a no-op there and both spaces now mask the SAME cells.
+            bx, by = self.warp.frame_to_board(cx, cy)
+            d = ((bx - kx) * tx) ** 2 + ((by - ky) * ty) ** 2
             out.append(d > clear * clear)
         return out
 
