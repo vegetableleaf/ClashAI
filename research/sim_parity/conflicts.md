@@ -1225,6 +1225,36 @@ and still has to be (a perception hiccup must not break training). So:
   keyword call, the positional call, the `max_age` forward and the counter. VERIFIED TO FAIL:
   deleting `with_base` from the passthrough turns it red with 2 failures and 4 errors.
 
+### ⚠ sim_view: THE CHAIN WAS INVISIBLE BY CONSTRUCTION, not by omission
+
+The brief said `sim_view.py` "labels units by `spec.key` but does not draw chain arcs or ability
+effects". True, but the reason matters, because adding a draw call would not have been enough.
+
+MEASURED: an Electro Dragon chaining into six Barbarians for 12 s of engine time produced **zero
+frames** in which a `<base>_chain` projectile was alive — a chain hop is created and consumed
+inside ONE `advance(dt)` call and never survives a frame boundary — while the damage ledger over
+the same run read **192 / 960 / 1152 / 576 / 576** across the row. The mechanic worked and the
+picture showed nothing, which is exactly the shape of the owner's original report.
+
+So the debugger needed a RECORD, not a renderer: `SimEngine.arc_events` and
+`SimEngine.ability_events`, in the same idiom as `splash_events` (whose own comment already says
+"-- sim_view"). What is drawn now, with a pixel test behind each one:
+
+* chain arcs, one line per hop, dim + ringless for a LATE bounce (ruling 12's reduced damage and
+  no stun), **over** the bodies — under them they were 0 changed pixels, because an arc joins two
+  body centres;
+* ability activations (an expanding ring labelled with the `ability_kind`), casts still inside
+  their activation delay (ruling 7's refund window), and the running-ability / cloak / airborne /
+  taunt / souls / dash state on each body;
+* LINGERING ZONES — `eng.zones` was not drawn at all, so a Poison was an 8-second area doing
+  damage nothing on screen accounted for, and after I9 a Heal Spirit's field was the same in
+  reverse. Heal fields are drawn in their own colour;
+* RAGE ZONES while they are still ARMING. The spell publishes a 0.5 s deploy timer of its own and
+  the old draw skipped the whole window, which is the same trap one layer down;
+* the two pieces of BODILESS engine state — the Hero Goblins' banner and Goblinstein's antenna —
+  plus the Goblinstein LINK capsule its zone tick actually damages along, and a `'` suffix on a
+  cloned body.
+
 ### NOT IMPLEMENTED, DELIBERATELY (I9 item 1)
 
 * **The Clone's forward shove of the ORIGINAL body.** "When a troop is cloned, the original troop

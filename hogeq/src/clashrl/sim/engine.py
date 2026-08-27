@@ -1678,6 +1678,16 @@ class SimEngine:
         self._empress_cache: dict = {}   # (key, level) -> CardSpec; see _empress_form
         self.rng = rng
         self.splash_events: list = []   # (x, y, radius_tiles, t) of recent splash hits -- sim_view
+        # I9 -- TWO MORE DEBUGGER RECORDS, and they exist because the effects are otherwise
+        # UNOBSERVABLE rather than merely fiddly to draw. MEASURED: an Electro Dragon chaining
+        # into six Barbarians for 12 s produced ZERO frames in which a `<base>_chain` projectile
+        # was alive, because a chain hop is created and consumed inside one `advance(dt)` call --
+        # so at the debugger's 0.1 s physics resolution there was never anything on screen. The
+        # owner's original "the electro dragon chain doesn't work" report was partly that: the
+        # chain was landing 192 / 960 / 1152 / 576 / 576 across the row while the picture showed
+        # nothing. Same for an ability press, which resolves and leaves no trace on any body.
+        self.arc_events: list = []      # (x0, y0, x1, y1, team, t, kind) chain/bounce hops
+        self.ability_events: list = []  # (x, y, team, t, kind, base) ability activations
         self.rage_zones: list = []      # (x, y, r_tiles, team, t_on, t_off, boost) -- Lumberjack's bottle
         self.spark_zones: list = []     # [x, y, r, team, t_end, tick_dmg, next_tick_t] -- Evo FC trails
                                         # flashes each as a brief AOE circle (~0.15 s), capped at 40
@@ -1988,6 +1998,8 @@ class SimEngine:
             self._banner.pop(team, None)
             ghost = Unit(_bs, team, _bx, _by, 1.0)
             ghost.ability_left = 0
+            self.ability_events.append((_bx, _by, team, self.t, _bs.ability_kind, _bs.base))
+            del self.ability_events[:-40]
             if _bs.ability_delay > 0.0:
                 self._ability_pending.append([team, ghost, float(_bs.ability_cost),
                                               float(_bs.ability_delay), _bs.ability_kind])
@@ -2004,6 +2016,8 @@ class SimEngine:
         if handler is None:                                   # unknown kind: refuse, never guess
             return False
         self.elixir[team] -= s.ability_cost
+        self.ability_events.append((champ.x, champ.y, team, self.t, s.ability_kind, s.base))
+        del self.ability_events[:-40]
         # SINGLE USE (4/8/2026 balance): every champion but the Boss Bandit gets exactly one
         # activation, counted per BODY (ruling 6) -- a champion who dies and is cycled back gets
         # his again.
@@ -4586,6 +4600,9 @@ class SimEngine:
                 self._hurt(e, late_dmg if late else dmg)
                 if not late:
                     self._apply_status(team, s, e)         # the stun rides the FULL hits only
+                self.arc_events.append((cur.x, cur.y, e.x, e.y, team, self.t,
+                                        "chain_late" if late else "chain"))
+                del self.arc_events[:-60]
                 self.projectiles.append(Projectile(
                     label=f"{s.base}_chain_late" if late else f"{s.base}_chain",
                     team=team, x=cur.x, y=cur.y, tx=e.x, ty=e.y,
