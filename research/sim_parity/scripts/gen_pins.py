@@ -9,7 +9,12 @@ would regress (PLAN.md I4 "Curated values survive import"). Sources, in order:
   1. every ledger/stat_diffs.jsonl row with verdict "pin" (66 rows, R2 sweep) --
      value = the row's current_db (the curated value the sweep upheld);
   2. the owner rulings in decisions.md (2026-08-26 R2 ADJUDICATION) that assert a
-     specific number, including the 5 balance-lag crown pins the sweep re-derived.
+     specific number, including the 5 balance-lag crown pins the sweep re-derived;
+  3. I5 (2026-08-26): every row of `ledger/i5_plan.json` that i5_apply.py routed to the
+     IMPORT layer. These are the adjudicated corrections the wiki would otherwise undo
+     on the next scrape -- the whole CROWN family, the proven-lag reconstructions, the
+     floor()-convention DPS values, and the parent/child stat swaps. Without them the
+     import re-writes the stale number and I5 silently unwinds itself.
 
 Where both name the same (key, field) the stat_diffs row wins the provenance slot and
 the script asserts the values agree -- a disagreement would mean the ledger and the
@@ -63,8 +68,19 @@ DECISION_PINS = [
     ("zap", "crown_tower_damage", 48, "decisions.md balance-lag pin (post-1/6/2026)"),
     ("the_log", "crown_tower_damage", 35, "decisions.md balance-lag pin (post-1/6/2026)"),
     ("poison", "crown_tower_damage", 21, "decisions.md balance-lag pin (post-1/6/2026)"),
+    # I5: the third of I4's predicted --force-field refusals. Unlike the two mortar dps rows this
+    # one is a cards_stats-layer HYGIENE fix, not a merged-DB change -- cards.yaml has curated
+    # `rage: {attacks: [air, ground]}` since d8fc808, so the stale ['buildings'] was already
+    # shadowed. Pinned null so the importer stops re-asserting it.
+    ("rage", "attacks", None,
+     "I5: the imported ['buildings'] was a FALSE buildings-only assertion -- the wiki's Target "
+     "cell 'Friendly Troops & Buildings' names who Rage BUFFS, not who it attacks (root cause "
+     "fixed in card_import by d8fc808). Released with --force-field rage.attacks on the I5 "
+     "--write and pinned null here"),
 ]
 DECISION_DATE = "2026-08-26"
+I5_PLAN = LEDGER / "i5_plan.json"
+_DROP = "__DROP__"
 
 
 def main() -> int:
@@ -100,12 +116,31 @@ def main() -> int:
             pins[(key, field)] = {"key": key, "field": field, "value": value,
                                   "source": why, "date": DECISION_DATE}
 
+    # 3. I5: everything i5_apply.py routed to the import layer.
+    i5 = 0
+    if I5_PLAN.exists():
+        for row in json.loads(I5_PLAN.read_text(encoding="utf-8"))["plan"]:
+            if row["route"] != "pin":
+                continue
+            key, field = row["key"], row["field"]
+            value = None if row["after"] == _DROP else row["after"]
+            why = "I5 apply (%s): %s" % (row["bucket"], row["ruling"])
+            if (key, field) in pins:
+                got = pins[(key, field)]["value"]
+                assert got == value, ("pin disagreement for %s.%s: existing %r vs I5 plan %r"
+                                      % (key, field, got, value))
+                continue
+            pins[(key, field)] = {"key": key, "field": field, "value": value,
+                                  "source": why, "date": DECISION_DATE}
+            i5 += 1
+
     ordered = [pins[k] for k in sorted(pins)]
     payload = {
         "meta": {
             "generator": "research/sim_parity/scripts/gen_pins.py",
             "sources": ["ledger/stat_diffs.jsonl (66 verdict:pin rows)",
-                        "decisions.md 2026-08-26 R2 ADJUDICATION (owner rulings)"],
+                        "decisions.md 2026-08-26 R2 ADJUDICATION (owner rulings)",
+                        "ledger/i5_plan.json (rows i5_apply.py routed to the import layer)"],
             "semantics": "the importer applies pins as a post-pass over the scraped rows and "
                          "--write refuses if a pinned field would regress; value null = the "
                          "field must not be imported; fields the importer does not emit are "
@@ -115,6 +150,7 @@ def main() -> int:
             "counts": {"total": len(ordered),
                        "from_stat_diffs": len(pin_rows),
                        "from_decisions": len(DECISION_PINS),
+                       "from_i5_plan": i5,
                        "overlapping": dup},
         },
         "pins": ordered,
@@ -125,7 +161,7 @@ def main() -> int:
         o.write_text(text, encoding="utf-8", newline="\n")
     same = outs[0].read_bytes() == outs[1].read_bytes()
     print(f"wrote {len(ordered)} pins ({len(pin_rows)} stat_diffs + "
-          f"{len(DECISION_PINS)} decisions, {dup} overlapping) to:")
+          f"{len(DECISION_PINS)} decisions + {i5} I5-plan, {dup} overlapping) to:")
     for o in outs:
         print(f"  {o}")
     print(f"pair byte-identical: {same}")

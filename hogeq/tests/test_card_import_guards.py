@@ -183,10 +183,32 @@ class PinTests(unittest.TestCase):
                                       {"earthquake": {"damage": 84}}, pins, {"earthquake"}), [])
 
     def test_dps_recomputed_when_a_pin_moves_hit_speed(self):
+        """A hit_speed pin drags the derived dps with it -- for a key with no dps pin of its own.
+
+        `giant_skeleton` is that case in the live pins file: hit_speed is pinned, dps is not.
+        """
+        out = {"giant_skeleton": {"damage": 276, "hit_speed": 1.4, "dps": 197}}
+        _apply_pins(out, _pins())
+        self.assertEqual(out["giant_skeleton"]["hit_speed"], 1.3)
+        self.assertEqual(out["giant_skeleton"]["dps"], round(276 / 1.3))
+
+    def test_an_explicit_dps_pin_beats_the_derived_recompute(self):
+        """I5: pins apply in (key, field) order, so "hit_speed" lands AFTER "dps".
+
+        Before this rule a hit_speed pin silently overwrote the key's OWN dps pin with
+        round(damage/hit_speed) -- an alphabetical accident deciding an adjudicated value. Mortar
+        pins both (hit_speed 4.7 from decisions.md #10, dps 57 from the LAG bucket), so it is the
+        live case: the explicit pin must survive.
+        """
         out = {"mortar": {"damage": 230, "hit_speed": 5.0, "dps": 46}}
         _apply_pins(out, _pins())
         self.assertEqual(out["mortar"]["hit_speed"], 4.7)
-        self.assertEqual(out["mortar"]["dps"], 49)
+        self.assertEqual(out["mortar"]["dps"], 57)          # the pin, not round(230/4.7) = 49
+
+    def test_force_field_releases_the_dps_pin_back_to_the_recompute(self):
+        out = {"mortar": {"damage": 230, "hit_speed": 5.0, "dps": 46}}
+        _apply_pins(out, _pins(), force=frozenset({"mortar.dps"}))
+        self.assertEqual(out["mortar"]["dps"], round(230 / 4.7))
 
 
 class DiffTests(unittest.TestCase):

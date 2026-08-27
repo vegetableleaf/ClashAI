@@ -104,12 +104,22 @@ class BuildSpecRefusesPhantomsTests(unittest.TestCase):
         self.assertGreater(build_spec(db, "knight_evo", 11).hp, 0.0)
 
     def test_the_evo_row_actually_overlays_the_base(self):
-        """Guards the other half: refusing fakes is worthless if real evos still field base stats."""
+        """Guards the other half: refusing fakes is worthless if real evos still field base stats.
+
+        The card moved from bomber_evo to bats_evo in I5. bomber_evo is no longer a valid probe
+        for this property: the R2 LAG bucket ruled its 332 stale (both the Evo page's own intro
+        and the Card Evolution table say the Evo Bomber has IDENTICAL stats to the base, and the
+        Evo page simply never took the 6/10/2025 -7%), so base and evo now agree at 304 BY
+        RULING. A test that reads "different" as "the overlay works" would have made that
+        correction look like a regression. bats_evo (81 -> 122) is a genuine stat divergence.
+        """
         db = _db()
-        row = db.get("bomber_evo") or {}
-        self.assertTrue(row.get("hitpoints"), "bomber_evo lost its imported hitpoints")
-        base = build_spec(db, "bomber", 11)
-        evo = build_spec(db, "bomber_evo", 11)
+        row = db.get("bats_evo") or {}
+        self.assertTrue(row.get("hitpoints"), "bats_evo lost its imported hitpoints")
+        base = build_spec(db, "bats", 11)
+        evo = build_spec(db, "bats_evo", 11)
+        self.assertAlmostEqual(evo.hp, float(row["hitpoints"]), places=1,
+                               msg="the evo row is not reaching the spec")
         self.assertNotAlmostEqual(base.hp, evo.hp, places=1,
                                   msg="the evo row is not reaching the spec")
 

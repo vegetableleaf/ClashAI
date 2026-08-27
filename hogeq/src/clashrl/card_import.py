@@ -642,6 +642,13 @@ def _apply_pins(out: dict, pins: list, force=frozenset()) -> list:
     stays coherent.
     """
     applied = []
+    # A key with its OWN `dps` pin must not have that pin undone by the derived recompute below.
+    # Pins are applied in file order, which is sorted by (key, field), so "damage" < "dps" <
+    # "hit_speed": a hit_speed pin lands AFTER the dps pin and used to overwrite it. Measured on
+    # bats_evo during I5 (dps pinned 68, hit_speed pin recomputed it) -- same number there, but
+    # the ordering dependence is a trap, so the explicit pin simply wins.
+    own_dps = {p.get("key") for p in pins
+               if p.get("field") == "dps" and f"{p.get('key')}.dps" not in force}
     for p in pins:
         key, field, val = p.get("key"), p.get("field"), p.get("value")
         if f"{key}.{field}" in force:
@@ -656,7 +663,7 @@ def _apply_pins(out: dict, pins: list, force=frozenset()) -> list:
         if field in row and row[field] != val:
             applied.append((key, field, row[field], val))
             row[field] = val
-            if field in ("damage", "hit_speed"):
+            if field in ("damage", "hit_speed") and key not in own_dps:
                 d, a = row.get("damage"), row.get("hit_speed")
                 if d and a and "dps" in row:
                     row["dps"] = round(d / a)
