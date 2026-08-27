@@ -3373,6 +3373,34 @@ if the verdict flips with horizon, that is the finding, not a nuisance.
 **ORDER (owner):** rolling-spell changes merge -> **eval-only rollout search** -> spell experiments
 -> new 20k PPO. Owner stepped away 2026-08-27 and delegated the whole chain.
 
+### DONE 2026-08-27 — BOTH SWEEPS RUN. Ledger: `research/sim_parity/ledger/rollout_search.md`.
+Sweep 1 = §0-§9 of that file; **sweep 2 (the ceiling) = §10-§19**. Headlines:
+```
+policy alone                                 37.0%   tower -0.928
++ search H=12, every 5th decision            59.0%   tower -0.234   (+9.53 sigma)
++ search H=12, EVERY decision (N=1)          80.7%   tower +0.484   (+19.91 sigma)
++ N=1 and top-3 CELLS  <-- CEILING           85.7%   tower +0.651   (+20.74 sigma)
+```
+* **Horizon saturates at H = 12** — H = 16/20/30 are all within 1 sigma of it, and rolling to the
+  MATCH END is 5.1 sigma WORSE. The horizon cap is the idle rollout default, not search.
+  §4x's "sweep it, if the verdict flips that is the finding" — it does not flip, it plateaus.
+* **K is inert** (K = 2 = 4 = 8; K = 8 never binds). **N is the only real lever.**
+* **The match-position confound was measured and disposed of**: 9.5% of rollouts reach the match end
+  at H = 12 (0% before 60 s), early-only search still clears the bar at 2.03 sigma with a MEASURED
+  0.0% clamp, and the 100%-clamp arm is the worst one.
+* ⚠⚠ **LIVE SEARCH IS RULED OUT**, and not on compute (~24 ms/decision into ~230 ms of slack).
+  There is no detector -> `SimEngine` bridge, per-unit HP is unavailable, there is no opponent
+  deck/hand model, and ~80 per-unit fields are unobservable. On top of that a **quarter-tile**
+  position error costs 62% of the search's gain and the damage SATURATES there, so no detector is
+  good enough. **Recommendation: DISTILLATION** (~2 h on 16 cores for an 18k-match-equivalent
+  target set; teacher wins 85.7% vs 37.0%).
+* ⚠⚠ **TRAP, and it affects every number in that ledger:** `rollout_search.py` sets
+  `PYTHONHASHSEED` with `os.environ.setdefault` AFTER interpreter start, which is a NO-OP, so runs
+  are **not reproducible**. Two runs of the identical N = 1 config gave 78.7% and 80.7%. Effect
+  sizes and sigmas stay valid (the sem is empirical and pairing still removes 56% of the variance)
+  but §1's three "IDENTICAL" determinism checks do not reproduce. **Export `PYTHONHASHSEED=0`**
+  before any re-run, and re-run the baseline if you do.
+
 ---
 
 ## 4w. ⏳ PENDING CARD UPGRADE — apply on the sim-parity branch before the merge
