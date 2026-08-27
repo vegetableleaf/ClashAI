@@ -3329,8 +3329,35 @@ policy+search vs policy alone, same reference checkpoint, same seeds:
 ⚠ Only viable since 2026-08-27: before the `deploy_seq` attribution fix the sim was not
 reproducible run-to-run, so rollouts would have been comparing noise.
 
+### ⚠ THE SCORING FUNCTION — refined by the owner's question, and "net tower HP" was too loose
+Owner asked whether the rollout scores BOTH sides. Yes — but raw HP delta breaks three ways, and
+the project already has MEASURED machinery for all three, so nothing here is invented:
+
+1. **Elixir must be in the score.** 6 elixir to prevent 200 damage is worse play than 2 to prevent
+   150; a score without a cost term over-commits by construction. That failure mode is ALREADY this
+   policy's known defect (§4q: mean elixir 2.29, 5.4% of steps at >=6, `bank_to_six_then_bow` 0%),
+   so an elixir-blind search would pursue it HARDER. Use the measured
+   `threat_value.ELIXIR_TO_TOWER = 0.061` (derived across 113 cards) to convert.
+2. **Crowns are not linear in HP.** A tower's last 100 hp is worth far more than its first 100,
+   because taking it is discrete. Add explicit crown terms rather than trusting the HP integral.
+3. **The horizon truncates unrealised value.** At the end of a 5 s rollout a Golem push about to
+   connect scores the same as no push. For an X-BOW CONTROL deck that bias — immediate defence over
+   investment — is close to inverting the deck's strategy. Value the surviving board at the horizon
+   with `threat_value.bodies_ignore_frac`, which already prices bodies in TOWER FRACTIONS.
+
+Everything lands in one currency (tower fractions):
+```
+score =  enemy tower fraction destroyed
+       - our tower fraction lost
+       - elixir spent * ELIXIR_TO_TOWER (0.061)
+       + (our surviving board value - theirs)      # bodies_ignore_frac, both sides
+       + crown terms                                # discrete, large
+```
+⚠ Horizon length is itself a variable: 5 s was my arbitrary figure. SWEEP IT (e.g. 3/5/8/12 s) —
+if the verdict flips with horizon, that is the finding, not a nuisance.
+
 **ORDER (owner):** rolling-spell changes merge -> **eval-only rollout search** -> spell experiments
--> new 20k PPO.
+-> new 20k PPO. Owner stepped away 2026-08-27 and delegated the whole chain.
 
 ---
 
