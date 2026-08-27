@@ -310,10 +310,20 @@ cards:
   #   spawn_first_wave_s: SUPERSEDED ABSENT -> 1.0. KBGAP: 'her first wave of Skeletons will spawn
   #     1 second after she is deployed', not after the generic 7 s interval
   witch_evo: {hitpoints: 839, spawn_death_heal: 220, overheal_frac: 1.73, damage: 135, hit_speed: 1.1, dps: 123, speed_tiles: 1.0, max_hitpoints: 1452, heal_source_cap: 4, spawn_count_per_wave: 4, spawn_first_wave_s: 1.0, verified: true}
-  # EVO ELECTRO DRAGON: "bolts chain indefinitely between multiple targets within a 3.5-tile
-  # radius, provided there is more than one enemy in range" -- hits_per_attack raised to 12 as
-  # the practical infinity on a 18x32 board.
-  electro_dragon_evo: {hits_per_attack: 12, verified: true}
+  # EVO ELECTRO DRAGON: "bolts chain indefinitely between multiple targets ... provided there is
+  # more than one enemy in range" -- hits_per_attack raised to 12 as the practical infinity on a
+  # 18x32 board.
+  # I5 2026-08-26, decisions.md #6 (GLOBAL chain arc): chain_tiles 4.0. SUPERSEDED: the engine's
+  #   flat _CHAIN_TILES 3.0, and the "3.5-tile radius" this comment used to quote -- which matched
+  #   NEITHER the constant nor the wiki. Three independent statements say 4 (Electro Dragon,
+  #   Electro Dragon/Evolution, Card Evolution), and the constant's own comment claiming the arc
+  #   is "not published by the wiki" is what let the estimate stand for so long.
+  # ⚠ STILL OPEN (conflicts.md, I5): hits_per_attack 12 is a MODEL error, not just a number. The
+  #   engine reads it as 12 hits at the FULL 267 -> 3204 per swing. The wiki's shape is 3 hits at
+  #   full damage WITH the stun, then unlimited SLOWER bounces at a reduced ~89 and NO stun.
+  #   Splitting it needs an engine change (late_chain_damage + an unlimited-bounce flag), so the
+  #   number is left as it stands and recorded rather than half-corrected.
+  electro_dragon_evo: {hits_per_attack: 12, chain_tiles: 4.0, verified: true}
   # EVO INFERNO DRAGON: "once [it] defeats a troop on whatever damage stage it was in, it
   # remains on that damage state until 9 seconds ... or it is reset by a stun. After 20 seconds
   # of damage, [it] will reach a 4th damage stage which deals twice the damage of the 3rd."
@@ -2511,7 +2521,10 @@ cards:
   #   evolution.available: SUPERSEDED ABSENT -> True. SYSTEMIC GATE BUG -- 10 of my 32 keys. The
   #     parent row has evolution:null while a fully populated electro_dragon_evo row exists
   #     carrying the correct evo_cycles=1
-  electro_dragon: {range: long, multi: chain, evolution: {available: true}, verified: true}
+  # I5 2026-08-26, decisions.md #6: chain_tiles 4.0, SUPERSEDING the engine's flat 3.0 estimate.
+  #   The bolt "arcs and strikes up to 2 OTHER targets" within 4 tiles (attributes table); the
+  #   target COUNT (1 + 2 = hits_per_attack 3) was already right, only the reach was wrong.
+  electro_dragon: {range: long, multi: chain, chain_tiles: 4.0, evolution: {available: true}, verified: true}
   # "If 2 or more targets are within his range, his attack will SPLIT and attack the closest 2
   # units" -- his 115 damage is the TOTAL (115 / 1.8 hit speed == his published dps 64), so it is
   # halved when two things are in range. Contrast the Electro Dragon, whose bolt "arcs and strikes

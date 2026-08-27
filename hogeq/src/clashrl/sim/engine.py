@@ -94,8 +94,15 @@ _KING_HALF = 2.0
 _SPARK_CROWN_FRAC = 0.3125
 _TOWER_CLEAR = 0.15       # tiles of daylight left when rounding a tower's shoulder
 _RIVER = 0.5              # the board is symmetric about this now that anchors are tile-derived
-# MULTI-HIT geometry, in TILES. Neither is published by the wiki, so both are estimates: how far a
-# chain bolt will arc to its next target, and how far Firecracker's sparks spray from the impact.
+# MULTI-HIT geometry, in TILES: how far a chain bolt arcs to its next target, and how far
+# Firecracker's sparks spray from the impact.
+#
+# `_CHAIN_TILES` is now a FALLBACK, not the answer. It was introduced as an estimate with the note
+# "not published by the wiki" -- and the R2 sweep disproved that premise on three independent
+# pages (Electro Dragon, Electro Dragon/Evolution, Card Evolution) plus a fourth for the Electro
+# Spirit, all saying 4 tiles. decisions.md #6 makes the arc a PER-CARD KB field (`chain_tiles`),
+# because a single shared constant cannot be corrected for one card without silently moving every
+# other chain card with it. Cards that publish nothing still land here.
 _CHAIN_TILES = 3.0
 _SPARK_TILES = 2.5
 _SKELETON_BASES = {"skeletons", "skeleton_army", "guards"}   # Evo Witch's Healing Bones triggers
@@ -421,6 +428,10 @@ class CardSpec:
     # for all of them), so these cards were 2-10x too weak -- a point-blank Hunter should land 10 x 84.
     multi_kind: str = ""
     multi_hits: int = 0
+    # PER-CARD CHAIN ARC, in tiles. 0 = fall back to the module's `_CHAIN_TILES`. The global was
+    # introduced with the comment "not published by the wiki"; the R2 sweep showed that premise is
+    # FALSE (decisions.md #6), so the arc is a card fact like any other and belongs in the KB.
+    chain_tiles: float = 0.0
                               # this the sim let Miner chip towers at FULL damage -> king-snipe exploit.
     deploy_time: float = 1.0  # seconds before a freshly-placed unit can act (spells = 0)
     # WEAPON LOAD TIME: the wind-up between acquiring a target and the FIRST hit landing
@@ -906,6 +917,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         bounce_tiles=float(c.get("bounce_tiles") or 0.0),
         multi_kind=str((db.get(base) or {}).get("multi") or ""),
         multi_hits=int(c.get("hits_per_attack") or 0),
+        chain_tiles=float(c.get("chain_tiles") or 0.0),
         damage_reduction=dmg_reduc,
         pulls=pulls,
         pull_radius=(_TORNADO_RADIUS if pulls else 0.0),
@@ -3687,10 +3699,11 @@ class SimEngine:
                 return
             seen = {id(ref)}
             cur = ref
+            arc = s.chain_tiles or _CHAIN_TILES        # published per card; global is the fallback
             for _ in range(n - 1):
                 near = [e for e in self.units
                         if e.team != team and e.hp > 0 and id(e) not in seen
-                        and _dist(cur.x, cur.y, e.x, e.y) <= _CHAIN_TILES
+                        and _dist(cur.x, cur.y, e.x, e.y) <= arc
                         and not (not s.attacks_air and e.spec.flying)]
                 if not near:
                     break

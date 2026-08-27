@@ -704,6 +704,63 @@ class EvoSnowballAirAndRollTests(unittest.TestCase):
         self.assertFalse(build_spec(eng.db, "fireball", LVL).rolls)
 
 
+class ChainArcIsPerCardTests(unittest.TestCase):
+    """decisions.md #6: the chain arc is a PER-CARD KB field, and the Electro Dragon's is 4 tiles.
+
+    This is the owner's original "the chain doesn't work" report, finally measured. engine.py had
+    one global `_CHAIN_TILES = 3.0` carrying the comment "not published by the wiki". The R2 sweep
+    disproved that premise on FOUR independent pages -- Electro Dragon, Electro Dragon/Evolution
+    and Card Evolution all say 4 tiles for the ED family, and the Electro Spirit page says 4 for
+    itself. The target COUNT was never wrong (1 + 2 others = hits_per_attack 3); only the reach.
+
+    MEASURED, Electro Dragon swinging at body A with body B 3.5 tiles from A:
+        arc 3.0 (the old global)  A 533.6   B   0.0   <- the bolt never leaves the first body
+        arc 4.0 (the ruled value) A 266.8   B 266.8   <- it arcs, and each takes one hit
+    533.6 is two swings' worth on A precisely BECAUSE the hop failed: nothing else was in range.
+    """
+
+    def _probe(self, arc):
+        eng = _make_engine()
+        s = replace(build_spec(eng.db, "electro_dragon", LVL), chain_tiles=arc)
+        t = build_spec(eng.db, "knight", LVL)
+        ax, ay = 0.50, 0.60 - 3.0 / _TILES_Y
+        bx, by = 0.50 + 3.5 / _TILES_X, ay                   # 3.5 tiles from A: inside 4, not 3
+        ed = Unit(spec=s, team=0, x=0.50, y=0.60, hp=s.hp)
+        a = Unit(spec=t, team=1, x=ax, y=ay, hp=t.hp * 50)
+        b = Unit(spec=t, team=1, x=bx, y=by, hp=t.hp * 50)
+        eng.units += [ed, a, b]
+        ha, hb = a.hp, b.hp
+        for _ in range(60):
+            a.x, a.y, b.x, b.y = ax, ay, bx, by              # pin them: this is a reach test
+            eng.advance(0.05)
+            if ha - a.hp > 0 and hb - b.hp > 0:
+                break
+        return ha - a.hp, hb - b.hp
+
+    def test_a_chain_that_dies_at_three_tiles_connects_at_four(self):
+        _, b3 = self._probe(3.0)
+        a4, b4 = self._probe(4.0)
+        self.assertEqual(b3, 0.0, "MEASURED BEFORE: the second body took nothing at 3.0 tiles")
+        self.assertGreater(b4, 0.0, "at the published 4.0 the bolt arcs to it")
+        self.assertAlmostEqual(b4, a4, delta=1.0, msg="each body takes one full hit")
+
+    def test_the_ed_family_carries_the_published_arc(self):
+        eng = _make_engine()
+        for key in ("electro_dragon", "electro_dragon_evo"):
+            with self.subTest(card=key):
+                self.assertAlmostEqual(build_spec(eng.db, key, LVL).chain_tiles, 4.0, delta=1e-9)
+
+    def test_the_global_is_only_a_FALLBACK_now(self):
+        """A card that publishes no arc still lands on the module constant -- moving one card must
+        not move every chain card with it, which is exactly why this became a KB field."""
+        import clashrl.sim.engine as E
+        eng = _make_engine()
+        s = build_spec(eng.db, "electro_spirit", LVL)
+        self.assertEqual(s.chain_tiles, 0.0, "electro_spirit is NOT in the #6 ruling")
+        self.assertEqual(s.chain_tiles or E._CHAIN_TILES, E._CHAIN_TILES)
+        self.assertEqual(E._CHAIN_TILES, 3.0)
+
+
 class TestE1WalkingSpawnerPricing(unittest.TestCase):
     """E1 (owner-approved, MEASURED 2026-08-26): a spawner that WALKS is priced by how long it
     SURVIVES, not by an unmeasured flat constant.
