@@ -3299,6 +3299,150 @@ play/wait asymmetry to correct).
 gradient is necessary, not sufficient, and this can still come back null. Pre-committed: >=2 sigma
 on the paired probe or it is reported as NO MEASUREMENT.
 
+## 4y. 2026-08-27 — ⚠⚠ THE SPELL EXPERIMENTS: THE SPELLS ARE NET-NEGATIVE, PLACEMENT IS WORTH NOTHING, AND THE SIM'S ACTION SPACE WAS CLAMPED BY SCREEN CONSTANTS
+
+Owner's standing request (§6-PRIORITY), rescoped by `rollout_search.md` §5.1/§6.2/§7a.
+Full ledger: **`research/sim_parity/ledger/spell_experiments.md`**. Read that before re-running
+anything; only the verdicts are here.
+
+### WHY THESE ARE DECISION-TIME ARMS AND NOT TRAINING ARMS
+A matched-control training arm costs **~2 h** (measured: ARM_control4 1h50, ARM_fix23b 1h52,
+ARM_clipfix 1h53 at 2600 episodes), and §4n's own post-mortem is *"compute the detectable effect
+size BEFORE running the arm"*. Both spell questions have a prerequisite a decision-time arm answers
+in 8 minutes at far higher power: **if the rule is FORCED with engine ground truth, does it help at
+all?** If not, training a policy to approximate it from a degraded observation cannot either.
+Every arm below is therefore an **upper bound** on what the training change could deliver.
+Harness `scratchpad/spell_arms.py` (a verbatim copy of `rollout_search.py` + flags, all default OFF;
+baseline byte-identical, checked). n=300, seeds 5_000_000..5_000_299, paired, **GREEDY**, bar >=2σ.
+
+### ⚠ `rs_base.json` NO LONGER REPRODUCES — d9b20d6 MOVED THE BASELINE
+`rollout_search.md`'s 37.0% / -0.928 is 43.0% / -0.841 today on the same seeds and checkpoint.
+Commit **d9b20d6** (ruling 29, spawned-body elixir) feeds `threat_value` -> the threat vector -> the
+observation -> the action stream. Seed 5000000 goes 371 steps/49 plays -> 215/17.
+**§4q's "arms hours apart differ by every commit between them" bites EVAL arms too.** Every number
+below is against its own same-tree baseline.
+
+### EXPERIMENT A — RESTRAINT: **MEASURED**, and the mechanism is mostly VOLUME
+Rule (NOT a scalar): refuse a SPELL card when no legal cell would catch >= K enemy bodies under the
+ENGINE's own hit test (corridor for a roll, pull disc, blast disc — §4v's trap).
+```
+K       casts/m   win%   towerd delta   sigma        K       casts/m  win%   towerd delta  sigma
+1        7.47     41.7      -0.025      -0.69        5        1.56    49.7     +0.397     +6.31
+2        6.12     37.7      +0.023      +0.38        7        0.53    52.0     +0.383     +5.82
+3        4.32     47.7      +0.233      +3.58        NEVER    0.00    50.0     +0.306     +4.33
+4        2.64     50.0      +0.332      +5.12
+```
+Monotone on tower delta, crown delta AND dump rate (36.7 -> 9.4%), plateau at K>=5. Not multiplicity.
+**THE CONTROLS ARE THE POINT** (paired, arm vs arm, matched CASTS/MATCH):
+```
+ctlS3 -> k3    same 4.3 casts/m, criterion vs RANDOM spell bans   +0.207   2.98σ   SIG
+ctlS5 -> k5    same 1.5 casts/m, criterion vs RANDOM spell bans   +0.009   0.16σ   NO MEAS.
+base  -> knever  cast NO spells at all                            +0.306   4.33σ   SIG
+knever -> k7   0.53 SELECTIVE casts/match vs none                 +0.077   2.24σ   SIG
+ctlany  ban random cards (troops too), vs base            -6.3pp win  -2.37σ  HARMFUL
+```
+1. **The biggest single effect is that this policy should barely cast its spells.** Deleting all
+   three — 3 of 8 cards — is +0.306 / +7.0pp at 4.33σ.
+2. **Targeting is worth something only while volume is high.** +0.207 over its matched control at
+   4.3 casts/m; **+0.009 at 1.5**. (At matched volume the criterion arm dumps 18.5%, the random arm
+   40.1% — they really do behave differently; it just stops mattering.)
+3. **Spells are worth ~half a cast per match**: k7 beats never-casting by +0.077 (2.24σ).
+4. **Global "play less" is harmful; SPELL-SPECIFIC "play less" is worth 7-9 points.** That is why
+   §6.2's tau sweep could not find it — the gate fires before the card argmax, so it is
+   card-agnostic by construction.
+5. **The elixir-trade criterion is a NULL** (+0.017, 0.38σ) and the reason is its 3.7% fire rate,
+   not the idea. Do not re-run it as written.
+
+### EXPERIMENT B — PLACEMENT: **NULL**, with the instrument demonstrably awake
+`aim` = keep the card, move the cell to the engine-true best-hitting legal cell. The CEILING of a
+perfect spell placement head.
+```
+base -> aim    tower delta +0.004  sem 0.051  +0.07σ   NO MEASUREMENT   (winrate -3.3pp)
+```
+It moved 856 casts (36.5%), gained 1290 bodies hit, 413 of them from a ZERO-hit cell, and took the
+tornado's dump rate 15.0% -> 4.4% and the rocket's 8.6% -> 2.5%. **2σ upper bound on perfect spell
+placement: +0.106.** §5.2's +0.216 for all-card cell search is real and is somewhere else.
+
+**§4r's two-failure split is now decided PER CARD.** the_log = RESTRAINT (perfect aim 46.2% ->
+45.3%, restraint -> 27.8%; it is `own_half_only`, so an enemy on their side is unreachable by any
+cell). tornado/rocket = PLACEMENT, fixable, worth nothing.
+⚠ EXPLORATORY, not pre-registered: aim ON TOP of restraint is +0.103 (2.49σ). A hypothesis.
+
+### AND NO SINGLE SPELL IS THE CULPRIT — do not nerf one card
+```
+delete the_log  +0.066 (1.01σ)  |  tornado +0.082 (1.72σ)  |  rocket +0.048 (2.62σ)
+delete ALL THREE +0.306 (4.33σ)  -- SUPER-additive; singles sum to +0.196
+```
+Removing the Log alone makes winrate WORSE (-1.7pp). The problem is spell casting as a class.
+
+### THE LIVE PATH — FOUR DEFECTS, THREE SHIPPED-CODE UNITS ERRORS (§3 of the ledger)
+* ✅ CLEAN: the grid round trip, 0 of 432 cells wrong. §4.2 stayed fixed.
+* ✅ CLEAN: the live OBSERVATION — detections and anchors all go through `warp.frame_to_board`.
+  **The asymmetry is action-side only.**
+* **FIXED `84bd0a7`** — `no_king_mask` compared FRAME `cell_center` to a BOARD `king_xy`. Live
+  blocked 12 cells, sim 22; the 10 extra sit **1.54-2.69 true tiles** from the enemy king, four
+  inside a Rocket's 2.0-tile blast. RS-4 in shipped code. `test_deploy_rows` had the SAME units bug,
+  which is why it never caught it — updated, not deleted. **2.3% of cells: real, and NOT the
+  owner's report.**
+* **FIXED `8476a1e`** — the **TORNADO** was being snapped onto Crown Towers by `weaker_princess_cell`
+  (gated on `anywhere_ids` = {rocket, TORNADO}). **80 of 432 cells (18.5%)** sit in that box, so ~1
+  tornado cast in 5 was redirected onto a building it cannot pull. The sim's own `spell_target_mask`
+  already states the rule ("never for a pull"); it never reached live.
+* ⚠ **MEASURED, NOT FIXED** — `reward.spell_whiffed` takes a radius in TILES and every live caller
+  feeds it FRAME coordinates. A 4.5-tile radius really spans **4.7 to 12.0 tiles** depending on
+  depth, so the LIVE reward under-charges whiffs, worst at the enemy end. ~10 call sites across
+  `env.py`/`play.py` in two decks and it moves the live reward, so it is its own change.
+  Same family, same call sites: `nado_king_cell`, `spell_intercept_cell`, `pump_rocket_cell`,
+  `weaker_princess_cell` all use raw normalised distances with one radius (reward.py 224/231/244/275/314).
+
+### ⚠⚠ AND THE BIGGEST FINDING IS NOT IN LIVE — `51f34fb`, THE SIM'S ACTION SPACE WAS CLAMPED
+`_board_action_space` never overrode `label.arena_top` / `arena_bottom` / `buttons.chat_avoid_box`
+— LIVE SCREEN constants that `cell_center` applies to whatever space it is in.
+```
+before: 96 of 432 cells (22.2%) deployed somewhere other than their own centre, worst 6.37 tiles
+        only 372 DISTINCT deploy points -> 60 cells were EXACT DUPLICATES of another cell
+        board tile-y outside 3.20..27.52 was UNREACHABLE (the arena is 0..32)
+        the EMOTE-ICON box alone displaced 15 cells
+after:  0 displaced, 432 distinct, tile-y 0.67..31.33
+```
+* **All 36 cells of grid rows 0-1 clamped to tile-y 3.20; the enemy king is at 3.0.** 8.3% of the
+  action space landed on the king and `train_sim_ppo.py:199` masks NONE of it
+  (`allcells_mask = torch.ones`). That is a structural explanation for `never_rocket_their_king`
+  scoring 0-17% — the policy could barely avoid it.
+* **60 duplicate actions** = the cell head asked to distinguish identical actions. A structural
+  contributor to §4r's near-uniform cell head, independent of learning.
+* In LIVE all three clamps fire on **0 of 432 cells** — inert where they belong, mangling a fifth of
+  the action space where they do not. The mirror image of the §4.2 trap.
+* MEASURED SAFE on the current checkpoint: applying it at eval is **+0.006, 0.24σ**, winrate
+  identical. ⚠⚠ **REQUIRES A RETRAIN before any placement number is quoted again.**
+
+### RECOMMENDATION FOR THE NEXT RUN — one change, four DO-NOTs
+**DO:** promote the spell mask from a CELL mask to a **CARD veto at K=3 bodies on the ENGINE's
+geometry**, applied in sampling **and** `choose_greedy` (which applies no spell mask today, so eval
+and live have always run unmasked while sampling ran masked). K=3, not 5 or 7, because K=3 is the
+largest threshold at which the CRITERION beats its volume-matched control (+0.207, 2.98σ); above it
+you are only buying "cast fewer spells". Machinery is 80% there: `sim/env.py::spell_target_mask` +
+`train_sim_ppo.py:458-497`.
+**DO NOT** spend an arm on the cell head / doctrine cell prior / spell entropy floor (ceiling +0.106).
+**DO NOT** ship "tighten `spell_waste_tiles` 4.5 -> 2.0" as the fix — its card-level form is k1,
+-0.69σ. The binding variable is HOW MANY bodies, not the radius.
+**DO NOT** retune `ppo_gate_threshold` (closed by §6.2, re-confirmed by `ctlany`).
+**DO NOT** nerf or delete a single spell.
+**FIRST:** `51f34fb` must be in the tree the run starts from.
+
+⚠ ALL ARMS USE ENGINE GROUND TRUTH. In the sim that is free (`spell_target_mask` already reads the
+engine). LIVE, at `sim_detector_recall 0.82`, a real 3-body clump is fully seen only 0.82^3 = **55%**
+of the time, so the live port would veto about half the casts it should allow. **Separate question.**
+
+### UNTESTED, worth one arm later (do not bundle)
+`knever` removes the HITS as well as the whiffs and still wins at 4.33σ, and `k7` shows the marginal
+value of every cast past the best ~0.5/match is negative. So the problem may not be that whiffs are
+under-charged but that **a cast hitting one or two bodies is paid for at all**: `rewards.spell_waste
+-0.3` only fires when nothing is within 4.5 tiles, and no term prices "a 2-elixir Log clipped one
+Skeleton" as the losing trade it is. NOT TESTED.
+
+---
+
 ## 4x. 2026-08-27 — QUEUED EXPERIMENT: EVAL-ONLY ROLLOUT SEARCH (owner's idea, scoped by measurement)
 
 Owner asked whether MCTS belongs in the sim: clone the state every Nth decision, play out a few
@@ -4109,7 +4253,12 @@ configured but **have never run** — BC has not been retrained since the soft-t
 
 ---
 
-## 6-PRIORITY. ⏳ THE SPELL EXPERIMENTS — OWNER-REQUESTED, RUN AFTER THE PARITY MERGE + NEW PPO
+## 6-PRIORITY. ✅ THE SPELL EXPERIMENTS — DONE 2026-08-27 (§4y). READ §4y AND `research/sim_parity/ledger/spell_experiments.md`, NOT THE SPEC BELOW.
+
+⚠ The spec below is kept for provenance and its labelling is now WRONG: it calls placement "EXPERIMENT A" and restraint "EXPERIMENT B", while §4y runs restraint first (as the evidence demanded) and calls it A. Its two named levers were both measured and both are DO-NOTs: the cell head has a ceiling of +0.106 tower fractions, and the card-level form of `spell_waste_tiles` tightening reads -0.69σ. What DID clear the bar is a state-conditioned CARD veto at a >=3-body clump. The baselines it says not to re-measure are the SAMPLED policy's (rollout_search.md §7a) and must not be used to grade an arm.
+
+### ORIGINAL SPEC (superseded)
+
 
 Owner (2026-08-26): "don't forget to run the spell cast experiments after implementation is done
 and a new PPO is started." This is that reminder, written to be RUNNABLE rather than a note.
