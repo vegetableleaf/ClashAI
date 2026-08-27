@@ -65,6 +65,26 @@ def _board_action_space(cfg) -> ActionSpace:
         ("env", "enemy_towers"): [[pt[0] / tx, epy], [(tx - pt[0]) / tx, epy], [kt[0] / tx, eky]],
         # ...and board-true field edges/river, so the edge anchors are identity points too
         ("env", "board_edges"): {"top": 0.0, "river": 0.5, "bottom": 1.0, "left": 0.0, "right": 1.0},
+        # ...and the three LIVE-SCREEN safety constants, which `cell_center` applies to whatever
+        # space it happens to be in. `label.arena_top/arena_bottom` keep a TAP off the card tray and
+        # `buttons.chat_avoid_box` keeps it off the emote icon: both are screen furniture, neither
+        # exists on the board, and leaving them at their live values CLAMPED THE SIM'S OWN ACTION
+        # SPACE. MEASURED 2026-08-27, both decks, 18x24 = 432 cells:
+        #   * 96 cells (22.2%) deployed somewhere other than their own board centre, the worst by
+        #     6.37 tiles (grid row 23, left columns);
+        #   * only 372 DISTINCT deploy points existed, so 60 cells were exact duplicates of another
+        #     cell -- five different grid rows all deploying to tile (0.50, 24.96);
+        #   * board tile-y outside 3.20 .. 27.52 was UNREACHABLE (the arena is 0..32), which put all
+        #     36 cells of grid rows 0-1 within 0.2 tiles of the ENEMY KING's row at tile-y 3.0;
+        #   * the emote-icon box alone displaced 15 cells, in front of our own left princess.
+        # And they were never doing their job anyway: in the LIVE ActionSpace the same three clamps
+        # fire on 0 of 432 cells, because the warped grid already lands inside them. So they were
+        # inert where they belong and mangling a fifth of the action space where they do not.
+        # This is the mirror image of the section 4.2 trap -- not an offline tool reading live
+        # coordinates, but a live-screen constant applied to the board.
+        ("label", "arena_top"): 0.0,
+        ("label", "arena_bottom"): 1.0,
+        ("buttons", "chat_avoid_box"): None,
     }))
 
 
