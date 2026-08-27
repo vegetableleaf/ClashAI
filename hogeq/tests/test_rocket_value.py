@@ -24,6 +24,12 @@ from clashrl.sim.engine import build_spec      # noqa: E402
 from clashrl.sim.doctrine import doctrine_cards  # noqa: E402
 
 
+try:                                     # discovered as a package (python -m unittest discover)
+    from ._deckcards import requires_cards
+except ImportError:                      # ...or run as a plain script
+    from _deckcards import requires_cards
+
+
 def _env(seed=3):
     e = SimMatchEnv(Config.load(), seed=seed)
     e.reset()
@@ -38,6 +44,7 @@ def _enemy_tower(env):
     return [t for t in env.eng.towers[1][:2] if t.alive][0]
 
 
+@requires_cards("rocket", why="the conditional Rocket value branch (env._rocket_value)")
 class RocketValueTests(unittest.TestCase):
     def test_waste_on_cheap_bodies_is_negative(self):
         """Six elixir on Skeletons is a misplace, not merely a zero -- the user's own example."""
@@ -121,6 +128,7 @@ class RocketValueTests(unittest.TestCase):
         self.assertLess(env._rocket_value(0.51, 0.55, 9.0), fresh)
 
 
+@requires_cards("rocket", why="the Rocket nomination prior")
 class RocketPriorTests(unittest.TestCase):
     def test_quiet_when_there_is_no_rocket_situation(self):
         env = _env()
@@ -180,6 +188,7 @@ def _any_cell_wakes(troop, side, dc, surfaced):
     return False
 
 
+@requires_cards("tornado", why="the Tornado king-activation doctrine cell")
 class TornadoLogDoctrineTests(unittest.TestCase):
     """Tornado / Log rules recovered from the icebow deck guides (2026-08-16)."""
 

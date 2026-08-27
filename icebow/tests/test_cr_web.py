@@ -59,10 +59,25 @@ class LiveSourceTests(unittest.TestCase):
         self.assertAlmostEqual(float(st["hp_11"]), spec.hp, delta=2.0)
         self.assertAlmostEqual(float(st["dmg_11"]), spec.hit_dmg, delta=2.0)
 
-    def test_previously_blocked_sources_now_fetch(self):
-        """Fandom card PAGES used to 402 and the community stat sites sat behind Cloudflare."""
+    def test_the_sources_THIS_PIPELINE_READS_still_fetch(self):
+        """Both Fandom routes the importer depends on must come back with a real body.
+
+        This test used to also assert that `royaleapi.com/card/hog-rider` fetches, under the name
+        `test_previously_blocked_sources_now_fetch`. That premise expired. MEASURED 2026-08-27:
+
+            https://clashroyale.fandom.com/wiki/Hog_Rider          461,770 bytes   not blocked
+            https://clashroyale.fandom.com/api.php?...&prop=wikitext 33,161 bytes  not blocked
+            https://royaleapi.com/card/hog-rider                         0 bytes   BLOCKED
+
+        RoyaleAPI, Deck Shop and StatsRoyale are behind Cloudflare again and the sim-parity
+        research confirmed it independently. The right response is not to assert that a third
+        party stays blocked -- that is just as brittle in the other direction, and would go red
+        the day Cloudflare relaxes. It is to assert what we actually depend on. NOTHING in
+        card_import.py reads RoyaleAPI: the importer walks Fandom pages and api.php, which is why
+        api.php is asserted here and was not before."""
         for url in ("https://clashroyale.fandom.com/wiki/Hog_Rider",
-                    "https://royaleapi.com/card/hog-rider"):
+                    "https://clashroyale.fandom.com/api.php?action=parse&page=Hog_Rider"
+                    "&prop=wikitext&format=json"):
             r = cr_web.fetch(url)
             self.assertTrue(r["html"], "no body from %s" % url)
             self.assertFalse(cr_web._looks_blocked(r["html"]), "blocked by %s" % url)

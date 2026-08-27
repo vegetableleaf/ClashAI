@@ -27,6 +27,12 @@ from clashrl.reward import nado_regressed, spell_whiffed          # noqa: E402
 from clashrl.replay_mine import Detection, TeamTracker            # noqa: E402
 
 
+try:                                     # discovered as a package (python -m unittest discover)
+    from ._deckcards import requires_cards
+except ImportError:                      # ...or run as a plain script
+    from _deckcards import requires_cards
+
+
 class SpellWhiffTests(unittest.TestCase):
     def test_empty_blast_is_a_whiff(self):
         self.assertTrue(spell_whiffed(0.5, 0.3, 3.0, []))
@@ -75,6 +81,7 @@ class NadoRegressionTests(unittest.TestCase):
         self.assertFalse(nado_regressed([(0.5, 0.55)], [(0.5, 0.559, 0, 0)], self.MY))
 
 
+@requires_cards("tornado", why="the Tornado bad-pull charge (env._nado_shaping)")
 class SimNadoBadTests(unittest.TestCase):
     """The engine-truth twin, through the real _nado_watch machinery."""
 

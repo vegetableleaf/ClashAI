@@ -32,6 +32,12 @@ def _kill(env, unit):
     unit.hp = -1.0                                   # engine culls it on the next tick
 
 
+try:                                     # discovered as a package (python -m unittest discover)
+    from ._deckcards import a_counter_for
+except ImportError:                      # ...or run as a plain script
+    from _deckcards import a_counter_for
+
+
 class TradeLedgerTests(unittest.TestCase):
     def test_prompt_attributed_kill_credits(self):
         env = _quiet_env()
@@ -337,8 +343,14 @@ class ThreatTimingTests(unittest.TestCase):
         return env
 
     def _troop_counter(self, env):
-        ci = next(i for i, k in enumerate(env.deck_keys) if "knight" in k)
+        """The card that answers the enemy Knight, asked of the COUNTER TABLE rather than named.
+
+        This used to be `next(i for i, k in ... if "knight" in k)`, which is icebow's answer to
+        a Knight and raises StopIteration in any deck that does not hold one. What the timing
+        tests are about -- the depth window and the credit budget -- has nothing to do with which
+        card it is, so the deck supplies its own legitimate counter (hogeq: the Mighty Miner)."""
         tid = env._threat_id_true
+        ci = a_counter_for(env, tid)
         tx, _ = env._threat_pos()
         return ci, tid, tx
 

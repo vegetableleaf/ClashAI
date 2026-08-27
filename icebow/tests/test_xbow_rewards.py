@@ -14,6 +14,12 @@ from clashrl.sim.env import SimMatchEnv
 from clashrl.sim.engine import build_spec
 
 
+try:                                     # discovered as a package (python -m unittest discover)
+    from ._deckcards import requires_cards
+except ImportError:                      # ...or run as a plain script
+    from _deckcards import requires_cards
+
+
 def _quiet_env(seed=42):
     env = SimMatchEnv(Config.load(), seed=seed)
     env.reset()
@@ -26,6 +32,7 @@ def _total(env, name):
     return 0.0 if t is None else t.total
 
 
+@requires_cards("x_bow", why="the X-Bow uptime/overcommit ledger and its context modifiers")
 class XbowRewardTests(unittest.TestCase):
     def test_lock_ticks_accumulate_and_cap(self):
         env = _quiet_env()
@@ -315,6 +322,7 @@ class PunishWindowTests(unittest.TestCase):
 if __name__ == "__main__":
     unittest.main(verbosity=1)
 
+@requires_cards("x_bow", why="X-Bow overcommit attribution")
 class BowOvercommitAttributionTests(unittest.TestCase):
     """Only elixir the opponent SPENT to answer the bow counts as drawn."""
 

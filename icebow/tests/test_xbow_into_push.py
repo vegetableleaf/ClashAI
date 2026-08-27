@@ -29,11 +29,18 @@ from clashrl.sim.env import SimMatchEnv                  # noqa: E402
 from clashrl.sim import view                            # noqa: E402
 from clashrl import card_threat                         # noqa: E402
 
+try:                                     # discovered as a package (python -m unittest discover)
+    from ._deckcards import requires_cards
+except ImportError:                      # ...or run as a plain script
+    from _deckcards import requires_cards
+
+
 PUSH = (("giant", 0.56), ("musketeer", 0.50), ("knight", 0.54))
 FORWARD_Y = 13.5 / 24.0          # row 13 -- where the deploy clamp puts every forward bow
 DEEP_Y = 15.5 / 24.0             # row 15 -- the defensive centre band
 
 
+@requires_cards("x_bow", why="the forward-bow-into-a-push penalty (env._xbow_into_push)")
 class XbowIntoPushTests(unittest.TestCase):
     def setUp(self):
         self.env = SimMatchEnv(Config.load(), seed=5)
@@ -97,6 +104,7 @@ class XbowIntoPushTests(unittest.TestCase):
         self.assertLess(self._charge(), -3.59)
 
 
+@requires_cards("x_bow", why="the bow over-aggression penalty (env._xbow_overaggression)")
 class XbowOverAggressionTests(unittest.TestCase):
     """Don't buy chip with the elixir the defence needed.
 
