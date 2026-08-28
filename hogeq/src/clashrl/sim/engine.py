@@ -4863,9 +4863,16 @@ class SimEngine:
             rocket's flight heading -- not a radial ring;
           * each bolt PIERCES, damaging everything along its corridor (published projectile
             radius 0.4 tiles) -- her damage stat is PER BOLT, the carrier deals nothing;
-          * total projectile range is 11 tiles from the FIRING position ("she can even damage
-            the Princess towers when at the bridge, not unlike a Magic Archer"), so the bolts
-            fly whatever is LEFT of that budget past the impact point.
+          * each bolt travels a FIXED distance from the impact point (`_SPARK_TILES`), and this
+            is the owner's correction of 2026-08-28: the shards do NOT share a range budget with
+            the carrier. The old model computed `left = proj_range - flown`, i.e. an 11-tile TOTAL
+            from the firing position, so a SHORT carrier flight handed the shards a LONGER run to
+            "make up" the difference -- a close-range shot sprayed shrapnel ~9 tiles. Owner,
+            verbatim: "no matter how far the primary one travels, the secondary projectiles always
+            travel the same distance." Total reach is therefore carrier distance + _SPARK_TILES,
+            not a constant 11. WARNING: the published "damage the Princess towers from the bridge" line
+            is a consequence of her CARRIER range under this model, not of a shrapnel budget; if
+            that behaviour turns out not to reproduce, the value to revisit is _SPARK_TILES.
         The old model sprayed 5 bolts in a full circle with no heading vector, and a piercing
         projectile moves along dirx/diry -- unset, so they sat motionless on the impact point.
         """
@@ -4873,8 +4880,9 @@ class SimEngine:
         n = s.multi_hits
         if s.multi_kind != "spark" or n < 2:
             return
-        flown = _dist(p.ox, p.oy, p.x, p.y)
-        left = max(1.0, (s.proj_range or (flown + _SPARK_TILES)) - flown)
+        # FIXED, not a remainder. See the docstring: `proj_range - flown` made the shards longer
+        # the shorter the carrier flew, which is the compensation the owner ruled out.
+        left = _SPARK_TILES
         hx, hy = (p.x - p.ox) * _TILES_X, (p.y - p.oy) * _TILES_Y
         d = math.hypot(hx, hy)
         if d < 1e-9:                                   # point-blank burst: spray toward the enemy side
