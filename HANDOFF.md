@@ -5325,3 +5325,53 @@ not settling. Measure the ADVANTAGE split by PLAY vs WAIT before and after a 2-l
 that is the quantity the gate actually consumes, and §5b already showed the per-decision REWARD
 favours playing by 5.45 sigma while the policy plays 10% of the time. If the reward says play and
 the advantage says wait, the critic is the gap.
+
+## §5e — P(play) IS INVARIANT TO THE GATE'S LEARNING SIGNAL (the sweep's missing middle)
+
+§5d measured the clip sweep's MECHANISM and its OUTCOME and skipped the step between them. Measured
+now, on the 15 checkpoints already on disk -- no new training:
+
+```
+mult   P(play) mean     sd     share>0.25   elixir>=6      gate pressure (5d)
+1.0       0.1160     0.0046      6.9%        18.4%          -0.00060  (toward WAIT)
+1.7       0.1123     0.0049      7.6%        18.5%          -0.00004
+2.5       0.1163     0.0040      8.3%        15.3%          +0.00015  (toward PLAY)
+4.0       0.1170     0.0139      7.7%        16.2%          +0.00024
+6.0       0.1107     0.0074      5.7%        17.7%          +0.00015
+```
+
+**The gradient pressure on the gate was INVERTED from negative to positive, and P(play) did not
+move.** Range 0.1107-0.1170, spread 0.006 against a within-arm sd of 0.004-0.014.
+
+### What this kills
+
+The whole chain §5c proposed -- "the clip inverts the gate's signal, so the gate learns to wait,
+so P(play) collapses" -- has a broken link. The first half is real and measured at 34 sigma. The
+second half is FALSE: P(play) does not follow the gate's pressure. Any future plan that reasons
+"fix the gate's gradient and it will play more" is contradicted by this table.
+
+### It also reframes three earlier readings
+
+* §4z's "it banks elixir and never fires" is wrong in its premise here: elixir reaches 6 on only
+  **15-18%** of steps in these runs, so there is not much banking to spend.
+* §5b (reward favours playing +5.45 sigma) and the advantage probe (+0.80 across 3 seeds, n=3038+)
+  are both still true -- and now BOTH are known not to move P(play) either.
+* Every input to the update measures as pointing toward playing, and the play rate sits at 0.11
+  regardless. The problem is not what the update is TOLD.
+
+### Where to look next, and what NOT to assume
+
+P(play) being pinned at ~0.11 across five very different trust regions suggests something outside
+the policy gradient sets it. Candidates, none measured:
+1. **The behaviour policy** -- exploration floors / prior mixing deciding what is actually sampled.
+   §3p already found exactly this class once: floors overrode the bot's own choice 75-85% of the
+   time and produced a pi/mu of ~0.0125.
+2. **The elixir economy** -- a sustainable play rate is bounded by generation, not preference.
+   ⚠ But do NOT jump to this: the watchdog reads 46% FORCED waits (nothing affordable) and 44%
+   gate-chosen waits, so on affordable steps it still declines ~81% of the time. It is not
+   obviously at an economic ceiling.
+3. **Gate logit saturation** -- the card head has a `_LOGIT_CAP` tanh for exactly this failure;
+   whether the gate has an equivalent bound has not been checked.
+
+The cheap discriminator is (1): compare the BEHAVIOUR play rate against the NETWORK's own greedy
+play rate on the same states. If they differ, the network is not the thing choosing.
