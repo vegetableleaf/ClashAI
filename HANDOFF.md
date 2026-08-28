@@ -5085,3 +5085,51 @@ re-checking, because it was swept against the OLD always-play premise).
 throttled, and no longer pushed down -- so what holds it at 0.17 when elixir and the win condition
 are both available on ~41% of steps? Distillation will NOT answer it: the card head is the half
 that already works.
+
+## §5a — 3x's "the offence has no reachable positive signal" is CONTRADICTED by measurement
+
+3x named this as the one remaining candidate after drill_frac was ruled out, and explicitly said
+*"measure that on a real sample before changing anything."* Measured: `policy-stats`, 300 greedy
+matches, `policy_BEST_m18000`, seed 909, 8,355 plays.
+
+**The claim was: `take_enemy_tower` has ZERO fires and the offence terms sum NEGATIVE
+(`xbow_into_push` -4.00 against `wincon_exec` +1.20 for one fire each).** That was a 1-fire
+extrapolation. On a real sample it is false in both halves.
+
+```
+  OFFENCE, positive                          OFFENCE, negative
+    wincon_exec        +1800.2   998 fires     xbow_into_push       -500.0  125 fires
+    wincon_reach       +1023.0  1023           xbow_overaggression  -237.0   79
+    take_enemy_tower    +275.0   275   <--
+    xbow_lock           +132.0 11052
+    chip_offence        +124.2 13142
+    xbow_defends        +111.6  9299
+                       ~ +3466                                     ~  -737
+```
+
+`take_enemy_tower` fires **275 times in 300 matches**, and `wincon_exec` is the **largest single
+term in the whole ledger**. Attempting offence is strongly expected-value POSITIVE. The hypothesis
+is dead; do not spend a run on it.
+
+### And "waiting pays" is dead in the same table
+
+The largest NEGATIVE term is `threat_miss_idle` at **-1020.3 over 1,494 fires** -- a penalty for
+IDLING while a threat is live. `leak` (-416.0, 3,467 fires) punishes hoarding. The reward pushes
+toward playing MORE, and the policy plays on ~10% of ticks anyway (gate held 44%, forced waits 46%).
+So the gate is NOT optimising a reward that rewards inaction. **Both standing explanations for the
+low gate are now measured false**, and that is the useful part of this result: the gate refuses to
+play against a reward that pays richly for playing.
+
+The tool's own flag is the remaining lead: **ACTION TAX -- 6 terms fire and can NEVER be positive**
+(`building_waste`, `threat_miss_idle`, `xbow_into_push`, `spell_waste`, `xbow_overaggression`,
+`nado_bad`). Five of the six are reachable only BY ACTING. That is a one-sided risk on plays with
+no matching one-sided credit, and it is the next thing to quantify per-decision rather than in
+totals -- totals are what produced the retracted claim above.
+
+### /!\ TWO INSTRUMENTS DISAGREE 2x ON WINRATE FOR THE SAME CHECKPOINT
+
+`policy-stats` reports **35%** on 300 matches; `wr_eval` reports **17.0% +-5.2** on 200 fixed
+seeds. Same checkpoint, same day. They use different opponent sets, so this is not necessarily a
+bug -- but no conclusion should quote a winrate without naming which harness produced it, and the
+gap needs closing before either is used as a gate. This is the same class of error as gate_probe
+(§4z correction) and the drill scaffolding: measure the instrument before trusting the number.
