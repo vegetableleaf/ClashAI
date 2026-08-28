@@ -4947,3 +4947,48 @@ python -c "import sys;sys.path.insert(0,'src');from clashrl.config import Config
 Test suites: icebow **337 pass**; hogeq **401**, of which 41 fail — all IceBow-card lookups
 (`x_bow`/`rocket`/`tornado`/`knight`/`ice_wizard`) that the Hog EQ deck does not hold. That 41 is the
 expected baseline; a *different* number means something real broke.
+
+## §4y — Distillation has NOT started; Valkyrie r31d is in flight (2026-08-27, window-end snapshot)
+
+**Read this before assuming the long run can start.** The long run requires distillation
+(owner asked twice). As of this writing the harness **does not exist**: no teacher script, no
+corpus generator, no `ledger/distillation.md`. The only distillation artifact in the repo is the
+SPEC, at §6-PRIORITY-B (commit `5aceb09`). Agent `a83ef3720cbf613c0` was given the build and had
+produced nothing for it on disk; it spent the window on Valkyrie instead. **Plain PPO does not
+satisfy the request — do not start the long run and call it done.**
+
+**Valkyrie hero ability (ruling 31d) — implemented but UNCOMMITTED at snapshot time.**
+Modified in BOTH decks: `engine.py`, `config/cards.yaml`, plus `research/sim_parity/decisions.md`
+and `conflicts.md`; untracked: `{icebow,hogeq}/tests/test_valkyrie_seek_r31d.py` and
+`research/sim_parity/webcache/Valkyrie_Hero.live.wikitext`. If `git status` is clean and no
+`r31d` commit exists, **the work was lost** — the CRLF/`git checkout` trap (§2) eats exactly this.
+
+The mechanic, so it can be rebuilt from this section alone:
+* **5.5 tiles is a TARGET-DETECTION RADIUS, not a dash distance.** Enemy troop **or building**
+  within 5.5 tiles -> she instantly locks on and enters the "Ultra-Fast Whirlwind Stage". Nothing
+  within 5.5 -> she **walks forward normally**, no whirlwind damage, no speed boost, until
+  something enters the bubble.
+* **One clock, started at ABILITY ACTIVATION** (owner ruling, verbatim): walk time BURNS the
+  duration. Activate, walk 2.0 s, then acquire -> the whirlwind runs only **1.5 s** of the 3.5 s.
+  Acquire nothing for the full 3.5 s -> the ability is **entirely wasted, zero damage**.
+  Do NOT start the clock at whirlwind entry; that would make a mistimed cast free.
+
+⚠ **Three wrong readings were shipped to the agent before this one** — a 5.5-tile travel cap, a
+dash-then-spin pre-phase, and a Bandit-style leap. I also derived a speed of `5.5 / 3.5 = 1.571`
+tiles/s, which is **meaningless**: the two numbers describe unrelated things. The wiki documents no
+dash at all; the mechanic came from an owner-supplied web-search result, recorded in `conflicts.md`
+as a SECONDARY source. Open in-game check: *"activate with nothing within 5.5 tiles — does she walk
+without whirlwind damage until an enemy arrives?"* One observation confirms the whole model.
+
+⚠ **Opponent-AI trap, unverified:** `ScriptedBot._try_ability` must not fire this ability on an
+empty board — under the shared-clock ruling that throws the whole thing away. If the heuristic is
+still the generic defensive/offensive family rule, the opponent will waste it routinely and the
+card will **measure as weaker than it is** — which reads as a card-balance problem when it is an AI
+problem. Same shape as the Boss Bandit issue.
+
+**Next session, in order:** (1) confirm the r31d commit exists, rebuild from this section if not;
+(2) build the distillation harness from §6-PRIORITY-B — teacher at **N=1** (at N=5 the restraint
+signal has the WRONG SIGN) and export `PYTHONHASHSEED` properly (the harness's own setting is a
+no-op, so identical configs silently differ); (3) measure the **privileged-teacher gap** before
+committing to a full run — the teacher sees engine ground truth, the student sees a degraded
+observation; (4) only then start the long run, checkpoints to `policy_sim_ppo.pt`, veto OFF.
