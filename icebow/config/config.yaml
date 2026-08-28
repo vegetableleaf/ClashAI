@@ -904,6 +904,17 @@ train:
   rl_checkpoint: "data/policy_rl.pt" # RL fine-tuned policy; `play` prefers this if present
   sim_checkpoint: "data/policy_sim.pt" # SIMULATOR-trained prior (train-sim); warm-start live train-rl from it
   sim_ppo_checkpoint: "data/policy_sim_ppo.pt" # PPO sibling (train-sim-ppo) -- separate file so the DDQN baseline is never clobbered
+  # ---- CARD-HEAD DISTILLATION from the rollout-search teacher (research/sim_parity) ----
+  # Set these two and `train-sim-ppo` distills with NO command-line flag. --distill-corpus /
+  # --distill-coef still override when passed explicitly.
+  # Measured, held out BY MATCH: card|teacher-plays 0.4955 -> 0.8754 (+38pp over the base policy).
+  # The GATE is NOT distilled -- it measured 0.5892 -> 0.6012 against an always-WAIT floor of
+  # 0.7756, so the teacher's timing is not recoverable from the student's observation.
+  # A corpus whose n_cards or obs_shape does not match this deck is REFUSED, not warned about.
+  ppo_distill_corpus: null   # path to a distill_label.py .npz, or null = OFF
+  ppo_distill_coef: 0.0      # weight on the card CE term. 0.0 = OFF. /!\ UNTUNED -- no A/B has
+                             # been run on the value; treat any setting as arm 1 of an experiment.
+  ppo_distill_batch: 256     # teacher rows sampled per update
   # timelapse: capture the whole train-rl run and compress it to a fixed-length video
   # (however long training lasts, the mp4 is always timelapse_seconds long at timelapse_fps)
   timelapse: false                # record a training timelapse during train-rl

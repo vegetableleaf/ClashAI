@@ -168,13 +168,25 @@ def _cmd_train_sim_ppo(args) -> None:
         # between the two arms is an override that quietly never gets tested.
         cfg = _DrillFracOverride(cfg, float(args.drill_frac))
         print(f"[train-sim-ppo] drill mix: {float(args.drill_frac):.0%} of episodes are DRILLS")
+    # CONFIG OR FLAG -- and the flag wins ONLY when it was actually passed. Every distill arg
+    # defaults to None rather than to 0.0/256, because `--distill-coef 0.0` has to mean "OFF,
+    # override the config" and NOT "falsy, so fall back to the config". That exact confusion is
+    # section 3w: `--drill-frac 0.0` resolved to "no override", silently trained at 0.3, and voided
+    # every drills-off arm ever run from the command line.
+    _d_flag = getattr(args, "distill_corpus", None)
+    _d_corpus = _d_flag if _d_flag is not None else cfg.get("train", "ppo_distill_corpus", default=None)
+    _d_k = getattr(args, "distill_coef", None)
+    _d_coef = float(_d_k) if _d_k is not None else float(cfg.get("train", "ppo_distill_coef", default=0.0) or 0.0)
+    _d_b = getattr(args, "distill_batch", None)
+    _d_batch = int(_d_b) if _d_b is not None else int(cfg.get("train", "ppo_distill_batch", default=256) or 256)
+    if _d_corpus and _d_coef > 0.0:
+        print("[train-sim-ppo] distillation from %s: corpus=%s coef=%s batch=%d"
+              % ("FLAG" if _d_flag is not None else "CONFIG", _d_corpus, _d_coef, _d_batch))
     train_sim_ppo(cfg, matches=args.matches, resume=args.resume,
                   workers=getattr(args, "workers", 0),
                   seed=args.seed, envs=args.envs, init=args.init, device=args.device,
                   reset_gate=args.reset_gate,
-                  distill_corpus=getattr(args, "distill_corpus", None),
-                  distill_coef=float(getattr(args, "distill_coef", 0.0) or 0.0),
-                  distill_batch=int(getattr(args, "distill_batch", 256) or 256))
+                  distill_corpus=_d_corpus, distill_coef=_d_coef, distill_batch=_d_batch)
 
 
 class _KeyOverride:
@@ -698,11 +710,11 @@ def main() -> None:
                           "the base policy). The GATE is deliberately NOT distilled -- it measured "
                           "0.5892 -> 0.6012, BELOW the always-WAIT floor of 0.7756, so the teacher's "
                           "timing edge is not recoverable from the student's observation.")
-    tsp.add_argument("--distill-coef", type=float, default=0.0,
+    tsp.add_argument("--distill-coef", type=float, default=None,
                      help="weight on the card-distillation term (0 = OFF, the default). UNTUNED: no "
                           "A/B has been run on this value, so treat any setting as arm 1 of an "
                           "experiment, not as a shipped default.")
-    tsp.add_argument("--distill-batch", type=int, default=256,
+    tsp.add_argument("--distill-batch", type=int, default=None,
                      help="teacher rows sampled per update for the distillation term")
     tsp.set_defaults(func=_cmd_train_sim_ppo)
 
