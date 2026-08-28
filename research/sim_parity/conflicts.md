@@ -1988,3 +1988,82 @@ Not renumbered here because that would rewrite three generated `source` strings 
 this file for a labelling error, and the commit d9b20d6 that shipped the prices calls it 29 while
 every artefact around it calls it 19. **Treat "ruling 19" and "RULING 29" as the same ruling**;
 prefer the decisions.md number when writing anything new.
+
+## 2026-08-27 -- Ruling 31d (Hero Valkyrie's 5.5): a contested source, and one bug found
+
+### ⚠ 31d-1 (OWNER IN-GAME CHECK -- one observation settles the whole model)
+**"On activation with no enemy within 5.5 tiles, does she walk normally WITHOUT whirlwind damage
+until one enters?"** And, if you can see it in the same clip: **"does the whirlwind's 3.5 s start
+at the button or at the moment she locks on?"** (the second is already ruled by the owner -- at the
+button -- and is implemented that way; the check is confirmation, not an open question).
+
+SOURCE QUALITY, stated plainly because it decides how much this is worth: the model shipped comes
+from an **owner-supplied web search result**, not from Fandom and not from an in-game observation.
+Fandom publishes the NUMBER (`Valkyrie/Hero` revid 437412, ability table column "Dash Distance",
+icon `{{Icon|I=Dash Range}}`, value 5.5) and no description of it whatsoever. The secondary source
+is the only account that explains the stat, and it is corroborated by a fact it could not have
+guessed -- **5.5 is already her sight radius** in `card_mechanics.json`, for all three Valkyrie
+forms -- which is why it was taken over the column's own name.
+
+### ⚠ 31d-2 (THREE READINGS RETIRED, recorded so they are not re-derived)
+The session produced four readings of "Dash Distance 5.5" before the source above appeared:
+1. **cumulative TRAVEL cap, spin throughout** -- from the card's flavour text (owner screenshot):
+   *"Whirls her way to nearby enemies, spinning and slicing, but still taking damage"*. Implemented
+   and measured, then retired. Its own arithmetic was against it: at her published ability Speed
+   (Medium 60, identical to her body) she covers at most **3.4 tiles** unobstructed in the 3.5 s
+   window, so a 5.5-tile allowance could never bind and the field would have been inert.
+2. **dash PRE-PHASE, spin on arrival** -- retired with (1).
+3. **Bandit-style leap** -- the stat-name convention (Bandit: min 3 / max 6, "immune to damage
+   during her dash"). A prior about what the column name usually means, against direct evidence
+   about this card.
+4. **detection bubble** -- SHIPPED.
+
+⚠ The speed arithmetic that appeared in the briefs for (1) and (2) -- dividing 5.5 tiles by the
+3.5 s duration to infer a required 1.571 tiles/s -- is **meaningless under the shipped reading**:
+the two numbers are unrelated. It is recorded only so it is not resurrected.
+
+### ⚠ 31d-3 (PREMISE IN THE BRIEF THAT WAS WRONG). The wiki DOES document the 5.5.
+The brief stated: *"The wiki does not document the dash at all ... The owner's in-game screenshot
+is the ONLY source that the dash exists."* The archived wikitext
+`research/sim_parity/webcache/Valkyrie_Hero.live.wikitext` (revid 437412) carries the column and
+the value, and `config/cards.yaml`'s own KB comment had already recorded it as a deliberate
+non-implementation before this session started.
+
+### ⚠ 31d-4 (RECORDED). The ability table's Speed contradicts the blurb, and the KB follows the table.
+The Heroes master page (revid 437509) says the ability is *"increasing her movement speed"*, and
+the secondary source calls the stage *"Ultra-Fast"*. The ability table prints **Speed Medium (60)**
+-- IDENTICAL to her body's Medium (60) -- and "Ultra-Fast" is **not one of the game's tiers**
+(Slow 45 / Medium 60 / Fast 90 / Very Fast 120), so it cannot be converted to a number. No boost is
+curated; `ability_move_speed` stays 0.0 and `test_no_speed_boost_is_invented` pins it. Compare the
+Berserker, whose ability table prints Ultra Fast (135) against a Fast (90) body and whose KB
+therefore DOES carry `ability_move_speed_tiles: 2.25`, and the Golden Knight (Very Fast (120) ->
+2.0). The convention is established; the Hero Valkyrie's table simply does not use it.
+
+### ⚠⚠ 31d-5 (LIVE BUG -- FOUND, MEASURED, NOT FIXED). Her 15% damage reduction has never been wired.
+`valkyrie_hero`'s KB row writes **`ability_dmg_reduction: 15.0`**, which is the *CardSpec field
+name*. `build_spec` reads **`ability_damage_reduction`** -- the key the Monk's row uses, which is
+why his 65% works. Hers therefore resolves to `0.0` and has done since I8.
+
+```
+build_spec(valkyrie_hero, 11).ability_dmg_reduction  = 0.0     <- published 15%
+build_spec(monk,          11).ability_dmg_reduction  = 0.65    <- CONTROL, published 65%
+1000 damage dealt mid-ability                        -> 1000.0 hp lost   (850.0 if it applied)
+```
+NOT FIXED in this batch: an 8k PPO run is live and she is a hero candidate in **143** opponent meta
+decks, so renaming the key is a behaviour change to the opponent mid-run. It is a ONE-WORD fix
+(`ability_dmg_reduction` -> `ability_damage_reduction` in both decks' `cards.yaml`) and it is
+pinned by `test_the_published_15pct_damage_reduction_is_NOT_wired_KB_KEY_TYPO`, which flips when it
+lands. ⚠ The same class of typo could exist on other rows -- the KB has no unknown-key check, so a
+misspelled ability key is silently ignored. That audit is queued, not done.
+
+### ⚠ 31d-6 (RECORDED, and it is a deliberate choice). The Whirlwind Stage LATCHES.
+Once the spin has turned once it stays entered for the rest of the activation, even if the target
+dies and the bubble empties. "Enter her Whirlwind Stage" is a state she enters, not a condition
+re-tested per tick, and under the one-clock ruling re-seeking could only ever hand back time the
+clock has already spent. Latched on `ability_hits`, so it costs no new field. Not stated by any
+source; recorded.
+
+### ⚠ 31d-7 (RECORDED). Air bodies do not arm the stance.
+The source says "enemy troop or building" without qualifying transport. Flyers are excluded here
+because her Target is Ground and the spin already skips them, so arming on a flyer would burn the
+3.5 s window against something the stance can never hit. Not stated; recorded.

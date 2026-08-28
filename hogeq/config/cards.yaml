@@ -3581,11 +3581,31 @@ cards:
   #     both would double-count); the page does not say either way -- recorded in conflicts.md.
   #   ability_dmg_reduction 15.0 = the table's "Damage reduction 15%".
   #   ability_crown_tower_damage 48.5 = 97 x 0.5 (table "Crown Tower Damage -50%").
-  #   NOT IMPLEMENTED, deliberately: the move-speed boost the BLURB claims (the ability table
-  #     prints Speed Medium (60), identical to her body, and the table is the machine-readable
-  #     statement), and the table's lone "Dash Distance 5.5", which no prose on either page
-  #     mentions at all. Both in conflicts.md.
-  valkyrie_hero: {ability_kind: buff_self, ability_cost: 3, ability_uses: 1, ability_delay_s: 1.0, ability_duration_s: 3.5, ability_tick_s: 0.25, ability_radius_tiles: 2.5, ability_damage: 97, ability_crown_tower_damage: 48.5, ability_dmg_reduction: 15.0, ability_ai: {family: defensive, crowd_n: 2, crowd_tiles: 2.5}, verified: false}
+  #   ability_seek_tiles 5.5 = the ability table's lone "Dash Distance" column, icon
+  #     {{Icon|I=Dash Range}} (RULING 31d). No Fandom prose describes it. An owner-supplied
+  #     SECONDARY source names it a detection radius instead: "Target Detection: If an enemy troop
+  #     or building is anywhere within a 5.5 tile radius, she will instantly lock onto them and
+  #     enter her ... Whirlwind Stage. If no targets are within 5.5 tiles, she will run forward
+  #     normally until an enemy enters that 5.5 tile bubble." Taken, because it is the only account
+  #     that explains the stat AND it lands on a number the KB already holds -- her sight is 5.5,
+  #     imported from the wiki long before this ruling -- so the "bubble" is the aggro range she
+  #     has always had. Provenance caveat and the three retired readings are in conflicts.md.
+  #   /!\ WHAT CHANGES: the whirlwind no longer starts on the BUTTON, it starts when something is
+  #     inside the bubble; with nothing in range she walks forward and does not spin, and the 3.5 s
+  #     clock burns anyway (owner ruling: "the timer counts down the moment the ability activates",
+  #     so 2 s of walking leaves 1.5 s of spin -- MEASURED 6 turns, not 14).
+  #   THE OPPONENT AI NEEDS NO NEW PRECONDITION, and that is provable rather than sampled: her
+  #     ability_ai is family `defensive` with crowd_n 2 / crowd_tiles 2.5, so `_ability_wants` only
+  #     arms with >= 2 enemy bodies within 2.5 tiles -- STRICTLY INSIDE the 5.5 bubble. It cannot
+  #     fire her on an empty board. The one residual is the arm->resolve window (the bot's rolled
+  #     reaction_s plus ability_delay_s 1.0), in which those bodies can die or walk out; that is a
+  #     real but bounded waste and it is the same window every other hero's read already pays.
+  #   NOT IMPLEMENTED, deliberately: the move-speed boost the BLURB claims ("increasing her
+  #     movement speed"), and the secondary source's "Ultra-Fast" whirlwind speed. The ability
+  #     table prints Speed Medium (60), IDENTICAL to her body, and no source anywhere publishes a
+  #     number for the boost -- "Ultra-Fast" is not one of the game's tiers (Slow 45 / Medium 60 /
+  #     Fast 90 / Very Fast 120), so any multiplier would be invented. In conflicts.md.
+  valkyrie_hero: {ability_kind: buff_self, ability_cost: 3, ability_uses: 1, ability_delay_s: 1.0, ability_duration_s: 3.5, ability_tick_s: 0.25, ability_radius_tiles: 2.5, ability_damage: 97, ability_crown_tower_damage: 48.5, ability_dmg_reduction: 15.0, ability_seek_tiles: 5.5, ability_ai: {family: defensive, crowd_n: 2, crowd_tiles: 2.5}, verified: false}
 
   # BOWLER -- Stone Swish (Bowler/Hero, revid 437528). "After 2.5sec of the ability pressed, the
   # bowler will change the attack to a long-ranged mortar attack for 7.3sec. Getting a total of 3

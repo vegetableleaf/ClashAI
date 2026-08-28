@@ -250,6 +250,15 @@ class CardSpec:
     ability_max_hits: int = 0           # cap on those repeats (GK: 10 dashes)
     ability_speed_mult: float = 0.0     # ATTACK-speed multiplier while active (AQ 1.8)
     ability_move_speed: float = 0.0     # MOVE speed in tiles/s while active (AQ 0.75, GK 2.0)
+    # ---- RULING 31d. THE HERO VALKYRIE'S 5.5. `Valkyrie/Hero` (revid 437412) prints a lone
+    # "Dash Distance" column, icon {{Icon|I=Dash Range}}, reading 5.5 in the Wild Whirlwind table
+    # and described by no prose on any Fandom page. A secondary source the owner supplied names it
+    # instead: "Target Detection: If an enemy troop or building is anywhere within a 5.5 tile
+    # radius, she will instantly lock onto them and enter her ... Whirlwind Stage. If no targets
+    # are within 5.5 tiles, she will run forward normally until an enemy enters that 5.5 tile
+    # bubble." So it is an ARMING RADIUS, not a distance travelled: the spin does not begin on the
+    # button, it begins when something is in the bubble to spin at.
+    ability_seek_tiles: float = 0.0     # the ability's target-detection radius (Hero Valkyrie 5.5)
     ability_spawn: Optional["CardSpec"] = None   # the body it summons, prebuilt (SK Skeleton,
                                         # LP Guardienne) -- same idiom as `spawner_spec`
     ability_spawn_count: int = 0        # how many (SK's floor of 6; souls add on top)
@@ -1209,6 +1218,7 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         ability_max_hits=int(c.get("ability_max_hits") or 0),
         ability_speed_mult=float(c.get("ability_attack_speed_boost") or 0.0),
         ability_move_speed=float(c.get("ability_move_speed_tiles") or 0.0),
+        ability_seek_tiles=float(c.get("ability_seek_tiles") or 0.0),
         ability_spawn=ability_spawn,
         ability_spawn_count=int(c.get("ability_spawn_count") or 0),
         ability_shield_hp=_lv.scale(float(c.get("ability_shield_hp") or 0.0), level),
@@ -3147,7 +3157,7 @@ class SimEngine:
                     end = ABILITY_ENDS.get(u.spec.ability_kind)
                     if end is not None:
                         end(self, u)
-                elif u.spec.ability_tick_s > 0.0:
+                elif u.spec.ability_tick_s > 0.0 and not _seeking(self, u):
                     # EXPIRY IS CHECKED FIRST, so the tick that lands exactly ON the end of the
                     # window does not fire. MEASURED with the order reversed: Goblinstein's link
                     # dealt 9 x 107 over its published 4 s / 0.5 s, which is a free extra shock
@@ -6124,6 +6134,55 @@ def _ability_zone_tick(eng: "SimEngine", u: "Unit") -> None:
 # Sixteen live heroes, twelve shapes. Sources are `research/sim_parity/abilities/<key>.yaml` (the
 # frozen prose + the revid of the live revision it was read from); every conflict resolved below is
 # argued in the KB comment beside the number and recorded in conflicts.md under "I8".
+
+
+def _seeking(eng: "SimEngine", u: "Unit") -> bool:
+    """RULING 31d -- IS THIS BODY STILL LOOKING FOR SOMETHING TO SPIN AT?
+
+    True while an area stance is armed but has found nothing inside its detection radius, which is
+    the one thing the ability does that the engine did not already do: the whirlwind used to start
+    on the button and turn in empty air. Source (owner-supplied, secondary -- see conflicts.md
+    "I8 / ruling 31d" for the provenance caveat): "If an enemy troop or building is anywhere within
+    a 5.5 tile radius, she will instantly lock onto them and enter her ... Whirlwind Stage. If no
+    targets are within 5.5 tiles, she will run forward normally until an enemy enters that 5.5 tile
+    bubble."
+
+    THE RADIUS IS NOT A NEW NUMBER, and that is the strongest corroboration this reading has.
+    MEASURED: `valkyrie`, `valkyrie_evo` and `valkyrie_hero` all already carry sight 5.5 (imported
+    from the wiki into `card_mechanics.json` long before this ruling), so the "5.5 tile bubble" is
+    exactly the aggro range the engine has always given her. It is curated separately anyway --
+    `ability_seek_tiles`, not a read of `spec.sight` -- because a stance whose arming radius
+    happens to equal the body's sight is not the same statement as one that is DEFINED as it, and
+    a future card can differ.
+
+    IT LATCHES ON `ability_hits`. Once the stage has turned once it stays entered for the rest of
+    the activation, so a target that dies to the first turn of the spin cannot flicker it back off
+    -- "enter her Whirlwind Stage" is a state she enters, not a condition she re-tests each tick.
+
+    WHAT COUNTS: an enemy TROOP OR BUILDING ("or building" is the source's own wording, so it is
+    not troops-only), plus enemy crown towers, which are buildings by every reading and are already
+    legal targets for the spin. FLYING bodies do not count -- she cannot lock onto or damage what
+    she cannot reach, and counting them would arm the stance against a target it can never hit.
+
+    THE 3.5 s RUNS FROM ACTIVATION, not from the moment the bubble fills. The ability table prints
+    ONE Duration in the same row as the 5.5 and publishes no second clock, so a seek that pauses
+    the window would be inventing one. It is the open question this reading leaves and it is on the
+    owner in-game checklist; holding the clock instead is a change to this function and nothing
+    else.
+    """
+    s = u.spec
+    r = s.ability_seek_tiles
+    if r <= 0.0 or u.ability_hits > 0:
+        return False                                 # not a seeking stance, or already spun up
+    for e in eng.units:
+        if e.team == u.team or e.hp <= 0 or e.spec.flying:
+            continue
+        if _gap(u.x, u.y, e) <= r:
+            return False
+    for tw in eng._enemy_towers(u.team):
+        if _gap(u.x, u.y, tw) <= r:
+            return False
+    return True
 
 
 def _ability_buff_self(eng: "SimEngine", u: "Unit") -> None:

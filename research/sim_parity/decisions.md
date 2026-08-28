@@ -1221,3 +1221,85 @@ mechanism: a 4-tile pull centred up to 5.5 tiles behind the fireball reads as an
 radius from the receiving side.
 
 Test: tests/test_wizard_nado_landing_r31c.py (4 tests, byte-identical both decks).
+
+### 31d -- Hero Valkyrie: the "Dash Distance 5.5" is a TARGET-DETECTION BUBBLE, on ONE clock
+
+**Shipped 2026-08-27.** `icebow/tests/test_valkyrie_seek_r31d.py` (17 tests, byte-identical in both
+decks). Engine: `CardSpec.ability_seek_tiles`, `_seeking()`, one gate on the area-tick dispatch.
+KB: `ability_seek_tiles: 5.5` on `valkyrie_hero`.
+
+#### The evidence, and the three readings it retired
+`Valkyrie/Hero` revid 437412 publishes the number and nothing else about it -- the Wild Whirlwind
+attribute table's last column is "Dash Distance" (icon `{{Icon|I=Dash Range}}`) reading **5.5**,
+and NO prose on any Fandom page mentions it. The brief for this work asserted the wiki documented
+no dash at all and that the owner's screenshot was the only evidence it exists; **that premise was
+wrong** -- the archived wikitext carries it, and its value agrees with the screenshot.
+
+Four readings were put forward across the session. Three are retired:
+1. a cumulative 5.5-tile TRAVEL cap with the spin running throughout (first brief);
+2. a 5.5-tile DASH PRE-PHASE, spin on arrival (correction);
+3. a Bandit-style leap (the stat-name convention -- Bandit min 3 / max 6, "immune to damage during
+   her dash", already modelled as `leap_min_tiles` / `leap_max_tiles` / `leap_speed_tiles`).
+
+**Taken:** an owner-supplied secondary source (a web result -- NOT Fandom, NOT an in-game
+observation): *"Target Detection: If an enemy troop or building is anywhere within a 5.5 tile
+radius, she will instantly lock onto them and enter her Ultra-Fast 'Whirlwind Stage'. If no targets
+are within 5.5 tiles, she will run forward normally until an enemy enters that 5.5 tile bubble."*
+
+#### Why a secondary source beat the wiki's own column name -- the load-bearing measurement
+**5.5 IS NOT A NEW NUMBER.** MEASURED: `valkyrie`, `valkyrie_evo` and `valkyrie_hero` all already
+carry **sight 5.5**, imported from the wiki into `card_mechanics.json` long before this ruling. The
+"5.5 tile bubble" is therefore exactly the aggro radius the engine has always given her. A
+fabricated description does not land on a constant the KB already holds. It also explains why no
+Fandom prose describes a "dash": there isn't one.
+
+#### The clock -- OWNER RULING, verbatim
+*"if she walks for 2 seconds before something enters the bubble, she only enters whirlwind state
+for 1.5 seconds. the timer counts down the moment the ability activates."* ONE clock, started at
+activation; the walk phase burns it. Modelling it from whirlwind entry would make a mistimed
+activation free, and it is not.
+
+MEASURED, bare engine, both decks:
+```
+enemy inside 5.5 at activation        -> 14 spin turns (3.5 s / 0.25 s), damage from the first tick
+empty bubble, enemy enters at +2.0 s  ->  6 spin turns  (~1.5 s of window left) <- the owner's case
+empty bubble for the whole window     ->  0 turns, 0 damage, the ability is fully WASTED
+enemy arrives after the window closed ->  0 turns
+target dies after 2 turns, bubble now empty -> still 14 turns (the stage LATCHES)
+building inside the bubble            -> arms it (the source says "troop OR BUILDING")
+enemy crown tower inside the bubble   -> arms it (a tower is a building by every reading)
+AIR body inside the bubble            -> does NOT arm it (her Target is Ground; the spin skips flyers)
+```
+The window opens showing **3.4 s**, not 3.5: `ability_delay_s` 1.0 resolves on the following tick
+and the tick that opens the window also spends one dt of it. Pinned in the test rather than
+smoothed over.
+
+#### The opponent AI needs no new precondition, and that is provable rather than sampled
+Her `ability_ai` is family `defensive` with `crowd_n` 2 / `crowd_tiles` 2.5, so `_ability_wants`
+only arms with >= 2 enemy bodies within **2.5** tiles -- strictly inside the 5.5 bubble. The bot
+**cannot** fire her on an empty board, so a target-in-bubble precondition would be dead code. Two
+tests state the property directly. The one residual is the arm->resolve window (the bot's rolled
+`reaction_s` plus `ability_delay_s` 1.0), in which those bodies can die or walk out; that is the
+same window every other hero's board read already pays. A 150-match probe was run and is reported
+as INCONCLUSIVE, not as support: an idle agent gives the opponent's Valkyrie nothing to crowd
+against, so it produced **0** Hero Valkyrie activations in 150 matches.
+
+#### Deliberately NOT implemented
+* **The speed boost.** The Heroes blurb says "increasing her movement speed" and the secondary
+  source calls the stage "Ultra-Fast", but the ability table prints **Speed Medium (60)** --
+  IDENTICAL to her body -- and "Ultra-Fast" is not one of the game's tiers (Slow 45 / Medium 60 /
+  Fast 90 / Very Fast 120). No source publishes a number, so any multiplier would be invented.
+* **The 15% damage reduction** -- see the bug below. It has never been wired, and this ruling did
+  not cause that.
+
+#### ⚠ A LIVE BUG FOUND WHILE MEASURING THIS (found, NOT fixed)
+Her KB row writes **`ability_dmg_reduction: 15.0`** -- the CardSpec FIELD name. `build_spec` reads
+**`ability_damage_reduction`**, which is the key the Monk's row uses and the reason his 65% works.
+Hers silently resolves to **0.0**, so the Hero Valkyrie has taken FULL damage through Wild
+Whirlwind since I8. MEASURED: 1000 damage mid-ability costs her 1000.0 hitpoints; the published 15%
+would cost 850.0. Control: `build_spec(monk).ability_dmg_reduction == 0.65`.
+
+NOT FIXED HERE, deliberately: an 8k PPO run is live and she is a hero candidate in **143** opponent
+meta decks, so the one-word fix is a behaviour change to sequence after it, not to bundle into a
+ruling. Pinned by `test_the_published_15pct_damage_reduction_is_NOT_wired_KB_KEY_TYPO`, which flips
+when it is fixed.
