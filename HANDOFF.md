@@ -5582,3 +5582,56 @@ held-out AUC by MATCH. Then the intervention is a veto on the policy's own plays
 to make the policy play MORE, only to decline the ones it should not make, which is the failure the
 drills (`never_rocket_their_king` 0-17%) and §6-PRIORITY's RESTRAINT arm have both reported all
 along.
+
+## §5j — THE RESTRAINT VETO IS HARMFUL. Declining the teacher's declines is not the teacher's edge
+
+Built the head §5i's separability check justified, then measured it where it counts. Matched
+control: same checkpoint (`policy_BEST_m18000`), same 200 fixed opponent seeds, greedy, veto ON/OFF.
+
+```
+  restraint head: held-out AUC 0.6942 (linear-probe baseline 0.6675, chance 0.5)
+  veto precision at q=0.1: 95.0% against a 74.8% base rate -- 19 of 20 vetoed plays are real over-plays
+
+  baseline (no veto)   15.5% +/- 5.0   plays 8.0%
+  veto q=0.1           14.5% +/- 4.9   plays 7.7%
+  veto q=0.2           14.0% +/- 4.8   plays 7.6%
+  veto q=0.3           10.0% +/- 4.2   plays 7.6%
+  veto q=0.5            5.5% +/- 3.2   plays 5.6%      <- exactly the UNTRAINED baseline
+```
+
+**Monotone harm.** 15.5 -> 5.5 across the sweep, and the q=0.5 drop (10.0 points) clears the
+combined interval (5.9). A 95%-precise veto on genuine over-plays makes the policy strictly worse.
+
+### Why, and it is the useful part
+
+The head is not wrong -- it identifies over-plays at 95% precision. What is wrong is the assumption
+that REMOVING those plays recovers the teacher's advantage. **The teacher does not merely decline;
+it declines AND THEN PLAYS AT A BETTER MOMENT.** The veto delivers only the first half: it takes
+plays away and puts nothing in their place, so the policy loses the defence and pressure those
+plays were providing and gains none of the timing that made declining correct for the searcher.
+
+The teacher's "wait" label is CONDITIONAL ON THE TEACHER'S OWN SUBSEQUENT BEHAVIOUR. Transplanted
+into a policy that will not follow through, it is not a good label. Half a policy is not half the
+benefit.
+
+### What survives and what dies
+
+* DIES: the restraint veto, at every operating point tested. Do not revive it as a decision-time
+  filter without a mechanism that also supplies the replacement play.
+* SURVIVES: the DIAGNOSIS. The policy does play far more than the teacher (0.3552 vs 0.2109) and
+  74% of its plays are ones the teacher declines (§5h). That measurement is unaffected -- what is
+  refuted is a specific intervention built on it.
+* SURVIVES: §5i's separability (AUC 0.694). The signal is real; it is just not actionable by
+  subtraction.
+
+### The pattern this makes four times
+
+distillation moved card agreement +4.2 sigma -> winrate unmoved.
+the clip fix flipped the gate's gradient sign at 34 sigma -> P(play) unmoved.
+the critic was exonerated -> nothing to fix.
+the veto cut real over-plays at 95% precision -> winrate WORSE.
+
+Four interventions, each hitting its stated mechanism, none improving the outcome. The one thing
+that HAS moved the outcome remains rollout search (37.0% -> 85.7%), which differs from all four by
+replacing the whole decision rather than editing one part of it. That is the observation any next
+attempt should start from.

@@ -25,6 +25,7 @@ from __future__ import annotations
 import math
 import os
 import sys
+from pathlib import Path
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src"))
 
@@ -46,6 +47,26 @@ def _ci(w, n):
         return 0.0, 0.0
     p = w / n
     return 100.0 * p, 100.0 * 1.96 * math.sqrt(max(p * (1.0 - p), 1e-9) / n)
+
+
+_VETO = None
+_vetoed = [0]
+
+
+def _load_veto(path: str, q: float) -> None:
+    """Load the restraint head and set its cut at the q-quantile of its own held-out scores."""
+    global _VETO
+    import sys as _s
+    _s.path.insert(0, str(Path(__file__).resolve().parents[2] / "research" / "sim_parity" / "scripts"))
+    from restraint_train import RestraintHead
+    ck = torch.load(path, map_location="cpu", weights_only=False)
+    net = RestraintHead(ck["in_ch"], ck["tab"])
+    net.load_state_dict(ck["model"])
+    net.eval()
+    _VETO = {"net": net, "mu": ck["mu"], "sd": ck["sd"], "in_ch": ck["in_ch"],
+             "thr": ck.get("q_thresholds", {}).get(str(q), 0.0)}
+    print("  veto head AUC %.4f, cut at score %.4f (q=%.2f)" % (ck.get("auc", float("nan")),
+                                                                _VETO["thr"], q))
 
 
 def evaluate(ckpt, n_matches, sampled=False, envs=8, untrained=False):
@@ -93,6 +114,23 @@ def evaluate(ckpt, n_matches, sampled=False, envs=8, untrained=False):
                 aff = [c for c in e._hand_ids()
                        if 0 <= c < len(e.specs) and e.eng.elixir[0] >= e.specs[c].elixir]
                 go = (rng.random() < pg[i]) if sampled else (pg[i] > tau)
+                # RESTRAINT VETO. The teacher declines 74% of the plays this policy makes (§5h), and
+                # those over-plays are separable from the good ones (§5i, AUC 0.694). This asks the
+                # head, at DECISION TIME, whether the play the policy wants is one the teacher would
+                # make -- and drops it if not. It can only REMOVE plays: a vetoed step becomes a
+                # wait, never the reverse, because the measured error is 2.22:1 over-playing.
+                if go and aff and _VETO is not None:
+                    _tabi = np.concatenate([np.asarray(e.hand_vec, np.float32),
+                                            np.asarray(e.next_vec, np.float32),
+                                            np.asarray(e.elixir_vec, np.float32),
+                                            np.pad(np.asarray(e.threat_vec, np.float32),
+                                                   (0, max(0, 52 - len(e.threat_vec))))[:52]])
+                    _tabi = (_tabi - _VETO["mu"]) / _VETO["sd"]
+                    _sc = float(_VETO["net"](xb[i:i + 1, :_VETO["in_ch"]],
+                                             torch.from_numpy(_tabi).float().unsqueeze(0))[0])
+                    if _sc <= _VETO["thr"]:
+                        go = False
+                        _vetoed[0] += 1
                 if aff and go:
                     plays += 1
                     if sampled:
@@ -143,6 +181,11 @@ def main() -> int:
         j = args.index("--vs")
         other = args[j + 1]
         args = args[:j] + args[j + 2:]
+    global _VETO
+    if "--veto" in args:
+        j = args.index("--veto")
+        _load_veto(args[j + 1], float(args[j + 2]))
+        args = args[:j] + args[j + 3:]
     ckpt = args[0] if args else "data/policy_ppo_drill.pt"
     n = int(args[1]) if len(args) > 1 else 275
     print("%d matches per arm, fixed opponent seeds, %s gate"
