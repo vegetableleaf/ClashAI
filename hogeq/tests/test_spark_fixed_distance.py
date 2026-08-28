@@ -89,7 +89,9 @@ class ShrapnelFixedDistanceTests(unittest.TestCase):
         gave each bolt ~10 tiles of run. Anything near that means the subtraction returned."""
         runs = _bolt_runs("firecracker", 1.0)
         self.assertTrue(runs)
-        self.assertLess(runs[0], 4.0,
+        # Threshold sits BETWEEN the fixed run (5.0) and the old model's ~10 tiles at 1 tile of
+        # carrier flight, so it still fails if the budget subtraction returns.
+        self.assertLess(runs[0], 7.0,
                         "a point-blank shot is spraying shrapnel far downfield again")
 
 

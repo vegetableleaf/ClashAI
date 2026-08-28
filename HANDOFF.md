@@ -5236,3 +5236,45 @@ the board, and at 700 matches it is ~2 hours, not 8.
 /!\ Do NOT restate the retracted claim #4 ("mult=4.0 stops the decay") -- it was overstated on one
 seed and the honest prior is "reduces the damage". What is NEW here is the MECHANISM at 34 sigma
 and the SIGN FLIP, neither of which was established before; the knob's effect size still is not.
+
+## §6-LADDER — Model capacity: the escalation order, and why it is LAST not first
+
+Owner asked (2026-08-28) whether 481,136 parameters is too small for a game state this complex,
+noting that effective game-playing models often carry millions or billions. The instinct is
+reasonable and the answer is **not yet** -- with a pre-committed ladder so it does not get relitigated
+from scratch each time.
+
+**Run in this order. Each rung fires only if the one above comes back NULL.**
+
+1. **`ppo_clip_play_mult` sweep** -- RUNNING (5 values x 3 seeds x 700 matches, from scratch).
+   Targets the measured mechanism: the clip INVERTS the gate's learning signal (§5c, 34 sigma).
+2. **CRITIC CAPACITY** -- if the sweep is null. The critic is a single `Linear(328 -> 1)`, **329
+   parameters**, and `ppo_value_detach` would reduce it to a literal linear probe on policy
+   features. PPO is only as good as its advantages, and advantages are `reward - V(s)`. Value loss
+   is NOT settling: the sweep's control run reads `vl 1.250 -> 2.371 -> 2.095`, drifting UP.
+   The change is a 2-layer MLP critic -- a few THOUSAND parameters, not millions -- and it is
+   testable at the same 700-match scale. Measure the advantage's sign and magnitude split by
+   PLAY vs WAIT before and after; that is the quantity the gate actually consumes.
+3. **TRUNK WIDTH** -- if the critic A/B is also null. Only then does "the model is too small"
+   become the leading hypothesis rather than a guess.
+
+### Why capacity is not the leading hypothesis today -- three independent measurements
+
+* **Rollout search takes the FROZEN policy from 37.0% to 85.7%.** Same weights, same 481k
+  parameters, same observation, same opponents. If capacity were binding, searching over the
+  network's own outputs could not extract 2.3x the winrate. The information is already in there.
+* **Distillation reached 0.90 card agreement with that teacher (+4.2 sigma) and winrate did not
+  move.** The network had no trouble REPRESENTING a much better card policy at current size.
+* **The cell head is learning hard, not saturating** -- 2,225x an untrained net's within-card logit
+  spread.
+
+And the measured bottleneck is a SIGN FLIP in the clip. Parameters do not fix a sign error.
+
+### The constraint that actually binds is SAMPLE THROUGHPUT
+
+~**290 matches/hour** -- the engine is pure Python and CPU-bound, and the network is nowhere near
+the bottleneck. The 8k run took ~14 hours and came out flat. AlphaStar's parameter count came with
+~1e11 environment steps behind it; this project is at ~1e4 matches. Scaling parameters without
+scaling data buys worse sample efficiency and more overfitting, against an optimiser bug that would
+still be there. If rung 3 is ever reached, **fix throughput first** -- it is an engineering problem
+(the pure-Python engine), not an architecture one.

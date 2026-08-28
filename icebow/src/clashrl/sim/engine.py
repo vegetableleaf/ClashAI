@@ -127,7 +127,10 @@ _NO_REFLECT_BASES = frozenset({
     "electro_spirit", "fire_spirit", "ice_spirit", "heal_spirit",
     "fisherman",
 })
-_SPARK_TILES = 2.5
+_SPARK_TILES = 5.0   # shrapnel bolt run, FIXED (owner 2026-08-28). Not a remainder of the
+                     # carrier's budget -- see _spark_burst. Consistency note: the page's
+                     # 11-tile TOTAL from the firing position is this 5 plus a ~6-tile
+                     # carrier flight, so the fixed model and the published total agree.
 _SKELETON_BASES = {"skeletons", "skeleton_army", "guards"}   # Evo Witch's Healing Bones triggers
 _SPLASH_R = 1.9           # splash radius, tiles
 # The Log (rolling spell): a forward CORRIDOR from the cast point -- ground-only, with knockback.
