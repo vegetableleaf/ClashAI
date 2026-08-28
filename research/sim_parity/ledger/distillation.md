@@ -168,3 +168,54 @@ cd C:\Users\benpe\ClashBot
 ```
 Fill in section 4's table from that output and write the verdict. **Only then** consider the full
 corpus, and not while the 8k run is still on the box.
+
+## 6. The coef A/B (2026-08-28): NULL, and the design was wrong
+
+3 arms x 3 seeds, 700 matches each, FROM SCRATCH, corpus = 230 matches / 36,521 rows /
+7,704 teacher-play rows (5 parallel shards merged with OFFSET MATCH IDS -- per-shard ids are
+0..39 and the student holds out BY MATCH, so unoffset ids would group different matches together
+and leak across the split). Scored on 200 fixed opponent seeds per checkpoint, greedy gate.
+
+```
+   arm   meanWR%    sd    totW/totN   plays%   sd
+   0.0     0.00    0.00     0/600      1.47   1.19
+   0.5     0.17    0.29     1/600      2.40   1.76
+   2.0     0.00    0.00     0/600      0.07   0.06
+```
+
+### The winrate column is a FLOOR, not a measurement
+
+**One win in 1,800 matches, across every arm.** Nothing can be distinguished at zero, so this
+experiment does not answer whether card distillation helps. It answers only that a 700-match
+from-scratch run lands below the benchmark's resolution.
+
+/!\ **3x SAID SO IN ADVANCE and I designed into it anyway**: *"No arm clears untrained on
+crowndiff. At this training scale (350 matches) PPO does not produce a policy the benchmark can
+distinguish from a random init."* That section was read the same day this was planned. The fix is
+not a bigger sample, it is a different STARTING POINT -- `--init` from a checkpoint that already
+wins ~17%, so an effect has somewhere to register. Re-run before drawing any conclusion about
+distillation itself.
+
+### The one real signal: a high coef SUPPRESSES PLAYING
+
+```
+  coef 2.0 vs control:  plays 0.07% vs 1.47%   delta -1.40pp   sigma -2.03
+  coef 0.5 vs control:  plays 2.40% vs 1.47%   delta +0.93pp   sigma +0.76
+```
+
+coef 2.0 is at 0.1 / 0.0 / 0.1 across all three seeds -- it has essentially stopped playing.
+Directionally consistent, ~2 sigma, and it has a mechanism already documented in this repo: the
+card-CE gradient reaches the SHARED TRUNK `z`, and `gate = Linear(z, 2)` reads that same trunk.
+This is the representation-drift path `ppo_value_detach` was built for, arriving from a new term.
+
+**Consequence for the long run: do NOT ship a large coef.** Whatever the re-run says, 2.0 costs
+play rate on the head that is already the failure, and the gate is exactly what distillation was
+measured NOT to be able to teach.
+
+### Read the training-time numbers with suspicion, not as support
+
+Cumulative training wins were 43 / 53 / 54 (control / 0.5 / 2.0), which reads as "distillation
+helps" at ~1.0 sigma -- and the eval says every one of those policies wins 0% on fixed seeds. The
+ordering also INVERTED mid-run: at 300 episodes coef 2.0 was the worst arm on rolling winrate
+(0/0/0) and it finished with the most training wins. In-run rolling numbers on a sampled policy
+are not a preview of the eval.
