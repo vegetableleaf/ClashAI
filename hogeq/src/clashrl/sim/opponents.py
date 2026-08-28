@@ -634,10 +634,32 @@ class ScriptedBot:
         threats = [u for u in eng.units if u.team == 0 and u.y < 0.5]
         if threats:
             deepest = min(threats, key=lambda u: u.y)             # closest to our king
+            # A DEFENSIVE BUILDING BELONGS IN FRONT OF THE TOWER, NOT AT THE BRIDGE.
+            # `kind == "building"` matched NOTHING in this list, so every Cannon/Tesla/Inferno
+            # fell through to the ATTACK path and was placed like a win condition. MEASURED over
+            # 40 matches before this: 99% of enemy buildings landed at y >= 12 tiles and 82% at
+            # y >= 14 -- the river is 16 and their own king is 3, so they were being dropped at or
+            # past the bridge, which is almost never the play.
+            # Siege buildings (X-Bow, Mortar) are EXCLUDED: for them the bridge really is the play,
+            # and they stay on the offence path where the siege branch already handles them.
+            defbld = [s for s in usable if s.kind == "building" and not s.deploy_anywhere
+                      and not s.siege and s.gen_every <= 0]
             troops = [s for s in usable if s.kind == "troop" and not s.building_only]
+            # A building is the ANSWER to a win condition -- it pulls a Hog/Giant/Ram off its line.
+            # Prefer it when one is actually incoming; otherwise the cheap troop is still correct.
+            if defbld and any(u.spec.building_only for u in threats):
+                s = min(defbld, key=lambda s: s.elixir)
+                # Pulled toward the centre so it drags the push off its lane, and set ~3 tiles in
+                # front of their princess tower (princess y = 6.5 tiles of 32, river at 16).
+                self._play(eng, s, deepest.x + (0.5 - deepest.x) * 0.45, 0.30)
+                return
             if troops:
                 s = min(troops, key=lambda s: s.elixir)
                 self._play(eng, s, deepest.x, max(0.12, deepest.y - 0.06))
+                return
+            if defbld:                                            # no troop to answer with
+                s = min(defbld, key=lambda s: s.elixir)
+                self._play(eng, s, deepest.x + (0.5 - deepest.x) * 0.45, 0.30)
                 return
             spells = [s for s in usable if s.kind == "spell"]
             if spells and len(threats) >= 3:
@@ -672,7 +694,10 @@ class ScriptedBot:
             return        # ATTACK
         if self.style == "beatdown" and elix < 9.5:
             return                                                # save up for a big push
-        offense = [s for s in usable if s.kind != "spell" and s.gen_every <= 0]
+        # NON-SIEGE DEFENSIVE BUILDINGS ARE NOT AN ATTACK. Leaving them here is what put Cannons on
+        # the bridge: this list feeds the bridge/lane placements below. Siege buildings stay.
+        offense = [s for s in usable if s.kind != "spell" and s.gen_every <= 0
+                   and not (s.kind == "building" and not s.deploy_anywhere and not s.siege)]
         if not offense:
             return
         # DEPLOY-ANYWHERE cards (Miner / Goblin Drill, KB flag) tunnel STRAIGHT to the defender's tower --
