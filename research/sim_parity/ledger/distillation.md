@@ -219,3 +219,60 @@ helps" at ~1.0 sigma -- and the eval says every one of those policies wins 0% on
 ordering also INVERTED mid-run: at 300 episodes coef 2.0 was the worst arm on rolling winrate
 (0/0/0) and it finished with the most training wins. In-run rolling numbers on a sampled policy
 are not a preview of the eval.
+
+## 7. The corrected coef A/B (warm-started): STILL NULL, and the pooled test is a trap
+
+Same 3 arms x 3 seeds x 700 matches, one change from section 6: `--init policy_BEST_m18000`, so
+every arm starts from a policy that scores 17.0% +-5.2 instead of from scratch. Scored on 200 fixed
+opponent seeds per checkpoint, greedy gate.
+
+```
+   arm   meanWR%     sd   per-seed WR        pooled%   plays%    sd
+   0.0      6.00   5.07   [ 1.5,  5.0, 11.5]   6.00      8.63   0.46
+   0.5      9.00   6.54   [13.5,  1.5, 12.0]   9.02      8.57   3.69
+   2.0      7.17  10.32   [ 2.5,  0.0, 19.0]   7.17      4.97   5.11
+```
+
+### VERDICT: NULL. No arm clears the pre-committed 2-sigma bar.
+
+```
+  coef 0.5:  seed-level +3.00pp (+0.63 sigma)   <- the honest test
+  coef 2.0:  seed-level +1.17pp (+0.18 sigma)
+```
+
+/!\ **THE POOLED BINOMIAL SAYS z=+1.98 FOR coef 0.5 AND IT IS WRONG.** Pooling all 600 matches
+treats them as independent draws, but they come from THREE policies, and the between-seed spread is
+sd 5-10pp -- larger than the effect being tested. Pooling discards that variance and manufactures a
+CI ~3x too narrow. The unit of analysis is the SEED, not the match; that is the whole reason this
+project's rule is 3 seeds minimum. **Do not quote the z. It is pseudo-replication.**
+
+### The one reproducible finding: a high coef SUPPRESSES PLAYING
+
+```
+                      from scratch (section 6)   warm-started (here)
+  coef 2.0 plays vs control    -2.03 sigma            -1.24 sigma
+```
+Same direction in two independent experiments with different starting points. Neither clears 2
+sigma alone, but a reproduced direction is worth more than one arm's z. Mechanism is already in the
+repo: the card-CE gradient reaches the shared trunk `z`, and `gate = Linear(z, 2)` reads that same
+trunk -- the representation-drift path `ppo_value_detach` exists for.
+
+### Do not read "every arm lost ground against its init"
+
+All three arms (6.0 / 9.0 / 7.2%) sit below the 17.0% they started from. That is the WARM-START
+CRITIC DIP, whose bottom 4a measured at ~1,700 episodes with most recovery by ~7,600 -- these runs
+end at ~3,200. It is exactly why the comparison was pre-committed as arm-vs-arm only. It is NOT
+evidence that training degrades the policy, and 4c already produced one false alarm by reading a
+mid-dip checkpoint against its init.
+
+### What this means for the long run
+
+**Ship `ppo_distill_coef: 0.0`.** There is no measured winrate benefit at 700 matches, and the only
+reproduced effect (coef 2.0 costing play rate) points the wrong way on the head that is already the
+failure. Card distillation remains well-supported as a REPRESENTATION result (0.4955 -> 0.8754
+agreement) and unsupported as a TRAINING intervention at this budget -- those are different claims
+and only the first is measured.
+
+What would actually settle it: a run long enough to clear the critic dip (>= ~7,600 episodes) so
+the arms are compared after recovery rather than inside the hole, at 3+ seeds. That is a much more
+expensive experiment than this one and should not be run on a hunch.
