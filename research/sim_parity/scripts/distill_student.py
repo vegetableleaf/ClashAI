@@ -96,7 +96,7 @@ def forward_batch(net, z, idx, device, costs):
     elx = torch.from_numpy(z["elx"][idx]).to(device)
     thr = torch.from_numpy(z["thr"][idx]).to(device)
     cq, _ceq, gq, _v, _vd = net(obs, hand, nxt, elx, thr)
-    pm = playable_mask(hand, elx.squeeze(-1), costs)
+    pm = playable_mask(hand, elx, costs)
     return cq, gq, pm
 
 

@@ -99,11 +99,40 @@ linearly available?) and `full` (everything trains — is it learnable at all?).
 
 ```
                               gate      card|teacher plays    joint
-  majority-class WAIT         PENDING   —                     —
-  base policy (FLOOR)         PENDING   PENDING               PENDING
-  student [heads]             PENDING   PENDING               PENDING
-  student [full]              PENDING   PENDING               PENDING
+  majority-class WAIT         0.7756    -                     -
+  base policy (FLOOR)         0.5892    0.4955                0.5719
+  student [heads]             0.6012    0.8754                0.5852
+  student [full]              0.6305    0.8665                0.6152
+  (held-out 1502 rows / 337 teacher plays, split BY MATCH, 30-match corpus 4732 rows)
 ```
+
+### VERDICT (2026-08-27): GO for the CARD head, NO for the GATE head.
+
+The gap is not uniform -- it is localised, and the two heads answer oppositely.
+
+* **CARD choice distils.** 0.4955 -> 0.8665/0.8754, **+37-38pp over the base floor**. What the
+  teacher plays IS inferable from the student's degraded observation.
+* **GATE timing does not.** 0.5892 -> 0.6012 (heads) / 0.6305 (full), **+1.2 / +4.1pp** -- and both
+  sit far BELOW the majority-class floor of **0.7756**. "Always WAIT" predicts the teacher's timing
+  better than either the base policy or the distilled student.
+
+Mechanistically consistent: the teacher decides WHEN by rolling the future out; the student sees one
+frame. Timing is exactly the information a single observation does not carry. Card choice is not.
+
+/!\ **The gate number is confounded and must not be over-read.** Accuracy on a 22/78 imbalanced
+binary rewards a predictor that never acts, and "always WAIT" is a policy with winrate 0. The honest
+claim is *"card distils strongly; gate shows little gain and the metric cannot settle it"* -- NOT
+"the gate is useless". A gate verdict needs a decision-value metric, not top-1 agreement.
+
+/!\ **Distillation targets the head that already works.** The known failures live in the GATE:
+`bank_to_six_then_bow` 0%, `never_rocket_their_king` 17%, gate collapsed to always-play. So card
+distillation is real but is NOT expected to fix the banking/restraint failures on its own.
+
+### Bug fixed while running this (uncommitted -> now committed)
+`distill_student.py` crashed on every run: `forward_batch` passed `elx.squeeze(-1)` into
+`playable_mask`, giving `(B,)` where the `(1,10)` cost row needs `(B,1)` to broadcast. Measured
+corpus shapes: obs (N,96,64,12) u8, hand (N,10), nxt (N,10), elx (N,1), thr (N,52). The floors
+printed before the crash, which is why the harness looked half-working.
 
 **How to read it.** Student joint agreement well above the base floor ⇒ the targets are learnable
 from the degraded observation and the corpus is worth generating at scale. Student ≈ base floor,
