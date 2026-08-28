@@ -182,11 +182,26 @@ def _cmd_train_sim_ppo(args) -> None:
     if _d_corpus and _d_coef > 0.0:
         print("[train-sim-ppo] distillation from %s: corpus=%s coef=%s batch=%d"
               % ("FLAG" if _d_flag is not None else "CONFIG", _d_corpus, _d_coef, _d_batch))
+    # SEARCH: config or flag, flag wins only when actually passed (the 3w falsy-override rule --
+    # every default is None so `--search-interval 0` can mean OFF rather than "fall back to config").
+    _si = getattr(args, "search_interval", None)
+    _s_int = int(_si) if _si is not None else int(cfg.get("sim", "ppo_search_interval", default=0) or 0)
+    _sh = getattr(args, "search_horizon", None)
+    _s_hor = float(_sh) if _sh is not None else float(cfg.get("sim", "ppo_search_horizon", default=12.0) or 12.0)
+    _sc = getattr(args, "search_cells", None)
+    _s_cells = int(_sc) if _sc is not None else int(cfg.get("sim", "ppo_search_cells", default=3) or 3)
+    _sf = getattr(args, "search_coef", None)
+    _s_coef = float(_sf) if _sf is not None else float(cfg.get("sim", "ppo_search_coef", default=1.0) or 1.0)
+    if _s_int > 0:
+        print("[train-sim-ppo] search from %s: interval=%d horizon=%.1f cells=%d coef=%s"
+              % ("FLAG" if _si is not None else "CONFIG", _s_int, _s_hor, _s_cells, _s_coef))
     train_sim_ppo(cfg, matches=args.matches, resume=args.resume,
                   workers=getattr(args, "workers", 0),
                   seed=args.seed, envs=args.envs, init=args.init, device=args.device,
                   reset_gate=args.reset_gate,
-                  distill_corpus=_d_corpus, distill_coef=_d_coef, distill_batch=_d_batch)
+                  distill_corpus=_d_corpus, distill_coef=_d_coef, distill_batch=_d_batch,
+                  search_interval=_s_int, search_horizon=_s_hor,
+                  search_cells=_s_cells, search_coef=_s_coef)
 
 
 class _KeyOverride:
@@ -716,6 +731,21 @@ def main() -> None:
                           "experiment, not as a shipped default.")
     tsp.add_argument("--distill-batch", type=int, default=None,
                      help="teacher rows sampled per update for the distillation term")
+    tsp.add_argument("--search-interval", type=int, default=None,
+                     help="run ROLLOUT SEARCH in the training loop every N decisions (0 = OFF). The "
+                          "searcher's action is ACTED, and the policy is trained toward it by "
+                          "imitation -- searched steps leave the PPO surrogate, because the stored "
+                          "log-prob is the policy's while the action that ran was the searcher's. "
+                          "N=1 is the measured setting (at N=5 the restraint signal inverts). "
+                          "Requires --workers 0: search must clone an in-process engine.")
+    tsp.add_argument("--search-horizon", type=float, default=None,
+                     help="rollout horizon in seconds (12 is the measured optimum; 16/20/30 are "
+                          "indistinguishable and FULL-remainder is 5.14 sigma WORSE)")
+    tsp.add_argument("--search-cells", type=int, default=None,
+                     help="cells searched per candidate card (1 = the policy's argmax only; 3 added "
+                          "+3.3pp over card-only search)")
+    tsp.add_argument("--search-coef", type=float, default=None,
+                     help="weight on the search-imitation cross-entropy. UNTUNED.")
     tsp.set_defaults(func=_cmd_train_sim_ppo)
 
     drl = sub.add_parser("drills",

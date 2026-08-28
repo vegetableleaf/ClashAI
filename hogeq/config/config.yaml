@@ -1715,6 +1715,17 @@ sim:
   # float to every rollout worker (RemotePool(spell_min_value=...)), because a veto evaluated in
   # the parent does not exist under --workers > 1, which is every real run.
   ppo_spell_min_value: 0.0
+  # ---- ROLLOUT SEARCH IN THE TRAINING LOOP ----
+  # Set these and `train-sim-ppo` searches with NO command-line flag; --search-* still overrides.
+  # Search is the ONLY intervention that has moved this project's outcome (37.0% -> 85.7% on frozen
+  # weights). The searcher's action is ACTED and the policy is trained toward it by imitation.
+  # /!\ REQUIRES workers 0: search clones an in-process engine, and workers>1 empties the parent
+  # pool (3n). The trainer REFUSES rather than train a silently search-free run.
+  # MEASURED cost, envs 16 / workers 0: 283 matches/hour with search vs 725 without (2.56x).
+  ppo_search_interval: 0     # search every N decisions. 0 = OFF. 1 = the measured setting.
+  ppo_search_horizon: 12.0   # rollout seconds; 12 is the measured optimum (16/20/30 tie, FULL is worse)
+  ppo_search_cells: 3        # cells per candidate card; 3 added +3.3pp over card-only search
+  ppo_search_coef: 1.0       # weight on the imitation cross-entropy. UNTUNED.
   ppo_gate_threshold: 0.25
   # COUNTERFACTUAL FORK: judge a play by what actually followed it instead of classifying it at the
   # moment it was made. On a play the env deep-copies (engine + opponent) into an ISOLATED branch,

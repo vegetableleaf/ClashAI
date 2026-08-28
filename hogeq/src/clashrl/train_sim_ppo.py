@@ -83,7 +83,9 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                   init: str | None = None, device: str | None = None,
                   reset_gate: bool = False, workers: int = 0,
                   distill_corpus: str | None = None, distill_coef: float = 0.0,
-                  distill_batch: int = 256) -> None:
+                  distill_batch: int = 256, search_interval: int = 0,
+                  search_horizon: float = 12.0, search_cells: int = 3,
+                  search_coef: float = 1.0) -> None:
     try:
         import torch
         import torch.nn as nn
@@ -688,6 +690,13 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     _best_snap = {"net": None}
     _prog = {"n": 0}
     _adv_stats = {"drill": 0.0, "match": 0.0, "frac_drill_steps": 0.0}
+    # PRE-EXISTING BUG, found 2026-08-28 by the first hogeq PPO run in a long while: the gate-push
+    # diagnostic further down was ported from icebow WITHOUT its state dict, so hogeq carried SIX
+    # uses of `_terms` and ZERO definitions. train-sim-ppo raised NameError on the FIRST update,
+    # with or without search -- hogeq's PPO trainer could not run at all. Nothing caught it because
+    # hogeq is the sanity deck and the test suites never invoke the trainer.
+    # Default OFF (icebow gates it on CLASHRL_GATE_PROBE); the probe itself is icebow-only.
+    _terms = {"want": False, "ppo": 0.0, "entropy": 0.0, "value": 0.0, "n": 0}
     _clip_split = {"play": 0.0, "play_n": 0.0, "wait": 0.0, "wait_n": 0.0}
 
     def snapshot(store=True):
@@ -856,6 +865,8 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         cell_f = torch.tensor([a[2] for a in flat("act")], device=device)
         sil_f = (torch.tensor(flat("sil"), dtype=torch.float32, device=device)
                  if roll.get("sil") else torch.zeros(N, device=device))
+        srch_f = (torch.tensor(flat("srch"), dtype=torch.float32, device=device)
+                  if roll.get("srch") else torch.zeros(N, device=device))
         obs_f, hand_f = flat("obs"), flat("hand")
         nxt_f, elx_f, thr_f = flat("nxt"), flat("elx"), flat("thr")
 
@@ -911,6 +922,15 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 eps_b = clip_eps * (1.0 + (clip_play_mult - 1.0) * play)
                 s2 = torch.clamp(ratio, 1.0 - eps_b, 1.0 + eps_b) * a_b
                 pl = -torch.min(s1, s2).mean()
+                # SEARCHED STEPS LEAVE THE PPO SURROGATE. The stored log-prob belongs to the
+                # POLICY's sample, but the action that ran was the SEARCHER's -- so pi_new/mu is not
+                # an importance ratio on those steps, it is a ratio between two different
+                # distributions. Zero them here and teach them by imitation below instead.
+                _sb = srch_f[mb_t]
+                if float(_sb.sum()) > 0.0:
+                    _keep = (1.0 - _sb)
+                    _dn = float(_keep.sum())
+                    pl = (-(torch.min(s1, s2) * _keep).sum() / _dn) if _dn > 0 else pl * 0.0
                 vl = F.mse_loss(val, r_b)
                 if _warm["left"] > 0:
                     _warm["left"] -= 1
@@ -1005,6 +1025,41 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                             print("[train-sim-ppo]   GATE PUSH BY LOSS TERM (+ = toward PLAY):  "
                                   "ppo %+.5f   entropy %+.5f   value %+.5f"
                                   % (_terms["ppo"], _terms["entropy"], _terms["value"]), flush=True)
+                # SEARCH IMITATION -- OUTSIDE the value-warmup gate, because it is a SUPERVISED
+                # loss and does not depend on the critic. Gating it behind the 60-minibatch warmup
+                # meant a short run trained on nothing but the critic (measured: 12 updates, 0
+                # imitation steps). Cross-entropy toward the action the SEARCHER chose, on the
+                # steps it chose one. No importance weight -- these are supervised targets, not
+                # actions this policy took. ALL THREE HEADS, because search's advantage is the
+                # whole decision: teaching only the card is what plain distillation did, and it
+                # moved card agreement +4.2 sigma while moving winrate by nothing.
+                if _searchers is not None and float(_sb.sum()) > 0.0 and search_coef > 0.0:
+                    _lg = lp_g.gather(1, g_b.view(-1, 1)).squeeze(1)
+                    _lc = lp_c.gather(1, c_b.view(-1, 1)).squeeze(1)
+                    _lq = lp_cell.gather(1, cell_b.view(-1, 1)).squeeze(1)
+                    # A TARGET THE UPDATE'S MASK FORBIDS SCORES -1e9, NOT "a large loss". The
+                    # stored cell mask was built for the card the POLICY sampled; when search picks
+                    # a DIFFERENT card that mask is the wrong one, so the searcher's cell can land
+                    # on a masked entry. MEASURED: one such row in ~346 gave a batch mean of
+                    # 2,890,174 (= 1e9/346) -- rare, and catastrophic when it happens, which is
+                    # exactly why it needs a guard rather than luck. Drop those rows, as the
+                    # card-distillation term does.
+                    _ok = (_lg > -50.0) & ((play < 0.5) | ((_lc > -50.0) & (_lq > -50.0)))
+                    _sbk = _sb * _ok.float()
+                    if float(_sbk.sum()) > 0.0:
+                        _im = -_lg - play * _lc - play * _lq
+                        _iml = (_im * _sbk).sum() / float(_sbk.sum())
+                        loss = loss + search_coef * _iml
+                        _sstat["loss"] += float(_iml); _sstat["nl"] += 1
+                        _sstat["kept"] += int((_sbk > 0).sum())
+                        _sstat["seen"] += int((_sb > 0).sum())
+                        if _sstat["nl"] <= 3 or _sstat["nl"] % 200 == 0:
+                            print("[train-sim-ppo]   SEARCH  %d/%d decisions searched, %.1f%% changed "
+                                  "the action | imitation CE %.4f | %.1f%% of searched rows usable"
+                                  % (_sstat["searched"], _sstat["n"],
+                                     100.0 * _sstat["changed"] / max(1, _sstat["searched"]),
+                                     _sstat["loss"] / _sstat["nl"],
+                                     100.0 * _sstat["kept"] / max(1, _sstat["seen"])), flush=True)
                 opt.zero_grad(); loss.backward()
                 torch.nn.utils.clip_grad_norm_(net.parameters(), max_grad)
                 opt.step()
@@ -1055,6 +1110,34 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         print(f"[train-sim-ppo] cell entropy coefficient {cell_ent_coef} (gate/card {ent_coef})")
     print(f"[train-sim-ppo] {device}: {K} env(s), horizon {horizon} (batch {horizon * K}), up to "
           f"{matches} matches (cards={n_cards}, cells={n_cells}). Ctrl+C to stop + save.")
+    # ------------------------------------------------- SEARCH IN THE LOOP (DAgger, not distillation)
+    # Rollout search took the FROZEN policy 37.0% -> 85.7% (HANDOFF 4x). Four component-level
+    # interventions each hit their mechanism and moved nothing; search is the only thing that has
+    # ever moved the outcome, and it differs by replacing the WHOLE decision.
+    #
+    # WHY THIS IS NOT THE DISTILLATION THAT FAILED: that corpus was labelled from a FROZEN policy,
+    # so the teacher described states the learner drifts away from -- textbook covariate shift.
+    # Here the searcher runs on the CURRENT policy's own states every rollout, so the target
+    # distribution tracks the learner.
+    _searchers = None
+    if search_interval > 0:
+        if remote:
+            # 3n: `remote = workers > 1` leaves the parent's `pool` EMPTY, and search must clone a
+            # live SimEngine. Refuse loudly rather than train a silently search-free run.
+            print("[train-sim-ppo] REFUSING --search-interval with workers>1: the envs live in the "
+                  "worker processes and search needs an in-process engine to clone. Use --workers 0.")
+            return
+        try:
+            from .sim import rollout_search as _RS   # package module: each deck searches its OWN sim
+        except Exception as _e:                                # noqa: BLE001
+            print(f"[train-sim-ppo] REFUSING --search-interval: cannot import rollout_search ({_e})")
+            return
+        _searchers = [_RS.Searcher(e, net, device, search_horizon, search_interval, 4,
+                                   1.0, gate_tau, cells=search_cells) for e in pool]
+        print(f"[train-sim-ppo] SEARCH IN THE LOOP: every {search_interval} decision(s), "
+              f"H={search_horizon}s cells={search_cells} coef={search_coef} over {len(pool)} env(s)")
+    _sstat = {"n": 0, "searched": 0, "changed": 0, "loss": 0.0, "nl": 0, "kept": 0, "seen": 0}
+
     done_n = wins = losses = draws = 0
     drills_done = drill_pass = 0     # drills are counted apart from the match record
     # ...and their share of STEPS is tracked apart from their share of EPISODES, because those two
@@ -1072,7 +1155,12 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                     # SELF-IMITATION MASK: 1.0 on steps that turned out to belong to a drill
                     # episode the agent PASSED. Filled in retroactively when the episode ends,
                     # because that is when the verdict exists.
-                    "sil": [], "isdrill": [], "boot": None}
+                    "sil": [], "isdrill": [], "boot": None,
+                    # SEARCHED steps: the action came from the SEARCHER, not the policy. They are
+                    # EXCLUDED from the PPO surrogate (the stored log-prob is the policy's, not the
+                    # behaviour that acted, so the importance ratio would be meaningless) and are
+                    # instead the target of a plain imitation cross-entropy.
+                    "srch": []}
             ep_from = [0] * K                              # first step of each env's current episode
             for _t in range(horizon):
                 if not running["v"] or done_n >= matches:
@@ -1081,6 +1169,26 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 roll["obs"].append(list(cobs)); roll["hand"].append([h.copy() for h in chand])
                 roll["nxt"].append([n.copy() for n in cnxt]); roll["elx"].append([e.copy() for e in celx])
                 roll["thr"].append([t.copy() for t in cthr])
+                # SEARCH OVERRIDES THE ACTION on its own cadence. Acting with the searcher is
+                # the point: it puts the trajectory on the distribution the improved policy will
+                # see, which is the half plain distillation could not supply.
+                srow = [0.0] * len(acts)
+                if _searchers is not None:
+                    for _i in range(len(acts)):
+                        if _i >= len(_searchers) or pool[_i].eng.done:
+                            continue
+                        _sstat["n"] += 1
+                        try:
+                            _sa, _did = _searchers[_i].act(_t)
+                        except Exception:                      # noqa: BLE001
+                            continue
+                        if _did:
+                            _sstat["searched"] += 1
+                            if tuple(_sa) != tuple(acts[_i]):
+                                _sstat["changed"] += 1
+                            acts[_i] = tuple(_sa)
+                            srow[_i] = 1.0
+                roll["srch"].append(srow)
                 roll["act"].append(acts); roll["logp"].append(logps); roll["val"].append(vals)
                 rew_row, done_row, trunc_row = [], [], []
                 if remote:
