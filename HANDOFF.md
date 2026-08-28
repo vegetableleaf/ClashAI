@@ -5478,3 +5478,59 @@ Both §5f and its retraction came from the same diagnostic; only the SAMPLE diff
 run with drills and a trained run on matches are different populations, and the gate statistic is
 not comparable across them. Any future gate number must state: trained or from scratch, drills in
 or out, and conditioned on affordability or not.
+
+## §5h — THE SIGN WAS BACKWARDS ALL SESSION. The policy is TOO EAGER, not too reluctant
+
+Owner's argument, and it is correct: an affordable card is not an opportunity. A policy that played
+whenever it could afford something would spam 1-3 elixir cards on cooldown and never bank for its
+win condition. Declining most affordable steps is what banking discipline LOOKS like. The test has
+to condition on the RESULTS of plays, not on the elixir at the time of the play.
+
+Measured against the SEARCH TEACHER -- outcome-grounded by construction, it rolls the future out --
+on the 36,521-decision corpus already on disk:
+
+```
+  SEARCH TEACHER play rate   0.2109      (this agent wins 85.7%)
+  POLICY         play rate   0.3552      (this agent wins 37.0%)
+                             +14.4 pp -- the policy plays 68% MORE than the far stronger agent
+
+  both play                        0.0923
+  both wait                        0.5262
+  teacher plays, policy WAITS      0.1186   <- "too reluctant" errors
+  policy plays, teacher WAITS      0.2629   <- "too eager" errors
+  gate agreement                   0.6185
+  eager : reluctant                2.22 : 1
+
+  when BOTH play, same card:       0.8650   -- the card head is fine
+```
+
+### Everything about the gate this session was pointed the wrong way
+
+* "The gate is collapsed / reluctant / will not fire" is FALSE. It fires too often.
+* `27.9 plays/match` (policy-stats) is a normal human play rate. It was never under-playing.
+* The clip sweep widened the trust region FOR PLAYS -- i.e. pushed harder in the wrong direction --
+  which is the most likely reading of mult 4.0 measuring **-3.75 sigma on reward** (§5d). That was
+  filed as "no improvement, some evidence of harm"; the harm now has a mechanism.
+* §5b's reward (+5.45 sigma) and the advantage probe (+0.80) both measure the policy's OWN plays,
+  which are SELF-SELECTED. §5b flagged that caveat and I under-weighted it. The marginal play it
+  declines is not the average play it makes -- and the teacher says 26% of the plays it DOES make
+  should have been holds.
+* `bank_to_six_then_bow` at 0% is explained exactly as the owner said: it spends on cheap cards and
+  never reaches 6.
+
+### The real target is RESTRAINT, and it was named long ago
+
+§6-PRIORITY already split the spell failure into PLACEMENT and **RESTRAINT** -- "it casts when it
+should hold" -- and `never_rocket_their_king` (a do-NOT-cast drill) has been at 0-17% throughout.
+That was the correct diagnosis. This session spent itself chasing the opposite sign.
+
+### What follows
+
+The teachable signal exists and is already labelled: **26.3% of decisions are plays the teacher
+would decline**, versus 11.9% the other way. Distillation on the GATE was measured as not learnable
+(0.5892 -> 0.6012, below the always-WAIT floor of 0.7756) -- but that was fitting the gate as a
+2-way classifier over ALL decisions, where the majority class dominates. Restraint on the
+over-played subset is a different, much better-posed target and has NOT been tried.
+
+/!\ Do not read this as "make it play less" globally. The teacher still plays on 21% of decisions
+and the policy misses 11.9% of those. The target is the DISAGREEMENT, not the rate.
