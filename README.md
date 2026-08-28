@@ -77,7 +77,8 @@ thousands of matches before the game is ever opened.
 | **Modelled mechanics** | shields, tower troops, per-card sight and targeting, spells and rolling-spell corridors, champion and hero abilities, the 2×/3× elixir phases |
 | **Test suites** | 1,186 (`icebow`) · 1,203 (`hogeq`) |
 
-<img width="576" height="1200" alt="ezgif-5c1a780120ff41a6" src="https://github.com/user-attachments/assets/a93f876c-bc57-435a-883f-3450c05ce2fa" />
+<img width="462" height="962" alt="ezgif-1fd67eca6dfde1eb" src="https://github.com/user-attachments/assets/055c27eb-6ab3-426a-861f-64f0fb1b0fd1" />
+
 
 ---
 
