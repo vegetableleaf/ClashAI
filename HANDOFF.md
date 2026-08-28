@@ -5375,3 +5375,55 @@ the policy gradient sets it. Candidates, none measured:
 
 The cheap discriminator is (1): compare the BEHAVIOUR play rate against the NETWORK's own greedy
 play rate on the same states. If they differ, the network is not the thing choosing.
+
+## §5f — THE GATE WAS NEVER COLLAPSED. P(play) over ALL steps is an affordability statistic
+
+Measured in the trainer's own sampling path, 3 seeds x 200 matches from scratch, n ~16,000 steps
+each:
+
+```
+seed   anything playable   gate P(play) GIVEN a choice   raw pref over ALL steps
+ 41          6.0%                    0.5636                      0.0341
+ 42          4.6%                    0.5349                      0.0247
+ 43          7.5%                    0.3445                      0.0258
+```
+
+**Given an affordable card, the gate plays 34-56% of the time.** That is a decisive gate, not a
+collapsed one. The 0.03 figure over all steps is ~0.05 x ~0.45 -- it is dominated by how often a
+card is affordable at all, and barely reflects the gate's preference.
+
+### What this invalidates
+
+§4z, §5c, §5d and §5e all tracked **P(play) over all steps** and read it as the gate's behaviour.
+It is not. It is mostly an elixir statistic. Specifically:
+* "the gate collapsed to never-play" -- the gate given a choice is 0.34-0.56, not collapsed;
+* §5e's "P(play) is invariant to the gate's gradient" is still TRUE as measured, and now has an
+  obvious reason: the quantity is set by affordability, which the gate's gradient does not move;
+* the whole ladder (clip -> critic -> capacity) was aimed at a number that was never measuring what
+  it was believed to measure. The clip sweep's null and the critic's exoneration both stand -- they
+  were correct answers to a question about the wrong statistic.
+
+### The story that now fits every measurement
+
+The gate is EAGER, not reluctant. It plays on ~45% of the steps where it can, so elixir is spent as
+soon as it arrives and never accumulates: mean elixir 2.29, elixir >= 6 on 15-18% of steps,
+`bank_to_six_then_bow` at 0%. The 6-cost win conditions are therefore rarely affordable, x_bow and
+rocket rarely get played, and the deck cannot execute its own win condition. That is the same
+failure the drills have been reporting all along, with the sign of the cause REVERSED: not "it
+refuses to play", but "it plays too readily on cheap cards to ever bank for the expensive ones".
+
+### /!\ Confirm before building on it
+
+* These are 200-match FROM-SCRATCH runs. An untrained policy spending fast would produce exactly
+  this picture, so the same split must be measured on a TRAINED checkpoint before it is a claim
+  about the trained policy.
+* **4.6-7.5% affordability is itself suspicious.** The deck holds skeletons (1) and the Log (2),
+  and a 4-card hand should contain something cheap far more often than 1 step in 20. Either the
+  economy is much tighter than expected, or the affordability mask is under-reporting. That is a
+  bug hypothesis in its own right and should be checked directly, not assumed.
+
+### The instrument lesson, again
+
+`gate_probe` reports sigmoid(gq1-gq0) on RAW logits; the trainer's p_g uses MASKED logits. Those are
+different quantities and this file has been quoting them interchangeably (0.171 vs 0.03). Any future
+P(play) number must say WHICH, and whether it is conditioned on a card being affordable.

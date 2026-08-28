@@ -648,6 +648,30 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             # episodes. The prior is the drill's own reference line, which records when each card
             # is played. Stored log-prob is the MIXTURE's, so the PPO ratio stays exact.
             p_g = F.log_softmax(gq_m, dim=1).exp()
+            # BEHAVIOUR vs NETWORK. The gate the game sees is not always the gate the network
+            # asked for: on DRILL steps it is mixed with the drill's reference line at
+            # ppo_drill_gate_floor. 3p already found this class once -- floors overriding the bot
+            # 75-85% of the time, pi/mu ~0.0125 -- so measure the override rather than assume it.
+            # `_pure` is the network's own P(play); `_mix` is what actually samples.
+            _bvg["pure_m"] += float(p_g[[i for i in range(p_g.shape[0]) if not in_drill[i]], 1].sum())                 if any(not in_drill[i] for i in range(p_g.shape[0])) else 0.0
+            _bvg["n_m"] += sum(1 for i in range(p_g.shape[0]) if not in_drill[i])
+            _bvg["pure_d"] += float(p_g[[i for i in range(p_g.shape[0]) if in_drill[i]], 1].sum())                 if any(in_drill[i] for i in range(p_g.shape[0])) else 0.0
+            _bvg["n_d"] += sum(1 for i in range(p_g.shape[0]) if in_drill[i])
+            _bvg["greedy"] += int((p_g[:, 1] > gate_tau).sum())
+            _bvg["n_all"] += int(p_g.shape[0])
+            # IS AFFORDABILITY THE BINDING CONSTRAINT? `playable` is the per-card in-hand AND
+            # affordable mask, and masked_logits masks the PLAY gate to -inf when nothing passes it.
+            # So p_g[:,1] already carries the mask, while gate_probe's sigmoid(gq1-gq0) does NOT --
+            # which is the whole 0.03-vs-0.116 gap. Split it: how often is anything affordable, and
+            # what does the gate want WHEN IT HAS THE CHOICE.
+            _aff = playable.any(dim=1)
+            _raw = torch.sigmoid(gq_m[:, 1] - gq_m[:, 0])
+            _bvg["aff"] += int(_aff.sum())
+            if int(_aff.sum()) > 0:
+                _bvg["pg_aff"] += float(p_g[_aff, 1].sum())
+                _bvg["raw_aff"] += float(_raw[_aff].sum())
+                _bvg["n_aff"] += int(_aff.sum())
+            _bvg["raw_all"] += float(_raw.sum())
             if drill_gate_floor > 0.0:
                 for i in range(p_g.shape[0]):
                     if not in_drill[i]:
@@ -664,6 +688,22 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                     p_g[i] = (1.0 - gf) * p_g[i] + gf * prior
             lp_g = p_g.clamp_min(1e-12).log()
             g_samp = torch.multinomial(p_g.clamp_min(1e-12), 1).squeeze(1)
+            _bvg["mix_d"] += float(p_g[[i for i in range(p_g.shape[0]) if in_drill[i]], 1].sum())                 if any(in_drill[i] for i in range(p_g.shape[0])) else 0.0
+            _bvg["played"] += int((g_samp == 1).sum())
+            _bvg["n"] += 1
+            if _bvg["n"] % 400 == 0 and _bvg["n_m"] > 0 and _bvg["n_d"] > 0:
+                print("[train-sim-ppo]   BEHAVIOUR vs NETWORK  match P(play) %.4f (n=%d) | "
+                      "drill pure %.4f -> mixed %.4f (n=%d) | sampled-play %.4f | greedy>tau %.4f"
+                      % (_bvg["pure_m"] / _bvg["n_m"], _bvg["n_m"],
+                         _bvg["pure_d"] / _bvg["n_d"], _bvg["mix_d"] / _bvg["n_d"], _bvg["n_d"],
+                         _bvg["played"] / _bvg["n_all"], _bvg["greedy"] / _bvg["n_all"]), flush=True)
+                print("[train-sim-ppo]   AFFORDABILITY  anything playable on %.1f%% of steps | "
+                      "gate P(play) GIVEN a choice %.4f | raw (unmasked) pref %.4f overall, "
+                      "%.4f given a choice"
+                      % (100.0 * _bvg["aff"] / _bvg["n_all"],
+                         _bvg["pg_aff"] / max(1, _bvg["n_aff"]),
+                         _bvg["raw_all"] / _bvg["n_all"],
+                         _bvg["raw_aff"] / max(1, _bvg["n_aff"])), flush=True)
             # Card sampling from a MIXTURE: (1-floor)*policy + floor*uniform(playable). The STORED
             # log-prob below is this mixture's (the true behaviour policy mu), so the PPO ratio the
             # update forms -- pi_new(card)/mu(card), pi_new being the pure softmax it recomputes --
@@ -851,6 +891,9 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
               "n": 0, "gate_w": 0.0}
     _ep0 = {"want": True}
     _advk = {"p_sum": 0.0, "p_n": 0, "w_sum": 0.0, "w_n": 0, "n": 0}
+    _bvg = {"pure_m": 0.0, "n_m": 0, "pure_d": 0.0, "mix_d": 0.0, "n_d": 0,
+            "played": 0, "greedy": 0, "n_all": 0, "n": 0,
+            "aff": 0, "pg_aff": 0.0, "raw_aff": 0.0, "raw_all": 0.0, "n_aff": 0}
     _lastep = {"want": True}
     _clip_split = {"play": 0.0, "play_n": 0.0, "wait": 0.0, "wait_n": 0.0,
                    "play_block": 0.0, "wait_block": 0.0, "play_push": 0.0, "wait_push": 0.0,
