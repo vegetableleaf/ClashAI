@@ -107,7 +107,7 @@ def main(ckpt="data/policy_sim_ppo.pt", matches=8, envs=4, size="432"):
 
     while done_n < matches:
         with torch.no_grad():
-            _, _, gq, _ = net(
+            cq, _, gq, _ = net(
                 torch.stack([obs_t(o) for o in obs]),
                 torch.stack([vec_t(e.hand_vec) for e in pool]),
                 torch.stack([vec_t(e.next_vec) for e in pool]),
@@ -115,6 +115,7 @@ def main(ckpt="data/policy_sim_ppo.pt", matches=8, envs=4, size="432"):
                 torch.stack([thr_t(e.threat_vec) for e in pool]),
             )
             probs = torch.sigmoid(gq[:, 1] - gq[:, 0]).cpu().numpy()
+            card_p = torch.softmax(cq, dim=1).cpu().numpy()
 
         for i, e in enumerate(pool):
             steps += 1
@@ -127,12 +128,27 @@ def main(ckpt="data/policy_sim_ppo.pt", matches=8, envs=4, size="432"):
                 if any(costs[c] <= e.elixir + 1e-6 for c in held):
                     wincon_affordable += 1
 
-            # follow the policy's own greedy behaviour to advance the state
+            # ADVANCE THE STATE THE WAY ppo_watchdog DOES, and for the reasons its own comments
+            # give. This probe used to do two things that make its elixir trace a property of the
+            # MEASUREMENT rather than of the run, and both were already fixed in the watchdog and
+            # never back-ported here (this file raised AttributeError on every call for months, so
+            # nobody noticed the divergence):
+            #   1. it played `aff[0]` -- the first affordable card BY INDEX, not the policy's pick;
+            #   2. it thresholded the gate at 0.25 instead of SAMPLING it, so at P(play) 0.17 it
+            #      played on ~14% of steps, banked everything else, and reported elixir mean 5.00
+            #      with 41.7% of steps at >=6 -- while the watchdog, sampling on the same
+            #      checkpoint, read 2.38 and 1.3%. The two disagreed by 30x on the column that
+            #      decides whether the win conditions are affordable at all.
+            # Training samples the gate and the policy picks a card, so this does both.
             aff = [c for c in hand if costs[c] <= e.elixir + 1e-6]
-            if aff and probs[i] > 0.25:
-                act = (1, int(aff[0]), int(e0.n_cells // 2))
+            if aff:
+                w = card_p[i][aff]
+                w = w / w.sum() if w.sum() > 0 else None
+                pick = int(np.random.choice(aff, p=w)) if w is not None else int(aff[0])
             else:
-                act = (0, 0, 0)
+                pick = None
+            play = pick is not None and float(np.random.random()) < float(probs[i])
+            act = (1, pick, int(e0.n_cells // 2)) if play else (0, 0, 0)
             nobs, _, done, _ = e.step(act)
             obs[i] = e.reset() if done else nobs
             done_n += int(done)

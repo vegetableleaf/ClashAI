@@ -4995,6 +4995,36 @@ observation; (4) only then start the long run, checkpoints to `policy_sim_ppo.pt
 
 ## §4z — The gate investigation, re-measured: it collapsed the OTHER WAY, and two premises are dead
 
+> ## /!\ CORRECTION (2026-08-28): PREMISE 2 BELOW IS WITHDRAWN. THE ELIXIR NUMBERS WERE AN ARTIFACT
+>
+> The fixed `gate_probe` still carried two flaws that `ppo_watchdog` had already identified and
+> fixed, and which were never back-ported because this file raised AttributeError on every call:
+> it played **`aff[0]`, the first affordable card BY INDEX** rather than the policy's pick, and it
+> **thresholded the gate at 0.25 instead of sampling it**. At P(play) 0.17 the threshold means it
+> played on ~14% of steps and banked the rest, so elixir piled up. The watchdog's own comment names
+> this exact failure: *"a property of the measurement, not of the run."*
+>
+> Same checkpoint, three readings:
+> ```
+>                          P(play)   elixir mean   >=6      wincon affordable
+>   gate_probe (broken)     0.171       5.00       41.66%       41.45%
+>   gate_probe (fixed)      0.113       3.19       13.40%       11.90%
+>   ppo_watchdog            0.292       2.38        1.3%          --
+> ```
+> **"The elixir-starvation story is CLOSED" is WITHDRAWN.** Elixir reaches 6 on 13.4% of steps by
+> the corrected probe and 1.3% by the watchdog -- not 41.7%. The win conditions are largely
+> UNAFFORDABLE, which is much closer to the original premise than to my correction of it. Premise 2
+> below is live again; treat it as unresolved, and note the two instruments still differ 10x on
+> that column, so neither number is trustworthy on its own yet.
+>
+> **PREMISE 1 SURVIVES**: every reading puts P(play) at 0.11-0.29, nowhere near the 0.938 that
+> `--reset-gate`'s help asserts. The gate is not collapsed to always-play.
+>
+> Lesson, and it is the same one this file already records twice: an offline probe that does not
+> reproduce the policy's own action selection measures the probe. Both the drill-scaffolding
+> finding and this one came from a tool scoring something other than the network.
+
+
 **The instrument was broken.** `tools/gate_probe.py` raised `AttributeError: 'PolicyNet' object has
 no attribute 'cell_head'` on **every** invocation and had done so since the spatial-cell refactor --
 it still called `features_vec` + `.cell_head(z)`, which `PolicyNet.forward_parts` explicitly tells

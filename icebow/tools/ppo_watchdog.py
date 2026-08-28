@@ -248,9 +248,55 @@ def cell_structure(ckpt: Path) -> float:
     return spread(True) / max(1e-9, base)
 
 
+class _Drift:
+    """RELATIVE-DECLINE detector: does this run still do what IT used to do?
+
+    Absolute thresholds cannot catch the failure this project actually has, because the healthy
+    P(play) for the drill regime is UNKNOWN. Measured points, all real: match-only training is
+    healthy at 0.92-0.99; an untrained net is 0.49; the drill-regime collapse lands at 0.107-0.151;
+    and the live 8k checkpoint sits at 0.171 while failing every ACT drill (banks elixir to >=6 on
+    41.7% of steps and never spends it). A band tuned to any one of those either never fires or
+    fires forever -- the shipped 0.05 never-play floor sits BELOW every number in that list, so it
+    would have watched the whole 8k run in silence.
+
+    What IS well defined is the run's own trajectory. A policy that was playing and stops has
+    declined against itself, and that is measurable without knowing what healthy looks like. This
+    also matches the shape of the failure that has actually cost this project a run: the 40k run
+    decayed GRADUALLY (ladder 33% -> 20% over ~8k episodes), it did not fall off a cliff.
+
+    Peaks are per-run and in-memory: restarting the watchdog re-arms it, which is correct -- a peak
+    carried across a trainer restart would compare two different policies.
+    """
+
+    def __init__(self, frac: float = 0.60, min_matches: int = 300, min_peak: float = 0.05):
+        self.frac, self.min_matches, self.min_peak = frac, min_matches, min_peak
+        self.peak: dict = {}
+
+    def check(self, label: str, value, matches: int):
+        """One verdict string, or None. Sustain is NOT handled here -- the caller's `_streak`
+        already requires two consecutive cycles before anything is posted."""
+        if value is None or matches < self.min_matches:
+            return None
+        pk = max(self.peak.get(label, value), value)
+        self.peak[label] = pk
+        if pk < self.min_peak or value >= self.frac * pk:
+            return None
+        return ("%s DRIFT -- now %.3f, which is %.0f%% below this run's own peak of %.3f "
+                "(matches=%d). Gradual decay is what killed the 40k run; it will not trip an "
+                "absolute floor." % (label, value, 100.0 * (1.0 - value / pk), pk, matches))
+
+
 def verdicts(h: dict, matches: int) -> list:
     """Only conditions that have actually broken a run on this project."""
     out = []
+    # /!\ THE ALWAYS-PLAY PREMISE WAS DISPROVED (2026-08-27). --reset-gate's help still claims the
+    # gate "COLLAPSED to always-play, P(play) 0.938 min 0.911"; re-measured on the live checkpoint
+    # with a REPAIRED gate_probe (it had been raising AttributeError on every call since the
+    # spatial-cell refactor, so nothing downstream of it was ever measured) the gate is 0.171 mean
+    # and never exceeds 0.60 -- the collapse runs the OTHER WAY. Both absolute bands are kept
+    # because each still describes a real catastrophic end state, but NEITHER is calibrated against
+    # a known-healthy value, and the live failure sits in the silent gap between them. The DRIFT
+    # check above is what covers that gap; do not re-tune these two without a measurement.
     if h["p_play_mean"] > 0.90 and h["p_play_min"] > 0.80:
         out.append("GATE COLLAPSED to always-play (mean %.3f, min %.3f) -- it never holds, so the "
                    "bar cannot climb and the 6-cost win conditions stay masked."
@@ -293,6 +339,7 @@ def main() -> int:
     # probe then contradicted (x_bow affordable 1.3% of steps, played 2.4% of plays).
     # A condition now has to hold on two CONSECUTIVE cycles before it is believed.
     _streak = {}
+    _drift = _Drift()
 
     while True:
         now = datetime.now().strftime("%H:%M")
@@ -331,6 +378,12 @@ def main() -> int:
             return 0
 
         alerts = verdicts(h, h["matches"])
+        # RELATIVE DECLINE, checked every cycle so the peak keeps updating even while healthy.
+        for _lbl, _val in (("GATE", h["p_play_mean"]), ("ELIXIR>=6", h["elixir_ge6"]),
+                           ("CELL STRUCTURE", h.get("cell_struct"))):
+            _d = _drift.check(_lbl, _val, h["matches"])
+            if _d:
+                alerts.append(_d)
         if n_proc == 0:
             alerts.append("PROCESS GONE -- no train-sim-ppo running (last matches=%d)." % h["matches"])
         elif idle_min >= a.quiet_min:
