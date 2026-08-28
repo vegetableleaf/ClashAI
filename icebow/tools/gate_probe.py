@@ -62,9 +62,12 @@ def main(ckpt="data/policy_sim_ppo.pt", matches=8, envs=4, size="432"):
             self.value = nn.Linear(self.policy.embed_dim, 1)
 
         def forward(self, x, hand, nxt=None, elx=None, thr=None):
-            z = self.policy.features_vec(x, hand, nxt, elx, thr)
-            return (self.policy.card_head(z), self.policy.cell_head(z),
-                    self.gate(z), self.value(z).squeeze(-1))
+            # `cell_head` HAS NOT EXISTED since the spatial-cell refactor, and `features_vec`
+            # discards the pre-pool feature map that head needs -- PolicyNet.forward_parts says so
+            # in its own docstring. This probe kept calling both and raised AttributeError on every
+            # invocation, so the gate diagnostic has been dead for as long as that refactor is old.
+            z, cards, cells = self.policy.forward_parts(x, hand, nxt, elx, thr)
+            return cards, cells, self.gate(z), self.value(z).squeeze(-1)
 
     net = PPONet().to(device)
     net.policy.load_state_dict(state["model"])

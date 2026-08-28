@@ -4992,3 +4992,66 @@ signal has the WRONG SIGN) and export `PYTHONHASHSEED` properly (the harness's o
 no-op, so identical configs silently differ); (3) measure the **privileged-teacher gap** before
 committing to a full run — the teacher sees engine ground truth, the student sees a degraded
 observation; (4) only then start the long run, checkpoints to `policy_sim_ppo.pt`, veto OFF.
+
+## §4z — The gate investigation, re-measured: it collapsed the OTHER WAY, and two premises are dead
+
+**The instrument was broken.** `tools/gate_probe.py` raised `AttributeError: 'PolicyNet' object has
+no attribute 'cell_head'` on **every** invocation and had done so since the spatial-cell refactor --
+it still called `features_vec` + `.cell_head(z)`, which `PolicyNet.forward_parts` explicitly tells
+you not to do in its own docstring. So the gate diagnostic has been dead for as long as that
+refactor is old, and every "the gate has collapsed to always-play" claim downstream of it predates
+that. Fixed to use `forward_parts`.
+
+### Measured now, on the live 8k checkpoint (m=5050, 2900 steps / 8 matches)
+
+```
+P(play)  p5 0.051  p25 0.119  p50 0.167  p75 0.219  p95 0.303   mean 0.171  min 0.004  max 0.495
+         share > 0.25: 13.7%      share > 0.60: 0.0%      share > 0.95: 0.0%
+elixir   p5 1.00   p25 2.00   p50 5.00   p75 7.00   p95 10.00   mean 5.00   max 10.00
+         share >= 6 (X-Bow/Rocket affordable): 41.66%
+x_bow/rocket IN HAND 94.6%   IN HAND *and affordable* 41.45%
+```
+
+### Two documented premises are now FALSE. Do not act on either again.
+
+1. **`--reset-gate`'s help says the gate "has COLLAPSED to always-play: measured P(play) 0.938 with
+   min 0.911".** It is **0.171 mean, 0.495 max, and never once exceeds 0.60**. The collapse is in
+   the OPPOSITE direction. A fresh gate starts near 0.5, so `--reset-gate` would now RAISE the play
+   rate -- the flag may still help, but its stated rationale is inverted and must not be quoted.
+2. **"elixir never passes 5, and the 6-cost win conditions stay masked (= zero policy gradient)
+   forever."** Elixir mean is **5.00** and **41.66%** of steps are at >= 6, with the win condition
+   in hand and affordable on **41.45%** of steps. The elixir-starvation story is CLOSED. It banks
+   fine. It does not fire.
+
+### The downward drive is gone; the gate is parked, not falling
+
+Documented drift was a systematic **-0.169 / -0.386 / -0.408** on PLAY steps at ~11x its own sd.
+Measured in the live run now, four consecutive windows: **+0.091 / -0.138 / -0.098 / +0.201** --
+mixed sign, mean ~+0.014. The §3p exploration-floor fix (0.85/0.75 -> 0.30/0.25) appears to have
+removed the systematic push. So this is no longer "the gate is being driven down"; it is "the gate
+sits at a low fixed point and stays there".
+
+`ppo_gate_threshold` is **0.25** and only **13.7%** of steps clear it -- which is exactly the
+eval's 10.2% play rate, and exactly why the ACT drills score 0 while the banking half works.
+
+### What this does and does not license
+
+It explains every drill result measured today: `bank_to_six_then_bow` 0% (it banks and never
+fires), `hold_the_spell_for_a_target` / `rocket_the_two_for_one` / `rocket_the_pump_on_sight` /
+`skeletons_stop_the_wall_breakers` / `log_rolls_forward_not_backward` all 0%, all ACT drills, while
+`bow_punishes_the_pump` 100% and `bow_punish_the_commitment` 92% survive.
+
+⚠ **This is a DIAGNOSIS, not a repair.** No fix has been measured. And the repair experiment is
+constrained by a result already on the books: **the collapse is BISTABLE, measured escape rate
+4/6**, so **3 seeds minimum** -- a one-run result decides nothing here, and that error has already
+been made once on this exact question (the retracted "it is NOT the drills", n=1).
+
+Closed already, do not respend: per-head clipping (measured, no improvement), `ppo_value_head_split`
+(tried, rejected), `ppo_clip_play_mult` (mitigation ~25%, UNTUNED, its 5-value x 2-seed sweep is
+still staged and unrun), and the gate-threshold sweep (reported optimal in both directions -- worth
+re-checking, because it was swept against the OLD always-play premise).
+
+**The open question is now narrow:** the gate is not starved (largest policy-head gradient), not
+throttled, and no longer pushed down -- so what holds it at 0.17 when elixir and the win condition
+are both available on ~41% of steps? Distillation will NOT answer it: the card head is the half
+that already works.
