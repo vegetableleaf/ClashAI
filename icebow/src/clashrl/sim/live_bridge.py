@@ -1,0 +1,193 @@
+"""LIVE -> SimEngine bridge: reconstruct a searchable engine state from what the screen shows.
+
+Rollout search works by CLONING a `SimEngine` and rolling it forward. Live has no engine -- only
+detections -- so this module builds one. It is the missing piece HANDOFF named first when it ruled
+live search out:
+
+    "There is no detector -> SimEngine bridge, per-unit HP is unavailable, there is no opponent
+     deck/hand model, and ~80 per-unit fields are unobservable. On top of that a quarter-tile
+     position error costs 62% of the search's gain and the damage SATURATES there."
+
+/!\\ READ THAT BEFORE TRUSTING ANY OUTPUT OF THIS MODULE. The ceiling is measured at ~38% of the
+sim gain from POSITION ERROR ALONE, and the other unobservables compound on top. The owner accepted
+that ceiling deliberately ("a gain is a gain"). This module's job is to make the capped gain
+reachable AND to make the size of the cap measurable -- not to pretend the gap is closed.
+
+WHAT IS OBSERVED, WHAT IS ASSUMED
+---------------------------------
+observed   unit identity (detector class -> card key), unit position (frame -> board), which
+           towers are alive, own hand + next card, own elixir, match clock
+ASSUMED    per-unit HP          -> spec maximum. Live cannot read troop HP; `troop_hp.py` covers
+                                   only a few large bodies. A half-dead Giant reads as full.
+ASSUMED    unit facing/target   -> the engine re-acquires on its own from position
+ASSUMED    deploy/charge state  -> treated as fully deployed and idle
+ASSUMED    opponent hand        -> uniform over their DETECTED deck (deck_detect), or the meta
+                                   pool if no deck is known. Their cycle is unobservable.
+ASSUMED    opponent elixir      -> `opponent_elixir.py`'s estimate, which is itself inferred
+UNMODELLED shields, buffs, status timers, ability cooldowns, spawner timers -- the ~80 fields
+
+Every assumption above BIASES SEARCH TOWARD OPTIMISM about enemy bodies (full HP) and toward
+IGNORANCE about their hand. Both push the same way: search will under-rate defence.
+
+VALIDATION
+----------
+`reconstruction_error()` runs the bridge against a state where ground truth EXISTS -- a live sim
+match -- by rebuilding the engine from what a detector would have seen and diffing it against the
+real one. That is the only honest way to size the gap, because in live play there is nothing to
+diff against.
+"""
+from __future__ import annotations
+
+import math
+from typing import Any, Dict, List, Optional, Sequence, Tuple
+
+from .engine import SimEngine, Unit, build_spec, _TILES_X, _TILES_Y
+
+
+# Detector classes that are not troops/buildings and must never become Units.
+_NON_BODY = {"", "none", "unknown", "background", "tower", "king_tower", "princess_tower"}
+
+
+def _clean_key(name: str) -> str:
+    """Detector class name -> card KB key. detect_classes.yaml already names them after KB keys."""
+    return str(name or "").strip().lower().replace(" ", "_").replace("-", "_")
+
+
+def tracks_to_bodies(db, tracks: Sequence[Any], actions, level: int = 11,
+                     own_team: int = 0) -> List[Dict[str, Any]]:
+    """Normalise detector tracks into `{key, team, x, y}` board-space records.
+
+    `tracks` items may be dicts or tuples; we accept either rather than couple this module to one
+    tracker's shape, because `enemy_tracks` is a passthrough whose contract has already gone
+    silently inert once (HANDOFF: the `with_base` TypeError).
+    """
+    out: List[Dict[str, Any]] = []
+    for tr in tracks or ():
+        if isinstance(tr, dict):
+            name = tr.get("base") or tr.get("cls") or tr.get("label") or ""
+            fx, fy = tr.get("x"), tr.get("y")
+            team = int(tr.get("team", 1 - own_team))
+        else:
+            try:
+                name, fx, fy = tr[0], tr[1], tr[2]
+            except Exception:                                  # noqa: BLE001
+                continue
+            team = 1 - own_team
+        key = _clean_key(name)
+        if key in _NON_BODY or fx is None or fy is None:
+            continue
+        # /!\ build_spec DOES NOT RAISE on an unknown key -- it returns a DEFAULT 300-hp troop.
+        # A mislabelled or novel detector class would therefore inject a PHANTOM BODY into every
+        # rollout, and search would plan around a unit that does not exist. Membership in the card
+        # DB is the real check; the try/except alone was not one.
+        if key not in db.cards:
+            continue
+        try:
+            spec = build_spec(db, key, level)
+        except Exception:                                      # noqa: BLE001
+            continue
+        if spec.kind == "spell":
+            continue
+        try:
+            bx, by = actions.frame_to_board(float(fx), float(fy))
+        except Exception:                                      # noqa: BLE001
+            continue
+        out.append({"key": key, "spec": spec, "team": int(team),
+                    "x": float(bx), "y": float(by)})
+    return out
+
+
+def build_engine(cfg, db, rng, bodies: Sequence[Dict[str, Any]],
+                 elixir: Tuple[float, float] = (5.0, 5.0),
+                 t: float = 0.0,
+                 towers_alive: Optional[Dict[int, Sequence[bool]]] = None,
+                 tower_hp: Optional[Dict[int, Sequence[float]]] = None,
+                 level: int = 11) -> SimEngine:
+    """Build a SimEngine populated from observed bodies. Returns an engine search can clone.
+
+    /!\\ Every body enters at FULL SPEC HP -- see the module docstring. This is the single largest
+    modelled inaccuracy and it systematically over-states enemy defence.
+    """
+    eng = SimEngine(cfg, db, rng)
+    eng.reset()
+    eng.units.clear()
+    for b in bodies:
+        u = Unit(spec=b["spec"], team=int(b["team"]),
+                 x=float(b["x"]), y=float(b["y"]), hp=float(b["spec"].hp))
+        u.deploy_left = 0.0            # already on the field: it was SEEN, so it has landed
+        eng.units.append(u)
+    try:
+        eng.elixir[0] = float(elixir[0])
+        eng.elixir[1] = float(elixir[1])
+    except Exception:                                          # noqa: BLE001
+        pass
+    eng.t = float(t)
+    if towers_alive:
+        for team, flags in towers_alive.items():
+            for tw, alive in zip(eng.towers.get(int(team), []), flags):
+                if not alive:
+                    tw.alive = False
+                    tw.hp = 0.0
+    if tower_hp:
+        for team, hps in tower_hp.items():
+            for tw, hp in zip(eng.towers.get(int(team), []), hps):
+                if hp is not None and hp > 0:
+                    tw.hp = min(float(tw.max_hp), float(hp))
+    return eng
+
+
+# ------------------------------------------------------------------ validation against ground truth
+
+def observe_as_detector(eng: SimEngine, own_team: int = 0,
+                        drop: float = 0.0, pos_sigma: float = 0.0,
+                        rng=None) -> List[Dict[str, Any]]:
+    """What a PERFECT-identity detector would report for this engine.
+
+    Models the two live losses that are measurable: missed bodies (`drop`) and position error
+    (`pos_sigma`, in TILES). HP loss is not modelled here because the bridge discards HP entirely
+    -- that error is total by construction, not a parameter.
+    """
+    import random as _r
+    rng = rng or _r.Random(0)
+    out = []
+    for u in eng.units:
+        if u.hp <= 0:
+            continue
+        if drop > 0.0 and rng.random() < drop:
+            continue
+        x, y = u.x, u.y
+        if pos_sigma > 0.0:
+            x += rng.gauss(0.0, pos_sigma) / _TILES_X
+            y += rng.gauss(0.0, pos_sigma) / _TILES_Y
+        out.append({"key": u.spec.base, "spec": u.spec, "team": int(u.team),
+                    "x": float(x), "y": float(y)})
+    return out
+
+
+def reconstruction_error(truth: SimEngine, rebuilt: SimEngine) -> Dict[str, float]:
+    """Diff a rebuilt engine against the real one. The honest measure of what the bridge loses."""
+    tl = [u for u in truth.units if u.hp > 0]
+    rl = [u for u in rebuilt.units if u.hp > 0]
+    hp_true = sum(u.hp for u in tl)
+    hp_rebuilt = sum(u.hp for u in rl)
+    # nearest-neighbour position error over same-key bodies
+    errs = []
+    pool = list(rl)
+    for u in tl:
+        cands = [v for v in pool if v.spec.base == u.spec.base]
+        if not cands:
+            continue
+        v = min(cands, key=lambda w: (w.x - u.x) ** 2 + (w.y - u.y) ** 2)
+        pool.remove(v)
+        errs.append(math.hypot((v.x - u.x) * _TILES_X, (v.y - u.y) * _TILES_Y))
+    return {
+        "bodies_true": float(len(tl)),
+        "bodies_rebuilt": float(len(rl)),
+        "bodies_missing": float(len(tl) - len(rl)),
+        "hp_true": float(hp_true),
+        "hp_rebuilt": float(hp_rebuilt),
+        "hp_overstate_frac": float((hp_rebuilt - hp_true) / hp_true) if hp_true > 0 else 0.0,
+        "pos_err_mean_tiles": float(sum(errs) / len(errs)) if errs else 0.0,
+        "pos_err_max_tiles": float(max(errs)) if errs else 0.0,
+        "matched": float(len(errs)),
+    }
