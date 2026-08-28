@@ -5534,3 +5534,51 @@ over-played subset is a different, much better-posed target and has NOT been tri
 
 /!\ Do not read this as "make it play less" globally. The teacher still plays on 21% of decisions
 and the policy misses 11.9% of those. The target is the DISAGREEMENT, not the rate.
+
+## §5i — Restraint IS separable: AUC 0.667 from a LINEAR probe, and 74% of its plays are over-plays
+
+The cheap check before building anything: are the plays the teacher declines distinguishable from
+the plays it endorses, using only what the student can see? Corpus already on disk, split BY MATCH.
+
+```
+  policy-play decisions   12,972
+  teacher agrees           0.2599     <- only 26% of the policy's plays are ones the teacher makes
+  OVER-PLAYS               0.7401     <- three in four of its plays are wrong
+  majority-class baseline  0.7478 (test split)
+
+  logistic     held-out AUC 0.6675   acc 0.7632
+  2-layer MLP  held-out AUC 0.6157   acc 0.6350
+```
+
+**AUC 0.667 is a LOWER BOUND.** The probe sees 97 features: hand 10, next 10, elixir 1, threat 52,
+and the 96x64x12 board crushed to 24 numbers (per-channel mean and std). The conv policy sees the
+whole board. A state-dependent restraint rule is learnable from the student's own observation --
+which is exactly the thing §6.2 proved a SCALAR THRESHOLD cannot express ("search's restraint is
+STATE-DEPENDENT and no scalar reproduces it", threshold swept 0.02-0.60, 0.25 optimal both ways).
+
+### Read the metrics the right way
+
+Accuracy is nearly useless here: the class is 74/26, so "always call it an over-play" scores 0.748
+and the logistic model's 0.763 looks like nothing. **AUC is the metric** -- the ranking carries the
+signal, and 0.667 on a linear probe over a crushed board is a real result.
+
+⚠ The MLP scoring WORSE than logistic (0.6157 vs 0.6675) is overfitting on 10.5k rows with 97
+features, not evidence against separability. A real run needs regularisation and the full corpus,
+and should be judged on AUC over held-out MATCHES, never on accuracy.
+
+### Why this is not a repeat of the failed gate distillation
+
+§8 measured gate distillation at 0.5892 -> 0.6012 against an always-WAIT floor of 0.7756 and called
+it unlearnable. That fit the gate as a 2-way classifier over ALL 36,521 decisions, where 79% are
+waits: a model scores 0.776 by never playing, so the loss barely rewards learning WHEN. This is a
+different problem -- conditioned on the policy already wanting to play, asking only whether that
+particular play is one the teacher would make. Same corpus, different question, and the answer is
+that the signal is there.
+
+### Next
+
+Train the restraint head properly: full corpus, conv over the real board, class-weighted, scored on
+held-out AUC by MATCH. Then the intervention is a veto on the policy's own plays -- it never needs
+to make the policy play MORE, only to decline the ones it should not make, which is the failure the
+drills (`never_rocket_their_king` 0-17%) and §6-PRIORITY's RESTRAINT arm have both reported all
+along.
