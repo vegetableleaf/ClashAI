@@ -5427,3 +5427,54 @@ refuses to play", but "it plays too readily on cheap cards to ever bank for the 
 `gate_probe` reports sigmoid(gq1-gq0) on RAW logits; the trainer's p_g uses MASKED logits. Those are
 different quantities and this file has been quoting them interchangeably (0.171 vs 0.03). Any future
 P(play) number must say WHICH, and whether it is conditioned on a card being affordable.
+
+## §5g — /!\ §5f IS RETRACTED. Affordability is 64%, and the trained gate declines 82% of its chances
+
+§5f concluded "the gate was never collapsed -- given an affordable card it plays 34-56%, and
+P(play) over all steps is an affordability statistic". That was measured on **FROM-SCRATCH runs
+mixed with DRILLS**, and §5f's own caveat said to confirm it on a trained checkpoint before
+believing it. Confirmed, and it does not hold.
+
+Trained `policy_BEST_m18000`, **match-only** (`--drill-frac 0`), policy frozen by the value warmup,
+3 seeds, accumulated over full matches:
+
+```
+                      anything playable    P(play) GIVEN a choice    raw pref overall
+  from scratch + drills      4.6-7.5%            0.34-0.56               0.025-0.034
+  TRAINED, match-only        63.3-64.5%          0.167-0.188             0.107-0.119
+```
+
+**Both halves of §5f were artifacts of the wrong sample.** Drills carry scripted elixir and an
+untrained policy spends to zero on arrival, which manufactures both the 6% affordability and the
+high conditional rate.
+
+### What is actually true
+
+* **Affordability is NOT the binding constraint.** Something is playable on ~64% of steps.
+* **The trained gate declines ~82% of the opportunities it has.** It is reluctant, and the
+  reluctance is a property of the gate, not of the elixir economy.
+* The raw over-all-steps preference (0.107-0.119) matches `gate_probe`'s 0.116 -- those two
+  instruments agree once the statistic is named properly.
+* **Training roughly HALVES the conditional play rate**: 0.34-0.56 from scratch -> 0.167-0.188
+  trained. That is the decay, measured for the first time on the statistic that isolates the gate
+  from the elixir economy. Every previous decay measurement was contaminated by affordability.
+
+### So the open question is restored, and sharper than before
+
+The gate declines 82% of its chances while:
+  reward per decision favours playing        +5.45 sigma  (§5b)
+  advantage favours playing                  +0.80, 3 seeds, n=3038+
+  the gradient's sign was repaired           §5d -- and P(play) did not move (§5e)
+  the critic is exonerated                   advantage agrees with reward
+  its card choice is learnable               0.4955 -> 0.8754 (§8)
+
+Everything the update is told points toward playing, and the conditional rate still halves during
+training. §5e's invariance stands and now has NO benign explanation -- affordability was the last
+one and it is gone.
+
+### Method note, paid for twice today
+
+Both §5f and its retraction came from the same diagnostic; only the SAMPLE differed. A from-scratch
+run with drills and a trained run on matches are different populations, and the gate statistic is
+not comparable across them. Any future gate number must state: trained or from scratch, drills in
+or out, and conditioned on affordability or not.

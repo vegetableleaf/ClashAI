@@ -691,19 +691,22 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             _bvg["mix_d"] += float(p_g[[i for i in range(p_g.shape[0]) if in_drill[i]], 1].sum())                 if any(in_drill[i] for i in range(p_g.shape[0])) else 0.0
             _bvg["played"] += int((g_samp == 1).sum())
             _bvg["n"] += 1
+            # AFFORDABILITY prints on its own condition. It was nested under the behaviour print,
+            # which requires DRILL steps -- so at --drill-frac 0 (the only honest way to read the
+            # match economy) it could never fire at all.
+            if (_bvg["n"] <= 3 or _bvg["n"] % 100 == 0) and _bvg["n_aff"] > 0:
+                print("[train-sim-ppo]   AFFORDABILITY  anything playable on %.1f%% of steps | "
+                      "gate P(play) GIVEN a choice %.4f | raw pref %.4f overall"
+                      % (100.0 * _bvg["aff"] / _bvg["n_all"],
+                         _bvg["pg_aff"] / max(1, _bvg["n_aff"]),
+                         _bvg["raw_all"] / _bvg["n_all"]), flush=True)
             if _bvg["n"] % 400 == 0 and _bvg["n_m"] > 0 and _bvg["n_d"] > 0:
                 print("[train-sim-ppo]   BEHAVIOUR vs NETWORK  match P(play) %.4f (n=%d) | "
                       "drill pure %.4f -> mixed %.4f (n=%d) | sampled-play %.4f | greedy>tau %.4f"
                       % (_bvg["pure_m"] / _bvg["n_m"], _bvg["n_m"],
                          _bvg["pure_d"] / _bvg["n_d"], _bvg["mix_d"] / _bvg["n_d"], _bvg["n_d"],
                          _bvg["played"] / _bvg["n_all"], _bvg["greedy"] / _bvg["n_all"]), flush=True)
-                print("[train-sim-ppo]   AFFORDABILITY  anything playable on %.1f%% of steps | "
-                      "gate P(play) GIVEN a choice %.4f | raw (unmasked) pref %.4f overall, "
-                      "%.4f given a choice"
-                      % (100.0 * _bvg["aff"] / _bvg["n_all"],
-                         _bvg["pg_aff"] / max(1, _bvg["n_aff"]),
-                         _bvg["raw_all"] / _bvg["n_all"],
-                         _bvg["raw_aff"] / max(1, _bvg["n_aff"])), flush=True)
+
             # Card sampling from a MIXTURE: (1-floor)*policy + floor*uniform(playable). The STORED
             # log-prob below is this mixture's (the true behaviour policy mu), so the PPO ratio the
             # update forms -- pi_new(card)/mu(card), pi_new being the pure softmax it recomputes --
