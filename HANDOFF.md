@@ -5180,3 +5180,59 @@ have to be worth thirteen times less than its average play. Possible; not obviou
 Card and cell come from the POLICY, not a stand-in -- placement drives `xbow_into_push` and
 `building_waste` directly, so a centre-cell stand-in would have manufactured the tax being tested
 for. That is the gate_probe error (§4z correction) avoided by construction.
+
+## §5c — THE CLIP FLIPS THE SIGN OF THE GATE'S LEARNING SIGNAL (504 windows, 34 sigma)
+
+The optimiser investigation, and it did not need a new experiment: `train_sim_ppo` has been printing
+the decisive diagnostic all along, and §4's own instruction was to **accumulate it across a run**
+because it is underpowered per-window. Aggregated over **504 windows from all 18 A/B runs**:
+
+```
+GATE LOGIT PRESSURE   (+ = toward PLAY)
+  clipped   (what training actually applies)   -0.00073   se 0.00005
+  unclipped (what it would be without clip)    +0.00411   se 0.00015
+  clipping REMOVES 0.00484 of pressure         +34.08 sigma, paired
+  clipped pressure NEGATIVE in 393/504 windows; unclipped POSITIVE in 462/504
+
+CLIP INCIDENCE                       PLAY        WAIT       ratio
+  clip rate                          0.4149      0.0015     278x
+  gradient KILLED                    0.2214      0.0009     238x
+
+PUSH ON PLAYS
+  surviving (after clip)  +0.29701      raw CONTROL (no clip)  +0.52184
+  clipping removes 43% of the push toward playing
+  play share of steps: 3.10%
+```
+
+**Without the clip the gate's net signal points TOWARD playing (+0.00411). With it, it points
+AWAY (-0.00073).** The clip does not merely damp the signal -- it INVERTS it. That is the whole
+gate failure, and it is an OPTIMISER ARTIFACT.
+
+### The mechanism, end to end
+
+Plays are ~3% of steps. `d(log p)/d(logit)` is ~1 for the MINORITY action and ~p for the majority,
+so an identical logit move swings a play's log-ratio ~1/p harder -- §4 measured 19x on this very
+head. So plays leave the +-20% trust region **278x** more often than waits, 22% of their gradient is
+killed outright against 0.09% of waits', 43% of the push toward playing is deleted, and what
+survives is net NEGATIVE. Fewer plays makes plays a smaller minority, which widens the asymmetry.
+It is self-reinforcing, which is why it looks like "decay from start".
+
+### /!\ THIS CORRECTS §4's STANDING CONCLUSION
+
+§4 reported *"the PPO surrogate's net gate pressure is ~0 while P(play) is collapsing -- i.e.
+something outside the PPO term is driving the gate down"* and sent the search to the entropy bonus,
+`_clamp_heads()` and the exploration floors. That reading was **underpowered**: per-window sd is
+0.00104 against a mean of 0.00073, so a single window cannot see it. §4 said so itself and said to
+accumulate. Accumulated, the clipped pressure is **-14 sigma from zero**, not ~0. The cause is
+INSIDE the PPO term after all, and the hunt outside it can stop.
+
+### What to do, and it is already built and staged
+
+`ppo_clip_play_mult` widens the clip bound for PLAY actions only. It is **1.0 = OFF**. §4 measured
+4.0 as cutting the kill asymmetry to 3.5x and buying ~8.5 reward and ~0.22 P(play), and its
+**5-value x 2-seed sweep is STAGED AND UNRUN**. That sweep is now the highest-value experiment on
+the board, and at 700 matches it is ~2 hours, not 8.
+
+/!\ Do NOT restate the retracted claim #4 ("mult=4.0 stops the decay") -- it was overstated on one
+seed and the honest prior is "reduces the damage". What is NEW here is the MECHANISM at 34 sigma
+and the SIGN FLIP, neither of which was established before; the knob's effect size still is not.
