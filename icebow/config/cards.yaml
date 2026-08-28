@@ -1630,6 +1630,13 @@ cards:
     range: melee
     verified: false
     spawn_unit_stats: {range_tiles: 5.0, speed_tiles: 2.0, hit_speed: 1.6}
+    # THE BACKPACK, owner 2026-08-28 + Goblin Giant page: "He also carries two Spear Goblins on his
+    # back, that can attack independently on the Goblin Giant. When he is defeated, the Spear
+    # Goblins spawn and continue attacking." The BASE card carries them exactly as the Evolution
+    # does -- the field existed only on goblin_giant_evo, and the engine read it NOWHERE, so on
+    # both rows it was inert. Same stats as the Evo row (they are the same two goblins).
+    backpack_spear_goblins: {count: 2, hitpoints: 133, damage: 81, hit_speed: 1.6,
+                             range_tiles: 5.0, projectile_speed: 500, attacks: [air, ground]}
 
   elixir_golem:
     display: "Elixir Golem"
@@ -2996,7 +3003,11 @@ cards:
   # 2026-08-15 wiki attr row: 50% -> Very Fast (120), 10 s fuse, Melee: Short (0.5), blast 2.5.
   # His "life 10" is the LIT FUSE, not a lifetime (hp must not bleed from deploy); below half
   # he sprints at the nearest building and detonates on connect or when the fuse runs out.
-  goblin_demolisher: {range: long, flags: [ranged, splash, death_damage, knockback],
+  # OWNER 2026-08-28: his ATTACK does NOT knock back. The `knockback` flag had to be REMOVED
+  # rather than set to 0 -- build_spec reads `knockback_tiles: 0` as absent and re-applies
+  # _KNOCKBACK_DEFAULT whenever the flag is present, so the flag is the only real switch.
+  # His DEATH explosion is untouched: that is `death_knockback_tiles`, a separate key.
+  goblin_demolisher: {range: long, flags: [ranged, splash, death_damage],
                       enrage_frac: 0.5, enrage_fuse_s: 10.0, enrage_speed: 2.0, enrage_reach: 0.5,
                       verified: true}
   # STILL NOT MODELLED, and why:

@@ -486,6 +486,16 @@ class CardSpec:
     # cast during this phase, it will not affect the Skeletons." The death blast + knockback
     # land at once; the bodies arrive after this delay. That gap IS the log-timing skill.
     death_spawn_delay_s: float = 0.0
+    # GOBLIN GIANT's BACKPACK. "He also carries two Spear Goblins on his back, that can attack
+    # independently on the Goblin Giant. When he is defeated, the Spear Goblins spawn and continue
+    # attacking" (Goblin Giant page). They have no body while riding -- not separately targetable --
+    # so they are an extra ranged attack on the carrier plus a death spawn, NOT attached units.
+    bp_spec: Optional["CardSpec"] = None
+    bp_count: int = 0
+    bp_dmg: float = 0.0
+    bp_hit_speed: float = 0.0
+    bp_range: float = 0.0
+    bp_air: bool = True
     # GOBLIN BARREL: thrown from the caster's KING TOWER, so its flight time grows with the
     # distance thrown -- the same physics the rocket already uses.
     lobbed: bool = False
@@ -962,6 +972,13 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
     spw = dict(db.spawner(base) or {})
     if c.get("spawns"):
         spw.update(c["spawns"])          # an EVO row / curation may override the whole spawner
+    _bp = dict(c.get("backpack_spear_goblins") or {})
+    bp_spec = None
+    if _bp:
+        try:
+            bp_spec = build_spec(db, "spear_goblins", level)
+        except Exception:                                     # noqa: BLE001 - unknown key: no backpack
+            bp_spec = None
     spawner_spec = None                  # (Evo Furnace 2.4s, Evo Battle Ram -> EVO barbarians,
                                          # Evo Goblin Giant + Evo Lumberjack gain one outright)
     if spw and spw.get("unit") and spw["unit"] != base:
@@ -1069,6 +1086,12 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         freezes=("freeze" in flags or bool(c.get("freeze_duration_s"))),
         level=int(level), sight=sight, pulse_dmg=p_dmg, pulse_r=p_r, pulse_stun=p_stun, pulse_interval=p_int,
         spawn_spec=spawn_spec, spawn_count=spawn_count,
+        bp_spec=bp_spec,
+        bp_count=(int(_bp.get("count") or 0) if bp_spec is not None else 0),
+        bp_dmg=float(_bp.get("damage") or 0.0) * sc,
+        bp_hit_speed=float(_bp.get("hit_speed") or 1.6),
+        bp_range=float(_bp.get("range_tiles") or 0.0),
+        bp_air=("air" in (_bp.get("attacks") or ["air", "ground"])),
         spawner_spec=spawner_spec,
         spawner_count=(int(spw.get("count") or 1) if spawner_spec is not None else 0),
         spawner_interval=(float(spw.get("interval") or 0.0) if spawner_spec is not None else 0.0),
@@ -1365,6 +1388,7 @@ class Unit:
                                  # for the CURRENT engagement. Cleared on losing reach, so a unit
                                  # that gets kited or knocked back has to wind up again.
     deploy_left: float = 0.0     # deploy delay remaining (can't act while > 0)
+    bp_cd: float = 0.0           # GOBLIN GIANT backpack: cooldown of the riding Spear Goblins
     slow_left: float = 0.0       # SLOW status timer (halved move + attack speed)
     stun_left: float = 0.0       # STUN / FREEZE status timer (can't act while > 0)
     pulse_cd: float = 0.0        # Evo Tesla: time until its next area-shock pulse
@@ -3008,6 +3032,8 @@ class SimEngine:
                 continue
             u.age += dt
             u.cooldown = max(0.0, u.cooldown - dt)
+            if u.spec.bp_count > 0 and u.deploy_left <= 0.0 and u.stun_left <= 0.0:
+                self._backpack_fire(u, dt)
             if u.flying_left > 0.0:
                 # AIRBORNE: the Hero Wizard in Fiery Flight, or a body the Hero Giant has thrown.
                 # TICKED HERE, ahead of the stun/deploy early-outs, and it has to be: the hurl
@@ -3500,6 +3526,8 @@ class SimEngine:
                                               int(u.spec.spawner_death)))   # barrel limbo
                 else:
                     self._spawn_from(u, u.spec.spawner_death)  # death burst (Tombstone's 4, Drill's 2)
+                if u.spec.bp_count > 0 and u.spec.bp_spec is not None:
+                    self._spawn_backpack(u)     # "when he is defeated, the Spear Goblins spawn"
                 if u.spec.mid_drop_frac > 0.0 and not u.mid_drop_done:
                     # EVO SKEL BARREL: "if this hitpoints trigger isn't activated before reaching a
                     # building, the 2 barrels will drop at once" -- second blast + second 7 skels.
@@ -4053,6 +4081,54 @@ class SimEngine:
             if sp.ghost_life_s > 0.0:
                 nu.hatch_left = sp.ghost_life_s          # timed silent removal (no death effects)
             self.units.append(nu)
+
+    def _spawn_backpack(self, u: "Unit") -> None:
+        """The Goblin Giant's two Spear Goblins get bodies when he loses his."""
+        sp = u.spec.bp_spec
+        if sp is None or u.spec.bp_count <= 0:
+            return
+        fwd = -1.0 if u.team == 0 else 1.0
+        step = u.spec.radius + sp.radius + 0.1
+        for i in range(int(u.spec.bp_count)):
+            ox = ((i % 2) * 2 - 1) * step / _TILES_X          # one either side of where he fell
+            oy = (-fwd * u.spec.radius) / _TILES_Y            # behind him, not ahead of him
+            x, y = _clamp_xy(u.x + ox, u.y + oy, sp.radius)
+            nu = Unit(spec=sp, team=u.team, x=x, y=y, hp=sp.hp)
+            nu.deploy_left = 0.0                              # already on the field, in his backpack
+            self.units.append(nu)
+
+    def _backpack_fire(self, u: "Unit", dt: float) -> None:
+        """The riding Spear Goblins attack INDEPENDENTLY of their carrier.
+
+        Their own hit speed, their own range, and NOT bound by his buildings-only targeting -- that
+        independence is the whole reason a Goblin Giant chips defenders on the way in.
+
+        SIMPLIFICATION, recorded as one: direct damage rather than two projectile streams. The
+        spears fly at 500 over at most 5 tiles, so travel is under a tick, but this does mean they
+        cannot be dodged or intercepted the way a real spear can.
+        """
+        s = u.spec
+        u.bp_cd = max(0.0, u.bp_cd - dt)
+        if u.bp_cd > 0.0:
+            return
+        best, bd = None, s.bp_range
+        for e in self.units:
+            if e.team == u.team or e.hp <= 0 or e.deploy_left > 0.0:
+                continue
+            if e.spec.flying and not s.bp_air:
+                continue
+            g = _dist(u.x, u.y, e.x, e.y) - e.spec.radius
+            if g <= bd:
+                best, bd = e, g
+        if best is not None:
+            self._hurt(best, s.bp_dmg * s.bp_count)           # both goblins fire together
+            u.bp_cd = s.bp_hit_speed
+            return
+        for tw in self._enemy_towers(u.team):
+            if tw.alive and _gap(u.x, u.y, tw) <= s.bp_range:
+                self._damage_tower(tw, s.bp_dmg * s.bp_count, u.team)
+                u.bp_cd = s.bp_hit_speed
+                return
 
     def _spawn_cursed_hog(self, u: "Unit") -> None:
         """Mother Witch curse: a cursed enemy TROOP turns into a hog for the curser's team on death."""
