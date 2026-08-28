@@ -3754,7 +3754,7 @@ class SimEngine:
         if isinstance(ref, Tower):
             self._damage_tower(ref, dmg, u.team)
         elif ref.hp > 0:
-            self._hurt(ref, dmg, source=attacker)
+            self._hurt(ref, dmg, source=u)          # the leaper IS the attacker here
             self._apply_status(u.team, s, ref)
             self._knock(ref, s, u.x, u.y)
         if s.leap_splash > 0.0 or s.splash:                   # Mega Knight lands ON a group
@@ -4473,7 +4473,7 @@ class SimEngine:
             ref.parry_ready_t = self.t + ref.spec.parry_cd_s
             self._hurt(attacker, 2.0 * ref.spec.hit_dmg * ref.dmg_mult)
             return
-        self._hurt(ref, dmg)
+        self._hurt(ref, dmg, source=attacker)
         self._apply_status(team, spec, ref)
         if spec.kind != "tower" and getattr(ref, "spec", None) is not None:
             ref.last_unit_hit_t = self.t          # combat stamp: a UNIT (not a tower) hit it

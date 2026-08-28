@@ -169,6 +169,48 @@ class EvoGoblinCageSuppressionTests(unittest.TestCase):
             eng.advance(0.1)
         self.assertIsNone(cage.cage_prisoner)
 
+    def test_the_cage_can_actually_damage_its_prisoner_THROUGH_THE_ATTACK_PATH(self):
+        """INTEGRATION, and the gap that shipped a broken mechanic.
+
+        The unit test above calls `_hurt(..., source=cage)` DIRECTLY, which proves the rule but not
+        the wiring. In a real match the cage swings through `_land_hit`, and `_land_hit` was not
+        forwarding its `attacker` -- so the prisoner was immune to the cage as well as to everything
+        else, i.e. a permanent stun with no way out. Test the path the game uses, not the helper.
+        """
+        eng = _engine()
+        eng.reset()
+        cage = Unit(spec=build_spec(_DB, "goblin_cage_evo", 11), team=0, x=0.5, y=0.5, hp=780.0)
+        foe = Unit(spec=build_spec(_DB, "knight", 11), team=1,
+                   x=0.5, y=0.5 - 2.5 / _TILES_Y, hp=600.0)
+        eng.units += [cage, foe]
+        cage.deploy_left = foe.deploy_left = 0.0
+        hp0 = foe.hp
+        for _ in range(200):
+            eng.advance(0.1)
+        self.assertLess(foe.hp, hp0,
+                        "the cage cannot damage its own prisoner -- that is a permanent stun")
+
+    def test_a_dashing_unit_landing_on_a_body_does_not_crash(self):
+        """REGRESSION: `_land_leap` was handed `source=attacker`, a name that does not exist in
+        that scope, so EVERY dash landing raised NameError and killed the run. Both suites passed
+        through it -- no test exercised a leap onto a live body."""
+        eng = _engine()
+        eng.reset()
+        for key in ("bandit", "mega_knight"):
+            try:
+                sp = build_spec(_DB, key, 11)
+            except Exception:                                  # noqa: BLE001
+                continue
+            if sp.leap_dmg <= 0.0:
+                continue
+            u = Unit(spec=sp, team=0, x=0.5, y=0.5, hp=3000.0)
+            foe = Unit(spec=build_spec(_DB, "knight", 11), team=1,
+                       x=0.5, y=0.5 - 4.0 / _TILES_Y, hp=3000.0)
+            eng.units += [u, foe]
+            u.deploy_left = foe.deploy_left = 0.0
+            for _ in range(120):
+                eng.advance(0.05)                              # must not raise
+
 
 class RoyalRecruitsLineTests(unittest.TestCase):
     """OWNER 2026-08-28: they spawn in a SINGLE LINE across the board, not a 2x3 rectangle.
