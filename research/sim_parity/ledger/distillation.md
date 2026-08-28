@@ -276,3 +276,60 @@ and only the first is measured.
 What would actually settle it: a run long enough to clear the critic dip (>= ~7,600 episodes) so
 the arms are compared after recovery rather than inside the hole, at 3+ seeds. That is a much more
 expensive experiment than this one and should not be run on a hunch.
+
+## 8. THE ANSWER: the term works, and card choice is not the bottleneck
+
+The mechanism check the outcome check should have been preceded by. Same 9 warm-started
+checkpoints from section 7, scored for top-1 CARD agreement with the teacher on the 36,521-row
+corpus (7,704 teacher-play rows).
+
+```
+   arm   card|teacher-plays     sd        per-seed
+   0.0        0.7975         0.0436   [0.7575, 0.7911, 0.8440]
+   0.5        0.9031         0.0009   [0.9025, 0.9041, 0.9026]
+   2.0        0.9064         0.0012   [0.9073, 0.9069, 0.9051]
+
+   coef 0.5 vs control  +0.1055  (+4.19 sigma)
+   coef 2.0 vs control  +0.1089  (+4.32 sigma)
+```
+
+**The distillation term unambiguously works.** +10.6 points of card agreement at 4.2 sigma, and the
+variance COLLAPSES: the three distilled seeds land within 0.0016 of each other against the
+control's 0.087 spread. The term is doing precisely what it was built to do, and it does it
+identically at both coefficients.
+
+### Put that beside the winrate on the SAME checkpoints
+
+```
+  card agreement   +0.1055   +4.19 sigma     <- the intervention fires
+  winrate          +3.00pp   +0.63 sigma     <- and nothing happens
+```
+
+**Card choice is not the bottleneck.** We can now make the policy pick the teacher's card 90% of
+the time, and it does not win more. That is the cleanest statement of the result this whole line of
+work has produced, and it is only visible because the mechanism and the outcome were measured on
+the same artifacts.
+
+### Therefore the search's advantage is in the TIMING, and that is the one thing that will not transfer
+
+The chain now closes:
+* search takes the FROZEN policy from 37.0% -> 85.7%;
+* its CARD choice is learnable from the student's observation -- 0.4955 -> 0.8754 held out, and
+  0.7975 -> 0.9031 inside a live PPO run at 4.2 sigma;
+* teaching the card choice moves winrate by nothing;
+* so the advantage lives in the GATE -- which measured 0.5892 -> 0.6012, BELOW the always-WAIT
+  floor of 0.7756, i.e. not recoverable from a single frame.
+A teacher that decides WHEN by rolling the future out cannot hand that over to a student that sees
+one frame. The card head was the transferable half, and transferring it is worth ~0.
+
+### DO NOT RUN THE LONGER A/B
+
+It was scoped at 2 arms x 8 seeds x 1,700 matches, ~8 hours unattended, with a minimum detectable
+effect of ~6pp. It is now pointless: we know the intervention fires (4.2 sigma) and the outcome
+does not follow (0.63 sigma). More seeds would sharpen a null whose mechanism is already explained.
+Spend the night on the GATE instead.
+
+/!\ IN-SAMPLE caveat, stated and bounded: the distilled arms trained on this corpus, so 0.90 could
+carry memorisation. It does not change the conclusion -- a student trained from scratch on this
+corpus scored 0.8754 HELD OUT, so ~0.90 in-sample is the expected value of real learning, not an
+artifact. And the conclusion rests on the CONTRAST with winrate, which memorisation cannot explain.
