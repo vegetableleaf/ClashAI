@@ -5133,3 +5133,50 @@ seeds. Same checkpoint, same day. They use different opponent sets, so this is n
 bug -- but no conclusion should quote a winrate without naming which harness produced it, and the
 gap needs closing before either is used as a gate. This is the same class of error as gate_probe
 (§4z correction) and the drill scaffolding: measure the instrument before trusting the number.
+
+## §5b — The ACTION TAX is dead too: a play is worth +5.45 sigma MORE than a wait
+
+`tools/action_tax.py`, 40 greedy matches on `policy_BEST_m18000`, 11,728 decisions. Reward terms
+attributed to the DECISION that produced them by snapshotting the env's own per-term totals either
+side of one step -- per-decision, never totals, because totals are what killed 3x's claim.
+
+```
+steps=11728   plays=1201 (10.2%)   waits=10527
+
+  play   mean +0.1471   sd 1.0035
+  wait   mean -0.0112   sd 0.2318
+  play - wait = +0.1583   (5.45 sigma)
+```
+
+The tax terms ARE real and they ARE one-sided on plays -- `xbow_into_push` -0.0566/play,
+`xbow_overaggression` -0.0175, `building_waste` -0.0103, ~-0.085 per play in total. They are simply
+**dwarfed by the credit**: `wincon_exec` alone pays **+0.1813 per play**, plus `threat_response`
++0.0458 and `wincon_reach` +0.0142, ~+0.24. Net **+0.147 per play**.
+
+Meanwhile a WAIT averages **-0.0112**, and `threat_miss_idle` (-0.0124/wait) is why.
+
+### All three explanations for the low gate are now measured false
+
+1. "the offence has no reachable positive signal" -- FALSE (§5a, +3466 vs -737)
+2. "the policy learned that waiting pays"          -- FALSE (waits average NEGATIVE)
+3. "an action tax makes playing EV-negative"       -- FALSE (plays beat waits by 5.45 sigma)
+
+**The gate is not optimising a broken reward. It is failing to optimise a working one.** The bar
+for a marginal play to be worth taking is only -0.0112, and its average play scores +0.147, yet it
+plays on 10.2% of decisions. This is an OPTIMISATION failure, not a reward-design failure, and that
+is now the narrowest the question has ever been.
+
+### /!\ THE SELECTION CAVEAT, and the measurement that would close it
+
+These are the policy's OWN plays, so play-steps are self-selected to be favourable. This shows the
+plays it MAKES are good; it does not prove the plays it DECLINES would be. The counterfactual --
+clone the state at wait-steps, force the policy's best play, compare returns -- is the measurement
+that settles it, and `rollout_search` already has the cloning machinery.
+
+But note the bar: a declined play only has to beat **-0.0112** to be worth taking, and its chosen
+plays average **+0.147**. For the gate to be correct at 10.2%, the marginal declined play would
+have to be worth thirteen times less than its average play. Possible; not obviously so.
+
+Card and cell come from the POLICY, not a stand-in -- placement drives `xbow_into_push` and
+`building_waste` directly, so a centre-cell stand-in would have manufactured the tax being tested
+for. That is the gate_probe error (§4z correction) avoided by construction.
