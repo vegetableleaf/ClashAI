@@ -641,6 +641,8 @@ class CardSpec:
     spread: float = 0.0       # SHOTGUN half-angle in DEGREES that the pellets scatter within
     curse_dur: float = 0.0    # Mother Witch curse duration on struck enemy troops (seconds)
     hook_min: float = 0.0     # Fisherman hook starts only at/above this edge gap (tiles)
+    formation_step_tiles: float = 0.0  # per-card body spacing for a multi-unit drop (0 = derive)
+    cage_suppress: bool = False  # EVO GOBLIN CAGE: the hooked body is pulled INSIDE and held
     hook_max: float = 0.0     # Fisherman hook reaches up to this edge gap (tiles)
     hook_time: float = 0.0    # Fisherman hook wind-up/execution time (seconds)
     hook_speed: float = 0.0   # Fisherman hook projectile speed (tiles/s), informational for now
@@ -1303,6 +1305,8 @@ def build_spec(db, key: str, level: int = 11) -> CardSpec:
         spread=float(c.get("spread_degrees") or 0.0),
         curse_dur=float(c.get("curse_duration_s") or 0.0),
         hook_min=float(c.get("hook_min_tiles") or 0.0),
+        formation_step_tiles=float(c.get("formation_step_tiles") or 0.0),
+        cage_suppress=bool(c.get("cage_suppress")),
         hook_max=float(c.get("hook_max_tiles") or 0.0),
         hook_time=float(c.get("hook_time_s") or 0.0),
         hook_speed=float(c.get("hook_speed_tiles") or 0.0),
@@ -1493,6 +1497,8 @@ class Unit:
     # A compound episode runs several drills on one board and each one's predicates must see only
     # its own units, or "no enemy alive" is answered by a different drill's Hog.
     drill_tag: int = -1
+    caged_by: object = None      # EVO GOBLIN CAGE: the cage holding this body prisoner
+    cage_prisoner: object = None # ...and, on the cage, who it is holding (one at a time)
     hook_left: float = 0.0       # Fisherman: seconds remaining in an active hook-pull motion
     hook_windup_left: float = 0.0  # fixed pre-throw wind-up time
     hook_out_left: float = 0.0   # hook projectile travel time OUT to target
@@ -2339,7 +2345,13 @@ class SimEngine:
         # Log/Arrows radius; four abreast span ~4 tiles and cannot all be hit by one cheap spell,
         # so modelling them as a block over-values the spell answer.
         cols = n if getattr(spec, "line_formation", False) else int(math.ceil(math.sqrt(n)))
-        step = max(0.4, spec.radius * 2.2)            # touching-but-not-overlapping bodies (TILES)
+        # PER-CARD SPACING when the card publishes one. Royal Recruits are not merely "in a line",
+        # they are in a line SPANNING THE ARENA -- the wiki calls them "the most amount of space of
+        # any card in the game, stretching across almost the entire arena", and it is why they are
+        # "the only card that cannot be placed at the opponent's territory if one Crown Tower has
+        # been destroyed". At the derived spacing the shoulder-to-shoulder default gives them a
+        # ~5.5-tile line, which is a completely different card: one Arrows covers it.
+        step = spec.formation_step_tiles or max(0.4, spec.radius * 2.2)
         # Lay the members out row by row (each row centred), then subtract the cluster's mean so the
         # formation is centred on the drop point EXACTLY -- a partly-filled last row (3 bodies in a
         # 2x2, the Skeletons case) would otherwise bias the whole squad up and to one side.
@@ -3031,6 +3043,23 @@ class SimEngine:
             if u.hp <= 0:
                 continue
             u.age += dt
+            # CAGED: no movement, no attack, and the body is held at the cage. Released the moment
+            # the cage stops being a live body -- "until the cage breaks, or the target dies".
+            if u.caged_by is not None:
+                cg = u.caged_by
+                if not isinstance(cg, Unit) or cg.hp <= 0:
+                    u.caged_by = None
+                    if isinstance(cg, Unit) and cg.cage_prisoner is u:
+                        cg.cage_prisoner = None
+                else:
+                    u.x, u.y = cg.x, cg.y
+                    u.attacking = False
+                    u.locked = False
+                    continue
+            if u.cage_prisoner is not None:
+                pr = u.cage_prisoner
+                if not isinstance(pr, Unit) or pr.hp <= 0:
+                    u.cage_prisoner = None               # prisoner died: the cage is free again
             u.cooldown = max(0.0, u.cooldown - dt)
             if u.spec.bp_count > 0 and u.deploy_left <= 0.0 and u.stun_left <= 0.0:
                 self._backpack_fire(u, dt)
@@ -3676,6 +3705,17 @@ class SimEngine:
             self._land_hit(u.team, "tower", ref, u.spec, dmg, tower_dmg, attacker=u)
         elif isinstance(ref, Unit) and ref.hp > 0:
             self._land_hit(u.team, "unit", ref, u.spec, dmg, tower_dmg, attacker=u)
+        # EVO GOBLIN CAGE: the hook does not merely pull, it IMPRISONS. Owner 2026-08-28: the
+        # target is dragged INTO the cage, cannot move or attack, and can only take the cage's own
+        # damage, until the cage breaks or the target dies.
+        if (u.spec.cage_suppress and u.hook_mode == "target"
+                and isinstance(ref, Unit) and ref.hp > 0 and u.cage_prisoner is None):
+            ref.caged_by = u
+            u.cage_prisoner = ref
+            ref.x, ref.y = u.x, u.y                      # held inside, not beside
+            ref.attacking = False
+            ref.locked = False
+            ref.target = None
         u.charge_dist = 0.0
         u.hook_windup_left = u.hook_out_left = u.hook_pull_left = 0.0
         u.hook_mode = u.hook_kind = ""
@@ -3714,7 +3754,7 @@ class SimEngine:
         if isinstance(ref, Tower):
             self._damage_tower(ref, dmg, u.team)
         elif ref.hp > 0:
-            self._hurt(ref, dmg)
+            self._hurt(ref, dmg, source=attacker)
             self._apply_status(u.team, s, ref)
             self._knock(ref, s, u.x, u.y)
         if s.leap_splash > 0.0 or s.splash:                   # Mega Knight lands ON a group
@@ -4144,7 +4184,7 @@ class SimEngine:
         nu.deploy_left = min(sp.deploy_time, 0.2)
         self.units.append(nu)
 
-    def _hurt(self, u: "Unit", dmg: float, hits_hidden: bool = False) -> None:
+    def _hurt(self, u: "Unit", dmg: float, hits_hidden: bool = False, source=None) -> None:
         """Apply damage to a UNIT. Two defensive mechanics can reduce it first:
         - DAMAGE REDUCTION while NOT attacking (Evo Knight -- 60% less from ALL sources whenever it isn't
           engaged; it drops the moment it deals a hit, tracked by `u.attacking`). NOT a numerical HP pool.
@@ -4156,6 +4196,11 @@ class SimEngine:
         # of the wind-up is not an option the defender has.
         # "She is immune to damage during her dash" -- the WHOLE dash, charge and flight alike.
         if (u.leap_left > 0.0 or u.leap_go) and u.spec.leap_invuln:
+            return
+        # CAGED: "it can only take the damage from the goblin cage". Every other source -- spells,
+        # zones, other troops, the tower -- is refused while it is held. `source` defaults to None,
+        # so a caller that does not name an attacker is correctly treated as "not the cage".
+        if u.caged_by is not None and source is not u.caged_by:
             return
         # DASHING DASH: "His dashes have invulnerability", "When dashing, he is immune to all
         # forms of damage like the Bandit. This immunity can be extended by having him dash
@@ -4969,17 +5014,28 @@ class SimEngine:
         else:
             hx, hy = hx / d, hy / d
         base = math.atan2(hy, hx)
+        # DETONATE ON THE TARGET'S FRONT EDGE, not its centre (owner 2026-08-28). The firework
+        # "explodes on impact", and impact with a 1.5-radius Crown Tower happens at its face -- the
+        # carrier was flying THROUGH the hitbox to the centre and handing the shards 1.5 free tiles
+        # of penetration. The target still takes all five bolts: _pierce_pass runs at the spawn
+        # point and its reach (0.4) plus the tower radius (1.5) still covers it.
+        _tr = getattr(p.target, "radius", None)
+        if _tr is None:
+            _tsp = getattr(p.target, "spec", None)
+            _tr = getattr(_tsp, "radius", 0.0) if _tsp is not None else 0.0
+        _tr = float(_tr or 0.0)
+        _sx, _sy = p.x - hx * _tr / _TILES_X, p.y - hy * _tr / _TILES_Y
         for i in range(n):
             ang = base + math.radians(-35.0 + 70.0 * i / (n - 1))
             cx, cy = math.cos(ang), math.sin(ang)
             shard = Projectile(
-                label=f"{s.base}_spark", team=p.team, x=p.x, y=p.y,
-                tx=p.x + cx * left / _TILES_X, ty=p.y + cy * left / _TILES_Y, target=None,
+                label=f"{s.base}_spark", team=p.team, x=_sx, y=_sy,
+                tx=_sx + cx * left / _TILES_X, ty=_sy + cy * left / _TILES_Y, target=None,
                 spec=s, dmg=p.dmg, tower_dmg=p.tower_dmg, radius=0.0,
                 speed=max(s.proj_speed, 8.0), left=left,
                 ground_only=not s.attacks_air, pierce=True,
                 width=s.proj_radius or 0.4,
-                dirx=cx / _TILES_X, diry=cy / _TILES_Y, ox=p.x, oy=p.y, shooter=p.shooter,
+                dirx=cx / _TILES_X, diry=cy / _TILES_Y, ox=_sx, oy=_sy, shooter=p.shooter,
                 spark_end_dmg=s.spark_dps_small * 0.25,  # ONE small zone at the END of each bolt
                 spark_end_r=s.spark_r, spark_end_dur=s.spark_dur)
             self.projectiles.append(shard)

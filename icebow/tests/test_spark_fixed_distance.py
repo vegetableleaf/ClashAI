@@ -94,6 +94,34 @@ class ShrapnelFixedDistanceTests(unittest.TestCase):
         self.assertLess(runs[0], 7.0,
                         "a point-blank shot is spraying shrapnel far downfield again")
 
+    def test_the_carrier_detonates_on_the_targets_FRONT_EDGE_not_its_centre(self):
+        """OWNER 2026-08-28. The firework explodes on impact, and impact with a 1.5-radius Crown
+        Tower happens at its face -- the carrier was flying THROUGH the hitbox to the centre and
+        handing the shards 1.5 free tiles of penetration.
+
+        The payload property must survive: all five bolts still land on the tower it hit, which is
+        the published "totaling 320 if all shards hit the same target".
+        """
+        import random as _r
+        from clashrl.sim.engine import SimEngine as _E, Unit as _U, _TILES_X as _TX
+        from test_sim_status_effects import DummyCfg as _D
+        eng = _E(_D(), CardDB(path=ROOT / "config" / "cards.yaml"), _r.Random(0))
+        eng.reset()
+        ps = [t for t in eng.towers[1] if not t.king]
+        p0 = sum(t.hp for t in ps)
+        fc = _U(spec=build_spec(eng.db, "firecracker_evo", 11), team=0,
+                x=3.5 / _TX, y=11.0 / _TILES_Y, hp=304.0)
+        eng.units.append(fc)
+        eng._attack(fc, "tower", ps[0])
+        for _ in range(120):
+            eng._tick_projectiles(0.05)
+        self.assertAlmostEqual(p0 - sum(t.hp for t in ps), 320.0, places=1,
+                               msg="the five bolts no longer all land on the target it hit")
+        shard = [q for q in eng.projectiles if q.label.endswith("_spark")]
+        if shard:
+            self.assertGreater(shard[0].oy * _TILES_Y, 6.5,
+                               "shards still originate at the tower CENTRE (y=6.5), not its face")
+
 
 if __name__ == "__main__":
     unittest.main()

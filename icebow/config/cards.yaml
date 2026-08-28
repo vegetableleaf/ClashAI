@@ -647,7 +647,7 @@ cards:
   #     one troop being released and the next being pulled in. The KB models hook_time_s 1.2 /
   #     hook_speed_tiles 8.0 / hook_max_tiles 3.0 but has no cooldown, so the sim has no gap
   #     between grabs at all
-  goblin_cage_evo: {hook_max_tiles: 3.0, hook_time_s: 1.2, hook_speed_tiles: 8.0, ability_cooldown_s: 0.3, verified: true}
+  goblin_cage_evo: {cage_suppress: true, hook_max_tiles: 3.0, hook_time_s: 1.2, hook_speed_tiles: 8.0, ability_cooldown_s: 0.3, verified: true}
   # EVO GOBLIN DRILL: "submerges and reappears around the tower as it takes damage, spawning
   # Goblins each time" -- every 25% hp lost it resurfaces on a new side with a fresh goblin.
   # I5 2026-08-26 -- adjudicated R2 ledger applied (research/sim_parity/decisions.md; row-by-row
@@ -2512,7 +2512,16 @@ cards:
   # the import missed entirely. That he takes splash while invisible is explicit: 8/4/2022 "fixed an
   # issue where an invisible Royal Ghost was not receiving splash damage".
   royal_ghost: {range: melee, splash: true, flags: [splash], invisibility_time_s: 1.8, verified: true}
-  royal_recruits: {range: melee, flags: [shield], verified: false}   # each recruit carries a shield
+  # OWNER 2026-08-28: they spawn in a SINGLE LINE across the board, not a 2x3 block. Wiki: "Deploys
+  # a line of recruits"; "Their deployment is in a horizontal formation spanning the Arena"; "take
+  # up the most amount of space of any card in the game, stretching across almost the entire arena"
+  # -- which is why they are "the only card that cannot be placed at the opponent's territory if one
+  # Crown Tower has been destroyed". Without line_formation the engine used ceil(sqrt(6)) = 3
+  # columns, i.e. exactly the 2x3 rectangle reported.
+  # /!\ formation_step_tiles 3.0 is DERIVED, not published: 6 bodies at 3.0 span 15 of the arena's
+  # 18 tiles, which is the "almost the entire arena" the page describes. No source gives the number
+  # directly -- worth one in-game check before it is treated as verified.
+  royal_recruits: {range: melee, flags: [shield, line_formation], formation_step_tiles: 3.0, verified: false}   # each recruit carries a shield
   # 2026-08-15 wiki: "a slow, single-target, BUILDING-TARGETING, melee, ground troop" (attr
   # row: Medium (60) / Melee: Medium (1.2) / Building). The thin KB import had no targeting
   # data, so the sim's Rune Giant was brawling troops on the way in. Her ally damage-buff

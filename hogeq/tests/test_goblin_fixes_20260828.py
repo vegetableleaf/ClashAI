@@ -27,7 +27,7 @@ for _p in (str(ROOT / "src"), str(ROOT / "tests")):
 
 from clashrl.cards import CardDB                                   # noqa: E402
 from clashrl.sim.engine import (SimEngine, Unit, build_spec,       # noqa: E402
-                                _TILES_Y)
+                                _TILES_X, _TILES_Y)
 from test_sim_status_effects import DummyCfg                       # noqa: E402
 
 _DB = CardDB(path=ROOT / "config" / "cards.yaml")
@@ -102,6 +102,106 @@ class GoblinDemolisherKnockbackTests(unittest.TestCase):
     def test_his_death_explosion_is_untouched(self):
         s = build_spec(_DB, "goblin_demolisher", 11)
         self.assertGreater(s.death_dmg, 0.0, "the death explosion was removed with the knockback")
+
+
+class EvoGoblinCageSuppressionTests(unittest.TestCase):
+    """OWNER 2026-08-28: the Evo Goblin Cage pulls its target INTO the cage. While inside, the
+    target is suppressed -- cannot move or attack -- and can only take the cage's own damage. It
+    ends when the cage breaks or the target dies.
+
+    BEFORE: the cage reused the Fisherman hook, which pulls the body to `reach` and then hits it
+    normally. There was no suppression, no damage exclusivity, and no release condition at all.
+    """
+
+    def _caged(self):
+        eng = _engine()
+        eng.reset()
+        cage = Unit(spec=build_spec(_DB, "goblin_cage_evo", 11), team=0, x=0.5, y=0.5, hp=780.0)
+        foe = Unit(spec=build_spec(_DB, "knight", 11), team=1,
+                   x=0.5, y=0.5 - 2.5 / _TILES_Y, hp=2000.0)
+        eng.units += [cage, foe]
+        cage.deploy_left = foe.deploy_left = 0.0
+        for _ in range(60):
+            eng.advance(0.1)
+        return eng, cage, foe
+
+    def test_only_the_evolution_cages(self):
+        self.assertTrue(build_spec(_DB, "goblin_cage_evo", 11).cage_suppress)
+        self.assertFalse(build_spec(_DB, "goblin_cage", 11).cage_suppress)
+        self.assertFalse(build_spec(_DB, "fisherman", 11).cage_suppress,
+                         "the Fisherman shares the hook but must NOT imprison")
+
+    def test_the_target_is_taken_prisoner(self):
+        eng, cage, foe = self._caged()
+        self.assertIs(foe.caged_by, cage)
+        self.assertIs(cage.cage_prisoner, foe)
+
+    def test_a_caged_body_cannot_move(self):
+        eng, cage, foe = self._caged()
+        px, py = foe.x, foe.y
+        for _ in range(30):
+            eng.advance(0.1)
+        self.assertAlmostEqual(foe.x, px, places=9)
+        self.assertAlmostEqual(foe.y, py, places=9)
+
+    def test_only_the_cage_can_damage_it(self):
+        eng, cage, foe = self._caged()
+        hp = foe.hp
+        eng._hurt(foe, 500.0)                      # a spell, another troop, the tower: refused
+        self.assertEqual(foe.hp, hp, "outside damage reached a caged body")
+        eng._hurt(foe, 500.0, source=cage)         # the cage itself: allowed
+        self.assertAlmostEqual(hp - foe.hp, 500.0, places=6)
+
+    def test_breaking_the_cage_releases_it(self):
+        eng, cage, foe = self._caged()
+        cage.hp = 0.0
+        for _ in range(20):
+            eng.advance(0.1)
+        self.assertIsNone(foe.caged_by, "the prisoner is still caged after the cage broke")
+        hp = foe.hp
+        eng._hurt(foe, 100.0)
+        self.assertAlmostEqual(hp - foe.hp, 100.0, places=6, msg="still immune after release")
+
+    def test_a_dead_prisoner_frees_the_cage(self):
+        eng, cage, foe = self._caged()
+        foe.hp = 0.0
+        for _ in range(20):
+            eng.advance(0.1)
+        self.assertIsNone(cage.cage_prisoner)
+
+
+class RoyalRecruitsLineTests(unittest.TestCase):
+    """OWNER 2026-08-28: they spawn in a SINGLE LINE across the board, not a 2x3 rectangle.
+    Wiki: "Their deployment is in a horizontal formation spanning the Arena" and they "take up the
+    most amount of space of any card in the game, stretching across almost the entire arena".
+    """
+
+    def _drop(self, card):
+        eng = _engine()
+        eng.reset()
+        eng.elixir[0] = 10.0
+        eng.deploy(0, build_spec(_DB, card, 11), 0.5, 0.72)
+        us = [u for u in eng.units if u.spec.base == card]
+        return [u.x * _TILES_X for u in us], [u.y * _TILES_Y for u in us]
+
+    def test_six_recruits_in_one_row(self):
+        xs, ys = self._drop("royal_recruits")
+        self.assertEqual(len(xs), 6)
+        self.assertAlmostEqual(max(ys) - min(ys), 0.0, places=6,
+                               msg="the recruits are in more than one row -- still a rectangle")
+
+    def test_the_line_spans_most_of_the_arena(self):
+        xs, _ = self._drop("royal_recruits")
+        span = max(xs) - min(xs)
+        self.assertGreater(span, 12.0, f"span {span:.2f}t is not 'almost the entire arena' (18t)")
+        self.assertLess(span, 18.0, "the line is wider than the arena")
+
+    def test_ordinary_swarms_are_unchanged(self):
+        """NEGATIVE CONTROL: the flag must not turn every multi-unit card into a line."""
+        for card in ("skeletons", "barbarians"):
+            xs, ys = self._drop(card)
+            self.assertGreater(max(ys) - min(ys), 0.0,
+                               f"{card} became a single line -- the change leaked")
 
 
 if __name__ == "__main__":

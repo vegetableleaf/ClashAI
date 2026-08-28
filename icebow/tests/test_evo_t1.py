@@ -13,7 +13,7 @@ for p in (str(SRC), str(ROOT / "tests")):
         sys.path.insert(0, p)
 
 from test_sim_status_effects import _make_engine
-from clashrl.sim.engine import build_spec
+from clashrl.sim.engine import _TILES_X, _TILES_Y, build_spec
 
 
 class EvoT1Tests(unittest.TestCase):
@@ -83,13 +83,27 @@ class EvoT1Tests(unittest.TestCase):
         # The knight walks TOWARD the recruits, so he starts 5.8 tiles out -- each side covers
         # ~2.9, comfortably past the 2.5-tile charge run-up (a 3.8-tile gap left them at ~1.9).
         eng.elixir = [10.0, 10.0]
-        self.assertTrue(eng.deploy(0, build_spec(eng.db, "knight", 11), 0.50, 0.64))
+        # SAME LANE AS THE SURVIVING RECRUIT. The probe isolates ONE body, and since the recruits
+        # spawn in their real arena-spanning line that body is no longer at x=0.50 -- the centre of
+        # a 6-wide line at 3-tile spacing sits ~1.5 tiles off. Dropping the knight at a fixed 0.50
+        # meant the two never met inside the window.
+        self.assertTrue(eng.deploy(0, build_spec(eng.db, "knight", 11), keep.x, 0.64))
         kn = [u for u in eng.units if u.team == 0][-1]
+        # ATTRIBUTE THE DAMAGE. "First HP drop over 50" is not the same as "a recruit hit him":
+        # a Princess Tower swing is 157.6 and its range is ~7.5 tiles, so a knight that drifts into
+        # tower range on his way to the recruit registers 3 tower hits (464.2) and the probe reads
+        # it as a recruit landing 464. That is exactly what happened when the recruits went from a
+        # 1.1-tile huddle to their real arena-spanning line: the surviving centre body sits 1.5
+        # tiles off the knight's lane, so he meets a tower first. Require the recruit to actually
+        # be in reach before believing the number.
         for _ in range(240):
             prev = kn.hp
             eng.advance(0.05)
             if prev - kn.hp > 50:
-                return prev - kn.hp                          # the first landed recruit swing
+                r = squad[0]
+                gap = (((kn.x - r.x) * _TILES_X) ** 2 + ((kn.y - r.y) * _TILES_Y) ** 2) ** 0.5
+                if r.hp > 0 and gap <= r.spec.reach + r.spec.radius + kn.spec.radius + 0.6:
+                    return prev - kn.hp                      # the first landed RECRUIT swing
         self.fail("no recruit ever landed a hit")
 
     def test_recruits_charge_only_after_shield(self):
