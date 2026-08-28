@@ -5278,3 +5278,50 @@ the bottleneck. The 8k run took ~14 hours and came out flat. AlphaStar's paramet
 scaling data buys worse sample efficiency and more overfitting, against an optimiser bug that would
 still be there. If rung 3 is ever reached, **fix throughput first** -- it is an engineering problem
 (the pure-Python engine), not an architecture one.
+
+## §5d — The clip sweep: the mechanism was REPAIRED and it bought NOTHING. Ladder advances to the critic
+
+5 values x 3 seeds x 700 matches, from scratch, drill_frac 0.3. The experiment §5c pointed at.
+
+```
+mult  clipPLAY  killPLAY  gatePress   %neg-windows   finalWR    sd    avg_rew    sd
+1.0     0.3741    0.1971   -0.00060       75%          6.67   5.03    -19.50   0.80
+1.7     0.2057    0.0872   -0.00004       51%          1.33   1.15    -20.07   1.21
+2.5     0.1327    0.0480   +0.00015       26%          2.67   3.06    -20.83   2.70
+4.0     0.0702    0.0279   +0.00024       24%          2.00   2.00    -22.30   1.01
+6.0     0.0149    0.0099   +0.00015       32%          4.00   2.00    -19.13   0.15
+
+vs control:  1.7  WR -5.33pp (-1.79s)  rew -0.57 (-0.68s)
+             2.5  WR -4.00pp (-1.18s)  rew -1.33 (-0.82s)
+             4.0  WR -4.67pp (-1.49s)  rew -2.80 (-3.75s)   <- significantly WORSE
+             6.0  WR -2.67pp (-0.85s)  rew +0.37 (+0.78s)
+```
+
+**The intervention did exactly what it was supposed to.** Clipping on plays fell 25x, outright
+gradient-kill 20x, and the gate pressure **FLIPPED POSITIVE** at mult >= 2.5 -- negative windows
+went 75% -> 24%. §5c's mechanism is confirmed live and repairable.
+
+**And no arm beat the control.** Every one is worse on winrate (-0.85 to -1.79 sigma, none at the
+2-sigma bar) and mult 4.0 is **-3.75 sigma worse on reward**, which does clear it in the wrong
+direction.
+
+### What this kills
+
+**The clip sign-flip is REAL but is NOT what limits performance.** That is a hard result and it
+cost only ~3 hours: a 34-sigma mechanism was identified, repaired, and the outcome did not follow.
+Do not reopen `ppo_clip_play_mult` without a new reason -- and note the retracted claim #4
+("mult=4.0 stops the decay") is now doubly dead, since 4.0 is the *worst* arm on reward here.
+
+/!\ Read the winrate column with its spread: the control's own sd is 5.03pp across three seeds, so
+"all arms worse" rests mostly on direction plus the reward column, not on any single 2-sigma
+winrate result. The claim is "no improvement, and some evidence of harm" -- NOT "widening the clip
+is proven harmful".
+
+### LADDER ADVANCES (§6-LADDER rung 1 -> rung 2): the CRITIC
+
+Next is critic capacity, and the case for it is already written: the critic is a single
+`Linear(328 -> 1)`, **329 parameters**, PPO is only as good as its advantages, and value loss is
+not settling. Measure the ADVANTAGE split by PLAY vs WAIT before and after a 2-layer MLP critic --
+that is the quantity the gate actually consumes, and §5b already showed the per-decision REWARD
+favours playing by 5.45 sigma while the policy plays 10% of the time. If the reward says play and
+the advantage says wait, the critic is the gap.
