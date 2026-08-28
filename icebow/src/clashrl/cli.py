@@ -181,7 +181,10 @@ def _cmd_train_sim_ppo(args) -> None:
     train_sim_ppo(cfg, matches=args.matches, resume=args.resume,
                   workers=getattr(args, "workers", None),
                   seed=args.seed, envs=args.envs, init=args.init, device=args.device,
-                  reset_gate=args.reset_gate)
+                  reset_gate=args.reset_gate,
+                  distill_corpus=getattr(args, "distill_corpus", None),
+                  distill_coef=float(getattr(args, "distill_coef", 0.0) or 0.0),
+                  distill_batch=int(getattr(args, "distill_batch", 256) or 256))
 
 
 class _KeyOverride:
@@ -701,6 +704,19 @@ def main() -> None:
                      help="fraction of episodes that are DRILLS instead of full matches "
                           "(overrides sim.drill_frac; 0 = plain matches, 0.3 = suggested mix). "
                           "Use this to A/B the drill curriculum against a plain run.")
+    tsp.add_argument("--distill-corpus", default=None, metavar="NPZ",
+                     help="teacher corpus from research/sim_parity/scripts/distill_label.py. Adds a "
+                          "CARD-HEAD cross-entropy toward the rollout-search teacher's card. Measured "
+                          "on a held-out split BY MATCH: card agreement 0.4955 -> 0.8754 (+38pp over "
+                          "the base policy). The GATE is deliberately NOT distilled -- it measured "
+                          "0.5892 -> 0.6012, BELOW the always-WAIT floor of 0.7756, so the teacher's "
+                          "timing edge is not recoverable from the student's observation.")
+    tsp.add_argument("--distill-coef", type=float, default=0.0,
+                     help="weight on the card-distillation term (0 = OFF, the default). UNTUNED: no "
+                          "A/B has been run on this value, so treat any setting as arm 1 of an "
+                          "experiment, not as a shipped default.")
+    tsp.add_argument("--distill-batch", type=int, default=256,
+                     help="teacher rows sampled per update for the distillation term")
     tsp.set_defaults(func=_cmd_train_sim_ppo)
 
     drl = sub.add_parser("drills",

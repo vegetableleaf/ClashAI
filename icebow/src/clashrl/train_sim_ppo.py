@@ -82,7 +82,9 @@ def compute_gae(rew, val, done, boot, gamma: float, lam: float, trunc=None):
 
 def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, envs=None,
                   init: str | None = None, device: str | None = None,
-                  reset_gate: bool = False, workers: int = 0) -> None:
+                  reset_gate: bool = False, workers: int = 0,
+                  distill_corpus: str | None = None, distill_coef: float = 0.0,
+                  distill_batch: int = 256) -> None:
     try:
         import torch
         import torch.nn as nn
@@ -186,6 +188,52 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             return cards, cells, self.gate(z), v_m, v_d
 
     net = PPONet().to(device)
+
+    # ------------------------------------------------ CARD-HEAD DISTILLATION (teacher = rollout search)
+    # research/sim_parity/ledger/distillation.md. Measured on a held-out split BY MATCH: the CARD
+    # head goes 0.4955 -> 0.8754 agreement with the search teacher (+38pp over the base policy),
+    # while the GATE goes 0.5892 -> 0.6012 and sits BELOW the always-WAIT floor of 0.7756.
+    # So this term trains the CARD HEAD ONLY. Distilling the gate from this corpus is not supported
+    # by the measurement and is deliberately not done.
+    _dst = None
+    if distill_corpus and distill_coef > 0.0:
+        import json as _json
+        _dp = Path(distill_corpus)
+        if not _dp.exists():
+            print(f"[train-sim-ppo] --distill-corpus not found: {_dp}")
+            return
+        _dz = np.load(str(_dp), allow_pickle=True)
+        _dmeta = _json.loads(str(_dz["meta"])) if "meta" in _dz.files else {}
+        # HEAD SHAPE IS NOT NEGOTIABLE. icebow has 10 cards and hogeq 11; a corpus from the other
+        # deck would index a different card set and silently teach the wrong card everywhere.
+        _dn = int(_dmeta.get("n_cards", -1))
+        if _dn != int(n_cards):
+            print(f"[train-sim-ppo] REFUSING distillation: corpus n_cards={_dn}, this deck has {n_cards}.")
+            return
+        _dobs = tuple(_dmeta.get("obs_shape") or ())
+        if _dobs and tuple(int(x) for x in e0.obs_shape) != _dobs:
+            print(f"[train-sim-ppo] REFUSING distillation: corpus obs {_dobs} != env obs "
+                  f"{tuple(int(x) for x in e0.obs_shape)}.")
+            return
+        # TEACHER-PLAY ROWS ONLY: teach_card is -1 wherever the teacher waited, and the measured
+        # quantity is card-given-teacher-plays. Rows where it waited carry no card label at all.
+        _dsel = np.nonzero(np.asarray(_dz["teach_card"]) >= 0)[0]
+        if _dsel.size < 64:
+            print(f"[train-sim-ppo] REFUSING distillation: only {_dsel.size} teacher-play rows.")
+            return
+        _dst = {k: np.ascontiguousarray(_dz[k][_dsel]) for k in ("obs", "hand", "nxt", "elx", "thr")}
+        _dst["card"] = np.ascontiguousarray(np.asarray(_dz["teach_card"])[_dsel]).astype(np.int64)
+        _dst["n"] = int(_dsel.size)
+        print(f"[train-sim-ppo] DISTILL card head: {_dst['n']} teacher-play rows from {_dp.name} "
+              f"(coef {distill_coef}, batch {distill_batch})")
+        print(f"[train-sim-ppo]   corpus provenance: commit {str(_dmeta.get('git_commit'))[:12]} "
+              f"dirty={_dmeta.get('git_dirty')} ckpt {_dmeta.get('checkpoint_sha256_16')} "
+              f"N={_dmeta.get('interval')} PYTHONHASHSEED={_dmeta.get('pythonhashseed')}")
+        if str(_dmeta.get("interval")) not in ("1", "1.0"):
+            # N=1 is not a preference: at N=5 the unsearched decisions between labelled ones
+            # contaminate the targets and the restraint signal comes out with the WRONG SIGN.
+            print("[train-sim-ppo]   WARNING: corpus interval is NOT 1 -- the restraint signal may be inverted.")
+    _dstat = {"loss": 0.0, "n": 0, "kept": 0, "seen": 0}
 
     # masks shared with train_sim: anywhere cards -> all cells, else YOUR half; affordability by cost
     anywhere_ids = set(e0.anywhere_ids)
@@ -1294,6 +1342,47 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                             sil_lp = play * (lp_c.gather(1, c_b.view(-1, 1)).squeeze(1)
                                              + lp_cell.gather(1, cell_b.view(-1, 1)).squeeze(1))
                             loss = loss - sil_coef * (sil_b * sil_lp).sum() / denom
+                    if _dst is not None:
+                        # CARD-HEAD DISTILLATION TERM. A fresh minibatch from the teacher corpus
+                        # each update, forwarded through the SAME masked_logits the policy acts
+                        # under, scored as plain cross-entropy toward the teacher's card.
+                        # NO IMPORTANCE WEIGHT: these are supervised targets, not actions this
+                        # policy took, so pi/mu has no meaning and the ~0.01 ratio that silently
+                        # kills the SIL/PPO signal on prior-driven steps cannot apply here.
+                        _dk = min(int(distill_batch), _dst["n"])
+                        _dj = np.random.choice(_dst["n"], size=_dk, replace=False)
+                        _dhand = torch.as_tensor(_dst["hand"][_dj], device=device)
+                        _delx = torch.as_tensor(_dst["elx"][_dj], device=device)
+                        _dcq, _dceq, _dgq, _, _ = net(
+                            torch.as_tensor(_dst["obs"][_dj], device=device)
+                                 .float().permute(0, 3, 1, 2) / 255.0,
+                            _dhand,
+                            torch.as_tensor(_dst["nxt"][_dj], device=device),
+                            _delx,
+                            torch.as_tensor(_dst["thr"][_dj], device=device))
+                        _dcqm, _, _, _dplayable = masked_logits(_dcq, _dceq, _dgq, _dhand, _delx)
+                        _dtgt = torch.as_tensor(_dst["card"][_dj], device=device)
+                        # A target this net's mask forbids is -inf under log_softmax, which makes
+                        # the loss NaN rather than large -- and one NaN poisons every parameter
+                        # through the shared trunk. Drop those rows: the corpus was labelled under
+                        # its own elixir/bank state, not the one being masked here.
+                        _dkeep = _dplayable.gather(1, _dtgt.view(-1, 1)).squeeze(1)
+                        if int(_dkeep.sum()) >= 8:
+                            _dloss = F.cross_entropy(_dcqm[_dkeep], _dtgt[_dkeep])
+                            loss = loss + distill_coef * _dloss
+                            _dstat["loss"] += float(_dloss)
+                            _dstat["kept"] += int(_dkeep.sum())
+                            _dstat["seen"] += int(_dk)
+                            _dstat["n"] += 1
+                            # FIRST update too: "did the distillation term actually attach?" is
+                            # a question you want answered in the first seconds of a multi-day run,
+                            # not 200 updates in.
+                            if _dstat["n"] == 1 or _dstat["n"] % 200 == 0:
+                                print("[train-sim-ppo]   DISTILL card CE %.4f over %d updates "
+                                      "(%.0f%% of sampled rows kept by the live mask)"
+                                      % (_dstat["loss"] / _dstat["n"], _dstat["n"],
+                                         100.0 * _dstat["kept"] / max(1, _dstat["seen"])),
+                                      flush=True)
                 # WHICH LOSS TERM DRIVES THE GATE. Measured, the gate drifts -0.169 on play steps and
                 # -0.044 on wait steps every update -- consistently, at 11x its own noise. Three terms
                 # touch the gate logits: the PPO surrogate, the entropy bonus, and (via the shared trunk
