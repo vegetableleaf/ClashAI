@@ -4704,7 +4704,7 @@ class SimEngine:
                         p.left = back
                         p.hit.clear()
                         continue
-                    self._drop_spark_zone(p)   # Evo FC shrapnel: one SMALL zone at the end of its run
+                    self._drop_spark_zone(p, pull_back=True)   # Evo FC shrapnel: SMALL zone, far edge at the 5-tile mark
                     self._drop_nado(p)         # Hero Wizard: the fireball's tornado, where it died
                     self.projectiles.remove(p)
                 continue
@@ -4733,7 +4733,7 @@ class SimEngine:
             self.vortices.append(_Vortex(p.team, p.x, p.y, p.nado_spec,
                                          p.nado_spec.pull_duration))
 
-    def _drop_spark_zone(self, p: Projectile) -> None:
+    def _drop_spark_zone(self, p: Projectile, pull_back: bool = False) -> None:
         """EVO FIRECRACKER: leave this shot's lingering spark zone where its flight ENDED.
 
         The card's damage-over-time is deliberately only in two places -- one large circle on the
@@ -4743,7 +4743,28 @@ class SimEngine:
         """
         if p.spark_end_dmg <= 0.0:
             return
-        self.spark_zones.append([p.x, p.y, p.spark_end_r or p.spec.spark_r or 0.75, p.team,
+        r = p.spark_end_r or p.spec.spark_r or 0.75
+        zx, zy = p.x, p.y
+        if pull_back:
+            # THE BOLT'S 5 TILES ARE ITS REACH, so the circle's FAR EDGE sits at the 5-tile mark and
+            # its CENTRE one radius short -- not the centre at 5 with the spark reaching 6.2.
+            # Owner-observed 2026-08-28: an Evo Firecracker attacking a Princess Tower must not
+            # damage the King. Geometry, outermost bolt of the 70-degree cone from the tower face:
+            #   centre at 5.0 -> 2.78 tiles from the king centre -> INSIDE 1.2 + 2.0, it connects
+            #   centre at 3.8 -> 3.82 -> clears
+            # The zone centre has to be within 4.50 tiles of the tower face to clear, and the old
+            # model sat at 5.00 -- over by half a tile. Only the SHRAPNEL pulls back; the carrier's
+            # large zone belongs on the impact point it actually struck.
+            # /!\ DERIVED FROM THE OBSERVATION, not from a published figure. It is the reading that
+            # makes the reported behaviour true; a second prediction separates it from the old one --
+            # under this model the spark coverage ends at 5.0 tiles from the tower face, under the
+            # old one at 6.2.
+            dx, dy = p.dirx * _TILES_X, p.diry * _TILES_Y
+            m = math.hypot(dx, dy)
+            if m > 1e-9:
+                zx -= (dx / m) * r / _TILES_X
+                zy -= (dy / m) * r / _TILES_Y
+        self.spark_zones.append([zx, zy, r, p.team,
                                  self.t + (p.spark_end_dur or p.spec.spark_dur), p.spark_end_dmg,
                                  self.t])
         del self.spark_zones[:-60]

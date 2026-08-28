@@ -850,6 +850,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     _gnorm = {"want": _probe, "gate": 0.0, "card": 0.0, "cell": 0.0, "val": 0.0,
               "n": 0, "gate_w": 0.0}
     _ep0 = {"want": True}
+    _advk = {"p_sum": 0.0, "p_n": 0, "w_sum": 0.0, "w_n": 0, "n": 0}
     _lastep = {"want": True}
     _clip_split = {"play": 0.0, "play_n": 0.0, "wait": 0.0, "wait_n": 0.0,
                    "play_block": 0.0, "wait_block": 0.0, "play_push": 0.0, "wait_push": 0.0,
@@ -1136,6 +1137,33 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 # collapse to a delta -- and it did collapse (3 of 432 cells ever used).
                 cell_ent = play * (-(lp_cell.exp() * lp_cell).sum(1))
                 a_b, r_b, ol_b = adv_f[mb_t], ret_f[mb_t], oldlp_f[mb_t]
+                # ADVANTAGE BY ACTION KIND -- the quantity the policy gradient actually consumes.
+                # 5b measured the per-decision REWARD favouring a play over a wait by +5.45 sigma
+                # while the policy plays ~10% of the time. PPO does not follow reward, it follows
+                # `advantage = reward - V(s)`. If the advantage disagrees with the reward, the
+                # critic is the gap and its 329 parameters are the suspect; if it agrees, the
+                # critic is exonerated and the gate is being driven by something else.
+                # Accumulated across the whole run, NOT read per window -- 4 measured the
+                # per-window sd (0.00104) as larger than the effect (0.00073), which is how the
+                # clip's sign flip stayed invisible for days.
+                if _advk["n"] < 10 ** 9:
+                    _pm = play > 0.5
+                    _wm = ~_pm
+                    if int(_pm.sum()) > 0:
+                        _advk["p_sum"] += float(a_b[_pm].sum()); _advk["p_n"] += int(_pm.sum())
+                    if int(_wm.sum()) > 0:
+                        _advk["w_sum"] += float(a_b[_wm].sum()); _advk["w_n"] += int(_wm.sum())
+                    _advk["n"] += 1
+                    # EARLY AND OFTEN. A 200-update interval produced NOTHING in the first 14
+                    # minutes of a 400-match run; the accumulator is cumulative, so an early print
+                    # is simply a noisier estimate of the same number, not a different one.
+                    if ((_advk["n"] <= 5 or _advk["n"] % 50 == 0)
+                            and _advk["p_n"] > 0 and _advk["w_n"] > 0):
+                        _pa = _advk["p_sum"] / _advk["p_n"]
+                        _wa = _advk["w_sum"] / _advk["w_n"]
+                        print("[train-sim-ppo]   ADV BY ACTION  play %+.5f (n=%d)  wait %+.5f (n=%d)"
+                              "   play-wait %+.5f" % (_pa, _advk["p_n"], _wa, _advk["w_n"], _pa - _wa),
+                              flush=True)
                 ratio = (new_lp - ol_b).exp()
                 # EPOCH-0 RATIO. The rollout stores the MIXTURE log-prob mu = (1-f)*pi_old + f*prior,
                 # so on the FIRST pass -- pi_new still == pi_old, no gradient step taken yet -- a

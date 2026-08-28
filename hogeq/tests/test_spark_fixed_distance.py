@@ -122,6 +122,58 @@ class ShrapnelFixedDistanceTests(unittest.TestCase):
             self.assertGreater(shard[0].oy * _TILES_Y, 6.5,
                                "shards still originate at the tower CENTRE (y=6.5), not its face")
 
+    def test_attacking_a_princess_tower_does_NOT_damage_the_king(self):
+        """THE REPORTED BUG (owner 2026-08-28), and the reason the zone centre pulls back.
+
+        The shrapnel's 5 tiles are its REACH, so the spark circle's FAR EDGE sits at the 5-tile mark
+        and its centre one radius short. Geometry, outermost bolt of the 70-degree cone measured
+        from the tower face:
+            centre at 5.0 -> 2.78 tiles from the king centre -> inside 1.2 + 2.0, it connects
+            centre at 3.8 -> 3.82 -> clears
+        The centre has to be within 4.50 tiles of the face to clear; the old model sat at 5.00.
+
+        Asserted on BOTH lanes: the cone is mirrored, so a right-lane shot is a real second case.
+        """
+        import random as _r
+        from clashrl.sim.engine import SimEngine as _E, Unit as _U, _TILES_X as _TX
+        from test_sim_status_effects import DummyCfg as _D
+        for fx, lane in ((3.5, 3.5), (5.5, 3.5), (14.5, 14.5), (12.5, 14.5)):
+            eng = _E(_D(), CardDB(path=ROOT / "config" / "cards.yaml"), _r.Random(0))
+            eng.reset()
+            king = [t for t in eng.towers[1] if t.king][0]
+            ps = [t for t in eng.towers[1] if not t.king]
+            tgt = min(ps, key=lambda t: abs(t.x * _TX - lane))
+            k0 = king.hp
+            fc = _U(spec=build_spec(eng.db, "firecracker_evo", 11), team=0,
+                    x=fx / _TX, y=11.0 / _TILES_Y, hp=304.0)
+            eng.units.append(fc)
+            eng._attack(fc, "tower", tgt)
+            for _ in range(90):
+                eng.advance(0.05)
+            self.assertAlmostEqual(k0 - king.hp, 0.0, places=6,
+                                   msg=f"from x={fx} the sparks reached the KING tower")
+
+    def test_the_carriers_own_zone_is_NOT_pulled_back(self):
+        """Only the shrapnel pulls back. The carrier's large zone belongs on the point it struck --
+        if it moved too, the impact DoT would drift off the tower it just hit."""
+        import random as _r
+        from clashrl.sim.engine import SimEngine as _E, Unit as _U, _TILES_X as _TX
+        from test_sim_status_effects import DummyCfg as _D
+        eng = _E(_D(), CardDB(path=ROOT / "config" / "cards.yaml"), _r.Random(0))
+        eng.reset()
+        ps = [t for t in eng.towers[1] if not t.king]
+        fc = _U(spec=build_spec(eng.db, "firecracker_evo", 11), team=0,
+                x=3.5 / _TX, y=11.0 / _TILES_Y, hp=304.0)
+        eng.units.append(fc)
+        eng._attack(fc, "tower", ps[0])
+        for _ in range(40):
+            eng.advance(0.05)
+        big = [z for z in eng.spark_zones if abs(z[2] - 2.5) < 1e-6]
+        self.assertTrue(big, "the carrier's large zone is missing")
+        for z in big:
+            gap = ((z[0] - ps[0].x) ** 2 * _TX ** 2 + (z[1] - ps[0].y) ** 2 * _TILES_Y ** 2) ** 0.5
+            self.assertLess(gap, 2.0, "the carrier's zone drifted off the tower it hit")
+
 
 if __name__ == "__main__":
     unittest.main()
