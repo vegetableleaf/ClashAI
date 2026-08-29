@@ -78,6 +78,7 @@ class LiveSearch:
         # nothing; it does NOT say whether the detector saw nothing or the bridge threw everything
         # away, and those need opposite fixes.
         self.drops: dict = {}
+        self._env = None            # a real SimMatchEnv, built lazily and reused
         self.errors: dict = {}      # exception type+message -> count, so "error N" is diagnosable
         # counters -- every skip reason is recorded, because a live feature that quietly never
         # fires looks exactly like one that fires and does nothing.
@@ -191,12 +192,21 @@ class LiveSearch:
         """Run the searcher over a reconstructed engine. Split out so tests can stub it."""
         from . import rollout_search as RS
 
-        class _Env:
-            """The minimal surface Searcher touches: an engine and the opponent that acts in it."""
-            def __init__(self, e, o):
-                self.eng, self.opp = e, o
+        # A REAL SimMatchEnv WITH ITS ENGINE SWAPPED, not a hand-rolled stub. My first version
+        # passed an object carrying only `eng` and `opp`, and Searcher/Scorer also read env.db,
+        # env.actions, env.n_cells and env.specs -- so every decision died with
+        #     AttributeError: '_Env' object has no attribute 'db'
+        # 19 times out of 25, and the bare error counter could not say so until it was taught to
+        # name exceptions. Enumerating that surface by hand is exactly the guesswork that failed;
+        # the real env HAS the surface by construction, and it is built ONCE here rather than
+        # per decision.
+        if self._env is None:
+            from .env import SimMatchEnv
+            self._env = SimMatchEnv(self.cfg)
+        self._env.eng = eng
+        self._env.opp = opp
 
-        searcher = RS.Searcher(_Env(eng, opp), self.net, self.device, self.horizon, 1,
+        searcher = RS.Searcher(self._env, self.net, self.device, self.horizon, 1,
                                self.topk, 1.0, self.gate_tau, cells=self.cells)
         act, searched = searcher.act(0)
         if not searched or act is None:
