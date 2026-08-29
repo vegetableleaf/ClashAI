@@ -5804,3 +5804,59 @@ here, since the elixir collapse leaves nothing affordable.)
 Teach the WORKERS to search: each holds its own envs, so each could own a Searcher, which
 parallelises the 98.5% across cores instead of the 1.5%. Needs net weights broadcast to workers each
 update -- `_broadcast_league()` already establishes that channel. Not attempted; sized as real work.
+
+## §5n — DRILL + MATCH READ ON THE SEARCH RUN AT m=1600 (and why the comparison is confounded)
+
+Owner asked for match and drill performance plus collapse signatures on the live search PPO run
+(`--matches 50000 --envs 192 --workers 0 --search-interval 1 --init policy_BEST_m18000`).
+
+### Match (wr_eval, 150 matches/arm, fixed seeds, greedy gate)
+```
+ppo_probe.pt (m=1600)          3W-147L-0D   winrate  2.0% +/-2.2   plays 4.8%
+policy_BEST_m18000 (m=18000)  17W-132L-1D   winrate 11.3% +/-5.1   plays 8.2%
+DIFFERENCE -9.3 points -- larger than the combined interval (5.5). Real.
+```
+/!\ **This is exactly the comparison §4a forbids.** `--init` loads policy+gate but NOT the critic;
+§4a measured the dip bottom at ~1,700 episodes (`ep1675 -1.600`) with recovery by ~7,600, and its
+own conclusion is *"comparing a mid-run checkpoint against its init systematically understates the
+change being tested -- compare run-vs-run at matched episode counts instead."* m=1600 IS the bottom.
+The -9.3 is the warm-start tax sampled at its worst point, not a verdict on search. Keep the number
+as a matched-instrument baseline for a later checkpoint; do not read it as failure.
+
+### Foundational drills, 25 reps (vs §4t's policy column at 6 reps -- DIFFERENT checkpoint AND rep count)
+```
+drill                             §4t     now(m=1600)
+nado_king_activation                0%       0%    (DOCTRINE GAP: oracle itself only 8%)
+tesla_pulls_the_wincon             17%      24%
+log_the_ground_swarm                0%      20%
+ignore_the_ignorable (restraint)    0%      24%
+hold_the_spell_for_a_target         0%       4%
+log_rolls_forward_not_backward      0%       0%
+bank_to_six_then_bow                0%       4%    <-- THE DECK'S WIN CONDITION
+knight_blocks_the_charge           33%      24%
+skeletons_kill_the_miner          100%      56%
+bow_never_into_the_push            17%      20%    (DOCTRINE GAP: oracle 8%)
+bow_punish_the_commitment         100%      56%
+bow_punishes_the_pump             100%      60%
+rocket_the_two_for_one              0%       0%
+rocket_the_pump_on_sight            0%       0%
+never_rocket_their_king            17%       0%
+skeletons_stop_the_wall_breakers    0%       0%
+                          mean   24.0%    18.25%
+```
+**The policy got FLATTER: it lost its three strengths and gained a little on its weaknesses.** The
+drills §4t scored at 100% all regressed (100->56, 100->56, 100->60; non-overlapping even allowing
+6-rep noise), while several 0% drills lifted slightly (0->20, 0->24). Zeros fell 9 -> 6.
+
+That shape is what imitation of a different action distribution looks like, and it is ALSO what the
+critic dip looks like, and this read cannot separate them -- one checkpoint, at the dip bottom, at a
+different rep count from the reference. **Do not attribute it.** The matched-episode re-read is the
+measurement that decides it.
+
+### The one finding that is NOT confounded
+`bank_to_six_then_bow` at **4%** (doctrine 100%). It has now read 0%, 16%, 0% and 4% across four
+independent measurements spanning multiple checkpoints and both algorithms, and it agrees with the
+live instruments: mean elixir 2.49 and only 5.1% of steps at >=6 in this very run, plus `plays 4.8%`
+under a greedy gate while `P(play)` is 0.372. The policy wants to act constantly, spends to the
+floor, and therefore can never afford its own win condition. **This predates the run and survives
+every change tried so far.**
