@@ -6105,3 +6105,86 @@ log may never mention).
 
 **FIRST THING TO CHECK: does the CONTROL arm reproduce the collapse?** If it does not, the run is
 uninformative and no other arm in it can be read.
+
+## §5s — THE A/B DOES NOT NEED 10k MATCHES. The endpoint saturates by m≈800, so the run stops at 1500
+
+Owner asked whether a 4-arm A/B really needs 10,000 matches per arm (2.6 days at the measured rate)
+and what the minimum readable length is. It does not. The number was inherited from winrate-era
+runs and is ~10x more than these endpoints need.
+
+### The endpoint saturates by m≈800 (watchdog series, the interval-4 run that just closed)
+```
+interval-1 run   m=600    >=6 16.1%   mean 3.63
+                 m=700    >=6  2.6%   mean 2.39
+interval-4 run   m=500    >=6  0.8%   mean 2.01   <-- already collapsed
+                 m=800    >=6  0.6%   mean 2.11
+                 m=2550   >=6  1.5%   mean 2.24
+                 m=4000   >=6  0.1%   mean 1.98
+                 m=6700   >=6  0.1%   mean 2.04
+                 m=6849   >=6  0.6%   mean 2.13
+```
+The collapse completes between m=600 and m=800. **The following 6,000 matches moved the endpoint
+from 0.6% to 0.6%**, oscillating in a 0.1-1.5% band that is noise. There is no information in
+matches 800 -> 6849 for this metric. (Source: `scratchpad/watchdog_search.log`, ALERT lines only --
+the watchdog logs on alert, so this is a lower bound on sampling density, not a full series.)
+
+### Independent confirmation, from the A/B's own logs at m~100
+Rollout AFFORDABILITY ("anything playable on X% of steps"), control arm, first 9 updates:
+```
+100.0 -> 92.7 -> 82.6 -> 23.4 -> 13.6 -> 11.4 -> 9.7 -> 8.8 -> 8.6
+```
+~110 episodes, 37 minutes. **The reward's grip on elixir behaviour is essentially fully expressed
+inside the first hour.** bank6 over the same 9 updates: 100.0 -> 92.7 -> 83.7 -> 23.3 -> 13.4 ->
+10.9 -> 9.5 -> 8.4 -> 8.3 -- if anything marginally BELOW control, no sign of banking rising. Far
+too early to read as a result; recorded because it is the first arm-vs-arm number that exists.
+
+### Why these endpoints are cheap when winrate is not
+§5r's own row: two checkpoints 800 matches apart read winrate **18.8% and 6.2%** while the mechanism
+metric separated **80x** (25.0% vs 0.3% at >=6). The endpoints were deliberately chosen to be
+mechanism metrics (§5q), and mechanism metrics are exactly the ones that do not need long runs.
+`ab_reward_report.py`'s own dose table was measured on **12 matches**; §5r's final read used 16.
+
+### DECISION: stop all four arms at m=1500 (~9 h from the 14:16 launch), read at 500/1000/1500
+1,500 is ~2x the saturation point -- margin, not need. Owner chose this over relaunching as a
+3-seed design. Monitor armed on the four logs for `EVAL @`, failure signatures and ARM DEATH
+(a dead arm is a failure the log may never mention); it exits when all four reach `EVAL @ 1500`.
+
+### /!\ THE STOPPING RULE IS ASYMMETRIC, because the dip can MASK but cannot FAKE a difference
+m=1500 sits inside §4a's critic dip (bottom ~1,700 episodes). This does **not** invalidate the
+comparison: all four arms share an identical warm start, seed and dip, so it is common-mode, and
+§4a's own prescribed remedy is *"compare run-vs-run at matched episode counts"* -- which is what a
+4-arm A/B is. §4a forbids comparing a checkpoint to its INIT, a different thing.
+```
+arms SEPARATE at 1500   -> conclusive. Stop. Confirm the winner at 3 seeds (§5q).
+arms IDENTICAL at 1500  -> NOT conclusive. Dip-masking is a live alternative to "no effect."
+```
+The one scenario that would genuinely need length: `bank_hold` allowing the collapse and RECOVERING
+banking later. No evidence for it, and it fights the mechanism -- §5p is a per-step reward asymmetry
+acting from match 1, not a slow credit-assignment effect. Stated as the residual risk, not dismissed.
+
+### /!\ SEED NOISE, NOT RUN LENGTH, IS THE REAL THREAT -- and this A/B does not control it
+§5q already flagged one seed per arm as a SCREEN. The measured warning is the Aug-28 clip sweep
+(`scratchpad/ab/`, 3 coefficients x 3 seeds, 700 matches each, from scratch). Within a SINGLE arm,
+`plays%` across seeds read:
+```
+c0.0   0.1%  2.0%  2.3%
+c0.5   1.1%  1.7%  4.4%
+c2.0   0.0%  0.1%  0.1%
+```
+Seed spread swamped the arm effect (all nine cells also read 0.0% winrate -- that is §5d). ⚠ Those
+were FROM-SCRATCH runs at the noisiest point, so warm-started arms off a common checkpoint should be
+tighter; this is the best available estimate, NOT a matched one. It still means **a winner here is a
+screen result and is not established until it survives 3 seeds.**
+
+### Housekeeping
+Two stale `ppo_watchdog.py` processes from the killed interval-4 run were killed (PIDs 63708 +
+child 51772). They were watching `data/policy_sim_ppo.pt` -- last written 14:11, BEFORE the A/B
+launched -- and could never have seen the A/B's checkpoints in `data/ab/policy_*.pt`. Their final
+line proves it: `ALERT STALLED -- checkpoint unchanged for 44 minutes at matches=6849 ... procs=8`,
+i.e. reporting the dead run's frozen checkpoint while seeing the A/B's 8 processes.
+
+### /!\ §5r's MEMORY MEASUREMENT WAS TAKEN TOO EARLY AND UNDERSTATES THE FOOTPRINT 2.5x
+§5r recorded *"3.6 GB resident, 5.5 GB still free"* at launch. Measured at m~100, steady:
+**9.14 GB resident (4 arms x ~2.3 GB), 1.94 GB free of 31.4 GB**, CPU pegged at 99.95%. Nothing is
+failing, but the headroom §5r claims is not there -- do not start anything large alongside this run.
+Measure resident memory after the envs and buffers fill, not in the first minute.
