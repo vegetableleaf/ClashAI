@@ -6328,3 +6328,65 @@ so the "searched N/M" DENOMINATOR is not comparable across the two paths. The nu
    run-vs-run at matched m on the §5s endpoints -- the same instrument the A/B uses.
 3. The A/B in flight is `--workers 0` and is untouched by this; the edits cannot affect a running
    process (Python read the source at import).
+
+## §5v — m=500 READ: control has NOT collapsed yet, and §5s's saturation claim was CROSS-INSTRUMENT
+
+First matched read of the 4-arm A/B. All four checkpoints at **exactly m=500** (verified from each
+`.pt`'s own `matches` field), 16 matches/arm, greedy and search-free, scored under the CONTROL config,
+`PYTHONHASHSEED=0`.
+```
+arm          >=6 el%    mean     xbow%  plays%   dist   playH   winrate    leak  crowns
+control         13.0    3.23       7.1    11.6     10    2.07     37.5%   -1.57   -0.62
+restraint        3.2    2.22       2.3    13.7     10    1.94     18.8%   -0.37   -1.06
+bank2            2.8    2.16       1.4    13.6     10    1.92     18.8%   -0.16   -1.12
+bank6            8.9    2.81       5.5    12.6      9    2.02     25.0%   -0.73   -0.69
+```
+(reference points, same instrument, from §5q/§5r: m18000 = 26.3% / 10.9% xbow; i4_m6800 = 0.4% / 0.9%)
+
+### /!\ THE RUN IS NOT YET READABLE -- THE POSITIVE CONTROL HAS NOT FIRED
+§5r's gate is *"FIRST THING TO CHECK: does the CONTROL arm reproduce the collapse? If it does not,
+the run is uninformative and no other arm in it can be read."* At m=500 control reads **13.0%**,
+against a warm start of 26.3% and a collapsed floor of 0.3-0.4%. **It is about halfway down, not at
+the floor.** So nothing below is a verdict yet.
+
+### /!\ AND THIS RETRACTS §5s's TIMING ARGUMENT, WHICH WAS A CROSS-INSTRUMENT COMPARISON
+§5s concluded *"the endpoint saturates by m≈800"* from the watchdog series. **That series is a
+DIFFERENT INSTRUMENT from the one the A/B is judged on**, and I compared them as if they were one:
+```
+ppo_watchdog.py        SAMPLES the gate and SAMPLES the card from the card head
+                       (:180 "SAMPLE the gate, do not threshold it ... Training samples; so does
+                       this" -- written precisely because forcing plays drains the bar and fakes
+                       an "elixir never reaches 6" reading)
+ab_reward_report.py    GREEDY and search-free
+```
+A sampled policy and a greedy policy do not spend elixir at the same rate, so their `>=6` curves are
+not the same curve. On the GREEDY instrument the only reads that exist are the warm start (26.3%),
+m=6000 (0.3%) and m=6849 (0.4%) -- **nothing between m=0 and m=6000**. §5s's "saturates by m≈800"
+therefore had NO support on the instrument this A/B uses, and today's 13.0% at m=500 is the first
+point on that curve. It says the collapse is roughly HALF done at m=500.
+**The m=1500 stop may be too early.** Keep the asymmetric rule; expect to extend.
+⚠ What survives of §5s: the watchdog series itself is unchanged and still shows the sampled-instrument
+endpoint flat from m=800 to m=6849. The error is the transfer, not the data.
+
+### What the arms show, recorded but NOT actionable
+All three treatment arms sit BELOW control on the endpoint, and the dose-response is NON-MONOTONE:
+```
+dose (of play-side upside)   0%      6%       38%      110%
+arm                          control restraint bank2    bank6
+>=6 elixir                   13.0    3.2      2.8      8.9
+```
+§5q's design says a monotone rise with dose is causal and no movement refutes §5p. This is neither:
+it falls, and the largest dose is the least affected. Three readings, all UNTESTED --
+(a) the terms genuinely suppress banking; (b) the extra reward term simply moves those arms further
+along the SAME collapse curve per match, making control merely the slowest arm; (c) one-seed noise,
+which the report's own footer warns about (gate collapse escapes 4/6). **(b) is not consistent with
+the non-monotonicity**, but neither is it excluded at n=1 seed.
+`bank*` HOARDING DID NOT HAPPEN: leak tracks banking down (control -1.57, bank2 -0.16) and no arm
+shows the leak-up/crowns-down signature `wincon_reach: 2.0` produced.
+⚠ Winrate is NOT a discriminator here (control 37.5% on 16 matches is +/-12pp; §5r showed 18.8% vs
+6.2% across 800 matches of one run). It is in the table as a guardrail only.
+
+### Next
+Continue to m=1500 and re-read on the same instrument. If control is still not at its floor there,
+the honest move is to extend rather than call the mechanism refuted -- a null against a control that
+never collapsed measures nothing.
