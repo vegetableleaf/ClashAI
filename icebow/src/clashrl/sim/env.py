@@ -392,6 +392,24 @@ class SimMatchEnv:
         self.restraint_cap = float(cfg.get("rewards", "restraint_hold_cap", default=2.0))
         self._restraint_paid = 0.0
         self._restraint_last = -1e9
+        # ---- A/B KNOBS (2026-08-29). All default to TODAY'S BEHAVIOUR exactly. ---------------
+        # ARM 3: the triage boundary at which a board stops being "worth answering" and becomes
+        # "worth ignoring". `_threat_miss_idle` and `_restraint_hold` are EXACT COMPLEMENTS at this
+        # number -- one bills ignoring a board above it, the other pays declining a board below it.
+        # /!\ MOVING IT MUST MOVE BOTH. Change one alone and a band opens where a board is
+        # simultaneously worth answering and worth ignoring, and the two terms contradict; the
+        # restraint docstring's promise ("either worth answering or worth ignoring and never both")
+        # is exactly this invariant. The other six IGNORE_FRAC uses belong to different terms and
+        # are deliberately NOT routed through here.
+        # Why the knob exists, measured: at the shipped 0.05 this test blocks restraint on 65.2% of
+        # steps, so the term fires 0.2x/match = 4.7% of the play-side upside (+5.32/match).
+        self.restraint_frac = float(cfg.get("rewards", "restraint_ignore_frac",
+                                            default=threat_value.IGNORE_FRAC))
+        # ARM 4: pay for CLIMBING the bar toward a held win condition (see _bank_hold).
+        self.w_bank_hold = float(cfg.get("rewards", "bank_hold", default=0.0))
+        self.bank_hold_cap = float(cfg.get("rewards", "bank_hold_cap", default=2.0))
+        self._bank_hold_paid = 0.0
+        self._bank_hold_last = -1e9
         self._threat_miss_last = -1e9
         # --- COUNTERFACTUAL FORK (off by default; see _fork / _roll_fork for the RNG hazard) ---
         self.cf_enabled = bool(cfg.get("sim", "counterfactual", "enabled", default=False))
@@ -719,6 +737,8 @@ class SimMatchEnv:
         self._bow_window_hits = {}       # which of the eight licensed each offensive bow
         self._restraint_paid = 0.0       # per-match cap on the restraint credit
         self._restraint_last = -1e9
+        self._bank_hold_paid = 0.0       # per-match cap on the banking credit (arm 4)
+        self._bank_hold_last = -1e9
         self._nado_king_credited = False
         self._reset_vectors()
         self._update_vectors()
@@ -1133,7 +1153,7 @@ class SimMatchEnv:
             _miss_frac = float(threat_value.bodies_ignore_frac(
                 self.db, [u.spec.base for u in committed],
                 tower_level=self._tower_level_for_triage))
-            if _miss_frac < threat_value.IGNORE_FRAC:
+            if _miss_frac < self.restraint_frac:      # complement of _restraint_hold's test
                 return 0.0
         # ALREADY ANSWERING IT IS NOT IGNORING IT (2026-08-17). This term asked only "is a counter in
         # hand and affordable", never "is the push already being dealt with" -- so the step after a
@@ -1226,7 +1246,7 @@ class SimMatchEnv:
             return 0.0
         if threat_value.bodies_ignore_frac(
                 self.db, [u.spec.base for u in committed],
-                tower_level=self._tower_level_for_triage) >= threat_value.IGNORE_FRAC:
+                tower_level=self._tower_level_for_triage) >= self.restraint_frac:
             return 0.0                                   # worth answering -> threat_miss_idle's job
         elix = float(self.eng.elixir[0])
         for cid in self._hand_ids():
@@ -1237,6 +1257,51 @@ class SimMatchEnv:
                 self._restraint_paid += pay
                 return pay
         return 0.0                                       # could not have answered -> not a choice
+
+    def _bank_hold(self) -> float:
+        """ARM 4 (A/B, OFF by default): pay for CLIMBING the bar toward a held win condition.
+
+        `wincon_reach` pays ONCE, on arrival. This pays while the bar is still climbing, which is
+        the part the policy never does: MEASURED, it holds >=6 elixir on 1.0% of steps against the
+        m18000 reference's 35.4%, and plays x_bow on 2.7% of plays against 12.5%.
+
+        WHY A SECOND TERM RATHER THAN A BIGGER `wincon_reach`: raising that one to 2.0 was already
+        tried and bought HOARDING (leak fired 24x, crowns taken halved). A one-time arrival credit
+        cannot distinguish "climbing toward the bow" from "sitting on a full bar", because it does
+        not fire during either. So the guards here are about WHEN the credit stops, not how big it is:
+
+          * a win condition must be IN HAND -- banking toward nothing is hoarding by another name;
+          * elixir must be BELOW its cost, so the credit STOPS at arrival and cannot be farmed by
+            idling at 10 with a full bar (that is `leak`'s job, and it still bills);
+          * no answerable threat may be present -- defending outranks banking. This reads
+            `self.restraint_frac`, the SAME boundary `_threat_miss_idle` and `_restraint_hold` use,
+            so all three terms agree about what the board is;
+          * rate-limited by `threat_miss_period` and hard-capped per match.
+
+        /!\ UNTESTED. It is one of four arms; the measurement decides it. The named risk is that it
+        buys the hoarding `wincon_reach: 2.0` bought -- watch `leak` and crowns taken, not just the
+        elixir histogram.
+        """
+        if self.w_bank_hold <= 0.0 or self._bank_hold_paid >= self.bank_hold_cap:
+            return 0.0
+        if self.eng.t - self._bank_hold_last < self.threat_miss_period:
+            return 0.0
+        if not self._bank_wincon_ids:
+            return 0.0
+        if not (set(self._hand_ids()) & set(self._bank_wincon_ids)):
+            return 0.0                                   # nothing to bank TOWARD
+        if float(self.eng.elixir[0]) >= self._bank_wincon_cost:
+            return 0.0                                   # arrived -> wincon_reach's job, not this one
+        committed = [u for u in self.eng.units
+                     if u.team == 1 and u.hp > 0 and u.spec.kind != "spell" and u.y > 0.42]
+        if committed and threat_value.bodies_ignore_frac(
+                self.db, [u.spec.base for u in committed],
+                tower_level=self._tower_level_for_triage) >= self.restraint_frac:
+            return 0.0                                   # a real push outranks banking
+        self._bank_hold_last = self.eng.t
+        pay = min(self.w_bank_hold, self.bank_hold_cap - self._bank_hold_paid)
+        self._bank_hold_paid += pay
+        return pay
 
     def _secondary_lane_response(self, card_id: int, nx: float, ny: float) -> float:
         """A correct, proportionate answer to a committed threat in a lane OTHER than the primary.
@@ -2980,6 +3045,10 @@ class SimMatchEnv:
             # ...and the other half of the same decision: correctly declining an IGNORABLE one.
             # Mutually exclusive with the line above by construction -- they read the same triage.
             reward += self.rw_stats.add("restraint_hold", self._restraint_hold())
+            # ...and arm 4's third option: neither answering nor declining, but BANKING toward the
+            # win condition. Disjoint from the two above by its own guards (wincon in hand, bar
+            # still climbing, no answerable push).
+            reward += self.rw_stats.add("bank_hold", self._bank_hold())
         # opponent acts, then advance the match by agent_dt in sub-ticks
         self.opponent.act(self.eng)
         chip0 = chip1 = 0.0

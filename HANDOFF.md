@@ -5973,3 +5973,85 @@ a per-step hold credit while a win condition is in hand and the bar is climbing 
 `wincon_reach: 2.0` already failed that way, leak x24, crowns halved); or rebalancing the play-side
 positives down rather than adding more wait-side credit. **The measurement says the asymmetry is the
 mechanism; it does not say which correction is safe.** One change, measured, per §one-change-per-experiment.
+
+## §5q — THE 4-ARM REWARD A/B IS BUILT (icebow only), and two design choices were MEASURED OUT first
+
+Owner approved a 4-way A/B (control + 3 repairs) against §5p's diagnosis. Built, with two changes to
+the approved design -- both because the dose was measured BEFORE spending days on a run.
+
+### Dose of every candidate arm, frozen m5400 policy, 12 matches (play-side upside is +5.32/match)
+```
+arm                                credit/match     fires/match    % of play-side
+control                                  --              --              0%
+restraint_hold 1.0                     +0.33            0.3             6%
+restraint_hold 1.0 + frac 0.20         +0.50            0.5             9%
+restraint_hold 1.0 + frac 0.50         +0.50            0.5             9%   <-- IDENTICAL
+bank_hold 1.0 cap 2.0                  +2.00            2.0            38%
+bank_hold 1.0 cap 6.0                  +5.83            5.8           110%
+bank_hold 1.0 UNCAPPED                +16.33           16.3           307%
+```
+
+**"Widen guard 5" is DROPPED, on measurement.** It pays +0.50/match at `restraint_ignore_frac` 0.20
+and +0.50/match at 0.50 -- identical, because the 4 s `threat_miss_period` RATE LIMIT binds, not the
+threshold. Eligibility does rise (8.7% -> 20.5% -> 42.4% of declinable boards) and the credit does
+not follow. It could never have separated from the plain `restraint` arm, so it would have burnt an
+arm to measure nothing. The knob stays in env.py, defaulted to no change.
+
+**The freed slot becomes a DOSE PAIR** (`bank2` / `bank6`, differing only in the cap). A monotone
+dose-response is far stronger evidence than four unrelated tweaks: if banking rises with dose that
+is causal, and if neither moves, the mechanism in §5p is wrong.
+
+### Arms (`tools/ab_reward_arms.py`)
+| arm | delta | dose |
+|---|---|---|
+| control | none -- MUST reproduce the collapse (positive control) | 0% |
+| restraint | `restraint_hold: 1.0` -- restore what 0356830 silently zeroed | 6% |
+| bank2 | `bank_hold: 1.0`, cap 2.0 | 38% |
+| bank6 | `bank_hold: 1.0`, cap 6.0 | 110% |
+
+Configs are GENERATED from config.yaml at launch, never hand-maintained, so arms cannot drift in
+anything but their deltas; the generator refuses an ambiguous key match, then LOADS every arm back
+and asserts the delta took and the checkpoint paths are distinct. (That check earned itself
+immediately: the first version dropped the space before a trailing `#`, producing invalid YAML.)
+
+### /!\ PYTHONHASHSEED IS PINNED, AND IT IS NOT COSMETIC
+MEASURED: the same seeded rollout in two processes gives elixir mean **1.9847 vs 2.0383** and
+**3980 vs 4083 steps** unpinned, and is bit-identical pinned. Arms are separate processes, so
+without this they carry uncontrolled variance BEFORE any reward change. This also explains the
+`os.environ.setdefault("PYTHONHASHSEED", ...)` I removed from `rollout_search` as a no-op: it IS a
+no-op after interpreter start, but the INTENT was right and the fix belongs in the launcher.
+
+It also invalidated my first control check. Pre-patch vs patched read 1.9237 vs 1.9554 and I nearly
+recorded a behaviour change; pinned, both read **1.9278 / 0.25% / 3579 steps -- bit-identical**, so
+the new knobs are provably inert at their defaults.
+
+### New env.py code, all defaulting to today's behaviour
+* `rewards.restraint_ignore_frac` -- moves the triage boundary for `_threat_miss_idle` AND
+  `_restraint_hold` **together**. /!\ They are exact complements at `IGNORE_FRAC`; moving one alone
+  opens a band where a board is worth answering and worth ignoring at once. The other six
+  `IGNORE_FRAC` uses belong to different terms and are deliberately NOT routed through it.
+* `rewards.bank_hold` / `bank_hold_cap` + `_bank_hold()` -- pays for CLIMBING toward a held win
+  condition, stopping at arrival (that is `wincon_reach`'s job), suppressed by any answerable push,
+  rate-limited and capped.
+
+### Endpoints (`tools/ab_reward_report.py`)
+`>=6 elixir`, `x_bow share`, `plays%` -- NOT winrate. Demonstrated on the two known checkpoints:
+```
+arm          >=6 el%    mean    xbow%   plays%   winrate    leak
+m18000          25.0    4.22     11.6      9.9     16.7%   -3.65
+m5400 (i4)       0.3    1.93      1.1     14.6     16.7%    0.00
+```
+The mechanism metrics separate by 80x; **winrate is IDENTICAL at 16.7%**, which is the argument
+against it in one line. Note `leak` -3.65 vs 0.00: the reference banks and therefore leaks, the
+collapsed policy never approaches the cap.
+
+All arms are scored under the CONTROL config -- one scorer, four policies -- and `leak`/`crowns` are
+printed beside the targets because **hoarding does not show up in the elixir histogram**; a hoarding
+policy looks excellent there. `wincon_reach: 2.0` already failed exactly that way.
+
+### NOT DONE / open
+* **icebow only.** hogeq has `_threat_miss_idle` but NO `_restraint_hold` -- it carries the penalty
+  half of the asymmetry with no credit half. Recorded, not fixed; hogeq's wincon is a 4-cost Hog, so
+  the 6-elixir banking pathology may not even apply. Do not assume parity here.
+* Not launched: memory does not fit the A/B alongside the running interval-4 trainer.
+* One seed per arm is a SCREEN. Confirm any winner at 3 seeds (gate collapse escapes 4/6).

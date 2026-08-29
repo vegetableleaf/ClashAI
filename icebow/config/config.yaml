@@ -550,6 +550,25 @@ rewards:
   # ignoring real pushes still scales without limit and restraint cannot be farmed past the cap.
   restraint_hold: 0.0
   restraint_hold_cap: 2.0
+  # ---- A/B ARMS, 2026-08-29 (see HANDOFF 5p/5q). Defaults = TODAY'S BEHAVIOUR exactly. --------
+  # /!\ `restraint_hold` reads 0.0 while the comment above says "Raised to 1.0". It WAS 1.0 and was
+  # zeroed in 0356830 -- a commit whose message documents only an unrelated llm_advisor_async
+  # change, and those two lines were its ONLY config edits. It looks parked for that night's arms
+  # and never restored. Arm 2 is exactly "put it back".
+  #
+  # ARM 3. The triage boundary where a board stops being worth answering and becomes worth
+  # ignoring. `threat_miss_idle` bills ignoring ABOVE it; `restraint_hold` pays declining BELOW it.
+  # They are exact complements, so env.py moves BOTH from this one number -- raising it alone in
+  # either term would open a band where a board is worth answering AND worth ignoring at once.
+  # MEASURED at the shipped 0.05: this test blocks restraint on 65.2% of steps, so the term fires
+  # 0.2x/match = 4.7% of the +5.32/match play-side upside. Raising it is what makes arm 2 fire.
+  restraint_ignore_frac: 0.05     # = threat_value.IGNORE_FRAC, i.e. no change
+  # ARM 4. Per-fire credit for CLIMBING the bar toward a win condition held in hand, stopping at
+  # arrival (wincon_reach covers that). Capped, rate-limited, and suppressed by any answerable
+  # push. 0.0 = off. /!\ The named risk is the hoarding that `wincon_reach: 2.0` already bought
+  # (leak x24, crowns halved) -- judge this arm on leak and crowns, not on the elixir histogram.
+  bank_hold: 0.0
+  bank_hold_cap: 2.0
   # -- (2) ELIXIR-TRADE correctness (the honest economy: value removed - elixir spent) --
   elixir_trade: 1.0        # x [ (signed potential-based enemy value/mass eliminated, clipped) - elixir spent ] / value_norm. Telescopes -> idling can't farm it.
   # -- (3) WIN-CONDITION execution (the deck's doctrine done right for the current phase) --
@@ -1320,7 +1339,7 @@ overlay_replay:
 # window must never cover the game: by default it sits just RIGHT of the capture region. Closing
 # the window turns it off for the session.
 preview:
-  enabled: true
+  enabled: false
   scale: 0.5          # window size as a fraction of the captured frame
   fps: 30             # refresher-thread frame rate: LIVE frames redrawn with the newest detections
                       # (boxes still update at the act cadence ~1.5s = what the policy actually sees)
@@ -2077,7 +2096,7 @@ sim:
   # OFF by default. Ceiling MEASURED at 13-27% of the sim gain across four degraded arms at n=30,
   # with an incoherent ordering that says n=30 cannot resolve it -- treat any live gain as unproven.
   # Every guard inside LiveSearch falls back to the POLICY's action, never to nothing.
-  live_search_enabled: false
+  live_search_enabled: true
   live_search_horizon: 12.0
   live_search_cells: 3
   live_search_timeout_ms: 120.0
