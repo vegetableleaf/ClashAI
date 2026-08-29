@@ -74,6 +74,10 @@ class LiveSearch:
         # are inferred here instead, from bodies APPEARING on the board.
         self._seen_counts: dict = {}
         self._report_every = 25
+        # WHY tracks were rejected, not just that they were. "bodies 124/125" says the bridge got
+        # nothing; it does NOT say whether the detector saw nothing or the bridge threw everything
+        # away, and those need opposite fixes.
+        self.drops: dict = {}
         # counters -- every skip reason is recorded, because a live feature that quietly never
         # fires looks exactly like one that fires and does nothing.
         self.stats = {"asked": 0, "ran": 0, "kept_policy": 0, "changed": 0, "waited": 0,
@@ -139,7 +143,7 @@ class LiveSearch:
         t0 = time.time()
         try:
             bodies = LB.tracks_to_bodies(self.db, tracks, self.actions,
-                                         frame=frame, cfg=self.cfg)
+                                         frame=frame, cfg=self.cfg, drops=self.drops)
             self.note_bodies(bodies)                          # learn their deck from what appears
             if len(bodies) < self.min_bodies:
                 self.stats["skip_bodies"] += 1
@@ -198,8 +202,12 @@ class LiveSearch:
 
     def summary(self) -> str:
         s = self.stats
-        return ("live-search: asked %d, ran %d, changed %d, waited %d | skipped "
+        base = ("live-search: asked %d, ran %d, changed %d, waited %d | skipped "
                 "disabled %d conf %d bodies %d stale %d timeout %d error %d"
                 % (s["asked"], s["ran"], s["changed"], s["waited"], s["skip_disabled"],
                    s["skip_conf"], s["skip_bodies"], s["skip_stale"], s["skip_timeout"],
                    s["skip_error"]))
+        if self.drops:
+            top = sorted(self.drops.items(), key=lambda kv: -kv[1])[:6]
+            base += " | tracks: " + ", ".join(f"{k}={v}" for k, v in top)
+        return base

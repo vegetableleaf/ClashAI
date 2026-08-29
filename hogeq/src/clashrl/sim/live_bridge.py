@@ -54,15 +54,25 @@ def _clean_key(name: str) -> str:
 
 
 def tracks_to_bodies(db, tracks: Sequence[Any], actions, level: int = 11,
-                     own_team: int = 0, frame=None, cfg=None) -> List[Dict[str, Any]]:
+                     own_team: int = 0, frame=None, cfg=None,
+                     drops: Optional[Dict[str, int]] = None) -> List[Dict[str, Any]]:
     """Normalise detector tracks into `{key, team, x, y}` board-space records.
 
     `tracks` items may be dicts or tuples; we accept either rather than couple this module to one
     tracker's shape, because `enemy_tracks` is a passthrough whose contract has already gone
     silently inert once (HANDOFF: the `with_base` TypeError).
     """
+    # Pass `drops` to learn WHY tracks were rejected. Without it a zero-body result is
+    # indistinguishable from "the detector saw nothing", and those need completely different
+    # fixes -- exactly the ambiguity that left live search inert twice.
     out: List[Dict[str, Any]] = []
-    for tr in tracks or ():
+    tracks = list(tracks or ())
+    def _drop(reason: str) -> None:
+        if drops is not None:
+            drops[reason] = drops.get(reason, 0) + 1
+    if drops is not None:
+        drops["seen"] = drops.get("seen", 0) + len(tracks)
+    for tr in tracks:
         if isinstance(tr, dict):
             name = tr.get("base") or tr.get("cls") or tr.get("label") or ""
             fx, fy = tr.get("x"), tr.get("y")
@@ -78,26 +88,32 @@ def tracks_to_bodies(db, tracks: Sequence[Any], actions, level: int = 11,
                 fx, fy = float(tr[0]), float(tr[1])
                 name = str(tr[4]) if len(tr) > 4 and tr[4] else ""
             except Exception:                                  # noqa: BLE001
+                _drop("bad_tuple")
                 continue
             team = 1 - own_team
         key = _clean_key(name)
         if key in _NON_BODY or fx is None or fy is None:
+            _drop("no_identity" if key in _NON_BODY else "no_coords")
             continue
         # /!\ build_spec DOES NOT RAISE on an unknown key -- it returns a DEFAULT 300-hp troop.
         # A mislabelled or novel detector class would therefore inject a PHANTOM BODY into every
         # rollout, and search would plan around a unit that does not exist. Membership in the card
         # DB is the real check; the try/except alone was not one.
         if key not in db.cards:
+            _drop("not_a_card:" + key[:18])
             continue
         try:
             spec = build_spec(db, key, level)
         except Exception:                                      # noqa: BLE001
+            _drop("build_spec_failed")
             continue
         if spec.kind == "spell":
+            _drop("is_spell")
             continue
         try:
             bx, by = actions.frame_to_board(float(fx), float(fy))
         except Exception:                                      # noqa: BLE001
+            _drop("frame_to_board_failed")
             continue
         # READ THE HEALTH BAR when a frame and a box are available. `troop_hp` has existed as a
         # scaffold the whole time -- "measure the GREEN filled fraction of that bar ... multiply by
