@@ -5635,3 +5635,69 @@ Four interventions, each hitting its stated mechanism, none improving the outcom
 that HAS moved the outcome remains rollout search (37.0% -> 85.7%), which differs from all four by
 replacing the whole decision rather than editing one part of it. That is the observation any next
 attempt should start from.
+
+## §5k — LIVE SEARCH: the blocker was a NET CONTRACT mismatch, and the real lesson is startup-time proof
+
+`ValueError: not enough values to unpack (expected 5, got 3)`, 9 times in 25 decisions, after
+`AttributeError: '_Env' object has no attribute 'db'`, 19 times in 25, after two earlier rounds of
+`ran 0`.
+
+### The cause
+Three nets reach the searcher and they return different arities:
+
+| net | forward returns | arity |
+|---|---|---|
+| sim `PPONet` | `(cards, cells, gate, value, value_d)` | 5 |
+| **train-rl `DQN`** (`_build_net`) | `(cards, cells, gate)` | **3** |
+| `play.py` | `PolicyNet` + separate gate head | 3 |
+
+`rollout_search` was written against the sim net and unpacked exactly five. The first three are
+identical in meaning and order, and the two value heads were **discarded on the same line**
+(`cq, ceq, gq, _, _`). A non-difference was made into a hard failure. Fix: take the first three.
+
+### The pattern, four times in one feature
+Every live-search failure was a property of the WIRING, not of any board:
+
+1. `record_enemy_play()` called by nothing -> confidence 0.0 forever
+2. tracks passed as base-name STRINGS -> `tr[0..2]` read `'k','n','i'`
+3. `_Env` stub missing `db`/`actions`/`n_cells`/`specs`
+4. net arity 3 vs 5
+
+All four were deterministic and catchable BEFORE a match. All four were instead found as a
+per-decision error counter mid-run, each costing a live run to diagnose. `LiveSearch._selftest()`
+now runs one real forward at construction and either prints `net contract OK (N outputs)` or
+DISABLES search naming the exception. It caught its own author on the first run (placed before
+`_env` was assigned).
+
+**Rule this earns: a feature whose failure mode is fixed wiring must prove its wiring at startup.
+An error COUNTER is not a diagnosis, and a bare count with no exception name cost three runs.**
+
+### Measured, against the exact net train-rl builds
+    net contract OK (3 outputs); search is live
+    asked 6, ran 3, changed 3 | error 0
+Previously `ran 0` every time. 4-tuple tracks (`enemy_tracks` without `with_base`, no card
+identity) drop as `no_identity` rather than crashing. Producer formats confirmed at
+`replay_mine.py:483`: `(x, y, vx, vy, base)` with base, `(x, y, vx, vy)` without.
+
+### GHOST PLAYS -- correction, and the measurement that was being thrown away
+I said the affordability guard "fixed" the unaffordable plays. **`ran 0` means that override never
+executed once**, so it cannot have been the cause of what the owner was seeing. The guard was a
+real bug in code that was never reached; the claim overstated it.
+
+What is actually true, measured:
+* `env.elixir` at decision time IS the conservative floor (`int(frac - elixir_margin)`), written at
+  `env.py:2065`. The other writer (`:858`) is the match-START path and does not race it.
+* `train_rl.py:1139` and `play.py` both filter on `card_elixir[i] <= env.elixir + 1e-6`. The mask is
+  correct.
+* `play.elixir_safety_margin` has **no entry in config.yaml** and runs on its 0.25 default.
+* A ghost-play DETECTOR already existed at `_settle_deploys` and is careful (counts a miss only
+  when the two hypotheses differ by >=1.5 and the reading favours not-deployed by 0.75). But
+  `_failed_deploys` was **incremented and read by nothing**, and its per-card print sat behind
+  `spell_verify_log`, an unrelated flag. The bot has been measuring the exact reported symptom and
+  discarding it, in BOTH decks.
+
+Now reported: per-match `[deploy] ghost plays: N of M (X%)` plus `ghost_plays` and `elixir_margin`
+in the reward-stats JSONL. **The margin is NOT retuned yet -- deliberately.** The historical 24%
+tap-failure and 61%-at-slack-0 numbers predate the margin, so there is currently NO measurement of
+the rate WITH it. Raising the margin trades ghost plays for missed plays; make that call on the
+next live run's number, not on a guess.
