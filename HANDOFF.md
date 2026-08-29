@@ -6055,3 +6055,53 @@ policy looks excellent there. `wincon_reach: 2.0` already failed exactly that wa
   the 6-elixir banking pathology may not even apply. Do not assume parity here.
 * Not launched: memory does not fit the A/B alongside the running interval-4 trainer.
 * One seed per arm is a SCREEN. Confirm any winner at 3 seeds (gate collapse escapes 4/6).
+
+## §5r — INTERVAL-4 RUN CLOSED at m=6800, and the 4-arm A/B is RUNNING
+
+Owner stopped the run (verified: 0 `train-sim-ppo` processes before launching anything else).
+Its own ladder eval banked **best_wr = 9.58%** at m=6800 -- against the m18000 reference's 11.3%
++/-5.1 on a different instrument, so: not a collapse, not an improvement. Consistent with everything
+else measured this session -- **search-in-the-loop coexists with the banking failure, it does not
+fix it.**
+
+### Final read, `tools/ab_reward_report.py`, 16 matches, greedy and search-free
+```
+checkpoint        >=6 el%   mean   xbow%  plays%  playH  winrate   leak
+m18000 reference     26.3   4.30    10.9     9.6   2.13    12.5%  -3.65
+i4_best (m6000)       0.3   1.99     1.3    14.6   1.94    18.8%   0.00
+i4_m6800              0.4   2.03     0.9    14.0   1.93     6.2%  -0.00
+```
+6,800 matches of training took **>=6 elixir from 26.3% to 0.3%** and x_bow share from 10.9% to
+~1%. `leak` at 0.00 is the same fact from the other side: the bar never approaches the cap.
+
+**AND THE WINRATE COLUMN IS THE ARGUMENT FOR THE ENDPOINT CHOICE, IN ONE ROW.** The two i4
+checkpoints are 800 matches apart and read **18.8% and 6.2%** -- the earlier one BEATING the
+reference's 12.5%. That is +/-2 matches of noise. Any A/B judged on winrate at affordable sample
+sizes would have produced a confident, arbitrary winner.
+
+### Why this run was stopped rather than finished to 10k
+NOT because it is "architecturally unsound". It is faithfully optimising a reward whose every
+positive term requires a play (§5p) -- **every run under this reward dumps elixir, including the
+A/B's own control arm, which is designed to reproduce exactly this.** Calling the dumping an
+architecture fault points at training knobs, and that is the trap this project has hit four times.
+The real reason is cheaper: the remaining 3,200 matches duplicate what the control arm produces
+anyway, alone instead of alongside three informative arms, for ~4.5 h and the RAM the A/B needs.
+Nothing was forfeited by stopping -- both checkpoints were already on disk and evaluated after.
+
+### A/B launched (4 arms, ~10k matches each)
+Measured at launch: **8.03 cores of 16, 3.6 GB resident, 5.5 GB still free** -- comfortably inside
+the budget (the estimate was 10.2 cores / 5.6 GB, so 96 envs was, if anything, conservative).
+Runtime weights verified AT THE ENV, not just in the config file:
+```
+arm         w_restraint   w_bank_hold   bank_hold_cap
+control            0.0           0.0             2.0
+restraint          1.0           0.0             2.0
+bank2              0.0           1.0             2.0
+bank6              0.0           1.0             6.0
+```
+Read with `PYTHONHASHSEED=0 python tools/ab_reward_report.py`. A monitor is watching the four logs
+for `EVAL @`, `new BEST` and failure signatures, plus a process count (a dead arm is a failure the
+log may never mention).
+
+**FIRST THING TO CHECK: does the CONTROL arm reproduce the collapse?** If it does not, the run is
+uninformative and no other arm in it can be read.
