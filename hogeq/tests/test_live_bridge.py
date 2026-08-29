@@ -72,6 +72,41 @@ class LiveBridgeTests(unittest.TestCase):
                            "the bridge is not over-stating HP -- has it started reading real HP?")
         self.assertGreater(e["hp_rebuilt"], e["hp_true"])
 
+    def test_reading_the_HP_BAR_removes_almost_all_of_the_overstatement(self):
+        """OWNER PUSHBACK, 2026-08-28, and they were right: I called the HP error "total by
+        construction". It never was -- `troop_hp.read_hp_fraction` has existed as a scaffold the
+        whole time and the bridge simply never called it.
+
+        The point is not just that it improves, but WHY it improves so much: assuming full HP is a
+        ONE-DIRECTIONAL bias that compounds over every body, while bar-reading error is RANDOM and
+        largely cancels. A deliberately crude reader still gets most of the way there.
+        """
+        eng = _truth()
+        def over(**kw):
+            obs = LB.observe_as_detector(eng, rng=random.Random(1), **kw)
+            rb = LB.build_engine(DummyCfg(), _DB, random.Random(0), obs)
+            return LB.reconstruction_error(eng, rb)["hp_overstate_frac"]
+        none_read = over(read_hp=False)
+        perfect = over(read_hp=True, hp_err=0.0)
+        sloppy = over(read_hp=True, hp_err=0.25)
+        self.assertGreater(none_read, 0.5, "the no-read baseline is no longer overstating")
+        self.assertAlmostEqual(perfect, 0.0, places=6)
+        self.assertLess(abs(sloppy), 0.15,
+                        f"a +-25%% bar reader left {100*sloppy:.1f}%% bias -- error is not cancelling")
+        self.assertLess(abs(sloppy), none_read / 4.0,
+                        "bar-reading must beat assume-full-HP by a wide margin, not marginally")
+
+    def test_no_bar_means_full_hp_not_missing_data(self):
+        """read_hp_fraction returns None when NO BAR IS DRAWN, and Clash Royale only draws one once
+        a unit is damaged. So None -> 1.0 is the CORRECT reading, not a fallback."""
+        eng = _truth()
+        obs = LB.observe_as_detector(eng, rng=random.Random(1))
+        for b in obs:
+            b["hp_frac"] = None
+        rb = LB.build_engine(DummyCfg(), _DB, random.Random(0), obs)
+        for u in rb.units:
+            self.assertAlmostEqual(u.hp, u.spec.hp, places=3)
+
     def test_position_error_is_reported_faithfully(self):
         """The bridge must not flatter itself: injected jitter has to show up in the report."""
         eng = _truth()

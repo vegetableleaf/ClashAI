@@ -54,7 +54,7 @@ def _clean_key(name: str) -> str:
 
 
 def tracks_to_bodies(db, tracks: Sequence[Any], actions, level: int = 11,
-                     own_team: int = 0) -> List[Dict[str, Any]]:
+                     own_team: int = 0, frame=None, cfg=None) -> List[Dict[str, Any]]:
     """Normalise detector tracks into `{key, team, x, y}` board-space records.
 
     `tracks` items may be dicts or tuples; we accept either rather than couple this module to one
@@ -92,8 +92,24 @@ def tracks_to_bodies(db, tracks: Sequence[Any], actions, level: int = 11,
             bx, by = actions.frame_to_board(float(fx), float(fy))
         except Exception:                                      # noqa: BLE001
             continue
+        # READ THE HEALTH BAR when a frame and a box are available. `troop_hp` has existed as a
+        # scaffold the whole time -- "measure the GREEN filled fraction of that bar ... multiply by
+        # the unit's max HP" -- and the bridge simply never called it, which is what made every
+        # body enter at spec maximum and overstate enemy hitpoints by +77%.
+        # None means NO BAR, which correctly means UNDAMAGED: Clash Royale only draws the bar once
+        # a unit has taken damage. So None -> 1.0 is the right default, not a fallback.
+        hp_frac = None
+        box = tr.get("box") if isinstance(tr, dict) else None
+        if frame is not None and box is not None:
+            try:
+                from ..troop_hp import read_hp_fraction
+                hp_frac = read_hp_fraction(frame, tuple(box), cfg)
+            except Exception:                                  # noqa: BLE001
+                hp_frac = None                                 # reader unavailable -> assume full
         out.append({"key": key, "spec": spec, "team": int(team),
-                    "x": float(bx), "y": float(by)})
+                    "x": float(bx), "y": float(by),
+                    "hp_frac": (None if hp_frac is None
+                                else float(min(1.0, max(0.02, hp_frac))))})
     return out
 
 
@@ -112,8 +128,10 @@ def build_engine(cfg, db, rng, bodies: Sequence[Dict[str, Any]],
     eng.reset()
     eng.units.clear()
     for b in bodies:
+        _f = b.get("hp_frac")
+        _hp = float(b["spec"].hp) * (1.0 if _f is None else float(_f))
         u = Unit(spec=b["spec"], team=int(b["team"]),
-                 x=float(b["x"]), y=float(b["y"]), hp=float(b["spec"].hp))
+                 x=float(b["x"]), y=float(b["y"]), hp=_hp)
         u.deploy_left = 0.0            # already on the field: it was SEEN, so it has landed
         eng.units.append(u)
     try:
@@ -140,7 +158,8 @@ def build_engine(cfg, db, rng, bodies: Sequence[Dict[str, Any]],
 
 def observe_as_detector(eng: SimEngine, own_team: int = 0,
                         drop: float = 0.0, pos_sigma: float = 0.0,
-                        rng=None) -> List[Dict[str, Any]]:
+                        rng=None, read_hp: bool = False,
+                        hp_err: float = 0.0) -> List[Dict[str, Any]]:
     """What a PERFECT-identity detector would report for this engine.
 
     Models the two live losses that are measurable: missed bodies (`drop`) and position error
@@ -159,8 +178,13 @@ def observe_as_detector(eng: SimEngine, own_team: int = 0,
         if pos_sigma > 0.0:
             x += rng.gauss(0.0, pos_sigma) / _TILES_X
             y += rng.gauss(0.0, pos_sigma) / _TILES_Y
+        frac = None
+        if read_hp:
+            frac = max(0.02, min(1.0, u.hp / max(1e-6, u.spec.hp)))
+            if hp_err > 0.0:                                   # bar-reading error, +- hp_err
+                frac = max(0.02, min(1.0, frac * (1.0 + rng.uniform(-hp_err, hp_err))))
         out.append({"key": u.spec.base, "spec": u.spec, "team": int(u.team),
-                    "x": float(x), "y": float(y)})
+                    "x": float(x), "y": float(y), "hp_frac": frac})
     return out
 
 
