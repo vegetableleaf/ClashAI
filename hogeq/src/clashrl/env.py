@@ -273,6 +273,11 @@ class LiveMatchEnv:
         # before the else had ever run. None is the sentinel the code already tests for; it was
         # simply never set. Timing-dependent, which is why it survived this long.
         self._last_mass = None           # last colour-mass estimate; None = never measured
+        # WARNING: two other readers used getattr(self, "_last_mass", <default>) and relied on
+        # BEING ABSENT to get that 0.0. Setting it to None here made getattr return None and
+        # `None >= float` raised on the very first reset() -- I fixed one crash into another.
+        # None is still the right sentinel for the fast-tick branch (it means "never measured", so
+        # go measure), so the READERS coerce instead: (getattr(...) or 0.0).
         # THE LOG'S ROLL, shared by the aim assist and the whiff verdict so they cannot disagree
         # about what the spell can touch.
         self.log_half_w = float(cfg.get("env", "log_half_width", default=0.064))
@@ -671,7 +676,7 @@ class LiveMatchEnv:
         # and a proven driver of degenerate placement. Say so loudly, once a stretch.
         if self._detector is not None:
             import time as _t
-            if not dets and getattr(self, "_last_mass", 0.0) >= self.quiet_frac:
+            if not dets and (getattr(self, "_last_mass", None) or 0.0) >= self.quiet_frac:
                 if self._blind_since is None:
                     self._blind_since = _t.time()
                 elif _t.time() - self._blind_since > 5.0:
@@ -1656,7 +1661,7 @@ class LiveMatchEnv:
             return 0.0
         dets = self._last_dets_all
         blind = (dets is None or self._last_dets_age > self.phi_max_age
-                 or (not dets and getattr(self, "_last_mass", 0.0) >= self.quiet_frac))
+                 or (not dets and (getattr(self, "_last_mass", None) or 0.0) >= self.quiet_frac))
         if blind:
             return 0.0                                   # hold the snapshots; no events this frame
         now = float(getattr(self, "_last_frame_t", None) or time.time())

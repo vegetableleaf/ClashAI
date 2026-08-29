@@ -266,6 +266,11 @@ class LiveMatchEnv:
         self._pending_deploys: list = []  # deploy checks awaiting evidence (settled >= 1.4s later)
         self._fast_tick = False          # this decision was woken by perception: skip slow reads
         self._last_mass = None           # last colour-mass estimate; None = never measured
+        # WARNING: two other readers used getattr(self, "_last_mass", <default>) and relied on
+        # BEING ABSENT to get that 0.0. Setting it to None here made getattr return None and
+        # `None >= float` raised on the very first reset() -- I fixed one crash into another.
+        # None is still the right sentinel for the fast-tick branch (it means "never measured", so
+        # go measure), so the READERS coerce instead: (getattr(...) or 0.0).
         # /!\ MUST be initialised here, not only where it is computed. The fast-tick branch reads
         # `self._last_mass is not None` DIRECTLY (the two other readers correctly use
         # getattr(..., 0.0)), while the ONLY assignment lives in that branch's `else`. So a run
@@ -673,7 +678,7 @@ class LiveMatchEnv:
         # and a proven driver of degenerate placement. Say so loudly, once a stretch.
         if self._detector is not None:
             import time as _t
-            if not dets and getattr(self, "_last_mass", 0.0) >= self.quiet_frac:
+            if not dets and (getattr(self, "_last_mass", None) or 0.0) >= self.quiet_frac:
                 if self._blind_since is None:
                     self._blind_since = _t.time()
                 elif _t.time() - self._blind_since > 5.0:
@@ -1658,7 +1663,7 @@ class LiveMatchEnv:
             return 0.0
         dets = self._last_dets_all
         blind = (dets is None or self._last_dets_age > self.phi_max_age
-                 or (not dets and getattr(self, "_last_mass", 0.0) >= self.quiet_frac))
+                 or (not dets and (getattr(self, "_last_mass", None) or 0.0) >= self.quiet_frac))
         if blind:
             return 0.0                                   # hold the snapshots; no events this frame
         now = float(getattr(self, "_last_frame_t", None) or time.time())
