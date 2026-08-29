@@ -131,6 +131,36 @@ class LiveBridgeTests(unittest.TestCase):
                 return float(fx), float(fy)
         self.assertEqual(LB.tracks_to_bodies(_DB, [(0.5, 0.3, 0.0, 0.0)], _A()), [])
 
+    def test_it_works_with_the_REAL_ActionSpace_not_just_a_stub(self):
+        """THE BUG MY OWN TESTS COULD NOT SEE. `frame_to_board` lives on BoardWarp, NOT on
+        ActionSpace -- so `actions.frame_to_board(...)` raises AttributeError. Every test above
+        passed a STUB that HAD the method, i.e. a stub MORE CAPABLE THAN THE REAL OBJECT, so they
+        all passed while live dropped every track.
+
+        MEASURED in a live run before the fix: seen=49, frame_to_board_failed=49, every decision.
+        """
+        from clashrl.actions import ActionSpace
+        from clashrl.config import Config
+        a = ActionSpace(Config.load(ROOT / "config" / "config.yaml"))
+        self.assertFalse(hasattr(a, "frame_to_board"),
+                         "ActionSpace grew the method -- this test's premise is stale")
+        drops = {}
+        rows = LB.tracks_to_bodies(_DB, [(0.5, 0.4, 0, 0, "knight"),
+                                         (0.6, 0.3, 0, 0, "musketeer")], a, drops=drops)
+        self.assertEqual([r["key"] for r in rows], ["knight", "musketeer"])
+        self.assertNotIn("frame_to_board_failed", drops)
+
+    def test_a_missing_converter_is_reported_ONCE_not_smeared_over_every_track(self):
+        """A broad except around the per-track call turned one structural error into N silent
+        drops. An object with no converter at all must say so, not look like bad tracks."""
+        class _Useless:
+            pass
+        drops = {}
+        rows = LB.tracks_to_bodies(_DB, [(0.5, 0.4, 0, 0, "knight")] * 20, _Useless(), drops=drops)
+        self.assertEqual(rows, [])
+        self.assertEqual(drops.get("NO_frame_to_board_on_actions"), 1,
+                         "the missing converter was not reported exactly once")
+
     def test_position_error_is_reported_faithfully(self):
         """The bridge must not flatter itself: injected jitter has to show up in the report."""
         eng = _truth()

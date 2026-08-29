@@ -65,6 +65,19 @@ def tracks_to_bodies(db, tracks: Sequence[Any], actions, level: int = 11,
     # Pass `drops` to learn WHY tracks were rejected. Without it a zero-body result is
     # indistinguishable from "the detector saw nothing", and those need completely different
     # fixes -- exactly the ambiguity that left live search inert twice.
+    # RESOLVE THE CONVERTER ONCE, LOUDLY. `frame_to_board` lives on BoardWarp, NOT on
+    # ActionSpace -- calling it on the ActionSpace raises AttributeError, and a broad
+    # `except: continue` around the per-track call turned that ONE structural mistake into 49
+    # silent per-track drops every decision. MEASURED in a live run: seen=49,
+    # frame_to_board_failed=49. A missing converter is a configuration error and is reported as
+    # one, not smeared across every track.
+    conv = getattr(actions, "frame_to_board", None)
+    if conv is None:
+        conv = getattr(getattr(actions, "warp", None), "frame_to_board", None)
+    if conv is None:
+        if drops is not None:
+            drops["NO_frame_to_board_on_actions"] = drops.get("NO_frame_to_board_on_actions", 0) + 1
+        return []
     out: List[Dict[str, Any]] = []
     tracks = list(tracks or ())
     def _drop(reason: str) -> None:
@@ -111,7 +124,7 @@ def tracks_to_bodies(db, tracks: Sequence[Any], actions, level: int = 11,
             _drop("is_spell")
             continue
         try:
-            bx, by = actions.frame_to_board(float(fx), float(fy))
+            bx, by = conv(float(fx), float(fy))
         except Exception:                                      # noqa: BLE001
             _drop("frame_to_board_failed")
             continue
