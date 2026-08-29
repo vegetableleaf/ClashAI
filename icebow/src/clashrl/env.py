@@ -263,6 +263,7 @@ class LiveMatchEnv:
         self._pending_spells: list = []
         self._last_cast_rec = None       # the whiff record for THIS step's cast (see the tick)
         self._failed_deploys = 0         # taps that never moved the elixir bar (see the tick)
+        self._failed_deploys_match = 0   # ... same, reset per match, so a RATE can be reported
         self._pending_deploys: list = []  # deploy checks awaiting evidence (settled >= 1.4s later)
         self._fast_tick = False          # this decision was woken by perception: skip slow reads
         self._last_mass = None           # last colour-mass estimate; None = never measured
@@ -840,6 +841,7 @@ class LiveMatchEnv:
         self._last_step_t = None
         self._last_frame_t = None         # menu time must not count against the first paced wait
         self._play_log = []               # per-play telemetry for this match (see step's record block)
+        self._failed_deploys_match = 0    # ghost plays THIS match (rate is printed at match end)
         self._match_t0 = time.time()      # re-anchored below when IN_MATCH is actually detected
         self._nav.reset_state()
         while True:
@@ -1205,6 +1207,7 @@ class LiveMatchEnv:
             obs = float(cur_elixir)
             if abs(obs - if_not) + 0.75 < abs(obs - if_deployed):
                 self._failed_deploys += 1
+                self._failed_deploys_match += 1
                 if self.spell_verify_log:
                     name = (self.vision.deck_keys[d["card"]]
                             if 0 <= d["card"] < self.n_cards else str(d["card"]))
@@ -2128,9 +2131,23 @@ class LiveMatchEnv:
                       "wakes": int(getattr(self._ploop, "wakes", 0))}
             print("[perception] running=%s passes=%d wakes=%d" %
                   (percep["running"], percep["passes"], percep["wakes"]), flush=True)
+        # GHOST PLAYS -- cards the model chose, tapped, and the game refused for want of elixir.
+        # The detector at _settle_deploys has existed and been careful for a while (it only counts a
+        # miss when the two hypotheses are >=1.5 apart and the reading favours "not deployed" by
+        # 0.75). What it did NOT do was TELL ANYONE: `_failed_deploys` was incremented and never
+        # read by anything, and the per-card print was gated behind `spell_verify_log`, an unrelated
+        # flag. So the bot has been measuring the exact symptom the owner is reporting and throwing
+        # the measurement away. The rate goes in the per-match line and the JSONL from here.
+        _nplays = sum(1 for r in self._play_log if r.get("play"))
+        if _nplays:
+            print("[deploy] ghost plays: %d of %d (%.0f%%) never moved the elixir bar"
+                  % (self._failed_deploys_match, _nplays,
+                     100.0 * self._failed_deploys_match / _nplays), flush=True)
         self.rw_stats.dump_match(self.rw_stats_path,
                                  {"outcome": outcome, "decisions": self._cad_n, "cadence": cad,
                                   "perception": percep,
+                                  "ghost_plays": int(self._failed_deploys_match),
+                                  "elixir_margin": round(float(self.elixir_margin), 2),
                                   # NB key must NOT be "plays": dump_match merges match_summary() LAST,
                                   # whose int "plays" count would silently clobber this array (it did,
                                   # 2026-08-13 -- the whole day's per-play detail was lost to that).

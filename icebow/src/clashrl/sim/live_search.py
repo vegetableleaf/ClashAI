@@ -85,6 +85,51 @@ class LiveSearch:
         self.stats = {"asked": 0, "ran": 0, "kept_policy": 0, "changed": 0, "waited": 0,
                       "skip_disabled": 0, "skip_conf": 0, "skip_bodies": 0,
                       "skip_stale": 0, "skip_timeout": 0, "skip_error": 0}
+        # LAST in __init__, deliberately: the check touches `_env`, `stats` and `device`, and the
+        # first version ran it beside `self.opp` -- before `_env` existed -- so it reported the
+        # contract broken when the contract was fine. It caught its own author, which is the
+        # behaviour wanted, but the call belongs after everything it reads.
+        if self.enabled and net is not None:
+            self._selftest()
+
+    def _selftest(self) -> None:
+        """Prove the net answers the searcher's call ONCE, AT STARTUP, before any match.
+
+        Every live-search failure this feature has had was a contract mismatch that only showed up
+        as a per-decision exception counter mid-match: a stub missing `db`, a track tuple of the
+        wrong length, a net returning three values where five were unpacked. Each cost a run to
+        find, and the last one printed `error 9` nine times while saying nothing about why.
+
+        A mismatch is a PROPERTY OF THE WIRING, not of any particular board -- so it can be caught
+        deterministically here, and a feature that cannot work is DISABLED LOUDLY instead of
+        failing quietly sixty times a match.
+        """
+        try:
+            import torch
+            from .env import SimMatchEnv
+            if self._env is None:
+                self._env = SimMatchEnv(self.cfg)
+            e = self._env
+            e.reset()
+            obs = (torch.from_numpy(e._last_obs).float().permute(2, 0, 1)
+                   .unsqueeze(0).to(self.device) / 255.0)
+
+            def v(a):
+                import numpy as np
+                return torch.from_numpy(np.asarray(a, np.float32)).unsqueeze(0).to(self.device)
+
+            with torch.no_grad():
+                out = self.net(obs, v(e.hand_vec), v(e.next_vec), v(e.elixir_vec), v(e.threat_vec))
+            n = len(out)
+            if n < 3:
+                raise ValueError("net returned %d outputs; the searcher needs at least 3 "
+                                 "(cards, cells, gate)" % n)
+        except Exception as _e:                                # noqa: BLE001
+            self.enabled = False
+            print("[live-search] DISABLED at startup -- the network does not satisfy the "
+                  "searcher's contract: %s: %s" % (type(_e).__name__, _e), flush=True)
+            return
+        print("[live-search] net contract OK (%d outputs); search is live" % n, flush=True)
 
     # ------------------------------------------------------------------ observation feed
     def record_enemy_play(self, card_key: str) -> None:

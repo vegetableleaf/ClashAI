@@ -262,7 +262,17 @@ class Searcher:
         def v(a):
             return torch.from_numpy(np.asarray(a, np.float32)).unsqueeze(0).to(self.device)
         with torch.no_grad():
-            cq, ceq, gq, _, _ = self.net(obs, v(e.hand_vec), v(e.next_vec), v(e.elixir_vec), v(e.threat_vec))
+            _out = self.net(obs, v(e.hand_vec), v(e.next_vec), v(e.elixir_vec), v(e.threat_vec))
+        # THREE NETS FEED THIS, AND THEY RETURN DIFFERENT ARITIES:
+        #   sim PPONet      -> (cards, cells, gate, value, value_d)   5
+        #   train-rl DQN    -> (cards, cells, gate)                   3
+        #   play.py         -> PolicyNet + a separate gate head
+        # The first THREE are identical in meaning and order; the two value heads are DISCARDED
+        # here anyway. Unpacking exactly five turned that non-difference into a hard failure --
+        #     ValueError: not enough values to unpack (expected 5, got 3)
+        # -- on every live decision, because live runs the DQN. Take the first three and the same
+        # searcher serves all three nets unchanged.
+        cq, ceq, gq = _out[0], _out[1], _out[2]
         elixir = v(e.elixir_vec) * 10.0
         playable = (v(e.hand_vec) > 0.5) & (self.costs.view(1, -1) <= elixir + 1e-6)
         cq_m = cq.masked_fill(~playable, _NEG)
