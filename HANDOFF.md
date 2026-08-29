@@ -5701,3 +5701,52 @@ in the reward-stats JSONL. **The margin is NOT retuned yet -- deliberately.** Th
 tap-failure and 61%-at-slack-0 numbers predate the margin, so there is currently NO measurement of
 the rate WITH it. Raising the margin trades ghost plays for missed plays; make that call on the
 next live run's number, not on a guess.
+
+## §5l — LIVE SEARCH TIMEOUTS: the cost curve, and why discarding a finished search is dominated
+
+After §5k the errors went to zero and the counter read `ran 0, timeout 22` of 25. Search worked and
+was being thrown away.
+
+### The cost curve (MEASURED, live path, 13-candidate sweep)
+
+| bodies | full sweep | per rollout |
+|---|---|---|
+| 2 | 61 ms | ~4.7 ms |
+| 6 | 151 ms | ~11.6 ms |
+| 12 | 262 ms | ~20 ms |
+| 20 | **602 ms** | ~46 ms |
+| 30 | **927 ms** | ~71 ms |
+
+`act_period` is 600 ms. At 20+ bodies a full sweep costs MORE THAN THE ENTIRE DECISION PERIOD, and
+the bot is blind for all of it. The budget was 120 ms, so the old code paid the full cost and then
+discarded the answer for being late -- maximum latency, zero benefit, and it bit hardest on exactly
+the crowded boards where search is worth most. The bridge is NOT the cost: tracks_to_bodies 0.4 ms,
+build_engine 0.1 ms, LiveOpponent 0.4 ms, searcher.act 164.9 ms.
+
+### Two repairs, and one instrument that was wrong
+1. **Interruptible scoring.** `scores = [self._rollout(a) for a in cands]` was all-or-nothing. It
+   now checks a wall-clock `deadline` BETWEEN rollouts and keeps its best-so-far. `cands` is ordered
+   WAIT-first then by descending policy preference, so a prefix is the right subset to keep.
+   `deadline = None` by default, so **no clock is consulted on the sim path and sim behaviour is
+   unchanged by construction** -- the 37.0% -> 85.7% sim result stays the reference.
+2. **Stop discarding finished work.** Throwing away a COMPLETED search is strictly dominated: the
+   latency is already spent. The "too stale to use" reasoning does not survive contact with the
+   facts -- the policy's action and the search's action are computed from THE SAME observation, so
+   search does not age the board estimate. The only real cost is a later tap, and the deadline is
+   what bounds that. The hard timeout now fires only at 2x budget (pathological runaway), and
+   over-budget-but-used is counted separately so the budget can be tuned against real boards.
+
+**A body-count ceiling was considered and REJECTED on measurement.** The 2-rollout floor is NOT
+monotonic in bodies (2:54, 6:95, 12:184, 16:88, 20:183, 25:78, 30:98 ms) because a rollout ends when
+the match does -- a crowded board can be CHEAPER. Body count does not predict cost, so it cannot
+gate on it.
+
+### Measured after, full decide() path, real DQN net
+    bodies:      2     6    12    20    30    40
+    wall ms:   171   205   218   184   221   282
+    ran:       9/9   9/9   9/9   9/9   9/9   9/9      timeouts 0/54
+Was 927 ms and 22/25 discarded. `live_search_timeout_ms` default 120 -> 250; internal deadline is
+0.6x that, sized so deadline + one worst-case rollout (150 + 70) stays inside the cap.
+
+/!\ NOT YET MEASURED: whether live search HELPS. The ceiling is 13-27% of the sim gain at n=30 with
+incoherent ordering. It now runs; that is all that is established.

@@ -286,7 +286,7 @@ def train_rl(cfg, init: str | None = None) -> None:
                 horizon=float(cfg.get("sim", "live_search_horizon", default=12.0)),
                 cells=int(cfg.get("sim", "live_search_cells", default=3)),
                 gate_tau=float(cfg.get("sim", "ppo_gate_threshold", default=0.25)),
-                timeout_ms=float(cfg.get("sim", "live_search_timeout_ms", default=120.0)),
+                timeout_ms=float(cfg.get("sim", "live_search_timeout_ms", default=250.0)),
                 min_confidence=float(cfg.get("sim", "live_search_min_confidence", default=0.5)),
                 enabled=True)
             print("[train-rl] LIVE SEARCH ENABLED -- searched transitions are legitimate DDQN "

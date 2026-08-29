@@ -53,7 +53,7 @@ class LiveSearch:
     def __init__(self, cfg, db, rng, net, device, actions,
                  horizon: float = 12.0, cells: int = 3, topk: int = 4,
                  gate_tau: float = 0.25,
-                 timeout_ms: float = 120.0,
+                 timeout_ms: float = 250.0,
                  min_confidence: float = 0.5,
                  min_bodies: int = 1,
                  max_frame_age_s: float = 0.6,
@@ -215,10 +215,24 @@ class LiveSearch:
             key = "%s: %s" % (type(_e).__name__, str(_e)[:60])
             self.errors[key] = self.errors.get(key, 0) + 1
             return None
-        if (time.time() - t0) * 1000.0 > self.timeout_ms:
-            # The answer arrived, but too late to describe the board any more.
+        # DISCARD ONLY A PATHOLOGICAL OVERRUN, not merely a late one. Throwing away a COMPLETED
+        # search is strictly dominated: the latency has already been spent, so discarding buys back
+        # nothing and guarantees zero benefit. That is what the first cut did, and it threw away 22
+        # of 25 searches -- maximum cost, no gain.
+        # The "too stale to use" reasoning behind the old check does not survive contact with the
+        # facts either: the policy's action and the search's action are computed from THE SAME
+        # observation, so search does not make the board estimate any older. The only real cost is
+        # that the tap lands later, and `deadline` above is what bounds that -- it stops the work
+        # rather than paying for it and binning the result.
+        # This guard therefore exists only for the pathological case (a single rollout that runs
+        # away), where the tap would land so late in the 600 ms act_period as to be meaningless.
+        _el = (time.time() - t0) * 1000.0
+        if _el > 2.0 * self.timeout_ms:
             self.stats["skip_timeout"] += 1
             return None
+        if _el > self.timeout_ms:
+            # Over budget but USED, and counted so the budget can be tuned against real boards.
+            self.stats["over_budget"] = self.stats.get("over_budget", 0) + 1
         self.stats["ran"] += 1
         if action is None:
             self.stats["kept_policy"] += 1
@@ -253,7 +267,22 @@ class LiveSearch:
 
         searcher = RS.Searcher(self._env, self.net, self.device, self.horizon, 1,
                                self.topk, 1.0, self.gate_tau, cells=self.cells)
+        # SPEND THE BUDGET, DO NOT OVERRUN IT AND THEN THROW THE ANSWER AWAY. The searcher stops
+        # scoring at this instant and keeps its best-so-far, so a crowded board yields a smaller
+        # search instead of a discarded one. The fraction leaves room for the rollout in flight
+        # when the clock runs out: the deadline is only tested BETWEEN rollouts, so the true worst
+        # case is deadline + one rollout, and the caller's hard timeout must sit above that.
+        # 0.6, not 0.75: MEASURED. The worst single rollout is ~70 ms at 30 bodies (927 ms for a
+        # 13-candidate sweep), and the deadline can only be tested BETWEEN rollouts -- so the true
+        # cost is deadline + one rollout. At 0.75 that is 187 + 70 = 257 ms against a 250 ms cap,
+        # and the caller still discarded 4 of 7 crowded-board searches. At 0.6 it is 150 + 70 =
+        # 220 ms, inside the cap with room to spare.
+        searcher.deadline = time.perf_counter() + 0.6 * (self.timeout_ms / 1000.0)
+        self._last_truncated = 0
         act, searched = searcher.act(0)
+        self._last_truncated = int(searcher.truncated)
+        self.stats["truncated"] = self.stats.get("truncated", 0) + self._last_truncated
+        self.stats["rollouts"] = self.stats.get("rollouts", 0) + int(searcher.scored)
         if not searched or act is None:
             return None
         gate, card, cell = int(act[0]), int(act[1]), int(act[2])
@@ -266,6 +295,11 @@ class LiveSearch:
                 % (s["asked"], s["ran"], s["changed"], s["waited"], s["skip_disabled"],
                    s["skip_conf"], s["skip_bodies"], s["skip_stale"], s["skip_timeout"],
                    s["skip_error"]))
+        if s.get("ran"):
+            base += " | rollouts %d (%.1f/decision), truncated %d" % (
+                s.get("rollouts", 0), s.get("rollouts", 0) / float(s["ran"]), s.get("truncated", 0))
+        if s.get("over_budget"):
+            base += ", over-budget %d" % s["over_budget"]
         if s.get("skip_unaffordable"):
             base += " | UNAFFORDABLE picks rejected: %d" % s["skip_unaffordable"]
         if self.drops:

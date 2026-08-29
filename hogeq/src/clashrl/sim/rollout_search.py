@@ -254,6 +254,12 @@ class Searcher:
         self.jit_agree_card = 0           # ...same card (cell may differ)
         self.jit_dropped = 0
         self.jit_seen = 0
+        # WALL-CLOCK DEADLINE, live only. None => no clock is consulted anywhere below, so SIM
+        # BEHAVIOUR IS UNCHANGED BY CONSTRUCTION -- this must stay true, because the sim search
+        # result (37.0% -> 85.7%) is the reference every live claim is measured against.
+        self.deadline = None
+        self.truncated = 0                # decisions that scored only a PREFIX of the candidates
+        self.scored = 0                   # rollouts actually run, for cost accounting
 
     # -- policy ------------------------------------------------------------
     def _forward(self):
@@ -430,9 +436,29 @@ class Searcher:
         t0 = time.perf_counter()
         self._clamped_now = 0
         self._jit_active = False
-        scores = [self._rollout(a) for a in cands]
+        # INTERRUPTIBLE SCORING. Rollout cost scales steeply with how crowded the board is --
+        # MEASURED on the live path: 2 bodies 61 ms, 6 bodies 151 ms, 12 bodies 262 ms, 20 bodies
+        # 602 ms, 30 bodies 927 ms. At 20+ bodies a full sweep costs MORE THAN THE WHOLE 600 ms
+        # act_period, and the bot is blind for all of it. The old shape was all-or-nothing: pay the
+        # entire cost, then have the caller discard the answer for being late (22 of 25 decisions).
+        # That is the worst of both -- maximum latency, zero benefit, and it bit hardest on exactly
+        # the busy boards where search is worth most.
+        # `cands` is ordered WAIT-first then by descending policy preference, so a PREFIX is the
+        # right subset to keep: we lose the least-preferred options, never the plausible ones.
+        # At least two must be scored or there is nothing to compare and the policy stands.
+        scores = []
+        for _a in cands:
+            scores.append(self._rollout(_a))
+            if (self.deadline is not None and len(scores) >= 2
+                    and time.perf_counter() >= self.deadline):
+                self.truncated += 1
+                break
+        self.scored += len(scores)
+        if len(scores) < len(cands):
+            cands = cands[:len(scores)]
         clean_pick = cands[int(np.argmax(scores))]
-        if self.jit_on:
+        if self.jit_on and not (self.deadline is not None
+                                and time.perf_counter() >= self.deadline):
             # SAME decision, SAME candidates, a MISPERCEIVED starting board.
             self._plan_jitter(self.env.eng)
             self._jit_active = True
