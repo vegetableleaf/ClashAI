@@ -265,6 +265,14 @@ class LiveMatchEnv:
         self._failed_deploys = 0         # taps that never moved the elixir bar (see the tick)
         self._pending_deploys: list = []  # deploy checks awaiting evidence (settled >= 1.4s later)
         self._fast_tick = False          # this decision was woken by perception: skip slow reads
+        # /!\ MUST be initialised here, not only where it is computed. The fast-tick branch reads
+        # `self._last_mass is not None` DIRECTLY (the two other readers correctly use
+        # getattr(..., 0.0)), while the ONLY assignment lives in that branch's `else`. So a run
+        # whose FIRST decision is perception-woken raised
+        #     AttributeError: 'LiveMatchEnv' object has no attribute '_last_mass'
+        # before the else had ever run. None is the sentinel the code already tests for; it was
+        # simply never set. Timing-dependent, which is why it survived this long.
+        self._last_mass = None           # last colour-mass estimate; None = never measured
         # THE LOG'S ROLL, shared by the aim assist and the whiff verdict so they cannot disagree
         # about what the spell can touch.
         self.log_half_w = float(cfg.get("env", "log_half_width", default=0.064))
