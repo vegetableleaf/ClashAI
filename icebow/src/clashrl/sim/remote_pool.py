@@ -123,7 +123,7 @@ def _worker(conn, n_envs: int, seed0: int, drill_frac=None,
                        if spell_min_value is None else float(spell_min_value))
 
     def payload(i, env, obs, rew=0.0, done=False, outcome=None, pfsp=None,
-                drill=None, verdict=None, deck=None):
+                drill=None, verdict=None, deck=None, act=None, srch=0.0):
         hand = env._hand_ids() if hasattr(env, "_hand_ids") else []
         return {
             "obs": obs, "hand": env.hand_vec.copy(), "nxt": env.next_vec.copy(),
@@ -152,7 +152,28 @@ def _worker(conn, n_envs: int, seed0: int, drill_frac=None,
             # WHICH SPELL CARDS THIS BOARD REFUSES (ruling 30). Empty list at the shipped
             # 0.0 default; see spell_veto_ids for why it cannot be decided in the parent.
             "veto": spell_veto_ids(env, spell_min_value),
+            # THE ACTION ACTUALLY STEPPED, and whether the SEARCHER chose it. With worker-side
+            # search the parent no longer knows what was played -- it sent a proposal, and this
+            # process may have overridden it. Reporting both back is what keeps roll["act"] and
+            # roll["srch"] truthful; dropping either is the silent no-op this seam specialises in.
+            "act": (None if act is None else tuple(act)), "srch": float(srch),
         }
+
+    # WORKER-SIDE SEARCH STATE (HANDOFF 5m structural fix). Built lazily on the first "searchnet"
+    # message, because the searcher needs the CURRENT policy and the parent owns it.
+    searchers = None
+    snet = None
+    sstep = 0          # decision index, shared by every env in this shard (see Searcher.act)
+
+    def _load_search_net(sd):
+        from clashrl.train_rl import _build_net
+        e0 = envs[0]
+        n = _build_net(cfg, "cpu", e0.n_cards, e0.n_cells, e0.threat_dim,
+                       int(e0.obs_shape[2]))
+        n.policy.load_state_dict(sd["model"])
+        n.gate.load_state_dict(sd["gate"])
+        n.policy.eval(); n.gate.eval()
+        return n
 
     obs_cache = [e.reset() for e in envs]
     try:
@@ -166,7 +187,22 @@ def _worker(conn, n_envs: int, seed0: int, drill_frac=None,
                 acts = msg[1]
                 out = []
                 for i, e in enumerate(envs):
-                    nobs, reward, done, info = e.step(acts[i])
+                    # SEARCH RUNS HERE, NOT IN THE PARENT. Searcher.act clones a live SimEngine,
+                    # and the engine lives in this process -- which is the whole reason the parent
+                    # had to refuse --workers>1. Running it here parallelises the 98.5% of a
+                    # decision that is search (5m) across worker processes. The parent's sampled
+                    # action is the default and survives every non-searched decision.
+                    a = acts[i]
+                    srch = 0.0
+                    if searchers is not None and not e.eng.done:
+                        try:
+                            _sa, _did = searchers[i].act(sstep)
+                            if _did:
+                                a = tuple(_sa)
+                                srch = 1.0
+                        except Exception:              # noqa: BLE001
+                            pass
+                    nobs, reward, done, info = e.step(a)
                     outcome = pfsp = None
                     drill = verdict = deck = None
                     if done:
@@ -181,7 +217,8 @@ def _worker(conn, n_envs: int, seed0: int, drill_frac=None,
                         nobs = e.reset()
                     obs_cache[i] = nobs
                     out.append(payload(i, e, nobs, reward, done, outcome, pfsp, drill, verdict,
-                                       deck))
+                                       deck, act=a, srch=srch))
+                sstep += 1
                 conn.send(out)
             elif kind == "deckrec":
                 cfg._deck_record = dict(msg[1] or {})
@@ -192,6 +229,26 @@ def _worker(conn, n_envs: int, seed0: int, drill_frac=None,
                 state["weights"] = msg[2]
                 state["sp_prob"] = float(msg[3])
                 sp_cache.clear()
+                conn.send("ok")
+            elif kind == "searchnet":
+                # The current policy, every update. Searchers hold `snet` BY REFERENCE, so an
+                # in-place load_state_dict refreshes every searcher in this shard at once --
+                # rebuilding them here would throw away their interval counters and per-env stats.
+                sd, search = msg[1], msg[2]
+                if search is None:
+                    conn.send("ok")
+                    continue
+                if snet is None:
+                    snet = _load_search_net(sd)
+                    from clashrl.sim import rollout_search as _RS
+                    searchers = [_RS.Searcher(e, snet, "cpu",
+                                              search["horizon"], search["interval"], 4, 1.0,
+                                              search["gate_tau"], cells=search["cells"])
+                                 for e in envs]
+                else:
+                    snet.policy.load_state_dict(sd["model"])
+                    snet.gate.load_state_dict(sd["gate"])
+                    snet.policy.eval(); snet.gate.eval()
                 conn.send("ok")
             elif kind == "difficulty":
                 state["difficulty"] = float(msg[1])
@@ -252,6 +309,19 @@ class RemotePool:
         self._scatter(lambda i0, n: ("step", acts[i0:i0 + n]))
         self.last = self._gather()
         return self.last
+
+    def set_search_net(self, sd, search):
+        """Ship the CURRENT policy to every worker's searcher (HANDOFF 5m structural fix).
+
+        Same hop as `set_league`, different cargo: the league carries FROZEN snapshots to play
+        against, this carries the live policy to search WITH. It must be re-sent every update --
+        a searcher running last update's weights is a stale teacher, which is precisely the
+        covariate-shift failure search exists to avoid (see the 5m note on frozen-policy corpora).
+        """
+        for c in self.conns:
+            c.send(("searchnet", sd, search))
+        for c in self.conns:
+            c.recv()
 
     def set_league(self, sds, weights, sp_prob):
         for c in self.conns:

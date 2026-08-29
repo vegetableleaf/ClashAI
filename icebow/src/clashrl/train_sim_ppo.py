@@ -1505,7 +1505,13 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 # actions this policy took. ALL THREE HEADS, because search's advantage is the
                 # whole decision: teaching only the card is what plain distillation did, and it
                 # moved card agreement +4.2 sigma while moving winrate by nothing.
-                if _searchers is not None and float(_sb.sum()) > 0.0 and search_coef > 0.0:
+                # /!\ BOTH SEARCH PATHS. Gating this on `_searchers` alone would have made the
+                # entire supervised term a silent no-op under --workers>1: rows arrive flagged in
+                # roll["srch"], the CE is never added, and the run trains as plain PPO while every
+                # SEARCH log line still prints. That is this seam's signature failure (drill_frac,
+                # spell_veto, deck_record all broke exactly here).
+                if ((_searchers is not None or _search_cfg is not None)
+                        and float(_sb.sum()) > 0.0 and search_coef > 0.0):
                     _lg = lp_g.gather(1, g_b.view(-1, 1)).squeeze(1)
                     _lc = lp_c.gather(1, c_b.view(-1, 1)).squeeze(1)
                     _lq = lp_cell.gather(1, cell_b.view(-1, 1)).squeeze(1)
@@ -1646,22 +1652,29 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     # Here the searcher runs on the CURRENT policy's own states every rollout, so the target
     # distribution tracks the learner.
     _searchers = None
+    _search_cfg = None          # non-None = search runs in the WORKERS, config shipped with the net
     if search_interval > 0:
-        if remote:
-            # 3n: `remote = workers > 1` leaves the parent's `pool` EMPTY, and search must clone a
-            # live SimEngine. Refuse loudly rather than train a silently search-free run.
-            print("[train-sim-ppo] REFUSING --search-interval with workers>1: the envs live in the "
-                  "worker processes and search needs an in-process engine to clone. Use --workers 0.")
-            return
         try:
             from .sim import rollout_search as _RS   # package module: each deck searches its OWN sim
         except Exception as _e:                                # noqa: BLE001
             print(f"[train-sim-ppo] REFUSING --search-interval: cannot import rollout_search ({_e})")
             return
-        _searchers = [_RS.Searcher(e, net, device, search_horizon, search_interval, 4,
-                                   1.0, gate_tau, cells=search_cells) for e in pool]
-        print(f"[train-sim-ppo] SEARCH IN THE LOOP: every {search_interval} decision(s), "
-              f"H={search_horizon}s cells={search_cells} coef={search_coef} over {len(pool)} env(s)")
+        if remote:
+            # 5u -- THE OLD REFUSAL WAS RIGHT ABOUT THE CAUSE AND WRONG ABOUT THE ONLY FIX. Search
+            # must clone a live SimEngine and the parent's `pool` IS empty under workers>1, so
+            # searching here was impossible. But the engines are not gone, they are in the WORKERS.
+            # Sending the searcher to them is 5m's structural fix: the 98.5% of a decision that is
+            # search runs on `workers` cores instead of one. Weights ride down every update.
+            _search_cfg = {"horizon": float(search_horizon), "interval": int(search_interval),
+                           "gate_tau": float(gate_tau), "cells": int(search_cells)}
+            print(f"[train-sim-ppo] SEARCH IN THE WORKERS: every {search_interval} decision(s), "
+                  f"H={search_horizon}s cells={search_cells} coef={search_coef} over {K} env(s) "
+                  f"across {len(rpool.conns)} worker process(es)")
+        else:
+            _searchers = [_RS.Searcher(e, net, device, search_horizon, search_interval, 4,
+                                       1.0, gate_tau, cells=search_cells) for e in pool]
+            print(f"[train-sim-ppo] SEARCH IN THE LOOP: every {search_interval} decision(s), "
+                  f"H={search_horizon}s cells={search_cells} coef={search_coef} over {len(pool)} env(s)")
     _sstat = {"n": 0, "searched": 0, "changed": 0, "loss": 0.0, "nl": 0, "kept": 0, "seen": 0}
 
     done_n = wins = losses = draws = 0
@@ -1688,6 +1701,13 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                     # instead the target of a plain imitation cross-entropy.
                     "srch": []}
             ep_from = [0] * K                              # first step of each env's current episode
+            # THE WORKERS' SEARCHERS RUN THE CURRENT POLICY, so the weights go down every update.
+            # A searcher on last update's weights is a frozen teacher, which is the covariate-shift
+            # failure 5m says search exists to avoid. Workers hold the net BY REFERENCE, so this is
+            # an in-place refresh that keeps their interval counters and per-env stats alive.
+            if _search_cfg is not None:
+                rpool.set_search_net({"model": net.policy.state_dict(),
+                                      "gate": net.gate.state_dict()}, _search_cfg)
             for _t in range(horizon):
                 if not running["v"] or done_n >= matches:
                     break
@@ -1714,16 +1734,32 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                                 _sstat["changed"] += 1
                             acts[_i] = tuple(_sa)
                             srow[_i] = 1.0
+                # UNDER WORKER-SIDE SEARCH THE PARENT DOES NOT KNOW THE ACTION UNTIL THE WORKER
+                # ANSWERS, so the step has to happen BEFORE the roll is appended -- otherwise
+                # roll["act"] records the proposal and the imitation target is the wrong action.
+                # `_proposed` is kept so "% changed the action" still compares against the POLICY.
+                step_out = None
+                if remote:
+                    _proposed = list(acts)
+                    step_out = rpool.step_all(acts)
+                    if _search_cfg is not None:
+                        for _i in range(K):
+                            _pay = step_out[_i]
+                            _pa = _pay.get("act")
+                            if _pa is not None:
+                                acts[_i] = tuple(_pa)
+                            if float(_pay.get("srch", 0.0)) > 0.0:
+                                srow[_i] = 1.0
+                                _sstat["searched"] += 1
+                                if tuple(acts[_i]) != tuple(_proposed[_i]):
+                                    _sstat["changed"] += 1
+                            _sstat["n"] += 1
                 roll["srch"].append(srow)
                 roll["act"].append(acts); roll["logp"].append(logps); roll["val"].append(vals)
                 roll["lparts"].append(lparts)
                 roll["pk"].append(pkc)
                 roll["cm"].append([None if m is None else m.detach().cpu().numpy() for m in cms])
-                rew_row, done_row, trunc_row = [], [], []
-                if remote:
-                    step_out = rpool.step_all(acts)
-                else:
-                    step_out = None
+                rew_row, done_row, trunc_row = [], [], []   # step_out was filled above
                 for i in range(K):
                     if remote:
                         pay = step_out[i]

@@ -6253,3 +6253,78 @@ model with 230 game-sprite class names is its weakest regime. ⚠ This one is PL
 As an offline **pre-labeler** for the `to_label` pool (6,059 unlabelled, §9), where 5 s/image is
 irrelevant: ~8.2 h for the pool. Contingent on blocker 3 turning out false, and we already have a
 working label pipeline. Rated below everything in §6.
+
+## §5u — WORKER-SIDE SEARCH IMPLEMENTED (§5m's structural fix). Mechanism VERIFIED, speedup NOT
+
+Owner asked for §5m's structural fix: let the workers search, so `--search-interval` stops forcing
+`--workers 0`. Built and smoke-tested. **The throughput gain is NOT yet measured** -- see the two
+open items at the bottom before quoting any number.
+
+### /!\ THE PREMISE THAT MOTIVATED IT IS WRONG, AND IT SHRINKS THE PAYOFF
+Owner's reason was *"I'm not even close to full CPU utilization."* MEASURED, three consecutive
+samples while the A/B runs: **100%, 100%, 100%** of 16 cores (Intel Core Ultra 9 386H). The box is
+saturated right now.
+
+§5m's "3.25 cores of 16 (20%)" is a **single-run** figure. Four arms x ~3.25 cores fills the machine,
+so the A/B is already using all of it. That matters for what this fix buys:
+```
+one run alone      3.25 -> ~13 cores        up to ~4x        <-- this is the win
+four arms at once  16 cores -> 16 cores     ~0x              <-- already saturated
+```
+**It does not speed up the running A/B, and would not have.** It buys LATENCY on a single run
+(one answer 4x sooner) rather than WIDTH on a sweep (four answers at once). The place it pays is
+the §6-PRIORITY-B distillation long run -- which is exactly the case §5m raised it for.
+
+### The design: send the searcher to the engines, not the engines to the searcher
+The old refusal (`REFUSING --search-interval with workers>1`) was **right about the cause and wrong
+about the only fix**: `Searcher.act` must clone a live `SimEngine`, and the parent's `pool` IS empty
+under workers>1. But the engines are not gone -- they are in the workers. So the searcher goes there.
+```
+remote_pool.py   _worker gains a lazy Searcher per env, built on the first "searchnet" message.
+                 In the "step" handler it searches BEFORE stepping and reports back the action it
+                 actually played plus a `srch` flag. New payload keys: "act", "srch".
+                 RemotePool.set_search_net(sd, search) -- same hop as set_league, different cargo:
+                 the league ships FROZEN snapshots to play against, this ships the LIVE policy to
+                 search with. Workers hold the net BY REFERENCE, so the per-update refresh is an
+                 in-place load_state_dict that keeps interval counters and per-env stats alive.
+train_sim_ppo.py refusal replaced by a remote branch setting `_search_cfg`; the net is broadcast
+                 every update; `rpool.step_all` moved BEFORE the roll append, because under worker
+                 search the parent does not know the action until the worker answers.
+```
+The search config rides in the MESSAGE, not the `RemotePool` constructor -- `gate_tau` resolves at
+`:394`, after the pool is built at `:128`, so a constructor argument would have had to duplicate
+that config read and could drift from it.
+
+### /!\ THE TRAP THIS SEAM SPECIALISES IN, CAUGHT DURING THE BUILD
+The imitation loss was gated on `if _searchers is not None`, which is None on the remote path. Left
+alone, **the entire supervised CE would have been a silent no-op under `--workers>1`**: rows arrive
+flagged in `roll["srch"]`, the CE is never added, the run trains as plain PPO, and every SEARCH log
+line still prints. That is the identical failure `drill_frac`, `spell_veto` and `deck_record` each
+had at this exact boundary (see their comments in `remote_pool.py`). Now
+`(_searchers is not None or _search_cfg is not None)`.
+Same reasoning drove reporting `act`/`srch` back to the parent: without `act`, `roll["act"]` would
+record the parent's PROPOSAL, making the imitation target the wrong action while looking wired.
+
+### Smoke test -- MECHANISM VERIFIED (`--matches 6 --envs 4 --workers 2 --search-interval 4`)
+```
+[train-sim-ppo] SEARCH IN THE WORKERS: every 4 decision(s), H=12.0s cells=3 coef=1.0
+                over 4 env(s) across 2 worker process(es)
+[train-sim-ppo]   SEARCH  20/512 decisions searched, 80.0% changed the action
+                  | imitation CE 3.9014 | 100.0% of searched rows usable
+                  ... CE 3.8995 ... CE 3.8976        <-- decreasing across updates
+```
+No refusal, no traceback, exit 0. The CE being nonzero AND falling is the proof that the supervised
+term actually fires on the remote path -- that is the check the trap above demands.
+⚠ `_sstat["n"]` now counts ALL K decisions per step; the in-process path counted only non-done envs,
+so the "searched N/M" DENOMINATOR is not comparable across the two paths. The numerator is.
+
+### NOT DONE -- do not quote a speedup until these are closed
+1. **THROUGHPUT IS UNMEASURED.** The box is pegged by the 4-arm A/B, and §5o records that my own
+   competing jobs already corrupted one throughput baseline. ~4x is ARITHMETIC from §5m's 3.25/16,
+   not an observation. Benchmark on an idle box: same seed, `--workers 0` vs `--workers 12`,
+   compare matches/hour.
+2. **LEARNING PARITY IS UNMEASURED.** Workers seed their envs per shard (`seed0 + i` per worker), so
+   the two paths are NOT expected to be bit-identical and a diff cannot settle it. The real check is
+   run-vs-run at matched m on the §5s endpoints -- the same instrument the A/B uses.
+3. The A/B in flight is `--workers 0` and is untouched by this; the edits cannot affect a running
+   process (Python read the source at import).
