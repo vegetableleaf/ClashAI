@@ -20,6 +20,10 @@ go wrong:
                  bridge adds detection and reconstruction on top. Overrun -> keep the policy.
   confidence     `OpponentCycle.confidence()` below the bar means we are guessing at their hand,
                  and the rollout opponent would be fiction. Keep the policy.
+                 /!\ ITS CEILING IS NOT 1.0. The deck is learned from bodies APPEARING, and spells
+                 leave no body -- so a deck with two spells caps at 6/8 = 0.75. Setting
+                 min_confidence above the reachable ceiling silently disables the whole feature,
+                 which is exactly how the first cut shipped dead.
   freshness      a stale frame means search plans from a past board. Keep the policy.
   min_bodies     with nothing detected there is nothing to search over, and the bridge would hand
                  the searcher an empty arena it will happily "win".
@@ -64,6 +68,12 @@ class LiveSearch:
         self.max_frame_age_s = float(max_frame_age_s)
         self.enabled = bool(enabled)
         self.opp = OpponentCycle()
+        # SELF-FEEDING. Nothing outside this class calls record_enemy_play(), which is how the
+        # first cut shipped a feature that could NEVER fire: confidence() stayed 0.0, every
+        # decision hit the confidence guard, and no counter was ever printed to say so. The plays
+        # are inferred here instead, from bodies APPEARING on the board.
+        self._seen_counts: dict = {}
+        self._report_every = 25
         # counters -- every skip reason is recorded, because a live feature that quietly never
         # fires looks exactly like one that fires and does nothing.
         self.stats = {"asked": 0, "ran": 0, "kept_policy": 0, "changed": 0, "waited": 0,
@@ -77,6 +87,35 @@ class LiveSearch:
 
     def reset(self) -> None:
         self.opp.reset()
+        self._seen_counts.clear()
+
+    def note_bodies(self, bodies) -> int:
+        """Infer opponent plays from enemy bodies appearing on the board.
+
+        A card entering play shows up as a NEW body. Counting per key and recording only the
+        INCREASE handles multi-body cards (a Skeleton Army is one play, not fifteen) and avoids
+        re-counting a unit that merely persists between frames.
+
+        WARNING: it cannot see spells, and a body that leaves detection and returns will be counted
+        twice. Both corrupt the cycle -- and `OpponentCycle` self-heals only on the NEXT genuine
+        sighting of that card. This is the weakest link in the live chain; treat the hand as an
+        estimate, which is what `min_confidence` is guarding.
+        """
+        counts: dict = {}
+        for b in bodies:
+            if int(b.get("team", 1)) == 1:                     # enemy side only
+                counts[b["key"]] = counts.get(b["key"], 0) + 1
+        added = 0
+        for key, n in counts.items():
+            prev = self._seen_counts.get(key, 0)
+            if n > prev:
+                self.opp.record_play(key)                      # one play, however many bodies
+                added += 1
+            self._seen_counts[key] = n
+        for key in list(self._seen_counts):
+            if key not in counts:
+                self._seen_counts[key] = 0                     # gone -> next sighting is new
+        return added
 
     # ------------------------------------------------------------------ the decision
     def decide(self, tracks: Sequence[Any], hand_ids: Sequence[int], elixir: float,
@@ -91,15 +130,18 @@ class LiveSearch:
         if frame_t is not None and (time.time() - float(frame_t)) > self.max_frame_age_s:
             self.stats["skip_stale"] += 1
             return None
-        if self.opp.confidence() < self.min_confidence:
-            self.stats["skip_conf"] += 1
-            return None
         t0 = time.time()
         try:
             bodies = LB.tracks_to_bodies(self.db, tracks, self.actions,
                                          frame=frame, cfg=self.cfg)
+            self.note_bodies(bodies)                          # learn their deck from what appears
             if len(bodies) < self.min_bodies:
                 self.stats["skip_bodies"] += 1
+                return None
+            # CHECKED AFTER note_bodies, not before: the confidence gate reads a deck that only
+            # this call populates, so testing it first made it permanently 0.0.
+            if self.opp.confidence() < self.min_confidence:
+                self.stats["skip_conf"] += 1
                 return None
             eng = LB.build_engine(self.cfg, self.db, self.rng, bodies,
                                   elixir=(float(elixir), float(opp_elixir)),
@@ -118,6 +160,8 @@ class LiveSearch:
             self.stats["skip_timeout"] += 1
             return None
         self.stats["ran"] += 1
+        if self._report_every and self.stats["asked"] % self._report_every == 0:
+            print("[live-search] " + self.summary(), flush=True)
         if action is None:
             self.stats["kept_policy"] += 1
             return None

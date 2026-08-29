@@ -109,6 +109,49 @@ class LiveSearchGuardTests(unittest.TestCase):
         self.assertIsNone(ls.decide([{"base": "knight", "x": 1, "y": 1}], [], 5.0, POLICY))
         self.assertEqual(ls.stats["skip_timeout"], 1)
 
+    def test_it_LEARNS_the_deck_from_bodies_and_can_therefore_ever_fire(self):
+        """THE BUG THIS EXISTS TO PREVENT. The first cut never called record_enemy_play from
+        anywhere, so confidence() stayed 0.0 forever, every decision hit the confidence guard, and
+        search NEVER RAN -- silently, because nothing printed the counters. Owner enabled it, saw
+        no output, and was right to ask why.
+
+        A run of decide() calls must be able to drive confidence from 0 to 1 on its own.
+        """
+        ls = _ls(enabled=True, min_confidence=1.0)
+        self.assertEqual(ls.opp.confidence(), 0.0)
+        for c in DECK:
+            ls.decide([{"base": c, "x": 1, "y": 1}], [], 5.0, POLICY)
+        # SPELLS LEAVE NO BODY, so they can never be learned this way -- DECK holds fireball and
+        # zap, capping confidence at 6/8. That is correct behaviour and a real ceiling: a deck with
+        # two spells can never exceed 0.75, so a min_confidence above it silently disables the
+        # feature, which is the same class of bug this test exists to catch.
+        self.assertAlmostEqual(ls.opp.confidence(), 6.0 / 8.0, places=6,
+                               msg="decide() is not learning the deck from bodies at all")
+        self.assertGreater(ls.opp.confidence(), 0.5,
+                           "the SHIPPED default min_confidence 0.5 is unreachable -- feature is dead")
+        for c in ("knight", "hog_rider", "cannon"):
+            self.assertIn(c, ls.opp.known_deck())
+        for spell in ("fireball", "zap"):
+            self.assertNotIn(spell, ls.opp.known_deck())
+
+    def test_a_persisting_body_is_one_play_not_one_per_frame(self):
+        """A unit sits on the board for many frames. Counting each frame would spam the cycle."""
+        ls = _ls(enabled=True)
+        for _ in range(10):
+            ls.note_bodies([{"key": "knight", "team": 1}])
+        self.assertEqual(ls.opp.plays.count("knight"), 1)
+
+    def test_a_multi_body_card_is_one_play(self):
+        """Skeleton Army is one card, not fifteen."""
+        ls = _ls(enabled=True)
+        ls.note_bodies([{"key": "skeleton_army", "team": 1} for _ in range(15)])
+        self.assertEqual(ls.opp.plays.count("skeleton_army"), 1)
+
+    def test_our_own_bodies_are_not_counted_as_their_plays(self):
+        ls = _ls(enabled=True)
+        ls.note_bodies([{"key": "knight", "team": 0}, {"key": "zap", "team": 0}])
+        self.assertEqual(ls.opp.known_deck(), [])
+
     def test_summary_names_every_skip_reason(self):
         ls = _ls()
         ls.decide([], [], 5.0, POLICY)
