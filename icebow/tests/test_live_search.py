@@ -152,6 +152,28 @@ class LiveSearchGuardTests(unittest.TestCase):
         ls.note_bodies([{"key": "knight", "team": 0}, {"key": "zap", "team": 0}])
         self.assertEqual(ls.opp.known_deck(), [])
 
+    def test_the_summary_NAMES_the_exception_not_just_counts_it(self):
+        """'error 17' cost a run to diagnose. The type and message must reach the log."""
+        ls = _seen_full_deck(_ls(enabled=True))
+        def _boom(eng, opp):
+            raise ValueError("rollout exploded")
+        ls._search = _boom
+        ls.decide([{"base": "knight", "x": 1, "y": 1}], [], 5.0, POLICY)
+        self.assertEqual(ls.stats["skip_error"], 1)
+        self.assertIn("ValueError", ls.summary())
+        self.assertIn("rollout exploded", ls.summary())
+
+    def test_repeated_identical_errors_collapse_to_one_line(self):
+        """A per-decision failure must not produce a wall of identical text."""
+        ls = _seen_full_deck(_ls(enabled=True))
+        def _boom(eng, opp):
+            raise RuntimeError("same every time")
+        ls._search = _boom
+        for _ in range(30):
+            ls.decide([{"base": "knight", "x": 1, "y": 1}], [], 5.0, POLICY)
+        self.assertEqual(len(ls.errors), 1)
+        self.assertEqual(list(ls.errors.values())[0], 30)
+
     def test_summary_names_every_skip_reason(self):
         ls = _ls()
         ls.decide([], [], 5.0, POLICY)

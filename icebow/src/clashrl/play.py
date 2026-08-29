@@ -627,7 +627,16 @@ def play(cfg) -> None:
                 if _sa == _live_search.WAIT:
                     return
                 if _sa is not None:
-                    card_id, cell = int(_sa[0]), int(_sa[1])
+                    # /!\ RESPECT THE AFFORDABILITY FILTER THIS HOOK JUMPS OVER. The block above
+                    # builds `playable` precisely so play never taps a card it cannot pay for --
+                    # and overwriting card_id here walked straight past it. An unaffordable tap
+                    # does NOTHING in game while the bot believes it played, which is the
+                    # "it keeps tapping cards it cannot afford" the owner reported.
+                    _c, _cl = int(_sa[0]), int(_sa[1])
+                    if 0 <= _c < len(card_elixir) and elixir + 1e-6 >= card_elixir[_c]                             and any(h == _c for h in hand_ids):
+                        card_id, cell = _c, _cl
+                    else:
+                        _live_search.stats["skip_unaffordable"] =                             _live_search.stats.get("skip_unaffordable", 0) + 1
             except Exception:                                  # noqa: BLE001
                 pass                                           # never let it take the match down
         if card_id in anywhere_ids and card_id not in _pull_ids:   # DAMAGE spell / miner at a

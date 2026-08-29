@@ -20,7 +20,7 @@ go wrong:
                  bridge adds detection and reconstruction on top. Overrun -> keep the policy.
   confidence     `OpponentCycle.confidence()` below the bar means we are guessing at their hand,
                  and the rollout opponent would be fiction. Keep the policy.
-                 /!\ ITS CEILING IS NOT 1.0. The deck is learned from bodies APPEARING, and spells
+                 WARNING: its ceiling IS NOT 1.0. The deck is learned from bodies APPEARING, and spells
                  leave no body -- so a deck with two spells caps at 6/8 = 0.75. Setting
                  min_confidence above the reachable ceiling silently disables the whole feature,
                  which is exactly how the first cut shipped dead.
@@ -78,6 +78,7 @@ class LiveSearch:
         # nothing; it does NOT say whether the detector saw nothing or the bridge threw everything
         # away, and those need opposite fixes.
         self.drops: dict = {}
+        self.errors: dict = {}      # exception type+message -> count, so "error N" is diagnosable
         # counters -- every skip reason is recorded, because a live feature that quietly never
         # fires looks exactly like one that fires and does nothing.
         self.stats = {"asked": 0, "ran": 0, "kept_policy": 0, "changed": 0, "waited": 0,
@@ -160,10 +161,13 @@ class LiveSearch:
             opp = LiveOpponent(self.cfg, self.db, self.rng, self.opp.known_deck())
             opp.sync(self.opp, opp_elixir, eng)
             action = self._search(eng, opp)
-        except Exception:                                      # noqa: BLE001
-            # A live feature must never take the match down. Any reconstruction or search failure
-            # falls back to the policy, which is what would have run anyway.
+        except Exception as _e:                                # noqa: BLE001
+            # A live feature must never take the match down -- but it must SAY WHAT WENT WRONG.
+            # "error 17" told the owner nothing, which is the third time a bare counter has cost a
+            # run to diagnose. The type and message are recorded and printed with the summary.
             self.stats["skip_error"] += 1
+            key = "%s: %s" % (type(_e).__name__, str(_e)[:60])
+            self.errors[key] = self.errors.get(key, 0) + 1
             return None
         if (time.time() - t0) * 1000.0 > self.timeout_ms:
             # The answer arrived, but too late to describe the board any more.
@@ -207,7 +211,12 @@ class LiveSearch:
                 % (s["asked"], s["ran"], s["changed"], s["waited"], s["skip_disabled"],
                    s["skip_conf"], s["skip_bodies"], s["skip_stale"], s["skip_timeout"],
                    s["skip_error"]))
+        if s.get("skip_unaffordable"):
+            base += " | UNAFFORDABLE picks rejected: %d" % s["skip_unaffordable"]
         if self.drops:
             top = sorted(self.drops.items(), key=lambda kv: -kv[1])[:6]
             base += " | tracks: " + ", ".join(f"{k}={v}" for k, v in top)
+        if self.errors:
+            top = sorted(self.errors.items(), key=lambda kv: -kv[1])[:3]
+            base += " | errors: " + "; ".join(f"{k} x{v}" for k, v in top)
         return base

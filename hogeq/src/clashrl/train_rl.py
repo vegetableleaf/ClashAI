@@ -891,7 +891,16 @@ def train_rl(cfg, init: str | None = None) -> None:
                 if _sa == _live_search.WAIT:
                     return (0, 0, 0)
                 if _sa is not None:
-                    return (1, int(_sa[0]), int(_sa[1]))
+                    # /!\ THE SEARCH CARD MUST BE IN `playable`. That list is built at the top of
+                    # choose() as "in hand AND affordable", precisely so the bot never taps a card
+                    # it cannot pay for -- and returning search's pick here walked past it. An
+                    # unaffordable tap does NOTHING in game while the agent records a play, so the
+                    # transition it learns from is a lie AND the owner sees it "keep tapping cards
+                    # it cannot afford". Fall back to the policy's action, which was filtered.
+                    _c = int(_sa[0])
+                    if _c in playable:
+                        return (1, _c, int(_sa[1]))
+                    _live_search.stats["skip_unaffordable"] =                         _live_search.stats.get("skip_unaffordable", 0) + 1
             except Exception:                                  # noqa: BLE001
                 pass                                           # never take the run down
         return _pol
