@@ -268,22 +268,35 @@ class _Drift:
     carried across a trainer restart would compare two different policies.
     """
 
-    def __init__(self, frac: float = 0.60, min_matches: int = 300, min_peak: float = 0.05):
+    def __init__(self, frac: float = 0.60, min_matches: int = 300, min_peak: float = 0.05,
+                 window: int = 9, min_history: int = 5):
         self.frac, self.min_matches, self.min_peak = frac, min_matches, min_peak
-        self.peak: dict = {}
+        self.window, self.min_history = int(window), int(min_history)
+        self.hist: dict = {}
 
     def check(self, label: str, value, matches: int):
         """One verdict string, or None. Sustain is NOT handled here -- the caller's `_streak`
         already requires two consecutive cycles before anything is posted."""
         if value is None or matches < self.min_matches:
             return None
-        pk = max(self.peak.get(label, value), value)
-        self.peak[label] = pk
-        if pk < self.min_peak or value >= self.frac * pk:
+        h = self.hist.setdefault(label, [])
+        h.append(float(value))
+        del h[:-self.window]
+        if len(h) < self.min_history:
             return None
-        return ("%s DRIFT -- now %.3f, which is %.0f%% below this run's own peak of %.3f "
-                "(matches=%d). Gradual decay is what killed the 40k run; it will not trip an "
-                "absolute floor." % (label, value, 100.0 * (1.0 - value / pk), pk, matches))
+        # ROLLING MEDIAN, NOT A RUNNING MAX. The first version compared against the running
+        # maximum, which RATCHETS: every high excursion raises the bar, so the next normal low
+        # reads as a big decline. MEASURED on the live search run -- P(play) oscillated 0.093-0.359
+        # and returned to its highs repeatedly, and the max-based rule fired three times on a
+        # metric that was not decaying at all. A median is unmoved by the excursions.
+        srt = sorted(h[:-1]) or [value]
+        base = srt[len(srt) // 2]
+        if base < self.min_peak or value >= self.frac * base:
+            return None
+        return ("%s DRIFT -- now %.3f, which is %.0f%% below this run's rolling median of %.3f "
+                "over %d readings (matches=%d). Gradual decay is what killed the 40k run; it will "
+                "not trip an absolute floor."
+                % (label, value, 100.0 * (1.0 - value / base), base, len(h) - 1, matches))
 
 
 def verdicts(h: dict, matches: int) -> list:
@@ -379,7 +392,11 @@ def main() -> int:
 
         alerts = verdicts(h, h["matches"])
         # RELATIVE DECLINE, checked every cycle so the peak keeps updating even while healthy.
-        for _lbl, _val in (("GATE", h["p_play_mean"]), ("ELIXIR>=6", h["elixir_ge6"]),
+        # ELIXIR>=6 IS NOT AN INDEPENDENT SIGNAL. Measured on this run,
+        # corr(P(play), elixir>=6) = -0.940 -- playing more banks less, which is arithmetic, not a
+        # pathology. Alerting on both turned one event into two alarms and made a healthy run look
+        # doubly sick. It stays in the printed line; it is no longer a trigger.
+        for _lbl, _val in (("GATE", h["p_play_mean"]),
                            ("CELL STRUCTURE", h.get("cell_struct"))):
             _d = _drift.check(_lbl, _val, h["matches"])
             if _d:
