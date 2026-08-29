@@ -2073,6 +2073,15 @@ sim:
   # /!\ REQUIRES workers 0: search clones an in-process engine, and workers>1 empties the parent
   # pool (3n). The trainer REFUSES rather than train a silently search-free run.
   # MEASURED cost, envs 16 / workers 0: 283 matches/hour with search vs 725 without (2.56x).
+  # ---- LIVE ROLLOUT SEARCH (play.py) ----
+  # OFF by default. Ceiling MEASURED at 13-27% of the sim gain across four degraded arms at n=30,
+  # with an incoherent ordering that says n=30 cannot resolve it -- treat any live gain as unproven.
+  # Every guard inside LiveSearch falls back to the POLICY's action, never to nothing.
+  live_search_enabled: false
+  live_search_horizon: 12.0
+  live_search_cells: 3
+  live_search_timeout_ms: 120.0
+  live_search_min_confidence: 0.5
   ppo_search_interval: 0     # search every N decisions. 0 = OFF. 1 = the measured setting.
   ppo_search_horizon: 12.0   # rollout seconds; 12 is the measured optimum (16/20/30 tie, FULL is worse)
   ppo_search_cells: 3        # cells per candidate card; 3 added +3.3pp over card-only search

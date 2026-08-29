@@ -321,7 +321,31 @@ def play(cfg) -> None:
         motion_min=float(cfg.get("observation", "team_motion_min", default=0.05)),
         deep_mine_y=float(cfg.get("observation", "team_deep_mine_y", default=0.62)),
         deep_enemy_y=float(cfg.get("observation", "team_deep_enemy_y", default=0.38)))
-    _cycle_tracker = CycleTracker(n_cards)   # live estimate of the upcoming-card order (graded next_vec)
+    _cycle_tracker = CycleTracker(n_cards)
+    # ---- LIVE ROLLOUT SEARCH (sim.live_search_enabled, OFF by default) ----------------------
+    # Search is the only thing that has moved this project's outcome (37.0% -> 85.7% in sim on
+    # frozen weights). Live it plans over a RECONSTRUCTED board, so its ceiling is capped and
+    # poorly determined -- 13-27% of the sim gain across four arms at n=30, with an INCOHERENT
+    # ordering that says n=30 cannot resolve it. It is off unless explicitly enabled, and every
+    # failure path inside returns None, which means "keep the policy's action".
+    _live_search = None
+    try:
+        if bool(cfg.get("sim", "live_search_enabled", default=False)):
+            from .sim.live_search import LiveSearch
+            _live_search = LiveSearch(
+                cfg, card_db, random.Random(0), net, device, actions,
+                horizon=float(cfg.get("sim", "live_search_horizon", default=12.0)),
+                cells=int(cfg.get("sim", "live_search_cells", default=3)),
+                gate_tau=float(cfg.get("sim", "ppo_gate_threshold", default=0.25)),
+                timeout_ms=float(cfg.get("sim", "live_search_timeout_ms", default=120.0)),
+                min_confidence=float(cfg.get("sim", "live_search_min_confidence", default=0.5)),
+                enabled=True)
+            print("[play] LIVE SEARCH ENABLED -- ceiling is measured at 13-27% of the sim gain "
+                  "and poorly determined; the policy remains the fallback on every skip path")
+    except Exception as _e:                                    # noqa: BLE001
+        print(f"[play] live search unavailable ({_e}); continuing on the policy alone")
+        _live_search = None
+   # live estimate of the upcoming-card order (graded next_vec)
     # PUMP PUNISH (elixir collector -> rocket): sighting state + king-safe aim assist (mirrors env.py)
     _rocket_ids = {i for i, k in enumerate(vision.deck_keys) if card_threat.base_key(k) == "rocket"}
     _pump = {"t0": None, "last": 0.0, "xy": None}
@@ -568,6 +592,23 @@ def play(cfg) -> None:
                 if wait:
                     return
             cell = int(cell_logits_m.argmax(1).item())
+        # ---- LIVE SEARCH OVERRIDE. Set sim.live_search_enabled false to switch it off. --------
+        # The policy's (card_id, cell) is already decided above and stays the fallback: decide()
+        # returns None to keep it. Placed BEFORE the aim-assist so a searched cell gets the same
+        # clamping, snapping and deploy rules the policy's choice would have.
+        if _live_search is not None:
+            try:
+                _tr = (_ploop.enemy_tracks(time.time())
+                       if _ploop is not None and _ploop.running else
+                       _team_tracker.enemy_tracks(time.time()))
+                _sa = _live_search.decide(_tr, hand_ids, float(elixir), (card_id, cell),
+                                          frame=frame, frame_t=time.time())
+                if _sa == _live_search.WAIT:
+                    return
+                if _sa is not None:
+                    card_id, cell = int(_sa[0]), int(_sa[1])
+            except Exception:                                  # noqa: BLE001
+                pass                                           # never let it take the match down
         if card_id in anywhere_ids and card_id not in _pull_ids:   # DAMAGE spell / miner at a
             # princess -> aim the weaker one. Pull spells are excluded (see _pull_ids).
             gx, gy = cell % gw, cell // gw

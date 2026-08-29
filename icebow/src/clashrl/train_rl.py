@@ -266,6 +266,31 @@ def train_rl(cfg, init: str | None = None) -> None:
     nstep = _NStep(n_step, gamma)
 
     env = LiveMatchEnv(cfg)
+    # ---- LIVE ROLLOUT SEARCH, shared with play.py (sim.live_search_enabled, OFF by default) ----
+    # train-rl makes live decisions too, so the hook belongs here as well. DDQN is OFF-POLICY, so
+    # transitions produced by a searcher are legitimate training data -- no importance ratio to
+    # break, which is precisely what forced the PPO side to exclude searched steps from its
+    # surrogate. Ceiling is measured at 13-27% of the sim gain and poorly determined; every guard
+    # inside falls back to the POLICY's action.
+    _live_search = None
+    try:
+        if bool(cfg.get("sim", "live_search_enabled", default=False)):
+            from .sim.live_search import LiveSearch
+            from .cards import CardDB
+            _live_search = LiveSearch(
+                cfg, CardDB(path=cfg.path("config/cards.yaml")), random.Random(0),
+                net, device, env.actions,
+                horizon=float(cfg.get("sim", "live_search_horizon", default=12.0)),
+                cells=int(cfg.get("sim", "live_search_cells", default=3)),
+                gate_tau=float(cfg.get("sim", "ppo_gate_threshold", default=0.25)),
+                timeout_ms=float(cfg.get("sim", "live_search_timeout_ms", default=120.0)),
+                min_confidence=float(cfg.get("sim", "live_search_min_confidence", default=0.5)),
+                enabled=True)
+            print("[train-rl] LIVE SEARCH ENABLED -- searched transitions are legitimate DDQN "
+                  "training data (off-policy); the policy remains the fallback on every skip path")
+    except Exception as _e:                                    # noqa: BLE001
+        print(f"[train-rl] live search unavailable ({_e}); continuing on the policy alone")
+        _live_search = None
     if not env.region_ready():
         print("[train-rl] no capture region; set window.region in config.yaml.")
         return
@@ -862,9 +887,24 @@ def train_rl(cfg, init: str | None = None) -> None:
         # negative return on plays pushed all three down together and the no-op won by construction,
         # independently of how the reward was tuned. That is the passivity ratchet; this removes it.
         # The chosen card/cell are unchanged (still each head's masked argmax).
-        if wait_val >= play_val:
-            return (0, 0, 0)
-        return (1, card_id, int(ceq.argmax()))
+        _pol = (0, 0, 0) if wait_val >= play_val else (1, card_id, int(ceq.argmax()))
+        # ---- LIVE SEARCH OVERRIDE (sim.live_search_enabled, OFF by default) -------------------
+        # Wired here as well as in play.py because train-rl makes live decisions too, and DDQN is
+        # OFF-POLICY: learning from search-chosen transitions is legitimate with no importance
+        # ratio to break. That is why the PPO side had to EXCLUDE searched steps from its surrogate
+        # and this side does not -- the replay buffer simply stores a better behaviour policy.
+        # EPSILON STEPS ARE LEFT ALONE: they return above, so exploration stays exploration.
+        if _live_search is not None:
+            try:
+                _sa = _live_search.decide(list(threat_bases or ()), None, float(elixir), 
+                                          (_pol[1], _pol[2]))
+                if _sa == _live_search.WAIT:
+                    return (0, 0, 0)
+                if _sa is not None:
+                    return (1, int(_sa[0]), int(_sa[1]))
+            except Exception:                                  # noqa: BLE001
+                pass                                           # never take the run down
+        return _pol
 
     def _card_map(ceq, idx):
         """(B, n_cards, n_cells) + card index -> that CARD's placement map, (B, n_cells).
