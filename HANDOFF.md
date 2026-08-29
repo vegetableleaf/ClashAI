@@ -6205,3 +6205,51 @@ i.e. reporting the dead run's frozen checkpoint while seeing the A/B's 8 process
 **9.14 GB resident (4 arms x ~2.3 GB), 1.94 GB free of 31.4 GB**, CPU pegged at 99.95%. Nothing is
 failing, but the headroom §5r claims is not there -- do not start anything large alongside this run.
 Measure resident memory after the envs and buffers fill, not in the first minute.
+
+## §5t — locate-anything.cpp EVALUATED AND REJECTED as a YOLO replacement (3 independent blockers)
+
+Owner proposed https://github.com/mudler/locate-anything.cpp as a faster, better detector to train
+on our data. **It is neither faster nor trainable, and the domain is wrong.** Recorded so this is
+not re-litigated. The repo is NOT bad -- it is a clean ggml/C++17 port of NVIDIA's
+LocateAnything-3B (Qwen2.5-3B + MoonViT + 2-layer MLP projector, MIT for the port, NVIDIA license
+for the weights). It is simply aimed at a different problem on all three axes below.
+
+### /!\ BLOCKER 1 -- THE SPEED CLAIM IS RELATIVE TO ITS OWN BASELINE, NOT TO YOLO
+The README's "4.8x faster" is measured against **the official PyTorch f32 model**, not against a
+detector. Their table, Ryzen 9 9950X3D, CPU, 16 threads, 448 fixture:
+```
+mode                PyTorch f32    locate-anything.cpp f32
+slow (pure AR)         23.65 s            14.26 s
+hybrid (default)       69.06 s            22.32 s
+fast (MTP-only)        57.55 s            19.45 s
+q8_0, slow mode           --               4.89 s   <-- their best number
+```
+**4.89 SECONDS PER IMAGE is the floor.** Our live vision path is budgeted in MILLISECONDS:
+`vision.py:360` calls 93 ms/decision *"the largest item left in the live vision budget"*, and
+`vision.py:189` records grinding 32 ms -> 0.53 ms (71x) because 32 ms mattered. 4.89 s is **~53x
+the ENTIRE current per-decision cost**, against a YOLO11s that runs in single-digit ms. This is not
+a faster detector, it is a different category of artefact. **Read absolute latency, not a repo's
+self-relative speedup.**
+
+### BLOCKER 2 -- INFERENCE ONLY. "Train it on our data" has no path in this repo
+No training, no fine-tuning, no custom-dataset support anywhere in it; it is a dependency-light
+inference runtime. Fine-tuning would mean NVIDIA's LocateAnything-3B stack -- a 3B VLM instead of a
+~9 MB YOLO.
+
+### BLOCKER 3 -- open-vocab is the answer to NOT HAVING LABELS, and we have 12,821 of them
+It is a text-prompted open-vocabulary VLM (categories delimited by `</c>`). Open-vocab detection is
+strongest on natural imagery and is the tool for "no labeled data". We have the opposite problem
+(§9): **12,821 labeled train frames, 2,346 val, a 44,113-sprite bank over 186 classes, nc=230** --
+built precisely BECAUSE Clash Royale units are not natural-image objects. Prompting a natural-image
+model with 230 game-sprite class names is its weakest regime. ⚠ This one is PLAUSIBLE BUT UNTESTED
+(not run); blockers 1 and 2 make the test moot.
+
+### Minor, but relevant
+* master had **3 commits** at evaluation -- very young (542 stars / 74 forks, LocalAI team).
+* q8_0 needs **6.3 GB**; the box had **1.94 GB free** with the A/B pegging 16 cores. It could not
+  have been loaded at all without stopping the A/B.
+
+### The ONE use that is not ruled out (low priority, not scheduled)
+As an offline **pre-labeler** for the `to_label` pool (6,059 unlabelled, §9), where 5 s/image is
+irrelevant: ~8.2 h for the pool. Contingent on blocker 3 turning out false, and we already have a
+working label pipeline. Rated below everything in §6.
