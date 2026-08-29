@@ -40,3 +40,15 @@ __pycache__/
 venv/
 .pytest_cache/
 .ruff_cache/
+
+# --- card-art template images (added 2026-08-29) ---
+# MEASURED: an incremental detect found 4,568 changed images -- 2,335 in hogeq/templates and
+# 2,226 in icebow/templates. These are card-recognition template crops: there is nothing semantic
+# in them, and graphify gives EVERY image its own vision subagent, so indexing them would have
+# dispatched ~4,500 agents for zero graph value. They are regenerable from the sprite bank.
+templates/
+**/templates/
+
+# --- /watchvideo run folders: contact sheets + source video. The transcript is the artifact
+# --- worth reading, and it is already summarised in video-analytics/*/ markdown.
+video-analytics/
