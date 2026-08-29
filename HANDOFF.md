@@ -6390,3 +6390,82 @@ shows the leak-up/crowns-down signature `wincon_reach: 2.0` produced.
 Continue to m=1500 and re-read on the same instrument. If control is still not at its floor there,
 the honest move is to extend rather than call the mechanism refuted -- a null against a control that
 never collapsed measures nothing.
+
+## §5w — RoyaleAPI REPLAY MINE: no placements, one player — but it CHALLENGES the "too eager" diagnosis
+
+Owner mined RoyaleAPI replay data and proposed recreating scenarios in-sim from placement + timing.
+`icebow/data/royaleapi/{battles.csv, plays.csv}` (248 KB, NOT committed -- data/ is gitignored).
+
+### /!\ TWO FRAMING ERRORS IN THE PROPOSAL, BOTH AT THE DATA LEVEL
+1. **THERE IS NO PLACEMENT DATA.** `plays.csv` is exactly seven columns --
+   `replay_tag, play_index, tick, seconds, side, card, ability` -- and zero coordinate fields
+   (grepped: 0 hits for tile/x/y/coord/lane/pos). RoyaleAPI's battle log gives card + tick + side;
+   deploy tiles are not in it.
+2. **IT IS ONE PLAYER, NOT SEVERAL.** 53 battles, all `Hubert`, ONE deck, all pathOfLegend,
+   27W-25L-1D (51%). 5,147 plays (blue 2,647 / red 2,500), 49.9 blue plays per match.
+
+**SCENARIO RECREATION IS THEREFORE NOT VIABLE FROM THIS SOURCE.** A card sequence does not determine
+a board: reconstructing the situation a card was played INTO needs positions, HP and the opponent's
+placements. Without coordinates you can replay WHAT was played, never the state it answered.
+
+### /!\ THE FINDING THAT MATTERS: THE POLICY'S PLAY RATE IS HUMAN-NORMAL
+Pro plays **11.3 cards/min** (median 12.0). `sim.agent_dt: 0.6` = 100 decisions/min, so that is
+**11.3% of decision steps**. Against the §5v read on the same axis:
+```
+                          plays%    xbow share of plays
+pro (Hubert, 53 games)      11.3            7.1
+control @ m=500             11.6            7.1
+m18000 "reference"           9.6           10.9
+i4 collapsed (m6800)        14.6            0.9
+```
+**Control sits ON the pro's play rate AND on the pro's x-bow share.** The m18000 checkpoint this
+project treats as the good target plays LESS OFTEN than a pro while using x-bow MORE.
+
+This is direct evidence against §5h (*"THE SIGN WAS BACKWARDS ALL SESSION. The policy is TOO EAGER,
+not too reluctant"*) and against §5p's framing of over-playing as the pathology. The collapsed run's
+14.6% IS above human, but 11.6-13.7% -- where all four A/B arms currently sit -- is human-normal.
+**The defect may not be HOW OFTEN it plays; it is what it can afford to play.**
+
+Supporting, same direction: the pro **LEAKS 6.00 elixir/match** (median 3.04, max 21.83; opponents
+6.13). A player who never sat at cap could not leak. Sitting on elixir IS expert behaviour, so the
+target is not "never waste elixir" but "waste some to afford the win condition" -- which supports
+the banking direction while contradicting the over-play framing.
+
+### ⚠ WHAT THIS DOES NOT ESTABLISH
+* **n = 1 PLAYER, 53 GAMES, at 51% winrate.** One strong player's equilibrium, not a population and
+  not a winning sample. It cannot separate "how icebow is played" from "how Hubert plays".
+* **`plays% of decision steps` is DERIVED, NOT MEASURED.** The pro is not making 100 decisions a
+  minute; this divides their play rate by the SIM's cadence. Right unit for the comparison,
+  constructed quantity. Do not quote it as a human measurement.
+* The sim's opponent is not a ladder opponent, so the boards being answered are not the same boards.
+
+### Useful reference statistics (external anchors -- every §5q/§5v target so far comes from an
+### earlier checkpoint of THIS policy, i.e. the project measuring itself against itself)
+```
+play rate            11.3% of decision steps (11.3/min, median 12.0/min)
+inter-play gap       median 3.60 s   mean 4.84   p10 1.35   p90 9.55
+x-bow                3.55 deploys/match (median 3; 2 of 53 matches had none)
+x-bow timing         median t=152 s   p10 41 s   p90 249 s
+elixir leaked        mean 6.00/match  median 3.04
+elixir spent         151/match
+card mix (blue)      skeletons 17.2  knight 16.7  ice-wizard 16.4  tesla 14.7
+                     the-log 14.3  tornado 8.4  x-bow 7.1  rocket 5.1
+match length         mean 255 s  median 289 s  max 299 s  (sim: regulation 180 + overtime 120 = 300)
+```
+The inter-play gap distribution is the most directly useful: it is an empirical prior for how long a
+CORRECT WAIT lasts, which is exactly the quantity §5p shows has no positive value in the reward.
+
+### RECOMMENDED USE: calibration reference, NOT training data
+Nothing enters the gradient, so there is no BC/overfitting exposure and the owner's own concern is
+moot. Do NOT wire it in now: it is a new data source, the A/B is mid-flight, and §one-change-per-
+experiment applies.
+
+### Join problems to solve BEFORE any training use
+* 101 distinct cards across both sides, including a literal **`_invalid`**.
+* `plays.csv` STRIPS EVOLUTION IDENTITY: the deck column says `tesla-ev1` / `knight-ev1`, the plays
+  say `tesla` / `knight`. Mapping onto the 230-class taxonomy (§9) is not free.
+* `ability` is 1 on 141 of 5,147 rows (ability/evolution activations), 0 elsewhere.
+
+### If more is wanted from this source
+The highest-value next pull is **MORE PLAYERS** -- 53 games of one person cannot separate the deck's
+doctrine from one person's habits. Placement needs a DIFFERENT source than the battle log.
