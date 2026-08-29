@@ -4451,6 +4451,30 @@ slow one.
 
 ## 6. Open work
 
+### ⏳ QUEUED — SPLIT THIS FILE. It is 486 KB / 6,471 lines and is read in full every session.
+Owner approved 2026-08-29. **Do it AFTER the A/B's m=1500 read**, so results are not written into a
+file being restructured underneath them.
+
+**MEASURED rule and size** (do not archive by date alone -- several old sections are still load-bearing):
+a dated `3x`/`4x` section is archivable iff it is **not open/pending** AND is **cited <= 3 times**
+elsewhere in this file. That yields **37 sections / 2,691 lines = 42% of the file**.
+```
+biggest wins        S3n 513 lines (1 cite)   S3r 174 (0)   S3o 165 (0)   S3y 120 (0)   S4f 114 (0)
+MUST STAY, open     S4e S4i S4w S4x S4p  (QUEUED / PENDING / project open)
+MUST STAY, cited    S4a(12) S3p(11) S4y(6) S4r(6) S4t(6) S4q(5) S4z(5) S4d(4)
+NEVER ARCHIVE       S1 S2 S3 S4 S5 S6 S6-PRIORITY* S7 S8 S9 S10 S11 and every S5x session section
+```
+/!\ **§4a IS THE TRAP HERE.** It is the most-cited section in the file (12 references, including four
+today) because it owns the critic-dip figure and the *"compare run-vs-run at matched episode counts"*
+rule. Archiving by date would have moved it. Before archiving anything, lift any DURABLE RULE out of
+the section and into §8 (Measurement traps), which exists for exactly that -- then archive the
+narrative, not the rule.
+
+**Procedure:** move qualifying sections verbatim into `HANDOFF_ARCHIVE.md`, leave a one-line pointer
+per section in place (`## 3n. ... -> HANDOFF_ARCHIVE.md`), keep the archive greppable and committed.
+Re-run graphify afterwards -- the doc half of the graph goes stale the moment this lands.
+
+
 0a. **THE SPELL CARD VETO IS SHIPPED AND OFF, AND RE-OPENING IT HAS A PREREQUISITE.** `ruling 30`
    is complete: the enumerated exemption class with a doctrine source per entry, the value
    criterion in `SimMatchEnv.spell_card_ok`, the veto applied in `choose_sample`, `choose_greedy`
