@@ -5750,3 +5750,57 @@ Was 927 ms and 22/25 discarded. `live_search_timeout_ms` default 120 -> 250; int
 
 /!\ NOT YET MEASURED: whether live search HELPS. The ceiling is 13-27% of the sim gain at n=30 with
 incoherent ordering. It now runs; that is all that is established.
+
+## §5m — THROUGHPUT: the GPU is not the lever, and `--search-interval` is nearly free
+
+Owner asked whether hardware (RTX 5050, overclock, more CPU) can lift 252 matches/hour.
+
+### Where the time actually goes (MEASURED, in-process, warmed)
+```
+env.step                3.539 ms
+Searcher.act (i=1)    238.4   ms      = 67x an env step
+search share of a decision                98.5%
+```
+The run is not stepping envs, it is **searching**. Everything else follows from that.
+
+### The GPU does nothing, and this time the measurement is strong
+```
+cpu   Searcher.act  209.1 ms
+cuda  Searcher.act  206.6 ms      1.2% -- noise
+```
+Same instrument, warmed CUDA context, `torch.cuda.synchronize()` around the timed region, measured
+on the DOMINANT cost rather than on a wave-distorted `ep/s`. §4b reached the same verdict from a
+weak instrument (both arms read 0.50 ep/s at ep100, which §4b itself flagged as wave timing); this
+supersedes it with a direct read. The reason is structural: `Searcher.act` is Python SimEngine
+clone-and-roll-forward. The net forward is a rounding error inside it, and the net is the only part
+a GPU can touch. **Overclocking cannot help either -- the card is not the bottleneck, it is idle.**
+
+### CPU headroom is real but not reachable by "using more CPU"
+Trainer measured at **3.25 cores of 16 (20%)**. It cannot use more: search forces `--workers 0`
+(:1651 refuses `--search-interval` with workers>1, because the envs live in worker processes and
+search must clone an in-process engine). The idle 12 cores are locked behind that seam.
+
+### THE LEVER: raise `--search-interval`. The teaching rate barely moves.
+Search work scales as 1/N; env stepping does not.
+
+| interval | ms/decision | decisions/s | searched steps/s | speedup | 50k matches |
+|---|---|---|---|---|---|
+| **1 (now)** | 241.9 | 4.13 | 1.88 | 1.0x | **8.3 days** |
+| 4 | 63.1 | 15.85 | 1.80 | **3.8x** | 2.2 days |
+| 8 | 33.3 | 30.0 | 1.71 | **7.3x** | 1.1 days |
+
+**The number of teacher demonstrations per hour is nearly CONSTANT (1.88 -> 1.80 -> 1.71, -9% at
+interval 8) while total experience multiplies 7.3x.** Interval controls how often the student is
+taught per unit of experience, NOT how good the teacher is -- the 85.7% ceiling is a property of
+the searcher (H=12, cells=3), both unchanged. So raising it buys experience at almost no cost in
+supervision. This is an ARITHMETIC projection from the two measured costs, NOT an observed run.
+
+Also measured, because it was worth checking: at interval=1, **45.5% of steps are searched**, so the
+PPO surrogate still trains on 54.5%. The run is a ~45/55 imitation/PPO mix, not silently pure
+distillation. (`Searcher.act` returns `searched=False` when fewer than 2 candidates exist -- common
+here, since the elixir collapse leaves nothing affordable.)
+
+### Structural fix, if throughput matters beyond this run
+Teach the WORKERS to search: each holds its own envs, so each could own a Searcher, which
+parallelises the 98.5% across cores instead of the 1.5%. Needs net weights broadcast to workers each
+update -- `_broadcast_league()` already establishes that channel. Not attempted; sized as real work.
