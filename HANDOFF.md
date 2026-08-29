@@ -6144,10 +6144,27 @@ metric separated **80x** (25.0% vs 0.3% at >=6). The endpoints were deliberately
 mechanism metrics (§5q), and mechanism metrics are exactly the ones that do not need long runs.
 `ab_reward_report.py`'s own dose table was measured on **12 matches**; §5r's final read used 16.
 
-### DECISION: stop all four arms at m=1500 (~9 h from the 14:16 launch), read at 500/1000/1500
+### DECISION: stop all four arms at m=1500 (~8 h from the 14:16 launch), read at 500/1000/1500
 1,500 is ~2x the saturation point -- margin, not need. Owner chose this over relaunching as a
-3-seed design. Monitor armed on the four logs for `EVAL @`, failure signatures and ARM DEATH
-(a dead arm is a failure the log may never mention); it exits when all four reach `EVAL @ 1500`.
+3-seed design. Measured rate 191 matches/h/arm (m=175 at 55 min), so m=1500 lands ~22:10.
+
+/!\ **`eval_every_matches` IS 2000 IN THESE CONFIGS, SO `EVAL @` NEVER FIRES BEFORE THE STOP
+POINT.** I first armed a monitor keyed on `EVAL @ 1500` after reading the CODE DEFAULT (500 at
+`train_sim_ppo.py:988`) instead of the config; it was raised 500 -> 2000 on 2026-08-23 because one
+EVAL costs 195 s. That monitor would have stayed silent forever and never exited. Caught by the
+owner. **Read the config value, not the `default=` in the `cfg.get` call.**
+
+This costs nothing, because the ladder EVAL was never the endpoint (§5q: winrate is a guardrail,
+not the discriminator). Progress is keyed on the `N episodes:` line instead, which prints `done_n`
+-- the SAME counter as `--matches`, `EVAL @` and the checkpoint's `matches` field
+(`train_sim_ppo.py:1832,1899`) -- every `log_every_matches` = 25. The endpoint read comes from
+`ab_reward_report.py` against `data/ab/policy_*.pt`, refreshed every `save_every_matches` = 50, so
+a checkpoint is at most 50 matches stale. Monitor emits at m=500/1000/1500 plus failure signatures
+and ARM DEATH (a dead arm is a failure the log may never mention), and exits at m>=1500.
+
+Note `done_n` counts DRILL episodes too (`drills N (X% of eps)`), which is the same scale the
+watchdog's `matches=` series used, so §5s's m=800 saturation point and this m=1500 target are
+directly comparable.
 
 ### /!\ THE STOPPING RULE IS ASYMMETRIC, because the dip can MASK but cannot FAKE a difference
 m=1500 sits inside §4a's critic dip (bottom ~1,700 episodes). This does **not** invalidate the
