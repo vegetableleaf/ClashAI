@@ -5860,3 +5860,50 @@ live instruments: mean elixir 2.49 and only 5.1% of steps at >=6 in this very ru
 under a greedy gate while `P(play)` is 0.372. The policy wants to act constantly, spends to the
 floor, and therefore can never afford its own win condition. **This predates the run and survives
 every change tried so far.**
+
+## §5o — INTERVAL-4 RESTART: throughput 2.85x confirmed; the card_ent alarm is an ARTIFACT; banking is the real regression
+
+Owner restarted as `--search-interval 4` (same seed 41, same `--init policy_BEST_m18000`).
+
+### Throughput: the lever worked, but under the projection
+```
+interval 1   252 matches/hour     50k = 8.3 days
+interval 4   718 matches/hour     50k = 2.9 days      2.85x
+```
+§5m projected **3.8x**; the measured gain is **2.85x**. Two reasons, both mine: the 1/N model
+credited all non-search cost to `env.step` (3.5 ms) when the real per-decision floor -- greedy
+forward, obs build, bookkeeping -- is larger; and the 252/hr baseline was measured while my own
+drill and wr_eval jobs were competing for CPU, so the true ratio is lower still. **The projection
+was optimistic; the direction was right.**
+
+### /!\ THE CARD-ENTROPY COLLAPSE IS AN INSTRUMENT ARTIFACT
+The watchdog read `card_ent` 0.15 of 2.30, with 5 of the last 10 samples under 0.30, and
+`exp(0.15) = 1.2 effective cards` -- which reads as "the policy plays one card". IT DOES NOT.
+
+`ppo_watchdog.py:156` is `card_ent.append(_entropy(pc[i]))` averaged over states: the mean
+**PER-STATE** softmax entropy, i.e. how confident the policy is at each individual board. A decisive
+policy has LOW per-state entropy while still playing many different cards ACROSS states. Measured
+over 1500 greedy steps, the realized play distribution is **9 of 10 cards, entropy 1.96 of 2.30**.
+
+This is the third time an entropy read has pointed the wrong way in this project (see 3d50312, *"the
+cell head was learning all along -- entropy was the wrong instrument"*). **Per-state entropy is not
+behavioural diversity. Measure what the policy DOES, not how sure it is.**
+
+### The real regression, same probe, both policies run SEARCH-FREE (interval 0)
+```
+                    plays   distinct  play-ent   x_bow    elixir mean   >=6
+m18000 reference     8.5%     10/10     2.08     12.5%       4.98       35.4%
+interval-4 m5400    12.5%      9/10     1.96      2.7%       2.18        1.0%
+```
+* **Elixir >=6 collapsed 35.4% -> 1.0%**, mean 4.98 -> 2.18. The reference banks. This run does not.
+* **x_bow share fell 12.5% -> 2.7%.** The deck's win condition is nearly unused -- the direct
+  consequence of never holding 6 elixir, and exactly what `bank_to_six_then_bow` (4%) reports.
+* **It plays MORE often, 8.5% -> 12.5%.** Over-eagerness, precisely §5h.
+* Card diversity is FINE. That half of the alarm was the artifact.
+
+⚠ Still partly dip-confounded (m=5400 is past the ~1,700 bottom but short of ~7,600 recovery), and
+the two checkpoints differ in episode count. But a 35x drop in banking is far beyond what the dip
+explains, and the direction reproduces the pathology that predates every change tried.
+
+**Search-in-the-loop is NOT correcting the over-play/never-bank failure -- it is co-existing with a
+worse version of it.** That is now measured at two intervals and two checkpoints.
