@@ -831,7 +831,17 @@ def train_rl(cfg, init: str | None = None) -> None:
                 # any behaviour policy is legal here.
                 c = _kb_answer(playable, threat_bases)
                 if c is not None and advisor_log:
-                    print("[train-rl]   explore: advisor silent -> DOCTRINE %s" % card_names[c])
+                    # SAY WHICH CASE IT IS. This branch does not check `advisor`, so with the
+                    # advisor OFF (llm_advisor false, the shipped default) it fires on every
+                    # exploration step with a threat and used to report "advisor silent" -- which
+                    # reads as "it was asked and did not answer" when it was never enabled.
+                    # `llm_advisor_log` defaults to TRUE independently of `llm_advisor`, so the
+                    # message survives the advisor being switched off. The behaviour was always
+                    # right: this is the doctrine table picking a researched counter instead of a
+                    # random card. Only the label was wrong.
+                    print("[train-rl]   explore: %s -> DOCTRINE %s"
+                          % ("advisor OFF" if advisor is None else "advisor silent",
+                             card_names[c]))
             if c is None and advisor is not None and advisor_log:
                 # The fallback is invisible otherwise, and "the plays look random" is exactly what
                 # a silent fallback produces. Say which it was.
