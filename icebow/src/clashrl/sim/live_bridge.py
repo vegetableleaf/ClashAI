@@ -68,8 +68,15 @@ def tracks_to_bodies(db, tracks: Sequence[Any], actions, level: int = 11,
             fx, fy = tr.get("x"), tr.get("y")
             team = int(tr.get("team", 1 - own_team))
         else:
+            # THE TRACKER'S REAL FORMAT IS (x, y, ..., base) -- NOT (name, x, y). Assuming the
+            # latter silently mangled every track: for the string "knight" it read tr[0..2] as
+            # 'k','n','i', produced no body, and the caller's min_bodies guard skipped every
+            # decision. That is how live search shipped inert twice.
+            # Callers must pass enemy_tracks(..., with_base=True); without it there is no identity
+            # at index 4 and the track is correctly dropped rather than guessed at.
             try:
-                name, fx, fy = tr[0], tr[1], tr[2]
+                fx, fy = float(tr[0]), float(tr[1])
+                name = str(tr[4]) if len(tr) > 4 and tr[4] else ""
             except Exception:                                  # noqa: BLE001
                 continue
             team = 1 - own_team

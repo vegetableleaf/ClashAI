@@ -107,6 +107,30 @@ class LiveBridgeTests(unittest.TestCase):
         for u in rb.units:
             self.assertAlmostEqual(u.hp, u.spec.hp, places=3)
 
+    def test_it_parses_the_TRACKERS_REAL_TUPLE_FORMAT(self):
+        """THE BUG THAT SHIPPED TWICE. `enemy_tracks(with_base=True)` yields (x, y, ..., base) --
+        NOT (name, x, y). Reading it the wrong way turned the string "knight" into tr[0..2] =
+        'k','n','i', produced zero bodies, and made every decision skip on min_bodies.
+        """
+        class _A:
+            @staticmethod
+            def frame_to_board(fx, fy):
+                return float(fx), float(fy)
+        rows = LB.tracks_to_bodies(_DB, [(0.5, 0.3, 0.0, 0.0, "knight"),
+                                         (0.6, 0.4, 0.0, 0.0, "musketeer")], _A())
+        self.assertEqual([r["key"] for r in rows], ["knight", "musketeer"])
+        self.assertAlmostEqual(rows[0]["x"], 0.5, places=6)
+        self.assertAlmostEqual(rows[0]["y"], 0.3, places=6)
+
+    def test_a_track_without_with_base_is_dropped_not_guessed(self):
+        """No identity at index 4 means we do not know the card. Dropping is right; inventing one
+        would inject a phantom body into every rollout."""
+        class _A:
+            @staticmethod
+            def frame_to_board(fx, fy):
+                return float(fx), float(fy)
+        self.assertEqual(LB.tracks_to_bodies(_DB, [(0.5, 0.3, 0.0, 0.0)], _A()), [])
+
     def test_position_error_is_reported_faithfully(self):
         """The bridge must not flatter itself: injected jitter has to show up in the report."""
         eng = _truth()

@@ -124,6 +124,12 @@ class LiveSearch:
                towers_alive=None, tower_hp=None) -> Optional[Any]:
         """Return (card_id, cell), LiveSearch.WAIT, or None to keep the policy's action."""
         self.stats["asked"] += 1
+        # REPORT ON `asked`, BEFORE ANY SKIP CAN RETURN. The first cut printed after
+        # `stats["ran"] += 1`, i.e. only when search DID run -- so a feature that skipped every
+        # decision printed nothing at all, which is precisely the state the counters exist to
+        # reveal. Visibility must never be gated on the thing whose absence you are debugging.
+        if self._report_every and self.stats["asked"] % self._report_every == 0:
+            print("[live-search] " + self.summary(), flush=True)
         if not self.enabled:
             self.stats["skip_disabled"] += 1
             return None
@@ -160,8 +166,6 @@ class LiveSearch:
             self.stats["skip_timeout"] += 1
             return None
         self.stats["ran"] += 1
-        if self._report_every and self.stats["asked"] % self._report_every == 0:
-            print("[live-search] " + self.summary(), flush=True)
         if action is None:
             self.stats["kept_policy"] += 1
             return None

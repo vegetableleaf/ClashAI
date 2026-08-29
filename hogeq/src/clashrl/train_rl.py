@@ -880,8 +880,14 @@ def train_rl(cfg, init: str | None = None) -> None:
         # EPSILON STEPS ARE LEFT ALONE: they return above, so exploration stays exploration.
         if _live_search is not None:
             try:
-                _sa = _live_search.decide(list(threat_bases or ()), None, float(elixir), 
-                                          (_pol[1], _pol[2]))
+                # POSITIONED TRACKS, WITH BASE NAMES. This used to pass `threat_bases`,
+                # which is a tuple of base NAME STRINGS -- so the bridge parsed "knight" as
+                # tr[0..2] = 'k','n','i', produced zero bodies, and every decision skipped.
+                # with_base=True is required: without it there is no card identity in the track.
+                _tk = (env._ploop if (getattr(env, "_ploop", None) is not None
+                                      and env._ploop.running) else env._team_tracker)
+                _tr = _tk.enemy_tracks(time.time(), with_base=True)
+                _sa = _live_search.decide(_tr, None, float(elixir), (_pol[1], _pol[2]))
                 if _sa == _live_search.WAIT:
                     return (0, 0, 0)
                 if _sa is not None:

@@ -598,9 +598,11 @@ def play(cfg) -> None:
         # clamping, snapping and deploy rules the policy's choice would have.
         if _live_search is not None:
             try:
-                _tr = (_ploop.enemy_tracks(time.time())
+                # with_base=True or the track carries NO CARD IDENTITY and the bridge
+                # correctly drops every one of them (see live_bridge.tracks_to_bodies).
+                _tr = (_ploop.enemy_tracks(time.time(), with_base=True)
                        if _ploop is not None and _ploop.running else
-                       _team_tracker.enemy_tracks(time.time()))
+                       _team_tracker.enemy_tracks(time.time(), with_base=True))
                 _sa = _live_search.decide(_tr, hand_ids, float(elixir), (card_id, cell),
                                           frame=frame, frame_t=time.time())
                 if _sa == _live_search.WAIT:
