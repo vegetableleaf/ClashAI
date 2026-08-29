@@ -5907,3 +5907,69 @@ explains, and the direction reproduces the pathology that predates every change 
 
 **Search-in-the-loop is NOT correcting the over-play/never-bank failure -- it is co-existing with a
 worse version of it.** That is now measured at two intervals and two checkpoints.
+
+## §5p — THE BANKING FAILURE IS DIAGNOSED: waiting is a strictly dominated ACTION CLASS
+
+Owner asked whether this needs the run to reach 10k. It does not -- the pathology predates the run
+and reproduces across checkpoints and both algorithms, so it is a property of the REWARD, not of
+training progress. Measured on the current interval-4 checkpoint (m=5400), 12 matches, policy run
+search-free.
+
+### The measured asymmetry
+```
+positive terms, EVERY ONE requiring a play          per match
+  spell_defence  +1.65   threat_response   +1.00
+  wincon_reach   +0.58   chip_defence      +0.51
+  wincon_exec    +0.39   nado              +0.38
+  take_enemy_tower +0.33 chip_offence      +0.26
+  threat_response_2nd +0.15  xbow_defends  +0.07
+                                     TOTAL   +5.32
+
+terms that can fire on a step where NOTHING was played
+  threat_miss_idle  -0.68     leak  -0.03    TOTAL   -0.71   (both PENALTIES)
+```
+**Waiting has zero upside and non-zero downside. Playing carries +5.32/match of reachable credit.**
+Waiting is not merely discouraged, it is a strictly dominated action class -- so the gate plays at
+every opportunity, elixir sits at ~2.0, and a 6-cost win condition is unaffordable. Downstream,
+measured against the reference: elixir >=6 **35.4% -> 1.0%**, x_bow share **12.5% -> 2.7%**.
+`elixir_trade` IS negative (-0.72/m over 47 fires), so bad trades are billed -- the +5.32 simply
+swamps it.
+
+### The designed fix exists, is DISABLED, and would not be enough anyway
+`restraint_hold` -- the term written specifically to give a correct wait positive value -- is
+**`restraint_hold: 0.0`** in config. It was 1.0 and was zeroed in `0356830`, a commit whose message
+documents only an unrelated `llm_advisor_async` change; the two were the ONLY config edits in it.
+The surrounding comment still reads *"Raised to 1.0"*. It looks parked for that night's A/B arms and
+never restored.
+
+**But turning it back on does not fix this.** Measured at weight 1.0, fixed seed:
+```
+restraint_hold  +0.25/match over 0.2 fires/match      = 4.7% of the +5.32 play-side upside
+```
+That is the SAME "decorative" ratio (4%) the config comment itself records as the reason 0.25 was
+rejected -- the value was raised to 1.0 but the FIRE RATE, not the per-fire value, is what starves
+it. Its `restraint_cap: 2.0` is never approached.
+
+/!\ I first reported this term as NEVER FIRING. That was wrong -- the two arms had diverged RNG
+(separate `SimMatchEnv`s, unseeded). Re-run with `rng.seed(1234)` it fires 0.2/match. The correction
+matters: "inert" and "4.7% of the upside" imply different fixes.
+
+### Why it starves -- guard chain over 3,704 steps / 12 matches
+```
+5_worth_answering         65.2%   <-- DOMINANT BLOCKER: triage says the board IS worth answering,
+                                      so the step belongs to threat_miss_idle, not to restraint
+3_no_threat               28.9%   quiet board, correctly excluded (paying here is the hoarding
+                                  failure `wincon_reach: 2.0` already produced)
+1_cap                      3.4%
+6_no_affordable_counter    1.8%   (at ~2 elixir, "a counter you could have played" is rare)
+2_ratelimit                0.3%
+PASS                       0.3%
+```
+Restraint is only payable on boards triage calls IGNORABLE, and two thirds of boards are not.
+
+### What this does NOT establish
+Which repair works. Candidates, all UNTESTED: widen guard 5 (risks paying to ignore real pushes);
+a per-step hold credit while a win condition is in hand and the bar is climbing (risks hoarding --
+`wincon_reach: 2.0` already failed that way, leak x24, crowns halved); or rebalancing the play-side
+positives down rather than adding more wait-side credit. **The measurement says the asymmetry is the
+mechanism; it does not say which correction is safe.** One change, measured, per §one-change-per-experiment.
