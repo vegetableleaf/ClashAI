@@ -13,11 +13,22 @@ GEOMETRY (read from the engine at run time and printed, so it is auditable rathe
 board 18 x 32 tiles, normalised 0..1. Enemy princess towers y=0.20, ours y=0.80, river y=0.50.
 X-Bow reach 11.5 tiles, lifetime 30.0 s, 6 elixir, siege.
 
-REGIONS ARE DERIVED FROM REACH, NOT HAND-DRAWN BANDS. A placement is OFFENSIVE if the x-bow can
-reach an enemy princess tower from where it stands, and DEFENSIVE if it can reach OUR OWN princess
-tower -- i.e. it covers the ground an attacker must occupy to hit that tower. Those are not
-exclusive, so all four cells are reported. NEITHER is the owner's "too far back to hit their tower,
-too far up front to defend" dead zone, and it is the cell worth watching.
+OFFENSIVE is DERIVED FROM REACH, not a hand-drawn band: the x-bow can reach an enemy princess
+tower from where it stands.
+
+DEFENSIVE is the owner's BACK-CENTRAL band (2026-08-29): at least `--def-behind` tiles behind the
+bridge and at least `--def-edge` tiles from the left AND right map edges. Defaults 3.0 and 4.0.
+/!\ "Behind the bridge" is measured from the RIVER CENTRE LINE (y=0.5, tile 16 of 32), so the band
+starts at tile 19 = y 0.594. Measuring instead from the near bridge EDGE (river half-width 1.0
+tile, so tile 17) would start it at tile 20 = y 0.625. The reading is a real fork and the flag
+exists so it can be moved without editing code.
+
+The two are NOT exclusive and all four cells report. NEITHER is the owner's "too far back to hit
+their tower, too far up front to defend" dead zone, and it is the cell worth watching.
+/!\ THE BACK-CENTRAL BAND IS NOT PURELY DEFENSIVE AT ITS FRONT LANE CORNERS. At x = 4 tiles,
+y = 19 tiles the distance to the near enemy princess tower is 12.61 tiles, which is 11.11 after the
+1.5-tile tower radius -- inside the 11.5 reach. Those placements are BOTH, and the probe says so
+rather than calling them defensive by fiat.
 
 /!\ DAMAGE ATTRIBUTION IS AN UPPER BOUND. Damage is credited by sampling the locked target's HP
 each agent step and attributing the drop to the x-bow. If an ally is hitting the same target this
@@ -53,16 +64,18 @@ def _tiles(ax, ay, bx, by):
     return math.hypot((ax - bx) * E._TILES_X, (ay - by) * E._TILES_Y)
 
 
-def classify(eng, x, y, reach):
-    """OFFENSIVE / DEFENSIVE flags for a placement, from reach geometry."""
+def classify(eng, x, y, reach, def_behind, def_edge):
+    """OFFENSIVE (reach-derived) and DEFENSIVE (owner's back-central band) flags."""
     foe = [t for t in eng.towers[1] if not t.king and t.alive]
-    mine = [t for t in eng.towers[0] if not t.king and t.alive]
     off = any(_tiles(x, y, t.x, t.y) - PRINCESS_HALF <= reach for t in foe)
-    dfn = any(_tiles(x, y, t.x, t.y) - PRINCESS_HALF <= reach for t in mine)
+    # our side is +y; the river centre line is E._RIVER
+    behind_tiles = (y - E._RIVER) * E._TILES_Y
+    edge_tiles = min(x, 1.0 - x) * E._TILES_X
+    dfn = behind_tiles >= def_behind and edge_tiles >= def_edge
     return off, dfn
 
 
-def probe(ckpt, cfg, matches, seed=1234):
+def probe(ckpt, cfg, matches, def_behind, def_edge, seed=1234):
     dev = torch.device("cpu")
     env = SimMatchEnv(cfg)
     env.rng.seed(seed)
@@ -88,7 +101,7 @@ def probe(ckpt, cfg, matches, seed=1234):
             seen.add(k)
             r = live.get(k)
             if r is None:
-                off, dfn = classify(eng, u.x, u.y, reach)
+                off, dfn = classify(eng, u.x, u.y, reach, def_behind, def_edge)
                 r = live[k] = {"x": u.x, "y": u.y, "off": off, "dfn": dfn, "age": 0.0,
                                "n": 0, "t_tower": 0, "t_unit": 0, "t_idle": 0,
                                "dmg_tower": 0.0, "dmg_unit": 0.0, "kills": 0,
@@ -174,6 +187,10 @@ def main():
     ap.add_argument("--matches", type=int, default=24)
     ap.add_argument("--ckpt", nargs="*", default=None)
     ap.add_argument("--config", default=None)
+    ap.add_argument("--def-behind", type=float, default=3.0,
+                    help="tiles behind the RIVER CENTRE LINE for the defensive band")
+    ap.add_argument("--def-edge", type=float, default=4.0,
+                    help="minimum tiles from the left AND right map edges")
     args = ap.parse_args()
     ctrl = pathlib.Path(args.config) if args.config else (ROOT / "data" / "ab" / "control.yaml")
     cfg = Config.load(ctrl if ctrl.exists() else (ROOT / "config" / "config.yaml"))
@@ -181,12 +198,16 @@ def main():
         sorted((ROOT / "data" / "ab").glob("policy_*.pt"))
     print("scorer config: %s | %d matches/ckpt | greedy, search-free" % (ctrl.name, args.matches))
     print("geometry: board %.0fx%.0f tiles | x-bow reach 11.5 tiles | enemy towers y=0.20 | "
-          "ours y=0.80\n" % (E._TILES_X, E._TILES_Y))
+          "ours y=0.80" % (E._TILES_X, E._TILES_Y))
+    print("DEFENSIVE band: >=%.1f tiles behind the river centre (y >= %.3f) AND >=%.1f tiles "
+          "from each edge (x in [%.3f, %.3f])\n"
+          % (args.def_behind, E._RIVER + args.def_behind / E._TILES_Y, args.def_edge,
+             args.def_edge / E._TILES_X, 1.0 - args.def_edge / E._TILES_X))
     for ck in cks:
         if not ck.exists():
             print("%-14s MISSING" % ck.name)
             continue
-        recs, reach, life, m = probe(ck, cfg, args.matches)
+        recs, reach, life, m = probe(ck, cfg, args.matches, args.def_behind, args.def_edge)
         report(ck.stem.replace("policy_", ""), recs, reach, life, m)
         print()
 

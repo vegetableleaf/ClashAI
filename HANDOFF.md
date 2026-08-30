@@ -6564,3 +6564,60 @@ the new evidence of the inversion.
    NOT learning parity. A confirmation run is the wrong place to debut an unverified code path --
    if it has a subtle bug the 3-seed result is invalid and looks clean. Gate the relaunch on the
    benchmark's parity check.
+
+## §5y — THE DEFENSIVE X-BOW BAND IS ALREADY WIRED, IN THREE PLACES, WITH DIFFERENT NUMBERS
+
+Owner specified the defensive band as **>=3 tiles behind the bridge and >=4 tiles from either map
+edge** ("back central"), and asked whether it is wired into the sim / live play yet. **It is** --
+and the shipped numbers disagree with the spec in both axes, in opposite directions.
+
+### Owner's band, in engine units (board 18 x 32 tiles, river centre y=0.5 = tile 16)
+```
+>=3 tiles behind the river   ->  y >= 19/32 = 0.594
+>=4 tiles from either edge   ->  x in [4/18, 14/18] = [0.222, 0.778]
+```
+
+### What is ALREADY shipped
+```
+env.py:427  xbow_defense_front  0.56  -> tile 17.92 -> 1.92 tiles behind the river   (spec: 3.0)
+env.py:428  xbow_defense_back   0.66  -> tile 21.12 -> 5.12 tiles behind
+env.py:1563 central = abs(nx-0.5) <= 0.18 -> x in [0.32,0.68] -> 5.76 tiles from each edge (spec: 4.0)
+doctrine.py:513,530  _add_spot(0.48, 0.55) -> tile 17.6 -> 1.60 tiles behind the river
+DOCTRINE.md  "Defensive bow (0.48,0.55)" 1.60 | "def. bow (0.52,0.55)" 1.60
+             "place buildings deeper (0.58)" 2.56 | "Counter-bow (their_x,0.52)" 0.64
+```
+**The spec is DEEPER but WIDER than what ships** -- deeper by ~1.1 tiles at the front edge, wider by
+~1.8 tiles on each side. It is not a tightening of the existing band; it is a different rectangle.
+
+### /!\ EVERY SHIPPED DEFENSIVE COORDINATE SITS IN FRONT OF THE OWNER'S BAND
+0.64, 1.60, 1.60, 1.92 and 2.56 tiles behind the river -- **none reaches 3.0**. So adopting the spec
+without touching the rest makes `doctrine.py` sample defensive spots OUTSIDE the band the reward is
+meant to encode: the prior would teach one rectangle while `wincon_exec` credits another.
+
+### /!\ THE BAND IS NOT PURELY DEFENSIVE AT ITS FRONT LANE CORNERS
+At x=4 tiles, y=19 tiles the near enemy princess tower is 12.61 tiles away = **11.11 after the
+1.5-tile tower radius, inside the 11.5 reach**. Those placements can lock a tower. The probe reports
+them as BOTH rather than calling them defensive by fiat.
+
+### /!\ TWO SHIPPED VALUES HAVE MEASUREMENTS BEHIND THEM -- do not overwrite blind
+* `xbow_lane_frac: 0.35` exists because *"32/32 bow plays (rows 15-18, mostly lane-side) scored
+  -1.00 in a 20-match probe -- a 100% tax on the deck's win condition"*. Widening `central` to the
+  spec's +/-0.278 moves exactly those rows back inside full credit, which is plausibly right but
+  interacts with the fix that number came from.
+* `doctrine.py:517` suppresses the defensive spot entirely when the opponent holds a Rocket
+  (DOCTRINE_RESEARCH SS3, Hunter CR: rocket the bow -> rocket the tower -> never get a lock).
+  Any band edit must preserve that suppression.
+
+### DONE / NOT DONE
+* **DONE:** `tools/xbow_probe.py` now classifies DEFENSIVE by the owner's band, with `--def-behind`
+  (3.0) and `--def-edge` (4.0) as flags. OFFENSIVE stays reach-derived.
+  ⚠ "Behind the bridge" is measured from the RIVER CENTRE LINE (tile 16). From the near bridge EDGE
+  (river half-width 1.0 tile) the band would start at tile 20 = y 0.625 instead of 0.594. Real fork,
+  owner has not been asked which; the flag exists so it moves without a code edit.
+  Early signal, n=2 matches on m18000 so NOT a result: the two bows the reach-derived rule called
+  DEFENSIVE reclassify to **NEITHER (dead zone)** under the spec -- consistent with a policy trained
+  on a prior that samples y=0.55.
+* **NOT DONE, deliberately:** no change to `xbow_defense_front/back`, `central`, `doctrine.py`
+  spots or DOCTRINE.md. The A/B is in flight (§one-change-per-experiment), and the probe is queued
+  to measure where bows actually land and whether band placements outperform. **Change the doctrine
+  after that read, with evidence, not before it.**
