@@ -22,7 +22,7 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-08-27**, branch `main` (**RULING 30 + RULING 31c DONE, AND THE PINS GENERATOR
+Last updated: **2026-08-29**, branch `main` (**RULING 30 + RULING 31c DONE, AND THE PINS GENERATOR
 NO LONGER REVERTS ITS OWN RULINGS** -- the spell CARD VETO ships in both decks at
 `sim.ppo_spell_min_value: 0.0` = OFF, and the close-out measurement is why it stays off: re-run at
 HEAD under the DECK's own venv over 600 paired matches, the owner's VALUE form does **not** beat a
@@ -4239,3 +4239,16 @@ Pro 3.55 bows/match (§5w), m18000 reference 2.71, trained arms 0.71-1.83. **Tra
 deployment**, and restraint (0.71/match, 16.5 s mean life, 54% lock, median tower damage **0** --
 over half its offensive bows did nothing) is the worst on every axis here, independently confirming
 its drop from the 3-seed set.
+
+## §5ab — LIVE POLICY PERFORMANCE BRAINSTORM COMPILED FOR HANDOFF
+
+The full project-grounded brainstorm is now a durable agent-readable brief at
+`research/LIVE_POLICY_PERFORMANCE_BRAINSTORM.md`. It records the evidence that timing and complete
+response selection are the leading bottlenecks (search 37.0% -> 85.7%; card distillation improves
+agreement without a measured outcome gain; an accurate restraint veto is harmful), then specifies a
+ranked roadmap: enemy-play response-regret benchmark, joint WAIT/card/cell candidate scorer,
+timestamped canvas stack then recurrent sequence policy, teacher continuations with DAgger-style
+aggregation, reactive/strategic specialists, event-balanced live replay, opponent belief state, and
+only later a compact learned world model. It also records the non-recommendations, experiment gates,
+measurement discipline, primary research links, and the local evidence map. **Documentation only:**
+no model, reward, config, or running experiment changed.
