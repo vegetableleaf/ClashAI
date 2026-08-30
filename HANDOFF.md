@@ -4376,3 +4376,43 @@ softening window now starts at OUR BANK (0.53125) instead of the band front (cal
 softening tax"). ⚠ The widened window also softens the CENTRAL shallow strip (bank..0.625), not
 just off-centre -- tighten if the owner meant off-centre only. ⚠ Live `env.*` band NOT touched
 (screen-space, needs the calibration mapping). Backups in scratchpad/gauntlet/L1/prepatch/.
+
+## §5ae — GAUNTLET L2: regret corpus v1 built; the deficit is CONTINUATIONS, not event responses
+
+### v0's cross-checkpoint rankings were INVALID (affordability censoring)
+v0 measured each policy on its own trajectory: <2 affordable candidates = event skipped, so an
+elixir-starved policy gets its hardest moments censored and looks GOOD (bank6_s43 read 0.16 vs
+m18000's 0.35 while being the collapsed one). v0 stays useful for within-checkpoint diagnostics
+only. `tools/regret_corpus.py` is v1: a FIXED 203-state corpus (12 driver matches, replay-not-
+pickle, per-event candidate sets scored once), grading any checkpoint = replay + one forward pass
+per state (~1 min). Off-corpus actions rolled out on demand under the same per-event RNG.
+m18000's `off-corpus 0` doubles as the replay-determinism proof.
+
+### THE FINDING, and it survived its own control
+Paired on the same 203 states, ORACLE view: m18000 regret 0.384 (waits at 90% of events,
+missed-play 73%) vs trained arms 0.24-0.30. **The strongest match player makes the worst
+per-event decisions.** BELIEF view (reseed_opp, sampled futures -- the pre-committed
+discriminator): m18000 0.371, control_s41 0.221, bank6_s43 0.254 -- **ordering unchanged, gap
+intact. The oracle-bias explanation is dead.**
+```
+Conclusion: m18000's match superiority does NOT live in per-event response ranking.
+It lives in CONTINUATIONS/strategy. Roadmap tilts P2 (joint scorer) -> P3/P4
+(temporal memory + continuation teaching).
+```
+⚠ Caveat cutting the SAME direction: the H=12s scorer undervalues waits paying off later, i.e.
+per-event regret shares §5p's short-horizon bias. The doc's follow-through metrics are the fix,
+and they are continuation measurements.
+
+### Band retune training effect: NULL at this budget
+band_s41 (retuned doctrine, warm-start, s41, m=1500) vs seed-matched pre-retune control_s41:
+**still ZERO defensive x-bows** (prior samples (0.50,0.66) in-band; policy never places one);
+dead zone 14% vs 20% (n=14/15 bows -- noise-sized); offensive quality NOT claimed worse (n too
+small under the 9x lesson). The geometry stays (owner spec); the placement-prior-alone hypothesis
+FAILED. With restraint_hold and bank_hold dead (§5ad), three repair families have now failed
+measurably -- all converging on the structural/temporal thesis (§5ac).
+
+### Launched overnight: canvas_stack 1 vs 2 (the first P3 experiment)
+Both FROM SCRATCH (stack 2 changes input width, warm-start impossible; scratch-vs-warm would be
+the §4a confound), same seed 41, retuned config, 1500 matches, sequential
+(`data/bench/stack{1,2}_run.log`). Read tomorrow: paired regret on both corpora + xbow_probe +
+drills. NOTE stack1-scratch also gives the first scratch-vs-warmstart regret comparison for free.

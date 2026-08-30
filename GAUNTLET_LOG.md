@@ -48,3 +48,19 @@ NEXT     L2: when band run lands (~16:45): xbow_probe on policy_band_s41.pt (did
          appear in-band?); build corpus-based regret v1; consider belief-view (--reseed-opp) rerun.
 STATE    running: band-validation s41 (data/bench/band_s41.log). done: ab3 (9/9), retune, regret ref.
          blocked: none. NOTE owner usage 99% til Tue -- keep loops chunky, reports single.
+## L2 — 2026-08-30 18:20 — corpus v1, belief-view check, band null, stack chain launched
+DID      built regret_corpus.py v1 (203 fixed states, replay-based, candidate scores cached);
+         graded 5 ckpts oracle + 3 belief; final band probe vs seed-matched control; launched
+         canvas_stack 1v2 scratch pair overnight (sequential, seed 41).
+FOUND    measured: m18000 worst per-event regret (.384/.371 oracle/belief) vs trained arms
+         (.22-.30) on identical states -- ordering SURVIVES the belief-view control, so the
+         deficit is continuations, not event responses. measured: band retune trained NULL
+         (zero defensive bows persist; dead zone 14v20% noise-sized). contradicted: v0
+         cross-ckpt rankings (affordability censoring).
+MEANS    P2 joint scorer demoted; P3/P4 (temporal + continuations) promoted. Three repair
+         families now measured dead (restraint_hold, bank_hold, placement prior).
+NEXT     L3 when stack chain lands (~7h): grade both on corpus + probe + drills. If stack2
+         helps regret/drills -> GRU case strengthens; if null -> continuations (P4 teacher
+         plans) become the sole frontier.
+STATE    running: stack chain (2x scratch, ~7h). corpora: regret_corpus/ (oracle),
+         regret_corpus_belief/. usage note: owner 99% til Tue -- single report per loop.

@@ -65,7 +65,10 @@ def main():
         raise SystemExit(__doc__)
 
     OUTDIR.mkdir(parents=True, exist_ok=True)
-    cells = [(a, s) for a in CELLS for s in SEEDS]
+    # GROUPED BY SEED, NOT BY ARM. A wave must be a complete 3-arm comparison so that each
+    # wave yields a matched-m read across control/bank2/bank6 at one seed. Grouping by arm
+    # would run all three control seeds first and give no cross-arm answer until the end.
+    cells = [(a, sd) for sd in SEEDS for a in CELLS]
     for arm, seed in cells:
         (OUTDIR / ("%s_s%d.yaml" % (arm, seed))).write_text(render(arm, seed), encoding="utf-8")
     print("[ab3] wrote %d cell configs to %s" % (len(cells), OUTDIR))
