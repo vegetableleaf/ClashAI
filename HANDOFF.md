@@ -6627,3 +6627,72 @@ them as BOTH rather than calling them defensive by fiat.
   spots or DOCTRINE.md. The A/B is in flight (§one-change-per-experiment), and the probe is queued
   to measure where bows actually land and whether band placements outperform. **Change the doctrine
   after that read, with evidence, not before it.**
+
+## §5z — A/B CLOSED at m=1500. Control never reached its floor; bank6 held across three reads
+
+Final matched read, all four checkpoints at exactly m=1500, 16 matches/arm, greedy, search-free.
+Run stopped at 22:08 (8 -> 0 `train-sim-ppo` processes verified; arms were at m=1525-1550, zero
+`EVAL @` lines as expected since `eval_every_matches` is 2000).
+```
+arm          >=6 el%    mean     xbow%  plays%   playH   winrate    leak  crowns
+control          4.0    2.37       2.4    14.9    1.97      6.2%   -0.35   -1.19
+restraint        1.0    1.94       0.9    14.8    1.87      0.0%   -0.04   -1.56
+bank2            4.2    2.22       1.9    12.6    1.94     18.8%   -0.37   -1.00
+bank6           11.1    2.98       6.1    12.3    2.03     31.2%   -1.06   -0.75
+```
+
+### THE THREE-READ TRAJECTORY IS THE RESULT, NOT ANY SINGLE TABLE
+```
+>=6 elixir     m=500   m=1000   m=1500      shape
+control         13.0     6.3      4.0        monotone COLLAPSE (from 26.3 warm start)
+restraint        3.2     2.0      1.0        collapses FASTER than control
+bank2            2.8     7.5      4.2        no trend -- worst, then best, then tied
+bank6            8.9    12.0     11.1        FLAT-TO-RISING, never collapses
+```
+**Control collapses monotonically and bank6 does not.** That is the cleanest statement this run
+supports, and it is stronger than any single read because it is three points on two curves.
+`bank_hold` at cap 6.0 arrests the collapse; the control reward does not.
+
+Dose ordering (control < bank2 < bank6) held at m=1000 AND m=1500, having been absent at m=500.
+⚠ But bank2's margin over control at m=1500 is **+0.2 pp**, i.e. nothing. The intermediate dose is
+UNRESOLVED: cap 2.0 neither collapses like control nor holds like bank6.
+
+### /!\ THE POSITIVE CONTROL NEVER FIRED, SO §5r's GATE IS STILL UNMET
+Control ended at **4.0%** against a 0.3-0.4% collapsed floor -- descending (13.0 -> 6.3 -> 4.0) but
+decelerating, so the halving-per-500 model from §5x is itself wrong at the tail. Everything above is
+measured against a baseline still in motion. This is exactly what §5s's retraction predicted and why
+the plan moved to seeds rather than more length.
+
+### THE m=1000 HOARDING READ ON bank6 DID NOT HOLD
+```
+             leak            crowns
+          m1000   m1500    m1000   m1500
+control   -0.49   -0.35    -0.88   -1.19
+bank6     -1.54   -1.06    -1.31   -0.75   <- WORST crowns at m=1000, BEST of four at m=1500
+```
+§5x called bank6's hoarding signature present on the strength of leak-up + crowns-down. **Half of
+that reversed.** Leak is still ~3x control, but crowns went from worst to best. Recorded as a
+correction to §5x: the hoarding call was made on one read and one read undid it.
+
+### bank6 IS ALSO THE ARM CLOSEST TO THE HUMAN ANCHOR (§5w)
+```
+                 plays%   xbow share
+pro (Hubert)      11.3       7.1
+bank6             12.3       6.1
+control           14.9       2.4
+```
+Not a verdict -- §5w is n=1 player -- but the arm that best arrests the collapse is independently
+the one whose play rate and x-bow share sit nearest a pro's. The two instruments agree by accident
+or because both are tracking the same thing; the 3-seed run is what separates those.
+
+### WINRATE, AGAIN, IS NOISE
+bank6 read 12.5% at m=1000 and **31.2%** at m=1500 -- a 19 pp swing on the same arm, 500 matches
+apart, at n=16. Anyone reading the m=1500 winrate column alone would declare bank6 a 5x winner over
+control (31.2% vs 6.2%). Do not.
+
+### VERDICT: NO VERDICT, AND THE 3-SEED RUN IS UNCHANGED BY THIS
+The trajectory evidence is real and points at `bank_hold`, but every number here is n=1 seed, and
+bank2's own history (worst -> best -> tied across three reads) is the standing demonstration of what
+one seed does. **`tools/ab3_confirm.py` is prepped and verified; restraint is dropped on this
+evidence** (below control at all three reads, worst crowns, 0% winrate, lowest x-bow share).
+Arrangement still waits on the queued benchmark + parity gate.
