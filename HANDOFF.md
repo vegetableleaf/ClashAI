@@ -4264,3 +4264,54 @@ no model, reward, config, or running experiment changed.
   coherent pass, preserving the Rocket suppression and re-checking `xbow_lane_frac`.
 * Milestone monitoring was swapped for a FAILURE-ONLY watch: at 99% usage each notification costs
   an owner turn, and the happy path does not need one.
+
+## §5ab — /!\ THE 3-SEED CONFIRMATION REFUTES §5z AND §5x. The A/B was underpowered by ~10x
+
+Seeds 41 and 42 complete at matched m=1500 (seed 43 still running). 16 matches/arm, greedy,
+search-free, same scorer. Arm order is by argument position -- the report truncates names at 11
+chars, so rows 2/3 read as `policy_bank` for bank2 and bank6 respectively.
+```
+              >=6 el%   mean   xbow%  plays%   leak    crowns
+seed 41  control   2.2   2.08    2.0    14.2   -0.07   -0.50
+         bank2     1.9   2.12    2.2    14.4    0.00   -1.75
+         bank6     0.7   1.89    0.8    14.3    0.00   -1.00
+seed 42  control  20.3   3.83    8.1    10.4   -2.70   -0.62
+         bank2     5.2   2.41    3.2    12.6   -0.47   -1.69
+         bank6     4.4   2.26    1.2    14.6   -0.86   -0.81
+```
+
+### CONTROL BEATS BOTH BANK ARMS AT BOTH SEEDS
+§5z's headline was *"control collapses monotonically and bank6 does not"*, on three reads of one
+seed. **Two fresh seeds invert it.** The m=1000/m=1500 dose ordering does not reproduce.
+* §5z "bank6 arrests the collapse" -- **NOT SUPPORTED**
+* §5x "the dose-response appeared" -- **NOT SUPPORTED**
+
+### /!\ AND THE REAL NUMBER IS CONTROL'S OWN SPREAD: 2.2% vs 20.3%
+Same config, same init, same m, **differing only in seed** -- a **9x range on the primary
+endpoint**. Every arm difference this project has ever reported is smaller than that. The original
+A/B's headline gap (control 4.0 vs bank6 11.1) is 2.8x, comfortably inside what seed alone produces.
+
+**THE 4-ARM A/B COULD NOT HAVE DETECTED AN EFFECT OF THE SIZE IT WAS LOOKING FOR.** It was
+underpowered by roughly an order of magnitude, and no amount of extra run LENGTH would have fixed
+that -- which is why §5x's read of the m=500->m=1000 inversion (seeds, not length) was right even
+though its conclusion about the arms was not.
+
+### What this costs, honestly
+A chain of conclusions reported with rising confidence across 2026-08-29 -- §5x's "designed
+signature appeared", §5z's "strongest thing this run supports" -- rests on n=1 seed and is now
+withdrawn. The single-seed screen did exactly what §5q said a screen does; the error was mine, in
+how much weight I put on it between the screen and the confirmation.
+
+### What survives
+* **restraint is still dead**: worst arm in the original run AND worst on every x-bow axis (§5aa).
+* **§5aa's x-bow findings stand** -- they are per-checkpoint measurements over 178 bows, not
+  between-arm inferences, so seed variance does not touch them. Zero defensive x-bows, 24-37%
+  dead-zoned, offensive bows effective at 75-84% lock.
+* The banking collapse itself (§5o/§5p) is unaffected: it reproduces everywhere, in every arm.
+
+### CONSEQUENCE FOR FUTURE EXPERIMENTS -- do not run another A/B on this design
+Before testing any further reward change, either (a) find a LOWER-VARIANCE endpoint, or (b) size the
+seed count against the 2.2-20.3 spread rather than against intuition. ⚠ n=3 may still be too few:
+two seeds already differ by 9x. **Measuring the seed-variance distribution of the CONTROL arm alone
+is now the cheapest useful experiment available**, because it sets the detectable effect size for
+everything after it.

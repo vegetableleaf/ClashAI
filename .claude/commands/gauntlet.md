@@ -50,6 +50,22 @@ Each iteration, in order:
   reward, the metric, the opponent model, or the goal's framing — that is the point of giving you
   the wheel. Say so if you think the current direction is wrong.
 
+## 2.5 Subagents must write to disk as they go
+
+If you dispatch subagents, **every one of them writes its work, observations and results to disk
+as it produces them** — not only in the message it returns to you. A returned message is lost when
+a session limit, a crash, or a context reset lands mid-flight; a file is not.
+
+- Location: `scratchpad/gauntlet/L<loop>/<agent-label>.md`. Create the directory first and pass the
+  **absolute** path into the subagent's prompt — a subagent that has to guess where to write will
+  guess wrong.
+- Each subagent writes **incrementally** (findings as they are found, not one dump at the end) and
+  finishes by appending a `STATUS: complete` line. Anything without that line is partial work.
+- **Before dispatching, read that directory.** If a file for that agent-label already exists,
+  resume from what it contains instead of re-running the work. This is the whole point of the rule.
+- The loop's own interpretation step reads the files, not just the returned messages, so the record
+  and your conclusion come from the same source.
+
 ## 3. Discord report (every iteration, no exceptions)
 
 Write the report to a temp file and post it:
