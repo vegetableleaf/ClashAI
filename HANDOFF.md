@@ -6493,3 +6493,74 @@ experiment applies.
 ### If more is wanted from this source
 The highest-value next pull is **MORE PLAYERS** -- 53 games of one person cannot separate the deck's
 doctrine from one person's habits. Placement needs a DIFFERENT source than the battle log.
+
+## §5x — m=1000 READ: the dose-response APPEARED, and the arm ordering INVERTED. Seeds, not length
+
+Second matched read, all four checkpoints at exactly m=1000, 16 matches/arm, greedy, search-free.
+```
+arm          >=6 el%    mean     xbow%  plays%   playH   winrate    leak  crowns
+control          6.3    2.52       3.3    12.4    1.98     25.0%   -0.49   -0.88
+restraint        2.0    2.03       2.0    14.2    1.89     18.8%   -0.07   -1.25
+bank2            7.5    2.66       3.6    12.6    2.01     43.8%   -0.64   -0.50
+bank6           12.0    3.03       4.2    11.3    1.99     12.5%   -1.54   -1.31
+```
+
+### §5q's DESIGNED SIGNATURE APPEARED -- the bank dose pair is monotone
+```
+                control(0%)   bank2(38%, cap 2.0)   bank6(110%, cap 6.0)
+>=6 elixir          6.3              7.5                   12.0
+```
+And the TRAJECTORIES agree, which is stronger than the levels alone:
+```
+              m=500    m=1000
+control       13.0  ->   6.3    falling
+restraint      3.2  ->   2.0    falling
+bank2          2.8  ->   7.5    RISING
+bank6          8.9  ->  12.0    RISING
+```
+Both `bank_hold` arms rose while control and `restraint_hold` fell. That is what arresting the
+collapse looks like. §5q: *"if banking rises with dose that is causal."*
+
+### /!\ AND THE ARM ORDERING COMPLETELY INVERTED BETWEEN THE TWO READS
+```
+m=500    control > bank6 > restraint > bank2
+m=1000   bank6 > bank2 > control > restraint
+```
+`bank2` went from WORST treatment arm to ABOVE control in 500 matches, on the same seed.
+**This is a measurement of the noise floor, not a caveat about it: at n=1 seed these reads reorder.**
+The report's 4/6 gate-collapse escape rate now has a number behind it. Any verdict from this run
+alone would be arbitrary in the same way §5r's winrate column was.
+
+### bank6 CARRIES THE HOARDING SIGNATURE. bank2 DOES NOT.
+```
+             >=6 el    leak     crowns    winrate
+control        6.3    -0.49     -0.88      25.0%
+bank2          7.5    -0.64     -0.50      43.8%   <- banking up, crowns BEST, leak barely moved
+bank6         12.0    -1.54     -1.31      12.5%   <- banking up, leak 3.1x worse, crowns WORST
+```
+§5q's criterion: *"an arm that lifts banking while lifting leak has bought the failure, not fixed
+it"* -- how `wincon_reach: 2.0` failed (leak x24, crowns halved). **bank6 meets it; bank2 does not.**
+Reading: cap 2.0 is a useful nudge, cap 6.0 overpays and buys hoarding.
+
+### CONTROL IS STILL NOT AT ITS FLOOR -- m=1500 IS CONFIRMED TOO EARLY
+`26.3 -> 13.0 -> 6.3`, halving every 500 matches, against a 0.3-0.4% collapsed floor. Projects ~3%
+at m=1500 and the floor near **m=2500-3000**. This is §5s's retraction landing exactly as written.
+
+### DECISION: stop at m=1500 as planned, then spend the compute on SEEDS, not length
+The m=500 -> m=1000 inversion says the binding constraint is **seed variance, not run length**.
+Running to m=2500 buys one more noisy number from one seed. 3 seeds x {control, bank2, bank6} is
+the confirmation §5q requires before acting on any winner anyway, AND it directly tests whether the
+monotone dose-response is real. ⚠ This REVERSES the "extend rather than conclude" lean in §5v, on
+the new evidence of the inversion.
+
+### /!\ TWO WARNINGS ON THE RELAUNCH CONFIG
+1. **`--workers 12` WILL NOT SPEED UP A 9-CELL SWEEP.** §5u measured it: worker-side search lets ONE
+   run reach ~13 cores instead of 3.25, but nine concurrent cells already saturate 16 cores. Nine
+   cells x 12 workers = 108 worker processes on 16 cores -- oversubscription, not speedup. The lever
+   only pays when cells run sequentially or few-at-a-time. **Which arrangement is fastest is
+   UNMEASURED**; the queued benchmark answers it, so set the arrangement AFTER it reads.
+2. **WORKER-SIDE SEARCH IS AN UNPROVEN PATH FOR A CONFIRMATION RUN.** §5u verified the mechanism
+   (search fires, overrides 80% of searched actions, imitation CE fires and falls) but explicitly
+   NOT learning parity. A confirmation run is the wrong place to debut an unverified code path --
+   if it has a subtle bug the 3-seed result is invalid and looks clean. Gate the relaunch on the
+   benchmark's parity check.
