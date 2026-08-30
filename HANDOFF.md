@@ -6571,11 +6571,19 @@ Owner specified the defensive band as **>=3 tiles behind the bridge and >=4 tile
 edge** ("back central"), and asked whether it is wired into the sim / live play yet. **It is** --
 and the shipped numbers disagree with the spec in both axes, in opposite directions.
 
-### Owner's band, in engine units (board 18 x 32 tiles, river centre y=0.5 = tile 16)
+### Owner's band, in engine units (board 18 x 32 tiles)
+CLARIFIED 2026-08-29: "behind the bridge" means behind **OUR SIDE'S RIVER EDGE**, not the centre
+line. The river is 2 tiles wide (`_RIVER_HALF = 1.0`), so our bank is tile 17 (y = 0.53125):
 ```
->=3 tiles behind the river   ->  y >= 19/32 = 0.594
->=4 tiles from either edge   ->  x in [4/18, 14/18] = [0.222, 0.778]
+>=3 tiles behind OUR BANK   ->  y >= 20/32 = 0.625        (NOT 0.594 -- that was the centre-line read)
+>=4 tiles from either edge  ->  x in [4/18, 14/18] = [0.222, 0.778]
 ```
+**OVERLAP GOES TO OFFENSIVE** (owner's rule): a placement that can reach an enemy tower is
+offensive whatever else it also covers. Classification is now mutually exclusive -- three cells,
+no BOTH. At tile 20 the two do not actually intersect (deepest tower-reaching spot is y ~ 0.606,
+13.0 tiles of travel after the 1.5-tile tower radius against the 11.5 reach), leaving a thin dead
+strip from ~0.606 to 0.625 on tower-aligned columns that widens off-axis. The precedence rule is
+applied rather than assumed, so it stays correct if either flag moves.
 
 ### What is ALREADY shipped
 ```
@@ -6611,9 +6619,7 @@ them as BOTH rather than calling them defensive by fiat.
 ### DONE / NOT DONE
 * **DONE:** `tools/xbow_probe.py` now classifies DEFENSIVE by the owner's band, with `--def-behind`
   (3.0) and `--def-edge` (4.0) as flags. OFFENSIVE stays reach-derived.
-  ⚠ "Behind the bridge" is measured from the RIVER CENTRE LINE (tile 16). From the near bridge EDGE
-  (river half-width 1.0 tile) the band would start at tile 20 = y 0.625 instead of 0.594. Real fork,
-  owner has not been asked which; the flag exists so it moves without a code edit.
+  Measured from OUR BANK (tile 17) per the owner's clarification, so the band starts at tile 20.
   Early signal, n=2 matches on m18000 so NOT a result: the two bows the reach-derived rule called
   DEFENSIVE reclassify to **NEITHER (dead zone)** under the spec -- consistent with a policy trained
   on a prior that samples y=0.55.

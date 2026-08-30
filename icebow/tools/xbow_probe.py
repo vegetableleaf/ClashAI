@@ -16,19 +16,19 @@ X-Bow reach 11.5 tiles, lifetime 30.0 s, 6 elixir, siege.
 OFFENSIVE is DERIVED FROM REACH, not a hand-drawn band: the x-bow can reach an enemy princess
 tower from where it stands.
 
-DEFENSIVE is the owner's BACK-CENTRAL band (2026-08-29): at least `--def-behind` tiles behind the
-bridge and at least `--def-edge` tiles from the left AND right map edges. Defaults 3.0 and 4.0.
-/!\ "Behind the bridge" is measured from the RIVER CENTRE LINE (y=0.5, tile 16 of 32), so the band
-starts at tile 19 = y 0.594. Measuring instead from the near bridge EDGE (river half-width 1.0
-tile, so tile 17) would start it at tile 20 = y 0.625. The reading is a real fork and the flag
-exists so it can be moved without editing code.
+DEFENSIVE is the owner's BACK-CENTRAL band: at least `--def-behind` tiles behind OUR SIDE'S RIVER
+EDGE and at least `--def-edge` tiles from the left AND right map edges. Defaults 3.0 and 4.0.
+The river is 2 tiles wide (_RIVER_HALF = 1.0), so our bank is tile 17 (y = 0.53125) and the band
+starts at **tile 20, y = 0.625** -- measured from the BANK, not the centre line (owner, 2026-08-29).
 
-The two are NOT exclusive and all four cells report. NEITHER is the owner's "too far back to hit
-their tower, too far up front to defend" dead zone, and it is the cell worth watching.
-/!\ THE BACK-CENTRAL BAND IS NOT PURELY DEFENSIVE AT ITS FRONT LANE CORNERS. At x = 4 tiles,
-y = 19 tiles the distance to the near enemy princess tower is 12.61 tiles, which is 11.11 after the
-1.5-tile tower radius -- inside the 11.5 reach. Those placements are BOTH, and the probe says so
-rather than calling them defensive by fiat.
+CLASSIFICATION IS MUTUALLY EXCLUSIVE AND OFFENSIVE WINS ANY OVERLAP (owner's rule): a spot that can
+lock a tower is an offensive spot whatever else it also covers. Three cells, no BOTH. NEITHER is
+the owner's "too far back to hit their tower, too far up front to defend" dead zone.
+
+At tile 20 the bands do not in fact intersect: the deepest tower-reaching placement is y ~ 0.606
+(13.0 tiles of travel after the 1.5-tile tower radius, against the 11.5 reach), so a thin dead
+strip runs from ~0.606 to 0.625 on the tower-aligned columns and widens off-axis. The precedence
+rule is still applied rather than assumed, so it stays correct if either flag moves.
 
 /!\ DAMAGE ATTRIBUTION IS AN UPPER BOUND. Damage is credited by sampling the locked target's HP
 each agent step and attributing the drop to the x-bow. If an ally is hitting the same target this
@@ -64,15 +64,27 @@ def _tiles(ax, ay, bx, by):
     return math.hypot((ax - bx) * E._TILES_X, (ay - by) * E._TILES_Y)
 
 
+def our_bank():
+    """y of OUR SIDE's river edge. The river is 2 tiles wide (_RIVER_HALF = 1.0), so this is
+    tile 17 of 32, y = 0.53125 -- NOT the centre line. Owner's clarification 2026-08-29:
+    "3 tiles behind the bridge" is measured from this edge, putting the band at tile 20."""
+    return E._RIVER + E._RIVER_HALF / E._TILES_Y
+
+
 def classify(eng, x, y, reach, def_behind, def_edge):
-    """OFFENSIVE (reach-derived) and DEFENSIVE (owner's back-central band) flags."""
+    """MUTUALLY EXCLUSIVE: OFFENSIVE takes any overlap, then DEFENSIVE, else NEITHER.
+
+    OFFENSIVE is reach-derived -- the x-bow can reach an enemy princess tower from where it
+    stands. DEFENSIVE is the owner's back-central band, measured from OUR SIDE'S RIVER EDGE.
+    OVERLAP GOES TO OFFENSIVE (owner's rule): a spot that can lock a tower is an offensive spot
+    whatever else it also covers, so `dfn` is only true where `off` is false.
+    """
     foe = [t for t in eng.towers[1] if not t.king and t.alive]
     off = any(_tiles(x, y, t.x, t.y) - PRINCESS_HALF <= reach for t in foe)
-    # our side is +y; the river centre line is E._RIVER
-    behind_tiles = (y - E._RIVER) * E._TILES_Y
+    behind_tiles = (y - our_bank()) * E._TILES_Y
     edge_tiles = min(x, 1.0 - x) * E._TILES_X
-    dfn = behind_tiles >= def_behind and edge_tiles >= def_edge
-    return off, dfn
+    in_band = behind_tiles >= def_behind and edge_tiles >= def_edge
+    return off, (in_band and not off)
 
 
 def probe(ckpt, cfg, matches, def_behind, def_edge, seed=1234):
@@ -143,16 +155,10 @@ def report(name, recs, reach, life, matches):
         print("%-14s NO X-BOW DEPLOYED in %d matches" % (name, matches))
         return
     n = len(recs)
+    # Three cells, not four: classify() gives any overlap to OFFENSIVE, so BOTH cannot occur.
     cell = collections.Counter()
     for r in recs:
-        if r["off"] and r["dfn"]:
-            cell["BOTH"] += 1
-        elif r["off"]:
-            cell["OFFENSIVE"] += 1
-        elif r["dfn"]:
-            cell["DEFENSIVE"] += 1
-        else:
-            cell["NEITHER(dead)"] += 1
+        cell["OFFENSIVE" if r["off"] else ("DEFENSIVE" if r["dfn"] else "NEITHER(dead)")] += 1
     ages = np.array([r["age"] for r in recs])
     expired = sum(1 for r in recs if r["age"] >= life - 1.0)
     off = [r for r in recs if r["off"]]
@@ -199,10 +205,14 @@ def main():
     print("scorer config: %s | %d matches/ckpt | greedy, search-free" % (ctrl.name, args.matches))
     print("geometry: board %.0fx%.0f tiles | x-bow reach 11.5 tiles | enemy towers y=0.20 | "
           "ours y=0.80" % (E._TILES_X, E._TILES_Y))
-    print("DEFENSIVE band: >=%.1f tiles behind the river centre (y >= %.3f) AND >=%.1f tiles "
-          "from each edge (x in [%.3f, %.3f])\n"
-          % (args.def_behind, E._RIVER + args.def_behind / E._TILES_Y, args.def_edge,
+    _b = our_bank()
+    print("DEFENSIVE band: >=%.1f tiles behind OUR RIVER EDGE (y=%.5f, tile %.0f) -> y >= %.3f "
+          "(tile %.0f), AND >=%.1f tiles from each edge -> x in [%.3f, %.3f]"
+          % (args.def_behind, _b, _b * E._TILES_Y, _b + args.def_behind / E._TILES_Y,
+             (_b + args.def_behind / E._TILES_Y) * E._TILES_Y, args.def_edge,
              args.def_edge / E._TILES_X, 1.0 - args.def_edge / E._TILES_X))
+    print("OVERLAP RULE: a placement that can reach an enemy tower counts OFFENSIVE, never "
+          "DEFENSIVE (owner). Three cells, no BOTH.\n")
     for ck in cks:
         if not ck.exists():
             print("%-14s MISSING" % ck.name)
