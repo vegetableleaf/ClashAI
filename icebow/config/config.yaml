@@ -1608,7 +1608,8 @@ sim:
                                 # (clashrl/env.py + play.py read this; the sim reads sight_tiles).
   # --- sim REWARD geometry, in TILES (the env.* twins below are LIVE screen-space and stay separate) ---
   xbow_range_tiles: 11.5        # max distance from the X-Bow to an enemy princess for it to REACH the tower
-  xbow_defense_front: 0.56      # DEFENSIVE "back-centre" band (normalized y): ~2 tiles behind the river...
+  xbow_defense_front: 0.625     # OWNER BAND (2026-08-30, HANDOFF 5y): >=3 tiles behind OUR RIVER EDGE = tile 20.
+                                #   Was 0.56 (~2 tiles behind the river CENTRE); the owner measures from the BANK.
   xbow_defense_back: 0.74       # ...down THROUGH the canonical centre bow spot (~3 tiles ahead of the king,
                                 #    row 17 / y~0.73). 2026-08-15: the old 0.66 ended the band a row early, so
                                 #    the textbook defensive bow read as "behind" (0.25 credit) or, off-centre,

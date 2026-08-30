@@ -4338,3 +4338,41 @@ Band retune STAGED, not applied (gate: ab3 wave 3 still training):
 off-centre bows fall out of band by DEPTH under the new front, reverting the `xbow_lane_frac`
 softening for them. ⚠ The live `env.*` band (0.52/0.62) is SCREEN-SPACE on a foreshortened frame
 (env.py:424) and is NOT retuned -- it needs the calibration mapping, not tile numbers.
+
+## §5ad — 3-SEED FINAL: bank_hold is HARMFUL, dose-dependently, at p≈0.005. Band retune APPLIED
+
+### The complete 3-seed table (all cells at m=1500/1501, same instrument throughout)
+```
+>=6 el%    s41    s42    s43     within-seed ordering
+control    2.2   20.3    7.5     control > bank2 > bank6
+bank2      1.9    5.2    6.2     control > bank2 > bank6
+bank6      0.7    4.4    0.0     control > bank2 > bank6
+```
+**Control beats bank2 beats bank6 at ALL THREE seeds.** Within-seed comparisons are paired (arms
+share the seed), so the 9x match-level variance largely cancels; sign test on the full ordering:
+(1/6)^3 ≈ 0.5%. **The dose-response is monotone in the WRONG direction: `bank_hold` deepens the
+collapse it was designed to arrest.** bank6_s43 is the first TOTAL collapse measured anywhere
+(0.0%, and its 8/10 distinct cards is also the first card-diversity loss).
+
+### The mechanism reading (plausible, one signature, not proven)
+`bank_hold` pays for CLIMBING toward a held win condition. Paying for the climb pays for
+spend-to-the-floor-then-reclimb cycles. bank6_s43 carries the signature: highest plays% (14.6),
+lowest mean elixir (1.76). The gaming risk flagged at §5x is what happened.
+
+### Standing conclusions
+* `bank_hold` joins `restraint_hold` as a DEAD repair. §5p's asymmetry diagnosis still stands;
+  two reward-side patches have now failed measurably. This CONVERGES with the brainstorm's thesis
+  (§5ac): the failure is temporal/structural, not reward-tunable.
+* §5z's single-seed trajectory ("bank6 never collapses", bank6=11.1 at m=1500) is now the outlier
+  against four fresh cells. Single-seed trajectories join single-seed levels as untrustworthy.
+* Control's n=3 spread: 2.2 / 7.5 / 20.3 -- the 9x range is confirmed, not a two-seed fluke.
+
+### Band retune APPLIED (§5y scope + owner rulings, nothing training at the time)
+10 edits, every anchor asserted, geometry verified after: `sim.xbow_defense_front` 0.56 -> 0.625;
+`central` 0.18 -> 0.278; doctrine spots (0.48,0.55) -> (0.50,0.66) both call sites; DOCTRINE.md
+rows updated; counter-bow #48 left as-is (offensive trade rule) with a flag comment.
+Owner rulings folded in: back edge stays 0.74 + deep_frac (call 1 approved); `xbow_lane_frac`
+softening window now starts at OUR BANK (0.53125) instead of the band front (call 2: "reapply the
+softening tax"). ⚠ The widened window also softens the CENTRAL shallow strip (bank..0.625), not
+just off-centre -- tighten if the owner meant off-centre only. ⚠ Live `env.*` band NOT touched
+(screen-space, needs the calibration mapping). Backups in scratchpad/gauntlet/L1/prepatch/.

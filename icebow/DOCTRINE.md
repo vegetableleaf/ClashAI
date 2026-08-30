@@ -60,7 +60,7 @@ catalog only applies once they say there is a decision to make.
 | **Log ahead of a locked X-Bow** | Cast at the GROUND defenders walking onto the bow (air answers are IW/pulse's job) | Knockback = 1–2 more bow shots; resets charges |
 | **Skeletons + Tesla** | Skels ON the attacker at the Tesla | Surround DPS while the pull holds aggro |
 | **Evo Knight walk-tank + IW slow** | Knight placed to WALK across the push, IW behind | Near-zero-damage defense vs mid pushes |
-| **X-Bow + Tesla double-building** | Defensive bow (0.48, 0.55) + Tesla (0.48±0.05, 0.58) | Two pulls: RG/Hog never touches a tower |
+| **X-Bow + Tesla double-building** | Defensive bow (0.50, 0.66; owner band 5y) + Tesla (0.48±0.05, 0.58) | Two pulls: RG/Hog never touches a tower |
 
 ## 3. Counter catalog
 
@@ -76,7 +76,7 @@ helper (small), **L** = live-limited (detector must name the card; class-level f
 | 3 | Hog Rider (king asleep, nado in hand) | **Tornado → king** | Nado destination (0.48, 0.70) | The moment he commits past the bridge | The classic activation — highest-value single play the deck owns | S |
 | 4 | **Ram Rider / Battle Ram** | Log first, then Tesla | Log INTO the charge (head-on, threat lane); Tesla centre band | Log while charging = reset | Never let a charged ram connect with a tower/bow | S |
 | 5 | **Giant** | Tesla pull + Skels surround + IW | Tesla centre; Skels on his back; IW (0.48, 0.66) | Tesla early (he's slow); support later | Kill the SUPPORT with Log/Rocket math, not the Giant first | S |
-| 6 | **Royal Giant** | Tesla + defensive X-Bow (second building) | Tesla (0.44, 0.56); def. bow (0.52, 0.55) | Tesla at his bridge commit; bow only if he's supported | Evo RG: expect one recoil knockback — place buildings deeper (0.58) | S |
+| 6 | **Royal Giant** | Tesla + defensive X-Bow (second building) | Tesla (0.44, 0.56); def. bow (0.52, 0.66; owner band 5y) | Tesla at his bridge commit; bow only if he's supported | Evo RG: expect one recoil knockback — place buildings deeper (0.70) | S |
 | 7 | **Golem (placed behind their king)** | **Opposite-lane offensive X-Bow immediately** + minimal defense later | Bow at behind-bridge lock (opp_lane_x, 0.50) | The instant the Golem lands (8-elixir window) | The repo's punish rule; do NOT out-tank a golem push — out-tempo it | S |
 | 8 | Golem push arriving | IW + Tesla + nado-clump the support behind the Golem | Nado at support, NOT the golem; IW behind | Support first — golem alone can't kill you fast | Rocket the clumped support if ≥2 mediums | S |
 | 9 | **Elixir Golem** | Do NOT kill it early; IW slow + towers; Rocket the support pumping behind | IW (0.48, 0.64) | Let the tower work; nado blobs together only WITH IW/pulse up | Killing it fast feeds their Healer/NW golemites | S |
@@ -143,7 +143,7 @@ helper (small), **L** = live-limited (detector must name the card; class-level f
 | 45 | **Earthquake seen** | Building-lean OFF for the match (see #14); Knight/skels carry defense | — | Match-flag | | S (flag) |
 | 46 | **Lightning deck** | Never 3 medium targets in one 3.5-tile circle near the bow | Spread supports | Standing rule | | S+ |
 | 47 | **Rocket mirror / their Rocket on our bow** | Bow placements hug the EDGE column so their rocket can't clip tower+bow | Bridge-edge lock spots (0.16/0.84, 0.50) | Standing rule vs rocket decks | Measured: Hunter's lane bows sit at 0.16/0.84 — this is why | S |
-| 48 | **Enemy X-Bow (mirror)** | OUR X-Bow placed to outrange/trade + Rocket theirs when it locks + Knight blocks theirs | Counter-bow at (their_x, 0.52) | Immediately | Whoever defends cheaper wins; rocket math decides | S |
+| 48 | **Enemy X-Bow (mirror)** | OUR X-Bow placed to outrange/trade + Rocket theirs when it locks + Knight blocks theirs | Counter-bow at (their_x, 0.52) <!-- 5y: offensive trade rule, NOT retuned to the defensive band; on the river by design --> | Immediately | Whoever defends cheaper wins; rocket math decides | S |
 | 49 | **Mortar** | **Knight INTO the 3.5-tile blind spot** (forces it to lose the lock/retarget) + skels chew it; a near-bridge Tesla both absorbs the retargeted lock AND out-shoots a bridge mortar | Knight walks inside 3.5 tiles of it (drop at bridge edge, he enters the blind zone); Tesla at (0.48, 0.52–0.54) if it's a bridge mortar | Knight immediately on mortar placement, BEFORE its first shell lands on the tower | Mortar cannot hit anything inside 3.5 tiles (blind spot, buffed to 3.5 in 2018); a unit entering it forces retarget — the classic RG-in-blind-spot tech, ours is Knight. Distraction-at-distance also works but costs more time. Never let it free-chip | S |
 | 50 | **Elixir Collector** | **Rocket it within 12 s** (+princess clip if aligned; never king-adjacent) | Already coded (pump punish) | Fresh pump only | | S (exists) |
 | 51 | **Graveyard** | IW ON the tower + skels perimeter + nado skeletons to KING (activation + kill) | IW at (tower_x, tower_y+0.03); nado (0.48, 0.70) | IW pre-emptive at their 9 elixir if GY seen | Poison-bait discipline: don't stack IW+skels | S+ |
@@ -183,7 +183,7 @@ every rule below applies to the hero versions automatically.
 | 53 | Opponent spent ≥7 elixir away from our bow lane | Offensive X-Bow | Behind-bridge lock (0.26/0.73, 0.50); centre-forward (0.42–0.58, 0.46) only on the front row | The punish window (coded); Knight ready behind | S |
 | 54 | Bow is deploying (3.5 s) | Pre-shield | Knight at (bow_x, bow_y−0.04) BEFORE their answer lands | The deploy window is when bows die | S+ |
 | 55 | Their building drops to pull our locked bow | Log/nado their building's pull OR accept + rocket chip | Nado drags their DEFENDER off, not the building | Kill-the-defender beats fight-the-building | S+ |
-| 56 | 2×/3× elixir, no breakthrough | Rocket-cycle mode (coded) + defensive bow only | Rocket weaker princess; bow (0.48, 0.55) | The phase machine exists; doctrine adds: keep ONE spell always in hand | S |
+| 56 | 2×/3× elixir, no breakthrough | Rocket-cycle mode (coded) + defensive bow only | Rocket weaker princess; bow (0.50, 0.66) | The phase machine exists; doctrine adds: keep ONE spell always in hand | S |
 | 57 | Both princesses even HP | Rocket the one their DECK defends worse (fewer buildings that side) | — | Tie-break beyond current weaker-HP snap | S+ |
 
 ---

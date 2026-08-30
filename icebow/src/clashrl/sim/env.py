@@ -1559,11 +1559,15 @@ class SimMatchEnv:
             # "back-centre" = the CENTER INTERCEPT band behind the bridge (where a Tesla would sit), NOT
             # behind the princess towers. In-band = full credit; DEEPER than the towers = a small fraction
             # (soft shaping: rarely useful, but not punished like a true misplace).
-            central = abs(nx - 0.5) <= 0.18
+            central = abs(nx - 0.5) <= 0.278   # OWNER BAND (5y): >=4 tiles from each edge = 5/18.
+            # /!\ was 0.18 (5.76 tiles). Rows 15-18 off-centre bows now fall OUT of band by
+            # DEPTH (front 0.625) rather than by width -- the 32/32 lane-bow tax (xbow_lane_frac)
+            # reverts for them; owner-flagged in the L1 report, revisit if bow volume drops.
             in_band = central and self.xbow_front <= ny <= self.xbow_back
             behind = central and ny > self.xbow_back
             frac = 1.0 if in_band else (self.xbow_deep_frac if behind else 0.0)
-            if frac == 0.0 and self.xbow_front <= ny <= self.xbow_back + 0.10:
+            if frac == 0.0 and 0.53125 <= ny <= self.xbow_back + 0.10:   # 0.53125 = OUR BANK (tile 17);
+                # owner ruling 2026-08-30: keep the lane softening for sub-band placements
                 # LANE-BOW SOFTENING (2026-08-15): an off-centre bow at defensive depth is a
                 # SUBOPTIMAL spot, not a thrown-away card -- but it fell off the `central`
                 # cliff to frac 0 and ate the full w_wincon_mis. MEASURED: 32/32 bow plays

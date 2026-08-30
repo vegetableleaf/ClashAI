@@ -511,7 +511,7 @@ def _doctrine_cells_rules(env, card_id: int) -> Optional[List[Tuple[int, float]]
         # bow into an assembling beatdown is blocked before it ever locks.
         if threat_value.massing_in_back(
                 env.db, [(u.x, u.y, u.spec.base) for u in _enemies(env)]):
-            _add_spot(w, env, 0.48, 0.55, 5.0, 1.5)          # back-centre band, above the phase spots
+            _add_spot(w, env, 0.50, 0.66, 5.0, 1.5)          # OWNER BAND centre (5y): tile 21, was (0.48,0.55) = 0.6 tiles behind the bank
         elif env._defensive:
             # THE CENTRAL LESSON (DOCTRINE_RESEARCH.md SS3, Hunter CR): NEVER place a mid-map or
             # defensive X-Bow against a deck holding Rocket. His stated chain is: they rocket the
@@ -527,7 +527,7 @@ def _doctrine_cells_rules(env, card_id: int) -> Optional[List[Tuple[int, float]]
             # Suppressed rather than re-weighted: "never" is the doctrine, and a weaker spot would
             # still be sampled.
             if "rocket" not in _opp_cards(env):
-                _add_spot(w, env, 0.48, 0.55, 4.0, 1.5)      # #56: defensive bow, centre band
+                _add_spot(w, env, 0.50, 0.66, 4.0, 1.5)      # #56: defensive bow, OWNER BAND centre (5y)
         else:
             # #53/#47: behind-bridge lock spots. Opposite lane of the enemy's committed mass
             # (the punish rule); EDGE column vs rocket decks so their rocket can't clip tower+bow.
