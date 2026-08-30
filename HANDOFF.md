@@ -4252,3 +4252,15 @@ aggregation, reactive/strategic specialists, event-balanced live replay, opponen
 only later a compact learned world model. It also records the non-recommendations, experiment gates,
 measurement discipline, primary research links, and the local evidence map. **Documentation only:**
 no model, reward, config, or running experiment changed.
+
+### §5aa addendum — owner decisions 2026-08-29 23:00 (weekly usage at 99%, resets Tuesday)
+* **Graphify doc pass: DEFERRED past Tuesday's reset.** The AST half is done and committed; the
+  234 changed docs remain unstamped in the manifest, so `--update` re-queues them automatically.
+* **3-seed run: LET IT FINISH** (option a). No doctrine change until it completes -- the run
+  depends on the current doctrine, and §one-change-per-experiment applies.
+* **X-bow defensive band retune: AFTER the 3-seed run.** Scope is fixed and measured in §5y/§5aa:
+  `xbow_defense_front` (0.92 tiles behind our bank vs the 3.0 spec), `central` (5.76 tiles from
+  edges vs 4.0), `doctrine.py`'s `_add_spot(0.48, 0.55)`, and DOCTRINE.md's coordinates -- one
+  coherent pass, preserving the Rocket suppression and re-checking `xbow_lane_frac`.
+* Milestone monitoring was swapped for a FAILURE-ONLY watch: at 99% usage each notification costs
+  an owner turn, and the happy path does not need one.
