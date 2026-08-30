@@ -4315,3 +4315,26 @@ seed count against the 2.2-20.3 spread rather than against intuition. ⚠ n=3 ma
 two seeds already differ by 9x. **Measuring the seed-variance distribution of the CONTROL arm alone
 is now the cheapest useful experiment available**, because it sets the detectable effect size for
 everything after it.
+
+## §5ac — GAUNTLET L1: brainstorm reviewed, response-regret benchmark v0 built, band retune staged
+
+Owner started `/gauntlet` (goal: evaluate `research/LIVE_POLICY_PERFORMANCE_BRAINSTORM.md`, then
+improve decision-making -- spells, efficient defense, x-bow use and defense). Full verdict table
+with measurements: **`research/BRAINSTORM_REVIEW.md`**. Spine accepted (regret benchmark -> joint
+candidate scorer -> temporal memory -> world model last); two-speed router REJECTED pending
+evidence; GRU/R2D2, belief heads, event replay DEFERRED; its §14.1 bank_hold premise is refuted by
+§5ab. Key addition: the benchmark is ALSO the §5ab power fix -- regret is scored per-state on a
+cloned board, so the 9x match-level seed variance never enters the comparison.
+
+`tools/response_regret.py` v0: enemy-play events via `eng.last_deploy[1]` timestamps; scores WAIT +
+top card/cell candidates through `Searcher.candidates()`/`_rollout()` (H=12 s, outcome-grounded
+Scorer, common RNG per decision); fixed seed list; per-event CSV (enemy base/kind, wait_score,
+best_same_card_score) so spell/x-bow/card-vs-placement buckets slice offline. Smoke: mechanics OK.
+
+Band retune STAGED, not applied (gate: ab3 wave 3 still training):
+`scratchpad/gauntlet/L1/band_retune.py`, asserts every anchor and verifies band geometry after.
+⚠ Two decisions taken without asking, flagged for veto: (a) the owner band has no back edge, so
+`xbow_defense_back: 0.74` + `deep_frac` beyond is kept as the faithful reading; (b) rows 15-18
+off-centre bows fall out of band by DEPTH under the new front, reverting the `xbow_lane_frac`
+softening for them. ⚠ The live `env.*` band (0.52/0.62) is SCREEN-SPACE on a foreshortened frame
+(env.py:424) and is NOT retuned -- it needs the calibration mapping, not tile numbers.
