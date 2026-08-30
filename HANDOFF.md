@@ -4157,3 +4157,85 @@ bank2's own history (worst -> best -> tied across three reads) is the standing d
 one seed does. **`tools/ab3_confirm.py` is prepped and verified; restraint is dropped on this
 evidence** (below control at all three reads, worst crowns, 0% winrate, lowest x-bow share).
 Arrangement still waits on the queued benchmark + parity gate.
+
+## §5aa — OVERNIGHT CHAIN: throughput measured, parity unresolved-but-not-broken, and the X-BOW ANSWER
+
+Ran unattended after the A/B stopped, on an idle box. Three results.
+
+### 1. THROUGHPUT: §5u's ~4x was ARITHMETIC AND WRONG. Measured 1.83x.
+150 matches, 96 envs, interval 4, seed 41, idle box:
+```
+--workers 0    442.6 matches/hour
+--workers 12   810.8 matches/hour     1.83x   (5u projected ~4x from 3.25/16 cores)
+4 concurrent A/B arms, measured over 7h:  ~197 each = ~788/hour AGGREGATE
+```
+**One 12-worker run (810.8) essentially TIES four concurrent 0-worker runs (788).** Worker-side
+search does not beat concurrency on this box; it matches it. The box is the constraint either way.
+§5u's projection is retracted: the lever is real but half the size claimed, and it buys latency on
+a single run, never total throughput.
+
+### 2. PARITY GATE: large divergence, but "the worker path does not train" is REFUTED
+Both bench checkpoints, same init / seed / config, scored on the same instrument:
+```
+                >=6 el%   mean   xbow%  plays%  winrate   leak    crowns
+policy_inproc      4.4     2.03    0.3    14.0    12.5%   -0.79   -1.50
+policy_workers12  27.3     4.22    6.3     9.6     0.0%   -4.90   -1.88
+```
+A 6x gap on the primary endpoint. **But the failure hypothesis is dead**, on three checks:
+```
+L1 drift from the m18000 init:  inproc 27252 (104.65%)   workers12 27322 (104.92%)
+search fired:                   inproc 486/12288          workers12 436/12288
+gradient signals:               pl +0.044 vl 1.345        pl +0.037 vl 1.126
+```
+**Both paths train equally hard and search at the same rate; they land in different places.** At
+m=150 that is exactly the variance this project has already measured -- §5x's arm ordering inverted
+between m=500 and m=1000, and bank2 read 2.8 -> 7.5 -> 4.2 across three reads on one seed.
+**Parity is UNRESOLVED, not failed.** ⚠ Do not read this as clearance either: two runs at m=150
+cannot establish parity in either direction.
+Residual lead, not chased: the imitation CE MOVES on inproc (1.8117 -> 2.7872) and is nearly FLAT
+and higher on workers (3.2031 -> 3.1992). Equal weight drift makes a stale-net cause unlikely, but
+the cheap decisive test is a worker-side assertion that each broadcast state_dict differs from the
+previous one.
+
+### 3. /!\ THE X-BOW ANSWER: THE POLICY NEVER PLAYS A DEFENSIVE X-BOW. Not once, in any trained arm.
+24 matches per checkpoint, greedy, search-free, owner's band (>=3 tiles behind OUR bank, >=4 from
+each edge, overlap to offensive):
+```
+                 bows/match  OFFENSIVE  NEITHER(dead)  DEFENSIVE  lifetime  full  IDLE  lock%  towerdmg
+m18000 reference    2.71        69%         29%          2% (1)    20.9s    25%   32%    82%    1611
+control             1.25        63%         37%          0%        21.5s    33%   32%    84%    2259
+bank2               0.92        73%         27%          0%        20.6s    32%   39%    75%    2129
+bank6               1.83        64%         36%          0%        20.2s    25%   35%    75%    1519
+restraint           0.71        76%         24%          0%        16.5s    12%   39%    54%    1129
+```
+**ONE defensive x-bow out of 178 across five checkpoints, and it belongs to the untrained-on
+reference.** Every trained arm: zero. The deck's second-building doctrine (§DOCTRINE.md "DEFENSIVE
+(centre band, acts as a second pull building)") is not merely under-used -- **it is absent**, and
+that is consistent with §5y: the doctrine prior samples y=0.55, which is 0.6 tiles behind our bank
+against the band's 3.0, so the prior has never taught the band the reward is meant to credit.
+
+**24-37% of every arm's x-bows land in the DEAD ZONE** -- 6 elixir placed where they can neither
+reach an enemy tower nor sit in the defensive band. That is roughly one x-bow in three, wasted.
+
+### The owner's hypothesis, answered
+Owner asked whether bad x-bows or an unrealistic opponent explained bank6's poor crowns.
+**Neither, and the offensive x-bows are actually FINE**: 75-84% get a tower lock and deal
+1500-2400 damage. What is broken is around them -- a third in the dead zone, zero defensive, and
+**32-39% of x-bow LIFETIME spent with no target at all**.
+
+⚠ AND IT QUALIFIES §5z's READ OF bank6. Per-bow, bank6's x-bows are the WEAKER ones:
+```
+                bows/match   tower dmg each   ~total tower dmg/match
+control            1.25           2259               2824
+bank6              1.83           1519               2780
+```
+**bank6 plays 46% more x-bows for the same total tower damage.** Its higher `xbow%` share (§5z) is
+volume, not effect. That does not overturn §5z's banking result, but "bank6 is closest to the human
+x-bow share" (§5w) is now a weaker claim than it looked: the pro's 3.55 bows/match are presumably
+not each worth a third less.
+
+### Volume is DOWN against both references
+Pro 3.55 bows/match (§5w), m18000 reference 2.71, trained arms 0.71-1.83. **Training reduces x-bow
+deployment**, and restraint (0.71/match, 16.5 s mean life, 54% lock, median tower damage **0** --
+over half its offensive bows did nothing) is the worst on every axis here, independently confirming
+its drop from the 3-seed set.
