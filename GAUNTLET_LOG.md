@@ -33,3 +33,18 @@ NEXT     when ab3 wave 3 lands: final 3-seed read, apply band_retune.py, then a 
          (8 matches, idle box) on m18000 + ab3 checkpoints as the benchmark's first reference.
 STATE    running: ab3 wave 3 (s43 ~m1175/1500). queued: retune apply, 3-seed read, regret reference.
          blocked: none. live env.* band flagged, needs screen mapping.
+## L1-final — 2026-08-30 13:10 — 3-seed verdict, retune applied, regret v0 reference
+DID      seed-43 read -> 5ad (bank_hold verdict); applied band_retune.py (10 edits, verified,
+         backups in L1/prepatch/); ran regret v0 reference (m18000 + 3 ab3 ckpts, 278 CSV rows);
+         launched band-validation run (retuned config, seed 41, 1500 matches, workers 0).
+FOUND    measured: bank_hold HARMFUL dose-dependently -- control>bank2>bank6 at ALL 3 seeds,
+         sign test ~0.5%; bank6_s43 total collapse 0.0%. measured: regret v0 within-ckpt --
+         m18000 missed-play FN 58% (oracle view), worst family = enemy buildings (0.40);
+         control_s41 over-play FP 64%. contradicted: cross-ckpt regret rankings INVALID in v0
+         (affordability censoring: <2 affordable cands = event skipped, starved policies look good).
+MEANS    both reward patches dead -> brainstorm's structural thesis is the working hypothesis.
+         Regret v1 must be a FIXED STATE CORPUS (paired across ckpts, kills both confounds).
+NEXT     L2: when band run lands (~16:45): xbow_probe on policy_band_s41.pt (did defensive bows
+         appear in-band?); build corpus-based regret v1; consider belief-view (--reseed-opp) rerun.
+STATE    running: band-validation s41 (data/bench/band_s41.log). done: ab3 (9/9), retune, regret ref.
+         blocked: none. NOTE owner usage 99% til Tue -- keep loops chunky, reports single.
