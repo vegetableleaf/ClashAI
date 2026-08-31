@@ -4526,3 +4526,21 @@ warm-start with cell-head reset, or prior-weighted fine-tuning.
 (near-zero cost), hazard-first loss ordering, pro population distributions as EVALUATION anchors
 never gradient, pre-committed gates, explicit does-NOT-do list. First implementation step is pure
 logging (no training change) — ready for the owner's go-ahead.
+
+## §5ai — GAUNTLET L6 (hold loop): pro SPELL placement portraits — doctrine largely validated
+
+Read-only analysis of crawl2 (blue plays with coords; frame per §5ag). Owner-gated items untouched.
+```
+the-log   n=1802  99% own-half; modes (14,18) (4,18) -- lane logs just behind our bank, rolling
+                  forward. DOCTRINE VALIDATED ("cast from your side, reaches their chip range").
+rocket    n=761   76% enemy-half; modes (14,8) (6,8) (4,8) = 1.5-2 tiles IN FRONT of the enemy
+                  princess (tower+support value). Almost never their king (doctrine rule holds).
+                  16% own-half = defensive rockets exist but are the minority.
+tornado   n=979   BIMODAL: king-pull cluster (8,24)(10,24)(8,26) + mid clump cluster (4,16)(4,12).
+                  ⚠ Pro king-pulls sit at y 24-26 -- DEEPER than doctrine's destination
+                  (0.48,0.70) = tile 22.4 by ~2-3 tiles. Doctrine's nado coordinate may be shallow;
+                  flagged for the owner's doctrine pass, NOT changed.
+```
+These are evaluation anchors (and candidate prior updates, owner-gated). With §5ag/§5ah this
+completes the goal's four focus areas with population evidence: spells (validated + one refinement),
+defense (continuation targets), x-bow use (band evidence), defending the bow (follow-up ratios).

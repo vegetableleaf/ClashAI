@@ -96,3 +96,11 @@ MEANS    the band+prior mechanism is real; the blocker is warm-start inertia. P4
 NEXT     L6 (owner gates): band-width ruling (5ag), P4 step-1 go-ahead (pure logging), then
          warm-start-vs-band experiment design.
 STATE    box idle. pending owner: band width, P4 go. crawl + corpora + 3 scratch seeds banked.
+## L6 — 2026-08-31 04:55 — hold loop; spell portraits banked
+DID      read-only crawl2 spell analysis (log/rocket/nado); no config/doctrine/training touched.
+FOUND    measured: log 99% own-half lane modes (doctrine validated); rocket modes 1.5-2 tiles in
+         front of enemy princess, king-rockets ~absent (rule holds); nado bimodal, king-pulls
+         2-3 tiles DEEPER than doctrine's coordinate (flagged, not changed).
+MEANS    all four goal focus areas now carry population evidence.
+NEXT     owner rulings (band width; P4 step-1). Then P4 logging build.
+STATE    box idle; holding.
