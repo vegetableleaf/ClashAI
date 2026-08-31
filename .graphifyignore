@@ -52,3 +52,9 @@ templates/
 # --- /watchvideo run folders: contact sheets + source video. The transcript is the artifact
 # --- worth reading, and it is already summarised in video-analytics/*/ markdown.
 video-analytics/
+
+# --- working/scratch dirs (added 2026-08-31): regenerable sweep logs and session scratch.
+# 130 of 240 "changed docs" in the doc-pass detect were scratchpad sweep outputs -- 6 subagents
+# of zero graph value. The durable knowledge lives in HANDOFF/research/ledger, which stay indexed.
+scratchpad/
+scratch/

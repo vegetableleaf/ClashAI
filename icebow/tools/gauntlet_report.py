@@ -97,8 +97,11 @@ def main():
     ap.add_argument("--dry-run", action="store_true", help="print what would be posted")
     args = ap.parse_args()
     text = pathlib.Path(args.file).read_text(encoding="utf-8") if args.file else sys.stdin.read()
+    # NOTE: @here pinged everyone online (owner complaint 2026-08-31). A bare @username
+    # in webhook content does NOT notify -- a real ping needs the numeric <@id> mention;
+    # if the owner supplies their Discord user id, put it here.
     if args.questions:
-        text = "@here **GAUNTLET BLOCKED - waiting on you**\n" + text
+        text = "@vegetableleaf **GAUNTLET BLOCKED - waiting on you**\n" + text
     post(text.strip(), dry=args.dry_run)
 
 
