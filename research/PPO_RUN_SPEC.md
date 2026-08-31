@@ -43,3 +43,31 @@ also ON   train.continuation_log — instrumentation, not treatment: this run ge
 ## Approval question for the owner
 Approve as specced? Options: (a) approve — launches immediately, ~4h, report per wave;
 (b) modify (different seeds/length/arms — say the word); (c) reject in favor of something else.
+
+---
+# ADDENDUM 2026-08-31: THE REAL RUN (gauntlet terminal condition, owner directive)
+
+**Launches IMMEDIATELY when the last gate is green** — owner rule: failed experiments get
+modified and rerun first; otherwise no waiting. The gauntlet ends AT this launch.
+
+## Gates (in order, each with its pass condition)
+1. **Parity chain** (running): per-seed-pair corpus deltas small + sign-mixed → workers 12;
+   one-sided gap → workers 0 (launch anyway, slower path).
+2. **Geometry redo** (seeds 54-56, fixed constants): pre-committed rule from 5am. Pass → current
+   config stands; fail cleanly (no implementation flaw) → REVERT lane spots to centre-only band
+   (5aj minus lane spots), then launch. A third implementation flaw → fix + one more redo.
+3. **Hazard A/B** (2 arms × 3 seeds, sized from measured pace tomorrow): mechanism win on
+   realized-wait regret (paired corpora) → real run carries the hazard head; null → launches
+   without it. Mechanical failure → fix + rerun per owner rule.
+
+## The run itself
+* config: `data/bench/real_run.yaml` (checkpoint ISOLATED at data/policy_real_20260901.pt --
+  never touches policy_sim_ppo.pt; continuation_log ON to data/continuations_real.jsonl)
+* horizon: --matches 40000; workers per gate 1; seed 41; --search-interval 4; scratch vs
+  warm-start DECIDED BY THE REDO (5ah: warm-start blocks placement learning -- if geometry
+  passes at 3 seeds scratch, the real run goes scratch; this is the standing intent, owner can
+  override at launch notification)
+* §4d anti-plateau gate: paired instrument reads at m=5k/10k/20k (probe + corpora + continuation
+  report); keep-best stays on; a sustained regression across TWO consecutive reads posts a
+  --questions alert rather than silently training on.
+* watchdog armed on the real checkpoint path; Discord report at every instrument gate.
