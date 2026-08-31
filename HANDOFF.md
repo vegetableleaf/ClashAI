@@ -4569,3 +4569,36 @@ env's next play, next card/cell/flag, `trunc` marking horizon/episode censoring 
 treats censored, not "no next play"). Episode boundaries respected via roll["done"].
 Smoke-verified: 4 matches -> 42 well-formed rows. Next: enable on the next real training run to
 accumulate the corpus; `continuation_report.py` eval is step 2 (design doc §6).
+
+## §5ak — GAUNTLET L7: continuation instrument SEES m18000's edge; chained plans cost 2x search
+
+### continuation_report.py (P4 step 2) BUILT + baselined (16 matches, fixed seeds, greedy)
+```
+                     gap med   rate/min   after-BOW L1-to-pro (n)   after-TESLA L1 (n)
+pro anchors (5ag)     3.85       11.7            --                       --
+m18000                4.20       10.6         0.250 (16)               0.419 (27)
+control_s41           4.20       13.5         1.020 (10)               0.619 (31)
+stack1_scratch        4.20       13.5         0.960 (5)                1.000 (10)
+band_s41              4.20       13.1         1.080 (5)                0.771 (14)
+```
+**m18000 is 4x closer to the pro continuation profile than any trained arm** -- the edge that was
+INVISIBLE to per-event regret (§5ae: m18000 reads WORST there) is the largest separation on this
+instrument, and the ordering now matches match strength. That is the missing complement: regret
+measures the instant, this measures the follow-through, and the two instruments disagree in
+exactly the direction the continuation thesis predicts.
+⚠ after-bow n is 5-16 (bows are rare); use >=32 matches for tight after-bow numbers. ⚠ gap medians
+quantize to agent_dt multiples (all read 4.20 = 7 steps); timing carries +/-0.6s granularity.
+
+### Chained-sweep cost probe (P4 option a): the price is 2x search, NOT more
+30 events, m18000, sweep from the state ~1.8s after the chosen action:
+```
+sweep1 111ms mean | sweep2 104ms mean | ratio 0.94x | chained total 215ms/searched decision
+```
+The post-action board is NOT costlier to roll (0.94x). Genuine teacher plans cost ~2.0x search;
+at interval 4 (search ~95% of decision cost) that PROJECTS to ~0.5x training throughput, or
+chain every 8th decision to keep today's speed. Projection labeled; run-level impact untested.
+
+### Graphify doc pass: 5/10 chunks landed (all images), 5 doc chunks in flight
+Third scope bug caught first: 130 of 240 "changed docs" were scratchpad sweep logs -- would have
+burnt 6 subagents. `scratchpad/` + `scratch/` now in .graphifyignore; 245 -> 105 files, 16 -> 10
+chunks. Merge + rebuild happens when the doc chunks land.

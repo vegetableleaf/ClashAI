@@ -110,3 +110,13 @@ DID      band widened per ruling (central 0.389, lane-bow doctrine spots, probe 
          design's premise (_rollout idles our side -- no teacher continuations exist to record).
 NEXT     enable continuation_log on the next training run; build continuation_report.py; probe
          chained-sweep cost for genuine teacher plans; owner may relaunch /gauntlet.
+## L7 — 2026-08-31 09:55 — continuation instrument built; chain cost measured; graphify in flight
+DID      continuation_report.py + 4-ckpt baseline; chained-sweep cost probe (30 events);
+         graphify doc pass dispatched (10 subagents; scratchpad scope bug fixed first).
+FOUND    measured: m18000 after-bow L1-to-pro 0.250 vs trained arms 0.96-1.08 -- the continuation
+         instrument SEES the edge regret missed, ordering matches match strength. measured:
+         chained sweep 0.94x first sweep, total 215ms = 2.0x per searched decision (~0.5x
+         throughput at interval 4, projection). graphify: 5/10 chunks in.
+MEANS    P4 has both its instruments; teacher plans have a measured price; spec next.
+NEXT     L8: merge graphify when doc chunks land; write the PPO run spec; post --questions.
+STATE    5 doc-chunk subagents running. Box otherwise idle.
