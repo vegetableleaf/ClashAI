@@ -129,3 +129,11 @@ NEXT     on approval: generate 3 seed configs from current config.yaml (continua
          distinct checkpoints), launch sequential, report per wave. On modify/reject: revise.
 STATE    box idle. BLOCKED on owner (the goal REQUIRES this stop -- it is the finish line, not a
          guess avoided).
+## L9 — 2026-08-31 12:05 — APPROVED; geometry run launched; ping fixed
+DID      owner approved the spec (a); launched geo chain (3 scratch seeds, 5aj geometry,
+         continuation_log ON, sequential, detached, ~4h); @here -> @vegetable_leaf in
+         gauntlet_report (owner complaint; bare-name caveat noted, needs <@id> for a true ping).
+NEXT     when geo_chain.done: paired reads (re-probe stack1 trio under def-edge 2.0, probe geo
+         trio, corpus regret both views, continuation_report 32 matches), 5am verdict by the
+         pre-committed rule, report. Then the P4 hazard A/B spec on the fresh corpus.
+STATE    running: geo chain s41 (of 3). Owner confirmed: this is an EXPERIMENT, not the long run.
