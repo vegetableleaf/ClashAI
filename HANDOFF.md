@@ -4614,3 +4614,44 @@ burnt 6 agents). The graph now covers code AND docs including all §5x-era secti
 unit; 3 scratch seeds vs the stack1 trio already on disk (identical but for the ruling);
 continuation_log ON as instrumentation; paired instruments with the def-edge re-probe caveat;
 fixed 1500; pre-committed verdict rule. NOT launched.
+
+## §5am — GEOMETRY RUN VERDICT: NOT PASSED (1/3), and two SELF-INFLICTED flaws contaminate it
+
+### The pre-committed read (paired probes, one instrument, def-edge 2.0, all six at m=1500)
+```
+             bows/match   DEFENSIVE in-band     paired delta (5aj vs 5y config, same seed)
+geo_s41        1.33          0/32  (0%)          DOWN vs stack1_s41 38%   <- WALL ARTIFACT
+geo_s42        0.00          no bows at all      DOWN vs stack1_s42 21%   <- volume collapse
+geo_s43        0.71          9/17  (53%)         UP   vs stack1_s43 30%
+```
+Rule was: rises at >=2 of 3 seeds. **Rises at 1 of 3 -> NOT PASSED.** But the verdict is
+contaminated in both directions by implementation flaws found AFTER the read (below), so the
+honest status is: **the lane-spot mechanism is UNTESTED, not refuted; the s43 signal and the s42
+volume collapse are real observations.**
+
+### /!\ FLAW 1 (mine): the lane spot CLIPS INTO THE WALL. geo_s41's bows are ALL at x=0.6 tiles
+I placed the doctrine lane spots at x=0.11 (=1.98 tiles) with the standard 1.5-tile spread. Half
+that Gaussian falls off the board; deploy-clamp folds it into the wall column, and s41 collapsed
+onto the clipped attractor: every bow at x=0.6 tiles, y 23-30 (coordinates verified). The pros'
+modal tile is x=2 -- the spot should be the TILE CENTRE (0.139 = tile 2.5), inside every boundary.
+### /!\ FLAW 2 (mine): three >= 2.0 boundaries pinch the taught spot
+Doctrine 0.11 = 1.98 tiles; probe band requires >=2.0; reward `central` 0.389 cuts at 2.0 exactly
+(|0.11-0.5| = 0.39 > 0.389 -- the reward band EXCLUDES the very spot the prior teaches, leaving it
+lane_frac 0.35). Even un-clipped placements at the taught x misclassify AND under-credit.
+
+### What survives untouched by the flaws
+* **s42's ZERO bows in 24 matches** is behaviour, not classification -- first bow-free arm ever
+  probed. Volume risk under the widened band is real at 1 of 3 seeds.
+* **s43: 53% in-band defensive** (9/17, 1990 dmg mean, 17 kills) -- the best defensive-bow read of
+  any checkpoint, ever.
+* **Guardrails passed**: regret 0.257-0.309 both views (in family, no regression); geo_s41's
+  continuation profile is the closest-to-pro measured ANYWHERE (after-bow L1 0.223 vs m18000's
+  0.250; after-tesla 0.243 vs 0.419), and its 11.9/min rate ~= pro 11.7 -- though follow-ups come
+  fast (dt 1.8s vs pro 5.5s).
+* **38,224 continuation rows banked** (~2x estimate) for the hazard A/B.
+
+### Fix + redo (queued AFTER the parity chain, per the owner-approved order)
+Constants: lane spots 0.11/0.89 -> **0.139/0.861** (tile 2.5, pros' modal column, clear of clamp
+and both band edges); reward `central` 0.389 -> **0.390** (covers tile-2 centres cleanly). Then
+redo = 3 fresh seeds (54-56), same everything else -- ~3h. The s43-vs-stack1_s43 pairing carries
+forward as supporting evidence, never as the verdict.

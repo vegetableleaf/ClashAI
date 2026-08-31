@@ -137,3 +137,13 @@ NEXT     when geo_chain.done: paired reads (re-probe stack1 trio under def-edge 
          trio, corpus regret both views, continuation_report 32 matches), 5am verdict by the
          pre-committed rule, report. Then the P4 hazard A/B spec on the fresh corpus.
 STATE    running: geo chain s41 (of 3). Owner confirmed: this is an EXPERIMENT, not the long run.
+## L10 — 2026-08-31 15:05 — geometry verdict NOT PASSED (1/3) + two self-caught flaws; redo queued
+DID      paired reads (6 probes one instrument, regret x2 views, continuation x3); coordinate
+         falsification check on the anomalous seed; 5am written; redo constants fixed.
+FOUND    measured: s41 bows ALL at x=0.6 tiles = wall-clipped lane spot (my 0.11 placement);
+         s42 zero bows (real volume collapse); s43 53% in-band (best ever). Guardrails passed;
+         geo_s41 continuation profile closest-to-pro ever (L1 0.223). Corpus 38,224 rows.
+MEANS    lane-spot mechanism UNTESTED not refuted; constants fixed (0.139/0.861, central 0.390);
+         redo seeds 54-56 queued after parity.
+NEXT     parity chain grades when done (~tomorrow am); then geometry redo; then hazard A/B.
+STATE    running: parity w12_s51. corpus banked. flaws documented in 5am.

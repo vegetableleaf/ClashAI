@@ -1559,7 +1559,7 @@ class SimMatchEnv:
             # "back-centre" = the CENTER INTERCEPT band behind the bridge (where a Tesla would sit), NOT
             # behind the princess towers. In-band = full credit; DEEPER than the towers = a small fraction
             # (soft shaping: rarely useful, but not punished like a true misplace).
-            central = abs(nx - 0.5) <= 0.389   # OWNER RULING 2026-08-31 (5ag): widen to the
+            central = abs(nx - 0.5) <= 0.390   # 5am: 0.389 excluded tile-2 centres by 0.001   # OWNER RULING 2026-08-31 (5ag): widen to the
             # placements pros use. Top pro tiles are LANE bows at (2,20)/(16,20) -- 2 tiles
             # from the edge -- so the margin is >=2 tiles: |nx-0.5| <= 7/18. Was 0.278 (4 tiles).
             # /!\ was 0.18 (5.76 tiles). Rows 15-18 off-centre bows now fall OUT of band by

@@ -514,8 +514,8 @@ def _doctrine_cells_rules(env, card_id: int) -> Optional[List[Tuple[int, float]]
             _add_spot(w, env, 0.50, 0.66, 5.0, 1.5)          # OWNER BAND centre (5y): tile 21, was (0.48,0.55) = 0.6 tiles behind the bank
             # 5ag/owner 2026-08-31: pros' MODAL defensive bows are LANE bows at (2,20)/(16,20)
             # (250+248 of 1,038 vs 123+111 centre). Sample them at least as often as centre.
-            _add_spot(w, env, 0.11, 0.64, 5.0, 1.5)
-            _add_spot(w, env, 0.89, 0.64, 5.0, 1.5)
+            _add_spot(w, env, 0.139, 0.64, 5.0, 1.5)   # tile 2.5 CENTRE -- 0.11 clipped into the wall (5am)
+            _add_spot(w, env, 0.861, 0.64, 5.0, 1.5)
         elif env._defensive:
             # THE CENTRAL LESSON (DOCTRINE_RESEARCH.md SS3, Hunter CR): NEVER place a mid-map or
             # defensive X-Bow against a deck holding Rocket. His stated chain is: they rocket the
@@ -532,8 +532,8 @@ def _doctrine_cells_rules(env, card_id: int) -> Optional[List[Tuple[int, float]]
             # still be sampled.
             if "rocket" not in _opp_cards(env):
                 _add_spot(w, env, 0.50, 0.66, 4.0, 1.5)      # #56: defensive bow, OWNER BAND centre (5y)
-                _add_spot(w, env, 0.11, 0.64, 4.0, 1.5)  # lane bows (5ag, owner 2026-08-31)
-                _add_spot(w, env, 0.89, 0.64, 4.0, 1.5)
+                _add_spot(w, env, 0.139, 0.64, 4.0, 1.5)  # lane bows, tile 2.5 centre (5am fix)
+                _add_spot(w, env, 0.861, 0.64, 4.0, 1.5)
         else:
             # #53/#47: behind-bridge lock spots. Opposite lane of the enemy's committed mass
             # (the punish rule); EDGE column vs rocket decks so their rocket can't clip tower+bow.
