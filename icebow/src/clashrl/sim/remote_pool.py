@@ -235,6 +235,23 @@ def _worker(conn, n_envs: int, seed0: int, drill_frac=None,
                 # in-place load_state_dict refreshes every searcher in this shard at once --
                 # rebuilding them here would throw away their interval counters and per-env stats.
                 sd, search = msg[1], msg[2]
+                # 5ak residual lead, closed before the parity experiment: assert each broadcast
+                # actually DIFFERS from the last. A frozen fingerprint means the searchers are a
+                # stale teacher -- the exact covariate-shift failure worker-side search exists to
+                # avoid -- and it must be LOUD, not silent. Warning, not crash: training goes on.
+                try:
+                    _fp = float(sum(v.abs().sum().item() for v in sd["model"].values()
+                                    if hasattr(v, "abs")))
+                    if state.get("_last_fp") == _fp:
+                        state["_fp_reps"] = state.get("_fp_reps", 0) + 1
+                        if state["_fp_reps"] in (3, 30, 300):
+                            print("[worker] WARNING: search-net fingerprint UNCHANGED across %d "
+                                  "broadcasts -- stale teacher?" % state["_fp_reps"], flush=True)
+                    else:
+                        state["_fp_reps"] = 0
+                    state["_last_fp"] = _fp
+                except Exception:                              # noqa: BLE001 -- diagnostics only
+                    pass
                 if search is None:
                     conn.send("ok")
                     continue
