@@ -101,7 +101,7 @@ def main():
     # in webhook content does NOT notify -- a real ping needs the numeric <@id> mention;
     # if the owner supplies their Discord user id, put it here.
     if args.questions:
-        text = "@vegetable_leaf **GAUNTLET BLOCKED - waiting on you**\n" + text
+        text = "<@697093319112786000> (@vegetable_leaf) **GAUNTLET BLOCKED - waiting on you**\n" + text
     post(text.strip(), dry=args.dry_run)
 
 
