@@ -147,3 +147,12 @@ MEANS    lane-spot mechanism UNTESTED not refuted; constants fixed (0.139/0.861,
          redo seeds 54-56 queued after parity.
 NEXT     parity chain grades when done (~tomorrow am); then geometry redo; then hazard A/B.
 STATE    running: parity w12_s51. corpus banked. flaws documented in 5am.
+## L11 — 2026-08-31 16:20 — hazard head built + smoked; parity mid-chain; real-run staged
+DID      hazard head wired (model+targets+loss+knob, smoke exit 0); real_run.yaml staged
+         (isolated ckpt, continuation_log ON); PPO_RUN_SPEC addendum committed (gates + launch-
+         on-green + terminal condition = REAL RUN LAUNCH).
+FOUND    parity w12_s51 m=1275+, ZERO fingerprint warnings (assert passing silently).
+NEXT     parity done (~04:30) -> grade pairs -> geometry redo (54-56, ~3h) -> hazard A/B
+         (sized from measured pace) -> REAL RUN. Owner window: tomorrow morning/afternoon.
+STATE    running: parity chain. staged: redo configs implied by fixed constants; hazard smoke cfg;
+         real_run.yaml. gauntlet ends at the real launch.
