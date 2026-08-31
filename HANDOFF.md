@@ -4458,3 +4458,41 @@ Three measured distillation nulls + no reconstructable states (sim-parity drift)
 too thin. Approved uses: placement priors P(tile | card, phase, recent enemy) for doctrine.py's
 exploration prior (replay-visible conditioning only, no board reconstruction), continuation
 statistics for P4, and evaluation anchors (does the pro population place bows in the 5y band?).
+
+## §5ag — GAUNTLET L4: the pro population dataset. Depth of the band VALIDATED, width CONTRADICTED
+
+Crawl complete: **520 battles, 45,335 plays, 24 players** (26 of the 50-player roster had no icebow
+battles in their recent 5 pages — roster attrition, not failure), Hunter and Hubert both in.
+Placement join is **bimodal**: 268 replays join >80%, 251 join <20% — markers exist for roughly
+half the replays (likely an age/payload variant), yielding **12,220 blue plays with tile coords**.
+Frame verified empirically before use: blue's own half is HIGH y (tesla median tile_y exactly 20.0,
+IW 23.5, 99-100% of defensive-card placements at y>16) — same orientation as the engine.
+
+### THE HEADLINE: 1,038 pro x-bow placements vs the §5y band
+```
+IN OWNER BAND (y>=20, 4<=x<=14)      359   35%
+OFFENSIVE (tower-reaching)           178   17%
+NEITHER                              501   48%
+tile_y: median 19.5  p10 19.5  p90 22.5
+top tiles: (16,20) x250   (2,20) x248   (10,22) x123   (8,22) x111
+```
+* **DEPTH: VALIDATED almost exactly.** p10 of pro bow depth is 19.5 — the owner's front (tile 20)
+  sits within half a tile of where pros actually start. Nobody places shallower.
+* **WIDTH: CONTRADICTED.** The two most common pro tiles — (16,20) and (2,20), ~48% of all
+  placements between them — are LANE bows at depth, 2 tiles from the edge, EXCLUDED by the
+  4-tile margin. The owner's ruling to keep `xbow_lane_frac` softening is empirically vindicated:
+  lane bows at depth are the pros' modal defensive placement, not a misplace.
+* ⚠ DECISION FOR THE OWNER (not taken): widen the band to include lane columns at depth
+  (e.g. y>=20 with no width constraint, or a two-region band), or keep centre-only full credit
+  with lane softening. Nothing changed in config/doctrine pending that call.
+
+### Population continuation anchors (P4 targets; §5w's n=1 anchors CONFIRMED at n=24)
+```
+inter-play gap  median 3.85s  mean 5.13  p10 1.55  p90 10.15   (n=23,101; 5w said 3.60)
+play rate       11.7/min                                        (5w said 11.3)
+AFTER X-BOW     next play median 5.5s: knight 20%, tesla 17%, skeletons 17%, log 16%, IW 16%
+AFTER TESLA     next play median 4.2s: skeletons 22%, knight 19%, log 18%, IW 17%
+```
+The deck's premise ("defend the bow") is now a measured distribution: within ~5.5 s a pro follows
+the bow with a bodyguard, second building, or cycle card, at these ratios. These are the empirical
+targets for the P4 teacher-plan record.

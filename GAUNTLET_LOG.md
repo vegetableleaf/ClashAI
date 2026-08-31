@@ -78,3 +78,12 @@ NEXT     L4: crawl summary + pro-placement-vs-band check; defbow seeds land ~04:
          P4 design (teacher plan record in rollout_search) informed by human continuation stats.
 STATE    running: defbow chain (2x1500 scratch), crawl 460/512 replays. done: stack pair,
          corpora, retune. blocked: none.
+## L4 — 2026-08-31 00:45 — population dataset read; band depth validated, width contradicted
+DID      crawl summary + frame verification + 1,038-bow band check + continuation stats.
+FOUND    measured: pro bow depth p10=19.5 (owner front tile 20 = validated); pros' top-2 tiles
+         (16,20)/(2,20) are lane bows EXCLUDED by the 4-tile width margin (48% of placements);
+         5w anchors confirmed at n=24 (gap 3.85s vs 3.60, rate 11.7 vs 11.3/min); after-bow
+         follow-ups quantified (knight 20% @5.5s median). Join bimodal: markers in ~half of replays.
+MEANS    band width is an owner decision now ON EVIDENCE; P4 has empirical targets.
+NEXT     L5: defbow s42/s43 probes when chain lands (~03:30); P4 teacher-plan design doc.
+STATE    running: defbow chain (s42 ~m1000). done: crawl (520 battles / 45,335 plays / 24 players).
