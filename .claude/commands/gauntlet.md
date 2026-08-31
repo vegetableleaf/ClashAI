@@ -99,7 +99,10 @@ Never paste the webhook, a secret, or a wall of raw log. Numbers, not narration.
   hours of box time, and any conflict between the goal and what you have measured.
 - **If you have no questions**, continue: call `ScheduleWakeup` with the same `/gauntlet` prompt to
   fire the next iteration, pacing the delay to what you are waiting on (a training run's ETA, not a
-  fixed tick). Any message from the owner ends the gauntlet.
+  fixed tick). **The gauntlet ends ONLY when the owner explicitly says to end it** (owner rule,
+  2026-08-31 — supersedes the original any-message rule). An owner message that does not say to
+  stop is steering: fold it in — answer questions, apply rulings, adjust course — and continue the
+  loop in the same breath. When in doubt whether a message meant "stop", ask; do not silently halt.
 - Stop the loop outright (`ScheduleWakeup` with `stop: true`) when the goal is achieved, or when
   further loops cannot make progress without the owner.
 
