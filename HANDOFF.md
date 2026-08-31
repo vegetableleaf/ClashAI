@@ -4496,3 +4496,33 @@ AFTER TESLA     next play median 4.2s: skeletons 22%, knight 19%, log 18%, IW 17
 The deck's premise ("defend the bow") is now a measured distribution: within ~5.5 s a pro follows
 the bow with a bodyguard, second building, or cycle card, at these ratios. These are the empirical
 targets for the P4 teacher-plan record.
+
+## §5ah — GAUNTLET L5: SCRATCH-DEFENSIVE-BOW CONFIRMED AT 3 SEEDS; P4 design committed
+
+### The 3-seed verdict (xbow_probe, 24 matches each, all checkpoints m=1500, one instrument)
+```
+                 defensive bows      def-bow unit dmg (upper bound)
+stack1_s41         3/8   (38%)          1505 mean   (measured L3)
+stack1_s42         3/14  (21%)          3313 mean, 24 targets died   (this loop)
+stack1_s43         3/10  (30%)          2492 mean   (this loop)
+pooled             9/32  (28%)
+every warm-started checkpoint ever probed: 0/192   (5 ckpts x 178 + band_s41 x 14)
+```
+**CONFIRMED: from-scratch training under the §5y-retuned doctrine produces in-band defensive
+x-bows at every seed; warm-starting from m18000 has produced zero, everywhere, always.** The §5ae
+"placement-prior-alone FAILED" verdict is REFINED, not reversed: the prior teaches the band —
+m18000's frozen placement habits block it. The defensive bows WORK when placed (1.5-3.3k unit
+damage as a second pull).
+
+### What this does NOT establish
+Scratch arms are far worse match players overall: offensive locks 0-25% (warm-started: 58-84%),
+dead-zone 21-50%, bow volume 0.42-0.58/match vs the pro 3.55. The finding is narrow and about the
+PRIOR's teachability, not about scratch arms being good. The open question it sharpens: how to get
+band placements WITHOUT forfeiting the warm start — candidates (all untested): longer scratch runs,
+warm-start with cell-head reset, or prior-weighted fine-tuning.
+
+### P4 design committed
+`research/P4_CONTINUATIONS_DESIGN.md`: teacher plan record from the winning rollout branch
+(near-zero cost), hazard-first loss ordering, pro population distributions as EVALUATION anchors
+never gradient, pre-committed gates, explicit does-NOT-do list. First implementation step is pure
+logging (no training change) — ready for the owner's go-ahead.

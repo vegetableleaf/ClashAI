@@ -87,3 +87,12 @@ FOUND    measured: pro bow depth p10=19.5 (owner front tile 20 = validated); pro
 MEANS    band width is an owner decision now ON EVIDENCE; P4 has empirical targets.
 NEXT     L5: defbow s42/s43 probes when chain lands (~03:30); P4 teacher-plan design doc.
 STATE    running: defbow chain (s42 ~m1000). done: crawl (520 battles / 45,335 plays / 24 players).
+## L5 — 2026-08-31 03:05 — scratch-defensive-bow CONFIRMED (3 seeds); P4 designed
+DID      probed s42+s43 (s41 from L3); wrote P4_CONTINUATIONS_DESIGN.md; verdict into 5ah.
+FOUND    measured: defensive bows at ALL 3 scratch seeds (3/8, 3/14, 3/10 = 28% pooled) vs
+         0/192 across every warm-started checkpoint. 5ae refined: the prior teaches, the
+         warm start blocks. Scratch arms otherwise weak (locks 0-25%, volume 0.42-0.58/m).
+MEANS    the band+prior mechanism is real; the blocker is warm-start inertia. P4 ready to build.
+NEXT     L6 (owner gates): band-width ruling (5ag), P4 step-1 go-ahead (pure logging), then
+         warm-start-vs-band experiment design.
+STATE    box idle. pending owner: band width, P4 go. crawl + corpora + 3 scratch seeds banked.
