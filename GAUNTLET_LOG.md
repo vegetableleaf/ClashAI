@@ -64,3 +64,17 @@ NEXT     L3 when stack chain lands (~7h): grade both on corpus + probe + drills.
          plans) become the sole frontier.
 STATE    running: stack chain (2x scratch, ~7h). corpora: regret_corpus/ (oracle),
          regret_corpus_belief/. usage note: owner 99% til Tue -- single report per loop.
+## L3 — 2026-08-31 00:55 — stack2 null-negative; placement data found; crawl near done
+DID      graded stack2 both corpora + probe (after catching the cross-width config trap);
+         launched defbow confirmation (stack1 cfg, seeds 42/43, detached); built + ran the
+         population crawl with placement-aware parser (3 login bugs fixed, token persisted).
+FOUND    measured: stack2 regret WORSE both views (.296/.286 vs stack1 .237/.242) at a 4x
+         throughput tax -> canvas_stack dead at this budget; P4 continuations sole frontier.
+         measured: RoyaleAPI .marker elements carry data-x/y (1000 units/tile), 104/109 join
+         -> 5w corrected, owner's placement claim vindicated. measured: scratch arms produce
+         defensive bows (3/8, 1/4), warm-started arms never do.
+MEANS    roadmap collapsed to one frontier with a fresh human dataset aimed exactly at it.
+NEXT     L4: crawl summary + pro-placement-vs-band check; defbow seeds land ~04:30; then
+         P4 design (teacher plan record in rollout_search) informed by human continuation stats.
+STATE    running: defbow chain (2x1500 scratch), crawl 460/512 replays. done: stack pair,
+         corpora, retune. blocked: none.

@@ -4416,3 +4416,45 @@ Both FROM SCRATCH (stack 2 changes input width, warm-start impossible; scratch-v
 the §4a confound), same seed 41, retuned config, 1500 matches, sequential
 (`data/bench/stack{1,2}_run.log`). Read tomorrow: paired regret on both corpora + xbow_probe +
 drills. NOTE stack1-scratch also gives the first scratch-vs-warmstart regret comparison for free.
+
+## §5af — GAUNTLET L3: canvas_stack 2 is NULL-NEGATIVE at 1500 matches; placement data EXISTS on RoyaleAPI
+
+### canvas_stack 1 vs 2 (paired: same seed 41, same retuned config, both scratch, both m=1500)
+```
+                 oracle regret   belief regret   top-1   missed-play%   bows/m   bow<5s death
+stack1 (1 slice)    0.2368          0.2417        21%       64%          0.33        12%
+stack2 (motion)     0.2961          0.2859        26%       57%          0.17        75%
+```
+Pre-committed call (§5ae): **NULL, leaning negative** -- stack2 is worse on mean regret in both
+views. Faint counter-signal in the decision RATIOS (missed-play 57 vs 64%, worse-than-WAIT 19-21
+vs 23%) recorded, not weighted: n=1 seed, and it does not survive the mean. Combined with the
+MEASURED 4x throughput tax (957 -> ~300 matches/h), canvas_stack 2 is dead at this budget.
+**Continuation teaching (P4) is the sole frontier.** ⚠ 1500 scratch matches is a small budget;
+"dead at this budget" is the claim, not "temporal information is worthless".
+/!\ INSTRUMENT TRAP FOUND: grading a stack-2 checkpoint under a stack-1 config silently skips
+`features.0.weight` (random first layer) and RUNS ANYWAY. The regrade asserts zero carry-over
+warnings. Any cross-width eval must pass the checkpoint's own --config.
+
+### The scratch-defensive-bow phenomenon REPRODUCED (weakly) and is being confirmed
+stack1 3/8 bows in-band, stack2 1/4 -- both scratch arms produce defensive bows; every
+warm-started arm ever probed has ZERO. Confirmation chain launched: stack1 config, seeds 42+43,
+sequential, detached (data/bench/defbow_chain.sh, .done marker on completion).
+
+### /!\ §5w CORRECTION: RoyaleAPI DOES ship placement. The owner was right; the export was blind.
+The replay payload carries a `.marker` element set -- `data-x`/`data-y` in game units (1000/tile,
+x 0-18000, y 0-32000) -- that the stock scraper never parsed. Probe-verified on Hubert replay
+02GY9GQLLQ2Y: 104/109 plays join to tile-precision placements on (tick, card, occurrence). §5w's
+"THERE IS NO PLACEMENT DATA" is CONTRADICTED for the source; it was true only of that export.
+
+### Population crawl RUNNING (owner-directed): top-50 icebow + Hubert first, Hunter ON ROSTER
+`clash-replay-scraper/crawl_icebow.py` (new driver): 50 players, 5 pages each, extended parser
+keeps every data-* attr + tile_x/tile_y. Session token persisted (3 logins were burned by two
+driver bugs, both fixed: save-token-before-verify; per-player completion marks after
+pipeline.battles' fan-out checkpointed a 1-player partial as final). At L3 close: 460/512
+replays. Output: icebow/data/royaleapi/crawl2/ (gitignored).
+
+### Owner ruling on replay-data use (asked before bed): NOT BC pretraining
+Three measured distillation nulls + no reconstructable states (sim-parity drift) + 50-75k plays
+too thin. Approved uses: placement priors P(tile | card, phase, recent enemy) for doctrine.py's
+exploration prior (replay-visible conditioning only, no board reconstruction), continuation
+statistics for P4, and evaluation anchors (does the pro population place bows in the 5y band?).
