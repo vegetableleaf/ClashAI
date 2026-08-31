@@ -201,6 +201,12 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             self.value = nn.Linear(self.policy.embed_dim, 1)   # V(s) for GAE -- MATCH steps
             # second critic, used only for drill steps when ppo_value_head_split is on
             self.value_d = nn.Linear(self.policy.embed_dim, 1)
+            # P4 HAZARD HEAD (owner go 2026-08-31): time-to-next-own-play, 7 log-spaced bins of
+            # agent_dt steps (1, 2, 3-4, 5-8, 9-16, 17-32, >32/censored). Inert at
+            # train.hazard_coef 0.0 -- the loss is never computed -- but its PRESENCE consumes
+            # init RNG, so new-code runs are not bit-comparable to pre-head runs even at 0.
+            # A/B arms must both run THIS code.
+            self.hazard = nn.Linear(self.policy.embed_dim, 7)
 
         def forward(self, x, hand, nxt=None, elx=None, thr=None):
             z, cards, cells = self.policy.forward_parts(x, hand, nxt, elx, thr)
@@ -216,7 +222,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             v_in = z.detach() if value_detach else z
             v_m = self.value(v_in).squeeze(-1)
             v_d = self.value_d(v_in).squeeze(-1) if value_head_split else v_m
-            return cards, cells, self.gate(z), v_m, v_d
+            return cards, cells, self.gate(z), v_m, v_d, self.hazard(z)
 
     net = PPONet().to(device)
 
@@ -295,6 +301,9 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
               f"{bank_floor:.0f} elixir up, so the bar can actually reach them")
 
     ppo_path = cfg.path(cfg.get("train", "sim_ppo_checkpoint", default="data/policy_sim_ppo.pt"))
+    hazard_coef = float(cfg.get("train", "hazard_coef", default=0.0))
+    if hazard_coef > 0.0:
+        print("[train-sim-ppo] HAZARD HEAD ON: coef %.3f, 7 log-spaced dt bins" % hazard_coef)
     # P4 step 1: hindsight continuation logging (JSONL). Empty = OFF (provably zero change).
     cont_log = str(cfg.get("train", "continuation_log", default="") or "")
     if cont_log:
@@ -649,7 +658,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         pk_codes = pocket_now()
         pk_t = torch.tensor(pk_codes, dtype=torch.long, device=device)
         with torch.no_grad():
-            cq, ceq, gq, val_m, val_d = net(obs_t, hand_t,
+            cq, ceq, gq, val_m, val_d, _hz = net(obs_t, hand_t,
                                             torch.stack([to_vec_t(n) for n in nxt_b]),
                                             elx_t, torch.stack([to_vec_t(t) for t in thr_b]))
             val = val_m
@@ -866,7 +875,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         hand_t = torch.stack([to_vec_t(h) for h in hand_b])
         elx_t = torch.stack([to_vec_t(e) for e in elx_b])
         with torch.no_grad():
-            cq, ceq, gq, _, _ = net(obs_t, hand_t, torch.stack([to_vec_t(n) for n in nxt_b]),
+            cq, ceq, gq, _, _, _ = net(obs_t, hand_t, torch.stack([to_vec_t(n) for n in nxt_b]),
                                  elx_t, torch.stack([to_vec_t(t) for t in thr_b]))
         cq_m, _, gq_m, playable = masked_logits(cq, ceq, gq, hand_t, elx_t)
         # THE SAME CARD VETO THE SAMPLER APPLIES. Without this the benchmark grades a policy that
@@ -1161,6 +1170,27 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         cell_f = torch.tensor([a[2] for a in flat("act")], device=device)
         sil_f = (torch.tensor(flat("sil"), dtype=torch.float32, device=device)
                  if roll.get("sil") else torch.zeros(N, device=device))
+        # P4 hazard targets: per flattened step, dt (in agent steps) to the SAME env's next
+        # PLAY, binned log-spaced; episode boundaries respected; censored (no next play before
+        # horizon/episode end) -> last bin. Built from the same buffers continuation_log reads.
+        if hazard_coef > 0.0:
+            import bisect as _bisect
+            _T = len(roll["act"]); _K = len(roll["act"][0]) if _T else 0
+            _edges = [1, 2, 4, 8, 16, 32]          # bin upper bounds in steps; bin 6 = beyond
+            _hz_tgt = [[6] * _K for _ in range(_T)]
+            for _i in range(_K):
+                _nextp = 10 ** 9
+                for _t in range(_T - 1, -1, -1):
+                    if roll["done"][_t][_i] > 0.5:
+                        _nextp = 10 ** 9           # a new episode starts ABOVE this row
+                    _dt = _nextp - _t
+                    _hz_tgt[_t][_i] = _bisect.bisect_left(_edges, _dt) if _dt <= 32 else 6
+                    if roll["act"][_t][_i][0] == 1:
+                        _nextp = _t
+            hz_f = torch.tensor([b for row in _hz_tgt for b in row], dtype=torch.long,
+                                device=device)
+        else:
+            hz_f = None
         srch_f = (torch.tensor(flat("srch"), dtype=torch.float32, device=device)
                   if roll.get("srch") else torch.zeros(N, device=device))
         obs_f, hand_f = flat("obs"), flat("hand")
@@ -1193,7 +1223,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 obs_t = torch.stack([to_obs_t(obs_f[i]) for i in mb])
                 hand_t = torch.stack([to_vec_t(hand_f[i]) for i in mb])
                 elx_t = torch.stack([to_vec_t(elx_f[i]) for i in mb])
-                cq, ceq, gq, val_m, val_d = net(obs_t, hand_t,
+                cq, ceq, gq, val_m, val_d, hz_q = net(obs_t, hand_t,
                                                 torch.stack([to_vec_t(nxt_f[i]) for i in mb]),
                                                 elx_t,
                                                 torch.stack([to_vec_t(thr_f[i]) for i in mb]))
@@ -1475,7 +1505,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                         _dj = np.random.choice(_dst["n"], size=_dk, replace=False)
                         _dhand = torch.as_tensor(_dst["hand"][_dj], device=device)
                         _delx = torch.as_tensor(_dst["elx"][_dj], device=device)
-                        _dcq, _dceq, _dgq, _, _ = net(
+                        _dcq, _dceq, _dgq, _, _, _ = net(
                             torch.as_tensor(_dst["obs"][_dj], device=device)
                                  .float().permute(0, 3, 1, 2) / 255.0,
                             _dhand,
@@ -1572,6 +1602,11 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                                      100.0 * _sstat["changed"] / max(1, _sstat["searched"]),
                                      _sstat["loss"] / _sstat["nl"],
                                      100.0 * _sstat["kept"] / max(1, _sstat["seen"])), flush=True)
+                # P4 HAZARD LOSS -- supervised, so OUTSIDE the value warmup for the same reason
+                # as the search CE above. Plain CE on binned time-to-next-play; grading by
+                # accuracy is forbidden (always-WAIT floor); the A/B is judged on the corpora.
+                if hazard_coef > 0.0 and hz_f is not None:
+                    loss = loss + hazard_coef * F.cross_entropy(hz_q, hz_f[mb_t])
                 opt.zero_grad(); loss.backward()
                 # IS THE GATE STARVED OF GRADIENT? Measured, a play's log-prob moves +-61% on the
                 # CELL head per update while the GATE moves +-0.2% -- 250x. Clipping does not cause
@@ -2045,7 +2080,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                           f"(winrate ema {_curr['wr_ema']:.0f}%, window {wr_now:.0f}%)")
             with torch.no_grad():                              # bootstrap values for the final states
                 net.eval()
-                _, _, _, bv_m, bv_d = net(torch.stack([to_obs_t(o) for o in cobs]),
+                _, _, _, bv_m, bv_d, _ = net(torch.stack([to_obs_t(o) for o in cobs]),
                                           torch.stack([to_vec_t(h) for h in chand]),
                                           torch.stack([to_vec_t(n) for n in cnxt]),
                                           torch.stack([to_vec_t(e) for e in celx]),
