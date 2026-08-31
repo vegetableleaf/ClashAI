@@ -80,6 +80,35 @@ def compute_gae(rew, val, done, boot, gamma: float, lam: float, trunc=None):
     return adv, ret
 
 
+def _log_continuations(roll, K, agent_dt, path):
+    """P4 step 1 (design doc 1b, owner go 2026-08-31): HINDSIGHT continuation rows from a
+    finished horizon buffer. Pure logging -- reads the buffers, writes JSONL, changes nothing.
+    For every PLAY decision, the next play by the SAME env within the horizon (dt in seconds),
+    with searched flags for both. `trunc` marks pairs cut by the horizon/episode boundary, so
+    the hazard loss can treat them as censored rather than "no next play".
+    """
+    import json as _json
+    T = len(roll["act"])
+    rows = []
+    for i in range(K):
+        plays = [(t, roll["act"][t][i], roll["srch"][t][i]) for t in range(T)
+                 if roll["act"][t][i][0] == 1]
+        ends = {t for t in range(T) if roll["done"][t][i] > 0.5}
+        for j, (t, a, sr) in enumerate(plays):
+            nxt = next(((t2, a2, s2) for (t2, a2, s2) in plays[j + 1:]
+                        if not any(t <= e < t2 for e in ends)), None)
+            rows.append({"t": t, "card": int(a[1]), "cell": int(a[2]), "srch": float(sr),
+                         "dt": (None if nxt is None else round((nxt[0] - t) * agent_dt, 2)),
+                         "next_card": (None if nxt is None else int(nxt[1][1])),
+                         "next_cell": (None if nxt is None else int(nxt[1][2])),
+                         "next_srch": (None if nxt is None else float(nxt[2])),
+                         "trunc": nxt is None})
+    if rows:
+        with open(path, "a", encoding="utf-8") as f:
+            for r in rows:
+                f.write(_json.dumps(r) + chr(10))
+
+
 def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, envs=None,
                   init: str | None = None, device: str | None = None,
                   reset_gate: bool = False, workers: int = 0,
@@ -266,6 +295,11 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
               f"{bank_floor:.0f} elixir up, so the bar can actually reach them")
 
     ppo_path = cfg.path(cfg.get("train", "sim_ppo_checkpoint", default="data/policy_sim_ppo.pt"))
+    # P4 step 1: hindsight continuation logging (JSONL). Empty = OFF (provably zero change).
+    cont_log = str(cfg.get("train", "continuation_log", default="") or "")
+    if cont_log:
+        cont_log = str(cfg.path(cont_log))
+        print("[train-sim-ppo] continuation log ON -> %s" % cont_log)
     resumed_best_wr = -1.0
     warm_loaded = False
     # RESUME only into a MATCHING architecture. Flipping observation.use_detector_canvas changes the
@@ -2026,6 +2060,12 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                     bv = torch.where(_bsel > 0.5, bv_d, bv_m)
             roll["boot"] = bv.cpu().numpy().astype(np.float32)
             roll["val"] = [np.asarray(v, np.float32) for v in roll["val"]]
+            if cont_log:
+                try:
+                    _log_continuations(roll, K, float(cfg.get("sim", "agent_dt", default=0.6)),
+                                       cont_log)
+                except Exception as _e:                        # noqa: BLE001 -- logging must never kill training
+                    print("[train-sim-ppo] continuation log failed: %s" % type(_e).__name__)
             stats = ppo_update(roll)
     except KeyboardInterrupt:
         pass

@@ -4544,3 +4544,28 @@ tornado   n=979   BIMODAL: king-pull cluster (8,24)(10,24)(8,26) + mid clump clu
 These are evaluation anchors (and candidate prior updates, owner-gated). With §5ag/§5ah this
 completes the goal's four focus areas with population evidence: spells (validated + one refinement),
 defense (continuation targets), x-bow use (band evidence), defending the bow (follow-up ratios).
+
+## §5aj — OWNER RULINGS EXECUTED: band widened to pro placements; P4 step 1 shipped (+ a design correction)
+
+### Band widened (owner, 2026-08-31: "encompass the placements pros use")
+`env.py` central 0.278 -> **0.389** (>=2 tiles from each edge -- pro modal tiles are lane bows at
+x=2/16, §5ag); `doctrine.py` gains the pros' lane-bow spots **(0.11, 0.64) and (0.89, 0.64)** at
+centre-spot weight in BOTH defensive branches (lane bows outnumber centre bows 498 vs 234 in the
+population); probe `--def-edge` default 4.0 -> 2.0. Depth unchanged (validated, §5ag). Applied
+with nothing training; env constructs and steps.
+
+### /!\ P4 DESIGN CORRECTION: the teacher has NO continuations to record
+`_rollout` (rollout_search.py:308) IDLES OUR SIDE for the whole horizon. The searcher that lifted
+37% -> 85.7% scores every action followed by 12 s of DOING NOTHING -- there is no winning-branch
+continuation to log, and the design doc's §1 premise was wrong (corrected in the doc, loudly).
+This SHARPENS the diagnosis: even a single action + passivity beats the policy, and continuations
+were never modelled anywhere. Replacements: (a) chained sweeps (genuine teacher plans, ~2x search
+cost, needs a cost probe); (b) hindsight continuations from the training stream -- implemented.
+
+### P4 step 1 SHIPPED: hindsight continuation logging (pure logging, zero training change)
+`train.continuation_log: <path>` (default "" = OFF, provably no change). At each PPO update the
+finished horizon buffers emit one JSONL row per play: card/cell/searched-flag, dt to the SAME
+env's next play, next card/cell/flag, `trunc` marking horizon/episode censoring (hazard loss
+treats censored, not "no next play"). Episode boundaries respected via roll["done"].
+Smoke-verified: 4 matches -> 42 well-formed rows. Next: enable on the next real training run to
+accumulate the corpus; `continuation_report.py` eval is step 2 (design doc §6).

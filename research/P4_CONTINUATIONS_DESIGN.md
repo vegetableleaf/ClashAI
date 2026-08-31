@@ -7,10 +7,23 @@ belief-view control); three repair families failed (restraint_hold §5j/§5ad, b
 placement-prior-alone §5ae); canvas_stack-2 is null-negative at a 4x cost (§5af). What has never
 been taught is what the search teacher actually knows: **what happens after the action.**
 
-## 1. The teacher plan record (rollout_search addition)
+## 1. The teacher plan record — CORRECTED 2026-08-31
 
-At every searched decision, the winning candidate's rollout already SIMULATES the next 12 s —
-today only its scalar score survives. Record the plan instead:
+/!\ THE ORIGINAL PREMISE HERE WAS WRONG. `_rollout` (rollout_search.py:308) IDLES OUR SIDE for
+the whole horizon — "idle our side / run theirs". The teacher never simulates its own follow-up
+plays, so there is no "winning branch continuation" to record. (Corollary worth its own line:
+the searcher that lifted 37->85.7% scores every action followed by 12 s of DOING NOTHING — its
+edge is pure single-action consequence, which makes the missing-continuation diagnosis sharper.)
+
+Two replacement mechanisms:
+(a) CHAINED SWEEPS — after picking the winner, re-search from the post-action state at +dt to
+    synthesize a plan. Genuine teacher continuations; ~2x search cost; needs a cost probe before
+    any training use.
+(b) HINDSIGHT CONTINUATIONS — log what the policy+search actually EXECUTED next in the training
+    stream. Free, on-policy, no behavior change. IMPLEMENTED as step 1 (continuation_log knob in
+    train_sim_ppo; JSONL rows emitted from the finished horizon buffers).
+
+The record (per searched play decision):
 
 ```
 plan = {

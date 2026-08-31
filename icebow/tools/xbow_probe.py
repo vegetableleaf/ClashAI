@@ -17,7 +17,8 @@ OFFENSIVE is DERIVED FROM REACH, not a hand-drawn band: the x-bow can reach an e
 tower from where it stands.
 
 DEFENSIVE is the owner's BACK-CENTRAL band: at least `--def-behind` tiles behind OUR SIDE'S RIVER
-EDGE and at least `--def-edge` tiles from the left AND right map edges. Defaults 3.0 and 4.0.
+EDGE and at least `--def-edge` tiles from the left AND right map edges. Defaults 3.0 and 2.0
+(edge margin WIDENED from 4.0 by owner ruling 2026-08-31: pro modal tiles are lane bows at x=2/16, 5ag).
 The river is 2 tiles wide (_RIVER_HALF = 1.0), so our bank is tile 17 (y = 0.53125) and the band
 starts at **tile 20, y = 0.625** -- measured from the BANK, not the centre line (owner, 2026-08-29).
 
@@ -195,7 +196,7 @@ def main():
     ap.add_argument("--config", default=None)
     ap.add_argument("--def-behind", type=float, default=3.0,
                     help="tiles behind the RIVER CENTRE LINE for the defensive band")
-    ap.add_argument("--def-edge", type=float, default=4.0,
+    ap.add_argument("--def-edge", type=float, default=2.0,
                     help="minimum tiles from the left AND right map edges")
     args = ap.parse_args()
     ctrl = pathlib.Path(args.config) if args.config else (ROOT / "data" / "ab" / "control.yaml")

@@ -1559,7 +1559,9 @@ class SimMatchEnv:
             # "back-centre" = the CENTER INTERCEPT band behind the bridge (where a Tesla would sit), NOT
             # behind the princess towers. In-band = full credit; DEEPER than the towers = a small fraction
             # (soft shaping: rarely useful, but not punished like a true misplace).
-            central = abs(nx - 0.5) <= 0.278   # OWNER BAND (5y): >=4 tiles from each edge = 5/18.
+            central = abs(nx - 0.5) <= 0.389   # OWNER RULING 2026-08-31 (5ag): widen to the
+            # placements pros use. Top pro tiles are LANE bows at (2,20)/(16,20) -- 2 tiles
+            # from the edge -- so the margin is >=2 tiles: |nx-0.5| <= 7/18. Was 0.278 (4 tiles).
             # /!\ was 0.18 (5.76 tiles). Rows 15-18 off-centre bows now fall OUT of band by
             # DEPTH (front 0.625) rather than by width -- the 32/32 lane-bow tax (xbow_lane_frac)
             # reverts for them; owner-flagged in the L1 report, revisit if bow volume drops.

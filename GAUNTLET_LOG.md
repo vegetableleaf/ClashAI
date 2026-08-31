@@ -104,3 +104,9 @@ FOUND    measured: log 99% own-half lane modes (doctrine validated); rocket mode
 MEANS    all four goal focus areas now carry population evidence.
 NEXT     owner rulings (band width; P4 step-1). Then P4 logging build.
 STATE    box idle; holding.
+## post-gauntlet — 2026-08-31 08:20 — owner rulings executed (gauntlet ended by owner reply)
+DID      band widened per ruling (central 0.389, lane-bow doctrine spots, probe default);
+         P4 step 1 shipped (continuation_log knob, smoke-verified 42 rows) after correcting the
+         design's premise (_rollout idles our side -- no teacher continuations exist to record).
+NEXT     enable continuation_log on the next training run; build continuation_report.py; probe
+         chained-sweep cost for genuine teacher plans; owner may relaunch /gauntlet.
