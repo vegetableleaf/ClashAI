@@ -4602,3 +4602,15 @@ chain every 8th decision to keep today's speed. Projection labeled; run-level im
 Third scope bug caught first: 130 of 240 "changed docs" were scratchpad sweep logs -- would have
 burnt 6 subagents. `scratchpad/` + `scratch/` now in .graphifyignore; 245 -> 105 files, 16 -> 10
 chunks. Merge + rebuild happens when the doc chunks land.
+
+## §5al — GAUNTLET L8: graphify current (12,018 nodes); PPO run spec posted for approval
+
+Graphify doc pass done: 10 subagent chunks (all validated by their agents, zero requeued),
+merged + AST + clustered -> **12,018 nodes / 22,230 edges / 633 communities**; 105 semantic files
+stamped; scratchpad/scratch permanently excluded (third scope bug -- 130 sweep logs would have
+burnt 6 agents). The graph now covers code AND docs including all §5x-era sections.
+
+`research/PPO_RUN_SPEC.md` posted with --questions. One change = the §5aj geometry ruling as a
+unit; 3 scratch seeds vs the stack1 trio already on disk (identical but for the ruling);
+continuation_log ON as instrumentation; paired instruments with the def-edge re-probe caveat;
+fixed 1500; pre-committed verdict rule. NOT launched.

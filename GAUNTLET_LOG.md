@@ -120,3 +120,12 @@ FOUND    measured: m18000 after-bow L1-to-pro 0.250 vs trained arms 0.96-1.08 --
 MEANS    P4 has both its instruments; teacher plans have a measured price; spec next.
 NEXT     L8: merge graphify when doc chunks land; write the PPO run spec; post --questions.
 STATE    5 doc-chunk subagents running. Box otherwise idle.
+## L8 — 2026-08-31 11:10 — graphify merged; PPO spec posted with --questions; BLOCKED on owner
+DID      merged 10 chunks + AST + cluster (12,018n/22,230e/633c, manifest stamped, temps cleaned);
+         wrote research/PPO_RUN_SPEC.md; posted --questions.
+FOUND    all goal items 1-3 done (continuation instrument 5ak, chain cost 5ak, graphify here).
+MEANS    goal item 4 delivered as a spec; launch gated on owner approval per the goal's own terms.
+NEXT     on approval: generate 3 seed configs from current config.yaml (continuation_log ON,
+         distinct checkpoints), launch sequential, report per wave. On modify/reject: revise.
+STATE    box idle. BLOCKED on owner (the goal REQUIRES this stop -- it is the finish line, not a
+         guess avoided).
