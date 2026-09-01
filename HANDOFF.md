@@ -4688,3 +4688,34 @@ warnings across all three w12 runs -- the 5ak flat-CE residual lead is retired (
 every update; the L2-era 6x gap was seed variance, as the equal-drift check said).
 NO throughput numbers from this chain (contended box: reads + owner apps). 5 of 6 runs also
 survived a session restart mid-chain (nohup isolation working as designed).
+
+## §5ao — GEOMETRY REDO: CLEAN FAIL (0/3). Lane spots reverted; centre-only widened band stands
+
+Redo with the §5am wall-clip fix (lane spots 0.139/0.861 = tile 2.5 centres, `central` 0.390),
+3 scratch seeds 54-56, m=1500, probed vs the stack1 trio under the same def-edge:
+```
+                DEFENSIVE in-band     stack1 baseline (same seed slot)
+geo2_s54          1/3   (33%, n=3)      stack1_scratch 38%
+geo2_s55          2/19  (11%)           stack1_s42     21%
+geo2_s56          1/10  (10%)           stack1_s43     30%
+```
+Rule (§5am): in-band rate rises at >=2 of 3 seeds. **Rose at 0 of 3** -- s55/s56 BELOW baseline,
+s54 is 1 bow of 3 (noise). s56 dead-zone 80%. The wall-clip fix worked mechanically (no x=0.6
+pile this time), so this is a CLEAN fail, not an implementation flaw -> spec fail-clean branch.
+
+**FINDING: the doctrine placement prior cannot teach in-band lane bows.** Third confirmation that
+placement priors alone don't move behaviour (§5ae placement-prior-alone, §5am clipped, §5ao clean).
+Pros place lane bows; sampling those tiles in exploration does not make the policy imitate them.
+Points at the same continuation deficit the hazard head targets.
+
+**ACTION: lane spots (0.139/0.861) REVERTED in doctrine.py, both branches. RETAINED: widened
+`central` 0.390 in env.py** -- the reward still CREDITS a pro lane bow, it just no longer SAMPLES
+one in exploration. The real run proceeds on this centre-only widened band, scratch.
+
+### /!\ PROCESS NOTES (two, both mine)
+* The emulator (crosvm, 11 procs) had autostarted ~17:00 and stole ~30% throughput through the
+  parity chain AND the whole redo -- the real cause of the redo overrun (~40 min crash + ~90 min
+  contention), NOT the "optimism" I first claimed. Killed on owner's OK. Measure contention before
+  attributing a slowdown.
+* I killed the emulator while s56 was at m=1100 and only checked chain state AFTER -- it had
+  finished exit 0 ~1 min prior, so nothing was lost, but record-before-kill was cut too close.
