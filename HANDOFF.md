@@ -4672,3 +4672,19 @@ Constants: lane spots 0.11/0.89 -> **0.139/0.861** (tile 2.5, pros' modal column
 and both band edges); reward `central` 0.389 -> **0.390** (covers tile-2 centres cleanly). Then
 redo = 3 fresh seeds (54-56), same everything else -- ~3h. The s43-vs-stack1_s43 pairing carries
 forward as supporting evidence, never as the verdict.
+
+## §5an — PARITY CLEARED: workers-12 carries the real run
+
+3 seed-pairs, 1500 matches each, identical config, graded paired on both frozen corpora:
+```
+w12 - w0 regret    oracle     belief
+s51                -0.025     -0.019
+s52                +0.017     +0.023
+s53                -0.018     -0.038
+```
+**All |deltas| 0.017-0.038 (inside same-config seed spread), signs MIXED -> no systematic path
+effect. Gate 1 PASSED: the real run gets workers 12 and its 1.83x.** Fingerprint assert: 0
+warnings across all three w12 runs -- the 5ak flat-CE residual lead is retired (broadcasts change
+every update; the L2-era 6x gap was seed variance, as the equal-drift check said).
+NO throughput numbers from this chain (contended box: reads + owner apps). 5 of 6 runs also
+survived a session restart mid-chain (nohup isolation working as designed).
