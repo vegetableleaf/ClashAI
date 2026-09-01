@@ -174,3 +174,6 @@ STATE    running: geo2 s54. cleared: gate 1 (workers 12). confirmed: scratch, 40
 - Box: 2.2 GB available; owner desktop holds ~11 GB (reported, not touched).
 - Process: emulator autostart (~30% throughput theft) was the real redo-overrun cause; killed on OK.
 - Discord: launch report posted with ping. STOP: gauntlet ends at this launch per owner rule.
+- 18:15 OWNER OVERRIDE (post-terminal): hazard head IN. Run killed at m=400 (state recorded),
+  no-hazard artifacts archived, ckpt path verified empty, RELAUNCHED 18:18 coef 0.5 (banner
+  verified), watchdog+gates re-armed, launch-epoch marker added for pace. §5aq.

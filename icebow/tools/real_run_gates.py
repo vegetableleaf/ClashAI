@@ -108,7 +108,13 @@ def main() -> None:
         # sustained regression = regret rose at TWO consecutive reads (needs 3 points)
         vals = [v for _, v in hist if v is not None]
         regress = len(vals) >= 3 and vals[-1] > vals[-2] > vals[-3]
-        hrs = max((time.time() - os.path.getctime(LOG)) / 3600.0, 1e-6)
+        # launch epoch from the launcher's marker, not the log's ctime: Windows "tunnels" a recreated
+        # file's creation time from its deleted namesake, which would understate hours since launch
+        try:
+            t0 = float(open(os.path.join(ROOT, r"data\bench\real_run_20260901.launched"), encoding="utf-8").read().strip())
+        except Exception:                                    # noqa: BLE001
+            t0 = os.path.getctime(LOG)
+        hrs = max((time.time() - t0) / 3600.0, 1e-6)
         pace = k / hrs
         text = ("**REAL RUN instrument gate m=%d** (snapshot data/bench/real_m%dk.pt)\n"
                 "**Pace (measured since launch)** %.0f matches/hr -> 40k ETA ~%.1f h from launch (%.1f h remaining)\n"

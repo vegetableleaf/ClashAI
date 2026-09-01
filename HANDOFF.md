@@ -4797,3 +4797,35 @@ state a wait-count floor in advance. Seeds 62/63 waited 39-79 -> s61 was an outl
 ### What this does NOT establish
 * Nothing about the real run's quality yet -- m=5k is the first read.
 * The hazard head is not refuted: 2 valid seeds at m=1500 cannot distinguish a 2-5 point effect.
+
+## §5aq — OWNER OVERRIDE: the real run RELAUNCHED 18:18 WITH the hazard head (coef 0.5)
+
+Owner, 18:15, on reading §5ap: *"Just because an issue fooled us in the past doesn't mean the same
+observation is necessarily a trap. Restart the PPO with the hazard head included -- we'll be able to
+see the results take shape more with the long run."* Applied. The correction is valid: §5ap used
+"3/3 same-sign small deltas has fooled this project before" as if it were evidence AGAINST the
+observation; it is only a prior on how much to trust small deltas. The measured record is: primary
+NULL (not negative), secondaries same-sign at 3/3 seeds, NO metric showing harm at any seed.
+
+**Stated limitation (measurement, not objection):** the long run has no paired no-hazard twin, so
+the 5k/10k/20k gate reads show the head's behaviour in ABSOLUTE terms (vs pro anchors, vs the
+run's own earlier snapshots) and cannot attribute outcomes to the head. §6 fine-tune ablation
+(coef 0 on a real-run checkpoint) is the attribution path if ever needed.
+
+**Kill record (guardrail):** first launch (17:50, coef 0.0) stopped at 18:16 at m=400, 0 warnings,
+first checkpoint save had landed 18:14. Artifacts ARCHIVED, not deleted:
+`data/bench/aborted_real_nohaz_20260901/` (policy 1,936,305 B; continuations 564,749 B; run log;
+progress; watchdog/gates out). Checkpoint path verified EMPTY before relaunch (else train-sim-ppo
+would have silently WARM-STARTED from the no-hazard save). policy_sim_ppo.pt untouched (Aug 29).
+
+**Relaunch:** identical invocation; `real_run.yaml` now differs from config.yaml in the same 3 lines
+with `hazard_coef: 0.5` (parse-checked, band/cells/eval asserted). Banner verified: `HAZARD HEAD ON:
+coef 0.500, 7 log-spaced dt bins` + `training FROM SCRATCH` + `continuation log ON`. 12 workers,
+2.6-3.8 GB available. Watchdog + `tools/real_run_gates.py` re-armed (nohup). Launch epoch written to
+`data/bench/real_run_20260901.launched` -- the gate script now reads pace from it, not the log's
+ctime (Windows tunnels a recreated file's creation time from its deleted namesake).
+
+**Trap (mine, new):** a PowerShell `Where-Object CommandLine -like '*train-sim-ppo*'` kill sweep
+matched ITS OWN shell (the pattern text is in the command line) and killed itself (exit 255) after
+taking down only part of the chain. Kill by PID from a listing; never by a substring your own
+command contains.
