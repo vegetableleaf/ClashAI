@@ -4719,3 +4719,67 @@ one in exploration. The real run proceeds on this centre-only widened band, scra
   attributing a slowdown.
 * I killed the emulator while s56 was at m=1100 and only checked chain state AFTER -- it had
   finished exit 0 ~1 min prior, so nothing was lost, but record-before-kill was cut too close.
+
+## §5ap — HAZARD A/B: NULL (1 win / 1 tie / 1 disqualified). THE REAL RUN LAUNCHED 2026-09-01 17:50
+
+### Hazard head A/B (P4), hazard_coef 0.5 vs 0.0, scratch seeds 61-63, m=1500, centre-only band
+Primary = realized-wait regret (missed-play % on the states where the policy WAITED), paired on both
+corpora (oracle / belief). Pre-committed win rule: c05 lower at >=2 of 3 seeds AND guardrail not worse.
+```
+seed   arm   regret mean (o/b)   waits   missed-play (o/b)   worse-than-WAIT (o/b)   top-1 (o/b)
+61     c05   0.3133 / 0.3035      35      57% / 54%            22% / 23%              19% / 20%
+61     c00   0.2917 / 0.3041       2       0% /  0%            24% / 27%              17% / 15%
+62     c05   0.2797 / 0.2763      39      64% / 62%            23% / 24%              25% / 27%
+62     c00   0.2806 / 0.2741      55      69% / 69%            24% / 25%              22% / 22%
+63     c05   0.2904 / 0.2962      79      65% / 65%            19% / 20%              28% / 27%
+63     c00   0.3141 / 0.3113      74      65% / 65%            21% / 23%              26% / 25%
+```
+* **s61 DISQUALIFIED on the primary**: the control waited at 2 of 203 states, so "0% missed-play" is
+  no waits to grade, not good waiting. Floor set at >=15 waits per arm BEFORE seeds 62/63 were read
+  (pre-commitment, so it could not be tuned to taste). s62/s63 both clear it.
+* s62: c05 WINS (64/62 vs 69/69). s63: exact TIE (65/65 vs 65/65; 51/79 vs 48/74).
+* **VERDICT: NULL under the rule as written -> the real run carries hazard_coef 0.0.**
+
+### What the secondaries show (measured; suggestive; NOT a result)
+Same sign at 3/3 seeds, both corpora, in the head's favour: top-1 oracle agreement +2..+5 pts;
+worse-than-WAIT plays -1..-4 pts. Overall regret is MIXED-SIGN across seeds (s61 +0.022/-0.001,
+s62 wash, s63 -0.024/-0.015) = noise. Continuation report (16 matches, greedy): after-x-bow
+follow-up L1-to-pro better for c05 at both comparable seeds (0.400 vs 0.660; 0.286 vs 0.320;
+s61 control had no bows) and after-bow delay longer (1.2-2.7s vs 0.6s; pro 5.5s); after-tesla
+mixed (2/3). Each is 3/3 on 1-5 point deltas at n=5-27 -- a sign test at p=0.125 per metric, the
+exact pattern this project has been burned by (§5x, §5z). **Top follow-up candidate**, queued in §6:
+rerun with a 4th seed to replace s61, OR test as a fine-tune on the real run's checkpoint (the head
+is in the net, inert, so no architecture mismatch), with the ~10x larger continuations_real.jsonl.
+
+### Trap found (new): near-zero-wait control arms
+A fresh scratch arm can wait at ~1% of corpus states (s61 c00: 2/203), which makes any
+wait-conditioned metric undefined for it. Any future A/B whose primary conditions on waits MUST
+state a wait-count floor in advance. Seeds 62/63 waited 39-79 -> s61 was an outlier, not systemic.
+
+### THE REAL RUN (gauntlet terminal condition; owner directive "launch immediately when gates green")
+* Launched 2026-09-01 17:50 via `data/bench/real_run_launch.sh` (nohup): `--config data/bench/real_run.yaml
+  train-sim-ppo --matches 40000 --envs 96 --workers 12 --size 432 --device cpu --seed 41 --search-interval 4`
+* `real_run.yaml` = CURRENT config.yaml + exactly 3 lines: `train.sim_ppo_checkpoint: data/policy_real_20260901.pt`
+  (ISOLATED; path verified empty pre-launch; policy_sim_ppo.pt untouched), `train.continuation_log:
+  data/continuations_real.jsonl`, `train.hazard_coef: 0.0`. Parse-checked; asserted band 0.625,
+  cells 3, eval_every 2000, keep_best true (read from config, not defaults).
+* gates: (1) parity CLEARED -> workers 12; (2) geometry CLEAN FAIL -> lane spots reverted (§5ao),
+  centre-only widened band; (3) hazard NULL -> coef 0. SCRATCH (nothing at the checkpoint path).
+* Banner verified: `continuation log ON`, `training FROM SCRATCH`, no HAZARD banner, 0 WARNING lines.
+* Log: `data/bench/real_run_20260901.log`; exit line will land in `real_run_20260901.progress`.
+* ARMED (nohup, session-independent): `tools/ppo_watchdog.py data/policy_real_20260901.pt --every 300
+  --quiet-min 30` (out: data/bench/real_run_watchdog.out); `tools/real_run_gates.py` (NEW): waits for
+  m=5k/10k/20k, SNAPSHOTS the ckpt to data/bench/real_m{5,10,20}k.pt, grades the snapshot with
+  xbow_probe(24) + both corpora + continuation_report(16) into data/bench/real_gate_m*k.log, posts to
+  Discord with measured pace + ETA; regret rising at TWO consecutive reads -> --questions (owner ping).
+  State in data/bench/real_run_gates.progress (resumable).
+* BOX AT LAUNCH: 2.2 GB available of 31.4. Training ~7.8 GB; owner desktop holds the rest (Chrome 4.9,
+  VS Code 2.5, nucleo uvicorn 2.2, Discord/ChatGPT/Steam ~1.7) -- NOT touched. MemoryError is the
+  main death risk; watchdog DEAD alert covers it. Emulator (crosvm) and Medal: 0 procs.
+* ETA: NOT estimated here on purpose -- the m=5k gate report states the measured pace. For scale:
+  workers-0 clean pace was ~1,260 matches/hr (haz chain); parity measured 1.83x for workers 12 on a
+  clean box -> ~17 h IF that held, but this box is memory-tight and shared. Read the gate report.
+
+### What this does NOT establish
+* Nothing about the real run's quality yet -- m=5k is the first read.
+* The hazard head is not refuted: 2 valid seeds at m=1500 cannot distinguish a 2-5 point effect.

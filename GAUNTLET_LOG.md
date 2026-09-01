@@ -162,3 +162,15 @@ DID      s53 pair graded (-0.018/-0.038); 5an written; config.yaml corruption (l
          parse-checked configs; owner confirmed scratch + 40k for the real run.
 NEXT     geo2 done ~04:30 -> grade vs stack1 trio (5am rule) -> hazard A/B 61-63 -> REAL LAUNCH.
 STATE    running: geo2 s54. cleared: gate 1 (workers 12). confirmed: scratch, 40k, ping on launch.
+
+## L13 — 2026-09-01 07:15 → 17:55  |  GATES 2+3 RESOLVED, REAL RUN LAUNCHED (gauntlet terminal)
+- Gate 2 geometry redo: CLEAN FAIL 0/3 (in-band 33%/11%/10% vs baselines 38/21/30%) -> lane spots
+  REVERTED, widened central kept (§5ao, commit). Third confirmation placement priors don't teach.
+- Gate 3 hazard A/B: NULL. s61 primary disqualified (control 2 waits; >=15 floor pre-committed),
+  s62 win, s63 tie. Secondaries 3/3 same-sign 1-5 pts = screen; queued as top follow-up (§5ap).
+- REAL RUN launched 17:50: scratch, seed 41, 40k, workers 12, centre-only band, hazard 0, isolated
+  ckpt data/policy_real_20260901.pt, continuation_log ON. Watchdog + tools/real_run_gates.py
+  (5k/10k/20k, snapshot-graded, measured-pace ETA, 2-read regression -> ping) armed, nohup.
+- Box: 2.2 GB available; owner desktop holds ~11 GB (reported, not touched).
+- Process: emulator autostart (~30% throughput theft) was the real redo-overrun cause; killed on OK.
+- Discord: launch report posted with ping. STOP: gauntlet ends at this launch per owner rule.
