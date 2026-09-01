@@ -1908,6 +1908,23 @@ slow one.
 
 ## 6. Open work
 
+### ⏳ FUTURE (owner-requested 2026-08-31): learned placement prior from the pro corpus
+**Run AFTER the first real PPO's results are read** -- its value depends on how the hand-picked
+lane spots (§5aj/§5am) perform there. The idea: replace `doctrine.py`'s hand-picked `_add_spot`
+coordinates with a distribution FIT to the 12,220 pro placements in
+`icebow/data/royaleapi/crawl2/plays_ext.csv`: `P(tile | card, phase)` with phase in
+{single-elixir, double, overtime} from `seconds`. Injection point: the SAME doctrine-prior seam
+(rollout-only, annealable) -- exploration shaping, not imitation, so the three measured BC/
+distillation failures (§5af) do NOT apply.
+Design constraints, decided now so a future session does not relearn them:
+* per-card sample floors before trusting a fit (bow 1,038 / tesla 1,705 / log 1,802 are fine;
+  thin card-phase cells fall back to the hand spots);
+* /!\ the marker join covers only ~HALF of replays (§5ag: 268 of 519 >80%) -- check the covered
+  half is not biased (newer replays? different players?) before fitting;
+* one change per experiment: distribution prior vs hand-spot config, 3 seeds, graded on
+  xbow_probe + paired corpora + continuation L1-to-pro;
+* mirror-fold left/right (pros' (2,20)/(16,20) are symmetric) to double effective samples.
+
 ### ✅ DONE 2026-08-29 — THIS FILE WAS SPLIT. 6,699 -> 4,156 lines (38%); archive is 2,739.
 Executed after the A/B's m=1500 read, as planned. 37 sections moved verbatim to
 `HANDOFF_ARCHIVE.md`; each keeps its HEADER plus a pointer here, so `grep` on a section
