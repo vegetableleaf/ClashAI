@@ -1908,6 +1908,23 @@ slow one.
 
 ## 6. Open work
 
+### ⏳ QUEUED (2026-09-01, owner): PROFILE THE TRAINING CYCLE before any more throughput work
+Prompted by evaluating github.com/MakazhanAlpamys/Soup (owner ask). **Soup: REJECTED -- wrong
+problem.** It is an LLM fine-tuning CLI (LoRA/NF4, TRL tasks) whose headline is layer streaming a
+multi-billion-param frozen transformer through a small GPU. Our policy is 1.9 MB; our wall is CPU sim
+throughput + process-count RAM + desktop contention. Nothing in it applies. Solid tool (4.6k stars,
+Apache-2.0, preprint) for a problem we do not have.
+What the evaluation DID surface (measured this session): workers already `set_num_threads(1)`
+(remote_pool.py:59) so oversubscription is ruled out; the trainer has NO rollout/update/broadcast
+timing; workers 12 scales only 1.83x on 16 cores (§5u) -> the main process is the ceiling, cause
+UNTESTED. The box has an RTX 5050 Laptop 4 GB (unused; `--device` flag exists).
+The measurement (~20 lines, run on a BENCH config, never on the real run): per cycle, wall time in
+(a) rollout collection, (b) PPO update, (c) weight broadcast/searchnet, (d) eval. Decision rule:
+update >30% of cycle -> test async overlap OR `--device cuda` for the update only; rollout dominant
+with workers idle -> IPC (obs pickling) is the target; neither -> the sim step itself, profile env.py.
+One change per experiment after that. Cloud note: a CPU sim scales with vCPUs -- a 32-64 vCPU VM,
+not Colab (2 vCPU).
+
 ### ⏳ QUEUED (2026-09-01, §5ap): hazard head follow-up -- the A/B was a NULL at 2 valid seeds, not a refutation
 Secondaries leaned the head's way at 3/3 seeds by 1-5 points (top-1 agreement, worse-than-WAIT
 plays, after-bow follow-up L1-to-pro) -- a screen at p=0.125 per metric. Two ways to settle it,
