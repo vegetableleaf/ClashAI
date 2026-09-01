@@ -1908,9 +1908,23 @@ slow one.
 
 ## 6. Open work
 
+### ⏳ QUEUED (2026-09-01, §5ap): hazard head follow-up -- the A/B was a NULL at 2 valid seeds, not a refutation
+Secondaries leaned the head's way at 3/3 seeds by 1-5 points (top-1 agreement, worse-than-WAIT
+plays, after-bow follow-up L1-to-pro) -- a screen at p=0.125 per metric. Two ways to settle it,
+pick ONE (one change per experiment): (a) a 4th scratch seed pair (hazard 0.5 vs 0.0, m=1500) to
+replace disqualified s61, graded on the same paired corpora WITH the >=15-wait floor pre-stated;
+(b) a fine-tune A/B on a real-run checkpoint (the `Linear(z,7)` head is in the net, inert at coef
+0, so no architecture mismatch), which also gets the ~10x larger `data/continuations_real.jsonl`.
+Do NOT run either while the real run is on the box (contention, §5ap). Sized: ~2.5-3 h per pair.
+
 ### ⏳ FUTURE (owner-requested 2026-08-31): learned placement prior from the pro corpus
-**Run AFTER the first real PPO's results are read** -- its value depends on how the hand-picked
-lane spots (§5aj/§5am) perform there. The idea: replace `doctrine.py`'s hand-picked `_add_spot`
+**Run AFTER the first real PPO's results are read.** /!\ 2026-09-01 update: the hand-picked lane
+spots this entry originally deferred to were REVERTED in §5ao (the doctrine prior did not teach
+in-band lane bows at 3 seeds; the real run uses the centre-only widened band). That makes this
+entry MORE relevant, not less -- a fitted distribution is the untested alternative to hand spots --
+but read §5ae/§5am/§5ao first: three placement priors in a row moved nothing, so state the
+mechanism by which a fitted one would differ before spending seeds on it.
+The idea: replace `doctrine.py`'s hand-picked `_add_spot`
 coordinates with a distribution FIT to the 12,220 pro placements in
 `icebow/data/royaleapi/crawl2/plays_ext.csv`: `P(tile | card, phase)` with phase in
 {single-elixir, double, overtime} from `seconds`. Injection point: the SAME doctrine-prior seam
