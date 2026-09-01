@@ -156,3 +156,9 @@ NEXT     parity done (~04:30) -> grade pairs -> geometry redo (54-56, ~3h) -> ha
          (sized from measured pace) -> REAL RUN. Owner window: tomorrow morning/afternoon.
 STATE    running: parity chain. staged: redo configs implied by fixed constants; hazard smoke cfg;
          real_run.yaml. gauntlet ends at the real launch.
+## L12 — 2026-09-01 00:40 — parity CLEARED (workers 12); config corruption caught; redo running
+DID      s53 pair graded (-0.018/-0.038); 5an written; config.yaml corruption (live_search_C3,
+         22:13, not script-attributable) restored from git; geo2 chain relaunched with
+         parse-checked configs; owner confirmed scratch + 40k for the real run.
+NEXT     geo2 done ~04:30 -> grade vs stack1 trio (5am rule) -> hazard A/B 61-63 -> REAL LAUNCH.
+STATE    running: geo2 s54. cleared: gate 1 (workers 12). confirmed: scratch, 40k, ping on launch.
