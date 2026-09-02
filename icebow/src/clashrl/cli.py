@@ -511,7 +511,7 @@ def _cmd_detect_preview(args) -> None:
 def _cmd_katacr_segments(args) -> None:
     from .katacr_segments import katacr_segments
     katacr_segments(Config.load(args.config), src=args.src, src_width=args.src_width,
-                    dry_run=args.dry_run)
+                    dry_run=args.dry_run, bank_dir=args.bank, prefix=args.prefix)
 
 
 def _cmd_models(args) -> None:
@@ -526,7 +526,8 @@ def _cmd_sprites(args) -> None:
         verify_sprites(cfg, count=args.count, margin=args.margin)
     elif args.synth:
         synth_images(cfg, count=args.synth, paste_max=args.paste, classes_filter=args.classes,
-                     seed=args.seed)
+                     seed=args.seed, bank_dir=args.bank, base_split=args.base_split,
+                     out_name=args.out_name, update_yaml=not args.no_yaml)
     else:
         extract_sprites(cfg, split=args.split, margin=args.margin, limit=args.limit,
                         append=args.append)
@@ -1007,6 +1008,11 @@ def main() -> None:
                       help="effective frame width their segments were cut from, in px; 'auto' "
                            "measures it from the classes both banks share (needs a width-tagged bank)")
     kseg.add_argument("--dry-run", action="store_true", help="report the mapping and write nothing")
+    kseg.add_argument("--bank", default=None,
+                      help="write into THIS bank instead of data/detect/sprites (a held-out slice for a "
+                           "synthetic val goes to its own bank so training synth never sees it)")
+    kseg.add_argument("--prefix", default="katacr",
+                      help="provenance prefix on written files (default katacr; use kitka for kitka's library)")
     kseg.set_defaults(func=_cmd_katacr_segments)
 
     mdl = sub.add_parser("models",
@@ -1037,6 +1043,15 @@ def main() -> None:
     spr.add_argument("--paste", type=int, default=4, help="max sprites pasted per synthetic image (default 4)")
     spr.add_argument("--classes", default=None,
                      help="comma list restricting --synth pasting to these classes (e.g. skeletons,ice_spirit,guards)")
+    spr.add_argument("--bank", default=None,
+                     help="--synth from THIS sprite bank instead of data/detect/sprites (held-out val)")
+    spr.add_argument("--base-split", choices=["train", "val"], default="train",
+                     help="--synth pastes onto frames of this split (default train; use val ONLY for a "
+                          "held-out synthetic val set, never for training data)")
+    spr.add_argument("--out-name", default="synth",
+                     help="--synth output folder under data/detect (default synth; anything else is "
+                          "NOT added to data.yaml)")
+    spr.add_argument("--no-yaml", action="store_true", help="--synth: do not touch data.yaml")
     spr.add_argument("--seed", type=int, default=0,
                      help="RNG seed for the --synth draw (default 0 = REPRODUCIBLE). Synth is ~40%% of the "
                           "training set, so an unseeded regeneration silently changes that much of the data "

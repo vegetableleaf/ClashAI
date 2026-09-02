@@ -22,7 +22,12 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-02 07:35**, branch `main` (**§5ba: GAUNTLET L2 -- THE PPO CUDA RUN IS STOPPED AT
+Last updated: **2026-09-02 08:30**, branch `main` (**§5bb: GAUNTLET L3 -- KITKA FOLDED INTO THE SPRITE BANK
+(+4,835 sprites, 3 EMPTY classes filled, 13 thin classes now 42-222 sprites) AND A HELD-OUT SYNTHETIC VAL
+BUILT (1,000 val-frame composites from a 20% kitka slice the training bank never sees) so board-27's kitka
+half is falsifiable.** L1's kitka counts RETRACTED: `dataset_updates/` is a byte-duplicate of `segment/`,
+so every "0->324"-style number in §5az.4 was ~2x. Screen still running (yolo11s epoch 9/30 at 08:13,
+5.4 min/epoch -> both arms land ~13:00, not 11:30). Previously **§5ba: GAUNTLET L2 -- THE PPO CUDA RUN IS STOPPED AT
 18,000 EPISODES AND THE DETECTOR SCREEN IS RUNNING.** The greedy EVAL instrument justifies the stop:
 ladder went 3/12/19/13/7/21/8/10% across EVAL@2000..16000, a 5-eval moving average FLAT at 12-14%
 (fair 7-8%) since episode 12,000 -- no upward trend, and the `_best` snapshot has not moved since 03:54
@@ -208,8 +213,10 @@ cd C:\Users\benpe\ClashBot\hogeq
   and confirmed by its own eval curve. Archive + checkpoints:
   `icebow/data/bench/stopped_real_cuda_18k_20260902/` (2 .pt SHA-verified, 2 milestone snapshots, log).
 * **RUNNING NOW: the L2 detector screen** (`scratchpad/gauntlet/L2_screen.ps1`) -- yolo11s control then
-  yolo26s, identical settings, fraction 0.35 / 30 epochs / imgsz 960, ~2 h per arm, ~2.8 GB VRAM.
+  yolo26s, identical settings, fraction 0.35 / 30 epochs / imgsz 960, ~2.8 GB VRAM. **Measured 5.4
+  min/epoch** (epoch 9 at 08:13 from a 07:24 start), so ~2.7 h per arm: y11s lands ~10:10, y26s ~13:00.
   Progress: `scratchpad/gauntlet/L2/screen.progress`, logs `scratchpad/gauntlet/L2/screen-*.log`.
+  ⚠ It trains on `data/detect/synth` -- do NOT run `run.py sprites --synth` until it finishes (§5bb.5).
   **Sandbox emulator + service STOPPED 01:08** (§5ay, qemu verified gone); nothing else is running. Sandbox state: WORKING, local patch commit 7c66f92 in
   `research/ext/cr-native-sandbox`'s own git; the batch results live in `scratchpad/gauntlet/ext/batch/`.
 
@@ -2321,6 +2328,12 @@ per section in place, keep the archive greppable and committed.
 ---
 
 ## 8. Measurement traps (each of these produced a wrong conclusion first)
+
+* **kitka `dataset_updates/` is a 100% byte-duplicate of `segment/segment` (2026-09-02, §5bb).** Counting
+  both doubled every per-class number in §5az.4 (hunter_evo "546" is 276). Count `segment/segment` only.
+* **`run.py sprites --synth N` regenerates `data/detect/synth` IN PLACE (2026-09-02, §5bb).** If a training
+  run is reading that folder, the regeneration silently swaps its training images mid-run. Regenerate only
+  between runs; the held-out set lives in its own folder (`synth_holdout`) for the same reason.
 
 * **PS 5.1: a script `param($Args)` is SILENTLY EMPTY (2026-09-02, §5ay).** `$Args` is a reserved automatic
   variable; the launcher dropped every argument and started a bare python REPL that hung on stdin
@@ -5908,3 +5921,75 @@ raw-head probe of the checkpoint, so the 15% rollout cell floor is NOT in these 
 3. Full ~24 h run of the winner with kitka folded in, battery watchdog armed on its run name.
 4. Latency: map the decision path and measure the non-GPU terms; the detector half must wait for a free
    GPU or the measurement is contended (§6).
+
+## §5bb — GAUNTLET L3: KITKA FOLDED INTO THE SPRITE BANK, L1's COUNTS RETRACTED (duplicate folder), AND A HELD-OUT SYNTHETIC VAL BUILT SO THE KITKA HALF OF BOARD-27 CAN BE FALSIFIED (2026-09-02 07:40-08:30)
+
+### 1. Retraction of §5az.4's numbers (and what survives)
+`data/kitka/detector_data/dataset_updates/dataset_updates/{air,ground,spells}` is a **byte-for-byte
+duplicate** of files in `segment/segment` (sha1 over all 3,165 files: 100% present in segment). L1 summed
+both, so every "X -> Y" in §5az.4 is ~2x: hunter_evo is 276 raw segments, not 546; cannon_evo 124, not 242;
+pekka_evo 162, not 324. The unique library is **183 class folders / 7,792 PNGs**. What survives of L1: it
+IS a sprite bank, not a labelled set; the thin evolution classes ARE its value; and it fills not 1 but
+**3 classes that had zero sprites** (pekka_evo, giant_snowball_evo, skeleton_army_evo -- the last two were
+missed by L1's normaliser, see 3).
+
+### 2. The split (measured)
+`tools/detect/kitka_split.py` (new): sha1(filename)-ranked 80/20 per class, classes under 15 segments not
+split. **6,313 train / 1,479 held-out** PNGs (`data/kitka/split/{train,holdout}`). Deterministic; a re-run
+moves nothing.
+
+### 3. Imports (measured)
+`run.py katacr-segments --src-width 735 --prefix kitka` (train slice -> `data/detect/sprites`) and the
+same with `--bank data/detect/sprites_holdout` (held-out slice -> its own bank). `--bank` and `--prefix`
+are new flags; width is always measured against the TRAINING bank so both slices scale identically.
+* Training bank **44,094 -> 48,929 files** (+4,835 `kitka_*`, **0 pre-existing files removed** -- comm
+  check on the before/after listings). 143 classes mapped, 26 deliberately dropped (UI/decals), 10
+  unmatched-and-dropped (below).
+* Held-out bank **1,124 files / 106 classes**.
+* Thin classes, training bank now (kitka + pre-existing) / held-out: pekka_evo 130 (130+0)/32 ·
+  hunter_evo 222 (216+6)/54 · cannon_evo 100 (94+6)/24 · lumberjack_evo 77 (74+3)/19 · electro_dragon_evo
+  71 (64+7)/16 · dart_goblin_evo 58 (57+1)/14 · vines 50 (49+1)/12 · executioner_evo 42 (35+7)/9 ·
+  royal_ghost_evo 126 (120+6)/30 · mega_knight_evo 118 (99+19)/25 · giant_snowball_evo 61 (61+0)/15 ·
+  skeleton_army_evo 164 (164+0)/41 · spirit_empress 197 (162+35)/41.
+* Five kitka names needed explicit mappings the normaliser missed (`dartgoblin-evolution`,
+  `ghost-evolution`, `megaknight-evolution`, `snowball-evolution`, `skarmy-evolution`) -- dart_goblin_evo
+  had imported ONE sprite before the fix. `spirit-empress-{air,ground}` both map to `spirit_empress`.
+* Source width: kitka crops come from frames of AUTO-measured width 735 px but with **CV 0.27 (p10 612 /
+  p90 952)**, i.e. some classes are ±25% off-scale after the fixed-735 import. (b) untested whether that
+  sits inside ultralytics' default scale augmentation (0.5); the held-out val's composite (below) looked
+  right by eye for executioner_evo (troop-sized next to a princess) and vines.
+* **Taxonomy gap found (b):** 10 kitka classes are real in-game objects our 230-class list cannot name at
+  all: goblinstein_monster (214 segs), goblin_dummy (133), skeleton_balloon_evo (104), ghost_soldier (86),
+  hogs_evo (71), goblinstein_doctor (52), bush, drill_evo, and two text overlays. Adding them changes `nc`
+  and needs real labels; parked in §6, NOT part of this gauntlet (one change per experiment).
+
+### 4. The held-out synthetic val (the instrument §5az.5 said was missing)
+`run.py sprites --synth 1000 --seed 0 --bank data/detect/sprites_holdout --base-split val
+--out-name synth_holdout --no-yaml` (three new flags). **1,000 val-frame composites, 2,479 pastes, 6,832
+boxes, 156 classes**; `data/detect/holdout_val.yaml` points at it (not committed: under data/).
+`data/detect/data.yaml` untouched (238 lines, `synth/images` once) -- verified, because a duplicated
+train entry would double-weight synth silently.
+* **How to read it:** per-class AP for the PASTED classes only, board-26 vs board-27, from the same
+  yaml. The overall mAP of this set is NOT a number to quote: its real boxes are the real val set's boxes,
+  and the base frames overlap the real val the architecture verdict uses.
+* **What it measures:** whether a class learned from synth transfers to sprites of that class the
+  training set never saw. **What it does NOT measure:** transfer to real screen crops of those classes --
+  for the 69 zero-val-instance classes there is still no real-crop instrument, and this set must not be
+  mistaken for one.
+
+### 5. Deliberately NOT done this loop
+The training synth (`data/detect/synth`, 5,000 images) still contains none of the kitka sprites: the
+running screen reads that folder and `synth_images` regenerates it in place (§8 trap). Regeneration
+(`run.py sprites --synth 5000 --seed 0`) is the first step after "ALL SCREEN ARMS DONE", before board-27.
+
+### 6. Code (committed): `katacr_segments.py` (`--bank`, `--prefix`, ref-bank width, 7 explicit names),
+`sprites.py` (`bank_dir`, `base_split`, `out_name`, `update_yaml`), `cli.py` (flags), new
+`tools/detect/kitka_split.py`. All syntax-checked and exercised by the runs above.
+
+### 7. Next
+1. ~10:10 read the y11s arm's final row; ~13:00 read y26s; pick the architecture (arm vs arm only).
+2. Then in order: regenerate training synth -> engine recording pass for the gate prior (§6 ruling,
+   `replay_drive --record-every 12`, needs the emulator, CPU-only, ~40 min est.) -> launch board-27
+   (fraction 1.0, 120 ep, 960, batch 4) + `battery_watchdog.ps1 -Run board-27`.
+3. Meanwhile (CPU, cheap): the gate-prior builder against the one existing full recording
+   (`replay_00LYPLJLC80L_run1.json`), so the tool is proven before the 211-replay pass.

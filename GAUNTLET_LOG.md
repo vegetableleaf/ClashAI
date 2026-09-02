@@ -269,3 +269,19 @@ event; 28-43 distinct cells throughout (never the 3-cell catastrophe). Elixir>=6
 over 8k->18k: a real monotone decline that makes X-Bow/Rocket uncastable and matches the 12-14% plateau.
 L2 report did not read this instrument; corrected in HANDOFF §5ba.6b. Stop decision unchanged.
 Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-cell dump).
+
+## L3 — 2026-09-02 07:40-08:30 | kitka folded in, L1 counts RETRACTED, held-out synthetic val built
+- RETRACTED §5az.4 numbers: `dataset_updates/` is a byte-duplicate of `segment/segment`, so every L1
+  per-class count was ~2x (hunter_evo 546 -> 276). Unique library: 183 classes / 7,792 PNGs. It fills
+  3 empty classes (pekka_evo, giant_snowball_evo, skeleton_army_evo), not 1.
+- Split 80/20 by sha1(name): 6,313 train / 1,479 holdout. Imported train slice into the bank
+  (44,094 -> 48,929 files, +4,835, 0 removed) and the holdout slice into its OWN bank (1,124 / 106 cls).
+  Thin classes now 42-222 sprites each (were 0-19). 5 names needed explicit mappings (dart_goblin_evo had
+  imported 1 sprite before the fix).
+- Built the missing instrument: 1,000 VAL-frame composites from the held-out bank (2,479 pastes, 156
+  classes), own `holdout_val.yaml`. Read per-class AP for pasted classes only; never its overall mAP.
+- (b) kitka crop scale CV 0.27 around 735 px; one composite eyeballed and troop-sized. (b) 10 kitka classes
+  are objects our taxonomy cannot name (goblinstein, goblin_dummy, skeleton_balloon_evo, hogs_evo...) -> §6.
+- NOT regenerated the training synth: the screen reads `data/detect/synth` and regen overwrites in place.
+  First step after the screen. Screen measured 5.4 min/epoch -> both arms ~13:00 (not 11:30).
+- Next: gate-prior builder on the one existing engine recording (CPU) while the screen runs.
