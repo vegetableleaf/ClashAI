@@ -116,6 +116,10 @@ def main() -> None:
                     help="run-folder prefix under runs/detect (ultralytics auto-increments: board -> board-24). "
                          "Use a different prefix for CONTROL runs so they do not consume the next board-N slot "
                          "-- a generation number should mean 'a candidate for promotion', not 'an experiment'.")
+    ap.add_argument("--fraction", type=float, default=1.0,
+                    help="train on this FRACTION of the training set (ultralytics `fraction`). Screening only: "
+                         "a subsample keeps imgsz (so small-object ranking is preserved) while cutting epoch cost. "
+                         "Never use for a promotion run -- board-26's 0.860 was measured at fraction 1.0.")
     ap.add_argument("--status-aug", action="store_true",
                     help="extra augmentation for CR STATUS EFFECTS that distort a troop's look: stronger OCCLUSION "
                          "(erasing 0.4->0.6) + colour-TINT (slow blue / rage purple), spell HAZE + BLUR via "
@@ -179,7 +183,7 @@ def main() -> None:
     model.train(
         data=str(data), epochs=args.epochs, imgsz=args.imgsz, batch=args.batch,
         patience=args.patience, seed=args.seed, workers=args.workers,
-        project=str(root / "runs" / "detect"), name=args.name,
+        project=str(root / "runs" / "detect"), name=args.name, fraction=args.fraction,
         # colour jitter helps the own-troop (blue) labels transfer to the red enemy side (also covers slow/rage tints)
         hsv_h=0.5, hsv_s=0.5, hsv_v=0.4, fliplr=0.0, erasing=erasing,   # no horizontal flip: lanes are asymmetric
     )

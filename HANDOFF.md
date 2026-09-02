@@ -22,7 +22,16 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-02 02:05**, branch `main` (**§5az: GAUNTLET L1 -- DETECTOR UPGRADE RECON.**
+Last updated: **2026-09-02 07:35**, branch `main` (**§5ba: GAUNTLET L2 -- THE PPO CUDA RUN IS STOPPED AT
+18,000 EPISODES AND THE DETECTOR SCREEN IS RUNNING.** The greedy EVAL instrument justifies the stop:
+ladder went 3/12/19/13/7/21/8/10% across EVAL@2000..16000, a 5-eval moving average FLAT at 12-14%
+(fair 7-8%) since episode 12,000 -- no upward trend, and the `_best` snapshot has not moved since 03:54
+(~12k). Checkpoints backed up and SHA-verified to `data/bench/stopped_real_cuda_18k_20260902/`;
+20 -> 6 python procs, 0 train-sim-ppo left, 11.1 GB RAM and the whole GPU freed. YOLO26s SMOKE-TESTED on
+our 230-class data: it trains, 5.6 ms inference / **0.4 ms postprocess** at 960px (NMS-free). Two-arm
+screen (yolo11s control vs yolo26s, identical settings, fraction 0.35 / 30 ep) launched 07:23.
+`battery_watchdog.ps1` rewritten for the owner's pause -> sit -> AUTO-RESUME spec. Previously
+**§5az: GAUNTLET L1 -- DETECTOR UPGRADE RECON.**
 The isolated venv the owner approved is probably unnecessary: `icebow/.venv`'s ultralytics 8.4.107
 ALREADY ships yolo26 / yolo26-p2 / yolo12 / rt-detr configs, so the leading candidates need no install.
 kitka's data is a SPRITE library, not a labelled dataset: my first "88 new classes" read was wrong and
@@ -195,10 +204,13 @@ cd C:\Users\benpe\ClashBot\hogeq
 
 ## 3. What is running RIGHT NOW
 
-* **2026-09-02 02:05 — cuda real run alive** (`icebow/data/bench/real_run_20260901.log`, 7,700 episodes
-  at 0.5 ep/s; watchdog + gates armed, §5as). **Owner ruling (§5az): stop it at ~18,000 episodes** and
-  hand the GPU to board training; background watcher armed (fires at >=18k or on exit). **Sandbox
-  emulator + service STOPPED 01:08** (§5ay, qemu verified gone); nothing else of ours is running. Sandbox state: WORKING, local patch commit 7c66f92 in
+* **2026-09-02 07:35 — the PPO cuda run is STOPPED** (§5ba) at 18,000 episodes, per the owner's ruling
+  and confirmed by its own eval curve. Archive + checkpoints:
+  `icebow/data/bench/stopped_real_cuda_18k_20260902/` (2 .pt SHA-verified, 2 milestone snapshots, log).
+* **RUNNING NOW: the L2 detector screen** (`scratchpad/gauntlet/L2_screen.ps1`) -- yolo11s control then
+  yolo26s, identical settings, fraction 0.35 / 30 epochs / imgsz 960, ~2 h per arm, ~2.8 GB VRAM.
+  Progress: `scratchpad/gauntlet/L2/screen.progress`, logs `scratchpad/gauntlet/L2/screen-*.log`.
+  **Sandbox emulator + service STOPPED 01:08** (§5ay, qemu verified gone); nothing else is running. Sandbox state: WORKING, local patch commit 7c66f92 in
   `research/ext/cr-native-sandbox`'s own git; the batch results live in `scratchpad/gauntlet/ext/batch/`.
 
 * **board-26 detector training — RESUMED 2026-08-18 17:24 after a host restart killed it.**
@@ -5763,3 +5775,77 @@ box. The 23.9 h board-26 wall time is carried forward from that run's own log, n
 3. Extend `tools/battery_watchdog.ps1`: it currently KILLS at 10% and needs a manual `--resume`; the
    owner wants pause -> sit 1-2 h -> auto-resume.
 4. On the watcher firing at 18k: record PPO state, stop it, then the cheap screen, then the full run.
+
+## §5ba — GAUNTLET L2: THE PPO CUDA RUN STOPPED AT 18k (its own eval curve says it cost nothing), YOLO26 SMOKE-TESTED ON OUR DATA, AND THE TWO-ARM SCREEN LAUNCHED (2026-09-02 07:13-07:35)
+
+### 1. Stopping the PPO run — the ruling, and the evidence that it was right
+The owner ruled in §5az.1 to stop at ~18k. Before acting I read the **greedy EVAL** instrument rather
+than the rolling sampled winrate (§8: never mix the two):
+
+| EVAL @ | 2000 | 4000 | 6000 | 8000 | 10000 | 12000 | 14000 | 16000 |
+|---|---|---|---|---|---|---|---|---|
+| ladder (L13-16) | 3% | 12% | 19% | 13% | 7% | 21% | 8% | 10% |
+| fair (L15) | 3% | 5% | 10% | 5% | 4% | 13% | 5% | 7% |
+| ladder 5-eval avg | - | - | 11% | 12% | 11% | **14%** | **13%** | **12%** |
+
+* **(a) measured:** the 5-eval moving average has been FLAT at 12-14% ladder / 7-8% fair since episode
+  12,000. Consecutive evals swing 7% -> 21% -> 8% at 150 matches each, far beyond the ~2.7pp standard
+  error of a 12% rate at n=150, so the policy itself is oscillating rather than the sampler being noisy.
+  `policy_real_20260901_best.pt` was last written **03:54 (~12k)** and has not moved since.
+* Conclusion: stopping at 18k gave up nothing measurable. This is consistent with §4t's "peaks then
+  gives it back", but it is INDEPENDENT evidence from this run, not §4t carried forward.
+* **What this does NOT establish:** that the run would never have improved later, or anything about the
+  hazard head. It is a stop justified by 8 evals of flatness, not a verdict on the configuration.
+
+### 2. How it was stopped (guardrail trail)
+Checkpoints found by reading the run's own command line and log (NOT the stale `data/policy_sim_ppo.pt`,
+which is from 08-29 and belongs to another run): `data/policy_real_20260901.pt` (07:11, at 18k) and
+`data/policy_real_20260901_best.pt` (03:54). Copied with `data/bench/real_m5k.pt`, `real_m10k.pt` and the
+log to **`data/bench/stopped_real_cuda_18k_20260902/`**, both .pt SHA-256 verified equal
+(56FD3C94..., CE8AF22F...). Then Stop-Process on PIDs 44316 + 70192: python procs **20 -> 6**,
+train-sim-ppo remaining **0**, free RAM **11.1 GB / 31.4**, GPU 1169 MiB / 8151 and 0% util.
+
+### 3. YOLO26 smoke on our own data (measured)
+`tools/detect/train.py --model yolo26s.pt --epochs 1 --fraction 0.02` completed exit 0 on the real
+230-class dataset. Speed at imgsz 960 on the RTX 5050: **0.4 ms preprocess, 5.6 ms inference,
+0.4 ms postprocess** per image. The 0.4 ms postprocess is the NMS-free head showing up -- relevant to
+the sub-100 ms latency goal, and to be compared against yolo11s's own postprocess from the control arm.
+
+### 4. Paper screen (web, measured from Ultralytics' published table)
+| | mAP50-95 (COCO 640) | params (M) | FLOPs (B) | T4 TensorRT (ms) |
+|---|---|---|---|---|
+| YOLO11s | 47.0 | 9.4 | 21.5 | 2.5 |
+| **YOLO26s** | **48.6** | 9.5 | 20.7 | 2.5 |
+
+Same size, +1.6 COCO points, fewer FLOPs, identical GPU latency, **NMS-free**, plus ProgLoss/STAL which
+are explicitly small-object techniques -- our regime (CR units at 960px). RT-DETR is deprioritised on
+the project's OWN prior reasoning (`tools/detect/train.py` docstring: DETR-family is data-hungry and
+this is a small, label-bottlenecked, 230-class dataset); it stays available via `--model rtdetr-l.pt`
+if the screen disappoints. **These are COCO numbers on someone else's data (b) -- they rank the
+candidates, they do not predict our mAP.** That is what the screen is for.
+
+### 5. The screen that is now running
+Two arms, identical in everything but `--model`: **yolo11s control** then **yolo26s**, 30 epochs,
+`--fraction 0.35`, imgsz 960, batch 4, workers 4, seed 0. ~2 h per arm (board-26 measured 718 s/epoch
+at fraction 1.0). A new `--fraction` flag was added to `train.py` for this, documented as screening-only.
+**⚠ The screen's numbers are comparable ONLY to each other, never to board-26's 0.860** -- different
+data volume and epoch count. That is exactly why the control arm exists and why I did not simply run
+yolo26s and diff against board-26.
+
+### 6. Battery watchdog rewritten (owner spec)
+`icebow/tools/battery_watchdog.ps1` previously KILLED the run at 10% and left a manual `--resume`,
+which for an unattended 24 h job is just an ending. It now does **pause -> sit (default 90 min) ->
+wait for >= 25% -> auto-resume -> keep watching**, up to 12 cycles. Two new refusals, each because the
+alternative destroys a run silently: it will not stop without a `last.pt`, and it will not RESUME a
+STRIPPED checkpoint (ultralytics does not raise on that -- it starts a fresh coco8 training that looks
+like a normal log; this repo has three such folders already). Parse-checked; not yet exercised against
+a real low-battery event (b) -- the box has been on AC at 100% throughout.
+
+### 7. Next
+1. Read the screen when both arms land (~11:30): mAP50 and mAP50-95 arm vs arm, plus each arm's
+   postprocess ms, and pick the architecture.
+2. Build the **held-out synthetic val** from unseen kitka sprites (§5az.5) -- without it the kitka half
+   of the full run is unfalsifiable.
+3. Full ~24 h run of the winner with kitka folded in, battery watchdog armed on its run name.
+4. Latency: map the decision path and measure the non-GPU terms; the detector half must wait for a free
+   GPU or the measurement is contended (§6).

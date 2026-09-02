@@ -247,3 +247,17 @@ STATE    running: geo2 s54. cleared: gate 1 (workers 12). confirmed: scratch, 40
   from unseen kitka sprites, reported separately. detect-eval is right for the architecture half only.
 - No model trained: GPU is the PPO run's until 18k (watcher armed). Next: paper screen (free), non-GPU
   latency breakdown, battery watchdog pause/resume rewrite.
+
+## L2 — 2026-09-02 07:13-07:35 | PPO stopped at 18k, YOLO26 smoked, screen launched
+- Watcher fired at 18,000 eps. Before stopping, read the GREEDY eval (not the sampled winrate):
+  ladder 3/12/19/13/7/21/8/10% at EVAL@2000..16000 -> 5-eval avg FLAT 12-14% since 12k; _best.pt has
+  not moved since 03:54 (~12k). Stopping cost nothing measurable -- independent of 4t, not carried from it.
+- Stopped per guardrail: ckpts SHA-verified into data/bench/stopped_real_cuda_18k_20260902/, then
+  Stop-Process; python 20 -> 6, train-sim-ppo 0, RAM 11.1 GB free, GPU idle.
+- YOLO26s SMOKE on our real 230-class data: exit 0, 5.6 ms inference / 0.4 ms postprocess @960 (NMS-free).
+  Paper: yolo26s 48.6 vs yolo11s 47.0 COCO mAP50-95, same params, fewer FLOPs, + ProgLoss/STAL (small objects).
+- LAUNCHED the 2-arm screen (yolo11s control vs yolo26s, identical, fraction 0.35 / 30 ep / 960px, ~2 h each).
+  Screen numbers compare ONLY to each other -- never to board-26's 0.860. That is why the control exists.
+- battery_watchdog.ps1 REWRITTEN to the owner's spec: pause -> sit 90 min -> wait >=25% -> auto-resume,
+  12 cycles; refuses to resume a STRIPPED ckpt (that silently starts a coco8 run -- 3 such folders here).
+- Next: read the screen ~11:30, build the held-out synthetic val from unseen kitka sprites, then the full run.
