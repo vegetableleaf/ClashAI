@@ -6135,3 +6135,44 @@ ports that have not been done.
 3. Remaining one-way ports, in this order: `train_rl.py` (icebow's async LLM advisor), `env.py`
    (the two decks' comments still diverge), `sim/remote_pool.py` (moves with deck PFSP, so only when
    hogeq gets `sim/opponents.py`'s deck-PFSP half).
+
+## §5bd — THE HOGEQ CORPUS IS BUILT AND THE DERIVATION HAS STARTED: `tools/replay_priors.py`, both bias gates passed, and a PRELIMINARY contradiction of the Hog placement rule (2026-09-02 12:00-12:40)
+
+### 1. The corpus (measured)
+`crawl_deck.py --deck hogeq` first pass: **462 replays / 40,250 plays in 47 min**; the resume sweep for
+the 13 rate-limited players took it to **595 replays / 52,973 plays**. Placement join is the same bimodal
+shape as icebow's (296 covered / 299 uncovered), giving **14,002 blue plays with tile coordinates**
+(icebow: 12,220).
+
+### 2. Frame verified from the data, twice, before any fit
+Blue's own half is HIGH y: hog-rider median tile_y **17.5 with p10 = p90 = 17.5** (every Hog on the bridge
+line), tesla 21.0 in an 18-22 band, and earthquake at **10.5** — a spell cast into the ENEMY half, which
+confirms the orientation from the opposite direction. Row histogram: y=17 holds 4,679 of 14,002 plays.
+
+### 3. `tools/replay_priors.py` (new, in BOTH decks)
+Fits `P(tile | card, phase)` with phases read from `sim.double_time_s` / `sim.triple_time_s` (120 / 240 s)
+rather than guessed, mirror-folds x, applies a per-(card, phase) sample floor, and prints the three bias
+checks the queued spec in §6 demanded BEFORE any fit is trusted. **Validated against icebow's corpus: it
+reproduces §5ag's numbers exactly (12,220 blue placements, 268 covered / 251 uncovered).**
+* **Both bias gates pass, both decks:** no time skew between the covered and uncovered halves
+  (medians within hours), players balanced (hogeq 32 vs 31, 3 covered-only), and card mix matching
+  within **0.4 pp** once hero-ability rows are excluded — those carry `attr_card=_invalid` and can never
+  have a marker, and counting them made the mix look 8.5 pp different (§8's ability-row trap, again).
+
+### 4. ⚠ PRELIMINARY (a): the Hog rule's ranking looks inverted
+1,725 pro Hog placements, unfolded x histogram: **x=1 → 702, x=16 → 791 (87% together)**; the doctrine's
+primary spots, the princess columns at tiles 3 and 14, hold **21 plays (1.2%)**; its half-weighted
+"arena-edge" spot (tile 0) holds 64 (3.7%). So pros put the Hog one tile IN from the wall, and
+`sim/doctrine.py`'s `hog_rider` branch weights the bridge/princess column highest.
+* **What this does NOT yet establish:** `_add_spot` lays down a weighted BLOB, not a tile, so the
+  doctrine's mass over tiles 1/16 is not zero and the honest comparison is prior-weight vs measured
+  frequency over the whole board. That comparison is the next step; until it is run this is a modal-tile
+  mismatch, not a refuted rule.
+* Frame sanity: the two modes are symmetric about the centre (1 + 16 = 17 = 18 - 1) and the Tesla sits at
+  x=8, so the marker frame and the engine's 18-wide board agree.
+
+### 5. Next
+Weight-profile comparison per card (doctrine prior vs fitted distribution, same board), then the same
+read for mighty_miner (modal (2,17)/(3,17) — a BRIDGE punish, where the doctrine's headline rule is
+"tile-exact on the tank"), firecracker and earthquake. Only then a config-gated prior, one change per
+experiment, per the §6 spec.
