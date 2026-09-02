@@ -200,3 +200,12 @@ STATE    running: geo2 s54. cleared: gate 1 (workers 12). confirmed: scratch, 40
   watchdog + gates re-armed; Monitor on the m=1000 snapshot / m=2000 eval (first cuda pass at
   scale). +7.5 min: 250 matches, 0 warnings, ~0.9 GB VRAM. §5as. Next: cr-native-sandbox assessment
   (owner-directed, §5at); gauntlet NOT restarted.
+- 2026-09-01 21:5x (owner-directed, outside the gauntlet ladder) cr-native-sandbox ASSESSED, not run:
+  real CR engine (libg.so 15.535.29 x86_64) headless in a rooted AVD, JSON/TCP API, NO renderer (no
+  detector frames). Blocked on owner: 5 hash-gated split APKs from their own install, ~15-20 GB of
+  SDK/JDK installs, emulator contention with the cuda run. Replay->real-match idea MORE feasible than
+  assumed (retraction: plays are 20 Hz ticks in native 1000/cell units, not 1 s / tile-rounded);
+  268 usable replays / 23,490 plays; fidelity self-checks via rejections + final crowns. Better use
+  ranked: sim-parity oracle > real-engine eval > pro-state dataset > RL-in-engine (one throughput
+  measurement decides) > frames (impossible). §5at + research/CR_NATIVE_SANDBOX_ASSESSMENT.md.
+  Discord --questions posted; WAITING. Cuda run at +28 min: 963 matches, 0 warnings.

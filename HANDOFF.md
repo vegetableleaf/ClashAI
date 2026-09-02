@@ -1908,6 +1908,19 @@ slow one.
 
 ## 6. Open work
 
+### ⛔ BLOCKED ON OWNER (2026-09-01 evening, §5at): cr-native-sandbox -- the real CR engine headless; runtime + installs + timing are the owner's calls
+Assessed, not run (`research/CR_NATIVE_SANDBOX_ASSESSMENT.md`). Three owner decisions were posted with
+`--questions`: (1) supply the 5 split APKs of exactly 15.535.29 x86_64 from their own BlueStacks/GPG
+install (hash-gated; any other version = cannot run; ToS is theirs); (2) OK the ~15-20 GB of JDK 17 +
+Android SDK/AVD installs; (3) emulator only after the cuda run ends (default) or accept the slowdown.
+**If all three come back yes, the order of work is fixed:** hash gates -> `smoke.ps1` reproduces
+`96598dc9028e1802` -> first-hour experiments (`cmd` playback yes/no, deal-order permutation trick,
+same-actions=>same-hash, per-tick observe cost, Elite-Barbarians-evo presence, **matches/h with a
+random policy 1 AVD x 4 workers**) -> replay driver + fidelity grader over the 268 usable replays
+(`scratchpad/gauntlet/ext/usable_replays.json`; alias table in §5at) -> sim-parity oracle FIRST, then
+the pro-state dump for the placement prior / hazard targets. Nothing to do here until the answers land.
+Do not fetch game binaries from mirrors; do not install the SDK before the OK; never commit `research/ext/`.
+
 ### ✅ DONE (2026-09-01 evening, §5ar): PROFILE THE TRAINING CYCLE -> update was 70% -> learner on cuda, 2.92x per cycle
 Prompted by evaluating github.com/MakazhanAlpamys/Soup (owner ask). **Soup: REJECTED -- wrong
 problem.** It is an LLM fine-tuning CLI (LoRA/NF4, TRL tasks) whose headline is layer streaming a
@@ -5076,3 +5089,116 @@ the parent and does not shrink on cuda) -> +3-4 h. **ETA ~Sep 2 midday to late a
 * Both cuda-at-scale code paths (m=1000 snapshot, m=2000 eval) remain unexercised until they run;
   the Monitor + watchdog are the only guard. If either throws, the run dies with a Traceback in
   the log and `run_dead()` in the gate script posts it.
+
+## §5at — cr-native-sandbox ASSESSED (owner order 2026-09-01 21:2x): real CR engine headless, no renderer; NOT runnable here without owner-supplied game APKs + ~15-20 GB of installs; replay->real-match idea MORE feasible than assumed (268 complete command timelines at 20 Hz, native units); better use = sim-parity oracle
+
+Full write-up: `research/CR_NATIVE_SANDBOX_ASSESSMENT.md` (verdict, mechanism, needs, the replay
+route with both variants, the fidelity check, ranked better uses, cost table, first-hour questions).
+Internals record with file:line citations: `scratchpad/gauntlet/ext/cr_sandbox_internals.md`
+(subagent deep-read; `STATUS: complete`). Repo clone at `research/ext/cr-native-sandbox`
+(commit 643e63b, MIT, 5 commits 2026-08-24/25); `research/ext/` is now in `.gitignore` — never vendor it.
+This section is the short form and the record of what was measured.
+
+### 1. What it is (measured: code)
+The original Android x86_64 `libg.so` of client **15.535.29** run headless inside a rooted AOSP AVD
+(`android-31;default;x86_64`, 4 vCPU / 4 GB), via `app_process` + a hand-written `JniHost` with stub
+`com.supercell.titan.*` classes whose JNI descriptors match the real client's. The real package is
+installed on the AVD only to borrow its `AssetManager` (the exact problem Arron's
+`cr-engine-extraction` was stuck on — `research/CR_ENGINE_EXTRACTION_REVIEW.md`). ~60 hardcoded RVAs
+(fail-closed on `JNI_OnLoad-base != 0x1458BC0`); renderer NOP'd by five byte-verified patches at
+`GameMain::init`. JSON-line TCP API: `reset(replay_json)` (Supercell replay format: `rndSeed`,
+`battle{deck0,deck1{sp:[{d,l,el}x8], sc:[tower troop]}, avatar0/1, gamemode 72000007}`, **`cmd: []`**),
+`step(n)` (20 Hz logical ticks, no sleeps, author-reported ~10,200 ticks/s in-guest), `act(side,
+deck_index, x, y)` (libg's `DoSpellCommand`; libg's verdict authoritative: `card_not_in_hand`, 1050 no
+elixir), `ability(side, entity_id)`, `joint_transition` (one action per side, then step), `observe()`
+(all entities with x/y in 0..18000 x 0..32000 = 1000 units/cell, hp, card_id, level, targets, paths;
+elixir exact /10000; hand/cycle/next; towers; `state_hash`). Coverage claimed: 122 cards / 41 evos /
+16 heroes; **tower troops NOT claimed**. Determinism certified by the author only for the zero-action
+100-tick opening (hash `96598dc9028e1802`); same-actions => same-hash is plausible, untested.
+
+### 2. What it is NOT (measured: code)
+* **No frames.** No Surface, renderer disabled, no screencap path -> nothing for the detector.
+* No AI/opponent; frozen to one client build (every CR update invalidates the ~60 RVAs; bus factor 1);
+  unsanctioned (rooted, byte-patched engine outside the client, offline) — the ToS call is the owner's.
+
+### 3. Why it is NOT running on this box (blocked on owner; nothing here is an engineering blocker)
+1. **Runtime.** `freeze_runtime.ps1` hard-gates size + SHA-256 of all five split APKs of exactly
+   15.535.29 x86_64 (base 46,768,886 B; en 123,289; hdpi 88,604; x86_64 77,768,051; asset pack
+   885,861,071) and of `libg.so` (fa6704b8...). Repo ships none ("legally obtained by the user"). I do
+   not fetch game binaries from mirrors. Source = the owner's own BlueStacks 5 / Google Play Games
+   install (both x86_64 Android): `adb connect 127.0.0.1:5555` -> `dumpsys package
+   com.supercell.clashroyale | findstr versionName` -> if **15.535.29**: `pm path` + `adb pull` x5. Any
+   other version = the tool cannot run against that copy, full stop. /!\ 57 of our usable replays
+   contain `elite-barbarians-ev1`, which the 15.535.29 catalog does not list -> the live client on
+   Aug 23 may already have been newer; unresolvable without the runtime.
+2. **Installs** not approved: JDK 17 + Android cmdline-tools at `C:\Android\Sdk` + `bootstrap.ps1`
+   (platform-tools, emulator 37.1.11, platform 35, build-tools 35, NDK r27d, API-31 image, AVD) ≈ 15-20 GB;
+   `doctor.ps1` wants >30 GB under `%LOCALAPPDATA%\cr-native-sandbox\data`. 471 GB free (measured).
+3. **Contention.** One AVD = 4 vCPU + 4 GB; box RAM 33.7 GB total, **3.2 GB available** with the cuda
+   run (12 workers) + desktop (measured 21:4x). Emulator/smoke waits for the run to end (~Sep 2
+   afternoon) unless the owner accepts the slowdown. BlueStacks/GPG must be closed while it runs
+   (ports 5554/5555, adb server, hypervisor).
+
+### 4. The owner's idea (replays -> real matches -> real states), measured against our data
+* **Retraction of my own earlier assumption (contradicted):** the RoyaleAPI plays are NOT "1-second,
+  tile-rounded". `plays_ext.csv` `tick` is the engine tick at **20 Hz** (max 5979 = 298.95 s) and
+  `x_units/y_units` are **native 1000-per-cell cell-centred units** (x/tile = 1000 exactly) — the
+  sandbox's action frame. Measured this session on 45,335 rows / 519 battles.
+* **Usable = 268 replays** (positions present for 270 of 519 — the other payload variant lacks the
+  marker, §5af/§5ag; 268 have every non-ability play positioned): **23,490 plays** (blue 12,229 / red
+  11,261) + 565 abilities (`_invalid` card rows, no position — correct, the ability command targets an
+  entity). All 174 deck slugs map to the 15.535.29 catalog via an alias table (`the-log->Log`,
+  `barbarian-barrel->BarbLog`, `sparky->ZapMachine`, `spirit-empress->MergeMaiden`, ...; 0 unmapped).
+  Tag list: `scratchpad/gauntlet/ext/usable_replays.json`. Without the EB-evo replays: 211.
+* **Two routes:** (A) fill `cmd` in Supercell's command schema and let libg's replay controller apply
+  the commands itself (libg reads `cmd` and tracks `applied_replay_tick`; the repo never fills it;
+  per-command keys unknown until the runtime exists) — plausible, untested. (B) drive
+  `joint_transition` per tick from the CSV — works with the documented API, needs the initial
+  conditions: hand deal order (observe the seed's permutation after one reset and pre-permute
+  `deck.sp` — plausible, ~10 min to test; 438/536 usable player-sides played all 8 cards, so the
+  original deal is pinned by the play sequence), card levels (NOT crawled; extend the crawler or assume
+  tournament level 11 = the bootstrap default), tower troops (NOT crawled, NOT supported by the
+  sandbox — drop or measure), apply-before/after-tick off-by-one.
+* **Built-in fidelity check:** every real command was legal when issued -> a drifted reconstruction
+  produces a rejection; final crowns must equal `battles.csv` `team_crowns/opponent_crowns`. Each
+  reconstructed match gets a grade (accepted/total, crowns match). Nothing assumed.
+* **What the states buy, sized honestly:** ~1.6 M ticks of ground truth with pro actions, but only
+  **23k labelled decisions, one week, one deck's meta, one client version** — thin for BC (the §5af
+  "NOT BC pretraining" ruling was made under the now-removed "no reconstructable states" premise;
+  the sample size objection stands; owner may revisit). Rich for: the placement prior with the board
+  observed (§6 FUTURE entry), hazard-head time-to-next targets from real play, a regret corpus of real
+  defensive situations, and the parity oracle below.
+
+### 5. Better uses (recommendation, ranked)
+1. **Sim-parity oracle** — same command sequences in the Python sim and the real engine; measure
+   tower-HP/entity/elixir divergence per card and interaction. First-ever number for how wrong the
+   sim is. Shares every step with the replay route up to the state dump.
+2. Real-engine evaluation of real-run checkpoints vs scripted opponents (needs an engine-state ->
+   96x64x12 board adapter).
+3. The replay dataset (§4) for prior/hazard/regret — not BC unless revisited.
+4. RL directly in the real engine — decided by ONE measurement: matches/h with a random policy,
+   1 AVD x 4 workers, observe every 10 ticks (author's numbers suggest several thousand/h per AVD ≈
+   or > the sim's ~3,700/h on cuda; **untested here**; RAM ceiling = 1 AVD beside the desktop;
+   the drill/doctrine/continuation loop is welded to the Python sim — weeks to port).
+5. Detector frames: no (contradicted, §2).
+
+### 6. Cost/gates (from the doc §5): APKs+version check (owner, 10 min) -> installs (~20 min, no CPU)
+-> `prepare_runtime`+`freeze_runtime`+`doctor` (hash gates) -> emulator+`smoke.ps1` (must reproduce
+`96598dc9028e1802`; 4 vCPU/4 GB, after the run) -> first-hour experiments (`cmd` playback, deal-order
+trick, actions-determinism hash, per-tick observe cost, EB-evo presence) -> replay driver + fidelity
+grader (1-2 days) -> observation adapter (1 day).
+
+### 7. What this does NOT establish
+* Nothing about the tool was RUN here: every throughput/determinism number is the author's. The
+  hash-gate behaviour, the API semantics and the "no renderer" fact are read from the code, not
+  exercised.
+* Whether the owner's installed client is 15.535.29 (the EB-evo hint says maybe not).
+* Whether `cmd` playback works, whether the deal permutation is seed-only, whether actions are
+  deterministic across processes, and what per-tick `observe` costs on this box.
+* The 268/211 counts are one pass of one script over one crawl; re-verify when the driver is built.
+
+Live-run read at the time of writing (21:53, +28 min): 1,250 episodes = 963 matches (11W-952L) +
+287 drills, 0 WARNING / 0 Traceback, checkpoint 21:52:52, 1.52 MB of continuations; the m=1000
+league snapshot (first cuda pass at scale) is due within minutes — see §5au if anything happened.
+`.progress` does not exist while the run is alive (the launch script writes it only at exit; the
+gate script's `run_dead()` keys on that) — not a fault.
