@@ -232,3 +232,18 @@ STATE    running: geo2 s54. cleared: gate 1 (workers 12). confirmed: scratch, 40
   Driver replay_drive.py written and offline-verified (08CPVRRR8PYC: 54 plays, 256 consistent deals/side).
   Owner stopped the session (compaction); emulator STOPPED (free RAM 3.1 -> 7.7 GB); cuda run untouched
   (4200 eps, 95W-3262L-2D, EVAL@4000 12%/5%). Full runbook in §5aw.4.
+
+## L1 — 2026-09-02 01:20-02:05 | detector upgrade recon (owner goal: modern detector + <100ms decision)
+- Asked 4 questions BEFORE starting (owner instruction). Rulings: latency not act_period; stop PPO at
+  ~18k eps then board-train; isolated venv only for non-ultralytics; cheap screen then ONE full run.
+- MEASURED: icebow/.venv ultralytics 8.4.107 already ships yolo26 / yolo26-p2 / yolo12 / rt-detr ->
+  the approved venv is probably unnecessary; train.py already takes --model. Bar to beat = board-26
+  (yolo11s, 960px, 120 ep, 23.9 h): mAP50 0.860, mAP50-95 0.704.
+- RETRACTED my own first read of kitka ("88 new classes" -> naming artifact). Truth: sprite library,
+  fills 1 of 45 empty classes, +6,200 crops (+15%) to 128 existing, and 9 evolution classes go from
+  0-7 sprites to 88-540 = from unlearnable-by-synth to represented. That is the whole of its value.
+- ⚠ TRAP: 69/230 classes have ZERO val instances; the 9 kitka classes have 0-2. mAP50 on this val set
+  CANNOT see the kitka change -- a null would be an instrument artifact. Need a held-out SYNTHETIC val
+  from unseen kitka sprites, reported separately. detect-eval is right for the architecture half only.
+- No model trained: GPU is the PPO run's until 18k (watcher armed). Next: paper screen (free), non-GPU
+  latency breakdown, battery watchdog pause/resume rewrite.

@@ -22,8 +22,17 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-02 01:15**, branch `main` (**§5ay: ALL 268 USABLE REPLAYS CONVERTED THROUGH THE REAL
-ENGINE** -- 211 converted / 57 refused up front (Elite Barbarians evolution, form 26000043, no native
+Last updated: **2026-09-02 02:05**, branch `main` (**§5az: GAUNTLET L1 -- DETECTOR UPGRADE RECON.**
+The isolated venv the owner approved is probably unnecessary: `icebow/.venv`'s ultralytics 8.4.107
+ALREADY ships yolo26 / yolo26-p2 / yolo12 / rt-detr configs, so the leading candidates need no install.
+kitka's data is a SPRITE library, not a labelled dataset: my first "88 new classes" read was wrong and
+is retracted -- it fills 1 of 45 empty detector classes and adds +6,200 crops (+15%) to 128 existing
+ones, but its real value is 9 evolution classes going from 0-7 sprites to 88-540, i.e. from
+unlearnable-by-synth to represented. **TRAP: 69 of 230 classes have ZERO val instances and the 9 thin
+classes have 0-2, so mAP50 on the current val set CANNOT see the kitka change** -- a null there would be
+an instrument artifact. Owner rulings: latency (not act_period) to <100 ms; stop PPO at ~18k eps then
+board-train; isolated venv for anything non-ultralytics; cheap screen then ONE full run. Previously
+**§5ay: ALL 268 USABLE REPLAYS CONVERTED THROUGH THE REAL ENGINE** -- 211 converted / 57 refused up front (Elite Barbarians evolution, form 26000043, no native
 form in the frozen build); 17,757 of 17,901 driven plays accepted (99.2%), 0 invalid placements, 0 elixir
 delays; crowns match RoyaleAPI in 164/211 (77.7%), winner in 169/211 (80.1%), 135 matches fully clean;
 determinism 21/21; median 3.54 s per match, 782 s wall for the set. Fidelity limits are named (levels
@@ -186,9 +195,10 @@ cd C:\Users\benpe\ClashBot\hogeq
 
 ## 3. What is running RIGHT NOW
 
-* **2026-09-02 01:15 — cuda real run alive** (`icebow/data/bench/real_run_20260901.log`, 6975 episodes,
-  224W-5380L-4D; watchdog + gates armed, §5as). **Sandbox emulator + service STOPPED 01:08** (§5ay, qemu
-  verified gone); nothing else of ours is running. Sandbox state: WORKING, local patch commit 7c66f92 in
+* **2026-09-02 02:05 — cuda real run alive** (`icebow/data/bench/real_run_20260901.log`, 7,700 episodes
+  at 0.5 ep/s; watchdog + gates armed, §5as). **Owner ruling (§5az): stop it at ~18,000 episodes** and
+  hand the GPU to board training; background watcher armed (fires at >=18k or on exit). **Sandbox
+  emulator + service STOPPED 01:08** (§5ay, qemu verified gone); nothing else of ours is running. Sandbox state: WORKING, local patch commit 7c66f92 in
   `research/ext/cr-native-sandbox`'s own git; the batch results live in `scratchpad/gauntlet/ext/batch/`.
 
 * **board-26 detector training — RESUMED 2026-08-18 17:24 after a host restart killed it.**
@@ -5683,3 +5693,73 @@ the author's box also shows `loading_complete false`; anything about conversion 
 * Committed: `replay_drive.py`, `replay_batch.py`, `replay_view.py`, `batch/` (summary, aggregate, 211
   result JSONs, logs), the two recorded runs + viewer HTML, launcher scripts. NOT committed: libg dumps /
   carvings / disassembly, author jars (standing rule).
+
+## §5az — GAUNTLET L1: DETECTOR UPGRADE RECON (2026-09-02 01:20-02:05). The approved isolated venv is probably unnecessary (ultralytics 8.4.107 already ships yolo26 / yolo26-p2 / yolo12 / rt-detr); kitka is a SPRITE library whose real value is 9 evolution classes going from 0-7 sprites to 88-540 (my "88 new classes" first read RETRACTED); and ⚠ mAP on the current val set CANNOT measure that change -- 69/230 classes have ZERO val instances. No training run started: the GPU is the PPO run's until ~18k episodes.
+
+Full working notes: `scratchpad/gauntlet/L1/detector_upgrade_recon.md`.
+
+### 1. Owner rulings that scope this gauntlet (asked before starting, all four = my recommendation)
+1. "Sub-100 ms decision window" = **wall-clock LATENCY**, not `play.act_period`. The period stays
+   0.6 s; lowering it is a 6x MDP change that §3m measured as requiring a full sim retrain, and is
+   queued as its own experiment AFTER this gauntlet.
+2. **Stop the PPO cuda run at ~18,000 episodes**, then board training takes the GPU. Rationale offered
+   and accepted: §4t measured a previous run peaking near 18k and giving gains back -- but that was a
+   DIFFERENT config (CPU, no hazard head), so it is a screen, not a law. Saves ~12 h of GPU.
+3. Anything non-ultralytics goes in an **isolated venv**; `icebow/.venv` is not to be disturbed
+   (§4y measured -6.0pp winrate purely from running under the wrong venv's torch).
+4. Budget: **cheap screen, then ONE full ~24 h run** of the winner with kitka folded in.
+
+### 2. The install question mostly dissolves (measured)
+`icebow/.venv`: **ultralytics 8.4.107**, torch 2.11.0+cu128, CUDA True (RTX 5050 Laptop). Its model
+configs already include `26/` (yolo26, **yolo26-p2**, yolo26-p6, -seg/-obb/-pose), `12/`, `rt-detr/`,
+`v10/`, `v9/`. `tools/detect/train.py` already takes `--model` and already has `rtdetr-l.pt`,
+`yolo26n.pt`, `yolo11s.pt` sitting in `tools/detect/`. So **YOLO26 and RT-DETR need no install at all**
+-- the venv is only needed if a non-ultralytics candidate (RF-DETR / D-FINE / DEIM) survives the paper
+screen. `yolo26-p2` is a separate candidate on its own merits: a stride-4 head is the standard answer
+for SMALL objects, which is what CR units are at imgsz 960. Untested (b).
+
+### 3. The bar to beat (measured, `runs/detect/board-26`)
+yolo11s, imgsz 960, batch 4, 120 epochs, **23.9 h wall** (86,183 s): **mAP50 0.860, mAP50-95 0.704**,
+P 0.845 / R 0.826. Dataset nc=230, train 12,821 real + 5,000 synth (55,642 + 33,921 instances),
+val 2,346 images / 10,179 instances.
+
+### 4. kitka: what it actually adds — first read RETRACTED
+`icebow/data/kitka/detector_data` is 194 MB / 10,957 PNGs with **no bounding boxes** -- a sprite bank
+for the synthetic compositor, not a detection dataset. `segment/` = 183 class folders (29 not in our
+katacr import of 154); `dataset_updates/` = 3,165 crops / 29 classes, mostly evolutions.
+* **RETRACTION:** a naive name-normalizer reported "88 classes new to us". Handling `evolution`->`evo`
+  and plurals cut it to 14; checking those against the detector's own 230-class list cut it again.
+  Do not carry the 88 forward.
+* Our sprite bank already holds 42,313 crops / 184 classes. kitka adds **+6,200 crops to 128 classes we
+  already have** (~+15% variety) and fills **1 of the 45 detector classes that have NO sprites**
+  (`pekka_evo`, 324). The other 44 stay empty (hero abilities, `*_aoe` decals, mirror, void...).
+* **The real win is the thin classes**, where our bank has 1-7 sprites so every synthetic instance is
+  the same pixels: pekka_evo 0->324, hunter_evo 6->546, cannon_evo 6->242, lumberjack_evo 3->189,
+  electro_dragon_evo 7->167, dart_goblin_evo 1->143, vines 1->123, executioner_evo 7->95.
+  **9 evolution-era classes move from unlearnable-by-synth to represented.**
+
+### 5. ⚠⚠ TRAP: the promotion instrument cannot see the change it is meant to judge (measured)
+**69 of 230 classes have ZERO val instances.** Ultralytics averages AP only over classes with val
+instances, so those 69 can never move the number. The 9 classes kitka fixes have **0-2 val instances
+each** (executioner_evo 0, pekka_evo 0, the rest 1-2), so their AP is a coin flip.
+* Consequence: **comparing a kitka run's mAP50 against board-26's 0.860 and calling it a null would be
+  an artifact of the instrument, not a fact about the detector** -- the same failure mode as §8's
+  "never compare numbers from two different instruments".
+* `run.py detect-eval` is the right instrument for the ARCHITECTURE half (presence recall
+  class-agnostic, whitelist identity recall folded to base cards, per-ROLE gates with UNIT >= 0.80),
+  but it reads the same val set, so it does not fix this either.
+* Fix to build before the full run: a **held-out SYNTHETIC val** composed from kitka sprites the
+  training synth never saw, reported SEPARATELY from the real-frame val and never averaged into it.
+
+### 6. What this does NOT establish
+Nothing about whether any candidate beats yolo11s -- no model was trained or benchmarked this loop, by
+design: the GPU belongs to the PPO run until ~18k episodes and §6 forbids benchmarking on a contended
+box. The 23.9 h board-26 wall time is carried forward from that run's own log, not re-measured.
+
+### 7. Next
+1. Paper screen of candidates (yolo26s / yolo26-p2 / yolo12s / rtdetr-l / RF-DETR) -- free, no GPU.
+2. Latency budget breakdown of the non-GPU half of the decision path (capture, warp, tracker, threat
+   and observation build) while PPO still holds the GPU.
+3. Extend `tools/battery_watchdog.ps1`: it currently KILLS at 10% and needs a manual `--resume`; the
+   owner wants pause -> sit 1-2 h -> auto-resume.
+4. On the watcher firing at 18k: record PPO state, stop it, then the cheap screen, then the full run.
