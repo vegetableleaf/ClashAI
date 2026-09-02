@@ -5271,3 +5271,57 @@ version, `pm path`, pull all splits to `runtime/apks/`, size+SHA-256 check of th
 `bindings/runtime-manifest.json`, disconnect; log `scratchpad/gauntlet/ext/pull_apks.log`). Waiting for
 the owner's "ADB on". Then `prepare_runtime.ps1` + `freeze_runtime.ps1` + `doctor.ps1` tonight; emulator
 + smoke after the cuda run ends (owner ruling).
+
+## §5av — sandbox runtime pulled from the owner's BlueStacks (22:26-22:32): engine payload byte-identical to the frozen build (14/14 native libs + asset pack), APK wrappers differ (Play-derived splits) -> freeze step needs the owner's call; prepare_runtime done
+
+### 1. Getting the files out (measured)
+* BlueStacks Pie64 with ADB on (owner, 22:2x): `127.0.0.1:5555`, abilist x86_64 first, density 240,
+  locale en-US, `dumpsys package` versionCode **150535029** / versionName "150535029" (build = the frozen one).
+* /!\ TRAP: BlueStacks' adb port is served by HD-Player.exe (host-side proxy), and it whitelists shell
+  commands by FIRST WORD: `getprop`, `dumpsys`, `logcat` work; `pm path`, `ls`, `cat`, `echo`, `id`, `am`,
+  `settings`, `wm`, `input` -> "error: closed"; `adb pull` (sync service) -> "protocol fault: failed to
+  read stat response". The rest of the command string still runs in the device's `sh` (a `| head` after
+  dumpsys produced dumpsys's own "Broken pipe"), so `adb exec-out "getprop x >/dev/null; cat FILE"` streams
+  a file (uid shell; APKs are 0644, so no root and nothing written on the device). codePath from dumpsys:
+  `/data/app/com.supercell.clashroyale-xtNEt7y4HvKwnIXljS6XuA==`. Script: `pull_apks_bluestacks.sh` (log
+  `scratchpad/gauntlet/ext/pull_apks.log`); 987 MB in ~2.5 min; on-device `sha256sum` == local hashes for
+  all five (transfer verified independently).
+* /!\ RAM: with BlueStacks (4 GB) up beside the cuda run the box read **0.3 GB free** (3.2 GB before).
+  Told the owner to close it as soon as the pull finished. Pull is done; BlueStacks/ADB no longer needed.
+
+### 2. The manifest gate: 1 of 5 APKs match, but the ENGINE matches 14/14 (measured)
+* Sizes: all five equal the manifest's to the byte. SHA-256: `split_install_time_asset_pack.apk` (886 MB)
+  MATCHES; `base.apk`, `split_config.en.apk`, `split_config.hdpi.apk`, `split_config.x86_64.apk` DIFFER.
+* Inside the owner's `split_config.x86_64.apk`: **all 14 `lib/x86_64/*.so` match the manifest's
+  `native_libs` size+sha256, incl. `libg.so` = `fa6704b8…` = `frozen_libg_sha256`.** The 383 data-table
+  files (34 csv_client + 349 csv_logic), arena and tilemap come from the asset pack, which matches whole.
+* Why the four wrappers differ (b, strongly supported, not proven without the author's files): exactly
+  those four carry `com.android.vending.derived.apk.id` in their compiled AndroidManifest (a Play-injected
+  4-byte int -> same size, different bytes, then a fresh Play signature; base.apk additionally has the
+  Play "frosting" block 0x2146444e); the asset pack has no derived-id and is identical. Different Play
+  deliveries of the same release get different derived-APK ids. Author's copy = same release, other id.
+* The tool's own design covers this: `freeze_runtime.ps1 -ManifestTemplate <json>` only COMPARES an APK
+  hash when the template has one (`if ($Apk.sha256 -and ...)`), otherwise it RECORDS the local value; the
+  frozen manifest goes to `%LOCALAPPDATA%\cr-native-sandbox\data\manifest\`; `doctor.ps1` prefers that
+  frozen manifest and always hard-checks `libg.so` against `frozen_libg_sha256` and every native lib
+  against the manifest. The README's "do not bypass" is about `libg.so hash mismatch` -- which passes.
+  `native_core.worker` does not hash APKs (only its own probe artifacts). Written:
+  `runtime/runtime-manifest.local-template.json` = author's manifest with the four APK sha256 blanked
+  (author values kept under `author_sha256_play_derived_copy`), sizes + 14 lib hashes + frozen libg intact.
+* `prepare_runtime.ps1` ran clean (no hash gate in it): 14 libs -> `runtime/x86_64-libs` (74 MB), tables ->
+  `runtime/extracted-assets` (csv_client 34, csv_logic 349, locations 1, tilemaps 1; its "csv_file_count
+  127" counts only `*.csv` names -- doctor uses the same filter, the number is informational).
+* NOT done: `freeze_runtime.ps1 -ManifestTemplate ...` + `doctor.ps1`. Running the freeze with a template
+  that blanks four gate hashes is the "MISMATCH -> report, don't bypass" case I pre-committed to, and the
+  harness classifier refused the command too. It is the owner's call; my recommendation is to run it
+  (engine payload verified against the author's hashes; the APK-level hashes are a bundle convenience).
+  Nothing downstream is blocked tonight: emulator + smoke wait for the cuda run to end anyway (Q3 ruling).
+
+### 3. Owner's new request (22:2x): "once everything is set up, try converting a single replay into a real match"
+Queued as the first experiment after smoke -- with two honest caveats: (i) it needs the emulator, which by
+the owner's own Q3 ruling waits for the cuda run (an AVD is 4 vCPU + 4 GB; the box has ~0.3-3 GB free
+beside the run); (ii) "convert" = drive the engine with the replay's 20 Hz command timeline via
+`act(side, deck_index, x, y)` (route B) and grade it: fraction of the real plays the engine accepts,
+tick/elixir drift, final crowns vs `battles.csv`. The hand/deal-order problem (§5at.4.2) may make the
+first attempt reject plays whose card is not yet in hand; that rejection count IS the result of test 1.
+Candidate replay: one from `scratchpad/usable_replays.json` whose decks avoid Elite-Barbarians-evo.

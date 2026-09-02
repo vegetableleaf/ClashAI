@@ -218,3 +218,7 @@ STATE    running: geo2 s54. cleared: gate 1 (workers 12). confirmed: scratch, 40
   predicted), 0 warnings -> both cuda-at-scale paths passed. Sandbox runtime: BlueStacks AppCache.json
   proves CR build 150535029 installed 30.08 (retraction of the "client is newer" reading); pull script
   ready; waiting for the owner to enable ADB in BlueStacks. §5au.
+- 2026-09-01 22:40 sandbox runtime pulled from the owner's BlueStacks via exec-out (HD-Player adb proxy
+  whitelists getprop/dumpsys/logcat only; pull/sync blocked). Engine payload byte-identical: 14/14 native
+  libs incl. libg.so fa6704b8 + asset pack; 4 Play-derived APK wrappers differ (derived.apk.id + re-sign,
+  same sizes). prepare_runtime OK. freeze (template with blanked APK hashes) = owner's call. §5av.
