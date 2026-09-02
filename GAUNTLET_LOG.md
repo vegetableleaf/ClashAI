@@ -323,3 +323,23 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   recognition, threat/canvas, policy forward, LiveSearch.decide) -- the full 100 ms budget breakdown
   without touching play.py; then the 7 ms preprocess term. Gate-prior prep in parallel (CPU).
 
+
+## L6 — 2026-09-02 15:00-15:25 | GATE-PRIOR RUN LAUNCHED (owner order "launch the elixir fix run")
+- Built + smoked + launched in one loop. tools/gate_prior.py (both decks) fits P(play per 0.6 s window |
+  floor(elixir), phase) from the crawled replays; elixir reconstructed (start 5, engine regen, CardDB cost),
+  error MEASURED: 1.7% (icebow, 519 replays / 23,620 plays) and 2.8% (hogeq, 595 / 30,258) of plays under
+  cost. Both decks bank: single-elixir P(play) ~0.04-0.06 at 3-7 elixir, 0.20-0.25 at 9. Pros made 65% (icebow)
+  / 54% (hogeq) of plays at >=6; the 18k agent spent 0.02% of steps there.
+- Hook in both train_sim_ppo.py: sim.ppo_gate_prior_coef (0.0 = off) x Bernoulli CE of the GATE head toward
+  the table on match rows with play unmasked; engine clock added to the rollout + remote payload for the
+  phase key. Watchdog: ELIXIR>=6 drift rule with its own floor 0.002 (0.05 would have been dead), suppressed
+  when GATE DRIFT fires the same cycle. real_run_gates.py --run <kind>_<date>. Tests 15/15 icebow, 7+1 skip hogeq.
+- Deviation from the 08:20 ruling, stated: no threat key in v0 (needs the engine recording pass).
+- RUN: 15:07, cuda, seed 41, 40k, ONE change vs the 18k run = coef 0.1 (untested first value). Update 200:
+  pi(play) 0.379 vs prior 0.051 on usable rows, 8% of rows usable (= the collapse: nothing affordable on 92%).
+  Watchdog + gates armed on data/policy_gate_20260902.pt. Stale 18k watchdog still alive (kill refused).
+- TRAP (a): 91 watchdog readings of the FROZEN 18k checkpoint: cell_struct 685-14,834x, elixir>=6 0.0-11.3%;
+  the CELL STRUCTURE drift rule fired on an unchanged file. HANDOFF 8 + 5bf.5.
+- hogeq refuses --search-interval with workers>1 (search-in-workers never ported) -- parked in 6.
+- Next: read the run at m~1000 / the m=5k gate; latency-loop offline stage timer (single-thread parts only
+  while the box is contended).

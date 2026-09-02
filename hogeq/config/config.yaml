@@ -1715,6 +1715,16 @@ sim:
   # float to every rollout worker (RemotePool(spell_min_value=...)), because a veto evaluated in
   # the parent does not exist under --workers > 1, which is every real run.
   ppo_spell_min_value: 0.0
+  # ---- WHEN-NOT-TO-PLAY FROM A SOURCE THAT KNOWS (owner ruling 2026-09-02 08:20, HANDOFF 5bf) ----
+  # The 18k run's elixir>=6 share fell 2% -> 0.02% and three wait-side REWARD terms are dead at
+  # 3 seeds, so this is not a reward. It is a cross-entropy pull of the GATE head (only) toward the
+  # pros' P(play per decision | elixir bucket, phase), fitted by `tools/gate_prior.py` from the
+  # crawled replays into `config/gate_prior.json` (single elixir: ~4-8% at 3-7 elixir, ~20% at 9).
+  # Card and cell heads are untouched; drill rows and rows with nothing affordable are excluded.
+  # 0.0 = off (byte-for-byte the previous trainer). The trainer prints "GATE PRIOR CE ..." every
+  # 200 updates with pi(play) vs the prior on the same rows, so the log says whether it bites.
+  ppo_gate_prior_coef: 0.0
+  ppo_gate_prior_path: "config/gate_prior.json"
   # ---- ROLLOUT SEARCH IN THE TRAINING LOOP ----
   # Set these and `train-sim-ppo` searches with NO command-line flag; --search-* still overrides.
   # Search is the ONLY intervention that has moved this project's outcome (37.0% -> 85.7% on frozen

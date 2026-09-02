@@ -22,7 +22,18 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-02 15:00**, branch `main` (**§5be: THE DETECTOR SCREEN IS DECIDED -- yolo11s
+Last updated: **2026-09-02 15:20**, branch `main` (**§5bf: THE GATE-PRIOR RUN IS LAUNCHED** (owner order
+15:0x: "launch the elixir fix run"). `data/bench/gate_run_launch.sh`, 15:07, cuda, seed 41, 40k matches, ONE
+change vs the 18k real run: `sim.ppo_gate_prior_coef 0.1` -- a cross-entropy pull of the GATE head (only)
+toward the pros' P(play | elixir bucket, phase), fitted from the crawled replays by the new
+`tools/gate_prior.py` into `config/gate_prior.json` (both decks; icebow 519 replays / 23,620 plays, hogeq 595 /
+30,258; elixir reconstructed with a MEASURED 1.7% / 2.8% under-cost error). Deviation from the 08:20 ruling,
+stated plainly: v0 conditions on (elixir, phase) only -- the threat-on-our-half key needs the engine
+recording pass and slots in without changing the hook. First reading at 200 updates: pi(play) 0.379 vs prior
+0.051 on the rows the prior can act on (8% of rows -- the collapsed policy has nothing affordable on the
+rest). New trap (a): 91 watchdog readings of the FROZEN 18k checkpoint spread cell_struct 685-14,834x and
+elixir>=6 0.0-11.3% -- the CELL STRUCTURE drift rule fired on an unchanged policy (§5bf.5). Previously
+**§5be: THE DETECTOR SCREEN IS DECIDED -- yolo11s
 stays; yolo26s lost at every epoch (final mAP50 0.408 vs 0.253, mAP50-95 0.294 vs 0.171, identical args)
 and is also SLOWER on this GPU (34.5 vs 31.3 ms median wall, idle box): the NMS-free postprocess saving
 (3.1 -> 1.1 ms) is real but its inference is 6 ms slower, so the "faster because NMS-free" premise is
@@ -236,11 +247,23 @@ cd C:\Users\benpe\ClashBot\hogeq
 * **2026-09-02 07:35 — the PPO cuda run is STOPPED** (§5ba) at 18,000 episodes, per the owner's ruling
   and confirmed by its own eval curve. Archive + checkpoints:
   `icebow/data/bench/stopped_real_cuda_18k_20260902/` (2 .pt SHA-verified, 2 milestone snapshots, log).
-* **2026-09-02 14:22 -- NOTHING IS RUNNING.** The hogeq crawl finished (598 replays, §5bd) and both
-  detector screen arms finished (`ALL SCREEN ARMS DONE 14:22:16`, §5be). **board-27 is CANCELLED** by
-  owner ruling (§5be.3) -- do NOT launch `battery_watchdog.ps1 -Run board-27`. The training synth is
-  still the PRE-kitka one (regen is safe now that no reader is open, but only worth doing for the
-  fine-tune probe in §5be.3). Free RAM 12.3 GB, GPU idle.
+* **RUNNING NOW (2026-09-02 15:07): THE GATE-PRIOR RUN** (§5bf) -- `data/bench/gate_run_launch.sh`:
+  `run.py --config data/bench/gate_run.yaml train-sim-ppo --matches 40000 --envs 96 --workers 12 --size 432
+  --device cuda --seed 41 --search-interval 4`, log `icebow/data/bench/gate_run_20260902.log`, checkpoint
+  `icebow/data/policy_gate_20260902.pt` (isolated, was empty at launch), continuation log
+  `data/continuations_gate.jsonl`, launch epoch in `gate_run_20260902.launched`, exit line will land in
+  `gate_run_20260902.progress`. Overlay = config.yaml + those two paths + `hazard_coef 0.5` +
+  `ppo_gate_prior_coef 0.1` (verified by diff against `real_run.yaml`: the ONE change is the prior).
+  Monitors (nohup): `tools/ppo_watchdog.py data/policy_gate_20260902.pt --every 300 --quiet-min 30` ->
+  `data/bench/gate_run_watchdog.out`; `tools/real_run_gates.py --run gate_20260902` ->
+  `data/bench/gate_run_gates.out` (snapshots `data/bench/gate_m{5,10,20}k.pt`). Pace at launch 0.6 ep/s.
+  Read `GATE PRIOR CE ... pi(play) X vs prior Y` lines in the log: the term is biting iff X falls toward Y.
+* **STALE, could not be stopped: the 18k run's watchdog** (PIDs 21564/72608 under nohup 32660, launched
+  2026-09-01 21:25) is still sampling the frozen `data/policy_real_20260901.pt` every 5 min (a 2,400-step
+  CPU probe each time) and appending to `data/ppo_watchdog.log`. The kill was refused by the session's
+  permission classifier. OWNER: `Stop-Process -Id 72608,21564,32660`. Its readings are the noise-floor
+  data set in §5bf.5, so they were not wasted.
+* board-27 stays CANCELLED (§5be.3). The training synth is still the PRE-kitka one.
 * **DONE: the hogeq replay crawl** (§5bc-5bd) -- output `hogeq/data/royaleapi/crawl2/` (gitignored).
 * **DONE: the L2 detector screen** (`scratchpad/gauntlet/L2_screen.ps1`) -- yolo11s control then
   yolo26s, identical settings, fraction 0.35 / 30 epochs / imgsz 960, ~2.8 GB VRAM. **Measured 5.4
@@ -1986,6 +2009,25 @@ slow one.
 
 ## 6. Open work
 
+### Parked from §5bf (2026-09-02 15:25) -- do not bundle into the running gate-prior run
+* Prior v1: add the threat-on-our-half key (needs `replay_drive --record-every 12` over the converted
+  replays); one more index in `fit()` and in the trainer's `_gtab[...]` lookup.
+* hogeq: port icebow's SEARCH-IN-THE-WORKERS (its trainer refuses `--search-interval` with workers>1) and
+  the watchdog `_Drift` + per-label floor, BEFORE its own gate-prior run.
+* Watchdog instrument: 6 envs x 400 steps gives cell_struct a 3x 10-90% spread on a frozen policy (§5bf.5);
+  raise the sample or widen the median window, and re-check the 0.60 band against the frozen-checkpoint
+  data set (`data/ppo_watchdog.log`, matches=18000 rows) before trusting a CELL STRUCTURE alert.
+* If `pi(play)` on usable rows has not moved toward the prior by m=5k: coef 0.1 -> 0.5, one change.
+
+### ⚑ OWNER ORDER 2026-09-02 ~15:00 -- "launch the elixir fix run"; both decks collapse to cheap cards
+Owner: *"launch the elixir fix run. I've noticed that both icebow and hogeq collapse towards playing cheap
+cards, so this is a problem shared by both and most likely has a shared solution as well. After launching,
+continue onto the next loop."* Done at 15:07 (§5bf, §3). On the shared-solution claim: **(a) confirmed in
+FORM** -- both crawled corpora show the same banking shape (pros play in ~4-8% of decision windows at 3-7
+elixir and ~20-25% at 9, single elixir; §5bf.2), and the tool + hook are deck-agnostic with a deck-measured
+table, so hogeq gets the same fix by setting its own `ppo_gate_prior_coef`. **(b) untested** whether the
+same coef moves both decks; hogeq's run waits for the box (one run at a time) and for this one's verdict.
+
 ### ⚑ OWNER RULING 2026-09-02 14:30 -- board-27 CANCELLED; divert to the queued items + the latency loop
 Owner: *"if the verdict is to keep YOLO11s, then i don't really see a need for a full day of board
 training, unless you think the segments from kitka will benefit the detector significantly... If you
@@ -2368,6 +2410,13 @@ per section in place, keep the archive greppable and committed.
 
 ## 8. Measurement traps (each of these produced a wrong conclusion first)
 
+* **The PPO watchdog's sampled metrics have a WIDE noise floor -- measured on a frozen checkpoint
+  (2026-09-02, §5bf.5).** 91 readings of the unchanged 18k file (6 envs x 400 steps each) spread
+  cell_struct **685-14,834x** (10-90%: 5,014-11,802), elixir>=6 **0.0-11.3%**, P(play) 0.174-0.391. The
+  CELL STRUCTURE DRIFT rule (0.60 x rolling median) fired on that unchanged file at 10:06. A single
+  watchdog reading is one sample of a noisy instrument; a DRIFT alert on cell_struct is not evidence
+  without a second instrument, and any new relative-decline rule must be checked against this data set
+  (`icebow/data/ppo_watchdog.log`, the matches=18000 rows) before it is trusted.
 * **The trainer's `drills N (X% pass)` is a run-LIFETIME average, not a rate (2026-09-02, §5bd).**
   `drills_done`/`drill_pass` are initialised once and never reset, so the number converges by
   construction and then cannot move: measured on the stopped 18k run, 29% -> 45% over the first ~450
@@ -6289,3 +6338,115 @@ change, no live-path change.
    -> per-card top-cell dump of the 18k checkpoint.
 3. hogeq derivation (§5bd.6): doctrine prior-weight vs measured frequency per card, then a
    config-gated prior, one change per experiment.
+
+## §5bf — GAUNTLET L6: THE GATE-PRIOR RUN IS LAUNCHED (owner order) -- the pro WHEN-TO-PLAY table, the KL hook in both trainers, the elixir>=6 drift rule, and the watchdog's own noise floor measured on a frozen checkpoint (2026-09-02 15:00-15:25)
+
+### 1. What was ordered and what was built (this loop; everything below is new code)
+Owner order ~15:00: launch the elixir-fix run defined by the 08:20 ruling (§6). The prep did not exist at
+15:00; it was built, smoked on cuda in BOTH decks, and the icebow run launched at 15:07. Files:
+* `tools/gate_prior.py` (icebow + hogeq, byte-identical): fits `P(play in one agent_dt window | floor(elixir)
+  0..10, phase single/double/triple)` from the crawled player's play timeline in
+  `data/royaleapi/crawl2/plays_ext.csv`. Elixir is RECONSTRUCTED (start 5, the engine's four-phase regen
+  1/2.8 -> 1/1.4 -> 1/0.93 with the ENGINE's boundaries reg-60 and reg+(ot-60), CardDB cost per play,
+  `_invalid`/ability rows priced as `mighty_miner_ability`, `-evN`/`-hero` suffixes stripped) and its error
+  is MEASURED, not assumed: the share of plays where reconstructed elixir is below the card's cost.
+  Output `config/gate_prior.json` (schema 1, committed -- it is config, not data).
+* `train_sim_ppo.py` (both decks, applied by anchor -- the file is DRIFT, §5bc): `sim.ppo_gate_prior_coef`
+  (default **0.0** = byte-for-byte the old trainer) + `sim.ppo_gate_prior_path`. The engine clock `t` now
+  rides in the rollout (`roll["t"]`, from the new `"t"` key in `sim/remote_pool.py`'s payload or `env.eng.t`
+  in-process) so the phase is known at update time. Term: on MATCH rows whose PLAY logit is unmasked,
+  `coef * mean(-(p*log pi_play + (1-p)*log pi_wait))` = KL(prior || pi) on the gate up to a constant.
+  Card and cell heads untouched. Prints `GATE PRIOR CE ... pi(play) X vs prior Y on the same rows | Z% of
+  rows usable` at update 1 and every 200. Both `config.yaml`s document the keys at 0.0.
+* `tools/ppo_watchdog.py` (icebow): `_Drift(min_peak_by_label={"ELIXIR>=6": 0.002})` -- the shared floor
+  0.05 is a P(play) scale and would have left an elixir>=6 rule permanently dead (its medians are ~0.02).
+  The rule is SUPPRESSED in a cycle where GATE DRIFT already fired (corr -0.94, one event = one alarm).
+  hogeq's watchdog has no `_Drift` at all (parity gap, noted, not ported this loop).
+* `tools/real_run_gates.py`: `--run <kind>_<date>` (default = the old real run), so the same three
+  instruments fire at m=5k/10k/20k on this run and snapshot to `data/bench/gate_m<k>k.pt`.
+* `tests/test_gate_prior.py` (both decks): phase boundaries, suffix strip, elixir reconstruction + under-cost
+  count, ability pricing, the banking shape, the watchdog floor (skips on hogeq), and the term's gradient
+  sign (d/dlogit_play = pi_play - p). icebow 15/15 with the drift tests, hogeq 7 pass / 1 skip.
+
+### 2. The prior itself (a) measured -- P(play per 0.6 s decision | elixir bucket, phase)
+| deck | replays | plays | under-cost | plays at >=6 | single: 3 / 5 / 7 / 9 elixir | double: 3 / 5 / 7 / 9 |
+|---|---|---|---|---|---|---|
+| icebow | 519 | 23,620 | **1.7%** | 65% | 0.063 / 0.042 / 0.043 / 0.203 | 0.103 / 0.110 / 0.161 / 0.446 |
+| hogeq | 595 | 30,258 | **2.8%** | 54% | 0.075 / 0.060 / 0.070 / 0.249 | 0.139 / 0.168 / 0.195 / 0.386 |
+
+Full 11-bucket rows are in each `config/gate_prior.json`. Shape, both decks: flat and low from 2 to 7
+elixir, a step at 8, a peak at 9. The pros BANK, and they do it with a 3.5-cycle deck (icebow) and a
+2.6-cycle deck (hogeq) alike -- which is the owner's "shared problem" claim confirmed in form. The 18k
+agent spent 0.02% of its steps at >=6 (§5ba); the pros made 65% of their plays there.
+* **What the table is NOT (b):** not conditioned on the board. The 08:20 ruling's v0 named
+  threat-on-our-half as a third key; that needs the engine recording pass (`replay_drive --record-every
+  12`, §6) and is a one-line extension of `fit()` + one more index in the trainer. It is ALSO not the
+  agent's own state distribution: the pros are at 9 elixir often, the agent almost never, so the term
+  mostly acts at the low buckets today and the high-bucket rows of the table only matter once the
+  policy gets there.
+* **Reconstruction caveat (a):** 1.7% / 2.8% of plays are impossible under the reconstruction (elixir
+  below cost) -- unrecorded plays, an evo/ability cost mismatch, or a mistimed tick. The error is small
+  and it biases the low buckets slightly UP (a phantom-cheap play lands in a lower bucket), i.e. against
+  the direction of the pull, not for it.
+
+### 3. The run (a) launched, first readings
+`data/bench/gate_run_launch.sh` = `real_run_launch.sh` with the overlay swapped; overlay diff vs
+`real_run.yaml` is exactly {checkpoint path, continuation log path, `ppo_gate_prior_coef 0.1`, the
+documented `ppo_gate_prior_path`}. Banner verified: `GATE PRIOR ON: coef 0.100 ... (519 replays, dt 0.6 s;
+single-elixir P(play) at 4 / 7 / 9 elixir = 0.06 / 0.04 / 0.20)`, `HAZARD HEAD ON: coef 0.500`,
+`LEARNER ON cuda`, 12 workers x 8 envs. Pre-launch: no trainer running, 11.7 GB RAM free, CPU 3%,
+checkpoint path empty.
+* **Update 200 (100 episodes, ~3 min in):** `GATE PRIOR CE 0.5059 | pi(play) 0.379 vs prior 0.051 on the
+  same rows | 8% of rows usable`. Smoke on the same overlay at update 1 read 0.520 vs 0.048 / 13%.
+  hogeq smoke (its own table): 0.463 vs 0.061 / 32% usable.
+* **The 8% is the collapse itself, read from a new angle:** only 8% of minibatch rows are match rows with
+  anything affordable. The agent spends everything the instant it can, so 92% of its decisions are
+  forced waits where no gate term can act. The prior acts exactly on the 8% where the choice exists; if
+  it wins there, elixir accumulates and the usable share rises -- so `Z% of rows usable` is itself an
+  endpoint to watch, alongside the watchdog's `elixir_ge6`, `bank_to_six_then_bow` (exists,
+  `drills_icebow.py:214`), and the m=5k/10k/20k instrument gates.
+* **coef 0.1 is (b) untested.** It is the first value, chosen so the term (0.05 x 0.1 = 0.005 of loss) is
+  the same order as the entropy bonus (0.02 x H) rather than the policy loss. The log line exists so
+  the choice can be judged from the run instead of argued: if `pi(play)` on usable rows has not moved
+  toward the prior by m=5k, the coef is too small and the next run is the one change 0.1 -> 0.5.
+
+### 4. Smoke findings, both decks (a)
+icebow `--matches 6 --envs 8 --workers 2 --device cuda --search-interval 4`: exit 0, term printed,
+match-step gate drift on PLAY -0.315 in the last cycle (the term pushes the play logit down, as the test
+says it must). hogeq: exit 0 -- BUT hogeq REFUSES `--search-interval` with `--workers > 1` ("the envs live
+in the worker processes and search needs an in-process engine"): icebow's SEARCH-IN-THE-WORKERS path
+(§5as) was never ported. Parity gap for hogeq's own gate-prior run, recorded in §6.
+
+### 5. NEW TRAP (a): the watchdog's sampled metrics have a wide noise floor -- measured on a FROZEN checkpoint
+The 18k run's watchdog kept sampling `data/policy_real_20260901.pt` after the run died (07:19 -> 14:58,
+the file unchanged, 91 readings of the SAME policy at 6 envs x 400 steps). Spread across those readings:
+
+| metric | 10% | median | 90% | min / max |
+|---|---|---|---|---|
+| P(play) mean | -- | 0.362 | -- | 0.174 / 0.391 |
+| elixir>=6 % | 0.0 | 0.1 | 0.2 | 0.0 / **11.3** |
+| cell_struct (x untrained) | 5,014 | 7,865 | 11,802 | **685 / 14,834** |
+| distinct cells | -- | 32 | -- | 23 / 59 |
+
+**The CELL STRUCTURE DRIFT rule FIRED at 10:06 on this unchanged file** ("43% below this run's rolling
+median") -- a false positive by construction. The 0.60 x median band is inside this instrument's own
+spread for cell_struct (10th percentile = 0.64 x median), so that rule will keep firing on healthy runs.
+Consequences: (i) for THIS run, a CELL STRUCTURE alert is not evidence of anything without a second
+instrument; (ii) the new ELIXIR>=6 rule inherits the same instrument -- at the collapsed level its spread
+is 0.0-0.2% with one 11.3% outlier (one env banking through one match), so at a HEALTHY level (unknown,
+say 2-5%) the relative-decline band is (b) untested against noise; (iii) the right fix is a larger sample
+per reading or a longer median window, and that is a monitoring change, not a training change -- parked
+in §6, not made while the run depends on the watchdog as armed. §8 gets the one-line trap.
+
+### 6. What this does NOT establish
+Nothing about whether the prior CHANGES the policy's banking -- 100 episodes is a launch check. Nothing
+about the coef. Nothing about hogeq (smoked, not run). The shared-solution claim is confirmed in form
+(same table shape, same tool), not in effect.
+
+### 7. Next
+1. Read the run at ~m=1000 (`GATE PRIOR CE` trend, `elixir_ge6`, `% of rows usable`), then the m=5k gate.
+2. Latency loop resumes: offline stage timer for `act_in_match` (§5be.5.1) -- CPU-light, but the box is
+   now 12 workers busy, so only the single-thread, no-throughput parts of it are trustworthy while the
+   run is up (never benchmark throughput on a contended box).
+3. Engine recording pass -> threat key for the prior (v1), hogeq search-in-workers port, hogeq watchdog
+   `_Drift`, watchdog sample size -- all parked in §6.

@@ -227,6 +227,27 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
               f"{bank_floor:.0f} elixir up, so the bar can actually reach them")
 
     ppo_path = cfg.path(cfg.get("train", "sim_ppo_checkpoint", default="data/policy_sim_ppo.pt"))
+    # WHEN-NOT-TO-PLAY FROM A SOURCE THAT KNOWS (owner ruling 2026-09-02 08:20, HANDOFF 6 / 5bf).
+    # The 18k run's elixir>=6 share fell 2% -> 0.02% and three wait-side reward terms are dead at
+    # 3 seeds, so this is NOT a reward: it is a cross-entropy pull of the GATE head (only) toward
+    # the pro P(play | elixir bucket, phase) table that tools/gate_prior.py fits from the crawled
+    # replays. KL(prior || pi) up to a constant. Card and cell heads are untouched; drill rows and
+    # rows with nothing affordable (play masked) are excluded. coef 0.0 = off, byte-for-byte.
+    gate_prior_coef = float(cfg.get("sim", "ppo_gate_prior_coef", default=0.0))
+    _gprior = None
+    if gate_prior_coef > 0.0:
+        import json as _gjson
+        _gpp = cfg.path(cfg.get("sim", "ppo_gate_prior_path", default="config/gate_prior.json"))
+        _gj = _gjson.loads(Path(_gpp).read_text(encoding="utf-8"))
+        assert _gj.get("schema") == 1, "gate prior: unknown schema"
+        _greg, _got = float(_gj["regulation_s"]), float(_gj["overtime_s"])
+        _gprior = (np.asarray([_gj["p_play"][p] for p in ("single", "double", "triple")], np.float32),
+                   _greg - 60.0, _greg + max(0.0, _got - 60.0))
+        print("[train-sim-ppo] GATE PRIOR ON: coef %.3f, %s (%d replays, dt %.1f s; single-elixir "
+              "P(play) at 4 / 7 / 9 elixir = %.2f / %.2f / %.2f)"
+              % (gate_prior_coef, _gpp, int(_gj.get("replays", 0)), float(_gj.get("dt", 0.0)),
+                 _gprior[0][0][4], _gprior[0][0][7], _gprior[0][0][9]))
+    _gpstat = {"n": 0, "ce": 0.0, "pi": 0.0, "p": 0.0, "rows": 0, "seen": 0}
     resumed_best_wr = -1.0
     warm_loaded = False
     # RESUME only into a MATCHING architecture. Flipping observation.use_detector_canvas changes the
@@ -869,6 +890,17 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                   if roll.get("srch") else torch.zeros(N, device=device))
         obs_f, hand_f = flat("obs"), flat("hand")
         nxt_f, elx_f, thr_f = flat("nxt"), flat("elx"), flat("thr")
+        gp_f = gpm_f = None
+        if _gprior is not None and roll.get("t"):
+            _gtab, _gdbl, _gtri = _gprior
+            _gt = np.asarray(flat("t"), np.float32)
+            _gph = np.where(_gt >= _gtri, 2, np.where(_gt >= _gdbl, 1, 0))
+            _geb = np.clip(np.floor(np.asarray([float(e[0]) for e in elx_f]) * 10.0 + 1e-6),
+                           0, 10).astype(np.int64)
+            gp_f = torch.tensor(_gtab[_gph, _geb], dtype=torch.float32, device=device)
+            _gdr = (torch.tensor(flat("isdrill"), dtype=torch.float32, device=device)
+                    if roll.get("isdrill") else torch.zeros(N, device=device))
+            gpm_f = (_gdr < 0.5)                    # match rows only; the table is from matches
 
         # ADVANTAGE SPLIT: drill steps vs match steps. Advantages are normalised over the WHOLE
         # mixed batch, and a drill episode is ~20 steps against a match's ~300, so the two carry
@@ -1060,6 +1092,25 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                                      100.0 * _sstat["changed"] / max(1, _sstat["searched"]),
                                      _sstat["loss"] / _sstat["nl"],
                                      100.0 * _sstat["kept"] / max(1, _sstat["seen"])), flush=True)
+                if gp_f is not None and gate_prior_coef > 0.0:
+                    # KL(prior || pi) on the gate = Bernoulli cross-entropy toward p_play. Rows
+                    # whose PLAY logit is masked (nothing affordable) carry log pi(play) ~ -1e9 and
+                    # are excluded, or the term would be dominated by states the gate cannot act in.
+                    _gpk = gpm_f[mb_t] & (gq_m[:, 1] > _NEG * 0.5)
+                    _gpstat["seen"] += int(_gpk.numel())
+                    if bool(_gpk.any()):
+                        _gpt = gp_f[mb_t][_gpk]
+                        _gce = -(_gpt * lp_g[_gpk, 1] + (1.0 - _gpt) * lp_g[_gpk, 0])
+                        loss = loss + gate_prior_coef * _gce.mean()
+                        _gpstat["n"] += 1; _gpstat["rows"] += int(_gpk.sum())
+                        _gpstat["ce"] += float(_gce.mean()); _gpstat["p"] += float(_gpt.mean())
+                        _gpstat["pi"] += float(lp_g[_gpk, 1].exp().mean())
+                        if _gpstat["n"] == 1 or _gpstat["n"] % 200 == 0:
+                            print("[train-sim-ppo]   GATE PRIOR CE %.4f over %d updates | pi(play) %.3f "
+                                  "vs prior %.3f on the same rows | %.0f%% of rows usable"
+                                  % (_gpstat["ce"] / _gpstat["n"], _gpstat["n"],
+                                     _gpstat["pi"] / _gpstat["n"], _gpstat["p"] / _gpstat["n"],
+                                     100.0 * _gpstat["rows"] / max(1, _gpstat["seen"])), flush=True)
                 opt.zero_grad(); loss.backward()
                 torch.nn.utils.clip_grad_norm_(net.parameters(), max_grad)
                 opt.step()
@@ -1091,11 +1142,13 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
         # workers while the sampling happens here.
         in_drill = [bool(p.get("in_drill")) for p in rpool.last]
         celx = [p["elx"] for p in rpool.last]; cthr = [p["thr"] for p in rpool.last]
+        ct = [float(p.get("t", 0.0)) for p in rpool.last]      # engine clock, for the gate prior's phase
     else:
         cobs = [e.reset() for e in pool]
         chand = [e.hand_vec.copy() for e in pool]; cnxt = [e.next_vec.copy() for e in pool]
         in_drill = [bool(getattr(e, "_in_drill", False)) for e in pool]
         celx = [e.elixir_vec.copy() for e in pool]; cthr = [e.threat_vec.copy() for e in pool]
+        ct = [float(getattr(getattr(e, "eng", None), "t", 0.0)) for e in pool]
     ep_r = [0.0] * K
     ep_n = [0] * K            # steps per env this episode, for the drill STEP share
     running = {"v": True}
@@ -1161,7 +1214,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                     # SELF-IMITATION MASK: 1.0 on steps that turned out to belong to a drill
                     # episode the agent PASSED. Filled in retroactively when the episode ends,
                     # because that is when the verdict exists.
-                    "sil": [], "isdrill": [], "boot": None,
+                    "sil": [], "isdrill": [], "boot": None, "t": [],
                     # SEARCHED steps: the action came from the SEARCHER, not the policy. They are
                     # EXCLUDED from the PPO surrogate (the stored log-prob is the policy's, not the
                     # behaviour that acted, so the importance ratio would be meaningless) and are
@@ -1174,7 +1227,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 acts, logps, vals = choose_sample(cobs, chand, cnxt, celx, cthr)
                 roll["obs"].append(list(cobs)); roll["hand"].append([h.copy() for h in chand])
                 roll["nxt"].append([n.copy() for n in cnxt]); roll["elx"].append([e.copy() for e in celx])
-                roll["thr"].append([t.copy() for t in cthr])
+                roll["thr"].append([t.copy() for t in cthr]); roll["t"].append(list(ct))
                 # SEARCH OVERRIDES THE ACTION on its own cadence. Acting with the searcher is
                 # the point: it puts the trajectory on the distribution the improved policy will
                 # see, which is the half plain distillation could not supply.
@@ -1338,10 +1391,12 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                         chand[i], cnxt[i] = pay["hand"], pay["nxt"]
                         in_drill[i] = bool(pay.get("in_drill"))
                         celx[i], cthr[i] = pay["elx"], pay["thr"]
+                        ct[i] = float(pay.get("t", 0.0))
                     else:
                         chand[i], cnxt[i] = env.hand_vec.copy(), env.next_vec.copy()
                         in_drill[i] = bool(getattr(env, "_in_drill", False))
                         celx[i], cthr[i] = env.elixir_vec.copy(), env.threat_vec.copy()
+                        ct[i] = float(getattr(getattr(env, "eng", None), "t", 0.0))
                 roll["rew"].append(np.asarray(rew_row, np.float32))
                 roll["done"].append(np.asarray(done_row, np.float32))
                 roll["trunc"].append(np.asarray(trunc_row, np.float32))

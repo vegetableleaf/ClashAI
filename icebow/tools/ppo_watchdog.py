@@ -269,8 +269,11 @@ class _Drift:
     """
 
     def __init__(self, frac: float = 0.60, min_matches: int = 300, min_peak: float = 0.05,
-                 window: int = 9, min_history: int = 5):
+                 window: int = 9, min_history: int = 5, min_peak_by_label: dict | None = None):
         self.frac, self.min_matches, self.min_peak = frac, min_matches, min_peak
+        # per-label floor: the shared 0.05 is a P(play) scale and would make a rule on a metric
+        # whose healthy value is ~0.02 (elixir>=6 share) silently dead
+        self.min_peak_by_label = dict(min_peak_by_label or {})
         self.window, self.min_history = int(window), int(min_history)
         self.hist: dict = {}
 
@@ -291,7 +294,7 @@ class _Drift:
         # metric that was not decaying at all. A median is unmoved by the excursions.
         srt = sorted(h[:-1]) or [value]
         base = srt[len(srt) // 2]
-        if base < self.min_peak or value >= self.frac * base:
+        if base < self.min_peak_by_label.get(label, self.min_peak) or value >= self.frac * base:
             return None
         return ("%s DRIFT -- now %.3f, which is %.0f%% below this run's rolling median of %.3f "
                 "over %d readings (matches=%d). Gradual decay is what killed the 40k run; it will "
@@ -352,7 +355,7 @@ def main() -> int:
     # probe then contradicted (x_bow affordable 1.3% of steps, played 2.4% of plays).
     # A condition now has to hold on two CONSECUTIVE cycles before it is believed.
     _streak = {}
-    _drift = _Drift()
+    _drift = _Drift(min_peak_by_label={"ELIXIR>=6": 0.002})
 
     while True:
         now = datetime.now().strftime("%H:%M")
@@ -401,6 +404,15 @@ def main() -> int:
             _d = _drift.check(_lbl, _val, h["matches"])
             if _d:
                 alerts.append(_d)
+        # ...EXCEPT for the gate-prior run (owner ruling 2026-09-02 08:20, HANDOFF 5bf): there the
+        # elixir>=6 share is the OBJECTIVE, and the failure it exists to catch is that share
+        # collapsing (18k run: 2% -> 0.02%) whether or not P(play) moves with it. Its floor is
+        # 0.002 (the 18k run's medians were ~0.02; the shared 0.05 would never arm). The -0.94
+        # correlation above is why it is SUPPRESSED when the GATE rule already fired this cycle:
+        # one event, one alarm.
+        _e = _drift.check("ELIXIR>=6", h.get("elixir_ge6"), h["matches"])
+        if _e and not any(v.startswith("GATE DRIFT") for v in alerts):
+            alerts.append(_e)
         if n_proc == 0:
             alerts.append("PROCESS GONE -- no train-sim-ppo running (last matches=%d)." % h["matches"])
         elif idle_min >= a.quiet_min:

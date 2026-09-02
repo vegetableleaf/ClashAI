@@ -7,17 +7,26 @@ instead of silently training on. Exits when all gates are done or the run's prog
 an exit line (the run died; the watchdog owns that alert).
 
     nohup .venv/Scripts/python.exe tools/real_run_gates.py > data/bench/real_run_gates.out 2>&1 &
+    # a second run: `--run gate_20260902` reads data/bench/gate_run_20260902.{log,progress,launched},
+    # snapshots data/policy_gate_20260902.pt to data/bench/gate_m<k>k.pt (HANDOFF 5bf)
 """
 from __future__ import annotations
 import os, re, shutil, subprocess, sys, time
 
 ROOT = r"C:\Users\benpe\ClashBot\icebow"
 PY = os.path.join(ROOT, r".venv\Scripts\python.exe")
-LOG = os.path.join(ROOT, r"data\bench\real_run_20260901.log")
-PROG = os.path.join(ROOT, r"data\bench\real_run_20260901.progress")
-CKPT = os.path.join(ROOT, r"data\policy_real_20260901.pt")
+# RUN NAMES. The default is the 2026-09-01 real run's; `--run <tag>` (tag = "<kind>_<date>") maps to
+# data/bench/<kind>_run_<date>.{log,progress,launched}, data/policy_<tag>.pt and data/bench/<kind>_m<k>k.pt
+RUN = "real_20260901"
+if "--run" in sys.argv:
+    RUN = sys.argv[sys.argv.index("--run") + 1]
+KIND, DATE = RUN.split("_", 1)
+LOG = os.path.join(ROOT, r"data\bench\%s_run_%s.log" % (KIND, DATE))
+PROG = os.path.join(ROOT, r"data\bench\%s_run_%s.progress" % (KIND, DATE))
+LAUNCHED = os.path.join(ROOT, r"data\bench\%s_run_%s.launched" % (KIND, DATE))
+CKPT = os.path.join(ROOT, r"data\policy_%s.pt" % RUN)
 GATES = [5000, 10000, 20000]
-STATE = os.path.join(ROOT, r"data\bench\real_run_gates.progress")
+STATE = os.path.join(ROOT, r"data\bench\%s_run_gates.progress" % KIND)
 EP_RE = re.compile(r"^\[train-sim-ppo\] (\d+) episodes:", re.M)
 REGRET_RE = re.compile(r"regret mean ([0-9.]+)")
 
@@ -41,7 +50,7 @@ def run_dead() -> bool:
 
 
 def snapshot(k: int) -> str:
-    dst = os.path.join(ROOT, r"data\bench\real_m%dk.pt" % (k // 1000))
+    dst = os.path.join(ROOT, r"data\bench\%s_m%dk.pt" % (KIND, k // 1000))
     for _ in range(6):                      # the run may be mid-write; retry
         try:
             shutil.copyfile(CKPT, dst)
@@ -61,7 +70,7 @@ def sh(args: list[str], out: str) -> str:
 
 
 def grade(k: int, snap: str) -> dict:
-    out = os.path.join(ROOT, r"data\bench\real_gate_m%dk.log" % (k // 1000))
+    out = os.path.join(ROOT, r"data\bench\%s_gate_m%dk.log" % (KIND, k // 1000))
     rel = os.path.relpath(snap, ROOT).replace("\\", "/")
     res: dict = {}
     o = sh([PY, "tools/regret_corpus.py", "eval", "--ckpt", rel], out)
@@ -77,7 +86,7 @@ def grade(k: int, snap: str) -> dict:
 
 
 def post(text: str, questions: bool) -> None:
-    p = os.path.join(ROOT, r"data\bench\real_gate_report.md")
+    p = os.path.join(ROOT, r"data\bench\%s_gate_report.md" % KIND)
     open(p, "w", encoding="utf-8").write(text)
     args = [PY, "tools/gauntlet_report.py", "--file", p] + (["--questions"] if questions else [])
     subprocess.run(args, cwd=ROOT)
@@ -111,14 +120,14 @@ def main() -> None:
         # launch epoch from the launcher's marker, not the log's ctime: Windows "tunnels" a recreated
         # file's creation time from its deleted namesake, which would understate hours since launch
         try:
-            t0 = float(open(os.path.join(ROOT, r"data\bench\real_run_20260901.launched"), encoding="utf-8").read().strip())
+            t0 = float(open(LAUNCHED, encoding="utf-8").read().strip())
         except Exception:                                    # noqa: BLE001
             t0 = os.path.getctime(LOG)
         hrs = max((time.time() - t0) / 3600.0, 1e-6)
         pace = k / hrs
-        text = ("**REAL RUN instrument gate m=%d** (snapshot data/bench/real_m%dk.pt)\n"
+        text = ("**%s RUN instrument gate m=%d** (snapshot data/bench/%s_m%dk.pt)\n"
                 "**Pace (measured since launch)** %.0f matches/hr -> 40k ETA ~%.1f h from launch (%.1f h remaining)\n"
-                % (k, k // 1000, pace, 40000 / pace, (40000 - k) / pace)
+                % (KIND.upper(), k, KIND, k // 1000, pace, 40000 / pace, (40000 - k) / pace)
                 + "**Regret** oracle %s | belief %s   (prior gates: %s)\n"
                 "**Waits** %s\n**X-bow probe (24 matches)**\n```\n%s\n```\n**Continuations (16 matches)**\n```\n%s\n```\n"
                 "%s" % (res["regret_oracle"], res["regret_belief"],

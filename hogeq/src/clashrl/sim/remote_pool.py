@@ -123,6 +123,9 @@ def _worker(conn, n_envs: int, seed0: int, drill_frac=None,
         return {
             "obs": obs, "hand": env.hand_vec.copy(), "nxt": env.next_vec.copy(),
             "elx": env.elixir_vec.copy(), "thr": env.threat_vec.copy(),
+            # engine clock (s) -- the PHASE key of the gate prior (sim.ppo_gate_prior_coef); the
+            # parent has no engine of its own for remote envs, so it has to travel in the payload
+            "t": float(getattr(getattr(env, "eng", None), "t", 0.0)),
             "dc": {int(ci): doctrine_cells(env, int(ci)) for ci in hand},
             # WHICH card to nominate, not just where to put it -- the rocket was never SELECTED,
             # so its (already generous) placement prior and rewards were both unreachable.
