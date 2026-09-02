@@ -1949,6 +1949,12 @@ slow one.
 
 ## 6. Open work
 
+### PPO -- next run, two cheap items (from §5ba.6b, 2026-09-02)
+Add an `elixir_ge6` DRIFT rule to `tools/ppo_watchdog.py` (the stopped 18k run's 6-elixir fraction fell
+2% -> 0.02% monotonically from ~10k; the absolute 0.5% floor only fired in the back half). And a per-card
+top-cell dump of `data/bench/stopped_real_cuda_18k_20260902/policy_real_20260901_best.pt` to decide whether
+its 30-40-cell footprint is a collapse or a converged Icebow placement set. Not part of the detector gauntlet.
+
 ### ⛔ BLOCKED ON OWNER (2026-09-01 evening, §5at): cr-native-sandbox -- the real CR engine headless; runtime + installs + timing are the owner's calls
 Assessed, not run (`research/CR_NATIVE_SANDBOX_ASSESSMENT.md`). Three owner decisions were posted with
 `--questions`: (1) supply the 5 split APKs of exactly 15.535.29 x86_64 from their own BlueStacks/GPG
@@ -5840,6 +5846,42 @@ alternative destroys a run silently: it will not stop without a `last.pt`, and i
 STRIPPED checkpoint (ultralytics does not raise on that -- it starts a fresh coco8 training that looks
 like a normal log; this repo has three such folders already). Parse-checked; not yet exercised against
 a real low-battery event (b) -- the box has been on AC at 100% throughout.
+
+### 6b. ADDENDUM (owner question, 2026-09-02 ~08:00) -- what the PPO watchdog saw overnight, which §5ba.1 did NOT read
+§5ba.1 read only the greedy EVAL rows. The owner asked about the overnight CELL HEAD COLLAPSED / ELIXIR
+NEVER REACHES 6 alerts; re-read from `data/ppo_watchdog.log` (114 readings for this run, 21:30 -> 07:34,
+raw-head probe of the checkpoint, so the 15% rollout cell floor is NOT in these numbers):
+
+| eps | cell_ent (of 5.08) | distinct cells (of 432) | elixir >= 6 (% steps) | card_ent (of 2.30) |
+|---|---|---|---|---|
+| 0-2k | 1.09 | 28 | 0.45 | 1.31 |
+| 4-6k | 1.25 / 1.09 | 40 / 35 | 1.40 / 2.09 | 1.43 / 0.87 |
+| 8-12k | 0.96 / 0.87 / 1.01 | 38 / 34 / 36 | 1.71 / 1.19 / 1.03 | 1.29 / 1.10 / 1.10 |
+| 14-16k | 0.69 / 0.73 | 40 / 32 | 0.52 / 0.61 | 1.39 / 1.40 |
+| 18k | 0.80 | 34 | **0.02** | 1.29 |
+
+* **(a) measured -- cell head:** below the watchdog's collapse line (25% of max = 1.27 nats) on **83 of 94**
+  readings after ep 4000, and already there at the FIRST reading (ep 200: 1.09). So this was not a collapse
+  that happened overnight; it is the state the head was in from the start of the run. The alerts came
+  through only "several" times because of the two-consecutive-cycle debounce plus re-arming, not because the
+  condition was intermittent. It never reached the 3-of-432 catastrophe the floor was written for
+  (28-43 distinct cells throughout).
+* **(b) untested -- whether 30-40 distinct cells is pathological:** the 0.25 threshold was tuned to the
+  3-cell collapse, not to a known-healthy Icebow placement policy, and an Icebow deck legitimately uses a
+  few dozen cells (X-Bow bridge spots, Tesla/Cannon centre, Skeleton/Ice Spirit kite tiles). Whether these
+  34 cells are the RIGHT 34 needs a per-card top-cell dump of the checkpoint, not an entropy number.
+* **(a) measured -- elixir:** the 6-elixir fraction FELL over the run: ~1.4-2.1% (4-8k) -> 1.0-1.2% (10-12k)
+  -> 0.5-0.6% (14-16k) -> 0.02% at 18k. Below the 0.5% alert line on 34 of 80 readings after ep 6000, all in
+  the back half. This is a trend, not noise, and it is the same failure §5as/§4t describe: the policy spends
+  down to cheap cards and the deck's win condition (X-Bow, 6) and its only tower-kill spell (Rocket, 6)
+  become uncastable. With that, a 12-14% ladder plateau is what you would expect, so the two readings agree.
+* **What it changes:** nothing about the stop (it strengthens it) and nothing about this gauntlet's plan.
+  It is a finding for the NEXT PPO run, queued in §6: (1) the elixir-decline is monotone and visible by
+  ~12k, so a watchdog DRIFT rule on `elixir_ge6` (like the existing cell_struct drift) would have named it
+  6 h earlier than the absolute floor; (2) the cell head's 34-cell footprint needs a top-cell dump before
+  anyone calls it collapsed or healthy.
+* **Retraction of tone:** my L2 report's "stopping cost nothing measurable" stands, but "no problems
+  found" would have been wrong -- I had not read the instrument that would have found them.
 
 ### 7. Next
 1. Read the screen when both arms land (~11:30): mAP50 and mAP50-95 arm vs arm, plus each arm's

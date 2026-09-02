@@ -261,3 +261,11 @@ STATE    running: geo2 s54. cleared: gate 1 (workers 12). confirmed: scratch, 40
 - battery_watchdog.ps1 REWRITTEN to the owner's spec: pause -> sit 90 min -> wait >=25% -> auto-resume,
   12 cycles; refuses to resume a STRIPPED ckpt (that silently starts a coco8 run -- 3 such folders here).
 - Next: read the screen ~11:30, build the held-out synthetic val from unseen kitka sprites, then the full run.
+
+### L2 addendum (2026-09-02 08:05) -- owner asked about overnight cell/elixir alerts
+Re-read `ppo_watchdog.log` for the stopped run (114 readings). Cell head sat below the 1.27-nat collapse
+line on 83/94 readings after 4k and from the first reading (ep 200) -- a starting state, not an overnight
+event; 28-43 distinct cells throughout (never the 3-cell catastrophe). Elixir>=6 fell 2% -> 0.5% -> 0.02%
+over 8k->18k: a real monotone decline that makes X-Bow/Rocket uncastable and matches the 12-14% plateau.
+L2 report did not read this instrument; corrected in HANDOFF §5ba.6b. Stop decision unchanged.
+Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-cell dump).
