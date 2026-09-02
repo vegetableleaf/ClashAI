@@ -214,3 +214,7 @@ STATE    running: geo2 s54. cleared: gate 1 (workers 12). confirmed: scratch, 40
   -accel-check; upstream bootstrap bug ANDROID_AVD_HOME worked around); Q3 = after the cuda run; Q1
   explained, waiting for the owner to read the client version (must be 15.535.29). Cuda run passed
   episode 2000 at 22:13 (26W-1541L, 0 warnings); EVAL@2000 running (first cuda eval at scale).
+- 2026-09-01 22:22 cuda run: EVAL@2000 ladder 3% / fair 3% (150 each), eval wall 9.1 min (CPU-side, as
+  predicted), 0 warnings -> both cuda-at-scale paths passed. Sandbox runtime: BlueStacks AppCache.json
+  proves CR build 150535029 installed 30.08 (retraction of the "client is newer" reading); pull script
+  ready; waiting for the owner to enable ADB in BlueStacks. §5au.

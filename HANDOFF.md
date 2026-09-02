@@ -5235,3 +5235,39 @@ expected, the owner's Q1). FAIL "virtualization/WHPX VT-x firmware enabled=False
 of its probe: `Win32_ComputerSystem.HypervisorPresent = True` (Hyper-V/WHPX active hides the firmware flag)
 and the emulator's own `emulator -accel-check` says **"WHPX(10.0.26200) is installed and usable"**; the
 README itself classes that probe as a hint. So: everything but the game runtime is in place.
+
+## §5au — cuda real run: both previously unexercised cuda-at-scale paths PASSED (episode 1000 league snapshot, EVAL@2000); eval cost on cuda measured 9.1 min; runtime source for the sandbox found and verified as build 150535029 (BlueStacks, owner's own install)
+
+### 1. The run (measured 22:22)
+* **Episode-1000 league snapshot** (`snapshot()` + `_broadcast_league` via `_cpu_sd()` on cuda): fired at
+  episode 1000 (~21:49), prints nothing by design; the run continued 1,000+ episodes with 0 Traceback
+  -> passed. /!\ `done_n` counts EPISODES (matches + drills, drills ~22-23%): `--matches 40000`, the
+  snapshot/eval cadence and the 5k/10k/20k gates all use this counter (the gate script parses the
+  `N episodes:` line), so the run ends at ~30.8k real matches. Same counter as the pre-registered
+  design -- nothing about the experiment changes, only the word "matches" in the prose.
+* **EVAL @ 2000 episodes (first cuda eval at scale):** `ladder(L13-16) 3% | fair(L15) 3% | 150 matches
+  each`. Wall **9.1 min** (2000-episode line 22:12:43 -> EVAL line 22:21:51) -- inside the CPU run's
+  8.5-12 min, as predicted in §5ar/§5as (the eval is 96-env CPU stepping in the parent; cuda does not
+  shrink it). 20 evals ≈ 3 h of the run. 0 WARNING / 0 Traceback after it; GPU 2.8 GB total / 10%.
+  For comparison ONLY as a sanity read (different sample, §5as.5): the CPU run's EVAL@2000 was 11% / 4%.
+  One eval, one seed, 150 matches: ±4-5 pp -- says nothing yet.
+* Pace to episode 2000: 47 min incl. warm-up and the 9-min eval -> ~2,550 episodes/h gross; the gate
+  script's pace read at 5k is the number to quote. Toolchain unzip overlapped 22:09-22:12 (§5at.8).
+
+### 2. The sandbox runtime source (measured, read-only): BlueStacks 5 holds build 150535029
+Owner (22:1x): *"the current version is 15.535.29 on Google Play Games ... willing to accept the risks."*
+Independent confirmation on disk: `C:\ProgramData\BlueStacks_nxt\Engine\Pie64\AppCache\AppCache.json`
+records `com.supercell.clashroyale` installed 30.08.2026, **versionCode 150535029** = the sandbox's
+frozen runtime version. **Retraction:** §5at.3's "the live client is probably newer" reading of the
+Elite-Barbarians-evo clue is CONTRADICTED; the catalog generator missed that evolution (to be checked
+against the live tables once the runtime runs). The BlueStacks Pie64 instance: abi_list x86,x64,arm,
+arm64; **dpi 240 = hdpi** (the manifest's density split); 4 vCPU / 4 GB; `bst.enable_adb_access=0`
+(owner must toggle it: Settings -> Advanced -> Android Debug Bridge, port 5555); player not running.
+Google Play Games (PC) is NOT a usable source: no adb listener on any port (all 39 listeners checked),
+userdata kept as an encrypted image (`userdata_*.rra` + `*_encryption_key`). No APK files exist on the
+host side of either app (BlueStacks keeps them inside `Data.vhdx`, 6.0 GB).
+Prepared: `research/ext/cr-native-sandbox/pull_apks_bluestacks.sh` (connect 127.0.0.1:5555, dumpsys
+version, `pm path`, pull all splits to `runtime/apks/`, size+SHA-256 check of the five against
+`bindings/runtime-manifest.json`, disconnect; log `scratchpad/gauntlet/ext/pull_apks.log`). Waiting for
+the owner's "ADB on". Then `prepare_runtime.ps1` + `freeze_runtime.ps1` + `doctor.ps1` tonight; emulator
++ smoke after the cuda run ends (owner ruling).
