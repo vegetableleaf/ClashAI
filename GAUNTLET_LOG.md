@@ -192,3 +192,11 @@ STATE    running: geo2 s54. cleared: gate 1 (workers 12). confirmed: scratch, 40
 - Real run suspended twice for clean measurements (15:51 total, recorded, dead-man armed),
   resumed; m=2450 at 21:08, 0 warnings. Blocked on the owner: restart on cuda (recommended) or
   keep the CPU run (ETA Sep 3 midday). Next gauntlet NOT started (owner has a direction).
+- 21:24 OWNER ORDER: "stop and resume using device cuda; decide resume vs scratch". Decision
+  SCRATCH (ckpt has no hazard head / Adam / league / done_n; rail guard would rescale the cell
+  head x0.031; a resume saves ~45 min of cuda time). CPU run stopped at m=2700 (60W-2116L, EVAL@2000
+  11%/4%, 0 warnings, 27,429 continuation lines), archived to data/bench/aborted_real_cpu_20260901/.
+  RELAUNCHED 21:25:27 --device cuda, seed 41, 40k, 12 workers, hazard 0.5; banner verified;
+  watchdog + gates re-armed; Monitor on the m=1000 snapshot / m=2000 eval (first cuda pass at
+  scale). +7.5 min: 250 matches, 0 warnings, ~0.9 GB VRAM. §5as. Next: cr-native-sandbox assessment
+  (owner-directed, §5at); gauntlet NOT restarted.

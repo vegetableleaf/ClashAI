@@ -64,3 +64,6 @@ wr_eval_tmp.py
 /GATES.md
 .unlazy/
 .unlazy-hook-state.json
+
+# --- Third-party clones under research/ext/ (assessed, not vendored) ---
+research/ext/

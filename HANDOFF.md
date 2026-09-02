@@ -5005,3 +5005,74 @@ orphaned; `Stop-Process -Id <pid>` it, the resume script is idempotent anyway), 
 SUSPENDED / RESUMED lines carrying the run's state to the run's `.progress` file. The gate script's
 pace/ETA reads from the launch epoch and so understates pace by the suspended time (15 min 51 s
 today) -- cosmetic.
+
+## §5as — THE REAL RUN RELAUNCHED ON CUDA, FROM SCRATCH (owner order 2026-09-01 21:2x); the CPU run stopped at m=2700 and archived
+
+Owner (21:2x): *"Stop and resume using device cuda. Make a decision whether to resume from the cpu
+checkpoint, or to start from scratch."* Decision: **SCRATCH**. Executed 21:24-21:27. The owner's
+second instruction (assess `IMAX9D/cr-native-sandbox`) is a separate section (§5at); the next
+gauntlet is NOT started (owner has a direction planned).
+
+### 1. Why scratch and not `--resume` (all four are facts of the code, checked this session)
+* **The checkpoint has no hazard head.** `save()` (train_sim_ppo.py 944-958) writes `model`, `gate`,
+  `value`, `value_d`, `algo`, grid/deck metadata -- not `hazard`. A resume would re-initialise the
+  head this run exists to test, and with `hazard_coef 0.5` its random-head gradients would flow into
+  a trunk trained for 2,700 matches. That alone is disqualifying.
+* **No Adam state, no league.** Optimizer moments restart from zero (a warm-restart of Adam is a
+  known perturbation, not a continuation) and the league of past snapshots is empty again.
+* **`done_n` is not restored** (line 1807 `done_n = wins = losses = draws = 0`): every
+  `_prog["n"]`-keyed schedule -- `sp_ramp` 5000, `spell_mask_anneal`, `drill_cell_floor_anneal`,
+  `cell_ent_anneal` -- would restart at 0 while the weights are at 2,700, and the 5k/10k/20k gates
+  in `real_run_gates.py` count from the log, so the gate snapshots would land at 7.7k/12.7k/22.7k
+  of weight-age. The run would not be the pre-registered experiment.
+* **The rail guard would fire.** With the (now correct, §5ar) normalised inputs the m=2250
+  checkpoint reads cell absmax 143 > 16 -> the guard rescales the cell head x0.031. Whether that
+  rescale is good or bad is exactly the untested question queued in §6; it must not happen
+  silently inside the real run.
+What a resume would have saved: the CPU run's 2,700 matches = ~45 min of cuda time. Not close.
+
+### 2. The CPU run's final state (recorded in its `.progress` before the kill; archive below)
+m=2700 at 21:24, **60W-2116L-0D**, best_wr -1 (no eval win yet), EVAL@2000 ladder **11%** / fair
+**4%**, 0 WARNING / 0 Traceback, continuations **27,429** lines, wall 3 h 06 m of which 15 m 51 s
+suspended (§5ar) -> ~955 matches/h net. Artifacts moved (not copied) to
+`data/bench/aborted_real_cpu_20260901/`: `policy_real_20260901.pt` (m=2700, 1.9 MB),
+`continuations_real.jsonl`, `real_run_20260901.log/.progress/.launched`, `real_run_watchdog.out`,
+`real_run_gates.out`. The no-hazard 400-match run from 17:50 stays in
+`data/bench/aborted_real_nohaz_20260901/`. Kill order: gates + watchdog first (so neither could
+post a false STALLED/dead line), then the trainer and its 12 workers filtered by parent PID;
+process count verified 0 before the relaunch; checkpoint path verified empty.
+
+### 3. The relaunch (third launch of the real run today)
+`data/bench/real_run_launch.sh` (under data/, never committed) rewritten: same config
+`data/bench/real_run.yaml` (hazard_coef 0.5, eval_every_matches 2000, isolated checkpoint
+`data/policy_real_20260901.pt`, `continuation_log data/continuations_real.jsonl`), same CLI
+`--matches 40000 --envs 96 --workers 12 --size 432 --seed 41 --search-interval 4`, plus
+**`--device cuda`**. Launched **21:25:27** (epoch 1788312328 in `real_run_20260901.launched`, which
+`real_run_gates.py` uses for pace). Banner verified in the log: `LEARNER ON cuda`, `HAZARD HEAD ON
+0.500`, continuation log ON, FROM SCRATCH. `tools/ppo_watchdog.py --every 300 --quiet-min 30` and
+`tools/real_run_gates.py` re-armed (nohup), both writing to the live `.out` files. A Monitor watches
+the log for the two cuda code paths that the smoke exercised but no run has at scale: the **m=1000
+league snapshot** (`snapshot()` + `_broadcast_league` with `_cpu_sd()`) and the **m=2000 EVAL**
+(batched `choose_greedy` on cuda).
+
+First read at **+7.5 min (21:32:57)**: 325 episodes = 250 matches (4W-246L) + 75 drills,
+3,145 continuation lines, checkpoint written 21:33 (1.9 MB), 0 WARNING / 0 Traceback, nvidia-smi
+2.0 GB used in total (desktop baseline ~1.1 GB -> ~0.9 GB for the run, as in the §5ar profile).
+That is ~2,000 matches/h INCLUDING the warm-up cycle and the first save; the §5ar profile's
+steady-state figure is 2,600-3,700/h. Not a throughput claim -- the steady-state pace is read by
+the gate script from the launch epoch and will be in the m=5000 report.
+
+### 4. ETA arithmetic (estimate, not a measurement)
+40,000 matches at 2,600-3,700/h = 11-15 h of training, plus 20 in-run EVALs whose cuda cost is
+UNKNOWN (CPU measured 8.5-12 min each at m=2000, §5ar; the eval's 96-env stepping is CPU work in
+the parent and does not shrink on cuda) -> +3-4 h. **ETA ~Sep 2 midday to late afternoon.** The
+5k gate at ~+1.5-2 h (≈23:00-23:30), 10k at ~+3.5-4.5 h, 20k at ~+7-9 h.
+
+### 5. What this does NOT establish
+* Nothing about training quality yet: 250 matches, 1 seed, first save. The gates say.
+* The cuda trajectory differs from the CPU one after step 1 (kernel reduction order, fp32 both,
+  TF32 off) -- so the CPU run's m=2700 numbers are not a baseline for this run's m=2700; same
+  algorithm, different sample. Do not compare them as if they were two reads of one run.
+* Both cuda-at-scale code paths (m=1000 snapshot, m=2000 eval) remain unexercised until they run;
+  the Monitor + watchdog are the only guard. If either throws, the run dies with a Traceback in
+  the log and `run_dead()` in the gate script posts it.
