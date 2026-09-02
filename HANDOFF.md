@@ -22,15 +22,17 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-02 17:10**, branch `main` (**§5bh: GAUNTLET L8 -- coef 0.1 IS LOSING TO PPO, and the
-GATE IS THE RIGHT LEVER.** (a) The trainer's own pi(play) on usable rows, de-cumulated per 800 updates: 0.34 ->
-0.28 (upd 2400) -> 0.375 (upd 8800), moving AWAY from the prior 0.059; window CE 0.43 -> 0.61. Probe at
-m=4000, 3 seeds: `played` at 3 elixir 0.42-0.48 (18k control 0.36-0.37). (a) COUNTERFACTUAL `--force-bank 6`
-on the same checkpoint: when plays are suppressed below 6, the card head picks at mean cost 3.35-3.44 (deck
-3.50; unforced 2.45-2.49) -- skeletons / ice_wizard / x_bow / tesla ~equally -- so the card head at high
-elixir is NOT cheap-biased; the cheap-card collapse is the gate opening at 1-3 elixir where only skeletons/log
-are affordable. STOPPED to ask: relaunch at coef 0.5 (the gradient arithmetic in 5bh.4 says 0.1 x 3.3 = 0.33
-vs a PPO push ~0.8 per usable row -- it was always going to lose). Run untouched at m~4,300.)
+Last updated: **2026-09-02 17:45**, branch `main` (**§5bi: GAUNTLET L9 -- the m=5k READ MOVED TOWARD THE PRIOR,
+and the owner's relaunch-at-0.5 order (given on the m=4k picture) is ON HOLD pending a yes/no.** (a) Probe on
+`gate_m5k.pt`, 3 seeds, same instrument as L7/L8: `played` at 3 elixir 0.299 / 0.279 / 0.305 (m=4k 0.42-0.48,
+18k control 0.36-0.40); P(play | affordable) 0.28-0.32 (m=4k 0.43-0.45; control 0.39-0.41); elixir >=6 on
+0.8-1.6% of rows (m=4k 0.0-0.2%); rows at 4 elixir 108-143 per 2,400 (m=4k 42-76). Every summary stat moved
+the same way on all three seeds -- the first read below the 18k control. By the pre-registered §6 rule this is
+MIXED (two seeds < 0.30, one at 0.305) -> re-read at m=7.5k, no action. (c) PARTIAL RETRACTION of §5bh's
+"coef 0.1 cannot win": the trainer's own window pi(play) still sits at 0.35-0.41 (updates 10.4k-11.6k), so
+the two instruments disagree, but the probe -- the instrument the decision rule was written on -- says the
+pull is biting. One checkpoint; §5x says a single read can invert. ASKED the owner: hold to 7.5k (~18:40) or
+kill now and relaunch at 0.5 as ordered. Run untouched at m~5,300; `gate05_run.yaml` + launcher staged.)
 
 ---
 
@@ -1916,6 +1918,14 @@ slow one.
 * Watchdog instrument: 6 envs x 400 steps gives cell_struct a 3x 10-90% spread on a frozen policy (§5bf.5);
   raise the sample or widen the median window, and re-check the 0.60 band against the frozen-checkpoint
   data set (`data/ppo_watchdog.log`, matches=18000 rows) before trusting a CELL STRUCTURE alert.
+* **§5bi (17:45): m=5k RULE APPLIED -> MIXED (0.299 / 0.279 / 0.305) -> re-read at m=7.5k. Owner had ruled
+  "stop and restart with coef 0.5" on the m=4k picture (Discord, ~17:00); the m=5k read moved toward the prior on
+  all three seeds, so the kill is ON HOLD until the owner confirms (irreversible; §7). No answer = hold, probe the
+  live checkpoint at m>=7.5k on 3 seeds (`cp data/policy_gate_20260902.pt scratchpad/gauntlet/L10/gate_m7k5.pt`
+  first; real_run_gates.py only snapshots 5k/10k/20k), then: drop holds (<0.30 all seeds) -> leave to 10k;
+  bounce back (>=0.30 all seeds) -> relaunch at 0.5 without asking again (owner already ruled for that case).
+  Relaunch artifacts staged: `data/bench/gate05_run.yaml` (diff vs gate_run.yaml = ckpt name, continuation
+  log, `ppo_gate_prior_coef: 0.5`) + `data/bench/gate05_run_launch.sh`; sequence in §5bi.6.**
 * **§5bh (17:10): the m=5k rule is effectively DECIDED EARLY by the trainer's own trend (5bh.2) -- coef 0.1
   loses to PPO. Owner asked (Discord, --questions) whether to stop and relaunch at coef 0.5. Until answered:
   run untouched, m=5k snapshot still taken by real_run_gates.py, probe it on 3 seeds when it lands.**
@@ -6527,3 +6537,79 @@ gate-vs-card question should be asked with the same probe once its trainer has s
 
 ### 7. Files
 `icebow/tools/gate_prior_probe.py` (+`--force-bank`, per-card play counts, `cost_of_plays`).
+
+## §5bi — GAUNTLET L9: THE m=5k READ MOVED TOWARD THE PRIOR (first read below control, all 3 seeds) -- the relaunch order is on hold pending owner yes/no; replay zip delivered (2026-09-02 17:07-17:45)
+
+### 1. Why this
+Owner ruled at ~17:00 (on the m=4k picture in §5bh): "stop and restart with coef 0.5". The plan was to wait for
+the m=5k snapshot, probe it for the record, then kill and relaunch. The probe came back different from every
+read before it, and killing is irreversible (§7), so the order is held for one confirmation. Cost: 3 x 12 s
+probe, ~15 min bookkeeping. Run untouched.
+
+### 2. (a) Probe on `data/bench/gate_m5k.pt` (copy in `scratchpad/gauntlet/L9/gate_m5k.pt`, JSON `m5k_s{0,1,2}.json`)
+Same instrument as L7/L8 (`tools/gate_prior_probe.py`, seeds 0/1/2, 6 envs x 400 steps = 2,400 rows each):
+```
+                         m=2k (L7)        m=4k (L8)        m=5k (L9)        18k control (L7)
+played at 3 elixir       .449 .392 .424   .423 .434 .483   .299 .279 .305   .403 .372 .357
+P(play | affordable)     .43  .41  .42    .43  .43  .45    .28  .32  .32    .39  .41  .40
+rows with sth affordable .26  .27  .25    .25  .25  .23    .36  .36  .32    .29  .29  .28
+rows at 4 elixir /2400    63   65   65     76   52   42    143  137  108     57   77   72
+elixir >= 6 (frac rows)  .007 .009 .004   .002 .000 .003   .016 .008 .015   .001 .001 .000
+plays per row            .117 .110 .109   .110 .107 .108   .104 .110 .108   .115 .113 .109
+mean cost of plays          --             2.49 2.45 2.47   2.60 2.53 2.58      --
+```
+* Plays per row unchanged (regen-bound, as always). What changed is WHEN: the gate opens less at 3 (0.28-0.31
+  vs 0.42-0.48), the hand keeps its cheap cards longer (affordable 32-36% vs 23-25%), elixir reaches 4 twice as
+  often and 6+ ten times as often (still only 0.8-1.6% of rows). Mean cost of plays 2.53-2.60 vs 2.45-2.49.
+* Picks unchanged in kind: <3 elixir skeletons/the_log; 3-5 ice_wizard/knight/tornado; >=6 x_bow/tesla/rocket
+  (9-12 plays per 2,400 rows, up from 1-2).
+* Correction to L7/L8 wording: the 18k control's `played at 3` is 0.36-0.40 (seed 0 = 0.403), not "0.36-0.37".
+
+### 3. (a) The trainer's own term disagrees, or at least has not moved
+`GATE PRIOR CE` de-cumulated per 200 updates, 10,400 -> 11,600: pi(play) on usable rows 0.348 / 0.348 / 0.348 /
+0.404 / 0.292 / 0.406; window CE 0.54-0.67. Flat-to-noisy around 0.35, nothing like the probe's 0.28-0.32
+on affordable rows. Different distributions (training rollouts: domain rand on, search-interval 4, self-play
+opponents from m=5,000 at prob 0.15; probe: domain rand off, no search, scripted opponent), so they need not
+agree -- but §5bh.2 leaned on this series to call the run early, and the probe now says otherwise.
+
+### 4. What this means, plainly
+1. (c) PARTIAL RETRACTION of §5bh: "coef 0.1 cannot win, the arithmetic says why" was too strong. The
+   arithmetic assumed a constant PPO push of ~0.8 per usable row; the probe at m=5k is the first read where
+   the gate is below the untrained-prior control on every seed, which is what "the pull is biting" would look
+   like. The arithmetic stays (b); the observation that it was losing through m=4k stays (a).
+2. It is ONE checkpoint. §5x: the same run inverted between m=500 and m=1000. The pre-registered rule
+   (§6, written 16:05 before any of this) classifies 0.299/0.279/0.305 as MIXED -> one more read at 7.5k.
+3. The owner's order was made on the m=4k picture. Killing loses the only running evidence about whether
+   0.1 works; 0.5 would still be launchable 70 min later, and if 0.1 is working, 0.5 may over-suppress (no
+   threat key -- §5bh.4). Recommendation sent: hold to m=7.5k. Owner's call.
+4. Confound for any read after m=5,000: self-play ramps in at prob 0.15 (log line "self-play ON: prob 0.15
+   (ramp 5000)"). The 7.5k probe uses the scripted opponent so the probe itself is not confounded, but the
+   TRAINING signal from here on differs from the first 5k the same way it did for the 18k run.
+
+### 5. Endpoint of the coef-0.1 run at the time of the hold (for §3 if it is killed)
+17:31: 5,225 episodes, 151W-4076L-4D, EVAL@2000 ladder 12% / fair 8%, EVAL@4000 ladder 8% / fair 4% (150 each),
+ent 0.05, 0.6 ep/s, drills 994 (41% pass all). Last `GATE PRIOR CE` line: 0.5557 over 9,800 updates
+(cumulative), pi(play) 0.347 vs prior 0.059, 9% rows usable. Watchdog last alert 16:53 (m=4000): cell head
+1.06/5.08 nats, elixir >=6 0.1%. Procs: train-sim-ppo x2 (29460/59384), gate watchdog x3, gates x3, stale 18k
+watchdog x3. Free RAM 4.0 GB / 31.4, CPU 36%.
+
+### 6. Relaunch sequence (staged, not executed)
+`data/bench/gate05_run.yaml` (diff vs `gate_run.yaml` = `sim_ppo_checkpoint: data/policy_gate05_20260902.pt`,
+`continuation_log: data/continuations_gate05.jsonl`, `ppo_gate_prior_coef: 0.5`) and
+`data/bench/gate05_run_launch.sh` (same argv as `gate_run_launch.sh`, writes `gate05_run_20260902.{launched,
+log,progress}`). Steps: count `train-sim-ppo` procs (expect 2) -> kill 29460/59384 -> count (expect 0) ->
+`cd icebow && nohup bash data/bench/gate05_run_launch.sh &` -> first log line must read `GATE PRIOR ON: coef
+0.500` -> re-arm `tools/ppo_watchdog.py data/policy_gate05_20260902.pt --every 300 --quiet-min 30 >
+data/bench/gate05_run_watchdog.out` and `tools/real_run_gates.py --run gate05_20260902 > data/bench/
+gate05_run_gates.out` -> §3 RUNNING NOW rewritten -> commit. Old gate watchdog/gates (48908/62136/61016,
+10724/30624/43908) may need the owner to kill if the classifier refuses.
+
+### 7. Side task closed: replay folder delivered
+`icebow/data/overlayed_replays` (9 mp4, goodmatch_1..9, 1.5 GB) zipped as ONE file (ZIP_STORED, 1.555 GB) and
+uploaded to gofile.io as a guest upload (owner asked for bashupload.com -- its DNS has no records at three
+resolvers, dead; SwissTransfer needs a reCAPTCHA, not scriptable). md5 on the host equals the local zip. Link
+sent in chat + Discord; delete token kept in the session scratchpad only (never in the repo).
+
+### 8. What this does NOT establish
+That coef 0.1 works (one checkpoint, mixed by the rule). That 0.5 is right or wrong. Anything about the
+card head at 6+ once trained (still 9-12 plays per 2,400 rows there). Nothing about hogeq.

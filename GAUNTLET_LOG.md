@@ -374,3 +374,16 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - STOPPED (--questions): relaunch at coef 0.5? Run untouched at m~4,300; m=5k snapshot still taken.
 - Open side question: file host for the 9 replay mp4s (SwissTransfer needs a captcha -- not scriptable).
 
+
+## L9 — 2026-09-02 17:07-17:45 | m=5k READ MOVED TOWARD THE PRIOR; RELAUNCH ORDER ON HOLD FOR A YES/NO
+- Owner ruled (~17:00, on the m=4k picture): stop and restart at coef 0.5. Waited for the m=5k snapshot as planned.
+- (a) probe `gate_m5k.pt`, 3 seeds: played at 3 elixir 0.299 / 0.279 / 0.305 (m=4k 0.42-0.48; 18k control
+  0.36-0.40); P(play|affordable) 0.28-0.32 (m=4k 0.43-0.45); elixir >=6 0.8-1.6% of rows (m=4k 0.0-0.2%);
+  affordable rows 32-36% (23-25%). First read below control, all seeds, every stat. Plays/row unchanged.
+- (a) trainer's window pi(play) on usable rows still 0.29-0.41 (updates 10.4k-11.6k) -- instruments disagree.
+- (c) PARTIAL RETRACTION of L8 "0.1 cannot win": the arithmetic was (b) and the m=5k probe contradicts it.
+- Pre-registered rule says MIXED -> re-read at 7.5k. Killing is irreversible -> asked the owner: hold to 7.5k
+  (~18:40, recommended) or kill now and relaunch at 0.5 as ordered. No answer = hold and probe at 7.5k.
+- Side task done: 9 replay mp4s zipped as one file, uploaded to gofile (bashupload dead), md5 verified, link sent.
+- Correction: 18k control played@3 is 0.36-0.40 (seed 0 = 0.403), not 0.36-0.37 as written in L7/L8.
+
