@@ -177,3 +177,18 @@ STATE    running: geo2 s54. cleared: gate 1 (workers 12). confirmed: scratch, 40
 - 18:15 OWNER OVERRIDE (post-terminal): hazard head IN. Run killed at m=400 (state recorded),
   no-hazard artifacts archived, ckpt path verified empty, RELAUNCHED 18:18 coef 0.5 (banner
   verified), watchdog+gates re-armed, launch-epoch marker added for pace. §5aq.
+
+## POST-GAUNTLET — 2026-09-01 20:00 → 21:15  |  owner-directed throughput profile (§5ar); real run untouched
+- Owner: Soup (LLM fine-tuning CLI) rejected, wrong problem; "if cheap and decisive, do the
+  throughput experiments now". Profiled the trainer cycle with a new opt-in profiler.
+- MEASURED (cpu, real config, idle box, 4 cycles): update 402/572 s = 70%; workers idle 78% of
+  wall (live psutil). Decision rule pre-stated in §6 -> learner on the GPU.
+- BUILT: --device cuda end to end (CPU weight copies at the 3 worker/disk seams, TF32 off,
+  batched tensor assembly proven bit-identical). MEASURED: cycle 143 -> 49 s = 2.92x; ~3,700
+  matches/h steady vs ~1,130. Smoke exit 0, 12-worker bench exit 0, ~0.9 GB VRAM.
+- Found: resume rail guard fed 0..255 inputs (fixed, never fired in a logged run); cell head at
+  m=2300 is 43% beyond |16| (negative rail, gradient-dead) -- queued as a read at the gates; a
+  13-hour runaway regex process from 07:11 (Bash timeout does not kill the child) killed.
+- Real run suspended twice for clean measurements (15:51 total, recorded, dead-man armed),
+  resumed; m=2450 at 21:08, 0 warnings. Blocked on the owner: restart on cuda (recommended) or
+  keep the CPU run (ETA Sep 3 midday). Next gauntlet NOT started (owner has a direction).

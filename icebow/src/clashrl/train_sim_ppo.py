@@ -172,12 +172,26 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     n_cards, n_cells, threat_dim = e0.n_cards, e0.n_cells, e0.threat_dim
     in_ch = int(e0.obs_shape[2])      # 3 (RGB) or 3 + the semantic canvas (observation.use_detector_canvas)
     gw, gh = e0.gw, e0.gh
-    # MEASURED 2026-08-08: this trainer is FASTER ON CPU -- 1.0 match/s vs 0.2 on the GPU while a
-    # detector run shared it. The match engine is pure Python (CPU-bound whatever the net does) and
-    # the policy is ~2 MB, so every tiny forward pass pays more in kernel-launch + transfer overhead
-    # than it saves, and it also competes for VRAM. `--device cpu` therefore both speeds this up and
-    # lets it run alongside a detector train without an OOM risk.
+    # 2026-08-08 measured "faster on CPU" (1.0 vs 0.2 match/s) -- but that GPU read was taken WHILE
+    # A DETECTOR RUN SHARED THE GPU, i.e. on a contended device, so it never applied to an idle
+    # one. Re-measured 2026-09-01 (HANDOFF 5ar) on an idle box with the real-run config: the PPO
+    # update is 70% of every cycle and 87% of the update is the CNN forward+backward on 4 CPU
+    # threads (100 s per update); the identical compute on the idle RTX 5050 is 2.4 s. So the net
+    # lives on --device; with `cuda` the parent keeps the learner + action selection on the GPU
+    # while the 12 CPU workers still get CPU weights (see _cpu_sd: every pipe/disk seam ships CPU
+    # copies, or each worker would unpickle cuda tensors and open its own CUDA context).
     device = torch.device(device) if device else _pick_device(cfg)
+    if device.type == "cuda":
+        # fp32 numerics on the GPU too: Ampere+ defaults TF32 on for convolutions (10-bit
+        # mantissa), which would make cuda-vs-cpu arms differ by more than reduction order.
+        torch.backends.cudnn.allow_tf32 = False
+        torch.backends.cuda.matmul.allow_tf32 = False
+        print("[train-sim-ppo] LEARNER ON %s (%s, %.1f GB) -- TF32 off, fp32 throughout; workers stay "
+              "on CPU and receive CPU weight copies. (workers 0/1 runs the in-process searchers and "
+              "per-env self-play opponents on the GPU one tiny forward at a time: functional, "
+              "unmeasured, expected slow -- the measured configuration is --workers 12.)"
+              % (device, torch.cuda.get_device_name(device),
+                 torch.cuda.get_device_properties(device).total_memory / 1e9))
 
     value_detach = bool(cfg.get("sim", "ppo_value_detach", default=False))
     # SEPARATE CRITIC FOR DRILL vs MATCH STEPS (ppo_value_head_split).
@@ -351,8 +365,17 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             worst_card = worst_cell = 0.0
             with torch.no_grad():
                 for _ in range(8):
-                    px = torch.from_numpy(np.asarray(pobs, np.float32)).unsqueeze(0).permute(0, 3, 1, 2)
-                    pv = [torch.from_numpy(getattr(penv, k).astype(np.float32)).unsqueeze(0)
+                    # /255: THE INPUT THE NET IS TRAINED ON. Until 2026-09-01 (5ar) this fed the
+                    # raw uint8 board as 0..255 floats, 255x what to_obs_t feeds, so the guard read
+                    # every head as saturated: the real run's m=2250 checkpoint measured raw absmax
+                    # card 1424 / cell 35276 through this path against 8.2 / 143 normalized, and
+                    # a --resume would have shrunk the card head x0.0021 (it is healthy). Nothing
+                    # resumed a checkpoint through the guard before that day (no log carries its
+                    # message), so no run was harmed -- but any --resume, manual or a relauncher's,
+                    # would have been.
+                    px = (torch.from_numpy(np.asarray(pobs, np.float32)).unsqueeze(0)
+                          .permute(0, 3, 1, 2).to(device) / 255.0)
+                    pv = [torch.from_numpy(getattr(penv, k).astype(np.float32)).unsqueeze(0).to(device)
                           for k in ("hand_vec", "next_vec", "elixir_vec", "threat_vec")]
                     fmap = net.policy.features(px)
                     z = net.policy._embed(fmap, *pv)
@@ -506,11 +529,31 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                     if mod.bias is not None:
                         mod.bias.mul_(cap_n / n)
 
-    def to_obs_t(o):
-        return torch.from_numpy(o).float().permute(2, 0, 1).to(device) / 255.0
+    def to_obs_t(o):                     # per-sample reference chains; the batched forms below
+        return torch.from_numpy(o).float().permute(2, 0, 1).to(device) / 255.0     # are checked
 
-    def to_vec_t(v):
+    def to_vec_t(v):                     # against these (tools/check_batched_assembly.py)
         return torch.from_numpy(np.asarray(v, np.float32)).to(device)
+
+    # BATCHED ASSEMBLY (5ar). The per-sample chains above cost 512 tiny copies per minibatch --
+    # 12% of a CPU update, and on a GPU 2,560 separate host->device copies per minibatch (measured
+    # 18 s per update vs 3 s batched). One numpy stack, one device copy, one permute. Bit-identical
+    # to torch.stack([to_obs_t(o) ...]): uint8 -> float32 is exact, /255.0 is the same elementwise
+    # op, and .contiguous() lands the same NCHW layout torch.stack produced (so cudnn/oneDNN see
+    # the same tensor, not a channels-last one that would pick different kernels). Verified with
+    # torch.equal on both devices before it replaced the chains.
+    def to_obs_batch(obs_list):
+        return (torch.from_numpy(np.stack(obs_list)).to(device).permute(0, 3, 1, 2).contiguous()
+                .float() / 255.0)
+
+    def to_vec_batch(vec_list):
+        return torch.from_numpy(np.stack([np.asarray(v, np.float32) for v in vec_list])).to(device)
+
+    def _cpu_sd(mod):
+        """state_dict as CPU tensors -- what every pipe/disk seam ships (workers, league, saves),
+        so a cuda learner never hands cuda tensors to the 12 CPU workers or to tools that load
+        checkpoints with map_location='cpu'. On a CPU net this is the plain state_dict."""
+        return {k: v.detach().cpu() for k, v in mod.state_dict().items()}
 
     def masked_logits(cq, ceq, gq, hand_t, elx_t, card_idx=None, pocket_code=None,
                       stored_cm=None):
@@ -649,18 +692,17 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     def choose_sample(obs_b, hand_b, nxt_b, elx_b, thr_b):
         """Sample (gate, card, cell) from the factored policy for all K envs; return acts, logps, values."""
         net.eval()
-        obs_t = torch.stack([to_obs_t(o) for o in obs_b])
-        hand_t = torch.stack([to_vec_t(h) for h in hand_b])
-        elx_t = torch.stack([to_vec_t(e) for e in elx_b])
+        obs_t = to_obs_batch(obs_b)
+        hand_t = to_vec_batch(hand_b)
+        elx_t = to_vec_batch(elx_b)
         # POCKET per env, as a 2-bit code. Stored in the rollout so the update rebuilds the exact
         # mask that sampling used -- otherwise the stored log-prob describes a different action set
         # than the one being re-scored, and the importance ratio silently stops meaning anything.
         pk_codes = pocket_now()
         pk_t = torch.tensor(pk_codes, dtype=torch.long, device=device)
         with torch.no_grad():
-            cq, ceq, gq, val_m, val_d, _hz = net(obs_t, hand_t,
-                                            torch.stack([to_vec_t(n) for n in nxt_b]),
-                                            elx_t, torch.stack([to_vec_t(t) for t in thr_b]))
+            cq, ceq, gq, val_m, val_d, _hz = net(obs_t, hand_t, to_vec_batch(nxt_b),
+                                            elx_t, to_vec_batch(thr_b))
             val = val_m
             if value_head_split:
                 _sel = torch.tensor([1.0 if in_drill[i] else 0.0 for i in range(len(obs_b))],
@@ -871,12 +913,11 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     def choose_greedy(obs_b, hand_b, nxt_b, elx_b, thr_b, envs=None):
         """Deterministic mode of the policy (benchmark): gate by LOGIT compare, argmax card/cell."""
         net.eval()
-        obs_t = torch.stack([to_obs_t(o) for o in obs_b])
-        hand_t = torch.stack([to_vec_t(h) for h in hand_b])
-        elx_t = torch.stack([to_vec_t(e) for e in elx_b])
+        obs_t = to_obs_batch(obs_b)
+        hand_t = to_vec_batch(hand_b)
+        elx_t = to_vec_batch(elx_b)
         with torch.no_grad():
-            cq, ceq, gq, _, _, _ = net(obs_t, hand_t, torch.stack([to_vec_t(n) for n in nxt_b]),
-                                 elx_t, torch.stack([to_vec_t(t) for t in thr_b]))
+            cq, ceq, gq, _, _, _ = net(obs_t, hand_t, to_vec_batch(nxt_b), elx_t, to_vec_batch(thr_b))
         cq_m, _, gq_m, playable = masked_logits(cq, ceq, gq, hand_t, elx_t)
         # THE SAME CARD VETO THE SAMPLER APPLIES. Without this the benchmark grades a policy that
         # casts spells under no restriction at all while training ran under one -- the asymmetry
@@ -903,14 +944,14 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     def save(path=None):
         p = path if path is not None else ppo_path
         p.parent.mkdir(parents=True, exist_ok=True)
-        torch.save({"model": net.policy.state_dict(), "gate": net.gate.state_dict(),
-                    "value": net.value.state_dict(),
+        torch.save({"model": _cpu_sd(net.policy), "gate": _cpu_sd(net.gate),
+                    "value": _cpu_sd(net.value),
                     # THE DRILL CRITIC TOO (2026-08-23). Only `value` was saved, so a --resume
                     # rebuilt `value_d` from scratch and the drill population trained against a
                     # RANDOM critic until it refit -- silently undoing ppo_value_head_split, the
                     # one thing that flag exists to provide. Harmless when the flag is off (value_d
                     # is unused), so it is written unconditionally and read back only if present.
-                    "value_d": net.value_d.state_dict(), "algo": "ppo",
+                    "value_d": _cpu_sd(net.value_d), "algo": "ppo",
                     "grid": [gw, gh], "n_cards": n_cards, "n_cells": n_cells,
                     "threat_dim": threat_dim, "in_ch": in_ch, "deck": e0.deck_keys, "best_wr": best_wr,
                     "matches": done_n,     # matches played when this file was written (checkpoint inventory)
@@ -1011,7 +1052,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             w_l = list(pfsp_weights(nets, pfsp_power)) if (pfsp_on and len(nets) > 1) else []
         except Exception:  # noqa: BLE001
             w_l = []
-        sds = [{"model": n.policy.state_dict(), "gate": n.gate.state_dict()} for n in nets]
+        sds = [{"model": _cpu_sd(n.policy), "gate": _cpu_sd(n.gate)} for n in nets]
         _bcast["nets"] = nets
         rpool.set_league(sds, w_l, sp_prob_now())
 
@@ -1099,6 +1140,10 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
 
     def ppo_update(roll):
         """One PPO update over a finished rollout. roll holds [T] rows of K-sized per-env lists."""
+        # 5ar profile sub-buckets (only when CLASHRL_PROFILE=1; `_pc` is the cycle's bucket dict)
+        _pu = ({"u_prep": 0.0, "u_mb": 0.0, "u_fwd": 0.0, "u_bwd": 0.0, "u_step": 0.0}
+               if _pc is not None else None)
+        _pt0 = time.perf_counter()
         T = len(roll["rew"])
         adv, ret = compute_gae(roll["rew"], roll["val"], roll["done"], roll["boot"],
                                gamma, gae_lambda, trunc=roll.get("trunc"))
@@ -1211,6 +1256,8 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 _adv_stats["frac_drill_steps"] = _nd / max(1.0, _nd + _nm)
 
         net.train()
+        if _pu is not None:
+            _pu["u_prep"] = time.perf_counter() - _pt0
         tot_pl = tot_vl = tot_ent = tot_clip = 0.0
         nb = 0
         idx_all = np.arange(N)
@@ -1220,13 +1267,15 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             np.random.shuffle(idx_all)
             for s in range(0, N, minibatch):
                 mb = idx_all[s:s + minibatch]
-                obs_t = torch.stack([to_obs_t(obs_f[i]) for i in mb])
-                hand_t = torch.stack([to_vec_t(hand_f[i]) for i in mb])
-                elx_t = torch.stack([to_vec_t(elx_f[i]) for i in mb])
-                cq, ceq, gq, val_m, val_d, hz_q = net(obs_t, hand_t,
-                                                torch.stack([to_vec_t(nxt_f[i]) for i in mb]),
-                                                elx_t,
-                                                torch.stack([to_vec_t(thr_f[i]) for i in mb]))
+                _pt1 = time.perf_counter()
+                obs_t = to_obs_batch([obs_f[i] for i in mb])
+                hand_t = to_vec_batch([hand_f[i] for i in mb])
+                elx_t = to_vec_batch([elx_f[i] for i in mb])
+                nxt_t = to_vec_batch([nxt_f[i] for i in mb])
+                thr_t = to_vec_batch([thr_f[i] for i in mb])
+                if _pu is not None:
+                    _psync(); _pt2 = time.perf_counter(); _pu["u_mb"] += _pt2 - _pt1
+                cq, ceq, gq, val_m, val_d, hz_q = net(obs_t, hand_t, nxt_t, elx_t, thr_t)
                 val = val_m
                 if value_head_split and _dsplit is not None:
                     val = torch.where(_dsplit[torch.tensor(mb, device=device)] > 0.5,
@@ -1607,7 +1656,11 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 # accuracy is forbidden (always-WAIT floor); the A/B is judged on the corpora.
                 if hazard_coef > 0.0 and hz_f is not None:
                     loss = loss + hazard_coef * F.cross_entropy(hz_q, hz_f[mb_t])
+                if _pu is not None:
+                    _psync(); _pt3 = time.perf_counter(); _pu["u_fwd"] += _pt3 - _pt2
                 opt.zero_grad(); loss.backward()
+                if _pu is not None:
+                    _psync(); _pt4 = time.perf_counter(); _pu["u_bwd"] += _pt4 - _pt3
                 # IS THE GATE STARVED OF GRADIENT? Measured, a play's log-prob moves +-61% on the
                 # CELL head per update while the GATE moves +-0.2% -- 250x. Clipping does not cause
                 # that (it is visible before any clip), and _clamp_heads() never touches the gate.
@@ -1682,6 +1735,11 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                     _proj = torch.where(_pm > 0.5, 1.0 - _p_play, -_p_play)
                     _clip_split["gate_z"] += float((_push * _proj).sum())
                     _clip_split["gate_z_raw"] += float((_raw * _proj).sum())
+                if _pu is not None:
+                    _psync(); _pu["u_step"] += time.perf_counter() - _pt4
+        if _pu is not None:
+            for _k, _v in _pu.items():
+                _pc[_k] += _v
         return tot_pl / nb, tot_vl / nb, tot_ent / nb, tot_clip / nb
 
     # -- main loop: collect a horizon of experience across K envs, then one PPO update -------------
@@ -1755,9 +1813,43 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
     win_hist: deque = deque(maxlen=max(log_every, 50))
     rew_hist: deque = deque(maxlen=max(log_every, 50))
     stats = None
+    # OPT-IN CYCLE PROFILE (5ar): CLASHRL_PROFILE=1 prints where each rollout->update cycle's wall
+    # clock goes. OFF by default, and when off nothing below changes: the timers only accumulate
+    # into `_pc` when it exists. It was added because the trainer had no timing at all while
+    # 12 workers measured 1.83x workers-0 with the cause unknown -- this is the instrument that
+    # says whether the parent process (policy forward, PPO update) is the ceiling or the workers.
+    _PROF_KEYS = ("bcast", "choose", "search", "step", "eval", "save", "league", "cont", "update",
+                  "rollout", "cycle", "u_prep", "u_mb", "u_fwd", "u_bwd", "u_step")
+    _prof_on = bool(os.environ.get("CLASHRL_PROFILE"))
+    _prof_tot = {k: 0.0 for k in _PROF_KEYS} | {"n": 0, "steps": 0, "matches": 0}
+    _pc = None                                          # per-cycle buckets (None = profile off)
+    # CUDA kernels are asynchronous: without a sync the update sub-buckets would time the launch
+    # queue, not the work. Only called when profiling (a sync per minibatch is not free).
+    _psync = torch.cuda.synchronize if device.type == "cuda" else (lambda: None)
+
+    def _prof_report(pc: dict, dm: int, label: str) -> None:
+        cyc = max(pc["cycle"], 1e-9)
+        book = pc["rollout"] - pc["choose"] - pc["search"] - pc["step"] - pc["eval"] - pc["save"] - pc["league"]
+        other = pc["cycle"] - pc["rollout"] - pc["bcast"] - pc["cont"] - pc["update"]
+        print("[profile] %s: %.1fs | rollout %.1fs (choose %.1f | search %.1f | step %.1f = %.0f%% | book %.1f)"
+              " | update %.1fs = %.0f%% | bcast %.1f | cont %.1f | eval %.1f | save %.1f | league %.1f"
+              " | other %.1f | env-steps %d | matches +%d (%d done)"
+              % (label, pc["cycle"], pc["rollout"], pc["choose"], pc["search"], pc["step"],
+                 100.0 * pc["step"] / cyc, book, pc["update"], 100.0 * pc["update"] / cyc,
+                 pc["bcast"], pc["cont"], pc["eval"], pc["save"], pc["league"], other,
+                 pc["steps"], dm, done_n), flush=True)
+        upd = max(pc["update"], 1e-9)
+        print("[profile]   update split: prep %.1f | minibatch tensors %.1f (%.0f%%) | forward+loss %.1f (%.0f%%)"
+              " | backward %.1f (%.0f%%) | step+diag %.1f (%.0f%%)"
+              % (pc["u_prep"], pc["u_mb"], 100.0 * pc["u_mb"] / upd, pc["u_fwd"], 100.0 * pc["u_fwd"] / upd,
+                 pc["u_bwd"], 100.0 * pc["u_bwd"] / upd, pc["u_step"], 100.0 * pc["u_step"] / upd), flush=True)
+
     t0 = time.time()
     try:
         while running["v"] and done_n < matches:
+            if _prof_on:
+                _pc = {k: 0.0 for k in _PROF_KEYS} | {"steps": 0}
+                _pc0 = time.perf_counter(); _pm0 = done_n
             roll = {"obs": [], "hand": [], "nxt": [], "elx": [], "thr": [],
                     "act": [], "logp": [], "lparts": [], "pk": [], "cm": [], "val": [], "rew": [], "done": [], "trunc": [],
                     # SELF-IMITATION MASK: 1.0 on steps that turned out to belong to a drill
@@ -1775,12 +1867,19 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             # failure 5m says search exists to avoid. Workers hold the net BY REFERENCE, so this is
             # an in-place refresh that keeps their interval counters and per-env stats alive.
             if _search_cfg is not None:
-                rpool.set_search_net({"model": net.policy.state_dict(),
-                                      "gate": net.gate.state_dict()}, _search_cfg)
+                _pt = time.perf_counter()
+                rpool.set_search_net({"model": _cpu_sd(net.policy),
+                                      "gate": _cpu_sd(net.gate)}, _search_cfg)
+                if _pc is not None:
+                    _pc["bcast"] += time.perf_counter() - _pt
+            _pr0 = time.perf_counter()
             for _t in range(horizon):
                 if not running["v"] or done_n >= matches:
                     break
+                _pt = time.perf_counter()
                 acts, logps, vals, lparts, pkc, cms = choose_sample(cobs, chand, cnxt, celx, cthr)
+                if _pc is not None:
+                    _pc["choose"] += time.perf_counter() - _pt; _pc["steps"] += 1
                 roll["obs"].append(list(cobs)); roll["hand"].append([h.copy() for h in chand])
                 roll["nxt"].append([n.copy() for n in cnxt]); roll["elx"].append([e.copy() for e in celx])
                 roll["thr"].append([t.copy() for t in cthr])
@@ -1788,6 +1887,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 # the point: it puts the trajectory on the distribution the improved policy will
                 # see, which is the half plain distillation could not supply.
                 srow = [0.0] * len(acts)
+                _pt = time.perf_counter()
                 if _searchers is not None:
                     for _i in range(len(acts)):
                         if _i >= len(_searchers) or pool[_i].eng.done:
@@ -1807,10 +1907,15 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 # ANSWERS, so the step has to happen BEFORE the roll is appended -- otherwise
                 # roll["act"] records the proposal and the imitation target is the wrong action.
                 # `_proposed` is kept so "% changed the action" still compares against the POLICY.
+                if _pc is not None:
+                    _pc["search"] += time.perf_counter() - _pt
                 step_out = None
                 if remote:
                     _proposed = list(acts)
+                    _pt = time.perf_counter()
                     step_out = rpool.step_all(acts)
+                    if _pc is not None:
+                        _pc["step"] += time.perf_counter() - _pt
                     if _search_cfg is not None:
                         for _i in range(K):
                             _pay = step_out[_i]
@@ -1843,7 +1948,10 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                         env = None
                     else:
                         env = pool[i]
+                        _pt = time.perf_counter()
                         nobs, reward, done, info = env.step(acts[i])
+                        if _pc is not None:
+                            _pc["step"] += time.perf_counter() - _pt
                     rew_row.append(float(reward)); done_row.append(1.0 if done else 0.0)
                     # A DRILL ENDING IS A CUT, NOT AN OUTCOME. It has a `drill` name and no match
                     # `outcome`, so the position was still live when the episode stopped -- see
@@ -2005,10 +2113,17 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                                   f"avg_rew={ar:+.1f} {mps:.1f} ep/s total {wins}W-{losses}L-{draws}D{xs}{ds}",
                                   flush=True)
                         if done_n % save_every == 0:
+                            _pt = time.perf_counter()
                             save()
+                            if _pc is not None:
+                                _pc["save"] += time.perf_counter() - _pt
                         if sp_prob > 0 and done_n % sp_snap_every == 0:
+                            _pt = time.perf_counter()
                             snapshot()
                             _broadcast_league()
+                            if _pc is not None:
+                                _pc["league"] += time.perf_counter() - _pt
+                        _pt = time.perf_counter()
                         if eval_every > 0 and done_n % eval_every == 0:
                             wr = evaluate(fair=False)
                             if wr is not None:
@@ -2031,6 +2146,8 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                                         _best_snap["net"] = snapshot(store=False)
                                     print(f"[train-sim-ppo] new BEST ladder avg {smooth:4.0f}% -> "
                                           f"saved {best_path.name}", flush=True)
+                        if _pc is not None:
+                            _pc["eval"] += time.perf_counter() - _pt
                     else:
                         cobs[i] = nobs
                     if remote:
@@ -2047,6 +2164,8 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                 roll["sil"].append(np.zeros(K, np.float32))
                 roll["isdrill"].append(np.asarray([1.0 if in_drill[i] else 0.0
                                                    for i in range(K)], np.float32))
+            if _pc is not None:
+                _pc["rollout"] += time.perf_counter() - _pr0
             if not roll["rew"]:
                 break
             if len(win_hist) >= 20:
@@ -2080,11 +2199,8 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                           f"(winrate ema {_curr['wr_ema']:.0f}%, window {wr_now:.0f}%)")
             with torch.no_grad():                              # bootstrap values for the final states
                 net.eval()
-                _, _, _, bv_m, bv_d, _ = net(torch.stack([to_obs_t(o) for o in cobs]),
-                                          torch.stack([to_vec_t(h) for h in chand]),
-                                          torch.stack([to_vec_t(n) for n in cnxt]),
-                                          torch.stack([to_vec_t(e) for e in celx]),
-                                          torch.stack([to_vec_t(t) for t in cthr]))
+                _, _, _, bv_m, bv_d, _ = net(to_obs_batch(cobs), to_vec_batch(chand), to_vec_batch(cnxt),
+                                          to_vec_batch(celx), to_vec_batch(cthr))
                 # bootstrap from the SAME critic that scored the episode -- routing the rollout and
                 # the update but not the bootstrap would bootstrap a drill's tail off the match
                 # critic, which is the miscalibration this flag exists to remove.
@@ -2096,15 +2212,29 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             roll["boot"] = bv.cpu().numpy().astype(np.float32)
             roll["val"] = [np.asarray(v, np.float32) for v in roll["val"]]
             if cont_log:
+                _pt = time.perf_counter()
                 try:
                     _log_continuations(roll, K, float(cfg.get("sim", "agent_dt", default=0.6)),
                                        cont_log)
                 except Exception as _e:                        # noqa: BLE001 -- logging must never kill training
                     print("[train-sim-ppo] continuation log failed: %s" % type(_e).__name__)
+                if _pc is not None:
+                    _pc["cont"] += time.perf_counter() - _pt
+            _pt = time.perf_counter()
             stats = ppo_update(roll)
+            if _pc is not None:
+                _pc["update"] += time.perf_counter() - _pt
+                _pc["cycle"] += time.perf_counter() - _pc0
+                for _k in _PROF_KEYS:
+                    _prof_tot[_k] += _pc[_k]
+                _prof_tot["steps"] += _pc["steps"]; _prof_tot["n"] += 1
+                _prof_tot["matches"] += done_n - _pm0
+                _prof_report(_pc, done_n - _pm0, "cycle %d" % _prof_tot["n"])
     except KeyboardInterrupt:
         pass
     finally:
+        if _prof_on and _prof_tot["n"]:
+            _prof_report(_prof_tot, _prof_tot["matches"], "TOTAL over %d cycles" % _prof_tot["n"])
         save()
         print(f"[train-sim-ppo] stopped after {done_n} match(es); saved -> {ppo_path} "
               f"({wins}W-{losses}L-{draws}D)")

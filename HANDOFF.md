@@ -1908,22 +1908,37 @@ slow one.
 
 ## 6. Open work
 
-### ⏳ QUEUED (2026-09-01, owner): PROFILE THE TRAINING CYCLE before any more throughput work
+### ✅ DONE (2026-09-01 evening, §5ar): PROFILE THE TRAINING CYCLE -> update was 70% -> learner on cuda, 2.92x per cycle
 Prompted by evaluating github.com/MakazhanAlpamys/Soup (owner ask). **Soup: REJECTED -- wrong
 problem.** It is an LLM fine-tuning CLI (LoRA/NF4, TRL tasks) whose headline is layer streaming a
 multi-billion-param frozen transformer through a small GPU. Our policy is 1.9 MB; our wall is CPU sim
 throughput + process-count RAM + desktop contention. Nothing in it applies. Solid tool (4.6k stars,
 Apache-2.0, preprint) for a problem we do not have.
-What the evaluation DID surface (measured this session): workers already `set_num_threads(1)`
-(remote_pool.py:59) so oversubscription is ruled out; the trainer has NO rollout/update/broadcast
-timing; workers 12 scales only 1.83x on 16 cores (§5u) -> the main process is the ceiling, cause
-UNTESTED. The box has an RTX 5050 Laptop 4 GB (unused; `--device` flag exists).
-The measurement (~20 lines, run on a BENCH config, never on the real run): per cycle, wall time in
-(a) rollout collection, (b) PPO update, (c) weight broadcast/searchnet, (d) eval. Decision rule:
-update >30% of cycle -> test async overlap OR `--device cuda` for the update only; rollout dominant
-with workers idle -> IPC (obs pickling) is the target; neither -> the sim step itself, profile env.py.
-One change per experiment after that. Cloud note: a CPU sim scales with vCPUs -- a 32-64 vCPU VM,
-not Colab (2 vCPU).
+Measured (§5ar): the PPO update was 402 of 572 s = 70% of the cycle on 4 CPU threads; the 12
+workers sat idle 78% of wall. `--device cuda` (learner + action selection on the GPU, workers on
+CPU with CPU weight copies, TF32 off, batched tensor assembly proven bit-identical) -> cycle 143 s
+-> 49 s, **2.92x per env-step**, ~3,700 matches/h steady state vs ~1,130. The box's GPU is an
+RTX 5050 Laptop **8.55 GB** (the "4 GB" written here earlier was wrong). Decision on the running
+real run (restart on cuda vs keep CPU) is with the owner -- see §5ar §5.
+**Remaining throughput items, in the order the cuda profile ranks them (one per experiment):**
+1. `step` = 118 s of the 196 s cuda cycle (60%), while the 12 workers sum only ~3.8 cores during it
+   -> `remote_pool.step_all` IPC / straggler structure (obs pickling 73,728 B x 96 per step, pipe
+   round-trips, sequential collection?). Profile the pool first; do not guess.
+2. `choose` = 33.6 s (17%): `choose_sample`'s per-env Python loops (67 ms per call for 96 envs).
+3. Minibatch tensor assembly = 47% of the cuda update (5 s/cycle): upload the whole rollout's obs
+   to VRAM ONCE per update (906 MB as uint8 -> fits in 8.5 GB with the 0.9 GB now used) and index
+   minibatches on-device.
+4. EVAL cost: 8.5-12 min at m=2000 in the real run vs 195 s measured 2026-08-23; 20 evals would
+   be ~3-4 h of a ~12-15 h cuda run. Measure where it goes before touching eval size.
+Cloud note unchanged: a CPU sim scales with vCPUs -- a 32-64 vCPU VM, not Colab (2 vCPU).
+
+### ⏳ QUEUED (2026-09-01, §5ar): dead-cell fraction of the cell head at each real-run gate snapshot
+§5ar measured 83% / 43% / 13% of in-hand x deployable cell logits beyond |8| / |16| / |24| (almost
+all negative) at m=2300, one seed, one crude rollout -- gradient-dead under the tanh cap. Cheap
+(minutes, read-only): run `scratchpad/saturation_probe.py` on the 5k / 10k / 20k gate checkpoint
+copies and report the trend. If it grows, the fix candidates are (a) a smaller cap or a soft
+penalty on |raw| (b) a logit floor. Neither is to be applied mid-run; this is a READ. Relevant to
+the placement-prior direction: a prior can only reshape cells that still have gradient.
 
 ### ⏳ QUEUED (2026-09-01, §5ap): hazard head follow-up -- the A/B was a NULL at 2 valid seeds, not a refutation
 Secondaries leaned the head's way at 3/3 seeds by 1-5 points (top-1 agreement, worse-than-WAIT
@@ -2224,6 +2239,22 @@ per section in place, keep the archive greppable and committed.
 
 ## 8. Measurement traps (each of these produced a wrong conclusion first)
 
+* **⚠ A BASH-TOOL TIMEOUT DOES NOT KILL THE CHILD (2026-09-01, §5ar).** A regex heredoc that
+  "timed out" at 07:11 kept spinning at ~97% of one core for 13 hours, and would have overwritten
+  `doctrine.py` with a stale copy had it ever finished. Every "idle box" throughput read that day
+  before 20:10 carried it. After any timed-out call: `Get-CimInstance Win32_Process` for stray
+  `python.exe -` / `sleep` children and `Stop-Process` them by PID -- also when killing a
+  `nohup bash -c 'sleep N; ...'` dead-man, whose `sleep` survives its parent. Before an "idle box"
+  claim, count processes; do not infer idleness from the plan.
+* **⚠ A GUARD THAT MEASURES THE NET MUST SEE THE NET'S INPUTS (2026-09-01, §5ar).** The resume
+  rail guard fed the policy 0..255 uint8 boards cast to float (no `/255`) and would have read a
+  healthy card head as 1,424 and rescaled it x0.002 on any `--resume`. Any probe that builds its own
+  input tensors must reuse the trainer's `to_obs_batch` / `to_vec_batch`, not a re-typed chain --
+  and a rescale that fires on a fresh checkpoint is evidence against the probe before the net.
+* **⚠ "THE GPU IS SLOWER" WAS MEASURED ON A SHARED GPU (2026-08-08 note, retired in §5ar).** The
+  1.0 vs 0.2 match/s comparison ran while a detector job held the GPU; on the idle 5050 the same
+  trainer cycle is 2.92x faster than 4 CPU threads. A device comparison inherits the contention rule
+  as much as a core-count comparison does.
 * **⚠ BARE `python` IS THE ROOT `.venv`, AND IT CHANGES THE ANSWER.** Every arm in
   `spell_experiments.md` was launched as `python scratchpad/spell_arms*.py`, which resolves to
   `ClashBot/.venv` — **torch 2.13.0+cpu**, not the deck venv's **2.11.0+cu128** that the trainer,
@@ -4846,3 +4877,131 @@ ctime (Windows tunnels a recreated file's creation time from its deleted namesak
 matched ITS OWN shell (the pattern text is in the command line) and killed itself (exit 255) after
 taking down only part of the chain. Kill by PID from a listing; never by a substring your own
 command contains.
+
+## §5ar — THROUGHPUT PROFILED: the PPO update was 70% of every cycle; on the GPU the same cycle is 2.9x faster (measured, same config, idle box)
+
+Owner, 2026-09-01 evening: *"If it's a cheap decisive item, we can do the throughput experiments right
+now, as I have a different direction planned for the next gauntlet."* Done as the §6 entry pre-stated:
+profile first, then the decision rule, then ONE change. Every number below is MEASURED this session
+unless marked. The real run kept running throughout except two recorded suspensions (psutil
+`suspend()`, 15 min 51 s total, nothing lost -- technique note at the end); it is at m=2450 (21:08)
+and advancing, 0 WARNING / 0 Traceback.
+
+### 1. Where the cycle goes (`CLASHRL_PROFILE=1`, new opt-in profiler in train_sim_ppo.py)
+Real-run config (`data/bench/prof.yaml` = real_run.yaml with an isolated checkpoint + continuation
+path), `--envs 96 --workers 12 --size 432 --seed 41 --search-interval 4 --matches 125`, box idle
+(real run suspended, runaway killed), 4 cycles = 501 env-steps each way. Buckets are parent wall time.
+
+| device | 4 cycles | rollout (choose / step) | **update** | update split: mb tensors / fwd+loss / bwd / step |
+|---|---|---|---|---|
+| **cpu** (4 threads, = the real run) | **572.1 s** | 168.4 s (48.5 / 119.4) | **402.2 s = 70%** | 48.6 / 124.3 / 225.5 / 3.6 |
+| **cuda** (RTX 5050, fp32, TF32 off) | **196.0 s** | 152.2 s (33.6 / 117.7) | **42.3 s = 22%** | 20.0 / 9.3 / 9.2 / 3.3 |
+
+* **Cycle 143 s -> 49 s = 2.92x** (per env-step 1.142 s -> 0.391 s). Steady-state cycles 2-4:
+  cpu 132 matches / 420 s = 1,131 matches/h; cuda 143 / 137.9 s = **3,733 matches/h** (4-cycle
+  average incl. the warm-up cycle: 2,645/h). Matches per cycle depend on match length and the two
+  runs diverge numerically after step 1 (different conv kernels, same algorithm), so env-steps is
+  the fair unit; the real run itself measured ~1,016/h over its first 2,000 (one eval + the thief).
+* The update went 100.6 s -> 10.6 s per cycle (9.5x). 87% of the CPU update was the CNN
+  forward+backward on 4 threads; on cuda fwd+bwd is 4.6 s per update and the largest remaining
+  piece is **minibatch tensor assembly, 5.0 s = 47%** -- the host-side gather of 512 scattered
+  73,728-byte boards, 96 times per update, plus the H2D copy.
+* `step` (the workers) is unchanged, 119 -> 118 s, as it must be. `choose` fell 48.5 -> 33.6 s and
+  the 33.6 s that remain (67 ms per call over 96 envs) are the Python per-env loops in
+  `choose_sample` (veto, doctrine floor, pocket codes, bookkeeping), not the forward.
+* **Live duty cycle of the CPU real run (read-only psutil at 1 Hz, 300 s, no suspension):** the 12
+  workers were collectively idle (< 25% of one core, summed) **233 / 299 s = 78% of wall**; means:
+  parent 310%, workers 79% summed, box 48%. During the ~28-38 s rollout bursts the workers summed
+  only ~380% (3.8 of 12 cores) while the parent ran ~280%; then ~100 s of parent-only update at
+  300-600%. I.e. even the rollout is parent-bound, and the update leaves 12 cores idle.
+* Standalone micro-bench (`tools/upd_bench.py`, synthetic batch, same net/heads/optimizer): the
+  update's fwd+loss+bwd+clip+Adam for 96 minibatches is 88 s on 4 CPU threads vs **2.4 s** on the
+  idle 5050 (25 ms/minibatch; cudnn TF32 default ON there -- the trainer runs TF32 OFF and measured
+  4.6 s with per-minibatch syncs); trainer-style per-sample tensor assembly is WORSE on the GPU
+  (18.0 s: 2,560 tiny host-to-device copies) than batched (3.0 s). Peak VRAM 0.59 GB.
+
+### 2. What was built (one engineering change; training semantics unchanged; committed with this section)
+`--device cuda` now works end to end for `--workers >= 2`: learner + action selection on the GPU,
+the 12 CPU workers keep CPU nets. Three seams used to ship raw `state_dict()`s, which with a cuda
+net would hand cuda tensors to 12 CPU processes (each unpickling them into its own CUDA context)
+and into checkpoints; they now ship CPU copies via `_cpu_sd()`: `set_search_net` (every cycle),
+`_broadcast_league`, `save()`. TF32 is disabled on cuda so both devices compute fp32.
+Minibatch / choose / greedy / bootstrap tensor assembly is BATCHED (`to_obs_batch` / `to_vec_batch`:
+one `np.stack`, one device copy, one permute + `.contiguous()`), verified **bit-identical** to the
+old per-sample chains -- `torch.equal` values, same strides, same `forward_parts` output -- on real
+env observations and random boards, cpu AND cuda (`tools/check_batched_assembly.py`, exit 0). So
+the CPU path, which the running real run's code is, computes exactly what it did.
+Smoke: `--envs 4 --workers 2 --device cuda --resume`, exit 0 -- exercised resume, league snapshot +
+broadcast, search-net broadcast, save; checkpoint tensors verified `device=cpu`. VRAM in the
+12-worker profile ~0.9 GB (nvidia-smi delta). **Not exercised on cuda at run scale:** an in-run
+EVAL (m=2000) and a scratch-run league snapshot (m=1000) -- same code paths as the smoke
+(`choose_greedy` batched forward; `snapshot()` + `_broadcast_league`), different points of a run.
+`--workers 0/1` on cuda is functional but unmeasured (the in-process searchers and per-env
+self-play opponents would run one tiny GPU forward at a time) -- the banner says so.
+
+### 3. Found on the way (three, all measured)
+* **THE RESUME RAIL GUARD FED 0..255 INPUTS (bug, fixed).** The guard (2026-08-14) measured raw
+  head logits on `np.asarray(pobs, np.float32)` WITHOUT `/255` -- 255x the trained input scale.
+  Replayed on the real run's m=2250 checkpoint (`scratchpad/railguard_probe.py`, on a copy):
+  as written it read card 1,424 / cell 35,276 and would have rescaled the CARD head x0.0021 (and
+  cell x0.0001) on any `--resume`; with normalized inputs it reads card 8.2 (healthy, no rescale) /
+  cell 143 (next bullet). No run in the repo was ever resumed through it -- the cuda smoke's log is
+  the only one carrying the guard's message -- so nothing was harmed. Fixed: `/255.0`, plus
+  `.to(device)` so the guard also works on a cuda net.
+* **THE REAL RUN'S CELL HEAD IS ALREADY ON THE NEGATIVE RAIL (m=2300).** Raw pre-tanh cell logits
+  on 240 real states (`scratchpad/saturation_probe.py`; one seed; a crude half-greedy/half-wait
+  rollout -- NOT the training distribution): in-hand maps x 160 deployable cells, **83% beyond |8|,
+  43% beyond |16|, 13% beyond |24|**, almost all NEGATIVE (per-map min: median -22, p10 -54,
+  min -116); the ARGMAX (played) cell is live (median +4.3, p90 +9.5, 0.4% beyond 16).
+  Capped-softmax placement entropy 1.09 nats vs 5.08 uniform; median top-cell prob 0.60. The CARD
+  head is healthy (in-hand absmax 9.4, 0% beyond 16).
+  Mechanism: `cells = 8*tanh(raw/8)`, d/draw = sech^2(raw/8) = 0.07 at |16|, 0.0013 at |32|, so a
+  cell at raw -54 receives no policy gradient and no entropy gradient. The cap bounds the
+  PROBABILITY collapse (its 2026-08-14 purpose) but not gradient death; the 15% uniform cell floor
+  keeps sampling those cells and the update cannot lift them. UNTESTED: whether the frozen fraction
+  grows over the run, whether it is 1 seed's accident, and whether it matters for the owner's
+  placement-prior direction (it would: a prior can only reshape the cells that still have gradient).
+  The measurement that settles it is queued in §6 (dead-cell fraction at each gate snapshot).
+* **A 13-HOUR RUNAWAY PROCESS (trap).** PID 55920 (`.venv\Scripts\python.exe -`, launched
+  07:11:51) was this morning's regex-based lane-spot revert heredoc whose Bash call "timed out": the
+  TOOL timed out, the interpreter kept spinning on catastrophic regex backtracking at ~97% of one
+  core until killed at ~20:10. Had it finished, it would have overwritten `doctrine.py` with a stale
+  07:11 version (verified unchanged after the kill). Consequence: the box was NOT idle from 07:11 --
+  every "idle box" read today before 20:10 (parity chain, geometry redo, hazard A/B, the real run's
+  first 2 h) carried a ~6% one-core thief. §5an / §5ao / §5ap made no throughput claims, so nothing
+  to retract; §5ap's gauntlet ETA arithmetic was slightly pessimistic, which is the harmless side.
+
+### 4. Corrections to earlier notes
+* "RTX 5050 Laptop 4 GB" (§6 entry, this morning) was WRONG: `torch.cuda.get_device_properties`
+  says **8.55 GB total**, 7.41 GB free with the desktop up. Fixed in §6.
+* The 2026-08-08 code comment "trainer is FASTER on CPU (1.0 vs 0.2 match/s)" was measured WHILE A
+  DETECTOR RUN SHARED THE GPU. It never described an idle GPU; the comment now says so.
+* The real run's m=2000 EVAL took **8.5-12 min wall** (m=2000 save 20:15:44; still in EVAL at the
+  20:24:13 suspension; `EVAL @ 2000` printed and m=2050 reached by 20:39:54 after the 20:36:15
+  resume) vs 195 s measured 2026-08-23 (the number that set `eval_every_matches` 2000). Cause
+  UNTESTED (in-parent 96-env stepping with doctrine/threat/pocket costs added since Aug 23? the
+  thief?). At cuda speed, 20 evals of a 40k run would be ~3-4 h of a ~12-15 h run -> §6.
+
+### 5. Decision (owner's call -- posted with --questions)
+Rule pre-stated in §6: update > 30% of the cycle -> move it to the GPU. Measured 70% -> built,
+measured 2.9x per cycle. **Real run (CPU) vs a restart on cuda:** the CPU run is at m=2450 after
+2.83 h (~955 matches/h net of the suspensions) -> ~39 h remaining, ETA ~Sep 3 midday. Scratch on
+cuda at 2,600-3,700/h -> 11-15 h of training + ~3-4 h of evals -> ETA Sep 2 afternoon if launched
+tonight; the cuda run passes the CPU run's position after ~1-1.5 h. Cost of restarting: the 2.83 h
+done, plus a first-time cuda pass through the m=1000 league snapshot / m=2000 eval (code exercised
+by the smoke, not at those points). Recommendation: restart on cuda -- scratch, seed 41, identical
+config, archive the CPU artifacts (as `data/bench/aborted_real_nohaz_20260901/` did for the
+no-hazard run). fp32 on both devices, same algorithm; the trajectory differs (kernel reduction
+order), which does not change what the experiment means. If the owner keeps the CPU run: nothing to
+undo -- the committed code is inert on cpu (bit-identical assembly), cuda goes to the next run.
+
+### Technique note: suspending a live run for a clean measurement
+`psutil.Process(pid).suspend()` on the parent then the 12 workers, `resume()` in reverse, loses
+nothing: the only timeout in remote_pool is `join(timeout=2)` at shutdown, and the trainer's wall
+clock only feeds the cosmetic ep/s. The watchdog's STALLED line is a single un-pinged Discord line
+that self-clears. ALWAYS arm a detached dead-man resume first (`nohup bash -c 'sleep 900; python
+data/bench/resume_real.py deadman'` -- and note that killing that bash leaves the Windows `sleep`
+orphaned; `Stop-Process -Id <pid>` it, the resume script is idempotent anyway), and append
+SUSPENDED / RESUMED lines carrying the run's state to the run's `.progress` file. The gate script's
+pace/ETA reads from the launch epoch and so understates pace by the suspended time (15 min 51 s
+today) -- cosmetic.
