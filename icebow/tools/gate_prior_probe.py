@@ -28,7 +28,8 @@ import numpy as np                                      # noqa: E402
 import torch                                            # noqa: E402
 
 
-def probe(ckpt: Path, envs: int = 6, steps: int = 400, seed: int = 0) -> dict:
+def probe(ckpt: Path, envs: int = 6, steps: int = 400, seed: int = 0,
+          force_bank: float = 0.0) -> dict:
     import torch.nn as nn
     from clashrl.config import Config
     from clashrl.model import PolicyNet
@@ -80,8 +81,14 @@ def probe(ckpt: Path, envs: int = 6, steps: int = 400, seed: int = 0) -> dict:
         return torch.from_numpy(t[:thr_dim] if t.shape[0] > thr_dim
                                 else np.pad(t, (0, thr_dim - t.shape[0])))
 
+    # COUNTERFACTUAL BANK (--force-bank X): suppress every play below X elixir, then let the policy
+    # act normally. The gate prior's THEORY OF CHANGE is "if it waits, it will play the expensive
+    # win conditions"; that is a claim about the CARD head at an elixir level this policy never
+    # reaches, so it cannot be read off the unforced rollout. This forces the states and reads what
+    # the card head does there. It is a probe, not a policy: nothing is trained here.
     # rows: (phase, bucket, p_play, affordable, played, elixir)
     rows = []
+    picks = []                                          # (bucket, card_id) for rows that played
     obs = [e.reset() for e in pool]
     with torch.no_grad():
         for _ in range(steps):
@@ -107,7 +114,11 @@ def probe(ckpt: Path, envs: int = 6, steps: int = 400, seed: int = 0) -> dict:
                 else:
                     pick = None
                 play = bool(hand) and bool(np.random.random() < pg[i])
+                if force_bank > 0.0 and elx < force_bank:
+                    play = False
                 rows.append((ph, b, float(pg[i]), bool(hand), bool(play), elx))
+                if play and pick is not None:
+                    picks.append((b, int(pick)))
                 act = (1, pick, int(e0.n_cells // 2)) if (play and pick is not None) else (0, 0, 0)
                 nobs, _r, done, _i = e.step(act)
                 obs[i] = e.reset() if done else nobs
@@ -120,7 +131,22 @@ def probe(ckpt: Path, envs: int = 6, steps: int = 400, seed: int = 0) -> dict:
            "played_frac": float(pl.mean()),
            "elixir_mean": float(ex.mean()), "elixir_ge6": float((ex >= 6.0).mean()),
            "phase_rows": [int((ph == k).sum()) for k in range(3)],
-           "by_bucket": {}}
+           "force_bank": float(force_bank),
+           "cost_of_plays": None, "picks_by_bucket": {}, "card_names": [], "by_bucket": {}}
+    names = [str(getattr(sp, "key", i)) for i, sp in enumerate(e0.specs)]
+    costs = [float(sp.elixir) for sp in e0.specs]
+    out["card_names"] = names
+    if picks:
+        out["cost_of_plays"] = float(np.mean([costs[c] for _b, c in picks]))
+        for lo, hi, lab in ((0, 3, "<3"), (3, 6, "3-5"), (6, 11, ">=6")):
+            sel = [c for b_, c in picks if lo <= b_ < hi]
+            if sel:
+                cnt = {}
+                for c in sel:
+                    cnt[names[c]] = cnt.get(names[c], 0) + 1
+                out["picks_by_bucket"][lab] = {
+                    "n": len(sel), "mean_cost": float(np.mean([costs[c] for c in sel])),
+                    "top": sorted(cnt.items(), key=lambda kv: -kv[1])[:4]}
     for k in range(11):
         m = b == k
         out["by_bucket"][k] = {
@@ -139,14 +165,17 @@ def main():
     ap.add_argument("--steps", type=int, default=400)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--prior", default="config/gate_prior.json")
+    ap.add_argument("--force-bank", type=float, default=0.0,
+                    help="counterfactual: suppress plays below this elixir (probe only)")
     ap.add_argument("--json", default=None, help="also dump the full dict here")
     a = ap.parse_args()
-    r = probe(Path(a.ckpt), a.envs, a.steps, a.seed)
+    r = probe(Path(a.ckpt), a.envs, a.steps, a.seed, a.force_bank)
     prior = None
     pp = _ROOT / a.prior
     if pp.exists():
         prior = json.loads(pp.read_text(encoding="utf-8"))["p_play"]["single"]
-    print("%s  matches=%d  rows=%d  seed=%d" % (r["ckpt"], r["matches"], r["rows"], r["seed"]))
+    print("%s  matches=%d  rows=%d  seed=%d%s" % (r["ckpt"], r["matches"], r["rows"], r["seed"],
+          "  FORCE-BANK %.0f" % r["force_bank"] if r["force_bank"] else ""))
     print("  affordable on %.1f%% of rows | P(play) mean %.3f (all) %.3f (affordable rows) | "
           "played on %.1f%% of rows | elixir mean %.2f  >=6 %.1f%% | phase rows %s"
           % (100 * r["affordable_frac"], r["p_play_mean_all"],
@@ -159,6 +188,15 @@ def main():
         print("  %5d  %5d   %s     %s     %s    %s" % (
             k, d["rows"], f(d["p_play"]), f(d["affordable"]), f(d["played"]),
             "%.3f" % prior[k] if prior else "-"))
+    if r["cost_of_plays"] is not None:
+        print("  mean cost of the cards actually played: %.2f (deck mean %.2f)"
+              % (r["cost_of_plays"], float(np.mean([1, 2, 3, 3, 3, 4, 4, 6, 6, 3]))))
+        for lab in ("<3", "3-5", ">=6"):
+            d = r["picks_by_bucket"].get(lab)
+            if d:
+                print("    plays at %-4s n=%-4d mean cost %.2f  %s"
+                      % (lab, d["n"], d["mean_cost"],
+                         " ".join("%s:%d" % (k, v) for k, v in d["top"])))
     if a.json:
         Path(a.json).write_text(json.dumps(r, indent=1), encoding="utf-8")
 

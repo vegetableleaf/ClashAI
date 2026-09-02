@@ -360,3 +360,17 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   three -> ask the owner to relaunch at coef 0.5; < 0.30 on all three -> leave to m=10k; mixed -> read again 7.5k.
 - Next: m=5k gate (~17:00). Run untouched, 0.8 ep/s, ETA ~05:00 09-03.
 
+
+## L8 — 2026-09-02 16:54-17:10 | COEF 0.1 LOSES TO PPO; THE GATE IS THE RIGHT LEVER (counterfactual bank) -- STOPPED TO ASK
+- (a) trainer `GATE PRIOR CE` de-cumulated per 800 updates: pi(play) on usable rows 0.34 -> 0.28 (upd 2400)
+  -> 0.375 (upd 8800), AWAY from the prior 0.059; window CE 0.43 -> 0.61. Probe m=4000, 3 seeds: played at
+  3 elixir 0.42-0.48 (control 0.36-0.37); mean cost of cards played 2.45-2.49 (deck 3.50); x_bow once / 7,200 rows.
+- (a) `--force-bank 6` counterfactual on the same checkpoint: card head picks at mean cost 3.35-3.44
+  (~uniform over hand: skeletons / ice_wizard / x_bow / tesla ~30 each of 190), x_bow on ~15% of plays; same
+  elixir spend per row (0.27) as unforced. The cheap-card collapse is the GATE opening at 1-3 elixir, not a
+  cheap-biased card head.
+- Arithmetic: prior per-usable-row pull = coef x (pi-p) / 0.09 ~ 0.33 at 0.1 vs PPO advantage ~0.8 -> loses
+  (observed). 0.5 -> ~1.7, equilibrium pi ~0.20 at 3 elixir; 1.0 -> ~0.13; pros 0.06. (b) both.
+- STOPPED (--questions): relaunch at coef 0.5? Run untouched at m~4,300; m=5k snapshot still taken.
+- Open side question: file host for the 9 replay mp4s (SwissTransfer needs a captcha -- not scriptable).
+

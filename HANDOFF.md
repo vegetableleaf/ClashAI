@@ -22,15 +22,15 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-02 16:05**, branch `main` (**§5bg: GAUNTLET L7 -- the gate-prior run READ AT m=2000
-WITH A NEW SAME-INSTRUMENT PROBE, and it is NOT yet distinguishable from the collapsed 18k checkpoint.**
-`tools/gate_prior_probe.py` = the watchdog's sampler + per-row affordability + P(play | elixir bucket), np.random
-SEEDED. 3 seeds each, m=2000 gate vs 18k control: affordable on 25-27% vs 28-29% of rows; P(play) on
-affordable rows 0.41-0.43 vs 0.38-0.41 (pro table at 3 elixir: 0.063); 81% of decision rows at <3 elixir in
-BOTH; skeletons/log in hand at 1-2 elixir only 7-9% / 18-24% of the time (spent on draw = the cheap-card
-collapse, measured from the hand side). The trainer's own `pi(play)` on usable rows, de-cumulated, 0.336 ->
-0.316 over 3,800 updates. TRAP: the watchdog's `P(play) mean` is ~74% masked rows (nothing affordable), so it
-is not the gate's play rate. Decision rule pre-registered for the m=5k gate in §6. Run untouched; 0.8 ep/s.)
+Last updated: **2026-09-02 17:10**, branch `main` (**§5bh: GAUNTLET L8 -- coef 0.1 IS LOSING TO PPO, and the
+GATE IS THE RIGHT LEVER.** (a) The trainer's own pi(play) on usable rows, de-cumulated per 800 updates: 0.34 ->
+0.28 (upd 2400) -> 0.375 (upd 8800), moving AWAY from the prior 0.059; window CE 0.43 -> 0.61. Probe at
+m=4000, 3 seeds: `played` at 3 elixir 0.42-0.48 (18k control 0.36-0.37). (a) COUNTERFACTUAL `--force-bank 6`
+on the same checkpoint: when plays are suppressed below 6, the card head picks at mean cost 3.35-3.44 (deck
+3.50; unforced 2.45-2.49) -- skeletons / ice_wizard / x_bow / tesla ~equally -- so the card head at high
+elixir is NOT cheap-biased; the cheap-card collapse is the gate opening at 1-3 elixir where only skeletons/log
+are affordable. STOPPED to ask: relaunch at coef 0.5 (the gradient arithmetic in 5bh.4 says 0.1 x 3.3 = 0.33
+vs a PPO push ~0.8 per usable row -- it was always going to lose). Run untouched at m~4,300.)
 
 ---
 
@@ -1916,6 +1916,9 @@ slow one.
 * Watchdog instrument: 6 envs x 400 steps gives cell_struct a 3x 10-90% spread on a frozen policy (§5bf.5);
   raise the sample or widen the median window, and re-check the 0.60 band against the frozen-checkpoint
   data set (`data/ppo_watchdog.log`, matches=18000 rows) before trusting a CELL STRUCTURE alert.
+* **§5bh (17:10): the m=5k rule is effectively DECIDED EARLY by the trainer's own trend (5bh.2) -- coef 0.1
+  loses to PPO. Owner asked (Discord, --questions) whether to stop and relaunch at coef 0.5. Until answered:
+  run untouched, m=5k snapshot still taken by real_run_gates.py, probe it on 3 seeds when it lands.**
 * **m=5k DECISION RULE (pre-registered in §5bg, 16:05):** run `tools/gate_prior_probe.py data/bench/gate_m5k.pt
   --seed 0/1/2`. If `played` at bucket 3 is still >= 0.30 on all three seeds (18k control 0.36-0.37, m=2000
   read 0.39-0.45), coef 0.1 is too weak: ASK THE OWNER to stop the run and relaunch at coef 0.5 (a relaunch
@@ -6444,3 +6447,83 @@ be stopped: the pre-registered rule in §6 says when to ask.
 2. Latency loop stays blocked on the contended box for absolute numbers; the stage-timer HARNESS can be built
    and validated meanwhile (its numbers labelled contended until the run ends, ETA ~05:00 09-03).
 3. Parked from §5bf unchanged.
+
+## §5bh — GAUNTLET L8: COEF 0.1 IS LOSING TO PPO (trainer trend + m=4000 probe), AND THE COUNTERFACTUAL BANK SHOWS THE GATE IS THE RIGHT LEVER -- the card head at 6+ elixir is not cheap-biased (2026-09-02 16:54-17:10)
+
+### 1. Why this
+m=5k was 24 min out. The `GATE PRIOR CE` series de-cumulated (§8 trap from 5bg) showed the term moving the
+wrong way, and the bigger question was untested: the gate prior's theory of change is "if it waits, it
+plays the expensive cards" -- a claim about the CARD head at an elixir level this policy never reaches. The
+probe from 5bg got a `--force-bank X` counterfactual (suppress plays below X, then let the policy act) and
+per-card play counts. Cost: 10 min build, 6 x 12 s probe.
+
+### 2. (a) The trainer's own term, per 800-update window (log `GATE PRIOR CE`, de-cumulated)
+```
+updates      CE     pi(play)  prior
+    1-800   0.466   0.336    0.053
+  800-1600  0.501   0.342    0.053
+ 1600-2400  0.433   0.282    0.054
+ 2400-3200  0.529   0.328    0.055
+ 3200-4000  0.528   0.327    0.056
+ 4000-4800  0.594   0.365    0.057
+ 4800-5600  0.615   0.372    0.058
+ 5600-6400  0.579   0.360    0.058
+ 6400-7200  0.591   0.357    0.059
+ 7200-8000  0.585   0.351    0.059
+ 8000-8800  0.614   0.375    0.059
+```
+Down to 0.28 by update 2,400, then back up to 0.36-0.375 and holding. Cross-entropy up 0.43 -> 0.61. The
+pull is being out-fought; "9% of rows usable" throughout.
+
+### 3. (a) Probe at m=4000 (`scratchpad/gauntlet/L8/gate_m4k.pt`, JSON in `m4k_fb{0,6}_s{0,1,2}.json`)
+Unforced, 3 seeds: `played` at 3 elixir 0.423 / 0.434 / 0.483 (m=2000: 0.449 / 0.392 / 0.424; 18k control
+0.372 / 0.372 / 0.357; pros 0.063). P(play) on affordable rows 0.43-0.45. Mean cost of the cards actually
+played **2.45-2.49** (deck mean 3.50): below 3 elixir it is skeletons:~50 / the_log:~40 per 2,400 rows;
+at 3-5 it is ice_wizard / knight / tornado / tesla; at >=6 there were 1-2 plays per run (x_bow once in
+7,200 rows). Elixir >=6 on 0.0-0.2% of rows. All of this is the 18k picture; nothing has moved.
+
+**`--force-bank 6`, same checkpoint, same seeds** (every play below 6 elixir suppressed by the probe):
+* affordable on 90-93% of rows (the hand is no longer stripped of cheap cards -- they sit there unplayed);
+* elixir >=6 on 12.5-15.6% of rows, mean 4.4-4.6 (after each play the bar drops to 0-3 and takes 8-17 s
+  to climb back -- engine physics; the pros' "65% of PLAYS at >=6" is a per-play number, not per-row);
+* plays per row 7.9-8.1% vs 10.8-11.0% unforced, at mean cost **3.35 / 3.44 / 3.42** -- the same elixir
+  spend per row (0.27) as unforced (0.27): regen-bound either way, exactly as it should be;
+* the picks at >=6: skeletons 34-35, ice_wizard 30-36, x_bow 26-31, tesla 28 of ~190 -- close to uniform
+  over the hand. **The card head at high elixir does not prefer cheap cards.** x_bow is picked on ~15% of
+  plays there vs once per 7,200 rows unforced.
+* the raw gate at >=6 wants to play MORE: P(play) 0.55-0.64 at 6 (prior 0.042). Untrained region.
+
+### 4. What this means, plainly
+1. The cheap-card collapse the owner named is **the gate**, not the card head: the gate opens at 1-3 elixir,
+   where the only affordable cards are skeletons and the_log, so those get spent on draw; at 3-5 the
+   3-costs go; x_bow/rocket are never affordable. Fix the WHEN and the WHAT follows, at least at m=4000
+   (the card head at 6+ is untrained there, so "uniform" is what an untrained head looks like -- (b) whether
+   it stays sensible once trained at 6+ is what a working run would show).
+2. coef 0.1 cannot win, and the arithmetic says why. The term is `coef x mean over USABLE rows` while PPO's
+   policy loss is a mean over ALL rows; with 9% usable, each usable row's prior gradient on the play logit
+   is coef x (pi - p) / 0.09 = 0.1 x 0.30 / 0.09 ~ 0.33 (in per-row units of the PPO loss), against a
+   normalised advantage of typical size ~0.8 that favours playing on those rows. It loses -- observed. At
+   coef 0.5 the pull is ~1.7 > 0.8 and the equilibrium (where c x (pi - p) / 0.09 = 0.8) sits at
+   pi ~ p + 0.14 ~ 0.20 at 3 elixir; at coef 1.0, pi ~ 0.13. Pros 0.06. Both (b): the PPO push is not a
+   constant, and the prior has no threat key, so a strong coef makes the gate refuse to answer a push at
+   3 elixir unless PPO's advantage overrides it on those rows (which it can -- 6% of windows is still
+   ~one play per 10 s at 3 elixir).
+3. The pre-registered m=5k rule (§6) will read >= 0.30 at 3 elixir on all seeds -- the m=4000 read is
+   0.42-0.48 and rising. Asking now rather than in 20 min changes nothing about the answer and saves the
+   owner a round trip; the m=5k snapshot is still taken and will be probed.
+
+### 5. What this does NOT establish
+Whether 0.5 is enough, or too much without a threat key (b, above). Whether the card head stays uniform
+once it is actually trained at 6+ (it has never been). Nothing about hogeq (deck costs differ; the same
+gate-vs-card question should be asked with the same probe once its trainer has search-in-workers).
+
+### 6. Owner question posted (Discord, --questions), what I do with each answer
+* "relaunch at 0.5": wait for the m=5k snapshot (~17:20), record the run's endpoint in §3, kill it (count
+  procs before/after), relaunch the same `gate_run_launch.sh` with `ppo_gate_prior_coef: 0.5` as the ONE
+  change, new checkpoint name `policy_gate05_20260902.pt`, watchdog + gates re-armed.
+* "relaunch at 1.0" (or another value): same, with that value.
+* "let it run": nothing changes; m=10k read.
+* No answer: run untouched; m=5k probe on 3 seeds when the snapshot lands; report again.
+
+### 7. Files
+`icebow/tools/gate_prior_probe.py` (+`--force-bank`, per-card play counts, `cost_of_plays`).
