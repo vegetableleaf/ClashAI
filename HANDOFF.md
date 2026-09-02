@@ -1949,6 +1949,23 @@ slow one.
 
 ## 6. Open work
 
+### ⚑ OWNER RULING 2026-09-02 08:20 -- PPO elixir fix, prep folded into the detector gauntlet, run AFTER board-27
+The 18k run's elixir>=6 fraction fell 2% -> 0.02% (§5ba.6b). Three repair families are already dead at 3 seeds
+(bank_hold HARMFUL p~0.005 §5ad, restraint_hold dead, placement prior failed) -- do NOT propose another
+wait-side reward term. The owner picked repair (1): teach WHEN-NOT-TO-PLAY from a source that knows, and
+ordered the PREP done during the detector gauntlet so it is ready the moment board-27 finishes:
+* v0 = a **tabular gate prior** P(play | elixir bucket, phase, threat-on-our-half) from the 211 converted
+  replays' Icebow side (human plays from `data/royaleapi/crawl2/plays_ext.csv`; state from a compact
+  engine observation every 12 ticks = the 0.6 s decision cadence; ~40 min CPU pass, estimate from the
+  108 s full-record run, untested). Consumed by a KL term on the GATE head only (card/cell heads free),
+  behind a config coef defaulting to 0.0. v1 (full-obs BC gate) only if v0 is too coarse.
+* Second source, same prep: the rollout-search teacher / m18000 reference (banked 35.4%, x_bow 12.5%,
+  §5o) -- the distillation the owner asked for twice (§6-PRIORITY-B).
+* Endpoint BEFORE the run: `bank_to_six_then_bow` drill + the elixir_ge6 drift rule; control's >=6
+  fraction spreads 9x across seeds (2.2/7.5/20.3, §5ab), so match stats alone cannot read the repair.
+* The engine recording pass runs in the window between the screen ending and board-27 launching
+  (4.7 GB RAM free under the screen; the emulator would also contaminate one screen arm's timing lines).
+
 ### PPO -- next run, two cheap items (from §5ba.6b, 2026-09-02)
 Add an `elixir_ge6` DRIFT rule to `tools/ppo_watchdog.py` (the stopped 18k run's 6-elixir fraction fell
 2% -> 0.02% monotonically from ~10k; the absolute 0.5% floor only fired in the back half). And a per-card
