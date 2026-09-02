@@ -209,3 +209,8 @@ STATE    running: geo2 s54. cleared: gate 1 (workers 12). confirmed: scratch, 40
   ranked: sim-parity oracle > real-engine eval > pro-state dataset > RL-in-engine (one throughput
   measurement decides) > frames (impossible). §5at + research/CR_NATIVE_SANDBOX_ASSESSMENT.md.
   Discord --questions posted; WAITING. Cuda run at +28 min: 963 matches, 0 warnings.
+- 2026-09-01 22:15 owner answered: Q2 (installs) APPROVED -> done 22:13 (JDK 17.0.20.1, cmdline-tools,
+  SDK 7.9 GB, AVD created, venv; doctor passes all toolchain/AVD checks; WHPX usable per emulator
+  -accel-check; upstream bootstrap bug ANDROID_AVD_HOME worked around); Q3 = after the cuda run; Q1
+  explained, waiting for the owner to read the client version (must be 15.535.29). Cuda run passed
+  episode 2000 at 22:13 (26W-1541L, 0 warnings); EVAL@2000 running (first cuda eval at scale).

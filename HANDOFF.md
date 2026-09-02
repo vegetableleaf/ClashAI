@@ -1913,6 +1913,12 @@ Assessed, not run (`research/CR_NATIVE_SANDBOX_ASSESSMENT.md`). Three owner deci
 `--questions`: (1) supply the 5 split APKs of exactly 15.535.29 x86_64 from their own BlueStacks/GPG
 install (hash-gated; any other version = cannot run; ToS is theirs); (2) OK the ~15-20 GB of JDK 17 +
 Android SDK/AVD installs; (3) emulator only after the cuda run ends (default) or accept the slowdown.
+**Owner answers 22:0x (§5at.8): (2) APPROVED and DONE 22:13 -- toolchain installed, `doctor.ps1` passes
+every toolchain/AVD check; (3) = after the cuda run ends; (1) owner asked what "supply the runtime"
+means -- explained; the cheapest next step is theirs: read the client version in CR Settings. Only
+15.535.29 can work; the Elite-Barbarians-evo evidence (§5at.3) says the live client is probably newer,
+in which case the tool is dead for us as published (re-binding ~60 RVAs to a new build = days, and it
+breaks at the next update -- recommendation: don't).** Waiting for the version string.
 **If all three come back yes, the order of work is fixed:** hash gates -> `smoke.ps1` reproduces
 `96598dc9028e1802` -> first-hour experiments (`cmd` playback yes/no, deal-order permutation trick,
 same-actions=>same-hash, per-tick observe cost, Elite-Barbarians-evo presence, **matches/h with a
@@ -5202,3 +5208,30 @@ Live-run read at the time of writing (21:53, +28 min): 1,250 episodes = 963 matc
 league snapshot (first cuda pass at scale) is due within minutes — see §5au if anything happened.
 `.progress` does not exist while the run is alive (the launch script writes it only at exit; the
 gate script's `run_dead()` keys on that) — not a fault.
+
+### 8. Owner answers (22:0x) and the toolchain install (approved Q2) -- DONE 22:13
+Owner: *"for (1), can you explain to me what 'supply the game runtime' exactly entails? ... You have my
+approval for (2), and for (3) save it for after the cuda run ends."* Q1 explained in chat (the harness is
+not the game; the engine is `libg.so` inside the game's 5 split APKs; only build 15.535.29 fits the ~60
+hardcoded RVAs; the only legitimate source is the owner's own x86_64 install; cheapest check = the version
+string at the bottom of CR's Settings screen; the EB-evo evidence says it is probably newer). Waiting.
+**Installed (all under `C:\Android`, removable in one `rm`; log `scratchpad/gauntlet/ext/install_toolchain.log`):**
+* Temurin JDK **17.0.20.1+1** (zip, no admin) -> `C:\Android\jdk-17` (304 MB) -- exactly the author's baseline.
+* Android cmdline-tools `15859902` -> `C:\Android\Sdk\cmdline-tools\latest`; `bootstrap.ps1` then installed
+  platform-tools, emulator, platforms;android-35, build-tools 35.0.0, NDK 27.3.13750724, and
+  `system-images;android-31;default;x86_64` -> `C:\Android\Sdk` = **7.9 GB** (downloads ~2 min; unzip CPU
+  overlapped the cuda run for ~3 min at 22:09-22:12 -- note for the 5k-gate pace reading).
+* AVD `royale_worker_api31` at `%LOCALAPPDATA%\Android\avd` (4 vCPU / 4 GB / 10 GB data), **never booted**.
+* Sandbox venv `research/ext/cr-native-sandbox/.venv` (Python 3.13.14, package is stdlib-only, editable install).
+* `runtime.env.ps1` written from the example with `CR_SANDBOX_JDK=C:\Android\jdk-17` + JAVA_HOME.
+**Trap found (upstream bug, worked around locally):** `bootstrap.ps1` runs `avdmanager` without
+`ANDROID_AVD_HOME`, so the AVD landed in `%USERPROFILE%\.android\avd` while `worker.py:109` looks in
+`CR_SANDBOX_AVD_HOME` -> "AVD config.ini not found after creation". Fix: `runtime.env.ps1` now also sets
+`ANDROID_AVD_HOME = CR_SANDBOX_AVD_HOME` and `ANDROID_SDK_ROOT`; misplaced AVD removed; re-run PASS.
+`avdmanager`'s "Could not load devices from ...devices.xml" lines are cosmetic (AVD created regardless).
+**`doctor.ps1` (22:14):** PASS environment/python/adb/emulator/sdkmanager/avdmanager/android.jar/r8/javac/
+clang++/avd home/avd/ports/disk space/execution policy. FAIL runtime hashes + runtime assets (no APKs --
+expected, the owner's Q1). FAIL "virtualization/WHPX VT-x firmware enabled=False" is a **false negative**
+of its probe: `Win32_ComputerSystem.HypervisorPresent = True` (Hyper-V/WHPX active hides the firmware flag)
+and the emulator's own `emulator -accel-check` says **"WHPX(10.0.26200) is installed and usable"**; the
+README itself classes that probe as a hint. So: everything but the game runtime is in place.
