@@ -222,3 +222,13 @@ STATE    running: geo2 s54. cleared: gate 1 (workers 12). confirmed: scratch, 40
   whitelists getprop/dumpsys/logcat only; pull/sync blocked). Engine payload byte-identical: 14/14 native
   libs incl. libg.so fa6704b8 + asset pack; 4 Play-derived APK wrappers differ (derived.apk.id + re-sign,
   same sizes). prepare_runtime OK. freeze (template with blanked APK hashes) = owner's call. §5av.
+- 2026-09-01 23:05-23:40 (owner: "run the single replay conversion now, an hour of slowdown is fine")
+  sandbox SMOKE on this box: AVD boot 61.6 s, 5 APKs installed, libg headless load, DataTables, battle
+  from the bootstrap replay IDENTICAL to the author's certified state (rng 3502570521, towers, elixir 6).
+  BLOCKED: nativeStep never advances the tick (0->0 after 100 steps in 33.7 ms; 3/3 deterministic; author
+  reaches tick 100/hash 96598dc9028e1802 on the same path) -> service never listens -> conversion NOT run.
+  libg is packed on disk (static RE impossible; lldb broken here; no capstone) -> next: live /proc/self/mem
+  dump via a local probe-direct-hold mode, plus the cheap locale/tz + full-card-bootstrap tests first.
+  Driver replay_drive.py written and offline-verified (08CPVRRR8PYC: 54 plays, 256 consistent deals/side).
+  Owner stopped the session (compaction); emulator STOPPED (free RAM 3.1 -> 7.7 GB); cuda run untouched
+  (4200 eps, 95W-3262L-2D, EVAL@4000 12%/5%). Full runbook in §5aw.4.

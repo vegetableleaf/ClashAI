@@ -1916,9 +1916,9 @@ Android SDK/AVD installs; (3) emulator only after the cuda run ends (default) or
 **Owner answers 22:0x (§5at.8): (2) APPROVED and DONE 22:13 -- toolchain installed, `doctor.ps1` passes
 every toolchain/AVD check; (3) = after the cuda run ends; (1) owner asked what "supply the runtime"
 means -- explained; the cheapest next step is theirs: read the client version in CR Settings. Only
-15.535.29 can work; the Elite-Barbarians-evo evidence (§5at.3) says the live client is probably newer,
-in which case the tool is dead for us as published (re-binding ~60 RVAs to a new build = days, and it
-breaks at the next update -- recommendation: don't).** Waiting for the version string.
+15.535.29 can work. (§5at.3's "the live client is probably newer" reading was WRONG -- retracted in
+§5au: the owner's BlueStacks client IS 15.535.29 / versionCode 150535029, engine payload byte-identical
+to the frozen build, §5av.) Superseded by §5av-§5aw: runtime pulled, smoke run, engine boots, tick stall.**
 **If all three come back yes, the order of work is fixed:** hash gates -> `smoke.ps1` reproduces
 `96598dc9028e1802` -> first-hour experiments (`cmd` playback yes/no, deal-order permutation trick,
 same-actions=>same-hash, per-tick observe cost, Elite-Barbarians-evo presence, **matches/h with a
@@ -5325,3 +5325,120 @@ beside the run); (ii) "convert" = drive the engine with the replay's 20 Hz comma
 tick/elixir drift, final crowns vs `battles.csv`. The hand/deal-order problem (§5at.4.2) may make the
 first attempt reject plays whose card is not yet in hand; that rejection count IS the result of test 1.
 Candidate replay: one from `scratchpad/usable_replays.json` whose decks avoid Elite-Barbarians-evo.
+
+## §5aw — sandbox smoke on this box (23:05-23:35, owner-authorized "go now"): toolchain/AVD/install/libg load/DataTables/battle construction all WORK and match the author's certified state; BLOCKED on the engine clock — nativeStep never advances the tick (0→0 after 100 steps, deterministic, 3/3). Single-replay conversion NOT run. Session stopped by the owner ("compacting issues"); state saved here.
+
+### 0. Where things stand (read this first)
+* Owner rulings this evening: ToS risk accepted; ADB enabled; "run the single replay conversion now, slowing
+  the run for an hour is fine". The hour was used on the smoke + diagnosis; the conversion itself did not run.
+* The cuda real run is untouched and alive (log mtime 23:35:29; 4200 episodes: 95W-3262L-2D, winrate 6% at
+  the last window, pl +0.007, vl 1.759, ent 0.06, clip 0.04, drills 841/39% pass; EVAL@4000 = ladder 12%,
+  fair 5%). Free RAM with the emulator up: 3.1 GB (qemu 4.9 GB WS). **Emulator STOPPED at session end**
+  (see §5aw.6) so the run gets the box back; re-boot is 62 s.
+* Everything below the stall is done and verified; everything above it is blocked. The stall is the
+  ONLY open problem between us and the conversion test.
+
+### 1. What works (measured, this box)
+* `bootstrap.ps1` -> AVD `royale_worker_api31` (system-images;android-31;default;x86_64, pixel_2, 4 vCPU/4 GB/
+  10 GB; config.ini = author's overrides). Boot **61.6 s** under WHPX. `smoke.ps1 -KeepRunning`: build OK,
+  boot OK, 5 APKs installed OK, adb forward OK; "FAIL toolchain"/"FAIL runtime hashes" lines are the EXPECTED
+  consequence of the owner not having run `freeze_runtime.ps1` (doctor only; `worker.py` never reads the
+  manifest). Runner: `scratchpad/gauntlet/ext/run_smoke.ps1`, logs `smoke_1.log/.err`.
+* Direct headless bootstrap (`serve-direct` and the author's `probe-direct`): libg loads, package context,
+  TitanApplication bind, nativeCreateGameMain, nOnCreate, 5 s hold, InitResources, InitGameMain, 9 manager
+  pumps, DataTables pump (completed true, 106 iterations, state 0->9, progress 0->156, finalize 512 pumps,
+  ready_latch 1, loading_gate_state 4, **loading_complete false** -- the author's acceptance script does not
+  check that field, so unknown whether it is false on their box too), nativeLoadReplay(eight-card-bootstrap),
+  waitForBattle -> **battle constructed identically to the author's certified initial state**: rng_state
+  3502570521 (author's canonical), 6 towers hp [4824,3052,3052,4824,3052,3052], hands dealt, elixir 6.0
+  (raw 60000), coherent true, commands allowed, native_phase {battle 4, logic 3, logic_substate 1, flag_1e9 0}.
+* Author probe on our box: `scratchpad/gauntlet/ext/probe_direct_1.log` (author log copy) and
+  `probe_1.log` (runner output); serve-direct failure with full stage JSON: `service_0.log` (pulled with
+  `adb shell cat`, `adb pull` of it silently failed once).
+
+### 2. The stall (measured)
+* `nativeStep(10)` (serve-direct) -> stepped 10, tick 0->0 -> JniHost throws "controlled bootstrap did not
+  reach tick 5" -> service never listens -> `WorkerError: Direct service did not become ready: empty response`.
+  `probe-direct`: 100 steps, tick 0->0, **elapsed 33.7 ms** (so not a timeout/wait path; the core update
+  returns immediately without advancing), state hash after = e23456fd00d634de. Reproduced 3/3 (23:07 x2, 23:21).
+  Author expects tick 100 and hash 96598dc9028e1802 on the identical path (accept_direct_core.ps1).
+* `probe-no-surface` (23:33, differential): dies earlier -- "game state manager is not ready for replay
+  input" (manager_root 0x0 after the 5 s hold; the game's own main loop does not run without the direct
+  bootstrap). So the non-direct profiles are research leftovers; **probe-direct is the only path that
+  reaches a battle**, and it is the one that stalls. Log: `scratchpad/gauntlet/ext/probe_nosurf_author.log`.
+* nativeStep mechanics (bridge source, `android_probe/native/jni_bridge.cpp` 1964-2161): per step
+  `core_update(state, 0.05f)` (RVA 0xCE2CC0) -> capture -> `state_update(state, 0.05f)` (0xCE26D0) under the
+  0x1A85930 gate; tick read at battle+0x60 (battle = state+0x90). Nothing in the bridge can produce
+  "stepped 100 / tick 0" except the engine's own update returning early.
+
+### 3. What is ruled out / what is left (labelled)
+* Ruled out (measured): wrong replay doc (sha of the bootstrap matches the author's example; rng/tower/
+  elixir state identical); AVD config drift (config.ini == author's overrides); wrong libg (sha fa6704b8...);
+  timeout paths (33.7 ms); serve-specific bug (author's probe fails the same way).
+* Static RE of libg is IMPOSSIBLE: on disk it has 5 section headers and no .text; PT_LOADs 0..0x18b2fe0 RX
+  (encrypted), RW, a second RX at 0x1ae0000 (0x2099b bytes = the unpacker stub), RW at 0x1b04000. Carving
+  0xCE2CC0 (`scratchpad/gauntlet/ext/re/wrap_elf.py` -> `core.elf` -> llvm-objdump) gives garbage. lldb.exe in
+  the NDK fails to start on this box (liblldb.dll / api-ms-win-crt-time DLL). No capstone (third-party, not
+  installed without owner OK). => the decrypted code must be DUMPED FROM THE LIVE PROCESS.
+* Hypotheses, all UNTESTED: (a) locale/timezone-dependent path -- the Java shims (`ApplicationUtilBase`
+  getLocaleCountry/getPreferredLanguage/getTimeZoneID) use `Locale.getDefault()`/`TimeZone.getDefault()`; our
+  AVD has tz America/New_York and an EMPTY locale, the author's box was +0800 (cheap test:
+  `adb -s emulator-5554 shell setprop persist.sys.locale zh-CN; setprop persist.sys.timezone Asia/Shanghai`,
+  reboot or restart the process, rerun probe); (b) `runtime_clock` (prerequisite_probe shows it at a live
+  address) gating the first tick on wall-clock/thread state -- `nativeInitResources` calls
+  `runtime_clock_init` and `thread_option_set(5/3/10/12, true)`; (c) host CPU (Core Ultra 9 386H) / emulator
+  version code path; (d) `loading_complete false` is real and the author's box has it true (their acceptance
+  does not check it). (a) and (d) are the cheap ones; the decisive route is the dump.
+
+### 4. Resume runbook (next session; ~15 min to the first new datum)
+1. Boot: from `research/ext/cr-native-sandbox`, `. .\runtime.env.ps1`, then the sandbox venv python
+   `-m native_core.worker start --workers 1 --base-port 37031` (or `scripts\smoke.ps1 -KeepRunning` via
+   `scratchpad/gauntlet/ext/run_smoke.ps1`, which also re-installs). Launch long PowerShell steps with
+   `Start-Process -RedirectStandardOutput/-RedirectStandardError` (PS 5.1 trap, §5aw.5).
+2. Cheap tests first, one at a time, via `scratchpad/gauntlet/ext/run_probe_direct.ps1 -Profile probe-direct`
+   (author's probe, exit 0 even on stall; read `step.tick_after` in the `probe_result` line of the log under
+   `%LOCALAPPDATA%\cr-native-sandbox\data\probe\`): (i) locale+timezone setprop as in §5aw.3(a);
+   (ii) `-ReplayJson examples\full-card-bootstrap.json` (rndSeed 424242) -- rules out a doc-specific path.
+3. Decisive: add a local `probe-direct-hold` mode to `android_probe/java/royale/nativehost/JniHost.java`
+   (research/ext is git-ignored -> keep the patch as a commit in the sandbox repo's own git for revert).
+   Register it in `isProbeMode` and everywhere `"probe-direct".equals(mode)` is tested (lines 194, 338);
+   `usesSurface`/`usesStartResume` stay false, `usesActivityCreate` true. After the normal `probe_result`:
+   print `android.os.Process.myPid()`, read `/proc/self/maps`, dump every `libg.so` mapping (r-xp AND rw-p)
+   through `RandomAccessFile("/proc/self/mem","r")` to `<root>/dump_<start>.bin`, plus 0x1000 bytes at the
+   `battle`, `logic_battle`, `state`, `manager` addresses (from the pump/ready JSON) before and after an extra
+   `nativeStep(1)`, then exit. Rebuild with `scripts\build_probe.ps1`; launch with run_probe.ps1's own command
+   (line 90: `cd '<root>' && exec env CLASSPATH='<root>/lifecycle-probe.jar:<root>/base.apk'
+   LD_LIBRARY_PATH='<root>' app_process /system/bin royale.nativehost.JniHost '<root>' probe-direct-hold
+   '<root>/input-replay.json'`, root `/data/local/tmp/cr-native-sandbox-probe`; the script's ValidateSet
+   rejects the new name, so run the adb command directly after run_probe.ps1 has pushed the files once).
+   `adb pull` the dumps; `wrap_elf.py <dump> <vaddr> <len> out.elf` (edit: it seeks by vaddr, so pass a
+   dump that starts at the mapping base or add an offset arg); `llvm-objdump -d --start-address=0xCE2CC0`
+   (address = libg base + RVA) and read the early exits of core_update; compare the dumped battle/logic
+   words against the author's field map in `docs/SANDBOX_RUNTIME_TECHNICAL.zh-CN.md` 190-259.
+4. When tick advances: `research/ext/cr-native-sandbox/.venv/Scripts/python.exe
+   research/sandbox_tools/replay_drive.py --tag 08CPVRRR8PYC --port 37031 --runs 2` and grade (accepted vs
+   rejected plays by reason, elixir retry delays, crowns vs expected {red 0, blue 1}, terminal tick vs 3763,
+   hash reproducibility across the 2 runs; check `cycle_deck_indices` against `next_deck_index` at runtime).
+5. Stop when done: `python -m native_core.worker stop --workers 1 --base-port 37031 --stop-vm` (sandbox venv,
+   after dot-sourcing runtime.env.ps1). Never leave qemu (4.9 GB) up beside the cuda run longer than needed.
+
+### 5. Traps found tonight
+* PowerShell 5.1: with `$ErrorActionPreference="Stop"` (the author's scripts), `2>&1` / `*>>` on a native
+  command turns its FIRST stderr line into a terminating error (javac's deprecation Note killed smoke try 1).
+  Process-level `Start-Process -RedirectStandardError` does not. run_probe.ps1 guards its own `2>&1`.
+* The harness classifier denied `freeze_runtime.ps1 -ManifestTemplate` twice and one compound
+  Start-Process+Remove-Item; narrower single commands were allowed. Do not route around a denial; the freeze
+  is the owner's to run (still not run; only doctor's cosmetic FAIL lines depend on it).
+* `adb pull` of a file under `/data/local/tmp/cr-native-direct-0/` failed silently once; `adb shell cat > f` worked.
+* The AVD's first `bootstrap.ps1` attempt threw "AVD config.ini not found after creation"; a rerun succeeded.
+
+### 6. Driver (done, offline-verified; not yet run against the engine)
+`research/sandbox_tools/replay_drive.py` (sandbox venv python): orientation check, deal-permutation probe,
+play loop with elixir retry, tail stepping, grading; `--offline` mode. Offline for 08CPVRRR8PYC: blue win
+(team 1 / opp 0 crowns), 54 plays, last_play_tick 3763, both decks IceWizard/Knight-evo/Rocket/Skeletons/
+Tesla-evo/Log/Tornado/Xbow, side 0: 26 plays 85 elixir, side 1: 28 plays 88 elixir, 256 consistent deals per
+side. Output `scratchpad/gauntlet/ext/replay_<tag>_run<N>.json`.
+
+### 7. What this does NOT establish
+Whether the stall is environmental (fixable with a setprop) or a code-path difference (needs the dump); whether
+the author's box also shows `loading_complete false`; anything about conversion fidelity; matches/h.
