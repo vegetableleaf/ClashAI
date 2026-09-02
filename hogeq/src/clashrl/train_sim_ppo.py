@@ -1140,6 +1140,12 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
 
     done_n = wins = losses = draws = 0
     drills_done = drill_pass = 0     # drills are counted apart from the match record
+    # ...and a ROLLING window beside them. The two counters above are never reset, so the
+    # printed rate is a run-LIFETIME average: measured on the 18k run of 2026-09-01 it went
+    # 29% -> 45% and then sat at EXACTLY 45 for the last 275 prints, because at n=3,500 the
+    # next few hundred drills cannot move it (500 recent drills at 60% print as 47%). That
+    # is a converging statistic being read as a learning plateau. HANDOFF 5bd.
+    drill_recent: deque = deque(maxlen=300)
     # ...and their share of STEPS is tracked apart from their share of EPISODES, because those two
     # differ by an order of magnitude (48% of episodes was 8% of steps) and only the second is what
     # the optimiser sees. Printing one without the other is how a barely-training mix looked broken.
@@ -1233,7 +1239,9 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                         is_drill = info.get("drill") is not None
                         if is_drill:
                             drills_done += 1
-                            drill_pass += 1 if info.get("verdict") == "pass" else 0
+                            _dp = 1 if info.get("verdict") == "pass" else 0
+                            drill_pass += _dp
+                            drill_recent.append(_dp)
                             drill_steps += ep_n[i]
                             # MARK THE EPISODE FOR SELF-IMITATION, now that its verdict exists. The
                             # steps are already in the rollout; this walks back over the ones that
@@ -1289,7 +1297,8 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                             # the first is how a drill mix that was barely training got mistaken
                             # for one that was not working.
                             ds = (f" | drills {drills_done} "
-                                  f"({100.0 * drill_pass / max(1, drills_done):.0f}% pass, "
+                                  f"({100.0 * drill_pass / max(1, drills_done):.0f}% pass all, "
+                                  f"{100.0 * sum(drill_recent) / max(1, len(drill_recent)):.0f}% last {len(drill_recent)}, "
                                   f"{100.0 * drills_done / max(1, done_n):.0f}% of eps, "
                                   f"{100.0 * drill_steps / max(1, drill_steps + match_steps):.0f}% of STEPS)"
                                   if drills_done else "")

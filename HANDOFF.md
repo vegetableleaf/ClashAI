@@ -2345,6 +2345,14 @@ per section in place, keep the archive greppable and committed.
 
 ## 8. Measurement traps (each of these produced a wrong conclusion first)
 
+* **The trainer's `drills N (X% pass)` is a run-LIFETIME average, not a rate (2026-09-02, §5bd).**
+  `drills_done`/`drill_pass` are initialised once and never reset, so the number converges by
+  construction and then cannot move: measured on the stopped 18k run, 29% -> 45% over the first ~450
+  prints and then **EXACTLY 45% for the last 275**. At n=3,500 a genuine 500-drill window at 60%
+  prints as 47%. Reading that flat line as "the policy stopped learning drills" is reading the
+  statistic, not the policy. A rolling `% last 300` now prints beside it; for the real per-drill
+  number use `run.py drills --policy <ckpt>`, which is prior-free (§3p).
+
 * **RoyaleAPI "similar decks" are not all evolution swaps (2026-09-02, §5bc).** For hog 2.6 they include
   card SUBSTITUTIONS (cannon for tesla, electro-spirit for ice-spirit, valkyrie-hero for mighty-miner).
   A roster ranked across every variation board by rating is then mostly players whose battles the
