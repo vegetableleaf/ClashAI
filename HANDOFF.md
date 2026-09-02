@@ -22,7 +22,14 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-08-29**, branch `main` (**RULING 30 + RULING 31c DONE, AND THE PINS GENERATOR
+Last updated: **2026-09-02 00:15**, branch `main` (**§5ax: THE SANDBOX TICK STALL IS SOLVED AND THE FIRST
+REPLAY->REAL-MATCH CONVERSION RAN** -- the clock was held by a pending GameMain UI action (login-failed
+reason 8, "update from store", Play URL queued before the battle existed; measured from a live memory
+dump, the code is encrypted on disk). The bridge now discards it before stepping (sandbox-repo commit
+7c66f92) and the author's probe reproduces their canonical 100-tick hash 96598dc9028e1802 / rng
+3502570521 exactly; 08CPVRRR8PYC converted with 54/54 plays accepted, 0 elixir delays, crowns [0,1] =
+expected, terminal 3887, same hash d3aa402b826e6d72 on 2/2 runs, 1.7 s per match. Emulator stopped;
+cuda run untouched (5425 eps at 00:13). Next: convert all 268 usable replays. Previously **RULING 30 + RULING 31c DONE, AND THE PINS GENERATOR
 NO LONGER REVERTS ITS OWN RULINGS** -- the spell CARD VETO ships in both decks at
 `sim.ppo_spell_min_value: 0.0` = OFF, and the close-out measurement is why it stays off: re-run at
 HEAD under the DECK's own venv over 600 paired matches, the owner's VALUE form does **not** beat a
@@ -171,6 +178,11 @@ cd C:\Users\benpe\ClashBot\hogeq
 ---
 
 ## 3. What is running RIGHT NOW
+
+* **2026-09-02 00:15 — cuda real run alive** (`icebow/data/bench/real_run_20260901.log`, 5425 episodes,
+  148W-4201L-2D at 00:13; watchdog + gates armed, §5as). **Sandbox emulator + service STOPPED 00:11**
+  (§5ax); nothing else of ours is running. Sandbox state: WORKING (tick advances, canonical hash), local
+  patch commit 7c66f92 in `research/ext/cr-native-sandbox`'s own git.
 
 * **board-26 detector training — RESUMED 2026-08-18 17:24 after a host restart killed it.**
   Originally started 2026-08-17 ~23:30 via `icebow/_train_board26.py`,
@@ -1918,7 +1930,7 @@ every toolchain/AVD check; (3) = after the cuda run ends; (1) owner asked what "
 means -- explained; the cheapest next step is theirs: read the client version in CR Settings. Only
 15.535.29 can work. (§5at.3's "the live client is probably newer" reading was WRONG -- retracted in
 §5au: the owner's BlueStacks client IS 15.535.29 / versionCode 150535029, engine payload byte-identical
-to the frozen build, §5av.) Superseded by §5av-§5aw: runtime pulled, smoke run, engine boots, tick stall.**
+to the frozen build, §5av.) Superseded by §5av-§5ax: runtime pulled, smoke run, engine boots, tick stall FOUND AND FIXED (§5ax), first replay converted 54/54.**
 **If all three come back yes, the order of work is fixed:** hash gates -> `smoke.ps1` reproduces
 `96598dc9028e1802` -> first-hour experiments (`cmd` playback yes/no, deal-order permutation trick,
 same-actions=>same-hash, per-tick observe cost, Elite-Barbarians-evo presence, **matches/h with a
@@ -2257,6 +2269,15 @@ per section in place, keep the archive greppable and committed.
 ---
 
 ## 8. Measurement traps (each of these produced a wrong conclusion first)
+
+* **"THE ENGINE'S CLOCK DOES NOT ADVANCE" WAS A PENDING UI POPUP, NOT A CLOCK (2026-09-02, §5ax).**
+  Every hypothesis in §5aw (locale, runtime clock, CPU, loading flag) was about time; the real gate was
+  `GameMain+0x1BC != 0`, a queued "update from the store" action that the headless path never consumes.
+  When a native engine returns instantly without effect, read its early exits from a LIVE DUMP before
+  theorising -- the code on disk was encrypted and the 33 ms return time already said "no wait path".
+  Sandbox-tool traps from the same night: toybox `dd skip=` overflows past 2^31, `adb push` resets the
+  exec bit, Git-Bash rewrites `/data/local/tmp` paths, `pgrep -f` matches its own adb wrapper, and the
+  DataTables pump segfaults nondeterministically (~1 in 10 boots) before the replay doc is even read.
 
 * **⚠ A BASH-TOOL TIMEOUT DOES NOT KILL THE CHILD (2026-09-01, §5ar).** A regex heredoc that
   "timed out" at 07:11 kept spinning at ~97% of one core for 13 hours, and would have overwritten
@@ -5442,3 +5463,100 @@ side. Output `scratchpad/gauntlet/ext/replay_<tag>_run<N>.json`.
 ### 7. What this does NOT establish
 Whether the stall is environmental (fixable with a setprop) or a code-path difference (needs the dump); whether
 the author's box also shows `loading_complete false`; anything about conversion fidelity; matches/h.
+
+## §5ax — THE TICK STALL IS SOLVED AND THE FIRST REPLAY->REAL-MATCH CONVERSION RAN (2026-09-01 23:41 - 09-02 00:12): the clock was held by a PENDING GameMain UI ACTION (login-failed reason 8 = "update from store", Play URL queued before the battle existed); the bridge now discards it before stepping and reproduces the author's canonical hash 96598dc9028e1802 exactly; 08CPVRRR8PYC replays 54/54 plays accepted, crowns match, 2/2 runs same hash. Emulator STOPPED at the end.
+
+### 0. Where things stand (read this first)
+* The sandbox is now a working oracle on this box: author's probe-direct = tick 0->100, hash
+  96598dc9028e1802, rng 3502570521 (the certified values, `accept_direct_core.ps1`); the service
+  (`native_core.worker start`) attests slot 0 (tick 10, hash d036bec06e300550, tower maxima
+  [3052x4, 4824x2]); `replay_drive.py` drove one real RoyaleAPI battle through libg end to end.
+* The cuda real run was never touched: alive at 00:13 (5425 episodes, 148W-4201L-2D, winrate 2% at the
+  last window, pl +0.001, vl 2.429, ent 0.06, clip 0.04, drills 1074 / 40% pass). Emulator up 23:41-00:11
+  beside it; **VM and service stopped 00:11** (`worker stop --stop-vm`, qemu gone, `adb devices` empty).
+* Two local patches live in the sandbox repo's OWN git (research/ext is git-ignored by ClashBot):
+  commit `7c66f92` on top of the author's `643e63b`. Revert = `git -C research/ext/cr-native-sandbox
+  revert 7c66f92` + rebuild (`scripts\build_probe.ps1`, `scripts\build_bridge.ps1`). The author's
+  original binaries are kept at `scratchpad/gauntlet/ext/dump/lifecycle-probe.author.jar` (sha 39f3ce4c...)
+  and `libnative_core_probe.author.so`. Current: jar 5f998d0f..., bridge 82887463... (`doctor.ps1`'s
+  jar/bridge hash lines will FAIL against the author's manifest -- cosmetic, `worker.py` never reads it).
+
+### 1. The cause (measured from the live process, not inferred)
+* libg's code is encrypted on disk (§5aw.3) -> dumped from the live process: `hold_dump.py` (probe-direct
+  with a post-step hold, `CR_PROBE_HOLD_MS`) + a static `memdump` (pread on `/proc/<pid>/mem`, root) pulled
+  every libg mapping (`scratchpad/gauntlet/ext/dump/live/`, code at RVA 0 = `libg_7ad3d8ec7000_rwxp.bin`)
+  and the state/battle/GameMain objects (`hold1/`). `wrap_elf.py` + NDK `llvm-objdump` disassemble it.
+* `core_update` (0xCE2CC0) has five early exits before the tick path. The one that fires here is the third:
+  `dword [GameMain+0x1BC] != 0` (helper 0x72D220). Live values: `+0x1B8 = 0, +0x1B9 = 1, +0x1BC = 5,
+  +0x1C0 = 8`, and the string at `+0x1D0` (len 71) is
+  `https://play.google.com/store/apps/details?id=com.supercell.clashroyale`. The accumulator at
+  state+0x44 was 0.0 and state+0x18c = 0, so the tick path was never entered.
+* Who queues it: the server-message dispatcher (function 0xB072E0; type via vtable[5]) -> login-failed
+  branch (reason via vtable[8] at 0xB09D72) -> reason-7 jump table 0x3376C0 entry 1 = reason **8** ->
+  block 0xB0D09F: copies the message text into GameMain+0x1D0 and calls `requestAction(GameMain, code 5,
+  param 8)` (0x72B0E0, call site 0xB0D132). Code 5's handler (processor 0x72D230, jump table 0x2AC038 ->
+  0x72D288) opens the stored URL = the "update from the store" popup. `requestAction` stores the action in
+  `+0x1BC/+0x1C0` for GameMain::update's processor, which the headless bridge NEVER runs (it pumps only the
+  state manager 0xCE7810), so the action stays pending forever and the battle core refuses to tick.
+* Why the author's box did not hit it (plausible, UNTESTED): reason 8 is "client older than required"; our
+  Java wrapper is the Play-derived split APK set (§5av: 4 wrappers differ from the frozen build) and its
+  reported version/fingerprint is what the login path compares against. The author's runtime is the frozen
+  bundle. No network is involved in either case (the message is raised locally). Not chased further: the
+  fix below is independent of who queues the action.
+
+### 2. The fix and its A/B (all on the same stalled fixture, `eight-card-bootstrap.json`)
+* Live A/B first (`scratchpad/gauntlet/ext/dump/hold_fix.py`, pre-step hold `CR_PROBE_HOLD_PRE_MS` +
+  release file, static `memwrite` doing pwrite on `/proc/<pid>/mem`):
+  control (hold, no write): tick 0->0, hash **e23456fd00d634de** (§5aw's stall exactly);
+  `--clear` (qword +0x1BC := 0, word +0x1B8 := 0, i.e. what 0x72D230 itself does before dispatch):
+  tick 0->**100**, hash **96598dc9028e1802**, rng 3502570521, towers [4824,3052,3052,4824,3052,3052]
+  = the author's certified 100-tick state bit for bit. Files: `hold2_ctrl/`, `hold3_clear/` (result.json).
+* Permanent fix in the bridge (`android_probe/native/jni_bridge.cpp`, `discard_pending_game_action`, called
+  at the top of `nativeStep`; the step payload now carries `pending_game_action {discarded, code, parameter}`;
+  a no-op when nothing is pending, so the author's semantics are unchanged on their box). Rebuilt under the
+  author's `-Wall -Wextra -Werror`. Author's probe-direct with it: `{"tick_before":0,"tick_after":100,
+  "stepped":100,"pending_game_action":{"discarded":true,"code":5,"parameter":8}}`, hash 96598dc9028e1802,
+  rng 3502570521, replay->observe 42.8 ms (log `%LOCALAPPDATA%\cr-native-sandbox\data\probe\
+  20260902-001002-176-probe-direct.log`, runner `scratchpad/gauntlet/ext/probe_fixed.log`).
+* Also ruled out on the way (measured, §5aw hypotheses): (a) locale/timezone (zh-CN + Asia/Shanghai -> same
+  stall, same hash); doc-specific path (the full-card doc crashed BEFORE the doc is used, see trap below;
+  the eight-card doc reproduces identically). (b)-(d) moot.
+
+### 3. The conversion (08CPVRRR8PYC, `replay_drive.py --port 37031 --runs 2`, seed 424242, level 11)
+* Deal: position-based confirmed; deck permuted so the dealt positions carry the inferred hand/queue
+  (probe side 0 hand_pos [3,7,2,4] cycle [6,5,0,1] next 6; side 1 [6,3,7,1] / [4,2,5,0] / 4); opening
+  hands both IceWizard/Knight/Rocket/Skeletons.
+* **Accepted 54/54 plays, rejected {}, invalid placement 0, elixir delays n=0** -- every real play was legal
+  at the recorded tick with the recorded elixir; the engine's own elixir read at each play is in the log
+  (`scratchpad/gauntlet/ext/replay_drive_08CPVRRR8PYC.log`, e.g. t=951 s0 rocket at el 7.717).
+* Final: tick **3887**, terminated, outcome side1_win, crowns **[0, 1]** = expected {red 0, blue 1},
+  reason `native_logic_clock_stopped`; terminal - last play (3763) = 124 ticks (6.2 s: the tower fell and
+  the clock stopped). Hash **d3aa402b826e6d72 in BOTH runs** (determinism holds).
+* Cost: reset 0.04-0.05 s, drive+tail **1.67-1.77 s per full match** (3887 ticks + 54 plays + per-play
+  observes) -> ~2000 matches/h on ONE worker before any batching. Per-run JSON:
+  `scratchpad/gauntlet/ext/replay_08CPVRRR8PYC_run{1,2}.json`.
+* What this does NOT establish: fidelity of the intermediate state (tower HP trajectory vs the real
+  match is not recorded by the crawl, only crowns); whether the other 267 usable replays convert as
+  cleanly (this one is an Icebow mirror and every play had elixir to spare); anything about card levels
+  (both sides forced to 11).
+
+### 4. Next steps (in order; nothing blocks them)
+1. Convert the 268-replay set (`scratchpad/gauntlet/ext/usable_replays.json`) with `replay_drive.py`,
+   grading each: accepted/rejected by reason, elixir delays, crown match, determinism. That is the fidelity
+   number the sim-parity oracle (§4p / §5at) needs; budget ~10 min of engine time + a 70 s boot.
+2. Only then the per-tick state dump for the sim-parity oracle / placement prior.
+3. Owner-side (optional, cosmetic): `freeze_runtime.ps1` so `doctor.ps1` stops reporting hash FAILs; note
+   it will then pin OUR jar/bridge hashes, not the author's.
+
+### 5. Traps found tonight (also in §8)
+* toybox `dd skip=` overflows on 64-bit addresses ("dd: -456174 < 0") -> the static `memdump`/`memwrite`
+  C tools (NDK clang `--target=x86_64-linux-android31 -static`).
+* `adb push` resets the file mode -> `chmod 755` after EVERY push or "can't execute: Permission denied".
+* Git-Bash mangles `/data/local/tmp/...` into a Windows path in `adb push` args -> push from PowerShell.
+* `pgrep -f` matched the adb `sh -c` wrapper itself -> pattern `^app_process.*JniHost`.
+* `full-card-bootstrap.json` run died with SIGSEGV (exit 139) inside `nativePumpDataTables`
+  (0xE74B40 -> 0x12AF1B0 null deref, fault 0x80, 11 s uptime) -- BEFORE the replay doc is used, and the
+  DataTables pump's iteration count varies run to run (89/106/167). Timing-dependent; one crash in ~10
+  boots tonight. Re-run on crash; do not read it as a doc problem.
+* The Bash tool's cwd persists between calls; `cd research/ext/...` from inside the sandbox fails -- use
+  absolute paths.

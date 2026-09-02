@@ -1,0 +1,28 @@
+{
+ "pid": 3285,
+ "game": "0x7f2acb419cf0",
+ "before": {
+  "b8": 0,
+  "b9": 1,
+  "code": 5,
+  "param": 8,
+  "msg": "https://play.google.com/store/apps/details?id=com.supercell.clashroyale"
+ },
+ "clear": true,
+ "step": {
+  "tick_before": 0,
+  "tick_after": 100,
+  "stepped": 100
+ },
+ "state_hash": "96598dc9028e1802",
+ "rng_state": 3502570521,
+ "crown_hp": [
+  4824,
+  3052,
+  3052,
+  4824,
+  3052,
+  3052
+ ],
+ "elapsed_ms": 1067.7015
+}

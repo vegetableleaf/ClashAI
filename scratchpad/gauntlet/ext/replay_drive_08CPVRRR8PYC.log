@@ -1,0 +1,121 @@
+=== 08CPVRRR8PYC run 1/2 port 37031 seed 424242 level 11
+  t=  211 s0 skeletons    ( 8499,  500) el=9.7558 -> OK delay=0 
+  t=  263 s1 skeletons    ( 8499,31499) el=10.0 -> OK delay=0 
+  t=  435 s1 ice-wizard   ( 9500,31500) el=10.0 -> OK delay=0 
+  t=  487 s0 ice-wizard   ( 9500,  500) el=10.0 -> OK delay=0 
+  t=  627 s1 the-log      (14500,17500) el=10.0 -> OK delay=0 
+  t=  686 s0 knight       (15500,12500) el=10.0 -> OK delay=0 
+  t=  749 s1 knight       ( 9500,23499) el=10.0 -> OK delay=0 
+  t=  836 s0 tesla        (12000,14000) el=9.67 -> OK delay=0 
+  t=  908 s1 x-bow        ( 2500,19500) el=9.8302 -> OK delay=0 
+  t=  951 s0 rocket       ( 2500,17500) el=7.717 -> OK delay=0 
+  t=  985 s0 skeletons    ( 8499, 9500) el=2.3222 -> OK delay=0 
+  t= 1044 s1 skeletons    (17500,23499) el=6.251 -> OK delay=0 
+  t= 1442 s0 ice-wizard   ( 8500,  500) el=9.4568 -> OK delay=0 
+  t= 1492 s1 ice-wizard   ( 8500,31500) el=10.0 -> OK delay=0 
+  t= 1648 s0 the-log      ( 3500,14500) el=10.0 -> OK delay=0 
+  t= 1652 s1 the-log      (14500,17500) el=9.848 -> OK delay=0 
+  t= 1766 s1 knight       ( 3499,17499) el=9.8772 -> OK delay=0 
+  t= 1782 s0 tesla        ( 6000,14000) el=10.0 -> OK delay=0 
+  t= 1841 s1 x-bow        ( 2500,19500) el=8.2122 -> OK delay=0 
+  t= 1887 s0 rocket       ( 3500,17500) el=7.869 -> OK delay=0 
+  t= 2042 s0 skeletons    ( 3499,14500) el=4.628 -> OK delay=0 
+  t= 2297 s1 tesla        ( 5000,18000) el=10.0 -> OK delay=0 
+  t= 2354 s0 x-bow        (15500,12500) el=9.1816 -> OK delay=0 
+  t= 2392 s1 rocket       (15500,13500) el=7.691 -> OK delay=0 
+  t= 2411 s1 skeletons    ( 9500,22499) el=2.2261 -> OK delay=0 
+  t= 2529 s0 knight       ( 9500,  500) el=8.6057 -> OK delay=0 
+  t= 2592 s1 ice-wizard   ( 9500,31500) el=7.6878 -> OK delay=0 
+  t= 2635 s0 the-log      ( 3500,14500) el=9.3899 -> OK delay=0 
+  t= 2695 s1 x-bow        ( 2500,19500) el=8.3649 -> OK delay=0 
+  t= 2718 s0 ice-wizard   ( 9500, 9500) el=10.0 -> OK delay=0 
+  t= 2749 s0 rocket       ( 3500,17500) el=8.1067 -> OK delay=0 
+  t= 2755 s1 knight       (  499,18499) el=4.5069 -> OK delay=0 
+  t= 2771 s0 skeletons    (  499, 9500) el=2.8921 -> OK delay=0 
+  t= 2921 s1 tesla        (12000,18000) el=7.4331 -> OK delay=0 
+  t= 2931 s0 x-bow        (15500,12500) el=7.6041 -> OK delay=0 
+  t= 2972 s1 skeletons    (15500,17499) el=5.2538 -> OK delay=0 
+  t= 2981 s1 the-log      (14500,17500) el=4.5751 -> OK delay=0 
+  t= 2994 s0 knight       ( 8499,14500) el=3.8532 -> OK delay=0 
+  t= 3016 s1 ice-wizard   (17500,18500) el=3.8246 -> OK delay=0 
+  t= 3078 s0 tornado      ( 7500, 5500) el=3.852 -> OK delay=0 
+  t= 3134 s0 the-log      (16500,14500) el=2.8512 -> OK delay=0 
+  t= 3178 s1 knight       ( 9500,21499) el=6.608 -> OK delay=0 
+  t= 3246 s0 tesla        (13000,14000) el=4.8496 -> OK delay=0 
+  t= 3298 s1 tornado      (15500,16500) el=7.892 -> OK delay=0 
+  t= 3401 s1 x-bow        ( 2500,19500) el=8.5691 -> OK delay=0 
+  t= 3414 s0 x-bow        (15500,12500) el=6.8472 -> OK delay=0 
+  t= 3466 s0 skeletons    ( 8499, 8500) el=2.7036 -> OK delay=0 
+  t= 3472 s1 skeletons    ( 9500,22499) el=5.1038 -> OK delay=0 
+  t= 3526 s0 knight       ( 8499,10500) el=3.8456 -> OK delay=0 
+  t= 3532 s1 tesla        (15000,18000) el=6.2458 -> OK delay=0 
+  t= 3539 s1 the-log      (14500,17500) el=2.4957 -> OK delay=0 
+  t= 3583 s0 the-log      (14500,14500) el=2.8805 -> OK delay=0 
+  t= 3622 s1 knight       ( 2499,17499) el=3.4588 -> OK delay=0 
+  t= 3763 s1 tornado      ( 3500,11500) el=5.4925 -> OK delay=0 
+deal: permuted deck so dealt positions carry the inferred hand/queue | probe {0: {'hand_pos': [3, 7, 2, 4], 'cycle_pos': [6, 5, 0, 1], 'next': 6}, 1: {'hand_pos': [6, 3, 7, 1], 'cycle_pos': [4, 2, 5, 0], 'next': 4}} position_based=True
+opening hands: {0: ['IceWizard', 'Knight', 'Rocket', 'Skeletons'], 1: ['IceWizard', 'Knight', 'Rocket', 'Skeletons']}
+accepted 54/54 (of 54), rejected {}, invalid placement 0, elixir delays {'n': 0, 'max_ticks': 0, 'sum_ticks': 0}
+final: tick 3887 terminated=True outcome=side1_win crowns=[0, 1] reason=native_logic_clock_stopped expected crowns {0: 0, 1: 1} -> match=True; terminal - last play = 124 ticks; hash d3aa402b826e6d72
+timing: reset 0.05 s, drive+tail 1.77 s -> C:\Users\benpe\ClashBot\scratchpad\gauntlet\ext\replay_08CPVRRR8PYC_run1.json
+=== 08CPVRRR8PYC run 2/2 port 37031 seed 424242 level 11
+  t=  211 s0 skeletons    ( 8499,  500) el=9.7558 -> OK delay=0 
+  t=  263 s1 skeletons    ( 8499,31499) el=10.0 -> OK delay=0 
+  t=  435 s1 ice-wizard   ( 9500,31500) el=10.0 -> OK delay=0 
+  t=  487 s0 ice-wizard   ( 9500,  500) el=10.0 -> OK delay=0 
+  t=  627 s1 the-log      (14500,17500) el=10.0 -> OK delay=0 
+  t=  686 s0 knight       (15500,12500) el=10.0 -> OK delay=0 
+  t=  749 s1 knight       ( 9500,23499) el=10.0 -> OK delay=0 
+  t=  836 s0 tesla        (12000,14000) el=9.67 -> OK delay=0 
+  t=  908 s1 x-bow        ( 2500,19500) el=9.8302 -> OK delay=0 
+  t=  951 s0 rocket       ( 2500,17500) el=7.717 -> OK delay=0 
+  t=  985 s0 skeletons    ( 8499, 9500) el=2.3222 -> OK delay=0 
+  t= 1044 s1 skeletons    (17500,23499) el=6.251 -> OK delay=0 
+  t= 1442 s0 ice-wizard   ( 8500,  500) el=9.4568 -> OK delay=0 
+  t= 1492 s1 ice-wizard   ( 8500,31500) el=10.0 -> OK delay=0 
+  t= 1648 s0 the-log      ( 3500,14500) el=10.0 -> OK delay=0 
+  t= 1652 s1 the-log      (14500,17500) el=9.848 -> OK delay=0 
+  t= 1766 s1 knight       ( 3499,17499) el=9.8772 -> OK delay=0 
+  t= 1782 s0 tesla        ( 6000,14000) el=10.0 -> OK delay=0 
+  t= 1841 s1 x-bow        ( 2500,19500) el=8.2122 -> OK delay=0 
+  t= 1887 s0 rocket       ( 3500,17500) el=7.869 -> OK delay=0 
+  t= 2042 s0 skeletons    ( 3499,14500) el=4.628 -> OK delay=0 
+  t= 2297 s1 tesla        ( 5000,18000) el=10.0 -> OK delay=0 
+  t= 2354 s0 x-bow        (15500,12500) el=9.1816 -> OK delay=0 
+  t= 2392 s1 rocket       (15500,13500) el=7.691 -> OK delay=0 
+  t= 2411 s1 skeletons    ( 9500,22499) el=2.2261 -> OK delay=0 
+  t= 2529 s0 knight       ( 9500,  500) el=8.6057 -> OK delay=0 
+  t= 2592 s1 ice-wizard   ( 9500,31500) el=7.6878 -> OK delay=0 
+  t= 2635 s0 the-log      ( 3500,14500) el=9.3899 -> OK delay=0 
+  t= 2695 s1 x-bow        ( 2500,19500) el=8.3649 -> OK delay=0 
+  t= 2718 s0 ice-wizard   ( 9500, 9500) el=10.0 -> OK delay=0 
+  t= 2749 s0 rocket       ( 3500,17500) el=8.1067 -> OK delay=0 
+  t= 2755 s1 knight       (  499,18499) el=4.5069 -> OK delay=0 
+  t= 2771 s0 skeletons    (  499, 9500) el=2.8921 -> OK delay=0 
+  t= 2921 s1 tesla        (12000,18000) el=7.4331 -> OK delay=0 
+  t= 2931 s0 x-bow        (15500,12500) el=7.6041 -> OK delay=0 
+  t= 2972 s1 skeletons    (15500,17499) el=5.2538 -> OK delay=0 
+  t= 2981 s1 the-log      (14500,17500) el=4.5751 -> OK delay=0 
+  t= 2994 s0 knight       ( 8499,14500) el=3.8532 -> OK delay=0 
+  t= 3016 s1 ice-wizard   (17500,18500) el=3.8246 -> OK delay=0 
+  t= 3078 s0 tornado      ( 7500, 5500) el=3.852 -> OK delay=0 
+  t= 3134 s0 the-log      (16500,14500) el=2.8512 -> OK delay=0 
+  t= 3178 s1 knight       ( 9500,21499) el=6.608 -> OK delay=0 
+  t= 3246 s0 tesla        (13000,14000) el=4.8496 -> OK delay=0 
+  t= 3298 s1 tornado      (15500,16500) el=7.892 -> OK delay=0 
+  t= 3401 s1 x-bow        ( 2500,19500) el=8.5691 -> OK delay=0 
+  t= 3414 s0 x-bow        (15500,12500) el=6.8472 -> OK delay=0 
+  t= 3466 s0 skeletons    ( 8499, 8500) el=2.7036 -> OK delay=0 
+  t= 3472 s1 skeletons    ( 9500,22499) el=5.1038 -> OK delay=0 
+  t= 3526 s0 knight       ( 8499,10500) el=3.8456 -> OK delay=0 
+  t= 3532 s1 tesla        (15000,18000) el=6.2458 -> OK delay=0 
+  t= 3539 s1 the-log      (14500,17500) el=2.4957 -> OK delay=0 
+  t= 3583 s0 the-log      (14500,14500) el=2.8805 -> OK delay=0 
+  t= 3622 s1 knight       ( 2499,17499) el=3.4588 -> OK delay=0 
+  t= 3763 s1 tornado      ( 3500,11500) el=5.4925 -> OK delay=0 
+deal: permuted deck so dealt positions carry the inferred hand/queue | probe {0: {'hand_pos': [3, 7, 2, 4], 'cycle_pos': [6, 5, 0, 1], 'next': 6}, 1: {'hand_pos': [6, 3, 7, 1], 'cycle_pos': [4, 2, 5, 0], 'next': 4}} position_based=True
+opening hands: {0: ['IceWizard', 'Knight', 'Rocket', 'Skeletons'], 1: ['IceWizard', 'Knight', 'Rocket', 'Skeletons']}
+accepted 54/54 (of 54), rejected {}, invalid placement 0, elixir delays {'n': 0, 'max_ticks': 0, 'sum_ticks': 0}
+final: tick 3887 terminated=True outcome=side1_win crowns=[0, 1] reason=native_logic_clock_stopped expected crowns {0: 0, 1: 1} -> match=True; terminal - last play = 124 ticks; hash d3aa402b826e6d72
+timing: reset 0.04 s, drive+tail 1.67 s -> C:\Users\benpe\ClashBot\scratchpad\gauntlet\ext\replay_08CPVRRR8PYC_run2.json
+determinism across runs: SAME ['d3aa402b826e6d72', 'd3aa402b826e6d72']
