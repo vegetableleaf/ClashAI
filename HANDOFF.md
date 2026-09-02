@@ -1929,6 +1929,21 @@ slow one.
   raise the sample or widen the median window, and re-check the 0.60 band against the frozen-checkpoint
   data set (`data/ppo_watchdog.log`, matches=18000 rows) before trusting a CELL STRUCTURE alert.
 * **OWNER RULING 17:50: "wait until 18:40, to see if the reversal is genuine improvement or oscillation" -> HOLD confirmed; the 7.5k read decided per the rule below: OSCILLATION (0.376/0.301/0.401, all >= 0.30) -> killed, relaunched at coef 0.5 (§5bj, 18:59). Next pre-registered read: coef-0.5 run at m=2k (§3).**
+* **LEVEL 16 (owner question, 2026-09-02 19:5x -- answered, no run): card level in the sandbox is a FREE
+  PARAMETER, `--level 16` on `replay_drive.py`/`replay_batch.py`, valid 1..16 for every rarity
+  (`card_catalog.py:104`); it is NOT in the replay data -- the RoyaleAPI crawl has NO level column
+  (grep -ci level on battles.csv/plays_ext.csv = 0), so 11 is an ASSUMPTION, not a recovered fact.
+  (c) RETRACTS `HANDOFF.md:5737` "RoyaleAPI has the levels per card in the crawl" -- it does not, so the
+  ":5770 levels pass-through" item is blocked on a crawler change. Tower/king level is SEPARATE and
+  untouched by --level (`full-card-bootstrap.json`: `sc[0].l 10`, `avatar.kt 11`, `hbd[].kt 11`) -- cards
+  at 16 vs towers at 11 is a config that does not exist in the real game. Editing that template does NOT
+  break the certified hash (the boot/acceptance path uses `eight-card-bootstrap.json`, a different file).
+  All level math lives in libg.so (no stat tables in the sandbox; the level-11 tower HP 4824/3052 appear
+  in NONE of the 383 extracted CSVs) so scaling cannot be got wrong. WARNING: the 99.2%/77.7%/21-21
+  fidelity grade is a LEVEL-11 grade; for replay RECONSTRUCTION level 16 is a regression (real players had
+  mixed levels), for TOP-LADDER DATA GENERATION it is correct -- different projects. Untested (b): no test
+  or acceptance script uses any level but 11; settle with one reset at --level 16 + one observe()
+  (`entity["level"]==16`, max_hp up). Full writeup: `scratchpad/gauntlet/L11/level16-research.md`.**
 * **§5bi (17:45): m=5k RULE APPLIED -> MIXED (0.299 / 0.279 / 0.305) -> re-read at m=7.5k. Owner had ruled
   "stop and restart with coef 0.5" on the m=4k picture (Discord, ~17:00); the m=5k read moved toward the prior on
   all three seeds, so the kill is ON HOLD until the owner confirms (irreversible; §7). No answer = hold, probe the
