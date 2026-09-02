@@ -397,7 +397,8 @@ def _paste(img, sprite, x0, y0):
 
 
 def synth_images(cfg, count: int = 300, paste_max: int = 4, classes_filter: str | None = None,
-                 seed: int | None = None) -> None:
+                 seed: int | None = None, bank_dir: str | None = None, base_split: str = "train",
+                 out_name: str = "synth", update_yaml: bool = True) -> None:
     """COPY-PASTE augmentation: paste bank sprites onto ALREADY-LABELED train images and emit the
     merged labels -> data/detect/synth/{images,labels}. Using labeled bases is what makes this safe:
     every real unit in the frame keeps its box (no unlabeled-unit poison), and the pasted sprites
@@ -419,7 +420,13 @@ def synth_images(cfg, count: int = 300, paste_max: int = 4, classes_filter: str 
 
     want = {c.strip() for c in classes_filter.split(",")} if classes_filter else None
     bank: dict[str, list[Path]] = {}
-    sp_root = root / "sprites"
+    # bank_dir / base_split / out_name exist for ONE reason: a HELD-OUT synthetic VAL. 69 of 230
+    # classes have zero real val instances and the evolution classes have 0-2, so mAP on the real
+    # val set cannot see whether an imported sprite library taught them anything. Composing a
+    # separate set from sprites the training synth never saw, onto VAL frames, into its own folder
+    # (never listed in data.yaml) gives a per-class read that is reported SEPARATELY, never averaged
+    # into the real number. Defaults reproduce the original behaviour exactly.
+    sp_root = Path(cfg.path(bank_dir)) if bank_dir else root / "sprites"
     if sp_root.is_dir():
         for d in sorted(sp_root.iterdir()):
             if d.is_dir() and not d.name.startswith("_") and d.name in name_to_id \
@@ -439,16 +446,16 @@ def synth_images(cfg, count: int = 300, paste_max: int = 4, classes_filter: str 
     # bases = TRAIN images that HAVE a label file (empty = a labeled negative, a fine canvas);
     # their existing boxes ride along into the synthetic labels.
     bases = []
-    for ip in sorted((root / "images" / "train").glob("*.jpg")):
-        lp = root / "labels" / "train" / (ip.stem + ".txt")
+    for ip in sorted((root / "images" / base_split).glob("*.jpg")):
+        lp = root / "labels" / base_split / (ip.stem + ".txt")
         if lp.exists():
             bases.append((ip, _boxes_of(lp)))
     if not bases:
         print("[sprites] no labeled train images under data/detect -- run detect-import first.")
         return
 
-    out_i, out_l = root / "synth" / "images", root / "synth" / "labels"
-    dbg = root / "synth" / "_debug"
+    out_i, out_l = root / out_name / "images", root / out_name / "labels"
+    dbg = root / out_name / "_debug"
     for d in (out_i, out_l, dbg):
         d.mkdir(parents=True, exist_ok=True)
         for f in d.glob("*.*"):
@@ -526,7 +533,10 @@ def synth_images(cfg, count: int = 300, paste_max: int = 4, classes_filter: str 
 
     # keep data.yaml pointing at BOTH train dirs (detect-import's writer re-adds synth/ too)
     from .detect import _write_data_yaml
-    _write_data_yaml(root, classes)
+    if update_yaml and out_name == "synth":
+        _write_data_yaml(root, classes)
+    else:
+        print(f"[sprites] {out_name}/ is NOT added to data.yaml (held-out set; evaluate it with its own yaml)")
     top = sorted(per_class.items(), key=lambda kv: -kv[1])[:12]
     print(f"[sprites] synthesized {made} image(s), {pasted} sprite paste(s) "
           f"({time.time() - t0:.0f}s) seed={seed!r} -> {out_i.parent}")

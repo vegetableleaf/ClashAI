@@ -76,16 +76,10 @@ DECK_SPECIFIC = {
 }
 
 DRIFT = {
-    "sim/drill_env.py": "hogeq-only `_env_flag`: bool(os.environ.get(x)) is True for \"0\", so a "
-                        "CLASHRL_DRILL_* A/B could only ever turn a flag ON. Belongs in both",
     "sim/remote_pool.py": "icebow-only deck-record channel for deck PFSP across workers. Only "
                           "useful once hogeq has deck PFSP, so it moves with sim/opponents.py",
-    "reward.py": "icebow-only `log_corridor_cell` (the Log is a corridor, not a blast). Card-"
-                 "specific but engine-shaped; hogeq holds the_log too and has no assist for it",
     "train_rl.py": "icebow-only async LLM advisor; hogeq-only policy_identities() for the live "
                    "deck. Two separate one-way ports",
-    "model.py": "icebow-only CLASHRL_SINGLE_CELL_MAP escape hatch for the single-map vs per-card "
-                "cell-head A/B",
     "env.py": "comment wording only on the air_bases fix; the code agrees",
 }
 

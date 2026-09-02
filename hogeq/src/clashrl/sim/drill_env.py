@@ -23,7 +23,6 @@ from __future__ import annotations
 from typing import Optional
 
 import os
-
 import numpy as np
 
 from .engine import Unit, build_spec
@@ -56,23 +55,6 @@ def deploy_unit(eng, team: int, db, base: str, x: float, y: float, level: int = 
 # Cards used purely as DISTRACTORS on a drill board. Chosen to be ordinary, cheap-to-medium threats
 # that a real match is full of and that no drill is ABOUT, so they add board state without turning
 # into a second interaction the grader might confuse for the first.
-# ENV OVERRIDE ONLY. The real switch is `sim.drill_play_out` in config.yaml; env wins when set so
-# a command-line A/B needs no config edit, and None means "defer to config".
-def _env_flag(name):
-    """Parse a boolean ENV VAR properly. `bool(os.environ.get(name))` is True for ANY non-empty
-    string -- INCLUDING "0" and "false" -- so the override could only ever turn a flag ON. This
-    flag exists for command-line A/Bs, so `CLASHRL_DRILL_PLAY_OUT=0` silently produced the
-    TREATMENT arm and any A/B run that way compared the feature against itself. Same family as
-    `--drill-frac 0.0` and `--workers 0`: a falsy value that the code could not express."""
-    raw = os.environ.get(name)
-    if raw is None:
-        return None
-    return raw.strip().lower() not in ("", "0", "false", "no", "off")
-
-
-_PLAY_OUT_ENV = _env_flag("CLASHRL_DRILL_PLAY_OUT")
-_PLAY_OUT_ANNOUNCED = False
-
 _NOISE_CARDS = frozenset((
     "knight", "archers", "spear_goblins", "goblins", "minions", "bomber", "musketeer",
     "barbarians", "mega_minion", "fire_spirit", "ice_spirit", "bats", "skeletons",
@@ -143,6 +125,29 @@ def compose_components(pool, rng, n_max=3):
             offset = float(rng.uniform(0.6, 3.5))      # overlapping, not sequential
         out.append({"scenario": s, "lane": i % 2, "offset": round(offset, 1), "tag": i})
     return out
+
+
+# ENV OVERRIDE ONLY. The real switch is `sim.drill_play_out` in config.yaml -- the use site
+# below has always CALLED it that in its own comment while reading this variable, so a run
+# that set the config key got no play-out and no warning. Env still wins when set, so a
+# command-line A/B needs no config edit; None here means "defer to config".
+def _env_flag(name):
+    """Parse a boolean ENV VAR properly. `bool(os.environ.get(name))` is True for ANY non-empty
+    string -- INCLUDING "0" and "false" -- so the override could only ever turn a flag ON. This
+    flag exists for command-line A/Bs, so `CLASHRL_DRILL_PLAY_OUT=0` silently produced the
+    TREATMENT arm and any A/B run that way compared the feature against itself. Same family as
+    `--drill-frac 0.0` and `--workers 0`: a falsy value that the code could not express."""
+    raw = os.environ.get(name)
+    if raw is None:
+        return None
+    return raw.strip().lower() not in ("", "0", "false", "no", "off")
+
+
+_PLAY_OUT_ENV = _env_flag("CLASHRL_DRILL_PLAY_OUT")
+_PLAY_OUT_ANNOUNCED = False
+_FULL_HAND = bool(os.environ.get("CLASHRL_DRILL_FULL_HAND"))
+_CLOCK_JITTER = bool(os.environ.get("CLASHRL_DRILL_CLOCK"))
+_STATE_JITTER = bool(os.environ.get("CLASHRL_DRILL_STATE"))
 
 
 def compound_verdict(env):
@@ -477,7 +482,34 @@ class DrillEnv(SimMatchEnv):
             #
             # The scenarios are checked against this: every reference line is playable from its own
             # declared hand, so the drill's answer is never the thing this rules out.
-            self.cycle = list(wanted_slots)
+            if _FULL_HAND:
+                # FULL HAND FOR TRAINING (sim.drill_full_hand / CLASHRL_DRILL_FULL_HAND).
+                #
+                # Restricting the cycle to the named cards is right for MEASUREMENT -- it is what
+                # makes a failed rep fail for the drill's own reason. But it is wrong for TRAINING,
+                # and measurably so: a real match ALWAYS holds exactly 4 cards, while drills hold
+                # 2.23 on average (gap 1.73 pooled sd). The hand vector is a direct network input,
+                # so the policy learns "given this board AND a 2-card hand, play X" -- an input it
+                # never meets in a match, which is why drill competence does not transfer (a config
+                # with 25% drill pass scored WORSE on the match benchmark than one with 2%).
+                #
+                # So: guarantee the named cards, then fill to a full hand from the rest of the deck.
+                # The drill's success/failure predicates still decide the verdict, and a rep that
+                # passes with a different card is a rep whose lesson actually applies in a match.
+                # RANDOM SLOTS, not "wanted cards first". Putting them at the front makes their
+                # hand POSITION a giveaway: the policy can learn "play slot 0" instead of "play the
+                # Tornado", pass the drill, and carry nothing into a match where the needed card
+                # sits wherever the cycle put it. So the required cards go in RANDOM hand positions
+                # and the remaining slots are filled with other deck cards as noise -- same shape a
+                # real hand has, with no positional shortcut to exploit.
+                rest = [sl for sl in range(self.n_slots) if sl not in set(wanted_slots)]
+                self.rng.shuffle(rest)
+                n_fill = max(0, 4 - len(wanted_slots))
+                hand = list(wanted_slots) + rest[:n_fill]
+                self.rng.shuffle(hand)
+                self.cycle = hand + rest[n_fill:]
+            else:
+                self.cycle = list(wanted_slots)
 
     def drill_prior_gate(self):
         """P(play) the REFERENCE LINE would use right now, or None when it has no opinion.
@@ -570,6 +602,43 @@ class DrillEnv(SimMatchEnv):
         if self.scenario is not None and self.scenario.setup is not None:
             # After the board, so a setup can reach the bodies it just placed by name.
             self.scenario.setup(self)
+        if _STATE_JITTER:
+            # RANDOM MATCH STATE (sim.drill_state_jitter / CLASHRL_DRILL_STATE).
+            #
+            # Every drill otherwise starts from a pristine board: both sides at full towers and a
+            # scripted elixir count. Real interactions happen at every score line -- one tower down,
+            # two down, a princess at 30% -- and the right answer changes with it. A trade that is
+            # correct at 3 towers can be wrong when that tower is the last one standing.
+            #
+            # This also opens the POCKET (see ActionSpace.deployable_mask): destroying an enemy
+            # princess grants deployment territory across the river on that side, which is a real
+            # mechanic the sim did not model. A drill played with a tower already down is the only
+            # place the policy ever sees a board where the pocket exists.
+            for team in (0, 1):
+                for tw in self.eng.towers[team][:2]:          # princesses only, never the king
+                    r = float(self.rng.random())
+                    if r < 0.12:
+                        tw.hp, tw.alive = 0.0, False          # destroyed -> opens a pocket
+                    elif r < 0.45:
+                        tw.hp = float(tw.max_hp) * float(self.rng.uniform(0.25, 0.9))
+            # never leave a side with NO princesses AND a fresh king -- that is a 2-crown board the
+            # match would already have ended from in most drills; keep at least one standing.
+            for team in (0, 1):
+                pr = self.eng.towers[team][:2]
+                if not any(t.alive for t in pr):
+                    keep = pr[int(self.rng.random() > 0.5)]
+                    keep.alive, keep.hp = True, float(keep.max_hp) * 0.35
+            self.eng.elixir[0] = float(self.rng.uniform(1.0, 10.0))
+        if _CLOCK_JITTER:
+            # MATCH-REALISTIC CLOCK (sim.drill_clock_jitter / CLASHRL_DRILL_CLOCK).
+            #
+            # Every drill otherwise runs at t~9s while matches span 0-180s (gap 1.95 pooled sd).
+            # That means nothing is ever drilled under double elixir, in overtime, or with the
+            # clock pressure that changes what the right answer IS -- a trade that is correct at
+            # 30s can be wrong at 170s. The drill's own timing is measured RELATIVE to t0 (set
+            # below) and time_limit is checked as eng.t - t0, so moving the clock does not disturb
+            # any predicate; it only changes the game context the interaction happens in.
+            self.eng.t = float(self.rng.uniform(0.0, 150.0)) if hasattr(self, "rng")                 else float(np.random.uniform(0.0, 150.0))
         self._drill = {
             "t0": float(self.eng.t) - float(getattr(self, "_subgoal_skip", 0.0) or 0.0),
             "lane": getattr(self, "_drill_lane", None),
@@ -641,14 +710,14 @@ class DrillEnv(SimMatchEnv):
 
         `sim.drill_play_out`, with CLASHRL_DRILL_PLAY_OUT overriding it for a command-line A/B.
 
-        Root-cause fix for the two-population problem: a drill averages 18.4 s against a match's
-        180 s+, one critic has to value both, and measured that wrecks it (value loss 1.3-1.8 mixed
-        vs 0.38-0.56 matches-alone). Splitting the critic recovered only ~30% and shrinking
-        drill_frac did not help at all, because both compensate downstream for a length mismatch
-        instead of removing it. Playing the drill out makes episode length, return scale and critic
-        targets match automatically.
+        This is the root-cause fix for the two-population problem: a drill averages 18.4 s against
+        a match's 180 s+, one critic has to value both, and measured that wrecks it (value loss
+        1.3-1.8 mixed vs 0.38-0.56 matches-alone). Splitting the critic recovers only ~30% and
+        shrinking drill_frac does not help at all, because both compensate downstream for a
+        length mismatch instead of removing it. Playing the drill out makes episode length, return
+        scale and critic targets match automatically.
 
-        Announced ONCE per process: a flag that can silently do nothing is how the icebow version
+        Announced ONCE per process: a flag that can silently do nothing is exactly how this one
         spent its life being read from an env var while its own comment named a config key.
         """
         if _PLAY_OUT_ENV is not None:
@@ -732,13 +801,22 @@ class DrillEnv(SimMatchEnv):
                  "elixir": float(spent)})
         if not done:
             v = self._verdict()
-            # `last_verdict is None` guard: under play-out the episode continues, so this block is
-            # re-entered on later steps and would otherwise re-stamp the verdict every tick.
             if v is not None and self.last_verdict is None:
                 self.last_verdict = v
-                # PLAY OUT: record the verdict at its natural moment but let the episode CONTINUE
-                # as an ordinary match instead of ending here. Ending early is what creates the
-                # 18s-vs-180s mismatch that miscalibrates the shared critic.
+                # PLAY OUT (sim.drill_play_out): record the verdict at its natural moment but let
+                # the episode CONTINUE as an ordinary match instead of ending here.
+                #
+                # Why: a drill averages 18.4s against a match's 180s+, and one critic has to value
+                # both. Measured, that wrecks it -- value loss 1.3-1.8 with drills mixed in vs
+                # 0.38-0.56 with matches alone, and the miscalibrated critic is what precedes the
+                # gate collapsing (P(play) 0.11-0.15 with drills vs 0.92-0.99 without). Giving
+                # drills their own critic recovered only ~30% of that, and shrinking drill_frac did
+                # not help at all -- even 15% of EPISODES still broke it.
+                #
+                # Ending the episode early is what creates the mismatch, so this removes it at the
+                # source rather than compensating downstream: the drill becomes "a match that
+                # started in an interesting position". Episode length, return scale and critic
+                # targets all match automatically, with no special-casing in the trainer.
                 done = bool(done) or not self._play_out()
                 info = dict(info or {})
                 info["drill"] = self.scenario.name
@@ -978,6 +1056,28 @@ def report(cfg, names=None, reps=25, seed=5, policy=None, level=None, reward_mod
             verdict = "NOT DISCRIMINATING -- baseline matches the best line"
         else:
             verdict = "ok"
+        # THE VERDICT GRADES THE DRILL, NOT THE POLICY. Everything above is decided from the
+        # baseline / scripted / doctrine columns: "ok" means this drill is a VALID TEST -- the
+        # correct line passes it, doing nothing fails it, and the prior can find it. It says
+        # nothing about whether the model can do it, which made rows read "policy 0% ... ok" and
+        # invited exactly the wrong conclusion (owner spotted this, 2026-08-22).
+        #
+        # So when a policy IS supplied, say what happened to it. Judged against the DOCTRINE column
+        # rather than against 100%: doctrine is what a good hand-written prior achieves on the same
+        # board, so it is the fair bar for "the model knows this interaction".
+        if pol is not None and not verdict.startswith(("UNWINNABLE", "NOT DISCRIMINATING")):
+            pp, dd = float(pol["pass_rate"]), float(doc["pass_rate"])
+            if pp <= 0.0:
+                verdict += "  | POLICY FAILS (0%)"
+            elif pp >= dd:
+                verdict += "  | policy OK (%.0f%%)" % (100 * pp)
+            elif pp < 0.5 * max(dd, 1e-9):
+                verdict += "  | POLICY GAP (%.0f%% vs doctrine %.0f%%)" % (100 * pp, 100 * dd)
+            else:
+                # the middle band -- below the prior but not badly. Labelled too, so that EVERY
+                # row carrying a policy says something about it; an unannotated row was the exact
+                # ambiguity this block exists to remove.
+                verdict += "  | policy below doctrine (%.0f%% vs %.0f%%)" % (100 * pp, 100 * dd)
         print("%-30s %7.0f%% %8s %7.0f%% %8s   %s"
               % (name, 100 * b, ("%.0f%%" % (100 * r)) if r is not None else "-", 100 * d,
                  ("%.0f%%" % (100 * pol["pass_rate"])) if pol else "-", verdict))
@@ -1011,12 +1111,12 @@ class DrillMixEnv(DrillEnv):
                            if frac is None else float(frac))
         # RUNNING MEAN EPISODE LENGTHS, and the SEED MATTERS FOR THE WHOLE EARLY RUN.
         # _episode_prob solves `target_step_share = p*Ld / (p*Ld + (1-p)*Lm)` for p, so a stale Ld
-        # mis-sets the mix until the running mean catches up -- and with drill_play_out ON, 20.0 is
-        # not merely stale, it is wrong by ~25x. MEASURED in icebow at 25 episodes with play-out and
-        # the old seed: drills took 81% of STEPS against a configured 30%, because the solver still
-        # thought a drill cost 20 steps while each one now runs a full match. Seeding Ld = Lm under
-        # play-out makes p = target immediately -- with equal lengths the episode share and the step
-        # share are the same number, which is the whole point of the flag.
+        # mis-sets the mix until the running mean catches up -- and with drill_play_out on, 20.0 is
+        # not merely stale, it is wrong by ~25x. MEASURED at 25 episodes with play-out and the old
+        # seed: drills took 81% of STEPS against a configured 30%, because the solver still thought
+        # a drill cost 20 steps while each one now runs a full match. Seeding Ld = Lm under
+        # play-out makes p = target immediately, which is the whole point of the flag: with equal
+        # lengths the episode share and the step share are the same number.
         _po = False
         try:
             _e = _env_flag("CLASHRL_DRILL_PLAY_OUT")

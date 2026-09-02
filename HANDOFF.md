@@ -22,7 +22,20 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-02 08:30**, branch `main` (**§5bb: GAUNTLET L3 -- KITKA FOLDED INTO THE SPRITE BANK
+Last updated: **2026-09-02 10:10**, branch `main` (**§5bc: HOGEQ BROUGHT UP TO ICEBOW'S VERSION
+(owner request, mid-gauntlet).** parity 65 identical / 18 declared / **2 UNEXPECTED** -> **70 / 15 / 0**
+(`--strict` green from both decks); five shared files converged plus hogeq's cli flags and the aim-assist
+tests. ⚠ FOUND: **hogeq's Log corridor aim assist has always been INERT** -- its `env.py` calls
+`log_corridor_cell` behind `try/except ImportError` and its `reward.py` never defined it, in a deck that
+runs The Log. hogeq's suite is **1,288 OK** (the "42 known failures" baseline is dead; it was already 1,272
+OK before these ports). hogeq had NO replay corpus and the icebow crawl cannot supply one (**0 of its 520
+battles** has a hogeq-deck opponent), so a dedicated crawl is RUNNING via a new deck-parameterised
+`crawl_deck.py`; its first pass kept 0 battles from 14 players and the cause is fixed (RoyaleAPI's
+"similar decks" for hog 2.6 are card SUBSTITUTIONS, not evo swaps: only 100 of 531 rated players are on
+the exact base deck). ⚠ ALSO: icebow's suite has **1 pre-existing failure**, `test_xbow_into_push
+.test_the_clamped_frontmost_ROW_counts_as_forward` -- the §5y band retune moved `sim.xbow_defense_front`
+0.56 -> 0.625 and the test's premise (row 13 sits PAST the front) is no longer true. Not caused by these
+ports; unfixed, because what it should assert now is a reward-semantics call. Previously **§5bb: GAUNTLET L3 -- KITKA FOLDED INTO THE SPRITE BANK
 (+4,835 sprites, 3 EMPTY classes filled, 13 thin classes now 42-222 sprites) AND A HELD-OUT SYNTHETIC VAL
 BUILT (1,000 val-frame composites from a 20% kitka slice the training bank never sees) so board-27's kitka
 half is falsifiable.** L1's kitka counts RETRACTED: `dataset_updates/` is a byte-duplicate of `segment/`,
@@ -212,6 +225,9 @@ cd C:\Users\benpe\ClashBot\hogeq
 * **2026-09-02 07:35 — the PPO cuda run is STOPPED** (§5ba) at 18,000 episodes, per the owner's ruling
   and confirmed by its own eval curve. Archive + checkpoints:
   `icebow/data/bench/stopped_real_cuda_18k_20260902/` (2 .pt SHA-verified, 2 milestone snapshots, log).
+* **RUNNING NOW: the hogeq replay crawl** (§5bc) -- `~/clash-replay-scraper/crawl_deck.py --deck hogeq
+  crawl`, log `scratchpad/gauntlet/L4/crawl_hogeq.log`, output `hogeq/data/royaleapi/crawl2/` (gitignored).
+  Resume-safe: re-run the same command to sweep the players that failed on RoyaleAPI's rate limiter.
 * **RUNNING NOW: the L2 detector screen** (`scratchpad/gauntlet/L2_screen.ps1`) -- yolo11s control then
   yolo26s, identical settings, fraction 0.35 / 30 epochs / imgsz 960, ~2.8 GB VRAM. **Measured 5.4
   min/epoch** (epoch 9 at 08:13 from a 07:24 start), so ~2.7 h per arm: y11s lands ~10:10, y26s ~13:00.
@@ -2328,6 +2344,15 @@ per section in place, keep the archive greppable and committed.
 ---
 
 ## 8. Measurement traps (each of these produced a wrong conclusion first)
+
+* **RoyaleAPI "similar decks" are not all evolution swaps (2026-09-02, §5bc).** For hog 2.6 they include
+  card SUBSTITUTIONS (cannon for tesla, electro-spirit for ice-spirit, valkyrie-hero for mighty-miner).
+  A roster ranked across every variation board by rating is then mostly players whose battles the
+  `is_variation` filter rejects: 14 players walked, **0 battles kept**. Filter the roster by
+  `is_variation(found_on, seed)` BEFORE capping. icebow never showed this -- its similar decks really are
+  evo variations -- so a driver copied from it must be re-measured on the new deck.
+* **"hogeq is at its 42-known-failure baseline" is STALE (2026-09-02, §5bc).** Measured: 1,272 tests OK
+  (64 skipped) before this session's ports, 1,288 OK after. Quoting the 42 hides a real regression.
 
 * **kitka `dataset_updates/` is a 100% byte-duplicate of `segment/segment` (2026-09-02, §5bb).** Counting
   both doubled every per-class number in §5az.4 (hunter_evo "546" is 276). Count `segment/segment` only.
@@ -5993,3 +6018,112 @@ running screen reads that folder and `synth_images` regenerates it in place (§8
    (fraction 1.0, 120 ep, 960, batch 4) + `battery_watchdog.ps1 -Run board-27`.
 3. Meanwhile (CPU, cheap): the gate-prior builder against the one existing full recording
    (`replay_00LYPLJLC80L_run1.json`), so the tool is proven before the 211-replay pass.
+
+## §5bc — HOGEQ BROUGHT UP TO ICEBOW'S VERSION: parity restored and 5 shared files converged, the LOG AIM ASSIST WAS DEAD IN HOGEQ, and the hogeq replay corpus crawl (a roster bug found and fixed) (2026-09-02 09:00-11:00, owner request)
+
+Owner, mid-gauntlet: *"update hogeq so it's up-to-date with icebow's version... you may need to mine
+hogeq replays from RoyaleAPI using the replay scraper repo to build the corpus needed for that deck."*
+Both halves below. The L2 detector screen kept the GPU throughout; everything here is CPU/network.
+
+### 1. Parity, measured before and after
+`tools/parity_check.py` (byte-compare of the two trees, runs from either deck):
+
+| | shared identical | declared different | UNEXPECTED |
+|---|---|---|---|
+| at session start | 65 | 18 | **2** (my own L3 edits) |
+| now | **70** | **15** | **0** — `--strict` green from both decks |
+
+The 2 unexpected were `katacr_segments.py` and `sprites.py`: L3 changed shared code in icebow only,
+which is exactly the drift this gate exists for. Config quartet was already byte-identical.
+
+### 2. What was ported (icebow -> hogeq unless stated)
+* `src/clashrl/katacr_segments.py`, `src/clashrl/sprites.py` — L3's `--bank` / `--prefix` /
+  `--base-split` / `--out-name` / `--no-yaml` support (byte-identical copies).
+* `src/clashrl/cli.py` — the five new flags hand-ported (cli.py is legitimately deck-different, so
+  the gate would never have caught this; hogeq's `run.py sprites --help` now lists them).
+* `src/clashrl/reward.py` — `log_corridor_cell` + `nado_king_cell` (see 3). Now byte-identical.
+* `src/clashrl/model.py` — the `CLASHRL_SINGLE_CELL_MAP` escape hatch. Env-gated, default OFF, so
+  hogeq's default net is unchanged: **verified by strict-loading hogeq's own
+  `data/policy_sim_ppo_best.pt` under the ported file — cell head (11, 24, 1, 1), `cell_per_card`
+  True, `load_state_dict(strict=True)` clean.**
+* `src/clashrl/sim/drill_env.py` — icebow's three env-gated drill knobs (`CLASHRL_DRILL_FULL_HAND`,
+  `_CLOCK`, `_STATE`), all default OFF.
+* `tests/test_aim_assists.py` — copied to hogeq, **16 tests pass there**.
+
+### 3. THE FINDING: hogeq's Log aim assist has always been inert
+`hogeq/src/clashrl/env.py` imports `log_corridor_cell` inside `try/except ImportError` and calls it
+at `if base == "the_log"`. **hogeq's `reward.py` never defined it**, so the except branch set it to
+`None` and the assist was silently off — in a deck whose hand contains The Log. The comment above the
+import even asserted the opposite ("hogeq's reward.py has no tornado/log-corridor helpers"), which is
+true of the Tornado and false of the Log. This is the project's recurring failure shape: a feature
+that is both taken and quiet. Fixed by defining both helpers in hogeq and rewriting the comment in
+BOTH decks; `nado_king_cell` stays unreachable in hogeq for the right reason (empty `tornado_ids`).
+* **(a) measured:** `env.log_corridor_cell` is now a function in hogeq, and the ported
+  `test_it_actually_moves_the_aim` / `test_it_lines_the_corridor_up_with_the_push` pass there.
+* **⚠ this is a LIVE-path behaviour change for hogeq** (its `LiveMatchEnv` will now nudge Log casts
+  laterally onto the push). hogeq has no live-play history (§1: sim-only), so nothing in flight is
+  affected, but the owner should know it is on rather than discover it.
+
+### 4. Two DRIFT notes were stale — the allow-list was describing an older divergence
+* `sim/drill_env.py`'s note said the divergence was *hogeq-only* `_env_flag`. Measured: `_env_flag`
+  is in BOTH (only its position differs); the real divergence was 137 icebow-only lines of drill A/B
+  knobs. Ported, entry removed.
+* `reward.py`'s note said hogeq "has no assist for it" as if that were a deck opinion; it was a gap.
+* Entries removed from `DRIFT` in both decks' `parity_check.py` (which must stay byte-identical):
+  `reward.py`, `model.py`, `sim/drill_env.py`. 18 -> 15 declared-different.
+
+### 5. hogeq's test baseline is NOT "42 known failures" any more
+Old sections still say "hogeq at its 42-known baseline". Measured this session, before the ports:
+**1,272 tests, OK, 64 skipped** (265 s). Re-run after every port above: see the closing line of this
+section. Do not carry the 42 forward.
+
+### 6. The corpus: hogeq had nothing, and the icebow crawl cannot supply it
+`icebow/data/royaleapi/` holds 520 battles / 45,335 plays / 12,220 placement-joined blue plays
+(§5af-5ag). `hogeq/data/` has **no royaleapi folder at all**. Measured on the existing crawl:
+**0 of its 520 battles has an opponent on a hogeq-deck variation** (5 battles are 7-of-8-card
+neighbours: electro-spirit for ice-spirit, cannon for tesla). So the hogeq corpus has to be crawled,
+not extracted — that is the measurement that justifies the network work.
+
+### 7. `crawl_deck.py` — the deck-parameterised driver (new, in `~/clash-replay-scraper`)
+`crawl_icebow.py` is left FROZEN (it produced the icebow corpus and its constants are baked in). The
+new driver takes `--deck {icebow,hogeq}`, carrying over verbatim the pieces that each cost a crawl to
+learn: the extended parser that keeps every `data-*` attribute and joins the `.marker` placements,
+per-player completion marks, and save-token-before-verify. hogeq seed slug (RoyaleAPI's own spelling,
+verified against real battle rows in the icebow crawl):
+`earthquake,firecracker-ev1,hog-rider,ice-spirit,mighty-miner,skeletons,tesla-ev1,the-log`.
+* **Session: no owner login was needed.** The driver borrows the other deck's `.session_token`
+  (same site session). Probe verified live: a 109-card replay with **131 markers** fetched.
+
+### 8. ⚠ BUG FOUND AND FIXED: the roster stage kept the wrong players (0 battles from 14 players)
+First run walked 14 players and kept **0 battles**. Cause, measured from `roster.json`: RoyaleAPI's
+"similar decks" for hog 2.6 are not evolution swaps but **card SUBSTITUTIONS** — of the 531 rated
+players across the 11 variation boards, only **100 were on the exact 8 base cards**; the rest play
+cannon for tesla, electro-spirit for ice-spirit, or valkyrie-hero/knight-hero for mighty-miner.
+Ranking all 531 by rating and capping at 50 filled the roster with players whose battles the
+`is_variation` filter then rejected — a crawl that would have run for hours and produced nothing.
+The roster is now filtered by `is_variation(found_on, seed)` first (100 candidates -> top 50 by
+rating). **This could not have bitten icebow**, whose similar decks really are evo variations — which
+is why the frozen driver never showed it, and why a copied driver had to be re-measured on the new
+deck rather than trusted.
+
+### 9. What this does NOT establish
+Nothing about hogeq's play strength: every port is behaviour-neutral by construction except the Log
+assist, and none of it has been trained or played. The corpus is NOT built yet (the crawl is running,
+resume-safe); no hogeq priors have been derived; and the remaining declared-different files
+(`train_rl.py` async advisor, `sim/remote_pool.py` deck-PFSP channel, `env.py`) are still one-way
+ports that have not been done.
+
+### 10. Closing numbers (measured this session)
+* parity `--strict`: **PARITY OK** from both decks; 70 shared identical, 15 declared different, 0 unexpected.
+* hogeq suite: **1,288 tests OK, 64 skipped** (261 s) with every port in.
+* icebow suite: **1,257 tests, 1 failure** (the pre-existing `xbow_front` premise above), 21 skipped.
+* crawl: roster 50 players drawn from the 100 who play the exact base deck; running.
+
+### 11. Next on this thread
+1. Let the crawl finish, then re-run it once to sweep the rate-limited players (it is resume-safe).
+2. Derive hogeq's placement priors the way §5ag did for icebow -- `P(tile | card, phase)` off
+   `plays_ext.csv` -- and check them against `hogeq/DOCTRINE_RESEARCH.md`'s hand-written cell rules.
+   That is the first thing the corpus is FOR, and it is also how the corpus gets falsified.
+3. Remaining one-way ports, in this order: `train_rl.py` (icebow's async LLM advisor), `env.py`
+   (the two decks' comments still diverge), `sim/remote_pool.py` (moves with deck PFSP, so only when
+   hogeq gets `sim/opponents.py`'s deck-PFSP half).

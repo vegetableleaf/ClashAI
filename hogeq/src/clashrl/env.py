@@ -29,7 +29,10 @@ from .outcome import outcome_reward, read_scoreboard
 from . import threat_value
 from .reward import (TowerTracker, _anchors, enemy_mass, near_enemy_king, near_enemy_princess, pump_rocket_cell, spell_intercept_cell, threat_side, weaker_princess_cell, xbow_lock_cell, xbow_offense_depth_cell, xbow_target_lane_cell, tesla_pull_cell)
 from .reward import spell_whiffed, nado_regressed, lead_point, lead_velocity, log_hits
-# deck-dependent aim cells: hogeq's reward.py has no tornado/log-corridor helpers
+# deck-dependent aim cells. BOTH decks' reward.py now defines these (parity port 2026-09-02,
+# HANDOFF 5bc): hogeq's env has always CALLED log_corridor_cell and its reward.py did not
+# define it, so the Log aim assist was inert in a deck that runs The Log. The guards stay --
+# nado_king_cell is simply never reached in a deck with no tornado (empty tornado_ids).
 try:
     from .reward import nado_king_cell
 except ImportError:

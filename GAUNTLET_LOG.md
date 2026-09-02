@@ -285,3 +285,23 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - NOT regenerated the training synth: the screen reads `data/detect/synth` and regen overwrites in place.
   First step after the screen. Screen measured 5.4 min/epoch -> both arms ~13:00 (not 11:30).
 - Next: gate-prior builder on the one existing engine recording (CPU) while the screen runs.
+
+## L4 (owner task, mid-gauntlet) — 2026-09-02 09:00-10:10 | hogeq brought up to icebow's version
+- parity 65 identical / 18 declared / 2 UNEXPECTED -> 70 / 15 / 0, `--strict` green from both decks.
+  Ported: katacr_segments.py, sprites.py, reward.py, model.py, sim/drill_env.py, tests/test_aim_assists.py
+  + the five new CLI flags by hand (cli.py is deck-different, so the gate could never have caught it).
+- ⚠ FOUND: hogeq's env.py has always CALLED `log_corridor_cell` behind try/except and its reward.py never
+  defined it -> the Log corridor aim assist was INERT in a deck that runs The Log. Now defined; 16 ported
+  aim tests pass in hogeq. Live-path behaviour change (hogeq is sim-only, nothing in flight).
+- model.py port verified checkpoint-safe: hogeq's policy_sim_ppo_best.pt strict-loads, cell head (11,24,1,1).
+- Two DRIFT notes were STALE: `_env_flag` is in BOTH decks (the real drift was 3 icebow-only drill knobs);
+  reward.py's entry described a gap as a deck opinion. hogeq's "42 known failures" baseline is dead: 1,272
+  OK before the ports, 1,288 OK after. icebow: 1,257 with 1 PRE-EXISTING failure (xbow_front 0.56 -> 0.625
+  from the 5y retune invalidated a test premise; left for an owner call).
+- Corpus: hogeq had none, and the icebow crawl cannot supply it (0 of 520 battles has a hogeq-deck
+  opponent; 5 are 7/8-card neighbours). New `crawl_deck.py` (crawl_icebow.py left frozen), session token
+  borrowed from the icebow crawl -- no owner login needed, probe pulled a 109-card replay with 131 markers.
+- ⚠ BUG in the first pass: RoyaleAPI's "similar decks" for hog 2.6 are card SUBSTITUTIONS, not evo swaps;
+  only 100 of 531 rated players are on the exact base deck, so the top-50-by-rating roster produced
+  14 players walked / 0 battles kept. Roster now filtered by is_variation first; crawl restarted.
+- Next: finish + re-run the crawl to sweep rate-limited players, then hogeq placement priors (5ag's path).

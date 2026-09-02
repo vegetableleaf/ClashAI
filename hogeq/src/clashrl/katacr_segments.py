@@ -57,6 +57,13 @@ _EXPLICIT = {
     "phoenix-big": "phoenix", "phoenix-small": "phoenix", "phoenix-egg": None,
     "royal-guardian": "royal_ghost", "rascal-boy": "rascals", "rascal-girl": "rascals",
     "goblin-brawler": None,                # goblin_cage's spawn: not a card, deliberately unmodelled
+    # kitka's library (2026-09-02, HANDOFF 5bb): its own spellings for cards we DO model. Checked by
+    # hand against the taxonomy, not by string distance -- `goblinstein-doctor` and
+    # `skeleton-balloon-evolution` are ambiguous against our single classes and stay dropped.
+    "dartgoblin-evolution": "dart_goblin_evo", "ghost-evolution": "royal_ghost_evo",
+    "megaknight-evolution": "mega_knight_evo", "snowball-evolution": "giant_snowball_evo",
+    "skarmy-evolution": "skeleton_army_evo",
+    "spirit-empress-air": "spirit_empress", "spirit-empress-ground": "spirit_empress",
     "hog": None, "dirt": None, "axe": None, "bomb": None, "goblin-ball": None,
     "skeleton-king-skill": None, "tesla-evolution-shock": None,
     # one evolved BODY has no home: we hold `royal_recruit` (a body) and `royal_recruits` (the card),
@@ -137,12 +144,18 @@ def _our_rel_h(paths, limit: int = 80):
 
 
 def katacr_segments(cfg, src: str, src_width: str = "auto", dry_run: bool = False,
-                    min_per_class: int = 1) -> None:
+                    min_per_class: int = 1, bank_dir: Optional[str] = None,
+                    prefix: str = "katacr") -> None:
+    """`bank_dir` (default data/detect/sprites) lets a HELD-OUT slice of a segment library go into
+    a separate bank that only a synthetic VAL set is composed from -- the training bank never sees
+    it. `prefix` is the provenance tag on every written file (kitka_ vs katacr_), so two libraries
+    from the same upstream can coexist and each re-import stays idempotent."""
     from .detect import _load_classes
 
     ours = set(_load_classes(cfg))
     root = Path(cfg.path(cfg.get("detect", "dataset_dir", default="data/detect")))
-    bank = root / "sprites"
+    bank = Path(cfg.path(bank_dir)) if bank_dir else root / "sprites"
+    ref_bank = root / "sprites"          # width is always measured against the TRAINING bank
     sp = Path(src)
     if not sp.exists():
         print(f"[katacr] no segment folder at {sp}")
@@ -187,7 +200,7 @@ def katacr_segments(cfg, src: str, src_width: str = "auto", dry_run: bool = Fals
     if src_width == "auto":
         ests, untagged = [], 0
         for cls, pngs in sorted(mapped.items()):
-            mine = list((bank / cls).glob("*.png")) if (bank / cls).is_dir() else []
+            mine = list((ref_bank / cls).glob("*.png")) if (ref_bank / cls).is_dir() else []
             if len(mine) < 5 or len(pngs) < 5:
                 continue
             rel, n_rel = _our_rel_h(mine)
@@ -238,7 +251,7 @@ def katacr_segments(cfg, src: str, src_width: str = "auto", dry_run: bool = Fals
             # source width instead, so synth_images scales each paste to ITS base frame. Baking one
             # global factor in would throw away detail and re-freeze the same mixed-scale mistake.
             # katacr_ prefix keeps provenance visible and makes a re-import idempotent
-            cv2.imwrite(str(out / f"katacr_{p.stem}_{i:05d}_w{w_tag}.png"), im)
+            cv2.imwrite(str(out / f"{prefix}_{p.stem}_{i:05d}_w{w_tag}.png"), im)
             written += 1
     print(f"[katacr] wrote {written} segment(s) into {bank}, tagged _w{w_tag}")
     print("[katacr] NEXT: `run.py sprites --synth N` -- do NOT re-run `run.py sprites`, it CLEARS "
