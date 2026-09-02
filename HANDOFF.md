@@ -22,119 +22,15 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-02 15:20**, branch `main` (**§5bf: THE GATE-PRIOR RUN IS LAUNCHED** (owner order
-15:0x: "launch the elixir fix run"). `data/bench/gate_run_launch.sh`, 15:07, cuda, seed 41, 40k matches, ONE
-change vs the 18k real run: `sim.ppo_gate_prior_coef 0.1` -- a cross-entropy pull of the GATE head (only)
-toward the pros' P(play | elixir bucket, phase), fitted from the crawled replays by the new
-`tools/gate_prior.py` into `config/gate_prior.json` (both decks; icebow 519 replays / 23,620 plays, hogeq 595 /
-30,258; elixir reconstructed with a MEASURED 1.7% / 2.8% under-cost error). Deviation from the 08:20 ruling,
-stated plainly: v0 conditions on (elixir, phase) only -- the threat-on-our-half key needs the engine
-recording pass and slots in without changing the hook. First reading at 200 updates: pi(play) 0.379 vs prior
-0.051 on the rows the prior can act on (8% of rows -- the collapsed policy has nothing affordable on the
-rest). New trap (a): 91 watchdog readings of the FROZEN 18k checkpoint spread cell_struct 685-14,834x and
-elixir>=6 0.0-11.3% -- the CELL STRUCTURE drift rule fired on an unchanged policy (§5bf.5). Previously
-**§5be: THE DETECTOR SCREEN IS DECIDED -- yolo11s
-stays; yolo26s lost at every epoch (final mAP50 0.408 vs 0.253, mAP50-95 0.294 vs 0.171, identical args)
-and is also SLOWER on this GPU (34.5 vs 31.3 ms median wall, idle box): the NMS-free postprocess saving
-(3.1 -> 1.1 ms) is real but its inference is 6 ms slower, so the "faster because NMS-free" premise is
-CONTRADICTED here. BOARD-27 IS CANCELLED** (owner ruling 14:30: a day of training is not worth it unless
-kitka's benefit is significant -- and that benefit is (b) UNTESTED and invisible on the main val; the
-right-sized test is a 2-4 h fine-tune from board-26 measured on `holdout_val.yaml`, queued as an owner
-option, not launched). First latency number: the operating detector `board-24-5` costs **29.5 ms median /
-35.0 p90** per frame on an idle box, fp32 at 960 (pre 7.1 / inf 19.6 / post 3.1), so the detector is
-~30% of the 100 ms decision budget and the rest of the path (obs build, policy, live search ~24 ms carried
-from live_search.py's own note, aim assist) has not been measured yet. Previously **§5bc: HOGEQ BROUGHT
-UP TO ICEBOW'S VERSION
-(owner request, mid-gauntlet).** parity 65 identical / 18 declared / **2 UNEXPECTED** -> **70 / 15 / 0**
-(`--strict` green from both decks); five shared files converged plus hogeq's cli flags and the aim-assist
-tests. ⚠ FOUND: **hogeq's Log corridor aim assist has always been INERT** -- its `env.py` calls
-`log_corridor_cell` behind `try/except ImportError` and its `reward.py` never defined it, in a deck that
-runs The Log. hogeq's suite is **1,288 OK** (the "42 known failures" baseline is dead; it was already 1,272
-OK before these ports). hogeq had NO replay corpus and the icebow crawl cannot supply one (**0 of its 520
-battles** has a hogeq-deck opponent), so a dedicated crawl is RUNNING via a new deck-parameterised
-`crawl_deck.py`; its first pass kept 0 battles from 14 players and the cause is fixed (RoyaleAPI's
-"similar decks" for hog 2.6 are card SUBSTITUTIONS, not evo swaps: only 100 of 531 rated players are on
-the exact base deck). ⚠ ALSO: icebow's suite has **1 pre-existing failure**, `test_xbow_into_push
-.test_the_clamped_frontmost_ROW_counts_as_forward` -- the §5y band retune moved `sim.xbow_defense_front`
-0.56 -> 0.625 and the test's premise (row 13 sits PAST the front) is no longer true. Not caused by these
-ports; unfixed, because what it should assert now is a reward-semantics call. Previously **§5bb: GAUNTLET L3 -- KITKA FOLDED INTO THE SPRITE BANK
-(+4,835 sprites, 3 EMPTY classes filled, 13 thin classes now 42-222 sprites) AND A HELD-OUT SYNTHETIC VAL
-BUILT (1,000 val-frame composites from a 20% kitka slice the training bank never sees) so board-27's kitka
-half is falsifiable.** L1's kitka counts RETRACTED: `dataset_updates/` is a byte-duplicate of `segment/`,
-so every "0->324"-style number in §5az.4 was ~2x. Screen still running (yolo11s epoch 9/30 at 08:13,
-5.4 min/epoch -> both arms land ~13:00, not 11:30). Previously **§5ba: GAUNTLET L2 -- THE PPO CUDA RUN IS STOPPED AT
-18,000 EPISODES AND THE DETECTOR SCREEN IS RUNNING.** The greedy EVAL instrument justifies the stop:
-ladder went 3/12/19/13/7/21/8/10% across EVAL@2000..16000, a 5-eval moving average FLAT at 12-14%
-(fair 7-8%) since episode 12,000 -- no upward trend, and the `_best` snapshot has not moved since 03:54
-(~12k). Checkpoints backed up and SHA-verified to `data/bench/stopped_real_cuda_18k_20260902/`;
-20 -> 6 python procs, 0 train-sim-ppo left, 11.1 GB RAM and the whole GPU freed. YOLO26s SMOKE-TESTED on
-our 230-class data: it trains, 5.6 ms inference / **0.4 ms postprocess** at 960px (NMS-free). Two-arm
-screen (yolo11s control vs yolo26s, identical settings, fraction 0.35 / 30 ep) launched 07:23.
-`battery_watchdog.ps1` rewritten for the owner's pause -> sit -> AUTO-RESUME spec. Previously
-**§5az: GAUNTLET L1 -- DETECTOR UPGRADE RECON.**
-The isolated venv the owner approved is probably unnecessary: `icebow/.venv`'s ultralytics 8.4.107
-ALREADY ships yolo26 / yolo26-p2 / yolo12 / rt-detr configs, so the leading candidates need no install.
-kitka's data is a SPRITE library, not a labelled dataset: my first "88 new classes" read was wrong and
-is retracted -- it fills 1 of 45 empty detector classes and adds +6,200 crops (+15%) to 128 existing
-ones, but its real value is 9 evolution classes going from 0-7 sprites to 88-540, i.e. from
-unlearnable-by-synth to represented. **TRAP: 69 of 230 classes have ZERO val instances and the 9 thin
-classes have 0-2, so mAP50 on the current val set CANNOT see the kitka change** -- a null there would be
-an instrument artifact. Owner rulings: latency (not act_period) to <100 ms; stop PPO at ~18k eps then
-board-train; isolated venv for anything non-ultralytics; cheap screen then ONE full run. Previously
-**§5ay: ALL 268 USABLE REPLAYS CONVERTED THROUGH THE REAL ENGINE** -- 211 converted / 57 refused up front (Elite Barbarians evolution, form 26000043, no native
-form in the frozen build); 17,757 of 17,901 driven plays accepted (99.2%), 0 invalid placements, 0 elixir
-delays; crowns match RoyaleAPI in 164/211 (77.7%), winner in 169/211 (80.1%), 135 matches fully clean;
-determinism 21/21; median 3.54 s per match, 782 s wall for the set. Fidelity limits are named (levels
-forced to 11, 428 ability plays not driven, engine ends before the real match in 41). A full-observation
-recorder (`--record-full`: entity kind, projectiles, effects) and a schematic viewer exist; the sandbox
-CANNOT render the game (renderer-less by design), see §5ay.5. Emulator stopped 01:08. Previously
-**§5ax: THE SANDBOX TICK STALL IS SOLVED AND THE FIRST REPLAY->REAL-MATCH CONVERSION RAN** -- the clock was held by a pending GameMain UI action (login-failed
-reason 8, "update from store", Play URL queued before the battle existed; measured from a live memory
-dump, the code is encrypted on disk). The bridge now discards it before stepping (sandbox-repo commit
-7c66f92) and the author's probe reproduces their canonical 100-tick hash 96598dc9028e1802 / rng
-3502570521 exactly; 08CPVRRR8PYC converted with 54/54 plays accepted, 0 elixir delays, crowns [0,1] =
-expected, terminal 3887, same hash d3aa402b826e6d72 on 2/2 runs, 1.7 s per match. Emulator stopped;
-cuda run untouched (5425 eps at 00:13). Next: convert all 268 usable replays. Previously **RULING 30 + RULING 31c DONE, AND THE PINS GENERATOR
-NO LONGER REVERTS ITS OWN RULINGS** -- the spell CARD VETO ships in both decks at
-`sim.ppo_spell_min_value: 0.0` = OFF, and the close-out measurement is why it stays off: re-run at
-HEAD under the DECK's own venv over 600 paired matches, the owner's VALUE form does **not** beat a
-volume-matched RANDOM spell ban (+0.047, 0.98σ) and is measurably **worse** than the body-count
-form it replaced (-0.127, 2.99σ). Two confounds were each worth more than the effect under test:
-every earlier arm ran under the ROOT `.venv`'s torch 2.13.0+cpu instead of the deck's 2.11.0+cu128
-(**-6.0pp winrate on the same seeds, same tree, same checkpoint**), and the random-ban control is
-ONE DRAW whose own effect swung +0.301 (4.54σ) to +0.051 (0.76σ) between seed blocks. What
-survives: every owner-named single-target reference drill still plays at 0.45, `choose_greedy`
-applied NO spell mask before this (eval graded behaviour training never produced), and the veto
-now reaches a `--workers 12` run at all -- it was guarded by `and not remote`, which is every real
-run. **Ruling 31c**: the Hero Wizard's tornado is 3 tiles, not 4, and spawns at his FIREBALL'S
-LANDING POINT (measured dy 0.00 -> 5.00 tiles); the Evo Valkyrie's melee spin is unchanged at
-dy=0.00 / radius 5.5. Rulings 31a+31b+31c together move the eval baseline by NOTHING (43.0% ->
-43.0%). **Pins**: ruling 31a hand-edited `import_pins.json` without the generator, which would
-have silently reverted it plus ruling 31b's two owner-supplied radii -- `gen_pins.py --check` now
-exits 1 on any disagreement, with a per-pin report, a run negative control and 4 suite tests.
-icebow 1159 OK / hogeq 1182 OK. Previously **ROLLING SPELLS DONE, rulings 20-28** -- The Log and the
-Barbarian Barrel now CAST own-half while their corridors still cross the river (a clamped Log reaches
-7.60 tiles past it, measured), and a rolling spell SWEEPS instead of resolving its whole corridor in
-one frame: the_log 2.88 s, barbarian_barrel 1.35 s, giant_snowball_evo 0.80 s, from a `roll_speed`
-that was DEAD DATA -- published in the KB and read by nothing. A body 8 tiles ahead that steps clear
-at 1.5 s now takes 0 instead of 266, and one that steps in takes 266 instead of 0. The barrel's
-Barbarian appears at the same place but 1.35 s later; the hero's Rowdy Reroll is a literal second
-roll that ABSORBS the Barbarian and redeploys the same body healed. The spell-waste verdict had to
-move 0.75 -> 3.63 s or every good Log would have been billed for damage it had not dealt yet. A
-Barbarian is 716 hp (owner in-game, and the Evo + Hero pages already said so) and the barrel drops a
-normal one, 716/190.4/1.4; the barrel's missing crown value had been falling back to its FULL 230,
-now 116. 48 new tests (icebow 1091 OK / hogeq 1114 OK), pins 184 -> 195, `parity_check --strict`
-fixed from a PRE-EXISTING LF/CRLF failure whose `git diff` was empty. Drill deltas explained and
-measured in §5 -- `log_the_barrel_on_landing` fell 100 -> 56 because its reference line is now
-0.2-0.5 s LATE, not because the drill broke. Previously **I9 CROSS-CUTTING GAPS DONE** -- the engine had NO own-team spell path at all (`_resolve_spell` iterated `e.team != s.team` in all five branches), so Rage was a bare blast with its whole buff missing, Clone was a 3-elixir no-op and the Heal Spirit did not heal: all three now measured (a raged Knight covers +26.0% more ground, 4 skeletons become 8 at 1 hp and 0 elixir, an ally goes 100 -> 501.00 hp). MIRROR measured and SKIPPED (5/1000 decks, 0.29% of deck weight, and a hand mechanic rather than a board effect). Three engine bugs found and fixed with before/afters: a ZERO-DAMAGE hit woke the enemy King (goblin_barrel / royal_delivery / mirror all activated him at 0.0 s for 0 chip), drills could NEVER present an evolution (0 of 26 icebow / 0 of 24 hogeq, the OPPOSITE of the brief's premise), and a chain hop never survived a physics frame so sim_view showed NOTHING while the Electro Dragon chained for 192/960/1152/576/576. The base Barbarian Barrel now leaves its Barbarian (0 -> 1 body). perception's DRIFT entry was STALE -- measured, the TypeError does not fire in either deck -- and parity's declared-different list shrank 20 -> 18. 62 new tests; head shapes unchanged (icebow 10 / hogeq 11). See conflicts.md's I9 section. Previously **I8 HEROES DONE** -- all 16 LIVE heroes fire ENEMY-SIDE, twelve new `ability_kind` shapes on I7's registry, the 16/3/2026 three-slot loadout (Evolution + Hero + Wild at 1/3, an UNMEASURED choice behind `sim.wild_evo_prob`/`wild_hero_prob`), and `support:` finally consumed -- the opponent's princess-tower share went 54.6% -> 83.7% against a measured 90.5%. THREE I4 import bugs corrected (the turret's stats were on the Musketeer, the Tomb Queen's on the Tombstone, the Barbarian's melee on the barrel). 45 new tests; head shapes unchanged (icebow 10 / hogeq 11), so every checkpoint still loads. See research/sim_parity/conflicts.md's I8 section for 27 evidence conflicts, 4 wrong brief premises, 9 measured bugs, 11 owner in-game checks and 10 deliberate non-implementations -- the two biggest open numbers are the Hero Valkyrie's spin (1358 damage per activation under the per-tick reading) and the Hero Berserker's "Bear Damage". Previously **I7 CHAMPION ABILITIES DONE** -- `ability_kind` dispatch + a 16-field generic ability schema, all 8 live champions firing ENEMY-SIDE through `ScriptedBot._try_ability`, ruling 5's newest-body bug fixed, ruling 7's refund added, the Boss Bandit's HP auto-trigger DELETED, and the Evo Electro Dragon's swing corrected 3204 -> 1152; head shapes unchanged, icebow 890 OK / hogeq at its exact 42-known baseline. See SS5's I7 rows and research/sim_parity/conflicts.md's I7 section for the 12 evidence conflicts, 3 wrong brief premises and 5 owner in-game checks. Previously I5 DATA APPLICATION DONE -- 340 adjudicated ledger rows applied and verified 340/340, 81 pins + 258 curated cards.yaml fields, E4 closed, per-card chain_tiles, stat_sweep --all green in both decks, crown audit RED->GREEN after being RETARGETED at our KB; previously I4 importer hardening DONE -- dry-run-default cards-import, hero scrape, allowlist + pins guards, provenance, crown audit RED negative control, dry-run reconciled 0 surprises; see Phase I progress in SS3's sim-parity block). Previous: **2026-08-25** (DRILLS: the segmented mini-sim framework is in and
-validated in BOTH decks -- `sim/scenarios.py` + `sim/drill_env.py` + 4 icebow / 5 hogeq drills, each
-measured baseline-vs-oracle, plus `run.py drills` and a `sim.drill_frac` mixing ratio into PPO (default
-0.0, so an un-opted run is unchanged). Building it surfaced FIVE real bugs, all fixed, all cross-deck:
-the triage gate counted bodies as cards (a lone Skeletons scored 9x the ignore threshold -- the reported
-"defends small threats" failure), the Log prior spent itself on those trickles, every spell but Rocket
-was forbidden from the enemy half (the whole Hog+EQ combo was an UNREACHABLE action), every legal Hog
-send scored -1.0, and the king-activation prior aimed 8.7 tiles from a 5.5-tile pull. See SS5, SS6.0 and
-the four new traps in SS8.)
+Last updated: **2026-09-02 16:05**, branch `main` (**§5bg: GAUNTLET L7 -- the gate-prior run READ AT m=2000
+WITH A NEW SAME-INSTRUMENT PROBE, and it is NOT yet distinguishable from the collapsed 18k checkpoint.**
+`tools/gate_prior_probe.py` = the watchdog's sampler + per-row affordability + P(play | elixir bucket), np.random
+SEEDED. 3 seeds each, m=2000 gate vs 18k control: affordable on 25-27% vs 28-29% of rows; P(play) on
+affordable rows 0.41-0.43 vs 0.38-0.41 (pro table at 3 elixir: 0.063); 81% of decision rows at <3 elixir in
+BOTH; skeletons/log in hand at 1-2 elixir only 7-9% / 18-24% of the time (spent on draw = the cheap-card
+collapse, measured from the hand side). The trainer's own `pi(play)` on usable rows, de-cumulated, 0.336 ->
+0.316 over 3,800 updates. TRAP: the watchdog's `P(play) mean` is ~74% masked rows (nothing affordable), so it
+is not the gate's play rate. Decision rule pre-registered for the m=5k gate in §6. Run untouched; 0.8 ep/s.)
 
 ---
 
@@ -258,6 +154,9 @@ cd C:\Users\benpe\ClashBot\hogeq
   `data/bench/gate_run_watchdog.out`; `tools/real_run_gates.py --run gate_20260902` ->
   `data/bench/gate_run_gates.out` (snapshots `data/bench/gate_m{5,10,20}k.pt`). Pace at launch 0.6 ep/s.
   Read `GATE PRIOR CE ... pi(play) X vs prior Y` lines in the log: the term is biting iff X falls toward Y.
+  **Read it with `tools/gate_prior_probe.py <ckpt> --seed {0,1,2}`** (12 s each, §5bg): the number that
+  matters is `played` at bucket 3 (gate m=2000: 0.39-0.45; 18k control: 0.36-0.37; pros 0.063). The
+  `GATE PRIOR CE` line is CUMULATIVE since start -- difference consecutive lines before reading a trend.
 * **STALE, could not be stopped: the 18k run's watchdog** (PIDs 21564/72608 under nohup 32660, launched
   2026-09-01 21:25) is still sampling the frozen `data/policy_real_20260901.pt` every 5 min (a 2,400-step
   CPU probe each time) and appending to `data/ppo_watchdog.log`. The kill was refused by the session's
@@ -2017,7 +1916,11 @@ slow one.
 * Watchdog instrument: 6 envs x 400 steps gives cell_struct a 3x 10-90% spread on a frozen policy (§5bf.5);
   raise the sample or widen the median window, and re-check the 0.60 band against the frozen-checkpoint
   data set (`data/ppo_watchdog.log`, matches=18000 rows) before trusting a CELL STRUCTURE alert.
-* If `pi(play)` on usable rows has not moved toward the prior by m=5k: coef 0.1 -> 0.5, one change.
+* **m=5k DECISION RULE (pre-registered in §5bg, 16:05):** run `tools/gate_prior_probe.py data/bench/gate_m5k.pt
+  --seed 0/1/2`. If `played` at bucket 3 is still >= 0.30 on all three seeds (18k control 0.36-0.37, m=2000
+  read 0.39-0.45), coef 0.1 is too weak: ASK THE OWNER to stop the run and relaunch at coef 0.5 (a relaunch
+  changes what the experiment means -- owner call, not mine). If it is < 0.30 on all three, the term is
+  biting: leave the run alone to m=10k. Mixed = one more read at m=7.5k, no action.
 
 ### ⚑ OWNER ORDER 2026-09-02 ~15:00 -- "launch the elixir fix run"; both decks collapse to cheap cards
 Owner: *"launch the elixir fix run. I've noticed that both icebow and hogeq collapse towards playing cheap
@@ -2417,6 +2320,16 @@ per section in place, keep the archive greppable and committed.
   watchdog reading is one sample of a noisy instrument; a DRIFT alert on cell_struct is not evidence
   without a second instrument, and any new relative-decline rule must be checked against this data set
   (`icebow/data/ppo_watchdog.log`, the matches=18000 rows) before it is trusted.
+* **The watchdog's `P(play) mean` is mostly MASKED rows (2026-09-02, §5bg).** It averages the raw gate
+  softmax over every sampled row, and on the collapsed policy nothing is affordable on ~74% of rows (probe,
+  3 seeds each on two checkpoints: 71-75%). On those rows the gate cannot open and its logit gets no prior
+  gradient, so the mean moves with whatever the gate outputs where it is irrelevant: the m=2000 gate-prior
+  checkpoint read 0.50 (all rows) / 0.43 (affordable rows), the 18k control 0.35 / 0.39 -- the "higher"
+  run plays at the same rate. Read `tools/gate_prior_probe.py`'s `affordable rows` column or its per-bucket
+  `played`, never the watchdog's P(play), for anything about WHEN the agent plays.
+* **`GATE PRIOR CE` / `pi(play)` in the trainer log are cumulative means since update 1 (2026-09-02, §5bg).**
+  A line at update 4000 that reads 0.323 after 0.321 at 3400 is a window mean of ~0.33, not "flat". Difference
+  consecutive lines (n_k * v_k - n_{k-1} * v_{k-1}) / (n_k - n_{k-1}) before calling a trend.
 * **The trainer's `drills N (X% pass)` is a run-LIFETIME average, not a rate (2026-09-02, §5bd).**
   `drills_done`/`drill_pass` are initialised once and never reset, so the number converges by
   construction and then cannot move: measured on the stopped 18k run, 29% -> 45% over the first ~450
@@ -6450,3 +6363,84 @@ about the coef. Nothing about hogeq (smoked, not run). The shared-solution claim
    run is up (never benchmark throughput on a contended box).
 3. Engine recording pass -> threat key for the prior (v1), hogeq search-in-workers port, hogeq watchdog
    `_Drift`, watchdog sample size -- all parked in §6.
+
+## §5bg — GAUNTLET L7: THE GATE-PRIOR RUN READ AT m=2000 ON A NEW SAME-INSTRUMENT PROBE -- not yet distinguishable from the collapsed 18k checkpoint; the cheap-card collapse measured from the hand side; a watchdog trap (2026-09-02 15:45-16:05)
+
+### 1. Why this and not the latency timer
+The box is 12 workers + cuda busy (CPU 43%, 4.6 GB free), so any `act_in_match` stage timing would be
+a contended number (§7). The cheap decisive thing was to find out what the run's `9% of rows usable`
+and the watchdog's falling `P(play)` actually mean, because I had told the owner at 15:42 that the
+elixir direction "looked right" on two watchdog readings -- and the 15:45 reading (m=1850: P(play) 0.476,
+elixir 2.01, >=6 0.1%) had already reversed it. Cost: ~15 min build, 7 x 12 s of probe.
+
+### 2. The instrument: `icebow/tools/gate_prior_probe.py`
+The watchdog's `health()` sampler copied verbatim (6 envs, seeds 4242+i, 400 steps, card sampled from the
+card head, gate SAMPLED, plays at the centre cell, domain rand off) plus, per row: engine clock -> phase,
+floor(elixir) bucket, whether ANY hand card is affordable, and whether a play happened. `np.random` is
+seeded (`--seed`); the watchdog's is not. Prints `P(play)` / `affordable` / `played` per bucket next to
+the pro table's single-elixir column, `--json` dumps the dict. 12 s per run on the contended box.
+Deck costs for reading the table: tornado 3, tesla 4, ice_wizard 3, x_bow 6, rocket 6, knight 3,
+the_log 2, skeletons 1 (mean 3.5).
+
+### 3. Measured (a): m=2000 gate-prior checkpoint vs the frozen 18k control, 3 seeds each
+Snapshot `scratchpad/gauntlet/L7/gate_snap.pt` (copy of `data/policy_gate_20260902.pt` at matches=2000,
+15:52). JSON per run in `scratchpad/gauntlet/L7/probe_{gate,18k}_s{0,1,2}.json`.
+
+| | gate m=2000 (s0/s1/s2) | 18k control (s0/s1/s2) | pros |
+|---|---|---|---|
+| rows with anything affordable | 25.9 / 27.3 / 25.0% | 28.8 / 29.3 / 27.6% | -- |
+| P(play), all rows (= the watchdog's number) | 0.501 / 0.481 / 0.489 | 0.350 / 0.357 / 0.347 | -- |
+| P(play), affordable rows only | 0.432 / 0.409 / 0.422 | 0.392 / 0.405 / 0.397 | ~0.04-0.06 |
+| played on % of rows | 11.7 / 11.0 / 10.9 | 11.5 / 11.3 / 10.9 | -- |
+| elixir mean / >=6 | 2.04 / 0.7% ; 1.60* / 0.9% ; 1.53* / 0.4% | 2.02 / 0.1% ; 1.62* / 0.1% ; 1.59* / 0.0% | 65% of plays at >=6 |
+| rows at elixir <3 | 81 / 80 / 82% | 81 / 79 / 80% | -- |
+| `played` at bucket 3 (the affordable bucket) | 0.449 / 0.392 / 0.424 | 0.372 / 0.372 / 0.357 | 0.063 |
+| `played` at bucket 4 | 0.333 / 0.308 / 0.292 | 0.426 / 0.351 / 0.306 | 0.058 |
+| affordable at bucket 1 / 2 | 7-9% / 18-19% | 8% / 23-24% | -- |
+
+(* seeds 1-2 were run before the elixir-mean field was switched from the bucket to the raw value; they read
+~0.5 low by construction. Seed 0 of both was re-run after the fix and matches the watchdog's scale.)
+
+What this says, plainly:
+* **The play rate is the same.** On the rows where the gate can act, both policies open it ~40% of
+  windows; the pros open it ~6% at the same elixir. The prior has not moved behaviour by m=2000.
+* **The collapse is fully formed by m=2000 from scratch.** Elixir sits below 3 on 80% of decisions in
+  both; the 18k run's watchdog readings at m=1250-1650 (1.78-1.94 mean) said the same thing a day ago.
+* **The cheap-card collapse, seen from the hand.** Skeletons (1) and the_log (2) are the only cards
+  playable below 3 elixir. With 4 of 8 cards in hand you would expect skeletons in hand ~half the time;
+  it is there (= affordable at bucket 1) on 7-9% of rows. The agent spends the cheap cards the moment
+  they are drawn, so the hand is left holding 3-6 cost cards while the bar sits at 1-2. This is the
+  owner's "collapse towards playing cheap cards" as a number, and it is why only 9% of trainer rows /
+  26% of probe rows have anything to play -- the two instruments differ (the trainer's denominator includes
+  the 33% drill rows and its envs have search + opponents), so that gap is cross-instrument, not a finding.
+* **The trainer's own term, de-cumulated** (updates 1-800 / 800-1400 / 1400-2000 / 2000-2600 / 2600-3200 /
+  3200-3800): pi(play) on usable rows 0.336 / 0.343 / 0.306 / 0.294 / 0.326 / 0.316, window CE 0.46-0.53.
+  Flat within its own noise. Gradient on the play logit per usable row is (pi - p) ~ 0.35, times coef 0.1,
+  times the ~9% row share: a small term against PPO's advantage gradient. (b) whether it is too small --
+  decided at m=5k by the rule in §6, not by me now.
+
+### 4. Retraction of my 15:42 reading to the owner
+I said the elixir direction "looked right" on the watchdog's four readings (P(play) 0.65 -> 0.37, elixir
+1.9 -> 2.3, >=6 up to 2.6%). (c) contradicted: the 15:45 reading reversed all three (0.476 / 2.01 / 0.1%),
+and the probe shows the watchdog's P(play) is dominated by rows where the play is masked (§8). The
+labelled caveat ("within the noise floor, a hint not a result") was correct; the direction claim was not
+supported. Elixir >=6 at m=2000: 0.4-0.9% vs 0.0-0.1% -- 3 seeds, same instrument, a ~10-row difference
+out of 2,400; not a result either.
+
+### 5. Traps found
+* The watchdog's `P(play) mean` is ~74% masked rows -> §8.
+* `GATE PRIOR CE` lines are cumulative -> §8. (The trainer print could carry a window mean; not changed
+  while the run depends on the log format -- parked.)
+* `elixir_mean` in the first probe draft used the bucket, not the raw value (fixed before seed-0 reruns).
+
+### 6. What this does NOT establish
+Whether coef 0.1 will bite by m=5k or m=10k (the term is a slow pull by design, and PPO is not linear in
+updates). Nothing about the card head or the cell head. Nothing about hogeq. It does not say the run should
+be stopped: the pre-registered rule in §6 says when to ask.
+
+### 7. Next
+1. m=5k gate (~17:00 at 0.8 ep/s): probe the snapshot on 3 seeds, apply the §6 rule; if it says relaunch,
+   STOP and ask the owner.
+2. Latency loop stays blocked on the contended box for absolute numbers; the stage-timer HARNESS can be built
+   and validated meanwhile (its numbers labelled contended until the run ends, ETA ~05:00 09-03).
+3. Parked from §5bf unchanged.

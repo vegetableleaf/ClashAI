@@ -343,3 +343,20 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - hogeq refuses --search-interval with workers>1 (search-in-workers never ported) -- parked in 6.
 - Next: read the run at m~1000 / the m=5k gate; latency-loop offline stage timer (single-thread parts only
   while the box is contended).
+
+
+## L7 — 2026-09-02 15:45-16:05 | GATE-PRIOR RUN READ AT m=2000: NOT DISTINGUISHABLE FROM THE 18k CONTROL YET
+- Box contended (12 workers + cuda) -> no latency timing. Built tools/gate_prior_probe.py: the watchdog's
+  sampler + per-row affordability + P(play|elixir bucket) vs the pro table, np.random seeded, 12 s/run.
+- (a) 3 seeds each, gate m=2000 vs frozen 18k: affordable rows 25-27% vs 28-29%; P(play) on affordable rows
+  0.41-0.43 vs 0.38-0.41 (pros ~0.06); played/row 11-12% both; 80% of rows below 3 elixir in both; `played`
+  at bucket 3: 0.39-0.45 vs 0.36-0.37 vs pros 0.063. The prior has not moved behaviour by m=2000.
+- (a) the cheap-card collapse from the hand side: skeletons in hand at 1 elixir on 7-9% of rows (expected
+  ~50% under a neutral cycle) -- cheap cards are spent on draw, the hand holds 3-6 cost cards at 1-2 elixir.
+- (c) RETRACTED my 15:42 "direction looks right" read: the 15:45 watchdog reading reversed it, and the
+  watchdog's P(play) mean is ~74% masked rows (nothing affordable) -> HANDOFF 8. Trainer's pi(play) on
+  usable rows, DE-CUMULATED: 0.336 -> 0.316 over 3,800 updates -- flat.
+- Pre-registered m=5k rule (HANDOFF 6): probe gate_m5k.pt on 3 seeds; `played` at bucket 3 >= 0.30 on all
+  three -> ask the owner to relaunch at coef 0.5; < 0.30 on all three -> leave to m=10k; mixed -> read again 7.5k.
+- Next: m=5k gate (~17:00). Run untouched, 0.8 ep/s, ETA ~05:00 09-03.
+
