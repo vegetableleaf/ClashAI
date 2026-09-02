@@ -1918,6 +1918,7 @@ slow one.
 * Watchdog instrument: 6 envs x 400 steps gives cell_struct a 3x 10-90% spread on a frozen policy (§5bf.5);
   raise the sample or widen the median window, and re-check the 0.60 band against the frozen-checkpoint
   data set (`data/ppo_watchdog.log`, matches=18000 rows) before trusting a CELL STRUCTURE alert.
+* **OWNER RULING 17:50: "wait until 18:40, to see if the reversal is genuine improvement or oscillation" -> HOLD confirmed; the 7.5k read decides per the rule below.**
 * **§5bi (17:45): m=5k RULE APPLIED -> MIXED (0.299 / 0.279 / 0.305) -> re-read at m=7.5k. Owner had ruled
   "stop and restart with coef 0.5" on the m=4k picture (Discord, ~17:00); the m=5k read moved toward the prior on
   all three seeds, so the kill is ON HOLD until the owner confirms (irreversible; §7). No answer = hold, probe the
