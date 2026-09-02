@@ -387,3 +387,15 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Side task done: 9 replay mp4s zipped as one file, uploaded to gofile (bashupload dead), md5 verified, link sent.
 - Correction: 18k control played@3 is 0.36-0.40 (seed 0 = 0.403), not 0.36-0.37 as written in L7/L8.
 
+
+## L10 — 2026-09-02 18:54-19:10 | m=7.5k = OSCILLATION; coef-0.1 run killed at 7,575, coef-0.5 run launched 18:59
+- Owner 17:50: hold to 18:40 to tell genuine improvement from oscillation. Rule: >=0.30 all seeds -> relaunch.
+- (a) probe live ckpt at m=7,500, 3 seeds: played at 3 elixir 0.376 / 0.301 / 0.401 (m=5k 0.28-0.31; control
+  0.36-0.40); P(play|affordable) 0.34-0.39 (m=5k 0.28-0.32); elixir >=6 0.5-1.0%. Bounced back -> oscillation.
+- (a) trainer's window pi(play) on usable rows per 1,000 updates: flat 0.34-0.37 over 16,800 updates, CE never fell.
+- Verdict: coef 0.1 exerted no sustained pull (L8 claim stands; L9's partial retraction was the oscillation).
+- Killed PID 29460 tree at 18:57 (procs 2 -> 0, exit=1 logged), endpoint in HANDOFF §3. Launched
+  gate05_run_launch.sh 18:59: `GATE PRIOR ON: coef 0.500`, ONE change vs the killed run. Watchdog + gates re-armed.
+- Watch item: free RAM 0.6-1.1 GB at startup (workers 560 MB each). Re-check at m=2k.
+- Next: coef-0.5 m=2k probe (~20:10 at 0.5 ep/s), pre-registered: <=0.25 all seeds = biting; >=0.35 all = ask.
+

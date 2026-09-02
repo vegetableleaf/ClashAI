@@ -22,17 +22,16 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-02 17:45**, branch `main` (**§5bi: GAUNTLET L9 -- the m=5k READ MOVED TOWARD THE PRIOR,
-and the owner's relaunch-at-0.5 order (given on the m=4k picture) is ON HOLD pending a yes/no.** (a) Probe on
-`gate_m5k.pt`, 3 seeds, same instrument as L7/L8: `played` at 3 elixir 0.299 / 0.279 / 0.305 (m=4k 0.42-0.48,
-18k control 0.36-0.40); P(play | affordable) 0.28-0.32 (m=4k 0.43-0.45; control 0.39-0.41); elixir >=6 on
-0.8-1.6% of rows (m=4k 0.0-0.2%); rows at 4 elixir 108-143 per 2,400 (m=4k 42-76). Every summary stat moved
-the same way on all three seeds -- the first read below the 18k control. By the pre-registered §6 rule this is
-MIXED (two seeds < 0.30, one at 0.305) -> re-read at m=7.5k, no action. (c) PARTIAL RETRACTION of §5bh's
-"coef 0.1 cannot win": the trainer's own window pi(play) still sits at 0.35-0.41 (updates 10.4k-11.6k), so
-the two instruments disagree, but the probe -- the instrument the decision rule was written on -- says the
-pull is biting. One checkpoint; §5x says a single read can invert. ASKED the owner: hold to 7.5k (~18:40) or
-kill now and relaunch at 0.5 as ordered. Run untouched at m~5,300; `gate05_run.yaml` + launcher staged.)
+Last updated: **2026-09-02 19:10**, branch `main` (**§5bj: GAUNTLET L10 -- the m=5k drop was OSCILLATION, not a
+pull; coef-0.1 run KILLED at m=7,575 (owner ruling, §5bi rule applied), COEF-0.5 RUN LAUNCHED 18:59.** (a)
+Probe at m=7.5k, 3 seeds: `played` at 3 elixir 0.376 / 0.301 / 0.401 (m=5k 0.28-0.31; m=4k 0.42-0.48; 18k
+control 0.36-0.40); P(play | affordable) 0.34-0.39 (m=5k 0.28-0.32); elixir >=6 0.5-1.0% of rows. Back at the
+control level on two seeds, the third at the 0.30 threshold. (a) Trainer's own window pi(play) on usable rows
+per 1,000 updates, 16 windows: 0.34 0.31 0.32 0.34 0.37 0.36 0.36 0.36 0.37 0.37 0.36 0.34 0.34 0.36 0.35 0.35
+-- flat for 12,000 updates, CE 0.59-0.62. Two instruments, same verdict: no sustained pull at coef 0.1.
+Endpoint 7,575 eps, 240W-5894L-6D (§3). New run `data/bench/gate05_run_launch.sh`, ONE change vs the killed run:
+`ppo_gate_prior_coef 0.5`; first log line `GATE PRIOR ON: coef 0.500`. Watchdog + gates re-armed. NOTE free
+RAM 0.6-1.1 GB at startup (12 workers at 560 MB each) -- re-check at the next loop.)
 
 ---
 
@@ -145,20 +144,31 @@ cd C:\Users\benpe\ClashBot\hogeq
 * **2026-09-02 07:35 — the PPO cuda run is STOPPED** (§5ba) at 18,000 episodes, per the owner's ruling
   and confirmed by its own eval curve. Archive + checkpoints:
   `icebow/data/bench/stopped_real_cuda_18k_20260902/` (2 .pt SHA-verified, 2 milestone snapshots, log).
-* **RUNNING NOW (2026-09-02 15:07): THE GATE-PRIOR RUN** (§5bf) -- `data/bench/gate_run_launch.sh`:
-  `run.py --config data/bench/gate_run.yaml train-sim-ppo --matches 40000 --envs 96 --workers 12 --size 432
-  --device cuda --seed 41 --search-interval 4`, log `icebow/data/bench/gate_run_20260902.log`, checkpoint
-  `icebow/data/policy_gate_20260902.pt` (isolated, was empty at launch), continuation log
-  `data/continuations_gate.jsonl`, launch epoch in `gate_run_20260902.launched`, exit line will land in
-  `gate_run_20260902.progress`. Overlay = config.yaml + those two paths + `hazard_coef 0.5` +
-  `ppo_gate_prior_coef 0.1` (verified by diff against `real_run.yaml`: the ONE change is the prior).
-  Monitors (nohup): `tools/ppo_watchdog.py data/policy_gate_20260902.pt --every 300 --quiet-min 30` ->
-  `data/bench/gate_run_watchdog.out`; `tools/real_run_gates.py --run gate_20260902` ->
-  `data/bench/gate_run_gates.out` (snapshots `data/bench/gate_m{5,10,20}k.pt`). Pace at launch 0.6 ep/s.
-  Read `GATE PRIOR CE ... pi(play) X vs prior Y` lines in the log: the term is biting iff X falls toward Y.
-  **Read it with `tools/gate_prior_probe.py <ckpt> --seed {0,1,2}`** (12 s each, §5bg): the number that
-  matters is `played` at bucket 3 (gate m=2000: 0.39-0.45; 18k control: 0.36-0.37; pros 0.063). The
-  `GATE PRIOR CE` line is CUMULATIVE since start -- difference consecutive lines before reading a trend.
+* **KILLED 2026-09-02 18:57 at m=7,575 (owner ruling + §5bi rule): THE GATE-PRIOR RUN, coef 0.1** (§5bf-5bj).
+  Endpoint: 7,575 episodes, 240W-5894L-6D (7,500: 237W-5837L-6D), EVAL@2000 ladder 12% / fair 8%, @4000
+  8% / 4%, @6000 9% / 4% (150 each); ent 0.05-0.06; 0.5-0.6 ep/s; last `GATE PRIOR CE` 0.5737 cumulative
+  over 16,800 updates, pi(play) 0.347 vs prior 0.059, 9% rows usable. Procs before kill 2 (+12 workers), after
+  0. Final checkpoint copy `scratchpad/gauntlet/L10/gate_m7k5.pt` (m=7,500, cmp-stable); m=5k snapshot
+  `data/bench/gate_m5k.pt` + `scratchpad/gauntlet/L9/gate_m5k.pt`; log `data/bench/gate_run_20260902.log`
+  (exit=1 in `.progress` = the kill). Its old watchdog/gates were stopped (48908/10724 trees).
+* **RUNNING NOW (2026-09-02 18:59): THE GATE-PRIOR RUN, COEF 0.5** (§5bj) -- `data/bench/gate05_run_launch.sh`:
+  `run.py --config data/bench/gate05_run.yaml train-sim-ppo --matches 40000 --envs 96 --workers 12 --size 432
+  --device cuda --seed 41 --search-interval 4`, log `icebow/data/bench/gate05_run_20260902.log`, checkpoint
+  `icebow/data/policy_gate05_20260902.pt` (isolated, did not exist at launch), continuation log
+  `data/continuations_gate05.jsonl`, launch epoch in `gate05_run_20260902.launched` (1788389921), exit line
+  will land in `gate05_run_20260902.progress`. `gate05_run.yaml` diff vs `gate_run.yaml` = those two paths +
+  `ppo_gate_prior_coef: 0.5` (the ONE change vs the killed run). First log line: `GATE PRIOR ON: coef 0.500`.
+  Monitors (nohup): `tools/ppo_watchdog.py data/policy_gate05_20260902.pt --every 300 --quiet-min 30` ->
+  `data/bench/gate05_run_watchdog.out`; `tools/real_run_gates.py --run gate05_20260902` ->
+  `data/bench/gate05_run_gates.out` (snapshots `data/bench/gate05_m{5,10,20}k.pt`). Pace at launch 0.5 ep/s.
+  **Read it with `tools/gate_prior_probe.py <ckpt> --seed {0,1,2}`** (12 s each, §5bg): `played` at bucket 3
+  (coef-0.1 run: 0.39-0.45 at m=2k, 0.42-0.48 at 4k, 0.28-0.31 at 5k, 0.30-0.40 at 7.5k; 18k control
+  0.36-0.40; pros 0.063; §5bh.4 arithmetic predicts an equilibrium ~0.20 at coef 0.5 -- (b)). Trainer's
+  `GATE PRIOR CE` line is CUMULATIVE -- difference consecutive lines (per 1,000 updates, §5bj.3 script).
+  Pre-registered read: m=2k probe on 3 seeds. If `played` at 3 is <= 0.25 on all seeds the coef is biting
+  where 0.1 never did; if it is >= 0.35 on all seeds, 0.5 loses too and the mechanism (not the coef) is the
+  problem -> stop and ask. RAM at startup 0.6-1.1 GB free (12 workers x 560 MB + main 2.4 GB); the coef-0.1
+  run settled to ~170 MB/worker and 4 GB free -- re-check at m=2k, alert the owner if still < 1 GB.
 * **STALE, could not be stopped: the 18k run's watchdog** (PIDs 21564/72608 under nohup 32660, launched
   2026-09-01 21:25) is still sampling the frozen `data/policy_real_20260901.pt` every 5 min (a 2,400-step
   CPU probe each time) and appending to `data/ppo_watchdog.log`. The kill was refused by the session's
@@ -1918,7 +1928,7 @@ slow one.
 * Watchdog instrument: 6 envs x 400 steps gives cell_struct a 3x 10-90% spread on a frozen policy (§5bf.5);
   raise the sample or widen the median window, and re-check the 0.60 band against the frozen-checkpoint
   data set (`data/ppo_watchdog.log`, matches=18000 rows) before trusting a CELL STRUCTURE alert.
-* **OWNER RULING 17:50: "wait until 18:40, to see if the reversal is genuine improvement or oscillation" -> HOLD confirmed; the 7.5k read decides per the rule below.**
+* **OWNER RULING 17:50: "wait until 18:40, to see if the reversal is genuine improvement or oscillation" -> HOLD confirmed; the 7.5k read decided per the rule below: OSCILLATION (0.376/0.301/0.401, all >= 0.30) -> killed, relaunched at coef 0.5 (§5bj, 18:59). Next pre-registered read: coef-0.5 run at m=2k (§3).**
 * **§5bi (17:45): m=5k RULE APPLIED -> MIXED (0.299 / 0.279 / 0.305) -> re-read at m=7.5k. Owner had ruled
   "stop and restart with coef 0.5" on the m=4k picture (Discord, ~17:00); the m=5k read moved toward the prior on
   all three seeds, so the kill is ON HOLD until the owner confirms (irreversible; §7). No answer = hold, probe the
@@ -6614,3 +6624,68 @@ sent in chat + Discord; delete token kept in the session scratchpad only (never 
 ### 8. What this does NOT establish
 That coef 0.1 works (one checkpoint, mixed by the rule). That 0.5 is right or wrong. Anything about the
 card head at 6+ once trained (still 9-12 plays per 2,400 rows there). Nothing about hogeq.
+
+## §5bj — GAUNTLET L10: m=7.5k READ = OSCILLATION, NOT A PULL; coef-0.1 run killed at m=7,575, coef-0.5 run launched (2026-09-02 18:54-19:10)
+
+### 1. Why this
+Owner ruling 17:50: "wait until 18:40, to see if the reversal is genuine improvement or oscillation". The rule
+(§5bi/§6): probe the live checkpoint at m>=7.5k on 3 seeds; drop holds (<0.30 all seeds) -> leave to 10k;
+bounce back (>=0.30 all seeds) -> kill and relaunch at 0.5 without asking again. Cost: 3 x 12 s probe, kill +
+launch 3 min, bookkeeping 12 min.
+
+### 2. (a) Probe at m=7,500 (`scratchpad/gauntlet/L10/gate_m7k5.pt`, copied from the live checkpoint and cmp-stable; JSON `m7k5_s{0,1,2}.json`)
+```
+                         m=4k (L8)        m=5k (L9)        m=7.5k (L10)     18k control (L7)
+played at 3 elixir       .423 .434 .483   .299 .279 .305   .376 .301 .401   .403 .372 .357
+P(play | affordable)     .43  .43  .45    .28  .32  .32    .34  .34  .39    .39  .41  .40
+rows with sth affordable .25  .25  .23    .36  .36  .32    .31  .33  .27    .29  .29  .28
+rows at 4 elixir /2400    76   52   42    143  137  108    113  111   59     57   77   72
+elixir >= 6 (frac rows)  .002 .000 .003   .016 .008 .015   .007 .010 .005   .001 .001 .000
+elixir mean (raw)        2.01 1.96 1.91   2.29 2.28 2.24   2.15 2.18 2.02      --
+plays per row            .110 .107 .108   .104 .110 .108   .113 .106 .105   .115 .113 .109
+mean cost of plays       2.49 2.45 2.47   2.60 2.53 2.58   2.52 2.63 2.49      --
+```
+Every stat that moved toward the prior at m=5k moved back at least halfway by 7.5k; seeds 0 and 2 are at the
+control level, seed 1 sits on the 0.30 threshold. Seed spread widened (0.30-0.40 vs 0.28-0.31 at 5k).
+Rule verdict: all three >= 0.30 -> bounce back. Owner's "oscillation" reading is what the data shows.
+
+### 3. (a) The trainer's own term, per 1,000 updates, whole run (16,800 updates)
+```
+window   1-1.2k 1.2-2.2k 2.2-3.2k 3.2-4.2k 4.2-5.2k 5.2-6.2k 6.2-7.2k 7.2-8.2k 8.2-9.2k 9.2-10.2k ... 15.2-16.2k
+pi(play) 0.339  0.308    0.315    0.335    0.367    0.364    0.360    0.357    0.371    0.366    ...  0.348
+CE       0.476  0.462    0.510    0.543    0.593    0.595    0.595    0.596    0.614    0.611    ...  0.587
+```
+(full 16 windows in the header; script: difference consecutive `GATE PRIOR CE` lines at >=1,000-update
+spacing, `(ce*n - ce0*n0)/(n-n0)`). Flat at 0.34-0.37 from update 4,000 on; CE never fell. The trainer's
+instrument and the probe now agree: coef 0.1 exerted no sustained pull over 7,500 matches / 16,800 updates.
+
+### 4. What this means, plainly
+1. §5bi's partial retraction is itself retracted in part: the m=5k read WAS oscillation (owner's word),
+   so §5bh's core claim "coef 0.1 loses to PPO" stands as (a) over the whole run. What stays retracted from
+   §5bh is the certainty of the arithmetic ("cannot win, the arithmetic says why") -- that is still (b); it
+   predicted the outcome but was not what showed it.
+2. §5x's lesson held again: one checkpoint read can move 0.15 and mean nothing. The pre-registered rule
+   caught it; the ad-hoc call at 17:00 ("kill now") would have reached the same place 2 h earlier. Both paths
+   were defensible; the hold cost 2 h of box time and bought the (a) that 0.1 oscillates rather than pulls.
+3. Coef 0.5 is now the live experiment, ONE change vs the killed run (same seed 41, same config otherwise).
+   §5bh.4's arithmetic predicts equilibrium pi ~0.20 at 3 elixir if the PPO push is ~0.8 per usable row.
+   Pre-registered m=2k read is in §3. (b) until measured.
+
+### 5. Kill + launch record
+18:57:38 `taskkill /T /F` on PID 29460 (tree: 59384 + 12 workers): pre-kill log line 7,575 episodes; procs
+matching train-sim-ppo/multiprocessing after = 0; `gate_run_20260902.progress` got `exit=1`. Old gate
+watchdog (48908 tree) and gates (10724 tree) stopped (2 procs each). Free RAM after kill 6.2 GB.
+18:59:21 launch (`.launched` = 1788389921); log line 1 (after two torch warnings): `GATE PRIOR ON: coef
+0.500, config/gate_prior.json (519 replays ...)`. Procs: train-sim-ppo x2 (61036 parent, 47956 main) + 12
+workers, watchdog 69940/37792, gates x2. First lines: 50 eps 0W-49L, 75 eps 1W-66L, 0.5 ep/s, ent 0.05-0.08.
+RAM: free 0.6-1.1 GB at 19:01, workers 560 MB each + main 2.4 GB, Memory Compression 1.9 GB. The coef-0.1
+run showed 170 MB/worker after 4 h, so this is probably startup footprint -- re-check next loop; if the box
+is still < 1 GB free at m=2k, tell the owner (the run is his call, not mine to throttle).
+
+### 6. What this does NOT establish
+Anything about coef 0.5 yet. Whether the flat 0.35 at coef 0.1 is an equilibrium (pull = push) or no pull
+at all (the CE never fell, so "no pull" is the simpler reading, but a small equilibrium shift from an
+unmeasured no-prior baseline cannot be excluded without a coef-0 arm -- not worth a run).
+
+### 7. Files
+`scratchpad/gauntlet/L10/m7k5_s{0,1,2}.{json,txt}` (checkpoint copies stay out of git).
