@@ -1,0 +1,9 @@
+=== start 2026-09-02 01:04:23 C:/Users/benpe/ClashBot/research/sandbox_tools/replay_drive.py --tag 00LYPLJLC80L --port 37031 --runs 1 --quiet --record-every 1 --record-full
+=== 00LYPLJLC80L run 1/1 port 37031 seed 424242 level 11
+deal: permuted deck so dealt positions carry the inferred hand/queue | probe {0: {'hand_pos': [3, 7, 2, 4], 'cycle_pos': [6, 5, 0, 1], 'next': 6}, 1: {'hand_pos': [6, 3, 7, 1], 'cycle_pos': [4, 2, 5, 0], 'next': 4}} position_based=True
+opening hands: {0: ['Cannon', 'Fireball', 'HogRider', 'IceGolemite'], 1: ['IceWizard', 'Knight', 'Rocket', 'Tesla']}
+accepted 93/93 (of 93), rejected {}, invalid placement 0, elixir delays {'n': 0, 'max_ticks': 0, 'sum_ticks': 0}
+final: tick 5275 terminated=True outcome=side1_win crowns=[0, 1] reason=native_logic_clock_stopped expected crowns {0: 0, 1: 1} -> match=True; terminal - last play = 122 ticks; hash af377a10dce5c2ad
+timing: reset 0.04 s, drive+tail 108.22 s -> C:\Users\benpe\ClashBot\scratchpad\gauntlet\ext\replay_00LYPLJLC80L_run1.json
+exit=0
+=== end 2026-09-02 01:06:12

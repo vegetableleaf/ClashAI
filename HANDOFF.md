@@ -22,8 +22,15 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-02 00:15**, branch `main` (**§5ax: THE SANDBOX TICK STALL IS SOLVED AND THE FIRST
-REPLAY->REAL-MATCH CONVERSION RAN** -- the clock was held by a pending GameMain UI action (login-failed
+Last updated: **2026-09-02 01:15**, branch `main` (**§5ay: ALL 268 USABLE REPLAYS CONVERTED THROUGH THE REAL
+ENGINE** -- 211 converted / 57 refused up front (Elite Barbarians evolution, form 26000043, no native
+form in the frozen build); 17,757 of 17,901 driven plays accepted (99.2%), 0 invalid placements, 0 elixir
+delays; crowns match RoyaleAPI in 164/211 (77.7%), winner in 169/211 (80.1%), 135 matches fully clean;
+determinism 21/21; median 3.54 s per match, 782 s wall for the set. Fidelity limits are named (levels
+forced to 11, 428 ability plays not driven, engine ends before the real match in 41). A full-observation
+recorder (`--record-full`: entity kind, projectiles, effects) and a schematic viewer exist; the sandbox
+CANNOT render the game (renderer-less by design), see §5ay.5. Emulator stopped 01:08. Previously
+**§5ax: THE SANDBOX TICK STALL IS SOLVED AND THE FIRST REPLAY->REAL-MATCH CONVERSION RAN** -- the clock was held by a pending GameMain UI action (login-failed
 reason 8, "update from store", Play URL queued before the battle existed; measured from a live memory
 dump, the code is encrypted on disk). The bridge now discards it before stepping (sandbox-repo commit
 7c66f92) and the author's probe reproduces their canonical 100-tick hash 96598dc9028e1802 / rng
@@ -179,10 +186,10 @@ cd C:\Users\benpe\ClashBot\hogeq
 
 ## 3. What is running RIGHT NOW
 
-* **2026-09-02 00:15 — cuda real run alive** (`icebow/data/bench/real_run_20260901.log`, 5425 episodes,
-  148W-4201L-2D at 00:13; watchdog + gates armed, §5as). **Sandbox emulator + service STOPPED 00:11**
-  (§5ax); nothing else of ours is running. Sandbox state: WORKING (tick advances, canonical hash), local
-  patch commit 7c66f92 in `research/ext/cr-native-sandbox`'s own git.
+* **2026-09-02 01:15 — cuda real run alive** (`icebow/data/bench/real_run_20260901.log`, 6975 episodes,
+  224W-5380L-4D; watchdog + gates armed, §5as). **Sandbox emulator + service STOPPED 01:08** (§5ay, qemu
+  verified gone); nothing else of ours is running. Sandbox state: WORKING, local patch commit 7c66f92 in
+  `research/ext/cr-native-sandbox`'s own git; the batch results live in `scratchpad/gauntlet/ext/batch/`.
 
 * **board-26 detector training — RESUMED 2026-08-18 17:24 after a host restart killed it.**
   Originally started 2026-08-17 ~23:30 via `icebow/_train_board26.py`,
@@ -1930,7 +1937,7 @@ every toolchain/AVD check; (3) = after the cuda run ends; (1) owner asked what "
 means -- explained; the cheapest next step is theirs: read the client version in CR Settings. Only
 15.535.29 can work. (§5at.3's "the live client is probably newer" reading was WRONG -- retracted in
 §5au: the owner's BlueStacks client IS 15.535.29 / versionCode 150535029, engine payload byte-identical
-to the frozen build, §5av.) Superseded by §5av-§5ax: runtime pulled, smoke run, engine boots, tick stall FOUND AND FIXED (§5ax), first replay converted 54/54.**
+to the frozen build, §5av.) Superseded by §5av-§5ay: runtime pulled, smoke run, engine boots, tick stall FOUND AND FIXED (§5ax), first replay converted 54/54, THE WHOLE SET CONVERTED AND GRADED (§5ay: 211/268, 99.2% of plays accepted, crowns match 77.7%). Next = §5ay.6.**
 **If all three come back yes, the order of work is fixed:** hash gates -> `smoke.ps1` reproduces
 `96598dc9028e1802` -> first-hour experiments (`cmd` playback yes/no, deal-order permutation trick,
 same-actions=>same-hash, per-tick observe cost, Elite-Barbarians-evo presence, **matches/h with a
@@ -2270,6 +2277,16 @@ per section in place, keep the archive greppable and committed.
 
 ## 8. Measurement traps (each of these produced a wrong conclusion first)
 
+* **PS 5.1: a script `param($Args)` is SILENTLY EMPTY (2026-09-02, §5ay).** `$Args` is a reserved automatic
+  variable; the launcher dropped every argument and started a bare python REPL that hung on stdin
+  (WinError 123 from _pyrepl). Name the parameter anything else (`$Cmd`).
+* **`plays_ext` ability rows have `x_units`/`y_units` = the string "None" (2026-09-02, §5ay).** They are
+  hero-ability activations (`attr_ability=1`, `attr_card` `_invalid`), not placements; a loader that
+  requires positions on every row refuses 203 of the 268 replays for no reason. Skip them as ability rows.
+* **"Rejected by the engine" late in a match is usually the ENGINE'S END SEQUENCE, not a bad play
+  (2026-09-02, §5ay).** All 81 native_rejected results were code 4 within ~10-80 ticks of the engine's
+  terminal: the engine's match ended before the real one did, so the last real plays landed on a finished
+  battle. It is a fidelity signal (the engine diverged earlier), not a command-format error.
 * **"THE ENGINE'S CLOCK DOES NOT ADVANCE" WAS A PENDING UI POPUP, NOT A CLOCK (2026-09-02, §5ax).**
   Every hypothesis in §5aw (locale, runtime clock, CPU, loading flag) was about time; the real gate was
   `GameMain+0x1BC != 0`, a queued "update from the store" action that the headless path never consumes.
@@ -5540,7 +5557,7 @@ the author's box also shows `loading_complete false`; anything about conversion 
   cleanly (this one is an Icebow mirror and every play had elixir to spare); anything about card levels
   (both sides forced to 11).
 
-### 4. Next steps (in order; nothing blocks them)
+### 4. Next steps (in order; nothing blocks them) -- step 1 DONE in §5ay
 1. Convert the 268-replay set (`scratchpad/gauntlet/ext/usable_replays.json`) with `replay_drive.py`,
    grading each: accepted/rejected by reason, elixir delays, crown match, determinism. That is the fidelity
    number the sim-parity oracle (§4p / §5at) needs; budget ~10 min of engine time + a 70 s boot.
@@ -5560,3 +5577,109 @@ the author's box also shows `loading_complete false`; anything about conversion 
   boots tonight. Re-run on crash; do not read it as a doc problem.
 * The Bash tool's cwd persists between calls; `cd research/ext/...` from inside the sandbox fails -- use
   absolute paths.
+
+## §5ay — THE WHOLE USABLE SET CONVERTED THROUGH THE REAL ENGINE (2026-09-02 00:20-01:08): 211/268 converted (57 refused up front: Elite Barbarians evolution has no native form), 17,757/17,901 plays accepted (99.2%), crowns match RoyaleAPI 164/211 (77.7%), 135 fully clean, determinism 21/21, 3.5 s per match; a full-observation recorder + schematic viewer exist; the sandbox CANNOT show the real game (renderer-less by design). Emulator STOPPED 01:08.
+
+### 1. What ran
+* Service boot via `scratchpad/gauntlet/ext/svc_start4.ps1` (6-attempt retry): attempts 1 and 2 died in
+  `nativePumpDataTables` (SIGSEGV fault 0x80, same PCs as §5ax.5: libg 0x12AF1B0 <- 0x11EA4C2 <- 0xE256E6
+  <- 0xE74CA7), attempt 3 booted and attested (tick-10 hash d036bec06e300550). Static read of the crash
+  site (carvings `dump/live/c_12af100.elf`, `c_11ea400.elf`, `c_e25600.elf`, `c_11e8860.elf`, NOT committed):
+  0x11EA4A0 calls the resource lookup 0x11E8860(name, 0) and hands the result to 0x12AF1B0, a
+  wait-until-loaded loop on [obj+0x80]; a null lookup faults at +0x80. Timing-dependent (2 of 3 boots
+  tonight, ~1 in 10 in §5ax) -> the retry loop is the fix for now; the lookup's argument is the lead if it
+  ever becomes frequent.
+* `research/sandbox_tools/replay_batch.py` (new): every tag in `usable_replays.json` through
+  `replay_drive.drive()` in one python process, per-tag result JSON in `scratchpad/gauntlet/ext/batch/`,
+  resumable `summary.jsonl`, every 10th tag re-run for determinism, `aggregate.json` at the end. Log
+  `batch/batch_run.log`.
+* `replay_drive.py` patched first: `load_battle` refused 203/268 replays because hero-ability rows
+  (`attr_ability=1`, `attr_card` `_invalid`) carry `x_units`/`y_units` = "None"; they are now loaded as
+  ability rows (position None) and skipped by the driver as before (the engine's ability command needs an
+  entity id we do not have from the crawl). Offline pre-check of all 268 (`scratchpad/offline_all.py`):
+  268 load, deal inference consistent in all 268.
+
+### 2. Batch numbers (measured, `batch/aggregate.json`)
+* **268 tags: 211 converted, 57 refused** before the first tick, all the same error: "card has no native
+  evolution form: 26000043" = Elite Barbarians evolution. The frozen 15.535.29 build's catalog has no
+  native form for it (HANDOFF's earlier "without EB-evo: 211" count was exactly right).
+* **Plays: 17,901 driven, 17,757 accepted = 99.2%.** Rejections: `native_rejected` 81 (every one result
+  code 4, every one within ~10-80 ticks BEFORE the engine's own terminal -> the engine finished the match
+  earlier than the real one did; see §8) and `card_not_in_hand` 63. 46 matches have at least one
+  rejection; 165 have none. **Invalid placements 0. Elixir delays 0** (the recorded plays never needed
+  more elixir than the engine had at level 11).
+* **428 ability plays skipped** (hero abilities, in 158 matches). Not driven at all -> a known fidelity
+  gap. crowns-match WITHOUT any ability play 42/53 (79%) vs WITH 122/158 (77%): no measurable penalty
+  from skipping them at this sample size.
+* **Termination: 211/211 terminated** (`native_tiebreak_hp_drain` 81, `native_logic_clock_stopped` 130).
+* **Crowns match RoyaleAPI in 164/211 = 77.7%. Winner matches in 169/211 = 80.1%.** Mismatch direction:
+  engine side0 win where RoyaleAPI has side1 in 30, the reverse in 12, same winner but different crown
+  count in 5. (Side 0 = RoyaleAPI red = bottom.)
+* **Fully clean (crowns match, no rejections, no invalid placement): 135/211 = 64%.**
+* Terminal - last real play: median **+160 ticks** (8 s), **negative in 41** matches (engine ended before
+  the last real play; 28 of those still match on crowns).
+* **Determinism 21/21 SAME** final hash on the re-run (every 10th tag).
+* **`position_based` = False in 7 matches** (00LYPLCVPJR9, 00UYPL99PV2P, 022YYLV98PVR, 02JY9G08C0JV,
+  02JY9G08YCQG, 02QY9Q9PCGCP, 08PY88PRRPY2): the reversed-deck probe dealt different hand POSITIONS, so
+  the deck-permutation trick that gives the engine the real opening hand does not hold there; all 7 are
+  among the `card_not_in_hand` matches and all carry hero/evolution cards. Untested reading: the form flag
+  changes the deal. Lead for the next pass.
+* Cost: **782 s wall for the set, median 3.54 s per match, max 6.27** (one worker, one AVD).
+
+### 3. What the number means (and does not)
+* 99.2% of the real players' commands are legal in the real engine at the recorded tick with the
+  engine's own elixir -> the crawl's command timelines are essentially exact, and the engine agrees with
+  the real outcome in 4 of 5 matches WITHOUT card levels (both sides forced to 11), without abilities,
+  and with an unknown-ordering deal in 7. That is the fidelity floor for the sim-parity oracle (§4p/§5at).
+* The 22% crown mismatches are NOT yet attributed. Candidate causes, in order of plausibility (all
+  untested): card levels (a level-11 vs level-14 tower/troop changes every race), the 428 undriven
+  abilities, the engine's earlier end (41 matches), the 7 deal mismatches. Levels are the obvious first
+  test: RoyaleAPI has the levels per card in the crawl -> pass them through `battle` instead of `--level 11`.
+
+### 4. Recording and the viewer (new tools)
+* `replay_drive.py --record-every N [--record-full]`: stores an observation every N ticks in
+  `out["frames"]`. Compact = side/x/y/name/hp per entity + towers + elixir. `--record-full` uses
+  `env.observe()`: adds the entity `kind` code (12/13 buildings, 14/15 troops; 12/14 coincide with the
+  deploy timer / dormant state -- an untested reading of the code, not documented), every in-flight
+  projectile (x,y -> target_x,target_y, card name) and any non-projectile effect object. Recording does
+  NOT perturb the engine (same hash as the unrecorded run: 08CPVRRR8PYC d3aa402b826e6d72; 00LYPLJLC80L
+  af377a10dce5c2ad in both the batch and the recorded run) but costs ~20 ms per observe: every-2-ticks
+  compact = 34 s, every-tick full = 108 s for a 5275-tick match vs 1.7-3.5 s unrecorded.
+* `research/sandbox_tools/replay_view.py result.json [-o out.html]`: self-contained schematic viewer
+  (18x32 grid, towers, entities by kind, projectiles with target lines, effect rings, elixir bars, play
+  markers, scrub/play/speed). Published: 08CPVRRR8PYC compact/2-tick
+  (https://claude.ai/code/artifact/9ff6a4f7-1051-44e9-bd54-5eb053f3f8c8) and **00LYPLJLC80L full/1-tick
+  (Hog cycle w/ Musketeer-evo + Cannon-evo vs Icebow, 93/93 accepted, crowns [0,1] = RoyaleAPI, 5268
+  frames, 2.64 MB): https://claude.ai/code/artifact/cc872890-4afa-4d55-bdec-2b4da5004924**. Files:
+  `scratchpad/gauntlet/ext/replay_00LYPLJLC80L_run1.json` (9.3 MB) and `..._full_view.html`.
+
+### 5. "Can we watch the converted replay in the real game?" -- NO, by design (owner asked 01:0x)
+* (c) contradicted: the sandbox is renderer-less. No Surface, no GL, the rendering resource variant is
+  shimmed out (`docs/SANDBOX_RUNTIME_TECHNICAL.zh-CN.md` §10); the whole point of the repo is the ENGINE
+  (logic, entities, damage, elixir) running headless as an RL environment / oracle. There is no frame to
+  capture; the observation JSON is the only output.
+* (c) contradicted for the other route: the real client only plays replays it fetches from Supercell's
+  servers by tag; there is no "load a replay document" path in the UI. Feeding it a converted document
+  would need protocol interception or a private server -- weeks of work, against the ToS, and the
+  conversion is not exact anyway (levels forced, abilities skipped). Not doing it.
+* (a) what IS possible and was done: every tick of the real engine's state, drawn schematically (§5ay.4).
+  Anything more faithful (sprites, animation) would be OUR renderer on top of the engine's positions --
+  the positions are the engine's, the pictures would not be.
+
+### 6. Next steps (in order)
+1. **Levels pass-through**: drive with the crawl's per-card levels instead of `--level 11` and re-grade;
+   this is the cheapest test of the 22% crown mismatch. Then abilities (needs an entity-id resolver:
+   the ability command wants the hero's live entity id -> look it up from `observe()` by side + card).
+2. Elite Barbarians evolution (26000043): confirm from the catalog whether a base-form fallback is
+   acceptable (drive as base EB) -- gets the 57 refused replays back at a known fidelity cost.
+3. The 7 `position_based=False` matches: probe whether the hero/evolution form flag changes the deal.
+4. Per-tick state dump for the sim-parity oracle (§4p): `--record-full --record-every 1` over the 135
+   clean matches = ~4 h of engine time at 108 s/match; or record every 4 ticks (~30 s/match, 1.1 h).
+5. Boot crash: if `nativePumpDataTables` SIGSEGV becomes >1 in 3, chase 0x11E8860's argument.
+
+### 7. Housekeeping
+* Emulator + service stopped 01:08 (`worker stop --stop-vm`, qemu verified gone). Cuda run untouched
+  (6975 eps at 01:10).
+* Committed: `replay_drive.py`, `replay_batch.py`, `replay_view.py`, `batch/` (summary, aggregate, 211
+  result JSONs, logs), the two recorded runs + viewer HTML, launcher scripts. NOT committed: libg dumps /
+  carvings / disassembly, author jars (standing rule).

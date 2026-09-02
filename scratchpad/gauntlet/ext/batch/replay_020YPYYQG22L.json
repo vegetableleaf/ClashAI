@@ -1,0 +1,356 @@
+{
+ "tag": "020YPYYQG22L",
+ "run": "batch",
+ "port": 37031,
+ "seed": 424242,
+ "level": 11,
+ "expected": {
+  "result": "loss",
+  "crowns_by_side": {
+   "0": 3,
+   "1": 0
+  },
+  "last_play_tick": 747
+ },
+ "deal_inference": {
+  "0": {
+   "consistent": 256
+  },
+  "1": {
+   "consistent": 840
+  }
+ },
+ "reset_seconds": 0.03,
+ "tick_after_reset": 10,
+ "tower_rows_by_side": {
+  "0": [
+   3.0,
+   6.5,
+   6.5
+  ],
+  "1": [
+   29.0,
+   25.5,
+   25.5
+  ]
+ },
+ "orientation": "side0 low rows / side1 high rows (matches RoyaleAPI red/blue)",
+ "deal_probe": {
+  "canonical": {
+   "0": {
+    "hand_pos": [
+     3,
+     7,
+     2,
+     4
+    ],
+    "cycle_pos": [
+     6,
+     5,
+     0,
+     1
+    ],
+    "next": 6
+   },
+   "1": {
+    "hand_pos": [
+     6,
+     3,
+     7,
+     1
+    ],
+    "cycle_pos": [
+     4,
+     2,
+     5,
+     0
+    ],
+    "next": 4
+   }
+  },
+  "reversed": {
+   "0": {
+    "hand_pos": [
+     3,
+     7,
+     2,
+     4
+    ],
+    "cycle_pos": [
+     6,
+     5,
+     0,
+     1
+    ]
+   },
+   "1": {
+    "hand_pos": [
+     6,
+     3,
+     7,
+     1
+    ],
+    "cycle_pos": [
+     4,
+     2,
+     5,
+     0
+    ]
+   }
+  },
+  "position_based": true,
+  "same_cards_after_permute": false
+ },
+ "deal_strategy": "permuted deck so dealt positions carry the inferred hand/queue",
+ "final_decks": {
+  "0": [
+   "GoblinCage",
+   "RoyalRecruits@evolution",
+   "Fireball",
+   "ArcherQueen",
+   "SkeletonBalloon@evolution",
+   "DartBarrell",
+   "SuspiciousBush",
+   "Arrows"
+  ],
+  "1": [
+   "Xbow",
+   "Tornado",
+   "Tesla@evolution",
+   "Knight@evolution",
+   "Skeletons",
+   "Log",
+   "IceWizard",
+   "Rocket"
+  ]
+ },
+ "opening_hand": {
+  "0": [
+   "ArcherQueen",
+   "Arrows",
+   "Fireball",
+   "SkeletonBalloon"
+  ],
+  "1": [
+   "IceWizard",
+   "Knight",
+   "Rocket",
+   "Tornado"
+  ]
+ },
+ "opening_state_hash": "0bfbcb2adbea282e",
+ "drive_seconds": 0.61,
+ "final": {
+  "tick": 3681,
+  "terminated": true,
+  "outcome": "side0_win",
+  "winner": 0,
+  "crowns": [
+   1,
+   0
+  ],
+  "termination_reason": "native_logic_clock_stopped",
+  "terminal_tick": 3681,
+  "state_hash": "b95760d8d962b000",
+  "towers": [
+   {
+    "side": 0,
+    "type": "king",
+    "lane": null,
+    "hp": 4799,
+    "destroyed": false
+   },
+   {
+    "side": 0,
+    "type": "princess",
+    "lane": "left",
+    "hp": 3027,
+    "destroyed": false
+   },
+   {
+    "side": 0,
+    "type": "princess",
+    "lane": "right",
+    "hp": 3027,
+    "destroyed": false
+   },
+   {
+    "side": 1,
+    "type": "king",
+    "lane": null,
+    "hp": 1050,
+    "destroyed": false
+   },
+   {
+    "side": 1,
+    "type": "princess",
+    "lane": "left",
+    "hp": 0,
+    "destroyed": true
+   },
+   {
+    "side": 1,
+    "type": "princess",
+    "lane": "right",
+    "hp": 3052,
+    "destroyed": false
+   }
+  ],
+  "elixir": {
+   "0": 10.0,
+   "1": 10.0
+  }
+ },
+ "grade": {
+  "plays_total": 6,
+  "plays_driven": 5,
+  "accepted": 5,
+  "rejected_by_reason": {},
+  "invalid_placement": 0,
+  "elixir_delays": {
+   "n": 0,
+   "max_ticks": 0,
+   "sum_ticks": 0
+  },
+  "skipped": [
+   {
+    "play_index": 5,
+    "tick": 747,
+    "side": 0,
+    "card": "_invalid",
+    "skipped": "ability plays not driven by this version"
+   }
+  ],
+  "crowns_match": false,
+  "terminal_vs_last_play_ticks": 2934
+ },
+ "log": [
+  {
+   "play_index": 0,
+   "tick": 184,
+   "side": 0,
+   "card": "skeleton-barrel",
+   "x": 1500,
+   "y": 14500,
+   "cost": 3,
+   "elixir_before": 9.2752,
+   "hand_before": [
+    "ArcherQueen",
+    "Arrows",
+    "Fireball",
+    "SkeletonBalloon"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 184
+  },
+  {
+   "play_index": 1,
+   "tick": 206,
+   "side": 1,
+   "card": "tornado",
+   "x": 9500,
+   "y": 7500,
+   "cost": 3,
+   "elixir_before": 9.6668,
+   "hand_before": [
+    "IceWizard",
+    "Knight",
+    "Rocket",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 206
+  },
+  {
+   "play_index": 2,
+   "tick": 353,
+   "side": 0,
+   "card": "suspicious-bush",
+   "x": 3499,
+   "y": 14500,
+   "cost": 2,
+   "elixir_before": 9.2834,
+   "hand_before": [
+    "ArcherQueen",
+    "Arrows",
+    "Fireball",
+    "SuspiciousBush"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 353
+  },
+  {
+   "play_index": 3,
+   "tick": 391,
+   "side": 0,
+   "card": "archer-queen",
+   "x": 3499,
+   "y": 14500,
+   "cost": 5,
+   "elixir_before": 7.9598,
+   "hand_before": [
+    "ArcherQueen",
+    "Arrows",
+    "Fireball",
+    "DartBarrell"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 391
+  },
+  {
+   "play_index": 4,
+   "tick": 621,
+   "side": 0,
+   "card": "flying-machine",
+   "x": 2500,
+   "y": 20500,
+   "cost": 4,
+   "elixir_before": 7.0538,
+   "hand_before": [
+    "GoblinCage",
+    "Arrows",
+    "Fireball",
+    "DartBarrell"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 621
+  },
+  {
+   "play_index": 5,
+   "tick": 747,
+   "side": 0,
+   "card": "_invalid",
+   "skipped": "ability plays not driven by this version"
+  }
+ ]
+}

@@ -1,0 +1,44 @@
+{
+ "tags": 268,
+ "converted": 211,
+ "failed": 57,
+ "failed_by_error": {
+  "ValueError": 57
+ },
+ "plays_driven": 17901,
+ "accepted": 17757,
+ "accept_rate": 0.992,
+ "rejected_by_reason": {
+  "native_rejected": 81,
+  "card_not_in_hand": 63
+ },
+ "invalid_placement": 0,
+ "matches_with_rejections": 46,
+ "elixir_delays_plays": 0,
+ "elixir_delays_max_ticks": 0,
+ "ability_plays_skipped": 428,
+ "position_based_all": false,
+ "terminated": 211,
+ "termination_reasons": {
+  "native_tiebreak_hp_drain": 81,
+  "native_logic_clock_stopped": 130
+ },
+ "crowns_match": 164,
+ "crowns_match_rate": 0.7773,
+ "outcomes": {
+  "side0_win": 100,
+  "side1_win": 111
+ },
+ "clean": 135,
+ "terminal_vs_last_play": {
+  "median": 160,
+  "negative": 41
+ },
+ "determinism": {
+  "checked": 21,
+  "same": 21
+ },
+ "seconds_total": 716.4,
+ "seconds_per_match_median": 3.54,
+ "batch_wall_seconds": 782.0
+}

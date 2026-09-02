@@ -1,0 +1,1704 @@
+{
+ "tag": "02QY9Q92QPGC",
+ "run": "batch",
+ "port": 37031,
+ "seed": 424242,
+ "level": 11,
+ "expected": {
+  "result": "win",
+  "crowns_by_side": {
+   "0": 0,
+   "1": 1
+  },
+  "last_play_tick": 4234
+ },
+ "deal_inference": {
+  "0": {
+   "consistent": 256
+  },
+  "1": {
+   "consistent": 256
+  }
+ },
+ "reset_seconds": 0.04,
+ "tick_after_reset": 10,
+ "tower_rows_by_side": {
+  "0": [
+   3.0,
+   6.5,
+   6.5
+  ],
+  "1": [
+   29.0,
+   25.5,
+   25.5
+  ]
+ },
+ "orientation": "side0 low rows / side1 high rows (matches RoyaleAPI red/blue)",
+ "deal_probe": {
+  "canonical": {
+   "0": {
+    "hand_pos": [
+     3,
+     7,
+     2,
+     4
+    ],
+    "cycle_pos": [
+     6,
+     5,
+     0,
+     1
+    ],
+    "next": 6
+   },
+   "1": {
+    "hand_pos": [
+     6,
+     3,
+     7,
+     1
+    ],
+    "cycle_pos": [
+     4,
+     2,
+     5,
+     0
+    ],
+    "next": 4
+   }
+  },
+  "reversed": {
+   "0": {
+    "hand_pos": [
+     3,
+     7,
+     2,
+     4
+    ],
+    "cycle_pos": [
+     6,
+     5,
+     0,
+     1
+    ]
+   },
+   "1": {
+    "hand_pos": [
+     6,
+     3,
+     7,
+     1
+    ],
+    "cycle_pos": [
+     4,
+     2,
+     5,
+     0
+    ]
+   }
+  },
+  "position_based": true,
+  "same_cards_after_permute": false
+ },
+ "deal_strategy": "permuted deck so dealt positions carry the inferred hand/queue",
+ "final_decks": {
+  "0": [
+   "Pekka",
+   "Ghost@evolution",
+   "ElectroWizard",
+   "Arrows",
+   "GoldenKnight",
+   "WitchMother",
+   "RageBarbarian",
+   "BattleRam@evolution"
+  ],
+  "1": [
+   "Xbow",
+   "Skeletons",
+   "Log",
+   "Knight@evolution",
+   "Tesla@evolution",
+   "Tornado",
+   "IceWizard",
+   "Rocket"
+  ]
+ },
+ "opening_hand": {
+  "0": [
+   "Arrows",
+   "BattleRam",
+   "ElectroWizard",
+   "GoldenKnight"
+  ],
+  "1": [
+   "IceWizard",
+   "Knight",
+   "Rocket",
+   "Skeletons"
+  ]
+ },
+ "opening_state_hash": "0bfbcb2adbea282e",
+ "drive_seconds": 2.11,
+ "final": {
+  "tick": 4364,
+  "terminated": true,
+  "outcome": "side1_win",
+  "winner": 1,
+  "crowns": [
+   0,
+   1
+  ],
+  "termination_reason": "native_logic_clock_stopped",
+  "terminal_tick": 4364,
+  "state_hash": "53b33f6a48382dca",
+  "towers": [
+   {
+    "side": 0,
+    "type": "king",
+    "lane": null,
+    "hp": 4799,
+    "destroyed": false
+   },
+   {
+    "side": 0,
+    "type": "princess",
+    "lane": "left",
+    "hp": 0,
+    "destroyed": true
+   },
+   {
+    "side": 0,
+    "type": "princess",
+    "lane": "right",
+    "hp": 3052,
+    "destroyed": false
+   },
+   {
+    "side": 1,
+    "type": "king",
+    "lane": null,
+    "hp": 4258,
+    "destroyed": false
+   },
+   {
+    "side": 1,
+    "type": "princess",
+    "lane": "left",
+    "hp": 1301,
+    "destroyed": false
+   },
+   {
+    "side": 1,
+    "type": "princess",
+    "lane": "right",
+    "hp": 1067,
+    "destroyed": false
+   }
+  ],
+  "elixir": {
+   "0": 7.5207,
+   "1": 5.9174
+  }
+ },
+ "grade": {
+  "plays_total": 63,
+  "plays_driven": 60,
+  "accepted": 60,
+  "rejected_by_reason": {},
+  "invalid_placement": 0,
+  "elixir_delays": {
+   "n": 0,
+   "max_ticks": 0,
+   "sum_ticks": 0
+  },
+  "skipped": [
+   {
+    "play_index": 21,
+    "tick": 2316,
+    "side": 0,
+    "card": "_invalid",
+    "skipped": "ability plays not driven by this version"
+   },
+   {
+    "play_index": 37,
+    "tick": 3026,
+    "side": 0,
+    "card": "_invalid",
+    "skipped": "ability plays not driven by this version"
+   },
+   {
+    "play_index": 53,
+    "tick": 3831,
+    "side": 0,
+    "card": "_invalid",
+    "skipped": "ability plays not driven by this version"
+   }
+  ],
+  "crowns_match": true,
+  "terminal_vs_last_play_ticks": 130
+ },
+ "log": [
+  {
+   "play_index": 0,
+   "tick": 226,
+   "side": 1,
+   "card": "ice-wizard",
+   "x": 9500,
+   "y": 31500,
+   "cost": 3,
+   "elixir_before": 10.0,
+   "hand_before": [
+    "IceWizard",
+    "Knight",
+    "Rocket",
+    "Skeletons"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 226
+  },
+  {
+   "play_index": 1,
+   "tick": 278,
+   "side": 0,
+   "card": "battle-ram",
+   "x": 8499,
+   "y": 500,
+   "cost": 4,
+   "elixir_before": 10.0,
+   "hand_before": [
+    "Arrows",
+    "BattleRam",
+    "ElectroWizard",
+    "GoldenKnight"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 278
+  },
+  {
+   "play_index": 2,
+   "tick": 366,
+   "side": 1,
+   "card": "tesla",
+   "x": 9000,
+   "y": 21000,
+   "cost": 4,
+   "elixir_before": 9.492,
+   "hand_before": [
+    "Tesla",
+    "Knight",
+    "Rocket",
+    "Skeletons"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 366
+  },
+  {
+   "play_index": 3,
+   "tick": 453,
+   "side": 0,
+   "card": "lumberjack",
+   "x": 17500,
+   "y": 1500,
+   "cost": 4,
+   "elixir_before": 9.115,
+   "hand_before": [
+    "Arrows",
+    "RageBarbarian",
+    "ElectroWizard",
+    "GoldenKnight"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 453
+  },
+  {
+   "play_index": 4,
+   "tick": 602,
+   "side": 1,
+   "card": "skeletons",
+   "x": 5499,
+   "y": 27499,
+   "cost": 1,
+   "elixir_before": 9.6928,
+   "hand_before": [
+    "Log",
+    "Knight",
+    "Rocket",
+    "Skeletons"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 602
+  },
+  {
+   "play_index": 5,
+   "tick": 701,
+   "side": 1,
+   "card": "tornado",
+   "x": 9500,
+   "y": 24500,
+   "cost": 3,
+   "elixir_before": 10.0,
+   "hand_before": [
+    "Log",
+    "Knight",
+    "Rocket",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 701
+  },
+  {
+   "play_index": 6,
+   "tick": 722,
+   "side": 0,
+   "card": "golden-knight",
+   "x": 17500,
+   "y": 1500,
+   "cost": 4,
+   "elixir_before": 9.9032,
+   "hand_before": [
+    "Arrows",
+    "WitchMother",
+    "ElectroWizard",
+    "GoldenKnight"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 722
+  },
+  {
+   "play_index": 7,
+   "tick": 841,
+   "side": 1,
+   "card": "knight",
+   "x": 17500,
+   "y": 30499,
+   "cost": 3,
+   "elixir_before": 9.492,
+   "hand_before": [
+    "Log",
+    "Knight",
+    "Rocket",
+    "Xbow"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 841
+  },
+  {
+   "play_index": 8,
+   "tick": 931,
+   "side": 0,
+   "card": "pekka",
+   "x": 9500,
+   "y": 500,
+   "cost": 7,
+   "elixir_before": 9.6234,
+   "hand_before": [
+    "Arrows",
+    "WitchMother",
+    "ElectroWizard",
+    "Pekka"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 931
+  },
+  {
+   "play_index": 9,
+   "tick": 991,
+   "side": 1,
+   "card": "x-bow",
+   "x": 2500,
+   "y": 19500,
+   "cost": 6,
+   "elixir_before": 9.162,
+   "hand_before": [
+    "Log",
+    "IceWizard",
+    "Rocket",
+    "Xbow"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 991
+  },
+  {
+   "play_index": 10,
+   "tick": 1062,
+   "side": 0,
+   "card": "royal-ghost",
+   "x": 2499,
+   "y": 14500,
+   "cost": 3,
+   "elixir_before": 4.9552,
+   "hand_before": [
+    "Arrows",
+    "WitchMother",
+    "ElectroWizard",
+    "Ghost"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 1062
+  },
+  {
+   "play_index": 11,
+   "tick": 1113,
+   "side": 1,
+   "card": "ice-wizard",
+   "x": 4500,
+   "y": 17500,
+   "cost": 3,
+   "elixir_before": 5.3336,
+   "hand_before": [
+    "Log",
+    "IceWizard",
+    "Rocket",
+    "Tesla"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 1113
+  },
+  {
+   "play_index": 12,
+   "tick": 1297,
+   "side": 0,
+   "card": "battle-ram",
+   "x": 14500,
+   "y": 14500,
+   "cost": 4,
+   "elixir_before": 6.1382,
+   "hand_before": [
+    "Arrows",
+    "WitchMother",
+    "ElectroWizard",
+    "BattleRam"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 1297
+  },
+  {
+   "play_index": 13,
+   "tick": 1331,
+   "side": 1,
+   "card": "tesla",
+   "x": 9000,
+   "y": 22000,
+   "cost": 4,
+   "elixir_before": 6.214,
+   "hand_before": [
+    "Log",
+    "Skeletons",
+    "Rocket",
+    "Tesla"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 1331
+  },
+  {
+   "play_index": 14,
+   "tick": 1391,
+   "side": 1,
+   "card": "the-log",
+   "x": 12500,
+   "y": 22500,
+   "cost": 2,
+   "elixir_before": 3.282,
+   "hand_before": [
+    "Log",
+    "Skeletons",
+    "Rocket",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 1391
+  },
+  {
+   "play_index": 15,
+   "tick": 1425,
+   "side": 0,
+   "card": "mother-witch",
+   "x": 9500,
+   "y": 14500,
+   "cost": 4,
+   "elixir_before": 4.4166,
+   "hand_before": [
+    "Arrows",
+    "WitchMother",
+    "ElectroWizard",
+    "RageBarbarian"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 1425
+  },
+  {
+   "play_index": 16,
+   "tick": 1522,
+   "side": 1,
+   "card": "knight",
+   "x": 15500,
+   "y": 23499,
+   "cost": 3,
+   "elixir_before": 3.6138,
+   "hand_before": [
+    "Knight",
+    "Skeletons",
+    "Rocket",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 1522
+  },
+  {
+   "play_index": 17,
+   "tick": 2021,
+   "side": 1,
+   "card": "x-bow",
+   "x": 2500,
+   "y": 19500,
+   "cost": 6,
+   "elixir_before": 9.496,
+   "hand_before": [
+    "Xbow",
+    "Skeletons",
+    "Rocket",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2021
+  },
+  {
+   "play_index": 18,
+   "tick": 2071,
+   "side": 0,
+   "card": "golden-knight",
+   "x": 8499,
+   "y": 8500,
+   "cost": 4,
+   "elixir_before": 10.0,
+   "hand_before": [
+    "Arrows",
+    "GoldenKnight",
+    "ElectroWizard",
+    "RageBarbarian"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2071
+  },
+  {
+   "play_index": 19,
+   "tick": 2161,
+   "side": 0,
+   "card": "pekka",
+   "x": 3499,
+   "y": 14500,
+   "cost": 7,
+   "elixir_before": 7.602,
+   "hand_before": [
+    "Arrows",
+    "Pekka",
+    "ElectroWizard",
+    "RageBarbarian"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2161
+  },
+  {
+   "play_index": 20,
+   "tick": 2241,
+   "side": 1,
+   "card": "ice-wizard",
+   "x": 8500,
+   "y": 26500,
+   "cost": 3,
+   "elixir_before": 7.412,
+   "hand_before": [
+    "IceWizard",
+    "Skeletons",
+    "Rocket",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2241
+  },
+  {
+   "play_index": 21,
+   "tick": 2316,
+   "side": 0,
+   "card": "_invalid",
+   "skipped": "ability plays not driven by this version"
+  },
+  {
+   "play_index": 22,
+   "tick": 2351,
+   "side": 1,
+   "card": "tesla",
+   "x": 9000,
+   "y": 20000,
+   "cost": 4,
+   "elixir_before": 6.37,
+   "hand_before": [
+    "Tesla",
+    "Skeletons",
+    "Rocket",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2351
+  },
+  {
+   "play_index": 23,
+   "tick": 2371,
+   "side": 1,
+   "card": "skeletons",
+   "x": 2499,
+   "y": 22499,
+   "cost": 1,
+   "elixir_before": 2.726,
+   "hand_before": [
+    "Log",
+    "Skeletons",
+    "Rocket",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2371
+  },
+  {
+   "play_index": 24,
+   "tick": 2562,
+   "side": 0,
+   "card": "royal-ghost",
+   "x": 499,
+   "y": 8500,
+   "cost": 3,
+   "elixir_before": 10.0,
+   "hand_before": [
+    "Arrows",
+    "Ghost",
+    "ElectroWizard",
+    "RageBarbarian"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2562
+  },
+  {
+   "play_index": 25,
+   "tick": 2593,
+   "side": 1,
+   "card": "rocket",
+   "x": 4500,
+   "y": 6500,
+   "cost": 6,
+   "elixir_before": 9.1323,
+   "hand_before": [
+    "Log",
+    "Knight",
+    "Rocket",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 2,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2593
+  },
+  {
+   "play_index": 26,
+   "tick": 2618,
+   "side": 1,
+   "card": "tornado",
+   "x": 4500,
+   "y": 8500,
+   "cost": 3,
+   "elixir_before": 4.0248,
+   "hand_before": [
+    "Log",
+    "Knight",
+    "Xbow",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2618
+  },
+  {
+   "play_index": 27,
+   "tick": 2672,
+   "side": 0,
+   "card": "lumberjack",
+   "x": 4499,
+   "y": 14500,
+   "cost": 4,
+   "elixir_before": 10.0,
+   "hand_before": [
+    "Arrows",
+    "BattleRam",
+    "ElectroWizard",
+    "RageBarbarian"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2672
+  },
+  {
+   "play_index": 28,
+   "tick": 2761,
+   "side": 0,
+   "card": "mother-witch",
+   "x": 8499,
+   "y": 14500,
+   "cost": 4,
+   "elixir_before": 9.1773,
+   "hand_before": [
+    "Arrows",
+    "BattleRam",
+    "ElectroWizard",
+    "WitchMother"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2761
+  },
+  {
+   "play_index": 29,
+   "tick": 2792,
+   "side": 0,
+   "card": "battle-ram",
+   "x": 3499,
+   "y": 14500,
+   "cost": 4,
+   "elixir_before": 6.284,
+   "hand_before": [
+    "Arrows",
+    "BattleRam",
+    "ElectroWizard",
+    "GoldenKnight"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2792
+  },
+  {
+   "play_index": 30,
+   "tick": 2841,
+   "side": 1,
+   "card": "knight",
+   "x": 4499,
+   "y": 17499,
+   "cost": 3,
+   "elixir_before": 8.9859,
+   "hand_before": [
+    "Log",
+    "Knight",
+    "Xbow",
+    "IceWizard"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2841
+  },
+  {
+   "play_index": 31,
+   "tick": 2858,
+   "side": 1,
+   "card": "the-log",
+   "x": 3500,
+   "y": 24500,
+   "cost": 2,
+   "elixir_before": 6.5928,
+   "hand_before": [
+    "Log",
+    "Tesla",
+    "Xbow",
+    "IceWizard"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2858
+  },
+  {
+   "play_index": 32,
+   "tick": 2864,
+   "side": 0,
+   "card": "golden-knight",
+   "x": 3499,
+   "y": 14500,
+   "cost": 4,
+   "elixir_before": 4.8544,
+   "hand_before": [
+    "Arrows",
+    "Pekka",
+    "ElectroWizard",
+    "GoldenKnight"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2864
+  },
+  {
+   "play_index": 33,
+   "tick": 2884,
+   "side": 1,
+   "card": "tesla",
+   "x": 7000,
+   "y": 21000,
+   "cost": 4,
+   "elixir_before": 5.521,
+   "hand_before": [
+    "Skeletons",
+    "Tesla",
+    "Xbow",
+    "IceWizard"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2884
+  },
+  {
+   "play_index": 34,
+   "tick": 2937,
+   "side": 1,
+   "card": "ice-wizard",
+   "x": 3500,
+   "y": 27500,
+   "cost": 3,
+   "elixir_before": 3.4131,
+   "hand_before": [
+    "Skeletons",
+    "Rocket",
+    "Xbow",
+    "IceWizard"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2937
+  },
+  {
+   "play_index": 35,
+   "tick": 2948,
+   "side": 0,
+   "card": "royal-ghost",
+   "x": 1499,
+   "y": 14500,
+   "cost": 3,
+   "elixir_before": 3.8532,
+   "hand_before": [
+    "Arrows",
+    "Pekka",
+    "ElectroWizard",
+    "Ghost"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2948
+  },
+  {
+   "play_index": 36,
+   "tick": 3015,
+   "side": 1,
+   "card": "skeletons",
+   "x": 499,
+   "y": 29499,
+   "cost": 1,
+   "elixir_before": 3.1977,
+   "hand_before": [
+    "Skeletons",
+    "Rocket",
+    "Xbow",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3015
+  },
+  {
+   "play_index": 37,
+   "tick": 3026,
+   "side": 0,
+   "card": "_invalid",
+   "skipped": "ability plays not driven by this version"
+  },
+  {
+   "play_index": 38,
+   "tick": 3061,
+   "side": 1,
+   "card": "knight",
+   "x": 2499,
+   "y": 17499,
+   "cost": 3,
+   "elixir_before": 3.8399,
+   "hand_before": [
+    "Knight",
+    "Rocket",
+    "Xbow",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3061
+  },
+  {
+   "play_index": 39,
+   "tick": 3082,
+   "side": 0,
+   "card": "arrows",
+   "x": 2500,
+   "y": 24500,
+   "cost": 3,
+   "elixir_before": 5.637,
+   "hand_before": [
+    "Arrows",
+    "Pekka",
+    "ElectroWizard",
+    "RageBarbarian"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3082
+  },
+  {
+   "play_index": 40,
+   "tick": 3115,
+   "side": 1,
+   "card": "the-log",
+   "x": 3500,
+   "y": 24500,
+   "cost": 2,
+   "elixir_before": 2.7677,
+   "hand_before": [
+    "Log",
+    "Rocket",
+    "Xbow",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3115
+  },
+  {
+   "play_index": 41,
+   "tick": 3312,
+   "side": 0,
+   "card": "electro-wizard",
+   "x": 8500,
+   "y": 8500,
+   "cost": 4,
+   "elixir_before": 10.0,
+   "hand_before": [
+    "WitchMother",
+    "Pekka",
+    "ElectroWizard",
+    "RageBarbarian"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 2,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3312
+  },
+  {
+   "play_index": 42,
+   "tick": 3365,
+   "side": 1,
+   "card": "tesla",
+   "x": 8000,
+   "y": 21000,
+   "cost": 4,
+   "elixir_before": 9.6927,
+   "hand_before": [
+    "Tesla",
+    "Rocket",
+    "Xbow",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3365
+  },
+  {
+   "play_index": 43,
+   "tick": 3406,
+   "side": 0,
+   "card": "battle-ram",
+   "x": 4499,
+   "y": 14500,
+   "cost": 4,
+   "elixir_before": 9.3558,
+   "hand_before": [
+    "WitchMother",
+    "Pekka",
+    "BattleRam",
+    "RageBarbarian"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 2,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3406
+  },
+  {
+   "play_index": 44,
+   "tick": 3471,
+   "side": 1,
+   "card": "ice-wizard",
+   "x": 1500,
+   "y": 24500,
+   "cost": 3,
+   "elixir_before": 9.4769,
+   "hand_before": [
+    "IceWizard",
+    "Rocket",
+    "Xbow",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3471
+  },
+  {
+   "play_index": 45,
+   "tick": 3531,
+   "side": 0,
+   "card": "golden-knight",
+   "x": 499,
+   "y": 1500,
+   "cost": 4,
+   "elixir_before": 9.8183,
+   "hand_before": [
+    "WitchMother",
+    "Pekka",
+    "GoldenKnight",
+    "RageBarbarian"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 2,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3531
+  },
+  {
+   "play_index": 46,
+   "tick": 3581,
+   "side": 1,
+   "card": "rocket",
+   "x": 2500,
+   "y": 6500,
+   "cost": 6,
+   "elixir_before": 10.0,
+   "hand_before": [
+    "Skeletons",
+    "Rocket",
+    "Xbow",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3581
+  },
+  {
+   "play_index": 47,
+   "tick": 3636,
+   "side": 0,
+   "card": "royal-ghost",
+   "x": 1499,
+   "y": 14500,
+   "cost": 3,
+   "elixir_before": 9.5668,
+   "hand_before": [
+    "WitchMother",
+    "Pekka",
+    "Ghost",
+    "RageBarbarian"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 2,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3636
+  },
+  {
+   "play_index": 48,
+   "tick": 3651,
+   "side": 1,
+   "card": "knight",
+   "x": 1499,
+   "y": 24499,
+   "cost": 3,
+   "elixir_before": 6.499,
+   "hand_before": [
+    "Skeletons",
+    "Knight",
+    "Xbow",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3651
+  },
+  {
+   "play_index": 49,
+   "tick": 3691,
+   "side": 0,
+   "card": "pekka",
+   "x": 3499,
+   "y": 14500,
+   "cost": 7,
+   "elixir_before": 8.5303,
+   "hand_before": [
+    "WitchMother",
+    "Pekka",
+    "Arrows",
+    "RageBarbarian"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3691
+  },
+  {
+   "play_index": 50,
+   "tick": 3717,
+   "side": 1,
+   "card": "the-log",
+   "x": 3500,
+   "y": 17500,
+   "cost": 2,
+   "elixir_before": 5.8552,
+   "hand_before": [
+    "Skeletons",
+    "Log",
+    "Xbow",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3717
+  },
+  {
+   "play_index": 51,
+   "tick": 3778,
+   "side": 1,
+   "card": "tesla",
+   "x": 9000,
+   "y": 21000,
+   "cost": 4,
+   "elixir_before": 6.0329,
+   "hand_before": [
+    "Skeletons",
+    "Tesla",
+    "Xbow",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3778
+  },
+  {
+   "play_index": 52,
+   "tick": 3788,
+   "side": 0,
+   "card": "mother-witch",
+   "x": 6499,
+   "y": 14500,
+   "cost": 4,
+   "elixir_before": 4.9932,
+   "hand_before": [
+    "WitchMother",
+    "ElectroWizard",
+    "Arrows",
+    "RageBarbarian"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3788
+  },
+  {
+   "play_index": 53,
+   "tick": 3831,
+   "side": 0,
+   "card": "_invalid",
+   "skipped": "ability plays not driven by this version"
+  },
+  {
+   "play_index": 54,
+   "tick": 3851,
+   "side": 1,
+   "card": "ice-wizard",
+   "x": 1500,
+   "y": 26500,
+   "cost": 3,
+   "elixir_before": 4.639,
+   "hand_before": [
+    "Skeletons",
+    "IceWizard",
+    "Xbow",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3851
+  },
+  {
+   "play_index": 55,
+   "tick": 3928,
+   "side": 0,
+   "card": "battle-ram",
+   "x": 2499,
+   "y": 14500,
+   "cost": 4,
+   "elixir_before": 5.9912,
+   "hand_before": [
+    "BattleRam",
+    "ElectroWizard",
+    "Arrows",
+    "RageBarbarian"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3928
+  },
+  {
+   "play_index": 56,
+   "tick": 3951,
+   "side": 1,
+   "card": "tornado",
+   "x": 4500,
+   "y": 17500,
+   "cost": 3,
+   "elixir_before": 5.209,
+   "hand_before": [
+    "Skeletons",
+    "Rocket",
+    "Xbow",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3951
+  },
+  {
+   "play_index": 57,
+   "tick": 3995,
+   "side": 1,
+   "card": "knight",
+   "x": 3499,
+   "y": 22499,
+   "cost": 3,
+   "elixir_before": 3.7798,
+   "hand_before": [
+    "Skeletons",
+    "Rocket",
+    "Xbow",
+    "Knight"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3995
+  },
+  {
+   "play_index": 58,
+   "tick": 4041,
+   "side": 0,
+   "card": "lumberjack",
+   "x": 3499,
+   "y": 14500,
+   "cost": 4,
+   "elixir_before": 6.0253,
+   "hand_before": [
+    "GoldenKnight",
+    "ElectroWizard",
+    "Arrows",
+    "RageBarbarian"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 4041
+  },
+  {
+   "play_index": 59,
+   "tick": 4051,
+   "side": 1,
+   "card": "the-log",
+   "x": 3500,
+   "y": 24500,
+   "cost": 2,
+   "elixir_before": 2.779,
+   "hand_before": [
+    "Skeletons",
+    "Rocket",
+    "Xbow",
+    "Log"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 4051
+  },
+  {
+   "play_index": 60,
+   "tick": 4124,
+   "side": 0,
+   "card": "arrows",
+   "x": 3500,
+   "y": 22500,
+   "cost": 3,
+   "elixir_before": 4.9884,
+   "hand_before": [
+    "GoldenKnight",
+    "ElectroWizard",
+    "Arrows",
+    "Ghost"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 2,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 4124
+  },
+  {
+   "play_index": 61,
+   "tick": 4221,
+   "side": 1,
+   "card": "rocket",
+   "x": 4500,
+   "y": 7500,
+   "cost": 6,
+   "elixir_before": 6.848,
+   "hand_before": [
+    "Skeletons",
+    "Rocket",
+    "Xbow",
+    "Tesla"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 4221
+  },
+  {
+   "play_index": 62,
+   "tick": 4234,
+   "side": 0,
+   "card": "royal-ghost",
+   "x": 2499,
+   "y": 14500,
+   "cost": 3,
+   "elixir_before": 5.9154,
+   "hand_before": [
+    "GoldenKnight",
+    "ElectroWizard",
+    "Pekka",
+    "Ghost"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 4234
+  }
+ ]
+}

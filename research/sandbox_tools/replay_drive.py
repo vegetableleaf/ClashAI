@@ -41,7 +41,17 @@ OUT_DIR = REPO / "scratchpad" / "gauntlet" / "ext"
 if str(SANDBOX) not in sys.path:
     sys.path.insert(0, str(SANDBOX))
 
-from native_core.card_catalog import catalog, card_cost  # noqa: E402
+from native_core.card_catalog import catalog, card_cost, observed_card  # noqa: E402
+from native_core.env import CARD_NAMES  # noqa: E402
+
+
+def card_name(card_id: int) -> str:
+    """Same naming as NativeRoyaleEnv._enrich_state uses for entities (base card name, else the form's internal name)."""
+    card_id = int(card_id)
+    if card_id < 0:
+        return str(card_id)
+    identity = observed_card(card_id)
+    return CARD_NAMES.get(int(identity["base_card_id"]), str(identity["form_name"]))
 from native_core.decks import build_replay, resolve_card  # noqa: E402
 from native_core.env import NativeRoyaleEnv  # noqa: E402
 
@@ -114,12 +124,20 @@ def load_battle(tag: str) -> tuple[dict, list[dict]]:
     with (CRAWL / "plays_ext.csv").open(encoding="utf-8", newline="") as handle:
         plays = [row for row in csv.DictReader(handle) if row["replay_tag"] == tag]
     for row in plays:
-        for key in ("tick", "x_units", "y_units", "play_index", "attr_ability"):
+        for key in ("tick", "play_index", "attr_ability"):
+            if row[key] in ("", "None"):
+                raise SystemExit(f"play {row['play_index']} of {tag} has no {key}")
+        row["play_index"] = int(row["play_index"]); row["ability"] = int(row["attr_ability"])
+        row["tick"] = int(row["tick"]); row["side"] = SIDE_OF[row["attr_s"]]
+        if row["ability"]:
+            # hero/evolution ability presses carry no card and no position in the crawl (attr_card "_invalid");
+            # they are logged as skipped by drive(), not driven
+            row["x"] = row["y"] = None
+            continue
+        for key in ("x_units", "y_units"):
             if row[key] in ("", "None"):
                 raise SystemExit(f"play {row['play_index']} of {tag} has no {key}; replay is not fully positioned")
-        row["tick"] = int(row["tick"]); row["x"] = int(row["x_units"]); row["y"] = int(row["y_units"])
-        row["play_index"] = int(row["play_index"]); row["ability"] = int(row["attr_ability"])
-        row["side"] = SIDE_OF[row["attr_s"]]
+        row["x"] = int(row["x_units"]); row["y"] = int(row["y_units"])
     plays.sort(key=lambda row: (row["tick"], row["play_index"]))
     if int(rows[0]["plays"]) != len(plays):
         raise SystemExit(f"battles.csv says {rows[0]['plays']} plays, plays_ext.csv has {len(plays)}")
@@ -168,7 +186,7 @@ def offline_report(tag: str) -> dict:
     for side in (0, 1):
         deck = deck_for_side(battle, side)
         by_slug = {item["slug"]: item for item in deck}
-        side_plays = [row for row in plays if row["side"] == side]
+        side_plays = [row for row in plays if row["side"] == side and not row["ability"]]
         unknown = [row["attr_card"] for row in side_plays if row["attr_card"] not in by_slug]
         if unknown:
             raise SystemExit(f"side {side} plays cards outside its deck: {sorted(set(unknown))}")
@@ -222,14 +240,17 @@ def deck_spec(order: list[dict], level: int) -> list[dict]:
 
 
 def drive(tag: str, *, port: int, seed: int, level: int, elixir_slack: int, tail_cap: int,
-          run_label: str, verbose: bool) -> dict:
+          run_label: str, verbose: bool, record_every: int = 0, record_full: bool = False) -> dict:
+    """Drive one replay.  record_every=N (>0) additionally stores an observation every N ticks in
+    out["frames"] (each: tick, players' elixir, every entity's side/x/y/name/hp) for a viewer;
+    record_full=True uses the full observation (adds entity kind, projectiles and spell effects)."""
     battle, plays = load_battle(tag)
     decks = {side: deck_for_side(battle, side) for side in (0, 1)}
     template = json.loads((SANDBOX / "examples" / "full-card-bootstrap.json").read_text(encoding="utf-8-sig"))
     deals = {}
     for side in (0, 1):
         by_slug = {item["slug"]: item for item in decks[side]}
-        seq = [by_slug[row["attr_card"]]["card_id"] for row in plays if row["side"] == side]
+        seq = [by_slug[row["attr_card"]]["card_id"] for row in plays if row["side"] == side and not row["ability"]]
         found = infer_deals(seq, [item["card_id"] for item in decks[side]])
         if not found:
             raise SystemExit(f"side {side}: no (hand, queue) assignment reproduces the play sequence")
@@ -291,12 +312,47 @@ def drive(tag: str, *, port: int, seed: int, level: int, elixir_slack: int, tail
 
     # --- 4. drive the timeline ----------------------------------------------------------------------
     log: list[dict] = []
+    frames: list[dict] = []
+
+    def snapshot(state: dict) -> None:
+        frame = {"tick": int(state["tick"]),
+                 "elixir": [player(state, s).get("elixir_exact", player(state, s).get("elixir")) for s in (0, 1)],
+                 "entities": [[int(e["side"]), int(e["x"]), int(e["y"]), e.get("name", str(e.get("card_id"))),
+                               int(e["hp"]), int(e["max_hp"])] + ([int(e.get("kind", -1))] if record_full else [])
+                              for e in state.get("entities", [])],
+                 "towers": [[int(t["side"]), t.get("type"), t.get("lane"), int(t["x"]), int(t["y"]), int(t["hp"]),
+                             int(t["max_hp"])] for t in state["episode"].get("crown_towers", [])]}
+        if record_full:
+            frame["projectiles"] = [[int(q["side"]), int(q["x"]), int(q["y"]), int(q["target_x"]), int(q["target_y"]),
+                                     card_name(q["card_id"])] for q in state.get("projectiles", [])]
+            frame["effects"] = [[int(q["side"]), int(q["x"]), int(q["y"]), card_name(q["card_id"])]
+                                for q in state.get("effects", [])]
+        frames.append(frame)
+
+    def observe_for_record() -> dict:
+        return env.observe() if record_full else env.observe_compact()
+
+    def advance(n: int) -> dict:
+        """env.step(n), split into record_every-sized chunks with a compact observation after each when recording."""
+        if record_every <= 0:
+            return env.step(n)
+        step = None
+        while n > 0:
+            chunk = min(record_every, n)
+            step = env.step(chunk); n -= chunk
+            snapshot(observe_for_record())
+            if step["episode"].get("terminated") or int(step.get("stepped", 1)) == 0:
+                break
+        return step
+
+    if record_every > 0:
+        snapshot(observe_for_record())
     terminated = False
     t_drive = time.perf_counter()
     for row in plays:
         side = row["side"]; slug = row["attr_card"]
         if row["tick"] > tick:
-            step = env.step(row["tick"] - tick)
+            step = advance(row["tick"] - tick)
             tick = int(step["tick_after"])
             if step["episode"].get("terminated"):
                 terminated = True
@@ -334,7 +390,7 @@ def drive(tag: str, *, port: int, seed: int, level: int, elixir_slack: int, tail
     # --- 5. run out the clock -----------------------------------------------------------------------
     episode = env.last_episode or {}
     while not episode.get("terminated") and tick < tail_cap:
-        step = env.step(min(200, tail_cap - tick)); tick = int(step["tick_after"]); episode = step["episode"]
+        step = advance(min(200, tail_cap - tick)); tick = int(step["tick_after"]); episode = step["episode"]
         if int(step.get("stepped", 1)) == 0:
             break
     final_state = env.observe()
@@ -362,6 +418,10 @@ def drive(tag: str, *, port: int, seed: int, level: int, elixir_slack: int, tail
         "terminal_vs_last_play_ticks": (int(out["final"]["terminal_tick"]) - plays[-1]["tick"]) if out["final"].get("terminal_tick") else None,
     }
     out["log"] = log
+    if record_every > 0:
+        out["frames"] = frames
+        out["record_every"] = record_every
+        out["record_full"] = record_full
     env.close()
     return out
 
@@ -377,6 +437,10 @@ def main() -> int:
     parser.add_argument("--runs", type=int, default=1)
     parser.add_argument("--offline", action="store_true", help="no engine: decks, deal inference, sanity only")
     parser.add_argument("--quiet", action="store_true")
+    parser.add_argument("--record-every", type=int, default=0,
+                        help="store an observation every N ticks in the result JSON (for replay_view.py)")
+    parser.add_argument("--record-full", action="store_true",
+                        help="record the full observation (entity kind, projectiles, spell effects) instead of the compact one")
     args = parser.parse_args()
 
     if args.offline:
@@ -387,7 +451,8 @@ def main() -> int:
     for run in range(1, args.runs + 1):
         print(f"=== {args.tag} run {run}/{args.runs} port {args.port} seed {args.seed} level {args.level}", flush=True)
         result = drive(args.tag, port=args.port, seed=args.seed, level=args.level, elixir_slack=args.elixir_slack,
-                       tail_cap=args.tail_cap, run_label=f"run{run}", verbose=not args.quiet)
+                       tail_cap=args.tail_cap, run_label=f"run{run}", verbose=not args.quiet,
+                       record_every=args.record_every, record_full=args.record_full)
         path = OUT_DIR / f"replay_{args.tag}_run{run}.json"
         path.write_text(json.dumps(result, indent=1, default=str), encoding="utf-8")
         hashes.append(result["final"]["state_hash"])

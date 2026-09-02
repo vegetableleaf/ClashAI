@@ -1,0 +1,220 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\benpe\ClashBot\research\ext\cr-native-sandbox\native_core\worker.py", line 552, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "C:\Users\benpe\ClashBot\research\ext\cr-native-sandbox\native_core\worker.py", line 537, in main
+    value = pool.ensure_ready(
+        args.workers, configure_direct=args.transport == "direct"
+    )
+  File "C:\Users\benpe\ClashBot\research\ext\cr-native-sandbox\native_core\worker.py", line 327, in ensure_ready
+    services = [self.start_service(slot) for slot in range(workers)]
+                ~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\benpe\ClashBot\research\ext\cr-native-sandbox\native_core\worker.py", line 298, in start_service
+    raise WorkerError((result.stderr or result.stdout).strip())
+WorkerError: Direct service did not become ready: empty response
+{"schema_version":1,"stage":"jni_on_load","event":"before_system_load","path":"/data/local/tmp/cr-native-direct-0/libg.
+so"}
+java.lang.ClassNotFoundException: com.supercell.titan.UnityAdsTitan
+	at java.lang.Runtime.nativeLoad(Native Method)
+	at java.lang.Runtime.nativeLoad(Runtime.java:1121)
+	at java.lang.Runtime.load0(Runtime.java:927)
+	at java.lang.System.load(System.java:1620)
+	at royale.nativehost.JniHost.main(JniHost.java:98)
+	at com.android.internal.os.RuntimeInit.nativeFinishInit(Native Method)
+	at com.android.internal.os.RuntimeInit.main(RuntimeInit.java:355)
+{"schema_version":1,"stage":"jni_on_load","event":"after_system_load","ok":true}
+{"schema_version":1,"stage":"package_context","ok":true,"context_class":"android.app.ContextImpl","assets_class":"andro
+id.content.res.AssetManager"}
+{"schema_version":1,"stage":"runtime_probe","event":"after_system_load","value":{"rva":"0x1ab9910","buckets":"0x0","buc
+ket_count":0,"first":"0x0","size":0,"max_load_factor_bits":"0x3f800000","manager_root":"0x0","context":"0x0","state_vta
+ble":"0x0","state_methods_rva":["0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x
+0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0"],"manager_phase":-1,"current_state_type":-1,"pending_state_typ
+e":-1,"replay_data":"0x0","replay_keys":{"battle":"battle","cmd":"cmd","first_int":"rndSeed","second_int":"time"},"batt
+le":"0x0","battle_vtable":"0x0","battle_methods_rva":["0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0"
+,"0x0"],"tick":-1,"read_ok":{"map":true,"root":true,"context":false,"manager_fields":false,"battle":false,"tick":false}
+}}
+{"schema_version":1,"stage":"native_libraries_loaded","event":"before"}
+{"schema_version":1,"stage":"native_libraries_loaded","event":"after"}
+{"schema_version":1,"stage":"runtime_probe","event":"after_native_libraries_loaded","value":{"rva":"0x1ab9910","buckets
+":"0x0","bucket_count":0,"first":"0x0","size":0,"max_load_factor_bits":"0x3f800000","manager_root":"0x0","context":"0x0
+","state_vtable":"0x0","state_methods_rva":["0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x
+0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0"],"manager_phase":-1,"current_state_type":-1,"pendi
+ng_state_type":-1,"replay_data":"0x0","replay_keys":{"battle":"battle","cmd":"cmd","first_int":"rndSeed","second_int":"
+time"},"battle":"0x0","battle_vtable":"0x0","battle_methods_rva":["0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0"
+,"0x0","0x0","0x0"],"tick":-1,"read_ok":{"map":true,"root":true,"context":false,"manager_fields":false,"battle":false,"
+tick":false}}}
+{"schema_version":1,"stage":"application_create","event":"before"}
+{"schema_version":1,"stage":"application_create","event":"after"}
+{"schema_version":1,"stage":"runtime_probe","event":"after_application_create","value":{"rva":"0x1ab9910","buckets":"0x
+0","bucket_count":0,"first":"0x0","size":0,"max_load_factor_bits":"0x3f800000","manager_root":"0x0","context":"0x0","st
+ate_vtable":"0x0","state_methods_rva":["0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0
+x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0"],"manager_phase":-1,"current_state_type":-1,"pending_st
+ate_type":-1,"replay_data":"0x0","replay_keys":{"battle":"battle","cmd":"cmd","first_int":"rndSeed","second_int":"time"
+},"battle":"0x0","battle_vtable":"0x0","battle_methods_rva":["0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0
+","0x0","0x0"],"tick":-1,"read_ok":{"map":true,"root":true,"context":false,"manager_fields":false,"battle":false,"tick"
+:false}}}
+sh: /system/xbin/which: inaccessible or not found
+{"schema_version":1,"stage":"create_game_main","ok":true,"result":"r6VRV=>.A2=^(6ZW:hv'N$;Qr(/}avPVbF6@;}k["}
+{"schema_version":1,"stage":"runtime_probe","event":"after_create_game_main","value":{"rva":"0x1ab9910","buckets":"0x0"
+,"bucket_count":0,"first":"0x0","size":0,"max_load_factor_bits":"0x3f800000","manager_root":"0x0","context":"0x0","stat
+e_vtable":"0x0","state_methods_rva":["0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0
+","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0"],"manager_phase":-1,"current_state_type":-1,"pending_stat
+e_type":-1,"replay_data":"0x0","replay_keys":{"battle":"battle","cmd":"cmd","first_int":"rndSeed","second_int":"time"},
+"battle":"0x0","battle_vtable":"0x0","battle_methods_rva":["0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0",
+"0x0","0x0"],"tick":-1,"read_ok":{"map":true,"root":true,"context":false,"manager_fields":false,"battle":false,"tick":f
+alse}}}
+{"schema_version":1,"stage":"activity_create","event":"before"}
+{"schema_version":1,"stage":"activity_create","event":"after"}
+{"schema_version":1,"stage":"runtime_probe","event":"after_activity_create","value":{"rva":"0x1ab9910","buckets":"0x0",
+"bucket_count":0,"first":"0x0","size":0,"max_load_factor_bits":"0x3f800000","manager_root":"0x0","context":"0x0","state
+_vtable":"0x0","state_methods_rva":["0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0"
+,"0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0"],"manager_phase":-1,"current_state_type":-1,"pending_state
+_type":-1,"replay_data":"0x0","replay_keys":{"battle":"battle","cmd":"cmd","first_int":"rndSeed","second_int":"time"},"
+battle":"0x0","battle_vtable":"0x0","battle_methods_rva":["0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","
+0x0","0x0"],"tick":-1,"read_ok":{"map":true,"root":true,"context":false,"manager_fields":false,"battle":false,"tick":fa
+lse}}}
+{"schema_version":1,"stage":"headless_hold","event":"before"}
+{"schema_version":1,"stage":"headless_hold","event":"after"}
+{"schema_version":1,"stage":"runtime_probe","event":"after_headless_hold","value":{"rva":"0x1ab9910","buckets":"0x7f192
+405c290","bucket_count":5,"first":"0x7f1914061500","size":4,"max_load_factor_bits":"0x3f800000","manager_root":"0x0","c
+ontext":"0x0","state_vtable":"0x0","state_methods_rva":["0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x
+0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0"],"manager_phase":-1,"current_state_typ
+e":-1,"pending_state_type":-1,"replay_data":"0x0","replay_keys":{"battle":"battle","cmd":"cmd","first_int":"rndSeed","s
+econd_int":"time"},"battle":"0x0","battle_vtable":"0x0","battle_methods_rva":["0x0","0x0","0x0","0x0","0x0","0x0","0x0"
+,"0x0","0x0","0x0","0x0","0x0"],"tick":-1,"read_ok":{"map":true,"root":true,"context":false,"manager_fields":false,"bat
+tle":false,"tick":false}}}
+{"schema_version":1,"stage":"prerequisite_probe","event":"after_headless_hold","value":{"manager":"0x0","loader":"0x0",
+"asset_system":"0x7f19c4033690","game_singleton":"0x7f1a04035040","runtime_clock":"0x7f192405db28","game_vtable_rva":"0
+x18b6ff8","game_context":"0x7f19640332d8","game_methods_rva":["0x726240","0x726c40","0x726ca0","0x727050","0x72c8b0","0
+x72a590","0x72c110","0x1408d00","0x72c920","0x72c930","0x72daf0","0x1408b80","0x1408bf0","0x72c910","0x72e3d0","0x72d3e
+0","0x72d810","0x72d8f0","0x72dab0","0x72d720","0x72e3e0","0x72d5e0","0x72df40","0x72c0e0"],"game_helper":"0x0","stage_
+registry":"0x0","battle_data_root":"0x0","battle_data_root_vtable_rva":"0x0","battle_data_root_methods_rva":["0x0","0x0
+","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0"],"battle_data_object":"0x0","battle_data_object_vtable_rv
+a":"0x0","battle_data_object_methods_rva":["0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0"],"ba
+ttle_data_content":"0x0","battle_data_loader":"0x0","battle_data_loader_vtable_rva":"0x0","battle_data_loader_methods_r
+va":["0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0"],"loading_state":"0x0","data_load_task":"0
+x0","data_load_task_words":["0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0"],"loader_vtable_rva":"0x0","asset_system_vt
+able_rva":"0x0","thread_size":4,"thread_nodes":[["0x7f19140619e0","0x8","0x100000008","0x0","0xfb94000000015102","0x0"]
+,["0x7f19140611a0","0x2","0x100000002","0x0","0x91e6000000018102","0x0"],["0x7f1914061230","0x9","0x100000009","0x0","0
+x757f000000020102","0x0"],["0x0","0x1","0x100000001","0x0","0xd79700000001a102","0x0"]]}}
+DIRECT_RESOURCES asset=0x7f19c4033690 loader=0x0
+{"schema_version":1,"stage":"direct_platform_init","event":"after_call","value":{"called":true,"manager_before":"0x0","
+manager_after":"0x0","loader_before":"0x0","loader_after":"0x0","asset_system_before":"0x7f19c4033690","asset_system_af
+ter":"0x7f19c4033690","game_singleton_after":"0x7f1a04035040","entry_rva":"0xce65b0","loader_init_rva":"0x11e8f20"}}
+{"schema_version":1,"stage":"direct_game_main_init","event":"after_call","value":{"called":true,"game":"0x7f1a04035040"
+,"context":"0x7f19640332d8","helper_before":"0x0","helper_after":"0x7f19f4035220","manager_after":"0x7f199435a570","ent
+ry_rva":"0x727050","headless_resource_variant_rva":"0x137f220"}}
+{"schema_version":1,"stage":"direct_loading_state","event":"after_call","value":{"called":true,"manager":"0x7f199435a57
+0","state":"0x7f199435ad50","battle":"0x0","logic_battle":"0x0","replay":"0x0","left_player":"0x0","right_player":"0x0"
+,"battle_json_loaded":false,"current_state_type":1,"pending_state_type":0}}
+{"schema_version":1,"stage":"direct_loading_frames","event":"after_call","value":{"called":true,"manager":"0x7f199435a5
+70","state":"0x7f199435ad50","battle":"0x0","logic_battle":"0x0","replay":"0x0","left_player":"0x0","right_player":"0x0
+","battle_json_loaded":false,"current_state_type":1,"pending_state_type":0}}
+At C:\Users\benpe\ClashBot\research\ext\cr-native-sandbox\scripts\start_direct_service.ps1:175 char:1
++ throw "Direct service did not become ready: $LastError`n$($Tail | Out ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Direct service ...ate_type":0}}
+:String) [], RuntimeException
+    + FullyQualifiedErrorId : Direct service did not become ready: empty response
+    {"schema_version":1,"stage":"jni_on_load","event":"before_system_load","path":"/data/local/tmp/cr-native-direct-0/ 
+   libg.so"}
+java.lang.ClassNotFoundException: com.supercell.titan.UnityAdsTitan
+	at java.lang.Runtime.nativeLoad(Native Method)
+	at java.lang.Runtime.nativeLoad(Runtime.java:1121)
+	at java.lang.Runtime.load0(Runtime.java:927)
+	at java.lang.System.load(System.java:1620)
+	at royale.nativehost.JniHost.main(JniHost.java:98)
+	at com.android.internal.os.RuntimeInit.nativeFinishInit(Native Method)
+	at com.android.internal.os.RuntimeInit.main(RuntimeInit.java:355)
+{"schema_version":1,"stage":"jni_on_load","event":"after_system_load","ok":true}
+    {"schema_version":1,"stage":"package_context","ok":true,"context_class":"android.app.ContextImpl","assets_class":" 
+   android.content.res.AssetManager"}
+    {"schema_version":1,"stage":"runtime_probe","event":"after_system_load","value":{"rva":"0x1ab9910","buckets":"0x0" 
+   ,"bucket_count":0,"first":"0x0","size":0,"max_load_factor_bits":"0x3f800000","manager_root":"0x0","context":"0x0",  
+  "state_vtable":"0x0","state_methods_rva":["0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0",   
+ "0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0"],"manager_phase":-1,"current_state_type":-    
+1,"pending_state_type":-1,"replay_data":"0x0","replay_keys":{"battle":"battle","cmd":"cmd","first_int":"rndSeed","    
+second_int":"time"},"battle":"0x0","battle_vtable":"0x0","battle_methods_rva":["0x0","0x0","0x0","0x0","0x0","0x0"    
+,"0x0","0x0","0x0","0x0","0x0","0x0"],"tick":-1,"read_ok":{"map":true,"root":true,"context":false,"manager_fields"    
+:false,"battle":false,"tick":false}}}
+{"schema_version":1,"stage":"native_libraries_loaded","event":"before"}
+{"schema_version":1,"stage":"native_libraries_loaded","event":"after"}
+    {"schema_version":1,"stage":"runtime_probe","event":"after_native_libraries_loaded","value":{"rva":"0x1ab9910","bu 
+   ckets":"0x0","bucket_count":0,"first":"0x0","size":0,"max_load_factor_bits":"0x3f800000","manager_root":"0x0","con  
+  text":"0x0","state_vtable":"0x0","state_methods_rva":["0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0",   
+ "0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0"],"manager_phase":-1,"current_s    
+tate_type":-1,"pending_state_type":-1,"replay_data":"0x0","replay_keys":{"battle":"battle","cmd":"cmd","first_int"    
+:"rndSeed","second_int":"time"},"battle":"0x0","battle_vtable":"0x0","battle_methods_rva":["0x0","0x0","0x0","0x0"    
+,"0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0"],"tick":-1,"read_ok":{"map":true,"root":true,"context":false,"man    
+ager_fields":false,"battle":false,"tick":false}}}
+{"schema_version":1,"stage":"application_create","event":"before"}
+{"schema_version":1,"stage":"application_create","event":"after"}
+    {"schema_version":1,"stage":"runtime_probe","event":"after_application_create","value":{"rva":"0x1ab9910","buckets 
+   ":"0x0","bucket_count":0,"first":"0x0","size":0,"max_load_factor_bits":"0x3f800000","manager_root":"0x0","context"  
+  :"0x0","state_vtable":"0x0","state_methods_rva":["0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0"   
+ ,"0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0"],"manager_phase":-1,"current_state_    
+type":-1,"pending_state_type":-1,"replay_data":"0x0","replay_keys":{"battle":"battle","cmd":"cmd","first_int":"rnd    
+Seed","second_int":"time"},"battle":"0x0","battle_vtable":"0x0","battle_methods_rva":["0x0","0x0","0x0","0x0","0x0    
+","0x0","0x0","0x0","0x0","0x0","0x0","0x0"],"tick":-1,"read_ok":{"map":true,"root":true,"context":false,"manager_    
+fields":false,"battle":false,"tick":false}}}
+sh: /system/xbin/which: inaccessible or not found
+{"schema_version":1,"stage":"create_game_main","ok":true,"result":"r6VRV=>.A2=^(6ZW:hv'N$;Qr(/}avPVbF6@;}k["}
+    {"schema_version":1,"stage":"runtime_probe","event":"after_create_game_main","value":{"rva":"0x1ab9910","buckets": 
+   "0x0","bucket_count":0,"first":"0x0","size":0,"max_load_factor_bits":"0x3f800000","manager_root":"0x0","context":"  
+  0x0","state_vtable":"0x0","state_methods_rva":["0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","   
+ 0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0"],"manager_phase":-1,"current_state_ty    
+pe":-1,"pending_state_type":-1,"replay_data":"0x0","replay_keys":{"battle":"battle","cmd":"cmd","first_int":"rndSe    
+ed","second_int":"time"},"battle":"0x0","battle_vtable":"0x0","battle_methods_rva":["0x0","0x0","0x0","0x0","0x0",    
+"0x0","0x0","0x0","0x0","0x0","0x0","0x0"],"tick":-1,"read_ok":{"map":true,"root":true,"context":false,"manager_fi    
+elds":false,"battle":false,"tick":false}}}
+{"schema_version":1,"stage":"activity_create","event":"before"}
+{"schema_version":1,"stage":"activity_create","event":"after"}
+    {"schema_version":1,"stage":"runtime_probe","event":"after_activity_create","value":{"rva":"0x1ab9910","buckets":" 
+   0x0","bucket_count":0,"first":"0x0","size":0,"max_load_factor_bits":"0x3f800000","manager_root":"0x0","context":"0  
+  x0","state_vtable":"0x0","state_methods_rva":["0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0   
+ x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0"],"manager_phase":-1,"current_state_typ    
+e":-1,"pending_state_type":-1,"replay_data":"0x0","replay_keys":{"battle":"battle","cmd":"cmd","first_int":"rndSee    
+d","second_int":"time"},"battle":"0x0","battle_vtable":"0x0","battle_methods_rva":["0x0","0x0","0x0","0x0","0x0","    
+0x0","0x0","0x0","0x0","0x0","0x0","0x0"],"tick":-1,"read_ok":{"map":true,"root":true,"context":false,"manager_fie    
+lds":false,"battle":false,"tick":false}}}
+{"schema_version":1,"stage":"headless_hold","event":"before"}
+{"schema_version":1,"stage":"headless_hold","event":"after"}
+    {"schema_version":1,"stage":"runtime_probe","event":"after_headless_hold","value":{"rva":"0x1ab9910","buckets":"0x 
+   7f192405c290","bucket_count":5,"first":"0x7f1914061500","size":4,"max_load_factor_bits":"0x3f800000","manager_root  
+  ":"0x0","context":"0x0","state_vtable":"0x0","state_methods_rva":["0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0",   
+ "0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0"],"manager_phase":-    
+1,"current_state_type":-1,"pending_state_type":-1,"replay_data":"0x0","replay_keys":{"battle":"battle","cmd":"cmd"    
+,"first_int":"rndSeed","second_int":"time"},"battle":"0x0","battle_vtable":"0x0","battle_methods_rva":["0x0","0x0"    
+,"0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0"],"tick":-1,"read_ok":{"map":true,"root":true,"context    
+":false,"manager_fields":false,"battle":false,"tick":false}}}
+    {"schema_version":1,"stage":"prerequisite_probe","event":"after_headless_hold","value":{"manager":"0x0","loader":" 
+   0x0","asset_system":"0x7f19c4033690","game_singleton":"0x7f1a04035040","runtime_clock":"0x7f192405db28","game_vtab  
+  le_rva":"0x18b6ff8","game_context":"0x7f19640332d8","game_methods_rva":["0x726240","0x726c40","0x726ca0","0x727050   
+ ","0x72c8b0","0x72a590","0x72c110","0x1408d00","0x72c920","0x72c930","0x72daf0","0x1408b80","0x1408bf0","0x72c910"    
+,"0x72e3d0","0x72d3e0","0x72d810","0x72d8f0","0x72dab0","0x72d720","0x72e3e0","0x72d5e0","0x72df40","0x72c0e0"],"g    
+ame_helper":"0x0","stage_registry":"0x0","battle_data_root":"0x0","battle_data_root_vtable_rva":"0x0","battle_data    
+_root_methods_rva":["0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0"],"battle_data_object":    
+"0x0","battle_data_object_vtable_rva":"0x0","battle_data_object_methods_rva":["0x0","0x0","0x0","0x0","0x0","0x0",    
+"0x0","0x0","0x0","0x0","0x0","0x0"],"battle_data_content":"0x0","battle_data_loader":"0x0","battle_data_loader_vt    
+able_rva":"0x0","battle_data_loader_methods_rva":["0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0","0x0    
+","0x0"],"loading_state":"0x0","data_load_task":"0x0","data_load_task_words":["0x0","0x0","0x0","0x0","0x0","0x0",    
+"0x0","0x0"],"loader_vtable_rva":"0x0","asset_system_vtable_rva":"0x0","thread_size":4,"thread_nodes":[["0x7f19140    
+619e0","0x8","0x100000008","0x0","0xfb94000000015102","0x0"],["0x7f19140611a0","0x2","0x100000002","0x0","0x91e600    
+0000018102","0x0"],["0x7f1914061230","0x9","0x100000009","0x0","0x757f000000020102","0x0"],["0x0","0x1","0x1000000    
+01","0x0","0xd79700000001a102","0x0"]]}}
+DIRECT_RESOURCES asset=0x7f19c4033690 loader=0x0
+    {"schema_version":1,"stage":"direct_platform_init","event":"after_call","value":{"called":true,"manager_before":"0 
+   x0","manager_after":"0x0","loader_before":"0x0","loader_after":"0x0","asset_system_before":"0x7f19c4033690","asset  
+  _system_after":"0x7f19c4033690","game_singleton_after":"0x7f1a04035040","entry_rva":"0xce65b0","loader_init_rva":"   
+ 0x11e8f20"}}
+    {"schema_version":1,"stage":"direct_game_main_init","event":"after_call","value":{"called":true,"game":"0x7f1a0403 
+   5040","context":"0x7f19640332d8","helper_before":"0x0","helper_after":"0x7f19f4035220","manager_after":"0x7f199435  
+  a570","entry_rva":"0x727050","headless_resource_variant_rva":"0x137f220"}}
+    {"schema_version":1,"stage":"direct_loading_state","event":"after_call","value":{"called":true,"manager":"0x7f1994 
+   35a570","state":"0x7f199435ad50","battle":"0x0","logic_battle":"0x0","replay":"0x0","left_player":"0x0","right_pla  
+  yer":"0x0","battle_json_loaded":false,"current_state_type":1,"pending_state_type":0}}
+    {"schema_version":1,"stage":"direct_loading_frames","event":"after_call","value":{"called":true,"manager":"0x7f199 
+   435a570","state":"0x7f199435ad50","battle":"0x0","logic_battle":"0x0","replay":"0x0","left_player":"0x0","right_pl  
+  ayer":"0x0","battle_json_loaded":false,"current_state_type":1,"pending_state_type":0}}

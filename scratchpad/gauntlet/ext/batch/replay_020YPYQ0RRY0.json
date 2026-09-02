@@ -1,0 +1,1253 @@
+{
+ "tag": "020YPYQ0RRY0",
+ "run": "batch",
+ "port": 37031,
+ "seed": 424242,
+ "level": 11,
+ "expected": {
+  "result": "loss",
+  "crowns_by_side": {
+   "0": 3,
+   "1": 0
+  },
+  "last_play_tick": 3481
+ },
+ "deal_inference": {
+  "0": {
+   "consistent": 256
+  },
+  "1": {
+   "consistent": 256
+  }
+ },
+ "reset_seconds": 0.05,
+ "tick_after_reset": 10,
+ "tower_rows_by_side": {
+  "0": [
+   3.0,
+   6.5,
+   6.5
+  ],
+  "1": [
+   29.0,
+   25.5,
+   25.5
+  ]
+ },
+ "orientation": "side0 low rows / side1 high rows (matches RoyaleAPI red/blue)",
+ "deal_probe": {
+  "canonical": {
+   "0": {
+    "hand_pos": [
+     3,
+     7,
+     2,
+     4
+    ],
+    "cycle_pos": [
+     6,
+     5,
+     0,
+     1
+    ],
+    "next": 6
+   },
+   "1": {
+    "hand_pos": [
+     6,
+     3,
+     7,
+     1
+    ],
+    "cycle_pos": [
+     4,
+     2,
+     5,
+     0
+    ],
+    "next": 4
+   }
+  },
+  "reversed": {
+   "0": {
+    "hand_pos": [
+     3,
+     7,
+     2,
+     4
+    ],
+    "cycle_pos": [
+     6,
+     5,
+     0,
+     1
+    ]
+   },
+   "1": {
+    "hand_pos": [
+     6,
+     3,
+     7,
+     1
+    ],
+    "cycle_pos": [
+     4,
+     2,
+     5,
+     0
+    ]
+   }
+  },
+  "position_based": true,
+  "same_cards_after_permute": false
+ },
+ "deal_strategy": "permuted deck so dealt positions carry the inferred hand/queue",
+ "final_decks": {
+  "0": [
+   "Musketeer@hero",
+   "Log",
+   "HogRider",
+   "Fireball",
+   "Tombstone",
+   "MegaKnight@evolution",
+   "Witch@evolution",
+   "Freeze"
+  ],
+  "1": [
+   "Xbow",
+   "Log",
+   "Tesla@evolution",
+   "Knight@evolution",
+   "Skeletons",
+   "Tornado",
+   "IceWizard",
+   "Rocket"
+  ]
+ },
+ "opening_hand": {
+  "0": [
+   "Fireball",
+   "Freeze",
+   "HogRider",
+   "Tombstone"
+  ],
+  "1": [
+   "IceWizard",
+   "Knight",
+   "Rocket",
+   "Log"
+  ]
+ },
+ "opening_state_hash": "0bfbcb2adbea282e",
+ "drive_seconds": 1.78,
+ "final": {
+  "tick": 3607,
+  "terminated": true,
+  "outcome": "side0_win",
+  "winner": 0,
+  "crowns": [
+   3,
+   0
+  ],
+  "termination_reason": "native_logic_clock_stopped",
+  "terminal_tick": 3607,
+  "state_hash": "6b7de23bbc3c1457",
+  "towers": [
+   {
+    "side": 0,
+    "type": "king",
+    "lane": null,
+    "hp": 4799,
+    "destroyed": false
+   },
+   {
+    "side": 0,
+    "type": "princess",
+    "lane": "left",
+    "hp": 3052,
+    "destroyed": false
+   },
+   {
+    "side": 0,
+    "type": "princess",
+    "lane": "right",
+    "hp": 2130,
+    "destroyed": false
+   },
+   {
+    "side": 1,
+    "type": "king",
+    "lane": null,
+    "hp": 0,
+    "destroyed": true
+   },
+   {
+    "side": 1,
+    "type": "princess",
+    "lane": "left",
+    "hp": 0,
+    "destroyed": true
+   },
+   {
+    "side": 1,
+    "type": "princess",
+    "lane": "right",
+    "hp": 0,
+    "destroyed": true
+   }
+  ],
+  "elixir": {
+   "0": 4.7742,
+   "1": 10.0
+  }
+ },
+ "grade": {
+  "plays_total": 43,
+  "plays_driven": 43,
+  "accepted": 43,
+  "rejected_by_reason": {},
+  "invalid_placement": 0,
+  "elixir_delays": {
+   "n": 0,
+   "max_ticks": 0,
+   "sum_ticks": 0
+  },
+  "skipped": [],
+  "crowns_match": true,
+  "terminal_vs_last_play_ticks": 126
+ },
+ "log": [
+  {
+   "play_index": 0,
+   "tick": 201,
+   "side": 0,
+   "card": "tombstone",
+   "x": 9500,
+   "y": 10500,
+   "cost": 3,
+   "elixir_before": 9.5778,
+   "hand_before": [
+    "Fireball",
+    "Freeze",
+    "HogRider",
+    "Tombstone"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 201
+  },
+  {
+   "play_index": 1,
+   "tick": 205,
+   "side": 1,
+   "card": "the-log",
+   "x": 14500,
+   "y": 17500,
+   "cost": 2,
+   "elixir_before": 9.649,
+   "hand_before": [
+    "IceWizard",
+    "Knight",
+    "Rocket",
+    "Log"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 205
+  },
+  {
+   "play_index": 2,
+   "tick": 313,
+   "side": 1,
+   "card": "ice-wizard",
+   "x": 9500,
+   "y": 31500,
+   "cost": 3,
+   "elixir_before": 9.5714,
+   "hand_before": [
+    "IceWizard",
+    "Knight",
+    "Rocket",
+    "Skeletons"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 313
+  },
+  {
+   "play_index": 3,
+   "tick": 367,
+   "side": 0,
+   "card": "witch",
+   "x": 17500,
+   "y": 1500,
+   "cost": 5,
+   "elixir_before": 9.5326,
+   "hand_before": [
+    "Fireball",
+    "Freeze",
+    "HogRider",
+    "Witch"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 367
+  },
+  {
+   "play_index": 4,
+   "tick": 451,
+   "side": 1,
+   "card": "rocket",
+   "x": 14500,
+   "y": 8500,
+   "cost": 6,
+   "elixir_before": 9.0278,
+   "hand_before": [
+    "Tesla",
+    "Knight",
+    "Rocket",
+    "Skeletons"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 2,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 451
+  },
+  {
+   "play_index": 5,
+   "tick": 635,
+   "side": 0,
+   "card": "mega-knight",
+   "x": 9500,
+   "y": 500,
+   "cost": 7,
+   "elixir_before": 9.303,
+   "hand_before": [
+    "Fireball",
+    "Freeze",
+    "HogRider",
+    "MegaKnight"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 635
+  },
+  {
+   "play_index": 6,
+   "tick": 817,
+   "side": 1,
+   "card": "tesla",
+   "x": 9000,
+   "y": 22000,
+   "cost": 4,
+   "elixir_before": 9.5426,
+   "hand_before": [
+    "Tesla",
+    "Knight",
+    "Tornado",
+    "Skeletons"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 817
+  },
+  {
+   "play_index": 7,
+   "tick": 963,
+   "side": 1,
+   "card": "knight",
+   "x": 9500,
+   "y": 18499,
+   "cost": 3,
+   "elixir_before": 8.1414,
+   "hand_before": [
+    "Xbow",
+    "Knight",
+    "Tornado",
+    "Skeletons"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 963
+  },
+  {
+   "play_index": 8,
+   "tick": 972,
+   "side": 0,
+   "card": "musketeer",
+   "x": 9500,
+   "y": 14500,
+   "cost": 4,
+   "elixir_before": 8.3016,
+   "hand_before": [
+    "Fireball",
+    "Freeze",
+    "HogRider",
+    "Musketeer"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 972
+  },
+  {
+   "play_index": 9,
+   "tick": 1021,
+   "side": 1,
+   "card": "skeletons",
+   "x": 13500,
+   "y": 17499,
+   "cost": 1,
+   "elixir_before": 6.1738,
+   "hand_before": [
+    "Xbow",
+    "Log",
+    "Tornado",
+    "Skeletons"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 1021
+  },
+  {
+   "play_index": 10,
+   "tick": 1024,
+   "side": 0,
+   "card": "fireball",
+   "x": 10500,
+   "y": 19500,
+   "cost": 4,
+   "elixir_before": 5.2272,
+   "hand_before": [
+    "Fireball",
+    "Freeze",
+    "HogRider",
+    "Log"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 1024
+  },
+  {
+   "play_index": 11,
+   "tick": 1151,
+   "side": 1,
+   "card": "ice-wizard",
+   "x": 10500,
+   "y": 23500,
+   "cost": 3,
+   "elixir_before": 7.4878,
+   "hand_before": [
+    "Xbow",
+    "Log",
+    "Tornado",
+    "IceWizard"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 1151
+  },
+  {
+   "play_index": 12,
+   "tick": 1186,
+   "side": 1,
+   "card": "the-log",
+   "x": 13500,
+   "y": 23500,
+   "cost": 2,
+   "elixir_before": 5.1108,
+   "hand_before": [
+    "Xbow",
+    "Log",
+    "Tornado",
+    "Rocket"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 1186
+  },
+  {
+   "play_index": 13,
+   "tick": 1201,
+   "side": 0,
+   "card": "freeze",
+   "x": 12500,
+   "y": 23500,
+   "cost": 4,
+   "elixir_before": 4.3778,
+   "hand_before": [
+    "Tombstone",
+    "Freeze",
+    "HogRider",
+    "Log"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 1201
+  },
+  {
+   "play_index": 14,
+   "tick": 1244,
+   "side": 1,
+   "card": "tesla",
+   "x": 12000,
+   "y": 18000,
+   "cost": 4,
+   "elixir_before": 4.1432,
+   "hand_before": [
+    "Xbow",
+    "Tesla",
+    "Tornado",
+    "Rocket"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 1244
+  },
+  {
+   "play_index": 15,
+   "tick": 1481,
+   "side": 0,
+   "card": "hog-rider",
+   "x": 16500,
+   "y": 14500,
+   "cost": 4,
+   "elixir_before": 5.3618,
+   "hand_before": [
+    "Tombstone",
+    "Witch",
+    "HogRider",
+    "Log"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 2,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 1481
+  },
+  {
+   "play_index": 16,
+   "tick": 1564,
+   "side": 1,
+   "card": "tornado",
+   "x": 9500,
+   "y": 24500,
+   "cost": 3,
+   "elixir_before": 5.8392,
+   "hand_before": [
+    "Xbow",
+    "Knight",
+    "Tornado",
+    "Rocket"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 2,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 1564
+  },
+  {
+   "play_index": 17,
+   "tick": 1937,
+   "side": 1,
+   "card": "knight",
+   "x": 9500,
+   "y": 31499,
+   "cost": 3,
+   "elixir_before": 9.4786,
+   "hand_before": [
+    "Xbow",
+    "Knight",
+    "Skeletons",
+    "Rocket"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 1937
+  },
+  {
+   "play_index": 18,
+   "tick": 1951,
+   "side": 0,
+   "card": "tombstone",
+   "x": 9500,
+   "y": 10500,
+   "cost": 3,
+   "elixir_before": 9.7278,
+   "hand_before": [
+    "Tombstone",
+    "Witch",
+    "MegaKnight",
+    "Log"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 1951
+  },
+  {
+   "play_index": 19,
+   "tick": 2107,
+   "side": 1,
+   "card": "ice-wizard",
+   "x": 9500,
+   "y": 22500,
+   "cost": 3,
+   "elixir_before": 9.5046,
+   "hand_before": [
+    "Xbow",
+    "IceWizard",
+    "Skeletons",
+    "Rocket"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2107
+  },
+  {
+   "play_index": 20,
+   "tick": 2121,
+   "side": 0,
+   "card": "musketeer",
+   "x": 17500,
+   "y": 8500,
+   "cost": 4,
+   "elixir_before": 9.7538,
+   "hand_before": [
+    "Musketeer",
+    "Witch",
+    "MegaKnight",
+    "Log"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2121
+  },
+  {
+   "play_index": 21,
+   "tick": 2201,
+   "side": 1,
+   "card": "skeletons",
+   "x": 17500,
+   "y": 30499,
+   "cost": 1,
+   "elixir_before": 8.1778,
+   "hand_before": [
+    "Xbow",
+    "Log",
+    "Skeletons",
+    "Rocket"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 2,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2201
+  },
+  {
+   "play_index": 22,
+   "tick": 2271,
+   "side": 0,
+   "card": "the-log",
+   "x": 14500,
+   "y": 14500,
+   "cost": 2,
+   "elixir_before": 8.4238,
+   "hand_before": [
+    "Fireball",
+    "Witch",
+    "MegaKnight",
+    "Log"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2271
+  },
+  {
+   "play_index": 23,
+   "tick": 2281,
+   "side": 1,
+   "card": "rocket",
+   "x": 14500,
+   "y": 8500,
+   "cost": 6,
+   "elixir_before": 8.6018,
+   "hand_before": [
+    "Xbow",
+    "Log",
+    "Tesla",
+    "Rocket"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2281
+  },
+  {
+   "play_index": 24,
+   "tick": 2331,
+   "side": 1,
+   "card": "tornado",
+   "x": 13500,
+   "y": 8500,
+   "cost": 3,
+   "elixir_before": 3.4918,
+   "hand_before": [
+    "Xbow",
+    "Log",
+    "Tesla",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2331
+  },
+  {
+   "play_index": 25,
+   "tick": 2341,
+   "side": 0,
+   "card": "witch",
+   "x": 17500,
+   "y": 8500,
+   "cost": 5,
+   "elixir_before": 7.6698,
+   "hand_before": [
+    "Fireball",
+    "Witch",
+    "MegaKnight",
+    "Freeze"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2341
+  },
+  {
+   "play_index": 26,
+   "tick": 2497,
+   "side": 0,
+   "card": "mega-knight",
+   "x": 14500,
+   "y": 14500,
+   "cost": 7,
+   "elixir_before": 7.1829,
+   "hand_before": [
+    "Fireball",
+    "HogRider",
+    "MegaKnight",
+    "Freeze"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 2,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2497
+  },
+  {
+   "play_index": 27,
+   "tick": 2542,
+   "side": 1,
+   "card": "tesla",
+   "x": 9000,
+   "y": 21000,
+   "cost": 4,
+   "elixir_before": 6.7894,
+   "hand_before": [
+    "Xbow",
+    "Log",
+    "Tesla",
+    "Knight"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 2,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2542
+  },
+  {
+   "play_index": 28,
+   "tick": 2584,
+   "side": 1,
+   "card": "knight",
+   "x": 9500,
+   "y": 17499,
+   "cost": 3,
+   "elixir_before": 4.2888,
+   "hand_before": [
+    "Xbow",
+    "Log",
+    "IceWizard",
+    "Knight"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2584
+  },
+  {
+   "play_index": 29,
+   "tick": 2633,
+   "side": 1,
+   "card": "ice-wizard",
+   "x": 16500,
+   "y": 17500,
+   "cost": 3,
+   "elixir_before": 3.0381,
+   "hand_before": [
+    "Xbow",
+    "Log",
+    "IceWizard",
+    "Skeletons"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 2,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2633
+  },
+  {
+   "play_index": 30,
+   "tick": 2642,
+   "side": 0,
+   "card": "fireball",
+   "x": 10500,
+   "y": 19500,
+   "cost": 4,
+   "elixir_before": 5.3594,
+   "hand_before": [
+    "Fireball",
+    "HogRider",
+    "Tombstone",
+    "Freeze"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2642
+  },
+  {
+   "play_index": 31,
+   "tick": 2666,
+   "side": 1,
+   "card": "skeletons",
+   "x": 13500,
+   "y": 17499,
+   "cost": 1,
+   "elixir_before": 1.2162,
+   "hand_before": [
+    "Xbow",
+    "Log",
+    "Rocket",
+    "Skeletons"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2666
+  },
+  {
+   "play_index": 32,
+   "tick": 2744,
+   "side": 0,
+   "card": "hog-rider",
+   "x": 16500,
+   "y": 14500,
+   "cost": 4,
+   "elixir_before": 5.0008,
+   "hand_before": [
+    "Musketeer",
+    "HogRider",
+    "Tombstone",
+    "Freeze"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2744
+  },
+  {
+   "play_index": 33,
+   "tick": 2782,
+   "side": 1,
+   "card": "the-log",
+   "x": 14500,
+   "y": 20500,
+   "cost": 2,
+   "elixir_before": 4.3574,
+   "hand_before": [
+    "Xbow",
+    "Log",
+    "Rocket",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2782
+  },
+  {
+   "play_index": 34,
+   "tick": 2844,
+   "side": 1,
+   "card": "tornado",
+   "x": 9500,
+   "y": 24500,
+   "cost": 3,
+   "elixir_before": 4.5708,
+   "hand_before": [
+    "Xbow",
+    "Tesla",
+    "Rocket",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2844
+  },
+  {
+   "play_index": 35,
+   "tick": 2886,
+   "side": 1,
+   "card": "knight",
+   "x": 15500,
+   "y": 22499,
+   "cost": 3,
+   "elixir_before": 3.0702,
+   "hand_before": [
+    "Xbow",
+    "Tesla",
+    "Rocket",
+    "Knight"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2886
+  },
+  {
+   "play_index": 36,
+   "tick": 2905,
+   "side": 0,
+   "card": "freeze",
+   "x": 11500,
+   "y": 26500,
+   "cost": 4,
+   "elixir_before": 6.7485,
+   "hand_before": [
+    "Musketeer",
+    "Log",
+    "Tombstone",
+    "Freeze"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2905
+  },
+  {
+   "play_index": 37,
+   "tick": 2971,
+   "side": 1,
+   "card": "ice-wizard",
+   "x": 13500,
+   "y": 20500,
+   "cost": 3,
+   "elixir_before": 3.1047,
+   "hand_before": [
+    "Xbow",
+    "Tesla",
+    "Rocket",
+    "IceWizard"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2971
+  },
+  {
+   "play_index": 38,
+   "tick": 3014,
+   "side": 0,
+   "card": "tombstone",
+   "x": 9500,
+   "y": 10500,
+   "cost": 3,
+   "elixir_before": 6.6398,
+   "hand_before": [
+    "Musketeer",
+    "Log",
+    "Tombstone",
+    "Witch"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 2,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3014
+  },
+  {
+   "play_index": 39,
+   "tick": 3115,
+   "side": 0,
+   "card": "mega-knight",
+   "x": 13500,
+   "y": 14500,
+   "cost": 7,
+   "elixir_before": 7.2455,
+   "hand_before": [
+    "Musketeer",
+    "Log",
+    "MegaKnight",
+    "Witch"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 2,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3115
+  },
+  {
+   "play_index": 40,
+   "tick": 3261,
+   "side": 0,
+   "card": "witch",
+   "x": 9500,
+   "y": 14500,
+   "cost": 5,
+   "elixir_before": 5.4577,
+   "hand_before": [
+    "Musketeer",
+    "Log",
+    "Fireball",
+    "Witch"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3261
+  },
+  {
+   "play_index": 41,
+   "tick": 3373,
+   "side": 0,
+   "card": "hog-rider",
+   "x": 16500,
+   "y": 20500,
+   "cost": 4,
+   "elixir_before": 4.4561,
+   "hand_before": [
+    "Musketeer",
+    "Log",
+    "Fireball",
+    "HogRider"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3373
+  },
+  {
+   "play_index": 42,
+   "tick": 3481,
+   "side": 0,
+   "card": "fireball",
+   "x": 9500,
+   "y": 27500,
+   "cost": 4,
+   "elixir_before": 4.3117,
+   "hand_before": [
+    "Musketeer",
+    "Log",
+    "Fireball",
+    "Freeze"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 2,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3481
+  }
+ ]
+}

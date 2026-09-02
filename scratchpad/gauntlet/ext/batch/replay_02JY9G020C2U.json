@@ -1,0 +1,1061 @@
+{
+ "tag": "02JY9G020C2U",
+ "run": "batch",
+ "port": 37031,
+ "seed": 424242,
+ "level": 11,
+ "expected": {
+  "result": "win",
+  "crowns_by_side": {
+   "0": 0,
+   "1": 3
+  },
+  "last_play_tick": 3184
+ },
+ "deal_inference": {
+  "0": {
+   "consistent": 256
+  },
+  "1": {
+   "consistent": 256
+  }
+ },
+ "reset_seconds": 0.03,
+ "tick_after_reset": 10,
+ "tower_rows_by_side": {
+  "0": [
+   3.0,
+   6.5,
+   6.5
+  ],
+  "1": [
+   29.0,
+   25.5,
+   25.5
+  ]
+ },
+ "orientation": "side0 low rows / side1 high rows (matches RoyaleAPI red/blue)",
+ "deal_probe": {
+  "canonical": {
+   "0": {
+    "hand_pos": [
+     3,
+     7,
+     2,
+     4
+    ],
+    "cycle_pos": [
+     6,
+     5,
+     0,
+     1
+    ],
+    "next": 6
+   },
+   "1": {
+    "hand_pos": [
+     6,
+     3,
+     7,
+     1
+    ],
+    "cycle_pos": [
+     4,
+     2,
+     5,
+     0
+    ],
+    "next": 4
+   }
+  },
+  "reversed": {
+   "0": {
+    "hand_pos": [
+     3,
+     7,
+     2,
+     4
+    ],
+    "cycle_pos": [
+     6,
+     5,
+     0,
+     1
+    ]
+   },
+   "1": {
+    "hand_pos": [
+     6,
+     3,
+     7,
+     1
+    ],
+    "cycle_pos": [
+     4,
+     2,
+     5,
+     0
+    ]
+   }
+  },
+  "position_based": true,
+  "same_cards_after_permute": false
+ },
+ "deal_strategy": "permuted deck so dealt positions carry the inferred hand/queue",
+ "final_decks": {
+  "0": [
+   "Zap@evolution",
+   "Wizard@evolution",
+   "MiniPekka",
+   "Giant@hero",
+   "Skeletons",
+   "Tornado",
+   "ZapMachine",
+   "Heal"
+  ],
+  "1": [
+   "Xbow",
+   "Log",
+   "Tesla@evolution",
+   "Knight@evolution",
+   "Skeletons",
+   "Tornado",
+   "IceWizard",
+   "Rocket"
+  ]
+ },
+ "opening_hand": {
+  "0": [
+   "Giant",
+   "Heal",
+   "MiniPekka",
+   "Skeletons"
+  ],
+  "1": [
+   "IceWizard",
+   "Knight",
+   "Rocket",
+   "Log"
+  ]
+ },
+ "opening_state_hash": "0bfbcb2adbea282e",
+ "drive_seconds": 1.26,
+ "final": {
+  "tick": 3413,
+  "terminated": true,
+  "outcome": "side1_win",
+  "winner": 1,
+  "crowns": [
+   0,
+   3
+  ],
+  "termination_reason": "native_logic_clock_stopped",
+  "terminal_tick": 3413,
+  "state_hash": "4a06193845066364",
+  "towers": [
+   {
+    "side": 0,
+    "type": "king",
+    "lane": null,
+    "hp": 0,
+    "destroyed": true
+   },
+   {
+    "side": 0,
+    "type": "princess",
+    "lane": "left",
+    "hp": 0,
+    "destroyed": true
+   },
+   {
+    "side": 0,
+    "type": "princess",
+    "lane": "right",
+    "hp": 0,
+    "destroyed": true
+   },
+   {
+    "side": 1,
+    "type": "king",
+    "lane": null,
+    "hp": 4799,
+    "destroyed": false
+   },
+   {
+    "side": 1,
+    "type": "princess",
+    "lane": "left",
+    "hp": 3027,
+    "destroyed": false
+   },
+   {
+    "side": 1,
+    "type": "princess",
+    "lane": "right",
+    "hp": 3004,
+    "destroyed": false
+   }
+  ],
+  "elixir": {
+   "0": 10.0,
+   "1": 9.7076
+  }
+ },
+ "grade": {
+  "plays_total": 35,
+  "plays_driven": 35,
+  "accepted": 35,
+  "rejected_by_reason": {},
+  "invalid_placement": 0,
+  "elixir_delays": {
+   "n": 0,
+   "max_ticks": 0,
+   "sum_ticks": 0
+  },
+  "skipped": [],
+  "crowns_match": true,
+  "terminal_vs_last_play_ticks": 229
+ },
+ "log": [
+  {
+   "play_index": 0,
+   "tick": 311,
+   "side": 1,
+   "card": "the-log",
+   "x": 4500,
+   "y": 17500,
+   "cost": 2,
+   "elixir_before": 10.0,
+   "hand_before": [
+    "IceWizard",
+    "Knight",
+    "Rocket",
+    "Log"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 311
+  },
+  {
+   "play_index": 1,
+   "tick": 481,
+   "side": 1,
+   "card": "ice-wizard",
+   "x": 7500,
+   "y": 31500,
+   "cost": 3,
+   "elixir_before": 10.0,
+   "hand_before": [
+    "IceWizard",
+    "Knight",
+    "Rocket",
+    "Skeletons"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 481
+  },
+  {
+   "play_index": 2,
+   "tick": 533,
+   "side": 0,
+   "card": "mini-pekka",
+   "x": 8499,
+   "y": 500,
+   "cost": 4,
+   "elixir_before": 10.0,
+   "hand_before": [
+    "Giant",
+    "Heal",
+    "MiniPekka",
+    "Skeletons"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 2,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 533
+  },
+  {
+   "play_index": 3,
+   "tick": 646,
+   "side": 1,
+   "card": "tesla",
+   "x": 9000,
+   "y": 18000,
+   "cost": 4,
+   "elixir_before": 9.937,
+   "hand_before": [
+    "Tesla",
+    "Knight",
+    "Rocket",
+    "Skeletons"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 646
+  },
+  {
+   "play_index": 4,
+   "tick": 707,
+   "side": 0,
+   "card": "sparky",
+   "x": 8499,
+   "y": 11500,
+   "cost": 6,
+   "elixir_before": 9.0972,
+   "hand_before": [
+    "Giant",
+    "Heal",
+    "ZapMachine",
+    "Skeletons"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 2,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 707
+  },
+  {
+   "play_index": 5,
+   "tick": 768,
+   "side": 1,
+   "card": "tornado",
+   "x": 4500,
+   "y": 13500,
+   "cost": 3,
+   "elixir_before": 8.1086,
+   "hand_before": [
+    "Tornado",
+    "Knight",
+    "Rocket",
+    "Skeletons"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 768
+  },
+  {
+   "play_index": 6,
+   "tick": 797,
+   "side": 1,
+   "card": "skeletons",
+   "x": 6499,
+   "y": 17499,
+   "cost": 1,
+   "elixir_before": 5.6248,
+   "hand_before": [
+    "Xbow",
+    "Knight",
+    "Rocket",
+    "Skeletons"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 797
+  },
+  {
+   "play_index": 7,
+   "tick": 854,
+   "side": 1,
+   "card": "the-log",
+   "x": 4500,
+   "y": 17500,
+   "cost": 2,
+   "elixir_before": 5.6394,
+   "hand_before": [
+    "Xbow",
+    "Knight",
+    "Rocket",
+    "Log"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 854
+  },
+  {
+   "play_index": 8,
+   "tick": 1084,
+   "side": 0,
+   "card": "skeletons",
+   "x": 14500,
+   "y": 14500,
+   "cost": 1,
+   "elixir_before": 9.8078,
+   "hand_before": [
+    "Giant",
+    "Heal",
+    "Tornado",
+    "Skeletons"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 1084
+  },
+  {
+   "play_index": 9,
+   "tick": 1152,
+   "side": 0,
+   "card": "zap",
+   "x": 14500,
+   "y": 22500,
+   "cost": 2,
+   "elixir_before": 10.0,
+   "hand_before": [
+    "Giant",
+    "Heal",
+    "Tornado",
+    "Zap"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 1152
+  },
+  {
+   "play_index": 10,
+   "tick": 1261,
+   "side": 0,
+   "card": "heal-spirit",
+   "x": 14500,
+   "y": 14500,
+   "cost": 1,
+   "elixir_before": 9.9402,
+   "hand_before": [
+    "Giant",
+    "Heal",
+    "Tornado",
+    "Wizard"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 1261
+  },
+  {
+   "play_index": 11,
+   "tick": 1621,
+   "side": 1,
+   "card": "knight",
+   "x": 8499,
+   "y": 31499,
+   "cost": 3,
+   "elixir_before": 10.0,
+   "hand_before": [
+    "Xbow",
+    "Knight",
+    "Rocket",
+    "IceWizard"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 1621
+  },
+  {
+   "play_index": 12,
+   "tick": 1682,
+   "side": 0,
+   "card": "wizard",
+   "x": 8499,
+   "y": 7500,
+   "cost": 5,
+   "elixir_before": 10.0,
+   "hand_before": [
+    "Giant",
+    "MiniPekka",
+    "Tornado",
+    "Wizard"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 1682
+  },
+  {
+   "play_index": 13,
+   "tick": 1794,
+   "side": 1,
+   "card": "ice-wizard",
+   "x": 8500,
+   "y": 22500,
+   "cost": 3,
+   "elixir_before": 10.0,
+   "hand_before": [
+    "Xbow",
+    "Tesla",
+    "Rocket",
+    "IceWizard"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 1794
+  },
+  {
+   "play_index": 14,
+   "tick": 1876,
+   "side": 0,
+   "card": "tornado",
+   "x": 5500,
+   "y": 20500,
+   "cost": 3,
+   "elixir_before": 8.4532,
+   "hand_before": [
+    "Giant",
+    "MiniPekka",
+    "Tornado",
+    "ZapMachine"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 2,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 1876
+  },
+  {
+   "play_index": 15,
+   "tick": 1969,
+   "side": 1,
+   "card": "x-bow",
+   "x": 2500,
+   "y": 19500,
+   "cost": 6,
+   "elixir_before": 10.0,
+   "hand_before": [
+    "Xbow",
+    "Tesla",
+    "Rocket",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 1969
+  },
+  {
+   "play_index": 16,
+   "tick": 2031,
+   "side": 0,
+   "card": "giant",
+   "x": 3499,
+   "y": 8500,
+   "cost": 5,
+   "elixir_before": 8.2122,
+   "hand_before": [
+    "Giant",
+    "MiniPekka",
+    "Skeletons",
+    "ZapMachine"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2031
+  },
+  {
+   "play_index": 17,
+   "tick": 2075,
+   "side": 0,
+   "card": "skeletons",
+   "x": 9500,
+   "y": 10500,
+   "cost": 1,
+   "elixir_before": 3.9954,
+   "hand_before": [
+    "Zap",
+    "MiniPekka",
+    "Skeletons",
+    "ZapMachine"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 2,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2075
+  },
+  {
+   "play_index": 18,
+   "tick": 2111,
+   "side": 1,
+   "card": "tesla",
+   "x": 7000,
+   "y": 18000,
+   "cost": 4,
+   "elixir_before": 6.5276,
+   "hand_before": [
+    "Skeletons",
+    "Tesla",
+    "Rocket",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2111
+  },
+  {
+   "play_index": 19,
+   "tick": 2181,
+   "side": 0,
+   "card": "mini-pekka",
+   "x": 1499,
+   "y": 14500,
+   "cost": 4,
+   "elixir_before": 4.8822,
+   "hand_before": [
+    "Zap",
+    "MiniPekka",
+    "Heal",
+    "ZapMachine"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2181
+  },
+  {
+   "play_index": 20,
+   "tick": 2241,
+   "side": 1,
+   "card": "skeletons",
+   "x": 5499,
+   "y": 17499,
+   "cost": 1,
+   "elixir_before": 4.8416,
+   "hand_before": [
+    "Skeletons",
+    "Log",
+    "Rocket",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2241
+  },
+  {
+   "play_index": 21,
+   "tick": 2269,
+   "side": 1,
+   "card": "knight",
+   "x": 2499,
+   "y": 17499,
+   "cost": 3,
+   "elixir_before": 4.34,
+   "hand_before": [
+    "Knight",
+    "Log",
+    "Rocket",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2269
+  },
+  {
+   "play_index": 22,
+   "tick": 2271,
+   "side": 0,
+   "card": "heal-spirit",
+   "x": 1499,
+   "y": 14500,
+   "cost": 1,
+   "elixir_before": 2.4842,
+   "hand_before": [
+    "Zap",
+    "Wizard",
+    "Heal",
+    "ZapMachine"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 2,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2271
+  },
+  {
+   "play_index": 23,
+   "tick": 2322,
+   "side": 0,
+   "card": "zap",
+   "x": 5500,
+   "y": 18500,
+   "cost": 2,
+   "elixir_before": 2.392,
+   "hand_before": [
+    "Zap",
+    "Wizard",
+    "Tornado",
+    "ZapMachine"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2322
+  },
+  {
+   "play_index": 24,
+   "tick": 2447,
+   "side": 0,
+   "card": "tornado",
+   "x": 8500,
+   "y": 31500,
+   "cost": 3,
+   "elixir_before": 3.4583,
+   "hand_before": [
+    "Giant",
+    "Wizard",
+    "Tornado",
+    "ZapMachine"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 2,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2447
+  },
+  {
+   "play_index": 25,
+   "tick": 2585,
+   "side": 1,
+   "card": "ice-wizard",
+   "x": 3500,
+   "y": 22500,
+   "cost": 3,
+   "elixir_before": 10.0,
+   "hand_before": [
+    "IceWizard",
+    "Log",
+    "Rocket",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2585
+  },
+  {
+   "play_index": 26,
+   "tick": 2621,
+   "side": 1,
+   "card": "the-log",
+   "x": 5500,
+   "y": 17500,
+   "cost": 2,
+   "elixir_before": 8.2852,
+   "hand_before": [
+    "Xbow",
+    "Log",
+    "Rocket",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 1,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2621
+  },
+  {
+   "play_index": 27,
+   "tick": 2651,
+   "side": 1,
+   "card": "tornado",
+   "x": 3500,
+   "y": 12500,
+   "cost": 3,
+   "elixir_before": 7.3562,
+   "hand_before": [
+    "Xbow",
+    "Tesla",
+    "Rocket",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2651
+  },
+  {
+   "play_index": 28,
+   "tick": 2676,
+   "side": 1,
+   "card": "skeletons",
+   "x": 3499,
+   "y": 20499,
+   "cost": 1,
+   "elixir_before": 5.2487,
+   "hand_before": [
+    "Xbow",
+    "Tesla",
+    "Rocket",
+    "Skeletons"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2676
+  },
+  {
+   "play_index": 29,
+   "tick": 2702,
+   "side": 1,
+   "card": "knight",
+   "x": 3499,
+   "y": 17499,
+   "cost": 3,
+   "elixir_before": 5.1769,
+   "hand_before": [
+    "Xbow",
+    "Tesla",
+    "Rocket",
+    "Knight"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2702
+  },
+  {
+   "play_index": 30,
+   "tick": 2944,
+   "side": 1,
+   "card": "x-bow",
+   "x": 2500,
+   "y": 12500,
+   "cost": 6,
+   "elixir_before": 10.0,
+   "hand_before": [
+    "Xbow",
+    "Tesla",
+    "Rocket",
+    "IceWizard"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2944
+  },
+  {
+   "play_index": 31,
+   "tick": 2975,
+   "side": 1,
+   "card": "ice-wizard",
+   "x": 4500,
+   "y": 11500,
+   "cost": 3,
+   "elixir_before": 5.1067,
+   "hand_before": [
+    "Log",
+    "Tesla",
+    "Rocket",
+    "IceWizard"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 2975
+  },
+  {
+   "play_index": 32,
+   "tick": 3128,
+   "side": 1,
+   "card": "rocket",
+   "x": 6500,
+   "y": 3500,
+   "cost": 6,
+   "elixir_before": 7.5688,
+   "hand_before": [
+    "Log",
+    "Tesla",
+    "Rocket",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 2,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3128
+  },
+  {
+   "play_index": 33,
+   "tick": 3168,
+   "side": 1,
+   "card": "the-log",
+   "x": 8500,
+   "y": 11500,
+   "cost": 2,
+   "elixir_before": 2.9968,
+   "hand_before": [
+    "Log",
+    "Tesla",
+    "Skeletons",
+    "Tornado"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 0,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3168
+  },
+  {
+   "play_index": 34,
+   "tick": 3184,
+   "side": 0,
+   "card": "sparky",
+   "x": 8499,
+   "y": 500,
+   "cost": 6,
+   "elixir_before": 10.0,
+   "hand_before": [
+    "Giant",
+    "Wizard",
+    "Skeletons",
+    "ZapMachine"
+   ],
+   "delay_ticks": 0,
+   "accepted": true,
+   "result_code": 0,
+   "result_name": "accepted",
+   "hand_index": 3,
+   "placement_valid": true,
+   "placement_reason": "valid",
+   "engine_tick": 3184
+  }
+ ]
+}
