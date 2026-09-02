@@ -22,7 +22,18 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-02 10:10**, branch `main` (**§5bc: HOGEQ BROUGHT UP TO ICEBOW'S VERSION
+Last updated: **2026-09-02 15:00**, branch `main` (**§5be: THE DETECTOR SCREEN IS DECIDED -- yolo11s
+stays; yolo26s lost at every epoch (final mAP50 0.408 vs 0.253, mAP50-95 0.294 vs 0.171, identical args)
+and is also SLOWER on this GPU (34.5 vs 31.3 ms median wall, idle box): the NMS-free postprocess saving
+(3.1 -> 1.1 ms) is real but its inference is 6 ms slower, so the "faster because NMS-free" premise is
+CONTRADICTED here. BOARD-27 IS CANCELLED** (owner ruling 14:30: a day of training is not worth it unless
+kitka's benefit is significant -- and that benefit is (b) UNTESTED and invisible on the main val; the
+right-sized test is a 2-4 h fine-tune from board-26 measured on `holdout_val.yaml`, queued as an owner
+option, not launched). First latency number: the operating detector `board-24-5` costs **29.5 ms median /
+35.0 p90** per frame on an idle box, fp32 at 960 (pre 7.1 / inf 19.6 / post 3.1), so the detector is
+~30% of the 100 ms decision budget and the rest of the path (obs build, policy, live search ~24 ms carried
+from live_search.py's own note, aim assist) has not been measured yet. Previously **§5bc: HOGEQ BROUGHT
+UP TO ICEBOW'S VERSION
 (owner request, mid-gauntlet).** parity 65 identical / 18 declared / **2 UNEXPECTED** -> **70 / 15 / 0**
 (`--strict` green from both decks); five shared files converged plus hogeq's cli flags and the aim-assist
 tests. ⚠ FOUND: **hogeq's Log corridor aim assist has always been INERT** -- its `env.py` calls
@@ -225,10 +236,13 @@ cd C:\Users\benpe\ClashBot\hogeq
 * **2026-09-02 07:35 — the PPO cuda run is STOPPED** (§5ba) at 18,000 episodes, per the owner's ruling
   and confirmed by its own eval curve. Archive + checkpoints:
   `icebow/data/bench/stopped_real_cuda_18k_20260902/` (2 .pt SHA-verified, 2 milestone snapshots, log).
-* **RUNNING NOW: the hogeq replay crawl** (§5bc) -- `~/clash-replay-scraper/crawl_deck.py --deck hogeq
-  crawl`, log `scratchpad/gauntlet/L4/crawl_hogeq.log`, output `hogeq/data/royaleapi/crawl2/` (gitignored).
-  Resume-safe: re-run the same command to sweep the players that failed on RoyaleAPI's rate limiter.
-* **RUNNING NOW: the L2 detector screen** (`scratchpad/gauntlet/L2_screen.ps1`) -- yolo11s control then
+* **2026-09-02 14:22 -- NOTHING IS RUNNING.** The hogeq crawl finished (598 replays, §5bd) and both
+  detector screen arms finished (`ALL SCREEN ARMS DONE 14:22:16`, §5be). **board-27 is CANCELLED** by
+  owner ruling (§5be.3) -- do NOT launch `battery_watchdog.ps1 -Run board-27`. The training synth is
+  still the PRE-kitka one (regen is safe now that no reader is open, but only worth doing for the
+  fine-tune probe in §5be.3). Free RAM 12.3 GB, GPU idle.
+* **DONE: the hogeq replay crawl** (§5bc-5bd) -- output `hogeq/data/royaleapi/crawl2/` (gitignored).
+* **DONE: the L2 detector screen** (`scratchpad/gauntlet/L2_screen.ps1`) -- yolo11s control then
   yolo26s, identical settings, fraction 0.35 / 30 epochs / imgsz 960, ~2.8 GB VRAM. **Measured 5.4
   min/epoch** (epoch 9 at 08:13 from a 07:24 start), so ~2.7 h per arm: y11s lands ~10:10, y26s ~13:00.
   Progress: `scratchpad/gauntlet/L2/screen.progress`, logs `scratchpad/gauntlet/L2/screen-*.log`.
@@ -1972,7 +1986,16 @@ slow one.
 
 ## 6. Open work
 
-### ⚑ OWNER RULING 2026-09-02 08:20 -- PPO elixir fix, prep folded into the detector gauntlet, run AFTER board-27
+### ⚑ OWNER RULING 2026-09-02 14:30 -- board-27 CANCELLED; divert to the queued items + the latency loop
+Owner: *"if the verdict is to keep YOLO11s, then i don't really see a need for a full day of board
+training, unless you think the segments from kitka will benefit the detector significantly... If you
+decide to cancel the board training, then divert your focus to the items queued afterwards, as well as
+the decision time optimization loop."* Verdict is yolo11s (§5be.1), kitka's benefit is (b) untested, so
+board-27 is cancelled (§5be.3). Consequence for the 08:20 ruling below: the PPO elixir-fix run is no
+longer gated on board-27 -- it is gated on its PREP only (gate prior + KL hook + drift rule + endpoint
+drill). Launching it is still an owner call (a multi-day run).
+
+### ⚑ OWNER RULING 2026-09-02 08:20 -- PPO elixir fix, prep folded into the detector gauntlet, run AFTER board-27 (board-27 since cancelled, see above)
 The 18k run's elixir>=6 fraction fell 2% -> 0.02% (§5ba.6b). Three repair families are already dead at 3 seeds
 (bank_hold HARMFUL p~0.005 §5ad, restraint_hold dead, placement prior failed) -- do NOT propose another
 wait-side reward term. The owner picked repair (1): teach WHEN-NOT-TO-PLAY from a source that knows, and
@@ -6176,3 +6199,93 @@ Weight-profile comparison per card (doctrine prior vs fitted distribution, same 
 read for mighty_miner (modal (2,17)/(3,17) — a BRIDGE punish, where the doctrine's headline rule is
 "tile-exact on the tank"), firecracker and earthquake. Only then a config-gated prior, one change per
 experiment, per the §6 spec.
+
+## §5be — GAUNTLET L5: THE SCREEN VERDICT (yolo11s, and yolo26s is slower too), BOARD-27 CANCELLED BY OWNER RULING, and the first latency number: the operating detector is 29.5 ms of the 100 ms budget (2026-09-02 14:22-15:00)
+
+### 1. The screen, final (a) measured
+Both arms finished (`screen.progress`: y11s 177 min, y26s 241 min, exit 0 each). `args.yaml` identical
+except `model`: epochs 30, fraction 0.35, imgsz 960, batch 4, seed 0, same `data/detect/synth` + real
+frames. Final-epoch rows of each `results.csv` (the same instrument, the same val):
+
+| arm | mAP50 | mAP50-95 | P | R | val cls loss | wall |
+|---|---|---|---|---|---|---|
+| screen-y11s (control) | **0.408** | **0.294** | 0.669 | 0.369 | 1.516 | 177 min |
+| screen-y26s | 0.253 | 0.171 | 0.473 | 0.221 | 1.633 | 241 min |
+
+yolo26s sits at 62% of the control's mAP50 at the end (P 0.473 / R 0.221 vs 0.668 / 0.369) and was
+behind at every one of the 30 epochs. Epoch-matched gap in mAP50: +0.043 at epoch 1, peak **+0.177**
+at epochs 11-12, then a slow close to **+0.150** at epoch 30 (0.027 over the last 18 epochs). It also
+took 36% longer to train (241 vs 177 min).
+* **(b) what the screen cannot say:** 30 epochs at fraction 0.35 is a short schedule, and yolo26's
+  one-to-one assignment is documented to converge slower than NMS-trained heads. The gap DID narrow
+  after epoch 12, so a full-schedule crossover is not excluded: a straight-line extrapolation of the
+  closing rate (0.0015/epoch) puts it near epoch 130, outside a 120-epoch run, and that extrapolation
+  is unreliable in both directions (the control is still climbing; both will plateau). I am NOT
+  spending 24 GPU-hours to settle it, because the speed result in §2 removes the other reason to want
+  yolo26 -- accuracy parity alone would not justify a swap of the operating architecture.
+* These numbers compare ONLY to each other, never to board-26's 0.860 (full data, 120 epochs).
+
+### 2. Idle-box detector latency, the first number of the latency loop (a) measured
+`scratchpad/gauntlet/L5/bench_detector.py`: mirrors the ONE live call, `BoardDetector.detect()` ->
+`model.predict(frame, conf, imgsz=960, verbose=False)`, fp32, on the 241 real 1182x668 frames of
+`val_board15.txt`, 10 warm-up + 200 timed calls, GPU idle (0% util, 1.2 GB used, nothing else running,
+12.3 GB RAM free). Wall clock around `predict()` is what the agent pays; the split is ultralytics' own.
+
+| weights | wall median | p90 | max | pre | inf | post | dets/frame |
+|---|---|---|---|---|---|---|---|
+| board-24-5 (**operating**, config `detect.weights`) | **29.5 ms** | 35.0 | 76.2 | 7.1 | 19.6 | 3.1 | 3.6 |
+| board-26 | 32.6 | 36.3 | 38.9 | 7.3 | 21.8 | 3.2 | 3.4 |
+| screen-y11s | 31.3 | 35.1 | 38.4 | 7.2 | 20.4 | 3.1 | 2.8 |
+| screen-y26s | 34.5 | 41.5 | 48.3 | 7.6 | **26.1** | **1.1** | 2.0 |
+
+* **(c) CONTRADICTED: "yolo26 is faster because it is NMS-free".** The postprocess saving is real
+  (3.1 -> 1.1 ms) but its inference is 5.7 ms slower on this RTX 5050, net **+3.2 ms**. The L2 smoke
+  read 5.6 / 0.4 ms on a CONTENDED box (PPO running) and was labelled arm-vs-arm only; this is the
+  clean number. The architecture question is closed on both axes.
+* `half=True` is DEPRECATED in ultralytics 8.4.107 ("use quantize") and produced no consistent change
+  (board-24-5 31.3, board-26 33.4, y26s 38.4; y11s 22.9 once, with the same p90 35.6 as fp32 -- treat
+  as noise until measured with the supported flag). One 3,500 ms max on the first arm is a one-off
+  allocator/autotune spike and does not recur (every other max <= 76 ms).
+* **What it means for the budget:** preprocess is 7 ms of CPU letterboxing a 1182x668 frame to 960
+  every pass -- ~24% of the detector's time, and the one term that does not need a new model. The
+  detector runs in the 10 Hz perception THREAD (perception.py), so at decision time the policy reads
+  a snapshot that is up to one perception period old; the detector's 30 ms bounds that period, it is
+  not added to the decision path serially. The decision path proper (`play.act_in_match`: obs build,
+  hand/next recognition, threat vector, canvas channels, policy forward, live search, aim assist,
+  tap) is UNMEASURED -- the only number on it is live_search.py's own note "~24 ms/decision" (carried,
+  origin unknown, not re-measured). `sim.live_search_timeout_ms` is **120** in config (the class
+  default is 250 -- read the config, not the default).
+
+### 3. Board-27 is CANCELLED (owner ruling, 14:30) -- and what I told the owner about kitka
+The honest kitka assessment: its whole value is 9 evolution classes going from 0-19 sprites to 42-222
+and 3 empty classes being filled (§5bb). Whether that helps the LIVE detector is **(b) untested**, and
+it cannot become (a) on the main val, which has 0-2 instances of those classes (§5az trap). The only
+instrument that can see it is `holdout_val.yaml` (§5bb.4), per-class AP on the pasted classes. A
+from-scratch 24 h board-27 is the most expensive possible way to get that number.
+* **Right-sized alternative, NOT launched (owner option):** regenerate the training synth from the
+  kitka-augmented bank (`run.py sprites --synth 5000 --seed 0`, safe now, in-place), then fine-tune
+  from `board-26/weights/best.pt` for ~20 epochs at fraction 1.0 (est. 2-4 h from the screen's 5.4
+  min/epoch at 0.35), and read TWO things: per-class AP on `holdout_val.yaml` (the kitka half) and
+  no regression on `run.py detect-eval --sweep --subset data/detect/val_board15.txt` (the promotion
+  gate). Promotion still requires the detect-eval gate, as `detect.weights` says.
+* What cancelling costs: nothing measured. Board-26 (mAP50 0.860) already exists and is NOT the
+  operating detector (`detect.weights` = board-24-5) -- whether board-26 should be promoted is a
+  separate detect-eval question that predates this gauntlet.
+
+### 4. What this does NOT establish
+Nothing about the decision path's total latency (§2 measured the detector alone). Nothing about
+yolo26 under a full schedule (b). Nothing about kitka's live value (b). No PPO change, no doctrine
+change, no live-path change.
+
+### 5. Next on this thread (the diverted focus)
+1. **Latency loop:** an OFFLINE stage timer for `act_in_match` -- decode frames from
+   `data/sessions/20260815_222309/video.mp4`, run the same functions (vision.observe, hand/next
+   recognition, threat + canvas build, policy forward, LiveSearch.decide) and time each stage per
+   frame, without touching play.py or the game. That gives the first full breakdown against the
+   100 ms budget. Then the preprocess term (7 ms: pre-letterbox / capture at the model's size).
+2. **Queued items (08:20 ruling), now unblocked:** engine recording pass `replay_drive
+   --record-every 12` over the 211 converted replays -> tabular gate prior tool -> KL-on-gate hook in
+   `train_sim_ppo.py` behind a coef defaulting to 0.0 -> `elixir_ge6` drift rule in `ppo_watchdog.py`
+   -> per-card top-cell dump of the 18k checkpoint.
+3. hogeq derivation (§5bd.6): doctrine prior-weight vs measured frequency per card, then a
+   config-gated prior, one change per experiment.

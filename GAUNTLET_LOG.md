@@ -305,3 +305,21 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   only 100 of 531 rated players are on the exact base deck, so the top-50-by-rating roster produced
   14 players walked / 0 battles kept. Roster now filtered by is_variation first; crawl restarted.
 - Next: finish + re-run the crawl to sweep rate-limited players, then hogeq placement priors (5ag's path).
+
+## L5 — 2026-09-02 14:22-15:00 | screen verdict, board-27 CANCELLED (owner ruling), first latency number
+- Screen final, identical args, same val: yolo11s mAP50 0.408 / mAP50-95 0.294 vs yolo26s 0.253 / 0.171.
+  y26s behind at all 30 epochs; gap peaked +0.177 (ep 11-12), closed to +0.150 by ep 30. 36% slower to train.
+  (b) a full-schedule crossover is not excluded (linear extrapolation ~ep 130); not worth 24 GPU-h given:
+- IDLE-BOX latency bench (241 real 1182x668 frames, fp32 @960, 200 calls, the live predict() call):
+  board-24-5 (operating) 29.5 ms median / 35.0 p90 (pre 7.1 / inf 19.6 / post 3.1); board-26 32.6;
+  y11s 31.3; y26s 34.5 (inf 26.1, post 1.1). (c) "NMS-free = faster" CONTRADICTED on this GPU: +3.2 ms net.
+  half=True is deprecated in 8.4.107 and moved nothing consistently.
+- Owner ruling 14:30: a day of board training only if kitka's benefit is significant. It is (b) UNTESTED
+  and invisible on the main val (0-2 instances of those classes) -> board-27 CANCELLED. Right-sized test
+  queued as an owner option: 2-4 h fine-tune from board-26 on kitka synth, read on holdout_val.yaml + the
+  detect-eval promotion gate. Not launched.
+- Consequence: the PPO elixir-fix run (08:20 ruling) is now gated on its prep only, not on board-27.
+- Next: OFFLINE stage timer for play.act_in_match over data/sessions/20260815_222309/video.mp4 (obs build,
+  recognition, threat/canvas, policy forward, LiveSearch.decide) -- the full 100 ms budget breakdown
+  without touching play.py; then the 7 ms preprocess term. Gate-prior prep in parallel (CPU).
+
