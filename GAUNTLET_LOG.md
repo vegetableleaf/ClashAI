@@ -682,3 +682,17 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - (a) drills pass-all at m2450: gatec2 39% vs gate05 38%, gatep6 31%, floor7 43% -- no collapse.
 - (b) durability: gate05 stood here at m2k and fell to 1.17 by m5k. Bar unchanged, m5k ~13:55. HANDOFF §5ch.
 
+
+## L35 — 2026-09-03 13:16-13:35 | AGGRO gauntlet loop 19: owner question (elixir/x-bow/spell trend); PYTHONHASHSEED trap found, own numbers retracted
+- MY ERROR (a), against a rule already in this repo's standing rules ("export PYTHONHASHSEED=0 before any labelling run"):
+  greedy EVAL tools need it too; real_run_gates.py:65 sets it, my ad-hoc runs did not. Not a new trap -- a violated one.
+  Same ckpt: 68 vs 79 x-bows, DEFENSIVE 68% vs 49%, tower lock 40% vs 66%; continuation plays 401 (seeded, twice) vs 367/399
+  (unseeded). My first x-bow/continuation runs this loop are RETRACTED. New standing rule.
+- (a) MATCHED m2k card mix (new cardmix.py on continuation_report's exact rollout): SPELL share gatep6 29.4 > floor7 25.2 >
+  gate05 21.6 > gatec2 14.0%, mirrored by x_bow share 3.3 < 5.3 < 8.0 < 13.2%. Total plays 520 -> 401. Support cards
+  (skeletons/ice_wiz/knight) FLAT across all arms -- the coef removed spell plays specifically, not plays in general.
+- (a, unmatched counts) x-bow at m2450: 2.83/match, DEFENSIVE 68% / OFFENSIVE 29% / dead 3% (gate05 m5k 28/48/25, floor7 m5k
+  6/69/25). Directional only until gatec2's own m5k gate.
+- (b) ELIXIR trend NOT callable: 3 non-monotone watchdog points (2.57/2.28/2.71) + one probe point (2.72 at m2450). Said so
+  rather than drawing a line through noise. HANDOFF §5ci.
+

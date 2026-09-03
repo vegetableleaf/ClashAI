@@ -22,7 +22,15 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-03 12:30**, branch `main` (**§5ch: GAUNTLET L34 -- gatec2 m2k SCREEN (bar is m5k): >=6 share
+Last updated: **2026-09-03 13:35**, branch `main` (**§5ci: GAUNTLET L35 -- owner asked for the elixir / x-bow / spell
+trend. I VIOLATED AN ALREADY-DOCUMENTED RULE and it invalidated my own first numbers this loop: the standing rules
+already say to export `PYTHONHASHSEED=0` before any labelling run; it covers the greedy eval tools too, and
+`real_run_gates.py:65` sets it for every gate report while my ad-hoc runs did not -- the same ckpt read 68 vs 79 x-bows and DEFENSIVE 68% vs 49%. Numbers below are the PYTHONHASHSEED=0 instrument;
+the first set is RETRACTED. At m2450, gatec2 vs the arms at matched m2k: SPELL share **14.0%** (gate05 21.6, floor7 25.2,
+gatep6 29.4) and x_bow share **13.2%** (gate05 8.0, floor7 5.3, gatep6 3.3) -- the coef traded spell-spam for the win
+condition. X-bow placement DEFENSIVE 68% / OFFENSIVE 29% / dead **3%** (gate05 m5k 28/48/25, floor7 m5k 6/69/25) -- but
+that is m2450 vs m5k, NOT matched. Elixir trend within the run is NOT callable yet (3 noisy watchdog points). m5k bar
+~13:50. RUNNING NOW. Previous header follows.) (**§5ch: GAUNTLET L34 -- gatec2 m2k SCREEN (bar is m5k): >=6 share
 **3.5 / 4.4 / 3.4%** at m2450 on the ledger probe -- gate05's m2k level (4.0/3.5/3.0) and 4-5x its one-change comparator
 gatep6 (0.9/0.8/0.5). The coef BITES (a): the trainer's cumulative pi(play) on usable rows is flat at 0.150-0.162 from
 update 800 to 5400 (gatep6 sat at 0.242 at 11.4k, floor7 0.283) -- but it suppresses the gate LEVEL uniformly (per-bucket
@@ -2191,6 +2199,9 @@ slow one.
      (`gatec2_run`, one change vs gatep6). Bars in §5cg.2; m2k screen ~12:25, m5k bar ~14:00 + eval.
   -> L34 (§5ch): m2k SCREEN 3.5/4.4/3.4% (gate05 m2k 4.0/3.5/3.0; gatep6 0.9/0.8/0.5). Coef bites: in-run pi(play) flat
      0.15 (gatep6 0.24). Level suppressed uniformly, shape not learned. Drills 39% = gate05's 38%. m5k bar ~13:55.
+  -> L35 (§5ci): owner question (elixir/x-bow/spell trend). MY ERROR: violated the documented PYTHONHASHSEED=0 rule (gates set it,
+     ad-hoc runs did not); my first x-bow read this loop is retracted. Matched-m2k card mix: gatec2 SPELL 14.0% /
+     x_bow 13.2% vs gate05 21.6/8.0, floor7 25.2/5.3, gatep6 29.4/3.3. Elixir trend not callable yet.
 
 ### From §5bq (2026-09-02 22:10) -- spell niches, after the gate-prior run ends (sim reward = one change each)
 * **`nado_retarget` UNREACHABLE (c, §5bq.3):** sim/env.py:2472 and :2508 `tile_dist(u, tw) <= u.spec.reach + 1.0`
@@ -8831,4 +8842,90 @@ instrument, not comparable to the probe): >=6 3.9% at m1700, one DRIFT alert (42
 
 ### 5. Files
 `scratchpad/gauntlet/L34/{probe_m2k5_s{0,1,2}.txt,.json}` (committed); `gatec2_m2k5.pt` (NOT in git).
+
+## §5ci. GAUNTLET L35 (2026-09-03 13:16-13:35) -- owner question: elixir / x-bow / spell trend. A reproducibility trap, and the matched-m2k card mix
+
+**The question (owner, 13:1x).** "What does the trend look like for the run, elixir and xbow wise? What about spell usage?"
+
+### 0. MY ERROR, against a rule this file already carries (a). RETRACTION inside the loop.
+**This is not a new trap -- it is a documented one I failed to apply.** The standing rules already say: "The search
+harness is NOT reproducible as written. `PYTHONHASHSEED` is set via `os.environ.setdefault` AFTER interpreter start,
+which is a NO-OP... Export `PYTHONHASHSEED=0` in the environment before any labelling run" (recorded when two identical
+N=1 configs gave 78.7% and 80.7%). It applies to the greedy, search-free eval tools too (`xbow_probe.py`,
+`continuation_report.py`, anything reusing their rollout). `real_run_gates.py:65` sets it (`env = dict(os.environ,
+PYTHONHASHSEED="0", ...)`) for every gate report; my first ad-hoc runs this loop did not. The rule was there; I did not
+follow it, and I only caught it because a plays= count disagreed between two tools that share a rollout. Same checkpoint, same
+`--matches 24`, same seeds:
+```
+                          x-bows   per match   DEFENSIVE / OFFENSIVE / dead   tower lock   RETRACTED?
+gatec2_m2k5, no PHS         79       3.29          49% / 37% / 14%              66%        YES -- do not use
+gatec2_m2k5, PHS=0          68       2.83          68% / 29% /  3%              40%        the gates' instrument
+```
+`continuation_report` on the same ckpt: 367 plays without, **401 with** (and 401 again on a repeat); a third unseeded run
+of the same rollout gave 399 -- i.e. unseeded runs vary run-to-run, seeded ones do not. Every number in §1-2 below is
+PYTHONHASHSEED=0. **The existing rule is extended in place: it covers the greedy EVAL tools
+(`xbow_probe`, `continuation_report`, `cardmix`), not just the search/labelling harness -- an ad-hoc run without PHS=0
+cannot be compared with a gate report.** Two lessons, both already on the guardrail list and both re-earned here:
+a 24-match x-bow read carries enough run-to-run noise to flip its headline (49% -> 68% DEFENSIVE), and "same tool" is
+not "same instrument".
+
+### 1. SPELL usage and card mix (a) -- MATCHED match count, `scratchpad/gauntlet/L35/cardmix.py`, 16 matches, PHS=0
+New script, deliberately built on `continuation_report`'s exact rollout (same `Searcher(12.0, 0, 4, 1.0, 0.25, cells=3)`,
+same `SEEDS`, same `_base` normalisation) so its plays ARE that report's plays -- only the counting differs. Compare only
+against other runs of this script. All four arms read at their m2k snapshot (m2,000-m2,450), so this table IS matched:
+```
+arm (ckpt)          plays   SPELL%   log    nado   rocket   x_bow%   tesla%   skel%   ice%   knight%
+gatec2  m2450        401     14.0     8.7    4.5    0.7      13.2     13.9    20.4   17.5   20.9
+gate05  m2000        412     21.6    11.4    9.7    0.5       8.0     11.2    20.9   17.2   21.1
+floor7  m2450        543     25.2    14.9    9.8    0.6       5.3     10.1    21.2   18.0   20.1
+gatep6  m2350        520     29.4    15.8   13.3    0.4       3.3      7.8    21.3   17.3   20.7
+```
+Read across the rows: **spell share falls 29.4 -> 25.2 -> 21.6 -> 14.0 exactly as x-bow share rises 3.3 -> 5.3 -> 8.0 ->
+13.2**, and total plays fall 520 -> 401. gatec2 plays a third fewer cards than gatep6 and spends the plays it keeps on
+the win condition instead of on log/tornado. Rocket is ~0.5% everywhere (all arms essentially never rocket). The
+non-spell support cards (skeletons, ice_wizard, knight) are FLAT at 20-21 / 17-18 / 20-21% across all four arms -- the
+coef did not touch them, it removed spell plays specifically. That is the elixir-conditional story from a second angle:
+log (2) and tornado (3) are the cheap cards a low gate stops firing.
+Caveat (b): this is share-of-plays, not plays per minute, and it is ONE seed set of 16 matches per arm. The direction is
+monotone across four arms, which is why I report it; the size of each step is not established.
+
+### 2. X-BOW (a where matched, flagged where not) -- `xbow_probe.py`, 24 matches, PHS=0
+```
+ckpt            matches   bows/match   DEFENSIVE   OFFENSIVE   dead   lock%   life median   died<5s
+gatec2 m2k5      2450        2.83         68%        29%        3%     40      14.5 s        10%
+gate05 m5k       5000        1.67         28%        48%       25%     47      14.8 s         2%
+gate05 m10k     10000        0.71         41%        35%       24%     --        --           --
+floor7 m5k       5000        1.50          6%        69%       25%     --        --           --
+```
+**These rows are NOT matched on match count** -- gatec2 is at m2450, the others at m5k/m10k -- so the only honest reading
+is directional and it is (b) until gatec2's own m5k gate fires (~13:50, and it runs this exact tool). What is (a) is that
+at m2450 gatec2 places 2.83 bows a match with **3% dead** (placements that can reach nothing), against 25% dead for both
+gate05 and floor7 at m5k; and that it is defence-first (68%) where floor7 was almost purely offensive (6% defensive).
+Whether that survives to m5k is precisely what the gate will say, and gate05's own bows/match FELL 1.67 -> 0.71 between
+m5k and m10k, so bow volume is not a monotone quantity in this project.
+
+### 3. ELIXIR trend -- NOT callable yet (b), and I am not going to call it
+Within-run points for gatec2, `ppo_watchdog` (its OWN sampled instrument -- never compare to the probe):
+```
+matches    1700    2600    3500
+elixir     2.57    2.28    2.71
+>=6 %       3.9     1.2     1.8
+card_ent   1.06    1.58    1.47
+distinct     29      48      53
+```
+Three points, non-monotone, on a sampler whose own alert logic calls a 42% swing "drift". The ledger probe (the bar's
+instrument) has exactly ONE gatec2 point so far: elixir mean 2.72 / >=6 3.77% at m2450 (§5ch). **A trend needs the m5k
+probe point; until it lands, "the elixir trend" is one number and a noise band.** What IS measured is the m2k comparison
+(§5ch): elixir mean 2.72 vs gate05 2.59, floor7 2.27, gatep6 2.21 -- gatec2 banks more than any prior arm at m2k.
+
+### 4. What this does NOT establish
+* Any m5k claim (b). Everything here is an m2k snapshot plus unmatched context rows.
+* That the spell drop is good (b). Fewer log/tornado plays could equally mean missed defensive answers; the m5k regret
+  read's missed-play and worse-than-WAIT columns are the instrument, and that is the §5cg.2 caution guard.
+* That the x-bow placement shift is durable or caused by the coef rather than by being early in training (b): the
+  matched-count comparison for x-bow only exists at m5k, which is the next read.
+
+### 5. Files
+`scratchpad/gauntlet/L35/{cardmix.py, xbow_gatec2_m2k5_phs0.txt, cont_gatec2_m2k5.txt, xbow_gatec2_m2k5.txt}` (the last
+two are the RETRACTED no-PHS runs, kept as the evidence for §0).
 

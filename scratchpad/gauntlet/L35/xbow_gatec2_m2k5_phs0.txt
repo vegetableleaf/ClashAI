@@ -1,0 +1,12 @@
+scorer config: control.yaml | 24 matches/ckpt | greedy, search-free
+geometry: board 18x32 tiles | x-bow reach 11.5 tiles | enemy towers y=0.20 | ours y=0.80
+DEFENSIVE band: >=3.0 tiles behind OUR RIVER EDGE (y=0.53125, tile 17) -> y >= 0.625 (tile 20), AND >=2.0 tiles from each edge -> x in [0.111, 0.889]
+OVERLAP RULE: a placement that can reach an enemy tower counts OFFENSIVE, never DEFENSIVE (owner). Three cells, no BOTH.
+
+gatec2_m2k5   68 x-bows in 24 matches (2.83/match)
+   PLACEMENT   DEFENSIVE=46(68%)   OFFENSIVE=20(29%)   NEITHER(dead)=2(3%)
+   LIFETIME    mean 17.7s of 30s   median 14.5s   reached-full 17/68 (25%)   died<5s 7 (10%)
+   TIME SPENT  on TOWER 7%   on UNITS 40%   IDLE(no target) 53%
+   OFFENSIVE   20 placed | got a TOWER LOCK 8 (40%) | tower dmg/xbow mean 1047 median 0  [upper bound]
+   DEFENSIVE   46 placed | unit dmg/xbow mean 2143 median 2003 | targets that died 153  [upper bound]
+
