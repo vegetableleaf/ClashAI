@@ -22,7 +22,18 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-03 14:40**, branch `main` (**§5ck: GAUNTLET L37 -- OWNER RULED (14:2x) on the §5cj question: option
+Last updated: **2026-09-03 15:15**, branch `main` (**§5cl: GAUNTLET L38 -- owner asked what the m5k snapshot said about
+SPELLS (answer: nothing -- the gate report has one incidental spell line). Built `scratchpad/gauntlet/L38/spellprobe.py`,
+which attributes damage ON THE ENGINE (wraps `_resolve_spell` / `_resolve_roll` / `_tick_vortex` / `_tick_roll` so every
+`_hurt` / `_damage_tower` inside them is credited to the cast that caused it) and validates EXACTLY against L35's
+`cardmix.py` on the same ckpt (401 plays, SPELL 14.0 / 8.7 / 4.5 / 0.7 -- identical, so the two are ONE instrument).
+TRAP: the search DEEPCOPIES the engine and its forks cast spells too; counting them inflated the first run (7 log casts
+vs 6 log plays). WITHIN gatec2 (a, 3 points): SPELL share 14.0 (m2450) -> 11.6 (m5000) -> **19.8% (m6800)**, log 0.63 ->
+0.87 -> 1.44 casts/min, tornado 0.34 -> 0.24 -> 0.68 -- the spell suppression that drove the L36 regret failure is
+RECOVERING inside the run, which is the first evidence for the owner's rebound hypothesis. Log WHIFF 73% -> 14% -> 24%.
+RETRACTION of my own live claim this loop: rocket did NOT "go up" -- 3 casts / 16 matches at both m2450 and m5000, 0 at
+m6800, and L35 already had every arm at 0.4-0.7% rocket share at m2k. Previous header follows.) (**§5ck: GAUNTLET L37 --
+OWNER RULED (14:2x) on the §5cj question: option
 (iv) then (iii). Let `gatec2_run` reach m10k ("5k matches is still very early ... a real chance the policy might rebound"),
 take the m10k read, then MOVE TO THE AGGRO WORK regardless -- the owner's reading is that direct attacks on the elixir
 share have not budged it across 3 arms, so there are probably confounders, and the aggro flags may move it indirectly.
@@ -2221,6 +2232,9 @@ slow one.
      waits 33 vs gate05's 5). Pre-registered verdict: NOT a pass. Run left going to m10k. QUESTION OPEN: next arm.
   -> L37 (§5ck): OWNER RULED 14:2x -- wait for m10k (rebound chance), then aggro work regardless: aggro_drills -> reach
      fix -> lock-aware, one change each. Base for the first aggro arm decided by the m10k read (§5ck.2 rule).
+  -> L38 (§5cl): owner question (spells). New engine-attributed spell probe, validated == cardmix. gatec2 spell share
+     14.0 -> 11.6 -> 19.8% over m2450/m5000/m6800 (recovering toward gate05's 28.3); log whiff 73 -> 14 -> 24%;
+     tornado whiff 0% at m5k+ vs gate05 9%; rocket ~0 everywhere (my "rocket went up" claim RETRACTED same loop).
 
 ### From §5bq (2026-09-02 22:10) -- spell niches, after the gate-prior run ends (sim reward = one change each)
 * **`nado_retarget` UNREACHABLE (c, §5bq.3):** sim/env.py:2472 and :2508 `tile_dist(u, tw) <= u.spec.reach + 1.0`
@@ -9093,4 +9107,85 @@ m10k report (regret / x-bow / continuation, PYTHONHASHSEED=0 by construction). C
 
 ### 4. Files
 This section; no new measurement this loop (the loop's action was recording the ruling and pre-registering the read).
+
+## §5cl. GAUNTLET L38 (2026-09-03 14:55-15:15) -- owner question: spells. A new engine-attributed probe; the spell suppression is recovering inside the run
+
+**The question (owner, 14:5x).** "did the 5k snapshot reveal anything about spells? if not, could you run a check on
+spell usage for the current policy (how often? how many whiffs? did rocket usage go up?)"
+
+### 0. The m5k gate report says nothing about spells (a)
+Grepped `data/bench/gatec2_gate_report.md`: the only spell line in it is `after x_bow ... the_log 16%` (n=67 follow-up
+plays). The gate trio (regret / x-bow / continuation) has no cast counts, no whiffs, no rocket. So the answer to the
+first half is a plain no, and the second half needed a new measurement.
+
+### 1. The instrument, and the trap inside it (a)
+`scratchpad/gauntlet/L38/spellprobe.py`. Same rollout as `continuation_report.py` and L35's `cardmix.py` -- greedy
+`Searcher(12.0, 0, 4, 1.0, 0.25, cells=3)`, `CR.SEEDS[:16]`, PYTHONHASHSEED=0 -- so its plays ARE those reports' plays.
+It measures damage **on the engine, not on the reward ledger**: `SimEngine._resolve_spell`, `_resolve_roll`,
+`_tick_vortex` and `_tick_roll` are wrapped, and every `_hurt` / `_damage_tower` call inside them is credited to the
+cast that produced that roll or vortex. WHIFF = that cast damaged zero enemy bodies AND zero enemy towers.
+**TRAP (a, found and fixed inside the loop):** `rollout_search.Searcher` deepcopies `(eng, opponent)` at every search
+decision and plays candidate futures on the COPY -- and those copies cast spells. Counting them gave 7 log casts against
+6 log plays on a 2-match smoke run, with one cast duplicated at the identical `t` and identical damage. Fixed with an
+identity test (`self is REAL["eng"]`), which a deepcopy cannot satisfy; casts then equal plays exactly (6 log, 3 nado).
+**That equality is the probe's own validity check and it is now the thing to re-check if this script is ever changed.**
+**Cross-validation against the existing instrument (a):** on `L34/gatec2_m2k5.pt` this probe returns 401 plays, SPELL
+14.0%, log 8.7 / nado 4.5 / rocket 0.7 -- *identical* to L35's `cardmix.py` row (§5ci.1). The two scripts are one
+instrument, so every m2k card-mix comparison in §5ci carries over to this table without a guardrail violation.
+NOTE the older, DIFFERENT spell instrument: `scratchpad/gauntlet/L13/spell_xbow_probe.py` (§5bm.4) defines whiff as
+"mask-whiff" (a cell `spell_target_mask` would veto) and "0-dmg" (the `spell_waste` ledger term), 3 seeds x 12 matches.
+Its 11% is NOT comparable to this probe's damage-attributed whiff. Do not mix the two.
+
+### 2. Spell usage across arms at a MATCHED count, m5000 (a) -- 16 matches each
+```
+ckpt              plays  SPELL%   log/min  log whiff  log bodies  nado/min  nado whiff  nado bodies  rocket casts
+gatec2  m5000      510    11.6      0.87      14%       1.98        0.24        0%         5.33        3 (0.19/match)
+gate05  m5000      594    28.3      1.85      24%       1.83        1.45        9%         2.74        0
+floor7  m5000      767    27.4      2.05      32%       1.43        1.37        4%         2.51        0
+gatec2  m6800      581    19.8      1.44      24%       1.73        0.68        0%         2.55        0
+```
+gatec2 casts less than half as many spells per minute as either comparator AND connects better with the ones it casts:
+log whiff 14% vs 24 / 32%, tornado whiff 0% vs 9 / 4%, and 5.33 bodies caught per tornado vs 2.74 / 2.51. The low spell
+share is therefore NOT indiscriminate suppression of aim -- it is fewer, better-aimed casts. That is a genuine finding
+in the coef arm's favour and it does not undo §5cj: the regret corpus says the casts it declines to make include the
+defensive answers, and "the casts it does make connect" is a different quantity from "it answered the push".
+
+### 3. The trend INSIDE the run -- the first evidence for the owner's rebound hypothesis (a for the points, (b) for "rebound")
+```
+gatec2 matches   SPELL%   log/min  log whiff  nado/min  nado whiff  nado bodies  rocket
+2450              14.0     0.63       73%      0.34       19%         3.50       3 casts (1 whiff)
+5000              11.6     0.87       14%      0.24        0%         5.33       3 casts (0 whiff)
+6800 (live)       19.8     1.44       24%      0.68        0%         2.55       0 casts
+```
+Spell share fell then rose: 14.0 -> 11.6 -> **19.8%**, moving back toward gate05's 28.3% at a matched instrument, and
+both cast rates are up (log x2.3, tornado x2.8 from m5000). Spell suppression is exactly the mechanism §5cj measured as
+the cause of the regret failure (wrong waits 33/203, all of the excess over gate05, concentrated on enemy-troop states,
+with log and tornado the cheap defensive answers). So the quantity that broke the guards is recovering on its own, which
+is the owner's 14:2x hypothesis ("a real chance the policy might rebound") and the first measurement that supports it.
+It is (b) as a REBOUND claim: the regret corpus is the instrument for that, and its next read is the m10k gate. Log
+whiff rising 14 -> 24% alongside the rate is consistent with re-learning to fire (it now matches gate05's 24% exactly).
+Also (a): log whiff at m2450 was **73%** -- three casts in four hit nothing at all. Early-training spell aim is close to
+random, which is worth remembering the next time an m2k spell number is read as if it meant something.
+
+### 4. Rocket -- RETRACTION of a claim I made live this loop
+I told the owner mid-loop that gatec2's 3 rockets at m5000 were "the first non-zero rocket usage measured in sim,
+against a project history of zero". **That is wrong and I retract it.** L35's own card mix (§5ci.1) already had rocket
+at 0.4-0.7% of plays in ALL FOUR arms at m2k, and this loop's m2450 read has gatec2 at the same 3 casts. The correct
+statement (a): rocket sits at ~0-3 casts per 16 matches everywhere; gatec2 held 3 at m5000 where gate05 and floor7 had
+decayed to 0; gatec2 itself is at 0 by m6800. **Rocket usage did not go up.** The L13 line "0 casts in 72 matches"
+(§5bm.4) is true of the two checkpoints it measured, not of every arm -- I generalised it and should not have.
+What IS worth keeping (a, tiny n): the rockets that were cast landed on bodies -- 2.33 enemy units and ~4,587 damage
+per cast at m5000, 0 tower damage. Pros rocket 3.4% of plays (§5bm.4); every arm here is at <= 0.7%.
+
+### 5. What this does NOT establish
+* A rebound (b). Three points on the spell instrument are not the regret corpus; §5ck.2's REBOUND test (m10k regret
+  <= 0.2418 and wrong waits <= 15/203) is unchanged and is still the thing that decides it.
+* That fewer, better-aimed spells are better play (b). The x-bow / regret gates say the opposite at m5000; both can be
+  true (accurate when it fires, absent when it should have fired).
+* Anything about live (b). This is the sim policy through the greedy path with no spell mask.
+* 16 matches, one seed set per checkpoint. Direction across 3 in-run points is the claim; step sizes are not.
+
+### 6. Files
+`scratchpad/gauntlet/L38/{spellprobe.py, spell_m5k.txt, spell_m2k5.txt}` (committed); `gatec2_live.pt` (m6800 copy of
+the live checkpoint, verified to load, NOT in git).
 

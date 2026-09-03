@@ -722,3 +722,19 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   above gate05 m10k 0.1-0.2 on 3 seeds. First aggro arm = ONE change `sim.aggro_drills: true`; base = gatec2 m10k ckpt only
   on rebound+held, else gate05 recipe from scratch seed 41. Read on the ledger + the lock-state drill counters.
 
+
+## L38 — 2026-09-03 14:55-15:15 | AGGRO gauntlet loop 22: owner question (spells) -- new engine-attributed spell probe; suppression is recovering in-run
+- (a) The m5k gate report contains NO spell metrics (one incidental line: the_log = 16% of after-x_bow follow-ups).
+- NEW INSTRUMENT `scratchpad/gauntlet/L38/spellprobe.py`: attributes damage on the ENGINE (wraps _resolve_spell/_resolve_roll/
+  _tick_vortex/_tick_roll; whiff = 0 enemy bodies AND 0 tower damage). Validates EXACTLY against L35 cardmix on the same ckpt
+  (401 plays, 14.0/8.7/4.5/0.7) -> one instrument. NOT comparable to L13's mask-whiff / spell_waste probe.
+- TRAP (a): the Searcher deepcopies the engine and the forks cast spells too -- counting them gave 7 log casts vs 6 log plays.
+  Fixed by an identity test on the live engine; casts == plays is now the probe's validity check.
+- (a) matched m5000: gatec2 SPELL 11.6% vs gate05 28.3, floor7 27.4; log whiff 14% vs 24/32; tornado whiff 0% vs 9/4; tornado
+  catches 5.33 bodies/cast vs 2.74/2.51. Fewer, better-aimed casts -- not loss of aim.
+- (a) IN-RUN TREND gatec2 m2450/m5000/m6800: SPELL 14.0 -> 11.6 -> 19.8%; log 0.63 -> 0.87 -> 1.44/min; nado 0.34 -> 0.24 ->
+  0.68/min; log whiff 73 -> 14 -> 24%. The suppression that caused the L36 regret failure is recovering -> first support for
+  the owner's rebound hypothesis (b as a rebound claim; the m10k regret read decides it).
+- RETRACTED IN-LOOP: my live claim that rocket usage "went up / first non-zero ever". Rocket is 3 casts/16 matches at m2450 AND
+  m5000, 0 at m6800; L35 already had all four arms at 0.4-0.7% rocket share at m2k. Rocket did not go up. HANDOFF §5cl.
+

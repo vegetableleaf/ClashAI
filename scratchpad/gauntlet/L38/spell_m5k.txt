@@ -1,0 +1,24 @@
+  gatec2_m5k.pt: 16 matches, 49.7 min of match time, 510 plays
+  spell       casts  /match   /min   whiff  bodies  unit dmg  tower dmg
+  the_log        43    2.69   0.87     14%    1.98       696          0
+  tornado        12    0.75   0.24      0%    5.33       582          0
+  rocket          3    0.19   0.06      0%    2.33      4587          0
+  SPELL share of plays: 11.6%  the_log 8.6%  tornado 2.4%  rocket 0.6%
+  gate05_m5k.pt: 16 matches, 45.4 min of match time, 594 plays
+  spell       casts  /match   /min   whiff  bodies  unit dmg  tower dmg
+  the_log        84    5.25   1.85     24%    1.83       650          0
+  tornado        66    4.12   1.45      9%    2.74       288          0
+  rocket          0    0.00   0.00      --      --        --         --
+  SPELL share of plays: 28.3%  the_log 15.8%  tornado 12.5%  rocket 0.0%
+  floor7_m5k.pt: 16 matches, 52.7 min of match time, 767 plays
+  spell       casts  /match   /min   whiff  bodies  unit dmg  tower dmg
+  the_log       108    6.75   2.05     32%    1.43       502          0
+  tornado        72    4.50   1.37      4%    2.51       275          0
+  rocket          0    0.00   0.00      --      --        --         --
+  SPELL share of plays: 27.4%  the_log 15.5%  tornado 11.9%  rocket 0.0%
+  gatec2_live.pt: 16 matches, 48.8 min of match time, 581 plays
+  spell       casts  /match   /min   whiff  bodies  unit dmg  tower dmg
+  the_log        70    4.38   1.44     24%    1.73       613          0
+  tornado        33    2.06   0.68      0%    2.55       286          0
+  rocket          0    0.00   0.00      --      --        --         --
+  SPELL share of plays: 19.8%  the_log 13.6%  tornado 6.2%  rocket 0.0%
