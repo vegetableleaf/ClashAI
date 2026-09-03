@@ -22,7 +22,18 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-02 23:45**, branch `main` (**§5bu: GAUNTLET L20 = aggro loop 4: TWO AGGRO DRILLS GRADED
+Last updated: **2026-09-03 01:15**, branch `main` (**§5bv: GAUNTLET L21 -- the m10k read TRIPPED the owner's rule
+(median 3-seed elixir>=6 share < 1%): 0.1 / 0.2 / 0.0% (m5k 1.2/1.3/1.0, m2k 4.0/3.5/3.0), P(play|affordable)
+0.36/0.35/0.38, elixir mean 2.09, x-bow plays 1/2/0 per 2,400 rows. COEF-0.5 RUN STOPPED at 01:02 per the ruling:
+state recorded (10,000 eps, 356W-7653L-10D, best_wr 11.338, gate m10k regret 0.2418/0.2395), checkpoint backed up
+cmp-verified, procs 2 -> 0, watchdog stopped. Diagnosis cut 1 (trainer's own instrument, 237 update blocks): the
+post-clip gate pressure is toward PLAY in 199/237 blocks (mean +0.25) while the unclipped pressure is zero-mean
+(-0.05, positive 124/237); clip rate PLAY 0.77 vs WAIT 0.01 -- the KNOWN clip sign-flip (§'34 sigma'), present all
+run; the gate drifted +0.04 P(play|choice) over 10k eps and the >=6 share is its geometric tail ((1-p)^~19). The
+old clip_play_mult sweep graded winrate/reward at 700 matches and could not see this drift -> a repair is (b) until
+graded on the bucket probe at m2k/m5k. NEXT: choose + implement the repair, test run, THEN restart with the aggro
+wiring (owner ruling §6). Box idle.**
+Previous header (§5bu: GAUNTLET L20 = aggro loop 4: TWO AGGRO DRILLS GRADED
 ON THE ENGINE'S LOCK STATE -- `sim/aggro_drills.py` (explicit `register_all()`, NOT auto-imported, so the running
 trainer never sees it) + 4 tests: `tank_for_bow` (success = the Valkyrie's `target` becomes our Knight, failure = her
 first hit lands on the bow) and `bow_lane_choice` (success = the bow's FIRST lock after deploy is a tower, failure =
@@ -2062,6 +2073,7 @@ slow one.
   decided then, recorded here) with ONE attributable change per experiment where possible -- the aggro wiring and
   the elixir repair are two changes; if both go in, the test run must isolate the repair first. If it does NOT
   trip: the run continues; aggro wiring stays blocked; next read at the following snapshot.
+  -> TRIPPED at m10k (§5bv, 01:00): 0.1 / 0.2 / 0.0%. RUN STOPPED 01:02. Step (1) done; (2)-(5) in progress.
 
 ### From §5bq (2026-09-02 22:10) -- spell niches, after the gate-prior run ends (sim reward = one change each)
 * **`nado_retarget` UNREACHABLE (c, §5bq.3):** sim/env.py:2472 and :2508 `tile_dist(u, tw) <= u.spec.reach + 1.0`
@@ -7806,4 +7818,84 @@ owner; run left alone.
 ### 7. Files
 `icebow/src/clashrl/sim/aggro_drills.py`, `icebow/tests/test_aggro_drills.py`, `scratchpad/gauntlet/L20/{board_sweep.py,
 trace_drills.py, cell_probe.py, legal_sweep.py, bow_row_probe.py, rates.py, policy_rates.py}`.
+
+## §5bv — GAUNTLET L21: the m10k read TRIPS the owner's rule; coef-0.5 run STOPPED (2026-09-03 00:55-)
+
+### 1. The read (a; `tools/gate_prior_probe.py data/bench/gate05_m10k.pt --seed 0/1/2`, greedy, 2,400 rows each; snapshot 00:58, copy `scratchpad/gauntlet/L21/gate05_m10k.pt` cmp-verified)
+| | m2k (§5bk) | m5k (§5bq.5) | **m10k (this loop)** |
+|---|---|---|---|
+| elixir >= 6 share | 4.0 / 3.5 / 3.0% | 1.2 / 1.3 / 1.0% | **0.1 / 0.2 / 0.0%** |
+| P(play given affordable) | 0.228 / 0.227 / 0.239 | 0.282 / 0.287 / 0.295 | **0.364 / 0.352 / 0.375** |
+| affordable rows | 41% | 40% | **30%** |
+| elixir mean | 2.57 | 2.37 | **2.09** |
+| mean cost of plays (deck 3.50) | 2.63 / 2.66 / 2.66 | 2.61 / 2.60 / 2.54 | 2.53 / 2.50 / 2.50 |
+| x-bow plays / 2,400 rows | 7 / 6 / 3 (m5k) | | **1 / 2 / 0** |
+Owner rule (§6 ruling 00:0x): median >=6 share < 1.0% -> stop. Median 0.1%: TRIPPED, every seed, not close.
+Run state at the stop (a): 10,000 episodes, 356W-7653L-10D, avg_rew -16.5 (windowed), drills 42% pass all /
+44% last 300; EVAL@8000 ladder 8% (avg-4 11%), fair 4%; best_wr 11.338 (EVAL@6000); watchdog 00:57 P(play)
+0.364, elixir mean 2.11, >=6 0.3%, cell ent 0.85/5.08, procs=2; gate m10k regret 0.2418 oracle / 0.2395 belief
+(m5k 0.2291 / 0.2045), 17 x-bows in 24 matches (41% defensive, 35% offensive, 24% dead). Live checkpoint
+`data/policy_gate05_20260902.pt` (00:51, 1,935,229 B) backed up to `scratchpad/gauntlet/L21/policy_gate05_prekill_0051.pt`,
+cmp-verified. Trainer tree = 2 python processes (61036 parent, 47956 child) + 2 stale grep tails.
+
+### 2. Diagnosis input already in hand (a, trainer's own per-update diagnostics, `scratchpad/gauntlet/L21/run_log_lf.txt`, 237 blocks)
+SAMPLED trainer series, NOT comparable to the greedy table above, but its own trend is the point: "anything playable
+on X% of steps" 10.7 -> 12.0% flat all run; gate P(play GIVEN a choice) 0.223 (ep 375) -> 0.263 (ep 9950),
+monotone; plays 3-4% of steps flat; raw pref 0.027 -> 0.031. So the ONE thing that moved is P(play | affordable),
+by +0.04 over 10k episodes. Model (b): agent_dt 0.6 s, regen 1/2.8 s = 0.214 elixir per step; banking ~2 -> 6
+needs ~19 consecutive affordable steps declined; the gate is a per-step coin, so P(bank) ~ (1-p)^19 -- a GEOMETRIC
+TAIL. (1-p)^19 at p 0.29 -> 0.36 (greedy m5k -> m10k) falls by x0.14; measured >=6 share fell 1.2% -> 0.1-0.2%
+(x0.08-0.17). Consistent. The >=6 share is therefore an exquisitely sensitive readout of a tiny gate drift, not a
+separate "unlearning banking" event, and the play-cost mean (flat 2.5-2.66 since the PREVIOUS run's m2k) says the
+card head never learned anything about cost at all. Untested (b): the run-length distribution of declined
+affordable steps (needs per-row probe output; `gate_prior_probe.py --json` has no rows).
+
+### 3. The stop (a, 01:01-01:02)
+Order followed: state into §1 above -> watchdog python procs (69940, 37792) stopped first so it would not post a
+death alert for an intended kill -> `taskkill /T /F` on 61036 (child 47956 and its child 15652 went with it) ->
+trainer python procs 2 -> 0 verified -> `data/policy_gate05_20260902.pt` cmp-identical to the pre-kill backup ->
+`gate05_run_20260902.progress` shows `exit=1 01:02:07`. Free RAM 4.3 -> 7.6 GB, CPU 100 -> 31% (the gate script's
+m10k grading was still finishing; it exits on its own when it next polls and sees the run gone). Two stale
+`grep --line-buffered` log tails from earlier sessions remain; harmless.
+
+### 4. Diagnosis cut 1 -- what this run's own instrument says (a) and what history already tried (a)
+`scratchpad/gauntlet/L21/run_log_lf.txt` (the run log, CR->LF), 237 "GATE LOGIT PRESSURE" blocks:
+* post-clip (surviving) gate pressure: mean **+0.248**, median +0.153, toward PLAY in **199/237** blocks; by
+  quarter +0.20 / +0.41 / +0.24 / +0.15 -- never a quarter toward WAIT.
+* unclipped pressure (the trainer's CONTROL): mean **-0.052**, median +0.023, positive in 124/237 -- zero-mean.
+* clip rate PLAY 0.765 vs WAIT 0.010; gradient KILLED PLAY 0.365 vs WAIT 0.005.
+So the advantage signal on the gate is balanced and the clip converts it into a steady push toward PLAY. This is
+the clip sign-flip HANDOFF already established ("34 sigma", §"What to do, and it is already built and staged") --
+NOT new. What is new is only that (i) it is present for the whole of THIS run at coef 0.5 (the gate prior did not
+neutralise it), and (ii) the drift it predicts is the measured one: P(play GIVEN a choice) 0.223 -> 0.263 sampled,
+0.23 -> 0.36 greedy, and the >=6 share collapsed as its geometric tail (§2). History: `ppo_clip_play_mult` swept
+5 values x 3 seeds x 700 matches from scratch, no arm beat control on winrate/reward, mult 4.0 worst on reward,
+record says "do not reopen without a new reason" (§6-LADDER rung 1). The new reason, stated carefully: that sweep
+graded winrate/reward at 700 matches; winrate is not a discriminator (§7) and the elixir drift is a 2k -> 10k
+phenomenon that no 700-match run can show. Whether a clip repair stops the DRIFT is (b) -- untested on the
+instrument that shows the drift (greedy bucket probe at m2k and m5k). It is not established that the clip is the
+only or the main driver: the reward pays nothing for holding elixir and x-bow plays are so rare (1-7 per 2,400
+rows) that the value of banking is almost never sampled -- a zero-mean gate advantage plus ANY asymmetry drifts.
+
+### 5. What this does NOT establish
+Which repair to make (next loop's job, with a measurement, not a preference): candidates are (A) a symmetric
+objective for the gate head (KL-penalised / unclipped gate term, or per-head + widened bound -- the latter's 700-
+match history is a null on the wrong instrument), (B) a reward-side term that pays for banking when x-bow/rocket
+is in hand (doctrine says bank; the policy never samples it), (C) freezing/slowing the gate head's learning rate.
+Restart-vs-resume: NOT decided; note that every snapshot after m2k carries a degraded gate, so "resume" would mean
+m2k (4% >=6) or the pre-run `policy_sim_ppo.pt`, not m10k. The run-length (geometric) model of §2 is (b).
+
+### 6. Plan (owner ruling §6, 00:0x) -- sequence for the stopped window
+1. L22: diagnosis cut 2 = pick the repair with one decisive measurement; implement behind a config flag; unit
+   test. 2. TEST RUN from scratch, same config as gate05 + the repair only, graded by the bucket probe at m2k vs this
+   run's m2k (4.0/3.5/3.0%, P(play|aff) 0.23) and at m5k (drift). ~3 h to 5k at 0.5 ep/s. 3. Aggro wiring in code
+   now but behind a flag OFF for the test run: `aggro_drills.register_all()` from `drills_icebow.py`, `noise` field
+   on `Scenario`, re-predicate/retire `knight_guards_the_bow` + `nado_the_sneaky_lock`, `nado_retarget` reach fix
+   (the owner's reward bug; `retarget_reach.py` as the test), lock-aware `predict_targets`. 4. Restart = repair +
+   aggro flag ON; attribution: repair by the bucket probe, aggro by the new drills' pass rates (policy m5k 12%/0%,
+   §5bu) and `nado_king_activation`. Restart-vs-resume decided at step 4 and recorded here.
+
+### 7. Files
+`scratchpad/gauntlet/L21/{m10k_probe.sh, m10k_s0/1/2.txt+json, m10k_copy.txt, run_log_lf.txt}`; the m10k snapshot
+copy and the pre-kill checkpoint backup stay out of git.
 

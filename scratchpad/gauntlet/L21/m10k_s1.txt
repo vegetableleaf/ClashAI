@@ -1,0 +1,18 @@
+data\bench\gate05_m10k.pt  matches=10000  rows=2400  seed=1
+  affordable on 30.8% of rows | P(play) mean 0.343 (all) 0.352 (affordable rows) | played on 11.0% of rows | elixir mean 2.12  >=6 0.2% | phase rows [1881, 519, 0]
+  bucket  rows  P(play)  affordable  played   pro(single)
+      0    363   0.318     0.000     0.000    0.010
+      1    786   0.323     0.090     0.047    0.024
+      2    734   0.363     0.247     0.069    0.042
+      3    382   0.375     0.919     0.332    0.063
+      4     86   0.279     1.000     0.314    0.058
+      5     43   0.429     1.000     0.442    0.042
+      6      6   0.477     1.000     0.500    0.042
+      7      0     -         -         -      0.043
+      8      0     -         -         -      0.083
+      9      0     -         -         -      0.203
+     10      0     -         -         -      0.184
+  mean cost of the cards actually played: 2.50 (deck mean 3.50)
+    plays at <3   n=88   mean cost 1.42  skeletons:51 the_log:37
+    plays at 3-5  n=173  mean cost 3.00  ice_wizard:48 knight:40 tornado:39 tesla:15
+    plays at >=6  n=3    mean cost 5.33  x_bow:2 tesla_evo:1

@@ -529,3 +529,15 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - (a) trained policies, greedy masked, 40 reps: gate05 m5k 12% / 0% (tank / lane), pre-run policy_sim_ppo 15% / 35%; doctrine 95 / 90.
   "No concept of aggro" is measured for these two questions. nado_king_activation 0% for every policy, doctrine 5%.
 - Run untouched (7,825 eps). HANDOFF §5bu.
+
+
+## L21 — 2026-09-03 00:55-01:15 | AGGRO gauntlet loop 5: m10k read TRIPS the owner's rule; coef-0.5 run STOPPED
+- (a) greedy bucket probe, 3 seeds, m10k: elixir>=6 share 0.1 / 0.2 / 0.0% (m5k 1.2/1.3/1.0, m2k 4.0/3.5/3.0); P(play|affordable)
+  0.36/0.35/0.38 (m5k 0.28-0.30); elixir mean 2.09; x-bow plays 1/2/0 per 2,400 rows; played cost still 2.50-2.53. Median 0.1% < 1% -> stop.
+- (a) stopped per ruling: state recorded (10,000 eps, 356W-7653L-10D, best_wr 11.338, gate m10k regret 0.2418/0.2395), ckpt
+  backed up cmp-verified, watchdog stopped first, procs 2 -> 0, ckpt unchanged. Box idle (7.6 GB free).
+- (a) diagnosis cut 1, trainer's own instrument (237 blocks): post-clip gate pressure toward PLAY 199/237 (mean +0.25), unclipped
+  zero-mean (-0.05, 124/237 positive); clip rate PLAY 0.77 vs WAIT 0.01. = the KNOWN clip sign-flip, present all run at coef 0.5.
+  The gate drifted +0.04 P(play|choice); >=6 share is its geometric tail (b). clip_play_mult history = null on winrate/reward at
+  700 matches, which cannot see a 2k->10k drift; repair (b) until graded on the bucket probe.
+- Next: L22 pick the repair with one measurement, implement behind a flag, unit test; then TEST RUN; aggro wiring behind a flag; restart. HANDOFF §5bv.

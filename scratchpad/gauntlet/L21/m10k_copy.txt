@@ -1,0 +1,2 @@
+copy verified 1935229 bytes 00:58
+DONE 01:00
