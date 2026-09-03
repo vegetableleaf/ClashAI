@@ -588,3 +588,12 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Run stopped 04:16 at 5,175 eps (recorded §5bz.4); python 19 -> 1 (Nucleo). Box idle, 9.8 GB free. A/B/C question open.
 - Next: aggro wiring behind a flag (owner-ordered, unblocked) while the question stands. HANDOFF §5bz.
 
+
+## L26 — 2026-09-03 04:21-04:50 | AGGRO gauntlet loop 10: aggro wiring BUILT behind two flags, both OFF (39aa80b)
+- `sim.aggro_drills` (tank_for_bow + bow_lane_choice in; knight_guards_the_bow + nado_the_sneaky_lock retired from the pool,
+  still registered). OFF = the 29-drill gate05 pool exactly (a, verified; the new test caught a registry leak, fixed).
+- `env.nado_retarget_reach_fix`: centre-to-centre -> engine `_gap`. (a) hog at 2.20 tiles is now a targeter and the reference
+  pull earns the credit's predicate; OFF reproduces the never-fires behaviour. 3 new tests from the L16 script.
+- `Scenario.noise` field replaces the `_no_distractors` hook. 83/83 tests across the touched modules. Box idle. A/B/C open.
+- Next: lock-aware `predict_targets` graded by aggro_agreement.py (stopped-window job). HANDOFF §5ca.
+

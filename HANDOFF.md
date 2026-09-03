@@ -22,7 +22,11 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-03 04:25**, branch `main` (**§5bz: GAUNTLET L25 -- gatep6 m5k read FAILS the bar:
+Last updated: **2026-09-03 04:50**, branch `main` (**§5ca: GAUNTLET L26 -- aggro wiring BUILT behind two flags,
+both OFF (39aa80b): `sim.aggro_drills` (lock-state drills in, the two old aggro drills out; OFF = the 29-drill gate05
+pool exactly, verified) and `env.nado_retarget_reach_fix` (the owner's reward bug; the credit is now reachable,
+unit-tested on the L16 board). `Scenario.noise` field. 83/83 tests. Box idle; A/B/C question still open; next =
+lock-aware `predict_targets`. Previous header follows.) (**§5bz: GAUNTLET L25 -- gatep6 m5k read FAILS the bar:
 ≥6 share 1.4 / 1.1 / 2.0% at m=5,150 vs the bar "above gate05's m2k 4.0/3.5/3.0"; it is INDISTINGUISHABLE from gate05's
 m5k 1.2/1.3/1.0. Both tables land at ~1-2% by m5k: the ceiling is the opponent model, not the table. Test run STOPPED
 04:16 at 5,175 eps (state recorded, procs 19 -> 1 = Nucleo only). Owner question A/B/C (§5by.4) still open; the
@@ -2115,7 +2119,9 @@ slow one.
   -> L24 (§5by): m2k read FAILS the bar's direction: 0.9/0.8/0.5% at m2,350 vs gate05 m2k 4.0/3.5/3.0. Running on to
      the pre-registered m5k read (ETA ~03:50 at 0.7 ep/s). Owner question re-posted: opponent cadence (see §5by.4).
   -> L25 (§5bz): m5k read 1.4/1.1/2.0% -- bar FAILED, tie with gate05's m5k. Run stopped 04:16. Box idle. A/B/C open;
-     aggro wiring proceeds (unblocked). Grade: `gate_prior_probe.py` seeds 0/1/2 at m2k (gate05: >=6 share 4.0/3.5/3.0%,
+     aggro wiring proceeds (unblocked).
+  -> L26 (§5ca): step 4 BUILT: `sim.aggro_drills` + `env.nado_retarget_reach_fix`, both default false. At the
+     restart, turning either on is a change; both on = two changes (owner's call, §5ca.4). Grade: `gate_prior_probe.py` seeds 0/1/2 at m2k (gate05: >=6 share 4.0/3.5/3.0%,
      P(play|aff) 0.23) and m5k (gate05: 1.2/1.3/1.0%) + the L22 ledger. Bar: m5k >=6 share ABOVE gate05's m2k.
 
 ### From §5bq (2026-09-02 22:10) -- spell niches, after the gate-prior run ends (sim reward = one change each)
@@ -8264,4 +8270,57 @@ blend + aggro; C one more test run. Nothing launches until then.
 ### 6. Files
 `scratchpad/gauntlet/L25/probe_m5k1_s{0,1,2}.txt` (committed); `gatep6_m5k1.pt` and `data/policy_gatep6_20260903{,_final}.pt`
 (not in git).
+
+## §5ca. GAUNTLET L26 (2026-09-03 04:21-04:50) -- aggro wiring built behind two flags, both OFF (commit 39aa80b)
+
+The ruling's step 4, done while A/B/C (§5by.4) waits. Nothing launched; box idle throughout (python = Nucleo only).
+
+### 1. What changed (all default-off; the gate05 configuration is byte-for-byte unchanged in behaviour)
+* `Scenario.noise: Optional[bool] = None` (scenarios.py). `None` = the config's `drill_noise` applies; `False` = never
+  deal distractors into this drill. `drill_env._place_noise` honours it. Replaces `aggro_drills._no_distractors`
+  (the setup-hook workaround from §5bu.3; deleted). `bow_lane_choice` carries `noise=False`; `tank_for_bow` keeps
+  noise (§5bu measured no effect on it).
+* `sim.aggro_drills: false` (config.yaml, read in `DrillMixEnv.__init__`). ON: `aggro_drills.register_all()` and
+  the pool drops `aggro_drills.RETIRED = (knight_guards_the_bow, nado_the_sneaky_lock)` -- they stay REGISTERED
+  (so `cli drills` reports and `prereq` names still resolve), they just are not dealt. OFF: the pool also FILTERS
+  the aggro names out, because the registry is process-global and a `cli drills` report or a test that called
+  `register_all()` earlier in the same process leaked them into a flag-off pool (caught by the new test, fixed in
+  the same commit). Verified (a): flag-off pool = 29 names = exactly the set registered by `drills_icebow.py`.
+* `env.nado_retarget_reach_fix: false` (config.yaml, read in `SimMatchEnv.__init__`). The owner's reward bug
+  (§5bq.3): the retarget-candidate test at both sites (`_register_nado`, `_nado_catch`) was centre-to-centre
+  `tile_dist <= reach + 1.0`; the engine engages centre-to-hitbox-EDGE (`_gap`). New `_tower_in_reach(u, tw)` uses
+  `_gap(u.x, u.y, tw) <= reach + 1.0` when the flag is on, the historical test otherwise. Still one credit per cast,
+  still `>= d0 + 1.6` tiles and `nado_retarget_min_worth`, untouched.
+
+### 2. Tests (a)
+* `tests/test_nado_retarget_reach.py` (new, 3 tests, 0.8 s) = `scratchpad/gauntlet/L16/retarget_reach.py` as a
+  regression test: hog locked on our left princess settles at d0 with `reach + 1.0 < d0 < reach + 2.5` (the tower's
+  body is the gap); flag OFF -> `targeters == []` at cast and after 2.5 s of `_nado_catch`; flag ON -> the hog is
+  the targeter, the 4-tile-toward-the-bridge tornado moves it `>= d0 + 1.6` and it is alive -- i.e. the credit's own
+  predicate fires on the reference line for the first time in the project.
+* `tests/test_aggro_drills.py` gains `AggroWiringTests` (3): flag off = old pool (no aggro names even after
+  `register_all()` ran in-process); flag on = aggro names in, RETIRED out but still registered,
+  `nado_king_activation` kept; `noise=False` -> 0 tagged bodies over 12 seeds for `bow_lane_choice` at
+  `drill_noise 1.5` while `tank_for_bow` gets some.
+* Whole modules run: test_aggro_drills 7/7 (43 s), test_nado_retarget_reach 3/3, test_gate_prior 12/12,
+  {king_rocket_and_nado_combo, xbow_rewards, gate_parity, drill_evo_cycle_i9, aggro_oracle,
+  pull_spell_no_tower_snap, env_init_attrs} 61/61. `pytest` is not installed: `python -m unittest tests.<mod>`.
+
+### 3. Does NOT establish
+* That either flag improves anything when trained on (b). The drills' scripted/doctrine/policy rates are §5bu's
+  (tank 92/95/12%, lane 95/90/0% at gate05 m5k); the reach fix has never been on in a run.
+* Real-game truth of the engine's lock geometry the drills grade (b; §5bu oracle-exposed behaviours list).
+
+### 4. Restart bookkeeping (for whoever launches step 5)
+One change per experiment: `aggro_drills: true` alone is "the aggro wiring"; `nado_retarget_reach_fix: true` alone
+is "the reward bug fix". Both on in one run = two changes; the owner asked for both at the restart ("restart the
+PPO with the new changes ... also a good time to wire in the aggro manipulation changes") -- flagging that the
+attributability rule and that instruction conflict; my recommendation is aggro_drills first (the drill pool is
+graded per-drill in the log, so its effect is legible on its own), reach fix as the next change. Pending the A/B/C
+ruling, nothing launches.
+
+### 5. Remaining aggro item (unblocked)
+Lock-aware `predict_targets` (obs predictor; §5bs/§5bu list: ENGAGED hint from `u.locked`+target, deploy-time
+no-target, building reach), graded by `scratchpad/gauntlet/L17/aggro_agreement.py` against the engine (locked 81%
+baseline from L17). Workers import it, so it is a stopped-window job -- now.
 
