@@ -580,3 +580,11 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Run continues to the pre-registered m5k read (~03:50). Owner question re-posted with the mechanism: (A) opponent cadence arm
   (recommended), (B) restart on gate05's blend + aggro wiring, (C) stronger coef on the conditioned table (expect fail). HANDOFF §5by.
 
+
+## L25 — 2026-09-03 03:52-04:25 | AGGRO gauntlet loop 9: gatep6 m5k read -- bar FAILED, tie with gate05; run stopped
+- (a) probe s0/1/2 at m5,150: >=6 share 1.4/1.1/2.0% vs bar (above 4.0/3.5/3.0) -- FAILED; vs gate05 m5k 1.2/1.3/1.0 -- tie.
+  L24's early "worse" closed by m5k; carry "does not help", not "hurts". Bucket P(play) flat 0.22-0.31.
+- (b, strengthened) >=6 share bounded ~1-2% by the opponent model (two tables, same landing). Settled only by path A.
+- Run stopped 04:16 at 5,175 eps (recorded §5bz.4); python 19 -> 1 (Nucleo). Box idle, 9.8 GB free. A/B/C question open.
+- Next: aggro wiring behind a flag (owner-ordered, unblocked) while the question stands. HANDOFF §5bz.
+

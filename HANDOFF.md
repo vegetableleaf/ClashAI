@@ -22,7 +22,12 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-03 02:55**, branch `main` (**§5by: GAUNTLET L24 -- the m2k read of the pressure-conditioned
+Last updated: **2026-09-03 04:25**, branch `main` (**§5bz: GAUNTLET L25 -- gatep6 m5k read FAILS the bar:
+≥6 share 1.4 / 1.1 / 2.0% at m=5,150 vs the bar "above gate05's m2k 4.0/3.5/3.0"; it is INDISTINGUISHABLE from gate05's
+m5k 1.2/1.3/1.0. Both tables land at ~1-2% by m5k: the ceiling is the opponent model, not the table. Test run STOPPED
+04:16 at 5,175 eps (state recorded, procs 19 -> 1 = Nucleo only). Owner question A/B/C (§5by.4) still open; the
+aggro wiring is unblocked, owner-ordered work and proceeds behind a flag. NOTHING IS RUNNING. Previous header follows.)
+(**§5by: GAUNTLET L24 -- the m2k read of the pressure-conditioned
 test run is BELOW gate05: ≥6-elixir share 0.9 / 0.8 / 0.5% at m=2,350 (probe, seeds 0/1/2) vs gate05's m2k 4.0 / 3.5 / 3.0
 and at/below its m5k 1.2 / 1.3 / 1.0. Mechanism (a, trainer stat at 5,000 updates): the conditioned target AVERAGES HIGHER
 on sim rows (0.066 vs 0.060) because the sim opponent pressures 50% of usable rows vs pros' 38% -- the split is a licence
@@ -2108,7 +2113,9 @@ slow one.
      --seed 41 --search-interval 4` (identical to gate05's except the config); ckpt `data/policy_gatep6_20260903.pt`
      (did not exist before). LAUNCHED 01:46 (`data/bench/gatep6_run_launch.sh`), monitors up -- see §5bx.5.
   -> L24 (§5by): m2k read FAILS the bar's direction: 0.9/0.8/0.5% at m2,350 vs gate05 m2k 4.0/3.5/3.0. Running on to
-     the pre-registered m5k read (ETA ~03:50 at 0.7 ep/s). Owner question re-posted: opponent cadence (see §5by.4). Grade: `gate_prior_probe.py` seeds 0/1/2 at m2k (gate05: >=6 share 4.0/3.5/3.0%,
+     the pre-registered m5k read (ETA ~03:50 at 0.7 ep/s). Owner question re-posted: opponent cadence (see §5by.4).
+  -> L25 (§5bz): m5k read 1.4/1.1/2.0% -- bar FAILED, tie with gate05's m5k. Run stopped 04:16. Box idle. A/B/C open;
+     aggro wiring proceeds (unblocked). Grade: `gate_prior_probe.py` seeds 0/1/2 at m2k (gate05: >=6 share 4.0/3.5/3.0%,
      P(play|aff) 0.23) and m5k (gate05: 1.2/1.3/1.0%) + the L22 ledger. Bar: m5k >=6 share ABOVE gate05's m2k.
 
 ### From §5bq (2026-09-02 22:10) -- spell niches, after the gate-prior run ends (sim reward = one change each)
@@ -8206,4 +8213,55 @@ answer by the m5k read, the run continues to m5k and stops there (pre-registered
 
 ### 5. Files
 `scratchpad/gauntlet/L24/probe_m2k35_s{0,1,2}.txt` (committed), `gatep6_m2k35.pt` (not in git).
+
+## §5bz. GAUNTLET L25 (2026-09-03 03:52-04:25) -- gatep6 m5k read: bar FAILED, tie with gate05; run stopped
+
+### 1. The read (a) -- `gate_prior_probe.py` seeds 0/1/2 on `scratchpad/gauntlet/L25/gatep6_m5k1.pt` (trainer ckpt
+written 04:12 at ~5,125-5,150 episodes; the gates monitor's own m5k snapshot had not fired yet -- it polls every 600 s)
+| | gatep6 m5,150 s0/s1/s2 | gatep6 m2,350 (L24) | gate05 m5,000 (L16) | gate05 m2,000 (L11) |
+|---|---|---|---|---|
+| ≥6 elixir share | **1.4 / 1.1 / 2.0%** | 0.9 / 0.8 / 0.5 | 1.2 / 1.3 / 1.0 | 4.0 / 3.5 / 3.0 |
+| elixir mean | 2.38 / 2.42 / 2.35 | 2.21 / 2.26 / 2.18 | -- | 2.57 / 2.64 / 2.57 |
+| affordable rows | 39.5 / 40.4 / 38.0% | 33.0 / 35.5 / 32.5 | -- | 41.0 / 45.2 / 43.7 |
+| P(play \| affordable) | 0.268 / 0.269 / 0.273 | 0.340 / 0.327 / 0.350 | -- | 0.228 / 0.233 / 0.227 |
+| played rows | 10.5 / 10.0 / 10.4% | 11.3 / 10.6 / 11.7 | -- | 10.0 / 9.5 / 10.7 |
+Plays at ≥6: n=10/9/15 (x_bow 4/4/7, tesla_evo 1/2/2). Per-bucket P(play) is flat 0.22-0.31 across buckets 0-6 on all
+seeds (s0: 0.248 0.258 0.278 0.283 0.245 0.312 0.294). Trainer cumulative stat at 11,400 updates: CE 0.3911, pi(play)
+0.242 vs prior 0.064, 12% usable, PRESSURE on 50%. EVAL@4000 ladder 9% / fair 5% (150 each; winrate is not a
+discriminator, recorded for completeness). Run endpoint: 5,175 eps, 124W-3991L-3D, 0.6 ep/s, drills 35% pass all.
+
+### 2. What it establishes
+* (a) **The bar failed**: every seed at m5k is below every seed of gate05's m2k (4.0/3.5/3.0) by 2-3x.
+* (a) **gatep6 and gate05 are a tie at m5k** (1.4/1.1/2.0 vs 1.2/1.3/1.0; ranges overlap). L24's "gatep6 is worse" was
+  an early-trajectory difference (m2.35k) that closed by m5k -- do not carry "the conditioned table hurts" forward;
+  carry "it does not help". The m2k-vs-m5k ordering flip is §5x's lesson yet again (single reads move 3x and mean
+  little; here 3 seeds moved together, so it was a real dip, but not a durable one).
+* (b -> strengthened) **the ≥6 share is bounded at ~1-2% by the opponent model, not the table.** Two different tables
+  (blend; pressure-split with a 2-3x quiet/pressure contrast) land in the same place. The mechanism in §5by.2 (50%
+  pressured rows, ~5 s quiet windows) applies equally to both. The measurement that would settle it is path (A): a
+  cadence-corrected opponent with either table. Until then it stays (b).
+* (a) Pressure key is stable at 50% of usable rows from update 5,000 to 11,400 -- the sim opponent's cadence does not
+  drift with training.
+
+### 3. What it does NOT establish
+* Whether the conditioned table would help against a pro-cadence opponent (untested; that is A).
+* Anything about m10k/m20k for gatep6 (stopped at m5k as pre-registered; `data/policy_gatep6_20260903_final.pt` is the
+  endpoint, byte-verified copy of the 04:16 ckpt, NOT in git).
+* Coef 1.0-2.0 on the conditioned table (C) -- untested; expectation (b) unchanged from §5by.4.
+
+### 4. Stop record (guardrail)
+04:16: endpoint recorded above; `taskkill /T /F` on PID 75000 (44416 + 12 spawn workers went with it); Stop-Process on
+watchdog 72948/584 and gates 28984/24236; two stale `grep.exe` tail-watchers of mine from earlier loops also removed.
+python.exe count 19 -> 1 (the owner's Nucleo uvicorn 63608, untouched). `gatep6_run_20260903.progress` got `exit=1
+04:16:13`. Free RAM after: 9.8 GB. Note: from Git Bash `taskkill /T /F` mangles the flags into `T:/` -- use PowerShell.
+
+### 5. Decision
+The ruling's steps 1-3 are complete with a null. Step 4 (wire the aggro changes, behind a flag, OFF by default) is
+owner-ordered and does not depend on A/B/C ("get done the features that aren't blocked"), so the loop proceeds with it
+while the question stands. Step 5 (restart) waits for the ruling: A launches a cadence arm first; B restarts on the
+blend + aggro; C one more test run. Nothing launches until then.
+
+### 6. Files
+`scratchpad/gauntlet/L25/probe_m5k1_s{0,1,2}.txt` (committed); `gatep6_m5k1.pt` and `data/policy_gatep6_20260903{,_final}.pt`
+(not in git).
 
