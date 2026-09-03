@@ -508,3 +508,12 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   princess after 7.9 s; valk beats knight 26% HP, mini-PEKKA beats knight 56.5%. Hog on princess + reference tornado -> KING.
 - (a) cost: fork 0.5 ms, question 2-3 ms, 31-fork window 83 ms (6-unit board).
 - (b) flagged: engine resets a lock when a body spawns on the locked unit; no 4 s king aim delay. Run untouched (6,000 eps). HANDOFF §5bs.
+
+
+## L19 — 2026-09-02 22:45-23:00 | AGGRO gauntlet loop 3: do the existing aggro drills grade aggro? (c) no
+- (a) knight_guards_the_bow: success = bow alive AND knight played -> passes the step ANY knight lands (bow dies 7-8 s);
+  cell/timing ungraded. Oracle: the knight takes the lock on 23/760 cell x delay combos (river line, <= 1.8 s).
+- (a) nado_the_sneaky_lock, 40 reps ladder roll: reference 47.5%, knight-only 60%, nado-only 0%, knight-in-front-no-nado 80%.
+  The bow never re-locks a tower after the reference pull (2 tiles vs 11.5 reach) -> notes (c). L16 enemies: 5% for every line.
+- (a) trap: `cli drills --level 11` pins the ENEMY only; our bow is L16 -> "nothing 100%". Use ladder or pin 14-16.
+- Next: `sim/aggro_drills.py` with lock-state predicates (tank_for_bow, bow_first_lock). Run untouched (6,950 eps). HANDOFF §5bt.

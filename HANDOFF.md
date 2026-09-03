@@ -22,7 +22,17 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-02 22:30**, branch `main` (**§5bs: GAUNTLET L18 = aggro loop 2: the ENGINE-BACKED AGGRO
+Last updated: **2026-09-02 23:00**, branch `main` (**§5bt: GAUNTLET L19 = aggro loop 3: DO THE AGGRO DRILLS GRADE
+AGGRO? (c) No, neither of the two. `knight_guards_the_bow` passes the STEP a knight is played anywhere (success =
+bow alive AND knight played, verdict fires immediately; the bow only dies at 7-8 s) -- cell and timing are
+irrelevant; scripted 100%. `nado_the_sneaky_lock`: the tornado earns NOTHING -- knight-only @2.4 passes 60% on the
+ladder roll vs the full reference 47.5%, tornado-only 0%; knight-in-front @0.6 with no tornado is the best line at
+80%; the bow NEVER re-locks a tower after the reference pull (a 2-tile pull cannot leave the bow's 11.5-tile reach,
+the drill notes' 'a lone Tornado re-locks the bow' is contradicted). Trap: `cli drills --level 11` pits OUR L16
+cards vs L11 enemies (sneaky lock 'nothing 100%'); training rolls enemies 13-16. Oracle numbers of §5bs stand (they
+were stated at 11 vs 11; hand-built Unit vs eng.deploy checked: same). Run untouched (6,950 eps). Next: loop 4 =
+`sim/aggro_drills.py` with oracle-verified predicates (lock taken; bow's FIRST lock after deploy).**
+Previous header (§5bs: GAUNTLET L18 = aggro loop 2: the ENGINE-BACKED AGGRO
 ORACLE exists -- `sim/aggro_oracle.py` (fork the engine, advance, read `Unit.target`; never re-derives rules) with
 8 unit tests that ARE the owner's questions on fixed boards: target_of / targeted_by, next target after a kill,
 what a placed knight draws, the interposition window, tornado king-activation retarget, duel winner + HP left.
@@ -2016,8 +2026,10 @@ slow one.
   remain as record; board-27 stays cancelled; the live detector stays YOLO11s. Do not re-propose.
 
 ### AGGRO GAUNTLET (owner order 2026-09-02 22:1x) -- running; §5br is loop 1
-* Loop 2 DONE (§5bs): `sim/aggro_oracle.py` + 8 tests. Loop 3: aggro drill family graded by the oracle
-  (tank_for_bow, kta_retarget) -- as a NEW module if the workers import `drills_icebow.py`. Later: lock-aware
+* Loop 2 DONE (§5bs): `sim/aggro_oracle.py` + 8 tests. Loop 3 DONE (§5bt): the two existing aggro drills do
+  not grade aggro (knight_guards_the_bow verdict fires on any knight play; sneaky-lock's tornado earns nothing,
+  notes contradicted). Loop 4: `sim/aggro_drills.py` (tank_for_bow on lock state, bow_first_lock) + tests;
+  when the run stops: wire in, re-predicate/retire the two old drills. Later: lock-aware
   `predict_targets` (blocked until the run stops: workers import it); grade with `aggro_agreement.py`.
 * Oracle-exposed engine behaviours to verify vs the real game (b): spawn-on-top lock reset (engine :5758),
   no 4 s king aim delay. Do not build rewards that depend on the first.
@@ -7589,4 +7601,80 @@ the run's command line; free RAM 4.53 GB; CPU 100%. `gate05_m10k.pt` not yet wri
 
 ### 6. Files
 `icebow/src/clashrl/sim/aggro_oracle.py`, `icebow/tests/test_aggro_oracle.py`, `scratchpad/gauntlet/L18/cost_probe.py`.
+
+## §5bt — GAUNTLET L19 (aggro gauntlet, loop 3): do the existing aggro drills grade aggro? (2026-09-02 22:45-23:00)
+
+Question: before writing new aggro drills, do the two the deck already has (`knight_guards_the_bow`,
+`nado_the_sneaky_lock`, both in the run's pool: `drill_tiers: null`, `drill_frac: 0.3`, play-out on) reward the
+aggro decision they are named for? Instrument 1: oracle sweeps (`scratchpad/gauntlet/L19/drill_sweep.py`, every
+0.05-grid cell x delays, level 11 vs 11). Instrument 2: the real `DrillEnv` via `cli drills` and
+`run_drill(scripted_policy(variant))` with the reference line swapped for variants (`ref_variants.py`), 40 reps,
+seed 5 (same ladder rolls across variants), enemy level = ladder roll (13-16, weights 2/4/3/2) and pinned 11/14/16.
+
+### 1. `knight_guards_the_bow` -- verdict is trivial (a, by code + by run)
+`success = bow alive AND played(knight)`; `_verdict` fires "pass" the first step a predicate holds
+(`drill_env.py:762`). The bow dies at 7.4-8.3 s unguarded, so ANY knight play anywhere before then passes.
+Scripted 100%, doctrine 100%, nothing 0% (ladder). The knight's cell and timing are not graded at all.
+Oracle sweep (760 = 190 cells x 4 delays, 11 v 11): the knight actually TAKES the Valkyrie's lock in 23/760
+combos -- only on the river line y 0.50-0.55, x 0.05-0.35, delays <= 1.8 s (the reference (0.26, 0.50, 0.6) is one);
+the bow then survives to 20 s in 4/760 (x 0.15 / 0.35 on the river: she dies where the princess also reaches).
+So the skill the drill is NAMED for exists on 3% of the cells and is not what the verdict measures.
+
+### 2. `nado_the_sneaky_lock` -- the tornado is not the play (a); notes contradicted (c)
+Pass rates, 40 reps, same seed (enemy ladder / L11 / L14 / L16):
+| line | ladder | L11 | L14 | L16 |
+|---|---|---|---|---|
+| reference: nado (0.26,0.40)@1.2 + knight (0.26,0.56)@2.4 | **47.5%** | 100 | 97.5 | 5 |
+| knight only @2.4 | **60.0%** | 100 | 100 | 5 |
+| nado only @1.2 | 0% | 100 | 5 | 0 |
+| nado to the CENTRE (0.50,0.42)@1.2 only | 10% | 92.5 | 10 | 7.5 |
+| nado CENTRE + knight | 50% | 92.5 | 85 | 5 |
+| knight in FRONT (0.26,0.50)@0.6, no nado | **80.0%** | 100 | 95 | 5 |
+| nothing | 2% | 100 | -- | -- |
+* The reference tornado LOWERS the pass rate (47.5 vs 60 knight-only). The best line is a knight in front, early,
+  with no tornado. At L16 nothing passes (5%). Against L11 the L16 bow wins alone ("nothing 100%").
+* Mechanism (oracle, 11 v 11): the reference pull moves the knight 0.47 -> 0.409 (2 tiles); the bow's reach is
+  11.5 tiles, so it keeps the knight and the bow's target is NEVER a tower until the knight dies. The notes'
+  "A lone Tornado re-locks the bow ... the pull converts the bow's attention" is (c). Where a tornado does help
+  (centre cells, 10/304), it works by pulling the knight out of ITS OWN 5.5-tile sight of the bow so it marches
+  at our tower and dies to bow + princess -- a real aggro play, but not the one the drill describes, and the drill
+  cannot tell the two apart because success is "enemy tower lost 150 hp", which our knight earns by walking there.
+* Drill verdict order matters: failure (bow dead) is checked first, so the reference at 11 v 11 in the oracle
+  board FAILS (bow dies 8.7 s, tower-150 at 16.8 s); in the DrillEnv at L11 it passes because OUR bow is L16.
+
+### 3. Trap: `cli drills --level N` pins the ENEMY only (a)
+Our cards come from `config/cards.yaml` per card (x_bow L16, 2556 hp, 93 dmg); `--level 11` therefore reports a
+16-vs-11 board. Training rolls 13-16. Any drill report used to argue winnability must run WITHOUT `--level`
+(ladder) or with the level pinned to 14-16. §5bs's oracle boards were 11 v 11 by construction and said so;
+they describe the mechanism, not the training board. Hand-built `Unit(...)` vs `eng.deploy` spawn was checked on
+the sneaky board: identical death times (7.4 s), so the oracle tests' spawn idiom is fine for single units
+(squads still need `deploy`, per drill_env's own warning).
+
+### 4. What this means
+The owner's "the model performs poorly on the sneaky-lock drill because it has no concept of aggro" is (c) for
+this drill: the drill does not test aggro; its best line is a 3-elixir knight and its reference is worse than that
+line; on the ladder roll no line beats 80%. `nado_king_activation` IS a real aggro drill (scripted 100%, doctrine
+5%, nothing 0%). The drills that would grade the owner's questions do not exist yet; they need predicates on the
+engine's lock state, not on hp totals:
+* `tank_for_bow`: success = the enemy's `target` is our knight while the bow is alive (lock taken), failure = the
+  enemy hits the bow first. Graded on aggro, not on survival (which the level roll decides).
+* `bow_first_lock`: enemy troop standing near the river; hand x_bow (+ tornado); success = the bow's FIRST target
+  after its 3.5 s deploy is a tower; failure = a troop. This is the owner's "does the placed X-Bow get blocked or
+  lock the tower" question and the oracle's `draws()` answers it; the drill board must be one where both outcomes
+  are reachable (oracle sweep to choose it -- a troop within 11.5 tiles is always nearer than the tower at 10.6).
+Both go in `sim/aggro_drills.py` (explicit `register()`, not auto-imported -- §5bs trap) with tests; wiring into
+`drills_icebow.py` and retiring/re-predicating the two above waits for the run to stop.
+
+### 5. Does NOT establish
+How often the policy plays the knight in front vs behind in these drills (needs per-drill pass rates, which the
+run log does not print, or `cli drills --policy <ckpt>` -- a loop of its own). Whether the real game's X-Bow
+first-lock rule is "nearest in reach" (engine) -- (b). Real-game truth of the centre-pull mechanism -- (b).
+
+### 6. Box (a, 23:00)
+Run 6,950 eps, 227W-5329L-7D, avg_rew -18.8, drills 43% / 47% last 300; 11 procs; free RAM 5.07 GB;
+`gate05_m10k.pt` not yet written. Untouched.
+
+### 7. Files
+`scratchpad/gauntlet/L19/{drill_sweep.py, drill_sweep.json, baseline.py, order.py, refs.py, trace_sneaky.py,
+spawn_vs_unit.py, levels.py, ref_variants.py}`.
 
