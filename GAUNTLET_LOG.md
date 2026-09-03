@@ -541,3 +541,17 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   The gate drifted +0.04 P(play|choice); >=6 share is its geometric tail (b). clip_play_mult history = null on winrate/reward at
   700 matches, which cannot see a 2k->10k drift; repair (b) until graded on the bucket probe.
 - Next: L22 pick the repair with one measurement, implement behind a flag, unit test; then TEST RUN; aggro wiring behind a flag; restart. HANDOFF §5bv.
+
+
+## L22 — 2026-09-03 01:08-02:05 | AGGRO gauntlet loop 6: diagnosis cut 2 -- repair chosen (pressure-conditioned prior)
+- RETRACTED L21's "unclipped gate pressure is zero-mean" (heavy-tailed block sums). ADV BY ACTION, 11.6M samples: play +0.211 vs
+  wait -0.008 -- the PLAY bias is in the advantages.
+- (a) per-term ledger, 24 matches x 3 seeds, m2k/m5k/m10k, two instruments: the 2k->10k reward gain is the wait-side penalty
+  vanishing (sampled threat_miss_idle -2.20 -> -1.11; greedy wait-side -6.5 -> -0.26); x-bow terms flat (sampled) or falling
+  (greedy exec 2.24 -> 0.62 m5k->m10k, total +2.96 -> +0.93). Greedy m2k is a HOARDER (>=6 29.9%, leak -3.8) -- instrument-dependent.
+- (a) the shipped prior is board-blind; refit with "enemy troop played < 6 s ago" from plays_ext.csv: pro P(play) at 5/6/7
+  elixir 0.024/0.030/0.029 quiet vs 0.086/0.068/0.066 pressured (2.3-3.6x, n 3k-10k/cell); pressure on 37% of pro windows.
+- (a) sim opponent, same key, single elixir: pressure 46-52% of steps, quiet median 4.8-5.4 s, bank-length stretches 10-16%
+  vs pros 37% / 9.0 s / 39%. ~1 bankable window per phase vs ~2.7. Bounds any gate repair (b for the size).
+- Decision: repair = pressure-conditioned prior (schema 2 + sim key, flag OFF = today's table). Question posted on the opponent
+  cadence (not blocking). Next: build + unit test, then TEST RUN from scratch graded at m2k/m5k. HANDOFF §5bw.

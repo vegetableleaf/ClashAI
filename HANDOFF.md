@@ -22,7 +22,22 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-03 01:15**, branch `main` (**§5bv: GAUNTLET L21 -- the m10k read TRIPPED the owner's rule
+Last updated: **2026-09-03 02:05**, branch `main` (**§5bw: GAUNTLET L22 -- diagnosis cut 2, the repair is CHOSEN.
+(1) Per-term reward ledger on the m2k/m5k/m10k snapshots (24 matches x 3 seeds x 2 instruments): the 2k->10k reward
+gain is the WAIT-SIDE penalty shrinking (sampled: threat_miss_idle -2.20 -> -1.11/match; greedy: wait-side -6.5 ->
+-0.26) while the x-bow terms are flat (sampled wincon_exec +0.98 -> +1.00) or FALLING (greedy m5k -> m10k: exec
+2.24 -> 0.62, total +2.96 -> +0.93). The policy trades bow execution for fewer misses, as priced. RETRACTION: L21's
+'unclipped gate pressure is zero-mean' was an over-read of heavy-tailed block sums; ADV BY ACTION (11.6M samples)
+reads play +0.211 vs wait -0.008 -- the bias is in the advantages. (2) The shipped gate prior is UNCONDITIONAL on
+the board (the ruling's threat-on-our-half key was dropped in v0); refit with 'enemy troop played < 6 s ago':
+pro P(play) at 5/6/7 elixir = 0.024/0.030/0.029 quiet vs 0.086/0.068/0.066 under pressure (2.3-3.6x; n 3k-10k
+per cell). (3) Same key on the sim: the opponent pressures 46-52% of single-elixir steps vs pros 37%; quiet-stretch
+median 4.8-5.4 s vs 9.0 s; a 2->6 bank window (>= 11.2 s) is 10-16% of stretches vs 39%. REPAIR = the pressure-
+conditioned prior (schema 2 + the sim key), in-family with the owner's chosen family; test run after it is built.
+QUESTION posted: the opponent's pressure cadence (an opponent-model change). Instrument note: the full-match
+ledger reads the >=6 share 4.3 -> 1.0 -> 1.0% (m5k = m10k, a plateau) where the probe read 1.2 -> 0.1; both are at
+the 1% rule, the stop stands. Box idle.**
+Previous header (§5bv: GAUNTLET L21 -- the m10k read TRIPPED the owner's rule
 (median 3-seed elixir>=6 share < 1%): 0.1 / 0.2 / 0.0% (m5k 1.2/1.3/1.0, m2k 4.0/3.5/3.0), P(play|affordable)
 0.36/0.35/0.38, elixir mean 2.09, x-bow plays 1/2/0 per 2,400 rows. COEF-0.5 RUN STOPPED at 01:02 per the ruling:
 state recorded (10,000 eps, 356W-7653L-10D, best_wr 11.338, gate m10k regret 0.2418/0.2395), checkpoint backed up
@@ -2074,6 +2089,8 @@ slow one.
   the elixir repair are two changes; if both go in, the test run must isolate the repair first. If it does NOT
   trip: the run continues; aggro wiring stays blocked; next read at the following snapshot.
   -> TRIPPED at m10k (§5bv, 01:00): 0.1 / 0.2 / 0.0%. RUN STOPPED 01:02. Step (1) done; (2)-(5) in progress.
+  -> L22 (§5bw): diagnosis done, repair CHOSEN = pressure-conditioned gate prior (the ruling's dropped key).
+     Next: build it behind `sim.ppo_gate_prior_pressure_s` + unit test, then the from-scratch TEST RUN.
 
 ### From §5bq (2026-09-02 22:10) -- spell niches, after the gate-prior run ends (sim reward = one change each)
 * **`nado_retarget` UNREACHABLE (c, §5bq.3):** sim/env.py:2472 and :2508 `tile_dist(u, tw) <= u.spec.reach + 1.0`
@@ -7898,4 +7915,126 @@ m2k (4% >=6) or the pre-run `policy_sim_ppo.pt`, not m10k. The run-length (geome
 ### 7. Files
 `scratchpad/gauntlet/L21/{m10k_probe.sh, m10k_s0/1/2.txt+json, m10k_copy.txt, run_log_lf.txt}`; the m10k snapshot
 copy and the pre-kill checkpoint backup stay out of git.
+
+## §5bw — GAUNTLET L22: diagnosis cut 2 -- the ledger says the reward buys the collapse; the prior is board-blind; the sim opponent pressures 1.4x as often as pros (2026-09-03 01:08-02:05)
+
+### 1. RETRACTION of §5bv.4's "unclipped gate pressure is zero-mean"
+That reading averaged the trainer's `gate_z_raw` block sums. Those sums are heavy-tailed (blocks run -45 to
++110, dominated by a handful of extreme importance ratios), so their mean says nothing about the typical
+row. The clean statistic the trainer also prints, ADV BY ACTION (cumulative mean of the normalised
+advantage per action kind, 11.6M samples over the run): **play +0.211 (n=409,032) vs wait -0.0077
+(n=11,238,968)**. The bias toward PLAY is in the ADVANTAGES the gate is trained on, before any clip.
+§5bv's claim that "the advantage signal on the gate is balanced and the clip converts it into a push" is
+withdrawn; the clip asymmetry (PLAY 0.765 vs WAIT 0.010) is still real and still §5d's null.
+
+### 2. Per-term reward ledger on the snapshots (a) -- `scratchpad/gauntlet/L22/term_ledger.py`
+`env.rw_stats.run_summary()` per term, 24 matches x seeds 1/2/3 per checkpoint, `gate05_run.yaml`, search-free.
+Two instruments, both reported because they disagree on the m2k policy: SAMPLED (gate ~ Bernoulli(P(play)),
+card ~ softmax, cell = head argmax; the training-distribution instrument, closest to the probe) and GREEDY
+(`Searcher.act(0)`, play iff P(play) > 0.25; `ab_reward_report`'s instrument).
+```
+SAMPLED (mean of 3 seeds, per match)      m2k        m5k       m10k
+  plays % of steps                        12.1       12.9       12.9
+  elixir mean / >=6 share                 2.64/4.3%  2.30/1.0%  2.27/1.0%
+  threat_miss_idle   (fires)             -2.20 (3.3) -1.22 (2.0) -1.11 (1.9)
+  leak                                   -0.15      -0.01      -0.02
+  threat_response                        +1.85      +2.35      +2.10
+  wincon_exec        (fires)             +0.98 (0.8) +1.01 (0.7) +1.00 (0.6)
+  wincon_reach                           +0.99      +0.78      +0.72
+  xbow_into_push                         -0.94      -0.44      -0.44
+  elixir_trade                           -0.96      -0.92      -0.87
+  outcome (win/loss)                     -1.61      -1.44      -1.44
+  play-side shaping  + / -               +6.97/-3.85 +7.11/-3.52 +6.30/-3.12
+  wait-side total                        -2.35      -1.23      -1.12
+  TOTAL                                  -2.25      -0.34      -0.59
+GREEDY (tau 0.25)                         m2k        m5k       m10k
+  plays % / elixir / >=6                  9.6/4.49/29.9%  13.6/2.34/2.5%  14.1/2.22/1.3%
+  leak               (fires)             -3.78 (31.5) -0.04     -0.02
+  threat_miss_idle                       -2.76      -0.43      -0.24
+  xbow_into_push                         -4.44      -1.56      -0.33
+  wincon_exec                            +2.17      +2.24      +0.62
+  wincon_reach                           +2.63      +1.50      +0.72
+  wait-side total                        -6.54      -0.46      -0.26
+  TOTAL                                  -5.70      +2.96      +0.93
+```
+Readings (a):
+* The reward the policy gained from 2k to 10k is the wait-side penalty going away (sampled +1.2 of the +1.7
+  total; greedy +6.3 of +8.7 to m5k), not more x-bow value. The x-bow terms are flat on the sampled
+  instrument and FALL m5k -> m10k on the greedy one (exec 2.24 -> 0.62, reach 1.50 -> 0.72) while
+  threat_miss keeps shrinking and total reward drops +2.96 -> +0.93. The policy is trading bow execution for
+  fewer misses, which is what the ledger prices: a missed answerable threat is -1 every 4 s (rate-limited)
+  while a bow is ~+1.5 exec + ~+1 reach once, and the match is lost either way (outcome -1.44, WR ~4.5%).
+* The m2k GREEDY policy is a hoarder (P(play|aff) 0.23 < tau 0.25 -> it mostly waits): >=6 share 29.9%,
+  leak -3.78/match over 31 fires, bows dropped into pushes -4.44. The sampled m2k policy of the same weights
+  spends (4.3%). So "m2k banked" is instrument-dependent; §5bv's "resume from m2k" option is weaker than it
+  read -- the m2k weights bank only when the gate's P(play) is thresholded, not when it is sampled.
+* This is §5p's asymmetry again (play-side +5.32 vs wait-side -0.71 at m=5400 then; +6.3/-1.1 now), now
+  with its TIME COURSE: the gap narrows because the wait-side penalties are learnable-away by spending.
+* Instrument note for the stop rule: this full-match ledger (domain rand on, cell head) reads the >=6 share
+  4.3 -> 1.0 -> 1.0% (m5k = m10k within +-0.2), where the probe (400 steps/env, domain rand off, centre
+  cell) read 1.2 -> 0.1. Both put m10k at <= 1%; the trip stands. "Plateau at 1%" vs "collapse to 0" is an
+  open instrument question, not a decision-changing one (the target is the pros' ~35%).
+
+### 3. The shipped prior is BOARD-BLIND, and the pros' rule splits 2.3-3.6x on pressure (a)
+`config/gate_prior.json` is P(play | elixir bucket, phase) only. The owner's ruling (§6, 08:20) named a
+third key, threat-on-our-half; `tools/gate_prior.py` line 26 records dropping it ("needs the engine
+recording pass"). It does not: the red side's plays are in `plays_ext.csv`, so "an enemy TROOP card was
+played within the last W s" (spells and buildings excluded) is computable per window with no emulator.
+`scratchpad/gauntlet/L22/prior_pressure.py`, 519 replays, W = 6 s, single elixir, per 0.6 s decision:
+```
+elixir            3      4      5      6      7      8      9
+quiet          0.049  0.040  0.024  0.030  0.029  0.065  0.179    (n 5.1k / 5.9k / 9.0k / 10.0k / 10.4k / 8.9k / 4.9k)
+pressure       0.084  0.089  0.086  0.068  0.066  0.110  0.235    (n 3.2k / 3.5k / 3.6k / 4.7k / 5.9k / 5.8k / 3.8k)
+shipped blend  0.063  0.058  0.042  0.042  0.043  0.083  0.203
+```
+Pressure is on 37% of pro single-elixir windows (54% at W = 10 s; double elixir 65%/84%). At W = 10 s the
+quiet row reads 0.016-0.024 at 5-7 elixir -- the split is not an artefact of the window. What this means
+for the trainer: on pressured rows PPO (correctly) pushes PLAY and the blended prior pulls to 0.04 -- twice
+as hard as the pros' own 0.07-0.09 -- and on quiet rows, where PPO has almost nothing to say (no
+threat_miss fires there), the blend pulls only half as hard as the pros' 0.024-0.030. The conditioned
+table halves the conflict where PPO is right and doubles the bank pull where banking happens. Training
+effect (b) until the test run.
+
+### 4. The sim opponent pressures more often than pros, with half-length quiet windows (a)
+Same key on the sim (`quiet_stretches.py`: enemy troop unit with `age < 6 s`), sampled m10k policy,
+12 matches, single elixir (t < 120 s), vs the pro timeline under the identical definition:
+```
+                         sim m10k s1   sim m10k s2   sim m2k s1   PROS (519 replays)
+pressure on              46%           51%           52%          37%
+quiet stretch median     5.4 s         4.8 s         5.4 s        9.0 s
+stretch p90 / p95        13.4 / 18.0   11.2 / 15.8   14.5 / 17.6  23.4 / 28.6
+stretches >= 11.2 s      16%           10%           12%          39%
+  (= a 2->6 bank in single elixir: 4 elixir at 1/2.8 s)
+quiet steps inside one   39%           30%           35%          71%
+bankable stretches/phase ~1.6          ~1.0          ~1.2         ~2.7
+```
+So the scripted opponent gives roughly one bank-to-six window per single-elixir phase where a pro
+opponent gives ~2.7. This bounds what ANY gate repair can produce in this sim (b for the size of the
+bound; the cadence numbers are a). Caveats: the sim rows are the policy's own trajectories (the opponent
+reacts to our plays, as a human would); 12 matches x 2 seeds; the pro key counts cards, the sim key counts
+units of a card deployed within 6 s -- same event.
+
+### 5. Decision: the repair is the PRESSURE-CONDITIONED PRIOR; the opponent cadence is a question
+Ruled out with evidence: wait-side reward terms (dead at 3 seeds, §5ad; owner: do not propose another);
+the clip (§5d/§5e null); a stronger unconditional coef (it would pull harder on exactly the pressured
+rows where §3 shows the pros play 2-3x MORE than the blend). Chosen: the owner's own v0 spec with its
+dropped key restored -- schema-2 table `P(play | phase, pressure, elixir bucket)` from `gate_prior.py`,
+the sim key `any enemy troop with age < W` carried in the worker payload next to `t`, W from config
+(`sim.ppo_gate_prior_pressure_s`, 0 = off = today's table byte-for-byte), trainer indexes
+`_gtab[phase, pressure, bucket]`. One change vs gate05: the table + key. Grading: the bucket probe at m2k
+(vs 4.0/3.5/3.0%, P(play|aff) 0.23) and m5k (vs 1.2/1.3/1.0), plus this ledger's >=6 share; the honest
+success bar is the >=6 share holding ABOVE m2k's at m5k, not reaching the pros' 35% (§4's bound).
+QUESTION for the owner (posted, not blocking the build): whether to bring the sim opponent's deploy
+cadence toward the pro rate (37% pressured, 9 s median quiet) -- an opponent-model change, so it changes
+what every sim number means and is not mine to make.
+
+### 6. What this does NOT establish
+That the conditioned prior moves the >=6 share (b: the test run). Whether the m5k = m10k plateau on the
+ledger instrument is real (the probe says otherwise; both <= 1%). Whether W = 6 s is the right key width
+(6 and 10 agree on the shape). Restart-vs-resume: unchanged from §5bv.5, with §2's note that m2k banks
+only on the thresholded gate.
+
+### 7. Files
+`scratchpad/gauntlet/L22/{term_ledger.py, ledger_grid.sh, summarise.py, led_<ckpt>_<mode>_s<seed>.txt+json
+(18), prior_pressure.py, prior_pressure_W6.json, prior_pressure_W10.json, quiet_stretches.py}`.
 

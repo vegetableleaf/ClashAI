@@ -1,0 +1,24 @@
+../scratchpad/gauntlet/L21/gate05_m10k.pt mode=greedy matches=24 steps=7913 plays=1102 (13.9% of steps) elixir mean 2.26 >=6 1.5%
+term                      per-match  |share|  fires/match keys=['fires', 'pos', 'neg', 'total', 'pos_total', 'neg_total']
+spell_defence                +1.737    14.2% 3.5833333333333335
+threat_response              +1.458    11.9% 3.2916666666666665
+lose_own_tower               -1.250    10.2%         1.25
+outcome                      -1.167     9.6%          1.0
+building_waste               -0.900     7.4%         2.25
+wincon_reach                 +0.875     7.2%        0.875
+wincon_exec                  +0.723     5.9% 0.7916666666666666
+elixir_trade                 -0.521     4.3% 61.083333333333336
+xbow_into_push               -0.500     4.1%        0.125
+chip_defence                 +0.462     3.8%       22.875
+spell_waste                  -0.413     3.4%        1.375
+counterfactual               -0.385     3.2% 8.958333333333334
+nado_bad                     -0.350     2.9% 1.1666666666666667
+threat_response_2nd          +0.331     2.7% 0.6666666666666666
+take_enemy_tower             +0.250     2.0%         0.25
+chip_offence                 +0.230     1.9%        14.25
+nado                         +0.219     1.8% 2.2083333333333335
+threat_miss_idle             -0.216     1.8% 0.4583333333333333
+xbow_defends                 +0.169     1.4%       14.125
+xbow_lock                    +0.022     0.2%        1.875
+leak                         -0.020     0.2% 0.16666666666666666
+chip_linear                  +0.014     0.1% 2.7916666666666665
