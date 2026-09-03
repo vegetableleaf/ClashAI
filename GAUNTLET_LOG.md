@@ -753,3 +753,19 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - LOOP RULE ADDED (.claude/commands/gauntlet.md §2): repeat a headline number on a disjoint seed slice before reporting it.
 - Run untouched, m8800 at 16:23; m10k gate ~17:05. HANDOFF §5cm.
 
+
+## L40 — 2026-09-03 17:15-17:35 | AGGRO gauntlet loop 24: gatec2 m10k read = NO-REBOUND + HELD; gatec2 stopped; aggro arm 1 launched
+- (a) pre-registered §5ck.2 read on `gatec2_m10k.pt`: regret 0.2824 / 0.2805 (bar <= 0.2418) FAIL; wrong waits 33/203
+  (bar <= 15) FAIL -- the SAME 33 as m5k. >=6 share 2.7 / 3.8 / 2.4% on seeds 0/1/2 (gate05 m10k 0.1-0.2) HELD, up from
+  m5k 2.3/1.7/2.0. Outcome 3 of 4: banks by refusing to defend, §5ck.3 chain confirmed at 2x the matches.
+- (a) secondary at m10k vs own m5k: deploy 11.4/min (pro 11.7; m5k 10.4), gap 4.20 s (pro 3.85); x-bow dead 16 -> 35%,
+  defensive 45 -> 23%, offensive dmg 1217 -> 1676; L1-to-pro after x-bow/tesla 0.30/0.39 -> 0.46/0.51 (worse).
+  EVAL@10000 ladder 25% fair 20%; drills 42%/42%.
+- Rule fired as written (base = gate05 recipe, NOT gatec2's ckpt). gatec2 STOPPED at m10150 (best_wr 17.77, 472W-7651L-8D);
+  live+best ckpts backed up to scratchpad/gauntlet/L40, cmp-verified; python 19 -> 1 (Nucleo only) verified.
+- AGGRO ARM 1 launched 17:22: `aggro1_20260903` = gate05_run.yaml + `sim.aggro_drills: true` (3-line diff), same CLI,
+  seed 41, from scratch. Pool verified on the trainer's code path: 29 drills, tank_for_bow + bow_lane_choice in,
+  knight_guards_the_bow + nado_the_sneaky_lock out. Watchdog + gates monitors up; 19 python, 2.1 GB free.
+- Read plan pre-registered in §5cn.4: drill counters (direct) + ledger >=6 share 3 seeds at m2k/m5k (indirect) + regret
+  at the m5k gate vs gate05 m5k. First look ~19:00 (m2000 EVAL), decisive ~20:10 (m5k gate). HANDOFF §5cn.
+

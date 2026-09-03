@@ -22,7 +22,17 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-03 16:30**, branch `main` (**§5cm: GAUNTLET L39 -- **I RETRACT §5cl.3's "the spell suppression is
+Last updated: **2026-09-03 17:35**, branch `main` (**§5cn: GAUNTLET L40 -- gatec2 m10k gate read (pre-registered §5ck.2):
+NO-REBOUND + HELD.** Regret 0.2824 / 0.2805 vs the 0.2418 bar; wrong waits 33 of 203 (bar <= 15) -- IDENTICAL to m5k's 33, so
+5,000 more matches did not move the passivity at all. >=6 share 2.7 / 3.8 / 2.4% on 3 seeds (gate05 m10k 0.1-0.2), up from
+its own m5k 2.3/1.7/2.0 -- it banks by continuing to decline cheap defensive answers (§5ck.3 chain confirmed at 2x). Cadence
+DID reach pro (11.4/min vs 11.7; gap 4.20 s vs 3.85) and offensive x-bow dmg rose 1217 -> 1676, but dead x-bow placements
+16 -> 35% and defensive x-bows 45 -> 23%. Base-selection rule fired as written: **gatec2 STOPPED at m10150** (best_wr
+17.77, 472W-7651L-8D, both ckpts backed up to scratchpad/gauntlet/L40, 19 -> 1 python verified) and **AGGRO ARM 1
+LAUNCHED 17:22** = gate05 recipe from scratch seed 41 + ONE change `sim.aggro_drills: true` (`data/bench/aggro1_run.yaml`,
+ckpt `data/policy_aggro1_20260903.pt`, watchdog + gates monitors up). Pool verified offline on the trainer's own code
+path: 29 drills both ways; flag swaps knight_guards_the_bow + nado_the_sneaky_lock for tank_for_bow + bow_lane_choice.
+Previous header follows.) (**§5cm: GAUNTLET L39 -- **I RETRACT §5cl.3's "the spell suppression is
 recovering".** A 4th point (m8600) and, for the first time, a DISJOINT SEED SLICE on the same checkpoints kill it: spell
 share reads 14.0 (m2450) / 11.6 (m5000) / 19.8 + 19.4 (m6800) / 13.7 + 9.8 (m8600) -- up then back down, no direction.
 The two slices agree to 0.4-0.6pp on m6800 and gate05, so the m6800 rise was REAL and simply did not persist; this is
@@ -2248,6 +2258,9 @@ slow one.
   -> L39 (§5cm): m8600 + DISJOINT SLICES. §5cl.3's "recovery" RETRACTED (c): share 14.0/11.6/19.8+19.4/13.7+9.8 has no
      direction; noise band 0.4-0.6pp so the m6800 rise was real and did not persist. ROCKET rose at m8600 (10 and 7
      casts/16 matches, 2.3/1.1% of plays) -- highest measured, partly reversing §5cl.4. Drills + EVAL still climbing.
+  -> L40 (§5cn): m10k READ = NO-REBOUND + HELD. Regret 0.2824/0.2805 (bar 0.2418), wrong waits 33/203 (bar 15) -- same 33
+     as m5k. >=6 2.7/3.8/2.4% (up). Rule fired: gatec2 STOPPED at m10150 (backed up); AGGRO ARM 1 = gate05 recipe from
+     scratch + `sim.aggro_drills: true` launched 17:22 as `aggro1_20260903`. Read at m2k/m5k on the ledger + drill counters.
 
 ### From §5bq (2026-09-02 22:10) -- spell niches, after the gate-prior run ends (sim reward = one change each)
 * **`nado_retarget` UNREACHABLE (c, §5bq.3):** sim/env.py:2472 and :2508 `tile_dist(u, tw) <= u.spec.reach + 1.0`
@@ -9272,4 +9285,94 @@ in-run signals that bear on "is it still improving", and they both say yes.
 `scratchpad/gauntlet/L38/spellprobe.py` (now with `--offset`), `scratchpad/gauntlet/L39/{spell_m8600.txt,
 spell_offset16.txt}` (committed); `L39/gatec2_live_m8600.pt` (verified `matches=8600`, NOT in git).
 `.claude/commands/gauntlet.md` gains the disjoint-slice rule in §2.
+
+## §5cn. GAUNTLET L40 (2026-09-03 17:15-17:35) -- the gatec2 m10k gate: NO-REBOUND + HELD; gatec2 stopped; aggro arm 1 launched
+
+**Why this loop existed.** The owner's 14:2x ruling: wait for gatec2's m10k gate, take the read, then move to aggro work
+regardless. §5ck.2 pre-registered the read and the base-selection rule BEFORE the gate fired, so this loop applies them
+and does not re-decide. The gate fired at 17:04 (snapshot `data/bench/gatec2_m10k.pt`, graded 17:07, `regress=False`).
+
+### 1. The pre-registered read (a) -- gates monitor at m10k (PYTHONHASHSEED=0 by construction) + ledger probe, 3 seeds
+```
+                          gatec2 m5k (L36)    gatec2 m10k (this loop)    bar (§5ck.2)          verdict
+regret oracle / belief    0.2924 / 0.2880     0.2824 / 0.2805            <= 0.2418 (gate05 m10k)  FAIL
+waited / wrong waits      60 / 33             62 / 33  (belief 62 / 30)  wrong waits <= 15        FAIL
+played / wrong plays      143 / 24            141 / 23
+total errors of 203       57 (28.2%)          56 (27.6%)
+top-1 / off-corpus        27% / 132           33% / 131
+>=6 share seeds 0/1/2     2.3 / 1.7 / 2.0     2.7 / 3.8 / 2.4            > 0.1-0.2 (gate05 m10k)  HELD
+elixir mean seeds 0/1/2   --                  2.80 / 2.91 / 2.73
+```
+**Outcome = NO-REBOUND + HELD**, the third of §5ck.2's four: "banks by refusing to defend, the L36 reading confirmed at
+2x the matches". The wrong-wait count is not merely above the bar, it is the SAME number (33) after 5,000 more matches;
+regret moved 0.010, inside what one snapshot-to-snapshot step has moved before. The §5ck.3 causal chain (coef 2 lowers the
+gate level uniformly -> cheap spells vanish -> the policy declines to defend) stands with a second point on it.
+
+### 2. Secondary gates at m10k (a) -- same instruments as §5ck.4, matched at m10k against the arm's own m5k
+```
+                        gatec2 m5k              gatec2 m10k             pro anchor
+deploy rate / gap       10.4/min, 4.80 s        11.4/min, 4.20 s        11.7/min, 3.85 s  (§5ag)
+after x_bow dt / L1     4.8 s, 0.304            3.9 s, 0.459            5.5 s
+after tesla dt / L1     4.8 s, 0.394            6.0 s, 0.505            4.2 s
+x-bows / match          4.79                    4.33
+placement OFF/DEF/dead  39 / 45 / 16%           42 / 23 / 35%
+tower lock (offensive)  71%, 1217 dmg mean      70%, 1676 dmg mean
+idle (no target)        52%                     47%
+EVAL@10000 (trainer)    --                      ladder 25% (avg-5 18%), fair 20%
+drills (trainer)        --                      42% pass all / 42% last 300 at m10150
+```
+Honest split: cadence reached the pro rate (the owner's L22 ask) and offensive x-bows hit harder; but a third of x-bows
+are now placed where they can reach nothing (dead 16 -> 35%), defensive x-bows halved, and the continuation L1-to-pro
+distances got WORSE (0.30 -> 0.46, 0.39 -> 0.51). None of these is the guard; the guard is §1 and it failed.
+
+### 3. What the rule does with it, and what I did (a)
+Base for aggro arm 1 = gatec2's m10k ckpt ONLY on rebound+held (§5ck.2). Not that outcome -> **gate05 recipe from scratch,
+seed 41**. I am recording, for the record, the temptation I did not act on: gatec2's cadence, rocket usage (§5cm.3) and
+climbing drill/EVAL counters (§5cm.4) all argue for it as a base, and the pre-registration exists exactly so that a base is
+not chosen by whichever numbers look good after the fact. The guard (does it defend?) is the one that failed.
+* gatec2 state at stop: 10150 episodes, winrate 20%, 472W-7651L-8D, 0.5 ep/s, best_wr 17.77 (ladder avg-5 at EVAL@10000),
+  drills 2019 (42% pass all, 42% last 300). Live ckpt (matches=10150) and best ckpt (matches=10000) copied to
+  `scratchpad/gauntlet/L40/gatec2_{live,best}_final.pt`, `cmp` byte-identical, torch.load verified. NOT in git.
+* Kill: trainer tree (launcher 4836 -> 26424 -> 12 spawn workers) + watchdog (72560/29476) + gates (3808/55184).
+  python count 19 before -> 1 after (Nucleo 63608 untouched). Snapshots `gatec2_m5k.pt` / `gatec2_m10k.pt` stay in
+  `data/bench/` with both gate logs and `gatec2_gate_report.md`.
+* **Aggro arm 1 = `aggro1_20260903`.** `data/bench/aggro1_run.yaml` = `gate05_run.yaml` with exactly three lines changed:
+  ckpt path, continuation-log path, and `sim.aggro_drills: true` (diff verified). Launch script `aggro1_run_launch.sh` is
+  `gate05_run_launch.sh` with paths swapped (same CLI: `--matches 40000 --envs 96 --workers 12 --size 432 --device cuda
+  --seed 41 --search-interval 4`, PYTHONHASHSEED=0, from scratch). Launched 17:22; watchdog (`--every 300 --quiet-min
+  30`) and `real_run_gates.py --run aggro1_20260903` (gates m5k/m10k/m20k -> `data/bench/aggro1_m{5,10,20}k.pt`) up.
+  Box after launch: 19 python, 2.1 GB free. Free RAM 9.6 GB / CPU 34% before launch.
+* Pool check (a), run offline through `drill_env.py:1113-1118`'s own lines with the deck scenarios loaded: flag OFF
+  (gate05_run.yaml) = 29 drills incl. `nado_king_activation`, `knight_guards_the_bow`, `nado_the_sneaky_lock`; flag ON
+  (aggro1_run.yaml) = 29 drills, `tank_for_bow` + `bow_lane_choice` in, the two retired ones out, `nado_king_activation`
+  in both. `Config.load` on the new yaml reads `aggro_drills=True`, coef 0.5, `config/gate_prior.json`, no pressure_s, no
+  bot_attack_floor -- i.e. gate05's recipe. (`tests/test_aggro_drills.py` could not run: no pytest in either venv and
+  installing is a guardrail violation; the offline pool check covers what its `test_flag_off_is_the_old_pool` asserts.)
+
+### 4. How aggro arm 1 is read (pre-registered here, before its m2k)
+Instruments and comparators, all already measured on gate05's own run so no new baseline is needed:
+* **Direct half (the flag's own drills):** trainer `drills` counter and the per-scenario pass rates for `tank_for_bow`,
+  `bow_lane_choice`, `nado_king_activation`. gate05 comparator: drills last-300 49 / 47 / 39% at m5900/6800/8600 (§5cm.4),
+  42% cumulative. The two new drills have NO gate05 number (they were not in its pool), so their first read is against
+  their own reference lines in `aggro_drills.py`, not against gate05.
+* **Indirect half (the owner's hypothesis that aggro understanding moves elixir):** ledger probe `gate_prior_probe.py
+  data/bench/aggro1_m5k.pt --seed 0/1/2`, >=6 share vs gate05 m5k (§5bw / L36 comparators) and vs gatec2 m5k 2.3/1.7/2.0.
+  Plus the gates monitor's m5k regret / x-bow / continuation against gate05 m5k (regret 0.2291, wrong waits 5).
+* Spell share via `spellprobe.py` (both slices, L39 rule) against gate05 m5000 28.3 / 27.7%.
+* A drill gain with no share movement is a result (falsifies the indirect half, keeps the direct half). No movement on
+  either at m5k on 3 seeds = the flag as built does not do what §5bt hoped; then the reach fix goes on gate05 as its own
+  arm, per the owner's order, not stacked.
+
+### 5. What this loop does NOT establish
+* Anything about the aggro arm (b): it has run 10 minutes. First read at the m2000 EVAL / a live-ckpt ledger probe
+  (~19:00 at 0.5 ep/s), decisive read at the m5k gate (~20:10).
+* That gatec2's cadence gain would have survived (b): the run is stopped; its m10k snapshot is on disk if anyone wants
+  the counterfactual later.
+* That the m10k regret is "flat" rather than "slowly falling" (b): 0.2924 -> 0.2824 is one step on one seed. It is
+  irrelevant to the rule, which was written against a bar, not a slope.
+
+### 6. Files
+`data/bench/aggro1_run.yaml`, `aggro1_run_launch.sh`, `aggro1_run_20260903.{log,launched}`, `aggro1_run_{watchdog,gates}.out`
+(NOT in git, under data/). `scratchpad/gauntlet/L40/gatec2_{live,best}_final.pt` (NOT in git). gatec2 m10k gate log:
+`data/bench/gatec2_gate_m10k.log`. Report: `report_L40.md` (Claude scratchpad).
 
