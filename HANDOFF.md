@@ -22,7 +22,15 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-02 20:55**, branch `main` (**§5bm: GAUNTLET L13 -- owner's two live-play reports tested.
+Last updated: **2026-09-02 21:10**, branch `main` (**§5bn: GAUNTLET L14 -- owner ruling on the X-Bow defensive
+doctrine, verified against the pro crawl and APPLIED to the live path (three env.py edits, owner-authorised).
+(a) pro blue-side bows (1,029 with tiles): front share 93% (0-30 s) -> 82% -> 63% (2x) -> 54% (OT) -> 48%
+(3x OT); late bows in matches the pro finished with a crown 54% front vs 62% at zero crowns -> the TIME gate is a
+real (soft) preference, the TOWER gate has no support. Edits: tower-gated `_defensive` flip removed (overtime+chip
+only); defensive bow snap now also fires while `_defensive`; `_wincon_exec_live` anchors alive-only. Tests 56/57,
+the one failure PRE-EXISTING (test_xbow_into_push, fails on the untouched tree). Sim twin NOT changed (run live).
+Flag for the owner: the hard OT snap overrides the ~54% of pro OT bows that stay forward.**
+Previous header (§5bm: GAUNTLET L13 -- owner's two live-play reports tested.
 X-BOW AT A DEAD TOWER: (c) the model is not blind to it (tower HP in obs since 08-10, live dead-lane aim assist
 since 08-16, sim reward already alive-only) -- (a) what happened today is 6/6 bows on ONE cell (243, raw==assisted)
 and after the tower kill `_defensive` flips, which SKIPS every bow aim assist (env.py:1823), so the constant-cell
@@ -1959,8 +1967,16 @@ slow one.
 
 ## 6. Open work
 
+### From §5bn (2026-09-02 21:10) -- after the gate-prior run ends
+* SIM TWIN of the tower-gate removal: sim/env.py:3149-3156 drop `took_tower` from the phase flip so sim and
+  live share one doctrine again (live changed 09-02, §5bn.2). One change, its own experiment.
+* Owner call: soften the live OT snap (pros keep 54% of OT bows forward, §5bn.1) -- e.g. snap only when
+  `_defensive and _enemy_massing_back()`. Not done.
+* First live session after §5bn: read play_log `raw_cell != cell` for bows in the defensive phase and `wc`
+  after a tower kill -- the edits are unexercised.
+
 ### From §5bm (2026-09-02 20:55) -- owner call, live path
-* X-Bow after a tower kill: env.py:1823 assist gate + env.py:1574 alive check (§5bm.5). Two one-liners.
+* ~~X-Bow after a tower kill: env.py:1823 assist gate + env.py:1574 alive check (§5bm.5).~~ DONE §5bn (21:10).
 * ROCKET IS NEVER CAST by the sim policy (0/72 matches, both 18k and coef-0.5; pros 3.4%). Find why
   (masks vs reward) before any spell experiment -- the spell A/Bs owed (§6-PRIORITY) are meaningless on
   a policy that cannot rocket.
@@ -7061,4 +7077,70 @@ tracker; why rocket is never cast in sim; whether the sim's 11% whiff rate rises
 
 ### 7. Files
 `scratchpad/gauntlet/L13/spell_xbow_probe.py`, `probe_gate05_m2k.{json,txt}`, `probe_18k.{json,txt}`.
+
+## §5bn — GAUNTLET L14: X-Bow defensive doctrine -- tower gate removed, time gate verified against pros and kept, snap + anchors fixed (2026-09-02 20:55-21:10)
+
+Owner (20:5x): "the defensive bow doctrine needs to be tweaked, if not outright removed. I'm thinking remove the
+tower-gated defensive snap and keep the time-gated one. But don't take my word for it, verify the time based snap
+with some empirical evidence from pro player replay data. But yes, you can make the defensive bow snap and the
+anchors if they're still applicable." Live path only; the sim twin is untouched while the gate-prior run is live.
+
+### 1. Pro evidence (a) -- `scratchpad/gauntlet/L14/pro_bow_timing.py`, output `pro_bow_timing.txt`
+`plays_ext.csv`, x-bow plays with tiles 1,089; blue side (tile_y >= 16) 1,029. Tiles are half-integers:
+front/offensive = 18.5/19.5 (bridge band, reaches a princess), back/defensive = 21.5-25.5, 20.5 = mid (3 plays).
+
+| match time | n | front | back | front % |
+|---|---|---|---|---|
+| 0-30 s | 42 | 39 | 3 | **92.9** |
+| 30-120 s | 264 | 216 | 48 | 81.8 |
+| 2x (120-180 s) | 330 | 208 | 120 | 63.0 |
+| OT (180-240 s) | 261 | 142 | 118 | 54.4 |
+| 3x OT (240 s+) | 132 | 63 | 69 | 47.7 |
+
+Per replay: 255 replays with blue bows, **122 switch front -> back** at some point; first switch lands in 2x
+(70), OT (28), 3x OT (11), before 2x (13). So the TIME-gated move to a back bow is what pros do -- as a
+drift from 93% front to a coin-flip by overtime, not a hard switch.
+Tower proxy (the crawl has NO tower-death events, §5bm.3; only final crowns): late bows (>= 120 s) in matches
+the pro ended with >= 1 crown are **54.2% front (n=463)** vs **62.3% front (n=260)** at zero crowns. Taking a
+tower moves bows back by ~8 pp at most, and that conflates "took a tower" with "was ahead". Not a switch.
+Over all times: 63.6% vs 67.2%. (Pre-compaction read in this loop said "1,038 blue"; the script on disk says
+1,029 -- the script is the record.)
+
+**Ruling supported:** tower gate (c) unsupported by pros AND measured harmful (§5bm.2: it switched off the
+dead-lane guard at the moment a tower died); time gate (a) supported as a preference. **Flag:** the live phase
+flip is a HARD snap once `in_overtime and chip < xbow_success_frac * full` -- it overrides the ~54% of pro OT
+bows that stay forward. The chip condition narrows it to matches where the offensive bow never worked, which the
+crawl cannot condition on (no damage events). Whether that narrowing is enough to match pros is (b); the owner
+may want the snap softened to a preference (e.g. only when massing back OR chip < frac) -- owner call, not done.
+
+### 2. Edits (a, `icebow/src/clashrl/env.py`, owner-authorised, live path)
+1. env.py:~2007 phase flip: `took_tower or` REMOVED -> `if not self._defensive and (in_overtime and
+   self._enemy_chip_total < self.tower_hp.full * self.xbow_success_frac)`. `took_tower` is still computed
+   (:1984) for the crown reward terms. Comment block records the ruling and the numbers above.
+2. env.py:~1830 bow assist: `if card_id in self.xbow_ids and (self._defensive or self._enemy_massing_back()):
+   cell = self._defensive_bow_cell(cell)` -- the defensive phase now applies the doctrine's snap instead of
+   skipping every assist (§5bm.2 hole). `_defensive_bow_cell` is a correction: a bow already in the defensive
+   band keeps its own cell (env.py:1368-1380).
+3. env.py:~1575 `_wincon_exec_live`: `princesses` filtered by `self.tower.enemy_alive` (falls back to all-alive
+   if the tracker has no list) -- mirror of sim `_wincon_exec`. A bow reaching only a dead tower no longer earns
+   +w_wincon.
+Import OK. `python -m unittest tests.test_xbow_lane tests.test_xbow_rewards tests.test_xbow_into_push
+tests.test_env_init_attrs tests.test_wincon_bank`: 57 tests, 56 pass, 1 failure
+`test_xbow_into_push.test_the_clamped_frontmost_ROW_counts_as_forward` (0.5625 < 0.625) -- **PRE-EXISTING**,
+verified by `git stash` on the untouched tree (a 32-row-era assertion on the 24-row grid). Not fixed here (not
+this change). No live session was run: the edits are unexercised in a real match -- (b) until the next session.
+
+### 3. NOT changed, queued (§6)
+* Sim twin of the phase flip, sim/env.py:3149-3156, still has `took_tower` -> sim and live doctrines now
+  DIFFER. Deliberate: the gate-prior run depends on the sim reward (guardrail: no doctrine change under a
+  dependent run). Apply after the run ends, then the two are one doctrine again.
+* Hard-vs-soft OT snap (owner call, §1 flag).
+
+### 4. Does NOT establish
+Whether the three edits change live bow placement (no session run); the pro depth split conditioned on an
+actual tower death (no events); whether the 24-row test failure hides a real depth-band regression (the assist
+passes the other 56 tests; the failing one asserts a coordinate the current grid cannot produce).
+
+### 5. Files
+`scratchpad/gauntlet/L14/pro_bow_timing.{py,txt}`; `icebow/src/clashrl/env.py` (3 hunks).
 

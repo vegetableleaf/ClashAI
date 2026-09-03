@@ -450,3 +450,14 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Proposed (owner call): env.py:1823 run defensive bow snap when _defensive; env.py:1574 alive-only anchors.
 - Files: scratchpad/gauntlet/L13/{spell_xbow_probe.py,probe_gate05_m2k.*,probe_18k.*}. HANDOFF §5bm.
 - Run untouched. Next: 21:11 wakeup = m=5k read.
+
+
+## L14 — 2026-09-02 20:55-21:10 | owner ruling on X-Bow defensive doctrine: verified vs pros, APPLIED to live env.py
+- (a) pro blue bows n=1,029: front share 93% (0-30 s) / 82% / 63% (2x) / 54% (OT) / 48% (3x OT); 122/255 replays
+  switch front->back, 70 of them in 2x. Late bows: 54% front when the pro took a crown vs 62% at 0 crowns ->
+  time gate = real soft preference; tower gate = no support (and §5bm measured it harmful).
+- (a) env.py edits (owner-authorised): tower-gated `_defensive` flip removed (OT+chip only); defensive bow snap
+  also when `_defensive`; `_wincon_exec_live` anchors alive-only. 56/57 tests, the failure PRE-EXISTING (stash-verified).
+- NOT done: sim twin (sim/env.py:3149, run live -> §6); OT snap hard vs soft = owner call (flag: overrides ~54% of pro OT bows).
+- (b) edits unexercised live. Files: scratchpad/gauntlet/L14/pro_bow_timing.{py,txt}. HANDOFF §5bn.
+- Run untouched. Next: 21:11 wakeup = m=5k read.

@@ -1572,6 +1572,10 @@ class LiveMatchEnv:
         if card_id in self.xbow_ids:
             _, enemy_a, _ = _anchors(self.cfg)
             princesses = enemy_a[:2] if len(enemy_a) >= 2 else enemy_a
+            # ALIVE princesses only (2026-09-02, §5bn) -- mirror of sim/env._wincon_exec. A bow in range
+            # of a destroyed tower alone has nothing to chip; it used to earn the full offensive credit.
+            alive = list(getattr(self.tower, "enemy_alive", None) or [True] * len(princesses))
+            princesses = [a for a, ok in zip(princesses, alive) if ok] or []
             d = min((math.hypot(cx - ax, cy - ay) for ax, ay in princesses), default=1.0)
             # "back-centre" = the CENTER INTERCEPT band behind the bridge (the Tesla area), NOT behind your
             # princess towers; deeper than the towers earns only a small fraction (soft shaping).
@@ -1819,7 +1823,11 @@ class LiveMatchEnv:
             # is assembling is precisely how six elixir gets blocked before it fires a shot. Same
             # card, opposite intent -- so the snap is skipped and the bow keeps the back-centre
             # cell the leak-guard/doctrine chose for it.
-            if card_id in self.xbow_ids and self._enemy_massing_back():
+            # ...and in the DEFENSIVE PHASE itself (2026-09-02, §5bn): the phase used to skip the whole
+            # bow assist chain, so the model's raw forward pick went out untouched and was billed -1.
+            # Pros keep 54% of overtime bows forward, so this is the doctrine's preference, applied only
+            # while the time-gated phase says the offensive bow has failed.
+            if card_id in self.xbow_ids and (self._defensive or self._enemy_massing_back()):
                 cell = self._defensive_bow_cell(cell)
             elif card_id in self.xbow_ids and not self._defensive:  # OFFENSIVE phase only: snap a forward X-Bow onto the nearer lane so it LOCKS
                 gx, gy = cell % self.gw, cell // self.gw
@@ -1975,9 +1983,16 @@ class LiveMatchEnv:
                 print(f"[env] elixir x{new_mult}")               # 1x -> 2x (double) -> 3x (overtime)
             self.elixir_mult = new_mult
             self._cad["reads"] += time.time() - t0               # tower reads + HP OCR + mass + elixir + clock
-            # OFFENSE -> DEFENSE phase (icebow): once you TAKE a tower (defend the lead), OR double elixir
-            # has arrived and the X-Bow never broke through (cumulative enemy chip < xbow_success_frac of a
-            # tower), give up the offensive X-Bow -> the reward moves to a back-centre X-Bow + rocket-cycle.
+            # OFFENSE -> DEFENSE phase (icebow): overtime has arrived and the X-Bow never broke through
+            # (cumulative enemy chip < xbow_success_frac of a tower) -> give up the offensive X-Bow, the
+            # reward moves to a back-centre X-Bow + rocket-cycle.
+            # TOWER-GATED FLIP REMOVED (owner ruling 2026-09-02, HANDOFF §5bn). "Once you take a tower go
+            # defensive" used to flip this too, and the flip also switched OFF every offensive bow assist
+            # (the dead-lane guard among them) at exactly the moment a tower was dead -- MEASURED 20:14
+            # session: 6/6 bows at one raw cell, unassisted, four billed -1. The pro crawl gives it no
+            # support either: late bows in matches the pro ended with a crown are 54% front vs 62% at zero
+            # crowns (723 late placements of 1,029), a preference at most, never a switch. `took_tower` is still read
+            # for the reward's crown terms below.
             # (The matchup-from-start branch -- defensive vs cycle/beatdown/split-lane decks -- and the
             # beatdown-punish need the opponent's cards, so they wait on the detector / Stage 3.)
             self._enemy_chip_total += max(0.0, self.tower_hp.last_enemy_chip)
@@ -1989,8 +2004,8 @@ class LiveMatchEnv:
             # the match clock when available and from the 3x flip as a fallback.
             in_overtime = (self.clock.overtime if hasattr(self.clock, "overtime")
                            else self.elixir_mult >= 3)
-            if not self._defensive and (took_tower or (in_overtime
-                    and self._enemy_chip_total < self.tower_hp.full * self.xbow_success_frac)):
+            if not self._defensive and (in_overtime
+                    and self._enemy_chip_total < self.tower_hp.full * self.xbow_success_frac):
                 self._defensive = True
                 print("[env] phase -> DEFENSIVE (X-Bow back-centre + rocket-cycle)")
             # --- CORRECTNESS score (mirrors the sim; from live perception) ---
