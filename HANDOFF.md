@@ -2049,6 +2049,19 @@ slow one.
 * Obs predictor fixes queued (all graded by the same probe): ENGAGED hint (locked 81% -> ?), deploy-time
   (no target while `deploy_left` > 0), building reach (no tower target unless in reach; siege only).
 * When the PPO is stopped: record state first (§7), then restart-vs-resume decision, then `nado_retarget` fix.
+* **OWNER RULING 2026-09-03 00:0x -- the m10k read decides the coef-0.5 run.** "Let the read decide. If >=6 elixir
+  share decreases past 1% again, stop the run, do a diagnosis/repair/test run, then restart the PPO with the new
+  changes. That would also be a good time to wire in the aggro manipulation changes." Operationalised (my reading,
+  stated to the owner, not yet confirmed): the same GREEDY 3-seed elixir-bucket probe (§5bu.6b instrument) on
+  `data/bench/gate05_m10k.pt`; TRIGGER = median of the three seeds' >=6 share < 1.0% (m5k was 1.2/1.3/1.0). If it
+  trips: (1) record run state per §7 and stop it (verify process counts before/after); (2) diagnosis of the >=6
+  decline (why banking is unlearned while played cost is flat 2.5-2.66); (3) repair + a short TEST run (same
+  instrument, 3 seeds, before restarting for real); (4) in the same stopped window wire the aggro changes:
+  `aggro_drills.register_all()` from `drills_icebow.py`, `noise` field on `Scenario`, re-predicate/retire the two
+  old aggro drills, `nado_retarget` fix, lock-aware `predict_targets`; (5) restart the PPO (restart-vs-resume
+  decided then, recorded here) with ONE attributable change per experiment where possible -- the aggro wiring and
+  the elixir repair are two changes; if both go in, the test run must isolate the repair first. If it does NOT
+  trip: the run continues; aggro wiring stays blocked; next read at the following snapshot.
 
 ### From §5bq (2026-09-02 22:10) -- spell niches, after the gate-prior run ends (sim reward = one change each)
 * **`nado_retarget` UNREACHABLE (c, §5bq.3):** sim/env.py:2472 and :2508 `tile_dist(u, tw) <= u.spec.reach + 1.0`
