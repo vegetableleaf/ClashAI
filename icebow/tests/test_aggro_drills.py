@@ -25,6 +25,55 @@ def rate(sc, policy=None):
     return run_drill(Config.load(), sc, policy=policy, reps=REPS, seed=SEED)["pass_rate"]
 
 
+def _cfg(**over):
+    """A Config with `sim.<key>` overridden -- the trainer reads these through cfg.get, so a copy of
+    the loaded dict is the honest way to flip a flag in a test."""
+    import copy
+    cfg = Config.load()
+    data = copy.deepcopy(cfg.data)
+    data.setdefault("sim", {}).update(over)
+    return Config(data=data, root=cfg.root)
+
+
+class AggroWiringTests(unittest.TestCase):
+    """The `sim.aggro_drills` flag (HANDOFF §5ca): off = the gate05 pool exactly; on = the lock-state
+    drills in, the two old aggro drills out. And `Scenario.noise=False` really keeps distractors off."""
+
+    def test_flag_off_is_the_old_pool(self):
+        from clashrl.sim.drill_env import DrillMixEnv
+        env = DrillMixEnv(_cfg(aggro_drills=False), seed=1)
+        names = {s.name for s in env._pool}
+        self.assertIn("knight_guards_the_bow", names)
+        self.assertIn("nado_the_sneaky_lock", names)
+        # `register_all` may have run in another test of this process: the flag must still hide them
+        self.assertNotIn("tank_for_bow", names)
+        self.assertNotIn("bow_lane_choice", names)
+
+    def test_flag_on_swaps_the_aggro_drills(self):
+        from clashrl.sim.drill_env import DrillMixEnv
+        env = DrillMixEnv(_cfg(aggro_drills=True), seed=1)
+        names = {s.name for s in env._pool}
+        for n in aggro_drills.RETIRED:
+            self.assertNotIn(n, names)
+            self.assertIn(n, scenarios._REGISTRY)          # retired from the pool, not unregistered
+        for s in aggro_drills.ALL:
+            self.assertIn(s.name, names)
+        self.assertIn("nado_king_activation", names)       # the real tornado-aggro drill stays
+
+    def test_noise_field_keeps_distractors_off_this_drill_only(self):
+        from clashrl.sim.drill_env import DrillEnv
+        cfg = _cfg(drill_noise=1.5)                        # one or two distractors per episode
+        self.assertIs(aggro_drills.BOW_LANE_CHOICE.noise, False)
+        self.assertIsNone(aggro_drills.TANK_FOR_BOW.noise)
+        seen_noise = {"bow": 0, "tank": 0}
+        for seed in range(12):
+            for key, sc in (("bow", aggro_drills.BOW_LANE_CHOICE), ("tank", aggro_drills.TANK_FOR_BOW)):
+                env = DrillEnv(cfg, sc, seed=seed); env.reset()
+                seen_noise[key] += sum(1 for u in env.eng.units if getattr(u, "drill_noise", False))
+        self.assertEqual(seen_noise["bow"], 0)
+        self.assertGreater(seen_noise["tank"], 0)
+
+
 class AggroDrillTests(unittest.TestCase):
     def test_register_all_is_idempotent(self):
         first = aggro_drills.register_all()

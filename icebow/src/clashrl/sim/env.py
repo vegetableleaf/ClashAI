@@ -24,7 +24,7 @@ from .. import detect_obs
 from .. import interactions
 from .. import threat_value
 from ..cycle import cycle_vector
-from .engine import SimEngine, build_spec, tile_dist, _ROCKET_RADIUS, _TILES_X, _TILES_Y
+from .engine import SimEngine, build_spec, tile_dist, _ROCKET_RADIUS, _TILES_X, _TILES_Y, _gap
 from .meta_decks import load_meta_decks
 from .opponents import make_opponent
 from . import view
@@ -440,6 +440,12 @@ class SimMatchEnv:
         # RELAXED gate for the tornado RETARGET credit -- see the credit site. A wincon dragged off
         # your tower is worth paying for even when that one body is worth less than a rocket.
         self.nado_retarget_min_worth = float(cfg.get("env", "nado_retarget_min_worth", default=2.0))
+        # THE OWNER'S REWARD BUG (HANDOFF §5bq.3): the retarget candidate test was centre-to-centre,
+        # `tile_dist(u, tw) <= reach + 1.0`, while the engine engages from the attacker's centre to the
+        # TARGET'S HITBOX EDGE (`_gap`). A hog settles 2.20 tiles from the princess centre against a
+        # reach of 0.8 (+1.0 slack), so `targeters` was ALWAYS empty and `nado_retarget` (0.4) never
+        # paid in any run. Flag, default off: turning a never-paid term on is a reward change.
+        self.nado_retarget_reach_fix = bool(cfg.get("env", "nado_retarget_reach_fix", default=False))
         # A body this expensive counts as a "medium" for the clump credit -- DOCTRINE.md requires
         # ">=2 mediums" before the clumped push is worth rocketing. See the credit site.
         self.nado_clump_medium_worth = float(cfg.get("env", "nado_clump_medium_worth", default=2.5))   # elixir in the blast to count as VALUE
@@ -2468,6 +2474,13 @@ class SimMatchEnv:
                 prog += d ** self.chip_power
         return prog
 
+    def _tower_in_reach(self, u, tw) -> bool:
+        """Is `u` close enough to `tw` to be (about to be) locked on it? Engine geometry when the fix
+        is on (centre-to-edge, as `SimEngine` engages); the historical centre-to-centre test otherwise."""
+        if self.nado_retarget_reach_fix:
+            return _gap(u.x, u.y, tw) <= u.spec.reach + 1.0
+        return tile_dist(u.x, u.y, tw.x, tw.y) <= u.spec.reach + 1.0
+
     def _register_nado(self, nx: float, ny: float, spec) -> None:
         """Record a just-cast agent tornado so its EXECUTION can be credited once the pull has
         played out: which enemies it can catch, whether the king was still asleep, and which
@@ -2480,7 +2493,7 @@ class SimMatchEnv:
             if not u.spec.building_only:
                 continue
             for tw in self.eng.towers[0]:
-                if tw.alive and tile_dist(u.x, u.y, tw.x, tw.y) <= u.spec.reach + 1.0:
+                if tw.alive and self._tower_in_reach(u, tw):
                     targeters.append((u, tw, float(tile_dist(u.x, u.y, tw.x, tw.y))))
                     break
         self._nado_watch.append({
@@ -2516,7 +2529,7 @@ class SimMatchEnv:
             w["pulled_at"].append((u.x, u.y))
             if u.spec.building_only:
                 for tw in self.eng.towers[0]:
-                    if tw.alive and tile_dist(u.x, u.y, tw.x, tw.y) <= u.spec.reach + 1.0:
+                    if tw.alive and self._tower_in_reach(u, tw):
                         w["targeters"].append((u, tw, float(tile_dist(u.x, u.y, tw.x, tw.y))))
                         break
 

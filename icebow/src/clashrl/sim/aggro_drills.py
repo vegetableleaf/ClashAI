@@ -3,7 +3,9 @@
 Why a separate module and why it is NOT auto-imported: `scenarios.load_all()` imports every
 `sim/drills_*.py` by filename at env construction, so a new file with that prefix would silently
 join the pool of whatever run is training. These drills join the deck's pool only through an explicit
-`register_all()` call (to be made from `drills_icebow.py` once the coef-0.5 run has stopped).
+`register_all()` call, made by `DrillEnv.__init__` when `sim.aggro_drills` is true (default false, so
+the gate05 pool is unchanged unless a run asks for these). The same flag retires the two old drills
+named in `RETIRED` from the pool (they stay registered for `cli drills` and prereq lookups).
 
 Why they exist: the two aggro drills the deck already has do not grade aggro (§5bt, measured).
 `knight_guards_the_bow` passes the step ANY knight is played (bow alive + knight played, verdict fires
@@ -28,17 +30,11 @@ def _our(eng, base: str):
             and not getattr(u, "drill_noise", False)]
 
 
-def _no_distractors(env) -> None:
-    """Scenario `setup`: drop the tagged noise bodies `_place_noise` dealt (it runs before setup).
-
-    Noise lands in "the lane the drill is NOT about" (drill_env `_place_noise`), and for a drill
-    whose ANSWER is the other lane that is exactly the wrong place: an enemy body at y 0.30-0.46
-    is always nearer to a river-row bow than the tower at 11.6 tiles, so the reference had no
-    passing cell in every episode that rolled an enemy distractor (measured L20: 5% scripted).
-    A `noise` field on `Scenario` is the proper switch; `scenarios.py` is imported by the running
-    trainer's workers, so this is the opt-out until the run stops.
-    """
-    env.eng.units[:] = [u for u in env.eng.units if not getattr(u, "drill_noise", False)]
+# The two drills the deck already had for these skills, retired from the pool when the flag is on:
+# `knight_guards_the_bow` (verdict fires on ANY knight play; §5bt.1) is replaced by `tank_for_bow`,
+# `nado_the_sneaky_lock` (the tornado lowers its own pass rate; §5bt.2) has no replacement -- the
+# real tornado-aggro drill is `nado_king_activation`, which stays.
+RETIRED = ("knight_guards_the_bow", "nado_the_sneaky_lock")
 
 
 # ---------------------------------------------------------------------------------------------
@@ -150,7 +146,11 @@ BOW_LANE_CHOICE = Scenario(
     randomise=("lane",),
     graded_by=("xbow_lock",),
     prereq=("bank_to_six_then_bow",),
-    setup=_no_distractors,
+    # NO DISTRACTORS: noise lands in "the lane the drill is NOT about", which for this drill is the
+    # answer lane -- an enemy body at y 0.30-0.46 is nearer to a river-row bow than the tower at
+    # 11.6 tiles, so with noise on the reference had no passing cell in every episode that rolled
+    # an enemy distractor (measured §5bu: 68% with, 95% without).
+    noise=False,
     reference=(("x_bow", 0.917, 0.5625, 0.6),),
     notes="The owner's 'does a placed X-Bow get blocked or lock the tower after its deploy time' "
           "question as a drill; `AggroOracle.draws()` answers it for any cell. A bow that first "

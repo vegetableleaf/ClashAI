@@ -107,6 +107,12 @@ class Scenario:
     # the evolution's name, which is the "fails for the wrong reason" trap `_restrict_hand` exists
     # to prevent.
     evo_charged: Optional[object] = None
+    # DISTRACTOR SWITCH (HANDOFF §5bu.3). `drill_env._place_noise` deals tagged noise into "the lane
+    # the drill is NOT about"; for a drill whose ANSWER is the other lane (bow_lane_choice) that
+    # body is nearer than the tower in every episode that rolls it and the reference line had no
+    # passing cell (measured: 68% with noise, 95% without). None = the config's `drill_noise`
+    # applies (match behaviour, the default); False = never deal noise into this drill.
+    noise: Optional[bool] = None
     notes: str = ""
 
     def __post_init__(self):

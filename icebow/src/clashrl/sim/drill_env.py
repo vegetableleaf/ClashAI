@@ -282,7 +282,7 @@ class DrillEnv(SimMatchEnv):
         lane-aware HP predicates stay about the drill's own interaction.
         """
         n = float(self.cfg.get("sim", "drill_noise", default=0.0))
-        if n <= 0.0 or lane is None:
+        if n <= 0.0 or lane is None or getattr(self.scenario, "noise", None) is False:
             return
         pool = [k for k in getattr(self.eng.db, "cards", {})
                 if str(k) in _NOISE_CARDS]
@@ -1102,7 +1102,20 @@ class DrillMixEnv(DrillEnv):
 
     def __init__(self, cfg, seed: int = 0, level=None, frac=None, tiers=None):
         sc.load_all()                                  # registry is filled by import side-effect
-        pool = sc.all_scenarios()
+        # AGGRO DRILLS (HANDOFF §5bt-§5bu; flag so the gate05 pool is reproducible byte-for-byte).
+        # ON: the lock-state drills join the pool and the two old "aggro" drills leave it --
+        # `knight_guards_the_bow` passes the step ANY knight is played (its verdict never read the
+        # placement) and `nado_the_sneaky_lock`'s best line has no tornado in it (knight-only 60% >
+        # reference 47.5%). They stay REGISTERED so `cli drills` reports and prereq names resolve.
+        # OFF also FILTERS the aggro names out: the registry is process-global, so a `cli drills`
+        # report or a test that called `register_all()` earlier would otherwise leak them into a
+        # flag-off pool (caught by tests/test_aggro_drills.py::test_flag_off_is_the_old_pool).
+        from . import aggro_drills
+        _aggro = bool(cfg.get("sim", "aggro_drills", default=False))
+        if _aggro:
+            aggro_drills.register_all()
+        _drop = set(aggro_drills.RETIRED) if _aggro else {s.name for s in aggro_drills.ALL}
+        pool = [s for s in sc.all_scenarios() if s.name not in _drop]
         super().__init__(cfg, pool[0] if pool else None, seed=seed, level=level)
         # TARGET SHARE OF TRAINING STEPS, not of episodes. See the module note: a drill is ~19
         # steps against a match's ~186, so picking drills half the time still left them at 8% of

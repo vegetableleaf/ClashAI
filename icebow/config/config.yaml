@@ -1149,6 +1149,10 @@ env:
   nado_pull_s: 1.05                    # how long a landed tornado actually PULLS. The combo needs the rocket's blast to go off INSIDE this window on the same spot, which is why doctrine is ROCKET FIRST then tornado (DOCTRINE_RESEARCH.md R6): a tornado cast first has released the clump long before a slow rocket arrives.
   nado_pull_tiles: 5.5                 # the tornado's actual pull radius in TILES. The combo credit requires real enemy bodies inside it worth rewards.rocket_min_worth -- without that gate the credit paid in full for two casts at an empty tile.
   nado_retarget_min_worth: 2.0         # elixir a SINGLE body must be worth for the tornado RETARGET credit.
+  nado_retarget_reach_fix: false       # HANDOFF §5bq.3 / §5ca: the retarget candidate test was centre-to-centre
+                                       # while the engine engages centre-to-hitbox-EDGE, so a hog settled at
+                                       # 2.20 tiles never counted and the credit NEVER paid in any run. true =
+                                       # use the engine's `_gap`. A reward change: its own experiment.
   nado_clump_medium_worth: 2.5         # a body worth at least this counts as a "MEDIUM". The clump
                                        # credit needs >=2 mediums, per DOCTRINE.md: "a naked nado on a
                                        # single tank is wasted" and "Rocket the clumped support if >=2
@@ -1739,6 +1743,10 @@ sim:
   drill_play_out: true
   drill_frac: 0.3
   drill_tiers: null          # null = every registered drill; else e.g. [foundational]
+  aggro_drills: false        # HANDOFF §5bt-§5bu / §5ca: true = `sim/aggro_drills.py` (tank_for_bow,
+                             # bow_lane_choice; graded on the engine's LOCK state) join the pool and the
+                             # two old aggro drills (knight_guards_the_bow, nado_the_sneaky_lock) leave it.
+                             # false = the gate05 pool exactly.
   curriculum_start: 0.3      # opponent difficulty scalar at start: 30% ladder pool, 70% easy tier
                              # (same meta decks at OUR level 11, no adaptive counter-play)
   curriculum_full_wr: 35     # difficulty reaches full ladder when recent winrate hits this %
