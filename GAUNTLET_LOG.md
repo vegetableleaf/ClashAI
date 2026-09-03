@@ -696,3 +696,20 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - (b) ELIXIR trend NOT callable: 3 non-monotone watchdog points (2.57/2.28/2.71) + one probe point (2.72 at m2450). Said so
   rather than drawing a line through noise. HANDOFF §5ci.
 
+
+## L36 — 2026-09-03 14:04-14:15 | AGGRO gauntlet loop 20: gatec2 m5k -- bar PASSES, caution guards COLLAPSE = "not a pass"
+- (a) BAR, ledger probe on data/bench/gatec2_m5k.pt (m5200), seeds 0/1/2: >=6 share 2.3/1.7/2.0%. vs gatep6 m5k 1.4/1.1/2.0
+  -> above on 2 seeds, EQUAL on the third (not the clean seed-by-seed sweep the bar asked for); vs gate05 m5k 1.2/1.3/1.0 ->
+  above on all 3. First arm to hold >2% at m5k; keeps 53% of its m2k share vs gate05's 33%.
+- (a) GUARDS FAIL: regret oracle 0.2924 / belief 0.2880 -- WORST of every arm (gate05 0.2291/0.2045, floor7 0.271/0.2483).
+  Cause is one column: waits 22 -> 60 of 203 states, 55%/50% of them wrong. Absolute errors 57/203 (28.2%) vs gate05's
+  36 (17.7%); ALL the excess is wrong waits (33 vs 5) -- its plays are better (24 wrong vs 31). Enemy-troop regret 0.3013.
+  Falsification: converted rates to counts to rule out a "waits more often" artifact; it is not an artifact.
+- (a) causal chain complete: coef 2 lowers the gate LEVEL not SHAPE (L34) -> removes cheap SPELL plays (L35, 29.4->14.0%) ->
+  those are the defensive answers -> declines to defend (L36). Each link measured before the next was known.
+- Verdict per §5cg.2 pre-registration: NOT A PASS ("the prior won by breaking the policy").
+- Not all bad (a): closest arm to pro deploy rate (10.4 vs 11.7), best after-bow L1-to-pro (0.304 vs 0.902), 4.79 bows/match
+  with 16% dead vs 25%. §5ci's 3% dead at m2450 did NOT hold at m5k -- the matched-count caveat was right.
+- QUESTION OPEN (next arm: coef 1.0 / fix coverage / go do the aggro work [my rec] / run to m10k first). Run LEFT RUNNING --
+  m10k gate ~16:45 preserves that option free. HANDOFF §5cj.
+

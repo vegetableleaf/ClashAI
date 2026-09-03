@@ -22,7 +22,16 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-03 13:35**, branch `main` (**§5ci: GAUNTLET L35 -- owner asked for the elixir / x-bow / spell
+Last updated: **2026-09-03 14:15**, branch `main` (**§5cj: GAUNTLET L36 -- gatec2 m5k: THE BAR PASSES AND THE CAUTION
+GUARDS COLLAPSE, which §5cg.2 pre-registered as "the prior won by breaking the policy" -- NOT a pass. >=6 share
+**2.3 / 1.7 / 2.0%** (gatep6 m5k 1.4/1.1/2.0: above on 2 seeds, EQUAL on the third; gate05 m5k 1.2/1.3/1.0: above on 3).
+But regret is the worst of every arm (oracle **0.2924** vs gate05 0.2291, floor7 0.271) and the cause is measured and
+specific: **waits tripled 22 -> 60 of 203 states and 55%/50% of them are wrong** (gate05 23%/18%). In ABSOLUTE errors
+gatec2 makes 57 of 203 (28.2%) vs gate05's 36 (17.7%), and every bit of the excess is wrong WAITS (33 vs 5) -- its plays
+are actually better (24 bad vs 31). The causal chain is now measured end to end: coef 2 suppresses the gate LEVEL not the
+SHAPE (§5ch) -> it removes cheap SPELL plays specifically (§5ci: spell share 14.0% vs 21.6-29.4%) -> those are the
+defensive answers, so it declines to defend (§5cj). Run LEFT RUNNING to m10k (~16:45) to preserve that option.
+STOPPED ON A QUESTION -- §5cj.5. Previous header follows.) (**§5ci: GAUNTLET L35 -- owner asked for the elixir / x-bow / spell
 trend. I VIOLATED AN ALREADY-DOCUMENTED RULE and it invalidated my own first numbers this loop: the standing rules
 already say to export `PYTHONHASHSEED=0` before any labelling run; it covers the greedy eval tools too, and
 `real_run_gates.py:65` sets it for every gate report while my ad-hoc runs did not -- the same ckpt read 68 vs 79 x-bows and DEFENSIVE 68% vs 49%. Numbers below are the PYTHONHASHSEED=0 instrument;
@@ -2202,6 +2211,8 @@ slow one.
   -> L35 (§5ci): owner question (elixir/x-bow/spell trend). MY ERROR: violated the documented PYTHONHASHSEED=0 rule (gates set it,
      ad-hoc runs did not); my first x-bow read this loop is retracted. Matched-m2k card mix: gatec2 SPELL 14.0% /
      x_bow 13.2% vs gate05 21.6/8.0, floor7 25.2/5.3, gatep6 29.4/3.3. Elixir trend not callable yet.
+  -> L36 (§5cj): gatec2 m5k -- bar PASSES (2.3/1.7/2.0), caution guards COLLAPSE (regret 0.2924 worst of all arms; wrong
+     waits 33 vs gate05's 5). Pre-registered verdict: NOT a pass. Run left going to m10k. QUESTION OPEN: next arm.
 
 ### From §5bq (2026-09-02 22:10) -- spell niches, after the gate-prior run ends (sim reward = one change each)
 * **`nado_retarget` UNREACHABLE (c, §5bq.3):** sim/env.py:2472 and :2508 `tile_dist(u, tw) <= u.spec.reach + 1.0`
@@ -8928,4 +8939,100 @@ probe point; until it lands, "the elixir trend" is one number and a noise band.*
 ### 5. Files
 `scratchpad/gauntlet/L35/{cardmix.py, xbow_gatec2_m2k5_phs0.txt, cont_gatec2_m2k5.txt, xbow_gatec2_m2k5.txt}` (the last
 two are the RETRACTED no-PHS runs, kept as the evidence for §0).
+
+## §5cj. GAUNTLET L36 (2026-09-03 14:04-14:15) -- gatec2 m5k: bar passed, guards collapsed. The pre-registered "not a pass".
+
+**Context.** Path C's pre-registered m5k read (§5cg.2), snapshot `data/bench/gatec2_m5k.pt` written 14:01 at
+matches=5200. Run untouched and still going (21 python, 0.5 ep/s, m5325 at the read).
+
+### 1. The bar (a) -- `gate_prior_probe.py` seeds 0/1/2, the ledger instrument
+```
+arm             matches   >=6 share (s0/s1/s2)   mean   P(play|aff)         elixir mean
+gatec2 (L36)     5200      2.3 / 1.7 / 2.0       2.00   0.224/0.218/0.220   2.68/2.63/2.55
+gatep6 (L25)     5150      1.4 / 1.1 / 2.0       1.50   0.268/0.269/0.273   2.38/2.42/2.35
+gate05 (L16)     5000      1.2 / 1.3 / 1.0       1.17   --                  --
+gatec2 (L34)     2450      3.5 / 4.4 / 3.4       3.77   0.198/0.200/0.208   2.62/2.80/2.75
+gate05 (L11)     2000      4.0 / 3.5 / 3.0       3.50   0.228/0.233/0.227   2.57/2.64/2.57
+```
+Against the pre-registered PASS bar (above gatep6's m5k **seed by seed**): s0 2.3>1.4 yes, s1 1.7>1.1 yes, s2 2.0 vs 2.0
+**EQUAL, not above**. So strictly it is 2 of 3 and a tie, not the clean sweep the bar asked for; on the mean (2.00 vs
+1.50) and against gate05's m5k (above on all three) it clears. The STRONG bar (above gate05's m2k 4.0/3.5/3.0) is not
+met. Within-arm decay m2k -> m5k: gatec2 keeps 53% of its m2k share (3.77 -> 2.00) where gate05 kept 33% (3.50 -> 1.17)
+-- the coef does slow the decay. **This is the first arm to hold >2% at m5k.**
+
+### 2. The caution guards (a) -- and they fail, which §5cg.2 said outranks the bar
+`regret_corpus.py` on the fixed 203-state corpus, identical for every arm:
+```
+arm          regret oracle / belief   top-1   waited (missed-play)   played (worse-than-WAIT)   off-corpus
+gatec2 m5k     0.2924 / 0.2880        27%     60 (55% / 50%)         143 (17% / 18%)             132
+gate05 m5k     0.2291 / 0.2045        29%     22 (23% / 18%)         181 (17% / 20%)             170
+floor7 m5k     0.2710 / 0.2483        27%     17 (12% /  6%)         186 (20% / 23%)             152
+```
+gatec2's regret is the **worst of every arm measured**. The cause is not diffuse -- it is one column. Converting rates to
+absolute errors over the same 203 states:
+```
+arm          waits   wrong waits   plays   wrong plays   TOTAL errors   % of 203
+gate05 m5k     22          5        181         31            36         17.7%
+floor7 m5k     17          2        186         37            39         19.3%
+gatec2 m5k     60         33        143         24            57         28.2%
+```
+**Falsification check, and it survives:** a higher missed-play RATE could be a mechanical artifact of waiting more often,
+so I converted to counts. It is not an artifact -- gatec2 makes 21 more errors than gate05 in absolute terms and every
+one of them is a wrong WAIT (33 vs 5). Its plays are *better* than gate05's (24 wrong vs 31): when it acts it acts well,
+it just declines to act. Regret concentrates on `enemy troop` states (n=191, mean 0.3013, the highest of any arm) -- the
+defensive-response states specifically. Off-corpus 132 vs gate05's 170 is a second tell: it reaches fewer of the corpus's
+states at all.
+
+### 3. The causal chain, now measured end to end (a)
+```
+L34 (§5ch)  coef 2 lowers the gate LEVEL uniformly (per-bucket P(play) flat 0.17-0.22 across elixir 0-9),
+            it does NOT learn the pro SHAPE (hold at 3-7, spend at 9)
+L35 (§5ci)  a uniformly lower gate removes the CHEAP cards first: spell share 29.4 -> 14.0% while support
+            cards stay flat; log (2 elixir) and tornado (3) are what disappear
+L36 (§5cj)  log and tornado ARE the cheap defensive answers, so the policy declines to defend:
+            waits 22 -> 60, wrong waits 5 -> 33, enemy-troop regret 0.2339 -> 0.3013
+```
+Each link is a separate measurement on its own instrument, taken before the next was known. §5ch flagged the shape/level
+distinction as the risk and named the regret read as its instrument; the instrument came back positive for the risk.
+**Verdict, per the pre-registration verbatim ("A pass on the bar with a collapse on the guards is reported as 'the prior
+won by breaking the policy', not as a pass"): NOT A PASS.**
+
+### 4. Secondary gates (a, matched at m5k now -- §5ci's unmatched x-bow rows are superseded)
+```
+                     bows/match   DEF / OFF / dead   deploy rate (pro 11.7)   gap median (pro 3.85)   L1-to-pro after bow
+gatec2 m5k              4.79       45% / 39% / 16%        10.4/min                 4.80 s                  0.304
+gate05 m5k              1.67       28% / 48% / 25%        13.3/min                 4.20 s                  0.902
+floor7 m5k              1.50        6% / 69% / 25%        14.7/min                 3.60 s                  0.965
+```
+Not everything got worse, and it would be dishonest to bury it: gatec2 is the closest arm to the pro deploy rate (10.4
+vs 11.7, from the wrong side for the first time), by far the closest on the after-x-bow follow-up distribution (L1 0.304
+vs 0.902), and it fields 3x the x-bows with fewer dead placements than either comparator (16% vs 25%). §5ci's m2450 dead
+figure of 3% did NOT hold -- it is 16% at m5k, which is the matched-count lesson that section flagged as (b).
+
+### 5. QUESTION -- loop stopped on it; run LEFT RUNNING (see below)
+Path A failed (§5cf); Path C passes its bar only by breaking defence. Both pre-authorised arms are now measured. The
+next arm is genuinely the owner's call, and my recommendation is (iii):
+* **(i) coef 1.0** -- between 0.5 (moved nothing) and 2.0 (breaks defence). One change, ~20 h. (b): nothing measured says
+  the passivity is smoothly proportional to the coef, so this may land in neither place.
+* **(ii) fix COVERAGE, not strength** -- the term reaches only 9-15% of rows, so the policy satisfies it by lowering the
+  gate everywhere rather than by learning the shape. Broadening coverage is a design change, not a config flip; it is
+  the fix the mechanism actually points at, and it is unbuilt (b).
+* **(iii) STOP chasing the >=6 share and go do the aggro work** -- my recommendation. This gauntlet's goal is aggro
+  manipulation; three arms and ~12 loops have gone into the elixir gate and no arm beats gate05 on the guards. The three
+  aggro changes the owner ordered (`sim.aggro_drills` -> `env.nado_retarget_reach_fix` -> `observation.lock_aware_targets`)
+  are built, tested, default-off and UNMEASURED in training. gate05 remains the best-guarded base to run them on.
+* **(iv) let gatec2 run to m10k first** -- costs ~2.6 h of box time already committed and answers whether the passivity
+  is transient. This is why the run is NOT stopped: leaving it going preserves (iv) at no extra cost, and if no ruling
+  arrives by ~16:45 the m10k gate fires and I take the read. Nothing is foreclosed by waiting.
+
+### 6. What this does NOT establish
+* That coef 2.0 is unusable (b): one training seed, one coef value. The guards fail; the bar passes; a different coef or
+  a coverage fix is untested.
+* That the passivity is permanent (b): the m10k read is the instrument and it is 2.6 h away.
+* That gate05 is the right base for the aggro arms (b, but it is the best-guarded one measured: regret 0.2291, the
+  lowest of the four).
+
+### 7. Files
+`scratchpad/gauntlet/L36/{probe_m5k_s{0,1,2}.txt,.json}` (committed); `gatec2_m5k.pt` copy (NOT in git); gate report
+`data/bench/gatec2_gate_report.md`, `gatec2_gate_m5k.log` (NOT in git).
 
