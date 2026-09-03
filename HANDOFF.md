@@ -22,7 +22,17 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-02 22:10**, branch `main` (**§5bq: GAUNTLET L16 (LAST loop of this gauntlet, owner order) --
+Last updated: **2026-09-02 22:30**, branch `main` (**§5br: GAUNTLET L17 = loop 1 of the AGGRO-MANIPULATION gauntlet
+(owner order 22:1x). Orient + one measurement. The policy's only aggro concept is `interactions.predict_targets`
+(memoryless nearest-target, painted into the predictive canvas + 12-dim interaction vector) -- so aggro IS modelled,
+but WRONG in the states that matter: vs the engine's sticky `Unit.target` over 60,599 unit-samples (m=5k ckpt, 36
+matches, 3 seeds) it agrees 93-96% for WALKING troops but only 81% for LOCKED troops (n=14,268), 16-25% for
+buildings (an out-of-reach X-Bow/Tesla is shown aiming at a tower) and 0% during deploy. The locked misses are
+exactly the tank-for-bow / defender-next-to-a-tower-hitter cases. Engine rules checked against the wiki (KTA on
+damage only, 4 s to first shot; tornado/log/stun retarget; X-Bow 3.5 s deploy window): consistent. Engine target
+changes 14.4 per unit-minute, 47% with the old target still alive. Run untouched (5,975 eps). Next: engine-backed
+aggro ORACLE (new module + tests, unblocked), then a lock-aware obs feature once the run is stopped.**
+Previous header (§5bq: GAUNTLET L16 (LAST loop of this gauntlet, owner order) --
 "does the model know how to USE its spells?" Pro niche reference from the crawl (6,804 icebow-side casts) + sim probe on
 3 checkpoints x 3 seeds x 12 matches, engine ground truth. (a) LOG: lands where pros land it (own bridge side 72-85% vs
 pros 87%) but covers NO enemy body on 18-26% of casts and kills something on only 25-37%. (a) TORNADO: king activation
@@ -1994,6 +2004,13 @@ slow one.
   verdict and the order of work; do not start it without a new owner order.
 * **YOLOv26 (yolo26s / yolo26-p2) detector upgrade: NO-GO** (owner, 21:2x). The L2 screen and §5ba-5be smoke
   remain as record; board-27 stays cancelled; the live detector stays YOLO11s. Do not re-propose.
+
+### AGGRO GAUNTLET (owner order 2026-09-02 22:1x) -- running; §5br is loop 1
+* Loop 2: `sim/aggro_oracle.py` + tests (new files, unblocked). Loop 3+: drills that use it; lock-aware
+  `predict_targets` (blocked until the run stops: workers import it); grade with `aggro_agreement.py`.
+* Obs predictor fixes queued (all graded by the same probe): ENGAGED hint (locked 81% -> ?), deploy-time
+  (no target while `deploy_left` > 0), building reach (no tower target unless in reach; siege only).
+* When the PPO is stopped: record state first (§7), then restart-vs-resume decision, then `nado_retarget` fix.
 
 ### From §5bq (2026-09-02 22:10) -- spell niches, after the gate-prior run ends (sim reward = one change each)
 * **`nado_retarget` UNREACHABLE (c, §5bq.3):** sim/env.py:2472 and :2508 `tile_dist(u, tw) <= u.spec.reach + 1.0`
@@ -7392,4 +7409,97 @@ whoever picks the run up (`tools/gate_prior_probe.py data/bench/gate05_m10k.pt -
 ### 6. Files
 `scratchpad/gauntlet/L16/{pro_spell_niche.py,txt, sim_spell_niche.py, sim_m2k/m5k/18k.{json,txt}, retarget_reach.py,
 m5k_s0/1/2.txt}`; the m5k checkpoint copy stays out of git.
+
+## §5br — GAUNTLET L17 (aggro gauntlet, loop 1): what aggro concept the model HAS, measured against the engine; real-game rules checked (2026-09-02 22:10-22:30)
+
+Owner order (22:1x): a new gauntlet on AGGRO MANIPULATION -- who locks onto whom, next target after a kill,
+retarget after tornado / log, what a placed card draws, interposition timing windows, 1v1 outcomes -- used for
+sim decisions that transfer live; king activation and the sneaky-lock drill perform poorly "likely because it has
+no concept of aggro mechanics". Also: stop the PPO when looped to a good place, restart vs resume; find a spot for
+the `nado_retarget` fix; unblocked features first while the coef-0.5 run lives.
+
+### 1. Correction to the premise (a)
+"I don't think [aggro] is modeled anywhere in the ML model itself" -- it IS, in two places, both enabled in
+config (`use_interactions: true`, `use_predictive_canvas: true`): `interactions.predict_targets` (nearest
+attackable foe within the unit's own KB sight range, else nearest alive tower; building-targeters = nearest of
+{building unit, tower}) feeds (i) the 12-dim interaction vector (elixir-value + urgency heading at each of the six
+towers) and (ii) 3 predictive canvas channels (dead-reckoned positions 1 s ahead + enemy urgency). What it lacks
+is STATE: no lock, no stickiness, no reset, no deploy delay, no building reach. The engine (`engine._acquire`,
+:2494) has all of those: sticky `Unit.target`, `locked` once swinging, 1.8x-sight hysteresis for a walking unit's
+current target, steal-only-if-closer, `aggro_reset` from stun/freeze/log/shove/taunt (20 reset sites), buildings
+hold until the target dies or leaves reach, king wakes on ANY hit or a princess death (:5901-5909).
+
+### 2. Measurement (a): obs predictor vs engine ground truth -- `scratchpad/gauntlet/L17/aggro_agreement.py`
+m=5k snapshot (`scratchpad/gauntlet/L16/gate05_m5k.pt`), greedy searcher (same driver as §5bq), 12 matches x
+seeds 0,1,2, every env step, every alive non-spell unit of BOTH teams, predictor fed the noise-free unit list
+(no recall dropout, so this is the predictor's ceiling). Agreement = same kind AND same object.
+
+| unit state (engine) | n | agree |
+|---|---|---|
+| walking, ours / theirs | 17,154 / 13,024 | **96.2% / 93.0%** |
+| locked (swinging), ours / theirs | 6,015 / 8,253 | **81.5% / 80.6%** |
+| building-only troop (hog, ram...) theirs | 3,417 | 92.7% |
+| stationary building, ours / theirs | 5,345 / 1,914 | **25.0% / 15.6%** |
+| deploying (`deploy_left` > 0) | 2,987 / 2,490 | 0% (by construction: engine has no target yet) |
+| all | 60,599 | 74.2% |
+
+Where the locked 19% goes (counts over all seeds): predicted UNIT, engine on a TOWER **1,041** (a troop chewing
+the tower while a nearer troop stands next to it -- the predictor says it turns round; the engine, and the game,
+say it does not); predicted TOWER, engine on a UNIT 784 (locked on a unit outside memoryless sight: hysteresis /
+edge-gap); walking predicted tower but engine on unit 571. Buildings: `building|pred=tower|eng=none` 4,925 --
+an X-Bow/Tesla with nothing in reach is shown as "heading for" a tower (the predictor has no reach and no
+building branch; `mover_forecast` skips buildings as movers, so this hits the interaction vector only if it
+counts them -- not checked this loop, (b)).
+Stickiness: 6,900 target changes over 28,718 unit-seconds = **14.4 per unit-minute**; 53% because the old target
+died, **47% with the old target alive** (walking steals 2,171, locked re-picks 950, building-only 144).
+So aggro events the predictor cannot represent happen ~7 times per unit-minute of play.
+
+### 3. Real-game rules vs the engine (a, wiki text via api.php, saved in `scratchpad/gauntlet/L17/wiki_*.txt`)
+* King's Tower: "not able to attack until it is damaged or either of the player's Crown Towers are destroyed";
+  activation "takes 4 seconds ... 3.3 seconds to aim ... another 0.7 seconds before it shoots". Engine: any hit
+  wakes it / princess death wakes it (:5901, :5909) -- matches; the 4 s aim delay is NOT checked (b).
+  For melee troops "the tile directly in front of the King's Tower and two tiles into the defending lane" is the
+  activation cast -- the drill reference (0.472, 0.771) is that spot.
+* Tornado: "Any unit caught in the Tornado can attack as long as there is a target in range"; a 2023 fix made
+  cards stop attacking towers once "pulled out of range by Tornado" -> pulled out of reach = retarget. Engine:
+  shove-out-of-reach reset (:5758) -- consistent. Chargers resist the pull and keep their charge.
+* The Log: knockback "will reset their attack animation"; RG "retarget to another building". Engine :3095/:3127
+  reset on knockback -- consistent.
+* X-Bow: "3.5 seconds to deploy", the distraction placed "at the last second"; on target death it "retarget[s]
+  onto the next closest"; a stun "force[s] the X-Bow to retarget to the nearest entity"; air cannot distract it.
+  Engine building branch (:2565-2600) holds until death/out-of-reach, stun resets -- consistent.
+* Sight ranges: KB matches the wiki tables for knight 5.5, pekka 5.0, musketeer 6.0, golem 7.0, giant/RG 7.5,
+  balloon 7.7, hog 9.5, x-bow 11.5. Differences: mortar KB 11.5 vs wiki 11.0 (with a 5.0 blind spot the KB may
+  not have), dart_goblin KB 7.5 vs wiki 6.5, bowler 5.5 vs 4 (the two wiki blogs disagree with each other). (b).
+* Knight page: "cheap tank for tanking an enemy X-Bow" and "tank for Mortar or X-Bow" -- the owner's example is
+  the wiki's own.
+
+### 4. What this means for the plan
+The "concept" the owner wants is the ENGINE's `_acquire` -- deterministic, already faithful at the rule level.
+The model never sees it (obs is memoryless) and never queries it (search rolls forward blindly). Two routes,
+both unblocked as NEW files while the run lives:
+1. **Aggro oracle** (loop 2): `sim/aggro_oracle.py` over an engine fork (deepcopy ~6.5 ms, §env.py:1834):
+   `who_targets(u)`, `targeted_by(u)`, `next_target_after(u kills t)`, `draws(card, cell)` (what locks onto a
+   hypothetical placement and what it locks onto after its deploy time), `interpose_window(Y, enemy, Z)` (latest
+   time Z placed between them still steals the lock), `duel(A, B)` (winner + HP left). Answered by advancing the
+   fork, not by re-deriving rules. Tests = the owner's questions on fixed boards. Consumers: drills (predicates),
+   rewards (tank-for-bow credit), search (prune placements the oracle says get blocked), obs.
+2. **Lock-aware obs** (after the run stops -- edits `interactions.py`, which the trainer's workers import):
+   give `predict_targets` an optional per-unit ENGAGED hint = sim `u.locked`+target; live = track stationarity
+   next to a foe. Expected to lift locked agreement from 81% toward the walking 95% -- (b), the probe above is the
+   instrument. Deploy-time and building-reach handling are two more one-line fixes the same probe will grade.
+
+### 5. Does NOT establish
+Whether the 19% locked mismatch changes any DECISION (the probe grades the feature, not the policy). Whether the
+predictor's building error reaches the interaction vector. Whether the engine's 1.8x hysteresis and
+steal-if-closer-while-walking match the real client (the wiki does not state the walking rule; (b) -- the
+sandbox oracle, §5at, is the instrument if it ever runs). Nothing about the drills' pass rates per drill (the run
+log prints only the aggregate: 42% pass all, 49% last 300).
+
+### 6. Box (a, 22:2x)
+Run at 5,975 eps, 0.5 ep/s, 179W-4588L-7D, avg_rew -20.3; 2 trainer PIDs; free RAM 5.85 GB; CPU 57%.
+`gate05_m10k.pt` not yet written (ETA ~00:30). Untouched.
+
+### 7. Files
+`scratchpad/gauntlet/L17/aggro_agreement.py`, `agree_m5k.{json,txt}`, `wiki_*.txt` (rule sources).
 

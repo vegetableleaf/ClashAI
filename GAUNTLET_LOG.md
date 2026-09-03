@@ -491,3 +491,12 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - (a) m=5k read: played@3 0.281/0.269/0.315 -> mixed, not the ask branch; == coef-0.1's own 5k (0.28-0.31). Run continues.
 - HANDOFF §6: agent_dt DEFERRED, YOLOv26 NO-GO (owner). Gauntlet stopped on owner order; new gauntlet next.
 - Files: scratchpad/gauntlet/L16/*. HANDOFF §5bq. Run untouched (2 trainer PIDs before and after).
+
+
+## L17 — 2026-09-02 22:10-22:30 | AGGRO gauntlet loop 1: the obs predictor vs the engine's sticky lock
+- Premise corrected: aggro IS modelled (interactions.predict_targets -> interaction vector + predictive canvas), memoryless.
+- (a) vs engine Unit.target, m5k ckpt, 36 matches x 3 seeds, 60,599 unit-samples: walking 96/93% agree, LOCKED 81%
+  (n=14,268; 1,041 = tower-hitter shown turning to a nearby troop), buildings 25/16%, deploying 0%. Engine target
+  changes 14.4/unit-min, 47% with the old target alive.
+- (a) wiki rules (KTA on damage only + 4 s; nado/log/stun retarget; X-Bow 3.5 s deploy, air can't distract) match the engine.
+- Next: aggro ORACLE over an engine fork (new module + tests; unblocked). Run untouched (5,975 eps). HANDOFF §5br.

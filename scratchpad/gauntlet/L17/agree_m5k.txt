@@ -1,0 +1,13 @@
+== predict_targets (obs) vs engine Unit.target, 60599 unit-samples, 36 matches, 3 seeds
+   team0/building     agree  25.0%  (n=5345)
+   team0/deploying    agree   0.0%  (n=2987)
+   team0/locked       agree  81.5%  (n=6015)
+   team0/walking      agree  96.2%  (n=17154)
+   team1/bld_only     agree  92.7%  (n=3417)
+   team1/building     agree  15.6%  (n=1914)
+   team1/deploying    agree   0.0%  (n=2490)
+   team1/locked       agree  80.6%  (n=8253)
+   team1/walking      agree  93.0%  (n=13024)
+   ALL                agree  74.2%  (n=60599)
+   confusion (state | predicted kind | engine kind): walking|pred=tower|eng=tower 23128, locked|pred=unit|eng=unit 10662, walking|pred=unit|eng=unit 6077, building|pred=tower|eng=none 4925, deploying|pred=tower|eng=none 3192, bld_only|pred=tower|eng=tower 2765, deploying|pred=unit|eng=none 2284, locked|pred=tower|eng=tower 1781, building|pred=unit|eng=unit 1605, locked|pred=unit|eng=tower 1041, locked|pred=tower|eng=unit 784, walking|pred=tower|eng=unit 571
+   engine stickiness: 6900 target changes over 28718 unit-seconds = 14.42 per unit-minute; old target dead 3635, old alive: walking 2171, locked 950, bld_only 144

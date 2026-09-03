@@ -1,0 +1,342 @@
+{{Protection}}{{MagicWords}}<br>{{MergeTacticsLink|Royale King}}<br>{{Quote|The King's Tower is the most important tower in a battle; don't let the enemies get to it! If it is destroyed, you lose immediately!}}
+----
+{|style="text-align:center; margin:auto;"
+|-
+|[[File:King Tower Red.png|125px|link=]]
+|[[File:King Tower Red Active.png|125px|link=]]
+|-
+|'''Red Idle'''
+|'''Red Active'''
+|-
+|[[File:King Tower Blue.png|125px|link=]]
+|[[File:King Tower Blue Active.png|125px|link=]]
+|-
+|'''Blue Idle'''
+|'''Blue Active'''
+|}
+----
+
+==Summary==
+*Each player has a 4×4 King's Tower, located at the center back of their side of the [[Arenas|Arena]], 1 tile from the back.
+*Destroying it automatically grants the player who destroys it the remaining Crowns and ends the [[Basics of Battle|battle]].
+*The power of the player's King's Tower (referred to in-game as "Tower Power") will be upgraded depending on the amount of cards and there level. The King's Towers' hitpoints and damage are increased by approximately 7% and 8% respectively per Level up to Level 9. From Level 10 onwards, both of these statistics are increased by roughly 10% per Level.
+*The King's Tower is not able to attack until it is damaged or either of the player's Crown Towers are destroyed. When one of these events happen, the King's Tower activates its defense, which is a large black cannon that targets both air and ground enemies with similar stats to a [[Tower Princess]]. Activation takes 4 seconds to complete - it takes 3.3 seconds for the King Tower's cannon to aim at an enemy target, and another 0.7 seconds before it shoots its first cannonball.
+*The King's Tower is classified as a [[:Category:Building Cards|building]] and will be targeted by building-targeting [[:Category:Troop Cards|troops]].
+*There are certain [[cards]] that will deal reduced damage to Crown Towers. More specifically:
+**The [[Firecracker/Evolution|Evolved Firecracker]]'s Sparks will deal 6% of their full damage to Crown Towers.
+**[[The Log]] will deal 13% of their full damage.
+**[[Void]]'s single target and 2-4 targets beams will deal 15% of their full damage.
+**The [[Miner]] and [[Arrows]]  will deal 20% of their full damage.
+**The [[Goblinstein]]'s ability will also deal 21% of its full damage.
+**Void's 5+ targets beam will deal 22% of their full damage.
+**[[Rocket]] and [[Vines]] will deal 23% of their full damage.
+**[[Poison]] will deal 24% of their full damage.
+**[[Fireball]], [[Zap]], [[Giant Snowball]],  [[Rage]], [[Freeze]] and [[Lightning]] will deal 25% of their full damage.
+***Due to spawning a Rage after death, the [[Lumberjack]]'s death Rage will also deal 25% of its full damage to Crown Towers.
+***The  [[Cannon/Evolution|Evolved Cannon]]'s Barrage Damage, and [[Dart Goblin/Evolution|Evolved Dart Goblin]]'s Poison Damage will also deal 25% of their full damage.
+**The [[Goblin Curse]]  will deal 29% of its full damage.
+**The [[Tornado]] will deal 30% of its full damage.
+***The [[Goblin Drill]] will also deal 30% of its full damage to Crown Towers on spawn (although the spawned Goblins deal full damage to it).
+**The [[Goblin Machine]]'s Rocket will deal 33% of its full damage.
+**The [[Valkyrie/Evolution|Evolved Valkyrie]]'s Tornado will deal 44% of its full damage.
+**The [[Electro Giant]]'s Reflected Damage will deal 50% of their full damage.
+**The [[Earthquake]] will deal 60% of its full troop damage.
+*The King's Tower is affected by Rage, just like all [[:Category:Tower Troop Cards|tower troops]]. It can also be slowed down by slowing attacks.
+
+==Strategy==
+*When using area damage [[:Category:Spell Cards|spells]], like [[Arrows]], [[Fireball]], [[Zap]], [[Giant Snowball]], [[Earthquake]], and [[Tornado]], the player should generally avoid hitting the King's Tower, as doing so will activate the King before destroying a Crown Tower. An activated King's Tower will be targeting and attacking [[:Category:Troop Cards|troops]], helping the opponent defend attacks more easily, making cards like [[Goblin Barrel]] and [[Graveyard]] harder to get value. However, if the opponent's King's Tower is already activated, hitting it with spells to damage it along with any nearby troops that you're targeting is free chip damage, though this strategy is inefficient as the King's Tower's health is much higher than all [[:Category:Tower Troop Cards|tower troops]].
+**Graveyard and Goblin Barrel are cards that can easily activate the King's Tower. For the former, the player should put it closer to the corner while still leaving a gap between some of its area and a [[:Category:Crown Towers|Crown Tower]], so that it doesn't come close to the King's Tower. For the latter, the player should avoid deploying it too high, or the enemy can easily pull the spawned [[Goblins]] with units like [[Skeletons]] or [[Ice Spirit]], or use Tornado to more easily pull them.
+**Activating the King's Tower early can be worth the tradeoff in specific scenarios. For example, the [[Three Musketeers]] are highly vulnerable to Lightning and hitting all 3 effectively results in a +3 [[Elixir]] trade, although the King's Tower may receive a Lightning if the player cannot hit them all at once. As a result, many players opt to deploy them behind their King's Tower, which causes them to split shortly after. A preemptively placed Fireball can still hit all 3 in this position, though the player should weigh the consequences of activating the opponent's King's Tower under the match's circumstances.
+*Some [[cards]], typically ranged units, are largely unaffected by a King's Tower activation due to never getting in its attacking range. [[Battle Decks|Decks]] centered around using a [[Mortar]], [[Royal Giant]], or [[X-Bow]] mat opt to attack the King's Tower with a spell if the value they gain from hitting other units alongside it is significant, given that they will never be hit by it.
+**On the contrary, some cards are much less effective when attacking against an activated King's Tower. For example, when placed on a [[Tower Princess]] or [[Dagger Duchess]], the [[Skeletons]] spawned by a Graveyard are unable to accumulate without support due to both the Tower Princess and King's Tower hitting the Skeletons together. The player can place another card to tank for the Graveyard, but it will only distract the Crown Tower.
+*When defending against a Graveyard with spell-vulnerable troops, the player must place them directly in front of your King's Tower. Due to the circular area of area damage spells, the opponent may accidentally hit the King's Tower while trying to take out the troops with a spell.
+*If 2 [[:Category:Building Cards|buildings]] are placed in front of the King's Tower, a building-targeting troop such as a [[Golem]] or [[Giant]] will target the King's Tower after destroying these 2 buildings. This puts the opponent at an advantage as the death damage of a Golem or Golemite or a hit landed by a [[Hog Rider]] or Giant can activate the King's cannon, once again giving a significant advantage. A [[Tornado]] could also drag the troop to the King's Tower after it has destroyed the first building, although this is often a waste of Elixir.
+*When placing melee ground troops after destroying both Crown Towers, they should be placed horizontally from the bridge instead of the center of the Arena. This will minimize the path that it will take for them to reach the King Tower to start attacking him. An exception can be made for the [[Prince]] and [[Dark Prince]]; these will path straight towards the King's Tower when they are placed in the center.
+**Air troops will path towards the King Tower in a similar way as the Prince and Dark Prince. As such, they should be placed at the center of the Arena in order for them to connect as early as possible. 
+*The player should avoid using Arrows, Fireball, Zap, [[Rocket]], Giant Snowball, [[Barbarian Barrel]], or [[The Log]] against the [[Electro Giant]] if he is attacking the King's Tower. This will cause the King Tower to get stunned unnecessarily, making him take longer to defeat the Electro Giant and will cause him to take massive damage in return, unless it's the [[Giant Snowball/Evolution|Evolved Giant Snowball]], which will move the Electro Giant away from the King's Tower, giving the player some time. However, in [[2v2]] [[:Category:Modes|modes]], the player can combine a Tornado with one of these spells to activate the duo's King Tower from the reflected damage without it taking any damage. This is because damage dealt by any offensive spell originates from the King Tower and technically counts as an attack by it.
+
+<center><div class="table-back">{{Statistics}}
+{{StatusEffects}}
+{|class="wikitable" id="unit-attributes-table" style="width:100%; text-align:center;"
+!scope="col"|Hit Speed<br>{{Icon|I=Damage Speed}}
+!scope="col"|Range<br>{{Icon|I=Range}}
+!scope="col"|Target<br>{{Icon|I=Targets}}
+|-
+|1 sec||7||Air & Ground
+|}
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Hitpoints<br>{{Icon|I=Hitpoint}}
+!scope="col"|Damage<br>{{Icon|I=Damage}}
+!scope="col"|Damage Per Second<br>{{Icon|I=DPS}}
+|-
+|1||2,400||50||50
+|-
+|2||2,568||54||54
+|-
+|3||2,736||58||58
+|-
+|4||2,904||62||62
+|-
+|5||3,096||67||67
+|-
+|6||3,312||72||72
+|-
+|7||3,528||78||78
+|-
+|8||3,768||84||84
+|-
+|9||4,008||90||90
+|-
+|10||4,392||99||99
+|-
+|11||4,824||109||109
+|-
+|12||5,304||119||119
+|-
+|13||5,832||131||131
+|-
+|14||6,408||144||144
+|-
+|15||7,032||158||158
+|-
+|16||7,704||173||173
+|}
+{{StatisticsSubheader|Level Requerment}}
+{|class="wikitable" id="unit-statistics-table" style="width:100%; text-align:center;"
+!scope="col"|Level<br>{{Icon|I=Level}}
+!scope="col"|Card Amount<br>[[File:MirroredCommon.jpeg|center|28px|link=]]
+!scope="col"|Minimum Card Level<br>{{Icon|I=Level}}
+|-
+|2||9||1
+|-
+|3||9||2
+|-
+|4||9||3
+|-
+|5||9||4
+|-
+|6||10||5
+|-
+|7||10||6
+|-
+|8||10||7
+|-
+|9||10||8
+|-
+|10||10||9
+|-
+|11||10||10
+|-
+|12||11||11
+|-
+|13||11||12
+|-
+|14||12||13
+|-
+|15||13||14
+|-
+|16||14||15
+|}
+</div></center>
+
+==Gallery==
+<gallery>
+Blue King.png|Blue King.
+Blue King Laughing.png|The Blue King laughing.
+Blue King Scared.png|The Blue King scared.
+Blue King New.png|Blue King new.
+Red King Angry.png|The Red King angry.
+</gallery>
+
+==Tower Skins==
+{|class="sortable mw-collapsible mw-collapsed fandom-table" style="width: 100%; margin: auto; text-align: center;"
+|+
+|-style="vertical-align: bottom; height: 100px;"
+|[[File:Crown_Tower.png|78px|center]] '''Starter'''
+|[[File:Shark_Tank Tower.png|78px|center]] '''S 1'''
+|[[File:Sandcastle Tower.png|78px|center]] '''S 2'''
+|[[File:Fortress Tower.png|78px|center]] '''S 3'''
+|[[File:Jack-o'-Lantern Tower.png|78px|center]] '''S 4'''
+|[[File:Party_Hut Tower.png|78px|center]] '''S 5'''
+|[[File:Clashmas Tower.png|78px|center]] '''S 6'''
+|-style="vertical-align: center; height: 100px;"
+|[[File:Igloo Tower.png|78px|center]] '''Free'''
+|[[File:Gingerbread_Tower.png|78px|center]] '''Shop'''
+|[[File:Lunar_Lantern Tower.png|78px|center]] '''S 7'''
+|[[File:Log-endary_Tower.png|78px|center]] '''S 8'''
+|[[File:Fondant Fortress_Tower.png|78px|center]] '''S 9'''
+|[[File:Treehouse Tower.png|78px|center]] '''S 10''' 
+|[[File:Dragon_Tower.png|78px|center]] '''S 11'''
+|-style="vertical-align: center; height: 100px;"
+|[[File:The Tower of Dreams Tower.png|78px|center]] '''S 12'''
+|[[File:Tropical_Turret Tower.png|78px|center]] '''S 13'''
+|[[File:Mega_Knight_Tower.png|78px|center]] '''S 14'''
+|[[File:Colossal_Castle Tower.png|78px|center]] '''S 15'''
+|[[File:Clan_Boat_Bastion Tower.png|78px|center]] '''Free'''
+|[[File:Electro_Tower.png|78px|center]] '''S 16'''
+|[[File:Ghostly Treasure Tower.png|78px|center]] '''S 17'''
+|-style="vertical-align: center; height: 100px;"
+|[[File:Clashmas Sled Tower.png|78px|center]] '''S 18'''
+|[[File:Logmas Tower.png|78px|center]] '''Shop'''
+|[[File:Frozen Tower.png|78px|center]] '''S 19'''
+|[[File:Forbidden Palace Tower.png|78px|center]] '''S 20'''
+|[[File:Birthday Card Tower.png|78px|center]] '''S 21'''
+|[[File:PEKKA Tower.png|78px|center]] '''S 22'''
+|[[File:Thermal Baths Tower.png|78px|center]] '''S 23'''
+|-style="vertical-align: center; height: 100px;"
+|[[File:Jungle Tower.png|78px|center]] '''S 24'''
+|[[File:Boom Tower.png|78px|center]] '''S 25'''
+|[[File:Fisherman Tower.jpg|78px|center]] '''S 26'''
+|[[File:Kitchen Pot Tower.png|78px|center]] '''S 27'''
+|[[File:Electro Wizard Tower.png|78px|center]] '''S 28''' 
+|[[File:Skeleton King Tower.jpg|78px|center]] '''S 29'''
+|[[File:Archer Queen Tower.png|78px|center]] '''S 30'''
+|-style="vertical-align: center; height: 100px;"
+|[[File:Clashmas Tavern Tower.png|78px|center]] '''Shop'''
+|[[File:Golden Knight Tower.jpeg|78px|center]] '''S 31'''
+|[[File:Tiger Tower.jpeg|78px|center]] '''Shop''' 
+|[[File:Lava Tower.jpeg|78px|center]] '''S 32'''
+|[[File:Pinata Tower.png|78px|center]] '''S 33'''
+|[[File:Mighty Miner Tower.jpeg|78px|center]] '''S 34'''
+|[[File:Mine Cart Tower.jpeg|78px|center]] '''Shop'''
+|-style="vertical-align: center; height: 100px;"
+|[[File:Crystal Cauldron Tower.jpg|78px|center]] '''S 35'''
+|[[File:Bone Pit Tower.png|78px|center]] '''S 36'''
+|[[File:Giant Skeleton Tower.png|78px|center]] '''Shop'''
+|[[File:Pancake Tower.jpeg|78px|center]] '''S 37'''
+|[[File:Pixel Tower.jpeg|78px|center]] '''S 38'''
+|[[File:Arcade Tower.jpeg|78px|center]] '''Shop'''
+|[[File:Clash Fest Tower.png|78px|center]] '''S 39'''
+|-style="vertical-align: center; height: 100px;"
+|[[File:Royal Arena Tower.png|78px|center]] '''Event'''
+|[[File:Night Witch Tower.jpeg|78px|center]] '''S 40'''
+|[[File:Spooky Town Tower.jpeg|78px|center]] '''Shop'''
+|[[File:Monk’s Mantlet Tower.jpeg|78px|center]] '''S 41'''
+|[[File:Ram-part Tower.jpeg|78px|center]] '''Shop'''
+|[[File:Clashmas Cake Tower.png|78px|center]] '''S 42'''
+|[[File:Nutcracker Tower.png|78px|center]] '''Shop'''
+|-style="vertical-align: center; height: 100px;"
+|[[File:Clashmas Tree Tower.png|78px|center]] '''Shop'''
+|[[File:Clashmas Sweater Tower.png|78px|center]] '''Free'''
+|[[File:Ice Golem Tower.jpeg|78px|center]] '''S 43'''
+|[[File:Year of the Rabbit Tower.jpeg|78px|center]] '''Shop'''
+|[[File:Valentines Tower.jpg|78px|center]] '''S 44'''
+|[[File:Magic Archer Tower.jpg|78px|center]] '''Shop'''
+|[[File:Party Protector Tower.jpg|78px|center]] '''S 45'''
+|-style="vertical-align: center; height: 100px;"
+|[[File:Disco Defense Tower.jpg|78px|center]] '''Shop'''
+|[[File:Archer Tower.jpeg|78px|center]] '''S 46'''
+|[[File:Boot Camp Tower.jpg|78px|center]] '''Shop'''
+|[[File:Hog Head Tower.jpeg|78px|center]] '''S 47'''
+|[[File:Book Barricade Tower.jpeg|78px|center]] '''Shop'''
+|[[File:Heavy Metal Tower.png|78px|center]] '''S 48'''
+|[[File:Dark Elixer Tower.png|78px|center]] '''S 49'''
+|-style="vertical-align: center; height: 100px;"
+|[[File:Rock Guitar Tower.png|78px|center]] '''Shop'''
+|[[File:Clash-A-Rama King Tower.png|78px|center]] '''S 50'''
+|[[File:Cartoon Castle Tower.png|78px|center]] '''Shop'''
+|[[File:Castling Castle Tower.png|78px|center]] '''S 51'''
+|[[File:Bat-tlements Tower.png|78px|center]] '''S 52'''
+|[[File:Cursed Kitchen Tower.png|78px|center]] '''Shop'''
+|[[File:Tavern Table Tower.png|50px|center]] '''S 53'''
+|-style="vertical-align: center; height: 100px;"
+|[[File:Snoglobe Tower.png|78px|center]] '''S 54'''
+|[[File:Freezey the Snowman Tower.png|78px|center]] '''Shop'''
+| [[File:Grouchy Goblin Tower.png|78px|center]] '''Free'''
+|[[File:Clashmas Tower.png|78px|center]] '''Shop''' 
+|[[File:Longboat Tower.png|78px|center]] '''S 55'''
+|[[File:Explosive Valentine Tower.png|78px|center]] '''S 56'''
+|[[File:DJ Defense Tower.png|78px|center]] '''S 57'''
+|-style="vertical-align: center; height: 100px;"
+|[[File:Bouncy Bastille Tower.png|78px|center]] '''Free'''
+|[[File:House of Daggers Tower.png|78px|center]] '''S 58'''
+|[[File:Squad Buster Tower.png|78px|center]] '''Free'''
+|[[File:Cluckingham Tower.png|78px|center]] '''S 59'''
+|[[File:Gold Goblin Tower.png|78px|center]] '''S 60'''
+|[[File:Goblin Mine Tower.png|78px|center]] '''Free'''
+|[[File:Goblin Queen Throne Tower.png|78px|center]] '''S 61'''
+|-style="vertical-align: center; height: 100px;"
+|[[File:Tiki Tower.png|78px|center]] '''S 62'''
+|[[File:Target Dummy Tower.png|78px|center]] '''Event'''
+|[[File:Fight Night Tower.png|78px|center]] '''S 63'''
+|[[File:Halloween 2024.png|78px|center]] '''S 64'''
+|[[File:Make Campaign (Fan Made).png|78px|center]] '''Event'''
+|[[File:Western Sheriff.png|78px|center]] '''S 65'''
+|[[File:Cozy Castle.png|78px|center]] '''S 66'''
+|-style="vertical-align: center; height: 100px;"
+|[[File:Camouflage Castle.png|78px|center]] '''SC ID Rewards''' 
+|[[File:Forge Tower.png|78px|center]] '''S 67'''
+|[[File:Valentines.png|78px|center]] '''S 68'''
+|[[File:Crown Tower Skin.png|78px|center]] '''S 69'''
+|[[File:Royal Delivery Tower.png|78px|center]] '''S 70'''
+|[[File:Bandit Tower.png|78px|center]] '''Event'''
+|[[File:Witch Evo Tower.png|78px|center]] '''S 71'''
+|-style="vertical-align: center; height: 100px;"
+|[[File:Barebones Tower.png|78px|center]] '''Event'''
+|[[File:Barebones Tower Gold.png|78px|center]] '''Shop Gold'''
+|[[File:Inferno Dragon Tower.png|78px|center]] '''S 72'''
+|[[File:Spirit Empress Tower.png|78px|center]] '''S 73'''
+|[[File:Furnace Tower.png|78px|center]] '''S 74'''
+|
+|
+|}
+
+==History==
+2016
+[[File:RED.png|right|x105px|thumb|RED King Tower]]  
+*The King's Tower was added with [[Version History#Softlaunch on iOS (4/1/2016)|Clash Royale's game launch]] on 4/1/2016.
+*On 3/5/2016, the [[Version History#May 2016 Update (3/5/2016)|May 2016 Update]] increased the King's Tower Level Cap to 13 (from 12), its Projectile Speed to 1000 (from 850), and made it so that the its hitpoints and damage would increase by 10% with each Level at Levels 9-12 (from 7%). The update also decreased the King's Tower's range to 7 tiles (from 8 tiles), but its effective range was unchanged.
+*On 3/11/2016, Supercell released special offers for iOS only, known as the (HERO PACK)<sup>RED</sup> and (POUCH OF GEMS)<sup>RED</sup>. Players who purchased either of these offers would gain red decorations around their [[:Category:Crown Towers|Crown Towers]] until 6/12/2016.
+2017   
+*On 9/10/2017, the [[Version History#Epic Quests Update (9/10/2017)|Epic Quests Update]] added a Crown Tower Skin to make Crown Towers have the [[Elixir Collector]]'s producing animation. This skin is used in [[Tournament/Special Event Challenges|Special Event Challenges]] with higher [[Elixir]] producing rate. It also added 2 Crown Tower Skins that would appear in the Gold Rush and Gem Rush [[Events]] respectively.
+*On 22/12/2017, a Crown Tower Skin that had holiday-themed decorations was added. This Crown Tower Skin would appear exclusively in the [[Royal Ghost]] Mirror Challenge.
+2018  
+*On 6/8/2018, a [[Version History#Balance Changes (6/8/2018)|Balance Update]] made it so that so that the King's Tower's damage would increase by 8% with each Level at Levels 1-8 (from 7%).
+*On 5/12/2018, the [[Version History#December 2018 Update (5/12/2018)|December 2018 Update]] added a new button in the [[Cards|card]] tab which displays the King's Tower's stats when tapped.
+*On 12/12/2018, an [[Version History#Optional Update (12/12/2018)|Optional Update]] added the King Level to the [[Player Profile]].
+2019 
+*On 1/7/2019, the [[Version History#July 2019 Update (1/7/2019)|July 2019 Update]] added Tower Skins unlockable through [[Pass Royale]].
+*On 5/7/2019, an [[Version History#Optional Update (5/7/2019)|Optional Update]] made Tower Skin display correctly in all game [[:Category:Modes|modes]].
+*On 7/10/2019, a [[Version History#Maintenance Break (7/10/2019)|maintenance break]] fixed some animations for an opposing King Tower's destruction.
+*On 17/10/2019, an [[Version History#Optional Update (17/10/2019)|Optional Update]] added correct destroyed King Tower visual effects.
+*On 26/11/2019, the [[Version History#End of November 2019 Update (26/11/2019)|End of November 2019 Update]] fixed a bug where the player would receive a permanent in-game notification after unlocking a Tower skin.
+*Starting from the 2/12/2019 [[Version History#Pass Royale and more 34|Balance Update]] certain Tower Skins would now appear in the [[Shop]].
+2020 
+*On 10/9/2020, an [[Version History#Optional Update (10/9/2020)|Optional Update]] fixed ‘ghost notifications’ for Tower Skins sometimes appearing.
+*On 4/12/2020, a [[Version History#Maintenance Break (4/12/2020)|maintenance break]] updated visuals of the Electro Tower, Clan War Bastion, and Mega Knight Bastion skins to look smaller.
+2021 
+*On 30/3/2021, the [[Version History#2021 Quarter 1 Update (30/3/2021)|2021 Quarter 1 Update]] moved the Tower Skins to a new tab.
+*On 7/6/2021, the [[Version History#Summer 2021 Update (7/6/2021)|Summer 2021 Update]] allowed players to randomize their King's Tower's Skin when entering a [[Basics of Battle|battle]].
+*On 27/10/2021, the [[Version History#Champions Update (27/10/2021)|Champions Update]] increased the King's Tower Level Cap to 14 (from 13).
+2023  
+*On 19/6/2023, the [[Version History#Card Evolution Update (19/6/2023)|Card Evolution Update]] increased the King's Tower Level Cap to 15 (from 14).
+
+==Trivia==   
+*The King is similar to the [https://en.wikipedia.org/wiki/King_(chess) King] from [https://en.wikipedia.org/wiki/Chess Chess], as in both games, losing the King results in an instant loss for the player, whereas they're more active in the middle and end portions of the game.
+*Launched [[:Category:Spell Cards|spells]], such as the [[Fireball]] and [[Rocket]], seem to come from the King's Tower, despite there being no clear origin they could launch from. 
+**Oddly enough, in [[Heist]], spells arrive from the Safe. Because of this, when used against an [[Electro Giant]], he will stun the Safe, even though it has no effect.
+**In [[Touchdown]], launched spells appear to come from nowhere, due to the lack of a King’s Tower.
+*Though very rare, a 3 Crown draw is actually possible and can be attained when both players’ King's Towers are destroyed at the same time. If a draw is achieved this way, the game will be counted as a 3 Crown win on both the player's [[Player Profile|Profile]] and the opponent's Profile.
+*The first 3 Trainers in the [[Training Camp]] have reduced King's Tower statistics. Trainers 1-3 have King's Towers with 20%, 30%, and 40% of the hitpoints of a Level 1 King's Tower respectively.
+*Although [[Cannon]]s themselves can only target ground [[:Category:Troop Cards|troops]], the King's Tower's cannon can target both air and ground troops. This might be because the cannon is elevated on the King's Tower.
+*Even though the King stands behind the turret, he doesn't seem to be controlling it. Rather, the turret seems to automatically aim at enemies.
+*According to a Clash Royale FAQ, it is said that the King uses [[Elixir]]-based beard oil with pine scent to keep his perfect facial hair.
+*According to an [https://twitter.com/ClashRoyale/status/1532693656498589698 official art] from the Clash Royale Twitter, the King is bald.
+*A special form of the King's Tower, which looks like 2 regular King's Towers side by side and connected to each other, is used in [[2v2]] [[:Category:Modes|mode]]. When activated, there are 2 cannons that can independently attack.
+*The King is featured as [https://fictionalcrossover.fandom.com/wiki/Dax_the_Duck_(Mascot)?file=Dax_Clash_Royale.png a character skin for Dax the Duck] in [https://duckduckgo.com/ DuckDuckGo].
+*According to [https://www.youtube.com/watch?v=L6grys552go&list=WL&index=26&pp=gAQBiAQB TV Royale], the number of Crown Towers that were destroyed in 2018 was 89 billion.
+*The King is the subject of certain cosmetics in the game. More specifically:
+**The King is the subject of a few [[Emotes]].
+***He is the subject of the first Emotes to exist in Clash Royale.
+**The King is the subject of a few [[Battle Banners|Battle Banner]] items.
+***The King is the first [[:Category:Crown Towers|Crown Tower]] to be the subject of a Crown Tower.
+***The King and Dragon decoration is created by Myoho.
+*It is possible for a [[Monk]] to deflect a pancake from a [[Royal Chef]] with his ability if the Monk is beside the troop targeted by the Royal Chef. The pancake will be deflected back to the opposing King's Tower, raising its Level by 1.
+*In "[https://youtu.be/J_n1OnE5h18?si=KTmt01pequvmU5cy Clash-A-Rama! How Clan Wars Works!]" it's shown that there's other Kings with different shades of clothing and hair to represent the [[Clans|Clan]] members.
+**In the video, the blonde King stitches a scarf with [[w:c:brawlstars:El Primo|El Primo]]'s face.
+**At 1:38, the Clans "Reservoir Hogs" and "Rolling Bones" are a reference to the movie [[Wikipedia:Reservoir Dogs|Resevoir Dogs]] and the band [[Wikipedia:The Rolling Stones|Rolling Stones]] respectively.
+
+{{Navigation|Battle}}
+[[fr:Tour du roi]][[de:Königsturm]]
+[[Category:Crown Towers]]

@@ -1,0 +1,329 @@
+==Introduction==
+Hello! This is a little info series detailing stats in Clash Royale that are not easily accessible to the player. Essentially, these are stats that aren't told to the player via the card info screens. Last week, we looked at the area damage radius of all non-spell cards. In this blog post, we will be going over the sight range of (almost) all cards.
+==What is sight range/aggro range?==
+Sight range may just seem like a troop's attack range, but there's more to it than that. If sight range was identical to attack range, then technically, all Melee: Short cards would only be able to see troops less than a tile away from them, and wouldn't be able to be pulled by... well, almost anything. On the contrary, they'd need to be placed right next to an enemy troop if you wanted them to attack it. So, a troop needs to have a seperate range that lets it know if there is a closer object that it can attack instead, while also not interfering with the range of its actual attack. Thus, the sight range!
+​​
+
+You might already know that units that target buildings only, such as the Giant or Golem, seem to be pulled from farther away than regular units. This is because their sight range is longer. This is a deliberate design choice, as players can only use buildings to otherwise redirect damage from these troops. Even among building chasers, there are minute differences. I originally thought about giving my own thoughts about why some of these cards have different sight ranges despite it seeming like they should be similar, but I'm no game designer, and it clutters up the page anyways (this is mainly supposed to be a statistics-based series)
+
+So, with that out of the way, here's the sight range table! I decided to include what each card targets, to help with comparisons.
+===Sight range table===
+{| border="0" cellspacing="1" cellpadding="1" style="width:500px;" class="article-table sortable"
+|-
+! scope="col"|Card
+! data-sort-type="number"|Sight range
+! scope="col"|Targets
+|-
+| style="text-align:center;"|Bowler 
+| style="text-align:center;"|4 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Giant Skeleton
+| style="text-align:center;"|5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|P.E.K.K.A.
+| style="text-align:center;"|5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Zappies
+| style="text-align:center;"|5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Sparky
+| style="text-align:center;"|5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Goblin Cage (brawler)
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Minions
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Archers
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Knight
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Mini P.E.K.K.A.
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Prince
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Baby Dragon
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Skeletons
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Spear Goblins
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Goblins
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Hunter
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Bomber
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Valkyrie
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Witch
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Cannon
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Barbarians
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Battle Ram
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Mega Minion
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Miner
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Lava Hound + Pups
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Bats
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Fire Spirits
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Wizard
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Night Witch
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Inferno Dragon
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Royal Recruits
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Guards
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Mega Knight
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Ice Spirit
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Lumberjack
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Ice Wizard
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Rascal Boy
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Rascal Girls
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Elite Barbarians
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Heal Spirit
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Cannon Cart (second form)
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Bomb Tower
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Ram Rider (rider)
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|All troops
+|-
+| style="text-align:center;"|Tesla
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Electro Dragon
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Electro Wizard
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Skeleton Dragons
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Battle Healer
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Executioner
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Royal Ghost
+| style="text-align:center;"|5.5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Musketeer
+| style="text-align:center;"|6 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Inferno Tower
+| style="text-align:center;"|6 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Flying Machine
+| style="text-align:center;"|6 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Bandit
+| style="text-align:center;"|6 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Cannon Cart (first form)
+| style="text-align:center;"|6 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Wall Breakers
+| style="text-align:center;"|7 tiles
+| style="text-align:center;"|Buildings
+|-
+| style="text-align:center;"|Golem + Golemites
+| style="text-align:center;"|7 tiles
+| style="text-align:center;"|Buildings
+|-
+| style="text-align:center;"|Ice Golem
+| style="text-align:center;"|7 tiles
+| style="text-align:center;"|Buildings
+|-
+| style="text-align:center;"|King Tower
+| style="text-align:center;"|7 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Giant
+| style="text-align:center;"|7.5 tiles
+| style="text-align:center;"|Buildings
+|-
+| style="text-align:center;"|Magic Archer
+| style="text-align:center;"|7.5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Royal Giant
+| style="text-align:center;"|7.5 tiles
+| style="text-align:center;"|Buildings
+|-
+| style="text-align:center;"|Dart Goblin
+| style="text-align:center;"|7.5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Goblin Giant
+| style="text-align:center;"|7.5 tiles
+| style="text-align:center;"|Buildings
+|-
+| style="text-align:center;"|Ram Rider (ram)
+| style="text-align:center;"|7.5 tiles
+| style="text-align:center;"|Buildings
+|-
+| style="text-align:center;"|Fisherman
+| style="text-align:center;"|7.5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|Elixir Golem + Golemites + Blobs
+| style="text-align:center;"|7.5 tiles
+| style="text-align:center;"|Buildings
+|-
+| style="text-align:center;"|Princess Tower
+| style="text-align:center;"|7.5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Balloon
+| style="text-align:center;"|7.7 tiles
+| style="text-align:center;"|Buildings
+|-
+| style="text-align:center;"|Skeleton Barrel
+| style="text-align:center;"|7.7 tiles
+| style="text-align:center;"|Buildings
+|-
+| style="text-align:center;"|Firecracker
+| style="text-align:center;"|8.5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Hog Rider
+| style="text-align:center;"|9.5 tiles
+| style="text-align:center;"|Buildings
+|-
+| style="text-align:center;"|Royal Hogs
+| style="text-align:center;"|9.5 tiles
+| style="text-align:center;"|Buildings
+|-
+| style="text-align:center;"|Princess
+| style="text-align:center;"|9.5 tiles
+| style="text-align:center;"|All
+|-
+| style="text-align:center;"|Mortar
+| style="text-align:center;"|11.5 tiles
+| style="text-align:center;"|Ground
+|-
+| style="text-align:center;"|X-Bow
+| style="text-align:center;"|11.5 tiles
+| style="text-align:center;"|Ground
+|}
+====Things of note/takeaways====
+*All building targeting cards have a sight range above 6 tiles except for Battle Ram and the Lava Hound.
+*5.5 tiles of sight range seems to be the main standard for most cards.
+*It's common for most ranged cards to have 0.5 tiles of extra sight range compared to their attack range.
+*The sight range of buildings is the same as their attack range. Cannon Cart's first form is classified as a troop.
+**Mortar has a 3 tile blindspot close to its center.
+*Spawner buildings do not attack, and have an effective sight range of 0 tiles. As such, I decided to omit them from the table.<br /> 
+Thanks for reading this far! If you have any questions, or saw that I made a mistake somewhere, please don't hesitate to leave a message on my wall!
+[[Category:Blog posts]]

@@ -1,0 +1,48 @@
+Hidden info on how far each troop and building can see!
+
+A troop's sight range is how far they can see. Anything in their sight is what the troop will be attracted to. It's how far away you can plant troops to draw the unit into the kill zone.
+
+For building targeting units, they have a much larger sight range than most of the regular troops. This is by design. Since players can't pull these units with regular units, they need to place buildings in order to pull them into the kill zone. Building targeting units also play a big role in how players build their decks.
+
+If there are other pages on this, consider this as an update.
+
+'''5.0 tile sight range'''
+
+P.E.K.K.A., Sparky
+
+'''5.5 tile sight range'''
+
+Knight, Giant Skeleton, Cannon Cart, Mega Knight, Battle Ram, Barbarians, Elite Barbarians, Archers, Spear Goblins, Goblins, Cannon, Tesla, Valkyrie, Wizard, Ice Wizard, Skeletons, Minions, Mega Minion, Inferno Dragon, Executioner, Electro Wizard, Night Witch, Lumberjack, Witch, Miner, Bowler, Ice Spirit, Fire Spirits, Baby Dragon, Lava Hound, Lava Pups, Guards, Prince, Dark Prince, Bats
+
+'''6.0 tile sight range'''
+
+Musketeer, Flying Machine, Bandit, Inferno Tower, Bomb Tower
+
+'''6.5 tile sight range'''
+
+Dart Goblin
+
+'''7.0 tile sight range'''
+
+Golem, Golemites, Ice Golem, King's Tower
+
+'''7.5 tile sight range'''
+
+Giant, Royal Giant, Princess Tower
+
+'''7.7 tile sight range'''
+
+Balloon, Skeleton Barrel
+
+'''9.5 tile sight range'''
+
+Princess, Hog Rider (The Hog Rider is the easiest unit to pull in the game for a reason. He hops over the river and has a very fast movespeed. This is probably by design as well. If a Golem could leap over the river, he'd have a similar sight range.)
+
+'''11.0 tile sight range'''
+
+Mortar (the Mortar can't see anything less than 5.0 tiles away from it)
+
+'''11.5 tile sight range'''
+
+X-Bow
+[[Category:Blog posts]]
