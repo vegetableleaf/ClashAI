@@ -7577,8 +7577,11 @@ An AGGRO DRILL family whose predicates are oracle calls, so the grader is the en
 (`targeted_by(x_bow, 1 s)` has no enemy troop) before first damage; (2) `kta_retarget`: board B, hand tornado;
 success = `target_of(hog, 1 s)` is the king (replaces the buggy `nado_retarget` predicate for THIS drill only --
 the existing drill keeps its predicate until the run stops, since `sim/env.py` is imported by the workers ->
-drills must be added as a NEW module the drill loader can pick up, else deferred). Check first where
-`drills_icebow.py` is imported; if the trainer imports it, loop 3 is blocked and falls to the m=10k read.
+drills must NOT be added as a `drills_*.py` file while the run lives -- TRAP (a, 22:3x): `scenarios.load_all()`
+imports EVERY `sim/drills_*.py` by filename at every env construction (`drill_env.py:1104`), so a new file with
+that prefix silently enters the pool of any worker or snapshot-eval process spawned after it lands. Loop 3 writes
+`sim/aggro_drills.py` (no `drills_` prefix, nothing imports it, registration only via an explicit `register()`)
+with its own tests; wiring into `drills_icebow.py` waits for the run to stop.
 
 ### 5. Box (a, 22:28)
 Run at 6,000 eps, 0.5 ep/s, 180W-4605L-7D, avg_rew -21.9, drills 42% pass all / 49% last 300; 15 processes carry
