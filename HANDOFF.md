@@ -22,7 +22,7 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-03 12:40**, branch `main` (**§5ch: GAUNTLET L34 -- gatec2 m2k SCREEN (bar is m5k): >=6 share
+Last updated: **2026-09-03 12:30**, branch `main` (**§5ch: GAUNTLET L34 -- gatec2 m2k SCREEN (bar is m5k): >=6 share
 **3.5 / 4.4 / 3.4%** at m2450 on the ledger probe -- gate05's m2k level (4.0/3.5/3.0) and 4-5x its one-change comparator
 gatep6 (0.9/0.8/0.5). The coef BITES (a): the trainer's cumulative pi(play) on usable rows is flat at 0.150-0.162 from
 update 800 to 5400 (gatep6 sat at 0.242 at 11.4k, floor7 0.283) -- but it suppresses the gate LEVEL uniformly (per-bucket
@@ -8785,7 +8785,7 @@ sampled, 6 envs x 400 steps). Comparators are the same instrument's earlier read
 ### 4. Files
 `data/bench/gatec2_run.yaml`, `gatec2_run_launch.sh` (NOT in git); this section.
 
-## §5ch. GAUNTLET L34 (2026-09-03 12:24-12:40) -- gatec2 m2k screen: gate05's level, 4-5x gatep6; the coef bites, on the level not the shape
+## §5ch. GAUNTLET L34 (2026-09-03 12:24-12:30) -- gatec2 m2k screen: gate05's level, 4-5x gatep6; the coef bites, on the level not the shape
 
 **Context.** Path C (§5cg) at m2475, 0.6-0.7 ep/s, 19 python, 69W-1907L-2D. Pre-registered m2k screen taken on a
 snapshot at matches=2450 (`scratchpad/gauntlet/L34/gatec2_m2k5.pt`, not in git). Run untouched.

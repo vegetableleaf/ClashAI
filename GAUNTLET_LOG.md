@@ -673,7 +673,7 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   guards = regret / drills / x-bow split / deploy rate / cell-head alerts. HANDOFF §5cg.
 
 
-## L34 — 2026-09-03 12:24-12:40 | AGGRO gauntlet loop 18: gatec2 m2k screen -- gate05's level, 4-5x gatep6; coef bites on level not shape
+## L34 — 2026-09-03 12:24-12:30 | AGGRO gauntlet loop 18: gatec2 m2k screen -- gate05's level, 4-5x gatep6; coef bites on level not shape
 - (a) ledger probe, gatec2 @m2450, seeds 0/1/2: >=6 share 3.5/4.4/3.4% (gate05 m2k 4.0/3.5/3.0; gatep6 0.9/0.8/0.5; floor7
   1.2/1.3/0.5). P(play|aff) 0.20 (gatep6 0.34). Elixir mean 2.62-2.80.
 - (a) in-run: cumulative pi(play) on usable rows flat 0.150-0.162 from update 800 to 5400 (gatep6 0.242 @11.4k, floor7 0.283).
