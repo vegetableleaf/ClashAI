@@ -589,7 +589,7 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Next: aggro wiring behind a flag (owner-ordered, unblocked) while the question stands. HANDOFF §5bz.
 
 
-## L26 — 2026-09-03 04:21-04:50 | AGGRO gauntlet loop 10: aggro wiring BUILT behind two flags, both OFF (39aa80b)
+## L26 — 2026-09-03 04:21-04:30 | AGGRO gauntlet loop 10: aggro wiring BUILT behind two flags, both OFF (39aa80b)
 - `sim.aggro_drills` (tank_for_bow + bow_lane_choice in; knight_guards_the_bow + nado_the_sneaky_lock retired from the pool,
   still registered). OFF = the 29-drill gate05 pool exactly (a, verified; the new test caught a registry leak, fixed).
 - `env.nado_retarget_reach_fix`: centre-to-centre -> engine `_gap`. (a) hog at 2.20 tiles is now a targeter and the reference

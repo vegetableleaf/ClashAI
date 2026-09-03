@@ -22,7 +22,7 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-03 04:50**, branch `main` (**§5ca: GAUNTLET L26 -- aggro wiring BUILT behind two flags,
+Last updated: **2026-09-03 04:30**, branch `main` (**§5ca: GAUNTLET L26 -- aggro wiring BUILT behind two flags,
 both OFF (39aa80b): `sim.aggro_drills` (lock-state drills in, the two old aggro drills out; OFF = the 29-drill gate05
 pool exactly, verified) and `env.nado_retarget_reach_fix` (the owner's reward bug; the credit is now reachable,
 unit-tested on the L16 board). `Scenario.noise` field. 83/83 tests. Box idle; A/B/C question still open; next =
@@ -8271,7 +8271,7 @@ blend + aggro; C one more test run. Nothing launches until then.
 `scratchpad/gauntlet/L25/probe_m5k1_s{0,1,2}.txt` (committed); `gatep6_m5k1.pt` and `data/policy_gatep6_20260903{,_final}.pt`
 (not in git).
 
-## §5ca. GAUNTLET L26 (2026-09-03 04:21-04:50) -- aggro wiring built behind two flags, both OFF (commit 39aa80b)
+## §5ca. GAUNTLET L26 (2026-09-03 04:21-04:30) -- aggro wiring built behind two flags, both OFF (commit 39aa80b)
 
 The ruling's step 4, done while A/B/C (§5by.4) waits. Nothing launched; box idle throughout (python = Nucleo only).
 
