@@ -22,8 +22,18 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-02 19:10**, branch `main` (**§5bj: GAUNTLET L10 -- the m=5k drop was OSCILLATION, not a
-pull; coef-0.1 run KILLED at m=7,575 (owner ruling, §5bi rule applied), COEF-0.5 RUN LAUNCHED 18:59.** (a)
+Last updated: **2026-09-02 20:25**, branch `main` (**§5bk: GAUNTLET L11 -- COEF 0.5 IS BITING at m=2k, on both
+instruments; the PPO push is visibly fighting back in the trainer's own windows; level-16 sandbox answered;
+stale 18k watchdog killed; owner's decision-time question answered with a counter-question (§6).** (a) Probe of
+`gate05_m2k.pt`, 3 seeds: `played` at 3 elixir **0.271 / 0.227 / 0.239** (coef-0.1 m=2k 0.39-0.45; 18k control
+0.36-0.40; pros 0.063) -- pre-registered `<= 0.25 all seeds` narrowly missed on seed 0 (0.271), the rule's
+`>= 0.35 -> ask` branch is far away, verdict = biting. P(play | affordable) 0.227-0.233 (coef-0.1 0.43-0.45);
+elixir >= 6 on 3.0-4.0% of rows (coef-0.1 0.0-0.2%). (a) Trainer's window pi(play) on usable rows, per 200
+updates: 0.34 -> 0.22 by update 2,000, then BACK UP to 0.24-0.29 over updates 2,800-5,600 with window CE
+rising 0.35 -> 0.42-0.44: the prior pulled first, PPO is pushing back. Where that settles is the m=5k read.
+Match strength at m=2k, same seed: avg_rew -18.2 (coef 0.1: -15.2, 18k baseline: -13.4) -- worst of three, (b)
+the cost of banking; EVAL@2000 5%/2% is n=150 noise. **Previous header (§5bj, L10):** m=7.5k read was
+OSCILLATION; coef-0.1 run KILLED at m=7,575, coef-0.5 run launched 18:59. (a)
 Probe at m=7.5k, 3 seeds: `played` at 3 elixir 0.376 / 0.301 / 0.401 (m=5k 0.28-0.31; m=4k 0.42-0.48; 18k
 control 0.36-0.40); P(play | affordable) 0.34-0.39 (m=5k 0.28-0.32); elixir >=6 0.5-1.0% of rows. Back at the
 control level on two seeds, the third at the 0.30 threshold. (a) Trainer's own window pi(play) on usable rows
@@ -167,13 +177,21 @@ cd C:\Users\benpe\ClashBot\hogeq
   `GATE PRIOR CE` line is CUMULATIVE -- difference consecutive lines (per 1,000 updates, §5bj.3 script).
   Pre-registered read: m=2k probe on 3 seeds. If `played` at 3 is <= 0.25 on all seeds the coef is biting
   where 0.1 never did; if it is >= 0.35 on all seeds, 0.5 loses too and the mechanism (not the coef) is the
-  problem -> stop and ask. RAM at startup 0.6-1.1 GB free (12 workers x 560 MB + main 2.4 GB); the coef-0.1
-  run settled to ~170 MB/worker and 4 GB free -- re-check at m=2k, alert the owner if still < 1 GB.
-* **STALE, could not be stopped: the 18k run's watchdog** (PIDs 21564/72608 under nohup 32660, launched
-  2026-09-01 21:25) is still sampling the frozen `data/policy_real_20260901.pt` every 5 min (a 2,400-step
-  CPU probe each time) and appending to `data/ppo_watchdog.log`. The kill was refused by the session's
-  permission classifier. OWNER: `Stop-Process -Id 72608,21564,32660`. Its readings are the noise-floor
-  data set in §5bf.5, so they were not wasted.
+  problem -> stop and ask. **m=2k READ DONE (§5bk, 19:5x): 0.271 / 0.227 / 0.239 -> BITING** (seed 0 just
+  over the 0.25 line; nowhere near the 0.35 ask-branch). RAM re-checked 20:08: 4.2 GB free, run at 0.62 ep/s
+  (2,550 eps at 20:08) -- the startup footprint settled as the coef-0.1 run's did. **Next pre-registered
+  read: m=5k** (`data/bench/gate05_m5k.pt` from the gates script, ETA ~21:15-21:30), 3 seeds, same probe.
+  What to look for: the trainer's window pi(play) fell to 0.22 and is climbing back (0.24-0.29 at updates
+  2,800-5,600) -- if the probe's `played` at 3 is back >= 0.35 on all seeds at 5k, the 0.5 pull is being
+  overpowered too and it is the mechanism -> stop and ask; if it holds <= 0.30, 0.5 is an equilibrium
+  (§5bh.4 predicted ~0.20, (b)). Self-play ramps in at m=5,000 (prob 0.15) -- confound for reads AFTER 5k,
+  not for the 5k snapshot itself. Compare avg_rew at 5k against the coef-0.1 run's (log
+  `data/bench/gate_run_20260902.log`) and the 18k run's at the same episode count, same seed 41.
+* **KILLED 2026-09-02 19:2x (owner asked how; I did it): the 18k run's stale watchdog** (PIDs 21564/72608
+  under nohup 32660, launched 2026-09-01 21:25, sampling the frozen `data/policy_real_20260901.pt` every
+  5 min). `Stop-Process -Id 72608,21564,32660`; verified gone. Its readings are the noise-floor data set in
+  §5bf.5. Two orphaned `grep.exe` filters from the old nohup chains remain (PIDs 68604, 30068, created
+  2026-09-01 21:26 / 22:37) -- idle on dead pipes, zero CPU, harmless; kill at leisure.
 * board-27 stays CANCELLED (§5be.3). The training synth is still the PRE-kitka one.
 * **DONE: the hogeq replay crawl** (§5bc-5bd) -- output `hogeq/data/royaleapi/crawl2/` (gitignored).
 * **DONE: the L2 detector screen** (`scratchpad/gauntlet/L2_screen.ps1`) -- yolo11s control then
@@ -1929,6 +1947,22 @@ slow one.
   raise the sample or widen the median window, and re-check the 0.60 band against the frozen-checkpoint
   data set (`data/ppo_watchdog.log`, matches=18000 rows) before trusting a CELL STRUCTURE alert.
 * **OWNER RULING 17:50: "wait until 18:40, to see if the reversal is genuine improvement or oscillation" -> HOLD confirmed; the 7.5k read decided per the rule below: OSCILLATION (0.376/0.301/0.401, all >= 0.30) -> killed, relaunched at coef 0.5 (§5bj, 18:59). Next pre-registered read: coef-0.5 run at m=2k (§3).**
+* **DECISION TIME (owner question, 2026-09-02 20:0x: "Is now a good time to start the decision time
+  optimization loop? I've realized even 0.6s is extremely slow for a gaming AI.") -- answered with a
+  counter-question, WAITING.** The premise conflates two knobs. (a) 0.6 s is `play.act_period`
+  (config.yaml:1248), the routine decision CADENCE, not the reaction time and not the compute latency:
+  the live loop already wakes early on a new enemy commitment (`perception.py:96 wait_event`, called at
+  `env.py:1910`, `react_min_gap_s: 0.15`), so worst-case reaction is ~0.15 s + one perception period
+  (<= 100 ms) + inference. (a) Compute latency measured so far = detector only, 29.5 ms median / 35 p90 on
+  an idle box (§5be.2), in a parallel 10 Hz thread; `act_in_match` (play.py:482, ~352 lines) is
+  UNMEASURED end to end. Owner's own ruling §5az.1 already separated the two: "sub-100 ms" = wall-clock
+  latency, `act_period` stays 0.6 (lowering it = 6x MDP change, full sim retrain, §3m). What I offered:
+  (1) if the aim is faster REACTION -> build the offline stage timer now (§5be.5.1 spec: recorded frames,
+  no play.py edits, no game), measure on an idle box after the run, first target = the EVENT path
+  (sighting -> wake -> decision -> tap) which has never been timed; (2) if the aim is MORE DECISIONS per
+  match -> that is the `act_period` retrain, a separate experiment that cannot start beside the gate-prior
+  run. Measuring anything now on the contended box is out (guardrail; the L2 contended smoke produced a
+  wrong yolo26 conclusion, §5be). Waiting on which of the two the owner meant.
 * **LEVEL 16 (owner question, 2026-09-02 19:5x -- answered, no run): card level in the sandbox is a FREE
   PARAMETER, `--level 16` on `replay_drive.py`/`replay_batch.py`, valid 1..16 for every rarity
   (`card_catalog.py:104`); it is NOT in the replay data -- the RoyaleAPI crawl has NO level column
@@ -6704,3 +6738,93 @@ unmeasured no-prior baseline cannot be excluded without a coef-0 arm -- not wort
 
 ### 7. Files
 `scratchpad/gauntlet/L10/m7k5_s{0,1,2}.{json,txt}` (checkpoint copies stay out of git).
+
+## §5bk — GAUNTLET L11: COEF 0.5 BITES AT m=2k on both instruments; PPO push visibly fighting back; level-16 sandbox answer; stale watchdog killed; decision-time question -> counter-question (2026-09-02 19:20-20:25)
+
+### 0. What this loop was
+Bookkeeping loop for work done between the L10 commit and the 20:05 wakeup, plus one cheap new read (the
+trainer's gate windows). No box time spent: the coef-0.5 run was untouched throughout.
+
+### 1. The pre-registered m=2k read (a)
+`gate05_m2k.pt` = copy of `data/policy_gate05_20260902.pt` taken when the log passed 2,000 episodes (cmp-stable
+across two copies), probed with `tools/gate_prior_probe.py --seed {0,1,2}` (12 s each), the same instrument
+as L7-L10:
+
+| seed | played at 3 | P(play \| affordable) | affordable rows | elixir >= 6 | elixir mean | cost of plays |
+|---|---|---|---|---|---|---|
+| 0 | **0.271** | 0.228 | 41.0% | 4.0% | 2.57 | 2.63 |
+| 1 | **0.227** | 0.233 | 45.2% | 3.5% | 2.64 | 2.66 |
+| 2 | **0.239** | 0.227 | 43.7% | 3.0% | 2.57 | 2.66 |
+
+Same instrument, earlier checkpoints: coef-0.1 m=2k 0.449/0.392/0.424, m=4k 0.42-0.48, m=5k 0.28-0.31,
+m=7.5k 0.30-0.40; 18k control 0.40/0.37/0.36; pros 0.063. P(play | affordable) at coef-0.1 m=2k was
+0.43-0.45; elixir >= 6 was 0.0-0.2%.
+
+Rule check: `<= 0.25 on all seeds` missed by 0.021 on seed 0; `>= 0.35 on all seeds` (the ask-branch) is
+nowhere near. Verdict: **biting**, i.e. a ~0.15-0.20 drop in the gate at 3 elixir vs both the coef-0.1 run at
+the same match count and the untrained control, on every seed, and the first checkpoint in this project whose
+elixir reaches 6 on more than 2% of rows. Not a 3-seed confirmation of the LEVEL (0.227-0.271 is a 0.044 spread),
+a 3-seed confirmation of the DIRECTION.
+
+### 2. The trainer's own windows: the prior pulled first, PPO is pushing back (a)
+`GATE PRIOR CE` is cumulative; de-cumulated per 200 updates (`(ce*n - ce0*n0)/(n-n0)`, same for pi):
+
+```
+updates   200   400   600   800  1000  1200  1400  1600  1800  2000
+pi(play) .343  .298  .249  .241  .233  .243  .247  .241  .235  .219
+CE       .463  .420  .371  .355  .349  .369  .362  .360  .360  .353
+updates  2200  2400  2600  2800  3000  3200  3400  3600  3800  4000
+pi(play) .244  .242  .240  .252  .252  .268  .253  .289  .274  .236
+CE       .376  .381  .366  .398  .402  .410  .405  .420  .419  .389
+updates  4200  4400  4600  4800  5000  5200  5400  5600
+pi(play) .276  .256  .279  .281  .258  .284  .286  .260
+CE       .405  .405  .432  .412  .419  .439  .429  .418
+```
+Prior on the same rows 0.059-0.060; 11-12% of rows usable. Shape: pi falls 0.34 -> 0.22 in the first 2,000
+updates (the prior winning), then climbs to 0.24-0.29 with CE rising 0.35 -> 0.42-0.44 (PPO's advantage on
+PLAY, +0.35 vs WAIT -0.01 in the log's `ADV BY ACTION`, pushing it back). Contrast coef 0.1: flat 0.34-0.37 over
+16,800 updates, CE never fell (§5bj.3). So 0.5 is the first coefficient that moved the trainer's own
+distribution -- and the push-back is exactly the "equilibrium vs overpowered" question the m=5k read answers.
+This is the trainer's instrument (domain rand + search + drills); the probe's numbers in §1 are a different
+distribution and are NOT to be compared line by line with these.
+
+### 3. Match strength at m=2k, same seed 41, same log format (a)
+| run | 2,000-ep line | avg_rew | drills pass | EVAL@2000 ladder / fair |
+|---|---|---|---|---|
+| coef 0.5 (this) | 46W-1554L-1D | **-18.2** | 39% | 5% / 2% |
+| coef 0.1 (killed) | 37W-1546L-2D | -15.2 | 43% | 12% / 8% |
+| 18k run (no prior) | 26W-1541L-0D | -13.4 | -- | 3% / 3% |
+
+avg_rew is a per-episode mean over ~2,000 episodes and is the only one of these with resolution; coef 0.5 is
+worst by 3 points. (b) plausible reading: banking elixir costs reward under the current shaping (fewer plays
+-> fewer shaped rewards, more damage taken); the alternative reading, that the prior is simply making the
+policy worse, is not excluded by anything here. EVAL is n=150: 5% vs 12% vs 3% is inside the ±5pp band and
+says nothing. Win counts: 46 vs 37 vs 26 -- same story. Do NOT read the coef-0.1 EVAL trajectory
+(12/8 -> 8/4 -> 9/4) as decline; it is the same noise.
+
+### 4. Side work this segment
+* Level 16 in the sandbox engine (owner question): full writeup `scratchpad/gauntlet/L11/level16-research.md`
+  (committed acbb168), summary in §6. Load-bearing (c): `HANDOFF.md:5737`'s "RoyaleAPI has the levels per
+  card in the crawl" is false for the crawl on this box.
+* Stale 18k watchdog killed (§3 updated). Two orphaned grep.exe filters remain, harmless.
+* Decision-time question answered with a counter-question (§6). Nothing built, nothing measured.
+
+### 5. Traps found
+* The pre-registered `<= 0.25 on all seeds` was too tight for a 3-seed probe whose spread at a fixed
+  checkpoint is ~0.04-0.05 (L7-L11 all show it). A rule with a 0.10 gap between its two branches
+  (0.25 / 0.35) leaves a dead zone that 0.271 landed in. Next rules get ONE threshold with the noise band
+  around it stated, not two.
+* `EVAL @ 2000` in this log is written as `EVAL @ 2000:` (space before the @), so `grep "EVAL@"` finds
+  nothing. Use `grep -i eval` and filter.
+* `gate05_run_gates.progress` does not exist yet -- the gates script writes it only at the first gate (5,000).
+  Its liveness check is the two `real_run_gates.py` PIDs (60548/9528), not the file.
+
+### 6. What this does NOT establish
+Whether 0.5 is an equilibrium or a transient the PPO push will erase (trainer windows are climbing). Whether
+the reward cost (-18.2 vs -15.2) is banking or damage. Anything about win rate. Anything past m=2,550.
+
+### 7. Files
+`scratchpad/gauntlet/L11/g05m2k_s{0,1,2}.{json,txt}`, `level16-research.md` (committed acbb168);
+`gate05_m2k.pt` stays out of git. Probe series for the whole gate-prior program: L7 (18k control),
+L8 (coef-0.1 m=2k/4k), L9 (m=5k), L10 (m=7.5k), L11 (coef-0.5 m=2k).
+

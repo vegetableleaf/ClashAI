@@ -399,3 +399,17 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Watch item: free RAM 0.6-1.1 GB at startup (workers 560 MB each). Re-check at m=2k.
 - Next: coef-0.5 m=2k probe (~20:10 at 0.5 ep/s), pre-registered: <=0.25 all seeds = biting; >=0.35 all = ask.
 
+
+
+## L11 — 2026-09-02 19:20-20:25 | coef 0.5 BITES at m=2k; PPO push climbing back in trainer windows; level-16 answered; stale watchdog killed
+- (a) probe gate05_m2k.pt, 3 seeds: played at 3 elixir 0.271 / 0.227 / 0.239 (coef-0.1 m=2k 0.39-0.45; control
+  0.36-0.40; pros 0.063). P(play|affordable) 0.227-0.233 (coef-0.1 0.43-0.45); elixir >=6 3.0-4.0% (0.0-0.2%).
+  Rule: <=0.25 all seeds missed by 0.021 on seed 0; >=0.35 ask-branch far away. Verdict: biting (direction, 3 seeds).
+- (a) trainer window pi(play) per 200 updates: 0.34 -> 0.22 by update 2,000, then back to 0.24-0.29 through 5,600,
+  CE 0.35 -> 0.42-0.44. First coef that moved the trainer's own gate; PPO pushing back. m=5k decides equilibrium.
+- (a) m=2k same seed: avg_rew -18.2 (coef 0.1 -15.2; 18k -13.4); EVAL@2000 5%/2% (n=150, noise). Coef 0.5 worst on
+  reward, (b) banking cost vs simply worse -- unresolved.
+- Side: level-16 sandbox writeup (scratchpad/gauntlet/L11/level16-research.md; (c) HANDOFF:5737 retracted); stale
+  18k watchdog killed; owner's decision-time question answered with a counter-question (act_period vs latency).
+- Trap: two-threshold rule (0.25/0.35) left a dead zone; probe spread at fixed ckpt is ~0.04-0.05. One threshold next.
+- Box 20:08: run at 2,550 eps, 0.62 ep/s, 4.2 GB free. Next: m=5k read (~21:15-21:30), ask-branch = >=0.35 all seeds.
