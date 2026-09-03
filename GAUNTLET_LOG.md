@@ -769,3 +769,14 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Read plan pre-registered in §5cn.4: drill counters (direct) + ledger >=6 share 3 seeds at m2k/m5k (indirect) + regret
   at the m5k gate vs gate05 m5k. First look ~19:00 (m2000 EVAL), decisive ~20:10 (m5k gate). HANDOFF §5cn.
 
+
+## L41 — 2026-09-03 17:25-17:45 | AGGRO gauntlet loop 25 (owner follow-up): gatec2 m10k stat sheet; "init from gatec2" arm parked
+- Owner: future arm = aggro flag + init from gatec2 ckpt; "best results of any checkpoint" -> (a) on EVAL/crowns/x-bow,
+  (c) on regret/defense. Parked as aggro arm 1b in HANDOFF §6, to run AFTER aggro1's m5k read.
+- (a) gatec2 m10k vs gate05 m10k, both slices: spell share 11.0/9.0 vs 27.2/27.3; log 0.94/0.83 per min whiff 21/22%;
+  tornado 0.20/0.09 per min whiff 27/20% (nearly gone); ROCKET 4/2 casts -- the m8600 rise (10/7) did NOT hold (c).
+- (a) outcome on the greedy rollout 1/16 and 7/16 for the SAME policy on consecutive slices -- n=16 winrate not a
+  discriminator, demonstrated again. Use EVAL@10000: gatec2 25%/20% vs gate05 10%/10%. Crowns 24-40 vs 8-45 per 32.
+- (a) x-bow m10k: 4.33 vs 0.71 per match; tower lock 70% vs 50%; dmg 1676 vs 676; dead placements 35% vs 24%.
+- spellprobe.py gained an OUTCOME line. aggro1 at 600 episodes, 0.7 ep/s, untouched. HANDOFF §5cn.7.
+

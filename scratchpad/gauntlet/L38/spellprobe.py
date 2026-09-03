@@ -108,6 +108,7 @@ def run(ckpt, cfg, matches, offset=0):
     RECS.clear(); OWNER.clear()
     plays = collections.Counter()
     total_plays = 0
+    outc = collections.Counter(); my_cr = op_cr = 0   # L41: outcome tally on the same rollout
     secs = 0.0
     for seed in CR.SEEDS[offset:offset + matches]:
         env.rng.seed(seed); env.reset(); REAL["eng"] = env.eng; done = False
@@ -117,6 +118,7 @@ def run(ckpt, cfg, matches, offset=0):
                 plays[CR._base(env.deck_keys[act[1]])] += 1; total_plays += 1
             _o, _r, done, _i = env.step(act)
         secs += float(env.eng.t)
+        outc[_i.get("outcome")] += 1; my_cr += _i["crowns"][0]; op_cr += _i["crowns"][1]
     mins = secs / 60.0
     print(f"  {ckpt.name}: {matches} matches (seed slice {offset}:{offset+matches}), {mins:.1f} min of match time, {total_plays} plays")
     by = collections.defaultdict(list)
@@ -137,6 +139,7 @@ def run(ckpt, cfg, matches, offset=0):
               f"{bodies/n:>8.2f}{sum(r['dmg'] for r in recs)/n:>10.0f}"
               f"{sum(r['tower'] for r in recs)/n:>11.0f}")
     sp = sum(plays[k] for k in SPELL)
+    print(f"  OUTCOME  win {outc['win']}  loss {outc['loss']}  draw {matches-outc['win']-outc['loss']}  of {matches} (greedy, search-free)  crowns {my_cr}-{op_cr}")
     print(f"  SPELL share of plays: {100.0*sp/max(total_plays,1):.1f}%  "
           + "  ".join(f"{k} {100.0*plays[k]/max(total_plays,1):.1f}%" for k in SPELL))
 

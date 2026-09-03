@@ -2175,6 +2175,13 @@ slow one.
 
 ## 6. Open work
 
+### ⚑ AGGRO ARM QUEUE (owner order 2026-09-03 07:45 + 17:3x)
+* **aggro1** RUNNING since 17:22 (§5cn): gate05 recipe from scratch + `sim.aggro_drills: true`. Read at m2k / m5k.
+* **aggro1b** (owner 17:3x, §5cn.7): same recipe + `--init data/bench/gatec2_m10k.pt`. AFTER aggro1's m5k read, never
+  concurrently. Before launch: confirm the trainer's `--init` resets optimizer + match counter (else it is a resume).
+* then `env.nado_retarget_reach_fix` (the reward bug fix) as its own arm, then `observation.lock_aware_targets`.
+* deferred: `sim.bot_attack_floor` arm (owner 10:5x); coef-1.0 and coverage arms NOT taken.
+
 ### ⚑ OWNER DECISIONS 2026-09-02 (recorded so they are not re-litigated)
 * **agent_dt / act_period changes: DEFERRED** (owner, 21:2x). PRIORITY-C below stays as the record of the
   verdict and the order of work; do not start it without a new owner order.
@@ -2261,6 +2268,11 @@ slow one.
   -> L40 (§5cn): m10k READ = NO-REBOUND + HELD. Regret 0.2824/0.2805 (bar 0.2418), wrong waits 33/203 (bar 15) -- same 33
      as m5k. >=6 2.7/3.8/2.4% (up). Rule fired: gatec2 STOPPED at m10150 (backed up); AGGRO ARM 1 = gate05 recipe from
      scratch + `sim.aggro_drills: true` launched 17:22 as `aggro1_20260903`. Read at m2k/m5k on the ledger + drill counters.
+  -> L41 (§5cn.7, owner 17:3x): **FUTURE ARM "aggro1b" = same flag, `--init data/bench/gatec2_m10k.pt`** -- owner: gatec2
+     "produced the best results we've seen of any checkpoint" (a on EVAL 25/20%, crowns 24 vs 8 per 32 matches, x-bow dmg
+     1676 vs 676; c on regret/defense). Run AFTER aggro1's m5k read so the flag and the init are separable. Full m10k
+     stat sheet vs gate05 m10k in §5cn.7: spell share 11.0/9.0 vs 27.2/27.3; rocket FELL BACK 10/7 -> 4/2 (m8600 rise
+     was a wobble, c); tornado 0.20/0.09 per min with 20-27% whiff.
 
 ### From §5bq (2026-09-02 22:10) -- spell niches, after the gate-prior run ends (sim reward = one change each)
 * **`nado_retarget` UNREACHABLE (c, §5bq.3):** sim/env.py:2472 and :2508 `tile_dist(u, tw) <= u.spec.reach + 1.0`
@@ -9375,4 +9387,48 @@ Instruments and comparators, all already measured on gate05's own run so no new 
 `data/bench/aggro1_run.yaml`, `aggro1_run_launch.sh`, `aggro1_run_20260903.{log,launched}`, `aggro1_run_{watchdog,gates}.out`
 (NOT in git, under data/). `scratchpad/gauntlet/L40/gatec2_{live,best}_final.pt` (NOT in git). gatec2 m10k gate log:
 `data/bench/gatec2_gate_m10k.log`. Report: `report_L40.md` (Claude scratchpad).
+
+### 7. Owner follow-up (17:3x): gatec2 m10k stat sheet, and the "init from gatec2" arm parked (L41 addendum, 17:25-17:45)
+Owner: "We could try doing an aggro arm init from the gatec2 checkpoint as a future experiment ... it's produced the best
+results we've seen of any checkpoint so far. Could you probe the gatec2 policy for its spell usage and other stats?"
+"Best results" is (a) on winrate / crowns / x-bow damage / cadence and (c) on the guard (regret worst of every arm, 33
+wrong waits vs gate05's 5). Both true at once; that is why it earns its own arm rather than being the base.
+**Parked in §6 as aggro arm 1b:** `aggro1_run.yaml` recipe + `--init data/bench/gatec2_m10k.pt` (verify the trainer's
+init path keeps the optimizer fresh and the match counter at 0 before launching). Run AFTER aggro1's m5k read, never
+concurrently (box), so the flag's effect and the init's effect are separable.
+
+Everything below is matched at m10k against `gate05_m10k.pt`, same instruments, same seeds, measured this loop.
+`spellprobe.py` gained an OUTCOME line (win/loss/crowns from `info` at done) -- committed.
+```
+spells (greedy, search-free, 16 matches x 2 disjoint slices 0:16 / 16:32)
+                          gatec2 m10k              gate05 m10k
+SPELL share of plays      11.0% / 9.0%             27.2% / 27.3%
+log   per min, whiff      0.94 / 0.83, 21 / 22%    2.03 / 2.16, 25 / 25%
+tornado per min, whiff    0.20 / 0.09, 27 / 20%    1.48 / 1.54, 16 / 15%
+rocket casts, whiff       4 / 2, 0% / 0%           1 / 0
+outcome (16 matches)      1W-15L / 7W-9L           2W-14L / 4W-12L
+crowns taken-lost (32)    24 - 40                  8 - 45
+```
+* **Rocket (c): the m8600 rise did not hold.** 10 / 7 casts at m8600 -> 4 / 2 at m10k (0.6 / 0.3% of plays; pro 3.4%).
+  §5cm.5 pre-stated the test as "holds the rate AND drops the whiff": whiff is 0% on both slices but the rate is a third
+  of m8600's, so the rise was a wobble like the spell-share rise before it. Rocket series: 3 / 3 / 0 / 10+7 / 4+2.
+* **Tornado is nearly gone** at m10k: 16 casts in 32 matches, 20-27% whiff (0% at m8600). §5cl.2's "fewer, better-aimed
+  spells" now holds only for the log's cast COUNT; the aim advantage on tornado is gone.
+* **Winrate: use the trainer's EVAL** (150 matches each): gatec2 EVAL@10000 ladder 25% / fair 20% vs gate05 10% / 10% at
+  the same count -- the highest trainer EVAL on record. The greedy 16-match rollout read 1/16 and 7/16 on consecutive
+  seed slices of the SAME policy, 37pp apart: the standing rule (winrate is not a discriminator at n=16) demonstrated
+  again on its own instrument. Crowns are steadier and say the same thing as EVAL: 3x gate05's crowns taken.
+```
+x-bow (gates monitor xbow_probe, 24 matches)   gatec2 m10k          gate05 m10k
+x-bows / match                                  4.33                 0.71
+placement OFF / DEF / dead                      42 / 23 / 35%        35 / 41 / 24%
+offensive tower lock, dmg/bow mean              70%, 1676            50%, 676
+lifetime mean / reached-full                    21.9 s / 38%         18.6 s / 24%
+time on TOWER / UNITS / idle                    17 / 36 / 47%        9 / 45 / 46%
+continuation deploy rate / gap                  11.4/min, 4.20 s     14.2/min, 3.60 s   (pro 11.7, 3.85)
+```
+**Reading:** gatec2 m10k is the best ATTACKING checkpoint on record (crowns, x-bow lock rate and damage, EVAL) and the
+worst DEFENDING one (regret, wrong waits, tornado). Aggro arm 1b is the bet that the lock-state drills repair the second
+half without undoing the first. It does NOT change the base for aggro arm 1 (already running, §3).
+Files: `scratchpad/gauntlet/L40/spell_m10k.txt`, `spell_m10k_offset16.txt` (committed).
 
