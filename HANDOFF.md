@@ -8532,8 +8532,9 @@ base for the aggro flags (next change: `sim.aggro_drills: true`, then the reach 
 applied, new run vs a continuation-logged flip at a known match count, is decided at m5k and written here). Fail -> stop
 at m5k (record state first), then C with caution: the conditioned table `gate_prior_p6.json` at a stronger coef, on top
 of the floor.
-The run's own first `GATE PRIOR CE ... PRESSURE on X%` line is the in-run check that the floor is live (gate05/gatep6 read
-44% on an untrained policy; a floor-7 opponent should read lower) -- to be recorded at the m2k read, not claimed now.
+CORRECTION (same loop, 07:53): the `PRESSURE on X%` line is printed ONLY under the schema-2 table (gatep6); this run uses
+gate05's blended table, so there is NO in-run cadence readout. The floor's liveness rests on the unit tests + the yaml loaded
+through `Config` (floor 7.0) + the workers importing the committed opponents.py; the outcome is read at m2k/m5k.
 
 ### 3. What this does NOT establish
 * Anything about the policy yet (b): no update line had landed at the time of writing.
