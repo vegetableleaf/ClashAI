@@ -796,3 +796,14 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   (online sources) -- no measurement owed; the sim's 0.4 is the wrong one.
 - Run untouched (12 trainer procs before/after). HANDOFF §5co.
 
+
+## L43 — 2026-09-03 19:10-20:00 | AGGRO gauntlet loop 27 (owner steering): the CEILING measured; archetype-GA answered; opp-elixir obs mismatch found
+- Owner: "too much scaffolding / GA like Trackmania?" -> answered (c on the analogy, right on entropy collapse ent=0.05-0.06);
+  owner chose (1) measure the ceiling only. Ran it: gatec2_m10k, ladder, 48 paired seeds: policy alone 41.7% / tower -0.91;
+  search teacher (H=12, cells 3) 77.1% / +0.11 (a). Ledger 08-27 said 37.0 -> 85.7 (m18000, n=300). Sim is not the ceiling;
+  the learner is. Distillation (6-PRIORITY-B) is the case, privileged-teacher gap (reseed_opp) must be measured first.
+- Per-archetype (a, screen): policy beatdown 8% / control 46 / cycle 60 / siege 33 (n 12/13/20/3); teacher 58/77/85/100.
+- Owner's archetype-GA: obs already has OpponentMemory + measured detector noise; recommended ONE net + archetype-posterior
+  input over six GA loops (fitness noise x6; nets cannot be averaged). Not started.
+- FOUND (a, code): sim/env.py:643 puts OUR elixir in memory slot 5; live puts the opponent-elixir estimate there (3bc1d45,
+  08-11). Sim policy has never seen opponent elixir. Parity-arm candidate; untouched while aggro1 runs. HANDOFF §5cp.

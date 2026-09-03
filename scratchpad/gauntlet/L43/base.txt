@@ -1,0 +1,5 @@
+  [base] 10/48  wr=50.0%  3.26 s/match
+  [base] 20/48  wr=40.0%  3.03 s/match
+  [base] 30/48  wr=33.3%  2.76 s/match
+  [base] 40/48  wr=40.0%  2.69 s/match
+[base] wr=41.7%  towerdelta=-0.9097  searched=0 disagree=0 wait->play=0 play->wait=0  wall=130.3s -> C:/Users/benpe/ClashBot/scratchpad/gauntlet/L43/base.json

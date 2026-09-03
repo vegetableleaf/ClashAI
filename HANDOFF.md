@@ -22,7 +22,7 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-03 19:05**, branch `main` (**§5co: GAUNTLET L42 -- LIVE SPELL AIM FIX (owner-authorized live-path
+Last updated: **2026-09-03 20:00**, branch `main` (**§5cp: GAUNTLET L43 -- THE CEILING: search teacher 77.1% vs policy 41.7% on the same sim (gatec2_m10k, 48 paired); per-archetype beatdown 8% / cycle 60%; owner archetype-GA answered; sim/live opp-elixir obs slot mismatch found (sim/env.py:643). Previous header follows.** §5co: GAUNTLET L42 -- LIVE SPELL AIM FIX (owner-authorized live-path
 change) + aggro1 first look. Owner: "the policy plays every log 1-2 tiles too far forward and whiffs; it never leads log or
 rocket; I think it ignores the ~1 s cast delay". "Mapping issue" (c): the board->screen warp is shared by troops and spells.
 The real defects (a, in code): (1) env.py `_wheels_spell_aim` GATED on the current positions (`log_hits` / radius test)
@@ -9545,3 +9545,77 @@ nado_king_activation      0%      100%       8%          0%            0%   (doc
 (report only); `scratchpad/gauntlet/L42/{drills_aggro1_m2500.txt,drills_gate05_m5k.txt,ge6_m2500.txt,drills_m2500.sh}`
 (committed); `L42/aggro1_live_m25.pt` (verified matches=2500, NOT in git).
 
+
+## §5cp. GAUNTLET L43 (2026-09-03 19:10-20:00) -- owner strategic question ("too much scaffolding? GA/elitism?"); the CEILING measured: search teacher 77.1% vs policy 41.7% on the same sim; per-archetype breakdown; a sim/live obs mismatch found (opp-elixir slot)
+
+**Owner (19:1x):** is the project fundamentally wrong -- too many reward terms/scaffolding for a learner meant to explore;
+Yosh's Trackmania AI (GA: elitism+crossover+mutation) learned from random inputs; "hundreds of thousands of matches and
+barely anywhere". Answer given in chat (summary): Trackmania analogy (c) -- dense, deterministic, near-noiseless fitness and
+~1000x our throughput (0.5 ep/s here = ~45k matches/day); elitism needs a low-noise fitness and ours is winrate at +/-12pp;
+the owner IS right about entropy collapse (aggro1 `ent=0.06` at 2500 eps, 0.05 at 4450 -- near-deterministic policy by
+m2500), peak-and-decay (gate05 EVAL 17% -> 8%), and the scaffolding cost (retraction ledger; sim bugs have capped every
+learner). Proposed (1) measure the ceiling (search teacher vs policy on the same sim) and (2) a core-reward ablation arm.
+**Owner: "go with (1) only for now."** (2) is NOT to be run unless asked.
+
+### 1. The ceiling (a) -- `scratchpad/gauntlet/L43/ceiling.sh`, gatec2_m10k, ladder pool, 48 paired seeds (seed0 5000000)
+`rollout_search.py` (NOT in git) on a copy of `data/bench/gatec2_m10k.pt`; base = policy alone (H=0); teacher = the
+6-PRIORITY-B oracle (H=12 decisions, every decision, topk 4, cells 3), same seeds.
+
+| leg | win% | tower delta (ours-theirs) | s/match | searched | disagree |
+|---|---|---|---|---|---|
+| policy alone | 41.7% | -0.910 | 2.7 | 0 | -- |
+| search teacher | **77.1%** | **+0.115** | 14.9 | 7530 | 2443 (32%): wait->play 1218, play->wait 973 |
+
++35pp / +1.02 tower on the SAME sim, SAME opponents, SAME action interface, SAME network as the candidate proposer. Ledger
+(rollout_search.md, 2026-08-27, policy_BEST_m18000, n=300): 37.0% -> 85.7%. Two checkpoints, two dates, same answer:
+**the sim/opponent/interface is not the ceiling; the learner leaves ~35-49pp on the table.** By the owner's own decision
+rule ("hand-written line wins 50%+ and the student 10-27% -> the learner/signal is the problem -> distillation") this is
+the distillation case (6-PRIORITY-B).
+
+### 2. Per-archetype (a, one checkpoint, n=3-20 per cell -- a screen) -- `opp_labels.py` rebuilds each seed's ladder opponent (`env.rng.seed(s); env.reset()` is deterministic) and labels it with `meta_decks.classify_style`
+| style | n | policy win% | policy tower | teacher win% | teacher tower |
+|---|---|---|---|---|---|
+| beatdown | 12 | **8.3%** | -1.97 | 58.3% | -0.39 |
+| control | 13 | 46.2% | -1.02 | 76.9% | -0.13 |
+| cycle | 20 | 60.0% | -0.28 | 85.0% | +0.51 |
+| siege | 3 | 33.3% | -0.36 | 100% | +0.59 |
+
+The policy's losses are NOT archetype-uniform: even vs cycle, collapses vs beatdown (8% vs 60% is outside the +/-12pp
+band; control/siege cells are not). The teacher lifts every bucket, most of all beatdown (+50pp). So the owner's
+archetype intuition has support, but the fix the data points at is the general one (the teacher, with the same inputs,
+already beats beatdown 58%) -- not six learners.
+
+### 3. Owner's archetype-GA proposal (19:3x) -- answered in chat
+(a) the obs ALREADY carries an opponent memory (`card_threat.OpponentMemory`, 8 slots: seen win-con/tank/swarm/air/building
+flags, elixir slot, tempo EWMA, staging mass), fed through the measured detector noise (recall 0.82 / precision 0.89 /
+presence 0.85 / per-card table) -- the owner's "I think it's already implemented" is correct; the bot self-labels 4 styles
+(`meta_decks.classify_style`: siege/beatdown/cycle/control -- no bait/bridgespam bucket). Pushback: (1) six elitism loops
+multiply the fitness-noise problem by 6; (2) six independently trained nets cannot be weight-averaged -- "combine" is
+either a mixture-of-experts with the archetype classifier as router or a 6->1 distillation, a project in itself; (3) ONE
+network with an archetype posterior INPUT (seen-card set -> pool-deck overlap -> 6-way belief, ~10 lines, noise already
+modelled) gets the same conditioning. Recommended order: ceiling (done) -> per-archetype (done, §2) -> archetype posterior
+as an obs feature in one network IF pursued. Not started; owner decides.
+
+### 4. Found while checking §3 (a, in code): sim/live OBS MISMATCH in the opponent-memory elixir slot
+`sim/env.py:643` `mem[5] = self.eng.elixir[0] / 10.0` = OUR elixir (duplicate of `elixir_vec[0]`); live `env.py:673` /
+`play.py:447` put the **opponent-elixir estimate** (`opponent_elixir.py`) in the same slot. Commit c38420a (08-11 11:44)
+wrote `elixir[1]` (opponent, correct); commit 3bc1d45 (08-11 15:42, "Flip detector obs canvas gate and promote board-24")
+changed it to `elixir[0]` with the comment "mirrors the opponent-elixir signal from team 1's perspective" and no stated
+reason. Nothing else in the sim obs carries the opponent's elixir (`view.threat_vector` has none). Consequences: the sim
+policy has NEVER seen the opponent's elixir (the elixir-counting / tempo signal the aggro goal is built on); live feeds a
+different quantity into the same input. Effect on play (b) untested. NOT changed (aggro1 depends on the sim env). Queue
+as a parity-arm candidate: `mem[5] = eng.elixir[1] / 10.0`, ONE change, read on the tempo drills + ge6 share.
+
+### 5. Does NOT establish
+* That distillation will transfer the 35pp -- the teacher is PRIVILEGED: the rollout fork carries the opponent's RNG state
+  (`--reseed_opp` off), so it replays the opponent's actual future. The privileged-teacher gap (reseed_opp on, same seeds)
+  is the ledger's mandatory first measurement before any corpus is built. 14.9 s/match -> a teacher, never a live policy.
+* Anything at n=3 (siege) or from one checkpoint. Per-archetype needs a second checkpoint (gate05 m5k or aggro1 m5k) and
+  the disjoint-slice rule before it steers an arm.
+* base 41.7% vs the ledger's 37.0% are different checkpoints and n -- not a trend.
+
+### 6. Box / run
+aggro1 untouched: 4450 eps at 19:5x, 0.5 ep/s, ent 0.05, 129W-3438L-7D; m5k ~20:12, gate probes after. Ceiling run
+shared the box 19:41-19:53 (2 extra procs; aggro1 throughput was not benchmarked during it -- do not read ep/s from
+that window). Files: `scratchpad/gauntlet/L43/{ceiling.sh,base.txt,teacher.txt,base.json,teacher.json,opp_labels.py,
+opp_labels.json}` in git; `_rs_gatec2_m10k.pt` NOT in git.
