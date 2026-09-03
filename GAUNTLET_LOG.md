@@ -517,3 +517,15 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   The bow never re-locks a tower after the reference pull (2 tiles vs 11.5 reach) -> notes (c). L16 enemies: 5% for every line.
 - (a) trap: `cli drills --level 11` pins the ENEMY only; our bow is L16 -> "nothing 100%". Use ladder or pin 14-16.
 - Next: `sim/aggro_drills.py` with lock-state predicates (tank_for_bow, bow_first_lock). Run untouched (6,950 eps). HANDOFF §5bt.
+
+
+## L20 — 2026-09-02 23:05-23:45 | AGGRO gauntlet loop 4: `sim/aggro_drills.py` -- drills graded on the engine's lock state
+- Built `tank_for_bow` (success = the valk's `target` becomes our knight; failure = her first hit on the bow) and `bow_lane_choice`
+  (success = the bow's FIRST lock after deploy is a tower; failure = a troop) + 4 tests. Explicit `register_all()`, not auto-imported.
+- (a) 40 reps ladder: nothing 0/0, scripted 92/95 (L16 pinned 98/98), knight @4.2 s 0%, far-lane knight 0%, same-lane bow 0%, doctrine 95/90.
+  Knight BEHIND the bow still 88% (he walks past it) -> the drill grades lane + timing, not the row.
+- (a) traps: first legal agent row is y 0.5625 (L19's river-line cells were unreachable -> scripted 0% until the bow moved to 0.60);
+  drill noise lands in the answer's lane (reference 68% with noise) -> `setup` strips it; a Scenario `noise` field waits for the stop.
+- (a) trained policies, greedy masked, 40 reps: gate05 m5k 12% / 0% (tank / lane), pre-run policy_sim_ppo 15% / 35%; doctrine 95 / 90.
+  "No concept of aggro" is measured for these two questions. nado_king_activation 0% for every policy, doctrine 5%.
+- Run untouched (7,825 eps). HANDOFF §5bu.

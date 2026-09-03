@@ -22,7 +22,17 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-02 23:00**, branch `main` (**§5bt: GAUNTLET L19 = aggro loop 3: DO THE AGGRO DRILLS GRADE
+Last updated: **2026-09-02 23:45**, branch `main` (**§5bu: GAUNTLET L20 = aggro loop 4: TWO AGGRO DRILLS GRADED
+ON THE ENGINE'S LOCK STATE -- `sim/aggro_drills.py` (explicit `register_all()`, NOT auto-imported, so the running
+trainer never sees it) + 4 tests: `tank_for_bow` (success = the Valkyrie's `target` becomes our Knight, failure = her
+first hit lands on the bow) and `bow_lane_choice` (success = the bow's FIRST lock after deploy is a tower, failure =
+a troop). 40 reps, ladder roll: nothing 0% / scripted 92% / 95%; late knight (4.2 s) 0%, far-lane knight 0%,
+same-lane bow 0%; doctrine 95% / 90%. THE TRAINED POLICY FAILS BOTH (a, greedy masked, 40 reps): gate05 m5k 12% / 0%, pre-run
+policy_sim_ppo 15% / 35% -- the owner's "no concept of aggro" is now measured, and the doctrine has the answer (95 / 90). Two traps
+found by tracing the real DrillEnv: the first LEGAL agent row is y 0.5625 (a reference at y 0.50 snaps BEHIND a
+bow at 0.56 -- the L19 oracle boards used `deploy_unit`, which ignores the grid), and drill NOISE lands in the lane
+the answer needs (reference capped at 68% with noise; opt-out via `setup`). Run untouched (7,825 eps).**
+Previous header (§5bt: GAUNTLET L19 = aggro loop 3: DO THE AGGRO DRILLS GRADE
 AGGRO? (c) No, neither of the two. `knight_guards_the_bow` passes the STEP a knight is played anywhere (success =
 bow alive AND knight played, verdict fires immediately; the bow only dies at 7-8 s) -- cell and timing are
 irrelevant; scripted 100%. `nado_the_sneaky_lock`: the tornado earns NOTHING -- knight-only @2.4 passes 60% on the
@@ -2028,8 +2038,11 @@ slow one.
 ### AGGRO GAUNTLET (owner order 2026-09-02 22:1x) -- running; §5br is loop 1
 * Loop 2 DONE (§5bs): `sim/aggro_oracle.py` + 8 tests. Loop 3 DONE (§5bt): the two existing aggro drills do
   not grade aggro (knight_guards_the_bow verdict fires on any knight play; sneaky-lock's tornado earns nothing,
-  notes contradicted). Loop 4: `sim/aggro_drills.py` (tank_for_bow on lock state, bow_first_lock) + tests;
-  when the run stops: wire in, re-predicate/retire the two old drills. Later: lock-aware
+  notes contradicted). Loop 4 DONE (§5bu): `sim/aggro_drills.py` (tank_for_bow, bow_lane_choice; explicit
+  `register_all()`) + 4 tests; scripted 92/95, nothing 0/0, doctrine 95/90. When the run stops: call
+  `aggro_drills.register_all()` from `drills_icebow.py`, add a `noise` field to `Scenario` (replace the
+  `_no_distractors` setup), re-predicate/retire `knight_guards_the_bow` + `nado_the_sneaky_lock`. Oracle-chosen
+  cells MUST be legal `cell_center`s (first own row y 0.5625) -- §5bu trap. Later: lock-aware
   `predict_targets` (blocked until the run stops: workers import it); grade with `aggro_agreement.py`.
 * Oracle-exposed engine behaviours to verify vs the real game (b): spawn-on-top lock reset (engine :5758),
   no 4 s king aim delay. Do not build rewards that depend on the first.
@@ -7677,4 +7690,107 @@ Run 6,950 eps, 227W-5329L-7D, avg_rew -18.8, drills 43% / 47% last 300; 11 procs
 ### 7. Files
 `scratchpad/gauntlet/L19/{drill_sweep.py, drill_sweep.json, baseline.py, order.py, refs.py, trace_sneaky.py,
 spawn_vs_unit.py, levels.py, ref_variants.py}`.
+
+## §5bu — GAUNTLET L20 (aggro gauntlet, loop 4): aggro drills graded on the lock state (2026-09-02 23:05-23:45)
+
+### 1. What was built (new files only; nothing the trainer imports was touched)
+`icebow/src/clashrl/sim/aggro_drills.py` -- two `Scenario`s and an idempotent `register_all()`. Deliberately NOT
+named `drills_*.py`: `scenarios.load_all()` imports every such file at env construction (drill_env.py:1104), so the
+running coef-0.5 trainer would have picked a new drill up mid-run. Wiring into `drills_icebow.py` waits for the stop.
+* `tank_for_bow`: our X-Bow at (0.26, 0.60), enemy Valkyrie at (0.24, 0.42) walking; hand knight, 4 elixir.
+  success = a live drill enemy's `target` is our (non-noise) knight while the bow lives; failure = a drill enemy is
+  `locked` on the bow (first hit landed) or the bow is dead. Graded on the RETARGET, not on who then wins.
+* `bow_lane_choice`: enemy Knight at (0.26, 0.45) walking; hand x_bow, 6 elixir. success = the bow's FIRST non-None
+  `target` after `deploy_left <= 0` is a `Tower`; failure = a `Unit`. The first lock is memoised in the drill's
+  scratch dict so a later re-lock cannot rewrite the answer. `setup=_no_distractors` strips tagged noise (see 3).
+`icebow/tests/test_aggro_drills.py` -- 4 tests, 40 s: register idempotent; tank scripted >= 90% and nothing 0%;
+knight at 4.2 s <= 10%; bow opposite lane >= 90%, nothing 0%, same lane 0%.
+
+### 2. Measured pass rates (a; `run_drill`, 40 reps, seed 5, enemy = ladder roll 13-16 unless pinned)
+| drill / line | pass |
+|---|---|
+| tank_for_bow: nothing | 0% (40 fail) |
+| tank_for_bow: reference knight (0.25, 0.5625) @0.6 | **92%**; L16 pinned 98% |
+| tank_for_bow: knight @1.8 / @3.0 / @4.2 | 98% / 92% / **0%** |
+| tank_for_bow: knight BEHIND the bow (0.25, 0.646) @0.6 | 88% |
+| tank_for_bow: knight in the FAR lane (0.75, 0.5625) @0.6 | 0% |
+| bow_lane_choice: nothing | 0% (40 timeout) |
+| bow_lane_choice: reference bow (0.917, 0.5625) @0.6 | **95%**; L16 pinned 98% |
+| bow_lane_choice: same lane (0.25, 0.5625) | 0% (37 fail) |
+| bow_lane_choice: (0.806, 0.5625) -- one column nearer | 2% |
+| bow_lane_choice: row 0.604 (nothing in reach) | 0% (40 timeout) |
+| bow_lane_choice: reference WITH the distractors left on | 68% |
+| `report()` doctrine column | tank 95%, bow 90% |
+Read: both drills separate the correct line from the null and from the wrong lane / late line, and the enemy's level
+does not move the verdict (L16 pinned = ladder). `tank_for_bow` grades LANE + TIMING (window = until her first hit,
+3.7 s after she spawns), NOT front-vs-back row: a knight dropped behind the bow walks past it to meet her and takes
+the lock 88% of the time. That is engine-true (he sees her at 5.5 tiles and the bow is a building he walks around);
+it means the drill will not teach "in front" specifically, only "in her lane, in time". The DOCTRINE already passes
+both (95 / 90) -- the aggro answer exists in the hand-written rules; whether the trained policy has it is 4.
+
+### 3. Two traps (a, found by stepping the real DrillEnv, `scratchpad/gauntlet/L20/trace_drills.py`)
+* THE AGENT'S GRID CANNOT REACH THE RIVER. `ActionSpace`: 18x24 cells, `deploy_board` 0.53125 -> `min_own_gy` 13 ->
+  first legal row centre y = **0.5625**; `deploy_clamp` pulls anything nearer the river down to it. The L19 oracle
+  sweeps placed the knight with `deploy_unit` at y 0.50 (river line) and said "6 cells take the lock"; the scripted
+  reference (0.26, 0.50) in the real env snapped to (0.25, 0.5625) -- BEHIND the original bow at 0.56 -- and passed
+  0/20. Every oracle-chosen cell must be a `cell_center` of a legal row, and every landing is +0.25 s late
+  (`action_latency`). Re-swept on legal cells (`legal_sweep.py`): bow at y 0.60 -> her first hit at 3.7 s; cells that
+  take the lock 16 (landing 0.85 s) / 10 (1.45) / 6 (2.05) / 4 (3.25) / 0 after; identical at L14 and L16. Bow at
+  0.65: hit 4.7 s, 27 -> 11 cells; at 0.70: hit 6.8 s, all 27 cells at every delay (no timing content). 0.60 chosen.
+  Bow first-lock on legal rows (`bow_row_probe.py`, knight L13 = L16): row 0.5625 -> 15/18 cells lock the knight,
+  only x 0.86-0.97 lock the tower; row 0.604 -> 16 knight, 2 nothing. The tower is 11.6 tiles from the river row,
+  the reach 11.5 + bodies: only the far corner of the OTHER lane sees a tower before the walking troop.
+* DRILL NOISE LANDS WHERE THE ANSWER IS. `_place_noise` (drill_noise 0.5, 75% enemy) deals distractors into "the
+  lane the drill is not about" at y 0.30-0.46 -- for a drill whose answer IS the other lane, that is a body 3-8
+  tiles from the reference cell and always nearer than the tower. With noise on, the reference passes 68% (the
+  structural cap: ~37% of episodes roll an enemy distractor). `Scenario` has no noise switch and `scenarios.py` is
+  imported by the workers, so the drill's `setup` hook (runs after `_place_noise`) removes tagged bodies. A `noise`
+  field on `Scenario` is the right fix once the run stops. `tank_for_bow` keeps its noise (the far lane is 10 tiles
+  from the valk; measured no effect: the reference sits at 92% with it on).
+* Smaller: `Tower` has no `.team` (towers are `eng.towers[team][i]`); `report()` needs `register_all()` called first
+  because `cli drills` only sees `load_all()` modules.
+
+### 4. Trained policy on these drills (a; GREEDY masked wrapper `_drill_policy_from_checkpoint`, 40 reps, seed 5)
+| drill | nothing | scripted | doctrine | gate05 m5k | pre-run `policy_sim_ppo.pt` |
+|---|---|---|---|---|---|
+| tank_for_bow (new) | 0% | 92% | 95% | **12%** | 15% |
+| bow_lane_choice (new) | 0% | 95% | 90% | **0%** | 35% |
+| knight_guards_the_bow (old, trivial verdict) | 0% | 100% | 100% | 38% | 90% |
+| nado_the_sneaky_lock (old) | 2% | 48% | 95% | 38% | 10% |
+| nado_king_activation | 0% | 100% | 5% | 0% | 0% |
+Read (a): the owner's "the model has no concept of aggro" is MEASURED for these two questions -- the m5k policy takes
+the Valkyrie's lock 12% and never places the bow where its first lock is a tower (0%), while the doctrine does both
+(95 / 90). The pre-run policy is no better on tank (15%) and only 35% on the lane choice. The old trivial drill
+reads 90% -> 38% pre-run -> m5k, which is the m5k policy simply playing the knight less (§5br/§5bu P(play) ~0.30),
+not an aggro change -- the drill cannot tell. `nado_the_sneaky_lock` doctrine 95% here vs the scripted reference
+48%: the doctrine's line is the knight-in-front one (§5bt), and its 95% > reference confirms the reference is the
+worse line. `nado_king_activation` stays at 0% for every policy and 5% for the doctrine (DOCTRINE GAP, §5bp).
+One seed (seed 5, 40 reps): the pass rates are +-8 pp at this n; the 0 / 12 vs 90 / 95 separation is not.
+
+### 5. Does NOT establish
+Real-game truth of the two lock rules the drills grade (first-lock = nearest in reach for a siege building; a walking
+troop steals only to a nearer body until its first hit) -- (b), sandbox oracle (§5at) is the instrument. Whether a
+policy trained WITH these drills transfers the lane/timing rule to matches -- (b), needs the wiring after the stop and
+a 3-seed A/B. Whether "knight in front" (as opposed to "knight in the lane in time") matters in the real game -- (b).
+
+### 6. Box (a, 23:30)
+Run 7,825 eps, 0.5 ep/s, 258W-6003L-7D, avg_rew -20.5, drills 42% pass all / 43% last 300; `gate05_m10k.pt` not
+written; 5 processes on the run's command line at this read (11 at 23:00 -- pool churn, the log advances); free RAM
+4.13 GB; CPU 100%. Untouched. The drill measurements above were run on this contended box: pass rates, not throughput.
+
+### 6b. Owner question 23:40 -- "the watchdog fired elixir-collapse warnings; is it learning cheap cards again?" (a)
+Watchdog (SAMPLED, `gate05_run_watchdog.out`): 6x ELIXIR>=6 DRIFT + 1x NEVER-REACHES-6 (0.3% at 7,250). The rule
+fires on a reading >= 40% below a rolling median of a ~1% quantity whose per-reading noise is +-100% (0.1 -> 3.8 -> 0.2
+-> 2.2% within 1,000 matches). By stretch, the >=6 share medians: 2400-4000 ~0.3%, 4100-6000 ~1.2%, 6000-8000 ~0.8%
+-- up then slightly down, NO monotone decay; the 0.3% floor trip was followed by 1.3 / 0.5 / 0.8 / 0.8 / 0.6%.
+GREEDY probe (same instrument each time, 3 seeds, 2,400 rows): mean cost of cards played m2k 2.63/2.66/2.66 -> m5k
+2.61/2.60/2.54 (previous gate run m5k 2.60/2.53/2.58, m7.5k 2.52/2.63/2.49; deck mean 3.50) = FLAT and already cheap
+before this run; elixir>=6 share m2k 4.0/3.5/3.0% -> m5k 1.2/1.3/1.0% = a REAL fall, all seeds. So: not "cheap cards
+again" (never stopped), but banking-to-6 did fall m2k -> m5k. Decision point = the same probe on `gate05_m10k.pt`
+(3 seeds): <= 1% again with cost ~2.6 is the 40k run's shape (stop); recovery toward 3% makes m5k a dip. Told the
+owner; run left alone.
+
+### 7. Files
+`icebow/src/clashrl/sim/aggro_drills.py`, `icebow/tests/test_aggro_drills.py`, `scratchpad/gauntlet/L20/{board_sweep.py,
+trace_drills.py, cell_probe.py, legal_sweep.py, bow_row_probe.py, rates.py, policy_rates.py}`.
 
