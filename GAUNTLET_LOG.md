@@ -570,3 +570,13 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   `data/policy_gatep6_20260903.pt`, watchdog + gates monitors up; first update `PRESSURE on 44% of usable rows`. Next: m2k read
   (~1.1 h) with gate_prior_probe seeds 0/1/2 vs gate05's 4.0/3.5/3.0%. HANDOFF §5bx.5.
 
+
+## L24 — 2026-09-03 02:45-02:55 | AGGRO gauntlet loop 8: m2k read of the conditioned-prior test run -- BELOW gate05
+- (a) gate_prior_probe seeds 0/1/2 at m2,350: >=6 share 0.9/0.8/0.5% vs gate05 m2k 4.0/3.5/3.0 (L11) and m5k 1.2/1.3/1.0 (L16);
+  elixir mean 2.2 vs 2.6; P(play|aff) 0.34 vs 0.23. Every seed below every gate05 seed.
+- (a) trainer stat at 5,000 updates: conditioned target averages 0.066 vs blend 0.060 on sim rows because PRESSURE covers 50%
+  of usable rows (pros 38%). (b) net pull-to-wait weaker; quiet windows (~5 s median) too short to bank; the split is a
+  licence to spend under the sim's cadence -- the §5bw.4 caveat materialising.
+- Run continues to the pre-registered m5k read (~03:50). Owner question re-posted with the mechanism: (A) opponent cadence arm
+  (recommended), (B) restart on gate05's blend + aggro wiring, (C) stronger coef on the conditioned table (expect fail). HANDOFF §5by.
+

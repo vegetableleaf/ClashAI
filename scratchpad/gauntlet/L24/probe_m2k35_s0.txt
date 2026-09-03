@@ -1,0 +1,18 @@
+..\scratchpad\gauntlet\L24\gatep6_m2k35.pt  matches=2350  rows=2400  seed=0
+  affordable on 33.0% of rows | P(play) mean 0.370 (all) 0.340 (affordable rows) | played on 11.3% of rows | elixir mean 2.21  >=6 0.9% | phase rows [1731, 669, 0]
+  bucket  rows  P(play)  affordable  played   pro(single)
+      0    368   0.348     0.000     0.000    0.010
+      1    751   0.381     0.103     0.059    0.024
+      2    698   0.384     0.244     0.063    0.042
+      3    382   0.370     0.898     0.319    0.063
+      4    106   0.292     1.000     0.321    0.058
+      5     72   0.391     1.000     0.292    0.042
+      6     17   0.277     1.000     0.235    0.042
+      7      5   0.274     1.000     0.400    0.043
+      8      1   0.247     1.000     0.000    0.083
+      9      0     -         -         -      0.203
+     10      0     -         -         -      0.184
+  mean cost of the cards actually played: 2.55 (deck mean 3.50)
+    plays at <3   n=88   mean cost 1.43  skeletons:50 the_log:38
+    plays at 3-5  n=177  mean cost 3.05  ice_wizard:49 knight:41 tornado:37 tesla:19
+    plays at >=6  n=6    mean cost 4.17  x_bow:3 tesla:1 the_log:1 skeletons:1

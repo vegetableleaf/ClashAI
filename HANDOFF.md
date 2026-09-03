@@ -22,7 +22,12 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-03 01:55**, branch `main` (**§5bx: GAUNTLET L23 -- the repair is BUILT, smoke-tested and the TEST RUN IS LAUNCHED (01:46, `data/bench/gatep6_run_launch.sh`, ckpt `data/policy_gatep6_20260903.pt`, monitors up):
+Last updated: **2026-09-03 02:55**, branch `main` (**§5by: GAUNTLET L24 -- the m2k read of the pressure-conditioned
+test run is BELOW gate05: ≥6-elixir share 0.9 / 0.8 / 0.5% at m=2,350 (probe, seeds 0/1/2) vs gate05's m2k 4.0 / 3.5 / 3.0
+and at/below its m5k 1.2 / 1.3 / 1.0. Mechanism (a, trainer stat at 5,000 updates): the conditioned target AVERAGES HIGHER
+on sim rows (0.066 vs 0.060) because the sim opponent pressures 50% of usable rows vs pros' 38% -- the split is a licence
+to spend. Run continues to the pre-registered m5k read (gates monitor snapshots it); question re-posted to the owner on
+the opponent cadence, now with the mechanism. Previous header follows.) (**§5bx: GAUNTLET L23 -- the repair is BUILT, smoke-tested and the TEST RUN IS LAUNCHED (01:46, `data/bench/gatep6_run_launch.sh`, ckpt `data/policy_gatep6_20260903.pt`, monitors up):
 schema-2 gate prior split by opponent pressure (`tools/gate_prior.py --pressure-s 6` -> `config/gate_prior_p6.json`,
 blend byte-identical to `gate_prior.json`), sim key `SimMatchEnv.enemy_troop_min_age()` carried as payload `eage`,
 trainer flag `sim.ppo_gate_prior_pressure_s` (0.0 = gate05's table byte-for-byte), 5 new unit tests (12/12 pass),
@@ -2101,7 +2106,9 @@ slow one.
   -> L23 (§5bx): BUILT + unit-tested + smoke-run. Launch line for the TEST RUN (step 3): `run.py --config
      data/bench/gatep6_run.yaml train-sim-ppo --matches 40000 --envs 96 --workers 12 --size 432 --device cuda
      --seed 41 --search-interval 4` (identical to gate05's except the config); ckpt `data/policy_gatep6_20260903.pt`
-     (did not exist before). LAUNCHED 01:46 (`data/bench/gatep6_run_launch.sh`), monitors up -- see §5bx.5. Grade: `gate_prior_probe.py` seeds 0/1/2 at m2k (gate05: >=6 share 4.0/3.5/3.0%,
+     (did not exist before). LAUNCHED 01:46 (`data/bench/gatep6_run_launch.sh`), monitors up -- see §5bx.5.
+  -> L24 (§5by): m2k read FAILS the bar's direction: 0.9/0.8/0.5% at m2,350 vs gate05 m2k 4.0/3.5/3.0. Running on to
+     the pre-registered m5k read (ETA ~03:50 at 0.7 ep/s). Owner question re-posted: opponent cadence (see §5by.4). Grade: `gate_prior_probe.py` seeds 0/1/2 at m2k (gate05: >=6 share 4.0/3.5/3.0%,
      P(play|aff) 0.23) and m5k (gate05: 1.2/1.3/1.0%) + the L22 ledger. Bar: m5k >=6 share ABOVE gate05's m2k.
 
 ### From §5bq (2026-09-02 22:10) -- spell niches, after the gate-prior run ends (sim reward = one change each)
@@ -8141,4 +8148,62 @@ snapshot (gate05: 1.2/1.3/1.0%). Bar: m5k ≥6 share above gate05's m2k. Then de
 `src/clashrl/train_sim_ppo.py`, `tests/test_gate_prior.py`. `data/bench/gatep6_run.yaml` (new) is NOT in git --
 `icebow/data/` is gitignored and no `data/bench/*.yaml` ever was (gate05_run.yaml included); its full diff vs
 gate05_run.yaml is the four lines in §1, reproducible from that. Same for `data/bench/gatep6_run_launch.sh` (§5).
+
+## §5by. GAUNTLET L24 (2026-09-03 02:45-02:55) -- m2k read of the pressure-conditioned test run: BELOW gate05, 3 seeds
+
+**Context.** §5bx launched the test run (`gatep6`, one change vs gate05: `ppo_gate_prior_pressure_s: 6.0` with the
+schema-2 table). Pre-registered grade: `gate_prior_probe.py` seeds 0/1/2 at m2k vs gate05's 4.0/3.5/3.0% ≥6 share, bar
+at m5k = above gate05's m2k. This loop is the m2k read. Run state at the read: 2,350 episodes, 0.7 ep/s, 37W-1819L-2D,
+19 python processes; snapshot `scratchpad/gauntlet/L24/gatep6_m2k35.pt` (not in git), probe outputs
+`scratchpad/gauntlet/L24/probe_m2k35_s{0,1,2}.txt`.
+
+### 1. The read (a) -- same instrument as gate05's m2k (L11 `g05m2k_s*.txt`), 2,400 rows per seed
+| | gatep6 m2,350 s0/s1/s2 | gate05 m2,000 s0/s1/s2 (L11) | gate05 m5,000 (L16) |
+|---|---|---|---|
+| ≥6 elixir share | **0.9 / 0.8 / 0.5%** | 4.0 / 3.5 / 3.0% | 1.2 / 1.3 / 1.0% |
+| elixir mean | 2.21 / 2.26 / 2.18 | 2.57 / 2.64 / 2.57 | -- |
+| affordable rows | 33.0 / 35.5 / 32.5% | 41.0 / 45.2 / 43.7% | -- |
+| P(play \| affordable) | 0.340 / 0.327 / 0.350 | 0.228 / 0.233 / 0.227 | -- |
+| played rows | 11.3 / 10.6 / 11.7% | 10.0 / 9.5 / 10.7% | -- |
+| bucket-3 P(play) / played | 0.370/0.319, 0.359/0.282, 0.375/0.336 | 0.261/0.271 (s0) | -- |
+| bucket-4 P(play) / played | 0.292/0.321, 0.287/0.292, 0.310/0.302 | 0.179/0.117 (s0) | -- |
+Plays at ≥6 (s0): 6 of 271 (x_bow 3). Every seed of gatep6 is below every seed of gate05's m2k, and at or below gate05's
+m5k. The 350-episode offset does not rescue it: gate05 fell 4.0 -> 1.2 over 3,000 episodes, so ~3.7% would be the
+interpolated m2,350 value. Watchdog (its own instrument, one sample per reading): gatep6 rolling median 0.020 -> 0.002
+at m2,000; gate05 0.015 -> 0.008 at m1,700, 0.006 at m2,400. Both runs pass through ~2% early and fall; gatep6 faster.
+
+### 2. Mechanism (a for the numbers, b for the causal story)
+Trainer stat, cumulative over the first 5,000 updates, both runs (`GATE PRIOR CE` lines, same instrument):
+gate05 `pi(play) 0.258 vs prior 0.060 on the same rows | 12% usable`; gatep6 `pi(play) 0.217 vs prior 0.066 | 13% usable |
+PRESSURE on 50% of them`. (a) The conditioned target averages HIGHER on the sim's rows than the blend did (0.066 vs
+0.060): the sim opponent pressures 50% of usable rows vs the pros' 38% (single) and the pressure column of the table is
+2-3x the quiet column. (b) So the net pull-to-wait got WEAKER overall, and the stronger pull on quiet rows cannot bank
+because quiet windows in the sim are ~5 s median (§5bw.4) -- a 2->6 bank needs 11.2 s -- and the next pressure event
+licenses the spend at p=0.084-0.089 (buckets 3-4). The split is a licence to spend under the sim's cadence. Note the two
+eagerness readings disagree in direction (trainer cumulative pi(play) lower; probe P(play|aff) higher) -- different
+instruments, different row populations (training rows incl. search overrides vs a fixed probe scenario); the ≥6 share
+is the pre-registered outcome and it is unambiguous.
+
+### 3. What this does NOT establish
+* The m5k bar formally (that read is pre-registered; the run continues, ETA ~03:50). Passing it needs a 5x rise from
+  here; gate05's own trajectory never rose above 1% after m3k (watchdog 0.001 at m3,100, 0.29% at m7,250).
+* That W=6 is the problem (b). A longer W flags more rows as pressured (54% single at W=10), which makes it worse under
+  this mechanism, not better. A shorter W is untested.
+* That the conditioned table is wrong for PROS (it is the pros' own rule, n>=98 per cell). It is wrong for THIS
+  OPPONENT MODEL, which is the §5bw.4 caveat materialising.
+
+### 4. Decision and the owner question (re-posted, now with the mechanism)
+Ruling sequence (§6): diagnosis -> repair -> test run -> aggro wiring -> restart. The repair as specified (the ruling's
+dropped key) is built and, on this read, does not lift the ≥6 share. Paths from here, for the owner:
+(A) **opponent cadence** (the L22 question): bring the scripted opponent's troop-deploy rate toward the pros' (pressure
+38% of single windows, quiet median 9 s) -- a SEPARATE arm, then re-test the conditioned prior on top. This is the only
+path that attacks the measured mechanism. (B) **restart with gate05's blended table** (the better of the two at m2k,
+4.0/3.5/3.0 -> 1.2 at m5k) plus the aggro wiring, and accept ≥6 share ~1% as bounded by the opponent model. (C) a
+stronger coef on the CONDITIONED table (1.0-2.0) -- L22 rejected a stronger blend because it pulls hardest on pressured
+rows; the conditioned table does not have that flaw, but under a 50%-pressured sim the average target stays high and
+the mechanism in §2 still applies; my expectation is (b) it fails the same way. Recommendation: A, then re-test. If no
+answer by the m5k read, the run continues to m5k and stops there (pre-registered), and nothing new launches.
+
+### 5. Files
+`scratchpad/gauntlet/L24/probe_m2k35_s{0,1,2}.txt` (committed), `gatep6_m2k35.pt` (not in git).
 
