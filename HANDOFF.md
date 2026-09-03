@@ -22,7 +22,14 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-03 10:50**, branch `main` (**§5cf: GAUNTLET L32 -- PATH A FAILED ITS PRE-REGISTERED BAR. floor7_run
+Last updated: **2026-09-03 11:30**, branch `main` (**§5cg: GAUNTLET L33 -- OWNER RULED (10:5x): PATH C LAUNCHED 11:20 --
+`gatec2_run` = gatep6_run.yaml + `sim.ppo_gate_prior_coef: 2.0` (the ONE change; conditioned table `gate_prior_p6.json`,
+pressure_s 6.0, NO bot_attack_floor -- DEFERRED to after this run, not dropped: "the attack floor fundamentally changes how
+the bots behave"). Trainer confirms `GATE PRIOR ON: coef 2.000 ... PRESSURE key W=6 s`. Seed 41, from scratch, ckpt
+`data/policy_gatec2_20260903.pt`, log `data/bench/gatec2_run_20260903.log`, watchdog + gates up (19 python). Bars
+pre-registered in §5cg.2: m5k >=6 share above gatep6's 1.4/1.1/2.0 on 3 seeds (pass), above gate05's m2k 4.0/3.5/3.0
+(strong pass); caution guards = regret gate, drills pass, cell-head collapse. RUNNING NOW -- read §5cg before touching
+the box. Previous header follows.) (**§5cf: GAUNTLET L32 -- PATH A FAILED ITS PRE-REGISTERED BAR. floor7_run
 m5k (`data/bench/floor7_m5k.pt`, snapshot 10:18) reads >=6 share **0.7 / 0.9 / 0.5%** on the pre-registered probe against
 gate05's m5k 1.2/1.3/1.0 -- below on all three seeds, and DOWN from its own m2450 (1.2/1.3/0.5). The floor also REGRESSED the
 regret gate at the same match count (oracle 0.271 vs gate05's 0.2291, belief 0.2483 vs 0.2045) and killed defensive x-bow
@@ -2174,6 +2181,8 @@ slow one.
   -> L32 (§5cf): **PATH A FAILED.** m5k >=6 share 0.7/0.9/0.5 vs the bar 1.2/1.3/1.0, 3/3 seeds below, own trend DOWN from
      m2450. Regret gate regressed too (0.271/0.2483 vs 0.2291/0.2045 at the same count). Run stopped at m5950, ckpt kept.
      Next arm is C (stronger gate-prior coef) -- BLOCKED on one owner question: floor in or out of C (§5cf.5).
+  -> L33 (§5cg): OWNER RULED 10:5x -- C with coef 2.0, floor OUT of C and DEFERRED (not dropped). LAUNCHED 11:20
+     (`gatec2_run`, one change vs gatep6). Bars in §5cg.2; m2k screen ~12:25, m5k bar ~14:00 + eval.
 
 ### From §5bq (2026-09-02 22:10) -- spell niches, after the gate-prior run ends (sim reward = one change each)
 * **`nado_retarget` UNREACHABLE (c, §5bq.3):** sim/env.py:2472 and :2508 `tile_dist(u, tw) <= u.spec.reach + 1.0`
@@ -8715,4 +8724,56 @@ ride along inside a coef experiment.
 ### 7. Files
 `scratchpad/gauntlet/L32/{probe_m5k_s{0,1,2}.txt,.json}` (committed); `floor7_m5k.pt` copy (NOT in git);
 run log `data/bench/floor7_run_20260903.log`, gate report `data/bench/floor7_gate_report.md` (NOT in git).
+
+## §5cg. GAUNTLET L33 (2026-09-03 10:55-11:30) -- owner ruled; Path C LAUNCHED (`gatec2_run`: gate-prior coef 2.0, no floor)
+
+**The ruling (owner, 10:5x, verbatim).** "launch C with coef 2, since it's too underpowered currently. and strip the
+bot_attack_floor for now. defer the attack floor for after the path C run, since the attack floor fundamentally changes
+how the bots behave, which in turn affects the behaviors the model learns, so I'm hesitant to strip it permanently."
+So: coef 2.0 (owner-chosen; 4x gatep6's 0.5), the conditioned table as gatep6 ran it, floor deferred to its own later
+arm -- the floor's realism case (§5cd.1) stands, it is sequenced after C, not discarded.
+
+### 1. What launched (a)
+`data/bench/gatec2_run.yaml` = `gatep6_run.yaml` with exactly three lines changed (diff verified): `train.sim_ppo_checkpoint`
+-> `data/policy_gatec2_20260903.pt`, `train.continuation_log` -> `data/continuations_gatec2.jsonl`, and THE ONE CHANGE
+`sim.ppo_gate_prior_coef: 0.5 -> 2.0`. Loaded through `Config`: coef 2.0, path `config/gate_prior_p6.json`, pressure_s
+6.0, `bot_attack_floor` absent (= 0, the historical bot). `gatec2_run_launch.sh` = gatep6's with the names swapped (same
+CLI: `--matches 40000 --envs 96 --workers 12 --size 432 --device cuda --seed 41 --search-interval 4`, PYTHONHASHSEED=0,
+from scratch). Neither file is in git (`icebow/data/` gitignored); both reproducible from this paragraph.
+Box before: 1 python (Nucleo), 9.1 GB free, CPU 21%; after launch + monitors: 19 python (2 trainer + 12 workers + 2
+watchdog + 2 gates + Nucleo). Trainer's own confirmation line: `GATE PRIOR ON: coef 2.000, ...gate_prior_p6.json (519
+replays, dt 0.6 s; PRESSURE key W=6 s; single-elixir P(play) at 4/7/9 elixir quiet 0.039/0.028/0.178, pressure
+0.089/0.067/0.235)`; first CE line `pi(play) 0.495 vs prior 0.052 | 9% of rows usable | PRESSURE on 46%`. Monitors:
+`ppo_watchdog.py data/policy_gatec2_20260903.pt --every 300 --quiet-min 30` -> `gatec2_run_watchdog.out` (first health
+probe FileNotFoundError before the first ckpt write, same as floor7's -- expected); `real_run_gates.py --run
+gatec2_20260903` -> `gatec2_run_gates.out`, snapshots `data/bench/gatec2_m{5,10,20}k.pt`.
+
+### 2. Pre-registered reads and bars (written before any update line landed)
+Instrument = the ledger's: `gate_prior_probe.py <ckpt> --seed 0/1/2` (config.yaml env, non-adaptive floor-0 bots, gate
+sampled, 6 envs x 400 steps). Comparators are the same instrument's earlier reads, named by loop.
+* **m2k screen** (~12:25 at 0.5-0.6 ep/s): vs gatep6 m2350 0.9/0.8/0.5 (L24) and gate05 m2k 4.0/3.5/3.0 (L11). A screen
+  only -- m2k has false-negatived once (gatep6, §5bz.2).
+* **m5k bar** (~14:00 + the EVAL@4000 pause; gates snapshot `data/bench/gatec2_m5k.pt`): PASS = >=6 share above gatep6's
+  m5k 1.4/1.1/2.0 seed-by-seed (the coef moved the share against its one-change comparator). STRONG PASS = above
+  gate05's m2k 4.0/3.5/3.0 (a bank the pros would recognise, sustained to m5k for the first time). FAIL = neither.
+* **In-run signal, coef bites or not** (the trainer's cumulative `GATE PRIOR CE` line -- one instrument, its own curve):
+  gatep6 at 11.4k updates sat at pi(play) 0.242 vs prior 0.064 (§5bz.1); floor7 at 12.6k at 0.283 vs 0.057. If coef 2
+  bites, gatec2's pi(play) on usable rows should sit clearly below 0.24 by ~10k updates. If it does not move, the coef
+  is not the lever either and that is a result.
+* **Caution guards** (the owner's "with caution"): at m5k, on the gates instrument (same corpora as §5cf.3): regret
+  oracle vs gate05's 0.2291 / floor7's 0.271; drills pass-all vs gatep6's 35% (§5bz.1) / floor7's 45%; x-bow placement
+  split; deploy rate vs pro 11.7/min; watchdog CELL HEAD COLLAPSED alerts. A pass on the bar with a collapse on the
+  guards is reported as "the prior won by breaking the policy", not as a pass.
+* **On fail**: stop at m5k (record state first), and the next arm is the owner's call -- the candidates are coverage
+  (the term reaches 9-12% of rows; §5cf.6) and the deferred floor.
+* **On pass**: run continues to m10k (gate05 collapsed 1.17 -> 0.1-0.2 between m5k and m10k, so m10k is the durability
+  read), then becomes the base for the aggro flags in the owner's order (aggro_drills -> reach fix -> lock-aware), and
+  the floor returns as its own arm.
+
+### 3. What this does NOT establish
+* Anything about the policy (b): no update line had landed at the time of writing.
+* That 2.0 is the right coef (b): owner-chosen from the 5x gap; a sweep was offered and not taken, one value runs.
+
+### 4. Files
+`data/bench/gatec2_run.yaml`, `gatec2_run_launch.sh` (NOT in git); this section.
 

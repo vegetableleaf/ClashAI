@@ -662,3 +662,13 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - STOPPED ON A QUESTION: does C keep bot_attack_floor 7 (owner's cadence preference, carries the regret regression) or run clean
   (gatep6 + coef only, my recommendation)? HANDOFF §5cf.
 
+
+## L33 — 2026-09-03 10:55-11:30 | AGGRO gauntlet loop 17: owner ruled; Path C LAUNCHED (gatec2_run, coef 2.0, no floor)
+- Ruling 10:5x: coef 2.0; strip bot_attack_floor for C; floor DEFERRED to after C (owner hesitant to drop it permanently --
+  it changes what the bots do and therefore what the model learns).
+- LAUNCHED 11:20 from scratch: gatec2_run.yaml = gatep6_run.yaml + ppo_gate_prior_coef 0.5 -> 2.0 (one change; p6 table,
+  pressure_s 6.0, no floor), seed 41, ckpt data/policy_gatec2_20260903.pt; trainer prints GATE PRIOR ON coef 2.000; 19 python.
+- Pre-registered: m2k screen ~12:25 (vs gatep6 0.9/0.8/0.5, gate05 4.0/3.5/3.0); m5k bar ~14:00: PASS > gatep6's 1.4/1.1/2.0
+  per seed, STRONG > gate05 m2k 4.0/3.5/3.0; in-run: pi(play) on usable rows vs gatep6's 0.242 at 11k updates; caution
+  guards = regret / drills / x-bow split / deploy rate / cell-head alerts. HANDOFF §5cg.
+
