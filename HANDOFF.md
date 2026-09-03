@@ -22,7 +22,12 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-03 04:30**, branch `main` (**§5ca: GAUNTLET L26 -- aggro wiring BUILT behind two flags,
+Last updated: **2026-09-03 04:48**, branch `main` (**§5cb: GAUNTLET L27 -- LOCK-AWARE `predict_targets` built behind
+`observation.lock_aware_targets` (default off) and graded on the engine, 3 seeds x 12 matches, the SAME 60,599 unit-samples
+as L17: memoryless 74.2% (unchanged = the no-hint path is intact), engine-truth hints 95.8% (locked 81.5/80.6 -> 97.8/96.7,
+deploying 0 -> 100, buildings 25/16 -> 95/95), a LIVE-STYLE proxy (stationarity + range + track age, perfect tracker) 89.7%.
+The seam: live has no track memory, so the flag is a sim-to-real gap until a live tracker supplies the same hint. A/B/C still
+open; nothing running. Previous header follows.) (**§5ca: GAUNTLET L26 -- aggro wiring BUILT behind two flags,
 both OFF (39aa80b): `sim.aggro_drills` (lock-state drills in, the two old aggro drills out; OFF = the 29-drill gate05
 pool exactly, verified) and `env.nado_retarget_reach_fix` (the owner's reward bug; the credit is now reachable,
 unit-tested on the L16 board). `Scenario.noise` field. 83/83 tests. Box idle; A/B/C question still open; next =
@@ -2123,6 +2128,9 @@ slow one.
   -> L26 (§5ca): step 4 BUILT: `sim.aggro_drills` + `env.nado_retarget_reach_fix`, both default false. At the
      restart, turning either on is a change; both on = two changes (owner's call, §5ca.4). Grade: `gate_prior_probe.py` seeds 0/1/2 at m2k (gate05: >=6 share 4.0/3.5/3.0%,
      P(play|aff) 0.23) and m5k (gate05: 1.2/1.3/1.0%) + the L22 ledger. Bar: m5k >=6 share ABOVE gate05's m2k.
+  -> L27 (§5cb): the last aggro item BUILT: `observation.lock_aware_targets` (default false). Engine agreement 74.2 ->
+     95.8% with engine hints; a live-style proxy reaches 89.7%. Turning it on at the restart = a THIRD change (and a
+     sim-to-real seam until live carries the hint) -- owner's call, §5cb.4.
 
 ### From §5bq (2026-09-02 22:10) -- spell niches, after the gate-prior run ends (sim reward = one change each)
 * **`nado_retarget` UNREACHABLE (c, §5bq.3):** sim/env.py:2472 and :2508 `tile_dist(u, tw) <= u.spec.reach + 1.0`
@@ -8323,4 +8331,77 @@ ruling, nothing launches.
 Lock-aware `predict_targets` (obs predictor; §5bs/§5bu list: ENGAGED hint from `u.locked`+target, deploy-time
 no-target, building reach), graded by `scratchpad/gauntlet/L17/aggro_agreement.py` against the engine (locked 81%
 baseline from L17). Workers import it, so it is a stopped-window job -- now.
+  -> DONE L27 (§5cb): built + graded; flag `observation.lock_aware_targets`, default off.
+
+## §5cb. GAUNTLET L27 (2026-09-03 04:31-04:48) -- lock-aware `predict_targets`: built, flagged OFF, graded on the engine
+
+**Context.** The last unblocked aggro item (§5ca.5). The policy's only aggro concept is `interactions.predict_targets`
+(memoryless nearest-target), painted into the predictive canvas and the 12-dim interaction vector. L17 measured it against
+the engine's `Unit.target`: walking 96/93%, locked 81.5/80.6%, buildings 25/16%, deploying 0%, all 74.2%. This loop adds
+the state the frame does not carry. Box idle throughout (python = Nucleo only); nothing launched; commit below.
+
+### 1. What changed (all behind `hints=None` / a default-off flag)
+* `interactions.Hint(engaged, deploying)` (NamedTuple) and an optional `hints` argument on `predict_targets`,
+  `mover_forecast`, `interaction_vector`, `detect_obs.predictive_channels`. With `hints=None` the code path is the
+  historical one (the lock-aware block is skipped entirely). With hints: ENGAGED -> keep that target (an index into the
+  same `units` list or that side's towers; a dead tower / own-side index is ignored, not trusted); DEPLOYING -> no
+  target (forecast in place, urgency 0, no tower dim); a stationary BUILDING (not building-targeting) -> only what is
+  inside `attack_range_tiles + 1.0` (crown towers for `siege` only), else idle. Building targets were already inert on
+  both consumers (`interaction_vector` skips buildings; `mover_forecast` holds them in place), so that rule only fixes the
+  agreement number, not the obs.
+* `sim/view.interaction_state(..., hints=True)` returns a 4th element: per-unit hints read off the engine (`Unit.locked`
+  + `target`; `deploy_left > 0`). A locked target that the recall drop removed from `units` gives `engaged=None` (a
+  detector that missed the body cannot know the lock either). The 3-tuple form is untouched (opponents.py still uses it
+  for team 1 -- a policy opponent reads MEMORYLESS even with the flag on; wire it there too if self-play ever needs it).
+* `SimMatchEnv._interaction_state()` feeds the hints into both consumers when `observation.lock_aware_targets` is true
+  (config key added, default false). Sub-tick trap found on the way (not fixed, engine change): `deploy_left` counts down
+  by `sub_dt` 0.1 and `1.0 - 10*0.1` leaves 1.4e-16 > 0, so every 1.0 s deploy is 1.1 s in the sim -- one sub-tick, (b)
+  negligible, but it is why a team-0 unit is still "deploying" at its second 0.6 s sample.
+* Tests: `tests/test_lock_aware_targets.py` 6/6 (no-hint identity, engaged keeps the farther target, deploying no-target,
+  building idle / siege in reach, engine hints aligned on a real locked board, flag gates the obs). Regression over the
+  touched modules 45/45 (1 pre-existing config skip).
+
+### 2. The grade (a) -- `scratchpad/gauntlet/L27/lockaware_agreement.py`, gate05 m5k (L16 ckpt), 12 matches x seeds 0/1/2
+Three reads on the SAME unit-samples (60,599 = L17's count exactly, so the no-hint path is intact by construction):
+| state (team0 / team1) | n | memoryless (= L17) | engine-truth hints | live-style PROXY |
+|---|---|---|---|---|
+| walking | 17,154 / 13,024 | 96.2 / 93.0 | 96.2 / 93.0 | 96.2 / 84.4 |
+| locked | 6,015 / 8,253 | 81.5 / 80.6 | **97.8 / 96.7** | 84.9 / 82.2 |
+| deploying | 2,987 / 2,490 | 0.0 / 0.0 | **100 / 100** | 100 / 100 |
+| building | 5,345 / 1,914 | 25.0 / 15.6 | **95.1 / 94.8** | 90.6 / 86.4 |
+| bld_only (hog etc.) | -- / 3,417 | -- / 92.7 | -- / 92.9 | -- / 87.7 |
+| ALL | 60,599 | 74.2 | **95.8** | 89.7 |
+Per-seed truth: locked 98.2/97.0/98.0 (t0), 96.9/96.0/97.3 (t1); the spread is < 1.3 pp on every row. Residuals with
+truth hints: `walking|pred=tower|eng=unit` 571 + `walking|pred=unit|eng=tower` 296 (the engine's "only a CLOSER foe
+steals a walking unit" rule + its 1.8x sight hysteresis -- memory the frame does not have), `building|pred=unit|eng=none`
+295 (the +1.0 slack over-reaches; the engine measures to the hitbox edge), `locked|pred=tower|eng=unit` 241 (target dead
+this tick, re-pick next tick).
+The PROXY = what a live tracker could produce with no engine access: engaged = did not move over the last 0.6 s sample
+AND nearest attackable foe/tower inside attack range + slack; deploying = new track, or age < deploy_time - 0.3 s. It
+assumes a perfect tracker (identity across frames), which live does not have (detections are per-frame, no track age --
+`env.py` builds `units` straight from `_last_dets_all`). Stationarity is a WEAK lock signal at 0.6 s cadence: locked
++3.4/+1.6 pp only, and the deploy rule over-extends by one sample for the opponent's sub-step drops (team-1 walking
+93.0 -> 84.4). So the live ceiling of this design is ~90%, most of it from deploy-time and building reach, not from
+the lock itself.
+
+### 3. What this does NOT establish
+* That the policy plays better with the hint (b). Agreement is the instrument for "the obs tells the truth"; the
+  training effect needs a run with the flag on (one change) and the aggro drills (`tank_for_bow`, `bow_lane_choice`,
+  `nado_king_activation`) as the grade -- they are the drills whose answers depend on who locks what.
+* That live can supply the hint (b). Today it cannot; a tracker (identity + age + stationarity) is a live-path change
+  and out of this gauntlet's scope. Until it exists, `lock_aware_targets: true` trains the policy on an obs live will
+  not reproduce: locked units that live paints as re-targeting to the nearest body, deploying units that live paints
+  as already marching. A policy trained memoryless (every ckpt so far) has no such seam.
+* The proxy numbers are a CEILING (perfect tracker), not a live measurement.
+
+### 4. Bookkeeping for the restart (owner's call, with §5ca.4)
+Three built, default-off changes now wait: `sim.aggro_drills`, `env.nado_retarget_reach_fix`, `observation.lock_aware_targets`.
+One change per experiment says: aggro_drills first (grades the aggro skills directly), reach fix next, lock-aware last --
+and lock-aware only once the live seam is decided (sim-only is a deliberate sim-to-real gap; the honest alternative is
+to build the live tracker first and feed BOTH sides the proxy hint, sim-side too, so train and live see the same 89.7%
+instrument). A/B/C (§5by.4) still open; nothing launches until it is answered.
+
+### 5. Files
+`icebow/src/clashrl/interactions.py`, `sim/view.py`, `sim/env.py`, `detect_obs.py`, `config/config.yaml`,
+`icebow/tests/test_lock_aware_targets.py`, `scratchpad/gauntlet/L27/lockaware_agreement.py`, `lockaware_m5k.{json,txt}`.
 

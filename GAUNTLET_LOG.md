@@ -597,3 +597,15 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - `Scenario.noise` field replaces the `_no_distractors` hook. 83/83 tests across the touched modules. Box idle. A/B/C open.
 - Next: lock-aware `predict_targets` graded by aggro_agreement.py (stopped-window job). HANDOFF §5ca.
 
+
+## L27 — 2026-09-03 04:31-04:48 | AGGRO gauntlet loop 11: lock-aware predict_targets built (flag OFF) and graded
+- Built: `interactions.Hint(engaged, deploying)` + optional `hints` on predict_targets/mover_forecast/interaction_vector/
+  predictive_channels; `view.interaction_state(hints=True)` reads Unit.locked/target + deploy_left; `observation.lock_aware_targets`
+  (default false) feeds it into the sim obs. 6 new tests, 45/45 across touched modules.
+- (a) engine agreement, gate05 m5k, 12 matches x 3 seeds, SAME 60,599 samples as L17: memoryless 74.2% (unchanged), engine-truth
+  hints 95.8% (locked 81.5/80.6 -> 97.8/96.7, deploying 0 -> 100, buildings 25/16 -> 95/95), live-style proxy 89.7%.
+- (b) live has no track memory (per-frame detections), so the flag is a sim-to-real seam; proxy = ceiling with a perfect tracker.
+- Trap: engine `deploy_left` float residue makes every 1.0 s deploy 1.1 s (one sub-tick). Not fixed (engine change).
+- Three default-off changes now wait for the restart; recommended order aggro_drills -> reach fix -> lock-aware (after the live
+  seam is decided). A/B/C still open. Nothing running. HANDOFF §5cb.
+

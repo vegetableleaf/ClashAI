@@ -214,6 +214,10 @@ observation:
   # recall-noise scoped); LIVE from the detector's tagged tracks. Flipping this WIDENS threat_dim (+12 ->
   # 46 with the detector blocks) = a FRESH train-sim + re-label, so flip it at the NEXT from-scratch run.
   use_interactions: true
+  lock_aware_targets: false  # HANDOFF §5cb: true = the sim's interaction vector + predictive canvas use the
+                             # LOCK-AWARE predictor (engine lock state, deploy time, building reach). LIVE has
+                             # no track memory today, so this is a sim-to-real seam until live supplies the
+                             # same hint (interactions.Hint). false = the memoryless read every ckpt was trained on.
   # CANONICAL RGB LIVE (2026-08-15). The image branch is rebuilt from OUR OWN detections in the
   # sim's palette instead of showing the real game pixels, so sim / BC-replay / live all present
   # ONE distribution to the conv trunk. Measured motivation: the same checkpoint never used

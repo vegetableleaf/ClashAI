@@ -1,0 +1,696 @@
+[
+ {
+  "ckpt": "../scratchpad/gauntlet/L16/gate05_m5k.pt",
+  "matches": 12,
+  "seed": 0,
+  "samples": 20766,
+  "agree_by_state": {
+   "memoryless": {
+    "team0/building": [
+     437,
+     1858,
+     23.5
+    ],
+    "team0/deploying": [
+     0,
+     1047,
+     0.0
+    ],
+    "team0/locked": [
+     1871,
+     2306,
+     81.1
+    ],
+    "team0/walking": [
+     5862,
+     6110,
+     95.9
+    ],
+    "team1/bld_only": [
+     1308,
+     1416,
+     92.4
+    ],
+    "team1/building": [
+     155,
+     820,
+     18.9
+    ],
+    "team1/deploying": [
+     0,
+     858,
+     0.0
+    ],
+    "team1/locked": [
+     2005,
+     2451,
+     81.8
+    ],
+    "team1/walking": [
+     3638,
+     3900,
+     93.3
+    ]
+   },
+   "truth": {
+    "team0/building": [
+     1777,
+     1858,
+     95.6
+    ],
+    "team0/deploying": [
+     1047,
+     1047,
+     100.0
+    ],
+    "team0/locked": [
+     2265,
+     2306,
+     98.2
+    ],
+    "team0/walking": [
+     5862,
+     6110,
+     95.9
+    ],
+    "team1/bld_only": [
+     1316,
+     1416,
+     92.9
+    ],
+    "team1/building": [
+     769,
+     820,
+     93.8
+    ],
+    "team1/deploying": [
+     858,
+     858,
+     100.0
+    ],
+    "team1/locked": [
+     2376,
+     2451,
+     96.9
+    ],
+    "team1/walking": [
+     3638,
+     3900,
+     93.3
+    ]
+   },
+   "proxy": {
+    "team0/building": [
+     1705,
+     1858,
+     91.8
+    ],
+    "team0/deploying": [
+     1047,
+     1047,
+     100.0
+    ],
+    "team0/locked": [
+     1966,
+     2306,
+     85.3
+    ],
+    "team0/walking": [
+     5862,
+     6110,
+     95.9
+    ],
+    "team1/bld_only": [
+     1265,
+     1416,
+     89.3
+    ],
+    "team1/building": [
+     637,
+     820,
+     77.7
+    ],
+    "team1/deploying": [
+     858,
+     858,
+     100.0
+    ],
+    "team1/locked": [
+     2033,
+     2451,
+     82.9
+    ],
+    "team1/walking": [
+     3288,
+     3900,
+     84.3
+    ]
+   }
+  },
+  "confusion": {
+   "memoryless": {
+    "bld_only|pred=tower|eng=none": 2,
+    "bld_only|pred=tower|eng=tower": 1130,
+    "bld_only|pred=unit|eng=none": 10,
+    "bld_only|pred=unit|eng=tower": 92,
+    "bld_only|pred=unit|eng=unit": 182,
+    "building|pred=tower|eng=none": 1750,
+    "building|pred=tower|eng=tower": 51,
+    "building|pred=tower|eng=unit": 117,
+    "building|pred=unit|eng=none": 38,
+    "building|pred=unit|eng=tower": 141,
+    "building|pred=unit|eng=unit": 581,
+    "deploying|pred=tower|eng=none": 1198,
+    "deploying|pred=unit|eng=none": 707,
+    "locked|pred=tower|eng=tower": 515,
+    "locked|pred=tower|eng=unit": 264,
+    "locked|pred=unit|eng=tower": 291,
+    "locked|pred=unit|eng=unit": 3687,
+    "walking|pred=tower|eng=none": 5,
+    "walking|pred=tower|eng=tower": 7629,
+    "walking|pred=tower|eng=unit": 202,
+    "walking|pred=unit|eng=none": 24,
+    "walking|pred=unit|eng=tower": 116,
+    "walking|pred=unit|eng=unit": 2034
+   },
+   "truth": {
+    "bld_only|pred=tower|eng=none": 2,
+    "bld_only|pred=tower|eng=tower": 1138,
+    "bld_only|pred=unit|eng=none": 10,
+    "bld_only|pred=unit|eng=tower": 84,
+    "bld_only|pred=unit|eng=unit": 182,
+    "building|pred=none|eng=none": 1684,
+    "building|pred=none|eng=unit": 19,
+    "building|pred=tower|eng=tower": 192,
+    "building|pred=unit|eng=none": 104,
+    "building|pred=unit|eng=unit": 679,
+    "deploying|pred=none|eng=none": 1905,
+    "locked|pred=tower|eng=tower": 806,
+    "locked|pred=tower|eng=unit": 66,
+    "locked|pred=unit|eng=unit": 3885,
+    "walking|pred=tower|eng=none": 5,
+    "walking|pred=tower|eng=tower": 7629,
+    "walking|pred=tower|eng=unit": 202,
+    "walking|pred=unit|eng=none": 24,
+    "walking|pred=unit|eng=tower": 116,
+    "walking|pred=unit|eng=unit": 2034
+   },
+   "proxy": {
+    "bld_only|pred=none|eng=none": 12,
+    "bld_only|pred=none|eng=tower": 58,
+    "bld_only|pred=none|eng=unit": 10,
+    "bld_only|pred=tower|eng=tower": 1085,
+    "bld_only|pred=unit|eng=tower": 79,
+    "bld_only|pred=unit|eng=unit": 172,
+    "building|pred=none|eng=none": 1687,
+    "building|pred=none|eng=tower": 10,
+    "building|pred=none|eng=unit": 35,
+    "building|pred=tower|eng=tower": 37,
+    "building|pred=unit|eng=none": 101,
+    "building|pred=unit|eng=tower": 145,
+    "building|pred=unit|eng=unit": 663,
+    "deploying|pred=none|eng=none": 1905,
+    "locked|pred=none|eng=tower": 5,
+    "locked|pred=none|eng=unit": 116,
+    "locked|pred=tower|eng=tower": 573,
+    "locked|pred=tower|eng=unit": 99,
+    "locked|pred=unit|eng=tower": 228,
+    "locked|pred=unit|eng=unit": 3736,
+    "walking|pred=none|eng=none": 12,
+    "walking|pred=none|eng=tower": 241,
+    "walking|pred=none|eng=unit": 160,
+    "walking|pred=tower|eng=none": 2,
+    "walking|pred=tower|eng=tower": 7388,
+    "walking|pred=tower|eng=unit": 183,
+    "walking|pred=unit|eng=none": 15,
+    "walking|pred=unit|eng=tower": 116,
+    "walking|pred=unit|eng=unit": 1893
+   }
+  },
+  "wall_s": 36.4
+ },
+ {
+  "ckpt": "../scratchpad/gauntlet/L16/gate05_m5k.pt",
+  "matches": 12,
+  "seed": 1,
+  "samples": 22303,
+  "agree_by_state": {
+   "memoryless": {
+    "team0/building": [
+     580,
+     1924,
+     30.1
+    ],
+    "team0/deploying": [
+     1,
+     1036,
+     0.1
+    ],
+    "team0/locked": [
+     1532,
+     1855,
+     82.6
+    ],
+    "team0/walking": [
+     5549,
+     5650,
+     98.2
+    ],
+    "team1/bld_only": [
+     1167,
+     1255,
+     93.0
+    ],
+    "team1/building": [
+     80,
+     402,
+     19.9
+    ],
+    "team1/deploying": [
+     0,
+     1043,
+     0.0
+    ],
+    "team1/locked": [
+     2660,
+     3260,
+     81.6
+    ],
+    "team1/walking": [
+     5455,
+     5878,
+     92.8
+    ]
+   },
+   "truth": {
+    "team0/building": [
+     1819,
+     1924,
+     94.5
+    ],
+    "team0/deploying": [
+     1035,
+     1036,
+     99.9
+    ],
+    "team0/locked": [
+     1800,
+     1855,
+     97.0
+    ],
+    "team0/walking": [
+     5549,
+     5650,
+     98.2
+    ],
+    "team1/bld_only": [
+     1167,
+     1255,
+     93.0
+    ],
+    "team1/building": [
+     381,
+     402,
+     94.8
+    ],
+    "team1/deploying": [
+     1043,
+     1043,
+     100.0
+    ],
+    "team1/locked": [
+     3131,
+     3260,
+     96.0
+    ],
+    "team1/walking": [
+     5455,
+     5878,
+     92.8
+    ]
+   },
+   "proxy": {
+    "team0/building": [
+     1738,
+     1924,
+     90.3
+    ],
+    "team0/deploying": [
+     1035,
+     1036,
+     99.9
+    ],
+    "team0/locked": [
+     1569,
+     1855,
+     84.6
+    ],
+    "team0/walking": [
+     5548,
+     5650,
+     98.2
+    ],
+    "team1/bld_only": [
+     1071,
+     1255,
+     85.3
+    ],
+    "team1/building": [
+     368,
+     402,
+     91.5
+    ],
+    "team1/deploying": [
+     1043,
+     1043,
+     100.0
+    ],
+    "team1/locked": [
+     2673,
+     3260,
+     82.0
+    ],
+    "team1/walking": [
+     4898,
+     5878,
+     83.3
+    ]
+   }
+  },
+  "confusion": {
+   "memoryless": {
+    "bld_only|pred=tower|eng=none": 2,
+    "bld_only|pred=tower|eng=tower": 998,
+    "bld_only|pred=tower|eng=unit": 5,
+    "bld_only|pred=unit|eng=none": 1,
+    "bld_only|pred=unit|eng=tower": 74,
+    "bld_only|pred=unit|eng=unit": 175,
+    "building|pred=tower|eng=none": 1508,
+    "building|pred=tower|eng=tower": 81,
+    "building|pred=tower|eng=unit": 72,
+    "building|pred=unit|eng=none": 8,
+    "building|pred=unit|eng=tower": 30,
+    "building|pred=unit|eng=unit": 627,
+    "deploying|pred=tower|eng=none": 1149,
+    "deploying|pred=unit|eng=none": 929,
+    "deploying|pred=unit|eng=unit": 1,
+    "locked|pred=tower|eng=tower": 732,
+    "locked|pred=tower|eng=unit": 240,
+    "locked|pred=unit|eng=tower": 395,
+    "locked|pred=unit|eng=unit": 3748,
+    "walking|pred=tower|eng=none": 6,
+    "walking|pred=tower|eng=tower": 8736,
+    "walking|pred=tower|eng=unit": 214,
+    "walking|pred=unit|eng=none": 43,
+    "walking|pred=unit|eng=tower": 79,
+    "walking|pred=unit|eng=unit": 2450
+   },
+   "truth": {
+    "bld_only|pred=tower|eng=none": 2,
+    "bld_only|pred=tower|eng=tower": 998,
+    "bld_only|pred=tower|eng=unit": 5,
+    "bld_only|pred=unit|eng=none": 1,
+    "bld_only|pred=unit|eng=tower": 74,
+    "bld_only|pred=unit|eng=unit": 175,
+    "building|pred=none|eng=none": 1409,
+    "building|pred=none|eng=unit": 5,
+    "building|pred=tower|eng=tower": 111,
+    "building|pred=tower|eng=unit": 1,
+    "building|pred=unit|eng=none": 107,
+    "building|pred=unit|eng=unit": 693,
+    "deploying|pred=none|eng=none": 2078,
+    "deploying|pred=none|eng=unit": 1,
+    "locked|pred=tower|eng=tower": 1127,
+    "locked|pred=tower|eng=unit": 114,
+    "locked|pred=unit|eng=unit": 3874,
+    "walking|pred=tower|eng=none": 6,
+    "walking|pred=tower|eng=tower": 8736,
+    "walking|pred=tower|eng=unit": 214,
+    "walking|pred=unit|eng=none": 43,
+    "walking|pred=unit|eng=tower": 79,
+    "walking|pred=unit|eng=unit": 2450
+   },
+   "proxy": {
+    "bld_only|pred=none|eng=none": 3,
+    "bld_only|pred=none|eng=tower": 93,
+    "bld_only|pred=none|eng=unit": 16,
+    "bld_only|pred=tower|eng=tower": 914,
+    "bld_only|pred=tower|eng=unit": 5,
+    "bld_only|pred=unit|eng=tower": 65,
+    "bld_only|pred=unit|eng=unit": 159,
+    "building|pred=none|eng=none": 1411,
+    "building|pred=none|eng=tower": 14,
+    "building|pred=none|eng=unit": 13,
+    "building|pred=tower|eng=tower": 62,
+    "building|pred=tower|eng=unit": 1,
+    "building|pred=unit|eng=none": 105,
+    "building|pred=unit|eng=tower": 35,
+    "building|pred=unit|eng=unit": 685,
+    "deploying|pred=none|eng=none": 2078,
+    "deploying|pred=none|eng=unit": 1,
+    "locked|pred=none|eng=tower": 10,
+    "locked|pred=none|eng=unit": 193,
+    "locked|pred=tower|eng=tower": 855,
+    "locked|pred=tower|eng=unit": 135,
+    "locked|pred=unit|eng=tower": 262,
+    "locked|pred=unit|eng=unit": 3660,
+    "walking|pred=none|eng=none": 46,
+    "walking|pred=none|eng=tower": 334,
+    "walking|pred=none|eng=unit": 317,
+    "walking|pred=tower|eng=tower": 8403,
+    "walking|pred=tower|eng=unit": 178,
+    "walking|pred=unit|eng=none": 3,
+    "walking|pred=unit|eng=tower": 78,
+    "walking|pred=unit|eng=unit": 2169
+   }
+  },
+  "wall_s": 36.1
+ },
+ {
+  "ckpt": "../scratchpad/gauntlet/L16/gate05_m5k.pt",
+  "matches": 12,
+  "seed": 2,
+  "samples": 17530,
+  "agree_by_state": {
+   "memoryless": {
+    "team0/building": [
+     320,
+     1563,
+     20.5
+    ],
+    "team0/deploying": [
+     0,
+     904,
+     0.0
+    ],
+    "team0/locked": [
+     1501,
+     1854,
+     81.0
+    ],
+    "team0/walking": [
+     5088,
+     5394,
+     94.3
+    ],
+    "team1/bld_only": [
+     693,
+     746,
+     92.9
+    ],
+    "team1/building": [
+     64,
+     692,
+     9.2
+    ],
+    "team1/deploying": [
+     0,
+     589,
+     0.0
+    ],
+    "team1/locked": [
+     1983,
+     2542,
+     78.0
+    ],
+    "team1/walking": [
+     3019,
+     3246,
+     93.0
+    ]
+   },
+   "truth": {
+    "team0/building": [
+     1489,
+     1563,
+     95.3
+    ],
+    "team0/deploying": [
+     904,
+     904,
+     100.0
+    ],
+    "team0/locked": [
+     1817,
+     1854,
+     98.0
+    ],
+    "team0/walking": [
+     5088,
+     5394,
+     94.3
+    ],
+    "team1/bld_only": [
+     693,
+     746,
+     92.9
+    ],
+    "team1/building": [
+     664,
+     692,
+     96.0
+    ],
+    "team1/deploying": [
+     589,
+     589,
+     100.0
+    ],
+    "team1/locked": [
+     2473,
+     2542,
+     97.3
+    ],
+    "team1/walking": [
+     3019,
+     3246,
+     93.0
+    ]
+   },
+   "proxy": {
+    "team0/building": [
+     1397,
+     1563,
+     89.4
+    ],
+    "team0/deploying": [
+     904,
+     904,
+     100.0
+    ],
+    "team0/locked": [
+     1574,
+     1854,
+     84.9
+    ],
+    "team0/walking": [
+     5088,
+     5394,
+     94.3
+    ],
+    "team1/bld_only": [
+     662,
+     746,
+     88.7
+    ],
+    "team1/building": [
+     649,
+     692,
+     93.8
+    ],
+    "team1/deploying": [
+     589,
+     589,
+     100.0
+    ],
+    "team1/locked": [
+     2078,
+     2542,
+     81.7
+    ],
+    "team1/walking": [
+     2800,
+     3246,
+     86.3
+    ]
+   }
+  },
+  "confusion": {
+   "memoryless": {
+    "bld_only|pred=tower|eng=tower": 637,
+    "bld_only|pred=tower|eng=unit": 3,
+    "bld_only|pred=unit|eng=tower": 48,
+    "bld_only|pred=unit|eng=unit": 58,
+    "building|pred=tower|eng=none": 1667,
+    "building|pred=tower|eng=tower": 19,
+    "building|pred=tower|eng=unit": 48,
+    "building|pred=unit|eng=none": 69,
+    "building|pred=unit|eng=tower": 55,
+    "building|pred=unit|eng=unit": 397,
+    "deploying|pred=tower|eng=none": 845,
+    "deploying|pred=unit|eng=none": 648,
+    "locked|pred=tower|eng=tower": 534,
+    "locked|pred=tower|eng=unit": 280,
+    "locked|pred=unit|eng=tower": 355,
+    "locked|pred=unit|eng=unit": 3227,
+    "walking|pred=tower|eng=none": 5,
+    "walking|pred=tower|eng=tower": 6763,
+    "walking|pred=tower|eng=unit": 155,
+    "walking|pred=unit|eng=none": 23,
+    "walking|pred=unit|eng=tower": 101,
+    "walking|pred=unit|eng=unit": 1593
+   },
+   "truth": {
+    "bld_only|pred=tower|eng=tower": 637,
+    "bld_only|pred=tower|eng=unit": 3,
+    "bld_only|pred=unit|eng=tower": 48,
+    "bld_only|pred=unit|eng=unit": 58,
+    "building|pred=none|eng=none": 1652,
+    "building|pred=none|eng=unit": 7,
+    "building|pred=tower|eng=tower": 73,
+    "building|pred=unit|eng=none": 84,
+    "building|pred=unit|eng=tower": 1,
+    "building|pred=unit|eng=unit": 438,
+    "deploying|pred=none|eng=none": 1493,
+    "locked|pred=tower|eng=tower": 889,
+    "locked|pred=tower|eng=unit": 61,
+    "locked|pred=unit|eng=unit": 3446,
+    "walking|pred=tower|eng=none": 5,
+    "walking|pred=tower|eng=tower": 6763,
+    "walking|pred=tower|eng=unit": 155,
+    "walking|pred=unit|eng=none": 23,
+    "walking|pred=unit|eng=tower": 101,
+    "walking|pred=unit|eng=unit": 1593
+   },
+   "proxy": {
+    "bld_only|pred=none|eng=tower": 34,
+    "bld_only|pred=none|eng=unit": 6,
+    "bld_only|pred=tower|eng=tower": 609,
+    "bld_only|pred=tower|eng=unit": 2,
+    "bld_only|pred=unit|eng=tower": 42,
+    "bld_only|pred=unit|eng=unit": 53,
+    "building|pred=none|eng=none": 1652,
+    "building|pred=none|eng=tower": 12,
+    "building|pred=none|eng=unit": 18,
+    "building|pred=unit|eng=none": 84,
+    "building|pred=unit|eng=tower": 62,
+    "building|pred=unit|eng=unit": 427,
+    "deploying|pred=none|eng=none": 1493,
+    "locked|pred=none|eng=tower": 1,
+    "locked|pred=none|eng=unit": 124,
+    "locked|pred=tower|eng=tower": 641,
+    "locked|pred=tower|eng=unit": 105,
+    "locked|pred=unit|eng=tower": 247,
+    "locked|pred=unit|eng=unit": 3278,
+    "walking|pred=none|eng=none": 22,
+    "walking|pred=none|eng=tower": 162,
+    "walking|pred=none|eng=unit": 97,
+    "walking|pred=tower|eng=tower": 6602,
+    "walking|pred=tower|eng=unit": 143,
+    "walking|pred=unit|eng=none": 6,
+    "walking|pred=unit|eng=tower": 100,
+    "walking|pred=unit|eng=unit": 1508
+   }
+  },
+  "wall_s": 32.8
+ }
+]

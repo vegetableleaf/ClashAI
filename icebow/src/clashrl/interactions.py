@@ -18,7 +18,7 @@ approximation a human makes at a glance.
 from __future__ import annotations
 
 import math
-from typing import List, Optional, Sequence, Tuple
+from typing import List, NamedTuple, Optional, Sequence, Tuple
 
 import numpy as np
 
@@ -44,14 +44,38 @@ Tower = Tuple[float, float, bool]             # (x, y, alive)
 Target = Tuple[Optional[str], int, float]     # (kind 'unit'|'tower'|None, index, distance)
 
 
+class Hint(NamedTuple):
+    """Per-unit LOCK-STATE hint for :func:`predict_targets` (HANDOFF §5bs / §5cb). The memoryless
+    nearest-target rule is right 93-96% of the time for a WALKING unit but only ~81% for one that is
+    already SWINGING (CR aggro is sticky: a locked unit keeps its target until it dies or an aggro
+    reset), and 0% for a unit still in its deploy time (it has no target yet). Both facts are state
+    the caller may know and the frame does not: the sim reads them off the engine (``Unit.locked`` /
+    ``deploy_left``); live would read them off a track (stationary next to a foe / track age).
+    ``engaged`` = ("unit", j) | ("tower", k), an index into the SAME ``units`` / that side's towers
+    list the predictor is given; None = not known to be swinging."""
+    engaged: Optional[Tuple[str, int]] = None
+    deploying: bool = False
+
+
+_NO_HINT = Hint()
+
+
 def predict_targets(units: Sequence[Unit], my_towers: Sequence[Tower],
-                    enemy_towers: Sequence[Tower], db) -> List[Target]:
+                    enemy_towers: Sequence[Tower], db,
+                    hints: Optional[Sequence[Optional[Hint]]] = None) -> List[Target]:
     """Predicted target per unit, by CR's targeting rules with the unit's OWN sight/aggro radius
     (db.sight_range_tiles: most troops 5.5 tiles, PEKKA-class 5.0, building-seekers 7-7.7, Hog/Royal
     Hogs/Princess 9.5 -- opposite lanes are ~9-10 tiles apart, hence lane-ignoring marches).
     ``my_towers``/``enemy_towers`` are each the 3 (x, y, alive) towers of that side in the SAME frame
-    as the units ('mine' units attack toward ``enemy_towers`` and vice versa). Spells get (None, -1, 0)."""
+    as the units ('mine' units attack toward ``enemy_towers`` and vice versa). Spells get (None, -1, 0).
+
+    ``hints`` (optional, aligned with ``units``) switches on the LOCK-AWARE model: a unit whose hint
+    says it is ENGAGED keeps that target (sticky aggro), a DEPLOYING unit has no target, and a
+    stationary BUILDING only targets what is inside its attack range (crown towers for siege only)
+    instead of "the nearest tower" it can never reach. ``hints=None`` is the memoryless model,
+    byte-for-byte the historical output (every shipped checkpoint was trained on it)."""
     out: List[Target] = []
+    lock_aware = hints is not None
     for i, (team, base, x, y) in enumerate(units):
         p = card_threat.profile(db, base)
         if p.spell:
@@ -60,6 +84,41 @@ def predict_targets(units: Sequence[Unit], my_towers: Sequence[Tower],
         foe_team = "enemy" if team == "mine" else "mine"
         towers = enemy_towers if team == "mine" else my_towers
         best: Optional[Target] = None
+        if lock_aware:
+            h = hints[i] or _NO_HINT
+            if h.deploying:                           # still in deploy time: no target yet
+                out.append((None, -1, 0.0))
+                continue
+            eng = h.engaged
+            if eng is not None:                       # swinging: nothing else exists until it dies
+                ek, ej = eng
+                if ek == "unit" and 0 <= ej < len(units) and units[ej][0] == foe_team:
+                    out.append(("unit", ej, _tdist(x, y, units[ej][2], units[ej][3])))
+                    continue
+                if ek == "tower" and 0 <= ej < len(towers) and towers[ej][2]:
+                    out.append(("tower", ej, _tdist(x, y, towers[ej][0], towers[ej][1])))
+                    continue
+            if p.kind == "building" and not p.building_targeting:
+                # A building cannot walk: nothing inside its arms -> it sits idle (no target), it
+                # does not "march at the nearest tower". Range is centre-to-EDGE in the engine; the
+                # frame has no hitbox radii, so +1.0 tile of slack stands in for the target's body.
+                reach = float(db.attack_range_tiles(base)) + 1.0
+                for j, (ft, fb, fx, fy) in enumerate(units):
+                    if ft != foe_team:
+                        continue
+                    fp = card_threat.profile(db, fb)
+                    if fp.spell or (fp.flying and not p.attacks_air):
+                        continue
+                    d = _tdist(x, y, fx, fy)
+                    if d <= reach and (best is None or d < best[2]):
+                        best = ("unit", j, d)
+                if p.siege:
+                    for k, (tx, ty, alive) in enumerate(towers):
+                        d = _tdist(x, y, tx, ty)
+                        if alive and d <= reach and (best is None or d < best[2]):
+                            best = ("tower", k, d)
+                out.append(best if best is not None else (None, -1, 0.0))
+                continue
         if p.building_targeting:                      # ignores troops: nearest enemy BUILDING unit...
             for j, (ft, fb, fx, fy) in enumerate(units):
                 if ft != foe_team or card_threat.profile(db, fb).kind != "building":
@@ -97,17 +156,18 @@ def predict_targets(units: Sequence[Unit], my_towers: Sequence[Tower],
 
 def mover_forecast(units: Sequence[Unit], my_towers: Sequence[Tower],
                    enemy_towers: Sequence[Tower], db,
-                   dt_s: float = 1.0, horizon_s: float = 8.0) -> List[Tuple[float, float, float]]:
+                   dt_s: float = 1.0, horizon_s: float = 8.0,
+                   hints: Optional[Sequence[Optional[Hint]]] = None) -> List[Tuple[float, float, float]]:
     """Per-unit short-term forecast from the SAME deterministic targeting rules:
     ``(px, py, urgency)`` -- the unit dead-reckoned ``dt_s`` seconds along the line to its
     predicted target at its KB speed (clamped at the target), and urgency in [0, 1] =
     ``1 - eta/horizon_s`` (how soon it reaches what it is heading for). Spells, buildings and
     idle units forecast in place with urgency 0. Dual-source: the same pure function runs on
     the sim's ground-truth units and on live detector tracks -- prediction the policy does
-    not have to learn from pixels."""
+    not have to learn from pixels. ``hints`` -> the lock-aware :func:`predict_targets`."""
     out: List[Tuple[float, float, float]] = []
     for (team, base, x, y), (kind, k, dist) in zip(units, predict_targets(units, my_towers,
-                                                                          enemy_towers, db)):
+                                                                          enemy_towers, db, hints)):
         p = card_threat.profile(db, base)
         c = db.get(base) or {}
         spd = _SPEED.get(c.get("speed"), 1.0)
@@ -133,14 +193,16 @@ def mover_forecast(units: Sequence[Unit], my_towers: Sequence[Tower],
 
 def interaction_vector(units: Sequence[Unit], my_towers: Sequence[Tower],
                        enemy_towers: Sequence[Tower], db,
-                       value_norm: float = 8.0, eta_norm: float = 10.0) -> np.ndarray:
+                       value_norm: float = 8.0, eta_norm: float = 10.0,
+                       hints: Optional[Sequence[Optional[Hint]]] = None) -> np.ndarray:
     """The policy-facing 12-dim TOWER-PRESSURE summary. dims [0..5] = per MY tower (L, R, king):
     [incoming enemy elixir-value / value_norm (clipped 1), URGENCY = 1 - nearest_eta/eta_norm (0 =
     nothing within ~eta_norm s)]; dims [6..11] = the same for MY units heading at ENEMY towers.
-    Units predicted to fight another UNIT light nothing (engaged); stationary buildings are skipped."""
+    Units predicted to fight another UNIT light nothing (engaged); stationary buildings are skipped.
+    ``hints`` -> the lock-aware :func:`predict_targets` (None = the historical memoryless read)."""
     v = np.zeros(INTERACTION_DIM, np.float32)
     for (team, base, x, y), (kind, k, dist) in zip(units, predict_targets(units, my_towers,
-                                                                          enemy_towers, db)):
+                                                                          enemy_towers, db, hints)):
         if kind != "tower" or not (0 <= k < 3):
             continue
         c = db.get(base) or {}

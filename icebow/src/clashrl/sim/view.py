@@ -264,12 +264,18 @@ def opponent_memory_items(engine, team: int, whitelist) -> "list[tuple[str, floa
 
 
 def interaction_state(engine, team: int, whitelist, rng=None, recall: float = 1.0,
-                      recall_by_card=None):
+                      recall_by_card=None, hints: bool = False):
     """Ground-truth inputs for :mod:`clashrl.interactions` from ``team``'s point of view, in its LOCAL
     frame (mirrored for team 1): (units, my_towers, enemy_towers). Units = BOTH sides' recognisable
     (whitelisted) troops/buildings tagged 'mine'/'enemy'; optional detector-noise RECALL drops mimic
-    live coverage (the live block is built from detections, which miss units)."""
-    units = []
+    live coverage (the live block is built from detections, which miss units).
+
+    ``hints=True`` appends a 4th element: per-unit :class:`interactions.Hint` read off the engine --
+    ``engaged`` = the unit's target when it is SWINGING (``Unit.locked``), as an index into the SAME
+    ``units`` list (None when that body was recall-dropped: a detector that missed the target cannot
+    know the lock either) or into the target side's tower list; ``deploying`` = ``deploy_left > 0``."""
+    from .. import interactions as _ia
+    units = []; kept = []
     for u in engine.units:
         if u.hp <= 0:
             continue
@@ -282,13 +288,32 @@ def interaction_state(engine, team: int, whitelist, rng=None, recall: float = 1.
                 continue                              # detector would have MISSED this unit
         lx, ly = to_local(u.x, u.y, team)
         units.append(("mine" if u.team == team else "enemy", base, lx, ly))
+        kept.append(u)
     def _side(tws):
         out = []
         for t in tws[:3]:
             lx, ly = to_local(t.x, t.y, team)
             out.append((lx, ly, bool(t.alive)))
         return out
-    return units, _side(engine.towers[team]), _side(engine.towers[1 - team])
+    my_t, en_t = _side(engine.towers[team]), _side(engine.towers[1 - team])
+    if not hints:
+        return units, my_t, en_t
+    idx = {id(u): j for j, u in enumerate(kept)}
+    hs = []
+    for u in kept:
+        eng = None
+        if getattr(u, "locked", False):
+            t = u.target
+            if id(t) in idx:
+                eng = ("unit", idx[id(t)])
+            else:
+                tws = engine.towers[1 - u.team][:3]
+                for k, tw in enumerate(tws):
+                    if tw is t:
+                        eng = ("tower", k)
+                        break
+        hs.append(_ia.Hint(engaged=eng, deploying=float(getattr(u, "deploy_left", 0.0)) > 0.0))
+    return units, my_t, en_t, hs
 
 
 def apply_detector_noise(items, recall: float, precision: float, rng, whitelist, recall_by_card=None):
