@@ -22,7 +22,13 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-03 07:05**, branch `main` (**§5cc: GAUNTLET L29 -- PATH A PREPARED, not launched: the sim
+Last updated: **2026-09-03 07:52**, branch `main` (**§5cd: GAUNTLET L30 -- OWNER RULED (07:4x): Path A, then C with
+caution if A fails; aggro flags one at a time, aggro_drills -> reach fix -> lock-aware. PATH A LAUNCHED 07:48 from scratch:
+`data/bench/floor7_run.yaml` = gate05_run.yaml + `sim.bot_attack_floor: 7.0` (the ONE change), seed 41, ckpt
+`data/policy_floor7_20260903.pt`, log `data/bench/floor7_run_20260903.log`, watchdog + gates monitors up. Bar: m5k >=6 share
+above gate05's 1.2/1.3/1.0% (m2k reference 4.0/3.5/3.0%). Owner's observation CONFIRMED (a): at floor 0 the bot never fields
+its >=6 card in 7 of 17 decks that hold one (Royal Giant twice, Pekka, E-Barbs x2, 3M, Boss Bandit); at floor 7, 0 of 13.
+RUNNING NOW -- read §5cd before touching the box. Previous header follows.) (**§5cc: GAUNTLET L29 -- PATH A PREPARED, not launched: the sim
 opponent's cadence has NO knob -- a cycle/control/siege ScriptedBot attacks on the first step it can afford any offensive card
 (the cause of §5bw.4's 46-52% pressure). Added `sim.bot_attack_floor` (default 0 = the historical bot, byte-identical deploy
 logs on HEAD vs patched; training-only through make_opponent's `adaptive` gate, so eval bots are untouched). Cadence screen,
@@ -2143,6 +2149,9 @@ slow one.
   -> L29 (§5cc): Path A PREPARED. The opponent cadence had no knob; `sim.bot_attack_floor` added (default 0 = historical,
      eval bots untouched). Floor 7 gives non-beatdown bots 42% pressure / 2.2 bankable windows per phase (from 56% / 0.62;
      pros 37% / 2.7). Path A is now launchable the moment the owner rules: `sim.bot_attack_floor: 7`, one change.
+  -> L30 (§5cd): OWNER RULED 07:4x -- A (then C with caution if A fails); cadence toward the pros: yes; aggro flags one at a
+     time in the order aggro_drills -> reach fix -> lock-aware. Path A LAUNCHED 07:48 (floor7_run, from scratch). Reads: m2k
+     by hand (~1.1 h), m5k from the gates snapshot; bar = m5k >=6 share above gate05's 1.2/1.3/1.0%.
 
 ### From §5bq (2026-09-02 22:10) -- spell niches, after the gate-prior run ends (sim reward = one change each)
 * **`nado_retarget` UNREACHABLE (c, §5bq.3):** sim/env.py:2472 and :2508 `tile_dist(u, tw) <= u.spec.reach + 1.0`
@@ -8478,4 +8487,60 @@ value, not a 3-seed conclusion (the direction holds on both seeds at 7 and 8).
 ### 5. Files
 `icebow/src/clashrl/sim/opponents.py`, `icebow/config/config.yaml` (key, default 0), `icebow/tests/test_bot_attack_floor.py`,
 `scratchpad/gauntlet/L29/{cadence_floor.py, identity_check.py, cadence_floor_summary.txt, cad_f{0,5,6,7,8}_s{1,2}.json}`.
+
+## §5cd. GAUNTLET L30 (2026-09-03 07:45-07:52) -- owner ruling received; Path A LAUNCHED (`floor7_run`, from scratch)
+
+**The ruling (owner, 07:4x, verbatim by item).** "L22: bring the deploy cadence towards the pro rate, yes. L24: do A, and
+if that doesn't work do C with caution. L25: see above. L26: aggro drills first, then the reach fix, then lock aware. L29:
+your order makes sense. I think this floor is really good because I've noticed some opponents rarely play 6+ elixir cards
+(an opponent piloting a royal giant fisherman deck never actually plays the RG, or a split lane deck opponent that never
+actually plays recruits)." So: Path A now; C (stronger coef on the conditioned table, with caution) only if A fails the
+bar; the three aggro flags follow one at a time in that order; restart-vs-resume = from scratch (a from-scratch run is the
+only one comparable to gate05's own m2k/m5k curve on the same instrument).
+
+### 1. The owner's observation, tested first (a) -- `scratchpad/gauntlet/L30/big_cards.py`, m10k sampled policy, 12 matches x seeds 1,2
+Opponent deploys by cost, training-style bots, and per match whether a >=6-elixir non-spell card in the deck was EVER played:
+```
+floor  seed  decks holding a >=6 card   never played it                                  >=6 share of the bot's deploys
+  0     1        9 / 12                  3: Pekka (beatdown), E-Barbs, 3M+collector           6.7%
+  0     2        8 / 12                  4: Royal Giant x2 (cycle), Boss Bandit, E-Barbs      3.8%
+  7     1        5 / 12                  0                                                    3.5%
+  7     2        8 / 12                  0                                                    5.8%
+```
+CONFIRMED: at floor 0, 7 of 17 decks that hold a >=6 card never fielded it in the whole match (both Royal Giant decks
+among them -- the owner's exact case). Mechanism = §5cc.1: the bot spends at 3-4 on the first affordable step, so it
+almost never holds 6+ when the attack branch fires and a 6-cost card only gets played when defence or overflow hands it
+the elixir. At floor 7, 0 of 13. The >=6 share of all deploys does not rise (the floor-7 bot plays MORE cards over a match
+because its matches run longer -- fewer crowns, more overtime), the never-played count is the number that moves.
+
+### 2. LAUNCHED 07:48 -- Path A, the opponent-cadence arm
+`data/bench/floor7_run_launch.sh` (= gate05's launch script with the config swapped): `PYTHONHASHSEED=0 run.py --config
+data/bench/floor7_run.yaml train-sim-ppo --matches 40000 --envs 96 --workers 12 --size 432 --device cuda --seed 41
+--search-interval 4`, from scratch. `floor7_run.yaml` = `gate05_run.yaml` + `sim.bot_attack_floor: 7.0` (the ONE change;
+gate05's blended `config/gate_prior.json`, no `ppo_gate_prior_pressure_s`, aggro_drills / nado_retarget_reach_fix /
+lock_aware_targets absent = off) + isolated `sim_ppo_checkpoint: data/policy_floor7_20260903.pt`, `continuation_log:
+data/continuations_floor7.jsonl` -- verified by loading the yaml through `Config` before launch. Neither yaml nor launch
+script is in git (`icebow/data/` gitignored; the diff vs gate05_run.yaml is the three lines above). Log
+`data/bench/floor7_run_20260903.log`, `.launched` epoch 1788436090, exit line -> `floor7_run_20260903.progress`. Box before:
+1 python (Nucleo 63608), 8.8 GB free, GPU 1.6/8.2 GB, CPU 46%; after: 19 python. Monitors (nohup): `tools/ppo_watchdog.py
+data/policy_floor7_20260903.pt --every 300 --quiet-min 30` -> `data/bench/floor7_run_watchdog.out`; `tools/real_run_gates.py
+--run floor7_20260903` -> `floor7_run_gates.out` (snapshots `data/bench/floor7_m{5,10,20}k.pt`).
+**Reads (same instrument as gate05's):** m2k by hand, `gate_prior_probe.py data/policy_floor7_20260903.pt --seed 0/1/2`
+(gate05: 4.0/3.5/3.0% >=6, P(play|aff) 0.23; ETA ~1.1 h at 0.5 ep/s); m5k from the gates snapshot (gate05 1.2/1.3/1.0%).
+**Bar (pre-registered, §5by.4):** m5k >=6 share above gate05's m5k on 3 seeds. Pass -> the run continues and becomes the
+base for the aggro flags (next change: `sim.aggro_drills: true`, then the reach fix, then lock-aware -- how each is
+applied, new run vs a continuation-logged flip at a known match count, is decided at m5k and written here). Fail -> stop
+at m5k (record state first), then C with caution: the conditioned table `gate_prior_p6.json` at a stronger coef, on top
+of the floor.
+The run's own first `GATE PRIOR CE ... PRESSURE on X%` line is the in-run check that the floor is live (gate05/gatep6 read
+44% on an untrained policy; a floor-7 opponent should read lower) -- to be recorded at the m2k read, not claimed now.
+
+### 3. What this does NOT establish
+* Anything about the policy yet (b): no update line had landed at the time of writing.
+* The owner's second example (Recruits never played by a split-lane deck) was not in either 12-match sample; the
+  mechanism covers it (7 elixir, cycle/control deck) but it is unmeasured.
+
+### 4. Files
+`scratchpad/gauntlet/L30/{big_cards.py, big_f{0,7}_s{1,2}.json, big_f{0,7}_s{1,2}.log}` (committed); `data/bench/floor7_run.yaml`,
+`floor7_run_launch.sh` (NOT in git, reproducible from §2).
 

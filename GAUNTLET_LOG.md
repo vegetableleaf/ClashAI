@@ -627,3 +627,13 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - (b) whether the floor lifts the policy's >=6 share is Path A itself (one change, `sim.bot_attack_floor: 7`, read at m5k).
 - Tests 5/5 new, opponent regression 16/16. Nothing launched; A/B/C still open. HANDOFF §5cc.
 
+
+## L30 — 2026-09-03 07:45-07:52 | AGGRO gauntlet loop 14: owner ruled; Path A LAUNCHED
+- Owner ruling 07:4x: cadence toward pros YES; do A, then C with caution if A fails; aggro flags one at a time, aggro_drills ->
+  reach fix -> lock-aware; "this floor is really good" (opponents that never play their RG / Recruits).
+- Owner's observation CONFIRMED (a): floor 0, 7 of 17 decks holding a >=6 card never fielded it (RG x2, Pekka, E-Barbs x2, 3M,
+  Boss Bandit); floor 7: 0 of 13. m10k policy, 12 matches x 2 seeds per floor.
+- LAUNCHED 07:48 from scratch: floor7_run.yaml = gate05_run.yaml + sim.bot_attack_floor 7.0 (one change), seed 41, ckpt
+  data/policy_floor7_20260903.pt, watchdog + gates up; 19 python after (1 before). Bar: m5k >=6 share > gate05's 1.2/1.3/1.0%.
+- Next: m2k by hand (~09:00), m5k from the gates snapshot. HANDOFF §5cd.
+
