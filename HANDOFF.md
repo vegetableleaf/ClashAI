@@ -22,13 +22,14 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-03 03:05**, branch `main` (**§5bx: GAUNTLET L23 -- the repair is BUILT and smoke-tested:
+Last updated: **2026-09-03 01:55**, branch `main` (**§5bx: GAUNTLET L23 -- the repair is BUILT, smoke-tested and the TEST RUN IS LAUNCHED (01:46, `data/bench/gatep6_run_launch.sh`, ckpt `data/policy_gatep6_20260903.pt`, monitors up):
 schema-2 gate prior split by opponent pressure (`tools/gate_prior.py --pressure-s 6` -> `config/gate_prior_p6.json`,
 blend byte-identical to `gate_prior.json`), sim key `SimMatchEnv.enemy_troop_min_age()` carried as payload `eage`,
 trainer flag `sim.ppo_gate_prior_pressure_s` (0.0 = gate05's table byte-for-byte), 5 new unit tests (12/12 pass),
 CPU smoke run reaches the loss with "PRESSURE on 57% of usable rows". Test-run config staged:
-`data/bench/gatep6_run.yaml` = gate05_run.yaml + that one flag + isolated paths. NEXT: launch the TEST RUN.
-Previous header follows.) (**§5bw: GAUNTLET L22 -- diagnosis cut 2, the repair is CHOSEN.
+`data/bench/gatep6_run.yaml` = gate05_run.yaml + that one flag + isolated paths. NEXT: m2k read (~1.1 h at 0.5 ep/s).
+CLOCK CORRECTION: §5bw's header/LOG said 02:05; the commit landed 01:30 -- the wall-clock stamps in §5bw are ~35 min
+fast, the box clock is authoritative. Previous header follows.) (**§5bw: GAUNTLET L22 -- diagnosis cut 2, the repair is CHOSEN.
 (1) Per-term reward ledger on the m2k/m5k/m10k snapshots (24 matches x 3 seeds x 2 instruments): the 2k->10k reward
 gain is the WAIT-SIDE penalty shrinking (sampled: threat_miss_idle -2.20 -> -1.11/match; greedy: wait-side -6.5 ->
 -0.26) while the x-bow terms are flat (sampled wincon_exec +0.98 -> +1.00) or FALLING (greedy m5k -> m10k: exec
@@ -2100,7 +2101,7 @@ slow one.
   -> L23 (§5bx): BUILT + unit-tested + smoke-run. Launch line for the TEST RUN (step 3): `run.py --config
      data/bench/gatep6_run.yaml train-sim-ppo --matches 40000 --envs 96 --workers 12 --size 432 --device cuda
      --seed 41 --search-interval 4` (identical to gate05's except the config); ckpt `data/policy_gatep6_20260903.pt`
-     (did not exist at 03:05). Grade: `gate_prior_probe.py` seeds 0/1/2 at m2k (gate05: >=6 share 4.0/3.5/3.0%,
+     (did not exist before). LAUNCHED 01:46 (`data/bench/gatep6_run_launch.sh`), monitors up -- see §5bx.5. Grade: `gate_prior_probe.py` seeds 0/1/2 at m2k (gate05: >=6 share 4.0/3.5/3.0%,
      P(play|aff) 0.23) and m5k (gate05: 1.2/1.3/1.0%) + the L22 ledger. Bar: m5k >=6 share ABOVE gate05's m2k.
 
 ### From §5bq (2026-09-02 22:10) -- spell niches, after the gate-prior run ends (sim reward = one change each)
@@ -8049,12 +8050,13 @@ only on the thresholded gate.
 `scratchpad/gauntlet/L22/{term_ledger.py, ledger_grid.sh, summarise.py, led_<ckpt>_<mode>_s<seed>.txt+json
 (18), prior_pressure.py, prior_pressure_W6.json, prior_pressure_W10.json, quiet_stretches.py}`.
 
-## §5bx. GAUNTLET L23 (2026-09-03 02:10-03:05) -- the pressure-conditioned gate prior is BUILT, tested, smoke-run
+## §5bx. GAUNTLET L23 (2026-09-03 01:31-01:55) -- the pressure-conditioned gate prior is BUILT, tested, smoke-run, LAUNCHED
 
 **Context.** §5bw chose the repair for the tripped ≥6-elixir read: restore the third key the owner's v0 ruling named
 ("threat on our half") to the gate prior, so the cross-entropy pull stops asking "wait" twice as hard as pros on rows
 where the opponent just committed a troop, and asks it properly on quiet rows. This loop built it. No training ran;
-the box was idle throughout (1 python process, 7.2 GB free at 02:10).
+the box was idle until the launch (1 python process, 7.2 GB free at 01:32). (Clock: §5bw's "01:08-02:05" was ~35 min
+fast; its commit a007f23 landed 01:30. Times here are the box clock.)
 
 ### 1. What was built (one change, one flag; 0.0 = the gate05 run byte-for-byte)
 * **`tools/gate_prior.py` schema 2** -- `--pressure-s W`. Pressure = the OPPONENT (red rows of `plays_ext.csv`)
@@ -8089,7 +8091,7 @@ the box was idle throughout (1 python process, 7.2 GB free at 02:10).
   trajectories vs pros' 37%).
 * **`data/bench/gatep6_run.yaml`** = `gate05_run.yaml` with `ppo_gate_prior_path: config/gate_prior_p6.json`,
   `ppo_gate_prior_pressure_s: 6.0`, ckpt `data/policy_gatep6_20260903.pt`, continuation log
-  `data/continuations_gatep6.jsonl`. `diff` = those four lines. NOT launched this loop.
+  `data/continuations_gatep6.jsonl`. `diff` = those four lines. Launched at the end of the loop (§5).
 
 ### 2. Verification (a)
 * `tests/test_gate_prior.py`: 5 new tests in `TestPressureKey` -- pressure windows are the troop ones only (a red
@@ -8118,9 +8120,25 @@ the box was idle throughout (1 python process, 7.2 GB free at 02:10).
 * The 57% pressure share in the smoke run is 8 matches of an UNTRAINED policy (its opponent draws differ) -- not
   comparable to §5bw.4's 46-52% on the m10k policy. The run's own `PRESSURE on` line is the comparable number.
 
+### 5. LAUNCHED: the TEST RUN (01:46) -- RUNNING NOW
+`data/bench/gatep6_run_launch.sh` (= gate05's launch script with the config swapped; the ONE change is the flag):
+`PYTHONHASHSEED=0 run.py --config data/bench/gatep6_run.yaml train-sim-ppo --matches 40000 --envs 96 --workers 12
+--size 432 --device cuda --seed 41 --search-interval 4`, from scratch. Log `data/bench/gatep6_run_20260903.log`,
+ckpt `data/policy_gatep6_20260903.pt` (did not exist at launch; first write seen 01:47), continuation log
+`data/continuations_gatep6.jsonl`, `.launched` epoch 1788414375, exit line will land in `gatep6_run_20260903.progress`.
+Box before launch: only the owner's Nucleo uvicorn (pid 63608, left alone), 6.9 GB free, GPU 1.6/8.2 GB. After: 15
+python processes. First update line: `GATE PRIOR CE 0.7174 | pi(play) 0.513 vs prior 0.050 | 9% of rows usable |
+PRESSURE on 44% of them`. Monitors (nohup): `tools/ppo_watchdog.py data/policy_gatep6_20260903.pt --every 300
+--quiet-min 30` -> `data/bench/gatep6_run_watchdog.out` (its first cycle ran before the ckpt existed:
+"health probe failed: FileNotFoundError", expected, it retries every 300 s); `tools/real_run_gates.py --run
+gatep6_20260903` -> `data/bench/gatep6_run_gates.out` (snapshots `data/bench/gatep6_m{5,10,20}k.pt`, state
+`gatep6_run_gates.progress`). **Reads:** m2k by hand (`gate_prior_probe.py data/policy_gatep6_20260903.pt --seed
+0/1/2`, gate05 read 4.0/3.5/3.0% ≥6, P(play|aff) 0.23; ETA ~1.1 h at gate05's 0.5 ep/s), m5k from the gates
+snapshot (gate05: 1.2/1.3/1.0%). Bar: m5k ≥6 share above gate05's m2k. Then decide restart-vs-resume (§6 ruling).
+
 ### 4. Files
 `tools/gate_prior.py`, `config/gate_prior_p6.json` (new), `src/clashrl/sim/env.py`, `src/clashrl/sim/remote_pool.py`,
 `src/clashrl/train_sim_ppo.py`, `tests/test_gate_prior.py`. `data/bench/gatep6_run.yaml` (new) is NOT in git --
 `icebow/data/` is gitignored and no `data/bench/*.yaml` ever was (gate05_run.yaml included); its full diff vs
-gate05_run.yaml is the four lines in §1, reproducible from that.
+gate05_run.yaml is the four lines in §1, reproducible from that. Same for `data/bench/gatep6_run_launch.sh` (§5).
 
