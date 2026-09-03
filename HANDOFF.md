@@ -22,7 +22,13 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-03 14:15**, branch `main` (**§5cj: GAUNTLET L36 -- gatec2 m5k: THE BAR PASSES AND THE CAUTION
+Last updated: **2026-09-03 14:40**, branch `main` (**§5ck: GAUNTLET L37 -- OWNER RULED (14:2x) on the §5cj question: option
+(iv) then (iii). Let `gatec2_run` reach m10k ("5k matches is still very early ... a real chance the policy might rebound"),
+take the m10k read, then MOVE TO THE AGGRO WORK regardless -- the owner's reading is that direct attacks on the elixir
+share have not budged it across 3 arms, so there are probably confounders, and the aggro flags may move it indirectly.
+m10k read pre-registered in §5ck.2 (rebound test + base-selection rule for the first aggro arm). Run RUNNING, m5900 at
+14:25, 0.5 ep/s, m10k gate ~16:45-17:00 (+ EVAL@6000/8000 pauses). Previous header follows.) (**§5cj: GAUNTLET L36 --
+gatec2 m5k: THE BAR PASSES AND THE CAUTION
 GUARDS COLLAPSE, which §5cg.2 pre-registered as "the prior won by breaking the policy" -- NOT a pass. >=6 share
 **2.3 / 1.7 / 2.0%** (gatep6 m5k 1.4/1.1/2.0: above on 2 seeds, EQUAL on the third; gate05 m5k 1.2/1.3/1.0: above on 3).
 But regret is the worst of every arm (oracle **0.2924** vs gate05 0.2291, floor7 0.271) and the cause is measured and
@@ -2213,6 +2219,8 @@ slow one.
      x_bow 13.2% vs gate05 21.6/8.0, floor7 25.2/5.3, gatep6 29.4/3.3. Elixir trend not callable yet.
   -> L36 (§5cj): gatec2 m5k -- bar PASSES (2.3/1.7/2.0), caution guards COLLAPSE (regret 0.2924 worst of all arms; wrong
      waits 33 vs gate05's 5). Pre-registered verdict: NOT a pass. Run left going to m10k. QUESTION OPEN: next arm.
+  -> L37 (§5ck): OWNER RULED 14:2x -- wait for m10k (rebound chance), then aggro work regardless: aggro_drills -> reach
+     fix -> lock-aware, one change each. Base for the first aggro arm decided by the m10k read (§5ck.2 rule).
 
 ### From §5bq (2026-09-02 22:10) -- spell niches, after the gate-prior run ends (sim reward = one change each)
 * **`nado_retarget` UNREACHABLE (c, §5bq.3):** sim/env.py:2472 and :2508 `tile_dist(u, tw) <= u.spec.reach + 1.0`
@@ -9035,4 +9043,54 @@ next arm is genuinely the owner's call, and my recommendation is (iii):
 ### 7. Files
 `scratchpad/gauntlet/L36/{probe_m5k_s{0,1,2}.txt,.json}` (committed); `gatec2_m5k.pt` copy (NOT in git); gate report
 `data/bench/gatec2_gate_report.md`, `gatec2_gate_m5k.log` (NOT in git).
+
+## §5ck. GAUNTLET L37 (2026-09-03 14:25-14:40) -- owner ruled: m10k first, then aggro work. Pre-registration of the m10k read
+
+**The ruling (owner, 14:2x, verbatim).** "let's wait for the gatec2 run to hit 10k first. 5k matches is still very early
+by any metric, and I think there's a real chance the policy might rebound if we wait for it a bit. After the 10k eval,
+move on to aggro work. The fact that we spent so much effort chasing the elixir problem and got nowhere could point to
+the fact that there are confounding factors that feed into the elixir share issue we've been observing. The aggro work
+might flip the elixir problem, and it might recover some of the regressions that were observed. This is all pure
+speculation, but clearly attacking the elixir problem directly doesn't budge it, so we might as well poke and prod at
+other strings to see if we can indirectly influence elixir management."
+So: §5cj.5 option (iv) now, then (iii). The coef-1.0 and coverage arms are NOT taken. The elixir-share ledger stays as
+the instrument; the aggro arms are read on it too, because the owner's hypothesis is precisely that they move it.
+
+### 1. Box at the ruling (a)
+`gatec2_run` untouched: m5900 at 14:25, 224W-4496L-6D, 0.5 ep/s, drills 39% pass-all (38% last 300), ent 0.07, clip
+0.03, 19 python (2 trainer + 12 workers + 2 watchdog + 2 gates + Nucleo). Watchdog (its own sampled instrument):
+ELIXIR>=6 DRIFT alert at m5100 (0.7% vs rolling median 2.8%), CELL HEAD COLLAPSED at m4900 (1.10 of 5.08, 58 distinct).
+Remaining 4,100 matches at 0.5 ep/s = ~2h15m + EVAL@6000 and @8000 (~9 min each) -> m10k gate ~16:45-17:00.
+
+### 2. Pre-registered m10k read (written before the gate fires)
+Instrument = the ledger probe (`gate_prior_probe.py data/bench/gatec2_m10k.pt --seed 0/1/2`) + the gates monitor's own
+m10k report (regret / x-bow / continuation, PYTHONHASHSEED=0 by construction). Comparators, named by loop:
+* **Rebound test** (the owner's hypothesis): gatec2's own m5k = >=6 share 2.3/1.7/2.0 (L36), regret 0.2924/0.2880, waits
+  60 of 203 with 33 wrong, plays 24 wrong; gate05 m10k = >=6 0.1-0.2% (§5bw), regret 0.2418/0.2395, 0.71 bows/match.
+  REBOUND = regret at m10k back at or below gate05's m10k 0.2418 AND wrong waits at or below gate05 m5k's 5 + a margin
+  (say <= 15 of 203) -- i.e. the passivity was transient. HELD = >=6 share still above gate05's m10k 0.1-0.2 on 3 seeds.
+  Four outcomes: rebound+held (the coef arm is a real base), rebound+decayed (it converged to gate05 -- nothing gained,
+  nothing lost), no-rebound+held (banks by refusing to defend, the L36 reading confirmed at 2x the matches), no-rebound
+  +decayed (worst of both; the coef arm is dead).
+* **Base-selection rule for the first aggro arm** (so the choice is not made after seeing the number): the base is
+  gatec2's m10k checkpoint ONLY on rebound+held. Every other outcome -> base is the gate05 recipe (`gate05_run.yaml`
+  config, from scratch, seed 41), because gate05 is the arm with the best guards (regret 0.2291 at m5k) and the one every
+  ledger comparison already exists against. The first aggro arm is then ONE change on that base: `sim.aggro_drills:
+  true` (owner order: aggro_drills -> reach fix -> lock-aware; §5ca.5 recommendation confirmed by the 07:45 ruling).
+  "From scratch on gate05's recipe" is preferred over "resume gate05's ckpt" because the flag changes the drill pool the
+  policy trains on from step 0; a resume would confound "learned late" with "learned from the pool".
+* **What the aggro arm is read on**: the same ledger (>=6 share, seeds 0/1/2 at m2k/m5k) AND its own drill counters
+  (the lock-state drills' pass rates -- the two the flag adds, `tank_for_bow` and `bow_lane_choice`, plus
+  `nado_king_activation`, which is in both pools; the flag RETIRES `knight_guards_the_bow` and `nado_the_sneaky_lock`), because the owner's hypothesis has two halves: the flag should move the drills it targets (direct) and
+  may move the elixir share (indirect). A drill gain with no share movement is still a result; it just falsifies the
+  indirect half.
+
+### 3. What this does NOT establish
+* That waiting to m10k will show a rebound (b). gate05's history says shares DECAY m5k -> m10k (1.17 -> 0.1-0.2); the
+  owner's hypothesis is that the wait-heavy regret regresses back. Both get one read.
+* The owner's confounder hypothesis (b). It is explicitly labelled speculation by the owner; the aggro arms are the
+  measurement, one flag at a time, on the ledger plus drill counters.
+
+### 4. Files
+This section; no new measurement this loop (the loop's action was recording the ruling and pre-registering the read).
 

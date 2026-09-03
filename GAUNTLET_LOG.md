@@ -713,3 +713,12 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - QUESTION OPEN (next arm: coef 1.0 / fix coverage / go do the aggro work [my rec] / run to m10k first). Run LEFT RUNNING --
   m10k gate ~16:45 preserves that option free. HANDOFF §5cj.
 
+
+## L37 — 2026-09-03 14:25-14:40 | AGGRO gauntlet loop 21: owner ruled -- wait for m10k, then aggro work regardless
+- Ruling 14:2x: §5cj option (iv) then (iii). Owner: 5k is early, real chance of a rebound; after m10k move on to aggro
+  regardless -- three direct arms did not budge the elixir share, so likely confounders; aggro flags may move it indirectly.
+- No measurement this loop. gatec2_run untouched: m5900 at 14:25, 0.5 ep/s, drills 39%, 19 python; m10k gate ~16:45-17:00.
+- PRE-REGISTERED (HANDOFF §5ck.2): REBOUND = m10k regret <= gate05 m10k 0.2418 AND wrong waits <= 15/203; HELD = >=6 share
+  above gate05 m10k 0.1-0.2 on 3 seeds. First aggro arm = ONE change `sim.aggro_drills: true`; base = gatec2 m10k ckpt only
+  on rebound+held, else gate05 recipe from scratch seed 41. Read on the ledger + the lock-state drill counters.
+
