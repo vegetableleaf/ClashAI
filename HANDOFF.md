@@ -22,7 +22,13 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-03 07:52**, branch `main` (**§5cd: GAUNTLET L30 -- OWNER RULED (07:4x): Path A, then C with
+Last updated: **2026-09-03 09:10**, branch `main` (**§5ce: GAUNTLET L31 -- floor7_run m2k READ (screen, bar is m5k): on
+the pre-registered probe the floor-7 policy at m2450 reads >=6 share 1.2/1.3/0.5% -- BELOW gate05's m2k 4.0/3.5/3.0, like
+gatep6 (0.9/0.8/0.5). And a cross probe (each ckpt vs floor-0 AND floor-7 training bots) CONTRADICTS the mechanism behind
+Path A at m2k: the opponent's cadence does not move a fixed policy's >=6 share at all (gate05 m2k 5.0/4.5/2.4 vs 4.5/3.5/4.3;
+floor7 1.5/1.8/0.9 vs 1.8/1.4/1.0). The share is the policy's own P(play|affordable), not the windows it is given. Run
+CONTINUES to the pre-registered m5k read (~10:05-10:20, gates snapshot `data/bench/floor7_m5k.pt`); RUNNING NOW.
+Previous header follows.) (**§5cd: GAUNTLET L30 -- OWNER RULED (07:4x): Path A, then C with
 caution if A fails; aggro flags one at a time, aggro_drills -> reach fix -> lock-aware. PATH A LAUNCHED 07:48 from scratch:
 `data/bench/floor7_run.yaml` = gate05_run.yaml + `sim.bot_attack_floor: 7.0` (the ONE change), seed 41, ckpt
 `data/policy_floor7_20260903.pt`, log `data/bench/floor7_run_20260903.log`, watchdog + gates monitors up. Bar: m5k >=6 share
@@ -2152,6 +2158,11 @@ slow one.
   -> L30 (§5cd): OWNER RULED 07:4x -- A (then C with caution if A fails); cadence toward the pros: yes; aggro flags one at a
      time in the order aggro_drills -> reach fix -> lock-aware. Path A LAUNCHED 07:48 (floor7_run, from scratch). Reads: m2k
      by hand (~1.1 h), m5k from the gates snapshot; bar = m5k >=6 share above gate05's 1.2/1.3/1.0%.
+  -> L31 (§5ce): m2k SCREEN (not the bar): floor7 @m2450 >=6 share 1.2/1.3/0.5% vs gate05 m2k 4.0/3.5/3.0 -- below, like
+     gatep6. Cross probe (c): a fixed policy's >=6 share does NOT move with the opponent's floor (gate05 5.0/4.5/2.4 @f0 vs
+     4.5/3.5/4.3 @f7; floor7 1.5/1.8/0.9 vs 1.8/1.4/1.0) -- the "opponent bounds the bank" premise of Path A fails at m2k.
+     Run continues to the m5k bar as pre-registered; if it fails there, C with caution (owner order) -- and C's premise
+     (the policy's own eagerness is the lever) is the one this probe supports.
 
 ### From §5bq (2026-09-02 22:10) -- spell niches, after the gate-prior run ends (sim reward = one change each)
 * **`nado_retarget` UNREACHABLE (c, §5bq.3):** sim/env.py:2472 and :2508 `tile_dist(u, tw) <= u.spec.reach + 1.0`
@@ -8544,4 +8555,72 @@ through `Config` (floor 7.0) + the workers importing the committed opponents.py;
 ### 4. Files
 `scratchpad/gauntlet/L30/{big_cards.py, big_f{0,7}_s{1,2}.json, big_f{0,7}_s{1,2}.log}` (committed); `data/bench/floor7_run.yaml`,
 `floor7_run_launch.sh` (NOT in git, reproducible from §2).
+
+## §5ce. GAUNTLET L31 (2026-09-03 08:52-09:10) -- floor7_run m2k read: below gate05, and the opponent-cadence premise fails the cross probe
+
+**Context.** Path A launched 07:48 (§5cd). The pre-registered bar is at m5k; m2k is the screen gate05 and gatep6 were both
+read at, so it is read here on the same instrument. Then a second, cheap probe asks the question Path A rests on directly:
+does the opponent's cadence change how much a FIXED policy banks? Run untouched throughout (19 python before and after;
+the probes ran sequentially because physical RAM was ~0.6 GB free with 36 GB virtual -- the run is paging already).
+
+### 1. The pre-registered read (a) -- `tools/gate_prior_probe.py` on a snapshot at matches=2450 (`scratchpad/gauntlet/L31/floor7_m2k4.pt`, sha 1a64a7f1..., not in git), seeds 0/1/2
+Same instrument as every m2k/m5k number in the ledger (config.yaml, 6 envs x 400 steps, seeds 4242+i, gate SAMPLED,
+env-default = NON-adaptive floor-0 bots):
+```
+ckpt                 matches   >=6 share (s0/s1/s2)   elixir mean       affordable%        P(play|aff)          played%
+floor7_run (L31)      2450     1.2 / 1.3 / 0.5        2.29/2.29/2.23    37.0/38.1/37.4    0.289/0.293/0.288    10.7/10.5/11.7
+gate05  (L11)         2000     4.0 / 3.5 / 3.0        --                --                0.23                 --
+gatep6  (L2x)         2350     0.9 / 0.8 / 0.5        --                --                0.34                 --
+gate05  (L16)         5000     1.2 / 1.3 / 1.0        --                --                --                   --
+```
+At m2450 the floor-7 policy already sits where gate05 reached at m5k. Its sampled P(play) at 7-10 elixir is 0.28-0.44
+(gate05 m2k: 0.12-0.22 at the same buckets): it is MORE eager at high elixir than gate05 was, not less. Cards at >=6:
+x_bow 5-9 of the 7-12 plays per seed (the win condition, correctly), the rest tesla/tesla_evo.
+
+### 2. The cross probe (a) -- `scratchpad/gauntlet/L31/probe_trainenv.py`, 2 ckpts x 2 opponent floors x seeds 0/1/2
+Same probe, but the envs build their bots through `make_opponent(adaptive=True)` (the training provider) with
+`sim.bot_attack_floor` forced to 0 or 7 (`PROBE_FLOOR`). This is a DIFFERENT instrument variant from §1 (training-style
+bots), compare within the table only. Each cell is a fixed policy against a quieter or a busier opponent:
+```
+ckpt              opp floor   >=6 share (s0/s1/s2)   mean     P(play|aff) s0/s1/s2      plays at >=6 (s0)
+floor7_m2450         0        1.5 / 1.8 / 0.9        1.4      0.28 / 0.29 / 0.28
+floor7_m2450         7        1.8 / 1.4 / 1.0        1.4      0.28 / 0.29 / 0.29        n=12, x_bow 9
+gate05_m2000         0        5.0 / 4.5 / 2.4        4.0      0.25 / 0.25 / 0.24        n=22, x_bow 6 rocket 3
+gate05_m2000         7        4.5 / 3.5 / 4.3        4.1      0.24 / 0.25 / 0.25
+```
+The opponent floor moves NEITHER policy's >=6 share: gate05 4.0 -> 4.1, floor7 1.4 -> 1.4 (means of 3 seeds; per-seed
+spread 2.4-5.0 is larger than any floor effect). P(play|aff) is unchanged to the second decimal in every cell.
+**(c) CONTRADICTED, at m2k, on this instrument: "the sim opponent's cadence bounds the policy's >=6 share" (§5bw.4,
+the premise of Path A).** Given 3.5x more bankable windows (§5cc.3), a fixed policy banks exactly as little as before: it
+spends on the first affordable step at its own P(play|aff) ~0.25-0.29 regardless of what the opponent is doing. The
+windows are there; the policy does not use them, because nothing in its objective values holding elixir except the
+gate prior (coef 0.5 on the blended table), and that pull is what decays m2k -> m5k in gate05.
+What the probe does NOT say: whether TRAINING against the quieter opponent changes the policy over a longer horizon
+(that is the run itself, bar at m5k). It does say the floor-7 arm's m2k number is not a "not enough windows" artefact.
+
+### 3. Why the floor-7 policy is MORE eager at m2k (b, two candidates, neither tested)
+* The quieter opponent punishes less, so an early play is less often answered and the return-per-play gradient is steeper
+  (winrate 8% at m2700 vs gate05's ~2-3% at the same count -- different instrument from the probe, the trainer's own
+  running counter; carried from the run logs, not a probe number).
+* gatep6 (conditioned table, coef 0.5) showed the same early over-eagerness (P(play|aff) 0.34 at m2350) and then TIED
+  gate05 at m5k (1.4/1.1/2.0 vs 1.2/1.3/1.0) -- so an m2k under-read has already once failed to predict m5k. That is the
+  reason the bar stays at m5k and the run is not stopped here.
+
+### 4. Decision (pre-registered; not a new ruling)
+Run continues to m5k (ETA 10:05-10:20 at 0.6 ep/s from 2700 at 09:00; the gates monitor snapshots `data/bench/floor7_m5k.pt`).
+Bar unchanged: >=6 share on seeds 0/1/2 above gate05's m5k 1.2/1.3/1.0 (pre-registered instrument, §1). Fail -> record
+state, stop (process count before/after), then C with caution per the owner's order -- and note that §2 is evidence FOR
+C's premise (the lever is the policy's own eagerness, i.e. the prior's pull) and against A's. If A fails and C is
+launched, the floor stays in (the owner wants the cadence toward the pros regardless, §5cd), so C = floor 7 + conditioned
+table `config/gate_prior_p6.json` at a stronger coef, ONE change vs floor7_run.
+
+### 5. What this does NOT establish
+* The m5k outcome (b). m2k is a screen with a known false-negative on record (gatep6).
+* That the floor is useless for training: a quieter opponent changes what the policy sees in ~35% fewer troop drops per
+  phase (§5cc.4) and every reward it collects; the fixed-policy probe cannot see that.
+* Anything about eval winrate (the eval bench is floor-0 by construction; `EVAL@2000` has not been read this loop).
+
+### 6. Files
+`scratchpad/gauntlet/L31/{probe_m2k4_s{0,1,2}.txt,.json, probe_trainenv.py, tenv_{floor7_m2k4,gate05_m2k}_f{0,7}_s{0,1,2}.txt}`
+(committed); `floor7_m2k4.pt` (snapshot, NOT in git).
 

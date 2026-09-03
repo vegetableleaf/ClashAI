@@ -1,0 +1,18 @@
+..\scratchpad\gauntlet\L31\floor7_m2k4.pt  matches=2450  rows=2400  seed=0
+  affordable on 40.8% of rows | P(play) mean 0.279 (all) 0.274 (affordable rows) | played on 10.9% of rows | elixir mean 2.46  >=6 1.8% | phase rows [1704, 696, 0]
+  bucket  rows  P(play)  affordable  played   pro(single)
+      0    267   0.262     0.000     0.000    0.010
+      1    702   0.268     0.111     0.041    0.024
+      2    687   0.286     0.287     0.067    0.042
+      3    437   0.301     0.906     0.243    0.063
+      4    165   0.266     1.000     0.248    0.058
+      5     96   0.293     1.000     0.292    0.042
+      6     27   0.263     1.000     0.222    0.042
+      7     13   0.284     1.000     0.231    0.043
+      8      6   0.248     1.000     0.500    0.083
+      9      0     -         -         -      0.203
+     10      0     -         -         -      0.184
+  mean cost of the cards actually played: 2.64 (deck mean 3.50)
+    plays at <3   n=75   mean cost 1.40  skeletons:45 the_log:30
+    plays at 3-5  n=175  mean cost 2.97  ice_wizard:43 knight:36 tornado:29 tesla:24
+    plays at >=6  n=12   mean cost 5.50  x_bow:9 tesla_evo:2 tesla:1

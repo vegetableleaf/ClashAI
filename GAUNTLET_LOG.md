@@ -637,3 +637,14 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   data/policy_floor7_20260903.pt, watchdog + gates up; 19 python after (1 before). Bar: m5k >=6 share > gate05's 1.2/1.3/1.0%.
 - Next: m2k by hand (~09:00), m5k from the gates snapshot. HANDOFF §5cd.
 
+
+## L31 — 2026-09-03 08:52-09:10 | AGGRO gauntlet loop 15: floor7_run m2k screen -- below gate05; Path A's premise fails a cross probe
+- (a) pre-registered probe, floor7 ckpt @m2450, seeds 0/1/2: >=6 share 1.2/1.3/0.5% (gate05 m2k 4.0/3.5/3.0; gatep6 0.9/0.8/0.5;
+  gate05 m5k 1.2/1.3/1.0). P(play|aff) 0.29 (gate05 m2k 0.23) -- more eager, not less.
+- (c) cross probe, fixed ckpt vs floor-0 and floor-7 training bots: gate05 m2k 5.0/4.5/2.4 -> 4.5/3.5/4.3; floor7 1.5/1.8/0.9 ->
+  1.8/1.4/1.0. The opponent's cadence does not move a fixed policy's >=6 share; P(play|aff) unchanged to 2 decimals. The
+  "opponent bounds the bank" premise of Path A is contradicted at m2k; the policy spends at its own rate whatever the windows.
+- Decision: pre-registered -- run to m5k (ETA 10:05-10:20), bar unchanged. Fail -> C with caution = floor 7 + gate_prior_p6 at a
+  stronger coef (one change vs floor7_run). Box: 19 python, physical RAM ~0.6 GB free (paging), probes run one at a time.
+- HANDOFF §5ce.
+

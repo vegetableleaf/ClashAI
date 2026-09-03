@@ -1,0 +1,18 @@
+..\scratchpad\gauntlet\L11\gate05_m2k.pt  matches=2000  rows=2400  seed=0
+  affordable on 42.6% of rows | P(play) mean 0.285 (all) 0.242 (affordable rows) | played on 11.1% of rows | elixir mean 2.63  >=6 4.5% | phase rows [1544, 856, 0]
+  bucket  rows  P(play)  affordable  played   pro(single)
+      0    290   0.310     0.000     0.000    0.010
+      1    662   0.306     0.097     0.047    0.024
+      2    645   0.304     0.287     0.064    0.042
+      3    409   0.289     0.929     0.281    0.063
+      4    173   0.217     1.000     0.214    0.058
+      5    106   0.190     1.000     0.217    0.042
+      6     47   0.153     1.000     0.170    0.042
+      7     26   0.178     1.000     0.115    0.043
+      8     18   0.184     1.000     0.278    0.083
+      9      8   0.184     1.000     0.250    0.203
+     10     16   0.187     1.000     0.125    0.184
+  mean cost of the cards actually played: 2.66 (deck mean 3.50)
+    plays at <3   n=72   mean cost 1.40  skeletons:43 the_log:29
+    plays at 3-5  n=175  mean cost 2.91  ice_wizard:44 knight:39 tornado:30 tesla:18
+    plays at >=6  n=20   mean cost 5.05  x_bow:10 tesla:3 tesla_evo:2 ice_wizard:2
