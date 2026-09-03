@@ -780,3 +780,18 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - (a) x-bow m10k: 4.33 vs 0.71 per match; tower lock 70% vs 50%; dmg 1676 vs 676; dead placements 35% vs 24%.
 - spellprobe.py gained an OUTCOME line. aggro1 at 600 episodes, 0.7 ep/s, untouched. HANDOFF §5cn.7.
 
+
+## L42 — 2026-09-03 17:50-19:05 | AGGRO gauntlet loop 26 (owner steering): LIVE SPELL AIM FIX (authorized) + aggro1 first look
+- (c) owner's "mapping issue": the warp is shared by troops and spells; a log-only forward bias cannot be it. Owner's
+  own third message (cast delay ~1 s) is the diagnosis the code supports.
+- (a, in code) four defects: env.py gated on CURRENT positions before leading (lead never ran on the cast that needed
+  it); tracks fetched without the base (KB speed fallback dead on fresh tracks); log_hits back-slop 1.73 tiles (x width
+  on the y axis; sim uses 1.0); play.py never led log or tornado, rocket used the deprecated rate, no cast delay.
+- FIX shipped (live only, sim untouched): env.spell_cast_delay_s 1.0 (b); lead-then-gate on led tracks for log/rocket/
+  tornado in env.py AND play.py; back-slop 1 tile; drill_env.report registers aggro drills (report only).
+  Offline: hog +2.0 tiles, knight +1.0, building 0; hog gate fails on led body -> cast 2.24 tiles back.
+- aggro1 m2500: tank_for_bow 36% (gate05 m5k 12% same instrument; §5bt.4 12%), bow_lane 0, nado_king 0 (doctrine 8%);
+  >=6 share 2.5/1.0/1.2; EVAL@2000 4/2%. One seed, 25 reps: a screen. m5k gate (~20:10) is the read.
+- §6 queue += sim spell_delay parity arm after aggro1b (owner). Delay measurement from a recording still owed.
+- Run untouched (12 trainer procs before/after). HANDOFF §5co.
+

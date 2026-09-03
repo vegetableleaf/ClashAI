@@ -1141,6 +1141,11 @@ env:
                                  # own sim.spell_tower_aim_tiles (3.8) for a different purpose.
   rocket_origin: [0.5, 1.05]     # rocket launch point (your side, off-screen); travel time ~ distance from here
   rocket_base_time: 0.3          # fixed part of rocket flight time (s)
+  spell_cast_delay_s: 1.0        # LIVE ONLY (2026-09-03, owner): seconds between the tap and the spell
+                                 # actually existing on the board. The log/rocket lead is scaled by it
+                                 # (rocket: this + flight; log: this alone, the corridor covers the roll).
+                                 # 1.0 is the owner's eyeball estimate -- (b) untested; replace with the
+                                 # tap->sprite gap measured from a recorded session. Floors rocket_base_time.
   rocket_travel_rate: 2.2        # DEPRECATED (kept so an old config still loads): seconds per
                                  # NORMALISED unit, which mixed the 18- and 32-tile axes and ranked
                                  # targets by the wrong distance -- 20.0 tiles scored a LONGER

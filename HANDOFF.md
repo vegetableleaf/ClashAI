@@ -22,7 +22,19 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-03 17:35**, branch `main` (**§5cn: GAUNTLET L40 -- gatec2 m10k gate read (pre-registered §5ck.2):
+Last updated: **2026-09-03 19:05**, branch `main` (**§5co: GAUNTLET L42 -- LIVE SPELL AIM FIX (owner-authorized live-path
+change) + aggro1 first look. Owner: "the policy plays every log 1-2 tiles too far forward and whiffs; it never leads log or
+rocket; I think it ignores the ~1 s cast delay". "Mapping issue" (c): the board->screen warp is shared by troops and spells.
+The real defects (a, in code): (1) env.py `_wheels_spell_aim` GATED on the current positions (`log_hits` / radius test)
+BEFORE the lead, so an aim through the push where it stood passed and the lead never ran; (2) it fetched tracks WITHOUT
+the card base, so `lead_velocity`'s walking-speed fallback was a no-op on every track < 0.5 s old; (3) `log_hits` back-slop
+was 0.5 x half_w -- an x-axis width on the y axis = 1.73 tiles, scoring a log 1-2 tiles ahead of a troop as a hit; (4)
+play.py never led the log at all, led rockets with the DEPRECATED normalised rate and no cast delay, and never led the
+tornado. Fix: `env.spell_cast_delay_s: 1.0` (owner's estimate, (b)); every live spell aim now leads by velocity x
+(cast delay [+ rocket flight]), gates on the LED positions, back-slop 1 tile (= sim). Tornado led too (owner 18:4x).
+Offline check: hog +2.0 tiles, knight +1.0, building 0. NOT on the sim; aggro1 untouched. aggro1 m2500 first look:
+tank_for_bow 36% vs gate05 m5k 12% (same instrument, 25 reps, seed 5; one seed = a screen), bow_lane 0, nado_king 0;
+>=6 share 2.5/1.0/1.2. Previous header follows.) (**§5cn: GAUNTLET L40 -- Last updated 2026-09-03 17:35**, branch `main` (**§5cn: GAUNTLET L40 -- gatec2 m10k gate read (pre-registered §5ck.2):
 NO-REBOUND + HELD.** Regret 0.2824 / 0.2805 vs the 0.2418 bar; wrong waits 33 of 203 (bar <= 15) -- IDENTICAL to m5k's 33, so
 5,000 more matches did not move the passivity at all. >=6 share 2.7 / 3.8 / 2.4% on 3 seeds (gate05 m10k 0.1-0.2), up from
 its own m5k 2.3/1.7/2.0 -- it banks by continuing to decline cheap defensive answers (§5ck.3 chain confirmed at 2x). Cadence
@@ -2180,6 +2192,9 @@ slow one.
 * **aggro1b** (owner 17:3x, §5cn.7): same recipe + `--init data/bench/gatec2_m10k.pt`. AFTER aggro1's m5k read, never
   concurrently. Before launch: confirm the trainer's `--init` resets optimizer + match counter (else it is a resume).
 * then `env.nado_retarget_reach_fix` (the reward bug fix) as its own arm, then `observation.lock_aware_targets`.
+* **sim-parity arm (owner 18:2x, §5co.5): engine `spell_delay` 0.4 -> the MEASURED live cast delay for log/rocket**, after
+  aggro1b. The sim's log whiff is 21-25% on every arm and the policy can never learn a lead the sim does not need.
+  Measure the delay first (tap timestamp -> first frame the sprite exists, from a recorded session); 1.0 is an estimate.
 * deferred: `sim.bot_attack_floor` arm (owner 10:5x); coef-1.0 and coverage arms NOT taken.
 
 ### ⚑ OWNER DECISIONS 2026-09-02 (recorded so they are not re-litigated)
@@ -2268,6 +2283,9 @@ slow one.
   -> L40 (§5cn): m10k READ = NO-REBOUND + HELD. Regret 0.2824/0.2805 (bar 0.2418), wrong waits 33/203 (bar 15) -- same 33
      as m5k. >=6 2.7/3.8/2.4% (up). Rule fired: gatec2 STOPPED at m10150 (backed up); AGGRO ARM 1 = gate05 recipe from
      scratch + `sim.aggro_drills: true` launched 17:22 as `aggro1_20260903`. Read at m2k/m5k on the ledger + drill counters.
+  -> L42 (§5co): LIVE SPELL AIM FIX shipped (owner-authorized): cast-delay lead for log / rocket / tornado on both live
+     paths, gate-after-lead, back-slop 1 tile; `env.spell_cast_delay_s: 1.0` is (b) until measured. aggro1 m2500 first
+     look: tank_for_bow 36% (gate05 m5k 12%), bow_lane 0, nado_king 0; >=6 share 2.5/1.0/1.2 (3 seeds).
   -> L41 (§5cn.7, owner 17:3x): **FUTURE ARM "aggro1b" = same flag, `--init data/bench/gatec2_m10k.pt`** -- owner: gatec2
      "produced the best results we've seen of any checkpoint" (a on EVAL 25/20%, crowns 24 vs 8 per 32 matches, x-bow dmg
      1676 vs 676; c on regret/defense). Run AFTER aggro1's m5k read so the flag and the init are separable. Full m10k
@@ -9431,4 +9449,97 @@ continuation deploy rate / gap                  11.4/min, 4.20 s     14.2/min, 3
 worst DEFENDING one (regret, wrong waits, tornado). Aggro arm 1b is the bet that the lock-state drills repair the second
 half without undoing the first. It does NOT change the base for aggro arm 1 (already running, §3).
 Files: `scratchpad/gauntlet/L40/spell_m10k.txt`, `spell_m10k_offset16.txt` (committed).
+
+## §5co. GAUNTLET L42 (2026-09-03 17:50-19:05) -- the live spell whiff: owner's "mapping issue" contradicted, four real defects fixed on the live path; aggro1 first look
+
+**Owner (17:5x-18:4x):** "policy STILL doesn't know how to aim log in live training, it always plays it 1 or 2 tiles too
+far forward so it perfectly misses. This is a mapping issue, so just tell the model to play all logs 1-2 tiles further
+back" / "it still doesn't lead its target at all for log or rocket" / "I think the model fails to consider the cast time
+(1 second between cast and the spell appearing)" / chose **velocity lead with a 1.0 s knob** and **a sim spell_delay
+parity arm after aggro1b** / "make sure this also transfers to tornado -- in that 1 s a unit could walk out of the pull".
+This is the ONE owner-authorized exception to the live-path guardrail; the sim training path was not touched.
+
+### 1. "Mapping issue" -- (c) contradicted
+The board->screen mapping (`actions.py` BoardWarp piecewise-linear over measured anchors, `capture.to_screen`) is one
+function shared by troop and spell placements. A log-only 1-2 tile forward bias cannot come from it; troops would land
+1-2 tiles forward too. A constant "play logs 1-2 tiles back" would also be wrong in both directions: a stationary
+building needs 0 and a hog needs 2 (the miss scales with the target's speed x the delay, which is the owner's own
+third message). The owner's cast-delay diagnosis is the one the code supports.
+
+### 2. The defects (a, read in code; none had been measured before because the live path was off-limits)
+1. `env.py _wheels_spell_aim` (the train-rl live env, `training_wheels: true` -- what "live training" runs): the gate
+   `if log_hits(cx, cy, tracks, ...): return cell` (and the radius gate for the other spells) ran on the CURRENT track
+   positions BEFORE the lead. An aim drawn through the push where it stood passed the gate and the model's cell was
+   returned untouched; the lead code six lines further down (added 2026-08-20) ran only when the model had aimed at
+   nothing at all. So the one cast that needed the lead never got it.
+2. The same function fetched `self._enemy_tracks_now()` WITHOUT `with_base`. `lead_velocity` falls back to the KB
+   walking speed only when it has the card name, and the tracker reports zero velocity under 0.5 s of history -- so the
+   lead, when it did run, moved a fresh track by 0. The 2026-08-20 fallback had been dead on arrival.
+3. `reward.log_hits` back-slop was `-0.5 * half_w`: `log_half_width` 0.1083 is an x-axis (18-tile) width, applied on
+   the y axis (32 tiles) = 1.73 tiles behind the cast point still counted as hit. The sim engine's `_LOG_BACK_SLOP` is
+   1.0. Same anisotropy family as the rocket-distance and tornado-radius bugs fixed 2026-08-20. This one also scored
+   the live reward's whiff verdict (`env.py:1259`), so a log dropped 1-2 tiles ahead of a troop was rewarded as a hit.
+4. `play.py` (the `play` command's own inline copies): log branch had no lead at all; rocket branch used
+   `spell_intercept_cell` with the DEPRECATED `rocket_travel_rate` normalised flight, no cast delay, tracks without
+   base; tornado branch: no lead, no base, and no check that the model's own aim still pulled anything.
+
+### 3. The fix (shipped this loop; files in §5co.7)
+* `config.yaml env.spell_cast_delay_s: 1.0` -- LIVE ONLY. Floors `rocket_base_time` (0.3) rather than adding to it.
+* `env.py _impact_time(..., is_log=False)`: log -> cast delay; tornado -> max(tornado_time 1.2, delay); rocket -> delay
+  + tile-true flight, same [0.6, spell_eval_time] clamp. Consequence: the live reward's ROCKET verdict now judges at
+  1.0 + flight instead of 0.3 + flight (`env.py:956`); log verdict (`log_impact_time` 3.4) and tornado (1.2) unchanged.
+* `env.py _wheels_spell_aim`: tracks `with_base=True`; eta first; every track advanced by `lead_velocity x eta`; the
+  `log_hits` gate, the radius gate, `nado_king_cell` and the corridor/nearest fallbacks ALL run on the led tracks.
+* `reward.log_hits(..., back_slop=1/32)`: 1 tile, the sim's number, an explicit parameter.
+* `play.py`: log branch leads by the delay before `log_corridor_cell`; rocket branch -> `lead_point` with `_db` at
+  delay + tile-true flight, `actions.cell_at`; tornado branch leads by max(1.2, delay), king activation on led tracks,
+  and if the model's own aim pulls nothing at the predicted positions, snaps to the nearest predicted enemy (env.py's
+  fallback). `import math` added (it was missing; the lambda would have failed at runtime, not at import).
+* `sim/drill_env.report()`: registers the aggro drills when `sim.aggro_drills` is on (REPORT ONLY; `cli drills --only
+  tank_for_bow` raised KeyError against the aggro yaml). The training pool logic is untouched.
+
+### 4. Offline check (a; `lead_velocity` -> `log_corridor_cell` / `log_hits` with the shipped config, young tracks)
+```
+target      KB speed   led in 1.0 s   gate on led body (aim ON the current body)   corrected cast
+hog_rider   2.0 t/s     +2.00 tiles    FAILS (2 > 1-tile slop) -> corridor redrawn   2.24 tiles behind the current body
+knight      1.0 t/s     +1.00 tiles    passes (inside the slop) -> model's cell stands
+tesla       0            0             passes -> stands                              0
+rocket, hog 2.16 tiles off aim, impact 1.0 + 20/14 s: lead_point +4.86 tiles
+```
+The placement grid quantises corrections to 1.28 tiles per row, so a hog gets +2.24, not exactly +2.0.
+`clashrl.env` and `clashrl.play` import clean; nothing under `sim/` imports `log_hits`, `lead_point`, `lead_velocity`,
+`log_corridor_cell` or `_impact_time` (grep), so the running aggro1 and every future sim arm are byte-identical.
+
+### 5. What this does NOT establish
+* That the cast delay is 1.0 s (b). It is the owner's eyeball. Measure it: tap timestamp -> first frame the log/rocket
+  sprite exists, from a recorded session, for log and rocket separately (a rocket's flight is separately modelled).
+* That the lead lands hits live (b). Test: a live-training session's log whiff rate before/after (the `env.py:1259`
+  verdict, now with the 1-tile slop, so the "before" must be re-scored with the same slop to be comparable).
+* Whether `tornado_time` 1.2 already includes the cast delay (b): treated as the whole cast->effect (max, not sum).
+* The sim's log whiff (21-25% on gate05/gatec2/floor7, §5cl-5cn) is the SIM'S 0.4 s `spell_delay` vs a ~1 s live
+  delay: the policy is trained on a world where a log needs ~no lead, then whiffs live where it needs 1-2 tiles. That
+  is the parity arm queued in §6 -- (b) until the delay is measured and the arm is run.
+
+### 6. aggro1 first look at m2500 (a; §5cn.4 read plan, first half)
+* `cli drills --only tank_for_bow,bow_lane_choice,nado_king_activation --reps 25 --seed 5`, live ckpt verified m2500:
+```
+drill                  nothing  scripted  doctrine   aggro1 m2500   gate05 m5k (this loop, same instrument)   §5bt.4 gate05 m5k (40 reps)
+tank_for_bow              0%       92%      92%         36%            12%                                      12%
+bow_lane_choice           0%      100%     100%          0%            0%                                        0%
+nado_king_activation      0%      100%       8%          0%            0%   (doctrine gap: the prior finds it 8%)  0%
+```
+  One seed, 25 reps (+-10 pp): tank_for_bow 36% vs gate05's 12% is a SCREEN, not a result -- it is the drill aggro1
+  is being trained on, at 2,500 matches, and the m5k gate is the pre-registered read. bow_lane_choice 0% and king
+  activation 0% are unchanged from every policy measured (§5bt.4).
+* >=6 share (`gate_prior_probe`, seeds 0/1/2): **2.5 / 1.0 / 1.2%**, elixir mean 2.29 / 2.31 / 2.18. NOT the m2k
+  point (m2500; the decay between m2k and m5k is steep: gate05 3.50 -> 1.17), so no cross-arm call yet.
+* Trainer counters at 2500 eps: drills 34% all / 36% last-300 (gate05 38 / 38 -- DIFFERENT POOL, the aggro pool has
+  the three hard drills in it, not comparable); EVAL@2000 ladder 4% fair 2% (gate05 5%; winrate is not a discriminator).
+* Watchdog fired ELIXIR>=6 DRIFT at m2000 (0.005 vs rolling median 0.018) -- the same alert gate05 fired at m3000; it
+  SAMPLES (different instrument), noted, not acted on.
+
+### 7. Files
+`icebow/config/config.yaml`, `icebow/src/clashrl/{env,play,reward}.py`, `icebow/src/clashrl/sim/drill_env.py`
+(report only); `scratchpad/gauntlet/L42/{drills_aggro1_m2500.txt,drills_gate05_m5k.txt,ge6_m2500.txt,drills_m2500.sh}`
+(committed); `L42/aggro1_live_m25.pt` (verified matches=2500, NOT in git).
 

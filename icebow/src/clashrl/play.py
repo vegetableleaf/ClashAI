@@ -7,6 +7,7 @@ fine-tuning, the same loop plays toward the tower/crown/win rewards.
 """
 from __future__ import annotations
 
+import math
 import random
 import signal
 import time
@@ -22,6 +23,7 @@ from .reward import (TowerTracker, pump_rocket_cell, spell_intercept_cell, weake
                      xbow_lock_cell, xbow_offense_depth_cell, xbow_target_lane_cell,
                      tesla_pull_cell, log_corridor_cell, nado_king_cell)
 from .reward import spell_whiffed          # live spell target mask (see use site)
+from .reward import lead_point, lead_velocity   # 2026-09-03: cast-delay lead for log + rocket
 from .reward import TILE as _TILE
 from .states import GameState
 from .threats import ThreatTracker, THREAT_DIM
@@ -363,6 +365,16 @@ def play(cfg) -> None:
     _rocket_org = list(cfg.get("env", "rocket_origin", default=[0.5, 1.05]))
     _rocket_base = float(cfg.get("env", "rocket_base_time", default=0.3))
     _rocket_rate = float(cfg.get("env", "rocket_travel_rate", default=2.2))
+    _rocket_speed = float(cfg.get("env", "rocket_speed_tiles", default=14.0))
+    _spell_eval = float(cfg.get("env", "spell_eval_time", default=4.0))
+    # CAST DELAY (owner, 2026-09-03): ~1 s from tap to the spell existing on the board. This path
+    # led rockets with the DEPRECATED normalised-rate flight and no cast delay, and never led the
+    # Log at all -- the corridor was drawn through the push where it STOOD, 1-2 tiles ahead of
+    # where it would be when the log appeared. Same fix as env.py: lead every target by
+    # velocity x (cast delay [+ rocket flight]) before aiming, KB walking speed for young tracks.
+    _cast_delay = float(cfg.get("env", "spell_cast_delay_s", default=1.0))
+    _nado_eta = max(float(cfg.get("env", "tornado_time", default=1.2)), _cast_delay)
+    _nado_r_tiles = float((_db.get("tornado") or {}).get("radius_tiles") or 5.5) + 1.0   # env.py's gate
     # CONTINUOUS PERCEPTION (~10Hz): detector + team tracker run in a background thread; the act
     # loop reads a fresh snapshot at decision time instead of being blind between decisions.
     _ploop = None
@@ -655,10 +667,13 @@ def play(cfg) -> None:
                 tgt = weaker_princess_cell(cx, cy, aim_radius, tower_tracker.enemy_a,
                                            hp_tracker.enemy_hp, tower_tracker.enemy_alive, actions)
             if tgt is None and card_id in _rocket_ids:     # no tower/pump snap -> LEAD the tracked troops
-                impact = _rocket_base + _rocket_rate * float(np.hypot(cx - _rocket_org[0], cy - _rocket_org[1]))
-                tracks = (_ploop.enemy_tracks(time.time()) if _ploop is not None and _ploop.running
-                          else _team_tracker.enemy_tracks(time.time()))
-                tgt = spell_intercept_cell(cx, cy, tracks, impact, _lead_radius, actions)
+                # cast delay + TRUE tile-distance flight (env.py's _impact_time, same clamp)
+                d_tiles = float(np.hypot((cx - _rocket_org[0]) * 18.0, (cy - _rocket_org[1]) * 32.0))
+                impact = min(max(max(_rocket_base, _cast_delay) + d_tiles / _rocket_speed, 0.6), _spell_eval)
+                tracks = (_ploop.enemy_tracks(time.time(), True) if _ploop is not None and _ploop.running
+                          else _team_tracker.enemy_tracks(time.time(), True))
+                _lp = lead_point(cx, cy, tracks, impact, _lead_radius * 18.0, _db)
+                tgt = actions.cell_at(_lp[0], _lp[1]) if _lp is not None else None
             if tgt is not None:
                 cell = tgt
         # Defensive units (Tesla / Ice Wizard / Ronin) are NO LONGER forced to the centre: the
@@ -700,6 +715,9 @@ def play(cfg) -> None:
             cx, cy = actions.cell_center(gx, gy)
             _tk = (_ploop.enemy_tracks(time.time(), True) if _ploop is not None and _ploop.running
                    else _team_tracker.enemy_tracks(time.time(), True))
+            # where each body will be when the log APPEARS, not where it is at the tap
+            _tk = [(t[0] + vx * _cast_delay, t[1] + vy * _cast_delay) + tuple(t[2:])
+                   for t in _tk for vx, vy in (lead_velocity(t, _db),)]
             aim = log_corridor_cell(cx, cy, _tk, actions, _log_half_w, _log_roll, _AIR_BASES)
             if aim is not None:
                 cell = aim
@@ -707,11 +725,25 @@ def play(cfg) -> None:
             # KING ACTIVATION: the highest-value Tornado in the deck, and the one the model has
             # never attempted live. Only fires when an attacker is actually deep enough to be
             # worth waking the king -- otherwise the policy's own cast stands.
-            _tk = (_ploop.enemy_tracks(time.time()) if _ploop is not None and _ploop.running
-                   else _team_tracker.enemy_tracks(time.time()))
+            # LEAD THE TORNADO TOO (owner, 2026-09-03): in the cast delay a unit at the edge of the
+            # pull walks clean out of it. Judge and aim on where the units will be when it activates.
+            _tk = (_ploop.enemy_tracks(time.time(), True) if _ploop is not None and _ploop.running
+                   else _team_tracker.enemy_tracks(time.time(), True))
+            _tk = [(t[0] + vx * _nado_eta, t[1] + vy * _nado_eta) + tuple(t[2:])
+                   for t in _tk for vx, vy in (lead_velocity(t, _db),)]
             aim = nado_king_cell(_tk, tower_tracker.mine_a, actions, _nado_pull_r)
             if aim is not None:
                 cell = aim
+            elif _tk:
+                gx, gy = cell % gw, cell // gw
+                cx, cy = actions.cell_center(gx, gy)
+                _dist = lambda t: math.hypot((t[0] - cx) * 18.0, (t[1] - cy) * 32.0)
+                if not any(_dist(t) <= _nado_r_tiles for t in _tk):
+                    # the model's aim pulls NOTHING at the predicted positions (it did at the
+                    # current ones, or it was never near anything) -> nearest predicted enemy,
+                    # the same fallback the train-rl env uses. A 3-elixir pull of nothing is worse.
+                    _best = min(_tk, key=_dist)
+                    cell = actions.cell_at(_best[0], _best[1])
         elif card_id in tesla_ids and _wincon["xy"] is not None:
             # CENTRE-PULL: sit at the far edge of the win condition's OWN aggro radius so it is dragged
             # across the middle instead of beelining the near princess tower.

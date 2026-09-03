@@ -985,6 +985,12 @@ def report(cfg, names=None, reps=25, seed=5, policy=None, level=None, reward_mod
     shaping in the rest".
     """
     rows = []
+    # `cli drills --config <aggro arm yaml> --only tank_for_bow` raised KeyError (2026-09-03): the
+    # aggro drills are registered by DrillEnv.__init__, which this report never constructs. Mirror
+    # the flag here so a report can name them -- REPORT ONLY, the training pool is decided above.
+    if bool(cfg.get("sim", "aggro_drills", default=False)):
+        from . import aggro_drills
+        aggro_drills.register_all()
     todo = list(names) if names else sc.names()
     if reward_mode:
         # DOES THE REWARD PAY FOR THE CORRECT PLAY? A drill only teaches if passing it earns more
