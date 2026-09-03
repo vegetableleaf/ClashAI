@@ -1,0 +1,18 @@
+..\scratchpad\gauntlet\L32\floor7_m5k.pt  matches=5100  rows=2400  seed=1
+  affordable on 39.6% of rows | P(play) mean 0.283 (all) 0.286 (affordable rows) | played on 10.8% of rows | elixir mean 2.35  >=6 0.9% | phase rows [1697, 703, 0]
+  bucket  rows  P(play)  affordable  played   pro(single)
+      0    306   0.259     0.000     0.000    0.010
+      1    728   0.270     0.125     0.048    0.024
+      2    678   0.290     0.295     0.059    0.042
+      3    424   0.310     0.932     0.271    0.063
+      4    152   0.251     1.000     0.217    0.058
+      5     87   0.314     1.000     0.287    0.042
+      6     25   0.375     1.000     0.480    0.042
+      7      0     -         -         -      0.043
+      8      0     -         -         -      0.083
+      9      0     -         -         -      0.203
+     10      0     -         -         -      0.184
+  mean cost of the cards actually played: 2.64 (deck mean 3.50)
+    plays at <3   n=75   mean cost 1.43  skeletons:43 the_log:32
+    plays at 3-5  n=173  mean cost 2.99  ice_wizard:47 knight:38 tesla:24 tornado:22
+    plays at >=6  n=12   mean cost 5.08  x_bow:8 tesla:2 knight:1 the_log:1

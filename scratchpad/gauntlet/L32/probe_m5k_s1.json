@@ -1,0 +1,159 @@
+{
+ "ckpt": "..\\scratchpad\\gauntlet\\L32\\floor7_m5k.pt",
+ "matches": 5100,
+ "rows": 2400,
+ "seed": 1,
+ "affordable_frac": 0.3958333333333333,
+ "p_play_mean_all": 0.28267675667108655,
+ "p_play_mean_affordable": 0.28604643084206866,
+ "played_frac": 0.10833333333333334,
+ "elixir_mean": 2.3479166666666487,
+ "elixir_ge6": 0.00875,
+ "phase_rows": [
+  1697,
+  703,
+  0
+ ],
+ "force_bank": 0.0,
+ "cost_of_plays": 2.6384615384615384,
+ "picks_by_bucket": {
+  "<3": {
+   "n": 75,
+   "mean_cost": 1.4266666666666667,
+   "top": [
+    [
+     "skeletons",
+     43
+    ],
+    [
+     "the_log",
+     32
+    ]
+   ]
+  },
+  "3-5": {
+   "n": 173,
+   "mean_cost": 2.994219653179191,
+   "top": [
+    [
+     "ice_wizard",
+     47
+    ],
+    [
+     "knight",
+     38
+    ],
+    [
+     "tesla",
+     24
+    ],
+    [
+     "tornado",
+     22
+    ]
+   ]
+  },
+  ">=6": {
+   "n": 12,
+   "mean_cost": 5.083333333333333,
+   "top": [
+    [
+     "x_bow",
+     8
+    ],
+    [
+     "tesla",
+     2
+    ],
+    [
+     "knight",
+     1
+    ],
+    [
+     "the_log",
+     1
+    ]
+   ]
+  }
+ },
+ "card_names": [
+  "tornado",
+  "tesla",
+  "tesla_evo",
+  "ice_wizard",
+  "x_bow",
+  "rocket",
+  "knight",
+  "knight_evo",
+  "the_log",
+  "skeletons"
+ ],
+ "by_bucket": {
+  "0": {
+   "rows": 306,
+   "p_play": 0.2586151135513206,
+   "affordable": 0.0,
+   "played": 0.0
+  },
+  "1": {
+   "rows": 728,
+   "p_play": 0.26975124589280114,
+   "affordable": 0.125,
+   "played": 0.04807692307692308
+  },
+  "2": {
+   "rows": 678,
+   "p_play": 0.29030369534802825,
+   "affordable": 0.2949852507374631,
+   "played": 0.058997050147492625
+  },
+  "3": {
+   "rows": 424,
+   "p_play": 0.3095974738222002,
+   "affordable": 0.9316037735849056,
+   "played": 0.27122641509433965
+  },
+  "4": {
+   "rows": 152,
+   "p_play": 0.25072865318016785,
+   "affordable": 1.0,
+   "played": 0.21710526315789475
+  },
+  "5": {
+   "rows": 87,
+   "p_play": 0.31422785960737315,
+   "affordable": 1.0,
+   "played": 0.28735632183908044
+  },
+  "6": {
+   "rows": 25,
+   "p_play": 0.37461083352565766,
+   "affordable": 1.0,
+   "played": 0.48
+  },
+  "7": {
+   "rows": 0,
+   "p_play": null,
+   "affordable": null,
+   "played": null
+  },
+  "8": {
+   "rows": 0,
+   "p_play": null,
+   "affordable": null,
+   "played": null
+  },
+  "9": {
+   "rows": 0,
+   "p_play": null,
+   "affordable": null,
+   "played": null
+  },
+  "10": {
+   "rows": 0,
+   "p_play": null,
+   "affordable": null,
+   "played": null
+  }
+ }
+}

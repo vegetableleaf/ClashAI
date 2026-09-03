@@ -22,7 +22,15 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-03 09:10**, branch `main` (**§5ce: GAUNTLET L31 -- floor7_run m2k READ (screen, bar is m5k): on
+Last updated: **2026-09-03 10:50**, branch `main` (**§5cf: GAUNTLET L32 -- PATH A FAILED ITS PRE-REGISTERED BAR. floor7_run
+m5k (`data/bench/floor7_m5k.pt`, snapshot 10:18) reads >=6 share **0.7 / 0.9 / 0.5%** on the pre-registered probe against
+gate05's m5k 1.2/1.3/1.0 -- below on all three seeds, and DOWN from its own m2450 (1.2/1.3/0.5). The floor also REGRESSED the
+regret gate at the same match count (oracle 0.271 vs gate05's 0.2291, belief 0.2483 vs 0.2045) and killed defensive x-bow
+(6% vs 28%). Run STOPPED at m5950 per the pre-registered rule (ckpt preserved, resumable). Structural diagnosis (a): the gate
+prior term is too weak BY CONSTRUCTION -- it wants pi(play) 0.057, the policy sits at 0.283, and coef 0.5 acts on only 10% of
+rows. The one arm whose >=6 share ROSE m2k->m5k is gatep6 (conditioned table): 0.73 -> 1.50 mean. OWNER QUESTION OPEN: does C
+keep the floor (owner's stated cadence preference, but it carries the measured regret regression into C) or run clean without
+it? Box idle apart from Nucleo. Previous header follows.) (**§5ce: GAUNTLET L31 -- floor7_run m2k READ (screen, bar is m5k): on
 the pre-registered probe the floor-7 policy at m2450 reads >=6 share 1.2/1.3/0.5% -- BELOW gate05's m2k 4.0/3.5/3.0, like
 gatep6 (0.9/0.8/0.5). And a cross probe (each ckpt vs floor-0 AND floor-7 training bots) CONTRADICTS the mechanism behind
 Path A at m2k: the opponent's cadence does not move a fixed policy's >=6 share at all (gate05 m2k 5.0/4.5/2.4 vs 4.5/3.5/4.3;
@@ -2163,6 +2171,9 @@ slow one.
      4.5/3.5/4.3 @f7; floor7 1.5/1.8/0.9 vs 1.8/1.4/1.0) -- the "opponent bounds the bank" premise of Path A fails at m2k.
      Run continues to the m5k bar as pre-registered; if it fails there, C with caution (owner order) -- and C's premise
      (the policy's own eagerness is the lever) is the one this probe supports.
+  -> L32 (§5cf): **PATH A FAILED.** m5k >=6 share 0.7/0.9/0.5 vs the bar 1.2/1.3/1.0, 3/3 seeds below, own trend DOWN from
+     m2450. Regret gate regressed too (0.271/0.2483 vs 0.2291/0.2045 at the same count). Run stopped at m5950, ckpt kept.
+     Next arm is C (stronger gate-prior coef) -- BLOCKED on one owner question: floor in or out of C (§5cf.5).
 
 ### From §5bq (2026-09-02 22:10) -- spell niches, after the gate-prior run ends (sim reward = one change each)
 * **`nado_retarget` UNREACHABLE (c, §5bq.3):** sim/env.py:2472 and :2508 `tile_dist(u, tw) <= u.spec.reach + 1.0`
@@ -8623,4 +8634,85 @@ table `config/gate_prior_p6.json` at a stronger coef, ONE change vs floor7_run.
 ### 6. Files
 `scratchpad/gauntlet/L31/{probe_m2k4_s{0,1,2}.txt,.json, probe_trainenv.py, tenv_{floor7_m2k4,gate05_m2k}_f{0,7}_s{0,1,2}.txt}`
 (committed); `floor7_m2k4.pt` (snapshot, NOT in git).
+
+## §5cf. GAUNTLET L32 (2026-09-03 10:38-10:52) -- Path A FAILED the m5k bar; run stopped; the prior term is too weak by construction
+
+**Context.** The owner asked (10:38) where the run is and what the m5k outlook is. The run had already passed m5k and the
+gates monitor had snapshotted it at 10:18, so the outlook question is answered by the bar read itself rather than by a
+trend guess. Read taken, decision executed per the pre-registered rule (§5ce.4), run stopped.
+
+### 1. The bar read (a) -- `tools/gate_prior_probe.py` on `data/bench/floor7_m5k.pt`, seeds 0/1/2, the ledger instrument
+```
+arm / ckpt            matches   >=6 share (s0/s1/s2)   mean   P(play|aff)   elixir mean   verdict
+floor7_run            5000      0.7 / 0.9 / 0.5        0.70   0.299/0.286/0.302   2.22/2.35/2.21
+gate05  (L16, the bar) 5000     1.2 / 1.3 / 1.0        1.17   --            --            floor7 BELOW on 3/3 seeds
+floor7_run (L31)      2450      1.2 / 1.3 / 0.5        1.00   0.289/0.293/0.288             own trend DOWN
+```
+**FAILED**, pre-registered bar, no ambiguity: every seed below gate05's corresponding seed, and the arm's own share fell
+1.00 -> 0.70 mean over m2450 -> m5000. Plays at >=6 are 4-12 per seed and still mostly the win condition (x_bow 2-8).
+
+### 2. The decay is the whole family, not this arm (a, carried reads named by loop)
+```
+arm                                m2k mean       m5k mean       m10k
+gate05 (blended table, coef 0.5)   3.50 (L11)     1.17 (L16)     0.1-0.2% (§5bw)
+gatep6 (conditioned table, 0.5)    0.73 (L2x)     1.50 (L2x)     --
+floor7 (blended + opp floor 7)     1.00 (L31)     0.70 (L32)     --
+```
+Every arm that starts high decays; **gatep6 is the only arm whose >=6 share ROSE across m2k -> m5k** (0.73 -> 1.50). That
+is the single strongest piece of evidence for Path C's direction, and it is the arm C builds on.
+
+### 3. Same-count gate comparison (a) -- `regret_corpus.py` / `xbow_probe.py` / `continuation_report.py`, identical corpora and match counts
+```
+gate                          gate05_m5k        floor7_m5k        reading
+regret oracle / belief        0.2291 / 0.2045   0.271 / 0.2483    floor7 WORSE by +0.042 / +0.044
+waited (missed-play)          22 (23% / 18%)    17 (12% / 6%)     floor7 waits less, but errs less when it does
+x-bows per match              1.67              1.50
+  OFFENSIVE / DEFENSIVE / dead 48% / 28% / 25%  69% / 6% / 25%    floor7 nearly stopped defending with the bow
+deploy gap median / rate      4.20 s / 13.3-min 3.60 s / 14.7-min pro 3.85 s / 11.7-min: floor7 FURTHER from pro
+```
+So the floor did not just miss its target -- the policy trained against it is measurably worse on the fixed regret corpus
+and deploys faster than the arm it was meant to beat. **This retracts the hopeful reading in §5ce.3** that the floor-7 arm's
+early eagerness plus its higher training winrate (110W at m2700 vs gate05's 58W) might be a healthier trajectory: the
+higher training winrate came with worse regret and a faster deploy rate. Training winrate against a WEAKER opponent is
+not a quality signal, and that is exactly the trap -- the floor-7 bot banks instead of pressuring, so it is easier to beat.
+
+### 4. Why the prior term cannot hold the bank (a, from the trainer's own line + the loss code)
+`train_sim_ppo.py:1721-1743`: the term is `coef * BernoulliCE(prior || pi)` on the gate, over rows where the PLAY logit is
+unmasked. The run's line, stable over 12,600 updates:
+```
+GATE PRIOR CE 0.4155 | pi(play) 0.283 vs prior 0.057 on the same rows | 10% of rows usable
+```
+The prior asks for P(play) 0.057; the policy sits at 0.283 (5x) and does not move. coef 0.5, on 10% of rows, against a
+reward signal that acts on all of them. The term is under-powered by construction -- which is the same conclusion the L31
+cross probe reached from the other side (the opponent cannot move the share; only the policy's own P(play|aff) can). This
+is a MECHANISM claim, measured; how much coef is enough is (b).
+
+### 5. Run stopped -- state at stop, and the one open question
+State recorded before the kill (guardrail): m5950 episodes, 289W-4519L-6D, train winrate 2-10% over the last reads,
+avg_rew -14.0, pl +0.010, vl 1.031, ent 0.07, clip 0.04, drills 45% pass-all (44-45% over the last 300), 0.6 ep/s,
+no EVAL line yet (eval_every_matches 2000 but the first eval had not printed), watchdog ALERTs: ELIXIR>=6 DRIFT at m3000
+and m3500, CELL HEAD COLLAPSED (0.81 of 5.08, 44 distinct) at m4350. Checkpoint `data/policy_floor7_20260903.pt` and the
+gates snapshot `data/bench/floor7_m5k.pt` are both preserved, so the arm is resumable if the owner wants an m10k point.
+Procs 19 before the stop; box 1.7 GB free physical of 31.4.
+**QUESTION (posted, loop stopped on it):** C is "stronger coef on the conditioned table". Does C keep `bot_attack_floor: 7`?
+* (i) keep it -- matches the owner's "cadence toward the pros: yes", but C then inherits §3's measured regret regression
+  and a result cannot be attributed to the coef alone.
+* (ii) drop it for C -- C becomes gatep6 + one change (coef), the clean continuation of the only arm that trended UP,
+  directly comparable to gatep6 and gate05; the floor returns as its own later arm, its opponent-realism value (§5cd.1,
+  owner-confirmed) untouched and unchallenged.
+My recommendation is (ii): the floor's justification is opponent realism, which is not in dispute and does not need to
+ride along inside a coef experiment.
+
+### 6. What this does NOT establish
+* That the floor is bad for training (b). §3 is ONE training seed per arm; the floor's realism case (§5cd.1) is separate
+  and stands. What is measured is that this arm, at m5k, is worse on these gates.
+* The coef value C needs (b). 0.5 does not bite; the CE line gives the size of the gap (0.283 vs 0.057) but not the coef
+  that closes it without distorting the rest of the policy. A coef sweep is cheap only at m2k, and m2k has already
+  false-negatived once (gatep6).
+* That coverage is not the binding constraint (b, parked): the term reaches 10% of rows. Broadening coverage is a
+  SECOND change and must not be bundled with the coef.
+
+### 7. Files
+`scratchpad/gauntlet/L32/{probe_m5k_s{0,1,2}.txt,.json}` (committed); `floor7_m5k.pt` copy (NOT in git);
+run log `data/bench/floor7_run_20260903.log`, gate report `data/bench/floor7_gate_report.md` (NOT in git).
 

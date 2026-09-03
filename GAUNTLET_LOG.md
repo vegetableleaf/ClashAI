@@ -648,3 +648,17 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   stronger coef (one change vs floor7_run). Box: 19 python, physical RAM ~0.6 GB free (paging), probes run one at a time.
 - HANDOFF §5ce.
 
+
+## L32 — 2026-09-03 10:38-10:52 | AGGRO gauntlet loop 16: PATH A FAILED the m5k bar; run stopped; question posted
+- (a) BAR READ, pre-registered probe on data/bench/floor7_m5k.pt (snapshot 10:18), seeds 0/1/2: >=6 share 0.7/0.9/0.5% vs the
+  bar (gate05 m5k) 1.2/1.3/1.0 -- below on 3/3 seeds, and DOWN from its own m2450 read of 1.2/1.3/0.5. FAILED.
+- (a) same-count gates: regret oracle 0.271 vs 0.2291, belief 0.2483 vs 0.2045 (WORSE); x-bow DEFENSIVE 6% vs 28%; deploy rate
+  14.7/min vs 13.3 (pro 11.7, so further away). RETRACTS §5ce.3's hopeful reading -- the higher training winrate (110W vs 58W at
+  m2700) came from a WEAKER banking opponent, not a better policy.
+- (a) mechanism: GATE PRIOR CE line stable over 12.6k updates -- prior wants pi(play) 0.057, policy sits at 0.283, coef 0.5 on
+  10% of rows. The term is under-powered by construction; agrees with L31's cross probe from the other side.
+- (a) only gatep6 (conditioned table) ROSE m2k->m5k (0.73 -> 1.50 mean). C builds on the one arm with a positive trend.
+- Run STOPPED at m5950 (289W-4519L-6D, drills 45%, state recorded first; ckpt + m5k snapshot preserved, resumable). Procs 19 -> 2.
+- STOPPED ON A QUESTION: does C keep bot_attack_floor 7 (owner's cadence preference, carries the regret regression) or run clean
+  (gatep6 + coef only, my recommendation)? HANDOFF §5cf.
+
