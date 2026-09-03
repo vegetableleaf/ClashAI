@@ -616,3 +616,14 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   is the restart, blocked on the ruling. Checked whether the live-tracker seam could be probed cheaply: data/sessions are raw
   video + click events (no per-frame detections), so it is a detector-over-video job, not a hold-loop probe. Parked.
 
+
+## L29 — 2026-09-03 06:50-07:05 | AGGRO gauntlet loop 13: Path A prepared -- opponent cadence knob built (default OFF) and screened
+- Cause of §5bw.4's over-pressure found (a): the non-beatdown ScriptedBot has NO elixir rule on its attack branch -- it plays on
+  the first step it can afford any offensive card. Added `sim.bot_attack_floor` (default 0), training-only via make_opponent's
+  `adaptive` gate (eval bots untouched). Identity at 0: deploy-log sha equal on HEAD vs patched, eval- and training-style.
+- Screen (a), m10k sampled policy, 12 matches x 2 seeds per floor, non-beatdown bots: floor 0 press 56% / median 4.8 s /
+  bankable 0.62 per phase; 5-6 barely move; floor 7: 42% / 6.6 s / 2.2; floor 8: 42% / 7.8 s / 2.2; pros 37% / 9.0 s / 2.7.
+  Instrument differs from L22 (training provider vs non-adaptive) -- compare within the table only. 2 seeds = a screen.
+- (b) whether the floor lifts the policy's >=6 share is Path A itself (one change, `sim.bot_attack_floor: 7`, read at m5k).
+- Tests 5/5 new, opponent regression 16/16. Nothing launched; A/B/C still open. HANDOFF §5cc.
+

@@ -22,7 +22,14 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-03 04:48**, branch `main` (**§5cb: GAUNTLET L27 -- LOCK-AWARE `predict_targets` built behind
+Last updated: **2026-09-03 07:05**, branch `main` (**§5cc: GAUNTLET L29 -- PATH A PREPARED, not launched: the sim
+opponent's cadence has NO knob -- a cycle/control/siege ScriptedBot attacks on the first step it can afford any offensive card
+(the cause of §5bw.4's 46-52% pressure). Added `sim.bot_attack_floor` (default 0 = the historical bot, byte-identical deploy
+logs on HEAD vs patched; training-only through make_opponent's `adaptive` gate, so eval bots are untouched). Cadence screen,
+m10k sampled policy, 12 matches x 2 seeds per floor, non-beatdown bots: floor 0 pressure 56% / quiet median 4.8 s /
+bankable windows 0.62 per phase; floor 7: 42% / 6.6 s / 2.2; floor 8: 42% / 7.8 s / 2.2; floors 5-6 barely move it;
+pros 37% / 9.0 s / 2.7. Recommended arm value 7. A/B/C still open; nothing running. Previous header follows.)
+(**§5cb: GAUNTLET L27 -- LOCK-AWARE `predict_targets` built behind
 `observation.lock_aware_targets` (default off) and graded on the engine, 3 seeds x 12 matches, the SAME 60,599 unit-samples
 as L17: memoryless 74.2% (unchanged = the no-hint path is intact), engine-truth hints 95.8% (locked 81.5/80.6 -> 97.8/96.7,
 deploying 0 -> 100, buildings 25/16 -> 95/95), a LIVE-STYLE proxy (stationarity + range + track age, perfect tracker) 89.7%.
@@ -2133,6 +2140,9 @@ slow one.
      sim-to-real seam until live carries the hint) -- owner's call, §5cb.4.
   -> L28 (05:48): HOLD. No ruling, no steering, box idle. Nothing unblocked remains (the live tracker that would close
      the lock-aware seam is live-path work: sessions are raw video + clicks, no per-frame detections -- not a cheap probe).
+  -> L29 (§5cc): Path A PREPARED. The opponent cadence had no knob; `sim.bot_attack_floor` added (default 0 = historical,
+     eval bots untouched). Floor 7 gives non-beatdown bots 42% pressure / 2.2 bankable windows per phase (from 56% / 0.62;
+     pros 37% / 2.7). Path A is now launchable the moment the owner rules: `sim.bot_attack_floor: 7`, one change.
 
 ### From §5bq (2026-09-02 22:10) -- spell niches, after the gate-prior run ends (sim reward = one change each)
 * **`nado_retarget` UNREACHABLE (c, §5bq.3):** sim/env.py:2472 and :2508 `tile_dist(u, tw) <= u.spec.reach + 1.0`
@@ -8406,4 +8416,66 @@ instrument). A/B/C (§5by.4) still open; nothing launches until it is answered.
 ### 5. Files
 `icebow/src/clashrl/interactions.py`, `sim/view.py`, `sim/env.py`, `detect_obs.py`, `config/config.yaml`,
 `icebow/tests/test_lock_aware_targets.py`, `scratchpad/gauntlet/L27/lockaware_agreement.py`, `lockaware_m5k.{json,txt}`.
+
+## §5cc. GAUNTLET L29 (2026-09-03 06:50-07:05) -- Path A prepared: the opponent cadence knob (`sim.bot_attack_floor`), screened
+
+**Context.** A/B/C (§5by.4) is still unanswered; Path A (opponent-cadence arm) is my recommendation, and it was not
+launchable because there was nothing to launch: §5bw.4 measured the sim opponent pressuring 46-52% of single-elixir steps
+against the pros' 37% but did not locate the cause. This loop found it, added the knob (default off), proved the default is
+the historical bot, and screened candidate values. Nothing launched; box idle throughout (python = Nucleo only).
+
+### 1. Cause (a, by reading `ScriptedBot.act`)
+The ATTACK branch of a cycle/control/siege bot has no elixir rule at all: `usable` = every affordable card, and the branch
+plays one on the first step (0.6 s) it can afford any offensive card. Only beatdown holds (`elix < 9.5 -> return`). So a
+cycle bot chips at 3-4 elixir every ~8-11 s and never banks -- the mechanism behind the half-length quiet windows. The
+adaptive knobs (reaction, hold-counter, punish, split) shape WHAT it plays, not WHEN.
+
+### 2. The knob (built, default OFF; commit below)
+* `ScriptedBot(..., attack_floor=0.0)`: before the ATTACK branch, `if style != "beatdown" and elix < attack_floor: return`.
+  Defence, punish, backline opening and pump plays sit above it and are untouched (a human defends at any elixir).
+* `make_opponent`: `attack_floor = cfg sim.bot_attack_floor if adaptive else 0.0` -- the same `adaptive`-argument gate
+  `deck_pfsp_power` uses, so the eval benchmark (adaptive=False, level 11) keeps its historical cadence and eval curves stay
+  comparable. Config key `sim.bot_attack_floor: 0.0` (commented).
+* IDENTITY (a): `scratchpad/gauntlet/L29/identity_check.py`, sha-256 of every opponent deploy (t, card, x, y) over 4
+  matches at seed 0, eval-style and training-style bots: HEAD `0800dc7e...` / `1c5bbadf...` == patched `0800dc7e...` /
+  `1c5bbadf...`. The default is the bot every checkpoint trained against, not "approximately".
+* Tests: `tests/test_bot_attack_floor.py` 5/5 (default 0 in code and config; banks under the floor, attacks at it; defence
+  ignores it; beatdown keeps 9.5; eval path always 0). Opponent regression 16/16 with cycle/elixir/building-placement.
+
+### 3. The screen (a) -- `scratchpad/gauntlet/L29/cadence_floor.py`, m10k sampled policy, 12 matches x seeds 1,2 per floor
+Same key as §5bw.4 (enemy TROOP with age < 6 s, single elixir) but a DIFFERENT instrument variant: this one builds the bots
+through `make_opponent(adaptive=True)` as training does (L22 used the env's default non-adaptive provider), so compare only
+within this table. Reruns reproduce to the digit under PYTHONHASHSEED=0. Non-beatdown bots only (the floor does not touch
+beatdown), both seeds pooled; `bank/ph` = quiet stretches >= 11.2 s (a 2->6 bank) per single-elixir phase:
+```
+floor  n_m  press%  med s   p90    p95   >=11.2%  bank/ph  opp@10elix%  troop units/ph   per-seed press% | bank/ph
+  0     16   55.7    4.8    9.6   12.1    5.9     0.62      0.1         33.8            s1 56 | 0.86   s2 55 | 0.44
+  5     21   54.2    4.2    9.6   12.9    6.1     0.67      0.0         29.1            s1 54 | 0.64   s2 55 | 0.70
+  6     20   48.4    5.4   10.8   13.8    9.0     0.90      0.0         23.6            s1 45 | 1.11   s2 52 | 0.73
+  7     18   42.0    6.6   17.3   20.3   24.1     2.17      2.3         23.2            s1 40 | 2.45   s2 46 | 1.71
+  8     19   41.9    7.8   17.0   19.4   26.8     2.21      1.6         26.6            s1 41 | 2.44   s2 43 | 2.00
+beatdown bots (control, floor cannot touch them): press 33-46%, bank/ph 2.2-3.1 across the cells (deck-mix noise, n 3-8)
+PROS (L22, 519 replays, all styles): press 37% | med 9.0 s | p90/p95 23.4/28.6 | >=11.2 s 39% | bank/ph ~2.7
+```
+Reading: floors 5-6 barely move the key because most of the bot's troop drops are DEFENCE against our policy's own plays
+(the key counts every young enemy troop, defensive or not), which the floor does not gate; the attack subset only starts to
+bank meaningfully at 7. Floor 7 is the knee: pressure 56 -> 42% (both seeds), bankable windows 0.62 -> 2.2 per phase
+(3.5x), quiet median 4.8 -> 6.6 s, with the bot parked at 10 elixir on 2.3% of steps (pros sit at 10 too; not a wasteful
+bot). Floor 8 adds nothing over 7. The sim still falls short of the pros on the tail (p95 20 vs 29 s; >=11.2 s 24-27% vs
+39%): a floor produces a fixed wait, pros also wait longer than their elixir requires. Two seeds = a screen for picking the
+value, not a 3-seed conclusion (the direction holds on both seeds at 7 and 8).
+
+### 4. What this does NOT establish
+* That the floor raises the policy's >=6-elixir share (b) -- that IS Path A: `sim.bot_attack_floor: 7`, one change, on
+  the restart, read at m5k with the gate ledger (bar from §5by.4: m5k >=6 share above gate05's 1.2/1.3/1.0%).
+* That floor 7 is the right value beyond this screen; a per-bot roll (e.g. uniform 6-8, a population like the adaptive
+  knobs) would add the tail the pros have -- parked (b), one knob first.
+* Difficulty side-effect (b): troop units per phase fall 34 -> 23, so a floor-7 opponent puts fewer bodies on the board.
+  The eval bench is untouched by construction, so a winrate move on it would be real; whether it moves is untested.
+* The same-instrument caveat: §5bw.4's 46-52% was the non-adaptive provider; this loop's 56% (non-beatdown) / 51-54% (all
+  styles) is the training provider. Both say the same thing; they are not the same number.
+
+### 5. Files
+`icebow/src/clashrl/sim/opponents.py`, `icebow/config/config.yaml` (key, default 0), `icebow/tests/test_bot_attack_floor.py`,
+`scratchpad/gauntlet/L29/{cadence_floor.py, identity_check.py, cadence_floor_summary.txt, cad_f{0,5,6,7,8}_s{1,2}.json}`.
 

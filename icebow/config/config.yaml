@@ -1637,6 +1637,10 @@ sim:
   enemy_level_weights: [2, 4, 3, 2]   # ...weighted toward higher levels so the policy learns to counter L15/16 decks (14 still most common: 18/36/27/18%). YOUR deck levels are per-card in config/cards.yaml
   backline_support_prob: 0.05         # ROCKET-COMBO SETUP: per-step chance (control/beatdown opponents, early) to OPEN with a 4-6 elixir support BEHIND the king -- the scenario the agent learns to rocket (support + tower). ~half of control/beatdown matches.
   backline_support_until_s: 45.0      # only in the first N seconds (the opening); later a support comes as part of a push, not a backline drop
+  bot_attack_floor: 0.0               # OPPONENT CADENCE (HANDOFF §5cc, training bots only -- eval bots stay historical): a
+                                      # cycle/control/siege bot banks to this many elixir before it ATTACKS (defence and
+                                      # punish plays unaffected). 0 = attack on the first affordable step (the historical bot:
+                                      # 46-52% of single-elixir steps pressured, 5 s quiet median vs pros 37% / 9 s, §5bw.4).
   anywhere_deploy_prob: 0.75          # chance a bot holding a DEPLOY_ANYWHERE card (cards.yaml flag: Miner /
                                       # Goblin Drill) tunnels it straight onto a live princess tower instead of
                                       # walking it from the bridge. Without this the sim never produces the
