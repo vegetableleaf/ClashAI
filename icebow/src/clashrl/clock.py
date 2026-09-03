@@ -132,6 +132,11 @@ class ElixirClock:
         return (time.time() - self._start) >= self.ot_t
 
     @property
+    def overtime_s(self) -> float:
+        """Seconds INTO overtime (0 before it). Drives the soft defensive ramp (env, HANDOFF §5bo)."""
+        return max(0.0, (time.time() - self._start) - self.ot_t)
+
+    @property
     def multiplier(self) -> int:
         return self._mult
 

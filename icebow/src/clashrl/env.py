@@ -384,6 +384,9 @@ class LiveMatchEnv:
         self.xbow_defense_back = float(cfg.get("env", "xbow_defense_back", default=0.62))
         self.xbow_deep_frac = float(cfg.get("rewards", "xbow_deep_frac", default=0.25))
         self.xbow_success_frac = float(cfg.get("env", "xbow_success_frac", default=0.30))
+        # SOFT overtime flip (owner 2026-09-02, HANDOFF §5bo): the defensive weight ramps 0 -> 1 over this
+        # many seconds of overtime instead of switching at once. Pros keep 54% of OT bows forward.
+        self.xbow_defense_ramp_s = float(cfg.get("env", "xbow_defense_ramp_s", default=60.0))
         # thresholds the correctness terms use
         self.quiet_frac = float(cfg.get("env", "enemy_quiet_frac", default=0.02))       # 'quiet board' enemy-mass gate
         self.full_elixir = int(cfg.get("env", "elixir_full", default=10))               # leak / cycle threshold
@@ -828,7 +831,9 @@ class LiveMatchEnv:
         self._canvas_stack.reset()
         self._det_hold.reset()                        # flicker memory must not bridge two matches
         self._not_in_match = 0        # motion history must never bridge two matches
-        self._defensive = False           # icebow phase: False = offensive X-Bow win condition; True = defence + rocket-cycle
+        self._defensive_w = 0.0           # icebow phase weight 0..1 (§5bo): 0 = offensive X-Bow win condition, 1 = defence + rocket-cycle;
+                                          #   blends the bow reward, scales the rocket-cycle credit, is the snap probability. `_defensive` = (w >= 1)
+        self._rng = np.random.default_rng()
         self._enemy_chip_total = 0.0      # cumulative enemy-tower HP chipped (the X-Bow 'did it break through?' gauge)
         self._xbow_play_t = None          # wincon repeat-credit window must not bridge two matches
         self._match_bonus = 0.0
@@ -1365,6 +1370,15 @@ class LiveMatchEnv:
         except Exception:  # noqa: BLE001 -- perception hiccup: assume no beatdown, act normally
             return False
 
+    @property
+    def _defensive(self) -> bool:
+        """Fully defensive phase (soft weight saturated). Assigning True/False pins the weight to 1/0 (tests)."""
+        return self._defensive_w >= 1.0
+
+    @_defensive.setter
+    def _defensive(self, v: bool) -> None:
+        self._defensive_w = 1.0 if v else 0.0
+
     def _defensive_bow_cell(self, cell: int) -> int:
         """Pull an X-Bow back into the DEFENSIVE centre band (env.xbow_defense_front/back).
 
@@ -1583,12 +1597,15 @@ class LiveMatchEnv:
             in_band = central and self.xbow_defense_front <= cy <= self.xbow_defense_back
             behind = central and cy > self.xbow_defense_back
             frac = 1.0 if in_band else (self.xbow_deep_frac if behind else 0.0)
-            if self._defensive:
-                val = self.w_wincon * frac if frac > 0.0 else self.w_wincon_mis
-            elif d <= self.xbow_range:
-                val = self.w_wincon
+            # SOFT PHASE (§5bo): offensive and defensive credits blended by _defensive_w, so the
+            # preference tilts through overtime instead of flipping. w=0 and w=1 are the old branches.
+            def_val = self.w_wincon * frac if frac > 0.0 else self.w_wincon_mis
+            if d <= self.xbow_range:
+                off_val = self.w_wincon
             else:
-                val = self.w_wincon * 0.4 * frac if frac > 0.0 else self.w_wincon_mis
+                off_val = self.w_wincon * 0.4 * frac if frac > 0.0 else self.w_wincon_mis
+            w = self._defensive_w
+            val = (1.0 - w) * off_val + w * def_val
             # REPEAT-CREDIT GATE, live twin of sim/env._wincon_exec's (2026-08-12): no positive
             # credit while our previous X-Bow can still be standing. Live cannot reliably SEE its
             # own bow (detector recall), but it KNOWS when it played one -- so "standing" is the
@@ -1643,8 +1660,8 @@ class LiveMatchEnv:
                            and math.hypot(cx - ax, cy - ay) <= self.spell_aim_radius
                            for i, (ax, ay) in enumerate(enemy_a[:2]))
                 return self.w_wincon * (self.combo_mult if both else 1.0)
-            if self._defensive and near_enemy_princess(cx, cy, self.cfg, self.spell_aim_radius):
-                return self.w_wincon * 0.6
+            if self._defensive_w > 0.0 and near_enemy_princess(cx, cy, self.cfg, self.spell_aim_radius):
+                return self.w_wincon * 0.6 * self._defensive_w     # rocket-cycle credit grows with the phase (§5bo)
             return 0.0
         if card_id in self.miner_ids:
             if near_enemy_king(cx, cy, self.cfg, self.spell_aim_radius):
@@ -1827,9 +1844,13 @@ class LiveMatchEnv:
             # bow assist chain, so the model's raw forward pick went out untouched and was billed -1.
             # Pros keep 54% of overtime bows forward, so this is the doctrine's preference, applied only
             # while the time-gated phase says the offensive bow has failed.
-            if card_id in self.xbow_ids and (self._defensive or self._enemy_massing_back()):
+            if card_id in self.xbow_ids and (self._enemy_massing_back()
+                                             or self._rng.random() < self._defensive_w):
+                # SOFT snap (§5bo): probability = _defensive_w, 0 at the overtime whistle -> 1 after
+                # xbow_defense_ramp_s. A rising preference, which is what the pro split is (54% front
+                # in OT, 48% at 3x), not a step. Massing back still forces it at any time.
                 cell = self._defensive_bow_cell(cell)
-            elif card_id in self.xbow_ids and not self._defensive:  # OFFENSIVE phase only: snap a forward X-Bow onto the nearer lane so it LOCKS
+            elif card_id in self.xbow_ids:  # OFFENSIVE phase only: snap a forward X-Bow onto the nearer lane so it LOCKS
                 gx, gy = cell % self.gw, cell // self.gw
                 cx, cy = self.actions.cell_center(gx, gy)
                 _, enemy_a, _ = _anchors(self.cfg)
@@ -2004,9 +2025,19 @@ class LiveMatchEnv:
             # the match clock when available and from the 3x flip as a fallback.
             in_overtime = (self.clock.overtime if hasattr(self.clock, "overtime")
                            else self.elixir_mult >= 3)
-            if not self._defensive and (in_overtime
-                    and self._enemy_chip_total < self.tower_hp.full * self.xbow_success_frac):
-                self._defensive = True
+            # SOFT RAMP (owner 2026-09-02, §5bo): "softer, but increasingly harder as OT progresses".
+            # w = seconds into overtime / xbow_defense_ramp_s, clamped; 0 while the offensive bow has
+            # broken through (chip >= xbow_success_frac). Time and chip are monotone, so w never drops
+            # except by the bow succeeding -- which is the one case the doctrine WANTS it to drop.
+            w_prev = self._defensive_w
+            if in_overtime and self._enemy_chip_total < self.tower_hp.full * self.xbow_success_frac:
+                ot_s = getattr(self.clock, "overtime_s", None)
+                self._defensive_w = 1.0 if ot_s is None else                     float(min(1.0, max(0.0, ot_s / max(1e-6, self.xbow_defense_ramp_s))))
+            else:
+                self._defensive_w = 0.0
+            if w_prev <= 0.0 < self._defensive_w:
+                print(f"[env] phase -> DEFENSIVE ramp begins (w rises to 1 over {self.xbow_defense_ramp_s:.0f} s)")
+            elif w_prev < 1.0 <= self._defensive_w:
                 print("[env] phase -> DEFENSIVE (X-Bow back-centre + rocket-cycle)")
             # --- CORRECTNESS score (mirrors the sim; from live perception) ---
             gx, gy = cell % self.gw, cell // self.gw

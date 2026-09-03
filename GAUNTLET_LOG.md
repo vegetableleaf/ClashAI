@@ -461,3 +461,11 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - NOT done: sim twin (sim/env.py:3149, run live -> §6); OT snap hard vs soft = owner call (flag: overrides ~54% of pro OT bows).
 - (b) edits unexercised live. Files: scratchpad/gauntlet/L14/pro_bow_timing.{py,txt}. HANDOFF §5bn.
 - Run untouched. Next: 21:11 wakeup = m=5k read.
+
+
+## L14b — 2026-09-02 21:10-21:30 | owner steering: OT flip -> SOFT RAMP; agent_dt verdict pinned in HANDOFF §6
+- (a) live env: `_defensive_w` = clamp(s into OT / `env.xbow_defense_ramp_s` 60) while chip < success_frac, else 0;
+  blends the bow reward, scales rocket-cycle credit, is the snap probability. `_defensive` = property (w>=1).
+  `clock.overtime_s` added. 5 new tests; 130/131 (the 1 pre-existing). Unexercised live (b).
+- HANDOFF §6 PRIORITY-C: agent_dt verdict (§5bl.6) with the order of work, so it is not lost.
+- Run untouched. Next: 21:11 wakeup fired? -> m=5k read.

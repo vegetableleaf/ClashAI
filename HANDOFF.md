@@ -22,7 +22,14 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-02 21:10**, branch `main` (**§5bn: GAUNTLET L14 -- owner ruling on the X-Bow defensive
+Last updated: **2026-09-02 21:30**, branch `main` (**§5bo: owner steering applied -- the live overtime flip is now a
+SOFT RAMP: `_defensive_w` 0 -> 1 over `env.xbow_defense_ramp_s` (60 s: soft at the 180 s whistle, fully defensive
+at the 3x minute), zero whenever the offensive bow has broken through. It blends the bow reward
+((1-w) offensive + w defensive), scales the rocket-cycle credit, and is the PROBABILITY of the defensive snap.
+`_defensive` is now a property (= w >= 1; assignment pins w, tests unchanged). `clock.overtime_s` added.
+5 new tests (tests/test_defensive_ramp.py), 130/131 across the doctrine modules, the 1 failure pre-existing.
+agent_dt verdict (§5bl.6) pinned as a §6 item so it is not lost. Unexercised live (b).**
+Previous header (§5bn: GAUNTLET L14 -- owner ruling on the X-Bow defensive
 doctrine, verified against the pro crawl and APPLIED to the live path (three env.py edits, owner-authorised).
 (a) pro blue-side bows (1,029 with tiles): front share 93% (0-30 s) -> 82% -> 63% (2x) -> 54% (OT) -> 48%
 (3x OT); late bows in matches the pro finished with a crown 54% front vs 62% at zero crowns -> the TIME gate is a
@@ -1967,11 +1974,29 @@ slow one.
 
 ## 6. Open work
 
+### PRIORITY-C -- agent_dt / act_period (owner asked to pin this, 2026-09-02; measured §5bl, L12)
+**Verdict (§5bl.6): do NOT lower agent_dt yet.** Served decision loop p50 **0.760 s** against act_period 0.6
+(pipeline 0.646 s; env reads 0.343 s; trainer residual **0.315 s**, which is NOT the net: forward 1.6 ms,
+DDQN step 21 ms). Lowering the period today changes nothing served. Pros play < 0.6 s after their own
+previous play only 1.4% of the time (43,205 gaps); reaction to the enemy is event-woken and bounded by the
+pipeline, not the period. Order of work when this is picked up:
+1. Make serving honest at 0.6: pipeline 0.65 -> < 0.40 s. Targets by size: the 0.3 s trainer residual
+   (timers around live_search.decide / doctrine / logging -- unsplit); `detect_state` 56-86 ms per decision
+   (template match, could run at 2 Hz); tower-HP OCR p90 348 ms; threat colour 60 ms.
+   Instrument: `tools/latency_stage_timer.py` on an IDLE box (§5bl numbers are contended upper bounds).
+2. When the pipeline is <= 0.2 s: a 0.3 s agent_dt RETRAIN is a real experiment -- ONE change, after the
+   gate-prior run, prior tables regenerated for 0.3 s.
+3. Separate prize: the reaction path (sighting -> tap) timed on an idle box.
+
+### From §5bo (2026-09-02 21:30)
+* Sim twin of the SOFT RAMP + tower-gate removal (sim/env.py:3149-3156): one change after the run.
+* First live session: `raw_cell != cell` for OT bows, the ramp prints, `wc` after a tower kill.
+* Ramp length `env.xbow_defense_ramp_s` = 60 is (b); owner's knob.
+
 ### From §5bn (2026-09-02 21:10) -- after the gate-prior run ends
 * SIM TWIN of the tower-gate removal: sim/env.py:3149-3156 drop `took_tower` from the phase flip so sim and
   live share one doctrine again (live changed 09-02, §5bn.2). One change, its own experiment.
-* Owner call: soften the live OT snap (pros keep 54% of OT bows forward, §5bn.1) -- e.g. snap only when
-  `_defensive and _enemy_massing_back()`. Not done.
+* ~~Owner call: soften the live OT snap~~ DONE §5bo (21:30): soft ramp, hardening through OT.
 * First live session after §5bn: read play_log `raw_cell != cell` for bows in the defensive phase and `wc`
   after a tower kill -- the edits are unexercised.
 
@@ -7143,4 +7168,50 @@ passes the other 56 tests; the failing one asserts a coordinate the current grid
 
 ### 5. Files
 `scratchpad/gauntlet/L14/pro_bow_timing.{py,txt}`; `icebow/src/clashrl/env.py` (3 hunks).
+
+## §5bo — owner steering: the overtime flip is a SOFT RAMP, hardening through OT; agent_dt verdict pinned in §6 (2026-09-02 21:10-21:30)
+
+Owner (21:1x): "Make the OT flip softer, but increasingly harder as OT progresses. And for your agent_dt
+verdict, make a note in handoff.md so we don't forget about it later." Live path, owner-authorised.
+
+### 1. Design (a, code)
+`_defensive` (bool) -> `_defensive_w` (float 0..1), computed every step in the phase block (env.py ~:2020):
+* w = 0 before overtime; w = clamp(seconds_into_overtime / `env.xbow_defense_ramp_s`, 0, 1) once
+  `clock.overtime` (elapsed >= `elixir.overtime_time_s` 180); **w = 0 at any time the offensive bow has broken
+  through** (`_enemy_chip_total >= xbow_success_frac * full`), the one case the doctrine wants offence kept.
+  Time and chip are monotone, so w only rises -- except by the bow succeeding.
+* Default ramp 60 s (config `env.xbow_defense_ramp_s`, config.yaml env block): soft at the 180 s whistle,
+  fully defensive at 240 s = the 3x-elixir minute. (b) that 60 s is the right length: pros go 63% front (2x)
+  -> 54% (OT) -> 48% (3x), a gentler slope than a 60 s ramp to "always back"; the chip condition is what
+  justifies steeper, and the crawl cannot check it. One knob, owner's to move.
+* Three consumers, all continuous now:
+  1. `_wincon_exec_live` bow credit = (1-w) x offensive branch + w x defensive branch. w=0 and w=1 are the
+     old two branches exactly (tested).
+  2. rocket-cycle chip credit (`near_enemy_princess` spell branch) = 0.6 x w_wincon x w.
+  3. Defensive bow snap fires with PROBABILITY w (env RNG), or always when `_enemy_massing_back()`. A rising
+     preference reproduces the pro split in expectation; a threshold would just be the hard flip 30 s later.
+     (b) the wheel's randomness at mid-ramp costs the model a consistent target -- the reward blend is the
+     signal that teaches it, the snap is the wheel; watch `raw_cell != cell` in OT next session.
+* `_defensive` kept as a PROPERTY (= w >= 1; setter pins w to 1/0) -- 10 existing tests assign it directly
+  and all still pass. `ElixirClock.overtime_s` (seconds into OT, 0 before) added; env reads it via getattr
+  and falls back to w = 1 (the old hard flip) if a clock has no `overtime_s`.
+* Phase prints: "DEFENSIVE ramp begins" when w leaves 0; "phase -> DEFENSIVE" when it reaches 1.
+
+### 2. Tests (a)
+`tests/test_defensive_ramp.py` (5): w=0/w=1 equal the old branches; blend monotone in w and halfway at 0.5;
+a bow reaching only a DEAD princess earns the misplace, not +w_wincon (§5bn edit 3); the property pins w;
+`overtime_s` 0 before OT and ~30 at OT+30. Doctrine modules (xbow_lane, xbow_rewards, xbow_into_push,
+env_init_attrs, wincon_bank, defensive_doctrine, rocket_doctrine, rocket_value, spell_card_veto) 125 tests,
+1 failure = the pre-existing `test_the_clamped_frontmost_ROW_counts_as_forward` (§5bn). Total 130/131.
+Trap found writing the test: `_wincon_exec_live` re-anchors `_xbow_play_t` on EVERY bow call, so a second call
+inside `xbow_lifetime` (30 s) returns 0 by the repeat-credit gate -- reset `_xbow_play_t = None` per call.
+
+### 3. NOT done / does NOT establish
+Sim twin (sim/env.py:3149 still hard, tower-gated) -- after the run, one change (§6). Whether w's 60 s
+ramp matches pro behaviour once conditioned on "bow never worked" (unobservable in the crawl). No live
+session run: (b) until the next one.
+
+### 4. Files
+`icebow/src/clashrl/env.py`, `icebow/src/clashrl/clock.py`, `icebow/config/config.yaml`
+(`env.xbow_defense_ramp_s`), `icebow/tests/test_defensive_ramp.py`.
 

@@ -1206,6 +1206,8 @@ env:
   xbow_defense_back: 0.62              # ...down to ~your princess-tower line. BEHIND the towers (deeper) is rarely useful ->
                                        #    earns only rewards.xbow_deep_frac of the win-condition credit (soft nudge, not a punishment)
   xbow_success_frac: 0.30              # OFFENSE->DEFENSE trigger: X-Bow chipped LESS than this fraction of a tower by 2x elixir -> switch to defensive X-Bow + rocket-cycle
+  xbow_defense_ramp_s: 60              # SOFT overtime flip (owner 2026-09-02, HANDOFF 5bo): defensive weight ramps 0->1 over this many seconds
+                                       #   of OVERTIME (180 s + 60 = fully defensive at the 3x minute). Blends the bow reward, is the snap probability.
   # --- PRESCRIBED PLACEMENTS (aim assists, not shaping: the policy still decides WHEN and WHAT) ----
   # OFFENSIVE X-BOW DEPTH. Reach to the enemy princess is a RADIUS, so the correct row depends on
   # the column. BEHIND A BRIDGE (x ~ 0.25 / 0.75) the bow is nearly in the tower's own lane and
