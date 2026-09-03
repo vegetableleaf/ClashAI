@@ -792,6 +792,7 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   Offline: hog +2.0 tiles, knight +1.0, building 0; hog gate fails on led body -> cast 2.24 tiles back.
 - aggro1 m2500: tank_for_bow 36% (gate05 m5k 12% same instrument; §5bt.4 12%), bow_lane 0, nado_king 0 (doctrine 8%);
   >=6 share 2.5/1.0/1.2; EVAL@2000 4/2%. One seed, 25 reps: a screen. m5k gate (~20:10) is the read.
-- §6 queue += sim spell_delay parity arm after aggro1b (owner). Delay measurement from a recording still owed.
+- §6 queue += sim spell_delay 0.4 -> 1.0 parity arm after aggro1b (owner). Owner 19:1x: delay is 1.0 s for ALL spells
+  (online sources) -- no measurement owed; the sim's 0.4 is the wrong one.
 - Run untouched (12 trainer procs before/after). HANDOFF §5co.
 

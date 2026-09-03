@@ -2192,9 +2192,10 @@ slow one.
 * **aggro1b** (owner 17:3x, §5cn.7): same recipe + `--init data/bench/gatec2_m10k.pt`. AFTER aggro1's m5k read, never
   concurrently. Before launch: confirm the trainer's `--init` resets optimizer + match counter (else it is a resume).
 * then `env.nado_retarget_reach_fix` (the reward bug fix) as its own arm, then `observation.lock_aware_targets`.
-* **sim-parity arm (owner 18:2x, §5co.5): engine `spell_delay` 0.4 -> the MEASURED live cast delay for log/rocket**, after
-  aggro1b. The sim's log whiff is 21-25% on every arm and the policy can never learn a lead the sim does not need.
-  Measure the delay first (tap timestamp -> first frame the sprite exists, from a recorded session); 1.0 is an estimate.
+* **sim-parity arm (owner 18:2x, §5co.5): engine `spell_delay` 0.4 -> 1.0 s** (engine.py:855, every spell but royal
+  delivery), after aggro1b. Owner 19:1x: "the delay is 1.0 s for ALL spells, confirmed from online sources" -- no
+  measurement step needed. The sim's log whiff is 21-25% on every arm and the policy can never learn a lead the sim does
+  not need. ONE change vs the base recipe; read on spellprobe log/tornado whiff both slices + the m5k gate.
 * deferred: `sim.bot_attack_floor` arm (owner 10:5x); coef-1.0 and coverage arms NOT taken.
 
 ### ⚑ OWNER DECISIONS 2026-09-02 (recorded so they are not re-litigated)
@@ -9511,8 +9512,9 @@ The placement grid quantises corrections to 1.28 tiles per row, so a hog gets +2
 `log_corridor_cell` or `_impact_time` (grep), so the running aggro1 and every future sim arm are byte-identical.
 
 ### 5. What this does NOT establish
-* That the cast delay is 1.0 s (b). It is the owner's eyeball. Measure it: tap timestamp -> first frame the log/rocket
-  sprite exists, from a recorded session, for log and rocket separately (a rocket's flight is separately modelled).
+* ~~That the cast delay is 1.0 s (b)~~ -- RESOLVED 19:1x: owner confirmed 1.0 s for ALL spells from online sources
+  (sourced, not measured on this box; the value the fix ships with). Tornado: `tornado_time` 1.2 is kept as the full
+  cast->effect (max, not sum), i.e. 1.0 spawn + ~0.2 activation.
 * That the lead lands hits live (b). Test: a live-training session's log whiff rate before/after (the `env.py:1259`
   verdict, now with the 1-tile slop, so the "before" must be re-scored with the same slop to be comparable).
 * Whether `tornado_time` 1.2 already includes the cast delay (b): treated as the whole cast->effect (max, not sum).
