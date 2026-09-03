@@ -22,7 +22,13 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-03 11:30**, branch `main` (**§5cg: GAUNTLET L33 -- OWNER RULED (10:5x): PATH C LAUNCHED 11:20 --
+Last updated: **2026-09-03 12:40**, branch `main` (**§5ch: GAUNTLET L34 -- gatec2 m2k SCREEN (bar is m5k): >=6 share
+**3.5 / 4.4 / 3.4%** at m2450 on the ledger probe -- gate05's m2k level (4.0/3.5/3.0) and 4-5x its one-change comparator
+gatep6 (0.9/0.8/0.5). The coef BITES (a): the trainer's cumulative pi(play) on usable rows is flat at 0.150-0.162 from
+update 800 to 5400 (gatep6 sat at 0.242 at 11.4k, floor7 0.283) -- but it suppresses the gate LEVEL uniformly (per-bucket
+P(play) flat 0.17-0.22 across elixir 0-9), it has not taught the prior's elixir-conditional SHAPE. Caution guard at m2k:
+drills 39% pass-all = gate05's 38% at the same count. Run continues to the m5k bar (~13:55). RUNNING NOW. Previous header
+follows.) (**§5cg: GAUNTLET L33 -- OWNER RULED (10:5x): PATH C LAUNCHED 11:20 --
 `gatec2_run` = gatep6_run.yaml + `sim.ppo_gate_prior_coef: 2.0` (the ONE change; conditioned table `gate_prior_p6.json`,
 pressure_s 6.0, NO bot_attack_floor -- DEFERRED to after this run, not dropped: "the attack floor fundamentally changes how
 the bots behave"). Trainer confirms `GATE PRIOR ON: coef 2.000 ... PRESSURE key W=6 s`. Seed 41, from scratch, ckpt
@@ -2183,6 +2189,8 @@ slow one.
      Next arm is C (stronger gate-prior coef) -- BLOCKED on one owner question: floor in or out of C (§5cf.5).
   -> L33 (§5cg): OWNER RULED 10:5x -- C with coef 2.0, floor OUT of C and DEFERRED (not dropped). LAUNCHED 11:20
      (`gatec2_run`, one change vs gatep6). Bars in §5cg.2; m2k screen ~12:25, m5k bar ~14:00 + eval.
+  -> L34 (§5ch): m2k SCREEN 3.5/4.4/3.4% (gate05 m2k 4.0/3.5/3.0; gatep6 0.9/0.8/0.5). Coef bites: in-run pi(play) flat
+     0.15 (gatep6 0.24). Level suppressed uniformly, shape not learned. Drills 39% = gate05's 38%. m5k bar ~13:55.
 
 ### From §5bq (2026-09-02 22:10) -- spell niches, after the gate-prior run ends (sim reward = one change each)
 * **`nado_retarget` UNREACHABLE (c, §5bq.3):** sim/env.py:2472 and :2508 `tile_dist(u, tw) <= u.spec.reach + 1.0`
@@ -8776,4 +8784,51 @@ sampled, 6 envs x 400 steps). Comparators are the same instrument's earlier read
 
 ### 4. Files
 `data/bench/gatec2_run.yaml`, `gatec2_run_launch.sh` (NOT in git); this section.
+
+## §5ch. GAUNTLET L34 (2026-09-03 12:24-12:40) -- gatec2 m2k screen: gate05's level, 4-5x gatep6; the coef bites, on the level not the shape
+
+**Context.** Path C (§5cg) at m2475, 0.6-0.7 ep/s, 19 python, 69W-1907L-2D. Pre-registered m2k screen taken on a
+snapshot at matches=2450 (`scratchpad/gauntlet/L34/gatec2_m2k5.pt`, not in git). Run untouched.
+
+### 1. The screen (a) -- `gate_prior_probe.py`, seeds 0/1/2, the ledger instrument
+```
+ckpt               matches  >=6 share (s0/s1/s2)  mean   P(play|aff)          elixir mean       affordable%        plays>=6 (x_bow)
+gatec2 (L34)        2450    3.5 / 4.4 / 3.4       3.77   0.198/0.200/0.208    2.62/2.80/2.75    47.1/52.3/50.2    15/22/22 (10/10/10)
+gate05 (L11)        2000    4.0 / 3.5 / 3.0       3.50   0.228/0.233/0.227    2.57/2.64/2.57    41.0/45.2/43.7
+gatep6 (L24)        2350    0.9 / 0.8 / 0.5       0.73   0.340/0.327/0.350    2.21/2.26/2.18    33.0/35.5/32.5
+floor7 (L31)        2450    1.2 / 1.3 / 0.5       1.00   0.289/0.293/0.288    2.29/2.29/2.23    37.0/38.1/37.4
+```
+Against its one-change comparator (gatep6: same table, same pressure key, coef 0.5) the coef-2 policy banks 4-5x more
+at m2k and its P(play|affordable) is 0.20 vs 0.34. It sits at gate05's m2k level -- and gate05 then decayed to 1.17 at
+m5k and 0.1-0.2 at m10k, so the screen says nothing about durability; the bar (§5cg.2) is at m5k.
+
+### 2. The coef bites -- and what it is doing (a, the trainer's own cumulative line, one instrument)
+```
+updates     800     1800    2800    3800    4800    5400      gatep6 @11.4k   floor7 @12.6k
+pi(play)   0.162   0.157   0.154   0.151   0.150   0.151      0.242           0.283
+prior      0.061   0.060   0.062   0.062   0.062   0.061      0.064           0.057
+usable     15%                                                 12%             10%
+```
+The pre-registered in-run tell (§5cg.2: "clearly below 0.24 by ~10k updates") is met by update 800 and holds flat. The
+gap to the prior is now 2.5x (was 4-5x). PRESSURE on 48% of usable rows (gatep6 50%).
+**Shape vs level (a):** per-bucket sampled P(play) on seed 0 is 0.18 / 0.19 / 0.21 / 0.22 / 0.19 / 0.22 / 0.17 / 0.18 /
+0.17 / 0.14 across elixir 0-9; the pro table is 0.01 / 0.02 / 0.04 / 0.06 / 0.06 / 0.04 / 0.04 / 0.04 / 0.08 / 0.20. The
+policy has lowered its gate everywhere by roughly the same factor; it has not learned "hold at 3-7, spend at 9". The >=6
+share rises anyway because a uniformly lower play rate lets the bar climb. Whether a uniformly lower gate is what we
+want is a separate question from the bar (b): it is the mechanism the regret / drills guards exist to catch.
+
+### 3. Caution guards at m2k (a, same count, the trainer's own drill counter -- one instrument across arms)
+drills pass-all at m2450: gate05 38%, gatep6 31%, floor7 43%, **gatec2 39%**. No collapse. Watchdog (its own sampled
+instrument, not comparable to the probe): >=6 3.9% at m1700, one DRIFT alert (42% below a 5-reading rolling median of
+6.7% -- early readings are noisy, and the alert is relative). Regret / x-bow / deploy-rate guards are m5k reads.
+
+### 4. What this does NOT establish
+* The m5k bar (b). gate05 stood exactly here at m2k and lost 2/3 of it by m5k.
+* That the uniform suppression is harmless (b): a policy that plays 20% less everywhere may miss defensive plays; the
+  m5k regret read (worse-than-WAIT and missed-play columns) is the instrument for that.
+* That coverage (15% usable) is enough (b, parked): the term now reaches more rows than gatep6's 12% because the policy
+  is affordable on more rows (47-52% vs 33-36%) -- banking makes more rows usable, a small positive feedback.
+
+### 5. Files
+`scratchpad/gauntlet/L34/{probe_m2k5_s{0,1,2}.txt,.json}` (committed); `gatec2_m2k5.pt` (NOT in git).
 
