@@ -561,6 +561,17 @@ class SimMatchEnv:
     def _hand_ids(self):
         return [self._slot_card_id(s) for s in self.cycle[:4]]
 
+    def enemy_troop_min_age(self) -> float:
+        """Seconds since the YOUNGEST living enemy TROOP was deployed; 1e9 with none on the board.
+        The sim side of the gate prior's PRESSURE key (tools/gate_prior.py schema 2, HANDOFF 5bx):
+        the pro table's key is "the opponent played a troop within W s", and `age` starts at 0 on
+        deploy (deploy time included), so `min_age < W` is the same event. Spells and buildings do
+        not count on either side. The threshold W lives in the parent (sim.ppo_gate_prior_pressure_s)
+        so the worker carries the raw age and no config seam can open between the two."""
+        ages = [float(u.age) for u in self.eng.units
+                if u.team == 1 and u.hp > 0 and u.spec.kind == "troop"]
+        return min(ages) if ages else 1e9
+
     def _play_slot(self, card_id: int) -> None:
         """Consume a played identity: bank/spend its slot's Evolution charge, then send the slot to
         the back of the cycle."""

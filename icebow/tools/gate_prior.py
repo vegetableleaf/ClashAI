@@ -23,9 +23,21 @@ double / triple, the ENGINE's boundaries, not a guess) and whether a card was pl
 Both corpora show the same shape (2026-09-02): in single elixir pros play in ~4-8% of windows at
 3-7 elixir and ~20-25% at 9 -- they BANK. The 18k agent spent 0.02% of its steps at >= 6.
 
-WHAT IT IS NOT. Not conditioned on the board (the ruling's v0 also names threat-on-our-half; that
-needs the engine recording pass and can be added as a third key without changing the trainer
-hook). Not an imitation target for WHICH card or WHERE -- the card/cell heads are untouched.
+THE THIRD KEY (schema 2, `--pressure-s W`, HANDOFF 5bw/5bx). The ruling's v0 also named
+threat-on-our-half, and the docstring above used to say that needed an engine pass -- it does not:
+the OPPONENT's plays are in the same CSV. "Pressure" = the opponent played a TROOP (CardDB kind,
+not a spell or building) within the last W seconds of the window's start. The measured split
+(2026-09-03, W=6, single elixir, 5/6/7 elixir): pros play in 2.4/3.0/2.9% of QUIET windows vs
+8.6/6.8/6.6% under PRESSURE, so the blended table pulled "wait" twice as hard on pressured rows
+(where PPO is right to play) and half as hard on quiet ones (where banking happens). Schema 2
+keeps `p_play` (the blend, byte-identical to schema 1) and adds `p_play_by_pressure[phase]
+["quiet"|"pressure"][bucket]`; the trainer reads the split only when `sim.ppo_gate_prior_pressure_s`
+matches the table's W, and the sim-side key is "a living enemy TROOP younger than W s"
+(`SimMatchEnv.enemy_troop_min_age`), the same event.
+
+WHAT IT IS NOT. Not an imitation target for WHICH card or WHERE -- the card/cell heads are
+untouched. Not a threat-on-OUR-half test (a troop played anywhere counts): the CSV has tiles, but
+the sim key must be computable in the worker from the engine alone, and the two must agree.
 """
 from __future__ import annotations
 
@@ -46,6 +58,8 @@ from clashrl import cards as _cards                                  # noqa: E40
 
 PHASES = ("single", "double", "triple")
 N_BUCKETS = 11          # floor(elixir) 0..10
+PRESSURE_KEYS = ("quiet", "pressure")
+MIN_CELL_N = 30         # a conditioned cell thinner than this falls back to the blended p_play
 
 
 def _rate(t: float, reg: float, ot: float) -> float:
@@ -68,7 +82,17 @@ def _base(slug: str) -> str:
     return re.sub(r"-ev\d+$|-hero$", "", slug)
 
 
-def fit(src: Path, cfg, db, side: str = "blue"):
+def _is_troop(db, slug: str, unknown: Counter) -> bool:
+    """The opponent-side classifier of the pressure key. CardDB kind; a card the DB does not know
+    is COUNTED (reported) and treated as a troop, the majority class."""
+    k = db.kind(_base(slug).replace("-", "_"))
+    if k is None:
+        unknown[slug] += 1
+        return True
+    return k == "troop"
+
+
+def fit(src: Path, cfg, db, side: str = "blue", pressure_s: float = 0.0):
     dt = float(cfg.get("sim", "agent_dt", default=0.6))
     reg = float(cfg.get("sim", "regulation_s", default=180.0))
     ot = float(cfg.get("sim", "overtime_s", default=120.0))
@@ -78,13 +102,22 @@ def fit(src: Path, cfg, db, side: str = "blue"):
         by[r["replay_tag"]].append(r)
     windows = {ph: [0] * N_BUCKETS for ph in PHASES}      # count of decision windows
     plays = {ph: [0] * N_BUCKETS for ph in PHASES}        # ...in which the pro played
+    # ...split by the PRESSURE key (schema 2 only; [quiet, pressure] per phase)
+    windows_p = {ph: [[0] * N_BUCKETS for _ in PRESSURE_KEYS] for ph in PHASES}
+    plays_p = {ph: [[0] * N_BUCKETS for _ in PRESSURE_KEYS] for ph in PHASES}
     elx_at_play = Counter()
     unpriced: Counter = Counter()
+    unknown_kind: Counter = Counter()
     n_plays = n_under = n_rep = 0
+    other = "red" if side == "blue" else "blue"
     for tag, rs in by.items():
         mine = sorted((r for r in rs if r.get("attr_s") == side), key=lambda r: float(r["seconds"]))
         if not mine:
             continue
+        # the OPPONENT's troop plays (abilities and non-troops are not pressure)
+        theirs = sorted(float(r["seconds"]) for r in rs
+                        if r.get("attr_s") == other and r.get("attr_ability") != "1"
+                        and r.get("attr_card") != "_invalid" and _is_troop(db, r["attr_card"], unknown_kind))
         seq = []
         for r in mine:
             if r.get("attr_ability") == "1" or r.get("attr_card") == "_invalid":
@@ -95,10 +128,13 @@ def fit(src: Path, cfg, db, side: str = "blue"):
                 seq.append((float(r["seconds"]), _base(r["attr_card"])))
         end = max(float(r["seconds"]) for r in rs) + dt
         n_rep += 1
-        e, t, j = 5.0, 0.0, 0
+        e, t, j, k = 5.0, 0.0, 0, 0
         while t < end:
             eb = min(N_BUCKETS - 1, int(math.floor(e + 1e-9)))
             ph = _phase(t, reg, ot)
+            while k < len(theirs) and theirs[k] <= t:
+                k += 1
+            pres = int(pressure_s > 0.0 and k > 0 and t - theirs[k - 1] < pressure_s)
             played = 0
             t2, tt = t + dt, t
             while j < len(seq) and seq[j][0] < t2:
@@ -120,8 +156,10 @@ def fit(src: Path, cfg, db, side: str = "blue"):
             t = t2
             windows[ph][eb] += 1
             plays[ph][eb] += played
+            windows_p[ph][pres][eb] += 1
+            plays_p[ph][pres][eb] += played
     table = {ph: [plays[ph][b] / max(1, windows[ph][b]) for b in range(N_BUCKETS)] for ph in PHASES}
-    return {
+    out = {
         "schema": 1, "side": side, "dt": dt, "regulation_s": reg, "overtime_s": ot,
         "source": str(src), "replays": n_rep, "plays": n_plays,
         "reconstruction_under_cost_frac": n_under / max(1, n_plays),
@@ -129,6 +167,17 @@ def fit(src: Path, cfg, db, side: str = "blue"):
         "elixir_at_play": {str(k): v for k, v in sorted(elx_at_play.items())},
         "windows": windows, "play_windows": plays, "p_play": table,
     }
+    if pressure_s > 0.0:
+        out["schema"] = 2
+        out["pressure_s"] = float(pressure_s)
+        out["unknown_kind"] = dict(unknown_kind)
+        out["windows_by_pressure"] = {ph: dict(zip(PRESSURE_KEYS, windows_p[ph])) for ph in PHASES}
+        out["play_windows_by_pressure"] = {ph: dict(zip(PRESSURE_KEYS, plays_p[ph])) for ph in PHASES}
+        out["p_play_by_pressure"] = {
+            ph: {key: [plays_p[ph][q][b] / windows_p[ph][q][b] if windows_p[ph][q][b] >= MIN_CELL_N
+                       else table[ph][b] for b in range(N_BUCKETS)]
+                 for q, key in enumerate(PRESSURE_KEYS)} for ph in PHASES}
+    return out
 
 
 def report(pr: dict) -> None:
@@ -142,13 +191,38 @@ def report(pr: dict) -> None:
     for ph in PHASES:
         print(f"{ph:<8}" + "".join(f"{pr['p_play'][ph][b]:>10.3f}" for b in range(N_BUCKETS)))
         print(f"{'  n':<8}" + "".join(f"{pr['windows'][ph][b]:>10d}" for b in range(N_BUCKETS)))
+    if pr.get("schema", 1) >= 2:
+        print(f"[gate-prior] split by PRESSURE (opponent troop within {pr['pressure_s']:.0f} s)"
+              f"{'  UNKNOWN KIND: ' + str(pr['unknown_kind']) if pr.get('unknown_kind') else ''}")
+        for ph in PHASES:
+            for key in PRESSURE_KEYS:
+                n = sum(pr["windows_by_pressure"][ph][key])
+                tot = max(1, sum(pr["windows"][ph]))
+                print(f"{ph[:3] + '/' + key[:4]:<8}"
+                      + "".join(f"{pr['p_play_by_pressure'][ph][key][b]:>10.3f}" for b in range(N_BUCKETS))
+                      + f"   ({100.0 * n / tot:.0f}% of windows)")
+                print(f"{'  n':<8}" + "".join(f"{pr['windows_by_pressure'][ph][key][b]:>10d}" for b in range(N_BUCKETS)))
 
 
 def load_table(path: Path) -> dict:
-    """The trainer's reader: {phase: [p_play per bucket]} plus dt / phase boundaries."""
+    """The trainer's reader: {phase: [p_play per bucket]} plus dt / phase boundaries; schema 2
+    adds p_play_by_pressure[phase][quiet|pressure] and pressure_s."""
     pr = json.loads(Path(path).read_text(encoding="utf-8"))
-    assert pr.get("schema") == 1, "unknown gate_prior schema"
+    assert pr.get("schema") in (1, 2), "unknown gate_prior schema"
     return pr
+
+
+def prior_array(pr: dict, pressure_s: float = 0.0):
+    """What the trainer indexes. pressure_s == 0: [phase, bucket] from p_play (schema 1 or 2,
+    identical numbers). pressure_s > 0: [phase, pressure(0/1), bucket], and the table's own W
+    must match -- a table fit at 6 s indexed by a 10 s sim key is a different prior."""
+    import numpy as np
+    if pressure_s <= 0.0:
+        return np.asarray([pr["p_play"][p] for p in PHASES], np.float32)
+    assert pr.get("schema") == 2, "gate prior: ppo_gate_prior_pressure_s > 0 needs a schema-2 table"
+    assert abs(float(pr["pressure_s"]) - float(pressure_s)) < 1e-6, (
+        f"gate prior: table fit at W={pr['pressure_s']} s, config asks {pressure_s} s")
+    return np.asarray([[pr["p_play_by_pressure"][p][k] for k in PRESSURE_KEYS] for p in PHASES], np.float32)
 
 
 def main() -> int:
@@ -157,11 +231,13 @@ def main() -> int:
     ap.add_argument("--side", default="blue", help="crawled player's side in the payload (blue)")
     ap.add_argument("--out", default=None, help="write the prior here (JSON), e.g. config/gate_prior.json")
     ap.add_argument("--report", action="store_true")
+    ap.add_argument("--pressure-s", type=float, default=0.0,
+                    help="schema 2: also split by 'opponent troop played within W s' (0 = schema 1)")
     a = ap.parse_args()
     cfg = Config.load(None)
     db = _cards.load(cfg)
     src = Path(a.src) if Path(a.src).is_absolute() else Path(cfg.path(a.src))
-    pr = fit(src, cfg, db, side=a.side)
+    pr = fit(src, cfg, db, side=a.side, pressure_s=a.pressure_s)
     if a.report or not a.out:
         report(pr)
     if a.out:

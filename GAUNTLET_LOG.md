@@ -555,3 +555,16 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   vs pros 37% / 9.0 s / 39%. ~1 bankable window per phase vs ~2.7. Bounds any gate repair (b for the size).
 - Decision: repair = pressure-conditioned prior (schema 2 + sim key, flag OFF = today's table). Question posted on the opponent
   cadence (not blocking). Next: build + unit test, then TEST RUN from scratch graded at m2k/m5k. HANDOFF §5bw.
+
+
+## L23 — 2026-09-03 02:10-03:05 | AGGRO gauntlet loop 7: the repair is BUILT (pressure-conditioned gate prior)
+- Built, one flag: `tools/gate_prior.py --pressure-s 6` (schema 2; blend byte-identical to the shipped table) ->
+  `config/gate_prior_p6.json`; sim key `SimMatchEnv.enemy_troop_min_age()` carried raw as payload `eage`;
+  `sim.ppo_gate_prior_pressure_s` in the trainer (0.0 = gate05 byte-for-byte; W must match the table's, asserted).
+- (a) table W=6, single elixir 5/6/7 elixir: quiet 0.024/0.030/0.028 vs pressure 0.086/0.067/0.067; 38% of single
+  windows pressured (CardDB kind; L22's hand list said 37%). No unknown red cards.
+- (a) 5 new unit tests, 12/12 pass. CPU smoke run flag ON: reaches the loss, `PRESSURE on 57% of usable rows`
+  (untrained policy, 8 matches -- not L22's number). Flag-OFF smoke (gate05_run.yaml, isolated --out): exit 0, original banner, no PRESSURE clause.
+- Staged `data/bench/gatep6_run.yaml` (= gate05_run.yaml + the flag + isolated paths). NOT launched. Next: launch the
+  TEST RUN (cuda, same launch line as gate05), grade at m2k/m5k with gate_prior_probe seeds 0/1/2 + ledger. HANDOFF §5bx.
+

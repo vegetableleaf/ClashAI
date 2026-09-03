@@ -22,7 +22,13 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-03 02:05**, branch `main` (**§5bw: GAUNTLET L22 -- diagnosis cut 2, the repair is CHOSEN.
+Last updated: **2026-09-03 03:05**, branch `main` (**§5bx: GAUNTLET L23 -- the repair is BUILT and smoke-tested:
+schema-2 gate prior split by opponent pressure (`tools/gate_prior.py --pressure-s 6` -> `config/gate_prior_p6.json`,
+blend byte-identical to `gate_prior.json`), sim key `SimMatchEnv.enemy_troop_min_age()` carried as payload `eage`,
+trainer flag `sim.ppo_gate_prior_pressure_s` (0.0 = gate05's table byte-for-byte), 5 new unit tests (12/12 pass),
+CPU smoke run reaches the loss with "PRESSURE on 57% of usable rows". Test-run config staged:
+`data/bench/gatep6_run.yaml` = gate05_run.yaml + that one flag + isolated paths. NEXT: launch the TEST RUN.
+Previous header follows.) (**§5bw: GAUNTLET L22 -- diagnosis cut 2, the repair is CHOSEN.
 (1) Per-term reward ledger on the m2k/m5k/m10k snapshots (24 matches x 3 seeds x 2 instruments): the 2k->10k reward
 gain is the WAIT-SIDE penalty shrinking (sampled: threat_miss_idle -2.20 -> -1.11/match; greedy: wait-side -6.5 ->
 -0.26) while the x-bow terms are flat (sampled wincon_exec +0.98 -> +1.00) or FALLING (greedy m5k -> m10k: exec
@@ -2091,6 +2097,11 @@ slow one.
   -> TRIPPED at m10k (§5bv, 01:00): 0.1 / 0.2 / 0.0%. RUN STOPPED 01:02. Step (1) done; (2)-(5) in progress.
   -> L22 (§5bw): diagnosis done, repair CHOSEN = pressure-conditioned gate prior (the ruling's dropped key).
      Next: build it behind `sim.ppo_gate_prior_pressure_s` + unit test, then the from-scratch TEST RUN.
+  -> L23 (§5bx): BUILT + unit-tested + smoke-run. Launch line for the TEST RUN (step 3): `run.py --config
+     data/bench/gatep6_run.yaml train-sim-ppo --matches 40000 --envs 96 --workers 12 --size 432 --device cuda
+     --seed 41 --search-interval 4` (identical to gate05's except the config); ckpt `data/policy_gatep6_20260903.pt`
+     (did not exist at 03:05). Grade: `gate_prior_probe.py` seeds 0/1/2 at m2k (gate05: >=6 share 4.0/3.5/3.0%,
+     P(play|aff) 0.23) and m5k (gate05: 1.2/1.3/1.0%) + the L22 ledger. Bar: m5k >=6 share ABOVE gate05's m2k.
 
 ### From §5bq (2026-09-02 22:10) -- spell niches, after the gate-prior run ends (sim reward = one change each)
 * **`nado_retarget` UNREACHABLE (c, §5bq.3):** sim/env.py:2472 and :2508 `tile_dist(u, tw) <= u.spec.reach + 1.0`
@@ -8037,4 +8048,79 @@ only on the thresholded gate.
 ### 7. Files
 `scratchpad/gauntlet/L22/{term_ledger.py, ledger_grid.sh, summarise.py, led_<ckpt>_<mode>_s<seed>.txt+json
 (18), prior_pressure.py, prior_pressure_W6.json, prior_pressure_W10.json, quiet_stretches.py}`.
+
+## §5bx. GAUNTLET L23 (2026-09-03 02:10-03:05) -- the pressure-conditioned gate prior is BUILT, tested, smoke-run
+
+**Context.** §5bw chose the repair for the tripped ≥6-elixir read: restore the third key the owner's v0 ruling named
+("threat on our half") to the gate prior, so the cross-entropy pull stops asking "wait" twice as hard as pros on rows
+where the opponent just committed a troop, and asks it properly on quiet rows. This loop built it. No training ran;
+the box was idle throughout (1 python process, 7.2 GB free at 02:10).
+
+### 1. What was built (one change, one flag; 0.0 = the gate05 run byte-for-byte)
+* **`tools/gate_prior.py` schema 2** -- `--pressure-s W`. Pressure = the OPPONENT (red rows of `plays_ext.csv`)
+  played a card of CardDB kind `troop` within W s of the window's start (abilities, spells, buildings excluded;
+  a card the DB does not know is counted in `unknown_kind` and treated as a troop -- the corpus has none). Output
+  keeps `p_play` (the blend; verified `==` the shipped `config/gate_prior.json` p_play AND windows) and adds
+  `p_play_by_pressure[phase][quiet|pressure][bucket]`, `windows_by_pressure`, `play_windows_by_pressure`,
+  `pressure_s`. A conditioned cell with < `MIN_CELL_N` 30 windows falls back to the blend (none does on the
+  corpus: min cell n = 98, triple/quiet bucket 0). `prior_array(pr, W)` is the trainer's reader: `[phase, bucket]`
+  at W=0, `[phase, pressure, bucket]` at W>0, and it REFUSES a table fit at another W (a 6-s table indexed by a
+  10-s key is a different prior). Docstring corrected: the old text said the third key "needs the engine
+  recording pass" -- it never did, the opponent's plays are in the same CSV.
+* **`config/gate_prior_p6.json`** (NEW file; `config/gate_prior.json` untouched). (a) single elixir, buckets 0..10:
+  quiet `0.009 0.022 0.030 0.049 0.039 0.024 0.030 0.028 0.065 0.178 0.133` (62% of windows), pressure
+  `0.011 0.028 0.057 0.084 0.089 0.086 0.067 0.067 0.109 0.235 0.279` (38%). Double: quiet
+  `0.008 0.033 0.055 0.083 0.076 0.079 0.108 0.135 0.255 0.418 0.341` (34%), pressure `0.010 0.039 0.066 0.113
+  0.138 0.128 0.146 0.175 0.273 0.459 0.342` (66%). Triple: quiet `.010 .050 .082 .136 .145 .145 .219 .250 .340
+  .475 .301` (20%), pressure `.024 .048 .093 .162 .188 .202 .247 .283 .355 .455 .319` (80%). Matches §5bw.3 to
+  the third decimal (that fit used a hand-typed spell/building list; this one uses CardDB kind -- 38% vs 37%
+  pressured single windows is the whole difference).
+* **Sim key: `SimMatchEnv.enemy_troop_min_age()`** (`sim/env.py`, next to `_hand_ids`) -- age in s of the
+  YOUNGEST living enemy troop (`team==1, hp>0, spec.kind=="troop"`), 1e9 with none. `Unit.age` starts at 0 on
+  deploy and includes deploy time, so `min_age < W` is the same event as the table's "played within W s".
+  The worker payload (`remote_pool.py payload()`) carries it RAW as `"eage"` beside `"t"`; the parent applies the
+  threshold, so no config seam can open between worker and parent (the drill_frac lesson). Main-process fallback,
+  `roll["eage"]`, and the per-step refresh mirror the `t` plumbing at all four sites.
+* **Trainer (`train_sim_ppo.py`)**: `sim.ppo_gate_prior_pressure_s` (default 0.0). >0 requires a schema-2 table
+  with matching W (asserted at load), builds `_gtab[phase, pres, bucket]`, indexes with
+  `flat("eage") < W`; the loss line is unchanged. The GATE PRIOR banner prints both rows; the periodic
+  `GATE PRIOR CE` line gains `| PRESSURE on N% of them` (share of USABLE rows that are pressured) -- the monitor
+  for whether the sim's pressure rate drifts during the run (§5bw.4 measured 46-52% on the trained policy's
+  trajectories vs pros' 37%).
+* **`data/bench/gatep6_run.yaml`** = `gate05_run.yaml` with `ppo_gate_prior_path: config/gate_prior_p6.json`,
+  `ppo_gate_prior_pressure_s: 6.0`, ckpt `data/policy_gatep6_20260903.pt`, continuation log
+  `data/continuations_gatep6.jsonl`. `diff` = those four lines. NOT launched this loop.
+
+### 2. Verification (a)
+* `tests/test_gate_prior.py`: 5 new tests in `TestPressureKey` -- pressure windows are the troop ones only (a red
+  knight at 3.1 s flags exactly the 10 windows starting in [3.1, 9.1); a fireball and a tesla flag none; blue's
+  play at 4.0 s lands in a pressured window, the one at 40 s in a quiet one); the blend is unchanged by the
+  split; thin cells fall back to the blend; `prior_array` shapes (3,11)/(3,2,11) and the W guard; the sim key
+  (empty board 1e9; own troop and enemy building ignored; youngest of two enemy troops; a dead one drops out;
+  `advance(0.6)` ages it). **12/12 pass** (2.1 s). Trap found: window starts accumulate 0.6 in floating point, so
+  a play exactly ON a boundary (3.0 = 5 x 0.6) is a rounding coin-flip -- the test uses 3.1 s, and this matters
+  for nobody else (real timestamps are not multiples of 0.6).
+* Smoke run, flag ON: `run.py --config data/bench/gatep6_run.yaml train-sim-ppo --matches 6 --envs 8 --workers 2
+  --size 432 --device cpu --seed 41 --search-interval 4 --out <scratchpad>/smoke_p6.pt` -> exit 0, banner
+  `GATE PRIOR ON: coef 0.500 ... PRESSURE key W=6 s; single-elixir P(play) at 4/7/9 elixir quiet
+  0.039/0.028/0.178, pressure 0.089/0.067/0.235`, first update `GATE PRIOR CE 0.6731 | pi(play) 0.489 vs prior
+  0.056 | 13% of rows usable | PRESSURE on 57% of them`. The key reaches the loss through the remote-worker path.
+* Smoke run, flag OFF (`gate05_run.yaml`, same args, isolated `--out`): exit 0, the ORIGINAL banner
+  (`... P(play) at 4 / 7 / 9 elixir = 0.06 / 0.04 / 0.20`, no PRESSURE clause), `GATE PRIOR CE 0.6641 | 12% of
+  rows usable`. Existing checkpoints untouched (`policy_gate05_20260902.pt` mtime 00:51, `policy_sim_ppo.pt` Aug 29).
+
+### 3. What this does NOT establish
+* That the conditioned pull moves the ≥6 share at all (b). That is the test run's question, and §5bw.4 bounds the
+  answer: the sim opponent leaves ~1 bankable quiet window per phase vs pros' ~2.7, so even a perfect prior cannot
+  reach the pros' 35% of plays at ≥6. Bar stays: m5k ≥6 share above gate05's m2k (4.0/3.5/3.0%, probe seeds 0/1/2).
+* Whether W=6 is the right window (b). W=10 gives pressure on 54% of single windows and a smaller quiet/pressure
+  split (§5bw.3); 6 was chosen because it is ~a troop's deploy + walk to the river. One W per experiment.
+* The 57% pressure share in the smoke run is 8 matches of an UNTRAINED policy (its opponent draws differ) -- not
+  comparable to §5bw.4's 46-52% on the m10k policy. The run's own `PRESSURE on` line is the comparable number.
+
+### 4. Files
+`tools/gate_prior.py`, `config/gate_prior_p6.json` (new), `src/clashrl/sim/env.py`, `src/clashrl/sim/remote_pool.py`,
+`src/clashrl/train_sim_ppo.py`, `tests/test_gate_prior.py`. `data/bench/gatep6_run.yaml` (new) is NOT in git --
+`icebow/data/` is gitignored and no `data/bench/*.yaml` ever was (gate05_run.yaml included); its full diff vs
+gate05_run.yaml is the four lines in §1, reproducible from that.
 
