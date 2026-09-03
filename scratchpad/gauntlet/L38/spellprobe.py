@@ -101,7 +101,7 @@ def _install():
     Eng._l38 = True
 
 
-def run(ckpt, cfg, matches):
+def run(ckpt, cfg, matches, offset=0):
     env = SimMatchEnv(cfg)
     net = RS.load_net(str(ckpt), env, torch.device("cpu"))
     sr = RS.Searcher(env, net, torch.device("cpu"), 12.0, 0, 4, 1.0, 0.25, cells=3)
@@ -109,7 +109,7 @@ def run(ckpt, cfg, matches):
     plays = collections.Counter()
     total_plays = 0
     secs = 0.0
-    for seed in CR.SEEDS[:matches]:
+    for seed in CR.SEEDS[offset:offset + matches]:
         env.rng.seed(seed); env.reset(); REAL["eng"] = env.eng; done = False
         while not done:
             act, _ = sr.act(0)
@@ -118,7 +118,7 @@ def run(ckpt, cfg, matches):
             _o, _r, done, _i = env.step(act)
         secs += float(env.eng.t)
     mins = secs / 60.0
-    print(f"  {ckpt.name}: {matches} matches, {mins:.1f} min of match time, {total_plays} plays")
+    print(f"  {ckpt.name}: {matches} matches (seed slice {offset}:{offset+matches}), {mins:.1f} min of match time, {total_plays} plays")
     by = collections.defaultdict(list)
     for r in RECS:
         by[r["key"]].append(r)
@@ -145,8 +145,12 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--ckpt", nargs="+", required=True)
     ap.add_argument("--matches", type=int, default=16)
+    # DISJOINT SEED SLICE. CR.SEEDS is fixed, so re-running a checkpoint reproduces its numbers
+    # exactly -- which measures nothing about sampling noise. --offset 16 runs the SAME policy on
+    # 16 DIFFERENT matches, and the gap between the two reads is this instrument's noise band.
+    ap.add_argument("--offset", type=int, default=0)
     a = ap.parse_args()
     _install()
     cfg = Config.load()
     for c in a.ckpt:
-        run(pathlib.Path(c), cfg, a.matches)
+        run(pathlib.Path(c), cfg, a.matches, a.offset)

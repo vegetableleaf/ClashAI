@@ -738,3 +738,18 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - RETRACTED IN-LOOP: my live claim that rocket usage "went up / first non-zero ever". Rocket is 3 casts/16 matches at m2450 AND
   m5000, 0 at m6800; L35 already had all four arms at 0.4-0.7% rocket share at m2k. Rocket did not go up. HANDOFF §5cl.
 
+
+## L39 — 2026-09-03 16:16-16:30 | AGGRO gauntlet loop 23: 4th spell point + disjoint seed slices -- my own L38 "recovery" RETRACTED
+- (a) NOISE BAND, new `--offset` (same ckpt, SEEDS[16:32]): spell share repeats to 0.4pp (m6800), 0.6pp (gate05 m5000),
+  3.9pp (m8600). Cross-arm gaps (11.6 vs 28.3) are far outside it -> §5cl.2's cross-arm table stands.
+- (c) RETRACTED: §5cl.3's "spell suppression is recovering". Series is 14.0 / 11.6 / 19.8+19.4 / 13.7+9.8 -- up then back
+  down. The m6800 rise was real (both slices agree) and did not persist. No trend; oscillation in a 10-20% band.
+- (a) ROCKET rose at m8600: 10 and 7 casts per 16 matches (2.3% / 1.1% of plays, 0.21 / 0.11 per min) vs 0 at m6800 and 0
+  for gate05/floor7. Highest measured in the project; pros 3.4%. Partly reverses §5cl.4 ("rocket did not go up" -- true
+  through m6800, wrong at m8600). BUT 30% / 14% of those rockets hit nothing (6 elixir each).
+- (a) log whiff at m8600 8% / 15%, best of any ckpt (gate05 24/26%, floor7 32%).
+- (b) matched trainer counters: gatec2 drills last-300 38 -> 42 -> 49% at m5900/6800/8600 while gate05 went 49 -> 47 -> 39;
+  EVAL ladder 2/12/23/27 vs gate05 5/13/17/8/10. Both say "still improving"; neither is a discriminator.
+- LOOP RULE ADDED (.claude/commands/gauntlet.md §2): repeat a headline number on a disjoint seed slice before reporting it.
+- Run untouched, m8800 at 16:23; m10k gate ~17:05. HANDOFF §5cm.
+

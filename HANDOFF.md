@@ -22,7 +22,17 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-03 15:15**, branch `main` (**§5cl: GAUNTLET L38 -- owner asked what the m5k snapshot said about
+Last updated: **2026-09-03 16:30**, branch `main` (**§5cm: GAUNTLET L39 -- **I RETRACT §5cl.3's "the spell suppression is
+recovering".** A 4th point (m8600) and, for the first time, a DISJOINT SEED SLICE on the same checkpoints kill it: spell
+share reads 14.0 (m2450) / 11.6 (m5000) / 19.8 + 19.4 (m6800) / 13.7 + 9.8 (m8600) -- up then back down, no direction.
+The two slices agree to 0.4-0.6pp on m6800 and gate05, so the m6800 rise was REAL and simply did not persist; this is
+policy volatility, not sampling noise, and not a recovery. Instrument noise band now MEASURED (§5cm.1) and the probe
+gained `--offset`. What DID move (a, on both slices): **ROCKET**, 0 casts at m6800 -> 10 and 7 casts per 16 matches at
+m8600 (2.3% / 1.1% of plays, pro 3.4%) -- the highest rocket usage measured in this project, which partly reverses my
+own §5cl.4 "rocket did not go up" (correct on the data through m6800, wrong as of m8600). Log whiff at m8600 8% / 15%,
+the best of any checkpoint (gate05 24 / 26%). Matched-count trainer counters: drills last-300 gatec2 38 -> 42 -> 49% at
+m5900/6800/8600 while gate05 went 49 -> 47 -> 39; EVAL ladder 2/12/23/27% vs gate05 5/13/17/8/10. m10k gate ~17:05.
+Previous header follows.) (**§5cl: GAUNTLET L38 -- owner asked what the m5k snapshot said about
 SPELLS (answer: nothing -- the gate report has one incidental spell line). Built `scratchpad/gauntlet/L38/spellprobe.py`,
 which attributes damage ON THE ENGINE (wraps `_resolve_spell` / `_resolve_roll` / `_tick_vortex` / `_tick_roll` so every
 `_hurt` / `_damage_tower` inside them is credited to the cast that caused it) and validates EXACTLY against L35's
@@ -2235,6 +2245,9 @@ slow one.
   -> L38 (§5cl): owner question (spells). New engine-attributed spell probe, validated == cardmix. gatec2 spell share
      14.0 -> 11.6 -> 19.8% over m2450/m5000/m6800 (recovering toward gate05's 28.3); log whiff 73 -> 14 -> 24%;
      tornado whiff 0% at m5k+ vs gate05 9%; rocket ~0 everywhere (my "rocket went up" claim RETRACTED same loop).
+  -> L39 (§5cm): m8600 + DISJOINT SLICES. §5cl.3's "recovery" RETRACTED (c): share 14.0/11.6/19.8+19.4/13.7+9.8 has no
+     direction; noise band 0.4-0.6pp so the m6800 rise was real and did not persist. ROCKET rose at m8600 (10 and 7
+     casts/16 matches, 2.3/1.1% of plays) -- highest measured, partly reversing §5cl.4. Drills + EVAL still climbing.
 
 ### From §5bq (2026-09-02 22:10) -- spell niches, after the gate-prior run ends (sim reward = one change each)
 * **`nado_retarget` UNREACHABLE (c, §5bq.3):** sim/env.py:2472 and :2508 `tile_dist(u, tw) <= u.spec.reach + 1.0`
@@ -9188,4 +9201,75 @@ per cast at m5000, 0 tower damage. Pros rocket 3.4% of plays (§5bm.4); every ar
 ### 6. Files
 `scratchpad/gauntlet/L38/{spellprobe.py, spell_m5k.txt, spell_m2k5.txt}` (committed); `gatec2_live.pt` (m6800 copy of
 the live checkpoint, verified to load, NOT in git).
+
+## §5cm. GAUNTLET L39 (2026-09-03 16:16-16:30) -- the 4th spell point kills my own "recovery" reading; the instrument's noise band, measured at last
+
+**Why this loop existed.** §5cl.3 told the owner that gatec2's spell share rising 11.6 -> 19.8% between m5000 and m6800
+was "the first evidence for the rebound hypothesis". Three points, one seed slice, and a directional claim: exactly the
+shape of conclusion this project keeps having to retract. Before the m10k gate fired I took a 4th point and, for the
+first time on this instrument, re-ran fixed checkpoints on a DISJOINT seed slice.
+
+### 1. The instrument's own noise band (a) -- new `--offset` on `spellprobe.py`
+`CR.SEEDS` is a fixed list, so re-running a checkpoint reproduces its numbers exactly and measures NOTHING about
+sampling. `--offset 16` runs the same policy on `SEEDS[16:32]` -- 16 different matches, same everything else.
+```
+ckpt                 SPELL% slice 0:16   SPELL% slice 16:32   gap    log/min       nado/min      rocket casts
+gatec2 m8600            13.7                 9.8             3.9pp  0.78 / 0.76   0.34 / 0.19   10 / 7
+gatec2 m6800            19.8                19.4             0.4pp  1.44 / 1.64   0.68 / 0.71    0 / 0
+gate05 m5000            28.3                27.7             0.6pp  1.85 / 1.85   1.45 / 1.47    0 / 0
+```
+So this probe is TIGHT: two of three checkpoints repeat to under 1pp, the third to 3.9pp. **Cross-arm gaps of 11.6 vs
+28.3 are an order of magnitude outside that band, so §5cl.2's cross-arm table stands unchanged.** Every headline spell
+number from here on gets the second slice before it is reported -- added to the gauntlet skill's §2 this loop.
+
+### 2. RETRACTION (c): the spell "recovery" in §5cl.3 does not exist
+```
+gatec2 matches   2450    5000    6800            8600
+SPELL share      14.0    11.6    19.8 / 19.4     13.7 / 9.8
+log casts/min    0.63    0.87    1.44 / 1.64     0.78 / 0.76
+nado casts/min   0.34    0.24    0.68 / 0.71     0.34 / 0.19
+```
+Up, then back down to roughly the m5000 level. The two slices agree at both m6800 and m8600, so this is NOT the
+instrument wobbling -- the m6800 rise was real, and it reversed 1,800 matches later. The correct statement is that
+gatec2's spell share OSCILLATES in a band of roughly 10-20% with no trend, and my "the suppression is recovering, the
+first evidence for the owner's rebound hypothesis" (§5cl.3, and I said it to the owner live) is **withdrawn**. The
+rebound question is untouched by this either way: §5ck.2's REBOUND test is the regret corpus at m10k, not spell share.
+
+### 3. What DID move: rocket (a, on both slices) -- and it partly reverses §5cl.4
+```
+gatec2 matches   2450   5000   6800   8600
+rocket casts       3      3      0     10 / 7   (2.3% / 1.1% of plays; 0.21 / 0.11 casts per minute)
+rocket whiff      33%     0%     --    30% / 14%
+```
+Ten and seven rockets per 16 matches is the highest rocket usage measured anywhere in this project -- previous reads
+were 0-3 casts, and gate05 / floor7 are at 0 on both slices. Against a Poisson expectation of ~3 the 10-cast slice is
+p ~= 0.001, and the disjoint slice confirms it at 7. Pros rocket 3.4% of plays (§5bm.4); m8600 sits at 1.1-2.3%.
+**This partly reverses my §5cl.4 retraction:** that retraction was correct on the data it had (m2450 / m5000 / m6800),
+and it is wrong as a forward statement -- rocket usage DID go up, 1,800 matches later. Caveat (a): 30% / 14% of those
+rockets hit nothing at all, which at 6 elixir is the most expensive whiff in the deck; average 1.1-1.6 bodies and 45
+tower damage per cast on the first slice, 0 tower damage on the second.
+Log whiff at m8600 is 8% / 15%, the best of any checkpoint measured (gate05 m5000 24 / 26%, floor7 32%).
+
+### 4. Matched-count trainer counters (a) -- same instrument, its own curve, both arms
+```
+matches           5900        6800        8600
+gatec2 drills   38% / 39%   42% / 39%   49% / 42%     (last-300 / cumulative)
+gate05 drills   49% / 41%   47% / 42%   39% / 42%
+EVAL ladder     gatec2 2 / 12 / 23 / 27% at m2000/4000/6000/8000; gate05 5 / 13 / 17 / 8 / 10% at m2000..10000
+```
+gatec2's drill pass rate is climbing where gate05's is falling, and its EVAL ladder winrate has not yet turned over
+where gate05's peaked at m6000 and halved. Both are (b) as evidence of anything: winrate is not a discriminator here
+(standing rule), and drills are a training-time counter on one seed per arm. Reported because they are the only two
+in-run signals that bear on "is it still improving", and they both say yes.
+
+### 5. What this does NOT establish
+* A rebound or its absence (b). The regret corpus at m10k decides it (§5ck.2), unchanged by this loop.
+* That the rocket rise is a learned skill rather than exploration drift (b): 30% whiff says the aim is not there yet.
+  The test is whether m10k holds the rate AND drops the whiff.
+* That spell share will not move again (b). Four points, two of them doubled; the band is 10-20%.
+
+### 6. Files
+`scratchpad/gauntlet/L38/spellprobe.py` (now with `--offset`), `scratchpad/gauntlet/L39/{spell_m8600.txt,
+spell_offset16.txt}` (committed); `L39/gatec2_live_m8600.pt` (verified `matches=8600`, NOT in git).
+`.claude/commands/gauntlet.md` gains the disjoint-slice rule in §2.
 

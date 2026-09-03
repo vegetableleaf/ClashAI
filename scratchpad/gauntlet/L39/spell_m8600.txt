@@ -1,0 +1,6 @@
+  gatec2_live_m8600.pt: 16 matches, 47.5 min of match time, 481 plays
+  spell       casts  /match   /min   whiff  bodies  unit dmg  tower dmg
+  the_log        37    2.31   0.78      8%    2.41       847          0
+  tornado        16    1.00   0.34      0%    4.19       478          0
+  rocket         10    0.62   0.21     30%    1.60      3146         45
+  SPELL share of plays: 13.7%  the_log 8.1%  tornado 3.3%  rocket 2.3%

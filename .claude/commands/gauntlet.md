@@ -43,6 +43,12 @@ Each iteration, in order:
 
 - **Falsify your own result before believing it.** The project's history is a list of confident
   wrong conclusions caught later. Ask what else could produce this number.
+- **Repeat a headline number on a DISJOINT seed slice before reporting it.** The greedy probes run
+  a fixed seed list, so re-running the same checkpoint reproduces its number exactly and measures
+  nothing. Running the same checkpoint on the NEXT 16 seeds gives the instrument's own noise band
+  (L39: 0.4-0.6pp on two checkpoints, 3.9pp on a third), and that band is what decides whether a
+  move between two checkpoints is a finding or a wobble. Added 2026-09-03 after L38 reported a
+  three-point "recovery" that the fourth point contradicted.
 - **A null is a result.** Report it plainly; do not go looking for a positive.
 - **Retract loudly.** If a previous loop's conclusion is wrong, say so in the HANDOFF section, in
   the commit message, and in the Discord report. Never quietly correct.
