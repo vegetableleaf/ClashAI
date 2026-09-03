@@ -22,7 +22,17 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-02 22:30**, branch `main` (**§5br: GAUNTLET L17 = loop 1 of the AGGRO-MANIPULATION gauntlet
+Last updated: **2026-09-02 22:30**, branch `main` (**§5bs: GAUNTLET L18 = aggro loop 2: the ENGINE-BACKED AGGRO
+ORACLE exists -- `sim/aggro_oracle.py` (fork the engine, advance, read `Unit.target`; never re-derives rules) with
+8 unit tests that ARE the owner's questions on fixed boards: target_of / targeted_by, next target after a kill,
+what a placed knight draws, the interposition window, tornado king-activation retarget, duel winner + HP left.
+Measured on the X-Bow-vs-Valkyrie board: a knight in front of the bow steals the lock if placed <= 1.6 s after
+the valk starts walking and fails from 1.8 s = exactly her first hit (lock = kept); a hog chewing the princess is
+retargeted to the KING by the drill-reference tornado; mini-PEKKA beats knight with 56% HP, valk beats knight
+with 26%. Cost: 0.5 ms fork, 2-3 ms per question, 83 ms for a 31-fork window search (6-unit board). Two engine
+behaviours the oracle exposes are (b) vs the real game: a body spawned ON a locked unit resets its lock (:5758),
+and no 4 s king aim delay. Run untouched (6,000 eps). Next: an aggro DRILL family graded by the oracle.**
+Previous header (§5br: GAUNTLET L17 = loop 1 of the AGGRO-MANIPULATION gauntlet
 (owner order 22:1x). Orient + one measurement. The policy's only aggro concept is `interactions.predict_targets`
 (memoryless nearest-target, painted into the predictive canvas + 12-dim interaction vector) -- so aggro IS modelled,
 but WRONG in the states that matter: vs the engine's sticky `Unit.target` over 60,599 unit-samples (m=5k ckpt, 36
@@ -2006,8 +2016,11 @@ slow one.
   remain as record; board-27 stays cancelled; the live detector stays YOLO11s. Do not re-propose.
 
 ### AGGRO GAUNTLET (owner order 2026-09-02 22:1x) -- running; §5br is loop 1
-* Loop 2: `sim/aggro_oracle.py` + tests (new files, unblocked). Loop 3+: drills that use it; lock-aware
+* Loop 2 DONE (§5bs): `sim/aggro_oracle.py` + 8 tests. Loop 3: aggro drill family graded by the oracle
+  (tank_for_bow, kta_retarget) -- as a NEW module if the workers import `drills_icebow.py`. Later: lock-aware
   `predict_targets` (blocked until the run stops: workers import it); grade with `aggro_agreement.py`.
+* Oracle-exposed engine behaviours to verify vs the real game (b): spawn-on-top lock reset (engine :5758),
+  no 4 s king aim delay. Do not build rewards that depend on the first.
 * Obs predictor fixes queued (all graded by the same probe): ENGAGED hint (locked 81% -> ?), deploy-time
   (no target while `deploy_left` > 0), building reach (no tower target unless in reach; siege only).
 * When the PPO is stopped: record state first (§7), then restart-vs-resume decision, then `nado_retarget` fix.
@@ -7502,4 +7515,75 @@ Run at 5,975 eps, 0.5 ep/s, 179W-4588L-7D, avg_rew -20.3; 2 trainer PIDs; free R
 
 ### 7. Files
 `scratchpad/gauntlet/L17/aggro_agreement.py`, `agree_m5k.{json,txt}`, `wiki_*.txt` (rule sources).
+
+## §5bs — GAUNTLET L18 (aggro gauntlet, loop 2): the engine-backed aggro oracle + tests (2026-09-02 22:20-22:30)
+
+### 1. What was built (new files, nothing the trainer imports was touched)
+`icebow/src/clashrl/sim/aggro_oracle.py` -- `AggroOracle(eng)`. Every question is answered by deep-copying the
+engine, advancing the copy in 0.1 s ticks and reading the copy's `Unit.target` / `Tower.target` back through an
+id-map to the caller's objects. No second rule set: if `engine._acquire` changes, the oracle's answers change with
+it. The caller's engine is never mutated (test-covered). Queries:
+* `target_of(u, horizon_s)` / `targeted_by(u, horizon_s)` -- who X attacks, who attacks Y, `horizon_s` ahead.
+* `next_target_after_kill(u)` -- advance until X's current target dies; report seconds + the next lock.
+* `after_spell(team, key, x, y, settle_s)` -- {unit: (target before, target after)} for a tornado / log / zap.
+* `draws(team, key, x, y, horizon_s)` -- place Z, wait out its `deploy_left`, report what Z locks and what locks Z.
+* `interpose_window(team, key, x, y, enemy, protect)` -- scan placement delays 0..6 s (0.2 s step, one fork each):
+  latest delay at which Z still takes the enemy off Y, first delay that fails, and when the enemy first hits Y.
+* `first_damage_to(victim, by)` -- seconds to first hit (units via `last_unit_hit_t`; buildings' hp decays with
+  lifetime, so hp-drop is wrong for them -- trap found and avoided).
+* `duel(a, b)` -- both at level 11, 1 tile apart, towers disarmed, until one dies: winner, HP left, seconds.
+`icebow/tests/test_aggro_oracle.py` -- 8 tests, all pass (1.5 s): agree-with-engine, no-mutation, determinism,
+next-after-kill, knight-draws-valk, window-closes-at-first-hit, tornado-KTA-retarget, duel + order symmetry.
+
+### 2. Measured answers on the fixed boards (a; level 11; ticks 0.1 s)
+Board A: our X-Bow at (0.26, 0.53), enemy Valkyrie at (0.26, 0.40) walking at it.
+* valk -> x_bow from t=0; x_bow -> valk from t=0 (11.5 sight); valk's first hit on the bow at **1.8 s**, `locked`
+  from then, standing at y=0.456.
+* Knight (ours) placed at (0.26, 0.44/0.46/0.50): window = **(latest ok 1.6 s, first fail 1.8 s, hit 1.8 s)** at
+  all three cells -- "how much time do I have" = until the enemy's first swing, not until it arrives; once locked,
+  a nearer body does NOT pull it (§5br's 1,041 obs mismatches are this rule).
+* Knight at (0.26, 0.48) = on top of where the valk stands: window (6.0, None) -- ALWAYS works, because the engine
+  resets a lock when a body spawns on the locked unit (`aggro_reset`, engine :5758). Engine-truthful; real-game
+  truth is (b) -- the wiki only documents tornado-out-of-reach and knockback resets, not spawn-shove. Flagged.
+* Knight at y 0.46 is 1.3 tiles across the river: the ENEMY princess also shoots it (`targeted_by` lists the
+  tower) -- correct and a reminder that "in front of the bow" on the enemy half costs tower damage.
+* If the valk is left alone she kills the bow and re-locks after **7.9 s** onto our LEFT princess (same lane).
+* Duels: valkyrie beats knight with **495.8 HP left (26%) in 10.2 s**; mini-PEKKA beats knight with **785.2 HP
+  (56.5%) in 4.4 s**; the answer is order-independent (test).
+Board B: enemy hog at (0.25, 0.62) -> reaches and locks our left princess at **t=2.0 s** (first hit 1.8 s).
+* `after_spell(tornado at the drill reference (0.472, 0.771), settle 2 s)`: hog target princess -> **KING**. The
+  king in the caller's engine stays inactive (no mutation). So the oracle reproduces the `nado_king_activation`
+  drill's intended mechanism without the drill's centre-to-centre `nado_retarget` bug (§5bp) -- because it reads
+  the engine's own reach, not a re-derived one.
+Cost (6-unit board, `scratchpad/gauntlet/L18/cost_probe.py`): fork **0.5 ms**, `targets_at(3 s)` 1.9 ms,
+`next_target_after_kill` 2.8 ms, `draws` 1.6 ms, `after_spell` 2.7 ms, `duel` 2.0 ms, `interpose_window`
+(31 forks) **83 ms**. Cheap enough for drill predicates and for reward shaping at episode end; NOT free inside a
+per-step search branch at 96 envs (83 ms x 96 = 8 s per step) -- windows must be cached per (unit pair, cell) if
+search ever uses them.
+
+### 3. What this does NOT establish
+* Real-game fidelity of two engine behaviours the oracle makes visible: (i) spawn-on-top lock reset (:5758),
+  (ii) no 4 s king aim delay after activation (wiki: 3.3 s aim + 0.7 s). Both (b); the sandbox oracle (§5at) is
+  the instrument. Until then, drills/rewards built on the oracle must not depend on (i).
+* Whether the engine's 1.8x-sight hysteresis and steal-if-closer-while-walking match the client (§5br carry).
+* Anything about the policy: the oracle is an instrument; no drill, reward or search consumer exists yet, so no
+  behaviour has changed. No number here is a training number.
+* The cost numbers are for a 6-unit board; a 20-unit late-game board forks slower (deepcopy scales with units;
+  §env.py:1834 measured ~6.5 ms in search) -- (b), measure when a consumer needs it.
+
+### 4. Plan (loop 3)
+An AGGRO DRILL family whose predicates are oracle calls, so the grader is the engine, not a hand-written reach:
+(1) `tank_for_bow`: board A, hand knight; success = `interpose_window` says the placed knight took the lock
+(`targeted_by(x_bow, 1 s)` has no enemy troop) before first damage; (2) `kta_retarget`: board B, hand tornado;
+success = `target_of(hog, 1 s)` is the king (replaces the buggy `nado_retarget` predicate for THIS drill only --
+the existing drill keeps its predicate until the run stops, since `sim/env.py` is imported by the workers ->
+drills must be added as a NEW module the drill loader can pick up, else deferred). Check first where
+`drills_icebow.py` is imported; if the trainer imports it, loop 3 is blocked and falls to the m=10k read.
+
+### 5. Box (a, 22:28)
+Run at 6,000 eps, 0.5 ep/s, 180W-4605L-7D, avg_rew -21.9, drills 42% pass all / 49% last 300; 15 processes carry
+the run's command line; free RAM 4.53 GB; CPU 100%. `gate05_m10k.pt` not yet written. Untouched.
+
+### 6. Files
+`icebow/src/clashrl/sim/aggro_oracle.py`, `icebow/tests/test_aggro_oracle.py`, `scratchpad/gauntlet/L18/cost_probe.py`.
 

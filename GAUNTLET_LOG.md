@@ -500,3 +500,11 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   changes 14.4/unit-min, 47% with the old target alive.
 - (a) wiki rules (KTA on damage only + 4 s; nado/log/stun retarget; X-Bow 3.5 s deploy, air can't distract) match the engine.
 - Next: aggro ORACLE over an engine fork (new module + tests; unblocked). Run untouched (5,975 eps). HANDOFF §5br.
+
+
+## L18 — 2026-09-02 22:20-22:30 | AGGRO gauntlet loop 2: engine-backed aggro oracle + tests
+- Built `sim/aggro_oracle.py` (fork engine, advance, read Unit.target back; no re-derived rules) + 8 tests = the owner's questions.
+- (a) X-Bow vs Valkyrie: knight steals the lock if placed <= 1.6 s, fails from 1.8 s = her first hit; valk kills bow then
+  princess after 7.9 s; valk beats knight 26% HP, mini-PEKKA beats knight 56.5%. Hog on princess + reference tornado -> KING.
+- (a) cost: fork 0.5 ms, question 2-3 ms, 31-fork window 83 ms (6-unit board).
+- (b) flagged: engine resets a lock when a body spawns on the locked unit; no 4 s king aim delay. Run untouched (6,000 eps). HANDOFF §5bs.
