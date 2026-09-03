@@ -22,7 +22,19 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-02 20:25**, branch `main` (**§5bk: GAUNTLET L11 -- COEF 0.5 IS BITING at m=2k, on both
+Last updated: **2026-09-02 20:50**, branch `main` (**§5bl: GAUNTLET L12 -- THE DECISION PATH WAS NEVER UNMEASURED:
+the live loop has timed every stage of every match since 08-12 (`cadence` in data/reward_stats/live_*.jsonl,
+904 matches) and nobody read it. (a) Since act_period went to 0.6 (100 matches, 38 sessions): served
+decision-to-decision time p50 **0.76 s** (p10 0.66, p90 0.90); 91/100 matches > 0.66 s, 3/100 <= 0.62. The
+pipeline alone (loop - wait) is p50 0.65 s: env share 0.34 s (reads 0.131, act 0.058, state 0.056, threat 0.053,
+grab 0.035, hand 0.012, obs 0.003) + trainer residual p50 0.315 s (p10 0.08, p90 0.45). => a 27% train/serve
+cadence mismatch at the median, the 08-12 bug class again; lowering act_period is a no-op until the pipeline
+drops below it. (a) Pros: 1.4% of consecutive same-side plays are < 0.6 s apart (43,205 gaps, 519 replays), median
+4.15 s. Offline stage timer built (`tools/latency_stage_timer.py`), smoke on the CONTENDED box (upper bounds):
+detect_state 86 ms, detector 80, threat colour 62, tower-HP OCR 22 p50 / 348 p90, elixir 15, mass 10, hand 5;
+net forward 1.6 ms, DDQN learn step 21 ms -- the 0.3 s trainer residual is NOT the net. Owner delegated the
+agent_dt call: recommendation = do NOT lower it; fix serving to 0.6 first (§5bl.6).** Previous header (§5bk):
+COEF 0.5 IS BITING at m=2k, on both
 instruments; the PPO push is visibly fighting back in the trainer's own windows; level-16 sandbox answered;
 stale 18k watchdog killed; owner's decision-time question answered with a counter-question (§6).** (a) Probe of
 `gate05_m2k.pt`, 3 seeds: `played` at 3 elixir **0.271 / 0.227 / 0.239** (coef-0.1 m=2k 0.39-0.45; 18k control
@@ -1949,7 +1961,12 @@ slow one.
 * **OWNER RULING 17:50: "wait until 18:40, to see if the reversal is genuine improvement or oscillation" -> HOLD confirmed; the 7.5k read decided per the rule below: OSCILLATION (0.376/0.301/0.401, all >= 0.30) -> killed, relaunched at coef 0.5 (§5bj, 18:59). Next pre-registered read: coef-0.5 run at m=2k (§3).**
 * **DECISION TIME (owner question, 2026-09-02 20:0x: "Is now a good time to start the decision time
   optimization loop? I've realized even 0.6s is extremely slow for a gaming AI.") -- answered with a
-  counter-question, WAITING.** The premise conflates two knobs. (a) 0.6 s is `play.act_period`
+  counter-question; then OWNER ORDER 20:3x: "build the stage timer and measure the results"; agent_dt
+  weighing delegated to me -> DONE, §5bl (verdict: the bot is served at 0.76 s not 0.6; fix serving first;
+  do not lower agent_dt yet). Open work from it: idle-box run of `tools/latency_stage_timer.py` (the smoke
+  was contended); a timer around `live_search.decide` + the doctrine block in train_rl.py to split the
+  0.3 s trainer residual (live-path edit, owner call); `detect_state` (56-86 ms EVERY decision, template
+  matching) is the first cut. ORIGINAL NOTE (superseded):** The premise conflates two knobs. (a) 0.6 s is `play.act_period`
   (config.yaml:1248), the routine decision CADENCE, not the reaction time and not the compute latency:
   the live loop already wakes early on a new enemy commitment (`perception.py:96 wait_event`, called at
   `env.py:1910`, `react_min_gap_s: 0.15`), so worst-case reaction is ~0.15 s + one perception period
@@ -2384,7 +2401,11 @@ per section in place, keep the archive greppable and committed.
 
 ---
 
-## 8. Measurement traps (each of these produced a wrong conclusion first)
+## 8. Measurement traps
+
+* **An instrument that only writes to a file nobody reads does not exist (§5bl).** The live loop's per-stage
+  `cadence` dict has been in every `data/reward_stats/live_*.jsonl` since 08-12; HANDOFF called the decision path
+  "unmeasured" for two weeks. Before declaring anything unmeasured, grep the JSONLs and the per-match prints. (each of these produced a wrong conclusion first)
 
 * **The PPO watchdog's sampled metrics have a WIDE noise floor -- measured on a frozen checkpoint
   (2026-09-02, §5bf.5).** 91 readings of the unchanged 18k file (6 envs x 400 steps each) spread
@@ -6827,4 +6848,120 @@ the reward cost (-18.2 vs -15.2) is banking or damage. Anything about win rate. 
 `scratchpad/gauntlet/L11/g05m2k_s{0,1,2}.{json,txt}`, `level16-research.md` (committed acbb168);
 `gate05_m2k.pt` stays out of git. Probe series for the whole gate-prior program: L7 (18k control),
 L8 (coef-0.1 m=2k/4k), L9 (m=5k), L10 (m=7.5k), L11 (coef-0.5 m=2k).
+
+## §5bl — GAUNTLET L12: THE DECISION PATH WAS ALREADY MEASURED -- served cadence 0.76 s against a 0.6 s policy; stage timer built; agent_dt weighed (2026-09-02 20:30-20:55)
+
+Owner order 20:3x: *"build the stage timer and measure the results. But if 0.6s is the minimum time between 2
+consecutive actions for the same decision, then it's way too long. But I'll leave it to you to weigh the benefits
+and drawbacks of lowering the agent_dt."*  The gate-prior run was untouched; two ~5-20 s smokes of the timer
+ran beside it (CPU 40 -> 100% during, labelled).
+
+### 1. RETRACTION (c): "act_in_match / the decision path is unmeasured"
+Said in §5be.5.1, §6 (twice) and by me to the owner at 20:0x. False. `env.py` has accumulated per-stage wall
+time for every decision since the 08-12 cadence fix (`self._cad[...]` at env.py:1877-2082), prints a
+`[cadence]` line per match (env.py:2124) and dumps the dict as `cadence` in `data/reward_stats/live_*.jsonl`
+(env.py:2149). 904 matches carry it. No HANDOFF section has ever cited one. Trap: an instrument that writes to
+a JSONL nobody greps is an instrument that does not exist; it is now in §8.
+
+### 2. What the live loop measured (a) -- 100 matches, 38 sessions, 2026-08-20 09:36 -> 2026-09-02 19:58
+Restricted to the act_period-0.6 era (config change §3m); per-match MEANS, then percentiles across matches:
+
+| stage | what it is (env.py) | p10 | p50 | p90 |
+|---|---|---|---|---|
+| **loop** | decision-to-decision wall time | 0.664 | **0.760** | 0.898 |
+| wait | slack left in the period (event-interruptible) | 0.026 | 0.123 | 0.287 |
+| grab | screen capture | 0.026 | 0.035 | 0.046 |
+| state | `vision.detect_state` (template match) | 0.041 | 0.056 | 0.063 |
+| reads | tower alive + HP OCR + colour mass + elixir + clock | 0.074 | 0.131 | 0.175 |
+| hand | hand recognition | 0.010 | 0.012 | 0.015 |
+| threat | tracker update (+ perception snapshot) | 0.048 | 0.053 | 0.063 |
+| obs | observation build | 0.003 | 0.003 | 0.004 |
+| act | tap execution | 0.041 | 0.058 | 0.076 |
+| det_age | staleness of the detection used | 0.055 | 0.061 | 0.081 |
+| env sum | grab..act | 0.288 | **0.343** | 0.408 |
+| trainer residual | loop - wait - env sum: forward, doctrine, live search, DDQN learn step, logging | 0.082 | **0.315** | 0.448 |
+| pipeline | loop - wait | 0.403 | **0.646** | 0.842 |
+
+91/100 matches ran the loop above 0.66 s (>10% over the trained 0.6); 3/100 at or under 0.62; 41/100 had
+< 0.10 s of slack, i.e. the pipeline alone exceeded the period. **The policy is trained at agent_dt 0.6 and
+served at 0.76 (median), 0.90 at p90.** Same bug class as C-list item 5 (1.0 trained / 2.2 served, 08-12),
+smaller, and invisible for two weeks for the reason in §1. Box load per session is NOT recorded (the 09-01
+21:47 and 09-02 19:51 sessions certainly ran beside a cuda training run); the p10 match, 0.66 s, is still
+over 0.6, so the conclusion survives the contention caveat even if the split does not.
+
+Consequence for the owner's question: **lowering `act_period` today changes nothing served.** The loop
+cannot go faster than its pipeline (0.65 s median); a period below the pipeline only widens the train/serve
+gap. The owner's reading of the mechanism is right, though: after a play, the next decision is >= 0.6 s
+away unless perception wakes the loop on a new ENEMY commitment (env.py:1910, `react_min_gap_s` 0.15) --
+the bot's own follow-up play (Hog then Ice Spirit) is never a wake reason.
+
+### 3. Offline stage timer -- built, smoked on the contended box (a, UPPER BOUNDS)
+`icebow/tools/latency_stage_timer.py` (new, ~230 lines): decodes `data/sessions/20260815_222309/video.mp4`
+(656x1198, 12 fps), keeps IN_MATCH frames, and times each `reads`/`state`/`hand`/`threat` component with the
+real classes (`Vision`, `TowerTracker`, `TowerHpTracker`, `ElixirClock`, `ThreatTracker`, `load_detector`)
+plus the trainer side with the real net (`train_rl._build_net` + `policy_rl.pt`): forward at batch 1 and a
+DDQN optimise-equivalent at batch 64 (online + target forward, huber, backward, clip, step -- what
+`train_rl.optimise()` does synchronously after EVERY live decision, train_rl.py:1187). Records free RAM /
+CPU% / VRAM before and after so the load is on the record. No play.py / env.py / train_rl.py edits.
+
+Smoke, 40 in-match frames, stride 12, CPU 40% -> 100% (the run), cuda shared with the run:
+```
+detect_state   p50  86.2 ms  p90 120.0      tower_hp_step  p50 22.5 ms  p90 348.3  (OCR bursts)
+detector       p50  80.1     p90 215.7      read_elixir    p50 15.1     p90  24.9
+threat_colour  p50  61.6     p90 143.7      enemy_mass     p50  9.7     p90  14.3
+hand           p50   5.2     p90  11.5      observe        p50  4.4     p90   7.1
+tower_step     p50   1.4                    clock_update   p50  0.0
+net_forward_b1 p50   1.6 ms  p90  6.2       ddqn_optimise_b64 p50 20.8 ms  p90 27.8   (cuda)
+```
+Env sum of medians 286 ms -- consistent with the live env share (343 ms incl. grab 35 + act 58, which the
+tool cannot reproduce). Every number here is an upper bound; the idle-box run is the measurement. What the
+smoke DOES settle, because it is a lower bound on the residual's non-membership: **the 0.315 s trainer
+residual is not the network** (forward 1.6 ms + learn step 21 ms even contended). (b) it is some mix of
+`live_search.decide` (120 ms budget, `sim.live_search_enabled: true` since a410de6 08-29 -- and sessions
+before that date show residuals of 0.02-0.31 s, so search is not the whole story), the doctrine/counter
+block, and contention. Settling it needs timers inside train_rl's loop (live path -> owner call) or the
+idle-box run with search toggled.
+
+### 4. Pros' inter-play spacing (a)
+`icebow/data/royaleapi/crawl2/plays_ext.csv`, ability rows excluded, gaps between consecutive plays by the
+SAME side within a replay: 1,038 sides, 43,205 gaps. < 0.3 s: 0.3%; **< 0.6 s: 1.4%**; < 1.0 s: 3.6%;
+< 1.5 s: 7.8%; < 2 s: 18.0%; < 3 s: 35.3%; p10 1.60 s, p25 2.35, **p50 4.15**, p75 7.05, p90 11.0. The
+0.6 s floor between the bot's own consecutive plays excludes 1.4% of what pros do. Elixir, not reflex, sets
+the spacing.
+
+### 5. What the 0.6 s actually costs, and what it does not (labelled)
+* (a) Own-follow-up combos inside 0.6 s: 1.4% of pro play pairs. Small.
+* (a) Reaction to an enemy play: NOT bounded by act_period (event wake), bounded by the pipeline. A woken
+  decision still pays grab + state + hand + threat + trainer + act ~ 0.5 s (reads partly skipped on a fast
+  tick, env.py:1950/1972). The event path has never been timed end to end; (b) ~0.5 s from sighting to tap.
+* (b) Placement timing inside a 0.6 s grid (waiting for a troop to cross the bridge before a Log): plausible
+  cost, no measurement; the sim would show it as a gain from a finer dt, which is the retrain question.
+
+### 6. agent_dt: the weighing (owner delegated the call)
+Lowering agent_dt (sim) / act_period (live) together, e.g. 0.6 -> 0.3:
+* Buys: (a) 1.4% of pro combos; (b) finer placement timing; nothing on reaction (see §5).
+* Costs: (a) full sim retrain (§3m); gamma retune (0.994 was set for 0.6, config.yaml:787); per-step P(play)
+  halves so the gate imbalance the gate-prior program is fighting gets harder and the prior tables
+  (P(play | elixir, phase) per decision) must be rebuilt for the new dt; sim throughput per match halves
+  (0.6 ep/s -> ~0.3 at 96 envs); live search's 120 ms is a bigger share of a smaller period; and it CANNOT
+  be served -- the live loop does not deliver 0.6 today.
+* **Verdict: do not lower agent_dt now.** Order of work: (1) make serving honest at 0.6 -- pipeline 0.65 ->
+  < 0.40 s so `loop` sits at 0.60-0.62 (targets in order of size: the 0.3 s trainer residual once it is
+  split; `detect_state` at 56-86 ms per decision, which is a template match that could run at 2 Hz instead
+  of every decision; tower-HP OCR p90 348 ms; threat colour 60 ms). (2) When the pipeline is <= 0.2 s, a
+  0.3 s agent_dt retrain is a real experiment: queue it as ONE change after the gate-prior run, with the
+  prior tables regenerated for 0.3 s. (3) The reaction path is the separate prize: time sighting -> tap
+  once on an idle box, then decide whether a fast tick should skip more than the telemetry reads.
+
+### 7. Traps
+* §1: per-match `cadence` has been in every live JSONL since 08-12 and was never read. Added to §8.
+* `cfg.get("train","device")` returns a STRING; `torch.device()` it before `.type` (cost one smoke).
+* The tool's `threat_colour` is the colour tracker alone; live `threat` also pulls the perception snapshot.
+  The tool's `detector` is a synchronous pass; live runs it in the 10 Hz thread (det_age 61 ms) -- do not
+  add it to the per-decision sum.
+
+### 8. Files
+`icebow/tools/latency_stage_timer.py` (new); `scratchpad/gauntlet/L12/stage_timer_smoke_contended.json`,
+`stage_timer_smoke_net_contended.json`. Cadence analysis was ad hoc (python over the JSONLs, §2 table);
+the pro-gap numbers likewise (§4). Both are 20-line scripts reproduced in GAUNTLET_LOG L12.
 

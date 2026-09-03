@@ -1,0 +1,108 @@
+{
+ "video": "data/sessions/20260815_222309/video.mp4",
+ "frames": 8,
+ "stride": 12,
+ "box_before": {
+  "free_gb": 5.73,
+  "cpu_pct": 40.8,
+  "cuda": true,
+  "vram_free_gb": 6.9
+ },
+ "stages_ms": {
+  "decode": {
+   "n": 8,
+   "p50": 3.4,
+   "p90": 23.9,
+   "mean": 5.9
+  },
+  "detect_state": {
+   "n": 8,
+   "p50": 50.6,
+   "p90": 77.0,
+   "mean": 50.4
+  },
+  "tower_step": {
+   "n": 8,
+   "p50": 1.4,
+   "p90": 1.7,
+   "mean": 1.1
+  },
+  "tower_hp_step": {
+   "n": 8,
+   "p50": 14.4,
+   "p90": 60.5,
+   "mean": 15.7
+  },
+  "enemy_mass": {
+   "n": 8,
+   "p50": 8.2,
+   "p90": 13.1,
+   "mean": 8.0
+  },
+  "read_elixir": {
+   "n": 8,
+   "p50": 13.7,
+   "p90": 21.8,
+   "mean": 11.5
+  },
+  "clock_update": {
+   "n": 8,
+   "p50": 0.0,
+   "p90": 0.1,
+   "mean": 0.0
+  },
+  "hand": {
+   "n": 8,
+   "p50": 5.7,
+   "p90": 138.3,
+   "mean": 21.9
+  },
+  "threat_colour": {
+   "n": 8,
+   "p50": 47.5,
+   "p90": 76.1,
+   "mean": 44.0
+  },
+  "detector": {
+   "n": 8,
+   "p50": 49.5,
+   "p90": 3398.0,
+   "mean": 472.6
+  },
+  "observe": {
+   "n": 8,
+   "p50": 4.1,
+   "p90": 5.6,
+   "mean": 3.8
+  },
+  "net_forward_b1": {
+   "n": 30,
+   "p50": 1.6,
+   "p90": 6.2,
+   "mean": 2.7
+  },
+  "ddqn_optimise_b64": {
+   "n": 30,
+   "p50": 20.8,
+   "p90": 27.8,
+   "mean": 20.5
+  }
+ },
+ "errors": {},
+ "env_sum_of_medians_ms": 195.2,
+ "net": {
+  "ckpt": "policy_rl.pt",
+  "device": "cuda",
+  "obs": [
+   12,
+   96,
+   64
+  ]
+ },
+ "box_after": {
+  "free_gb": 4.76,
+  "cpu_pct": 57.0,
+  "cuda": true,
+  "vram_free_gb": 6.56
+ }
+}

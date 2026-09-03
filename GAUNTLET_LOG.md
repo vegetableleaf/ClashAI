@@ -413,3 +413,27 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   18k watchdog killed; owner's decision-time question answered with a counter-question (act_period vs latency).
 - Trap: two-threshold rule (0.25/0.35) left a dead zone; probe spread at fixed ckpt is ~0.04-0.05. One threshold next.
 - Box 20:08: run at 2,550 eps, 0.62 ep/s, 4.2 GB free. Next: m=5k read (~21:15-21:30), ask-branch = >=0.35 all seeds.
+
+
+## L12 — 2026-09-02 20:30-20:55 | owner order: stage timer + agent_dt weighing. RETRACTION: decision path was measured all along
+- (c) "act_in_match / decision path unmeasured" (§5be, §6, my 20:0x reply): env.py has timed every stage of every
+  decision since 08-12 (`cadence` dict in data/reward_stats/live_*.jsonl, 904 matches; `[cadence]` print). Nobody read it.
+- (a) act_period-0.6 era, 100 matches / 38 sessions since 08-20, per-match means: loop p10 0.664 p50 0.760 p90 0.898 s;
+  wait 0.123; env sum 0.343 (reads 0.131, act 0.058, state 0.056, threat 0.053, grab 0.035, hand 0.012, obs 0.003);
+  trainer residual p50 0.315 (p10 0.08, p90 0.45); pipeline (loop-wait) p50 0.646. 91/100 matches loop>0.66.
+  => trained at 0.6, served at 0.76 (27% mismatch, the 08-12 bug class). Box load per session unrecorded (caveat on
+  the split, not on ">0.6": the p10 match is already over).
+- (a) pros: 43,205 consecutive same-side gaps, 519 replays: <0.6 s 1.4%, <1 s 3.6%, <2 s 18%, p50 4.15 s.
+- Built icebow/tools/latency_stage_timer.py (offline, real Vision/trackers/detector/net, no live-path edits). Smoke
+  on the CONTENDED box (40 frames, upper bounds): detect_state 86 ms, detector 80, threat colour 62, tower-HP OCR
+  22 p50/348 p90, elixir 15, mass 10, hand 5, observe 4; net fwd b1 1.6 ms, DDQN learn step b64 21 ms (cuda).
+  => the 0.3 s trainer residual is NOT the net; (b) live search (on since a410de6 08-29) / doctrine / contention.
+- Weighing (owner delegated): lower agent_dt buys 1.4% of pro combos + (b) placement timing, nothing on reaction
+  (event wake already exists; reaction is pipeline-bound ~0.5 s). Costs: sim retrain, gamma retune, gate prior
+  tables per dt, halved sim throughput, and it cannot be served (pipeline 0.65 > 0.6 today).
+  VERDICT: do not lower agent_dt; make serving honest at 0.6 first (residual split, detect_state at 2 Hz, OCR p90).
+- Repro (cadence): python over live_*.jsonl, sessions >= 20260820_093600, matches with cadence.n>=50, per-match means
+  of cad[k]/n, percentiles across matches. Repro (pros): plays_ext.csv, sort by (battle, side, t), diff t, drop abilities.
+- Trap: an instrument that writes to a JSONL nobody greps does not exist (§8 entry added).
+- Files: tools/latency_stage_timer.py; scratchpad/gauntlet/L12/stage_timer_smoke_{,net_}contended.json. HANDOFF §5bl.
+- Box 20:25: run untouched (gate05, watchdog + gates alive). Next: 21:11 wakeup = m=5k read; idle-box timer run parked.
