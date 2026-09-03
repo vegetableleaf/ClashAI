@@ -1,0 +1,23 @@
+== the_log: 241 casts over 36 matches (3 seeds)
+   zone: own half, bridge side 79%, own back / king zone 21%
+   covers at cast: chip only 56%, kills >=1 body 25%, nothing 18%
+   body classes covered (share of casts): medium 49%, swarm/cheap 31%, tank/wincon 19%, building 5%
+   top keys covered: skeletons 24, miner 12, knight_hero 12, hunter 11, royal_ghost 10, fisherman 9, bowler_hero 9, skeleton_king 8
+   opp play in prev 6 s (any): swarm/cheap 29%, medium 15%, tank/wincon 10%, building 3%, (nothing) 51%
+== tornado: 187 casts over 36 matches (3 seeds)
+   zone: own half, bridge side 55%, enemy half 36%, own back / king zone 9%, ENEMY princess-tower zone 1%
+   covers at cast: chip only 64%, kills >=1 body 25%, nothing 11%
+   body classes covered (share of casts): medium 55%, swarm/cheap 39%, tank/wincon 17%, building 11%
+   top keys covered: skeletons 19, fisherman 13, ice_wizard 9, bowler_hero 9, royal_ghost 8, bats 7, giant_skeleton 7, skeletons_evo 6
+   opp play in prev 6 s (any): swarm/cheap 30%, medium 14%, tank/wincon 7%, building 2%, (nothing) 55%
+   king asleep at cast 54%; cast within 6 tiles of own king 9%; pulls a tower-locked unit 58%; >=2 bodies 48%
+== rocket: 1 casts over 36 matches (3 seeds)
+   zone: ENEMY princess-tower zone 100%
+   covers at cast: kills >=1 body 100%
+   body classes covered (share of casts): swarm/cheap 100%
+   top keys covered: bomber 1, skeletons 1
+   opp play in prev 6 s (any): swarm/cheap 100%, (nothing) 0%
+   on tower 100%; elixir covered p50 2.3
+   ledger fires (all seeds): spell_waste 38, spell_defence 127, nado 91, nado_bad 35, log_hits 0, chip_offence 497
+   tornado split (probe-side, same predicates as sim): clump 19, combo 36, evaluated 155, king_activate 1, pulled_nothing 17
+   plays per seed: 527, 492, 466; casts per seed: 150, 137, 142

@@ -1,0 +1,4664 @@
+[
+ {
+  "ckpt": "../scratchpad/gauntlet/L11/gate05_m2k.pt",
+  "matches": 12,
+  "seed": 0,
+  "plays": 291,
+  "casts": [
+   {
+    "spell": "the_log",
+    "t": 1.2,
+    "zone": "own back / king zone",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": true,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "electro_spirit"
+   },
+   {
+    "spell": "the_log",
+    "t": 67.2,
+    "zone": "own back / king zone",
+    "n_hit": 2,
+    "hit": [
+     [
+      "medium",
+      1
+     ],
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "hog_rider",
+      1
+     ],
+     [
+      "mighty_miner",
+      1
+     ]
+    ],
+    "killed": 1,
+    "elixir_hit": 8.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": true,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "firecracker"
+   },
+   {
+    "spell": "the_log",
+    "t": 108.0,
+    "zone": "own half, bridge side",
+    "n_hit": 4,
+    "hit": [
+     [
+      "medium",
+      1
+     ],
+     [
+      "swarm/cheap",
+      3
+     ]
+    ],
+    "hit_keys": [
+     [
+      "mighty_miner",
+      1
+     ],
+     [
+      "skeletons",
+      3
+     ]
+    ],
+    "killed": 3,
+    "elixir_hit": 5.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "skeletons"
+   },
+   {
+    "spell": "the_log",
+    "t": 175.8,
+    "zone": "own half, bridge side",
+    "n_hit": 2,
+    "hit": [
+     [
+      "medium",
+      1
+     ],
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "hog_rider",
+      1
+     ],
+     [
+      "mighty_miner",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 8.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 6.0,
+    "zone": "own back / king zone",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": true,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "medium"
+    ],
+    "prev_opp_last": "valkyrie"
+   },
+   {
+    "spell": "tornado",
+    "t": 31.8,
+    "zone": "own back / king zone",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "mini_pekka_hero",
+      1
+     ]
+    ],
+    "killed": 1,
+    "elixir_hit": 4.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 41.4,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "musketeer",
+      1
+     ]
+    ],
+    "killed": 1,
+    "elixir_hit": 4.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 64.8,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "valkyrie",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 4.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "princess"
+   },
+   {
+    "spell": "the_log",
+    "t": 73.2,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "swarm/cheap",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "princess",
+      1
+     ]
+    ],
+    "killed": 1,
+    "elixir_hit": 3.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 6.0,
+    "zone": "own back / king zone",
+    "n_hit": 3,
+    "hit": [
+     [
+      "swarm/cheap",
+      3
+     ]
+    ],
+    "hit_keys": [
+     [
+      "goblin_gang",
+      3
+     ]
+    ],
+    "killed": 3,
+    "elixir_hit": 3.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": true,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "bats"
+   },
+   {
+    "spell": "the_log",
+    "t": 51.6,
+    "zone": "own half, bridge side",
+    "n_hit": 2,
+    "hit": [
+     [
+      "swarm/cheap",
+      2
+     ]
+    ],
+    "hit_keys": [
+     [
+      "goblins_hero",
+      2
+     ]
+    ],
+    "killed": 2,
+    "elixir_hit": 1.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "goblins_hero"
+   },
+   {
+    "spell": "tornado",
+    "t": 85.2,
+    "zone": "own half, bridge side",
+    "n_hit": 5,
+    "hit": [
+     [
+      "swarm/cheap",
+      5
+     ]
+    ],
+    "hit_keys": [
+     [
+      "bats_evo",
+      5
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 2.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "bats_evo"
+   },
+   {
+    "spell": "the_log",
+    "t": 87.0,
+    "zone": "own back / king zone",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": true,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "bats_evo"
+   },
+   {
+    "spell": "tornado",
+    "t": 115.2,
+    "zone": "own back / king zone",
+    "n_hit": 1,
+    "hit": [
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "hog_rider",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 4.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": true,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 130.2,
+    "zone": "own half, bridge side",
+    "n_hit": 4,
+    "hit": [
+     [
+      "medium",
+      1
+     ],
+     [
+      "swarm/cheap",
+      3
+     ]
+    ],
+    "hit_keys": [
+     [
+      "bandit",
+      1
+     ],
+     [
+      "goblins_hero",
+      3
+     ]
+    ],
+    "killed": 3,
+    "elixir_hit": 4.5,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 162.0,
+    "zone": "enemy half",
+    "n_hit": 6,
+    "hit": [
+     [
+      "swarm/cheap",
+      6
+     ]
+    ],
+    "hit_keys": [
+     [
+      "goblin_gang",
+      6
+     ]
+    ],
+    "killed": 3,
+    "elixir_hit": 6.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "goblin_gang"
+   },
+   {
+    "spell": "the_log",
+    "t": 162.6,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "hog_rider",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 4.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "goblin_gang"
+   },
+   {
+    "spell": "tornado",
+    "t": 7.2,
+    "zone": "own half, bridge side",
+    "n_hit": 2,
+    "hit": [
+     [
+      "swarm/cheap",
+      2
+     ]
+    ],
+    "hit_keys": [
+     [
+      "skeletons",
+      2
+     ]
+    ],
+    "killed": 2,
+    "elixir_hit": 0.7,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "skeletons"
+   },
+   {
+    "spell": "the_log",
+    "t": 8.4,
+    "zone": "own back / king zone",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": true,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "skeletons"
+   },
+   {
+    "spell": "the_log",
+    "t": 9.0,
+    "zone": "own back / king zone",
+    "n_hit": 1,
+    "hit": [
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "hog_rider",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 4.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": true,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "berserker_hero"
+   },
+   {
+    "spell": "tornado",
+    "t": 39.0,
+    "zone": "enemy half",
+    "n_hit": 2,
+    "hit": [
+     [
+      "building",
+      1
+     ],
+     [
+      "swarm/cheap",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "berserker_hero",
+      1
+     ],
+     [
+      "cannon",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 5.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 56.4,
+    "zone": "own half, bridge side",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 109.8,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "swarm/cheap",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "archers",
+      1
+     ]
+    ],
+    "killed": 1,
+    "elixir_hit": 1.5,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 129.0,
+    "zone": "own half, bridge side",
+    "n_hit": 2,
+    "hit": [
+     [
+      "swarm/cheap",
+      2
+     ]
+    ],
+    "hit_keys": [
+     [
+      "archers",
+      2
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 3.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "archers"
+   },
+   {
+    "spell": "the_log",
+    "t": 137.4,
+    "zone": "own half, bridge side",
+    "n_hit": 4,
+    "hit": [
+     [
+      "swarm/cheap",
+      3
+     ],
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "hog_rider",
+      1
+     ],
+     [
+      "skeletons",
+      3
+     ]
+    ],
+    "killed": 3,
+    "elixir_hit": 5.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 151.2,
+    "zone": "enemy half",
+    "n_hit": 2,
+    "hit": [
+     [
+      "swarm/cheap",
+      2
+     ]
+    ],
+    "hit_keys": [
+     [
+      "skeletons",
+      2
+     ]
+    ],
+    "killed": 2,
+    "elixir_hit": 0.7,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "skeletons"
+   },
+   {
+    "spell": "the_log",
+    "t": 6.6,
+    "zone": "own back / king zone",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": true,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap",
+     "tank/wincon"
+    ],
+    "prev_opp_last": "berserker"
+   },
+   {
+    "spell": "tornado",
+    "t": 11.4,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "little_prince",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 3.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [
+     "medium"
+    ],
+    "prev_opp_last": "little_prince"
+   },
+   {
+    "spell": "the_log",
+    "t": 45.0,
+    "zone": "own back / king zone",
+    "n_hit": 1,
+    "hit": [
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "miner",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 3.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": true,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "tank/wincon"
+    ],
+    "prev_opp_last": "miner"
+   },
+   {
+    "spell": "tornado",
+    "t": 153.0,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "rune_giant",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 4.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "berserker"
+   },
+   {
+    "spell": "the_log",
+    "t": 154.8,
+    "zone": "own back / king zone",
+    "n_hit": 2,
+    "hit": [
+     [
+      "medium",
+      1
+     ],
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "little_prince",
+      1
+     ],
+     [
+      "rune_giant",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 7.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "berserker"
+   },
+   {
+    "spell": "the_log",
+    "t": 90.0,
+    "zone": "own half, bridge side",
+    "n_hit": 2,
+    "hit": [
+     [
+      "medium",
+      1
+     ],
+     [
+      "swarm/cheap",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "berserker_hero",
+      1
+     ],
+     [
+      "night_witch",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 6.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "golemite"
+   },
+   {
+    "spell": "tornado",
+    "t": 97.8,
+    "zone": "own back / king zone",
+    "n_hit": 3,
+    "hit": [
+     [
+      "medium",
+      1
+     ],
+     [
+      "swarm/cheap",
+      2
+     ]
+    ],
+    "hit_keys": [
+     [
+      "bats",
+      2
+     ],
+     [
+      "night_witch",
+      1
+     ]
+    ],
+    "killed": 2,
+    "elixir_hit": 4.8,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "bats"
+   },
+   {
+    "spell": "the_log",
+    "t": 255.6,
+    "zone": "own half, bridge side",
+    "n_hit": 3,
+    "hit": [
+     [
+      "swarm/cheap",
+      3
+     ]
+    ],
+    "hit_keys": [
+     [
+      "goblins_hero",
+      3
+     ]
+    ],
+    "killed": 3,
+    "elixir_hit": 1.5,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "ice_spirit"
+   },
+   {
+    "spell": "tornado",
+    "t": 40.2,
+    "zone": "own half, bridge side",
+    "n_hit": 4,
+    "hit": [
+     [
+      "medium",
+      1
+     ],
+     [
+      "swarm/cheap",
+      3
+     ]
+    ],
+    "hit_keys": [
+     [
+      "knight_hero",
+      1
+     ],
+     [
+      "skeletons",
+      3
+     ]
+    ],
+    "killed": 3,
+    "elixir_hit": 4.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "skeletons"
+   },
+   {
+    "spell": "the_log",
+    "t": 42.0,
+    "zone": "own back / king zone",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": true,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 42.6,
+    "zone": "own back / king zone",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "knight_hero",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 3.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 134.4,
+    "zone": "own back / king zone",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": true,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 160.8,
+    "zone": "own half, bridge side",
+    "n_hit": 3,
+    "hit": [
+     [
+      "building",
+      1
+     ],
+     [
+      "medium",
+      2
+     ]
+    ],
+    "hit_keys": [
+     [
+      "archers_evo",
+      2
+     ],
+     [
+      "tesla",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 7.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "medium"
+    ],
+    "prev_opp_last": "archers_evo"
+   },
+   {
+    "spell": "tornado",
+    "t": 14.4,
+    "zone": "own half, bridge side",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 31.2,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "swarm/cheap",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "berserker_hero",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 2.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 58.8,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "swarm/cheap",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "berserker_hero",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 2.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 60.6,
+    "zone": "own half, bridge side",
+    "n_hit": 3,
+    "hit": [
+     [
+      "swarm/cheap",
+      3
+     ]
+    ],
+    "hit_keys": [
+     [
+      "berserker_hero",
+      1
+     ],
+     [
+      "wall_breakers_evo",
+      2
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 4.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 76.8,
+    "zone": "own half, bridge side",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "bats"
+   },
+   {
+    "spell": "the_log",
+    "t": 150.6,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "miner",
+      1
+     ]
+    ],
+    "killed": 1,
+    "elixir_hit": 3.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   }
+  ],
+  "ledger": {
+   "spell_waste": [
+    5,
+    -1.5
+   ],
+   "spell_defence": [
+    25,
+    9.05
+   ],
+   "nado": [
+    10,
+    3.3
+   ],
+   "nado_bad": [
+    3,
+    -0.9
+   ],
+   "log_hits": [
+    0,
+    0.0
+   ],
+   "chip_offence": [
+    177,
+    2.38
+   ]
+  },
+  "nado_split": {
+   "evaluated": 15,
+   "combo": 7,
+   "pulled_nothing": 1
+  },
+  "wall_s": 95.1
+ },
+ {
+  "ckpt": "../scratchpad/gauntlet/L11/gate05_m2k.pt",
+  "matches": 12,
+  "seed": 1,
+  "plays": 346,
+  "casts": [
+   {
+    "spell": "the_log",
+    "t": 3.6,
+    "zone": "own half, bridge side",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "medium",
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "electro_spirit"
+   },
+   {
+    "spell": "the_log",
+    "t": 138.6,
+    "zone": "own back / king zone",
+    "n_hit": 4,
+    "hit": [
+     [
+      "medium",
+      1
+     ],
+     [
+      "tank/wincon",
+      3
+     ]
+    ],
+    "hit_keys": [
+     [
+      "mighty_miner",
+      1
+     ],
+     [
+      "royal_hogs",
+      3
+     ]
+    ],
+    "killed": 2,
+    "elixir_hit": 7.8,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": true,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap",
+     "tank/wincon"
+    ],
+    "prev_opp_last": "electro_spirit"
+   },
+   {
+    "spell": "tornado",
+    "t": 159.6,
+    "zone": "own half, bridge side",
+    "n_hit": 4,
+    "hit": [
+     [
+      "swarm/cheap",
+      4
+     ]
+    ],
+    "hit_keys": [
+     [
+      "electro_spirit",
+      1
+     ],
+     [
+      "skeletons",
+      3
+     ]
+    ],
+    "killed": 3,
+    "elixir_hit": 2.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [
+     "medium",
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "skeletons"
+   },
+   {
+    "spell": "the_log",
+    "t": 160.2,
+    "zone": "own back / king zone",
+    "n_hit": 3,
+    "hit": [
+     [
+      "medium",
+      3
+     ]
+    ],
+    "hit_keys": [
+     [
+      "royal_hogs_evo",
+      3
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 3.8,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": true,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "medium",
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "skeletons"
+   },
+   {
+    "spell": "tornado",
+    "t": 150.6,
+    "zone": "enemy half",
+    "n_hit": 3,
+    "hit": [
+     [
+      "swarm/cheap",
+      3
+     ]
+    ],
+    "hit_keys": [
+     [
+      "zappies",
+      3
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 4.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [
+     "swarm/cheap",
+     "tank/wincon"
+    ],
+    "prev_opp_last": "barbarians"
+   },
+   {
+    "spell": "the_log",
+    "t": 154.2,
+    "zone": "own half, bridge side",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "medium",
+     "swarm/cheap",
+     "tank/wincon"
+    ],
+    "prev_opp_last": "royal_ghost"
+   },
+   {
+    "spell": "the_log",
+    "t": 13.2,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "valkyrie",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 4.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "medium"
+    ],
+    "prev_opp_last": "valkyrie"
+   },
+   {
+    "spell": "tornado",
+    "t": 31.2,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "elixir_golem",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 3.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [
+     "tank/wincon"
+    ],
+    "prev_opp_last": "elixir_golem"
+   },
+   {
+    "spell": "the_log",
+    "t": 38.4,
+    "zone": "own half, bridge side",
+    "n_hit": 2,
+    "hit": [
+     [
+      "swarm/cheap",
+      2
+     ]
+    ],
+    "hit_keys": [
+     [
+      "elixir_golemite",
+      2
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 3.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "medium",
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "elixir_golemite"
+   },
+   {
+    "spell": "tornado",
+    "t": 54.6,
+    "zone": "enemy half",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "inferno_dragon",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 4.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [
+     "medium"
+    ],
+    "prev_opp_last": "inferno_dragon"
+   },
+   {
+    "spell": "the_log",
+    "t": 81.0,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "valkyrie",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 4.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 94.8,
+    "zone": "own back / king zone",
+    "n_hit": 4,
+    "hit": [
+     [
+      "swarm/cheap",
+      4
+     ]
+    ],
+    "hit_keys": [
+     [
+      "elixir_blob",
+      4
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 2.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": true,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "elixir_blob"
+   },
+   {
+    "spell": "tornado",
+    "t": 147.6,
+    "zone": "own half, bridge side",
+    "n_hit": 3,
+    "hit": [
+     [
+      "medium",
+      2
+     ],
+     [
+      "swarm/cheap",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "battle_healer",
+      1
+     ],
+     [
+      "elixir_blob",
+      1
+     ],
+     [
+      "inferno_dragon",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 8.5,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [
+     "medium",
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "elixir_blob"
+   },
+   {
+    "spell": "the_log",
+    "t": 153.0,
+    "zone": "own half, bridge side",
+    "n_hit": 2,
+    "hit": [
+     [
+      "medium",
+      2
+     ]
+    ],
+    "hit_keys": [
+     [
+      "battle_healer",
+      1
+     ],
+     [
+      "valkyrie",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 8.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "elixir_blob"
+   },
+   {
+    "spell": "tornado",
+    "t": 157.8,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "valkyrie",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 4.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 2.4,
+    "zone": "own half, bridge side",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "medium"
+    ],
+    "prev_opp_last": "baby_dragon"
+   },
+   {
+    "spell": "tornado",
+    "t": 21.0,
+    "zone": "enemy half",
+    "n_hit": 2,
+    "hit": [
+     [
+      "medium",
+      2
+     ]
+    ],
+    "hit_keys": [
+     [
+      "baby_dragon",
+      1
+     ],
+     [
+      "inferno_dragon",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 8.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [
+     "medium"
+    ],
+    "prev_opp_last": "inferno_dragon"
+   },
+   {
+    "spell": "the_log",
+    "t": 33.6,
+    "zone": "own half, bridge side",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "medium"
+    ],
+    "prev_opp_last": "balloon_hero"
+   },
+   {
+    "spell": "the_log",
+    "t": 34.2,
+    "zone": "own half, bridge side",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "medium"
+    ],
+    "prev_opp_last": "balloon_hero"
+   },
+   {
+    "spell": "tornado",
+    "t": 54.0,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "bowler",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 5.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [
+     "medium"
+    ],
+    "prev_opp_last": "bowler"
+   },
+   {
+    "spell": "the_log",
+    "t": 72.0,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "knight",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 3.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "medium"
+    ],
+    "prev_opp_last": "knight"
+   },
+   {
+    "spell": "the_log",
+    "t": 4.2,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "swarm/cheap",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "skeletons",
+      1
+     ]
+    ],
+    "killed": 1,
+    "elixir_hit": 0.3,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap",
+     "tank/wincon"
+    ],
+    "prev_opp_last": "skeletons"
+   },
+   {
+    "spell": "the_log",
+    "t": 96.6,
+    "zone": "own half, bridge side",
+    "n_hit": 3,
+    "hit": [
+     [
+      "swarm/cheap",
+      3
+     ]
+    ],
+    "hit_keys": [
+     [
+      "skeletons",
+      3
+     ]
+    ],
+    "killed": 3,
+    "elixir_hit": 1.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "skeletons"
+   },
+   {
+    "spell": "the_log",
+    "t": 134.4,
+    "zone": "own half, bridge side",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "tank/wincon"
+    ],
+    "prev_opp_last": "hog_rider"
+   },
+   {
+    "spell": "tornado",
+    "t": 148.2,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "swarm/cheap",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "ice_golem_hero",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 2.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 148.8,
+    "zone": "enemy half",
+    "n_hit": 1,
+    "hit": [
+     [
+      "building",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "cannon",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 3.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 171.0,
+    "zone": "own half, bridge side",
+    "n_hit": 3,
+    "hit": [
+     [
+      "swarm/cheap",
+      2
+     ],
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "hog_rider",
+      1
+     ],
+     [
+      "skeletons",
+      2
+     ]
+    ],
+    "killed": 2,
+    "elixir_hit": 4.7,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "skeletons"
+   },
+   {
+    "spell": "the_log",
+    "t": 172.2,
+    "zone": "own half, bridge side",
+    "n_hit": 2,
+    "hit": [
+     [
+      "building",
+      1
+     ],
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "cannon",
+      1
+     ],
+     [
+      "hog_rider",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 7.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "skeletons"
+   },
+   {
+    "spell": "tornado",
+    "t": 184.8,
+    "zone": "own half, bridge side",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "skeletons"
+   },
+   {
+    "spell": "the_log",
+    "t": 3.0,
+    "zone": "own half, bridge side",
+    "n_hit": 2,
+    "hit": [
+     [
+      "swarm/cheap",
+      2
+     ]
+    ],
+    "hit_keys": [
+     [
+      "skeletons",
+      2
+     ]
+    ],
+    "killed": 2,
+    "elixir_hit": 0.7,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "ice_spirit"
+   },
+   {
+    "spell": "the_log",
+    "t": 122.4,
+    "zone": "own back / king zone",
+    "n_hit": 4,
+    "hit": [
+     [
+      "swarm/cheap",
+      4
+     ]
+    ],
+    "hit_keys": [
+     [
+      "goblins",
+      1
+     ],
+     [
+      "skeletons",
+      3
+     ]
+    ],
+    "killed": 4,
+    "elixir_hit": 1.5,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": true,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "berserker_hero"
+   },
+   {
+    "spell": "the_log",
+    "t": 9.0,
+    "zone": "own half, bridge side",
+    "n_hit": 2,
+    "hit": [
+     [
+      "swarm/cheap",
+      2
+     ]
+    ],
+    "hit_keys": [
+     [
+      "skeletons",
+      2
+     ]
+    ],
+    "killed": 2,
+    "elixir_hit": 0.7,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap",
+     "tank/wincon"
+    ],
+    "prev_opp_last": "skeletons"
+   },
+   {
+    "spell": "tornado",
+    "t": 154.2,
+    "zone": "own half, bridge side",
+    "n_hit": 3,
+    "hit": [
+     [
+      "tank/wincon",
+      3
+     ]
+    ],
+    "hit_keys": [
+     [
+      "royal_hogs",
+      3
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 3.8,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [
+     "tank/wincon"
+    ],
+    "prev_opp_last": "royal_hogs"
+   },
+   {
+    "spell": "the_log",
+    "t": 6.0,
+    "zone": "own half, bridge side",
+    "n_hit": 3,
+    "hit": [
+     [
+      "medium",
+      1
+     ],
+     [
+      "swarm/cheap",
+      2
+     ]
+    ],
+    "hit_keys": [
+     [
+      "mighty_miner",
+      1
+     ],
+     [
+      "skeletons",
+      2
+     ]
+    ],
+    "killed": 2,
+    "elixir_hit": 4.7,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "medium",
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "skeletons"
+   },
+   {
+    "spell": "the_log",
+    "t": 46.8,
+    "zone": "own back / king zone",
+    "n_hit": 2,
+    "hit": [
+     [
+      "swarm/cheap",
+      1
+     ],
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "hog_rider",
+      1
+     ],
+     [
+      "skeletons",
+      1
+     ]
+    ],
+    "killed": 1,
+    "elixir_hit": 4.3,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": true,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 85.2,
+    "zone": "own half, bridge side",
+    "n_hit": 9,
+    "hit": [
+     [
+      "medium",
+      1
+     ],
+     [
+      "swarm/cheap",
+      8
+     ]
+    ],
+    "hit_keys": [
+     [
+      "firecracker_evo",
+      1
+     ],
+     [
+      "skeletons_evo",
+      8
+     ]
+    ],
+    "killed": 8,
+    "elixir_hit": 5.7,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "electro_spirit"
+   },
+   {
+    "spell": "the_log",
+    "t": 111.0,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "mighty_miner",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 4.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 129.0,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "swarm/cheap",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "firecracker",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 3.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 138.6,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "mighty_miner",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 4.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 151.2,
+    "zone": "own half, bridge side",
+    "n_hit": 8,
+    "hit": [
+     [
+      "medium",
+      1
+     ],
+     [
+      "swarm/cheap",
+      7
+     ]
+    ],
+    "hit_keys": [
+     [
+      "mighty_miner",
+      1
+     ],
+     [
+      "skeletons_evo",
+      7
+     ]
+    ],
+    "killed": 7,
+    "elixir_hit": 6.3,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 157.8,
+    "zone": "own half, bridge side",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 2.4,
+    "zone": "own half, bridge side",
+    "n_hit": 2,
+    "hit": [
+     [
+      "swarm/cheap",
+      2
+     ]
+    ],
+    "hit_keys": [
+     [
+      "spear_goblins",
+      2
+     ]
+    ],
+    "killed": 2,
+    "elixir_hit": 1.3,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "spear_goblins"
+   },
+   {
+    "spell": "tornado",
+    "t": 21.6,
+    "zone": "enemy half",
+    "n_hit": 4,
+    "hit": [
+     [
+      "swarm/cheap",
+      4
+     ]
+    ],
+    "hit_keys": [
+     [
+      "goblin_gang",
+      4
+     ]
+    ],
+    "killed": 3,
+    "elixir_hit": 4.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "goblin_gang"
+   },
+   {
+    "spell": "the_log",
+    "t": 39.6,
+    "zone": "own half, bridge side",
+    "n_hit": 3,
+    "hit": [
+     [
+      "swarm/cheap",
+      3
+     ]
+    ],
+    "hit_keys": [
+     [
+      "spear_goblins",
+      3
+     ]
+    ],
+    "killed": 3,
+    "elixir_hit": 2.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "skeletons"
+   },
+   {
+    "spell": "tornado",
+    "t": 68.4,
+    "zone": "own half, bridge side",
+    "n_hit": 4,
+    "hit": [
+     [
+      "swarm/cheap",
+      4
+     ]
+    ],
+    "hit_keys": [
+     [
+      "bats",
+      4
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 1.6,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 73.8,
+    "zone": "own half, bridge side",
+    "n_hit": 3,
+    "hit": [
+     [
+      "swarm/cheap",
+      3
+     ]
+    ],
+    "hit_keys": [
+     [
+      "spear_goblins",
+      3
+     ]
+    ],
+    "killed": 3,
+    "elixir_hit": 2.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 100.8,
+    "zone": "own back / king zone",
+    "n_hit": 4,
+    "hit": [
+     [
+      "swarm/cheap",
+      4
+     ]
+    ],
+    "hit_keys": [
+     [
+      "bats_evo",
+      4
+     ]
+    ],
+    "killed": 1,
+    "elixir_hit": 1.6,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 150.0,
+    "zone": "own half, bridge side",
+    "n_hit": 8,
+    "hit": [
+     [
+      "swarm/cheap",
+      8
+     ]
+    ],
+    "hit_keys": [
+     [
+      "goblin_gang",
+      3
+     ],
+     [
+      "skeletons",
+      5
+     ]
+    ],
+    "killed": 5,
+    "elixir_hit": 4.7,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "skeletons"
+   },
+   {
+    "spell": "the_log",
+    "t": 52.8,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "swarm/cheap",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "zappies",
+      1
+     ]
+    ],
+    "killed": 1,
+    "elixir_hit": 1.3,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "mother_witch_hog"
+   },
+   {
+    "spell": "tornado",
+    "t": 80.4,
+    "zone": "own half, bridge side",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [
+     "tank/wincon"
+    ],
+    "prev_opp_last": "barbarians"
+   },
+   {
+    "spell": "the_log",
+    "t": 97.2,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "giant_skeleton",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 6.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 123.0,
+    "zone": "own half, bridge side",
+    "n_hit": 3,
+    "hit": [
+     [
+      "swarm/cheap",
+      1
+     ],
+     [
+      "tank/wincon",
+      2
+     ]
+    ],
+    "hit_keys": [
+     [
+      "elite_barbarians",
+      2
+     ],
+     [
+      "mother_witch_hog",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 7.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 33.0,
+    "zone": "own back / king zone",
+    "n_hit": 3,
+    "hit": [
+     [
+      "swarm/cheap",
+      3
+     ]
+    ],
+    "hit_keys": [
+     [
+      "goblins",
+      3
+     ]
+    ],
+    "killed": 3,
+    "elixir_hit": 1.5,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": true,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "goblins"
+   },
+   {
+    "spell": "tornado",
+    "t": 76.2,
+    "zone": "own back / king zone",
+    "n_hit": 7,
+    "hit": [
+     [
+      "swarm/cheap",
+      7
+     ]
+    ],
+    "hit_keys": [
+     [
+      "skeletons_evo",
+      7
+     ]
+    ],
+    "killed": 7,
+    "elixir_hit": 2.3,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": true,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [
+     "building",
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "goblin_drill_evo"
+   },
+   {
+    "spell": "the_log",
+    "t": 76.8,
+    "zone": "own back / king zone",
+    "n_hit": 5,
+    "hit": [
+     [
+      "swarm/cheap",
+      5
+     ]
+    ],
+    "hit_keys": [
+     [
+      "skeletons_evo",
+      5
+     ]
+    ],
+    "killed": 5,
+    "elixir_hit": 1.7,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": true,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "building",
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "skeletons_evo"
+   },
+   {
+    "spell": "tornado",
+    "t": 103.8,
+    "zone": "own half, bridge side",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 126.6,
+    "zone": "own half, bridge side",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "building"
+    ],
+    "prev_opp_last": "goblin_drill"
+   },
+   {
+    "spell": "tornado",
+    "t": 178.2,
+    "zone": "own back / king zone",
+    "n_hit": 8,
+    "hit": [
+     [
+      "swarm/cheap",
+      8
+     ]
+    ],
+    "hit_keys": [
+     [
+      "berserker_hero",
+      1
+     ],
+     [
+      "skeletons_evo",
+      7
+     ]
+    ],
+    "killed": 7,
+    "elixir_hit": 4.3,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": true,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 7.8,
+    "zone": "own half, bridge side",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 31.2,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "pekka",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 7.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 77.4,
+    "zone": "own half, bridge side",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 87.0,
+    "zone": "own back / king zone",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "goblinstein",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 5.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": true,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 103.2,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "pekka_evo",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 7.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 132.0,
+    "zone": "own back / king zone",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "pekka_evo",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 7.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": true,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [
+     "tank/wincon"
+    ],
+    "prev_opp_last": "ram_rider"
+   },
+   {
+    "spell": "the_log",
+    "t": 134.4,
+    "zone": "own back / king zone",
+    "n_hit": 2,
+    "hit": [
+     [
+      "medium",
+      2
+     ]
+    ],
+    "hit_keys": [
+     [
+      "goblinstein",
+      1
+     ],
+     [
+      "pekka_evo",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 12.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": true,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "medium"
+    ],
+    "prev_opp_last": "fisherman"
+   }
+  ],
+  "ledger": {
+   "spell_waste": [
+    7,
+    -2.1
+   ],
+   "spell_defence": [
+    29,
+    6.63
+   ],
+   "nado": [
+    21,
+    5.8
+   ],
+   "nado_bad": [
+    6,
+    -1.8
+   ],
+   "log_hits": [
+    0,
+    0.0
+   ],
+   "chip_offence": [
+    152,
+    2.03
+   ]
+  },
+  "nado_split": {
+   "evaluated": 26,
+   "combo": 11,
+   "clump": 4,
+   "pulled_nothing": 3
+  },
+  "wall_s": 64.7
+ },
+ {
+  "ckpt": "../scratchpad/gauntlet/L11/gate05_m2k.pt",
+  "matches": 12,
+  "seed": 2,
+  "plays": 308,
+  "casts": [
+   {
+    "spell": "the_log",
+    "t": 83.4,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "swarm/cheap",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "skeletons",
+      1
+     ]
+    ],
+    "killed": 1,
+    "elixir_hit": 0.3,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "skeletons"
+   },
+   {
+    "spell": "the_log",
+    "t": 130.8,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "hunter",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 4.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 142.8,
+    "zone": "own back / king zone",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "royal_ghost",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 3.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": true,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "electro_spirit"
+   },
+   {
+    "spell": "the_log",
+    "t": 146.4,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "hunter",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 4.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 39.6,
+    "zone": "own back / king zone",
+    "n_hit": 1,
+    "hit": [
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "mega_knight",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 7.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 136.8,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "royal_giant_evo",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 6.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 164.4,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "mega_knight",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 7.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 177.0,
+    "zone": "own half, bridge side",
+    "n_hit": 2,
+    "hit": [
+     [
+      "swarm/cheap",
+      1
+     ],
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "firecracker",
+      1
+     ],
+     [
+      "royal_giant",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 9.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": true,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 4.2,
+    "zone": "own half, bridge side",
+    "n_hit": 4,
+    "hit": [
+     [
+      "swarm/cheap",
+      3
+     ],
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "hog_rider",
+      1
+     ],
+     [
+      "skeletons",
+      3
+     ]
+    ],
+    "killed": 3,
+    "elixir_hit": 5.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap",
+     "tank/wincon"
+    ],
+    "prev_opp_last": "skeletons"
+   },
+   {
+    "spell": "tornado",
+    "t": 11.4,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "swarm/cheap",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "ice_golem",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 2.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "ice_spirit"
+   },
+   {
+    "spell": "the_log",
+    "t": 39.0,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "swarm/cheap",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "skeletons",
+      1
+     ]
+    ],
+    "killed": 1,
+    "elixir_hit": 0.3,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 46.2,
+    "zone": "own half, bridge side",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 158.4,
+    "zone": "own half, bridge side",
+    "n_hit": 5,
+    "hit": [
+     [
+      "building",
+      1
+     ],
+     [
+      "medium",
+      1
+     ],
+     [
+      "swarm/cheap",
+      3
+     ]
+    ],
+    "hit_keys": [
+     [
+      "musketeer_hero",
+      1
+     ],
+     [
+      "skeletons",
+      3
+     ],
+     [
+      "trusty_turret",
+      1
+     ]
+    ],
+    "killed": 4,
+    "elixir_hit": 8.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [
+     "medium"
+    ],
+    "prev_opp_last": "musketeer_hero"
+   },
+   {
+    "spell": "the_log",
+    "t": 8.4,
+    "zone": "own half, bridge side",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "bomber"
+   },
+   {
+    "spell": "the_log",
+    "t": 9.0,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "swarm/cheap",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "bomber",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 2.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "bomber"
+   },
+   {
+    "spell": "the_log",
+    "t": 39.6,
+    "zone": "own half, bridge side",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 70.2,
+    "zone": "own back / king zone",
+    "n_hit": 13,
+    "hit": [
+     [
+      "medium",
+      2
+     ],
+     [
+      "swarm/cheap",
+      11
+     ]
+    ],
+    "hit_keys": [
+     [
+      "balloon_hero",
+      1
+     ],
+     [
+      "inferno_dragon",
+      1
+     ],
+     [
+      "lava_pups",
+      5
+     ],
+     [
+      "skeleton_army",
+      5
+     ],
+     [
+      "skeletrooper",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 13.5,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": true,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "bomber"
+   },
+   {
+    "spell": "the_log",
+    "t": 75.6,
+    "zone": "own back / king zone",
+    "n_hit": 2,
+    "hit": [
+     [
+      "swarm/cheap",
+      2
+     ]
+    ],
+    "hit_keys": [
+     [
+      "skeleton_army",
+      2
+     ]
+    ],
+    "killed": 2,
+    "elixir_hit": 0.4,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": true,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 159.6,
+    "zone": "own back / king zone",
+    "n_hit": 12,
+    "hit": [
+     [
+      "swarm/cheap",
+      12
+     ]
+    ],
+    "hit_keys": [
+     [
+      "ice_golem_hero",
+      1
+     ],
+     [
+      "skeletons",
+      3
+     ],
+     [
+      "skeletons_evo",
+      8
+     ]
+    ],
+    "killed": 11,
+    "elixir_hit": 5.7,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": true,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "skeletons_evo"
+   },
+   {
+    "spell": "the_log",
+    "t": 22.8,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "mighty_miner",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 4.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 75.6,
+    "zone": "own half, bridge side",
+    "n_hit": 3,
+    "hit": [
+     [
+      "swarm/cheap",
+      3
+     ]
+    ],
+    "hit_keys": [
+     [
+      "skeletons_evo",
+      3
+     ]
+    ],
+    "killed": 3,
+    "elixir_hit": 1.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "skeletons_evo"
+   },
+   {
+    "spell": "the_log",
+    "t": 76.2,
+    "zone": "own back / king zone",
+    "n_hit": 4,
+    "hit": [
+     [
+      "swarm/cheap",
+      3
+     ],
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "hog_rider",
+      1
+     ],
+     [
+      "skeletons_evo",
+      3
+     ]
+    ],
+    "killed": 3,
+    "elixir_hit": 5.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": true,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "skeletons_evo"
+   },
+   {
+    "spell": "the_log",
+    "t": 163.8,
+    "zone": "own half, bridge side",
+    "n_hit": 2,
+    "hit": [
+     [
+      "medium",
+      1
+     ],
+     [
+      "swarm/cheap",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "mighty_miner",
+      1
+     ],
+     [
+      "skeletons_evo",
+      1
+     ]
+    ],
+    "killed": 1,
+    "elixir_hit": 4.3,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 7.2,
+    "zone": "own half, bridge side",
+    "n_hit": 2,
+    "hit": [
+     [
+      "swarm/cheap",
+      2
+     ]
+    ],
+    "hit_keys": [
+     [
+      "skeletons",
+      2
+     ]
+    ],
+    "killed": 2,
+    "elixir_hit": 0.7,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "skeletons"
+   },
+   {
+    "spell": "the_log",
+    "t": 22.8,
+    "zone": "own back / king zone",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": true,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 50.4,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "swarm/cheap",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "princess",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 3.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 51.0,
+    "zone": "own half, bridge side",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 70.2,
+    "zone": "own back / king zone",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": true,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "electro_spirit"
+   },
+   {
+    "spell": "the_log",
+    "t": 110.4,
+    "zone": "own half, bridge side",
+    "n_hit": 4,
+    "hit": [
+     [
+      "medium",
+      1
+     ],
+     [
+      "swarm/cheap",
+      3
+     ]
+    ],
+    "hit_keys": [
+     [
+      "skeletons",
+      3
+     ],
+     [
+      "valkyrie_hero",
+      1
+     ]
+    ],
+    "killed": 3,
+    "elixir_hit": 5.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "skeletons"
+   },
+   {
+    "spell": "the_log",
+    "t": 169.2,
+    "zone": "own half, bridge side",
+    "n_hit": 3,
+    "hit": [
+     [
+      "swarm/cheap",
+      2
+     ],
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "hog_rider",
+      1
+     ],
+     [
+      "skeletons",
+      2
+     ]
+    ],
+    "killed": 2,
+    "elixir_hit": 4.7,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "skeletons"
+   },
+   {
+    "spell": "tornado",
+    "t": 11.4,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "swarm/cheap",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "archers",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 1.5,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 36.6,
+    "zone": "own half, bridge side",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 3.0,
+    "zone": "own half, bridge side",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "tank/wincon"
+    ],
+    "prev_opp_last": "ram_rider"
+   },
+   {
+    "spell": "the_log",
+    "t": 57.0,
+    "zone": "own half, bridge side",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "medium"
+    ],
+    "prev_opp_last": "knight"
+   },
+   {
+    "spell": "tornado",
+    "t": 84.0,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "pekka",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 7.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [
+     "medium"
+    ],
+    "prev_opp_last": "mega_minion"
+   },
+   {
+    "spell": "tornado",
+    "t": 84.6,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "pekka",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 7.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [
+     "medium"
+    ],
+    "prev_opp_last": "mega_minion"
+   },
+   {
+    "spell": "the_log",
+    "t": 92.4,
+    "zone": "own back / king zone",
+    "n_hit": 1,
+    "hit": [
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "pekka",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 7.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 117.6,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "knight_evo",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 3.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [
+     "medium"
+    ],
+    "prev_opp_last": "knight_evo"
+   },
+   {
+    "spell": "tornado",
+    "t": 118.2,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "knight_evo",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 3.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [
+     "medium"
+    ],
+    "prev_opp_last": "knight_evo"
+   },
+   {
+    "spell": "the_log",
+    "t": 133.2,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "pekka",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 7.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "medium"
+    ],
+    "prev_opp_last": "mega_minion"
+   },
+   {
+    "spell": "tornado",
+    "t": 141.6,
+    "zone": "own half, bridge side",
+    "n_hit": 2,
+    "hit": [
+     [
+      "medium",
+      1
+     ],
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "mega_minion",
+      1
+     ],
+     [
+      "pekka",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 10.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 151.2,
+    "zone": "own back / king zone",
+    "n_hit": 1,
+    "hit": [
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "pekka",
+      1
+     ]
+    ],
+    "killed": 1,
+    "elixir_hit": 7.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": true,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 5.4,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "dark_prince_hero",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 4.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "medium"
+    ],
+    "prev_opp_last": "dark_prince_hero"
+   },
+   {
+    "spell": "tornado",
+    "t": 19.8,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "electro_wizard",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 4.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 48.0,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "giant_hero",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 5.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 75.6,
+    "zone": "enemy half",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 76.2,
+    "zone": "enemy half",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 93.6,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "giant_hero",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 5.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 129.0,
+    "zone": "own half, bridge side",
+    "n_hit": 6,
+    "hit": [
+     [
+      "medium",
+      1
+     ],
+     [
+      "swarm/cheap",
+      5
+     ]
+    ],
+    "hit_keys": [
+     [
+      "bats",
+      5
+     ],
+     [
+      "electro_wizard",
+      1
+     ]
+    ],
+    "killed": 5,
+    "elixir_hit": 6.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 129.6,
+    "zone": "own half, bridge side",
+    "n_hit": 0,
+    "hit": [],
+    "hit_keys": [],
+    "killed": 0,
+    "elixir_hit": 0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 176.4,
+    "zone": "own half, bridge side",
+    "n_hit": 7,
+    "hit": [
+     [
+      "swarm/cheap",
+      7
+     ]
+    ],
+    "hit_keys": [
+     [
+      "skeleton_army",
+      7
+     ]
+    ],
+    "killed": 7,
+    "elixir_hit": 1.4,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "swarm/cheap"
+    ],
+    "prev_opp_last": "skeleton_army"
+   },
+   {
+    "spell": "the_log",
+    "t": 43.8,
+    "zone": "own back / king zone",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "royal_ghost",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 3.0,
+    "on_tower": false,
+    "king_asleep": true,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 63.0,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "wizard_hero",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 5.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 63.6,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "wizard_hero",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 5.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": false,
+    "prev_opp_classes": [
+     "tank/wincon"
+    ],
+    "prev_opp_last": "battle_ram"
+   },
+   {
+    "spell": "the_log",
+    "t": 78.6,
+    "zone": "own half, bridge side",
+    "n_hit": 4,
+    "hit": [
+     [
+      "medium",
+      1
+     ],
+     [
+      "swarm/cheap",
+      3
+     ]
+    ],
+    "hit_keys": [
+     [
+      "mother_witch",
+      1
+     ],
+     [
+      "zappies",
+      3
+     ]
+    ],
+    "killed": 1,
+    "elixir_hit": 8.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [
+     "medium",
+     "swarm/cheap",
+     "tank/wincon"
+    ],
+    "prev_opp_last": "barbarians"
+   },
+   {
+    "spell": "tornado",
+    "t": 96.6,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "royal_ghost",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 3.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "tornado",
+    "t": 97.2,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "medium",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "royal_ghost",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 3.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": true,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   },
+   {
+    "spell": "the_log",
+    "t": 125.4,
+    "zone": "own half, bridge side",
+    "n_hit": 1,
+    "hit": [
+     [
+      "tank/wincon",
+      1
+     ]
+    ],
+    "hit_keys": [
+     [
+      "giant_skeleton",
+      1
+     ]
+    ],
+    "killed": 0,
+    "elixir_hit": 6.0,
+    "on_tower": false,
+    "king_asleep": false,
+    "near_own_king": false,
+    "pull_locked_on_tower": null,
+    "prev_opp_classes": [],
+    "prev_opp_last": null
+   }
+  ],
+  "ledger": {
+   "spell_waste": [
+    6,
+    -1.8
+   ],
+   "spell_defence": [
+    20,
+    10.01
+   ],
+   "nado": [
+    11,
+    2.45
+   ],
+   "nado_bad": [
+    4,
+    -1.2
+   ],
+   "log_hits": [
+    0,
+    0.0
+   ],
+   "chip_offence": [
+    111,
+    1.44
+   ]
+  },
+  "nado_split": {
+   "evaluated": 16,
+   "clump": 3,
+   "pulled_nothing": 3,
+   "combo": 4
+  },
+  "wall_s": 55.5
+ }
+]

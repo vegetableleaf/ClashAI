@@ -476,3 +476,18 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   P(play) 0.26 vs 0.48, card_ent 1.18 vs 1.82 (coef-0.5 vs 0.1): (b), single sampled readings, not the probe.
 - Trainer EVAL @4000: coef-0.5 13%/10%, coef-0.1 8%/4% -- winrate, logged only.
 - Trap: ETA from one rate reading; next wakeup paced on the snapshot file. Next: 21:41 = m=5k read (rule §3).
+
+
+## L16 — 2026-09-02 21:20-22:10 | FINAL loop (owner order): spell niches; nado_retarget unreachable; m=5k read; gauntlet STOPPED
+- (a) pro reference (6,804 icebow-side casts): log 87% own bridge side; rocket 81% enemy half/tower zone; tornado spread,
+  19% own back/king zone. Class of the preceding enemy play only mildly separates the spells; the crawl has no unit
+  positions, so "what the spell covered" is sim-only.
+- (a) sim, 3 ckpts x 3 seeds x 12 matches, engine truth: LOG zone pro-like (72-85% own bridge) but covers nothing on
+  18-26% of casts, kills on 25-37%; TORNADO king activation 0/1/4 per 36 matches (king asleep at 43-54% of casts),
+  2-14% cast near our king vs pros 19%; clump set up 7-19x, rocket never cashes it; ROCKET 1 cast / 108 matches.
+- (c) `nado_retarget` has NEVER been payable: gate centre-dist <= reach+1.0 (1.8 for hog) vs measured attack distance
+  2.20 (hog) / 2.10 / 2.68 / 2.68 -- engine reach is a gap. Fix queued §6 (one change, after the run).
+- Retracted before recording: my first pass read "0 clump/combo/king/retarget" from ledger keys that do not exist.
+- (a) m=5k read: played@3 0.281/0.269/0.315 -> mixed, not the ask branch; == coef-0.1's own 5k (0.28-0.31). Run continues.
+- HANDOFF §6: agent_dt DEFERRED, YOLOv26 NO-GO (owner). Gauntlet stopped on owner order; new gauntlet next.
+- Files: scratchpad/gauntlet/L16/*. HANDOFF §5bq. Run untouched (2 trainer PIDs before and after).

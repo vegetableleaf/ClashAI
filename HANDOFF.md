@@ -22,7 +22,18 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-02 21:20**, branch `main` (**§5bp: GAUNTLET L15 -- m=5k NOT reached (4,425 eps at 21:15,
+Last updated: **2026-09-02 22:10**, branch `main` (**§5bq: GAUNTLET L16 (LAST loop of this gauntlet, owner order) --
+"does the model know how to USE its spells?" Pro niche reference from the crawl (6,804 icebow-side casts) + sim probe on
+3 checkpoints x 3 seeds x 12 matches, engine ground truth. (a) LOG: lands where pros land it (own bridge side 72-85% vs
+pros 87%) but covers NO enemy body on 18-26% of casts and kills something on only 25-37%. (a) TORNADO: king activation
+0 / 1 / 4 per 36 matches with the king asleep at 43-54% of casts; 2-14% of casts near our king (pros 19% back/king
+zone); clump-for-rocket set up 7-19 times per 36 matches and NEVER cashed. (a) ROCKET: 1 cast in 108 matches (pros
+3.4% of plays, 81% in the enemy half/tower zone). (c) REWARD BUG: `nado_retarget` is UNREACHABLE -- the gate is
+centre-to-centre `<= reach + 1.0` but every wincon attacks from further out (hog 2.20 vs 1.8). Verdict: the policy
+knows the log's ZONE, not the log's TARGET; does not know the tornado's king/retarget niches; has no rocket at all.
+m=5k READ (pre-registered): `played` at 3 = 0.281 / 0.269 / 0.315 -> NOT the ask branch, run continues to 10k.
+Owner notes: agent_dt DEFERRED, YOLOv26 NO-GO (§6). Gauntlet STOPPED on owner order; new gauntlet next.**
+Previous header (§5bp: GAUNTLET L15 -- m=5k NOT reached (4,425 eps at 21:15,
 0.5 ep/s, ETA ~21:35); no pre-registered read yet. Same-instrument watchdog at 4000: both arms trip the SAME two
 alerts (cell ent 1.07 vs 1.06 of 5.08; elixir>=6 <0.3%) -> not discriminating. Sampled P(play) 0.26-0.38 (coef-0.5)
 vs 0.48 (coef-0.1), card_ent 1.18 vs 1.82 -- one reading each, watchdog instrument, NOT the probe. Wakeup 21:41.**
@@ -1978,7 +1989,27 @@ slow one.
 
 ## 6. Open work
 
-### PRIORITY-C -- agent_dt / act_period (owner asked to pin this, 2026-09-02; measured §5bl, L12)
+### ⚑ OWNER DECISIONS 2026-09-02 (recorded so they are not re-litigated)
+* **agent_dt / act_period changes: DEFERRED** (owner, 21:2x). PRIORITY-C below stays as the record of the
+  verdict and the order of work; do not start it without a new owner order.
+* **YOLOv26 (yolo26s / yolo26-p2) detector upgrade: NO-GO** (owner, 21:2x). The L2 screen and §5ba-5be smoke
+  remain as record; board-27 stays cancelled; the live detector stays YOLO11s. Do not re-propose.
+
+### From §5bq (2026-09-02 22:10) -- spell niches, after the gate-prior run ends (sim reward = one change each)
+* **`nado_retarget` UNREACHABLE (c, §5bq.3):** sim/env.py:2472 and :2508 `tile_dist(u, tw) <= u.spec.reach + 1.0`
+  is centre-to-centre; the engine's reach is a gap. Fix = `<= u.spec.reach + _body_radius(tw) + _body_radius(u) + 1.0`
+  (or reuse the engine's `_gap`). Regression test: `scratchpad/gauntlet/L16/retarget_reach.py` as a unit test
+  (hog settles at 2.20 tiles and must be a targeter). Its own experiment: the term has never paid, so turning it
+  on is a reward change.
+* Rocket at 0-1 casts per 108 matches on three checkpoints: find the cause (masks vs `wincon_mis` vs
+  `spell_waste` at radius 2.0) before the spell A/Bs (§6-PRIORITY) -- they are meaningless without a rocket.
+* King activation 0-4 per 36 matches with the king asleep at half the casts: a DRILL that starts with a sleeping
+  king and a hog at our princess would teach the pull; check `drills_icebow.py` for one first.
+* Ledger: give the four tornado credits their own keys (`nado_king`, `nado_clump`, `nado_combo`,
+  `nado_retarget`) so the next reader does not repeat my first-pass error (§5bq.2). Bookkeeping, no reward change.
+* Re-run `scratchpad/gauntlet/L16/sim_spell_niche.py` on the 10k snapshot for the trend (3 seeds).
+
+### PRIORITY-C -- agent_dt / act_period (owner asked to pin this, 2026-09-02; measured §5bl, L12) -- DEFERRED, see above
 **Verdict (§5bl.6): do NOT lower agent_dt yet.** Served decision loop p50 **0.760 s** against act_period 0.6
 (pipeline 0.646 s; env reads 0.343 s; trainer residual **0.315 s**, which is NOT the net: forward 1.6 ms,
 DDQN step 21 ms). Lowering the period today changes nothing served. Pros play < 0.6 s after their own
@@ -7248,4 +7279,117 @@ Anything about the m=5k rule. Whether the P(play)/card_ent gap survives at 5k on
 ### 4. Trap
 Wakeup ETA computed from one rate reading (0.6 ep/s) -- the run slowed to 0.5 under the watchdog's
 policy-stats child. Pace the next wakeup from the latest rate AND the snapshot's existence, not the count.
+
+## §5bq — GAUNTLET L16 (final loop): does the policy know its spell NICHES? Pro reference + engine-truth probe; `nado_retarget` unreachable; m=5k read (2026-09-02 21:20-22:10)
+
+Owner (21:2x): "does the model know how to actually use its spells? just because it lands a spell, doesn't mean the
+spell was a good spell ... each spell in icebow fills a specific niche (log on goblin barrel / princess / goblin gang
+/ skeleton-barrel skeletons; tornado to activate king tower or reset aggro; rocket to clear clumps or medium troops
+next to the enemy princess tower for the 2-for-1). After this is addressed, you may stop the gauntlet ... Don't take
+my examples as the ONLY possible use cases: you can easily determine how spells should be used by looking at pro
+player spell placements." Run untouched throughout (2 trainer PIDs + watchdog + gates script, before and after).
+
+### 1. Pro niche reference (a) -- `scratchpad/gauntlet/L16/pro_spell_niche.py`, output `pro_spell_niche.txt`
+`plays_ext.csv`, icebow side = the side that plays x-bow (515 of 519 replays); casts: the-log 3,479, tornado 1,886,
+rocket 1,439 (rocket = 3.4% of all pro plays). Landing zone, blue-normalised tiles (y<=8 ENEMY princess-tower zone,
+<16 enemy half, <24 own half bridge side, else own back/king zone), casts with tiles only:
+
+| spell | n(tiles) | enemy tower zone | enemy half | own bridge side | own back / king |
+|---|---|---|---|---|---|
+| the-log | 1,831 | 0% | 1% | **87%** | 13% |
+| tornado | 969 | 7% | 37% | 36% | **19%** |
+| rocket | 768 | **32%** | **49%** | 19% | 0% |
+
+Opponent's last play within 6 s before the cast (p50 gap 2.2-2.4 s): log -- 13% nothing, then barbarian-barrel
+5.9%, skeletons 3.0%, goblin-barrel 1.8%, electro-spirit, hog/royal-hogs (knock-back), e-barbs; by class swarm/cheap
+27.5% > medium 20.6% > wincon 15.2%. Tornado -- barbarian-barrel, hog, skeletons, skeleton-army, goblin-barrel;
+swarm 26% ~ medium 23%. Rocket -- e-barbs 4.8%, sparky 3.4%, baby-dragon, x-bow, balloon; medium 26.7% > wincon
+21.6% > swarm 14.9%. So the crawl's strongest niche signal is the LANDING ZONE (log = defensive at our bridge,
+rocket = offensive into the enemy half / on the tower, tornado = spread, with a fifth of casts in the king zone);
+the preceding-card class only mildly separates the three. The crawl has no unit positions, so "what the spell
+covered" is not measurable for pros -- the owner's examples (log on barrel/princess/gang) are consistent with the
+last-play table but cannot be counted from it. (Presentation bug in the script's "any play in window" column:
+the (nothing) cell prints 0.0%; the last-play column's 10-15% is the right figure.)
+
+### 2. Sim probe (a) -- `scratchpad/gauntlet/L16/sim_spell_niche.py`, greedy, search-free, NO spell mask
+3 checkpoints x seeds 0/1/2 x 12 matches, PYTHONHASHSEED=0, same harness as L13 (plays per seed identical to L13
+-> deterministic). Per cast: landing zone (sim y mirrored to the same 4 buckets), enemy bodies the cast covers at
+engine ground truth (log: 2.5-tile-wide, 10-tile roll toward the enemy; nado: pull radius 5.5; rocket: radius+0.5),
+bodies it kills outright (hp <= spell dmg), the sim's own ledger, and the four tornado credits SPLIT probe-side by
+re-evaluating the sim's predicates (the sim folds them into one `nado` key, sim/env.py:3073 -- my first pass read
+"0 fires" for all four from that ledger and was WRONG; retracted before recording).
+
+| | coef-0.5 m2k | coef-0.5 **m5k** | 18k control |
+|---|---|---|---|
+| plays / spell casts | 945 / 168 | 1,485 / 429 | 1,635 / 496 |
+| **LOG** casts | 99 | 241 | 273 |
+| zone: own bridge side / own back | 72 / 28% | 79 / 21% | 85 / 15% |
+| covers NOTHING / chip only / kills >=1 | 26 / 36 / 37% | 18 / 56 / 25% | 25 / 39 / 36% |
+| class covered: swarm / medium / wincon / bldg | 36 / 31 / 22 / 2% | 31 / 49 / 19 / 5% | 35 / 33 / 17 / 11% |
+| top bodies under the log | skeletons 14, hog 10, mighty_miner 9 | skeletons 24, miner 12, knight_hero 12, hunter 11 | skeletons 27, royal_hogs 21, cannon 15 |
+| ledger spell_waste / spell_defence | 18 / 74 | 38 / 127 | 45 / 130 |
+| **TORNADO** casts | 69 | 187 | 223 |
+| zone: enemy half / own bridge / own back-king | 14 / 68 / 17% | 36 / 55 / 9% | 54 / 39 / 2% |
+| king asleep at cast / cast within 6 tiles of our king | 43% / 14% | 54% / 9% | 47% / 2% |
+| **king_activate** credits (per 36 matches) | **0** | **1** | **4** |
+| clump (>=2 mediums at the centre) / combo (>=2 dead) | 7 / 22 | 19 / 36 | 18 / 38 |
+| retarget credits | 0 | 0 | 0 |
+| pulled nothing / nado_bad | 7 / 13 (19%) | 17 / 35 (19%) | 20 / 29 (13%) |
+| **ROCKET** casts | **0** | **1** (on tower, bomber+skeletons) | **0** |
+
+### 3. Reading (labelled)
+* **Log** (a): the ZONE is pro-like (72-85% own bridge side; pros 87%) -- the policy knows the log is a defensive
+  spell cast at our bridge. The TARGET is not: 18-26% of casts cover no enemy body at all (ledger spell_waste, the
+  sim's own wider 4.5-tile verdict: 11% / 16% / 16%), only 25-37% kill anything, and 17-22% of logs go under a
+  wincon (hog, pekka, miner, giant-class) that 352 damage cannot kill. (b) Some of the wincon logs are the pro
+  knock-back play (pros log hogs/royal-hogs 1.6% each); the sim's log has `pushes`, so it is not automatically a
+  whiff -- what is NOT visible is the goblin-barrel/princess/gang niche the owner named, because the scripted
+  opponent rarely plays them (barrel shows as spawned goblins; top covered swarm = skeletons). m5k drifts toward
+  logging mediums (49% vs 31-33%, kills 25%): single checkpoint per stage, (b) as a trend.
+* **Tornado** (a): the KING-ACTIVATION niche is essentially absent -- 0 / 1 / 4 activations per 36 matches while the
+  king was asleep at 43-54% of casts; 2-14% of casts land near our king versus 19% of pro tornadoes in the back/king
+  zone. The credit is reachable (it fired 5 times) and worth 0.5 once per match; the policy has not found it. The
+  CLUMP niche is half-known: 7-19 clumps of >=2 mediums per 36 matches, 22-38 combos (>=2 pulled bodies dead) --
+  but the doctrine's payoff, rocket on the clump, is never cast, so the clump is cashed only by our tower/Tesla.
+  The 18k control casts 54% of its tornadoes in the ENEMY half (pros 37%), m2k 14%: (b) the gate prior moved the
+  cast site, one checkpoint each. nado_bad 13-19% of casts on all three.
+* **Retarget / "reset aggro"** (c): **the reward cannot pay it.** `_register_nado` / `_nado_catch` list a
+  tower-locked wincon only if `tile_dist(unit, tower) <= reach + 1.0` CENTRE to centre (sim/env.py:2472, :2508),
+  but the engine's reach is a GAP (`goal = reach + body_radius(anchor) + body_radius(mover)`, engine.py:3683; tower
+  body 1.5). Measured, wincons attacking our princess settle at hog 2.20 tiles (gate 1.8), royal_hogs 2.10 (1.7),
+  giant 2.68 (2.2), balloon 2.68 (1.1) -> `targeters` is always empty, `nado_retarget` (0.4) has NEVER fired in
+  training. `scratchpad/gauntlet/L16/retarget_reach.py`. Whether the policy "knows" this niche is therefore
+  unmeasurable from the reward; the probe's own count (46-58% of tornadoes pull a unit whose `target` is one of our
+  towers) says it pulls tower-locked units often, by accident or not.
+* **Rocket** (a): 1 cast in 108 matches across three checkpoints (L13: 0/72 on two). The 2-for-1 / tower-chip
+  niche does not exist in the policy. Pros: 3.4% of plays, 81% into the enemy half or on the tower. Cause still
+  unknown (L13 candidates: own-half/no-king masks, `wincon_mis` on the king, `spell_waste` at radius 2.0).
+* **Overall verdict on the owner's question:** no. The policy knows WHERE the log goes and casts the tornado on
+  bodies, but it does not use any of the three spells for the niche that justifies its slot: the log kills
+  something on a third of casts, the tornado wakes the king a handful of times per 36 matches and never sets up a
+  rocket, and the rocket is not played. Two of those have reward-side causes found this loop (retarget unreachable;
+  rocket at 0 for an unfound reason), which is the right order of work: fix what the reward cannot pay before
+  asking the policy to learn it.
+
+### 4. Instrument notes / does NOT establish
+Pro table = tap timeline of humans; sim table = engine truth against `ScriptedBot`. Landing zones are comparable
+in kind (same 4 buckets); the "opponent's play in the previous 6 s" is NOT (sim: nothing in the window on 41-56%
+of casts, the bot's cadence). Not established: how the LIVE policy (`policy_rl.pt`, DDQN-tuned) uses spells --
+this is the sim policy; whether the log-on-wincon share is knock-back intent; the rocket cause; the m5k trends.
+
+### 5. m=5k read on the coef-0.5 run (a, pre-registered §5bk/§3; `data/bench/gate05_m5k.pt` snapshot 21:39, copy `scratchpad/gauntlet/L16/gate05_m5k.pt`, cmp-verified)
+`tools/gate_prior_probe.py`, seeds 0/1/2: `played` at 3 elixir **0.281 / 0.269 / 0.315**; P(play | affordable)
+0.282 / 0.287 / 0.295; elixir >= 6 on 1.2 / 1.3 / 1.0% of rows; mean cost of plays 2.61 / 2.60 / 2.54; plays at
+>=6 elixir 12 / 10 / 4 per 2,400 rows (x-bow 7/6/3, rocket 1 on seed 1). Rule: `>= 0.35 on all seeds -> ask` is not
+met (max 0.315); `<= 0.30 on all` is not met either (seed 2) -> mixed, run continues to 10k, no action. Context:
+m2k was 0.271 / 0.227 / 0.239 -- the number has come back UP, exactly as the trainer's window pi(play) predicted
+(§5bk), and it now sits where the coef-0.1 run was at ITS 5k (0.299 / 0.279 / 0.305, same instrument, §5bi) -- the
+run whose 7.5k read then returned to control level. So at 5k the two coefs are indistinguishable on the probe.
+avg_rew at the 5000 line: coef-0.5 -17.5, coef-0.1 -15.2 (single windowed log lines, not a discriminator).
+Self-play ramps in at 5,000 (prob 0.15) -- confound for every read after this one. Next reads: 7.5k / 10k by
+whoever picks the run up (`tools/gate_prior_probe.py data/bench/gate05_m10k.pt --seed 0/1/2`).
+
+### 6. Files
+`scratchpad/gauntlet/L16/{pro_spell_niche.py,txt, sim_spell_niche.py, sim_m2k/m5k/18k.{json,txt}, retarget_reach.py,
+m5k_s0/1/2.txt}`; the m5k checkpoint copy stays out of git.
 
