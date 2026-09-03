@@ -1,0 +1,342 @@
+[
+ {
+  "ckpt": "../scratchpad/gauntlet/L11/gate05_m2k.pt",
+  "matches": 12,
+  "seed": 0,
+  "plays": 291,
+  "spell_casts": {
+   "the_log": 29,
+   "tornado": 16
+  },
+  "cast_where_mask_says_nothing_to_hit": {
+   "the_log": 7
+  },
+  "cast_with_no_target_anywhere": {
+   "tornado": 1
+  },
+  "ledger": {
+   "spell_waste": [
+    5,
+    -1.5
+   ],
+   "nado_bad": [
+    3,
+    -0.9
+   ],
+   "spell_effect": [
+    0,
+    0.0
+   ],
+   "log_hits": [
+    0,
+    0.0
+   ],
+   "chip_offence": [
+    177,
+    2.38
+   ],
+   "wincon_exec": [
+    28,
+    27.54
+   ],
+   "wincon_mis": [
+    0,
+    0.0
+   ]
+  },
+  "xbow_plays": 29,
+  "xbow_with_a_dead_princess": 9,
+  "xbow_reaches_dead_only": 0,
+  "xbow_reaches_no_tower": 28,
+  "xbow_records_with_dead": [
+   {
+    "t": 157.8,
+    "cell": 275,
+    "alive": [
+     true,
+     false
+    ],
+    "d": [
+     14.3,
+     16.8
+    ],
+    "reaches_alive": false,
+    "reaches_dead_only": false,
+    "defensive": true
+   },
+   {
+    "t": 85.2,
+    "cell": 239,
+    "alive": [
+     true,
+     false
+    ],
+    "d": [
+     11.7,
+     14.6
+    ],
+    "reaches_alive": false,
+    "reaches_dead_only": false,
+    "defensive": true
+   },
+   {
+    "t": 135.6,
+    "cell": 269,
+    "alive": [
+     true,
+     false
+    ],
+    "d": [
+     19.0,
+     13.2
+    ],
+    "reaches_alive": false,
+    "reaches_dead_only": false,
+    "defensive": true
+   },
+   {
+    "t": 173.4,
+    "cell": 239,
+    "alive": [
+     true,
+     false
+    ],
+    "d": [
+     11.7,
+     14.6
+    ],
+    "reaches_alive": false,
+    "reaches_dead_only": false,
+    "defensive": true
+   },
+   {
+    "t": 118.8,
+    "cell": 287,
+    "alive": [
+     true,
+     false
+    ],
+    "d": [
+     19.9,
+     14.5
+    ],
+    "reaches_alive": false,
+    "reaches_dead_only": false,
+    "defensive": true
+   },
+   {
+    "t": 169.8,
+    "cell": 275,
+    "alive": [
+     true,
+     false
+    ],
+    "d": [
+     14.3,
+     16.8
+    ],
+    "reaches_alive": false,
+    "reaches_dead_only": false,
+    "defensive": true
+   },
+   {
+    "t": 200.4,
+    "cell": 239,
+    "alive": [
+     true,
+     false
+    ],
+    "d": [
+     11.7,
+     14.6
+    ],
+    "reaches_alive": false,
+    "reaches_dead_only": false,
+    "defensive": true
+   },
+   {
+    "t": 231.6,
+    "cell": 311,
+    "alive": [
+     true,
+     false
+    ],
+    "d": [
+     17.0,
+     19.1
+    ],
+    "reaches_alive": false,
+    "reaches_dead_only": false,
+    "defensive": true
+   },
+   {
+    "t": 253.8,
+    "cell": 239,
+    "alive": [
+     true,
+     false
+    ],
+    "d": [
+     11.7,
+     14.6
+    ],
+    "reaches_alive": false,
+    "reaches_dead_only": false,
+    "defensive": true
+   }
+  ],
+  "wall_s": 63.2
+ },
+ {
+  "ckpt": "../scratchpad/gauntlet/L11/gate05_m2k.pt",
+  "matches": 12,
+  "seed": 1,
+  "plays": 346,
+  "spell_casts": {
+   "the_log": 36,
+   "tornado": 29
+  },
+  "cast_where_mask_says_nothing_to_hit": {
+   "the_log": 4,
+   "tornado": 2
+  },
+  "cast_with_no_target_anywhere": {
+   "tornado": 2
+  },
+  "ledger": {
+   "spell_waste": [
+    7,
+    -2.1
+   ],
+   "nado_bad": [
+    6,
+    -1.8
+   ],
+   "spell_effect": [
+    0,
+    0.0
+   ],
+   "log_hits": [
+    0,
+    0.0
+   ],
+   "chip_offence": [
+    152,
+    2.03
+   ],
+   "wincon_exec": [
+    25,
+    21.93
+   ],
+   "wincon_mis": [
+    0,
+    0.0
+   ]
+  },
+  "xbow_plays": 26,
+  "xbow_with_a_dead_princess": 3,
+  "xbow_reaches_dead_only": 0,
+  "xbow_reaches_no_tower": 26,
+  "xbow_records_with_dead": [
+   {
+    "t": 93.6,
+    "cell": 287,
+    "alive": [
+     true,
+     false
+    ],
+    "d": [
+     19.9,
+     14.5
+    ],
+    "reaches_alive": false,
+    "reaches_dead_only": false,
+    "defensive": true
+   },
+   {
+    "t": 131.4,
+    "cell": 287,
+    "alive": [
+     true,
+     false
+    ],
+    "d": [
+     19.9,
+     14.5
+    ],
+    "reaches_alive": false,
+    "reaches_dead_only": false,
+    "defensive": true
+   },
+   {
+    "t": 132.6,
+    "cell": 287,
+    "alive": [
+     true,
+     false
+    ],
+    "d": [
+     19.9,
+     14.5
+    ],
+    "reaches_alive": false,
+    "reaches_dead_only": false,
+    "defensive": true
+   }
+  ],
+  "wall_s": 59.1
+ },
+ {
+  "ckpt": "../scratchpad/gauntlet/L11/gate05_m2k.pt",
+  "matches": 12,
+  "seed": 2,
+  "plays": 308,
+  "spell_casts": {
+   "the_log": 34,
+   "tornado": 24
+  },
+  "cast_where_mask_says_nothing_to_hit": {
+   "the_log": 3,
+   "tornado": 3
+  },
+  "cast_with_no_target_anywhere": {
+   "tornado": 1
+  },
+  "ledger": {
+   "spell_waste": [
+    6,
+    -1.8
+   ],
+   "nado_bad": [
+    4,
+    -1.2
+   ],
+   "spell_effect": [
+    0,
+    0.0
+   ],
+   "log_hits": [
+    0,
+    0.0
+   ],
+   "chip_offence": [
+    111,
+    1.44
+   ],
+   "wincon_exec": [
+    27,
+    19.98
+   ],
+   "wincon_mis": [
+    0,
+    0.0
+   ]
+  },
+  "xbow_plays": 28,
+  "xbow_with_a_dead_princess": 0,
+  "xbow_reaches_dead_only": 0,
+  "xbow_reaches_no_tower": 26,
+  "xbow_records_with_dead": [],
+  "wall_s": 57.2
+ }
+]

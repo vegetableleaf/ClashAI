@@ -437,3 +437,16 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Trap: an instrument that writes to a JSONL nobody greps does not exist (§8 entry added).
 - Files: tools/latency_stage_timer.py; scratchpad/gauntlet/L12/stage_timer_smoke_{,net_}contended.json. HANDOFF §5bl.
 - Box 20:25: run untouched (gate05, watchdog + gates alive). Next: 21:11 wakeup = m=5k read; idle-box timer run parked.
+
+
+## L13 — 2026-09-02 20:30-20:55 | owner reports tested: X-Bow at dead tower; spell whiffs; ROCKET NEVER CAST in sim
+- (c) "model doesn't know which cells target which tower": tower HP in obs since 08-10; live dead-lane assist since
+  08-16 (reward.py:319); sim reward alive-only. (a) today: 6/6 bows at cell 243, raw==assisted; after took_tower
+  `_defensive` flips and env.py:1823 SKIPS all bow assists -> unassisted constant cell, billed -1 for depth.
+  (a) `_wincon_exec_live` ignores tower alive (sim checks). (c) crawl has no tower-death events.
+- (a) sim probe, greedy no-mask, 36 matches/ckpt: m2k 168 spells, 0-dmg 11%, mask-whiff 11%, nado_bad 19%;
+  18k 496 spells, 0-dmg 9%, mask-whiff 21%, nado_bad 13%. Rocket 0 casts on BOTH (pros 3.4%). Live today
+  spell_waste 25/54 spell plays (other instrument). Mask at ~86% in training -> (b) policy never learned aim.
+- Proposed (owner call): env.py:1823 run defensive bow snap when _defensive; env.py:1574 alive-only anchors.
+- Files: scratchpad/gauntlet/L13/{spell_xbow_probe.py,probe_gate05_m2k.*,probe_18k.*}. HANDOFF §5bm.
+- Run untouched. Next: 21:11 wakeup = m=5k read.

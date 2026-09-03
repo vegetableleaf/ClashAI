@@ -22,7 +22,16 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-02 20:50**, branch `main` (**§5bl: GAUNTLET L12 -- THE DECISION PATH WAS NEVER UNMEASURED:
+Last updated: **2026-09-02 20:55**, branch `main` (**§5bm: GAUNTLET L13 -- owner's two live-play reports tested.
+X-BOW AT A DEAD TOWER: (c) the model is not blind to it (tower HP in obs since 08-10, live dead-lane aim assist
+since 08-16, sim reward already alive-only) -- (a) what happened today is 6/6 bows on ONE cell (243, raw==assisted)
+and after the tower kill `_defensive` flips, which SKIPS every bow aim assist (env.py:1823), so the constant-cell
+bow goes out unassisted and is billed -1; plus (a) `_wincon_exec_live` ignores tower alive (sim does not). Crawl
+has NO tower events -> pro 'after a tower dies' placements are not derivable from it. SPELLS, sim greedy no-mask,
+36 matches x 2 ckpts: coef-0.5 m2k zero-damage 11% of 168 casts (mask-whiff 11%, nado_bad 19%); 18k 9% of 496
+(mask-whiff 21%, nado_bad 13%); live today 25 spell_waste / 54 spell plays (other instrument). ROCKET: 0 casts in
+72 sim matches on BOTH checkpoints (pros 3.4% of plays). Two live-path one-liners proposed, owner call.**
+Previous header (§5bl: GAUNTLET L12 -- THE DECISION PATH WAS NEVER UNMEASURED:
 the live loop has timed every stage of every match since 08-12 (`cadence` in data/reward_stats/live_*.jsonl,
 904 matches) and nobody read it. (a) Since act_period went to 0.6 (100 matches, 38 sessions): served
 decision-to-decision time p50 **0.76 s** (p10 0.66, p90 0.90); 91/100 matches > 0.66 s, 3/100 <= 0.62. The
@@ -1949,6 +1958,13 @@ slow one.
 ---
 
 ## 6. Open work
+
+### From §5bm (2026-09-02 20:55) -- owner call, live path
+* X-Bow after a tower kill: env.py:1823 assist gate + env.py:1574 alive check (§5bm.5). Two one-liners.
+* ROCKET IS NEVER CAST by the sim policy (0/72 matches, both 18k and coef-0.5; pros 3.4%). Find why
+  (masks vs reward) before any spell experiment -- the spell A/Bs owed (§6-PRIORITY) are meaningless on
+  a policy that cannot rocket.
+* Sim whiff rate vs mask anneal: re-run `scratchpad/gauntlet/L13/spell_xbow_probe.py` at each snapshot.
 
 ### Parked from §5bf (2026-09-02 15:25) -- do not bundle into the running gate-prior run
 * Prior v1: add the threat-on-our-half key (needs `replay_drive --record-every 12` over the converted
@@ -6964,4 +6980,85 @@ Lowering agent_dt (sim) / act_period (live) together, e.g. 0.6 -> 0.3:
 `icebow/tools/latency_stage_timer.py` (new); `scratchpad/gauntlet/L12/stage_timer_smoke_contended.json`,
 `stage_timer_smoke_net_contended.json`. Cadence analysis was ad hoc (python over the JSONLs, §2 table);
 the pro-gap numbers likewise (§4). Both are 20-line scripts reproduced in GAUNTLET_LOG L12.
+
+## §5bm — GAUNTLET L13: owner's two live-play reports tested -- X-Bow at a dead tower; spell whiffs; rocket is dead in the sim policy (2026-09-02 20:30-20:55)
+
+Owner (20:3x): (1) "the model doesn't know which placement positions for offensive x-bow target which princess
+tower ... tries to place an xbow in a cell that targets an already dead princess tower ... placements can be
+directly derived from the replay crawl data"; (2) "lots of spell whiffs ... could you check the spell usage
+stats for the current PPO?" Both treated as hypotheses. Run untouched; the probes ran beside it (contended,
+behaviour not throughput).
+
+### 1. X-Bow at a dead tower -- what is already there (a, code)
+* Observation: enemy tower HP fractions, 6 dims, since 2819923 (08-10), `observation.use_tower_hp` absent from
+  config -> default True; live env.py:505 widens by the same block. The policy CAN see a dead tower.
+* Live aim assist `xbow_target_lane_cell` (reward.py:319, added 08-16 after the owner reported exactly this):
+  "NEVER bow a dead lane" -- moves an offensive bow to the live princess's column. Called from env.py:1832.
+* Sim reward `_wincon_exec` (sim/env.py:1553): `princesses = [t for t in towers[1][:2] if t.alive]` --
+  offensive credit only for reaching a LIVE princess.
+So "the model doesn't know" is (c) as stated: the information and two guards exist. What fails is below.
+
+### 2. What actually happened in today's live matches (a, `data/reward_stats/live_20260902_{195143,201412}.jsonl`)
+Six X-Bow plays, 20:14 session: `cell 243` every time (x 0.519, y 0.479 -- centre column, forward),
+`raw_cell == cell` every time -> neither the lane assist nor the lock/depth snaps changed anything.
+`wc` (live wincon credit): +3.0 for the first bow of each match, -1.0 for the four later ones.
+Why the assist did nothing: env.py:1823 `elif card_id in self.xbow_ids and not self._defensive:` -- the
+whole offensive assist chain (lane -> lock -> depth) is gated OFF once `_defensive` is True, and env.py:1994
+sets `_defensive = True` on `took_tower`. **The moment an enemy princess dies is the moment the dead-lane guard
+stops running.** The doctrine says a post-kill bow belongs back-centre (`_defensive_bow_cell`), but that snap
+only runs when `_enemy_massing_back()` (env.py:1821). So after the kill the model's raw pick goes out
+unassisted; its raw pick is the same cell every time (constant-cell attractor, live edition); the live reward
+bills -1 because cy 0.479 is above `xbow_defense_front` 0.52, not because of the lane.
+Second gap (a): `_wincon_exec_live` (env.py:1569-1576) computes `d` over BOTH princess anchors with no alive
+check -- unlike the sim -- so a bow in range of only a dead tower earns +w_wincon whenever `_defensive` is
+False (i.e. when `took_tower` was missed by perception). Real but masked by the phase flip in practice.
+Cannot say from the log which tower was dead at each play (tower state is not in play_log) -- (b) that the
+owner's "targets the dead tower" reading is the centre bow after a kill; from the centre column both
+princesses are in reach, so the real game would still lock the live one.
+
+### 3. The crawl cannot give "placement after a tower dies" (c)
+`plays_ext.csv` (45,335 plays, 2,073 x-bow with tile_x/tile_y) has no tower-death or crown-time events;
+`battles.csv` has final crown counts only. Pro bow placement OVERALL is derivable and was already used
+(5ag lane-bow ruling). Conditioning on a dead tower is not. The geometry ("which cells reach which tower")
+does not need the crawl at all -- reach 11.5 tiles + anchors, already in `xbow_lock_cell`.
+
+### 4. Sim probe: spells and bows, greedy, search-free, NO spell mask (the policy alone) -- (a)
+`scratchpad/gauntlet/L13/spell_xbow_probe.py`, 3 seeds x 12 matches per checkpoint, PYTHONHASHSEED=0.
+"mask-whiff" = the cast cell is one `spell_target_mask` would have vetoed; "0-dmg" = ledger `spell_waste`.
+
+| ckpt | plays | spells (share) | log / nado / rocket | mask-whiff | 0-dmg | nado_bad | bows | bows reaching a live tower | dead-only |
+|---|---|---|---|---|---|---|---|---|---|
+| coef-0.5 m2k | 945 | 168 (18%) | 99 / 69 / **0** | 19 (11%) | 18 (11%) | 13 (19% of nados) | 83 | 3 | 0 |
+| 18k control | 1,635 | 496 (30%) | 273 / 223 / **0** | 105 (21%) | 45 (9%) | 29 (13%) | 14 | 0 | 0 |
+Per-seed spell_waste: m2k 5/7/6, 18k 15/16/14 -- consistent. Live today (a, OTHER instrument, tracker-based
+verdict, do not compare numerically): `spell_waste` 25 fires over 54 spell plays in 5 matches, nado_bad 4.
+* Whiffs: the policy alone whiffs ~10% of casts by the sim's damage verdict; the trainer runs with the spell
+  mask at ~86% strength (25k-episode anneal, 3.5k in), so exploration almost never pays for a whiff -- the
+  policy is learning "roughly there" and relies on a mask. Live serves the same policy through the live mask
+  over DETECTOR tracks (play.py:563); where tracks are stale the mask passes a whiff, and the live verdict
+  also bills false whiffs on detector misses (env.py:340). (b) most of the live 25 are perception, not policy;
+  the measurement is a session with the detector log kept, or the offline replay of a recording.
+* **Rocket: 0 casts in 72 matches on both checkpoints.** Pros: 1,520 / 45,335 = 3.4% of plays. Live today: 4.
+  (b) cause unknown -- candidates: the own-half/no-king masks leaving few legal cells, `wincon_mis` on the
+  king, the `spell_waste` bill at rocket radius. Not a gate-prior effect (the 18k control has it too).
+* Bows: the sim policy's bows are almost all defensive (80/83 and 14/14 reach no tower); 12 bows were placed
+  with a princess already dead and NONE reached the dead one only. The live bow-at-cell-243 pattern is not
+  reproduced in sim: the live checkpoint is the DDQN-tuned `policy_rl.pt`, not these.
+
+### 5. Proposed fixes (live path -> owner call, not done)
+1. env.py:1823: run the bow assists in the defensive phase too -- specifically, when `_defensive`, snap a
+   forward bow to `_defensive_bow_cell` (the doctrine's answer) regardless of `_enemy_massing_back()`. One
+   condition change. Closes the exact hole in §2.
+2. env.py:1574: `princesses = [a for a, alive in zip(enemy_a[:2], self.tower.enemy_alive) if alive]` --
+   mirror the sim. One line.
+3. Not the crawl: the geometry is already coded; the crawl adds nothing for this.
+Rocket-at-0% is a separate item for the queue (§6).
+
+### 6. Does NOT establish
+Which tower was dead at each of today's bows (not logged); the split of live whiffs between policy and
+tracker; why rocket is never cast in sim; whether the sim's 11% whiff rate rises as the mask anneals
+(it will, if the policy never learned aim -- measure at the next snapshot).
+
+### 7. Files
+`scratchpad/gauntlet/L13/spell_xbow_probe.py`, `probe_gate05_m2k.{json,txt}`, `probe_18k.{json,txt}`.
 
