@@ -469,3 +469,10 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   `clock.overtime_s` added. 5 new tests; 130/131 (the 1 pre-existing). Unexercised live (b).
 - HANDOFF §6 PRIORITY-C: agent_dt verdict (§5bl.6) with the order of work, so it is not lost.
 - Run untouched. Next: 21:11 wakeup fired? -> m=5k read.
+
+
+## L15 — 2026-09-02 21:15-21:20 | m=5k wakeup landed early (4,425 eps, 0.5 ep/s); no pre-registered read
+- (a) watchdog @4000, both arms: same CELL-COLLAPSE (ent 1.07 vs 1.06 /5.08) and ELIXIR>=6 alerts -> recipe, not coef.
+  P(play) 0.26 vs 0.48, card_ent 1.18 vs 1.82 (coef-0.5 vs 0.1): (b), single sampled readings, not the probe.
+- Trainer EVAL @4000: coef-0.5 13%/10%, coef-0.1 8%/4% -- winrate, logged only.
+- Trap: ETA from one rate reading; next wakeup paced on the snapshot file. Next: 21:41 = m=5k read (rule §3).

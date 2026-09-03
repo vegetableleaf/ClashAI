@@ -22,7 +22,11 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-02 21:30**, branch `main` (**§5bo: owner steering applied -- the live overtime flip is now a
+Last updated: **2026-09-02 21:20**, branch `main` (**§5bp: GAUNTLET L15 -- m=5k NOT reached (4,425 eps at 21:15,
+0.5 ep/s, ETA ~21:35); no pre-registered read yet. Same-instrument watchdog at 4000: both arms trip the SAME two
+alerts (cell ent 1.07 vs 1.06 of 5.08; elixir>=6 <0.3%) -> not discriminating. Sampled P(play) 0.26-0.38 (coef-0.5)
+vs 0.48 (coef-0.1), card_ent 1.18 vs 1.82 -- one reading each, watchdog instrument, NOT the probe. Wakeup 21:41.**
+Previous header (§5bo: owner steering applied -- the live overtime flip is now a
 SOFT RAMP: `_defensive_w` 0 -> 1 over `env.xbow_defense_ramp_s` (60 s: soft at the 180 s whistle, fully defensive
 at the 3x minute), zero whenever the offensive bow has broken through. It blends the bow reward
 ((1-w) offensive + w defensive), scales the rocket-cycle credit, and is the PROBABILITY of the defensive snap.
@@ -7214,4 +7218,34 @@ session run: (b) until the next one.
 ### 4. Files
 `icebow/src/clashrl/env.py`, `icebow/src/clashrl/clock.py`, `icebow/config/config.yaml`
 (`env.xbow_defense_ramp_s`), `icebow/tests/test_defensive_ramp.py`.
+
+## §5bp — GAUNTLET L15: the m=5k wakeup landed early; same-instrument orientation only (2026-09-02 21:15-21:20)
+
+### 1. Box (a)
+Run at **4,425 episodes, 0.5 ep/s, 111W-3437L-6D, avg_rew -18.6** (log 21:15); the 21:11 wakeup assumed the
+20:36 rate of 0.6 ep/s. Processes: 2 trainer, watchdog, gates script, plus the watchdog's own `policy-stats`
+child (2 PIDs). Free RAM 3.98 GB, CPU 100%. `gate05_m5k.pt` not yet written. m=5k ETA ~21:35; the gates
+script snapshots at 5k, so the read is the 21:41 wakeup. **Nothing pre-registered was read this loop.**
+
+### 2. Same-instrument comparison, watchdog only (a, one reading per arm, samples the gate)
+| matches=4000 | coef-0.1 (`gate_run_watchdog.out` 16:53) | coef-0.5 (`gate05_run_watchdog.out` 20:59) |
+|---|---|---|
+| CELL HEAD COLLAPSED alert | yes: ent 1.06/5.08, 62 cells | yes: ent 1.07/5.08, 56 cells |
+| ELIXIR>=6 DRIFT alert | yes: 0.001 | yes (at 3100 and 4400): 0.001-0.002 |
+| P(play) mean | 0.479 | 0.261 (0.342 at 3100, 0.375 at 4400) |
+| card_ent | 1.82/2.30 | 1.18/2.30 |
+| elixir mean | 1.96 | 2.67 (2.10 at 4400) |
+The two alerts fire on both arms at the same point with the same numbers -> (a) they are a property of this
+recipe at 4k, not of the coef. P(play) lower and card entropy narrower on the 0.5 arm: (b) consistent with
+a heavier prior pulling the gate toward the prior table's wait mass and the card head toward its mode;
+single readings, the watchdog SAMPLES (§8 trap) -- the pre-registered probe at 5k is the instrument.
+Trainer-line EVAL (the trainer's own instrument, 150 matches): coef-0.5 @4000 ladder 13% / fair 10%;
+coef-0.1 @4000 8% / 4%, @6000 9% / 4%. Winrate is not a discriminator (§7); logged, not concluded from.
+
+### 3. Does NOT establish
+Anything about the m=5k rule. Whether the P(play)/card_ent gap survives at 5k on the probe.
+
+### 4. Trap
+Wakeup ETA computed from one rate reading (0.6 ep/s) -- the run slowed to 0.5 under the watchdog's
+policy-stats child. Pace the next wakeup from the latest rate AND the snapshot's existence, not the count.
 
