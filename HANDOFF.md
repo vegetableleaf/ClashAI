@@ -2131,6 +2131,8 @@ slow one.
   -> L27 (§5cb): the last aggro item BUILT: `observation.lock_aware_targets` (default false). Engine agreement 74.2 ->
      95.8% with engine hints; a live-style proxy reaches 89.7%. Turning it on at the restart = a THIRD change (and a
      sim-to-real seam until live carries the hint) -- owner's call, §5cb.4.
+  -> L28 (05:48): HOLD. No ruling, no steering, box idle. Nothing unblocked remains (the live tracker that would close
+     the lock-aware seam is live-path work: sessions are raw video + clicks, no per-frame detections -- not a cheap probe).
 
 ### From §5bq (2026-09-02 22:10) -- spell niches, after the gate-prior run ends (sim reward = one change each)
 * **`nado_retarget` UNREACHABLE (c, §5bq.3):** sim/env.py:2472 and :2508 `tile_dist(u, tw) <= u.spec.reach + 1.0`

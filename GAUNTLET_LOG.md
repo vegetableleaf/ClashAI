@@ -609,3 +609,10 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Three default-off changes now wait for the restart; recommended order aggro_drills -> reach fix -> lock-aware (after the live
   seam is decided). A/B/C still open. Nothing running. HANDOFF §5cb.
 
+
+## L28 — 2026-09-03 05:48-05:52 | AGGRO gauntlet loop 12: HOLD -- produced nothing
+- No owner ruling on A/B/C (L24), no steering, no new commits; box idle (python = Nucleo only, 9.4 GB free).
+- Every aggro item is built default-off (aggro_drills, nado_retarget_reach_fix, lock_aware_targets). The only remaining step
+  is the restart, blocked on the ruling. Checked whether the live-tracker seam could be probed cheaply: data/sessions are raw
+  video + click events (no per-frame detections), so it is a detector-over-video job, not a hold-loop probe. Parked.
+
