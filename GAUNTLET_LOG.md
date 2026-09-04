@@ -872,3 +872,13 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   discriminator (play share when rich AND holding a non-spell) s6 0.467/0.087 vs s7 0.333/0.050 -- the arms OVERLAP at
   2 matches each, so (b) not (a). Direction: the sim's >=6 banking metric points the WRONG WAY live; live init stays
   `best`. Instrument trap found: npz['elixir'] is capped at 9, elixir_vec*10 is the policy-facing value. HANDOFF §5cs.10.
+- L46e (09:4x-10:2x): owner order -- "do the checkpoint, figure out why the model is so stupid". WHY (a): his train-rl
+  sessions ran rl_epsilon_start 0.5 over 6000 steps (~30 matches) with an epsilon branch that is an explicit expert
+  ("quiet board + >=6 elixir -> X-BOW" + counter table), and the tau-0.5 greedy rule vetoed ~99.9% of the net's plays --
+  so ~40% of his decisions were doctrine plays and essentially every play he watched was the doctrine, not the network.
+  Both masks came off today (eps 0 + tau 0.25): s4-s7 are the first sight of the raw policy, not a regression. Sim drill
+  suite agrees: 9 of 29 drills at 0% vs doctrine 76-100%, incl. bank_to_six_then_bow 0% vs 100%. Checkpoint arm 6 v 6
+  alternated: best 196/1439 plays (13.6%), commits when rich 0.222, bow 0.137; m10k 68/1022 (6.7%), 0.049, 0.019.
+  Rank test on the 6-a-side arm alone U 26/36 (p~0.15) -- direction consistent, not significant; pooled 8-a-side
+  (post-hoc) U 50/64 p<0.05. Live init stays `best`. Fix route proposed: distil the doctrine into the policy.
+  HANDOFF §5cs.11.

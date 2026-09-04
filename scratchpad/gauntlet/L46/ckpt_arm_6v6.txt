@@ -1,0 +1,16 @@
+best (A1+A2): decisions 1439 plays 196 (0.136) | elixir mean 6.19 | >=9 share 0.263 | play share at >=9 0.122
+    rich(>=9)+non-spell-in-hand rows 185 -> played 41 (0.222) | bow in hand at >=6 elixir 255 rows -> bow played 35 (0.137)
+    per-match (decisions, plays): [(248, 35), (149, 9), (203, 27), (376, 76), (242, 7), (221, 42)]
+m10k (B1+B2): decisions 1022 plays 68 (0.067) | elixir mean 7.73 | >=9 share 0.488 | play share at >=9 0.058
+    rich(>=9)+non-spell-in-hand rows 487 -> played 24 (0.049) | bow in hand at >=6 elixir 466 rows -> bow played 9 (0.019)
+    per-match (decisions, plays): [(218, 19), (201, 19), (178, 11), (136, 5), (127, 8), (162, 6)]
+best per-match play rate       [0.029, 0.06, 0.133, 0.141, 0.19, 0.202]
+best per-match rich+playable   [0.028, 0.146, 0.182, 0.444, 0.656]
+m10k per-match play rate       [0.037, 0.037, 0.062, 0.063, 0.087, 0.095]
+m10k per-match rich+playable   [0.012, 0.024, 0.055, 0.068, 0.07, 0.091]
+Mann-Whitney U (rich+playable, best vs m10k) = 26.0 of 30
+Mann-Whitney U (play rate) = 26.0 of 36  (n=6,6: U>=31 needed for p<0.05 two-sided)
+best POOLED (s6/s7 + arms): matches 8 decisions 1847 plays 249 (0.135)
+m10k POOLED (s6/s7 + arms): matches 8 decisions 1387 plays 104 (0.075)
+  play rate: best n=8 median 0.137 | m10k n=8 median 0.062 | U=50.0 of 64
+  rich+playable: best n=7 median 0.182 | m10k n=8 median 0.061 | U=46.0 of 56

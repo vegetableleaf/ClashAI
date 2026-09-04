@@ -10178,3 +10178,43 @@ tops that metric (5.5 vs best's 2.2) and produced the worse-looking live session
 proxy on this evidence; it is a sim-side health signal only. Live init stays `policy_c2r_20260903_best.pt` until an arm
 with enough matches says otherwise (a proper read needs ~6+ matches per arm at these per-match spreads -- ~30 min of
 window time each; owner's call whether that is worth it).
+
+### 11. WHY train-rl never showed this before (a, code+config) and the 6-a-side checkpoint arm (owner order 09:4x)
+**The owner: "train-rl has never had any of these issues at all, until now."** Cause, from the code and the config
+values (not the `default=`):
+1. `config/config.yaml` `train.rl_epsilon_start: 0.5`, `rl_epsilon_decay_steps: 6000`, `explore_wait_prob: 0.2`. A live
+   match is ~200 decisions, so 6000 steps ~= 30 matches: across every session the owner has watched, epsilon stayed
+   0.4-0.5. The live-obs yamls set it to **0.0** (his own instruction for the observation runs).
+2. The epsilon branch is **not random** (`train_rl.py` ~679-720): with the advisor off it is an explicit expert --
+   "quiet board and >= 6 elixir -> play the X-BOW", else a counter-table doctrine hit. 80% of epsilon steps act.
+3. Until 2026-09-04 the train-rl greedy rule was tau 0.5 (§5cr.7) and the PPO's p(play) p99 is 0.358, so ~99.9% of the
+   network's own decisions resolved to WAIT.
+=> in the owner's sessions roughly **40% of decisions produced a doctrine play and virtually every play he ever watched
+was the doctrine, not the network**. Both masks came off this morning (epsilon 0 + tau 0.25), so s4-s7 are the first
+observations of the raw policy. NOT a regression: nothing in the live path got worse, the cover was removed.
+**And it is not live-specific.** The drill suite finished 08:57 on `gatec2_m10k` (c2r's init) in the SIM, offline:
+29 drills, **9 at 0%**, 6 large gaps, 11 below doctrine, 3 OK. Including `bank_to_six_then_bow` **policy 0% vs doctrine
+100%**, `bow_defends_from_the_centre` 0% vs 64%, `skeletons_stop_the_wall_breakers` 0% vs 84%, `tesla_pulls_the_wincon`
+24% vs 100%, `split_lane_needs_the_centre` 16% vs 96%. "Sits on elixir and never commits the bow" reproduces in the sim.
+**Checkpoint arm (`L46/ckpt_arm_6v6.txt`), 6 matches each, alternated A1-B1-A2-B2 to spread matchmaking drift:**
+
+| arm | decisions | plays | rate | elixir | >=9 share | play at >=9 | rich(>=9)+non-spell in hand -> played | bow in hand at >=6 -> bow played |
+|---|---|---|---|---|---|---|---|---|
+| best | 1439 | 196 | **0.136** | 6.19 | 0.263 | 0.122 | 185 -> 41 (**0.222**) | 255 -> 35 (**0.137**) |
+| c2r_m10k | 1022 | 68 | **0.067** | 7.73 | 0.488 | 0.058 | 487 -> 24 (**0.049**) | 466 -> 9 (**0.019**) |
+
+Crowns best 1W-5L vs m10k 0W-6L (not the read). Per-match play rate best .029/.060/.133/.141/.190/.202 vs m10k
+.037/.037/.062/.063/.087/.095. **Rank test on the pre-registered 6-a-side arm: U 26/36 (play rate, p~0.15) and 26/30
+(rich+playable, p~0.065) -- consistent direction, NOT significant at n=6.** Pooling s6/s7 in (same config, same fixes,
+same day; 8 matches a side, decided AFTER seeing the arm -- post-hoc) gives play rate median 0.137 vs 0.062, U 50/64
+(p<0.05) and rich+playable U 46/56 (p~0.05). **Decision: the live init stays `policy_c2r_20260903_best.pt`.** m10k tops
+the sim's >=6 banking metric and is the worse live policy on every behavioural column -- §5cs.10's warning, now with 8x
+the evidence: >=6 share is a sim-side health signal, NOT a live-quality proxy.
+**Fix routes (none launched -- c2r is running and its m30k read is pre-registered):**
+* (A) The policy fails the drills the doctrine passes, so **distil the doctrine into the policy** (BC/auxiliary loss on
+  doctrine actions in drill + match states) instead of hoping reward shaping finds them. The doctrine agent and the
+  drill harness already exist; the gate-prior KL hook (`sim.ppo_gate_prior_coef`) is the same shape of machinery.
+  This is the owner's queued distillation item (§6-PRIORITY-B) aimed at the measured 0% drills.
+* (B) For REAL train-rl (not observation) epsilon 0.5 is correct and should stay -- DDQN is off-policy and the doctrine
+  is a better behaviour policy than the net. Only the observation runs should sit at 0.
+* (C) Still open and unmeasured: the last third of the gate gap on sim states with the live image (0.317 vs 0.483).
