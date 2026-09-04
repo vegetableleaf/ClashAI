@@ -1,0 +1,74 @@
+{
+ "bow_never_into_the_push": {
+  "doctrine": 0.08,
+  "doctrine_s": 0.7,
+  "policy": 0.44,
+  "policy_s": 4.9,
+  "search": 0.28,
+  "search_s": 13.0
+ },
+ "hold_the_spell_for_a_target": {
+  "doctrine": 0.96,
+  "doctrine_s": 0.6,
+  "policy": 0.16,
+  "policy_s": 2.8,
+  "search": 0.52,
+  "search_s": 6.5
+ },
+ "ignore_the_ignorable": {
+  "doctrine": 0.08,
+  "doctrine_s": 0.5,
+  "policy": 0.0,
+  "policy_s": 1.2,
+  "search": 0.0,
+  "search_s": 5.2
+ },
+ "log_rolls_forward_not_backward": {
+  "doctrine": 0.84,
+  "doctrine_s": 1.1,
+  "policy": 0.12,
+  "policy_s": 1.1,
+  "search": 0.4,
+  "search_s": 6.2
+ },
+ "matchup_bridge_spam": {
+  "doctrine": 0.2,
+  "doctrine_s": 3.6,
+  "policy": 0.2,
+  "policy_s": 5.8,
+  "search": 0.76,
+  "search_s": 29.3
+ },
+ "nado_clump_for_the_wizard": {
+  "doctrine": 0.72,
+  "doctrine_s": 1.4,
+  "policy": 0.52,
+  "policy_s": 4.0,
+  "search": 0.88,
+  "search_s": 12.4
+ },
+ "nado_the_sneaky_lock": {
+  "doctrine": 0.92,
+  "doctrine_s": 1.2,
+  "policy": 0.08,
+  "policy_s": 2.6,
+  "search": 0.84,
+  "search_s": 8.2
+ },
+ "rocket_the_two_for_one": {
+  "doctrine": 0.88,
+  "doctrine_s": 0.6,
+  "policy": 0.12,
+  "policy_s": 3.5,
+  "search": 0.24,
+  "search_s": 12.9
+ },
+ "skeletons_stop_the_wall_breakers": {
+  "doctrine": 0.92,
+  "doctrine_s": 0.5,
+  "policy": 0.0,
+  "policy_s": 0.9,
+  "search": 0.0,
+  "search_s": 23.2
+ }
+}

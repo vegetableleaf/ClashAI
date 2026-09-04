@@ -1,0 +1,12 @@
+[drill] play-out ON -- drills continue as ordinary matches after their verdict
+bank_to_six_then_bow               doctrine  100%  policy    0%  search   40%   (2.2s)
+bow_punish_the_commitment          doctrine   96%  policy   92%  search   88%   (6.4s)
+hold_the_tesla_for_their_wincon    doctrine   56%  policy   20%  search    0%   (4.3s)
+knight_blocks_the_charge           doctrine   88%  policy   28%  search   88%   (8.9s)
+log_the_barrel_on_landing          doctrine    0%  policy    0%  search   28%   (7.0s)
+matchup_hog_cycle                  doctrine   96%  policy   76%  search  100%   (36.0s)
+nado_king_activation               doctrine    0%  policy    0%  search    0%   (6.6s)
+never_rocket_their_king            doctrine  100%  policy   80%  search    8%   (7.0s)
+rocket_then_tornado                doctrine   16%  policy    0%  search    4%   (16.3s)
+split_lane_needs_the_centre        doctrine   88%  policy   40%  search   32%   (9.0s)
+SHARD_DONE

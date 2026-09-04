@@ -1,0 +1,1 @@
+[doctrine_d6body_spam] wr=20.8%  towerdelta=-1.272 crowndelta=-0.83 plays/match=37.1 play share 0.113 elixir>=6 share 0.016

@@ -1,0 +1,1 @@
+[doctrine_d5spamiw] wr=14.6%  towerdelta=-1.261 crowndelta=-0.90 plays/match=36.4 play share 0.113 elixir>=6 share 0.014

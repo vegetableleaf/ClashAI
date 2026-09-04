@@ -1,0 +1,45 @@
+[doctrine_v2] installed: cycle-with-a-cell
+[doctrine_v4] installed: quiet-board tempo MIN=4.0 SKEL=True
+  match 1/12 wins 1
+  match 2/12 wins 1
+  match 3/12 wins 2
+  match 4/12 wins 3
+  match 5/12 wins 3
+  match 6/12 wins 4
+  match 7/12 wins 4
+  match 8/12 wins 4
+  match 9/12 wins 4
+  match 10/12 wins 5
+  match 11/12 wins 5
+  match 12/12 wins 5
+decisions 3917  mean regret 0.1175  regret>0.05 share 0.245  total 460.44
+regret by (doctrine did -> search best): summed regret, n, mean
+         HOLD -> knight        85.65  n= 177  mean=0.484
+         HOLD -> skeletons     73.00  n= 199  mean=0.367
+         HOLD -> ice_wizard    49.21  n= 109  mean=0.451
+         HOLD -> tesla         33.97  n=  76  mean=0.447
+         HOLD -> knight_evo    18.16  n=  44  mean=0.413
+         HOLD -> tesla_evo     17.62  n=  29  mean=0.608
+         HOLD -> the_log       16.59  n=  68  mean=0.244
+    skeletons -> skeletons     13.17  n=  52  mean=0.253
+         HOLD -> tornado       12.55  n=  35  mean=0.359
+      tornado -> knight        12.06  n=  15  mean=0.804
+   ice_wizard -> knight        10.63  n=  15  mean=0.708
+         HOLD -> x_bow          9.46  n=   6  mean=1.577
+       knight -> knight         8.45  n=  40  mean=0.211
+      tornado -> ice_wizard     7.73  n=  10  mean=0.773
+   ice_wizard -> ice_wizard     6.93  n=  22  mean=0.315
+    skeletons -> HOLD           5.15  n=  24  mean=0.215
+high-regret decisions by board (top 12):
+  123.28 n=278 ()
+   20.27 n= 19 ('goblins', 'ice_spirit')
+   19.22 n= 13 ('bomber', 'pekka')
+   13.17 n= 18 ('inferno_dragon', 'skeleton_army')
+   12.67 n= 24 ('goblins',)
+   12.59 n= 24 ('giant',)
+    9.05 n= 11 ('wall_breakers',)
+    9.01 n= 13 ('inferno_dragon',)
+    7.62 n= 20 ('archer_queen',)
+    7.35 n=  6 ('dark_prince', 'mega_minion')
+    7.06 n= 14 ('hunter',)
+    6.32 n= 11 ('fisherman', 'monk')

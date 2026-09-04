@@ -1,0 +1,82 @@
+{
+ "bow_defends_from_the_centre": {
+  "doctrine": 0.44,
+  "doctrine_s": 1.6,
+  "policy": 0.0,
+  "policy_s": 5.0,
+  "search": 0.0,
+  "search_s": 10.6
+ },
+ "bow_punishes_the_pump": {
+  "doctrine": 0.92,
+  "doctrine_s": 0.7,
+  "policy": 0.24,
+  "policy_s": 0.6,
+  "search": 0.0,
+  "search_s": 3.5
+ },
+ "ice_wizard_behind_the_line": {
+  "doctrine": 1.0,
+  "doctrine_s": 0.7,
+  "policy": 1.0,
+  "policy_s": 0.5,
+  "search": 1.0,
+  "search_s": 3.9
+ },
+ "knight_guards_the_bow": {
+  "doctrine": 1.0,
+  "doctrine_s": 0.6,
+  "policy": 0.96,
+  "policy_s": 0.9,
+  "search": 1.0,
+  "search_s": 4.1
+ },
+ "log_the_ground_swarm": {
+  "doctrine": 0.88,
+  "doctrine_s": 0.8,
+  "policy": 0.24,
+  "policy_s": 2.5,
+  "search": 0.72,
+  "search_s": 12.4
+ },
+ "matchup_lavaloon": {
+  "doctrine": 0.68,
+  "doctrine_s": 3.4,
+  "policy": 0.2,
+  "policy_s": 8.4,
+  "search": 0.52,
+  "search_s": 51.6
+ },
+ "nado_pull_the_flock_back": {
+  "doctrine": 1.0,
+  "doctrine_s": 0.6,
+  "policy": 0.96,
+  "policy_s": 0.7,
+  "search": 0.64,
+  "search_s": 10.6
+ },
+ "rocket_the_pump_on_sight": {
+  "doctrine": 0.88,
+  "doctrine_s": 0.5,
+  "policy": 0.04,
+  "policy_s": 3.2,
+  "search": 0.96,
+  "search_s": 3.4
+ },
+ "skeletons_kill_the_miner": {
+  "doctrine": 1.0,
+  "doctrine_s": 0.6,
+  "policy": 1.0,
+  "policy_s": 0.6,
+  "search": 0.4,
+  "search_s": 8.8
+ },
+ "tesla_pulls_the_wincon": {
+  "doctrine": 0.92,
+  "doctrine_s": 0.8,
+  "policy": 0.28,
+  "policy_s": 1.5,
+  "search": 0.24,
+  "search_s": 4.4
+ }
+}
