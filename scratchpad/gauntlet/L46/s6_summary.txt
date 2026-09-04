@@ -1,0 +1,13 @@
+data/bench/live_obs\obs_s6_20260904_082948.npz
+n 408 plays 53 (0.130) elixir mean 5.68 >=9 share 0.140 hand size 3.61
+  match 0: n 239 plays 37 (0.155) elixir 6.05 >=9 0.14 hand size 3.79
+  match 1: n 169 plays 16 (0.095) elixir 5.16 >=9 0.14 hand size 3.35
+  elixir [0,4): n  96 play share 0.010
+  elixir [4,7): n 161 play share 0.112
+  elixir [7,9): n  94 play share 0.191
+  elixir [9,11): n  57 play share 0.281
+missing-slot share 0.30  deadlock share 0.09  (at >=9: 0.07)
+present: {'tornado': 0.65, 'tesla': 0.29, 'tesla_evo': 0.03, 'ice_wizard': 0.46, 'x_bow': 0.29, 'rocket': 0.97, 'knight': 0.05, 'knight_evo': 0.0, 'the_log': 0.8, 'skeletons': 0.06}
+plays by card: {'tornado': 3, 'tesla': 9, 'tesla_evo': 2, 'ice_wizard': 9, 'x_bow': 10, 'knight': 8, 'knight_evo': 2, 'the_log': 1, 'skeletons': 9}
+plays per 100 in-hand: {'tornado': np.float64(1.1), 'tesla': np.float64(7.6), 'tesla_evo': np.float64(18.2), 'ice_wizard': np.float64(4.8), 'x_bow': np.float64(8.3), 'rocket': np.float64(0.0), 'knight': np.float64(38.1), 'knight_evo': np.float64(100.0), 'the_log': np.float64(0.3), 'skeletons': np.float64(37.5)}
+missing-slot rows 123 t range (np.float64(1788525010.2574325), np.float64(1788525391.872697)) matches [0 1]

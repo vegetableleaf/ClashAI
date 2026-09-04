@@ -22,7 +22,7 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-04 08:0x**, branch `main` (**§5cs: overnight NO loops ran (wakeup never fired); c2r gate read NOT collapsed -- >=6 share 3.8/4.0/4.0 @m5k -> 5.0/6.7/4.9 @m10k vs init 2.7/3.8/2.4, same probe, 3 seeds; watchdog COLLAPSED alert uninformative; stop-path fix shipped (b). Previous header follows.) (**§5cr.8: the live gate collapse is ONE input slot -- threat slot 31 (opp-memory 5) carries the opponent-elixir ESTIMATE live (mean 0.035) but OUR elixir in the sim; slot 31 := own elixir lifts p(play)>tau at >=9 elixir from 1.7% to 96.9% offline, and the live rerun (s3c) plays 12.5% of decisions vs 3.3% (sim 10.8%) with elixir spent (5.2 vs 8.75). Also fixed: WindowCapture locks 38 px short on the MATCH_END screen (blind sessions), SW_RESTORE un-maximizing the window. Next seam: live hand recognition 2.9/4 slots, x_bow seen 5% vs 56%. Previous §5cr.7: FOUND train-rl's greedy rule (WAIT iff Q_wait>=Q_play, = tau 0.5) vs sim/play.py tau 0.25 -- gatec2_m10k p(play) p99 0.358, so at epsilon 0 the PPO policy keeps 0.1% of its plays live (99% vetoed); fix = train.rl_gate_tau 0.25 (config-driven, baseline yaml keeps the old rule); base-block threat seam measured second-order; c2r counter 2000; display timeout set to Never by owner, live waiter armed**)
+Last updated: **2026-09-04 08:5x**, branch `main` (**§5cs.6-8: the live gap was TWO input seams, both fixed on the live path only -- (1) tower anchors drawn at frame positions (rows 2-8 px off the sim's), (2) `hand.slots` centres 7-10 px left of the cards in the Play Games window so x_bow/evo art scored <0.5 and the hand deadlocked on three hoarded spells; s4 6.9% -> s5 4.7% -> s6 13.0% plays, elixir 7.8 -> 8.7 -> 5.7, deadlock 6 -> 67 -> 9%. Residual -1 reads = 1-s deal gaps (a). Image still costs ~1/3 of the gate on sim states (b). c2r reached 20k episodes 08:41. Previous header follows.) (**§5cs: overnight NO loops ran (wakeup never fired); c2r gate read NOT collapsed -- >=6 share 3.8/4.0/4.0 @m5k -> 5.0/6.7/4.9 @m10k vs init 2.7/3.8/2.4, same probe, 3 seeds; watchdog COLLAPSED alert uninformative; stop-path fix shipped (b). Previous header follows.) (**§5cr.8: the live gate collapse is ONE input slot -- threat slot 31 (opp-memory 5) carries the opponent-elixir ESTIMATE live (mean 0.035) but OUR elixir in the sim; slot 31 := own elixir lifts p(play)>tau at >=9 elixir from 1.7% to 96.9% offline, and the live rerun (s3c) plays 12.5% of decisions vs 3.3% (sim 10.8%) with elixir spent (5.2 vs 8.75). Also fixed: WindowCapture locks 38 px short on the MATCH_END screen (blind sessions), SW_RESTORE un-maximizing the window. Next seam: live hand recognition 2.9/4 slots, x_bow seen 5% vs 56%. Previous §5cr.7: FOUND train-rl's greedy rule (WAIT iff Q_wait>=Q_play, = tau 0.5) vs sim/play.py tau 0.25 -- gatec2_m10k p(play) p99 0.358, so at epsilon 0 the PPO policy keeps 0.1% of its plays live (99% vetoed); fix = train.rl_gate_tau 0.25 (config-driven, baseline yaml keeps the old rule); base-block threat seam measured second-order; c2r counter 2000; display timeout set to Never by owner, live waiter armed**)
 change) + aggro1 first look. Owner: "the policy plays every log 1-2 tiles too far forward and whiffs; it never leads log or
 rocket; I think it ignores the ~1 s cast delay". "Mapping issue" (c): the board->screen warp is shared by troops and spells.
 The real defects (a, in code): (1) env.py `_wheels_spell_aim` GATED on the current positions (`log_hits` / radius test)
@@ -10032,3 +10032,90 @@ NO third match queued.
 `icebow/src/clashrl/env.py` (stop-path guard), `scratchpad/gauntlet/L45/live_obs_session.py` (stop arming),
 `scratchpad/gauntlet/L46/{gate_probes.sh,drills.sh,ge6_*_s{0,1,2}.txt}` committed. Data (not in git): c2r logs,
 snapshots, `data/ppo_watchdog.log`.
+
+### 6. s4 live (owner watching) + the "it appears to be blind" report -> the TOWER-ANCHOR seam in the live canonical render (a)
+**s4** (08:48-08:53, init `data/policy_c2r_20260903_best.pt`, tau 0.25 + own_elixir, 2 matches, eps 0, learning off):
+0-3, 0-3; **23 plays / 334 decisions (6.9%)**, elixir mean 7.77, >=9 on 44% of decisions (s3c on gatec2_best:
+12.5% / 5.18). Stop-path fix (5cs.4) VERIFIED live: "match 2 is the last: stop armed", "stopped after 2 match(es)",
+no third match queued (a). Owner's read: "leaks for dozens of seconds, plays a couple of cards seemingly randomly,
+then idles ... appears to be blind".
+**Blind in the literal sense: (c).** Reads healthy (hand 3.80/4 slots, 0/23 ghost plays, chosen == exec on every
+row, region 1198 locked). The NETWORK itself outputs p_play 0.205 on the 130 idle-at->=9 rows (share>0.25 0.8%).
+**Where the s4 gate suppression came from (a, offline ablations on the 334 recorded decisions, same ckpt, same rule;
+`L46/obs_channel_ablate_s4.txt`, `L46/tower_repaint_ablate_s4.txt`):** share>0.25 at elixir>=9 = 0.085 as recorded;
+RGB := random sim frames 0.70; R channel alone := sim 0.73; semantic canvas swaps <= 0.10 (irrelevant). Cause found in
+code: `replay_bc.canonical_render` draws the towers from `reward._anchors(cfg)` = `env.my_towers` (FRAME-normalized,
+y 0.615/0.72) while the live caller (env.py ~754) passes BOARD-warped detections and `_RIVER_BOARD_Y` 0.5, so OUR
+towers were drawn at rows 57-61 / 66-72 of 96 where the sim (`sim/view.render_obs`, engine coords via `to_local`)
+draws them at rows 74-78 / 84-90 (cols 10-14/29-35/49-53). To a policy trained only on sim renders, two red 5x5
+blocks just below the river on our half = our own deployed buildings at both bridges -> bank elixir. Repaint test:
+towers erased 0.348; towers at the sim rows (alive-gated by threat 46-48) **0.681** = the "RGB := sim" ceiling 0.695;
+all drawn 0.851. Enemy side: frame anchors happened to land within 1-4 px of the sim's rows (0.205 -> row 19 = sim 19;
+king 0.11 -> row 10 vs sim 9), which is why only the R channel on OUR half mattered.
+**Fix shipped (live path only, sim/engine/config untouched -- the PPO imports neither module):**
+`replay_bc.canonical_render(..., anchors=None, alive=None)`; `env.py` passes `_SIM_TOWERS_BOARD` = the engine's exact
+tower coordinates through `to_local` (7/36, 51/64; 29/36, 51/64; 0.5, 29/32 | mirrored) and `TowerTracker.*_alive`
+so dead towers are not drawn (as the sim). Verified offline: rendered rows/cols now match the sim pixel-for-pixel
+(red 74-78/84-90, blue 6-12/17-21; cols 10-14/29-35/49-53). The BC miner's default path (frame-space detections +
+frame anchors) is unchanged. In-code (a), not fixed: `play.py` never calls `canonical_render` at all -- it feeds
+`vision.observe(frame)` (the raw board-warped screenshot) to the policy, a bigger parity break for play mode.
+
+### 7. s5 live with the tower fix: play rate did NOT recover -> the second seam, the HAND-SLOT MISALIGNMENT (a)
+**s5** (08:12-08:17, same init/config + tower fix): 0-3, 0-1; **14 plays / 300 (4.7%)**, elixir mean 8.66, >=9 on
+64%. Recorded obs confirm the fix applied (red rows 74-78/84-90). The image seam DID move on the offline instrument:
+"sim states with the live obs" 0.069 (s4) -> **0.303** (s5) against the sim's own 0.483 (`live_gate_ablate_s5.txt`)
+-- but s5's own gate at >=9 read 0.057 and no single block explains it (RGB := sim 0.088, hand := sim 0.285,
+threat := sim 0.254, next zeroed 0.207, all three := sim 0.508). RETRACTION of the L46 reply to the owner: the tower
+anchor was THE seam for s4's frames, not for live play in general. Two sessions, two different dominant seams.
+**What s5 actually did (a):** the hand read `[0, 8, -1, 5]` = tornado, log, UNREAD, rocket at elixir 9-10 for 150 s
+of match 2. The c2r policy hoards spells in the SIM too (tornado in hand 90% / rocket 94% / log 71% of sim decisions;
+per-in-hand play rates spells <= 1/100, skeletons 35, knight 15, tesla/ice 5-6, x_bow 2), so with one unread slot the
+visible hand is three hoarded spells -> WAIT is exactly its sim behaviour -> nothing cycles -> **deadlock**. Share of
+decisions in that state (a slot -1 AND no non-spell visible): **s5 67% (91% of the >=9-elixir rows), s4 6%, sim 0.0%**.
+Per-card play rates when the card IS read match the sim (knight 2/2 read -> 2 plays; skeletons 17-33/100 vs sim 35;
+tesla 5.6-5.8 vs 5.3): the gate is fine; the hand was not. Plays when a non-spell was visible 13/98 (0.133) vs sim
+0.103 overall / 0.256 at >=7.
+**Cause (a, `L46/hand_read_probe_s5m2.txt`, `hand_slot_shift_scan_s5.txt`, `hand_slot_calib_s4s5.txt`):** the unread
+card was the X-BOW (tray strip `L46/s5m2_tray_f1110.png`), scoring 0.416 < threshold 0.5 against 38 x_bow templates
+because the configured `hand.slots` centres sit 7-10 px (of 492) LEFT of the cards in the Play Games window: shifting
+the crop by dx +8 px lifts x_bow 0.42 -> 0.96, log 0.74 -> 0.98, rocket 0.62 -> 0.95 (slot 0 was ~aligned; the
+tray is ~5% wider than the calibration: spacing 0.177 -> 0.186). 47 frames x 4 slots over the four s4/s5 replays:
+median shifts (-0.006, +0.014, +0.020, +0.016) x; scores as-configured median 0.78/0.71/0.45/0.62 -> 0.98. No crop
+SCALE residual (card_w 0.055-0.062 scan: 0.055 best). **Recalibrated** `hand.slots` -> `[[0.305, 0.890],
+[0.499, 0.886], [0.680, 0.891], [0.870, 0.888]]` in `config/config.yaml` and the three `data/bench/live_obs*.yaml`;
+same 13 frames x 4 slots: unread 13/52 -> 2/52 (both on a loading screen), mean score 0.62 -> 0.80. The next-preview
+read was already healthy (rows nonzero 1.0). Templates untouched (Aug 17 set: knight 35, knight_evo 6, tesla_evo 10).
+Why nobody saw it: the reads that still passed (0.55-0.62) sat just above the 0.5 threshold; only fine-featured
+portraits (x_bow, and the evo art) fell under it -- which is the "tesla_evo/knight_evo never present live" gap too (b).
+**s6** launched 08:29 with BOTH live fixes (owner present; read below when it lands). Cadence trap: live loop 0.71-0.82 s
+vs the sim's agent_dt 0.6 on this saturated box (c2r + drills at 100% CPU) -- a further 1.2-1.4x fewer decisions per
+second than training; not a seam in the inputs but it scales every play-rate comparison.
+
+### 8. s6 live with BOTH fixes: play rate 13.0% (sim band); the residual "missing slot" reads are ~1 s deal gaps, not a stuck state (a)
+**s6** (08:29-08:36, init `policy_c2r_20260903_best.pt`, live_obs_tau_slot.yaml + tower anchors + recalibrated slots;
+`obs_s6_20260904_082948.npz`, `L46/s6_summary.txt`): **53 plays / 408 decisions (13.0%)** -- match 1 37/239 (15.5%,
+1-2, took a tower), match 2 16/169 (9.5%, 0-3); elixir mean **5.68** (s4 7.77, s5 8.66), >=9-elixir share **14%**
+(s4 44%, s5 64%); play share by elixir 0.01 / 0.11 / 0.19 / **0.28** at [0,4)/[4,7)/[7,9)/>=9 (sim >=9: 0.22);
+deadlock share **9%** (s5 67%); hand size 3.61/4; ghost plays 0/53. Every card played: tesla 9, ice 9, x_bow 10,
+skeletons 9, knight 8, tornado 3, tesla_evo 2, knight_evo 2, log 1 -- the two evo cards were read and played live for
+the first time (they never appeared in s1-s5). Per-100-in-hand: knight ~40, tesla 7.6, x_bow 8.3, ice 4.8, tornado
+1.1, rocket 0 (sim: knight 15, skeletons 35, tesla 5.3, x_bow 1.9, ice 6.2, spells <= 1). Still 0-2 on results:
+winrate is not the read (§7).
+**Residual: the npz still shows a -1 slot on 30% of decisions.** Classified on the two s6 replays at 6-frame (0.32 s)
+resolution (`L46/hand_empty_runs.py`, `hand_empty_runs_s6.txt`): empty slot-reads **7.6% / 5.8%** of all slot-reads;
+every empty run is **<= 1.5 s (58 runs) or <= 3 s (4 runs)**; the only longer ones are the end-of-video tails when the
+tray leaves the screen. Each is the deal animation after a play from that slot (e.g. slot 3: knight 40.0 s -> empty
+1.3 s -> x_bow 41.5 -> played 59.7 -> skeletons 61.0 -> played 62.3 -> tesla 63.6 -> ...). The policy plays its one
+non-spell slot over and over (three spells hoarded, as in the sim), so the active slot is empty ~1.3 s per play; 4 slots
+x ~7% = the 30% of decisions with some -1. RETRACTION of my 10-s-stride reading ("slot 0 empty 2960-4255, ~70 s"):
+three separate 1-s gaps sampled by chance. No stuck card-selection state, no controller defect -- (c) contradicted.
+**Offline instrument on s6 states (`live_gate_ablate_s6.txt`, same script as s4/s5):** live as recorded, share
+p(play)>0.25 at >=9: **0.368** (s4 0.085, s5 0.057); "sim states with the live obs" **0.317** vs the sim's own 0.483
+(s4 0.069, s5 0.303) -- the image still costs ~a third of the gate on sim states; obs zeroed lifts it to 0.807, so the
+remaining gap is something the live image CONTAINS, not something it lacks (b: candidates = semantic channels 3-8 from
+the detector vs the sim's exact units, DomainRand restyling; measure by swapping channel groups, not the whole image).
+**What s6 does NOT establish:** that the policy is now as good live as in the sim (two matches, one session, box at
+100% CPU: live loop 0.80-0.98 s vs agent_dt 0.6); that the evo templates are reliable (knight_evo 6 templates, 2 reads).
+**c2r:** 20000 episodes reached 08:41 (EVAL ladder best 29.9 at 03:51; log "20000 episodes: winrate 18%"); the
+m20k gate/snapshot had not posted by 08:5x (`c2r_run_gates.out` last: m10k 02:44). Drill suite (`L46/drills.sh`, seed 5
+x25 reps, init then c2r_m10k) still running since 07:30 with buffered output (0 bytes until each ckpt finishes).

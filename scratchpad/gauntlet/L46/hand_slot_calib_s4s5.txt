@@ -1,0 +1,9 @@
+data/bench/live_obs/replays/match_20260904_081412.mp4 frames scanned 12 492 x 898
+data/bench/live_obs/replays/match_20260904_081300.mp4 frames scanned 11 492 x 898
+data/bench/live_obs/replays/match_20260904_074855.mp4 frames scanned 12 492 x 898
+data/bench/live_obs/replays/match_20260904_075136.mp4 frames scanned 12 492 x 898
+slot 0: n 47  median shift dx -0.0061 dy +0.0056 (IQR dx -0.0061..+0.0081)  score as-configured median 0.784 -> shifted 0.979  => centre [0.3019, 0.8926]
+slot 1: n 46  median shift dx +0.0142 dy -0.0017 (IQR dx +0.0061..+0.0142)  score as-configured median 0.713 -> shifted 0.977  => centre [0.4992, 0.8853]
+slot 2: n 46  median shift dx +0.0203 dy +0.0078 (IQR dx +0.0203..+0.0203)  score as-configured median 0.446 -> shifted 0.975  => centre [0.6803, 0.8918]
+slot 3: n 44  median shift dx +0.0163 dy +0.0039 (IQR dx +0.0163..+0.0224)  score as-configured median 0.622 -> shifted 0.976  => centre [0.8703, 0.8879]
+next no confident frames

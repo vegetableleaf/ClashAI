@@ -849,3 +849,14 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   band (0.6-1.6); uninformative. Trainer EVAL ladder 19..33%, best 29.9 saved 03:51 (winrate not a discriminator).
   Stop-path fix shipped (env.py Play Again tap skipped when stop requested; launcher arms stop on the Nth match) -- (b)
   until a live session runs it. Full drill suite init vs c2r_m10k running in background. HANDOFF §5cs.
+- L46 cont. (2026-09-04 08:0x-08:5x): the owner watched s4 and called the model "blind". Tested, not agreed: TWO input
+  seams, both live-path only, both (a) with before/after on one instrument. (1) tower anchors drawn at frame-detected
+  positions, rows 2-8 px off the sim's: s4 frames re-rendered with the sim's exact tower cells -> gate share at >=9
+  0.085 -> 0.681 (sim ceiling 0.695); shipped `_SIM_TOWERS_BOARD` + alive gating in env.py/replay_bc.py. s5 with that
+  fix alone did NOT recover (4.7% plays) -> RETRACTED "tower anchor = the seam": s5's mechanism was (2) `hand.slots`
+  centres 7-10 px left of the cards in the Play Games window -> x_bow scored 0.42 < 0.5 -> hand = three hoarded spells
+  -> deadlock 67% of decisions (sim 0.0%). Recalibrated slots (unread 13/52 -> 2/52). s6 with both: 53/408 plays
+  (13.0%), elixir 5.68, >=9 share 14%, deadlock 9%, evo cards read+played live for the first time; residual -1 reads are
+  ~1-s deal gaps (0.32-s scan, all runs <= 3 s) -- my "70-s empty slot" reading retracted (10-s stride artefact).
+  Left (b): image still costs ~1/3 of the gate on sim states (0.317 vs 0.483); play.py never renders canonically.
+  c2r reached 20k episodes 08:41; m20k gate not yet posted; drill suite still running. HANDOFF §5cs.6-8.

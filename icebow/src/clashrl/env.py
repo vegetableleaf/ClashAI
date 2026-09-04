@@ -118,6 +118,14 @@ class _BoardDet:
 
 
 _RIVER_BOARD_Y = 0.5            # board-true river (the canonical render is drawn in board space)
+# Tower anchors in BOARD space, copied from the sim engine's tower coordinates through
+# `sim/view.to_local` (team 0): princess (0.19, 0.80)/(0.81, 0.80), king (0.50, 0.91), mirrored
+# for the enemy. Order L, R, king -- the same order as `env.my_towers` and `TowerTracker.*_alive`.
+# The frame-space `env.my_towers` (y 0.615/0.72) drew our towers 17-18 rows too high in the
+# board-space canonical render (5cs.6); the enemy king's warp saturates to y 0.0, so the
+# enemy side is copied from the sim too rather than warped.
+_SIM_TOWERS_BOARD = ([(7 / 36, 51 / 64), (29 / 36, 51 / 64), (0.5, 29 / 32)],      # exact: int() rounding
+                     [(7 / 36, 13 / 64), (29 / 36, 13 / 64), (0.5, 3 / 32)])       # must match the sim's
 
 
 class LiveMatchEnv:
@@ -751,7 +759,12 @@ class LiveMatchEnv:
                 bx, by = w.frame_to_board(d.cx, d.gy)
                 dets.append(_BoardDet(d, bx, by))
             oh, ow = self.obs_shape[0], self.obs_shape[1]
-            img = replay_bc.canonical_render(dets, self.cfg, int(oh), int(ow), _RIVER_BOARD_Y)
+            # Towers at the sim's board-true rows, dead ones not drawn (5cs.6: frame-space
+            # anchors put our towers where the sim shows our deployed buildings -> gate idle).
+            _al = (list(getattr(self.tower, "mine_alive", []) or []) or None,
+                   list(getattr(self.tower, "enemy_alive", []) or []) or None)
+            img = replay_bc.canonical_render(dets, self.cfg, int(oh), int(ow), _RIVER_BOARD_Y,
+                                             anchors=_SIM_TOWERS_BOARD, alive=_al)
         else:
             img = self.vision.observe(frame)
         if not self.use_canvas:

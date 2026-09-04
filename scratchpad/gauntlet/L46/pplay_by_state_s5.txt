@@ -1,0 +1,22 @@
+sim n 4707 play share 0.103
+  elixir [0,4): n 1783  p_play mean 0.164  share>0.25 0.130  plays 231
+  elixir [4,7): n 1378  p_play mean 0.201  share>0.25 0.154  plays 212
+  elixir [7,9): n  150  p_play mean 0.230  share>0.25 0.260  plays 39
+  elixir [9,11): n   18  p_play mean 0.231  share>0.25 0.222  plays 4
+live n 300 play share 0.047
+  elixir [0,4): n    4  p_play mean 0.100  share>0.25 0.000  plays 0
+  elixir [4,7): n   53  p_play mean 0.135  share>0.25 0.057  plays 2
+  elixir [7,9): n   50  p_play mean 0.181  share>0.25 0.040  plays 2
+  elixir [9,11): n  193  p_play mean 0.192  share>0.25 0.057  plays 10
+  live match 0 t[0,30)s: n  46 p_play 0.148 elixir 6.4 plays 4
+  live match 0 t[30,90)s: n  38 p_play 0.154 elixir 9.0 plays 2
+  live match 0 t[90,400)s: n   0 p_play nan elixir nan plays 0
+  live match 1 t[0,30)s: n  37 p_play 0.188 elixir 6.8 plays 3
+  live match 1 t[30,90)s: n  78 p_play 0.182 elixir 9.0 plays 4
+  live match 1 t[90,400)s: n 101 p_play 0.197 elixir 10.0 plays 1
+  sim t[0,30)s: n  553 p_play 0.173 elixir 3.9 play share 0.128
+  sim t[30,90)s: n 1119 p_play 0.179 elixir 4.2 play share 0.105
+  sim t[90,400)s: n 1657 p_play 0.188 elixir 4.0 play share 0.179
+live idle@>=9 rows n 183: policy p_play mean 0.186  share>0.25 0.005  chosen=play on those rows 0.000
+live chosen play share 0.047 exec play share 0.047 chosen but not exec 0 exec but not chosen 0
+deck ['tornado', 'tesla', 'tesla_evo', 'ice_wizard', 'x_bow', 'rocket', 'knight', 'knight_evo', 'the_log', 'skeletons']

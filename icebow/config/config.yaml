@@ -14,7 +14,7 @@ capture:
 
 # --- Hand card slots (normalized centres, from the trol calibration) ------
 hand:
-  slots: [[0.308, 0.887], [0.485, 0.887], [0.660, 0.884], [0.854, 0.884]]
+  slots: [[0.305, 0.890], [0.499, 0.886], [0.680, 0.891], [0.870, 0.888]]   # RECALIBRATED 2026-09-04 (5cs.7) from the s4/s5 replays: the old centres sat 7-10 px (of 492) left of the cards in the Play Games window; x_bow read 0.42 (-1) -> 0.96, hand read 13/52 unread -> 2/52. Re-measure with scratchpad/gauntlet/L46/hand_slot_calib.py if the window geometry changes.
   click_radius: 0.06            # a click near a slot's x, in the tray band, = selecting that card
   # Card-identity recognition: the policy acts on WHICH card identity to play (not
   # the tray slot, which cycles). An EVOLVED card is its own identity (`<key>_evo`)

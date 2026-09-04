@@ -1,0 +1,12 @@
+live as recorded                                             p_play(all) 0.169  elixir>=9: mean 0.211 share>0.25 0.085
+bug boxes (rows, cols): [((57, 62), (13, 18)), ((57, 62), (45, 50)), ((66, 73), (28, 35))]
+fix boxes (rows, cols): [((74, 79), (10, 15)), ((74, 79), (49, 54)), ((83, 90), (29, 36))]
+  live frames: tower colour fill in bug box 0: 1.000
+  live frames: tower colour fill in bug box 1: 1.000
+  live frames: tower colour fill in bug box 2: 1.000
+  alive (threat 46-48) mean per tower: [0.895 0.308 1.   ]
+live, our towers ERASED (rows 57-61/66-72 -> grass)          p_play(all) 0.193  elixir>=9: mean 0.240 share>0.25 0.348
+live, our towers at SIM rows (all drawn)                     p_play(all) 0.252  elixir>=9: mean 0.309 share>0.25 0.851
+live, our towers at SIM rows (alive-gated by threat 46-48)   p_play(all) 0.235  elixir>=9: mean 0.276 share>0.25 0.681
+reference: RGB := random sim RGB                             p_play(all) 0.230  elixir>=9: mean 0.278 share>0.25 0.695
+sim: fraction of frames with any red pixel in rows 55-73: 0.298  rows 74-91: 0.649
