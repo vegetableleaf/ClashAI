@@ -1,0 +1,18 @@
+C:\Users\benpe\ClashBot\icebow\data\bench\c2r_m30k.pt  matches=30050  rows=2400  seed=5
+  affordable on 61.3% of rows | P(play) mean 0.161 (all) 0.177 (affordable rows) | played on 10.1% of rows | elixir mean 2.92  >=6 3.1% | phase rows [1725, 675, 0]
+  bucket  rows  P(play)  affordable  played   pro(single)
+      0    152   0.108     0.000     0.000    0.010
+      1    542   0.125     0.177     0.031    0.024
+      2    653   0.151     0.527     0.049    0.042
+      3    505   0.174     0.954     0.154    0.063
+      4    290   0.191     1.000     0.183    0.058
+      5    174   0.229     1.000     0.224    0.042
+      6     64   0.229     1.000     0.203    0.042
+      7     20   0.226     1.000     0.550    0.043
+      8      0     -         -         -      0.083
+      9      0     -         -         -      0.203
+     10      0     -         -         -      0.184
+  mean cost of the cards actually played: 2.82 (deck mean 3.50)
+    plays at <3   n=49   mean cost 1.35  skeletons:32 the_log:17
+    plays at 3-5  n=170  mean cost 2.91  ice_wizard:38 knight:37 tornado:24 tesla:23
+    plays at >=6  n=24   mean cost 5.17  x_bow:14 rocket:3 tesla:2 ice_wizard:2
