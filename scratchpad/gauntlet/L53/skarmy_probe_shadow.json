@@ -1,0 +1,644 @@
+[
+ {
+  "card": "skeleton_army_evo",
+  "defender": null,
+  "patches": [
+   "shadow_speed"
+  ],
+  "ok": true,
+  "tower_xy": [
+   [
+    3.5,
+    6.5
+   ],
+   [
+    14.5,
+    6.5
+   ],
+   [
+    9.0,
+    3.0
+   ]
+  ],
+  "first_tower_dmg_t": 4.4,
+  "gerry_first_damaged_t": 11.8,
+  "gerry_death_t": 12.6,
+  "end_t": 40.0,
+  "towers_end": [
+   0,
+   3052,
+   4091
+  ],
+  "tower_dmg_total": 3785,
+  "rows": [
+   {
+    "t": 0.1,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     3.5,
+     17.5
+    ],
+    "front": 15.0
+   },
+   {
+    "t": 2.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     3.5,
+     15.6
+    ],
+    "front": 12.9
+   },
+   {
+    "t": 4.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     3.5,
+     12.1
+    ],
+    "front": 8.9
+   },
+   {
+    "t": 6.0,
+    "towers": [
+     2238,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     3.0,
+     9.6
+    ],
+    "front": 7.0
+   },
+   {
+    "t": 8.0,
+    "towers": [
+     1100,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     2.9,
+     9.4
+    ],
+    "front": 5.6
+   },
+   {
+    "t": 10.0,
+    "towers": [
+     0,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     3.5,
+     8.8
+    ],
+    "front": 4.8
+   },
+   {
+    "t": 12.0,
+    "towers": [
+     0,
+     3052,
+     4580
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     0,
+     5.4,
+     6.2
+    ],
+    "front": 3.5
+   },
+   {
+    "t": 14.0,
+    "towers": [
+     0,
+     3052,
+     4173
+    ],
+    "skel": 1,
+    "ghost": 0,
+    "gerry": null,
+    "front": 4.4
+   },
+   {
+    "t": 16.0,
+    "towers": [
+     0,
+     3052,
+     4091
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 18.0,
+    "towers": [
+     0,
+     3052,
+     4091
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 20.0,
+    "towers": [
+     0,
+     3052,
+     4091
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 22.0,
+    "towers": [
+     0,
+     3052,
+     4091
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 24.0,
+    "towers": [
+     0,
+     3052,
+     4091
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 26.0,
+    "towers": [
+     0,
+     3052,
+     4091
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 28.0,
+    "towers": [
+     0,
+     3052,
+     4091
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 30.0,
+    "towers": [
+     0,
+     3052,
+     4091
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 32.0,
+    "towers": [
+     0,
+     3052,
+     4091
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 34.0,
+    "towers": [
+     0,
+     3052,
+     4091
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 36.0,
+    "towers": [
+     0,
+     3052,
+     4091
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 38.0,
+    "towers": [
+     0,
+     3052,
+     4091
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 40.0,
+    "towers": [
+     0,
+     3052,
+     4091
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   }
+  ]
+ },
+ {
+  "card": "skeleton_army_evo",
+  "defender": "knight",
+  "patches": [
+   "shadow_speed"
+  ],
+  "ok": true,
+  "tower_xy": [
+   [
+    3.5,
+    6.5
+   ],
+   [
+    14.5,
+    6.5
+   ],
+   [
+    9.0,
+    3.0
+   ]
+  ],
+  "first_tower_dmg_t": 5.8,
+  "gerry_first_damaged_t": 12.9,
+  "gerry_death_t": 13.8,
+  "end_t": 40.0,
+  "towers_end": [
+   0,
+   3052,
+   4173
+  ],
+  "tower_dmg_total": 3703,
+  "rows": [
+   {
+    "t": 0.1,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     3.5,
+     17.5
+    ],
+    "front": 15.0
+   },
+   {
+    "t": 2.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     3.5,
+     15.5
+    ],
+    "front": 12.8
+   },
+   {
+    "t": 4.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     3.3,
+     13.4
+    ],
+    "front": 10.2
+   },
+   {
+    "t": 6.0,
+    "towers": [
+     2971,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     3.4,
+     12.1
+    ],
+    "front": 8.3
+   },
+   {
+    "t": 8.0,
+    "towers": [
+     1913,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     4.1,
+     9.5
+    ],
+    "front": 5.8
+   },
+   {
+    "t": 10.0,
+    "towers": [
+     529,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     4.1,
+     9.5
+    ],
+    "front": 5.4
+   },
+   {
+    "t": 12.0,
+    "towers": [
+     0,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     5.3,
+     7.9
+    ],
+    "front": 4.1
+   },
+   {
+    "t": 14.0,
+    "towers": [
+     0,
+     3052,
+     4254
+    ],
+    "skel": 2,
+    "ghost": 0,
+    "gerry": null,
+    "front": 3.9
+   },
+   {
+    "t": 16.0,
+    "towers": [
+     0,
+     3052,
+     4173
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 18.0,
+    "towers": [
+     0,
+     3052,
+     4173
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 20.0,
+    "towers": [
+     0,
+     3052,
+     4173
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 22.0,
+    "towers": [
+     0,
+     3052,
+     4173
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 24.0,
+    "towers": [
+     0,
+     3052,
+     4173
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 26.0,
+    "towers": [
+     0,
+     3052,
+     4173
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 28.0,
+    "towers": [
+     0,
+     3052,
+     4173
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 30.0,
+    "towers": [
+     0,
+     3052,
+     4173
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 32.0,
+    "towers": [
+     0,
+     3052,
+     4173
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 34.0,
+    "towers": [
+     0,
+     3052,
+     4173
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 36.0,
+    "towers": [
+     0,
+     3052,
+     4173
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 38.0,
+    "towers": [
+     0,
+     3052,
+     4173
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 40.0,
+    "towers": [
+     0,
+     3052,
+     4173
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   }
+  ]
+ }
+]

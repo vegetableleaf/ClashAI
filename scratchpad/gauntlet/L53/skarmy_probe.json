@@ -1,0 +1,1821 @@
+[
+ {
+  "card": "skeleton_army_evo",
+  "defender": null,
+  "patches": [],
+  "ok": true,
+  "tower_xy": [
+   [
+    3.5,
+    6.5
+   ],
+   [
+    14.5,
+    6.5
+   ],
+   [
+    9.0,
+    3.0
+   ]
+  ],
+  "first_tower_dmg_t": 4.3,
+  "gerry_first_damaged_t": 11.6,
+  "gerry_death_t": 12.5,
+  "end_t": 40.0,
+  "towers_end": [
+   0,
+   3052,
+   3929
+  ],
+  "tower_dmg_total": 3947,
+  "rows": [
+   {
+    "t": 0.1,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     3.5,
+     17.5
+    ],
+    "front": 15.0
+   },
+   {
+    "t": 2.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     3.5,
+     15.6
+    ],
+    "front": 12.9
+   },
+   {
+    "t": 4.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     3.5,
+     12.1
+    ],
+    "front": 8.9
+   },
+   {
+    "t": 6.0,
+    "towers": [
+     2157,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     3.0,
+     9.6
+    ],
+    "front": 6.7
+   },
+   {
+    "t": 8.0,
+    "towers": [
+     611,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     2.9,
+     9.5
+    ],
+    "front": 5.3
+   },
+   {
+    "t": 10.0,
+    "towers": [
+     0,
+     3052,
+     4743
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     3.7,
+     8.6
+    ],
+    "front": 3.8
+   },
+   {
+    "t": 12.0,
+    "towers": [
+     0,
+     3052,
+     4173
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     0,
+     5.8,
+     6.5
+    ],
+    "front": 2.7
+   },
+   {
+    "t": 14.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 1,
+    "ghost": 0,
+    "gerry": null,
+    "front": 3.5
+   },
+   {
+    "t": 16.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 18.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 20.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 22.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 24.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 26.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 28.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 30.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 32.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 34.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 36.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 38.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 40.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   }
+  ]
+ },
+ {
+  "card": "skeleton_army",
+  "defender": null,
+  "patches": [],
+  "ok": true,
+  "tower_xy": [
+   [
+    3.5,
+    6.5
+   ],
+   [
+    14.5,
+    6.5
+   ],
+   [
+    9.0,
+    3.0
+   ]
+  ],
+  "first_tower_dmg_t": 5.2,
+  "gerry_first_damaged_t": null,
+  "gerry_death_t": null,
+  "end_t": 40.0,
+  "towers_end": [
+   773,
+   3052,
+   4824
+  ],
+  "tower_dmg_total": 2279,
+  "rows": [
+   {
+    "t": 0.1,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": null,
+    "front": 15.0
+   },
+   {
+    "t": 2.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": null,
+    "front": 12.7
+   },
+   {
+    "t": 4.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 12,
+    "ghost": 0,
+    "gerry": null,
+    "front": 9.8
+   },
+   {
+    "t": 6.0,
+    "towers": [
+     2645,
+     3052,
+     4824
+    ],
+    "skel": 10,
+    "ghost": 0,
+    "gerry": null,
+    "front": 8.0
+   },
+   {
+    "t": 8.0,
+    "towers": [
+     2075,
+     3052,
+     4824
+    ],
+    "skel": 7,
+    "ghost": 0,
+    "gerry": null,
+    "front": 7.4
+   },
+   {
+    "t": 10.0,
+    "towers": [
+     1343,
+     3052,
+     4824
+    ],
+    "skel": 5,
+    "ghost": 0,
+    "gerry": null,
+    "front": 7.2
+   },
+   {
+    "t": 12.0,
+    "towers": [
+     936,
+     3052,
+     4824
+    ],
+    "skel": 2,
+    "ghost": 0,
+    "gerry": null,
+    "front": 7.2
+   },
+   {
+    "t": 14.0,
+    "towers": [
+     773,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 16.0,
+    "towers": [
+     773,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 18.0,
+    "towers": [
+     773,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 20.0,
+    "towers": [
+     773,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 22.0,
+    "towers": [
+     773,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 24.0,
+    "towers": [
+     773,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 26.0,
+    "towers": [
+     773,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 28.0,
+    "towers": [
+     773,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 30.0,
+    "towers": [
+     773,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 32.0,
+    "towers": [
+     773,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 34.0,
+    "towers": [
+     773,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 36.0,
+    "towers": [
+     773,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 38.0,
+    "towers": [
+     773,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 40.0,
+    "towers": [
+     773,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   }
+  ]
+ },
+ {
+  "card": "skeleton_army_evo",
+  "defender": "knight",
+  "patches": [],
+  "ok": true,
+  "tower_xy": [
+   [
+    3.5,
+    6.5
+   ],
+   [
+    14.5,
+    6.5
+   ],
+   [
+    9.0,
+    3.0
+   ]
+  ],
+  "first_tower_dmg_t": 5.7,
+  "gerry_first_damaged_t": 12.2,
+  "gerry_death_t": 13.1,
+  "end_t": 40.0,
+  "towers_end": [
+   0,
+   3052,
+   3929
+  ],
+  "tower_dmg_total": 3947,
+  "rows": [
+   {
+    "t": 0.1,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     3.5,
+     17.5
+    ],
+    "front": 15.0
+   },
+   {
+    "t": 2.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     3.5,
+     15.5
+    ],
+    "front": 12.8
+   },
+   {
+    "t": 4.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     3.5,
+     13.5
+    ],
+    "front": 10.2
+   },
+   {
+    "t": 6.0,
+    "towers": [
+     2726,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     3.4,
+     11.4
+    ],
+    "front": 7.3
+   },
+   {
+    "t": 8.0,
+    "towers": [
+     1587,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     4.1,
+     9.5
+    ],
+    "front": 5.0
+   },
+   {
+    "t": 10.0,
+    "towers": [
+     0,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     4.2,
+     9.5
+    ],
+    "front": 4.8
+   },
+   {
+    "t": 12.0,
+    "towers": [
+     0,
+     3052,
+     4580
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     6.0,
+     7.1
+    ],
+    "front": 3.2
+   },
+   {
+    "t": 14.0,
+    "towers": [
+     0,
+     3052,
+     4010
+    ],
+    "skel": 1,
+    "ghost": 0,
+    "gerry": null,
+    "front": 4.5
+   },
+   {
+    "t": 16.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 18.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 20.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 22.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 24.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 26.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 28.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 30.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 32.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 34.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 36.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 38.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 40.0,
+    "towers": [
+     0,
+     3052,
+     3929
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   }
+  ]
+ },
+ {
+  "card": "skeleton_army",
+  "defender": "knight",
+  "patches": [],
+  "ok": true,
+  "tower_xy": [
+   [
+    3.5,
+    6.5
+   ],
+   [
+    14.5,
+    6.5
+   ],
+   [
+    9.0,
+    3.0
+   ]
+  ],
+  "first_tower_dmg_t": 8.4,
+  "gerry_first_damaged_t": null,
+  "gerry_death_t": null,
+  "end_t": 40.0,
+  "towers_end": [
+   2645,
+   3052,
+   4824
+  ],
+  "tower_dmg_total": 407,
+  "rows": [
+   {
+    "t": 0.1,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": null,
+    "front": 15.0
+   },
+   {
+    "t": 2.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 14,
+    "ghost": 0,
+    "gerry": null,
+    "front": 13.0
+   },
+   {
+    "t": 4.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 11,
+    "ghost": 0,
+    "gerry": null,
+    "front": 10.8
+   },
+   {
+    "t": 6.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 7,
+    "ghost": 0,
+    "gerry": null,
+    "front": 10.9
+   },
+   {
+    "t": 8.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 4,
+    "ghost": 0,
+    "gerry": null,
+    "front": 8.8
+   },
+   {
+    "t": 10.0,
+    "towers": [
+     2726,
+     3052,
+     4824
+    ],
+    "skel": 2,
+    "ghost": 0,
+    "gerry": null,
+    "front": 8.1
+   },
+   {
+    "t": 12.0,
+    "towers": [
+     2645,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 14.0,
+    "towers": [
+     2645,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 16.0,
+    "towers": [
+     2645,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 18.0,
+    "towers": [
+     2645,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 20.0,
+    "towers": [
+     2645,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 22.0,
+    "towers": [
+     2645,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 24.0,
+    "towers": [
+     2645,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 26.0,
+    "towers": [
+     2645,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 28.0,
+    "towers": [
+     2645,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 30.0,
+    "towers": [
+     2645,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 32.0,
+    "towers": [
+     2645,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 34.0,
+    "towers": [
+     2645,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 36.0,
+    "towers": [
+     2645,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 38.0,
+    "towers": [
+     2645,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 40.0,
+    "towers": [
+     2645,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   }
+  ]
+ },
+ {
+  "card": "skeleton_army_evo",
+  "defender": "ice_wizard",
+  "patches": [],
+  "ok": true,
+  "tower_xy": [
+   [
+    3.5,
+    6.5
+   ],
+   [
+    14.5,
+    6.5
+   ],
+   [
+    9.0,
+    3.0
+   ]
+  ],
+  "first_tower_dmg_t": null,
+  "gerry_first_damaged_t": 1.5,
+  "gerry_death_t": 3.1,
+  "end_t": 40.0,
+  "towers_end": [
+   3052,
+   3052,
+   4824
+  ],
+  "tower_dmg_total": 0,
+  "rows": [
+   {
+    "t": 0.1,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     3.5,
+     17.5
+    ],
+    "front": 15.0
+   },
+   {
+    "t": 2.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     0,
+     3.5,
+     15.6
+    ],
+    "front": 12.9
+   },
+   {
+    "t": 4.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 3,
+    "ghost": 0,
+    "gerry": null,
+    "front": 13.3
+   },
+   {
+    "t": 6.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 8.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 10.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 12.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 14.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 16.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 18.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 20.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 22.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 24.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 26.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 28.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 30.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 32.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 34.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 36.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 38.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 40.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   }
+  ]
+ },
+ {
+  "card": "skeleton_army_evo",
+  "defender": null,
+  "patches": [],
+  "ok": true,
+  "tower_xy": [
+   [
+    3.5,
+    25.5
+   ],
+   [
+    14.5,
+    25.5
+   ],
+   [
+    9.0,
+    29.0
+   ]
+  ],
+  "first_tower_dmg_t": 4.2,
+  "gerry_first_damaged_t": 12.4,
+  "gerry_death_t": 13.2,
+  "end_t": 40.0,
+  "towers_end": [
+   0,
+   3052,
+   3278
+  ],
+  "tower_dmg_total": 4598,
+  "rows": [
+   {
+    "t": 0.1,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     3.5,
+     14.5
+    ],
+    "front": null
+   },
+   {
+    "t": 2.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     3.5,
+     17.0
+    ],
+    "front": null
+   },
+   {
+    "t": 4.0,
+    "towers": [
+     3052,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     3.4,
+     20.9
+    ],
+    "front": null
+   },
+   {
+    "t": 6.0,
+    "towers": [
+     2076,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     3.7,
+     22.5
+    ],
+    "front": null
+   },
+   {
+    "t": 8.0,
+    "towers": [
+     937,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     3.7,
+     22.5
+    ],
+    "front": null
+   },
+   {
+    "t": 10.0,
+    "towers": [
+     0,
+     3052,
+     4824
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     4.5,
+     23.3
+    ],
+    "front": null
+   },
+   {
+    "t": 12.0,
+    "towers": [
+     0,
+     3052,
+     4254
+    ],
+    "skel": 15,
+    "ghost": 0,
+    "gerry": [
+     81,
+     81,
+     6.2,
+     25.7
+    ],
+    "front": null
+   },
+   {
+    "t": 14.0,
+    "towers": [
+     0,
+     3052,
+     3359
+    ],
+    "skel": 2,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 16.0,
+    "towers": [
+     0,
+     3052,
+     3278
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 18.0,
+    "towers": [
+     0,
+     3052,
+     3278
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 20.0,
+    "towers": [
+     0,
+     3052,
+     3278
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 22.0,
+    "towers": [
+     0,
+     3052,
+     3278
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 24.0,
+    "towers": [
+     0,
+     3052,
+     3278
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 26.0,
+    "towers": [
+     0,
+     3052,
+     3278
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 28.0,
+    "towers": [
+     0,
+     3052,
+     3278
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 30.0,
+    "towers": [
+     0,
+     3052,
+     3278
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 32.0,
+    "towers": [
+     0,
+     3052,
+     3278
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 34.0,
+    "towers": [
+     0,
+     3052,
+     3278
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 36.0,
+    "towers": [
+     0,
+     3052,
+     3278
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 38.0,
+    "towers": [
+     0,
+     3052,
+     3278
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   },
+   {
+    "t": 40.0,
+    "towers": [
+     0,
+     3052,
+     3278
+    ],
+    "skel": 0,
+    "ghost": 0,
+    "gerry": null,
+    "front": null
+   }
+  ]
+ }
+]

@@ -110,6 +110,21 @@ class ParityEngine(SimEngine):
             return e.hp > 0 and e.invis_left <= 0.0 and not e.ghost
         return super()._valid_foe(u, e)
 
+    # --patch shadow_speed (L53): cards.yaml carries `shadow_skeleton_speed_tiles: 1.0` for the evo Skeleton
+    # Army (wiki: shadows are Medium (60) since the 12/01/2026 balance) but engine.py never reads the key --
+    # ghosts are `Unit(u.spec, ...)` and run at the live skeleton's 1.5 tiles/s (measured L53). The patch swaps
+    # every ghost's spec for a speed-1.0 copy right after it is created.
+    _slow_specs: dict = {}
+    def advance(self, dt):
+        super().advance(dt)
+        if "shadow_speed" in PATCHES:
+            for u in self.units:
+                if u.invis_left >= 9999.0 and u.spec.key == "skeleton_army_evo" and u.spec.speed != 1.0:
+                    sl = self._slow_specs.get(id(u.spec))
+                    if sl is None:
+                        sl = self._slow_specs[id(u.spec)] = _dc_replace(u.spec, speed=1.0)
+                    u.spec = sl
+
 
 def make_engine(cfg, db, level, seed):
     ParityEngine.parity_level = level
@@ -214,7 +229,7 @@ def main():
     ap.add_argument("--tail-cap", type=float, default=360.0)
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--record", action="store_true", help="dump per-sub_dt frames (engine-record schema) into the per-tag JSON")
-    ap.add_argument("--patch", action="append", default=[], help="mechanic patch(es) to apply: spell_edge, corner_buildings, hidden_pull")
+    ap.add_argument("--patch", action="append", default=[], help="mechanic patch(es) to apply: spell_edge, corner_buildings, hidden_pull, shadow_speed")
     ap.add_argument("--mirror", action="store_true",
                     help="swap the sides (side 0 <-> 1, x -> 18000-x, y -> 32000-y): a symmetric sim must give the mirrored result")
     args = ap.parse_args()
