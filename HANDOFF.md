@@ -10218,3 +10218,17 @@ the evidence: >=6 share is a sim-side health signal, NOT a live-quality proxy.
 * (B) For REAL train-rl (not observation) epsilon 0.5 is correct and should stay -- DDQN is off-policy and the doctrine
   is a better behaviour policy than the net. Only the observation runs should sit at 0.
 * (C) Still open and unmeasured: the last third of the gate gap on sim states with the live image (0.317 vs 0.483).
+
+### 12. Drill suite init vs c2r_m10k: 10,000 matches of PPO bought +1.5pp mean (a)
+`L46/drills.sh` (seed 5, 25 reps, c2r run config, same instrument both ckpts) finished 10:2x. Mean policy pass over the
+29 drills: **init (gatec2_m10k) 33.0% -> c2r_m10k 34.5%, +1.5pp**; drills at 0%: 9 -> 8. Six are 0% on BOTH
+(`bank_to_six_then_bow` 0 vs doctrine 100, `bow_defends_from_the_centre` 0 vs 48, `log_rolls_forward_not_backward` 0 vs
+80, `log_the_barrel_on_landing` 0 vs 56, `nado_king_activation` 0 vs 100, `rocket_the_two_for_one` 0 vs 100). Largest
+moves: `rocket_the_pump_on_sight` 68 -> 8, `nado_pull_the_flock_back` 72 -> 100, `rocket_then_tornado` 0 -> 28,
+`skeletons_kill_the_miner` 72 -> 96, `hold_the_spell_for_a_target` 60 -> 36. **Caveat: 25 reps on ONE seed, so a single
+drill's +-20pp is inside the noise band; the 29-drill mean is the read, and it moved 1.5pp over 10k matches.**
+This is the quantitative form of §5cs.11's argument: the PPO is not learning the doctrine's behaviours at the rate the
+project needs, and six of the drills it fails outright have never moved. Supports route (A) -- distil a competent
+teacher -- over more reward shaping. Does NOT establish that distillation will work, and the drills are a PROXY: aggro1
+(§5cn/5cq) produced a drill gain that did not persist, so any distillation arm must read drills + regret corpus + a
+live session, never drills alone.
