@@ -1,0 +1,3 @@
+L55: c2r STOPPED on owner order at 36,375 eps (17 -> 1 procs, best 36k backed up); the live corner-Tesla is the sim policy -- policy_rl.pt == c2r_best (diff 0.0), greedy sim probe puts tesla at cell 234 (left riverside corner) 63% / x_bow 62% / skeletons at 423 99% over 3 seeds, live tesla@235 39/101, x_bow 63/85; oscillation instruments recorded (>=6 share 3.9/5.5/1.2/3.3/1.3, entropy 0.06, one cell per card, gate PLAY drift negative every batch on 5-20 samples), cause (b); next = sim Tesla-outcome probe then an exploration arm -- HANDOFF 5cs.25
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
