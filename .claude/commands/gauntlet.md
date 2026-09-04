@@ -72,6 +72,24 @@ a session limit, a crash, or a context reset lands mid-flight; a file is not.
 - The loop's own interpretation step reads the files, not just the returned messages, so the record
   and your conclusion come from the same source.
 
+## 2.6 Context discipline (owner-approved 2026-09-04, after repeated context resets)
+
+The conversation's context is the scarcest resource in this project, and the journal is what spends it
+(HANDOFF.md measured 11,326 lines / 970 KB on 2026-09-04; the prescribed bootstrap alone was ~50k tokens).
+Until the state/archive split lands, every loop follows these:
+
+- **Probe output goes to a file, not the conversation.** Run every probe/analysis with `> file`, then bring
+  back ONLY the summary lines you need (`tail -n 3`, `grep`, a per-arm one-liner). Never let a tool return a
+  whole log, JSON, or a checkpoint listing.
+- **Cap every grep/read of HANDOFF.md or GAUNTLET_LOG.md** with `| cut -c1-200` and `| head -N`. Read a
+  section by line range, never the file. Grep for the section header first, then read only that span.
+- **Never re-read a file already read this session.** Note the numbers you need the first time.
+- **Write long text with the Write tool**, one file per call; keep Bash compound commands short. A failed
+  heredoc costs two attempts of context.
+- **Subagents for anything that means reading more than ~3 files** -- they return a conclusion, not the files.
+- **Reports carry numbers, not narration.** The Discord report and the `§` section are the record; the chat
+  answer to the owner is a few lines that point at them.
+
 ## 3. Discord report (every iteration, no exceptions)
 
 Write the report to a temp file and post it:
