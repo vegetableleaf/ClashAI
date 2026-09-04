@@ -22,7 +22,7 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-03 20:00**, branch `main` (**§5cp: GAUNTLET L43 -- THE CEILING: search teacher 77.1% vs policy 41.7% on the same sim (gatec2_m10k, 48 paired); per-archetype beatdown 8% / cycle 60%; owner archetype-GA answered; sim/live opp-elixir obs slot mismatch found (sim/env.py:643). Previous header follows.** §5co: GAUNTLET L42 -- LIVE SPELL AIM FIX (owner-authorized live-path
+Last updated: **2026-09-03 21:00**, branch `main` (**§5cq: AGGRO GAUNTLET CLOSED -- aggro1 m5k FAILED (tank_for_bow 0/0 vs gate05 12/12; >=6 share unchanged; regret 0.262 vs 0.229, 25 wrong waits vs 5); aggro1 stopped ~m5900; NO run live; `env.nado_retarget_reach_fix` now TRUE (owner's reward bug fix) -- every existing ckpt predates it. Next direction = owner's call (§5cq.6). Previous: §5cp: GAUNTLET L43 -- THE CEILING: search teacher 77.1% vs policy 41.7% on the same sim (gatec2_m10k, 48 paired); per-archetype beatdown 8% / cycle 60%; owner archetype-GA answered; sim/live opp-elixir obs slot mismatch found (sim/env.py:643). Previous header follows.** §5co: GAUNTLET L42 -- LIVE SPELL AIM FIX (owner-authorized live-path
 change) + aggro1 first look. Owner: "the policy plays every log 1-2 tiles too far forward and whiffs; it never leads log or
 rocket; I think it ignores the ~1 s cast delay". "Mapping issue" (c): the board->screen warp is shared by troops and spells.
 The real defects (a, in code): (1) env.py `_wheels_spell_aim` GATED on the current positions (`log_hits` / radius test)
@@ -9619,3 +9619,82 @@ aggro1 untouched: 4450 eps at 19:5x, 0.5 ep/s, ent 0.05, 129W-3438L-7D; m5k ~20:
 shared the box 19:41-19:53 (2 extra procs; aggro1 throughput was not benchmarked during it -- do not read ep/s from
 that window). Files: `scratchpad/gauntlet/L43/{ceiling.sh,base.txt,teacher.txt,base.json,teacher.json,opp_labels.py,
 opp_labels.json}` in git; `_rs_gatec2_m10k.pt` NOT in git.
+
+## §5cq. GAUNTLET L44 (2026-09-03 20:23-21:0x) -- aggro1 m5k gate: FAILED on all three halves; aggro1 stopped; reward bug fix (reach) switched on; the aggro gauntlet CLOSED (owner ruling 20:3x)
+
+**Owner (20:3x):** "after the 5k gate, finish up the aggro plan, see where it's at. If aggro works, stop the gauntlet.
+Otherwise decide if there's anything more that can be done to improve the aggro manipulation, and if there's not then
+close out the gauntlet as well." Verdict criteria written BEFORE the direct read (chat, 20:4x): aggro1 "works" only if
+tank_for_bow holds >= 36% on BOTH drill seeds AND at least one of bow_lane_choice / nado_king_activation moves off 0.
+
+### 1. The pre-registered m5k read (§5cn.4) -- all (a), same instruments as gate05/gatec2 m5k
+**Direct (drills, 25 reps, greedy, `--config data/bench/aggro1_run.yaml`):**
+| ckpt | seed | tank_for_bow | bow_lane_choice | nado_king_activation |
+|---|---|---|---|---|
+| aggro1 m2500 (L42) | 5 | 36% | 0 | 0 |
+| **aggro1 m5k** | 5 | **0%** | 0 | 0 |
+| **aggro1 m5k** | 6 | **0%** | 0 | 0 |
+| gate05 m5k | 5 | 12% | 0 | 0 |
+| gate05 m5k | 6 | 12% | 0 | 0 |
+(do-nothing 0 / doctrine 84-92 / prior 92 for tank_for_bow; king activation: prior 4-8% = DOCTRINE GAP, unchanged.)
+The m2500 36% (flagged "a screen" in §5co.6) did not persist: at m5k the arm that TRAINS on the drill scores 0 on it,
+below the arm that never saw it. Fails the verdict on its own.
+**Indirect (`gate_prior_probe` seeds 0/1/2, >=6 share):** aggro1 m5k **2.0 / 2.1 / 1.4%** (elixir mean 2.46/2.45/2.39)
+vs gate05 m5k 2.3/1.7/2.0 and gatec2 m5k 2.3/1.7/2.0 (§5cn.4). Unchanged -- the owner's hypothesis "aggro understanding
+moves elixir banking" gets no support from this arm.
+**Regret corpus (real_run_gates m5k, 203 states):** aggro1 **0.2621**, waited 46, missed-play 54% (= 25 wrong waits)
+vs gate05 m5k 0.2291 / 22 / 23% (5) ; floor7 0.2710 / 17 / 12% (2) ; gatec2 0.2924 / 60 / 55% (33). aggro1 waits twice
+as often as its base and half of those waits are wrong -- WORSE than gate05, between gate05 and gatec2.
+**Trainer counters (b, sampled, NOT comparable to the greedy probes):** 5925 eps at 20:50, 180W-4561L-7D, ent 0.05-0.09,
+EVAL@2000 4%/2%, EVAL@4000 3%/5%; pooled drills 36% pass-all (gate05 42%, different drill set).
+
+### 2. Verdict: aggro1 FAILED. The aggro-drill curriculum route is exhausted at this evidence level.
+Not "the drills are wrong" (the doctrine line passes them 84-100%, the do-nothing 0) and not "too early" (the arm was
+AHEAD at m2500 and lost it by m5k with ent 0.05: the policy collapsed onto something else). What it says is the same thing
+§5cp's ceiling says from the other side: the search teacher over this policy's own candidates wins 77%; PPO on the
+same sim, with the aggro drills as 20% of episodes, cannot hold a 36% drill pass. The learner is the bottleneck, and
+more curriculum through the same learner is not the lever.
+
+### 3. Is there anything more for aggro manipulation? (owner's question) -- four concrete items, none of them this gauntlet
+1. **aggro1b (warm start from gatec2_m10k) -- NOT launched.** Same mechanism that just failed to persist within one run; a
+   warm start changes the starting point, not why the drill knowledge decays. Expected value low; owner may veto.
+2. **nado_king_activation DOCTRINE GAP** (prior finds it 4-8%, do-nothing 0, drill winnable 100%): nothing -- PPO,
+   search, or distillation -- can teach a line the doctrine prior does not contain. A hand-written king-activation
+   line in the prior (tornado cell that drags a bridge unit into king range, §5bx geometry) is the cheap prerequisite.
+3. **Opponent-elixir obs slot** (§5cp.4, sim/env.py:643): aggro manipulation is tempo, and the sim policy has never seen
+   the opponent's elixir. One-line parity fix, own arm.
+4. **Sim `spell_delay` 0.4 -> 1.0** (§5co.5, engine.py:855): the tornado-timing part of every aggro line is trained at a
+   delay the live game does not have.
+All four route through the next gauntlet's direction (distillation from the search teacher, §5cp), which is the owner's
+decision. So: gauntlet CLOSED per the owner's ruling.
+
+### 4. aggro1 STOPPED (state above; 20:5x) and the reward bug fix switched on
+* Stopped: trainer tree (pid 68712 -> 16948 + workers), `ppo_watchdog` (74088/43644), `real_run_gates` (27956/50584).
+  Process count recorded before/after in §4 below. Checkpoints kept: `data/policy_aggro1_20260903.pt` (live, ~m5900),
+  `data/bench/aggro1_m5k.pt`, `scratchpad/gauntlet/L42/aggro1_live_m25.pt`; log `data/bench/aggro1_run_20260903.log`.
+* `env.nado_retarget_reach_fix: false -> true` (config.yaml:1162). The owner's reward bug (§5bq.3, built + tested §5ca,
+  `tests/test_nado_retarget_reach.py`): the retarget credit never paid in any run because the candidate test was
+  centre-to-centre while the engine engages centre-to-edge. Owner: "find a good spot to implement the reward bug fix at
+  some point" -- the good spot is now: NO training run is live, so nothing depends on the old value, and every future
+  run (whatever the owner picks next) trains with the credit reachable. Trap for the next arm: any base that predates
+  this flip (gate05/gatec2/floor7/aggro1 ckpts) was trained under the unreachable credit; a new base must be trained
+  with it ON before an A/B on top of it means anything. `sim.aggro_drills` stays false by default.
+* Process count (a): python.exe 19 before -> 1 after (pid 63608 = the owner's Nucleo uvicorn, untouched). Config
+  loaded value confirmed: `env.nado_retarget_reach_fix True`, `sim.aggro_drills False`; `tests.test_nado_retarget_reach`
+  + `tests.test_aggro_drills` pass after the flip.
+
+### 5. Does NOT establish
+* That the aggro drills themselves are useless as an INSTRUMENT -- they are the only greedy measure of the three lines
+  and stay in the toolbox (`sim.aggro_drills: true` + `--only ...` on any ckpt).
+* Anything about aggro1 beyond m5k (stopped at ~m5900; the 40k plan was never going to be read anyway -- the m5k gate
+  was the pre-registered decision point).
+* That the reach fix helps: it is a BUG FIX (a credit that could not fire now can), not a measured improvement. The
+  first run with it on is the measurement.
+
+### 6. State for the next session
+NO training run is live. Box free (python: Nucleo only). Config differs from every checkpoint's training config by the
+reach flip. Open directions for the owner (§5cp + §3 above): distillation from the search teacher (6-PRIORITY-B; measure
+the reseed_opp privileged-teacher gap FIRST), the opp-elixir slot parity fix, the sim spell_delay parity fix, the
+king-activation doctrine line, the archetype-posterior obs feature. The owner also floated (20:3x) letting me start and
+observe LIVE train-rl sessions myself (screen capture + window focus tested working from my shell, §chat 20:3x) -- needs
+an explicit rewrite of the live-play guardrail before any session; "next gauntlet idea" pending from the owner.

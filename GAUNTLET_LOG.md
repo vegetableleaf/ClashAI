@@ -807,3 +807,13 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   input over six GA loops (fitness noise x6; nets cannot be averaged). Not started.
 - FOUND (a, code): sim/env.py:643 puts OUR elixir in memory slot 5; live puts the opponent-elixir estimate there (3bc1d45,
   08-11). Sim policy has never seen opponent elixir. Parity-arm candidate; untouched while aggro1 runs. HANDOFF §5cp.
+
+## L44 — 2026-09-03 20:23-21:00 | AGGRO gauntlet loop 28 -- CLOSE-OUT: aggro1 m5k FAILED all three halves; run stopped; reach fix ON
+- Direct (a): tank_for_bow aggro1 m5k 0%/0% (seeds 5,6) vs gate05 m5k 12%/12%; m2500's 36% did not persist. bow_lane 0,
+  king activation 0 (prior 4-8% = doctrine gap). Indirect (a): >=6 share 2.0/2.1/1.4 vs gate05 2.3/1.7/2.0 -- unchanged.
+  Regret (a): 0.2621, 25 wrong waits vs gate05 0.2291 / 5. Verdict: FAILED; drill curriculum through PPO is not the lever
+  (same message as L43's ceiling: learner-bound).
+- aggro1 STOPPED at ~m5900 (state in §5cq.1/4; python 19 -> 1, Nucleo untouched). aggro1b NOT launched (same mechanism).
+- Owner's reward bug fix switched on: env.nado_retarget_reach_fix true (tests pass). Every prior ckpt predates it.
+- Four remaining aggro levers (king-activation doctrine line, opp-elixir obs slot, sim spell_delay 1.0, distillation)
+  all belong to the next gauntlet's direction. GAUNTLET CLOSED per owner ruling 20:3x. HANDOFF §5cq.

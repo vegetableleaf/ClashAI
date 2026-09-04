@@ -1159,7 +1159,7 @@ env:
   nado_pull_s: 1.05                    # how long a landed tornado actually PULLS. The combo needs the rocket's blast to go off INSIDE this window on the same spot, which is why doctrine is ROCKET FIRST then tornado (DOCTRINE_RESEARCH.md R6): a tornado cast first has released the clump long before a slow rocket arrives.
   nado_pull_tiles: 5.5                 # the tornado's actual pull radius in TILES. The combo credit requires real enemy bodies inside it worth rewards.rocket_min_worth -- without that gate the credit paid in full for two casts at an empty tile.
   nado_retarget_min_worth: 2.0         # elixir a SINGLE body must be worth for the tornado RETARGET credit.
-  nado_retarget_reach_fix: false       # HANDOFF §5bq.3 / §5ca: the retarget candidate test was centre-to-centre
+  nado_retarget_reach_fix: true        # HANDOFF §5bq.3 / §5ca: the retarget candidate test was centre-to-centre
                                        # while the engine engages centre-to-hitbox-EDGE, so a hog settled at
                                        # 2.20 tiles never counted and the credit NEVER paid in any run. true =
                                        # use the engine's `_gap`. A reward change: its own experiment.

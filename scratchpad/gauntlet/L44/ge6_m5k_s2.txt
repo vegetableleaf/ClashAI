@@ -1,0 +1,19 @@
+C:\Users\benpe\ClashBot\icebow\data\bench\aggro1_m5k.pt  matches=5000  rows=2400  seed=2
+  affordable on 39.7% of rows | P(play) mean 0.293 (all) 0.259 (affordable rows) | played on 10.8% of rows | elixir mean 2.39  >=6 1.4% | phase rows [1781, 619, 0]
+  bucket  rows  P(play)  affordable  played   pro(single)
+      0    306   0.326     0.000     0.000    0.010
+      1    694   0.316     0.104     0.052    0.024
+      2    697   0.299     0.297     0.062    0.042
+      3    426   0.277     0.930     0.256    0.063
+      4    160   0.204     1.000     0.206    0.058
+      5     81   0.242     1.000     0.346    0.042
+      6     19   0.219     1.000     0.316    0.042
+      7     10   0.172     1.000     0.200    0.043
+      8      6   0.100     1.000     0.167    0.083
+      9      1   0.148     1.000     1.000    0.203
+     10      0     -         -         -      0.184
+  mean cost of the cards actually played: 2.61 (deck mean 3.50)
+    plays at <3   n=79   mean cost 1.41  skeletons:47 the_log:32
+    plays at 3-5  n=170  mean cost 3.01  ice_wizard:46 knight:37 tornado:28 tesla:23
+    plays at >=6  n=10   mean cost 5.20  x_bow:4 tesla_evo:2 rocket:2 tesla:2
+PROBES_DONE
