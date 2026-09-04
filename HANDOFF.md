@@ -10301,3 +10301,87 @@ noise applied exactly as `view.DomainRand` samples them, 24 styles; nothing but 
 **Trap.** `sim as recorded` in every L45-L47 ablation is an average over random styles while `live as recorded` is
 one style; comparing them attributes a style draw to "the live image". Any future sim-vs-live image comparison
 must either re-style the live frame across the DR distribution or render the sim frames canonical.
+
+### 14. BOTH DISTILLATION TEACHERS SPECIFIED AND MEASURED ON ONE INSTRUMENT (owner order, 2026-09-04 ~11:00): the doctrine is a 14.6% whole-match player, the search teacher is 79.2% and only ~6pp of that is privileged -- DECISION: doctrine imitation on DRILL STATES ONLY (arm D1) first; the search teacher is rejected as a one-frame distillation target on the ledger's own measurements
+
+**Instrument** (all four legs today, `scratchpad/gauntlet/L47/{doctrine_teacher.py, doctrine48.txt, policy48.txt,
+teacher48.txt, teacher48_reseed.txt}`; = L43 `ceiling.sh`: ladder pool, DR off, 48 paired seeds from 5000000, root
+`.venv` python as L43 used, 1 thread each, run alongside c2r -- not a throughput read):
+
+| leg (ckpt `policy_c2r_20260903_best`) | win% | tower delta | crown delta | plays/match | play share | >=6 share | s/match |
+|---|---|---|---|---|---|---|---|
+| policy alone (H=0) | 37.5% | -1.124 | -0.35 | 37.6 | 0.109 | 0.078 | 2.3 |
+| **doctrine** (`drill_env.doctrine_policy`: doctrine_cards + doctrine_cells, HOLD when nothing nominated) | **14.6%** | **-1.465** | -1.00 | 30.3 | 0.097 | 0.082 | 0.7 |
+| **search teacher** (H 12 s, N 1, K 4, cells 3 -- the 6-PRIORITY-B oracle) | **79.2%** | **+0.167** | -- | -- | -- | -- | 12.9 |
+| search teacher, `--reseed-opp` (privileged-gap control) | 72.9% | +0.103 | -- | -- | -- | -- | 14.0 |
+
+- (a) **The doctrine, played whole-match, is WORSE than the policy it would teach**: 14.6% vs 37.5%, tower -1.465
+  vs -1.124, three-crowned on average. At elixir>=9 it plays **1.5%** of decisions (741 rich decisions) -- the same
+  rich-state passivity the owner watched live. Instrumented (`doctrine_rich_probe.py`, 12 matches, 406 rich
+  decisions): board quiet in 386, something nominated in 396, but the nomination is `the_log` 364 times (the ">=8
+  elixir -> cheapest card" cycle rule) and `doctrine_cells` has NO cell for a log on an empty board, so
+  `doctrine_policy` falls through to HOLD. The bow was in hand in only 12 of the 406 (it cycles out: on the field
+  in 20% of all decisions). The whole-match doctrine = reactive counters + a cycle rule that cannot execute. Its
+  76-100% on the drills is real and LOCAL: the drills are built around the counter situations it encodes.
+- (a) **The search teacher reproduces on a third checkpoint** (ledger 37.0->85.7 m18000; L43 41.7->77.1 gatec2_m10k;
+  today 37.5->79.2 c2r_best) and **the privileged-teacher gap is ~6pp** (79.2 -> 72.9 with the opponent's RNG
+  re-seeded inside the fork; tower +0.167 -> +0.103). Most of the edge is NOT knowing the opponent's future.
+  It disagrees with the policy on 33% of decisions, wait->play 1057 vs play->wait 1023 -- corrects both ways.
+
+**Teacher B -- rollout search (6-PRIORITY-B). Spec, unchanged where already measured:** teacher H 12 / N 1 / K 4 /
+cells 3; corpus via `research/sim_parity/scripts/distill_label.py` (exists, refuses N!=1), `PYTHONHASHSEED=0`,
+corpus and student on ONE commit; ~14 s/match single-thread -> an 18k-match-equivalent corpus is ~2 h on 16 idle
+cores (needs the box: c2r must be finished first); student = the existing `--distill-corpus/--distill-coef` term
+(card head only, `train_sim_ppo.py` ~243) or the DAgger path (`ppo_search_interval: 1`, all three heads, ~1685).
+**Why it is rejected as the FIRST arm -- the ledger's own measurements (`research/sim_parity/ledger/distillation.md`
+sections 4, 7, 8; HANDOFF 5o):** (i) card choice distils (held-out agreement 0.4955 -> 0.8754) and moves winrate by
+nothing (+3.0pp, +0.63 sigma, 3 seeds; card agreement +4.19 sigma on the same checkpoints) -- "card choice is not
+the bottleneck"; (ii) the GATE does not distil from one frame (0.5892 -> 0.6012, below the always-WAIT floor
+0.7756): the teacher decides WHEN by rolling the future out, and a single observation does not carry that;
+(iii) search-in-the-loop (DAgger, interval 4) co-existed with a WORSE banking collapse (>=6 share 35.4% -> 1.0%,
+5o). All three are dated (m18000 / pre-reach-fix tree), but two independent experiments point the same way and (ii)
+is mechanism, not sample size. What would reopen it: a sequence/recurrent student (HANDOFF ~4966) -- a project,
+not an arm.
+
+**Teacher A -- the doctrine. Spec (arm D1):**
+- **Where it teaches: DRILL episodes only** (`info["drill"]` set; `drill_frac` 0.3 in c2r_run.yaml so ~30% of
+  episodes). NEVER on ladder-match states -- whole-match it is a 14.6% player and would teach the passivity above.
+- **Mechanism: the existing search-imitation plumbing with the doctrine as the "searcher".** A
+  `DoctrineSearcher(env)` whose `act(t)` returns `(doctrine_policy(None, env), True)` on drill envs and
+  `(None, False)` on match envs, plugged into `_searchers` / the worker `searchers` list
+  (`sim/remote_pool.py` ~203, `train_sim_ppo.py` ~1991). Rows arrive flagged `srch=1`, the executed action IS the
+  doctrine's (DAgger, the measured search setting), and the supervised CE on ALL THREE HEADS (`train_sim_ppo.py`
+  ~1685, `ppo_search_coef`) trains gate + card + cell toward it. HOLD rows teach WAIT; play rows teach PLAY + card
+  + cell. New config: `ppo_doctrine_imitate: true`, `ppo_doctrine_act_frac: 1.0` (0.5 = mixed, second arm), coef
+  **0.5** (coef 2.0 suppressed playing through the shared trunk in two ledger experiments; 0.5 did not). One
+  change vs c2r; everything else c2r_run.yaml.
+- **Why it is the right first arm:** the doctrine is a ONE-FRAME function of the state by construction, so its
+  targets are learnable in principle (the failure mode that killed the search gate does not apply); it passes the
+  six drills the policy scores 0% on (5cs.12) at 76-100%; and 10,000 PPO matches with the doctrine as a mere
+  exploration PRIOR (`doctrine_frac 0.6`) bought +1.5pp -- the sampler sees the placements and the reward does not
+  keep them, so a supervised term is the mechanism that differs.
+- **Privileged gap (measure first, cheap):** the doctrine reads engine ground truth; the student sees the degraded
+  canvas (presence recall 0.85). Floor: the current policy's top-1 agreement with the doctrine on drill states;
+  after the arm: held-out agreement on drill seeds not trained on. If agreement does not move, the targets are not
+  visible from the obs -- a clean negative.
+- **Run:** init `gatec2_m10k` (c2r's init), 5,000 matches (~3 h at c2r's 1,759/hr), one seed as the screen.
+- **Pre-registered reads (same instruments as 5cs.12 / L46):** (1) drill suite 29-mean and the 0% count vs
+  `c2r_m5k` at the same match count -- bar: **>=3 of the six 0% drills above 40% AND 29-mean +5pp**; (2) 3-seed
+  >=6 probe (health only -- NOT a live proxy, 5cs.10); (3) regret corpus; (4) one 6-match live session, s6
+  protocol, commit-when-rich share and bow share vs s6 (0.222 / 0.137). Confirmation needs 3 seeds.
+- **What it does NOT promise:** whole-match winrate. The drills are local skills; whether they compose into a
+  better match is exactly what read (4) and the ladder EVAL are for.
+- **Traps:** (i) the `srch` seam is a silent no-op under `--workers>1` if the flag is not shipped (measured, 5o) --
+  verify the "SEARCH n/N decisions" log line shows drill rows in the FIRST update; (ii) the -1e9 masked-cell guard
+  drops rows whose doctrine cell is masked for the sampled card -- read "% of searched rows usable"; (iii) class
+  imbalance: HOLD rows dominate; if the gate drifts toward WAIT on MATCH states, the drill-only restriction has
+  leaked through the shared trunk -- read P(play) on the watchdog and the >=6 probe.
+
+**Doctrine work items surfaced (owner's call, domain judgement):** the ">=8 -> cheapest card" rule nominates a card
+with no cell and holds; the rich-state passivity (1.5%) is the doctrine's, not only the policy's. If the owner
+wants a whole-match rule teacher (the owner's own rule: "hand-written line wins 50%+ and the student 10-27% ->
+distil"), the doctrine has to clear 50% on THIS instrument first -- it is at 14.6%.
+
+**Does NOT establish:** that D1 moves the six drills (b, that is the arm); that search on drill states passes them
+(b, untested -- a cheap later measurement: the drills instrument with a searcher policy; if it does, a
+search-on-drills arm is the second candidate).

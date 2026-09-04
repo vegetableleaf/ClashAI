@@ -889,3 +889,12 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   29th percentile; style-median 0.439/0.465 ~ sim 0.483. Most of the residual image gap = the canonical palette is
   a low-gate style; DR did not buy invariance. Fix candidates parked (RGB-off arm first choice) behind distillation.
   Trap: sim "as recorded" averages over styles, live is one draw. c2r ~23k, m30k read ~14:20. HANDOFF §5cs.13.
+- L47b (2026-09-04 ~11:00-12:00): owner order "spec both distillation teachers and decide". Four legs on the L43
+  ceiling instrument (c2r_best, 48 paired seeds, ladder, DR off): policy 37.5%; DOCTRINE whole-match 14.6% / tower
+  -1.465 (plays 1.5% of rich decisions -- the ">=8 -> cheapest card" rule nominates the log with no cell and holds);
+  SEARCH teacher 79.2% / +0.167; search with reseed-opp 72.9% -> privileged gap ~6pp. Decision: arm D1 = doctrine
+  imitation on DRILL STATES ONLY via the existing search-imitation plumbing (DoctrineSearcher, coef 0.5, all three
+  heads), init gatec2_m10k, 5k matches, pre-registered drill bar (>=3 of the six 0% drills >40% AND 29-mean +5pp).
+  Search teacher rejected as a one-frame distillation target on the ledger's numbers (card distils, winrate +0;
+  gate not one-frame learnable; DAgger co-existed with banking collapse). Nothing launched: c2r running, m30k ~14:20.
+  HANDOFF 5cs.14.

@@ -1,0 +1,5 @@
+  [teacher_reseed] 10/48  wr=90.0%  13.12 s/match
+  [teacher_reseed] 20/48  wr=85.0%  13.97 s/match
+  [teacher_reseed] 30/48  wr=83.3%  14.83 s/match
+  [teacher_reseed] 40/48  wr=75.0%  14.12 s/match
+[teacher_reseed] wr=72.9%  towerdelta=0.1034  searched=7705 disagree=2509 wait->play=1222 play->wait=901  wall=672.6s -> C:/Users/benpe/ClashBot/scratchpad/gauntlet/L47/teacher48_reseed.json

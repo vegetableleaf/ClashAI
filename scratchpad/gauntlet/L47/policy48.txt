@@ -1,0 +1,7 @@
+  [policy] 8/48 wr=37.5% 2.27 s/match
+  [policy] 16/48 wr=37.5% 2.38 s/match
+  [policy] 24/48 wr=41.7% 2.35 s/match
+  [policy] 32/48 wr=40.6% 2.35 s/match
+  [policy] 40/48 wr=35.0% 2.24 s/match
+  [policy] 48/48 wr=37.5% 2.30 s/match
+[policy] wr=37.5%  towerdelta=-1.124 crowndelta=-0.35 plays/match=37.6 play share 0.109 elixir>=6 share 0.078

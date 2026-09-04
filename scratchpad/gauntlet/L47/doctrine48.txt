@@ -1,0 +1,7 @@
+  [doctrine] 8/48 wr=25.0% 0.68 s/match
+  [doctrine] 16/48 wr=18.8% 0.70 s/match
+  [doctrine] 24/48 wr=16.7% 0.69 s/match
+  [doctrine] 32/48 wr=18.8% 0.68 s/match
+  [doctrine] 40/48 wr=15.0% 0.68 s/match
+  [doctrine] 48/48 wr=14.6% 0.68 s/match
+[doctrine] wr=14.6%  towerdelta=-1.465 crowndelta=-1.00 plays/match=30.3 play share 0.097 elixir>=6 share 0.082 rich(>=9) decisions 741 play share 0.015
