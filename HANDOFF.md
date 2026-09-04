@@ -10153,3 +10153,28 @@ init from `c2r_m10k.pt`, everything else identical to s6** -- one change, read a
 next loop. (2) evo templates rebuilt from the s6 replays (knight_evo has 6), measured before/after on recorded frames --
 run after s7 so it does not confound it. (3) `play.py` canonical-render parity -- a fix, not an experiment; ship when
 the render path is settled; play mode is not train-rl. (4) live-search `hand_ids=None` -- parked, latency-only.
+
+### 10. s7 (init c2r_m10k, one change from s6): the sim's banking metric points the WRONG WAY live (b)
+**s7** (09:21-09:26, `obs_s7_20260904_092112.npz`, replays `match_20260904_092137/092447.mp4`): identical to s6 except
+`--init data/bench/c2r_m10k.pt` instead of `policy_c2r_20260903_best.pt`. Both read on ONE instrument
+(`L46/obs_summary.py`, elixir = `elixir_vec*10`, the policy-facing value; note `npz['elixir']` is CAPPED AT 9 and gives
+a different mean -- do not mix them):
+
+| | plays | play rate | elixir mean | >=9 share | play share at >=9 | missing-slot | x_bow plays/100 in-hand |
+|---|---|---|---|---|---|---|---|
+| s6 (best) | 53/408 | 0.130 | 5.68 | 0.14 | 0.281 | 0.30 | 8.3 |
+| s7 (m10k) | 36/365 | 0.099 | 7.10 | 0.31 | 0.123 | 0.11 | 1.9 |
+
+s7 played no spell at all (tornado/log/rocket 0 plays, in hand 85-98% of rows). Results 0-1, 0-3 (winrate is not the read).
+**Discriminator (play share when elixir >=9 AND >=1 non-spell card is in hand), per match:** s6 0.467 / 0.087,
+s7 0.333 / 0.050. **The arms OVERLAP: 2 matches each cannot separate them** -- s7 m2 is an outlier (63% of its 126
+decisions were at >=9 elixir holding the x-bow, played on 5%; the worst state yet recorded), and s6 m2 is nearly as bad
+(0.087). Label **(b)**: no evidence m10k is better live, weak evidence it is worse; both s7 matches sit below their s6
+counterparts on the discriminator. What IS established (a): the missing-slot share fell 0.30 -> 0.11 purely because the
+policy plays less (fewer deal animations), confirming §5cs.8's reading of that number.
+**The point that matters:** the sim probe's elixir->=6 share -- the metric the collapse protocol and every gate read is
+built on -- is a BANKING metric, and live, more banking looked like more idling at 10 elixir with the bow in hand. m10k
+tops that metric (5.5 vs best's 2.2) and produced the worse-looking live session. Do NOT treat >=6 share as a live-quality
+proxy on this evidence; it is a sim-side health signal only. Live init stays `policy_c2r_20260903_best.pt` until an arm
+with enough matches says otherwise (a proper read needs ~6+ matches per arm at these per-match spreads -- ~30 min of
+window time each; owner's call whether that is worth it).

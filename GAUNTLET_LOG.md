@@ -867,3 +867,8 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   m30k (~14:00) pre-registered as the decisive read. Found (a): the live sessions were initialising from the EVAL-
   WINRATE-selected `best` ckpt, which reads 2.2 on the mechanism metric vs m10k's 5.5 -- s7 = s6 with the init changed
   to c2r_m10k, one change. Open-factor slate recorded in §5cs.9. HANDOFF §5cs.9.
+- L46d (09:2x-09:4x): s7 = s6 with ONE change (init c2r_m10k, not the winrate-selected best). 36/365 plays (9.9% vs
+  13.0%), elixir 7.10 vs 5.68, >=9 share 0.31 vs 0.14, play share at >=9 0.123 vs 0.281, zero spells played. Per-match
+  discriminator (play share when rich AND holding a non-spell) s6 0.467/0.087 vs s7 0.333/0.050 -- the arms OVERLAP at
+  2 matches each, so (b) not (a). Direction: the sim's >=6 banking metric points the WRONG WAY live; live init stays
+  `best`. Instrument trap found: npz['elixir'] is capped at 9, elixir_vec*10 is the policy-facing value. HANDOFF §5cs.10.
