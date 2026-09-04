@@ -1,0 +1,8098 @@
+[
+{
+"tag": "000YLY0JCPGL",
+"sim": [
+0,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 121,
+"rej": 0,
+"driven": 121,
+"delays": 0,
+"maxdelay": 0,
+"t": 300.1,
+"term": true,
+"tm": 3.85,
+"early": false,
+"abil": 2,
+"e_tick": 6085,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.2,
+"reasons": []
+},
+{
+"tag": "000YLY0PYYQY",
+"sim": [
+1,
+1
+],
+"eng": [
+0,
+3
+],
+"real": [
+0,
+3
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": false,
+"acc": 33,
+"rej": 0,
+"driven": 33,
+"delays": 2,
+"maxdelay": 10,
+"t": 300.1,
+"term": true,
+"tm": 157.4,
+"early": false,
+"abil": 2,
+"e_tick": 2929,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.09,
+"reasons": []
+},
+{
+"tag": "000YLY2UCC8C",
+"sim": [
+3,
+0
+],
+"eng": [
+3,
+0
+],
+"real": [
+3,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 36,
+"rej": 0,
+"driven": 37,
+"delays": 6,
+"maxdelay": 30,
+"t": 165.3,
+"term": true,
+"tm": -1.5,
+"early": true,
+"abil": 1,
+"e_tick": 3462,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.06,
+"reasons": []
+},
+{
+"tag": "000YLY2ULYLR",
+"sim": [
+3,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 16,
+"rej": 1,
+"driven": 114,
+"delays": 0,
+"maxdelay": 0,
+"t": 76.5,
+"term": true,
+"tm": -222.35,
+"early": true,
+"abil": 0,
+"e_tick": 6137,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.03,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "000YLY2UVGRL",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 54,
+"rej": 0,
+"driven": 54,
+"delays": 1,
+"maxdelay": 6,
+"t": 180.1,
+"term": true,
+"tm": 2.05,
+"early": false,
+"abil": 2,
+"e_tick": 3681,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.07,
+"reasons": []
+},
+{
+"tag": "000YLY2VQ92P",
+"sim": [
+3,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 0,
+"e_clean": false,
+"acc": 40,
+"rej": 0,
+"driven": 53,
+"delays": 4,
+"maxdelay": 14,
+"t": 149.4,
+"term": true,
+"tm": -29.35,
+"early": true,
+"abil": 2,
+"e_tick": 6134,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.05,
+"reasons": []
+},
+{
+"tag": "002YLLLP2YRR",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 58,
+"rej": 0,
+"driven": 71,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -21.6,
+"early": true,
+"abil": 0,
+"e_tick": 4122,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.09,
+"reasons": []
+},
+{
+"tag": "002YLLLP9JUR",
+"sim": [
+2,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": false,
+"acc": 55,
+"rej": 0,
+"driven": 105,
+"delays": 1,
+"maxdelay": 2,
+"t": 180.1,
+"term": true,
+"tm": -100.5,
+"early": true,
+"abil": 0,
+"e_tick": 5307,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.06,
+"reasons": []
+},
+{
+"tag": "00GYPYP0PCLR",
+"sim": [
+3,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 50,
+"rej": 0,
+"driven": 112,
+"delays": 1,
+"maxdelay": 8,
+"t": 179.0,
+"term": true,
+"tm": -118.2,
+"early": true,
+"abil": 0,
+"e_tick": 6119,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.14,
+"reasons": []
+},
+{
+"tag": "00GYPYPRQCY8",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 46,
+"rej": 2,
+"driven": 108,
+"delays": 4,
+"maxdelay": 26,
+"t": 180.1,
+"term": true,
+"tm": -115.95,
+"early": true,
+"abil": 0,
+"e_tick": 4654,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.1,
+"reasons": [
+"no_elixir_after_slack",
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "00GYPYPYUQQY",
+"sim": [
+3,
+0
+],
+"eng": [
+2,
+1
+],
+"real": [
+3,
+2
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": false,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": false,
+"acc": 33,
+"rej": 0,
+"driven": 116,
+"delays": 0,
+"maxdelay": 0,
+"t": 139.5,
+"term": true,
+"tm": -145.75,
+"early": true,
+"abil": 2,
+"e_tick": 4803,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.1,
+"reasons": []
+},
+{
+"tag": "00JYPQQ8UCVL",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 47,
+"rej": 0,
+"driven": 99,
+"delays": 0,
+"maxdelay": 0,
+"t": 190.6,
+"term": true,
+"tm": -107.15,
+"early": true,
+"abil": 2,
+"e_tick": 6124,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.06,
+"reasons": []
+},
+{
+"tag": "00JYPQQ9V8UY",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 48,
+"rej": 0,
+"driven": 101,
+"delays": 2,
+"maxdelay": 14,
+"t": 180.1,
+"term": true,
+"tm": -114.3,
+"early": true,
+"abil": 3,
+"e_tick": 6116,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.06,
+"reasons": []
+},
+{
+"tag": "00JYPQYYV0JV",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": false,
+"acc": 51,
+"rej": 0,
+"driven": 104,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -93.45,
+"early": true,
+"abil": 3,
+"e_tick": 5235,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.13,
+"reasons": []
+},
+{
+"tag": "00LYPLCUGYJ2",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 56,
+"rej": 0,
+"driven": 131,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -118.45,
+"early": true,
+"abil": 2,
+"e_tick": 6116,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.09,
+"reasons": []
+},
+{
+"tag": "00LYPLCV08L9",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 53,
+"rej": 0,
+"driven": 106,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -113.55,
+"early": true,
+"abil": 2,
+"e_tick": 6138,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.04,
+"reasons": []
+},
+{
+"tag": "00LYPLCV92L0",
+"sim": [
+2,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": false,
+"acc": 43,
+"rej": 0,
+"driven": 102,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -118.5,
+"early": true,
+"abil": 3,
+"e_tick": 5156,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.05,
+"reasons": []
+},
+{
+"tag": "00LYPLCVPJR9",
+"sim": [
+3,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 52,
+"rej": 0,
+"driven": 56,
+"delays": 4,
+"maxdelay": 38,
+"t": 172.0,
+"term": true,
+"tm": -6.55,
+"early": true,
+"abil": 0,
+"e_tick": 3693,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.1,
+"reasons": []
+},
+{
+"tag": "00LYPLCVQRVY",
+"sim": [
+0,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 0,
+"e_clean": false,
+"acc": 125,
+"rej": 0,
+"driven": 125,
+"delays": 0,
+"maxdelay": 0,
+"t": 300.1,
+"term": true,
+"tm": 3.0,
+"early": false,
+"abil": 1,
+"e_tick": 6127,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.17,
+"reasons": []
+},
+{
+"tag": "00LYPLCVRCCV",
+"sim": [
+0,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 1,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 98,
+"rej": 0,
+"driven": 98,
+"delays": 0,
+"maxdelay": 0,
+"t": 300.1,
+"term": true,
+"tm": 55.95,
+"early": false,
+"abil": 2,
+"e_tick": 4822,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.1,
+"reasons": []
+},
+{
+"tag": "00LYPLJLC80L",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 79,
+"rej": 0,
+"driven": 93,
+"delays": 0,
+"maxdelay": 0,
+"t": 225.5,
+"term": true,
+"tm": -32.15,
+"early": true,
+"abil": 0,
+"e_tick": 5275,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.09,
+"reasons": []
+},
+{
+"tag": "00LYPLJLQ80J",
+"sim": [
+3,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 20,
+"rej": 0,
+"driven": 114,
+"delays": 0,
+"maxdelay": 0,
+"t": 91.1,
+"term": true,
+"tm": -206.65,
+"early": true,
+"abil": 0,
+"e_tick": 6149,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.05,
+"reasons": []
+},
+{
+"tag": "00LYPLJLRJ00",
+"sim": [
+3,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": false,
+"acc": 15,
+"rej": 0,
+"driven": 110,
+"delays": 0,
+"maxdelay": 0,
+"t": 71.8,
+"term": true,
+"tm": -225.1,
+"early": true,
+"abil": 0,
+"e_tick": 3681,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.04,
+"reasons": []
+},
+{
+"tag": "00LYPLJLYQCR",
+"sim": [
+3,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": false,
+"acc": 10,
+"rej": 1,
+"driven": 114,
+"delays": 0,
+"maxdelay": 0,
+"t": 47.5,
+"term": true,
+"tm": -251.15,
+"early": true,
+"abil": 0,
+"e_tick": 3681,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.04,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "00LYPLR0C8GJ",
+"sim": [
+2,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 63,
+"rej": 0,
+"driven": 138,
+"delays": 2,
+"maxdelay": 20,
+"t": 180.1,
+"term": true,
+"tm": -117.7,
+"early": true,
+"abil": 1,
+"e_tick": 6136,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.06,
+"reasons": []
+},
+{
+"tag": "00LYPLR200VU",
+"sim": [
+2,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 49,
+"rej": 0,
+"driven": 112,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -116.45,
+"early": true,
+"abil": 0,
+"e_tick": 6132,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.08,
+"reasons": []
+},
+{
+"tag": "00LYPLR222YQ",
+"sim": [
+3,
+0
+],
+"eng": [
+3,
+0
+],
+"real": [
+3,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 15,
+"rej": 0,
+"driven": 15,
+"delays": 0,
+"maxdelay": 0,
+"t": 112.6,
+"term": true,
+"tm": 14.95,
+"early": false,
+"abil": 0,
+"e_tick": 2304,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.03,
+"reasons": []
+},
+{
+"tag": "00LYPLU8C8JP",
+"sim": [
+0,
+3
+],
+"eng": [
+0,
+3
+],
+"real": [
+0,
+3
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 1,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 26,
+"rej": 0,
+"driven": 26,
+"delays": 0,
+"maxdelay": 0,
+"t": 142.7,
+"term": true,
+"tm": 13.15,
+"early": false,
+"abil": 1,
+"e_tick": 2897,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.04,
+"reasons": []
+},
+{
+"tag": "00LYPLU8VV0C",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 87,
+"rej": 0,
+"driven": 114,
+"delays": 0,
+"maxdelay": 0,
+"t": 256.6,
+"term": true,
+"tm": -41.5,
+"early": true,
+"abil": 1,
+"e_tick": 6130,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.15,
+"reasons": []
+},
+{
+"tag": "00LYPLU8YQVQ",
+"sim": [
+0,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 1,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 78,
+"rej": 1,
+"driven": 79,
+"delays": 0,
+"maxdelay": 0,
+"t": 300.1,
+"term": true,
+"tm": 71.55,
+"early": false,
+"abil": 3,
+"e_tick": 4993,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.17,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "00LYPQ28JL8Q",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 103,
+"rej": 0,
+"driven": 137,
+"delays": 1,
+"maxdelay": 4,
+"t": 255.6,
+"term": true,
+"tm": -41.6,
+"early": true,
+"abil": 1,
+"e_tick": 6028,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.17,
+"reasons": []
+},
+{
+"tag": "00LYPQ28PU22",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": false,
+"acc": 52,
+"rej": 0,
+"driven": 79,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -74.45,
+"early": true,
+"abil": 1,
+"e_tick": 3696,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.19,
+"reasons": []
+},
+{
+"tag": "00LYPQ2909YG",
+"sim": [
+0,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 1,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 72,
+"rej": 0,
+"driven": 72,
+"delays": 0,
+"maxdelay": 0,
+"t": 300.1,
+"term": true,
+"tm": 100.55,
+"early": false,
+"abil": 0,
+"e_tick": 4365,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.13,
+"reasons": []
+},
+{
+"tag": "00LYPQ8LGYP2",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 50,
+"rej": 0,
+"driven": 114,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -116.3,
+"early": true,
+"abil": 1,
+"e_tick": 6129,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.15,
+"reasons": []
+},
+{
+"tag": "00UYPL92ULUL",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 57,
+"rej": 0,
+"driven": 127,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -118.5,
+"early": true,
+"abil": 1,
+"e_tick": 6143,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.29,
+"reasons": []
+},
+{
+"tag": "00UYPL99P28R",
+"sim": [
+3,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 13,
+"rej": 0,
+"driven": 137,
+"delays": 0,
+"maxdelay": 0,
+"t": 51.0,
+"term": true,
+"tm": -245.55,
+"early": true,
+"abil": 0,
+"e_tick": 5879,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.03,
+"reasons": []
+},
+{
+"tag": "00UYPL99PV2P",
+"sim": [
+3,
+0
+],
+"eng": [
+3,
+0
+],
+"real": [
+3,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": false,
+"acc": 18,
+"rej": 1,
+"driven": 19,
+"delays": 0,
+"maxdelay": 0,
+"t": 90.2,
+"term": true,
+"tm": 8.55,
+"early": false,
+"abil": 0,
+"e_tick": 2171,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.06,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "00UYPL99UQCG",
+"sim": [
+2,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 65,
+"rej": 0,
+"driven": 125,
+"delays": 2,
+"maxdelay": 16,
+"t": 180.1,
+"term": true,
+"tm": -114.3,
+"early": true,
+"abil": 1,
+"e_tick": 6108,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.21,
+"reasons": []
+},
+{
+"tag": "00UYPL9P0VQL",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": false,
+"acc": 56,
+"rej": 0,
+"driven": 117,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -113.5,
+"early": true,
+"abil": 1,
+"e_tick": 4688,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.15,
+"reasons": []
+},
+{
+"tag": "00UYPLL0RLRQ",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 55,
+"rej": 0,
+"driven": 96,
+"delays": 0,
+"maxdelay": 0,
+"t": 210.2,
+"term": true,
+"tm": -79.85,
+"early": true,
+"abil": 1,
+"e_tick": 6108,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.13,
+"reasons": []
+},
+{
+"tag": "00UYPLLCLCJQ",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 55,
+"rej": 0,
+"driven": 106,
+"delays": 3,
+"maxdelay": 20,
+"t": 180.1,
+"term": true,
+"tm": -106.65,
+"early": true,
+"abil": 0,
+"e_tick": 5882,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.25,
+"reasons": []
+},
+{
+"tag": "00UYPLLGUP02",
+"sim": [
+0,
+1
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 1,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 51,
+"rej": 0,
+"driven": 115,
+"delays": 1,
+"maxdelay": 8,
+"t": 180.1,
+"term": true,
+"tm": -117.2,
+"early": true,
+"abil": 4,
+"e_tick": 6127,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.14,
+"reasons": []
+},
+{
+"tag": "00UYPLLGYCQ2",
+"sim": [
+2,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 52,
+"rej": 0,
+"driven": 85,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -74.95,
+"early": true,
+"abil": 0,
+"e_tick": 5187,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.21,
+"reasons": []
+},
+{
+"tag": "00UYPLLR2JVJ",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 76,
+"rej": 0,
+"driven": 118,
+"delays": 0,
+"maxdelay": 0,
+"t": 236.5,
+"term": true,
+"tm": -61.55,
+"early": true,
+"abil": 5,
+"e_tick": 5839,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.2,
+"reasons": []
+},
+{
+"tag": "00UYPLLU0C0L",
+"sim": [
+3,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 29,
+"rej": 0,
+"driven": 114,
+"delays": 0,
+"maxdelay": 0,
+"t": 137.1,
+"term": true,
+"tm": -160.5,
+"early": true,
+"abil": 1,
+"e_tick": 6131,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.17,
+"reasons": []
+},
+{
+"tag": "00UYPLLU8LYV",
+"sim": [
+3,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 37,
+"rej": 1,
+"driven": 85,
+"delays": 3,
+"maxdelay": 30,
+"t": 157.3,
+"term": true,
+"tm": -108.6,
+"early": true,
+"abil": 0,
+"e_tick": 5414,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.07,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "00UYPLLURY2U",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": false,
+"acc": 43,
+"rej": 0,
+"driven": 97,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -112.95,
+"early": true,
+"abil": 2,
+"e_tick": 3681,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.12,
+"reasons": []
+},
+{
+"tag": "00VYPLPJGYLY",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": false,
+"acc": 56,
+"rej": 0,
+"driven": 122,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -117.5,
+"early": true,
+"abil": 3,
+"e_tick": 5631,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.25,
+"reasons": []
+},
+{
+"tag": "00VYPLPJLC88",
+"sim": [
+2,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 44,
+"rej": 0,
+"driven": 106,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -118.0,
+"early": true,
+"abil": 1,
+"e_tick": 6116,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.11,
+"reasons": []
+},
+{
+"tag": "00VYPLPJRYRY",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": false,
+"acc": 61,
+"rej": 0,
+"driven": 65,
+"delays": 1,
+"maxdelay": 2,
+"t": 180.1,
+"term": true,
+"tm": -6.65,
+"early": true,
+"abil": 1,
+"e_tick": 3768,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.13,
+"reasons": []
+},
+{
+"tag": "020YPYL2LVU9",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 0,
+"e_clean": false,
+"acc": 72,
+"rej": 0,
+"driven": 90,
+"delays": 5,
+"maxdelay": 20,
+"t": 236.2,
+"term": true,
+"tm": -27.85,
+"early": true,
+"abil": 3,
+"e_tick": 5548,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.15,
+"reasons": []
+},
+{
+"tag": "020YPYL80RJY",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 48,
+"rej": 0,
+"driven": 90,
+"delays": 1,
+"maxdelay": 2,
+"t": 180.1,
+"term": true,
+"tm": -100.75,
+"early": true,
+"abil": 0,
+"e_tick": 5827,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.14,
+"reasons": []
+},
+{
+"tag": "020YPYL89Y8Y",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 51,
+"rej": 0,
+"driven": 107,
+"delays": 2,
+"maxdelay": 22,
+"t": 180.1,
+"term": true,
+"tm": -117.95,
+"early": true,
+"abil": 0,
+"e_tick": 6126,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.13,
+"reasons": []
+},
+{
+"tag": "020YPYL9CYUL",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 47,
+"rej": 0,
+"driven": 90,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -82.75,
+"early": true,
+"abil": 1,
+"e_tick": 5455,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.16,
+"reasons": []
+},
+{
+"tag": "020YPYL9R08C",
+"sim": [
+3,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+3,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": false,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": false,
+"acc": 22,
+"rej": 0,
+"driven": 22,
+"delays": 0,
+"maxdelay": 0,
+"t": 119.0,
+"term": true,
+"tm": 15.6,
+"early": false,
+"abil": 0,
+"e_tick": 3681,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.13,
+"reasons": []
+},
+{
+"tag": "020YPYL9VC0C",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 76,
+"rej": 0,
+"driven": 99,
+"delays": 20,
+"maxdelay": 36,
+"t": 228.9,
+"term": true,
+"tm": -38.7,
+"early": true,
+"abil": 1,
+"e_tick": 4572,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.25,
+"reasons": []
+},
+{
+"tag": "020YPYLLQUV0",
+"sim": [
+3,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 47,
+"rej": 1,
+"driven": 58,
+"delays": 0,
+"maxdelay": 0,
+"t": 172.1,
+"term": true,
+"tm": -38.45,
+"early": true,
+"abil": 1,
+"e_tick": 4355,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.17,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "020YPYLP8YR0",
+"sim": [
+2,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 50,
+"rej": 0,
+"driven": 104,
+"delays": 4,
+"maxdelay": 18,
+"t": 180.1,
+"term": true,
+"tm": -110.95,
+"early": true,
+"abil": 0,
+"e_tick": 6113,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.16,
+"reasons": []
+},
+{
+"tag": "020YPYLPPCPQ",
+"sim": [
+2,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 63,
+"rej": 0,
+"driven": 89,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -48.15,
+"early": true,
+"abil": 1,
+"e_tick": 4829,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.14,
+"reasons": []
+},
+{
+"tag": "020YPYLY29LP",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": false,
+"acc": 49,
+"rej": 0,
+"driven": 117,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -117.7,
+"early": true,
+"abil": 2,
+"e_tick": 5575,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.1,
+"reasons": []
+},
+{
+"tag": "020YPYP8J9PV",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 62,
+"rej": 1,
+"driven": 132,
+"delays": 0,
+"maxdelay": 0,
+"t": 189.8,
+"term": true,
+"tm": -108.45,
+"early": true,
+"abil": 1,
+"e_tick": 6090,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.18,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "020YPYQ0RRY0",
+"sim": [
+3,
+0
+],
+"eng": [
+3,
+0
+],
+"real": [
+3,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 14,
+"rej": 1,
+"driven": 43,
+"delays": 1,
+"maxdelay": 32,
+"t": 71.8,
+"term": true,
+"tm": -102.25,
+"early": true,
+"abil": 0,
+"e_tick": 3607,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.09,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "020YPYQ22GY2",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 47,
+"rej": 0,
+"driven": 84,
+"delays": 7,
+"maxdelay": 36,
+"t": 180.1,
+"term": true,
+"tm": -89.5,
+"early": true,
+"abil": 2,
+"e_tick": 5516,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.14,
+"reasons": []
+},
+{
+"tag": "020YPYYQG22L",
+"sim": [
+3,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+3,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": false,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": false,
+"acc": 5,
+"rej": 0,
+"driven": 5,
+"delays": 0,
+"maxdelay": 0,
+"t": 40.7,
+"term": true,
+"tm": 3.35,
+"early": false,
+"abil": 1,
+"e_tick": 3681,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.05,
+"reasons": []
+},
+{
+"tag": "020YPYYQQ8V8",
+"sim": [
+0,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 1,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 61,
+"rej": 0,
+"driven": 61,
+"delays": 2,
+"maxdelay": 16,
+"t": 300.1,
+"term": true,
+"tm": 74.95,
+"early": false,
+"abil": 2,
+"e_tick": 4594,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.19,
+"reasons": []
+},
+{
+"tag": "020YPYYR8Q0P",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 53,
+"rej": 0,
+"driven": 76,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -46.0,
+"early": true,
+"abil": 0,
+"e_tick": 4953,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.11,
+"reasons": []
+},
+{
+"tag": "020YPYYVJR0V",
+"sim": [
+3,
+0
+],
+"eng": [
+3,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": false,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": false,
+"acc": 13,
+"rej": 1,
+"driven": 57,
+"delays": 2,
+"maxdelay": 14,
+"t": 60.7,
+"term": true,
+"tm": -111.15,
+"early": true,
+"abil": 0,
+"e_tick": 3625,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.1,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "022YYL8R2GG0",
+"sim": [
+3,
+0
+],
+"eng": [
+3,
+1
+],
+"real": [
+3,
+1
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": false,
+"acc": 18,
+"rej": 0,
+"driven": 45,
+"delays": 0,
+"maxdelay": 0,
+"t": 86.0,
+"term": true,
+"tm": -86.05,
+"early": true,
+"abil": 0,
+"e_tick": 3392,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.13,
+"reasons": []
+},
+{
+"tag": "022YYL8YCYC8",
+"sim": [
+0,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 118,
+"rej": 0,
+"driven": 118,
+"delays": 0,
+"maxdelay": 0,
+"t": 300.1,
+"term": true,
+"tm": 3.25,
+"early": false,
+"abil": 3,
+"e_tick": 6135,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.31,
+"reasons": []
+},
+{
+"tag": "022YYLUUPYYV",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 50,
+"rej": 0,
+"driven": 112,
+"delays": 0,
+"maxdelay": 0,
+"t": 187.8,
+"term": true,
+"tm": -110.95,
+"early": true,
+"abil": 7,
+"e_tick": 6130,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.17,
+"reasons": []
+},
+{
+"tag": "022YYLV98PVR",
+"sim": [
+2,
+0
+],
+"eng": [
+3,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 52,
+"rej": 0,
+"driven": 108,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -117.8,
+"early": true,
+"abil": 0,
+"e_tick": 3586,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.16,
+"reasons": []
+},
+{
+"tag": "022YYLV9QLQJ",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 54,
+"rej": 0,
+"driven": 63,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -20.45,
+"early": true,
+"abil": 1,
+"e_tick": 6124,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.14,
+"reasons": []
+},
+{
+"tag": "022YYLV9V90G",
+"sim": [
+2,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 49,
+"rej": 0,
+"driven": 113,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -116.35,
+"early": true,
+"abil": 0,
+"e_tick": 6126,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.11,
+"reasons": []
+},
+{
+"tag": "022YYLV9YVJL",
+"sim": [
+0,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": false,
+"sim_w": 1,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 118,
+"rej": 1,
+"driven": 119,
+"delays": 3,
+"maxdelay": 34,
+"t": 300.1,
+"term": true,
+"tm": 3.5,
+"early": false,
+"abil": 4,
+"e_tick": 6010,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.27,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "022YYQ0RPYY2",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 53,
+"rej": 0,
+"driven": 104,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -111.45,
+"early": true,
+"abil": 0,
+"e_tick": 6129,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.12,
+"reasons": []
+},
+{
+"tag": "022YYQ22298V",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 46,
+"rej": 0,
+"driven": 46,
+"delays": 7,
+"maxdelay": 28,
+"t": 180.1,
+"term": true,
+"tm": 1.55,
+"early": false,
+"abil": 1,
+"e_tick": 3681,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.13,
+"reasons": []
+},
+{
+"tag": "022YYQ2G0LPV",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": false,
+"acc": 44,
+"rej": 0,
+"driven": 90,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -94.2,
+"early": true,
+"abil": 0,
+"e_tick": 4332,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.19,
+"reasons": []
+},
+{
+"tag": "022YYQ2QJRPV",
+"sim": [
+3,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 29,
+"rej": 0,
+"driven": 43,
+"delays": 0,
+"maxdelay": 0,
+"t": 139.8,
+"term": true,
+"tm": -36.75,
+"early": true,
+"abil": 3,
+"e_tick": 3681,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.1,
+"reasons": []
+},
+{
+"tag": "022YYQ92909Q",
+"sim": [
+3,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 44,
+"rej": 0,
+"driven": 104,
+"delays": 0,
+"maxdelay": 0,
+"t": 177.3,
+"term": true,
+"tm": -119.45,
+"early": true,
+"abil": 0,
+"e_tick": 6128,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.18,
+"reasons": []
+},
+{
+"tag": "022YYQL2QLUV",
+"sim": [
+3,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 61,
+"rej": 0,
+"driven": 61,
+"delays": 6,
+"maxdelay": 16,
+"t": 178.3,
+"term": true,
+"tm": 1.0,
+"early": false,
+"abil": 1,
+"e_tick": 3681,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.17,
+"reasons": []
+},
+{
+"tag": "022YYQL828PQ",
+"sim": [
+3,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": false,
+"acc": 29,
+"rej": 1,
+"driven": 81,
+"delays": 0,
+"maxdelay": 0,
+"t": 134.0,
+"term": true,
+"tm": -100.85,
+"early": true,
+"abil": 2,
+"e_tick": 4307,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.12,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "022YYQYV2C2J",
+"sim": [
+3,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 46,
+"rej": 1,
+"driven": 71,
+"delays": 2,
+"maxdelay": 16,
+"t": 161.9,
+"term": true,
+"tm": -41.8,
+"early": true,
+"abil": 1,
+"e_tick": 4697,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.24,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "022YYQYV9Y2R",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 62,
+"rej": 0,
+"driven": 129,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -112.05,
+"early": true,
+"abil": 2,
+"e_tick": 5975,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.15,
+"reasons": []
+},
+{
+"tag": "022YYYUC8VUJ",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 90,
+"rej": 0,
+"driven": 123,
+"delays": 0,
+"maxdelay": 0,
+"t": 253.7,
+"term": true,
+"tm": -43.5,
+"early": true,
+"abil": 1,
+"e_tick": 6121,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.4,
+"reasons": []
+},
+{
+"tag": "022YYYUCQR2V",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 54,
+"rej": 1,
+"driven": 83,
+"delays": 3,
+"maxdelay": 20,
+"t": 180.1,
+"term": true,
+"tm": -57.45,
+"early": true,
+"abil": 0,
+"e_tick": 4878,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.16,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "022YYYUCR9VJ",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 45,
+"rej": 1,
+"driven": 74,
+"delays": 1,
+"maxdelay": 6,
+"t": 180.1,
+"term": true,
+"tm": -70.2,
+"early": true,
+"abil": 0,
+"e_tick": 5553,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.18,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "022YYYUCVPR9",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 60,
+"rej": 0,
+"driven": 130,
+"delays": 2,
+"maxdelay": 2,
+"t": 180.1,
+"term": true,
+"tm": -116.7,
+"early": true,
+"abil": 1,
+"e_tick": 6112,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.1,
+"reasons": []
+},
+{
+"tag": "022YYYUU9LPG",
+"sim": [
+0,
+1
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 1,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": false,
+"acc": 95,
+"rej": 1,
+"driven": 121,
+"delays": 1,
+"maxdelay": 2,
+"t": 260.1,
+"term": true,
+"tm": -37.95,
+"early": true,
+"abil": 1,
+"e_tick": 3799,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.12,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "022YYYUUQGGJ",
+"sim": [
+2,
+1
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 43,
+"rej": 0,
+"driven": 91,
+"delays": 2,
+"maxdelay": 20,
+"t": 180.1,
+"term": true,
+"tm": -100.2,
+"early": true,
+"abil": 4,
+"e_tick": 4796,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.14,
+"reasons": []
+},
+{
+"tag": "022YYYUVGPUU",
+"sim": [
+3,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 46,
+"rej": 0,
+"driven": 99,
+"delays": 0,
+"maxdelay": 0,
+"t": 157.9,
+"term": true,
+"tm": -99.05,
+"early": true,
+"abil": 1,
+"e_tick": 5224,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.14,
+"reasons": []
+},
+{
+"tag": "022YYYVURLCJ",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 44,
+"rej": 1,
+"driven": 107,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -117.7,
+"early": true,
+"abil": 2,
+"e_tick": 6108,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.16,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "02GY9GJCR9P0",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 47,
+"rej": 0,
+"driven": 107,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -115.95,
+"early": true,
+"abil": 0,
+"e_tick": 6144,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.19,
+"reasons": []
+},
+{
+"tag": "02GY9GJGYJUV",
+"sim": [
+3,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 17,
+"rej": 1,
+"driven": 84,
+"delays": 0,
+"maxdelay": 0,
+"t": 91.5,
+"term": true,
+"tm": -168.4,
+"early": true,
+"abil": 0,
+"e_tick": 5390,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.1,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "02GY9GJJLR9Q",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": false,
+"acc": 50,
+"rej": 0,
+"driven": 56,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -12.1,
+"early": true,
+"abil": 3,
+"e_tick": 3759,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.12,
+"reasons": []
+},
+{
+"tag": "02GY9GJQU0UR",
+"sim": [
+0,
+1
+],
+"eng": [
+0,
+1
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": true,
+"sim_w": 1,
+"eng_w": 1,
+"real_w": 0,
+"e_clean": false,
+"acc": 56,
+"rej": 0,
+"driven": 133,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -117.05,
+"early": true,
+"abil": 3,
+"e_tick": 5691,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.1,
+"reasons": []
+},
+{
+"tag": "02GY9GJRPQ89",
+"sim": [
+2,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 45,
+"rej": 1,
+"driven": 107,
+"delays": 2,
+"maxdelay": 38,
+"t": 180.1,
+"term": true,
+"tm": -116.0,
+"early": true,
+"abil": 1,
+"e_tick": 6123,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.17,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "02GY9GJRQG2Q",
+"sim": [
+0,
+1
+],
+"eng": [
+0,
+3
+],
+"real": [
+0,
+3
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 1,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 7,
+"rej": 1,
+"driven": 8,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": 145.7,
+"early": false,
+"abil": 0,
+"e_tick": 1148,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.03,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "02GY9GJURY8G",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 52,
+"rej": 0,
+"driven": 69,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -46.65,
+"early": true,
+"abil": 1,
+"e_tick": 4684,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.1,
+"reasons": []
+},
+{
+"tag": "02GY9GJV00GV",
+"sim": [
+0,
+1
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 1,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 67,
+"rej": 0,
+"driven": 100,
+"delays": 1,
+"maxdelay": 8,
+"t": 180.1,
+"term": true,
+"tm": -68.55,
+"early": true,
+"abil": 0,
+"e_tick": 5059,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.15,
+"reasons": []
+},
+{
+"tag": "02GY9GJV8CVG",
+"sim": [
+3,
+1
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 119,
+"rej": 0,
+"driven": 119,
+"delays": 0,
+"maxdelay": 0,
+"t": 273.9,
+"term": true,
+"tm": 4.15,
+"early": false,
+"abil": 0,
+"e_tick": 5502,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.2,
+"reasons": []
+},
+{
+"tag": "02GY9GJVQGCQ",
+"sim": [
+3,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 35,
+"rej": 0,
+"driven": 141,
+"delays": 0,
+"maxdelay": 0,
+"t": 131.2,
+"term": true,
+"tm": -166.95,
+"early": true,
+"abil": 2,
+"e_tick": 6118,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.06,
+"reasons": []
+},
+{
+"tag": "02GY9GJVUP00",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": false,
+"acc": 51,
+"rej": 0,
+"driven": 113,
+"delays": 4,
+"maxdelay": 26,
+"t": 180.1,
+"term": true,
+"tm": -117.6,
+"early": true,
+"abil": 2,
+"e_tick": 3681,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.2,
+"reasons": []
+},
+{
+"tag": "02GY9GR902G8",
+"sim": [
+3,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 34,
+"rej": 0,
+"driven": 71,
+"delays": 0,
+"maxdelay": 0,
+"t": 135.6,
+"term": true,
+"tm": -85.15,
+"early": true,
+"abil": 0,
+"e_tick": 4536,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.1,
+"reasons": []
+},
+{
+"tag": "02JY9G00V9CJ",
+"sim": [
+3,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": false,
+"acc": 28,
+"rej": 1,
+"driven": 103,
+"delays": 1,
+"maxdelay": 28,
+"t": 133.2,
+"term": true,
+"tm": -160.75,
+"early": true,
+"abil": 0,
+"e_tick": 3985,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.09,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "02JY9G020C2U",
+"sim": [
+0,
+1
+],
+"eng": [
+0,
+3
+],
+"real": [
+0,
+3
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 1,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 35,
+"rej": 0,
+"driven": 35,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": 20.9,
+"early": false,
+"abil": 0,
+"e_tick": 3413,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.08,
+"reasons": []
+},
+{
+"tag": "02JY9G02LR0U",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 49,
+"rej": 0,
+"driven": 112,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -117.95,
+"early": true,
+"abil": 0,
+"e_tick": 6125,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.17,
+"reasons": []
+},
+{
+"tag": "02JY9G02UJL2",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": false,
+"acc": 52,
+"rej": 1,
+"driven": 115,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -118.55,
+"early": true,
+"abil": 0,
+"e_tick": 3681,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.26,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "02JY9G082QC2",
+"sim": [
+3,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 28,
+"rej": 0,
+"driven": 108,
+"delays": 0,
+"maxdelay": 0,
+"t": 134.7,
+"term": true,
+"tm": -162.15,
+"early": true,
+"abil": 3,
+"e_tick": 6121,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.1,
+"reasons": []
+},
+{
+"tag": "02JY9G08C0JV",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 48,
+"rej": 0,
+"driven": 105,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -117.85,
+"early": true,
+"abil": 0,
+"e_tick": 6153,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.11,
+"reasons": []
+},
+{
+"tag": "02JY9G08YCQG",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": false,
+"acc": 57,
+"rej": 0,
+"driven": 137,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -117.5,
+"early": true,
+"abil": 2,
+"e_tick": 3681,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.14,
+"reasons": []
+},
+{
+"tag": "02JY9G090029",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 50,
+"rej": 0,
+"driven": 114,
+"delays": 2,
+"maxdelay": 12,
+"t": 180.1,
+"term": true,
+"tm": -116.65,
+"early": true,
+"abil": 1,
+"e_tick": 6117,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.15,
+"reasons": []
+},
+{
+"tag": "02JY9G8LJPJV",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 54,
+"rej": 0,
+"driven": 113,
+"delays": 0,
+"maxdelay": 0,
+"t": 201.0,
+"term": true,
+"tm": -97.65,
+"early": true,
+"abil": 4,
+"e_tick": 6133,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.12,
+"reasons": []
+},
+{
+"tag": "02JY9G99CGPC",
+"sim": [
+1,
+0
+],
+"eng": [
+2,
+1
+],
+"real": [
+1,
+2
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 50,
+"rej": 2,
+"driven": 64,
+"delays": 1,
+"maxdelay": 22,
+"t": 180.1,
+"term": true,
+"tm": -26.6,
+"early": true,
+"abil": 1,
+"e_tick": 3833,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.16,
+"reasons": [
+"no_elixir_after_slack",
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "02JY9G99LY0L",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 47,
+"rej": 0,
+"driven": 107,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -116.95,
+"early": true,
+"abil": 0,
+"e_tick": 6137,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.12,
+"reasons": []
+},
+{
+"tag": "02JY9G99RPRU",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 84,
+"rej": 0,
+"driven": 114,
+"delays": 0,
+"maxdelay": 0,
+"t": 254.7,
+"term": true,
+"tm": -43.75,
+"early": true,
+"abil": 1,
+"e_tick": 6111,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.35,
+"reasons": []
+},
+{
+"tag": "02JY9G9PP92L",
+"sim": [
+0,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 123,
+"rej": 0,
+"driven": 123,
+"delays": 0,
+"maxdelay": 0,
+"t": 300.1,
+"term": true,
+"tm": 3.45,
+"early": false,
+"abil": 2,
+"e_tick": 6101,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.35,
+"reasons": []
+},
+{
+"tag": "02JY9GL00Q0C",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 64,
+"rej": 0,
+"driven": 110,
+"delays": 0,
+"maxdelay": 0,
+"t": 204.0,
+"term": true,
+"tm": -90.65,
+"early": true,
+"abil": 0,
+"e_tick": 6070,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.28,
+"reasons": []
+},
+{
+"tag": "02JY9GL09YJJ",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 70,
+"rej": 0,
+"driven": 113,
+"delays": 0,
+"maxdelay": 0,
+"t": 231.9,
+"term": true,
+"tm": -66.8,
+"early": true,
+"abil": 1,
+"e_tick": 6134,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.14,
+"reasons": []
+},
+{
+"tag": "02JY9GL22CYR",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 47,
+"rej": 0,
+"driven": 111,
+"delays": 2,
+"maxdelay": 4,
+"t": 180.1,
+"term": true,
+"tm": -117.6,
+"early": true,
+"abil": 0,
+"e_tick": 6140,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.09,
+"reasons": []
+},
+{
+"tag": "02JY9GL9VP9C",
+"sim": [
+3,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 24,
+"rej": 0,
+"driven": 47,
+"delays": 0,
+"maxdelay": 0,
+"t": 101.3,
+"term": true,
+"tm": -68.5,
+"early": true,
+"abil": 1,
+"e_tick": 3681,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.06,
+"reasons": []
+},
+{
+"tag": "02JY9GL9Y90C",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 50,
+"rej": 0,
+"driven": 113,
+"delays": 1,
+"maxdelay": 4,
+"t": 180.1,
+"term": true,
+"tm": -107.45,
+"early": true,
+"abil": 1,
+"e_tick": 6109,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.1,
+"reasons": []
+},
+{
+"tag": "02JY9GPPVPPG",
+"sim": [
+3,
+0
+],
+"eng": [
+3,
+0
+],
+"real": [
+3,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 17,
+"rej": 0,
+"driven": 17,
+"delays": 2,
+"maxdelay": 2,
+"t": 77.4,
+"term": true,
+"tm": 3.3,
+"early": false,
+"abil": 1,
+"e_tick": 1720,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.15,
+"reasons": []
+},
+{
+"tag": "02JY9GQY2VCU",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 51,
+"rej": 0,
+"driven": 112,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -115.95,
+"early": true,
+"abil": 0,
+"e_tick": 6144,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.13,
+"reasons": []
+},
+{
+"tag": "02JY9GQYCPCQ",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": false,
+"acc": 48,
+"rej": 0,
+"driven": 89,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -91.95,
+"early": true,
+"abil": 2,
+"e_tick": 5495,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.17,
+"reasons": []
+},
+{
+"tag": "02JY9GQYLVLV",
+"sim": [
+3,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 54,
+"rej": 0,
+"driven": 132,
+"delays": 0,
+"maxdelay": 0,
+"t": 174.5,
+"term": true,
+"tm": -123.3,
+"early": true,
+"abil": 1,
+"e_tick": 6122,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.14,
+"reasons": []
+},
+{
+"tag": "02JY9GYLJC9Y",
+"sim": [
+0,
+1
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": false,
+"sim_w": 1,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 73,
+"rej": 0,
+"driven": 125,
+"delays": 0,
+"maxdelay": 0,
+"t": 218.9,
+"term": true,
+"tm": -77.65,
+"early": true,
+"abil": 5,
+"e_tick": 6108,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.21,
+"reasons": []
+},
+{
+"tag": "02JY9GYQ0Q9G",
+"sim": [
+2,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 58,
+"rej": 0,
+"driven": 87,
+"delays": 3,
+"maxdelay": 24,
+"t": 180.1,
+"term": true,
+"tm": -58.45,
+"early": true,
+"abil": 0,
+"e_tick": 5047,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.1,
+"reasons": []
+},
+{
+"tag": "02JY9GYQ89QY",
+"sim": [
+3,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+3,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": false,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": false,
+"acc": 9,
+"rej": 0,
+"driven": 10,
+"delays": 2,
+"maxdelay": 26,
+"t": 40.2,
+"term": true,
+"tm": -11.65,
+"early": true,
+"abil": 1,
+"e_tick": 3681,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.08,
+"reasons": []
+},
+{
+"tag": "02LY9LJV20Q9",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": false,
+"acc": 89,
+"rej": 0,
+"driven": 89,
+"delays": 0,
+"maxdelay": 0,
+"t": 292.9,
+"term": true,
+"tm": 11.05,
+"early": false,
+"abil": 6,
+"e_tick": 5560,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.27,
+"reasons": []
+},
+{
+"tag": "02LY9LJV8Q0C",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 97,
+"rej": 0,
+"driven": 104,
+"delays": 0,
+"maxdelay": 0,
+"t": 259.1,
+"term": true,
+"tm": -6.95,
+"early": true,
+"abil": 3,
+"e_tick": 5465,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.25,
+"reasons": []
+},
+{
+"tag": "02QY9Q8VCCYQ",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 48,
+"rej": 1,
+"driven": 102,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -116.0,
+"early": true,
+"abil": 2,
+"e_tick": 6138,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.13,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "02QY9Q8VGVGQ",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 64,
+"rej": 0,
+"driven": 132,
+"delays": 2,
+"maxdelay": 18,
+"t": 194.1,
+"term": true,
+"tm": -102.05,
+"early": true,
+"abil": 2,
+"e_tick": 6106,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.19,
+"reasons": []
+},
+{
+"tag": "02QY9Q900RQL",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 50,
+"rej": 0,
+"driven": 116,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -118.3,
+"early": true,
+"abil": 1,
+"e_tick": 6112,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.2,
+"reasons": []
+},
+{
+"tag": "02QY9Q90JPCL",
+"sim": [
+2,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 44,
+"rej": 0,
+"driven": 107,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -117.7,
+"early": true,
+"abil": 0,
+"e_tick": 6131,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.12,
+"reasons": []
+},
+{
+"tag": "02QY9Q90QQ9V",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 0,
+"e_clean": false,
+"acc": 52,
+"rej": 0,
+"driven": 114,
+"delays": 4,
+"maxdelay": 32,
+"t": 180.1,
+"term": true,
+"tm": -117.8,
+"early": true,
+"abil": 1,
+"e_tick": 6123,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.13,
+"reasons": []
+},
+{
+"tag": "02QY9Q90VQ02",
+"sim": [
+3,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 0,
+"e_clean": false,
+"acc": 39,
+"rej": 0,
+"driven": 52,
+"delays": 0,
+"maxdelay": 0,
+"t": 169.3,
+"term": true,
+"tm": -29.75,
+"early": true,
+"abil": 0,
+"e_tick": 4392,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.19,
+"reasons": []
+},
+{
+"tag": "02QY9Q928Y8C",
+"sim": [
+0,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 1,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": false,
+"acc": 109,
+"rej": 1,
+"driven": 110,
+"delays": 2,
+"maxdelay": 30,
+"t": 300.1,
+"term": true,
+"tm": 4.0,
+"early": false,
+"abil": 3,
+"e_tick": 4964,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.23,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "02QY9Q92CGV0",
+"sim": [
+3,
+0
+],
+"eng": [
+3,
+0
+],
+"real": [
+3,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 19,
+"rej": 1,
+"driven": 20,
+"delays": 1,
+"maxdelay": 20,
+"t": 101.6,
+"term": true,
+"tm": 8.7,
+"early": false,
+"abil": 1,
+"e_tick": 2087,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.08,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "02QY9Q92QPGC",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 59,
+"rej": 0,
+"driven": 60,
+"delays": 0,
+"maxdelay": 0,
+"t": 211.4,
+"term": true,
+"tm": -0.3,
+"early": true,
+"abil": 3,
+"e_tick": 4364,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.19,
+"reasons": []
+},
+{
+"tag": "02QY9Q980YV0",
+"sim": [
+0,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 94,
+"rej": 0,
+"driven": 94,
+"delays": 0,
+"maxdelay": 0,
+"t": 300.1,
+"term": true,
+"tm": 1.85,
+"early": false,
+"abil": 2,
+"e_tick": 6143,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.27,
+"reasons": []
+},
+{
+"tag": "02QY9Q98C0J8",
+"sim": [
+3,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 15,
+"rej": 1,
+"driven": 111,
+"delays": 0,
+"maxdelay": 0,
+"t": 71.5,
+"term": true,
+"tm": -226.2,
+"early": true,
+"abil": 0,
+"e_tick": 6121,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.04,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "02QY9Q9L9CLL",
+"sim": [
+3,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 45,
+"rej": 0,
+"driven": 124,
+"delays": 1,
+"maxdelay": 10,
+"t": 163.1,
+"term": true,
+"tm": -133.45,
+"early": true,
+"abil": 1,
+"e_tick": 6117,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.21,
+"reasons": []
+},
+{
+"tag": "02QY9Q9LCCQQ",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 46,
+"rej": 0,
+"driven": 71,
+"delays": 3,
+"maxdelay": 14,
+"t": 180.1,
+"term": true,
+"tm": -62.8,
+"early": true,
+"abil": 0,
+"e_tick": 4963,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.13,
+"reasons": []
+},
+{
+"tag": "02QY9Q9P0CRP",
+"sim": [
+3,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 38,
+"rej": 0,
+"driven": 57,
+"delays": 2,
+"maxdelay": 8,
+"t": 137.3,
+"term": true,
+"tm": -44.25,
+"early": true,
+"abil": 0,
+"e_tick": 6107,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.1,
+"reasons": []
+},
+{
+"tag": "02QY9Q9PCGCP",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+2
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 44,
+"rej": 1,
+"driven": 108,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -116.8,
+"early": true,
+"abil": 2,
+"e_tick": 3744,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.18,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "02QY9Q9PY29C",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": false,
+"acc": 72,
+"rej": 0,
+"driven": 102,
+"delays": 0,
+"maxdelay": 0,
+"t": 247.8,
+"term": true,
+"tm": -49.4,
+"early": true,
+"abil": 7,
+"e_tick": 5337,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.22,
+"reasons": []
+},
+{
+"tag": "02QY9Q9YY089",
+"sim": [
+2,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 44,
+"rej": 0,
+"driven": 95,
+"delays": 2,
+"maxdelay": 26,
+"t": 180.1,
+"term": true,
+"tm": -99.6,
+"early": true,
+"abil": 1,
+"e_tick": 5692,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.19,
+"reasons": []
+},
+{
+"tag": "082Y8Q0CRU92",
+"sim": [
+0,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 1,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 118,
+"rej": 0,
+"driven": 118,
+"delays": 1,
+"maxdelay": 22,
+"t": 300.1,
+"term": true,
+"tm": 2.05,
+"early": false,
+"abil": 0,
+"e_tick": 6127,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.23,
+"reasons": []
+},
+{
+"tag": "088Y88LLCJRY",
+"sim": [
+0,
+1
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 1,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 68,
+"rej": 0,
+"driven": 142,
+"delays": 2,
+"maxdelay": 12,
+"t": 180.1,
+"term": true,
+"tm": -116.85,
+"early": true,
+"abil": 0,
+"e_tick": 6135,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.21,
+"reasons": []
+},
+{
+"tag": "088Y88LQYJ00",
+"sim": [
+3,
+0
+],
+"eng": [
+3,
+0
+],
+"real": [
+3,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 20,
+"rej": 0,
+"driven": 20,
+"delays": 0,
+"maxdelay": 0,
+"t": 144.4,
+"term": true,
+"tm": 8.55,
+"early": false,
+"abil": 0,
+"e_tick": 2917,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.04,
+"reasons": []
+},
+{
+"tag": "08CPVR8P2JPV",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 0,
+"e_clean": false,
+"acc": 61,
+"rej": 0,
+"driven": 140,
+"delays": 2,
+"maxdelay": 34,
+"t": 180.1,
+"term": true,
+"tm": -117.45,
+"early": true,
+"abil": 2,
+"e_tick": 5981,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.13,
+"reasons": []
+},
+{
+"tag": "08CPVRQ9JCLR",
+"sim": [
+3,
+0
+],
+"eng": [
+1,
+2
+],
+"real": [
+1,
+2
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 17,
+"rej": 0,
+"driven": 54,
+"delays": 0,
+"maxdelay": 0,
+"t": 73.4,
+"term": true,
+"tm": -103.0,
+"early": true,
+"abil": 0,
+"e_tick": 6087,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.09,
+"reasons": []
+},
+{
+"tag": "08CPVRQ9RQUY",
+"sim": [
+0,
+1
+],
+"eng": [
+0,
+3
+],
+"real": [
+0,
+3
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 1,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 27,
+"rej": 0,
+"driven": 27,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": 37.95,
+"early": false,
+"abil": 0,
+"e_tick": 3008,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.06,
+"reasons": []
+},
+{
+"tag": "08CPVRQPJLPG",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 54,
+"rej": 0,
+"driven": 122,
+"delays": 2,
+"maxdelay": 32,
+"t": 180.1,
+"term": true,
+"tm": -116.7,
+"early": true,
+"abil": 1,
+"e_tick": 6119,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.26,
+"reasons": []
+},
+{
+"tag": "08CPVRRCJY0J",
+"sim": [
+0,
+3
+],
+"eng": [
+0,
+3
+],
+"real": [
+0,
+3
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 1,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 18,
+"rej": 0,
+"driven": 18,
+"delays": 0,
+"maxdelay": 0,
+"t": 127.7,
+"term": true,
+"tm": 15.65,
+"early": false,
+"abil": 1,
+"e_tick": 2450,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.05,
+"reasons": []
+},
+{
+"tag": "08CPVRRCV922",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 45,
+"rej": 0,
+"driven": 69,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -61.8,
+"early": true,
+"abil": 2,
+"e_tick": 5047,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.1,
+"reasons": []
+},
+{
+"tag": "08CPVRRJ9C2L",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 55,
+"rej": 0,
+"driven": 131,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -117.5,
+"early": true,
+"abil": 1,
+"e_tick": 6132,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.11,
+"reasons": []
+},
+{
+"tag": "08CPVRRR8PYC",
+"sim": [
+0,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 1,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 54,
+"rej": 0,
+"driven": 54,
+"delays": 0,
+"maxdelay": 0,
+"t": 300.1,
+"term": true,
+"tm": 111.95,
+"early": false,
+"abil": 0,
+"e_tick": 3887,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.11,
+"reasons": []
+},
+{
+"tag": "08CPVRRRC0P8",
+"sim": [
+0,
+1
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 1,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 46,
+"rej": 0,
+"driven": 46,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": 1.8,
+"early": false,
+"abil": 2,
+"e_tick": 3681,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.11,
+"reasons": []
+},
+{
+"tag": "08CPVRRU8VCQ",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 60,
+"rej": 0,
+"driven": 67,
+"delays": 1,
+"maxdelay": 12,
+"t": 195.9,
+"term": true,
+"tm": -12.25,
+"early": true,
+"abil": 0,
+"e_tick": 6092,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.24,
+"reasons": []
+},
+{
+"tag": "08CPVRRUR90G",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 0,
+"e_clean": false,
+"acc": 45,
+"rej": 0,
+"driven": 45,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": 4.45,
+"early": false,
+"abil": 1,
+"e_tick": 6106,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.14,
+"reasons": []
+},
+{
+"tag": "08CPVRRUYG00",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 56,
+"rej": 0,
+"driven": 88,
+"delays": 4,
+"maxdelay": 8,
+"t": 180.1,
+"term": true,
+"tm": -68.75,
+"early": true,
+"abil": 1,
+"e_tick": 5096,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.1,
+"reasons": []
+},
+{
+"tag": "08LY80VC29RV",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 71,
+"rej": 0,
+"driven": 71,
+"delays": 4,
+"maxdelay": 6,
+"t": 223.7,
+"term": true,
+"tm": 6.85,
+"early": false,
+"abil": 4,
+"e_tick": 4221,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.13,
+"reasons": []
+},
+{
+"tag": "08PY88PC88QV",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 66,
+"rej": 1,
+"driven": 135,
+"delays": 0,
+"maxdelay": 0,
+"t": 196.7,
+"term": true,
+"tm": -99.7,
+"early": true,
+"abil": 1,
+"e_tick": 6144,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.15,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "08PY88PCQ9C2",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 53,
+"rej": 0,
+"driven": 70,
+"delays": 0,
+"maxdelay": 0,
+"t": 205.8,
+"term": true,
+"tm": -48.85,
+"early": true,
+"abil": 1,
+"e_tick": 5282,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.15,
+"reasons": []
+},
+{
+"tag": "08PY88PCV0JQ",
+"sim": [
+3,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 37,
+"rej": 0,
+"driven": 104,
+"delays": 0,
+"maxdelay": 0,
+"t": 157.2,
+"term": true,
+"tm": -140.4,
+"early": true,
+"abil": 1,
+"e_tick": 5781,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.14,
+"reasons": []
+},
+{
+"tag": "08PY88PJYJUR",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 57,
+"rej": 1,
+"driven": 114,
+"delays": 1,
+"maxdelay": 14,
+"t": 195.0,
+"term": true,
+"tm": -103.65,
+"early": true,
+"abil": 3,
+"e_tick": 6134,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.13,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "08PY88PQV2YV",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 68,
+"rej": 0,
+"driven": 106,
+"delays": 0,
+"maxdelay": 0,
+"t": 233.4,
+"term": true,
+"tm": -62.65,
+"early": true,
+"abil": 1,
+"e_tick": 4282,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.26,
+"reasons": []
+},
+{
+"tag": "08PY88PR0LJY",
+"sim": [
+0,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": false,
+"acc": 109,
+"rej": 0,
+"driven": 109,
+"delays": 0,
+"maxdelay": 0,
+"t": 300.1,
+"term": true,
+"tm": 11.9,
+"early": false,
+"abil": 3,
+"e_tick": 5805,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.26,
+"reasons": []
+},
+{
+"tag": "08PY88PRLJCQ",
+"sim": [
+3,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 47,
+"rej": 0,
+"driven": 105,
+"delays": 0,
+"maxdelay": 0,
+"t": 175.6,
+"term": true,
+"tm": -119.45,
+"early": true,
+"abil": 0,
+"e_tick": 6118,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.14,
+"reasons": []
+},
+{
+"tag": "08PY88PRRPY2",
+"sim": [
+3,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 0,
+"e_clean": false,
+"acc": 17,
+"rej": 1,
+"driven": 104,
+"delays": 1,
+"maxdelay": 28,
+"t": 84.0,
+"term": true,
+"tm": -209.15,
+"early": true,
+"abil": 0,
+"e_tick": 6105,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.07,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "08PY88PUQVCU",
+"sim": [
+2,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 43,
+"rej": 1,
+"driven": 105,
+"delays": 3,
+"maxdelay": 28,
+"t": 180.1,
+"term": true,
+"tm": -118.55,
+"early": true,
+"abil": 1,
+"e_tick": 6130,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.17,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "08PY88PUY9YP",
+"sim": [
+1,
+0
+],
+"eng": [
+3,
+0
+],
+"real": [
+3,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 40,
+"rej": 1,
+"driven": 41,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": 19.4,
+"early": false,
+"abil": 1,
+"e_tick": 3424,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.07,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "08QPVCPC2VCU",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 56,
+"rej": 0,
+"driven": 118,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -111.75,
+"early": true,
+"abil": 0,
+"e_tick": 6087,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.16,
+"reasons": []
+},
+{
+"tag": "08QPVCPC9QQU",
+"sim": [
+3,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 13,
+"rej": 1,
+"driven": 62,
+"delays": 3,
+"maxdelay": 40,
+"t": 39.6,
+"term": true,
+"tm": -137.3,
+"early": true,
+"abil": 0,
+"e_tick": 3681,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.06,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "08QPVCPCG8L9",
+"sim": [
+3,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 26,
+"rej": 0,
+"driven": 66,
+"delays": 0,
+"maxdelay": 0,
+"t": 125.6,
+"term": true,
+"tm": -112.75,
+"early": true,
+"abil": 0,
+"e_tick": 4875,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.11,
+"reasons": []
+},
+{
+"tag": "08QPVCPCVGVJ",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 46,
+"rej": 0,
+"driven": 51,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -7.7,
+"early": true,
+"abil": 1,
+"e_tick": 3681,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.12,
+"reasons": []
+},
+{
+"tag": "08QPVCPCYU2U",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 50,
+"rej": 0,
+"driven": 101,
+"delays": 0,
+"maxdelay": 0,
+"t": 181.3,
+"term": true,
+"tm": -106.65,
+"early": true,
+"abil": 3,
+"e_tick": 5918,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.24,
+"reasons": []
+},
+{
+"tag": "08QPVCPU28C0",
+"sim": [
+3,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 0,
+"e_clean": false,
+"acc": 42,
+"rej": 0,
+"driven": 54,
+"delays": 0,
+"maxdelay": 0,
+"t": 162.9,
+"term": true,
+"tm": -25.15,
+"early": true,
+"abil": 4,
+"e_tick": 3877,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.11,
+"reasons": []
+},
+{
+"tag": "08QPVCPULY0V",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 86,
+"rej": 0,
+"driven": 129,
+"delays": 0,
+"maxdelay": 0,
+"t": 221.5,
+"term": true,
+"tm": -70.9,
+"early": true,
+"abil": 0,
+"e_tick": 5959,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.17,
+"reasons": []
+},
+{
+"tag": "08YY892LJCG9",
+"sim": [
+0,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 1,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 42,
+"rej": 0,
+"driven": 42,
+"delays": 0,
+"maxdelay": 0,
+"t": 300.1,
+"term": true,
+"tm": 123.95,
+"early": false,
+"abil": 5,
+"e_tick": 3681,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.16,
+"reasons": []
+},
+{
+"tag": "08YY892P8Q98",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 0,
+"e_clean": false,
+"acc": 50,
+"rej": 0,
+"driven": 118,
+"delays": 5,
+"maxdelay": 22,
+"t": 180.1,
+"term": true,
+"tm": -117.95,
+"early": true,
+"abil": 1,
+"e_tick": 6139,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.27,
+"reasons": []
+},
+{
+"tag": "08YY892V8QUU",
+"sim": [
+0,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": false,
+"acc": 72,
+"rej": 0,
+"driven": 72,
+"delays": 0,
+"maxdelay": 0,
+"t": 300.1,
+"term": true,
+"tm": 56.45,
+"early": false,
+"abil": 1,
+"e_tick": 4599,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.22,
+"reasons": []
+},
+{
+"tag": "08YY89822YRQ",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 45,
+"rej": 0,
+"driven": 110,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -118.85,
+"early": true,
+"abil": 0,
+"e_tick": 6128,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.17,
+"reasons": []
+},
+{
+"tag": "08YY8988C0QC",
+"sim": [
+3,
+0
+],
+"eng": [
+3,
+0
+],
+"real": [
+3,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 29,
+"rej": 0,
+"driven": 29,
+"delays": 0,
+"maxdelay": 0,
+"t": 151.3,
+"term": true,
+"tm": 4.05,
+"early": false,
+"abil": 3,
+"e_tick": 3120,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.1,
+"reasons": []
+},
+{
+"tag": "08YY8988V9JL",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 100,
+"rej": 0,
+"driven": 103,
+"delays": 0,
+"maxdelay": 0,
+"t": 264.4,
+"term": true,
+"tm": -2.15,
+"early": true,
+"abil": 0,
+"e_tick": 5461,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.25,
+"reasons": []
+},
+{
+"tag": "08YY8989P8J2",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 48,
+"rej": 0,
+"driven": 105,
+"delays": 1,
+"maxdelay": 8,
+"t": 180.1,
+"term": true,
+"tm": -116.8,
+"early": true,
+"abil": 0,
+"e_tick": 6143,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.11,
+"reasons": []
+},
+{
+"tag": "08YY898L28JL",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 101,
+"rej": 0,
+"driven": 110,
+"delays": 0,
+"maxdelay": 0,
+"t": 288.5,
+"term": true,
+"tm": -8.75,
+"early": true,
+"abil": 4,
+"e_tick": 6139,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.19,
+"reasons": []
+},
+{
+"tag": "08YY898L9JLC",
+"sim": [
+3,
+0
+],
+"eng": [
+2,
+0
+],
+"real": [
+2,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 41,
+"rej": 0,
+"driven": 41,
+"delays": 1,
+"maxdelay": 12,
+"t": 177.8,
+"term": true,
+"tm": 4.25,
+"early": false,
+"abil": 1,
+"e_tick": 3681,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.11,
+"reasons": []
+},
+{
+"tag": "08YY898LQL9V",
+"sim": [
+0,
+1
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 1,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": false,
+"acc": 89,
+"rej": 0,
+"driven": 116,
+"delays": 0,
+"maxdelay": 0,
+"t": 250.4,
+"term": true,
+"tm": -37.65,
+"early": true,
+"abil": 7,
+"e_tick": 5791,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.21,
+"reasons": []
+},
+{
+"tag": "08YY898LU88C",
+"sim": [
+2,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 57,
+"rej": 0,
+"driven": 106,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -94.6,
+"early": true,
+"abil": 3,
+"e_tick": 5687,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.12,
+"reasons": []
+},
+{
+"tag": "08YY898LY8G8",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 58,
+"rej": 0,
+"driven": 62,
+"delays": 0,
+"maxdelay": 0,
+"t": 188.3,
+"term": true,
+"tm": -15.45,
+"early": true,
+"abil": 2,
+"e_tick": 4298,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.3,
+"reasons": []
+},
+{
+"tag": "08YY898PPLJ9",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 64,
+"rej": 0,
+"driven": 141,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -117.65,
+"early": true,
+"abil": 0,
+"e_tick": 6130,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.14,
+"reasons": []
+},
+{
+"tag": "08YY898Q09RY",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 77,
+"rej": 0,
+"driven": 100,
+"delays": 0,
+"maxdelay": 0,
+"t": 264.8,
+"term": true,
+"tm": -32.4,
+"early": true,
+"abil": 0,
+"e_tick": 6112,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.15,
+"reasons": []
+},
+{
+"tag": "08YY898QYRPP",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 0,
+"e_clean": false,
+"acc": 51,
+"rej": 0,
+"driven": 61,
+"delays": 1,
+"maxdelay": 8,
+"t": 180.1,
+"term": true,
+"tm": -20.2,
+"early": true,
+"abil": 3,
+"e_tick": 3681,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.3,
+"reasons": []
+},
+{
+"tag": "08YY898YJ8LY",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 55,
+"rej": 0,
+"driven": 127,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -118.55,
+"early": true,
+"abil": 4,
+"e_tick": 3681,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.19,
+"reasons": []
+},
+{
+"tag": "092PPVPCRCPC",
+"sim": [
+0,
+1
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": false,
+"sim_w": 1,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 52,
+"rej": 0,
+"driven": 123,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -117.3,
+"early": true,
+"abil": 2,
+"e_tick": 6095,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.14,
+"reasons": []
+},
+{
+"tag": "092PPVPCU9LL",
+"sim": [
+2,
+1
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 76,
+"rej": 0,
+"driven": 100,
+"delays": 0,
+"maxdelay": 0,
+"t": 220.8,
+"term": true,
+"tm": -38.9,
+"early": true,
+"abil": 0,
+"e_tick": 3955,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.26,
+"reasons": []
+},
+{
+"tag": "092PPVPU00LV",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 60,
+"rej": 0,
+"driven": 60,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": 5.05,
+"early": false,
+"abil": 1,
+"e_tick": 3781,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.32,
+"reasons": []
+},
+{
+"tag": "092PPVPUY8PG",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 51,
+"rej": 1,
+"driven": 88,
+"delays": 2,
+"maxdelay": 12,
+"t": 180.1,
+"term": true,
+"tm": -77.75,
+"early": true,
+"abil": 1,
+"e_tick": 5264,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.11,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "092PPVPV8PRJ",
+"sim": [
+3,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 53,
+"rej": 0,
+"driven": 64,
+"delays": 0,
+"maxdelay": 0,
+"t": 165.5,
+"term": true,
+"tm": -19.65,
+"early": true,
+"abil": 1,
+"e_tick": 3946,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.13,
+"reasons": []
+},
+{
+"tag": "092PPVPVRCYP",
+"sim": [
+3,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 50,
+"rej": 1,
+"driven": 138,
+"delays": 2,
+"maxdelay": 22,
+"t": 155.4,
+"term": true,
+"tm": -135.8,
+"early": true,
+"abil": 0,
+"e_tick": 5928,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.14,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "092PPVPVULCU",
+"sim": [
+2,
+1
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 52,
+"rej": 0,
+"driven": 124,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -118.25,
+"early": true,
+"abil": 0,
+"e_tick": 6130,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.17,
+"reasons": []
+},
+{
+"tag": "092PPVY0J0J8",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 49,
+"rej": 0,
+"driven": 112,
+"delays": 3,
+"maxdelay": 30,
+"t": 180.1,
+"term": true,
+"tm": -117.95,
+"early": true,
+"abil": 1,
+"e_tick": 6107,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.2,
+"reasons": []
+},
+{
+"tag": "092PPVY0Q0CR",
+"sim": [
+3,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 43,
+"rej": 0,
+"driven": 116,
+"delays": 0,
+"maxdelay": 0,
+"t": 162.0,
+"term": true,
+"tm": -136.05,
+"early": true,
+"abil": 0,
+"e_tick": 6106,
+"e_reason": "native_tiebreak_hp_drain",
+"sim_secs": 0.09,
+"reasons": []
+},
+{
+"tag": "092PPVY29Q2V",
+"sim": [
+1,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 48,
+"rej": 1,
+"driven": 97,
+"delays": 2,
+"maxdelay": 40,
+"t": 180.1,
+"term": true,
+"tm": -101.7,
+"early": true,
+"abil": 0,
+"e_tick": 5799,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.11,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "092PPVY2CGG8",
+"sim": [
+3,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": false,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 25,
+"rej": 1,
+"driven": 65,
+"delays": 0,
+"maxdelay": 0,
+"t": 97.1,
+"term": true,
+"tm": -81.95,
+"early": true,
+"abil": 0,
+"e_tick": 3698,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.12,
+"reasons": [
+"no_elixir_after_slack"
+]
+},
+{
+"tag": "092PPVY2RCUL",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": false,
+"eng_wm": false,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 1,
+"e_clean": false,
+"acc": 48,
+"rej": 0,
+"driven": 48,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": 0.7,
+"early": false,
+"abil": 2,
+"e_tick": 4137,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.09,
+"reasons": []
+},
+{
+"tag": "092PPVY8298U",
+"sim": [
+2,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 42,
+"rej": 0,
+"driven": 78,
+"delays": 0,
+"maxdelay": 0,
+"t": 180.1,
+"term": true,
+"tm": -81.45,
+"early": true,
+"abil": 1,
+"e_tick": 5357,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.13,
+"reasons": []
+},
+{
+"tag": "092PPVY899LL",
+"sim": [
+3,
+0
+],
+"eng": [
+0,
+1
+],
+"real": [
+0,
+1
+],
+"sim_cm": false,
+"sim_wm": false,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": false,
+"sim_w": 0,
+"eng_w": 1,
+"real_w": 1,
+"e_clean": true,
+"acc": 49,
+"rej": 0,
+"driven": 83,
+"delays": 0,
+"maxdelay": 0,
+"t": 170.9,
+"term": true,
+"tm": -67.15,
+"early": true,
+"abil": 3,
+"e_tick": 4833,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.09,
+"reasons": []
+},
+{
+"tag": "092PPVY8PV90",
+"sim": [
+1,
+0
+],
+"eng": [
+1,
+0
+],
+"real": [
+1,
+0
+],
+"sim_cm": true,
+"sim_wm": true,
+"eng_cm": true,
+"eng_wm": true,
+"sim_eng_cm": true,
+"sim_w": 0,
+"eng_w": 0,
+"real_w": 0,
+"e_clean": true,
+"acc": 49,
+"rej": 0,
+"driven": 49,
+"delays": 0,
+"maxdelay": 0,
+"t": 183.7,
+"term": true,
+"tm": 12.35,
+"early": false,
+"abil": 2,
+"e_tick": 3781,
+"e_reason": "native_logic_clock_stopped",
+"sim_secs": 0.23,
+"reasons": []
+}
+]

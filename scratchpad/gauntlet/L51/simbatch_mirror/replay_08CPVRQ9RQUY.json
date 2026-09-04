@@ -1,0 +1,414 @@
+{
+ "tag": "08CPVRQ9RQUY",
+ "level": 11,
+ "sub_dt": 0.1,
+ "expected": {
+  "crowns_by_side": [
+   3,
+   0
+  ],
+  "winner": 0,
+  "result_col": "win"
+ },
+ "final": {
+  "t": 168.8,
+  "terminated": true,
+  "outcome_team0": "win",
+  "crowns": [
+   3,
+   0
+  ],
+  "winner": 0,
+  "towers": [
+   {
+    "side": 0,
+    "type": "princess",
+    "hp": 2711,
+    "max_hp": 3052,
+    "destroyed": false
+   },
+   {
+    "side": 0,
+    "type": "princess",
+    "hp": 3052,
+    "max_hp": 3052,
+    "destroyed": false
+   },
+   {
+    "side": 0,
+    "type": "king",
+    "hp": 4824,
+    "max_hp": 4824,
+    "destroyed": false
+   },
+   {
+    "side": 1,
+    "type": "princess",
+    "hp": 3052,
+    "max_hp": 3052,
+    "destroyed": false
+   },
+   {
+    "side": 1,
+    "type": "princess",
+    "hp": 0,
+    "max_hp": 3052,
+    "destroyed": true
+   },
+   {
+    "side": 1,
+    "type": "king",
+    "hp": 0,
+    "max_hp": 4824,
+    "destroyed": true
+   }
+  ],
+  "elixir": [
+   10.0,
+   10.0
+  ]
+ },
+ "grade": {
+  "plays_total": 27,
+  "plays_driven": 27,
+  "accepted": 27,
+  "rejected": 0,
+  "skipped_ability": 0,
+  "elixir_delays": {
+   "n": 0,
+   "max_ticks": 0,
+   "sum_ticks": 0
+  },
+  "crowns_match": true,
+  "winner_match": true,
+  "terminal_minus_last_play_s": 26.65,
+  "ended_before_last_play": false
+ },
+ "drive_seconds": 0.09,
+ "log": [
+  {
+   "play_index": 0,
+   "tick": 211,
+   "side": 1,
+   "card": "archers",
+   "x": 9501,
+   "y": 31500,
+   "cost": 3.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 10.6
+  },
+  {
+   "play_index": 1,
+   "tick": 274,
+   "side": 0,
+   "card": "ice-wizard",
+   "x": 9500,
+   "y": 500,
+   "cost": 3.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 13.7
+  },
+  {
+   "play_index": 2,
+   "tick": 384,
+   "side": 1,
+   "card": "skeletons",
+   "x": 9501,
+   "y": 31500,
+   "cost": 1.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 19.2
+  },
+  {
+   "play_index": 3,
+   "tick": 447,
+   "side": 1,
+   "card": "dark-prince",
+   "x": 1500,
+   "y": 18500,
+   "cost": 4.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 22.4
+  },
+  {
+   "play_index": 4,
+   "tick": 494,
+   "side": 0,
+   "card": "knight",
+   "x": 7500,
+   "y": 10501,
+   "cost": 3.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 24.7
+  },
+  {
+   "play_index": 5,
+   "tick": 532,
+   "side": 0,
+   "card": "the-log",
+   "x": 5500,
+   "y": 14500,
+   "cost": 2.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 26.6
+  },
+  {
+   "play_index": 6,
+   "tick": 676,
+   "side": 1,
+   "card": "electro-spirit",
+   "x": 9501,
+   "y": 24500,
+   "cost": 1.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 33.8
+  },
+  {
+   "play_index": 7,
+   "tick": 764,
+   "side": 0,
+   "card": "skeletons",
+   "x": 9501,
+   "y": 501,
+   "cost": 1.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 38.2
+  },
+  {
+   "play_index": 8,
+   "tick": 872,
+   "side": 0,
+   "card": "tesla",
+   "x": 9000,
+   "y": 12000,
+   "cost": 4.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 43.6
+  },
+  {
+   "play_index": 9,
+   "tick": 938,
+   "side": 1,
+   "card": "rocket",
+   "x": 4500,
+   "y": 7500,
+   "cost": 6.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 46.9
+  },
+  {
+   "play_index": 10,
+   "tick": 1082,
+   "side": 0,
+   "card": "x-bow",
+   "x": 13500,
+   "y": 12500,
+   "cost": 6.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 54.1
+  },
+  {
+   "play_index": 11,
+   "tick": 1124,
+   "side": 0,
+   "card": "knight",
+   "x": 15501,
+   "y": 13501,
+   "cost": 3.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 56.2
+  },
+  {
+   "play_index": 12,
+   "tick": 1145,
+   "side": 1,
+   "card": "inferno-tower",
+   "x": 15500,
+   "y": 18500,
+   "cost": 5.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 57.3
+  },
+  {
+   "play_index": 13,
+   "tick": 1233,
+   "side": 0,
+   "card": "ice-wizard",
+   "x": 15500,
+   "y": 14500,
+   "cost": 3.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 61.7
+  },
+  {
+   "play_index": 14,
+   "tick": 1237,
+   "side": 1,
+   "card": "arrows",
+   "x": 14500,
+   "y": 14500,
+   "cost": 3.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 61.9
+  },
+  {
+   "play_index": 15,
+   "tick": 1265,
+   "side": 1,
+   "card": "skeletons",
+   "x": 8500,
+   "y": 22500,
+   "cost": 1.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 63.3
+  },
+  {
+   "play_index": 16,
+   "tick": 1324,
+   "side": 1,
+   "card": "electro-spirit",
+   "x": 12501,
+   "y": 24500,
+   "cost": 1.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 66.2
+  },
+  {
+   "play_index": 17,
+   "tick": 1434,
+   "side": 0,
+   "card": "skeletons",
+   "x": 14501,
+   "y": 14501,
+   "cost": 1.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 71.7
+  },
+  {
+   "play_index": 18,
+   "tick": 1841,
+   "side": 0,
+   "card": "tesla",
+   "x": 9000,
+   "y": 11000,
+   "cost": 4.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 92.1
+  },
+  {
+   "play_index": 19,
+   "tick": 2016,
+   "side": 0,
+   "card": "x-bow",
+   "x": 13500,
+   "y": 12500,
+   "cost": 6.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 100.8
+  },
+  {
+   "play_index": 20,
+   "tick": 2296,
+   "side": 0,
+   "card": "knight",
+   "x": 17501,
+   "y": 18501,
+   "cost": 3.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 114.8
+  },
+  {
+   "play_index": 21,
+   "tick": 2352,
+   "side": 0,
+   "card": "ice-wizard",
+   "x": 17500,
+   "y": 20500,
+   "cost": 3.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 117.6
+  },
+  {
+   "play_index": 22,
+   "tick": 2403,
+   "side": 0,
+   "card": "skeletons",
+   "x": 17501,
+   "y": 20501,
+   "cost": 1.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 120.2
+  },
+  {
+   "play_index": 23,
+   "tick": 2496,
+   "side": 0,
+   "card": "the-log",
+   "x": 9500,
+   "y": 20500,
+   "cost": 2.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 124.8
+  },
+  {
+   "play_index": 24,
+   "tick": 2592,
+   "side": 0,
+   "card": "rocket",
+   "x": 11500,
+   "y": 26500,
+   "cost": 6.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 129.6
+  },
+  {
+   "play_index": 25,
+   "tick": 2723,
+   "side": 0,
+   "card": "x-bow",
+   "x": 15500,
+   "y": 19500,
+   "cost": 6.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 136.2
+  },
+  {
+   "play_index": 26,
+   "tick": 2843,
+   "side": 0,
+   "card": "tornado",
+   "x": 7500,
+   "y": 27500,
+   "cost": 3.0,
+   "delay_ticks": 0,
+   "accepted": true,
+   "sim_t": 142.2
+  }
+ ]
+}
