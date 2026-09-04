@@ -1,0 +1,3 @@
+L57: pro corpus vs the locked cells -- the policy's X-Bow corner IS the pros' modal lane-bow spot to ~1 tile (24% of 1,038 pro bows within 1.5 tiles, 50% mirrored) but its Tesla cell matches 2.0% of 1,705 pro Teslas (pros x=9 centre 48%, y 18-22), Skeletons 4.9%, Knight 2.2%; hidden_pull rerun of the L56 probe stays flat corner-vs-centre (935 vs 1029) and only lifts the lane cell (690 -> 966) -> the missing pull is not the flatness (c); decision to owner: fitted placement prior as a cell-head KL (mechanism stated) vs opponent work -- HANDOFF 5cs.27
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
