@@ -1,0 +1,17 @@
+data\policy_sim_ppo_best.pt  matches=2000  rows=2400  seed=0  FORCE-BANK 4
+  affordable on 90.6% of rows | P(play) mean 0.576 (all) 0.570 (affordable rows) | played on 9.4% of rows | elixir mean 2.99  >=6 1.9% | phase rows [1814, 586, 0]
+  bucket  rows  P(play)  affordable  played   pro(single)
+      0    165   0.619     0.000     0.000    0.032
+      1    432   0.617     0.870     0.000    0.048
+      2    551   0.611     0.991     0.000    0.059
+      3    691   0.602     1.000     0.000    0.075
+      4    406   0.523     1.000     0.448    0.079
+      5    106   0.330     1.000     0.274    0.060
+      6     30   0.302     1.000     0.267    0.059
+      7     14   0.251     1.000     0.286    0.070
+      8      5   0.293     1.000     0.400    0.143
+      9      0     -         -         -      0.249
+     10      0     -         -         -      0.258
+  mean cost of the cards actually played: 2.96 (deck mean 3.50)
+    plays at 3-5  n=211  mean cost 2.95  mighty_miner:36 hog_rider:31 tesla:30 ice_spirit:26
+    plays at >=6  n=14   mean cost 3.14  mighty_miner:4 hog_rider:2 tesla:2 firecracker:2

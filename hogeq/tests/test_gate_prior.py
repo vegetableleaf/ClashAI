@@ -33,10 +33,14 @@ class _Cfg:
 
 
 class _DB:
-    COST = {"knight": 3, "fireball": 4, "mighty_miner_ability": 1}
+    COST = {"knight": 3, "fireball": 4, "mighty_miner_ability": 1, "tesla": 4}
+    KIND = {"knight": "troop", "fireball": "spell", "tesla": "building"}
 
     def elixir(self, name):
         return self.COST.get(name)
+
+    def kind(self, name):
+        return self.KIND.get(name)
 
 
 def _csv(rows):
@@ -111,6 +115,99 @@ class TestFit(unittest.TestCase):
         self.assertEqual(sum(tbl["single"][:7]), 0.0)
         self.assertGreater(tbl["single"][10] + tbl["single"][9], 0.0)
         self.assertEqual(sum(pr["windows"]["double"]), 0, "no double-elixir windows before 120 s")
+
+
+class TestPressureKey(unittest.TestCase):
+    """Schema 2 (HANDOFF 5bw/5bx): the ruling's dropped third key. Pressure = the OPPONENT played a
+    TROOP within W s. Spells and buildings are not pressure; the blended p_play is unchanged; the
+    trainer's array is [phase, pressure, bucket] and refuses a table fit at another W."""
+
+    def _rows(self):
+        return [
+            {"replay_tag": "r1", "attr_s": "red", "seconds": "3.1", "attr_card": "knight-ev1", "attr_ability": "0"},
+            {"replay_tag": "r1", "attr_s": "red", "seconds": "20.0", "attr_card": "fireball", "attr_ability": "0"},
+            {"replay_tag": "r1", "attr_s": "red", "seconds": "30.0", "attr_card": "tesla", "attr_ability": "0"},
+            {"replay_tag": "r1", "attr_s": "blue", "seconds": "4.0", "attr_card": "knight", "attr_ability": "0"},
+            {"replay_tag": "r1", "attr_s": "blue", "seconds": "40.0", "attr_card": "knight", "attr_ability": "0"},
+        ]
+
+    def test_pressure_windows_are_the_troop_ones_only(self):
+        gp = _load("gate_prior")
+        pr = gp.fit(_csv(self._rows()), _Cfg(), _DB(), side="blue", pressure_s=6.0)
+        self.assertEqual(pr["schema"], 2)
+        self.assertEqual(pr["pressure_s"], 6.0)
+        self.assertEqual(pr["unknown_kind"], {})
+        wp = pr["windows_by_pressure"]["single"]
+        # the red knight at 3.1 s flags the windows starting in [3.1, 9.1): 3.6 .. 9.0, 10 of them
+        # at dt 0.6; the fireball (spell) and tesla (building) flag none. (3.1, not 3.0: window
+        # starts accumulate 0.6 in floating point and a play ON a boundary is a rounding coin-flip.)
+        self.assertEqual(sum(wp["pressure"]), 10)
+        self.assertEqual(sum(wp["quiet"]) + sum(wp["pressure"]), sum(pr["windows"]["single"]))
+        # blue's play at 4.0 s falls in a pressured window; the one at 40.0 s in a quiet one
+        self.assertEqual(sum(pr["play_windows_by_pressure"]["single"]["pressure"]), 1)
+        self.assertEqual(sum(pr["play_windows_by_pressure"]["single"]["quiet"]), 1)
+
+    def test_blend_is_unchanged_by_the_split(self):
+        gp = _load("gate_prior")
+        p1 = gp.fit(_csv(self._rows()), _Cfg(), _DB(), side="blue")
+        p2 = gp.fit(_csv(self._rows()), _Cfg(), _DB(), side="blue", pressure_s=6.0)
+        self.assertEqual(p1["schema"], 1)
+        self.assertEqual(p1["p_play"], p2["p_play"])
+        self.assertEqual(p1["windows"], p2["windows"])
+        self.assertNotIn("p_play_by_pressure", p1)
+
+    def test_thin_cells_fall_back_to_the_blend(self):
+        """Every cell here has < MIN_CELL_N windows, so the split table must equal the blend."""
+        gp = _load("gate_prior")
+        pr = gp.fit(_csv(self._rows()), _Cfg(), _DB(), side="blue", pressure_s=6.0)
+        for key in gp.PRESSURE_KEYS:
+            self.assertEqual(pr["p_play_by_pressure"]["single"][key], pr["p_play"]["single"])
+
+    def test_prior_array_shape_and_w_guard(self):
+        gp = _load("gate_prior")
+        pr = gp.fit(_csv(self._rows()), _Cfg(), _DB(), side="blue", pressure_s=6.0)
+        self.assertEqual(gp.prior_array(pr, 0.0).shape, (3, 11))
+        self.assertEqual(gp.prior_array(pr, 6.0).shape, (3, 2, 11))
+        with self.assertRaises(AssertionError):
+            gp.prior_array(pr, 10.0)                       # a table fit at 6 s is not a 10 s prior
+        p1 = gp.fit(_csv(self._rows()), _Cfg(), _DB(), side="blue")
+        with self.assertRaises(AssertionError):
+            gp.prior_array(p1, 6.0)                        # schema 1 has no split
+
+    def test_sim_key_is_the_youngest_living_enemy_troop(self):
+        """SimMatchEnv.enemy_troop_min_age: 1e9 on an empty board, the youngest enemy TROOP's age
+        otherwise; enemy buildings, own troops and dead troops do not count."""
+        try:
+            from clashrl.config import Config
+            from clashrl.sim.engine import Unit, build_spec
+            from clashrl.sim.env import SimMatchEnv
+        except Exception as e:
+            self.skipTest(f"sim env import: {e}")
+        env = SimMatchEnv(Config.load()); env.reset()
+        e = env.eng
+        e.units.clear(); e.spells.clear(); e.projectiles.clear()
+        self.assertEqual(env.enemy_troop_min_age(), 1e9)
+
+        def spawn(key, team, y, age=0.0, hp=None):
+            s = build_spec(e.db, key, 11)
+            u = Unit(spec=s, team=team, x=0.3, y=y, hp=s.hp if hp is None else hp)
+            u.age = age
+            e.units.append(u)
+            return u
+
+        spawn("knight", 0, 0.6, age=1.0)                           # ours: not pressure
+        spawn("tesla", 1, 0.4, age=0.5)                            # their building: not pressure
+        self.assertEqual(env.enemy_troop_min_age(), 1e9)
+        old = spawn("knight", 1, 0.3, age=9.0)
+        self.assertAlmostEqual(env.enemy_troop_min_age(), 9.0)
+        young = spawn("valkyrie", 1, 0.35, age=2.5)
+        self.assertAlmostEqual(env.enemy_troop_min_age(), 2.5)
+        young.hp = 0.0                                             # dead: not pressure
+        self.assertAlmostEqual(env.enemy_troop_min_age(), 9.0)
+        # ...and age advances with the engine, so the key expires on its own
+        e.advance(0.6)
+        self.assertGreater(env.enemy_troop_min_age(), 9.0)
+        del old
 
 
 class TestWatchdogFloor(unittest.TestCase):

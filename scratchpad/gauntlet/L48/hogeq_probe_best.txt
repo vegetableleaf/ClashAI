@@ -1,0 +1,54 @@
+data\policy_sim_ppo_best.pt  matches=2000  rows=2400  seed=0
+  affordable on 27.5% of rows | P(play) mean 0.563 (all) 0.488 (affordable rows) | played on 13.2% of rows | elixir mean 1.82  >=6 0.2% | phase rows [1963, 437, 0]
+  bucket  rows  P(play)  affordable  played   pro(single)
+      0    566   0.667     0.000     0.000    0.032
+      1    887   0.543     0.234     0.116    0.048
+      2    604   0.549     0.230     0.129    0.059
+      3    256   0.487     0.879     0.410    0.075
+      4     40   0.406     1.000     0.425    0.079
+      5     43   0.416     1.000     0.302    0.060
+      6      4   0.445     1.000     0.500    0.059
+      7      0     -         -         -      0.070
+      8      0     -         -         -      0.143
+      9      0     -         -         -      0.249
+     10      0     -         -         -      0.258
+  mean cost of the cards actually played: 2.05 (deck mean 3.50)
+    plays at <3   n=181  mean cost 1.31  skeletons:58 ice_spirit:58 the_log:57 mighty_miner:8
+    plays at 3-5  n=135  mean cost 3.04  earthquake:48 firecracker:41 firecracker_evo:17 mighty_miner:10
+    plays at >=6  n=2    mean cost 1.00  skeletons:1 ice_spirit:1
+data\policy_sim_ppo_best.pt  matches=2000  rows=2400  seed=1
+  affordable on 31.6% of rows | P(play) mean 0.534 (all) 0.415 (affordable rows) | played on 12.8% of rows | elixir mean 1.88  >=6 0.2% | phase rows [2045, 355, 0]
+  bucket  rows  P(play)  affordable  played   pro(single)
+      0    551   0.621     0.000     0.000    0.032
+      1    881   0.547     0.267     0.123    0.048
+      2    575   0.521     0.282     0.122    0.059
+      3    264   0.439     0.879     0.341    0.075
+      4     70   0.329     1.000     0.314    0.079
+      5     52   0.327     1.000     0.212    0.060
+      6      7   0.361     1.000     0.714    0.059
+      7      0     -         -         -      0.070
+      8      0     -         -         -      0.143
+      9      0     -         -         -      0.249
+     10      0     -         -         -      0.258
+  mean cost of the cards actually played: 2.05 (deck mean 3.50)
+    plays at <3   n=178  mean cost 1.30  ice_spirit:58 skeletons:56 the_log:53 mighty_miner:11
+    plays at 3-5  n=123  mean cost 3.08  earthquake:41 firecracker:38 firecracker_evo:14 mighty_miner:10
+    plays at >=6  n=5    mean cost 3.40  mighty_miner:2 tesla:1 the_log:1 firecracker:1
+data\policy_sim_ppo_best.pt  matches=2000  rows=2400  seed=2
+  affordable on 29.5% of rows | P(play) mean 0.558 (all) 0.445 (affordable rows) | played on 13.1% of rows | elixir mean 1.83  >=6 0.2% | phase rows [2034, 366, 0]
+  bucket  rows  P(play)  affordable  played   pro(single)
+      0    554   0.650     0.000     0.000    0.032
+      1    879   0.564     0.245     0.118    0.048
+      2    616   0.535     0.276     0.115    0.059
+      3    259   0.486     0.892     0.432    0.075
+      4     46   0.309     1.000     0.261    0.079
+      5     42   0.324     1.000     0.333    0.060
+      6      4   0.289     1.000     0.500    0.059
+      7      0     -         -         -      0.070
+      8      0     -         -         -      0.143
+      9      0     -         -         -      0.249
+     10      0     -         -         -      0.258
+  mean cost of the cards actually played: 2.02 (deck mean 3.50)
+    plays at <3   n=175  mean cost 1.31  skeletons:58 ice_spirit:56 the_log:54 mighty_miner:7
+    plays at 3-5  n=138  mean cost 2.91  earthquake:49 firecracker:43 firecracker_evo:14 mighty_miner:7
+    plays at >=6  n=2    mean cost 3.00  tesla:1 the_log:1

@@ -737,7 +737,7 @@ def lead_point(cx, cy, tracks, impact_s, snap_radius_tiles, db=None,
     return tx, ty
 
 
-def log_hits(cx, cy, tracks, half_w=0.064, roll=0.28, air=()):
+def log_hits(cx, cy, tracks, half_w=0.064, roll=0.28, air=(), back_slop=1.0 / 32.0):
     """Would a Log cast at (cx, cy) actually touch anything?
 
     The roll starts AT the cast point and travels forward (decreasing y -- our side is the high-y
@@ -754,6 +754,10 @@ def log_hits(cx, cy, tracks, half_w=0.064, roll=0.28, air=()):
         if abs(float(t[0]) - cx) > half_w:
             continue                                  # beside the corridor
         dy = cy - float(t[1])                          # >0 = the unit is FORWARD of the cast
-        if -0.5 * half_w <= dy <= roll:
+        # back_slop: how far BEHIND the cast point the roll still catches a body. Was 0.5*half_w
+        # -- an 18-tile-axis width reused on the 32-tile axis, i.e. 1.73 tiles of slop that scored
+        # a log dropped 1-2 tiles ahead of a troop as a hit (the owner's whiff report, 2026-09-03).
+        # Default 1 tile, the sim engine's _LOG_BACK_SLOP.
+        if -back_slop <= dy <= roll:
             return True
     return False

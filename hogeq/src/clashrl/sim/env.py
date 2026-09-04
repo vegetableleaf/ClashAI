@@ -187,6 +187,7 @@ class SimMatchEnv:
         self.det_recall_by_card = dict(cfg.get("observation", "sim_detector_recall_by_card", default=None) or {})
         # Stage-3b gate: the troop-INTERACTION block (who is predicted to be moving at which tower)
         self.use_interactions = bool(cfg.get("observation", "use_interactions", default=False))
+        self.lock_aware_targets = bool(cfg.get("observation", "lock_aware_targets", default=False))
         self.sight_range = float(cfg.get("sim", "sight_tiles", default=5.5))   # tiles
         # TOWER BLOCK: 6 dims = HP FRACTION of (L princess, R princess, king) for MINE then THEIRS,
         # in the policy's own mirrored frame. Gated so an old checkpoint's schema still resolves.
@@ -446,6 +447,17 @@ class SimMatchEnv:
         """The whole cycle as the identities it will present, in order (hand first)."""
         return [self._slot_card_id(s) for s in self.cycle]
 
+    def enemy_troop_min_age(self) -> float:
+        """Seconds since the YOUNGEST living enemy TROOP was deployed; 1e9 with none on the board.
+        The sim side of the gate prior's PRESSURE key (tools/gate_prior.py schema 2, HANDOFF 5bx):
+        the pro table's key is "the opponent played a troop within W s", and `age` starts at 0 on
+        deploy (deploy time included), so `min_age < W` is the same event. Spells and buildings do
+        not count on either side. The threshold W lives in the parent (sim.ppo_gate_prior_pressure_s)
+        so the worker carries the raw age and no config seam can open between the two."""
+        ages = [float(u.age) for u in self.eng.units
+                if u.team == 1 and u.hp > 0 and u.spec.kind == "troop"]
+        return min(ages) if ages else 1e9
+
     def _hand_ids(self):
         ids = [self._slot_card_id(s) for s in self.cycle[:4]]
         # The ability is not dealt, it becomes AVAILABLE: the champion has to be alive on the board
@@ -545,12 +557,20 @@ class SimMatchEnv:
         mem[5] = self.eng.elixir[0] / 10.0
         parts = [base, self._threat_id, mem]
         if self.use_interactions:                     # who is predicted to be marching at which tower
-            units, mine_t, en_t = view.interaction_state(self.eng, 0, self.detector_cards, self.rng,
-                                                         self.det_recall, self.det_recall_by_card)
-            parts.append(interactions.interaction_vector(units, mine_t, en_t, self.db))
+            units, mine_t, en_t, hs = self._interaction_state()
+            parts.append(interactions.interaction_vector(units, mine_t, en_t, self.db, hints=hs))
         if self.use_tower_obs:
             parts.append(view.tower_vector(self.eng, 0))
         return np.concatenate(parts).astype(np.float32)
+
+    def _interaction_state(self):
+        """(units, my_towers, enemy_towers, hints) for the interaction vector and the predictive
+        canvas. ``hints`` is None unless ``observation.lock_aware_targets`` is on (HANDOFF §5cb):
+        the LIVE side has no track memory today, so a sim obs built on engine lock state is a
+        sim-to-real seam until live supplies the same hint -- default off."""
+        st = view.interaction_state(self.eng, 0, self.detector_cards, self.rng, self.det_recall,
+                                    self.det_recall_by_card, hints=self.lock_aware_targets)
+        return st if len(st) == 4 else (*st, None)
 
     def _render(self) -> np.ndarray:
         oh, ow, _ = self.obs_shape
@@ -562,10 +582,10 @@ class SimMatchEnv:
         if self.use_pred_canvas:
             # PREDICTIVE slice from the SAME noised unit view the interaction vector reads --
             # sim and live both paint mover_forecast, so the feature transfers by construction.
-            units, mine_t, en_t = view.interaction_state(self.eng, 0, self.detector_cards, self.rng,
-                                                         self.det_recall, self.det_recall_by_card)
+            units, mine_t, en_t, hs = self._interaction_state()
             pred = detect_obs.predictive_channels(units, mine_t, en_t, self.db, oh, ow,
-                                                  dt_s=self.pred_dt, horizon_s=self.pred_horizon)
+                                                  dt_s=self.pred_dt, horizon_s=self.pred_horizon,
+                                                  hints=hs)
             ch = np.concatenate([ch, detect_obs.channels_to_uint8(pred)], axis=2)
         if self.use_hp_canvas:
             hp = detect_obs.hp_channels(view.hp_state(self.eng, 0, self.rng,

@@ -5968,7 +5968,21 @@ class SimEngine:
 
     # -- reward / observation accessors ------------------------------------
     def crowns(self, team: int) -> int:
-        return sum(1 for t in self.towers[1 - team] if not t.alive)
+        """CR crowns for `team`: 3 the moment the enemy KING falls, else dead enemy princess towers.
+
+        THE BUG THIS FIXES (owner-reported from sim_view, confirmed 2026-09-04, HANDOFF 5cs.16): this
+        used to count dead towers, so a king kill with one princess still standing read 2 crowns, not
+        the 3 real CR awards. Outcomes were never wrong (`_check_end` ends the match on the king before
+        any crown comparison), but every crown_delta / "crowns taken" figure was understated (policy
+        ceiling leg: -0.354 read vs -0.521 real over 48 matches, 8 of 12 king losses undercounted) and
+        the per-crown reward terms `take_enemy_tower` / `lose_own_tower` (env.py) paid per TOWER. With
+        the fix a king-fall with a princess up pays w_take/w_lose x 2 in that step -- the real-CR
+        incentive. Runs before c2r (inclusive) trained on the old count.
+        """
+        enemy = self.towers[1 - team]
+        if not enemy[2].alive:
+            return 3
+        return sum(1 for t in enemy if not t.alive)
 
     def tower_hp_total(self, team: int) -> float:
         return sum(t.hp for t in self.towers[team])

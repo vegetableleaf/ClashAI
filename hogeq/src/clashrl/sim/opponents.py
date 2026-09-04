@@ -140,8 +140,15 @@ class ScriptedBot:
                  evo_candidates: "List[str] | None" = None,
                  hero_candidates: "List[str] | None" = None,
                  champion_candidates: "List[str] | None" = None,
-                 support: "List[str] | None" = None):
+                 support: "List[str] | None" = None, attack_floor: float = 0.0):
         self.style = style
+        # ATTACK FLOOR (sim.bot_attack_floor, training-only via make_opponent). MEASURED (HANDOFF
+        # §5bw.4): the non-beatdown bot attacks on the FIRST step it can afford any offensive card,
+        # so it pressures 46-52% of single-elixir steps with a 5 s median quiet window where the
+        # pros pressure 37% with 9 s -- one bank-to-six window per phase against the pros' ~2.7.
+        # A cycle/control/siege bot banks to this many elixir before it ATTACKS (defence, punish,
+        # backline and pump plays are untouched, as a human's are). 0 = the historical bot.
+        self.attack_floor = float(attack_floor)
         self.cards = list(cards)                                  # deck card keys (for matchup detection)
         self.rng = rng
         levels = levels or [11] * len(cards)
@@ -694,6 +701,8 @@ class ScriptedBot:
             return        # ATTACK
         if self.style == "beatdown" and elix < 9.5:
             return                                                # save up for a big push
+        if self.style != "beatdown" and elix < self.attack_floor:
+            return                                                # bank first (sim.bot_attack_floor)
         # NON-SIEGE DEFENSIVE BUILDINGS ARE NOT AN ATTACK. Leaving them here is what put Cannons on
         # the bridge: this list feeds the bridge/lane placements below. Siege buildings stay.
         offense = [s for s in usable if s.kind != "spell" and s.gen_every <= 0
@@ -763,7 +772,11 @@ def make_opponent(cfg, db, rng, pool: List[dict], level: "int | None" = None,
     if level is not None:
         levels = [int(level)] * len(deck["cards"])
     is_adaptive = adaptive and rng.random() < float(cfg.get("sim", "adaptive_prob", default=0.65))
+    # ATTACK FLOOR: training-only, gated on the `adaptive` argument exactly like deck_pfsp_power, so
+    # the eval benchmark's bots keep their historical cadence and eval curves stay comparable.
+    _floor = float(cfg.get("sim", "bot_attack_floor", default=0.0)) if adaptive else 0.0
     return ScriptedBot(cfg, db, rng, deck["cards"], deck["style"], levels, adaptive=is_adaptive,
+                       attack_floor=_floor,
                        evo=deck.get("evo"),       # a DECLARED slot, if a source ever names one
                        evo_candidates=deck.get("evo_candidates"),   # else drawn from the legal set
                        hero_candidates=deck.get("hero_candidates"),  # I8: the Hero + Wild slots

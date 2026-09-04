@@ -206,6 +206,10 @@ def train_rl(cfg, init: str | None = None) -> None:
                             default=cfg.get("train", "epsilon_decay_steps", default=3000)))
     n_step = max(1, int(cfg.get("train", "n_step", default=1)))
     wait_prob = float(cfg.get("train", "explore_wait_prob", default=0.4))
+    _rl_gate_tau = cfg.get("train", "rl_gate_tau", default=None)          # None = legacy 0.5 rule (5cr)
+    _rl_gate_tau = None if _rl_gate_tau is None else float(_rl_gate_tau)
+    print("[train-rl] greedy gate rule: %s" % ("WAIT iff p(play) <= %.2f (sim parity)" % _rl_gate_tau
+                                                if _rl_gate_tau is not None else "WAIT iff Q(wait) >= Q(play) (legacy, = tau 0.5)"))
     min_play_elixir = int(cfg.get("train", "min_play_elixir", default=3))
     save_every = int(cfg.get("train", "save_every_matches", default=1))
 
@@ -871,7 +875,18 @@ def train_rl(cfg, init: str | None = None) -> None:
         # negative return on plays pushed all three down together and the no-op won by construction,
         # independently of how the reward was tuned. That is the passivity ratchet; this removes it.
         # The chosen card/cell are unchanged (still each head's masked argmax).
-        _pol = (0, 0, 0) if wait_val >= play_val else (1, card_id, int(ceq.argmax()))
+        # SIM/LIVE GATE-RULE PARITY (2026-09-03, HANDOFF 5cr). The sim's greedy rule
+        # (train_sim_ppo.choose_greedy, play.py) is WAIT iff sigmoid(play - wait) <= ppo_gate_threshold
+        # (0.25); the comparison above is the same test at 0.5. MEASURED on gatec2_m10k over 5,371
+        # sim decisions: p(play) 99th percentile 0.358, so the 0.5 rule keeps 0.1% of the plays the
+        # 0.25 rule makes (99% lost) -- at epsilon 0 the PPO policy essentially never played live,
+        # and every live play came from exploration or the leak-guard wheel. `train.rl_gate_tau`
+        # unset keeps the old rule (so the baseline stays measurable); set it to the sim's tau.
+        if _rl_gate_tau is not None:
+            _wait = bool(torch.sigmoid(play_val - wait_val) <= _rl_gate_tau)
+        else:
+            _wait = bool(wait_val >= play_val)
+        _pol = (0, 0, 0) if _wait else (1, card_id, int(ceq.argmax()))
         # ---- LIVE SEARCH OVERRIDE (sim.live_search_enabled, OFF by default) -------------------
         # Wired here as well as in play.py because train-rl makes live decisions too, and DDQN is
         # OFF-POLICY: learning from search-chosen transitions is legitimate with no importance

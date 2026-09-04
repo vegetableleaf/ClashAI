@@ -240,19 +240,32 @@ class _ElixirModel:
 # ---------------------------------------------------------------------------
 # Canonical re-render (OUR renderer, never the pro's pixels)
 # ---------------------------------------------------------------------------
-def canonical_render(dets: List[Detection], cfg, oh: int, ow: int, river_y: float) -> np.ndarray:
-    """Synthetic top-down arena rebuilt from detections, in the sim's palette and frame geometry.
+def canonical_render(dets: List[Detection], cfg, oh: int, ow: int, river_y: float,
+                     anchors=None, alive=None) -> np.ndarray:
+    """Synthetic top-down arena rebuilt from detections, in the sim's palette.
 
-    Geometry is FRAME-normalized (the same space `detect_obs.detection_channels` and the live env
-    rasterize into), so the RGB and the semantic channels of one sample always agree.
+    Geometry follows the DETECTIONS' space: the replay miner passes frame-normalized ones (and
+    the tower anchors default to the frame-space `env.my_towers`/`env.enemy_towers`); the live
+    env passes BOARD-warped ones and must pass board-space ``anchors=(mine, enemy)`` too.
+    MEASURED (5cs, s4): drawing board-space units over frame-space towers put OUR towers at
+    rows 57-61/66-72 of 96 where the sim draws them at 74-78/84-90 -- red blocks on our half
+    exactly where the sim shows our own deployed buildings -- and the PPO gate at >=9 elixir
+    read share>0.25 0.085; repainting the towers at the sim's rows: 0.68 (sim RGB ceiling 0.70).
+    ``alive=(mine_alive, enemy_alive)`` skips dead towers, as `sim/view.render_obs` does.
     """
     img = np.zeros((int(oh), int(ow), 3), np.uint8)
     img[:, :] = _GRASS
     ry = int(np.clip(river_y, 0.0, 0.999) * oh)
     img[ry, :] = _RIVER
-    mine_a, enemy_a, _ = _anchors(cfg)
-    for anchors, col in ((mine_a, _YOU), (enemy_a, _ENEMY)):
-        for i, (ax, ay) in enumerate(anchors or []):
+    if anchors is None:
+        mine_a, enemy_a, _ = _anchors(cfg)
+    else:
+        mine_a, enemy_a = anchors
+    mine_al, enemy_al = alive if alive is not None else (None, None)
+    for anchors_, col, al in ((mine_a, _YOU, mine_al), (enemy_a, _ENEMY, enemy_al)):
+        for i, (ax, ay) in enumerate(anchors_ or []):
+            if al is not None and i < len(al) and not al[i]:
+                continue                                       # dead tower: the sim draws nothing
             cx, cy = int(ax * ow), int(ay * oh)
             hw = 3 if i == 2 else 2                            # index 2 = king (drawn bigger)
             img[max(0, cy - hw):cy + hw + 1, max(0, cx - hw):cx + hw + 1] = col

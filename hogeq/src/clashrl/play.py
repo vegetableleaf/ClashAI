@@ -7,6 +7,7 @@ fine-tuning, the same loop plays toward the tower/crown/win rewards.
 """
 from __future__ import annotations
 
+import math
 import random
 import signal
 import time
@@ -21,6 +22,8 @@ from .controller import Controller
 from .reward import (TowerTracker, pump_rocket_cell, spell_intercept_cell, weaker_princess_cell,
                      xbow_lock_cell, xbow_offense_depth_cell, xbow_target_lane_cell,
                      tesla_pull_cell)
+from .reward import log_corridor_cell                # 2026-09-04: Log corridor assist (icebow parity, HANDOFF 5cs.18)
+from .reward import lead_point, lead_velocity   # 2026-09-03: cast-delay lead for log + rocket
 from .reward import TILE as _TILE
 from .states import GameState
 from .threats import ThreatTracker, THREAT_DIM
@@ -152,6 +155,30 @@ def play(cfg) -> None:
     # CHAMPION ABILITY. Its identity is the LAST deck key (CardDB.ability_identity appends it), and
     # it is dispatched as a single tap on the button rather than a select-then-place. -1 when the
     # deck has no champion, which never matches a real card_id.
+    # LOG AIM ASSIST (icebow parity, 2026-09-04). Every other card with geometry that matters
+    # (X-Bow, Tesla, rocket) had an assist in this loop and the Log had none -- it was ported into
+    # the train-rl env (5bc) but never into play.py, so a pure-play session rolled it wherever the
+    # raw cell landed. Distances are the LIVE screen-space normalised ones, not the sim's tiles.
+    _log_ids = {i for i, key in enumerate(vision.deck_keys)
+                if (key[:-4] if key.endswith("_evo") else key) == "the_log"}
+    _log_half_w = float(cfg.get("env", "log_half_width", default=0.064))   # 2.2 tiles of corridor
+    _log_roll = float(cfg.get("env", "log_roll_len", default=0.28))        # 9.6 tiles of travel
+
+    class _AirSet:
+        """Which detected classes FLY, answered from the card KB rather than a hand-kept list --
+        a hardcoded roster silently stops being true the next time a card is released."""
+
+        def __init__(self, db):
+            self._db, self._memo = db, {}
+
+        def __contains__(self, base):
+            if base is None:
+                return False
+            hit = self._memo.get(base)
+            if hit is None:
+                hit = self._memo[base] = bool(card_threat.profile(self._db, base).flying)
+            return hit
+
     _ability_id = (vision.deck_keys.index(vision.ability_key)
                    if getattr(vision, "ability_key", None) in vision.deck_keys else -1)
     _ability_xy = tuple(cfg.get("hand", "ability_button", default=[0.963, 0.758]))
@@ -241,6 +268,7 @@ def play(cfg) -> None:
     # it can't afford (and can track its own spend). Indexed by deck/card id, same as the policy heads.
     from .cards import CardDB
     _db = CardDB(cfg)
+    _AIR_BASES = _AirSet(_db)          # the Log rolls UNDER flyers -- never aim it at one
     # HARD GUARD: the checkpoint must match the CONFIGURED deck (same check as train-rl). After a
     # deck change an old net's heads are the wrong width and its card ids mean different cards --
     # here that would surface as a torch shape error (10-wide hand one-hots into a 9-card net) or,
@@ -297,6 +325,14 @@ def play(cfg) -> None:
     _ident_state = {"depth": 0.0, "t": None}   # deepest-threat depth + time, for the approach velocity
     _opp_mem = card_threat.OpponentMemory(_db)  # per-match opponent short-term memory (Stage 3)
     _opp_elx = OpponentElixirEstimator(_db)     # live estimate from mirrored spend accounting
+    # SIM/LIVE PARITY of opponent-memory slot 5 (HANDOFF 5cr.8, owner ruling 23:4x): the sim wrote OUR elixir into this
+    # slot during training (sim/env.py mem[5] = eng.elixir[0]/10) while live wrote the opponent-elixir ESTIMATE (mean
+    # 0.035 in a live session) -- the trained gate read "no elixir" and waited. Same switch as train-rl's env:
+    # 'opp_estimate' (legacy, default) or 'own_elixir' (what the checkpoint was trained on).
+    _mem5_source = str(cfg.get("env", "opp_mem_slot5", default="opp_estimate"))
+    if _mem5_source not in ("opp_estimate", "own_elixir"):
+        raise ValueError("env.opp_mem_slot5 must be 'opp_estimate' or 'own_elixir', got %r" % _mem5_source)
+    print("[play] opp-memory slot 5 source: %s" % _mem5_source)
     _last_dets = {"all": []}                    # newest tagged detections (feeds the semantic canvas)
     # The canvas is fed only when the LOADED policy was trained with it -- the config gate decides
     # what a NEW training run sees, the checkpoint decides what THIS net expects.
@@ -359,6 +395,14 @@ def play(cfg) -> None:
     _rocket_org = list(cfg.get("env", "rocket_origin", default=[0.5, 1.05]))
     _rocket_base = float(cfg.get("env", "rocket_base_time", default=0.3))
     _rocket_rate = float(cfg.get("env", "rocket_travel_rate", default=2.2))
+    _rocket_speed = float(cfg.get("env", "rocket_speed_tiles", default=14.0))
+    _spell_eval = float(cfg.get("env", "spell_eval_time", default=4.0))
+    # CAST DELAY (owner, 2026-09-03): ~1 s from tap to the spell existing on the board. This path
+    # led rockets with the DEPRECATED normalised-rate flight and no cast delay, and never led the
+    # Log at all -- the corridor was drawn through the push where it STOOD, 1-2 tiles ahead of
+    # where it would be when the log appeared. Same fix as env.py: lead every target by
+    # velocity x (cast delay [+ rocket flight]) before aiming, KB walking speed for young tracks.
+    _cast_delay = float(cfg.get("env", "spell_cast_delay_s", default=1.0))
     # CONTINUOUS PERCEPTION (~10Hz): detector + team tracker run in a background thread; the act
     # loop reads a fresh snapshot at decision time instead of being blind between decisions.
     _ploop = None
@@ -428,7 +472,8 @@ def play(cfg) -> None:
                                                     dt=dt, horizon=predict_horizon)
         _ident_state["depth"] = float(ident[7]); _ident_state["t"] = now
         mem = _opp_mem.update([(d.base, d.gy) for d in dets], dt=dt)          # memory: BOTH halves (incl. staging)
-        mem[5] = _opp_elx.update(float(my_elixir), dets, now)                 # normalized opponent-elixir estimate
+        _est = _opp_elx.update(float(my_elixir), dets, now)                   # normalized opponent-elixir estimate
+        mem[5] = _est if _mem5_source == "opp_estimate" else float(my_elixir) / 10.0
         blocks = []
         if want_identity:
             blocks.append(ident)
@@ -636,10 +681,13 @@ def play(cfg) -> None:
                 tgt = weaker_princess_cell(cx, cy, aim_radius, tower_tracker.enemy_a,
                                            hp_tracker.enemy_hp, tower_tracker.enemy_alive, actions)
             if tgt is None and card_id in _rocket_ids:     # no tower/pump snap -> LEAD the tracked troops
-                impact = _rocket_base + _rocket_rate * float(np.hypot(cx - _rocket_org[0], cy - _rocket_org[1]))
-                tracks = (_ploop.enemy_tracks(time.time()) if _ploop is not None and _ploop.running
-                          else _team_tracker.enemy_tracks(time.time()))
-                tgt = spell_intercept_cell(cx, cy, tracks, impact, _lead_radius, actions)
+                # cast delay + TRUE tile-distance flight (env.py's _impact_time, same clamp)
+                d_tiles = float(np.hypot((cx - _rocket_org[0]) * 18.0, (cy - _rocket_org[1]) * 32.0))
+                impact = min(max(max(_rocket_base, _cast_delay) + d_tiles / _rocket_speed, 0.6), _spell_eval)
+                tracks = (_ploop.enemy_tracks(time.time(), True) if _ploop is not None and _ploop.running
+                          else _team_tracker.enemy_tracks(time.time(), True))
+                _lp = lead_point(cx, cy, tracks, impact, _lead_radius * 18.0, _db)
+                tgt = actions.cell_at(_lp[0], _lp[1]) if _lp is not None else None
             if tgt is not None:
                 cell = tgt
         # Defensive units (Tesla / Ice Wizard / Ronin) are NO LONGER forced to the centre: the
@@ -675,6 +723,18 @@ def play(cfg) -> None:
             depth = xbow_offense_depth_cell(cx, cy, xbow_defense_front, _deploy_top, actions)
             if depth is not None:
                 cell = depth
+        elif card_id in _log_ids:
+            # THE LOG IS A CORRIDOR, NOT A BLAST: line it up with the push instead of beside it.
+            gx, gy = cell % gw, cell // gw
+            cx, cy = actions.cell_center(gx, gy)
+            _tk = (_ploop.enemy_tracks(time.time(), True) if _ploop is not None and _ploop.running
+                   else _team_tracker.enemy_tracks(time.time(), True))
+            # where each body will be when the log APPEARS, not where it is at the tap
+            _tk = [(t[0] + vx * _cast_delay, t[1] + vy * _cast_delay) + tuple(t[2:])
+                   for t in _tk for vx, vy in (lead_velocity(t, _db),)]
+            aim = log_corridor_cell(cx, cy, _tk, actions, _log_half_w, _log_roll, _AIR_BASES)
+            if aim is not None:
+                cell = aim
         elif card_id in tesla_ids and _wincon["xy"] is not None:
             # CENTRE-PULL: sit at the far edge of the win condition's OWN aggro radius so it is dragged
             # across the middle instead of beelining the near princess tower.

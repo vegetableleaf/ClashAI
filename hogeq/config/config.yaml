@@ -229,6 +229,10 @@ observation:
   # recall-noise scoped); LIVE from the detector's tagged tracks. Flipping this WIDENS threat_dim (+12 ->
   # 46 with the detector blocks) = a FRESH train-sim + re-label, so flip it at the NEXT from-scratch run.
   use_interactions: true
+  lock_aware_targets: false  # HANDOFF §5cb: true = the sim's interaction vector + predictive canvas use the
+                             # LOCK-AWARE predictor (engine lock state, deploy time, building reach). LIVE has
+                             # no track memory today, so this is a sim-to-real seam until live supplies the
+                             # same hint (interactions.Hint). false = the memoryless read every ckpt was trained on.
   # CANONICAL RGB LIVE (2026-08-15). The image branch is rebuilt from OUR OWN detections in the
   # sim's palette instead of showing the real game pixels, so sim / BC-replay / live all present
   # ONE distribution to the conv trunk. Measured motivation: the same checkpoint never used
@@ -717,6 +721,10 @@ train:
 
   rl_epsilon_start: 0.70
   rl_epsilon_end: 0.15
+  rl_gate_tau: 0.25        # (2026-09-03, HANDOFF 5cr; hogeq 5cs.18) live GREEDY wait/play rule = the sim's: WAIT iff sigmoid(Q_play - Q_wait)
+                           # <= this. train-rl used Q(wait) >= Q(play) (= 0.5) while the sim trains/evals and play.py use
+                           # sim.ppo_gate_threshold 0.25. MEASURED on ICEBOW gatec2_m10k, 5,371 sim decisions: p(play) never reaches
+                           # 0.5 (p99 0.358) -> the 0.5 rule drops 99% of the policy's plays. Remove the key = legacy rule.
   rl_epsilon_decay_steps: 6000
   explore_wait_prob: 0.2         # while exploring, chance of a no-op (lowered so it commits to plays more)
   min_play_elixir: 2             # while exploring, don't play a card below this elixir
@@ -914,6 +922,16 @@ env:
                                  # own sim.spell_tower_aim_tiles (3.8) for a different purpose.
   rocket_origin: [0.5, 1.05]     # rocket launch point (your side, off-screen); travel time ~ distance from here
   rocket_base_time: 0.3          # fixed part of rocket flight time (s)
+  opp_mem_slot5: opp_estimate    # LIVE ONLY (2026-09-03, HANDOFF 5cr.8): what train-rl/env put in opponent-memory slot 5 (threat
+                                 # slot 31). The SIM trains the policy with OUR elixir there; "opp_estimate" (legacy live) feeds the
+                                 # opponent-elixir estimate instead, and the gate reads it as ~0 elixir -> waits. MEASURED on ICEBOW s2:
+                                 # p(play)>0.25 at >=9 elixir 1.7% vs 96.9% with "own_elixir". Set "own_elixir" for parity with the trained policy.
+  spell_cast_delay_s: 1.0        # LIVE ONLY (2026-09-03, owner): seconds between the tap and the spell
+                                 # actually existing on the board. The log/rocket lead is scaled by it
+                                 # (rocket: this + flight; log: this alone, the corridor covers the roll).
+                                 # 1.0 s for ALL spells -- owner-confirmed from online sources (2026-09-03
+                                 # 19:1x); the sim engine's spell_delay (0.4) is the one that is wrong.
+                                 # Floors rocket_base_time.
   rocket_travel_rate: 2.2        # DEPRECATED (kept so an old config still loads): seconds per
                                  # NORMALISED unit, which mixed the 18- and 32-tile axes and ranked
                                  # targets by the wrong distance -- 20.0 tiles scored a LONGER
@@ -1378,6 +1396,10 @@ sim:
   enemy_level_weights: [2, 4, 3, 2]   # ...weighted toward higher levels so the policy learns to counter L15/16 decks (14 still most common: 18/36/27/18%). YOUR deck levels are per-card in config/cards.yaml
   backline_support_prob: 0.05         # ROCKET-COMBO SETUP: per-step chance (control/beatdown opponents, early) to OPEN with a 4-6 elixir support BEHIND the king -- the scenario the agent learns to rocket (support + tower). ~half of control/beatdown matches.
   backline_support_until_s: 45.0      # only in the first N seconds (the opening); later a support comes as part of a push, not a backline drop
+  bot_attack_floor: 0.0               # OPPONENT CADENCE (HANDOFF §5cc, training bots only -- eval bots stay historical): a
+                                      # cycle/control/siege bot banks to this many elixir before it ATTACKS (defence and
+                                      # punish plays unaffected). 0 = attack on the first affordable step (the historical bot:
+                                      # 46-52% of single-elixir steps pressured, 5 s quiet median vs pros 37% / 9 s, §5bw.4).
   anywhere_deploy_prob: 0.75          # chance a bot holding a DEPLOY_ANYWHERE card (cards.yaml flag: Miner /
                                       # Goblin Drill) tunnels it straight onto a live princess tower instead of
                                       # walking it from the bridge. Without this the sim never produces the
@@ -1471,6 +1493,11 @@ sim:
   # it here is sufficient; CLASHRL_DRILL_PLAY_OUT overrides for a command-line A/B.
   drill_play_out: true
   drill_tiers: null          # null = every registered drill; else e.g. [foundational]
+  aggro_drills: false        # HANDOFF §5bt-§5bu / §5ca: true = `sim/aggro_drills.py` (tank_for_bow,
+                             # bow_lane_choice; graded on the engine's LOCK state) join the pool and the
+                             # two old aggro drills (knight_guards_the_bow, nado_the_sneaky_lock) leave it.
+                             # false = the gate05 pool exactly. HOGEQ: the aggro drills are X-Bow drills
+                             # (icebow's wincon); this deck has no bow, so leave false until hogeq drills exist.
   curriculum_start: 0.3      # opponent difficulty scalar at start: 30% ladder pool, 70% easy tier
                              # (same meta decks at OUR level 11, no adaptive counter-play)
   curriculum_full_wr: 35     # difficulty reaches full ladder when recent winrate hits this %

@@ -1,0 +1,146 @@
+{
+ "ckpt": "data\\policy_sim_ppo_best.pt",
+ "matches": 2000,
+ "rows": 2400,
+ "seed": 0,
+ "affordable_frac": 0.9058333333333334,
+ "p_play_mean_all": 0.5758482773058737,
+ "p_play_mean_affordable": 0.569732696611328,
+ "played_frac": 0.09375,
+ "elixir_mean": 2.986994047619003,
+ "elixir_ge6": 0.01875,
+ "phase_rows": [
+  1814,
+  586,
+  0
+ ],
+ "force_bank": 4.0,
+ "cost_of_plays": 2.9644444444444447,
+ "picks_by_bucket": {
+  "3-5": {
+   "n": 211,
+   "mean_cost": 2.9526066350710902,
+   "top": [
+    [
+     "mighty_miner",
+     36
+    ],
+    [
+     "hog_rider",
+     31
+    ],
+    [
+     "tesla",
+     30
+    ],
+    [
+     "ice_spirit",
+     26
+    ]
+   ]
+  },
+  ">=6": {
+   "n": 14,
+   "mean_cost": 3.142857142857143,
+   "top": [
+    [
+     "mighty_miner",
+     4
+    ],
+    [
+     "hog_rider",
+     2
+    ],
+    [
+     "tesla",
+     2
+    ],
+    [
+     "firecracker",
+     2
+    ]
+   ]
+  }
+ },
+ "card_names": [
+  "hog_rider",
+  "firecracker",
+  "firecracker_evo",
+  "mighty_miner",
+  "tesla",
+  "tesla_evo",
+  "the_log",
+  "earthquake",
+  "skeletons",
+  "ice_spirit",
+  "mighty_miner"
+ ],
+ "by_bucket": {
+  "0": {
+   "rows": 165,
+   "p_play": 0.6187344106309342,
+   "affordable": 0.0,
+   "played": 0.0
+  },
+  "1": {
+   "rows": 432,
+   "p_play": 0.6168473551256789,
+   "affordable": 0.8703703703703703,
+   "played": 0.0
+  },
+  "2": {
+   "rows": 551,
+   "p_play": 0.6110109359891358,
+   "affordable": 0.9909255898366606,
+   "played": 0.0
+  },
+  "3": {
+   "rows": 691,
+   "p_play": 0.6015224811147937,
+   "affordable": 1.0,
+   "played": 0.0
+  },
+  "4": {
+   "rows": 406,
+   "p_play": 0.5225610176257312,
+   "affordable": 1.0,
+   "played": 0.4482758620689655
+  },
+  "5": {
+   "rows": 106,
+   "p_play": 0.32978143648437735,
+   "affordable": 1.0,
+   "played": 0.27358490566037735
+  },
+  "6": {
+   "rows": 30,
+   "p_play": 0.3017077078421911,
+   "affordable": 1.0,
+   "played": 0.26666666666666666
+  },
+  "7": {
+   "rows": 14,
+   "p_play": 0.25105317894901547,
+   "affordable": 1.0,
+   "played": 0.2857142857142857
+  },
+  "8": {
+   "rows": 5,
+   "p_play": 0.2929978042840958,
+   "affordable": 1.0,
+   "played": 0.4
+  },
+  "9": {
+   "rows": 0,
+   "p_play": null,
+   "affordable": null,
+   "played": null
+  },
+  "10": {
+   "rows": 0,
+   "p_play": null,
+   "affordable": null,
+   "played": null
+  }
+ }
+}

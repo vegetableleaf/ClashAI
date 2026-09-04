@@ -218,7 +218,8 @@ def detection_channels(dets: List[Detection], db, oh: int, ow: int, warp=None) -
 
 
 def predictive_channels(units, my_towers, enemy_towers, db, oh: int, ow: int,
-                        confs=None, dt_s: float = 1.0, horizon_s: float = 8.0) -> np.ndarray:
+                        confs=None, dt_s: float = 1.0, horizon_s: float = 8.0,
+                        hints=None) -> np.ndarray:
     """Render interactions.mover_forecast into [oh, ow, N_PRED] float32: channel 0 = enemy
     units at their PREDICTED t+dt positions, 1 = ours likewise, 2 = enemy URGENCY painted at
     the CURRENT position (brightness = closeness-in-time to its target). ``units`` are
@@ -229,7 +230,7 @@ def predictive_channels(units, my_towers, enemy_towers, db, oh: int, ow: int,
     if not units:
         return ch
     fc = interactions.mover_forecast(units, my_towers, enemy_towers, db,
-                                     dt_s=dt_s, horizon_s=horizon_s)
+                                     dt_s=dt_s, horizon_s=horizon_s, hints=hints)
     rx, ry = max(1, int(ow / 18.0 * 0.55)), max(1, int(oh / 32.0 * 0.7))
     for i, ((team, base, x, y), (px, py, urg)) in enumerate(zip(units, fc)):
         conf = float(confs[i]) if confs is not None else 1.0

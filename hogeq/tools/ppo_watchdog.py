@@ -248,9 +248,71 @@ def cell_structure(ckpt: Path) -> float:
     return spread(True) / max(1e-9, base)
 
 
+class _Drift:
+    """RELATIVE-DECLINE detector: does this run still do what IT used to do?
+
+    Absolute thresholds cannot catch the failure this project actually has, because the healthy
+    P(play) for the drill regime is UNKNOWN. Measured points, all real: match-only training is
+    healthy at 0.92-0.99; an untrained net is 0.49; the drill-regime collapse lands at 0.107-0.151;
+    and the live 8k checkpoint sits at 0.171 while failing every ACT drill (banks elixir to >=6 on
+    41.7% of steps and never spends it). A band tuned to any one of those either never fires or
+    fires forever -- the shipped 0.05 never-play floor sits BELOW every number in that list, so it
+    would have watched the whole 8k run in silence.
+
+    What IS well defined is the run's own trajectory. A policy that was playing and stops has
+    declined against itself, and that is measurable without knowing what healthy looks like. This
+    also matches the shape of the failure that has actually cost this project a run: the 40k run
+    decayed GRADUALLY (ladder 33% -> 20% over ~8k episodes), it did not fall off a cliff.
+
+    Peaks are per-run and in-memory: restarting the watchdog re-arms it, which is correct -- a peak
+    carried across a trainer restart would compare two different policies.
+    """
+
+    def __init__(self, frac: float = 0.60, min_matches: int = 300, min_peak: float = 0.05,
+                 window: int = 9, min_history: int = 5, min_peak_by_label: dict | None = None):
+        self.frac, self.min_matches, self.min_peak = frac, min_matches, min_peak
+        # per-label floor: the shared 0.05 is a P(play) scale and would make a rule on a metric
+        # whose healthy value is ~0.02 (elixir>=6 share) silently dead
+        self.min_peak_by_label = dict(min_peak_by_label or {})
+        self.window, self.min_history = int(window), int(min_history)
+        self.hist: dict = {}
+
+    def check(self, label: str, value, matches: int):
+        """One verdict string, or None. Sustain is NOT handled here -- the caller's `_streak`
+        already requires two consecutive cycles before anything is posted."""
+        if value is None or matches < self.min_matches:
+            return None
+        h = self.hist.setdefault(label, [])
+        h.append(float(value))
+        del h[:-self.window]
+        if len(h) < self.min_history:
+            return None
+        # ROLLING MEDIAN, NOT A RUNNING MAX. The first version compared against the running
+        # maximum, which RATCHETS: every high excursion raises the bar, so the next normal low
+        # reads as a big decline. MEASURED on the live search run -- P(play) oscillated 0.093-0.359
+        # and returned to its highs repeatedly, and the max-based rule fired three times on a
+        # metric that was not decaying at all. A median is unmoved by the excursions.
+        srt = sorted(h[:-1]) or [value]
+        base = srt[len(srt) // 2]
+        if base < self.min_peak_by_label.get(label, self.min_peak) or value >= self.frac * base:
+            return None
+        return ("%s DRIFT -- now %.3f, which is %.0f%% below this run's rolling median of %.3f "
+                "over %d readings (matches=%d). Gradual decay is what killed the 40k run; it will "
+                "not trip an absolute floor."
+                % (label, value, 100.0 * (1.0 - value / base), base, len(h) - 1, matches))
+
+
 def verdicts(h: dict, matches: int) -> list:
     """Only conditions that have actually broken a run on this project."""
     out = []
+    # /!\ THE ALWAYS-PLAY PREMISE WAS DISPROVED (2026-08-27). --reset-gate's help still claims the
+    # gate "COLLAPSED to always-play, P(play) 0.938 min 0.911"; re-measured on the live checkpoint
+    # with a REPAIRED gate_probe (it had been raising AttributeError on every call since the
+    # spatial-cell refactor, so nothing downstream of it was ever measured) the gate is 0.171 mean
+    # and never exceeds 0.60 -- the collapse runs the OTHER WAY. Both absolute bands are kept
+    # because each still describes a real catastrophic end state, but NEITHER is calibrated against
+    # a known-healthy value, and the live failure sits in the silent gap between them. The DRIFT
+    # check above is what covers that gap; do not re-tune these two without a measurement.
     if h["p_play_mean"] > 0.90 and h["p_play_min"] > 0.80:
         out.append("GATE COLLAPSED to always-play (mean %.3f, min %.3f) -- it never holds, so the "
                    "bar cannot climb and the 6-cost win conditions stay masked."
@@ -293,6 +355,7 @@ def main() -> int:
     # probe then contradicted (x_bow affordable 1.3% of steps, played 2.4% of plays).
     # A condition now has to hold on two CONSECUTIVE cycles before it is believed.
     _streak = {}
+    _drift = _Drift(min_peak_by_label={"ELIXIR>=6": 0.002})
 
     while True:
         now = datetime.now().strftime("%H:%M")
@@ -331,6 +394,25 @@ def main() -> int:
             return 0
 
         alerts = verdicts(h, h["matches"])
+        # RELATIVE DECLINE, checked every cycle so the peak keeps updating even while healthy.
+        # ELIXIR>=6 IS NOT AN INDEPENDENT SIGNAL. Measured on this run,
+        # corr(P(play), elixir>=6) = -0.940 -- playing more banks less, which is arithmetic, not a
+        # pathology. Alerting on both turned one event into two alarms and made a healthy run look
+        # doubly sick. It stays in the printed line; it is no longer a trigger.
+        for _lbl, _val in (("GATE", h["p_play_mean"]),
+                           ("CELL STRUCTURE", h.get("cell_struct"))):
+            _d = _drift.check(_lbl, _val, h["matches"])
+            if _d:
+                alerts.append(_d)
+        # ...EXCEPT for the gate-prior run (owner ruling 2026-09-02 08:20, HANDOFF 5bf): there the
+        # elixir>=6 share is the OBJECTIVE, and the failure it exists to catch is that share
+        # collapsing (18k run: 2% -> 0.02%) whether or not P(play) moves with it. Its floor is
+        # 0.002 (the 18k run's medians were ~0.02; the shared 0.05 would never arm). The -0.94
+        # correlation above is why it is SUPPRESSED when the GATE rule already fired this cycle:
+        # one event, one alarm.
+        _e = _drift.check("ELIXIR>=6", h.get("elixir_ge6"), h["matches"])
+        if _e and not any(v.startswith("GATE DRIFT") for v in alerts):
+            alerts.append(_e)
         if n_proc == 0:
             alerts.append("PROCESS GONE -- no train-sim-ppo running (last matches=%d)." % h["matches"])
         elif idle_min >= a.quiet_min:
