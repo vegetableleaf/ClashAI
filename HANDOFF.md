@@ -2187,6 +2187,18 @@ slow one.
 
 ## 6. Open work
 
+### ⚑ OWNER RULING 2026-09-03 23:3x -- c2r collapse protocol
+"If the PPO collapses again, diagnose the cause (did the reach fix cause it or something else?) then restart the PPO with
+whatever repairs you decide to implement." Pre-registered (5cr.9): the m5k gate read on the SAME instruments as gatec2/gate05
+(greedy probe 3 seeds: elixir>=6 share + mean card cost; drills; watchdog P(play)/cell_struct). COLLAPSE = the 40k shape:
+greedy >=6 share <= 1% on all 3 seeds while gatec2_m10k reads ~3% on the same probe the same day, or watchdog P(play) mean
+< 0.05 / > 0.90, or the cell head flat/collapsed. Attribution design if it trips: c2r differs from gatec2 by FOUR things
+(reach fix, optimizer reset, RAIL-GUARD cell-head x0.0556, +N matches) -- the reach fix is testable in isolation: two
+short arms from gatec2_m10k, reach on vs off, same seed, ~2000 matches each, read on the same probe; the optimizer/rail
+pair is testable by a resume WITHOUT the rescale. Only then restart with the repair. As of m4000 (23:21) the watchdog
+reads P(play) 0.197 / >=6 3.0% / cell_struct 9175 vs the init's 0.166 / 3.1% / 9588 -- NOT collapsed; the 23:05 DRIFT
+alerts were single readings of a +-100%-noise instrument (0.5% -> 2.2 -> 1.8 -> 3.0% on the next three).
+
 ### ⚑ AGGRO ARM QUEUE (owner order 2026-09-03 07:45 + 17:3x)
 * **aggro1** RUNNING since 17:22 (§5cn): gate05 recipe from scratch + `sim.aggro_drills: true`. Read at m2k / m5k.
 * **aggro1b** (owner 17:3x, §5cn.7): same recipe + `--init data/bench/gatec2_m10k.pt`. AFTER aggro1's m5k read, never
