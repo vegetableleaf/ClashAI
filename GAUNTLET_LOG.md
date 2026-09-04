@@ -882,3 +882,10 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   Rank test on the 6-a-side arm alone U 26/36 (p~0.15) -- direction consistent, not significant; pooled 8-a-side
   (post-hoc) U 50/64 p<0.05. Live init stays `best`. Fix route proposed: distil the doctrine into the policy.
   HANDOFF §5cs.11.
+- L47 (2026-09-04 10:3x-11:0x): reverse channel-group swap (sim states + live image, one group at a time), s6 AND
+  s7, 3 pairings each: semantic canvas 3-8 is NOT the seam (0.455-0.524 vs sim 0.483); RGB carries the bulk
+  (0.36-0.45 alone); predictive <=0.05. Then: the gate is PALETTE-SENSITIVE -- same live frames re-styled through
+  DomainRand's own distribution (24 styles) read share>0.25 0.263-0.579 (s6) / 0.360-0.667 (s7); canonical = 12th /
+  29th percentile; style-median 0.439/0.465 ~ sim 0.483. Most of the residual image gap = the canonical palette is
+  a low-gate style; DR did not buy invariance. Fix candidates parked (RGB-off arm first choice) behind distillation.
+  Trap: sim "as recorded" averages over styles, live is one draw. c2r ~23k, m30k read ~14:20. HANDOFF §5cs.13.

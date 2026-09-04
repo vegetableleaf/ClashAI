@@ -10232,3 +10232,72 @@ project needs, and six of the drills it fails outright have never moved. Support
 teacher -- over more reward shaping. Does NOT establish that distillation will work, and the drills are a PROXY: aggro1
 (§5cn/5cq) produced a drill gain that did not persist, so any distillation arm must read drills + regret corpus + a
 live session, never drills alone.
+
+### 13. The image gap on the gate is mostly ARENA STYLE: the gate is palette-sensitive and the live canonical palette sits at the 12th/29th percentile of the training styles (a, two sessions)
+
+**Question.** L46 left one third of the gate gap unexplained: sim states with the whole live image dropped in read
+share>0.25 (elixir>=7) 0.317 vs 0.483 with the sim's own image. Which channel group carries it -- RGB 0-2, the
+detector-fed semantic canvas 3-8, or the predictive channels 9-11?
+
+**Instrument** (`scratchpad/gauntlet/L47/sim_with_live_groups.py`, net `policy_c2r_20260903_best.pt` = the live init;
+sim states `L45/sim_obs_gatec2m10k.npz` elixir>=7, all 145 rows every seed; live rows at elixir>=9 paired at random,
+3 pairings; same p(play) rule as 5cr.8). Results, share>0.25 on the sim states, seeds 0/1/2:
+
+| sim image with ... | s6 (57 live rows) | s7 (114 live rows) |
+|---|---|---|
+| sim as recorded | 0.483 (fixed) | 0.483 |
+| whole live obs | 0.338 / 0.366 / 0.331 | 0.310 / 0.345 / 0.290 |
+| RGB 0-2 := live | 0.421 / 0.414 / 0.448 | 0.400 / 0.414 / 0.359 |
+| semantic 3-8 := live | 0.490 / 0.510 / 0.524 | 0.476 / 0.455 / 0.476 |
+| predictive 9-11 := live | 0.469 / 0.462 / 0.434 | 0.462 / 0.448 / 0.462 |
+| live obs but RGB := sim | 0.469 / 0.455 / 0.441 | 0.407 / 0.414 / 0.372 |
+| sim, RGB zeroed | 0.648 | -- |
+| sim, canvas 3-11 zeroed | 0.324 | -- |
+
+- (a) The detector-fed **semantic canvas is NOT the seam**: dropping the live canvas into sim states reads the same as
+  or slightly above the sim's own canvas on both sessions (0.455-0.524 vs 0.483). The predictive channels cost
+  <=0.05. **RGB carries the bulk** (0.48 -> 0.36-0.45 alone; putting the sim RGB back into the live image recovers
+  0.34 -> 0.37-0.47). The parts do not add to the whole (RGB -0.06, canvas -0.03, whole -0.14): the net reads RGB
+  and canvas jointly, and a mismatched pair costs extra.
+- The live RGB is the canonical render (5cs.6): four exact colours, grass (25,80,25) / river (120,90,30) / you
+  (230,90,60) / enemy (60,60,230), 100.00% of pixels (`L47/rgb_pixel_stats_s6.txt`). The training frames are
+  `observation.domain_rand` re-styled per match (bg +-55, team +-25, gain 0.7-1.25, bias +-25, noise <=6; ON in
+  `c2r_run.yaml` and `config.yaml`); the sim dump's modal background is (0,29,0). So live = one fixed style inside
+  the training style distribution.
+
+**So is the gate style-sensitive?** (`L47/live_style_sweep.py`: the SAME live frames, palette remapped and gain/bias/
+noise applied exactly as `view.DomainRand` samples them, 24 styles; nothing but the arena look changes.)
+
+| | s6 (57 rows >=9) | s7 (114 rows >=9) |
+|---|---|---|
+| canonical (as recorded) | **0.368** | **0.421** |
+| 24 DomainRand styles: min / p25 / median / p75 / max | 0.263 / 0.399 / 0.439 / 0.491 / 0.579 | 0.360 / 0.412 / 0.465 / 0.520 / 0.667 |
+| canonical's percentile among styles | 12th | 29th |
+| single factor, bias -25 / +25 | 0.421 / 0.439 | 0.518 / 0.360 |
+| single factor, gain 0.7 / 1.25 | 0.456 / 0.421 | 0.439 / 0.447 |
+| noise 3 / 6 | 0.368 / 0.368 | -- |
+
+- (a) **The gate moves ~0.3 of share with the arena palette alone**, on identical board states, on both sessions.
+  e>=9 mean p(play) moves too (s6 0.214-0.276), so it is not a threshold artefact. Domain randomisation did NOT buy
+  palette invariance -- it bought a policy whose play rate is a function of the grass colour. The style-median on
+  live frames (0.439 / 0.465) is within ~0.03 of the sim's 0.483: **most of the residual "image gap" is that the
+  canonical palette happens to be a low-gate style**, not that the live image is malformed.
+- Does NOT establish: that a palette-invariant policy plays better (b). The sim's own numbers are already averaged
+  over styles; live is one draw from the low tail. Additive noise does nothing (0.368 both), so it is the colours
+  and the global gain/bias, not pixel noise.
+
+**Fix candidates -- PARKED behind the distillation arm (5cs.11), one change per experiment:**
+1. **RGB-off arm**: zero channels 0-2 in `SimMatchEnv` obs AND the live env (one config flag, both paths), init
+   gatec2_m10k, 2000-5000 matches; read drills (29-mean) + 3-seed >=6 probe + one live session against c2r at the
+   same match count. Removes the style axis outright; the semantic + predictive canvas already carry every unit and
+   tower. `sim, RGB zeroed` reading 0.648 is out-of-distribution evidence only -- it says the canvas alone suffices
+   for the gate to fire, not that the trained-without-RGB policy is better.
+2. Cheaper, NO training: render the live canonical frame in a fixed style near the training median (e.g. bias -25:
+   s7 0.518, s6 0.421). This is a hack -- it tunes a nuisance variable to a favourable value -- and I do not
+   recommend it; recorded so nobody rediscovers it as a "fix".
+3. Stronger DR (per-frame or wider) is the wrong direction: the CNN already failed to become invariant under
+   per-match DR; more variance without a consistency loss will not force it.
+
+**Trap.** `sim as recorded` in every L45-L47 ablation is an average over random styles while `live as recorded` is
+one style; comparing them attributes a style draw to "the live image". Any future sim-vs-live image comparison
+must either re-style the live frame across the DR distribution or render the sim frames canonical.

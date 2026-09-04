@@ -1,0 +1,41 @@
+palette covers 1.0000 of live RGB pixels
+live canonical:
+  canonical (as recorded)                            p_play(all) 0.192  e>=9 mean 0.243 share>0.25 0.368
+24 DomainRand styles:
+  grass(40, 54, 0) gain1.17 bias-23 noise4.4         p_play(all) 0.232  e>=9 mean 0.266 share>0.25 0.491
+  grass(35, 120, 25) gain0.92 bias+22 noise5.9       p_play(all) 0.167  e>=9 mean 0.245 share>0.25 0.404
+  grass(70, 119, 0) gain1.25 bias+15 noise3.0        p_play(all) 0.176  e>=9 mean 0.259 share>0.25 0.439
+  grass(53, 33, 0) gain0.94 bias-22 noise5.7         p_play(all) 0.211  e>=9 mean 0.271 share>0.25 0.526
+  grass(75, 40, 36) gain1.06 bias+12 noise2.9        p_play(all) 0.159  e>=9 mean 0.228 share>0.25 0.368
+  grass(0, 118, 68) gain0.84 bias-0 noise2.8         p_play(all) 0.174  e>=9 mean 0.252 share>0.25 0.474
+  grass(0, 76, 3) gain0.95 bias+22 noise1.9          p_play(all) 0.192  e>=9 mean 0.251 share>0.25 0.386
+  grass(35, 56, 61) gain1.24 bias-15 noise0.9        p_play(all) 0.168  e>=9 mean 0.231 share>0.25 0.421
+  grass(72, 38, 0) gain0.92 bias+24 noise4.9         p_play(all) 0.185  e>=9 mean 0.259 share>0.25 0.456
+  grass(0, 36, 20) gain1.03 bias-9 noise0.2          p_play(all) 0.223  e>=9 mean 0.260 share>0.25 0.456
+  grass(26, 121, 6) gain0.77 bias+7 noise4.0         p_play(all) 0.192  e>=9 mean 0.246 share>0.25 0.351
+  grass(38, 60, 0) gain0.86 bias-20 noise5.1         p_play(all) 0.239  e>=9 mean 0.266 share>0.25 0.509
+  grass(76, 119, 6) gain0.83 bias-16 noise2.3        p_play(all) 0.214  e>=9 mean 0.259 share>0.25 0.404
+  grass(76, 60, 6) gain1.06 bias-23 noise3.0         p_play(all) 0.217  e>=9 mean 0.276 share>0.25 0.579
+  grass(0, 97, 79) gain0.91 bias+7 noise4.3          p_play(all) 0.172  e>=9 mean 0.245 share>0.25 0.421
+  grass(38, 125, 26) gain1.14 bias+3 noise4.0        p_play(all) 0.174  e>=9 mean 0.252 share>0.25 0.439
+  grass(0, 70, 30) gain0.80 bias-9 noise2.3          p_play(all) 0.234  e>=9 mean 0.259 share>0.25 0.491
+  grass(49, 117, 37) gain0.71 bias-17 noise2.9       p_play(all) 0.225  e>=9 mean 0.255 share>0.25 0.439
+  grass(73, 106, 47) gain0.75 bias+17 noise0.8       p_play(all) 0.150  e>=9 mean 0.214 share>0.25 0.263
+  grass(39, 28, 27) gain0.74 bias+8 noise1.1         p_play(all) 0.191  e>=9 mean 0.240 share>0.25 0.351
+  grass(69, 65, 10) gain0.84 bias-21 noise0.5        p_play(all) 0.235  e>=9 mean 0.273 share>0.25 0.561
+  grass(0, 93, 0) gain1.11 bias-22 noise5.6          p_play(all) 0.216  e>=9 mean 0.265 share>0.25 0.579
+  grass(41, 70, 0) gain0.94 bias+10 noise4.9         p_play(all) 0.210  e>=9 mean 0.254 share>0.25 0.368
+  grass(0, 110, 74) gain1.01 bias+24 noise1.9        p_play(all) 0.170  e>=9 mean 0.236 share>0.25 0.439
+styles: share>0.25 min 0.263 p25 0.399 median 0.439 p75 0.491 max 0.579; canonical 0.368 = percentile 12
+single-factor sweeps (palette fixed canonical):
+  gain 0.7                                           p_play(all) 0.228  e>=9 mean 0.252 share>0.25 0.456
+  gain 0.85                                          p_play(all) 0.210  e>=9 mean 0.246 share>0.25 0.333
+  gain 1.0                                           p_play(all) 0.192  e>=9 mean 0.243 share>0.25 0.368
+  gain 1.1                                           p_play(all) 0.185  e>=9 mean 0.244 share>0.25 0.404
+  gain 1.25                                          p_play(all) 0.179  e>=9 mean 0.242 share>0.25 0.421
+  bias -25                                           p_play(all) 0.221  e>=9 mean 0.258 share>0.25 0.421
+  bias -12                                           p_play(all) 0.211  e>=9 mean 0.247 share>0.25 0.368
+  bias +12                                           p_play(all) 0.178  e>=9 mean 0.243 share>0.25 0.439
+  bias +25                                           p_play(all) 0.171  e>=9 mean 0.243 share>0.25 0.439
+  noise 3.0                                          p_play(all) 0.193  e>=9 mean 0.243 share>0.25 0.368
+  noise 6.0                                          p_play(all) 0.193  e>=9 mean 0.243 share>0.25 0.368
