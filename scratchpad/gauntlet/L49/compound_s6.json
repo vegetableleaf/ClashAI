@@ -1,0 +1,3283 @@
+[
+ {
+  "label": "nothing",
+  "tally": {
+   "fail": 47,
+   "ended": 1
+  },
+  "boards": [
+   {
+    "components": [
+     "nado_pull_the_flock_back",
+     "log_the_ground_swarm",
+     "tesla_pulls_the_wincon"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     "fail"
+    ],
+    "steps": 11,
+    "reward": -1.677,
+    "elapsed": 6.6,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "ice_wizard_behind_the_line",
+     "ignore_the_ignorable",
+     "split_lane_needs_the_centre"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     null,
+     "fail"
+    ],
+    "steps": 39,
+    "reward": -9.72,
+    "elapsed": 23.4,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "bow_never_into_the_push",
+     "ignore_the_ignorable"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     null
+    ],
+    "steps": 31,
+    "reward": -8.748,
+    "elapsed": 18.6,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "log_the_ground_swarm",
+     "log_the_barrel_on_landing",
+     "never_rocket_their_king"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     null
+    ],
+    "steps": 29,
+    "reward": -5.479,
+    "elapsed": 17.4,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "log_rolls_forward_not_backward",
+     "never_rocket_their_king",
+     "bow_punishes_the_pump"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     null,
+     "fail"
+    ],
+    "steps": 44,
+    "reward": -4.833,
+    "elapsed": 26.4,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "rocket_then_tornado",
+     "bow_punish_the_commitment"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 16,
+    "reward": -2.145,
+    "elapsed": 9.6,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "nado_the_sneaky_lock",
+     "bow_punish_the_commitment"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 16,
+    "reward": -0.66,
+    "elapsed": 9.6,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "log_the_ground_swarm",
+     "log_the_barrel_on_landing"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 11,
+    "reward": -2.111,
+    "elapsed": 6.6,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "never_rocket_their_king",
+     "ice_wizard_behind_the_line",
+     "rocket_the_two_for_one"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     "fail",
+     null
+    ],
+    "steps": 41,
+    "reward": -11.091,
+    "elapsed": 24.6,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "never_rocket_their_king",
+     "bow_punishes_the_pump",
+     "ice_wizard_behind_the_line"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     "fail",
+     "fail"
+    ],
+    "steps": 46,
+    "reward": -9.227,
+    "elapsed": 27.6,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "rocket_the_pump_on_sight",
+     "nado_pull_the_flock_back",
+     "rocket_then_tornado"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     "fail"
+    ],
+    "steps": 19,
+    "reward": -7.737,
+    "elapsed": 11.4,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "nado_clump_for_the_wizard",
+     "ice_wizard_behind_the_line"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 14,
+    "reward": -3.313,
+    "elapsed": 8.4,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "ignore_the_ignorable",
+     "log_the_ground_swarm"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     "fail"
+    ],
+    "steps": 25,
+    "reward": -3.038,
+    "elapsed": 15.0,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "ignore_the_ignorable",
+     "nado_pull_the_flock_back",
+     "bow_defends_from_the_centre"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     "fail",
+     "fail"
+    ],
+    "steps": 40,
+    "reward": -10.776,
+    "elapsed": 24.0,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "tesla_pulls_the_wincon",
+     "log_the_barrel_on_landing",
+     "rocket_the_two_for_one"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     null
+    ],
+    "steps": 30,
+    "reward": -8.221,
+    "elapsed": 18.0,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "nado_pull_the_flock_back",
+     "nado_king_activation",
+     "skeletons_kill_the_miner"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     "fail"
+    ],
+    "steps": 8,
+    "reward": -1.281,
+    "elapsed": 4.8,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "skeletons_kill_the_miner",
+     "rocket_then_tornado",
+     "log_rolls_forward_not_backward"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     "fail"
+    ],
+    "steps": 7,
+    "reward": -1.926,
+    "elapsed": 4.2,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "log_the_barrel_on_landing",
+     "nado_king_activation",
+     "nado_pull_the_flock_back"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     "fail"
+    ],
+    "steps": 11,
+    "reward": -2.275,
+    "elapsed": 6.6,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "tesla_pulls_the_wincon",
+     "bow_punishes_the_pump"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 16,
+    "reward": -0.985,
+    "elapsed": 9.6,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "nado_pull_the_flock_back",
+     "hold_the_spell_for_a_target",
+     "ignore_the_ignorable"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     null,
+     null
+    ],
+    "steps": 27,
+    "reward": -5.635,
+    "elapsed": 16.2,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "bow_punishes_the_pump",
+     "ignore_the_ignorable",
+     "tesla_pulls_the_wincon"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     null,
+     "fail"
+    ],
+    "steps": 40,
+    "reward": -4.606,
+    "elapsed": 24.0,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "log_the_barrel_on_landing",
+     "nado_the_sneaky_lock"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 13,
+    "reward": 0.053,
+    "elapsed": 7.8,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "rocket_the_pump_on_sight",
+     "never_rocket_their_king"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     null
+    ],
+    "steps": 24,
+    "reward": -1.878,
+    "elapsed": 14.4,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "ice_wizard_behind_the_line",
+     "rocket_the_pump_on_sight",
+     "bow_never_into_the_push"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     "fail"
+    ],
+    "steps": 19,
+    "reward": -3.762,
+    "elapsed": 11.4,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "split_lane_needs_the_centre",
+     "knight_guards_the_bow",
+     "bow_defends_from_the_centre"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     "fail"
+    ],
+    "steps": 25,
+    "reward": -3.717,
+    "elapsed": 15.0,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "never_rocket_their_king",
+     "ignore_the_ignorable"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     null
+    ],
+    "steps": 21,
+    "reward": -2.033,
+    "elapsed": 12.6,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "hold_the_tesla_for_their_wincon",
+     "rocket_the_two_for_one"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     null
+    ],
+    "steps": 37,
+    "reward": -6.945,
+    "elapsed": 22.2,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "rocket_the_pump_on_sight",
+     "log_the_ground_swarm"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 19,
+    "reward": -3.123,
+    "elapsed": 11.4,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "rocket_the_pump_on_sight",
+     "bow_punish_the_commitment",
+     "bow_defends_from_the_centre"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     "fail"
+    ],
+    "steps": 30,
+    "reward": -4.535,
+    "elapsed": 18.0,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "nado_pull_the_flock_back",
+     "knight_guards_the_bow"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 18,
+    "reward": -2.829,
+    "elapsed": 10.8,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "nado_clump_for_the_wizard",
+     "log_the_barrel_on_landing",
+     "rocket_then_tornado"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     "fail"
+    ],
+    "steps": 11,
+    "reward": -3.515,
+    "elapsed": 6.6,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "bow_never_into_the_push",
+     "bow_punishes_the_pump"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 18,
+    "reward": -4.02,
+    "elapsed": 10.8,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "skeletons_kill_the_miner",
+     "ignore_the_ignorable",
+     "nado_pull_the_flock_back"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     null,
+     "fail"
+    ],
+    "steps": 33,
+    "reward": -6.353,
+    "elapsed": 19.8,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "bow_never_into_the_push",
+     "log_the_ground_swarm"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 14,
+    "reward": -2.549,
+    "elapsed": 8.4,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "log_rolls_forward_not_backward",
+     "split_lane_needs_the_centre"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 8,
+    "reward": -0.232,
+    "elapsed": 4.8,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "rocket_the_two_for_one",
+     "split_lane_needs_the_centre",
+     "rocket_then_tornado"
+    ],
+    "verdict": "ended",
+    "per_component": [
+     null,
+     "fail",
+     "fail"
+    ],
+    "steps": 33,
+    "reward": -13.838,
+    "elapsed": 0.0,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "log_the_barrel_on_landing",
+     "bow_never_into_the_push"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 13,
+    "reward": -2.704,
+    "elapsed": 7.8,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "hold_the_tesla_for_their_wincon",
+     "bow_punishes_the_pump",
+     "rocket_the_two_for_one"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     null
+    ],
+    "steps": 44,
+    "reward": -10.035,
+    "elapsed": 26.4,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "ignore_the_ignorable",
+     "rocket_then_tornado"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     "fail"
+    ],
+    "steps": 27,
+    "reward": -6.566,
+    "elapsed": 16.2,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "tesla_pulls_the_wincon",
+     "bow_punish_the_commitment"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 16,
+    "reward": -0.985,
+    "elapsed": 9.6,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "log_rolls_forward_not_backward",
+     "nado_the_sneaky_lock"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 14,
+    "reward": 0.061,
+    "elapsed": 8.4,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "knight_blocks_the_charge",
+     "bow_defends_from_the_centre"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 12,
+    "reward": -1.465,
+    "elapsed": 7.2,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "bank_to_six_then_bow",
+     "tesla_pulls_the_wincon"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 19,
+    "reward": -1.282,
+    "elapsed": 11.4,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "rocket_the_pump_on_sight",
+     "bow_punishes_the_pump"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 19,
+    "reward": -1.2,
+    "elapsed": 11.4,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "never_rocket_their_king",
+     "hold_the_tesla_for_their_wincon"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     "fail"
+    ],
+    "steps": 37,
+    "reward": -8.112,
+    "elapsed": 22.2,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "nado_king_activation",
+     "tesla_pulls_the_wincon",
+     "rocket_the_two_for_one"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     null
+    ],
+    "steps": 27,
+    "reward": -7.46,
+    "elapsed": 16.2,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "knight_blocks_the_charge",
+     "rocket_the_pump_on_sight",
+     "hold_the_spell_for_a_target"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     null
+    ],
+    "steps": 31,
+    "reward": -8.041,
+    "elapsed": 18.6,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "nado_clump_for_the_wizard",
+     "bow_never_into_the_push"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 13,
+    "reward": -2.732,
+    "elapsed": 7.8,
+    "spent": 0.0
+   }
+  ],
+  "components": {
+   "nado_pull_the_flock_back|fail": 8,
+   "log_the_ground_swarm|fail": 6,
+   "tesla_pulls_the_wincon|fail": 7,
+   "ice_wizard_behind_the_line|fail": 5,
+   "ignore_the_ignorable|None": 9,
+   "split_lane_needs_the_centre|fail": 4,
+   "bow_never_into_the_push|fail": 6,
+   "log_the_barrel_on_landing|fail": 7,
+   "never_rocket_their_king|None": 7,
+   "log_rolls_forward_not_backward|fail": 4,
+   "bow_punishes_the_pump|fail": 7,
+   "rocket_then_tornado|fail": 6,
+   "bow_punish_the_commitment|fail": 4,
+   "nado_the_sneaky_lock|fail": 3,
+   "rocket_the_two_for_one|None": 6,
+   "rocket_the_pump_on_sight|fail": 7,
+   "nado_clump_for_the_wizard|fail": 3,
+   "bow_defends_from_the_centre|fail": 4,
+   "nado_king_activation|fail": 3,
+   "skeletons_kill_the_miner|fail": 3,
+   "hold_the_spell_for_a_target|None": 2,
+   "knight_guards_the_bow|fail": 2,
+   "hold_the_tesla_for_their_wincon|fail": 3,
+   "knight_blocks_the_charge|fail": 2,
+   "bank_to_six_then_bow|fail": 1
+  }
+ },
+ {
+  "label": "doctrine",
+  "tally": {
+   "fail": 31,
+   "pass": 17
+  },
+  "boards": [
+   {
+    "components": [
+     "nado_pull_the_flock_back",
+     "log_the_ground_swarm",
+     "tesla_pulls_the_wincon"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "pass",
+     "fail",
+     "fail"
+    ],
+    "steps": 2,
+    "reward": -0.064,
+    "elapsed": 1.2,
+    "spent": 2.8
+   },
+   {
+    "components": [
+     "log_the_ground_swarm",
+     "rocket_then_tornado"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 9,
+    "reward": 4.032,
+    "elapsed": 5.4,
+    "spent": 10.4
+   },
+   {
+    "components": [
+     "nado_pull_the_flock_back",
+     "tesla_pulls_the_wincon",
+     "ignore_the_ignorable"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "pass",
+     "fail",
+     null
+    ],
+    "steps": 27,
+    "reward": -2.003,
+    "elapsed": 16.2,
+    "spent": 8.1
+   },
+   {
+    "components": [
+     "knight_blocks_the_charge",
+     "rocket_the_pump_on_sight",
+     "knight_guards_the_bow"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     "fail",
+     "pass"
+    ],
+    "steps": 37,
+    "reward": 9.701,
+    "elapsed": 22.2,
+    "spent": 9.4
+   },
+   {
+    "components": [
+     "hold_the_spell_for_a_target",
+     "knight_blocks_the_charge"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 18,
+    "reward": 0.617,
+    "elapsed": 10.8,
+    "spent": 5.4
+   },
+   {
+    "components": [
+     "rocket_then_tornado",
+     "bow_defends_from_the_centre"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "fail",
+     "pass"
+    ],
+    "steps": 3,
+    "reward": 10.7,
+    "elapsed": 1.8,
+    "spent": 8.6
+   },
+   {
+    "components": [
+     "bow_punish_the_commitment",
+     "hold_the_spell_for_a_target"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "pass",
+     null
+    ],
+    "steps": 40,
+    "reward": 1.867,
+    "elapsed": 24.0,
+    "spent": 7.6
+   },
+   {
+    "components": [
+     "ice_wizard_behind_the_line",
+     "never_rocket_their_king",
+     "knight_blocks_the_charge"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "pass",
+     null,
+     "fail"
+    ],
+    "steps": 37,
+    "reward": -5.818,
+    "elapsed": 22.2,
+    "spent": 6.4
+   },
+   {
+    "components": [
+     "hold_the_tesla_for_their_wincon",
+     "log_the_ground_swarm",
+     "ice_wizard_behind_the_line"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     "pass"
+    ],
+    "steps": 10,
+    "reward": -0.317,
+    "elapsed": 6.0,
+    "spent": 8.4
+   },
+   {
+    "components": [
+     "rocket_the_pump_on_sight",
+     "knight_guards_the_bow",
+     "rocket_the_two_for_one"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "fail",
+     "pass",
+     "pass"
+    ],
+    "steps": 19,
+    "reward": 4.077,
+    "elapsed": 11.4,
+    "spent": 8.6
+   },
+   {
+    "components": [
+     "skeletons_stop_the_wall_breakers",
+     "hold_the_spell_for_a_target"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "pass",
+     "fail"
+    ],
+    "steps": 2,
+    "reward": 0.0,
+    "elapsed": 1.2,
+    "spent": 2.6
+   },
+   {
+    "components": [
+     "nado_clump_for_the_wizard",
+     "skeletons_stop_the_wall_breakers",
+     "nado_pull_the_flock_back"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     "pass"
+    ],
+    "steps": 8,
+    "reward": -1.59,
+    "elapsed": 4.8,
+    "spent": 9.4
+   },
+   {
+    "components": [
+     "log_the_ground_swarm",
+     "bow_punishes_the_pump",
+     "bank_to_six_then_bow"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     null,
+     "pass"
+    ],
+    "steps": 49,
+    "reward": 2.774,
+    "elapsed": 29.4,
+    "spent": 11.1
+   },
+   {
+    "components": [
+     "skeletons_stop_the_wall_breakers",
+     "never_rocket_their_king",
+     "bow_punishes_the_pump"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "pass",
+     "fail"
+    ],
+    "steps": 36,
+    "reward": 6.632,
+    "elapsed": 21.6,
+    "spent": 14.1
+   },
+   {
+    "components": [
+     "ignore_the_ignorable",
+     "hold_the_tesla_for_their_wincon",
+     "bow_punish_the_commitment"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     "pass"
+    ],
+    "steps": 30,
+    "reward": 3.099,
+    "elapsed": 18.0,
+    "spent": 13.9
+   },
+   {
+    "components": [
+     "hold_the_spell_for_a_target",
+     "tesla_pulls_the_wincon"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     null,
+     "pass"
+    ],
+    "steps": 27,
+    "reward": 0.345,
+    "elapsed": 16.2,
+    "spent": 5.6
+   },
+   {
+    "components": [
+     "hold_the_spell_for_a_target",
+     "rocket_the_pump_on_sight",
+     "rocket_the_two_for_one"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     null,
+     "pass",
+     "pass"
+    ],
+    "steps": 27,
+    "reward": 10.265,
+    "elapsed": 16.2,
+    "spent": 7.6
+   },
+   {
+    "components": [
+     "bow_punishes_the_pump",
+     "ice_wizard_behind_the_line"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "pass",
+     "pass"
+    ],
+    "steps": 18,
+    "reward": 1.551,
+    "elapsed": 10.8,
+    "spent": 8.6
+   },
+   {
+    "components": [
+     "never_rocket_their_king",
+     "hold_the_spell_for_a_target",
+     "knight_guards_the_bow"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "pass",
+     null,
+     "pass"
+    ],
+    "steps": 34,
+    "reward": 1.897,
+    "elapsed": 20.4,
+    "spent": 10.4
+   },
+   {
+    "components": [
+     "tesla_pulls_the_wincon",
+     "bow_defends_from_the_centre"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 16,
+    "reward": 2.415,
+    "elapsed": 9.6,
+    "spent": 9.6
+   },
+   {
+    "components": [
+     "log_the_ground_swarm",
+     "rocket_the_two_for_one",
+     "log_the_barrel_on_landing"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "pass",
+     "fail"
+    ],
+    "steps": 20,
+    "reward": 11.014,
+    "elapsed": 12.0,
+    "spent": 7.6
+   },
+   {
+    "components": [
+     "knight_blocks_the_charge",
+     "rocket_the_two_for_one",
+     "rocket_then_tornado"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     "fail",
+     "fail"
+    ],
+    "steps": 31,
+    "reward": 11.317,
+    "elapsed": 18.6,
+    "spent": 12.1
+   },
+   {
+    "components": [
+     "skeletons_stop_the_wall_breakers",
+     "bow_punish_the_commitment",
+     "rocket_the_pump_on_sight"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "pass",
+     "fail"
+    ],
+    "steps": 19,
+    "reward": 1.728,
+    "elapsed": 11.4,
+    "spent": 6.6
+   },
+   {
+    "components": [
+     "nado_the_sneaky_lock",
+     "bow_defends_from_the_centre",
+     "rocket_the_two_for_one"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     "fail"
+    ],
+    "steps": 33,
+    "reward": 4.136,
+    "elapsed": 19.8,
+    "spent": 11.4
+   },
+   {
+    "components": [
+     "bow_defends_from_the_centre",
+     "bow_punish_the_commitment"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     null
+    ],
+    "steps": 44,
+    "reward": -0.45,
+    "elapsed": 26.4,
+    "spent": 5.8
+   },
+   {
+    "components": [
+     "ignore_the_ignorable",
+     "hold_the_spell_for_a_target"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "fail",
+     "pass"
+    ],
+    "steps": 9,
+    "reward": 0.033,
+    "elapsed": 5.4,
+    "spent": 0.8
+   },
+   {
+    "components": [
+     "bank_to_six_then_bow",
+     "log_the_ground_swarm"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "fail",
+     "pass"
+    ],
+    "steps": 4,
+    "reward": 0.0,
+    "elapsed": 2.4,
+    "spent": 2.8
+   },
+   {
+    "components": [
+     "nado_clump_for_the_wizard",
+     "bow_punish_the_commitment"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     "fail"
+    ],
+    "steps": 40,
+    "reward": 4.506,
+    "elapsed": 24.0,
+    "spent": 11.4
+   },
+   {
+    "components": [
+     "bow_punish_the_commitment",
+     "nado_pull_the_flock_back",
+     "tesla_pulls_the_wincon"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "pass",
+     "fail"
+    ],
+    "steps": 16,
+    "reward": -0.6,
+    "elapsed": 9.6,
+    "spent": 9.4
+   },
+   {
+    "components": [
+     "never_rocket_their_king",
+     "bow_defends_from_the_centre"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     "fail"
+    ],
+    "steps": 40,
+    "reward": 0.956,
+    "elapsed": 24.0,
+    "spent": 5.8
+   },
+   {
+    "components": [
+     "ice_wizard_behind_the_line",
+     "rocket_the_two_for_one",
+     "ignore_the_ignorable"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "pass",
+     null,
+     "fail"
+    ],
+    "steps": 37,
+    "reward": -1.477,
+    "elapsed": 22.2,
+    "spent": 10.4
+   },
+   {
+    "components": [
+     "rocket_the_pump_on_sight",
+     "knight_guards_the_bow",
+     "tesla_pulls_the_wincon"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "fail",
+     "pass",
+     "pass"
+    ],
+    "steps": 19,
+    "reward": 0.908,
+    "elapsed": 11.4,
+    "spent": 6.6
+   },
+   {
+    "components": [
+     "never_rocket_their_king",
+     "nado_king_activation",
+     "bow_never_into_the_push"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     "fail",
+     "fail"
+    ],
+    "steps": 35,
+    "reward": 1.955,
+    "elapsed": 21.0,
+    "spent": 14.1
+   },
+   {
+    "components": [
+     "bow_punishes_the_pump",
+     "bow_punish_the_commitment"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "pass",
+     "pass"
+    ],
+    "steps": 7,
+    "reward": 1.442,
+    "elapsed": 4.2,
+    "spent": 5.8
+   },
+   {
+    "components": [
+     "bow_defends_from_the_centre",
+     "never_rocket_their_king",
+     "rocket_the_two_for_one"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "pass",
+     "fail"
+    ],
+    "steps": 28,
+    "reward": 4.864,
+    "elapsed": 16.8,
+    "spent": 11.6
+   },
+   {
+    "components": [
+     "log_rolls_forward_not_backward",
+     "bow_defends_from_the_centre"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "fail",
+     "pass"
+    ],
+    "steps": 6,
+    "reward": 2.605,
+    "elapsed": 3.6,
+    "spent": 7.6
+   },
+   {
+    "components": [
+     "knight_blocks_the_charge",
+     "bow_defends_from_the_centre",
+     "nado_king_activation"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     "fail"
+    ],
+    "steps": 16,
+    "reward": -1.545,
+    "elapsed": 9.6,
+    "spent": 3.6
+   },
+   {
+    "components": [
+     "knight_guards_the_bow",
+     "rocket_the_two_for_one",
+     "split_lane_needs_the_centre"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "pass",
+     "pass",
+     "fail"
+    ],
+    "steps": 35,
+    "reward": 3.959,
+    "elapsed": 21.0,
+    "spent": 12.4
+   },
+   {
+    "components": [
+     "rocket_then_tornado",
+     "rocket_the_pump_on_sight"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "fail",
+     "pass"
+    ],
+    "steps": 2,
+    "reward": 9.0,
+    "elapsed": 1.2,
+    "spent": 8.6
+   },
+   {
+    "components": [
+     "nado_pull_the_flock_back",
+     "bank_to_six_then_bow",
+     "log_rolls_forward_not_backward"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "pass",
+     "fail",
+     "fail"
+    ],
+    "steps": 3,
+    "reward": 1.895,
+    "elapsed": 1.8,
+    "spent": 5.6
+   },
+   {
+    "components": [
+     "bow_never_into_the_push",
+     "tesla_pulls_the_wincon",
+     "log_the_barrel_on_landing"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "fail",
+     "pass",
+     "pass"
+    ],
+    "steps": 11,
+    "reward": 0.456,
+    "elapsed": 6.6,
+    "spent": 11.4
+   },
+   {
+    "components": [
+     "tesla_pulls_the_wincon",
+     "bow_punishes_the_pump"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "fail",
+     "pass"
+    ],
+    "steps": 17,
+    "reward": 2.529,
+    "elapsed": 10.2,
+    "spent": 9.6
+   },
+   {
+    "components": [
+     "ice_wizard_behind_the_line",
+     "rocket_the_pump_on_sight",
+     "hold_the_spell_for_a_target"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "pass",
+     "fail",
+     null
+    ],
+    "steps": 37,
+    "reward": 8.042,
+    "elapsed": 22.2,
+    "spent": 10.4
+   },
+   {
+    "components": [
+     "log_rolls_forward_not_backward",
+     "rocket_the_pump_on_sight"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 10,
+    "reward": 9.871,
+    "elapsed": 6.0,
+    "spent": 7.6
+   },
+   {
+    "components": [
+     "bank_to_six_then_bow",
+     "hold_the_spell_for_a_target",
+     "log_rolls_forward_not_backward"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "pass",
+     null,
+     "pass"
+    ],
+    "steps": 44,
+    "reward": 0.977,
+    "elapsed": 26.4,
+    "spent": 8.4
+   },
+   {
+    "components": [
+     "nado_king_activation",
+     "hold_the_spell_for_a_target",
+     "tesla_pulls_the_wincon"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     null,
+     "fail"
+    ],
+    "steps": 29,
+    "reward": 0.07,
+    "elapsed": 17.4,
+    "spent": 8.4
+   },
+   {
+    "components": [
+     "ignore_the_ignorable",
+     "never_rocket_their_king"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     null
+    ],
+    "steps": 21,
+    "reward": 1.104,
+    "elapsed": 12.6,
+    "spent": 8.1
+   },
+   {
+    "components": [
+     "skeletons_stop_the_wall_breakers",
+     "rocket_the_pump_on_sight",
+     "split_lane_needs_the_centre"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "pass",
+     "fail",
+     null
+    ],
+    "steps": 34,
+    "reward": 2.05,
+    "elapsed": 20.4,
+    "spent": 9.1
+   }
+  ],
+  "components": {
+   "nado_pull_the_flock_back|pass": 5,
+   "log_the_ground_swarm|fail": 5,
+   "tesla_pulls_the_wincon|fail": 6,
+   "rocket_then_tornado|fail": 4,
+   "ignore_the_ignorable|None": 2,
+   "knight_blocks_the_charge|None": 2,
+   "rocket_the_pump_on_sight|fail": 7,
+   "knight_guards_the_bow|pass": 5,
+   "hold_the_spell_for_a_target|fail": 2,
+   "knight_blocks_the_charge|fail": 3,
+   "bow_defends_from_the_centre|pass": 2,
+   "bow_punish_the_commitment|pass": 4,
+   "hold_the_spell_for_a_target|None": 7,
+   "ice_wizard_behind_the_line|pass": 5,
+   "never_rocket_their_king|None": 4,
+   "hold_the_tesla_for_their_wincon|fail": 2,
+   "rocket_the_two_for_one|pass": 4,
+   "skeletons_stop_the_wall_breakers|pass": 2,
+   "nado_clump_for_the_wizard|fail": 1,
+   "skeletons_stop_the_wall_breakers|fail": 3,
+   "bow_punishes_the_pump|None": 1,
+   "bank_to_six_then_bow|pass": 2,
+   "never_rocket_their_king|pass": 3,
+   "bow_punishes_the_pump|fail": 1,
+   "ignore_the_ignorable|fail": 3,
+   "tesla_pulls_the_wincon|pass": 3,
+   "rocket_the_pump_on_sight|pass": 2,
+   "bow_punishes_the_pump|pass": 3,
+   "bow_defends_from_the_centre|fail": 6,
+   "log_the_barrel_on_landing|fail": 1,
+   "rocket_the_two_for_one|fail": 3,
+   "nado_the_sneaky_lock|fail": 1,
+   "bow_punish_the_commitment|None": 1,
+   "hold_the_spell_for_a_target|pass": 1,
+   "bank_to_six_then_bow|fail": 2,
+   "log_the_ground_swarm|pass": 1,
+   "nado_clump_for_the_wizard|None": 1,
+   "bow_punish_the_commitment|fail": 2,
+   "rocket_the_two_for_one|None": 1,
+   "nado_king_activation|fail": 3,
+   "bow_never_into_the_push|fail": 2,
+   "log_rolls_forward_not_backward|fail": 3,
+   "split_lane_needs_the_centre|fail": 1,
+   "log_the_barrel_on_landing|pass": 1,
+   "log_rolls_forward_not_backward|pass": 1,
+   "split_lane_needs_the_centre|None": 1
+  }
+ },
+ {
+  "label": "c2r_m20k",
+  "tally": {
+   "fail": 34,
+   "pass": 14
+  },
+  "boards": [
+   {
+    "components": [
+     "nado_pull_the_flock_back",
+     "log_the_ground_swarm",
+     "tesla_pulls_the_wincon"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "pass",
+     "fail",
+     "fail"
+    ],
+    "steps": 3,
+    "reward": 1.896,
+    "elapsed": 1.8,
+    "spent": 5.6
+   },
+   {
+    "components": [
+     "nado_king_activation",
+     "skeletons_stop_the_wall_breakers"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 10,
+    "reward": 0.222,
+    "elapsed": 6.0,
+    "spent": 5.6
+   },
+   {
+    "components": [
+     "bank_to_six_then_bow",
+     "knight_guards_the_bow"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "pass",
+     "pass"
+    ],
+    "steps": 5,
+    "reward": 1.129,
+    "elapsed": 3.0,
+    "spent": 2.8
+   },
+   {
+    "components": [
+     "log_the_barrel_on_landing",
+     "bow_defends_from_the_centre"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 28,
+    "reward": -3.29,
+    "elapsed": 16.8,
+    "spent": 7.6
+   },
+   {
+    "components": [
+     "bank_to_six_then_bow",
+     "rocket_the_two_for_one"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 10,
+    "reward": 1.0,
+    "elapsed": 6.0,
+    "spent": 2.8
+   },
+   {
+    "components": [
+     "rocket_then_tornado",
+     "nado_the_sneaky_lock"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "fail",
+     "pass"
+    ],
+    "steps": 14,
+    "reward": -0.263,
+    "elapsed": 8.4,
+    "spent": 11.4
+   },
+   {
+    "components": [
+     "never_rocket_their_king",
+     "rocket_the_two_for_one"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     null
+    ],
+    "steps": 25,
+    "reward": 9.0,
+    "elapsed": 15.0,
+    "spent": 5.8
+   },
+   {
+    "components": [
+     "rocket_the_pump_on_sight",
+     "rocket_the_two_for_one"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     null
+    ],
+    "steps": 24,
+    "reward": 5.967,
+    "elapsed": 14.4,
+    "spent": 5.8
+   },
+   {
+    "components": [
+     "nado_pull_the_flock_back",
+     "skeletons_stop_the_wall_breakers",
+     "ice_wizard_behind_the_line"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "pass",
+     "fail",
+     "fail"
+    ],
+    "steps": 5,
+    "reward": -0.969,
+    "elapsed": 3.0,
+    "spent": 7.4
+   },
+   {
+    "components": [
+     "knight_guards_the_bow",
+     "nado_king_activation",
+     "never_rocket_their_king"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "pass",
+     "fail",
+     null
+    ],
+    "steps": 34,
+    "reward": 3.597,
+    "elapsed": 20.4,
+    "spent": 11.4
+   },
+   {
+    "components": [
+     "nado_clump_for_the_wizard",
+     "split_lane_needs_the_centre",
+     "bow_never_into_the_push"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     "fail"
+    ],
+    "steps": 22,
+    "reward": 1.13,
+    "elapsed": 13.2,
+    "spent": 12.1
+   },
+   {
+    "components": [
+     "rocket_the_two_for_one",
+     "tesla_pulls_the_wincon"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "fail",
+     "pass"
+    ],
+    "steps": 2,
+    "reward": 0.0,
+    "elapsed": 1.2,
+    "spent": 3.8
+   },
+   {
+    "components": [
+     "split_lane_needs_the_centre",
+     "tesla_pulls_the_wincon",
+     "log_the_ground_swarm"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "pass",
+     "fail"
+    ],
+    "steps": 13,
+    "reward": 0.587,
+    "elapsed": 7.8,
+    "spent": 5.6
+   },
+   {
+    "components": [
+     "never_rocket_their_king",
+     "split_lane_needs_the_centre",
+     "skeletons_stop_the_wall_breakers"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     "fail",
+     "fail"
+    ],
+    "steps": 39,
+    "reward": 2.92,
+    "elapsed": 23.4,
+    "spent": 11.1
+   },
+   {
+    "components": [
+     "tesla_pulls_the_wincon",
+     "knight_guards_the_bow",
+     "nado_the_sneaky_lock"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "steps": 14,
+    "reward": 0.858,
+    "elapsed": 8.4,
+    "spent": 5.6
+   },
+   {
+    "components": [
+     "hold_the_spell_for_a_target",
+     "knight_blocks_the_charge"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "fail",
+     "pass"
+    ],
+    "steps": 3,
+    "reward": 0.0,
+    "elapsed": 1.8,
+    "spent": 5.4
+   },
+   {
+    "components": [
+     "tesla_pulls_the_wincon",
+     "bow_punishes_the_pump",
+     "log_rolls_forward_not_backward"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "pass",
+     "fail"
+    ],
+    "steps": 12,
+    "reward": 2.338,
+    "elapsed": 7.2,
+    "spent": 7.6
+   },
+   {
+    "components": [
+     "hold_the_tesla_for_their_wincon",
+     "hold_the_spell_for_a_target",
+     "bow_defends_from_the_centre"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     null,
+     "pass"
+    ],
+    "steps": 43,
+    "reward": -2.864,
+    "elapsed": 25.8,
+    "spent": 11.4
+   },
+   {
+    "components": [
+     "nado_clump_for_the_wizard",
+     "tesla_pulls_the_wincon",
+     "log_rolls_forward_not_backward"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "pass",
+     "fail"
+    ],
+    "steps": 10,
+    "reward": -2.925,
+    "elapsed": 6.0,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "never_rocket_their_king",
+     "nado_the_sneaky_lock"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     "fail"
+    ],
+    "steps": 37,
+    "reward": -1.24,
+    "elapsed": 22.2,
+    "spent": 11.4
+   },
+   {
+    "components": [
+     "tesla_pulls_the_wincon",
+     "ice_wizard_behind_the_line"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "fail",
+     "pass"
+    ],
+    "steps": 8,
+    "reward": 0.629,
+    "elapsed": 4.8,
+    "spent": 6.6
+   },
+   {
+    "components": [
+     "log_the_barrel_on_landing",
+     "hold_the_tesla_for_their_wincon",
+     "bow_punish_the_commitment"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "pass",
+     "fail",
+     "fail"
+    ],
+    "steps": 16,
+    "reward": 0.145,
+    "elapsed": 9.6,
+    "spent": 5.6
+   },
+   {
+    "components": [
+     "tesla_pulls_the_wincon",
+     "never_rocket_their_king"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     null
+    ],
+    "steps": 27,
+    "reward": 7.847,
+    "elapsed": 16.2,
+    "spent": 9.6
+   },
+   {
+    "components": [
+     "rocket_the_pump_on_sight",
+     "split_lane_needs_the_centre",
+     "nado_pull_the_flock_back"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     "fail"
+    ],
+    "steps": 13,
+    "reward": -0.538,
+    "elapsed": 7.8,
+    "spent": 5.8
+   },
+   {
+    "components": [
+     "split_lane_needs_the_centre",
+     "nado_pull_the_flock_back",
+     "ignore_the_ignorable"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "pass",
+     "pass"
+    ],
+    "steps": 31,
+    "reward": 2.469,
+    "elapsed": 18.6,
+    "spent": 8.1
+   },
+   {
+    "components": [
+     "log_rolls_forward_not_backward",
+     "tesla_pulls_the_wincon"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 3,
+    "reward": 0.178,
+    "elapsed": 1.8,
+    "spent": 5.6
+   },
+   {
+    "components": [
+     "rocket_the_pump_on_sight",
+     "tesla_pulls_the_wincon"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "fail",
+     "pass"
+    ],
+    "steps": 12,
+    "reward": 0.979,
+    "elapsed": 7.2,
+    "spent": 9.6
+   },
+   {
+    "components": [
+     "tesla_pulls_the_wincon",
+     "nado_clump_for_the_wizard",
+     "bow_never_into_the_push"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     "fail"
+    ],
+    "steps": 16,
+    "reward": -0.615,
+    "elapsed": 9.6,
+    "spent": 8.4
+   },
+   {
+    "components": [
+     "bow_punishes_the_pump",
+     "rocket_the_pump_on_sight",
+     "tesla_pulls_the_wincon"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     "pass"
+    ],
+    "steps": 19,
+    "reward": 1.684,
+    "elapsed": 11.4,
+    "spent": 9.6
+   },
+   {
+    "components": [
+     "skeletons_kill_the_miner",
+     "rocket_the_two_for_one"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "pass",
+     null
+    ],
+    "steps": 25,
+    "reward": -0.367,
+    "elapsed": 15.0,
+    "spent": 6.6
+   },
+   {
+    "components": [
+     "nado_pull_the_flock_back",
+     "bow_defends_from_the_centre"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "pass",
+     "fail"
+    ],
+    "steps": 6,
+    "reward": 0.481,
+    "elapsed": 3.6,
+    "spent": 2.8
+   },
+   {
+    "components": [
+     "log_the_barrel_on_landing",
+     "bow_punish_the_commitment",
+     "split_lane_needs_the_centre"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     null,
+     "fail"
+    ],
+    "steps": 45,
+    "reward": -1.999,
+    "elapsed": 27.0,
+    "spent": 11.4
+   },
+   {
+    "components": [
+     "split_lane_needs_the_centre",
+     "skeletons_kill_the_miner",
+     "nado_clump_for_the_wizard"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     "pass"
+    ],
+    "steps": 27,
+    "reward": -0.068,
+    "elapsed": 16.2,
+    "spent": 10.1
+   },
+   {
+    "components": [
+     "skeletons_stop_the_wall_breakers",
+     "never_rocket_their_king",
+     "hold_the_spell_for_a_target"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "pass",
+     null,
+     "fail"
+    ],
+    "steps": 26,
+    "reward": 3.159,
+    "elapsed": 15.6,
+    "spent": 11.1
+   },
+   {
+    "components": [
+     "log_rolls_forward_not_backward",
+     "ice_wizard_behind_the_line",
+     "rocket_the_two_for_one"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     null
+    ],
+    "steps": 38,
+    "reward": -0.34,
+    "elapsed": 22.8,
+    "spent": 10.4
+   },
+   {
+    "components": [
+     "nado_pull_the_flock_back",
+     "rocket_the_two_for_one"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     null
+    ],
+    "steps": 27,
+    "reward": 4.834,
+    "elapsed": 16.2,
+    "spent": 8.6
+   },
+   {
+    "components": [
+     "hold_the_tesla_for_their_wincon",
+     "knight_guards_the_bow",
+     "skeletons_stop_the_wall_breakers"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "fail",
+     "pass",
+     "pass"
+    ],
+    "steps": 6,
+    "reward": 0.272,
+    "elapsed": 3.6,
+    "spent": 9.1
+   },
+   {
+    "components": [
+     "ignore_the_ignorable",
+     "log_the_ground_swarm",
+     "bow_punishes_the_pump"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     "fail",
+     "fail"
+    ],
+    "steps": 46,
+    "reward": 0.735,
+    "elapsed": 27.6,
+    "spent": 13.9
+   },
+   {
+    "components": [
+     "nado_the_sneaky_lock",
+     "bow_punish_the_commitment"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "pass",
+     "pass"
+    ],
+    "steps": 13,
+    "reward": 0.482,
+    "elapsed": 7.8,
+    "spent": 5.6
+   },
+   {
+    "components": [
+     "nado_clump_for_the_wizard",
+     "bank_to_six_then_bow"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "pass",
+     "fail"
+    ],
+    "steps": 29,
+    "reward": -1.777,
+    "elapsed": 17.4,
+    "spent": 12.9
+   },
+   {
+    "components": [
+     "hold_the_tesla_for_their_wincon",
+     "bow_never_into_the_push"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "fail",
+     "pass"
+    ],
+    "steps": 29,
+    "reward": -1.291,
+    "elapsed": 17.4,
+    "spent": 9.4
+   },
+   {
+    "components": [
+     "rocket_the_pump_on_sight",
+     "knight_guards_the_bow",
+     "log_the_ground_swarm"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "pass",
+     null
+    ],
+    "steps": 34,
+    "reward": 2.34,
+    "elapsed": 20.4,
+    "spent": 4.6
+   },
+   {
+    "components": [
+     "rocket_the_pump_on_sight",
+     "bow_defends_from_the_centre"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 35,
+    "reward": 3.357,
+    "elapsed": 21.0,
+    "spent": 11.6
+   },
+   {
+    "components": [
+     "ignore_the_ignorable",
+     "rocket_then_tornado"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "pass",
+     "fail"
+    ],
+    "steps": 15,
+    "reward": -0.095,
+    "elapsed": 9.0,
+    "spent": 10.9
+   },
+   {
+    "components": [
+     "skeletons_stop_the_wall_breakers",
+     "rocket_then_tornado",
+     "never_rocket_their_king"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     null
+    ],
+    "steps": 32,
+    "reward": 4.018,
+    "elapsed": 19.2,
+    "spent": 13.9
+   },
+   {
+    "components": [
+     "split_lane_needs_the_centre",
+     "rocket_the_pump_on_sight"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     "fail"
+    ],
+    "steps": 34,
+    "reward": -0.212,
+    "elapsed": 20.4,
+    "spent": 9.6
+   },
+   {
+    "components": [
+     "rocket_the_pump_on_sight",
+     "log_rolls_forward_not_backward"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 19,
+    "reward": 1.604,
+    "elapsed": 11.4,
+    "spent": 7.6
+   },
+   {
+    "components": [
+     "bow_defends_from_the_centre",
+     "bank_to_six_then_bow",
+     "nado_king_activation"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     "fail",
+     "fail"
+    ],
+    "steps": 45,
+    "reward": 0.729,
+    "elapsed": 27.0,
+    "spent": 9.1
+   }
+  ],
+  "components": {
+   "nado_pull_the_flock_back|pass": 4,
+   "log_the_ground_swarm|fail": 3,
+   "tesla_pulls_the_wincon|fail": 6,
+   "nado_king_activation|fail": 3,
+   "skeletons_stop_the_wall_breakers|fail": 4,
+   "bank_to_six_then_bow|pass": 1,
+   "knight_guards_the_bow|pass": 5,
+   "log_the_barrel_on_landing|fail": 1,
+   "bow_defends_from_the_centre|fail": 3,
+   "bank_to_six_then_bow|fail": 3,
+   "rocket_the_two_for_one|fail": 2,
+   "rocket_then_tornado|fail": 3,
+   "nado_the_sneaky_lock|pass": 3,
+   "never_rocket_their_king|None": 7,
+   "rocket_the_two_for_one|None": 5,
+   "rocket_the_pump_on_sight|fail": 8,
+   "ice_wizard_behind_the_line|fail": 2,
+   "nado_clump_for_the_wizard|fail": 3,
+   "split_lane_needs_the_centre|fail": 7,
+   "bow_never_into_the_push|fail": 2,
+   "tesla_pulls_the_wincon|pass": 6,
+   "hold_the_spell_for_a_target|fail": 2,
+   "knight_blocks_the_charge|pass": 1,
+   "bow_punishes_the_pump|pass": 1,
+   "log_rolls_forward_not_backward|fail": 5,
+   "hold_the_tesla_for_their_wincon|fail": 4,
+   "hold_the_spell_for_a_target|None": 1,
+   "bow_defends_from_the_centre|pass": 1,
+   "nado_the_sneaky_lock|fail": 1,
+   "ice_wizard_behind_the_line|pass": 1,
+   "log_the_barrel_on_landing|pass": 1,
+   "bow_punish_the_commitment|fail": 1,
+   "nado_pull_the_flock_back|fail": 2,
+   "ignore_the_ignorable|pass": 2,
+   "bow_punishes_the_pump|fail": 2,
+   "skeletons_kill_the_miner|pass": 1,
+   "log_the_barrel_on_landing|None": 1,
+   "bow_punish_the_commitment|None": 1,
+   "skeletons_kill_the_miner|fail": 1,
+   "nado_clump_for_the_wizard|pass": 2,
+   "skeletons_stop_the_wall_breakers|pass": 2,
+   "ignore_the_ignorable|None": 1,
+   "bow_punish_the_commitment|pass": 1,
+   "bow_never_into_the_push|pass": 1,
+   "log_the_ground_swarm|None": 1,
+   "split_lane_needs_the_centre|None": 1,
+   "bow_defends_from_the_centre|None": 1
+  }
+ },
+ {
+  "label": "gatec2_m10k",
+  "tally": {
+   "fail": 34,
+   "pass": 13,
+   "ended": 1
+  },
+  "boards": [
+   {
+    "components": [
+     "nado_pull_the_flock_back",
+     "log_the_ground_swarm",
+     "tesla_pulls_the_wincon"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     "fail"
+    ],
+    "steps": 13,
+    "reward": 1.532,
+    "elapsed": 7.8,
+    "spent": 6.6
+   },
+   {
+    "components": [
+     "log_the_barrel_on_landing",
+     "tesla_pulls_the_wincon",
+     "rocket_then_tornado"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     "fail"
+    ],
+    "steps": 11,
+    "reward": 5.847,
+    "elapsed": 6.6,
+    "spent": 10.4
+   },
+   {
+    "components": [
+     "ignore_the_ignorable",
+     "bow_punishes_the_pump",
+     "nado_king_activation"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     "fail",
+     null
+    ],
+    "steps": 42,
+    "reward": 1.615,
+    "elapsed": 25.2,
+    "spent": 13.9
+   },
+   {
+    "components": [
+     "tesla_pulls_the_wincon",
+     "nado_king_activation"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 10,
+    "reward": -0.06,
+    "elapsed": 6.0,
+    "spent": 3.8
+   },
+   {
+    "components": [
+     "nado_clump_for_the_wizard",
+     "nado_pull_the_flock_back"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "pass"
+    ],
+    "steps": 7,
+    "reward": -0.474,
+    "elapsed": 4.2,
+    "spent": 5.6
+   },
+   {
+    "components": [
+     "skeletons_kill_the_miner",
+     "bow_never_into_the_push",
+     "hold_the_spell_for_a_target"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     null
+    ],
+    "steps": 31,
+    "reward": -8.657,
+    "elapsed": 18.6,
+    "spent": 2.8
+   },
+   {
+    "components": [
+     "rocket_the_two_for_one",
+     "never_rocket_their_king",
+     "log_the_ground_swarm"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     null,
+     "fail"
+    ],
+    "steps": 22,
+    "reward": 11.116,
+    "elapsed": 13.2,
+    "spent": 7.6
+   },
+   {
+    "components": [
+     "rocket_then_tornado",
+     "rocket_the_pump_on_sight"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "fail",
+     "pass"
+    ],
+    "steps": 9,
+    "reward": 2.818,
+    "elapsed": 5.4,
+    "spent": 8.6
+   },
+   {
+    "components": [
+     "tesla_pulls_the_wincon",
+     "nado_pull_the_flock_back"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 11,
+    "reward": -0.64,
+    "elapsed": 6.6,
+    "spent": 6.6
+   },
+   {
+    "components": [
+     "knight_guards_the_bow",
+     "ice_wizard_behind_the_line"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "pass",
+     "pass"
+    ],
+    "steps": 3,
+    "reward": 0.036,
+    "elapsed": 1.8,
+    "spent": 5.6
+   },
+   {
+    "components": [
+     "bow_punishes_the_pump",
+     "bow_punish_the_commitment",
+     "never_rocket_their_king"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "pass",
+     "pass",
+     "pass"
+    ],
+    "steps": 22,
+    "reward": 2.841,
+    "elapsed": 13.2,
+    "spent": 11.6
+   },
+   {
+    "components": [
+     "skeletons_kill_the_miner",
+     "rocket_the_pump_on_sight",
+     "rocket_then_tornado"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "pass",
+     "fail",
+     "fail"
+    ],
+    "steps": 19,
+    "reward": -0.635,
+    "elapsed": 11.4,
+    "spent": 9.4
+   },
+   {
+    "components": [
+     "split_lane_needs_the_centre",
+     "hold_the_spell_for_a_target",
+     "nado_pull_the_flock_back"
+    ],
+    "verdict": "ended",
+    "per_component": [
+     "fail",
+     null,
+     "fail"
+    ],
+    "steps": 33,
+    "reward": -10.807,
+    "elapsed": 0.0,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "never_rocket_their_king",
+     "split_lane_needs_the_centre",
+     "bow_punish_the_commitment"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     "fail",
+     "fail"
+    ],
+    "steps": 40,
+    "reward": 7.041,
+    "elapsed": 24.0,
+    "spent": 9.6
+   },
+   {
+    "components": [
+     "hold_the_tesla_for_their_wincon",
+     "bow_defends_from_the_centre"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "fail",
+     "pass"
+    ],
+    "steps": 4,
+    "reward": 0.0,
+    "elapsed": 2.4,
+    "spent": 3.8
+   },
+   {
+    "components": [
+     "hold_the_spell_for_a_target",
+     "split_lane_needs_the_centre"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     "pass"
+    ],
+    "steps": 38,
+    "reward": -1.527,
+    "elapsed": 22.8,
+    "spent": 3.8
+   },
+   {
+    "components": [
+     "bow_defends_from_the_centre",
+     "nado_pull_the_flock_back",
+     "ice_wizard_behind_the_line"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "fail",
+     "pass",
+     "pass"
+    ],
+    "steps": 4,
+    "reward": 0.998,
+    "elapsed": 2.4,
+    "spent": 5.6
+   },
+   {
+    "components": [
+     "nado_king_activation",
+     "nado_the_sneaky_lock"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "fail",
+     "pass"
+    ],
+    "steps": 25,
+    "reward": 0.325,
+    "elapsed": 15.0,
+    "spent": 5.6
+   },
+   {
+    "components": [
+     "never_rocket_their_king",
+     "rocket_the_two_for_one"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     null
+    ],
+    "steps": 21,
+    "reward": 8.676,
+    "elapsed": 12.6,
+    "spent": 5.8
+   },
+   {
+    "components": [
+     "knight_blocks_the_charge",
+     "rocket_then_tornado"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 17,
+    "reward": 9.339,
+    "elapsed": 10.2,
+    "spent": 9.4
+   },
+   {
+    "components": [
+     "log_the_ground_swarm",
+     "rocket_the_pump_on_sight"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     null,
+     "pass"
+    ],
+    "steps": 27,
+    "reward": 1.681,
+    "elapsed": 16.2,
+    "spent": 7.6
+   },
+   {
+    "components": [
+     "knight_guards_the_bow",
+     "knight_blocks_the_charge"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "pass",
+     "fail"
+    ],
+    "steps": 14,
+    "reward": 0.426,
+    "elapsed": 8.4,
+    "spent": 3.6
+   },
+   {
+    "components": [
+     "rocket_the_two_for_one",
+     "nado_clump_for_the_wizard"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "pass",
+     "fail"
+    ],
+    "steps": 27,
+    "reward": 7.723,
+    "elapsed": 16.2,
+    "spent": 11.4
+   },
+   {
+    "components": [
+     "log_the_ground_swarm",
+     "ice_wizard_behind_the_line"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "fail",
+     "pass"
+    ],
+    "steps": 12,
+    "reward": 1.786,
+    "elapsed": 7.2,
+    "spent": 4.6
+   },
+   {
+    "components": [
+     "nado_the_sneaky_lock",
+     "bank_to_six_then_bow"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "pass",
+     "pass"
+    ],
+    "steps": 11,
+    "reward": 1.453,
+    "elapsed": 6.6,
+    "spent": 6.6
+   },
+   {
+    "components": [
+     "bank_to_six_then_bow",
+     "hold_the_tesla_for_their_wincon"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 24,
+    "reward": -2.768,
+    "elapsed": 14.4,
+    "spent": 0.0
+   },
+   {
+    "components": [
+     "ignore_the_ignorable",
+     "log_the_ground_swarm"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "pass",
+     "fail"
+    ],
+    "steps": 17,
+    "reward": 1.067,
+    "elapsed": 10.2,
+    "spent": 8.1
+   },
+   {
+    "components": [
+     "ice_wizard_behind_the_line",
+     "rocket_the_two_for_one",
+     "ignore_the_ignorable"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "pass",
+     "fail",
+     null
+    ],
+    "steps": 37,
+    "reward": 2.897,
+    "elapsed": 22.2,
+    "spent": 13.9
+   },
+   {
+    "components": [
+     "rocket_the_pump_on_sight",
+     "bow_defends_from_the_centre"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 35,
+    "reward": 5.045,
+    "elapsed": 21.0,
+    "spent": 11.6
+   },
+   {
+    "components": [
+     "log_the_ground_swarm",
+     "log_the_barrel_on_landing"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 15,
+    "reward": 1.711,
+    "elapsed": 9.0,
+    "spent": 1.8
+   },
+   {
+    "components": [
+     "log_the_ground_swarm",
+     "rocket_the_pump_on_sight"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "pass",
+     "pass"
+    ],
+    "steps": 7,
+    "reward": 4.2,
+    "elapsed": 4.2,
+    "spent": 7.6
+   },
+   {
+    "components": [
+     "nado_king_activation",
+     "nado_clump_for_the_wizard"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 19,
+    "reward": 0.35,
+    "elapsed": 11.4,
+    "spent": 5.6
+   },
+   {
+    "components": [
+     "rocket_the_two_for_one",
+     "bank_to_six_then_bow",
+     "skeletons_stop_the_wall_breakers"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     "pass"
+    ],
+    "steps": 25,
+    "reward": 1.933,
+    "elapsed": 15.0,
+    "spent": 9.1
+   },
+   {
+    "components": [
+     "rocket_the_two_for_one",
+     "hold_the_spell_for_a_target",
+     "bow_never_into_the_push"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     null
+    ],
+    "steps": 32,
+    "reward": -0.844,
+    "elapsed": 19.2,
+    "spent": 11.1
+   },
+   {
+    "components": [
+     "rocket_the_pump_on_sight",
+     "split_lane_needs_the_centre"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     null
+    ],
+    "steps": 35,
+    "reward": 4.224,
+    "elapsed": 21.0,
+    "spent": 9.6
+   },
+   {
+    "components": [
+     "tesla_pulls_the_wincon",
+     "nado_the_sneaky_lock"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 16,
+    "reward": 1.098,
+    "elapsed": 9.6,
+    "spent": 6.6
+   },
+   {
+    "components": [
+     "bank_to_six_then_bow",
+     "bow_punish_the_commitment",
+     "nado_king_activation"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     null
+    ],
+    "steps": 44,
+    "reward": 0.705,
+    "elapsed": 26.4,
+    "spent": 12.9
+   },
+   {
+    "components": [
+     "nado_king_activation",
+     "hold_the_spell_for_a_target"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 15,
+    "reward": -0.362,
+    "elapsed": 9.0,
+    "spent": 4.6
+   },
+   {
+    "components": [
+     "nado_king_activation",
+     "bow_punish_the_commitment",
+     "nado_pull_the_flock_back"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     "fail"
+    ],
+    "steps": 16,
+    "reward": 0.1,
+    "elapsed": 9.6,
+    "spent": 5.6
+   },
+   {
+    "components": [
+     "skeletons_stop_the_wall_breakers",
+     "rocket_the_two_for_one",
+     "ice_wizard_behind_the_line"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     "fail"
+    ],
+    "steps": 22,
+    "reward": -1.975,
+    "elapsed": 13.2,
+    "spent": 5.4
+   },
+   {
+    "components": [
+     "rocket_the_two_for_one",
+     "never_rocket_their_king"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     null
+    ],
+    "steps": 25,
+    "reward": 8.707,
+    "elapsed": 15.0,
+    "spent": 5.8
+   },
+   {
+    "components": [
+     "never_rocket_their_king",
+     "ice_wizard_behind_the_line"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     "pass"
+    ],
+    "steps": 37,
+    "reward": 7.273,
+    "elapsed": 22.2,
+    "spent": 8.6
+   },
+   {
+    "components": [
+     "nado_clump_for_the_wizard",
+     "log_the_barrel_on_landing"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail"
+    ],
+    "steps": 15,
+    "reward": -0.455,
+    "elapsed": 9.0,
+    "spent": 7.4
+   },
+   {
+    "components": [
+     "never_rocket_their_king",
+     "log_the_ground_swarm"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     null,
+     "fail"
+    ],
+    "steps": 21,
+    "reward": 1.092,
+    "elapsed": 12.6,
+    "spent": 7.6
+   },
+   {
+    "components": [
+     "rocket_the_pump_on_sight",
+     "tesla_pulls_the_wincon"
+    ],
+    "verdict": "pass",
+    "per_component": [
+     "fail",
+     "pass"
+    ],
+    "steps": 14,
+    "reward": 3.0,
+    "elapsed": 8.4,
+    "spent": 9.6
+   },
+   {
+    "components": [
+     "hold_the_tesla_for_their_wincon",
+     "log_rolls_forward_not_backward",
+     "knight_blocks_the_charge"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     "fail"
+    ],
+    "steps": 10,
+    "reward": -0.031,
+    "elapsed": 6.0,
+    "spent": 9.1
+   },
+   {
+    "components": [
+     "bow_punishes_the_pump",
+     "hold_the_spell_for_a_target",
+     "knight_guards_the_bow"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     "fail",
+     "pass"
+    ],
+    "steps": 16,
+    "reward": 1.544,
+    "elapsed": 9.6,
+    "spent": 4.6
+   },
+   {
+    "components": [
+     "skeletons_stop_the_wall_breakers",
+     "rocket_the_two_for_one",
+     "rocket_the_pump_on_sight"
+    ],
+    "verdict": "fail",
+    "per_component": [
+     "fail",
+     null,
+     "fail"
+    ],
+    "steps": 28,
+    "reward": 2.132,
+    "elapsed": 16.8,
+    "spent": 11.1
+   }
+  ],
+  "components": {
+   "nado_pull_the_flock_back|fail": 4,
+   "log_the_ground_swarm|fail": 6,
+   "tesla_pulls_the_wincon|fail": 5,
+   "log_the_barrel_on_landing|fail": 3,
+   "rocket_then_tornado|fail": 4,
+   "ignore_the_ignorable|None": 2,
+   "bow_punishes_the_pump|fail": 2,
+   "nado_king_activation|None": 2,
+   "nado_king_activation|fail": 5,
+   "nado_clump_for_the_wizard|fail": 4,
+   "nado_pull_the_flock_back|pass": 2,
+   "skeletons_kill_the_miner|fail": 1,
+   "bow_never_into_the_push|fail": 1,
+   "hold_the_spell_for_a_target|None": 3,
+   "rocket_the_two_for_one|fail": 5,
+   "never_rocket_their_king|None": 6,
+   "rocket_the_pump_on_sight|pass": 3,
+   "knight_guards_the_bow|pass": 3,
+   "ice_wizard_behind_the_line|pass": 5,
+   "bow_punishes_the_pump|pass": 1,
+   "bow_punish_the_commitment|pass": 1,
+   "never_rocket_their_king|pass": 1,
+   "skeletons_kill_the_miner|pass": 1,
+   "rocket_the_pump_on_sight|fail": 5,
+   "split_lane_needs_the_centre|fail": 2,
+   "bow_punish_the_commitment|fail": 3,
+   "hold_the_tesla_for_their_wincon|fail": 3,
+   "bow_defends_from_the_centre|pass": 1,
+   "split_lane_needs_the_centre|pass": 1,
+   "bow_defends_from_the_centre|fail": 2,
+   "nado_the_sneaky_lock|pass": 2,
+   "rocket_the_two_for_one|None": 3,
+   "knight_blocks_the_charge|fail": 3,
+   "log_the_ground_swarm|None": 1,
+   "rocket_the_two_for_one|pass": 1,
+   "bank_to_six_then_bow|pass": 1,
+   "bank_to_six_then_bow|fail": 3,
+   "ignore_the_ignorable|pass": 1,
+   "log_the_ground_swarm|pass": 1,
+   "skeletons_stop_the_wall_breakers|pass": 1,
+   "hold_the_spell_for_a_target|fail": 3,
+   "bow_never_into_the_push|None": 1,
+   "split_lane_needs_the_centre|None": 1,
+   "nado_the_sneaky_lock|fail": 1,
+   "skeletons_stop_the_wall_breakers|fail": 2,
+   "ice_wizard_behind_the_line|fail": 1,
+   "tesla_pulls_the_wincon|pass": 1,
+   "log_rolls_forward_not_backward|fail": 1
+  }
+ }
+]
