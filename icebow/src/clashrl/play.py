@@ -304,6 +304,14 @@ def play(cfg) -> None:
     _ident_state = {"depth": 0.0, "t": None}   # deepest-threat depth + time, for the approach velocity
     _opp_mem = card_threat.OpponentMemory(_db)  # per-match opponent short-term memory (Stage 3)
     _opp_elx = OpponentElixirEstimator(_db)     # live estimate from mirrored spend accounting
+    # SIM/LIVE PARITY of opponent-memory slot 5 (HANDOFF 5cr.8, owner ruling 23:4x): the sim wrote OUR elixir into this
+    # slot during training (sim/env.py mem[5] = eng.elixir[0]/10) while live wrote the opponent-elixir ESTIMATE (mean
+    # 0.035 in a live session) -- the trained gate read "no elixir" and waited. Same switch as train-rl's env:
+    # 'opp_estimate' (legacy, default) or 'own_elixir' (what the checkpoint was trained on).
+    _mem5_source = str(cfg.get("env", "opp_mem_slot5", default="opp_estimate"))
+    if _mem5_source not in ("opp_estimate", "own_elixir"):
+        raise ValueError("env.opp_mem_slot5 must be 'opp_estimate' or 'own_elixir', got %r" % _mem5_source)
+    print("[play] opp-memory slot 5 source: %s" % _mem5_source)
     _last_dets = {"all": []}                    # newest tagged detections (feeds the semantic canvas)
     # The canvas is fed only when the LOADED policy was trained with it -- the config gate decides
     # what a NEW training run sees, the checkpoint decides what THIS net expects.
@@ -444,7 +452,8 @@ def play(cfg) -> None:
                                                     dt=dt, horizon=predict_horizon)
         _ident_state["depth"] = float(ident[7]); _ident_state["t"] = now
         mem = _opp_mem.update([(d.base, d.gy) for d in dets], dt=dt)          # memory: BOTH halves (incl. staging)
-        mem[5] = _opp_elx.update(float(my_elixir), dets, now)                 # normalized opponent-elixir estimate
+        _est = _opp_elx.update(float(my_elixir), dets, now)                   # normalized opponent-elixir estimate
+        mem[5] = _est if _mem5_source == "opp_estimate" else float(my_elixir) / 10.0
         blocks = []
         if want_identity:
             blocks.append(ident)

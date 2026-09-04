@@ -2187,6 +2187,14 @@ slow one.
 
 ## 6. Open work
 
+### ⚑ OWNER RULINGS 2026-09-03 23:4x (owner asleep; gauntlet runs overnight)
+* Sim-side slot-31 parity arm (`sim/env.py:643 mem[5] = eng.elixir[1]/10`, own retrain): PERMITTED to launch "if c2r is
+  stopped, or paused (by your discretion)". Not while c2r runs.
+* `play.py` gets the same `env.opp_mem_slot5` switch as train-rl's env (default legacy `opp_estimate`) -- DONE 23:4x.
+* Overnight defaults stated to the owner: c2r m5k gate + collapse protocol; train_rl stop-path fix (stop before
+  re-queueing); hand-recognition audit next; 2 matches per live session, eps 0 / learning off, <= ~2 sessions/hour;
+  window re-maximized between sessions only; nothing outside the game window.
+
 ### ⚑ OWNER RULING 2026-09-03 23:3x -- c2r collapse protocol
 "If the PPO collapses again, diagnose the cause (did the reach fix cause it or something else?) then restart the PPO with
 whatever repairs you decide to implement." Pre-registered (5cr.9): the m5k gate read on the SAME instruments as gatec2/gate05
