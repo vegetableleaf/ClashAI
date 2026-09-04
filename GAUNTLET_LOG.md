@@ -842,3 +842,10 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   hand -1 / elixir 9.22 forever; launcher relocks at the first IN_MATCH frame inside reset(). Window drift (a): SW_RESTORE
   un-maximizes a maximized window (controller.py comment (c)); IsIconic guard. Next seam: live hand reads 2.9/4 slots,
   x_bow in hand 5% vs 56% sim. c2r m3725, watchdog >=6 share 0.005 (68% below rolling median) -- m5k gate ~23:50. §5cr.8.
+- L46 (2026-09-04 07:2x-08:0x): OVERNIGHT NOTHING RAN -- the 23:46 wakeup never fired; told the owner plainly. Pre-registered
+  c2r gate read (greedy probe, seeds 0/1/2, same instrument same morning): init gatec2_m10k 2.7/3.8/2.4 (reproduces L36),
+  c2r_m5k 3.8/4.0/4.0, c2r_m10k 5.0/6.7/4.9 -- NOT collapsed; first arm whose >=6 share rose init->m5k->m10k on all seeds.
+  Attribution arms not owed. Watchdog "CELL HEAD COLLAPSED" alerts = a threshold (ent<1.27) inside every run's normal
+  band (0.6-1.6); uninformative. Trainer EVAL ladder 19..33%, best 29.9 saved 03:51 (winrate not a discriminator).
+  Stop-path fix shipped (env.py Play Again tap skipped when stop requested; launcher arms stop on the Nth match) -- (b)
+  until a live session runs it. Full drill suite init vs c2r_m10k running in background. HANDOFF §5cs.

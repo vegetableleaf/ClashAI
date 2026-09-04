@@ -9971,3 +9971,64 @@ Git Bash -- use PowerShell `Stop-Process`; a chain script keeps going when you t
 `rounds2.progress`). Owner's window rule (this session): if the game window drifts off-centre, press the
 maximize/"full screen" button on the CR title bar (icon becomes two overlapping rectangles) -- between sessions, not
 mid-match, because each `WindowCapture` locks its region once.
+
+## §5cs. GAUNTLET L46 (2026-09-04 07:2x-08:0x) -- overnight: NO loops ran; the c2r gate read (pre-registered): NOT collapsed, >=6 share ROSE m5k -> m10k on all 3 seeds; the stop-path fix for the thrown ladder match
+
+### 1. Overnight (a): nothing ran
+The `/gauntlet` ScheduleWakeup armed 23:46 (2026-09-03) never fired. Last commit 2a21add 23:35; no live session after
+s3c (23:05-23:11, `rounds2.progress`); no HANDOFF/Discord/gate read between 23:35 and the owner's 07:18 "What did you
+do overnight?". Cause unknown (the session went idle; nothing in this repo can explain a dropped wakeup). Only the
+autonomous processes ran: c2r trainer (2 procs), `ppo_watchdog`, `real_run_gates` (snapshots c2r_m5k.pt 23:57,
+c2r_m10k.pt 02:41; m20k due at counter 20000, ~08:3x). Reported to the owner plainly at 07:2x.
+
+### 2. c2r overnight, the trainer's own counters (a, sampled -- not comparable to §3)
+07:2x: counter 18225 (absolute ~m28k of the gatec2 lineage), 0.5 ep/s, 1637W-12760L-8D, ent 0.07, clip 0.03, drills 46%
+all / 47% last 300, P(play|choice) 0.169. EVAL (trainer instrument) ladder @2k..@18k: 19 31 29 30 29 30 19 30 33%;
+fair 13 22 21 22 22 19 12 24 22%. `data/policy_c2r_20260903_best.pt` saved 03:51 at best ladder avg 29.9 (gatec2's
+best_wr 17.8 on the same instrument -- but +-12pp at this n; the @14k 19/12 dip shows the band). Watchdog (sampled)
+07:05-07:21: P(play) 0.156-0.178, >=6 1.8-3.1%, elixir 2.58-2.85, cell ent 0.77-0.80/5.08, distinct 39-42.
+8 alerts overnight: 5 DRIFT (single readings of the +-100%-noise instrument, see §5cr.9) and 2 "CELL HEAD COLLAPSED"
+(23:27 m4000: ent 0.72, 35 distinct; 05:13 m14350: 0.83, 22 distinct). **The COLLAPSED rule is uninformative here (a):**
+it fires at cell_ent/5.08 < 0.25 = ent < 1.27; every checkpoint in `data/ppo_watchdog.log` -- gate05, gatec2 (init read
+0.87), aggro1, c2r -- sits at 0.6-1.6 with 21-62 distinct cells, so the threshold sits in the middle of the normal band.
+The rule's other clause (<= 3 distinct cells, the failure it was written for) never came close. Quiet window
+(`--quiet-min 25`) is why it fired twice and not twenty times. Not evidence of collapse, not evidence against it --
+which is why §3 was run.
+
+### 3. The pre-registered gate read (a) -- `gate_prior_probe.py`, seeds 0/1/2, SAME instrument, SAME morning
+`scratchpad/gauntlet/L46/gate_probes.sh`, 9 probes 07:3x-07:5x, alongside the trainer (greedy, deterministic; the
+probe is not a throughput number). gatec2_m10k reproduces L36/L40 exactly (2.7/3.8/2.4).
+```
+ckpt (lineage abs.)   >=6 share s0/s1/s2   mean   P(play|aff)         elixir mean       plays>=6 n (x_bow)   mean cost >=6
+gatec2_m10k (init)    2.7 / 3.8 / 2.4      2.97   0.195/0.200/0.204   2.80/2.91/2.73    23/23/23 (9/10/6)    4.74/4.52/3.83
+c2r_m5k   (m15k)      3.8 / 4.0 / 4.0      3.93   0.181/0.178/0.186   2.89/2.91/2.95    27/21/22 (9/10/12)   4.11/4.71/4.82
+c2r_m10k  (m20k)      5.0 / 6.7 / 4.9      5.53   0.179/0.173/0.176   3.01/3.07/2.96    40/36/27 (14/19/12)  4.28/4.89/4.56
+```
+**Collapse test (§6 ruling, pre-registered 5cr.9): NOT TRIPPED.** The 40k shape was <= 1% on all seeds while the
+comparator read ~3%; c2r reads 3.8-6.7%, ABOVE its init on every seed at both snapshots, and rising m5k -> m10k on
+every seed (3.8->5.0, 4.0->6.7, 4.0->4.9). Watchdog P(play) 0.15-0.23 all night (bounds 0.05/0.90). Cell head: 21-42
+distinct cells on the sampled instrument, no flat/collapse. The collapse protocol's attribution arms (reach on/off from
+gatec2_m10k) are therefore NOT owed -- there is nothing to attribute.
+What it does NOT establish: (i) WHY the share rose -- c2r differs from gatec2 by four things (reach fix, optimizer reset,
+rail-guard x0.0556, +N matches), so "the reach fix helps the elixir economy" is (b); the on/off arms would settle it
+but cost ~2 x 2000 matches of the box; (ii) that the rise continues -- m20k snapshot is the next read, same probe;
+(iii) anything about winrate. First arm in this project whose >=6 share ROSE init -> m5k -> m10k on all 3 seeds
+(gatep6 rose only m2k -> m5k, 0.73 -> 1.50, §5bz). x_bow plays at >=6 doubled on the s1 seed (10 -> 19).
+Full drill suite (seed 5, 25 reps, c2r config) on gatec2_m10k and c2r_m10k running in the background
+(`L46/drills.sh` -> `L46/drills_{gatec2_m10k,c2r_m10k}.txt`); read next loop.
+
+### 4. Stop-path fix for the thrown ladder match (5cr.8 open item) -- shipped, UNTESTED live (b)
+`env.py` end-of-match: the "Play Again" tap (line ~2316) is now skipped when `stop_requested()` already reads True
+(`if self.stop_requested is None or not self.stop_requested()`). Ctrl+C at the results screen therefore no longer
+queues a match either (a behaviour change for plain `train-rl` too -- deliberate; a queued match nobody plays is a
+ladder loss). `L45/live_obs_session.py` `_reset` wrapper now counts match starts; when the Nth (`--matches`) match is
+under way it arms `env.stop_requested` -> True, so that match's end skips the tap and the next `reset()` returns None
+(`env.stopped`) -> train_rl exits cleanly. The jsonl watcher's `interrupt_main` stays as the backstop. Both parse;
+sim path does not import `clashrl.env` (checked: no import in sim/*, train_sim_ppo, gate_prior_probe), so c2r is
+unaffected. First live session with it is the test: expect "match 2 is the last: stop armed" in the session log and
+NO third match queued.
+
+### 5. Files
+`icebow/src/clashrl/env.py` (stop-path guard), `scratchpad/gauntlet/L45/live_obs_session.py` (stop arming),
+`scratchpad/gauntlet/L46/{gate_probes.sh,drills.sh,ge6_*_s{0,1,2}.txt}` committed. Data (not in git): c2r logs,
+snapshots, `data/ppo_watchdog.log`.

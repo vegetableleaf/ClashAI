@@ -142,6 +142,16 @@ def main():
             return _orig_reset(self, *ra, **rk)
         finally:
             self.capture.grab = orig_grab
+            # STOP-PATH FIX (5cs): count match starts; once the Nth match is under way, make the env's
+            # stop_requested() read True so the end-of-match "Play Again" tap is skipped (env.py) and the
+            # next reset() returns None -> train_rl exits cleanly. Before this, the watcher only saw the
+            # match in the stats jsonl AFTER the tap, so every session threw one ladder match.
+            state["starts"] = state.get("starts", 0) + 1
+            if state["starts"] >= a.matches and not state.get("stop_armed"):
+                state["stop_armed"] = True
+                _prev = self.stop_requested
+                self.stop_requested = lambda: True if state.get("stop_armed") else (bool(_prev()) if _prev else False)
+                say(f"match {state['starts']} is the last: stop armed (no Play Again re-queue at its end)")
     _cls.reset = _reset
     try:
         train_rl(cfg, init=a.init)

@@ -1,0 +1,18 @@
+C:\Users\benpe\ClashBot\icebow\data\bench\gatec2_m10k.pt  matches=10000  rows=2400  seed=1
+  affordable on 56.0% of rows | P(play) mean 0.173 (all) 0.200 (affordable rows) | played on 10.8% of rows | elixir mean 2.91  >=6 3.8% | phase rows [1661, 739, 0]
+  bucket  rows  P(play)  affordable  played   pro(single)
+      0    173   0.111     0.000     0.000    0.010
+      1    537   0.127     0.149     0.039    0.024
+      2    631   0.159     0.374     0.049    0.042
+      3    528   0.191     0.943     0.165    0.063
+      4    295   0.213     1.000     0.200    0.058
+      5    137   0.252     1.000     0.270    0.042
+      6     58   0.265     1.000     0.103    0.042
+      7     37   0.322     1.000     0.405    0.043
+      8      3   0.396     1.000     0.333    0.083
+      9      1   0.337     1.000     1.000    0.203
+     10      0     -         -         -      0.184
+  mean cost of the cards actually played: 2.69 (deck mean 3.50)
+    plays at <3   n=52   mean cost 1.33  skeletons:35 the_log:17
+    plays at 3-5  n=183  mean cost 2.85  ice_wizard:45 knight:35 tesla:25 the_log:24
+    plays at >=6  n=23   mean cost 4.52  x_bow:10 tesla:5 tesla_evo:2 the_log:2

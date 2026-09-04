@@ -2313,7 +2313,10 @@ class LiveMatchEnv:
         reward = outcome_reward(outcome, self.cfg) if outcome else 0.0
         # leave the results screen by re-queueing (1v1 "Play Again") so the next match
         # starts without a detour through HOME; reset() then picks up QUEUING/IN_MATCH.
-        self.controller.tap(*self.play_again)
-        time.sleep(self.menu_delay)
+        # UNLESS a stop is already requested: re-queueing then throws a ladder match nobody
+        # will play (the session ends before reset() runs; 5cr.8 -- one thrown match per session).
+        if self.stop_requested is None or not self.stop_requested():
+            self.controller.tap(*self.play_again)
+            time.sleep(self.menu_delay)
         detail = {"crowns": (blue_c, red_c), "scoreboard": (sb_blue, sb_red), "towers": (t_blue, t_red)}
         return reward, outcome, detail
