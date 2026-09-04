@@ -22,7 +22,7 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-03 21:00**, branch `main` (**§5cq: AGGRO GAUNTLET CLOSED -- aggro1 m5k FAILED (tank_for_bow 0/0 vs gate05 12/12; >=6 share unchanged; regret 0.262 vs 0.229, 25 wrong waits vs 5); aggro1 stopped ~m5900; NO run live; `env.nado_retarget_reach_fix` now TRUE (owner's reward bug fix) -- every existing ckpt predates it. Next direction = owner's call (§5cq.6). Previous: §5cp: GAUNTLET L43 -- THE CEILING: search teacher 77.1% vs policy 41.7% on the same sim (gatec2_m10k, 48 paired); per-archetype beatdown 8% / cycle 60%; owner archetype-GA answered; sim/live opp-elixir obs slot mismatch found (sim/env.py:643). Previous header follows.** §5co: GAUNTLET L42 -- LIVE SPELL AIM FIX (owner-authorized live-path
+Last updated: **2026-09-03 21:45**, branch `main` (**§5cr: NEW GAUNTLET sim->live gap -- c2r PPO resume RUNNING (coef 2.0, reach fix ON, counter restarts at 0 = +10000 absolute); live-obs harness built (epsilon 0, learning off, idle-gated); first live sample BLOCKED: display asleep (20-min timeout vs 15-min away rule) -- owner question on Discord; epsilon branch is informed exploration, not uniform random**)
 change) + aggro1 first look. Owner: "the policy plays every log 1-2 tiles too far forward and whiffs; it never leads log or
 rocket; I think it ignores the ~1 s cast delay". "Mapping issue" (c): the board->screen warp is shared by troops and spells.
 The real defects (a, in code): (1) env.py `_wheels_spell_aim` GATED on the current positions (`log_hits` / radius test)
@@ -9698,3 +9698,75 @@ the reseed_opp privileged-teacher gap FIRST), the opp-elixir slot parity fix, th
 king-activation doctrine line, the archetype-posterior obs feature. The owner also floated (20:3x) letting me start and
 observe LIVE train-rl sessions myself (screen capture + window focus tested working from my shell, §chat 20:3x) -- needs
 an explicit rewrite of the live-play guardrail before any session; "next gauntlet idea" pending from the owner.
+
+## §5cr. GAUNTLET L45 (2026-09-03 21:05-21:4x) -- NEW GAUNTLET: the sim->live gap. c2r PPO resume launched; live-obs harness built; first live sample BLOCKED by the owner's display being off
+
+**Owner's brief (21:0x, verbatim core):** "there is a massive gap between sim and live training ... the model's decision making
+collapses during live training, as if it's completely ignoring the game state 90% of the time and just playing cards as they
+come up." Tasks: (1) continue a PPO run from the coef2 checkpoint (owner: keep coef 2.0, resume from the best ckpt, reach fix
+ON); (2) run train-rl matches through the Google Play Games window and observe the model and the game state; record visible
+issues; (3) every loop check the PPO run against the best coef2 checkpoint (volume hypothesis -- never tested empirically);
+(4) take a few train-rl samples every loop, init from the PPO checkpoint, at epsilon 0 with learning OFF (owner Q1/Q2). Full
+autonomy; ask only when genuinely undecidable.
+
+**NEW LIVE GUARDRAIL (owner, 21:0x, supersedes the gauntlet file's "do not touch the live-play path" for this gauntlet):**
+anything inside the game window is allowed; navigating any other app or window requires explicit permission. Owner-away rule
+(Q4): more than 15 minutes without any input.
+
+### 5cr.1 c2r PPO resume -- RUNNING since 21:27
+- `data/bench/c2r_run.yaml` = gatec2_run.yaml + 3 keys: `sim_ppo_checkpoint data/policy_c2r_20260903.pt`,
+  `continuation_log data/continuations_c2r.jsonl`, `nado_retarget_reach_fix: true` (inserted explicitly -- TRAP: the run
+  yaml predates the key and `--config` REPLACES config.yaml, so a derived yaml silently loses any key added later; verified
+  loaded reach True / coef 2.0). Launcher `data/bench/c2r_run_launch.sh`: `train-sim-ppo --resume --matches 40000 --envs 96
+  --workers 12 --size 432 --device cuda --seed 41 --search-interval 4`, log `data/bench/c2r_run_20260903.log`; watchdog
+  `data/bench/c2r_run_watchdog.out`; gates `tools/real_run_gates.py --run c2r_20260903` (snapshots c2r_m5k/m10k/m20k.pt).
+- Init = `data/policy_gatec2_20260903_best.pt` (matches 10000, best_wr 17.77; weight distance 0.0 to gatec2_m10k).
+- **THREE TRAPS for the "volume" read:** (i) `--resume` restarts `done_n` at 0 -- log/gate counters are +10000 behind the
+  absolute count (c2r counter 5000 = absolute m15k); (ii) the checkpoint carries no optimizer state -- Adam moments restart;
+  (iii) RAIL GUARD on resume rescaled the cell head x0.0556 (raw absmax 81) -- rankings kept, softmax flattened. c2r is
+  therefore "gatec2 + 10k more matches + reach fix + optimizer reset + cell-head rescale", NOT a pure volume arm.
+- 21:37 (a): 475 eps, 0.8 ep/s, EVAL not yet (every 2000). 19 python procs. Box: CPU 100%, available RAM 0.9 GB of 31.4
+  (python 9.5 GB, chrome 4.3, Code 2.1, crosvm 1.8) -- every live sample this gauntlet runs on a contended box (the owner's
+  19:41 m2 showed loop 0.981 s vs 0.68 uncontended).
+
+### 5cr.2 Live observation harness (built, not yet run)
+- `data/bench/live_obs.yaml` (NOT in git) = config.yaml with `rl_epsilon_start 0.0`, `rl_epsilon_end 0.0`, `min_replay 1e9`
+  (learning off), `rl_checkpoint data/bench/live_obs/policy_rl.pt` (isolated writer), overlay recorder fps 50->20, scale
+  1.0->0.75, out_dir `data/bench/live_obs/replays` (CPU is at 100%). action.grid already [18,24] (=432). Verified via
+  Config.load. training_wheels stays true; spell_cast_delay_s 1.0.
+- `scratchpad/gauntlet/L45/live_obs_session.py` (in git): refuses unless GetLastInputInfo idle >= 15 min AND the Clash Royale
+  window exists AND SetForegroundWindow succeeds (verified by GetForegroundWindow); runs `train_rl(cfg, init)` in-process;
+  a watcher thread counts new `data/reward_stats/live_*.jsonl` lines and raises SIGINT (train-rl's clean stop) after N
+  matches; aborts HARD (two SIGINTs) if the foreground is not CR for 3 consecutive 2-s polls (= owner took over). Never
+  touches another window. Backups: `data/bench/live_obs/backup_20260903/policy_rl*.pt` (sha256 14a66ae0... matches).
+- Live init snapshots: `data/bench/live_obs/init_c2r_live_2133.pt` (= c2r counter m300).
+
+### 5cr.3 BLOCKED (a): the display is OFF, so the game cannot be observed or driven
+- 21:34 attempt (`--init data/policy_gatec2_20260903_best.pt --matches 2`): owner idle 81 min, CR window found (hwnd
+  1447174, top of z-order, rect 491,0 593x976), `SetForegroundWindow` FAILED; `GetForegroundWindow()` == 0; mss frame of the
+  CR rect mean 0.0 (pure black); input desktop is "Default" (not locked); AC display timeout = 0x4b0 = **20 min**. Owner idle
+  81 min > 20 -> the display is asleep. ES_DISPLAY_REQUIRED did not wake it. A 1-px synthetic mouse nudge to wake it was
+  BLOCKED by the auto-mode classifier (it is also an input outside the game window -- correctly a guardrail question).
+- Consequence: with a 20-min display timeout and a 15-min idle rule, the sampling window is the 5 minutes between them.
+  Live samples need the owner to either set the display timeout to Never / >= the away period, or authorise a wake nudge.
+  **Question posted to Discord (L45).** Until answered, the gauntlet continues on the offline half (obs-assembly diff,
+  DDQN-on-logits path, c2r monitoring) and retries the live gate every loop.
+
+### 5cr.4 CORRECTION to my 21:1x reading of the epsilon branch (a, code)
+- train_rl.py:675-760: the epsilon branch is NOT uniform random. It is "informed exploration": below min_play_elixir (3) or
+  with prob explore_wait_prob (0.4) -> WAIT; quiet board -> X-Bow at >= 6 elixir else HOLD; threat -> counter_table row, else
+  the LLM advisor (async, ~0.5 s), else random card + random tile. So at rl_epsilon_start 0.60 with a sim checkpoint (no
+  explore_step), ~60% of the owner's live decisions were doctrine/advisor/random and ~40% the PPO policy. "Ignoring the game
+  state 90% of the time" would therefore NOT be explained by exploration alone (b) -- the ~40% PPO share plus the random
+  fallback rate (unmeasured; the advisor log would show it) is the thing to measure. The live-obs yaml removes the branch
+  entirely (epsilon 0), which is the clean test of "what does the PPO policy itself do on a real board".
+
+### 5cr.5 Provenance of the owner's 2026-09-03 sessions (a, weight distance)
+- 19:09 and 19:34 init = gatec2_m10k; 19:41 init = policy_ppo_drill_best (= policy_BEST_m26000_20260823). All three at
+  epsilon 0.60, learning ON after 200 transitions, DDQN targets on PPO logits. 19:41 match 2 was box-contended by my L43
+  ceiling run (loop 0.981 s).
+
+### 5cr.6 What this loop does NOT establish
+- Nothing about the live behaviour of any checkpoint -- no sample ran. Nothing about c2r vs gatec2 (first EVAL at counter
+  2000 ~ 22:1x; first gate snapshot at counter 5000 ~ 23:1x). The obs-slot mismatch (§5cp) is still the leading offline
+  candidate and untested.

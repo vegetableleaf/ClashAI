@@ -817,3 +817,13 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Owner's reward bug fix switched on: env.nado_retarget_reach_fix true (tests pass). Every prior ckpt predates it.
 - Four remaining aggro levers (king-activation doctrine line, opp-elixir obs slot, sim spell_delay 1.0, distillation)
   all belong to the next gauntlet's direction. GAUNTLET CLOSED per owner ruling 20:3x. HANDOFF §5cq.
+
+## L45 — 2026-09-03 21:05-21:45 | NEW GAUNTLET: sim->live gap, loop 1 -- c2r launched; live harness built; first sample BLOCKED (display off)
+- c2r PPO resume RUNNING 21:27 (gatec2_m10k best + reach fix, coef 2.0, 12 workers cuda, 0.8 ep/s). Traps: counter restarts
+  at 0 (+10000 absolute), no optimizer state, RAIL GUARD cell-head x0.0556 on resume -- not a pure volume arm. HANDOFF §5cr.1.
+- Live-obs harness: data/bench/live_obs.yaml (eps 0/0, learning off, isolated ckpt+replays) + L45/live_obs_session.py
+  (idle>=15 min gate, foreground-verified, N-match clean stop, foreground-loss hard abort). §5cr.2.
+- BLOCKED (a): display asleep -- foreground 0, CR frame mean 0.0, AC display timeout 20 min < owner idle 81 min. Wake nudge
+  is input outside the game window (classifier blocked it too). Owner question posted. §5cr.3.
+- Correction (a, code): epsilon branch = doctrine/counter-table/advisor/random, not uniform random; the owner's sessions were
+  ~60% that branch, ~40% PPO. §5cr.4. Next: retry the live gate each loop; offline obs-assembly diff meanwhile.
