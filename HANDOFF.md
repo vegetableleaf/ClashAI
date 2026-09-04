@@ -10119,3 +10119,37 @@ the detector vs the sim's exact units, DomainRand restyling; measure by swapping
 **c2r:** 20000 episodes reached 08:41 (EVAL ladder best 29.9 at 03:51; log "20000 episodes: winrate 18%"); the
 m20k gate/snapshot had not posted by 08:5x (`c2r_run_gates.out` last: m10k 02:44). Drill suite (`L46/drills.sh`, seed 5
 x25 reps, init then c2r_m10k) still running since 07:30 with buffered output (0 bytes until each ckpt finishes).
+
+### 9. c2r m20k gate: the run PEAKED AT m10k and has given the gain back -- does NOT strictly trip the collapse rule (a)
+Same pre-registered probe (`tools/gate_prior_probe.py`, greedy, seeds 0/1/2, 2400 rows each), all four checkpoints read
+on the SAME instrument the SAME day (07:2x-09:1x), `L46/ge6_*`:
+
+| ckpt | elixir >=6 share (s0/s1/s2) | mean | elixir mean | affordable rows | P(play) mean | played rows |
+|---|---|---|---|---|---|---|
+| gatec2_m10k (init) | 2.7 / 3.8 / 2.4 | 3.0 | 2.81 | 54% | 0.172 | 10.7% |
+| c2r_m5k | 3.8 / 4.0 / 4.0 | 3.9 | 2.92 | 56% | 0.160 | 9.9% |
+| **c2r_m10k** | **5.0 / 6.7 / 4.9** | **5.5** | 3.01 | 59% | 0.151 | 10.0% |
+| c2r_best (03:51, EVAL wr 29.9) | 2.7 / 1.6 / 2.4 | 2.2 | 2.72 | 53% | 0.170 | 10.4% |
+| c2r_m20k | 1.5 / 1.0 / 1.1 | **1.2** | 2.49 | 45% | 0.202 | 10.7% |
+
+**Reading (a):** monotone rise to m10k, then monotone decay to below the init on all three seeds. The mechanism is
+visible in the other columns: P(play) 0.151 -> 0.202 and affordable rows 59% -> 45% -- the m20k policy spends earlier,
+so it is poorer, so fewer rows are affordable; the played-row share is flat (~10%) throughout. Mean cost of the plays it
+does make at >=6 rose 4.6 -> 5.1 (it dumps the expensive card when rich). This is §5bv/§8194's shape (4.3 -> 1.0 -> 1.0).
+**It does NOT strictly trip the owner's pre-registered COLLAPSE rule** ("<=1% on all 3 seeds while gatec2_m10k reads
+~3% the same day"): 1.5 / 1.0 / 1.1. I am not restarting on a rule that did not trip -- moving a threshold after seeing
+the data is the error this project keeps repeating. **Pre-registered now for m30k (~14:00 at 1759 matches/hr): if the
+same probe reads <=1% on all 3 seeds, the rule trips and the attribution arms run (reach on/off from gatec2_m10k,
+2000 matches each, same seed) before any restart.** The run's own gates disagree, as they measure other things and are
+not comparable: regret m5k 0.2721 / m10k 0.3001 / m20k 0.2726, x-bow 2.29 per match with 73% offensive, continuation
+gap median 3.60 s vs pro 3.85 -- "no sustained regression rule fired".
+**Immediate consequence for the LIVE work (a):** s4/s5/s6 all initialised from `policy_c2r_20260903_best.pt`, which is
+selected on EVAL WINRATE -- and on the mechanism metric it is one of the WORSE checkpoints (2.2 vs m10k's 5.5). Winrate
+is not a discriminator (§7); it should never have been the live init. **Next live session (s7) = the same two fixes,
+init from `c2r_m10k.pt`, everything else identical to s6** -- one change, read against s6's 13.0% plays / elixir 5.68 /
+>=9 share 0.14. Box left contended exactly as s6 ran (c2r + drills) so the cadence is comparable.
+**Open-factor slate (owner gave me the call, 09:1x):** (1) the residual image gap -- swap obs channel GROUPS (0-2 RGB,
+3-8 detector semantic, 9-11 predictive) between live and sim states rather than the whole image; offline, ~15 min, run
+next loop. (2) evo templates rebuilt from the s6 replays (knight_evo has 6), measured before/after on recorded frames --
+run after s7 so it does not confound it. (3) `play.py` canonical-render parity -- a fix, not an experiment; ship when
+the render path is settled; play mode is not train-rl. (4) live-search `hand_ids=None` -- parked, latency-only.

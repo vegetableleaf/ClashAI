@@ -860,3 +860,10 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   ~1-s deal gaps (0.32-s scan, all runs <= 3 s) -- my "70-s empty slot" reading retracted (10-s stride artefact).
   Left (b): image still costs ~1/3 of the gate on sim states (0.317 vs 0.483); play.py never renders canonically.
   c2r reached 20k episodes 08:41; m20k gate not yet posted; drill suite still running. HANDOFF §5cs.6-8.
+- L46c (09:0x-09:2x): c2r m20k gate. Pre-registered 3-seed probe, all four ckpts same instrument same day: >=6 share
+  init 3.0 -> m5k 3.9 -> m10k 5.5 -> best 2.2 -> m20k 1.2 (means). The run PEAKED at m10k and is now below init on all
+  3 seeds; P(play) 0.151 -> 0.202, affordable rows 59% -> 45% (spends earlier, so it is poorer). Does NOT strictly trip
+  the owner's collapse rule (<=1% on ALL 3 seeds; read 1.5/1.0/1.1) -- not restarting on a rule that did not trip;
+  m30k (~14:00) pre-registered as the decisive read. Found (a): the live sessions were initialising from the EVAL-
+  WINRATE-selected `best` ckpt, which reads 2.2 on the mechanism metric vs m10k's 5.5 -- s7 = s6 with the init changed
+  to c2r_m10k, one change. Open-factor slate recorded in §5cs.9. HANDOFF §5cs.9.
