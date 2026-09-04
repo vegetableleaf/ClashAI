@@ -15,7 +15,21 @@ ICEBOW = ROOT / "icebow"
 sys.path.insert(0, str(ICEBOW / "src"))
 from clashrl.config import Config                       # noqa: E402
 from clashrl.cards import shared as shared_db           # noqa: E402
-from clashrl.sim.engine import SimEngine, build_spec    # noqa: E402
+from clashrl.sim.engine import SimEngine, build_spec as _build_spec    # noqa: E402
+from dataclasses import replace as _dc_replace                             # noqa: E402
+
+# --patch experiments (L52): ONE mechanic each, applied to the specs the driver builds, engine untouched.
+#   spell_edge : thrown spells measure their blast to the target's collision EDGE (engine-measured on
+#                08CPVRRR8PYC: a rocket 2.24 tiles from an X-Bow centre kills it in the real engine,
+#                misses in the sim, which compares centre-to-centre unless `blast_edge`).
+PATCHES: set = set()
+
+
+def build_spec(db, key, level):
+    spec = _build_spec(db, key, level)
+    if "spell_edge" in PATCHES and spec.kind == "spell" and spec.spell_dmg > 0.0 and not spec.blast_edge:
+        spec = _dc_replace(spec, blast_edge=True)
+    return spec
 
 CRAWL = ICEBOW / "data" / "royaleapi" / "crawl2"
 SIDE_OF = {"red": 0, "blue": 1}
@@ -71,6 +85,31 @@ class ParityEngine(SimEngine):
                 self._make_tower(a[2][0], a[2][1], "king", self.parity_level, king=True),
             ]
 
+    # --patch corner_buildings (L52): the crawl places Tesla (1789/1789 plays) and Goblin Drill (60/60) on tile
+    # CORNERS (integer x,y units) and every other card at tile centres; the sim snaps everything to centres,
+    # a 0.71-tile diagonal offset on exactly the cards whose pull radius decides hog/ram defence.
+    CORNER_BASES = {"tesla", "goblin_drill"}
+    _raw_xy = None
+
+    def deploy(self, team, spec, x, y, *a, **k):
+        self._raw_xy = (x, y)
+        return super().deploy(team, spec, x, y, *a, **k)
+
+    def _place(self, spec, team, cx, cy):
+        if "corner_buildings" in PATCHES and spec.base in self.CORNER_BASES and self._raw_xy is not None:
+            rx, ry = self._raw_xy
+            cx, cy = round(rx * 18.0) / 18.0, round(ry * 32.0) / 32.0
+        return super()._place(spec, team, cx, cy)
+
+    # --patch hidden_pull (L52): the engine record shows a Hog Rider changing heading toward a Tesla on the
+    # very tick it is placed, hidden, 6.2 and 7.1 tiles away (00LYPLJLC80L ticks 194 and 1162) -- a hidden
+    # Tesla IS a pathing target for building-targeters; it is only immune to their hits until it surfaces.
+    # The sim's `_valid_foe` hides it from acquisition entirely ("he cannot lock it until it surfaces").
+    def _valid_foe(self, u, e):
+        if "hidden_pull" in PATCHES and u.spec.building_only and e.hidden and e.spec.kind == "building":
+            return e.hp > 0 and e.invis_left <= 0.0 and not e.ghost
+        return super()._valid_foe(u, e)
+
 
 def make_engine(cfg, db, level, seed):
     ParityEngine.parity_level = level
@@ -79,8 +118,9 @@ def make_engine(cfg, db, level, seed):
     return eng
 
 
-def drive(tag, battle, plays, cfg, db, level, elixir_slack_ticks, tail_cap_s, sub_dt):
+def drive(tag, battle, plays, cfg, db, level, elixir_slack_ticks, tail_cap_s, sub_dt, record=False):
     eng = make_engine(cfg, db, level, seed=424242)
+    frames = []      # engine-record schema: tick, elixir, entities [side, x_units, y_units, name, hp, max_hp], towers
     specs = {}
     for side in (0, 1):
         specs[side] = {}
@@ -134,6 +174,11 @@ def drive(tag, battle, plays, cfg, db, level, elixir_slack_ticks, tail_cap_s, su
                 still.append(item)
         pending = still
         eng.advance(sub_dt)
+        if record:
+            frames.append({"tick": int(round(eng.t * 20)), "elixir": [round(eng.elixir[0], 3), round(eng.elixir[1], 3)],
+                           "entities": [[u.team, int(round(u.x * 18000)), int(round((1.0 - u.y) * 32000)), u.spec.key,
+                                         round(u.hp), round(u.spec.hp)] for u in eng.units if u.hp > 0],
+                           "towers": [[s, ("king" if tw.king else "princess"), round(tw.hp)] for s in (0, 1) for tw in eng.towers[s]]})
     final_towers = [{"side": s, "type": "king" if tw.king else "princess", "hp": round(tw.hp), "max_hp": round(tw.max_hp),
                      "destroyed": not tw.alive} for s in (0, 1) for tw in eng.towers[s]]
     crowns = [eng.crowns(0), eng.crowns(1)]
@@ -156,7 +201,7 @@ def drive(tag, battle, plays, cfg, db, level, elixir_slack_ticks, tail_cap_s, su
                   "crowns_match": crowns == exp_crowns, "winner_match": winner == exp_winner,
                   "terminal_minus_last_play_s": round(eng.t - last_play_t, 2),
                   "ended_before_last_play": eng.t < last_play_t - 1e-6},
-        "drive_seconds": round(time.time() - t0, 2), "log": log,
+        "drive_seconds": round(time.time() - t0, 2), "log": log, **({"frames": frames} if record else {}),
     }
 
 
@@ -168,9 +213,12 @@ def main():
     ap.add_argument("--elixir-slack", type=int, default=40)
     ap.add_argument("--tail-cap", type=float, default=360.0)
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--record", action="store_true", help="dump per-sub_dt frames (engine-record schema) into the per-tag JSON")
+    ap.add_argument("--patch", action="append", default=[], help="mechanic patch(es) to apply: spell_edge, corner_buildings, hidden_pull")
     ap.add_argument("--mirror", action="store_true",
                     help="swap the sides (side 0 <-> 1, x -> 18000-x, y -> 32000-y): a symmetric sim must give the mirrored result")
     args = ap.parse_args()
+    PATCHES.update(args.patch)
     out = Path(args.out); out.mkdir(parents=True, exist_ok=True)
     if args.tags:
         tags = [l.strip() for l in Path(args.tags).read_text().splitlines() if l.strip()]
@@ -200,7 +248,7 @@ def main():
         if tag in done:
             continue
         try:
-            res = drive(tag, battles[tag], plays[tag], cfg, db, args.level, args.elixir_slack, args.tail_cap, sub_dt)
+            res = drive(tag, battles[tag], plays[tag], cfg, db, args.level, args.elixir_slack, args.tail_cap, sub_dt, record=args.record)
         except Exception as e:                                  # record, never silently skip
             res = {"tag": tag, "error": repr(e)[:300]}
         (out / f"replay_{tag}.json").write_text(json.dumps(res, indent=1))

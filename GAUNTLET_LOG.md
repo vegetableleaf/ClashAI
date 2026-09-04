@@ -966,3 +966,14 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   games end earlier (median 180 s vs engine 276 s), 3-crown 58 vs real 20. Caveat: open-loop replay penalises the
   reactive deck first -- but the engine held the real board on the same inputs. Step 2 (engine per-tick diff,
   emulator, after c2r) now warranted. 31 s wall for the set. c2r 31,325 eps, 17 procs. HANDOFF 5cs.21.
+- L52 (2026-09-04 15:57-16:3x): ORACLE STEP 1b -- tick-level diff of the two engine-recorded clips (`L52/tick_diff.py`)
+  vs a sim per-0.1 s dump. Hog hit 317 = sim 316.8, rocket 1484/342, fireball 172: (c) the L51 hog-damage candidate is
+  contradicted. Three measured divergences, each patched in the DRIVER only (`sim_replay_drive.py --patch`): spells
+  measure blast to the collision edge (rocket 2.24 tiles kills the X-Bow 1561->71; sim untouched), Tesla/Drill sit on
+  tile corners (0.71-tile snap error), hidden Tesla pulls building-targeters on its placement tick. Each fixes its clip
+  (both now 0-1 = real). Population, 211 matches: base 26.1% -> spell_edge 26.5, corner 26.5, edge+corner 28.0,
+  hidden_pull 26.5 (9 changed), all three 26.5% -- NULL. Damage rate: sim on icebow towers 32.2 HP/s vs engine 16.2,
+  on opponent towers 4.2 vs 15.2. 20 sim matches end 3-0 for the opponent before 120 s (real: 20 three-crown matches
+  total); skeleton-army in 8/20 (2.6x), skeleton-king 5/9, witch 5/10, goblin-gang 5/17, minion-horde 4/13. Evo skarmy
+  clip 08QPVCPC9QQU: sim ghosts pile up while Gerry is never hit, 3-0 at 39.6 s. Priority list for oracle step 2
+  written into §6. c2r 32,675 eps, 17 procs, 4 GB free. HANDOFF 5cs.22.

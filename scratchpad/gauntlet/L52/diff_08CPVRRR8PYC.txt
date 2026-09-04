@@ -1,0 +1,77 @@
+=== 08CPVRRR8PYC: real crowns {'0': 0, '1': 1}, engine [0, 1] @tick 3887, sim [0, 0] @tick 6002
+--- L11 max HP per card (engine | sim):
+   icewizard              [688] | [688]
+   knight                 [1766] | [1766]
+   skeletons              [81] | [81]
+   tesla                  [1182] | [1182]
+   xbow                   [1600] | [1600]
+--- tower HP at 30 s intervals (engine | sim), and first-fall ticks:
+   t= 60s 0pl:3052|3052  0pr:3017|3052  0k:4824|4824  1pl:3052|3052  1pr:3052|2787  1k:4824|4824
+   t= 90s 0pl:3052|3052  0pr:2982|3052  0k:4824|4824  1pl:3017|3052  1pr:3052|2787  1k:4824|4824
+   t=120s 0pl:2936|2964  0pr:2982|3052  0k:4824|4824  1pl:3017|3052  1pr:3052|2787  1k:4824|4824
+   t=150s 0pl:2936|2964  0pr:2982|3052  0k:4824|4824  1pl:2982|3052  1pr:3052|2787  1k:4824|4824
+   tower (0, 'princess', 'left'): first damage tick engine 1951 sim 2104; fell engine 3807 sim None
+   tower (0, 'princess', 'right'): first damage tick engine 683 sim 3222; fell engine None sim None
+   tower (0, 'king', ''): first damage tick engine None sim None; fell engine None sim None
+   tower (1, 'princess', 'left'): first damage tick engine 1706 sim 3316; fell engine None sim None
+   tower (1, 'princess', 'right'): first damage tick engine 3192 sim 1112; fell engine None sim None
+   tower (1, 'king', ''): first damage tick engine None sim None; fell engine None sim None
+   mean |tower HP diff| over common ticks: 90 HP (n=1128 ticks)
+--- per-play unit cohorts: idx side card | engine spawned/life_ticks/died | sim spawned/life_ticks/died
+     0 s0 skeletons        |  3   246 True  |  3   266 True 
+     1 s1 skeletons        |  3   194 True  |  3   296 True   <-- x1.5
+     2 s1 icewizard        |  1   427 True  |  1   422 True 
+     3 s0 icewizard        |  1   579 True  |  1   712 True 
+     4 s1 thelog           |  0  None None  |  0  None None 
+     5 s0 knight           |  1   275 True  |  1   374 True 
+     6 s1 knight           |  1   212 True  |  1   224 True 
+     7 s0 tesla            |  1   520 True  |  1   522 True 
+     8 s1 xbow             |  1   113 True  |  1   112 True 
+     9 s0 rocket           |  0  None None  |  0  None None 
+    10 s0 skeletons        |  3   149 True  |  3   230 True   <-- x1.5
+    11 s1 skeletons        |  3    16 True  |  3    32 True   <-- x1.5
+    12 s0 icewizard        |  1   413 True  |  1   444 True 
+    13 s1 icewizard        |  1   572 True  |  1   614 True 
+    14 s0 thelog           |  0  None None  |  0  None None 
+    15 s1 thelog           |  0  None None  |  0  None None 
+    16 s1 knight           |  1   165 True  |  1   174 True 
+    17 s0 tesla            |  1   155 True  |  1   190 True 
+    18 s1 xbow             |  1   112 True  |  1   670 True   <-- x1.5
+    19 s0 rocket           |  0  None None  |  0  None None 
+    20 s0 skeletons        |  3    82 True  |  0  None None 
+    21 s1 tesla            |  1   520 True  |  1   522 True 
+    22 s0 xbow             |  1   113 True  |  1   112 True 
+    23 s1 rocket           |  0  None None  |  0  None None 
+    24 s1 skeletons        |  3   156 True  |  3   178 True 
+    25 s0 knight           |  1   462 True  |  1   462 True 
+    26 s1 icewizard        |  1   380 True  |  1   700 True   <-- x1.5
+    27 s0 thelog           |  0  None None  |  0  None None 
+    28 s1 xbow             |  1   112 True  |  1   508 True   <-- x1.5
+    29 s0 icewizard        |  1   294 True  |  1   148 True   <-- x1.5
+    30 s0 rocket           |  0  None None  |  0  None None 
+    31 s1 knight           |  1   375 True  |  1   796 True   <-- x1.5
+    32 s0 skeletons        |  3   132 True  |  3   114 True 
+    33 s1 tesla            |  1   209 True  |  1   228 True 
+    34 s0 xbow             |  1   405 True  |  1   180 True   <-- x1.5
+    35 s1 skeletons        |  3    28 True  |  3    80 True   <-- x1.5
+    36 s1 thelog           |  0  None None  |  0  None None 
+    37 s0 knight           |  1   426 True  |  0  None None 
+    38 s1 icewizard        |  1   180 True  |  1   252 True 
+    39 s0 tornado          |  0  None None  |  0  None None 
+    40 s0 thelog           |  0  None None  |  0  None None 
+    41 s1 knight           |  1   138 True  |  1    36 True   <-- x1.5
+    42 s0 tesla            |  1   313 True  |  1   192 True   <-- x1.5
+    43 s1 tornado          |  0  None None  |  0  None None 
+    44 s1 xbow             |  1   484 False |  1   670 True 
+    45 s0 xbow             |  1   349 True  |  1   162 True   <-- x1.5
+    46 s0 skeletons        |  3    91 True  |  3    68 True 
+    47 s1 skeletons        |  3    65 True  |  3   148 True   <-- x1.5
+    48 s0 knight           |  1   359 False |  1   260 True 
+    49 s1 tesla            |  1    75 True  |  1   496 True   <-- x1.5
+    50 s1 thelog           |  0  None None  |  0  None None 
+    51 s0 thelog           |  0  None None  |  0  None None 
+    52 s1 knight           |  1   263 False |  1   402 True   <-- x1.5
+    53 s1 tornado          |  0  None None  |  0  None None 
+   SUMMARY n=37 troop plays: median life engine 212 ticks vs sim 252; died engine 34 sim 37; cohort-size differs 0
+   side 0: median life engine 304 vs sim 211 ticks (n=16)
+   side 1: median life engine 180 vs sim 296 ticks (n=21)
