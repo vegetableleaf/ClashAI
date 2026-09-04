@@ -833,3 +833,12 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   (config.yaml), key absent = legacy (live_obs.yaml baseline / live_obs_tau.yaml). Base-block seam (sim 6 slots vs live 16)
   measured second-order (gate agree 0.93; detector-fed slots 16+ carry the decision: 0.83). Config-value correction:
   rl_epsilon_start 0.50 not 0.60. HANDOFF §5cr.7.
+- L45 cont. (22:2x-23:2x): live obs sessions at eps 0. s1 BLIND (my venv error), s1b/s3/s3b FROZEN reads, s2 = the gap:
+  3.3% plays, 69% of decisions at >=9 elixir, one burst then idle. Offline ablation on the live states: ONE slot -- threat
+  31 (opp-memory 5) = opponent-elixir estimate live (mean 0.035) vs OUR elixir in sim; slot31 := own elixir -> p(play)>tau at
+  >=9 elixir 1.7% -> 96.9%; obs image/hand/next/tower are not it. Fix env.opp_mem_slot5 (config, default legacy). s3c with
+  own_elixir + working reads: 58/463 plays (12.5% vs sim 10.8%), elixir 5.2, plays all match long, still 2 losses.
+  Frozen reads (a): fresh WindowCapture on the MATCH_END screen locks 38 px short (dark bottom band), never re-scans ->
+  hand -1 / elixir 9.22 forever; launcher relocks at the first IN_MATCH frame inside reset(). Window drift (a): SW_RESTORE
+  un-maximizes a maximized window (controller.py comment (c)); IsIconic guard. Next seam: live hand reads 2.9/4 slots,
+  x_bow in hand 5% vs 56% sim. c2r m3725, watchdog >=6 share 0.005 (68% below rolling median) -- m5k gate ~23:50. §5cr.8.

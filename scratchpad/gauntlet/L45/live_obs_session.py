@@ -40,7 +40,8 @@ def main():
         say("REFUSED: owner not idle long enough"); return 2
     h = cr_hwnd()
     if not h: say("REFUSED: no Clash Royale window"); return 3
-    u.ShowWindow(h, 9); u.SetForegroundWindow(h); time.sleep(0.3)
+    if u.IsIconic(h): u.ShowWindow(h, 9)     # SW_RESTORE only when minimised: on a MAXIMIZED window it un-maximizes + moves it (5cr.8.5)
+    u.SetForegroundWindow(h); time.sleep(0.3)
     if u.GetForegroundWindow() != h: say("REFUSED: could not bring Clash Royale to the foreground"); return 4
     r = w.RECT(); u.GetWindowRect(h, ctypes.byref(r)); say(f"CR hwnd ok, rect {r.left},{r.top},{r.right-r.left}x{r.bottom-r.top}; init {a.init}; matches {a.matches}")
     stats_dir = os.path.join(ROOT, "data", "reward_stats"); before = set(glob.glob(os.path.join(stats_dir, "live_*.jsonl")))
@@ -79,6 +80,11 @@ def main():
         pre = (np.array(self._last_obs, copy=True), self.hand_vec.copy(), self.next_vec.copy(),
                self.elixir_vec.copy(), self.threat_vec.copy(), float(self.elixir))
         out = _orig_step(self, action)
+        # capture-region audit (5cr.8): s1b's main-loop reads were FROZEN (hand empty, elixir 9.19 x299) while the
+        # perception thread's own capture saw the game -- log both regions every 50 decisions to catch a stale lock.
+        if len(dump["t"]) % 50 == 0:
+            _pr = getattr(getattr(self, "_ploop", None), "_region", None)
+            say(f"regions: main {getattr(self.capture, 'region', None)} locked={getattr(self.capture, '_render_locked', None)} | perception {_pr} | hand_ids {getattr(self, 'hand_ids', None)} elixir {self.elixir}")
         ex = getattr(self, "_last_exec_action", None)
         dump["obs"].append(pre[0]); dump["hand"].append(pre[1]); dump["next"].append(pre[2])
         dump["elixir_vec"].append(pre[3]); dump["threat"].append(pre[4]); dump["elixir"].append(pre[5])
@@ -89,6 +95,54 @@ def main():
             np.savez_compressed(dump_path, **{k: np.array(v) for k, v in dump.items()})
         return out
     _cls.step = _step
+    # REGION RE-LOCK at match start (5cr.8.5, measured): a WindowCapture built while the MATCH_END screen shows locks
+    # 38 px SHORT (its bottom band is dark -> _render_area's bottom-black-bar trim), and never re-scans after a
+    # successful lock. On an in-match frame that short lock reads hand [-1,1,-1,-1] / next -1 / elixir 9.22 -- the
+    # exact s1b/s3 "frozen" signature. So: whenever reset() sees IN_MATCH, re-scan BOTH captures (main loop +
+    # perception thread) on the live match frame before the original reset reads anything. Launcher-only hook;
+    # the env/perception code is untouched (the perception loop's cap_factory test hook exposes its capture).
+    from clashrl import perception as _pmod
+    from clashrl.states import GameState as _GS
+    _orig_pinit = _pmod.PerceptionLoop.__init__
+    def _pinit(self, *pa, **pk):
+        _orig_pinit(self, *pa, **pk)
+        if getattr(self, "_cap_factory", None) is None:
+            from clashrl.capture import WindowCapture as _WC
+            def _factory(_self=self):
+                _self._cap_obj = _WC(_self._title, _self._region_cfg)
+                return _self._cap_obj
+            self._cap_factory = _factory
+    _pmod.PerceptionLoop.__init__ = _pinit
+    _orig_reset = _cls.reset
+    def _reset(self, *ra, **rk):
+        # reset() loops internally until IN_MATCH, so the relock has to sit on the grab INSIDE that loop: the first
+        # frame that reads IN_MATCH triggers a re-scan of both captures and the frame is re-grabbed from the new region.
+        done = {"v": False}
+        orig_grab = self.capture.grab
+        def grab():
+            fr = orig_grab()
+            try:
+                if fr is not None and not done["v"] and self.vision.detect_state(fr) == _GS.IN_MATCH:
+                    done["v"] = True
+                    old = self.capture.region
+                    self.capture.refresh_region()
+                    pc = getattr(getattr(self, "_ploop", None), "_cap_obj", None)
+                    pold = getattr(pc, "region", None)
+                    if pc is not None:
+                        pc.refresh_region()
+                    say(f"relock at match start: main {old} -> {self.capture.region} locked={getattr(self.capture, '_render_locked', None)} | perception {pold} -> {getattr(pc, 'region', None)}")
+                    fr2 = orig_grab()
+                    if fr2 is not None:
+                        fr = fr2
+            except Exception as e:  # noqa: BLE001
+                say(f"relock failed: {e!r}")
+            return fr
+        self.capture.grab = grab
+        try:
+            return _orig_reset(self, *ra, **rk)
+        finally:
+            self.capture.grab = orig_grab
+    _cls.reset = _reset
     try:
         train_rl(cfg, init=a.init)
     except KeyboardInterrupt:

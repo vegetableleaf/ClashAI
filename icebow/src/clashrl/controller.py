@@ -38,7 +38,12 @@ class Controller:
                 return False
             if ctypes.windll.user32.GetForegroundWindow() == hwnd:
                 return True
-            ctypes.windll.user32.ShowWindow(hwnd, 9)          # SW_RESTORE (no-op if not minimised)
+            # SW_RESTORE is NOT a no-op on a MAXIMIZED window: Win32 restores it to its pre-maximize size and
+            # position (measured 2026-09-03, HANDOFF 5cr.8.5: the maximized game window at (654,0) became an
+            # un-maximized (614,0) one on every session start -- the owner's 'clicks moved the window off
+            # centre'). Only restore when the window is actually minimised (iconic).
+            if ctypes.windll.user32.IsIconic(hwnd):
+                ctypes.windll.user32.ShowWindow(hwnd, 9)      # SW_RESTORE
             ctypes.windll.user32.SetForegroundWindow(hwnd)
             time.sleep(float(self.cfg.get("play", "focus_settle_s", default=0.06)))
             return ctypes.windll.user32.GetForegroundWindow() == hwnd

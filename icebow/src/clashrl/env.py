@@ -486,6 +486,17 @@ class LiveMatchEnv:
         self._prev_ident_t = None
         self._opp_mem = card_threat.OpponentMemory(db)   # per-match opponent short-term memory (Stage 3)
         self._opp_elixir = OpponentElixirEstimator(db)   # live estimate from mirrored spend accounting
+        # SIM/LIVE PARITY of opponent-memory slot 5 (2026-09-03, HANDOFF 5cr.8). The sim writes OUR
+        # elixir there (sim/env.py mem[5] = eng.elixir[0]/10 since 3bc1d45); live wrote the OPPONENT
+        # estimate. MEASURED on the live obs dump (s2, 425 decisions): the PPO gate reads that slot as
+        # its own elixir -- with the live value (~0.03) p(play)>0.25 at >=9 elixir on 1.7% of states;
+        # with own elixir in the slot, 96.9%. "own_elixir" = what the policy was trained on;
+        # "opp_estimate" = the legacy live value. The estimate itself is still computed either way
+        # (the trade potential reads self._opp_est).
+        self._mem5_source = str(cfg.get("env", "opp_mem_slot5", default="opp_estimate"))
+        if self._mem5_source not in ("opp_estimate", "own_elixir"):
+            raise ValueError("env.opp_mem_slot5 must be 'opp_estimate' or 'own_elixir', got %r" % self._mem5_source)
+        print("[env] opp-memory slot 5 source: %s" % self._mem5_source)
         from .replay_mine import TeamTracker, own_card_bases
         self._team_tracker = TeamTracker(                # LIVE: evidence-fused teams (plays/motion/bars/pockets)
             own_cards=own_card_bases(db),                # + the DECK VETO: 'mine' must name a card we own
@@ -670,8 +681,8 @@ class LiveMatchEnv:
         mem = self._opp_mem.update([(d.base, d.gy) for d in dets], dt=dt)    # memory: BOTH halves (incl. staging)
         # Slot 5 carries the current opponent-elixir estimate (normalized), inferred from symmetric
         # elixir accounting + detected enemy plays; keeps model width unchanged.
-        mem[5] = self._opp_elixir.update(self.elixir, dets, now)
-        self._opp_est = float(mem[5])                    # the trade potential reads the same estimate
+        self._opp_est = float(self._opp_elixir.update(self.elixir, dets, now))   # the trade potential reads this estimate
+        mem[5] = self._opp_est if self._mem5_source == "opp_estimate" else float(self.elixir_vec[0])
         tid_now = self._threat_id
         if tid_now is None or len(tid_now) == 0 or float(tid_now[0]) < 0.5:
             # HYSTERESIS (2026-08-14): detector gaps unlight the tid for a frame or two mid-push,

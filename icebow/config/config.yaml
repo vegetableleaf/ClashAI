@@ -1145,6 +1145,10 @@ env:
                                  # own sim.spell_tower_aim_tiles (3.8) for a different purpose.
   rocket_origin: [0.5, 1.05]     # rocket launch point (your side, off-screen); travel time ~ distance from here
   rocket_base_time: 0.3          # fixed part of rocket flight time (s)
+  opp_mem_slot5: opp_estimate    # LIVE ONLY (2026-09-03, HANDOFF 5cr.8): what train-rl/env put in opponent-memory slot 5 (threat
+                                 # slot 31). The SIM trains the policy with OUR elixir there; "opp_estimate" (legacy live) feeds the
+                                 # opponent-elixir estimate instead, and the gate reads it as ~0 elixir -> waits. MEASURED s2: p(play)>0.25
+                                 # at >=9 elixir 1.7% vs 96.9% with "own_elixir". Set "own_elixir" for parity with the trained policy.
   spell_cast_delay_s: 1.0        # LIVE ONLY (2026-09-03, owner): seconds between the tap and the spell
                                  # actually existing on the board. The log/rocket lead is scaled by it
                                  # (rocket: this + flight; log: this alone, the corridor covers the roll).
