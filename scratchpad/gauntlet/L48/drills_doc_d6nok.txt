@@ -1,0 +1,35 @@
+[doctrine_v2] installed: cycle-with-a-cell
+[doctrine_v4] installed: quiet-board tempo MIN=99.0 SKEL=True SKELMIN=3.0 IW=99.0
+[doctrine_v6] installed: generic body
+[drill] play-out ON -- drills continue as ordinary matches after their verdict
+bank_to_six_then_bow               doctrine_v6     100%
+bow_defends_from_the_centre        doctrine_v6      32%
+bow_never_into_the_push            doctrine_v6       8%
+bow_punish_the_commitment          doctrine_v6      96%
+bow_punishes_the_pump              doctrine_v6      92%
+hold_the_spell_for_a_target        doctrine_v6      96%
+hold_the_tesla_for_their_wincon    doctrine_v6      56%
+ice_wizard_behind_the_line         doctrine_v6     100%
+ignore_the_ignorable               doctrine_v6       0%
+knight_blocks_the_charge           doctrine_v6      84%
+knight_guards_the_bow              doctrine_v6     100%
+log_rolls_forward_not_backward     doctrine_v6      84%
+log_the_barrel_on_landing          doctrine_v6       0%
+log_the_ground_swarm               doctrine_v6      88%
+matchup_bridge_spam                doctrine_v6      28%
+matchup_hog_cycle                  doctrine_v6      96%
+matchup_lavaloon                   doctrine_v6      64%
+nado_clump_for_the_wizard          doctrine_v6      72%
+nado_king_activation               doctrine_v6       0%
+nado_pull_the_flock_back           doctrine_v6     100%
+nado_the_sneaky_lock               doctrine_v6      92%
+never_rocket_their_king            doctrine_v6     100%
+rocket_the_pump_on_sight           doctrine_v6      92%
+rocket_the_two_for_one             doctrine_v6      88%
+rocket_then_tornado                doctrine_v6      16%
+skeletons_kill_the_miner           doctrine_v6     100%
+skeletons_stop_the_wall_breakers   doctrine_v6      76%
+split_lane_needs_the_centre        doctrine_v6      88%
+tesla_pulls_the_wincon             doctrine_v6      92%
+[doctrine_v6] mean 70.3%  zeros 3
+DONE

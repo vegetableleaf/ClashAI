@@ -1,0 +1,32 @@
+[drill] play-out ON -- drills continue as ordinary matches after their verdict
+bank_to_six_then_bow               none            100%
+bow_defends_from_the_centre        none             44%
+bow_never_into_the_push            none              8%
+bow_punish_the_commitment          none             96%
+bow_punishes_the_pump              none             92%
+hold_the_spell_for_a_target        none             96%
+hold_the_tesla_for_their_wincon    none             56%
+ice_wizard_behind_the_line         none            100%
+ignore_the_ignorable               none              8%
+knight_blocks_the_charge           none             88%
+knight_guards_the_bow              none            100%
+log_rolls_forward_not_backward     none             84%
+log_the_barrel_on_landing          none              0%
+log_the_ground_swarm               none             88%
+matchup_bridge_spam                none             20%
+matchup_hog_cycle                  none             96%
+matchup_lavaloon                   none             68%
+nado_clump_for_the_wizard          none             72%
+nado_king_activation               none              0%
+nado_pull_the_flock_back           none            100%
+nado_the_sneaky_lock               none             92%
+never_rocket_their_king            none            100%
+rocket_the_pump_on_sight           none             88%
+rocket_the_two_for_one             none             88%
+rocket_then_tornado                none             16%
+skeletons_kill_the_miner           none            100%
+skeletons_stop_the_wall_breakers   none             92%
+split_lane_needs_the_centre        none             88%
+tesla_pulls_the_wincon             none             92%
+[none] mean 71.4%  zeros 2
+DONE

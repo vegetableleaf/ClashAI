@@ -1,0 +1,1 @@
+[doctrine_d7tank] wr=12.5%  towerdelta=-1.492 crowndelta=-1.02 plays/match=37.4 play share 0.114 elixir>=6 share 0.020
