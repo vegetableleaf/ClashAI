@@ -64,10 +64,37 @@ def main():
     from clashrl.config import Config
     from clashrl.train_rl import train_rl
     cfg = Config.load(os.path.join(ROOT, a.config))
+    # OBS DUMP: wrap env.step so every decision's observation (image + hand/next/elixir/threat vectors), the
+    # chosen action, the EXECUTED action (after aim assists / wheels), reward and elixir are written to an npz
+    # per session -- the sim/live comparison instrument (HANDOFF 5cr). Pure read-only hook on the live env.
+    import numpy as np
+    from clashrl import env as _envmod
+    dump = {"obs": [], "hand": [], "next": [], "elixir_vec": [], "threat": [], "chosen": [], "exec": [],
+            "reward": [], "elixir": [], "t": [], "match": []}
+    _orig_step = _envmod.Env.step if hasattr(_envmod, "Env") else None
+    _cls = next(c for n, c in vars(_envmod).items() if isinstance(c, type) and hasattr(c, "step") and hasattr(c, "_update_threat"))
+    _orig_step = _cls.step
+    dump_path = os.path.join(ROOT, "data", "bench", "live_obs", f"obs_{a.tag}_{time.strftime('%Y%m%d_%H%M%S')}.npz")
+    def _step(self, action):
+        pre = (np.array(self._last_obs, copy=True), self.hand_vec.copy(), self.next_vec.copy(),
+               self.elixir_vec.copy(), self.threat_vec.copy(), float(self.elixir))
+        out = _orig_step(self, action)
+        ex = getattr(self, "_last_exec_action", None)
+        dump["obs"].append(pre[0]); dump["hand"].append(pre[1]); dump["next"].append(pre[2])
+        dump["elixir_vec"].append(pre[3]); dump["threat"].append(pre[4]); dump["elixir"].append(pre[5])
+        dump["chosen"].append(np.array(tuple(action) if action is not None else (-1, -1, -1)))
+        dump["exec"].append(np.array(tuple(ex) if ex is not None else (-1, -1, -1)))
+        dump["reward"].append(float(out[1])); dump["t"].append(time.time()); dump["match"].append(state["done"])
+        if len(dump["t"]) % 50 == 0:
+            np.savez_compressed(dump_path, **{k: np.array(v) for k, v in dump.items()})
+        return out
+    _cls.step = _step
     try:
         train_rl(cfg, init=a.init)
     except KeyboardInterrupt:
         say("train_rl interrupted")
+    if dump["t"]:
+        np.savez_compressed(dump_path, **{k: np.array(v) for k, v in dump.items()}); say(f"obs dump {len(dump['t'])} decisions -> {dump_path}")
     say(f"session end: {state['abort']}  matches {state['done']}  wall {(time.time()-t0)/60:.1f} min")
     return 0
 

@@ -827,3 +827,9 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   is input outside the game window (classifier blocked it too). Owner question posted. §5cr.3.
 - Correction (a, code): epsilon branch = doctrine/counter-table/advisor/random, not uniform random; the owner's sessions were
   ~60% that branch, ~40% PPO. §5cr.4. Next: retry the live gate each loop; offline obs-assembly diff meanwhile.
+- L45 cont. (22:0x-22:2x): owner set display timeout Never; waiter armed. FOUND (a): train-rl greedy rule = tau 0.5 vs sim/
+  play.py tau 0.25; gatec2_m10k p(play) p99 0.358 -> 0.5 rule keeps 0.1% of plays (6 vs 581 in 16 sim matches). At eps 0
+  the PPO never plays live; owner's sessions = exploration half + wait-till-9.5-then-bow half. Fix: train.rl_gate_tau 0.25
+  (config.yaml), key absent = legacy (live_obs.yaml baseline / live_obs_tau.yaml). Base-block seam (sim 6 slots vs live 16)
+  measured second-order (gate agree 0.93; detector-fed slots 16+ carry the decision: 0.83). Config-value correction:
+  rl_epsilon_start 0.50 not 0.60. HANDOFF §5cr.7.

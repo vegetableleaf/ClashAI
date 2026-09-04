@@ -22,7 +22,7 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-03 21:45**, branch `main` (**§5cr: NEW GAUNTLET sim->live gap -- c2r PPO resume RUNNING (coef 2.0, reach fix ON, counter restarts at 0 = +10000 absolute); live-obs harness built (epsilon 0, learning off, idle-gated); first live sample BLOCKED: display asleep (20-min timeout vs 15-min away rule) -- owner question on Discord; epsilon branch is informed exploration, not uniform random**)
+Last updated: **2026-09-03 22:25**, branch `main` (**§5cr.7: FOUND train-rl's greedy rule (WAIT iff Q_wait>=Q_play, = tau 0.5) vs sim/play.py tau 0.25 -- gatec2_m10k p(play) p99 0.358, so at epsilon 0 the PPO policy keeps 0.1% of its plays live (99% vetoed); fix = train.rl_gate_tau 0.25 (config-driven, baseline yaml keeps the old rule); base-block threat seam measured second-order; c2r counter 2000; display timeout set to Never by owner, live waiter armed**)
 change) + aggro1 first look. Owner: "the policy plays every log 1-2 tiles too far forward and whiffs; it never leads log or
 rocket; I think it ignores the ~1 s cast delay". "Mapping issue" (c): the board->screen warp is shared by troops and spells.
 The real defects (a, in code): (1) env.py `_wheels_spell_aim` GATED on the current positions (`log_hits` / radius test)
@@ -9770,3 +9770,37 @@ anything inside the game window is allowed; navigating any other app or window r
 - Nothing about the live behaviour of any checkpoint -- no sample ran. Nothing about c2r vs gatec2 (first EVAL at counter
   2000 ~ 22:1x; first gate snapshot at counter 5000 ~ 23:1x). The obs-slot mismatch (§5cp) is still the leading offline
   candidate and untested.
+
+### 5cr.7 (22:0x-22:2x) FOUND (a, code + measured): train-rl's greedy wait/play rule is NOT the sim's -- at epsilon 0 the PPO policy essentially never plays live
+- Owner set the display timeout to Never (22:0x); capture is live again (CR frame mean 47.3). Waiter armed: the launcher
+  retries every 60 s until idle >= 15 min (`data/bench/live_obs/s1.out`).
+- **The rule.** Sim greedy (`train_sim_ppo.choose_greedy` :979) and `play.py:620`: WAIT iff sigmoid(Q_play - Q_wait) <=
+  `sim.ppo_gate_threshold` = 0.25. `train_rl.py` (:889 before this patch): WAIT iff Q_wait >= Q_play, i.e. the same test at
+  0.5. Same gate head (train_rl loads `ckpt["gate"]`, :183).
+- **The measurement** (`L45/sim_obs_dump.py`: gatec2_m10k greedy in SimMatchEnv, 16 seeds 7000000+, tau 0.25, 5,371
+  decisions; npz `L45/sim_obs_gatec2m10k.npz`, NOT in git): p(play) quantiles 10/25/50/75/90/99% = 0.0/0.0/0.149/0.211/
+  0.253/0.358 -- it NEVER reaches 0.5. Play rate 10.8% of decisions under tau 0.25 vs **0.1% under the 0.5 rule**: 6 plays
+  in 16 matches instead of 581 (99% lost; per match 26-72 -> 0-3).
+- **Consequence for the owner's live sessions:** with `rl_epsilon_start` 0.50 (config VALUE -- my 21:1x "0.60" was the
+  coded default; `explore_wait_prob` 0.2, `min_play_elixir` 2 likewise) half the decisions were the exploration branch
+  (5cr.4) and the other half the PPO rule, which under the 0.5 test is ~always WAIT. The only PPO-path plays were the
+  leak-guard wheel (`play.offense_leak_guard` 9.5: quiet board at 9.5 elixir -> X-Bow). So the live behaviour the owner
+  watched was "doctrine/advisor/random half the time, wait-until-9.5-then-bow the other half": every card the PPO
+  policy would have played was vetoed by the rule. This is a candidate for the whole "ignores the state and plays cards
+  as they come" reading, and it is the cheapest one to test (b until s1/s2 run).
+- **Fix shipped (config-driven, baseline preserved):** `train.rl_gate_tau` (config.yaml 0.25 = sim parity); key ABSENT ->
+  legacy rule, so `live_obs.yaml` (no key) measures the old behaviour and `live_obs_tau.yaml` (the one key) the new. Not a
+  training change; c2r does not execute the edited lines (train_sim_ppo imports only `_build_net/_pick_device`).
+- **Base-block seam, second finding (a):** sim `view.threat_vector` fills threat slots 0-5 only (mass, count/6, biggest,
+  left flag, right flag, depth; 6-15 ALWAYS 0 -- nonzero rate 0.632/0.632/0.632/0.283/0.26/0.632, then 0 x10) while live
+  `threats.Threat.vector` fills all 16 with different meanings (0 mass, 1 my-side mass, 2 blob, 3 count/12, 4 green,
+  5 purple, 6 depth, 7-9 lane masses, 10 speed, 11-13 projectile [slot 12 = 0.5 whenever none], 14 behind, 15 siege). Both
+  predate the 07-28 rename. `L45/base_block_perturb.py` on the sim dump (decision agreement vs the untouched obs):
+  slot12=0.5 only: gate agree 0.992; live-semantics remap: 0.932, play rate 0.108->0.171; base block zeroed: 0.963;
+  CONTROL slots 16+ zeroed (identity/memory/interactions/tower): 0.831, play rate -> 0.251. So the base-block seam is real
+  but second-order; the policy's decision mass sits in the detector-fed blocks (recall 0.82 / precision 0.89 live).
+- Obs-dump instrument: the launcher now wraps `LiveMatchEnv.step` and writes every decision's obs image + hand/next/elixir/
+  threat vectors + chosen and EXECUTED action + reward to `data/bench/live_obs/obs_<tag>_<ts>.npz`, the same layout as the
+  sim dump -- slot-by-slot live vs sim comparison, and the live gate values can be recomputed offline from it.
+- c2r 22:19: counter 2000 (absolute m12k), EVAL in progress. Watchdog: ELIXIR>=6 drift alert at counter 1500 (0.018 vs
+  rolling median 0.031) -- noted, not read as anything yet (n=5 readings).

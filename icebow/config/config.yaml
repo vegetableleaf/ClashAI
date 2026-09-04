@@ -905,9 +905,13 @@ train:
   exact_cell_loss_weight: 0.25
   soft_cell_loss_weight: 0.75
 
-  rl_epsilon_start: 0.60
-  rl_epsilon_end: 0.10
+  rl_epsilon_start: 0.50
+  rl_epsilon_end: 0.00
   rl_epsilon_decay_steps: 6000
+  rl_gate_tau: 0.25        # (2026-09-03, HANDOFF 5cr) live GREEDY wait/play rule = the sim's: WAIT iff sigmoid(Q_play - Q_wait)
+                           # <= this. train-rl used Q(wait) >= Q(play) (= 0.5) while the sim trains/evals and play.py use
+                           # sim.ppo_gate_threshold 0.25. MEASURED gatec2_m10k, 5,371 sim decisions: p(play) never reaches
+                           # 0.5 (p99 0.358) -> the 0.5 rule drops 99% of the policy's plays. Remove the key = legacy rule.
   explore_wait_prob: 0.2         # while exploring, chance of a no-op (lowered so it commits to plays more)
   min_play_elixir: 2             # while exploring, don't play a card below this elixir
   min_replay: 200                # transitions to collect before learning starts
