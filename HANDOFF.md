@@ -11885,7 +11885,7 @@ running on a fundamentally incorrect sim that is only 1/4 parity with the real g
 read, not a winrate eval (150 greedy matches = +-8pp, and in a 26%-parity sim it measures the wrong game).
 
 **Read (snapshot `data/bench/armE_m3k85_now.pt` = `policy_armE_20260905.pt` at 14:16 UTC, sha 09e581e8...,
-3,850 episodes; `L60/reads_armE_m3k85_now.txt`, `L60/baseline_armE_m3k85.json`, `L60/rails_read.py`). (a),
+3,850 episodes; `L60/reads_armE_m3k85_now.txt`, `L60/(json not written -- the script printed to stdout only; numbers in this section)`, `L60/rails_read.py`). (a),
 one training seed.**
 - place_probe (greedy card+cell, 6x400 steps, seeds 0/1/2): knight@426 **35/39, 35/37, 35/40** (distinct
   4/3/2); tesla@234 19/29, 19/25, 25/28 (distinct **8/6/4**); skeletons@423 52/52, 50/51, 52/52; x_bow@234
