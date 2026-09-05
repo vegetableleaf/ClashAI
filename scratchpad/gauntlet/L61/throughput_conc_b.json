@@ -1,0 +1,75 @@
+{
+ "port": 37032,
+ "tag": "000YLY0JCPGL",
+ "label": "conc_b",
+ "runs": [
+  {
+   "every": 0,
+   "rep": 0,
+   "wall_s": 1.727,
+   "final_tick": 6085,
+   "n_frames": 0,
+   "n_plays": 123,
+   "n_observe_calls_approx": 123,
+   "state_hash": "d0874ff2026fa69e",
+   "qemu_ws_mb": 4260.0
+  },
+  {
+   "every": 0,
+   "rep": 1,
+   "wall_s": 1.461,
+   "final_tick": 6085,
+   "n_frames": 0,
+   "n_plays": 123,
+   "n_observe_calls_approx": 123,
+   "state_hash": "d0874ff2026fa69e",
+   "qemu_ws_mb": 4260.0
+  },
+  {
+   "every": 0,
+   "rep": 2,
+   "wall_s": 1.557,
+   "final_tick": 6085,
+   "n_frames": 0,
+   "n_plays": 123,
+   "n_observe_calls_approx": 123,
+   "state_hash": "d0874ff2026fa69e",
+   "qemu_ws_mb": 4260.0
+  },
+  {
+   "every": 10,
+   "rep": 0,
+   "wall_s": 4.647,
+   "final_tick": 6085,
+   "n_frames": 661,
+   "n_plays": 123,
+   "n_observe_calls_approx": 784,
+   "state_hash": "d0874ff2026fa69e",
+   "qemu_ws_mb": 4260.0
+  },
+  {
+   "every": 10,
+   "rep": 1,
+   "wall_s": 4.674,
+   "final_tick": 6085,
+   "n_frames": 661,
+   "n_plays": 123,
+   "n_observe_calls_approx": 784,
+   "state_hash": "d0874ff2026fa69e",
+   "qemu_ws_mb": 4260.0
+  },
+  {
+   "every": 10,
+   "rep": 2,
+   "wall_s": 4.85,
+   "final_tick": 6085,
+   "n_frames": 661,
+   "n_plays": 123,
+   "n_observe_calls_approx": 784,
+   "state_hash": "d0874ff2026fa69e",
+   "qemu_ws_mb": 4260.0
+  }
+ ],
+ "qemu_ws_mb_before": 4260.0,
+ "qemu_ws_mb_after": 4260.0
+}

@@ -1,0 +1,65 @@
+=== attempt 1 start 2026-09-05 10:47:05
+{
+  "vm": {
+    "ready": true,
+    "started": false,
+    "serial": "emulator-5554"
+  },
+  "package": {
+    "complete": true,
+    "installed": false
+  },
+  "services": [
+    {
+      "slot": 0,
+      "port": 37031,
+      "ready": true,
+      "started": false,
+      "tick": 10,
+      "state_hash": "d036bec06e300550",
+      "tower_max_hp": [
+        3052,
+        3052,
+        3052,
+        3052,
+        4824,
+        4824
+      ]
+    },
+    {
+      "slot": 1,
+      "port": 37032,
+      "ready": true,
+      "started": true,
+      "tick": 10,
+      "state_hash": "d036bec06e300550",
+      "tower_max_hp": [
+        3052,
+        3052,
+        3052,
+        3052,
+        4824,
+        4824
+      ]
+    }
+  ],
+  "direct_transport": {
+    "kind": "emulator_tcp_redir",
+    "mappings": [
+      {
+        "slot": 0,
+        "host_port": 38031,
+        "guest_port": 37031,
+        "ready": true
+      },
+      {
+        "slot": 1,
+        "host_port": 38032,
+        "guest_port": 37032,
+        "ready": true
+      }
+    ]
+  }
+}
+exit=0
+=== end 2026-09-05 10:47:26
