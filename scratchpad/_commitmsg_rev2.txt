@@ -1,0 +1,3 @@
+RADIUS proposal rev 2: owner additions folded in (doc s7: obs has no card identity -> role-band derivable, identity channel = 2nd experiment; sim-view --radii overlay deliverable; tornado pull distance/direction + king activation; bridge-block cases never penalised early; dead towers already removed from targeting/canvas/collision, new terms alive-only); rulings t_hit+1.0 / 3 arms 2 at a time / live log-only; Q1 explained (open) -- HANDOFF 5cs.28
+
+Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>
