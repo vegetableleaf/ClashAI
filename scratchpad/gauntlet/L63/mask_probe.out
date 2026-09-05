@@ -1,0 +1,5 @@
+[v1] TRAIN: n 5918 target-masked 300 (5.07%)  ce(legal) 3.262  H 3.47  legal cells mean 188 (uniform H 5.17)
+[v1] VAL: n 1004 target-masked 30 (2.99%)  ce(legal) 3.521  H 3.48  legal cells mean 188 (uniform H 5.17)
+[data] N=9444 train=8111 val=1333
+[v2] TRAIN: n 8111 target-masked 391 (4.82%)  ce(legal) 3.586  H 3.49  legal cells mean 194 (uniform H 5.19)
+[v2] VAL: n 1333 target-masked 46 (3.45%)  ce(legal) 3.620  H 3.46  legal cells mean 190 (uniform H 5.17)

@@ -1280,3 +1280,10 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - NEW TRAP: `_latest.pt` is written only at save_every crossings -- engB_*_latest are byte-identical to m500/m502 and the weights from m500->m609 are gone.
 - HANDOFF.md 12,879 -> 2,325 lines (1.1 MB -> 269 KB), LOSSLESS: old §3 run state, the §5a..§5cs.42 narrative and 270 lines of stale header stack moved verbatim to HANDOFF_ARCHIVE.md (10,800 lines) with a 150-entry index; new compact header + §6 top-of-queue block. Backup scratchpad/gauntlet/L62/HANDOFF_prespllit_backup.md.
 - Next: awaiting the owner's new gauntlet; box idle.
+
+## L63 -- 2026-09-05 22:0x-22:3x UTC -- NEW GAUNTLET (square one, research, propose); owner's "BC overfits" premise tested (HANDOFF §5cs.52)
+- (c) "BC / IL overfits": bc_bias_native_s0 scores 17.62/48.85 on its OWN TRAIN rows vs 15.44/46.61 val (v1; CE 3.26 vs 3.52, H 3.47 nats over ~188 legal cells); on v2 val 15.00 > train 14.09. It underfits: misses the pro cell on 82% of the boards it was fit on, +1.8 over the board-blind histogram (13.65).
+- (a) The legal-placement mask forbids the pro's cell on 3.0-5.1% of rows (train higher than val); cause untested (b). New pipeline must validate its mask against the corpus first.
+- Research fan-out: 5 background agents -> scratchpad/gauntlet/L63/{lit_game_ai,cr_prior_art,recent_2025_2026,assets_audit,lessons}.md, incremental, STATUS line marks done.
+- Five owner questions posted with --questions (live-path guardrail, engine in/out, which ckpt was played live, budget/cloud, grading ladder). Proposal next loop after answers + agent files.
+- Box: nothing training; python 3 (crawler x2 + uvicorn), qemu UP, free RAM 3.9 GB.
