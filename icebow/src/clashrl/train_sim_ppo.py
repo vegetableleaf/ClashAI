@@ -429,6 +429,7 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             penv = SimMatchEnv(cfg, seed=101)
             pobs = penv.reset()
             worst_card = worst_cell = 0.0
+            cell_raws = []
             with torch.no_grad():
                 for _ in range(8):
                     # /255: THE INPUT THE NET IS TRAINED ON. Until 2026-09-01 (5ar) this fed the
@@ -446,7 +447,9 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                     fmap = net.policy.features(px)
                     z = net.policy._embed(fmap, *pv)
                     worst_card = max(worst_card, float(net.policy.card_head(z).abs().max()))
-                    worst_cell = max(worst_cell, float(net.policy._cell_logits(fmap, z).abs().max()))
+                    cell_raw = net.policy._cell_logits(fmap, z).abs()
+                    worst_cell = max(worst_cell, float(cell_raw.max()))
+                    cell_raws.append(cell_raw.flatten())
                     po = penv.step((True, 0, 200))
                     pobs = po[0] if not po[2] else penv.reset()
                 fixed = []
@@ -455,13 +458,23 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
                     net.policy.card_head.weight.mul_(a)
                     net.policy.card_head.bias.mul_(a)
                     fixed.append(f"card head x{a:.4f} (raw absmax {worst_card:.0f})")
-                if worst_cell > 2.0 * _LOGIT_CAP:
-                    a = 4.5 / worst_cell
+                # CELL CRITERION = p99 of |raw|, not the max (2026-09-05, HANDOFF 5cs.38). A healthy
+                # head has a few confident cells past the cap -- the BC-initialised heads
+                # (bc_bias_native_s*, p99 ~6 by construction) reach absmax 20-28 on real boards, and
+                # the max rule would have shrunk their conv residual x0.2 on load while leaving the
+                # bias map alone, silently changing the init being tested. The saturated case the
+                # guard exists for (c2r_best: 92% of masked cells |raw| > 8, p99 62) still trips.
+                cell_p99 = float(torch.quantile(torch.cat(cell_raws), 0.99))
+                if cell_p99 > 2.0 * _LOGIT_CAP:
+                    a = 4.5 / cell_p99
                     last = net.policy.cell_conv[-1]
                     last.weight.mul_(a)
                     if last.bias is not None:
                         last.bias.mul_(a)
-                    fixed.append(f"cell head x{a:.4f} (raw absmax {worst_cell:.0f})")
+                    fixed.append(f"cell head x{a:.4f} (raw p99 {cell_p99:.0f}, absmax {worst_cell:.0f})")
+                else:
+                    print(f"[train-sim-ppo] rail guard: cell head raw p99 {cell_p99:.1f} "
+                          f"(absmax {worst_cell:.0f}) within 2x cap -- left as loaded")
             if fixed:
                 print("[train-sim-ppo] RAIL GUARD: resumed head(s) saturated beyond the tanh cap -- "
                       f"rescaled into the linear region: {', '.join(fixed)}. Rankings preserved; "
