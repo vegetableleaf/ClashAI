@@ -332,10 +332,14 @@ def _drill_policy_from_checkpoint(path: str, device: str = None, spell_min_value
         gate = None
     # `sim.ppo_gate_threshold`, read from the default config -- this helper takes no cfg, and the
     # threshold is what separates "the policy" from "a policy that plays on every affordable step".
+    from .gate_rule import GateRule            # sim.ppo_gate_rule: sample | threshold (5cs.49)
     try:
-        gate_tau = float(Config.load(None).get("sim", "ppo_gate_threshold", default=0.25))
+        gate_rule = GateRule(Config.load(None), seed=0)
     except Exception:  # noqa: BLE001
-        gate_tau = 0.25
+        class _NoCfg:
+            def get(self, *a, default=None):
+                return default
+        gate_rule = GateRule(_NoCfg(), seed=0)
 
     def _t(v):
         return torch.as_tensor(_np.asarray(v)[None], dtype=torch.float32, device=dev)
@@ -379,7 +383,7 @@ def _drill_policy_from_checkpoint(path: str, device: str = None, spell_min_value
             # checkpoint does -- and it reported 0% on drills the real policy passes 8/8.
             if gate is not None:
                 g = gate(z)[0]
-                if float(torch.softmax(g, dim=0)[1]) <= gate_tau:
+                if not gate_rule.play(g):
                     return (0, 0, 0)
             keep = torch.full_like(cards[0], float("-inf"))
             for i in playable:

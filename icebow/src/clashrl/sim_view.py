@@ -584,7 +584,12 @@ def _policy_agent(env, path: str):
     # per tick, so a calibrated gate sits far below 0.5. train_sim_ppo.choose_greedy and play.py were
     # both fixed then; this debugger was missed, so it rendered a policy that under-deploys relative
     # to the one that actually plays.
-    gate_tau = float(env.cfg.get("sim", "ppo_gate_threshold", default=0.25))
+    # 2026-09-05 (HANDOFF 5cs.49): a fixed 0.25 threshold cannot show a PRO-CALIBRATED gate playing
+    # (pro mean P(play) 0.111; 8.1% of pro windows exceed 0.25) -- engB m250 rendered as catatonic
+    # here while its sampled play rate on the engine was ~22/match. The rule now lives in GateRule
+    # (sim.ppo_gate_rule: sample | threshold), seeded from the env seed so a viewing reproduces.
+    from .gate_rule import GateRule
+    gate_rule = GateRule(env.cfg, seed=int(getattr(env, "seed", 0) or 0))
     oh, ow, _ = env.obs_shape
     net = PolicyNet(int(ck.get("in_ch", 3)), int(ck["n_cards"]), int(ck["n_cells"]), int(ck["threat_dim"]))
     net.load_state_dict(ck["model"])
@@ -594,7 +599,8 @@ def _policy_agent(env, path: str):
         gate.load_state_dict(ck["gate"])
     gate.eval()
     print(f"[sim-view] policy {Path(path).name} (algo={ck.get('algo') or 'ddqn'}, "
-          f"n_cells={ck['n_cells']}, threat_dim={ck['threat_dim']})")
+          f"n_cells={ck['n_cells']}, threat_dim={ck['threat_dim']}) gate rule: "
+          + (gate_rule.describe() if is_ppo else "DDQN gate-logit compare"))
 
     def choose(e):
         with torch.no_grad():
@@ -613,7 +619,7 @@ def _policy_agent(env, path: str):
             cm = torch.tensor(e.actions.deployable_mask(card in e.anywhere_ids))
             ceqm = ceq[card].masked_fill(~cm, -1e9)     # PER-CARD placement map
             cell = int(ceqm.argmax())
-            play = (float(torch.sigmoid(gq[1] - gq[0])) > gate_tau) if is_ppo \
+            play = gate_rule.play(gq) if is_ppo \
                 else (gq[1] + cq.max() + ceqm.max() > gq[0])
             return (int(bool(play)), card, cell)
     return choose

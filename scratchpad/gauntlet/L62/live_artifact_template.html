@@ -1,0 +1,649 @@
+<title>Engine decision view 00LYPLJLC80L</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+/* ---- light palette (bare :root = the un-stamped default too) -------------------------------- */
+:root{
+  --bg:#eeece2; --fg:#1f221c; --muted:#6b6f62; --faint:#8d9182;
+  --panel:#fbfaf4; --panel2:#f2f0e6; --line:#d2cebe; --line2:#e2dfd1;
+  --ground:#dfe2cc; --grid:#cbcfb4; --tile:#d6daBF; --river:#9dc0e0; --bridge:#c2ac83;
+  --s0:#c03a2b; --s1:#2159c0;                 /* engine side 0 / side 1 */
+  --ring-table:#8a6a12;                        /* the radius the REWARD scores */
+  --ring-fire:#b1258e;                         /* reach + target hitbox: where the ENGINE fires */
+  --gate:#0f6f68;                              /* the play gate */
+  --band:#c2571d;                              /* the scored P1 band (annulus round the threat) */
+  --play:#1d7a3a; --wait:#7c8071; --bad:#a8201a;
+  --cur:#f2e6a6; --shadow:#5d6154;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#14160f; --fg:#e9e7db; --muted:#9b9e8f; --faint:#7b7f71;
+  --panel:#1c1f16; --panel2:#22261b; --line:#373b2c; --line2:#2b2f22;
+  --ground:#242819; --grid:#333823; --tile:#2c3120; --river:#2a4666; --bridge:#65563a;
+  --s0:#e8695a; --s1:#6a97e8;
+  --ring-table:#d6ac3e;
+  --ring-fire:#f472c8;
+  --gate:#4ecdc0;
+  --band:#f0a06a;
+  --play:#5fcc82; --wait:#8b8f80; --bad:#f08a80;
+  --cur:#453f1c; --shadow:#9a9e8d;
+}}
+:root[data-theme="dark"]{
+  --bg:#14160f; --fg:#e9e7db; --muted:#9b9e8f; --faint:#7b7f71;
+  --panel:#1c1f16; --panel2:#22261b; --line:#373b2c; --line2:#2b2f22;
+  --ground:#242819; --grid:#333823; --tile:#2c3120; --river:#2a4666; --bridge:#65563a;
+  --s0:#e8695a; --s1:#6a97e8;
+  --ring-table:#d6ac3e;
+  --ring-fire:#f472c8;
+  --gate:#4ecdc0;
+  --band:#f0a06a;
+  --play:#5fcc82; --wait:#8b8f80; --bad:#f08a80;
+  --cur:#453f1c; --shadow:#9a9e8d;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);
+     font:14px/1.5 "IBM Plex Sans",system-ui,Segoe UI,Roboto,sans-serif}
+.wrap{display:grid;grid-template-columns:minmax(300px,430px) 1fr;gap:14px;padding:14px;
+      max-width:1240px;margin:0 auto;align-items:start}
+@media (max-width:820px){.wrap{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:11px 13px}
+.stack{display:flex;flex-direction:column;gap:12px}
+h1{font-size:17px;margin:0;font-weight:600;letter-spacing:-.01em;text-wrap:balance}
+h2{font-size:11px;margin:0 0 7px;font-weight:600;color:var(--muted);
+   text-transform:uppercase;letter-spacing:.07em}
+.sub{color:var(--muted);font-size:12px;margin-top:3px}
+.mono,.num{font-family:"IBM Plex Mono",ui-monospace,Consolas,monospace;font-variant-numeric:tabular-nums}
+.row{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+button,select{font:inherit;font-size:12px;padding:3px 9px;border:1px solid var(--line);
+   background:var(--panel2);color:var(--fg);border-radius:4px;cursor:pointer}
+button:hover,select:hover{border-color:var(--faint)}
+button:focus-visible,select:focus-visible,input:focus-visible,canvas:focus-visible{
+   outline:2px solid var(--gate);outline-offset:1px}
+button.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+label.f{font-size:11px;color:var(--muted);display:flex;gap:5px;align-items:center}
+input[type=range]{width:100%;accent-color:var(--gate)}
+canvas#board{background:var(--ground);border:1px solid var(--line);width:100%;height:auto;
+   display:block;border-radius:4px}
+/* transport ---------------------------------------------------------------------------------- */
+#timeline{position:relative;height:15px;background:var(--line2);border-radius:3px;margin:7px 0 2px;
+   cursor:pointer}
+#timeline i{position:absolute;width:2px;height:50%;background:var(--muted)}
+#timeline i.s0{top:50%;background:var(--s0)}
+#timeline i.s1{top:0;background:var(--s1)}
+#timeline i.rej{background:var(--bad)}
+#cursor{position:absolute;top:-3px;width:2px;height:21px;background:var(--fg);pointer-events:none}
+#gatestrip{position:relative;height:46px;background:var(--panel2);border:1px solid var(--line2);
+   border-radius:3px;cursor:pointer;margin-top:6px}
+#gatestrip canvas{display:block;width:100%;height:100%;border-radius:3px}
+#gcursor{position:absolute;top:0;width:1px;height:100%;background:var(--fg);pointer-events:none}
+.elx{display:grid;grid-template-columns:78px 1fr 38px;gap:7px;align-items:center;margin-top:5px}
+.bar{height:9px;background:var(--line2);border-radius:5px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:5px}
+/* the decision readout ------------------------------------------------------------------------ */
+.verdict{display:flex;gap:9px;align-items:baseline;flex-wrap:wrap}
+.big{font-size:27px;font-weight:600;line-height:1;font-family:"IBM Plex Mono",monospace;
+     font-variant-numeric:tabular-nums;color:var(--gate)}
+.tag{font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+     padding:2px 7px;border-radius:3px;border:1px solid currentColor}
+.tag.play{color:var(--play)} .tag.wait{color:var(--wait)} .tag.bad{color:var(--bad)}
+.tag.shadow{color:var(--shadow)}
+#gmeter{position:relative;height:16px;background:var(--line2);border-radius:3px;margin:9px 0 3px}
+#gfill{height:100%;background:var(--gate);border-radius:3px 0 0 3px}
+#gmeter b{position:absolute;top:-3px;width:1px;height:22px;background:var(--fg);opacity:.55}
+#gmeter b span{position:absolute;top:-13px;left:-11px;font-size:9.5px;color:var(--muted);
+   font-family:"IBM Plex Mono",monospace}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;font-size:12.5px;margin-top:8px}
+.kv dt{color:var(--muted)}
+.kv dd{margin:0;font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.cards{display:flex;flex-direction:column;gap:3px;margin-top:9px}
+.cards div{display:grid;grid-template-columns:88px 1fr 42px;gap:7px;align-items:center;font-size:11.5px}
+.cards i{display:block;height:7px;background:var(--faint);border-radius:4px}
+.cards div.pick i{background:var(--gate)}
+.hand{display:flex;gap:5px;margin-top:9px;flex-wrap:wrap}
+.hand div{border:1px solid var(--line);border-radius:4px;padding:3px 7px;font-size:11.5px;min-width:66px;
+   line-height:1.3}
+.hand div.pick{border-color:var(--gate);box-shadow:inset 0 0 0 1px var(--gate)}
+.hand div.poor{opacity:.45}
+.hand div.next{border-style:dashed}
+.hand small{display:block;color:var(--muted);font-family:"IBM Plex Mono",monospace;font-size:10px}
+.terms{display:flex;flex-wrap:wrap;gap:4px 9px;margin-top:8px;font-size:11.5px;
+   font-family:"IBM Plex Mono",monospace}
+.terms span{color:var(--muted)} .terms b{font-weight:500;color:var(--fg)}
+/* legend + tables ----------------------------------------------------------------------------- */
+.legend{display:flex;flex-direction:column;gap:6px;font-size:11.5px;margin-top:8px}
+.legend div{display:grid;grid-template-columns:34px 1fr;gap:8px;align-items:center}
+.legend svg{display:block}
+.scroll{max-height:236px;overflow:auto;border-top:1px solid var(--line2);margin-top:7px}
+table{border-collapse:collapse;width:100%;font-size:11.5px}
+td,th{padding:2px 5px;text-align:left;border-bottom:1px solid var(--line2);white-space:nowrap}
+th{position:sticky;top:0;background:var(--panel);font-weight:600;color:var(--muted);
+   text-transform:uppercase;letter-spacing:.05em;font-size:10px;z-index:1}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--panel2)}
+tr.cur{background:var(--cur)}
+tr.rej td{color:var(--bad)}
+td.n{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+.s0c{color:var(--s0)} .s1c{color:var(--s1)}
+.note{font-size:11.5px;color:var(--muted);line-height:1.55}
+.note b{color:var(--fg);font-weight:600}
+.note code{font-family:"IBM Plex Mono",monospace;font-size:11px}
+.warn{border-left:2px solid var(--ring-fire);padding-left:9px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="wrap">
+<div class="stack">
+
+ <div class="panel">
+  <h1>Engine decision view <span class="mono" id="tag"></span></h1>
+  <div class="sub" id="hdr"></div>
+  <div class="row" style="margin-top:9px">
+   <button id="play">Play</button>
+   <button data-speed="0.5">0.5&times;</button><button data-speed="1" class="on">1&times;</button>
+   <button data-speed="2">2&times;</button><button data-speed="4">4&times;</button>
+   <button data-speed="8">8&times;</button>
+   <button id="prevd" title="previous decision">&#8249; dec</button>
+   <button id="nextd" title="next decision">dec &#8250;</button>
+  </div>
+  <div id="timeline"><div id="cursor"></div></div>
+  <input type="range" id="scrub" min="0" max="0" value="0" aria-label="scrub frames">
+  <div class="row" style="justify-content:space-between">
+    <b class="mono" id="tick">tick 0</b><span class="mono" style="color:var(--muted)" id="clock"></span>
+  </div>
+  <div class="elx"><span id="eltop_l">top</span>
+    <div class="bar"><i id="eltop"></i></div><span class="num" id="eltop_t"></span></div>
+  <div class="elx"><span id="elbot_l">bottom</span>
+    <div class="bar"><i id="elbot"></i></div><span class="num" id="elbot_t"></span></div>
+  <div class="mono" id="towers" style="font-size:11px;color:var(--muted);margin-top:7px"></div>
+  <div class="mono" id="crowns" style="font-size:11px;color:var(--muted)"></div>
+ </div>
+
+ <div class="panel">
+  <h2>The gate, decision by decision</h2>
+  <div id="gatestrip"><canvas id="gcv"></canvas><div id="gcursor"></div></div>
+  <div class="note" style="margin-top:6px">Every dot is one decision: height is <b>p(play)</b>, filled = the
+   policy played. The two rules drawn across it are <b>&tau;&nbsp;0.25</b> (the trainer's monitoring
+   threshold) and <b>0.50</b> (what <code>GreedyPolicy</code> uses). Click to seek.</div>
+ </div>
+
+ <div class="panel">
+  <h2>Decision readout</h2>
+  <div class="verdict">
+    <span class="big" id="pplay">&mdash;</span>
+    <span style="color:var(--muted);font-size:12px">p(play)</span>
+    <span class="tag" id="verdict">&mdash;</span>
+    <span class="tag shadow" id="applied">shadow</span>
+    <span class="tag" id="engres" hidden></span>
+  </div>
+  <div id="gmeter"><div id="gfill" style="width:0"></div>
+    <b style="left:25%"><span>0.25</span></b><b style="left:50%"><span>0.50</span></b></div>
+  <dl class="kv" id="kv"></dl>
+  <div class="hand" id="hand"></div>
+  <div class="cards" id="cards"></div>
+  <div class="terms" id="terms"></div>
+ </div>
+
+ <div class="panel">
+  <h2>Radii</h2>
+  <div class="row">
+   <label class="f">rings
+    <select id="ringmode">
+      <option value="both" selected>table + engine fire point</option>
+      <option value="table">table reach only</option>
+      <option value="fire">engine fire point only</option>
+      <option value="off">off</option>
+    </select></label>
+   <label class="f">fire ring vs
+    <select id="firemode">
+      <option value="nearest" selected>nearest enemy</option>
+      <option value="0.5">a small troop (0.5)</option>
+      <option value="0.9">a tank (0.9)</option>
+      <option value="1.5">a crown tower (1.5)</option>
+    </select></label>
+  </div>
+  <div class="row" style="margin-top:6px">
+   <label class="f">show for
+    <select id="ringwho">
+      <option value="all" selected>everything</option>
+      <option value="0">side 0 only</option>
+      <option value="1">side 1 only</option>
+      <option value="towers">towers only</option>
+    </select></label>
+   <label class="f"><input type="checkbox" id="sight" checked> sight rings</label>
+   <label class="f"><input type="checkbox" id="flip" checked> focus side at the bottom</label>
+  </div>
+  <div class="legend" id="legend"></div>
+  <div class="note warn" style="margin-top:9px">The engine tests reach <b>centre&#8209;to&#8209;target&#8209;EDGE</b>,
+   so it fires at <code>reach + the target's hitbox</code> &mdash; 0.5&ndash;1.5 tiles outside the ring the
+   reward scores with. Both are drawn; neither is the &ldquo;right&rdquo; one. Neither carries the sim
+   engine's own <code>_REACH_SLOP</code> of 0.6.</div>
+ </div>
+
+ <div class="panel">
+  <h2>Decisions <span id="dcount" style="color:var(--faint);font-weight:400"></span></h2>
+  <div class="scroll"><table><thead><tr><th>tick</th><th>p</th><th>action</th><th>cell</th><th>why</th>
+   </tr></thead><tbody id="drows"></tbody></table></div>
+ </div>
+
+ <div class="panel">
+  <h2>Plays the engine actually ran</h2>
+  <div class="scroll"><table><thead><tr><th>tick</th><th>side</th><th>card</th><th>x,y</th><th>result</th>
+   </tr></thead><tbody id="prows"></tbody></table></div>
+ </div>
+
+ <div class="panel note" id="honesty"></div>
+</div>
+
+<div><canvas id="board" width="720" height="1280" tabindex="0"
+  aria-label="engine board, scrub with the slider or arrow keys"></canvas></div>
+</div>
+
+<script>
+/* ============================================================================================ */
+const F = DATA.frames, PLAYS = DATA.plays, DEC = DATA.decisions, SP = DATA.specs, B = DATA.board;
+const W = B.tiles_x, H = B.tiles_y, U = B.units_per_tile, S = 40;
+const FOCUS = DATA.focus_side, TICK_S = DATA.tick_s, DT = DATA.decision_ticks;
+const DECK = {}; (DATA.deck || []).forEach(c => { DECK[c.key] = c; });
+const PH = DATA.phase_s || [120, 240];            /* 2x / 3x elixir boundaries, seconds */
+/* the tick the policy DECIDED on (pre-step); d.tick is the tick after the step was applied */
+const OT = d => d.obs_tick != null ? d.obs_tick : d.tick - DT;
+const OEL = d => d.obs_elixir || d.elixir;
+const cv = document.getElementById('board'), ctx = cv.getContext('2d');
+const scrub = document.getElementById('scrub'); scrub.max = F.length - 1;
+const lastTick = F[F.length - 1].t, firstTick = F[0].t;
+let idx = 0, playing = false, speed = 1, acc = 0, last = 0;
+let ringmode = 'both', firemode = 'nearest', ringwho = 'all', showSight = true, flip = true;
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const col = s => s === 0 ? css('--s0') : css('--s1');
+/* focus side at the bottom = exactly what the policy is shown (the L61 mirror) */
+const fx = x => flip && FOCUS === 1 ? (W * U - x) : x;
+const fy = y => flip && FOCUS === 1 ? (H * U - y) : y;
+const px = x => fx(x) / U * S;
+const py = y => (H - fy(y) / U) * S;
+const rx = t => t * S, ry = t => t * S;
+/* score_focus_play works in the focus side's normalised frame (focus at the bottom, y down);
+   invert engine_view._mirror_fns to get raw engine units back */
+const fromNorm = (nx, ny) => FOCUS === 1 ? [(1 - nx) * W * U, ny * H * U] : [nx * W * U, (1 - ny) * H * U];
+const RESNAME = {0:'accepted', 9:'card_not_in_hand', 22:'native_rejected', 1014:'ability_exhausted', 1050:'not_enough_elixir'};
+
+/* ---- header ------------------------------------------------------------------------------- */
+document.getElementById('tag').textContent = DATA.tag;
+const fin = DATA.final || {};
+document.getElementById('hdr').innerHTML =
+  `real engine match, every tick &middot; focus = side ${FOCUS} &middot; engine verdict `
+  + `<b>${fin.outcome}</b> crowns ${JSON.stringify(fin.crowns)} at tick ${fin.tick} `
+  + `&middot; policy <span class="mono">${(DATA.policy.ckpt || '').split(/[\\/]/).pop()}</span>, `
+  + `gate rule <b>${DATA.rule}</b>, heads ${DATA.heads}`
+  + ` &middot; hand from the ${(DATA.episode || {}).hand_source || '?'} queue`
+  + ((DATA.episode || {}).hand_mismatch ? ` (${DATA.episode.hand_mismatch} mismatches)` : ' (0 mismatches)');
+document.getElementById('dcount').textContent =
+  `${DEC.length} at ${DATA.decision_ticks} ticks (${(DATA.decision_ticks * TICK_S).toFixed(2)} s)`;
+document.getElementById('honesty').innerHTML =
+ `<b>What is real and what is not.</b> Every board state here is a real Clash Royale engine state, `
+ + `recorded from the cr-native-sandbox at 20&nbsp;Hz; the towers, bodies, hit points, elixir and `
+ + `projectiles are the engine's own. The <b>decisions are shadow decisions</b>: the policy was asked `
+ + `what it would do in each state, but the match advanced along the recording, so nothing it chose `
+ + `was ever sent to the engine and no <code>result_code</code> is claimed. In a live run each `
+ + `accepted play spends elixir and changes the next state, so the play rate here is not a live play `
+ + `rate. Shapes are schematic &mdash; the sandbox has no renderer. Squares are buildings `
+ + `(engine kind 12/13), circles troops (14/15); a dashed outline is kind 12/14, which the bridge `
+ + `disassembly reads as &ldquo;no attack component right now&rdquo; (deploying, frozen or dormant), `
+ + `not specifically a deploy timer. Status timers, lingering spell zones (Poison, Tornado, `
+ + `Graveyard), and ability state are <b>not exported by the current bridge</b> and so are absent `
+ + `here rather than empty. Radii come from <code>geometry_reward.radii_of</code>, the same table the `
+ + `reward scores with. <b>Timing:</b> a decision is listed at the tick it was <i>decided on</i> `
+ + `(the frame the policy saw, <code>obs_tick</code>); the step it was applied in ends `
+ + `${DT} ticks later (<code>tick</code>). <b>Hand:</b> the 4 cards + queue are the L61 cycle rule `
+ + `(seeded from the engine's queue, advanced by every accepted focus play in the recording), not an `
+ + `engine field. <b>Elixir phase:</b> 2&times; at ${PH[0]} s and 3&times; at ${PH[1]} s, the sim's `
+ + `<code>elixir_rate</code> rule, confirmed on this recording (regen 0.36 &rarr; 0.72 /s at tick 2401, `
+ + `0.72 &rarr; 1.08 at tick 4801). <b>Placement score:</b> the P-terms and the P1 band are scored on the `
+ + `board <i>after</i> the step (<code>tick</code>), where the reward would see it, so a threat placed by the `
+ + `opponent inside the step can appear in the readout before the policy could have seen it; the band is `
+ + `therefore drawn from <code>tick</code> on, the cell marker from <code>obs_tick</code> on.`;
+
+/* ---- legend ------------------------------------------------------------------------------- */
+document.getElementById('legend').innerHTML = [
+ [`<svg width="34" height="14"><circle cx="17" cy="7" r="6" fill="none" stroke="${'var(--ring-table)'}" stroke-width="1.6"/></svg>`,
+  '<b>table reach</b> &mdash; what <code>radii_of</code> returns and the reward&rsquo;s P&#8209;terms score'],
+ [`<svg width="34" height="14"><circle cx="17" cy="7" r="6" fill="none" stroke="var(--ring-fire)" stroke-width="1.6" stroke-dasharray="2.4 2.4"/></svg>`,
+  '<b>engine fire point</b> &mdash; reach + the target&rsquo;s hitbox radius'],
+ [`<svg width="34" height="14"><circle cx="17" cy="7" r="6" fill="none" stroke="var(--muted)" stroke-width="1.2" stroke-dasharray="1 3" opacity=".8"/></svg>`,
+  '<b>sight</b> &mdash; the aggro radius from the same table'],
+ [`<svg width="34" height="14"><path d="M11 3l12 8M23 3l-12 8" stroke="var(--play)" stroke-width="2"/></svg>`,
+  '<b>the policy&rsquo;s cell</b> at this decision'],
+ [`<svg width="34" height="14"><circle cx="17" cy="7" r="6" fill="var(--band)" fill-opacity=".25" stroke="var(--band)" stroke-width="1.2"/><circle cx="17" cy="7" r="2.5" fill="none" stroke="var(--band)" stroke-width="1.2"/></svg>`,
+  '<b>P1 band</b> &mdash; the annulus round the threat the placement was scored against (buildings only) + the threat link'],
+ [`<svg width="34" height="14"><circle cx="17" cy="7" r="6" fill="none" stroke="var(--s1)" stroke-width="1.2"/><circle cx="17" cy="7" r="4" fill="none" stroke="var(--s1)" stroke-width="1"/></svg>`,
+  '<b>flying</b> &mdash; a second thin ring on the body (from the sim spec of the name)'],
+ [`<svg width="34" height="14"><circle cx="17" cy="7" r="5.5" fill="none" stroke="var(--s0)" stroke-width="2"/></svg>`,
+  '<b>a play the engine ran</b>, flashed for 0.5 s in the player&rsquo;s colour']
+].map(([a, b]) => `<div>${a}<span>${b}</span></div>`).join('');
+
+/* ---- radii helpers -------------------------------------------------------------------------- */
+function specOf(name){ return SP[name] || null; }
+function bodyR(e){ const s = specOf(e[3]); return s && s.r_body ? s.r_body : 0.5; }
+function towerR(t){ return t[1] === 'king' ? B.king_half : B.princess_half; }
+function refRadius(f, side, x, y){
+  if (firemode !== 'nearest') return parseFloat(firemode);
+  let best = null, bd = Infinity;
+  for (const e of f.e){ if (e[0] === side || e[3] === '-1' || e[4] <= 0) continue;
+    const d = Math.hypot((e[1]-x)/U, (e[2]-y)/U); if (d < bd){ bd = d; best = bodyR(e); } }
+  for (const t of f.tw){ if (t[0] === side || t[5] <= 0) continue;
+    const d = Math.hypot((t[3]-x)/U, (t[4]-y)/U); if (d < bd){ bd = d; best = towerR(t); } }
+  return best;
+}
+function wants(side, isTower){
+  if (ringwho === 'all') return true;
+  if (ringwho === 'towers') return isTower;
+  return String(side) === ringwho;
+}
+function ring(x, y, tiles, colour, dash, wdt){
+  if (!(tiles > 0)) return;
+  ctx.save(); ctx.beginPath(); ctx.setLineDash(dash || []);
+  ctx.strokeStyle = colour; ctx.lineWidth = wdt || 1.4; ctx.globalAlpha = .85;
+  ctx.ellipse(px(x), py(y), rx(tiles), ry(tiles), 0, 0, 6.2832); ctx.stroke(); ctx.restore();
+}
+
+/* ---- the board ------------------------------------------------------------------------------ */
+function draw(i){
+  const f = F[i];
+  const CT = css('--ring-table'), CF = css('--ring-fire'), CM = css('--muted');
+  ctx.clearRect(0, 0, cv.width, cv.height);
+  ctx.fillStyle = css('--ground'); ctx.fillRect(0, 0, W*S, H*S);
+  ctx.strokeStyle = css('--grid'); ctx.lineWidth = 1;
+  for (let x = 0; x <= W; x++){ ctx.beginPath(); ctx.moveTo(x*S, 0); ctx.lineTo(x*S, H*S); ctx.stroke(); }
+  for (let y = 0; y <= H; y++){ ctx.beginPath(); ctx.moveTo(0, y*S); ctx.lineTo(W*S, y*S); ctx.stroke(); }
+  ctx.fillStyle = css('--river'); ctx.fillRect(0, (H-17)*S, W*S, S);
+  ctx.fillStyle = css('--bridge');
+  ctx.fillRect(2.5*S, (H-17)*S, S, S); ctx.fillRect(14.5*S, (H-17)*S, S, S);
+
+  /* rings first, so bodies sit on top of them */
+  if (ringmode !== 'off'){
+    for (const t of f.tw){
+      if (t[5] <= 0 || !wants(t[0], true)) continue;
+      const ra = t[1] === 'king' ? B.king_range : B.tower_range;
+      if (ringmode !== 'fire') ring(t[3], t[4], ra, CT, [], 1.4);
+      if (ringmode !== 'table'){ const rr = refRadius(f, t[0], t[3], t[4]);
+        if (rr != null) ring(t[3], t[4], ra + rr, CF, [4, 4], 1.4); }
+    }
+    for (const e of f.e){
+      if (e[3] === '-1' || e[4] <= 0 || !wants(e[0], false)) continue;
+      const s = specOf(e[3]); if (!s || s.kind === 'spell' || !(s.r_atk > 0)) continue;
+      if (ringmode !== 'fire') ring(e[1], e[2], s.r_atk, CT, [], 1.2);
+      if (showSight && s.r_sight > s.r_atk && ringmode !== 'fire')
+        ring(e[1], e[2], s.r_sight, CM, [1.5, 5], 1);
+      if (ringmode !== 'table'){ const rr = refRadius(f, e[0], e[1], e[2]);
+        if (rr != null) ring(e[1], e[2], s.r_atk + rr, CF, [4, 4], 1.2); }
+    }
+  }
+
+  /* the scored P1 band + threat link for the current placement (what sim_view shades for 1.5 s) */
+  for (const dd of recentPlays(f.t)){
+    if (!dd.scores || f.t < dd.tick) continue;
+    const sc = dd.scores;
+    if (sc.threat_x != null && sc.threat_y != null){
+      const [tx, ty] = fromNorm(sc.threat_x, sc.threat_y), CB = css('--band');
+      const kind = (DECK[dd.card_key] || {}).kind, lo = sc.p1_band_lo || 0, hi = sc.p1_band_hi || 0;
+      if (kind === 'building' && hi > lo && lo >= 0){
+        ctx.save(); ctx.beginPath();
+        ctx.ellipse(px(tx), py(ty), rx(hi), ry(hi), 0, 0, 6.2832);
+        ctx.ellipse(px(tx), py(ty), rx(lo), ry(lo), 0, 0, 6.2832, true);
+        ctx.fillStyle = CB; ctx.globalAlpha = .18; ctx.fill('evenodd'); ctx.restore();
+        ring(tx, ty, lo, CB, [], 1.2); ring(tx, ty, hi, CB, [], 1.2);
+      }
+      ctx.save(); ctx.strokeStyle = CB; ctx.lineWidth = 1.2; ctx.globalAlpha = .9;
+      ctx.beginPath(); ctx.moveTo(px(dd.engine_xy[0]), py(dd.engine_xy[1])); ctx.lineTo(px(tx), py(ty)); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(px(tx) - 6, py(ty) - 6); ctx.lineTo(px(tx) + 6, py(ty) + 6);
+      ctx.moveTo(px(tx) + 6, py(ty) - 6); ctx.lineTo(px(tx) - 6, py(ty) + 6); ctx.stroke(); ctx.restore();
+    }
+  }
+  /* towers */
+  for (const t of f.tw){
+    const [side, type, lane, x, y, hp, mhp] = t, r = (type === 'king' ? 3.6 : 2.8) * S / 2;
+    ctx.globalAlpha = hp > 0 ? 1 : .22; ctx.fillStyle = col(side);
+    ctx.fillRect(px(x) - r, py(y) - r, 2*r, 2*r);
+    ctx.globalAlpha = 1; ctx.fillStyle = '#fff'; ctx.textAlign = 'center';
+    ctx.font = '500 12px "IBM Plex Mono",monospace';
+    ctx.fillText(hp > 0 ? hp : '\u00d7', px(x), py(y) + 4);
+  }
+  /* bodies */
+  for (const e of f.e){
+    const [side, x, y, name, hp, mhp, kind] = e; if (name === '-1') continue;
+    const building = kind === 12 || kind === 13, dormant = kind === 12 || kind === 14;
+    const cx = px(x), cy = py(y);
+    ctx.fillStyle = col(side); ctx.globalAlpha = dormant ? .4 : .85;
+    if (building) ctx.fillRect(cx - .5*S, cy - .5*S, S, S);
+    else { ctx.beginPath(); ctx.arc(cx, cy, .45*S, 0, 6.2832); ctx.fill(); }
+    ctx.globalAlpha = 1;
+    if (dormant){ ctx.save(); ctx.setLineDash([3, 3]); ctx.strokeStyle = col(side); ctx.lineWidth = 2;
+      if (building) ctx.strokeRect(cx - .5*S, cy - .5*S, S, S);
+      else { ctx.beginPath(); ctx.arc(cx, cy, .45*S, 0, 6.2832); ctx.stroke(); } ctx.restore(); }
+    const sf = specOf(name);
+    if (sf && sf.flying && !building){ ctx.save(); ctx.strokeStyle = col(side); ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.arc(cx, cy, .3*S, 0, 6.2832); ctx.stroke(); ctx.restore(); }
+    if (mhp > 0){ ctx.beginPath();
+      ctx.arc(cx, cy, .6*S, -1.5708, -1.5708 + 6.2832*Math.max(0, hp)/mhp);
+      ctx.strokeStyle = css('--fg'); ctx.lineWidth = 3; ctx.stroke(); }
+    ctx.fillStyle = css('--fg'); ctx.font = '11px "IBM Plex Sans",system-ui'; ctx.textAlign = 'center';
+    ctx.fillText(name, cx, cy - .78*S);
+  }
+  /* projectiles */
+  for (const q of (f.p || [])){
+    const [side, x, y, tx, ty, name] = q, cx = px(x), cy = py(y);
+    ctx.save(); ctx.strokeStyle = col(side); ctx.lineWidth = 1.5; ctx.globalAlpha = .7;
+    ctx.setLineDash([2, 3]); ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(px(tx), py(ty));
+    ctx.stroke(); ctx.restore();
+    ctx.beginPath(); ctx.arc(cx, cy, .17*S, 0, 6.2832); ctx.fillStyle = css('--fg'); ctx.fill();
+    ctx.beginPath(); ctx.arc(cx, cy, .1*S, 0, 6.2832); ctx.fillStyle = col(side); ctx.fill();
+    if (name !== '-1'){ ctx.fillStyle = css('--muted'); ctx.textAlign = 'left';
+      ctx.font = '9px "IBM Plex Mono",monospace'; ctx.fillText(name, cx + .22*S, cy + 3); }
+  }
+  /* plays the engine ran: a shrinking ring for 0.5 s */
+  for (const p of PLAYS){
+    if (p.t <= f.t && f.t < p.t + 10){
+      const k = (f.t - p.t) / 10;
+      ctx.save(); ctx.beginPath(); ctx.arc(px(p.x), py(p.y), (1.3 - k) * S, 0, 6.2832);
+      ctx.strokeStyle = p.ok ? col(p.side) : css('--bad'); ctx.lineWidth = 3;
+      ctx.setLineDash(p.ok ? [] : [4, 4]); ctx.stroke(); ctx.restore();
+      ctx.fillStyle = p.ok ? col(p.side) : css('--bad'); ctx.textAlign = 'center';
+      ctx.font = '600 12px "IBM Plex Sans",system-ui';
+      ctx.fillText(p.card, px(p.x), py(p.y) + 1.7*S);
+    }
+  }
+  /* the policy's own cell: every play decided within the last 3 steps */
+  for (const d of recentPlays(f.t)){
+    const cx = px(d.engine_xy[0]), cy = py(d.engine_xy[1]);
+    ctx.save(); ctx.strokeStyle = css('--play'); ctx.lineWidth = 2.4;
+    ctx.beginPath(); ctx.moveTo(cx - 11, cy - 11); ctx.lineTo(cx + 11, cy + 11);
+    ctx.moveTo(cx + 11, cy - 11); ctx.lineTo(cx - 11, cy + 11); ctx.stroke();
+    ctx.beginPath(); ctx.arc(cx, cy, 15, 0, 6.2832); ctx.lineWidth = 1.4;
+    ctx.setLineDash([3, 3]); ctx.stroke(); ctx.restore();
+    ctx.fillStyle = css('--play'); ctx.textAlign = 'left';
+    ctx.font = '600 12px "IBM Plex Mono",monospace';
+    ctx.fillText(d.card_key, cx + 19, cy + 4);
+  }
+  hud(f);
+}
+
+/* ---- HUD + readout -------------------------------------------------------------------------- */
+function curDec(t){ let k = -1; for (let j = 0; j < DEC.length; j++) if (OT(DEC[j]) <= t) k = j; return k; }
+/* play decisions still on screen at tick t: decided at OT(d) <= t, shown until 3 steps after they applied */
+function recentPlays(t){ const k = curDec(t), out = [];
+  for (let j = Math.max(0, k - 4); j <= k; j++){ const d = DEC[j];
+    if (d && d.play && d.engine_xy && OT(d) <= t && t < d.tick + DT * 3) out.push(d); }
+  return out; }
+let lastDec = -2;
+function hud(f){
+  document.getElementById('tick').textContent = 'tick ' + f.t;
+  const sec = f.t * TICK_S;
+  document.getElementById('clock').textContent =
+    Math.floor(sec/60) + ':' + String(Math.floor(sec % 60)).padStart(2, '0')
+    + (sec >= PH[1] ? '  3\u00d7 elixir' : sec >= PH[0] ? '  2\u00d7 elixir' : '  1\u00d7 elixir');
+  /* which side is drawn at the top depends on the flip: focus at the bottom = side FOCUS at the bottom */
+  const topSide = (flip && FOCUS === 1) ? 0 : 1, botSide = 1 - topSide;
+  for (const [pos, s] of [['top', topSide], ['bot', botSide]]){ const v = f.el[s] == null ? 0 : f.el[s];
+    const bar = document.getElementById('el' + pos), lab = document.getElementById('el' + pos + '_l');
+    bar.style.width = (v / 10 * 100) + '%'; bar.style.background = col(s);
+    lab.textContent = (pos === 'top' ? 'top \u2014 ' : 'bottom \u2014 ') + (s === FOCUS ? 'us (side ' + s + ')' : 'them (side ' + s + ')');
+    lab.className = 's' + s + 'c';
+    document.getElementById('el' + pos + '_t').textContent = v.toFixed(1); }
+  const awake = {};
+  for (const e of f.e) if (e[3] === '-1' && e[6] === 13)
+    for (const t of f.tw) if (t[1] === 'king' && t[0] === e[0] && t[3] === e[1] && t[4] === e[2]) awake[e[0]] = true;
+  document.getElementById('towers').textContent =
+    f.tw.map(t => (t[0] === FOCUS ? 'us' : 'them') + (t[1] === 'king' ? (awake[t[0]] ? 'K*' : 'K') : (t[2] || '?')[0].toUpperCase())
+      + ' ' + t[5]).join('   ') + '    (K* = king awake)';
+  const dead = s => f.tw.filter(t => t[0] === s && t[5] <= 0).length;
+  document.getElementById('crowns').textContent =
+    'crowns  us ' + dead(1 - FOCUS) + ' - ' + dead(FOCUS) + ' them   (towers at 0 hp; the engine verdict is in the header)';
+  document.getElementById('cursor').style.left = ((f.t - firstTick) / (lastTick - firstTick) * 100) + '%';
+  document.getElementById('gcursor').style.left = ((f.t - firstTick) / (lastTick - firstTick) * 100) + '%';
+  const k = curDec(f.t);
+  if (k !== lastDec){ lastDec = k; readout(DEC[k], k); }
+  let cp = -1; for (let j = 0; j < PLAYS.length; j++) if (PLAYS[j].t <= f.t) cp = j;
+  markRows('prows', cp); markRows('drows', k);
+  scrub.value = idx;
+}
+function markRows(id, k){
+  const rows = document.getElementById(id).children;
+  if (rows.mark === k) return; rows.mark = k;
+  for (let j = 0; j < rows.length; j++) rows[j].classList.toggle('cur', j === k);
+  if (playing && k >= 0 && rows[k]) rows[k].scrollIntoView({block: 'nearest'});
+}
+function readout(d, k){
+  const V = document.getElementById('verdict'), A = document.getElementById('applied');
+  const R = document.getElementById('engres');
+  if (!d){ document.getElementById('pplay').textContent = '\u2014';
+    V.textContent = '\u2014'; V.className = 'tag'; document.getElementById('gfill').style.width = '0';
+    document.getElementById('kv').innerHTML = ''; document.getElementById('cards').innerHTML = '';
+    document.getElementById('hand').innerHTML = '';
+    document.getElementById('terms').innerHTML = ''; A.hidden = true; R.hidden = true; return; }
+  document.getElementById('pplay').textContent = d.p_play == null ? '\u2014' : d.p_play.toFixed(3);
+  document.getElementById('gfill').style.width = ((d.p_play || 0) * 100) + '%';
+  /* three tags: the rule's verdict, whether the play was sent (shadow) and, live only, the engine's answer */
+  A.hidden = !(d.play && d.accepted == null);
+  if (d.play){ V.textContent = 'play ' + d.card_key; V.className = 'tag play'; }
+  else { V.textContent = 'wait'; V.className = 'tag wait'; }
+  if (d.play && d.accepted === true){ R.hidden = false; R.textContent = 'engine accepted'; R.className = 'tag play'; }
+  else if (d.play && d.accepted === false){ R.hidden = false; R.className = 'tag bad';
+    R.textContent = 'engine refused \u00b7 ' + (RESNAME[d.result_code] || d.result_code); }
+  else R.hidden = true;
+  const oel = OEL(d);
+  const rows = [['decision', '#' + (k + 1) + ' of ' + DEC.length],
+                ['decided on', 'tick ' + OT(d) + '   ' + (OT(d) * TICK_S).toFixed(2) + ' s'],
+                ['applied at', 'tick ' + d.tick + '   ' + d.seconds.toFixed(2) + ' s'],
+                ['rule', d.rule + (d.rule === 'threshold' ? ' \u03c4 ' + DATA.gate_tau : d.rule === 'argmax' ? ' (p > 0.5)' : ' (g ~ Bernoulli p)')],
+                ['elixir seen', 'us ' + oel[FOCUS].toFixed(2) + '   them ' + oel[1-FOCUS].toFixed(2)],
+                ['affordable', (d.n_playable == null ? '\u2014' : d.n_playable) + ' of 4 in hand']];
+  if (d.play){ rows.push(['cell', d.cell + '  \u2192  ('
+      + (d.engine_xy[0]/1000).toFixed(2) + ', ' + (d.engine_xy[1]/1000).toFixed(2) + ') tiles']);
+    if (d.p_cell != null) rows.push(['p(cell)', d.p_cell.toFixed(4) + '  of ' + DATA.policy.n_cells]);
+    if (d.result && d.result.placement_valid === false) rows.push(['placement', d.result.placement_reason || 'invalid']); }
+  else rows.push(['why not', d.wait_reason || 'gate said wait']);
+  const hand = d.hand || [], q = d.queue || [], us = oel[FOCUS];
+  document.getElementById('hand').innerHTML = hand.map(c => { const cost = (DECK[c] || {}).elixir;
+    return `<div class="${c === d.card_key && d.play ? 'pick' : ''} ${cost != null && cost > us + 1e-6 ? 'poor' : ''}">`
+      + `${c}<small>${cost == null ? '' : cost + ' elixir'}</small></div>`; }).join('')
+    + q.map((c, i) => `<div class="next" style="min-width:0"><small>${i === 0 ? 'next' : 'then'}</small>${c}</div>`).join('');
+  document.getElementById('kv').innerHTML =
+    rows.map(([a, b]) => `<dt>${a}</dt><dd>${b}</dd>`).join('');
+  document.getElementById('cards').innerHTML = (d.top_cards || []).map(([c, p]) =>
+    `<div class="${c === d.card_key ? 'pick' : ''}"><span>${c}</span>`
+    + `<i style="width:${Math.max(2, p*100).toFixed(1)}%"></i>`
+    + `<span class="num">${p.toFixed(3)}</span></div>`).join('');
+  const sc = d.scores || {};
+  const nz = Object.entries(sc).filter(([a, v]) => typeof v === 'number' && Math.abs(v) > 1e-9);
+  document.getElementById('terms').innerHTML = !d.play ? ''
+    : (nz.length ? `<span>placement vs <b>${sc.threat_base || '\u2013'}</b>:</span> ` + nz.map(([a, v]) =>
+        `<span>${a}</span> <b>${v > 0 ? '+' : ''}${v.toFixed(2)}</b>`).join(' ')
+      : '<span>placement scored: every geometry term 0 (no threat on the board)</span>');
+}
+
+/* ---- the gate strip -------------------------------------------------------------------------- */
+const gcv = document.getElementById('gcv'), gctx = gcv.getContext('2d');
+function drawGate(){
+  const r = gcv.getBoundingClientRect(), dpr = Math.min(2, devicePixelRatio || 1);
+  gcv.width = Math.max(80, r.width * dpr); gcv.height = Math.max(30, r.height * dpr);
+  gctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const w = r.width, h = r.height;
+  gctx.clearRect(0, 0, w, h);
+  for (const [tau, lab] of [[0.25, '\u03c4 .25'], [0.5, '.50']]){
+    const y = h - tau * h;
+    gctx.save(); gctx.setLineDash([3, 3]); gctx.strokeStyle = css('--faint'); gctx.lineWidth = 1;
+    gctx.beginPath(); gctx.moveTo(0, y); gctx.lineTo(w, y); gctx.stroke(); gctx.restore();
+    gctx.fillStyle = css('--faint'); gctx.font = '9px "IBM Plex Mono",monospace';
+    gctx.fillText(lab, 2, y - 2);
+  }
+  for (const d of DEC){
+    if (d.p_play == null) continue;
+    const x = (OT(d) - firstTick) / (lastTick - firstTick) * w, y = h - d.p_play * h;
+    gctx.beginPath(); gctx.arc(x, y, d.play ? 1.9 : 1.4, 0, 6.2832);
+    if (d.play){ gctx.fillStyle = css('--gate'); gctx.fill(); }
+    else { gctx.strokeStyle = css('--faint'); gctx.lineWidth = 1; gctx.stroke(); }
+  }
+}
+
+/* ---- tables + timeline ------------------------------------------------------------------------ */
+const tl = document.getElementById('timeline');
+function frameAt(t){ let lo = 0, hi = F.length - 1;
+  while (lo < hi){ const m = (lo + hi) >> 1; if (F[m].t < t) lo = m + 1; else hi = m; } return lo; }
+PLAYS.forEach(p => { const m = document.createElement('i');
+  m.style.left = ((p.t - firstTick) / (lastTick - firstTick) * 100) + '%';
+  m.className = (p.ok ? '' : 'rej ') + 's' + p.side; m.title = p.t + ' ' + p.card; tl.appendChild(m); });
+document.getElementById('prows').innerHTML = PLAYS.map(p =>
+  `<tr class="${p.ok ? '' : 'rej'}" data-t="${p.t}"><td class="n">${p.t}</td>`
+  + `<td class="${p.side === FOCUS ? 's' + FOCUS + 'c' : ''}">${p.side === FOCUS ? 'us' : 'them'}</td>`
+  + `<td>${p.card}</td><td class="n">${(p.x/1000).toFixed(1)},${(p.y/1000).toFixed(1)}</td>`
+  + `<td>${p.ok ? 'accepted' : p.res}</td></tr>`).join('');
+document.getElementById('drows').innerHTML = DEC.map(d =>
+  `<tr class="${d.accepted === false ? 'rej' : ''}" data-t="${OT(d)}"><td class="n">${OT(d)}</td>`
+  + `<td class="n">${d.p_play == null ? '\u2014' : d.p_play.toFixed(3)}</td>`
+  + `<td>${d.play ? '<b>play</b> ' + d.card_key : 'wait'}</td>`
+  + `<td class="n">${d.play ? d.cell : ''}</td>`
+  + `<td style="color:var(--muted)">${d.play ? (d.accepted === false ? 'refused ' + (RESNAME[d.result_code] || d.result_code)
+      : (d.top_cards ? 'p(card) ' + d.p_card.toFixed(2) : '')) : (d.wait_reason || '')}</td></tr>`).join('');
+for (const id of ['prows', 'drows'])
+  document.getElementById(id).onclick = ev => { const tr = ev.target.closest('tr');
+    if (tr) { idx = frameAt(+tr.dataset.t); playing = false;
+      document.getElementById('play').textContent = 'Play'; draw(idx); } };
+function seekFromEvent(el, ev){ const r = el.getBoundingClientRect();
+  const frac = Math.max(0, Math.min(1, (ev.clientX - r.left) / r.width));
+  idx = frameAt(firstTick + frac * (lastTick - firstTick)); draw(idx); }
+tl.onclick = ev => seekFromEvent(tl, ev);
+document.getElementById('gatestrip').onclick = ev => seekFromEvent(document.getElementById('gatestrip'), ev);
+
+/* ---- controls --------------------------------------------------------------------------------- */
+document.getElementById('play').onclick = e => { playing = !playing; last = performance.now();
+  if (playing && idx >= F.length - 1) idx = 0; e.target.textContent = playing ? 'Pause' : 'Play'; };
+document.querySelectorAll('button[data-speed]').forEach(b => b.onclick = () => { speed = +b.dataset.speed;
+  document.querySelectorAll('button[data-speed]').forEach(x => x.classList.toggle('on', x === b)); });
+function stepDec(dir){ const k = curDec(F[idx].t), j = Math.max(0, Math.min(DEC.length - 1, k + dir));
+  idx = frameAt(OT(DEC[j])); playing = false;
+  document.getElementById('play').textContent = 'Play'; draw(idx); }
+document.getElementById('prevd').onclick = () => stepDec(-1);
+document.getElementById('nextd').onclick = () => stepDec(1);
+scrub.oninput = () => { idx = +scrub.value; draw(idx); };
+document.getElementById('ringmode').onchange = e => { ringmode = e.target.value; draw(idx); };
+document.getElementById('firemode').onchange = e => { firemode = e.target.value; draw(idx); };
+document.getElementById('ringwho').onchange = e => { ringwho = e.target.value; draw(idx); };
+document.getElementById('sight').onchange = e => { showSight = e.target.checked; draw(idx); };
+document.getElementById('flip').onchange = e => { flip = e.target.checked; draw(idx); };
+document.addEventListener('keydown', e => {
+  if (e.target.tagName === 'SELECT' || e.target.tagName === 'INPUT') return;
+  if (e.key === ' '){ e.preventDefault(); document.getElementById('play').click(); }
+  if (e.key === 'ArrowRight'){ idx = Math.min(F.length - 1, idx + 1); draw(idx); }
+  if (e.key === 'ArrowLeft'){ idx = Math.max(0, idx - 1); draw(idx); }
+  if (e.key === 'n'){ stepDec(1); } if (e.key === 'p'){ stepDec(-1); }
+});
+function loop(ts){
+  if (playing){ const dt = (ts - last) / 1000; last = ts; acc += dt * 20 * speed;
+    while (acc >= 1 && idx < F.length - 1){ acc -= 1; idx++; }
+    if (idx >= F.length - 1){ playing = false; document.getElementById('play').textContent = 'Play'; }
+    draw(idx); }
+  requestAnimationFrame(loop);
+}
+addEventListener('resize', drawGate);
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { drawGate(); draw(idx); });
+const hh = (location.hash || '').match(/tick=(\d+)/);
+if (hh) idx = frameAt(+hh[1]);
+drawGate(); draw(idx); requestAnimationFrame(loop);
+</script>

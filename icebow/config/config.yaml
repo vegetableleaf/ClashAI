@@ -2162,6 +2162,15 @@ sim:
   ppo_search_cells: 3        # cells per candidate card; 3 added +3.3pp over card-only search
   ppo_search_coef: 1.0       # weight on the imitation cross-entropy. UNTUNED.
   ppo_gate_threshold: 0.25
+  # HOW VIEWERS AND GRADERS DECIDE TO PLAY (owner ruling 2026-09-05, HANDOFF 5cs.49/5cs.50). A gate
+  # trained to the pro table (config/gate_prior.json: mean P(play) 0.111, only 8.1% of pro windows
+  # above 0.25) sits BELOW 0.25 on nearly every single-elixir board, so `sigmoid > 0.25` renders any
+  # calibrated policy as never playing (engB m250: 0.1 / 1.5 plays per match). `sample` draws
+  # play ~ Bernoulli(p) from a seeded generator -- the rule training uses; card and cell stay
+  # argmax. `threshold` is the old rule at ppo_gate_threshold (the fallback if sampling misbehaves).
+  # Read by sim_view, policy-stats, the cli drill helper and the L62 gate_probe; play.py (live) and
+  # the sim trainer's greedy bench still read ppo_gate_threshold and are NOT changed by this key.
+  ppo_gate_rule: sample
   # COUNTERFACTUAL FORK: judge a play by what actually followed it instead of classifying it at the
   # moment it was made. On a play the env deep-copies (engine + opponent) into an ISOLATED branch,
   # rolls that branch `horizon_s` with the AGENT DOING NOTHING, and later compares the real branch's

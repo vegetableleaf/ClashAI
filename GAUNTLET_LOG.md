@@ -1265,3 +1265,9 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Owner question posted: deploy rule -- sample the gate (rec.), calibrated tau ~0.10, or keep 0.25. Not changed.
 - Visualizer agent restarted (accidental stop) -- resuming from live_view.py + template + payload; artifact not yet published.
 - Next: m500 grade ~21:15 UTC (same three instruments); publish the live artifact when the agent returns.
+
+## L62k -- 2026-09-05 20:4x-21:1x UTC -- deploy-rule ruling applied + live engine visualizer published (HANDOFF §5cs.50)
+- Owner: "(1) sample the gate; if that doesn't work try (2) tau ~0.10". New src/clashrl/gate_rule.py (ONE GateRule for sim_view, policy_stats, cli drill helper, gate_probe); config sim.ppo_gate_rule: sample; play.py + sim trainer greedy bench untouched. 15/15 sim_view tests; threshold path reproduces §5cs.49 exactly (63 plays).
+- Under SAMPLE (sim, 16 m, seed 4242): init 36.6 plays/match, engB control m250 17.2, engB KL m250 24.5 (were 0.1 / 1.5 under tau 0.25). Only rocket never played (was 9 of 10 cards). Sampled p(play) lower (0.12 vs 0.19) because the policy spends -- gate is elixir-conditioned.
+- Visualizer agent restarted from disk, finished: artifact https://claude.ai/code/artifact/3aca72fa-8f09-40e9-9d59-65c0dc2e03d2 (3.74 MB, 5,268 frames, 527 decisions, radii/fire ring/P1 band/terms/gate/ghosts); live_view.md §1-6 STATUS complete. (c) sim_view HUD says 3x from 180 s; engine says 240 s (display-only).
+- Next: m500 grade under SAMPLE (threshold column kept for comparison to §5cs.49).

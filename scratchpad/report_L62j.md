@@ -1,0 +1,12 @@
+**GAUNTLET loop 62j** — engB m250 graded (agreement + play rate + gate); deploy-rule question
+**QUESTION (blocking a doctrine change, not the run):** the viewer/grader deploy rule `sigmoid(gate) > 0.25` cannot show a pro-calibrated policy playing — only 8.1% of pro windows exceed 0.25, pro mean is 0.11. Options: (1) **sample the gate with a fixed seed** (what training does; ~20-30 plays/match on the engine) — my recommendation; (2) lower tau to ~0.10 (greedy, but turns a probability into a step); (3) keep 0.25 (catatonic in sim-view forever). Affects sim_view, policy-stats, gate_probe, later play.py. Nothing changed until you rule.
+**Did:** graded `engB_{ctrl,kl}_m250.pt` on read_ckpt (cells), gate_probe (sim greedy), policy-stats (sim greedy, 16 m); read the engine-side GATE readout at m≈290. Restarted the live-visualizer agent (accidental stop) from its on-disk state.
+**Found (measured):**
+- Cells: control **7.47/26.79** (worse than engA control's 11.25/32.97 — with the gate alive it plays more, so it drifts faster; kl_cell 0.56-0.75 at m290). KL arm **16.33/44.02** v1, 14.25/42.76 v2 — AT the init (15.44/46.61), not above it; kl_cell 0.04-0.05. Arm gap +8.9/+17.2.
+- Gate: alive in both arms. Engine p_gate 0.058-0.085 vs pro target 0.09-0.11; p90 0.10-0.16; gp_ce flat 0.30-0.35 since update 6. Sim probe p50/p90/max = 0.152/0.201/0.245 (ctrl), 0.194/0.241/0.318 (KL) — real spread, unlike engA's constant 0.2325.
+- Under tau 0.25: control 0 plays in 710 decisions (0.1/match); KL 1.5/match on 16 matches vs 21/match on 3 other matches — same rule, 20x swing: tau sits at the gate's p92-95, so the threshold decides, not the policy.
+- BC init on engine boards (visualizer self-test): p(play) mean 0.47, 87% > 0.25 — 4x the pro rate. It looked active because it was miscalibrated.
+**RETRACTION:** my L62h alarm "frac_gt_tau < 0.02 = prior failed" was wrong — that is exactly what a working prior produces. Diagnostic now: p_gate within ~0.7-1.3x of gp_target, p50/p90/max not coincident.
+**Means:** engB answers its question — the gate prior prevents the collapse. The KL arm holds the pro cells; whether it ever exceeds them is m500+. Your "extremely inactive" observation will persist in sim-view until the rule changes.
+**Next:** m500 grade ~21:15 UTC, same three instruments; publish the live engine visualizer when the agent returns.
+**Cost:** ~25 min; engB both arms alive (1.7 / 1.6 GB), crawler + Nucleo untouched, 4.3 GB free.

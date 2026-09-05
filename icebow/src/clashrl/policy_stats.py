@@ -131,9 +131,10 @@ def policy_stats(cfg, ckpt: Optional[str] = None, matches: int = 60, envs: int =
     # Q(play) IS gate[play] and the comparison is gate-only. Keep the two in lockstep.
     algo = str(state.get("algo", "") or "").lower()
     is_ppo = algo == "ppo" or (not algo and "ppo" in ck_path.name.lower())
-    gate_tau = float(cfg.get("sim", "ppo_gate_threshold", default=0.25))
+    from .gate_rule import GateRule            # sim.ppo_gate_rule: sample | threshold (5cs.49)
+    gate_rule = GateRule(cfg, seed=seed)
     print(f"[policy-stats] checkpoint algo '{algo or 'unknown'}' -> gate rule "
-          + (f"PPO sigmoid(play-wait) > {gate_tau}" if is_ppo else "DDQN gate-logit compare"))
+          + (gate_rule.describe() if is_ppo else "DDQN gate-logit compare"))
 
     anywhere_ids = set(e0.anywhere_ids)
     yourhalf_mask = torch.tensor(e0.actions.deployable_mask(False), dtype=torch.bool, device=device)
@@ -229,7 +230,7 @@ def policy_stats(cfg, ckpt: Optional[str] = None, matches: int = 60, envs: int =
                 ci = int(cq_i.argmax())
                 cmask = allcells_mask if ci in anywhere_ids else yourhalf_mask
                 ceq_i = ceq[i, ci].masked_fill(~cmask, float("-inf"))   # PER-CARD map
-                held = (float(torch.sigmoid(gq[i, 1] - gq[i, 0])) <= gate_tau if is_ppo
+                held = ((not gate_rule.play(gq[i])) if is_ppo
                         else bool(gq[i, 0] >= gq[i, 1]))
                 if held:
                     wait_gate += 1                          # the GATE chose to hold, not a lack of options
@@ -300,6 +301,7 @@ def policy_stats(cfg, ckpt: Optional[str] = None, matches: int = 60, envs: int =
         "generated": time.time(),
         "ckpt": str(ck_path.relative_to(cfg.root)) if ck_path.is_relative_to(cfg.root) else str(ck_path),
         "matches": played, "envs": K, "seed": seed, "epsilon": epsilon,
+        "gate_rule": gate_rule.describe() if is_ppo else "ddqn",
         "grid": [gw, gh], "deck": list(e0.deck_keys),
         "steps": steps, "plays": play_n, "wait_gate": wait_gate, "wait_forced": wait_forced,
         "wait_rate_gate": wait_gate / max(1, steps),
