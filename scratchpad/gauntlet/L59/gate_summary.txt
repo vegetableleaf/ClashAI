@@ -1,0 +1,108 @@
+# L59 gate rerun: 1453 scored building plays, 350 gate-probe boards
+
+## BLUE (icebow player) tesla: n=807, threat present 733/807
+  pc p1_pull_band       pro>0 0.533 (n=430, mean when fires 0.813) mean_pro 0.433 mean_lock 0.197 | pro>lock 0.440 tie 0.457 pro<lock 0.103
+  pc p1_snapshot        pro>0 0.409 (n=330, mean when fires 0.770) mean_pro 0.315 mean_lock 0.207 | pro>lock 0.290 tie 0.553 pro<lock 0.157
+  pc p1_close_penalty   pro>0 0.086 (n=69, mean when fires -0.505) mean_pro -0.043 mean_lock -0.060 | pro>lock 0.134 tie 0.792 pro<lock 0.074
+  pc p1_close_snapshot  pro>0 0.035 (n=28, mean when fires -0.349) mean_pro -0.012 mean_lock -0.020 | pro>lock 0.050 tie 0.919 pro<lock 0.031
+  pc p2_cover           pro>0 0.927 (n=748, mean when fires 0.704) mean_pro 0.652 mean_lock 0.426 | pro>lock 0.540 tie 0.299 pro<lock 0.161
+  pc p5_timing          pro>0 0.665 (n=537, mean when fires 0.924) mean_pro 0.615 mean_lock 0.615 | pro>lock 0.000 tie 1.000 pro<lock 0.000
+  pc p6_siege           pro>0 0.000 (n=0, mean when fires 0.000) mean_pro 0.000 mean_lock 0.000 | pro>lock 0.000 tie 1.000 pro<lock 0.000
+  pc placement_credit   pro>lock 0.476 tie 0.404 pro<lock 0.120 | mean pro 0.346 lock 0.101 | median rank 2 of 27 | rank1 0.450 | min -0.300 max 1.000
+  pc timing_credit      mean pro 0.615 >0 0.665
+  ra p1_pull_band       pro>0 0.570 (n=460, mean when fires 0.833) mean_pro 0.475 mean_lock 0.148 | pro>lock 0.506 tie 0.387 pro<lock 0.108
+  ra p1_snapshot        pro>0 0.420 (n=339, mean when fires 0.771) mean_pro 0.324 mean_lock 0.203 | pro>lock 0.302 tie 0.532 pro<lock 0.166
+  ra p1_close_penalty   pro>0 0.038 (n=31, mean when fires -0.484) mean_pro -0.019 mean_lock -0.020 | pro>lock 0.053 tie 0.913 pro<lock 0.033
+  ra p1_close_snapshot  pro>0 0.017 (n=14, mean when fires -0.248) mean_pro -0.004 mean_lock -0.004 | pro>lock 0.015 tie 0.970 pro<lock 0.015
+  ra p2_cover           pro>0 0.927 (n=748, mean when fires 0.704) mean_pro 0.652 mean_lock 0.426 | pro>lock 0.540 tie 0.299 pro<lock 0.161
+  ra p5_timing          pro>0 0.665 (n=537, mean when fires 0.924) mean_pro 0.615 mean_lock 0.615 | pro>lock 0.000 tie 1.000 pro<lock 0.000
+  ra p6_siege           pro>0 0.000 (n=0, mean when fires 0.000) mean_pro 0.000 mean_lock 0.000 | pro>lock 0.000 tie 1.000 pro<lock 0.000
+  ra placement_credit   pro>lock 0.523 tie 0.362 pro<lock 0.115 | mean pro 0.397 lock 0.086 | median rank 2 of 27 | rank1 0.436 | min -0.300 max 1.000
+  ra timing_credit      mean pro 0.615 >0 0.665
+  pc P1 fires: both 276 path-only 154 snapshot-only 54 neither 323 (n=807)
+  pc close penalty fires on the PRO tile: d_path form 69/807 = 0.086 (mean -0.505); snapshot form 28/807 = 0.035
+  pro tiles (rounded): [((9, 21), 135), ((9, 19), 71), ((9, 22), 68), ((9, 18), 67), ((9, 20), 49), ((5, 18), 35)]
+   tile (9, 21) n=135: path P1 mean 0.542 (>0 0.652), snapshot mean 0.236 (>0 0.356); pcred pro 0.496 vs corner 0.101; close d_path fires 1
+   tile (9, 19) n=71: path P1 mean 0.541 (>0 0.634), snapshot mean 0.353 (>0 0.451); pcred pro 0.508 vs corner 0.110; close d_path fires 1
+   tile (9, 22) n=68: path P1 mean 0.641 (>0 0.721), snapshot mean 0.345 (>0 0.456); pcred pro 0.594 vs corner 0.169; close d_path fires 4
+   tile (9, 18) n=67: path P1 mean 0.489 (>0 0.597), snapshot mean 0.317 (>0 0.418); pcred pro 0.334 vs corner 0.125; close d_path fires 2
+
+## BLUE (icebow player) x-bow: n=543, threat present 390/543
+  pc p1_pull_band       pro>0 0.162 (n=88, mean when fires 0.728) mean_pro 0.118 mean_lock 0.149 | pro>lock 0.107 tie 0.746 pro<lock 0.147
+  pc p1_snapshot        pro>0 0.123 (n=67, mean when fires 0.677) mean_pro 0.084 mean_lock 0.108 | pro>lock 0.085 tie 0.808 pro<lock 0.107
+  pc p1_close_penalty   pro>0 0.050 (n=27, mean when fires -0.573) mean_pro -0.029 mean_lock -0.030 | pro>lock 0.085 tie 0.867 pro<lock 0.048
+  pc p1_close_snapshot  pro>0 0.018 (n=10, mean when fires -0.438) mean_pro -0.008 mean_lock -0.004 | pro>lock 0.017 tie 0.967 pro<lock 0.017
+  pc p2_cover           pro>0 0.873 (n=474, mean when fires 0.597) mean_pro 0.521 mean_lock 0.413 | pro>lock 0.300 tie 0.639 pro<lock 0.061
+  pc p5_timing          pro>0 0.160 (n=87, mean when fires 0.746) mean_pro 0.119 mean_lock 0.119 | pro>lock 0.000 tie 1.000 pro<lock 0.000
+  pc p6_siege           pro>0 0.683 (n=371, mean when fires 0.959) mean_pro 0.655 mean_lock 0.967 | pro>lock 0.018 tie 0.087 pro<lock 0.895
+  pc placement_credit   pro>lock 0.077 tie 0.131 pro<lock 0.792 | mean pro 0.702 lock 0.947 | median rank 9 of 27 | rank1 0.125 | min -0.300 max 1.000
+  pc timing_credit      mean pro 0.119 >0 0.160
+  ra p1_pull_band       pro>0 0.175 (n=95, mean when fires 0.684) mean_pro 0.120 mean_lock 0.117 | pro>lock 0.134 tie 0.716 pro<lock 0.149
+  ra p1_snapshot        pro>0 0.129 (n=70, mean when fires 0.695) mean_pro 0.090 mean_lock 0.113 | pro>lock 0.092 tie 0.783 pro<lock 0.125
+  ra p1_close_penalty   pro>0 0.017 (n=9, mean when fires -0.661) mean_pro -0.011 mean_lock -0.012 | pro>lock 0.029 tie 0.954 pro<lock 0.017
+  ra p1_close_snapshot  pro>0 0.004 (n=2, mean when fires -0.488) mean_pro -0.002 mean_lock -0.002 | pro>lock 0.007 tie 0.989 pro<lock 0.004
+  ra p2_cover           pro>0 0.873 (n=474, mean when fires 0.597) mean_pro 0.521 mean_lock 0.413 | pro>lock 0.300 tie 0.639 pro<lock 0.061
+  ra p5_timing          pro>0 0.193 (n=105, mean when fires 0.684) mean_pro 0.132 mean_lock 0.132 | pro>lock 0.000 tie 1.000 pro<lock 0.000
+  ra p6_siege           pro>0 0.696 (n=378, mean when fires 0.961) mean_pro 0.669 mean_lock 0.994 | pro>lock 0.004 tie 0.074 pro<lock 0.923
+  ra placement_credit   pro>lock 0.026 tie 0.140 pro<lock 0.834 | mean pro 0.739 lock 0.984 | median rank 9 of 27 | rank1 0.140 | min -0.203 max 1.000
+  ra timing_credit      mean pro 0.132 >0 0.193
+  pc P1 fires: both 44 path-only 44 snapshot-only 23 neither 432 (n=543)
+  pc close penalty fires on the PRO tile: d_path form 27/543 = 0.050 (mean -0.573); snapshot form 10/543 = 0.018
+
+## RED tesla: n=63, threat present 50/63
+  pc p1_pull_band       pro>0 0.270 (n=17, mean when fires 0.771) mean_pro 0.208 mean_lock 0.173 | pro>lock 0.222 tie 0.571 pro<lock 0.206
+  pc p1_snapshot        pro>0 0.302 (n=19, mean when fires 0.772) mean_pro 0.233 mean_lock 0.229 | pro>lock 0.206 tie 0.603 pro<lock 0.190
+  pc p1_close_penalty   pro>0 0.159 (n=10, mean when fires -0.375) mean_pro -0.059 mean_lock -0.045 | pro>lock 0.095 tie 0.778 pro<lock 0.127
+  pc p1_close_snapshot  pro>0 0.079 (n=5, mean when fires -0.231) mean_pro -0.018 mean_lock -0.002 | pro>lock 0.016 tie 0.905 pro<lock 0.079
+  pc p2_cover           pro>0 1.000 (n=63, mean when fires 0.521) mean_pro 0.521 mean_lock 0.500 | pro>lock 0.048 tie 0.889 pro<lock 0.063
+  pc p5_timing          pro>0 0.556 (n=35, mean when fires 0.911) mean_pro 0.506 mean_lock 0.506 | pro>lock 0.000 tie 1.000 pro<lock 0.000
+  pc p6_siege           pro>0 0.000 (n=0, mean when fires 0.000) mean_pro 0.000 mean_lock 0.000 | pro>lock 0.000 tie 1.000 pro<lock 0.000
+  pc placement_credit   pro>lock 0.206 tie 0.571 pro<lock 0.222 | mean pro 0.127 lock 0.093 | median rank 3 of 27 | rank1 0.365 | min -0.300 max 1.000
+  pc timing_credit      mean pro 0.506 >0 0.556
+  ra p1_pull_band       pro>0 0.302 (n=19, mean when fires 0.760) mean_pro 0.229 mean_lock 0.184 | pro>lock 0.254 tie 0.540 pro<lock 0.206
+  ra p1_snapshot        pro>0 0.333 (n=21, mean when fires 0.824) mean_pro 0.275 mean_lock 0.241 | pro>lock 0.238 tie 0.571 pro<lock 0.190
+  ra p1_close_penalty   pro>0 0.159 (n=10, mean when fires -0.365) mean_pro -0.058 mean_lock -0.044 | pro>lock 0.095 tie 0.778 pro<lock 0.127
+  ra p1_close_snapshot  pro>0 0.079 (n=5, mean when fires -0.219) mean_pro -0.017 mean_lock -0.002 | pro>lock 0.016 tie 0.905 pro<lock 0.079
+  ra p2_cover           pro>0 1.000 (n=63, mean when fires 0.521) mean_pro 0.521 mean_lock 0.500 | pro>lock 0.048 tie 0.889 pro<lock 0.063
+  ra p5_timing          pro>0 0.556 (n=35, mean when fires 0.911) mean_pro 0.506 mean_lock 0.506 | pro>lock 0.000 tie 1.000 pro<lock 0.000
+  ra p6_siege           pro>0 0.000 (n=0, mean when fires 0.000) mean_pro 0.000 mean_lock 0.000 | pro>lock 0.000 tie 1.000 pro<lock 0.000
+  ra placement_credit   pro>lock 0.254 tie 0.524 pro<lock 0.222 | mean pro 0.144 lock 0.102 | median rank 4 of 27 | rank1 0.333 | min -0.300 max 1.000
+  ra timing_credit      mean pro 0.506 >0 0.556
+  pc P1 fires: both 13 path-only 4 snapshot-only 6 neither 40 (n=63)
+  pc close penalty fires on the PRO tile: d_path form 10/63 = 0.159 (mean -0.375); snapshot form 5/63 = 0.079
+
+## RED x-bow: n=40, threat present 26/40
+  pc p1_pull_band       pro>0 0.100 (n=4, mean when fires 0.479) mean_pro 0.048 mean_lock 0.146 | pro>lock 0.100 tie 0.675 pro<lock 0.225
+  pc p1_snapshot        pro>0 0.075 (n=3, mean when fires 0.806) mean_pro 0.060 mean_lock 0.090 | pro>lock 0.075 tie 0.800 pro<lock 0.125
+  pc p1_close_penalty   pro>0 0.075 (n=3, mean when fires -0.631) mean_pro -0.047 mean_lock -0.072 | pro>lock 0.175 tie 0.750 pro<lock 0.075
+  pc p1_close_snapshot  pro>0 0.000 (n=0, mean when fires 0.000) mean_pro 0.000 mean_lock -0.018 | pro>lock 0.025 tie 0.975 pro<lock 0.000
+  pc p2_cover           pro>0 1.000 (n=40, mean when fires 0.545) mean_pro 0.545 mean_lock 0.500 | pro>lock 0.100 tie 0.900 pro<lock 0.000
+  pc p5_timing          pro>0 0.175 (n=7, mean when fires 0.876) mean_pro 0.153 mean_lock 0.153 | pro>lock 0.000 tie 1.000 pro<lock 0.000
+  pc p6_siege           pro>0 0.750 (n=30, mean when fires 0.939) mean_pro 0.704 mean_lock 0.545 | pro>lock 0.300 tie 0.200 pro<lock 0.500
+  pc placement_credit   pro>lock 0.450 tie 0.075 pro<lock 0.475 | mean pro 0.710 lock 0.538 | median rank 7.0 of 27 | rank1 0.125 | min -0.225 max 1.000
+  pc timing_credit      mean pro 0.153 >0 0.175
+  ra p1_pull_band       pro>0 0.125 (n=5, mean when fires 0.501) mean_pro 0.063 mean_lock 0.149 | pro>lock 0.125 tie 0.650 pro<lock 0.225
+  ra p1_snapshot        pro>0 0.075 (n=3, mean when fires 0.999) mean_pro 0.075 mean_lock 0.110 | pro>lock 0.075 tie 0.800 pro<lock 0.125
+  ra p1_close_penalty   pro>0 0.075 (n=3, mean when fires -0.625) mean_pro -0.047 mean_lock -0.071 | pro>lock 0.175 tie 0.750 pro<lock 0.075
+  ra p1_close_snapshot  pro>0 0.000 (n=0, mean when fires 0.000) mean_pro 0.000 mean_lock -0.018 | pro>lock 0.025 tie 0.975 pro<lock 0.000
+  ra p2_cover           pro>0 1.000 (n=40, mean when fires 0.545) mean_pro 0.545 mean_lock 0.500 | pro>lock 0.100 tie 0.900 pro<lock 0.000
+  ra p5_timing          pro>0 0.200 (n=8, mean when fires 0.776) mean_pro 0.155 mean_lock 0.155 | pro>lock 0.000 tie 1.000 pro<lock 0.000
+  ra p6_siege           pro>0 0.925 (n=37, mean when fires 0.966) mean_pro 0.893 mean_lock 0.950 | pro>lock 0.025 tie 0.125 pro<lock 0.850
+  ra placement_credit   pro>lock 0.175 tie 0.125 pro<lock 0.700 | mean pro 0.876 lock 0.909 | median rank 9.0 of 27 | rank1 0.125 | min 0.000 max 1.000
+  ra timing_credit      mean pro 0.155 >0 0.200
+  pc P1 fires: both 2 path-only 2 snapshot-only 1 neither 35 (n=40)
+  pc close penalty fires on the PRO tile: d_path form 3/40 = 0.075 (mean -0.631); snapshot form 0/40 = 0.000
+
+## doc s3 GATE RULE: modal (9,21) vs corner (1.5,18.5) Tesla on Hog/Giant/PEKKA boards, n=350
+  threats: {'pekka': 68, 'hog_rider': 156, 'giant': 126}
+  p1_pull_band       median diff +0.000 mean modal 0.517 mean corner 0.254 modal>corner 0.480 modal<corner 0.134 | ACTIVE n=235 median +0.441 > 0.715 < 0.200
+     hog_rider: n=156 median +0.000 > 0.256 < 0.179
+     giant: n=126 median +0.496 > 0.690 < 0.087
+     pekka: n=68 median +0.329 > 0.603 < 0.118
+  p1_snapshot        median diff +0.000 mean modal 0.423 mean corner 0.277 modal>corner 0.286 modal<corner 0.134 | ACTIVE n=196 median +0.070 > 0.510 < 0.240
+  p1_close_penalty   median diff +0.000 mean modal -0.098 mean corner -0.074 modal>corner 0.189 modal<corner 0.171 | ACTIVE n=126 median +0.043 > 0.524 < 0.476
+  p1_close_snapshot  median diff +0.000 mean modal -0.014 mean corner -0.024 modal>corner 0.080 modal<corner 0.046 | ACTIVE n=44 median +0.091 > 0.636 < 0.364
+  p2_cover           median diff +0.500 mean modal 0.813 mean corner 0.404 modal>corner 0.817 modal<corner 0.000 | ACTIVE n=337 median +0.500 > 0.849 < 0.000
+  p5_timing          median diff +0.000 mean modal 0.805 mean corner 0.805 modal>corner 0.000 modal<corner 0.000 | ACTIVE n=298 median +0.000 > 0.000 < 0.000
+  sum                median diff +0.500 mean modal 2.036 mean corner 1.389 modal>corner 0.846 modal<corner 0.129 | ACTIVE n=350 median +0.500 > 0.846 < 0.129
+  pcred              median diff +0.148 mean modal 0.422 mean corner 0.130 modal>corner 0.543 modal<corner 0.143 | ACTIVE n=242 median +0.579 > 0.785 < 0.207

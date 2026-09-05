@@ -109,6 +109,28 @@ def _log_continuations(roll, K, agent_dt, path):
                 f.write(_json.dumps(r) + chr(10))
 
 
+def worker_config_args(cfg) -> dict:
+    """What a rollout worker needs to rebuild THIS process's config (L59 s9.7).
+
+    Workers are spawned processes that load their own Config. They used to call `Config.load()`
+    unconditionally -- config.yaml from disk -- so a `--config <run yaml>` reached the learner and
+    its local twin env but not one rollout env, with no error. Two things cross the pipe:
+      config_path: the file the parent's Config was read from (`Config.source`; the _KeyOverride /
+                   _DrillFracOverride proxies forward the attribute). None for a hand-built Config,
+                   which keeps the old behaviour.
+      overrides:   the parent's in-memory config changes a file load cannot see, as RESOLVED values
+                   (never sentinels): --size mutates action.grid; --drill-only proxies sim.drill_only.
+                   A None value means "absent here too" and is not shipped.
+    drill_frac and spell_min_value keep their own explicit RemotePool arguments, unchanged.
+    """
+    src = getattr(cfg, "source", None)
+    over = [(k, v) for k, v in (
+        (("action", "grid"), cfg.get("action", "grid", default=None)),
+        (("sim", "drill_only"), cfg.get("sim", "drill_only", default=None)),
+    ) if v is not None]
+    return {"config_path": (str(src) if src else None), "overrides": over}
+
+
 def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0, envs=None,
                   init: str | None = None, device: str | None = None,
                   reset_gate: bool = False, workers: int = 0,
@@ -158,7 +180,9 @@ def train_sim_ppo(cfg, matches: int = 2000, resume: bool = False, seed: int = 0,
             drill_frac=float(cfg.get("sim", "drill_frac", default=0.0)),
             # the same rule for the spell veto: a resolved float, never a sentinel, so the
             # workers refuse exactly what this process thinks they refuse (ruling 30).
-            spell_min_value=float(cfg.get("sim", "ppo_spell_min_value", default=0.0)))
+            spell_min_value=float(cfg.get("sim", "ppo_spell_min_value", default=0.0)),
+            # L59 s9.7: the parent's config FILE + in-memory overrides (see worker_config_args)
+            **worker_config_args(cfg))
         pool = []                                   # rollout envs live in the workers
         e0 = SimMatchEnv(cfg, seed=seed + 10_000)   # local metadata/mask twin (never stepped)
         print(f"[train-sim-ppo] ROLLOUT WORKERS: {len(rpool.procs)} processes x "

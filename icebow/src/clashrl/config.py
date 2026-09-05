@@ -13,6 +13,11 @@ import yaml
 class Config:
     data: Dict[str, Any]
     root: Path
+    # THE FILE THIS CONFIG CAME FROM (None when built by hand). Rollout workers are separate
+    # processes that load their own Config; without this they had no way to load the SAME file
+    # the parent was given with `--config`, so every key of a run yaml silently stopped at the
+    # learner (L59 s9.7). Default None keeps `Config(data=..., root=...)` callers working.
+    source: Optional[Path] = None
 
     def __deepcopy__(self, memo):
         # SHARED ACROSS ENGINE FORKS -- read-only after load; see CardSpec.__deepcopy__.
@@ -25,7 +30,7 @@ class Config:
         cfg_path = Path(path) if path else root / "config" / "config.yaml"
         with open(cfg_path, "r", encoding="utf-8") as f:
             data = yaml.safe_load(f) or {}
-        return cls(data=data, root=root)
+        return cls(data=data, root=root, source=Path(cfg_path).resolve())
 
     def get(self, *keys: str, default: Any = None) -> Any:
         """Fetch a nested value, e.g. cfg.get("record", "fps")."""

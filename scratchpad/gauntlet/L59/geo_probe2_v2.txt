@@ -1,0 +1,9 @@
+seeds 20..31 (12 matches), scored placements n=366
+building: scored 4, paid (credit != 0) 0, module-threat among paid 0
+   p2_cover         nonzero 4/4 min +0.260 max +1.000 mean +0.651
+troop: scored 218, paid (credit != 0) 22, module-threat among paid 1
+   credit min +0.114 median +2.000 max +3.000; time part >0 22, place part >0 22, close<0 0, gate<1 9
+   p3_intercept     nonzero 61/218 min +0.066 max +1.000 mean +0.533
+   p5_timing        nonzero 61/218 min +0.004 max +1.000 mean +0.817
+spell: scored 144, paid (credit != 0) 0, module-threat among paid 0
+   p4_spell_frac    nonzero 17/144 min +0.105 max +1.000 mean +0.651

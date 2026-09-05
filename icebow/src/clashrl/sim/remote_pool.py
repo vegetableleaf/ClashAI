@@ -50,7 +50,7 @@ def spell_veto_ids(env, min_value: float):
 
 
 def _worker(conn, n_envs: int, seed0: int, drill_frac=None,
-            spell_min_value=None) -> None:
+            spell_min_value=None, config_path=None, overrides=None) -> None:
     if _SRC not in sys.path:
         sys.path.insert(0, _SRC)
     import random
@@ -63,7 +63,20 @@ def _worker(conn, n_envs: int, seed0: int, drill_frac=None,
     from clashrl.sim.doctrine import doctrine_cells, doctrine_cards
     from clashrl.sim.opponents import SelfPlayOpponent, make_opponent
 
-    cfg = Config.load()
+    # THE PARENT'S CONFIG FILE, NOT config.yaml (L59 s9.7). This worker used to call
+    # `Config.load()` unconditionally, so a `--config <run yaml>` reached the learner and its local
+    # twin env but NOT one rollout env: every key of a run yaml that only the env reads was silently
+    # the disk value in every worker, with no error. `config_path` is the parent's `Config.source`;
+    # None (a hand-built Config) keeps the old behaviour.
+    cfg = Config.load(config_path) if config_path else Config.load()
+    # ... plus the parent's in-memory overrides that a file load cannot see: `--size` (action.grid,
+    # mutated in _sized_config) and the `_KeyOverride` proxies (`--drill-only` -> sim.drill_only).
+    # drill_frac and spell_min_value keep their own explicit arguments below, unchanged.
+    for _key, _val in (overrides or []):
+        _node = cfg.data
+        for _k in list(_key)[:-1]:
+            _node = _node.setdefault(_k, {})
+        _node[_key[-1]] = _val
     from clashrl.sim.drill_env import make_train_env
     # drill_frac ARRIVES FROM THE PARENT, because this worker re-reads config.yaml from disk and
     # would otherwise ignore any in-memory override -- which is exactly what `--drill-frac` is.
@@ -276,6 +289,15 @@ def _worker(conn, n_envs: int, seed0: int, drill_frac=None,
             elif kind == "difficulty":
                 state["difficulty"] = float(msg[1])
                 conn.send("ok")
+            elif kind == "probe":
+                # L59: DIAGNOSTIC -- what THIS process's envs actually run with (the seam check:
+                # a parent-side override that never crossed the pipe shows up here as the disk value)
+                conn.send([{"geo_enabled": bool(getattr(e, "geo_enabled", False)),
+                            "geometry": cfg.get("env", "geometry", default=None),
+                            "config_source": (str(cfg.source) if cfg.source else None),
+                            "grid": cfg.get("action", "grid", default=None),
+                            "drill_only": cfg.get("sim", "drill_only", default=None),
+                            "cls": type(e).__name__} for e in envs])
             elif kind == "close":
                 conn.send("bye")
                 return
@@ -287,7 +309,12 @@ class RemotePool:
     """Parent-side handle: the trainer's env surface, sharded over worker processes."""
 
     def __init__(self, n_envs: int, workers: int, seed: int = 0, drill_frac=None,
-                 spell_min_value=None):
+                 spell_min_value=None, config_path=None, overrides=None):
+        # config_path: the parent's config FILE (Config.source) so each worker loads the same yaml
+        # the parent was given with --config; overrides: [(key_tuple, value)] for the parent's
+        # in-memory config changes (--size, --drill-only) that no file load can see. L59 s9.7.
+        config_path = str(config_path) if config_path else None
+        overrides = [(tuple(k), v) for k, v in (overrides or [])]
         ctx = mp.get_context("spawn")
         self.K = int(n_envs)
         workers = max(1, min(int(workers), self.K))
@@ -302,7 +329,8 @@ class RemotePool:
                 continue
             parent_c, child_c = ctx.Pipe()
             pr = ctx.Process(target=_worker,
-                             args=(child_c, n, s0, drill_frac, spell_min_value),
+                             args=(child_c, n, s0, drill_frac, spell_min_value,
+                                   config_path, overrides),
                              daemon=True)
             pr.start()
             self.shards.append(n)
@@ -392,6 +420,12 @@ class RemotePool:
     def drill_gate(self, i: int):
         """P(play) the current drill's reference line would use, or None outside a drill."""
         return (self.last[i] or {}).get("dgate")
+
+    def probe(self):
+        """L59 diagnostic: per-env dicts from INSIDE the workers (`geo_enabled`, the `env.geometry`
+        block the worker's cfg carries, env class) -- proves a parent-side override reached them."""
+        self._scatter(lambda i0, n: ("probe",))
+        return self._gather()
 
     def close(self):
         for c in self.conns:

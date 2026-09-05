@@ -1268,7 +1268,7 @@ env:
   # _threat_response / _wincon_exec). DEFAULTS OFF: with enabled false the reward is byte-identical
   # to the pre-L59 code (tests/test_geometry_wiring.py). Read via cfg.get("env", "geometry", key).
   geometry:
-    enabled: false        # arm G sets true
+    enabled: true         # L59 ARM G: the ONLY difference from config/config.yaml (full copy, because --config REPLACES it)
     w_geom: 2.0           # HANDOFF 5cs.29: 1/mean restricted band score of c2r_best (0.430), cap 2.0
     w_time: 1.0           # replaces the binary deep_ok / threat_response credit scale
     pre_place_s: 3.0      # geometry credit still paid when t_resp is up to this early before t_cross

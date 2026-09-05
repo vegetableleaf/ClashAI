@@ -1,0 +1,11 @@
+states 1047, matches 3, CAP 8.0
+card             n raw_top med raw_top max |raw| med frac |raw|<16  tanh_d@top  ent med
+ice_wizard     275        10.9        18.7      17.6          0.41    2.28e-01     1.70
+knight         182         7.7        17.8      22.4          0.19    4.48e-01     0.69
+knight_evo      74         5.6         8.6      22.4          0.25    6.34e-01     1.33
+rocket        1047         6.0        15.6      22.2          0.19    5.88e-01     0.73
+skeletons       82         9.6        10.8      33.0          0.13    3.02e-01     1.39
+tesla          987        13.1        22.0      25.5          0.25    1.41e-01     1.56
+the_log        179         7.8        19.4      22.4          0.22    4.37e-01     1.00
+tornado        322         5.2        19.8      20.4          0.26    6.78e-01     1.08
+x_bow         1040        15.3        24.2      17.9          0.40    8.27e-02     1.75

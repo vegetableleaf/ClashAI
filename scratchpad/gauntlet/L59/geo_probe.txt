@@ -1,0 +1,7 @@
+== seed 7
+  step 131 t= 79.2 ice_wizard     tile=(0.0) threat=lava_hound   src=env    gate=0.95 p1=0.00 p1c=0.00 p2=0.00 p3=0.00 p5=0.95 p6=0.00 credit=+0.948 r=+0.948
+== seed 11
+  step   2 t=  1.8 skeletons      tile=(0.0) threat=giant        src=module gate=1.00 p1=0.00 p1c=0.00 p2=0.00 p3=0.00 p5=1.00 p6=0.00 credit=+1.000 r=+1.000
+  step 113 t= 68.4 skeletons      tile=(0.0) threat=giant        src=module gate=1.00 p1=0.00 p1c=0.00 p2=0.00 p3=1.00 p5=1.00 p6=0.00 credit=+3.000 r=+3.000
+  step 213 t=128.4 skeletons      tile=(0.0) threat=giant        src=env    gate=1.00 p1=0.00 p1c=0.00 p2=0.00 p3=1.00 p5=1.00 p6=0.00 credit=+3.000 r=+2.800
+paid credits n=4 min +0.948 max +3.000; gates [0.95, 1.0, 1.0, 1.0]

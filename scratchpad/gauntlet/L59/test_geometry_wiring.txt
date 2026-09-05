@@ -1,0 +1,26 @@
+test_override_reaches_the_worker_env (tests.test_geometry_wiring.GeometryReachesWorkers.test_override_reaches_the_worker_env) ... ok
+test_disabled_is_byte_identical (tests.test_geometry_wiring.GeometryWiring.test_disabled_is_byte_identical) ... ok
+test_enabled_runs_and_logs_geo_terms (tests.test_geometry_wiring.GeometryWiring.test_enabled_runs_and_logs_geo_terms) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 11.557s
+
+OK
+[wiring] worker probe with the shipped override: {'geo_enabled': True, 'geometry': {'enabled': True, 'w_geom': 2.0, 'w_time': 1.0, 'pre_place_s': 3.0, 'p7_enabled': False, 'log_all_terms': True}, 'cls': 'SimMatchEnv'}
+[wiring] worker probe with nothing shipped: {'geo_enabled': False, 'geometry': {'enabled': False, 'w_geom': 2.0, 'w_time': 1.0, 'pre_place_s': 3.0, 'p7_enabled': False, 'log_all_terms': True}, 'cls': 'SimMatchEnv'}
+[wiring] match 0 seed 7: 222 steps, non-trade reward sum -10.9461, identical to ref
+[wiring] match 1 seed 11: 290 steps, non-trade reward sum -9.1382, identical to ref
+[wiring] ENABLED match 0 seed 7: 222 steps, reward sum -10.9461, geo keys 4
+    geo_gate             fires   17  sum  +16.9484  (+17 / -0)
+    geo_p3               fires    1  sum   +1.0000  (+1 / -0)
+    geo_p5               fires    3  sum   +2.9484  (+3 / -0)
+    geo_threat_module    fires    8  sum   +8.0000  (+8 / -0)
+[wiring] ENABLED match 1 seed 11: 290 steps, reward sum -5.1382, geo keys 8
+    geo_credit           fires    2  sum   +6.0000  (+2 / -0)
+    geo_gate             fires   24  sum  +23.3333  (+24 / -0)
+    geo_p2               fires    1  sum   +1.0000  (+1 / -0)
+    geo_p3               fires    7  sum   +4.4157  (+7 / -0)
+    geo_p4               fires    1  sum   +0.3333  (+1 / -0)
+    geo_p5               fires    7  sum   +6.3333  (+7 / -0)
+    geo_paid_module_threat fires    1  sum   +1.0000  (+1 / -0)
+    geo_threat_module    fires   11  sum  +11.0000  (+11 / -0)
