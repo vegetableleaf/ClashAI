@@ -1,0 +1,15 @@
+[train-sim-ppo] 15750 episodes: winrate=   8% avg_rew=-16.7 0.6 ep/s total 1180W-11345L-2D pl=+0.010 vl=1.281 ent=0.06 clip=0.03 |
+[train-sim-ppo] EVAL @ 2000: ladder(L13-16)   37% (avg-1   37%) | fair(L15)   25% (avg-1   25%) | 150 matches each
+[train-sim-ppo] EVAL @ 4000: ladder(L13-16)   39% (avg-2   38%) | fair(L15)   29% (avg-2   27%) | 150 matches each
+[train-sim-ppo] EVAL @ 6000: ladder(L13-16)   27% (avg-3   34%) | fair(L15)   25% (avg-3   26%) | 150 matches each
+[train-sim-ppo] EVAL @ 8000: ladder(L13-16)   23% (avg-4   31%) | fair(L15)   14% (avg-4   23%) | 150 matches each
+[train-sim-ppo] EVAL @ 10000: ladder(L13-16)   36% (avg-5   32%) | fair(L15)   24% (avg-5   23%) | 150 matches each
+[train-sim-ppo] EVAL @ 12000: ladder(L13-16)   27% (avg-5   30%) | fair(L15)   19% (avg-5   22%) | 150 matches each
+[train-sim-ppo] EVAL @ 14000: ladder(L13-16)   35% (avg-5   29%) | fair(L15)   27% (avg-5   22%) | 150 matches each
+ALERT CELL HEAD COLLAPSED (0.82 of 5.08, 34 distinct cells). | [03:13] matches=4500 best_wr=30.667 P(play) mean=0.158 min=0.022 max=0.544 | 
+ALERT CELL STRUCTURE DRIFT -- now 3583.620, which is 49% below this run's rolling median of 7030.533 over 8 readings (matches=6000). Gradual
+ALERT CELL HEAD COLLAPSED (1.16 of 5.08, 33 distinct cells). | [04:44] matches=7350 best_wr=34.222 P(play) mean=0.199 min=0.025 max=0.807 | 
+ALERT ELIXIR>=6 DRIFT -- now 0.016, which is 49% below this run's rolling median of 0.032 over 8 readings (matches=11450). Gradual decay is 
+ALERT CELL HEAD COLLAPSED (1.08 of 5.08, 43 distinct cells). | [07:29] matches=12700 best_wr=34.222 P(play) mean=0.152 min=0.022 max=0.666 |
+ALERT CELL HEAD COLLAPSED (1.15 of 5.08, 38 distinct cells). | [07:45] matches=13350 best_wr=34.222 P(play) mean=0.162 min=0.021 max=0.612 |
+Sat Sep  5 12:52:40 UTC 2026
