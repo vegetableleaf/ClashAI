@@ -2442,7 +2442,9 @@ one of the two files. Pre-split backup: `scratchpad/gauntlet/L62/HANDOFF_prespll
 TRAP: the archive file ALREADY EXISTED -- a split script that does `write_text` on it destroys the
 previous split. Append, or read-merge first.
 
-### §5cs.52 -- L62m (2026-09-05 22:0x UTC, background task completed unattended): **THE WAVE-4 CRAWL FINISHED AND THE IMITATION CORPUS IS STILL ONLY ~HALF-USABLE -- 1,253 battles on disk but only 625 (49.9%) carry x/y placement coordinates, and the usable opponent-deck pool is 435, not the 781 the raw battle file suggests.** The owner's bar for the deck pool is >1,000, so the honest gap is 435 -> 1,000, more than double, NOT the "781, nearly there" a naive count gives.
+### §5cs.54 -- L62m (2026-09-05 22:0x UTC, background task completed unattended; RENUMBERED from
+§5cs.52 at 23:2x -- a CONCURRENT SESSION had already claimed §5cs.52/.53 for L63/L63b while this
+loop was writing. Two sessions were editing HANDOFF.md at once; see the trap at the end of this section): **THE WAVE-4 CRAWL FINISHED AND THE IMITATION CORPUS IS STILL ONLY ~HALF-USABLE -- 1,253 battles on disk but only 625 (49.9%) carry x/y placement coordinates, and the usable opponent-deck pool is 435, not the 781 the raw battle file suggests.** The owner's bar for the deck pool is >1,000, so the honest gap is 435 -> 1,000, more than double, NOT the "781, nearly there" a naive count gives.
 
 Measured this loop from `icebow/data/royaleapi/crawl2/` (the crawl's own output; no experiment run, box idle).
 Crawl log `scratchpad/gauntlet/L61/crawl_icebow_wave4.log`: **"DONE: 565 new replays in 478 min"**, exit 0; the two
@@ -2472,3 +2474,15 @@ half too.
 on disk is unchanged); whether the x/y-less half is recoverable by a re-parse or needs a re-fetch; whether deck
 POOL size or board COUNT is the thing that limits the imitation ceiling (b -- these are different experiments, and
 the owner's >1,000 bar is about the pool).
+
+**TRAP (new, 2026-09-05 23:2x, cost a duplicate section number).** Two Claude sessions were live on this repo at
+the same time -- this loop closing out L62 while the owner's NEW session ran L63/L63b -- and both appended to
+`HANDOFF.md` and `GAUNTLET_LOG.md` and committed. Nothing was lost (this loop's commit `8544985` is verified
+purely additive, 37 insertions / 0 deletions, and the L63 commits `9d9a019` / `ac74536` / `21da924` are intact),
+but the section number collided and the log blocks are out of order (L62m sits AFTER L63b). Rules for next time:
+**(1) before appending a § section, re-read the last section header from disk -- do not trust a number computed
+earlier in the loop; (2) never rewrite HANDOFF.md wholesale (read-modify-write) when another session may be live --
+append only; a scripted `write_text` would have silently destroyed the other session's work, and in this loop only
+an assertion failure prevented exactly that; (3) `git add <named files>` then check `git log --oneline -3` for
+commits you did not make before committing.**
+
