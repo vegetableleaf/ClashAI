@@ -1,0 +1,2 @@
+[train-sim-ppo] 3975 episodes: winrate=   6% avg_rew=-17.7 0.8 ep/s total 203W-2942L-2D pl=+0.002 vl=1.496 ent=0.06 clip=0.03 | drills 828 (43% pass all, 43% last 300, 21% of eps, 32% of STEPS)
+stopped 2026-09-05 14:19:20 UTC
