@@ -1221,3 +1221,9 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - (c) lingering zones NOT in the bridge's effects (23,169/23,169 frames effects==projectiles). (a) recorder dropped target/timers/ability/level -- one-line recorder change + re-record recovers them.
 - (b) kind 14 = "cannot act" (also flips on frozen/knocked bodies), not only deploying -- the policy obs deploying channel inherits this.
 - Not wired to the live env yet (next: one render call per decision on EngineMatchEnv; ghost staleness marker).
+
+## L62e -- 2026-09-05 18:0x UTC -- first PPO on the real engine launched (owner order)
+- Pair live 17:49:44 UTC: control kl 0 (PID 31628, port 38031) vs KL-to-frozen-init 0.3 (PID 54320, 38032), seed 41, same tag sequence, from bc_bias_native_s0 (m0 checkpoint reproduces the init exactly 15.44/46.61, 15.00/43.51).
+- (a) FINDING: bcA-style critic warm-up on the SHARED trunk moved both arms ~1.15 nats cell-KL from the init before any policy gradient (control raw p99 13.6 vs init 6.3 at m=48); the KL arm recovers to 0.08 within 3 updates. Kept running (shared drift, coef still the only difference). --kl_in_warmup added for re-runs; trunk-frozen warm-up parked.
+- (a, contended) ~12 s/match/arm -> m250 ~18:40 UTC, m500 ~19:30, m2000 ~00:30-01:30 UTC Sep 6. Free RAM 2.2-2.5 GB with both trainers.
+- Owner (18:2x UTC): "reverse engineer the remaining features [buffs/zones], you have my permission" -> RE agent dispatched, host-only phase (static on the 5ax dump + bridge patch + build), VM phase after the pair; generic buffs[] / area_effects[] export is the target, not 7 separate hunts.
