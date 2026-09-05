@@ -74,6 +74,11 @@ def grade(k, snap):
             m = re.match(r"(\S+)\s+n=\s*(\d+) distinct=\s*(\d+) top=(.*)", line)
             if m and m.group(1) in ("tesla", "x_bow", "skeletons", "ice_wizard", "knight"):
                 summ.append(f"s{seed} {m.group(1)} n={m.group(2)} distinct={m.group(3)} top={m.group(4)[:60]}")
+    gl = []
+    for seed in (0, 1):
+        o = sh([PY, os.path.join(L59, "geo_ledger_probe.py"), rel, str(seed), "greedy", "data/bench/%s_run.yaml" % KIND])
+        out += [f"## geo_ledger_probe seed {seed} (arm yaml, geometry ON)", o]
+        gl += [l[:200] for l in o.splitlines() if l.startswith("geo ledger") or "tesla " in l or "x_bow " in l or "skeletons " in l][:4]
     g = sh([PY, "tools/gate_prior_probe.py", rel, "--prior", "config/gate_prior_p6.json"])
     out += ["## gate_prior_probe", g]
     gsum = [l for l in g.splitlines() if "P(play)" in l or "mean cost" in l][:3]
@@ -85,6 +90,7 @@ def grade(k, snap):
     open(os.path.join(L59, "reads_%s_m%dk.txt" % (RUN, k // 1000)), "w", encoding="utf-8").write(txt)
     rep = [f"**ARM GATE {RUN} m{k//1000}k** (counter after c2r_best; snapshot `{os.path.basename(snap)}`)",
            "**place_probe (greedy card+cell, 6 envs x 400 steps, 3 seeds):**", *summ[:15],
+           "**geo_ledger_probe (seeds 0/1):**", *gl,
            "**gate_prior_probe:**", *gsum,
            "**ledger (log tail):**", *[l[:160] for l in geo[-3:]],
            f"full read: scratchpad/gauntlet/L59/reads_{RUN}_m{k//1000}k.txt"]

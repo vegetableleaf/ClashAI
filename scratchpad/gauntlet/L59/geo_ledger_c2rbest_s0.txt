@@ -1,0 +1,20 @@
+geo ledger (fires, sum) over 6 envs: {'geo_credit': (23, 47.923), 'geo_gate': (178, 169.766), 'geo_p1': (13, 6.032), 'geo_p1_close': (11, -6.905), 'geo_p1_snapshot': (13, 10.325), 'geo_p2': (41, 20.5), 'geo_p3': (25, 18.304), 'geo_p4': (25, 21.007), 'geo_p4_nado': (8, 1.246), 'geo_p5': (78, 65.431), 'geo_p6': (9, 9.0), 'geo_paid_module_threat': (10, 10.0), 'geo_threat_module': (119, 119.0)}
+  skeletons      scored= 53 paid=  0 mean_credit_paid=0.000 mean_p1=0.000 mean_p3=0.000 mean_p6=0.000 mean_p5=0.140 mean_gate=0.302
+  ice_wizard     scored= 47 paid= 10 mean_credit_paid=1.804 mean_p1=0.000 mean_p3=0.177 mean_p6=0.000 mean_p5=0.225 mean_gate=0.396
+  the_log        scored= 44 paid=  0 mean_credit_paid=0.000 mean_p1=0.000 mean_p3=0.000 mean_p6=0.000 mean_p5=0.000 mean_gate=1.000
+  knight         scored= 39 paid=  4 mean_credit_paid=2.808 mean_p1=0.000 mean_p3=0.231 mean_p6=0.000 mean_p5=0.276 mean_gate=0.441
+  tesla          scored= 24 paid=  2 mean_credit_paid=1.560 mean_p1=0.039 mean_p3=0.000 mean_p6=0.000 mean_p5=0.861 mean_gate=1.000
+  tornado        scored= 23 paid=  0 mean_credit_paid=0.000 mean_p1=0.000 mean_p3=0.000 mean_p6=0.000 mean_p5=0.000 mean_gate=1.000
+  knight_evo     scored= 15 paid=  1 mean_credit_paid=1.907 mean_p1=0.000 mean_p3=0.067 mean_p6=0.000 mean_p5=0.216 mean_gate=0.594
+  x_bow          scored= 13 paid=  2 mean_credit_paid=2.712 mean_p1=0.138 mean_p3=0.000 mean_p6=0.692 mean_p5=0.377 mean_gate=0.692
+  tesla_evo      scored=  9 paid=  4 mean_credit_paid=2.048 mean_p1=0.366 mean_p3=0.000 mean_p6=0.000 mean_p5=0.875 mean_gate=1.000
+{"ckpt": "data/bench/c2r_best_36k_backup.pt", "seed": 0, "greedy_card": true, "first": [[["knight", 230], 2], [["tesla", 234], 2], [["knight", 426], 2], [["knight", 219], 1], [["x_bow", 234], 1], [["knight", 266], 1]], "cellarg_all": [[["the_log", 219], 150], [["skeletons", 423], 128], [["ice_wizard", 234], 99], [["the_log", 230], 94], [["tesla", 234], 67], [["knight", 426], 50], [["tornado", 234], 38], [["ice_wizard", 219], 38]]}
+skeletons      n= 53 distinct=  1 top=[(423, 53)]
+ice_wizard     n= 47 distinct=  9 top=[(234, 21), (219, 13), (251, 3), (246, 3), (230, 2)]
+the_log        n= 44 distinct=  9 top=[(219, 21), (230, 12), (237, 4), (248, 2), (266, 1)]
+knight         n= 39 distinct=  8 top=[(426, 19), (230, 8), (219, 7), (266, 1), (302, 1)]
+tesla          n= 24 distinct=  9 top=[(234, 14), (219, 2), (246, 2), (230, 1), (228, 1)]
+tornado        n= 23 distinct= 12 top=[(234, 10), (246, 2), (228, 2), (251, 1), (239, 1)]
+knight_evo     n= 15 distinct=  6 top=[(234, 5), (219, 5), (246, 2), (374, 1), (216, 1)]
+x_bow          n= 13 distinct=  4 top=[(234, 9), (219, 2), (221, 1), (239, 1)]
+tesla_evo      n=  9 distinct=  3 top=[(234, 7), (248, 1), (219, 1)]
