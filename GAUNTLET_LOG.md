@@ -1255,3 +1255,13 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - (a) FUNCTIONAL test, 240 pro x-bows within 13.0 tiles of an enemy princess tower: 432 puts 0 out of reach (worst distance added +0.000); 576 puts 132 of 240 = 55.0% OUT of reach. Cause is PHASE not resolution -- pros place on the half-tile lattice, 0.499 aligns with it, 0.374 does not, and an offensive x-bow sits AT the range boundary.
 - (b) The observation is real but the cause is elsewhere: it was seen on engA_kl_m253, the COLLAPSED checkpoint (0.12 plays/match, cell head 1+ nat off the pro prior). At 0.499 tiles/row a ONE-CELL policy error is ~0.5 tiles = exactly the symptom.
 - (b) Phase-preserving alternative if finer control is ever wanted: 48 rows = 0.25 tiles (864 cells), still on the half-tile lattice. Not now -- n_cells is baked into the BC init, both val sets and every checkpoint, so a grid change is a full IL re-fit, not a flag.
+
+## L62j -- 2026-09-05 20:1x-20:4x UTC -- engB m250 graded on three instruments (HANDOFF §5cs.49)
+- read_ckpt: engB control 7.47/26.79 (v1) 6.83/26.86 (v2) -- collapsed FASTER than engA's control (11.25/32.97); engB KL 16.33/44.02 / 14.25/42.76 -- at the init (15.44/46.61, 15.00/43.51), not above it. Arm gap +8.9/+17.2 (v1), driven by the control's fall.
+- Gate ALIVE both arms: engine p_gate 0.058-0.085 vs gp_target 0.09-0.11, p90 0.10-0.16, gp_ce flat 0.30-0.35; sim probe p50/p90/max 0.152/0.201/0.245 (ctrl) 0.194/0.241/0.318 (KL) -- state-dependent, unlike engA's constant 0.2325.
+- Under the deploy rule tau 0.25: control 0 plays/710 decisions, policy-stats 0.1 plays/match; KL 1.5/match (policy-stats, 16 m) vs 21/match (gate_probe, 3 m) -- same rule, 20x swing = tau sits at the gate's p92-95, threshold decides, not policy.
+- RETRACTION: the §5cs.47 alarm "frac_gt_tau < 0.02 = prior failed" was wrong -- only 8.14% of pro windows exceed 0.25, a working prior produces exactly that. Diagnostic = p_gate vs gp_target + p50/p90/max spread.
+- BC init on engine boards (live_view selftest, agent): p(play) mean 0.47, 87% > 0.25 -- 4x the pro rate; it looked active because it was miscalibrated.
+- Owner question posted: deploy rule -- sample the gate (rec.), calibrated tau ~0.10, or keep 0.25. Not changed.
+- Visualizer agent restarted (accidental stop) -- resuming from live_view.py + template + payload; artifact not yet published.
+- Next: m500 grade ~21:15 UTC (same three instruments); publish the live artifact when the agent returns.

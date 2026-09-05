@@ -1,0 +1,5 @@
+[v1 sim boards] matches=250 v1 sim boards: n 1004 top1 7.47 top5 26.79 | cards skeletons:1.7/11.1(180) ice_wizard:3.8/16.4(159) the_log:0.7/14.7(143) knight:0.0/11.1(126) tesla:28.6/60.0(105) x_bow:20.9/79.1(91) tornado:2.8/19.4(72) rocket:15.1/32.1(53) | time 0-60:5.8/23.0(257) 60-120:8.7/27.3(242) 120-180:8.8/30.6(376) 180+:4.7/22.5(129)
+[rails] frac |raw|>8 = 0.027  p99 9.8  mean 2.9
+[bias map] max 5.31 min -1.41 |d| from init n/a (see native_bias_ckpt)
+[data] N=9444 train=8111 val=1333
+[v2 engine boards] matches=250 v2 engine boards: n 1333 top1 6.83 top5 26.86 | cards skeletons:0.4/11.1(225) ice_wizard:4.3/20.5(210) the_log:3.1/21.1(194) knight:0.0/10.1(159) tesla:18.6/49.6(129) x_bow:21.6/73.1(134) tornado:6.2/18.6(97) rocket:8.1/32.4(74) | time 0-60:5.3/24.8(206) 60-120:7.5/26.8(228) 120-180:8.6/28.8(371) 180+:5.9/26.3(528)

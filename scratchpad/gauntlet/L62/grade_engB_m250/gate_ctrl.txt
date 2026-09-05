@@ -1,0 +1,1 @@
+engB_ctrl_m250.pt  dec=  710 plays=   0 | p(play) mean 0.1612 p50 0.1523 p90 0.2012 max 0.2447 | frac>tau 0.0000 | mean affordable cards 3.98, frac with >=1 1.000
