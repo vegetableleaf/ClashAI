@@ -1,0 +1,94 @@
+{
+ "matches": 40,
+ "ghost_rejections_per_match": {
+  "mean": 0.35,
+  "median": 0.0,
+  "max": 2,
+  "matches_with_zero": 27,
+  "histogram": {
+   "0": 27,
+   "1": 12,
+   "2": 1
+  }
+ },
+ "ghost_reject_rate_per_match": {
+  "mean": 0.0179,
+  "median": 0.0,
+  "max": 0.1
+ },
+ "ghost_reject_rate_by_match_time": {
+  "0-60s": {
+   "attempts": 221,
+   "rejected": 0,
+   "rate": 0.0
+  },
+  "60-120s": {
+   "attempts": 210,
+   "rejected": 1,
+   "rate": 0.0048
+  },
+  "120-180s": {
+   "attempts": 267,
+   "rejected": 6,
+   "rate": 0.0225
+  },
+  "180-240s": {
+   "attempts": 60,
+   "rejected": 7,
+   "rate": 0.1167
+  },
+  "240-ends": {
+   "attempts": 34,
+   "rejected": 0,
+   "rate": 0.0
+  }
+ },
+ "first_rejection_seconds": {
+  "n_matches": 13,
+  "median": 163.2,
+  "min": 101.6,
+  "max": 220.7
+ },
+ "ghost_undelivered": {
+  "note": "commands never ATTEMPTED because the match ended first -- the dominant way a ghost stops mattering, far larger than outright rejection",
+  "total": 787,
+  "of_total_commands": 1579,
+  "frac_mean": 0.4562,
+  "frac_median": 0.5432
+ },
+ "sanity": {
+  "terminated": 40,
+  "of": 40,
+  "outcomes": {
+   "loss": 36,
+   "win": 4
+  },
+  "mean_crowns_for": 0.7,
+  "mean_crowns_against": 2.5,
+  "mean_match_seconds": 168.6,
+  "median_match_seconds": 167.5,
+  "match_seconds_min_max": [
+   67.2,
+   307.2
+  ],
+  "mean_reward": -6.171,
+  "our_plays_per_match": 15.93,
+  "our_reject_rate": 0.0334,
+  "termination_reasons": {
+   "null": 40
+  },
+  "expected_vs_actual": {
+   "human_icebow_result": {
+    "win": 26,
+    "loss": 14
+   },
+   "our_policy_result": {
+    "loss": 36,
+    "win": 4
+   }
+  },
+  "deal_cache_hit": 24,
+  "deal_seconds_median": 0.0,
+  "unmapped_entities": 0
+ }
+}

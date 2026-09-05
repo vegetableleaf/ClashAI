@@ -1,0 +1,2810 @@
+{
+ "port": 38031,
+ "matches": 20,
+ "device": "cpu",
+ "decision_ticks": 10,
+ "total_s": 62.1,
+ "s_per_match": 3.107,
+ "matches_per_hour": 1158.7,
+ "wall_s": {
+  "min": 1.147,
+  "median": 3.0625,
+  "max": 6.69
+ },
+ "policy_s_frac": 0.28,
+ "reset_s_median": 0.014499999999999999,
+ "terminated_frac": 1.0,
+ "outcomes": {
+  "win": 2,
+  "loss": 18,
+  "draw": 0
+ },
+ "mean_crowns_for": 0.8,
+ "mean_crowns_against": 2.45,
+ "mean_match_seconds": 178.3,
+ "median_match_seconds": 180.05,
+ "mean_reward": -5.747,
+ "ghost": {
+  "total": 726,
+  "ok": 399,
+  "rejected": 8,
+  "undelivered": 319,
+  "reject_rate_overall": 0.0197,
+  "per_match_rate": {
+   "mean": 0.022,
+   "median": 0.0,
+   "min": 0.0,
+   "max": 0.1
+  },
+  "reasons": {
+   "native_4": 8
+  }
+ },
+ "our": {
+  "plays": 330,
+  "rejected": 9,
+  "reasons": {
+   "native_4": 9
+  }
+ },
+ "unmapped_entities": 0,
+ "rows": [
+  {
+   "tag": "000YLY0JCPGL",
+   "tick": 6144,
+   "seconds": 307.2,
+   "steps": 606,
+   "terminated": true,
+   "outcome": "loss",
+   "crowns": [
+    1,
+    2
+   ],
+   "reward": -4.5927,
+   "state_hash": "08633a4e3495b521",
+   "ghost_ok": 57,
+   "ghost_rejected": 0,
+   "ghost_total": 57,
+   "ghost_undelivered": 0,
+   "ghost_reject_reasons": {},
+   "ghost_events": [
+    [
+     221,
+     1,
+     "accepted"
+    ],
+    [
+     381,
+     1,
+     "accepted"
+    ],
+    [
+     488,
+     1,
+     "accepted"
+    ],
+    [
+     535,
+     1,
+     "accepted"
+    ],
+    [
+     611,
+     1,
+     "accepted"
+    ],
+    [
+     831,
+     1,
+     "accepted"
+    ],
+    [
+     1103,
+     1,
+     "accepted"
+    ],
+    [
+     1198,
+     1,
+     "accepted"
+    ],
+    [
+     1318,
+     1,
+     "accepted"
+    ],
+    [
+     1492,
+     1,
+     "accepted"
+    ],
+    [
+     1571,
+     1,
+     "accepted"
+    ],
+    [
+     1718,
+     1,
+     "accepted"
+    ],
+    [
+     1831,
+     1,
+     "accepted"
+    ],
+    [
+     2248,
+     1,
+     "accepted"
+    ],
+    [
+     2294,
+     1,
+     "accepted"
+    ],
+    [
+     2323,
+     1,
+     "accepted"
+    ],
+    [
+     2448,
+     1,
+     "accepted"
+    ],
+    [
+     2477,
+     1,
+     "accepted"
+    ],
+    [
+     2707,
+     1,
+     "accepted"
+    ],
+    [
+     2741,
+     1,
+     "accepted"
+    ],
+    [
+     2896,
+     1,
+     "accepted"
+    ],
+    [
+     3135,
+     1,
+     "accepted"
+    ],
+    [
+     3198,
+     1,
+     "accepted"
+    ],
+    [
+     3268,
+     1,
+     "accepted"
+    ],
+    [
+     3302,
+     1,
+     "accepted"
+    ],
+    [
+     3431,
+     1,
+     "accepted"
+    ],
+    [
+     3603,
+     1,
+     "accepted"
+    ],
+    [
+     3655,
+     1,
+     "accepted"
+    ],
+    [
+     3756,
+     1,
+     "accepted"
+    ],
+    [
+     3821,
+     1,
+     "accepted"
+    ],
+    [
+     3851,
+     1,
+     "accepted"
+    ],
+    [
+     4012,
+     1,
+     "accepted"
+    ],
+    [
+     4191,
+     1,
+     "accepted"
+    ],
+    [
+     4238,
+     1,
+     "accepted"
+    ],
+    [
+     4325,
+     1,
+     "accepted"
+    ],
+    [
+     4458,
+     1,
+     "accepted"
+    ],
+    [
+     4602,
+     1,
+     "accepted"
+    ],
+    [
+     4634,
+     1,
+     "accepted"
+    ],
+    [
+     4704,
+     1,
+     "accepted"
+    ],
+    [
+     4833,
+     1,
+     "accepted"
+    ],
+    [
+     4917,
+     1,
+     "accepted"
+    ],
+    [
+     4931,
+     1,
+     "accepted"
+    ],
+    [
+     4978,
+     1,
+     "accepted"
+    ],
+    [
+     5111,
+     1,
+     "accepted"
+    ],
+    [
+     5151,
+     1,
+     "accepted"
+    ],
+    [
+     5228,
+     1,
+     "accepted"
+    ],
+    [
+     5271,
+     1,
+     "accepted"
+    ],
+    [
+     5324,
+     1,
+     "accepted"
+    ],
+    [
+     5414,
+     1,
+     "accepted"
+    ],
+    [
+     5471,
+     1,
+     "accepted"
+    ],
+    [
+     5562,
+     1,
+     "accepted"
+    ],
+    [
+     5601,
+     1,
+     "accepted"
+    ],
+    [
+     5637,
+     1,
+     "accepted"
+    ],
+    [
+     5704,
+     1,
+     "accepted"
+    ],
+    [
+     5767,
+     1,
+     "accepted"
+    ],
+    [
+     5861,
+     1,
+     "accepted"
+    ],
+    [
+     5901,
+     1,
+     "accepted"
+    ]
+   ],
+   "our_plays": 49,
+   "our_rejected": 0,
+   "our_reject_reasons": {},
+   "unmapped_entities": 0,
+   "expected_result": "win",
+   "expected_crowns": [
+    0,
+    1
+   ],
+   "wall_s": 6.69,
+   "reset_s": 0.022,
+   "policy_s": 1.782,
+   "deal_s": 0.0,
+   "deal_cache_hit": true
+  },
+  {
+   "tag": "000YLY0PYYQY",
+   "tick": 6108,
+   "seconds": 305.4,
+   "steps": 602,
+   "terminated": true,
+   "outcome": "win",
+   "crowns": [
+    1,
+    0
+   ],
+   "reward": 4.6376,
+   "state_hash": "e131d05f350fac41",
+   "ghost_ok": 14,
+   "ghost_rejected": 0,
+   "ghost_total": 14,
+   "ghost_undelivered": 0,
+   "ghost_reject_reasons": {},
+   "ghost_events": [
+    [
+     197,
+     1,
+     "accepted"
+    ],
+    [
+     312,
+     1,
+     "accepted"
+    ],
+    [
+     425,
+     1,
+     "accepted"
+    ],
+    [
+     676,
+     1,
+     "accepted"
+    ],
+    [
+     728,
+     1,
+     "accepted"
+    ],
+    [
+     758,
+     1,
+     "accepted"
+    ],
+    [
+     1328,
+     1,
+     "accepted"
+    ],
+    [
+     1484,
+     1,
+     "accepted"
+    ],
+    [
+     1679,
+     1,
+     "accepted"
+    ],
+    [
+     1754,
+     1,
+     "accepted"
+    ],
+    [
+     1862,
+     1,
+     "accepted"
+    ],
+    [
+     1909,
+     1,
+     "accepted"
+    ],
+    [
+     2061,
+     1,
+     "accepted"
+    ],
+    [
+     2215,
+     1,
+     "accepted"
+    ]
+   ],
+   "our_plays": 11,
+   "our_rejected": 0,
+   "our_reject_reasons": {},
+   "unmapped_entities": 0,
+   "expected_result": "win",
+   "expected_crowns": [
+    0,
+    3
+   ],
+   "wall_s": 4.928,
+   "reset_s": 0.019,
+   "policy_s": 1.538,
+   "deal_s": 0.0,
+   "deal_cache_hit": true
+  },
+  {
+   "tag": "000YLY2UCC8C",
+   "tick": 2357,
+   "seconds": 117.9,
+   "steps": 227,
+   "terminated": true,
+   "outcome": "loss",
+   "crowns": [
+    1,
+    3
+   ],
+   "reward": -7.5806,
+   "state_hash": "9b08746478ef2d7c",
+   "ghost_ok": 11,
+   "ghost_rejected": 0,
+   "ghost_total": 20,
+   "ghost_undelivered": 9,
+   "ghost_reject_reasons": {},
+   "ghost_events": [
+    [
+     222,
+     1,
+     "accepted"
+    ],
+    [
+     393,
+     1,
+     "accepted"
+    ],
+    [
+     556,
+     1,
+     "accepted"
+    ],
+    [
+     761,
+     1,
+     "accepted"
+    ],
+    [
+     882,
+     1,
+     "accepted"
+    ],
+    [
+     1038,
+     1,
+     "accepted"
+    ],
+    [
+     1183,
+     1,
+     "accepted"
+    ],
+    [
+     1687,
+     1,
+     "accepted"
+    ],
+    [
+     1814,
+     1,
+     "accepted"
+    ],
+    [
+     1828,
+     1,
+     "accepted"
+    ],
+    [
+     2007,
+     1,
+     "accepted"
+    ]
+   ],
+   "our_plays": 9,
+   "our_rejected": 0,
+   "our_reject_reasons": {},
+   "unmapped_entities": 0,
+   "expected_result": "loss",
+   "expected_crowns": [
+    3,
+    0
+   ],
+   "wall_s": 2.167,
+   "reset_s": 0.014,
+   "policy_s": 0.582,
+   "deal_s": 0.0,
+   "deal_cache_hit": true
+  },
+  {
+   "tag": "000YLY2UGCGC",
+   "tick": 3055,
+   "seconds": 152.8,
+   "steps": 297,
+   "terminated": true,
+   "outcome": "loss",
+   "crowns": [
+    1,
+    3
+   ],
+   "reward": -7.5806,
+   "state_hash": "f6585023ca3571f8",
+   "ghost_ok": 15,
+   "ghost_rejected": 1,
+   "ghost_total": 34,
+   "ghost_undelivered": 18,
+   "ghost_reject_reasons": {
+    "native_4": 1
+   },
+   "ghost_events": [
+    [
+     241,
+     1,
+     "accepted"
+    ],
+    [
+     533,
+     1,
+     "accepted"
+    ],
+    [
+     795,
+     1,
+     "accepted"
+    ],
+    [
+     839,
+     1,
+     "accepted"
+    ],
+    [
+     899,
+     1,
+     "accepted"
+    ],
+    [
+     1259,
+     1,
+     "accepted"
+    ],
+    [
+     1652,
+     1,
+     "accepted"
+    ],
+    [
+     1915,
+     1,
+     "accepted"
+    ],
+    [
+     2091,
+     1,
+     "accepted"
+    ],
+    [
+     2126,
+     1,
+     "accepted"
+    ],
+    [
+     2511,
+     1,
+     "accepted"
+    ],
+    [
+     2601,
+     1,
+     "accepted"
+    ],
+    [
+     2645,
+     1,
+     "accepted"
+    ],
+    [
+     2665,
+     1,
+     "accepted"
+    ],
+    [
+     2763,
+     1,
+     "accepted"
+    ],
+    [
+     3038,
+     0,
+     "native_4"
+    ]
+   ],
+   "our_plays": 17,
+   "our_rejected": 3,
+   "our_reject_reasons": {
+    "native_4": 3
+   },
+   "unmapped_entities": 0,
+   "expected_result": "loss",
+   "expected_crowns": [
+    1,
+    0
+   ],
+   "wall_s": 2.777,
+   "reset_s": 0.025,
+   "policy_s": 0.73,
+   "deal_s": 0.009,
+   "deal_cache_hit": false
+  },
+  {
+   "tag": "000YLY2ULYLR",
+   "tick": 3777,
+   "seconds": 188.9,
+   "steps": 369,
+   "terminated": true,
+   "outcome": "loss",
+   "crowns": [
+    2,
+    3
+   ],
+   "reward": -5.5806,
+   "state_hash": "6a9daf1ffc3cb8fc",
+   "ghost_ok": 20,
+   "ghost_rejected": 0,
+   "ghost_total": 44,
+   "ghost_undelivered": 24,
+   "ghost_reject_reasons": {},
+   "ghost_events": [
+    [
+     398,
+     1,
+     "accepted"
+    ],
+    [
+     504,
+     1,
+     "accepted"
+    ],
+    [
+     826,
+     1,
+     "accepted"
+    ],
+    [
+     1003,
+     1,
+     "accepted"
+    ],
+    [
+     1147,
+     1,
+     "accepted"
+    ],
+    [
+     1265,
+     1,
+     "accepted"
+    ],
+    [
+     1546,
+     1,
+     "accepted"
+    ],
+    [
+     1904,
+     1,
+     "accepted"
+    ],
+    [
+     2281,
+     1,
+     "accepted"
+    ],
+    [
+     2348,
+     1,
+     "accepted"
+    ],
+    [
+     2587,
+     1,
+     "accepted"
+    ],
+    [
+     2785,
+     1,
+     "accepted"
+    ],
+    [
+     2812,
+     1,
+     "accepted"
+    ],
+    [
+     2923,
+     1,
+     "accepted"
+    ],
+    [
+     3006,
+     1,
+     "accepted"
+    ],
+    [
+     3141,
+     1,
+     "accepted"
+    ],
+    [
+     3262,
+     1,
+     "accepted"
+    ],
+    [
+     3405,
+     1,
+     "accepted"
+    ],
+    [
+     3511,
+     1,
+     "accepted"
+    ],
+    [
+     3668,
+     1,
+     "accepted"
+    ]
+   ],
+   "our_plays": 19,
+   "our_rejected": 0,
+   "our_reject_reasons": {},
+   "unmapped_entities": 0,
+   "expected_result": "win",
+   "expected_crowns": [
+    0,
+    1
+   ],
+   "wall_s": 3.213,
+   "reset_s": 0.014,
+   "policy_s": 0.896,
+   "deal_s": 0.0,
+   "deal_cache_hit": true
+  },
+  {
+   "tag": "000YLY2UVGRL",
+   "tick": 3520,
+   "seconds": 176.0,
+   "steps": 344,
+   "terminated": true,
+   "outcome": "loss",
+   "crowns": [
+    1,
+    3
+   ],
+   "reward": -7.5806,
+   "state_hash": "99816677b86b90a4",
+   "ghost_ok": 28,
+   "ghost_rejected": 0,
+   "ghost_total": 28,
+   "ghost_undelivered": 0,
+   "ghost_reject_reasons": {},
+   "ghost_events": [
+    [
+     181,
+     1,
+     "accepted"
+    ],
+    [
+     303,
+     1,
+     "accepted"
+    ],
+    [
+     362,
+     1,
+     "accepted"
+    ],
+    [
+     544,
+     1,
+     "accepted"
+    ],
+    [
+     556,
+     1,
+     "accepted"
+    ],
+    [
+     733,
+     1,
+     "accepted"
+    ],
+    [
+     911,
+     1,
+     "accepted"
+    ],
+    [
+     1312,
+     1,
+     "accepted"
+    ],
+    [
+     1457,
+     1,
+     "accepted"
+    ],
+    [
+     1571,
+     1,
+     "accepted"
+    ],
+    [
+     1581,
+     1,
+     "accepted"
+    ],
+    [
+     1644,
+     1,
+     "accepted"
+    ],
+    [
+     1876,
+     1,
+     "accepted"
+    ],
+    [
+     2182,
+     1,
+     "accepted"
+    ],
+    [
+     2305,
+     1,
+     "accepted"
+    ],
+    [
+     2427,
+     1,
+     "accepted"
+    ],
+    [
+     2503,
+     1,
+     "accepted"
+    ],
+    [
+     2523,
+     1,
+     "accepted"
+    ],
+    [
+     2792,
+     1,
+     "accepted"
+    ],
+    [
+     2844,
+     1,
+     "accepted"
+    ],
+    [
+     2964,
+     1,
+     "accepted"
+    ],
+    [
+     3011,
+     1,
+     "accepted"
+    ],
+    [
+     3036,
+     1,
+     "accepted"
+    ],
+    [
+     3106,
+     1,
+     "accepted"
+    ],
+    [
+     3141,
+     1,
+     "accepted"
+    ],
+    [
+     3196,
+     1,
+     "accepted"
+    ],
+    [
+     3306,
+     1,
+     "accepted"
+    ],
+    [
+     3402,
+     1,
+     "accepted"
+    ]
+   ],
+   "our_plays": 14,
+   "our_rejected": 0,
+   "our_reject_reasons": {},
+   "unmapped_entities": 0,
+   "expected_result": "win",
+   "expected_crowns": [
+    0,
+    1
+   ],
+   "wall_s": 2.944,
+   "reset_s": 0.013,
+   "policy_s": 0.807,
+   "deal_s": 0.0,
+   "deal_cache_hit": true
+  },
+  {
+   "tag": "000YLY2VQ92P",
+   "tick": 2465,
+   "seconds": 123.2,
+   "steps": 238,
+   "terminated": true,
+   "outcome": "loss",
+   "crowns": [
+    0,
+    3
+   ],
+   "reward": -8.6042,
+   "state_hash": "1d279ce4e0b0ea8c",
+   "ghost_ok": 10,
+   "ghost_rejected": 0,
+   "ghost_total": 22,
+   "ghost_undelivered": 12,
+   "ghost_reject_reasons": {},
+   "ghost_events": [
+    [
+     198,
+     1,
+     "accepted"
+    ],
+    [
+     316,
+     1,
+     "accepted"
+    ],
+    [
+     651,
+     1,
+     "accepted"
+    ],
+    [
+     705,
+     1,
+     "accepted"
+    ],
+    [
+     1135,
+     1,
+     "accepted"
+    ],
+    [
+     1316,
+     1,
+     "accepted"
+    ],
+    [
+     1422,
+     1,
+     "accepted"
+    ],
+    [
+     1703,
+     1,
+     "accepted"
+    ],
+    [
+     1957,
+     1,
+     "accepted"
+    ],
+    [
+     2384,
+     1,
+     "accepted"
+    ]
+   ],
+   "our_plays": 11,
+   "our_rejected": 0,
+   "our_reject_reasons": {},
+   "unmapped_entities": 0,
+   "expected_result": "loss",
+   "expected_crowns": [
+    1,
+    0
+   ],
+   "wall_s": 2.007,
+   "reset_s": 0.014,
+   "policy_s": 0.584,
+   "deal_s": 0.0,
+   "deal_cache_hit": true
+  },
+  {
+   "tag": "002YLLLP2YRR",
+   "tick": 3681,
+   "seconds": 184.1,
+   "steps": 360,
+   "terminated": true,
+   "outcome": "loss",
+   "crowns": [
+    0,
+    1
+   ],
+   "reward": -4.4512,
+   "state_hash": "4d506cf7e66b5b90",
+   "ghost_ok": 29,
+   "ghost_rejected": 1,
+   "ghost_total": 36,
+   "ghost_undelivered": 6,
+   "ghost_reject_reasons": {
+    "native_4": 1
+   },
+   "ghost_events": [
+    [
+     431,
+     1,
+     "accepted"
+    ],
+    [
+     656,
+     1,
+     "accepted"
+    ],
+    [
+     738,
+     1,
+     "accepted"
+    ],
+    [
+     848,
+     1,
+     "accepted"
+    ],
+    [
+     1037,
+     1,
+     "accepted"
+    ],
+    [
+     1156,
+     1,
+     "accepted"
+    ],
+    [
+     1521,
+     1,
+     "accepted"
+    ],
+    [
+     1615,
+     1,
+     "accepted"
+    ],
+    [
+     1721,
+     1,
+     "accepted"
+    ],
+    [
+     1841,
+     1,
+     "accepted"
+    ],
+    [
+     1904,
+     1,
+     "accepted"
+    ],
+    [
+     1942,
+     1,
+     "accepted"
+    ],
+    [
+     1973,
+     1,
+     "accepted"
+    ],
+    [
+     2024,
+     1,
+     "accepted"
+    ],
+    [
+     2408,
+     1,
+     "accepted"
+    ],
+    [
+     2501,
+     1,
+     "accepted"
+    ],
+    [
+     2572,
+     1,
+     "accepted"
+    ],
+    [
+     2773,
+     1,
+     "accepted"
+    ],
+    [
+     2855,
+     1,
+     "accepted"
+    ],
+    [
+     2904,
+     1,
+     "accepted"
+    ],
+    [
+     2957,
+     1,
+     "accepted"
+    ],
+    [
+     3016,
+     1,
+     "accepted"
+    ],
+    [
+     3047,
+     1,
+     "accepted"
+    ],
+    [
+     3113,
+     1,
+     "accepted"
+    ],
+    [
+     3232,
+     1,
+     "accepted"
+    ],
+    [
+     3334,
+     1,
+     "accepted"
+    ],
+    [
+     3379,
+     1,
+     "accepted"
+    ],
+    [
+     3415,
+     1,
+     "accepted"
+    ],
+    [
+     3529,
+     1,
+     "accepted"
+    ],
+    [
+     3608,
+     0,
+     "native_4"
+    ]
+   ],
+   "our_plays": 21,
+   "our_rejected": 5,
+   "our_reject_reasons": {
+    "native_4": 5
+   },
+   "unmapped_entities": 0,
+   "expected_result": "loss",
+   "expected_crowns": [
+    1,
+    0
+   ],
+   "wall_s": 3.128,
+   "reset_s": 0.014,
+   "policy_s": 0.87,
+   "deal_s": 0.0,
+   "deal_cache_hit": true
+  },
+  {
+   "tag": "002YLLLP9JUR",
+   "tick": 4425,
+   "seconds": 221.2,
+   "steps": 434,
+   "terminated": true,
+   "outcome": "loss",
+   "crowns": [
+    1,
+    3
+   ],
+   "reward": -6.8368,
+   "state_hash": "df5dc3a58cf81e94",
+   "ghost_ok": 33,
+   "ghost_rejected": 1,
+   "ghost_total": 53,
+   "ghost_undelivered": 19,
+   "ghost_reject_reasons": {
+    "native_4": 1
+   },
+   "ghost_events": [
+    [
+     196,
+     1,
+     "accepted"
+    ],
+    [
+     444,
+     1,
+     "accepted"
+    ],
+    [
+     541,
+     1,
+     "accepted"
+    ],
+    [
+     804,
+     1,
+     "accepted"
+    ],
+    [
+     927,
+     1,
+     "accepted"
+    ],
+    [
+     1062,
+     1,
+     "accepted"
+    ],
+    [
+     1303,
+     1,
+     "accepted"
+    ],
+    [
+     1343,
+     1,
+     "accepted"
+    ],
+    [
+     1765,
+     1,
+     "accepted"
+    ],
+    [
+     1987,
+     1,
+     "accepted"
+    ],
+    [
+     2291,
+     1,
+     "accepted"
+    ],
+    [
+     2362,
+     1,
+     "accepted"
+    ],
+    [
+     2526,
+     1,
+     "accepted"
+    ],
+    [
+     2578,
+     1,
+     "accepted"
+    ],
+    [
+     2641,
+     1,
+     "accepted"
+    ],
+    [
+     2691,
+     1,
+     "accepted"
+    ],
+    [
+     2893,
+     1,
+     "accepted"
+    ],
+    [
+     2961,
+     1,
+     "accepted"
+    ],
+    [
+     3086,
+     1,
+     "accepted"
+    ],
+    [
+     3114,
+     1,
+     "accepted"
+    ],
+    [
+     3171,
+     1,
+     "accepted"
+    ],
+    [
+     3236,
+     1,
+     "accepted"
+    ],
+    [
+     3341,
+     1,
+     "accepted"
+    ],
+    [
+     3451,
+     1,
+     "accepted"
+    ],
+    [
+     3491,
+     1,
+     "accepted"
+    ],
+    [
+     3535,
+     1,
+     "accepted"
+    ],
+    [
+     3591,
+     1,
+     "accepted"
+    ],
+    [
+     3873,
+     1,
+     "accepted"
+    ],
+    [
+     4015,
+     1,
+     "accepted"
+    ],
+    [
+     4091,
+     1,
+     "accepted"
+    ],
+    [
+     4113,
+     1,
+     "accepted"
+    ],
+    [
+     4311,
+     1,
+     "accepted"
+    ],
+    [
+     4338,
+     1,
+     "accepted"
+    ],
+    [
+     4414,
+     0,
+     "native_4"
+    ]
+   ],
+   "our_plays": 27,
+   "our_rejected": 0,
+   "our_reject_reasons": {},
+   "unmapped_entities": 0,
+   "expected_result": "win",
+   "expected_crowns": [
+    0,
+    1
+   ],
+   "wall_s": 3.755,
+   "reset_s": 0.012,
+   "policy_s": 1.06,
+   "deal_s": 0.0,
+   "deal_cache_hit": true
+  },
+  {
+   "tag": "00CYPL2VPYJV",
+   "tick": 1516,
+   "seconds": 75.8,
+   "steps": 143,
+   "terminated": true,
+   "outcome": "loss",
+   "crowns": [
+    1,
+    3
+   ],
+   "reward": -7.382,
+   "state_hash": "287eacb9d4d0f41d",
+   "ghost_ok": 6,
+   "ghost_rejected": 0,
+   "ghost_total": 44,
+   "ghost_undelivered": 38,
+   "ghost_reject_reasons": {},
+   "ghost_events": [
+    [
+     296,
+     1,
+     "accepted"
+    ],
+    [
+     446,
+     1,
+     "accepted"
+    ],
+    [
+     784,
+     1,
+     "accepted"
+    ],
+    [
+     798,
+     1,
+     "accepted"
+    ],
+    [
+     1047,
+     1,
+     "accepted"
+    ],
+    [
+     1172,
+     1,
+     "accepted"
+    ]
+   ],
+   "our_plays": 7,
+   "our_rejected": 0,
+   "our_reject_reasons": {},
+   "unmapped_entities": 0,
+   "expected_result": "win",
+   "expected_crowns": [
+    0,
+    1
+   ],
+   "wall_s": 1.147,
+   "reset_s": 0.013,
+   "policy_s": 0.339,
+   "deal_s": 0.0,
+   "deal_cache_hit": true
+  },
+  {
+   "tag": "00CYPL2VU8J8",
+   "tick": 3681,
+   "seconds": 184.1,
+   "steps": 360,
+   "terminated": true,
+   "outcome": "loss",
+   "crowns": [
+    1,
+    2
+   ],
+   "reward": -4.4305,
+   "state_hash": "4e5c4667733a1c09",
+   "ghost_ok": 19,
+   "ghost_rejected": 1,
+   "ghost_total": 42,
+   "ghost_undelivered": 22,
+   "ghost_reject_reasons": {
+    "native_4": 1
+   },
+   "ghost_events": [
+    [
+     192,
+     1,
+     "accepted"
+    ],
+    [
+     371,
+     1,
+     "accepted"
+    ],
+    [
+     489,
+     1,
+     "accepted"
+    ],
+    [
+     621,
+     1,
+     "accepted"
+    ],
+    [
+     901,
+     1,
+     "accepted"
+    ],
+    [
+     1427,
+     1,
+     "accepted"
+    ],
+    [
+     1545,
+     1,
+     "accepted"
+    ],
+    [
+     1579,
+     1,
+     "accepted"
+    ],
+    [
+     2221,
+     1,
+     "accepted"
+    ],
+    [
+     2451,
+     1,
+     "accepted"
+    ],
+    [
+     2462,
+     1,
+     "accepted"
+    ],
+    [
+     2631,
+     1,
+     "accepted"
+    ],
+    [
+     2711,
+     1,
+     "accepted"
+    ],
+    [
+     2781,
+     1,
+     "accepted"
+    ],
+    [
+     2892,
+     1,
+     "accepted"
+    ],
+    [
+     3032,
+     1,
+     "accepted"
+    ],
+    [
+     3298,
+     1,
+     "accepted"
+    ],
+    [
+     3371,
+     1,
+     "accepted"
+    ],
+    [
+     3473,
+     1,
+     "accepted"
+    ],
+    [
+     3634,
+     0,
+     "native_4"
+    ]
+   ],
+   "our_plays": 27,
+   "our_rejected": 1,
+   "our_reject_reasons": {
+    "native_4": 1
+   },
+   "unmapped_entities": 0,
+   "expected_result": "win",
+   "expected_crowns": [
+    0,
+    1
+   ],
+   "wall_s": 3.363,
+   "reset_s": 0.012,
+   "policy_s": 0.861,
+   "deal_s": 0.0,
+   "deal_cache_hit": true
+  },
+  {
+   "tag": "00CYPL800QU9",
+   "tick": 3047,
+   "seconds": 152.3,
+   "steps": 296,
+   "terminated": true,
+   "outcome": "loss",
+   "crowns": [
+    0,
+    3
+   ],
+   "reward": -9.1173,
+   "state_hash": "dbab4191efeb447a",
+   "ghost_ok": 19,
+   "ghost_rejected": 0,
+   "ghost_total": 54,
+   "ghost_undelivered": 35,
+   "ghost_reject_reasons": {},
+   "ghost_events": [
+    [
+     351,
+     1,
+     "accepted"
+    ],
+    [
+     645,
+     1,
+     "accepted"
+    ],
+    [
+     742,
+     1,
+     "accepted"
+    ],
+    [
+     925,
+     1,
+     "accepted"
+    ],
+    [
+     1118,
+     1,
+     "accepted"
+    ],
+    [
+     1208,
+     1,
+     "accepted"
+    ],
+    [
+     1409,
+     1,
+     "accepted"
+    ],
+    [
+     1426,
+     1,
+     "accepted"
+    ],
+    [
+     1542,
+     1,
+     "accepted"
+    ],
+    [
+     1735,
+     1,
+     "accepted"
+    ],
+    [
+     1904,
+     1,
+     "accepted"
+    ],
+    [
+     2011,
+     1,
+     "accepted"
+    ],
+    [
+     2202,
+     1,
+     "accepted"
+    ],
+    [
+     2517,
+     1,
+     "accepted"
+    ],
+    [
+     2621,
+     1,
+     "accepted"
+    ],
+    [
+     2701,
+     1,
+     "accepted"
+    ],
+    [
+     2855,
+     1,
+     "accepted"
+    ],
+    [
+     2886,
+     1,
+     "accepted"
+    ],
+    [
+     2901,
+     1,
+     "accepted"
+    ]
+   ],
+   "our_plays": 4,
+   "our_rejected": 0,
+   "our_reject_reasons": {},
+   "unmapped_entities": 0,
+   "expected_result": "win",
+   "expected_crowns": [
+    0,
+    1
+   ],
+   "wall_s": 2.477,
+   "reset_s": 0.015,
+   "policy_s": 0.687,
+   "deal_s": 0.0,
+   "deal_cache_hit": true
+  },
+  {
+   "tag": "00GYP9UGJYLQ",
+   "tick": 3681,
+   "seconds": 184.1,
+   "steps": 360,
+   "terminated": true,
+   "outcome": "loss",
+   "crowns": [
+    0,
+    1
+   ],
+   "reward": -4.9302,
+   "state_hash": "d3c6429deeeb4ec9",
+   "ghost_ok": 22,
+   "ghost_rejected": 0,
+   "ghost_total": 22,
+   "ghost_undelivered": 0,
+   "ghost_reject_reasons": {},
+   "ghost_events": [
+    [
+     122,
+     1,
+     "accepted"
+    ],
+    [
+     708,
+     1,
+     "accepted"
+    ],
+    [
+     791,
+     1,
+     "accepted"
+    ],
+    [
+     831,
+     1,
+     "accepted"
+    ],
+    [
+     967,
+     1,
+     "accepted"
+    ],
+    [
+     1427,
+     1,
+     "accepted"
+    ],
+    [
+     1562,
+     1,
+     "accepted"
+    ],
+    [
+     1706,
+     1,
+     "accepted"
+    ],
+    [
+     1913,
+     1,
+     "accepted"
+    ],
+    [
+     2096,
+     1,
+     "accepted"
+    ],
+    [
+     2294,
+     1,
+     "accepted"
+    ],
+    [
+     2422,
+     1,
+     "accepted"
+    ],
+    [
+     2522,
+     1,
+     "accepted"
+    ],
+    [
+     2628,
+     1,
+     "accepted"
+    ],
+    [
+     2684,
+     1,
+     "accepted"
+    ],
+    [
+     2847,
+     1,
+     "accepted"
+    ],
+    [
+     2939,
+     1,
+     "accepted"
+    ],
+    [
+     3026,
+     1,
+     "accepted"
+    ],
+    [
+     3252,
+     1,
+     "accepted"
+    ],
+    [
+     3316,
+     1,
+     "accepted"
+    ],
+    [
+     3445,
+     1,
+     "accepted"
+    ],
+    [
+     3537,
+     1,
+     "accepted"
+    ]
+   ],
+   "our_plays": 19,
+   "our_rejected": 0,
+   "our_reject_reasons": {},
+   "unmapped_entities": 0,
+   "expected_result": "win",
+   "expected_crowns": [
+    0,
+    1
+   ],
+   "wall_s": 2.997,
+   "reset_s": 0.015,
+   "policy_s": 0.863,
+   "deal_s": 0.0,
+   "deal_cache_hit": true
+  },
+  {
+   "tag": "00GYP9VC09QR",
+   "tick": 1986,
+   "seconds": 99.3,
+   "steps": 190,
+   "terminated": true,
+   "outcome": "loss",
+   "crowns": [
+    1,
+    3
+   ],
+   "reward": -7.5514,
+   "state_hash": "33d1b2e5eed64b70",
+   "ghost_ok": 7,
+   "ghost_rejected": 0,
+   "ghost_total": 22,
+   "ghost_undelivered": 15,
+   "ghost_reject_reasons": {},
+   "ghost_events": [
+    [
+     498,
+     1,
+     "accepted"
+    ],
+    [
+     681,
+     1,
+     "accepted"
+    ],
+    [
+     941,
+     1,
+     "accepted"
+    ],
+    [
+     1187,
+     1,
+     "accepted"
+    ],
+    [
+     1421,
+     1,
+     "accepted"
+    ],
+    [
+     1557,
+     1,
+     "accepted"
+    ],
+    [
+     1766,
+     1,
+     "accepted"
+    ]
+   ],
+   "our_plays": 6,
+   "our_rejected": 0,
+   "our_reject_reasons": {},
+   "unmapped_entities": 0,
+   "expected_result": "win",
+   "expected_crowns": [
+    0,
+    1
+   ],
+   "wall_s": 1.6,
+   "reset_s": 0.02,
+   "policy_s": 0.455,
+   "deal_s": 0.0,
+   "deal_cache_hit": true
+  },
+  {
+   "tag": "00GYP9VCRCCL",
+   "tick": 2062,
+   "seconds": 103.1,
+   "steps": 198,
+   "terminated": true,
+   "outcome": "loss",
+   "crowns": [
+    0,
+    3
+   ],
+   "reward": -8.9423,
+   "state_hash": "aa6b7e6938c331e2",
+   "ghost_ok": 9,
+   "ghost_rejected": 1,
+   "ghost_total": 44,
+   "ghost_undelivered": 34,
+   "ghost_reject_reasons": {
+    "native_4": 1
+   },
+   "ghost_events": [
+    [
+     136,
+     1,
+     "accepted"
+    ],
+    [
+     273,
+     1,
+     "accepted"
+    ],
+    [
+     371,
+     1,
+     "accepted"
+    ],
+    [
+     561,
+     1,
+     "accepted"
+    ],
+    [
+     931,
+     1,
+     "accepted"
+    ],
+    [
+     1252,
+     1,
+     "accepted"
+    ],
+    [
+     1373,
+     1,
+     "accepted"
+    ],
+    [
+     1575,
+     1,
+     "accepted"
+    ],
+    [
+     1833,
+     1,
+     "accepted"
+    ],
+    [
+     2032,
+     0,
+     "native_4"
+    ]
+   ],
+   "our_plays": 6,
+   "our_rejected": 0,
+   "our_reject_reasons": {},
+   "unmapped_entities": 0,
+   "expected_result": "win",
+   "expected_crowns": [
+    0,
+    1
+   ],
+   "wall_s": 1.58,
+   "reset_s": 0.013,
+   "policy_s": 0.475,
+   "deal_s": 0.0,
+   "deal_cache_hit": true
+  },
+  {
+   "tag": "00GYP9VVJGRY",
+   "tick": 3681,
+   "seconds": 184.1,
+   "steps": 360,
+   "terminated": true,
+   "outcome": "win",
+   "crowns": [
+    2,
+    1
+   ],
+   "reward": 4.7402,
+   "state_hash": "390a7d4389e2bf12",
+   "ghost_ok": 26,
+   "ghost_rejected": 1,
+   "ghost_total": 55,
+   "ghost_undelivered": 28,
+   "ghost_reject_reasons": {
+    "native_4": 1
+   },
+   "ghost_events": [
+    [
+     124,
+     1,
+     "accepted"
+    ],
+    [
+     371,
+     1,
+     "accepted"
+    ],
+    [
+     472,
+     1,
+     "accepted"
+    ],
+    [
+     602,
+     1,
+     "accepted"
+    ],
+    [
+     811,
+     1,
+     "accepted"
+    ],
+    [
+     873,
+     1,
+     "accepted"
+    ],
+    [
+     954,
+     1,
+     "accepted"
+    ],
+    [
+     1268,
+     1,
+     "accepted"
+    ],
+    [
+     1315,
+     1,
+     "accepted"
+    ],
+    [
+     1377,
+     1,
+     "accepted"
+    ],
+    [
+     1636,
+     1,
+     "accepted"
+    ],
+    [
+     2041,
+     1,
+     "accepted"
+    ],
+    [
+     2196,
+     1,
+     "accepted"
+    ],
+    [
+     2387,
+     1,
+     "accepted"
+    ],
+    [
+     2448,
+     1,
+     "accepted"
+    ],
+    [
+     2487,
+     1,
+     "accepted"
+    ],
+    [
+     2587,
+     1,
+     "accepted"
+    ],
+    [
+     2824,
+     1,
+     "accepted"
+    ],
+    [
+     2881,
+     1,
+     "accepted"
+    ],
+    [
+     3001,
+     1,
+     "accepted"
+    ],
+    [
+     3085,
+     1,
+     "accepted"
+    ],
+    [
+     3187,
+     1,
+     "accepted"
+    ],
+    [
+     3253,
+     1,
+     "accepted"
+    ],
+    [
+     3371,
+     1,
+     "accepted"
+    ],
+    [
+     3431,
+     1,
+     "accepted"
+    ],
+    [
+     3561,
+     1,
+     "accepted"
+    ],
+    [
+     3667,
+     0,
+     "native_4"
+    ]
+   ],
+   "our_plays": 19,
+   "our_rejected": 0,
+   "our_reject_reasons": {},
+   "unmapped_entities": 0,
+   "expected_result": "win",
+   "expected_crowns": [
+    0,
+    1
+   ],
+   "wall_s": 3.267,
+   "reset_s": 0.015,
+   "policy_s": 0.93,
+   "deal_s": 0.0,
+   "deal_cache_hit": true
+  },
+  {
+   "tag": "00GYP9VVV9PR",
+   "tick": 3990,
+   "seconds": 199.5,
+   "steps": 391,
+   "terminated": true,
+   "outcome": "loss",
+   "crowns": [
+    1,
+    3
+   ],
+   "reward": -7.5806,
+   "state_hash": "1241c9580fc9c0ca",
+   "ghost_ok": 23,
+   "ghost_rejected": 0,
+   "ghost_total": 35,
+   "ghost_undelivered": 12,
+   "ghost_reject_reasons": {},
+   "ghost_events": [
+    [
+     451,
+     1,
+     "accepted"
+    ],
+    [
+     724,
+     1,
+     "accepted"
+    ],
+    [
+     964,
+     1,
+     "accepted"
+    ],
+    [
+     973,
+     1,
+     "accepted"
+    ],
+    [
+     1571,
+     1,
+     "accepted"
+    ],
+    [
+     1633,
+     1,
+     "accepted"
+    ],
+    [
+     1753,
+     1,
+     "accepted"
+    ],
+    [
+     1838,
+     1,
+     "accepted"
+    ],
+    [
+     2274,
+     1,
+     "accepted"
+    ],
+    [
+     2278,
+     1,
+     "accepted"
+    ],
+    [
+     2532,
+     1,
+     "accepted"
+    ],
+    [
+     2601,
+     1,
+     "accepted"
+    ],
+    [
+     2634,
+     1,
+     "accepted"
+    ],
+    [
+     2774,
+     1,
+     "accepted"
+    ],
+    [
+     2937,
+     1,
+     "accepted"
+    ],
+    [
+     3178,
+     1,
+     "accepted"
+    ],
+    [
+     3251,
+     1,
+     "accepted"
+    ],
+    [
+     3357,
+     1,
+     "accepted"
+    ],
+    [
+     3549,
+     1,
+     "accepted"
+    ],
+    [
+     3595,
+     1,
+     "accepted"
+    ],
+    [
+     3609,
+     1,
+     "accepted"
+    ],
+    [
+     3721,
+     1,
+     "accepted"
+    ],
+    [
+     3877,
+     1,
+     "accepted"
+    ]
+   ],
+   "our_plays": 19,
+   "our_rejected": 0,
+   "our_reject_reasons": {},
+   "unmapped_entities": 0,
+   "expected_result": "win",
+   "expected_crowns": [
+    0,
+    1
+   ],
+   "wall_s": 3.585,
+   "reset_s": 0.02,
+   "policy_s": 1.004,
+   "deal_s": 0.0,
+   "deal_cache_hit": true
+  },
+  {
+   "tag": "00GYPPUUY9YR",
+   "tick": 2796,
+   "seconds": 139.8,
+   "steps": 271,
+   "terminated": true,
+   "outcome": "loss",
+   "crowns": [
+    0,
+    3
+   ],
+   "reward": -9.1173,
+   "state_hash": "4686bd185eb71844",
+   "ghost_ok": 13,
+   "ghost_rejected": 1,
+   "ghost_total": 38,
+   "ghost_undelivered": 24,
+   "ghost_reject_reasons": {
+    "native_4": 1
+   },
+   "ghost_events": [
+    [
+     321,
+     1,
+     "accepted"
+    ],
+    [
+     854,
+     1,
+     "accepted"
+    ],
+    [
+     1017,
+     1,
+     "accepted"
+    ],
+    [
+     1102,
+     1,
+     "accepted"
+    ],
+    [
+     1271,
+     1,
+     "accepted"
+    ],
+    [
+     1401,
+     1,
+     "accepted"
+    ],
+    [
+     1664,
+     1,
+     "accepted"
+    ],
+    [
+     1968,
+     1,
+     "accepted"
+    ],
+    [
+     2031,
+     1,
+     "accepted"
+    ],
+    [
+     2261,
+     1,
+     "accepted"
+    ],
+    [
+     2481,
+     1,
+     "accepted"
+    ],
+    [
+     2556,
+     1,
+     "accepted"
+    ],
+    [
+     2703,
+     1,
+     "accepted"
+    ],
+    [
+     2763,
+     0,
+     "native_4"
+    ]
+   ],
+   "our_plays": 7,
+   "our_rejected": 0,
+   "our_reject_reasons": {},
+   "unmapped_entities": 0,
+   "expected_result": "loss",
+   "expected_crowns": [
+    1,
+    0
+   ],
+   "wall_s": 2.386,
+   "reset_s": 0.013,
+   "policy_s": 0.66,
+   "deal_s": 0.0,
+   "deal_cache_hit": true
+  },
+  {
+   "tag": "00GYPYCGR2QR",
+   "tick": 6137,
+   "seconds": 306.9,
+   "steps": 605,
+   "terminated": true,
+   "outcome": "loss",
+   "crowns": [
+    1,
+    3
+   ],
+   "reward": -4.8765,
+   "state_hash": "d001beb76e77b9ba",
+   "ghost_ok": 21,
+   "ghost_rejected": 0,
+   "ghost_total": 21,
+   "ghost_undelivered": 0,
+   "ghost_reject_reasons": {},
+   "ghost_events": [
+    [
+     285,
+     1,
+     "accepted"
+    ],
+    [
+     447,
+     1,
+     "accepted"
+    ],
+    [
+     718,
+     1,
+     "accepted"
+    ],
+    [
+     868,
+     1,
+     "accepted"
+    ],
+    [
+     1248,
+     1,
+     "accepted"
+    ],
+    [
+     1361,
+     1,
+     "accepted"
+    ],
+    [
+     1539,
+     1,
+     "accepted"
+    ],
+    [
+     1841,
+     1,
+     "accepted"
+    ],
+    [
+     1989,
+     1,
+     "accepted"
+    ],
+    [
+     2343,
+     1,
+     "accepted"
+    ],
+    [
+     2429,
+     1,
+     "accepted"
+    ],
+    [
+     2525,
+     1,
+     "accepted"
+    ],
+    [
+     2647,
+     1,
+     "accepted"
+    ],
+    [
+     2758,
+     1,
+     "accepted"
+    ],
+    [
+     2941,
+     1,
+     "accepted"
+    ],
+    [
+     2996,
+     1,
+     "accepted"
+    ],
+    [
+     3151,
+     1,
+     "accepted"
+    ],
+    [
+     3307,
+     1,
+     "accepted"
+    ],
+    [
+     3386,
+     1,
+     "accepted"
+    ],
+    [
+     3419,
+     1,
+     "accepted"
+    ],
+    [
+     3576,
+     1,
+     "accepted"
+    ]
+   ],
+   "our_plays": 24,
+   "our_rejected": 0,
+   "our_reject_reasons": {},
+   "unmapped_entities": 0,
+   "expected_result": "loss",
+   "expected_crowns": [
+    1,
+    0
+   ],
+   "wall_s": 4.912,
+   "reset_s": 0.023,
+   "policy_s": 1.453,
+   "deal_s": 0.007,
+   "deal_cache_hit": false
+  },
+  {
+   "tag": "00GYPYCQRVPC",
+   "tick": 3205,
+   "seconds": 160.2,
+   "steps": 312,
+   "terminated": true,
+   "outcome": "loss",
+   "crowns": [
+    1,
+    3
+   ],
+   "reward": -7.5806,
+   "state_hash": "dababc3553ff9457",
+   "ghost_ok": 17,
+   "ghost_rejected": 1,
+   "ghost_total": 41,
+   "ghost_undelivered": 23,
+   "ghost_reject_reasons": {
+    "native_4": 1
+   },
+   "ghost_events": [
+    [
+     213,
+     1,
+     "accepted"
+    ],
+    [
+     377,
+     1,
+     "accepted"
+    ],
+    [
+     441,
+     1,
+     "accepted"
+    ],
+    [
+     627,
+     1,
+     "accepted"
+    ],
+    [
+     1074,
+     1,
+     "accepted"
+    ],
+    [
+     1358,
+     1,
+     "accepted"
+    ],
+    [
+     1622,
+     1,
+     "accepted"
+    ],
+    [
+     1718,
+     1,
+     "accepted"
+    ],
+    [
+     1831,
+     1,
+     "accepted"
+    ],
+    [
+     1961,
+     1,
+     "accepted"
+    ],
+    [
+     2401,
+     1,
+     "accepted"
+    ],
+    [
+     2525,
+     1,
+     "accepted"
+    ],
+    [
+     2647,
+     1,
+     "accepted"
+    ],
+    [
+     2751,
+     1,
+     "accepted"
+    ],
+    [
+     2791,
+     1,
+     "accepted"
+    ],
+    [
+     2901,
+     1,
+     "accepted"
+    ],
+    [
+     3037,
+     1,
+     "accepted"
+    ],
+    [
+     3194,
+     0,
+     "native_4"
+    ]
+   ],
+   "our_plays": 14,
+   "our_rejected": 0,
+   "our_reject_reasons": {},
+   "unmapped_entities": 0,
+   "expected_result": "win",
+   "expected_crowns": [
+    0,
+    1
+   ],
+   "wall_s": 3.215,
+   "reset_s": 0.023,
+   "policy_s": 0.806,
+   "deal_s": 0.01,
+   "deal_cache_hit": false
+  }
+ ]
+}

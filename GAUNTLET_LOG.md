@@ -1204,3 +1204,12 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Collision: env agent's 202-row pool overwritten at pool.jsonl -> env builder moved to pool_env_v0.jsonl. Trap: disjoint OUTPUT paths per agent.
 - Owner ask: sim_view debugger -> engine. Yes, one renderer two feeds; radii/P1/term readout carry over via the L61 adapter; agent dispatched (L62/engine_view).
 - Outlook: env agent still running (s/match, rejection-vs-time, determinism); then PPO-on-engine + KL control pair. Supply probe for trophy-road players is now mandatory before any "10k replays" promise.
+
+## L62c -- 2026-09-05 17:5x UTC -- EngineMatchEnv v0 built and measured
+- SimMatchEnv-interface env on the real engine; obs = L61 adapter; ghost = recorded human commands; unshaped engine-only reward.
+- (a) inverse cell<->(x,y) exact 9,368/9,368; determinism 3/3; 1,159 matches/h one slot, 1,847/h two slots (BC policy in loop, CPU; cuda not faster).
+- (c) RETRACTED the "rejection rate = divergence" diagnostic: all rejections are the end-of-battle gate; 0 game-state refusals in 799. Ghosts go STALE and RUN OUT: 50% of ghost commands never fire.
+- Engine rule: no deploys before tick 90 (4.5 s countdown); episodes start at tick 90.
+- Sanity 40 matches greedy BC: 4W/36L, 168.6 s mean; humans went 26W/14L on the same battles. Baseline.
+- Limits: fixed seed 424242, levels 11, no ghost reaction, PPO-on-unshaped-reward untested.
+- Next: standalone engine PPO driver; pair control vs KL-to-prior, one slot each, same init/seed; grade by pro agreement.

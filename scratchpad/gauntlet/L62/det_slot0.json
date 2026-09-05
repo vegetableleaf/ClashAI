@@ -1,0 +1,115 @@
+{
+ "tag": "000YLY0JCPGL",
+ "repeats": 3,
+ "hashes": [
+  "08633a4e3495b521"
+ ],
+ "deterministic": true,
+ "rewards": [
+  -4.5927
+ ],
+ "ticks": [
+  6144
+ ],
+ "runs": [
+  {
+   "tag": "000YLY0JCPGL",
+   "tick": 6144,
+   "seconds": 307.2,
+   "steps": 606,
+   "terminated": true,
+   "outcome": "loss",
+   "crowns": [
+    1,
+    2
+   ],
+   "reward": -4.5927,
+   "state_hash": "08633a4e3495b521",
+   "ghost_ok": 57,
+   "ghost_rejected": 0,
+   "ghost_total": 57,
+   "ghost_undelivered": 0,
+   "ghost_reject_reasons": {},
+   "our_plays": 49,
+   "our_rejected": 0,
+   "our_reject_reasons": {},
+   "unmapped_entities": 0,
+   "expected_result": "win",
+   "expected_crowns": [
+    0,
+    1
+   ],
+   "wall_s": 5.77,
+   "reset_s": 0.028,
+   "policy_s": 1.544,
+   "deal_s": 0.0,
+   "deal_cache_hit": true
+  },
+  {
+   "tag": "000YLY0JCPGL",
+   "tick": 6144,
+   "seconds": 307.2,
+   "steps": 606,
+   "terminated": true,
+   "outcome": "loss",
+   "crowns": [
+    1,
+    2
+   ],
+   "reward": -4.5927,
+   "state_hash": "08633a4e3495b521",
+   "ghost_ok": 57,
+   "ghost_rejected": 0,
+   "ghost_total": 57,
+   "ghost_undelivered": 0,
+   "ghost_reject_reasons": {},
+   "our_plays": 49,
+   "our_rejected": 0,
+   "our_reject_reasons": {},
+   "unmapped_entities": 0,
+   "expected_result": "win",
+   "expected_crowns": [
+    0,
+    1
+   ],
+   "wall_s": 5.5,
+   "reset_s": 0.011,
+   "policy_s": 1.461,
+   "deal_s": 0.0,
+   "deal_cache_hit": true
+  },
+  {
+   "tag": "000YLY0JCPGL",
+   "tick": 6144,
+   "seconds": 307.2,
+   "steps": 606,
+   "terminated": true,
+   "outcome": "loss",
+   "crowns": [
+    1,
+    2
+   ],
+   "reward": -4.5927,
+   "state_hash": "08633a4e3495b521",
+   "ghost_ok": 57,
+   "ghost_rejected": 0,
+   "ghost_total": 57,
+   "ghost_undelivered": 0,
+   "ghost_reject_reasons": {},
+   "our_plays": 49,
+   "our_rejected": 0,
+   "our_reject_reasons": {},
+   "unmapped_entities": 0,
+   "expected_result": "win",
+   "expected_crowns": [
+    0,
+    1
+   ],
+   "wall_s": 7.006,
+   "reset_s": 0.012,
+   "policy_s": 1.739,
+   "deal_s": 0.0,
+   "deal_cache_hit": true
+  }
+ ]
+}

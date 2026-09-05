@@ -1,0 +1,136 @@
+{
+ "n_plays": 9368,
+ "roundtrip_err_tiles": {
+  "mean": 0.3814,
+  "median": 0.5,
+  "p90": 0.501,
+  "max": 0.8336
+ },
+ "inverse_is_exact": {
+  "cell_recovered": 9368,
+  "of": 9368,
+  "max_residual_tiles": 0.000333
+ },
+ "examples": [
+  {
+   "tag": "000YLY0JCPGL",
+   "card": "skeletons",
+   "engine_xy": [
+    8499,
+    31499
+   ],
+   "cell": 423,
+   "back_xy": [
+    8500,
+    31333
+   ],
+   "err_tiles": 0.166,
+   "snap_tiles": 0.1657
+  },
+  {
+   "tag": "000YLY0JCPGL",
+   "card": "the-log",
+   "engine_xy": [
+    5500,
+    17500
+   ],
+   "cell": 246,
+   "back_xy": [
+    5500,
+    18000
+   ],
+   "err_tiles": 0.5,
+   "snap_tiles": 0.5
+  },
+  {
+   "tag": "000YLY0JCPGL",
+   "card": "tesla",
+   "engine_xy": [
+    9000,
+    21000
+   ],
+   "cell": 278,
+   "back_xy": [
+    9500,
+    20667
+   ],
+   "err_tiles": 0.6007,
+   "snap_tiles": 0.6009
+  },
+  {
+   "tag": "000YLY0JCPGL",
+   "card": "rocket",
+   "engine_xy": [
+    2500,
+    8500
+   ],
+   "cell": 123,
+   "back_xy": [
+    2500,
+    8667
+   ],
+   "err_tiles": 0.167,
+   "snap_tiles": 0.1667
+  },
+  {
+   "tag": "000YLY0JCPGL",
+   "card": "knight",
+   "engine_xy": [
+    3499,
+    21499
+   ],
+   "cell": 302,
+   "back_xy": [
+    3500,
+    22000
+   ],
+   "err_tiles": 0.501,
+   "snap_tiles": 0.501
+  },
+  {
+   "tag": "000YLY0JCPGL",
+   "card": "ice-wizard",
+   "engine_xy": [
+    3500,
+    27500
+   ],
+   "cell": 374,
+   "back_xy": [
+    3500,
+    27333
+   ],
+   "err_tiles": 0.167,
+   "snap_tiles": 0.1667
+  },
+  {
+   "tag": "000YLY0JCPGL",
+   "card": "skeletons",
+   "engine_xy": [
+    8499,
+    31499
+   ],
+   "cell": 423,
+   "back_xy": [
+    8500,
+    31333
+   ],
+   "err_tiles": 0.166,
+   "snap_tiles": 0.1657
+  },
+  {
+   "tag": "000YLY0JCPGL",
+   "card": "the-log",
+   "engine_xy": [
+    3500,
+    21500
+   ],
+   "cell": 302,
+   "back_xy": [
+    3500,
+    22000
+   ],
+   "err_tiles": 0.5,
+   "snap_tiles": 0.5
+  }
+ ]
+}
