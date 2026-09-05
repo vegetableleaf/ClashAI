@@ -1271,3 +1271,12 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Under SAMPLE (sim, 16 m, seed 4242): init 36.6 plays/match, engB control m250 17.2, engB KL m250 24.5 (were 0.1 / 1.5 under tau 0.25). Only rocket never played (was 9 of 10 cards). Sampled p(play) lower (0.12 vs 0.19) because the policy spends -- gate is elixir-conditioned.
 - Visualizer agent restarted from disk, finished: artifact https://claude.ai/code/artifact/3aca72fa-8f09-40e9-9d59-65c0dc2e03d2 (3.74 MB, 5,268 frames, 527 decisions, radii/fire ring/P1 band/terms/gate/ghosts); live_view.md §1-6 STATUS complete. (c) sim_view HUD says 3x from 180 s; engine says 240 s (display-only).
 - Next: m500 grade under SAMPLE (threshold column kept for comparison to §5cs.49).
+
+## L62l -- 2026-09-05 21:2x-21:5x UTC -- engB KILLED; engine-PPO closed; HANDOFF split (HANDOFF §5cs.51)
+- m500 grade: control 6.87/22.21 (rails frac>8 0.262, p99 18.0 -> 31.25 in the train log at m602) -- degenerating and accelerating. KL 15.64/45.12 v1, 14.03/42.69 v2 -- flat vs init 15.44/46.61 across m0/m250/m500.
+- VERDICT: 4 arms, ~1,500 engine matches, the unshaped engine reward has produced NO measured gain in pro agreement. The leash defends the init; nothing improves it.
+- Owner live-play report tested: "hasn't changed" (a) TRUE + expected; "sloppy/wastes cards" (a) expected at 15.6% top-1; "throwing on purpose" (c) contradicted, no mechanism. Caveats (b): live obs comes from the screen detector, and play.py still uses the tau-0.25 rule. UNRESOLVED: which checkpoint file was loaded.
+- KILL (owner ruling): taskkill shims 40540/72932 + children 56708/71976, 45856/46364. python 7 -> 3, guarded survivors alive (29444/53824 crawler, 63608 uvicorn), qemu 54304 UP with both slots FREE, free RAM 2.4 -> 5.0 GB.
+- NEW TRAP: `_latest.pt` is written only at save_every crossings -- engB_*_latest are byte-identical to m500/m502 and the weights from m500->m609 are gone.
+- HANDOFF.md 12,879 -> 2,325 lines (1.1 MB -> 269 KB), LOSSLESS: old §3 run state, the §5a..§5cs.42 narrative and 270 lines of stale header stack moved verbatim to HANDOFF_ARCHIVE.md (10,800 lines) with a 150-entry index; new compact header + §6 top-of-queue block. Backup scratchpad/gauntlet/L62/HANDOFF_prespllit_backup.md.
+- Next: awaiting the owner's new gauntlet; box idle.
