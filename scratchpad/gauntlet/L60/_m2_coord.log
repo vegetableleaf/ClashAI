@@ -1,0 +1,67 @@
+[rescale] p99 62.19 -> cell_conv.4 / 10.36
+rescaled baseline rescaled_baseline: n 1004 top1 3.49 top5 11.75 | cards skeletons:3.9/10.0(180) ice_wizard:3.1/5.7(159) the_log:11.9/41.3(143) knight:3.2/8.7(126) tesla:1.0/2.9(105) x_bow:0.0/0.0(91) tornado:0.0/9.7(72) rocket:0.0/9.4(53) | time 0-60:4.7/13.2(257) 60-120:3.3/12.8(242) 120-180:2.9/9.6(376) 180+:3.1/13.2(129)
+ep 0 val top1 3.49 top5 11.75 ce 5.218 H 4.57
+[check] epoch 0 == rescaled baseline (zero-init coordinate weights)
+ep 1 train_ce 4.754 val top1 8.47 top5 21.02 ce 4.598 H 4.59
+ep 2 train_ce 4.582 val top1 8.47 top5 22.31 ce 4.515 H 4.49
+ep 3 train_ce 4.496 val top1 8.96 top5 22.61 ce 4.453 H 4.41
+ep 4 train_ce 4.441 val top1 8.57 top5 22.51 ce 4.404 H 4.39
+ep 5 train_ce 4.407 val top1 7.57 top5 23.21 ce 4.389 H 4.35
+ep 6 train_ce 4.382 val top1 7.47 top5 23.41 ce 4.374 H 4.32
+ep 7 train_ce 4.358 val top1 8.76 top5 24.10 ce 4.325 H 4.27
+ep 8 train_ce 4.340 val top1 7.87 top5 23.01 ce 4.338 H 4.30
+ep 9 train_ce 4.329 val top1 7.67 top5 23.80 ce 4.320 H 4.41
+ep 10 train_ce 4.311 val top1 7.97 top5 25.20 ce 4.304 H 4.28
+ep 11 train_ce 4.296 val top1 8.07 top5 23.61 ce 4.294 H 4.18
+ep 12 train_ce 4.282 val top1 9.26 top5 24.50 ce 4.281 H 4.20
+ep 13 train_ce 4.274 val top1 7.87 top5 23.71 ce 4.292 H 4.32
+ep 14 train_ce 4.266 val top1 7.97 top5 24.10 ce 4.275 H 4.20
+ep 15 train_ce 4.246 val top1 8.17 top5 23.80 ce 4.270 H 4.16
+ep 16 train_ce 4.242 val top1 8.57 top5 24.40 ce 4.240 H 4.24
+ep 17 train_ce 4.222 val top1 8.07 top5 24.60 ce 4.251 H 4.17
+ep 18 train_ce 4.219 val top1 8.07 top5 24.50 ce 4.243 H 4.24
+ep 19 train_ce 4.201 val top1 7.67 top5 23.90 ce 4.238 H 4.20
+ep 20 train_ce 4.195 val top1 8.67 top5 24.10 ce 4.222 H 4.15
+ep 21 train_ce 4.184 val top1 7.77 top5 24.30 ce 4.222 H 4.18
+ep 22 train_ce 4.174 val top1 8.76 top5 24.50 ce 4.217 H 4.17
+ep 23 train_ce 4.168 val top1 8.76 top5 24.30 ce 4.214 H 4.17
+ep 24 train_ce 4.155 val top1 7.87 top5 23.31 ce 4.233 H 4.18
+ep 25 train_ce 4.156 val top1 8.07 top5 23.71 ce 4.212 H 4.16
+ep 26 train_ce 4.139 val top1 8.67 top5 25.10 ce 4.198 H 4.15
+ep 27 train_ce 4.129 val top1 8.27 top5 24.70 ce 4.206 H 4.18
+ep 28 train_ce 4.120 val top1 8.67 top5 25.30 ce 4.193 H 4.11
+ep 29 train_ce 4.113 val top1 9.36 top5 24.50 ce 4.190 H 4.14
+ep 30 train_ce 4.105 val top1 9.46 top5 25.40 ce 4.185 H 4.18
+ep 31 train_ce 4.101 val top1 8.27 top5 25.40 ce 4.180 H 4.12
+ep 32 train_ce 4.087 val top1 8.67 top5 25.30 ce 4.176 H 4.19
+ep 33 train_ce 4.078 val top1 8.76 top5 25.90 ce 4.188 H 4.05
+ep 34 train_ce 4.072 val top1 8.76 top5 26.29 ce 4.176 H 4.09
+ep 35 train_ce 4.065 val top1 8.57 top5 26.69 ce 4.164 H 4.12
+ep 36 train_ce 4.064 val top1 9.16 top5 26.29 ce 4.172 H 4.09
+ep 37 train_ce 4.053 val top1 7.87 top5 26.49 ce 4.170 H 3.97
+ep 38 train_ce 4.050 val top1 8.96 top5 25.50 ce 4.169 H 4.00
+ep 39 train_ce 4.036 val top1 9.36 top5 26.99 ce 4.165 H 3.96
+ep 40 train_ce 4.040 val top1 9.36 top5 26.69 ce 4.161 H 4.14
+ep 41 train_ce 4.025 val top1 8.96 top5 26.29 ce 4.156 H 4.07
+ep 42 train_ce 4.019 val top1 8.76 top5 26.20 ce 4.160 H 4.07
+ep 43 train_ce 4.008 val top1 9.06 top5 26.89 ce 4.144 H 4.11
+ep 44 train_ce 4.004 val top1 8.37 top5 26.39 ce 4.145 H 4.04
+ep 45 train_ce 3.995 val top1 8.17 top5 26.69 ce 4.154 H 4.10
+ep 46 train_ce 3.988 val top1 9.36 top5 26.99 ce 4.150 H 4.12
+ep 47 train_ce 3.987 val top1 8.96 top5 26.49 ce 4.156 H 4.01
+ep 48 train_ce 3.977 val top1 9.16 top5 26.99 ce 4.140 H 3.93
+ep 49 train_ce 3.970 val top1 9.76 top5 26.69 ce 4.129 H 4.05
+ep 50 train_ce 3.964 val top1 9.56 top5 26.29 ce 4.143 H 3.94
+ep 51 train_ce 3.960 val top1 8.57 top5 26.00 ce 4.165 H 4.05
+ep 52 train_ce 3.959 val top1 9.36 top5 26.59 ce 4.128 H 4.08
+ep 53 train_ce 3.944 val top1 9.66 top5 26.59 ce 4.133 H 4.07
+ep 54 train_ce 3.941 val top1 8.96 top5 27.59 ce 4.130 H 3.97
+ep 55 train_ce 3.930 val top1 8.96 top5 27.29 ce 4.133 H 4.04
+ep 56 train_ce 3.931 val top1 9.26 top5 27.89 ce 4.125 H 4.05
+ep 57 train_ce 3.921 val top1 9.16 top5 27.69 ce 4.119 H 3.90
+ep 58 train_ce 3.916 val top1 9.76 top5 28.29 ce 4.115 H 3.98
+ep 59 train_ce 3.912 val top1 9.86 top5 28.09 ce 4.118 H 4.02
+ep 60 train_ce 3.905 val top1 9.56 top5 27.29 ce 4.123 H 3.98
+BEST M2_coord_best: n 1004 top1 9.76 top5 28.29 | cards skeletons:5.0/28.3(180) ice_wizard:18.2/36.5(159) the_log:18.2/44.8(143) knight:16.7/37.3(126) tesla:7.6/22.9(105) x_bow:0.0/12.1(91) tornado:1.4/8.3(72) rocket:0.0/9.4(53) | time 0-60:16.3/37.4(257) 60-120:9.9/28.5(242) 120-180:6.1/23.4(376) 180+:7.0/24.0(129) ce 4.114842891693115 entropy 3.975132465362549
+saved+reloaded (via wrapper) C:\Users\benpe\ClashBot\icebow\data\bc_pro\models\bc_head_coord_s0.pt top1 9.760956175298805
+done 30s

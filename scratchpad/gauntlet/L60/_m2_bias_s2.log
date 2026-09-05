@@ -1,0 +1,41 @@
+[rescale] p99 62.19 -> cell_conv.4 / 10.36
+rescaled baseline rescaled_baseline: n 1004 top1 3.49 top5 11.75 | cards skeletons:3.9/10.0(180) ice_wizard:3.1/5.7(159) the_log:11.9/41.3(143) knight:3.2/8.7(126) tesla:1.0/2.9(105) x_bow:0.0/0.0(91) tornado:0.0/9.7(72) rocket:0.0/9.4(53) | time 0-60:4.7/13.2(257) 60-120:3.3/12.8(242) 120-180:2.9/9.6(376) 180+:3.1/13.2(129)
+log_prior_alone: n 1004 top1 13.65 top5 40.04 | cards skeletons:10.0/25.6(180) ice_wizard:11.9/32.1(159) the_log:15.4/48.3(143) knight:7.9/35.7(126) tesla:22.9/64.8(105) x_bow:29.7/80.2(91) tornado:8.3/22.2(72) rocket:3.8/17.0(53) | time 0-60:15.6/47.9(257) 60-120:14.0/40.5(242) 120-180:13.8/37.8(376) 180+:8.5/30.2(129)
+ep 0 val top1 9.16 top5 32.47 ce 4.243 H 3.61
+ep 1 train_ce 3.752 val top1 15.24 top5 41.14 ce 3.772 H 3.99
+ep 2 train_ce 3.657 val top1 15.44 top5 41.43 ce 3.739 H 3.86
+ep 3 train_ce 3.619 val top1 15.14 top5 41.83 ce 3.690 H 3.89
+ep 4 train_ce 3.578 val top1 15.14 top5 42.13 ce 3.666 H 3.87
+ep 5 train_ce 3.546 val top1 15.24 top5 43.13 ce 3.638 H 3.82
+ep 6 train_ce 3.526 val top1 15.34 top5 42.53 ce 3.629 H 3.89
+ep 7 train_ce 3.512 val top1 15.34 top5 41.33 ce 3.614 H 3.77
+ep 8 train_ce 3.494 val top1 15.44 top5 43.13 ce 3.610 H 3.85
+ep 9 train_ce 3.481 val top1 14.74 top5 41.63 ce 3.609 H 3.72
+ep 10 train_ce 3.470 val top1 14.84 top5 43.33 ce 3.605 H 3.66
+ep 11 train_ce 3.458 val top1 15.34 top5 43.73 ce 3.595 H 3.74
+ep 12 train_ce 3.447 val top1 15.14 top5 43.33 ce 3.597 H 3.78
+ep 13 train_ce 3.442 val top1 14.24 top5 43.73 ce 3.584 H 3.66
+ep 14 train_ce 3.432 val top1 15.04 top5 44.52 ce 3.572 H 3.69
+ep 15 train_ce 3.417 val top1 14.84 top5 43.63 ce 3.576 H 3.65
+ep 16 train_ce 3.411 val top1 14.24 top5 44.52 ce 3.566 H 3.71
+ep 17 train_ce 3.400 val top1 14.34 top5 45.02 ce 3.560 H 3.62
+ep 18 train_ce 3.386 val top1 14.24 top5 44.72 ce 3.560 H 3.63
+ep 19 train_ce 3.382 val top1 14.74 top5 45.22 ce 3.553 H 3.62
+ep 20 train_ce 3.369 val top1 15.24 top5 45.32 ce 3.546 H 3.64
+ep 21 train_ce 3.364 val top1 15.34 top5 44.72 ce 3.563 H 3.65
+ep 22 train_ce 3.355 val top1 15.54 top5 44.82 ce 3.561 H 3.59
+ep 23 train_ce 3.350 val top1 15.94 top5 45.62 ce 3.545 H 3.57
+ep 24 train_ce 3.339 val top1 15.14 top5 46.51 ce 3.531 H 3.59
+ep 25 train_ce 3.333 val top1 15.04 top5 45.32 ce 3.540 H 3.57
+ep 26 train_ce 3.329 val top1 15.94 top5 45.82 ce 3.534 H 3.58
+ep 27 train_ce 3.318 val top1 16.14 top5 45.52 ce 3.545 H 3.49
+ep 28 train_ce 3.315 val top1 15.54 top5 46.02 ce 3.539 H 3.51
+ep 29 train_ce 3.307 val top1 15.14 top5 46.31 ce 3.541 H 3.49
+ep 30 train_ce 3.304 val top1 15.64 top5 46.61 ce 3.533 H 3.48
+ep 31 train_ce 3.299 val top1 16.24 top5 46.12 ce 3.535 H 3.51
+ep 32 train_ce 3.298 val top1 15.64 top5 46.02 ce 3.533 H 3.49
+early stop at ep 32, best ep 24 val_ce 3.531
+BEST M2_bias_best: n 1004 top1 15.14 top5 46.51 | cards skeletons:10.6/35.6(180) ice_wizard:11.3/40.3(159) the_log:24.5/58.7(143) knight:11.1/46.0(126) tesla:22.9/64.8(105) x_bow:26.4/76.9(91) tornado:5.6/23.6(72) rocket:11.3/28.3(53) | time 0-60:19.1/55.3(257) 60-120:14.0/47.5(242) 120-180:15.2/42.6(376) 180+:9.3/38.8(129) ce 3.530963659286499 entropy 3.5883982181549072
+strict-loadable convs WITHOUT the bias map: strict_part_without_bias_map: n 1004 top1 5.88 top5 19.42 | cards skeletons:5.0/16.1(180) ice_wizard:10.1/20.8(159) the_log:7.7/39.9(143) knight:11.9/30.2(126) tesla:4.8/8.6(105) x_bow:1.1/7.7(91) tornado:0.0/2.8(72) rocket:1.9/15.1(53) | time 0-60:10.9/27.6(257) 60-120:4.1/16.1(242) 120-180:4.3/18.4(376) 180+:3.9/12.4(129)
+saved+reloaded (via wrapper) C:\Users\benpe\ClashBot\icebow\data\bc_pro\models\bc_head_bias_s2.pt top1 15.139442231075698
+done 15s
