@@ -1,0 +1,32 @@
+# Part 3 -- linear probe: n=6264 steps with exactly one enemy troop on our half, d=328 trunk features, 83 classes, 72 matches
+split by match: train 4979 steps / 58 matches, test 1285 steps / 14 matches
+class counts (top 12): [(np.str_('knight'), 390), (np.str_('hog_rider'), 381), (np.str_('giant'), 292), (np.str_('ice_golem'), 284), (np.str_('inferno_dragon'), 240), (np.str_('valkyrie'), 220), (np.str_('mighty_miner'), 203), (np.str_('berserker'), 194), (np.str_('golden_knight'), 177), (np.str_('lava_hound'), 166), (np.str_('mini_pekka'), 160), (np.str_('executioner'), 158)]
+roles: [(np.str_('win_condition'), 1535), (np.str_('untagged'), 1348), (np.str_('tank'), 879), (np.str_('troop'), 751), (np.str_('air'), 626), (np.str_('splash'), 610), (np.str_('building_targeting'), 342), (np.str_('swarm'), 173)]
+ridge lam=1: card acc train 0.523 test 0.120 (n_test=1285); role-of-predicted-card acc test 0.306
+ridge lam=10: card acc train 0.516 test 0.123 (n_test=1285); role-of-predicted-card acc test 0.311
+ridge lam=100: card acc train 0.487 test 0.111 (n_test=1285); role-of-predicted-card acc test 0.305
+baseline majority card ('knight'): test acc 0.063
+baseline role-oracle (most common TRAIN card within the TRUE role): test acc 0.303
+role probe (lam=10): test acc 0.394 vs majority role 'win_condition' 0.260
+per-class test recall (lam=10), classes with >= 20 test steps:
+  archer_queen     role untagged     n_test   38 recall 0.000  role-oracle would give 0.000
+  balloon          role win_condition n_test   20 recall 0.200  role-oracle would give 0.000
+  berserker        role untagged     n_test   36 recall 0.083  role-oracle would give 1.000
+  bowler           role splash       n_test   24 recall 0.000  role-oracle would give 0.000
+  executioner      role untagged     n_test   58 recall 0.000  role-oracle would give 0.000
+  goblin_giant     role win_condition n_test   23 recall 0.000  role-oracle would give 0.000
+  goblins          role untagged     n_test   27 recall 0.000  role-oracle would give 0.000
+  golden_knight    role untagged     n_test   56 recall 0.000  role-oracle would give 0.000
+  guards           role untagged     n_test   20 recall 0.000  role-oracle would give 0.000
+  hog_rider        role win_condition n_test  102 recall 0.294  role-oracle would give 0.000
+  ice_golem        role building_targeting n_test  137 recall 0.117  role-oracle would give 1.000
+  inferno_dragon   role air          n_test  109 recall 0.275  role-oracle would give 1.000
+  knight           role tank         n_test   81 recall 0.494  role-oracle would give 1.000
+  lava_hound       role win_condition n_test   84 recall 0.179  role-oracle would give 0.000
+  mighty_miner     role troop        n_test  137 recall 0.000  role-oracle would give 0.000
+  miner            role win_condition n_test   56 recall 0.000  role-oracle would give 0.000
+  musketeer        role troop        n_test   35 recall 0.000  role-oracle would give 0.000
+  pekka            role tank         n_test   30 recall 0.000  role-oracle would give 0.000
+  skeleton_barrel  role win_condition n_test   33 recall 0.061  role-oracle would give 0.000
+  skeletons        role swarm        n_test   26 recall 0.462  role-oracle would give 1.000
+  valkyrie         role tank         n_test   28 recall 0.071  role-oracle would give 0.000

@@ -1036,3 +1036,24 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Decision to owner (STOP): fitted pro placement prior as a KL term on the cell head from c2r_best (mechanism
   stated: direct gradient, no reward difference needed -- unlike the 3 failed rollout-sampling priors), or
   opponent-model work, or neither. HANDOFF §5cs.27. Box idle.
+
+
+## L58 (2026-09-04) -- radius-graded reward step 0 built + validation gate; two retractions
+- Built `geometry_reward.py` (P1-P7, bridge block, tornado away/king), 19 tests OK, `sim-view --radii`
+  overlay (flag off byte-identical). Commit c642a73. Nothing wired into env.py yet.
+- RETRACTED (c): the corner X-Bow (1.5,18.5) DOES reach the enemy princess (`_gap` 10.67 < 11.5; a
+  deployed bow damages it 4858->4568 in 6 s). L57/§5cs.27 and doc rev 1-3 said it does not (stale
+  engine comment). RETRACTED (c): the locked troop cells are (9.5,31.3)/(12.5,31.3) behind the king,
+  not (9.3,24.1)/(11.8,24.1) (cell_center mis-conversion); pro skeletons within 1.5 tiles = 8.9%, not 4.9%.
+- Gate on 211 pro replays (5,825 blue plays): pro tile beats the locked tile on the equal-weight SUM for
+  tesla 63/19, tornado 69/29, knight 51/9, ice-wiz 44/22, skeletons 40/22, log 34/32, rocket 16/65, x-bow
+  11/83. Doc §3 rule drops nothing (modal Tesla vs corner on 350 Hog/Giant/PEKKA boards: SUM 88%/6%).
+  Against the pros: P2 on troops (2/23) and spells (rocket 1/71), P7 on skeletons (0.1/7.6); building P5
+  has no placement gradient; snapshot P1 fires on 41% of pro Teslas only. (a)
+- Policy (c2r_best, 3 seeds x 24, 2,485 placements): SUM mean 0.828 -> w 1.21 raw; restricted sum 0.430
+  -> w_geom 2.0 (cap). Rocket never played at tau 0.25. Linear probe: trunk holds ROLE-level enemy
+  identity (39% vs 26%), not card (12% vs 6%) -> no obs change in run 1 stands. (a)
+- Next: step 1 = restrict terms (P2 buildings only, P7 not swarm, building P5 = timing term), path-based
+  P1, wire into sim/env.py with w_geom 2.0, then arms G / G+E. HANDOFF §5cs.29. Box idle.
+- Flag: `config.yaml rl_epsilon_start 0.50 -> 0.85` is modified on disk (18:32 today, not by this
+  session, not committed) -- left untouched.

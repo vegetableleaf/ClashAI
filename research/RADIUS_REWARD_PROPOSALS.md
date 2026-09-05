@@ -254,16 +254,16 @@ credit   = w_bow * band(d(b, tower); lo = r_atk(tower) + 0.5, hi = siege_sight (
            * (1 - band(d(b, enemy building), lo = 0, hi = r_atk(building), w = 0.5))   # not under a Cannon/Tesla
 ```
 
-- Reach check against the engine's own measurement (engine.py ~2567): an X-Bow reaches an enemy
-  princess only from y <= ~0.56 (tile ~17.9; 11.18 tiles to the tower's edge vs 11.50 reach); at y 0.60
-  it is 12.34 and cannot hit. So the pros' modal lane bow (2, 19.5) does NOT reach the tower -- it is a
-  DEFENSIVE placement (§5ag already classed those 48% as "neither"), graded by P1/P2, not here. And the
-  policy's corner bow (1.5, 18.5 = y 0.578) does not reach it either: L56's hypothesis (b)(1) "the X-Bow
-  at 234 is rewarded because it reaches the left tower" is CONTRADICTED by the engine's number; the
-  corner cell is not an offensive bow. P6 pays only bows placed to lock: the 17% "tower-reaching" pro
-  bows sit within ~1.5 tiles of the bank, and the graded edge at 11.5 teaches the half-tile that
-  separates a firing bow from a bow that "aims and never fires" (the sim-view symptom quoted in the
-  engine comment).
+- **RETRACTION (2026-09-04, L58 step 0).** Rev 1-3 of this note said the corner bow (1.5, 18.5) and the
+  pros' lane bow do NOT reach the enemy princess, quoting the engine comment at `engine.py:2567`
+  (11.18 tiles at y 0.56). That comment is STALE: the running engine's `_gap` from (1.5, 18.5) to the
+  enemy princess's hitbox edge is **10.67 tiles < 11.5 reach** (box-edge geometry: dx 3.0-1.5, dy
+  12.0-1.5 -> hypot 10.6), and a deployed X-Bow there locks and damages the princess (4858 -> 4568 HP
+  in 6 s, measured by the step-0 build in `scratchpad/gauntlet/L58/impl_geometry.md`). So the
+  policy's corner cell IS an offensive bow, L56's hypothesis (b)(1) "the X-Bow at 234 is rewarded
+  because it reaches the left tower" is back to (b) untested (not contradicted), and the 17% / 48%
+  "tower-reaching" / "neither" split in §5ag needs re-deriving with `_gap`, not centre distance. P6 as
+  written scores the corner tile 1.0 -- the formula stands; the example was wrong.
 - Centre bow (8.5, 22): both towers ~16 away -> 0 offensive credit (it is a defensive placement, graded
   by P1/P2 instead). This removes the hand-picked band entirely.
 - *Pro test:* 1,038 pro bows: the offensive-scored fraction should match the §5ag split (17% tower-
