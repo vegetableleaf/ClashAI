@@ -1287,3 +1287,10 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Research fan-out: 5 background agents -> scratchpad/gauntlet/L63/{lit_game_ai,cr_prior_art,recent_2025_2026,assets_audit,lessons}.md, incremental, STATUS line marks done.
 - Five owner questions posted with --questions (live-path guardrail, engine in/out, which ckpt was played live, budget/cloud, grading ladder). Proposal next loop after answers + agent files.
 - Box: nothing training; python 3 (crawler x2 + uvicorn), qemu UP, free RAM 3.9 GB.
+
+## L63b -- 2026-09-05 23:1x UTC -- proposal posted, STOPPED for approval
+- Artifact: https://claude.ai/code/artifact/0e57cffe-d199-46c2-b39c-5922032b6821 (src scratchpad/gauntlet/L63/proposal.html); HANDOFF §5cs.53.
+- Five stages, pre-registered gates: S0 obs contract + corpus rebuild (613 x/y replays, ~3x) + mask <0.5% + scripted bot in engine; S1 imitation v3 (token transformer, full-res head; gate train>17.6, val>15.44+band, 3 seeds); S2 corpus x3->x10 (crawler + detector-as-IDM); S3 engine search teacher + DAgger supervised distillation (no PG); S4 live layer (reranked top-k, live matches re-driven for the teacher). Owner grades live.
+- Diagnosis carried forward (a): underfit board-blind model (17.6/15.4, cos 0.991), PG no gain in 4 arms, sim 26% vs engine 78%, live 1.3%/957.
+- Questions: approve; live-grading mode + block size; crawler stalled on Cloudflare clearance since 17:16 UTC (restart?); cloud for S3.
+- Box: nothing training; python 3; qemu UP, guest services dead.

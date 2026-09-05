@@ -161,7 +161,7 @@ cd C:\Users\benpe\ClashBot\hogeq
 
 ## 3. What is running RIGHT NOW
 
-**2026-09-05 22:3x UTC -- NOTHING IS TRAINING (L63: research phase of the new gauntlet; 5 research agents writing to `scratchpad/gauntlet/L63/`).** The engB engine-PPO pair was killed at m=602/609
+**2026-09-05 22:3x UTC -- NOTHING IS TRAINING (L63b: proposal posted, awaiting approval; L63: research phase of the new gauntlet; 5 research agents writing to `scratchpad/gauntlet/L63/`).** The engB engine-PPO pair was killed at m=602/609
 (§5cs.51, owner ruling); engA before it (§5cs.46). Box state verified at the kill: python processes
 7 -> 3, free RAM 5.0 GB.
 
@@ -2253,6 +2253,33 @@ marks completion). Nothing is training; box: python 3 (guarded survivors), qemu 
 thing the new pipeline must show); the cause of the masked-target rows; anything the research agents return.
 
 ---
+
+### §5cs.53 -- L63b (2026-09-05 22:4x-23:1x UTC): **PIPELINE PROPOSAL WRITTEN AND POSTED FOR APPROVAL -- "Square One": obs contract + corpus rebuild -> imitation v3 (entity/patch tokens, full-res cell head) -> corpus x3->x10 via crawler + detector-as-IDM -> engine search-teacher with DAgger-style supervised distillation (no policy gradient) -> live layer (critic-reranked top-k, live matches re-driven in the engine for the teacher). Owner grades live.** Artifact: https://claude.ai/code/artifact/0e57cffe-d199-46c2-b39c-5922032b6821 (source `scratchpad/gauntlet/L63/proposal.html`). Nothing implemented, nothing training; STOPPED for approval.
+
+**A. Research inputs (all `STATUS: complete`, `scratchpad/gauntlet/L63/`):** `lessons.md` (269 lines, 37 measured mechanisms + top-12 constraints), `cr_prior_art.md` (181; every public CR agent incl. Supercell's Boney et al. 2020, SEAT IJCAI-2019, KataCR, YouTube captions), `lit_game_ai.md` (239; ~70 sourced claims), `recent_2025_2026.md` (556; 75 entries Jan-2025..Sep-2026), `assets_audit.md` (308), `cloud_options.md` (163). Owner rulings (L63, `ac74536`) applied: live path may be touched this gauntlet; engine is IN; the live-play report was the KL (init-equivalent) checkpoint; unlimited box budget, cloud if cheap/free; proxy gates allowed, live grading final.
+
+**B. The diagnosis the proposal rests on (all (a), measured in §5cs.34/44-52 -- carried forward, not re-measured this loop):**
+1. Representation: BC init 17.62 train / 15.44 val top-1 (v1), +1.8 over the board-blind histogram 13.65, trunk cosine 0.991 across boards; `model.py` has no coordinate input, 12x8 map upsampled to 24x18, tanh-capped head. -> UNDERFIT, board-blind.
+2. Signal: 4 engine-PPO arms / ~1,500 matches: KL 15.44->16.33->15.64 flat; control ->7.47->6.87, 26% logits railed. Supercell's own DQN/Q-MC failed; their DAgger-of-search-oracle beat their BC 71.4+-8.8%.
+3. Environment: sim 26.1% vs engine 77.7% crowns-match on the same 211 replays; engine deterministic 211/211, ~1,850 matches/h on two slots, accepts 99.2% of pro plays.
+4. Live path: 12 W / 957 (1.3%); detector obs never graded; `play.py` gate threshold 0.25; act period 0.76 vs trained 0.6.
+
+**C. Stages and pre-registered gates (all (b) until run):**
+- S0 contract/instruments: one obs builder for engine state AND detector output, contract-tested on recorded frames (first engine-vs-live fidelity number); corpus rebuilt from all 613 x/y replays through the engine (v2 used 211 -> ~3x); mask validated (<0.5% pro cells forbidden; §5cs.52 measured 3.0-5.1%); scripted bot ported into the engine; eval harness = agreement+play-rate+board-blind control, engine winrate n=500 vs fixed opponents.
+- S1 imitation v3: entity+patch tokens with coords, full-res per-cell head, supervised state-conditioned gate, categorical value head, past-actions channels, mirror aug, "wait for card" action; one ablation (outcome-weighted BC). GATE: train top-1 > 17.6; val > 15.44 + band on 3 seeds; embedding spread >> 0.991; engine winrate >= old init at n=500.
+- S2 corpus x3 -> x10: crawler restored; detector-as-IDM precision/recall measured on engine ground truth before labelling video; two-point data-scaling fit.
+- S3 search teacher + DAgger: Gumbel-top-k over the student's top 8-16 (card,cell)+wait at STUDENT-visited engine states; each candidate = re-drive prefix (deterministic) + ~15 s rollout; supervised update on pro corpus + search targets. GATE: searched targets agree with pros >= student on 500 pro states; teacher beats frozen student >= 60% (n=500); distilled > student on winrate AND agreement, 3 seeds. ~30 s/decision/slot; 1,000 decisions = 4-7 h on 2 slots.
+- S4 live: shared obs builder, sampled gate (`gate_rule`), EMA weights, trained act period; critic-reranked top-k (Best-of-Q/IBRL) with the critic trained from engine + live matches; each live match re-driven in the engine from detected plays so the teacher improves the student on live-visited states. Owner grades in fixed N-match blocks.
+
+**D. Old->new, one line each:** signal PG-on-sparse-reward -> supervised pro + search targets; model rendered-board CNN -> token transformer with full-res head; env 26%-parity sim -> engine with fidelity numbers; data 9.4k -> 28k -> x10; gate learned-from-reward -> supervised state-conditioned + wait action; deploy last-iterate/threshold/single-sample -> EMA/sampled/reranked through one obs builder; measurement single-seed agreement -> agreement+play rate+board-blind, engine winrate n=500 (SE 2.2 pp), 3 paired seeds, gates pre-registered.
+
+**E. Cost.** S0-S2 box only (~1-4 weeks wall). S3 engine-heavy: box 2 slots ~150 decisions/h; GCP $300 trial spot n2-standard-16 nested-virt ~$0.30/h (~16,000 emulator-h) or Hetzner AX162 ~$283/mo -> ~1,000 decisions/h at 16 emulators. Free student compute does not cover an emulator fleet (Azure ~4 vCPU no GPU; NU Quest needs sponsor, no KVM).
+
+**F. Questions posted (`--questions`):** (1) approve / modify the 5 stages; (2) live grading protocol -- proposed 20-match blocks, one fixed mode (trainer / ladder band / friendly), EMA ckpt, no learning during a block -- owner picks the mode; (3) crawler: stalled on expired Cloudflare clearance since 17:16 UTC (294 AuthErrors in `L61/crawl_icebow_wave4.log`, no output since) -- restart it or owner refreshes session; (4) cloud for S3: GCP trial / Hetzner / box-only.
+
+**Not established.** Everything in C is (b). Risks named in the proposal §7: truncated-rollout value quality, engine-vs-live transition gap (no number exists yet), corpus may be too small even at x10, ghost opponents are non-reactive.
+
+**Box.** Nothing training; python 3 (guarded survivors), qemu UP with in-guest worker services DEAD (needs ~73 s reboot at S0 start), free RAM ~3.9 GB (L63 read).
 
 ## Archive index (`HANDOFF_ARCHIVE.md`)
 

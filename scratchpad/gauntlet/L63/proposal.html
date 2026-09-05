@@ -1,0 +1,196 @@
+<title>Square One Pipeline</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --ground:#F2F4F7; --surface:#FFFFFF; --ink:#16202B; --muted:#5B6774; --line:#D5DBE3;
+  --accent:#1E4FA3; --accent-ink:#173F84; --accent-soft:#E3EBF8;
+  --ok:#1F7A5C; --ok-soft:#E1F1EA; --warn:#B5701A; --warn-soft:#FBEEDC; --bad:#B3352E; --bad-soft:#F8E3E1;
+  --code:#EEF1F5;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#0E141B; --surface:#161D26; --ink:#E4E9EF; --muted:#97A3B1; --line:#2A3440;
+    --accent:#6FA2F2; --accent-ink:#8FB6F5; --accent-soft:#1B2A44;
+    --ok:#5FC79A; --ok-soft:#14302A; --warn:#E5A44B; --warn-soft:#3A2A12; --bad:#EF7B72; --bad-soft:#3E1A18;
+    --code:#0F161E;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#0E141B; --surface:#161D26; --ink:#E4E9EF; --muted:#97A3B1; --line:#2A3440;
+  --accent:#6FA2F2; --accent-ink:#8FB6F5; --accent-soft:#1B2A44;
+  --ok:#5FC79A; --ok-soft:#14302A; --warn:#E5A44B; --warn-soft:#3A2A12; --bad:#EF7B72; --bad-soft:#3E1A18;
+  --code:#0F161E;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:16px;line-height:1.55}
+a{color:var(--accent-ink);text-decoration:none;border-bottom:1px solid var(--line)}
+a:hover,a:focus-visible{border-bottom-color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.page{max-width:1140px;margin:0 auto;padding:40px 28px 80px;display:grid;grid-template-columns:200px minmax(0,1fr);gap:48px}
+@media (max-width:960px){.page{grid-template-columns:1fr;gap:24px}.toc{position:static!important}}
+.toc{position:sticky;top:24px;align-self:start;font-size:13px}
+.toc .eyebrow{margin-bottom:10px}
+.toc ol{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:6px}
+.toc a{border:0;color:var(--muted)}
+.toc a:hover{color:var(--accent-ink)}
+.eyebrow{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font-family:"IBM Plex Serif",Georgia,serif;font-weight:600;font-size:40px;line-height:1.1;margin:8px 0 12px;text-wrap:balance}
+h2{font-family:"IBM Plex Serif",Georgia,serif;font-weight:600;font-size:26px;line-height:1.2;margin:56px 0 12px;text-wrap:balance;padding-top:16px;border-top:1px solid var(--line)}
+h3{font-size:17px;font-weight:600;margin:28px 0 8px}
+p,li{max-width:68ch}
+.lede{font-size:18px;color:var(--muted);max-width:62ch;margin:0 0 20px}
+.meta{display:flex;flex-wrap:wrap;gap:14px 28px;font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--muted);padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.meta b{color:var(--ink);font-weight:500}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:.92em}
+code{background:var(--code);padding:1px 5px;border-radius:3px}
+.tag{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.04em;padding:1px 7px;border-radius:3px;vertical-align:1px;white-space:nowrap}
+.a{background:var(--ok-soft);color:var(--ok)} .b{background:var(--warn-soft);color:var(--warn)} .c{background:var(--bad-soft);color:var(--bad)}
+.verdict{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:20px 0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:16px 18px}
+.card .num{font-family:"IBM Plex Mono",monospace;font-size:26px;font-weight:500;line-height:1.1;font-variant-numeric:tabular-nums}
+.card .lab{font-size:13px;color:var(--muted);margin-top:6px}
+.card p{font-size:14px;margin:10px 0 0}
+table{border-collapse:collapse;width:100%;font-size:14px;background:var(--surface)}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px;margin:14px 0}
+th,td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left}
+th{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;background:var(--ground)}
+tr:last-child td{border-bottom:0}
+td.n{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+.flow{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:22px 0 8px}
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:14px 16px;position:relative}
+.stage .k{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--accent-ink);letter-spacing:.06em}
+.stage h4{margin:4px 0 8px;font-size:16px;font-weight:600}
+.stage p{font-size:13.5px;margin:0;color:var(--muted)}
+.stage .gate{margin-top:12px;padding-top:10px;border-top:1px dashed var(--line);font-size:13px}
+.stage .gate b{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.06em;color:var(--ok);font-weight:500}
+.callout{border-left:3px solid var(--accent);background:var(--accent-soft);padding:12px 16px;border-radius:0 6px 6px 0;margin:18px 0;max-width:76ch}
+.callout p{margin:0}
+.callout.bad{border-left-color:var(--bad);background:var(--bad-soft)}
+.callout.warn{border-left-color:var(--warn);background:var(--warn-soft)}
+ol.q li{margin-bottom:10px}
+.small{font-size:13.5px;color:var(--muted)}
+dl{display:grid;grid-template-columns:max-content 1fr;gap:6px 18px;font-size:14.5px;max-width:80ch}
+dt{font-family:"IBM Plex Mono",monospace;font-size:12.5px;color:var(--muted);padding-top:2px}
+dd{margin:0}
+</style>
+
+<div class="page">
+<nav class="toc" aria-label="Contents">
+  <div class="eyebrow">Contents</div>
+  <ol>
+    <li><a href="#verdict">1 · Why it stalled</a></li>
+    <li><a href="#keep">2 · Keep / drop</a></li>
+    <li><a href="#pipeline">3 · The pipeline</a></li>
+    <li><a href="#changes">4 · What changes, and why it grows</a></li>
+    <li><a href="#measure">5 · How each stage is graded</a></li>
+    <li><a href="#cost">6 · Cost and compute</a></li>
+    <li><a href="#risks">7 · What could still stall</a></li>
+    <li><a href="#approve">8 · For approval</a></li>
+    <li><a href="#sources">Sources</a></li>
+  </ol>
+</nav>
+
+<main>
+<div class="eyebrow">ClashBot · training-pipeline proposal · gauntlet L63</div>
+<h1>Square One: imitate, search, distil, then learn live</h1>
+<p class="lede">A replacement for the sim → PPO pipeline, built from six research files and this week's measurements. The short version: the policy never saw the board, the reward never carried a signal, and the environment never matched the game. The new pipeline fixes those three in that order and grades every stage before the next one is allowed to start.</p>
+<div class="meta">
+  <span>Date <b>2026-09-05</b></span>
+  <span>Status <b>awaiting owner approval</b></span>
+  <span>Research <b>scratchpad/gauntlet/L63/*.md</b></span>
+  <span>Record <b>HANDOFF §5cs.52–53</b></span>
+</div>
+
+<p class="small" style="margin-top:14px">Every claim is tagged: <span class="tag a">a · measured</span> with the number, <span class="tag b">b · untested</span> with the measurement that settles it, or <span class="tag c">c · contradicted</span> with the evidence against.</p>
+
+<h2 id="verdict">1 · Why it stalled — three measured causes, not one</h2>
+<div class="verdict">
+  <div class="card"><div class="num">17.6 → 15.4</div><div class="lab">BC init top-1 on its own TRAIN rows → VAL rows (v1)</div><p><span class="tag c">c</span> It does not overfit. It misses the pro's cell on 82% of the boards it was fit on, and holds only +1.8 pt over a board-blind "where does this card usually go" histogram (13.65). Its trunk embedding is near-constant across pro boards (cosine 0.991). <b>The model cannot see the board.</b></p></div>
+  <div class="card"><div class="num">4 arms · 0 gains</div><div class="lab">engine PPO, ~1,500 matches, KL-leashed and unleashed</div><p><span class="tag a">a</span> Leashed: 15.44 → 16.33 → 15.64 (flat). Unleashed: 15.44 → 7.47 → 6.87 with 26% of placement logits railed. Supercell's own team saw the same: their DQN and Q-MC failed; a DAgger student of a search oracle beat their BC agent 71%. <b>The reward carried no signal at this scale.</b></p></div>
+  <div class="card"><div class="num">26% vs 78%</div><div class="lab">crowns-match with real outcomes: hand-written sim vs real engine, same 211 replays</div><p><span class="tag a">a</span> The sim was wrong one-directionally against the X-Bow side; three mechanic fixes were nulls. <b>Nothing learned in it transferred.</b> The engine is deterministic (211/211), ~1,850 matches/h on two slots, and accepts 99.2% of real pro plays.</p></div>
+  <div class="card"><div class="num">1.3%</div><div class="lab">live winrate, 957 logged matches (12 W)</div><p><span class="tag a">a</span> Live observations come from the screen detector; no checkpoint has ever been graded on that distribution, <code>play.py</code> still thresholds the gate at 0.25, and the live act period is 0.76 s against a trained 0.6. <b>The live path was never contract-tested against training.</b></p></div>
+</div>
+<div class="callout"><p><b>The architectural premise is supported.</b> <code>model.py</code> has no coordinate input and upsamples a 12×8 feature map to the 24×18 action grid through a tanh-capped cell head; CoordConv and Transporter say that bounds placement accuracy on a half-tile lattice by construction, before data size even enters. The 9.4k-sample corpus is also ~2 orders of magnitude below where imitation priors became useful anywhere in the literature (Supercell: 76M frames; KataCR at 114k frames: 10% vs the trainer bot).</p></div>
+
+<h2 id="keep">2 · What we keep and what we drop</h2>
+<div class="tablewrap"><table>
+<tr><th>Asset</th><th>Verdict</th><th>Why</th></tr>
+<tr><td><b>Real engine sandbox</b> (libg 15.535.29 in the AVD, bridge v1 + built v2)</td><td><span class="tag a">keep — the environment</span></td><td>Owner ruling. Highest-fidelity env outside the game; deterministic; 2.3–3.5 s/match; exact per-tick state.</td></tr>
+<tr><td><b>Replay corpus</b> (1,228 battles, 108,696 plays, 28,411 positioned icebow-side plays; ghost pool 447 timelines)</td><td><span class="tag a">keep — grows</span></td><td>v2 BC used 211 replays / 9,444 samples; 613 replays with x/y sit on disk unused (~3×). Crawler stalled since 17:16 UTC on Cloudflare clearance — needs the owner's browser session.</td></tr>
+<tr><td><b>Detector</b> (yolo11s, 230 classes, mAP50 0.794, 29.5 ms)</td><td><span class="tag a">keep</span></td><td>Perception for live play and the inverse-dynamics labeller for video (stage 2).</td></tr>
+<tr><td><b>Instruments</b>: <code>read_ckpt</code> scorer, engine visualiser, <code>gauntlet_report</code>, <code>gate_rule</code>, replay drive/batch</td><td><span class="tag a">keep</span></td><td>Env-independent; the scorer needs a ~30-line adapter for a new model.</td></tr>
+<tr><td>Hand-written sim, its reward terms, <code>train-sim-ppo</code>, <code>engine_ppo.py</code>, DQN-era code</td><td><span class="tag c">drop</span></td><td>26% oracle; no measured gain from any reward variant; the PG trainer is the mechanism that railed the head. Kept on disk, never launched.</td></tr>
+<tr><td><code>clashrl/model.py</code> policy net and every checkpoint</td><td><span class="tag c">drop as init</span></td><td>Board-blind trunk, upsampled head. <code>bc_bias_native_s0.pt</code> stays as the <em>baseline every stage must beat</em>.</td></tr>
+<tr><td>Pro gate prior, sampled deploy rule, 432 grid, one-obs-builder rule</td><td><span class="tag a">keep as constraints</span></td><td>Each is a measured result (§5cs.47–50, L35); they become design requirements, not tunables.</td></tr>
+</table></div>
+
+<h2 id="pipeline">3 · The pipeline</h2>
+<p>Five stages. Each ends in a <b>pre-registered gate</b> on fixed instruments; a stage that fails its gate is reported as a null and the next one does not start. The order is the order the causes were measured in: representation, then data, then a learning signal that can improve on the data, then the live game.</p>
+<div class="flow">
+  <div class="stage"><div class="k">STAGE 0 · week 1</div><h4>Contract &amp; instruments</h4><p>One observation builder (entity list + raster) for engine state <em>and</em> detector output, contract-tested on recorded live frames. Corpus rebuilt from all 613 x/y replays through the engine, every phase kept, mask validated. Engine-vs-live fidelity numbers. Scripted opponent ported into the engine. Eval harness fixed.</p><div class="gate"><b>GATE</b> mask forbids &lt;0.5% of pro cells · detector→obs vs engine→obs agreement reported · board-blind control per split</div></div>
+  <div class="stage"><div class="k">STAGE 1 · weeks 1–2</div><h4>Imitation v3</h4><p>New net: entity tokens + spatial patch tokens with coordinates, full-resolution per-cell head (no 12×8 upsample, no tanh cap), card head, supervised state-conditioned gate, categorical value head, past-actions channels, mirror augmentation, "wait for this card" action. Outcome-weighted BC as the one ablation.</p><div class="gate"><b>GATE</b> train top-1 &gt; 17.6 · val top-1 &gt; 15.44 + band, 3 seeds · embedding cosine spread ≫ 0.991 · engine winrate vs fixed opponents ≥ old init at n = 500</div></div>
+  <div class="stage"><div class="k">STAGE 2 · weeks 2–4, parallel</div><h4>Corpus ×3 → ×10</h4><p>Crawler restored, every positioned replay converted. Then the detector as an inverse-dynamics model: measure placement-recovery precision/recall on engine ground truth, label pro video, add to the corpus. Two-point data-scaling fit decides whether to keep going.</p><div class="gate"><b>GATE</b> IDM precision/recall measured · val top-1 rises with corpus size on the fixed val set</div></div>
+  <div class="stage"><div class="k">STAGE 3 · weeks 3–6</div><h4>Search teacher, DAgger student</h4><p>At states the <em>student</em> visits in the engine: Gumbel-top-k over its top 8–16 (card, cell) proposals + wait, each scored by re-driving the deterministic prefix and rolling out ~15 s (Supercell's oracle value). The improved target is aggregated with the pro corpus and the student is updated <em>by supervised learning</em> — no policy gradient, no critic warm-up, no rails.</p><div class="gate"><b>GATE</b> searched target agrees with pros ≥ student on 500 pro states · teacher beats frozen student ≥ 60% (n = 500) · distilled student &gt; student on winrate and agreement, 3 seeds</div></div>
+  <div class="stage"><div class="k">STAGE 4 · week 5+</div><h4>Live layer</h4><p>Deploy through the shared obs builder, sampled gate, EMA weights, trained act period. Live learning: a critic trained from engine rollouts + live matches reranks the proposer's top-k (Best-of-Q / IBRL); every live match is re-driven in the engine from detected plays so the search teacher can improve the student on the states it actually met live. The owner grades here.</p><div class="gate"><b>GATE</b> live protocol: fixed mode, N-match blocks, EMA checkpoint, detector obs · winrate and plays/match vs the stage-1 and stage-3 checkpoints</div></div>
+</div>
+<p class="small">Stages 1 and 2 run on the box; stage 3's teacher is the one engine-heavy step and scales with emulator count (§6). Stage 4 is the only stage that touches the live path, and only after stage 3 has a checkpoint worth playing.</p>
+
+<h3>Stage 3 in one paragraph, because it is the new idea</h3>
+<p>The old pipeline asked a sparse win/loss signal to improve a policy through a policy gradient, and measured that it cannot at this scale. The new one asks the <em>engine</em> to improve the policy directly: for a given board, try the policy's own best few candidates, let the deterministic engine play each forward a few seconds, and keep the one that leaves the board better. That improved choice is guaranteed to be at least as good as the policy's own under the value used, so the student learns from a teacher that is strictly better than itself — Supercell's escape from the same ceiling (<a href="https://arxiv.org/abs/2012.12186">Boney et al. 2020</a>: 71.4 ± 8.8% vs their production BC). Querying the teacher on the student's own states, not the pro's, is the DAgger half; Supercell measured plain BC-of-the-oracle at 17.4% vs DAgger's 23.3% wins on the same oracle. The engine has no snapshot op, so branching means re-driving the prefix — deterministic (211/211) and ~0.4–3 s per branch — which is why this is feasible now and was not before the engine existed.</p>
+
+<h2 id="changes">4 · What changes, and why each change should produce growth</h2>
+<div class="tablewrap"><table>
+<tr><th>Axis</th><th>Old pipeline</th><th>New pipeline</th><th>Why it should grow instead of stall</th></tr>
+<tr><td><b>Learning signal</b></td><td>Sparse outcome reward → PPO gradient on a BC init, optionally KL-leashed</td><td>Supervised targets from two sources: pro placements, and a search teacher run in the engine on the student's own states</td><td><span class="tag a">a</span> 4 arms / 1,500 matches: leash defends, buys nothing; no leash degenerates. <span class="tag a">a</span> Supercell: DQN/Q-MC failed, oracle-DAgger won. Search improvement is monotone under the value by construction; a supervised update cannot rail a head the way a PG update did (0.027 → 0.262 railed).</td></tr>
+<tr><td><b>Model</b></td><td>Rendered-board CNN, 12×8 map upsampled to 24×18, tanh-capped cell head, no coordinates</td><td>Entity tokens + patch tokens with coordinates, full-res per-cell head, categorical value head, context added mid-trunk, past-10-actions channels</td><td><span class="tag a">a</span> trunk cosine 0.991 across boards; +1.8 over board-blind. <span class="tag b">b</span> The Generals.io 2026 agent (#1 on a 5,000-player ladder) is the same shape: patch-token transformer, per-cell head, HL-Gauss value. First falsifiable test: train top-1 above 17.6 on the same rows.</td></tr>
+<tr><td><b>Environment</b></td><td>Hand-written sim (26% oracle) for training; engine for the last two runs</td><td>Engine only, with an engine-vs-live fidelity table measured first</td><td><span class="tag a">a</span> 26.1% vs 77.7% crowns-match; the checkpoint was equally bad on engine boards, so sim training taught nothing that transferred.</td></tr>
+<tr><td><b>Data</b></td><td>9,444 placements from 211 replays; 43.5% of pro plays dropped in v1</td><td>All 613 x/y replays (~3×), every phase; then detector-as-IDM on pro video (×10)</td><td><span class="tag a">a</span> 28,411 positioned icebow plays on disk. <span class="tag b">b</span> VPT-style pipelines at ~0.70 IDM recall still gave +70% relative at 10× volume; the scaling fit decides.</td></tr>
+<tr><td><b>Gate (play / wait)</b></td><td>Learned from reward; collapsed to a constant twice; pro prior bolted on late</td><td>Supervised state-conditioned target P(play | elixir, phase, board) from day one; "wait for card X" action so exploration reaches 4–6 cost cards</td><td><span class="tag a">a</span> 0.12 plays/match after gate collapse; the prior restored state dependence (§5cs.49). <span class="tag a">a</span> Supercell's wait-action is what stopped their elixir-dump collapse.</td></tr>
+<tr><td><b>Deployment</b></td><td>Last iterate, gate thresholded at 0.25, single sample, act period 0.76 s vs trained 0.6</td><td>EMA weights, sampled gate (shared <code>gate_rule</code>), critic-reranked top-k, served at the trained period through the same obs builder as training</td><td><span class="tag a">a</span> threshold vs sample = 14× in plays/match; <span class="tag b">b</span> EMA +30 Elo and Best-of-Q +17 pts in their papers.</td></tr>
+<tr><td><b>Live learning</b></td><td>Live RL (DQN era): 0.15 decisions per parameter, buffer discarded each launch, 0.87% winrate</td><td>Live matches feed (i) an off-policy critic that reranks, (ii) engine re-drives of the live match so the search teacher improves the student on live-visited states</td><td><span class="tag b">b</span> ResFiT/IBRL improve a frozen BC policy from 100–350 real episodes; 15–20 live matches/h makes that a week, not a month. Untested here.</td></tr>
+<tr><td><b>Measurement</b></td><td>Pro agreement alone; single seeds; winrate at n = 16–150; two instruments compared</td><td>Agreement + play rate + board-blind control; engine winrate vs fixed opponents at n = 500 (SE 2.2 pp) — affordable now at 1,850 matches/h; 3 paired seeds; gates written before the run</td><td><span class="tag a">a</span> single-seed orderings inverted m500→m1000; instrument noise 685–14,834×. Engine throughput is what makes winrate a usable discriminator for the first time.</td></tr>
+</table></div>
+<div class="callout warn"><p><b>What is deliberately absent.</b> Diffusion/flow heads (a 432-way categorical is already multimodal), pixel world models (slower and less faithful than the engine we have), LLM/VLM policies (seconds per decision, beginner-arena results), league self-play at OpenAI-Five scale (needs 10⁷× our throughput), and any further reward shaping. Each was reviewed and ranked out in <code>lit_game_ai.md</code> / <code>recent_2025_2026.md</code>.</p></div>
+
+<h2 id="measure">5 · How each stage is graded</h2>
+<dl>
+  <dt>Fixed val sets</dt><dd>The v2 engine-board val (1,333 rows, 33 replays) stays as the cross-pipeline anchor; the rebuilt corpus gets its own by-replay split with a board-blind control per split (12.08 / 37.66 on v2 val).</dd>
+  <dt>Agreement</dt><dd>Top-1 / top-5 pro-cell agreement, always with plays/match under the sampled gate rule beside it. Exact-cell agreement is a smoke test (Supercell shipped at ~4% per-frame), not the objective.</dd>
+  <dt>Engine winrate</dt><dd>vs a fixed set of ghost-pool timelines (non-reactive) and vs the ported scripted bot (reactive), n = 500 per arm, crowns and match length reported. This is the "worse than a scripted bot" claim made measurable.</dd>
+  <dt>Seeds</dt><dd>3 paired seeds per arm before any design decision; byte-identical launch check between arms.</dd>
+  <dt>Live</dt><dd>Fixed mode, N-match blocks per checkpoint, EMA weights, detector observations; winrate, plays/match, elixir-at-play histogram vs pros. Owner's grade has the final say.</dd>
+  <dt>Health</dt><dd>Logit saturation, policy entropy, gate p vs target, embedding spread — logged every checkpoint, alert bands set from a measured frozen-checkpoint run, <code>_latest.pt</code> written every N updates.</dd>
+</dl>
+
+<h2 id="cost">6 · Cost and compute</h2>
+<div class="tablewrap"><table>
+<tr><th>Stage</th><th>Box</th><th>Engine time</th><th>Cloud (if used)</th></tr>
+<tr><td>0 Contract, corpus rebuild, fidelity</td><td>~1 week of my time; GPU idle</td><td class="n">613 replays ≈ 1 h on 2 slots</td><td>—</td></tr>
+<tr><td>1 Imitation v3</td><td class="n">RTX 5050: minutes per epoch at 30k samples; 3 seeds × ablations ≈ hours</td><td class="n">eval 500 matches ≈ 20 min per arm</td><td>—</td></tr>
+<tr><td>2 Corpus scaling</td><td>Detector inference on video: GPU-bound, ~30 ms/frame</td><td>—</td><td>Optional 4090 at ~$0.35/h for bulk video labelling</td></tr>
+<tr><td>3 Search teacher</td><td>Learner on the box GPU</td><td class="n">~2 s per candidate branch → ~30 s per decision per slot; 1,000 teacher decisions ≈ 4–7 h on 2 slots</td><td>GCP $300 trial (spot n2-standard-16, nested virt, ≈ $0.30/h ≈ 16,000 emulator-hours) or Hetzner AX162 (48c, ≈ $283/mo). 16 emulators → ~1,000 decisions/h.</td></tr>
+<tr><td>4 Live</td><td>Emulator + detector on the box; ~15–20 matches/h</td><td>Re-drive each live match ≈ 3 s</td><td>—</td></tr>
+</table></div>
+<p class="small">Free student compute does not cover the emulator fleet: Azure for Students is capped near 4 vCPU with no GPU; Northwestern Quest has free H100/A100 nodes but needs a faculty sponsor and has no KVM. Kaggle (~30 GPU-h/week) and Modal ($30/mo) cover small GPU jobs. Full pricing with dates in <code>cloud_options.md</code>.</p>
+
+<h2 id="risks">7 · What could still stall — stated before we start</h2>
+<ul>
+  <li><span class="tag b">b</span> <b>The truncated-rollout value may be wrong.</b> "Let the engine run 15 s with no more deploys" is Supercell's oracle value and it worked with 256 arms per decision; ours starts at 8–16. The stage-3 gate "searched target agrees with pros ≥ student" is the pre-registered check that search moves toward good play at all.</li>
+  <li><span class="tag b">b</span> <b>The engine may not match the live game closely enough.</b> 77.7% crowns-match is an outcome number; no transition-level engine-vs-live number exists. Stage 0 produces one before any engine-trained checkpoint is graded live.</li>
+  <li><span class="tag b">b</span> <b>The corpus may still be too small even at ×10.</b> The scaling fit in stage 2 is how we find out early instead of late.</li>
+  <li><span class="tag b">b</span> <b>Ghost opponents do not react.</b> Winrate against them can be gamed; that is why the scripted bot is ported into the engine and why self-play against past checkpoints is added once stage 3 produces one.</li>
+  <li><span class="tag a">a</span> <b>The live path has seams we already measured</b> (opponent-elixir slot, hand-slot pixels, act period). Stage 0's contract test is the fix; nothing is graded live until it passes.</li>
+</ul>
+
+<h2 id="approve">8 · For approval</h2>
+<ol class="q">
+  <li><b>Approve the five-stage plan as written?</b> If yes, stage 0 starts immediately (engine services reboot, obs contract, corpus rebuild). If you want a stage cut or reordered, say which.</li>
+  <li><b>Live grading protocol.</b> Proposal: 20-match blocks in one fixed mode (which one — trainer, ladder at a fixed trophy band, or friendly vs you?), EMA checkpoint, no learning during a graded block. Your call on the mode.</li>
+  <li><b>Crawler.</b> It has looped on an expired Cloudflare clearance since 17:16 UTC. May I restart it, or do you want to refresh the session yourself?</li>
+  <li><b>Cloud.</b> For stage 3 only: the GCP $300 trial (card required, ~$0.30/h spot after) or a Hetzner box (~$283/mo). Nothing is needed for stages 0–2. Say which, or "box only" and stage 3 runs at ~150 decisions/h.</li>
+</ol>
+
+<h2 id="sources">Sources</h2>
+<p class="small">Six research files under <code>scratchpad/gauntlet/L63/</code>: <code>lessons.md</code> (37 measured mechanisms), <code>lit_game_ai.md</code> (~70 sourced claims), <code>cr_prior_art.md</code> (every public CR agent), <code>recent_2025_2026.md</code> (75 entries, Jan 2025–Sep 2026), <code>assets_audit.md</code>, <code>cloud_options.md</code>. Key primary sources: Boney, Ilin, Kannala, Seppänen — <a href="https://arxiv.org/abs/2012.12186">Learning to Play Imperfect-Information Games by Imitating an Oracle Planner</a> (Supercell, 2020); <a href="https://arxiv.org/abs/2308.03526">AlphaStar Unplugged</a> (2023); <a href="https://arxiv.org/html/2606.23348v1">Superhuman AI for Generals.io</a> (2026); <a href="https://arxiv.org/abs/2509.19301">ResFiT</a> (2025); <a href="https://arxiv.org/abs/2504.04395">Metamon</a> (RLC 2025); <a href="https://arxiv.org/abs/2412.07762">WSRL</a> (ICLR 2025); <a href="https://arxiv.org/abs/2601.22701">Best-of-Q</a> (2026); <a href="https://arxiv.org/abs/2510.01460">Three Regimes of Offline-to-Online RL</a> (2025); CoordConv (Liu et al., NeurIPS 2018); VPT (Baker et al., NeurIPS 2022); RLPD (Ball et al., ICML 2023); IBRL (Hu et al., 2024).</p>
+</main>
+</div>
