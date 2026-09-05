@@ -22,7 +22,7 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-05 19:5x UTC**, branch `main` (**§5cs.47: engB pair relaunched with the pro gate prior in BOTH arms, gate ALIVE (frac_gt_tau 0.32 vs the killed arm 0.0000), arms byte-identical at update 1; then §5cs.46: RETRACTION -- the play gate COLLAPSED in both engine-PPO arms (KL arm 0.12 plays/match vs the init 36.2; gate prob max 0.2326, never crosses tau 0.25), the pro-agreement metric is conditional on playing and could not see it; pair killed at m=422, relaunching with the pro gate prior in both arms; then §5cs.45: m250 grade SEPARATES the engine-PPO arms -- control 11.25/32.97 (init 15.44/46.61) vs KL-to-init 16.73/44.02, top-1 ABOVE the init and NOT pinned; bridge RE done, area effects are the 3M series not 4M (why zones never appeared); then §5cs.44: first PPO on the real engine RUNNING (control vs KL-to-init 0.3, launched 17:49 UTC, ~12 s/match, ends ~01:00 UTC Sep 6); critic warm-up on the shared trunk moved both arms 1.15 nats from the pro init before any policy step; then §5cs.43: sim_view renders real-engine frames with the radii layer intact; engine reach is centre-to-EDGE so drawn rings / reward radii sit 0.5-1.0 tiles inside the real fire point; zones not exported by the bridge; then §5cs.42: EngineMatchEnv v0 built -- 1,159/h one slot, 1,847/h two slots with the BC policy in the loop; ghosts never desync, they go stale + run out (50% undelivered); engine PPO pair (control vs KL-to-prior) is next; then §5cs.41: GHOST POOL 447 timelines / 314 opp decks -- 10,000 decks and trophy-range coverage both CONTRADICTED by the corpus (715 decks total, no trophy data); x/y backfill = +473 battles; sim_view engine feed dispatched; then §5cs.40: OWNER ORDER -- bcA KILLED at 2,550 eps, sim PPO retired from the training path, engine environment v0 under construction (EngineMatchEnv + ghost pool, scratchpad/gauntlet/L62/); the sim survives as the obs renderer + smoke env**; §5cs.39: bcA m2k -- PPO erodes the BC init 15.44/46.61 -> 6.47/21.12 and re-saturates a healthy head in 2,000 matches, bias map untouched, cell_conv.4 grows 0.777; §5cs.38: bias map in model.py; §5cs.37: engine dataset v2).
+Last updated: **2026-09-05 20:1x UTC**, branch `main` (**§5cs.48: owner claim TESTED and contradicted -- grid 432 adds 0.000 tiles to in-reach x-bows (row pitch 0.499, phase-aligned to the half-tile lattice) while 576 pushes 55% of them OUT of reach; then §5cs.47: engB pair relaunched with the pro gate prior in BOTH arms, gate ALIVE (frac_gt_tau 0.32 vs the killed arm 0.0000), arms byte-identical at update 1; then §5cs.46: RETRACTION -- the play gate COLLAPSED in both engine-PPO arms (KL arm 0.12 plays/match vs the init 36.2; gate prob max 0.2326, never crosses tau 0.25), the pro-agreement metric is conditional on playing and could not see it; pair killed at m=422, relaunching with the pro gate prior in both arms; then §5cs.45: m250 grade SEPARATES the engine-PPO arms -- control 11.25/32.97 (init 15.44/46.61) vs KL-to-init 16.73/44.02, top-1 ABOVE the init and NOT pinned; bridge RE done, area effects are the 3M series not 4M (why zones never appeared); then §5cs.44: first PPO on the real engine RUNNING (control vs KL-to-init 0.3, launched 17:49 UTC, ~12 s/match, ends ~01:00 UTC Sep 6); critic warm-up on the shared trunk moved both arms 1.15 nats from the pro init before any policy step; then §5cs.43: sim_view renders real-engine frames with the radii layer intact; engine reach is centre-to-EDGE so drawn rings / reward radii sit 0.5-1.0 tiles inside the real fire point; zones not exported by the bridge; then §5cs.42: EngineMatchEnv v0 built -- 1,159/h one slot, 1,847/h two slots with the BC policy in the loop; ghosts never desync, they go stale + run out (50% undelivered); engine PPO pair (control vs KL-to-prior) is next; then §5cs.41: GHOST POOL 447 timelines / 314 opp decks -- 10,000 decks and trophy-range coverage both CONTRADICTED by the corpus (715 decks total, no trophy data); x/y backfill = +473 battles; sim_view engine feed dispatched; then §5cs.40: OWNER ORDER -- bcA KILLED at 2,550 eps, sim PPO retired from the training path, engine environment v0 under construction (EngineMatchEnv + ghost pool, scratchpad/gauntlet/L62/); the sim survives as the obs renderer + smoke env**; §5cs.39: bcA m2k -- PPO erodes the BC init 15.44/46.61 -> 6.47/21.12 and re-saturates a healthy head in 2,000 matches, bias map untouched, cell_conv.4 grows 0.777; §5cs.38: bias map in model.py; §5cs.37: engine dataset v2).
 change) + aggro1 first look. Owner: "the policy plays every log 1-2 tiles too far forward and whiffs; it never leads log or
 rocket; I think it ignores the ~1 s cast delay". "Mapping issue" (c): the board->screen warp is shared by troops and spells.
 The real defects (a, in code): (1) env.py `_wheels_spell_aim` GATED on the current positions (`log_hits` / radius test)
@@ -12599,3 +12599,58 @@ p_play 0.099, s/match 6.76 (uncontended by a second trainer only for that first 
 real check is frac_gt_tau at m30-50, then m250); whether the collapse would also be prevented at a lower coef; the
 tick -> phase mapping; the 0.6 s / 0.5 s dt mismatch's effect on learned play rate; anything about pro agreement
 (no engB checkpoint beyond m0 exists yet). engA's checkpoints are retained as the counterfactual.
+
+### §5cs.48 -- L62i (2026-09-05 20:0x UTC, owner claim tested): **(c) CONTRADICTED ON BOTH HALVES -- grid 432 does NOT snap an x-bow a tile back, and switching to 576 would CREATE that failure in 55% of offensive x-bow placements.** Owner: "size 432 is causing the policy to snap one of the offensive x-bow positions one tile too far back... I suggest trying size 576." Measured on all **2,617 real pro x-bow placements** in the crawl, through the same `ActionSpace` the trainer quantises with: the 432 grid's row pitch is **0.499 tiles** (not 1.333 -- the grid spans 19.7 tiles, not 32), backward shift p99 **0.304 tiles**, and for the 240 x-bows actually within reach of an enemy princess tower quantisation adds **0.000 tiles** and puts **0 of 240 out of reach**. At 576 the pitch is **0.374 tiles**, the mean |dy| is **3x worse** (0.289 vs 0.097), and **132 of 240 (55.0%) in-reach pro x-bows are pushed OUT of reach**. The cause is PHASE, not resolution: pros place on the half-tile lattice and 0.499 aligns with it; 0.374 does not.
+
+Measured by the lead: `scratchpad/gauntlet/L62/grid_quant_probe{,2,3}.py` (read-only; no checkpoint, no
+running process touched). Source rows `icebow/data/royaleapi/crawl2/plays_ext.csv` (`attr_card == "x-bow"`,
+2,617 with positions). (a) unless marked.
+
+**A. The grid is not what its docstring says.** `actions.py:5` calls 18x32 "one cell per board tile". Measured
+through `cell_center`, both grids span the SAME box -- columns 1.38..16.57 tiles (x pitch **1.026**, identical at
+both sizes, so this claim is about ROWS only) and rows 7.91..27.62 = **19.7 tiles**, not 32. So 24 rows = 0.499
+tiles/row and 32 rows = 0.374 tiles/row. The docstring is stale relative to the calibrated `arena_box`; nothing
+reads it, but it is what makes "576 = one cell per tile" sound right. **Trap: the 1.333-tiles/row figure that makes
+the owner's mechanism plausible does not exist at any grid size.**
+
+**B. Quantisation on real pro x-bow placements (2,617).**
+
+| grid | row pitch | mean abs dy | p99 abs dy | max abs dy | mean backward | backward > 1 tile |
+| --- | --- | --- | --- | --- | --- | --- |
+| 18x24 (432) | **0.499** | **0.097** | 0.304 | 1.877 | +0.008 | 0.11% |
+| 18x32 (576) | 0.374 | 0.289 | 0.340 | 1.815 | **-0.155** | 0.11% |
+
+The 1.87-tile maxima are the same 3 placements at BOTH sizes -- rows outside the grid's 7.91..27.62 span, clamped to
+the edge row. Resolution does not fix them and 576 does not either. Everything else is bounded by ~0.34 tiles.
+
+**C. The functional test (the owner's actual claim).** x-bow reach 11.5 tiles centre-to-centre + 1.5 tile tower
+radius = 13.0 to tower centre (engine-measured 13.04, §5cs.43); enemy princess towers taken from the sim at
+(3.5, 6.5) / (14.5, 6.5) and (3.5, 25.5) / (14.5, 25.5) tiles, the enemy pair chosen as the one on the other half
+from the placement (avoids the unestablished blue/red -> side mapping). Of 2,617 pro x-bows, **240 are within reach
+of a princess tower** ((b) the other 91% are defensive placements or my 13.0 threshold is too tight -- unverified,
+and it does not affect the comparison since both grids use the same subset):
+- **432: 0 of 240 pushed out of reach, worst distance added +0.000 tiles.**
+- **576: 132 of 240 (55.0%) pushed out of reach, worst +0.340 tiles.**
+Mechanism: pro x-bow placements sit on the HALF-TILE lattice (`tile_y` values are all X.5), 0.499 pitch lands on it,
+0.374 does not. And because an offensive x-bow is placed AT the range boundary, a 0.2-0.3 tile backward shift is
+exactly the difference between hitting the tower and sitting there -- which is why the finer grid is worse.
+
+**D. What IS true, since the owner's observation is real.** The symptom was seen in `sim-view` on
+`engA_kl_m253.pt` -- the COLLAPSED checkpoint (§5cs.46: 0.12 plays/match, gate constant, cell head 1+ nat from the
+pro prior). (b) The most probable cause is the policy choosing the wrong CELL, not the grid quantising the right one:
+at 0.499 tiles/row a ONE-CELL policy error is ~0.5 tiles, which for a boundary-placed x-bow is exactly "sits there
+and does not reach". Note the asymmetry this creates: 576 would shrink a one-cell error to 0.374 tiles, but its
+systematic phase penalty (+0.155 mean backward, 55% out of reach) costs far more than the 0.125 tiles it saves.
+(b) A phase-preserving refinement -- 48 rows at 0.25 tiles/row (864 cells), still aligned to the half-tile lattice --
+would give finer control without the phase cost; NOT recommended now, because it changes `n_cells` and therefore
+invalidates the BC init, both `bc_pro` val sets and the running pair.
+
+**E. Cost of the proposed change, for the record.** `n_cells` is baked into `bc_bias_native_s0.pt` (432), both
+grading val sets, `engine_env.cell_to_engine`, and every engA/engB checkpoint. Switching grids is not a config flip:
+it is a BC re-fit plus a new val set plus a relaunch, i.e. the whole IL pipeline. That cost is why this was measured
+before it was attempted.
+
+**Not established.** Why only 240/2,617 pro x-bows are in tower reach (threshold or frame; (b) worth a look because
+if the frame is off by a row the subset changes -- the 432-vs-576 CONTRAST is robust to it, the absolute 55% is not);
+what actually made the watched x-bow fall short (the collapsed checkpoint is the hypothesis, not a measurement);
+whether the 3 clamped placements matter in play.
