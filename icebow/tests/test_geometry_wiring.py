@@ -196,3 +196,34 @@ class GeometryReachesWorkers(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class GeometryCreditIsAnAndGate(unittest.TestCase):
+    """Owner ruling 2026-09-05: placement and timing are paid as a soft AND. Good timing with a bad placement
+    earns 0; a good placement at a bad time earns ~0; both good earns the full w_time + w_geom."""
+
+    def setUp(self):
+        self.env = SimMatchEnv(make_cfg(True), seed=1)
+        self.env.reset()
+        self.total = self.env.geo_w_time + self.env.geo_w_geom
+
+    def _credit(self, p3, p5, gate=1.0):
+        terms = {"p3_intercept": p3, "p5_timing": p5, "gate": gate}
+        return self.env._geo_credit(terms, "troop")
+
+    def test_both_good_pays_full(self):
+        self.assertAlmostEqual(self._credit(1.0, 1.0), self.total)
+
+    def test_bad_placement_good_timing_pays_zero(self):
+        self.assertEqual(self._credit(0.0, 1.0), 0.0)
+
+    def test_good_placement_bad_timing_pays_zero(self):
+        self.assertEqual(self._credit(1.0, 0.0), 0.0)
+
+    def test_partial_timing_scales_down(self):
+        # the v1 additive form paid 1*0.07 + 2*1*1 = +2.07 here; the AND form pays 3*0.07 = 0.21
+        self.assertAlmostEqual(self._credit(1.0, 0.07), self.total * 0.07)
+        self.assertLess(self._credit(1.0, 0.07), 0.25)
+
+    def test_gate_still_multiplies(self):
+        self.assertAlmostEqual(self._credit(1.0, 1.0, gate=0.5), self.total * 0.5)

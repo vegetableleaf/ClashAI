@@ -1038,14 +1038,17 @@ class SimMatchEnv:
                              float(terms["t_hit"]) + 1.0, 1.5))
 
     def _geo_credit(self, terms, kind: str) -> float:
-        """(w_time * timing_credit + w_geom * placement_credit(kind) * gate) if placement_credit > 0 else 0.
-        Only the PLACEMENT part is gated; the TIMING part is paid only alongside a positive placement
-        part (L59 lead ruling 6.1: a right-role card dropped behind the king at the right time earns
-        nothing, as the old binary's `intercept` required; a building with pull_ok = 0 earns nothing)."""
+        """(w_time + w_geom) * placement_credit(kind) * timing_credit * gate  -- a soft AND (owner ruling,
+        2026-09-05 05:1x): good timing with a bad placement earns nothing, and so does a good placement at a
+        bad time; either factor being partial scales the whole credit down (the "nuance" = P5's 1.5 s bands).
+        The additive v1 form (w_time*P5 + w_geom*place*gate, paid when place > 0) paid a Tesla at hog tile
+        12.3 (P5 0.07) +2.07 -- armG v1 ran 725 episodes on it and was stopped (HANDOFF 5cs.31). `gate` is
+        P5's window widened by pre_place_s on the early edge, so it is 1.0 wherever P5 > 0 and is kept only
+        so the config key means what it says; the max credit is unchanged at w_time + w_geom = 3.0."""
         place = GR.placement_credit(terms, kind, p7_enabled=self.geo_p7_enabled)
         if place > 0.0:
-            credit = (self.geo_w_time * GR.timing_credit(terms)
-                      + self.geo_w_geom * place * float(terms.get("gate", 1.0)))
+            credit = ((self.geo_w_time + self.geo_w_geom) * place * GR.timing_credit(terms)
+                      * float(terms.get("gate", 1.0)))
         else:
             credit = 0.0
         terms["credit"] = credit
@@ -1175,7 +1178,7 @@ class SimMatchEnv:
             return 0.0
         if card_threat.counters(prof, tid):
             if self.geo_enabled:
-                # L59 arm G: `intercept and deep_ok` -> w_time * P5 + w_geom * P3 (P7 only if enabled) x gate.
+                # L59 arm G: `intercept and deep_ok` -> (w_time + w_geom) * P3 (P7 only if enabled) * P5 * gate (soft AND, see _geo_credit).
                 if not budget_ok:
                     return 0.0
                 credit = self._geo_credit(self._geo_terms(card_id, nx, ny), "troop")

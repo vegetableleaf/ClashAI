@@ -1269,9 +1269,11 @@ env:
   # to the pre-L59 code (tests/test_geometry_wiring.py). Read via cfg.get("env", "geometry", key).
   geometry:
     enabled: false        # arm G sets true
+    # credit = (w_time + w_geom) * placement * P5_timing * gate -- a soft AND (owner ruling 2026-09-05: good
+    # timing with a bad placement pays nothing, and neither does a good placement at a bad time). Max 3.0.
     w_geom: 2.0           # HANDOFF 5cs.29: 1/mean restricted band score of c2r_best (0.430), cap 2.0
-    w_time: 1.0           # replaces the binary deep_ok / threat_response credit scale
-    pre_place_s: 3.0      # geometry credit still paid when t_resp is up to this early before t_cross
+    w_time: 1.0           # with w_geom, the total scale (the old flat threat_response credit was 1.0)
+    pre_place_s: 3.0      # early edge of `gate`; since 5cs.31 the P5 factor makes gate redundant (1 wherever P5 > 0)
     p7_enabled: false
     log_all_terms: true   # every term into the ledger even when not paid
 
