@@ -11377,3 +11377,14 @@ the ledger. Live stays log-only.
 (2) YouTube pages fetch as footer-only; `youtube.com/oembed?url=...` returns title + channel, nothing
 else. (3) Compound bash with several heredocs broke again (L57) -- long text goes through the Write
 tool, then a one-line append.
+
+**§5cs.28 addendum (2026-09-04, rev 3).** Owner rulings: Q1 = scale up (gate-calibrated, cap 2.0); obs
+change in run 1 = my call -> NO (doc §7.8, with the two measurements that would flip it). Bridge-block
+table rebuilt from the owner's `clashbot/bridgeblock.mp4` (Abdod): frames every 4 s + the built-in
+Windows `System.Speech` recogniser on the audio (`scratchpad/bb/`; rough but decodable). Headline rule
+from the video: default is NOT to block -- same principle as P5; block only in the listed cases (Hog vs
+X-Bow decks = our primary case; LJ+Balloon; Mighty Miner + Tornado king pull; tank+escort / E-Golem +
+Healer; graveyard escort; Wall Breakers vs single-target; Princess at the bridge). Anti-cases: heavy
+support behind the tank, building-on-bridge vs splash, skeleton-blocking Magic Archer/Firecracker.
+Owner: "you are good to go" -> implementation starts (step 0 sim-view --radii + geometry_reward.py).
+Trap: `SpeechRecognitionEngine.Recognize()` throws at end-of-wave instead of returning null -- catch it.

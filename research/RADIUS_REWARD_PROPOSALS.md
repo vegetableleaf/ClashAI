@@ -300,7 +300,7 @@ penalty  = -w_frag * band(d(counter, t); lo = 0, hi = r_atk(t), w = 0.5)   for s
 ## 6. Open questions for the owner
 
 1. Weights: keep the replaced terms' weights (my default) or scale the graded family up?
-   -> owner asked for the difference before deciding: answered in §7.6. STILL OPEN.
+   -> answered in §7.6; RULED 2026-09-04: scale up, calibrated by the §3 gate.
 2. P5's window uses the FIRST tower hit as the late edge; pros sometimes take one hit deliberately.
    Accept `t_hit - 0.5`, or widen to `t_hit + 1.0`?  -> RULED 2026-09-04: `t_hit + 1.0` (folded into P5).
 3. Arm plan in §2 (G / G+E / E, two at a time) -- or G+E only, accepting the attribution loss?
@@ -398,34 +398,56 @@ tornado  = w_nado * ( sum_u weight_u * away ) / value(push)
 
 ### 7.4 Bridge-blocking: cases to engrain; never penalise an early block
 
-I could not watch the video (the fetch returns only the title: **"When Should you Bridge Block?" --
-Abdod**). The cases below are the standard doctrine as I know it; **please strike or add** -- this is
-the one part of §7 that is not checked against anything measured.
+**Source (rev 3):** the owner's download `clashbot/bridgeblock.mp4` ("When Should you Bridge Block?",
+Abdod, 9:03). I cannot watch video; I read 136 frames (1 per 4 s, `scratchpad/bb/sheet*.png`) and ran
+the built-in Windows recogniser on the audio (`scratchpad/bb/transcript.txt`, `stt.ps1`; no packages
+installed). The transcript is rough ("hog rider" comes out as "hall light") -- every case below is
+decoded from the transcript AND checked against the frames; where I am not sure I say so.
 
-A bridge block = a body placed ON the bridge tile (or just behind it) so a crossing troop is stopped
-at the river instead of on our side. It is correct when at least one of:
+**The video's headline rule, which changes the reward treatment:** *by default do NOT bridge block --
+letting the troop cross so your towers help is the advantage; block only with a specific reason, because
+a block at the wrong time gets punished.* This is the SAME principle P5 already encodes (respond after
+the crossing so the princess tower helps). So a bridge block is not an exception to P5's idea, it is a
+short list of situations where the crossing itself is what you cannot afford. The three block types the
+video names: a **win condition** (hard -- needs a well-placed building or a body exactly on the bridge),
+a **mini-tank** (easy -- any ground card), and a **support troop** you want separated from the push.
 
-| # | Case | Why the tower-support rule (P5) is wrong here |
-|---|------|-----------------------------------------------|
-| B1 | Fast building-targeter (Hog, Royal Hogs, Ram, Battle Ram, Wall Breakers) with our tower already low | it reaches the tower before any counter engages; a Knight/Ice Golem body on the bridge makes it stop where BOTH princesses + the Tesla reach |
-| B2 | Dashing/charging units (Bandit, Prince, Ram) | the charge is broken at the bridge; letting them cross gives the charge |
-| B3 | Splash setup: the enemy stacks support behind a tank at the bridge | holding the tank at the river bunches the push for Tornado/Log/Rocket (Icebow's whole plan) |
-| B4 | Opposite-lane pressure: our X-Bow is locked on the other side | a block buys the bow its lock time; letting the push cross costs the bow |
-| B5 | Double-elixir defence of a single-elixir push already on our side | (not a block; listed to say P5's late edge still applies there) |
+| # | Case (video) | Block it because | Icebow relevance |
+|---|--------------|------------------|------------------|
+| B1 | **Hog Rider in X-Bow / two-building decks** (frames 2:40-3:08: Tesla/X-Bow vs Hog) | the video says X-Bow decks specifically *want* the hog blocked: an offensive X-Bow or a Tesla at the bridge stops the hog where the tower still targets it; "the more universal technique, any deck: block when you cannot afford the chip damage" (tower low) | **primary case** -- this is our deck |
+| B2 | **Lumberjack + Balloon** (frames 0:56-1:32: Balloon, Lumberjack, Minions vs Tesla) | you want the Balloon killed first; a body/building that holds the Lumberjack at the bridge keeps its rage from reaching the Balloon ("the rage drops behind the balloon and gets wasted") | Tesla + Ice Wizard |
+| B3 | **Mighty Miner (mini-tank) + Hog** (frame 2:44) | block the Mighty Miner with Skeletons at the bridge; then Tornado pulls the push to the king -- the king-activation play of §7.3 | Skeletons + Tornado |
+| B4 | **Balloon alone** | only if the tower is so low it cannot take a single hit; otherwise let it cross -- tower help is worth more (transcript: "the only time I'd consider blocking a balloon... if your tower is very low") | rarely |
+| B5 | **Giant / Goblin Giant / tank + escort** (frames 3:28-3:52: Elixir Golem + Battle Healer, Ice Spirit + Guards; Royal Giant 2:04) | hold the tank BEHIND the bridge so the support arrives on our side without it ("fully loaded on your side is a squishy support... guards start eating"); a building on the bridge works for a Giant followed by a Rocket; **Elixir Golem + Healer "is a must to block"** because letting them close lets the healer heal under tower | Knight / Tesla-on-bridge |
+| B6 | **Graveyard tank** (Knight / Barbarians escort) | "bridge blocking is a graveyard player's worst nightmare": block the escort at the bridge so the graveyard is cast without a tank in front | Knight at the bridge |
+| B7 | **Wall Breakers** | depends on the counter: a splash card (Dark Prince) -- do NOT block, let the tower + splash handle it; a single-target slow card (Knight) -- block so the tower helps finish | Knight -> block; Log -> no block |
+| B8 | **Princess at the bridge** | "Tesla is great at bridge blocking Princess; X-Bow players keep [a cheap card] to make sure they never get caught by a surprise princess at the bridge, where tower damage matters" | Tesla / Skeletons |
+| B9 | **Magic Archer / Firecracker** (transcript: skeleton-blocking them "on paper seems good, in practice sucks -- it helps them line up on the tower") | NOT a block case: a body at the bridge lines the archer up on the tower; take them out instead | do NOT credit a bridge body vs these |
+| B10 | **Cards to keep away from the tower** (transcript names "Royal Ghost / [wall breakers?] / Mega Knight" -- uncertain) | play safe: blocking them before they reach tower range denies the chain | uncertain -- owner to confirm |
 
-Not a block (P5 applies unchanged): a lone tank without support (let it walk to the tower), a swarm
-(bridge body dies to it), air (nothing to block).
+Anti-cases the video is explicit about (a bridge body earns NO credit here, and the ordinary P5 early
+ramp applies): (1) **a lot of support behind the tank** -- "any form of blocking can be an issue if they
+have so much stuff behind it: you lose the unit and the push comes fully deployed"; (2) a **building on
+the bridge vs a tank with splash behind it** ("a bad idea"; most buildings are locked for the deploy
+time -- Goblin Cage is the exception); (3) B9 above.
 
-Reward treatment:
+Reward treatment (unchanged in shape, now driven by the table):
 - Detect a block geometrically, not by card: placement within 1.5 tiles of a bridge tile
   (`x in {3.5, 14.5}`, `y in [15, 17.5]`) while an enemy ground unit is in that lane within
   `r_sight(unit) + 3` tiles of the bridge and moving toward it.
-- If detected: **P5 timing credit = full**, no early penalty (`t_resp < t_cross` is exactly the point),
-  and P1/P3 are scored with the bridge tile as the intercept point.
-- Credit only if the block HOLDS: the unit's `d_march` to our tower has not decreased for >= 1.5 s
-  after `T_deploy`, or it retargets the blocker. A body that gets walked past is scored as an ordinary
-  early play (P5's early ramp), which is the "don't pre-place blindly" guard the 08-20 ruling wants.
-- The owner's constraint: **an early block is never negative**. The worst a block can score is 0.
+- `block_case` = 1 if any of B1-B8 holds (recognisable from KB roles + our deck + tower HP: hog-role
+  wincon and we hold a building; balloon-role with a ground escort; mini-tank; tank with escort; escort
+  ahead of a graveyard-role spell; wall-breakers with a single-target counter; princess-role ranged at
+  the bridge), 0 otherwise. Support-count anti-case (1) zeroes it when >= 3 enemy troops trail the tank.
+- If detected and `block_case`: **P5 timing credit = full** (`t_resp < t_cross` is the point), P1/P3
+  scored with the bridge tile as the intercept point.
+- Credit only if the block HOLDS: the unit's `d_march` to our tower has not decreased for >= 1.5 s after
+  `T_deploy`, or it retargets the blocker. A body walked past scores as an ordinary early play.
+- If detected and NOT `block_case`: no P5 credit, no P5 penalty (owner: an early block is never
+  negative). The worst a bridge play can score is 0. The video's "default: don't" is expressed as
+  absence of credit, not as a penalty -- the 08-20 ruling against wait-side terms stands.
+- Ledger: `bridge_block_detected`, `bridge_block_case`, `bridge_block_held` counts per match, so the
+  first read shows whether the policy ever finds these plays at all.
 
 ### 7.5 A taken princess tower is removed from the match
 
@@ -480,3 +502,20 @@ lever and the answer is wrong. Both arms (G and G+E) use the same `w`.
   exploration change).
 - Q4: live path log-only in run 1 -- `geometry_reward.score_placement` runs on the live tracks, its
   per-term values go to reward_stats and the session log, and NOTHING is added to the live reward.
+
+### 7.8 Decisions taken for run 1 (2026-09-04, rev 3)
+
+- **Q1 -> scale up** (owner ruling): `w_geom = 1 / mean(band score of c2r_best's own placements)`,
+  measured by the §3 gate, capped at 2.0; same `w` in G and G+E.
+- **Obs change in run 1 -> NO** (owner left it to me). Reasons, in order of weight: (1) attributability
+  -- run 1 is the reward change alone, resumable from `c2r_best` (36k episodes of trunk we would
+  otherwise discard; a new first-conv cannot resume); (2) the pros' modal Tesla tile (9,21) is inside
+  the band for every wincon in the whitelist, so the role-average band the model CAN derive credits the
+  right tile -- the per-card difference is at the band EDGES, not at the optimum; (3) live, an identity
+  channel is bounded by detector recall 0.4-0.6 for Hog/Giant/PEKKA, so half the time it would be empty
+  anyway. What would flip this: the §3 gate showing the pros' tile ranks differently under role-average
+  radii (then identity matters at the optimum, not just the edges), or the cheap linear probe on
+  `c2r_best` features showing card identity is absent AND the G arm moving the Tesla toward the band
+  edge rather than the centre. Both measurements are in the gate step, so the decision is revisited
+  with numbers before arm 2 launches.
+- **Bridge-block table** rebuilt from the owner's video (§7.4); B10 stays marked uncertain.
