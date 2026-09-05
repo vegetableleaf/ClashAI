@@ -462,8 +462,16 @@ slow one.
 collapse, the KL leash prevents forgetting, and neither buys any pro agreement. **The box is idle.**
 
 **The new gauntlet ARRIVED 2026-09-05 22:0x (L63, §5cs.52): scrap the pipeline, research, propose a new one,
-then implement with a live-training final layer. Research phase running; proposal next loop, gated on five
-owner questions in §5cs.52.** The pre-gauntlet candidate list is kept for reference: Until it arrives, the standing candidates, ranked by the lead:
+then implement with a live-training final layer. Research phase running; proposal next loop.**
+
+**OWNER RULINGS 2026-09-05 22:4x (answers to the §5cs.52 questions; do not re-litigate):**
+1. Live-play path MAY be touched for this gauntlet (guardrail superseded for this gauntlet only).
+2. The real engine (cr-native-sandbox) is IN as a training / proxy environment -- "the highest fidelity
+   environment we have outside the actual game". Sim, its reward, PPO/DQN trainers, policy net: dropped.
+3. The live session behind the "worse than a scripted bot" report used the **KL checkpoint** (engB_kl_*), i.e. the
+   init-equivalent policy (15.64 top-1) -- the report is a read of the BC init on screen-detector observations.
+4. Budget: unlimited box time for now; cloud compute if free via student programmes, otherwise quote the price first.
+5. Proxy gates allowed (agreement-with-play-rate -> engine winrate n>=100 -> live); **live grading has the final say.** The pre-gauntlet candidate list is kept for reference: Until it arrives, the standing candidates, ranked by the lead:
 1. **Improve the imitation, not the RL.** The 15.44/46.61 init is the ceiling everything else is
    measured against, and it was fit on ~1,000 pro boards. More replays (the crawler is still running;
    deck pool 314 -> 587 with the x/y backfill, owner's bar is >1,000) and/or a better BC recipe is
