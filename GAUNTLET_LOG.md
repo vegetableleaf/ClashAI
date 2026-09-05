@@ -1294,3 +1294,9 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Diagnosis carried forward (a): underfit board-blind model (17.6/15.4, cos 0.991), PG no gain in 4 arms, sim 26% vs engine 78%, live 1.3%/957.
 - Questions: approve; live-grading mode + block size; crawler stalled on Cloudflare clearance since 17:16 UTC (restart?); cloud for S3.
 - Box: nothing training; python 3; qemu UP, guest services dead.
+
+## L62m -- 2026-09-05 22:0x UTC -- wave-4 crawl finished unattended; corpus measured (HANDOFF §5cs.52)
+- Crawl DONE: 565 new replays in 478 min, exit 0; both crawler PIDs exited. Box now has ONE python (owner's uvicorn). Nothing training, nothing crawling.
+- Corpus: 1,253 battles, 1,237 with plays, **625 (49.9%) with x/y**; 109,963 play rows, 54,148 (49.2%) with x/y; opponent decks 781 raw but **435 usable**. Owner's bar is >1,000 decks -> the real gap is 435->1,000, not 781->1,000.
+- Reading: the x/y-less half is the binding constraint on both board count and deck pool, and has been ~50% across waves. Cheapest next measurement is WHY (untested), not another wave.
+- No experiment run; no re-fit attempted; BC init on disk unchanged.

@@ -2441,3 +2441,34 @@ Verified lossless: every line of the pre-split HANDOFF and of the previous archi
 one of the two files. Pre-split backup: `scratchpad/gauntlet/L62/HANDOFF_prespllit_backup.md`.
 TRAP: the archive file ALREADY EXISTED -- a split script that does `write_text` on it destroys the
 previous split. Append, or read-merge first.
+
+### §5cs.52 -- L62m (2026-09-05 22:0x UTC, background task completed unattended): **THE WAVE-4 CRAWL FINISHED AND THE IMITATION CORPUS IS STILL ONLY ~HALF-USABLE -- 1,253 battles on disk but only 625 (49.9%) carry x/y placement coordinates, and the usable opponent-deck pool is 435, not the 781 the raw battle file suggests.** The owner's bar for the deck pool is >1,000, so the honest gap is 435 -> 1,000, more than double, NOT the "781, nearly there" a naive count gives.
+
+Measured this loop from `icebow/data/royaleapi/crawl2/` (the crawl's own output; no experiment run, box idle).
+Crawl log `scratchpad/gauntlet/L61/crawl_icebow_wave4.log`: **"DONE: 565 new replays in 478 min"**, exit 0; the two
+crawler processes (29444 / 53824) exited on their own -- the guarded process list is now the owner's uvicorn alone.
+(a) unless marked.
+
+| quantity | value |
+| --- | --- |
+| battles rows | 1,253 |
+| replay tags with any plays | 1,237 |
+| **replay tags with x/y coordinates** | **625 (49.9%)** |
+| play rows total / with x/y | 109,963 / **54,148 (49.2%)** |
+| opponent decks, all battles | 781 |
+| **opponent decks, USABLE (x/y present)** | **435** |
+| usable battles by result | 413 win / 212 loss |
+
+**Why this matters for the next direction.** §5cs.51 ranked "improve the imitation, not the RL" first, and the BC
+init that everything failed to beat (15.44/46.61) was fit on ~1,000 pro boards. The corpus can supply more -- 54,148
+placement rows now carry coordinates -- but the x/y-less half is the binding constraint on BOTH the board count and
+the deck pool, and it has been at ~50% across waves (§5cs.41 recorded the same shape at a smaller scale). **The
+cheapest next measurement is not another crawl wave: it is finding out WHY half the replays have no coordinates**
+(b -- untested; candidates are the RateLimited errors visible in the log tail, the clearance-renewal path, and a
+replay format the parser drops silently). A wave that doubles the battles at the same 50% yield doubles the wasted
+half too.
+
+**Not established.** Whether the 565 new replays actually lift the BC fit (untested -- no re-fit was run; the init
+on disk is unchanged); whether the x/y-less half is recoverable by a re-parse or needs a re-fetch; whether deck
+POOL size or board COUNT is the thing that limits the imitation ceiling (b -- these are different experiments, and
+the owner's >1,000 bar is about the pool).
