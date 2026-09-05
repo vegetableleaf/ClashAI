@@ -1,0 +1,309 @@
+{
+ "n_pool": 447,
+ "result": {
+  "win": 337,
+  "loss": 110
+ },
+ "mirror": 2,
+ "engine_verified": 211,
+ "engine_verified_position_based": 204,
+ "engine_verified_crowns_match": 164,
+ "refused_total": 701,
+ "refused_by_reason": {
+  "play_not_positioned": 574,
+  "no_native_evolution_form": 111,
+  "no_plays_rows": 15,
+  "side0_no_positioned_plays": 1
+ },
+ "refused_evo_slugs": {
+  "elite-barbarians": 111
+ },
+ "refused_hero": {},
+ "distinct_ghost_decks": 314,
+ "ghost_decks_seen_once": 259,
+ "ghost_deck_freq_hist": {
+  "1": 259,
+  "2": 27,
+  "3": 6,
+  "4": 10,
+  "5": 3,
+  "6": 4,
+  "7": 4,
+  "9": 1
+ },
+ "top10_ghost_decks": [
+  {
+   "n": 9,
+   "deck": "barbarian-barrel,battle-ram-evo,giant-skeleton,mother-witch,royal-ghost-evo,vines,wizard-her,zappies"
+  },
+  {
+   "n": 7,
+   "deck": "cannon,dart-goblin,goblin-barrel-evo,ice-spirit,princess,skeleton-army-evo,valkyrie-her,wall-breakers"
+  },
+  {
+   "n": 7,
+   "deck": "balloon-her,barbarian-barrel,bomb-tower,giant-snowball,ice-golem,miner,musketeer-evo,skeletons-evo"
+  },
+  {
+   "n": 7,
+   "deck": "archers-evo,barbarian-barrel,bomb-tower,electro-spirit,goblinstein,lightning,royal-hogs-evo,skeletons"
+  },
+  {
+   "n": 7,
+   "deck": "cannon-evo,fireball,hog-rider,ice-golem,ice-spirit,musketeer-her,skeletons-evo,the-log"
+  },
+  {
+   "n": 6,
+   "deck": "archers-evo,electro-spirit,fireball,knight-her,skeletons,tesla-evo,the-log,x-bow"
+  },
+  {
+   "n": 6,
+   "deck": "arrows,elixir-golem,lightning,night-witch,rage,skeleton-army-evo,skeleton-king,witch-evo"
+  },
+  {
+   "n": 6,
+   "deck": "barbarian-barrel,cannon-cart,fireball,goblin-gang,goblinstein,minion-horde-evo,mortar-evo,mother-witch"
+  },
+  {
+   "n": 6,
+   "deck": "baby-dragon-evo,balloon,barbarian-barrel,bowler,freeze,inferno-dragon-evo,knight-her,tornado"
+  },
+  {
+   "n": 5,
+   "deck": "archer-queen,barbarian-barrel,electro-spirit,fireball,goblin-hut,royal-ghost-evo,royal-hogs-evo,skeletons"
+  }
+ ],
+ "distinct_ghost_card_variants": 170,
+ "distinct_ghost_card_base_slugs": 120,
+ "top15_ghost_cards": [
+  {
+   "card": "barbarian-barrel",
+   "n_decks": 132
+  },
+  {
+   "card": "the-log",
+   "n_decks": 104
+  },
+  {
+   "card": "fireball",
+   "n_decks": 102
+  },
+  {
+   "card": "skeletons",
+   "n_decks": 100
+  },
+  {
+   "card": "tornado",
+   "n_decks": 87
+  },
+  {
+   "card": "arrows",
+   "n_decks": 83
+  },
+  {
+   "card": "lightning",
+   "n_decks": 71
+  },
+  {
+   "card": "electro-spirit",
+   "n_decks": 66
+  },
+  {
+   "card": "hog-rider",
+   "n_decks": 61
+  },
+  {
+   "card": "ice-spirit",
+   "n_decks": 56
+  },
+  {
+   "card": "zap",
+   "n_decks": 51
+  },
+  {
+   "card": "berserker-her",
+   "n_decks": 51
+  },
+  {
+   "card": "skeleton-army-evo",
+   "n_decks": 50
+  },
+  {
+   "card": "inferno-dragon-evo",
+   "n_decks": 49
+  },
+  {
+   "card": "baby-dragon-evo",
+   "n_decks": 46
+  }
+ ],
+ "ghost_cards_in_1_deck_only": 4,
+ "distinct_opponent_players": 437,
+ "distinct_icebow_players": 83,
+ "saturation_pool": [
+  {
+   "battles": 50,
+   "distinct_decks": 49
+  },
+  {
+   "battles": 100,
+   "distinct_decks": 93
+  },
+  {
+   "battles": 200,
+   "distinct_decks": 169
+  },
+  {
+   "battles": 300,
+   "distinct_decks": 231
+  },
+  {
+   "battles": 444,
+   "distinct_decks": 312
+  }
+ ],
+ "new_deck_rate_last_100": 0.562,
+ "corpus_battles": 1148,
+ "corpus_distinct_ghost_decks": 715,
+ "corpus_ghost_decks_seen_once": 598,
+ "saturation_corpus": [
+  {
+   "battles": 100,
+   "distinct_decks": 87
+  },
+  {
+   "battles": 250,
+   "distinct_decks": 203
+  },
+  {
+   "battles": 500,
+   "distinct_decks": 357
+  },
+  {
+   "battles": 750,
+   "distinct_decks": 493
+  },
+  {
+   "battles": 1000,
+   "distinct_decks": 644
+  },
+  {
+   "battles": 1148,
+   "distinct_decks": 715
+  }
+ ],
+ "rating_present": 447,
+ "rating_missing": 0,
+ "rating_stats": {
+  "min": 1923,
+  "p10": 2072,
+  "median": 2282,
+  "p90": 2762,
+  "max": 3429,
+  "mean": 2332.1
+ },
+ "rating_buckets_500": {
+  "1500": 8,
+  "2000": 363,
+  "2500": 52,
+  "3000": 24
+ },
+ "rank_present": 447,
+ "rank_stats": {
+  "min": 1,
+  "median": 28,
+  "max": 99
+ },
+ "opponent_rating_column_exists": false,
+ "battles_csv_columns": [
+  "replay_tag",
+  "deck",
+  "player_tag",
+  "player_name",
+  "clan_tag",
+  "rating",
+  "rank",
+  "wins_7d",
+  "battle_time",
+  "battle_timestamp",
+  "battle_type",
+  "result",
+  "team_tags",
+  "opponent_tags",
+  "team_crowns",
+  "opponent_crowns",
+  "team_deck",
+  "opponent_deck",
+  "team_elixir_total",
+  "team_elixir_troop",
+  "team_elixir_building",
+  "team_elixir_spell",
+  "team_elixir_leaked",
+  "oppo_elixir_total",
+  "oppo_elixir_troop",
+  "oppo_elixir_building",
+  "oppo_elixir_spell",
+  "oppo_elixir_leaked",
+  "plays"
+ ],
+ "ghost_plays_per_match": {
+  "mean": 45.07,
+  "median": 47,
+  "min": 2,
+  "max": 81,
+  "total": 20145
+ },
+ "icebow_plays_per_match": {
+  "mean": 47.87,
+  "median": 54,
+  "min": 1,
+  "max": 71,
+  "total": 21397
+ },
+ "ghost_gap_seconds": {
+  "n": 19698,
+  "mean": 5.39,
+  "median": 4.1,
+  "p10": 1.55,
+  "p90": 11.0,
+  "max": 80.65,
+  "zero_gap_same_tick": 3
+ },
+ "ghost_gap_mean_of_match_means": 5.9,
+ "match_seconds_last_play": {
+  "mean": 254.2,
+  "median": 290.2,
+  "min": 34.4,
+  "max": 298.9
+ },
+ "ghost_ability_presses": 1000,
+ "icebow_ability_presses": 26,
+ "matches_with_ghost_ability": 336,
+ "ghost_cmds_unmapped_sim_key": 0,
+ "deck_cards_unmapped_sim_key": [],
+ "ghost_deal_candidates": {
+  "mean": 256.5,
+  "median": 256,
+  "unique_1": 0,
+  "max": 480
+ },
+ "final_crowns_ghost": {
+  "0": 333,
+  "1": 95,
+  "2": 2,
+  "3": 17
+ },
+ "final_crowns_icebow": {
+  "0": 107,
+  "1": 324,
+  "2": 5,
+  "3": 11
+ },
+ "battle_types": {
+  "pathOfLegend": 434,
+  "trail": 6,
+  "PvP": 3,
+  "clanMate": 3,
+  "friendly": 1
+ }
+}

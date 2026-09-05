@@ -1,0 +1,13 @@
+{
+ "would_convert_if_positioned": 473,
+ "already_converted": 447,
+ "deck_no_native_evolution_form": 207,
+ "no_plays_rows": 15,
+ "no_consistent_deal": 4,
+ "play_outside_deck": 1,
+ "side_no_plays": 1,
+ "recoverable_distinct_ghost_decks": 336,
+ "recoverable_decks_NOT_in_pool": 273,
+ "pool_distinct_ghost_decks": 314,
+ "union_distinct_ghost_decks": 587
+}

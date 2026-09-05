@@ -1193,3 +1193,14 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
   s/match with a policy in the loop, ghost rejection rate as the match diverges, deck/rating coverage.
 - The sim survives as the obs RENDERER (the adapter drives _update_vectors) and as the fast smoke env; its reward and
   opponent are what is retired.
+
+## L62b -- 2026-09-05 17:3x UTC -- ghost pool built; owner's Q2 targets measured against the corpus
+- Pool: 447/1,148 battles convert (337 W / 110 L), 314 distinct opponent decks (259 once), 437 humans, 45 ghost plays/match.
+- (c) 10,000 distinct decks NOT reachable by mining: whole corpus 715 decks, 0.56 new/battle and falling (~20-30k battles, extrapolated).
+- (c) No trophy-range coverage: 434/447 Path of Legend (no trophy number), no opponent rating column at all, 81% in one 500-pt band.
+- Cheapest 2x: crawler x/y backfill -> +473 battles, +273 decks (574 replays carry no positions at all).
+- Ghost reactivity: 59.4% of ghost plays within 3 s of an icebow play vs 51.5% null -> ~1 in 12 is a reaction replay destroys.
+- Holes: 5.0% of ghost actions are ability presses the driver drops; 0/447 timelines reach overtime; hand never unique (median 256 deals).
+- Collision: env agent's 202-row pool overwritten at pool.jsonl -> env builder moved to pool_env_v0.jsonl. Trap: disjoint OUTPUT paths per agent.
+- Owner ask: sim_view debugger -> engine. Yes, one renderer two feeds; radii/P1/term readout carry over via the L61 adapter; agent dispatched (L62/engine_view).
+- Outlook: env agent still running (s/match, rejection-vs-time, determinism); then PPO-on-engine + KL control pair. Supply probe for trophy-road players is now mandatory before any "10k replays" promise.
