@@ -1213,3 +1213,11 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Sanity 40 matches greedy BC: 4W/36L, 168.6 s mean; humans went 26W/14L on the same battles. Baseline.
 - Limits: fixed seed 424242, levels 11, no ghost reaction, PPO-on-unshaped-reward untested.
 - Next: standalone engine PPO driver; pair control vs KL-to-prior, one slot each, same init/seed; grade by pro agreement.
+
+## L62d -- 2026-09-05 18:1x UTC -- sim_view debugger on the engine (owner ask)
+- One renderer, two feeds: L62/engine_view.py builds an EngineView the unchanged render_frame accepts; radii/P1/term readout intact; 52/52 sim_view tests.
+- (a) pixel checks: tower px error 0 vs SimMatchEnv, mirror exact, radii +5,197 px, P1 band +42,603 px; 1.74 ms/frame; 0 unmapped over 211 recordings.
+- (a) FIRST GROUND-TRUTH READ OF THE RADIUS TABLE: engine reach is centre-to-target-EDGE; table right to 0.1-0.35 for cannon/x_bow/tesla/ice_wiz, but drawn rings + reward P-terms use bare reach -> 0.5-1.0 tiles short. Princess tower first shot 8.48 edge (>= acquisition), table 8.0, wiki 7.5.
+- (c) lingering zones NOT in the bridge's effects (23,169/23,169 frames effects==projectiles). (a) recorder dropped target/timers/ability/level -- one-line recorder change + re-record recovers them.
+- (b) kind 14 = "cannot act" (also flips on frozen/knocked bodies), not only deploying -- the policy obs deploying channel inherits this.
+- Not wired to the live env yet (next: one render call per decision on EngineMatchEnv; ghost staleness marker).

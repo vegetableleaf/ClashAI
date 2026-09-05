@@ -1,0 +1,739 @@
+{
+ "Tesla": {
+  "n_first_shots": 0,
+  "d_body_tiles": {
+   "max": null,
+   "p90": null,
+   "median": null,
+   "min": null
+  },
+  "d_body_troop_targets": {
+   "n": 0,
+   "max": null,
+   "p90": null,
+   "median": null
+  },
+  "d_txy_tiles": {
+   "max": null,
+   "median": null
+  },
+  "d_edge_tiles": {
+   "max": null,
+   "p90": null,
+   "median": null
+  },
+  "radii_of": [
+   5.5,
+   5.5
+  ],
+  "sim_key": "tesla",
+  "n_shots_total": 0,
+  "top_first_shots": [],
+  "first_shots": []
+ },
+ "Cannon": {
+  "n_first_shots": 3,
+  "d_body_tiles": {
+   "max": 6.34,
+   "p90": 6.33,
+   "median": 6.29,
+   "min": 5.55
+  },
+  "d_body_troop_targets": {
+   "n": 3,
+   "max": 6.34,
+   "p90": 6.33,
+   "median": 6.29
+  },
+  "d_txy_tiles": {
+   "max": 6.34,
+   "median": 6.29
+  },
+  "d_edge_tiles": {
+   "max": 5.84,
+   "p90": 5.83,
+   "median": 5.79
+  },
+  "radii_of": [
+   5.5,
+   5.5
+  ],
+  "sim_key": "cannon",
+  "n_shots_total": 305,
+  "top_first_shots": [
+   [
+    2634,
+    6.34,
+    6.34,
+    "0:Cannon:9500:9500",
+    "Knight",
+    0,
+    5.84
+   ],
+   [
+    4622,
+    6.29,
+    6.29,
+    "0:Cannon:9500:13500",
+    "Knight",
+    0,
+    5.79
+   ],
+   [
+    867,
+    5.55,
+    5.61,
+    "0:Cannon:9500:9500",
+    "Knight",
+    0,
+    5.05
+   ]
+  ],
+  "first_shots": [
+   [
+    867,
+    5.55,
+    5.61,
+    "0:Cannon:9500:9500",
+    "Knight",
+    0,
+    5.05
+   ],
+   [
+    2634,
+    6.34,
+    6.34,
+    "0:Cannon:9500:9500",
+    "Knight",
+    0,
+    5.84
+   ],
+   [
+    4622,
+    6.29,
+    6.29,
+    "0:Cannon:9500:13500",
+    "Knight",
+    0,
+    5.79
+   ]
+  ]
+ },
+ "Xbow": {
+  "n_first_shots": 3,
+  "d_body_tiles": {
+   "max": 13.04,
+   "p90": 12.892,
+   "median": 12.3,
+   "min": 10.69
+  },
+  "d_body_troop_targets": {
+   "n": 2,
+   "max": 12.3,
+   "p90": 12.139000000000001,
+   "median": 11.495000000000001
+  },
+  "d_txy_tiles": {
+   "max": 13.04,
+   "median": 12.36
+  },
+  "d_edge_tiles": {
+   "max": 11.6,
+   "p90": 11.588,
+   "median": 11.54
+  },
+  "radii_of": [
+   11.5,
+   11.5
+  ],
+  "sim_key": "x_bow",
+  "n_shots_total": 281,
+  "top_first_shots": [
+   [
+    5083,
+    13.04,
+    13.04,
+    "1:Xbow:13500:19500",
+    "-1",
+    1,
+    11.54
+   ],
+   [
+    4245,
+    12.3,
+    12.36,
+    "1:Xbow:7500:23500",
+    "IceGolemite",
+    0,
+    11.6
+   ],
+   [
+    4537,
+    10.69,
+    10.69,
+    "1:Xbow:7500:23500",
+    "IceGolemite",
+    0,
+    9.99
+   ]
+  ],
+  "first_shots": [
+   [
+    4245,
+    12.3,
+    12.36,
+    "1:Xbow:7500:23500",
+    "IceGolemite",
+    0,
+    11.6
+   ],
+   [
+    4537,
+    10.69,
+    10.69,
+    "1:Xbow:7500:23500",
+    "IceGolemite",
+    0,
+    9.99
+   ],
+   [
+    5083,
+    13.04,
+    13.04,
+    "1:Xbow:13500:19500",
+    "-1",
+    1,
+    11.54
+   ]
+  ]
+ },
+ "Musketeer": {
+  "n_first_shots": 8,
+  "d_body_tiles": {
+   "max": 8.88,
+   "p90": 7.585,
+   "median": 6.635,
+   "min": 1.03
+  },
+  "d_body_troop_targets": {
+   "n": 8,
+   "max": 8.88,
+   "p90": 7.585,
+   "median": 6.635
+  },
+  "d_txy_tiles": {
+   "max": 8.98,
+   "median": 6.665
+  },
+  "d_edge_tiles": {
+   "max": 8.38,
+   "p90": 7.085,
+   "median": 6.109999999999999
+  },
+  "radii_of": [
+   6.0,
+   6.0
+  ],
+  "sim_key": "musketeer",
+  "n_shots_total": 177,
+  "top_first_shots": [
+   [
+    3340,
+    8.88,
+    8.98,
+    "0:Musketeer",
+    "Skeletons",
+    0,
+    8.38
+   ],
+   [
+    1165,
+    7.03,
+    7.03,
+    "0:Musketeer",
+    "IceWizard",
+    0,
+    6.53
+   ],
+   [
+    4398,
+    7.03,
+    7.03,
+    "0:Musketeer",
+    "Xbow",
+    0,
+    6.43
+   ],
+   [
+    3693,
+    6.98,
+    6.98,
+    "0:Musketeer",
+    "IceWizard",
+    0,
+    6.48
+   ],
+   [
+    3461,
+    6.29,
+    6.35,
+    "0:Musketeer",
+    "Knight",
+    0,
+    5.79
+   ],
+   [
+    1813,
+    5.52,
+    5.52,
+    "0:Musketeer",
+    "Tesla",
+    0,
+    5.02
+   ]
+  ],
+  "first_shots": [
+   [
+    1165,
+    7.03,
+    7.03,
+    "0:Musketeer",
+    "IceWizard",
+    0,
+    6.53
+   ],
+   [
+    1415,
+    2.16,
+    2.16,
+    "0:Musketeer",
+    "Knight",
+    0,
+    1.66
+   ],
+   [
+    1813,
+    5.52,
+    5.52,
+    "0:Musketeer",
+    "Tesla",
+    0,
+    5.02
+   ],
+   [
+    2082,
+    1.03,
+    1.03,
+    "0:Musketeer",
+    "Skeletons",
+    0,
+    0.53
+   ],
+   [
+    3340,
+    8.88,
+    8.98,
+    "0:Musketeer",
+    "Skeletons",
+    0,
+    8.38
+   ],
+   [
+    3461,
+    6.29,
+    6.35,
+    "0:Musketeer",
+    "Knight",
+    0,
+    5.79
+   ],
+   [
+    3693,
+    6.98,
+    6.98,
+    "0:Musketeer",
+    "IceWizard",
+    0,
+    6.48
+   ],
+   [
+    4398,
+    7.03,
+    7.03,
+    "0:Musketeer",
+    "Xbow",
+    0,
+    6.43
+   ]
+  ]
+ },
+ "IceWizard": {
+  "n_first_shots": 6,
+  "d_body_tiles": {
+   "max": 6.94,
+   "p90": 6.635,
+   "median": 6.015000000000001,
+   "min": 1.4
+  },
+  "d_body_troop_targets": {
+   "n": 5,
+   "max": 6.33,
+   "p90": 6.246,
+   "median": 5.91
+  },
+  "d_txy_tiles": {
+   "max": 6.94,
+   "median": 6.02
+  },
+  "d_edge_tiles": {
+   "max": 5.63,
+   "p90": 5.535,
+   "median": 5.365
+  },
+  "radii_of": [
+   5.5,
+   5.5
+  ],
+  "sim_key": "ice_wizard",
+  "n_shots_total": 143,
+  "top_first_shots": [
+   [
+    3032,
+    6.94,
+    6.94,
+    "1:IceWizard",
+    "-1",
+    1,
+    5.44
+   ],
+   [
+    2808,
+    6.33,
+    6.34,
+    "1:IceWizard",
+    "IceGolemite",
+    0,
+    5.63
+   ],
+   [
+    3667,
+    6.12,
+    6.14,
+    "1:IceWizard",
+    "IceGolemite",
+    0,
+    5.42
+   ],
+   [
+    2763,
+    5.91,
+    5.9,
+    "1:IceWizard",
+    "HogRider",
+    0,
+    5.31
+   ],
+   [
+    1170,
+    1.51,
+    1.47,
+    "1:IceWizard",
+    "HogRider",
+    0,
+    0.91
+   ],
+   [
+    1787,
+    1.4,
+    1.42,
+    "1:IceWizard",
+    "IceGolemite",
+    0,
+    0.7
+   ]
+  ],
+  "first_shots": [
+   [
+    1170,
+    1.51,
+    1.47,
+    "1:IceWizard",
+    "HogRider",
+    0,
+    0.91
+   ],
+   [
+    1787,
+    1.4,
+    1.42,
+    "1:IceWizard",
+    "IceGolemite",
+    0,
+    0.7
+   ],
+   [
+    2763,
+    5.91,
+    5.9,
+    "1:IceWizard",
+    "HogRider",
+    0,
+    5.31
+   ],
+   [
+    2808,
+    6.33,
+    6.34,
+    "1:IceWizard",
+    "IceGolemite",
+    0,
+    5.63
+   ],
+   [
+    3032,
+    6.94,
+    6.94,
+    "1:IceWizard",
+    "-1",
+    1,
+    5.44
+   ],
+   [
+    3667,
+    6.12,
+    6.14,
+    "1:IceWizard",
+    "IceGolemite",
+    0,
+    5.42
+   ]
+  ]
+ },
+ "-1": {
+  "n_first_shots": 31,
+  "d_body_tiles": {
+   "max": 8.98,
+   "p90": 8.89,
+   "median": 8.05,
+   "min": 5.89
+  },
+  "d_body_troop_targets": {
+   "n": 31,
+   "max": 8.98,
+   "p90": 8.89,
+   "median": 8.05
+  },
+  "d_txy_tiles": {
+   "max": 8.98,
+   "median": 8.1
+  },
+  "d_edge_tiles": {
+   "max": 8.48,
+   "p90": 8.29,
+   "median": 7.52
+  },
+  "radii_of": {
+   "princess": [
+    8.0,
+    8.0
+   ],
+   "king": [
+    8.5,
+    8.5
+   ]
+  },
+  "sim_key": "tower",
+  "n_shots_total": 1904,
+  "top_first_shots": [
+   [
+    3528,
+    8.98,
+    8.98,
+    "1:princess:right:princess",
+    "Skeletons",
+    0,
+    8.48
+   ],
+   [
+    3395,
+    8.93,
+    8.93,
+    "1:princess:left:princess",
+    "HogRider",
+    0,
+    8.33
+   ],
+   [
+    1165,
+    8.91,
+    8.91,
+    "1:princess:right:princess",
+    "IceGolemite",
+    0,
+    8.21
+   ],
+   [
+    1240,
+    8.89,
+    8.89,
+    "1:princess:left:princess",
+    "HogRider",
+    0,
+    8.29
+   ],
+   [
+    3389,
+    8.89,
+    8.89,
+    "1:king:None:king",
+    "HogRider",
+    0,
+    8.29
+   ],
+   [
+    4708,
+    8.74,
+    8.74,
+    "0:princess:right:princess",
+    "Knight",
+    0,
+    8.24
+   ]
+  ],
+  "first_shots": [
+   [
+    192,
+    7.12,
+    7.24,
+    "1:princess:left:princess",
+    "HogRider",
+    0,
+    6.52
+   ],
+   [
+    542,
+    7.54,
+    7.63,
+    "0:princess:right:princess",
+    "Skeletons",
+    0,
+    7.04
+   ],
+   [
+    559,
+    7.49,
+    7.58,
+    "0:princess:left:princess",
+    "Skeletons",
+    0,
+    6.99
+   ],
+   [
+    832,
+    7.98,
+    8.04,
+    "0:princess:right:princess",
+    "Knight",
+    0,
+    7.48
+   ],
+   [
+    1165,
+    8.91,
+    8.91,
+    "1:princess:right:princess",
+    "IceGolemite",
+    0,
+    8.21
+   ],
+   [
+    1240,
+    8.89,
+    8.89,
+    "1:princess:left:princess",
+    "HogRider",
+    0,
+    8.29
+   ],
+   [
+    1402,
+    8.08,
+    8.08,
+    "1:princess:right:princess",
+    "Musketeer",
+    0,
+    7.58
+   ],
+   [
+    1545,
+    8.04,
+    8.1,
+    "0:princess:right:princess",
+    "Knight",
+    0,
+    7.54
+   ]
+  ]
+ },
+ "Tesla_hitscan": {
+  "method": "hp-drop == 220 while a Tesla exists (no Tesla projectile in the recording)",
+  "n": 26,
+  "d_body_tiles": {
+   "max": 6.27,
+   "p90": 5.415,
+   "median": 2.7649999999999997
+  },
+  "d_edge_tiles": {
+   "max": 5.57,
+   "p90": 4.765000000000001
+  },
+  "tesla_kinds": {
+   "13": 26
+  },
+  "targets": {
+   "HogRider": 17,
+   "IceGolemite": 9
+  },
+  "radii_of": [
+   5.5,
+   5.5
+  ],
+  "top": [
+   [
+    3333,
+    "IceGolemite",
+    6.27,
+    5.57,
+    13
+   ],
+   [
+    2931,
+    "IceGolemite",
+    6.1,
+    5.4,
+    13
+   ],
+   [
+    2730,
+    "HogRider",
+    5.48,
+    4.88,
+    13
+   ],
+   [
+    3355,
+    "IceGolemite",
+    5.35,
+    4.65,
+    13
+   ],
+   [
+    1825,
+    "HogRider",
+    5.06,
+    4.46,
+    13
+   ]
+  ]
+ }
+}
