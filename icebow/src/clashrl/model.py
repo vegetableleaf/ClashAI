@@ -114,6 +114,22 @@ class PolicyNet(nn.Module):
             nn.Conv2d(48, 24, 1), nn.ReLU(inplace=True),
             nn.Conv2d(24, _cell_out, 1),
         )
+        # PER-CARD CELL BIAS MAP (2026-09-05, owner-approved; HANDOFF 5cs.36/5cs.37). One
+        # board-independent logit per (card, cell), added to the conv map BEFORE the tanh cap. The
+        # conv head has no coordinate input, so "x-bow goes at the river" -- a fixed place, not a
+        # feature at a place -- is out of its function class: three BC attempts left x_bow at 0/91
+        # held-out pro placements, and the head sat below the board-blind per-card prior
+        # (13.65 / 40.04 top-1 / top-5). Initialised from that prior (log(count+1) over the pro
+        # corpus) and fine-tuned, the same head reaches 15.4 / 46.6 on sim boards and 15.0 / 43.5 on
+        # real-engine boards; zero-initialised it changes nothing, and checkpoints written before
+        # this parameter existed load with a zero map (see load_state_dict).
+        self.cell_bias_map = nn.Parameter(torch.zeros(n_cards, n_cells))
+
+    def load_state_dict(self, state_dict, strict: bool = True, **kw):
+        if "cell_bias_map" not in state_dict:        # pre-2026-09-05 checkpoint: zero map == old net
+            state_dict = dict(state_dict)
+            state_dict["cell_bias_map"] = torch.zeros_like(self.cell_bias_map)
+        return super().load_state_dict(state_dict, strict=strict, **kw)
 
     @staticmethod
     def load_compat(policy, state: dict) -> "list[str]":
@@ -131,6 +147,8 @@ class PolicyNet(nn.Module):
         own = policy.state_dict()
         keep = {k: v for k, v in state.items()
                 if k in own and tuple(own[k].shape) == tuple(v.shape)}
+        if "cell_bias_map" not in keep:          # absent == zero map, not a dropped tensor
+            keep["cell_bias_map"] = torch.zeros_like(own["cell_bias_map"])
         dropped = sorted(set(own) - set(keep))
         policy.load_state_dict(keep, strict=False)
         return dropped
@@ -172,7 +190,7 @@ class PolicyNet(nn.Module):
             # so the gradient from every card accumulates into the SAME map -- which is the point:
             # 10x fewer parameters fed by 10x the samples.
             cells = cells.expand(-1, self.n_cards, -1)
-        return cells                                              # (B, n_cards, gh*gw)
+        return cells + self.cell_bias_map[None]                   # (B, n_cards, gh*gw)
 
     def forward_parts(self, x: torch.Tensor, hand: torch.Tensor, nxt: torch.Tensor | None = None,
                       elx: torch.Tensor | None = None, thr: torch.Tensor | None = None):
