@@ -22,7 +22,7 @@ exists, what is running, what is broken, what was fixed and how it was measured.
 > If a change is too small to warrant a ledger row, it is still worth a line — err toward writing
 > it down.
 
-Last updated: **2026-09-05 19:2x UTC**, branch `main` (**§5cs.46: RETRACTION -- the play gate COLLAPSED in both engine-PPO arms (KL arm 0.12 plays/match vs the init 36.2; gate prob max 0.2326, never crosses tau 0.25), the pro-agreement metric is conditional on playing and could not see it; pair killed at m=422, relaunching with the pro gate prior in both arms; then §5cs.45: m250 grade SEPARATES the engine-PPO arms -- control 11.25/32.97 (init 15.44/46.61) vs KL-to-init 16.73/44.02, top-1 ABOVE the init and NOT pinned; bridge RE done, area effects are the 3M series not 4M (why zones never appeared); then §5cs.44: first PPO on the real engine RUNNING (control vs KL-to-init 0.3, launched 17:49 UTC, ~12 s/match, ends ~01:00 UTC Sep 6); critic warm-up on the shared trunk moved both arms 1.15 nats from the pro init before any policy step; then §5cs.43: sim_view renders real-engine frames with the radii layer intact; engine reach is centre-to-EDGE so drawn rings / reward radii sit 0.5-1.0 tiles inside the real fire point; zones not exported by the bridge; then §5cs.42: EngineMatchEnv v0 built -- 1,159/h one slot, 1,847/h two slots with the BC policy in the loop; ghosts never desync, they go stale + run out (50% undelivered); engine PPO pair (control vs KL-to-prior) is next; then §5cs.41: GHOST POOL 447 timelines / 314 opp decks -- 10,000 decks and trophy-range coverage both CONTRADICTED by the corpus (715 decks total, no trophy data); x/y backfill = +473 battles; sim_view engine feed dispatched; then §5cs.40: OWNER ORDER -- bcA KILLED at 2,550 eps, sim PPO retired from the training path, engine environment v0 under construction (EngineMatchEnv + ghost pool, scratchpad/gauntlet/L62/); the sim survives as the obs renderer + smoke env**; §5cs.39: bcA m2k -- PPO erodes the BC init 15.44/46.61 -> 6.47/21.12 and re-saturates a healthy head in 2,000 matches, bias map untouched, cell_conv.4 grows 0.777; §5cs.38: bias map in model.py; §5cs.37: engine dataset v2).
+Last updated: **2026-09-05 19:5x UTC**, branch `main` (**§5cs.47: engB pair relaunched with the pro gate prior in BOTH arms, gate ALIVE (frac_gt_tau 0.32 vs the killed arm 0.0000), arms byte-identical at update 1; then §5cs.46: RETRACTION -- the play gate COLLAPSED in both engine-PPO arms (KL arm 0.12 plays/match vs the init 36.2; gate prob max 0.2326, never crosses tau 0.25), the pro-agreement metric is conditional on playing and could not see it; pair killed at m=422, relaunching with the pro gate prior in both arms; then §5cs.45: m250 grade SEPARATES the engine-PPO arms -- control 11.25/32.97 (init 15.44/46.61) vs KL-to-init 16.73/44.02, top-1 ABOVE the init and NOT pinned; bridge RE done, area effects are the 3M series not 4M (why zones never appeared); then §5cs.44: first PPO on the real engine RUNNING (control vs KL-to-init 0.3, launched 17:49 UTC, ~12 s/match, ends ~01:00 UTC Sep 6); critic warm-up on the shared trunk moved both arms 1.15 nats from the pro init before any policy step; then §5cs.43: sim_view renders real-engine frames with the radii layer intact; engine reach is centre-to-EDGE so drawn rings / reward radii sit 0.5-1.0 tiles inside the real fire point; zones not exported by the bridge; then §5cs.42: EngineMatchEnv v0 built -- 1,159/h one slot, 1,847/h two slots with the BC policy in the loop; ghosts never desync, they go stale + run out (50% undelivered); engine PPO pair (control vs KL-to-prior) is next; then §5cs.41: GHOST POOL 447 timelines / 314 opp decks -- 10,000 decks and trophy-range coverage both CONTRADICTED by the corpus (715 decks total, no trophy data); x/y backfill = +473 battles; sim_view engine feed dispatched; then §5cs.40: OWNER ORDER -- bcA KILLED at 2,550 eps, sim PPO retired from the training path, engine environment v0 under construction (EngineMatchEnv + ghost pool, scratchpad/gauntlet/L62/); the sim survives as the obs renderer + smoke env**; §5cs.39: bcA m2k -- PPO erodes the BC init 15.44/46.61 -> 6.47/21.12 and re-saturates a healthy head in 2,000 matches, bias map untouched, cell_conv.4 grows 0.777; §5cs.38: bias map in model.py; §5cs.37: engine dataset v2).
 change) + aggro1 first look. Owner: "the policy plays every log 1-2 tiles too far forward and whiffs; it never leads log or
 rocket; I think it ignores the ~1 s cast delay". "Mapping issue" (c): the board->screen warp is shared by troops and spells.
 The real defects (a, in code): (1) env.py `_wheels_spell_aim` GATED on the current positions (`log_hits` / radius test)
@@ -12546,3 +12546,56 @@ whether the collapse also happens with the prior at a lower coef; the greedy pla
 boards (b -- the probe above is the sim, because the VM was running the experiment under test; the engine's own
 sampled `p_play` was 0.028-0.058, which is a DIFFERENT instrument and must not be compared with the sim greedy rate);
 how much of the cell-map agreement change in §5cs.45 survives once the policy plays at a pro-like rate.
+
+### §5cs.47 -- L62h (2026-09-05 19:2x-19:5x UTC): **engB PAIR RELAUNCHED WITH THE PRO GATE PRIOR IN BOTH ARMS AND THE GATE IS ALIVE** -- control (kl 0, worker PID 71976, port 38031) vs KL-to-frozen-init 0.3 (PID 46364, 38032), `--gate_prior_coef 2.0` in BOTH so `--kl_coef` is still the only between-arm variable; at update 1 both arms report **p_gate 0.2157, p90 0.3815, frac_gt_tau 0.3208, gp_ce 0.5050, gp_target 0.0784** -- byte-identical between arms, which is the determinism check passing (same init, seed 41, ghost sequence; they can only diverge through kl_coef). Against the killed engA KL arm's frac_gt_tau **0.0000**. Three launch failures fixed on the way, all mine or the launcher's, none the engine's.
+
+Source: `scratchpad/gauntlet/L62/engine_ppo_v2.md` (agent, STATUS complete) for the patch and its offline checks; the
+launch, the recovery and the readouts measured by the lead. Logs `L62/engB_{ctrl,kl}_20260905.log`, launcher
+`engB_launch.ps1`, preflight `engB_preflight.py`, checkpoints `icebow/data/bench/engB_{ctrl,kl}_m{N}.pt` (outside git).
+(a) unless marked.
+
+**A. The patch (agent, 17 exact-string edits to `engine_ppo.py`, 521 -> 627 lines).** `loss += coef *
+mean(-(p*log pi_play + (1-p)*log pi_wait))` over rows where the PLAY logit is unmasked (the sim's exact exclusion
+`gq_m[:,1] > _NEG*0.5`), target `p = gate_prior.json[phase][elixir bucket]` read BEFORE `env.step()` (which advances
+tick and elixir); card and cell heads untouched -- verified by gradient check: `gate.weight |grad| 33.93` with
+`card_head.grad None` and `cell_conv[-1].grad None`. Phase from tick: double from 120 s, triple from 240 s (b -- the
+4.5 s pre-battle countdown may offset this; identical in both arms). Unit check of the lookup 27/27 PASS
+(single/3 0.062606, single/9 0.203290, double/9 0.446343; bucket edges at 2.999 -> 2, 2.9999995 -> 3).
+`--gate_prior_coef 0.0` proven byte-for-byte equal to the pre-patch file (18/18 shared log fields identical, all 33
+parameter tensors `torch.equal` after 2 updates at kl 0.3). New monitoring on every update line, existing field names
+unchanged: `p_gate` mean/p90, `frac_gt_tau`, `gp_ce`, `gp_target`, `gp_rows`. `_m0` reproduces the init EXACTLY
+(v1 15.44/46.61, v2 15.00/43.51; all 27 model + all gate tensors `torch.equal` to `bc_bias_native_s0.pt`).
+
+**B. Calibration the brief did not have (agent, (a) from the table itself).** A gate that MATCHES the prior does NOT
+sit above tau: over gate_prior.json's own 212,265 windows the mean target is 0.1109 and only **8.14%** exceed
+tau = 0.25 -- the largest single-elixir entry in the whole table is 0.2033, below tau. So a healthy `frac_gt_tau`
+should FALL from the launch value and settle near **0.05-0.10**, not the BC init's sim-measured 0.22; the alarm line
+stays "heading for <= 0.02". What the prior actually restores is STATE DEPENDENCE -- targets span 0.010-0.459, so a
+gate that fits them cannot be the constant engA collapsed to. Second finding, deliberately UNFIXED (one change per
+experiment): the table is fitted at **dt 0.6 s** while engine_ppo decides every **0.5 s** (`decision_ticks 10`), i.e.
+~20% more plays/second than pros; identical in both arms, so it does not confound the contrast. Proposal
+`--decision_ticks 12` parked.
+
+**C. The three launch failures (all fixable, none the engine's fault; recorded because each is a trap).**
+1. **My `taskkill /T` on the engA trainers killed the two IN-GUEST WORKER SERVICES with them** (`worker status` ->
+   `services [false, false]` with `vm_ready true`). The agent could not recover -- its one `worker start` attempt was
+   refused by its tool sandbox -- so it correctly stopped and reported instead of guessing. Recovered by the lead with
+   the existing `L62/_boot.ps1`; both slots `ready: true` at 19:30 UTC, VM never restarted.
+   **TRAP: tree-killing a trainer takes the engine service down; restart it before the next launch.**
+2. The launcher's preflight passed a multi-line here-string to `python -c`; Windows argument passing mangled it into a
+   syntax error. Moved to `engB_preflight.py`.
+3. The preflight then reported "SLOTS DOWN: IndexError" -- it called `NativeRoyaleEnv.observe()` with NO BATTLE
+   CONSTRUCTED. The service was healthy the whole time. Rewritten to do what the trainer does (`EngineMatchEnv(port)`
+   + `reset(index=0)`); both slots return `obs (96,64,12) tick 90`. **TRAP: a liveness probe that does not exercise
+   the caller's own path can report a false death.**
+
+**D. State at launch.** Both arms `--matches 2000 --seed 41 --rollout 1024 --save_every 250 --value_warmup 60
+--kl_in_warmup 0 --gate_prior_coef 2.0`; banner confirms the table (519 replays, 23,620 plays, dt 0.6). RSS ~2.0 GB
+each, free RAM 3.7 GB, guarded processes verified alive after launch (crawler 29444 + 53824, owner's uvicorn 63608,
+qemu 54304). At update 1: pl +0.0370, vl 0.6677, ent 0.272, cell_ent 3.704, kl_cell 0.1195, raw_p99 6.33,
+p_play 0.099, s/match 6.76 (uncontended by a second trainer only for that first rollout).
+
+**Not established.** Whether the prior HOLDS the gate open past m=50 (that is the whole point of the run -- the first
+real check is frac_gt_tau at m30-50, then m250); whether the collapse would also be prevented at a lower coef; the
+tick -> phase mapping; the 0.6 s / 0.5 s dt mismatch's effect on learned play rate; anything about pro agreement
+(no engB checkpoint beyond m0 exists yet). engA's checkpoints are retained as the counterfactual.

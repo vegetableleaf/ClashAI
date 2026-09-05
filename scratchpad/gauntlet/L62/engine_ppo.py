@@ -1,8 +1,16 @@
 """L62: engine_ppo -- a standalone PPO loop on ONE EngineMatchEnv slot (the REAL CR engine), from the
 BC init `bc_bias_native_s0.pt`, with an optional per-board KL-to-init term on the cell head.
 
-NO sim doctrine: no drill gates, spell vetoes, exploration floors, pocket/veto logic, gate prior, search,
-hazard head. Reward = EngineMatchEnv's unshaped reward. The ONLY extra loss term is `--kl_coef`.
+NO sim doctrine: no drill gates, spell vetoes, exploration floors, pocket/veto logic, search, hazard head.
+Reward = EngineMatchEnv's unshaped reward. TWO optional extra loss terms:
+  --kl_coef          per-board KL(pi || pi_init) on the cell head (play rows only).
+  --gate_prior_coef  v2, 2026-09-05: the sim trainer's GATE PRIOR (train_sim_ppo.py l.340-385 / l.1758-1772) --
+                     a Bernoulli cross-entropy pulling the GATE HEAD ONLY toward the pro
+                     P(play | elixir bucket, phase) table in icebow/config/gate_prior.json. It exists because a
+                     PPO gate with no when-to-play signal collapses: MEASURED on engA (this file at coef 0), the
+                     play gate went 36.2 plays/match at the init -> 0.12 at m=253, max p(play) 0.2326, i.e. 0.0%
+                     of decisions above the tau=0.25 deploy threshold. Both coefs default to 0.0 and 0.0 is
+                     byte-for-byte off (the table is not even read).
 
 What is copied from icebow/src/clashrl/train_sim_ppo.py (which is one closure and cannot be imported
 piecewise): PPONet (policy/gate/value/value_d), the masked_logits semantics (card = in-hand AND affordable,
@@ -40,13 +48,16 @@ ICEBOW = ROOT / "icebow"
 if str(ICEBOW / "src") not in sys.path:
     sys.path.insert(0, str(ICEBOW / "src"))
 
-from engine_env import EngineMatchEnv, load_pool, POOL_DEFAULT      # noqa: E402
+from engine_env import EngineMatchEnv, load_pool, POOL_DEFAULT, TICK_S   # noqa: E402
 from clashrl.model import PolicyNet, _LOGIT_CAP                     # noqa: E402
 from clashrl.train_sim_ppo import compute_gae                       # noqa: E402
 
 INIT_DEFAULT = ICEBOW / "data" / "bc_pro" / "models" / "bc_bias_native_s0.pt"
 INIT_SHA256_PREFIX = "a1273d5d"
 _NEG = -1e9
+# The deploy rule's threshold (sim.ppo_gate_threshold, the same number gate_probe.py reads). MONITORING ONLY:
+# nothing in training uses it -- it only defines `frac_gt_tau`, the readout whose absence hid engA's collapse.
+GATE_TAU = 0.25
 
 
 # ------------------------------------------------------------------------------------ net
@@ -99,8 +110,9 @@ class Trainer:
         pre_norm = self.out_prefix.replace("\\", "/")
         ib = str(ICEBOW).replace("\\", "/")
         if pre_norm.startswith(ib + "/data/"):
-            assert pre_norm.startswith(ib + "/data/bench/engA_"), \
-                f"refusing to write under icebow/data/ except icebow/data/bench/engA_*: {pre_norm}"
+            assert (pre_norm.startswith(ib + "/data/bench/engA_")
+                    or pre_norm.startswith(ib + "/data/bench/engB_")), \
+                f"refusing to write under icebow/data/ except icebow/data/bench/eng[AB]_*: {pre_norm}"
         clash = glob.glob(self.out_prefix + "_*.pt")
         assert not clash, f"refusing to overwrite existing checkpoints: {clash}"
         self.log_path = Path(a.log)
@@ -145,6 +157,32 @@ class Trainer:
             self._card_ref = float(self.net.policy.card_head.weight.norm())
             self._cell_ref = float(self.net.policy.cell_conv[-1].weight.norm())
         self.warm_left = int(a.value_warmup)
+        # ---- GATE PRIOR (semantics copied from train_sim_ppo.py l.340-385 setup + l.1758-1772 loss) ----
+        # Bernoulli cross-entropy of the GATE head ONLY toward the pro table's P(play | elixir bucket, phase):
+        #     loss += coef * mean( -(p * log pi(play) + (1-p) * log pi(wait)) )
+        # = KL(prior || pi) on the gate up to a constant. Card and cell heads are untouched. Rows whose PLAY
+        # logit is masked (nothing affordable) are EXCLUDED, via `gq_m[:, 1] > _NEG * 0.5` exactly as the sim
+        # trainer does -- otherwise the term is dominated by states the gate cannot act in.
+        # coef 0.0 = OFF byte-for-byte: the table is not read and no tensor in the loss changes.
+        # SCHEMA 1 ONLY (the blended table, i.e. the sim's ppo_gate_prior_pressure_s = 0.0). The schema-2
+        # "opponent troop within W s" pressure key is deliberately NOT implemented here.
+        self.gprior = None
+        self.gprior_note = "off (gate_prior_coef 0.0)"
+        if float(a.gate_prior_coef) > 0.0:
+            gj = json.loads(Path(a.gate_prior_path).read_text(encoding="utf-8"))
+            assert int(gj.get("schema", 0)) == 1, \
+                f"gate prior: engine_ppo implements schema 1 only, got {gj.get('schema')}"
+            gtab = np.asarray([gj["p_play"][ph] for ph in ("single", "double", "triple")], np.float32)
+            assert gtab.shape == (3, 11), gtab.shape
+            greg, gover = float(gj["regulation_s"]), float(gj["overtime_s"])
+            # Phase boundaries, exactly the sim trainer's arithmetic: DOUBLE from regulation-60 s, TRIPLE from
+            # regulation + max(0, overtime-60) s  =>  120 s and 240 s for regulation 180 / overtime 120.
+            self.gprior = (gtab, greg - 60.0, greg + max(0.0, gover - 60.0))
+            self.gprior_note = (
+                f"ON coef {float(a.gate_prior_coef):.3f} | {a.gate_prior_path} schema {gj.get('schema')} "
+                f"({gj.get('replays')} replays, {gj.get('plays')} plays, dt {gj.get('dt')}) | "
+                f"double from {self.gprior[1]:.0f}s, triple from {self.gprior[2]:.0f}s | single P(play) at "
+                f"4 / 7 / 9 elixir = {gtab[0][4]:.4f} / {gtab[0][7]:.4f} / {gtab[0][9]:.4f}")
         # ---- counters ------------------------------------------------------------------------------
         self.matches = 0
         self.decisions = 0
@@ -183,7 +221,8 @@ class Trainer:
                     "threat_dim": int(self.meta["threat_dim"]), "in_ch": int(self.meta["in_ch"]),
                     "deck": list(self.env.deck_keys), "best_wr": self.best_wr, "matches": self.matches,
                     "arena_size": list(self.meta["arena_size"]),
-                    "engine_ppo": {"kl_coef": self.a.kl_coef, "seed": self.a.seed, "updates": self.updates,
+                    "engine_ppo": {"kl_coef": self.a.kl_coef, "gate_prior_coef": self.a.gate_prior_coef,
+                                   "seed": self.a.seed, "updates": self.updates,
                                    "decisions": self.decisions, "wld": list(self.wld), "port": self.a.port}}, p)
         latest = Path(f"{self.out_prefix}_latest.pt")
         tmp = Path(f"{self.out_prefix}_latest.tmp")
@@ -207,6 +246,31 @@ class Trainer:
     def cellmask_for(self, card, code):
         return self.all_mask if int(card) in self.anywhere else self.pocket_masks[int(code)]
 
+    def gp_target(self):
+        """The pro table's P(play) for the CURRENT decision = table[phase][elixir bucket].
+
+        ELIXIR: the ENGINE's own number, `env.sim.eng.elixir[0]`. frame_to_engine sets it from the engine
+        frame's players[our side]["elixir_exact"] (L61/build_bc_v2.py l.155-157), and the observation's
+        `elixir_vec[0]` is exactly one tenth of it (sim/env.py l.621, no clamp), so `elixir_vec[0] * 10` is
+        the SAME number -- I read the engine value directly. Bucket = clip(floor(elixir + 1e-6), 0, 10),
+        which is the sim trainer's expression (l.1326-1327) with elx*10 substituted.
+
+        PHASE: from the engine tick, t_s = env.tick * TICK_S (0.05 s/tick), against the boundaries derived
+        in __init__ from gate_prior.json's regulation_s / overtime_s (120 s / 240 s). (b) UNVERIFIED that
+        engine tick 0 is the same instant as the sim's t = 0: EngineMatchEnv skips a 4.5 s pre-battle
+        countdown (ticks 0-90, engine_env.md l.107), so if the engine's own regulation clock starts AFTER
+        that countdown this mapping calls each phase flip up to 4.5 s early. Flagged, not hidden.
+
+        MUST be called BEFORE env.step(), which advances the tick and the elixir.
+        """
+        if self.gprior is None:
+            return 0.0
+        gtab, g_dbl, g_tri = self.gprior
+        ts = float(self.env.tick) * TICK_S
+        ph = 2 if ts >= g_tri else (1 if ts >= g_dbl else 0)
+        eb = int(np.clip(np.floor(float(self.env.sim.eng.elixir[0]) + 1e-6), 0, 10))
+        return float(gtab[ph, eb])
+
     # ---------------------------------------------------------------------------------- rollout
     def _new_match(self):
         idx = self.rng_pool.randrange(len(self.pool))
@@ -218,7 +282,7 @@ class Trainer:
     def rollout(self, n):
         self.net.eval()
         B = {k: [] for k in ("obs", "hand", "nxt", "elx", "thr", "cm", "g", "c", "cell", "lp", "val", "rew",
-                             "done", "trunc", "playable")}
+                             "done", "trunc", "playable", "gp", "pg", "pgm")}
         raws = []
         t0 = time.perf_counter()
         t_pol = 0.0
@@ -230,6 +294,7 @@ class Trainer:
             x = self.obs_t(obs)
             hand, nxt, elx, thr = self.vecs()
             code = self.pocket_code()
+            gp_row = self.gp_target()      # BEFORE env.step(): it reads the live tick and engine elixir
             ta = time.perf_counter()
             cards, cells, raw, gq, val = self.net(x, hand, nxt, elx, thr)
             elixir = elx * 10.0
@@ -263,6 +328,12 @@ class Trainer:
             B["val"].append(float(val[0])); B["rew"].append(float(r)); B["done"].append(bool(done))
             B["trunc"].append(bool(done) and bool(info.get("tail_capped")))
             B["playable"].append(playable[0].numpy())
+            B["gp"].append(gp_row)
+            # MONITORING (not an experimental variable): the gate's own probability at this decision,
+            # sigmoid(g_play - g_wait) on the RAW gate logits -- identical to softmax(gq_m)[1] on rows where
+            # PLAY is not masked, and the exact quantity gate_probe.py reports. `pgm` marks those rows.
+            B["pg"].append(float(torch.sigmoid(gq[0, 1] - gq[0, 0])))
+            B["pgm"].append(bool(playable.any()))
             self.decisions += 1
             if done:
                 s = self.env.episode_summary()
@@ -290,6 +361,11 @@ class Trainer:
         B["wall"] = time.perf_counter() - t0
         B["t_pol"] = t_pol
         B["finished"] = finished
+        _pg = np.asarray(B["pg"], np.float32)[np.asarray(B["pgm"], bool)]
+        B["pg_rows"] = int(_pg.size)
+        B["pg_mean"] = float(_pg.mean()) if _pg.size else float("nan")
+        B["pg_p90"] = float(np.percentile(_pg, 90)) if _pg.size else float("nan")
+        B["pg_gt_tau"] = float((_pg > GATE_TAU).mean()) if _pg.size else float("nan")
         return B
 
     # ---------------------------------------------------------------------------------- update
@@ -328,6 +404,8 @@ class Trainer:
         g_all = torch.tensor(B["g"]); c_all = torch.tensor(B["c"]); cell_all = torch.tensor(B["cell"])
         oldlp = torch.tensor(B["lp"], dtype=torch.float32)
         playable_all = torch.from_numpy(np.stack(B["playable"]))
+        gp_f = torch.tensor(B["gp"], dtype=torch.float32) if self.gprior is not None else None
+        gps = {"n": 0, "ce": 0.0, "p": 0.0, "rows": 0, "seen": 0}
         # frozen reference (the per-board pro estimate): SAME boards, SAME sampled card, SAME deployable mask,
         # renormalised over that mask. Computed once per update, batched (a per-decision ref forward at batch 1
         # would cost as much as the policy itself).
@@ -397,6 +475,19 @@ class Trainer:
                     acc["warm"] += 1
                 else:
                     loss = pl + a.vf_coef * vl - a.ent * ent.mean() - cell_coef * cell_ent.mean() + kl_term
+                # GATE PRIOR -- added OUTSIDE the value-warmup branch, exactly as the sim trainer does
+                # (its term sits at l.1758-1772, after the warm-up split at l.1617-1627): it is a
+                # SUPERVISED pull and does not depend on the critic. Gate head only.
+                if gp_f is not None:
+                    gpk = (gq_m[:, 1] > _NEG * 0.5)     # rows where PLAY is not masked (something affordable)
+                    gps["seen"] += int(gpk.numel())
+                    if bool(gpk.any()):
+                        gpt = gp_f[mb][gpk]
+                        gce = -(gpt * lp_g[gpk, 1] + (1.0 - gpt) * lp_g[gpk, 0])
+                        gcem = gce.mean()
+                        loss = loss + a.gate_prior_coef * gcem
+                        gps["n"] += 1; gps["rows"] += int(gpk.sum())
+                        gps["ce"] += float(gcem.detach()); gps["p"] += float(gpt.mean())
                 self.opt.zero_grad()
                 loss.backward()
                 torch.nn.utils.clip_grad_norm_(self.net.parameters(), a.max_grad)
@@ -427,6 +518,13 @@ class Trainer:
         for p in self.net.parameters():
             if not torch.isfinite(p).all():
                 raise RuntimeError(f"non-finite parameter after update {self.updates}")
+        # Appended AFTER the loop above: with the prior OFF these are NaN by design, which that guard
+        # would (correctly, for a trained quantity) treat as a crash. The prior's own guard is explicit.
+        out["gp_ce"] = gps["ce"] / gps["n"] if gps["n"] else float("nan")
+        out["gp_target"] = gps["p"] / gps["n"] if gps["n"] else float("nan")
+        out["gp_rows"] = gps["rows"] / max(1, gps["seen"])
+        if self.gprior is not None and not math.isfinite(out["gp_ce"]):
+            raise RuntimeError(f"non-finite gate-prior CE {out['gp_ce']} at update {self.updates}")
         return out
 
     # ---------------------------------------------------------------------------------- loop
@@ -435,6 +533,7 @@ class Trainer:
         self.save("m0")
         self.log(f"[engine_ppo] init check: card_head |w| {self._card_ref:.3f}  cell_conv[-1] |w| {self._cell_ref:.3f}  "
                  f"value head fresh |w| {float(self.net.value.weight.norm()):.3f}  ref frozen  kl_coef {a.kl_coef}")
+        self.log(f"[engine_ppo] GATE PRIOR {self.gprior_note}")
         t_run = time.perf_counter()
         try:
             while self.matches < a.matches:
@@ -459,7 +558,10 @@ class Trainer:
                     f"kl_cell {u['kl_cell']:.4f} kl_card {u['kl_card']:.4f} kl_term {u['kl_term']:+.4f} clip {u['clip']:.3f} "
                     f"vpred {u['vpred']:+.3f} ret {u['ret_mean']:+.3f} | last-epoch pl {u['pl_last']:+.4f} kl_cell {u['kl_cell_last']:.4f} kl_term {u['kl_term_last']:+.4f} | raw_p99 {B['raw_p99']:.2f} max {B['raw_max']:.1f} "
                     f"| p_play {u['p_play_sampled']:.3f} | s/match {spm:.2f} roll {B['wall']:.1f}s (pol {B['t_pol']:.1f}s) upd {t_u:.1f}s "
-                    f"warm_mb {int(u['warm'])} cell_coef {self.cell_ent_now():.4f} elapsed {el/60:.1f}m")
+                    f"warm_mb {int(u['warm'])} cell_coef {self.cell_ent_now():.4f} elapsed {el/60:.1f}m"
+                    f" | GATE p_gate {B['pg_mean']:.4f} p90 {B['pg_p90']:.4f} frac_gt_tau {B['pg_gt_tau']:.4f} "
+                    f"(n {B['pg_rows']}) gp_ce {u['gp_ce']:.4f} gp_target {u['gp_target']:.4f} "
+                    f"gp_rows {u['gp_rows']:.3f}")
                 bucket = self.matches // a.save_every
                 if bucket > self.last_save_bucket:
                     self.last_save_bucket = bucket
@@ -512,6 +614,10 @@ def main():
     ap.add_argument("--head_norm_mult", type=float, default=2.0) # sim.ppo_head_norm_mult (0 = off)
     ap.add_argument("--value_warmup", type=int, default=60)      # sim.ppo_value_warmup (minibatches, critic only)
     ap.add_argument("--kl_in_warmup", type=int, default=1)       # keep the KL term active during the critic warm-up
+    # GATE PRIOR: sim.ppo_gate_prior_coef (the sim runs it at 2.0) / sim.ppo_gate_prior_path.
+    # Default 0.0 so this file's pre-2026-09-05 behaviour is unchanged byte-for-byte.
+    ap.add_argument("--gate_prior_coef", type=float, default=0.0)
+    ap.add_argument("--gate_prior_path", default=str(ICEBOW / "config" / "gate_prior.json"))
     a = ap.parse_args()
     Trainer(a).run()
 
