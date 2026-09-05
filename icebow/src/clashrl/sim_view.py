@@ -91,6 +91,7 @@ _ZONE_HEAL = (120, 240, 160)   # ...and a HEALING one (Heal Spirit)
 _LINK = (60, 200, 255)         # Goblinstein's electric link, and its antenna
 _RAGE = (200, 0, 200)          # a rage zone; DIM while it is still arming (see below)
 _RAGE_ARM = (110, 0, 110)
+_BAND = (120, 240, 250)        # L58: the scored P1 band annulus + term readout (pale yellow)
 
 _HUD_TOP = 54
 _HUD_BOT = 58
@@ -114,13 +115,85 @@ def _hp_bar(img, cx: int, top: int, w: int, frac: float, h: int = 3) -> None:
         cv2.rectangle(img, (x0, top), (x0 + int((x1 - x0) * frac), top + h), col, -1)
 
 
-def render_frame(eng, width: int = 460, note: str = "", acts=None) -> np.ndarray:
+def _dim(col, k: float = 0.55):
+    return tuple(int(c * k) for c in col)
+
+
+def _dotted_ellipse(img, c, semi, col, on: int = 6, period: int = 14) -> None:
+    """OpenCV has no dashed ellipse: draw short arcs around the ring."""
+    for a in range(0, 360, period):
+        cv2.ellipse(img, c, semi, 0, a, a + on, col, 1)
+
+
+def _draw_radii(img, eng, px, rad_px) -> None:
+    """Attack range (solid) + sight radius (dotted, dimmer) for every ALIVE body, from the ONE
+    radius table the reward uses (`geometry_reward.radii_of`); then the last scored placement."""
+    from .geometry_reward import nonzero_terms, radii_of
+
+    kw = dict(siege_sight=getattr(eng, "siege_sight", 11.5), tower_range=getattr(eng, "tower_range", 8.0),
+              king_range=getattr(eng, "king_range", 8.5))
+    for team, tws in eng.towers.items():
+        for tw in tws:
+            if not tw.alive:
+                continue                                   # a taken tower has no circles (doc 7.5)
+            r_atk, r_sight = radii_of(tw, **kw)
+            c = px(tw.x, tw.y)
+            cv2.ellipse(img, c, rad_px(r_atk), 0, 0, 360, _TEAM[team], 1)
+            if abs(r_sight - r_atk) > 1e-6:
+                _dotted_ellipse(img, c, rad_px(r_sight), _dim(_TEAM[team]))
+    for u in eng.units:
+        if u.hp <= 0 or u.spec.kind == "spell":
+            continue
+        r_atk, r_sight = radii_of(u.spec, **kw)
+        c = px(u.x, u.y)
+        col = _TEAM[u.team]
+        if r_atk > 0.0:
+            cv2.ellipse(img, c, rad_px(r_atk), 0, 0, 360, col, 1)
+        if r_sight > 0.0:
+            _dotted_ellipse(img, c, rad_px(r_sight), _dim(col))
+    lp = getattr(eng, "last_placement", None)
+    if not lp or eng.t - float(lp.get("t", -9.0)) > 1.5:
+        return
+    sc = lp.get("scores") or {}
+    c = px(float(lp["x"]), float(lp["y"]))
+    tx, ty = sc.get("threat_x"), sc.get("threat_y")
+    lo, hi = float(sc.get("p1_band_lo", 0.0) or 0.0), float(sc.get("p1_band_hi", 0.0) or 0.0)
+    if tx is not None and ty is not None and hi > lo >= 0.0:
+        tc = px(float(tx), float(ty))
+        if lp.get("kind", "building") == "building":
+            # the P1 band the placement was scored against: a shaded annulus lo..hi round the threat
+            # (P1 is a BUILDING term; for a troop / spell only the threat link is drawn)
+            mask = np.zeros(img.shape[:2], np.uint8)
+            cv2.ellipse(mask, tc, rad_px(hi), 0, 0, 360, 255, -1)
+            cv2.ellipse(mask, tc, rad_px(lo), 0, 0, 360, 0, -1)
+            sel = mask > 0
+            img[sel] = (img[sel] * 0.7 + np.array(_BAND, np.float32) * 0.3).astype(np.uint8)
+            cv2.ellipse(img, tc, rad_px(lo), 0, 0, 360, _BAND, 1)
+            cv2.ellipse(img, tc, rad_px(hi), 0, 0, 360, _BAND, 1)
+        cv2.line(img, c, tc, _BAND, 1)
+    cv2.drawMarker(img, c, _BAND, cv2.MARKER_TILTED_CROSS, 11, 1)
+    lines = ["%s vs %s" % (str(lp.get("base", ""))[:12], (sc.get("threat_base") or "-")[:10])]
+    lines += ["%s %+.2f" % (k.replace("bridge_block_", "bb_"), v) for k, v in nonzero_terms(sc)]
+    x0 = c[0] + 10 if c[0] < img.shape[1] - 150 else c[0] - 145      # keep the readout on-screen
+    for i, txt in enumerate(lines[:9]):
+        cv2.putText(img, txt, (x0, c[1] - 4 + 11 * i), cv2.FONT_HERSHEY_PLAIN, 0.7, _BAND, 1)
+
+
+def render_frame(eng, width: int = 460, note: str = "", acts=None, radii: bool = False) -> np.ndarray:
     """Draw the engine's CURRENT state. Team 0 (you) is at the BOTTOM, matching the live screen.
 
     The canvas is the board's true 18:32 aspect, so a range that is N tiles in the engine is N tiles
     on both axes here. ``acts`` (an ActionSpace) overlays the PLACEMENT GRID -- the discrete cells the
     policy chooses among -- on top of the faint TILE grid; when `action.grid` is 18x32 the two
     coincide, when it is 18x24 each action cell is one tile wide and 1.33 tiles tall.
+
+    ``radii`` (L58, research/RADIUS_REWARD_PROPOSALS.md 7.2) overlays, per ALIVE unit / building /
+    tower, its attack range (solid 1 px ring, team colour) and its aggro / sight radius (dotted,
+    dimmer) -- both read from ``geometry_reward.radii_of``, the SAME function the graded reward
+    scores with, so what is drawn is what is scored. If the engine carries a ``last_placement``
+    record (set by ``sim_view`` after each of your placements) the P1 band it was scored against
+    is shaded as an annulus around the threat and the non-zero term values are printed beside
+    the placement for 1.5 s. OFF by default: the frame is byte-identical without it.
     """
     W = int(width)
     BH = int(W / _ASPECT)
@@ -208,6 +281,10 @@ def render_frame(eng, width: int = 460, note: str = "", acts=None) -> np.ndarray
         if 0.0 <= age <= 0.15:
             c = px(sx, sy)
             cv2.ellipse(img, c, rad_px(sr), 0, 0, 360, (0, 200, 255), 1)
+
+    # --- radius overlay (L58 step 0): under the bodies, over the ground effects ---------------
+    if radii:
+        _draw_radii(img, eng, px, rad_px)
 
     # --- towers ------------------------------------------------------------------------------
     for team in (1, 0):
@@ -545,7 +622,7 @@ def _policy_agent(env, path: str):
 # --------------------------------------------------------------------------------------------
 def sim_view(cfg, matches: int = 1, width: int = 460, fps: int = 20, seed: int = 0,
              policy: "str | None" = None, out: "str | None" = None, window: bool = True,
-             grid: bool = True) -> None:
+             grid: bool = True, radii: bool = False) -> None:
     env = SimMatchEnv(cfg, seed=seed)
     acts = env.actions if grid else None
     agent = _policy_agent(env, policy) if policy else _random_agent
@@ -562,10 +639,29 @@ def sim_view(cfg, matches: int = 1, width: int = 460, fps: int = 20, seed: int =
             print(f"[sim-view] WARNING: could not open {p} for writing (codec) -- window only")
             writer = None
 
+    seen = {"deploy": None}
+
+    def _score_last_placement(e) -> None:
+        """--radii: score each of YOUR placements the moment the engine records it
+        (`eng.last_deploy[0]`, set even while the tap is latency-queued) and hang the result on
+        the engine as `last_placement` for `render_frame` to draw. Reward-side only: nothing here
+        feeds the policy or the env's reward."""
+        ld = e.eng.last_deploy.get(0)
+        if ld is None or ld is seen["deploy"]:
+            return
+        seen["deploy"] = ld
+        from .geometry_reward import board_from_engine, placement_from_spec, score_placement
+        spec, x, y, t = ld
+        kw = dict(siege_sight=e.eng.siege_sight, tower_range=e.eng.tower_range, king_range=e.eng.king_range)
+        scores = score_placement(board_from_engine(e.eng, 0), placement_from_spec(spec, x, y, **kw))
+        e.eng.last_placement = dict(x=x, y=y, base=spec.base, kind=spec.kind, t=t, scores=scores)
+
     def sink(e, note=""):
         if state["quit"]:
             return
-        img = render_frame(e.eng, width, note, acts)
+        if radii:
+            _score_last_placement(e)
+        img = render_frame(e.eng, width, note, acts, radii=radii)
         frames["n"] += 1
         if writer is not None:
             writer.write(img)

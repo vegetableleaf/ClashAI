@@ -414,7 +414,7 @@ def _cmd_sim_view(args) -> None:
         return
     sim_view(_sized_config(args), matches=args.matches, width=args.width, fps=args.fps,
              seed=args.seed, policy=args.policy, out=args.out, window=not args.no_window,
-             grid=not args.no_grid)
+             grid=not args.no_grid, radii=bool(getattr(args, "radii", False)))
 
 
 def _cmd_policy_stats(args) -> None:
@@ -828,6 +828,10 @@ def main() -> None:
                      help="headless: only write --out (for a machine with no display)")
     svw.add_argument("--no-grid", action="store_true",
                      help="hide the placement-grid overlay (action.grid over action.arena_box)")
+    svw.add_argument("--radii", action="store_true",
+                     help="overlay every alive body's ATTACK range (solid ring) and SIGHT/aggro radius "
+                          "(dotted), read from geometry_reward.radii_of -- the same table the graded "
+                          "reward scores with -- plus the P1 band + term values of your last placement")
     svw.add_argument("--size", choices=sorted(_GRID_SIZES), default=None,
                      help="override action.grid (must match the --policy checkpoint's n_cells)")
     svw.set_defaults(func=_cmd_sim_view)
