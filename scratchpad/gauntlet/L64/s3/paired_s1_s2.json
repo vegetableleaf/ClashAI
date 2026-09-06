@@ -1,0 +1,37 @@
+{
+ "n": 500,
+ "replays": 85,
+ "A": {
+  "card": 60.2,
+  "cell": 21.2,
+  "1t": 30.6,
+  "dist": 3.662
+ },
+ "B": {
+  "card": 61.8,
+  "cell": 19.4,
+  "1t": 28.6,
+  "dist": 3.741
+ },
+ "paired": {
+  "card": {
+   "b_only": 40,
+   "a_only": 32,
+   "discordant": 72,
+   "p_two_sided": 0.4095793959270717
+  },
+  "cell": {
+   "b_only": 26,
+   "a_only": 35,
+   "discordant": 61,
+   "p_two_sided": 0.30567741986311836
+  },
+  "1t": {
+   "b_only": 33,
+   "a_only": 43,
+   "discordant": 76,
+   "p_two_sided": 0.3018724904870077
+  }
+ },
+ "GATE_cell_ge_student": false
+}
