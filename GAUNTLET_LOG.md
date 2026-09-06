@@ -1301,3 +1301,10 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Corpus: 1,253 battles, 1,237 with plays, **625 (49.9%) with x/y**; 109,963 play rows, 54,148 (49.2%) with x/y; opponent decks 781 raw but **435 usable**. Owner's bar is >1,000 decks -> the real gap is 435->1,000, not 781->1,000.
 - Reading: the x/y-less half is the binding constraint on both board count and deck pool, and has been ~50% across waves. Cheapest next measurement is WHY (untested), not another wave.
 - No experiment run; no re-fit attempted; BC init on disk unchanged.
+
+## L63c -- 2026-09-06 01:5x UTC -- APPROVED; rulings recorded; S0 step 1 done (engine services back, verified)
+- Rulings (§6): approved as written, hogeq inherits everything; live grading = ladder 10,000 trophies, 20-match blocks, EMA, no learning; crawler login when a session is re-opened (wave 4 actually finished 00:44 UTC -- "stalled" was (c)); Hetzner AX162 is $1.16/h or $700+/mo live (my $283/mo was stale, (c)).
+- S3 compute estimate (b, §5cs.55): ~400 slot-hours incl. margin; box alone ~9 days of engine time; GCP $300 trial covers it at any density -> recommend GCP, sign up at S3 start.
+- Engine: services were [false,false]; boot from Bash fails 6/6 (GNU tar reads C:\ as a host) -- TRAP; native PowerShell attempt 1 ok. Liveness via replay_drive on both slots == L61 reference (hash d0874ff2026fa69e, 121/121, 4.4 s).
+- Concurrent-session trap: old L62 gauntlet session wrote §5cs.54 during L63b; owner should close it.
+- Next: S0 step 2, the shared observation contract (engine schema + detector schema -> one obs_builder), then corpus rebuild for both decks.

@@ -1,0 +1,46 @@
+{
+ "tag": "000YLY0JCPGL",
+ "ref": {
+  "terminal_tick": 6085,
+  "outcome": "side0_win",
+  "crowns": [
+   1,
+   0
+  ],
+  "state_hash": "d0874ff2026fa69e",
+  "opening_state_hash": "0bfbcb2adbea282e",
+  "plays_driven": 121,
+  "accepted": 121,
+  "invalid_placement": 0
+ },
+ "37031": {
+  "terminal_tick": 6085,
+  "outcome": "side0_win",
+  "crowns": [
+   1,
+   0
+  ],
+  "state_hash": "d0874ff2026fa69e",
+  "opening_state_hash": "0bfbcb2adbea282e",
+  "plays_driven": 121,
+  "accepted": 121,
+  "invalid_placement": 0,
+  "seconds": 4.38,
+  "same_as_ref": true
+ },
+ "37032": {
+  "terminal_tick": 6085,
+  "outcome": "side0_win",
+  "crowns": [
+   1,
+   0
+  ],
+  "state_hash": "d0874ff2026fa69e",
+  "opening_state_hash": "0bfbcb2adbea282e",
+  "plays_driven": 121,
+  "accepted": 121,
+  "invalid_placement": 0,
+  "seconds": 4.47,
+  "same_as_ref": true
+ }
+}
