@@ -221,7 +221,7 @@ def _outcome(env, state: dict) -> tuple[str, tuple[int, int]]:
 
 def play_match(env, model, deck, entry: dict, *, decide_every: int, tau: float, gate: str, rng: random.Random,
                device: str, log_path: Path, parity_check: bool = True, policy: str = "model",
-               p_random: float = 0.093, grid: str = "floor") -> dict:
+               p_random: float = 0.093, grid: str = "floor", record_every: int = 0) -> dict:
     t0 = time.perf_counter()
     state = env.reset(entry)
     side, mirror = env.side, env._mirror
@@ -238,6 +238,7 @@ def play_match(env, model, deck, entry: dict, *, decide_every: int, tau: float, 
     n_dec = n_play = n_acc = n_ref = 0
     reject_reasons: dict[str, int] = {}
     p_gates: list[float] = []
+    frames: list[dict] = []        # record_every > 0: a compact observation every N ticks, for the viewer
     parity = None
     done = False
     with log_path.open("w", encoding="utf-8") as lf:
@@ -279,7 +280,22 @@ def play_match(env, model, deck, entry: dict, *, decide_every: int, tau: float, 
                     n_ref += 1
                     reject_reasons[nm] = reject_reasons.get(nm, 0) + 1
             lf.write(json.dumps(rec) + "\n")
-            env._advance_to(min(env.tick + decide_every, env.tail_cap))
+            if record_every > 0:
+                fr = dict(obs)          # the decision frame; tag the play so the viewer can flash it
+                if d["play"]:
+                    fr["play"] = {"side": side, "card": deck.cards[d["slot"]], "x": rec.get("bx"),
+                                  "y": rec.get("by"), "accepted": rec.get("accepted")}
+                frames.append(fr)
+            target = min(env.tick + decide_every, env.tail_cap)
+            if record_every > 0:
+                # Same target, same ghosts -- only split into record_every-sized hops so the viewer gets
+                # frames between decisions. Decision ticks are unchanged, so the policy path is identical.
+                while env.tick < target and not env.terminated:
+                    env._advance_to(min(env.tick + record_every, target))
+                    if env.tick < target:
+                        frames.append(compact_raw(env.eng.observe()))
+            else:
+                env._advance_to(target)
             state = env.eng.observe()
             done = bool(env.terminated) or env.tick >= env.tail_cap
     outcome, crowns = _outcome(env, state)
@@ -295,7 +311,8 @@ def play_match(env, model, deck, entry: dict, *, decide_every: int, tau: float, 
             "ghost_refuse_reasons": dict(env.ghost_reject_reasons),
             "p_gate_mean": round(float(np.mean(p_gates)), 4), "p_gate_p90": round(float(np.percentile(p_gates, 90)), 4),
             "unmapped": sorted(unmapped), "obs_parity_raw_vs_list": parity,
-            "deal_cache_hit": env.deal_cache_hit, "wall_s": round(wall, 1), "log": str(log_path)}
+            "deal_cache_hit": env.deal_cache_hit, "wall_s": round(wall, 1), "log": str(log_path),
+            **({"frames": frames, "record_every": record_every} if record_every > 0 else {})}
 
 
 # ------------------------------------------------------------------------------------------------------
@@ -318,6 +335,8 @@ def main(argv=None) -> int:
     ap.add_argument("--device", default="cpu")
     ap.add_argument("--pool", type=Path, default=None, help="default <deck data_dir>/ghost_pool/pool_env_v0.jsonl")
     ap.add_argument("--no-parity-check", action="store_true")
+    ap.add_argument("--record-every", type=int, default=0,
+                    help="engine ticks between recorded observation frames (0 = off; 2 = 10 fps for the video renderer)")
     a = ap.parse_args(argv)
 
     deck = load_deck(a.deck)
@@ -340,8 +359,14 @@ def main(argv=None) -> int:
             log_path = a.out / f"{entry['tag']}_m{i}.jsonl"
             r = play_match(env, model, deck, entry, decide_every=a.decide_every, tau=a.tau, gate=a.gate, rng=rng, grid=minfo["grid"],
                            device=a.device, log_path=log_path, parity_check=not a.no_parity_check, policy=a.policy,
-                           p_random=a.p_random)
+                           p_random=a.p_random, record_every=a.record_every)
             r["match"] = i
+            if a.record_every > 0:   # frames are bulky: one file per match, kept out of summary.json
+                fp = a.out / ("frames_%s_m%d.json" % (entry["tag"], i))
+                fp.write_text(json.dumps({k: r[k] for k in ("tag", "side", "outcome", "crowns_for",
+                                          "crowns_against", "seconds", "record_every", "frames")}),
+                              encoding="utf-8")
+                r.pop("frames"); r["frames_file"] = str(fp)
             results.append(r)
             print(json.dumps(r), flush=True)
     finally:
