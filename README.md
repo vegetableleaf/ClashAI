@@ -171,8 +171,8 @@ the experiments that fill [HANDOFF.md](HANDOFF.md).
 | :--- | :----------- |
 | **$5 / month** | A Sponsor badge on your profile |
 | **$20 / month** | Your name or logo in this README |
-| **$50 / month** | Training logs, evaluation numbers and gameplay videos |
-| **$150 / month** | Pre-release builds, on top of the logs, numbers and videos |
+| **$50 / month** | Access to non-secret data: training logs, evaluation numbers and gameplay videos |
+| **$150 / month** | Access to pre-release builds, on top of all non-secret data |
 | **$10 once** | A special mention on my next Instagram post |
 | **$200 once** | Added as a contributor, with your own branch on the project |
 
