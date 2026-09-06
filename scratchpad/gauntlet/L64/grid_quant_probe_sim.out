@@ -1,0 +1,6 @@
+real pro x-bow placements with positions: 2657
+their tile_y: min 9.50 p10 19.50 median 19.50 p90 22.50 max 29.50
+grid 18x24 (432 cells): row pitch 1.333 tiles | err mean 0.274 p90 0.500 max 0.500
+    signed dy (tiles, + = snapped FURTHER from the enemy tower): mean -0.165 max +0.500 | moved back >0.5: 0.0%  >0.75: 0.0%  >1.0: 0.00%
+grid 18x32 (576 cells): row pitch 1.000 tiles | err mean 0.000 p90 0.000 max 0.000
+    signed dy (tiles, + = snapped FURTHER from the enemy tower): mean +0.000 max +0.000 | moved back >0.5: 0.0%  >0.75: 0.0%  >1.0: 0.00%

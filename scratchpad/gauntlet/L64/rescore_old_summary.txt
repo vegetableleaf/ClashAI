@@ -1,0 +1,14 @@
+[S1 val] matches=36000 old init on S1 val plays (432 grid): n 3796 top1 13.70 top5 41.73 | cards skeletons:9.1/29.3(624) ice_wizard:10.9/35.9(607) the_log:21.1/52.2(536) knight:10.7/39.1(450) tesla:16.7/56.3(389) x_bow:30.5/75.4(325) tornado:6.4/20.8(312) rocket:10.5/40.2(219) | time 0-60:19.6/54.7(591) 60-120:15.4/48.2(570) 120-180:13.9/39.6(1088) 180+:10.7/35.9(1547)
+  side 0: n 60 top1 26.67 top5 51.67
+  side 1: n 3736 top1 13.49 top5 41.57
+  hand_match_engine=1: n 3790 top1 13.69 top5 41.66
+  hand_match_engine=0: n 6 top1 16.67 top5 83.33
+  snap_dist_tiles mean 0.386 max 0.833; unique (tag,side) 86; unique tags 85
+[S1 val, 1-tile 18x32 grid] n 3796 top1(argmax cell -> tile) 6.69  top1(tile prob mass) 6.69  top5(tile mass) 21.13
+[S1 val] |argmax - pro| tiles: mean 5.28 median 4.03 p90 12.30; within 1 tile 14.8% within 2 31.3%
+[leak] S1-val tags in old-model TRAIN split: 37/85 tags, 1724/3796 rows; on those rows top1 14.39 top5 42.00
+[S1 val CLEAN (never seen by old model)] n 2072 432-grid top1 13.13 top5 41.51 | 1-tile top1 6.37 top5(tile mass) 20.95; within 1 tile 14.5%
+[grid] board ActionSpace (sim env) gw 18 gh 24 n_cells 432; centre y range 0.0208..0.9792 (row pitch 1.333 tiles); x range 0.0278..0.9722 (col pitch 1.000 tiles)
+[join] s1_dataset val play rows 3796 (85 tags); old-instrument rows 3796 (dup keys old 0, new 0); matched (tag,side,tick) 3796; only-new 0; only-old 0
+[join] max |y_xy(new) - own_nxy(old)| over matched rows: 0.00005 (mean 0.000034)
+[join] examples only-new [] only-old []

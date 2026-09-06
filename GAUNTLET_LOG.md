@@ -1350,3 +1350,9 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Rebuilt: same row counts (icebow 21,687/56,590; hogeq 9,797/23,421); 24 tests OK; baselines identical (icebow tile 8.90%, hogeq 11.45%).
 - TRAP: TaskStop on a bash chain leaves the script's bash + python alive (advanced to seed 1) -- kill the PID tree and verify.
 - Running: run_seeds.sh (icebow s0-2, hogeq s0-2, 20 ep) ETA ~1h45. Next: icebow finals, gate sanity (<0.98 expected), then re-score old trunk on new rows.
+
+## L64c -- 2026-09-06 05:2x UTC -- RETRACTION of 5cs.48 (grid pitch), old init re-scored on S1 val, S1 seed 0
+- RETRACTED (a): L62i measured the LIVE ActionSpace (frame fractions x32) -> phantom 0.499 pitch. Trainer grid (_board_action_space): 432 = 1.333 tiles/row (owner was right), 576 = 1.000 with ZERO snap error on 2,657 pro x-bows; 432 max backward snap 0.5 tiles, 0/242 in-reach x-bows lost at either grid (owner's "one tile back / out of reach" still contradicted in magnitude).
+- Old init on the same 3,796 S1 val plays (a): 432 grid 13.70/41.73 (clean 2,072 rows 13.13/41.51; 37/85 val replays were in its train split); 1-tile bins 6.69%.
+- S1 icebow s0 (a, one seed): val tile 18.1% / half 15.4% (baseline 8.9/8.5), card 59.2%, gate bal-acc 0.715 (leak gone), emb cos 0.20. Matched grid: 1-tile new 17.3 vs old 6.7; old's 432 grid new 12.5 vs old 13.7 (clean 13.6 vs 13.1); miss distance mean 4.07 vs 5.28 tiles.
+- Monitor events also re-invoke the loop (a). Next: 3-seed bands per deck (~06:45 UTC).
