@@ -1,4 +1,13 @@
-"""L62: build the ghost pool that EngineMatchEnv consumes ->  icebow/data/ghost_pool/pool_env_v0.jsonl
+"""L62: build the ghost pool that EngineMatchEnv consumes ->  <deck>/data/ghost_pool/pool_env_v0.jsonl
+
+    python scratchpad/gauntlet/L62/build_ghost_pool.py [--deck icebow|hogeq] [--out PATH]
+
+L64 (2026-09-06): parameterised by deck.  `--deck` picks the card-base set (DECK_BASES) and the crawl
+(`<deck>/data/royaleapi/crawl2`) and the output dir (`<deck>/data/ghost_pool`).  Default icebow -> output
+byte-identical to the pre-L64 builder (verified with cmp at build time).
+KEY NAMES ARE DELIBERATELY UNCHANGED: `icebow_side` / `icebow_deck` / `icebow_commands` mean "OUR DECK's
+side" for whichever deck the pool was built for (hogeq included).  The rows carry no deck field; the deck
+is recorded in `pool_env_v0_build.json` only.  engine_env.py also accepts `our_*` spellings.
 
 OWNERSHIP NOTE (2026-09-05 13:2x): a second agent owns `icebow/data/ghost_pool/pool.jsonl` and a
 different schema (see scratchpad/gauntlet/L62/ghost_pool.md §0).  This builder writes ONLY
@@ -39,20 +48,30 @@ from native_core.card_catalog import catalog as _catalog  # noqa: E402
 
 CATALOG = _catalog()
 
-CRAWL = ROOT / "icebow" / "data" / "royaleapi" / "crawl2"
-OUT_DIR = ROOT / "icebow" / "data" / "ghost_pool"
-OUT = OUT_DIR / "pool_env_v0.jsonl"
-OUT_META = OUT_DIR / "pool_env_v0_build.json"
 LEVEL = 11
 ICEBOW_BASES = frozenset({"x_bow", "skeletons", "tesla", "knight", "the_log", "tornado", "ice_wizard", "rocket"})
+# hogeq: pipeline/decks/hogeq.yaml (hogeq/config/cards.yaml:36-47); corpus deck string
+# "earthquake,firecracker-ev1,hog-rider,ice-spirit,mighty-miner,skeletons,tesla-ev1,the-log"
+HOGEQ_BASES = frozenset({"hog_rider", "firecracker", "mighty_miner", "tesla", "the_log", "earthquake", "skeletons",
+                         "ice_spirit"})
+DECK_BASES = {"icebow": ICEBOW_BASES, "hogeq": HOGEQ_BASES}
+
+
+def paths_for(deck: str, out=None):
+    """(crawl dir, out jsonl, out meta) for a deck; `out` overrides the jsonl path (meta goes beside it)."""
+    crawl = ROOT / deck / "data" / "royaleapi" / "crawl2"
+    out = Path(out) if out else ROOT / deck / "data" / "ghost_pool" / "pool_env_v0.jsonl"
+    return crawl, out, out.with_name(out.stem + "_build.json")
 
 
 def key_base(slug):
     return slug.replace("-ev1", "").replace("-hero", "").replace("-", "_")
 
 
-def main():
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
+def main(deck: str = "icebow", out=None):
+    OUR_BASES = DECK_BASES[deck]
+    CRAWL, OUT, OUT_META = paths_for(deck, out)
+    OUT.parent.mkdir(parents=True, exist_ok=True)
     t0 = time.time()
     with (CRAWL / "battles.csv").open(encoding="utf-8", newline="") as fh:
         battles = list(csv.DictReader(fh))
@@ -92,9 +111,9 @@ def main():
         seen.add(tag)
         sides_with_icebow = [s for s in (0, 1)
                              if {key_base(t.strip()) for t in battle[RD.DECK_COL_OF_SIDE[s]].split(",")}
-                             == ICEBOW_BASES]
+                             == OUR_BASES]
         if len(sides_with_icebow) != 1:
-            refused["icebow_deck_not_on_exactly_one_side"] += 1
+            refused["icebow_deck_not_on_exactly_one_side"] += 1     # key kept: "our deck" (see docstring)
             continue
         ice = sides_with_icebow[0]
         ghost = 1 - ice
@@ -194,8 +213,9 @@ def main():
             fh.write(json.dumps(r) + "\n")
     meta = {"n": len(rows), "battles_csv_rows": len(battles), "distinct_tags_in_plays": len(by_tag),
             "refused_by_reason": dict(refused), "level_fill": LEVEL,
-            "builder": "scratchpad/gauntlet/L62/build_ghost_pool.py",
-            "source": "icebow/data/royaleapi/crawl2 (crawl RUNNING; snapshot at build time)",
+            "builder": "scratchpad/gauntlet/L62/build_ghost_pool.py", "deck": deck,
+            "our_side_keys": "icebow_side/icebow_deck/icebow_commands = OUR deck's side (any deck)",
+            "source": f"{deck}/data/royaleapi/crawl2 (snapshot at build time)",
             "built_at": time.strftime("%Y-%m-%d %H:%M:%S"), "seconds": round(time.time() - t0, 1),
             "ghost_cmds": {"total": sum(len(r["ghost_commands"]) for r in rows)}}
     OUT_META.write_text(json.dumps(meta, indent=1), encoding="utf-8")
@@ -208,4 +228,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    import argparse
+    ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    ap.add_argument("--deck", choices=sorted(DECK_BASES), default="icebow")
+    ap.add_argument("--out", default=None, help="jsonl path override (default <deck>/data/ghost_pool/pool_env_v0.jsonl)")
+    a = ap.parse_args()
+    main(a.deck, a.out)

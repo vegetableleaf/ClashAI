@@ -316,14 +316,17 @@ def main(argv=None) -> int:
     ap.add_argument("--gate", choices=("threshold", "sample", "none"), default="threshold",
                     help="none = no-plays control (model scored, never acts)")
     ap.add_argument("--device", default="cpu")
-    ap.add_argument("--pool", type=Path, default=None)
+    ap.add_argument("--pool", type=Path, default=None, help="default <deck data_dir>/ghost_pool/pool_env_v0.jsonl")
     ap.add_argument("--no-parity-check", action="store_true")
     a = ap.parse_args(argv)
 
     deck = load_deck(a.deck)
     model, minfo = load_model(a.ckpt, a.device)
     ee = _load_engine_env()
-    pool = ee.load_pool(a.pool) if a.pool else ee.load_pool()
+    # L64: default pool = the deck's own (deck.data_dir/ghost_pool/pool_env_v0.jsonl; for icebow that IS
+    # engine_env.POOL_DEFAULT, so icebow behaviour is unchanged); fall back to POOL_DEFAULT if it does not exist.
+    pool_path = a.pool or (deck.data_dir / "ghost_pool" / "pool_env_v0.jsonl")
+    pool = ee.load_pool(pool_path) if Path(pool_path).exists() else ee.load_pool()
     env = RawEngineEnv(port=a.port, host=a.host, pool=pool, decision_ticks=a.decide_every, seed=a.seed)
     a.out.mkdir(parents=True, exist_ok=True)
     order = random.Random(a.seed).sample(range(len(pool)), len(pool))       # seeded, no repeats within a run

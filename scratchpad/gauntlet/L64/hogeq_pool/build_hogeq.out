@@ -1,0 +1,23 @@
+{
+ "n": 241,
+ "battles_csv_rows": 598,
+ "distinct_tags_in_plays": 595,
+ "refused_by_reason": {
+  "play_not_positioned": 244,
+  "no_native_evolution_form": 107,
+  "no_plays_rows": 3,
+  "no_consistent_deal": 3
+ },
+ "level_fill": 11,
+ "builder": "scratchpad/gauntlet/L62/build_ghost_pool.py",
+ "deck": "hogeq",
+ "our_side_keys": "icebow_side/icebow_deck/icebow_commands = OUR deck's side (any deck)",
+ "source": "hogeq/data/royaleapi/crawl2 (snapshot at build time)",
+ "built_at": "2026-09-06 03:31:20",
+ "seconds": 2.1,
+ "ghost_cmds": {
+  "total": 9476
+ }
+}
+ghost positioned plays/match: median 35 min 1 max 81
+icebow_side counts: {1: 241}

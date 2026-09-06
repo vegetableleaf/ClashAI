@@ -161,7 +161,7 @@ cd C:\Users\benpe\ClashBot\hogeq
 
 ## 3. What is running RIGHT NOW
 
-**2026-09-06 07:5x UTC -- S1 DONE (6 checkpoints, icebow tile 18.22 +/- 0.11, hogeq 20.99 +/- 0.36 §5cs.64-65); ENGINE READ RUNNING (L64f: icebow s0 75-25 vs ghosts on 100 entries, no-plays 0-100, random 0-100 §5cs.65; s1 checkpoint x100 in flight on port 37032); trainers 0. Before that: L64a: S1 datasets built for both decks §5cs.60; corpus batches done §5cs.59; outputs scratchpad/gauntlet/ext/corpus_v3/, ETA ~2 h / ~40 min; step 2b own-click test DONE §5cs.58 -- from_live troop foot fix + degrade recalibration; §5cs.57). Before that: L63d S0 step 2 done -- pipeline/obs_contract.py; L63: research phase of the new gauntlet; 5 research agents writing to `scratchpad/gauntlet/L63/`).** The engB engine-PPO pair was killed at m=602/609
+**2026-09-06 08:5x UTC -- S1 DONE (6 checkpoints, icebow tile 18.22 +/- 0.11, hogeq 20.99 +/- 0.36 §5cs.64-65); ENGINE BAND CLOSED for icebow (L64g: 3 ckpts 75/71/71 wins of 100 vs ghosts, no-plays 0, random 0-3 §5cs.65-66); hogeq ghost pool subagent in flight; both engine slots free when it finishes; trainers 0. Before that: L64a: S1 datasets built for both decks §5cs.60; corpus batches done §5cs.59; outputs scratchpad/gauntlet/ext/corpus_v3/, ETA ~2 h / ~40 min; step 2b own-click test DONE §5cs.58 -- from_live troop foot fix + degrade recalibration; §5cs.57). Before that: L63d S0 step 2 done -- pipeline/obs_contract.py; L63: research phase of the new gauntlet; 5 research agents writing to `scratchpad/gauntlet/L63/`).** The engB engine-PPO pair was killed at m=602/609
 (§5cs.51, owner ruling); engA before it (§5cs.46). Box state verified at the kill: python processes
 7 -> 3, free RAM 5.0 GB.
 
@@ -1175,6 +1175,7 @@ per section in place, keep the archive greppable and committed.
 
 ## 8. Measurement traps
 
+* **Two engine slots, not four (§5cs.66).** 37031/37032 are the adb-forward doors and 38031/38032 the DIRECT doors of the same two guest engines; a client on 38031 while 37031 is busy hangs on `eng.reset` until the 120-s client timeout. Check `netstat -an | grep 3703` for ESTABLISHED before launching.
 * **`ActionSpace(cfg)` is the LIVE tap space; the trainer's grid is `sim/env.py::_board_action_space` (§5cs.62).** `cell_center` of the live space returns screen-frame fractions (arena box y 0.137..0.753), not board fractions; converting them with `*32` produced the phantom "0.499-tile row pitch" of §5cs.48. Any grid-geometry question about training goes through `_board_action_space`.
 * **A background bash chain outlives `TaskStop` (§5cs.61).** Stopping the task killed the wrapper shell; the script's own bash and its python trainer kept running and started the next seed. Kill the script's PID tree (`Get-CimInstance Win32_Process`, follow ParentProcessId) and verify the trainer count is 0 before touching its outputs.
 * **Two row types from two frame formats = a label leak (§5cs.61).** S1 play rows came from full play frames (7-col entities with `kind`, plus effects), wait rows from compact frames; the gate head read the row type off token columns 8-13 (bal-acc 0.98). Reduce every source to ONE format before building rows, then compare per-column token means across row types -- they must differ only where the state genuinely differs.
@@ -2468,6 +2469,23 @@ Trap: `set_crawl("hogeq")` first resolved to the repo's `hogeq/` directory becau
 **C. Trigger failure (a).** ScheduleWakeup set 23:08 for 23:39 local and the :53 cron both did not fire; at 00:11 `CronList` still showed the one-shot pending. The session's idle scheduler does not fire in this environment; task-completion notifications do (two subagents re-invoked the loop tonight). Standing mitigation: keep the engine batches as background TASKS so their exit re-invokes the loop; nothing else is available from inside.
 
 **D. Next.** When the icebow batch exits: final icebow grade, then the cleanup loop (ruling 6) and the S1 dataset build from `corpus_v3` play_frames through `pipeline.obs_contract.from_engine` (both decks).
+
+### §5cs.66 -- L64g (2026-09-06 08:0x-08:5x UTC): **engine checkpoint band CLOSED for icebow -- three S1 seeds on the same 100 paired entries (threshold tau 0.5): 75-25 / 71-29 / 71-29 wins, survival over the no-plays control +115.2 / +112.4 / +111.8 s (SE ~5.3 each), crowns against 0.86 / 0.93 / 0.86; a HIGHER-RATE random policy (p 0.13: 15.2 plays/min, 7.7 accepted/min) wins 3-97 and buys only +44 s -- the model's engine result is not play delivery.**
+
+**A. Checkpoint band (a), `L64/engine_ctrl/thr_ck{1,2}/`, scores `score_s0.txt` (s0) and `score_g.txt` (s2), s1 scored inline.**
+| ckpt | W-L | mean s | vs control | survived longer | crowns for / against | plays/min (acc) | p_gate |
+|---|---|---|---|---|---|---|---|
+| s1_icebow_s0 | 75-25 | 206.5 | +115.2 +/- 5.5 | 100/100 | 1.45 / 0.86 | 11.21 (85.5%) | 0.281 |
+| s1_icebow_s1 | 71-29 | 203.7 | +112.4 +/- 5.5 | 100/100 | 1.34 / 0.93 | 10.43 (87.4%) | 0.277 |
+| s1_icebow_s2 | 71-29 | 203.1 | +111.8 +/- 5.0 | 100/100 | 1.27 / 0.86 | 11.30 (85.3%) | -- |
+| mean | **72.3 +/- 2.3** | 204.4 | **+113.1** | | 1.35 / 0.88 | 10.98 | |
+Three checkpoints from three training seeds land within 4 wins of each other on the same entries; the survival delta band is 3.4 s wide against a per-run SE of ~5.3. The val-tile ordering (s1 18.34 > s2 18.20 > s0 18.12) does NOT predict the engine ordering (s0 best) -- (a) at this n the three are indistinguishable on the engine, and the 0.2-pt val-tile spread is below what the engine instrument can see.
+
+**B. Rate-matched random (a), `rnd13_s0/`, p_random 0.13.** 15.21 plays/min attempted, 50.6% accepted = 7.7 accepted/min (p 0.093 run: 6.8; model 9.6). **3W-97L**, mean 135.3 s, +44.0 +/- 3.9 s over the control, crowns against 2.63. Doubling the attempt rate over the §5cs.65 random run added 6 s of survival and 3 wins; the model at a LOWER attempt rate adds 113 s and 72 wins. The residual accepted-rate gap (7.7 vs 9.6/min) cannot carry that: (a) survival per accepted play is ~5.7 s for random vs ~11.8 s for the model. The two random controls together are the "any plays win against a replay" hypothesis's burial.
+
+**C. What this does NOT establish.** Still nothing against a reactive opponent; still no old-init number on this instrument (§5cs.65); the threshold-vs-sample question is open (one checkpoint, 75 vs 68, inside noise); hogeq on the engine waits on the deck-agnostic ghost pool (subagent in flight, `L64/hogeq_pool/hogeq_pool.md`). TRAP found by that subagent (a): **ports 38031/38032 are NOT extra engine slots** -- 37031+slot is the adb-forward door and 38031+slot the direct door of the SAME guest engine (adb PID 59132, qemu PID 54304); there are exactly TWO engine slots, and a client on 38031 while 37031 is busy hangs on `eng.reset` for the 120-s client timeout. §5cs.63's "four ports up" meant two slots x two doors.
+
+**D. Next.** hogeq s0 on the engine with its own no-plays + random controls once the pool exists; then the Square One order resumes: S1 ablation slot (outcome-weighted BC, one change) or S2 corpus x3. Recommendation to the owner (not a question, no stop): with S1 grading at 2x baseline on both decks and a controlled engine instrument, S2/S3 (more corpus, then the search teacher) is where the next gain is; the ablation can wait.
 
 ### §5cs.65 -- L64f (2026-09-06 06:3x-07:5x UTC): **S1 hogeq 3-seed band CLOSED (val tile 20.99 +/- 0.36, half 19.26, card 54.91 vs board-blind 11.45 / 11.45 / 42.32); FIRST ENGINE READ of the S1 model with controls: on 100 pool entries the icebow s0 checkpoint WINS 75 / loses 25 (threshold tau 0.5) and 68 / 32 (sampled gate) where the no-plays control loses 100/100 in 91 s and a rate-matched RANDOM policy loses 100/100 in 130 s. Model survives longer than the control on 100/100 entries (+115 +/- 5.5 s), crowns against 0.86 vs 3.00.**
 

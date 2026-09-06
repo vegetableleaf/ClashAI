@@ -1,0 +1,6 @@
+020YPYJJ9LLR_m1.jsonl refused: [(296.0, 'firecracker_evo', 'native_4', 'bx=0.49 by=0.35', 'elixir', 10.0), (296.5, 'ice_spirit', 'native_4', 'bx=0.49 by=0.35', 'elixir', 10.0), (297.0, 'ice_spirit', 'native_4', 'bx=0.49 by=0.35', 'elixir', 10.0), (297.5, 'ice_spirit', 'native_4', 'bx=0.49 by=0.35', 'elixir', 10.0), (298.0, 'ice_spirit', 'native_4', 'bx=0.49 by=0.35', 'elixir', 10.0), (298.5, 'ice_spirit', 'native_4', 'bx=0.49 by=0.35', 'elixir', 10.0), (299.0, 'ice_spirit', 'native_4', 'bx=0.49 by=0.35', 'elixir', 10.0)]
+   accepted by card: {'the_log': 10, 'tesla_evo': 1, 'firecracker_evo': 6, 'hog_rider': 11, 'mighty_miner': 5, 'skeletons': 11, 'ice_spirit': 10, 'earthquake': 9}
+   earthquake/log placements accepted by: [('the_log', 0.55), ('the_log', 0.55), ('earthquake', 0.34), ('the_log', 0.55), ('earthquake', 0.34), ('the_log', 0.55)]
+09J9JVLQ8YRR_m0.jsonl refused: [(199.5, 'ice_spirit', 'native_4', 'bx=0.10 by=0.54', 'elixir', 9.21), (200.0, 'ice_spirit', 'native_4', 'bx=0.10 by=0.54', 'elixir', 9.57), (200.5, 'ice_spirit', 'native_4', 'bx=0.10 by=0.54', 'elixir', 9.93)]
+   accepted by card: {'skeletons': 5, 'firecracker_evo': 5, 'mighty_miner': 4, 'hog_rider': 4, 'tesla_evo': 3, 'ice_spirit': 4, 'the_log': 1}
+   earthquake/log placements accepted by: [('the_log', 0.55)]

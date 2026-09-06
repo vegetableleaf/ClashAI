@@ -61,7 +61,7 @@ V2 = _load_module(ROOT / "scratchpad" / "gauntlet" / "L61" / "build_bc_v2.py", "
 TICK_S = 0.05
 # OWNERSHIP: `pool.jsonl` belongs to the ghost-pool agent and uses a different schema. This env reads
 # ONLY `pool_env_v0.jsonl`, written by scratchpad/gauntlet/L62/build_ghost_pool.py.
-POOL_DEFAULT = ICEBOW / "data" / "ghost_pool" / "pool_env_v0.jsonl"
+POOL_DEFAULT = ICEBOW / "data" / "ghost_pool" / "pool_env_v0.jsonl"     # hogeq: hogeq/data/ghost_pool/pool_env_v0.jsonl
 TEMPLATE = SANDBOX / "examples" / "full-card-bootstrap.json"
 DEAL_CACHE = Path(__file__).resolve().parent / "deal_cache.json"
 RESULT_CODE_NAMES = {0: "accepted", 9: "card_not_in_hand", 13: "not_enough_elixir", 1014: "ability_exhausted",
@@ -85,6 +85,14 @@ def load_pool(path=POOL_DEFAULT, *, require_commands: int = 1):
 
 def key_base(slug: str) -> str:
     return slug.replace("-ev1", "").replace("-hero", "").replace("-", "_")
+
+
+def ours(entry: dict, what: str):
+    """Our-side field of a pool entry. L64: the pool is built per deck (build_ghost_pool.py --deck) and the
+    row keys `icebow_side` / `icebow_deck` / `icebow_commands` mean OUR deck's side for ANY deck (hogeq
+    pools use the same names); `our_*` is accepted as a synonym for pools that spell it that way."""
+    k = f"our_{what}"
+    return entry[k] if k in entry else entry[f"icebow_{what}"]
 
 
 class EngineMatchEnv:
@@ -203,7 +211,7 @@ class EngineMatchEnv:
 
     # ---------------------------------------------------------------- deck / deal resolution
     def _side_plays(self, entry, side):
-        cmds = entry["icebow_commands"] if side == entry["icebow_side"] else entry["ghost_commands"]
+        cmds = ours(entry, "commands") if side == int(ours(entry, "side")) else entry["ghost_commands"]
         return [c for c in cmds if not c.get("ability")]
 
     def _resolve_decks(self, entry):
@@ -215,7 +223,7 @@ class EngineMatchEnv:
         cached per tag on disk (deal_cache.json) so a repeat episode of the same tag costs one reset
         instead of two.
         """
-        decks = {int(entry["icebow_side"]): list(entry["icebow_deck"]),
+        decks = {int(ours(entry, "side")): list(ours(entry, "deck")),
                  int(entry["ghost_side"]): list(entry["ghost_deck"])}
         cached = self._deal_cache.get(entry["tag"]) if self._use_cache else None
         if cached:
@@ -288,7 +296,7 @@ class EngineMatchEnv:
         if entry is None:
             entry = self.pool[index % len(self.pool)] if index is not None else self.rng.choice(self.pool)
         self.entry = entry
-        self.side = int(entry["icebow_side"])
+        self.side = int(ours(entry, "side"))
         self.opp = int(entry["ghost_side"])
         self._mirror = (self.side == 1)
 

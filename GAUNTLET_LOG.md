@@ -1372,3 +1372,9 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - hogeq 3 seeds (a): val tile 21.30/20.58/21.08 = 20.99 +/- 0.36 (baseline 11.45), half 19.26, card 54.91 (42.32); value acc 53.7 (icebow 69.8; crowns mismatch suspected, untested). Best epochs 20/11/18.
 - Engine, icebow s0 ckpt, 100 paired pool entries (a): threshold 75W-25L, sampled 68-32; no-plays control 0-100 (91 s), rate-matched random policy 0-100 (130 s). Model survives +115 +/- 5.5 s on 100/100 entries, crowns against 0.86 vs 3.00. Model win rate identical on entries the pro won (75%) and lost (76%); all 100 engine-terminated.
 - Not established: reactive opponents; old init on this instrument; checkpoint variance (s1 ckpt in flight). Harness: --policy random added.
+
+## L64g -- 2026-09-06 08:5x UTC -- engine checkpoint band closed; rate-matched random buried
+- 3 icebow ckpts x 100 paired entries (a): 75-25 / 71-29 / 71-29, survival +115/+112/+112 s over no-plays (SE ~5.3), crowns against 0.86/0.93/0.86. Val-tile order does not predict engine order; indistinguishable at this n.
+- Random p 0.13 (a): 15.2 plays/min, 7.7 accepted/min, 3W-97L, +44 s. Survival per accepted play ~5.7 s random vs ~11.8 s model.
+- TRAP (a, subagent): 38031/38032 are the direct doors of the SAME two engines as 37031/37032 -- two slots, not four.
+- Next: hogeq on the engine (pool subagent in flight), then S2/S3 per Square One.

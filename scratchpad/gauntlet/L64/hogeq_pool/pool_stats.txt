@@ -1,0 +1,14 @@
+== hogeq: n=241 result={'win': 138, 'loss': 103} our_side={1: 241}
+   plays/side (positioned): ours mean 48.1 median 47 | ghost mean 37.6 median 35 | ability cmds total 955
+   duration (last play) s: mean 228.6 median 232.7 min 28.8 max 298.9
+   distinct our-deck slug sets: 1 -> ('earthquake', 'firecracker', 'hog-rider', 'ice-spirit', 'mighty-miner', 'skeletons', 'tesla', 'the-log')
+   our-deck sim_key None count (reference field only): 0 / 1928
+   our-deck names: ['Earthquake', 'Firecracker', 'HogRider', 'IceSpirits', 'MightyMiner', 'Skeletons', 'Tesla', 'Log']
+   forms: Counter({'base': 6, 'evolution': 2})
+== icebow(on-disk): n=477 result={'win': 335, 'loss': 142} our_side={1: 477}
+   plays/side (positioned): ours mean 47.7 median 55 | ghost mean 42.8 median 44 | ability cmds total 1089
+   duration (last play) s: mean 253.9 median 290.2 min 34.4 max 298.9
+   distinct our-deck slug sets: 1 -> ('ice-wizard', 'knight', 'rocket', 'skeletons', 'tesla', 'the-log', 'tornado', 'x-bow')
+   our-deck sim_key None count (reference field only): 0 / 3816
+   our-deck names: ['IceWizard', 'Knight', 'Rocket', 'Skeletons', 'Tesla', 'Log', 'Tornado', 'Xbow']
+   forms: Counter({'base': 6, 'evolution': 2})
