@@ -378,7 +378,11 @@ def from_live(detections: Sequence[Any], reads: LiveReads, deck: Deck, *, warp: 
     spells: list[Unit] = []
     for d in detections:
         cid = vocab.unit_id(str(d.cls))
-        x, y = warp.frame_to_board(float(d.cx), float(d.gy))
+        fy = float(d.gy)
+        if (vocab.kind_of(cid) == "troop" and getattr(d, "ground_cy", None) is None
+                and getattr(d, "h", None) is not None):
+            fy = fy + TROOP_FOOT_K * float(d.h)      # ground troop: box centre -> feet (L63f own-click test)
+        x, y = warp.frame_to_board(float(d.cx), fy)
         u = Unit(cid, _TEAM_SIDE.get(str(d.team), -1), float(x), float(y), None, None, None, float(d.conf))
         (spells if vocab.is_spell(cid) else units).append(u)
     towers = []
@@ -406,22 +410,41 @@ def from_live(detections: Sequence[Any], reads: LiveReads, deck: Deck, *, warp: 
 # (HANDOFF.md:1080-1096, board-24-5). Everything else in here is UNMEASURED and says so.
 DEGRADE_RECALL = 0.855
 DEGRADE_PRECISION = 0.886
-_FP_JITTER_TILES = 1.0          # UNMEASURED: how far a false-positive duplicate sits from its source
-_CONF_RANGE = (0.35, 1.0)       # UNMEASURED: live conf distribution; 0.35 is the deploy gate (config detector_conf)
+# L63f own-click test (scratchpad/gauntlet/L63/s0/ownclick.md, 276 human plays / 17,336 detections, 4 sessions):
+TROOP_FOOT_K = 0.25             # MEASURED: a ground troop's box centre sits 0.354 box-heights above its feet
+                                #   (-0.73 tiles median at my-half clicks, n=73); K=0.25 leaves |dy| median 0.35 / p90 0.88
+_TP_SIGMA_TILES = 0.45          # MEASURED: true-positive position noise after the foot fix (x median 0.29 / p90 0.83)
+_FP_JITTER_TILES = 1.0          # UNMEASURED: how far a false-positive duplicate sits from its source (no enemy truth)
+_CONF_MIX = (0.30, 0.35, 0.78, 0.86, 0.045, 0.995)   # MEASURED shape: p10/p50/p90 = 0.47/0.835/0.91, 57% in 0.80-0.95;
+                                #   with prob 0.30 uniform(0.35, 0.78) else clip(normal(0.86, 0.045), 0.35, 0.995)
+UNKNOWN_TEAM_RATE = 0.25        # MEASURED offline colour vote: side unknown 0.252 (troop 0.235 / building 0.286 / spell 0.295)
+WRONG_TEAM_RATE = {"troop": 0.15, "building": 0.15, "spell": 0.40}   # (b) troop/building ~0.15 after TeamTracker
+                                #   (offline first sighting of OWN units: 30% tagged enemy); own spells 26/62 = 0.42 wrong
+
+
+def _draw_conf(rng: np.random.Generator) -> float:
+    p_u, lo, hi, mu, sd, cap = _CONF_MIX
+    if rng.random() < p_u:
+        return float(rng.uniform(lo, hi))
+    return float(np.clip(rng.normal(mu, sd), lo, cap))
 
 
 def degrade(bs: BoardState, rng: np.random.Generator, *, recall: float = DEGRADE_RECALL,
             precision: float = DEGRADE_PRECISION, elixir_to_int: bool = True, drop_hp: bool = True,
-            drop_deploying: bool = True, unknown_team_rate: Optional[float] = None,
-            pos_sigma_tiles: float = 0.0) -> BoardState:
+            drop_deploying: bool = True, unknown_team_rate: Optional[float] = UNKNOWN_TEAM_RATE,
+            pos_sigma_tiles: float = _TP_SIGMA_TILES,
+            wrong_team_rate: Optional[dict] = None) -> BoardState:
     """Turn an engine state into a live-like one. Units and spells are each kept with p = recall; per KEPT
     unit, with rate (1 - precision) / precision, a false positive is added: a copy with a jittered position
     and a random class of the same kind (troop / building). Live has no unit hp / deploy state / age, so
     those become None; conf is redrawn; elixir is floored to the bar's integer; the opponent's elixir and
     the kings' hp (never printed live) become None.
 
-    ``pos_sigma_tiles`` (gaussian position noise, tiles) and ``unknown_team_rate`` (side -> -1) are
-    UNMEASURED -- defaults 0.0 / None leave them off. Deterministic under ``rng``'s seed."""
+    ``pos_sigma_tiles`` (gaussian position noise, tiles; measured 0.45), ``unknown_team_rate`` (side -> -1;
+    measured 0.25) and ``wrong_team_rate`` (per kind, side flipped 0<->1; default ``WRONG_TEAM_RATE``, pass
+    ``{}`` to disable) come from the L63f own-click test. Deterministic under ``rng``'s seed."""
+    if wrong_team_rate is None:
+        wrong_team_rate = WRONG_TEAM_RATE
     fp_rate = (1.0 - precision) / precision
     kinds: dict[str, list[int]] = {"troop": [], "building": [], "spell": []}
     for i in range(vocab.N_DETECTOR):
@@ -431,12 +454,16 @@ def degrade(bs: BoardState, rng: np.random.Generator, *, recall: float = DEGRADE
         dx = rng.normal(0.0, jitter) / TILES_X if jitter > 0 else 0.0
         dy = rng.normal(0.0, jitter) / TILES_Y if jitter > 0 else 0.0
         side = u.side
-        if unknown_team_rate and rng.random() < unknown_team_rate:
+        r = rng.random()
+        wrong = wrong_team_rate.get(vocab.kind_of(u.cls), 0.0)
+        if unknown_team_rate and r < unknown_team_rate:
             side = -1
+        elif wrong and r < (unknown_team_rate or 0.0) + wrong and side in (0, 1):
+            side = 1 - side
         return Unit(u.cls if cls is None else cls, side,
                     float(np.clip(u.x + dx, 0.0, 1.0)), float(np.clip(u.y + dy, 0.0, 1.0)),
                     None if drop_hp else u.hp_frac, None if drop_deploying else u.deploying, None,
-                    float(rng.uniform(*_CONF_RANGE)))
+                    _draw_conf(rng))
 
     units: list[Unit] = []
     for u in bs.units:

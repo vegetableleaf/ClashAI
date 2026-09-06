@@ -347,8 +347,10 @@ class TestLiveAdapter(unittest.TestCase):
             fx, fy = self.warp.board_to_frame(*oc._engine_xy(x, y, False))
             if name in FLYERS:                            # sprite drawn above the shadow: cy high, ground_cy = true y
                 dets.append(self.Detection(cls_of[name], fx, fy - 0.045, 0.05, 0.05, 0.8, "enemy" if s else "mine", ground_cy=fy))
-            else:
+            elif name == "Xbow":                          # building: box centred on the tile (measured -0.09 tiles)
                 dets.append(self.Detection(cls_of[name], fx, fy, 0.05, 0.05, 0.9, "enemy" if s else "mine"))
+            else:                                         # ground troop: box centre sits TROOP_FOOT_K * h above the feet (L63f)
+                dets.append(self.Detection(cls_of[name], fx, fy - oc.TROOP_FOOT_K * 0.05, 0.05, 0.05, 0.9, "enemy" if s else "mine"))
         for (s, x, y, name) in EFFECTS:
             fx, fy = self.warp.board_to_frame(*oc._engine_xy(x, y, False))
             dets.append(self.Detection(cls_of[name], fx, fy, 0.1, 0.1, 0.7, "mine"))
@@ -430,7 +432,7 @@ class TestDegrade(unittest.TestCase):
         rng = np.random.default_rng(123)
         kept = fps = 0
         for _ in range(2000):
-            d = oc.degrade(bs, rng)
+            d = oc.degrade(bs, rng, pos_sigma_tiles=0.0)   # rates only: keep originals at their exact position
             n = len(d.units)
             # a false positive is a duplicate: same kind, jittered; count = tokens beyond the kept originals.
             # Kept originals have conf drawn but keep their exact position; FPs sit >= ~1 tile away.
@@ -495,3 +497,31 @@ class TestTokens(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
+
+
+class TestOwnClickCalibration(unittest.TestCase):
+    """L63f: the measured own-click calibration is wired in (ownclick.md)."""
+
+    def test_degrade_team_rates(self):
+        import pipeline.obs_contract as oc_
+        deck = oc_.load_deck("icebow")
+        units = tuple(oc_.Unit(oc_.vocab.unit_id("knight"), 0, 0.5, 0.7, 1.0, False, 0.0, 1.0) for _ in range(10))
+        bs = oc_.BoardState(source="engine", t_sec=10.0, t_source="tick", double_elixir=False, overtime=False,
+                            my_elixir=5.0, my_elixir_exact=True, opp_elixir=5.0, my_hand=(-1, -1, -1, -1), my_next=-1,
+                            towers=tuple(oc_.Tower(s, k, l, 1.0, True) for s in (0, 1) for (k, l) in oc_.TOWER_ORDER),
+                            units=units, spells=(), deck=deck.card_ids)
+        rng = np.random.default_rng(7)
+        unknown = wrong = total = 0
+        confs = []
+        for _ in range(1000):
+            d = oc_.degrade(bs, rng, recall=1.0, precision=1.0)
+            for u in d.units:
+                total += 1; unknown += u.side == -1; wrong += u.side == 1; confs.append(u.conf)
+        self.assertAlmostEqual(unknown / total, oc_.UNKNOWN_TEAM_RATE, delta=0.02)
+        self.assertAlmostEqual(wrong / total, oc_.WRONG_TEAM_RATE["troop"], delta=0.02)
+        c = np.array(confs)
+        self.assertAlmostEqual(float(np.median(c)), 0.835, delta=0.03)
+        self.assertTrue(0.35 <= c.min() and c.max() <= 0.995)
+        d0 = oc_.degrade(bs, np.random.default_rng(1)); d1 = oc_.degrade(bs, np.random.default_rng(1))
+        self.assertEqual(d0, d1)
+

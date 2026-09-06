@@ -1322,3 +1322,9 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Running: corpus_v3/icebow (37031, ~13 s/replay, ETA ~2 h), corpus_v3/hogeq (37032, ~8 s/replay, ETA ~40 min). Step 2b own-click agent dispatched.
 - (c) machine sleep as the cause of the 3 lost nights: 0 sleep/wake/boot events in 4 days of the System log. Cron :23/:53 added as second trigger.
 - Owner rulings: CR_ENGINE_EXTRACTION_REVIEW.md deleted; README rewritten (74a3e80).
+
+## L63f -- 2026-09-06 03:1x UTC -- S0 step 2b DONE: own-click contract test on 276 real human plays (4 sessions, 17,336 detections)
+- Recall of the placed unit within 1.5 s: same class 0.81 (hogeq 0.55 = class confusion on icebow's detector), any new detection 0.97. x error 0.29 tiles median (unbiased); troop y biased -0.73 tiles (box centre != feet) -> FIXED in from_live (fy = gy + 0.25 h). Conf p50 0.835 (uniform(0.35,1) contradicted); unknown-team 0.25; own units tagged enemy 30%, own spells 42%.
+- degrade() recalibrated: conf mixture, sigma 0.45, unknown 0.25, wrong_team_rate {troop/building 0.15 (b), spell 0.40}. 20 tests OK.
+- label.py defects (not fixed, old path): 9.1% of "plays" are tray taps; select-time stamp; river-line snapping.
+- Batches: icebow 132/619, hogeq 150/296 at 03:07 UTC; icebow background task survived the 10-min mark.
