@@ -165,9 +165,9 @@ See [log.txt](log.txt) for how the model and architecture evolved.
 
 ## Sponsors
 
-Want to sponsor my work? This is a hobby project built in the gaps around coursework — replay
-crawling, engine time and the odd cloud run all come out of pocket, and sponsorship buys more of
-the experiments that fill [HANDOFF.md](HANDOFF.md).
+Want to sponsor my work? This is a hobby, open-source project built in the gaps around coursework. I play for replay
+crawling, engine time and the odd cloud run all out of pocket, and any sponsorship buys me more of
+the experiments that fill [HANDOFF.md](HANDOFF.md). Any contribution is appreciated!
 
 **[github.com/sponsors/vegetableleaf](https://github.com/sponsors/vegetableleaf)**
 
