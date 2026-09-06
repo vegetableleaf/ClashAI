@@ -37,9 +37,9 @@ def main(argv=None) -> int:
         model = S1Model(d=args.get("d", 128), layers=args.get("layers", 4)).to(dev)
         model.load_state_dict(st["model"])
         with torch.no_grad():
-            ev = evaluate(model, rows)
+            ev = evaluate(model, rows, grid=args.get("grid", "floor"))
         ev.update({"ckpt": str(c), "epoch": st.get("epoch"), "data": str(a.data), "rows": int(len(idx)),
-                   "trained_on": str(args.get("data"))})
+                   "trained_on": str(args.get("data")), "grid": args.get("grid", "floor")})
         print(json.dumps({k: (round(v, 4) if isinstance(v, float) else v) for k, v in ev.items()}), flush=True)
     return 0
 
