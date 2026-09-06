@@ -1447,3 +1447,9 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - v5 icebow chain: s0 epoch 8/20 at ~221 s/epoch (val cell_half_top1 0.1922 at epoch 8, one seed mid-training -- NOT a result); s1/s2 to follow, ~3 h to ICEBOW_V5LAT_DONE. hogeq drive 233/423 (163 ok / 71 fail: 62 evo-E-barb 26000043, 9 hand-assignment).
 - Wrote scratchpad/gauntlet/L64/idm/_transfer_probe.py (arms A own session / B bridgeblock 640x360 / C upscaled). Two bugs caught before first run: Config is a dataclass (.load), whitelist is 46 BASE keys so compare Detection.base. Counts only -- can falsify transfer, cannot confirm it. Deferred: 2.7 GB free, CPU 100%.
 - Box: python train + sandbox drive; no launches. Commit fcb1c24 (rebased over 2 owner README commits).
+
+## L64t (2026-09-06/07) -- THIRD SCALING POINT: icebow v5 20.93 +/- 0.49; three points on one log-linear line
+- corpus_v5/icebow 1,638 replays -> v5lat x3 on the v3 VAL file (3,796 plays): exact cell 21.42 / 20.94 / 20.44 = 20.93 +/- 0.49 (v3 18.17, v4 19.84); card 63.0, 1-tile 31.9, gate bal-acc 75.7, NLL 3.22.
+- Fit cell = a*log2(n)+b over 493/953/1638: a = 1.60 pp per doubling, residuals -0.04/+0.10/-0.05. Pre-registered: x10 (4,930) -> 23.5 %; 30 % needs ~81k. Log-linear vs saturating not separable at 3 points. Corpus scale alone stays in the low 20s -> S3's argument, now with a slope.
+- Noise: v5 seed sd 0.49 vs v4 0.19; binomial per-seed SE 0.66 pp -- 0.19 was the lucky one. All points share the E-barb-blind filter (18.4 % of the crawl).
+- hogeq drive done: 302 ok / 121 fail (62 evo-E-barb), determinism 32/32. hogeq v5 chain running (b7wv22oz1), expected ~23.7 % on 21.00/22.56 instrument. §5cs.77.
