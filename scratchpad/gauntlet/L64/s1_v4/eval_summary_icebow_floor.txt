@@ -1,0 +1,4 @@
+eval_v3val_icebow_floor_place.out
+  s1_icebow_s0.pt        ep 14 floor   half 0.1536 tile 0.1812 nll 3.862 card 0.592 joint 0.1062 gate_bal 0.715 wait 0.475 value 0.692 | hit 0.0000 1t 0.2592 dist 4.069
+  s1_icebow_s1.pt        ep 14 floor   half 0.1615 tile 0.1834 nll 3.819 card 0.595 joint 0.1075 gate_bal 0.671 wait 0.473 value 0.707 | hit 0.0000 1t 0.2603 dist 4.079
+  s1_icebow_s2.pt        ep 20 floor   half 0.1649 tile 0.1820 nll 3.862 card 0.591 joint 0.1017 gate_bal 0.705 wait 0.476 value 0.696 | hit 0.0000 1t 0.2532 dist 4.056

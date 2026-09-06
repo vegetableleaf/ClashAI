@@ -1,0 +1,11 @@
+start icebow 14:04
+corpus_v4/icebow: v3 493 i1r 460 copied 953 total 953
+{"out": "icebow\\data\\pipeline\\s1_dataset_v4.npz", "rows": 147842, "play_rows": 40449, "wait_rows": 107393, "val_rows": 23527, "replays": 953, "units_total": 627751, "seconds": 18.2, "stats": {"mirror_matches": 3, "unmapped": [], "play_rows": 40449, "wait_rows": 107393, "wait_in_window": 22368, "p
+{"FINAL": "icebow_lat_s0", "val_cell_tile": 0.17992623814541622, "val_cell_half": 0.18018967334035826, "train_cell_tile": 0.22645617855198694, "card": 0.5948366701791359, "joint": 0.10379346680716543, "emb_cos": 0.18208229541778564, "epoch": 16}
+{"FINAL": "icebow_lat_s1", "val_cell_tile": 0.18203371970495258, "val_cell_half": 0.18177028451001054, "train_cell_tile": 0.22070844686648503, "card": 0.5969441517386723, "joint": 0.10247629083245521, "emb_cos": 0.1819375902414322, "epoch": 15}
+{"FINAL": "icebow_lat_s2", "val_cell_tile": 0.1833508956796628, "val_cell_half": 0.18308746048472077, "train_cell_tile": 0.23272596067111673, "card": 0.5835089567966281, "joint": 0.10273972602739725, "emb_cos": 0.18169613182544708, "epoch": 16}
+ICEBOW_V3LAT_DONE 15:17
+{"FINAL": "icebow_v4lat_s0", "val_cell_tile": 0.19974913766070868, "val_cell_half": 0.19974913766070868, "train_cell_tile": 0.23307456219534212, "card": 0.6127312637190342, "joint": 0.11994355597365945, "emb_cos": 0.16298669576644897, "epoch": 13}
+{"FINAL": "icebow_v4lat_s1", "val_cell_tile": 0.19880840388836626, "val_cell_half": 0.19880840388836626, "train_cell_tile": 0.23327835807220085, "card": 0.6191596111633741, "joint": 0.12151144559423016, "emb_cos": 0.16671761870384216, "epoch": 15}
+{"FINAL": "icebow_v4lat_s2", "val_cell_tile": 0.1975540921919097, "val_cell_half": 0.1975540921919097, "train_cell_tile": 0.22682089282486897, "card": 0.6175917215428034, "joint": 0.12386328002508623, "emb_cos": 0.1477680504322052, "epoch": 17}
+ICEBOW_V4LAT_DONE 17:33
