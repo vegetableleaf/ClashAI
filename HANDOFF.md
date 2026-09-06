@@ -1160,6 +1160,11 @@ per section in place, keep the archive greppable and committed.
   The user's instruction, verbatim: *"make sure to update handoff.md after every update"*.
 * Discord alerts go to the webhook in `icebow/data/discord_webhook.txt` via **python urllib** (not
   Git-Bash curl), and **must send a `User-Agent`** or Discord returns 403.
+* **Overnight wakeups (L63h, 2026-09-06): `ScheduleWakeup`/`CronCreate` do NOT fire while the session
+  is idle (measured three nights running; machine sleep ruled out by the event log). The trigger that
+  works is a background task's exit notification (subagents, `Bash run_in_background`). End every
+  loop with a timer task `sleep N; echo WAKE` (N <= 570 s under the 600 s Bash cap, chain for longer)
+  and keep long batches as background tasks.** Never end a loop on `ScheduleWakeup` alone.
 * Never re-run **bare** `run.py sprites` — it clears the sprite bank (`--append` keeps it).
   `run.py sprites --synth N` does **not** touch the bank (it is a separate `elif` branch); an
   earlier claim otherwise in this repo's own docstrings is wrong.

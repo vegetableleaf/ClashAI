@@ -1333,3 +1333,8 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - hogeq: 241/296 converted (52 EB-evo, 3 deal-inference), 98.7% plays accepted, det 27/27 SAME, crowns match 56.4% (65.3% even with zero rejections; icebow 80.8%), engine ends early in 36.5% (median 1,008 ticks). (b) level-11 uniform levels vs level-sensitive hog breakpoints.
 - icebow partial: 421/528 converted (103 EB-evo, 4 duplicated-row tags -- TRAP), 99.2% accepted, crowns 76.2%, 211/211 batch_v2 hashes reproduced.
 - (a) wakeup 23:39 + cron 23:53 local did NOT fire while idle; CronList still showed the one-shot at 00:11. Owner's message was the check.
+
+## L63h -- 2026-09-06 04:2x UTC -- Overnight trigger FIXED: timer tasks replace ScheduleWakeup
+- (a) ScheduleWakeup + CronCreate do not fire while idle (3 nights). (a) A background `sleep 60; echo WAKE` task's exit re-invoked the loop within seconds (task b4t2fo0uo, exit 0).
+- Rule written into .claude/commands/gauntlet.md §4 and HANDOFF §7: end every loop on a timer task (N<=570 s under the Bash cap, chain for longer); long batches stay background tasks. ScheduleWakeup allowed only as a free second trigger.
+- Icebow batch 592/619 at 04:19 UTC; 8-min fallback timer armed (bhlc02vvv).

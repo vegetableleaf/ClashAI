@@ -121,9 +121,14 @@ Never paste the webhook, a secret, or a wall of raw log. Numbers, not narration.
 - Questions worth stopping for: anything irreversible, anything that changes what the experiment
   means, anything needing Clash Royale domain judgement, anything that would spend more than a few
   hours of box time, and any conflict between the goal and what you have measured.
-- **If you have no questions**, continue: call `ScheduleWakeup` with the same `/gauntlet` prompt to
-  fire the next iteration, pacing the delay to what you are waiting on (a training run's ETA, not a
-  fixed tick). **The gauntlet ends ONLY when the owner explicitly says to end it** (owner rule,
+- **If you have no questions**, continue by launching a TIMER TASK, not `ScheduleWakeup`:
+  `Bash(run_in_background=true, timeout=600000, command="sleep <N<=570>; echo WAKE")`. Its exit
+  notification re-invokes the loop; pace N to what you are waiting on (a run's ETA, not a fixed
+  tick), chaining timers for waits over 9.5 min. Also keep every engine/training batch as a
+  background TASK so its own exit is a trigger. **Measured 2026-09-06 (L63h): `ScheduleWakeup`
+  and `CronCreate` do NOT fire while the session is idle (3 nights lost); a background task's
+  exit DOES (60 s timer test fired within seconds).** You may still call `ScheduleWakeup` as a
+  free second trigger, but never rely on it alone. **The gauntlet ends ONLY when the owner explicitly says to end it** (owner rule,
   2026-08-31 — supersedes the original any-message rule). An owner message that does not say to
   stop is steering: fold it in — answer questions, apply rulings, adjust course — and continue the
   loop in the same breath. When in doubt whether a message meant "stop", ask; do not silently halt.
