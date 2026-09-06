@@ -1,0 +1,18 @@
+# Deck facts for the shared pipeline (S0 step 2). Card class = the detector class name (vocab.py); an
+# evolved card is listed under its `_evo` class and matched by BASE key, so the hand reader's plain
+# `tesla` face and the engine's `Tesla` both land on this slot.
+# Source: icebow/config/cards.yaml:36-46 (deck order as the game shows the deck) + the L63 task list.
+name: icebow
+cards:                      # 8 slots, deck order
+  - tornado
+  - tesla_evo
+  - ice_wizard
+  - x_bow
+  - rocket
+  - knight_evo
+  - the_log
+  - skeletons
+config: icebow/config/config.yaml   # BoardWarp anchors: env.my_towers / enemy_towers / board_edges, sim.board, action.arena_box
+src_dir: icebow/src                 # where clashrl.actions.BoardWarp is imported from (shared by both decks)
+crawl_dir: icebow/data/royaleapi    # pro replay crawl (battles.csv, plays.csv, crawl2/)
+data_dir: icebow/data
