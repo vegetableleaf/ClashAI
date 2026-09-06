@@ -1,0 +1,1 @@
+{"out": "C:\\Users\\benpe\\ClashBot\\hogeq\\data\\pipeline\\s1_dataset.npz", "rows": 32320, "play_rows": 9797, "wait_rows": 22523, "val_rows": 5959, "replays": 241, "units_total": 130135, "seconds": 4.9, "stats": {"mirror_matches": 0, "unmapped": [], "play_rows": 9797, "play_skipped": 644, "wait_rows": 22523, "wait_in_window": 5363, "wait_no_hand": 1281}}

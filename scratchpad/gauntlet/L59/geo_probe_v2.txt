@@ -1,5 +1,0 @@
-== seed 7
-== seed 11
-  step 113 t= 68.4 skeletons      tile=(0.0) threat=giant        src=module gate=1.00 p1=0.00 p1c=0.00 p2=0.00 p3=1.00 p5=1.00 p6=0.00 credit=+3.000 r=+3.000
-  step 213 t=128.4 skeletons      tile=(0.0) threat=giant        src=env    gate=1.00 p1=0.00 p1c=0.00 p2=0.00 p3=1.00 p5=1.00 p6=0.00 credit=+3.000 r=+2.800
-paid credits n=2 min +3.000 max +3.000; gates [1.0, 1.0]

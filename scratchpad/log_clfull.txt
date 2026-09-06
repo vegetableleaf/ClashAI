@@ -1,7 +1,0 @@
-  [clfull] 10/60  wr=50.0%  11.47 s/match
-  [clfull] 20/60  wr=45.0%  11.28 s/match
-  [clfull] 30/60  wr=40.0%  10.43 s/match
-  [clfull] 40/60  wr=45.0%  10.11 s/match
-  [clfull] 50/60  wr=46.0%  9.72 s/match
-  [clfull] 60/60  wr=48.3%  9.41 s/match
-[clfull] wr=48.3%  towerdelta=-0.5445  searched=2115 disagree=755 wait->play=436 play->wait=284  wall=564.9s -> rs_clfull.json

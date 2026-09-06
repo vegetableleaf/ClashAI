@@ -1,5 +1,0 @@
-continuation report | 16 matches/ckpt | greedy, search-free | fixed seeds | pro anchors 5ag
-
-gatec2_m2k5          plays=367 | gap median 4.80s (pro 3.85)  p10 0.60  p90 18.00 | rate 8.8/min (pro 11.7)
-   after x_bow   n=47   dt median 6.0s (pro 5.5) | L1-to-pro 0.337 | ice_wizard 21%, tesla 21%, skeletons 19%, knight 13%
-   after tesla   n=39   dt median 3.0s (pro 4.2) | L1-to-pro 0.257 | ice_wizard 21%, skeletons 21%, x_bow 18%, the_log 15%

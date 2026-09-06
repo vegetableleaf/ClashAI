@@ -1,7 +1,0 @@
-  [tau0.10] 10/60  wr=30.0%  1.94 s/match
-  [tau0.10] 20/60  wr=25.0%  1.91 s/match
-  [tau0.10] 30/60  wr=20.0%  1.96 s/match
-  [tau0.10] 40/60  wr=22.5%  1.95 s/match
-  [tau0.10] 50/60  wr=22.0%  1.96 s/match
-  [tau0.10] 60/60  wr=21.7%  1.98 s/match
-[tau0.10] wr=21.7%  towerdelta=-1.2869  searched=0 disagree=0 wait->play=0 play->wait=0  wall=118.7s -> C:\Users\benpe\ClashBot\scratchpad\rs_tau0.10.json

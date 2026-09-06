@@ -1,1 +1,0 @@
-[doctrine_d4skeliw5] wr=12.5%  towerdelta=-1.346 crowndelta=-1.15 plays/match=35.6 play share 0.112 elixir>=6 share 0.017

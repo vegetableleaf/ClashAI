@@ -1,2 +1,0 @@
-[train-sim-ppo] 2550 episodes: winrate=   4% avg_rew=-15.3 0.6 ep/s total 131W-1894L-1D pl=+0.008 vl=1.177 ent=0.08 clip=0.03 | drills 524 (50% pass all, 50% last 300, 21% of eps, 31% of STEPS)
-final checkpoint matches 2550 best_wr 30.7 mtime 13:00:22

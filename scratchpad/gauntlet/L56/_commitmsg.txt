@@ -1,3 +1,0 @@
-L56: sim Tesla-outcome probe -- the sim does NOT reward the corner Tesla (per-Tesla dmg corner 1040 vs centre 1157 vs own 954, CIs overlap on both seeds) nor punish it; lane cell 274 is worst (690, CIs disjoint); bots cross right 55-64%; cell 234 was selected in gatec2 between 5k-10k from a 14-cell spread and inherited by c2r (cell head saturated |81|); every arm locks one cell per card, skeletons@423 universal; exploration arm parked -> next = human placement prior read from the replay corpus -- HANDOFF 5cs.26, retracts L55 (b)
-
-Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>

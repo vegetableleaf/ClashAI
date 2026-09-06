@@ -1,6 +1,0 @@
-  affordable on 34.2% of rows | P(play) mean 0.396 (all) 0.328 (affordable rows) | played on 10.8% of rows | elixir mean 2.29  >=6 2.5% | phase rows [1758, 642, 0]
-    plays at >=6  n=12   mean cost 5.17  x_bow:6 tesla:4 rocket:1 tesla_evo:1
-  affordable on 36.2% of rows | P(play) mean 0.371 (all) 0.321 (affordable rows) | played on 10.9% of rows | elixir mean 2.31  >=6 1.0% | phase rows [1868, 532, 0]
-    plays at >=6  n=9    mean cost 4.11  x_bow:3 knight_evo:2 ice_wizard:1 tornado:1
-  affordable on 31.5% of rows | P(play) mean 0.380 (all) 0.316 (affordable rows) | played on 10.5% of rows | elixir mean 2.18  >=6 1.2% | phase rows [1963, 437, 0]
-    plays at >=6  n=9    mean cost 4.67  x_bow:3 tesla:2 tesla_evo:1 knight_evo:1

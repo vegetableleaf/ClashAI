@@ -1,3 +1,0 @@
-L58 step 0: geometry_reward.py (pure module, one radius table, score_placement P1-P7 + bridge-block + tornado away/king), 19 unit tests OK, sim-view --radii overlay (flag off = byte-identical frames 103/103); engine check: corner X-Bow (1.5,18.5) DOES reach the enemy princess (_gap 10.67 < 11.5) -- retracts L57 correction, engine.py:2567 comment is stale
-
-Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>

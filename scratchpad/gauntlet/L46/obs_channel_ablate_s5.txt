@@ -1,8 +1,0 @@
-live as recorded                                     p_play(all) 0.179  elixir>=9: mean 0.192 share>0.25 0.057
-RGB := random sim RGB (canvas live)                  p_play(all) 0.172  elixir>=9: mean 0.188 share>0.25 0.088
-canvas := random sim canvas (RGB live)               p_play(all) 0.186  elixir>=9: mean 0.201 share>0.25 0.109
-RGB zeroed                                           p_play(all) 0.225  elixir>=9: mean 0.247 share>0.25 0.332
-canvas zeroed                                        p_play(all) 0.168  elixir>=9: mean 0.182 share>0.25 0.047
-canvas ch 3 enemy_ground zeroed                      p_play(all) 0.175  elixir>=9: mean 0.187 share>0.25 0.047
-canvas ch 4 enemy_air zeroed                         p_play(all) 0.178  elixir>=9: mean 0.191 share>0.25 0.057
-canvas ch 5 enemy_building zeroed                    p_play(all) 0.179  elixir>=9: mean 0.192 share>0.25 0.057

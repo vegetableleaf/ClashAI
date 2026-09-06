@@ -1,6 +1,0 @@
-drill                           nothing scripted doctrine   policy   verdict
-----------------------------------------------------------------------------------------------
-[drill] play-out ON -- drills continue as ordinary matches after their verdict
-tank_for_bow                         0%      84%      92%       0%   ok  | POLICY FAILS (0%)
-bow_lane_choice                      0%     100%     100%       0%   ok  | POLICY FAILS (0%)
-nado_king_activation                 0%     100%       4%       0%   DOCTRINE GAP -- winnable, but the prior does not find it  | POLICY FAILS (0%)

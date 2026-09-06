@@ -1,3 +1,0 @@
-RADIUS proposal rev 3: bridge-block table rebuilt from the owner video (frames + Windows STT, scratchpad/bb); Q1 ruled scale-up; run-1 obs change decided NO with flip conditions (doc s7.8); HANDOFF 5cs.28 addendum
-
-Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>

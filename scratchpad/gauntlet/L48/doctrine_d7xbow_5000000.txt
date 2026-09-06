@@ -1,1 +1,0 @@
-[doctrine_d7xbow] wr=12.5%  towerdelta=-1.409 crowndelta=-0.98 plays/match=35.9 play share 0.112 elixir>=6 share 0.025

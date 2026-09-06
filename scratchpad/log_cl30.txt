@@ -1,7 +1,0 @@
-  [cl30] 10/60  wr=70.0%  6.44 s/match
-  [cl30] 20/60  wr=65.0%  6.83 s/match
-  [cl30] 30/60  wr=56.7%  6.48 s/match
-  [cl30] 40/60  wr=57.5%  6.08 s/match
-  [cl30] 50/60  wr=62.0%  5.72 s/match
-  [cl30] 60/60  wr=61.7%  5.91 s/match
-[cl30] wr=61.7%  towerdelta=-0.1649  searched=2095 disagree=870 wait->play=630 play->wait=201  wall=354.7s -> rs_cl30.json

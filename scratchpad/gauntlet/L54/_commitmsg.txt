@@ -1,3 +1,0 @@
-L54 (owner ask: early stop?): m35k gate-probe read, 6 seeds, same instrument as m30k -- >=6 share 1.3% mean (m30k 3.3%, m20k 1.2%): the m20k spend signature again, not a collapse (rule not met); run EVAL/winrate/drills/entropy flat 8k-36k, new BEST at 36k is 30 -> 31 = noise; verdict: early stop justifiable and recommended, put to the owner (irreversible); run state recorded -- HANDOFF 5cs.24
-
-Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>

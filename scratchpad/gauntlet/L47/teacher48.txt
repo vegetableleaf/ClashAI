@@ -1,5 +1,0 @@
-  [teacher] 10/48  wr=90.0%  13.44 s/match
-  [teacher] 20/48  wr=75.0%  12.42 s/match
-  [teacher] 30/48  wr=76.7%  13.13 s/match
-  [teacher] 40/48  wr=77.5%  13.09 s/match
-[teacher] wr=79.2%  towerdelta=0.1673  searched=7354 disagree=2419 wait->play=1057 play->wait=1023  wall=617.4s -> C:/Users/benpe/ClashBot/scratchpad/gauntlet/L47/teacher48.json

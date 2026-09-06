@@ -1,1 +1,0 @@
-C:\Users\benpe\ClashBot\.venv\Scripts\python.exe: can't open file 'C:\\Users\\benpe\\ClashBot\\scratchpad\\_rs_prepatch2.py': [Errno 2] No such file or directory

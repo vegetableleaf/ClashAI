@@ -1,2 +1,0 @@
-[policy] n=48 our king kills 0 (undercounted 0)  their king kills 12 (undercounted 8)
-  crown_delta engine -0.354  real-CR -0.521

@@ -1,7 +1,0 @@
-decisions 5371
-V1 slot12=0.5 only                 gate agree 0.992 | card agree (both play) 1.000 | cell agree 1.000 | play rate 0.108->0.115 | mean dP(play) +0.002
-V2 live-semantics remap            gate agree 0.932 | card agree (both play) 0.998 | cell agree 0.996 | play rate 0.108->0.171 | mean dP(play) +0.014
-V3 base block empty (+0.5)         gate agree 0.961 | card agree (both play) 0.995 | cell agree 0.995 | play rate 0.108->0.076 | mean dP(play) -0.013
-CONTROL base block all-zero        gate agree 0.963 | card agree (both play) 0.995 | cell agree 0.995 | play rate 0.108->0.073 | mean dP(play) -0.015
-CONTROL slots16+ all-zero          gate agree 0.831 | card agree (both play) 0.984 | cell agree 0.961 | play rate 0.108->0.251 | mean dP(play) +0.054
-sim base-block nonzero rate per slot: [0.632, 0.632, 0.632, 0.283, 0.26, 0.632, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]

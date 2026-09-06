@@ -1,0 +1,1 @@
+{"out": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\pipeline\\s1_dataset.npz", "rows": 78528, "play_rows": 21687, "wait_rows": 56841, "val_rows": 13799, "replays": 493, "units_total": 344829, "seconds": 15.8, "stats": {"mirror_matches": 2, "unmapped": [], "play_rows": 21687, "wait_rows": 56841, "wait_in_window": 12163, "play_skipped": 256, "wait_no_hand": 230}}

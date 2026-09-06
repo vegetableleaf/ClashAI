@@ -1,3 +1,0 @@
-crossed 30k at Fri Sep  4 14:45:19 EDT 2026
-snapshot at Fri Sep  4 14:56:00 EDT 2026, log line: [train-sim-ppo] 30050 episodes:
-PROBES_DONE

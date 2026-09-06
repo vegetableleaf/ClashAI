@@ -1,9 +1,0 @@
-frames 241 shape (1182, 668, 3)  torch 2.11.0+cu128 cuda True
-board-24-5 (operating)   half=False wall med   29.5 p90   35.0 max   76.2 ms | pre 7.1 inf 19.6 post 3.1 | dets 3.6
-board-24-5 (operating)   half=True  wall med   31.3 p90   36.7 max 3500.3 ms | pre 7.2 inf 21.8 post 3.2 | dets 3.6
-board-26                 half=False wall med   32.6 p90   36.3 max   38.9 ms | pre 7.3 inf 21.8 post 3.2 | dets 3.4
-board-26                 half=True  wall med   33.4 p90   36.9 max   40.7 ms | pre 7.2 inf 22.4 post 3.3 | dets 3.4
-screen-y11s              half=False wall med   31.3 p90   35.1 max   38.4 ms | pre 7.2 inf 20.4 post 3.1 | dets 2.8
-screen-y11s              half=True  wall med   22.9 p90   35.6 max   42.2 ms | pre 5.3 inf 14.6 post 1.4 | dets 2.8
-screen-y26s              half=False wall med   34.5 p90   41.5 max   48.3 ms | pre 7.6 inf 26.1 post 1.1 | dets 2.0
-screen-y26s              half=True  wall med   38.4 p90   45.1 max   62.1 ms | pre 7.6 inf 29.7 post 1.1 | dets 2.0
