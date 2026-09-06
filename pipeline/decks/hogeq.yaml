@@ -1,0 +1,19 @@
+# Deck facts for the shared pipeline (S0 step 2). Card class = the detector class name (vocab.py); an
+# evolved card is listed under its `_evo` class and matched by BASE key. mighty_miner is a champion:
+# its ability is a separate action, not a hand card.
+# Source: hogeq/config/cards.yaml:36-47 (deck order). hogeq/DECK_SWITCH.md is a stale copy of the
+# icebow runbook (it names the icebow deck at line 7) and was NOT used.
+name: hogeq
+cards:                      # 8 slots, deck order
+  - hog_rider
+  - firecracker_evo
+  - mighty_miner
+  - tesla_evo
+  - the_log
+  - earthquake
+  - skeletons
+  - ice_spirit
+config: hogeq/config/config.yaml    # BoardWarp anchors (hogeq's own calibration; identical values to icebow's today)
+src_dir: icebow/src                 # BoardWarp is imported from icebow's clashrl (the spec's cited file), never copied
+crawl_dir: hogeq/data/royaleapi
+data_dir: hogeq/data
