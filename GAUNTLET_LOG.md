@@ -1338,3 +1338,4 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - (a) ScheduleWakeup + CronCreate do not fire while idle (3 nights). (a) A background `sleep 60; echo WAKE` task's exit re-invoked the loop within seconds (task b4t2fo0uo, exit 0).
 - Rule written into .claude/commands/gauntlet.md §4 and HANDOFF §7: end every loop on a timer task (N<=570 s under the Bash cap, chain for longer); long batches stay background tasks. ScheduleWakeup allowed only as a free second trigger.
 - Icebow batch 592/619 at 04:19 UTC; 8-min fallback timer armed (bhlc02vvv).
+- Icebow batch DONE (exit 0): 493/619 converted (120 EB-evo, 6 dup-row tags), 41,015/41,338 accepted 99.2%, crowns 76.9%, early-end 22.9%, det 49/49, 177.6 MB. S1 corpus = 734 replays. Next: cleanup loop (ruling 6), then S1 dataset build.
