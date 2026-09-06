@@ -29,8 +29,20 @@ sys.path.insert(0, str(HERE))
 from refetch_par import connect
 
 OUT = Path("C:/Users/benpe/ClashBot/icebow/data/royaleapi/crawl2")
-PLAY_FIELDS = ["replay_tag", "play_index", "tick", "seconds", "x_units", "y_units", "tile_x", "tile_y",
-               "attr_ability", "attr_card", "attr_i", "attr_s", "attr_t"]
+# L64p: NEVER hardcode this. The first version listed 13 fields with attr_i in the middle and appended
+# to plays_ext.csv, whose header is 12 columns and has no attr_i at all -- every row landed one column
+# out (attr_s held attr_i, attr_t held attr_s) and the engine drive rejected all 793 tags. New plays go
+# to plays_ext_i1.csv, the file that HAS attr_i, in that file's own column order, read off disk.
+PLAYS_CSV = OUT / "plays_ext_i1.csv"
+
+
+def play_fields() -> list[str]:
+    """The live header of the file we append to -- the only safe source of the column order."""
+    with PLAYS_CSV.open(encoding="utf-8", newline="") as f:
+        return next(csv.reader(f))
+
+
+PLAY_FIELDS = play_fields()
 
 
 def backlog():
@@ -47,10 +59,11 @@ def merge():
     """Fold every shard's rows into battles.csv / plays_ext.csv and mark them done."""
     done_p = OUT / "replays_done.json"
     done = set(json.loads(done_p.read_text(encoding="utf-8"))) if done_p.exists() else set()
-    bpath, ppath = OUT / "battles.csv", OUT / "plays_ext.csv"
+    bpath, ppath = OUT / "battles.csv", PLAYS_CSV
+    assert play_fields() == PLAY_FIELDS, "plays_ext_i1.csv header changed under us"
     nb = np = 0
     with bpath.open("a", newline="", encoding="utf-8") as bf, ppath.open("a", newline="", encoding="utf-8") as pf:
-        bw = csv.DictWriter(bf, pipeline.BATTLE_FIELDS + ["plays"], extrasaction="ignore")
+        bw = csv.DictWriter(bf, pipeline.BATTLE_FIELDS, extrasaction="ignore")  # already ends with "plays"
         pw = csv.DictWriter(pf, PLAY_FIELDS, extrasaction="ignore")
         added = set()
         for sh in sorted(OUT.glob("battles_sh*.csv")):
@@ -97,7 +110,7 @@ def main():
     newb, newp = not bpath.exists(), not ppath.exists()
     bf = bpath.open("a", newline="", encoding="utf-8")
     pf = ppath.open("a", newline="", encoding="utf-8")
-    bw = csv.DictWriter(bf, pipeline.BATTLE_FIELDS + ["plays"], extrasaction="ignore")
+    bw = csv.DictWriter(bf, pipeline.BATTLE_FIELDS, extrasaction="ignore")  # already ends with "plays"
     pw = csv.DictWriter(pf, PLAY_FIELDS, extrasaction="ignore")
     if newb:
         bw.writeheader()

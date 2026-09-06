@@ -1,0 +1,52 @@
+batch: 5 tags, 0 already done, port 37031
+[1/5] 000PGGYU2G08 FAILED SystemExit: side 0: no (hand, queue) assignment reproduces the play sequence
+[2/5] 000YL8VCR2QR FAILED ValueError: card has no native evolution form: 26000043
+[3/5] 000YLL2YLGCC acc 38/38 rej {} crowns [0, 2] exp [0, 2] match=True term=native_logic_clock_stopped tick 3681 (last play 3518) 7.22s
+[4/5] 000YLL9RURY8 acc 49/52 rej {'native_rejected': 2, 'card_not_in_hand': 1} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3681 (last play 3735) 8.09s
+[5/5] 000YLLP2UC98 acc 61/61 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 4175 (last play 4025) 9.58s
+{
+ "tags": 5,
+ "converted": 3,
+ "failed": 2,
+ "failed_by_error": {
+  "SystemExit": 1,
+  "ValueError": 1
+ },
+ "plays_driven": 151,
+ "accepted": 148,
+ "accept_rate": 0.9801,
+ "rejected_by_reason": {
+  "native_rejected": 2,
+  "card_not_in_hand": 1
+ },
+ "invalid_placement": 0,
+ "matches_with_rejections": 1,
+ "elixir_delays_plays": 0,
+ "elixir_delays_max_ticks": 0,
+ "ability_plays_skipped": 3,
+ "position_based_all": true,
+ "terminated": 3,
+ "termination_reasons": {
+  "native_logic_clock_stopped": 3
+ },
+ "crowns_match": 3,
+ "crowns_match_rate": 1.0,
+ "outcomes": {
+  "side1_win": 1,
+  "side0_win": 2
+ },
+ "clean": 2,
+ "terminal_vs_last_play": {
+  "median": 150,
+  "negative": 1
+ },
+ "determinism": {
+  "checked": 0,
+  "same": 0
+ },
+ "seconds_total": 25.3,
+ "seconds_per_match_median": 8.09,
+ "batch_wall_seconds": 25.3,
+ "rotated_rows": 371,
+ "rotated_tags": 5
+}
