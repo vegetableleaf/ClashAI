@@ -161,7 +161,7 @@ cd C:\Users\benpe\ClashBot\hogeq
 
 ## 3. What is running RIGHT NOW
 
-**2026-09-06 05:1x UTC -- NOTHING IS TRAINING; ENGINE IDLE (L64a: S1 datasets built for both decks §5cs.60; corpus batches done §5cs.59; outputs scratchpad/gauntlet/ext/corpus_v3/, ETA ~2 h / ~40 min; step 2b own-click test DONE §5cs.58 -- from_live troop foot fix + degrade recalibration; §5cs.57). Before that: L63d S0 step 2 done -- pipeline/obs_contract.py; L63: research phase of the new gauntlet; 5 research agents writing to `scratchpad/gauntlet/L63/`).** The engB engine-PPO pair was killed at m=602/609
+**2026-09-06 05:0x UTC -- S1 TRAINING RUNNING (L64b: run_seeds.sh, icebow s0-2 then hogeq s0-2, 20 epochs, ETA ~06:50 UTC, task b6vmgii7c; first run discarded for a row-format leak §5cs.61); ENGINE IDLE. Before that: L64a: S1 datasets built for both decks §5cs.60; corpus batches done §5cs.59; outputs scratchpad/gauntlet/ext/corpus_v3/, ETA ~2 h / ~40 min; step 2b own-click test DONE §5cs.58 -- from_live troop foot fix + degrade recalibration; §5cs.57). Before that: L63d S0 step 2 done -- pipeline/obs_contract.py; L63: research phase of the new gauntlet; 5 research agents writing to `scratchpad/gauntlet/L63/`).** The engB engine-PPO pair was killed at m=602/609
 (§5cs.51, owner ruling); engA before it (§5cs.46). Box state verified at the kill: python processes
 7 -> 3, free RAM 5.0 GB.
 
@@ -454,6 +454,8 @@ slow one.
 ---
 
 ## 6. Open work
+
+**Parked 2026-09-06 (§5cs.61):** S1 rows carry no `deploying` flag and no spell/effect tokens, because the compact `frames` in corpus_v3 record neither and the play frames had to be reduced to that format to close the gate leak. Restoring them = re-drive both corpora with effects recorded at every `record_every` tick (~2.5 h engine time), then rebuild. Do it before S4 (the live path DOES provide spells and a deploying=None channel).
 
 ### ⚑ TOP OF THE QUEUE as of 2026-09-05 21:5x UTC (everything below this block predates the engine era)
 
@@ -1173,6 +1175,8 @@ per section in place, keep the archive greppable and committed.
 
 ## 8. Measurement traps
 
+* **A background bash chain outlives `TaskStop` (§5cs.61).** Stopping the task killed the wrapper shell; the script's own bash and its python trainer kept running and started the next seed. Kill the script's PID tree (`Get-CimInstance Win32_Process`, follow ParentProcessId) and verify the trainer count is 0 before touching its outputs.
+* **Two row types from two frame formats = a label leak (§5cs.61).** S1 play rows came from full play frames (7-col entities with `kind`, plus effects), wait rows from compact frames; the gate head read the row type off token columns 8-13 (bal-acc 0.98). Reduce every source to ONE format before building rows, then compare per-column token means across row types -- they must differ only where the state genuinely differs.
 * **An instrument that only writes to a file nobody reads does not exist (§5bl).** The live loop's per-stage
   `cadence` dict has been in every `data/reward_stats/live_*.jsonl` since 08-12; HANDOFF called the decision path
   "unmeasured" for two weeks. Before declaring anything unmeasured, grep the JSONLs and the per-match prints. (each of these produced a wrong conclusion first)
@@ -2463,6 +2467,18 @@ Trap: `set_crawl("hogeq")` first resolved to the repo's `hogeq/` directory becau
 **C. Trigger failure (a).** ScheduleWakeup set 23:08 for 23:39 local and the :53 cron both did not fire; at 00:11 `CronList` still showed the one-shot pending. The session's idle scheduler does not fire in this environment; task-completion notifications do (two subagents re-invoked the loop tonight). Standing mitigation: keep the engine batches as background TASKS so their exit re-invokes the loop; nothing else is available from inside.
 
 **D. Next.** When the icebow batch exits: final icebow grade, then the cleanup loop (ruling 6) and the S1 dataset build from `corpus_v3` play_frames through `pipeline.obs_contract.from_engine` (both decks).
+
+### §5cs.61 -- L64b (2026-09-06 04:5x-05:0x UTC): **FIRST S1 RUN DISCARDED -- a ROW-FORMAT LEAK put gate balanced accuracy at 0.98; play frames carried 7-column entities (`kind` -> `deploying` flag) plus `effects`/`projectiles`, the compact wait frames carried neither, so the gate head could read the row TYPE off the token columns. Fixed (`_as_compact` in `pipeline/dataset.py`), both datasets rebuilt (row counts unchanged), 24 tests OK, baselines re-measured identical, 6-seed chain relaunched. Nothing from the leaked run is an S1 result.**
+
+**A. The leak (a).** Diagnosed from the leaked run's own numbers: gate balanced accuracy 0.98 at epoch 1 and flat (`scratchpad/gauntlet/L64/s1/LEAKED_train_icebow_s0.log`, 8 epochs, best val tile top-1 16.8% / half 15.4% / card 59.1% / joint 9.7-10.1% / wait 46-47% / value 70-71% / emb cosine 0.19-0.20; kept as a diagnostic only). Probe (`probe_pf.out` + this loop): play_frames entities are `[side,x,y,name,hp,max_hp,kind]` with kind in {12,13,14,15} (12/14 = deploying -> token cols 8-9 set), compact `frames` entities are the same first 6 columns and no kind; play frames also carry `effects` (-> spell tokens, col 13) and `projectiles`. Token column means BEFORE the fix differed by row type on cols 8, 9, 13; AFTER the fix cols 8-13 are 0.000 for both row types in both decks (icebow play `[0.79,1,0,0,0,0,1,0]` vs wait `[0.777,1,0,0,0,0,1,0]` on cols 6-13; hogeq `0.817` vs `0.804`). What remains different is real state: units/row 5.18 play vs 4.00 wait (icebow), 4.62 vs 3.69 (hogeq); my elixir sc[1] 0.696 vs 0.490 -- pros play when they have elixir, which is what the gate should learn.
+Cost of the fix (b): play rows lose the `deploying` flag and in-flight spell effects that the live path DOES provide (from_live sets deploying=None, spells from detector classes) -- the S1 model now never sees a spell token. To restore them without the leak the compact frames would need `record_full`-style effects at every recorded tick (re-drive, ~2.5 h engine time for both decks); parked, listed in §6.
+**TRAP (a):** `TaskStop` on a background `bash run_seeds.sh` killed the wrapper shell only -- the script's own bash (2 PIDs) and its python child survived and advanced to seed 1 (verified with `Get-CimInstance Win32_Process` by ParentProcessId). Stopping a chain = stop the task, then kill the script's PID tree, then verify `train_s1` count is 0. Same family as the L62h "tree-killing a trainer kills the in-guest worker services" trap, opposite direction.
+
+**B. Rebuild (a).** `python -m pipeline.dataset icebow|hogeq`: icebow 78,277 rows (21,687 play / 56,590 wait / val 13,761 / 493 replays, 14.3 s), hogeq 33,218 (9,797 / 23,421 / 6,133 / 241, 4.6 s) -- identical row counts to §5cs.60 C, only the unit-token columns changed. `unittest pipeline.tests.test_dataset pipeline.tests.test_obs_contract`: 24 OK. Board-blind baselines re-measured on the rebuilt val rows, identical to L64a: icebow tile 8.90% / half 8.48% / card 48.05% (n_val_play 3,796, n_train_play 17,891); hogeq 11.45% / 11.45% / 42.32% (1,817 / 7,980). Leaked checkpoint moved to `scratchpad/gauntlet/L64/s1/leaked_ckpt/s1_icebow_s0.pt` (out of `icebow/data/pipeline/`) so the fresh seed-0 run cannot be confused with it.
+
+**C. Running.** `bash scratchpad/gauntlet/L64/s1/run_seeds.sh` (task b6vmgii7c): icebow s0,s1,s2 then hogeq s0,s1,s2, 20 epochs each, ~71 s/epoch icebow (leaked run's rate) -> ~24 min per icebow seed, hogeq ~10 min -> ETA ~1 h 45 min for all six. Logs `train_<deck>_s<seed>.log`, per-seed `final_<deck>_s<seed>.json`; checkpoints `<deck>/data/pipeline/s1_<deck>_s<seed>.pt`. Timer task armed (560 s). Box: python 3 (nucleo uvicorn + trainer pair), free RAM 6.4 GB before launch.
+
+**D. Next.** Read the three icebow finals when they land (mean +/- band across seeds vs the 8.90% baseline; the old 15.44%/13.65% are a DIFFERENT instrument -- old rows, 432 grid -- until the old trunk is re-scored on these val rows, which is the loop after). Then the S1 gate sanity check: with the leak gone, gate bal-acc should sit well under 0.98; if it is still ~0.98 there is another leak (the elixir gap alone cannot give 0.98 -- (b), testable by a scalar-only gate baseline).
 
 ### §5cs.60 -- L64a (2026-09-06 04:4x-05:1x UTC): **OVERNIGHT TRIGGER FIXED (timer tasks), CLEANUP LOOP DONE (524 MB / 3,297 files out of scratchpad, zip-backed), and the S1 DATASET BUILDER shipped -- icebow 21,687 pro-play rows + 56,590 wait rows from 493 replays (old corpus: 9,444 placements / 211), hogeq 9,797 + 23,421 from 241.**
 

@@ -2,7 +2,8 @@
 
 Input: ``replay_<tag>.json`` written by ``research/sandbox_tools/replay_batch.py --record-plays``
 (``play_frames`` = the FULL engine observation immediately before every driven play of either side,
-with both players' hand/next; ``frames`` = a compact observation every ``record_every`` ticks, no
+with both players' hand/next -- reduced to the compact format by ``_as_compact`` so both row types share one
+format; ``frames`` = a compact observation every ``record_every`` ticks, no
 hands; ``log`` = one entry per driven play with ``accepted`` and ``hand_before``).
 
 Rows, all in MY board frame (``obs_contract`` docstring; me at the bottom):
@@ -71,6 +72,15 @@ def _crowns(rec: dict, side: int) -> tuple[int, int]:
     """Real result of the replay for this side (RoyaleAPI crowns, not the engine's)."""
     c = (rec.get("expected") or {}).get("crowns_by_side") or {}
     return int(c.get(str(side), 0)), int(c.get(str(1 - side), 0))
+
+
+def _as_compact(pf: dict) -> dict:
+    """Reduce a FULL play frame to what the compact ``frames`` carry: 6-column entities (no ``kind``, so no
+    ``deploying``), no ``effects`` / ``projectiles``. Without this the gate separates PLAY rows from WAIT
+    rows by row FORMAT (L64b measured gate balanced accuracy 0.98 with the leak), not by the state."""
+    out = {k: v for k, v in pf.items() if k not in ("effects", "projectiles")}
+    out["entities"] = [list(e[:6]) for e in pf.get("entities") or []]
+    return out
 
 
 def _tag_split(tag: str, val_pct: int) -> int:
@@ -147,7 +157,8 @@ def build_replay(rec: dict, deck: Deck, rows: _Rows, rep_index: int, *, wait_str
             if slot < 0:
                 st["unmapped_card:" + str(e["card"])] = st.get("unmapped_card:" + str(e["card"]), 0) + 1
                 continue
-            bs = from_engine(pf, side, deck, engine_deck=engine_deck, unmapped=st.setdefault("unmapped", set()))
+            bs = from_engine(_as_compact(pf), side, deck, engine_deck=engine_deck,
+                             unmapped=st.setdefault("unmapped", set()))
             xy = _engine_xy(float(e["x"]), float(e["y"]), mirror)
             rows.add(bs, slot=slot, xy=xy, gate=1, wait_slot=slot, wait_dt=0.0, tick=int(pf["tick"]),
                      rep=rep_index, side=side, split=split, past=_past(done, int(pf["tick"])), crowns=crowns)

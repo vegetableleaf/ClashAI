@@ -1,0 +1,1 @@
+{"deck": "icebow", "baseline": {"cell_half_top1": 0.08482613277133826, "cell_tile_top1": 0.08904109589041095, "card_top1": 0.48050579557428874, "n_val_play": 3796, "n_train_play": 17891}}

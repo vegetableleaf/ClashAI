@@ -1,0 +1,40 @@
+scratchpad/gauntlet/ext/corpus_v3/icebow\replay_000YLY0JCPGL.json ['tag', 'run', 'port', 'seed', 'level', 'expected', 'deal_inference', 'reset_seconds', 'tick_after_reset', 'tower_rows_by_side', 'orientation', 'deal_probe', 'deal_strategy', 'final_decks', 'opening_hand', 'opening_state_hash', 'drive_seconds', 'final', 'grade', 'log', 'frames', 'record_every', 'record_full', 'play_frames']
+tag '000YLY0JCPGL'
+run 'batch'
+port 37031
+seed 424242
+level 11
+expected dict 3
+deal_inference dict 2
+reset_seconds 0.06
+tick_after_reset 10
+tower_rows_by_side dict 2
+orientation 'side0 low rows / side1 high rows (matches RoyaleAPI red/blue)'
+deal_probe dict 4
+deal_strategy 'permuted deck so dealt positions carry the inferred hand/queue'
+final_decks dict 2
+opening_hand dict 2
+opening_state_hash '0bfbcb2adbea282e'
+drive_seconds 17.68
+final dict 10
+grade dict 9
+log list 123
+frames list 364
+record_every 20
+record_full False
+play_frames list 121
+PF keys ['tick', 'elixir', 'entities', 'towers', 'projectiles', 'effects', 'play_index', 'side', 'card', 'x', 'y', 'players']
+tick 215
+elixir [9.827, 9.827]
+entities 6 [[0, 9000, 3000, '-1', 4824, 4824, 12], [0, 3500, 6500, '-1', 3052, 3052, 13]]
+towers [[0, 'king', None, 9000, 3000, 4824, 4824], [0, 'princess', 'left', 3500, 6500, 3052, 3052], [0, 'princess', 'right', 14500, 6500, 3052, 3052], [1, 'king', None, 9000, 29000, 4824, 4824], [1, 'princess', 'left', 3500, 25500, 3052, 3052], [1, 'princess', 'right', 14500, 25500, 3052, 3052]]
+projectiles []
+effects []
+play_index 0
+side 1
+card 'skeletons'
+x 8499
+y 31499
+players [{'side': 0, 'elixir': 9.827, 'hand': ['Archer', 'BarbLog', 'BombTower', 'Goblinstein'], 'hand_pos': [3, 7, 2, 4], 'cycle_pos': [6, 5, 0, 1], 'next': 6}, {'side': 1, 'elixir': 9.827, 'hand': ['IceWizard', 'Knight', 'Rocket', 'Skeletons'], 'hand_pos': [6, 3, 7, 1], 'cycle_pos': [4, 2, 5, 0], 'next': 
+True {'0': ['Skeletons@evolution', 'Poison', 'BombTower', 'Archer@evolution', 'Goblinstein', 'IceSpirits', 'Graveyard', 'BarbLog'], '1': ['Xbow', 'Skeletons', 'Tesla@evolution', 'Knight@evolution', 'Log', 'Tornado', 'IceWizard', 'Rocket']}
+meta {'tag': "'000YLY0JCPGL'", 'run': "'batch'", 'port': '37031', 'seed': '424242', 'level': '11', 'expected': "{'result': 'win', 'crowns_by_side': {'0': 0, '1': 1}, 'last_play_tick': 5925}", 'deal_inference': "{'0': {'consistent': 256}, '1': {'consistent': 256}}", 'reset_seconds': '0.06', 'tick_after_reset': '10', 'tower_rows_by_side': "{'0': [3.0, 6.5, 6.5], '1': [29.0, 25.5, 25.5]}", 'orientation': "'side0 low rows / side1 high rows (matches RoyaleAPI red/blue)'", 'deal_probe': "{'canonical': {'0': {'hand_pos': [3, 7, 2, 4], 'cycle_pos': [6, 5, 0, 1], 'next': 6}, '1': {'hand_pos': [6, 3, 7, 1], 'cycle_pos': [4, 2, 5, 0], 'next': 4}}, 'reversed': {'0': {'hand_pos': [3, 7, 2, 4", 'deal_strategy': "'permuted deck so dealt positions carry the inferred hand/queue'", 'final_decks': "{'0': ['Skeletons@evolution', 'Poison', 'BombTower', 'Archer@evolution', 'Goblinstein', 'IceSpirits', 'Graveyard', 'BarbLog'], '1': ['Xbow', 'Skeletons', 'Tesla@evolution', 'Knight@evolution', 'Log', ", 'opening_hand': "{'0': ['Archer', 'BarbLog', 'BombTower', 'Goblinstein'], '1': ['IceWizard', 'Knight', 'Rocket', 'Skeletons']}", 'opening_state_hash': "'0bfbcb2adbea282e'", 'drive_seconds': '17.68', 'final': "{'tick': 6085, 'terminated': True, 'outcome': 'side0_win', 'winner': 0, 'crowns': [1, 0], 'termination_reason': 'native_tiebreak_hp_drain', 'terminal_tick': 6085, 'state_hash': 'd0874ff2026fa69e', 'to", 'grade': "{'plays_total': 123, 'plays_driven': 121, 'accepted': 121, 'rejected_by_reason': {}, 'invalid_placement': 0, 'elixir_delays': {'n': 0, 'max_ticks': 0, 'sum_ticks': 0}, 'skipped': [{'play_index': 26, '", 'log': "[{'play_index': 0, 'tick': 215, 'side': 1, 'card': 'skeletons', 'x': 8499, 'y': 31499, 'cost': 1, 'elixir_before': 9.827, 'hand_before': ['IceWizard', 'Knight', 'Rocket', 'Skeletons'], 'delay_ticks': ", 'record_every': '20', 'record_full': 'False'}
