@@ -1339,3 +1339,8 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Rule written into .claude/commands/gauntlet.md §4 and HANDOFF §7: end every loop on a timer task (N<=570 s under the Bash cap, chain for longer); long batches stay background tasks. ScheduleWakeup allowed only as a free second trigger.
 - Icebow batch 592/619 at 04:19 UTC; 8-min fallback timer armed (bhlc02vvv).
 - Icebow batch DONE (exit 0): 493/619 converted (120 EB-evo, 6 dup-row tags), 41,015/41,338 accepted 99.2%, crowns 76.9%, early-end 22.9%, det 49/49, 177.6 MB. S1 corpus = 734 replays. Next: cleanup loop (ruling 6), then S1 dataset build.
+
+## L64a -- 2026-09-06 05:1x UTC -- cleanup loop done + S1 dataset builder
+- Cleanup (ruling 6): scratchpad 1.1G -> 557M, 3,297 files deleted after zip backup (ClashBot_archive/scratch_2026-09-06.zip, verified); data/ untouched. TRAP: agent-staged deletions rode inside commit 9adc967 (lead's commit sweeps the index) -- subagents never stage.
+- pipeline/dataset.py: icebow 21,687 play + 56,590 wait rows / 493 replays; hogeq 9,797 + 23,421 / 241. Hand on wait rows reconstructed exactly from hand_before of the next accepted play. 24 tests OK.
+- Next: S1 model + trainer, board-blind baseline on the same val rows first.
