@@ -88,6 +88,24 @@ def compact_raw(state: dict) -> dict:
             "episode": {"crown_towers": (state.get("episode") or {}).get("crown_towers", [])}}
 
 
+# What the VIDEO renderer needs beyond the model's compact view: the entity kind (building / troop, still
+# deploying), its target (aggro lines), attack and movement state, every projectile and effect object.
+# Recorded frames only -- the model keeps seeing ``compact_raw``.
+_VIS_ENT_KEYS = _ENT_KEYS + ("id", "kind", "target", "attack_progress_ms", "movement_direction_x",
+                             "movement_direction_y", "level", "form_name", "ability_state_name")
+_VIS_PROJ_KEYS = ("id", "side", "x", "y", "target_x", "target_y", "card_id")
+_VIS_FX_KEYS = ("id", "side", "x", "y", "card_id", "kind", "category")
+
+
+def vis_raw(state: dict) -> dict:
+    """``compact_raw`` plus the fields ``match_video.py`` draws. Same tick, same entities, more columns."""
+    fr = compact_raw(state)
+    fr["entities"] = [{k: e[k] for k in _VIS_ENT_KEYS if k in e} for e in state.get("entities", [])]
+    fr["projectiles"] = [{k: q[k] for k in _VIS_PROJ_KEYS if k in q} for q in state.get("projectiles", [])]
+    fr["effects"] = [{k: q[k] for k in _VIS_FX_KEYS if k in q} for q in state.get("effects", [])]
+    return fr
+
+
 def list_frame(state: dict) -> dict:
     """The recorder's compact list frame (replay_drive.snapshot + players) for the parity check only."""
     players = {int(p["side"]): p for p in state["players"]}
@@ -281,10 +299,11 @@ def play_match(env, model, deck, entry: dict, *, decide_every: int, tau: float, 
                     reject_reasons[nm] = reject_reasons.get(nm, 0) + 1
             lf.write(json.dumps(rec) + "\n")
             if record_every > 0:
-                fr = dict(obs)          # the decision frame; tag the play so the viewer can flash it
+                fr = vis_raw(state)     # the decision frame; tag the play so the viewer can flash it
+                fr["p_gate"] = rec["p_gate"]
                 if d["play"]:
                     fr["play"] = {"side": side, "card": deck.cards[d["slot"]], "x": rec.get("bx"),
-                                  "y": rec.get("by"), "accepted": rec.get("accepted")}
+                                  "y": rec.get("by"), "accepted": rec.get("accepted"), "reason": rec.get("reason")}
                 frames.append(fr)
             target = min(env.tick + decide_every, env.tail_cap)
             if record_every > 0:
@@ -293,7 +312,7 @@ def play_match(env, model, deck, entry: dict, *, decide_every: int, tau: float, 
                 while env.tick < target and not env.terminated:
                     env._advance_to(min(env.tick + record_every, target))
                     if env.tick < target:
-                        frames.append(compact_raw(env.eng.observe()))
+                        frames.append(vis_raw(env.eng.observe()))
             else:
                 env._advance_to(target)
             state = env.eng.observe()
