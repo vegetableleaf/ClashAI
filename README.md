@@ -1,5 +1,6 @@
 # ClashAI
-<iframe src="https://github.com/sponsors/vegetableleaf/card" title="Sponsor vegetableleaf" height="225" width="600" style="border: 0;"></iframe>
+<iframe src="https://github.com/sponsors/vegetableleaf/button" title="Sponsor vegetableleaf" height="32" width="114" style="border: 0; border-radius: 6px;"></iframe>
+
 > Homemade bots that learn to play **Clash Royale** on PC (through Google Play Games) — a hobby /
 > research project about getting an agent to *actually play* a live real-time game.
 
