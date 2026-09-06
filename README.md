@@ -156,3 +156,24 @@ log.txt     changelog of model & architecture updates
 ```
 
 See [log.txt](log.txt) for how the model and architecture evolved.
+
+---
+
+## Sponsors
+
+Want to sponsor my work? This is a hobby project built in the gaps around coursework — replay
+crawling, engine time and the odd cloud run all come out of pocket, and sponsorship buys more of
+the experiments that fill [HANDOFF.md](HANDOFF.md).
+
+**[github.com/sponsors/vegetableleaf](https://github.com/sponsors/vegetableleaf)**
+
+| Tier | What you get |
+| :--- | :----------- |
+| **$5 / month** | A Sponsor badge on your profile |
+| **$20 / month** | Your name or logo in this README |
+| **$50 / month** | Access to all my non-secret data — videos, logs, and more |
+| **$150 / month** | Pre-release builds, on top of all the non-secret data |
+| **$10 once** | A special mention on my next Instagram post |
+| **$200 once** | Added as a contributor, with your own branch on the project |
+
+No sponsors yet — the table above is waiting for the first name.
