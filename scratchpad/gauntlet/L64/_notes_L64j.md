@@ -14,3 +14,8 @@
 - corpus_v3_i1r/hogeq re-drive RUNNING on 37032 (started 10:3x UTC).
 - smp_ck2 DONE: 84-16, seconds 158.4, +51.0 +/- 6.9, survived longer 79, crowns against 0.95, offered 20.1/min, 57.4% accepted, 30.5 accepted per match, p_gate p50 0.137. SAMPLE BAND 85 / 79 / 84 (mean 82.7, sd 3.2) vs THRESHOLD 53 / 19 / 44 (sd 17.6). Accepted per match 32.9 / 27.4 / 30.5 vs 26.8 / 17.4 / 24.9. rnd18 (rate-matched random) running on 37031 from 10:4x.
 - Chained (task byhty82qz): when corpus_v3_i1r/hogeq/aggregate.json appears -> s1_v4/run_hogeq_v4.sh (corpus_v4/hogeq = v3 + i1r; dataset s1_dataset_v4.npz; train_s1 x3 --tag v4; eval_s1 of v4+v3 ckpts on v3 val AND v4 val -> s1_v4/eval_v3val_hogeq.out, eval_v4val_hogeq.out). Reference band (v3 val): hogeq 21.30 / 20.58 / 21.08 = 20.99 +/- 0.36.
+
+## L64k notes (11:18 UTC)
+- i1r re-drive done 11:1x: 222 ok / 52 failed (same as first pass), rotated 274 tags / 25,859 rows, determinism 25/25, winner agreement 145/222 (unchanged), terminal_vs_last_play median -32 neg 116, first replay has frames (361) + play_frames (97).
+- corpus_v4/hogeq = 241 + 222 = 463 replays; s1_dataset_v4.npz rows 63,769 (play 18,743 wait 45,026 val 9,907) vs v3 33,218 (9,797/23,421) -> play share 29.4% vs 29.5%: mix preserved (a).
+- S1 v4 x3 training started ~11:17 UTC.

@@ -1,0 +1,12 @@
+<stdin>:9: RuntimeWarning: Mean of empty slice
+C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\numpy\_core\_methods.py:142: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+hogeq v3 play rows 9797 x frac: at0 0.779 at1- 0.221 mid 0.000 y frac: at0 0.282 at1- 0.718 mid 0.000
+   side 0 n 0 x at1- nan at0 nan y at1- nan at0 nan
+   side 1 n 9797 x at1- 0.221 at0 0.779 y at1- 0.718 at0 0.282
+hogeq v4 play rows 18743 x frac: at0 0.629 at1- 0.371 mid 0.000 y frac: at0 0.625 at1- 0.375 mid 0.000
+   side 0 n 0 x at1- nan at0 nan y at1- nan at0 nan
+   side 1 n 18743 x at1- 0.371 at0 0.629 y at1- 0.375 at0 0.625
+icebow v3 play rows 21687 x frac: at0 0.702 at1- 0.298 mid 0.000 y frac: at0 0.610 at1- 0.390 mid 0.000
+   side 0 n 86 x at1- 0.523 at0 0.477 y at1- 0.000 at0 1.000
+   side 1 n 21601 x at1- 0.297 at0 0.703 y at1- 0.391 at0 0.609

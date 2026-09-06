@@ -1,0 +1,10 @@
+**GAUNTLET loop L64k** — Square One S2: corpus v4 (hogeq) → a label trap found before the read
+**Did:** hogeq i=1 re-drive finished (222 ok / 52 failed, frames present, determinism 25/25); corpus_v4/hogeq = 463 replays → 63,769 rows (play share 29.4% vs v3 29.5%, mix preserved); previewed the first v4 checkpoint on the v3 val rows; chased why exact-cell fell while tile rose.
+**Found:**
+- (a) v4 s0 on v3 val (6,133 rows): tile top-1 0.2328 vs v3 0.2130, card 0.583 vs 0.547, gate 0.688 vs 0.627 — but cell_half 0.1365 vs 0.2003 and NLL 4.18 vs 3.90. Do NOT read 0.2328 as a scaling result.
+- (a) Cause: every crawl x/y is `500k` or `500k-1` units, and the SAME lattice point is spelled both ways at random (x=500: 152 vs 720). The S1 label uses floor(x*36) and the pro lattice sits exactly on those cell boundaries → 126 of 455 hogeq lattice points carry two different labels, 71.8% of play rows on the jittered side. Rotating the i=1 half (18000−x) flips which side the jitter lands, so v4 mixes both conventions.
+- (a) Also: the engine inverse placed every model card at the cell CENTRE = 250 units (0.25 tile) off the pro lattice.
+- (a) Fix shipped: `--grid lattice` (round; lattice points become cell centres; engine placement lands on the lattice), stored in the checkpoint; `floor` stays the default, v3 checkpoints read identically (s1_hogeq_s0 0.2130/0.2003/3.899 reproduced), round-trip error 0.000 units, 0 points with two labels.
+**Means:** v3's cell_half was capped by label noise all along; v3 tile numbers stay comparable (tile labels unchanged, 0.000 of rows), exact-cell numbers do not. The data-scaling read has to be lattice-vs-lattice.
+**Next:** chained: hogeq v3-lattice x3 (new baseline) → v4-lattice x3, both on v3 val (ETA ~14:00 UTC); then one lattice checkpoint on the sample-gate engine instrument vs 85/79/84.
+**Cost:** ~50 min. Running: naive v4 x3 (kept as the record), icebow re-fetch 403/615 with the i=1 tags→drive→fidelity chain armed on it, hogeq 24-tag re-fetch resume queued.

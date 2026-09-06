@@ -41,7 +41,7 @@ if str(REPO) not in sys.path:
 
 from pipeline import vocab                                                            # noqa: E402
 from pipeline.dataset import _past                                                    # noqa: E402
-from pipeline.model_v3 import GRID_X, GRID_Y, N_SLOTS, S1Model, hand_mask_from_sc     # noqa: E402
+from pipeline.model_v3 import GRID_X, GRID_Y, N_SLOTS, S1Model, cell_xy, hand_mask_from_sc     # noqa: E402
 from pipeline.obs_contract import ENGINE_X, ENGINE_Y, TICK_S, from_engine, load_deck, to_tokens  # noqa: E402
 
 ENGINE_ENV = REPO / "scratchpad" / "gauntlet" / "L62" / "engine_env.py"
@@ -53,10 +53,9 @@ RESULT_CODE_NAMES = {0: "accepted", 9: "card_not_in_hand", 13: "not_enough_elixi
 # ------------------------------------------------------------------------------------------------------
 # geometry: cell -> board (x, y) -> engine (x, y)
 # ------------------------------------------------------------------------------------------------------
-def cell_center(cell: int, gx: int = GRID_X, gy: int = GRID_Y) -> tuple[float, float]:
-    """Inverse of ``model_v3.cell_index`` at the cell centre: board-frame (x, y) in [0, 1]."""
-    cell = int(cell)
-    return (cell % gx + 0.5) / gx, (cell // gx + 0.5) / gy
+def cell_center(cell: int, grid: str = "floor") -> tuple[float, float]:
+    """Inverse of the checkpoint's label convention (``model_v3.cell_xy``): board-frame (x, y) in [0, 1]."""
+    return cell_xy(cell, grid)
 
 
 def board_to_engine(x: float, y: float, mirror: bool) -> tuple[float, float]:
@@ -68,8 +67,8 @@ def board_to_engine(x: float, y: float, mirror: bool) -> tuple[float, float]:
     return X, Y
 
 
-def cell_to_engine(cell: int, mirror: bool) -> tuple[int, int]:
-    x, y = cell_center(cell)
+def cell_to_engine(cell: int, mirror: bool, grid: str = "floor") -> tuple[int, int]:
+    x, y = cell_center(cell, grid)
     X, Y = board_to_engine(x, y, mirror)
     return int(round(X)), int(round(Y))
 
@@ -157,6 +156,7 @@ def load_model(ckpt: Path, device: str, retries: int = 5):
     model.load_state_dict(ck["model"])
     model.eval()
     return model, {"epoch": ck.get("epoch"), "n_params": ck.get("n_params"), "deck": ck.get("deck"),
+                   "grid": args.get("grid", "floor"),
                    "val_cell_tile_top1": (ck.get("val") or {}).get("cell_tile_top1")}
 
 
@@ -221,7 +221,7 @@ def _outcome(env, state: dict) -> tuple[str, tuple[int, int]]:
 
 def play_match(env, model, deck, entry: dict, *, decide_every: int, tau: float, gate: str, rng: random.Random,
                device: str, log_path: Path, parity_check: bool = True, policy: str = "model",
-               p_random: float = 0.093) -> dict:
+               p_random: float = 0.093, grid: str = "floor") -> dict:
     t0 = time.perf_counter()
     state = env.reset(entry)
     side, mirror = env.side, env._mirror
@@ -259,8 +259,8 @@ def play_match(env, model, deck, entry: dict, *, decide_every: int, tau: float, 
                                    "elixir": round(bs.my_elixir, 2), "hand": list(bs.my_hand), "n_units": int(mask.sum())}
             if d["play"]:
                 n_play += 1
-                x, y = cell_center(d["cell"])
-                X, Y = cell_to_engine(d["cell"], mirror)
+                x, y = cell_center(d["cell"], grid)
+                X, Y = cell_to_engine(d["cell"], mirror, grid)
                 r = env.eng.act(side=side, deck_index=deck_index_of_slot[d["slot"]], x=X, y=Y)
                 acc = bool(r["accepted"])
                 code = int(r.get("result_code", -1))
@@ -338,7 +338,7 @@ def main(argv=None) -> int:
         for i in range(a.matches):
             entry = pool[order[i % len(pool)]]
             log_path = a.out / f"{entry['tag']}_m{i}.jsonl"
-            r = play_match(env, model, deck, entry, decide_every=a.decide_every, tau=a.tau, gate=a.gate, rng=rng,
+            r = play_match(env, model, deck, entry, decide_every=a.decide_every, tau=a.tau, gate=a.gate, rng=rng, grid=minfo["grid"],
                            device=a.device, log_path=log_path, parity_check=not a.no_parity_check, policy=a.policy,
                            p_random=a.p_random)
             r["match"] = i

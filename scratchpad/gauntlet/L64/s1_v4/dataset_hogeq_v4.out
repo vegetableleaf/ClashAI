@@ -1,0 +1,10 @@
+[dataset] hogeq 50/463 rows=7595 1s
+[dataset] hogeq 100/463 rows=14459 2s
+[dataset] hogeq 150/463 rows=21250 2s
+[dataset] hogeq 200/463 rows=28191 3s
+[dataset] hogeq 250/463 rows=34971 5s
+[dataset] hogeq 300/463 rows=41561 6s
+[dataset] hogeq 350/463 rows=48231 8s
+[dataset] hogeq 400/463 rows=55159 9s
+[dataset] hogeq 450/463 rows=61976 11s
+{"out": "hogeq\\data\\pipeline\\s1_dataset_v4.npz", "rows": 63769, "play_rows": 18743, "wait_rows": 45026, "val_rows": 9907, "replays": 463, "units_total": 254329, "seconds": 12.4, "stats": {"mirror_matches": 0, "unmapped": [], "play_rows": 18743, "play_skipped": 1331, "wait_rows": 45026, "wait_in_window": 10156}}

@@ -42,6 +42,32 @@ def cell_index(xy: torch.Tensor, gx: int = GRID_X, gy: int = GRID_Y) -> torch.Te
     return cy * gx + cx
 
 
+def cell_label(xy: torch.Tensor, grid: str = "floor", gx: int = GRID_X, gy: int = GRID_Y) -> torch.Tensor:
+    """Placement LABEL cell. ``floor``: ``cell_index`` (the v3 checkpoints). ``lattice``: pro placements sit on the
+    500-unit lattice, i.e. x * 36 is an integer to +-0.002, so floor let a 1-unit jitter in the crawl (500k vs 500k-1,
+    random at the same point) flip the label one cell (§5cs.70); round makes lattice points the cell centres."""
+    if grid == "floor":
+        return cell_index(xy, gx, gy)
+    if grid != "lattice":
+        raise ValueError(f"grid {grid!r}")
+    cx = torch.round(xy[..., 0] * gx).long().clamp_(0, gx - 1)
+    cy = torch.round(xy[..., 1] * gy).long().clamp_(0, gy - 1)
+    return cy * gx + cx
+
+
+def tile_of_cell(cell: torch.Tensor) -> torch.Tensor:
+    """Half-tile cell id -> 1-tile id on the (GRID_X // 2, GRID_Y // 2) grid (pairs of adjacent half-cells)."""
+    return (cell // GRID_X // 2) * (GRID_X // 2) + (cell % GRID_X) // 2
+
+
+def cell_xy(cell: int, grid: str = "floor", gx: int = GRID_X, gy: int = GRID_Y) -> tuple[float, float]:
+    """Inverse of ``cell_label``: board-frame (x, y) in [0, 1] -- the cell centre under ``floor``, the lattice point
+    under ``lattice`` (so the engine places where the pros place, not 250 units off)."""
+    cell = int(cell)
+    off = 0.5 if grid == "floor" else 0.0
+    return (cell % gx + off) / gx, (cell // gx + off) / gy
+
+
 def _fourier(xy: torch.Tensor, n: int = 8) -> torch.Tensor:
     """[..., 2] -> [..., 4n] sin/cos features at frequencies 1..n (board is periodic in neither axis; the
     low frequencies give a smooth coordinate code, the high ones tile-scale resolution)."""

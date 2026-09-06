@@ -23,7 +23,8 @@ import torch
 import torch.nn.functional as Fn
 
 from .dataset import load as load_ds
-from .model_v3 import (GRID_X, GRID_Y, N_SLOTS, S1Model, VALUE_CLASSES, cell_index, hand_mask_from_sc,
+from .model_v3 import (GRID_X, GRID_Y, N_SLOTS, S1Model, VALUE_CLASSES, cell_index, cell_label, hand_mask_from_sc,
+                       tile_of_cell,
                        mirror_batch)
 from .obs_contract import F as TOK_F, load_deck
 
@@ -62,7 +63,7 @@ class Rows:
                 "value": self.value[ids_t]}
 
 
-def losses(model: S1Model, b: dict, mirror: bool) -> tuple[torch.Tensor, dict]:
+def losses(model: S1Model, b: dict, mirror: bool, grid: str = "floor") -> tuple[torch.Tensor, dict]:
     tok, sc, past, xy = b["tok"], b["sc"], b["past"], b["xy"]
     if mirror:
         tok, sc, past, xy = mirror_batch(tok, sc, past, xy)
@@ -72,7 +73,7 @@ def losses(model: S1Model, b: dict, mirror: bool) -> tuple[torch.Tensor, dict]:
     out = model(tok, b["mask"], sc, past, card_slot=slot_tf, hand_mask=hm)
     parts = {}
     if play.any():
-        cell_t = cell_index(xy[play])
+        cell_t = cell_label(xy[play], grid)
         parts["cell"] = Fn.cross_entropy(out["cell"][play], cell_t)
         parts["card"] = Fn.cross_entropy(out["card"][play], b["slot"][play])
     if (~play).any():
@@ -83,7 +84,7 @@ def losses(model: S1Model, b: dict, mirror: bool) -> tuple[torch.Tensor, dict]:
 
 
 @torch.no_grad()
-def evaluate(model: S1Model, rows: Rows, bs: int = 512) -> dict:
+def evaluate(model: S1Model, rows: Rows, bs: int = 512, grid: str = "floor") -> dict:
     model.eval()
     n = len(rows.idx)
     agg = {"cell_half": 0, "cell_tile": 0, "card": 0, "joint": 0, "n_play": 0, "gate_tp": 0, "gate_tn": 0,
@@ -98,13 +99,13 @@ def evaluate(model: S1Model, rows: Rows, bs: int = 512) -> dict:
         if play.any():
             logits = out["cell"][play]
             xy = b["xy"][play]
-            t_half = cell_index(xy)
+            t_half = cell_label(xy, grid)
             pred = logits.argmax(-1)
             agg["cell_half"] += int((pred == t_half).sum())
             agg["cell_nll"] += float(Fn.cross_entropy(logits, t_half, reduction="sum"))
             # 1-tile: sum probabilities of the 4 half-tile cells in each tile, compare argmax tiles
             p = logits.softmax(-1).view(-1, GRID_Y // 2, 2, GRID_X // 2, 2).sum((2, 4)).flatten(1)
-            t_tile = cell_index(xy, GRID_X // 2, GRID_Y // 2)
+            t_tile = cell_index(xy, GRID_X // 2, GRID_Y // 2) if grid == "floor" else tile_of_cell(t_half)
             tile_ok = p.argmax(-1) == t_tile
             agg["cell_tile"] += int(tile_ok.sum())
             card_ok = out["card"][play].argmax(-1) == b["slot"][play]
@@ -132,7 +133,7 @@ def evaluate(model: S1Model, rows: Rows, bs: int = 512) -> dict:
             "emb_cosine": spread, "n_play": agg["n_play"], "n": n}
 
 
-def baseline(arrs: dict) -> dict:
+def baseline(arrs: dict, grid: str = "floor") -> dict:
     """Board-blind histogram: per card, the most common cell on TRAIN play rows; top-1 on VAL play rows.
     Card baseline: the most common slot among the hand (train frequency), evaluated on val."""
     tr = (arrs["split"] == 0) & (arrs["y_gate"] == 1)
@@ -140,7 +141,8 @@ def baseline(arrs: dict) -> dict:
     xy = torch.from_numpy(arrs["y_xy"]); slot = arrs["y_slot"].astype(np.int64)
     res = {}
     for name, gx, gy in (("half", GRID_X, GRID_Y), ("tile", GRID_X // 2, GRID_Y // 2)):
-        c = cell_index(xy, gx, gy).numpy()
+        c = (cell_index(xy, gx, gy) if grid == "floor" else
+             (cell_label(xy, grid) if name == "half" else tile_of_cell(cell_label(xy, grid)))).numpy()
         best = {}
         for s in range(N_SLOTS):
             m = tr & (slot == s)
@@ -169,12 +171,14 @@ def main(argv=None) -> int:
     ap.add_argument("--out-dir", type=Path, default=REPO / "scratchpad" / "gauntlet" / "L64" / "s1")
     ap.add_argument("--baseline", action="store_true")
     ap.add_argument("--tag", default="", help="checkpoint name suffix: s1_<deck>[_<tag>]_s<seed>.pt (default: none)")
+    ap.add_argument("--grid", default="floor", choices=("floor", "lattice"),
+                    help="placement label convention (model_v3.cell_label); stored in the checkpoint args")
     a = ap.parse_args(argv)
     deck = load_deck(a.deck)
     arrs, meta = load_ds(a.data or (deck.data_dir / "pipeline" / "s1_dataset.npz"))
     a.out_dir.mkdir(parents=True, exist_ok=True)
     if a.baseline:
-        r = baseline(arrs)
+        r = baseline(arrs, a.grid)
         (a.out_dir / f"baseline_{a.deck}.json").write_text(json.dumps(r, indent=1))
         print(json.dumps({"deck": a.deck, "baseline": r}))
         return 0
@@ -198,7 +202,7 @@ def main(argv=None) -> int:
         tot, nb, parts_acc = 0.0, 0, {}
         for s in range(0, len(perm) - a.bs + 1, a.bs):
             b = tr.batch(perm[s:s + a.bs])
-            loss, parts = losses(model, b, mirror=(not a.no_mirror) and rng.random() < 0.5)
+            loss, parts = losses(model, b, mirror=(not a.no_mirror) and rng.random() < 0.5, grid=a.grid)
             opt.zero_grad(set_to_none=True)
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
@@ -206,7 +210,7 @@ def main(argv=None) -> int:
             tot += float(loss); nb += 1
             for k, v in parts.items():
                 parts_acc[k] = parts_acc.get(k, 0.0) + v
-        ev = evaluate(model, va)
+        ev = evaluate(model, va, grid=a.grid)
         ev.update({"epoch": ep + 1, "train_loss": tot / max(nb, 1),
                    "train_parts": {k: v / max(nb, 1) for k, v in parts_acc.items()}, "seconds": round(time.time() - t0)})
         hist.append(ev)
@@ -221,7 +225,7 @@ def main(argv=None) -> int:
     # train-set agreement of the best checkpoint (the S1 gate quotes train AND val)
     model.load_state_dict(torch.load(ckpt, map_location=dev)["model"])
     sub = Rows(arrs, rng.choice(tr_idx, size=min(len(tr_idx), 20000), replace=False), dev)
-    ev_tr = evaluate(model, sub)
+    ev_tr = evaluate(model, sub, grid=a.grid)
     final = {"deck": a.deck, "seed": a.seed, "n_params": n_params, "best_val": max(hist, key=lambda h: h["cell_tile_top1"]),
              "train_subset": ev_tr, "ckpt": str(ckpt), "epochs": a.epochs, "seconds": round(time.time() - t0)}
     (a.out_dir / f"final_{tag}.json").write_text(json.dumps(final, indent=1))

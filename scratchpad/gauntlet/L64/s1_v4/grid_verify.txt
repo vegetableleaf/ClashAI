@@ -1,0 +1,6 @@
+play rows 9797 floor!=lattice frac 0.718 tile(floor)!=tile(lattice) frac 0.000
+tile_of_cell(floor cell)==cell_index(xy,18,32): True
+lattice round-trip on 101 rows: max |err| units 0.000, bad 0
+floor-centre inverse: max |err| units 250.0 median 250.0
+lattice points 455 points with >1 lattice label 0
+points with >1 FLOOR label 126
