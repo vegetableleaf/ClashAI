@@ -1,0 +1,3 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:66: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+{"cell_half_top1": 0.2003, "cell_tile_top1": 0.213, "card_top1": 0.5465, "joint_top1": 0.1332, "cell_nll": 3.899, "gate_acc": 0.7341, "gate_bal_acc": 0.6273, "wait_top1": 0.4242, "value_acc": 0.5488, "emb_cosine": 0.1937, "n_play": 1817, "n": 6133, "ckpt": "hogeq\\data\\pipeline\\s1_hogeq_s0.pt", "epoch": 20, "data": "None", "rows": 6133, "trained_on": "None"}

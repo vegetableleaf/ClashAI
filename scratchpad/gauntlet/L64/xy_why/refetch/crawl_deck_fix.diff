@@ -1,0 +1,35 @@
+--- /c/Users/benpe/ClashBot/scratchpad/gauntlet/L64/xy_why/refetch/crawl_deck.py.orig	2026-09-06 06:21:29.514924500 -0400
++++ /c/Users/benpe/ClashBot/scratchpad/gauntlet/L64/xy_why/refetch/crawl_deck.py.new	2026-09-06 06:21:29.514924500 -0400
+@@ -112,21 +112,26 @@
+     d = BeautifulSoup(html, "lxml")
+     root = d.select_one(".battle_replay")
+     tag = root.get("data-tag", "") if root else ""
++    # L64h fix: `data-i` is a per-replay perspective flag (0 or 1 for EVERY marker of a replay), not an
++    # occurrence index -- keying on it dropped every i=1 replay's positions. Join on (tick, card, side)
++    # with in-order pop for repeats; keep `data-i` as attr_i (i=1 replays are in the other seat's frame).
++    side_of = {"t": "blue", "o": "red"}
+     markers = {}
+     for m in d.select(".marker"):
+-        key = (m.get("data-t", ""), m.get("data-c", ""), m.get("data-i", "0"))
+-        markers[key] = (m.get("data-x", ""), m.get("data-y", ""), m.get("data-s", ""))
++        if not m.get("data-t"):
++            continue
++        key = (m.get("data-t", ""), m.get("data-c", ""), side_of.get(m.get("data-s", ""), ""))
++        markers.setdefault(key, []).append((m.get("data-x", ""), m.get("data-y", ""), m.get("data-i", "")))
+     cards = sorted(d.select(".replay_timeline .replay_card"),
+                    key=lambda c: int(c.get("data-t", 0)))
+     plays, seen = [], {}
+     for i, c in enumerate(cards):
+         row = {("attr_" + k[5:]): v for k, v in c.attrs.items() if k.startswith("data-")}
+         t, card = c.get("data-t", ""), c.get("data-card", "")
+-        occ = seen.get((t, card), 0)
+-        seen[(t, card)] = occ + 1
+-        mx = markers.get((t, card, str(occ))) or markers.get((t, card, "0"))
++        lst = markers.get((t, card, c.get("data-s", "")))
++        mx = lst.pop(0) if lst else None
+         if mx:
+-            row["x_units"], row["y_units"] = mx[0], mx[1]
++            row["x_units"], row["y_units"], row["attr_i"] = mx[0], mx[1], mx[2]
+             try:
+                 row["tile_x"] = round(int(mx[0]) / 1000.0, 2)
+                 row["tile_y"] = round(int(mx[1]) / 1000.0, 2)

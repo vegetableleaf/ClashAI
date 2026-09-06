@@ -1,0 +1,3 @@
+smp_ck0 matches 100 decisions 32010 plays 5633 accepted 3290 per match 32.9
+  p_gate p50/p90/frac>0.5 0.1387 0.3494 0.023  elixir at play p10/p50 2.0 4.26  mean elixir at decision 3.41
+  card mix (top 8): [(7, 616), (6, 612), (1, 442), (0, 415), (4, 413), (2, 391), (5, 219), (3, 182)]  row of play p10/p50/p90 34 34 62  first play t p50 7.0

@@ -1,0 +1,12 @@
+scratchpad/gauntlet/ext/corpus_v3/hogeq/summary.jsonl: 241 ok / 296 rows; winner match 162/241 = 0.672; acc 0.9870; exact crowns 0.564
+   (expected, engine): {('s1', 's0'): 53, ('s0', 's1'): 26, ('s0', 's0'): 77, ('s1', 's1'): 85}
+   terminal_vs_last_play median 120 mean -94 neg 88/241; final_tick median 4140
+   term {'native_logic_clock_stopped': 192, 'native_tiebreak_hp_drain': 49} outcome {'side0_win': 130, 'side1_win': 111}
+   expected s1 wins 138/241  engine s1 wins 111
+scratchpad/gauntlet/ext/corpus_v3_i1/hogeq/summary.jsonl: 222 ok / 274 rows; winner match 145/222 = 0.653; acc 0.9799; exact crowns 0.545
+   (expected, engine): {('s1', 's0'): 47, ('s1', 's1'): 84, ('s0', 's0'): 61, ('s0', 's1'): 29, ('s1', 'draw'): 1}
+   terminal_vs_last_play median -41 mean -267 neg 116/222; final_tick median 3910
+   term {'native_tiebreak_hp_drain': 35, 'native_logic_clock_stopped': 186, 'native_tiebreak_exact_draw': 1} outcome {'side0_win': 108, 'side1_win': 113, 'draw': 1}
+   expected s1 wins 132/222  engine s1 wins 113
+hogeq n 241 real 3-crown 0.149 engine 3-crown 0.183 tv<-600: 59, tv<-1800: 23 last_play>3600 ticks: 162 final_tick p25/p75 3681.0 5775.5
+hogeq n 222 real 3-crown 0.068 engine 3-crown 0.126 tv<-600: 65, tv<-1800: 30 last_play>3600 ticks: 175 final_tick p25/p75 3681.0 5410.75

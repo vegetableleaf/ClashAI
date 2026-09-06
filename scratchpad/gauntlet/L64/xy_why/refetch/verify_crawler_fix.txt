@@ -1,0 +1,10 @@
+00YYPYJ2GPUU.html crawl_deck rows 109 with xy 109 i ['1'] MATCH
+00YYPYJ2GPUU.html crawl_icebow rows 109 with xy 109 i ['1'] MATCH
+000YLPCRRG89.html crawl_deck rows 83 with xy 83 i ['1'] MATCH
+000YLPCRRG89.html crawl_icebow rows 83 with xy 83 i ['1'] MATCH
+000YLPR9UR00.html crawl_deck rows 121 with xy 121 i ['1'] MATCH
+000YLPR9UR00.html crawl_icebow rows 121 with xy 121 i ['1'] MATCH
+000YLPUGYYV9.html crawl_deck rows 108 with xy 108 i ['1'] MATCH
+000YLPUGYYV9.html crawl_icebow rows 108 with xy 108 i ['1'] MATCH
+probe_payload.html crawl_deck rows 109 with xy 109 i ['0'] MATCH
+probe_payload.html crawl_icebow rows 109 with xy 109 i ['0'] MATCH

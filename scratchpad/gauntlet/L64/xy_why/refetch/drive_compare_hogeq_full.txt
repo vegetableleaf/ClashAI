@@ -1,0 +1,44 @@
+== v3_hogeq: rows 296 ok 241 bad 55
+   bad: 52 card has no native evolution form: 26000043
+   bad: 2 side 1: no (hand, queue) assignment reproduces the play sequence
+   bad: 1 side 0: no (hand, queue) assignment reproduces the play sequence
+   keys: ['ok', 'seconds', 'plays_total', 'plays_driven', 'accepted', 'invalid_placement', 'elixir_delays_n', 'elixir_delays_max', 'skipped', 'skipped_ability', 'position_based', 'terminated', 'crowns_match', 'final_tick', 'last_play_tick', 'terminal_vs_last_play', 'reset_seconds', 'drive_seconds']
+   ok: frac 1.000 n 241
+   seconds: mean 11.183 median 10.240
+   plays_total: mean 89.651 median 87.000
+   plays_driven: mean 73.631 median 62.000
+   accepted: mean 72.672 median 60.000
+   invalid_placement: mean 0.000 median 0.000
+   elixir_delays_n: mean 0.000 median 0.000
+   elixir_delays_max: mean 0.000 median 0.000
+   skipped: mean 3.776 median 4.000
+   skipped_ability: mean 3.411 median 3.000
+   position_based: frac 0.963 n 241
+   terminated: frac 1.000 n 241
+   crowns_match: frac 0.564 n 241
+   final_tick: mean 4476.734 median 4140.000
+   last_play_tick: mean 4571.029 median 4654.000
+   terminal_vs_last_play: mean -94.295 median 120.000
+   reset_seconds: mean 0.064 median 0.060
+   drive_seconds: mean 10.806 median 9.850
+== v3_i1_hogeq: rows 274 ok 222 bad 52
+   bad: 52 card has no native evolution form: 26000043
+   keys: ['ok', 'seconds', 'plays_total', 'plays_driven', 'accepted', 'invalid_placement', 'elixir_delays_n', 'elixir_delays_max', 'skipped', 'skipped_ability', 'position_based', 'terminated', 'crowns_match', 'final_tick', 'last_play_tick', 'terminal_vs_last_play', 'reset_seconds', 'drive_seconds']
+   ok: frac 1.000 n 222
+   seconds: mean 4.849 median 4.320
+   plays_total: mean 92.131 median 88.500
+   plays_driven: mean 72.081 median 63.500
+   accepted: mean 70.631 median 63.000
+   invalid_placement: mean 0.000 median 0.000
+   elixir_delays_n: mean 0.000 median 0.000
+   elixir_delays_max: mean 0.000 median 0.000
+   skipped: mean 4.036 median 4.000
+   skipped_ability: mean 3.514 median 3.000
+   position_based: frac 0.973 n 222
+   terminated: frac 1.000 n 222
+   crowns_match: frac 0.545 n 222
+   final_tick: mean 4438.617 median 3910.000
+   last_play_tick: mean 4705.572 median 4729.500
+   terminal_vs_last_play: mean -266.955 median -41.000
+   reset_seconds: mean 0.070 median 0.070
+   drive_seconds: mean 4.623 median 4.105

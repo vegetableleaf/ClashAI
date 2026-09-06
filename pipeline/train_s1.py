@@ -168,6 +168,7 @@ def main(argv=None) -> int:
     ap.add_argument("--no-mirror", action="store_true")
     ap.add_argument("--out-dir", type=Path, default=REPO / "scratchpad" / "gauntlet" / "L64" / "s1")
     ap.add_argument("--baseline", action="store_true")
+    ap.add_argument("--tag", default="", help="checkpoint name suffix: s1_<deck>[_<tag>]_s<seed>.pt (default: none)")
     a = ap.parse_args(argv)
     deck = load_deck(a.deck)
     arrs, meta = load_ds(a.data or (deck.data_dir / "pipeline" / "s1_dataset.npz"))
@@ -186,7 +187,7 @@ def main(argv=None) -> int:
     opt = torch.optim.AdamW(model.parameters(), lr=a.lr, weight_decay=0.01)
     steps = a.epochs * (len(tr_idx) // a.bs)
     sched = torch.optim.lr_scheduler.OneCycleLR(opt, max_lr=a.lr, total_steps=max(steps, 1), pct_start=0.05)
-    tag = f"{a.deck}_s{a.seed}"
+    tag = f"{a.deck}_{a.tag}_s{a.seed}" if a.tag else f"{a.deck}_s{a.seed}"
     ckpt = deck.data_dir / "pipeline" / f"s1_{tag}.pt"
     hist, best = [], -1.0
     rng = np.random.default_rng(a.seed)
