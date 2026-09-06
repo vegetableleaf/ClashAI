@@ -1,0 +1,3 @@
+144 (1, 'Knight', 203000000, 'Knight_hero', 'ready')
+93 (1, 'Knight', 203000000, 'Knight_hero', 'deploying')
+{'card_id': 26000000, 'internal_name': 'Knight', 'hero_form': 'Knight_hero', 'hero_form_id': 203000000, 'evolution_form': 'Knight_EV1', 'evolution_form_id': 13000000}

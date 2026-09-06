@@ -356,6 +356,9 @@ def main(argv=None) -> int:
     ap.add_argument("--no-parity-check", action="store_true")
     ap.add_argument("--record-every", type=int, default=0,
                     help="engine ticks between recorded observation frames (0 = off; 2 = 10 fps for the video renderer)")
+    ap.add_argument("--own-forms", action="store_true",
+                    help="only pool replays whose pro ran OUR card forms (deck yaml: `_evo` = evolution, else base); "
+                         "e.g. the icebow pool is 433 evo-knight / 40 hero-knight / 4 base, and seed 0 landed on a hero")
     a = ap.parse_args(argv)
 
     deck = load_deck(a.deck)
@@ -368,6 +371,15 @@ def main(argv=None) -> int:
     env = RawEngineEnv(port=a.port, host=a.host, pool=pool, decision_ticks=a.decide_every, seed=a.seed)
     a.out.mkdir(parents=True, exist_ok=True)
     order = random.Random(a.seed).sample(range(len(pool)), len(pool))       # seeded, no repeats within a run
+    if a.own_forms:
+        want = {vocab.base_key(c): ("evolution" if c.endswith("_evo") else "base") for c in deck.cards}
+        keep = [i for i in order if all(want.get(vocab.base_key(vocab.engine_key(it["name"]))) == it["form"]
+                                        for it in ee.ours(pool[i], "deck"))]
+        print(json.dumps({"own_forms": {k: v for k, v in want.items() if v != "base"}, "pool_kept": len(keep),
+                          "pool": len(pool)}), flush=True)
+        if not keep:
+            raise SystemExit("no pool replay matches our card forms")
+        order = keep
     rng = random.Random(a.seed + 1)
     print(json.dumps({"ckpt": str(a.ckpt), **minfo, "pool": len(pool), "port": a.port, "gate": a.gate, "tau": a.tau,
                       "decide_every": a.decide_every, "device": a.device, "policy": a.policy, "p_random": a.p_random}), flush=True)

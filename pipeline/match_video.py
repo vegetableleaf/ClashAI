@@ -193,10 +193,13 @@ def draw_arena(img) -> None:
     for j in range(1, TILES_Y):
         y = BOARD_TOP + j * TILE
         cv2.line(img, (BOARD_X0, y), (BOARD_X0 + BOARD_W, y), PALETTE["grid"], 1)
-    ymid = BOARD_TOP + BOARD_H // 2                              # the river: one tile either side
+    # River = engine rows 15..16 (docs/API.md: "Row 15..16 is the river"), i.e. TWO tiles centred on the
+    # board's midline. Bridges are THREE tiles wide at columns 2-4 and 13-15: measured from the L64 schema
+    # recording, ground-troop centres inside the river band sit at x 2.5-4.5 and 13.5-15.5 and nowhere else.
+    ymid = BOARD_TOP + BOARD_H // 2
     cv2.rectangle(img, (BOARD_X0, ymid - TILE), (BOARD_X0 + BOARD_W, ymid + TILE), PALETTE["river"], -1)
-    for bx in (3, 14):                                           # bridges at tiles 3-4 and 14-15
-        cv2.rectangle(img, (BOARD_X0 + bx * TILE, ymid - TILE), (BOARD_X0 + (bx + 1) * TILE, ymid + TILE),
+    for bx in (2, 13):
+        cv2.rectangle(img, (BOARD_X0 + bx * TILE, ymid - TILE), (BOARD_X0 + (bx + 3) * TILE, ymid + TILE),
                       PALETTE["bridge"], -1)
     cv2.rectangle(img, (BOARD_X0, BOARD_TOP), (BOARD_X0 + BOARD_W, BOARD_BOT), PALETTE["line"], 2)
 
