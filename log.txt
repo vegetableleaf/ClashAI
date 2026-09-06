@@ -3306,3 +3306,19 @@ Notes / caveats
   golem, minions, pekka, poison, ...). Those pages exist but format their stats differently;
   worth a second pass with per-card page/field mapping rather than guessing. Logged, not
   invented. 167/167 (1 skipped).
+
+------------------------------------------------------------------------------
+2026-09-06  —  Pipeline rebuilt from square one ("Square One", HANDOFF §5cs.53-56)
+------------------------------------------------------------------------------
+- The reward-shaped PPO line is closed: 4 arms / ~1,500 real-engine matches produced no
+  measured gain in pro agreement over the imitation init (KL leash defends, buys nothing;
+  no leash rails the placement head). Hand-written simulator retired from training (26%
+  crowns agreement with the real engine).
+- New deck-agnostic package pipeline/ (both decks inherit): vocab of 232 unit classes
+  (230 detector + 2 engine-only), BoardState, from_engine / from_live / degrade / to_tokens,
+  19 contract tests. Stage 0 done.
+- Plan: S1 imitation v3 (entity + patch tokens with coordinates, full-res per-cell head,
+  supervised gate, categorical value) -> S2 corpus x3-x10 -> S3 engine search teacher +
+  supervised distillation (DAgger) -> S4 live layer through the same contract, graded on
+  the ladder in 20-match blocks with an EMA checkpoint. Old BC checkpoint stays the baseline.
+- README rewritten for the new architecture.
