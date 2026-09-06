@@ -88,8 +88,17 @@ def main() -> int:
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--determinism-every", type=int, default=10, help="re-run every K-th tag and compare hashes (0=off)")
     ap.add_argument("--redo", action="store_true")
+    ap.add_argument("--crawl", default="", help="L63e: deck name (icebow|hogeq) or crawl dir; default icebow crawl2")
+    ap.add_argument("--out", default="", help="L63e: output dir (default scratchpad/gauntlet/ext/batch)")
+    ap.add_argument("--record-every", type=int, default=0, help="L63e: compact frame every N ticks")
+    ap.add_argument("--record-plays", action="store_true", help="L63e: full observation before every driven play")
     args = ap.parse_args()
 
+    global OUT
+    if args.crawl:
+        replay_drive.set_crawl(args.crawl)
+    if args.out:
+        OUT = Path(args.out)
     tags = json.loads(Path(args.tags).read_text(encoding="utf-8"))
     if args.limit:
         tags = tags[: args.limit]
@@ -110,8 +119,9 @@ def main() -> int:
             t0 = time.perf_counter()
             try:
                 res = replay_drive.drive(tag, port=args.port, seed=args.seed, level=args.level, elixir_slack=args.elixir_slack,
-                                         tail_cap=args.tail_cap, run_label="batch", verbose=False)
-                (OUT / f"replay_{tag}.json").write_text(json.dumps(res, indent=1, default=str), encoding="utf-8")
+                                         tail_cap=args.tail_cap, run_label="batch", verbose=False,
+                                         record_every=args.record_every, record_plays=args.record_plays)
+                (OUT / f"replay_{tag}.json").write_text(json.dumps(res, indent=None if args.record_plays else 1, default=str), encoding="utf-8")
                 row = summarize(tag, res, time.perf_counter() - t0)
                 if args.determinism_every and i % args.determinism_every == 0:
                     res2 = replay_drive.drive(tag, port=args.port, seed=args.seed, level=args.level, elixir_slack=args.elixir_slack,

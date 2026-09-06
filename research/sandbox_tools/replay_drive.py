@@ -37,6 +37,16 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[2]
 SANDBOX = REPO / "research" / "ext" / "cr-native-sandbox"
 CRAWL = REPO / "icebow" / "data" / "royaleapi" / "crawl2"
+
+
+def set_crawl(deck_or_path: str) -> Path:
+    """L63e: point the loader at another deck's crawl (a deck name -> <deck>/data/royaleapi/crawl2, or a path)."""
+    global CRAWL
+    p = Path(deck_or_path)
+    CRAWL = p if (p / "battles.csv").exists() else REPO / deck_or_path / "data" / "royaleapi" / "crawl2"
+    if not (CRAWL / "battles.csv").exists():
+        raise SystemExit(f"no battles.csv under {CRAWL}")
+    return CRAWL
 OUT_DIR = REPO / "scratchpad" / "gauntlet" / "ext"
 if str(SANDBOX) not in sys.path:
     sys.path.insert(0, str(SANDBOX))
@@ -240,10 +250,14 @@ def deck_spec(order: list[dict], level: int) -> list[dict]:
 
 
 def drive(tag: str, *, port: int, seed: int, level: int, elixir_slack: int, tail_cap: int,
-          run_label: str, verbose: bool, record_every: int = 0, record_full: bool = False) -> dict:
+          run_label: str, verbose: bool, record_every: int = 0, record_full: bool = False,
+          record_plays: bool = False) -> dict:
     """Drive one replay.  record_every=N (>0) additionally stores an observation every N ticks in
     out["frames"] (each: tick, players' elixir, every entity's side/x/y/name/hp) for a viewer;
-    record_full=True uses the full observation (adds entity kind, projectiles and spell effects)."""
+    record_full=True uses the full observation (adds entity kind, projectiles and spell effects).
+    record_plays=True (L63e, from L61's replay_drive_rec) stores a FULL observation immediately BEFORE every
+    driven play of both sides in out["play_frames"] (with play_index, side, card, x, y and both players'
+    hand/cycle/next/elixir)."""
     battle, plays = load_battle(tag)
     decks = {side: deck_for_side(battle, side) for side in (0, 1)}
     template = json.loads((SANDBOX / "examples" / "full-card-bootstrap.json").read_text(encoding="utf-8-sig"))
@@ -314,20 +328,29 @@ def drive(tag: str, *, port: int, seed: int, level: int, elixir_slack: int, tail
     log: list[dict] = []
     frames: list[dict] = []
 
-    def snapshot(state: dict) -> None:
+    play_frames: list[dict] = []
+
+    def snapshot(state: dict, full: bool = False, extra: dict | None = None, into: list | None = None) -> None:
+        record_full_ = record_full or full
         frame = {"tick": int(state["tick"]),
                  "elixir": [player(state, s).get("elixir_exact", player(state, s).get("elixir")) for s in (0, 1)],
                  "entities": [[int(e["side"]), int(e["x"]), int(e["y"]), e.get("name", str(e.get("card_id"))),
-                               int(e["hp"]), int(e["max_hp"])] + ([int(e.get("kind", -1))] if record_full else [])
+                               int(e["hp"]), int(e["max_hp"])] + ([int(e.get("kind", -1))] if record_full_ else [])
                               for e in state.get("entities", [])],
                  "towers": [[int(t["side"]), t.get("type"), t.get("lane"), int(t["x"]), int(t["y"]), int(t["hp"]),
                              int(t["max_hp"])] for t in state["episode"].get("crown_towers", [])]}
-        if record_full:
+        if record_full_:
             frame["projectiles"] = [[int(q["side"]), int(q["x"]), int(q["y"]), int(q["target_x"]), int(q["target_y"]),
                                      card_name(q["card_id"])] for q in state.get("projectiles", [])]
             frame["effects"] = [[int(q["side"]), int(q["x"]), int(q["y"]), card_name(q["card_id"])]
                                 for q in state.get("effects", [])]
-        frames.append(frame)
+        if extra:
+            frame.update(extra)
+            frame["players"] = [{"side": int(pl["side"]), "elixir": pl.get("elixir_exact", pl.get("elixir")),
+                                 "hand": [item["name"] for item in pl["hand"]],
+                                 "hand_pos": list(pl["hand_deck_indices"]), "cycle_pos": list(pl.get("cycle_deck_indices", [])),
+                                 "next": pl.get("next_deck_index")} for pl in state["players"]]
+        (frames if into is None else into).append(frame)
 
     def observe_for_record() -> dict:
         return env.observe() if record_full else env.observe_compact()
@@ -363,7 +386,13 @@ def drive(tag: str, *, port: int, seed: int, level: int, elixir_slack: int, tail
             log.append({"play_index": row["play_index"], "tick": row["tick"], "side": side, "card": slug,
                         "skipped": "ability plays not driven by this version"})
             continue
-        before = player(env.observe_compact(), side)
+        if record_plays:
+            obs_before = env.observe()
+            snapshot(obs_before, full=True, extra={"play_index": row["play_index"], "side": side, "card": slug,
+                                                   "x": row["x"], "y": row["y"]}, into=play_frames)
+            before = player(obs_before, side)
+        else:
+            before = player(env.observe_compact(), side)
         entry = {"play_index": row["play_index"], "tick": row["tick"], "side": side, "card": slug,
                  "x": row["x"], "y": row["y"], "cost": cost_of[side][slug],
                  "elixir_before": before.get("elixir_exact", before.get("elixir")),
@@ -422,6 +451,8 @@ def drive(tag: str, *, port: int, seed: int, level: int, elixir_slack: int, tail
         out["frames"] = frames
         out["record_every"] = record_every
         out["record_full"] = record_full
+    if record_plays:
+        out["play_frames"] = play_frames
     env.close()
     return out
 
@@ -437,11 +468,15 @@ def main() -> int:
     parser.add_argument("--runs", type=int, default=1)
     parser.add_argument("--offline", action="store_true", help="no engine: decks, deal inference, sanity only")
     parser.add_argument("--quiet", action="store_true")
+    parser.add_argument("--crawl", default="", help="deck name (icebow|hogeq) or crawl dir; default icebow crawl2")
+    parser.add_argument("--record-plays", action="store_true", help="full observation before every driven play (both sides)")
     parser.add_argument("--record-every", type=int, default=0,
                         help="store an observation every N ticks in the result JSON (for replay_view.py)")
     parser.add_argument("--record-full", action="store_true",
                         help="record the full observation (entity kind, projectiles, spell effects) instead of the compact one")
     args = parser.parse_args()
+    if args.crawl:
+        set_crawl(args.crawl)
 
     if args.offline:
         print(json.dumps(offline_report(args.tag), indent=1))
@@ -452,7 +487,8 @@ def main() -> int:
         print(f"=== {args.tag} run {run}/{args.runs} port {args.port} seed {args.seed} level {args.level}", flush=True)
         result = drive(args.tag, port=args.port, seed=args.seed, level=args.level, elixir_slack=args.elixir_slack,
                        tail_cap=args.tail_cap, run_label=f"run{run}", verbose=not args.quiet,
-                       record_every=args.record_every, record_full=args.record_full)
+                       record_every=args.record_every, record_full=args.record_full,
+                       record_plays=args.record_plays)
         path = OUT_DIR / f"replay_{args.tag}_run{run}.json"
         path.write_text(json.dumps(result, indent=1, default=str), encoding="utf-8")
         hashes.append(result["final"]["state_hash"])

@@ -1,0 +1,124 @@
+{
+ "icebow": {
+  "hash": "d0874ff2026fa69e",
+  "ref_hash": "d0874ff2026fa69e",
+  "same": true,
+  "play_frames": 121,
+  "ref_play_frames": 121,
+  "frames": 364,
+  "seconds": 10.82
+ },
+ "hogeq": {
+  "tag": "02RY9GQVP09R",
+  "grade": {
+   "plays_total": 99,
+   "plays_driven": 54,
+   "accepted": 51,
+   "rejected_by_reason": {
+    "native_rejected": 2,
+    "card_not_in_hand": 1
+   },
+   "invalid_placement": 0,
+   "elixir_delays": {
+    "n": 0,
+    "max_ticks": 0,
+    "sum_ticks": 0
+   },
+   "skipped": [
+    {
+     "play_index": 21,
+     "tick": 1998,
+     "side": 1,
+     "card": "_invalid",
+     "skipped": "ability plays not driven by this version"
+    },
+    {
+     "play_index": 34,
+     "tick": 2881,
+     "side": 1,
+     "card": "_invalid",
+     "skipped": "ability plays not driven by this version"
+    },
+    {
+     "play_index": 55,
+     "tick": 3878,
+     "side": 1,
+     "card": "_invalid",
+     "skipped": "ability plays not driven by this version"
+    },
+    {
+     "play_index": 57,
+     "tick": 3981,
+     "side": 0,
+     "card": "mega-knight",
+     "skipped": "episode already terminal at tick 3903"
+    }
+   ],
+   "crowns_match": false,
+   "terminal_vs_last_play_ticks": -1598
+  },
+  "final": {
+   "tick": 3903,
+   "terminated": true,
+   "outcome": "side0_win",
+   "winner": 0,
+   "crowns": [
+    1,
+    0
+   ],
+   "termination_reason": "native_logic_clock_stopped",
+   "terminal_tick": 3903,
+   "state_hash": "f80aefb6a30b5074",
+   "towers": [
+    {
+     "side": 0,
+     "type": "king",
+     "lane": null,
+     "hp": 4696,
+     "destroyed": false
+    },
+    {
+     "side": 0,
+     "type": "princess",
+     "lane": "left",
+     "hp": 635,
+     "destroyed": false
+    },
+    {
+     "side": 0,
+     "type": "princess",
+     "lane": "right",
+     "hp": 3017,
+     "destroyed": false
+    },
+    {
+     "side": 1,
+     "type": "king",
+     "lane": null,
+     "hp": 4824,
+     "destroyed": false
+    },
+    {
+     "side": 1,
+     "type": "princess",
+     "lane": "left",
+     "hp": 2181,
+     "destroyed": false
+    },
+    {
+     "side": 1,
+     "type": "princess",
+     "lane": "right",
+     "hp": 0,
+     "destroyed": true
+    }
+   ],
+   "elixir": {
+    "0": 10.0,
+    "1": 10.0
+   }
+  },
+  "play_frames": 54,
+  "seconds": 7.03
+ }
+}

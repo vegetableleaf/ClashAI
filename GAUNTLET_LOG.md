@@ -1315,3 +1315,10 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - (c) building kind 12 != deploying: 22% of kind-12 building rows damaged.
 - Stale sessions messaged (ruling 5); clashbot-c9 idle-confirmed. Owner ruling 6: cleanup loop before S1.
 - Next: S0 step 3 corpus rebuild both decks (needs --crawl on replay_drive), step 2b own-click test in parallel.
+
+## L63e -- 2026-09-06 02:5x UTC -- S0 step 3 LAUNCHED: corpus rebuild both decks through the engine, per-play recording
+- replay_drive.py: L61 per-play recording promoted in (--record-plays), --crawl <deck>; replay_batch.py: --crawl/--out/--record-every/--record-plays. Smoke: icebow 000YLY0JCPGL hash == batch_v2 (d0874ff2026fa69e), 121 play_frames; hogeq first tag drives.
+- Tag lists: icebow 619/1,253 fully positioned (54,142 plays), hogeq 296/598 (24,668 plays). EB-evo replays included (engine refuses cleanly).
+- Running: corpus_v3/icebow (37031, ~13 s/replay, ETA ~2 h), corpus_v3/hogeq (37032, ~8 s/replay, ETA ~40 min). Step 2b own-click agent dispatched.
+- (c) machine sleep as the cause of the 3 lost nights: 0 sleep/wake/boot events in 4 days of the System log. Cron :23/:53 added as second trigger.
+- Owner rulings: CR_ENGINE_EXTRACTION_REVIEW.md deleted; README rewritten (74a3e80).
