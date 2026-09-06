@@ -1328,3 +1328,8 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - degrade() recalibrated: conf mixture, sigma 0.45, unknown 0.25, wrong_team_rate {troop/building 0.15 (b), spell 0.40}. 20 tests OK.
 - label.py defects (not fixed, old path): 9.1% of "plays" are tray taps; select-time stamp; river-line snapping.
 - Batches: icebow 132/619, hogeq 150/296 at 03:07 UTC; icebow background task survived the 10-min mark.
+
+## L63g -- 2026-09-06 04:1x UTC -- first hogeq engine numbers; icebow batch 528/619; scheduled triggers did not fire
+- hogeq: 241/296 converted (52 EB-evo, 3 deal-inference), 98.7% plays accepted, det 27/27 SAME, crowns match 56.4% (65.3% even with zero rejections; icebow 80.8%), engine ends early in 36.5% (median 1,008 ticks). (b) level-11 uniform levels vs level-sensitive hog breakpoints.
+- icebow partial: 421/528 converted (103 EB-evo, 4 duplicated-row tags -- TRAP), 99.2% accepted, crowns 76.2%, 211/211 batch_v2 hashes reproduced.
+- (a) wakeup 23:39 + cron 23:53 local did NOT fire while idle; CronList still showed the one-shot at 00:11. Owner's message was the check.
