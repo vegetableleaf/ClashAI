@@ -92,11 +92,14 @@ def main() -> int:
     ap.add_argument("--out", default="", help="L63e: output dir (default scratchpad/gauntlet/ext/batch)")
     ap.add_argument("--record-every", type=int, default=0, help="L63e: compact frame every N ticks")
     ap.add_argument("--record-plays", action="store_true", help="L63e: full observation before every driven play")
+    ap.add_argument("--plays-file", default="", help="L64h: plays csv inside the crawl dir (default plays_ext.csv; plays_ext_i1.csv = re-fetched seat-flagged half, rotated on load)")
     args = ap.parse_args()
 
     global OUT
     if args.crawl:
         replay_drive.set_crawl(args.crawl)
+    if args.plays_file:
+        replay_drive.set_plays_file(args.plays_file)
     if args.out:
         OUT = Path(args.out)
     tags = json.loads(Path(args.tags).read_text(encoding="utf-8"))
@@ -145,6 +148,7 @@ def main() -> int:
     rows = [done[t] for t in tags if t in done]
     agg = aggregate(rows)
     agg["batch_wall_seconds"] = round(time.perf_counter() - t_batch, 1)
+    agg["rotated_rows"] = replay_drive.ROTATED["rows"]; agg["rotated_tags"] = len(replay_drive.ROTATED["tags"])
     (OUT / "aggregate.json").write_text(json.dumps(agg, indent=1), encoding="utf-8")
     print(json.dumps(agg, indent=1), flush=True)
     return 0

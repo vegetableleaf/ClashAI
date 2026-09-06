@@ -1,0 +1,45 @@
+batch: 2 tags, 0 already done, port 37032
+[1/2] 002YLQ9PY020 acc 135/135 rej {} crowns [1, 0] exp [0, 1] match=False term=native_tiebreak_hp_drain tick 6120 (last play 5933) 8.24s
+[2/2] 002YLQP2RRRC acc 95/98 rej {'native_rejected': 3} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 5407 (last play 5661) 6.22s
+{
+ "tags": 2,
+ "converted": 2,
+ "failed": 0,
+ "failed_by_error": {},
+ "plays_driven": 233,
+ "accepted": 230,
+ "accept_rate": 0.9871,
+ "rejected_by_reason": {
+  "native_rejected": 3
+ },
+ "invalid_placement": 0,
+ "matches_with_rejections": 1,
+ "elixir_delays_plays": 0,
+ "elixir_delays_max_ticks": 0,
+ "ability_plays_skipped": 7,
+ "position_based_all": true,
+ "terminated": 2,
+ "termination_reasons": {
+  "native_tiebreak_hp_drain": 1,
+  "native_logic_clock_stopped": 1
+ },
+ "crowns_match": 0,
+ "crowns_match_rate": 0.0,
+ "outcomes": {
+  "side0_win": 2
+ },
+ "clean": 0,
+ "terminal_vs_last_play": {
+  "median": 187,
+  "negative": 1
+ },
+ "determinism": {
+  "checked": 0,
+  "same": 0
+ },
+ "seconds_total": 14.5,
+ "seconds_per_match_median": 8.24,
+ "batch_wall_seconds": 14.5,
+ "rotated_rows": 238,
+ "rotated_tags": 2
+}

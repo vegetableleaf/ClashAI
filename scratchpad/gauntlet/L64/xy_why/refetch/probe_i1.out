@@ -1,0 +1,6 @@
+[probe] session: saved token
+Traceback (most recent call last):
+  File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L64\xy_why\refetch\probe_i1.py", line 53, in <module>
+    med = {str(k): (round(sorted(v)[len(v)//2], 1), len(v)) for k, v in ys.items()}
+                          ~~~~~~~~~^^^^^^^^^^^
+IndexError: list index out of range

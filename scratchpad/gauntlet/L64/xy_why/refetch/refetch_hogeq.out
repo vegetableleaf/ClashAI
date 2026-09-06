@@ -1,0 +1,59 @@
+[refetch] hogeq: 299 uncovered to fetch (0 done)
+[refetch] session: saved token
+[refetch] 10/299 (1 min) i-values {'1': 851} errs {}
+[refetch] ratelimited 00QYPLJRQ0R2 -- sleeping 120 s
+[refetch] 20/299 (4 min) i-values {'1': 1829} errs {'RateLimited': 1}
+[refetch] ratelimited 08GPVRYPVVY0 -- sleeping 120 s
+[refetch] 30/299 (7 min) i-values {'1': 2712} errs {'RateLimited': 2}
+[refetch] ratelimited 09QP9CYPGYJG -- sleeping 120 s
+[refetch] 40/299 (10 min) i-values {'1': 3624} errs {'RateLimited': 3}
+[refetch] ratelimited 020YPYCJGP0L -- sleeping 120 s
+[refetch] 50/299 (13 min) i-values {'1': 4360} errs {'RateLimited': 4}
+[refetch] ratelimited 09C9JUGV2Y89 -- sleeping 120 s
+[crawl] clearance expired during replay -- renewing
+[refetch] 60/299 (16 min) i-values {'1': 5080} errs {'RateLimited': 5}
+[crawl] clearance expired during replay -- renewing
+[refetch] ratelimited 09C9JV0RY2QC -- sleeping 120 s
+[refetch] 70/299 (19 min) i-values {'1': 6003} errs {'RateLimited': 6}
+[refetch] 80/299 (20 min) i-values {'1': 7146} errs {'RateLimited': 6}
+[refetch] ratelimited 09YP9C02YUUU -- sleeping 120 s
+[refetch] 90/299 (23 min) i-values {'1': 8264} errs {'RateLimited': 7}
+[crawl] clearance expired during replay -- renewing
+[refetch] ratelimited 02LY9LQR8UGU -- sleeping 120 s
+[refetch] 100/299 (26 min) i-values {'1': 9234} errs {'RateLimited': 8}
+[refetch] ratelimited 02VY8LLYQRJU -- sleeping 120 s
+[refetch] 110/299 (29 min) i-values {'1': 10386} errs {'RateLimited': 9}
+[refetch] ratelimited 00VYPLJGY2RV -- sleeping 120 s
+[crawl] clearance expired during replay -- renewing
+[refetch] 120/299 (32 min) i-values {'1': 11182} errs {'RateLimited': 10}
+[refetch] ratelimited 02CY8P8JUV2V -- sleeping 120 s
+[refetch] 130/299 (35 min) i-values {'1': 11919} errs {'RateLimited': 11}
+[refetch] ratelimited 020YPYCJLJ2C -- sleeping 120 s
+[refetch] 140/299 (39 min) i-values {'1': 12805} errs {'RateLimited': 12}
+[refetch] ratelimited 000YLYP89RYC -- sleeping 120 s
+[refetch] 150/299 (42 min) i-values {'1': 13752} errs {'RateLimited': 13}
+[refetch] ratelimited 098PPUQVQ9P8 -- sleeping 120 s
+[refetch] 160/299 (45 min) i-values {'1': 14774} errs {'RateLimited': 14}
+[refetch] ratelimited 028YPU8JPL9C -- sleeping 120 s
+[crawl] clearance expired during replay -- renewing
+[refetch] 170/299 (48 min) i-values {'1': 15534} errs {'RateLimited': 15}
+[refetch] 180/299 (49 min) i-values {'1': 16454} errs {'RateLimited': 15}
+[refetch] ratelimited 029YPC2QPY2Q -- sleeping 120 s
+[refetch] 190/299 (52 min) i-values {'1': 17355} errs {'RateLimited': 16}
+[refetch] ratelimited 082Y8QL2VQ9U -- sleeping 120 s
+[refetch] 200/299 (55 min) i-values {'1': 18247} errs {'RateLimited': 17}
+[crawl] clearance expired during replay -- renewing
+[refetch] ratelimited 089Y82PRCVPG -- sleeping 120 s
+[refetch] 210/299 (58 min) i-values {'1': 19082} errs {'RateLimited': 18}
+[refetch] ratelimited 08JPVCC909YV -- sleeping 120 s
+[refetch] 220/299 (61 min) i-values {'1': 20054} errs {'RateLimited': 19}
+[refetch] ratelimited 00QYPQLJRL20 -- sleeping 120 s
+[crawl] clearance expired during replay -- renewing
+[refetch] 230/299 (64 min) i-values {'1': 21003} errs {'RateLimited': 20}
+[refetch] 240/299 (65 min) i-values {'1': 21911} errs {'RateLimited': 20}
+[refetch] ratelimited 020YPYCC9JCG -- sleeping 120 s
+[refetch] 250/299 (68 min) i-values {'1': 22764} errs {'RateLimited': 21}
+[refetch] ratelimited 088Y88U92QC0 -- sleeping 120 s
+[refetch] 260/299 (71 min) i-values {'1': 23576} errs {'RateLimited': 22}
+[refetch] ratelimited 00RYPPV80C8P -- sleeping 120 s
+[refetch] 270/299 (74 min) i-values {'1': 24503} errs {'RateLimited': 23}

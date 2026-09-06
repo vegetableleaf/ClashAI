@@ -1,0 +1,53 @@
+[refetch] icebow: 615 uncovered to fetch (3 done)
+Traceback (most recent call last):
+  File "C:\Users/benpe/clash-replay-scraper\royale\transport.py", line 103, in renew
+    self.page.wait_for_function(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        "() => !document.title.startsWith('Just a moment')", timeout=60_000)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\benpe\clash-replay-scraper\.venv\Lib\site-packages\playwright\sync_api\_generated.py", line 12761, in wait_for_function
+    self._sync(
+    ~~~~~~~~~~^
+        self._impl_obj.wait_for_function(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+        )
+        ^
+    )
+    ^
+  File "C:\Users\benpe\clash-replay-scraper\.venv\Lib\site-packages\playwright\_impl\_sync_base.py", line 115, in _sync
+    return task.result()
+           ~~~~~~~~~~~^^
+  File "C:\Users\benpe\clash-replay-scraper\.venv\Lib\site-packages\playwright\_impl\_page.py", line 1151, in wait_for_function
+    return await self._main_frame.wait_for_function(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\benpe\clash-replay-scraper\.venv\Lib\site-packages\playwright\_impl\_frame.py", line 940, in wait_for_function
+    await self._channel.send("waitForFunction", self._timeout, params)
+  File "C:\Users\benpe\clash-replay-scraper\.venv\Lib\site-packages\playwright\_impl\_connection.py", line 76, in send
+    return await self._connection.wrap_api_call(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "C:\Users\benpe\clash-replay-scraper\.venv\Lib\site-packages\playwright\_impl\_connection.py", line 632, in wrap_api_call
+    raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+playwright._impl._errors.TimeoutError: Page.wait_for_function: Timeout 60000ms exceeded.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L64\xy_why\refetch\refetch_i1.py", line 139, in <module>
+    main()
+    ~~~~^^
+  File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L64\xy_why\refetch\refetch_i1.py", line 96, in main
+    pages, curl = connect()
+                  ~~~~~~~^^
+  File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L64\xy_why\refetch\refetch_i1.py", line 62, in connect
+    pages = Pages(); curl = None
+  File "C:\Users/benpe/clash-replay-scraper\royale\transport.py", line 88, in __init__
+    self.renew()
+    ~~~~~~~~~~^^
+  File "C:\Users/benpe/clash-replay-scraper\royale\transport.py", line 106, in renew
+    raise AuthError(
+        "Cloudflare verification did not finish in 60 seconds in Chrome") from e
+royale.transport.AuthError: Cloudflare verification did not finish in 60 seconds in Chrome

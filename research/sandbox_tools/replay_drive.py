@@ -126,12 +126,24 @@ def card_for_slug(slug: str) -> int:
         raise KeyError(f"RoyaleAPI slug {slug!r} has no catalog card (tried {name!r})") from exc
 
 
+PLAYS_FILE = "plays_ext.csv"
+# L64h (HANDOFF 5cs.67): RoyaleAPI serves half of all replays from the other seat (marker data-i == "1":
+# "blue" plays at y < 16000). Rows carrying attr_i == "1" are rotated 180 degrees into the crawl frame
+# above so SIDE_OF stays true; the rotation is the only transform and is counted in ROTATED.
+ROTATED = {"rows": 0, "tags": set()}
+
+
+def set_plays_file(name: str) -> None:
+    global PLAYS_FILE
+    PLAYS_FILE = name
+
+
 def load_battle(tag: str) -> tuple[dict, list[dict]]:
     with (CRAWL / "battles.csv").open(encoding="utf-8", newline="") as handle:
         rows = [row for row in csv.DictReader(handle) if row["replay_tag"] == tag]
     if len(rows) != 1:
         raise SystemExit(f"battles.csv has {len(rows)} rows for {tag}")
-    with (CRAWL / "plays_ext.csv").open(encoding="utf-8", newline="") as handle:
+    with (CRAWL / PLAYS_FILE).open(encoding="utf-8", newline="") as handle:
         plays = [row for row in csv.DictReader(handle) if row["replay_tag"] == tag]
     for row in plays:
         for key in ("tick", "play_index", "attr_ability"):
@@ -148,6 +160,9 @@ def load_battle(tag: str) -> tuple[dict, list[dict]]:
             if row[key] in ("", "None"):
                 raise SystemExit(f"play {row['play_index']} of {tag} has no {key}; replay is not fully positioned")
         row["x"] = int(row["x_units"]); row["y"] = int(row["y_units"])
+        if row.get("attr_i") == "1":
+            row["x"] = 18000 - row["x"]; row["y"] = 32000 - row["y"]
+            ROTATED["rows"] += 1; ROTATED["tags"].add(tag)
     plays.sort(key=lambda row: (row["tick"], row["play_index"]))
     if int(rows[0]["plays"]) != len(plays):
         raise SystemExit(f"battles.csv says {rows[0]['plays']} plays, plays_ext.csv has {len(plays)}")

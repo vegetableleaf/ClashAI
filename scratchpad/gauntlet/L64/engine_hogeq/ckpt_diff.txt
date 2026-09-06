@@ -1,0 +1,9 @@
+thr_s0 matches 100 decisions 36847 plays 3056 accepted 2677 per match 26.8
+  p_gate p50/p90/frac>0.5 0.3523 0.4928 0.083  elixir at play p10/p50 5.64 8.86  mean elixir at decision 8.0
+  card mix (top 8): [(7, 433), (1, 431), (6, 431), (2, 398), (0, 293), (4, 260), (3, 252), (5, 179)]  row of play p10/p50/p90 34 35 60  first play t p50 18.5
+thr_ck1 matches 100 decisions 34159 plays 2025 accepted 1735 per match 17.4
+  p_gate p50/p90/frac>0.5 0.3605 0.4838 0.059  elixir at play p10/p50 6.36 9.74  mean elixir at decision 8.73
+  card mix (top 8): [(1, 313), (6, 293), (2, 287), (7, 278), (0, 174), (3, 172), (4, 166), (5, 52)]  row of play p10/p50/p90 34 34 54  first play t p50 23.5
+thr_ck2 matches 100 decisions 37261 plays 2891 accepted 2492 per match 24.9
+  p_gate p50/p90/frac>0.5 0.3559 0.4913 0.077  elixir at play p10/p50 5.64 8.99  mean elixir at decision 8.2
+  card mix (top 8): [(6, 436), (7, 413), (1, 408), (2, 396), (0, 253), (4, 235), (3, 231), (5, 120)]  row of play p10/p50/p90 34 35 62  first play t p50 19.0

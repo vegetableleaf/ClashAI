@@ -1,0 +1,10 @@
+v3 241 ok rows; winner match 162 / 241 0.672 acc 0.987 exact crowns 0.564
+  (expected, engine): {('s1', 's0'): 53, ('s0', 's1'): 26, ('s0', 's0'): 77, ('s1', 's1'): 85}
+  terminal_vs_last_play median 120 neg 88 / 241
+  outcome {'side0_win': 130, 'side1_win': 111} term {'native_logic_clock_stopped': 192, 'native_tiebreak_hp_drain': 49}
+  expected s1 (team) wins 138 / 241  engine s1 wins 111
+i1 64 ok rows; winner match 41 / 64 0.641 acc 0.9759 exact crowns 0.438
+  (expected, engine): {('s1', 's0'): 15, ('s1', 's1'): 27, ('s0', 's0'): 14, ('s0', 's1'): 7, ('s1', 'draw'): 1}
+  terminal_vs_last_play median -101 neg 36 / 64
+  outcome {'side0_win': 29, 'side1_win': 34, 'draw': 1} term {'native_tiebreak_hp_drain': 12, 'native_logic_clock_stopped': 51, 'native_tiebreak_exact_draw': 1}
+  expected s1 (team) wins 43 / 64  engine s1 wins 34
