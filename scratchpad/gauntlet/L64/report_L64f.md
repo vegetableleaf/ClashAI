@@ -1,0 +1,10 @@
+**GAUNTLET loop L64f** — Square One S1 done; first engine read of the S1 model, with controls
+**Did:** hogeq seeds 0-2 finished (all 6 S1 checkpoints exist, trainers 0); ran the icebow s0 checkpoint on 100 pool entries under both gate rules, plus two controls on the SAME 100 entries: no-plays, and a rate-matched random policy (new `--policy random`).
+**Found (a):**
+- hogeq 3 seeds: val tile 21.30 / 20.58 / 21.08 = **20.99 ± 0.36** (board-blind 11.45); half 19.26; card 54.91 (42.32). Value acc only 53.7 (icebow 69.8) — the known hogeq crowns mismatch is the suspect, untested.
+- Engine, 100 paired entries vs the pros' real opponents replayed: **S1 s0 threshold 75W-25L**, sampled 68-32; **no-plays 0-100** (dead at 91 s), **random policy 0-100** (dead at 130 s). Model outlives the control on 100/100 entries (+115 ± 5.5 s); crowns against 0.86 vs 3.00; 11.2 plays/min at 85% accepted (pool humans 10.9).
+- Falsified: "non-reactive ghost, anything wins" (random: 0/100); "outcome inherited from the ghost's real game" (model wins 75% on games the pro won, 76% on games the pro lost); tail-cap artefact (100/100 engine-terminated).
+**Not established:** anything vs a reactive opponent (the pros won 70% of these games against humans — not comparable); the old init on this instrument (its encoder isn't wired into the harness; L62's 15-21% PPO rollouts were a different instrument); checkpoint variance (s1 ckpt at 47-19 with n=66, still running); hogeq on the engine. Random's accepted rate is 30% below the model's, so part of the gap is delivery, not placement — a p=0.13 random run would settle it.
+**Means:** S1 is a real init on both decks and the engine instrument now has its controls; S3's search teacher can be graded the same way. Threshold vs sampled gate is inside ±9 pp noise at n=100.
+**Next:** close the engine checkpoint band (s1/s2 × threshold), hogeq s0 on the engine with its controls, rate-matched random. Then the S1 ablation slot or S2 corpus ×3 per the Square One order.
+**Cost:** ~85 min wall; port 37032 busy (s1 ckpt, ~10 min left), 37031 idle, GPU idle.

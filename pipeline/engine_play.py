@@ -161,8 +161,11 @@ def load_model(ckpt: Path, device: str, retries: int = 5):
 
 
 def decide(model, tok: np.ndarray, mask: np.ndarray, sc: np.ndarray, past: np.ndarray, *, tau: float = 0.5,
-           gate: str = "threshold", rng: Optional[random.Random] = None, device: str = "cpu") -> dict:
-    """One decision. Returns {p_gate, play, slot, cell, p_card, p_cell}; slot/cell = -1 when not playing."""
+           gate: str = "threshold", rng: Optional[random.Random] = None, device: str = "cpu",
+           policy: str = "model", p_random: float = 0.093) -> dict:
+    """One decision. Returns {p_gate, play, slot, cell, p_card, p_cell}; slot/cell = -1 when not playing.
+    ``policy="random"`` is the state-blind control: play with probability ``p_random`` per decision, a uniformly
+    random hand card at a uniformly random own-half cell (rows GRID_Y/2..GRID_Y-1); the model still scores p_gate."""
     import torch
     with torch.no_grad():
         t_tok = torch.from_numpy(tok).unsqueeze(0).to(device)
@@ -179,6 +182,14 @@ def decide(model, tok: np.ndarray, mask: np.ndarray, sc: np.ndarray, past: np.nd
             play = (rng or random).random() < p_gate
         else:
             play = p_gate > tau
+        if policy == "random":
+            r_ = rng or random
+            play = r_.random() < p_random and bool(hm.any())
+            if not play:
+                return {"p_gate": p_gate, "play": False, "slot": -1, "cell": -1, "p_card": None, "p_cell": None}
+            slot = r_.choice([i for i in range(int(hm.shape[-1])) if bool(hm[0, i])])
+            cell = r_.randrange(GRID_X * (GRID_Y // 2)) + GRID_X * (GRID_Y // 2)
+            return {"p_gate": p_gate, "play": True, "slot": slot, "cell": cell, "p_card": None, "p_cell": None}
         if not play or not bool(hm.any()):
             return {"p_gate": p_gate, "play": False, "slot": -1, "cell": -1, "p_card": None, "p_cell": None}
         card_p = torch.softmax(heads["card"], -1)[0]
@@ -209,7 +220,8 @@ def _outcome(env, state: dict) -> tuple[str, tuple[int, int]]:
 
 
 def play_match(env, model, deck, entry: dict, *, decide_every: int, tau: float, gate: str, rng: random.Random,
-               device: str, log_path: Path, parity_check: bool = True) -> dict:
+               device: str, log_path: Path, parity_check: bool = True, policy: str = "model",
+               p_random: float = 0.093) -> dict:
     t0 = time.perf_counter()
     state = env.reset(entry)
     side, mirror = env.side, env._mirror
@@ -238,7 +250,8 @@ def play_match(env, model, deck, entry: dict, *, decide_every: int, tau: float, 
                 parity = bool(bs == bs2)
             tok, mask, sc = to_tokens(bs, MAX_U)
             past = _past(done_plays, tick)
-            d = decide(model, tok, mask, sc, past, tau=tau, gate=gate, rng=rng, device=device)
+            d = decide(model, tok, mask, sc, past, tau=tau, gate=gate, rng=rng, device=device, policy=policy,
+                       p_random=p_random)
             n_dec += 1
             p_gates.append(d["p_gate"])
             rec: dict[str, Any] = {"tick": tick, "t": round(tick * TICK_S, 2), "p_gate": round(d["p_gate"], 4),
@@ -256,7 +269,8 @@ def play_match(env, model, deck, entry: dict, *, decide_every: int, tau: float, 
                     nm = f"{nm}/{r.get('placement_reason')}"
                 rec.update({"accepted": acc, "result_code": code, "reason": None if acc else nm,
                             "x": X, "y": Y, "bx": round(x, 4), "by": round(y, 4),
-                            "p_card": round(d["p_card"], 4), "p_cell": round(d["p_cell"], 4),
+                            "p_card": None if d["p_card"] is None else round(d["p_card"], 4),
+                            "p_cell": None if d["p_cell"] is None else round(d["p_cell"], 4),
                             "card_name": deck.cards[d["slot"]]})
                 if acc:
                     n_acc += 1
@@ -296,6 +310,9 @@ def main(argv=None) -> int:
     ap.add_argument("--out", type=Path, default=REPO / "scratchpad" / "gauntlet" / "L64" / "engine_play")
     ap.add_argument("--decide-every", type=int, default=10, help="engine ticks between decisions (10 = 0.5 s)")
     ap.add_argument("--tau", type=float, default=0.5)
+    ap.add_argument("--policy", choices=("model", "random"), default="model",
+                    help="random = state-blind control: random hand card at a random own-half cell, p_random per decision")
+    ap.add_argument("--p-random", type=float, default=0.093, help="random policy's play probability per decision")
     ap.add_argument("--gate", choices=("threshold", "sample", "none"), default="threshold",
                     help="none = no-plays control (model scored, never acts)")
     ap.add_argument("--device", default="cpu")
@@ -312,14 +329,15 @@ def main(argv=None) -> int:
     order = random.Random(a.seed).sample(range(len(pool)), len(pool))       # seeded, no repeats within a run
     rng = random.Random(a.seed + 1)
     print(json.dumps({"ckpt": str(a.ckpt), **minfo, "pool": len(pool), "port": a.port, "gate": a.gate, "tau": a.tau,
-                      "decide_every": a.decide_every, "device": a.device}), flush=True)
+                      "decide_every": a.decide_every, "device": a.device, "policy": a.policy, "p_random": a.p_random}), flush=True)
     results = []
     try:
         for i in range(a.matches):
             entry = pool[order[i % len(pool)]]
             log_path = a.out / f"{entry['tag']}_m{i}.jsonl"
             r = play_match(env, model, deck, entry, decide_every=a.decide_every, tau=a.tau, gate=a.gate, rng=rng,
-                           device=a.device, log_path=log_path, parity_check=not a.no_parity_check)
+                           device=a.device, log_path=log_path, parity_check=not a.no_parity_check, policy=a.policy,
+                           p_random=a.p_random)
             r["match"] = i
             results.append(r)
             print(json.dumps(r), flush=True)

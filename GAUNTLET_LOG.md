@@ -1367,3 +1367,8 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Old init on its 432 grid (a): ahead of all 3 seeds on all rows (13.70 vs 12.54-13.28) but 37/85 val replays were in its train split; on the 2,072 clean rows all 3 seeds ahead (13.61-14.29 vs 13.13). Miss distance 4.07 vs 5.28 tiles every seed.
 - `--gate none` control (a): passive icebow loses 0-3 at 61 s (099P9CL8L2QJ, the entry the model beat 2-1) and 70 s (02GY9R09LU8J). WITHDRAWN: L64d's "pathological entry" -- undefended = dead in a minute, any entry. Engine reads must be deltas vs the per-tag control. engine_env ghost retry now also keys on code 13.
 - hogeq s0-2 running, ETA ~07:00 UTC.
+
+## L64f -- 2026-09-06 07:5x UTC -- hogeq band closed; first engine read with controls
+- hogeq 3 seeds (a): val tile 21.30/20.58/21.08 = 20.99 +/- 0.36 (baseline 11.45), half 19.26, card 54.91 (42.32); value acc 53.7 (icebow 69.8; crowns mismatch suspected, untested). Best epochs 20/11/18.
+- Engine, icebow s0 ckpt, 100 paired pool entries (a): threshold 75W-25L, sampled 68-32; no-plays control 0-100 (91 s), rate-matched random policy 0-100 (130 s). Model survives +115 +/- 5.5 s on 100/100 entries, crowns against 0.86 vs 3.00. Model win rate identical on entries the pro won (75%) and lost (76%); all 100 engine-terminated.
+- Not established: reactive opponents; old init on this instrument; checkpoint variance (s1 ckpt in flight). Harness: --policy random added.

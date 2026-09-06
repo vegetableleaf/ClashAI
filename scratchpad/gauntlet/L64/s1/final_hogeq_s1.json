@@ -1,0 +1,46 @@
+{
+ "deck": "hogeq",
+ "seed": 1,
+ "n_params": 1264680,
+ "best_val": {
+  "cell_half_top1": 0.18712162905888827,
+  "cell_tile_top1": 0.2058337919647771,
+  "card_top1": 0.5443037974683544,
+  "joint_top1": 0.12107870115575124,
+  "cell_nll": 3.932731817368301,
+  "gate_acc": 0.7294961682700146,
+  "gate_bal_acc": 0.5882502322060776,
+  "wait_top1": 0.4386005560704356,
+  "value_acc": 0.501059840208707,
+  "emb_cosine": 0.24383644759655,
+  "n_play": 1817,
+  "n": 6133,
+  "epoch": 11,
+  "train_loss": 6.149257028670538,
+  "train_parts": {
+   "cell": 3.6646947065989175,
+   "card": 0.9312562284015474,
+   "wait": 0.5652389568941933,
+   "gate": 0.5393694940067473,
+   "value": 0.4486976703008016
+  },
+  "seconds": 318
+ },
+ "train_subset": {
+  "cell_half_top1": 0.2234313892195205,
+  "cell_tile_top1": 0.23567420506716544,
+  "card_top1": 0.6299948988267301,
+  "joint_top1": 0.1540554327495324,
+  "cell_nll": 3.4912569308398513,
+  "gate_acc": 0.7294,
+  "gate_bal_acc": 0.5791127398072008,
+  "wait_top1": 0.5797152772859268,
+  "value_acc": 0.6243,
+  "emb_cosine": 0.2282741218805313,
+  "n_play": 5881,
+  "n": 20000
+ },
+ "ckpt": "C:\\Users\\benpe\\ClashBot\\hogeq\\data\\pipeline\\s1_hogeq_s1.pt",
+ "epochs": 20,
+ "seconds": 582
+}

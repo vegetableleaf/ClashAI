@@ -161,7 +161,7 @@ cd C:\Users\benpe\ClashBot\hogeq
 
 ## 3. What is running RIGHT NOW
 
-**2026-09-06 06:2x UTC -- S1 TRAINING RUNNING (L64e: icebow 3-seed band CLOSED val tile 18.22 +/- 0.11 §5cs.64; hogeq s0-2 running, ETA ~07:00 UTC, task b6vmgii7c; engine harness has a no-plays control, §5cs.63 trap (2) withdrawn); ENGINE UP, slots idle. Before that: L64a: S1 datasets built for both decks §5cs.60; corpus batches done §5cs.59; outputs scratchpad/gauntlet/ext/corpus_v3/, ETA ~2 h / ~40 min; step 2b own-click test DONE §5cs.58 -- from_live troop foot fix + degrade recalibration; §5cs.57). Before that: L63d S0 step 2 done -- pipeline/obs_contract.py; L63: research phase of the new gauntlet; 5 research agents writing to `scratchpad/gauntlet/L63/`).** The engB engine-PPO pair was killed at m=602/609
+**2026-09-06 07:5x UTC -- S1 DONE (6 checkpoints, icebow tile 18.22 +/- 0.11, hogeq 20.99 +/- 0.36 §5cs.64-65); ENGINE READ RUNNING (L64f: icebow s0 75-25 vs ghosts on 100 entries, no-plays 0-100, random 0-100 §5cs.65; s1 checkpoint x100 in flight on port 37032); trainers 0. Before that: L64a: S1 datasets built for both decks §5cs.60; corpus batches done §5cs.59; outputs scratchpad/gauntlet/ext/corpus_v3/, ETA ~2 h / ~40 min; step 2b own-click test DONE §5cs.58 -- from_live troop foot fix + degrade recalibration; §5cs.57). Before that: L63d S0 step 2 done -- pipeline/obs_contract.py; L63: research phase of the new gauntlet; 5 research agents writing to `scratchpad/gauntlet/L63/`).** The engB engine-PPO pair was killed at m=602/609
 (§5cs.51, owner ruling); engA before it (§5cs.46). Box state verified at the kill: python processes
 7 -> 3, free RAM 5.0 GB.
 
@@ -2468,6 +2468,32 @@ Trap: `set_crawl("hogeq")` first resolved to the repo's `hogeq/` directory becau
 **C. Trigger failure (a).** ScheduleWakeup set 23:08 for 23:39 local and the :53 cron both did not fire; at 00:11 `CronList` still showed the one-shot pending. The session's idle scheduler does not fire in this environment; task-completion notifications do (two subagents re-invoked the loop tonight). Standing mitigation: keep the engine batches as background TASKS so their exit re-invokes the loop; nothing else is available from inside.
 
 **D. Next.** When the icebow batch exits: final icebow grade, then the cleanup loop (ruling 6) and the S1 dataset build from `corpus_v3` play_frames through `pipeline.obs_contract.from_engine` (both decks).
+
+### §5cs.65 -- L64f (2026-09-06 06:3x-07:5x UTC): **S1 hogeq 3-seed band CLOSED (val tile 20.99 +/- 0.36, half 19.26, card 54.91 vs board-blind 11.45 / 11.45 / 42.32); FIRST ENGINE READ of the S1 model with controls: on 100 pool entries the icebow s0 checkpoint WINS 75 / loses 25 (threshold tau 0.5) and 68 / 32 (sampled gate) where the no-plays control loses 100/100 in 91 s and a rate-matched RANDOM policy loses 100/100 in 130 s. Model survives longer than the control on 100/100 entries (+115 +/- 5.5 s), crowns against 0.86 vs 3.00.**
+
+**A. hogeq band (a), `L64/s1/final_hogeq_s{0,1,2}.json`, val 6,133 rows / 1,817 plays, baseline `baseline_hogeq.out`.**
+| seed | best ep | tile | half | card | joint | gate bal-acc | wait | value | emb cos |
+|---|---|---|---|---|---|---|---|---|---|
+| 0 | 20 | 21.30 | 20.03 | 54.65 | 13.32 | 0.627 | 42.4 | 54.9 | 0.194 |
+| 1 | 11 | 20.58 | 18.71 | 54.43 | 12.11 | 0.588 | 43.9 | 50.1 | 0.244 |
+| 2 | 18 | 21.08 | 19.04 | 55.64 | 12.77 | 0.621 | 41.7 | 56.0 | 0.192 |
+| mean | | **20.99** | **19.26** | **54.91** | 12.73 | 0.612 | 42.7 | 53.7 | 0.210 |
+Range: tile 0.72, half 1.32, card 1.21, gate bal-acc 3.9, value 5.9 pt. 1.83x the board-blind baseline on tiles with 2.4x less data than icebow (33k vs 78k rows). Value acc 53.7 (icebow 69.8) -- (b) the hogeq crowns mismatch (§6 parked re-drive at level 14/15) is the obvious suspect for a noisy value target; untested. Best epochs 20/11/18: the 20-epoch schedule is not obviously long enough; (b) one seed x 30-40 epochs would say. All six S1 checkpoints are in `<deck>/data/pipeline/s1_<deck>_s<seed>.pt` (outside git); trainers verified 0 after ALL_SEEDS_DONE.
+
+**B. Engine read, icebow s0 checkpoint, 100 pool entries (a).** Harness §5cs.63; pool order = `random.Random(0).sample`, identical across runs, so every row below is paired per entry; scorer `L64/engine_score.py`, raw `L64/engine_ctrl/{none,thr,smp,rnd}_s0/`, scores `score_s0.txt` / `score_rnd.txt`. Level 11, ghosts = the pro's real opponent replayed (non-reactive), engine decides the outcome (92 clock-stopped, 8 overtime HP-drain; no tail-capping).
+| run | W-L | mean s | vs control s | survived longer | crowns for / against | plays/min (accepted) | p_gate |
+|---|---|---|---|---|---|---|---|
+| no-plays control (`--gate none`) | 0-100 | 91.3 | -- | -- | 0.00 / 3.00 | 0 | 0.30 (logged, unused) |
+| random policy (`--policy random`, p 0.093) | 0-100 | 129.6 | +38.3 +/- 3.5 | 94 / 100 | 0.11 / 2.77 | 10.78 (62.7%) | -- |
+| S1 s0, threshold tau 0.5 | **75-25** | 206.5 | **+115.2 +/- 5.5** | **100 / 100** | 1.45 / 0.86 | 11.21 (85.5%) | 0.281 |
+| S1 s0, sampled gate | 68-32 | 208.7 | +117.3 +/- 6.1 | 99 / 100 | 1.48 / 0.99 | 18.72 (60.2%) | 0.155 |
+Anatomy of the threshold run: wins average 1.71 crowns at 205.6 s (2 three-crown), losses 0.68 crowns for at 209.2 s; the model's 11.2 plays/min matches the pool humans' 10.93 (§5cs.63) and 85.5% are accepted (refusals = elixir). Sampling over-plays (18.7/min, 40% refused) and wins 7 fewer -- (a) at n=100 that is inside the binomial noise (+/- 9 pp), NOT a ranking of the two rules.
+**Falsifications run:** (1) *ghost is non-reactive, anything wins* -> contradicted: the rate-matched random policy wins 0/100 (it buys 38 s over doing nothing, the model buys 115). Caveat (b): random's ACCEPTED rate is 6.8/min vs the model's 9.6/min (blocked tiles + elixir waste), so part of the gap is play delivery, not placement -- a p_random ~0.13 run would rate-match on accepted plays; untested. (2) *outcome inherited from the ghost's real match* (its plays stop when the real game ended) -> contradicted: on the 67 entries the pro icebow side WON the model wins 50 (75%), on the 33 it LOST the model wins 25 (76%) -- same rate. (3) *tail-cap artefact* -> contradicted: 100/100 terminated by the engine. Pool prior: the pros won 335/477 (70%) of these games against reactive humans; the model's 75% is against their replays and is NOT comparable to that.
+What this does NOT establish: anything against a reactive opponent; the old init's number on this instrument (its L61 encoder is not wired into this harness -- the L62 PPO rollouts' 15-21% cum winrate were a SAMPLED policy under a different gate rule and level, a different instrument); checkpoint-seed variance (s1 checkpoint run in flight, 47-19 at n=66 when this was written); hogeq on the engine.
+
+**C. Harness additions (a).** `--policy random` (state-blind control: random hand card, uniform own-half cell, `--p-random` per decision; model still scores p_gate), `--gate none` (§5cs.64), engine_env ghost retry on code 13. `p_card`/`p_cell` are None for the random policy (a `round(None)` crash was fixed before the run). Offline tests 3/3.
+
+**D. Next.** Close the checkpoint band on the engine (s1, s2 x threshold), hogeq s0 on the engine with its own controls, then the rate-matched random (p 0.13). After that the S1 ablation slot (outcome-weighted BC) or S2 corpus x3 per the Square One order -- the engine instrument now exists and has its controls, so S3's teacher can be graded the same way.
 
 ### §5cs.64 -- L64e (2026-09-06 06:0x-06:2x UTC): **icebow S1 3-seed band CLOSED -- val tile top-1 18.22 +/- 0.11 (18.12 / 18.34 / 18.20), half-tile 15.99 +/- 0.57, card 59.26 +/- 0.20; on the old init's own 432 grid the old model is ahead of ALL THREE seeds on all val rows (13.70 vs 12.54-13.28) and BEHIND all three on the 2,072 rows it never trained on (13.13 vs 13.61-14.29); no-plays control built into the engine harness (`--gate none`) and the L64d "pathological entry" hypothesis is CONTRADICTED: a passive icebow loses 0-3 to BOTH smoke entries by 61-70 s.**
 
