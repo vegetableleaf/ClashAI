@@ -1,0 +1,22 @@
+attempted: ok 562, failed 134
+rating   ok median 2057.5 (n 562) | failed median 2072.0 (n 134)
+win rate ok 0.367 (n 562) | failed 0.343 (n 134)
+
+opponent cards MOST over-represented in the failed set (share_failed - share_ok):
+  barbarian-barrel,battle-ram-ev1,elite-barbarians-ev1,giant-skeleton,mother-witch,vines,wizard-hero,zappies ok 0.000 -> failed 0.134  (+0.134)
+  arrows,bomber,elite-barbarians-ev1,golem,mini-pekka-hero,night-witch,phoenix,zap-ev1 ok 0.000 -> failed 0.060  (+0.060)
+  barbarian-barrel,cannon-cart,elite-barbarians-ev1,fireball,goblinstein,minions,mortar-ev1,skeletons ok 0.000 -> failed 0.052  (+0.052)
+  barbarian-barrel,berserker-hero,electro-dragon-ev1,elite-barbarians-ev1,elixir-collector,golem,skeleton-dragons,tornado ok 0.000 -> failed 0.045  (+0.045)
+  bomber,dark-prince,elite-barbarians-ev1,fireball,giant-hero,mega-minion-hero,rage,zap ok 0.000 -> failed 0.022  (+0.022)
+  dark-prince-hero,elite-barbarians-ev1,fireball,golem,musketeer-ev1,phoenix,skeletons,zap ok 0.000 -> failed 0.015  (+0.015)
+most UNDER-represented:
+  barbarian-barrel,battle-ram-ev1,giant-skeleton,mother-witch,royal-ghost-ev1,vines,wizard-hero,zappies ok 0.020 -> failed 0.000  (-0.020)
+  archers-ev1,barbarian-barrel,bomb-tower,electro-spirit,goblinstein,lightning,royal-hogs-ev1,skeletons ok 0.018 -> failed 0.000  (-0.018)
+  cannon,dart-goblin,goblin-barrel-ev1,ice-spirit,princess,skeleton-army-ev1,valkyrie-hero,wall-breakers ok 0.018 -> failed 0.000  (-0.018)
+  barbarian-barrel-hero,electro-spirit,fireball,fisherman,hunter,royal-ghost-ev1,royal-giant-ev1,skeletons ok 0.016 -> failed 0.000  (-0.016)
+
+-- deck strings split properly --
+ok replays with an evo-E-barb opponent:     0 / 563 (0.0%)
+failed replays with an evo-E-barb opponent: 129 / 134 (96.3%)
+evo-E-barb opponents across the WHOLE icebow crawl: 381 / 2073 (18.4%)
+cards in failed opponents, top 4: [('barbarian-barrel,battle-ram-ev1,elite-barbarians-ev1,giant-skeleton,mother-witch,vines,wizard-hero,zappies', 18), ('arrows,bomber,elite-barbarians-ev1,golem,mini-pekka-hero,night-witch,phoenix,zap-ev1', 8), ('barbarian-barrel,cannon-cart,elite-barbarians-ev1,fireball,goblinstein,minions,mortar-ev1,skeletons', 7), ('barbarian-barrel,berserker-hero,electro-dragon-ev1,elite-barbarians-ev1,elixir-collector,golem,skeleton-dragons,tornado', 6)]

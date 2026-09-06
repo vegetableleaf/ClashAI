@@ -1441,3 +1441,4 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Renderer: --own-forms (icebow pool 433/477 evo-knight), bridges 3 tiles (owner correct), river stays 2 rows (owner contradicted, engine docs + troop positions), towers 3x3/4x4. .gitattributes *.sh eol=lf after the owner's run died on CRLF.
 - Drive 452/845 (363 ok / 84 fail, all evo-E-barb). No training this loop. §5cs.76.
 - CORRECTION (same loop): hogeq's driven corpus is corpus_v4 = 463 tags, not 296 (that was corpus_v3's attempt count); never-driven backlog is 478, not ~648. v5_tags_hogeq.json written.
+- E-barb failure class measured: 0/563 ok replays vs 129/134 failures have an evo-E-barb opponent; 18.4% of the whole icebow crawl. Not skill-biased (rating 2072 vs 2057). Every corpus since v3 is blind to that archetype. §5cs.76 E.
