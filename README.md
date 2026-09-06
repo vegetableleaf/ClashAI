@@ -97,6 +97,11 @@ replay twice produces byte-identical states, which is what makes the S3 search t
 (the engine has no snapshot, so branching means re-driving the prefix — ~4.4 s per replay). Two
 engine slots run on the training box; S3 is the one stage that scales with emulator count.
 
+
+https://github.com/user-attachments/assets/acdb0524-01a3-4c96-9180-3b8684044625
+
+
+
 ### What the bot reads from the screen (live)
 
 The arena image goes through a **YOLO11s object detector** (230 classes, trained on this project's
