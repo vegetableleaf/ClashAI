@@ -6719,7 +6719,7 @@ The original Android x86_64 `libg.so` of client **15.535.29** run headless insid
 (`android-31;default;x86_64`, 4 vCPU / 4 GB), via `app_process` + a hand-written `JniHost` with stub
 `com.supercell.titan.*` classes whose JNI descriptors match the real client's. The real package is
 installed on the AVD only to borrow its `AssetManager` (the exact problem Arron's
-`cr-engine-extraction` was stuck on — `research/CR_ENGINE_EXTRACTION_REVIEW.md`). ~60 hardcoded RVAs
+`cr-engine-extraction` was stuck on — `research/CR_ENGINE_EXTRACTION_REVIEW.md`, deleted 2026-09-06 on owner ruling, never committed). ~60 hardcoded RVAs
 (fail-closed on `JNI_OnLoad-base != 0x1458BC0`); renderer NOP'd by five byte-verified patches at
 `GameMain::init`. JSON-line TCP API: `reset(replay_json)` (Supercell replay format: `rndSeed`,
 `battle{deck0,deck1{sp:[{d,l,el}x8], sc:[tower troop]}, avatar0/1, gamemode 72000007}`, **`cmd: []`**),
