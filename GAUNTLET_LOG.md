@@ -1442,3 +1442,8 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Drive 452/845 (363 ok / 84 fail, all evo-E-barb). No training this loop. §5cs.76.
 - CORRECTION (same loop): hogeq's driven corpus is corpus_v4 = 463 tags, not 296 (that was corpus_v3's attempt count); never-driven backlog is 478, not ~648. v5_tags_hogeq.json written.
 - E-barb failure class measured: 0/563 ok replays vs 129/134 failures have an evo-E-barb opponent; 18.4% of the whole icebow crawl. Not skill-biased (rating 2072 vs 2057). Every corpus since v3 is blind to that archetype. §5cs.76 E.
+
+## L64s (2026-09-06) -- waiting on v5; transfer probe written and committed, not run
+- v5 icebow chain: s0 epoch 8/20 at ~221 s/epoch (val cell_half_top1 0.1922 at epoch 8, one seed mid-training -- NOT a result); s1/s2 to follow, ~3 h to ICEBOW_V5LAT_DONE. hogeq drive 233/423 (163 ok / 71 fail: 62 evo-E-barb 26000043, 9 hand-assignment).
+- Wrote scratchpad/gauntlet/L64/idm/_transfer_probe.py (arms A own session / B bridgeblock 640x360 / C upscaled). Two bugs caught before first run: Config is a dataclass (.load), whitelist is 46 BASE keys so compare Detection.base. Counts only -- can falsify transfer, cannot confirm it. Deferred: 2.7 GB free, CPU 100%.
+- Box: python train + sandbox drive; no launches. Commit fcb1c24 (rebased over 2 owner README commits).
