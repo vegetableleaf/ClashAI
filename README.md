@@ -1,5 +1,5 @@
 # ClashAI
-
+<iframe src="https://github.com/sponsors/vegetableleaf/card" title="Sponsor vegetableleaf" height="225" width="600" style="border: 0;"></iframe>
 > Homemade bots that learn to play **Clash Royale** on PC (through Google Play Games) — a hobby /
 > research project about getting an agent to *actually play* a live real-time game.
 
@@ -24,8 +24,6 @@ and its hand of cards.** From that it decides *which card to play and where to d
 > done; stages 1–4 are in progress. The old pipeline still runs and is kept as the baseline every
 > new stage has to beat. Day-by-day state lives in [HANDOFF.md](HANDOFF.md) and
 > [GAUNTLET_LOG.md](GAUNTLET_LOG.md).
-
-<iframe src="https://github.com/sponsors/vegetableleaf/card" title="Sponsor vegetableleaf" height="225" width="600" style="border: 0;"></iframe>
 ---
 
 ## What's in the repo
