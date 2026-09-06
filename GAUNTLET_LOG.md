@@ -1434,3 +1434,9 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Owner: clip "very blank". Rebuilt match_video.py: labels, hp, attack/aggro rings, target lines, labelled projectiles, tower ranges, elixir/hand/gate/log HUD. engine_play.vis_raw() records the extra fields; model input unchanged. 0587961.
 - Traps: sandbox csv_logic tables hold no values; cv2 putText thickness changes advance.
 - Box: icebow drive 164/845 (33 fails, all evo E-barbs 26000043); hogeq stage 2 40/355 after a 20-min 429 stall, now ~7/min, left running. L64p report posted.
+
+## L64r (2026-09-06) -- hogeq expansion complete; the CSV shift recurred; renderer at spec
+- hogeq: 953 battles / 79 players, ALL fetched (307 via crawl_deck 63 min + the 48 it dropped via crawl_par 7.9 min, merged). battles.csv 953x29, plays_ext_i1.csv 58,002x13, attr_s/attr_i clean, 944 tags with plays.
+- The L64p column shift RECURRED from crawl_deck.py's own writer (26,720 rows); repaired (.bak_L64q) and fixed at source. Trap: csv.DictWriter never checks fieldnames against the file it appends to.
+- Renderer: --own-forms (icebow pool 433/477 evo-knight), bridges 3 tiles (owner correct), river stays 2 rows (owner contradicted, engine docs + troop positions), towers 3x3/4x4. .gitattributes *.sh eol=lf after the owner's run died on CRLF.
+- Drive 452/845 (363 ok / 84 fail, all evo-E-barb). No training this loop. §5cs.76.
