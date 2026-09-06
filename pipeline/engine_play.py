@@ -15,7 +15,8 @@ entity history (``age`` unknown). ``compact_raw`` strips the raw state the same 
 model sees the row format it was trained on, not a richer one.
 
 Decision rule (``decide``): every ``decide_every`` engine ticks build the obs, run the model; play iff
-sigmoid(gate) > ``tau`` (``--gate threshold``) or with probability sigmoid(gate) (``--gate sample``); card =
+sigmoid(gate) > ``tau`` (``--gate threshold``), with probability sigmoid(gate) (``--gate sample``), or
+never (``--gate none``, the per-tag no-plays control); card =
 argmax of the hand-masked card logits; cell = argmax of that card's 2,304 cell logits; the cell CENTRE goes
 back to engine (x, y) through ``board_to_engine`` (the inverse of ``obs_contract._engine_xy``) and is played
 with ``NativeRoyaleEnv.act``. A refused play is counted and the loop continues. Every decision is appended to
@@ -172,7 +173,9 @@ def decide(model, tok: np.ndarray, mask: np.ndarray, sc: np.ndarray, past: np.nd
         enc = model.encode(t_tok, t_mask, t_sc, t_past)
         heads = model.heads(enc, hm)
         p_gate = float(torch.sigmoid(heads["gate"])[0])
-        if gate == "sample":
+        if gate == "none":                       # no-plays control: score the ghost alone, still log p_gate
+            play = False
+        elif gate == "sample":
             play = (rng or random).random() < p_gate
         else:
             play = p_gate > tau
@@ -293,7 +296,8 @@ def main(argv=None) -> int:
     ap.add_argument("--out", type=Path, default=REPO / "scratchpad" / "gauntlet" / "L64" / "engine_play")
     ap.add_argument("--decide-every", type=int, default=10, help="engine ticks between decisions (10 = 0.5 s)")
     ap.add_argument("--tau", type=float, default=0.5)
-    ap.add_argument("--gate", choices=("threshold", "sample"), default="threshold")
+    ap.add_argument("--gate", choices=("threshold", "sample", "none"), default="threshold",
+                    help="none = no-plays control (model scored, never acts)")
     ap.add_argument("--device", default="cpu")
     ap.add_argument("--pool", type=Path, default=None)
     ap.add_argument("--no-parity-check", action="store_true")

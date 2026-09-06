@@ -1361,3 +1361,9 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - icebow s1 (a): val tile 18.34 / half 16.15 (s0: 18.12 / 15.36); old's 432 grid 13.28 vs old 13.70 (clean 14.29 vs 13.13). Band waits on s2.
 - pipeline/engine_play.py (a): S1 model on the real engine vs L62 ghosts; 2-match smoke 1W-1L, 45/47 plays accepted, 8.8 plays/min (pool humans 10.9), deterministic. 3 offline tests OK.
 - Traps: engine refuse code 13 = no elixir (engine_env retry keys on 1050 only); pool entry 02GY9R09LU8J 3-crowns us by t=70 s even with no plays -> 500-match run needs a no-plays control per tag.
+
+## L64e -- 2026-09-06 06:2x UTC -- icebow band closed; no-plays control; L64d trap (2) withdrawn
+- icebow 3 seeds (a): val tile 18.12/18.34/18.20 = 18.22 +/- 0.11 (baseline 8.90); half 15.99 +/- 0.57; card 59.26; gate bal-acc 0.70. Seed 2 best at epoch 20 (schedule maybe short, untested).
+- Old init on its 432 grid (a): ahead of all 3 seeds on all rows (13.70 vs 12.54-13.28) but 37/85 val replays were in its train split; on the 2,072 clean rows all 3 seeds ahead (13.61-14.29 vs 13.13). Miss distance 4.07 vs 5.28 tiles every seed.
+- `--gate none` control (a): passive icebow loses 0-3 at 61 s (099P9CL8L2QJ, the entry the model beat 2-1) and 70 s (02GY9R09LU8J). WITHDRAWN: L64d's "pathological entry" -- undefended = dead in a minute, any entry. Engine reads must be deltas vs the per-tag control. engine_env ghost retry now also keys on code 13.
+- hogeq s0-2 running, ETA ~07:00 UTC.

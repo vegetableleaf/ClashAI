@@ -64,7 +64,8 @@ TICK_S = 0.05
 POOL_DEFAULT = ICEBOW / "data" / "ghost_pool" / "pool_env_v0.jsonl"
 TEMPLATE = SANDBOX / "examples" / "full-card-bootstrap.json"
 DEAL_CACHE = Path(__file__).resolve().parent / "deal_cache.json"
-RESULT_CODE_NAMES = {0: "accepted", 9: "card_not_in_hand", 1014: "ability_exhausted", 1050: "not_enough_elixir"}
+RESULT_CODE_NAMES = {0: "accepted", 9: "card_not_in_hand", 13: "not_enough_elixir", 1014: "ability_exhausted",
+                     1050: "not_enough_elixir"}   # 13 = this build's elixir refuse (measured L64d); 1050 = the documented one
 SEED_DEFAULT = 424242
 LEVEL_DEFAULT = 11
 
@@ -371,7 +372,7 @@ class EngineMatchEnv:
                 self.ghost_events.append((g["tick"], 1, "accepted"))
                 continue
             code = int(r["result_code"])
-            if code == 1050 and (tick - g["tick"]) < self.elixir_slack:
+            if code in (13, 1050) and (tick - g["tick"]) < self.elixir_slack:
                 g["sched"] = tick + 1
                 still.append(g)
                 continue
