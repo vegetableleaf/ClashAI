@@ -1400,3 +1400,9 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - (a) crawl x/y are 500k or 500k-1 at random for the same point; floor(x*36) puts the lattice ON cell boundaries -> 126/455 hogeq lattice points carry two labels, 71.8% of rows jittered; rotation of the i=1 half flips the side. Naive v4 s0 on v3 val: tile 0.2328 (v3 0.2130) but cell_half 0.1365 (0.2003), NLL 4.18 (3.90). Engine inverse was 250 units off the lattice.
 - (a) fix: model_v3 cell_label/tile_of_cell/cell_xy, train_s1 --grid lattice (stored in ckpt args), eval_s1/engine_play honour it; floor path byte-identical (s1_hogeq_s0 0.2130/0.2003/3.899 reproduced); lattice round-trip 0.000 units; 0 points with two labels.
 - Running: naive v4 x3 to completion (record), chained v3-lattice x3 -> v4-lattice x3 (ETA ~14:00 UTC); icebow i=1 chain armed. Next: lattice bands, then a lattice checkpoint on the sample-gate engine instrument vs 85/79/84.
+
+## L64l -- 2026-09-06 13:5x UTC -- first clean S2 scaling point: hogeq v4-lattice vs v3-lattice
+- (a) v3 val 6,133 rows, 3 seeds each: v3 lattice 20.91/21.02/21.08 (21.00 +/- 0.09), NLL 3.611; v4 lattice 22.84/21.90/22.95 (22.56 +/- 0.58), NLL 3.407; card 57.8 vs 55.0, gate bal 66.6 vs 61.1, value 57.9 vs 55.1.
+- (a) convention-free within-1-tile: v3 floor 26.99, v3 lattice 28.30, naive v4 floor 29.33, v4 lattice 30.76; mean miss 4.65 / 4.59 / 4.41 / 4.28 tiles. Convention +1.3 pp, data +2.5 pp, additive.
+- (a) naive v4 record: floor tile 23.10 +/- 0.32 but cell 13.36 / NLL 4.18-4.24 -- the trap, not a scaling number. Trap: lattice cell_tile == cell_half; never in a column with floor tile.
+- Running: smp_v4lat0 engine read (27/100) vs 85/79/84; icebow i=1 drive 407/560 -> fidelity/handedness -> corpus_v4/icebow -> lattice bands.

@@ -1,0 +1,4 @@
+eval_v3val_hogeq_v4lat.out
+  s1_hogeq_v4lat_s0.pt   ep 15 lattice half 0.2284 tile 0.2284 nll 3.365 card 0.577 joint 0.1365 gate_bal 0.677 wait 0.448 value 0.572 | hit 0.2284 1t 0.3076 dist 4.233
+  s1_hogeq_v4lat_s1.pt   ep 10 lattice half 0.2190 tile 0.2190 nll 3.452 card 0.573 joint 0.1359 gate_bal 0.643 wait 0.459 value 0.575 | hit 0.2190 1t 0.3054 dist 4.330
+  s1_hogeq_v4lat_s2.pt   ep 19 lattice half 0.2295 tile 0.2300 nll 3.404 card 0.585 joint 0.1398 gate_bal 0.677 wait 0.464 value 0.589 | hit 0.2295 1t 0.3099 dist 4.267

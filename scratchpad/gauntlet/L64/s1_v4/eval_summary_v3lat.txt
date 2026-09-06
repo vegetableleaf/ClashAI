@@ -1,0 +1,7 @@
+eval_v3val_hogeq_lat.out
+  s1_hogeq_lat_s0.pt     ep 12 lattice half 0.2091 tile 0.2091 nll 3.624 card 0.555 joint 0.1238 gate_bal 0.624 wait 0.437 value 0.567 | hit 0.2091 1t 0.2834 dist 4.580
+  s1_hogeq_lat_s1.pt     ep 12 lattice half 0.2102 tile 0.2108 nll 3.611 card 0.537 joint 0.1194 gate_bal 0.591 wait 0.427 value 0.525 | hit 0.2102 1t 0.2790 dist 4.669
+  s1_hogeq_lat_s2.pt     ep 17 lattice half 0.2108 tile 0.2108 nll 3.599 card 0.559 joint 0.1266 gate_bal 0.617 wait 0.420 value 0.560 | hit 0.2108 1t 0.2867 dist 4.515
+eval_place_check.out
+  s1_hogeq_s0.pt         ep 20 floor   half 0.2003 tile 0.2130 nll 3.899 card 0.546 joint 0.1332 gate_bal 0.627 wait 0.424 value 0.549 | hit 0.0000 1t 0.2719 dist 4.593
+  s1_hogeq_lat_s0.pt     ep 12 lattice half 0.2091 tile 0.2091 nll 3.624 card 0.555 joint 0.1238 gate_bal 0.624 wait 0.437 value 0.567 | hit 0.2091 1t 0.2834 dist 4.580

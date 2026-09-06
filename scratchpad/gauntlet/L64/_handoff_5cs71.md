@@ -1,0 +1,22 @@
+### §5cs.71 -- L64l (2026-09-06 12:0x-13:5x UTC): **first clean S2 data-scaling point on hogeq. Under one label convention (`--grid lattice`) and on the same 6,133 v3 val rows, corpus_v4 (463 replays, 63,769 rows, both crawl halves) vs corpus_v3 (241 replays): lattice-point top-1 22.56 +/- 0.58 vs 21.00 +/- 0.09 (+1.56 pp, 3 seeds each, no overlap), cell NLL 3.407 vs 3.611, within-1-tile 30.76 vs 28.30, mean miss 4.28 vs 4.59 tiles; card 57.8 vs 55.0, gate bal-acc 66.6 vs 61.1, value 57.9 vs 55.1. The convention change alone (v3 floor -> v3 lattice) is worth +1.3 pp within-1-tile; the data is worth +2.5 pp on top. The naive v4 band (record of the trap) is 23.10 +/- 0.32 floor-tile but 13.36 cell -- not a scaling number.**
+
+**A. The three bands, all on v3 val (6,133 rows), all (a), `L64/s1_v4/eval_summary_{naive,v3lat,v4lat}.txt`, train logs `train_hogeq_{v4,lat,v4lat}_s{0,1,2}.log`.** Checkpoints `hogeq/data/pipeline/s1_hogeq_{v4,lat,v4lat}_s{0,1,2}.pt` (never committed).
+| band | grid | top-1 (own cell) | NLL | card | gate bal | value | best ep |
+|---|---|---|---|---|---|---|---|
+| v3 floor (§5cs.6x reference) | floor | tile 20.99 +/- 0.36, half 19.26 | 3.90-3.93 | 54.4-55.6 | 58.8-62.7 | 50.1-56.0 | -- |
+| naive v4 (record) | floor | tile 23.28/22.73/23.28 = 23.10 +/- 0.32; half 13.65/13.54/12.88 | 4.18-4.24 | 58.0-58.3 | 65.2-68.8 | 57.2-58.7 | 16/13/13 |
+| v3 lattice | lattice | 20.91/21.02/21.08 = 21.00 +/- 0.09 | 3.624/3.611/3.599 | 55.5/53.7/55.9 | 62.4/59.1/61.7 | 56.7/52.5/56.0 | 12/12/17 |
+| v4 lattice | lattice | 22.84/21.90/22.95 = 22.56 +/- 0.58 | 3.365/3.452/3.404 | 57.7/57.3/58.5 | 67.7/64.3/67.7 | 57.2/57.5/58.9 | 15/10/19 |
+Under `lattice`, `cell_tile_top1` equals `cell_half_top1` (pairs (2j, 2j+1) collapse onto the tile-centre cells the pros use) -- it is NOT the floor "tile" instrument; the floor-tile 20.99 and the lattice 21.00 agreeing is coincidence, not identity.
+**B. The convention-free instrument (a, new in `train_s1.evaluate`, uncommitted until this loop): `place_hit` (checkpoint's own inverse of its argmax cell within 0.3 tile of the pro point), `place_1t` (within 1 tile), `place_dist` (mean tiles).** Comparable across floor and lattice checkpoints because each is inverted with its own `cell_xy`. Floor `place_hit` is 0 by construction (its centre sits 0.354 tile from every lattice point) -- so read `place_1t` / `place_dist`:
+| band | within 1 tile | mean miss (tiles) |
+|---|---|---|
+| v3 floor | 27.19/26.64/27.13 = 26.99 +/- 0.30 | 4.593/4.760/4.587 = 4.647 |
+| v3 lattice | 28.34/27.90/28.67 = 28.30 +/- 0.39 | 4.580/4.669/4.515 = 4.588 |
+| naive v4 floor | 29.99/28.62/29.39 = 29.33 +/- 0.69 | 4.414/4.380/4.425 = 4.406 |
+| v4 lattice | 30.76/30.54/30.99 = 30.76 +/- 0.23 | 4.233/4.330/4.267 = 4.277 |
+Decomposition: convention +1.31 pp (v3 floor -> v3 lattice, same data), data +2.46 pp (v3 lattice -> v4 lattice, same convention); the two add (+3.77 total). The naive v4's +2.34 over v3 floor is real on this instrument too -- its damage was to the exact-cell head, not to where the card lands. (b) Whether +1.56 pp per 1.9x replays continues at x10 is what the next corpus step measures; three points do not make a curve.
+**C. What it does NOT establish.** Nothing on the engine yet: `s1_hogeq_v4lat_s0` is running under `--gate sample` on the same 100 entries (seed 0) as the 85/79/84 band, 27/100 at 13:50 -- one seed, one checkpoint, so at best a screen. Nothing on icebow (its i=1 drive was 407/560 at 13:50). The best-epoch spread (10-19) says the early-stop is noisy; the bands are what they are with it. The lattice half-cell number has no v3-floor prior, by construction.
+**D. Box.** One training at a time held CPU at ~87%; the three chained bands took 11:2x-13:48 UTC. Icebow refetch: 560 usable / 3 rejected tags (02CY8L9JVCY0, 02VY8LGY90UV, 09PP9RQJGYPQ), 51 RateLimited + 4 AuthError skips resumable; all 47,642 positioned rows i=1.
+**TRAPS (a):** (1) A lattice checkpoint's `cell_tile_top1` is its `cell_half_top1`; never put it in a column with floor tile numbers. (2) Best epochs 10-19 across seeds of one config: quote 3-seed bands, never the best seed.
+**E. Next.** Score `smp_v4lat0` vs 85/79/84 when it lands (`engine_hogeq/score_smp_v4lat0.txt`); then the icebow side: fidelity/handedness of the i=1 half (second witness for §5cs.69 D), corpus_v4/icebow, v3-lattice x3 and v4-lattice x3 on icebow v3 val (floor reference 18.22 +/- 0.11, compare via `place_1t`/`place_dist` and lattice-vs-lattice).

@@ -1,0 +1,14 @@
+eval_v3val_hogeq.out
+  s1_hogeq_v4_s0.pt        ep 16 grid floor   tile 0.2328 half 0.1365 nll 4.184 card 0.583 joint 0.1464 gate_bal 0.688 wait 0.452 value 0.572
+  s1_hogeq_v4_s1.pt        ep 13 grid floor   tile 0.2273 half 0.1354 nll 4.240 card 0.580 joint 0.1343 gate_bal 0.652 wait 0.448 value 0.579
+  s1_hogeq_v4_s2.pt        ep 13 grid floor   tile 0.2328 half 0.1288 nll 4.192 card 0.578 joint 0.1475 gate_bal 0.670 wait 0.456 value 0.587
+  s1_hogeq_s0.pt           ep 20 grid floor   tile 0.2130 half 0.2003 nll 3.899 card 0.546 joint 0.1332 gate_bal 0.627 wait 0.424 value 0.549
+  s1_hogeq_s1.pt           ep 11 grid floor   tile 0.2058 half 0.1871 nll 3.933 card 0.544 joint 0.1211 gate_bal 0.588 wait 0.439 value 0.501
+  s1_hogeq_s2.pt           ep 18 grid floor   tile 0.2108 half 0.1904 nll 3.897 card 0.556 joint 0.1277 gate_bal 0.621 wait 0.417 value 0.560
+eval_v4val_hogeq.out
+  s1_hogeq_v4_s0.pt        ep 16 grid floor   tile 0.2364 half 0.1548 nll 4.133 card 0.568 joint 0.1443 gate_bal 0.678 wait 0.463 value 0.562
+  s1_hogeq_v4_s1.pt        ep 13 grid floor   tile 0.2320 half 0.1511 nll 4.161 card 0.565 joint 0.1345 gate_bal 0.645 wait 0.447 value 0.563
+  s1_hogeq_v4_s2.pt        ep 13 grid floor   tile 0.2364 half 0.1450 nll 4.148 card 0.569 joint 0.1457 gate_bal 0.662 wait 0.457 value 0.573
+  s1_hogeq_s0.pt           ep 20 grid floor   tile 0.2114 half 0.1518 nll 5.617 card 0.539 joint 0.1274 gate_bal 0.620 wait 0.433 value 0.548
+  s1_hogeq_s1.pt           ep 11 grid floor   tile 0.1995 half 0.1413 nll 5.482 card 0.523 joint 0.1165 gate_bal 0.585 wait 0.442 value 0.516
+  s1_hogeq_s2.pt           ep 18 grid floor   tile 0.2121 half 0.1453 nll 5.573 card 0.540 joint 0.1230 gate_bal 0.618 wait 0.428 value 0.551

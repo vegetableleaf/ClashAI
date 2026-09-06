@@ -1,0 +1,10 @@
+start lat 12:19
+{"FINAL": "hogeq_lat_s0", "val_cell_tile": 0.20913593835993396, "val_cell_half": 0.20913593835993396, "train_cell_tile": 0.2304318488529015, "card": 0.5547605943863512, "joint": 0.12383048981838195, "emb_cos": 0.22149015963077545, "epoch": 12}
+{"FINAL": "hogeq_lat_s1", "val_cell_tile": 0.2107870115575124, "val_cell_half": 0.21023665382498624, "train_cell_tile": 0.2457065124978745, "card": 0.5365987892129884, "joint": 0.11942762795817281, "emb_cos": 0.23236101865768433, "epoch": 12}
+{"FINAL": "hogeq_lat_s2", "val_cell_tile": 0.2107870115575124, "val_cell_half": 0.2107870115575124, "train_cell_tile": 0.25187841530054644, "card": 0.5586130985140341, "joint": 0.12658227848101267, "emb_cos": 0.19302909076213837, "epoch": 17}
+v3-lat done 12:48
+HOGEQ_V3LAT_DONE
+{"FINAL": "hogeq_v4lat_s0", "val_cell_tile": 0.23306233062330622, "val_cell_half": 0.23272357723577236, "train_cell_tile": 0.2669390534559074, "card": 0.568089430894309, "joint": 0.13516260162601626, "emb_cos": 0.18233497440814972, "epoch": 15}
+{"FINAL": "hogeq_v4lat_s1", "val_cell_tile": 0.22967479674796748, "val_cell_half": 0.22933604336043362, "train_cell_tile": 0.2538382804503582, "card": 0.5558943089430894, "joint": 0.13651761517615177, "emb_cos": 0.20297682285308838, "epoch": 10}
+{"FINAL": "hogeq_v4lat_s2", "val_cell_tile": 0.2306910569105691, "val_cell_half": 0.23035230352303523, "train_cell_tile": 0.2737732656514382, "card": 0.5697831978319783, "joint": 0.13414634146341464, "emb_cos": 0.15713468194007874, "epoch": 19}
+HOGEQ_V4LAT_DONE 13:48

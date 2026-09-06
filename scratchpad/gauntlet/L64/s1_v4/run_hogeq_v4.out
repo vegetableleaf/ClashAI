@@ -1,0 +1,3 @@
+corpus_v4/hogeq: v3 241 i1r 222 copied 463 total 463
+{"out": "hogeq\\data\\pipeline\\s1_dataset_v4.npz", "rows": 63769, "play_rows": 18743, "wait_rows": 45026, "val_rows": 9907, "replays": 463, "units_total": 254329, "seconds": 12.4, "stats": {"mirror_matches": 0, "unmapped": [], "play_rows": 18743, "play_skipped": 1331, "wait_rows": 45026, "wait_in_window": 10156}}
+HOGEQ_V4_DONE

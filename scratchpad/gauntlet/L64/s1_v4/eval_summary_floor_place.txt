@@ -1,0 +1,7 @@
+eval_v3val_floor_place.out
+  s1_hogeq_s0.pt         ep 20 floor   half 0.2003 tile 0.2130 nll 3.899 card 0.546 joint 0.1332 gate_bal 0.627 wait 0.424 value 0.549 | hit 0.0000 1t 0.2719 dist 4.593
+  s1_hogeq_s1.pt         ep 11 floor   half 0.1871 tile 0.2058 nll 3.933 card 0.544 joint 0.1211 gate_bal 0.588 wait 0.439 value 0.501 | hit 0.0000 1t 0.2664 dist 4.760
+  s1_hogeq_s2.pt         ep 18 floor   half 0.1904 tile 0.2108 nll 3.897 card 0.556 joint 0.1277 gate_bal 0.621 wait 0.417 value 0.560 | hit 0.0000 1t 0.2713 dist 4.587
+  s1_hogeq_v4_s0.pt      ep 16 floor   half 0.1365 tile 0.2328 nll 4.184 card 0.583 joint 0.1464 gate_bal 0.688 wait 0.452 value 0.572 | hit 0.0000 1t 0.2999 dist 4.414
+  s1_hogeq_v4_s1.pt      ep 13 floor   half 0.1354 tile 0.2273 nll 4.240 card 0.580 joint 0.1343 gate_bal 0.652 wait 0.448 value 0.579 | hit 0.0000 1t 0.2862 dist 4.380
+  s1_hogeq_v4_s2.pt      ep 13 floor   half 0.1288 tile 0.2328 nll 4.192 card 0.578 joint 0.1475 gate_bal 0.670 wait 0.456 value 0.587 | hit 0.0000 1t 0.2939 dist 4.425

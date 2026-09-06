@@ -19,3 +19,13 @@
 - i1r re-drive done 11:1x: 222 ok / 52 failed (same as first pass), rotated 274 tags / 25,859 rows, determinism 25/25, winner agreement 145/222 (unchanged), terminal_vs_last_play median -32 neg 116, first replay has frames (361) + play_frames (97).
 - corpus_v4/hogeq = 241 + 222 = 463 replays; s1_dataset_v4.npz rows 63,769 (play 18,743 wait 45,026 val 9,907) vs v3 33,218 (9,797/23,421) -> play share 29.4% vs 29.5%: mix preserved (a).
 - S1 v4 x3 training started ~11:17 UTC.
+
+## L64l notes (12:2x UTC)
+- Naive v4 (floor) band on v3 val (eval_summary_naive.txt): tile 23.28/22.73/23.28 = 23.10 +/- 0.32 vs v3 20.99 +/- 0.36; half 13.65/13.54/12.88 vs 20.03/18.71/19.04; nll 4.18-4.24 vs 3.90-3.93; card 58.0-58.3 vs 54.4-55.6; gate_bal 0.652-0.688 vs 0.588-0.627; wait 0.448-0.456 vs 0.417-0.439; value 0.572-0.587 vs 0.501-0.560. Best epochs 16/13/13 (v3: 20/11/18).
+- v3 checkpoints on v4 val: nll 5.48-5.62 (label split they never saw), tile 21.14/19.95/21.21.
+- lattice chain started 12:19 (v3-lat x3 then v4-lat x3).
+- 12:5x: v3-lattice band on v3 val (eval_summary_v3lat.txt): lattice-point top-1 20.91/21.02/21.08 (21.00 sd 0.09) vs floor tile 21.30/20.58/21.08; nll 3.624/3.611/3.599 vs 3.899/3.933/3.897; card 55.5/53.7/55.9 vs 54.6/54.4/55.6; gate_bal 0.624/0.591/0.617 vs 0.627/0.588/0.621; value 0.567/0.525/0.560. Best epochs 12/12/17.
+- Under lattice "tile" == half (pairs collapse onto tile-centre cells): lattice tile is NOT floor tile.
+- Shared convention-free instrument added to evaluate(): place_hit (<=0.3 tile), place_1t (<=1 tile), place_dist (tiles) between the ckpt's own inverse of its argmax cell and the pro point (eval_summary_floor_place.txt):
+  v3 floor 1t 27.19/26.64/27.13 dist 4.593/4.760/4.587; v3 lattice 1t 28.34/27.90/28.67 dist 4.580/4.669/4.515; v4 floor 1t 29.99/28.62/29.39 dist 4.414/4.380/4.425. floor hit = 0 by construction (centre 0.354 tile off the lattice).
+- hogeq refetch resume: +22 (297/299 done, 2 RateLimited left). icebow drive 114/560 at 12:49.

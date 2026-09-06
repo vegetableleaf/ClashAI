@@ -88,7 +88,11 @@ def evaluate(model: S1Model, rows: Rows, bs: int = 512, grid: str = "floor") -> 
     model.eval()
     n = len(rows.idx)
     agg = {"cell_half": 0, "cell_tile": 0, "card": 0, "joint": 0, "n_play": 0, "gate_tp": 0, "gate_tn": 0,
-           "n_pos": 0, "n_neg": 0, "wait": 0, "n_wait": 0, "value": 0, "cell_nll": 0.0}
+           "n_pos": 0, "n_neg": 0, "wait": 0, "n_wait": 0, "value": 0, "cell_nll": 0.0,
+           "place_hit": 0, "place_1t": 0, "place_dist": 0.0}
+    # convention-free placement read: where the checkpoint's own inverse would place the argmax cell vs the pro's
+    # point, in tiles (board frame: x * 18, y * 32). hit = within 0.3 tile (the pro lattice pitch is 0.5).
+    off = 0.5 if grid == "floor" else 0.0
     gs = []
     for s in range(0, n, bs):
         ids = rows.idx[s:s + bs]
@@ -102,6 +106,10 @@ def evaluate(model: S1Model, rows: Rows, bs: int = 512, grid: str = "floor") -> 
             t_half = cell_label(xy, grid)
             pred = logits.argmax(-1)
             agg["cell_half"] += int((pred == t_half).sum())
+            px = (pred % GRID_X).float() + off; py = (pred // GRID_X).float() + off
+            dist = torch.sqrt(((px / GRID_X - xy[:, 0]) * (GRID_X / 2)) ** 2 + ((py / GRID_Y - xy[:, 1]) * (GRID_Y / 2)) ** 2)
+            agg["place_hit"] += int((dist <= 0.3).sum()); agg["place_1t"] += int((dist <= 1.0).sum())
+            agg["place_dist"] += float(dist.sum())
             agg["cell_nll"] += float(Fn.cross_entropy(logits, t_half, reduction="sum"))
             # 1-tile: sum probabilities of the 4 half-tile cells in each tile, compare argmax tiles
             p = logits.softmax(-1).view(-1, GRID_Y // 2, 2, GRID_X // 2, 2).sum((2, 4)).flatten(1)
@@ -130,6 +138,7 @@ def evaluate(model: S1Model, rows: Rows, bs: int = 512, grid: str = "floor") -> 
             "gate_acc": (agg["gate_tp"] + agg["gate_tn"]) / max(n, 1),
             "gate_bal_acc": 0.5 * (agg["gate_tp"] / max(agg["n_pos"], 1) + agg["gate_tn"] / max(agg["n_neg"], 1)),
             "wait_top1": agg["wait"] / max(agg["n_wait"], 1), "value_acc": agg["value"] / max(n, 1),
+            "place_hit": agg["place_hit"] / np_, "place_1t": agg["place_1t"] / np_, "place_dist": agg["place_dist"] / np_,
             "emb_cosine": spread, "n_play": agg["n_play"], "n": n}
 
 
