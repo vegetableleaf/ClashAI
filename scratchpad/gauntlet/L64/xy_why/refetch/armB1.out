@@ -1,0 +1,35 @@
+[shard 1/3] 60 to fetch (backlog 740, done 1336)
+[shard 1] 429 02VY8QQQURR9 -- 15s, 0.5/s peak 2.3/s · 6 x 429
+[shard 1] 429 02QY9QP0CL00 -- 15s, 0.5/s peak 2.3/s · 12 x 429
+[shard 1] 429 00GYP9UC999U -- 15s, 0.5/s peak 2.3/s · 18 x 429
+[shard 1] 10/60 (2.9 min) 1.2/s peak 2.3/s · 23 x 429 errs {'RateLimited': 3}
+[shard 1] 429 09G9JURUCY9L -- 15s, 0.5/s peak 2.3/s · 29 x 429
+[shard 1] 429 09C9JCYLQVRL -- 15s, 0.5/s peak 2.3/s · 35 x 429
+[shard 1] 429 08QPVULUYUPV -- 15s, 0.5/s peak 2.3/s · 41 x 429
+[shard 1] 429 08QPVCUC0UV9 -- 15s, 0.5/s peak 2.3/s · 47 x 429
+[shard 1] 429 082Y8YLLCGQP -- 15s, 0.5/s peak 2.3/s · 53 x 429
+[shard 1] 20/60 (7.1 min) 1.2/s peak 2.3/s · 58 x 429 errs {'RateLimited': 8}
+[shard 1] 429 028YPUV8UQ82 -- 15s, 0.5/s peak 2.3/s · 64 x 429
+[shard 1] 429 00JYPG89GC8Q -- 15s, 0.5/s peak 2.3/s · 70 x 429
+[shard 1] 429 00YYPLP0GGCV -- 15s, 0.5/s peak 2.3/s · 76 x 429
+[shard 1] 30/60 (10.0 min) 1.8/s peak 2.3/s · 81 x 429 errs {'RateLimited': 11}
+[shard 1] 429 029YPCUJRVJ2 -- 15s, 0.5/s peak 2.3/s · 87 x 429
+[shard 1] 429 09YP9CP2LPPU -- 15s, 0.5/s peak 2.3/s · 93 x 429
+[shard 1] 429 08YY89VC9CCU -- 15s, 0.5/s peak 2.3/s · 99 x 429
+[shard 1] 429 08YY89UULC89 -- 15s, 0.5/s peak 2.3/s · 105 x 429
+[shard 1] 429 00QP8YQ92YRC -- 15s, 0.5/s peak 2.3/s · 111 x 429
+[shard 1] 40/60 (14.1 min) 2.0/s peak 2.3/s · 116 x 429 errs {'RateLimited': 16}
+[shard 1] 429 09PP9RP0PRJQ -- 15s, 0.5/s peak 2.3/s · 122 x 429
+[crawl] clearance expired during replay -- renewing
+[shard 1] pass 1: 17 re-queued
+[shard 1] 429 02QY9QP0CL00 -- 15s, 0.5/s peak 2.3/s · 132 x 429
+[shard 1] 429 08QPVCUC0UV9 -- 15s, 0.5/s peak 2.3/s · 143 x 429
+[shard 1] 429 082Y8YLLCGQP -- 15s, 0.5/s peak 2.3/s · 149 x 429
+[shard 1] 50/60 (18.2 min) 1.2/s peak 2.3/s · 149 x 429 errs {'RateLimited': 20}
+[shard 1] 429 029YPCUJRVJ2 -- 15s, 0.5/s peak 2.3/s · 155 x 429
+[shard 1] 429 09YP9CP2LPPU -- 15s, 0.5/s peak 2.3/s · 161 x 429
+[shard 1] 429 08YY89VC9CCU -- 15s, 0.5/s peak 2.3/s · 167 x 429
+[shard 1] pass 2: 6 re-queued
+[shard 1] 429 082Y8YLLCGQP -- 15s, 0.5/s peak 2.3/s · 178 x 429
+[shard 1] 429 029YPCUJRVJ2 -- 15s, 0.5/s peak 2.3/s · 184 x 429
+[shard 1] DONE {"label": "B3_acct1", "shard": 1, "n": 3, "fetched": 58, "wall_s": 1338.3, "slept_s": 375.0, "s_per_replay_wall": 23.07, "replays_per_min": 2.6, "rate_now": 1.25, "rate_peak": 2.32, "n_429": 184, "requests": 244, "errs": {"RateLimited": 25}}

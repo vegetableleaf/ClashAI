@@ -1,0 +1,19 @@
+[shard 0/3] 60 to fetch (backlog 564, done 1512)
+[crawl] clearance expired during replay -- renewing
+[shard 0] 10/60 (0.7 min) 2.8/s peak 2.8/s · 0 x 429 errs {}
+[shard 0] 429 02CP8J9PJ8PR -- 15s, 0.5/s peak 2.9/s · 6 x 429
+[shard 0] 429 09G8U0PCGJJL -- 15s, 0.5/s peak 2.9/s · 12 x 429
+[shard 0] 20/60 (2.5 min) 2.2/s peak 2.9/s · 12 x 429 errs {'RateLimited': 2}
+[shard 0] 429 08GPVRL99VUQ -- 15s, 0.5/s peak 2.9/s · 18 x 429
+[shard 0] 429 08UPPVQ2228J -- 15s, 0.5/s peak 2.9/s · 24 x 429
+[shard 0] 30/60 (4.5 min) 1.8/s peak 2.9/s · 24 x 429 errs {'RateLimited': 4}
+[shard 0] 429 088Y89GQJJYQ -- 15s, 0.5/s peak 2.9/s · 30 x 429
+[shard 0] 429 088Y88QU820L -- 15s, 0.5/s peak 2.9/s · 36 x 429
+[shard 0] 40/60 (6.3 min) 1.4/s peak 2.9/s · 36 x 429 errs {'RateLimited': 6}
+[shard 0] 429 022YYQGUYVJL -- 15s, 0.5/s peak 2.9/s · 42 x 429
+[shard 0] 429 08JPVU09Q2UP -- 15s, 0.5/s peak 2.9/s · 48 x 429
+[shard 0] 50/60 (8.1 min) 1.0/s peak 2.9/s · 48 x 429 errs {'RateLimited': 8}
+[shard 0] pass 1: 8 re-queued
+[shard 0] 60/60 (8.8 min) 2.5/s peak 2.9/s · 48 x 429 errs {'RateLimited': 8}
+[shard 0] DONE {"label": "A2_one_account_after", "shard": 0, "n": 3, "fetched": 60, "wall_s": 525.7, "slept_s": 120.0, "s_per_replay_wall": 8.76, "replays_per_min": 6.85, "rate_now": 2.5, "rate_peak": 2.94, "n_429": 48, "requests": 110, "errs": {"RateLimited": 8}}
+ARM_A2_EXIT 0

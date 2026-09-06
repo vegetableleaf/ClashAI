@@ -1,0 +1,32 @@
+[shard 0/3] 60 to fetch (backlog 740, done 1336)
+[shard 0] 429 08QPVULUG2JP -- 15s, 0.5/s peak 2.3/s · 6 x 429
+[shard 0] 429 08QPVULQP8JU -- 15s, 0.5/s peak 2.3/s · 12 x 429
+[shard 0] 429 08QPVCQU988J -- 15s, 0.5/s peak 2.3/s · 18 x 429
+[shard 0] 10/60 (2.9 min) 1.4/s peak 2.3/s · 23 x 429 errs {'RateLimited': 3}
+[shard 0] 429 08LY82JCJL9U -- 15s, 0.5/s peak 2.3/s · 29 x 429
+[shard 0] 429 00QYPQQGCJ0G -- 15s, 0.5/s peak 2.3/s · 35 x 429
+[shard 0] 429 002YLG9GJ00Q -- 15s, 0.5/s peak 2.3/s · 41 x 429
+[shard 0] 20/60 (5.8 min) 1.4/s peak 2.3/s · 46 x 429 errs {'RateLimited': 6}
+[shard 0] 429 08JPVCRCC9C0 -- 15s, 0.5/s peak 2.3/s · 52 x 429
+[shard 0] 429 09LP9UYQV899 -- 15s, 0.5/s peak 2.3/s · 63 x 429
+[shard 0] 429 02GY9R092YG0 -- 15s, 0.5/s peak 2.3/s · 69 x 429
+[shard 0] 429 02GY9R00Y8LJ -- 15s, 0.5/s peak 2.3/s · 75 x 429
+[shard 0] 30/60 (9.9 min) 1.2/s peak 2.3/s · 80 x 429 errs {'RateLimited': 10}
+[shard 0] 429 00YYPL9J2V2Q -- 15s, 0.5/s peak 2.3/s · 86 x 429
+[shard 0] 429 09R9JCRUYCRC -- 15s, 0.5/s peak 2.3/s · 97 x 429
+[shard 0] 429 000YLYY9V2GJ -- 15s, 0.5/s peak 2.3/s · 103 x 429
+[shard 0] 429 08YY89UUPUJY -- 15s, 0.5/s peak 2.3/s · 109 x 429
+[shard 0] 429 00VYPLRUQQV8 -- 15s, 0.5/s peak 2.3/s · 115 x 429
+[shard 0] 40/60 (14.1 min) 1.2/s peak 2.3/s · 115 x 429 errs {'RateLimited': 15}
+[shard 0] 429 02QY9G2J9Q9Q -- 15s, 0.5/s peak 2.3/s · 121 x 429
+[crawl] clearance expired during replay -- renewing
+[shard 0] pass 1: 16 re-queued
+[shard 0] 429 08QPVULUG2JP -- 15s, 0.5/s peak 2.3/s · 131 x 429
+[shard 0] 429 08QPVULQP8JU -- 15s, 0.5/s peak 2.3/s · 137 x 429
+[shard 0] 429 08LY82JCJL9U -- 15s, 0.5/s peak 2.3/s · 143 x 429
+[shard 0] 50/60 (18.2 min) 1.8/s peak 2.3/s · 148 x 429 errs {'RateLimited': 19}
+[shard 0] 429 09R9JCRUYCRC -- 15s, 0.5/s peak 2.3/s · 154 x 429
+[shard 0] 429 02QY9G2J9Q9Q -- 15s, 0.5/s peak 2.3/s · 165 x 429
+[shard 0] pass 2: 5 re-queued
+[shard 0] 60/60 (20.8 min) 1.8/s peak 2.3/s · 170 x 429 errs {'RateLimited': 21}
+[shard 0] DONE {"label": "B3_acct0", "shard": 0, "n": 3, "fetched": 60, "wall_s": 1251.0, "slept_s": 315.0, "s_per_replay_wall": 20.85, "replays_per_min": 2.88, "rate_now": 1.78, "rate_peak": 2.32, "n_429": 170, "requests": 232, "errs": {"RateLimited": 21}}

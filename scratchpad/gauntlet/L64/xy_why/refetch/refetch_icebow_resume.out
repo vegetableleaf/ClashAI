@@ -1,0 +1,13 @@
+[refetch] icebow: 55 uncovered to fetch (563 done)
+[refetch] session: saved token
+[refetch] 10/55 (1 min) i-values {'1': 915} errs {}
+[refetch] ratelimited 09G9JCJQ9999 -- sleeping 120 s
+[refetch] 20/55 (4 min) i-values {'1': 1791} errs {'RateLimited': 1}
+[refetch] ratelimited 09QP9CVLJJ20 -- sleeping 120 s
+[refetch] 30/55 (7 min) i-values {'1': 2694} errs {'RateLimited': 2}
+[refetch] ratelimited 08JPVU9JYJLJ -- sleeping 120 s
+[refetch] 40/55 (10 min) i-values {'1': 3813} errs {'RateLimited': 3}
+[refetch] ratelimited 02LY9YYLC8CY -- sleeping 120 s
+[refetch] 50/55 (13 min) i-values {'1': 4608} errs {'RateLimited': 4}
+[refetch] DONE icebow: 51 fetched in 13 min; i-values {'1': 4625}; errs {'RateLimited': 4}
+ICEBOW_RESUME_EXIT 0

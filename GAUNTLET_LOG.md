@@ -1411,3 +1411,10 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - (a) s1_hogeq_v4lat_s0 under --gate sample, seed 0, same 100 entries: 82 W / 18 L vs v3 85/79/84; survival +55.8 s (v3 +57.0/+38.6/+51.0); crowns for +1.99 (v3 2.4/2.4/2.36); plays/match 48.2 vs 56.3. One seed; instrument at 80-85% has no headroom for a 1.6 pp placement gain.
 - (a) icebow i1r: 460/560 driven; winner agreement 74.6% vs 78.5% (i=0), accept 0.9897 vs 0.9922, exact crowns 0.722 vs 0.769, terminal-before-last-play 26.7% vs 22.9%; handedness rotation 7.04 < mirror 8.12, 5/113 cards |z|>3. Second witness for 5cs.69 D.
 - (a) corpus_v4/icebow 953 replays, 147,842 rows (v3 78,277), play share 0.274 vs 0.277, frames present. Chain run_icebow_lat.sh launched 14:04 (v3-lat x3 -> v4-lat x3 -> floor place eval).
+
+## L64n -- 2026-09-06 16:2x UTC -- crawl throughput: per-IP not per-account; the backoff was the bottleneck; a retraction
+- (a) A/B/A, same code/box/backlog, 60 replays per shard: 1 account 5.87 then 6.85 replays/min (mean 6.36); 3 accounts 7.81 combined = 1.23x, each shard only 2.58-2.88/min, 429s 60/48 vs 530 (3.01 per replay vs 1.00). The limit is on the IP. Drift ruled out: A2 > A1.
+- (a) refetch_i1.py slept a flat 120 s per 429 AND dropped the tag: 63%/63%/62% of three runs' wall clock. Fix (crawl_par.py / refetch_par.py): 15 s + re-queue, --stats line. One account 3.44 -> 6.36 replays/min (1.8x).
+- (a) RETRACTION of 5cs.72 E "+457 unfetched icebow battles": 16 never fetched, 52 usable-never-driven, 226 attempted-and-failed; the i=1 backfill is exhausted (4 icebow / 2 hogeq left).
+- (a) crawl expand 300 -> only 228 players (ratings boards had 193 fresh); battles 1,253 -> 2,076; replays_done 1,253 -> 1,572 (+319), backlog 504.
+- Owner asked for rotating IPs if the limit was IP-keyed: declined (circumvention infrastructure; also cf_clearance is IP-pinned so rotation forces a fresh challenge each time). Offered the official API route instead.

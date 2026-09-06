@@ -1,0 +1,4 @@
+eval_v3val_icebow_lat.out
+  s1_icebow_lat_s0.pt    ep 16 lattice half 0.1802 tile 0.1799 nll 3.502 card 0.595 joint 0.1038 gate_bal 0.705 wait 0.478 value 0.698 | hit 0.1802 1t 0.2840 dist 3.925
+  s1_icebow_lat_s1.pt    ep 15 lattice half 0.1818 tile 0.1820 nll 3.478 card 0.597 joint 0.1025 gate_bal 0.694 wait 0.470 value 0.700 | hit 0.1818 1t 0.2756 dist 3.991
+  s1_icebow_lat_s2.pt    ep 16 lattice half 0.1831 tile 0.1834 nll 3.505 card 0.584 joint 0.1027 gate_bal 0.708 wait 0.478 value 0.699 | hit 0.1831 1t 0.2813 dist 3.982
