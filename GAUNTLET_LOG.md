@@ -1440,3 +1440,4 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - The L64p column shift RECURRED from crawl_deck.py's own writer (26,720 rows); repaired (.bak_L64q) and fixed at source. Trap: csv.DictWriter never checks fieldnames against the file it appends to.
 - Renderer: --own-forms (icebow pool 433/477 evo-knight), bridges 3 tiles (owner correct), river stays 2 rows (owner contradicted, engine docs + troop positions), towers 3x3/4x4. .gitattributes *.sh eol=lf after the owner's run died on CRLF.
 - Drive 452/845 (363 ok / 84 fail, all evo-E-barb). No training this loop. §5cs.76.
+- CORRECTION (same loop): hogeq's driven corpus is corpus_v4 = 463 tags, not 296 (that was corpus_v3's attempt count); never-driven backlog is 478, not ~648. v5_tags_hogeq.json written.
