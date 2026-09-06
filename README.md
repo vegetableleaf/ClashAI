@@ -25,6 +25,7 @@ and its hand of cards.** From that it decides *which card to play and where to d
 > new stage has to beat. Day-by-day state lives in [HANDOFF.md](HANDOFF.md) and
 > [GAUNTLET_LOG.md](GAUNTLET_LOG.md).
 
+<iframe src="https://github.com/sponsors/vegetableleaf/card" title="Sponsor vegetableleaf" height="225" width="600" style="border: 0;"></iframe>
 ---
 
 ## What's in the repo
