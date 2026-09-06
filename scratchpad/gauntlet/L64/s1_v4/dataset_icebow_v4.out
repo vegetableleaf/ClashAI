@@ -1,0 +1,20 @@
+[dataset] icebow 50/953 rows=7339 1s
+[dataset] icebow 100/953 rows=15514 2s
+[dataset] icebow 150/953 rows=23242 2s
+[dataset] icebow 200/953 rows=30726 3s
+[dataset] icebow 250/953 rows=38737 4s
+[dataset] icebow 300/953 rows=46210 5s
+[dataset] icebow 350/953 rows=53605 6s
+[dataset] icebow 400/953 rows=61077 7s
+[dataset] icebow 450/953 rows=68809 8s
+[dataset] icebow 500/953 rows=76854 8s
+[dataset] icebow 550/953 rows=84527 9s
+[dataset] icebow 600/953 rows=92574 10s
+[dataset] icebow 650/953 rows=100571 11s
+[dataset] icebow 700/953 rows=108260 12s
+[dataset] icebow 750/953 rows=115683 13s
+[dataset] icebow 800/953 rows=124028 14s
+[dataset] icebow 850/953 rows=131562 15s
+[dataset] icebow 900/953 rows=139220 15s
+[dataset] icebow 950/953 rows=147386 16s
+{"out": "icebow\\data\\pipeline\\s1_dataset_v4.npz", "rows": 147842, "play_rows": 40449, "wait_rows": 107393, "val_rows": 23527, "replays": 953, "units_total": 627751, "seconds": 18.2, "stats": {"mirror_matches": 3, "unmapped": [], "play_rows": 40449, "wait_rows": 107393, "wait_in_window": 22368, "play_skipped": 539}}

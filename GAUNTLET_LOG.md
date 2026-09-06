@@ -1406,3 +1406,8 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - (a) convention-free within-1-tile: v3 floor 26.99, v3 lattice 28.30, naive v4 floor 29.33, v4 lattice 30.76; mean miss 4.65 / 4.59 / 4.41 / 4.28 tiles. Convention +1.3 pp, data +2.5 pp, additive.
 - (a) naive v4 record: floor tile 23.10 +/- 0.32 but cell 13.36 / NLL 4.18-4.24 -- the trap, not a scaling number. Trap: lattice cell_tile == cell_half; never in a column with floor tile.
 - Running: smp_v4lat0 engine read (27/100) vs 85/79/84; icebow i=1 drive 407/560 -> fidelity/handedness -> corpus_v4/icebow -> lattice bands.
+
+## L64m -- 2026-09-06 14:2x UTC -- v4-lattice engine screen (null), icebow i=1 half graded, icebow lattice chain launched
+- (a) s1_hogeq_v4lat_s0 under --gate sample, seed 0, same 100 entries: 82 W / 18 L vs v3 85/79/84; survival +55.8 s (v3 +57.0/+38.6/+51.0); crowns for +1.99 (v3 2.4/2.4/2.36); plays/match 48.2 vs 56.3. One seed; instrument at 80-85% has no headroom for a 1.6 pp placement gain.
+- (a) icebow i1r: 460/560 driven; winner agreement 74.6% vs 78.5% (i=0), accept 0.9897 vs 0.9922, exact crowns 0.722 vs 0.769, terminal-before-last-play 26.7% vs 22.9%; handedness rotation 7.04 < mirror 8.12, 5/113 cards |z|>3. Second witness for 5cs.69 D.
+- (a) corpus_v4/icebow 953 replays, 147,842 rows (v3 78,277), play share 0.274 vs 0.277, frames present. Chain run_icebow_lat.sh launched 14:04 (v3-lat x3 -> v4-lat x3 -> floor place eval).

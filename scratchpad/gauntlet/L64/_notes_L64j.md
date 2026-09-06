@@ -29,3 +29,10 @@
 - Shared convention-free instrument added to evaluate(): place_hit (<=0.3 tile), place_1t (<=1 tile), place_dist (tiles) between the ckpt's own inverse of its argmax cell and the pro point (eval_summary_floor_place.txt):
   v3 floor 1t 27.19/26.64/27.13 dist 4.593/4.760/4.587; v3 lattice 1t 28.34/27.90/28.67 dist 4.580/4.669/4.515; v4 floor 1t 29.99/28.62/29.39 dist 4.414/4.380/4.425. floor hit = 0 by construction (centre 0.354 tile off the lattice).
 - hogeq refetch resume: +22 (297/299 done, 2 RateLimited left). icebow drive 114/560 at 12:49.
+
+## L64m notes (14:0x UTC)
+- icebow i=1 chain DONE 14:02: drive 460/560 ok; fidelity i1r vs v3: winner match 343/460 = 74.6% vs 387/493 = 78.5%; acc 0.9897 vs 0.9922; exact crowns 0.722 vs 0.769; terminal_vs_last_play neg 123/460 = 26.7% vs 113/493 = 22.9%; expected s1 wins 314 vs engine 267 (v3: 338 vs 283). Second witness for 5cs.69 D (hogeq i1 65.3 vs 67.2): the i=1 half is 2-4 pp less faithful on both decks.
+- handedness icebow: 113 cards compared, 5 with |z|>3 on left-fraction; sum |dLeft| rotation 7.038 vs mirror 8.118 (rotation is the better hypothesis, as on hogeq).
+- corpus_v4/icebow = 493 + 460 = 953 replays, 0 collisions, frames present; dataset v4 147,842 rows (v3 78,277), play share 0.274 vs 0.277, val_rows 23,527.
+- launched run_icebow_lat.sh (task bhyxgmby1) 14:04: v3 lattice x3 -> eval -> v4 lattice x3 -> eval -> floor place eval; ETA several hours.
+- engine read smp_v4lat0 at 80/100 at 14:07.

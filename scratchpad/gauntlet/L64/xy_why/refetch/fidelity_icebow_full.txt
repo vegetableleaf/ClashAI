@@ -1,0 +1,10 @@
+scratchpad/gauntlet/ext/corpus_v3_i1r/icebow/summary.jsonl: 460 ok / 560 rows; winner match 343/460 = 0.746; acc 0.9897; exact crowns 0.722
+   (expected, engine): {('s1', 's1'): 232, ('s1', 's0'): 81, ('s0', 's0'): 111, ('s0', 's1'): 35, ('s1', 'draw'): 1}
+   terminal_vs_last_play median 154 mean 36 neg 123/460; final_tick median 5265
+   term {'native_logic_clock_stopped': 316, 'native_tiebreak_hp_drain': 143, 'native_tiebreak_exact_draw': 1} outcome {'side1_win': 267, 'side0_win': 192, 'draw': 1}
+   expected s1 wins 314/460  engine s1 wins 267
+scratchpad/gauntlet/ext/corpus_v3/icebow/summary.jsonl: 493 ok / 619 rows; winner match 387/493 = 0.785; acc 0.9922; exact crowns 0.769
+   (expected, engine): {('s1', 's1'): 258, ('s1', 's0'): 80, ('s0', 's0'): 129, ('s0', 's1'): 25, ('s0', 'draw'): 1}
+   terminal_vs_last_play median 149 mean 23 neg 113/493; final_tick median 5541
+   term {'native_logic_clock_stopped': 307, 'native_tiebreak_hp_drain': 185, 'native_tiebreak_exact_draw': 1} outcome {'side1_win': 283, 'side0_win': 209, 'draw': 1}
+   expected s1 wins 338/493  engine s1 wins 283
