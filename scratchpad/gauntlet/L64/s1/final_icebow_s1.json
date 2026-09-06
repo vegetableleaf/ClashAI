@@ -1,0 +1,46 @@
+{
+ "deck": "icebow",
+ "seed": 1,
+ "n_params": 1264680,
+ "best_val": {
+  "cell_half_top1": 0.16148577449947313,
+  "cell_tile_top1": 0.1833508956796628,
+  "card_top1": 0.595100105374078,
+  "joint_top1": 0.10748155953635406,
+  "cell_nll": 3.8187431600749555,
+  "gate_acc": 0.7796671753506286,
+  "gate_bal_acc": 0.6707583496928395,
+  "wait_top1": 0.47325639739086806,
+  "value_acc": 0.7067800305210377,
+  "emb_cosine": 0.20517924427986145,
+  "n_play": 3796,
+  "n": 13761,
+  "epoch": 14,
+  "train_loss": 5.511629240853446,
+  "train_parts": {
+   "cell": 3.4522916002879067,
+   "card": 0.8068992192783053,
+   "wait": 0.5039858930404224,
+   "gate": 0.445672416734317,
+   "value": 0.3027801348103417
+  },
+  "seconds": 951
+ },
+ "train_subset": {
+  "cell_half_top1": 0.19346049046321526,
+  "cell_tile_top1": 0.22361489554950045,
+  "card_top1": 0.667211625794732,
+  "joint_top1": 0.14568574023614894,
+  "cell_nll": 3.3311168521669754,
+  "gate_acc": 0.79345,
+  "gate_bal_acc": 0.6856340577837138,
+  "wait_top1": 0.6145567437047258,
+  "value_acc": 0.7475,
+  "emb_cosine": 0.19583722949028015,
+  "n_play": 5505,
+  "n": 20000
+ },
+ "ckpt": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\pipeline\\s1_icebow_s1.pt",
+ "epochs": 20,
+ "seconds": 1365
+}

@@ -1356,3 +1356,8 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Old init on the same 3,796 S1 val plays (a): 432 grid 13.70/41.73 (clean 2,072 rows 13.13/41.51; 37/85 val replays were in its train split); 1-tile bins 6.69%.
 - S1 icebow s0 (a, one seed): val tile 18.1% / half 15.4% (baseline 8.9/8.5), card 59.2%, gate bal-acc 0.715 (leak gone), emb cos 0.20. Matched grid: 1-tile new 17.3 vs old 6.7; old's 432 grid new 12.5 vs old 13.7 (clean 13.6 vs 13.1); miss distance mean 4.07 vs 5.28 tiles.
 - Monitor events also re-invoke the loop (a). Next: 3-seed bands per deck (~06:45 UTC).
+
+## L64d -- 2026-09-06 05:5x UTC -- seed 1 agrees; engine play harness for the S1 model
+- icebow s1 (a): val tile 18.34 / half 16.15 (s0: 18.12 / 15.36); old's 432 grid 13.28 vs old 13.70 (clean 14.29 vs 13.13). Band waits on s2.
+- pipeline/engine_play.py (a): S1 model on the real engine vs L62 ghosts; 2-match smoke 1W-1L, 45/47 plays accepted, 8.8 plays/min (pool humans 10.9), deterministic. 3 offline tests OK.
+- Traps: engine refuse code 13 = no elixir (engine_env retry keys on 1050 only); pool entry 02GY9R09LU8J 3-crowns us by t=70 s even with no plays -> 500-match run needs a no-plays control per tag.
