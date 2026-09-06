@@ -208,9 +208,20 @@ def team_col(side: int, me: int):
     return PALETTE["me"] if side == me else PALETTE["them"]
 
 
+# Crown-tower FOOTPRINTS, as half-extents in tiles -- princess 3x3, king 4x4, the same hitboxes the
+# real game draws. Measured against the engine's own tower centres (L64 schema recording): princess at
+# (3.5, 6.5) and (14.5, 6.5), i.e. tile CENTRES, so 1.5 tiles either way lands on tile boundaries; king
+# at (9.0, 3.0), a tile CORNER, so 2.0 tiles either way does the same. Both footprints tile-align.
+TOWER_HALF_TILES = {"king": 2.0, "princess": 1.5}
+
+
+def is_king(e: dict) -> bool:
+    return (e.get("max_hp") or 0) > 4000                     # king 4824 vs princess 3052 at this level
+
+
 def body_radius(e: dict, is_tower: bool, is_building: bool) -> int:
     if is_tower:
-        return 24 if (e.get("max_hp") or 0) > 4000 else 20    # king / princess
+        return int(TOWER_HALF_TILES["king" if is_king(e) else "princess"] * TILE)
     hp = float(e.get("max_hp") or e.get("hp") or 0)
     r = 8 + 12 * math.sqrt(max(hp, 1.0) / 3000.0)
     return int(max(8, min(20, r))) + (2 if is_building else 0)
@@ -236,7 +247,7 @@ class Renderer:
                 continue
             c, col = e["_px"], dim(e["_col"], 0.45)
             if e["_tower"]:
-                r = TOWER_RANGE["king" if body_radius(e, True, True) == 24 else "princess"]
+                r = TOWER_RANGE["king" if is_king(e) else "princess"]
                 cv2.circle(img, c, tiles_px(r), col, 1, cv2.LINE_AA)
                 continue
             r_atk = self.cards.attack_range(e.get("name"))
@@ -274,6 +285,11 @@ class Renderer:
                 p0, p1 = (c[0] - r, c[1] - r), (c[0] + r, c[1] + r)
                 if e["_deploying"]:
                     dotted_rect(img, p0, p1, col, 2)
+                elif e["_tower"]:                             # 3x3 / 4x4 footprint: keep the tiles visible
+                    sub = img[max(p0[1], 0):p1[1], max(p0[0], 0):p1[0]]
+                    if sub.size:
+                        sub[:] = cv2.addWeighted(sub, 0.58, np.full_like(sub, col, dtype=sub.dtype), 0.42, 0)
+                    cv2.rectangle(img, p0, p1, PALETTE["text"], 2)
                 else:
                     cv2.rectangle(img, p0, p1, col, -1)
                     cv2.rectangle(img, p0, p1, dim(col, 0.5), 1)
@@ -288,12 +304,13 @@ class Renderer:
                     tip = board_px(float(e["x"]) + dx / n * 700.0, float(e["y"]) + dy / n * 700.0, self.mirror)
                     cv2.line(img, c, tip, PALETTE["text"], 2, cv2.LINE_AA)
             # hp bar under the body; towers also get the number
-            bw = max(30, 2 * r)
-            x0, y0 = c[0] - bw // 2, c[1] + r + 4
+            bw = min(max(30, 2 * r), 3 * TILE)
+            x0, y0 = c[0] - bw // 2, (c[1] + r - 34 if e["_tower"] else c[1] + r + 4)   # towers: inside the footprint
             cv2.rectangle(img, (x0, y0), (x0 + bw, y0 + 5), (30, 30, 30), -1)
             cv2.rectangle(img, (x0, y0), (x0 + int(bw * max(0.0, min(1.0, hp / mx))), y0 + 5), col, -1)
             if e["_tower"]:
-                text(img, "%s %d" % ("King" if r == 24 else "Princess", int(hp)), (x0 - 6, y0 + 20), 0.45, PALETTE["text"])
+                lab = "%s %d" % ("King" if is_king(e) else "Princess", int(hp))
+                text(img, lab, (c[0] - len(lab) * 5, y0 + 20), 0.45, PALETTE["text"])
             else:
                 nm = e["_name"]
                 if e.get("form_name", "").endswith("_hero"):
