@@ -1378,3 +1378,8 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Random p 0.13 (a): 15.2 plays/min, 7.7 accepted/min, 3W-97L, +44 s. Survival per accepted play ~5.7 s random vs ~11.8 s model.
 - TRAP (a, subagent): 38031/38032 are the direct doors of the SAME two engines as 37031/37032 -- two slots, not four.
 - Next: hogeq on the engine (pool subagent in flight), then S2/S3 per Square One.
+
+## L64h -- 2026-09-06 08:3x UTC -- the x/y-less half was a crawler join bug; re-fetch launched (2.0x positioned corpus)
+- (a) x/y all-or-nothing per replay (icebow 619/612/6 partials, hogeq 296/295/4); no battle field separates the halves (mode, date, rating, player, wave all ~50%). Cause: `data-i` is a per-replay flag; crawl join keyed on it and only looked up "0". Fresh fetch of an uncovered tag: 109/109 markers, all i=1.
+- (a) i=1 half is the other seat's frame (team median tile_y 13.5 vs 18.5) -> rotate (18-x, 32-y) at corpus build; handedness (b), check per-card x histograms after the re-fetch.
+- Re-fetch running (refetch_i1.py, 615 + 299 tags, saved token accepted, raw payloads now kept). Expected: icebow 619 -> ~1,237 positioned replays, hogeq 296 -> 595. Next: hogeq engine read, then corpus v4 + S1 re-run as the data-scaling measurement.

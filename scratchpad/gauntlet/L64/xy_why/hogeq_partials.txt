@@ -1,0 +1,18 @@
+covered 296 replays 25815 rows; attr_s: [('blue', 14663), ('red', 11152)] | attr_ability: [('0', 24668), ('1', 1147)] | tick==attr_t: 25815 | tick%20==0 share: 0.0 | tick parity even share: 0.395 | max tick: 5978 | mean plays/replay: 87.2
+   blue share 0.568  first tick median 191  tick last-digit dist [(1, 6916), (2, 2623), (7, 2609), (5, 2590), (6, 2587), (4, 2584), (3, 2530), (8, 2408), (9, 968)]
+   duplicate (tick,card) pairs: 4
+   covered rows with xy by side: [('blue', 14002), ('red', 10666)]
+   covered rows without xy by side/card: [(('blue', '_invalid'), 661), (('red', '_invalid'), 486)]
+uncovered 295 replays 26688 rows; attr_s: [('blue', 15334), ('red', 11354)] | attr_ability: [('0', 25440), ('1', 1248)] | tick==attr_t: 26688 | tick%20==0 share: 0.0 | tick parity even share: 0.395 | max tick: 5978 | mean plays/replay: 90.5
+   blue share 0.575  first tick median 191  tick last-digit dist [(1, 7357), (2, 2766), (7, 2680), (6, 2662), (4, 2661), (3, 2638), (5, 2579), (8, 2459), (9, 886)]
+   duplicate (tick,card) pairs: 0
+
+PARTIAL replays (0<frac<0.8):
+  02GY9GCVRGLP frac=0.008 n=134 xy_rows=1: [('4501', 'the-log', 'red', '5.5', '14.5')]
+      neighbours: [('4461', 'ice-spirit', 'blue'), ('4501', 'the-log', 'blue'), ('4501', 'the-log', 'red')]
+  00PYLLPR89R9 frac=0.007 n=145 xy_rows=1: [('4141', 'the-log', 'red', '3.5', '21.5')]
+      neighbours: [('4115', '_invalid', 'blue'), ('4141', 'the-log', 'blue'), ('4141', 'the-log', 'red'), ('4144', 'ice-spirit', 'blue'), ('4152', 'ice-golem', 'red')]
+  08GPVR20J292 frac=0.009 n=126 xy_rows=1: [('4424', 'skeletons', 'red', '11.5', '13.5')]
+      neighbours: [('4424', 'skeletons', 'blue'), ('4424', 'skeletons', 'red')]
+  08JPVCYLYQVY frac=0.017 n=65 xy_rows=1: [('511', 'mighty-miner', 'red', '17.5', '30.5')]
+      neighbours: [('511', 'mighty-miner', 'blue'), ('511', 'mighty-miner', 'red'), ('543', 'hog-rider', 'blue')]

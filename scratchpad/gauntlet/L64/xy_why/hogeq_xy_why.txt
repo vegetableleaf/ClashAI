@@ -1,0 +1,290 @@
+== hogeq: plays rows 52973, battles.csv rows 598, battles_raw 600, replays_done 598
+plays_ext columns: ['replay_tag', 'play_index', 'tick', 'seconds', 'x_units', 'y_units', 'tile_x', 'tile_y', 'attr_ability', 'attr_card', 'attr_s', 'attr_t']
+battles.csv columns: ['replay_tag', 'deck', 'player_tag', 'player_name', 'clan_tag', 'rating', 'rank', 'wins_7d', 'battle_time', 'battle_timestamp', 'battle_type', 'result', 'team_tags', 'opponent_tags', 'team_crowns', 'opponent_crowns', 'team_deck', 'opponent_deck', 'team_elixir_total', 'team_elixir_troop', 'team_elixir_building', 'team_elixir_spell', 'team_elixir_leaked', 'oppo_elixir_total', 'oppo_elixir_troop', 'oppo_elixir_building', 'oppo_elixir_spell', 'oppo_elixir_leaked', 'plays']
+battles_raw keys: ['battle_time', 'battle_timestamp', 'battle_type', 'clan_tag', 'deck', 'opponent_crowns', 'opponent_deck', 'opponent_tags', 'player_name', 'player_tag', 'rank', 'rating', 'replay_tag', 'result', 'team_crowns', 'team_deck', 'team_tags', 'wins_7d']
+
+== 1. per-battle x/y fraction (ability rows excluded), 595 replays with plays
+   0 exactly: 295
+     (0,0.2): 4
+   [0.2,0.8): 0
+     [0.8,1): 0
+   1 exactly: 296
+  play rows with x/y: 24672/52973
+  in covered battles, rows lacking xy by (ability, card): [(('1', '_invalid'), 1147)]
+  rows with x_units == 'None': 1147
+
+== 2. cross-tabs (has_xy = frac>=0.5), battles.csv n=598
+  battles.csv unique replay_tags 598; with plays 595; has_xy 296
+
+-- battle_type  (3 levels; showing top 3 by n)
+  pathOfLegend                                                   295/593    49.7%
+  challenge-grand                                                  1/1     100.0%
+  trail                                                            0/1       0.0%
+
+-- result  (2 levels; showing top 2 by n)
+  win                                                            163/326    50.0%
+  loss                                                           133/269    49.4%
+
+-- player is team[0]  (1 levels; showing top 1 by n)
+  True                                                           296/595    49.7%
+
+-- n team tags / n opp tags  (1 levels; showing top 1 by n)
+  (1, 1)                                                         296/595    49.7%
+
+-- crowns (team,opp)  (11 levels; showing top 11 by n)
+  ('1', '0')                                                     135/281    48.0%
+  ('0', '1')                                                      94/205    45.9%
+  ('0', '3')                                                      26/41     63.4%
+  ('3', '0')                                                      16/23     69.6%
+  ('2', '1')                                                       8/16     50.0%
+  ('1', '3')                                                       8/9      88.9%
+  ('1', '2')                                                       3/8      37.5%
+  ('0', '2')                                                       2/5      40.0%
+  ('2', '0')                                                       2/4      50.0%
+  ('3', '1')                                                       2/2     100.0%
+  ('2', '3')                                                       0/1       0.0%
+
+-- rank  (34 levels; showing top 8 by n)
+  7                                                               21/48     43.8%
+  2                                                               23/47     48.9%
+  21                                                              20/45     44.4%
+  5                                                               19/45     42.2%
+  38                                                              25/42     59.5%
+  31                                                              18/40     45.0%
+  22                                                              14/36     38.9%
+  34                                                              19/36     52.8%
+
+-- rating bucket (100)  (9 levels; showing top 9 by n)
+  1900                                                            77/133    57.9%
+  2200                                                            43/107    40.2%
+  2600                                                            40/93     43.0%
+  2100                                                            41/88     46.6%
+  2000                                                            46/84     54.8%
+  2900                                                            23/47     48.9%
+  2500                                                            14/26     53.8%
+  2300                                                            11/13     84.6%
+  2800                                                             1/4      25.0%
+
+-- wins_7d bucket (20)  (4 levels; showing top 4 by n)
+  0                                                              200/383    52.2%
+  20                                                              54/120    45.0%
+  200                                                             23/47     48.9%
+  40                                                              19/45     42.2%
+
+-- clan_tag  (32 levels; showing top 10 by n)
+  None                                                            43/95     45.3%
+  RL0ULLGV                                                        23/47     48.9%
+  PJR8U2R                                                         20/45     44.4%
+  GJUCLR9Y                                                        19/45     42.2%
+  QUGUJ0V2                                                        25/42     59.5%
+  G0Q89VUC                                                        14/36     38.9%
+  RY890VR8                                                        19/36     52.8%
+  90P0LR9                                                         15/30     50.0%
+  GJC98YJL                                                        19/25     76.0%
+  GJ9UJY98                                                        18/24     75.0%
+
+-- player_tag  (34 levels; showing top 34 by n)
+  V9J9UCY0L あ xAlexinho                                           21/48     43.8%
+  GQ9828VCR EA                                                    23/47     48.9%
+  VGLVV28PC Fleischsalat                                          20/45     44.4%
+  8R20J89G CODE Dave                                              19/45     42.2%
+  VQC2UJY9V CR YT SHERIF                                          25/42     59.5%
+  JJU80UUC M_ha21                                                 18/40     45.0%
+  8880RRC8U Sr. Kimich                                            14/36     38.9%
+  PPRP92U9R Chuyito                                               19/36     52.8%
+  JPYV8V8Q9 ¡SA¡                                                  15/30     50.0%
+  J8C899YC Plebb                                                  19/25     76.0%
+  LJ9V09J2L ⭐ASSIL⭐                                               18/24     75.0%
+  9UURVQYJY Lucasツ丨看護師✨                                            9/20     45.0%
+  208YLQ20J0 David✨                                                8/14     57.1%
+  YGYRUPU88 Mystical                                               4/14     28.6%
+  2YGU9RRR8 Gabriel⚽                                               7/13     53.8%
+  RUL2PR8GY FF｜Mr Deadli                                           5/11     45.5%
+  UVJUL98JL M⭐️İBRAHİM E                                           5/11     45.5%
+  8U0UUQLL Leviathan CR                                            4/10     40.0%
+  V8U9RJQQL FARUK™                                                 5/10     50.0%
+  RUVGY080 jean lipici☆                                            4/10     40.0%
+  GGUVJCU80 Jeffreyㅤㅤㅤㅤㅤ                                           4/9      44.4%
+  R9VLCGUQY Astraqq✨️❤️                                            7/8      87.5%
+  VLQ8L0CL Mini Goblin                                             4/8      50.0%
+  2PQL9R0J2 Alberto                                                3/8      37.5%
+  RR2PJQ02J Krv                                                    4/7      57.1%
+  L90GLPR9 Pr4linais_                                              4/5      80.0%
+  8YR9VGU2Y アシケン                                                   2/5      40.0%
+  C29YVPGU0 Piaget                                                 1/4      25.0%
+  20CQG0Y ¥Nico¥™                                                  1/4      25.0%
+  22P9J2UG9 謎のチーズ                                                  2/2     100.0%
+  2G0UQ9Y92 slayer                                                 0/1       0.0%
+  8QPJYQUP0 おLaleszお                                               1/1     100.0%
+  28PQY90RL Dex│黄昏高潮✨                                              0/1       0.0%
+  9QURQRJ2P Snowdrop                                               1/1     100.0%
+
+-- deck  (1 levels; showing top 1 by n)
+  earthquake,firecracker-ev1,hog-rider,ice-spirit,mighty-miner   296/595    49.7%
+
+-- replay_tag len  (1 levels; showing top 1 by n)
+  12                                                             296/595    49.7%
+
+-- replay_tag prefix2  (4 levels; showing top 4 by n)
+  00                                                             128/222    57.7%
+  02                                                              68/139    48.9%
+  08                                                              59/130    45.4%
+  09                                                              41/104    39.4%
+
+-- replay_tag char0  (1 levels; showing top 1 by n)
+  0                                                              296/595    49.7%
+
+-- replay_tag char1  (4 levels; showing top 4 by n)
+  0                                                              128/222    57.7%
+  2                                                               68/139    48.9%
+  8                                                               59/130    45.4%
+  9                                                               41/104    39.4%
+
+-- replay_tag char2  (14 levels; showing top 12 by n)
+  R                                                               45/75     60.0%
+  Y                                                               38/58     65.5%
+  J                                                               32/58     55.2%
+  L                                                               34/52     65.4%
+  V                                                               27/48     56.2%
+  0                                                               23/46     50.0%
+  C                                                               22/43     51.2%
+  9                                                               18/38     47.4%
+  P                                                               18/34     52.9%
+  2                                                               10/33     30.3%
+  Q                                                               12/32     37.5%
+  G                                                                9/30     30.0%
+
+-- replay_tag char3  (3 levels; showing top 3 by n)
+  Y                                                              250/447    55.9%
+  P                                                                6/77      7.8%
+  9                                                               40/71     56.3%
+
+-- replay_tag chars 4-5  (43 levels; showing top 12 by n)
+  8Q                                                              44/56     78.6%
+  PY                                                              31/55     56.4%
+  PL                                                              19/45     42.2%
+  9G                                                              28/43     65.1%
+  PQ                                                              24/38     63.2%
+  JC                                                              23/37     62.2%
+  LY                                                              23/30     76.7%
+  82                                                              23/28     82.1%
+  LQ                                                              11/23     47.8%
+  PU                                                               0/19      0.0%
+  88                                                               4/16     25.0%
+  JV                                                              13/16     81.2%
+
+-- battle day (UTC)  (19 levels; showing top 19 by n)
+  2026-08-29                                                      73/146    50.0%
+  2026-08-31                                                      52/124    41.9%
+  2026-09-01                                                      59/111    53.2%
+  2026-08-30                                                      49/89     55.1%
+  2026-09-02                                                      23/48     47.9%
+  2026-08-28                                                      17/33     51.5%
+  2026-08-19                                                       9/10     90.0%
+  2026-08-27                                                       3/7      42.9%
+  2026-08-23                                                       1/6      16.7%
+  2026-08-25                                                       2/6      33.3%
+  2026-08-24                                                       1/3      33.3%
+  2026-08-26                                                       2/3      66.7%
+  2026-08-21                                                       2/3      66.7%
+  2026-08-22                                                       0/1       0.0%
+  2026-08-01                                                       0/1       0.0%
+  2025-07-28                                                       1/1     100.0%
+  2025-04-29                                                       1/1     100.0%
+  2024-08-30                                                       1/1     100.0%
+  2026-08-17                                                       0/1       0.0%
+
+-- battle hour (UTC)  (24 levels; showing top 24 by n)
+  18                                                              20/46     43.5%
+  08                                                              17/39     43.6%
+  14                                                              19/31     61.3%
+  17                                                              13/30     43.3%
+  22                                                              12/29     41.4%
+  15                                                              13/28     46.4%
+  21                                                              13/28     46.4%
+  05                                                              12/28     42.9%
+  12                                                              13/28     46.4%
+  09                                                              18/27     66.7%
+  02                                                              19/27     70.4%
+  07                                                              16/26     61.5%
+  11                                                              14/25     56.0%
+  06                                                              12/23     52.2%
+  13                                                              10/23     43.5%
+  16                                                               7/22     31.8%
+  01                                                              12/21     57.1%
+  23                                                              11/20     55.0%
+  20                                                              11/20     55.0%
+  04                                                               8/17     47.1%
+  03                                                               6/16     37.5%
+  10                                                               5/14     35.7%
+  00                                                               9/14     64.3%
+  19                                                               6/13     46.2%
+
+-- plays count bucket (20)  (8 levels; showing top 8 by n)
+  120                                                             59/129    45.7%
+  60                                                              47/122    38.5%
+  40                                                              68/113    60.2%
+  80                                                              45/89     50.6%
+  100                                                             37/73     50.7%
+  140                                                             20/35     57.1%
+  20                                                              15/29     51.7%
+  0                                                                5/5     100.0%
+
+-- team_elixir_leaked bucket (2)  (16 levels; showing top 8 by n)
+  0                                                               75/135    55.6%
+  2                                                               62/129    48.1%
+  4                                                               57/123    46.3%
+  6                                                               34/68     50.0%
+  8                                                               25/54     46.3%
+  12                                                              10/23     43.5%
+  10                                                               8/19     42.1%
+  14                                                               9/16     56.2%
+
+-- team_elixir_total==0/empty  (1 levels; showing top 1 by n)
+  False                                                          296/595    49.7%
+
+-- battle day chronological
+  2024-08-30    1/1    100.0%
+  2025-04-29    1/1    100.0%
+  2025-07-28    1/1    100.0%
+  2026-08-01    0/1      0.0%
+  2026-08-17    0/1      0.0%
+  2026-08-19    9/10    90.0%
+  2026-08-21    2/3     66.7%
+  2026-08-22    0/1      0.0%
+  2026-08-23    1/6     16.7%
+  2026-08-24    1/3     33.3%
+  2026-08-25    2/6     33.3%
+  2026-08-26    2/3     66.7%
+  2026-08-27    3/7     42.9%
+  2026-08-28   17/33    51.5%
+  2026-08-29   73/146   50.0%
+  2026-08-30   49/89    55.1%
+  2026-08-31   52/124   41.9%
+  2026-09-01   59/111   53.2%
+  2026-09-02   23/48    47.9%
+
+-- file mtimes: {'battles.csv': '2026-09-02 16:23 UTC', 'plays_ext.csv': '2026-09-02 16:23 UTC', 'battles_raw.json': '2026-09-02 16:13 UTC', 'players_done.json': '2026-09-02 16:13 UTC', 'replays_done.json': '2026-09-02 16:23 UTC', 'roster.json': '2026-09-02 13:54 UTC'}
+  battles_raw keys not in battles.csv: []
+
+-- battles.csv row-order (fetch order) bucket of 100
+  rows     0-   99:   47/100   47.0%  battle days 2026-08-28..2026-09-02
+  rows   100-  199:   48/99    48.5%  battle days 2026-08-28..2026-09-02
+  rows   200-  299:   46/100   46.0%  battle days 2026-08-23..2026-09-02
+  rows   300-  399:   52/100   52.0%  battle days 2026-08-27..2026-09-02
+  rows   400-  499:   53/100   53.0%  battle days 2024-08-30..2026-09-02
+  rows   500-  597:   50/96    52.1%  battle days 2026-08-17..2026-09-02
+
+-- raw battles 600, in battles.csv 598, in replays_done 598, done but not in csv 0, csv not in done 0
+
+-- per player: covered vs uncovered battle-timestamp (players with >=5 battles in both halves)
+  players with >=5 in both halves: 17; covered-half median newer than uncovered in 7
+  clean time split within player (max uncovered ts < min covered ts): 1/29
+
+-- all battles sorted by battle_timestamp, buckets of 100
+  2024-08-30 .. 2026-08-29:   56/100   56.0%
+  2026-08-29 .. 2026-08-29:   46/100   46.0%
+  2026-08-29 .. 2026-08-30:   56/100   56.0%
+  2026-08-30 .. 2026-08-31:   41/100   41.0%
+  2026-08-31 .. 2026-09-01:   52/100   52.0%
+  2026-09-01 .. 2026-09-02:   45/95    47.4%

@@ -1,0 +1,13 @@
+uncovered 00YYPYJ2GPUU markers with data-t 109 {('1', 'o'): 56, ('1', 't'): 53}
+  sample: {'class': ['red', 'marker'], 'data-x': '1499', 'data-y': '17499', 'data-c': 'hog-rider', 'data-t': '212', 'data-i': '1', 'data-s': 'o'}
+  side o n 53 median tile_y 18.0 frac y>16 0.943 x range 0.499 17.5
+  side t n 53 median tile_y 13.5 frac y>16 0.132 x range 0.5 17.5
+   ('tesla', 'o') n 8 median y 18.0
+   ('tesla', 't') n 10 median y 13.0
+   ('x-bow', 't') n 1 median y 12.5
+covered 02GY9GQLLQ2Y (probe_payload) markers with data-t 109 {('0', 't'): 59, ('0', 'o'): 50}
+  sample: {'class': ['blue', 'marker'], 'data-x': '4500', 'data-y': '17500', 'data-c': 'the-log', 'data-t': '271', 'data-i': '0', 'data-s': 't'}
+  side t n 59 median tile_y 18.499 frac y>16 0.932 x range 0.499 17.5
+  side o n 45 median tile_y 13.5 frac y>16 0.111 x range 0.499 17.5
+   ('tesla', 't') n 10 median y 21.0
+   ('x-bow', 't') n 6 median y 22.5

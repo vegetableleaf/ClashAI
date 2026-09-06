@@ -1,0 +1,22 @@
+covered 619 replays 55554 rows; attr_s: [('blue', 28862), ('red', 26692)] | attr_ability: [('0', 54142), ('1', 1412)] | tick==attr_t: 55554 | tick%20==0 share: 0.0 | tick parity even share: 0.394 | max tick: 5979 | mean plays/replay: 89.7
+   blue share 0.52  first tick median 201  tick last-digit dist [(1, 14929), (2, 5603), (4, 5589), (7, 5565), (5, 5563), (6, 5530), (3, 5482), (8, 5173), (9, 2120)]
+   duplicate (tick,card) pairs: 463
+   covered rows with xy by side: [('blue', 28804), ('red', 25338)]
+   covered rows without xy by side/card: [(('red', '_invalid'), 1354), (('blue', '_invalid'), 58)]
+uncovered 612 replays 53697 rows; attr_s: [('blue', 27954), ('red', 25743)] | attr_ability: [('0', 52292), ('1', 1405)] | tick==attr_t: 53697 | tick%20==0 share: 0.0 | tick parity even share: 0.392 | max tick: 10151 | mean plays/replay: 87.7
+   blue share 0.521  first tick median 198  tick last-digit dist [(1, 14418), (2, 5571), (3, 5556), (7, 5451), (6, 5383), (4, 5367), (5, 5279), (8, 4720), (9, 1952)]
+   duplicate (tick,card) pairs: 488
+
+PARTIAL replays (0<frac<0.8):
+  00YYPYJ2GPUU frac=0.009 n=109 xy_rows=1: [('4655', 'the-log', 'red', '3.5', '17.5')]
+      neighbours: [('4625', 'tesla', 'blue'), ('4655', 'the-log', 'blue'), ('4655', 'the-log', 'red'), ('4674', 'tesla', 'red')]
+  08GPVGVUL8YG frac=0.008 n=125 xy_rows=1: [('5893', 'the-log', 'red', '14.5', '17.5')]
+      neighbours: [('5864', 'rocket', 'red'), ('5866', 'rocket', 'blue'), ('5893', 'the-log', 'blue'), ('5893', 'the-log', 'red')]
+  08CPVC8U08U0 frac=0.010 n=99 xy_rows=1: [('3641', 'skeletons', 'red', '2.5', '8.5')]
+      neighbours: [('3611', 'goblin-demolisher', 'red'), ('3641', 'skeletons', 'blue'), ('3641', 'skeletons', 'red'), ('3681', 'the-log', 'blue')]
+  02JY9RQJVVQG frac=0.007 n=140 xy_rows=1: [('4411', 'the-log', 'red', '2.5', '17.5')]
+      neighbours: [('4411', 'the-log', 'blue'), ('4411', 'the-log', 'red'), ('4448', 'skeletons', 'red')]
+  02CP8J2V8QPJ frac=0.007 n=134 xy_rows=1: [('1975', 'skeletons', 'red', '12.5', '17.5')]
+      neighbours: [('1965', 'tesla', 'blue'), ('1975', 'skeletons', 'blue'), ('1975', 'skeletons', 'red'), ('2013', 'ice-spirit', 'red')]
+  08RPVC8G8UL2 frac=0.010 n=105 xy_rows=1: [('5893', 'tornado', 'red', '13.5', '15.5')]
+      neighbours: [('5893', 'tornado', 'blue'), ('5893', 'tornado', 'red')]
