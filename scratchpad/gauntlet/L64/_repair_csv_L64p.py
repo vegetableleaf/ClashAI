@@ -13,13 +13,25 @@ Two writer bugs, both caught by the drive failing on every new tag with KeyError
                     so DictWriter emitted the value twice. The duplicate is last, so columns 0..28
                     are correct and only a trailing 30th value is spurious. Repair: truncate.
 
-Writes NEW files and swaps them in; .bak_L64p copies of all three were taken first.
+Writes NEW files and swaps them in; .bak_<tag> copies of all three are taken first.
+
+L64q: the SAME shift recurred on hogeq from a different writer -- crawl_deck.py stage 2 builds its field
+list from the parsed play's attr_* keys, and parse_replay_ext has emitted attr_i since the re-fetch work,
+so it too writes 13 fields into the 12-column plays_ext.csv. Parametrised: `python _repair_csv_L64p.py hogeq`.
+
+usage: _repair_csv_L64p.py <deck> [bak_tag]
 """
-import csv
+import csv, shutil, sys
 from pathlib import Path
 
-D = Path("icebow/data/royaleapi/crawl2")
+DECK = sys.argv[1]
+TAG = sys.argv[2] if len(sys.argv) > 2 else "L64q"
+D = Path(f"{DECK}/data/royaleapi/crawl2")
 PLAYS, I1, BATTLES = D / "plays_ext.csv", D / "plays_ext_i1.csv", D / "battles.csv"
+for f in (PLAYS, I1, BATTLES):
+    b = f.with_name(f.name + ".bak_" + TAG)
+    assert not b.exists(), "backup already exists, refusing to overwrite: %s" % b
+    shutil.copy2(f, b); print("backup", b, f.stat().st_size)
 
 # --- plays_ext.csv: split the shifted rows out ------------------------------------------------
 with PLAYS.open(encoding="utf-8", newline="") as f:
@@ -46,6 +58,8 @@ ss = {r[i1_hdr.index("attr_s")] for r in fixed}
 ii = {r[i1_hdr.index("attr_i")] for r in fixed}
 print("after remap -- attr_s values:", sorted(ss), "| attr_i values:", sorted(ii))
 assert ss <= {"blue", "red"}, "attr_s still wrong after remap: %s" % sorted(ss)
+if not moved:
+    print("nothing to move"); sys.exit(0)
 assert ii <= {"0", "1", ""}, "attr_i still wrong after remap: %s" % sorted(ii)
 
 tmp = PLAYS.with_suffix(".csv.fixed")

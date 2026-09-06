@@ -28,21 +28,28 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from refetch_par import connect
 
-OUT = Path("C:/Users/benpe/ClashBot/icebow/data/royaleapi/crawl2")
+CRAWLS = {d: Path("C:/Users/benpe/ClashBot/%s/data/royaleapi/crawl2" % d) for d in ("icebow", "hogeq")}
+OUT = CRAWLS["icebow"]           # overridden by --deck before anything touches the disk
 # L64p: NEVER hardcode this. The first version listed 13 fields with attr_i in the middle and appended
 # to plays_ext.csv, whose header is 12 columns and has no attr_i at all -- every row landed one column
 # out (attr_s held attr_i, attr_t held attr_s) and the engine drive rejected all 793 tags. New plays go
 # to plays_ext_i1.csv, the file that HAS attr_i, in that file's own column order, read off disk.
 PLAYS_CSV = OUT / "plays_ext_i1.csv"
+PLAY_FIELDS: list[str] = []
+
+
+def set_deck(deck: str):
+    """Point every path at one deck's crawl2 and read that file's own header (L64q: lazy, was at import)."""
+    global OUT, PLAYS_CSV, PLAY_FIELDS
+    OUT = CRAWLS[deck]
+    PLAYS_CSV = OUT / "plays_ext_i1.csv"
+    PLAY_FIELDS = play_fields()
 
 
 def play_fields() -> list[str]:
     """The live header of the file we append to -- the only safe source of the column order."""
     with PLAYS_CSV.open(encoding="utf-8", newline="") as f:
         return next(csv.reader(f))
-
-
-PLAY_FIELDS = play_fields()
 
 
 def backlog():
@@ -90,7 +97,9 @@ def main():
     ap.add_argument("--stats")
     ap.add_argument("--label", default="")
     ap.add_argument("--merge", action="store_true")
+    ap.add_argument("--deck", default="icebow", choices=sorted(CRAWLS))
     a = ap.parse_args()
+    set_deck(a.deck)
     if a.merge:
         merge(); return
     if not a.token:
