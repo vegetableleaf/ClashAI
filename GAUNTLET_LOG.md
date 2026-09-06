@@ -1429,3 +1429,8 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - (a) bug, mine: crawl_par wrote 13 fields into 12-col plays_ext.csv (attr_i in the middle) and duplicated "plays" in battles rows -> drive KeyError on all 793 new tags. Repaired (_repair_csv_L64p.py, .bak_L64p kept): 63,925 rows moved to plays_ext_i1.csv in its own order, 801 battles rows trimmed. Probe drive 3/5 ok, both failures known classes. crawl_par now reads the live header.
 - (a) launched: corpus_v5 drive 845 tags (29 done: 26 ok / 3 no-native-evolution, ~10 s each, ~2.3 h); hogeq expand --expand-to 300 (54/115 walked, 700 battles). (b) corpus_v5 ~1,450-1,700 replays = x1.5-1.8, not a doubling.
 - (a) shipped c9aa461: engine_play --record-every, match_video.py, daily_clip.sh. Two render bugs found from stills (mirror, tower test).
+
+## L64q (2026-09-06) -- rich renderer, owner request
+- Owner: clip "very blank". Rebuilt match_video.py: labels, hp, attack/aggro rings, target lines, labelled projectiles, tower ranges, elixir/hand/gate/log HUD. engine_play.vis_raw() records the extra fields; model input unchanged. 0587961.
+- Traps: sandbox csv_logic tables hold no values; cv2 putText thickness changes advance.
+- Box: icebow drive 164/845 (33 fails, all evo E-barbs 26000043); hogeq stage 2 40/355 after a 20-min 429 stall, now ~7/min, left running. L64p report posted.
