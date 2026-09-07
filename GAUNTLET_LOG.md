@@ -1582,3 +1582,10 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Not established (b): that no teacher can beat the student; that pros are optimal; that the engine is useless (it stays the state source).
 - S3 ends; S4 (live path) is the owner's. One gauntlet-runnable prep measurement offered: offline feature-parity audit of live detector obs vs S1 input features.
 - VM powered off (~9 h billed this window). Restart is an owner gcloud command; disk persists.
+
+## L67a+b (2026-09-07) -- S4 opened: live-shift cost measured; FirstLight_CR reviewed; stopped for owner ruling
+- Live-path guardrail removed by owner ruling (gauntlet.md §6, quoted inline). Survey: play.py on old CNN/18x24/hardcoded tau 0.25; from_live has zero callers; all live inputs exist in scope.
+- Measured (a): degraded twin of v3 VAL (obs_contract.degrade on every BoardState, same rows/targets). v5lat s0/s1/s2 exact cell 21.4/21.0/20.5 -> 16.7/16.6/17.1; card 63.2/63.2/62.7 -> 52.4/48.3/51.1; mean dist 3.54-3.61 -> 4.53-4.64 tiles; gate acc .82 -> .74-.76. The live shift costs more than a corpus doubling buys (+1.5 pp). §5cs.95 A.
+- FirstLight_CR (owner pointer) read in full: offline-only (no capture/ADB), 252,238 RoyaleAPI replays public on HF, 12.7 M-param universal-card LSTM model, PPO at 1,528 concurrent matches / 8 GPUs. NO learning curve in the repo; results are argmax win rates vs frozen opponents; they hit our L62 passive-opponent trap (296/306 wins vs an IL that played <= 3 cards). "Not plateaued" = (b) unsupported. §5cs.95 B.
+- Transferable + cheap: HF shard 0 has 41 exact-icebow sides / 10,000 -> ~2,070 over the dataset (est.) = one more corpus doubling (v6), S2 slope predicts +1.5 pp; skill tier unknown, must be A/B'd on the unchanged v3 VAL. §5cs.95 C.
+- Stopped with --questions: next action (A) v6 corpus doubling from HF vs (B) degradation-augmented v5 retrain. Box idle, VM off.

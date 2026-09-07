@@ -1,0 +1,6 @@
+replays 5000 sides 10000
+modes [('Ranked', 4451), ('1v1 Battle', 325), ('Grand Challenge', 91), ('Ladder', 59), ('Normal Battle', 48), ('1v1', 21), ('Classic Challenge', 4), ('1v1 Showdown', 1)]
+battle_type [('pathOfLegend', 4451), ('clanMate', 225), ('trail', 155), ('friendly', 99), ('tournament', 48), ('riverRacePvP', 21), ('unknown', 1)]
+levels [(6, 3), (7, 1), (9, 2), (10, 3), (11, 7495), (12, 2), (13, 7), (14, 89), (15, 559), (16, 71839)]
+xbow sides 212 xbow+tesla 176 EXACT icebow sides 41
+exact tags [('c3ccaa538032406ba5ab61e9de2a0ec2', 'opponent'), ('f12a82e71fcc44a490740b3e8ea1a216', 'opponent'), ('d45ed8be106343b29bb58f14ecdfc231', 'opponent'), ('336934f4950144e5ae835fd9d1a353ac', 'team'), ('d17e257f2ab04c74ba1bff149d00e409', 'team')]
