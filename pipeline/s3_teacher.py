@@ -152,7 +152,36 @@ def unit_hp(state, side: int) -> tuple[int, int]:
     return ours, theirs
 
 
-def evaluate(env, side: int, horizon: int, mode: str = "v2") -> float:
+def rollout(env, ctx, side: int, start_tick: int, horizon: int, opponent: str) -> None:
+    """Advance `horizon` ticks. With opponent="replay", the OTHER side's recorded plays are applied at
+    their real ticks during the window instead of the opponent standing still.
+
+    Why this matters (§5cs.90 C): an inert opponent makes every placement look safe, because nothing is
+    ever punished. Only the other side's plays are replayed -- replaying our own future plays would leak
+    the pro's continuation into a score that is supposed to judge one placement.
+
+    Its limitation, which no amount of care removes: the opponent's recorded plays were a response to the
+    PRO's placement, not to our candidate. This is "the opponent does what they actually did", which is a
+    better environment than a statue and still not a reactive opponent."""
+    end = start_tick + horizon
+    t = start_tick
+    if opponent == "replay":
+        for row in ctx["plays"]:
+            if row["side"] == side or row["ability"] or not (start_tick < row["tick"] <= end):
+                continue
+            if row["tick"] > t:
+                step = env.step(row["tick"] - t)
+                t = int(step["tick_after"])
+                if step["episode"].get("terminated"):
+                    return
+            di = ctx["index_of"][row["side"]].get(row["attr_card"])
+            if di is not None:
+                env.act(side=row["side"], deck_index=di, x=row["x"], y=row["y"])
+    if end > t:
+        env.step(end - t)
+
+
+def evaluate(env, side: int, horizon: int, mode: str = "v2", advance=None) -> float:
     """Roll forward `horizon` ticks and score from `side`'s view.
 
     v1 (kept for comparison) scored (tower damage dealt - taken) + 1/8 * unit_swing, where unit_swing
@@ -168,7 +197,7 @@ def evaluate(env, side: int, horizon: int, mode: str = "v2") -> float:
     before = env.observe()
     ot0, tt0 = tower_hp(before, side)
     ou0, tu0 = unit_hp(before, side)
-    env.step(horizon)
+    (advance or (lambda: env.step(horizon)))()
     after = env.observe()
     ot1, tt1 = tower_hp(after, side)
     ou1, tu1 = unit_hp(after, side)
@@ -254,6 +283,8 @@ def run(argv) -> int:
     # cannot distinguish "the search found a clear optimum at the back" from "most candidates tied and the
     # first one wins, and the first one is the lowest cy" (§5cs.88 D). Those need opposite fixes.
     ap.add_argument("--dump-scores", type=Path, default=None)
+    ap.add_argument("--opponent", default="replay", choices=("replay", "none"),
+                    help="replay = the other side's recorded plays act during the rollout; none = inert")
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--shard", default="0/1", help="i/n -- split BY TAG so per-tag setup is not duplicated")
     ap.add_argument("--seed", type=int, default=1)
@@ -318,13 +349,15 @@ def run(argv) -> int:
                 def try_cells(cells, stage=""):
                     got = None; n_tied = 0
                     for (cx, cy) in cells:
-                        if drive_to(env, ctx, target["play_index"], rd) is None:
+                        bt = drive_to(env, ctx, target["play_index"], rd)
+                        if bt is None:
                             continue
                         ex, ey = cell_to_engine(cx, cy, row["side"], a.off)
                         res = env.act(side=row["side"], deck_index=di, x=ex, y=ey)
                         if not res.get("accepted"):
                             continue
-                        sc = evaluate(env, row["side"], a.horizon, a.score)
+                        sc = evaluate(env, row["side"], a.horizon, a.score,
+                                      lambda: rollout(env, ctx, row["side"], bt, a.horizon, a.opponent))
                         if dump is not None:
                             dump.write(json.dumps({"tag": tag, "tick": row["tick"], "stage": stage,
                                                    "cx": cx, "cy": cy, "score": round(sc, 2)}) + chr(10))
