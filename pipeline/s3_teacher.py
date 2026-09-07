@@ -165,9 +165,13 @@ def rollout(env, ctx, side: int, start_tick: int, horizon: int, opponent: str) -
     better environment than a statue and still not a reactive opponent."""
     end = start_tick + horizon
     t = start_tick
-    if opponent == "replay":
+    if opponent in ("replay", "both"):
         for row in ctx["plays"]:
-            if row["side"] == side or row["ability"] or not (start_tick < row["tick"] <= end):
+            # "both" (L66m diagnostic ONLY, never a teacher setting): our own recorded follow-ups are
+            # replayed too. That leaks the pro's continuation into the score on purpose -- it asks whether
+            # the pro's cell scores well GIVEN the pro's own next plays, which separates "the objective is
+            # wrong" from "one placement without its sequence is what is wrong" (§5cs.90 C, third cause).
+            if (opponent == "replay" and row["side"] == side) or row["ability"]                     or not (start_tick < row["tick"] <= end):
                 continue
             if row["tick"] > t:
                 step = env.step(row["tick"] - t)
@@ -283,7 +287,9 @@ def run(argv) -> int:
     # cannot distinguish "the search found a clear optimum at the back" from "most candidates tied and the
     # first one wins, and the first one is the lowest cy" (§5cs.88 D). Those need opposite fixes.
     ap.add_argument("--dump-scores", type=Path, default=None)
-    ap.add_argument("--opponent", default="replay", choices=("replay", "none"),
+    ap.add_argument("--include-pro", action="store_true",
+                    help="add the pro's own cell to the candidate set and report its score and rank (diagnostic)")
+    ap.add_argument("--opponent", default="replay", choices=("replay", "none", "both"),
                     help="replay = the other side's recorded plays act during the rollout; none = inert")
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--shard", default="0/1", help="i/n -- split BY TAG so per-tag setup is not duplicated")
@@ -345,6 +351,10 @@ def run(argv) -> int:
                 if base_tick is None:
                     continue
                 cands = legal_cells(env, row["side"], di, a.off, a.max_candidates)
+                pro_cell = (min(GRID_X - 1, int(row["x"] * GRID_X)), min(GRID_Y - 1, int(row["y"] * GRID_Y)))
+                if a.include_pro and pro_cell not in cands:
+                    cands = list(cands) + [pro_cell]
+                scored: dict[tuple[int, int], float] = {}
 
                 def try_cells(cells, stage=""):
                     got = None; n_tied = 0
@@ -358,6 +368,7 @@ def run(argv) -> int:
                             continue
                         sc = evaluate(env, row["side"], a.horizon, a.score,
                                       lambda: rollout(env, ctx, row["side"], bt, a.horizon, a.opponent))
+                        scored[(cx, cy)] = sc
                         if dump is not None:
                             dump.write(json.dumps({"tag": tag, "tick": row["tick"], "stage": stage,
                                                    "cx": cx, "cy": cy, "score": round(sc, 2)}) + chr(10))
@@ -389,9 +400,15 @@ def run(argv) -> int:
                 if best is None:
                     continue
                 sc, cx, cy = best
-                fh.write(json.dumps({"tag": tag, "tick": row["tick"], "slot": row["slot"],
-                                     "px": float(cx) + a.off, "py": float(cy) + a.off,
-                                     "score": round(sc, 1), "candidates": n_eval}) + chr(10))
+                out_row = {"tag": tag, "tick": row["tick"], "slot": row["slot"],
+                           "px": float(cx) + a.off, "py": float(cy) + a.off,
+                           "score": round(sc, 1), "candidates": n_eval}
+                if a.include_pro and pro_cell in scored:
+                    ps = scored[pro_cell]
+                    out_row.update({"pro_cx": pro_cell[0], "pro_cy": pro_cell[1], "pro_score": round(ps, 1),
+                                    "pro_rank": 1 + sum(1 for v in scored.values() if v > ps),
+                                    "n_scored": len(scored), "best_score": round(max(scored.values()), 1)})
+                fh.write(json.dumps(out_row) + chr(10))
                 fh.flush()
                 done += 1
                 if done % 5 == 0:
