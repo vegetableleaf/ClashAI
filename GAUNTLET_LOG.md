@@ -1575,3 +1575,10 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Per-card screen (a, n 2-13): spells agree (log rank 1 under replay, tornado 5-7, rocket 7); troops/buildings do not (ice-wizard 35, knight 33-37, x-bow 27-33, tesla 23-26).
 - New hypothesis (b): the replayed opponent is an ORACLE future -- against a known future the best cell exploits the exact timing/lane of the next enemy card; a pro's hedge wins only in expectation. Fits: spells immediate, troops hedges, follow-ups irrelevant, replay ~ none (5cs.91). Test: mean over K=4 jittered opponent futures, same futures for every candidate; pro rank up to top quartile => rebuild as expectation teacher; else engine teacher closed. ~2.5 h on 4 slots.
 - Trap: engine services were dead on arrival (all four ports closed) -- they died with the ssh session that started them (5cs.47). Restarted under nohup setsid. UTC stamps on 5cs.90-92 were mislabelled (this loop ran 11:4x-13:1x UTC).
+
+## L66n (2026-09-07) -- oracle-future hypothesis NULL; engine search teacher CLOSED; VM powered off; loop stopped for the owner
+- Test (a): K=4 jittered opponent futures (U(-60,60) ticks, 1 tile sd), same futures for every candidate, both-mode continuation, pro cell in the menu; 65 states / 12 tags. Pro rank median 21/49 (both 24, replay 27); top quartile 40.0% (36.9 / 26.2); paired jit4-both 19 better / 24 worse / 22 same, median 0; chosen->pro 9.51 tiles; teacher picked the pro cell exactly 2/65 (both 6, replay 4) vs student 21.9-23.9%.
+- Verdict (a): five hypotheses, five nulls. No tower-damage rollout objective tried here agrees with pros on troops/buildings; spells agree in every mode. Gate failed in every configuration, not for reachability. Engine search teacher closed. §5cs.94 C.
+- Not established (b): that no teacher can beat the student; that pros are optimal; that the engine is useless (it stays the state source).
+- S3 ends; S4 (live path) is the owner's. One gauntlet-runnable prep measurement offered: offline feature-parity audit of live detector obs vs S1 input features.
+- VM powered off (~9 h billed this window). Restart is an owner gcloud command; disk persists.
