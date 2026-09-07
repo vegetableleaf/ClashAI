@@ -1,0 +1,131 @@
+{
+ "session": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\sessions\\20260815_222309\\video.mp4",
+ "video": "C:\\Users\\benpe\\ClashBot\\bridgeblock.mp4",
+ "shapes": {
+  "session": [
+   1198,
+   656,
+   3
+  ],
+  "video": [
+   360,
+   640,
+   3
+  ],
+  "upscaled": [
+   1198,
+   2129,
+   3
+  ]
+ },
+ "arms": [
+  {
+   "arm": "A_own_session",
+   "frames": 60,
+   "dets": 223,
+   "whitelist_dets": 186,
+   "dets_per_frame": 3.72,
+   "whitelist_per_frame": 3.1,
+   "frames_with_any_det": 54,
+   "mean_conf": 0.712,
+   "top_classes": [
+    [
+     "ice_wizard",
+     36
+    ],
+    [
+     "skeletons",
+     29
+    ],
+    [
+     "x_bow",
+     25
+    ],
+    [
+     "knight",
+     15
+    ],
+    [
+     "knight_evo",
+     9
+    ],
+    [
+     "witch",
+     9
+    ]
+   ]
+  },
+  {
+   "arm": "B_video_native",
+   "frames": 60,
+   "dets": 123,
+   "whitelist_dets": 81,
+   "dets_per_frame": 2.05,
+   "whitelist_per_frame": 1.35,
+   "frames_with_any_det": 47,
+   "mean_conf": 0.59,
+   "top_classes": [
+    [
+     "skeletons",
+     25
+    ],
+    [
+     "knight",
+     9
+    ],
+    [
+     "elixir_golemite",
+     7
+    ],
+    [
+     "balloon",
+     6
+    ],
+    [
+     "tesla",
+     6
+    ],
+    [
+     "graveyard_aoe",
+     6
+    ]
+   ]
+  },
+  {
+   "arm": "C_video_upscaled",
+   "frames": 60,
+   "dets": 118,
+   "whitelist_dets": 79,
+   "dets_per_frame": 1.97,
+   "whitelist_per_frame": 1.32,
+   "frames_with_any_det": 48,
+   "mean_conf": 0.602,
+   "top_classes": [
+    [
+     "skeletons",
+     23
+    ],
+    [
+     "knight",
+     8
+    ],
+    [
+     "balloon",
+     6
+    ],
+    [
+     "tesla",
+     5
+    ],
+    [
+     "elixir_golemite",
+     5
+    ],
+    [
+     "tornado_aoe",
+     5
+    ]
+   ]
+  }
+ ]
+}

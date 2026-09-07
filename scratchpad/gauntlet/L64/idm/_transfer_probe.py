@@ -12,8 +12,17 @@ whitelist cards, on
   A) our own recorded session (the distribution the weights were fitted on)  -- the control
   B) bridgeblock.mp4, third-party gameplay video                             -- the transfer case
 plus C) B upscaled to the detector's native region size, which separates "too few pixels" from
-"different look" -- if upscaling recovers most of the gap it is a resolution problem (solvable by
-sourcing 1080p video); if it does not, it is a domain problem (needs re-labelling).
+"different look".
+
+RESULT (L64v) AND TWO CORRECTIONS TO THIS FILE'S OWN PREMISES:
+  * Arm C IS A NO-OP and its result must not be read. YOLO letterboxes every input to imgsz=960 on
+    the longest side, so 640x360 and the 2129x1198 upscale of it arrive at the model as the SAME
+    960x540 image. C measured 1.97 dets/frame against B 2.05 because it IS B. A real resolution
+    arm has to CROP the arena region first, so the arena fills imgsz.
+  * The paragraph above is wrong about the video. bridgeblock.mp4 is not a phone screen inside a
+    landscape frame -- it is an EDITED highlight clip: a panning, zooming crop of part of the
+    arena with overlaid card-name captions, no hand and no elixir bar. The arena is at higher
+    magnification than our own capture, not lower, which is why detections did not collapse.
 
 NOT a precision/recall measurement: there is no ground truth here, only detection counts. A detector that
 fires confidently on nothing real would look identical to a working one. This probe can only FALSIFY

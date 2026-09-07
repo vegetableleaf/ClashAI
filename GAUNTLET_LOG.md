@@ -1459,3 +1459,9 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Pre-registered 23.7 (icebow slope); measured 23.21, shortfall 0.5 pp vs per-seed SE 0.99 -- held. Own slope 1.34 +/- 0.20 vs icebow 1.60 +/- 0.17 = 1.0 sigma; POOLED 1.50 +/- 0.13 pp per doubling across 2 decks / 6 corpora / 18 runs.
 - RETRACTED before publishing: "both decks bend the same way" is an artifact -- a 3-point least-squares line ALWAYS has alternating residual signs. No curvature is measurable; a 4th point at 4-5k replays is the only test.
 - Means: x10 predicts 23.1-23.5 (icebow) / ~25.5 (hogeq); corpus scaling cannot reach the high 20s. S3 is next; s3_bench.py is the gate. Box now IDLE. §5cs.78.
+
+## L64v (2026-09-07) -- detector transfer does NOT collapse; the clip is unmineable for other reasons
+- Probe (60 frames/arm, conf 0.25): own session 3.72 dets/frame @0.71 conf, bridgeblock.mp4 2.05 @0.59, 47/60 frames with a detection, coherent class mix. Collapse hypothesis unsupported (a). NOT a recall comparison -- different content.
+- CONTRADICTED my own premise: bridgeblock.mp4 is not a phone screen in a landscape frame, it is an EDITED highlight -- panning/zooming crop, caption overlays, no hand, no elixir bar, never the whole board. Arena magnification is HIGHER than our capture.
+- CONTRADICTED arm C: YOLO letterboxes to imgsz 960 longest side, so the upscale is the same tensor as native. C == B, tested nothing. Both corrections written into the probe docstring.
+- Decides the S2 item: mining needs fixed board->pixel mapping + hand + elixir; this clip has none. Sourcing problem, not a detector problem. With a doubling worth 1.50 pp (§5cs.78), recommended to the owner: skip video mining, go to S3. §5cs.79.
