@@ -1,0 +1,47 @@
+[
+ {
+  "file": "ctrl_hunter1_180s.mp4",
+  "shape": [
+   888,
+   1920
+  ],
+  "portrait": true,
+  "frames_used": 17,
+  "of": 20,
+  "icebow": {
+   "tornado": 0.747,
+   "tesla": 0.844,
+   "ice_wizard": 0.809,
+   "x_bow": 0.782,
+   "rocket": 0.826,
+   "knight": 0.625,
+   "the_log": 0.82,
+   "skeletons": 0.671
+  },
+  "worst_icebow": 0.625,
+  "best_other": 0.786,
+  "separation": -0.161,
+  "top_other": [
+   [
+    "mega_minion",
+    0.786
+   ],
+   [
+    "clone",
+    0.785
+   ],
+   [
+    "firecracker",
+    0.784
+   ],
+   [
+    "barbarian_barrel",
+    0.777
+   ],
+   [
+    "bomb_tower",
+    0.77
+   ]
+  ]
+ }
+]

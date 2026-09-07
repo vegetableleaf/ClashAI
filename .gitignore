@@ -67,3 +67,7 @@ wr_eval_tmp.py
 
 # --- Third-party clones under research/ext/ (assessed, not vendored) ---
 research/ext/
+scratchpad/gauntlet/L66/clips/
+scratchpad/gauntlet/L66/clips180/
+scratchpad/gauntlet/L66/*.mp4
+scratchpad/gauntlet/L66/*.webm
