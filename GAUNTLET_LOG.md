@@ -1495,3 +1495,10 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Hit rate 1/9 = 11.1%, Wilson 95% CI 2.0-43.5% -> 49 h icebow point estimate, band 9-192 h, against 78-139 h per doubling. Point estimate is SHORT and the band straddles it: nine videos cannot answer this. 100-video sweep running (4-way parallel).
 - Cost measured: 21 MB and ~2 min per video for a 180 s slice; ~26 s/video to profile. All 1,382 = ~29 GB, ~12 h at 4-way. Stage 2 = full download of hits only.
 - Still unmeasured and largest unknown (b): what a mined replay is worth vs a sandbox-driven one. The 1.50 pp/doubling slope was fitted on exact-state engine data; mined data carries detector noise in observation AND label. §5cs.83.
+
+## L66c (2026-09-07) -- FIRST ENGINE SLOT ON LINUX
+- start_direct_service.sh returns {"ready": true, "mode": "serve-direct", "slot": 0, "port": 37031, "guest_pids": [2738], "state": {...}} on clashbot-s3. Readiness required ping AND status over the adb-forwarded socket, so the engine answers, not just launches.
+- The port needed NO repair. Everything 5cs.81 tested in isolation held live: nested launch string, adb forward, push_verified sha skip, unzip-not-tar, ps matcher. First attempt already reached jni_on_load after_system_load ok:true -- the real libg.so loading natively in the guest.
+- NEW TRAP (a): the start script pushes the APKs but does not INSTALL them; that is worker.py:184-194 (adb install-multiple -r -t, base.apk first, all 5 splits). On Windows it happened once at bootstrap and persists in the AVD, so it is invisible until a fresh one. Error names a missing package, not a missing step. Install took 8.2 s.
+- Timings: first start 4m03s (75 MB of .so pushed + sha-verified), second 14.2 s (push_verified skips on hash match). Steady-state slot restart is ~14 s, not 4 min.
+- Unmeasured: engine throughput vs the local 11.24 s/match median -- needs the replay corpus on the VM. That sizes S3. §5cs.84.
