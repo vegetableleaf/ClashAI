@@ -1,0 +1,5 @@
+{"file": "HunterCR_1.mp4", "duration_s": 811.5, "name_blocks": 34, "matches_lower_bound": 3, "block_lengths_s": [174.0, 278.0, 170.0], "jitter_p50": 0.0, "jitter_p99": 0.094}
+{"file": "HunterCR_2.mp4", "duration_s": 3741.8, "name_blocks": 181, "matches_lower_bound": 12, "block_lengths_s": [174.0, 170.0, 170.0, 170.0, 170.0, 340.0, 30.0, 346.0, 336.0, 170.0, 344.0, 170.0], "jitter_p50": 0.0, "jitter_p99": 0.0782}
+{"file": "HunterCR_3.mp4", "duration_s": 1246.4, "name_blocks": 113, "matches_lower_bound": 4, "block_lengths_s": [172.0, 172.0, 172.0, 172.0], "jitter_p50": 0.0, "jitter_p99": 0.1718}
+{"files": 3, "matches_lower_bound": 19, "video_minutes": 96.7, "minutes_per_match": 5.1, "corpus_growth_pct": 1.16, "pp_at_1p50_per_doubling": 0.025, "video_hours_for_one_doubling": 138.9}
+EXIT 0

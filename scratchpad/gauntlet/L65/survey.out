@@ -1,0 +1,5 @@
+{"file": "HunterCR_1.mp4", "duration_s": 811.5, "samples": 406, "in_battle_frac": 0.961, "battle_s": 796.0, "matches_upper_bound": 1, "run_lengths_s": [796.0]}
+{"file": "HunterCR_2.mp4", "duration_s": 3741.8, "samples": 1871, "in_battle_frac": 0.958, "battle_s": 3726.0, "matches_upper_bound": 1, "run_lengths_s": [3726.0]}
+{"file": "HunterCR_3.mp4", "duration_s": 1246.4, "samples": 624, "in_battle_frac": 0.962, "battle_s": 1226.0, "matches_upper_bound": 1, "run_lengths_s": [1226.0]}
+{"videos": 3, "matches_upper_bound": 3, "battle_minutes": 95.8, "corpus_now_icebow": 1638, "corpus_growth_pct": 0.18, "doublings": 0.0026, "pp_at_1p50_per_doubling": 0.004}
+EXIT 0
