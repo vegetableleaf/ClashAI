@@ -151,21 +151,30 @@ def unit_hp(state, side: int) -> tuple[int, int]:
     return ours, theirs
 
 
-def evaluate(env, side: int, horizon: int) -> float:
-    """Roll forward `horizon` ticks and score from `side`'s view. Towers dominate; units are a tiebreak
-    at 1/8 weight so that a placement which merely trades evenly does not outrank one that defends a tower."""
+def evaluate(env, side: int, horizon: int, mode: str = "v2") -> float:
+    """Roll forward `horizon` ticks and score from `side`'s view.
+
+    v1 (kept for comparison) scored (tower damage dealt - taken) + 1/8 * unit_swing, where unit_swing
+    counted our units' CURRENT hitpoints. That rewards cowardice and it showed: placing a card adds its
+    full hp to "our units", and placing it where nothing can reach it preserves that hp, while placing it
+    into a fight spends it. Over a 6 s horizon almost no candidate does tower damage, so the unit term
+    decided everything -- 53% of v1's targets landed in the back third of its own half (median py 5.5
+    against the pros' 39.0, §5cs.88).
+
+    v2 removes the perverse incentive by never counting our own units' hitpoints as a gain. It scores
+    DAMAGE only: enemy tower hp lost, plus enemy unit hp destroyed at 1/8 weight, minus our own tower hp
+    lost. A placement earns by hurting the opponent or by preventing damage, never by hiding."""
     before = env.observe()
     ot0, tt0 = tower_hp(before, side)
     ou0, tu0 = unit_hp(before, side)
-    step = env.step(horizon)
+    env.step(horizon)
     after = env.observe()
     ot1, tt1 = tower_hp(after, side)
     ou1, tu1 = unit_hp(after, side)
-    dealt = (tt0 - tt1)
-    taken = (ot0 - ot1)
-    unit_swing = (ou1 - ou0) - (tu1 - tu0)
-    terminated = bool(step["episode"].get("terminated"))
-    return float(dealt - taken) + 0.125 * float(unit_swing) + (0.0 if not terminated else 0.0)
+    if mode == "v1":
+        return float((tt0 - tt1) - (ot0 - ot1)) + 0.125 * float((ou1 - ou0) - (tu1 - tu0))
+    enemy_units_destroyed = max(0.0, float(tu0 - tu1))     # their hp that went away; spawns only lower it
+    return float((tt0 - tt1) - (ot0 - ot1)) + 0.125 * enemy_units_destroyed
 
 
 def legal_cells(env, side: int, deck_index: int, off: float, max_candidates: int) -> list[tuple[int, int]]:
@@ -239,6 +248,7 @@ def run(argv) -> int:
     # states) so 0% agreement was guaranteed by the design, not measured. Stage B re-searches the full
     # lattice within +/-R cells of the best coarse cell, which makes the criterion reachable.
     ap.add_argument("--refine", type=int, default=2, help="stage-B radius in cells; 0 disables")
+    ap.add_argument("--score", default="v2", choices=("v1", "v2"), help="v1 rewarded hiding; see evaluate()")
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--shard", default="0/1", help="i/n -- split BY TAG so per-tag setup is not duplicated")
     ap.add_argument("--seed", type=int, default=1)
@@ -307,7 +317,7 @@ def run(argv) -> int:
                         res = env.act(side=row["side"], deck_index=di, x=ex, y=ey)
                         if not res.get("accepted"):
                             continue
-                        sc = evaluate(env, row["side"], a.horizon)
+                        sc = evaluate(env, row["side"], a.horizon, a.score)
                         if got is None or sc > got[0]:
                             got = (sc, cx, cy)
                     return got
