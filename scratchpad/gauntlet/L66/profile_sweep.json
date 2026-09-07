@@ -1,0 +1,452 @@
+[
+ {
+  "file": "2ep6LwOCbY4.mp4",
+  "shape": [
+   592,
+   1280
+  ],
+  "portrait": true,
+  "frames_used": 12,
+  "of": 12,
+  "icebow": {
+   "tornado": 0.544,
+   "tesla": 0.708,
+   "ice_wizard": 0.704,
+   "x_bow": 0.635,
+   "rocket": 0.533,
+   "knight": 0.655,
+   "the_log": 0.75,
+   "skeletons": 0.52
+  },
+  "worst_icebow": 0.52,
+  "best_other": 0.845,
+  "separation": -0.325,
+  "top_other": [
+   [
+    "rage",
+    0.845
+   ],
+   [
+    "ice_spirit",
+    0.808
+   ],
+   [
+    "firecracker",
+    0.75
+   ],
+   [
+    "zap",
+    0.744
+   ],
+   [
+    "giant",
+    0.729
+   ]
+  ]
+ },
+ {
+  "file": "34EM0Kh3mro.mp4",
+  "shape": [
+   592,
+   1280
+  ],
+  "portrait": true,
+  "frames_used": 12,
+  "of": 12,
+  "icebow": {
+   "tornado": 0.562,
+   "tesla": 0.671,
+   "ice_wizard": 0.833,
+   "x_bow": 0.663,
+   "rocket": 0.523,
+   "knight": 0.624,
+   "the_log": 0.745,
+   "skeletons": 0.652
+  },
+  "worst_icebow": 0.523,
+  "best_other": 0.803,
+  "separation": -0.28,
+  "top_other": [
+   [
+    "giant",
+    0.803
+   ],
+   [
+    "mega_minion",
+    0.784
+   ],
+   [
+    "giant_snowball",
+    0.781
+   ],
+   [
+    "balloon",
+    0.761
+   ],
+   [
+    "bomb_tower",
+    0.761
+   ]
+  ]
+ },
+ {
+  "file": "S919Ydz_85A.mp4",
+  "shape": [
+   592,
+   1280
+  ],
+  "portrait": true,
+  "frames_used": 12,
+  "of": 12,
+  "icebow": {
+   "tornado": 0.584,
+   "tesla": 0.757,
+   "ice_wizard": 0.705,
+   "x_bow": 0.77,
+   "rocket": 0.749,
+   "knight": 0.622,
+   "the_log": 0.733,
+   "skeletons": 0.691
+  },
+  "worst_icebow": 0.584,
+  "best_other": 0.837,
+  "separation": -0.253,
+  "top_other": [
+   [
+    "mega_minion",
+    0.837
+   ],
+   [
+    "electro_spirit",
+    0.816
+   ],
+   [
+    "giant",
+    0.803
+   ],
+   [
+    "clone",
+    0.803
+   ],
+   [
+    "barbarian_barrel",
+    0.794
+   ]
+  ]
+ },
+ {
+  "file": "cUfmkF1kgeA.mp4",
+  "shape": [
+   592,
+   1280
+  ],
+  "portrait": true,
+  "frames_used": 9,
+  "of": 12,
+  "icebow": {
+   "tornado": 0.73,
+   "tesla": 0.738,
+   "ice_wizard": 0.819,
+   "x_bow": 0.778,
+   "rocket": 0.559,
+   "knight": 0.644,
+   "the_log": 0.785,
+   "skeletons": 0.635
+  },
+  "worst_icebow": 0.559,
+  "best_other": 0.835,
+  "separation": -0.276,
+  "top_other": [
+   [
+    "mega_minion",
+    0.835
+   ],
+   [
+    "firecracker",
+    0.777
+   ],
+   [
+    "clone",
+    0.773
+   ],
+   [
+    "barbarian_barrel",
+    0.771
+   ],
+   [
+    "bomb_tower",
+    0.769
+   ]
+  ]
+ },
+ {
+  "file": "cc0pJbt6VVk.mp4",
+  "shape": [
+   592,
+   1280
+  ],
+  "portrait": true,
+  "frames_used": 11,
+  "of": 12,
+  "icebow": {
+   "tornado": 0.546,
+   "tesla": 0.719,
+   "ice_wizard": 0.763,
+   "x_bow": 0.611,
+   "rocket": 0.512,
+   "knight": 0.701,
+   "the_log": 0.61,
+   "skeletons": 0.771
+  },
+  "worst_icebow": 0.512,
+  "best_other": 0.822,
+  "separation": -0.31,
+  "top_other": [
+   [
+    "rage",
+    0.822
+   ],
+   [
+    "bomb_tower",
+    0.795
+   ],
+   [
+    "royal_hogs",
+    0.755
+   ],
+   [
+    "battle_healer",
+    0.753
+   ],
+   [
+    "mega_minion",
+    0.752
+   ]
+  ]
+ },
+ {
+  "file": "g2nxzswd734.mp4",
+  "shape": [
+   592,
+   1280
+  ],
+  "portrait": true,
+  "frames_used": 11,
+  "of": 12,
+  "icebow": {
+   "tornado": 0.562,
+   "tesla": 0.742,
+   "ice_wizard": 0.862,
+   "x_bow": 0.65,
+   "rocket": 0.511,
+   "knight": 0.609,
+   "the_log": 0.707,
+   "skeletons": 0.593
+  },
+  "worst_icebow": 0.511,
+  "best_other": 0.827,
+  "separation": -0.316,
+  "top_other": [
+   [
+    "miner",
+    0.827
+   ],
+   [
+    "bomb_tower",
+    0.801
+   ],
+   [
+    "mega_minion",
+    0.795
+   ],
+   [
+    "zap",
+    0.783
+   ],
+   [
+    "firecracker",
+    0.783
+   ]
+  ]
+ },
+ {
+  "file": "hfOCaA7lKcQ.mp4",
+  "shape": [
+   592,
+   1280
+  ],
+  "portrait": true,
+  "frames_used": 12,
+  "of": 12,
+  "icebow": {
+   "tornado": 0.73,
+   "tesla": 0.792,
+   "ice_wizard": 0.839,
+   "x_bow": 0.786,
+   "rocket": 0.806,
+   "knight": 0.644,
+   "the_log": 0.78,
+   "skeletons": 0.487
+  },
+  "worst_icebow": 0.487,
+  "best_other": 0.79,
+  "separation": -0.303,
+  "top_other": [
+   [
+    "firecracker",
+    0.79
+   ],
+   [
+    "mega_minion",
+    0.776
+   ],
+   [
+    "barbarian_barrel",
+    0.773
+   ],
+   [
+    "bomb_tower",
+    0.77
+   ],
+   [
+    "clone",
+    0.758
+   ]
+  ]
+ },
+ {
+  "file": "ldl-YjQxWdY.mp4",
+  "shape": [
+   592,
+   1280
+  ],
+  "portrait": true,
+  "frames_used": 11,
+  "of": 12,
+  "icebow": {
+   "tornado": 0.579,
+   "tesla": 0.723,
+   "ice_wizard": 0.757,
+   "x_bow": 0.575,
+   "rocket": 0.615,
+   "knight": 0.704,
+   "the_log": 0.759,
+   "skeletons": 0.625
+  },
+  "worst_icebow": 0.575,
+  "best_other": 0.77,
+  "separation": -0.195,
+  "top_other": [
+   [
+    "balloon",
+    0.77
+   ],
+   [
+    "lightning",
+    0.767
+   ],
+   [
+    "bomb_tower",
+    0.765
+   ],
+   [
+    "barbarian_hut",
+    0.758
+   ],
+   [
+    "mega_minion",
+    0.753
+   ]
+  ]
+ },
+ {
+  "file": "wBHhcdRFfwQ.mp4",
+  "shape": [
+   592,
+   1280
+  ],
+  "portrait": true,
+  "frames_used": 10,
+  "of": 12,
+  "icebow": {
+   "tornado": 0.568,
+   "tesla": 0.692,
+   "ice_wizard": 0.71,
+   "x_bow": 0.64,
+   "rocket": 0.533,
+   "knight": 0.673,
+   "the_log": 0.609,
+   "skeletons": 0.536
+  },
+  "worst_icebow": 0.533,
+  "best_other": 0.88,
+  "separation": -0.347,
+  "top_other": [
+   [
+    "giant_snowball",
+    0.88
+   ],
+   [
+    "zap",
+    0.775
+   ],
+   [
+    "clone",
+    0.773
+   ],
+   [
+    "barbarian_barrel",
+    0.758
+   ],
+   [
+    "battle_healer",
+    0.75
+   ]
+  ]
+ },
+ {
+  "file": "zREpfHF2mIY.mp4",
+  "shape": [
+   592,
+   1280
+  ],
+  "portrait": true,
+  "frames_used": 11,
+  "of": 12,
+  "icebow": {
+   "tornado": 0.557,
+   "tesla": 0.734,
+   "ice_wizard": 0.808,
+   "x_bow": 0.571,
+   "rocket": 0.575,
+   "knight": 0.593,
+   "the_log": 0.643,
+   "skeletons": 0.594
+  },
+  "worst_icebow": 0.557,
+  "best_other": 0.813,
+  "separation": -0.256,
+  "top_other": [
+   [
+    "mega_minion",
+    0.813
+   ],
+   [
+    "barbarian_barrel",
+    0.773
+   ],
+   [
+    "lightning",
+    0.767
+   ],
+   [
+    "pekka",
+    0.762
+   ],
+   [
+    "bomb_tower",
+    0.761
+   ]
+  ]
+ }
+]
