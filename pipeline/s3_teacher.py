@@ -40,6 +40,7 @@ import math
 import sys
 import random
 import time
+import zlib
 from collections import defaultdict
 from pathlib import Path
 
@@ -152,7 +153,7 @@ def unit_hp(state, side: int) -> tuple[int, int]:
     return ours, theirs
 
 
-def rollout(env, ctx, side: int, start_tick: int, horizon: int, opponent: str) -> None:
+def rollout(env, ctx, side: int, start_tick: int, horizon: int, opponent: str, jit=None) -> None:
     """Advance `horizon` ticks. With opponent="replay", the OTHER side's recorded plays are applied at
     their real ticks during the window instead of the opponent standing still.
 
@@ -166,7 +167,24 @@ def rollout(env, ctx, side: int, start_tick: int, horizon: int, opponent: str) -
     end = start_tick + horizon
     t = start_tick
     if opponent in ("replay", "both"):
-        for row in ctx["plays"]:
+        plays = ctx["plays"]
+        if jit is not None:
+            # L66n oracle-future test: the OTHER side's recorded plays are perturbed in time and position by
+            # a generator seeded per (state, future k) -- NOT per candidate -- so every candidate in a state
+            # faces the same K sampled futures and the ranking compares like with like (§5cs.93 G).
+            J, S, seed = jit
+            jr = random.Random(seed)
+            plays = []
+            for row in ctx["plays"]:
+                if row["side"] == side or row["ability"]:
+                    plays.append(row); continue
+                r2 = dict(row)
+                r2["tick"] = max(start_tick + 1, row["tick"] + jr.randint(-J, J))
+                r2["x"] = min(17999, max(0, row["x"] + jr.gauss(0.0, S * 1000.0)))
+                r2["y"] = min(31999, max(0, row["y"] + jr.gauss(0.0, S * 1000.0)))
+                plays.append(r2)
+            plays.sort(key=lambda r: r["tick"])
+        for row in plays:
             # "both" (L66m diagnostic ONLY, never a teacher setting): our own recorded follow-ups are
             # replayed too. That leaks the pro's continuation into the score on purpose -- it asks whether
             # the pro's cell scores well GIVEN the pro's own next plays, which separates "the objective is
@@ -287,6 +305,9 @@ def run(argv) -> int:
     # cannot distinguish "the search found a clear optimum at the back" from "most candidates tied and the
     # first one wins, and the first one is the lowest cy" (§5cs.88 D). Those need opposite fixes.
     ap.add_argument("--dump-scores", type=Path, default=None)
+    ap.add_argument("--futures", type=int, default=1, help="K sampled opponent futures per candidate (mean score)")
+    ap.add_argument("--jitter-ticks", type=int, default=0, help="opponent play tick shift ~ U(-J, J)")
+    ap.add_argument("--jitter-tiles", type=float, default=0.0, help="opponent play position noise sd, tiles")
     ap.add_argument("--include-pro", action="store_true",
                     help="add the pro's own cell to the candidate set and report its score and rank (diagnostic)")
     ap.add_argument("--opponent", default="replay", choices=("replay", "none", "both"),
@@ -359,15 +380,25 @@ def run(argv) -> int:
                 def try_cells(cells, stage=""):
                     got = None; n_tied = 0
                     for (cx, cy) in cells:
-                        bt = drive_to(env, ctx, target["play_index"], rd)
-                        if bt is None:
-                            continue
                         ex, ey = cell_to_engine(cx, cy, row["side"], a.off)
-                        res = env.act(side=row["side"], deck_index=di, x=ex, y=ey)
-                        if not res.get("accepted"):
+                        parts = []
+                        for k in range(a.futures):
+                            bt = drive_to(env, ctx, target["play_index"], rd)
+                            if bt is None:
+                                break
+                            res = env.act(side=row["side"], deck_index=di, x=ex, y=ey)
+                            if not res.get("accepted"):
+                                break
+                            jit = None
+                            if a.jitter_ticks or a.jitter_tiles:
+                                jit = (a.jitter_ticks, a.jitter_tiles,
+                                       zlib.crc32(f"{tag}:{row['tick']}:{k}:{a.seed}".encode()))
+                            parts.append(evaluate(env, row["side"], a.horizon, a.score,
+                                                  lambda: rollout(env, ctx, row["side"], bt, a.horizon,
+                                                                  a.opponent, jit)))
+                        if len(parts) < a.futures:
                             continue
-                        sc = evaluate(env, row["side"], a.horizon, a.score,
-                                      lambda: rollout(env, ctx, row["side"], bt, a.horizon, a.opponent))
+                        sc = sum(parts) / len(parts)
                         scored[(cx, cy)] = sc
                         if dump is not None:
                             dump.write(json.dumps({"tag": tag, "tick": row["tick"], "stage": stage,

@@ -1,0 +1,8 @@
+**GAUNTLET loop L66m** — S3: owner delegated the call
+**Decision:** pro agreement STAYS as the S3 gate. It is the only calibrated instrument here; the failure is in the objective, not in search; a teacher that can't match pros on pro states has no claim to label off-distribution ones. "Another path" = another teacher, not another gate. (§5cs.93 A)
+**Did:** re-scored 65 states x 49 candidates (incl. the pro's own cell) with the pro's own follow-up plays replayed through the rollout (`--opponent both`), paired against opponent-only (`replay`). ~1 h on 4 VM slots.
+**Found (measured):** pro cell rank median 24/49 with its own follow-ups vs 27/49 without; paired diff median 0 (26 better / 20 worse / 19 same). Pro cell co-best in 18/65, >500 HP behind the best in 21/65. Chosen→pro 10.8 vs 10.3 tiles. Per card (small n): spells agree (log rank 1, tornado 5, rocket 7); troops/buildings don't (ice-wiz 35, knight 33, x-bow 27, tesla 23).
+**Means (contradicted):** sequencing is not the missing piece — the objective ranks the pro's real trajectory below the median random cell even given the pro's real next plays. The sequence-search rebuild is off the table.
+**New hypothesis (untested):** the replayed opponent is an oracle future; the best cell against a KNOWN future exploits it, a pro's hedge wins only in expectation. Fits spells-yes/troops-no.
+**Next:** score each candidate as the mean over K=4 jittered opponent futures (same futures for all candidates). Pro rank rises to top quartile → rebuild as an expectation teacher; doesn't → engine teacher closed. ~2.5 h, ~$1.
+**Cost:** 1 h VM (~$0.40). VM up, 4 slots live, nothing running. Trap: engine services die with the ssh session that started them.
