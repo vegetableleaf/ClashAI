@@ -38,6 +38,7 @@ import argparse
 import json
 import math
 import sys
+import random
 import time
 from collections import defaultdict
 from pathlib import Path
@@ -249,6 +250,10 @@ def run(argv) -> int:
     # lattice within +/-R cells of the best coarse cell, which makes the criterion reachable.
     ap.add_argument("--refine", type=int, default=2, help="stage-B radius in cells; 0 disables")
     ap.add_argument("--score", default="v2", choices=("v1", "v2"), help="v1 rewarded hiding; see evaluate()")
+    # Writes EVERY candidate's score, not just the winner. The bench output records only the argmax, which
+    # cannot distinguish "the search found a clear optimum at the back" from "most candidates tied and the
+    # first one wins, and the first one is the lowest cy" (§5cs.88 D). Those need opposite fixes.
+    ap.add_argument("--dump-scores", type=Path, default=None)
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--shard", default="0/1", help="i/n -- split BY TAG so per-tag setup is not duplicated")
     ap.add_argument("--seed", type=int, default=1)
@@ -278,7 +283,9 @@ def run(argv) -> int:
     if a.limit:
         tags = tags[:a.limit]
 
+    rng = random.Random(a.seed)
     env = NativeRoyaleEnv(port=a.port, timeout=180.0)
+    dump = a.dump_scores.open("w", encoding="utf-8") if a.dump_scores else None
     a.out.parent.mkdir(parents=True, exist_ok=True)
     done = 0
     t0 = time.perf_counter()
@@ -308,8 +315,8 @@ def run(argv) -> int:
                     continue
                 cands = legal_cells(env, row["side"], di, a.off, a.max_candidates)
 
-                def try_cells(cells):
-                    got = None
+                def try_cells(cells, stage=""):
+                    got = None; n_tied = 0
                     for (cx, cy) in cells:
                         if drive_to(env, ctx, target["play_index"], rd) is None:
                             continue
@@ -318,11 +325,23 @@ def run(argv) -> int:
                         if not res.get("accepted"):
                             continue
                         sc = evaluate(env, row["side"], a.horizon, a.score)
+                        if dump is not None:
+                            dump.write(json.dumps({"tag": tag, "tick": row["tick"], "stage": stage,
+                                                   "cx": cx, "cy": cy, "score": round(sc, 2)}) + chr(10))
+                        # RANDOM tie-break among equal maxima (reservoir), not "first wins".
+                        # Measured (§5cs.89): ~40% of candidates tie at the maximum and in the median
+                        # state the winner's cy equalled the LOWEST cy offered -- candidates are generated
+                        # ascending in cy, so "first wins" silently resolved every plateau to the back of
+                        # our own half. That, not the objective, produced the 12.5-tile bias.
                         if got is None or sc > got[0]:
-                            got = (sc, cx, cy)
+                            got = (sc, cx, cy); n_tied = 1
+                        elif sc == got[0]:
+                            n_tied += 1
+                            if rng.random() < 1.0 / n_tied:
+                                got = (sc, cx, cy)
                     return got
 
-                best = try_cells(cands)
+                best = try_cells(cands, "coarse")
                 n_eval = len(cands)
                 if best is not None and a.refine > 0:
                     _, bx, by = best
@@ -331,7 +350,7 @@ def run(argv) -> int:
                             for cx in range(max(0, bx - a.refine), min(GRID_X, bx + a.refine + 1))
                             if (cx, cy) != (bx, by)]
                     n_eval += len(near)
-                    fine = try_cells(near)
+                    fine = try_cells(near, "fine")
                     if fine is not None and fine[0] > best[0]:
                         best = fine
                 if best is None:
