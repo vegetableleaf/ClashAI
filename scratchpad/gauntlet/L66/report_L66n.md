@@ -1,0 +1,9 @@
+**QUESTION (blocking): S3's search teacher is closed with a negative result. Next is S4 — the v5 student on the live path — which the gauntlet may not touch. Do you want (a) me to run the one offline prep measurement, a feature-parity audit (can the S1 input vector be built from the live detector observation, with what error), (b) you take S4 from here, or (c) something else?**
+
+**GAUNTLET loop L66n** — S3: oracle-future hypothesis
+**Did:** scored each of 49 candidates as the mean over K=4 jittered opponent futures (±3 s, ~1 tile; same 4 futures for every candidate), pro's follow-ups exact, pro's own cell in the menu. Same 65 states as L66m. ~2.5 h on 4 VM slots.
+**Found (measured):** pro cell rank median 21/49 (both-mode 24, replay 27); top quartile 40% (37 / 26). Paired vs both-mode: 19 better / 24 worse / 22 same, median 0. Handed the pro's own cell, the teacher picked it exactly 2/65 (both 6, replay 4) vs the student's 22-24%. Chosen→pro 9.5 tiles.
+**Means (contradicted):** uncertainty over the opponent's future is not what the objective was missing. Five hypotheses tested since L66g — unit term, opponent, horizon, sequencing, oracle future — five nulls. No tower-damage rollout ranks the pro's placement above the median random cell for troops/buildings (spells agree in every mode). Gate failed in every configuration, not for reachability. **Engine search teacher closed.**
+**Not established:** that no teacher can beat the student; that pros are optimal; that the engine is useless (it stays the faithful-state source).
+**Next:** S3 has no evidence-supported step left; S4 is yours. Blocking question above.
+**Cost:** 2.5 h VM. **VM powered off** (~9 h billed this window, ~$3.50). Restart: `gcloud compute instances start clashbot-s3 --zone=us-central1-a`; disk persists. Gauntlet loop stopped pending your answer.
