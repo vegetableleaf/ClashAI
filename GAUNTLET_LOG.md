@@ -1453,3 +1453,9 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - Fit cell = a*log2(n)+b over 493/953/1638: a = 1.60 pp per doubling, residuals -0.04/+0.10/-0.05. Pre-registered: x10 (4,930) -> 23.5 %; 30 % needs ~81k. Log-linear vs saturating not separable at 3 points. Corpus scale alone stays in the low 20s -> S3's argument, now with a slope.
 - Noise: v5 seed sd 0.49 vs v4 0.19; binomial per-seed SE 0.66 pp -- 0.19 was the lucky one. All points share the E-barb-blind filter (18.4 % of the crawl).
 - hogeq drive done: 302 ok / 121 fail (62 evo-E-barb), determinism 32/32. hogeq v5 chain running (b7wv22oz1), expected ~23.7 % on 21.00/22.56 instrument. §5cs.77.
+
+## L64u (2026-09-07) -- hogeq third point: the slope replicates; pooled +1.50 +/- 0.13 pp/doubling
+- hogeq corpus_v5 765 replays -> v5lat x3 on the hogeq v3 VAL file (1,817 plays): 22.51 / 23.56 / 23.56 = 23.21 +/- 0.61 (v3 21.00, v4 22.56). Card 60.3, 1t 31.9, gate 71.4, NLL 3.30.
+- Pre-registered 23.7 (icebow slope); measured 23.21, shortfall 0.5 pp vs per-seed SE 0.99 -- held. Own slope 1.34 +/- 0.20 vs icebow 1.60 +/- 0.17 = 1.0 sigma; POOLED 1.50 +/- 0.13 pp per doubling across 2 decks / 6 corpora / 18 runs.
+- RETRACTED before publishing: "both decks bend the same way" is an artifact -- a 3-point least-squares line ALWAYS has alternating residual signs. No curvature is measurable; a 4th point at 4-5k replays is the only test.
+- Means: x10 predicts 23.1-23.5 (icebow) / ~25.5 (hogeq); corpus scaling cannot reach the high 20s. S3 is next; s3_bench.py is the gate. Box now IDLE. §5cs.78.
