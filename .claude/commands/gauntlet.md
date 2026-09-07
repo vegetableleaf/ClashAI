@@ -182,7 +182,11 @@ the owner change it.
 
 **Scope**
 - Do not install third-party packages, MCP servers, or anything that modifies your own harness.
-- Do not touch the live-play path or anything that drives the real game.
+- ~~Do not touch the live-play path or anything that drives the real game.~~ **REMOVED by owner
+  ruling, 2026-09-07** ("You have my permission to touch the live path for this gauntlet and future
+  gauntlets... permission from me to remove the live path guardrail"). S4 work runs through the live
+  path. What still holds: back up any live checkpoint/config before overwriting it, record state before
+  killing anything, and say in the report exactly what was changed on the live path and how to revert it.
 - Do not change training config or doctrine while an experiment that depends on it is running.
 
 **Honesty**
