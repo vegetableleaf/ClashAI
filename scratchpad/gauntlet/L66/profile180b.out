@@ -1,0 +1,4 @@
+{"file": "NYAWcJcGU3E.mp4", "shape": [592, 1280], "frames_used": 12, "worst_icebow": 0.73, "best_other": 0.779, "separation": -0.049}
+{"file": "mTazPC_TKVE.mp4", "shape": [592, 1280], "frames_used": 10, "worst_icebow": 0.517, "best_other": 0.782, "separation": -0.265}
+{"file": "ctrl_hunter2_180s.mp4", "shape": [592, 1280], "frames_used": 12, "worst_icebow": 0.67, "best_other": 0.779, "separation": -0.109}
+{"file": "ctrl_hunter3_180s.mp4", "shape": [592, 1280], "frames_used": 12, "worst_icebow": 0.687, "best_other": 0.794, "separation": -0.107}

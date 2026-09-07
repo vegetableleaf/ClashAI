@@ -1488,3 +1488,10 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - PILOT DISCARDED (c): 12 random videos at 20 s each all scored 0.483-0.545 vs known icebow 0.623-0.634 -- looked like a clean 0/12. Controlled test on KNOWN icebow footage: 20 s -> 0.558, 180 s -> 0.625, 180 s with 20 frames -> 0.625. Slice LENGTH decides, frame count does not. Every pilot clip sat in the regime where real icebow reads ~0.56. No conclusion about the icebow fraction survives. Eyeball agreed: the top "negative" (0.545) shows tornado + rocket + greyed x-bow.
 - Real job shape: stage 1 = one match (~180 s, ~30 MB) per video -> ~40 GB for all 1,382; stage 2 = full download of hits only.
 - Caveat unchanged: a doubling is +1.50 pp, and mined data is not engine-quality -- the slope was measured on exact-state sandbox replays and does not transfer to detector-noisy data by assumption. §5cs.82.
+
+## L66b (2026-09-07) -- identifier calibrated; first true positive; hit rate still too uncertain to decide
+- Separation at 180 s (a): known icebow 0.625 / 0.670 / 0.687; DISCOVERED icebow NYAWcJcGU3E 0.730 (per-card 0.730-0.829, all eight); 8 other-deck videos 0.500-0.565. Threshold 0.60, gap 0.060.
+- The retraction is confirmed, not softened (c): NYAWcJcGU3E is the video the discarded 20 s pilot scored 0.545 and called negative. 0.545 -> 0.730 on the same instrument with a longer slice. The pilot INVERTED a positive; a sweep built on it would have written the channel off.
+- Hit rate 1/9 = 11.1%, Wilson 95% CI 2.0-43.5% -> 49 h icebow point estimate, band 9-192 h, against 78-139 h per doubling. Point estimate is SHORT and the band straddles it: nine videos cannot answer this. 100-video sweep running (4-way parallel).
+- Cost measured: 21 MB and ~2 min per video for a 180 s slice; ~26 s/video to profile. All 1,382 = ~29 GB, ~12 h at 4-way. Stage 2 = full download of hits only.
+- Still unmeasured and largest unknown (b): what a mined replay is worth vs a sandbox-driven one. The 1.50 pp/doubling slope was fitted on exact-state engine data; mined data carries detector noise in observation AND label. §5cs.83.

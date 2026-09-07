@@ -1,0 +1,182 @@
+[
+ {
+  "file": "NYAWcJcGU3E.mp4",
+  "shape": [
+   592,
+   1280
+  ],
+  "portrait": true,
+  "frames_used": 12,
+  "of": 12,
+  "icebow": {
+   "tornado": 0.73,
+   "tesla": 0.759,
+   "ice_wizard": 0.766,
+   "x_bow": 0.778,
+   "rocket": 0.804,
+   "knight": 0.752,
+   "the_log": 0.829,
+   "skeletons": 0.765
+  },
+  "worst_icebow": 0.73,
+  "best_other": 0.779,
+  "separation": -0.049,
+  "top_other": [
+   [
+    "mega_minion",
+    0.779
+   ],
+   [
+    "bomb_tower",
+    0.763
+   ],
+   [
+    "hunter",
+    0.736
+   ],
+   [
+    "balloon",
+    0.735
+   ],
+   [
+    "giant",
+    0.732
+   ]
+  ]
+ },
+ {
+  "file": "mTazPC_TKVE.mp4",
+  "shape": [
+   592,
+   1280
+  ],
+  "portrait": true,
+  "frames_used": 10,
+  "of": 12,
+  "icebow": {
+   "tornado": 0.565,
+   "tesla": 0.678,
+   "ice_wizard": 0.689,
+   "x_bow": 0.583,
+   "rocket": 0.517,
+   "knight": 0.642,
+   "the_log": 0.536,
+   "skeletons": 0.525
+  },
+  "worst_icebow": 0.517,
+  "best_other": 0.782,
+  "separation": -0.265,
+  "top_other": [
+   [
+    "electro_spirit",
+    0.782
+   ],
+   [
+    "minions",
+    0.737
+   ],
+   [
+    "firecracker",
+    0.734
+   ],
+   [
+    "royal_ghost",
+    0.732
+   ],
+   [
+    "fireball",
+    0.727
+   ]
+  ]
+ },
+ {
+  "file": "ctrl_hunter2_180s.mp4",
+  "shape": [
+   592,
+   1280
+  ],
+  "portrait": true,
+  "frames_used": 12,
+  "of": 12,
+  "icebow": {
+   "tornado": 0.67,
+   "tesla": 0.85,
+   "ice_wizard": 0.871,
+   "x_bow": 0.723,
+   "rocket": 0.737,
+   "knight": 0.704,
+   "the_log": 0.728,
+   "skeletons": 0.685
+  },
+  "worst_icebow": 0.67,
+  "best_other": 0.779,
+  "separation": -0.109,
+  "top_other": [
+   [
+    "rage",
+    0.779
+   ],
+   [
+    "bomb_tower",
+    0.766
+   ],
+   [
+    "mega_minion",
+    0.737
+   ],
+   [
+    "clone",
+    0.72
+   ],
+   [
+    "zap",
+    0.714
+   ]
+  ]
+ },
+ {
+  "file": "ctrl_hunter3_180s.mp4",
+  "shape": [
+   592,
+   1280
+  ],
+  "portrait": true,
+  "frames_used": 12,
+  "of": 12,
+  "icebow": {
+   "tornado": 0.687,
+   "tesla": 0.728,
+   "ice_wizard": 0.865,
+   "x_bow": 0.789,
+   "rocket": 0.84,
+   "knight": 0.706,
+   "the_log": 0.857,
+   "skeletons": 0.69
+  },
+  "worst_icebow": 0.687,
+  "best_other": 0.794,
+  "separation": -0.107,
+  "top_other": [
+   [
+    "mega_minion",
+    0.794
+   ],
+   [
+    "firecracker",
+    0.794
+   ],
+   [
+    "rage",
+    0.783
+   ],
+   [
+    "clone",
+    0.782
+   ],
+   [
+    "barbarian_barrel",
+    0.771
+   ]
+  ]
+ }
+]
