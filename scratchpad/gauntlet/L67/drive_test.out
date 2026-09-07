@@ -1,0 +1,43 @@
+batch: 2 tags, 0 already done, port 37031
+[1/2] c3ccaa538032406ba5ab61e9de2a0ec2 acc 107/107 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6103 (last play 5891) 23.42s
+[2/2] f12a82e71fcc44a490740b3e8ea1a216 acc 108/108 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6127 (last play 5835) 22.59s
+{
+ "tags": 2,
+ "converted": 2,
+ "failed": 0,
+ "failed_by_error": {},
+ "plays_driven": 215,
+ "accepted": 215,
+ "accept_rate": 1.0,
+ "rejected_by_reason": {},
+ "invalid_placement": 0,
+ "matches_with_rejections": 0,
+ "elixir_delays_plays": 0,
+ "elixir_delays_max_ticks": 0,
+ "ability_plays_skipped": 1,
+ "position_based_all": true,
+ "terminated": 2,
+ "termination_reasons": {
+  "native_tiebreak_hp_drain": 2
+ },
+ "crowns_match": 2,
+ "crowns_match_rate": 1.0,
+ "outcomes": {
+  "side1_win": 1,
+  "side0_win": 1
+ },
+ "clean": 2,
+ "terminal_vs_last_play": {
+  "median": 292,
+  "negative": 0
+ },
+ "determinism": {
+  "checked": 0,
+  "same": 0
+ },
+ "seconds_total": 46.0,
+ "seconds_per_match_median": 23.42,
+ "batch_wall_seconds": 46.0,
+ "rotated_rows": 108,
+ "rotated_tags": 1
+}

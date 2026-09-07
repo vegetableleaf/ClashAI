@@ -1,0 +1,20 @@
+{
+ "stats": {
+  "replays": 252238,
+  "icebow_replays": 766,
+  "icebow_sides": 766,
+  "kept": 766,
+  "kept_sides": 766
+ },
+ "modes": {
+  "pathOfLegend/Ranked": 701,
+  "friendly/1v1 Battle": 38,
+  "trail/Classic Challenge": 13,
+  "trail/Grand Challenge": 4,
+  "trail/Ladder": 3,
+  "clanMate/1v1 Battle": 3,
+  "unknown/1v1 Battle": 2,
+  "trail/1v1 Showdown": 2
+ },
+ "our_keys": 1890
+}
