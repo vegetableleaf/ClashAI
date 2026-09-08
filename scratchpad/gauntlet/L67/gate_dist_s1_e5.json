@@ -1,0 +1,38 @@
+[
+ {
+  "source": "engine v3 VAL",
+  "n": 9620,
+  "median": 0.2142,
+  "mean": 0.3204,
+  "p90": 0.8284,
+  "frac_gt_0.5": 0.2976,
+  "frac_gt_0.25": 0.4683
+ },
+ {
+  "source": "modelled-live (degrade) v3 VAL",
+  "n": 9620,
+  "median": 0.51,
+  "mean": 0.4803,
+  "p90": 0.8908,
+  "frac_gt_0.5": 0.5108,
+  "frac_gt_0.25": 0.6984
+ },
+ {
+  "source": "real live frames (dry run)",
+  "n": 157,
+  "median": 0.32,
+  "mean": 0.3677,
+  "p90": 0.768,
+  "frac_gt_0.5": 0.3248,
+  "frac_gt_0.25": 0.5924
+ },
+ {
+  "source": "train target rate (v3 VAL y_gate)",
+  "n": 13761,
+  "median": null,
+  "mean": 0.2759,
+  "p90": null,
+  "frac_gt_0.5": null,
+  "frac_gt_0.25": null
+ }
+]
