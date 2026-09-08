@@ -150,6 +150,23 @@ def play(cfg) -> None:
     vision = Vision(cfg)
     actions = ActionSpace(cfg)
     controller = Controller(capture, cfg)
+    # --- L67d: OPTIONAL S1 student (pipeline/) as the decision maker. OFF unless play.student_ckpt is set.
+    # It replaces only the (card, cell) CHOICE; every safety and aim step below still runs on its answer,
+    # so an unset key leaves this file behaving exactly as it did before the student existed.
+    _student = None
+    _student_ckpt = cfg.get("play", "student_ckpt", default=None)
+    if _student_ckpt:
+        try:
+            from .student_live import StudentPolicy, live_reads as _student_reads
+            _student = StudentPolicy(cfg.path(_student_ckpt), str(cfg.get("play", "student_deck", default="icebow")),
+                                     actions, device=str(device),
+                                     gate_tau=float(cfg.get("play", "student_gate_tau", default=0.5)))
+            print(f"[play] S1 STUDENT ON: {Path(_student_ckpt).name} (epoch {_student.epoch}, "
+                  f"grid {_student.grid_kind}, gate tau {_student.gate_tau:g}) -- the old policy is loaded but "
+                  f"only used for the frames the student declines to answer.")
+        except Exception as exc:                                # noqa: BLE001
+            print(f"[play] student_ckpt set but the student failed to load ({exc}); staying on the old policy.")
+            _student = None
     rocket_ids = {i for i, key in enumerate(vision.deck_keys)
                   if (key[:-4] if key.endswith("_evo") else key) == "rocket"}
     # LOG + TORNADO AIM ASSISTS. Both cards were flying blind live: every other card with geometry
@@ -508,7 +525,8 @@ def play(cfg) -> None:
         hand_vec = vision.hand_multihot(hand_ids)
         if hand_vec.sum() == 0:               # no card recognized -> can't act this tick
             return
-        next_vec = _cycle_tracker.observe(hand_ids, vision.recognize_next(frame))
+        _next_id = vision.recognize_next(frame)   # read ONCE: the student below reuses it
+        next_vec = _cycle_tracker.observe(hand_ids, _next_id)
         elixir = vision.read_elixir(frame)
         threat_vec = threat_tracker.update(frame, time.time()).vector()
         if want_identity or want_interactions:
@@ -632,6 +650,25 @@ def play(cfg) -> None:
                 if wait:
                     return
             cell = int(cell_logits_m.argmax(1).item())
+        # ---- L67d: S1 STUDENT OVERRIDE (play.student_ckpt). Off by default; see student_live.py. ------
+        # The student answers from the CONTRACT's BoardState (detector + screen reads), not from the CNN's
+        # image tensor, so it needs its own call here. It decides (card, cell) ONLY: the deploy clamp, the
+        # aim assists and the tap below are untouched, and an unaffordable or unreadable answer is a WAIT
+        # rather than a silent fall-back to the other policy -- mixing two policies mid-match would make
+        # any live reading uninterpretable.
+        if _student is not None:
+            _nname = (vision.deck_keys[_next_id] if 0 <= int(_next_id) < len(vision.deck_keys) else None)
+            _sreads = _student_reads(elixir=float(elixir), hand_ids=hand_ids, deck_keys=vision.deck_keys,
+                                     next_name=_nname, hp_tracker=hp_tracker, tower_tracker=tower_tracker,
+                                     t_sec=max(0.0, time.time() - clock._start))
+            _sact = _student.decide(_last_dets["all"], _sreads, hand_ids, vision.deck_keys)
+            if _sact is None:
+                return                                        # student says WAIT
+            _scard, _scell = int(_sact[0]), int(_sact[1])
+            if elixir + 1e-6 < card_elixir[_scard] or not any(h == _scard for h in hand_ids):
+                _student.stats["skip_unaffordable"] = _student.stats.get("skip_unaffordable", 0) + 1
+                return
+            card_id, cell = _scard, _scell
         # ---- LIVE SEARCH OVERRIDE. Set sim.live_search_enabled false to switch it off. --------
         # The policy's (card_id, cell) is already decided above and stays the fallback: decide()
         # returns None to keep it. Placed BEFORE the aim-assist so a searched cell gets the same
@@ -763,6 +800,9 @@ def play(cfg) -> None:
         gx, gy = cell % gw, cell // gw
         controller.play_card(*actions.decode(slot, gx, gy))
         _cycle_tracker.record_play(card_id)        # a card left the hand -> it rotates to the queue back
+        if _student is not None:                   # L67d: the student's `past` = my last 3 accepted plays
+            _cx, _cy = actions.cell_center(gx, gy)
+            _student.record_play(card_id, actions.warp.frame_to_board(_cx, _cy), vision.deck_keys)
         # ANY play (troop or spell) anchors its own detection 'mine' -- base-matched, so your rolling Log
         # is claimed at the cast point while an enemy answer dropped on the same spot is not.
         cx, cy = actions.cell_center(gx, gy)
