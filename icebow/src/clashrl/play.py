@@ -671,18 +671,18 @@ def play(cfg) -> None:
                 if _student.stats["log_n"] % 10 == 0:         # rate-limited so a match is still readable
                     print(f"[student] WAIT p={_slast.get('p_play', float('nan')):.2f} "
                           f"elixir {elixir:.0f} units {_slast.get('units', 0)} dets {len(_last_dets['all'])} "
-                          f"(waits {_student.stats.get('wait', 0)}/{_student.stats.get('decisions', 0)})")
+                          f"(waits {_student.stats.get('wait', 0)}/{_student.stats.get('decisions', 0)})", flush=True)
                 return
             _scard, _scell = int(_sact[0]), int(_sact[1])
             if elixir + 1e-6 < card_elixir[_scard] or not any(h == _scard for h in hand_ids):
                 _student.stats["skip_unaffordable"] = _student.stats.get("skip_unaffordable", 0) + 1
                 print(f"[student] SKIP unaffordable {vision.deck_keys[_scard]} "
-                      f"(cost {card_elixir[_scard]}, elixir {elixir:.0f})")
+                      f"(cost {card_elixir[_scard]}, elixir {elixir:.0f})", flush=True)
                 return
             card_id, cell = _scard, _scell
             print(f"[student] PLAY {vision.deck_keys[card_id]} p={_slast.get('p_play', 0):.2f} "
                   f"cell {cell} board {tuple(round(v, 2) for v in _slast.get('board_xy', (0, 0)))} "
-                  f"units {_slast.get('units', 0)} {_slast.get('ms', 0):.0f} ms")
+                  f"units {_slast.get('units', 0)} {_slast.get('ms', 0):.0f} ms", flush=True)
         # ---- LIVE SEARCH OVERRIDE. Set sim.live_search_enabled false to switch it off. --------
         # The policy's (card_id, cell) is already decided above and stays the fallback: decide()
         # returns None to keep it. Placed BEFORE the aim-assist so a searched cell gets the same
