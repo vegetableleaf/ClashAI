@@ -332,6 +332,7 @@ class LiveReads:
     t_sec: float
     t_source: str                                     # 'clock' (wall clock since match start) | 'timer' (on-screen digits)
     tower_alive: tuple[bool, ...] = (True,) * 6       # TowerTracker flags; a king's hp is never printed live
+    opp_elixir: Optional[float] = None            # L67f: play.py's OpponentElixirEstimator reading, 0-10; None = unknown
 
 
 class _Cfg:
@@ -369,7 +370,8 @@ def board_warp(deck: Deck):
 _TEAM_SIDE = {"mine": 0, "enemy": 1, "unknown": -1}
 
 
-def from_live(detections: Sequence[Any], reads: LiveReads, deck: Deck, *, warp: Any = None) -> BoardState:
+def from_live(detections: Sequence[Any], reads: LiveReads, deck: Deck, *, warp: Any = None,
+              unit_hp_default: Optional[float] = None) -> BoardState:
     """Detector output + screen reads -> BoardState. ``detections`` are ``replay_mine.Detection`` (duck-typed:
     cls, cx, gy, conf, team); frame -> board goes through ``BoardWarp.frame_to_board`` on ``(cx, gy)`` --
     ``gy`` is the shadow-corrected y for flyers. ``team == 'unknown'`` -> side -1, KEPT."""
@@ -383,7 +385,8 @@ def from_live(detections: Sequence[Any], reads: LiveReads, deck: Deck, *, warp: 
                 and getattr(d, "h", None) is not None):
             fy = fy + TROOP_FOOT_K * float(d.h)      # ground troop: box centre -> feet (L63f own-click test)
         x, y = warp.frame_to_board(float(d.cx), fy)
-        u = Unit(cid, _TEAM_SIDE.get(str(d.team), -1), float(x), float(y), None, None, None, float(d.conf))
+        u = Unit(cid, _TEAM_SIDE.get(str(d.team), -1), float(x), float(y), unit_hp_default, None, None,
+                 float(d.conf))
         (spells if vocab.is_spell(cid) else units).append(u)
     towers = []
     for i, (side, (kind, lane)) in enumerate([(s, kl) for s in (0, 1) for kl in TOWER_ORDER]):
@@ -398,7 +401,8 @@ def from_live(detections: Sequence[Any], reads: LiveReads, deck: Deck, *, warp: 
         hand.append(-1)
     return BoardState(source="live", t_sec=float(reads.t_sec), t_source=str(reads.t_source),
                       double_elixir=dbl, overtime=ot, my_elixir=float(int(reads.elixir_int)),
-                      my_elixir_exact=False, opp_elixir=None, my_hand=tuple(hand),  # type: ignore[arg-type]
+                      my_elixir_exact=False, opp_elixir=reads.opp_elixir,
+                      my_hand=tuple(hand),  # type: ignore[arg-type]
                       my_next=deck.card_id_of(reads.next_name), towers=tuple(towers),
                       units=tuple(units), spells=tuple(spells), deck=deck.card_ids)
 

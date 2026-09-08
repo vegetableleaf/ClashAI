@@ -1,0 +1,147 @@
+{
+ "session": "20260815_222309",
+ "ckpt": "icebow\\data\\pipeline\\s1_icebow_v6lat_s0.pt",
+ "grid": "lattice",
+ "rows": [
+  {
+   "variant": "live (baseline)",
+   "n": 300,
+   "top1_share": 0.4,
+   "distinct": 43,
+   "top3": [
+    [
+     1267,
+     120
+    ],
+    [
+     1269,
+     42
+    ],
+    [
+     837,
+     22
+    ]
+   ]
+  },
+  {
+   "variant": "no_spell_tokens",
+   "n": 300,
+   "top1_share": 0.4167,
+   "distinct": 39,
+   "top3": [
+    [
+     1267,
+     125
+    ],
+    [
+     1269,
+     38
+    ],
+    [
+     837,
+     21
+    ]
+   ]
+  },
+  {
+   "variant": "side_resolved",
+   "n": 300,
+   "top1_share": 0.39,
+   "distinct": 42,
+   "top3": [
+    [
+     1267,
+     117
+    ],
+    [
+     1269,
+     44
+    ],
+    [
+     837,
+     21
+    ]
+   ]
+  },
+  {
+   "variant": "conf_1.0",
+   "n": 300,
+   "top1_share": 0.4033,
+   "distinct": 41,
+   "top3": [
+    [
+     1267,
+     121
+    ],
+    [
+     1269,
+     42
+    ],
+    [
+     837,
+     22
+    ]
+   ]
+  },
+  {
+   "variant": "hp_known",
+   "n": 300,
+   "top1_share": 0.3033,
+   "distinct": 57,
+   "top3": [
+    [
+     1267,
+     91
+    ],
+    [
+     1269,
+     41
+    ],
+    [
+     1263,
+     16
+    ]
+   ]
+  },
+  {
+   "variant": "scalars_known",
+   "n": 300,
+   "top1_share": 0.2867,
+   "distinct": 46,
+   "top3": [
+    [
+     1267,
+     86
+    ],
+    [
+     1269,
+     52
+    ],
+    [
+     1783,
+     11
+    ]
+   ]
+  },
+  {
+   "variant": "ALL of the above",
+   "n": 300,
+   "top1_share": 0.2433,
+   "distinct": 54,
+   "top3": [
+    [
+     1267,
+     73
+    ],
+    [
+     1269,
+     31
+    ],
+    [
+     1263,
+     15
+    ]
+   ]
+  }
+ ]
+}

@@ -661,9 +661,17 @@ def play(cfg) -> None:
         # any live reading uninterpretable.
         if _student is not None:
             _nname = (vision.deck_keys[_next_id] if 0 <= int(_next_id) < len(vision.deck_keys) else None)
+            # L67f: hand the student the opponent-elixir estimate play.py already computes (`_opp_elx`
+            # returns it NORMALISED 0-1, the contract wants 0-10) and the king alive-proxy. Both were being
+            # thrown away as "unknown", and supplying them measured better against pro labels than the
+            # unknown flag (blank_both 18.78 exact cell -> fill_both 20.15).
+            # `_opp_elx._est` is already in ELIXIR units (0-10); `update()` is the one that returns it
+            # normalised. Do not rescale -- a genuine 0.8-elixir estimate must not become 8.
+            _oe = getattr(_opp_elx, "_est", None)
             _sreads = _student_reads(elixir=float(elixir), hand_ids=hand_ids, deck_keys=vision.deck_keys,
                                      next_name=_nname, hp_tracker=hp_tracker, tower_tracker=tower_tracker,
-                                     t_sec=max(0.0, time.time() - clock._start))
+                                     t_sec=max(0.0, time.time() - clock._start),
+                                     opp_elixir=(None if _oe is None else float(_oe)))
             _sact = _student.decide(_last_dets["all"], _sreads, hand_ids, vision.deck_keys)
             _slast = _student.last or {}
             if _sact is None:                                 # student says WAIT (or nothing mappable)

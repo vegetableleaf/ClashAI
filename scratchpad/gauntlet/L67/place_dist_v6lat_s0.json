@@ -1,0 +1,26 @@
+[
+ {
+  "source": "engine v3 VAL (model's own card)",
+  "n": 4000,
+  "own_half_frac": 0.958,
+  "y_median": 0.6094,
+  "y_p10": 0.5469,
+  "y_p90": 0.9844,
+  "left_lane_frac": 0.4248,
+  "x_median": 0.5278,
+  "distinct_cells": 192,
+  "distinct_per_100": 4.8
+ },
+ {
+  "source": "real live frames",
+  "n": 780,
+  "own_half_frac": 0.8603,
+  "y_median": 0.5469,
+  "y_p10": 0.3594,
+  "y_p90": 0.7344,
+  "left_lane_frac": 0.7256,
+  "x_median": 0.25,
+  "distinct_cells": 65,
+  "distinct_per_100": 8.3
+ }
+]

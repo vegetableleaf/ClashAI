@@ -38,7 +38,7 @@ class StudentPolicy:
     """Loads an S1 checkpoint and answers ``decide(...)`` with (card_id, cell) in live conventions."""
 
     def __init__(self, ckpt_path: Path, deck_name: str, actions: Any, *, device: str = "cpu",
-                 gate_tau: float = 0.5) -> None:
+                 gate_tau: float = 0.5, fill_missing: bool = True) -> None:
         import torch
         from pipeline.model_v3 import GRID_X, S1Model, cell_xy, hand_mask_from_sc
 
@@ -54,6 +54,11 @@ class StudentPolicy:
         self.deck = load_deck(deck_name)
         self.actions = actions
         self.gate_tau = float(gate_tau)
+        # L67f: supplying a plausible value beats flagging it unknown -- MEASURED against pro labels on the
+        # v3 VAL (blank_both 18.78 exact cell / 52.11 card -> fill_both 20.15 / 63.25). The live path has no
+        # unit HP at all, so every unit is sent at full health; play.py supplies the real opponent-elixir
+        # estimate and the king's alive-proxy through LiveReads.
+        self.fill_missing = bool(fill_missing)
         self.ckpt = str(ckpt_path)
         self.epoch = st.get("epoch")
         self._past: deque = deque(maxlen=PAST_K)          # (deck_slot, board_x, board_y, t_wall)
@@ -79,7 +84,8 @@ class StudentPolicy:
         """-> (live card_id, live cell index, p_play), or None when the gate says WAIT / nothing maps."""
         torch = self._torch
         t0 = time.perf_counter()
-        bs = from_live(detections, reads, self.deck, warp=self.actions.warp)
+        bs = from_live(detections, reads, self.deck, warp=self.actions.warp,
+                       unit_hp_default=(1.0 if self.fill_missing else None))
         tok, mask, sc = to_tokens(bs)
         past = self._past_array(time.time())
         tt = torch.from_numpy(np.asarray(tok)[None]).to(self.dev)
@@ -141,7 +147,8 @@ def _tray_id_for_slot(deck_card: str, hand_ids: Sequence[int], deck_keys: Sequen
 
 
 def live_reads(*, elixir: float, hand_ids: Sequence[int], deck_keys: Sequence[str], next_name: Optional[str],
-               hp_tracker: Any, tower_tracker: Any, t_sec: float, t_source: str = "clock") -> LiveReads:
+               hp_tracker: Any, tower_tracker: Any, t_sec: float, t_source: str = "clock",
+               opp_elixir: Optional[float] = None, fill_king_hp: bool = True) -> LiveReads:
     """Assemble the contract's scalars from play.py's own readers.
 
     Tower order is the CONTRACT's (my king, my L, my R, opp king, opp L, opp R) -- NOT play.py's
@@ -162,12 +169,16 @@ def live_reads(*, elixir: float, hand_ids: Sequence[int], deck_keys: Sequence[st
     def alive(flags: list, i: int) -> bool:
         return bool(flags[i]) if i < len(flags) else True
 
-    tower_hp = (None, frac(my_hp, my_full, 0), frac(my_hp, my_full, 1),
-                None, frac(en_hp, en_full, 0), frac(en_hp, en_full, 1))
+    # The king's HP is never printed on screen. `fill_king_hp` sends the alive-proxy (undamaged while alive,
+    # play.py's own `_tower_frac` convention) instead of None -- measured better than the unknown flag (L67f).
+    king = 1.0 if fill_king_hp else None
+    tower_hp = (king, frac(my_hp, my_full, 0), frac(my_hp, my_full, 1),
+                king, frac(en_hp, en_full, 0), frac(en_hp, en_full, 1))
     tower_alive = (alive(my_alive, 2), alive(my_alive, 0), alive(my_alive, 1),
                    alive(en_alive, 2), alive(en_alive, 0), alive(en_alive, 1))
     names = tuple((_key_of(int(c), deck_keys) if int(c) >= 0 else None) for c in list(hand_ids)[:4])
     while len(names) < 4:
         names = names + (None,)
     return LiveReads(elixir_int=int(round(float(elixir))), hand_names=names, next_name=next_name,
-                     tower_hp=tower_hp, t_sec=float(t_sec), t_source=str(t_source), tower_alive=tower_alive)
+                     tower_hp=tower_hp, t_sec=float(t_sec), t_source=str(t_source), tower_alive=tower_alive,
+                     opp_elixir=(None if opp_elixir is None else float(opp_elixir)))

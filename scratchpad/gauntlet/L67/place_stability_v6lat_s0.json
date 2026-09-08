@@ -1,0 +1,20 @@
+[
+ {
+  "source": "real live frames",
+  "gap_s": "1.0-1.0",
+  "n_pairs": 777,
+  "same_cell_frac": 0.6139,
+  "median_move_tiles": 6.0,
+  "p90_move_tiles": 13.07,
+  "moves_over_5_tiles_frac": 0.5367
+ },
+ {
+  "source": "engine v3 VAL (consecutive rows, same match+side)",
+  "gap_s": "0.5-2.5",
+  "n_pairs": 4114,
+  "same_cell_frac": 0.387,
+  "median_move_tiles": 6.04,
+  "p90_move_tiles": 13.89,
+  "moves_over_5_tiles_frac": 0.5773
+ }
+]
