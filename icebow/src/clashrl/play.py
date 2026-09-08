@@ -642,7 +642,10 @@ def play(cfg) -> None:
             # learned one WAIT/PLAY rule and was DEPLOYED under another. policy_stats already used
             # the gate-only rule, so live play was the odd one out of the three.
             # PPO heads are logits, not advantages, so that branch keeps its thresholded probability.
-            if gate_logits is not None:
+            # L67e FIX: when the S1 student is driving, the STUDENT'S gate is the only gate. This branch
+            # returned first, so the old (near-catatonic, tau 0.25) CNN gate decided WAIT before the student
+            # was ever consulted -- the bot sat still for a whole match with the student loaded.
+            if gate_logits is not None and _student is None:
                 if is_ppo:
                     wait = bool(torch.sigmoid(gate_logits[0, 1] - gate_logits[0, 0]) <= gate_tau)
                 else:
@@ -662,18 +665,32 @@ def play(cfg) -> None:
                                      next_name=_nname, hp_tracker=hp_tracker, tower_tracker=tower_tracker,
                                      t_sec=max(0.0, time.time() - clock._start))
             _sact = _student.decide(_last_dets["all"], _sreads, hand_ids, vision.deck_keys)
-            if _sact is None:
-                return                                        # student says WAIT
+            _slast = _student.last or {}
+            if _sact is None:                                 # student says WAIT (or nothing mappable)
+                _student.stats["log_n"] = _student.stats.get("log_n", 0) + 1
+                if _student.stats["log_n"] % 10 == 0:         # rate-limited so a match is still readable
+                    print(f"[student] WAIT p={_slast.get('p_play', float('nan')):.2f} "
+                          f"elixir {elixir:.0f} units {_slast.get('units', 0)} dets {len(_last_dets['all'])} "
+                          f"(waits {_student.stats.get('wait', 0)}/{_student.stats.get('decisions', 0)})")
+                return
             _scard, _scell = int(_sact[0]), int(_sact[1])
             if elixir + 1e-6 < card_elixir[_scard] or not any(h == _scard for h in hand_ids):
                 _student.stats["skip_unaffordable"] = _student.stats.get("skip_unaffordable", 0) + 1
+                print(f"[student] SKIP unaffordable {vision.deck_keys[_scard]} "
+                      f"(cost {card_elixir[_scard]}, elixir {elixir:.0f})")
                 return
             card_id, cell = _scard, _scell
+            print(f"[student] PLAY {vision.deck_keys[card_id]} p={_slast.get('p_play', 0):.2f} "
+                  f"cell {cell} board {tuple(round(v, 2) for v in _slast.get('board_xy', (0, 0)))} "
+                  f"units {_slast.get('units', 0)} {_slast.get('ms', 0):.0f} ms")
         # ---- LIVE SEARCH OVERRIDE. Set sim.live_search_enabled false to switch it off. --------
         # The policy's (card_id, cell) is already decided above and stays the fallback: decide()
         # returns None to keep it. Placed BEFORE the aim-assist so a searched cell gets the same
         # clamping, snapping and deploy rules the policy's choice would have.
-        if _live_search is not None:
+        # L67e: the live rollout search plans over the CNN's action, and it can both override a card and
+        # return WAIT -- with the student driving that would silently blend two policies, so it is off
+        # whenever the student is on (sim.live_search_enabled still governs the CNN path).
+        if _live_search is not None and _student is None:
             try:
                 # with_base=True or the track carries NO CARD IDENTITY and the bridge
                 # correctly drops every one of them (see live_bridge.tracks_to_bodies).
