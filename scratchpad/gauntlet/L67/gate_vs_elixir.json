@@ -1,0 +1,179 @@
+{
+ "ckpt": "icebow\\data\\pipeline\\s1_icebow_v6lat_s0.pt",
+ "by_elixir": [
+  {
+   "elixir": 1,
+   "n": 1068,
+   "model_p": 0.0459,
+   "pro_rate": 0.0365
+  },
+  {
+   "elixir": 2,
+   "n": 2781,
+   "model_p": 0.0937,
+   "pro_rate": 0.0877
+  },
+  {
+   "elixir": 3,
+   "n": 4450,
+   "model_p": 0.1735,
+   "pro_rate": 0.1811
+  },
+  {
+   "elixir": 4,
+   "n": 6048,
+   "model_p": 0.2442,
+   "pro_rate": 0.2627
+  },
+  {
+   "elixir": 5,
+   "n": 6568,
+   "model_p": 0.2677,
+   "pro_rate": 0.2591
+  },
+  {
+   "elixir": 6,
+   "n": 6788,
+   "model_p": 0.2436,
+   "pro_rate": 0.2378
+  },
+  {
+   "elixir": 7,
+   "n": 7411,
+   "model_p": 0.2463,
+   "pro_rate": 0.2477
+  },
+  {
+   "elixir": 8,
+   "n": 7780,
+   "model_p": 0.2684,
+   "pro_rate": 0.2539
+  },
+  {
+   "elixir": 9,
+   "n": 6374,
+   "model_p": 0.3747,
+   "pro_rate": 0.3522
+  },
+  {
+   "elixir": 10,
+   "n": 6151,
+   "model_p": 0.4716,
+   "pro_rate": 0.4902
+  }
+ ],
+ "grid": [
+  {
+   "units": "0-1",
+   "elixir": "0-3",
+   "n": 425,
+   "model_p": 0.0525,
+   "pro_rate": 0.0541
+  },
+  {
+   "units": "0-1",
+   "elixir": "4-6",
+   "n": 2595,
+   "model_p": 0.0627,
+   "pro_rate": 0.0721
+  },
+  {
+   "units": "0-1",
+   "elixir": "7-8",
+   "n": 3440,
+   "model_p": 0.0754,
+   "pro_rate": 0.0648
+  },
+  {
+   "units": "0-1",
+   "elixir": "9-10",
+   "n": 3591,
+   "model_p": 0.2864,
+   "pro_rate": 0.2996
+  },
+  {
+   "units": "2-3",
+   "elixir": "0-3",
+   "n": 2174,
+   "model_p": 0.0896,
+   "pro_rate": 0.0851
+  },
+  {
+   "units": "2-3",
+   "elixir": "4-6",
+   "n": 5127,
+   "model_p": 0.1845,
+   "pro_rate": 0.1822
+  },
+  {
+   "units": "2-3",
+   "elixir": "7-8",
+   "n": 4440,
+   "model_p": 0.2343,
+   "pro_rate": 0.2146
+  },
+  {
+   "units": "2-3",
+   "elixir": "9-10",
+   "n": 3934,
+   "model_p": 0.4277,
+   "pro_rate": 0.427
+  },
+  {
+   "units": "4-6",
+   "elixir": "0-3",
+   "n": 3505,
+   "model_p": 0.1337,
+   "pro_rate": 0.1378
+  },
+  {
+   "units": "4-6",
+   "elixir": "4-6",
+   "n": 7173,
+   "model_p": 0.2907,
+   "pro_rate": 0.2858
+  },
+  {
+   "units": "4-6",
+   "elixir": "7-8",
+   "n": 4669,
+   "model_p": 0.3283,
+   "pro_rate": 0.3258
+  },
+  {
+   "units": "4-6",
+   "elixir": "9-10",
+   "n": 3367,
+   "model_p": 0.4933,
+   "pro_rate": 0.4752
+  },
+  {
+   "units": "7+",
+   "elixir": "0-3",
+   "n": 2237,
+   "model_p": 0.1775,
+   "pro_rate": 0.1779
+  },
+  {
+   "units": "7+",
+   "elixir": "4-6",
+   "n": 4509,
+   "model_p": 0.3758,
+   "pro_rate": 0.3846
+  },
+  {
+   "units": "7+",
+   "elixir": "7-8",
+   "n": 2642,
+   "model_p": 0.4095,
+   "pro_rate": 0.4217
+  },
+  {
+   "units": "7+",
+   "elixir": "9-10",
+   "n": 1633,
+   "model_p": 0.5615,
+   "pro_rate": 0.5536
+  }
+ ]
+}

@@ -155,6 +155,7 @@ def play(cfg) -> None:
     # so an unset key leaves this file behaving exactly as it did before the student existed.
     _student = None
     _student_ckpt = cfg.get("play", "student_ckpt", default=None)
+    _student_opp_elixir = bool(cfg.get("play", "student_opp_elixir", default=False))   # L67g: see below
     if _student_ckpt:
         try:
             from .student_live import StudentPolicy, live_reads as _student_reads
@@ -667,7 +668,17 @@ def play(cfg) -> None:
             # unknown flag (blank_both 18.78 exact cell -> fill_both 20.15).
             # `_opp_elx._est` is already in ELIXIR units (0-10); `update()` is the one that returns it
             # normalised. Do not rescale -- a genuine 0.8-elixir estimate must not become 8.
-            _oe = getattr(_opp_elx, "_est", None)
+            #
+            # L67g: DEFAULT OFF. Measured on 835 real detector frames (live_gate_elixir.json), supplying this
+            # estimate suppresses the gate monotonically -- frames over tau 0.27: 0.278 with it absent, 0.156
+            # at opp 5, 0.087 at opp 10 (a 3.2x cut), and even opp 0.0 suppresses (0.236), so it is the
+            # opp_known FLAG as much as the value. The estimator cannot be trusted to a value: `_est =
+            # my_elixir + my_spent - opp_spent` clipped to [0, 10], so every enemy play the detector MISSES
+            # ratchets it upward and it never comes back, drifting a long match toward the pinned 10 that
+            # costs the most gate. On ENGINE labels the TRUE opponent elixir is worth +6.8 pp of gate accuracy
+            # (0.755 -> 0.823), which is why it was wired in (5cs.98 F) -- but that is ground truth, not this.
+            # Set `play.student_opp_elixir: true` to restore the L67f behaviour.
+            _oe = getattr(_opp_elx, "_est", None) if _student_opp_elixir else None
             _sreads = _student_reads(elixir=float(elixir), hand_ids=hand_ids, deck_keys=vision.deck_keys,
                                      next_name=_nname, hp_tracker=hp_tracker, tower_tracker=tower_tracker,
                                      t_sec=max(0.0, time.time() - clock._start),
@@ -677,8 +688,10 @@ def play(cfg) -> None:
             if _sact is None:                                 # student says WAIT (or nothing mappable)
                 _student.stats["log_n"] = _student.stats.get("log_n", 0) + 1
                 if _student.stats["log_n"] % 10 == 0:         # rate-limited so a match is still readable
-                    print(f"[student] WAIT p={_slast.get('p_play', float('nan')):.2f} "
-                          f"elixir {elixir:.0f} units {_slast.get('units', 0)} dets {len(_last_dets['all'])} "
+                    _why = " NO-TRAY-MATCH" if _slast.get("no_mappable_card") else ""
+                    print(f"[student] WAIT{_why} p={_slast.get('p_play', float('nan')):.2f} "
+                          f"elixir {elixir:.0f} opp~{('?' if _oe is None else f'{float(_oe):.1f}')} "
+                          f"units {_slast.get('units', 0)} dets {len(_last_dets['all'])} "
                           f"(waits {_student.stats.get('wait', 0)}/{_student.stats.get('decisions', 0)})", flush=True)
                 return
             _scard, _scell = int(_sact[0]), int(_sact[1])
@@ -906,6 +919,12 @@ def play(cfg) -> None:
                     _canvas_stack.reset()         # ...and last match's canvas motion history
                     _replay_rec.new_match()       # arm a fresh overlay-replay clip for this match
                     prev_mult = 1
+                elif prev == GameState.IN_MATCH:
+                    # L67g: CLOSE the clip when the match ends. play.py armed clips (new_match) but never
+                    # ended one, so the only thing that ever closed a live clip was the `seconds` SAFETY CAP
+                    # -- env.py (train-rl) has always called this and that is why its overlays were written
+                    # per match. Any non-IN_MATCH read (MATCH_END / HOME / UNKNOWN past the grace hold) ends it.
+                    _replay_rec.end_match()
                 prev = state
 
             if state == GameState.IN_MATCH:

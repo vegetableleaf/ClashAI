@@ -1,0 +1,69 @@
+{
+ "data": "icebow\\data\\pipeline\\s1_dataset_v6.npz",
+ "grid": "lattice",
+ "rows": [
+  {
+   "board_distance": "0-0.25",
+   "cell_pairs": 0,
+   "same_cell_pct": 0.0,
+   "within_1_tile_pct": 0.0,
+   "median_sep_tiles": NaN,
+   "card_pairs": 1,
+   "same_card_pct": 0.0
+  },
+  {
+   "board_distance": "0.5-1",
+   "cell_pairs": 1,
+   "same_cell_pct": 0.0,
+   "within_1_tile_pct": 100.0,
+   "median_sep_tiles": 1.0,
+   "card_pairs": 1,
+   "same_card_pct": 100.0
+  },
+  {
+   "board_distance": "1-2",
+   "cell_pairs": 4,
+   "same_cell_pct": 0.0,
+   "within_1_tile_pct": 0.0,
+   "median_sep_tiles": 4.95,
+   "card_pairs": 6,
+   "same_card_pct": 66.67
+  },
+  {
+   "board_distance": "2-3",
+   "cell_pairs": 7,
+   "same_cell_pct": 0.0,
+   "within_1_tile_pct": 0.0,
+   "median_sep_tiles": 3.0,
+   "card_pairs": 14,
+   "same_card_pct": 50.0
+  },
+  {
+   "board_distance": "3-5",
+   "cell_pairs": 28,
+   "same_cell_pct": 25.0,
+   "within_1_tile_pct": 46.43,
+   "median_sep_tiles": 1.21,
+   "card_pairs": 46,
+   "same_card_pct": 60.87
+  },
+  {
+   "board_distance": "5-8",
+   "cell_pairs": 72,
+   "same_cell_pct": 12.5,
+   "within_1_tile_pct": 18.06,
+   "median_sep_tiles": 5.1,
+   "card_pairs": 137,
+   "same_card_pct": 52.55
+  },
+  {
+   "board_distance": ">8",
+   "cell_pairs": 134,
+   "same_cell_pct": 6.72,
+   "within_1_tile_pct": 16.42,
+   "median_sep_tiles": 5.0,
+   "card_pairs": 260,
+   "same_card_pct": 51.54
+  }
+ ]
+}

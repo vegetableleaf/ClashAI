@@ -1,0 +1,78 @@
+{
+ "data": "icebow\\data\\pipeline\\s1_dataset_v6.npz",
+ "grid": "lattice",
+ "rows": [
+  {
+   "board_distance": "0-0.25",
+   "cell_pairs": 16938,
+   "same_cell_pct": 27.84,
+   "within_1_tile_pct": 31.62,
+   "median_sep_tiles": 1.0,
+   "card_pairs": 38666,
+   "same_card_pct": 43.81
+  },
+  {
+   "board_distance": "0.25-0.5",
+   "cell_pairs": 88,
+   "same_cell_pct": 26.14,
+   "within_1_tile_pct": 37.5,
+   "median_sep_tiles": 1.0,
+   "card_pairs": 174,
+   "same_card_pct": 50.57
+  },
+  {
+   "board_distance": "0.5-1",
+   "cell_pairs": 153,
+   "same_cell_pct": 9.8,
+   "within_1_tile_pct": 13.73,
+   "median_sep_tiles": 7.0,
+   "card_pairs": 354,
+   "same_card_pct": 43.22
+  },
+  {
+   "board_distance": "1-2",
+   "cell_pairs": 23718,
+   "same_cell_pct": 18.54,
+   "within_1_tile_pct": 22.21,
+   "median_sep_tiles": 5.1,
+   "card_pairs": 66473,
+   "same_card_pct": 35.68
+  },
+  {
+   "board_distance": "2-3",
+   "cell_pairs": 21853,
+   "same_cell_pct": 13.99,
+   "within_1_tile_pct": 17.61,
+   "median_sep_tiles": 6.0,
+   "card_pairs": 57901,
+   "same_card_pct": 37.74
+  },
+  {
+   "board_distance": "3-5",
+   "cell_pairs": 35608,
+   "same_cell_pct": 14.08,
+   "within_1_tile_pct": 19.21,
+   "median_sep_tiles": 6.0,
+   "card_pairs": 91514,
+   "same_card_pct": 38.91
+  },
+  {
+   "board_distance": "5-8",
+   "cell_pairs": 46956,
+   "same_cell_pct": 9.66,
+   "within_1_tile_pct": 14.98,
+   "median_sep_tiles": 6.08,
+   "card_pairs": 125037,
+   "same_card_pct": 37.55
+  },
+  {
+   "board_distance": ">8",
+   "cell_pairs": 69034,
+   "same_cell_pct": 5.18,
+   "within_1_tile_pct": 9.55,
+   "median_sep_tiles": 6.71,
+   "card_pairs": 175687,
+   "same_card_pct": 39.29
+  }
+ ]
+}

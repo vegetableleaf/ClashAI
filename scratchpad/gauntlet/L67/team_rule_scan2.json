@@ -1,0 +1,168 @@
+[
+ {
+  "session": "20260815_222309",
+  "frames": 400,
+  "dets": 1105,
+  "raw_tags": {
+   "unknown": 194,
+   "mine": 501,
+   "enemy": 410
+  },
+  "tagged_by_TeamTracker": {
+   "enemy": 556,
+   "unknown": 42,
+   "mine": 507
+  },
+  "impossible_class_not_enemy_after_tracker": 0,
+  "top_still_wrong": [],
+  "unknown_resolved": 46,
+  "unknown_resolved_frac_of_dets": 0.0416,
+  "unknown_resolved_frac_of_unknown": 0.2371,
+  "top_resolved": [
+   [
+    "ronin",
+    6
+   ],
+   [
+    "skeleton_king",
+    6
+   ],
+   [
+    "goblin_barrel",
+    5
+   ],
+   [
+    "earthquake",
+    4
+   ],
+   [
+    "wizard_evo",
+    3
+   ],
+   [
+    "giant_hero",
+    2
+   ],
+   [
+    "arrows",
+    2
+   ],
+   [
+    "golem",
+    2
+   ]
+  ],
+  "mine_tagged_impossible": 72,
+  "top_mine_impossible": [
+   [
+    "skeleton_king",
+    14
+   ],
+   [
+    "earthquake",
+    9
+   ],
+   [
+    "elite_barbarians",
+    7
+   ],
+   [
+    "golem",
+    5
+   ],
+   [
+    "wizard_evo",
+    4
+   ],
+   [
+    "mighty_miner",
+    3
+   ],
+   [
+    "mega_knight_evo",
+    3
+   ],
+   [
+    "pekka",
+    2
+   ]
+  ]
+ },
+ {
+  "session": "20260804_173304",
+  "frames": 223,
+  "dets": 660,
+  "raw_tags": {
+   "enemy": 305,
+   "mine": 215,
+   "unknown": 140
+  },
+  "tagged_by_TeamTracker": {
+   "enemy": 349,
+   "mine": 281,
+   "unknown": 30
+  },
+  "impossible_class_not_enemy_after_tracker": 0,
+  "top_still_wrong": [],
+  "unknown_resolved": 20,
+  "unknown_resolved_frac_of_dets": 0.0303,
+  "unknown_resolved_frac_of_unknown": 0.1429,
+  "top_resolved": [
+   [
+    "guards",
+    8
+   ],
+   [
+    "fireball",
+    3
+   ],
+   [
+    "bats",
+    2
+   ],
+   [
+    "wizard_hero",
+    2
+   ],
+   [
+    "mega_knight",
+    2
+   ],
+   [
+    "inferno_tower",
+    1
+   ],
+   [
+    "ice_golem_hero",
+    1
+   ],
+   [
+    "elite_barbarians",
+    1
+   ]
+  ],
+  "mine_tagged_impossible": 17,
+  "top_mine_impossible": [
+   [
+    "guards",
+    8
+   ],
+   [
+    "bats",
+    4
+   ],
+   [
+    "mega_knight",
+    3
+   ],
+   [
+    "royal_giant",
+    1
+   ],
+   [
+    "goblin_barrel_evo",
+    1
+   ]
+  ]
+ }
+]

@@ -369,13 +369,51 @@ def board_warp(deck: Deck):
 
 _TEAM_SIDE = {"mine": 0, "enemy": 1, "unknown": -1}
 
+_MINE_CLASSES: dict[str, frozenset[str]] = {}
+
+
+def mine_classes(deck: Deck) -> frozenset[str]:
+    """BASE keys a detection could possibly be MINE: my 8 cards plus every body they spawn.
+
+    Owner ruling 2026-09-08: "if a goblin barrel is tagged 'unknown' auto assume it's the enemy cuz icebow
+    doesn't run goblin barrel. this card check should always be in there no matter what deck the model runs."
+
+    A class outside this set can never be mine -- I cannot deploy a card I do not hold, and the only other
+    way a body of mine reaches the board is as a spawn of a card I DO hold (Witch -> skeletons, Golem ->
+    golemite, Goblin Barrel -> goblins), which the transitive closure below covers. Mirror and Clone do not
+    break it: both only ever produce a class that is already in someone's deck, and a class of mine stays in
+    the set. The spawn map is the card DB's own ``spawns.unit`` plus vocab's measured spell-body table.
+    """
+    key = str(deck.config)
+    if key not in _MINE_CLASSES:
+        src = str(deck.src_dir)
+        if src not in sys.path:
+            sys.path.insert(0, src)
+        from clashrl.cards import CardDB                                    # noqa: E402
+        db = CardDB(path=deck.config.parent / "cards.yaml")
+        spawn: dict[str, str] = {str(k): str(v) for k, v in vocab._SPELL_BODY.items()}
+        for name in list(getattr(db, "cards", {}) or {}):
+            sp = db.spawner(name)
+            if sp and sp.get("unit"):
+                spawn[vocab.base_key(str(name))] = vocab.base_key(str(sp["unit"]))
+        got = {vocab.base_key(c) for c in deck.cards}
+        for _ in range(8):                       # transitive: elixir_golem -> golemite -> blob
+            grow = {spawn[k] for k in got if k in spawn} - got
+            if not grow:
+                break
+            got |= grow
+        _MINE_CLASSES[key] = frozenset(got)
+    return _MINE_CLASSES[key]
+
 
 def from_live(detections: Sequence[Any], reads: LiveReads, deck: Deck, *, warp: Any = None,
               unit_hp_default: Optional[float] = None) -> BoardState:
     """Detector output + screen reads -> BoardState. ``detections`` are ``replay_mine.Detection`` (duck-typed:
     cls, cx, gy, conf, team); frame -> board goes through ``BoardWarp.frame_to_board`` on ``(cx, gy)`` --
-    ``gy`` is the shadow-corrected y for flyers. ``team == 'unknown'`` -> side -1, KEPT."""
+    ``gy`` is the shadow-corrected y for flyers. ``team == 'unknown'`` -> side -1, EXCEPT for a class
+    my deck cannot produce (``mine_classes``), which is resolved to ENEMY."""
     warp = warp or board_warp(deck)
+    allowed = mine_classes(deck)
     units: list[Unit] = []
     spells: list[Unit] = []
     for d in detections:
@@ -385,8 +423,10 @@ def from_live(detections: Sequence[Any], reads: LiveReads, deck: Deck, *, warp: 
                 and getattr(d, "h", None) is not None):
             fy = fy + TROOP_FOOT_K * float(d.h)      # ground troop: box centre -> feet (L63f own-click test)
         x, y = warp.frame_to_board(float(d.cx), fy)
-        u = Unit(cid, _TEAM_SIDE.get(str(d.team), -1), float(x), float(y), unit_hp_default, None, None,
-                 float(d.conf))
+        side = _TEAM_SIDE.get(str(d.team), -1)
+        if side < 0 and vocab.base_key(str(d.cls)) not in allowed:
+            side = 1                             # cannot be mine -> it is theirs (owner ruling, mine_classes)
+        u = Unit(cid, side, float(x), float(y), unit_hp_default, None, None, float(d.conf))
         (spells if vocab.is_spell(cid) else units).append(u)
     towers = []
     for i, (side, (kind, lane)) in enumerate([(s, kl) for s in (0, 1) for kl in TOWER_ORDER]):

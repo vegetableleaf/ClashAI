@@ -1,0 +1,17 @@
+WAIT print lines 53 (1 per 10 waits), PLAY lines 62
+final counters: 530 / 600 -> plays 70
+units 0-1  n= 46 mean p=0.235 median=0.065 max=0.93
+units 2-3  n= 41 mean p=0.288 median=0.310 max=0.82
+units 4-6  n= 26 mean p=0.448 median=0.375 max=0.94
+units 7+   n=  2 mean p=0.650 median=0.650 max=0.82
+-- WAIT lines only, p by elixir --
+elixir  2 n=  5 mean p=0.026 median=0.030
+elixir  3 n=  7 mean p=0.061 median=0.060
+elixir  4 n=  6 mean p=0.068 median=0.045
+elixir  5 n=  4 mean p=0.073 median=0.040
+elixir  6 n=  7 mean p=0.047 median=0.060
+elixir  7 n=  1 mean p=0.000 median=0.000
+elixir  8 n=  7 mean p=0.081 median=0.020
+elixir  9 n=  1 mean p=0.010 median=0.010
+elixir 10 n= 15 mean p=0.062 median=0.030
+WAIT at elixir>=8: 23 mean p 0.066 | of those units<=2: 15

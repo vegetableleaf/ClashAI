@@ -105,7 +105,15 @@ class StudentPolicy:
                 if _tray_id_for_slot(self.deck.cards[s], hand_ids, deck_keys) is not None:
                     live_ok[s] = True
             if not bool(live_ok.any()):
+                # L67g: record the read BEFORE returning. This branch used to leave ``self.last`` holding the
+                # previous decision, so play.py's WAIT line printed a STALE p and a run of tray-read failures
+                # was indistinguishable from a run of genuine low-gate waits -- which is exactly the evidence
+                # needed to read a live freeze.
                 self.stats["no_mappable_card"] = self.stats.get("no_mappable_card", 0) + 1
+                self.last = {"p_play": p_play, "deck_slot": -1, "student_cell": None, "board_xy": (0.0, 0.0),
+                             "live_cell": None, "card_id": None, "no_mappable_card": True,
+                             "ms": (time.perf_counter() - t0) * 1e3, "units": len(bs.units),
+                             "spells": len(bs.spells)}
                 return None
             card_logits = card_logits.masked_fill(~live_ok, float("-inf"))
             slot = int(card_logits.argmax().item())

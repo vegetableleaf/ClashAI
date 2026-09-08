@@ -110,6 +110,20 @@ class OpponentElixirEstimator:
                 self._opp_spent += c
 
         est = float(my_elixir) + self._my_spent - self._opp_spent
-        self._est = max(0.0, min(10.0, est))
+        # L67g -- RE-BASELINE ON SATURATION, instead of clipping the output and keeping the bad books.
+        # The accounting is exact only if EVERY enemy play is seen: both players regenerate at the same
+        # rate, so opp = my_elixir + (what I spent) - (what they spent). Live, the detector misses enemy
+        # plays, `_opp_spent` runs low, and `est` drifts UP for the rest of the match -- the clip below used
+        # to hide that in the returned value while the next update recomputed from the same inflated base,
+        # so the estimate RATCHETED to a pinned 10 and stayed there. Nobody can hold more than 10 elixir, so
+        # an overflow IS the evidence of a missed play: charge it to `_opp_spent` and the books recover.
+        # Symmetrically, going below 0 means a play was double-counted, so give it back.
+        if est > 10.0:
+            self._opp_spent += est - 10.0
+            est = 10.0
+        elif est < 0.0:
+            self._opp_spent += est                     # est < 0 -> reduces _opp_spent
+            est = 0.0
+        self._est = est
         self._last_t = now
         return self._est / 10.0

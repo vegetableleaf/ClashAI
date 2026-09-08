@@ -48,6 +48,15 @@ def apply_variant(arrs: dict, name: str) -> dict:
         for k in KING_SLOTS:                 # king HP is never printed on screen
             sc[:, 52 + k] = 0.0
             sc[:, 58 + k] = 0.0
+    if name == "opp_none":                   # what the live path sent BEFORE the L67f wiring
+        sc[:, 5] = 0.0
+        sc[:, 6] = 0.0
+    if name == "opp_pinned10":               # what the LIVE ESTIMATOR degenerates to: est = my + my_spent -
+        sc[:, 5] = 1.0                       #   opp_spent, clipped at 10, and every MISSED enemy play pushes
+        sc[:, 6] = 1.0                       #   it up. Measured live: opp>=7.5 cuts the play rate to ~0.11.
+    if name == "opp_const5":
+        sc[:, 5] = 0.5
+        sc[:, 6] = 1.0
     if name in ("fill_scalars", "fill_both"):
         sc[:, 4] = 0.0                       # still a pip read -- only the MISSING fields get filled
         sc[:, 5] = 0.5                       # opponent elixir guessed at 5
@@ -82,7 +91,7 @@ def main() -> int:
     idx = np.flatnonzero(base["split"] == 1)
 
     rec = []
-    for name in ("clean", "blank_hp", "fill_hp", "blank_scalars", "fill_scalars", "blank_both", "fill_both"):
+    for name in ("clean", "opp_none", "opp_const5", "opp_pinned10"):
         arrs = base if name == "clean" else apply_variant(base, name)
         m = evaluate(model, Rows(arrs, idx, dev), grid=grid)
         rec.append({"variant": name, "cell_half_top1": round(float(m["cell_half_top1"]), 4),
