@@ -266,7 +266,11 @@ def main(argv=None) -> int:
         if ev[a.select] > best:
             best = ev[a.select]
             ckpt.parent.mkdir(parents=True, exist_ok=True)
-            torch.save({"model": model.state_dict(), "args": vars(a) | {"out_dir": str(a.out_dir), "data": str(a.data)},
+            # every Path in `args` must be stringified: torch 2.6 loads with weights_only=True by default and
+            # refuses a pickled WindowsPath, so a Path here makes the checkpoint unloadable by the reload
+            # below (and by anything else using the default). --init reintroduced exactly that bug (L67h).
+            _args = {k: (str(v) if isinstance(v, Path) else v) for k, v in vars(a).items()}
+            torch.save({"model": model.state_dict(), "args": _args | {"out_dir": str(a.out_dir), "data": str(a.data)},
                         "deck": a.deck, "epoch": ep + 1, "val": ev, "n_params": n_params}, ckpt)
         (a.out_dir / f"hist_{tag}.json").write_text(json.dumps({"deck": a.deck, "seed": a.seed, "n_params": n_params,
                                                                  "ckpt": str(ckpt), "hist": hist}, indent=1))
