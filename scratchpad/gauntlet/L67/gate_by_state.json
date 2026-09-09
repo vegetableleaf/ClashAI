@@ -1,0 +1,110 @@
+{
+ "ckpt": "icebow\\data\\pipeline\\s1_icebow_v6lat_s0.pt",
+ "rows": [
+  {
+   "condition": "ALL",
+   "n": 30000,
+   "model_p": 0.2738,
+   "model_frac_under_0.05": 0.3225,
+   "pro_play_rate": 0.2712
+  },
+  {
+   "condition": "single elixir (t<120s)",
+   "n": 14330,
+   "model_p": 0.1888,
+   "model_frac_under_0.05": 0.4174,
+   "pro_play_rate": 0.186
+  },
+  {
+   "condition": "double elixir (120-180s)",
+   "n": 7512,
+   "model_p": 0.3274,
+   "model_frac_under_0.05": 0.2503,
+   "pro_play_rate": 0.3199
+  },
+  {
+   "condition": "overtime flag set",
+   "n": 8158,
+   "model_p": 0.3739,
+   "model_frac_under_0.05": 0.2222,
+   "pro_play_rate": 0.3759
+  },
+  {
+   "condition": "t_sec > 180s",
+   "n": 8158,
+   "model_p": 0.3739,
+   "model_frac_under_0.05": 0.2222,
+   "pro_play_rate": 0.3759
+  },
+  {
+   "condition": "t_sec > 240s",
+   "n": 3373,
+   "model_p": 0.4206,
+   "model_frac_under_0.05": 0.2096,
+   "pro_play_rate": 0.4361
+  },
+  {
+   "condition": "both my princesses alive",
+   "n": 29426,
+   "model_p": 0.2726,
+   "model_frac_under_0.05": 0.324,
+   "pro_play_rate": 0.2704
+  },
+  {
+   "condition": "ONE of my princesses down",
+   "n": 533,
+   "model_p": 0.3285,
+   "model_frac_under_0.05": 0.2552,
+   "pro_play_rate": 0.3114
+  },
+  {
+   "condition": "BOTH my princesses down",
+   "n": 41,
+   "model_p": 0.4116,
+   "model_frac_under_0.05": 0.122,
+   "pro_play_rate": 0.3171
+  },
+  {
+   "condition": "one enemy princess down",
+   "n": 1017,
+   "model_p": 0.299,
+   "model_frac_under_0.05": 0.2645,
+   "pro_play_rate": 0.3019
+  },
+  {
+   "condition": "my last play < 10s ago",
+   "n": 24933,
+   "model_p": 0.2803,
+   "model_frac_under_0.05": 0.3051,
+   "pro_play_rate": 0.2797
+  },
+  {
+   "condition": "my last play 10-30s ago",
+   "n": 3475,
+   "model_p": 0.2936,
+   "model_frac_under_0.05": 0.3456,
+   "pro_play_rate": 0.2734
+  },
+  {
+   "condition": "no play yet this match",
+   "n": 1554,
+   "model_p": 0.12,
+   "model_frac_under_0.05": 0.5579,
+   "pro_play_rate": 0.1313
+  },
+  {
+   "condition": "elixir 10 AND units<=2",
+   "n": 1558,
+   "model_p": 0.4029,
+   "model_frac_under_0.05": 0.1598,
+   "pro_play_rate": 0.4365
+  },
+  {
+   "condition": "elixir 10 AND units<=2 AND t>180",
+   "n": 117,
+   "model_p": 0.6324,
+   "model_frac_under_0.05": 0.2051,
+   "pro_play_rate": 0.641
+  }
+ ]
+}

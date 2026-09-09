@@ -693,6 +693,8 @@ def play(cfg) -> None:
                 _student.stats["log_n"] = _student.stats.get("log_n", 0) + 1
                 if _student.stats["log_n"] % 10 == 0:         # rate-limited so a match is still readable
                     _why = " NO-TRAY-MATCH" if _slast.get("no_mappable_card") else ""
+                    if float(_slast.get("p_play", 1.0)) < 0.05 and _slast.get("digest"):
+                        _why += " | " + str(_slast["digest"])   # L67i: why is the gate pinned at zero?
                     print(f"[student] WAIT{_why} p={_slast.get('p_play', float('nan')):.2f} "
                           f"elixir {elixir:.0f} opp~{('?' if _oe is None else f'{float(_oe):.1f}')} "
                           f"units {_slast.get('units', 0)} dets {len(_last_dets['all'])} "

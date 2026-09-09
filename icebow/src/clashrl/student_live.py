@@ -126,12 +126,25 @@ class StudentPolicy:
         card_id = _tray_id_for_slot(self.deck.cards[slot], hand_ids, deck_keys)
         self.last = {"p_play": p_play, "deck_slot": slot, "student_cell": cell,
                      "board_xy": (float(bx), float(by)), "live_cell": live_cell, "card_id": card_id,
-                     "ms": (time.perf_counter() - t0) * 1e3, "units": len(bs.units), "spells": len(bs.spells)}
+                     "ms": (time.perf_counter() - t0) * 1e3, "units": len(bs.units), "spells": len(bs.spells),
+                     # L67i: the fields that are CONSTANT in every training row and can vary live. A gate that
+                     # pins at p=0.00 in a state the engine says is worth 0.63 is being driven by one of
+                     # these, and guessing which cost a whole session -- so the live log now carries them.
+                     "digest": state_digest(bs)}
         self.stats["decisions"] = self.stats.get("decisions", 0) + 1
         if p_play <= self.gate_tau:
             self.stats["wait"] = self.stats.get("wait", 0) + 1
             return None
         return int(card_id), live_cell, p_play
+
+
+def state_digest(bs) -> str:
+    """One compact line of the live-only fields, for the WAIT log when the gate collapses."""
+    tw = "".join(("-" if t.hp_frac is None else f"{t.hp_frac:.1f}") + ("" if t.alive else "x")
+                 for t in bs.towers)
+    return (f"exact={int(bs.my_elixir_exact)} opp={'?' if bs.opp_elixir is None else round(bs.opp_elixir, 1)} "
+            f"next={bs.my_next} t={bs.t_sec:.0f}s hand={list(bs.my_hand)} tw={tw} "
+            f"sp={len(bs.spells)} unk={sum(1 for u in bs.units if u.side < 0)}")
 
 
 def _key_of(card_id: int, deck_keys: Sequence[str]) -> Optional[str]:
