@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L67\merge_aug.py", line 51, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "C:\Users\benpe\ClashBot\scratchpad\gauntlet\L67\merge_aug.py", line 36, in main
+    blocks = [c["tok"]] + [d["tok"][doff[i]:doff[i + 1]] for i in tr]
+                           ~^^^^^^^
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\numpy\lib\_npyio_impl.py", line 257, in __getitem__
+    return format.read_array(
+           ~~~~~~~~~~~~~~~~~^
+        bytes,
+        ^^^^^^
+    ...<2 lines>...
+        max_header_size=self.max_header_size
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\numpy\lib\_format_impl.py", line 862, in read_array
+    array = numpy.ndarray(count, dtype=dtype)
+numpy._core._exceptions._ArrayMemoryError: Unable to allocate 73.9 MiB for an array with shape (19375650,) and data type float32

@@ -1,0 +1,37 @@
+[
+ {
+  "variant": "clean",
+  "class_id": null,
+  "mean_p": 0.276,
+  "median_p": 0.1586,
+  "frac_under_0.005": 0.1207
+ },
+ {
+  "variant": "1 unit -> knight_evo (UNTRAINED)",
+  "class_id": 149,
+  "mean_p": 0.349,
+  "median_p": 0.2909,
+  "frac_under_0.005": 0.0932
+ },
+ {
+  "variant": "1 unit -> tesla_evo (UNTRAINED)",
+  "class_id": 164,
+  "mean_p": 0.2766,
+  "median_p": 0.1586,
+  "frac_under_0.005": 0.1273
+ },
+ {
+  "variant": "1 unit -> knight (trained control)",
+  "class_id": 5,
+  "mean_p": 0.2713,
+  "median_p": 0.158,
+  "frac_under_0.005": 0.1233
+ },
+ {
+  "variant": "1 unit -> mega_knight (trained control)",
+  "class_id": 80,
+  "mean_p": 0.2779,
+  "median_p": 0.1604,
+  "frac_under_0.005": 0.1207
+ }
+]

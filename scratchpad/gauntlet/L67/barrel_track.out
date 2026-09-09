@@ -1,0 +1,5 @@
+WARNING NMS time limit 2.050s exceeded
+20260815_222309: 17 barrel tracks
+20260804_173304: 1 barrel tracks
+skip scratchpad/gauntlet/L67/barrel_track.json
+{"tracks": 18, "sightings_median": 5.0, "first_to_last_tiles": {"median": 10.75, "p90": 23.52}, "mean_sighting_err_tiles": {"median": 7.33, "p90": 17.59}, "last_sighting_dy_to_my_princess": {"median": 7.62, "frac_within_3_tiles": 0.222}}

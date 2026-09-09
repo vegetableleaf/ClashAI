@@ -1,0 +1,9 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+{"variant": "clean", "cell_half_top1": 0.2097, "card_top1": 0.6546, "place_dist": 3.513, "gate_acc": 0.8258, "n_play": 3796}
+{"variant": "blank_hp", "cell_half_top1": 0.1947, "card_top1": 0.5877, "place_dist": 3.9914, "gate_acc": 0.7989, "n_play": 3796}
+{"variant": "fill_hp", "cell_half_top1": 0.2026, "card_top1": 0.6401, "place_dist": 3.652, "gate_acc": 0.813, "n_play": 3796}
+{"variant": "blank_scalars", "cell_half_top1": 0.2042, "card_top1": 0.6099, "place_dist": 3.5755, "gate_acc": 0.6821, "n_play": 3796}
+{"variant": "fill_scalars", "cell_half_top1": 0.2071, "card_top1": 0.6483, "place_dist": 3.5322, "gate_acc": 0.8103, "n_play": 3796}
+{"variant": "blank_both", "cell_half_top1": 0.1878, "card_top1": 0.5211, "place_dist": 4.0851, "gate_acc": 0.7377, "n_play": 3796}
+{"variant": "fill_both", "cell_half_top1": 0.2015, "card_top1": 0.6325, "place_dist": 3.6379, "gate_acc": 0.7898, "n_play": 3796}

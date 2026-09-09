@@ -1,0 +1,584 @@
+{
+ "20260815_222309": [
+  {
+   "frame": 54,
+   "cls": "goblin_barrel",
+   "conf": 0.446,
+   "cx": 0.0411,
+   "cy": 0.2412,
+   "gy": 0.2412,
+   "team": "unknown"
+  },
+  {
+   "frame": 3756,
+   "cls": "goblin_barrel",
+   "conf": 0.745,
+   "cx": 0.034,
+   "cy": 0.2303,
+   "gy": 0.2303,
+   "team": "mine"
+  },
+  {
+   "frame": 3762,
+   "cls": "goblin_barrel",
+   "conf": 0.417,
+   "cx": 0.0353,
+   "cy": 0.2334,
+   "gy": 0.2334,
+   "team": "mine"
+  },
+  {
+   "frame": 3792,
+   "cls": "goblin_barrel",
+   "conf": 0.618,
+   "cx": 0.0381,
+   "cy": 0.2333,
+   "gy": 0.2333,
+   "team": "unknown"
+  },
+  {
+   "frame": 3810,
+   "cls": "goblin_barrel",
+   "conf": 0.861,
+   "cx": 0.0402,
+   "cy": 0.238,
+   "gy": 0.238,
+   "team": "unknown"
+  },
+  {
+   "frame": 3852,
+   "cls": "goblin_barrel",
+   "conf": 0.423,
+   "cx": 0.0416,
+   "cy": 0.2416,
+   "gy": 0.2416,
+   "team": "unknown"
+  },
+  {
+   "frame": 4230,
+   "cls": "barbarian_barrel",
+   "conf": 0.411,
+   "cx": 0.2951,
+   "cy": 0.5977,
+   "gy": 0.5977,
+   "team": "enemy"
+  },
+  {
+   "frame": 4254,
+   "cls": "goblin_barrel_evo",
+   "conf": 0.683,
+   "cx": 0.468,
+   "cy": 0.1128,
+   "gy": 0.1128,
+   "team": "enemy"
+  },
+  {
+   "frame": 4260,
+   "cls": "goblin_barrel",
+   "conf": 0.936,
+   "cx": 0.4273,
+   "cy": 0.124,
+   "gy": 0.124,
+   "team": "enemy"
+  },
+  {
+   "frame": 4266,
+   "cls": "goblin_barrel",
+   "conf": 0.848,
+   "cx": 0.3795,
+   "cy": 0.1812,
+   "gy": 0.1812,
+   "team": "unknown"
+  },
+  {
+   "frame": 4272,
+   "cls": "goblin_barrel",
+   "conf": 0.873,
+   "cx": 0.3422,
+   "cy": 0.2774,
+   "gy": 0.2774,
+   "team": "unknown"
+  },
+  {
+   "frame": 4764,
+   "cls": "goblin_barrel",
+   "conf": 0.842,
+   "cx": 0.4634,
+   "cy": 0.112,
+   "gy": 0.112,
+   "team": "enemy"
+  },
+  {
+   "frame": 4770,
+   "cls": "goblin_barrel",
+   "conf": 0.928,
+   "cx": 0.4181,
+   "cy": 0.1219,
+   "gy": 0.1219,
+   "team": "enemy"
+  },
+  {
+   "frame": 4776,
+   "cls": "goblin_barrel",
+   "conf": 0.88,
+   "cx": 0.3619,
+   "cy": 0.1766,
+   "gy": 0.1766,
+   "team": "unknown"
+  },
+  {
+   "frame": 4776,
+   "cls": "goblin_barrel",
+   "conf": 0.51,
+   "cx": 0.3659,
+   "cy": 0.1623,
+   "gy": 0.1623,
+   "team": "enemy"
+  },
+  {
+   "frame": 4782,
+   "cls": "goblin_barrel",
+   "conf": 0.91,
+   "cx": 0.3154,
+   "cy": 0.2716,
+   "gy": 0.2716,
+   "team": "unknown"
+  },
+  {
+   "frame": 4788,
+   "cls": "goblin_barrel",
+   "conf": 0.833,
+   "cx": 0.2623,
+   "cy": 0.4159,
+   "gy": 0.4159,
+   "team": "unknown"
+  },
+  {
+   "frame": 4794,
+   "cls": "goblin_barrel",
+   "conf": 0.743,
+   "cx": 0.2114,
+   "cy": 0.5802,
+   "gy": 0.5802,
+   "team": "enemy"
+  },
+  {
+   "frame": 5418,
+   "cls": "goblin_barrel",
+   "conf": 0.872,
+   "cx": 0.446,
+   "cy": 0.1219,
+   "gy": 0.1219,
+   "team": "enemy"
+  },
+  {
+   "frame": 5424,
+   "cls": "goblin_barrel",
+   "conf": 0.8,
+   "cx": 0.3992,
+   "cy": 0.1609,
+   "gy": 0.1609,
+   "team": "enemy"
+  },
+  {
+   "frame": 5424,
+   "cls": "goblin_barrel_evo",
+   "conf": 0.619,
+   "cx": 0.6107,
+   "cy": 0.1625,
+   "gy": 0.1625,
+   "team": "mine"
+  },
+  {
+   "frame": 5430,
+   "cls": "goblin_barrel_evo",
+   "conf": 0.925,
+   "cx": 0.3547,
+   "cy": 0.2468,
+   "gy": 0.2468,
+   "team": "enemy"
+  },
+  {
+   "frame": 5430,
+   "cls": "goblin_barrel_evo",
+   "conf": 0.923,
+   "cx": 0.6566,
+   "cy": 0.2454,
+   "gy": 0.2454,
+   "team": "enemy"
+  },
+  {
+   "frame": 5436,
+   "cls": "goblin_barrel_evo",
+   "conf": 0.929,
+   "cx": 0.3074,
+   "cy": 0.3768,
+   "gy": 0.3768,
+   "team": "enemy"
+  },
+  {
+   "frame": 5436,
+   "cls": "goblin_barrel_evo",
+   "conf": 0.895,
+   "cx": 0.6999,
+   "cy": 0.3752,
+   "gy": 0.3752,
+   "team": "enemy"
+  },
+  {
+   "frame": 5442,
+   "cls": "goblin_barrel",
+   "conf": 0.812,
+   "cx": 0.7501,
+   "cy": 0.5454,
+   "gy": 0.5454,
+   "team": "enemy"
+  },
+  {
+   "frame": 5874,
+   "cls": "goblin_barrel",
+   "conf": 0.924,
+   "cx": 0.3308,
+   "cy": 0.134,
+   "gy": 0.134,
+   "team": "enemy"
+  },
+  {
+   "frame": 5880,
+   "cls": "goblin_barrel",
+   "conf": 0.951,
+   "cx": 0.2769,
+   "cy": 0.2124,
+   "gy": 0.2124,
+   "team": "unknown"
+  },
+  {
+   "frame": 5886,
+   "cls": "goblin_barrel",
+   "conf": 0.89,
+   "cx": 0.217,
+   "cy": 0.3428,
+   "gy": 0.3428,
+   "team": "unknown"
+  },
+  {
+   "frame": 5892,
+   "cls": "goblin_barrel",
+   "conf": 0.792,
+   "cx": 0.1536,
+   "cy": 0.5019,
+   "gy": 0.5019,
+   "team": "unknown"
+  },
+  {
+   "frame": 6732,
+   "cls": "goblin_barrel_evo",
+   "conf": 0.464,
+   "cx": 0.4663,
+   "cy": 0.1168,
+   "gy": 0.1168,
+   "team": "enemy"
+  },
+  {
+   "frame": 6732,
+   "cls": "goblin_barrel",
+   "conf": 0.361,
+   "cx": 0.4661,
+   "cy": 0.1169,
+   "gy": 0.1169,
+   "team": "enemy"
+  },
+  {
+   "frame": 6738,
+   "cls": "goblin_barrel",
+   "conf": 0.901,
+   "cx": 0.4257,
+   "cy": 0.1353,
+   "gy": 0.1353,
+   "team": "unknown"
+  },
+  {
+   "frame": 6744,
+   "cls": "goblin_barrel",
+   "conf": 0.91,
+   "cx": 0.3731,
+   "cy": 0.1996,
+   "gy": 0.1996,
+   "team": "enemy"
+  },
+  {
+   "frame": 6750,
+   "cls": "goblin_barrel",
+   "conf": 0.917,
+   "cx": 0.3336,
+   "cy": 0.3069,
+   "gy": 0.3069,
+   "team": "unknown"
+  },
+  {
+   "frame": 6756,
+   "cls": "goblin_barrel_evo",
+   "conf": 0.697,
+   "cx": 0.2861,
+   "cy": 0.4443,
+   "gy": 0.4443,
+   "team": "enemy"
+  },
+  {
+   "frame": 6936,
+   "cls": "goblin_barrel_evo",
+   "conf": 0.63,
+   "cx": 0.5308,
+   "cy": 0.1113,
+   "gy": 0.1113,
+   "team": "enemy"
+  },
+  {
+   "frame": 6948,
+   "cls": "goblin_barrel_evo",
+   "conf": 0.903,
+   "cx": 0.6395,
+   "cy": 0.2076,
+   "gy": 0.2076,
+   "team": "unknown"
+  },
+  {
+   "frame": 6948,
+   "cls": "goblin_barrel_evo",
+   "conf": 0.721,
+   "cx": 0.369,
+   "cy": 0.2084,
+   "gy": 0.2084,
+   "team": "enemy"
+  },
+  {
+   "frame": 6954,
+   "cls": "goblin_barrel_evo",
+   "conf": 0.897,
+   "cx": 0.3246,
+   "cy": 0.3195,
+   "gy": 0.3195,
+   "team": "enemy"
+  },
+  {
+   "frame": 6954,
+   "cls": "goblin_barrel_evo",
+   "conf": 0.879,
+   "cx": 0.6821,
+   "cy": 0.3188,
+   "gy": 0.3188,
+   "team": "enemy"
+  },
+  {
+   "frame": 6960,
+   "cls": "goblin_barrel",
+   "conf": 0.667,
+   "cx": 0.7311,
+   "cy": 0.4687,
+   "gy": 0.4687,
+   "team": "enemy"
+  },
+  {
+   "frame": 7116,
+   "cls": "goblin_barrel_evo",
+   "conf": 0.451,
+   "cx": 0.4679,
+   "cy": 0.1166,
+   "gy": 0.1166,
+   "team": "enemy"
+  },
+  {
+   "frame": 7122,
+   "cls": "goblin_barrel",
+   "conf": 0.805,
+   "cx": 0.4248,
+   "cy": 0.1367,
+   "gy": 0.1367,
+   "team": "unknown"
+  },
+  {
+   "frame": 7128,
+   "cls": "goblin_barrel",
+   "conf": 0.927,
+   "cx": 0.3735,
+   "cy": 0.2027,
+   "gy": 0.2027,
+   "team": "unknown"
+  },
+  {
+   "frame": 7134,
+   "cls": "goblin_barrel",
+   "conf": 0.91,
+   "cx": 0.335,
+   "cy": 0.3052,
+   "gy": 0.3052,
+   "team": "unknown"
+  },
+  {
+   "frame": 7320,
+   "cls": "goblin_barrel_evo",
+   "conf": 0.761,
+   "cx": 0.4597,
+   "cy": 0.1149,
+   "gy": 0.1149,
+   "team": "enemy"
+  },
+  {
+   "frame": 7320,
+   "cls": "goblin_barrel",
+   "conf": 0.377,
+   "cx": 0.459,
+   "cy": 0.1152,
+   "gy": 0.1152,
+   "team": "enemy"
+  },
+  {
+   "frame": 7326,
+   "cls": "goblin_barrel",
+   "conf": 0.904,
+   "cx": 0.4145,
+   "cy": 0.1299,
+   "gy": 0.1299,
+   "team": "unknown"
+  },
+  {
+   "frame": 7332,
+   "cls": "goblin_barrel",
+   "conf": 0.877,
+   "cx": 0.3508,
+   "cy": 0.1947,
+   "gy": 0.1947,
+   "team": "enemy"
+  },
+  {
+   "frame": 7338,
+   "cls": "goblin_barrel",
+   "conf": 0.943,
+   "cx": 0.3038,
+   "cy": 0.2955,
+   "gy": 0.2955,
+   "team": "enemy"
+  },
+  {
+   "frame": 7344,
+   "cls": "goblin_barrel",
+   "conf": 0.56,
+   "cx": 0.241,
+   "cy": 0.4406,
+   "gy": 0.4406,
+   "team": "enemy"
+  },
+  {
+   "frame": 7440,
+   "cls": "goblin_barrel",
+   "conf": 0.424,
+   "cx": 0.0391,
+   "cy": 0.2438,
+   "gy": 0.2438,
+   "team": "enemy"
+  },
+  {
+   "frame": 7464,
+   "cls": "goblin_barrel",
+   "conf": 0.481,
+   "cx": 0.0407,
+   "cy": 0.2399,
+   "gy": 0.2399,
+   "team": "unknown"
+  },
+  {
+   "frame": 7476,
+   "cls": "goblin_barrel",
+   "conf": 0.732,
+   "cx": 0.0404,
+   "cy": 0.2406,
+   "gy": 0.2406,
+   "team": "enemy"
+  },
+  {
+   "frame": 10152,
+   "cls": "goblin_barrel",
+   "conf": 0.657,
+   "cx": 0.4803,
+   "cy": 0.6127,
+   "gy": 0.6127,
+   "team": "enemy"
+  },
+  {
+   "frame": 10152,
+   "cls": "goblin_barrel",
+   "conf": 0.61,
+   "cx": 0.4369,
+   "cy": 0.6142,
+   "gy": 0.6142,
+   "team": "enemy"
+  }
+ ],
+ "20260804_192006": [
+  {
+   "frame": 60,
+   "cls": "goblin_barrel",
+   "conf": 0.466,
+   "cx": 0.0413,
+   "cy": 0.2409,
+   "gy": 0.2409,
+   "team": "unknown"
+  },
+  {
+   "frame": 486,
+   "cls": "barbarian_barrel",
+   "conf": 0.646,
+   "cx": 0.2896,
+   "cy": 0.4819,
+   "gy": 0.4819,
+   "team": "enemy"
+  },
+  {
+   "frame": 984,
+   "cls": "barbarian_barrel",
+   "conf": 0.774,
+   "cx": 0.239,
+   "cy": 0.3302,
+   "gy": 0.3302,
+   "team": "enemy"
+  },
+  {
+   "frame": 990,
+   "cls": "barbarian_barrel",
+   "conf": 0.477,
+   "cx": 0.2398,
+   "cy": 0.3719,
+   "gy": 0.3719,
+   "team": "mine"
+  },
+  {
+   "frame": 996,
+   "cls": "barbarian_barrel",
+   "conf": 0.87,
+   "cx": 0.2482,
+   "cy": 0.4154,
+   "gy": 0.4154,
+   "team": "enemy"
+  }
+ ],
+ "20260804_173304": [
+  {
+   "frame": 2664,
+   "cls": "goblin_barrel_evo",
+   "conf": 0.398,
+   "cx": 0.2605,
+   "cy": 0.6573,
+   "gy": 0.6573,
+   "team": "mine"
+  },
+  {
+   "frame": 2670,
+   "cls": "goblin_barrel_evo",
+   "conf": 0.387,
+   "cx": 0.2602,
+   "cy": 0.6577,
+   "gy": 0.6577,
+   "team": "mine"
+  }
+ ]
+}

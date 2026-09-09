@@ -1,0 +1,10 @@
+player map: 157 players, 28743/40000 rows attributed
+play rows 40000, replays 2238
+{"board_distance": "0-0.25", "cell_pairs": 16751, "same_cell_pct": 27.52, "within_1_tile_pct": 31.22, "median_sep_tiles": 1.0, "card_pairs": 38311, "same_card_pct": 43.72}
+{"board_distance": "0.25-0.5", "cell_pairs": 87, "same_cell_pct": 26.44, "within_1_tile_pct": 36.78, "median_sep_tiles": 1.0, "card_pairs": 170, "same_card_pct": 51.18}
+{"board_distance": "0.5-1", "cell_pairs": 152, "same_cell_pct": 9.21, "within_1_tile_pct": 13.16, "median_sep_tiles": 7.0, "card_pairs": 352, "same_card_pct": 43.18}
+{"board_distance": "1-2", "cell_pairs": 23555, "same_cell_pct": 18.5, "within_1_tile_pct": 22.13, "median_sep_tiles": 5.1, "card_pairs": 66046, "same_card_pct": 35.66}
+{"board_distance": "2-3", "cell_pairs": 21708, "same_cell_pct": 13.92, "within_1_tile_pct": 17.51, "median_sep_tiles": 6.0, "card_pairs": 57514, "same_card_pct": 37.74}
+{"board_distance": "3-5", "cell_pairs": 35349, "same_cell_pct": 13.99, "within_1_tile_pct": 19.1, "median_sep_tiles": 6.0, "card_pairs": 90820, "same_card_pct": 38.92}
+{"board_distance": "5-8", "cell_pairs": 46620, "same_cell_pct": 9.63, "within_1_tile_pct": 14.94, "median_sep_tiles": 6.08, "card_pairs": 124107, "same_card_pct": 37.56}
+{"board_distance": ">8", "cell_pairs": 68482, "same_cell_pct": 5.17, "within_1_tile_pct": 9.53, "median_sep_tiles": 6.71, "card_pairs": 174399, "same_card_pct": 39.27}

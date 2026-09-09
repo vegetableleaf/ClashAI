@@ -1,0 +1,430 @@
+batch: 383 tags, 0 already done, port 37032
+[1/383] 9bfe484f21e34c4d9791a2fb2172c225 acc 32/32 rej {} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 3244 (last play 3152) 17.22s
+[2/383] dd2a5aa4aed74c6c80e341ce09eefaaf acc 144/144 rej {} crowns [0, 1] exp [1, 0] match=False term=native_tiebreak_hp_drain tick 6134 (last play 5954) 42.14s
+[3/383] 22d2cc7fd6574a77926c02ba87687528 acc 78/78 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5103 (last play 4943) 30.71s
+[4/383] febfdc5354c444cbb51ce67ea93a7f5b acc 92/93 rej {'native_rejected': 1} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5544 (last play 5514) 34.99s
+[5/383] 94ef8a30b1294c89ab5a6447773aa370 acc 63/63 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4844 (last play 4651) 30.91s
+[6/383] 79dfd91aba534b64ab875ee2ed35a9ea acc 103/103 rej {} crowns [1, 0] exp [0, 1] match=False term=native_tiebreak_hp_drain tick 6124 (last play 5966) 39.55s
+[7/383] e9d7d5f4689e4902b67c12fe2874d471 FAILED ValueError: card has no native evolution form: 26000043
+[8/383] 7c79fdf6dc9d40e2ae5d32bfd702d8fe FAILED ValueError: card has no native evolution form: 26000043
+[9/383] b224463b3ff34e8f885ce06703033cbb FAILED ValueError: card has no native evolution form: 26000043
+[10/383] 567e613109be408fadf6b533acdb78ad acc 109/111 rej {'native_rejected': 2} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 6010 (last play 5975) 38.46s
+[11/383] bcf8ec58d03d4bb887367534d6e2d9b7 acc 60/60 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3681 (last play 3522) 20.61s
+[12/383] 6163c45baaf44dec9cbcff3ed50b5edd FAILED ValueError: card has no native evolution form: 26000043
+[13/383] e54d9d7d10ac45a8ae13c5c8f1e97004 acc 142/142 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6115 (last play 5968) 39.22s
+[14/383] f6ee7113c661467ea9eb35f09461afd6 acc 133/133 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 6066 (last play 5949) 37.88s
+[15/383] 46c06d42c9124563ac6495965998dd22 acc 130/130 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6089 (last play 5912) 36.84s
+[16/383] 4b346ac623894ca18ce4cd787b1571e1 acc 73/73 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 4916 (last play 4771) 26.45s
+[17/383] 855d0c3e521d4ed89816f2113adbef28 acc 131/131 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6089 (last play 5951) 36.1s
+[18/383] a59a85c417e0477898d47ce33d13e91a acc 105/105 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 5931 (last play 5833) 30.25s
+[19/383] 9c6a2514bc0c4e6fbce4f5884c707906 acc 117/117 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6095 (last play 5948) 32.58s
+[20/383] 8f287422a7944fe88bd671af4f848d62 FAILED ValueError: card has no native evolution form: 26000043
+[21/383] d5d1f9c3f44b4ce68c22d66fdc6554f9 acc 132/132 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6117 (last play 5961) 34.43s
+[22/383] 02f3776ec00145a094be0628d209b0ed FAILED ValueError: card has no native evolution form: 26000043
+[23/383] 58a52fc9b0a043a38e8a9c8bba56825b acc 126/126 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6121 (last play 5955) 34.06s
+[24/383] 487cd70f6a09412f8c531726b584d872 acc 52/52 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3681 (last play 3525) 18.11s
+[25/383] 9887ab9d1606472fb1deea09a98543a6 acc 99/99 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5517 (last play 5388) 29.09s
+[26/383] 370b0bfa082a47da9d6b92daf886b617 acc 69/71 rej {'native_rejected': 2} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4206 (last play 5822) 23.16s
+[27/383] 279bb9f423b64c1a9b681acc58d1f075 acc 141/141 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6144 (last play 5921) 38.51s
+[28/383] 01852645ef994048bbdecb079c42cbe5 acc 44/44 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3681 (last play 3223) 17.78s
+[29/383] 09a19e59529d4ea5b86bff764efa5bfa acc 29/29 rej {} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 2710 (last play 2458) 12.6s
+[30/383] 4336234180af4aafa9cf9b4376bc5273 acc 55/55 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3953 (last play 3967) 19.88s
+[31/383] aceef0a5ff024470b4b6142ec6046200 acc 41/45 rej {'card_not_in_hand': 4} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 3284 (last play 3141) 16.17s
+[32/383] 709bfb31833f438084784a06cab9be26 acc 92/92 rej {} crowns [0, 1] exp [1, 0] match=False term=native_logic_clock_stopped tick 5482 (last play 5246) 28.33s
+[33/383] c691d0a31e3643d2a394a11ee674ffb1 acc 90/90 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 5949 (last play 5634) 29.66s
+[34/383] 1f503c44f7334b1d82281eed8ed8a794 acc 47/49 rej {'native_rejected': 2} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3681 (last play 5969) 18.77s
+[35/383] 6c662245ca80441ba3e6ca0254dc77b7 acc 102/104 rej {'card_not_in_hand': 2} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6121 (last play 5964) 32.97s
+[36/383] 1ef9a5bdccc941b9a9f88877d84eef7f acc 128/128 rej {} crowns [1, 0] exp [0, 1] match=False term=native_tiebreak_hp_drain tick 6108 (last play 5935) 34.97s
+[37/383] 1e3bca5da52a4d729d6ffec1e3c2f431 FAILED ValueError: card has no native evolution form: 26000043
+[38/383] 83a1caa8c5414b4c995208b6c59e5099 FAILED ValueError: card has no native evolution form: 26000043
+[39/383] 9f03461916314fdba93360a91e46aaf9 acc 40/40 rej {} crowns [3, 0] exp [3, 0] match=True term=native_logic_clock_stopped tick 3539 (last play 3314) 16.42s
+[40/383] 9433d0b552d24c2990c251bb6e90cf13 acc 138/138 rej {} crowns [0, 1] exp [1, 0] match=False term=native_tiebreak_hp_drain tick 6113 (last play 5966) 35.09s
+[41/383] 773c88a3e3e944dc843f7ca6c6400f4c acc 143/143 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6088 (last play 5967) 33.74s
+[42/383] a29566293097479fb7aa1fe2fc1fe7e3 acc 74/74 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 4323 (last play 4088) 22.44s
+[43/383] ce1b58b06c5641ff8322020566d97a65 acc 141/141 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6140 (last play 5951) 36.93s
+[44/383] 905c49c70d894c469147c067d9c6b546 acc 94/94 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 5296 (last play 5162) 26.69s
+[45/383] 924702e1ab994e19be81dfbac101f5b2 FAILED ValueError: card has no native evolution form: 26000043
+[46/383] 758a8aa6c62e49eab3978244b9179df2 acc 39/39 rej {} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 3304 (last play 3001) 15.48s
+[47/383] 265d434f17244e9590e584473225349f FAILED ValueError: card has no native evolution form: 26000043
+[48/383] 097bee258c3a4bb89464ba7df04dd9d4 FAILED ValueError: card has no native evolution form: 26000043
+[49/383] 3412868827c343dd956322304040940b FAILED ValueError: card has no native evolution form: 26000043
+[50/383] 33b0260e2d2a4754bad5331704f04238 acc 70/70 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6118 (last play 4056) 28.28s
+[51/383] a753743a696746eab2dd1ac834582eec acc 42/42 rej {} crowns [3, 0] exp [3, 0] match=True term=native_logic_clock_stopped tick 3188 (last play 3054) 15.2s
+[52/383] d742d9a3856e4615b5ad092a382c59b6 FAILED ValueError: card has no native evolution form: 26000043
+[53/383] 7fb94cff2668407fa9958daa39c6babc acc 109/109 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6118 (last play 5962) 28.8s
+[54/383] f20cfaa574fb45e49fd12d5ad15cd14b acc 128/128 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6133 (last play 5906) 27.2s
+[55/383] 59f79fde385a4a5ea974429331cd7edb acc 109/109 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6134 (last play 5936) 26.14s
+[56/383] 85feb47cb3324122b671c6695be213bc acc 51/53 rej {'native_rejected': 2} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3681 (last play 5928) 14.72s
+[57/383] 3d9adf2e5ac248e39ec0846bcb7a821b FAILED ValueError: card has no native evolution form: 26000043
+[58/383] 615758134ea34df68a36bc7925b9b434 FAILED ValueError: card has no native evolution form: 26000043
+[59/383] 014bd0c8e7314940b4f792f980fa58cf acc 82/82 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5701 (last play 5471) 22.34s
+[60/383] ff92b907301240ff967bacf51196be62 acc 97/100 rej {'native_rejected': 3} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 5482 (last play 5621) 23.45s
+[61/383] d107d69e24184f348914f933e48f35c7 acc 55/56 rej {'native_rejected': 1} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 5861) 13.98s
+[62/383] 4ff95634751b4e6c82f407175a216923 acc 121/121 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6116 (last play 5931) 25.75s
+[63/383] a3674fb6151548f48a032f7e52f33336 acc 93/93 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 5119 (last play 5031) 20.74s
+[64/383] e1b3d9a06b804412ad0eefca28a5d674 acc 112/112 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6143 (last play 5939) 26.08s
+[65/383] f690b99bab9640e19355f74eaf5928c2 acc 82/82 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 5698 (last play 5414) 22.36s
+[66/383] 3a922b321cad4a808cbcb4110c41250d acc 25/28 rej {'native_rejected': 2, 'card_not_in_hand': 1} crowns [3, 0] exp [3, 0] match=True term=native_logic_clock_stopped tick 2725 (last play 2522) 10.39s
+[67/383] 6b85d4de9f414a9183720c411d78e92f acc 16/16 rej {} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 1818 (last play 1543) 7.23s
+[68/383] 0313832ac4e540b683d8a8c8ab9d6f46 acc 71/71 rej {} crowns [0, 1] exp [1, 0] match=False term=native_logic_clock_stopped tick 4069 (last play 4249) 17.57s
+[69/383] df53d2b014ad4379b6d132e9835615c1 FAILED ValueError: card has no native evolution form: 26000043
+[70/383] ef5b178b49a644c9a3d6fd5afd6dc360 FAILED ValueError: card has no native evolution form: 26000043
+[71/383] 348789d85dd5416b8fbe8d23306eb59c acc 91/91 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5090 (last play 4961) 21.38s
+[72/383] 21f451e0ed7d4ad2b26f938c25d0d6c4 acc 108/108 rej {} crowns [0, 1] exp [1, 0] match=False term=native_tiebreak_hp_drain tick 6127 (last play 5961) 24.21s
+[73/383] e6a8072d48a644a6bff64c87fd3d5b18 FAILED ValueError: card has no native evolution form: 26000043
+[74/383] d6adc415b8a844abba842513a6d09832 acc 123/124 rej {'native_rejected': 1} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5743 (last play 5731) 24.08s
+[75/383] 30bd4c1d2f204f37b3589e833c3ae197 acc 31/31 rej {} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 2735 (last play 2551) 9.46s
+[76/383] 162f8573df9342e49c52383f5c6ffc7c acc 48/50 rej {'native_rejected': 2} crowns [0, 1] exp [1, 0] match=False term=native_logic_clock_stopped tick 3681 (last play 5884) 14.3s
+[77/383] f3cc95590e28489abbc001b40a6903ac acc 46/46 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3681 (last play 3428) 13.75s
+[78/383] f8158e8fb0df425987ac99750969bd0d FAILED ValueError: card has no native evolution form: 26000043
+[79/383] f78229c994f94e348164fbb60897c08e FAILED ValueError: card has no native evolution form: 26000043
+[80/383] aeca0dc19b76427eaa78faec388687e5 acc 108/108 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6116 (last play 5875) 25.6s
+[81/383] 7a4c0a1289354f2aba963f178feb48d3 FAILED ValueError: card has no native evolution form: 26000043
+[82/383] 791adba64eaa4f3fb947bdc9c29aa3ad acc 118/122 rej {'native_rejected': 3, 'card_not_in_hand': 1} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5674 (last play 5938) 26.22s
+[83/383] f6284757db38417a9c23c3bd139e334c FAILED ValueError: card has no native evolution form: 26000043
+[84/383] c6bf981a20b64e72a0530189a2a4fd53 acc 126/126 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6126 (last play 5911) 27.21s
+[85/383] 6ca0aaa430ca418baf850ca6785efc3a acc 130/130 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5833 (last play 5741) 25.11s
+[86/383] 3f7b9bf3703a4d738be08c7804f78023 FAILED ValueError: card has no native evolution form: 26000043
+[87/383] 5887f3366f3b45109b02597c6defca68 acc 38/38 rej {} crowns [3, 0] exp [3, 0] match=True term=native_logic_clock_stopped tick 3306 (last play 3101) 12.06s
+[88/383] a5d6cae532c54e05ab25a977bfc1089d acc 56/57 rej {'native_rejected': 1} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 5951) 14.13s
+[89/383] 45aedfb5957e46179de7e0726572e64e acc 100/102 rej {'native_rejected': 2} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 5366 (last play 5434) 22.72s
+[90/383] da49b77a85a845acb3bb9f5d5c182e9b acc 114/114 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6113 (last play 5956) 24.77s
+[91/383] 3f6dc54d060743ee8c0f28521c563c7a acc 79/79 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 4881 (last play 4771) 20.1s
+[92/383] f28fd3b37b9b49b3855cdfa45a1f3d5f acc 132/132 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6142 (last play 5979) 26.86s
+[93/383] b66a7949bd60428dac09407012d84674 FAILED ValueError: card has no native evolution form: 26000043
+[94/383] cf7d5955281a412e82fa95b463b5f7e5 acc 119/119 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6140 (last play 5942) 26.8s
+[95/383] 1aec0036ff264ca39a6e071c8a109304 acc 73/75 rej {'native_rejected': 2} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4844 (last play 5904) 19.74s
+[96/383] f4d7af9e4625459887dddd5eb0773f8e FAILED ValueError: card has no native evolution form: 26000043
+[97/383] eab5717f761644f594f56ea0b365604e acc 109/109 rej {} crowns [1, 0] exp [0, 1] match=False term=native_tiebreak_hp_drain tick 6137 (last play 5972) 24.45s
+[98/383] 40f5d394fc0944fda85c2f922ec86c32 acc 47/48 rej {'native_rejected': 1} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3681 (last play 5976) 13.36s
+[99/383] 94e74a7037634d2fb219fbde0848d6ef acc 116/116 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6145 (last play 5851) 26.35s
+[100/383] 89687c0f797e409ba10d31008262dab2 acc 120/120 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6141 (last play 5715) 25.9s
+[101/383] 6ec4d5993098453db91c0d557a033f67 acc 112/112 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6144 (last play 5956) 27.62s
+[102/383] 04d87cf157b14e0e85ff84fe059e0db8 FAILED ValueError: card has no native evolution form: 26000043
+[103/383] 9342db938f4242efb7397abeb19fe8fd acc 98/105 rej {'native_rejected': 2, 'card_not_in_hand': 5} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 5628 (last play 5671) 27.2s
+[104/383] 3d08b96881fb469599c31fe17c6d7e7e acc 105/105 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5608 (last play 5472) 28.84s
+[105/383] 6d28559f829f444a984d20ff06a4ae3a acc 99/99 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6117 (last play 5923) 27.98s
+[106/383] de448754ddde46cc90ed9b89d28082f8 FAILED ValueError: card has no native evolution form: 26000043
+[107/383] 9e8876ea24fb465a8a466eb30704fc6b acc 71/71 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4537 (last play 4421) 20.95s
+[108/383] 2f08d88826cb4b66a736c445b635555e acc 22/22 rej {} crowns [3, 0] exp [3, 0] match=True term=native_logic_clock_stopped tick 2071 (last play 1772) 8.91s
+[109/383] 5323011504644d3292c1421fe669cf5b acc 47/48 rej {'native_rejected': 1} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 5943) 15.51s
+[110/383] 173e46aef19c4d878305e4adf34b1f4d acc 113/113 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6130 (last play 5956) 29.91s
+[111/383] cdcbdedd54294121a216cb5dd17fc29e acc 103/103 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6088 (last play 5931) 31.27s
+[112/383] cff95751b1684ea88f0b5809fb737e93 FAILED ValueError: card has no native evolution form: 26000043
+[113/383] 0c51725514c645a58e3e77c73f883180 acc 75/77 rej {'native_rejected': 1, 'card_not_in_hand': 1} crowns [0, 1] exp [1, 0] match=False term=native_logic_clock_stopped tick 4370 (last play 5471) 20.78s
+[114/383] 79ec525500cb44269231e463670aeb71 acc 64/65 rej {'native_rejected': 1} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4535 (last play 5921) 20.88s
+[115/383] 248bd5472bed4955b594fa9d4b390167 acc 121/121 rej {} crowns [1, 0] exp [0, 1] match=False term=native_tiebreak_hp_drain tick 6150 (last play 5951) 29.77s
+[116/383] b317541d1fcf4a46a7aa21651dde253b acc 107/107 rej {} crowns [1, 0] exp [0, 1] match=False term=native_tiebreak_hp_drain tick 6111 (last play 5911) 27.97s
+[117/383] 4d6778faa4cd44358968a654e4ffa67d acc 118/118 rej {} crowns [1, 0] exp [0, 1] match=False term=native_tiebreak_hp_drain tick 6122 (last play 5899) 31.66s
+[118/383] 0f7473d8addc4707a11b517b934c8245 acc 45/45 rej {} crowns [3, 0] exp [3, 0] match=True term=native_logic_clock_stopped tick 3422 (last play 3321) 14.07s
+[119/383] 4341e84cef2446f0a6fc85a76bf5090d acc 134/134 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6129 (last play 5955) 31.2s
+[120/383] c848be440ab045e99adeda6277a8f4c2 FAILED ValueError: card has no native evolution form: 26000043
+[121/383] 68ac6a3e21ea4b2a9815b04b16a111e6 acc 77/80 rej {'native_rejected': 2, 'card_not_in_hand': 1} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4295 (last play 4373) 20.63s
+[122/383] 714e7c206b0f461d91d8e43767e732af acc 89/91 rej {'native_rejected': 2} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 5134 (last play 5937) 24.91s
+[123/383] 439f84fb0b94416fb6f33e0624803ab5 FAILED ValueError: card has no native evolution form: 26000043
+[124/383] f90e141740dd45888ae6347f8bdf16a3 acc 67/72 rej {'native_rejected': 2, 'card_not_in_hand': 3} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 4078 (last play 5966) 22.27s
+[125/383] 21be22918db14a9b960863b726467acf acc 105/105 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 5941 (last play 5797) 28.69s
+[126/383] e90160a2c22f4764b76d7dd2160046ca FAILED ValueError: card has no native evolution form: 26000043
+[127/383] 4beffa6706de4393b144699a9407f7c4 acc 80/80 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6096 (last play 4442) 25.81s
+[128/383] 01c7769910314e4db83d129ed6c62512 acc 48/49 rej {'native_rejected': 1} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3681 (last play 5976) 15.97s
+[129/383] 9811463704ca4016b0badd1395208f1f acc 30/30 rej {} crowns [3, 0] exp [3, 0] match=True term=native_logic_clock_stopped tick 3058 (last play 2875) 12.72s
+[130/383] 12ed70d8a9724a63989d0e5d30f0d59d acc 54/54 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3803 (last play 3626) 17.19s
+[131/383] 4613d92846ec4e20a1333678b21fb997 acc 104/107 rej {'native_rejected': 2, 'card_not_in_hand': 1} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5388 (last play 5909) 31.66s
+[132/383] acb8a793ac4d467e8aca001a846a4bcc FAILED ValueError: card has no native evolution form: 26000043
+[133/383] a42592796c424ee697b1022b5784895b FAILED ValueError: card has no native evolution form: 26000043
+[134/383] 7227593671eb4a0eaf7842fc0ba1d330 acc 125/125 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6132 (last play 5883) 33.3s
+[135/383] 85af231941414678951c20e1b21f8334 acc 48/49 rej {'native_rejected': 1} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 3631) 16.32s
+[136/383] 82526b620cd24b0abe28638858c50835 acc 104/104 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6147 (last play 5956) 30.65s
+[137/383] a6b2e32513654cfb875b1f387a864ae0 acc 58/58 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3969 (last play 3782) 17.18s
+[138/383] 5c9b759381a4488ea34078853545de5d acc 105/105 rej {} crowns [1, 0] exp [0, 1] match=False term=native_tiebreak_hp_drain tick 6107 (last play 5961) 30.31s
+[139/383] 6ac631bb4246481799200b4867408daf acc 128/128 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6116 (last play 5971) 34.59s
+[140/383] 6674819abccb4b8d889ad238a4123606 FAILED ValueError: card has no native evolution form: 26000043
+[141/383] cadfff9b226e4d1e9eb5b67b9914dd8c acc 68/68 rej {} crowns [1, 0] exp [0, 1] match=False term=native_tiebreak_hp_drain tick 6130 (last play 4326) 26.66s
+[142/383] d746eddf56c240968e51baa362a82991 FAILED ValueError: card has no native evolution form: 26000043
+[143/383] 11788e04bdb948b092b82699e5032f36 acc 123/123 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6127 (last play 5931) 32.65s
+[144/383] 805ca98c924e4af08c0002b6e776c6ca acc 114/114 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6143 (last play 5919) 32.27s
+[145/383] 8545b14711454080bb9f9eae700ba7a9 acc 109/109 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 5776 (last play 5921) 27.3s
+[146/383] 0c9618be81ad48d7b6660e3d89a1b51e acc 107/107 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6133 (last play 5953) 27.95s
+[147/383] f14c0e22682049d9a5286791a7345c33 FAILED ValueError: card has no native evolution form: 26000043
+[148/383] 88fdfed7c878442b813ad7ec28865522 FAILED ValueError: card has no native evolution form: 26000043
+[149/383] 71bbd482dc1149c9a5fe89a0019601a1 FAILED ValueError: card has no native evolution form: 26000043
+[150/383] bc403c537b6b44858daf5228a24c02a6 acc 114/114 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5633 (last play 5497) 26.12s
+[151/383] f68b8e84e45f45b382831489c3c90465 FAILED ValueError: card has no native evolution form: 26000043
+[152/383] 9070859c67eb4383ab18b587325b33c4 acc 31/31 rej {} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 2583 (last play 2492) 11.78s
+[153/383] e467de5432fb460195a3ed1aa7602cd2 acc 33/33 rej {} crowns [3, 0] exp [3, 0] match=True term=native_logic_clock_stopped tick 2912 (last play 2791) 12.57s
+[154/383] fcbf769edcca4967a5abf5d5d5899eab acc 84/84 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 4993 (last play 4775) 22.74s
+[155/383] 12b2e1da8100480580941c6f6307ef71 acc 102/102 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5776 (last play 5584) 26.21s
+[156/383] f25b6574342c499aa37c2b5aa1c44442 acc 60/62 rej {'native_rejected': 1, 'card_not_in_hand': 1} crowns [0, 1] exp [1, 0] match=False term=native_logic_clock_stopped tick 3681 (last play 5944) 16.11s
+[157/383] 0729026cda544a00a446a7aefd55a233 acc 121/121 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6137 (last play 5917) 29.33s
+[158/383] 25d003faed8c441a8e6e23ad6f07bc0f acc 49/49 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3681 (last play 3371) 15.86s
+[159/383] f85e86d203004ad9b85ac5136754efbb acc 112/112 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6113 (last play 5956) 29.09s
+[160/383] 338f575506704ea08601e4441b8bfa36 FAILED ValueError: card has no native evolution form: 26000043
+[161/383] 99245605759040deb5ac5f70eac81b66 FAILED ValueError: card has no native evolution form: 26000043
+[162/383] 1c917000f86440f38a6b26f02f28a609 acc 109/109 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6144 (last play 5962) 27.95s
+[163/383] 42f223ccf54d47d097761e81d4461b5c acc 70/70 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4059 (last play 3847) 18.96s
+[164/383] d6e5d4d24d2e46ec8babc788b25d4eac acc 132/132 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6154 (last play 5951) 30.89s
+[165/383] a0ebcf5b8daa4140b168e1f092c5ba6d acc 52/54 rej {'native_rejected': 2} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3681 (last play 5416) 16.59s
+[166/383] c21b6fdfde104b7494d2b57e1692e2a7 acc 19/19 rej {} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 1912 (last play 1747) 8.21s
+[167/383] e917eb783ada4727b08eb050facba97a FAILED ValueError: card has no native evolution form: 26000043
+[168/383] 8a07cefa614e4bacb8a68024ba69ec7b acc 132/132 rej {} crowns [0, 1] exp [1, 0] match=False term=native_tiebreak_hp_drain tick 6127 (last play 5951) 29.81s
+[169/383] f407974c05eb4b3495d71e674059ea3f FAILED ValueError: card has no native evolution form: 26000043
+[170/383] b9f4edf6e2d846a9a9f3c7e69dffe2fb acc 126/126 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6136 (last play 5929) 28.69s
+[171/383] 0e702cedd3e44c1b9eed1d016d00c790 acc 54/54 rej {} crowns [1, 2] exp [1, 2] match=True term=native_logic_clock_stopped tick 4213 (last play 4086) 17.65s
+[172/383] 43d4199ed82243e8a5ba4e92f4f5f8ea FAILED ValueError: card has no native evolution form: 26000043
+[173/383] 9ff5b8e7949d41f29657ac60db1b9f00 FAILED ValueError: card has no native evolution form: 26000043
+[174/383] eb0e603f52ad4ccfb45be4c7d1512309 FAILED ValueError: card has no native evolution form: 26000043
+[175/383] 9159053aee5945e0b7b7cd2669e51057 acc 23/23 rej {} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 2225 (last play 1983) 8.88s
+[176/383] 2d8926844c3240359c5843d9b45ee9a2 acc 52/54 rej {'native_rejected': 2} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 4367) 15.04s
+[177/383] 3e1f51807b1e4e4abd9f0140a61e68a9 acc 109/109 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6135 (last play 5972) 30.35s
+[178/383] f2f96b4f7ca2498bac00e0378c0492f0 acc 110/110 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6143 (last play 5966) 32.76s
+[179/383] 7946f63d0596476095a1b1b05f2a63fa acc 59/59 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6134 (last play 3961) 27.61s
+[180/383] 82f8122294024313836137d2edb4eb64 acc 85/85 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5346 (last play 5232) 27.63s
+[181/383] 296fc965c85b455c826e1b36ef208bc9 acc 114/114 rej {} crowns [0, 1] exp [1, 0] match=False term=native_tiebreak_hp_drain tick 6130 (last play 5951) 29.92s
+[182/383] 9608902a2cae4d5a9c6d499112b14c8c acc 25/25 rej {} crowns [0, 1] exp [0, 3] match=False term=native_logic_clock_stopped tick 3681 (last play 2362) 15.73s
+[183/383] e94353d2cfc44658a2db3dfb1fa6d1ad acc 106/106 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5867 (last play 5752) 31.43s
+[184/383] ba4775a6624e43138d243098c21042a9 acc 100/100 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 5347 (last play 5161) 26.44s
+[185/383] 56e90810f188481d97aed855ce7478c5 acc 60/62 rej {'native_rejected': 2} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 5502) 18.35s
+[186/383] d042551fa1da4c859834483471383378 acc 76/76 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 5067 (last play 4888) 23.34s
+[187/383] c380b61b66bd4e819cf3d12c4bad2916 acc 101/101 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6119 (last play 5941) 28.17s
+[188/383] 4e8d7608cf29486eb5e354fe2e2eac15 FAILED ValueError: card has no native evolution form: 26000043
+[189/383] 7677a0bf1f674a169e76620b57f46786 acc 128/128 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6107 (last play 5952) 30.86s
+[190/383] 00cc8d5914df4733bc21bc47f2bce4b5 acc 101/101 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6115 (last play 5939) 28.09s
+[191/383] 75d7343cc62d4e98b9b1c0ab13a4e201 acc 62/62 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3681 (last play 4663) 16.21s
+[192/383] 782e5176b45b4de5ae969c5ce5d2910d acc 103/103 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 6025 (last play 5856) 28.47s
+[193/383] de1f0be2d15e4667a4b07818edc138a7 FAILED ValueError: card has no native evolution form: 26000043
+[194/383] 3fea88fe1070492a8ca116b8050f7119 acc 42/42 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3681 (last play 3561) 15.23s
+[195/383] 784570834ad344c2a6f9c479b0e90a43 acc 92/92 rej {} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 5557 (last play 5237) 29.66s
+[196/383] 21bf959d61da4d7093a8afbc93e3d0f0 FAILED ValueError: card has no native evolution form: 26000043
+[197/383] 058cb42f000d477396c2c781a190f7a5 acc 89/92 rej {'native_rejected': 3} crowns [0, 1] exp [1, 0] match=False term=native_logic_clock_stopped tick 5595 (last play 5901) 25.94s
+[198/383] 333ebb5673884328a477960a9ce4a14b acc 132/132 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 6074 (last play 5953) 30.7s
+[199/383] d9bd4e3449124192a32e1dbc628d492c FAILED ValueError: card has no native evolution form: 26000043
+[200/383] b8426d420aee466a83338e6bd1c34b2c FAILED ValueError: card has no native evolution form: 26000043
+[201/383] 8986c5aad3814519ac9325e5d3762804 acc 131/131 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6119 (last play 5953) 32.3s
+[202/383] d02b710b466f45ebb247548a2196ecd4 acc 82/88 rej {'card_not_in_hand': 5, 'native_rejected': 1} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5370 (last play 5359) 25.01s
+[203/383] 17b000ad9ce84c41923b528265409fb1 FAILED ValueError: card has no native evolution form: 26000043
+[204/383] 8d762c7277c7497cb04db15ecb1a2354 acc 19/19 rej {} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 1974 (last play 1861) 8.48s
+[205/383] 1c975f178cf04feb831d901ce1c4227f acc 63/66 rej {'native_rejected': 3} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3681 (last play 5433) 17.47s
+[206/383] ca2f14d39d984b96b6a59ce2a6430bcc acc 129/129 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6112 (last play 5953) 30.09s
+[207/383] c8068b75b679455b80fcc4bdf443e6da acc 85/88 rej {'native_rejected': 3} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 5087 (last play 5925) 22.02s
+[208/383] 26bdad8307ee4a5f827a9fc3dc5712d3 acc 41/41 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3681 (last play 3418) 14.85s
+[209/383] 60173f02521b42fa8e48e3988a0282df acc 78/78 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4324 (last play 4157) 21.24s
+[210/383] d9f06cd6721c4a84a3514350c41c41e0 acc 131/132 rej {'native_rejected': 1} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 6019 (last play 5976) 32.33s
+[211/383] b68044a774624e04b485c28cabff2a8f acc 137/137 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6104 (last play 5923) 33.46s
+[212/383] 7a143770ce7740ca9000fed6e02b6551 FAILED ValueError: card has no native evolution form: 26000043
+[213/383] fa34faa95a0c476384cdc17f33694215 acc 43/43 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3792 (last play 3501) 17.08s
+[214/383] e858bee960234bc8af8b485e67cce092 FAILED ValueError: card has no native evolution form: 26000043
+[215/383] a1fbddc220e544cbab2435effb376410 acc 138/138 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6107 (last play 5965) 29.72s
+[216/383] 07b052fe0fcf482eb1b7b61a5f585943 acc 71/72 rej {'native_rejected': 1} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 4237 (last play 5841) 18.61s
+[217/383] 70cff5859f604dee9cfc66aedb1655da acc 123/128 rej {'native_rejected': 4, 'card_not_in_hand': 1} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 5737 (last play 5967) 27.32s
+[218/383] 659fa48091704b7eb76b640b7774e206 acc 34/46 rej {'card_not_in_hand': 12} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3681 (last play 3541) 14.36s
+[219/383] 4e0f3872e57d476b8cc06b681b49b5b8 acc 43/54 rej {'native_rejected': 3, 'card_not_in_hand': 8} crowns [0, 3] exp [1, 0] match=False term=native_logic_clock_stopped tick 3396 (last play 3535) 16.19s
+[220/383] 5a9e8e1181144afa8ffe153931bca65d acc 71/71 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4218 (last play 4119) 17.48s
+[221/383] 43ca8ca8518b4909a812c60ba3d17882 acc 62/62 rej {} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 4853) 15.89s
+[222/383] 0038806231844ee084559043c5f0f430 acc 93/93 rej {} crowns [1, 0] exp [0, 1] match=False term=native_tiebreak_hp_drain tick 6105 (last play 5836) 25.59s
+[223/383] e5762a068cd944f282da509ff6897d14 FAILED ValueError: card has no native evolution form: 26000043
+[224/383] 3b4e55f235b74aa0961f13cf277035e9 acc 59/60 rej {'native_rejected': 1} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 4166 (last play 4093) 18.34s
+[225/383] 23a756de18dd42a78a9481930070b837 FAILED ValueError: card has no native evolution form: 26000043
+[226/383] 0737b241b54740659637a1d08be358ca acc 17/17 rej {} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 2178 (last play 1959) 9.33s
+[227/383] a584dac6636447aa924b6329e084c7f1 FAILED ValueError: card has no native evolution form: 26000043
+[228/383] 3af6f59b5caf412da018b965891b3bf8 acc 62/62 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 4309 (last play 5962) 20.26s
+[229/383] 60e45ca62f2545628b811498761ae135 acc 97/98 rej {'native_rejected': 1} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5650 (last play 5571) 30.02s
+[230/383] ba8eb570a80541eea828924a2d4f7c77 acc 61/61 rej {} crowns [1, 2] exp [1, 2] match=True term=native_logic_clock_stopped tick 4276 (last play 4188) 20.75s
+[231/383] d72d9050de174218b76536a49e7cd5a7 acc 56/60 rej {'native_rejected': 4} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 4477) 17.55s
+[232/383] f757cf661bb647c898fdeda88edad75a acc 43/45 rej {'native_rejected': 2} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 4596) 17.04s
+[233/383] 2be6bff2ac6e4b6e8b82f1f8db5162df acc 63/63 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4366 (last play 4261) 18.89s
+[234/383] da9325f7fb2d45568a348174c896d694 acc 67/67 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3779 (last play 3623) 17.88s
+[235/383] 24305607d87b4332847f999adf9e45ec FAILED ValueError: card has no native evolution form: 26000043
+[236/383] e3a0862a5e294ad3a6ed7d3f567a2ba4 acc 49/50 rej {'native_rejected': 1} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3681 (last play 5294) 18.18s
+[237/383] 9bf14fc5f59d4f23bc1ffce8562e19c6 acc 64/64 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3898 (last play 3805) 20.48s
+[238/383] 760c70e0d29a4c0ca7529a9f19da2001 acc 80/83 rej {'native_rejected': 2, 'card_not_in_hand': 1} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5062 (last play 5222) 24.2s
+[239/383] 0c8debc00fb445b197cd9cad293743ca acc 112/112 rej {} crowns [0, 1] exp [1, 0] match=False term=native_tiebreak_hp_drain tick 6115 (last play 5934) 28.17s
+[240/383] ddbf366491f442b4abd35283af48c45d acc 61/64 rej {'native_rejected': 3} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 5936) 16.54s
+[241/383] 00cd0f22deb04658849d30114f09af52 acc 90/90 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 5264 (last play 5127) 23.73s
+[242/383] 844db3de7006445c98a93e6153105872 acc 130/130 rej {} crowns [0, 1] exp [1, 0] match=False term=native_tiebreak_hp_drain tick 6130 (last play 5976) 29.85s
+[243/383] 7e220d1e230f492bbbd2321e332234ff acc 108/108 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6121 (last play 5975) 28.8s
+[244/383] 55d7ddeba44b4197b178e7cb3f5cbdfe acc 95/95 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5097 (last play 4914) 24.99s
+[245/383] 248569e5bd99433cb36c6292c68f57f3 acc 123/123 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6124 (last play 5945) 29.58s
+[246/383] 60ae4b74e10746ddaf88fa3c4e0001da acc 120/120 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5820 (last play 5725) 28.32s
+[247/383] 7f9ee8a66ab64c758a4bec1edf3f8b04 FAILED ValueError: card has no native evolution form: 26000043
+[248/383] bf13c4c4d6c049c9abdacc5a2f09582e acc 77/87 rej {'card_not_in_hand': 7, 'native_rejected': 3} crowns [0, 1] exp [1, 0] match=False term=native_logic_clock_stopped tick 5099 (last play 5961) 23.51s
+[249/383] 99396b75de3d4b75993d2ac31e8b473f acc 18/18 rej {} crowns [0, 1] exp [0, 3] match=False term=native_logic_clock_stopped tick 3681 (last play 1632) 12.44s
+[250/383] cc5d306ec1a544daa33dfafd4121f5be FAILED ValueError: card has no native evolution form: 26000043
+[251/383] 98504ee4d78c4b84853a4b4907fad1db FAILED ValueError: card has no native evolution form: 26000043
+[252/383] 2f1eaaa8b7b9498a865f4d65ed8f0ca3 acc 102/102 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6116 (last play 5961) 27.07s
+[253/383] d45edcae65d64614a247b3bdb5548292 acc 57/57 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4368 (last play 4222) 20.25s
+[254/383] 011290db7a5a48bcb988559a1e4dff3a acc 51/52 rej {'native_rejected': 1} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3826 (last play 4041) 16.82s
+[255/383] 3519f449b6d14e118deb073744e5af21 FAILED ValueError: card has no native evolution form: 26000043
+[256/383] ba2cc03257d049e8be7227f7e56e8b89 acc 60/60 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4078 (last play 3913) 18.64s
+[257/383] b3829bb7f3dd40f7bf16cbfd76b20bb2 acc 128/128 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6127 (last play 5955) 30.04s
+[258/383] 2fc208aad27146e69157e95385202d4d acc 96/97 rej {'native_rejected': 1} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 5003 (last play 5939) 28.16s
+[259/383] 2b6cfd15362f40d7b1902d9c4fe572ec acc 123/123 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6117 (last play 5977) 32.21s
+[260/383] 9b1151e5aa3d4ee48943ae29b6047f03 FAILED ValueError: card has no native evolution form: 26000043
+[261/383] 987dbac1cd2242e0a04d08f7c1cfb513 acc 116/116 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6135 (last play 5961) 35.36s
+[262/383] abaffe2b4a034f3f8019806d160a43ee acc 78/78 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 4475 (last play 4391) 21.23s
+[263/383] 8df13960f1244ea99cd423c161f0c2ae acc 116/116 rej {} crowns [1, 0] exp [0, 1] match=False term=native_tiebreak_hp_drain tick 6103 (last play 5941) 28.66s
+[264/383] 903b2bc69586444687cb52643846fa6a acc 53/55 rej {'native_rejected': 2} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3681 (last play 5272) 16.04s
+[265/383] a3d3fe34595f46f98edebaad0904269b FAILED ValueError: card has no native evolution form: 26000043
+[266/383] 10b27ce5fbc24337a2a33d9413a36586 acc 95/95 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5793 (last play 5682) 26.51s
+[267/383] d28f158e97d04ca3b33cc6e3510f8d5f acc 110/110 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 6045 (last play 5917) 29.02s
+[268/383] 64d430be7c984787af49f31007520a1c acc 92/93 rej {'native_rejected': 1} crowns [0, 1] exp [1, 0] match=False term=native_logic_clock_stopped tick 5554 (last play 5958) 40.7s
+[269/383] 8a6cfb8881064131be720ccf3d38ab99 acc 49/52 rej {'native_rejected': 2, 'card_not_in_hand': 1} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3681 (last play 4621) 22.77s
+[270/383] d3c999846874434d90c318fcbb04551a acc 107/107 rej {} crowns [0, 1] exp [1, 0] match=False term=native_tiebreak_hp_drain tick 6134 (last play 5932) 39.14s
+[271/383] ff982aad57454513add21e481f0f3dce acc 135/135 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6084 (last play 5941) 39.1s
+[272/383] 1f102f86634b491b97bbe17b0010639a acc 48/48 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3681 (last play 3563) 20.93s
+[273/383] 743cfca021084e7383969bfa6d8cefe0 acc 48/48 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3723 (last play 3593) 21.29s
+[274/383] b16d2010e3a94a37b869932e35b328ed acc 47/47 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3681 (last play 3571) 20.65s
+[275/383] efbe5f26a5cf4730bdf797418c9529eb acc 47/51 rej {'native_rejected': 4} crowns [1, 0] exp [2, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 4981) 21.33s
+[276/383] 3cb989df830d4119b19b95b9c96b30fa acc 40/40 rej {} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 3386 (last play 3238) 18.48s
+[277/383] 83713772c5a34d7cad865a1888e82638 acc 100/104 rej {'native_rejected': 1, 'card_not_in_hand': 3} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 6036 (last play 5941) 40.75s
+[278/383] 8b46c0a733bb437284b78d2b94c788cd acc 66/66 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 4507 (last play 4565) 25.62s
+[279/383] 0cf0fb5888444adf8cde74db3b5caccd FAILED ValueError: card has no native evolution form: 26000043
+[280/383] 920e5b7f17ca47c9bc1223800638b427 acc 43/47 rej {'native_rejected': 4} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 5534) 23.98s
+[281/383] d3cd4e41fc14492089be8f6bcb6d7573 acc 70/71 rej {'native_rejected': 1} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 4158 (last play 4102) 27.23s
+[282/383] 3905958a88594db7a2da543150a37a2a acc 50/52 rej {'native_rejected': 2} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3681 (last play 3669) 23.3s
+[283/383] 3acb13f0c30e4f46b4505f0a044946a2 FAILED ValueError: card has no native evolution form: 26000043
+[284/383] 46413e9081bd4a5a88a18a0b743fe2b8 acc 48/50 rej {'native_rejected': 2} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 5941) 21.45s
+[285/383] 3478ec33a74c4e87b4a7d12a614fbff6 acc 76/76 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4613 (last play 4453) 28.82s
+[286/383] 3715f33eaae64a09ac015094ecf7f973 acc 47/47 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6127 (last play 3491) 29.93s
+[287/383] 55e83c41b5274de7a25f6bbb48167533 acc 45/45 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3681 (last play 3456) 19.92s
+[288/383] 1c5d3153f930432c87ee8c84fb69f48d acc 105/105 rej {} crowns [0, 1] exp [1, 0] match=False term=native_tiebreak_hp_drain tick 6110 (last play 5952) 37.03s
+[289/383] 16c541fa6a13485ea294bccc1b6fb17c acc 100/104 rej {'native_rejected': 4} crowns [0, 1] exp [1, 0] match=False term=native_logic_clock_stopped tick 5869 (last play 5967) 37.69s
+[290/383] 6c914bdaf0c546809c1a659345e9f9fc FAILED ValueError: card has no native evolution form: 26000043
+[291/383] fc327c9941d4490b9acc7f801e662e25 FAILED ValueError: card has no native evolution form: 26000043
+[292/383] a2652dfe5d73461a9ec108652ad1c2fa FAILED ValueError: card has no native evolution form: 26000043
+[293/383] 39648d4afe414ed0a6bfc08bc508466b acc 129/129 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6125 (last play 5977) 39.65s
+[294/383] 6fd9e14bcb55435b83c3d5b353319751 acc 23/23 rej {} crowns [3, 0] exp [3, 0] match=True term=native_logic_clock_stopped tick 2651 (last play 2343) 13.64s
+[295/383] 4dc88635db3a4f15963273bde50c50dc acc 46/46 rej {} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 3484) 20.8s
+[296/383] 7e373991e9dd4a77bf69d36f89a4b8da acc 92/92 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6125 (last play 5621) 34.76s
+[297/383] 112831c6755f47e6bfee870f9a09b6fc acc 51/52 rej {'native_rejected': 1} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3681 (last play 5762) 16.44s
+[298/383] 77659a9010204e1cbacd7c847a00b1e6 FAILED ValueError: card has no native evolution form: 26000043
+[299/383] ec4f0391ae8c47ebade7a5116536c671 acc 76/76 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6109 (last play 4915) 25.7s
+[300/383] 29249cc1946f421f9f22b15dc73593e6 acc 79/79 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4447 (last play 5968) 22.77s
+[301/383] acc4806428fe46dfb3863f4f0541dccb acc 135/137 rej {'native_rejected': 2} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5935 (last play 5976) 32.41s
+[302/383] 4809e34081164cb4910409b430865099 FAILED ValueError: card has no native evolution form: 26000043
+[303/383] 3ff57e52ecc443cbbaf1039b632c6da2 acc 49/49 rej {} crowns [2, 1] exp [2, 1] match=True term=native_logic_clock_stopped tick 3793 (last play 3583) 16.2s
+[304/383] 060812c75cdf45f08e8e58c9b05fdecc FAILED ValueError: card has no native evolution form: 26000043
+[305/383] a0da52cf77044411bf39c2432e9e35b4 acc 137/137 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6108 (last play 5965) 30.97s
+[306/383] 784dc82e4409483f8968066deff7cb6b FAILED ValueError: card has no native evolution form: 26000043
+[307/383] 412ee040afce4e67a18e2c4490879838 acc 71/71 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4359 (last play 4201) 20.47s
+[308/383] 08256f74bd8d46c5956f6432e846f3b0 acc 90/90 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 5781 (last play 5305) 24.97s
+[309/383] 89e7825fb9b44d63890d8d2b238150a2 acc 38/38 rej {} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 3248 (last play 3056) 13.35s
+[310/383] a7023ecdc284441e9db057436cba1d12 acc 114/114 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6106 (last play 5941) 32.67s
+[311/383] 1696e9cc6a0e4e40b48970ff965d68a6 acc 105/105 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 5378 (last play 5264) 28.45s
+[312/383] 01d096a9dfc94824bc2b64070c41ae00 acc 59/59 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3930 (last play 3775) 17.71s
+[313/383] 3f36507f5f904b7a8f9b3b626ec37327 acc 88/93 rej {'native_rejected': 4, 'card_not_in_hand': 1} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4902 (last play 5921) 24.92s
+[314/383] 16a4bda84a244609a13262c544c01b0f acc 25/25 rej {} crowns [0, 1] exp [0, 3] match=False term=native_logic_clock_stopped tick 3681 (last play 2011) 14.43s
+[315/383] a7440af51a9d45e99ec4767d2d5fb783 acc 104/104 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6120 (last play 5833) 29.92s
+[316/383] a3ef27c93ba1436a9e74e1fd92f2e98c acc 97/97 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6123 (last play 5944) 27.44s
+[317/383] 46378b1afa5c43f9b6565e020b0c2762 acc 71/71 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4879 (last play 4715) 21.21s
+[318/383] 15fd620380d64d1a9fa71c14957f3819 acc 110/110 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6134 (last play 5941) 32.87s
+[319/383] f9de90c224844982b6ece634cf69f9ea acc 126/126 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6117 (last play 5915) 30.73s
+[320/383] b2d9c13f77214704a73314243dbbcfaf acc 73/73 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 4537 (last play 4391) 20.64s
+[321/383] 119428f46a034eeea84309af4029cf43 FAILED ValueError: card has no native evolution form: 26000043
+[322/383] de8d09e0e4d544899cbe7990cd7d098e acc 96/98 rej {'native_rejected': 2} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5349 (last play 5491) 25.94s
+[323/383] d4308b9117fc4268817eec93ee52d5a9 acc 84/84 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4887 (last play 4617) 25.21s
+[324/383] 5b5ffcb2eb054e919aa76af75426bfaf acc 132/132 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6134 (last play 5936) 31.51s
+[325/383] 3773ce435cd548fda0ea05964ce0dd1a acc 101/101 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 6063 (last play 5847) 26.38s
+[326/383] 3483356a35d64123a374dc4d0127e620 FAILED ValueError: card has no native evolution form: 26000043
+[327/383] 6e5cbf077a514691bafead550701eeea acc 47/47 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3681 (last play 3596) 15.49s
+[328/383] f0fbb75894da41cf9fa8479d398d62f6 acc 75/75 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4756 (last play 4613) 20.57s
+[329/383] e9caa0d864cc468995efbbf25736d272 acc 68/68 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 4965 (last play 4861) 20.68s
+[330/383] 543d171900e24c6998b15f26b0943249 FAILED ValueError: card has no native evolution form: 26000043
+[331/383] ef7ec23eccf74513be27ff02ba0fde21 acc 19/19 rej {} crowns [3, 0] exp [3, 0] match=True term=native_logic_clock_stopped tick 2666 (last play 2391) 9.63s
+[332/383] e64c2a2fc35742388d6487e2504be106 FAILED ValueError: card has no native evolution form: 26000043
+[333/383] 26c826f36fc14a6d8817e2345b574701 acc 96/100 rej {'native_rejected': 2, 'card_not_in_hand': 2} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 5048 (last play 5741) 23.78s
+[334/383] c2c20d3fa59d45eb92571e6f092bc70b acc 75/78 rej {'native_rejected': 3} crowns [0, 1] exp [1, 0] match=False term=native_logic_clock_stopped tick 4802 (last play 5178) 22.58s
+[335/383] cd259d6944b64330b2b9bc044b917b75 FAILED ValueError: card has no native evolution form: 26000043
+[336/383] a4e52efc33fe4c37ba03e46886d11448 acc 66/66 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5094 (last play 4998) 20.99s
+[337/383] 265f9d83f1984dabb474160ec657fad9 acc 106/106 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6139 (last play 5951) 25.98s
+[338/383] c90dc96d02d141cb8986ab5f0d40c465 FAILED ValueError: card has no native evolution form: 26000043
+[339/383] 955d14380dd748b28276b9f882a35cf5 acc 51/51 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6152 (last play 3559) 21.82s
+[340/383] 4cad6018640e4f179c521b8d242a3dd2 acc 27/29 rej {'card_not_in_hand': 2} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 3231 (last play 2848) 13.03s
+[341/383] ce49e7ef79394ae6b64e7b031fb90673 acc 46/48 rej {'native_rejected': 2} crowns [0, 1] exp [1, 0] match=False term=native_logic_clock_stopped tick 3681 (last play 5948) 17.37s
+[342/383] a3d74909024e49329c08dd38085a1c11 acc 51/51 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3681 (last play 3567) 17.63s
+[343/383] d22b089cdc254c2a816df50f63673c24 acc 32/32 rej {} crowns [3, 0] exp [3, 0] match=True term=native_logic_clock_stopped tick 3248 (last play 2945) 14.28s
+[344/383] 4b6fcb89d0f144d3be2b97d45e974447 acc 113/113 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6127 (last play 5951) 32.47s
+[345/383] cf32e52473ac443698ce6b775e12472e acc 91/92 rej {'native_rejected': 1} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5850 (last play 5671) 29.41s
+[346/383] 3ac6530643e54979ad8765547a0cc90b acc 87/89 rej {'native_rejected': 2} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4684 (last play 5546) 24.36s
+[347/383] 1ab6ae9ef9f443cc87e74713ddcd326d acc 101/101 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6102 (last play 5967) 30.58s
+[348/383] bf77a994cc4c4b38b57dff2d133fd2d4 acc 110/114 rej {'native_rejected': 4} crowns [2, 1] exp [2, 1] match=True term=native_logic_clock_stopped tick 5733 (last play 5951) 27.35s
+[349/383] 45dd034c33cf417481cc1886cb70f829 acc 52/52 rej {} crowns [0, 1] exp [1, 0] match=False term=native_logic_clock_stopped tick 3686 (last play 4021) 17.68s
+[350/383] b1e3c6b0cc584a9a968f9e64fa47825d FAILED ValueError: card has no native evolution form: 26000043
+[351/383] 8af218c003194ae1b64f1dd0f5f4e3d3 acc 64/64 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3944 (last play 4074) 20.31s
+[352/383] 77c9778d49814ceeb149444b20b1f270 acc 121/121 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6118 (last play 5971) 33.02s
+[353/383] a6553eca63b34539a3ad047a5147e0a6 acc 94/97 rej {'native_rejected': 2, 'card_not_in_hand': 1} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5320 (last play 5921) 27.66s
+[354/383] be958deefe5a46ae859d8b10c14a2087 FAILED ValueError: card has no native evolution form: 26000043
+[355/383] f2cd7f99c98b4a09a8e7da7c273ec997 acc 19/19 rej {} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 2542 (last play 2391) 10.2s
+[356/383] 337175c8fb854181b8ee40fa0a593177 acc 67/70 rej {'native_rejected': 2, 'card_not_in_hand': 1} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4884 (last play 5872) 22.61s
+[357/383] a1fbf705e726479591e4ab23227ba7af acc 33/33 rej {} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 3596 (last play 3392) 13.99s
+[358/383] cf58ba065f6e462ca027486bc2b37531 FAILED ValueError: card has no native evolution form: 26000043
+[359/383] fc4ca1b47f3d4bd1b2c91a6cbf4c9686 acc 50/50 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6067 (last play 3534) 22.83s
+[360/383] e2498de1b8f44e54b2e1a7a119cc3afb acc 116/116 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6136 (last play 5933) 30.05s
+[361/383] 2ff57d4a506f4ed89441a1b6a6658c96 acc 32/41 rej {'card_not_in_hand': 8, 'native_rejected': 1} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3681 (last play 5918) 16.62s
+[362/383] ffe078131aa34019b742c17e2c2c35d9 acc 32/32 rej {} crowns [2, 0] exp [3, 0] match=False term=native_logic_clock_stopped tick 3681 (last play 3001) 14.04s
+[363/383] d0a24d245128465bbdff00bd72d86dd5 acc 33/33 rej {} crowns [3, 0] exp [3, 0] match=True term=native_logic_clock_stopped tick 3149 (last play 3038) 12.96s
+[364/383] 1fbc71140efe485c8f6ff6c181e794de FAILED ValueError: card has no native evolution form: 26000043
+[365/383] 801ce7c91f34480a9367334fa8f98b19 FAILED ValueError: card has no native evolution form: 26000043
+[366/383] 488af28ae0f04dc6a17bb44358af84c4 FAILED ValueError: card has no native evolution form: 26000043
+[367/383] 69bce3b09b804c2ca59949b7739a9f34 acc 115/118 rej {'native_rejected': 3} crowns [0, 1] exp [1, 0] match=False term=native_logic_clock_stopped tick 5889 (last play 5971) 26.72s
+[368/383] fd081a7d52b74150836e22894d160c44 acc 108/108 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 6044 (last play 5917) 27.22s
+[369/383] 65ae83919f2d437097b4c1de052a4f04 acc 133/133 rej {} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 6062 (last play 5961) 29.25s
+[370/383] 1df6b1e3d2284bba8e28a47b39e4b464 acc 136/136 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6135 (last play 5918) 30.1s
+[371/383] 44b712af5b01464390b9b8930dcc7a44 acc 134/134 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6136 (last play 5901) 28.96s
+[372/383] abda4c6170cb4046bed2274de3b62b40 acc 24/24 rej {} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 3280 (last play 3132) 12.13s
+[373/383] c2c410038ec648b1a448d4d8ccff44a7 acc 126/128 rej {'native_rejected': 2} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 6004 (last play 5951) 28.8s
+[374/383] 9f5eae811623437db2449a4eb0fd9905 acc 55/57 rej {'native_rejected': 2} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3681 (last play 4232) 15.71s
+[375/383] a9508e5e17fd4ac8a787eaab8496f50b FAILED ValueError: card has no native evolution form: 26000043
+[376/383] 917d12555315410f8767a0d7ad8cddd9 acc 49/49 rej {} crowns [3, 0] exp [3, 0] match=True term=native_logic_clock_stopped tick 3623 (last play 3497) 15.03s
+[377/383] d8c58c2b433342b5bcab2398f3a229ca FAILED ValueError: card has no native evolution form: 26000043
+[378/383] 0c38b749e5fe4180b651e1a2097b6920 acc 110/113 rej {'native_rejected': 2, 'card_not_in_hand': 1} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5476 (last play 5631) 26.24s
+[379/383] 8af66b53f9e347aaa813b9998c3fedaa FAILED ValueError: card has no native evolution form: 26000043
+[380/383] 6b586b4bba144177b82cb24790c7e24e FAILED ValueError: card has no native evolution form: 26000043
+[381/383] 1948b877654a475280242c05d725266b FAILED ValueError: card has no native evolution form: 26000043
+[382/383] a11cb21ba6324d39ace590b6b989922f FAILED ValueError: card has no native evolution form: 26000043
+[383/383] 60ce814f5f06481f8b2d2bad4eccb90d acc 45/45 rej {} crowns [0, 2] exp [0, 3] match=False term=native_logic_clock_stopped tick 3681 (last play 3543) 17.54s
+{
+ "tags": 383,
+ "converted": 292,
+ "failed": 91,
+ "failed_by_error": {
+  "ValueError": 91
+ },
+ "plays_driven": 24474,
+ "accepted": 24253,
+ "accept_rate": 0.991,
+ "rejected_by_reason": {
+  "native_rejected": 147,
+  "card_not_in_hand": 74
+ },
+ "invalid_placement": 0,
+ "matches_with_rejections": 78,
+ "elixir_delays_plays": 0,
+ "elixir_delays_max_ticks": 0,
+ "ability_plays_skipped": 540,
+ "position_based_all": false,
+ "terminated": 292,
+ "termination_reasons": {
+  "native_logic_clock_stopped": 196,
+  "native_tiebreak_hp_drain": 96
+ },
+ "crowns_match": 231,
+ "crowns_match_rate": 0.7911,
+ "outcomes": {
+  "side1_win": 150,
+  "side0_win": 142
+ },
+ "clean": 183,
+ "terminal_vs_last_play": {
+  "median": 147,
+  "negative": 70
+ },
+ "determinism": {
+  "checked": 0,
+  "same": 0
+ },
+ "seconds_total": 7064.3,
+ "seconds_per_match_median": 24.99,
+ "batch_wall_seconds": 7064.7,
+ "rotated_rows": 16791,
+ "rotated_tags": 190
+}

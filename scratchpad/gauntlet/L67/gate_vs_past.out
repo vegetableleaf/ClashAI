@@ -1,0 +1,9 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+{"variant": "as_recorded", "n": 6000, "mean_p": 0.276, "mean_p_rows_with_past": 0.284, "frac_over_0.27": 0.3938, "pro_rate": 0.2693}
+{"variant": "no_past", "n": 6000, "mean_p": 0.0685, "mean_p_rows_with_past": 0.0645, "frac_over_0.27": 0.0823, "pro_rate": 0.2693}
+{"variant": "age_3s", "n": 6000, "mean_p": 0.2626, "mean_p_rows_with_past": 0.2697, "frac_over_0.27": 0.372, "pro_rate": 0.2693}
+{"variant": "age_10s", "n": 6000, "mean_p": 0.3157, "mean_p_rows_with_past": 0.3259, "frac_over_0.27": 0.4535, "pro_rate": 0.2693}
+{"variant": "age_30s", "n": 6000, "mean_p": 0.4316, "mean_p_rows_with_past": 0.4485, "frac_over_0.27": 0.5968, "pro_rate": 0.2693}
+{"variant": "age_60s", "n": 6000, "mean_p": 0.4479, "mean_p_rows_with_past": 0.4658, "frac_over_0.27": 0.6388, "pro_rate": 0.2693}
+{"variant": "age_120s", "n": 6000, "mean_p": 0.3186, "mean_p_rows_with_past": 0.3291, "frac_over_0.27": 0.4707, "pro_rate": 0.2693}

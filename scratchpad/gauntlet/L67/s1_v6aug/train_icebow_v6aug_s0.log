@@ -1,0 +1,65 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+C:\Users\benpe\ClashBot\pipeline\train_s1.py:219: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\pytorch\torch\csrc\autograd\generated\python_variable_methods.cpp:837.)
+  tot += float(loss); nb += 1
+{"cell_half_top1": 0.1496, "cell_tile_top1": 0.1499, "card_top1": 0.531, "joint_top1": 0.0752, "cell_nll": 3.7008, "gate_acc": 0.7512, "gate_bal_acc": 0.5709, "wait_top1": 0.4751, "value_acc": 0.5885, "place_hit": 0.1496, "place_1t": 0.2536, "place_dist": 4.5239, "emb_cosine": 0.4087, "n_play": 15065, "n": 55461, "epoch": 1, "train_loss": 8.0046, "seconds": 957}
+{"cell_half_top1": 0.1794, "cell_tile_top1": 0.1798, "card_top1": 0.5913, "joint_top1": 0.0993, "cell_nll": 3.4028, "gate_acc": 0.7911, "gate_bal_acc": 0.6761, "wait_top1": 0.4998, "value_acc": 0.5776, "place_hit": 0.1794, "place_1t": 0.2867, "place_dist": 3.9477, "emb_cosine": 0.3088, "n_play": 15065, "n": 55461, "epoch": 2, "train_loss": 6.0576, "seconds": 3558}
+{"cell_half_top1": 0.186, "cell_tile_top1": 0.1859, "card_top1": 0.6065, "joint_top1": 0.1079, "cell_nll": 3.3175, "gate_acc": 0.8035, "gate_bal_acc": 0.6982, "wait_top1": 0.511, "value_acc": 0.6184, "place_hit": 0.186, "place_1t": 0.3089, "place_dist": 3.8396, "emb_cosine": 0.2598, "n_play": 15065, "n": 55461, "epoch": 3, "train_loss": 5.7107, "seconds": 5364}
+{"cell_half_top1": 0.1954, "cell_tile_top1": 0.1955, "card_top1": 0.6135, "joint_top1": 0.1195, "cell_nll": 3.2458, "gate_acc": 0.8112, "gate_bal_acc": 0.7253, "wait_top1": 0.4971, "value_acc": 0.6079, "place_hit": 0.1954, "place_1t": 0.3237, "place_dist": 3.7754, "emb_cosine": 0.2262, "n_play": 15065, "n": 55461, "epoch": 4, "train_loss": 5.532, "seconds": 7181}
+{"cell_half_top1": 0.2011, "cell_tile_top1": 0.2009, "card_top1": 0.6186, "joint_top1": 0.1251, "cell_nll": 3.2024, "gate_acc": 0.8141, "gate_bal_acc": 0.7278, "wait_top1": 0.5122, "value_acc": 0.6099, "place_hit": 0.2011, "place_1t": 0.3201, "place_dist": 3.6288, "emb_cosine": 0.2325, "n_play": 15065, "n": 55461, "epoch": 5, "train_loss": 5.4086, "seconds": 8936}
+{"cell_half_top1": 0.2044, "cell_tile_top1": 0.2043, "card_top1": 0.625, "joint_top1": 0.1241, "cell_nll": 3.1825, "gate_acc": 0.8165, "gate_bal_acc": 0.7406, "wait_top1": 0.5146, "value_acc": 0.6142, "place_hit": 0.2044, "place_1t": 0.3302, "place_dist": 3.6036, "emb_cosine": 0.2347, "n_play": 15065, "n": 55461, "epoch": 6, "train_loss": 5.305, "seconds": 10687}
+{"cell_half_top1": 0.2088, "cell_tile_top1": 0.2088, "card_top1": 0.6235, "joint_top1": 0.1312, "cell_nll": 3.1692, "gate_acc": 0.8177, "gate_bal_acc": 0.7595, "wait_top1": 0.513, "value_acc": 0.6154, "place_hit": 0.2088, "place_1t": 0.3356, "place_dist": 3.5501, "emb_cosine": 0.1933, "n_play": 15065, "n": 55461, "epoch": 7, "train_loss": 5.2097, "seconds": 12480}
+{"cell_half_top1": 0.2163, "cell_tile_top1": 0.2165, "card_top1": 0.626, "joint_top1": 0.1363, "cell_nll": 3.1654, "gate_acc": 0.8164, "gate_bal_acc": 0.7733, "wait_top1": 0.51, "value_acc": 0.6214, "place_hit": 0.2163, "place_1t": 0.3414, "place_dist": 3.54, "emb_cosine": 0.1952, "n_play": 15065, "n": 55461, "epoch": 8, "train_loss": 5.1172, "seconds": 14631}
+{"cell_half_top1": 0.2167, "cell_tile_top1": 0.2167, "card_top1": 0.6223, "joint_top1": 0.1346, "cell_nll": 3.1394, "gate_acc": 0.8204, "gate_bal_acc": 0.7524, "wait_top1": 0.5097, "value_acc": 0.6249, "place_hit": 0.2167, "place_1t": 0.3445, "place_dist": 3.512, "emb_cosine": 0.2007, "n_play": 15065, "n": 55461, "epoch": 9, "train_loss": 5.0271, "seconds": 16697}
+{"cell_half_top1": 0.2178, "cell_tile_top1": 0.2179, "card_top1": 0.6202, "joint_top1": 0.1375, "cell_nll": 3.1432, "gate_acc": 0.8199, "gate_bal_acc": 0.7579, "wait_top1": 0.5112, "value_acc": 0.6134, "place_hit": 0.2178, "place_1t": 0.3458, "place_dist": 3.4746, "emb_cosine": 0.1805, "n_play": 15065, "n": 55461, "epoch": 10, "train_loss": 4.9424, "seconds": 18926}
+{"cell_half_top1": 0.2195, "cell_tile_top1": 0.2193, "card_top1": 0.617, "joint_top1": 0.1378, "cell_nll": 3.1376, "gate_acc": 0.8201, "gate_bal_acc": 0.7556, "wait_top1": 0.4988, "value_acc": 0.6167, "place_hit": 0.2195, "place_1t": 0.3482, "place_dist": 3.4721, "emb_cosine": 0.1758, "n_play": 15065, "n": 55461, "epoch": 11, "train_loss": 4.8533, "seconds": 20831}
+{"cell_half_top1": 0.2212, "cell_tile_top1": 0.2211, "card_top1": 0.6145, "joint_top1": 0.1389, "cell_nll": 3.1493, "gate_acc": 0.8211, "gate_bal_acc": 0.7593, "wait_top1": 0.5057, "value_acc": 0.6132, "place_hit": 0.2212, "place_1t": 0.353, "place_dist": 3.4554, "emb_cosine": 0.1606, "n_play": 15065, "n": 55461, "epoch": 12, "train_loss": 4.774, "seconds": 22958}
+{"cell_half_top1": 0.2189, "cell_tile_top1": 0.2188, "card_top1": 0.6179, "joint_top1": 0.1351, "cell_nll": 3.1596, "gate_acc": 0.8217, "gate_bal_acc": 0.7478, "wait_top1": 0.5054, "value_acc": 0.6034, "place_hit": 0.2189, "place_1t": 0.3488, "place_dist": 3.4732, "emb_cosine": 0.1712, "n_play": 15065, "n": 55461, "epoch": 13, "train_loss": 4.6982, "seconds": 25935}
+Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\benpe\ClashBot\pipeline\train_s1.py", line 249, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "C:\Users\benpe\ClashBot\pipeline\train_s1.py", line 218, in main
+    opt.step(); sched.step()
+    ~~~~~~~~^^
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\torch\optim\lr_scheduler.py", line 166, in wrapper
+    return func.__get__(opt, opt.__class__)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\torch\optim\optimizer.py", line 533, in wrapper
+    out = func(*args, **kwargs)
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\torch\optim\optimizer.py", line 81, in _use_grad
+    ret = func(*args, **kwargs)
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\torch\optim\adam.py", line 248, in step
+    adam(
+    ~~~~^
+        params_with_grad,
+        ^^^^^^^^^^^^^^^^^
+    ...<19 lines>...
+        decoupled_weight_decay=group["decoupled_weight_decay"],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\torch\optim\optimizer.py", line 151, in maybe_fallback
+    return func(*args, **kwargs)
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\torch\optim\adam.py", line 971, in adam
+    func(
+    ~~~~^
+        params,
+        ^^^^^^^
+    ...<17 lines>...
+        decoupled_weight_decay=decoupled_weight_decay,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\benpe\ClashBot\icebow\.venv\Lib\site-packages\torch\optim\adam.py", line 794, in _multi_tensor_adam
+    torch._foreach_add_(exp_avg_sq_sqrt, eps)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+torch.AcceleratorError: CUDA error: out of memory
+Search for `cudaErrorMemoryAllocation' in https://docs.nvidia.com/cuda/cuda-runtime-api/group__CUDART__TYPES.html for more information.
+CUDA kernel errors might be asynchronously reported at some other API call, so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1
+Compile with `TORCH_USE_CUDA_DSA` to enable device-side assertions.
+

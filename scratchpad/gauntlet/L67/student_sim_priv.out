@@ -1,0 +1,42 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+m000 seed 900000 outcome    loss tower_delta -0.918 plays  31 t_end 180s
+m001 seed 900001 outcome     win tower_delta +0.811 plays  60 t_end 259s
+m002 seed 900002 outcome    loss tower_delta -1.839 plays  24 t_end 180s
+m003 seed 900003 outcome    loss tower_delta -0.969 plays  34 t_end 214s
+m004 seed 900004 outcome     win tower_delta +0.078 plays  34 t_end 206s
+m005 seed 900005 outcome    loss tower_delta -2.191 plays  33 t_end 178s
+m006 seed 900006 outcome    loss tower_delta -0.705 plays  34 t_end 180s
+m007 seed 900007 outcome     win tower_delta +0.110 plays  69 t_end 300s
+m008 seed 900008 outcome    loss tower_delta -2.096 plays  26 t_end 180s
+m009 seed 900009 outcome    loss tower_delta -0.648 plays  28 t_end 180s
+m010 seed 900010 outcome    loss tower_delta -3.828 plays   5 t_end 143s
+m011 seed 900011 outcome    loss tower_delta -0.011 plays  67 t_end 300s
+m012 seed 900012 outcome    loss tower_delta -1.225 plays  75 t_end 300s
+m013 seed 900013 outcome    loss tower_delta -1.552 plays  22 t_end 154s
+m014 seed 900014 outcome    loss tower_delta -0.493 plays  69 t_end 289s
+m015 seed 900015 outcome    loss tower_delta -1.582 plays  28 t_end 180s
+m016 seed 900016 outcome     win tower_delta +0.553 plays  43 t_end 221s
+m017 seed 900017 outcome    loss tower_delta -0.839 plays  36 t_end 231s
+m018 seed 900018 outcome    loss tower_delta -1.798 plays  33 t_end 180s
+m019 seed 900019 outcome    loss tower_delta -0.520 plays  29 t_end 181s
+m020 seed 900020 outcome    loss tower_delta -2.774 plays  27 t_end 180s
+m021 seed 900021 outcome     win tower_delta +0.311 plays  39 t_end 214s
+m022 seed 900022 outcome    loss tower_delta -1.188 plays  69 t_end 300s
+m023 seed 900023 outcome    loss tower_delta -1.237 plays  50 t_end 247s
+{
+ "ckpt": "icebow\\data\\pipeline\\s1_icebow_v6lat_s0.pt",
+ "matches": 24,
+ "degrade": false,
+ "tau": 0.27,
+ "win_pct": 20.8,
+ "tower_delta_mean": -1.0229,
+ "tower_delta_sem": 0.2227,
+ "plays_per_match": 40.2,
+ "decisions": 8645,
+ "wait": 6599,
+ "no_affordable": 1081,
+ "gate_p_mean": 0.1216,
+ "gate_frac_over_tau": 0.1165,
+ "wall_s": 317.5
+}

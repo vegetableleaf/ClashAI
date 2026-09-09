@@ -1,0 +1,62 @@
+{
+ "ckpt": "icebow\\data\\pipeline\\s1_icebow_v6lat_s0.pt",
+ "n_collapse_rows": 263,
+ "rows": [
+  {
+   "variant": "clean (engine, as trained)",
+   "all_mean_p": 0.275,
+   "all_frac_under_0.05": 0.3173,
+   "collapse_state_mean_p": 0.5742,
+   "collapse_state_frac_under_0.05": 0.1901
+  },
+  {
+   "variant": "exact_off (live ALWAYS)",
+   "all_mean_p": 0.3102,
+   "all_frac_under_0.05": 0.2781,
+   "collapse_state_mean_p": 0.6165,
+   "collapse_state_frac_under_0.05": 0.1825
+  },
+  {
+   "variant": "opp_unknown (live since L67g)",
+   "all_mean_p": 0.4367,
+   "all_frac_under_0.05": 0.1639,
+   "collapse_state_mean_p": 0.7272,
+   "collapse_state_frac_under_0.05": 0.1255
+  },
+  {
+   "variant": "tower_hp_unknown",
+   "all_mean_p": 0.4269,
+   "all_frac_under_0.05": 0.1522,
+   "collapse_state_mean_p": 0.7039,
+   "collapse_state_frac_under_0.05": 0.1369
+  },
+  {
+   "variant": "next_card_blank",
+   "all_mean_p": 0.3385,
+   "all_frac_under_0.05": 0.2234,
+   "collapse_state_mean_p": 0.704,
+   "collapse_state_frac_under_0.05": 0.0114
+  },
+  {
+   "variant": "exact_off + opp_unknown (TODAY'S LIVE PATH)",
+   "all_mean_p": 0.4747,
+   "all_frac_under_0.05": 0.1388,
+   "collapse_state_mean_p": 0.753,
+   "collapse_state_frac_under_0.05": 0.0989
+  },
+  {
+   "variant": "+ tower_hp_unknown",
+   "all_mean_p": 0.6253,
+   "all_frac_under_0.05": 0.0455,
+   "collapse_state_mean_p": 0.8396,
+   "collapse_state_frac_under_0.05": 0.0076
+  },
+  {
+   "variant": "+ next_blank (worst case)",
+   "all_mean_p": 0.7029,
+   "all_frac_under_0.05": 0.0024,
+   "collapse_state_mean_p": 0.9426,
+   "collapse_state_frac_under_0.05": 0.0
+  }
+ ]
+}

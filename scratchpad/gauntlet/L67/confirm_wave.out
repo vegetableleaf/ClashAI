@@ -1,0 +1,28 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+{"session": "20260804_173304", "ckpt": "icebow\\data\\pipeline\\s1_icebow_v6lat_s0.pt", "frames_scored": 223, "plays": 35, "play_rate": 0.157, "student_ms_median": 36.5, "student_ms_p95": 61.3, "det_ms_median": 80.2, "p_play_median": 0.1, "distinct_cards": [0, 5, 6, 8, 9], "distinct_cells": 11, "no_mappable_card": 3, "units_median": 3.0, "spells_seen": 32, "wall_s": 51.8}
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+{"session": "20260815_222309", "ckpt": "icebow\\data\\pipeline\\s1_icebow_v6lat_s1.pt", "frames_scored": 400, "plays": 74, "play_rate": 0.185, "student_ms_median": 37.6, "student_ms_p95": 61.1, "det_ms_median": 80.5, "p_play_median": 0.15, "distinct_cards": [0, 1, 2, 3, 4, 5, 8, 9], "distinct_cells": 20, "no_mappable_card": 20, "units_median": 2.0, "spells_seen": 78, "wall_s": 85.3}
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+{"session": "20260815_222309", "ckpt": "icebow\\data\\pipeline\\s1_icebow_v6lat_s2.pt", "frames_scored": 400, "plays": 53, "play_rate": 0.133, "student_ms_median": 36.4, "student_ms_p95": 61.3, "det_ms_median": 79.0, "p_play_median": 0.1, "distinct_cards": [0, 1, 2, 4, 5, 8, 9], "distinct_cells": 15, "no_mappable_card": 20, "units_median": 2.0, "spells_seen": 78, "wall_s": 83.6}
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+{"source": "engine v3 VAL", "n": 9620, "median": 0.2128, "mean": 0.3176, "p90": 0.8167, "frac_gt_0.5": 0.2965, "frac_gt_0.25": 0.4643}
+{"source": "modelled-live (degrade) v3 VAL", "n": 9620, "median": 0.4468, "mean": 0.4466, "p90": 0.8844, "frac_gt_0.5": 0.4456, "frac_gt_0.25": 0.6595}
+{"source": "real live frames (dry run)", "n": 116, "median": 0.2, "mean": 0.3201, "p90": 0.75, "frac_gt_0.5": 0.2672, "frac_gt_0.25": 0.4397}
+{"source": "train target rate (v3 VAL y_gate)", "n": 13761, "median": null, "mean": 0.2759, "p90": null, "frac_gt_0.5": null, "frac_gt_0.25": null}
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+{"source": "engine v3 VAL", "n": 9620, "median": 0.2142, "mean": 0.3204, "p90": 0.8284, "frac_gt_0.5": 0.2976, "frac_gt_0.25": 0.4683}
+{"source": "modelled-live (degrade) v3 VAL", "n": 9620, "median": 0.51, "mean": 0.4803, "p90": 0.8908, "frac_gt_0.5": 0.5108, "frac_gt_0.25": 0.6984}
+{"source": "real live frames (dry run)", "n": 157, "median": 0.32, "mean": 0.3677, "p90": 0.768, "frac_gt_0.5": 0.3248, "frac_gt_0.25": 0.5924}
+{"source": "train target rate (v3 VAL y_gate)", "n": 13761, "median": null, "mean": 0.2759, "p90": null, "frac_gt_0.5": null, "frac_gt_0.25": null}
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+{"source": "engine v3 VAL", "n": 9620, "median": 0.2058, "mean": 0.3171, "p90": 0.8267, "frac_gt_0.5": 0.2936, "frac_gt_0.25": 0.4591}
+{"source": "modelled-live (degrade) v3 VAL", "n": 9620, "median": 0.5359, "mean": 0.4966, "p90": 0.9105, "frac_gt_0.5": 0.5245, "frac_gt_0.25": 0.7129}
+{"source": "real live frames (dry run)", "n": 157, "median": 0.21, "mean": 0.3125, "p90": 0.79, "frac_gt_0.5": 0.2484, "frac_gt_0.25": 0.465}
+{"source": "train target rate (v3 VAL y_gate)", "n": 13761, "median": null, "mean": 0.2759, "p90": null, "frac_gt_0.5": null, "frac_gt_0.25": null}
+CONFIRM_WAVE_DONE

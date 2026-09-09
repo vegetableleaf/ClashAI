@@ -1,0 +1,10 @@
+[dataset] icebow 50/493 rows=8146 2s
+[dataset] icebow 100/493 rows=15772 5s
+[dataset] icebow 150/493 rows=23626 8s
+[dataset] icebow 200/493 rows=31124 12s
+[dataset] icebow 250/493 rows=39202 16s
+[dataset] icebow 300/493 rows=47119 20s
+[dataset] icebow 350/493 rows=55433 24s
+[dataset] icebow 400/493 rows=63631 29s
+[dataset] icebow 450/493 rows=71328 32s
+{"out": "scratchpad\\gauntlet\\L67\\s1_dataset_v3_degraded_s0.npz", "rows": 78277, "play_rows": 21687, "wait_rows": 56590, "val_rows": 13761, "replays": 493, "units_total": 326681, "seconds": 37.9, "stats": {"mirror_matches": 2, "unmapped": [], "play_rows": 21687, "wait_rows": 56590, "wait_in_window": 12163, "play_skipped": 256}, "degraded_rows": 78277, "degrade_seed": 0}

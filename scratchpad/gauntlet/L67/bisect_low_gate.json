@@ -1,0 +1,887 @@
+{
+ "n_low": 261,
+ "summary": {
+  "all units -> ENEMY": {
+   "mean_delta_p": 0.0064,
+   "n": 40
+  },
+  "spells removed": {
+   "mean_delta_p": 0.0004,
+   "n": 40
+  },
+  "sides resolved to enemy": {
+   "mean_delta_p": 0.0,
+   "n": 40
+  },
+  "hp known 1.0": {
+   "mean_delta_p": 0.0,
+   "n": 40
+  },
+  "conf 1.0": {
+   "mean_delta_p": -0.0001,
+   "n": 40
+  },
+  "all units -> MINE": {
+   "mean_delta_p": -0.0027,
+   "n": 40
+  },
+  "elixir exact": {
+   "mean_delta_p": -0.0033,
+   "n": 40
+  },
+  "units removed": {
+   "mean_delta_p": -0.006,
+   "n": 40
+  },
+  "opp elixir 5": {
+   "mean_delta_p": -0.0063,
+   "n": 40
+  },
+  "towers full+alive": {
+   "mean_delta_p": -0.0064,
+   "n": 40
+  }
+ },
+ "rows": [
+  {
+   "p": 0.016,
+   "elixir": 0,
+   "units": 2,
+   "spells": 2,
+   "unknown_side": 0,
+   "mine": 0,
+   "enemy": 2,
+   "fixes": {
+    "units removed": 0.0022,
+    "spells removed": 0.0334,
+    "sides resolved to enemy": 0.016,
+    "all units -> ENEMY": 0.016,
+    "all units -> MINE": 0.0059,
+    "conf 1.0": 0.0158,
+    "hp known 1.0": 0.016,
+    "elixir exact": 0.0109,
+    "opp elixir 5": 0.0065,
+    "towers full+alive": 0.0063
+   }
+  },
+  {
+   "p": 0.0114,
+   "elixir": 0,
+   "units": 1,
+   "spells": 1,
+   "unknown_side": 0,
+   "mine": 0,
+   "enemy": 1,
+   "fixes": {
+    "units removed": 0.0022,
+    "spells removed": 0.038,
+    "sides resolved to enemy": 0.0114,
+    "all units -> ENEMY": 0.0114,
+    "all units -> MINE": 0.0028,
+    "conf 1.0": 0.0112,
+    "hp known 1.0": 0.0114,
+    "elixir exact": 0.0072,
+    "opp elixir 5": 0.004,
+    "towers full+alive": 0.0038
+   }
+  },
+  {
+   "p": 0.0021,
+   "elixir": 0,
+   "units": 0,
+   "spells": 1,
+   "unknown_side": 0,
+   "mine": 0,
+   "enemy": 0,
+   "fixes": {
+    "units removed": 0.0022,
+    "spells removed": 0.0022,
+    "sides resolved to enemy": 0.0021,
+    "all units -> ENEMY": 0.0021,
+    "all units -> MINE": 0.0021,
+    "conf 1.0": 0.0021,
+    "hp known 1.0": 0.0021,
+    "elixir exact": 0.0017,
+    "opp elixir 5": 0.0008,
+    "towers full+alive": 0.0006
+   }
+  },
+  {
+   "p": 0.0153,
+   "elixir": 0,
+   "units": 0,
+   "spells": 3,
+   "unknown_side": 0,
+   "mine": 0,
+   "enemy": 0,
+   "fixes": {
+    "units removed": 0.0022,
+    "spells removed": 0.0022,
+    "sides resolved to enemy": 0.0153,
+    "all units -> ENEMY": 0.0153,
+    "all units -> MINE": 0.0153,
+    "conf 1.0": 0.0153,
+    "hp known 1.0": 0.0153,
+    "elixir exact": 0.0105,
+    "opp elixir 5": 0.0062,
+    "towers full+alive": 0.0069
+   }
+  },
+  {
+   "p": 0.0158,
+   "elixir": 0,
+   "units": 0,
+   "spells": 5,
+   "unknown_side": 0,
+   "mine": 0,
+   "enemy": 0,
+   "fixes": {
+    "units removed": 0.0022,
+    "spells removed": 0.0022,
+    "sides resolved to enemy": 0.0158,
+    "all units -> ENEMY": 0.0158,
+    "all units -> MINE": 0.0158,
+    "conf 1.0": 0.0158,
+    "hp known 1.0": 0.0158,
+    "elixir exact": 0.0108,
+    "opp elixir 5": 0.007,
+    "towers full+alive": 0.0056
+   }
+  },
+  {
+   "p": 0.0195,
+   "elixir": 6,
+   "units": 2,
+   "spells": 0,
+   "unknown_side": 0,
+   "mine": 1,
+   "enemy": 1,
+   "fixes": {
+    "units removed": 0.0234,
+    "spells removed": 0.0195,
+    "sides resolved to enemy": 0.0195,
+    "all units -> ENEMY": 0.0225,
+    "all units -> MINE": 0.0216,
+    "conf 1.0": 0.0195,
+    "hp known 1.0": 0.0195,
+    "elixir exact": 0.0114,
+    "opp elixir 5": 0.0049,
+    "towers full+alive": 0.002
+   }
+  },
+  {
+   "p": 0.008,
+   "elixir": 6,
+   "units": 4,
+   "spells": 0,
+   "unknown_side": 0,
+   "mine": 3,
+   "enemy": 1,
+   "fixes": {
+    "units removed": 0.0035,
+    "spells removed": 0.008,
+    "sides resolved to enemy": 0.008,
+    "all units -> ENEMY": 0.0096,
+    "all units -> MINE": 0.0064,
+    "conf 1.0": 0.008,
+    "hp known 1.0": 0.008,
+    "elixir exact": 0.0037,
+    "opp elixir 5": 0.0017,
+    "towers full+alive": 0.0015
+   }
+  },
+  {
+   "p": 0.0155,
+   "elixir": 7,
+   "units": 3,
+   "spells": 0,
+   "unknown_side": 0,
+   "mine": 2,
+   "enemy": 1,
+   "fixes": {
+    "units removed": 0.0054,
+    "spells removed": 0.0155,
+    "sides resolved to enemy": 0.0155,
+    "all units -> ENEMY": 0.0224,
+    "all units -> MINE": 0.0101,
+    "conf 1.0": 0.0154,
+    "hp known 1.0": 0.0155,
+    "elixir exact": 0.007,
+    "opp elixir 5": 0.0031,
+    "towers full+alive": 0.0031
+   }
+  },
+  {
+   "p": 0.0168,
+   "elixir": 7,
+   "units": 3,
+   "spells": 0,
+   "unknown_side": 0,
+   "mine": 2,
+   "enemy": 1,
+   "fixes": {
+    "units removed": 0.0055,
+    "spells removed": 0.0168,
+    "sides resolved to enemy": 0.0168,
+    "all units -> ENEMY": 0.025,
+    "all units -> MINE": 0.0109,
+    "conf 1.0": 0.0159,
+    "hp known 1.0": 0.0168,
+    "elixir exact": 0.0075,
+    "opp elixir 5": 0.0033,
+    "towers full+alive": 0.0033
+   }
+  },
+  {
+   "p": 0.0186,
+   "elixir": 7,
+   "units": 2,
+   "spells": 0,
+   "unknown_side": 0,
+   "mine": 1,
+   "enemy": 1,
+   "fixes": {
+    "units removed": 0.0055,
+    "spells removed": 0.0186,
+    "sides resolved to enemy": 0.0186,
+    "all units -> ENEMY": 0.0269,
+    "all units -> MINE": 0.0117,
+    "conf 1.0": 0.0185,
+    "hp known 1.0": 0.0186,
+    "elixir exact": 0.0081,
+    "opp elixir 5": 0.0035,
+    "towers full+alive": 0.0035
+   }
+  },
+  {
+   "p": 0.0161,
+   "elixir": 7,
+   "units": 2,
+   "spells": 0,
+   "unknown_side": 0,
+   "mine": 1,
+   "enemy": 1,
+   "fixes": {
+    "units removed": 0.0055,
+    "spells removed": 0.0161,
+    "sides resolved to enemy": 0.0161,
+    "all units -> ENEMY": 0.0244,
+    "all units -> MINE": 0.0109,
+    "conf 1.0": 0.016,
+    "hp known 1.0": 0.0161,
+    "elixir exact": 0.007,
+    "opp elixir 5": 0.003,
+    "towers full+alive": 0.003
+   }
+  },
+  {
+   "p": 0.0103,
+   "elixir": 4,
+   "units": 4,
+   "spells": 0,
+   "unknown_side": 0,
+   "mine": 1,
+   "enemy": 3,
+   "fixes": {
+    "units removed": 0.0029,
+    "spells removed": 0.0103,
+    "sides resolved to enemy": 0.0103,
+    "all units -> ENEMY": 0.0124,
+    "all units -> MINE": 0.004,
+    "conf 1.0": 0.0106,
+    "hp known 1.0": 0.0103,
+    "elixir exact": 0.0053,
+    "opp elixir 5": 0.0025,
+    "towers full+alive": 0.0036
+   }
+  },
+  {
+   "p": 0.0042,
+   "elixir": 4,
+   "units": 4,
+   "spells": 0,
+   "unknown_side": 0,
+   "mine": 1,
+   "enemy": 3,
+   "fixes": {
+    "units removed": 0.0017,
+    "spells removed": 0.0042,
+    "sides resolved to enemy": 0.0042,
+    "all units -> ENEMY": 0.005,
+    "all units -> MINE": 0.0024,
+    "conf 1.0": 0.0042,
+    "hp known 1.0": 0.0042,
+    "elixir exact": 0.0029,
+    "opp elixir 5": 0.0019,
+    "towers full+alive": 0.0014
+   }
+  },
+  {
+   "p": 0.005,
+   "elixir": 4,
+   "units": 4,
+   "spells": 0,
+   "unknown_side": 0,
+   "mine": 1,
+   "enemy": 3,
+   "fixes": {
+    "units removed": 0.0017,
+    "spells removed": 0.005,
+    "sides resolved to enemy": 0.005,
+    "all units -> ENEMY": 0.0056,
+    "all units -> MINE": 0.0035,
+    "conf 1.0": 0.005,
+    "hp known 1.0": 0.005,
+    "elixir exact": 0.0033,
+    "opp elixir 5": 0.0021,
+    "towers full+alive": 0.0014
+   }
+  },
+  {
+   "p": 0.0078,
+   "elixir": 2,
+   "units": 2,
+   "spells": 1,
+   "unknown_side": 0,
+   "mine": 1,
+   "enemy": 1,
+   "fixes": {
+    "units removed": 0.0015,
+    "spells removed": 0.0041,
+    "sides resolved to enemy": 0.0078,
+    "all units -> ENEMY": 0.0117,
+    "all units -> MINE": 0.0062,
+    "conf 1.0": 0.0078,
+    "hp known 1.0": 0.0078,
+    "elixir exact": 0.0068,
+    "opp elixir 5": 0.0031,
+    "towers full+alive": 0.0053
+   }
+  },
+  {
+   "p": 0.0067,
+   "elixir": 2,
+   "units": 4,
+   "spells": 0,
+   "unknown_side": 0,
+   "mine": 2,
+   "enemy": 2,
+   "fixes": {
+    "units removed": 0.0015,
+    "spells removed": 0.0067,
+    "sides resolved to enemy": 0.0067,
+    "all units -> ENEMY": 0.016,
+    "all units -> MINE": 0.0026,
+    "conf 1.0": 0.0066,
+    "hp known 1.0": 0.0067,
+    "elixir exact": 0.0057,
+    "opp elixir 5": 0.0025,
+    "towers full+alive": 0.0045
+   }
+  },
+  {
+   "p": 0.0075,
+   "elixir": 2,
+   "units": 4,
+   "spells": 0,
+   "unknown_side": 0,
+   "mine": 2,
+   "enemy": 2,
+   "fixes": {
+    "units removed": 0.0015,
+    "spells removed": 0.0075,
+    "sides resolved to enemy": 0.0075,
+    "all units -> ENEMY": 0.0184,
+    "all units -> MINE": 0.0029,
+    "conf 1.0": 0.0074,
+    "hp known 1.0": 0.0075,
+    "elixir exact": 0.0063,
+    "opp elixir 5": 0.0028,
+    "towers full+alive": 0.0049
+   }
+  },
+  {
+   "p": 0.0077,
+   "elixir": 0,
+   "units": 4,
+   "spells": 0,
+   "unknown_side": 0,
+   "mine": 3,
+   "enemy": 1,
+   "fixes": {
+    "units removed": 0.0025,
+    "spells removed": 0.0077,
+    "sides resolved to enemy": 0.0077,
+    "all units -> ENEMY": 0.0123,
+    "all units -> MINE": 0.0057,
+    "conf 1.0": 0.0077,
+    "hp known 1.0": 0.0077,
+    "elixir exact": 0.0065,
+    "opp elixir 5": 0.0038,
+    "towers full+alive": 0.0032
+   }
+  },
+  {
+   "p": 0.0091,
+   "elixir": 0,
+   "units": 7,
+   "spells": 0,
+   "unknown_side": 0,
+   "mine": 2,
+   "enemy": 5,
+   "fixes": {
+    "units removed": 0.0011,
+    "spells removed": 0.0091,
+    "sides resolved to enemy": 0.0091,
+    "all units -> ENEMY": 0.0109,
+    "all units -> MINE": 0.0051,
+    "conf 1.0": 0.0091,
+    "hp known 1.0": 0.0091,
+    "elixir exact": 0.0071,
+    "opp elixir 5": 0.0036,
+    "towers full+alive": 0.003
+   }
+  },
+  {
+   "p": 0.0078,
+   "elixir": 0,
+   "units": 4,
+   "spells": 0,
+   "unknown_side": 0,
+   "mine": 3,
+   "enemy": 1,
+   "fixes": {
+    "units removed": 0.0019,
+    "spells removed": 0.0078,
+    "sides resolved to enemy": 0.0078,
+    "all units -> ENEMY": 0.0076,
+    "all units -> MINE": 0.0044,
+    "conf 1.0": 0.0078,
+    "hp known 1.0": 0.0078,
+    "elixir exact": 0.0063,
+    "opp elixir 5": 0.0029,
+    "towers full+alive": 0.0033
+   }
+  },
+  {
+   "p": 0.0104,
+   "elixir": 0,
+   "units": 6,
+   "spells": 0,
+   "unknown_side": 1,
+   "mine": 2,
+   "enemy": 3,
+   "fixes": {
+    "units removed": 0.0019,
+    "spells removed": 0.0104,
+    "sides resolved to enemy": 0.0106,
+    "all units -> ENEMY": 0.0123,
+    "all units -> MINE": 0.0064,
+    "conf 1.0": 0.0102,
+    "hp known 1.0": 0.0104,
+    "elixir exact": 0.0082,
+    "opp elixir 5": 0.0041,
+    "towers full+alive": 0.0049
+   }
+  },
+  {
+   "p": 0.0058,
+   "elixir": 1,
+   "units": 5,
+   "spells": 0,
+   "unknown_side": 0,
+   "mine": 3,
+   "enemy": 2,
+   "fixes": {
+    "units removed": 0.0024,
+    "spells removed": 0.0058,
+    "sides resolved to enemy": 0.0058,
+    "all units -> ENEMY": 0.0073,
+    "all units -> MINE": 0.0028,
+    "conf 1.0": 0.006,
+    "hp known 1.0": 0.0058,
+    "elixir exact": 0.0045,
+    "opp elixir 5": 0.002,
+    "towers full+alive": 0.0023
+   }
+  },
+  {
+   "p": 0.0019,
+   "elixir": 1,
+   "units": 5,
+   "spells": 0,
+   "unknown_side": 1,
+   "mine": 2,
+   "enemy": 2,
+   "fixes": {
+    "units removed": 0.0008,
+    "spells removed": 0.0019,
+    "sides resolved to enemy": 0.0019,
+    "all units -> ENEMY": 0.0021,
+    "all units -> MINE": 0.0011,
+    "conf 1.0": 0.0019,
+    "hp known 1.0": 0.0019,
+    "elixir exact": 0.0015,
+    "opp elixir 5": 0.0008,
+    "towers full+alive": 0.0008
+   }
+  },
+  {
+   "p": 0.001,
+   "elixir": 0,
+   "units": 5,
+   "spells": 0,
+   "unknown_side": 1,
+   "mine": 3,
+   "enemy": 1,
+   "fixes": {
+    "units removed": 0.0007,
+    "spells removed": 0.001,
+    "sides resolved to enemy": 0.001,
+    "all units -> ENEMY": 0.001,
+    "all units -> MINE": 0.0009,
+    "conf 1.0": 0.001,
+    "hp known 1.0": 0.001,
+    "elixir exact": 0.0009,
+    "opp elixir 5": 0.0005,
+    "towers full+alive": 0.0005
+   }
+  },
+  {
+   "p": 0.0125,
+   "elixir": 0,
+   "units": 6,
+   "spells": 0,
+   "unknown_side": 1,
+   "mine": 3,
+   "enemy": 2,
+   "fixes": {
+    "units removed": 0.0017,
+    "spells removed": 0.0125,
+    "sides resolved to enemy": 0.013,
+    "all units -> ENEMY": 0.0199,
+    "all units -> MINE": 0.0053,
+    "conf 1.0": 0.0117,
+    "hp known 1.0": 0.0125,
+    "elixir exact": 0.009,
+    "opp elixir 5": 0.0047,
+    "towers full+alive": 0.0039
+   }
+  },
+  {
+   "p": 0.0068,
+   "elixir": 1,
+   "units": 6,
+   "spells": 0,
+   "unknown_side": 1,
+   "mine": 3,
+   "enemy": 2,
+   "fixes": {
+    "units removed": 0.0025,
+    "spells removed": 0.0068,
+    "sides resolved to enemy": 0.0073,
+    "all units -> ENEMY": 0.0162,
+    "all units -> MINE": 0.0042,
+    "conf 1.0": 0.0067,
+    "hp known 1.0": 0.0068,
+    "elixir exact": 0.0048,
+    "opp elixir 5": 0.0025,
+    "towers full+alive": 0.0018
+   }
+  },
+  {
+   "p": 0.0043,
+   "elixir": 1,
+   "units": 5,
+   "spells": 0,
+   "unknown_side": 1,
+   "mine": 2,
+   "enemy": 2,
+   "fixes": {
+    "units removed": 0.0016,
+    "spells removed": 0.0043,
+    "sides resolved to enemy": 0.0045,
+    "all units -> ENEMY": 0.0053,
+    "all units -> MINE": 0.0022,
+    "conf 1.0": 0.0043,
+    "hp known 1.0": 0.0043,
+    "elixir exact": 0.0032,
+    "opp elixir 5": 0.0019,
+    "towers full+alive": 0.002
+   }
+  },
+  {
+   "p": 0.0099,
+   "elixir": 1,
+   "units": 4,
+   "spells": 0,
+   "unknown_side": 0,
+   "mine": 3,
+   "enemy": 1,
+   "fixes": {
+    "units removed": 0.0025,
+    "spells removed": 0.0099,
+    "sides resolved to enemy": 0.0099,
+    "all units -> ENEMY": 0.0249,
+    "all units -> MINE": 0.0069,
+    "conf 1.0": 0.0098,
+    "hp known 1.0": 0.0099,
+    "elixir exact": 0.0071,
+    "opp elixir 5": 0.0033,
+    "towers full+alive": 0.0025
+   }
+  },
+  {
+   "p": 0.0088,
+   "elixir": 1,
+   "units": 6,
+   "spells": 0,
+   "unknown_side": 0,
+   "mine": 3,
+   "enemy": 3,
+   "fixes": {
+    "units removed": 0.0025,
+    "spells removed": 0.0088,
+    "sides resolved to enemy": 0.0088,
+    "all units -> ENEMY": 0.0224,
+    "all units -> MINE": 0.0063,
+    "conf 1.0": 0.0088,
+    "hp known 1.0": 0.0088,
+    "elixir exact": 0.0062,
+    "opp elixir 5": 0.0028,
+    "towers full+alive": 0.002
+   }
+  },
+  {
+   "p": 0.0163,
+   "elixir": 2,
+   "units": 4,
+   "spells": 0,
+   "unknown_side": 0,
+   "mine": 2,
+   "enemy": 2,
+   "fixes": {
+    "units removed": 0.0046,
+    "spells removed": 0.0163,
+    "sides resolved to enemy": 0.0163,
+    "all units -> ENEMY": 0.0379,
+    "all units -> MINE": 0.0077,
+    "conf 1.0": 0.0159,
+    "hp known 1.0": 0.0163,
+    "elixir exact": 0.01,
+    "opp elixir 5": 0.0044,
+    "towers full+alive": 0.0031
+   }
+  },
+  {
+   "p": 0.0117,
+   "elixir": 2,
+   "units": 3,
+   "spells": 0,
+   "unknown_side": 0,
+   "mine": 2,
+   "enemy": 1,
+   "fixes": {
+    "units removed": 0.0047,
+    "spells removed": 0.0117,
+    "sides resolved to enemy": 0.0117,
+    "all units -> ENEMY": 0.031,
+    "all units -> MINE": 0.0144,
+    "conf 1.0": 0.0118,
+    "hp known 1.0": 0.0117,
+    "elixir exact": 0.0074,
+    "opp elixir 5": 0.0033,
+    "towers full+alive": 0.0021
+   }
+  },
+  {
+   "p": 0.0146,
+   "elixir": 2,
+   "units": 3,
+   "spells": 0,
+   "unknown_side": 0,
+   "mine": 2,
+   "enemy": 1,
+   "fixes": {
+    "units removed": 0.0047,
+    "spells removed": 0.0146,
+    "sides resolved to enemy": 0.0146,
+    "all units -> ENEMY": 0.0402,
+    "all units -> MINE": 0.0144,
+    "conf 1.0": 0.0146,
+    "hp known 1.0": 0.0146,
+    "elixir exact": 0.009,
+    "opp elixir 5": 0.0038,
+    "towers full+alive": 0.0025
+   }
+  },
+  {
+   "p": 0.0182,
+   "elixir": 2,
+   "units": 3,
+   "spells": 1,
+   "unknown_side": 0,
+   "mine": 2,
+   "enemy": 1,
+   "fixes": {
+    "units removed": 0.0041,
+    "spells removed": 0.02,
+    "sides resolved to enemy": 0.0182,
+    "all units -> ENEMY": 0.0713,
+    "all units -> MINE": 0.0175,
+    "conf 1.0": 0.018,
+    "hp known 1.0": 0.0182,
+    "elixir exact": 0.0104,
+    "opp elixir 5": 0.0043,
+    "towers full+alive": 0.004
+   }
+  },
+  {
+   "p": 0.001,
+   "elixir": 0,
+   "units": 1,
+   "spells": 1,
+   "unknown_side": 0,
+   "mine": 1,
+   "enemy": 0,
+   "fixes": {
+    "units removed": 0.0009,
+    "spells removed": 0.0011,
+    "sides resolved to enemy": 0.001,
+    "all units -> ENEMY": 0.0015,
+    "all units -> MINE": 0.001,
+    "conf 1.0": 0.001,
+    "hp known 1.0": 0.001,
+    "elixir exact": 0.0009,
+    "opp elixir 5": 0.0005,
+    "towers full+alive": 0.0005
+   }
+  },
+  {
+   "p": 0.0062,
+   "elixir": 1,
+   "units": 3,
+   "spells": 0,
+   "unknown_side": 0,
+   "mine": 2,
+   "enemy": 1,
+   "fixes": {
+    "units removed": 0.0018,
+    "spells removed": 0.0062,
+    "sides resolved to enemy": 0.0062,
+    "all units -> ENEMY": 0.0145,
+    "all units -> MINE": 0.004,
+    "conf 1.0": 0.0062,
+    "hp known 1.0": 0.0062,
+    "elixir exact": 0.0044,
+    "opp elixir 5": 0.0022,
+    "towers full+alive": 0.0027
+   }
+  },
+  {
+   "p": 0.0017,
+   "elixir": 1,
+   "units": 1,
+   "spells": 1,
+   "unknown_side": 0,
+   "mine": 1,
+   "enemy": 0,
+   "fixes": {
+    "units removed": 0.0018,
+    "spells removed": 0.0022,
+    "sides resolved to enemy": 0.0017,
+    "all units -> ENEMY": 0.0032,
+    "all units -> MINE": 0.0017,
+    "conf 1.0": 0.0017,
+    "hp known 1.0": 0.0017,
+    "elixir exact": 0.0014,
+    "opp elixir 5": 0.0007,
+    "towers full+alive": 0.0007
+   }
+  },
+  {
+   "p": 0.0051,
+   "elixir": 1,
+   "units": 2,
+   "spells": 1,
+   "unknown_side": 0,
+   "mine": 1,
+   "enemy": 1,
+   "fixes": {
+    "units removed": 0.0027,
+    "spells removed": 0.0059,
+    "sides resolved to enemy": 0.0051,
+    "all units -> ENEMY": 0.0084,
+    "all units -> MINE": 0.0036,
+    "conf 1.0": 0.005,
+    "hp known 1.0": 0.0051,
+    "elixir exact": 0.004,
+    "opp elixir 5": 0.002,
+    "towers full+alive": 0.0018
+   }
+  },
+  {
+   "p": 0.0025,
+   "elixir": 1,
+   "units": 1,
+   "spells": 1,
+   "unknown_side": 0,
+   "mine": 1,
+   "enemy": 0,
+   "fixes": {
+    "units removed": 0.0027,
+    "spells removed": 0.003,
+    "sides resolved to enemy": 0.0025,
+    "all units -> ENEMY": 0.0034,
+    "all units -> MINE": 0.0025,
+    "conf 1.0": 0.0025,
+    "hp known 1.0": 0.0025,
+    "elixir exact": 0.002,
+    "opp elixir 5": 0.001,
+    "towers full+alive": 0.0008
+   }
+  },
+  {
+   "p": 0.0037,
+   "elixir": 2,
+   "units": 0,
+   "spells": 0,
+   "unknown_side": 0,
+   "mine": 0,
+   "enemy": 0,
+   "fixes": {
+    "units removed": 0.0037,
+    "spells removed": 0.0037,
+    "sides resolved to enemy": 0.0037,
+    "all units -> ENEMY": 0.0037,
+    "all units -> MINE": 0.0037,
+    "conf 1.0": 0.0037,
+    "hp known 1.0": 0.0037,
+    "elixir exact": 0.0029,
+    "opp elixir 5": 0.0013,
+    "towers full+alive": 0.0009
+   }
+  },
+  {
+   "p": 0.0037,
+   "elixir": 2,
+   "units": 0,
+   "spells": 0,
+   "unknown_side": 0,
+   "mine": 0,
+   "enemy": 0,
+   "fixes": {
+    "units removed": 0.0037,
+    "spells removed": 0.0037,
+    "sides resolved to enemy": 0.0037,
+    "all units -> ENEMY": 0.0037,
+    "all units -> MINE": 0.0037,
+    "conf 1.0": 0.0037,
+    "hp known 1.0": 0.0037,
+    "elixir exact": 0.0029,
+    "opp elixir 5": 0.0013,
+    "towers full+alive": 0.0009
+   }
+  }
+ ]
+}

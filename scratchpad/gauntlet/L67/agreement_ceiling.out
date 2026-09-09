@@ -1,0 +1,7 @@
+play rows 40000, replays 2238
+{"board_distance": "0-1", "cell_pairs": 59548, "same_cell_pct": 27.42, "within_1_tile_pct": 31.55, "median_sep_tiles": 1.0, "card_pairs": 39194, "same_card_pct": 43.83}
+{"board_distance": "1-2", "cell_pairs": 171501, "same_cell_pct": 17.21, "within_1_tile_pct": 21.17, "median_sep_tiles": 5.66, "card_pairs": 66473, "same_card_pct": 35.68}
+{"board_distance": "2-3", "cell_pairs": 344095, "same_cell_pct": 12.81, "within_1_tile_pct": 17.09, "median_sep_tiles": 6.4, "card_pairs": 57901, "same_card_pct": 37.74}
+{"board_distance": "3-5", "cell_pairs": 1443467, "same_cell_pct": 9.53, "within_1_tile_pct": 14.29, "median_sep_tiles": 6.4, "card_pairs": 91514, "same_card_pct": 38.91}
+{"board_distance": "5-8", "cell_pairs": 4011855, "same_cell_pct": 6.31, "within_1_tile_pct": 10.88, "median_sep_tiles": 6.71, "card_pairs": 125037, "same_card_pct": 37.55}
+{"board_distance": ">8", "cell_pairs": 9753581, "same_cell_pct": 3.5, "within_1_tile_pct": 7.08, "median_sep_tiles": 7.07, "card_pairs": 175687, "same_card_pct": 39.29}

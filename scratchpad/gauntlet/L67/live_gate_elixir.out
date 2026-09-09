@@ -1,0 +1,7 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+20260815_222309: 500 states
+20260804_173304: 835 states
+live {"by_elixir": {"0-3": [341, 0.1088], "4-6": [292, 0.1984], "7-8": [144, 0.3134], "9-10": [58, 0.5666]}, "by_units": {"0-1": [231, 0.1503], "2-3": [336, 0.2324], "4-6": [250, 0.2335], "7+": [18, 0.1013]}, "frac_over_tau_0.27": 0.2778}
+exact_on {"by_elixir": {"0-3": [341, 0.081], "4-6": [292, 0.1614], "7-8": [144, 0.2735], "9-10": [58, 0.5171]}, "by_units": {"0-1": [231, 0.1289], "2-3": [336, 0.1966], "4-6": [250, 0.1878], "7+": [18, 0.0731]}, "frac_over_tau_0.27": 0.2144}
+exact_on+opp5 {"by_elixir": {"0-3": [341, 0.0326], "4-6": [292, 0.0793], "7-8": [144, 0.171], "9-10": [58, 0.3561]}, "by_units": {"0-1": [231, 0.0808], "2-3": [336, 0.1101], "4-6": [250, 0.0938], "7+": [18, 0.0248]}, "frac_over_tau_0.27": 0.1174}

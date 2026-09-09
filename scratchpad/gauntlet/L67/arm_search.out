@@ -1,0 +1,34 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+m000 outcome     win tower_delta +2.120 plays  29 searched 134 overrode 66 wait 105
+m001 outcome     win tower_delta +1.026 plays  44 searched 324 overrode 146 wait 251
+m002 outcome     win tower_delta +0.574 plays   3 searched 607 overrode 403 wait 531
+m003 outcome    loss tower_delta -0.826 plays  30 searched 769 overrode 476 wait 663
+m004 outcome     win tower_delta +0.783 plays  25 searched 951 overrode 599 wait 820
+m005 outcome     win tower_delta +1.044 plays  71 searched 1168 overrode 716 wait 966
+m006 outcome     win tower_delta +0.363 plays  66 searched 1375 overrode 824 wait 1107
+m007 outcome     win tower_delta +1.004 plays   4 searched 1648 overrode 1052 wait 1376
+m008 outcome     win tower_delta +1.175 plays  32 searched 1791 overrode 1104 wait 1487
+m009 outcome     win tower_delta +2.387 plays  24 searched 1976 overrode 1228 wait 1648
+m010 outcome     win tower_delta +0.430 plays  54 searched 2203 overrode 1312 wait 1821
+m011 outcome     win tower_delta +0.035 plays  66 searched 2520 overrode 1443 wait 2072
+{
+ "ckpt": "icebow\\data\\pipeline\\s1_icebow_v6lat_s0.pt",
+ "matches": 12,
+ "degrade": true,
+ "mode": "search",
+ "horizon": 12.0,
+ "interval": 1,
+ "topk": 4,
+ "cells": 3,
+ "win_pct": 91.7,
+ "tower_delta_mean": 0.8429,
+ "tower_delta_sem": 0.2483,
+ "plays_per_match": 37.3,
+ "searched": 2520,
+ "overrode": 1443,
+ "moved_cell": 52,
+ "chose_wait": 2072,
+ "policy_wait_overridden": 235,
+ "wall_s": 381.9
+}

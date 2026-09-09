@@ -1,0 +1,4 @@
+teacher_0.npz: 5918 rows, 22718 unit rows, matches 40
+teacher_1.npz: 6199 rows, 25277 unit rows, matches 40
+teacher_2.npz: 6101 rows, 23210 unit rows, matches 40
+{"rows": 18218, "unit_rows": 71205, "matches": 120, "val_rows": 3483, "gate_rate": 0.2345, "out": "scratchpad\\gauntlet\\L67\\teacher_corpus.npz"}

@@ -1,0 +1,30 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+{
+ "n_play_rows": 12000,
+ "ckpt": "icebow\\data\\pipeline\\s1_icebow_v6lat_s0.pt",
+ "cell_topk_pct": {
+  "1": 21.13,
+  "2": 35.79,
+  "3": 44.24,
+  "5": 55.5,
+  "8": 65.7,
+  "16": 78.28,
+  "32": 88.3
+ },
+ "cell_topk_within1_pct": {
+  "1": 32.7,
+  "2": 48.33,
+  "3": 57.38,
+  "5": 67.58,
+  "8": 75.78,
+  "16": 85.23,
+  "32": 92.47
+ },
+ "card_topk_pct": {
+  "1": 63.16,
+  "2": 88.07,
+  "3": 97.58,
+  "4": 100.0
+ }
+}

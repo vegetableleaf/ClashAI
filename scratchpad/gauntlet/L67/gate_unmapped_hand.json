@@ -1,0 +1,44 @@
+[
+ {
+  "variant": "clean",
+  "mean_p": 0.2756,
+  "median_p": 0.1597,
+  "frac_under_0.05": 0.318,
+  "frac_under_0.005": 0.1163
+ },
+ {
+  "variant": "1 hand slot unmapped",
+  "mean_p": 0.3154,
+  "median_p": 0.2087,
+  "frac_under_0.05": 0.2772,
+  "frac_under_0.005": 0.0892
+ },
+ {
+  "variant": "2 hand slots unmapped",
+  "mean_p": 0.3514,
+  "median_p": 0.2454,
+  "frac_under_0.05": 0.2639,
+  "frac_under_0.005": 0.0808
+ },
+ {
+  "variant": "3 hand slots unmapped",
+  "mean_p": 0.5478,
+  "median_p": 0.6046,
+  "frac_under_0.05": 0.1168,
+  "frac_under_0.005": 0.0314
+ },
+ {
+  "variant": "all 4 unmapped",
+  "mean_p": 0.598,
+  "median_p": 0.703,
+  "frac_under_0.05": 0.1015,
+  "frac_under_0.005": 0.0296
+ },
+ {
+  "variant": "next card unmapped",
+  "mean_p": 0.3454,
+  "median_p": 0.265,
+  "frac_under_0.05": 0.2194,
+  "frac_under_0.005": 0.0421
+ }
+]

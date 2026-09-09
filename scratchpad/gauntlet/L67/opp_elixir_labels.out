@@ -1,0 +1,6 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+{"variant": "clean", "cell_half_top1": 0.2116, "card_top1": 0.6336, "place_dist": 3.4717, "gate_acc": 0.8227, "n_play": 15065}
+{"variant": "opp_none", "cell_half_top1": 0.208, "card_top1": 0.6151, "place_dist": 3.5003, "gate_acc": 0.7549, "n_play": 15065}
+{"variant": "opp_const5", "cell_half_top1": 0.2104, "card_top1": 0.6315, "place_dist": 3.4766, "gate_acc": 0.8142, "n_play": 15065}
+{"variant": "opp_pinned10", "cell_half_top1": 0.2111, "card_top1": 0.6323, "place_dist": 3.4738, "gate_acc": 0.8053, "n_play": 15065}

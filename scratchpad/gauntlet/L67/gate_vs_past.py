@@ -65,9 +65,14 @@ def main() -> int:
             p[:, :, 3] = torch.where(m, torch.full_like(p[:, :, 3], float(v)), p[:, :, 3])
         return f
 
+    # L67i: the live student's `past` is wall-clock and is NEVER reset between matches, so once it stops
+    # playing the ages grow without bound and cross match boundaries. Training's max is 95.5 s (median 8.55,
+    # p99 36.75), so everything past ~100 s is a direction the gate head has never seen.
     variants = {"as_recorded": (lambda p: None), "no_past": (lambda p: p.fill_(-1.0)),
                 "age_3s": age(3.0), "age_10s": age(10.0), "age_30s": age(30.0),
-                "age_60s": age(60.0), "age_120s": age(120.0)}
+                "age_60s": age(60.0), "age_95s (training max)": age(95.0),
+                "age_120s": age(120.0), "age_200s": age(200.0), "age_300s": age(300.0),
+                "age_600s": age(600.0), "age_1200s": age(1200.0)}
     rec = []
     for name, mut in variants.items():
         p = score(mut)

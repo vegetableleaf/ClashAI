@@ -1,0 +1,7 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+{"session": "20260815_222309", "ckpt": "icebow\\data\\pipeline\\s1_icebow_v6lat_s0.pt", "frames_scored": 400, "plays": 78, "play_rate": 0.195, "student_ms_median": 28.7, "student_ms_p95": 35.8, "det_ms_median": 45.4, "p_play_median": 0.13, "distinct_cards": [0, 1, 2, 3, 5, 6, 7, 8, 9], "distinct_cells": 19, "no_mappable_card": 20, "units_median": 2.0, "spells_seen": 78, "wall_s": 57.9}
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+{"session": "20260804_192006", "ckpt": "icebow\\data\\pipeline\\s1_icebow_v6lat_s0.pt", "frames_scored": 174, "plays": 22, "play_rate": 0.126, "student_ms_median": 29.7, "student_ms_p95": 35.6, "det_ms_median": 46.5, "p_play_median": 0.09, "distinct_cards": [0, 1, 5, 8], "distinct_cells": 8, "no_mappable_card": 15, "units_median": 2.0, "spells_seen": 29, "wall_s": 27.5}
+DRYRUN_WAVE_DONE

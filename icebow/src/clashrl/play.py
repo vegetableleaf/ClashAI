@@ -163,6 +163,7 @@ def play(cfg) -> None:
             _student = StudentPolicy(cfg.path(_student_ckpt), str(cfg.get("play", "student_deck", default="icebow")),
                                      actions, device=str(device),
                                      gate_tau=float(cfg.get("play", "student_gate_tau", default=0.5)))
+            _student.dump_low_gate = cfg.path("data/low_gate_states.jsonl")   # L67i: capture p~0 inputs
             print(f"[play] S1 STUDENT ON: {Path(_student_ckpt).name} (epoch {_student.epoch}, "
                   f"grid {_student.grid_kind}, gate tau {_student.gate_tau:g}) -- the old policy is loaded but "
                   f"only used for the frames the student declines to answer.")
@@ -698,7 +699,9 @@ def play(cfg) -> None:
                     print(f"[student] WAIT{_why} p={_slast.get('p_play', float('nan')):.2f} "
                           f"elixir {elixir:.0f} opp~{('?' if _oe is None else f'{float(_oe):.1f}')} "
                           f"units {_slast.get('units', 0)} dets {len(_last_dets['all'])} "
-                          f"(waits {_student.stats.get('wait', 0)}/{_student.stats.get('decisions', 0)})", flush=True)
+                          f"(waits {_student.stats.get('wait', 0)}/{_student.stats.get('decisions', 0)}"
+                          f" badhand {_student.stats.get('hand_unmapped', 0)}/{_student.stats.get('frames', 0)})",
+                          flush=True)
                 return
             _scard, _scell = int(_sact[0]), int(_sact[1])
             if elixir + 1e-6 < card_elixir[_scard] or not any(h == _scard for h in hand_ids):

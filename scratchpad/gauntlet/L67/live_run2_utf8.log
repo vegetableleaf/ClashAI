@@ -1,0 +1,51 @@
+[play] policy policy_rl.pt loaded (RL gate ON).
+.\icebow\.venv\Scripts\python.exe : 
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: 
+UserWarning: enable_nested_tensor is True, but 
+self.use_nested_tensor is False because 
+encoder_layer.norm_first was True
+At line:1 char:1
++ .\icebow\.venv\Scripts\python.exe -u 
+icebow\run.py play --student dat ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C:\ 
+   Users\benpe\..._first was True:String) [], R  
+  emoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  self.encoder = nn.TransformerEncoder(enc, 
+layers)
+[play] S1 STUDENT ON: s1_icebow_v6lat_s0.pt (epoch 15, grid lattice, gate tau 0.5) -- the old policy is loaded but only used for the frames the student declines to answer.
+[play] opp-memory slot 5 source: opp_estimate
+[play] live search unavailable (name 'card_db' is not defined); continuing on the policy alone
+18:03:02 [play] running on cuda. Ctrl+C to stop, or slam the mouse into a screen corner for the failsafe. It navigates menus and plays in-match on its own.
+18:03:02 [play] logging to C:\Users\benpe\ClashBot\icebow\data\play_20260908_180302.log
+18:03:02 [play] state: HOME
+18:03:02 [nav] HOME -> Battle (located) (0.509,0.789)
+18:03:03 [play] state: UNKNOWN
+18:03:08 [play] state: IN_MATCH
+[student] WAIT p=0.01 elixir 10 units 0 dets 0 (waits 10/10)
+[student] WAIT p=0.05 elixir 10 units 2 dets 2 (waits 20/20)
+[student] WAIT p=0.06 elixir 10 units 1 dets 2 (waits 30/30)
+[student] WAIT p=0.07 elixir 10 units 1 dets 1 (waits 40/40)
+[student] WAIT p=0.24 elixir 10 units 3 dets 3 (waits 50/50)
+[student] PLAY tesla p=0.53 cell 279 board (0.5, 0.66) units 4 54 ms
+[student] WAIT p=0.08 elixir 7 units 6 dets 6 (waits 60/61)
+[student] PLAY tornado p=0.51 cell 333 board (0.53, 0.77) units 7 72 ms
+[student] PLAY knight p=0.53 cell 309 board (0.19, 0.73) units 7 54 ms
+[student] PLAY ice_wizard p=0.77 cell 343 board (0.08, 0.8) units 2 44 ms
+[student] PLAY ice_wizard p=0.77 cell 329 board (0.31, 0.77) units 5 54 ms
+[student] PLAY the_log p=0.93 cell 381 board (0.19, 0.89) units 5 67 ms
+[student] WAIT p=0.00 elixir 2 units 5 dets 5 (waits 70/76)
+[student] WAIT p=0.00 elixir 4 units 4 dets 4 (waits 80/86)
+[student] WAIT p=0.00 elixir 7 units 1 dets 1 (waits 90/96)
+[student] WAIT p=0.00 elixir 9 units 1 dets 1 (waits 100/106)
+[student] WAIT p=0.00 elixir 10 units 5 dets 5 (waits 110/116)
+[student] WAIT p=0.01 elixir 10 units 5 dets 5 (waits 120/126)
+[student] WAIT p=0.04 elixir 10 units 5 dets 5 (waits 130/136)
+[student] WAIT p=0.06 elixir 10 units 4 dets 4 (waits 140/146)
+18:04:45 [play] UNKNOWN 0.7s after in-match -> grace hold (label lost: overtime / end animation / dropout; up to 150s)
+18:04:52 [play] state: MATCH_END
+18:04:52 [nav] MATCH_END -> Play Again (located) (0.348,0.914)
+18:04:53 [play] state: UNKNOWN

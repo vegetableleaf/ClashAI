@@ -63,6 +63,8 @@ class StudentPolicy:
         self.epoch = st.get("epoch")
         self._past: deque = deque(maxlen=PAST_K)          # (deck_slot, board_x, board_y, t_wall)
         self.stats: dict[str, int] = {}
+        self.dump_low_gate = None      # set to a path to capture states where the gate pins at zero
+        self._dumped = 0
         self.last: dict[str, Any] = {}
 
     # -- state ---------------------------------------------------------------------------------------
@@ -86,6 +88,13 @@ class StudentPolicy:
         t0 = time.perf_counter()
         bs = from_live(detections, reads, self.deck, warp=self.actions.warp,
                        unit_hp_default=(1.0 if self.fill_missing else None))
+        # L67i: how often does the TRAY READER fail? An unreadable hand card becomes -1, which
+        # obs_contract._slot_onehot encodes as bit 8 ("not in my deck") -- a bit set in 0.0009% of the
+        # 339,192 training rows. The collapse frames captured live are full of them, but those frames were
+        # SELECTED for low p, so the rate across all frames is what says whether it can explain the freeze.
+        self.stats["frames"] = self.stats.get("frames", 0) + 1
+        if any(int(c) < 0 for c in bs.my_hand):
+            self.stats["hand_unmapped"] = self.stats.get("hand_unmapped", 0) + 1
         tok, mask, sc = to_tokens(bs)
         past = self._past_array(time.time())
         tt = torch.from_numpy(np.asarray(tok)[None]).to(self.dev)
@@ -131,6 +140,22 @@ class StudentPolicy:
                      # pins at p=0.00 in a state the engine says is worth 0.63 is being driven by one of
                      # these, and guessing which cost a whole session -- so the live log now carries them.
                      "digest": state_digest(bs)}
+        # L67i: CAPTURE the states where the gate pins at zero. The digest carries the scalars but not the
+        # unit tokens, and three hypotheses have now died to guesswork (overtime, tower loss, stale past), so
+        # the failing input itself gets written to disk for offline bisection. Capped so a bad run cannot
+        # fill the disk; set `dump_low_gate` to None to switch it off.
+        if self.dump_low_gate is not None and p_play < 0.02 and self._dumped < 60:
+            self._dumped += 1
+            try:
+                import dataclasses
+                import json as _json
+                rec = {"p": p_play, "t_sec": bs.t_sec, "tok": np.asarray(tok).tolist(),
+                       "mask": np.asarray(mask).tolist(), "sc": np.asarray(sc).tolist(),
+                       "past": past.tolist(), "digest": self.last["digest"]}
+                with open(self.dump_low_gate, "a", encoding="utf-8") as fh:
+                    fh.write(_json.dumps(rec) + chr(10))
+            except Exception:
+                pass
         self.stats["decisions"] = self.stats.get("decisions", 0) + 1
         if p_play <= self.gate_tau:
             self.stats["wait"] = self.stats.get("wait", 0) + 1
