@@ -65,11 +65,85 @@ class StudentSearcher(StudentActor):
         self.sub_dt = float(getattr(env, "sub_dt", 0.1))
         self.subs = int(getattr(env, "subs", 1))
         self.rollout_steps = max(1, int(round(self.horizon / max(1e-6, self.sub_dt * self.subs))))
+        self.dump = None
+        self.crowns = {}            # match id -> (mine, theirs), for the value head's target
+        self._rows = []
+        self._match_id = 0
         self.searched = 0
         self.overrode = 0
         self.moved_cell = 0
         self.chose_wait = 0
         self.policy_wait_overridden = 0
+
+    # -- teacher-corpus dump -------------------------------------------------------------------------
+    def _snapshot(self):
+        """The state the teacher decided on, in the SAME layout pipeline/dataset.py writes.
+
+        Same format on purpose: a teacher corpus that train_s1 can already read is one that can be mixed
+        with, or fine-tuned from, the pro corpus without a second loader to keep in step.
+        """
+        import numpy as _np
+        from sim_contract import from_sim as _fs
+        bs = _fs(self.env, self.deck, degrade_to_live=self.degrade)
+        tok, mask, sc = self._to_tokens(bs)
+        tok = _np.asarray(tok)[_np.asarray(mask).astype(bool)]      # store only the real rows, ragged
+        return {"tok": tok, "sc": _np.asarray(sc), "past": self._past_array(float(self.env.eng.t)),
+                "tick": int(round(float(self.env.eng.t) / 0.05))}
+
+    def _record(self, snap, gate, slot, bx, by):
+        self._rows.append({**snap, "y_gate": int(gate), "y_slot": int(slot),
+                           "y_xy": (float(bx), float(by)), "rep": int(self._match_id)})
+
+    def save_dump(self, path):
+        import numpy as _np
+        if not self._rows:
+            return 0
+        # WAIT-HEAD TARGETS, from the teacher's own trajectory: for each wait row, the slot it plays NEXT in
+        # that match and how many seconds until then (pipeline/dataset.py's "wait for card X" target). Rows
+        # with no future play in their match have no target and are DROPPED -- the same rule the pro corpus
+        # applies to frames after the last play, rather than inventing a label the trainer would fit.
+        rows, nxt_slot, nxt_t = [], -1, None
+        for r in reversed(self._rows):
+            if r["rep"] != (rows[0]["rep"] if rows else r["rep"]):
+                nxt_slot, nxt_t = -1, None
+            if nxt_slot < 0 and r["y_gate"] == 0:
+                continue                                  # no future play in this match -> no wait target
+            r = dict(r)
+            r["y_wait_slot"] = int(r["y_slot"]) if r["y_gate"] == 1 else int(nxt_slot)
+            r["y_wait_dt"] = 0.0 if r["y_gate"] == 1 else float((nxt_t - r["tick"]) * 0.05)
+            rows.insert(0, r)
+            if r["y_gate"] == 1:
+                nxt_slot, nxt_t = int(r["y_slot"]), int(r["tick"])
+        self._rows = rows
+        if not self._rows:
+            return 0
+        toks = [r["tok"] for r in self._rows]
+        off = _np.zeros(len(toks) + 1, dtype=_np.int64)
+        off[1:] = _np.cumsum([len(t) for t in toks])
+        rep = _np.array([r["rep"] for r in self._rows], dtype=_np.int32)
+        # SPLIT BY MATCH, never by row: rows from one match share a state trajectory, and a row-wise split
+        # would leak a near-duplicate of every held-out state into training.
+        val = (rep % 5) == 0
+        import json as _json
+        meta = _json.dumps({"source": "rollout_search_teacher", "deck": self.deck.name,
+                            "horizon": self.horizon, "interval": self.interval,
+                            "topk": self.topk, "cells": self.cells, "degraded_view": bool(self.degrade),
+                            "note": "teacher = 12 s rollout over the student's own shortlist; see HANDOFF 5cs.99 N"})
+        _np.savez_compressed(
+            path, meta=_np.array(meta),
+            tok=_np.concatenate(toks).astype(_np.float32), off=off,
+            sc=_np.stack([r["sc"] for r in self._rows]).astype(_np.float32),
+            past=_np.stack([r["past"] for r in self._rows]).astype(_np.float32),
+            y_gate=_np.array([r["y_gate"] for r in self._rows], dtype=_np.int8),
+            y_slot=_np.array([r["y_slot"] for r in self._rows], dtype=_np.int8),
+            y_xy=_np.array([r["y_xy"] for r in self._rows], dtype=_np.float32),
+            tick=_np.array([r["tick"] for r in self._rows], dtype=_np.int32),
+            rep=rep, side=_np.zeros(len(self._rows), dtype=_np.int8),
+            split=val.astype(_np.int8),
+            y_wait_slot=_np.array([r["y_wait_slot"] for r in self._rows], dtype=_np.int8),
+            y_wait_dt=_np.array([r["y_wait_dt"] for r in self._rows], dtype=_np.float32),
+            y_crowns=_np.array([self.crowns.get(r["rep"], (0, 0)) for r in self._rows], dtype=_np.int8))
+        return len(self._rows)
 
     # -- candidate generation ------------------------------------------------------------------------
     def _shortlist(self):
@@ -109,7 +183,8 @@ class StudentSearcher(StudentActor):
                 for cell in torch.topk(cl, self.cells).indices.tolist():
                     bx, by = self._cell_xy(int(cell), self.grid)
                     sim_cell = int(env.actions.cell_at(float(bx), float(by)))
-                    cands.append((int(slot_to_sim[slot]), sim_cell, int(slot), float(bx), float(by)))
+                    cands.append((int(slot_to_sim[slot]), sim_cell, int(slot), float(bx), float(by),
+                                  int(cell)))
         return p_play, cands, order
 
     # -- rollout -------------------------------------------------------------------------------------
@@ -147,6 +222,7 @@ class StudentSearcher(StudentActor):
             return (0, 0, 0), None
         p_play, cands, _order = self._shortlist()
         self.stats["decisions"] += 1
+        _snap = self._snapshot() if self.dump is not None else None
         self.p_hist.append(p_play)
         if not cands:
             self.stats["unaffordable"] += 1
@@ -162,13 +238,21 @@ class StudentSearcher(StudentActor):
             return (1, pick[0], pick[1]), None
         best, best_s = (0, 0, 0), self._rollout((0, 0, 0))          # WAIT is always a candidate
         wait_s = best_s
-        for card_id, cell, slot, bx, by in cands:
-            s = self._rollout((1, card_id, cell))
-            if s > best_s:
-                best, best_s = (1, card_id, cell), s
+        for c in cands:
+            sc_ = self._rollout((1, c[0], c[1]))
+            if sc_ > best_s:
+                best, best_s = (1, c[0], c[1]), sc_
         # what the UNSEARCHED student would have done, for the disagreement counters
         pol_play = p_play > self.gate_tau
         pol = cands[0] if pol_play else None
+        if _snap is not None:
+            if best[0] == 0:
+                self._record(_snap, 0, -1, -1.0, -1.0)
+            else:
+                for c in cands:
+                    if c[0] == best[1] and c[1] == best[2]:
+                        self._record(_snap, 1, c[2], c[3], c[4])
+                        break
         if best[0] == 0:
             self.chose_wait += 1
             self.stats["wait"] += 1
@@ -182,9 +266,9 @@ class StudentSearcher(StudentActor):
             self.overrode += 1
         elif pol is not None and best[2] != pol[1]:
             self.moved_cell += 1
-        for card_id, cell, slot, bx, by in cands:
-            if card_id == best[1] and cell == best[2]:
-                self._past.append((slot, bx, by, float(self.env.eng.t)))
+        for c in cands:
+            if c[0] == best[1] and c[1] == best[2]:
+                self._past.append((c[2], c[3], c[4], float(self.env.eng.t)))
                 break
         self.stats["plays"] += 1
         return best, None
@@ -204,6 +288,8 @@ def main():
     ap.add_argument("--degrade", action="store_true")
     ap.add_argument("--mode", default="search", choices=("search", "force_play", "random", "never"))
     ap.add_argument("--out", type=Path, default=None)
+    ap.add_argument("--dump", type=Path, default=None,
+                    help="write the TEACHER CORPUS (state + searched action per decision) to this .npz")
     a = ap.parse_args()
 
     import torch
@@ -235,9 +321,12 @@ def main():
                                hand_mask_from_sc=hand_mask_from_sc, to_tokens=to_tokens)
     recs = []
     t0 = time.perf_counter()
+    searcher.dump = a.dump
     for m in range(a.matches):
         searcher.reset()
+        searcher._match_id = m
         r = play_match(env, searcher, a.seed0 + m)
+        searcher.crowns[m] = tuple(int(c) for c in r.get("crowns", (0, 0)))
         recs.append(r)
         print("m%03d outcome %7s tower_delta %+0.3f plays %3d searched %d overrode %d wait %d"
               % (m, r["outcome"], r["tower_delta"], r["plays"], searcher.searched, searcher.overrode,
@@ -254,6 +343,9 @@ def main():
                "policy_wait_overridden": searcher.policy_wait_overridden,
                "wall_s": round(time.perf_counter() - t0, 1)}
     print(json.dumps(summary, indent=1), flush=True)
+    if a.dump:
+        n = searcher.save_dump(a.dump)
+        print("teacher corpus: %d labelled decisions -> %s" % (n, a.dump), flush=True)
     if a.out:
         a.out.write_text(json.dumps({"summary": summary, "matches": recs}, indent=1), encoding="utf-8")
     return 0

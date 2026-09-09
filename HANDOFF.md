@@ -2587,9 +2587,21 @@ restraint signature the CNN's N=1 arm showed, now measured on THIS model rather 
 **What it does NOT establish.** (1) It is the SIM: sim-optimal is not real-game-optimal, and the opponent is
 the scripted ladder pool. (2) The teacher is PRIVILEGED -- the rollouts fork the true engine while the student
 sees the degraded view, which is exactly the gap 6-PRIORITY-B says to measure BEFORE committing: hold out a
-slice and check the student's top-1 agreement with the teacher on states it never trained on. (3) 12 matches;
-the disjoint-seed confirmation (seeds 911000+) and the cells=1 ablation (does the CELL search matter for the
-student, when it was worth ~nothing for the CNN?) are running.
+slice and check the student's top-1 agreement with the teacher on states it never trained on. (3) n=12 per slice.
+
+**REPLICATED on a DISJOINT seed slice (a), seeds 911000+, which the first arm never touched** -- the project's
+own rule, because re-running the fixed seed list reproduces a number exactly and measures nothing:
+
+| | first slice (900000+) | disjoint slice (911000+) |
+|---|---|---|
+| baseline | -0.871, 3/12 wins | -1.757, **0/12 wins** |
+| search | +0.843, 11/12 wins | -0.297, 7/12 wins |
+| **paired delta** | **+1.714 +- 0.420 (t=4.08)** | **+1.460 +- 0.336 (t=4.35)** |
+
+The second slice is HARDER (its baseline loses every match) and the effect is the same size, which is the
+shape a real effect has: the absolute level moves with the seeds, the paired delta does not. The cells=1
+ablation (was the CELL search worth anything for the student, when it was worth ~nothing for the CNN?) and the
+N=1 teacher-corpus labelling run (3 x 40 matches on disjoint seeds) are running.
 
 ### §5cs.98 -- L67e+f (2026-09-08 06:00-18:00 UTC): **OPTION B GRADED (3 seeds: clean 21.56 +- 0.07, degraded 19.45 +- 0.05) BUT ITS GAIN IS AGAINST A CORRUPTION MODEL WE NOW KNOW IS WRONG. Three label-free live measurements instead: the GATE survives real detector input (live .248-.325 vs engine .294-.298), PLACEMENT COLLAPSES toward the prior (top-1 cell share 0.25 vs 0.07 at matched unit counts), and nothing JITTERS (same-cell 61.4% live vs 38.7% engine -- the collapse seen twice, not a second defect). Ablation names the cause: MISSING VALUES (unit HP, exact/opponent elixir, king HP), not noisy ones -- spell tokens, unknown team tags and low confidence each do NOTHING. Against pro labels, SUPPLYING beats FLAGGING (blank_both 18.78 exact cell / 52.11 card -> fill_both 20.15 / 63.25), so the fill is now wired live and verified (live top-1 share 0.411 -> 0.322)**
 

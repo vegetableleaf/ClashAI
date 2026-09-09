@@ -182,6 +182,10 @@ def main(argv=None) -> int:
     ap.add_argument("--tag", default="", help="checkpoint name suffix: s1_<deck>[_<tag>]_s<seed>.pt (default: none)")
     ap.add_argument("--grid", default="floor", choices=("floor", "lattice"),
                     help="placement label convention (model_v3.cell_label); stored in the checkpoint args")
+    ap.add_argument("--init", type=Path, default=None,
+                    help="start from this checkpoint's weights instead of a fresh init (fine-tuning / "
+                         "distillation). The architecture must match; --d and --layers are taken from the "
+                         "checkpoint's own args so a mismatch cannot be introduced silently.")
     a = ap.parse_args(argv)
     deck = load_deck(a.deck)
     arrs, meta = load_ds(a.data or (deck.data_dir / "pipeline" / "s1_dataset.npz"))
@@ -195,7 +199,17 @@ def main(argv=None) -> int:
     dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     tr_idx = np.where(arrs["split"] == 0)[0]; va_idx = np.where(arrs["split"] == 1)[0]
     tr, va = Rows(arrs, tr_idx, dev), Rows(arrs, va_idx, dev)
+    if a.init is not None:
+        _st = torch.load(a.init, map_location=dev)
+        _ia = dict(_st.get("args", {}) or {})
+        a.d, a.layers = int(_ia.get("d", a.d)), int(_ia.get("layers", a.layers))
+        if str(_ia.get("grid", a.grid)) != str(a.grid):
+            raise SystemExit(f"--init grid {_ia.get('grid')!r} != --grid {a.grid!r}: the cell LABEL convention "
+                             f"differs, so the loaded cell head means something else")
     model = S1Model(d=a.d, layers=a.layers).to(dev)
+    if a.init is not None:
+        model.load_state_dict(_st["model"])
+        print(json.dumps({"init": str(a.init), "epoch": _st.get("epoch"), "d": a.d, "layers": a.layers}))
     n_params = sum(p.numel() for p in model.parameters())
     opt = torch.optim.AdamW(model.parameters(), lr=a.lr, weight_decay=0.01)
     steps = a.epochs * (len(tr_idx) // a.bs)
