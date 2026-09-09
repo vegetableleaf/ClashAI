@@ -386,11 +386,40 @@ class TestLiveAdapter(unittest.TestCase):
         self.assertTrue(live.towers[0].alive)
 
     def test_unknown_team_kept(self):
+        # a class the deck COULD have produced stays unknown -- the deck rule below must not swallow it
         d = self.detections()[0]
         d.team = "unknown"
         live = oc.from_live([d], self.reads(), self.deck)
         self.assertEqual(len(live.units), 1)
         self.assertEqual(live.units[0].side, -1)
+        self.assertIn(vocab.base_key(str(d.cls)), oc.mine_classes(self.deck))
+
+    def test_unknown_team_outside_deck_is_enemy(self):
+        """Owner ruling 2026-09-08: a card my deck cannot produce is the opponent's, whatever the tag says.
+
+        "if a goblin barrel is tagged 'unknown' auto assume it's the enemy cuz icebow doesn't run goblin
+        barrel. this card check should always be in there no matter what deck the model runs."
+        """
+        d = self.detections()[0]
+        d.cls = "goblin_barrel"
+        d.team = "unknown"
+        live = oc.from_live([d], self.reads(), self.deck)
+        got = (live.units + live.spells)
+        self.assertEqual(len(got), 1)
+        self.assertEqual(got[0].side, 1)          # resolved to ENEMY, not left at -1
+
+    def test_mine_classes_closes_over_spawns(self):
+        """The rule must hold for ANY deck, so the allowed set includes what my cards SPAWN."""
+        import dataclasses
+        self.assertEqual(oc.mine_classes(self.deck), frozenset(
+            {"tornado", "tesla", "ice_wizard", "x_bow", "rocket", "knight", "the_log", "skeletons"}))
+        oc._MINE_CLASSES.clear()
+        spawny = dataclasses.replace(self.deck, cards=("witch", "golem", "elixir_golem", "goblin_barrel",
+                                                       "graveyard", "tombstone", "night_witch", "lava_hound"))
+        got = oc.mine_classes(spawny)
+        oc._MINE_CLASSES.clear()
+        for body in ("skeletons", "golemite", "elixir_golemite", "elixir_blob", "goblins", "bats", "lava_pups"):
+            self.assertIn(body, got, f"{body} is a body my deck can produce and must count as mine")
 
 
 class TestDegrade(unittest.TestCase):
