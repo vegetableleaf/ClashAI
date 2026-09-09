@@ -38,7 +38,8 @@ class StudentPolicy:
     """Loads an S1 checkpoint and answers ``decide(...)`` with (card_id, cell) in live conventions."""
 
     def __init__(self, ckpt_path: Path, deck_name: str, actions: Any, *, device: str = "cpu",
-                 gate_tau: float = 0.5, fill_missing: bool = True) -> None:
+                 gate_tau: float = 0.5, fill_missing: bool = True,
+                 stall_elixir: Optional[float] = None, stall_seconds: float = 12.0) -> None:
         import torch
         from pipeline.model_v3 import GRID_X, S1Model, cell_xy, hand_mask_from_sc
 
@@ -63,6 +64,19 @@ class StudentPolicy:
         self.epoch = st.get("epoch")
         self._past: deque = deque(maxlen=PAST_K)          # (deck_slot, board_x, board_y, t_wall)
         self.stats: dict[str, int] = {}
+        # ANTI-STALL (L67k). When elixir sits at cap and nothing has been played for `stall_seconds`, take the
+        # top AFFORDABLE candidate regardless of the gate. It never overrides a gate that already wants to
+        # play, and it cannot pick an unaffordable card.
+        #   WHY, measured: in the states the live bot freezes in, PROS play 23-36% of the time (units<=1 at
+        #   8-10 elixir 0.230; 2-3 units 0.357) and overflowing at 10 elixir is strictly wasted resource.
+        #   WHAT THE SIM SAYS, honestly: +0.245 +- 0.174 tower pooled over 24 matches on two disjoint seed
+        #   slices (t=1.40, positive in all 6 arm/slice comparisons, NOT significant). And the sim barely
+        #   tests it -- the sim actor plays ~50 times a match and stalls rarely, so the rule fired only ~1
+        #   per match there. This is shipped on "does no harm in the sim + the live state is measurably one
+        #   pros act in", NOT on a demonstrated win. play.stall_elixir: null disables it.
+        self.stall_elixir = None if stall_elixir is None else float(stall_elixir)
+        self.stall_seconds = float(stall_seconds)
+        self._last_play_t: Optional[float] = None
         self.hand_memory = HandMemory()
         self.dump_low_gate = None      # set to a path to capture states where the gate pins at zero
         self._dumped = 0
@@ -71,6 +85,7 @@ class StudentPolicy:
     # -- state ---------------------------------------------------------------------------------------
     def reset_match(self) -> None:
         self.hand_memory.reset()
+        self._last_play_t = None
         """Forget the previous match's plays. `past` ages are WALL-CLOCK, so without this the first
         decisions of a new match carry entries from the last one, aged by however long the menus took --
         values training never contains (its max age is 95.5 s, median 8.55)."""
@@ -78,6 +93,7 @@ class StudentPolicy:
 
     def record_play(self, card_id: int, board_xy: tuple[float, float], deck_keys: Sequence[str]) -> None:
         """Call after a tap so ``past`` matches the dataset's own 'my last 3 accepted plays'."""
+        self._last_play_t = time.time()
         slot = self.deck.slot_of(_key_of(card_id, deck_keys))
         if slot >= 0:
             self._past.append((slot, float(board_xy[0]), float(board_xy[1]), time.time()))
@@ -178,9 +194,16 @@ class StudentPolicy:
             except Exception:
                 pass
         self.stats["decisions"] = self.stats.get("decisions", 0) + 1
-        if p_play <= self.gate_tau:
+        stalled = False
+        if self.stall_elixir is not None and float(reads.elixir_int) >= self.stall_elixir:
+            idle = time.time() - (self._last_play_t if self._last_play_t is not None else 0.0)
+            stalled = idle >= self.stall_seconds
+        if p_play <= self.gate_tau and not stalled:
             self.stats["wait"] = self.stats.get("wait", 0) + 1
             return None
+        if p_play <= self.gate_tau:
+            self.stats["stall_fired"] = self.stats.get("stall_fired", 0) + 1
+            self.last["stall"] = True
         return int(card_id), live_cell, p_play
 
 

@@ -1,0 +1,87 @@
+﻿[play] policy policy_rl.pt loaded (RL gate ON).
+.\icebow\.venv\Scripts\python.exe : 
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: 
+UserWarning: enable_nested_tensor is True, but 
+self.use_nested_tensor is False because 
+encoder_layer.norm_first was True
+At line:1 char:1
++ .\icebow\.venv\Scripts\python.exe -u 
+icebow\run.py play --student dat ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C:\ 
+   Users\benpe\..._first was True:String) [], R  
+  emoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  self.encoder = nn.TransformerEncoder(enc, 
+layers)
+[play] S1 STUDENT ON: s1_icebow_v6lat_s0.pt (epoch 15, grid lattice, gate tau 0.27) -- the old policy is loaded but only used for the frames the student declines to answer.
+[play] opp-memory slot 5 source: opp_estimate
+[play] live search unavailable (name 'card_db' is not defined); continuing on the policy alone
+19:14:14 [play] running on cuda. Ctrl+C to stop, or slam the mouse into a screen corner for the failsafe. It navigates menus and plays in-match on its own.
+19:14:14 [play] logging to C:\Users\benpe\ClashBot\icebow\data\play_20260909_191414.log
+19:14:14 [play] state: HOME
+19:14:14 [nav] HOME -> Battle (located) (0.509,0.773)
+19:14:15 [play] state: UNKNOWN
+19:14:22 [play] state: IN_MATCH
+[student] PLAY x_bow p=0.28 cell 267 board (0.86, 0.61) units 0 39 ms
+[student] PLAY skeletons p=0.40 cell 247 board (0.75, 0.55) units 1 45 ms
+[student] PLAY the_log p=0.29 cell 249 board (0.86, 0.55) units 2 16 ms
+[student] PLAY knight p=0.72 cell 247 board (0.75, 0.55) units 3 41 ms
+[student] PLAY ice_wizard p=0.32 cell 234 board (0.03, 0.58) units 2 44 ms
+[student] PLAY tornado p=0.40 cell 147 board (0.19, 0.36) units 3 32 ms
+[student] PLAY the_log p=0.38 cell 248 board (0.81, 0.55) units 2 49 ms
+[student] WAIT | exact=0 opp=? next=7 t=30s hand=[164, 0, 4, 6] tw=1.00.71.01.01.01.0 sp=0 unk=0 p=0.00 elixir 3 opp~? units 1 dets 1 (waits 10/17 badhand 4/17)
+[student] WAIT p=0.09 elixir 5 opp~? units 2 dets 2 (waits 20/27 badhand 9/27)
+[student] WAIT p=0.20 elixir 7 opp~? units 1 dets 1 (waits 30/37 badhand 11/37)
+[student] PLAY rocket p=0.45 cell 219 board (0.19, 0.52) units 1 36 ms
+[student] WAIT | exact=0 opp=? next=6 t=50s hand=[164, 0, 7, 3] tw=1.00.51.01.01.01.0 sp=0 unk=0 p=0.00 elixir 4 opp~? units 1 dets 1 (waits 40/48 badhand 11/48)
+[student] WAIT | exact=0 opp=? next=6 t=56s hand=[164, 0, 7, 3] tw=1.00.0x1.01.01.01.0 sp=0 unk=0 p=0.01 elixir 6 opp~? units 2 dets 2 (waits 50/58 badhand 11/58)
+[student] WAIT | exact=0 opp=? next=6 t=62s hand=[164, 0, 7, 3] tw=1.00.0x1.01.01.01.0 sp=1 unk=0 p=0.00 elixir 8 opp~? units 4 dets 5 (waits 60/68 badhand 11/68)
+[student] WAIT | exact=0 opp=? next=6 t=67s hand=[164, 0, 7, 3] tw=1.00.0x1.01.01.01.0 sp=0 unk=0 p=0.01 elixir 10 opp~? units 4 dets 4 (waits 70/78 badhand 11/78)
+[student] WAIT | exact=0 opp=? next=6 t=73s hand=[164, 0, 7, 3] tw=1.00.0x1.01.01.01.0 sp=0 unk=0 p=0.00 elixir 10 opp~? units 2 dets 2 (waits 80/88 badhand 11/88)
+[student] WAIT | exact=0 opp=? next=6 t=79s hand=[164, 0, 7, 3] tw=1.00.0x0.0x1.01.01.0 sp=0 unk=0 p=0.01 elixir 10 opp~? units 2 dets 2 (waits 90/98 badhand 11/98)
+[student] WAIT | exact=0 opp=? next=6 t=86s hand=[164, 0, 7, 3] tw=1.00.0x0.0x1.01.01.0 sp=1 unk=0 p=0.00 elixir 10 opp~? units 3 dets 4 (waits 100/108 badhand 11/108)
+[student] WAIT | exact=0 opp=? next=6 t=92s hand=[164, 0, 7, 3] tw=1.00.0x0.0x1.01.01.0 sp=0 unk=0 p=0.00 elixir 10 opp~? units 1 dets 1 (waits 110/118 badhand 11/118)
+19:15:58 [play] UNKNOWN 0.7s after in-match -> grace hold (label lost: overtime / end animation / dropout; up to 150s)
+19:16:05 [play] state: MATCH_END
+[overlay-replay] saved C:\Users\benpe\ClashBot\icebow\data\overlayed_replays\match_20260909_191422.mp4 (5150 frames, captured 20.7 fps)
+19:16:05 [nav] MATCH_END -> Play Again (located) (0.348,0.914)
+19:16:06 [play] state: UNKNOWN
+19:16:11 [play] state: IN_MATCH
+[student] WAIT | exact=0 opp=? next=3 t=4s hand=[164, 0, 7, 149] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.01 elixir 8 opp~? units 0 dets 0 (waits 120/128 badhand 12/128)
+[student] PLAY tesla p=0.44 cell 240 board (0.33, 0.56) units 1 46 ms
+[student] PLAY x_bow p=0.39 cell 254 board (0.14, 0.61) units 2 32 ms
+[student] PLAY tornado p=0.40 cell 147 board (0.19, 0.36) units 2 28 ms
+[student] PLAY skeletons p=0.29 cell 235 board (0.08, 0.55) units 2 30 ms
+[student] PLAY knight p=0.35 cell 235 board (0.08, 0.55) units 2 28 ms
+[student] WAIT p=0.15 elixir 2 opp~? units 3 dets 3 (waits 130/143 badhand 12/143)
+[student] PLAY the_log p=0.64 cell 273 board (0.19, 0.64) units 3 42 ms
+[student] WAIT | exact=0 opp=? next=3 t=37s hand=[2, 0, 4, 164] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.02 elixir 4 opp~? units 1 dets 1 (waits 140/154 badhand 12/154)
+[student] PLAY tesla p=0.66 cell 297 board (0.5, 0.69) units 1 35 ms
+[student] WAIT | exact=0 opp=? next=7 t=46s hand=[2, 0, 4, 2] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.03 elixir 3 opp~? units 0 dets 0 (waits 150/165 badhand 12/165)
+[student] PLAY ice_wizard p=0.61 cell 296 board (0.47, 0.7) units 1 25 ms
+[student] PLAY tornado p=0.51 cell 333 board (0.53, 0.77) units 2 34 ms
+[student] PLAY skeletons p=0.30 cell 329 board (0.31, 0.77) units 2 34 ms
+[student] WAIT p=0.05 elixir 4 opp~? units 0 dets 0 (waits 160/178 badhand 12/178)
+[student] PLAY knight p=0.54 cell 242 board (0.47, 0.55) units 1 40 ms
+[student] PLAY the_log p=0.68 cell 255 board (0.19, 0.61) units 3 31 ms
+[student] PLAY ice_wizard p=0.33 cell 236 board (0.14, 0.55) units 3 45 ms
+[student] PLAY the_log p=0.40 cell 363 board (0.19, 0.86) units 3 32 ms
+[student] WAIT | exact=0 opp=? next=164 t=69s hand=[6, 0, 4, 6] tw=1.00.71.01.01.01.0 sp=1 unk=0 p=0.01 elixir 2 opp~? units 2 dets 3 (waits 170/192 badhand 12/192)
+[student] WAIT | exact=0 opp=? next=2 t=75s hand=[164, 0, 4, 3] tw=1.00.61.01.01.01.0 sp=0 unk=0 p=0.00 elixir 4 opp~? units 3 dets 3 (waits 180/202 badhand 12/202)
+[student] WAIT | exact=0 opp=? next=2 t=80s hand=[164, 0, 4, 3] tw=1.00.61.01.01.01.0 sp=0 unk=0 p=0.00 elixir 6 opp~? units 2 dets 2 (waits 190/212 badhand 12/212)
+[student] WAIT | exact=0 opp=? next=2 t=86s hand=[164, 0, 4, 3] tw=1.00.61.01.01.01.0 sp=0 unk=0 p=0.00 elixir 8 opp~? units 3 dets 3 (waits 200/222 badhand 12/222)
+[student] WAIT | exact=0 opp=? next=2 t=92s hand=[164, 0, 4, 3] tw=1.00.61.01.01.01.0 sp=0 unk=0 p=0.00 elixir 10 opp~? units 5 dets 5 (waits 210/232 badhand 12/232)
+[student] WAIT | exact=0 opp=? next=2 t=97s hand=[164, 0, 4, 3] tw=1.00.0x1.01.01.01.0 sp=1 unk=0 p=0.00 elixir 10 opp~? units 4 dets 5 (waits 220/242 badhand 12/242)
+[student] WAIT | exact=0 opp=? next=2 t=107s hand=[164, 0, 4, 3] tw=1.00.0x1.01.01.01.0 sp=0 unk=0 p=0.00 elixir 10 opp~? units 2 dets 2 (waits 230/252 badhand 12/252)
+[clock] icon reads x3 but the clock reads x1 -> using the clock (x1)
+[student] WAIT | exact=0 opp=? next=2 t=119s hand=[164, 0, 4, 3] tw=1.00.0x1.01.01.01.0 sp=1 unk=0 p=0.00 elixir 10 opp~? units 1 dets 2 (waits 240/262 badhand 12/262)
+[clock] icon reads x3 but the clock reads x2 -> using the clock (x2)
+19:18:12 [play] elixir x2
+19:18:14 [play] UNKNOWN 1.1s after in-match -> grace hold (label lost: overtime / end animation / dropout; up to 150s)
+19:18:21 [play] state: MATCH_END
+[overlay-replay] saved C:\Users\benpe\ClashBot\icebow\data\overlayed_replays\match_20260909_191611.mp4 (6461 frames, captured 20.6 fps)
+19:18:21 [nav] MATCH_END -> Play Again (located) (0.348,0.914)
+19:18:22 [play] state: UNKNOWN

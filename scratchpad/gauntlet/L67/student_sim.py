@@ -38,17 +38,25 @@ class StudentActor:
     """act(i) -> ((play, sim_card_id, sim_cell), meta), the interface rollout_search.play_match expects."""
 
     def __init__(self, env, model, deck, *, gate_tau, degrade, grid, torch, cell_xy,
-                 hand_mask_from_sc, to_tokens):
+                 hand_mask_from_sc, to_tokens, stall_elixir=None, stall_seconds=12.0):
         self.env, self.model, self.deck = env, model, deck
         self.gate_tau, self.degrade, self.grid = float(gate_tau), bool(degrade), str(grid)
         self._torch, self._cell_xy = torch, cell_xy
         self._hand_mask, self._to_tokens = hand_mask_from_sc, to_tokens
         self._past = []
         self.p_hist = []
-        self.stats = {"decisions": 0, "plays": 0, "wait": 0, "unaffordable": 0}
+        # ANTI-STALL: when elixir is at cap and nothing has been played for a while, take the top affordable
+        # candidate regardless of the gate. Overflowing at 10 elixir is strictly wasted resource, and pros
+        # play 23-36% of the time in exactly the states the live bot sits frozen in (L67i gate_by_state).
+        # None disables it; this is the arm under test.
+        self.stall_elixir = stall_elixir
+        self.stall_seconds = float(stall_seconds)
+        self._last_play_t = None
+        self.stats = {"decisions": 0, "plays": 0, "wait": 0, "unaffordable": 0, "stall_fired": 0}
 
     def reset(self):
         self._past = []
+        self._last_play_t = None
 
     def _past_array(self, now):
         p = np.full((PAST_K, 4), -1.0, dtype=np.float32)
@@ -85,9 +93,15 @@ class StudentActor:
             if not slot_to_sim:
                 self.stats["unaffordable"] += 1
                 return (0, 0, 0), None
-            if p_play <= self.gate_tau:
+            stalled = False
+            if self.stall_elixir is not None:
+                idle = float(env.eng.t) - (self._last_play_t if self._last_play_t is not None else 0.0)
+                stalled = (elix >= float(self.stall_elixir)) and (idle >= self.stall_seconds)
+            if p_play <= self.gate_tau and not stalled:
                 self.stats["wait"] += 1
                 return (0, 0, 0), None
+            if p_play <= self.gate_tau:
+                self.stats["stall_fired"] += 1
             logits = out["card"][0].clone()
             ok = torch.zeros_like(logits, dtype=torch.bool)
             for s in slot_to_sim:
@@ -97,6 +111,7 @@ class StudentActor:
         bx, by = self._cell_xy(cell, self.grid)
         sim_cell = int(env.actions.cell_at(float(bx), float(by)))   # the sim warp is the identity (env.py:54-70)
         self._past.append((slot, float(bx), float(by), float(env.eng.t)))
+        self._last_play_t = float(env.eng.t)
         self.stats["plays"] += 1
         return (1, int(slot_to_sim[slot]), sim_cell), None
 
@@ -109,6 +124,10 @@ def main():
     ap.add_argument("--tau", type=float, default=0.27)
     ap.add_argument("--degrade", action="store_true")
     ap.add_argument("--deck", default="icebow")
+    ap.add_argument("--stall-elixir", type=float, default=None,
+                    help="anti-stall: elixir at or above this, with no play for --stall-seconds, forces the "
+                         "top affordable candidate regardless of the gate")
+    ap.add_argument("--stall-seconds", type=float, default=12.0)
     ap.add_argument("--out", type=Path, default=None)
     a = ap.parse_args()
 
@@ -137,7 +156,8 @@ def main():
     deck = load_deck(a.deck)
 
     actor = StudentActor(env, model, deck, gate_tau=a.tau, degrade=a.degrade, grid=grid, torch=torch,
-                         cell_xy=cell_xy, hand_mask_from_sc=hand_mask_from_sc, to_tokens=to_tokens)
+                         cell_xy=cell_xy, hand_mask_from_sc=hand_mask_from_sc, to_tokens=to_tokens,
+                         stall_elixir=a.stall_elixir, stall_seconds=a.stall_seconds)
     recs = []
     t0 = time.perf_counter()
     for m in range(a.matches):
@@ -158,6 +178,8 @@ def main():
                "no_affordable": actor.stats["unaffordable"],
                "gate_p_mean": round(float(ph.mean()), 4),
                "gate_frac_over_tau": round(float((ph > a.tau).mean()), 4),
+               "stall_elixir": a.stall_elixir, "stall_seconds": a.stall_seconds,
+               "stall_fired": actor.stats.get("stall_fired", 0),
                "wall_s": round(time.perf_counter() - t0, 1)}
     print(json.dumps(summary, indent=1), flush=True)
     if a.out:

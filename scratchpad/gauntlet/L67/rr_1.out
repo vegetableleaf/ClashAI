@@ -1,0 +1,63 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+m000 outcome     win tower_delta +1.024 plays  34 searched 114 overrode 35 wait 80
+m001 outcome     win tower_delta +1.388 plays  27 searched 310 overrode 122 wait 249
+m002 outcome     win tower_delta +1.320 plays  25 searched 513 overrode 209 wait 427
+m003 outcome     win tower_delta +0.848 plays  34 searched 633 overrode 252 wait 513
+m004 outcome     win tower_delta +1.385 plays  30 searched 771 overrode 321 wait 621
+m005 outcome     win tower_delta +0.946 plays  29 searched 940 overrode 377 wait 761
+m006 outcome     win tower_delta +0.970 plays  51 searched 1104 overrode 449 wait 874
+m007 outcome     win tower_delta +0.839 plays  65 searched 1309 overrode 531 wait 1014
+m008 outcome     win tower_delta +1.003 plays  31 searched 1479 overrode 575 wait 1153
+m009 outcome     win tower_delta +1.447 plays  30 searched 1630 overrode 629 wait 1274
+m010 outcome    loss tower_delta -0.830 plays  65 searched 1933 overrode 767 wait 1512
+m011 outcome     win tower_delta +0.966 plays  31 searched 2080 overrode 821 wait 1628
+m012 outcome     win tower_delta +0.318 plays  32 searched 2204 overrode 882 wait 1720
+m013 outcome    loss tower_delta -1.285 plays  31 searched 2348 overrode 954 wait 1833
+m014 outcome    loss tower_delta -0.109 plays  70 searched 2647 overrode 1079 wait 2062
+m015 outcome     win tower_delta +1.090 plays  33 searched 2734 overrode 1118 wait 2116
+m016 outcome     win tower_delta +0.683 plays  30 searched 2859 overrode 1169 wait 2211
+m017 outcome     win tower_delta +0.760 plays  57 searched 3077 overrode 1234 wait 2372
+m018 outcome     win tower_delta -0.229 plays  33 searched 3212 overrode 1286 wait 2474
+m019 outcome     win tower_delta +0.867 plays  30 searched 3331 overrode 1343 wait 2563
+m020 outcome     win tower_delta +0.854 plays  32 searched 3458 overrode 1393 wait 2658
+m021 outcome     win tower_delta +0.473 plays  32 searched 3562 overrode 1453 wait 2730
+m022 outcome     win tower_delta +1.004 plays   8 searched 3824 overrode 1668 wait 2984
+m023 outcome     win tower_delta -0.442 plays  30 searched 3954 overrode 1712 wait 3084
+m024 outcome     win tower_delta +1.532 plays  30 searched 4104 overrode 1762 wait 3204
+m025 outcome     win tower_delta +0.725 plays  31 searched 4248 overrode 1806 wait 3317
+m026 outcome     win tower_delta +0.776 plays  30 searched 4383 overrode 1857 wait 3422
+m027 outcome     win tower_delta +0.725 plays  33 searched 4596 overrode 1953 wait 3602
+m028 outcome     win tower_delta +0.746 plays  33 searched 4713 overrode 2002 wait 3686
+m029 outcome     win tower_delta +1.321 plays  25 searched 4922 overrode 2111 wait 3870
+m030 outcome     win tower_delta -0.115 plays  74 searched 5142 overrode 2222 wait 4016
+m031 outcome     win tower_delta +2.904 plays  13 searched 5194 overrode 2240 wait 4055
+m032 outcome     win tower_delta +0.086 plays  28 searched 5417 overrode 2308 wait 4250
+m033 outcome     win tower_delta +0.996 plays  30 searched 5577 overrode 2374 wait 4380
+m034 outcome    loss tower_delta -0.770 plays  54 searched 5776 overrode 2442 wait 4525
+m035 outcome     win tower_delta +0.952 plays  30 searched 5935 overrode 2504 wait 4654
+m036 outcome     win tower_delta +0.256 plays  25 searched 6146 overrode 2590 wait 4840
+m037 outcome     win tower_delta +0.825 plays  32 searched 6295 overrode 2639 wait 4957
+m038 outcome     win tower_delta +0.218 plays  27 searched 6461 overrode 2730 wait 5096
+m039 outcome    loss tower_delta -1.280 plays  61 searched 6644 overrode 2814 wait 5218
+{
+ "ckpt": "icebow\\data\\pipeline\\s1_icebow_v6lat_s0.pt",
+ "matches": 40,
+ "degrade": true,
+ "mode": "search",
+ "horizon": 12.0,
+ "interval": 1,
+ "topk": 4,
+ "cells": 3,
+ "win_pct": 87.5,
+ "tower_delta_mean": 0.6297,
+ "tower_delta_sem": 0.1276,
+ "plays_per_match": 35.6,
+ "searched": 6644,
+ "overrode": 2814,
+ "moved_cell": 155,
+ "chose_wait": 5218,
+ "policy_wait_overridden": 827,
+ "wall_s": 918.7
+}
+rerank corpus: 6644 decisions, 37236 candidates -> scratchpad\gauntlet\L67\rr_1.npz

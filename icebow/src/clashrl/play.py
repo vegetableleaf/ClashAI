@@ -160,12 +160,17 @@ def play(cfg) -> None:
     if _student_ckpt:
         try:
             from .student_live import StudentPolicy, live_reads as _student_reads
+            _stall_elx = cfg.get("play", "stall_elixir", default=9.0)
             _student = StudentPolicy(cfg.path(_student_ckpt), str(cfg.get("play", "student_deck", default="icebow")),
                                      actions, device=str(device),
-                                     gate_tau=float(cfg.get("play", "student_gate_tau", default=0.5)))
+                                     gate_tau=float(cfg.get("play", "student_gate_tau", default=0.5)),
+                                     stall_elixir=(None if _stall_elx is None else float(_stall_elx)),
+                                     stall_seconds=float(cfg.get("play", "stall_seconds", default=12.0)))
             _student.dump_low_gate = cfg.path("data/low_gate_states.jsonl")   # L67i: capture p~0 inputs
             print(f"[play] S1 STUDENT ON: {Path(_student_ckpt).name} (epoch {_student.epoch}, "
-                  f"grid {_student.grid_kind}, gate tau {_student.gate_tau:g}) -- the old policy is loaded but "
+                  f"grid {_student.grid_kind}, gate tau {_student.gate_tau:g}, anti-stall "
+                  f"{'off' if _student.stall_elixir is None else f'{_student.stall_elixir:g} elixir / {_student.stall_seconds:g}s'}"
+                  f") -- the old policy is loaded but "
                   f"only used for the frames the student declines to answer.")
         except Exception as exc:                                # noqa: BLE001
             print(f"[play] student_ckpt set but the student failed to load ({exc}); staying on the old policy.")
@@ -720,7 +725,8 @@ def play(cfg) -> None:
                       f"(cost {card_elixir[_scard]}, elixir {elixir:.0f})", flush=True)
                 return
             card_id, cell = _scard, _scell
-            print(f"[student] PLAY {vision.deck_keys[card_id]} p={_slast.get('p_play', 0):.2f} "
+            print(f"[student] {'STALL-PLAY' if _slast.get('stall') else 'PLAY'} "
+                  f"{vision.deck_keys[card_id]} p={_slast.get('p_play', 0):.2f} "
                   f"cell {cell} board {tuple(round(v, 2) for v in _slast.get('board_xy', (0, 0)))} "
                   f"units {_slast.get('units', 0)} {_slast.get('ms', 0):.0f} ms", flush=True)
         # ---- LIVE SEARCH OVERRIDE. Set sim.live_search_enabled false to switch it off. --------

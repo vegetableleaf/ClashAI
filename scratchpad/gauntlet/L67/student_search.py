@@ -66,6 +66,8 @@ class StudentSearcher(StudentActor):
         self.subs = int(getattr(env, "subs", 1))
         self.rollout_steps = max(1, int(round(self.horizon / max(1e-6, self.sub_dt * self.subs))))
         self.dump = None
+        self.dump_rerank = None
+        self._rr = []
         self.crowns = {}            # match id -> (mine, theirs), for the value head's target
         self._rows = []
         self._match_id = 0
@@ -93,6 +95,31 @@ class StudentSearcher(StudentActor):
     def _record(self, snap, gate, slot, bx, by):
         self._rows.append({**snap, "y_gate": int(gate), "y_slot": int(slot),
                            "y_xy": (float(bx), float(by)), "rep": int(self._match_id)})
+
+    def save_rerank(self, path):
+        """One row per searched decision: the state, WAIT's score, and every candidate's (slot, cell, score)."""
+        import numpy as _np
+        if not self._rr:
+            return 0
+        toks = [r["tok"] for r in self._rr]
+        off = _np.zeros(len(toks) + 1, dtype=_np.int64)
+        off[1:] = _np.cumsum([len(t) for t in toks])
+        c_off = _np.zeros(len(self._rr) + 1, dtype=_np.int64)
+        c_off[1:] = _np.cumsum([len(r["cands"]) for r in self._rr])
+        flat = [c for r in self._rr for c in r["cands"]]
+        rep = _np.array([r["rep"] for r in self._rr], dtype=_np.int32)
+        _np.savez_compressed(
+            path,
+            tok=_np.concatenate(toks).astype(_np.float32), off=off,
+            sc=_np.stack([r["sc"] for r in self._rr]).astype(_np.float32),
+            past=_np.stack([r["past"] for r in self._rr]).astype(_np.float32),
+            wait_score=_np.array([r["wait_score"] for r in self._rr], dtype=_np.float32),
+            cand_off=c_off,
+            cand_slot=_np.array([c[0] for c in flat], dtype=_np.int8),
+            cand_cell=_np.array([c[1] for c in flat], dtype=_np.int16),
+            cand_score=_np.array([c[2] for c in flat], dtype=_np.float32),
+            rep=rep, split=((rep % 5) == 0).astype(_np.int8))
+        return len(self._rr)
 
     def save_dump(self, path):
         import numpy as _np
@@ -222,7 +249,7 @@ class StudentSearcher(StudentActor):
             return (0, 0, 0), None
         p_play, cands, _order = self._shortlist()
         self.stats["decisions"] += 1
-        _snap = self._snapshot() if self.dump is not None else None
+        _snap = self._snapshot() if (self.dump is not None or self.dump_rerank is not None) else None
         self.p_hist.append(p_play)
         if not cands:
             self.stats["unaffordable"] += 1
@@ -238,10 +265,19 @@ class StudentSearcher(StudentActor):
             return (1, pick[0], pick[1]), None
         best, best_s = (0, 0, 0), self._rollout((0, 0, 0))          # WAIT is always a candidate
         wait_s = best_s
+        scored = []
         for c in cands:
             sc_ = self._rollout((1, c[0], c[1]))
+            scored.append((c, sc_))
             if sc_ > best_s:
                 best, best_s = (1, c[0], c[1]), sc_
+        # L67k: the RERANK corpus. Distilling the search's ACTION failed (5cs.99 P) -- the student copied the
+        # teacher's restraint without its judgement. What the search actually contributes is a RANKING, so
+        # every candidate's score is kept here, not just the argmax that the action-corpus recorded. The
+        # target is each candidate's advantage over WAIT, which is what a reranker needs to reproduce.
+        if self.dump_rerank is not None and _snap is not None:
+            self._rr.append({**_snap, "wait_score": float(wait_s), "rep": int(self._match_id),
+                             "cands": [(int(c[2]), int(c[5]), float(v)) for c, v in scored]})
         # what the UNSEARCHED student would have done, for the disagreement counters
         pol_play = p_play > self.gate_tau
         pol = cands[0] if pol_play else None
@@ -288,6 +324,8 @@ def main():
     ap.add_argument("--degrade", action="store_true")
     ap.add_argument("--mode", default="search", choices=("search", "force_play", "random", "never"))
     ap.add_argument("--out", type=Path, default=None)
+    ap.add_argument("--dump-rerank", type=Path, default=None,
+                    help="write the RERANK corpus: state + EVERY candidate's rollout score")
     ap.add_argument("--dump", type=Path, default=None,
                     help="write the TEACHER CORPUS (state + searched action per decision) to this .npz")
     a = ap.parse_args()
@@ -322,6 +360,7 @@ def main():
     recs = []
     t0 = time.perf_counter()
     searcher.dump = a.dump
+    searcher.dump_rerank = a.dump_rerank
     for m in range(a.matches):
         searcher.reset()
         searcher._match_id = m
@@ -343,6 +382,10 @@ def main():
                "policy_wait_overridden": searcher.policy_wait_overridden,
                "wall_s": round(time.perf_counter() - t0, 1)}
     print(json.dumps(summary, indent=1), flush=True)
+    if a.dump_rerank:
+        n = searcher.save_rerank(a.dump_rerank)
+        print("rerank corpus: %d decisions, %d candidates -> %s"
+              % (n, sum(len(r["cands"]) for r in searcher._rr), a.dump_rerank), flush=True)
     if a.dump:
         n = searcher.save_dump(a.dump)
         print("teacher corpus: %d labelled decisions -> %s" % (n, a.dump), flush=True)
