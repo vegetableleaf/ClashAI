@@ -68,6 +68,12 @@ class StudentPolicy:
         self.last: dict[str, Any] = {}
 
     # -- state ---------------------------------------------------------------------------------------
+    def reset_match(self) -> None:
+        """Forget the previous match's plays. `past` ages are WALL-CLOCK, so without this the first
+        decisions of a new match carry entries from the last one, aged by however long the menus took --
+        values training never contains (its max age is 95.5 s, median 8.55)."""
+        self._past.clear()
+
     def record_play(self, card_id: int, board_xy: tuple[float, float], deck_keys: Sequence[str]) -> None:
         """Call after a tap so ``past`` matches the dataset's own 'my last 3 accepted plays'."""
         slot = self.deck.slot_of(_key_of(card_id, deck_keys))

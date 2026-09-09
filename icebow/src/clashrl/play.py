@@ -525,7 +525,13 @@ def play(cfg) -> None:
 
     def act_in_match(frame) -> None:
         hp_tracker.step(frame)                # keep enemy princess HP + alive flags current
-        tower_tracker.step(frame)
+        # L67i: NOT during a grace hold. TowerTracker latches a tower destroyed after 3 consecutive "gone"
+        # colour reads (~0.3 s at 10 Hz) and the latch is ONE-WAY, while a grace hold means the screen has
+        # stopped reading as in-match at all (end animation, overlay, dropout) -- so a 1.1 s blip, four times
+        # what the latch needs, could permanently convince the bot its own towers were gone. Observed in the
+        # owner's 22:29 run, where the collapse began at the exact frame the hold released.
+        if not getattr(grace, "_holding", False):
+            tower_tracker.step(frame)
         obs = vision.observe(frame)
         hand_ids = vision.recognize_hand(frame)
         hand_vec = vision.hand_multihot(hand_ids)
@@ -933,6 +939,8 @@ def play(cfg) -> None:
                     clock.reset()                 # zero the 2x/3x elixir clock at match start
                     _opp_mem.reset()              # forget the previous opponent's deck/archetype
                     _opp_elx.reset(my_elixir=float(vision.read_elixir(frame)), now=time.time())
+                    if _student is not None:
+                        _student.reset_match()    # L67i: play history must not cross a match boundary
                     if _ploop is not None and _ploop.running:
                         _ploop.reset_tracker()        # forget last match's own-unit tracks
                     else:

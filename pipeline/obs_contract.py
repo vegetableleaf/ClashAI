@@ -406,8 +406,31 @@ def mine_classes(deck: Deck) -> frozenset[str]:
     return _MINE_CLASSES[key]
 
 
+_EVO_FOLD: dict[str, int] = {}
+
+
+def _fold_evo(cls: str) -> int:
+    """Evolution class -> its BASE class id, because the evo class has no training signal at all.
+
+    MEASURED: all 42 ``_evo`` detector classes have ZERO of the 1,434,428 training unit tokens, while their
+    bases are everywhere (knight 155,582 / tesla 111,590). The corpus is built from pro replays through the
+    engine, which names every body by its base card; the live detector emits the evo class. So icebow's own
+    Evo Knight and Evo Tesla arrive as class ids whose embeddings were never trained -- arbitrary directions,
+    not learned ones. Folding to the base trades the evo's real stat differences (which the model was never
+    taught anyway) for 155k examples of roughly the right unit. Only the ``_evo`` suffix is folded: ``_aoe``
+    is a genuinely different thing (a spell's ground effect, not its projectile) and stays as it is.
+    """
+    if cls not in _EVO_FOLD:
+        base = cls[:-4] if cls.endswith("_evo") else cls
+        try:
+            _EVO_FOLD[cls] = vocab.unit_id(base)
+        except Exception:
+            _EVO_FOLD[cls] = vocab.unit_id(cls)
+    return _EVO_FOLD[cls]
+
+
 def from_live(detections: Sequence[Any], reads: LiveReads, deck: Deck, *, warp: Any = None,
-              unit_hp_default: Optional[float] = None) -> BoardState:
+              unit_hp_default: Optional[float] = None, fold_evo: bool = True) -> BoardState:
     """Detector output + screen reads -> BoardState. ``detections`` are ``replay_mine.Detection`` (duck-typed:
     cls, cx, gy, conf, team); frame -> board goes through ``BoardWarp.frame_to_board`` on ``(cx, gy)`` --
     ``gy`` is the shadow-corrected y for flyers. ``team == 'unknown'`` -> side -1, EXCEPT for a class
@@ -417,7 +440,7 @@ def from_live(detections: Sequence[Any], reads: LiveReads, deck: Deck, *, warp: 
     units: list[Unit] = []
     spells: list[Unit] = []
     for d in detections:
-        cid = vocab.unit_id(str(d.cls))
+        cid = _fold_evo(str(d.cls)) if fold_evo else vocab.unit_id(str(d.cls))
         fy = float(d.gy)
         if (vocab.kind_of(cid) == "troop" and getattr(d, "ground_cy", None) is None
                 and getattr(d, "h", None) is not None):
