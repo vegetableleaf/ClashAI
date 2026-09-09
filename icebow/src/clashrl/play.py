@@ -688,7 +688,8 @@ def play(cfg) -> None:
                                      next_name=_nname, hp_tracker=hp_tracker, tower_tracker=tower_tracker,
                                      t_sec=max(0.0, time.time() - clock._start),
                                      opp_elixir=(None if _oe is None else float(_oe)))
-            _sact = _student.decide(_last_dets["all"], _sreads, hand_ids, vision.deck_keys)
+            _sact = _student.decide(_last_dets["all"], _sreads, hand_ids, vision.deck_keys,
+                                    card_elixir=card_elixir)
             _slast = _student.last or {}
             if _sact is None:                                 # student says WAIT (or nothing mappable)
                 _student.stats["log_n"] = _student.stats.get("log_n", 0) + 1

@@ -1,0 +1,8 @@
+ENGINE: fraction of frames with p<0.02  (the live run measured 37/205 = 18.0%)
+  all rows                     22.1%
+  units<=1 (any elixir)        35.6%
+  units<=1 and elixir>=8       22.6%
+  units<=1 and t<60s           44.5%
+  units>=2                     19.2%
+
+ENGINE occupancy: 18.0% of rows have <=1 unit

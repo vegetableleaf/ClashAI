@@ -1,0 +1,14 @@
+  units 0-1  elixir 0-4   n=  352  model 0.074   pro 0.082
+  units 0-1  elixir 5-7   n= 1261  model 0.061   pro 0.073
+  units 0-1  elixir 8-10  n= 1996  model 0.221   pro 0.230
+  units 2-3  elixir 0-4   n= 1343  model 0.126   pro 0.126
+  units 2-3  elixir 5-7   n= 2011  model 0.194   pro 0.177
+  units 2-3  elixir 8-10  n= 2223  model 0.370   pro 0.357
+  units 4+   elixir 0-4   n= 3515  model 0.207   pro 0.208
+  units 4+   elixir 5-7   n= 4244  model 0.341   pro 0.336
+  units 4+   elixir 8-10  n= 3055  model 0.456   pro 0.446
+
+captured-live state (units<=1, elixir>=8, t<60s): n=1069 model 0.159  pro 0.189
+LIVE captured mean p in that state: 0.008
+
+ENGINE: 18.0% of rows have <=1 unit; live capture had 28/37 with <=1

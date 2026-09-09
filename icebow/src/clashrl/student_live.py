@@ -82,7 +82,8 @@ class StudentPolicy:
 
     # -- decision ------------------------------------------------------------------------------------
     def decide(self, detections: Sequence[Any], reads: LiveReads, hand_ids: Sequence[int],
-               deck_keys: Sequence[str]) -> Optional[tuple[int, int, float]]:
+               deck_keys: Sequence[str], card_elixir: Optional[Sequence[float]] = None
+               ) -> Optional[tuple[int, int, float]]:
         """-> (live card_id, live cell index, p_play), or None when the gate says WAIT / nothing maps."""
         torch = self._torch
         t0 = time.perf_counter()
@@ -111,8 +112,20 @@ class StudentPolicy:
             card_logits = out["card"][0].clone()
             live_ok = torch.zeros_like(card_logits, dtype=torch.bool)
             for s in range(int(card_logits.shape[0])):
-                if _tray_id_for_slot(self.deck.cards[s], hand_ids, deck_keys) is not None:
-                    live_ok[s] = True
+                cid = _tray_id_for_slot(self.deck.cards[s], hand_ids, deck_keys)
+                if cid is None:
+                    continue
+                # AFFORDABILITY BELONGS IN THE MASK, not in a veto after the fact. play.py used to check the
+                # cost AFTER this returned and skip the whole decision when the argmax card was too
+                # expensive -- so a frame that passed the gate produced NOTHING even when a cheaper card was
+                # in hand. MEASURED on the owner's own runs: 11% / 6% / 20% of gate-passing decisions thrown
+                # away that way (live_run3/5/6). The sim actor has always masked here, which is part of why
+                # it plays 40-50 times a match.
+                if card_elixir is not None:
+                    cost = float(card_elixir[int(cid)]) if int(cid) < len(card_elixir) else 0.0
+                    if cost > float(reads.elixir_int) + 1e-6:
+                        continue
+                live_ok[s] = True
             if not bool(live_ok.any()):
                 # L67g: record the read BEFORE returning. This branch used to leave ``self.last`` holding the
                 # previous decision, so play.py's WAIT line printed a STALE p and a run of tray-read failures
