@@ -1,0 +1,22 @@
+{
+ "recall_1": {
+  "samples": 1402,
+  "shipped_mean_abs_err": 1.744,
+  "shipped_bias": 0.322,
+  "shipped_frac_pinned10": 0.006,
+  "prefix_mean_abs_err": 2.254,
+  "prefix_bias": -1.216,
+  "prefix_frac_pinned10": 0.001,
+  "truth_mean": null
+ },
+ "recall_0.855": {
+  "samples": 1402,
+  "shipped_mean_abs_err": 1.526,
+  "shipped_bias": 0.011,
+  "shipped_frac_pinned10": 0.0,
+  "prefix_mean_abs_err": 1.84,
+  "prefix_bias": -1.675,
+  "prefix_frac_pinned10": 0.0,
+  "truth_mean": null
+ }
+}

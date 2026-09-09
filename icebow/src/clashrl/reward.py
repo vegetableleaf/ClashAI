@@ -249,6 +249,47 @@ def spell_intercept_cell(cx, cy, tracks, impact_s, snap_radius, acts):
     return acts.cell_at(tx, ty)
 
 
+# Spawn spells the detector names as a CARD while the thing is still in the air. Their body is not a
+# target -- it is a projectile whose contents appear where it LANDS.
+SPAWN_SPELL_BASES = frozenset({"goblin_barrel", "skeleton_barrel", "royal_delivery", "barbarian_barrel"})
+
+
+def spawn_spell_landing(t, acts, min_dy: float = 0.01, snap_tiles: float = 3.0):
+    """An in-flight barrel -> where it will LAND (frame coords), or None if it cannot be predicted.
+
+    Owner report, 2026-09-08: "when the model detects a goblin barrel mid-air, it tries to log the goblin
+    barrel's current position even though the barrel itself isn't the target, it's the goblins that come out
+    after it lands." He is right, and `TeamTracker` is why: SPAWN_SPELLS are deliberately SERVED as enemy
+    tracks (they must be answerable), so `log_corridor_cell` lines the Log up on the projectile.
+
+    MEASURED (`scratchpad/gauntlet/L67/barrel_track.py`, 18 tracked barrels over 2 sessions): a barrel travels
+    a median 10.75 tiles between its first and last sighting, and the average sighting sits 7.33 tiles from
+    the last one -- so aiming at the current position misses by more than twice the Log's own width. 15 of 18
+    tracks travel toward me, and extrapolating the flight to my princess row lands within 3 tiles of a
+    princess tower for 9 of 14 with usable motion; the 5 failures are near-STATIONARY detections at y ~ 0.24
+    (enemy half), which is why `min_dy` drops them instead of extrapolating a non-flight.
+
+    So: extrapolate along the track's own velocity to my princess row, and snap to the nearer princess tower
+    when the landing falls within `snap_tiles` of it (a barrel is thrown AT a tower). Returns None when the
+    body is not descending toward me -- the caller should then ignore it rather than aim at it.
+    """
+    x, y = float(t[0]), float(t[1])
+    vx, vy = (float(t[2]), float(t[3])) if len(t) > 3 else (0.0, 0.0)
+    try:
+        px, py = acts.warp.board_to_frame(0.194, 0.797)      # my LEFT princess, in frame coords
+        qx, _qy = acts.warp.board_to_frame(0.806, 0.797)
+    except Exception:
+        return None
+    if vy <= 0.0 or (py - y) <= min_dy:                      # not descending toward my towers
+        return None
+    s = (py - y) / vy                                        # seconds until it reaches the princess row
+    lx, ly = x + vx * s, py
+    for cand in (px, qx):
+        if abs(lx - cand) * (1.0 / max(1e-6, TILE)) <= snap_tiles:
+            return float(cand), float(ly)
+    return float(min(max(lx, 0.0), 1.0)), float(ly)
+
+
 def log_corridor_cell(cx, cy, tracks, acts, half_w=0.064, roll=0.28, air=(), min_hit=1):
     """PUT THE TARGET IN FRONT OF THE LOG, NOT BESIDE IT.
 

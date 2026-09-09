@@ -24,6 +24,7 @@ from .reward import (TowerTracker, pump_rocket_cell, spell_intercept_cell, weake
                      tesla_pull_cell, log_corridor_cell, nado_king_cell)
 from .reward import spell_whiffed          # live spell target mask (see use site)
 from .reward import lead_point, lead_velocity   # 2026-09-03: cast-delay lead for log + rocket
+from .reward import SPAWN_SPELL_BASES, spawn_spell_landing   # L67h: aim at a barrel's LANDING, not the barrel
 from .reward import TILE as _TILE
 from .states import GameState
 from .threats import ThreatTracker, THREAT_DIM
@@ -266,6 +267,9 @@ def play(cfg) -> None:
     from .cards import CardDB
     _db = CardDB(cfg)
     _AIR_BASES = _AirSet(_db)          # the Log rolls UNDER flyers -- never aim it at one
+    # L67h: aim the Log at where a thrown barrel LANDS instead of at the barrel in the air. Set
+    # `play.barrel_landing_aim: false` to restore the pre-L67h behaviour (aim at the projectile).
+    _barrel_landing_aim = bool(cfg.get("play", "barrel_landing_aim", default=True))
     # HARD GUARD: the checkpoint must match the CONFIGURED deck (same check as train-rl). After a
     # deck change an old net's heads are the wrong width and its card ids mean different cards --
     # here that would surface as a torch shape error (10-wide hand one-hots into a 9-card net) or,
@@ -797,11 +801,23 @@ def play(cfg) -> None:
             # THE LOG IS A CORRIDOR, NOT A BLAST: line it up with the push instead of beside it.
             gx, gy = cell % gw, cell // gw
             cx, cy = actions.cell_center(gx, gy)
-            _tk = (_ploop.enemy_tracks(time.time(), True) if _ploop is not None and _ploop.running
-                   else _team_tracker.enemy_tracks(time.time(), True))
-            # where each body will be when the log APPEARS, not where it is at the tap
-            _tk = [(t[0] + vx * _cast_delay, t[1] + vy * _cast_delay) + tuple(t[2:])
-                   for t in _tk for vx, vy in (lead_velocity(t, _db),)]
+            _raw_tk = (_ploop.enemy_tracks(time.time(), True) if _ploop is not None and _ploop.running
+                       else _team_tracker.enemy_tracks(time.time(), True))
+            # where each body will be when the log APPEARS, not where it is at the tap -- EXCEPT an
+            # in-flight spawn spell, which is a projectile and not a body at all (owner report,
+            # 2026-09-08). Its landing point already accounts for the flight, so it must NOT be led
+            # again, and a barrel we cannot predict is dropped rather than aimed at.
+            _tk = []
+            for _t in _raw_tk:
+                _tbase = _t[4] if len(_t) > 4 else None
+                if _barrel_landing_aim and _tbase in SPAWN_SPELL_BASES:
+                    _lp = spawn_spell_landing(_t, actions)
+                    if _lp is None:
+                        continue
+                    _tk.append((float(_lp[0]), float(_lp[1])) + tuple(_t[2:]))
+                    continue
+                _vx, _vy = lead_velocity(_t, _db)
+                _tk.append((_t[0] + _vx * _cast_delay, _t[1] + _vy * _cast_delay) + tuple(_t[2:]))
             aim = log_corridor_cell(cx, cy, _tk, actions, _log_half_w, _log_roll, _AIR_BASES)
             if aim is not None:
                 cell = aim

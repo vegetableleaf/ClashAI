@@ -1,0 +1,308 @@
+{
+ "summary": {
+  "tracks": 18,
+  "sightings_median": 5.0,
+  "first_to_last_tiles": {
+   "median": 10.75,
+   "p90": 23.52
+  },
+  "mean_sighting_err_tiles": {
+   "median": 7.33,
+   "p90": 17.59
+  },
+  "last_sighting_dy_to_my_princess": {
+   "median": 7.62,
+   "frac_within_3_tiles": 0.222
+  }
+ },
+ "tracks": [
+  {
+   "session": "20260815_222309",
+   "sightings": 4,
+   "dur_s": 0.5,
+   "first": [
+    0.0,
+    0.2482
+   ],
+   "last": [
+    0.0,
+    0.2424
+   ],
+   "first_to_last_tiles": 0.19,
+   "mean_sighting_err_tiles": 0.16,
+   "last_dy_to_my_princess_tiles": 17.75
+  },
+  {
+   "session": "20260815_222309",
+   "sightings": 2,
+   "dur_s": 0.5,
+   "first": [
+    0.0,
+    0.2347
+   ],
+   "last": [
+    0.0,
+    0.2386
+   ],
+   "first_to_last_tiles": 0.13,
+   "mean_sighting_err_tiles": 0.13,
+   "last_dy_to_my_princess_tiles": 17.87
+  },
+  {
+   "session": "20260815_222309",
+   "sightings": 2,
+   "dur_s": 0.17,
+   "first": [
+    0.0,
+    0.2486
+   ],
+   "last": [
+    0.0,
+    0.2488
+   ],
+   "first_to_last_tiles": 0.01,
+   "mean_sighting_err_tiles": 0.01,
+   "last_dy_to_my_princess_tiles": 17.54
+  },
+  {
+   "session": "20260815_222309",
+   "sightings": 15,
+   "dur_s": 2.5,
+   "first": [
+    0.4893,
+    0.0
+   ],
+   "last": [
+    0.2157,
+    0.6637
+   ],
+   "first_to_last_tiles": 21.8,
+   "mean_sighting_err_tiles": 16.22,
+   "last_dy_to_my_princess_tiles": 4.27
+  },
+  {
+   "session": "20260815_222309",
+   "sightings": 19,
+   "dur_s": 2.83,
+   "first": [
+    0.5128,
+    0.0
+   ],
+   "last": [
+    0.1593,
+    0.737
+   ],
+   "first_to_last_tiles": 24.43,
+   "mean_sighting_err_tiles": 17.83,
+   "last_dy_to_my_princess_tiles": 1.92
+  },
+  {
+   "session": "20260815_222309",
+   "sightings": 16,
+   "dur_s": 2.17,
+   "first": [
+    0.5077,
+    0.0
+   ],
+   "last": [
+    0.2298,
+    0.5727
+   ],
+   "first_to_last_tiles": 19.0,
+   "mean_sighting_err_tiles": 14.86,
+   "last_dy_to_my_princess_tiles": 7.18
+  },
+  {
+   "session": "20260815_222309",
+   "sightings": 6,
+   "dur_s": 1.0,
+   "first": [
+    0.697,
+    0.2536
+   ],
+   "last": [
+    0.8103,
+    0.6771
+   ],
+   "first_to_last_tiles": 13.7,
+   "mean_sighting_err_tiles": 8.43,
+   "last_dy_to_my_princess_tiles": 3.84
+  },
+  {
+   "session": "20260815_222309",
+   "sightings": 2,
+   "dur_s": 0.17,
+   "first": [
+    0.4914,
+    0.0
+   ],
+   "last": [
+    0.4669,
+    0.0
+   ],
+   "first_to_last_tiles": 0.44,
+   "mean_sighting_err_tiles": 0.44,
+   "last_dy_to_my_princess_tiles": 25.5
+  },
+  {
+   "session": "20260815_222309",
+   "sightings": 10,
+   "dur_s": 1.67,
+   "first": [
+    0.3223,
+    0.0
+   ],
+   "last": [
+    0.103,
+    0.6022
+   ],
+   "first_to_last_tiles": 19.67,
+   "mean_sighting_err_tiles": 12.93,
+   "last_dy_to_my_princess_tiles": 6.23
+  },
+  {
+   "session": "20260815_222309",
+   "sightings": 18,
+   "dur_s": 2.67,
+   "first": [
+    0.5092,
+    0.0
+   ],
+   "last": [
+    0.2013,
+    0.737
+   ],
+   "first_to_last_tiles": 24.23,
+   "mean_sighting_err_tiles": 17.77,
+   "last_dy_to_my_princess_tiles": 1.92
+  },
+  {
+   "session": "20260815_222309",
+   "sightings": 15,
+   "dur_s": 1.67,
+   "first": [
+    0.5098,
+    0.0
+   ],
+   "last": [
+    0.2891,
+    0.3462
+   ],
+   "first_to_last_tiles": 11.77,
+   "mean_sighting_err_tiles": 9.49,
+   "last_dy_to_my_princess_tiles": 14.42
+  },
+  {
+   "session": "20260815_222309",
+   "sightings": 4,
+   "dur_s": 0.83,
+   "first": [
+    0.6995,
+    0.2448
+   ],
+   "last": [
+    0.7885,
+    0.5451
+   ],
+   "first_to_last_tiles": 9.74,
+   "mean_sighting_err_tiles": 6.23,
+   "last_dy_to_my_princess_tiles": 8.06
+  },
+  {
+   "session": "20260815_222309",
+   "sightings": 14,
+   "dur_s": 2.17,
+   "first": [
+    0.5124,
+    0.0
+   ],
+   "last": [
+    0.2497,
+    0.4517
+   ],
+   "first_to_last_tiles": 15.21,
+   "mean_sighting_err_tiles": 10.75,
+   "last_dy_to_my_princess_tiles": 11.05
+  },
+  {
+   "session": "20260815_222309",
+   "sightings": 17,
+   "dur_s": 2.67,
+   "first": [
+    0.5075,
+    0.0
+   ],
+   "last": [
+    0.163,
+    0.6988
+   ],
+   "first_to_last_tiles": 23.21,
+   "mean_sighting_err_tiles": 17.51,
+   "last_dy_to_my_princess_tiles": 3.14
+  },
+  {
+   "session": "20260815_222309",
+   "sightings": 2,
+   "dur_s": 0.83,
+   "first": [
+    0.0,
+    0.2367
+   ],
+   "last": [
+    0.0,
+    0.2516
+   ],
+   "first_to_last_tiles": 0.48,
+   "mean_sighting_err_tiles": 0.48,
+   "last_dy_to_my_princess_tiles": 17.45
+  },
+  {
+   "session": "20260815_222309",
+   "sightings": 3,
+   "dur_s": 1.0,
+   "first": [
+    0.0,
+    0.2468
+   ],
+   "last": [
+    0.0,
+    0.2476
+   ],
+   "first_to_last_tiles": 0.02,
+   "mean_sighting_err_tiles": 0.08,
+   "last_dy_to_my_princess_tiles": 17.58
+  },
+  {
+   "session": "20260815_222309",
+   "sightings": 3,
+   "dur_s": 0.17,
+   "first": [
+    0.4257,
+    0.7991
+   ],
+   "last": [
+    0.4271,
+    0.7955
+   ],
+   "first_to_last_tiles": 0.12,
+   "mean_sighting_err_tiles": 0.54,
+   "last_dy_to_my_princess_tiles": 0.05
+  },
+  {
+   "session": "20260804_173304",
+   "sightings": 4,
+   "dur_s": 0.67,
+   "first": [
+    0.2104,
+    0.841
+   ],
+   "last": [
+    0.21,
+    0.8412
+   ],
+   "first_to_last_tiles": 0.01,
+   "mean_sighting_err_tiles": 0.01,
+   "last_dy_to_my_princess_tiles": 1.42
+  }
+ ]
+}

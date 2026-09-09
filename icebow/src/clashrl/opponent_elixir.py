@@ -31,6 +31,7 @@ class OpponentElixirEstimator:
         self._opp_spent = 0.0
         self._tracks: list[dict] = []      # {base, x, y, t}
         self._est = float(max(0.0, min(10.0, my_elixir)))
+        self._rebase = 0.0                 # cumulative saturation correction, for grading the estimator
         self._last_t = float(now) if now is not None else None
 
     def record_my_play(self, base: str) -> None:
@@ -120,9 +121,11 @@ class OpponentElixirEstimator:
         # Symmetrically, going below 0 means a play was double-counted, so give it back.
         if est > 10.0:
             self._opp_spent += est - 10.0
+            self._rebase += est - 10.0                 # diagnostic: total correction charged to the books
             est = 10.0
         elif est < 0.0:
             self._opp_spent += est                     # est < 0 -> reduces _opp_spent
+            self._rebase += est
             est = 0.0
         self._est = est
         self._last_t = now
