@@ -44,6 +44,7 @@ def teacher_agreement(model, grid, arrs, idx, torch, tau, Rows, cell_label, hand
     y_slot = arrs["y_slot"][idx].astype(int)
     y_cell = cell_label(torch.from_numpy(arrs["y_xy"][idx]), grid).numpy()
     gate_hit = card_hit = cell_hit = n_play = 0
+    tp = fp = tn = fn = 0
     p_all = []
     with torch.no_grad():
         for s0 in range(0, len(idx), 512):
@@ -54,7 +55,11 @@ def teacher_agreement(model, grid, arrs, idx, torch, tau, Rows, cell_label, hand
             p = torch.sigmoid(h["gate"]).cpu().numpy()
             p_all.append(p)
             lo, hi = s0, s0 + len(sl)
-            gate_hit += int((((p > tau).astype(int)) == y_gate[lo:hi]).sum())
+            pred = (p > tau).astype(int)
+            truth = y_gate[lo:hi]
+            gate_hit += int((pred == truth).sum())
+            tp += int(((pred == 1) & (truth == 1)).sum()); fp += int(((pred == 1) & (truth == 0)).sum())
+            tn += int(((pred == 0) & (truth == 0)).sum()); fn += int(((pred == 0) & (truth == 1)).sum())
             play = y_gate[lo:hi] == 1
             if play.any():
                 card = h["card"].argmax(-1).cpu().numpy()
@@ -64,7 +69,14 @@ def teacher_agreement(model, grid, arrs, idx, torch, tau, Rows, cell_label, hand
                 cell_hit += int((cell[play] == y_cell[lo:hi][play]).sum())
                 n_play += int(play.sum())
     p = np.concatenate(p_all)
+    # BALANCED accuracy and the always-WAIT baseline, because the teacher plays only ~24% of decisions:
+    # a model that never plays scores ~76% raw accuracy, so raw gate agreement alone means nothing here.
+    rec_pos = tp / max(tp + fn, 1)
+    rec_neg = tn / max(tn + fp, 1)
     return {"n": int(len(idx)), "n_play": n_play,
+            "gate_bal_acc": round(0.5 * (rec_pos + rec_neg), 4),
+            "gate_recall_play": round(rec_pos, 4), "gate_recall_wait": round(rec_neg, 4),
+            "always_wait_acc": round(float(1.0 - y_gate.mean()), 4),
             "gate_agree_pct": round(100.0 * gate_hit / max(len(idx), 1), 2),
             "card_agree_pct": round(100.0 * card_hit / max(n_play, 1), 2),
             "cell_agree_pct": round(100.0 * cell_hit / max(n_play, 1), 2),

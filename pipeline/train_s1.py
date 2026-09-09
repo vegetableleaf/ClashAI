@@ -63,7 +63,8 @@ class Rows:
                 "value": self.value[ids_t]}
 
 
-def losses(model: S1Model, b: dict, mirror: bool, grid: str = "floor") -> tuple[torch.Tensor, dict]:
+def losses(model: S1Model, b: dict, mirror: bool, grid: str = "floor",
+           heads: "set[str] | None" = None) -> tuple[torch.Tensor, dict]:
     tok, sc, past, xy = b["tok"], b["sc"], b["past"], b["xy"]
     if mirror:
         tok, sc, past, xy = mirror_batch(tok, sc, past, xy)
@@ -80,6 +81,15 @@ def losses(model: S1Model, b: dict, mirror: bool, grid: str = "floor") -> tuple[
         parts["wait"] = 0.5 * Fn.cross_entropy(out["wait"][~play], b["wait"][~play])
     parts["gate"] = Fn.binary_cross_entropy_with_logits(out["gate"], b["gate"])
     parts["value"] = 0.5 * Fn.cross_entropy(out["value"], b["value"])
+    if heads is not None:
+        # DISTILLATION targets only some heads. The teacher's placements are searched in the SIM, and the
+        # cell head is the one already at the human within-1-tile rate on pro labels (L67h section H), so
+        # training it on sim-chosen cells risks trading an outside-validated head for a simulator-fitted one.
+        # Dropping a loss also stops its gradient, so the untargeted heads keep their pro-trained weights
+        # except for what they share in the trunk.
+        parts = {k: v for k, v in parts.items() if k in heads}
+        if not parts:
+            raise ValueError(f"no loss left after --loss-heads {sorted(heads)}")
     return sum(parts.values()), {k: float(v.detach()) for k, v in parts.items()}
 
 
@@ -186,7 +196,21 @@ def main(argv=None) -> int:
                     help="start from this checkpoint's weights instead of a fresh init (fine-tuning / "
                          "distillation). The architecture must match; --d and --layers are taken from the "
                          "checkpoint's own args so a mismatch cannot be introduced silently.")
+    ap.add_argument("--loss-heads", default=None,
+                    help="comma-separated subset of {cell,card,wait,gate,value} to train. Default: all. "
+                         "Distillation from the sim search uses 'gate,card' -- see losses().")
+    ap.add_argument("--select", default="cell_tile_top1",
+                    help="val metric the CHECKPOINT is selected on. The default is the placement metric, "
+                         "which is the right one for the pro-imitation run -- but selecting on a head the "
+                         "run does not train (e.g. --loss-heads gate,card) picks an epoch by noise, so a "
+                         "distillation run should select on what it optimises (gate_acc / card_top1).")
     a = ap.parse_args(argv)
+    _heads = None
+    if a.loss_heads:
+        _heads = {h.strip() for h in str(a.loss_heads).split(",") if h.strip()}
+        _known = {"cell", "card", "wait", "gate", "value"}
+        if not _heads <= _known:
+            raise SystemExit(f"--loss-heads {sorted(_heads - _known)} not in {sorted(_known)}")
     deck = load_deck(a.deck)
     arrs, meta = load_ds(a.data or (deck.data_dir / "pipeline" / "s1_dataset.npz"))
     a.out_dir.mkdir(parents=True, exist_ok=True)
@@ -225,7 +249,8 @@ def main(argv=None) -> int:
         tot, nb, parts_acc = 0.0, 0, {}
         for s in range(0, len(perm) - a.bs + 1, a.bs):
             b = tr.batch(perm[s:s + a.bs])
-            loss, parts = losses(model, b, mirror=(not a.no_mirror) and rng.random() < 0.5, grid=a.grid)
+            loss, parts = losses(model, b, mirror=(not a.no_mirror) and rng.random() < 0.5, grid=a.grid,
+                                 heads=_heads)
             opt.zero_grad(set_to_none=True)
             loss.backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
@@ -238,8 +263,8 @@ def main(argv=None) -> int:
                    "train_parts": {k: v / max(nb, 1) for k, v in parts_acc.items()}, "seconds": round(time.time() - t0)})
         hist.append(ev)
         print(json.dumps({k: (round(v, 4) if isinstance(v, float) else v) for k, v in ev.items() if k != "train_parts"}), flush=True)
-        if ev["cell_tile_top1"] > best:
-            best = ev["cell_tile_top1"]
+        if ev[a.select] > best:
+            best = ev[a.select]
             ckpt.parent.mkdir(parents=True, exist_ok=True)
             torch.save({"model": model.state_dict(), "args": vars(a) | {"out_dir": str(a.out_dir), "data": str(a.data)},
                         "deck": a.deck, "epoch": ep + 1, "val": ev, "n_params": n_params}, ckpt)
