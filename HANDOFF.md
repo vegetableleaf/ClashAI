@@ -2620,6 +2620,22 @@ the most to lose and the least to gain.
 
 The N=1 teacher-corpus labelling run (3 x 40 matches on disjoint seeds) is running.
 
+**P. DISTILLATION OF THE SEARCH'S ACTIONS FAILS (a) -- the student learns the teacher and plays WORSE.** Corpus: 18,218 N=1 decisions over 120 matches, split by match; fine-tuned from v6lat_s0 on gate+card only (`--loss-heads gate,card`, `--select gate_bal_acc`, lr 1e-4).
+
+| | base | distilled |
+|---|---|---|
+| teacher agreement, balanced gate (held-out MATCHES) | 0.5756 | **0.6529** |
+| teacher card agreement | 68.92% | **86.51%** |
+| sim tower, slice A / B | -0.871 / -1.757 | **-1.411 / -2.143** |
+| paired vs base | -- | **-0.540 +- 0.450 / -0.385 +- 0.430** |
+| plays per match | ~50 | **21-27** |
+| PRO cell agreement | 0.2116 | 0.2029 |
+| PRO card agreement | **0.6336** | **0.4890** |
+
+**The imitation SUCCEEDED and the play got worse.** Agreement with the teacher rose on both heads; sim outcome fell on both seed slices (not significant at n=12, but negative on both), and pro card agreement collapsed 14.5 pp. The mechanism is in the play counts: search plays 37/match because it EVALUATES, per decision, whether this action beats waiting. The student learned the resulting marginal ("play about a quarter of the time") and dropped to 21-27 plays without the evaluation that chose WHICH quarter -- the teacher's restraint without its judgement. That is 6-PRIORITY-B's privileged-teacher gap, now MEASURED on this model rather than assumed.
+
+**Conclusion: behavioural cloning of the search is dead; do not tune it.** What survives is that the search itself replicates (+1.714 / +1.460 paired, section N) and that its value lies in RANKING candidates. The next target is therefore the search's VALUE, not its action: train a head to predict each candidate's rollout score and use it to rerank the student's own shortlist at decision time, keeping the evaluate-then-choose structure instead of collapsing it into a policy. The data already exists -- the search scores every candidate it rolls out and currently discards all but the argmax.
+
 ### §5cs.98 -- L67e+f (2026-09-08 06:00-18:00 UTC): **OPTION B GRADED (3 seeds: clean 21.56 +- 0.07, degraded 19.45 +- 0.05) BUT ITS GAIN IS AGAINST A CORRUPTION MODEL WE NOW KNOW IS WRONG. Three label-free live measurements instead: the GATE survives real detector input (live .248-.325 vs engine .294-.298), PLACEMENT COLLAPSES toward the prior (top-1 cell share 0.25 vs 0.07 at matched unit counts), and nothing JITTERS (same-cell 61.4% live vs 38.7% engine -- the collapse seen twice, not a second defect). Ablation names the cause: MISSING VALUES (unit HP, exact/opponent elixir, king HP), not noisy ones -- spell tokens, unknown team tags and low confidence each do NOTHING. Against pro labels, SUPPLYING beats FLAGGING (blank_both 18.78 exact cell / 52.11 card -> fill_both 20.15 / 63.25), so the fill is now wired live and verified (live top-1 share 0.411 -> 0.322)**
 
 **A. Option B, the 3-seed result (a), `s1_v6aug/eval_v3val_icebow_v6aug.out` + `eval_v3degraded_*`.** Augmented set = 622,923 rows (339,192 clean + 283,731 degraded TRAIN rows; val rows clean, so checkpoint selection is v6lat's own rule).
