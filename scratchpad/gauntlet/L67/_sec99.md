@@ -66,3 +66,27 @@ The pro's tile is in the student's **top-3 44.2% / top-5 55.5%** of the time -- 
 3. `student_live.decide()` now records `self.last` on the `no_mappable_card` path, and play.py's WAIT line prints `opp~<est>` and a `NO-TRAY-MATCH` flag. Before this a run of tray-read failures printed a STALE p and was indistinguishable in the log from genuine low-gate waits -- the exact evidence needed to read a freeze.
 
 **K. RETRACTED within the loop (c): the barrel-landing probe.** The first version matched a barrel to the CENTROID OF LATER GOBLIN DETECTIONS and reported median 12.52 tiles. It is wrong: those goblins sit at board y 0.512 (the river) with only 38% within 3 tiles of my princess row, i.e. it was associating Goblin Gang / spear goblins with a barrel they never came from. (Its predecessor found 0 pairs at all, because it looked for detector class `goblin` when the detector names bodies after the CARD -- `goblins`.) Replaced by `barrel_track.py`, which tracks the barrel itself across frames and needs no cross-class association: the landing estimate is the track's LAST sighting and the owner's question -- how wrong is the CURRENT position -- is the distance from each earlier sighting to it.
+
+**N. SEARCH OVER THE STUDENT WORKS, and all four controls behave (a), `student_search.py`, 12 matches, degraded view (what the live student sees), interval 1, H=12 s, K=4 cards x 3 cells. Paired per seed against the same-seed baseline:**
+
+| arm | paired delta tower | t | wins | plays/match |
+|---|---|---|---|---|
+| **search** | **+1.714 +- 0.420** | **4.08** | **11/12** | 37.3 |
+| force_play (top candidate, no rollouts) | -0.322 +- 0.425 | -0.76 | 3/12 | 53.9 |
+| random candidate from the same shortlist | -0.571 +- 0.453 | -1.26 | 2/12 | 55.6 |
+| never play | -1.528 +- 0.426 | -3.59 | 0/12 | 0 |
+| baseline (student alone) | -- | -- | 3/12 | 50.3 |
+
+Absolute: the student alone is 25.0% wins / tower -0.871; searched it is **91.7% / +0.843**. Every control that
+would explain it away fails: it is **not "play more"** (force_play plays 54/match and is null-to-negative), **not
+the shortlist alone** (random from the SAME candidates is worse than doing nothing about it), and **not the
+degenerate WAIT** the Scorer's elixir penalty could have rewarded (never-play is 0/12 wins at -2.398, the worst
+arm on the board). Search plays LESS than the student (37.3 vs 50.3) while winning far more -- the same
+restraint signature the CNN's N=1 arm showed, now measured on THIS model rather than inherited from it.
+
+**What it does NOT establish.** (1) It is the SIM: sim-optimal is not real-game-optimal, and the opponent is
+the scripted ladder pool. (2) The teacher is PRIVILEGED -- the rollouts fork the true engine while the student
+sees the degraded view, which is exactly the gap 6-PRIORITY-B says to measure BEFORE committing: hold out a
+slice and check the student's top-1 agreement with the teacher on states it never trained on. (3) 12 matches;
+the disjoint-seed confirmation (seeds 911000+) and the cells=1 ablation (does the CELL search matter for the
+student, when it was worth ~nothing for the CNN?) are running.

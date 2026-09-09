@@ -52,6 +52,10 @@ class StudentSearcher(StudentActor):
         #                 reproduces the gain, the finding is a GATE calibration result, not a search result.
         #   random     -- play a RANDOM candidate from the same shortlist. Separates "chooses well" from
         #                 "plays at all", and is the floor any real reranker must beat.
+        #   never      -- NEVER play. The floor this project's history demands: the Scorer subtracts spent
+        #                 elixir and the horizon is only 12 s, so WAIT can score well BY CONSTRUCTION. If
+        #                 doing nothing matches the search arm, "search learned restraint" is an artifact of
+        #                 the objective rather than a finding about play.
         self.mode = str(mode)
         import random as _r
         self._rng = _r.Random(int(rng_seed))
@@ -137,6 +141,10 @@ class StudentSearcher(StudentActor):
     def act(self, i):
         if self.interval <= 0 or (i % self.interval):
             return super().act(i)
+        if self.mode == "never":
+            self.stats["decisions"] += 1
+            self.stats["wait"] += 1
+            return (0, 0, 0), None
         p_play, cands, _order = self._shortlist()
         self.stats["decisions"] += 1
         self.p_hist.append(p_play)
@@ -194,7 +202,7 @@ def main():
     ap.add_argument("--cells", type=int, default=3)
     ap.add_argument("--crown", type=float, default=1.0)
     ap.add_argument("--degrade", action="store_true")
-    ap.add_argument("--mode", default="search", choices=("search", "force_play", "random"))
+    ap.add_argument("--mode", default="search", choices=("search", "force_play", "random", "never"))
     ap.add_argument("--out", type=Path, default=None)
     a = ap.parse_args()
 

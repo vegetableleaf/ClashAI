@@ -2567,6 +2567,30 @@ Shipped: `reward.spawn_spell_landing()` extrapolates a descending spawn-spell tr
 
 **M. Search over the student: the harness is BUILT and the baseline is running, no result yet.** `sim_contract.from_sim()` converts a `SimMatchEnv` state to a contract `BoardState` -- nearly free, because the sim already uses the contract's board frame (its team 0 princesses sit at y 0.797 and king at 0.906, asserted at every run by `assert_frame`). `student_sim.py` plays the student through the sim's own `play_match`, under either the privileged view (sim ground truth: unit HP, exact elixir, the opponent's real elixir) or `--degrade` (what the live path actually gives it). `student_search.py` rolls out the student's OWN shortlist (WAIT + top-K cards x top-C cells) with the same fork/score machinery as `rollout_search.Searcher`. Arms queued at interval 1, 12 matches, identical seeds: **search**, plus the two controls the spec demands -- **force_play** (play the top candidate, no rollouts: if this reproduces the gain the finding is gate calibration, not search) and **random** (a random candidate from the same shortlist: the floor any reranker must beat). Early smoke run, not a result: at interval 20, 8 of 11 searched decisions were search overriding a WAIT, which is exactly the pattern the controls exist to separate.
 
+**N. SEARCH OVER THE STUDENT WORKS, and all four controls behave (a), `student_search.py`, 12 matches, degraded view (what the live student sees), interval 1, H=12 s, K=4 cards x 3 cells. Paired per seed against the same-seed baseline:**
+
+| arm | paired delta tower | t | wins | plays/match |
+|---|---|---|---|---|
+| **search** | **+1.714 +- 0.420** | **4.08** | **11/12** | 37.3 |
+| force_play (top candidate, no rollouts) | -0.322 +- 0.425 | -0.76 | 3/12 | 53.9 |
+| random candidate from the same shortlist | -0.571 +- 0.453 | -1.26 | 2/12 | 55.6 |
+| never play | -1.528 +- 0.426 | -3.59 | 0/12 | 0 |
+| baseline (student alone) | -- | -- | 3/12 | 50.3 |
+
+Absolute: the student alone is 25.0% wins / tower -0.871; searched it is **91.7% / +0.843**. Every control that
+would explain it away fails: it is **not "play more"** (force_play plays 54/match and is null-to-negative), **not
+the shortlist alone** (random from the SAME candidates is worse than doing nothing about it), and **not the
+degenerate WAIT** the Scorer's elixir penalty could have rewarded (never-play is 0/12 wins at -2.398, the worst
+arm on the board). Search plays LESS than the student (37.3 vs 50.3) while winning far more -- the same
+restraint signature the CNN's N=1 arm showed, now measured on THIS model rather than inherited from it.
+
+**What it does NOT establish.** (1) It is the SIM: sim-optimal is not real-game-optimal, and the opponent is
+the scripted ladder pool. (2) The teacher is PRIVILEGED -- the rollouts fork the true engine while the student
+sees the degraded view, which is exactly the gap 6-PRIORITY-B says to measure BEFORE committing: hold out a
+slice and check the student's top-1 agreement with the teacher on states it never trained on. (3) 12 matches;
+the disjoint-seed confirmation (seeds 911000+) and the cells=1 ablation (does the CELL search matter for the
+student, when it was worth ~nothing for the CNN?) are running.
+
 ### §5cs.98 -- L67e+f (2026-09-08 06:00-18:00 UTC): **OPTION B GRADED (3 seeds: clean 21.56 +- 0.07, degraded 19.45 +- 0.05) BUT ITS GAIN IS AGAINST A CORRUPTION MODEL WE NOW KNOW IS WRONG. Three label-free live measurements instead: the GATE survives real detector input (live .248-.325 vs engine .294-.298), PLACEMENT COLLAPSES toward the prior (top-1 cell share 0.25 vs 0.07 at matched unit counts), and nothing JITTERS (same-cell 61.4% live vs 38.7% engine -- the collapse seen twice, not a second defect). Ablation names the cause: MISSING VALUES (unit HP, exact/opponent elixir, king HP), not noisy ones -- spell tokens, unknown team tags and low confidence each do NOTHING. Against pro labels, SUPPLYING beats FLAGGING (blank_both 18.78 exact cell / 52.11 card -> fill_both 20.15 / 63.25), so the fill is now wired live and verified (live top-1 share 0.411 -> 0.322)**
 
 **A. Option B, the 3-seed result (a), `s1_v6aug/eval_v3val_icebow_v6aug.out` + `eval_v3degraded_*`.** Augmented set = 622,923 rows (339,192 clean + 283,731 degraded TRAIN rows; val rows clean, so checkpoint selection is v6lat's own rule).
