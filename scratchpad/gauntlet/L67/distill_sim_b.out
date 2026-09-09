@@ -1,0 +1,30 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+m000 seed 911000 outcome    loss tower_delta -2.886 plays  14 t_end 143s
+m001 seed 911001 outcome    loss tower_delta -3.384 plays  12 t_end 149s
+m002 seed 911002 outcome    loss tower_delta -3.137 plays  18 t_end 165s
+m003 seed 911003 outcome     win tower_delta +0.306 plays  78 t_end 300s
+m004 seed 911004 outcome    loss tower_delta -2.132 plays  33 t_end 180s
+m005 seed 911005 outcome    loss tower_delta -3.274 plays   3 t_end 129s
+m006 seed 911006 outcome    loss tower_delta -3.063 plays   7 t_end 103s
+m007 seed 911007 outcome    loss tower_delta -1.241 plays  24 t_end 180s
+m008 seed 911008 outcome    loss tower_delta -2.648 plays   3 t_end 82s
+m009 seed 911009 outcome    loss tower_delta -2.419 plays   8 t_end 117s
+m010 seed 911010 outcome    loss tower_delta -0.835 plays  30 t_end 180s
+m011 seed 911011 outcome    loss tower_delta -1.000 plays  25 t_end 180s
+{
+ "ckpt": "icebow\\data\\pipeline\\s1_icebow_distillbal_s0.pt",
+ "matches": 12,
+ "degrade": true,
+ "tau": 0.27,
+ "win_pct": 8.3,
+ "tower_delta_mean": -2.1429,
+ "tower_delta_sem": 0.3412,
+ "plays_per_match": 21.2,
+ "decisions": 3188,
+ "wait": 2087,
+ "no_affordable": 846,
+ "gate_p_mean": 0.145,
+ "gate_frac_over_tau": 0.0979,
+ "wall_s": 85.3
+}

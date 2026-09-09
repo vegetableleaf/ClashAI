@@ -1,0 +1,28 @@
+{
+ "clip": "match_20260908_233317.mp4",
+ "frames": 300,
+ "threshold": 0.5,
+ "fail_rate_overall": 0.0633,
+ "fail_by_slot": {
+  "0": 0.1167,
+  "1": 0.0833,
+  "2": 0.0433,
+  "3": 0.01
+ },
+ "fail_scores": {
+  "median": 0.366,
+  "p90": 0.477,
+  "frac_within_0.15_of_threshold": 0.974
+ },
+ "closest_identity_when_failing": [
+  [
+   "(no candidate)",
+   75
+  ],
+  [
+   "tesla",
+   1
+  ]
+ ],
+ "isolated_flips_to_minus1": 1
+}

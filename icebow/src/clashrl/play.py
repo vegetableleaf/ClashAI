@@ -690,7 +690,10 @@ def play(cfg) -> None:
             # (0.755 -> 0.823), which is why it was wired in (5cs.98 F) -- but that is ground truth, not this.
             # Set `play.student_opp_elixir: true` to restore the L67f behaviour.
             _oe = getattr(_opp_elx, "_est", None) if _student_opp_elixir else None
-            _sreads = _student_reads(elixir=float(elixir), hand_ids=hand_ids, deck_keys=vision.deck_keys,
+            # L67j: the MODEL's hand is stabilised across the tray's cycle animation; the tap path below
+            # keeps the RAW hand_ids, so the bot still never plays a slot it cannot identify.
+            _hand_model = _student.hand_memory.stabilize(hand_ids, time.time())
+            _sreads = _student_reads(elixir=float(elixir), hand_ids=_hand_model, deck_keys=vision.deck_keys,
                                      next_name=_nname, hp_tracker=hp_tracker, tower_tracker=tower_tracker,
                                      t_sec=max(0.0, time.time() - clock._start),
                                      opp_elixir=(None if _oe is None else float(_oe)))

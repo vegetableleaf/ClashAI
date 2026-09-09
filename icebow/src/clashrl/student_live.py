@@ -63,12 +63,14 @@ class StudentPolicy:
         self.epoch = st.get("epoch")
         self._past: deque = deque(maxlen=PAST_K)          # (deck_slot, board_x, board_y, t_wall)
         self.stats: dict[str, int] = {}
+        self.hand_memory = HandMemory()
         self.dump_low_gate = None      # set to a path to capture states where the gate pins at zero
         self._dumped = 0
         self.last: dict[str, Any] = {}
 
     # -- state ---------------------------------------------------------------------------------------
     def reset_match(self) -> None:
+        self.hand_memory.reset()
         """Forget the previous match's plays. `past` ages are WALL-CLOCK, so without this the first
         decisions of a new match carry entries from the last one, aged by however long the menus took --
         values training never contains (its max age is 95.5 s, median 8.55)."""
@@ -180,6 +182,52 @@ class StudentPolicy:
             self.stats["wait"] = self.stats.get("wait", 0) + 1
             return None
         return int(card_id), live_cell, p_play
+
+
+class HandMemory:
+    """Last confidently-read identity per tray slot, to fill the MODEL's hand during the cycle animation.
+
+    MEASURED (L67j, `_tray_anim.py`, the bot's own footage): the tray reader fails on 48.4% of frames within
+    0.5 s of a hand change and only 7.7% once the hand has been stable for 2 s. The failing crops are the
+    slide animation -- a blend of the outgoing and incoming card -- which is why the best-scoring template is
+    the RIGHT card only 20.6% of the time there, and why lowering `match_threshold` would be wrong 79% of the
+    time. So the reader is behaving correctly; what is wrong is what we do with its -1.
+
+    An unreadable slot currently reaches the model as bit 8 of the hand one-hot ("card not in my deck"), a bit
+    set in 0.0009% of the 339,192 training rows. Filling it with the slot's last known card is a plausible
+    in-distribution value, and supplying beats flagging on this model by measurement (5cs.98 E: blank_both
+    18.78 exact cell / 52.11 card -> fill_both 20.15 / 63.25).
+
+    ⚠ This fills the MODEL'S VIEW ONLY. The tap path keeps the raw ids, so the bot still refuses to play a
+    slot it cannot identify -- holding a stale identity there would tap a slot whose card has just changed,
+    which is exactly the misplay the animation would cause.
+    """
+
+    def __init__(self, ttl_s: float = 3.0) -> None:
+        self.ttl_s = float(ttl_s)
+        self._slots: dict[int, tuple[int, float]] = {}
+        self.filled = 0
+        self.seen = 0
+
+    def stabilize(self, hand_ids: Sequence[int], now: float) -> list[int]:
+        out = []
+        for si, cid in enumerate(list(hand_ids)[:4]):
+            cid = int(cid)
+            self.seen += 1
+            if cid >= 0:
+                self._slots[si] = (cid, float(now))
+                out.append(cid)
+                continue
+            hit = self._slots.get(si)
+            if hit is not None and float(now) - hit[1] <= self.ttl_s:
+                self.filled += 1
+                out.append(int(hit[0]))
+            else:
+                out.append(-1)
+        return out
+
+    def reset(self) -> None:
+        self._slots.clear()
 
 
 def state_digest(bs) -> str:
