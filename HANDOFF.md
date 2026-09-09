@@ -2599,9 +2599,26 @@ own rule, because re-running the fixed seed list reproduces a number exactly and
 | **paired delta** | **+1.714 +- 0.420 (t=4.08)** | **+1.460 +- 0.336 (t=4.35)** |
 
 The second slice is HARDER (its baseline loses every match) and the effect is the same size, which is the
-shape a real effect has: the absolute level moves with the seeds, the paired delta does not. The cells=1
-ablation (was the CELL search worth anything for the student, when it was worth ~nothing for the CNN?) and the
-N=1 teacher-corpus labelling run (3 x 40 matches on disjoint seeds) are running.
+shape a real effect has: the absolute level moves with the seeds, the paired delta does not. 
+
+**O. WHICH HEADS the search actually improves (a), cells=1 vs cells=3 on the first slice, paired.** The spec
+targets gate+card and NOT the cell head, on the CNN's finding that placement was worth ~nothing there. For the
+student:
+
+| arm | tower | wins | plays/match | paired vs baseline |
+|---|---|---|---|---|
+| search, cells=3 | +0.843 | 11/12 | 37.3 | +1.714 +- 0.420 (t=4.08) |
+| search, cells=1 (gate+card only) | +0.322 | 9/12 | 41.6 | **+1.193 +- 0.418 (t=2.85)** |
+
+**Most of the gain survives without any cell search.** The extra from searching cells is +0.521 +- 0.341
+paired on the same seeds -- **t=1.53, NOT significant at n=12** -- so it is 30% of the effect by point
+estimate and within noise by test. Reported as (b) untested rather than as agreement with the CNN result: the
+comparison is underpowered, not negative. **Decision for the distillation: target GATE + CARD, per the spec.**
+That is where the established effect is, and it also leaves the pro-trained cell head alone -- the head that
+is already AT the human within-1-tile rate (31.87 vs a pro-pair 31.62, section H), and therefore the one with
+the most to lose and the least to gain.
+
+The N=1 teacher-corpus labelling run (3 x 40 matches on disjoint seeds) is running.
 
 ### §5cs.98 -- L67e+f (2026-09-08 06:00-18:00 UTC): **OPTION B GRADED (3 seeds: clean 21.56 +- 0.07, degraded 19.45 +- 0.05) BUT ITS GAIN IS AGAINST A CORRUPTION MODEL WE NOW KNOW IS WRONG. Three label-free live measurements instead: the GATE survives real detector input (live .248-.325 vs engine .294-.298), PLACEMENT COLLAPSES toward the prior (top-1 cell share 0.25 vs 0.07 at matched unit counts), and nothing JITTERS (same-cell 61.4% live vs 38.7% engine -- the collapse seen twice, not a second defect). Ablation names the cause: MISSING VALUES (unit HP, exact/opponent elixir, king HP), not noisy ones -- spell tokens, unknown team tags and low confidence each do NOTHING. Against pro labels, SUPPLYING beats FLAGGING (blank_both 18.78 exact cell / 52.11 card -> fill_both 20.15 / 63.25), so the fill is now wired live and verified (live top-1 share 0.411 -> 0.322)**
 
