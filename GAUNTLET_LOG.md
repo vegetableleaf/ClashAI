@@ -1622,3 +1622,12 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - **Reranker headroom is large:** pro's cell in the student's top-3 44.2% / top-5 55.5%, card top-3 97.6%. The answer is in the shortlist; the argmax misses it. Licenses search over THIS model (the +19.9 sigma search result was measured on the old CNN and is not evidence about the student).
 - Owner's deck-veto rule for unknown-team cards was ALREADY live and is measured to work (0 impossible classes survive as mine/unknown after TeamTracker); added to the contract path for the offline harnesses.
 - Retracted twice on the barrel probe (wrong class names -> 0 pairs; then goblin-centroid association -> 12.5 tiles, invalid). Replaced with track-based measurement.
+
+## L67m-n (2026-09-09/10) -- hogeq corpus mined with a MEASURED alias; value reranker collapses in closed loop (shift)
+- **Session stall, stated:** the previous session ended mid-plan; nothing ran after the substitution analysis until this one.
+- **hogeq substitutions (504,476 HF sides):** 117 exact, 1,893 one-card-off. Placement USAGE, not histogram overlap (which could not tell valkyrie from cannon), decides: only **tesla <- cannon** passes (own-half 55.6 vs 53.7%); **ice-spirit <- electro-spirit fails** (58.9 vs 49.6%, median 3 tiles forward) despite 71% of the volume. Alias in `Deck.slot_of` (my side only) + test; 23/23.
+- Traps caught by controls: a nonexistent `battle` column behind a swallowing try/except (reported 0 icebow decks too); RoyaleAPI coords are MILLI-tiles (self-overlap control returned 0.0).
+- **Mined 523 hogeq replays, 397 drivable** (126 hold evo Elite Barbarians, the engine blind spot that also sank 109 of the 121 v5 backlog failures). `run_hogeq_v6.sh` ready. **Parked by owner:** engine VM down, 3.9 GB free vs a 4 GB AVD; runs at the next long idle session.
+- **hogeq live path is a 68-file FORK** (Config.root follows the module), lacking student_live.py; port plan written, nothing edited. Mighty Miner's ability is wired nowhere.
+- **Value reranker:** clean fold regret 0.061-0.064 vs 0.079 always-WAIT, corr 0.66, play 17-20% (search 19.5%). RETRACTED first numbers (head trained on its reporting fold). **Closed loop: 1.5% plays, 0/4 wins, tower -2.61.** Bug-vs-shift test: on search-visited states via the online path the head would play 17.9% -> **covariate shift**, not a feature bug. Open: online corr 0.30 vs 0.66.
+- **Running:** DAgger iteration 1 (3 x 30 matches, beta 0.5) -> retrain on aggregated corpus -> paired closed-loop A/B via `rerank_ab_report.py`.
