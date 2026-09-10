@@ -68,7 +68,8 @@ def main():
     for nm, parts in (("vs student", pooled_base), ("vs search", pooled_search)):
         d = np.concatenate(parts)
         se = d.std(ddof=1) / np.sqrt(len(d))
-        print(f"POOLED {a.label} {nm}: {d.mean():+.3f} +- {se:.3f} (t={d.mean() / se:.2f}, n={len(d)})")
+        t = f"{d.mean() / se:.2f}" if se > 0 else "n/a (identical arms)"
+        print(f"POOLED {a.label} {nm}: {d.mean():+.3f} +- {se:.3f} (t={t}, n={len(d)})")
     return 0
 
 
