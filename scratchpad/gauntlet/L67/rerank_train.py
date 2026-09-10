@@ -11,14 +11,19 @@ WAIT's rollout score, and every candidate's (deck slot, lattice cell, rollout sc
 minus WAIT's score, i.e. the ADVANTAGE of playing that card there over waiting.
 
 Model: the S1 encoder is FROZEN (v6lat_s0) and run once; a small head reads [board summary g, the encoder's patch
-feature under the candidate cell, card embedding, cell embedding] -> predicted advantage. Card and cell
-embeddings are initialised from the student's own and fine-tuned.
+feature under the candidate cell, card embedding, cell embedding] -> predicted advantage.
 
-Graded on HELD-OUT MATCHES (split by match, never by row) with the metric that matters for play -- REGRET: the
-rollout value left on the table versus the best choice available at that decision (0 for an oracle). Baselines
-on the same decisions: always WAIT, always play the student's TOP candidate, play a RANDOM candidate.
+v2 (after the first run): the first head's best held-out regret came at EPOCH 1 and decayed after (val corr
+0.417 -> 0.334, regret 0.058 -> 0.077), and that epoch was selected on the SAME fold it was reported on -- an
+optimistic number. So matches are now split into three folds by match id: fold 0 SELECTS the epoch, fold 1 is
+REPORTED and never used for selection, the rest train. Dropout, weight decay and frozen embeddings are exposed
+because 92k candidates come from only ~16k correlated decisions in ~96 matches.
 
-usage: python scratchpad/gauntlet/L67/rerank_train.py --ckpt <v6lat_s0.pt> --shards rr_0.npz rr_1.npz rr_2.npz
+Graded by REGRET: the rollout value left on the table versus the best choice available at that decision (0 for
+an oracle). Baselines on the same decisions: always WAIT, always play the student's TOP candidate, a RANDOM one.
+
+usage: python scratchpad/gauntlet/L67/rerank_train.py --ckpt <v6lat_s0.pt> --shards rr_0.npz rr_1.npz rr_2.npz \
+           [--hidden 128 --dropout 0.3 --wd 1e-2 --freeze-emb --lr 3e-4 --tag A]
 """
 from __future__ import annotations
 
@@ -29,9 +34,53 @@ import time
 from pathlib import Path
 
 import numpy as np
+import torch
+import torch.nn as nn
 
 REPO = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO))
+
+
+class Head(nn.Module):
+    """[g, patch-under-cell, card emb, cell emb] -> predicted advantage over WAIT.
+
+    Module-level so the sim actor loads the exact same architecture. With dropout 0 the layer indices match the
+    first (v1) head file, so it still loads.
+    """
+
+    def __init__(self, d: int, n_slots: int, n_cells: int, hidden: int = 256, dropout: float = 0.0,
+                 card_w=None, cell_w=None, freeze_emb: bool = False):
+        super().__init__()
+        self.card = nn.Embedding(n_slots, d)
+        self.cell = nn.Embedding(n_cells, d)
+        if card_w is not None:
+            self.card.weight.data.copy_(card_w)
+        if cell_w is not None:
+            self.cell.weight.data.copy_(cell_w)
+        self.card.weight.requires_grad_(not freeze_emb)
+        self.cell.weight.requires_grad_(not freeze_emb)
+        layers = [nn.Linear(4 * d, hidden), nn.GELU()]
+        if dropout > 0:
+            layers.append(nn.Dropout(dropout))
+        layers += [nn.Linear(hidden, hidden), nn.GELU()]
+        if dropout > 0:
+            layers.append(nn.Dropout(dropout))
+        layers.append(nn.Linear(hidden, 1))
+        self.mlp = nn.Sequential(*layers)
+
+    def forward(self, g, cp, slot, cell):
+        return self.mlp(torch.cat([g, cp, self.card(slot), self.cell(cell)], -1)).squeeze(-1)
+
+
+def load_head(path, device="cpu"):
+    st = torch.load(path, map_location=device)
+    d = int(st.get("d", 128))
+    sd = st["head"]
+    h = Head(d, sd["card.weight"].shape[0], sd["cell.weight"].shape[0], hidden=int(st.get("hidden", 256)),
+             dropout=float(st.get("dropout", 0.0)))
+    h.load_state_dict(sd)
+    h.eval()
+    return h, st
 
 
 def load_shards(paths):
@@ -53,12 +102,12 @@ def load_shards(paths):
     out["off"] = np.concatenate([[0], np.concatenate(offs)]).astype(np.int64)
     out["cand_off"] = np.concatenate([[0], np.concatenate(coffs)]).astype(np.int64)
     out["rep"] = np.concatenate(reps)
-    out["split"] = ((out["rep"] % 5) == 0).astype(np.int8)          # 1 in 5 MATCHES held out
+    out["fold"] = (out["rep"] % 5).astype(np.int8)                # by MATCH: 0 select, 1 report, 2-4 train
     assert int(out["off"][-1]) == len(out["tok"]) and int(out["cand_off"][-1]) == len(out["cand_score"])
     return out
 
 
-def encode_all(model, data, torch, dev, bs=256, max_units=64):
+def encode_all(model, data, dev, bs=256, max_units=64):
     """Frozen encoder, run ONCE: per decision g [d]; per candidate the patch feature under its cell [d]."""
     n = len(data["sc"])
     G = np.zeros((n, model.d), np.float32)
@@ -122,15 +171,18 @@ def main():
     ap.add_argument("--ckpt", type=Path, required=True)
     ap.add_argument("--shards", type=Path, nargs="+", required=True)
     ap.add_argument("--out-dir", type=Path, default=Path("scratchpad/gauntlet/L67/rerank"))
-    ap.add_argument("--epochs", type=int, default=40)
-    ap.add_argument("--lr", type=float, default=1e-3)
+    ap.add_argument("--tag", default="v2")
+    ap.add_argument("--epochs", type=int, default=30)
+    ap.add_argument("--lr", type=float, default=3e-4)
+    ap.add_argument("--wd", type=float, default=1e-2)
+    ap.add_argument("--hidden", type=int, default=128)
+    ap.add_argument("--dropout", type=float, default=0.3)
+    ap.add_argument("--freeze-emb", action="store_true")
     ap.add_argument("--bs", type=int, default=1024)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--device", default="cuda")
     a = ap.parse_args()
 
-    import torch
-    import torch.nn as nn
     import torch.nn.functional as Fn
     from pipeline.model_v3 import S1Model
 
@@ -146,32 +198,24 @@ def main():
         q.requires_grad_(False)
 
     t0 = time.time()
-    G, CP = encode_all(model, data, torch, dev)
+    G, CP = encode_all(model, data, dev)
     print(f"encoded {len(G)} decisions / {len(CP)} candidates in {time.time() - t0:.0f}s", flush=True)
 
     coff = data["cand_off"]
-    dec_of = np.repeat(np.arange(len(G)), np.diff(coff))               # candidate -> decision
+    dec_of = np.repeat(np.arange(len(G)), np.diff(coff))
     adv = (data["cand_score"] - data["wait_score"][dec_of]).astype(np.float32)
-    val_dec = np.flatnonzero(data["split"] == 1)
-    tr_dec = np.flatnonzero(data["split"] == 0)
-    tr_c = np.flatnonzero(data["split"][dec_of] == 0)
-    va_c = np.flatnonzero(data["split"][dec_of] == 1)
-    print(f"train decisions {len(tr_dec)} / candidates {len(tr_c)}; held-out {len(val_dec)} / {len(va_c)}", flush=True)
+    fold = data["fold"]
+    sel_dec, rep_dec = np.flatnonzero(fold == 0), np.flatnonzero(fold == 1)
+    tr_c = np.flatnonzero(fold[dec_of] >= 2)
+    sel_c = np.flatnonzero(fold[dec_of] == 0)
+    rep_c = np.flatnonzero(fold[dec_of] == 1)
+    print(f"train candidates {len(tr_c)} | select-fold decisions {len(sel_dec)} | report-fold decisions {len(rep_dec)}",
+          flush=True)
 
     d = model.d
-
-    class Head(nn.Module):
-        def __init__(self):
-            super().__init__()
-            self.card = nn.Embedding.from_pretrained(model.card_emb.weight.detach().clone(), freeze=False)
-            self.cell = nn.Embedding.from_pretrained(model.cell_emb.detach().clone(), freeze=False)
-            self.mlp = nn.Sequential(nn.Linear(4 * d, 256), nn.GELU(), nn.Linear(256, 256), nn.GELU(), nn.Linear(256, 1))
-
-        def forward(self, g, cp, slot, cell):
-            return self.mlp(torch.cat([g, cp, self.card(slot), self.cell(cell)], -1)).squeeze(-1)
-
-    head = Head().to(dev)
-    opt = torch.optim.AdamW(head.parameters(), lr=a.lr, weight_decay=1e-4)
+    head = Head(d, model.card_emb.weight.shape[0], model.cell_emb.shape[0], hidden=a.hidden, dropout=a.dropout,
+                card_w=model.card_emb.weight.detach(), cell_w=model.cell_emb.detach(), freeze_emb=a.freeze_emb).to(dev)
+    opt = torch.optim.AdamW([q for q in head.parameters() if q.requires_grad], lr=a.lr, weight_decay=a.wd)
     Gt = torch.from_numpy(G).to(dev); CPt = torch.from_numpy(CP).to(dev)
     slot_t = torch.from_numpy(data["cand_slot"].astype(np.int64)).to(dev)
     cell_t = torch.from_numpy(data["cand_cell"].astype(np.int64)).to(dev)
@@ -186,7 +230,6 @@ def main():
                 out.append(head(Gt[dec_t[ii]], CPt[ii], slot_t[ii], cell_t[ii]).cpu().numpy())
         return np.concatenate(out) if out else np.zeros(0, np.float32)
 
-    rng = np.random.default_rng(0)
     best, hist = None, []
     for ep in range(1, a.epochs + 1):
         head.train()
@@ -199,17 +242,27 @@ def main():
             tot += float(loss.detach()); nb += 1
         head.eval()
         pred = np.zeros_like(adv)
-        pred[va_c] = predict(va_c)
-        g_val = grade(pred, adv, coff, val_dec, 0.0, rng)
-        corr = float(np.corrcoef(pred[va_c], adv[va_c])[0, 1])
-        rec = {"epoch": ep, "train_loss": round(tot / max(nb, 1), 5), "val_corr": round(corr, 4), **g_val}
+        pred[sel_c] = predict(sel_c)
+        pred[rep_c] = predict(rep_c)
+        g_sel = grade(pred, adv, coff, sel_dec, 0.0, np.random.default_rng(0))
+        g_rep = grade(pred, adv, coff, rep_dec, 0.0, np.random.default_rng(0))
+        rec = {"epoch": ep, "train_loss": round(tot / max(nb, 1), 5),
+               "select_corr": round(float(np.corrcoef(pred[sel_c], adv[sel_c])[0, 1]), 4),
+               "select": g_sel,
+               "report_corr": round(float(np.corrcoef(pred[rep_c], adv[rep_c])[0, 1]), 4),
+               "report": g_rep}
         hist.append(rec)
         print(json.dumps(rec), flush=True)
-        if best is None or rec["rerank"] < best["rerank"]:
+        if best is None or g_sel["rerank"] < best["select"]["rerank"]:     # SELECT on fold 0 only
             best = rec
-            torch.save({"head": head.state_dict(), "encoder_ckpt": str(a.ckpt), "d": d, "epoch": ep, "val": rec},
-                       a.out_dir / f"rerank_head_s{a.seed}.pt")
-    (a.out_dir / f"hist_s{a.seed}.json").write_text(json.dumps({"best": best, "hist": hist}, indent=1), encoding="utf-8")
+            torch.save({"head": head.state_dict(), "encoder_ckpt": str(a.ckpt), "d": d, "hidden": a.hidden,
+                        "dropout": a.dropout, "epoch": ep, "val": rec},
+                       a.out_dir / f"rerank_head_{a.tag}_s{a.seed}.pt")
+    (a.out_dir / f"hist_{a.tag}_s{a.seed}.json").write_text(json.dumps({"args": vars(a) | {"ckpt": str(a.ckpt),
+                                                                          "shards": [str(s) for s in a.shards],
+                                                                          "out_dir": str(a.out_dir)},
+                                                                 "best": best, "hist": hist}, indent=1),
+                                                        encoding="utf-8")
     print("BEST " + json.dumps(best), flush=True)
     return 0
 
