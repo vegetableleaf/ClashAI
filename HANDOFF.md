@@ -2674,6 +2674,21 @@ The N=1 teacher-corpus labelling run (3 x 40 matches on disjoint seeds) is runni
 
 *Next:* DAgger -- label the states the head itself visits (a beta-mix of search and head drives the match; every visited state gets rollout scores for its shortlist), aggregate with the search corpus, retrain, and only then the paired closed-loop A/B on the 900000 / 911000 slices.
 
+**S. VALUE RERANKER VERDICT (a): head-gated is a clear LOSS; rank-only is a NULL over three disjoint slices (L67n).** Closed loop, sim play_match, degraded view, identical seeds, paired per seed against the unsearched student (search vs student for reference: +1.587 +- 0.264 pooled, t=6.01).
+
+| arm | slice A | slice B | slice C | pooled | plays/match |
+|---|---|---|---|---|---|
+| head C gates + chooses | -1.415 +- 0.480 | -1.098 +- 0.347 | -- | **-1.257 +- 0.291 (t=-4.31)**, n=24 | 3.5 / 2.4 |
+| head D1C (+DAgger 1) gates + chooses | -1.287 +- 0.512 | -0.778 +- 0.463 | -- | **-1.033 +- 0.342 (t=-3.02)**, n=24 | 6.3 / 6.8 |
+| rank-only C (student gates) | -0.149 +- 0.617 | +1.060 +- 0.309 | +0.171 +- 0.613 | **+0.361 +- 0.311 (t=1.16)**, n=36 | 32.6 / 42.3 / 32.8 |
+| rank-only D1C (student gates) | +0.490 +- 0.500 | -0.063 +- 0.529 | +0.329 +- 0.606 | **+0.252 +- 0.309 (t=0.82)**, n=36 | 45.1 / 24.8 / 27.3 |
+
+*DAgger iteration 1* (90 matches, beta 0.5, 16,348 labelled decisions / 93,408 candidates; the head played 1,002 of its 8,172 steps): D1C minus C **+0.224 +- 0.164 (t=1.36)**, +2.8 / +4.4 plays per match. It doubled the play rate and did not rescue the gate.
+
+*Reading.* As a GATE the head sits near never-play and loses decisively -- the closed-loop shift of R, which one DAgger round only dents. As a pure CHOOSER under the student's own gate it is directionally positive for both heads and significant for neither; the two heads even helped on different slices (C on B at t=3.43, D1C on A at t=0.98), which is what noise looks like, and the third slice sat inside both bands. Even taken at face value the pooled +0.25-0.36 is under a quarter of what the rollouts themselves deliver, so the learned head recovers little of the search. **Consistent with P: learning the search's evaluation from the degraded view does not carry it into closed loop at this model and corpus size -- the privileged-teacher gap, now shown for values as well as actions.** Confound: plays per match move under an identical gate (24.8-45.1 vs ~50) because a different card choice changes the elixir trajectory, so the rank arms differ per decision only in the choice but not per match. Winrate (8-9/24 vs 3/24) is not used.
+
+*Not done, owner decision:* a power-up of the rank-only test (36 -> ~144 matches would put a true +0.3 near t=2), a second DAgger round, or closing the line.
+
 ### §5cs.98 -- L67e+f (2026-09-08 06:00-18:00 UTC): **OPTION B GRADED (3 seeds: clean 21.56 +- 0.07, degraded 19.45 +- 0.05) BUT ITS GAIN IS AGAINST A CORRUPTION MODEL WE NOW KNOW IS WRONG. Three label-free live measurements instead: the GATE survives real detector input (live .248-.325 vs engine .294-.298), PLACEMENT COLLAPSES toward the prior (top-1 cell share 0.25 vs 0.07 at matched unit counts), and nothing JITTERS (same-cell 61.4% live vs 38.7% engine -- the collapse seen twice, not a second defect). Ablation names the cause: MISSING VALUES (unit HP, exact/opponent elixir, king HP), not noisy ones -- spell tokens, unknown team tags and low confidence each do NOTHING. Against pro labels, SUPPLYING beats FLAGGING (blank_both 18.78 exact cell / 52.11 card -> fill_both 20.15 / 63.25), so the fill is now wired live and verified (live top-1 share 0.411 -> 0.322)**
 
 **A. Option B, the 3-seed result (a), `s1_v6aug/eval_v3val_icebow_v6aug.out` + `eval_v3degraded_*`.** Augmented set = 622,923 rows (339,192 clean + 283,731 degraded TRAIN rows; val rows clean, so checkpoint selection is v6lat's own rule).
