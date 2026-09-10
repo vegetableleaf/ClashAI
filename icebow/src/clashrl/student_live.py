@@ -221,12 +221,22 @@ class HandMemory:
     in-distribution value, and supplying beats flagging on this model by measurement (5cs.98 E: blank_both
     18.78 exact cell / 52.11 card -> fill_both 20.15 / 63.25).
 
+    TTL: 30 s, not 3 s. The dominant failure is not the 1-2 s cycle animation but the UNAFFORDABLE DIM --
+    Clash renders a card you cannot afford desaturated toward grey, which mixes colour channels and so is NOT
+    cancelled by the per-channel centring that makes template matching brightness-invariant (measured: the
+    same card scores ~0.1-0.19 lower while unaffordable, and in the 22:51 run the failing scores sat at a
+    median 0.49 against a 0.5 threshold). A card can stay unaffordable for tens of seconds, so a 3 s TTL
+    expires mid-dim and the slot falls back to -1 exactly when elixir is low. Matching on luminance instead
+    was tested and recovers only 3 of 53 failures, so it is not the answer. Holding the identity is: a dimmed
+    card has not CHANGED, it is only drawn differently, and `invalidate()` drops the one slot that really did
+    change.
+
     ⚠ This fills the MODEL'S VIEW ONLY. The tap path keeps the raw ids, so the bot still refuses to play a
     slot it cannot identify -- holding a stale identity there would tap a slot whose card has just changed,
     which is exactly the misplay the animation would cause.
     """
 
-    def __init__(self, ttl_s: float = 3.0) -> None:
+    def __init__(self, ttl_s: float = 30.0) -> None:
         self.ttl_s = float(ttl_s)
         self._slots: dict[int, tuple[int, float]] = {}
         self.filled = 0
@@ -248,6 +258,12 @@ class HandMemory:
             else:
                 out.append(-1)
         return out
+
+    def invalidate(self, slot_index: int) -> None:
+        """Forget one slot -- call it when THAT slot's card is played, which is the only way its identity
+        changes. With this, the TTL no longer has to be short: a slot that is merely unreadable (dimmed while
+        unaffordable, or mid-animation) keeps its identity, while a slot that genuinely changed drops it."""
+        self._slots.pop(int(slot_index), None)
 
     def reset(self) -> None:
         self._slots.clear()

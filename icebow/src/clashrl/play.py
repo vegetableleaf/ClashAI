@@ -878,6 +878,12 @@ def play(cfg) -> None:
         if _student is not None:                   # L67d: the student's `past` = my last 3 accepted plays
             _cx, _cy = actions.cell_center(gx, gy)
             _student.record_play(card_id, actions.warp.frame_to_board(_cx, _cy), vision.deck_keys)
+            # the played slot is the ONE whose identity actually changes -- drop its cached read so the
+            # long hand-memory TTL can never serve a card that has just been cycled out (L67k)
+            for _si, _cid in enumerate(list(hand_ids)[:4]):
+                if int(_cid) == int(card_id):
+                    _student.hand_memory.invalidate(_si)
+                    break
         # ANY play (troop or spell) anchors its own detection 'mine' -- base-matched, so your rolling Log
         # is claimed at the cast point while an enemy answer dropped on the same spot is not.
         cx, cy = actions.cell_center(gx, gy)
