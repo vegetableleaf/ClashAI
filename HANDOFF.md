@@ -2636,6 +2636,32 @@ The N=1 teacher-corpus labelling run (3 x 40 matches on disjoint seeds) is runni
 
 **Conclusion: behavioural cloning of the search is dead; do not tune it.** What survives is that the search itself replicates (+1.714 / +1.460 paired, section N) and that its value lies in RANKING candidates. The next target is therefore the search's VALUE, not its action: train a head to predict each candidate's rollout score and use it to rerank the student's own shortlist at decision time, keeping the evaluate-then-choose structure instead of collapsing it into a policy. The data already exists -- the search scores every candidate it rolls out and currently discards all but the argmax.
 
+**Q. hogeq corpus expansion via ONE-CARD-OFF pro decks, with a MEASURED alias (L67m, 2026-09-09/10).** Owner asked for hogeq to reach icebow's footing and approved mining substituted decks on the condition that placements are not confounded (a pro's electro-spirit placements must correspond to our ice-spirit, and so on).
+
+*Where hogeq stood (a):* 765 replays (v5) vs icebow's 2,241 (v6), but its v5lat checkpoint is already the stronger model -- **23.21 +- 0.61 exact cell** vs icebow v6lat 21.04 +- 0.22 -- so retraining on the same data reproduces it; only more data changes anything. The 188 crawled-but-undriven battles are NOT free: 121 were inside the v5 drive scope (attempted, did not land) and 67 lack usable play rows.
+
+*Census (a), `hf_subs_census.py`, 504,476 HF sides:* **117 exact hogeq, 1,893 one-card-off.** Swaps: ice-spirit->electro-spirit 1,346 / tesla->cannon 406 / the-log->barbarian-barrel 36 / mighty-miner->valkyrie+heroes 51 / skeletons->goblins+guards 19 / long tail.
+
+*Does the swapped card get placed like ours? (a), `hf_subs_placement.py`.* Histogram overlap on 3x4-tile bins did NOT discriminate (mighty-miner<-valkyrie 0.719 scored level with tesla<-cannon 0.716), so usage was measured directly:
+
+| card | n | own-half % | depth p25 / med / p75 |
+|---|---|---|---|
+| tesla (ours) | 505 | 55.6 | 11.0 / 18.0 / 21.0 |
+| **cannon** | 2,120 | **53.7** | **10.5 / 18.5 / 21.5** |
+| ice-spirit (ours) | 785 | 58.9 | 13.5 / 17.5 / 19.5 |
+| electro-spirit | 10,524 | **49.6** | 11.5 / **14.5** / 20.5 |
+| the-log / barbarian-barrel | 636 / 248 | 57.7 / 50.0 | 17.5 vs 16.0 median |
+| mighty-miner / valkyrie | 638 / 153 | 56.0 / 50.3 | |
+| skeletons / goblins | 764 / 78 | 58.6 / 52.6 | |
+
+**Only tesla <- cannon passes.** **ice-spirit <- electro-spirit FAILS despite being 71% of the volume**: played 9.3 pp more often on the enemy half, median 3 tiles further forward -- thrown offensively with a push, where hog 2.6's ice spirit is a defensive cycle card. Aliasing it would have taught our ice-spirit slot to be played forward, and a 0.844 histogram overlap hid that. Restricting it to its defensive plays is not possible: dropping individual plays breaks the hand-cycle reconstruction, so a replay is all-or-nothing.
+
+*Two measurement traps caught by their own controls:* (1) the first HF scan read a `battle` column that does not exist (the data is in `payload_json`, decks under `players[0]`) and a try/except swallowed it -- it reported 0 decks for icebow too, which is what exposed it; (2) RoyaleAPI coordinates are **milli-tiles** (0-18000 x 0-32000; replay_drive.py:162-164), read as tiles they fell outside every bin and the **self-overlap control (a card against its own plays) returned 0.0**, which is impossible for a sound instrument. The corrected self-overlap ceiling is 0.795-0.800.
+
+*Implementation:* `pipeline/decks/hogeq.yaml` gains `aliases: {cannon: tesla_evo}` with the verdict table inline; `obs_contract.Deck.aliases` is applied inside `Deck.slot_of`, whose every caller maps MY side only (dataset.deck_sides, crawl_slot play labels, card_id_of hand/next, engine_play, student_live.record_play) -- the opponent's cards and all unit tokens keep true names via vocab ids. Driven replay logs carry plain base names (`cannon`, not `cannon-ev1`), so crawl_slot reaches the alias. A deck holding BOTH cannon and tesla cannot match (two cards claim one slot). `hf_to_crawl_deck.py` generalises the frozen icebow miner to any deck + its alias table. Test `test_deck_aliases_map_only_measured_swaps`; 23/23 pass.
+
+*Also found (a):* **Mighty Miner's ability is not wired anywhere the model can use it.** play.py never reads `hand.ability_button`; env.py's support is dead (it reads `vision.ability_key`, which vision.py does not define, so `ability_id` = -1); the S1 action space is 8 deck slots (N_SLOTS=8) with no ability action; and replay_drive.py skips ability presses, so no corpus contains one. **And hogeq's live path is a FORK, not shared:** `hogeq/src/clashrl` is a 68-file copy without `student_live.py` (play.py differs by 306 lines), because `Config.load()` derives its root from the module's own location -- `icebow/run.py --config hogeq/...` still resolves everything under icebow/. The pipeline IS shared; the live path needs a port (owner: after the corpus work).
+
 ### §5cs.98 -- L67e+f (2026-09-08 06:00-18:00 UTC): **OPTION B GRADED (3 seeds: clean 21.56 +- 0.07, degraded 19.45 +- 0.05) BUT ITS GAIN IS AGAINST A CORRUPTION MODEL WE NOW KNOW IS WRONG. Three label-free live measurements instead: the GATE survives real detector input (live .248-.325 vs engine .294-.298), PLACEMENT COLLAPSES toward the prior (top-1 cell share 0.25 vs 0.07 at matched unit counts), and nothing JITTERS (same-cell 61.4% live vs 38.7% engine -- the collapse seen twice, not a second defect). Ablation names the cause: MISSING VALUES (unit HP, exact/opponent elixir, king HP), not noisy ones -- spell tokens, unknown team tags and low confidence each do NOTHING. Against pro labels, SUPPLYING beats FLAGGING (blank_both 18.78 exact cell / 52.11 card -> fill_both 20.15 / 63.25), so the fill is now wired live and verified (live top-1 share 0.411 -> 0.322)**
 
 **A. Option B, the 3-seed result (a), `s1_v6aug/eval_v3val_icebow_v6aug.out` + `eval_v3degraded_*`.** Augmented set = 622,923 rows (339,192 clean + 283,731 degraded TRAIN rows; val rows clean, so checkpoint selection is v6lat's own rule).

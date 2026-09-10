@@ -1,0 +1,32 @@
+{
+ "deck": "hogeq",
+ "sides": 504476,
+ "exact": 117,
+ "subs": {
+  "ice-spirit->electro-spirit": 1346,
+  "tesla->cannon": 406,
+  "the-log->barbarian-barrel": 36,
+  "mighty-miner->valkyrie-hero": 18,
+  "skeletons->goblins": 14,
+  "mighty-miner->valkyrie": 13,
+  "mighty-miner->knight-hero": 11,
+  "mighty-miner->berserker-hero": 9,
+  "ice-spirit->royal-delivery": 6,
+  "skeletons->guards": 5,
+  "firecracker->furnace": 4,
+  "earthquake->lightning": 4,
+  "ice-spirit->fire-spirit": 3,
+  "the-log->royal-delivery": 3,
+  "earthquake->fireball": 2,
+  "mighty-miner->knight": 2,
+  "skeletons->royal-delivery": 2,
+  "tesla->bomb-tower": 2,
+  "mighty-miner->goblinstein": 1,
+  "ice-spirit->wall-breakers": 1,
+  "mighty-miner->mega-knight": 1,
+  "firecracker->executioner": 1,
+  "firecracker->archers": 1,
+  "ice-spirit->berserker-hero": 1,
+  "mighty-miner->golden-knight": 1
+ }
+}

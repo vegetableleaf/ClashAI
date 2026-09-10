@@ -13,6 +13,16 @@ cards:                      # 8 slots, deck order
   - earthquake
   - skeletons
   - ice_spirit
+aliases:                    # THEIR card -> OUR slot, for mining one-card-off pro decks (Deck.slot_of applies it)
+  # Owner ruling 2026-09-10: substitutions only where placements are NOT confounded, and that is MEASURED
+  # (scratchpad/gauntlet/L67/hf_subs_placement.py, 504,476 HF sides). Candidate swaps and their verdicts:
+  #   tesla <- cannon            PASS  own-half 55.6% vs 53.7%, depth quartiles 11.0/18.0/21.0 vs 10.5/18.5/21.5
+  #   ice_spirit <- electro_spirit FAIL own-half 58.9% vs 49.6%, median 3 tiles further forward (played offensively)
+  #   the_log <- barbarian_barrel  FAIL own-half 57.7% vs 50.0%
+  #   mighty_miner <- valkyrie     FAIL own-half 56.0% vs 50.3%, and a champion is not a mini-tank
+  #   skeletons <- goblins         FAIL own-half 58.6% vs 52.6%
+  # Only my own side is aliased: the opponent's cards and every unit on the board keep their true names.
+  cannon: tesla_evo
 config: hogeq/config/config.yaml    # BoardWarp anchors (hogeq's own calibration; identical values to icebow's today)
 src_dir: icebow/src                 # BoardWarp is imported from icebow's clashrl (the spec's cited file), never copied
 crawl_dir: hogeq/data/royaleapi

@@ -408,6 +408,25 @@ class TestLiveAdapter(unittest.TestCase):
         self.assertEqual(len(got), 1)
         self.assertEqual(got[0].side, 1)          # resolved to ENEMY, not left at -1
 
+    def test_deck_aliases_map_only_measured_swaps(self):
+        """Owner ruling 2026-09-10: a one-card-off pro deck counts only where the swapped card is PLACED like ours.
+
+        hogeq aliases cannon -> tesla (measured: own-half 55.6% vs 53.7%, depth quartiles within 0.5 tile);
+        electro-spirit was measured to be played ~3 tiles further forward and must NOT map to ice-spirit.
+        """
+        hog = oc.load_deck("hogeq")
+        tesla_slot = hog.slot_of("tesla_evo")
+        self.assertGreaterEqual(tesla_slot, 0)
+        self.assertEqual(hog.slot_of("cannon"), tesla_slot)          # the pro's cannon plays land on our tesla
+        self.assertEqual(hog.slot_of("cannon_evo"), tesla_slot)      # forms free, like every other deck match
+        self.assertEqual(hog.slot_of("electro_spirit"), -1)          # measured FAIL -> not aliased
+        self.assertEqual(hog.slot_of("ice_spirit"), hog.cards.index("ice_spirit"))
+        self.assertEqual(self.deck.slot_of("cannon"), -1)            # icebow declares no alias
+        # a deck holding BOTH cannon and tesla cannot match: two cards would claim one slot
+        slots = sorted(hog.slot_of(c) for c in ("hog_rider", "firecracker", "mighty_miner", "tesla",
+                                                  "cannon", "the_log", "earthquake", "skeletons"))
+        self.assertNotEqual(slots, list(range(8)))
+
     def test_mine_classes_closes_over_spawns(self):
         """The rule must hold for ANY deck, so the allowed set includes what my cards SPAWN."""
         import dataclasses

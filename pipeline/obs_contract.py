@@ -63,12 +63,21 @@ class Deck:
     src_dir: Path                   # clashrl source dir BoardWarp is imported from
     crawl_dir: Path
     data_dir: Path
+    # (THEIR card, OUR card) pairs from the deck yaml's `aliases`: a pro's one-card-off deck is mined when the
+    # swapped card is measured to be PLACED like ours (hogeq: cannon for tesla). Applied here, so it reaches
+    # exactly the my-side mappings -- deck matching, play labels, hand/next, record_play -- and never the
+    # opponent's cards or any unit token, which go through vocab ids directly.
+    aliases: tuple[tuple[str, str], ...] = ()
 
     def slot_of(self, name: Optional[str]) -> int:
         """Deck slot of a class name (matched on BASE key so ``tesla`` and ``tesla_evo`` agree); -1 if absent."""
         if not name:
             return -1
         b = vocab.base_key(str(name))
+        for src, dst in self.aliases:
+            if vocab.base_key(src) == b:
+                b = vocab.base_key(dst)
+                break
         for i, c in enumerate(self.cards):
             if vocab.base_key(c) == b:
                 return i
@@ -93,7 +102,8 @@ def load_deck(name_or_path: str | Path) -> Deck:
         raise ValueError(f"{p}: deck needs 8 cards, got {len(cards)}")
     return Deck(name=str(d["name"]), cards=cards, card_ids=tuple(vocab.unit_id(c) for c in cards),
                 config=REPO / d["config"], src_dir=REPO / d["src_dir"],
-                crawl_dir=REPO / d["crawl_dir"], data_dir=REPO / d["data_dir"])
+                crawl_dir=REPO / d["crawl_dir"], data_dir=REPO / d["data_dir"],
+                aliases=tuple((str(k), str(v)) for k, v in (d.get("aliases") or {}).items()))
 
 
 # ------------------------------------------------------------------------------------------------------

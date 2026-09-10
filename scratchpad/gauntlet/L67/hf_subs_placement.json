@@ -1,0 +1,85 @@
+[
+ {
+  "pair": "ice-spirit <- electro-spirit",
+  "n_ours": 785,
+  "n_theirs": 10524,
+  "ours_median_xy": [
+   8.5,
+   17.5
+  ],
+  "theirs_median_xy": [
+   8.5,
+   14.5
+  ],
+  "median_shift_tiles": 3.0,
+  "histogram_overlap": 0.844
+ },
+ {
+  "pair": "tesla <- cannon",
+  "n_ours": 505,
+  "n_theirs": 2120,
+  "ours_median_xy": [
+   9.0,
+   18.0
+  ],
+  "theirs_median_xy": [
+   9.5,
+   18.5
+  ],
+  "median_shift_tiles": 0.71,
+  "histogram_overlap": 0.716
+ },
+ {
+  "pair": "the-log <- barbarian-barrel",
+  "n_ours": 636,
+  "n_theirs": 248,
+  "ours_median_xy": [
+   7.5,
+   17.5
+  ],
+  "theirs_median_xy": [
+   9.5,
+   16.0
+  ],
+  "median_shift_tiles": 2.5,
+  "histogram_overlap": 0.729
+ },
+ {
+  "pair": "mighty-miner <- valkyrie",
+  "n_ours": 638,
+  "n_theirs": 153,
+  "ours_median_xy": [
+   8.5,
+   17.5
+  ],
+  "theirs_median_xy": [
+   8.5,
+   17.5
+  ],
+  "median_shift_tiles": 0.0,
+  "histogram_overlap": 0.719
+ },
+ {
+  "pair": "skeletons <- goblins",
+  "n_ours": 764,
+  "n_theirs": 78,
+  "ours_median_xy": [
+   8.5,
+   17.5
+  ],
+  "theirs_median_xy": [
+   12.0,
+   17.5
+  ],
+  "median_shift_tiles": 3.5,
+  "histogram_overlap": 0.567
+ },
+ {
+  "self_overlap_ceiling": "tesla",
+  "overlap": 0.8
+ },
+ {
+  "self_overlap_ceiling": "ice-spirit",
+  "overlap": 0.795
+ }
+]
