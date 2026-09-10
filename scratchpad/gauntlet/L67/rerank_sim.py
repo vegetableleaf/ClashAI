@@ -38,8 +38,9 @@ from student_search import StudentSearcher                               # noqa:
 class RerankActor(StudentSearcher):
     """StudentSearcher's shortlist, scored by the learned head instead of by rollouts."""
 
-    def __init__(self, env, model, deck, *, head, margin, **kw):
+    def __init__(self, env, model, deck, *, head, margin, mode_rank=False, **kw):
         super().__init__(env, model, deck, **kw)
+        self.mode_rank = bool(mode_rank)
         self.head = head
         self.margin = float(margin)
         self.pred_adv = []
@@ -69,7 +70,16 @@ class RerankActor(StudentSearcher):
             pred = self.head(g.expand(len(cands), -1), cp, slots, cells).numpy()
         k = int(np.argmax(pred))
         self.pred_adv.append(float(pred[k]))
-        if float(pred[k]) <= self.margin:
+        # RANK mode: the STUDENT's own gate decides play vs wait, the head only chooses WHICH candidate. Against
+        # the unsearched student (who plays candidate 0 when p > tau) the ONLY difference is the choice, so the
+        # A/B isolates ranking quality from the play/wait decision -- which is where every head-gated arm failed.
+        if self.mode_rank:
+            if p_play <= self.gate_tau:
+                self.head_waited += 1
+                self.chose_wait += 1
+                self.stats["wait"] += 1
+                return (0, 0, 0), None
+        elif float(pred[k]) <= self.margin:
             self.head_waited += 1
             self.chose_wait += 1
             self.stats["wait"] += 1
@@ -90,6 +100,9 @@ def main():
     ap.add_argument("--margin", type=float, default=0.0)
     ap.add_argument("--topk", type=int, default=4)
     ap.add_argument("--cells", type=int, default=3)
+    ap.add_argument("--mode", default="head_gate", choices=("head_gate", "rank"),
+                    help="head_gate: the head decides play vs wait AND the candidate; rank: the student's gate "
+                         "(tau 0.27) decides play vs wait, the head only picks the candidate")
     ap.add_argument("--out", type=Path, default=None)
     a = ap.parse_args()
 
@@ -118,7 +131,7 @@ def main():
         raise SystemExit(f"head was trained on {hst.get('encoder_ckpt')}, not {a.ckpt}: the encoder must match")
     deck = load_deck("icebow")
 
-    actor = RerankActor(env, model, deck, head=head, margin=a.margin, horizon=12.0, interval=1, topk=a.topk,
+    actor = RerankActor(env, model, deck, head=head, margin=a.margin, mode_rank=(a.mode == "rank"), horizon=12.0, interval=1, topk=a.topk,
                         cells=a.cells, crown_w=1.0, scorer_cls=Scorer, gate_tau=0.27, degrade=True, grid=grid,
                         torch=torch, cell_xy=cell_xy, hand_mask_from_sc=hand_mask_from_sc, to_tokens=to_tokens)
     recs = []
@@ -131,7 +144,7 @@ def main():
               % (m, a.seed0 + m, r["outcome"], r["tower_delta"], r["plays"], actor.head_played, actor.head_waited),
               flush=True)
     td = np.array([r["tower_delta"] for r in recs])
-    summary = {"ckpt": str(a.ckpt), "head": str(a.head), "margin": a.margin, "matches": len(recs),
+    summary = {"ckpt": str(a.ckpt), "head": str(a.head), "mode": a.mode, "margin": a.margin, "matches": len(recs),
                "win_pct": round(100.0 * float(np.mean([r["outcome"] == "win" for r in recs])), 1),
                "tower_delta_mean": round(float(td.mean()), 4),
                "tower_delta_sem": round(float(td.std(ddof=1) / max(1.0, np.sqrt(len(td)))), 4),

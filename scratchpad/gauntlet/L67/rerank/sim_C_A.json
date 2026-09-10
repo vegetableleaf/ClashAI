@@ -1,0 +1,270 @@
+{
+ "summary": {
+  "ckpt": "icebow\\data\\pipeline\\s1_icebow_v6lat_s0.pt",
+  "head": "scratchpad\\gauntlet\\L67\\rerank\\rerank_head_C_s0.pt",
+  "margin": 0.0,
+  "matches": 12,
+  "win_pct": 8.3,
+  "tower_delta_mean": -2.2858,
+  "tower_delta_sem": 0.3979,
+  "plays_per_match": 3.5,
+  "head_played": 42,
+  "head_waited": 2810,
+  "pred_adv_median": -0.1066,
+  "wall_s": 176.6
+ },
+ "matches": [
+  {
+   "seed": 900000,
+   "steps": 229,
+   "plays": 6,
+   "elixir_sum": 1775.1428571428557,
+   "ge6": 159,
+   "casts": 0,
+   "dumped": 0,
+   "cast_rows": [],
+   "outcome": "loss",
+   "crowns": [
+    0,
+    3
+   ],
+   "t_end": 137.2999999999965,
+   "our_tower": 0.0,
+   "their_tower": 3.5892857142857144,
+   "tower_delta": -3.5892857142857144,
+   "crown_delta": -3,
+   "wall_s": 12.538293099998555
+  },
+  {
+   "seed": 900001,
+   "steps": 301,
+   "plays": 5,
+   "elixir_sum": 2456.1428571428564,
+   "ge6": 231,
+   "casts": 0,
+   "dumped": 0,
+   "cast_rows": [],
+   "outcome": "loss",
+   "crowns": [
+    0,
+    2
+   ],
+   "t_end": 180.09999999999405,
+   "our_tower": 0.4734558657323692,
+   "their_tower": 3.3480108499095844,
+   "tower_delta": -2.874554984177215,
+   "crown_delta": -2,
+   "wall_s": 17.103901599999517
+  },
+  {
+   "seed": 900002,
+   "steps": 501,
+   "plays": 2,
+   "elixir_sum": 4631.499999999999,
+   "ge6": 450,
+   "casts": 0,
+   "dumped": 0,
+   "cast_rows": [],
+   "outcome": "loss",
+   "crowns": [
+    0,
+    0
+   ],
+   "t_end": 300.09999999999974,
+   "our_tower": 3.197033227848101,
+   "their_tower": 3.7947932618683002,
+   "tower_delta": -0.5977600340201992,
+   "crown_delta": 0,
+   "wall_s": 29.485468999999284
+  },
+  {
+   "seed": 900003,
+   "steps": 136,
+   "plays": 3,
+   "elixir_sum": 865.9999999999991,
+   "ge6": 71,
+   "casts": 0,
+   "dumped": 0,
+   "cast_rows": [],
+   "outcome": "loss",
+   "crowns": [
+    0,
+    3
+   ],
+   "t_end": 81.19999999999966,
+   "our_tower": 1.0,
+   "their_tower": 3.585837793330589,
+   "tower_delta": -2.585837793330589,
+   "crown_delta": -3,
+   "wall_s": 7.425964699999895
+  },
+  {
+   "seed": 900004,
+   "steps": 181,
+   "plays": 3,
+   "elixir_sum": 1315.999999999999,
+   "ge6": 116,
+   "casts": 0,
+   "dumped": 0,
+   "cast_rows": [],
+   "outcome": "loss",
+   "crowns": [
+    0,
+    3
+   ],
+   "t_end": 108.39999999999812,
+   "our_tower": 0.6630785205696204,
+   "their_tower": 3.5895117540687163,
+   "tower_delta": -2.926433233499096,
+   "crown_delta": -3,
+   "wall_s": 10.18846029999986
+  },
+  {
+   "seed": 900005,
+   "steps": 161,
+   "plays": 5,
+   "elixir_sum": 1084.1428571428557,
+   "ge6": 91,
+   "casts": 0,
+   "dumped": 0,
+   "cast_rows": [],
+   "outcome": "loss",
+   "crowns": [
+    0,
+    3
+   ],
+   "t_end": 96.3999999999988,
+   "our_tower": 1.0,
+   "their_tower": 3.5892857142857144,
+   "tower_delta": -2.5892857142857144,
+   "crown_delta": -3,
+   "wall_s": 8.8616342000023
+  },
+  {
+   "seed": 900006,
+   "steps": 204,
+   "plays": 3,
+   "elixir_sum": 1651.9999999999995,
+   "ge6": 155,
+   "casts": 0,
+   "dumped": 0,
+   "cast_rows": [],
+   "outcome": "loss",
+   "crowns": [
+    0,
+    3
+   ],
+   "t_end": 122.39999999999732,
+   "our_tower": 0.5091517857142858,
+   "their_tower": 3.320049403046521,
+   "tower_delta": -2.8108976173322353,
+   "crown_delta": -3,
+   "wall_s": 11.961523099998885
+  },
+  {
+   "seed": 900007,
+   "steps": 501,
+   "plays": 3,
+   "elixir_sum": 4526.999999999998,
+   "ge6": 436,
+   "casts": 0,
+   "dumped": 0,
+   "cast_rows": [],
+   "outcome": "loss",
+   "crowns": [
+    0,
+    0
+   ],
+   "t_end": 300.09999999999974,
+   "our_tower": 3.46738669755877,
+   "their_tower": 3.585837793330589,
+   "tower_delta": -0.11845109577181878,
+   "crown_delta": 0,
+   "wall_s": 29.61192680000022
+  },
+  {
+   "seed": 900008,
+   "steps": 124,
+   "plays": 1,
+   "elixir_sum": 988.1428571428568,
+   "ge6": 92,
+   "casts": 0,
+   "dumped": 0,
+   "cast_rows": [],
+   "outcome": "loss",
+   "crowns": [
+    0,
+    3
+   ],
+   "t_end": 74.10000000000007,
+   "our_tower": 0.5621383363471968,
+   "their_tower": 3.854961832061069,
+   "tower_delta": -3.292823495713872,
+   "crown_delta": -3,
+   "wall_s": 7.319745900000271
+  },
+  {
+   "seed": 900009,
+   "steps": 301,
+   "plays": 2,
+   "elixir_sum": 2671.642857142856,
+   "ge6": 255,
+   "casts": 0,
+   "dumped": 0,
+   "cast_rows": [],
+   "outcome": "win",
+   "crowns": [
+    1,
+    0
+   ],
+   "t_end": 180.09999999999405,
+   "our_tower": 3.04251048965868,
+   "their_tower": 2.589967284623773,
+   "tower_delta": 0.45254320503490675,
+   "crown_delta": 1,
+   "wall_s": 18.26766510000016
+  },
+  {
+   "seed": 900010,
+   "steps": 222,
+   "plays": 8,
+   "elixir_sum": 1528.1428571428546,
+   "ge6": 130,
+   "casts": 0,
+   "dumped": 0,
+   "cast_rows": [],
+   "outcome": "loss",
+   "crowns": [
+    0,
+    3
+   ],
+   "t_end": 133.19999999999672,
+   "our_tower": 0.0,
+   "their_tower": 3.436911248198847,
+   "tower_delta": -3.436911248198847,
+   "crown_delta": -3,
+   "wall_s": 12.624489000001631
+  },
+  {
+   "seed": 900011,
+   "steps": 179,
+   "plays": 1,
+   "elixir_sum": 1642.6428571428569,
+   "ge6": 160,
+   "casts": 0,
+   "dumped": 0,
+   "cast_rows": [],
+   "outcome": "loss",
+   "crowns": [
+    0,
+    3
+   ],
+   "t_end": 107.39999999999817,
+   "our_tower": 0.5288426763110307,
+   "their_tower": 3.5892857142857144,
+   "tower_delta": -3.0604430379746836,
+   "crown_delta": -3,
+   "wall_s": 11.128759799998079
+  }
+ ]
+}

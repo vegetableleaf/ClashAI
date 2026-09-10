@@ -1,0 +1,23 @@
+dagger done 12:28
+BEST {"epoch": 24, "train_loss": 0.08374, "select_corr": 0.3754, "select": {"rerank": 0.0746, "always_wait": 0.0943, "student_top": 0.1956, "random_cand": 0.2047, "play_bal_acc": 0.618, "top1_when_play_is_right": 0.2976, "n_decisions": 7159}, "report_corr": 0.5793, "report": {"rerank": 0.0757, "alwa
+===== head C =====
+slice arm          tower  wins  plays |      vs student (paired) |       vs search (paired)
+A     student     -0.871  3/12   50.3
+A     search      +0.843 11/12   37.3
+A     C           -2.286  1/12    3.5 | -1.415 +- 0.480 (t=-2.95) | -3.129 +- 0.402 (t=-7.78)
+B     student     -1.757  0/12   49.7
+B     search      -0.298  7/12   30.9
+B     C           -2.855  0/12    2.4 | -1.098 +- 0.347 (t=-3.17) | -2.558 +- 0.444 (t=-5.77)
+POOLED C vs student: -1.257 +- 0.291 (t=-4.31, n=24)
+POOLED C vs search: -2.843 +- 0.299 (t=-9.52, n=24)
+===== head D1C =====
+slice arm          tower  wins  plays |      vs student (paired) |       vs search (paired)
+A     student     -0.871  3/12   50.3
+A     search      +0.843 11/12   37.3
+A     D1C         -2.158  0/12    6.3 | -1.287 +- 0.512 (t=-2.52) | -3.001 +- 0.353 (t=-8.51)
+B     student     -1.757  0/12   49.7
+B     search      -0.298  7/12   30.9
+B     D1C         -2.536  0/12    6.8 | -0.778 +- 0.463 (t=-1.68) | -2.238 +- 0.503 (t=-4.45)
+POOLED D1C vs student: -1.033 +- 0.342 (t=-3.02, n=24)
+POOLED D1C vs search: -2.619 +- 0.311 (t=-8.43, n=24)
+CHAIN_DONE 12:32
