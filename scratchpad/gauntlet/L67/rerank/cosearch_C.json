@@ -1,0 +1,9 @@
+{
+ "decisions_scored": 251,
+ "head_would_play_rate_on_search_states": 0.1793,
+ "search_play_rate_on_these_states": 0.259,
+ "head_max_pred_median": -0.094,
+ "online_corr_pred_vs_true_adv": 0.3041,
+ "verdict_hint": "SHIFT if would-play rate is near the search's (~0.2); BUG if it is near 0.015",
+ "margin": 0.0
+}
