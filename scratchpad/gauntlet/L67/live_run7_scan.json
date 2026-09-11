@@ -1,0 +1,74 @@
+{
+ "summary": {
+  "segments": 2,
+  "matches_ge_60s": 2,
+  "overtime_matches": 0,
+  "minutes_in_match": 3.9,
+  "plays": 22,
+  "stall_plays": 0,
+  "plays_per_min": 5.67,
+  "wait_lines": 24,
+  "pinned_lines": 20,
+  "hi_pinned": 12,
+  "matches_with_hi_run_ge_5": 2,
+  "matches_with_hi_run_ge_10": 0,
+  "hi_pinned_per_min_regulation": 3.09,
+  "hi_pinned_per_min_overtime": null,
+  "stall_per_min_regulation": 0.0,
+  "stall_per_min_overtime": null,
+  "first_match": "19:14:22",
+  "last_match": "19:16:11"
+ },
+ "matches": [
+  {
+   "start": "19:14:22",
+   "start_s": 69262,
+   "plays": 8,
+   "stall_plays": 0,
+   "wait_lines": 11,
+   "pinned_lines": 9,
+   "hi_pinned": 6,
+   "longest_hi_run": 6,
+   "grace_holds": 1,
+   "max_t_digest": 92,
+   "hi_pinned_t": [
+    62,
+    67,
+    73,
+    79,
+    86,
+    92
+   ],
+   "end_s": 69365,
+   "end_state": "MATCH_END",
+   "dur_s": 103,
+   "overtime": false,
+   "plays_per_min": 4.66
+  },
+  {
+   "start": "19:16:11",
+   "start_s": 69371,
+   "plays": 14,
+   "stall_plays": 0,
+   "wait_lines": 13,
+   "pinned_lines": 11,
+   "hi_pinned": 6,
+   "longest_hi_run": 5,
+   "grace_holds": 1,
+   "max_t_digest": 119,
+   "hi_pinned_t": [
+    4,
+    86,
+    92,
+    97,
+    107,
+    119
+   ],
+   "end_s": 69501,
+   "end_state": "MATCH_END",
+   "dur_s": 130,
+   "overtime": false,
+   "plays_per_min": 6.46
+  }
+ ]
+}

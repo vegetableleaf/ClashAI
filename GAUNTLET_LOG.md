@@ -1641,3 +1641,11 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - **Traps:** `worker stop` keeps the VM unless `--stop-vm` (fixed in script; VM stopped by hand); L63 liveness reference deleted -> `liveness_slots.py`; never edit a running bash script.
 - **Live port checkpoint:** v6lat_s0 (picked on the selection split). Next: hogeq live port.
 - **hogeq live port (5cs.99 U):** student_live.py copied; detect / opponent_elixir / reward now byte-identical to icebow; cli.py live hunks only; play.py 6 hunks by git + 4 by hand (137/138 added lines verbatim, the 138th is the hogeq deck default). Suite 1,319 OK before, 1,319 OK after. Dry run on a real hogeq session: 20/200 plays, 6 distinct cards, never the ability. Parity still fails on 5 PRE-EXISTING training-side files (not bundled). Trap: `git apply --reject`'s reject list named the wrong hunk. Not yet played live; hogeq overlay folder (8 clips) now prunes to 10.
+
+## L67p (2026-09-11) -- owner's long icebow session: no freeze on the board in 77 matches; 3 h 45 min lost to a nav loop
+- **Play 22:17-02:42:** 77 matches (15 overtime), 2,821 plays, 11.96/min, 283 STALL-PLAY (10%). Matches with a >= ~47 s high-elixir freeze: runs 2-7 8/13, run8 0/10, run9 0/77. Stable over 4 h (first vs last half 11.9 vs 12.0 plays/min).
+- **Overtime is NOT the trigger (contradicted):** at equal match clock regulation = overtime; pinned-high WAITs climb from double elixir (0.24/min at 20-60 s -> 0.69 at 120-180 s). Opening waits (t < 10 s) are pro-like: pro first play median 12.0 s.
+- **Root cause still hidden:** the low-gate capture (60/process, p < 0.02) filled in match 1; overlay clips cover matches 1-10 only.
+- **Nav loop 02:42-06:27:** MATCH_END with Play Again LOCATED, ~16,000 taps + 2,059 OK escalations, no ceiling in nav.py. Screen unknown (no screenshot on stall).
+- **Correction:** the student is consulted ~1/s, not 10/s -- decision cadence, not model compute, bounds reaction time.
+- **Asked the owner:** what was on screen at ~06:26; approve a nav escalation ceiling + a per-match STALL-PLAY capture for the next long session.

@@ -2742,6 +2742,41 @@ The N=1 teacher-corpus labelling run (3 x 40 matches on disjoint seeds) is runni
 *Live command:* `cd C:\Users\benpe\ClashBot\hogeq` then `.\.venv\Scripts\python.exe run.py play --student data/pipeline/s1_hogeq_v6lat_s0.pt`.
 
 
+**V. THE OWNER'S LONG ICEBOW SESSION (run9, 2026-09-10 22:17 -> 09-11 06:27 local; L67p): no freeze reached the board in 77 matches -- the anti-stall rule absorbed it 283 times -- but the session lost 3 h 45 min to a post-match NAV LOOP, and the freeze capture filled in match 1.** Logs: `icebow/data/play_20260910_221742.log` (nav/state) and the stdout tee `scratchpad/live_run8.log` (UTF-16; converted copy `scratchpad/gauntlet/L67/live_run9_utf8.log`). Scanner `scratchpad/gauntlet/L67/live_session_scan.py`, outputs `live_run{2..9}_scan.json`.
+
+*Setup (a):* `s1_icebow_v6lat_s0.pt` (epoch 15, lattice), gate tau 0.27, anti-stall 9 elixir / 12 s -- the same configuration as run8.
+
+*The freeze, one scanner over every run (a).* A WAIT line is printed once per 10 WAIT decisions; the student is consulted ~1.06 times per match-second (15,051 decisions / 14,156 s), so one WAIT line is ~9.4 s and "5 consecutive WAIT lines at elixir >= 8 with no play" is a >= ~47 s high-elixir freeze.
+
+| run | matches | min in match | plays/min | STALL-PLAY | matches with a >= ~47 s high-elixir freeze |
+|---|---|---|---|---|---|
+| runs 2-7 (pre-fix code, pooled) | 13 | 33.1 | 3.5-7.8 | 0 (rule absent) | **8 of 13** |
+| run8 | 10 | 28.3 | 10.93 | 28 | 0 of 10 |
+| **run9** | **77** | **235.9** | **11.96** (per match 8.0 / 12.1 / 16.1) | **283 (10.0% of 2,821 plays)** | **0 of 77** (longest run: 2 lines in 9 matches, 1 in 66) |
+
+Runs 2-7 ran older code (before HandMemory, the affordability mask and anti-stall), so that row is the bundle of fixes, not the anti-stall rule alone.
+
+*Stable over four hours (a):* first 38 vs last 39 matches -- plays/min 11.90 vs 12.01, STALL-PLAY/min 1.18 vs 1.22, pinned-high WAIT lines/min 0.72 vs 0.66. No drift, leak or slow degradation.
+
+*Overtime is not the trigger (c) -- contradicts the owner's overtime hypothesis.* STALL-PLAY/min regulation 1.21 vs overtime 1.18. Pinned-high WAIT lines (p < 0.05 at elixir >= 8) per match-minute by clock, regulation / overtime: 0-20 s **2.37 / 2.20**, 20-60 s 0.24 / 0.20, 60-120 s 0.44 / 0.33, 120-180 s **0.69 / 0.67**, 180 s+ 0.92 / 0.81. At equal clock time the two are the same; the rate climbs from double elixir (120 s) on, which is where overtime matches live -- that is what "collapse in overtime" looked like. Whether the climb is the model or just more time spent at >= 8 elixir under 2x elixir is (b) untested: the log has no per-decision elixir for PLAY lines, so exposure cannot be normalised.
+
+*The opening wait is pro-like (a).* 46 of the 72 minute-0 pinned-high lines fall at t < 10 s. Pros' first play in the icebow v6 dataset: median **12.0 s** (p10 9.1, p90 17.6; 2,244 player-matches; engine tick 0 vs the live clock's IN_MATCH start may differ by a few seconds). Waiting at 8-9 elixir before ~12 s is what pros do.
+
+*Tray reads (a, with a caveat):* the median `badhand` fraction over 591 digest lines is 0.28 -- ~28% of student frames had at least one unreadable tray slot. The counter is cumulative across the SESSION (`reset_match` does not clear `stats`), so this is a session average, not per match. The digest's `hand=[3, 4, 164, 149]` are vocab ids x_bow / rocket / tesla_evo / knight_evo (mapped cards), not unmapped slots.
+
+*Why the root cause is still not visible (a).*
+1. `student_live` dumps at most **60 states per process at p < 0.02**; `low_gate_states.jsonl` was last written 22:21 with t 1.8-180.6 s -- the whole budget went to match 1, mostly ordinary low-gate states (the opening wait, low elixir), none from the late-match climb. Capture design flaw: it samples the wrong condition and spends its budget immediately.
+2. Overlay clips exist only for matches 1-10 (22:17-22:48): `overlay_replay.max_clips` 10 is per process. No clip of any late match.
+
+*The session-killer: a post-match nav loop (a), `nav.py:88-108`.* Last match started 02:38:38 and ended 02:41:59. From 02:41:59 to 06:26:58 the screen read MATCH_END; the Play Again template was **located** and tapped (~16,000 taps) and the escalation alternated `results_ok_center` / `results_ok` every 6 s (1,030 + 1,029 taps) -- nothing advanced. At 06:26:58 the state read HOME and play resumed for one match before the owner stopped it. A similar episode at 23:06 (25 fixed Play Again taps) cleared through the UNKNOWN "dismiss" tap. The escalation ladder has no ceiling: no back/escape, no HOME route, no alert, no stop. What was on screen is unknown -- no screenshot is saved on a nav stall. (b) candidates: a modal over the results screen that leaves the Play Again art visible, or the game window losing input focus.
+
+*Correction to my own C++ answer (L67o chat):* "the screen is read 10 times a second" is the configured perception rate; the student is actually **consulted ~1 time per second** (a). Decision cadence, not model compute (median 27-65 ms), bounds live reaction time; which stage sets that cadence is (b) untested -- measure per-iteration stage timings before any rewrite.
+
+*What this does NOT establish.* The cause of the gate pinning in late-game states (no captured states from them). Whether 12 plays/min (above the 8-10.5 pro band carried from L67k) is good or wasteful. Winrate (not logged; not a discriminator anyway).
+
+*Proposed next (owner decisions, 5cs.99 V questions):* (i) nav: cap the MATCH_END/UNKNOWN escalation (after ~2 min stuck: save a screenshot, press Escape/back, route HOME; after ~10 min: stop play.py and post a Discord alert); (ii) capture: dump the state at every STALL-PLAY and at every pinned WAIT with elixir >= 8 and t >= 20 s, budgeted per match (not per process), so the next long session captures the late-game freezes themselves.
+
+
 ### §5cs.98 -- L67e+f (2026-09-08 06:00-18:00 UTC): **OPTION B GRADED (3 seeds: clean 21.56 +- 0.07, degraded 19.45 +- 0.05) BUT ITS GAIN IS AGAINST A CORRUPTION MODEL WE NOW KNOW IS WRONG. Three label-free live measurements instead: the GATE survives real detector input (live .248-.325 vs engine .294-.298), PLACEMENT COLLAPSES toward the prior (top-1 cell share 0.25 vs 0.07 at matched unit counts), and nothing JITTERS (same-cell 61.4% live vs 38.7% engine -- the collapse seen twice, not a second defect). Ablation names the cause: MISSING VALUES (unit HP, exact/opponent elixir, king HP), not noisy ones -- spell tokens, unknown team tags and low confidence each do NOTHING. Against pro labels, SUPPLYING beats FLAGGING (blank_both 18.78 exact cell / 52.11 card -> fill_both 20.15 / 63.25), so the fill is now wired live and verified (live top-1 share 0.411 -> 0.322)**
 
 **A. Option B, the 3-seed result (a), `s1_v6aug/eval_v3val_icebow_v6aug.out` + `eval_v3degraded_*`.** Augmented set = 622,923 rows (339,192 clean + 283,731 degraded TRAIN rows; val rows clean, so checkpoint selection is v6lat's own rule).
