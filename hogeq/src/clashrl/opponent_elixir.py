@@ -31,6 +31,7 @@ class OpponentElixirEstimator:
         self._opp_spent = 0.0
         self._tracks: list[dict] = []      # {base, x, y, t}
         self._est = float(max(0.0, min(10.0, my_elixir)))
+        self._rebase = 0.0                 # cumulative saturation correction, for grading the estimator
         self._last_t = float(now) if now is not None else None
 
     def record_my_play(self, base: str) -> None:
@@ -110,6 +111,22 @@ class OpponentElixirEstimator:
                 self._opp_spent += c
 
         est = float(my_elixir) + self._my_spent - self._opp_spent
-        self._est = max(0.0, min(10.0, est))
+        # L67g -- RE-BASELINE ON SATURATION, instead of clipping the output and keeping the bad books.
+        # The accounting is exact only if EVERY enemy play is seen: both players regenerate at the same
+        # rate, so opp = my_elixir + (what I spent) - (what they spent). Live, the detector misses enemy
+        # plays, `_opp_spent` runs low, and `est` drifts UP for the rest of the match -- the clip below used
+        # to hide that in the returned value while the next update recomputed from the same inflated base,
+        # so the estimate RATCHETED to a pinned 10 and stayed there. Nobody can hold more than 10 elixir, so
+        # an overflow IS the evidence of a missed play: charge it to `_opp_spent` and the books recover.
+        # Symmetrically, going below 0 means a play was double-counted, so give it back.
+        if est > 10.0:
+            self._opp_spent += est - 10.0
+            self._rebase += est - 10.0                 # diagnostic: total correction charged to the books
+            est = 10.0
+        elif est < 0.0:
+            self._opp_spent += est                     # est < 0 -> reduces _opp_spent
+            self._rebase += est
+            est = 0.0
+        self._est = est
         self._last_t = now
         return self._est / 10.0

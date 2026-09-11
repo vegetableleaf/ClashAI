@@ -1,0 +1,230 @@
+diff --git a/hogeq/src/clashrl/play.py b/hogeq/src/clashrl/play.py
+index 5bf5232..8e888b0 100644
+--- a/hogeq/src/clashrl/play.py
++++ b/hogeq/src/clashrl/play.py
+@@ -24,6 +24,7 @@ from .reward import (TowerTracker, pump_rocket_cell, spell_intercept_cell, weake
+                      tesla_pull_cell, log_corridor_cell, nado_king_cell)
+ from .reward import spell_whiffed          # live spell target mask (see use site)
+ from .reward import lead_point, lead_velocity   # 2026-09-03: cast-delay lead for log + rocket
++from .reward import SPAWN_SPELL_BASES, spawn_spell_landing   # L67h: aim at a barrel's LANDING, not the barrel
+ from .reward import TILE as _TILE
+ from .states import GameState
+ from .threats import ThreatTracker, THREAT_DIM
+@@ -150,6 +151,30 @@ def play(cfg) -> None:
+     vision = Vision(cfg)
+     actions = ActionSpace(cfg)
+     controller = Controller(capture, cfg)
++    # --- L67d: OPTIONAL S1 student (pipeline/) as the decision maker. OFF unless play.student_ckpt is set.
++    # It replaces only the (card, cell) CHOICE; every safety and aim step below still runs on its answer,
++    # so an unset key leaves this file behaving exactly as it did before the student existed.
++    _student = None
++    _student_ckpt = cfg.get("play", "student_ckpt", default=None)
++    _student_opp_elixir = bool(cfg.get("play", "student_opp_elixir", default=False))   # L67g: see below
++    if _student_ckpt:
++        try:
++            from .student_live import StudentPolicy, live_reads as _student_reads
++            _stall_elx = cfg.get("play", "stall_elixir", default=9.0)
++            _student = StudentPolicy(cfg.path(_student_ckpt), str(cfg.get("play", "student_deck", default="icebow")),
++                                     actions, device=str(device),
++                                     gate_tau=float(cfg.get("play", "student_gate_tau", default=0.5)),
++                                     stall_elixir=(None if _stall_elx is None else float(_stall_elx)),
++                                     stall_seconds=float(cfg.get("play", "stall_seconds", default=12.0)))
++            _student.dump_low_gate = cfg.path("data/low_gate_states.jsonl")   # L67i: capture p~0 inputs
++            print(f"[play] S1 STUDENT ON: {Path(_student_ckpt).name} (epoch {_student.epoch}, "
++                  f"grid {_student.grid_kind}, gate tau {_student.gate_tau:g}, anti-stall "
++                  f"{'off' if _student.stall_elixir is None else f'{_student.stall_elixir:g} elixir / {_student.stall_seconds:g}s'}"
++                  f") -- the old policy is loaded but "
++                  f"only used for the frames the student declines to answer.")
++        except Exception as exc:                                # noqa: BLE001
++            print(f"[play] student_ckpt set but the student failed to load ({exc}); staying on the old policy.")
++            _student = None
+     rocket_ids = {i for i, key in enumerate(vision.deck_keys)
+                   if (key[:-4] if key.endswith("_evo") else key) == "rocket"}
+     # LOG + TORNADO AIM ASSISTS. Both cards were flying blind live: every other card with geometry
+@@ -248,6 +273,9 @@ def play(cfg) -> None:
+     from .cards import CardDB
+     _db = CardDB(cfg)
+     _AIR_BASES = _AirSet(_db)          # the Log rolls UNDER flyers -- never aim it at one
++    # L67h: aim the Log at where a thrown barrel LANDS instead of at the barrel in the air. Set
++    # `play.barrel_landing_aim: false` to restore the pre-L67h behaviour (aim at the projectile).
++    _barrel_landing_aim = bool(cfg.get("play", "barrel_landing_aim", default=True))
+     # HARD GUARD: the checkpoint must match the CONFIGURED deck (same check as train-rl). After a
+     # deck change an old net's heads are the wrong width and its card ids mean different cards --
+     # here that would surface as a torch shape error (10-wide hand one-hots into a 9-card net) or,
+@@ -502,13 +530,20 @@ def play(cfg) -> None:
+ 
+     def act_in_match(frame) -> None:
+         hp_tracker.step(frame)                # keep enemy princess HP + alive flags current
+-        tower_tracker.step(frame)
++        # L67i: NOT during a grace hold. TowerTracker latches a tower destroyed after 3 consecutive "gone"
++        # colour reads (~0.3 s at 10 Hz) and the latch is ONE-WAY, while a grace hold means the screen has
++        # stopped reading as in-match at all (end animation, overlay, dropout) -- so a 1.1 s blip, four times
++        # what the latch needs, could permanently convince the bot its own towers were gone. Observed in the
++        # owner's 22:29 run, where the collapse began at the exact frame the hold released.
++        if not getattr(grace, "_holding", False):
++            tower_tracker.step(frame)
+         obs = vision.observe(frame)
+         hand_ids = vision.recognize_hand(frame)
+         hand_vec = vision.hand_multihot(hand_ids)
+         if hand_vec.sum() == 0:               # no card recognized -> can't act this tick
+             return
+-        next_vec = _cycle_tracker.observe(hand_ids, vision.recognize_next(frame))
++        _next_id = vision.recognize_next(frame)   # read ONCE: the student below reuses it
++        next_vec = _cycle_tracker.observe(hand_ids, _next_id)
+         elixir = vision.read_elixir(frame)
+         threat_vec = threat_tracker.update(frame, time.time()).vector()
+         if want_identity or want_interactions:
+@@ -624,7 +659,10 @@ def play(cfg) -> None:
+             # learned one WAIT/PLAY rule and was DEPLOYED under another. policy_stats already used
+             # the gate-only rule, so live play was the odd one out of the three.
+             # PPO heads are logits, not advantages, so that branch keeps its thresholded probability.
+-            if gate_logits is not None:
++            # L67e FIX: when the S1 student is driving, the STUDENT'S gate is the only gate. This branch
++            # returned first, so the old (near-catatonic, tau 0.25) CNN gate decided WAIT before the student
++            # was ever consulted -- the bot sat still for a whole match with the student loaded.
++            if gate_logits is not None and _student is None:
+                 if is_ppo:
+                     wait = bool(torch.sigmoid(gate_logits[0, 1] - gate_logits[0, 0]) <= gate_tau)
+                 else:
+@@ -632,11 +670,73 @@ def play(cfg) -> None:
+                 if wait:
+                     return
+             cell = int(cell_logits_m.argmax(1).item())
++        # ---- L67d: S1 STUDENT OVERRIDE (play.student_ckpt). Off by default; see student_live.py. ------
++        # The student answers from the CONTRACT's BoardState (detector + screen reads), not from the CNN's
++        # image tensor, so it needs its own call here. It decides (card, cell) ONLY: the deploy clamp, the
++        # aim assists and the tap below are untouched, and an unaffordable or unreadable answer is a WAIT
++        # rather than a silent fall-back to the other policy -- mixing two policies mid-match would make
++        # any live reading uninterpretable.
++        if _student is not None:
++            _nname = (vision.deck_keys[_next_id] if 0 <= int(_next_id) < len(vision.deck_keys) else None)
++            # L67f: hand the student the opponent-elixir estimate play.py already computes (`_opp_elx`
++            # returns it NORMALISED 0-1, the contract wants 0-10) and the king alive-proxy. Both were being
++            # thrown away as "unknown", and supplying them measured better against pro labels than the
++            # unknown flag (blank_both 18.78 exact cell -> fill_both 20.15).
++            # `_opp_elx._est` is already in ELIXIR units (0-10); `update()` is the one that returns it
++            # normalised. Do not rescale -- a genuine 0.8-elixir estimate must not become 8.
++            #
++            # L67g: DEFAULT OFF. Measured on 835 real detector frames (live_gate_elixir.json), supplying this
++            # estimate suppresses the gate monotonically -- frames over tau 0.27: 0.278 with it absent, 0.156
++            # at opp 5, 0.087 at opp 10 (a 3.2x cut), and even opp 0.0 suppresses (0.236), so it is the
++            # opp_known FLAG as much as the value. The estimator cannot be trusted to a value: `_est =
++            # my_elixir + my_spent - opp_spent` clipped to [0, 10], so every enemy play the detector MISSES
++            # ratchets it upward and it never comes back, drifting a long match toward the pinned 10 that
++            # costs the most gate. On ENGINE labels the TRUE opponent elixir is worth +6.8 pp of gate accuracy
++            # (0.755 -> 0.823), which is why it was wired in (5cs.98 F) -- but that is ground truth, not this.
++            # Set `play.student_opp_elixir: true` to restore the L67f behaviour.
++            _oe = getattr(_opp_elx, "_est", None) if _student_opp_elixir else None
++            # L67j: the MODEL's hand is stabilised across the tray's cycle animation; the tap path below
++            # keeps the RAW hand_ids, so the bot still never plays a slot it cannot identify.
++            _hand_model = _student.hand_memory.stabilize(hand_ids, time.time())
++            _sreads = _student_reads(elixir=float(elixir), hand_ids=_hand_model, deck_keys=vision.deck_keys,
++                                     next_name=_nname, hp_tracker=hp_tracker, tower_tracker=tower_tracker,
++                                     t_sec=max(0.0, time.time() - clock._start),
++                                     opp_elixir=(None if _oe is None else float(_oe)))
++            _sact = _student.decide(_last_dets["all"], _sreads, hand_ids, vision.deck_keys,
++                                    card_elixir=card_elixir)
++            _slast = _student.last or {}
++            if _sact is None:                                 # student says WAIT (or nothing mappable)
++                _student.stats["log_n"] = _student.stats.get("log_n", 0) + 1
++                if _student.stats["log_n"] % 10 == 0:         # rate-limited so a match is still readable
++                    _why = " NO-TRAY-MATCH" if _slast.get("no_mappable_card") else ""
++                    if float(_slast.get("p_play", 1.0)) < 0.05 and _slast.get("digest"):
++                        _why += " | " + str(_slast["digest"])   # L67i: why is the gate pinned at zero?
++                    print(f"[student] WAIT{_why} p={_slast.get('p_play', float('nan')):.2f} "
++                          f"elixir {elixir:.0f} opp~{('?' if _oe is None else f'{float(_oe):.1f}')} "
++                          f"units {_slast.get('units', 0)} dets {len(_last_dets['all'])} "
++                          f"(waits {_student.stats.get('wait', 0)}/{_student.stats.get('decisions', 0)}"
++                          f" badhand {_student.stats.get('hand_unmapped', 0)}/{_student.stats.get('frames', 0)})",
++                          flush=True)
++                return
++            _scard, _scell = int(_sact[0]), int(_sact[1])
++            if elixir + 1e-6 < card_elixir[_scard] or not any(h == _scard for h in hand_ids):
++                _student.stats["skip_unaffordable"] = _student.stats.get("skip_unaffordable", 0) + 1
++                print(f"[student] SKIP unaffordable {vision.deck_keys[_scard]} "
++                      f"(cost {card_elixir[_scard]}, elixir {elixir:.0f})", flush=True)
++                return
++            card_id, cell = _scard, _scell
++            print(f"[student] {'STALL-PLAY' if _slast.get('stall') else 'PLAY'} "
++                  f"{vision.deck_keys[card_id]} p={_slast.get('p_play', 0):.2f} "
++                  f"cell {cell} board {tuple(round(v, 2) for v in _slast.get('board_xy', (0, 0)))} "
++                  f"units {_slast.get('units', 0)} {_slast.get('ms', 0):.0f} ms", flush=True)
+         # ---- LIVE SEARCH OVERRIDE. Set sim.live_search_enabled false to switch it off. --------
+         # The policy's (card_id, cell) is already decided above and stays the fallback: decide()
+         # returns None to keep it. Placed BEFORE the aim-assist so a searched cell gets the same
+         # clamping, snapping and deploy rules the policy's choice would have.
+-        if _live_search is not None:
++        # L67e: the live rollout search plans over the CNN's action, and it can both override a card and
++        # return WAIT -- with the student driving that would silently blend two policies, so it is off
++        # whenever the student is on (sim.live_search_enabled still governs the CNN path).
++        if _live_search is not None and _student is None:
+             try:
+                 # with_base=True or the track carries NO CARD IDENTITY and the bridge
+                 # correctly drops every one of them (see live_bridge.tracks_to_bodies).
+@@ -722,11 +822,23 @@ def play(cfg) -> None:
+             # THE LOG IS A CORRIDOR, NOT A BLAST: line it up with the push instead of beside it.
+             gx, gy = cell % gw, cell // gw
+             cx, cy = actions.cell_center(gx, gy)
+-            _tk = (_ploop.enemy_tracks(time.time(), True) if _ploop is not None and _ploop.running
+-                   else _team_tracker.enemy_tracks(time.time(), True))
+-            # where each body will be when the log APPEARS, not where it is at the tap
+-            _tk = [(t[0] + vx * _cast_delay, t[1] + vy * _cast_delay) + tuple(t[2:])
+-                   for t in _tk for vx, vy in (lead_velocity(t, _db),)]
++            _raw_tk = (_ploop.enemy_tracks(time.time(), True) if _ploop is not None and _ploop.running
++                       else _team_tracker.enemy_tracks(time.time(), True))
++            # where each body will be when the log APPEARS, not where it is at the tap -- EXCEPT an
++            # in-flight spawn spell, which is a projectile and not a body at all (owner report,
++            # 2026-09-08). Its landing point already accounts for the flight, so it must NOT be led
++            # again, and a barrel we cannot predict is dropped rather than aimed at.
++            _tk = []
++            for _t in _raw_tk:
++                _tbase = _t[4] if len(_t) > 4 else None
++                if _barrel_landing_aim and _tbase in SPAWN_SPELL_BASES:
++                    _lp = spawn_spell_landing(_t, actions)
++                    if _lp is None:
++                        continue
++                    _tk.append((float(_lp[0]), float(_lp[1])) + tuple(_t[2:]))
++                    continue
++                _vx, _vy = lead_velocity(_t, _db)
++                _tk.append((_t[0] + _vx * _cast_delay, _t[1] + _vy * _cast_delay) + tuple(_t[2:]))
+             aim = log_corridor_cell(cx, cy, _tk, actions, _log_half_w, _log_roll, _AIR_BASES)
+             if aim is not None:
+                 cell = aim
+@@ -763,6 +875,15 @@ def play(cfg) -> None:
+         gx, gy = cell % gw, cell // gw
+         controller.play_card(*actions.decode(slot, gx, gy))
+         _cycle_tracker.record_play(card_id)        # a card left the hand -> it rotates to the queue back
++        if _student is not None:                   # L67d: the student's `past` = my last 3 accepted plays
++            _cx, _cy = actions.cell_center(gx, gy)
++            _student.record_play(card_id, actions.warp.frame_to_board(_cx, _cy), vision.deck_keys)
++            # the played slot is the ONE whose identity actually changes -- drop its cached read so the
++            # long hand-memory TTL can never serve a card that has just been cycled out (L67k)
++            for _si, _cid in enumerate(list(hand_ids)[:4]):
++                if int(_cid) == int(card_id):
++                    _student.hand_memory.invalidate(_si)
++                    break
+         # ANY play (troop or spell) anchors its own detection 'mine' -- base-matched, so your rolling Log
+         # is claimed at the cast point while an enemy answer dropped on the same spot is not.
+         cx, cy = actions.cell_center(gx, gy)
+@@ -833,6 +954,8 @@ def play(cfg) -> None:
+                     clock.reset()                 # zero the 2x/3x elixir clock at match start
+                     _opp_mem.reset()              # forget the previous opponent's deck/archetype
+                     _opp_elx.reset(my_elixir=float(vision.read_elixir(frame)), now=time.time())
++                    if _student is not None:
++                        _student.reset_match()    # L67i: play history must not cross a match boundary
+                     if _ploop is not None and _ploop.running:
+                         _ploop.reset_tracker()        # forget last match's own-unit tracks
+                     else:
+@@ -841,6 +964,12 @@ def play(cfg) -> None:
+                     _canvas_stack.reset()         # ...and last match's canvas motion history
+                     _replay_rec.new_match()       # arm a fresh overlay-replay clip for this match
+                     prev_mult = 1
++                elif prev == GameState.IN_MATCH:
++                    # L67g: CLOSE the clip when the match ends. play.py armed clips (new_match) but never
++                    # ended one, so the only thing that ever closed a live clip was the `seconds` SAFETY CAP
++                    # -- env.py (train-rl) has always called this and that is why its overlays were written
++                    # per match. Any non-IN_MATCH read (MATCH_END / HOME / UNKNOWN past the grace hold) ends it.
++                    _replay_rec.end_match()
+                 prev = state
+ 
+             if state == GameState.IN_MATCH:

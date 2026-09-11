@@ -1,0 +1,51 @@
+diff --git a/hogeq/src/clashrl/detect.py b/hogeq/src/clashrl/detect.py
+index 218ee4d..2c48087 100644
+--- a/hogeq/src/clashrl/detect.py
++++ b/hogeq/src/clashrl/detect.py
+@@ -392,6 +392,12 @@ class OverlayReplayRecorder:
+         # so an uncapped recorder quietly fills the disk with clips nobody watches -- and the first
+         # few are the useful ones anyway, since they all show the same policy. 0 = no cap.
+         self.max_clips = int(cfg.get("overlay_replay", "max_clips", default=5))
++        # RETENTION across runs. `max_clips` caps one PROCESS, and it resets every time play.py is
++        # restarted -- so a session of "run a few matches, stop, run a few more" accumulates without bound
++        # (measured 2026-09-09: 15 clips / 2.5 GB at a mean 169 MB each, from a handful of short runs).
++        # After each clip is written the directory is pruned to the newest `keep_clips`, which makes the
++        # ceiling a property of the DISK rather than of one process. 0 = keep everything.
++        self.keep_clips = int(cfg.get("overlay_replay", "keep_clips", default=self.max_clips))
+         self._title_contains = cfg.get("window", "title_contains", default=None)
+         self._region_cfg = cfg.get("window", "region", default=None)
+         self._dets: list = []
+@@ -401,6 +407,25 @@ class OverlayReplayRecorder:
+         self._thread = None
+         self.n_clips = 0
+ 
++    def _prune(self) -> None:
++        """Keep only the newest `keep_clips` clips THIS recorder writes; delete the rest.
++
++        Deliberately narrow: it globs `match_*.mp4` / `.avi` in the recorder's own out_dir and nothing else,
++        so hand-named keepers (e.g. `shitmatch_2.mp4`) and anything else in the folder are never touched.
++        """
++        if self.keep_clips <= 0:
++            return
++        try:
++            clips = sorted((p for ext in ("mp4", "avi") for p in self.out_dir.glob(f"match_*.{ext}")),
++                           key=lambda q: q.stat().st_mtime)
++            for old in clips[:max(0, len(clips) - self.keep_clips)]:
++                mb = old.stat().st_size / 1048576.0
++                old.unlink()
++                print(f"[overlay-replay] pruned {old.name} ({mb:.0f} MB; keeping newest "
++                      f"{self.keep_clips})", flush=True)
++        except Exception as exc:                                        # noqa: BLE001
++            print(f"[overlay-replay] prune skipped ({exc})", flush=True)
++
+     @property
+     def _capped(self) -> bool:
+         return self.max_clips > 0 and self.n_clips >= self.max_clips
+@@ -527,6 +552,7 @@ class OverlayReplayRecorder:
+             writer.release()
+             self.n_clips += 1
+             print(f"[overlay-replay] saved {path} ({n_frames} frames)", flush=True)
++            self._prune()
+ 
+ 
+ def autolabel(cfg, session_arg=None, do_all=False, preview=False) -> None:

@@ -132,7 +132,16 @@ def _cmd_train_rl(args) -> None:
 
 def _cmd_play(args) -> None:
     from .play import play
-    play(_sized_config(args))
+    cfg = _sized_config(args)
+    # L67d: --student <ckpt> is the same switch as the config key play.student_ckpt, so a live test needs
+    # no config edit (and leaves nothing behind to forget to unset).
+    if getattr(args, "student", None):
+        cfg.data.setdefault("play", {})["student_ckpt"] = args.student
+        if getattr(args, "student_gate_tau", None) is not None:
+            cfg.data["play"]["student_gate_tau"] = float(args.student_gate_tau)
+        if getattr(args, "student_deck", None):
+            cfg.data["play"]["student_deck"] = args.student_deck
+    play(cfg)
 
 
 def _cmd_train_sim(args) -> None:
@@ -877,6 +886,12 @@ def main() -> None:
     ply = sub.add_parser("play", help="run the trained policy live (needs torch + a trained policy)")
     ply.add_argument("--size", choices=["576", "432"], default=None,
                      help="board resolution 576=[18,32] / 432=[18,24]; overrides action.grid -- match your policy checkpoint")
+    ply.add_argument("--student", default=None,
+                     help="L67d: run the S1 student (pipeline/) as the policy from this checkpoint "
+                          "(e.g. data/pipeline/s1_hogeq_v6lat_s0.pt). Omit to use the CNN policy as before.")
+    ply.add_argument("--student-gate-tau", type=float, default=None,
+                     help="play/wait threshold for the student's gate (default 0.5, the training boundary)")
+    ply.add_argument("--student-deck", default=None, help="student deck yaml name (default hogeq)")
     ply.set_defaults(func=_cmd_play)
 
     dia = sub.add_parser("diag", help="diagnose menu navigation: state-template match scores on the current screen")

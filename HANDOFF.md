@@ -2716,6 +2716,32 @@ The N=1 teacher-corpus labelling run (3 x 40 matches on disjoint seeds) is runni
 *Checkpoint for the hogeq live port:* **`s1_hogeq_v6lat_s0.pt`**, chosen on the SELECTION split (v6 val exact cell 24.54 vs s2 24.51, s1 24.36), not on v3 VAL. Next: the hogeq live port (owner-approved after this build), per `scratchpad/gauntlet/L67/hogeq_port_plan.md`.
 
 
+**U. HOGEQ LIVE PORT DONE (L67o, 2026-09-11 UTC): hogeq can run the S1 student live; not yet played.** Plan `scratchpad/gauntlet/L67/hogeq_port_plan.md`, artefacts `scratchpad/gauntlet/L67/port/`.
+
+*What changed on hogeq's live path (S4 disclosure).*
+- `student_live.py` -- NEW, byte-copy of icebow's.
+- `detect.py`, `opponent_elixir.py`, `reward.py` -- icebow's changes since the last sync (`d0bbe1d`) applied cleanly; all three are now byte-identical to icebow.
+- `cli.py` -- only the two LIVE hunks (`play --student / --student-gate-tau / --student-deck`), help text says hogeq. The other four hunks (`gate_rule` in the drill helper, `sim-view --radii`) are training-side, need files hogeq lacks, and were NOT taken.
+- `play.py` (DECK_SPECIFIC) -- git applied 6 of 10 hunks; 4 hand-ported: the `SPAWN_SPELL_BASES` import, the student construction (only intended difference: `student_deck` default `hogeq`), tower latch paused during a grace hold + next card read once, and `record_play` / `hand_memory.invalidate` placed inside hogeq's ability `else:` branch. Line check: 137 of icebow's 138 added lines are present verbatim; the 138th is the deliberate deck default.
+
+*Behaviour changes even WITHOUT `--student`* (the CNN path shares these): tower latch not stepped during a grace hold; the Log aims at a barrel's LANDING (`play.barrel_landing_aim: false` restores the old aim); overlay clips close at match end and the folder keeps the newest 10 (`overlay_replay.keep_clips`, defaults to `max_clips` 10) -- **hogeq/data/overlayed_replays holds 8 clips today, so the oldest start being deleted from the 3rd new clip; `keep_clips: 0` disables pruning**; the opponent-elixir estimate re-baselines on saturation.
+
+*Revert:* `git revert <this commit>`, or per file `git checkout aba03f7 -- hogeq/src/clashrl/{cli,detect,opponent_elixir,play,reward}.py` and delete `hogeq/src/clashrl/student_live.py`.
+
+*Verification (a).*
+- hogeq suite: before **1,319 OK (64 skipped)** (the plan's 1,322 was the 5cs.18 count); after **1,319 OK (64 skipped) on the final code** (`port/hogeq_suite_final.out`; the only later edit is two cli.py help strings, compiled).
+- Smoke inside hogeq's own tree (`port/smoke_hogeq_student.out`): `clashrl` from hogeq/src, cfg root hogeq, 11 deck keys ending `mighty_miner_ability`, hand slots 0.308 / 0.485 / 0.660 / 0.854, `s1_hogeq_v6lat_s0.pt` loads (epoch 19, lattice), `mine_classes` = the 8 hogeq bases. `run.py play --help` lists the three flags.
+- Dry run on real frames (`port/dryrun_hogeq_v6lat_s0.out`, session 20260817_194419, real detector, no clicks, 200 frames): 20 plays (10%), p_play median 0.075, cards {hog_rider, firecracker_evo, tesla, the_log, earthquake, skeletons}, never the ability, 7/200 frames with no readable tray (all seven fully unread, none misread). Latency NOT reported: the test suite was running at the same time.
+- Parity `--strict`: FAIL on 5 files -- `config.py`, `gate_rule.py`, `geometry_reward.py`, `model.py`, `sim_view.py`. All pre-existing: the hogeq copies are unmodified and each changed in icebow after `d0bbe1d`. They are the plan's training-side list B, deliberately not bundled. The four shared files this port touched now pass.
+- `student_dryrun.py` now imports the tree named by `--deck` (it always used icebow/src, which would have read icebow's cards and detector for a hogeq session).
+
+*Traps.* (i) `git apply --reject` printed "Rejected hunk #1, #2, #4, #8", but the hunk actually missing afterwards was #9 (`record_play`); only the added-line content check caught it -- never trust the reject list, diff the content. (ii) The hogeq venv and cwd matter: `Config.load()` roots at the module, so the command must run from `hogeq/`.
+
+*What this does NOT establish.* No live hogeq match has been played with the student. The dry-run play rate is one 2026-08-17 session at the default gate tau 0.5. HandMemory on hogeq's tray (two evolutions, a champion, a faster cycle) is unmeasured. The student cannot use Mighty Miner's ability (N_SLOTS = 8; wired nowhere).
+
+*Live command:* `cd C:\Users\benpe\ClashBot\hogeq` then `.\.venv\Scripts\python.exe run.py play --student data/pipeline/s1_hogeq_v6lat_s0.pt`.
+
+
 ### §5cs.98 -- L67e+f (2026-09-08 06:00-18:00 UTC): **OPTION B GRADED (3 seeds: clean 21.56 +- 0.07, degraded 19.45 +- 0.05) BUT ITS GAIN IS AGAINST A CORRUPTION MODEL WE NOW KNOW IS WRONG. Three label-free live measurements instead: the GATE survives real detector input (live .248-.325 vs engine .294-.298), PLACEMENT COLLAPSES toward the prior (top-1 cell share 0.25 vs 0.07 at matched unit counts), and nothing JITTERS (same-cell 61.4% live vs 38.7% engine -- the collapse seen twice, not a second defect). Ablation names the cause: MISSING VALUES (unit HP, exact/opponent elixir, king HP), not noisy ones -- spell tokens, unknown team tags and low confidence each do NOTHING. Against pro labels, SUPPLYING beats FLAGGING (blank_both 18.78 exact cell / 52.11 card -> fill_both 20.15 / 63.25), so the fill is now wired live and verified (live top-1 share 0.411 -> 0.322)**
 
 **A. Option B, the 3-seed result (a), `s1_v6aug/eval_v3val_icebow_v6aug.out` + `eval_v3degraded_*`.** Augmented set = 622,923 rows (339,192 clean + 283,731 degraded TRAIN rows; val rows clean, so checkpoint selection is v6lat's own rule).

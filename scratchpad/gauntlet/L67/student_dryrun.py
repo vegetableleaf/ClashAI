@@ -22,7 +22,10 @@ import numpy as np
 
 REPO = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO))
-sys.path.insert(0, str(REPO / "icebow" / "src"))
+# L67o: import the DECK'S OWN live tree. The live path is a fork per deck and Config.load() roots at the module,
+# so a hogeq dry run through icebow/src would read icebow's cards, templates and detector. `--deck X` form only.
+_TREE = sys.argv[sys.argv.index("--deck") + 1] if "--deck" in sys.argv[:-1] else "icebow"
+sys.path.insert(0, str(REPO / _TREE / "src"))
 
 
 def main() -> int:

@@ -1,0 +1,8 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+clashrl from C:\Users\benpe\ClashBot\hogeq\src\clashrl\__init__.py
+cfg root C:\Users\benpe\ClashBot\hogeq
+deck_keys ['hog_rider', 'firecracker', 'firecracker_evo', 'mighty_miner', 'tesla', 'tesla_evo', 'the_log', 'earthquake', 'skeletons', 'ice_spirit', 'mighty_miner_ability']
+hand_slots [[0.308, 0.887], [0.485, 0.887], [0.66, 0.884], [0.854, 0.884]]
+student loaded: epoch 19 grid lattice gate_tau 0.5
+mine_classes ['earthquake', 'firecracker', 'hog_rider', 'ice_spirit', 'mighty_miner', 'skeletons', 'tesla', 'the_log']
