@@ -168,7 +168,7 @@ def play(cfg) -> None:
                                      gate_tau=float(cfg.get("play", "student_gate_tau", default=0.5)),
                                      stall_elixir=(None if _stall_elx is None else float(_stall_elx)),
                                      stall_seconds=float(cfg.get("play", "stall_seconds", default=12.0)))
-            _student.dump_low_gate = cfg.path("data/low_gate_states.jsonl")   # L67i: capture p~0 inputs
+            _student.dump_low_gate = cfg.path("data/freeze_states.jsonl")   # L67q: anti-stall + late pinned states
             print(f"[play] S1 STUDENT ON: {Path(_student_ckpt).name} (epoch {_student.epoch}, "
                   f"grid {_student.grid_kind}, gate tau {_student.gate_tau:g}, anti-stall "
                   f"{'off' if _student.stall_elixir is None else f'{_student.stall_elixir:g} elixir / {_student.stall_seconds:g}s'}"
@@ -982,6 +982,10 @@ def play(cfg) -> None:
                 time.sleep(poll_dt)
             else:
                 nav.handle(frame, state)      # HOME / MATCH_END / UNKNOWN: located buttons + escalation + watchdog
+                if nav.give_up:               # L67q: no match for nav.give_up_after_s -- stop, don't tap for hours
+                    log("[play] navigation gave up (no match started for too long) -> stopping. "
+                        "Desktop screenshots in data/nav_stall.")
+                    break
         except KeyboardInterrupt:
             break
         except Exception as exc:  # noqa: BLE001 -- log + keep navigating instead of dying silently

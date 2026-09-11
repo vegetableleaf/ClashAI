@@ -78,14 +78,17 @@ class StudentPolicy:
         self.stall_seconds = float(stall_seconds)
         self._last_play_t: Optional[float] = None
         self.hand_memory = HandMemory()
-        self.dump_low_gate = None      # set to a path to capture states where the gate pins at zero
-        self._dumped = 0
+        self.dump_low_gate = None      # set to a path to capture the freeze states (see CaptureBudget)
+        self.capture = CaptureBudget()
+        self._match_idx = 0
         self.last: dict[str, Any] = {}
 
     # -- state ---------------------------------------------------------------------------------------
     def reset_match(self) -> None:
         self.hand_memory.reset()
         self._last_play_t = None
+        self.capture.reset_match()     # L67q: the capture budget is per match
+        self._match_idx += 1
         """Forget the previous match's plays. `past` ages are WALL-CLOCK, so without this the first
         decisions of a new match carry entries from the last one, aged by however long the menus took --
         values training never contains (its max age is 95.5 s, median 8.55)."""
@@ -177,27 +180,31 @@ class StudentPolicy:
                      # pins at p=0.00 in a state the engine says is worth 0.63 is being driven by one of
                      # these, and guessing which cost a whole session -- so the live log now carries them.
                      "digest": state_digest(bs)}
-        # L67i: CAPTURE the states where the gate pins at zero. The digest carries the scalars but not the
-        # unit tokens, and three hypotheses have now died to guesswork (overtime, tower loss, stale past), so
-        # the failing input itself gets written to disk for offline bisection. Capped so a bad run cannot
-        # fill the disk; set `dump_low_gate` to None to switch it off.
-        if self.dump_low_gate is not None and p_play < 0.02 and self._dumped < 60:
-            self._dumped += 1
-            try:
-                import dataclasses
-                import json as _json
-                rec = {"p": p_play, "t_sec": bs.t_sec, "tok": np.asarray(tok).tolist(),
-                       "mask": np.asarray(mask).tolist(), "sc": np.asarray(sc).tolist(),
-                       "past": past.tolist(), "digest": self.last["digest"]}
-                with open(self.dump_low_gate, "a", encoding="utf-8") as fh:
-                    fh.write(_json.dumps(rec) + chr(10))
-            except Exception:
-                pass
         self.stats["decisions"] = self.stats.get("decisions", 0) + 1
         stalled = False
         if self.stall_elixir is not None and float(reads.elixir_int) >= self.stall_elixir:
             idle = time.time() - (self._last_play_t if self._last_play_t is not None else 0.0)
             stalled = idle >= self.stall_seconds
+        # L67q: CAPTURE THE FREEZE ITSELF for offline bisection -- the failing input, tokens and all. The L67i rule
+        # (p < 0.02, first 60 per process) spent its whole budget in match 1 of the owner's 77-match run and caught
+        # none of the late-game freezes (5cs.99 V). CaptureBudget picks anti-stall moments and late pinned waits,
+        # budgeted per match. `dump_low_gate` None switches it off.
+        if self.dump_low_gate is not None:
+            why = self.capture.choose(p_play=p_play, gate_tau=self.gate_tau, stalled=stalled,
+                                      elixir=float(reads.elixir_int), t_sec=float(bs.t_sec))
+            if why is not None:
+                try:
+                    import json as _json
+                    rec = {"why": why, "p": p_play, "t_sec": bs.t_sec, "elixir": float(reads.elixir_int),
+                           "match": self._match_idx, "wall": time.time(),
+                           "idle_s": (None if self._last_play_t is None else time.time() - self._last_play_t),
+                           "deck_slot": slot, "student_cell": cell,
+                           "tok": np.asarray(tok).tolist(), "mask": np.asarray(mask).tolist(),
+                           "sc": np.asarray(sc).tolist(), "past": past.tolist(), "digest": self.last["digest"]}
+                    with open(self.dump_low_gate, "a", encoding="utf-8") as fh:
+                        fh.write(_json.dumps(rec) + chr(10))
+                except Exception:
+                    pass
         if p_play <= self.gate_tau and not stalled:
             self.stats["wait"] = self.stats.get("wait", 0) + 1
             return None
@@ -205,6 +212,52 @@ class StudentPolicy:
             self.stats["stall_fired"] = self.stats.get("stall_fired", 0) + 1
             self.last["stall"] = True
         return int(card_id), live_cell, p_play
+
+
+class CaptureBudget:
+    """Which live decisions are written to disk for offline freeze bisection (L67q).
+
+    The L67i rule was "p < 0.02, the first 60 per process". MEASURED on the owner's 77-match run (5cs.99 V): all
+    60 went to match 1 (the opening wait, low-elixir waits) and none of the late-game high-elixir freezes it was
+    built for were captured. Now two reasons, each budgeted PER MATCH:
+      stall      the anti-stall rule fired: the gate stayed <= tau for stall_seconds at >= stall_elixir -- the
+                 freeze itself, at the moment it was overridden.
+      pinned_hi  p < pinned_p at elixir >= pinned_elixir after the opening (t >= min_t_sec: pros' first play is at
+                 a median 12.0 s, so earlier waits are normal), spaced min_gap_s apart.
+    ~6 KB a record: a 77-match session at full budget is ~7 MB; session_cap bounds a runaway run.
+    """
+
+    def __init__(self, per_match_stall: int = 10, per_match_pinned: int = 6, session_cap: int = 2000,
+                 pinned_p: float = 0.05, pinned_elixir: float = 8.0, min_t_sec: float = 20.0,
+                 min_gap_s: float = 5.0):
+        self.per_match = {"stall": int(per_match_stall), "pinned_hi": int(per_match_pinned)}
+        self.session_cap = int(session_cap)
+        self.pinned_p, self.pinned_elixir = float(pinned_p), float(pinned_elixir)
+        self.min_t_sec, self.min_gap_s = float(min_t_sec), float(min_gap_s)
+        self.total = 0
+        self.reset_match()
+
+    def reset_match(self) -> None:
+        self.n = {"stall": 0, "pinned_hi": 0}
+        self._last_pinned_t: Optional[float] = None
+
+    def choose(self, *, p_play: float, gate_tau: float, stalled: bool, elixir: float, t_sec: float) -> Optional[str]:
+        """The capture reason for this decision ("stall" / "pinned_hi"), or None. A returned reason is counted."""
+        if self.total >= self.session_cap:
+            return None
+        why = None
+        if stalled and p_play <= gate_tau:
+            if self.n["stall"] < self.per_match["stall"]:
+                why = "stall"
+        elif (p_play < self.pinned_p and elixir >= self.pinned_elixir and t_sec >= self.min_t_sec
+              and self.n["pinned_hi"] < self.per_match["pinned_hi"]
+              and (self._last_pinned_t is None or t_sec - self._last_pinned_t >= self.min_gap_s)):
+            why = "pinned_hi"
+            self._last_pinned_t = t_sec
+        if why is not None:
+            self.n[why] += 1
+            self.total += 1
+        return why
 
 
 class HandMemory:

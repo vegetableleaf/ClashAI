@@ -46,6 +46,24 @@ class MenuNavigator:
         self._match_end_since: Optional[float] = None
         self._stuck_since: Optional[float] = None
         self._escalate_alt = True                        # alternate center-OK / bottom-right-OK on escalation
+        # L67q NO-MATCH CEILING (HANDOFF 5cs.99 V). The owner's 8 h run lost 3 h 45 min (02:42-06:27) on the results
+        # screen: a WINDOWS POPUP sat over the game, the frame still showed Play Again, the template was LOCATED,
+        # and ~16,000 taps plus 2,059 OK escalations landed on the popup. No rule above can see that. So after
+        # `recover_after_s` with no match: desktop screenshot, log the foreground window, force the game window to
+        # the front and -- only if that worked -- press Escape; after `give_up_after_s`: set `give_up` (play.py
+        # stops) and send a text-only Discord alert. 0 disables either.
+        self.recover_after = float(cfg.get("nav", "recover_after_s", default=120.0))
+        self.recover_every = float(cfg.get("nav", "recover_every_s", default=60.0))
+        self.give_up_after = float(cfg.get("nav", "give_up_after_s", default=600.0))
+        self.stall_shots_keep = int(cfg.get("nav", "stall_shots_keep", default=20))
+        self._shot_dir = Path(cfg.path("data")) / "nav_stall"
+        self._cfg = cfg
+        self._off_match_since: Optional[float] = None
+        self._last_recover: Optional[float] = None
+        self._recovers = 0
+        self.give_up = False
+        self._now = time.time                            # injectable, so tests do not wait minutes
+        self._sleep = time.sleep
         self._log = log or self._make_file_log(cfg, label)
 
     @staticmethod
@@ -71,23 +89,120 @@ class MenuNavigator:
         self._match_end_since = None
         self._stuck_since = None
         self._escalate_alt = True
+        self._off_match_since = None
+        self._last_recover = None
+        self._recovers = 0
 
     def _locate(self, frame, tpl, thr, fallback):
         pt = self.vision.locate(frame, tpl, thr) if tpl else None
         return (pt, True) if pt else (fallback, False)
 
+    # -- L67q no-match ceiling ------------------------------------------------------------------------------
+    def _ceiling(self, state) -> bool:
+        """Recover or give up when no match has started for a long time. True = this call acted (skip the tap)."""
+        now = self._now()
+        if self._off_match_since is None:
+            self._off_match_since = now
+            return False
+        off = now - self._off_match_since
+        if self.give_up_after > 0 and off >= self.give_up_after and not self.give_up:
+            shot = self._screenshot("giveup")
+            fg, is_game = self._foreground()
+            self.give_up = True
+            self._log(f"[nav] NO MATCH for {off:.0f}s (state {state.name}) -> GIVING UP, stopping play. "
+                      f"foreground {fg!r} (game: {is_game}), screenshot {shot}")
+            self._alert(f"ClashBot play stopped: no match started for {off / 60:.0f} min (stuck on {state.name}). "
+                        + ("The game window was in front." if is_game else
+                           "Another window was in front of the game.")
+                        + " A desktop screenshot is saved locally in data/nav_stall.")
+            return True
+        if self.recover_after > 0 and off >= self.recover_after and (
+                self._last_recover is None or now - self._last_recover >= self.recover_every):
+            self._last_recover = now
+            self._recovers += 1
+            shot = self._screenshot("recover")
+            fg, is_game = self._foreground()
+            focus = getattr(self.controller, "force_focus", None)
+            focused = bool(focus()) if callable(focus) else False
+            # Escape only when the GAME is in front (a key must never land in someone else's window), and never
+            # on HOME, where Android back opens the exit dialog instead of leaving a screen.
+            esc = focused and state != GameState.HOME
+            if esc:
+                self.controller.press_key("esc")
+            self._log(f"[nav] NO MATCH for {off:.0f}s (state {state.name}) -> recover #{self._recovers}: "
+                      f"foreground {fg!r} (game: {is_game}), force focus {'ok' if focused else 'FAILED'}, "
+                      f"{'Escape sent' if esc else 'no Escape'}, screenshot {shot}")
+            self._sleep(self.menu_delay)
+            return True
+        return False
+
+    def _foreground(self) -> tuple:
+        """(title of the foreground window, whether it is the game window)."""
+        try:
+            import ctypes
+            u32 = ctypes.windll.user32
+            h = u32.GetForegroundWindow()
+            buf = ctypes.create_unicode_buffer(256)
+            u32.GetWindowTextW(h, buf, 256)
+            hw = getattr(self.controller, "_hwnd", None)
+            game = hw() if callable(hw) else None
+            return buf.value, bool(game) and h == game
+        except Exception:  # noqa: BLE001
+            return "?", False
+
+    def _screenshot(self, tag: str) -> str:
+        """WHOLE-DESKTOP PNG -- not the game region, the point is to see what covers it. Newest N kept."""
+        try:
+            import mss
+            import mss.tools
+            self._shot_dir.mkdir(parents=True, exist_ok=True)
+            path = self._shot_dir / f"{tag}_{datetime.now():%Y%m%d_%H%M%S}.png"
+            with mss.mss() as sct:
+                img = sct.grab(sct.monitors[0])
+                mss.tools.to_png(img.rgb, img.size, output=str(path))
+            shots = sorted(self._shot_dir.glob("*.png"), key=lambda p: p.stat().st_mtime)
+            for old in shots[:max(0, len(shots) - self.stall_shots_keep)]:
+                try:
+                    old.unlink()
+                except OSError:
+                    pass
+            return str(path)
+        except Exception as exc:  # noqa: BLE001
+            return f"(failed: {type(exc).__name__})"
+
+    def _alert(self, text: str) -> None:
+        """Text-only Discord alert. No screenshot upload (the desktop can show anything); never logs the URL."""
+        try:
+            import json
+            import urllib.request
+            from .monitor import _load_webhook
+            url = _load_webhook(self._cfg)
+            if not url:
+                self._log("[nav] no Discord webhook configured -- alert not sent")
+                return
+            req = urllib.request.Request(url, data=json.dumps({"content": text}).encode("utf-8"), method="POST")
+            req.add_header("Content-Type", "application/json")
+            req.add_header("User-Agent", "clashrl-nav/1.0")
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                resp.read()
+            self._log("[nav] Discord alert sent")
+        except Exception as exc:  # noqa: BLE001
+            self._log(f"[nav] Discord alert failed ({type(exc).__name__})")
+
     def handle(self, frame, state) -> None:
         """Perform one navigation action for a non-IN_MATCH state."""
+        if self._ceiling(state):
+            return
         if state == GameState.HOME:
             self._match_end_since = self._stuck_since = None
             pt, located = self._locate(frame, self.home_tpl, self.home_thr, self.battle)
             self._log(f"[nav] HOME -> Battle {'(located)' if located else '(fixed)'} "
                       f"({pt[0]:.3f},{pt[1]:.3f})")
             self.controller.tap(*pt)
-            time.sleep(self.menu_delay)
+            self._sleep(self.menu_delay)
         elif state == GameState.MATCH_END:
             self._stuck_since = None
-            now = time.time()
+            now = self._now()
             if self._match_end_since is None:
                 self._match_end_since = now
             if now - self._match_end_since >= self.match_end_timeout:
@@ -105,10 +220,10 @@ class MenuNavigator:
                 self._log(f"[nav] MATCH_END -> Play Again {'(located)' if located else '(fixed)'} "
                           f"({pt[0]:.3f},{pt[1]:.3f})")
                 self.controller.tap(*pt)
-            time.sleep(self.menu_delay)
+            self._sleep(self.menu_delay)
         else:  # UNKNOWN / QUEUING: normally just wait, but don't hang on an unrecognised popup
             self._match_end_since = None
-            now = time.time()
+            now = self._now()
             if self._stuck_since is None:
                 self._stuck_since = now
             elif now - self._stuck_since >= self.stuck_timeout:
@@ -116,6 +231,6 @@ class MenuNavigator:
                           f"({self.stuck_tap[0]:.3f},{self.stuck_tap[1]:.3f})")
                 self.controller.tap(*self.stuck_tap)
                 self._stuck_since = now
-                time.sleep(self.menu_delay)
+                self._sleep(self.menu_delay)
             else:
-                time.sleep(self.poll_dt)
+                self._sleep(self.poll_dt)

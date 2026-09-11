@@ -180,6 +180,11 @@ nav:
   menu_delay: 0.5                # wait after a menu tap before re-checking (lower = faster match-to-match transitions)
   match_end_timeout: 6           # seconds tapping "Play Again" with NO progress before ESCALATING to the OK button
                                  # (-> HOME -> located Battle), so a drifted/covered Play Again button can't hang nav
+  recover_after_s: 120           # L67q: no match started for this long -> desktop screenshot (data/nav_stall), log the
+                                 # front window, force the game window to the front, Escape (only if the game is in front)
+  recover_every_s: 60            # repeat that recovery at most this often
+  give_up_after_s: 600           # no match for this long -> stop play.py + text-only Discord alert (0 = never)
+  stall_shots_keep: 20           # newest desktop screenshots kept in data/nav_stall
 
 # --- Recording human play (screen + mouse) for imitation data ------------
 record:

@@ -50,6 +50,38 @@ class Controller:
         except Exception:  # noqa: BLE001
             return False
 
+    def force_focus(self) -> bool:
+        """ensure_focus, plus the ALT-key trick when Windows refuses the foreground switch (L67q).
+
+        SetForegroundWindow from a background process is silently refused while another window holds the
+        foreground lock -- the state a Windows popup leaves behind (the owner's 02:42-06:27 stall). A synthetic
+        Alt press makes this process the last input source, which lifts the lock. Used ONLY by the navigator's
+        no-match recovery; the in-match tap path keeps plain ensure_focus (an Alt tap can open menus elsewhere).
+        """
+        if self.ensure_focus():
+            return True
+        try:
+            import ctypes
+            u32 = ctypes.windll.user32
+            hwnd = self._hwnd()
+            if not hwnd:
+                return False
+            VK_MENU, KEYEVENTF_KEYUP = 0x12, 0x0002
+            u32.keybd_event(VK_MENU, 0, 0, 0)
+            u32.keybd_event(VK_MENU, 0, KEYEVENTF_KEYUP, 0)
+            if u32.IsIconic(hwnd):
+                u32.ShowWindow(hwnd, 9)                       # SW_RESTORE, minimised windows only (see above)
+            u32.BringWindowToTop(hwnd)
+            u32.SetForegroundWindow(hwnd)
+            time.sleep(3 * float(self.cfg.get("play", "focus_settle_s", default=0.06)))
+            return u32.GetForegroundWindow() == hwnd
+        except Exception:  # noqa: BLE001
+            return False
+
+    def press_key(self, key: str) -> None:
+        """One key press to the FOREGROUND window -- callers make sure that is the game first."""
+        pyautogui.press(key)
+
     def _hwnd(self):
         """HWND of the captured game window (cached; None if it cannot be found)."""
         if getattr(self, "_hwnd_cache", None):
