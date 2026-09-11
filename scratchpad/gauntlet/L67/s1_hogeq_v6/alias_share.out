@@ -1,0 +1,5 @@
+crawl replays with plays 523 | with a cannon play 419 | with a tesla play 143 | cannon and no tesla 373
+train: play rows 39605 | tesla-slot plays 4039: aliased (cannon, no tesla in replay) 1000 = 24.8% | other new 454 | v5 2585
+   all play rows from aliased replays 9119 (23.0%)
+val: play rows 7319 | tesla-slot plays 735: aliased (cannon, no tesla in replay) 202 = 27.5% | other new 43 | v5 490
+   all play rows from aliased replays 1934 (26.4%)

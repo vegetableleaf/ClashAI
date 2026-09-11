@@ -1,0 +1,11 @@
+mined 523  evo-E-barb dropped 126  to drive 397
+drive done 23:00
+corpus_v6/hogeq: v5 765 new ok 397 new without frames 0 total 1162
+{"out": "hogeq\\data\\pipeline\\s1_dataset_v6.npz", "rows": 159137, "play_rows": 46924, "wait_rows": 112213, "val_rows": 24646, "replays": 1162, "units_total": 632974, "seconds": 40.9, "stats": {"mirror_matches": 2, "unmapped": [], "play_rows": 46924, "play_skipped": 3133, "wait_rows": 112213, "wait
+{"FINAL": "hogeq_v6lat_s0", "val_cell_tile": 0.24825795873753245, "val_cell_half": 0.24538871430523296, "train_cell_tile": 0.2796047026750724, "card": 0.5951632736712665, "joint": 0.1556223527804345, "emb_cos": 0.14365558326244354, "epoch": 19}
+{"FINAL": "hogeq_v6lat_s1", "val_cell_tile": 0.2468916518650089, "val_cell_half": 0.24361251537095233, "train_cell_tile": 0.27445008460236886, "card": 0.5906544609919387, "joint": 0.1534362617843968, "emb_cos": 0.16099290549755096, "epoch": 13}
+{"FINAL": "hogeq_v6lat_s2", "val_cell_tile": 0.24798469736302772, "val_cell_half": 0.24511545293072823, "train_cell_tile": 0.2787307032590051, "card": 0.5944801202350047, "joint": 0.15767181308921985, "emb_cos": 0.15425443649291992, "epoch": 15}
+{"cell_half_top1": 0.2394, "cell_tile_top1": 0.2411, "card_top1": 0.6087, "joint_top1": 0.1524, "cell_nll": 3.2303, "gate_acc": 0.799, "gate_bal_acc": 0.744, "wait_top1": 0.4694, "value_acc": 0.61, "place_hit": 0.2394, "place_1t": 0.3302, "place_dist": 4.0154, "emb_cosine": 0.1539, "n_play": 1817, "
+{"cell_half_top1": 0.2312, "cell_tile_top1": 0.2323, "card_top1": 0.6092, "joint_top1": 0.1447, "cell_nll": 3.2514, "gate_acc": 0.7929, "gate_bal_acc": 0.7353, "wait_top1": 0.4831, "value_acc": 0.5914, "place_hit": 0.2312, "place_1t": 0.3192, "place_dist": 4.067, "emb_cosine": 0.1559, "n_play": 1817
+{"cell_half_top1": 0.2389, "cell_tile_top1": 0.2383, "card_top1": 0.6164, "joint_top1": 0.1513, "cell_nll": 3.2232, "gate_acc": 0.7949, "gate_bal_acc": 0.7356, "wait_top1": 0.4669, "value_acc": 0.5961, "place_hit": 0.2389, "place_1t": 0.3275, "place_dist": 3.9505, "emb_cosine": 0.1643, "n_play": 181
+RUN_DONE 01:23

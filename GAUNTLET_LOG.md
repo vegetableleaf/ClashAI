@@ -1633,3 +1633,10 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - **Running:** DAgger iteration 1 (3 x 30 matches, beta 0.5) -> retrain on aggregated corpus -> paired closed-loop A/B via `rerank_ab_report.py`.
 - **Reranker verdict (L67n, 5cs.99 S):** head-gated C -1.257 +- 0.291 (t=-4.31) and D1C -1.033 +- 0.342 (t=-3.02) vs the student, 2-7 plays/match; DAgger 1 helped +0.224 +- 0.164 (t=1.36). Rank-only (student gates, head chooses) over THREE disjoint slices: C +0.361 +- 0.311 (t=1.16), D1C +0.252 +- 0.309 (t=0.82), n=36 -- a NULL, heads helped on opposite slices. The learned value head does not carry the search's evaluation into closed loop. Owner decision pending: power up, DAgger 2, or close.
 - **OWNER RULING 2026-09-10: reranker line CLOSED** (over a rank-only power-up and DAgger 2). Open queue, all owner-gated: hogeq engine drive (next long idle session), then the hogeq live port; the live p=0.00 root cause (capture armed, needs session data).
+
+## L67o (2026-09-10/11) -- hogeq v6lat trained on 1,162 replays; calibrated heads up on every seed, exact cell a null
+- **Build:** 397 driven / 0 failed (126 evo-E-barb pre-dropped), corpus 765 -> 1,162, dataset 104,007 -> 159,137 rows. Crowns match 59.4% new vs 56.3% v5 (old gap). No leakage: v3 VAL's 44 replays are all in v6 val.
+- **v3 VAL, 3 seeds each:** exact cell 23.65 +- 0.46 vs v5lat 23.21 +- 0.61 (+0.44, t ~1.0, NOT established). Separated on every seed: cell NLL 3.235 vs 3.301, gate balanced acc 73.83 vs 71.39, value acc 59.92 vs 57.06.
+- **Alias check (owner's condition):** 24.8% of tesla training plays are pro cannon plays; tesla on exact-deck VAL 25.2 vs 22.7 exact cell (overlap) -- no harm measured. Hog rider -2.1 on all seeds is flagged, but 24 per-card tests expect ~2.4 chance separations; untested.
+- **Traps:** `worker stop` keeps the VM unless `--stop-vm` (fixed in script; VM stopped by hand); L63 liveness reference deleted -> `liveness_slots.py`; never edit a running bash script.
+- **Live port checkpoint:** v6lat_s0 (picked on the selection split). Next: hogeq live port.

@@ -1,0 +1,244 @@
+batch: 199 tags, 0 already done, port 37031
+[1/199] edf93c4519044b89944be9341d9f45ce acc 49/51 rej {'native_rejected': 2} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3681 (last play 5954) 5.71s
+[2/199] 3bd1461221e74473bd6d045c7457a3f6 acc 48/48 rej {} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 3498 (last play 3351) 5.64s
+[3/199] f4771dd1f70e4ad08852e0e93ab98799 acc 75/78 rej {'native_rejected': 3} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 4338 (last play 5833) 8.03s
+[4/199] 87420de6569e408f85eaa951ec8a04de acc 53/55 rej {'native_rejected': 1, 'card_not_in_hand': 1} crowns [0, 3] exp [0, 2] match=False term=native_logic_clock_stopped tick 3529 (last play 3567) 5.98s
+[5/199] ae7ba238caaf4ccd81857f6dccafeb00 acc 119/119 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5419 (last play 5327) 9.25s
+[6/199] 5551eabd86db4aba8dbc08459e5630ec acc 56/59 rej {'native_rejected': 3} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 5734) 5.51s
+[7/199] 3919fd63e214419a83de60c1c4bd261f acc 139/139 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6101 (last play 5971) 10.92s
+[8/199] 8f20cfb759b346bf96f6e227685aa71a acc 69/71 rej {'native_rejected': 2} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4024 (last play 4119) 6.11s
+[9/199] 7cdf0cf7753747af84c8392bfcabe427 acc 59/62 rej {'native_rejected': 3} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3789 (last play 5943) 5.87s
+[10/199] d0626c0c8e8c49dbb583c8437bfa5957 acc 71/71 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4189 (last play 4028) 6.7s
+[11/199] 6d042d49694a4dff83980a32905836d6 acc 55/59 rej {'native_rejected': 3, 'card_not_in_hand': 1} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 5324) 5.62s
+[12/199] 4c09f71eee28447d829efffec4f83e62 acc 61/64 rej {'native_rejected': 2, 'card_not_in_hand': 1} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3846 (last play 3986) 5.9s
+[13/199] 9eb5efcf373e44e683b4b2456710fa60 acc 152/152 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6124 (last play 5965) 11.19s
+[14/199] 74f358916a5348f6908efe1de60a2ecb acc 30/30 rej {} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 2622 (last play 2476) 3.78s
+[15/199] b3996852bc184a219469b45ad49055f9 acc 48/53 rej {'native_rejected': 2, 'card_not_in_hand': 3} crowns [3, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3321 (last play 3498) 5.31s
+[16/199] 4f7fd0dff7f3461c93427542a504118f acc 65/67 rej {'native_rejected': 2} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3681 (last play 4661) 6.06s
+[17/199] 988d915417294ff0a570193bc8ab3791 acc 62/65 rej {'native_rejected': 3} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 4653) 6.16s
+[18/199] a9752938e41f4d4b86b1e0cffc14f8a7 acc 91/91 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4574 (last play 4481) 7.57s
+[19/199] 284573190b34495ca694f63c3af55daa acc 70/70 rej {} crowns [2, 1] exp [1, 0] match=False term=native_tiebreak_hp_drain tick 6102 (last play 4171) 8.46s
+[20/199] 5207b5715dfe4e8b92935c1c9d342d1c acc 146/146 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6132 (last play 5943) 10.43s
+[21/199] 463b505d432f4b00a1510df2a3ad5957 acc 67/70 rej {'native_rejected': 2, 'card_not_in_hand': 1} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3768 (last play 4681) 6.11s
+[22/199] 53084af6df424555aca150bbd63f977d acc 55/55 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3681 (last play 3557) 5.63s
+[23/199] 3dd32c1e6f6a4c30ae076e46d251ad95 acc 155/155 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6083 (last play 5945) 10.7s
+[24/199] 1bcd07c5b21941f7bfba55e31ed088bb acc 58/58 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3808 (last play 4661) 5.9s
+[25/199] b53b11288bb84696bd1a9e1ac1da468a acc 63/64 rej {'native_rejected': 1} crowns [1, 0] exp [1, 2] match=False term=native_logic_clock_stopped tick 3681 (last play 5027) 5.95s
+[26/199] 6adb001a76ab48798de615c7efa49b9b acc 61/61 rej {} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3714 (last play 3574) 6.14s
+[27/199] 467153c37e1749f7bb35f3f6a73efb67 acc 54/54 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3851 (last play 3686) 5.72s
+[28/199] 038108e7ec6d4b628a105b5008484c54 acc 53/54 rej {'native_rejected': 1} crowns [1, 0] exp [1, 2] match=False term=native_logic_clock_stopped tick 3681 (last play 5572) 5.76s
+[29/199] 9fdb68219abe4584a437468ee175b873 acc 107/107 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5757 (last play 5666) 9.19s
+[30/199] 683f84f1aa594c4ebb7f81ebc0bbd62c acc 62/62 rej {} crowns [1, 2] exp [0, 1] match=False term=native_tiebreak_hp_drain tick 6122 (last play 4051) 8.32s
+[31/199] 3dad425f184f43c2b378838b7ad169cd acc 130/136 rej {'native_rejected': 4, 'card_not_in_hand': 2} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 5667 (last play 5694) 10.34s
+[32/199] fe32cc6f2ec04078859900ce4c11d8c3 acc 77/77 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4004 (last play 3901) 6.79s
+[33/199] f52833c71f414f16a7f8bf55891387eb acc 55/55 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3746 (last play 3627) 5.33s
+[34/199] 5b658250a80b40af87907d85ff83ac90 acc 67/69 rej {'native_rejected': 2} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4015 (last play 5937) 6.44s
+[35/199] 6673d51e5d1742c5a2e290bbb2171c75 acc 33/33 rej {} crowns [0, 1] exp [0, 3] match=False term=native_logic_clock_stopped tick 3681 (last play 2637) 5.29s
+[36/199] c8e47ea2798845beafeb88939db9b1dd acc 102/104 rej {'native_rejected': 1, 'card_not_in_hand': 1} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5346 (last play 5375) 8.43s
+[37/199] 88e00b2a457a4199861fcafa118eca9f acc 59/59 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3748 (last play 3647) 5.72s
+[38/199] f9f8719ff3274edaa82df790827aaa8f acc 107/107 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5066 (last play 4981) 8.68s
+[39/199] 0675ec52aa2c4c4f8cbce12606bea7cf acc 24/24 rej {} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 2135 (last play 1914) 2.8s
+[40/199] 4cb550a5457e4d84a7efc893e9e7dcae acc 94/94 rej {} crowns [1, 0] exp [0, 1] match=False term=native_tiebreak_hp_drain tick 6096 (last play 4681) 9.07s
+[41/199] 5f78bfca73fb4cf8a6da0474045421f6 acc 54/54 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3681 (last play 3561) 6.48s
+[42/199] ab5db0f60526455f93a5ab72248ce6aa acc 61/61 rej {} crowns [2, 0] exp [1, 0] match=False term=native_logic_clock_stopped tick 3681 (last play 3586) 6.7s
+[43/199] 5c2b0f8152f546a5834e5830e59ef16a acc 71/71 rej {} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 4005 (last play 3963) 6.83s
+[44/199] 2c07a2a3ec914da99f13ba6bb62fc97f acc 62/65 rej {'native_rejected': 3} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3866 (last play 3966) 6.16s
+[45/199] 779c5070e7634a5fa7cf6c46198e5de0 acc 41/41 rej {} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 3272 (last play 3118) 4.58s
+[46/199] a20e53f635c6411980e2dd0ee00a0e9b acc 59/61 rej {'native_rejected': 2} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3901 (last play 5963) 6.2s
+[47/199] b5fb991dfc524f1eb371af6c4df3b876 acc 70/73 rej {'native_rejected': 3} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 4186 (last play 5278) 6.83s
+[48/199] bd38fad538b343c89ade5a404da09c3c acc 51/52 rej {'native_rejected': 1} crowns [0, 3] exp [0, 1] match=False term=native_logic_clock_stopped tick 3534 (last play 3577) 5.42s
+[49/199] 7c9920e11bb54e388a54996059f2e9c3 acc 60/63 rej {'native_rejected': 3} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3983 (last play 4387) 6.43s
+[50/199] 7fadb10a53644b6e9231475ea2b7107e acc 55/55 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3681 (last play 3574) 5.46s
+[51/199] 4bcc3bbb750a4dc9811329fe0fd05081 acc 17/17 rej {} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 1910 (last play 1671) 2.57s
+[52/199] 85d8ac6ebc6c49c4b99eb9847d26bee9 acc 50/50 rej {} crowns [1, 2] exp [0, 3] match=False term=native_tiebreak_hp_drain tick 6123 (last play 3166) 7.84s
+[53/199] 9b137655a7014894a8db94eb840ccc98 acc 60/63 rej {'native_rejected': 3} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3681 (last play 4193) 5.79s
+[54/199] 83050108d6b84c8688abf0c04dbea623 acc 149/150 rej {'native_rejected': 1} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5982 (last play 5952) 10.9s
+[55/199] 1105b8831709482c8d05eaafcbd79c1c acc 120/125 rej {'native_rejected': 4, 'card_not_in_hand': 1} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 5795 (last play 5885) 9.82s
+[56/199] f5d52fa5d2e246bf92ce495898d643fe acc 140/140 rej {} crowns [2, 1] exp [1, 0] match=False term=native_tiebreak_hp_drain tick 6131 (last play 5971) 11.84s
+[57/199] ae6d43f5674f4ddd9dabdae189580729 acc 29/37 rej {'native_rejected': 3, 'card_not_in_hand': 5} crowns [3, 0] exp [1, 0] match=False term=native_logic_clock_stopped tick 2562 (last play 4473) 4.11s
+[58/199] 14bcdb9d03c9444fbebe23ec03dd9f11 acc 36/39 rej {'native_rejected': 2, 'card_not_in_hand': 1} crowns [1, 3] exp [1, 0] match=False term=native_logic_clock_stopped tick 2999 (last play 3541) 5.2s
+[59/199] 050acce1429c4ca0bd7b6817d4ec4bf5 acc 55/57 rej {'native_rejected': 2} crowns [0, 1] exp [1, 0] match=False term=native_logic_clock_stopped tick 3681 (last play 4691) 6.51s
+[60/199] 964e45a0412c4d6eb21fe115e2168421 acc 70/70 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 4381 (last play 4241) 7.87s
+[61/199] a3907c1a7f1e48a9bc2356457a6618e7 acc 110/110 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6119 (last play 4941) 10.54s
+[62/199] 001b7bb94ce24b45a7c045f8100378a8 acc 142/142 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6122 (last play 5966) 11.42s
+[63/199] fad9bd9c864d45a497f7cf5ba4d35b61 acc 59/59 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4128 (last play 4897) 6.89s
+[64/199] fbe6a3455fef40c28ae72d2d7aa6e5dd acc 86/88 rej {'native_rejected': 2} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5018 (last play 5957) 8.86s
+[65/199] 32b722c8090348dea5af69108ebca0c1 acc 64/64 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3895 (last play 3784) 6.44s
+[66/199] 99b74e8f5b174994b7c839cc95b4fa3e acc 49/51 rej {'native_rejected': 2} crowns [3, 1] exp [1, 3] match=False term=native_logic_clock_stopped tick 3324 (last play 3321) 5.47s
+[67/199] d1b694a9bcd148098f22e2ff5d11805e acc 58/61 rej {'native_rejected': 3} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3681 (last play 5613) 6.43s
+[68/199] 7d121ebab104461e90a2affb364c9d2a acc 44/46 rej {'native_rejected': 2} crowns [1, 3] exp [1, 2] match=False term=native_logic_clock_stopped tick 3368 (last play 3608) 5.82s
+[69/199] d4bcb481b9314bf6a8a165e7cfa2c50d acc 81/81 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 4554 (last play 4451) 8.25s
+[70/199] cc5e97ff40b64368845f1ddde9ced13b acc 111/113 rej {'native_rejected': 2} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5531 (last play 5869) 9.75s
+[71/199] 89c47219e367446b8ca763b52825e044 acc 114/114 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5608 (last play 5516) 9.42s
+[72/199] e67859e70afd45ada72c51aa2626ea26 acc 98/101 rej {'native_rejected': 2, 'card_not_in_hand': 1} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4953 (last play 5945) 8.61s
+[73/199] 4ecb6278ab3f407f96da13077dd9ff0f acc 45/60 rej {'card_not_in_hand': 15} crowns [2, 1] exp [0, 1] match=False term=native_logic_clock_stopped tick 3751 (last play 4257) 5.82s
+[74/199] 9bc7dee1a4bf472992c9f8036606a4ec acc 133/133 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6121 (last play 5965) 10.61s
+[75/199] 94b512be4f0342f5a8bc32c66efe1a67 acc 94/94 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4604 (last play 4461) 7.91s
+[76/199] 772a8aa63d394a6aa94a9465a1bf8b8c acc 132/136 rej {'native_rejected': 3, 'card_not_in_hand': 1} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 5848 (last play 5942) 10.54s
+[77/199] ec35790064474dadb134192b360e4abe acc 54/54 rej {} crowns [1, 2] exp [0, 2] match=False term=native_tiebreak_hp_drain tick 6154 (last play 3517) 7.98s
+[78/199] 8ca5addb2ab34334a21b5c93a34554f5 acc 153/153 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6117 (last play 5954) 10.98s
+[79/199] 519b3f294cb5432d980281a911f7129e acc 34/34 rej {} crowns [1, 0] exp [3, 0] match=False term=native_logic_clock_stopped tick 3681 (last play 2691) 5.09s
+[80/199] 90af2934497343bcbcfaa6a42d24a21d acc 55/55 rej {} crowns [1, 2] exp [1, 0] match=False term=native_tiebreak_hp_drain tick 6111 (last play 3515) 8.09s
+[81/199] 4926c5ba12004908b951d4ccd5bf6972 acc 55/57 rej {'native_rejected': 2} crowns [0, 1] exp [1, 0] match=False term=native_logic_clock_stopped tick 3771 (last play 4472) 5.8s
+[82/199] d9457eaf080249f2889e40bf59ae250f acc 64/64 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6081 (last play 3591) 8.7s
+[83/199] 089bf3d0345d442f83514b3eff6f2a4d acc 71/73 rej {'native_rejected': 2} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4419 (last play 4965) 6.77s
+[84/199] 88e7b6a5a577486e9a951aba2e0f88c6 acc 21/21 rej {} crowns [3, 0] exp [3, 0] match=True term=native_logic_clock_stopped tick 2140 (last play 1743) 3.28s
+[85/199] 49927ac8c4fa4a5981eb56002dfba831 acc 64/66 rej {'native_rejected': 2} crowns [0, 1] exp [1, 0] match=False term=native_logic_clock_stopped tick 3972 (last play 5965) 6.12s
+[86/199] 87d0fbbcb55749e4b036374b2b7c2c01 acc 63/64 rej {'native_rejected': 1} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 4007 (last play 5327) 5.97s
+[87/199] 97cd86fd9d3b4bcbae5c6b1cea7430cd acc 147/147 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 6013 (last play 5907) 10.97s
+[88/199] 5e94b59d658c432ea56be91ba63a7956 acc 58/58 rej {} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 3524) 5.9s
+[89/199] 1fc3a563a3a64922829e9fafb39676de acc 61/61 rej {} crowns [1, 2] exp [1, 0] match=False term=native_tiebreak_hp_drain tick 6122 (last play 3572) 8.47s
+[90/199] 9a1a9b51901f4c8489dea59feba74994 acc 47/47 rej {} crowns [0, 2] exp [0, 2] match=True term=native_logic_clock_stopped tick 3681 (last play 3442) 5.52s
+[91/199] a7f25da44d33416da7f2bf3155f1b7f5 acc 26/41 rej {'card_not_in_hand': 13, 'native_rejected': 2} crowns [0, 3] exp [1, 0] match=False term=native_logic_clock_stopped tick 3243 (last play 3591) 5.16s
+[92/199] a25febd272ab4a51a11bb6e85fdb3029 acc 21/26 rej {'card_not_in_hand': 5} crowns [1, 3] exp [0, 3] match=False term=native_logic_clock_stopped tick 2644 (last play 2447) 4.14s
+[93/199] e62c85dbbf664cc2b117071966133517 acc 51/52 rej {'native_rejected': 1} crowns [0, 1] exp [1, 0] match=False term=native_logic_clock_stopped tick 3681 (last play 4858) 5.91s
+[94/199] 2e9aeeb6f92b49cfb3ee860244fff829 acc 65/65 rej {} crowns [1, 2] exp [2, 1] match=False term=native_logic_clock_stopped tick 4486 (last play 4006) 6.96s
+[95/199] ccc4abc48d4045daaa846732fefa9369 acc 102/104 rej {'native_rejected': 2} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5126 (last play 5346) 9.46s
+[96/199] 0fcfe3d9db7143089d2c1c83e2b1e61a acc 138/138 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6110 (last play 5929) 11.4s
+[97/199] 5aea0662e2b24ec6964b46cadc9079bf acc 152/152 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 5960 (last play 5821) 11.36s
+[98/199] bfa5de599683465982c4ec8f95fc09c6 acc 86/88 rej {'native_rejected': 2} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5115 (last play 5961) 9.09s
+[99/199] a2737e62f99d4115b181e4e591d7f335 acc 99/99 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5002 (last play 4809) 9.39s
+[100/199] 9b6961b553b649d0b9bb880aab4eaaac acc 115/115 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6086 (last play 5771) 10.77s
+[101/199] cfd5fd24397a4f278a0bec56e9461b58 acc 56/59 rej {'native_rejected': 3} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3765 (last play 4103) 6.4s
+[102/199] bd081d90055a4bc3844edd778596623e acc 58/61 rej {'native_rejected': 2, 'card_not_in_hand': 1} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 5961) 6.01s
+[103/199] 0dec5db1b0cc405681d3e5e16600857f acc 64/66 rej {'native_rejected': 2} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 4076 (last play 4355) 7.12s
+[104/199] 9a59e21589dc4979b77fae8099588499 acc 55/56 rej {'native_rejected': 1} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3857 (last play 4628) 6.41s
+[105/199] 86d0e398335348ce91b2eed0ce2ca70f acc 53/54 rej {'native_rejected': 1} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 3991) 5.89s
+[106/199] 0e5e27d419654d40b251baa270b9b2aa acc 94/94 rej {} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 5186 (last play 4692) 9.43s
+[107/199] 82d23635f93c42428c436e3b964eb07a acc 132/132 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5499 (last play 5381) 10.9s
+[108/199] ce4bd3539ddb496990bc36b9c723a6af acc 73/77 rej {'native_rejected': 4} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3759 (last play 3738) 7.58s
+[109/199] 46f8a84f9d264d2696fa1ab31127fbfb acc 20/20 rej {} crowns [3, 1] exp [3, 1] match=True term=native_logic_clock_stopped tick 1597 (last play 1343) 2.68s
+[110/199] 002d0c2be38641ec9c35047f78fca4a6 acc 55/55 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3681 (last play 3577) 6.45s
+[111/199] 6ade0436b75142b99f2bad220608c87f acc 31/33 rej {'native_rejected': 2} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 2492 (last play 3146) 4.08s
+[112/199] 0ed41cd731df40b1a16521f1cd82feb5 acc 136/140 rej {'native_rejected': 3, 'card_not_in_hand': 1} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 5840 (last play 5964) 11.07s
+[113/199] dd414b0447234a8a92d457df5fdda417 acc 74/75 rej {'native_rejected': 1} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 4472 (last play 4874) 7.74s
+[114/199] afc643ef050b4c0b8326b5cf3f48730d acc 37/37 rej {} crowns [1, 3] exp [0, 3] match=False term=native_logic_clock_stopped tick 3011 (last play 2752) 4.79s
+[115/199] e65c8bc24eaf466a9e417b69f21d01f6 acc 123/123 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 5967 (last play 5867) 11.03s
+[116/199] c5d33870c899415cb816cc70ae15a089 acc 37/37 rej {} crowns [2, 0] exp [3, 0] match=False term=native_logic_clock_stopped tick 3681 (last play 2586) 5.44s
+[117/199] d801f17556a4416195cda64cbfb9e941 acc 130/130 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5648 (last play 5561) 10.38s
+[118/199] 6ef1cb4cb2844bc3a466d0cab99a0966 acc 99/102 rej {'native_rejected': 3} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 4564 (last play 5282) 8.57s
+[119/199] 0b3008313341494aada0e3acf7b2df96 acc 52/55 rej {'native_rejected': 2, 'card_not_in_hand': 1} crowns [0, 3] exp [1, 0] match=False term=native_logic_clock_stopped tick 3297 (last play 5957) 5.27s
+[120/199] 5530c25d0a564f30b9cfa8fc0642760f acc 135/135 rej {} crowns [0, 1] exp [1, 0] match=False term=native_tiebreak_hp_drain tick 6105 (last play 5891) 11.4s
+[121/199] 439e3e6baadc4d4e9e8bc6797f9f25f8 acc 52/55 rej {'native_rejected': 3} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3681 (last play 5614) 5.89s
+[122/199] 25faf99fc88b4767a9fd8e5d638dd3bd acc 66/67 rej {'native_rejected': 1} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3681 (last play 4528) 6.53s
+[123/199] 9cb9d4eefe974811beece6d4cf650ea8 acc 34/34 rej {} crowns [3, 0] exp [3, 0] match=True term=native_logic_clock_stopped tick 3005 (last play 2765) 4.69s
+[124/199] ecc45254ff84486f90c535caafe11d42 acc 73/74 rej {'native_rejected': 1} crowns [1, 0] exp [0, 3] match=False term=native_logic_clock_stopped tick 4208 (last play 5941) 7.7s
+[125/199] 63e64827c7014bfbb6d44ca0fb133a1f acc 113/116 rej {'native_rejected': 2, 'card_not_in_hand': 1} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 5582 (last play 5908) 10.38s
+[126/199] 33150a06eaa746d0b80568265f47f7f1 acc 141/141 rej {} crowns [0, 1] exp [1, 0] match=False term=native_tiebreak_hp_drain tick 6115 (last play 5951) 11.63s
+[127/199] 826672206ffc4f178d2e9d794d3fb4ea acc 141/141 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6122 (last play 5927) 11.09s
+[128/199] e0f9b66c2bf04c4baee80090097a46ad acc 65/65 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3852 (last play 3751) 6.35s
+[129/199] 580ccb1b2a0a40c790bd3a5da613279e acc 55/58 rej {'native_rejected': 2, 'card_not_in_hand': 1} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3796 (last play 4282) 6.04s
+[130/199] 44b70667c9214a80b8b0b294cfef2a72 acc 78/78 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4719 (last play 4492) 8.12s
+[131/199] 47ab738eb0974d399c3a0d824f4ffd31 acc 39/47 rej {'card_not_in_hand': 8} crowns [1, 2] exp [1, 3] match=False term=native_logic_clock_stopped tick 3681 (last play 3352) 5.43s
+[132/199] 66516cf35ee447f1ab2158ecd720e261 acc 52/52 rej {} crowns [3, 1] exp [0, 1] match=False term=native_logic_clock_stopped tick 3881 (last play 3601) 6.17s
+[133/199] a896f9714b014f66a5a5da9334936e4b acc 140/140 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6091 (last play 5874) 11.88s
+[134/199] cfb735ddeec54f2fbf041031575f27c6 acc 57/58 rej {'native_rejected': 1} crowns [2, 1] exp [2, 3] match=False term=native_logic_clock_stopped tick 3681 (last play 3959) 6.14s
+[135/199] 10ccaff8e1a441c0a3c22b4ea0d2359b acc 115/115 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5173 (last play 5074) 9.99s
+[136/199] f59ea3318794471899675530002c45f5 acc 36/36 rej {} crowns [3, 0] exp [3, 0] match=True term=native_logic_clock_stopped tick 2956 (last play 2581) 4.62s
+[137/199] 0f1f3b80bd554a789a5ec7fcaf2392fd acc 137/137 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 6025 (last play 5932) 11.94s
+[138/199] c2f023ccb9d2461a9568d26fb8d8463d acc 27/32 rej {'native_rejected': 3, 'card_not_in_hand': 2} crowns [0, 3] exp [0, 2] match=False term=native_logic_clock_stopped tick 2730 (last play 3501) 5.09s
+[139/199] c485194931404dad8acfb05b9d94e21f acc 26/29 rej {'native_rejected': 3} crowns [3, 0] exp [3, 1] match=False term=native_logic_clock_stopped tick 2615 (last play 2757) 4.65s
+[140/199] 562cd243e8f34294a82023c71ee30053 acc 51/52 rej {'native_rejected': 1} crowns [0, 3] exp [0, 1] match=False term=native_logic_clock_stopped tick 3613 (last play 3534) 6.02s
+[141/199] bd7de38a401044e287ec8b49035e740a acc 46/48 rej {'native_rejected': 2} crowns [1, 0] exp [1, 2] match=False term=native_logic_clock_stopped tick 3681 (last play 4798) 5.73s
+[142/199] ff208d8e93be4404a554d9558cd83ebb acc 73/73 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6121 (last play 3826) 9.6s
+[143/199] b9d607c820774db6b2220a7095b1b8d1 acc 41/48 rej {'card_not_in_hand': 5, 'native_rejected': 2} crowns [3, 1] exp [2, 1] match=False term=native_logic_clock_stopped tick 3409 (last play 5043) 5.6s
+[144/199] f7a0bfc339544e19b5678b9567cb8f83 acc 69/70 rej {'native_rejected': 1} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3706 (last play 4222) 6.5s
+[145/199] 4b13d015479b40c4aa4d253e3031057c acc 50/51 rej {'native_rejected': 1} crowns [2, 1] exp [1, 2] match=False term=native_logic_clock_stopped tick 3681 (last play 4555) 6.26s
+[146/199] 7e01592e68fb41b68a80a176777bfe14 acc 69/69 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3760 (last play 3598) 7.1s
+[147/199] ea8c033e7e7f434595eb2c1044a50ff5 acc 90/93 rej {'native_rejected': 3} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 4993 (last play 5779) 9.22s
+[148/199] 500010cd8efa41a1a3a8a5f9e3f0c5a7 acc 53/53 rej {} crowns [3, 1] exp [3, 0] match=False term=native_logic_clock_stopped tick 3660 (last play 3381) 6.4s
+[149/199] 99b7f21a7e0941fea426a9f777b05078 acc 132/132 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6136 (last play 5921) 11.4s
+[150/199] 3eea5e6e5f4b4d8c877e7e598ad12430 acc 88/90 rej {'native_rejected': 2} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 5125 (last play 5876) 9.0s
+[151/199] 06a982678ab54d528e37d9fd502899ea acc 56/58 rej {'native_rejected': 2} crowns [1, 2] exp [0, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 4622) 6.06s
+[152/199] c471c6c7e5984e5db4228732184de2f5 acc 132/132 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6133 (last play 5816) 11.26s
+[153/199] 72980254d24c456997c8f1e02d121985 acc 59/59 rej {} crowns [0, 2] exp [0, 2] match=True term=native_logic_clock_stopped tick 3681 (last play 3562) 6.68s
+[154/199] 6113da80eeb44808bb3d9d3c92ddc0c0 acc 58/58 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3820 (last play 3722) 6.22s
+[155/199] 2407580eb30940d3a05d8e418eab42b4 acc 62/64 rej {'native_rejected': 1, 'card_not_in_hand': 1} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 4376) 6.67s
+[156/199] 7e70fad1b9d04d4cb3bfd2474925a104 acc 137/137 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6104 (last play 5921) 11.79s
+[157/199] 9de6827bb5b34c79aa8b0c1ebbb32ef0 acc 125/128 rej {'native_rejected': 3} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 5804 (last play 5906) 10.88s
+[158/199] f2af498ab5064dedb4e71d14cea59a96 acc 84/85 rej {'native_rejected': 1} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 4525 (last play 5967) 8.36s
+[159/199] 297f3e3c9c7241818fc5bf39e15110ee acc 53/53 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3681 (last play 3557) 5.95s
+[160/199] 57f4a24190e644bfa360d0c755c8cea5 acc 50/53 rej {'native_rejected': 2, 'card_not_in_hand': 1} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3681 (last play 5358) 6.17s
+[161/199] 34474a687779470a858acc55dc47238b acc 29/29 rej {} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 2861 (last play 2609) 4.18s
+[162/199] c279bee8807943cab572f836ee90f856 acc 28/28 rej {} crowns [3, 1] exp [3, 1] match=True term=native_tiebreak_hp_drain tick 6132 (last play 2133) 7.82s
+[163/199] 2ad2a62859de4fbd94cf367c61e07915 acc 65/65 rej {} crowns [1, 0] exp [0, 1] match=False term=native_tiebreak_hp_drain tick 6132 (last play 3654) 9.12s
+[164/199] 0e3a10cb279c44d1b4294f2b45eb8315 acc 93/93 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4712 (last play 4542) 8.07s
+[165/199] 0d5f77c3c9c14778bd854a902caa0edc acc 52/55 rej {'native_rejected': 3} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3681 (last play 4383) 6.25s
+[166/199] 2eab3c92de2e45a28e9f2db01050480b acc 56/60 rej {'native_rejected': 3, 'card_not_in_hand': 1} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 5878) 5.78s
+[167/199] 1b09ed9149f54adebe98f85d6ea53e89 acc 140/140 rej {} crowns [0, 1] exp [1, 0] match=False term=native_tiebreak_hp_drain tick 6117 (last play 5961) 12.14s
+[168/199] 8d1f444c89d84070a831b96cecbb47c6 acc 100/103 rej {'native_rejected': 3} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 5035 (last play 5959) 8.8s
+[169/199] aae0406af73849dc96fd37fba23debd7 acc 108/113 rej {'native_rejected': 5} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 5279 (last play 5963) 9.67s
+[170/199] b67be7968bb145dd91a091ae269cef2f acc 129/129 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5888 (last play 5771) 11.01s
+[171/199] aa9d7ce0b9fb40e9bdf1f170cbf4c7ff acc 77/80 rej {'native_rejected': 3} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 4895 (last play 5891) 7.96s
+[172/199] 100256b0b65347478facb606e08a9dd0 acc 58/58 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3681 (last play 3531) 6.61s
+[173/199] 54e17cf3c7de4b66a44ff321b5aeb910 acc 65/65 rej {} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 3893 (last play 3788) 6.94s
+[174/199] 737ce1ed4cdc496c9baf18b964254e00 acc 58/59 rej {'native_rejected': 1} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 4001) 6.35s
+[175/199] c11e437ea6b64670a4137255be7c20f2 acc 37/37 rej {} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 3238 (last play 3104) 5.21s
+[176/199] f06f3b224fd84001911228f9bdd5ce71 acc 55/55 rej {} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 3531) 6.18s
+[177/199] 50310f246895410683262d2edc0ee0af acc 53/54 rej {'native_rejected': 1} crowns [3, 0] exp [1, 0] match=False term=native_logic_clock_stopped tick 3450 (last play 3577) 5.88s
+[178/199] de6c7914069144a08f7e9a8184c874ba acc 54/56 rej {'native_rejected': 2} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3681 (last play 5564) 6.55s
+[179/199] de3192aa2e874e1cb67f23c80b24f017 acc 142/142 rej {} crowns [1, 0] exp [0, 1] match=False term=native_tiebreak_hp_drain tick 6090 (last play 5911) 11.62s
+[180/199] 00c8d064ba7c47fea886d73c6f98d943 acc 65/67 rej {'native_rejected': 2} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4117 (last play 4321) 7.02s
+[181/199] 32c3df6e79bd4bc1bad26c021dcf4059 acc 92/95 rej {'native_rejected': 3} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4673 (last play 4911) 8.35s
+[182/199] a48119b87f7e434ea4be3eb1a3befc9f acc 80/82 rej {'native_rejected': 2} crowns [1, 0] exp [1, 0] match=True term=native_logic_clock_stopped tick 4652 (last play 5301) 8.29s
+[183/199] f2df0200ad0945cc8730f790d96496d0 acc 67/69 rej {'native_rejected': 2} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 5846) 6.71s
+[184/199] a330ef873c6d4233ac13a5524256fba0 acc 123/123 rej {} crowns [1, 0] exp [0, 1] match=False term=native_tiebreak_hp_drain tick 6134 (last play 5911) 12.49s
+[185/199] ac5cb2a86f2e4b8c881b35d3cd0bb5cf acc 35/49 rej {'card_not_in_hand': 14} crowns [3, 0] exp [1, 2] match=False term=native_logic_clock_stopped tick 3387 (last play 3716) 6.12s
+[186/199] 6f53e04423f04340825a8eda8da0f5c1 acc 139/139 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6117 (last play 5931) 12.21s
+[187/199] 617b91e102f34169a4857656f8d727b3 acc 55/55 rej {} crowns [0, 1] exp [2, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 3526) 6.29s
+[188/199] de40f22112b445a385ef5a773dbb94d5 acc 51/51 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3681 (last play 3577) 5.9s
+[189/199] 2c0a1573ea3e45528eacff40d3159507 acc 135/135 rej {} crowns [1, 0] exp [1, 0] match=True term=native_tiebreak_hp_drain tick 6083 (last play 5428) 11.72s
+[190/199] 830165001d884136b28bf82276f431d9 acc 55/55 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 3681 (last play 3504) 6.17s
+[191/199] 04aea5ee3bd6412daf03b23ffb1d28fe acc 56/58 rej {'native_rejected': 2} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 3681 (last play 3752) 6.27s
+[192/199] fbd21fce083643ec84e657e90e52fc27 acc 28/28 rej {} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 2465 (last play 2322) 3.96s
+[193/199] 2144a4cf57bc4e14a57ed1f0996cff29 acc 90/90 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6112 (last play 4836) 10.23s
+[194/199] 91e2e7aa9b3d46ad896b56376e0b37d0 acc 125/125 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6112 (last play 5952) 12.53s
+[195/199] dbb3eec12b2742c985da6ef06bdfc185 acc 138/142 rej {'native_rejected': 2, 'card_not_in_hand': 2} crowns [1, 0] exp [0, 1] match=False term=native_logic_clock_stopped tick 5952 (last play 5977) 11.67s
+[196/199] ecfc12d02b7b42ed9a064368944245b4 acc 122/122 rej {} crowns [0, 1] exp [0, 1] match=True term=native_tiebreak_hp_drain tick 6110 (last play 5912) 11.03s
+[197/199] e0d7cd2069054e69911e86e0fff49e42 acc 66/66 rej {} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 4022 (last play 3902) 6.0s
+[198/199] d96007ae7c724ac6b06894dc85e4fc49 acc 101/104 rej {'native_rejected': 3} crowns [0, 1] exp [0, 1] match=True term=native_logic_clock_stopped tick 5219 (last play 5583) 7.85s
+[199/199] d4b0528cabdf4cca91e49344ca411dd8 acc 52/52 rej {} crowns [0, 3] exp [0, 3] match=True term=native_logic_clock_stopped tick 3620 (last play 3495) 5.37s
+{
+ "tags": 199,
+ "converted": 199,
+ "failed": 0,
+ "failed_by_error": {},
+ "plays_driven": 15429,
+ "accepted": 15146,
+ "accept_rate": 0.9817,
+ "rejected_by_reason": {
+  "native_rejected": 192,
+  "card_not_in_hand": 91
+ },
+ "invalid_placement": 0,
+ "matches_with_rejections": 93,
+ "elixir_delays_plays": 0,
+ "elixir_delays_max_ticks": 0,
+ "ability_plays_skipped": 628,
+ "position_based_all": false,
+ "terminated": 199,
+ "termination_reasons": {
+  "native_logic_clock_stopped": 162,
+  "native_tiebreak_hp_drain": 37
+ },
+ "crowns_match": 119,
+ "crowns_match_rate": 0.598,
+ "outcomes": {
+  "side0_win": 86,
+  "side1_win": 113
+ },
+ "clean": 78,
+ "terminal_vs_last_play": {
+  "median": 93,
+  "negative": 89
+ },
+ "determinism": {
+  "checked": 0,
+  "same": 0
+ },
+ "seconds_total": 1496.3,
+ "seconds_per_match_median": 6.67,
+ "batch_wall_seconds": 1496.4,
+ "rotated_rows": 7753,
+ "rotated_tags": 84
+}

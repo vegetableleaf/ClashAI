@@ -1,0 +1,24 @@
+[dataset] hogeq 50/1162 rows=7644 1s
+[dataset] hogeq 100/1162 rows=14733 2s
+[dataset] hogeq 150/1162 rows=21881 2s
+[dataset] hogeq 200/1162 rows=28757 3s
+[dataset] hogeq 250/1162 rows=35112 5s
+[dataset] hogeq 300/1162 rows=42191 6s
+[dataset] hogeq 350/1162 rows=48719 8s
+[dataset] hogeq 400/1162 rows=55435 10s
+[dataset] hogeq 450/1162 rows=61922 12s
+[dataset] hogeq 500/1162 rows=68261 13s
+[dataset] hogeq 550/1162 rows=75084 15s
+[dataset] hogeq 600/1162 rows=81669 17s
+[dataset] hogeq 650/1162 rows=88282 19s
+[dataset] hogeq 700/1162 rows=95280 21s
+[dataset] hogeq 750/1162 rows=102130 22s
+[dataset] hogeq 800/1162 rows=109590 24s
+[dataset] hogeq 850/1162 rows=116494 26s
+[dataset] hogeq 900/1162 rows=123240 27s
+[dataset] hogeq 950/1162 rows=129935 29s
+[dataset] hogeq 1000/1162 rows=137364 31s
+[dataset] hogeq 1050/1162 rows=144182 33s
+[dataset] hogeq 1100/1162 rows=150319 34s
+[dataset] hogeq 1150/1162 rows=157459 36s
+{"out": "hogeq\\data\\pipeline\\s1_dataset_v6.npz", "rows": 159137, "play_rows": 46924, "wait_rows": 112213, "val_rows": 24646, "replays": 1162, "units_total": 632974, "seconds": 40.9, "stats": {"mirror_matches": 2, "unmapped": [], "play_rows": 46924, "play_skipped": 3133, "wait_rows": 112213, "wait_in_window": 25651}}

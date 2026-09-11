@@ -1,0 +1,10 @@
+{
+  "services": [
+    {
+      "slot": 0,
+      "port": 37031,
+      "stopped": true
+    }
+  ],
+  "vm_stopped": false
+}

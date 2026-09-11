@@ -37,6 +37,9 @@ $ENGPY research/sandbox_tools/replay_batch.py --crawl $CR --tags $CR/tags_ok_a.j
 $ENGPY research/sandbox_tools/replay_batch.py --crawl $CR --tags $CR/tags_ok_b.json --out $NEW --record-every 20 --record-plays --port 37032 --determinism-every 0 > $O/drive_b.out 2>&1 &
 wait
 echo "drive done $(date -u +%H:%M)"
+# free the engine VM's ~4 GB (plain `stop` keeps the VM: measured 2026-09-10, services stopped, vm_stopped false) before the dataset + training phases: Google Play Games holds another ~4.5 GB on this
+# box and the VM would otherwise leave ~2.7 GB for three sequential trainers. The corpus is already on disk.
+powershell.exe -NoProfile -Command "Set-Location C:\Users\benpe\ClashBot\research\ext\cr-native-sandbox; . .\runtime.env.ps1 *> \$null; & .\.venv\Scripts\python.exe -m native_core.worker stop --workers 2 --stop-vm" > $O/engine_stop.out 2>&1 || echo "engine stop returned nonzero (see $O/engine_stop.out); continuing"
 
 # 3. merge: corpus_v5 + NEW frames-bearing replays (the same rule v5 and icebow v6 used)
 $PY - <<'PY'

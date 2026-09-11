@@ -1,0 +1,30 @@
+{
+ "tag": "edf93c4519044b89944be9341d9f45ce",
+ "37031": {
+  "terminal_tick": 3681,
+  "outcome": "side0_win",
+  "crowns": [
+   1,
+   0
+  ],
+  "state_hash": "63a7959bdda8d36d",
+  "plays_driven": 51,
+  "accepted": 49,
+  "invalid_placement": 0,
+  "seconds": 1.76
+ },
+ "37032": {
+  "terminal_tick": 3681,
+  "outcome": "side0_win",
+  "crowns": [
+   1,
+   0
+  ],
+  "state_hash": "63a7959bdda8d36d",
+  "plays_driven": 51,
+  "accepted": 49,
+  "invalid_placement": 0,
+  "seconds": 1.74
+ },
+ "slots_agree": true
+}

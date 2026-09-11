@@ -1,0 +1,17 @@
+s1_dataset.npz [('tags', (241,), '<U12'), ('meta', (), '<U542'), ('off', (33219,), 'int64'), ('y_slot', (33218,), 'int8'), ('y_gate', (33218,), 'int8'), ('y_wait_slot', (33218,), 'int8'), ('y_wait_dt', (33218,), 'float32'), ('tick', (33218,), 'int32'), ('rep', (33218,), 'int32'), ('side', (33218,), 'int8'), ('split', (33218,), 'int8')]
+s1_dataset_v6.npz [('tags', (1162,), '<U32'), ('meta', (), '<U520'), ('off', (159138,), 'int64'), ('y_slot', (159137,), 'int8'), ('y_gate', (159137,), 'int8'), ('y_wait_slot', (159137,), 'int8'), ('y_wait_dt', (159137,), 'float32'), ('tick', (159137,), 'int32'), ('rep', (159137,), 'int32'), ('side', (159137,), 'int8'), ('split', (159137,), 'int8')]
+v3 split counts {0: 27085, 1: 6133}
+  split 0 play rows 7980
+  split 1 play rows 1817
+s1_dataset_v4.npz v3 split0 tags (197) in s1_dataset_v4.npz split0 (393 tags): overlap 197
+s1_dataset_v4.npz v3 split0 tags (197) in s1_dataset_v4.npz split1 (70 tags): overlap 0
+s1_dataset_v4.npz v3 split1 tags (44) in s1_dataset_v4.npz split0 (393 tags): overlap 0
+s1_dataset_v4.npz v3 split1 tags (44) in s1_dataset_v4.npz split1 (70 tags): overlap 44
+s1_dataset_v5.npz v3 split0 tags (197) in s1_dataset_v5.npz split0 (645 tags): overlap 197
+s1_dataset_v5.npz v3 split0 tags (197) in s1_dataset_v5.npz split1 (120 tags): overlap 0
+s1_dataset_v5.npz v3 split1 tags (44) in s1_dataset_v5.npz split0 (645 tags): overlap 0
+s1_dataset_v5.npz v3 split1 tags (44) in s1_dataset_v5.npz split1 (120 tags): overlap 44
+s1_dataset_v6.npz v3 split0 tags (197) in s1_dataset_v6.npz split0 (983 tags): overlap 197
+s1_dataset_v6.npz v3 split0 tags (197) in s1_dataset_v6.npz split1 (179 tags): overlap 0
+s1_dataset_v6.npz v3 split1 tags (44) in s1_dataset_v6.npz split0 (983 tags): overlap 0
+s1_dataset_v6.npz v3 split1 tags (44) in s1_dataset_v6.npz split1 (179 tags): overlap 44

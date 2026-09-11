@@ -2689,6 +2689,33 @@ The N=1 teacher-corpus labelling run (3 x 40 matches on disjoint seeds) is runni
 
 **OWNER RULING 2026-09-10: the reranker line is CLOSED** (chosen over a ~144-match power-up of rank-only and a second DAgger round). Recorded as a measured negative. Do not reopen without a new idea that addresses the privileged-teacher gap itself -- e.g. a student that sees what the teacher sees -- rather than another head on the same degraded view.
 
+**T. HOGEQ v6lat TRAINED (L67o, 2026-09-10 22:40 -> 09-11 01:23 UTC): calibrated heads better on every seed, exact cell +0.44 pp and NOT established; the cannon alias did not hurt tesla.** `scratchpad/gauntlet/L67/run_hogeq_v6.sh`, outputs `scratchpad/gauntlet/L67/s1_hogeq_v6/`.
+
+*Build (a).* 523 mined -> 126 dropped (evo Elite Barbarians) -> **397 driven, 0 failed**, 397/397 frames-bearing. corpus_v6/hogeq = 765 (v5) + 397 = **1,162 replays**; dataset `hogeq/data/pipeline/s1_dataset_v6.npz` **159,137 rows (46,924 play / 112,213 wait; 3,133 plays skipped; unmapped [])** vs v5's 104,007. Crowns match on the new drive **59.4% (236/397)** vs corpus_v5/hogeq **56.3% (431/765)** -- the known replay-fidelity gap, not a regression. Three seeds sequential, ~47 min each; selected epochs 19 / 13 / 15 on v6's own val split.
+
+*Leak check (a), `leak_check.out`.* All 44 v3-VAL replays sit in v6's val split, 0 in its train split (v4 and v5 identical). Caveat: epoch selection used v6 val, which contains those 44 replays; v5lat was selected the same way on v5 val, so the bias is shared, not zero.
+
+*The number (a), v3 VAL (6,133 rows / 1,817 plays), mean +- seed sd, `eval_v3val_hogeq_v6lat.out` vs `eval_v3val_hogeq_v5lat_regrade.out`.* The v5lat regrade reproduces 23.21 exactly.
+
+| metric | v5lat (s0/s1/s2) | v6lat (s0/s1/s2) | delta | seeds separate? |
+|---|---|---|---|---|
+| exact cell | 23.21 +- 0.61 (22.51/23.56/23.56) | **23.65 +- 0.46** (23.94/23.12/23.89) | +0.44 (Welch t ~1.0) | no |
+| card top-1 | 60.26 | 61.14 | +0.88 | touching (60.87 = 60.87) |
+| within 1 tile | 31.92 | 32.56 | +0.64 | no |
+| joint card+cell | 14.66 | 14.95 | +0.29 | no |
+| cell NLL | 3.301 | **3.235** | -0.066 | **yes, every seed** |
+| gate balanced acc | 71.39 | **73.83** | +2.44 | **yes** |
+| value acc | 57.06 | **59.92** | +2.86 | **yes** |
+
+*Did the alias confound placements? (a), `alias_share.out`, `eval_by_slot_v3val.out`.* Replays with a cannon play and no tesla play anywhere: 373 (a lower bound on the 406 alias replays; 33 have an opposing tesla). **1,000 of the 4,039 tesla-slot training plays (24.8%) are pro CANNON plays**; 23.0% of all training play rows come from those replays. On the exact-deck v3 VAL (185 tesla plays) v6lat places TESLA **25.2 vs 22.7 exact cell, 49.5 vs 46.7 within one tile** -- seeds overlap, so no gain is claimed, but a quarter-cannon tesla label produced no measurable harm. Other cards, same file: hog rider exact cell **-2.1** (53.0 vs 55.0) and within-1-tile -2.2, all three v6 seeds below all three v5; ice spirit exact cell +2.1 all seeds above, card top-1 -4.1 all below; the log card top-1 +6.3 (overlap). **Multiple-comparison warning:** 8 cards x 3 metrics = 24 tests, and 3-vs-3 full separation happens by chance ~10% of the time per test (either direction), so ~2.4 separations are expected under no effect; 5 were seen. The hog drop is (b) plausible but untested -- the measurement is hog placement on VAL by source (v5 vs new exact vs alias replays) and a hog-only pro-agreement ceiling.
+
+*What this does NOT establish.* (1) The alias is not isolated from "+397 replays"; the A/B is v5 corpus vs v5 + (117 exact + 406 alias). (2) No sim or live play test; these are agreement/calibration numbers. (3) The exact-cell gain is inside seed noise -- more data moved the calibrated heads (gate, value, NLL), not the argmax cell.
+
+*Traps found.* (i) `native_core.worker stop` KEEPS the VM by default (`vm_stopped: false`, qemu still 4.1 GB); the script now passes `--workers 2 --stop-vm`. This run's VM was stopped by hand at ~00:16 UTC after the drive (free RAM 2.8 -> 4.5 GB); the trainer was unaffected. (ii) The L63 liveness reference `ext/batch/replay_000YLY0JCPGL.json` is gone; `L67/liveness_slots.py` drives one replay on BOTH slots and compares (same state hash `63a7959bdda8d36d`, 49/51 accepted, 1.7 s each). (iii) Do not edit a bash script while it runs -- bash reads it by byte offset; the `--stop-vm` fix waited for RUN_DONE. (iv) `battles.csv` deck strings under-count cannon (39 replays) against the plays file (419) -- count alias replays from `plays_ext.csv`, not the deck column.
+
+*Checkpoint for the hogeq live port:* **`s1_hogeq_v6lat_s0.pt`**, chosen on the SELECTION split (v6 val exact cell 24.54 vs s2 24.51, s1 24.36), not on v3 VAL. Next: the hogeq live port (owner-approved after this build), per `scratchpad/gauntlet/L67/hogeq_port_plan.md`.
+
+
 ### §5cs.98 -- L67e+f (2026-09-08 06:00-18:00 UTC): **OPTION B GRADED (3 seeds: clean 21.56 +- 0.07, degraded 19.45 +- 0.05) BUT ITS GAIN IS AGAINST A CORRUPTION MODEL WE NOW KNOW IS WRONG. Three label-free live measurements instead: the GATE survives real detector input (live .248-.325 vs engine .294-.298), PLACEMENT COLLAPSES toward the prior (top-1 cell share 0.25 vs 0.07 at matched unit counts), and nothing JITTERS (same-cell 61.4% live vs 38.7% engine -- the collapse seen twice, not a second defect). Ablation names the cause: MISSING VALUES (unit HP, exact/opponent elixir, king HP), not noisy ones -- spell tokens, unknown team tags and low confidence each do NOTHING. Against pro labels, SUPPLYING beats FLAGGING (blank_both 18.78 exact cell / 52.11 card -> fill_both 20.15 / 63.25), so the fill is now wired live and verified (live top-1 share 0.411 -> 0.322)**
 
 **A. Option B, the 3-seed result (a), `s1_v6aug/eval_v3val_icebow_v6aug.out` + `eval_v3degraded_*`.** Augmented set = 622,923 rows (339,192 clean + 283,731 degraded TRAIN rows; val rows clean, so checkpoint selection is v6lat's own rule).
