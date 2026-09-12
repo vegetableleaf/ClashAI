@@ -1743,3 +1743,10 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - **By eye (b):** ~8 clearly good (tower pushes, Battle Ram, Balloon, Goblin Giant), 1 partial, ~6 no freeze inside the crop (snowman spawns behind the hero's target -- unclear, not proven wasted).
 - **Session (a):** 10.94 plays/min; X-Bow 6.6% of plays, Rocket 1 play; X2 pocket fired twice; Log skip 0; 3 known losses (0-1, 1-2, 1-3), 2 results not captured.
 - **hero_frames.py:** saved to scratchpad/gauntlet/L67; dry run on session 20260912_152220 + live_run11.log -> 26 hero plays, 231 raw frames, no drawn boxes.
+
+## L67aj (2026-09-12) -- E1 option B tooling built and verified offline; not run (box not free)
+- **Built (agent, new files only):** pipeline/e1_view.py, e1_pool.py, e1_eval.py, e1_score.py, tests/test_e1_baseline.py; pool v1 in icebow/data/ghost_pool (local).
+- **Verified (a):** 23 offline tests OK; pool verify sha_ok, rule_mismatch 0, 293 held-out / 1,505 train / 12 dropped, no opponent group on both sides; live-rule actions identical to student_live on 216 constructed states.
+- **Trap:** the corpus was driven from plays_ext_i1.csv (plays_ext.csv lacks positions).
+- **Deviations (b):** ghosts keep their real plays after the pro replay ends; PoolV1Env ghost loop tested only on a fake engine; anti-stall clock from tick 90.
+- **Not run:** free RAM 2.8 GB (needs ~10), Play Games + Roblox + Label Studio up. Runbook ~1 h 20 min; parity gate >= 19/20 first. Waiting for the owner's "box is free".

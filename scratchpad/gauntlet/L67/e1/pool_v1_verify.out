@@ -1,0 +1,1 @@
+{"sha_ok": true, "n_pool": 1810, "n_frozen": 1810, "rule_mismatch": 0, "row_vs_frozen_mismatch": 0, "counts": {"train": 1505, "heldout": 293, "dropped": 12}, "groups_heldout_and_train": [], "frozen_counts": {"heldout": 293, "train": 1505, "dropped": 12}}
