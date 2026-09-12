@@ -1,0 +1,30 @@
+lane split per card: BOT (this run) | PRO (icebow v6 train)
+  tornado     bot n= 41 left  29% centre  29% right  41%         | pro left  36% centre  26% right  38%
+  tesla       bot n= 38 left  18% centre  42% right  39%         | pro left  28% centre  43% right  29%
+  ice_wizard  bot n= 40 left  35% centre  22% right  42%         | pro left  31% centre  37% right  32%
+  x_bow       bot n= 17 left  29% centre   6% right  65%         | pro left  40% centre  20% right  40%
+  rocket      bot n=  5 left 100% centre   0% right   0%         | pro left  49% centre   2% right  49%
+  knight      bot n= 16 left  19% centre  12% right  69%         | pro left  35% centre  29% right  36%
+  the_log     bot n= 49 left  43% centre   0% right  57%         | pro left  48% centre   2% right  49%
+  skeletons   bot n= 49 left  35% centre  14% right  51%         | pro left  36% centre  27% right  37%
+ALL        bot left  33% centre  18% right  49% | pro left  37% centre  25% right  38%
+knight read anywhere in the decision hand: 40/255 (16%) | "?" slots per decision 0.67
+X-Bow plays (wall, board xy, model cell -> tap cell, elixir):
+   09:54:26.746 (0.86, 0.61) 267 -> 231 elixir 10
+   09:57:35.196 (0.14, 0.61) 254 -> 218 elixir 6
+   09:58:23.203 (0.86, 0.61) 267 -> 231 elixir 8
+   10:01:44.453 (0.53, 0.7) 297 -> 297 elixir 10
+   10:04:52.502 (0.86, 0.61) 267 -> 231 elixir 9
+   10:05:53.429 (0.14, 0.61) 254 -> 218 elixir 9
+   10:06:47.315 (0.86, 0.61) 267 -> 231 elixir 6
+   10:08:38.168 (0.75, 0.61) 265 -> 229 elixir 6
+   10:09:27.170 (0.86, 0.61) 267 -> 231 elixir 7
+   10:11:57.366 (0.14, 0.61) 254 -> 248 elixir 7
+   10:13:40.235 (0.86, 0.61) 267 -> 231 elixir 6
+   10:14:19.991 (0.86, 0.61) 267 -> 231 elixir 10
+   10:15:15.306 (0.86, 0.61) 267 -> 231 elixir 7
+   10:16:34.452 (0.86, 0.61) 267 -> 231 elixir 7
+   10:18:32.908 (0.14, 0.61) 254 -> 218 elixir 9
+   10:19:11.817 (0.14, 0.61) 254 -> 218 elixir 8
+   10:19:44.919 (0.86, 0.61) 267 -> 231 elixir 6
+cell moved after the model decided, by card: {'x_bow': 16, 'the_log': 33, 'ice_wizard': 6, 'tesla': 5, 'tornado': 7, 'rocket': 2, 'skeletons': 3, 'knight': 1}

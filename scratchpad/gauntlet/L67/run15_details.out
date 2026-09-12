@@ -1,0 +1,24 @@
+lines 1179 | ERROR 0 | Traceback 0 | SKIP 0 | NO-TRAY-MATCH 44
+matches 8 plays 255 | repeats within 2 0 | stall plays 4
+plays per match: [40, 35, 31, 29, 31, 30, 29, 30]
+card share: {'the_log': '49 (19%)', 'skeletons': '49 (19%)', 'tornado': '41 (16%)', 'ice_wizard': '40 (16%)', 'tesla': '38 (15%)', 'x_bow': '17 (7%)', 'knight': '16 (6%)', 'rocket': '5 (2%)'}
+per card: median board y (1=our back, 0=their back) | share on enemy half (y<0.5) | median elixir at play | p median
+  the_log      n= 49 y_med 0.55 enemy_half   0% x_med 0.75 elixir_med 3 p_med 0.40 units_med 3
+  skeletons    n= 49 y_med 0.55 enemy_half   0% x_med 0.58 elixir_med 2 p_med 0.43 units_med 3
+  tornado      n= 41 y_med 0.48 enemy_half  54% x_med 0.53 elixir_med 3 p_med 0.61 units_med 4
+  ice_wizard   n= 40 y_med 0.73 enemy_half   0% x_med 0.53 elixir_med 4 p_med 0.51 units_med 4
+  tesla        n= 38 y_med 0.57 enemy_half   0% x_med 0.50 elixir_med 4 p_med 0.48 units_med 3
+  x_bow        n= 17 y_med 0.61 enemy_half   0% x_med 0.86 elixir_med 7 p_med 0.39 units_med 2
+  knight       n= 16 y_med 0.55 enemy_half   0% x_med 0.78 elixir_med 4 p_med 0.53 units_med 2
+  rocket       n=  5 y_med 0.27 enemy_half  60% x_med 0.25 elixir_med 7 p_med 0.38 units_med 1
+taps 255 | no elixir drop 44/239 (18.4%) {'x_bow': '0/12', 'tesla': '7/38', 'the_log': '1/47', 'skeletons': '26/47', 'ice_wizard': '2/37', 'tornado': '7/39', 'rocket': '0/5', 'knight': '1/14'}
+[assist] lines 8 {'TORNADO nearest': 1, 'TORNADO king-spot': 7}
+    [assist] TORNADO nearest cell 239->58 target magic_archer at (0.30,0.19) enemy tracks 1 wall=09:56:40.513
+    [assist] TORNADO king-spot cell 158->333 trigger bats at (0.50,0.56) enemy tracks 7 wall=10:00:57.116
+    [assist] TORNADO king-spot cell 333->333 trigger mega_knight at (0.58,0.57) enemy tracks 9 wall=10:07:15.048
+    [assist] TORNADO king-spot cell 175->333 trigger bats at (0.56,0.53) enemy tracks 5 wall=10:09:59.300
+    [assist] TORNADO king-spot cell 9->332 trigger bats at (0.39,0.51) enemy tracks 9 wall=10:10:35.119
+    [assist] TORNADO king-spot cell 333->332 trigger giant at (0.49,0.51) enemy tracks 7 wall=10:11:25.248
+    [assist] TORNADO king-spot cell 333->332 trigger royal_giant at (0.46,0.53) enemy tracks 2 wall=10:18:38.749
+    [assist] TORNADO king-spot cell 333->332 trigger balloon at (0.48,0.56) enemy tracks 7 wall=10:19:24.096
+WAIT lines 131 | elixir at WAIT hist {1: 5, 2: 25, 3: 40, 4: 17, 5: 18, 6: 3, 7: 5, 8: 6, 9: 7, 10: 5}

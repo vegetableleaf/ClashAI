@@ -1,0 +1,22 @@
+the_log: 49 taps, moved 33 | move in grid cells (dx, dy) most common: [((1, 0), 5), ((2, 0), 3), ((-1, 0), 3), ((-1, 7), 2), ((0, -4), 2), ((-2, 0), 2), ((0, 1), 1), ((1, 7), 1)]
+   moved distance (cells) median 3 | model log cells most common [(248, 11), (237, 8), (247, 7), (249, 4), (236, 4), (327, 2)]
+x_bow: t (s into match), elixir, units on board, p, model cell -> tap cell
+   t 8.7 elixir 10 units 1 p 0.33 267 -> 231
+   t 197.2 elixir 6 units 4 p 0.75 254 -> 218
+   t 11.2 elixir 8 units 4 p 0.62 267 -> 231
+   t 23.5 elixir 10 units 3 p 0.4 297 -> 297
+   t 21.5 elixir 9 units 3 p 0.35 267 -> 231
+   t 82.4 elixir 9 units 0 p 0.31 254 -> 218
+   t 136.3 elixir 6 units 2 p 0.39 267 -> 231
+   t 57.2 elixir 6 units 1 p 0.28 265 -> 229
+   t 106.2 elixir 7 units 1 p 0.44 267 -> 231
+   t 66.4 elixir 7 units 3 p 0.32 254 -> 248
+   t 169.2 elixir 6 units 3 p 0.31 267 -> 231
+   t 19.0 elixir 10 units 1 p 0.53 267 -> 231
+   t 74.3 elixir 7 units 1 p 0.32 267 -> 231
+   t 153.5 elixir 7 units 3 p 0.39 267 -> 231
+   t 81.9 elixir 9 units 0 p 0.41 254 -> 218
+   t 120.8 elixir 8 units 2 p 0.46 254 -> 218
+   t 153.9 elixir 6 units 2 p 0.27 267 -> 231
+x_bow placed in first 20 s: 3 | at 9-10 elixir: 6 | with <=2 units on board: 10
+tornado: t median 129.1 | units median 4 | enemy-half model casts 22 / 41

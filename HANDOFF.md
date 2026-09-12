@@ -3011,6 +3011,31 @@ F2 detail: 11 of 19 matches still get a STALL-PLAY before any play, now at t 12.
 *What this does NOT establish.* The live effect -- the owner's next run: `[assist] TORNADO` lines should name no buildings, and the king-spot share of Tornados should not rise. That run's logs also feed N2.
 
 
+**AH. RUN15 (owner 2026-09-12 09:54-10:20, 8 matches; L67ab): the freeze / tap / Tornado-trigger fixes hold, and the problems now visible are PLACEMENT and CARD CHOICE -- above all an X-Bow assist that turns the model's pro-depth X-Bow into a bridge X-Bow 16 times out of 17.** The owner saw "a few problems" and asked what I notice before saying what they saw. Logs `icebow/data/play_20260912_095411.log`, stdout `scratchpad/live_run11.log` (converted `L67/live_run15_utf8.log`); outputs `live_run15_scan.json`, `tap_audit_run15.json`, `run15_details.out`, `run15_lanes.out`, `run15_log_xbow.out`. Frames kept local. Code was N1's (play.py saved 09:50:49, run 09:54:11).
+
+*What held (a), same instruments:* 8 matches, 25.1 min, plays/min **10.16** (pro band), STALL-PLAY/min 0.19, 0 long freezes, repeated taps **0**, no-elixir-drop taps 18.4% (skeletons 26/47; the_log 1/47, ice_wizard 2/37, x_bow 0/12), no nav stalls / reward taps, 0 errors. Tornado assist: 8 moves, **no building named** (N1), triggers bats x3, mega_knight, giant, royal_giant, balloon; 5 freeze captures, no repeat, no next-card conflict, no fake earthquake.
+
+*Results (a, the clips' result screens):* our crown shown only in matches 1 (overtime) and 5 -> **2 wins, 6 losses**. Eight matches decide nothing about strength (guardrail); recorded because the owner watched them.
+
+*1. X-Bow (a).* 17 X-Bows. The model's own cell: board (0.861, 0.604) x11 / (0.139, 0.604) x5 -- **the pro depth** (pro X-Bow y median 0.609, p10-p50 all 0.609; 7,178 pro plays). play.py's X-Bow assist then moved **16 of 17** two grid rows forward to board y **0.521** (cells 267->231, 254->218, 265->229, 254->248) -- **forward of y 0.58 for 16/17 (94%) vs pros 6.5%**. Three were placed in the first 20 s (8.7 s at 10 elixir with 1 unit on the board; pros place 2.5% of X-Bows in the first 20 s, 0.6% of those forward); 10 of 17 with <= 2 units on the board. Frames at 2:44 and 2:34 show the bridge X-Bows. Only one centre-defensive X-Bow (6%; pros 21.7%). **Why (a, code):** play.py runs `xbow_target_lane_cell`, `xbow_lock_cell` and `xbow_offense_depth_cell` on every X-Bow; the last two call a bow DEFENSIVE only when its FRAME y >= `env.xbow_defense_front` = **0.52** (the `sim` section's 0.625 is a different key). The model's cell 267 sits at frame y **0.503** -- the pro X-Bow row -- so it is judged offensive and `xbow_offense_depth_cell` moves it to the front row (`action.deploy_top` 0.44 -> frame 0.455 = board 0.521). The 0.52 frame threshold classifies the canonical pro X-Bow depth as an offensive bow.
+
+*2. Tornado overuse (a).* 16% of plays vs pros 8.0%; model casts on the enemy half 54% (pros 44%). One nearest-fallback Tornado went to a lone Magic Archer beside the ENEMY princess tower (frame) -- 3 elixir for nothing.
+
+*3. Knight almost never played (a).* 6% of plays vs pros 16.3%; a knight is read in the decision tray in only **16% of decisions** (a card in hand is read ~50% of the time in steady cycle), knight_evo has 6 templates vs knight's 35 -- the evolved Knight is unreadable, P1 removes unreadable slots, so the tap path rarely has it (P3 not shipped).
+
+*4. Rocket 2% vs pros 5.6% (a)* -- 5 plays, all left lane.
+
+*5. Right-lane lean (a).* All plays: left 33 / centre 18 / right 49% vs pros 37 / 25 / 38. Knight right 69% (pros 36), X-Bow 65% (40), the_log 57% (49).
+
+*6. Skeletons (b).* 26 of 47 Skeleton taps show no elixir drop; integer display + regen hides part of a 1-elixir drop; the rest may be real non-deploys (needs clips).
+
+*Other (a):* the Log assist moved 33 of 49 Logs, mostly 1-2 columns onto a lane; the model's own Log cells (front row at the bridges) match pro placement, so not flagged. 44 WAIT lines were NO-TRAY-MATCH (every readable card filtered by P1 at that moment).
+
+*What this does NOT establish.* Whether the bridge X-Bows lost the matches (2-6 over 8 matches is noise). Why the model overuses Tornado (the false-earthquake token was absent from this run's captures). Which side the owner's own observations point to -- asked.
+
+*Proposed (owner decision):* **X1** stop the X-Bow assist from pushing an X-Bow forward when the model placed it at the pro depth (or gate the push on a tower-lock condition that pros actually use); **P3** rebuild evolved-Knight templates; Tornado overuse needs a measurement of what state the model casts it in before any fix.
+
+
 ### §5cs.98 -- L67e+f (2026-09-08 06:00-18:00 UTC): **OPTION B GRADED (3 seeds: clean 21.56 +- 0.07, degraded 19.45 +- 0.05) BUT ITS GAIN IS AGAINST A CORRUPTION MODEL WE NOW KNOW IS WRONG. Three label-free live measurements instead: the GATE survives real detector input (live .248-.325 vs engine .294-.298), PLACEMENT COLLAPSES toward the prior (top-1 cell share 0.25 vs 0.07 at matched unit counts), and nothing JITTERS (same-cell 61.4% live vs 38.7% engine -- the collapse seen twice, not a second defect). Ablation names the cause: MISSING VALUES (unit HP, exact/opponent elixir, king HP), not noisy ones -- spell tokens, unknown team tags and low confidence each do NOTHING. Against pro labels, SUPPLYING beats FLAGGING (blank_both 18.78 exact cell / 52.11 card -> fill_both 20.15 / 63.25), so the fill is now wired live and verified (live top-1 share 0.411 -> 0.322)**
 
 **A. Option B, the 3-seed result (a), `s1_v6aug/eval_v3val_icebow_v6aug.out` + `eval_v3degraded_*`.** Augmented set = 622,923 rows (339,192 clean + 283,731 degraded TRAIN rows; val rows clean, so checkpoint selection is v6lat's own rule).

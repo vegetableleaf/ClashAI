@@ -1690,3 +1690,9 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - **Open:** Skeletons no-drop 23/45 (display rounding vs real, needs clips).
 - **Asked the owner:** N1 (Tornado assist ignores buildings), N2 (why our X-Bow is served as enemy), keep T3 parked; confirmation run owed (one session, 8 matches).
 - **L67aa (5cs.99 AG), owner "ship N1":** `reward.tornado_pullable` drops building tracks; icebow play.py's Tornado assist applies it before the king-activation trigger and the nearest-enemy fallback (run14: 2 of 8 moves aimed at buildings). New test_tornado_pullable.py: 5 OK in both trees; full suites hogeq 1,368 OK, icebow only the pre-existing test_xbow_into_push failure. N2 waits for the owner's next run.
+
+## L67ab (2026-09-12) -- run15: fixes hold; the X-Bow assist turns pro-depth X-Bows into bridge X-Bows (16/17)
+- **Held:** 10.2 plays/min, 0 repeats, 0 freezes, 0 nav stalls, Tornado assist names no buildings. Result screens: 2 W / 6 L (noise at n=8).
+- **X-Bow:** model cell at board y 0.604 (pros 0.609); the play.py assist moved 16/17 forward to y 0.521 -- forward in 94% vs pros 6.5%; 3 in the first 20 s (pros 2.5%).
+- **Card mix:** Tornado 16% (pros 8%), Knight 6% (pros 16%; knight read in 16% of decisions -- evolved Knight unreadable), Rocket 2% (5.6%). Right-lane lean 49% vs 38%.
+- **Open:** Skeletons 26/47 no elixir drop. Asked the owner what they saw; proposed X1 (X-Bow assist), P3 (evo Knight templates).
