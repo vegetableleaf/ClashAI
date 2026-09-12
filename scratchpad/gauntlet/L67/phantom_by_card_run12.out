@@ -1,0 +1,5 @@
+taps 697 | with a read >= 0.5 s after 563 | elixir did NOT fall 174 (30.9%)
+no-drop share by tapped card: {'the_log': '50/147 (34%)', 'ice_wizard': '55/130 (42%)', 'tornado': '16/86 (19%)', 'skeletons': '38/85 (45%)', 'tesla': '8/52 (15%)', 'knight': '7/40 (18%)', 'x_bow': '0/16 (0%)', 'rocket': '0/7 (0%)'}
+tapped card read in TWO tray slots: no-drop 24/43 | read once: 150/520
+logged elixir >= card cost: no-drop 174/563 | logged elixir < cost (should never be tapped): 0/0
+no-drop share by tapped slot: {0: '61/188', 1: '53/147', 2: '25/117', 3: '35/111'}

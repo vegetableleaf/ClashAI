@@ -1,0 +1,4 @@
+PLAY decision hand: n 697 | "?" share by slot 0-3 [0.092, 0.098, 0.436, 0.149] | rows with a card read in two slots 60 (8.6%)
+   duplicate read sits in slot {1: 12, 2: 17, 3: 32} | slot pairs (first,second) {(0, 3): 13, (1, 3): 13, (0, 1): 12, (0, 2): 11, (1, 2): 6, (2, 3): 6} | cards {'ice_wizard': 35, 'the_log': 17, 'rocket': 5, 'tornado': 4}
+TRAY re-read now: n 1078 | "?" share by slot 0-3 [0.291, 0.271, 0.542, 0.306] | rows with a card read in two slots 108 (10.0%)
+   duplicate read sits in slot {1: 17, 2: 53, 3: 41} | slot pairs (first,second) {(1, 2): 27, (0, 2): 26, (2, 3): 20, (0, 1): 17, (1, 3): 14, (0, 3): 7} | cards {'tornado': 57, 'ice_wizard': 22, 'tesla': 20, 'the_log': 7, 'rocket': 5}

@@ -1,0 +1,5 @@
+decisions 697 | deck (base) ['tornado', 'tesla', 'ice_wizard', 'x_bow', 'rocket', 'knight', 'the_log', 'skeletons']
+share of decisions each card is READ somewhere in the tray (a card sits in hand ~50% of the time):
+   {'tornado': 0.405, 'tesla': 0.506, 'ice_wizard': 0.455, 'x_bow': 0.242, 'rocket': 0.869, 'knight': 0.161, 'the_log': 0.336, 'skeletons': 0.164}
+  raw identities seen (incl. evo keys): {'rocket': 611, '?': 540, 'ice_wizard': 352, 'tesla': 297, 'tornado': 286, 'the_log': 251, 'x_bow': 169, 'skeletons': 114, 'knight': 92, 'tesla_evo': 56, 'knight_evo': 20}
+slot 2 unreadable with slots 0,1,3 cleanly read: 199 decisions; cards NOT in slots 0,1,3 (slot 2 is one of these 5): {'knight': 192, 'skeletons': 169, 'the_log': 149, 'tornado': 126, 'ice_wizard': 122, 'x_bow': 119, 'tesla': 98, 'rocket': 20}

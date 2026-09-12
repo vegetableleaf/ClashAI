@@ -1666,3 +1666,10 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - **Correction:** "next among the last 3 plays" is NOT impossible (training 11.8%); only a repeat inside past is.
 - **Asked the owner:** F3 (timestamped PLAY lines + tray read before/after) and F4 (no re-tap until the tray changes or ~1 s; record the card that actually left).
 - **L67u (5cs.99 AA), owner "logging only":** play.py (both decks) stamps every [student] line with wall time, adds the tray + elixir to PLAY lines, a TAP line at the tap, and TRAY lines at the first read after a tap and at >= 0.5 s. No decision reads them. Offline `tap_audit.py` classifies taps (deployed / not_deployed / retap_on_stale). Scanner unaffected on new-format lines; full suites hogeq 1,343 OK, icebow only the pre-existing test_xbow_into_push failure. F4 not shipped.
+
+## L67v (2026-09-12) -- the repeated taps are the TRAY READER; ~31% of taps deploy nothing; nav ceiling ended the run on a reward screen
+- **Run12 (16 matches):** STALL-PLAY/min 0.45 (run11 0.65, run10 1.09); 13.9 plays/min; captures: repeated past 0, next-in-last-3 75.6%.
+- **Tray reads:** slot 2 unreadable 43.6%; the same card read in two slots 8.6% of decisions; knight and skeletons read in only 16% of decisions. Overlay-clip frames: evolved Knight -> "?", greyed X-Bow -> "ice_wizard". No greyed-card templates; knight_evo has 6 templates.
+- **Elixir check:** 30.9% of taps show no elixir drop (the_log 34%, ice_wizard 42%; x_bow/rocket 0%); 56% when the card was read in two slots.
+- **Nav:** stuck on in-game reward screens (chest "Tap to open", card reveal); ceiling recovered 8x, gave up at 10 min, Discord alert sent, play.py stopped.
+- **Asked the owner:** P1 (greyed slot / double read never tapped), P2 (record a play only if elixir falls), P3 (evo templates), P4 (nav taps the centre on reward screens).
