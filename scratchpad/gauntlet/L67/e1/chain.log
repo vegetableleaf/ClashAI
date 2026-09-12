@@ -1,0 +1,5 @@
+2026-09-12T16:36:53 chain start; waiting for shard 0/2 launcher pid 59440
+2026-09-12T17:05:28 shard 0/2 exited; matches=147
+2026-09-12T17:05:28 shard 1/2 launched pid 59820
+2026-09-12T17:35:06 shard 1/2 exited; matches=146
+2026-09-12T17:35:06 CHAIN DONE

@@ -1,0 +1,114 @@
+{
+ "run_dirs": [
+  "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L67\\e1\\baseline_k0\\slot0",
+  "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L67\\e1\\baseline_k0\\slot1"
+ ],
+ "duplicates_dropped": 0,
+ "draws": 10000,
+ "boot_seed": 20260912,
+ "run": {
+  "matches": 293,
+  "entries": 293,
+  "W": 152,
+  "D": 0,
+  "L": 141,
+  "winrate": 0.5187713310580204,
+  "winrate_entry_weighted": {
+   "point": 0.5187713310580204,
+   "lo": 0.46075085324232085,
+   "hi": 0.5767918088737202,
+   "n_entries": 293,
+   "draws": 10000,
+   "seed": 20260912
+  },
+  "unclustered_normal_95": [
+   0.46155948108379113,
+   0.5759831810322497
+  ],
+  "per_seed": {
+   "0": {
+    "n": 293,
+    "wins": 152,
+    "winrate": 0.5187713310580204
+   }
+  },
+  "per_slot": {
+   "0": {
+    "n": 293,
+    "wins": 152,
+    "winrate": 0.5187713310580204
+   }
+  },
+  "decided_before_script_end": {
+   "n": 229,
+   "wins": 108,
+   "winrate": 0.47161572052401746
+  },
+  "wins_after_script": 44,
+  "share_of_wins_after_script": 0.2894736842105263,
+  "buckets": {
+   "ghost_delivered": {
+    "<=10": {
+     "n": 27,
+     "wins": 8,
+     "winrate": 0.2962962962962963,
+     "share_of_wins": 0.05263157894736842
+    },
+    "11-30": {
+     "n": 185,
+     "wins": 93,
+     "winrate": 0.5027027027027027,
+     "share_of_wins": 0.6118421052631579
+    },
+    ">30": {
+     "n": 81,
+     "wins": 51,
+     "winrate": 0.6296296296296297,
+     "share_of_wins": 0.3355263157894737
+    }
+   },
+   "ghost_distinct_delivered": {
+    "<=3": {
+     "n": 1,
+     "wins": 1,
+     "winrate": 1.0,
+     "share_of_wins": 0.006578947368421052
+    },
+    "4-6": {
+     "n": 25,
+     "wins": 8,
+     "winrate": 0.32,
+     "share_of_wins": 0.05263157894736842
+    },
+    ">6": {
+     "n": 267,
+     "wins": 143,
+     "winrate": 0.5355805243445693,
+     "share_of_wins": 0.9407894736842105
+    }
+   }
+  },
+  "wins_where_real_pro_lost": 68,
+  "matches_where_real_pro_lost": 132,
+  "plays_per_min": 13.363575238692905,
+  "accepted_per_min": 12.018826482585505,
+  "accepted_fraction": 0.8993720817903719,
+  "suggested_p_random": 0.2626937636136782,
+  "plays_attempted_per_match": 42.39590443686007,
+  "plays_accepted_per_match": 38.129692832764505,
+  "stall_fired_per_match": 0.006825938566552901,
+  "no_affordable_per_match": 210.94880546075086,
+  "mean_seconds": 190.34982935153585,
+  "mean_seconds_won": 195.4611842105263,
+  "ghost_refused_per_match": 0.7713310580204779,
+  "ghost_undelivered_per_match": 15.249146757679181,
+  "crowns_for_per_match": 1.1535836177474403,
+  "crowns_against_per_match": 1.2252559726962458,
+  "matches_degraded_count_ne_decisions": 0,
+  "wall_s_per_match": 12.271672354948805,
+  "policies": {
+   "live": 293
+  }
+ },
+ "controls": {}
+}

@@ -1,0 +1,11 @@
+2026-09-12T16:24:03 boot pid=60252
+2026-09-12T16:32:44 pid=23520 liveness port=38031 out=C:\Users\benpe\ClashBot\scratchpad\gauntlet\L67\e1\liveness\p38031_1
+2026-09-12T16:33:31 pid=31172 args=-m pipeline.e1_eval --mode liveness --port 38032 --split heldout --entries 0:1 --out C:\Users\benpe\ClashBot\scratchpad\gauntlet\L67\e1\liveness\p38032_1
+2026-09-12T16:33:37 pid=69256 args=-m pipeline.e1_eval --mode parity --port 38031 --shard 0/1 --split heldout --entries 0:20 --out C:\Users\benpe\ClashBot\scratchpad\gauntlet\L67\e1\parity20\slot0
+2026-09-12T16:35:00 pid=59440 baseline port=38031 shard=0/2 out=C:\Users\benpe\ClashBot\scratchpad\gauntlet\L67\e1\baseline_k0\slot0
+2026-09-12T16:36:53 pid=63144 chain_shard1.ps1
+2026-09-12T17:05:28 pid=59820 baseline port=38031 shard=1/2 out=C:\Users\benpe\ClashBot\scratchpad\gauntlet\L67\e1\baseline_k0\slot1
+2026-09-12T17:06:59 pid=54648 chain_after.ps1
+2026-09-12T17:35:21 pid=62552 ctrl_none60 port=38031 out=C:\Users\benpe\ClashBot\scratchpad\gauntlet\L67\e1\ctrl_none60\slot0
+2026-09-12T17:41:31 pid=44648 ctrl_random60 port=38031 out=C:\Users\benpe\ClashBot\scratchpad\gauntlet\L67\e1\ctrl_random60\slot0
+2026-09-12T17:51:19 pid=42948 cont66_100 port=38031 out=C:\Users\benpe\ClashBot\scratchpad\gauntlet\L67\e1\cont66_100\slot0

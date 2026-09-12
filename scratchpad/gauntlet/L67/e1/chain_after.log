@@ -1,0 +1,14 @@
+2026-09-12T17:07:00 chain_after start; waiting for CHAIN DONE
+2026-09-12T17:35:21 score: {"report": "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L67\\e1\\score_baseline_k0.md", "matches": 293, "winrate": 0.5187713310580204, "ci": [0.46075085324232085, 0.5767918088737202], "parity": null}
+2026-09-12T17:35:21 rate-matched p_random = 0.2627
+2026-09-12T17:35:21 ctrl_none60 launched pid 62552: --policy none --entries scratchpad\gauntlet\L67\e1\screen60_heldout_tags.txt
+2026-09-12T17:41:31 ctrl_none60 exited code=0 matches=60 errors=False
+2026-09-12T17:41:31 ctrl_random60 launched pid 44648: --policy random --p-random 0.2627 --entries scratchpad\gauntlet\L67\e1\screen60_heldout_tags.txt
+2026-09-12T17:51:18 ctrl_random60 exited code=0 matches=60 errors=False
+2026-09-12T17:51:19 score: {"report": "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L67\\e1\\score_baseline_k0_vs_controls.md", "matches": 293, "winrate": 0.5187713310580204, "ci": [0.46075085324232085, 0.5767918088737202], "parity": null}
+2026-09-12T17:51:19 cont66_100 launched pid 42948: --policy live --tau 0.5 --no-afford-mask --stall-elixir none --obs clean --entries 0:100
+2026-09-12T18:11:36 cont66_100 exited code=0 matches=100 errors=False
+2026-09-12T18:11:36 score: {"report": "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L67\\e1\\score_cont66_vs_liverule_100.md", "matches": 100, "winrate": 0.89, "ci": [0.83, 0.95], "parity": null}
+2026-09-12T18:11:36 stopping engine services + VM
+2026-09-12T18:11:45 stop done; qemu processes left=0; free GB 5.6
+2026-09-12T18:11:45 ALL DONE

@@ -1,0 +1,22 @@
+{"e1_eval": "parity", "policy": "live", "port": 38031, "tasks": 20, "already_done": 0, "grid": "floor", "tau": 0.27}
+[e1_eval] parity 1/20 000YLL9RURY8 hash_match=True tick 3681/3681 0.9s
+[e1_eval] parity 2/20 000YLLP2UC98 hash_match=True tick 4175/4175 1.0s
+[e1_eval] parity 3/20 000YLY2VQ92P hash_match=True tick 6134/6134 1.1s
+[e1_eval] parity 4/20 000YLYJULG22 hash_match=True tick 4229/4229 0.9s
+[e1_eval] parity 5/20 000YLYYCJ8VY hash_match=True tick 4768/4768 1.2s
+[e1_eval] parity 6/20 002YLQQ0J90P hash_match=True tick 6134/6134 1.6s
+[e1_eval] parity 7/20 008YLL2CQVUP hash_match=True tick 6134/6134 1.6s
+[e1_eval] parity 8/20 008YLQ2RJ00L hash_match=True tick 3681/3681 0.8s
+[e1_eval] parity 9/20 009Y20G9UY9R hash_match=True tick 3681/3681 1.0s
+[e1_eval] parity 10/20 009Y2C2CJ08G hash_match=True tick 6130/6130 1.6s
+[e1_eval] parity 11/20 009YLG90RURQ hash_match=True tick 4897/4897 1.2s
+[e1_eval] parity 12/20 009YLGLPG8JR hash_match=True tick 5069/5069 1.4s
+[e1_eval] parity 13/20 009YLQLLLUPY hash_match=True tick 3681/3681 0.8s
+[e1_eval] parity 14/20 00CYPL820VRL hash_match=True tick 5170/5170 1.2s
+[e1_eval] parity 15/20 00CYPLYYLPL9 hash_match=True tick 6108/6108 1.6s
+[e1_eval] parity 16/20 00CYPY9GJQLV hash_match=True tick 3718/3718 0.8s
+[e1_eval] parity 17/20 00GYP9UGJYLQ hash_match=True tick 4108/4108 0.8s
+[e1_eval] parity 18/20 00GYPL2GC9CG hash_match=True tick 5527/5527 1.3s
+[e1_eval] parity 19/20 00GYPYUCG2GQ hash_match=True tick 6126/6126 1.6s
+[e1_eval] parity 20/20 00JYPGYLRP88 hash_match=True tick 6147/6147 1.8s
+{"DONE": {"new_matches": 20, "finished": "2026-09-12 16:34:04", "wall_s_mean": 1.2, "hash_match": 20}}

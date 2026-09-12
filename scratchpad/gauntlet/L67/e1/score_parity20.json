@@ -1,0 +1,19 @@
+{
+ "run_dirs": [
+  "C:\\Users\\benpe\\ClashBot\\scratchpad\\gauntlet\\L67\\e1\\parity20\\slot0"
+ ],
+ "duplicates_dropped": 0,
+ "draws": 10000,
+ "boot_seed": 20260912,
+ "parity": {
+  "n": 20,
+  "hash_match": 20,
+  "opening_hash_match": 20,
+  "gate_19_of_20": true,
+  "per_slot": {
+   "0": 20
+  },
+  "mismatches": []
+ },
+ "controls": {}
+}

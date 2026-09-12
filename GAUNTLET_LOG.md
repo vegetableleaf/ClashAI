@@ -1750,3 +1750,10 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - **Trap:** the corpus was driven from plays_ext_i1.csv (plays_ext.csv lacks positions).
 - **Deviations (b):** ghosts keep their real plays after the pro replay ends; PoolV1Env ghost loop tested only on a fake engine; anti-stall clock from tick 90.
 - **Not run:** free RAM 2.8 GB (needs ~10), Play Games + Roblox + Label Studio up. Runbook ~1 h 20 min; parity gate >= 19/20 first. Waiting for the owner's "box is free".
+
+## L67ak (2026-09-12) -- option B: v6lat_s0 51.9% vs 293 held-out ghosts (live rule); the OLD rule wins 89% vs 52% on the same 100
+- **Box (a):** boot attempt 2 OK; liveness both doors; parity 20/20 hashes; one eval = ~680 MB (not 2 GB) -> one slot; ~12 s/match (not 21); engine stopped at the end (vm_stopped true).
+- **Baseline (a):** 152 W / 141 L = 51.9% (clustered CI 46.1-57.7); decided before the script ended 47.2%; 28.9% of wins after the script; winrate RISES with ghost activity (<=10 plays 29.6%, >30 plays 63.0%); 13.36 plays/min.
+- **Controls (a, 60 paired):** model 58.3% vs none 0% (+58.3, p 6e-11) and rate-matched random 5% (+53.3, p 5e-10).
+- **Rule contrast (a, 100 paired):** tau 0.5 + no mask + no anti-stall + clean obs 89.0% vs live rule 52.0%: +37.0 pp (CI 26-48), 40 vs 3 discordant, p 3e-9; 10.13 vs 13.32 plays/min. Four bundled changes -- not attributed.
+- **Asked the owner:** run the 4-arm attribution screen (one change per arm) before E1.
