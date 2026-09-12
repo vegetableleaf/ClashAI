@@ -1715,3 +1715,12 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - **Collapse (a):** X-Bow 10% -> 1% of plays from minute 1 to overtime (pros 8-11%); Rocket 1-2% in EVERY phase (pros 3-8%) -- never played, not collapsing; bot median 3 elixir at a play vs pros 7-9; 6-cost affordable at 2-7% of late decisions. Cause (b): affordability mask + low bank; C1 instrumentation proposed.
 - **Trap:** the owner's ice_wizard_hero_*.png are already live Ice Wizard templates (prefix loader).
 - Suites: icebow 1,406 run, 1 failure = the pre-existing test_xbow_into_push clamped-front-row test (fails on clean a1d31a8), 21 skipped; hogeq 1,382 OK (66 skipped).
+
+## L67af (2026-09-12) -- run17 hero matches + engine-RL feasibility + hero data; overnight engine-RL APPROVED
+- **Detector vs hero (a):** 15 live Ice Wizard plays, 45 crops -- hero mostly unboxed (~15 of ~25 on-board crops), sometimes `knight` or an ENEMY box; his deploy effect boxed as enemy `rage` 0.91/0.93.
+- **Own Tornado on own hero (a):** 14:34:45 Tornado assist triggered on "enemy ice_wizard" at our hero's exact position.
+- **Ability button (a):** frame (0.909, 0.765) r 0.062; boxed as enemy `earthquake` 0.91-0.95 -- red box in 17 of 56 sampled frames where visible (30%, pixel heuristic).
+- **Hero data (a):** 0 hero-Ice-Wizard matches in any crawl (all end by 09-06) or the 252k HF dump; press rows hold tick+side only; other heroes pressed once per deploy, median 6.2 s after deploy, late-skewed. Engine has no Ice Wizard hero form.
+- **Engine RL (a):** real libg.so, closed loop works, opponent = non-reacting ghost (S1 wins 72.3%); ~3,600 S1 matches / 8 h idle box (b); engine PPO already failed once on the CNN BC init (flat when leashed, collapsed when free).
+- **Owner:** approved ONE overnight S1 engine-RL experiment validated on held-out recorded opponents; ability metrics beyond troop count; wire a freeze-zone rule if pro data is absent.
+- **Next:** D1 button-region mask, D2 detector labels (hero as ice_wizard), H3 ability rule, E1 RL build.
