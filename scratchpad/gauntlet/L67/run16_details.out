@@ -1,0 +1,18 @@
+lines 6953 | ERROR 0 | Traceback 0 | SKIP 0 | NO-TRAY-MATCH 257 | STALL-PLAY 19
+matches 41 plays(tapped) 1578 | per match median 33 min 12 max 83
+repeats within 2 plays 17
+card share: {'skeletons': '308 (20%)', 'knight': '285 (18%)', 'the_log': '281 (18%)', 'tornado': '251 (16%)', 'ice_wizard': '217 (14%)', 'tesla': '135 (9%)', 'x_bow': '85 (5%)', 'rocket': '16 (1%)'}
+  skeletons   n= 308 y_med 0.55 enemy_half   0% lanes L39/C10/R51 elixir_med 2 p_med 0.43 moved 38 no_drop 153/286
+  knight      n= 285 y_med 0.55 enemy_half   1% lanes L39/C9/R52 elixir_med 3 p_med 0.51 moved 38 no_drop 59/269
+  the_log     n= 281 y_med 0.55 enemy_half   1% lanes L43/C0/R56 elixir_med 3 p_med 0.47 moved 196 no_drop 30/274
+  tornado     n= 251 y_med 0.39 enemy_half  62% lanes L31/C19/R49 elixir_med 3 p_med 0.49 moved 50 no_drop 56/240
+  ice_wizard  n= 217 y_med 0.58 enemy_half   0% lanes L31/C19/R50 elixir_med 4 p_med 0.49 moved 26 no_drop 26/208
+  tesla       n= 135 y_med 0.66 enemy_half   0% lanes L29/C53/R19 elixir_med 5 p_med 0.47 moved 11 no_drop 13/131
+  x_bow       n=  85 y_med 0.61 enemy_half   0% lanes L40/C2/R58 elixir_med 7 p_med 0.34 moved 0 no_drop 8/70
+  rocket      n=  16 y_med 0.27 enemy_half 100% lanes L62/C0/R38 elixir_med 7 p_med 0.43 moved 11 no_drop 2/15
+no elixir drop overall 347/1493 (23.2%)
+knight read in decision hand 437/1578 (28%) | "?" per decision 0.20 | dup reads 223
+X-Bow: n 85 | final board y median 0.604 | forward (<0.58) 0 | moved 0 | lanes L40/C2/R58 | model cells [(267, 44), (254, 32), (265, 5), (297, 2), (256, 2)] | tap cells [(267, 44), (254, 32), (265, 5), (297, 2), (256, 2)]
+first half: skeletons:20% knight:18% the_log:18% tornado:16% ice_wizard:15% tesla:8% x_bow:5% rocket:1% | no-drop 23% | knight read 27%
+second half: skeletons:19% knight:18% the_log:18% tornado:16% ice_wizard:13% tesla:9% x_bow:6% rocket:1% | no-drop 23% | knight read 28%
+[assist] TORNADO 55 {'TORNADO nearest': 8, 'TORNADO king-spot': 47} | bases {'skeletons': 7, 'balloon': 5, 'electro_giant': 5, 'goblinstein': 4, 'ice_golem': 4, 'bats': 4, 'knight': 3, 'hog_rider': 2, 'guards': 2, 'mini_pekka': 2, 'giant_skeleton': 2, 'royal_giant': 2}

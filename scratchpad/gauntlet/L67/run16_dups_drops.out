@@ -1,0 +1,11 @@
+decisions 1578 | card read in two slots: {'ice_wizard': 198, 'tesla': 20, 'the_log': 5} | slot pairs {(0, 2): 59, (1, 2): 53, (2, 3): 38, (0, 1): 34, (0, 3): 27, (1, 3): 12}
+elixir drop (before - after, >= 0.5 s) distribution per tapped card (cost in brackets):
+  tornado     [3] n= 240 {0: 56, 1: 11, 2: 84, 3: 88, 5: 1}
+  tesla       [4] n= 131 {0: 13, 1: 9, 2: 2, 3: 52, 4: 51, 6: 3, 7: 1}
+  ice_wizard  [3] n= 208 {-1: 1, 0: 25, 1: 25, 2: 77, 3: 73, 4: 3, 6: 4}
+  x_bow       [6] n=  70 {0: 8, 1: 7, 2: 7, 3: 1, 5: 13, 6: 34}
+  rocket      [6] n=  15 {0: 2, 1: 1, 2: 2, 5: 5, 6: 5}
+  knight      [3] n= 269 {-2: 1, -1: 10, 0: 48, 1: 17, 2: 92, 3: 99, 4: 1, 5: 1}
+  the_log     [2] n= 274 {0: 30, 1: 143, 2: 98, 3: 2, 4: 1}
+  skeletons   [1] n= 286 {-1: 9, 0: 144, 1: 107, 2: 12, 3: 6, 5: 6, 6: 2}
+knight taps whose decision hand read knight twice: 0 of 269 (P1 should refuse those)

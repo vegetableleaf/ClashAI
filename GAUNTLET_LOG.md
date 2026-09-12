@@ -1697,3 +1697,11 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - **Card mix:** Tornado 16% (pros 8%), Knight 6% (pros 16%; knight read in 16% of decisions -- evolved Knight unreadable), Rocket 2% (5.6%). Right-lane lean 49% vs 38%.
 - **Open:** Skeletons 26/47 no elixir drop. Asked the owner what they saw; proposed X1 (X-Bow assist), P3 (evo Knight templates).
 - **L67ac (5cs.99 AI), owner "do X1 and P3":** X1 -- live X-Bow assists use board depth 0.58 (not the 0.52 frame band), so the pro-row X-Bow stays put; env.py's band untouched; 3 tests OK both trees. P3 -- 15 Knight tray templates from 6 build clips; on 6 held-out clips unread 18.7% -> 7.1%, knight-read frames 17% -> 65%, 1,007 confident fixes, 1 low-score false change (3 weak templates dropped after a by-eye check). Full suites hogeq 1,371 OK, icebow only the pre-existing test_xbow_into_push failure. Owner's Log-on-air and X-Bow lane-splitting observations recorded as hypotheses for after the run.
+
+## L67ad (2026-09-12) -- run16 (41 matches, X1+P3): X-Bow never attacks; greyed X-Bow read as Ice Wizard blocks the real one
+- **Held:** 11.5 plays/min, 0 freezes, 17 repeats in 1,578 taps, 0 nav failures, no degradation across 2 h 20 min.
+- **X1:** 0 of 85 X-Bows forward; 76 at the pros' two favourite cells (board 0.861/0.139, 0.604), 12.9 tiles from the nearest enemy princess (range 11.5) -- purely defensive, no tower pressure.
+- **P3:** Knight 18% of plays (was 6%), placed at the front row (y 0.55 vs pros 0.64).
+- **Ice Wizard double read:** 198 of 1,578 decisions; clip crops: a greyed X-Bow read as ice_wizard every time; P1 then refuses the real pink Ice Wizard too.
+- **Other:** Tornado 16% (62% enemy half); Rocket 1%; Tesla 9%; Play Again template missed 26x (recovered). First 10 matches 3 W / 7 L, six losses by two crowns (noise-level).
+- **Asked the owner:** which issues they saw; proposed P1b (keep the pink copy of a double read), P5 (greyed X-Bow templates), X2 (an offensive X-Bow rule), N3 (Play Again template).
