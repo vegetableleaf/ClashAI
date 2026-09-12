@@ -1683,3 +1683,9 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - **Correction to X:** bisect's per-side unit arms were no-ops (int keys); board_empty stands.
 - **Asked the owner:** T1 wire is_spell into play.py's tracker; T2 log the assist's trigger; T3 drop spell detections on our king tower from the student input.
 - **L67y (5cs.99 AE), owner "do t1 and t2":** T1 -- play.py's TeamTracker (both decks) gets env.py's filters; the change is `is_spell` (base-folded): enemy non-spawn spells no longer feed the aim assists / threat gate. T2 -- icebow play.py logs `[assist] TORNADO king-spot|nearest cell A->B trigger BASE at (x,y)` whenever the assist moves a cast. New test_play_tracker_wiring.py: 6 OK in each tree; full suites hogeq 1,363 OK, icebow only the pre-existing test_xbow_into_push failure. T3 not shipped.
+
+## L67z (2026-09-12) -- first run with P1+P4+T1+T2: plays/min in the pro band, repeated taps gone, Tornado redirects cut (8 matches)
+- **run14 vs run12:** plays/min 13.9 -> 9.8; STALL-PLAY/min 0.45 -> 0.24; repeated taps 16.5% -> 0; no-elixir-drop taps 30.9% -> 17.4% (the_log 34% -> 0, ice_wizard 42% -> 12%); next-card conflict in captures 76% -> 0 (8 captures); Tornado king-spot redirects 39% -> 14% of Tornados. No nav stalls.
+- **T2 log:** 8 assist moves; triggers are real enemy troops -- and two BUILDINGS (enemy elixir collector; an "enemy x_bow" on our half 31 s after our own X-Bow, very likely ours mis-tagged).
+- **Open:** Skeletons no-drop 23/45 (display rounding vs real, needs clips).
+- **Asked the owner:** N1 (Tornado assist ignores buildings), N2 (why our X-Bow is served as enemy), keep T3 parked; confirmation run owed (one session, 8 matches).

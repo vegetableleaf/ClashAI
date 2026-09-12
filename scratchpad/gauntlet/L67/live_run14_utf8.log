@@ -1,0 +1,1107 @@
+[play] policy policy_rl.pt loaded (RL gate ON).
+.\icebow\.venv\Scripts\python.exe : 
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: 
+UserWarning: enable_nested_tensor is True, but 
+self.use_nested_tensor is False because 
+encoder_layer.norm_first was True
+At line:1 char:1
++ .\icebow\.venv\Scripts\python.exe -u 
+icebow\run.py play --student dat ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C:\Us 
+   ers\benpe\..._first was True:String) [], Remot  
+  eException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  self.encoder = nn.TransformerEncoder(enc, layers)
+[play] S1 STUDENT ON: s1_icebow_v6lat_s0.pt (epoch 15, grid lattice, gate tau 0.27, anti-stall 9 elixir / 12s) -- the old policy is loaded but only used for the frames the student declines to answer.
+[play] opp-memory slot 5 source: opp_estimate
+[play] live search unavailable (name 'card_db' is not defined); continuing on the policy alone
+09:19:41 [play] running on cuda. Ctrl+C to stop, or slam the mouse into a screen corner for the failsafe. It navigates menus and plays in-match on its own.
+09:19:41 [play] logging to C:\Users\benpe\ClashBot\icebow\data\play_20260912_091941.log
+09:19:41 [play] state: HOME
+09:19:41 [nav] HOME -> Battle (located) (0.509,0.789)
+09:19:42 [play] state: UNKNOWN
+09:19:47 [play] state: IN_MATCH
+[student] WAIT p=0.11 elixir 10 opp~? units 0 dets 0 (waits 10/10 badhand 10/10) tap [tesla,x_bow,?,ice_wizard] wall=09:19:55.535
+[student] STALL-PLAY x_bow p=0.11 cell 267 board (0.86, 0.61) units 0 19 ms tap [tesla,x_bow,?,ice_wizard] hand [tesla,x_bow,?,ice_wizard] elixir 10 wall=09:19:59.688
+[student] TAP slot 1 x_bow cell 231 wall=09:20:00.047
+[student] TRAY first +0.23s tapped slot 1 meant x_bow before [tesla,x_bow,?,ice_wizard] now [tesla,?,?,ice_wizard] slot_now ? elixir 10->6 wall=09:20:00.279
+[student] TRAY settled +0.58s tapped slot 1 meant x_bow before [tesla,x_bow,?,ice_wizard] now [tesla,?,?,ice_wizard] slot_now ? elixir 10->4 wall=09:20:00.626
+[student] WAIT | exact=0 opp=? next=7 t=15s hand=[164, 4, -1, 2] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.03 elixir 4 opp~? units 2 dets 2 (waits 20/21 badhand 21/21) tap [tesla,?,?,ice_wizard] wall=09:20:03.077
+[student] PLAY tesla p=0.62 cell 247 board (0.72, 0.56) units 4 24 ms tap [tesla,rocket,?,ice_wizard] hand [tesla,rocket,?,ice_wizard] elixir 6 wall=09:20:06.981
+[student] TAP slot 0 tesla cell 247 wall=09:20:07.350
+[student] TRAY first +0.30s tapped slot 0 meant tesla before [tesla,rocket,?,ice_wizard] now [?,rocket,knight,ice_wizard] slot_now ? elixir 6->4 wall=09:20:07.651
+[student] TRAY settled +0.64s tapped slot 0 meant tesla before [tesla,rocket,?,ice_wizard] now [?,rocket,?,ice_wizard] slot_now ? elixir 6->2 wall=09:20:07.991
+[student] PLAY skeletons p=0.47 cell 249 board (0.86, 0.55) units 3 15 ms tap [skeletons,?,?,ice_wizard] hand [skeletons,rocket,?,ice_wizard] elixir 3 wall=09:20:10.035
+[student] TAP slot 0 skeletons cell 249 wall=09:20:10.394
+[student] TRAY first +0.22s tapped slot 0 meant skeletons before [skeletons,rocket,?,ice_wizard] now [?,rocket,?,ice_wizard] slot_now ? elixir 3->2 wall=09:20:10.617
+[student] TRAY settled +0.51s tapped slot 0 meant skeletons before [skeletons,rocket,?,ice_wizard] now [?,rocket,?,ice_wizard] slot_now ? elixir 3->2 wall=09:20:10.907
+[student] PLAY ice_wizard p=0.34 cell 245 board (0.64, 0.55) units 4 17 ms tap [tornado,?,?,ice_wizard] hand [tornado,rocket,?,ice_wizard] elixir 3 wall=09:20:12.815
+[student] TAP slot 3 ice_wizard cell 245 wall=09:20:13.174
+[student] TRAY first +0.26s tapped slot 3 meant ice_wizard before [tornado,rocket,?,ice_wizard] now [tornado,rocket,tornado,?] slot_now ? elixir 3->3 wall=09:20:13.435
+[student] TRAY settled +0.62s tapped slot 3 meant ice_wizard before [tornado,rocket,?,ice_wizard] now [tornado,rocket,tornado,?] slot_now ? elixir 3->0 wall=09:20:13.793
+[student] WAIT | exact=0 opp=? next=3 t=31s hand=[0, 4, 0, 6] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.01 elixir 2 opp~? units 4 dets 4 (waits 28/32 badhand 29/34) tap [?,?,?,the_log] wall=09:20:18.265
+[student] PLAY tornado p=0.70 cell 245 board (0.64, 0.58) units 1 25 ms tap [tornado,?,?,the_log] hand [tornado,rocket,?,the_log] elixir 4 wall=09:20:23.924
+[student] TAP slot 0 tornado cell 245 wall=09:20:24.281
+[student] TRAY first +0.29s tapped slot 0 meant tornado before [tornado,rocket,?,the_log] now [?,rocket,?,the_log] slot_now ? elixir 4->3 wall=09:20:24.566
+[student] TRAY settled +0.87s tapped slot 0 meant tornado before [tornado,rocket,?,the_log] now [?,rocket,?,the_log] slot_now ? elixir 4->1 wall=09:20:25.148
+[student] WAIT NO-TRAY-MATCH p=0.04 elixir 2 opp~? units 4 dets 5 (waits 36/41 badhand 30/45) tap [?,?,?,?] wall=09:20:26.710
+[student] PLAY the_log p=0.96 cell 338 board (0.81, 0.77) units 5 18 ms tap [?,?,?,the_log] hand [ice_wizard,rocket,?,the_log] elixir 2 wall=09:20:28.948
+[student] TAP slot 3 the_log cell 355 wall=09:20:29.281
+[student] TRAY first +0.32s tapped slot 3 meant the_log before [ice_wizard,rocket,?,the_log] now [ice_wizard,rocket,?,?] slot_now ? elixir 2->1 wall=09:20:29.601
+[student] TRAY settled +1.12s tapped slot 3 meant the_log before [ice_wizard,rocket,?,the_log] now [ice_wizard,rocket,?,?] slot_now ? elixir 2->1 wall=09:20:30.400
+[student] WAIT NO-TRAY-MATCH p=0.03 elixir 3 opp~? units 0 dets 0 (waits 36/42 badhand 30/56) tap [?,?,?,?] wall=09:20:37.503
+[student] WAIT p=0.06 elixir 6 opp~? units 0 dets 0 (waits 46/52 badhand 30/66) tap [x_bow,rocket,?,tesla] wall=09:20:44.871
+[student] PLAY x_bow p=0.32 cell 267 board (0.86, 0.61) units 0 18 ms tap [x_bow,rocket,?,tesla] hand [x_bow,rocket,?,tesla] elixir 8 wall=09:20:49.530
+[student] TAP slot 0 x_bow cell 231 wall=09:20:49.885
+[student] TRAY first +0.26s tapped slot 0 meant x_bow before [x_bow,rocket,?,tesla] now [?,rocket,?,tesla] slot_now ? elixir 8->5 wall=09:20:50.140
+[student] TRAY settled +0.61s tapped slot 0 meant x_bow before [x_bow,rocket,?,tesla] now [?,rocket,?,tesla] slot_now ? elixir 8->2 wall=09:20:50.492
+[student] PLAY skeletons p=0.65 cell 247 board (0.75, 0.55) units 1 22 ms tap [skeletons,?,?,?] hand [skeletons,rocket,?,tesla] elixir 3 wall=09:20:52.022
+[student] TAP slot 0 skeletons cell 247 wall=09:20:52.360
+[student] TRAY first +0.29s tapped slot 0 meant skeletons before [skeletons,rocket,?,tesla] now [?,rocket,knight,tesla] slot_now ? elixir 3->2 wall=09:20:52.650
+[student] TRAY settled +0.88s tapped slot 0 meant skeletons before [skeletons,rocket,?,tesla] now [?,rocket,?,tesla] slot_now ? elixir 3->2 wall=09:20:53.240
+[student] WAIT | exact=0 opp=? next=0 t=69s hand=[2, 4, 149, 164] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.04 elixir 3 opp~? units 3 dets 3 (waits 55/63 badhand 31/78) tap [ice_wizard,?,?,?] wall=09:20:56.526
+[student] PLAY tesla p=0.66 cell 247 board (0.72, 0.56) units 3 20 ms tap [ice_wizard,?,?,tesla] hand [ice_wizard,rocket,?,tesla] elixir 4 wall=09:20:58.511
+[student] TAP slot 3 tesla cell 247 wall=09:20:58.859
+[student] TRAY first +0.28s tapped slot 3 meant tesla before [ice_wizard,rocket,?,tesla] now [ice_wizard,rocket,tornado,?] slot_now ? elixir 4->4 wall=09:20:59.135
+[student] TRAY settled +0.61s tapped slot 3 meant tesla before [ice_wizard,rocket,?,tesla] now [ice_wizard,rocket,tornado,?] slot_now ? elixir 4->0 wall=09:20:59.471
+[student] PLAY ice_wizard p=0.46 cell 316 board (0.58, 0.73) units 2 16 ms tap [ice_wizard,?,?,tornado] hand [ice_wizard,rocket,?,tornado] elixir 4 wall=09:21:09.268
+[student] TAP slot 0 ice_wizard cell 316 wall=09:21:09.616
+[student] TRAY first +0.31s tapped slot 0 meant ice_wizard before [ice_wizard,rocket,?,tornado] now [?,rocket,?,tornado] slot_now ? elixir 4->3 wall=09:21:09.930
+[student] TRAY settled +0.65s tapped slot 0 meant ice_wizard before [ice_wizard,rocket,?,tornado] now [?,rocket,?,ice_wizard] slot_now ? elixir 4->1 wall=09:21:10.271
+[student] WAIT | exact=0 opp=? next=3 t=84s hand=[6, 4, 0, 0] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.00 elixir 2 opp~? units 3 dets 3 (waits 63/73 badhand 33/90) tap [the_log,?,?,?] wall=09:21:11.876
+[student] WAIT p=0.06 elixir 3 opp~? units 1 dets 1 (waits 73/83 badhand 33/100) tap [the_log,?,?,tornado] wall=09:21:17.261
+[student] PLAY tornado p=0.33 cell 246 board (0.69, 0.58) units 4 24 ms tap [the_log,?,?,tornado] hand [the_log,rocket,?,tornado] elixir 4 wall=09:21:18.527
+[student] TAP slot 3 tornado cell 246 wall=09:21:18.889
+[student] TRAY first +0.27s tapped slot 3 meant tornado before [the_log,rocket,?,tornado] now [the_log,rocket,?,?] slot_now ? elixir 4->3 wall=09:21:19.157
+[student] TRAY settled +0.60s tapped slot 3 meant tornado before [the_log,rocket,?,tornado] now [the_log,rocket,?,?] slot_now ? elixir 4->1 wall=09:21:19.493
+[student] PLAY the_log p=0.71 cell 338 board (0.81, 0.77) units 2 22 ms tap [the_log,?,?,?] hand [the_log,rocket,knight,tesla] elixir 2 wall=09:21:20.449
+[student] TAP slot 0 the_log cell 338 wall=09:21:20.781
+[student] TRAY first +0.26s tapped slot 0 meant the_log before [the_log,rocket,knight,tesla] now [?,rocket,tornado,x_bow] slot_now ? elixir 2->1 wall=09:21:21.038
+[student] TRAY settled +1.11s tapped slot 0 meant the_log before [the_log,rocket,knight,tesla] now [?,rocket,tornado,?] slot_now ? elixir 2->0 wall=09:21:21.893
+[student] PLAY skeletons p=0.89 cell 248 board (0.81, 0.55) units 3 28 ms tap [skeletons,?,?,?] hand [skeletons,rocket,?,?] elixir 1 wall=09:21:23.404
+[student] TAP slot 0 skeletons cell 248 wall=09:21:23.756
+[student] TRAY first +0.28s tapped slot 0 meant skeletons before [skeletons,rocket,?,?] now [?,rocket,?,x_bow] slot_now ? elixir 1->1 wall=09:21:24.038
+[student] TRAY settled +0.64s tapped slot 0 meant skeletons before [skeletons,rocket,?,?] now [?,rocket,?,?] slot_now ? elixir 1->0 wall=09:21:24.392
+[student] PLAY tesla_evo p=0.66 cell 298 board (0.56, 0.69) units 2 19 ms tap [tesla_evo,?,?,?] hand [tesla_evo,rocket,?,x_bow] elixir 4 wall=09:21:35.813
+[student] TAP slot 0 tesla_evo cell 298 wall=09:21:36.160
+[student] TRAY first +1.10s tapped slot 0 meant tesla_evo before [tesla_evo,rocket,?,x_bow] now [?,rocket,tornado,?] slot_now ? elixir 4->4 wall=09:21:37.264
+[student] WAIT NO-TRAY-MATCH p=0.00 elixir 2 opp~? units 2 dets 2 (waits 75/89 badhand 35/114) tap [?,?,?,?] wall=09:21:40.691
+[clock] icon reads x3 but the clock reads x1 -> using the clock (x1)
+09:21:46 [play] UNKNOWN 1.0s after in-match -> grace hold (label lost: overtime / end animation / dropout; up to 150s)
+09:21:48 [play] elixir x2
+09:21:53 [play] state: MATCH_END
+[overlay-replay] saved C:\Users\benpe\ClashBot\icebow\data\overlayed_replays\match_20260912_091947.mp4 (6277 frames, captured 29.0 fps)
+09:21:53 [nav] MATCH_END -> Play Again (located) (0.348,0.914)
+09:21:54 [play] state: UNKNOWN
+09:21:59 [play] state: IN_MATCH
+[student] WAIT p=0.20 elixir 8 opp~? units 0 dets 0 (waits 82/96 badhand 36/124) tap [skeletons,knight,ice_wizard,the_log] wall=09:22:03.710
+[student] PLAY the_log p=0.46 cell 248 board (0.81, 0.55) units 0 34 ms tap [skeletons,knight,ice_wizard,the_log] hand [skeletons,knight,ice_wizard,the_log] elixir 9 wall=09:22:04.511
+[student] TAP slot 3 the_log cell 248 wall=09:22:04.884
+[student] TRAY first +0.27s tapped slot 3 meant the_log before [skeletons,knight,ice_wizard,the_log] now [skeletons,knight,ice_wizard,?] slot_now ? elixir 9->7 wall=09:22:05.154
+[student] TRAY settled +1.04s tapped slot 3 meant the_log before [skeletons,knight,ice_wizard,the_log] now [skeletons,knight,ice_wizard,?] slot_now ? elixir 9->7 wall=09:22:05.923
+[student] PLAY knight p=0.27 cell 422 board (0.47, 0.98) units 0 27 ms tap [skeletons,knight,ice_wizard,?] hand [skeletons,knight,ice_wizard,?] elixir 7 wall=09:22:06.003
+[student] TAP slot 1 knight cell 422 wall=09:22:06.345
+[student] TRAY first +0.28s tapped slot 1 meant knight before [skeletons,knight,ice_wizard,?] now [skeletons,?,ice_wizard,x_bow] slot_now ? elixir 7->7 wall=09:22:06.629
+[student] TRAY settled +1.03s tapped slot 1 meant knight before [skeletons,knight,ice_wizard,?] now [skeletons,?,ice_wizard,x_bow] slot_now ? elixir 7->5 wall=09:22:07.377
+[student] WAIT | exact=0 opp=? next=164 t=12s hand=[7, 0, 2, 3] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.02 elixir 6 opp~? units 3 dets 3 (waits 92/108 badhand 40/136) tap [skeletons,tornado,ice_wizard,x_bow] wall=09:22:11.495
+[student] PLAY x_bow p=0.30 cell 254 board (0.14, 0.61) units 4 18 ms tap [skeletons,tornado,ice_wizard,x_bow] hand [skeletons,tornado,ice_wizard,x_bow] elixir 8 wall=09:22:17.419
+[student] TAP slot 3 x_bow cell 218 wall=09:22:17.756
+[student] TRAY first +0.30s tapped slot 3 meant x_bow before [skeletons,tornado,ice_wizard,x_bow] now [skeletons,tornado,ice_wizard,?] slot_now ? elixir 8->5 wall=09:22:18.052
+[student] PLAY skeletons p=0.80 cell 235 board (0.08, 0.55) units 5 15 ms tap [skeletons,tornado,ice_wizard,?] hand [skeletons,tornado,ice_wizard,?] elixir 5 wall=09:22:18.122
+[student] TAP slot 0 skeletons cell 235 wall=09:22:18.485
+[student] TRAY first +0.25s tapped slot 0 meant skeletons before [skeletons,tornado,ice_wizard,?] now [?,tornado,ice_wizard,?] slot_now ? elixir 5->2 wall=09:22:18.738
+[student] TRAY settled +1.13s tapped slot 0 meant skeletons before [skeletons,tornado,ice_wizard,?] now [?,tornado,ice_wizard,tesla] slot_now ? elixir 5->2 wall=09:22:19.613
+[student] WAIT p=0.27 elixir 3 opp~? units 6 dets 6 (waits 102/120 badhand 41/148) tap [?,tornado,ice_wizard,?] wall=09:22:22.346
+[student] PLAY ice_wizard p=0.42 cell 240 board (0.36, 0.55) units 7 17 ms tap [?,tornado,ice_wizard,?] hand [rocket,tornado,ice_wizard,tesla] elixir 3 wall=09:22:23.159
+[student] TAP slot 2 ice_wizard cell 240 wall=09:22:23.528
+[student] TRAY first +0.27s tapped slot 2 meant ice_wizard before [rocket,tornado,ice_wizard,tesla] now [rocket,tornado,?,tesla] slot_now ? elixir 3->3 wall=09:22:23.798
+[student] TRAY settled +0.66s tapped slot 2 meant ice_wizard before [rocket,tornado,ice_wizard,tesla] now [rocket,tornado,?,tesla] slot_now ? elixir 3->1 wall=09:22:24.187
+[student] PLAY the_log p=0.48 cell 236 board (0.14, 0.55) units 8 21 ms tap [?,tornado,the_log,?] hand [rocket,tornado,the_log,tesla] elixir 3 wall=09:22:29.620
+[student] TAP slot 2 the_log cell 241 wall=09:22:29.979
+[student] TRAY first +0.28s tapped slot 2 meant the_log before [rocket,tornado,the_log,tesla] now [rocket,tornado,?,tesla] slot_now ? elixir 3->1 wall=09:22:30.261
+[student] TRAY settled +0.67s tapped slot 2 meant the_log before [rocket,tornado,the_log,tesla] now [rocket,tornado,?,tesla] slot_now ? elixir 3->1 wall=09:22:30.653
+[student] WAIT | exact=0 opp=? next=3 t=37s hand=[4, 0, -1, 164] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.04 elixir 3 opp~? units 3 dets 3 (waits 111/131 badhand 46/160) tap [?,tornado,?,?] wall=09:22:36.732
+[student] PLAY tesla p=0.36 cell 239 board (0.28, 0.56) units 3 19 ms tap [?,tornado,?,tesla] hand [rocket,tornado,?,tesla] elixir 4 wall=09:22:37.950
+[student] TAP slot 3 tesla cell 239 wall=09:22:38.306
+[student] TRAY first +0.28s tapped slot 3 meant tesla before [rocket,tornado,?,tesla] now [rocket,tornado,tornado,?] slot_now ? elixir 4->4 wall=09:22:38.584
+[student] TRAY settled +0.61s tapped slot 3 meant tesla before [rocket,tornado,?,tesla] now [rocket,tornado,tornado,?] slot_now ? elixir 4->0 wall=09:22:38.920
+[student] PLAY tornado p=0.27 cell 148 board (0.25, 0.36) units 1 28 ms tap [?,tornado,?,?] hand [rocket,tornado,?,ice_wizard] elixir 4 wall=09:22:49.227
+[student] TAP slot 1 tornado cell 148 wall=09:22:49.571
+[student] TRAY first +0.23s tapped slot 1 meant tornado before [rocket,tornado,?,ice_wizard] now [rocket,?,?,tesla] slot_now ? elixir 4->3 wall=09:22:49.799
+[student] TRAY settled +1.01s tapped slot 1 meant tornado before [rocket,tornado,?,ice_wizard] now [rocket,?,?,tesla] slot_now ? elixir 4->1 wall=09:22:50.585
+[student] WAIT p=0.10 elixir 1 opp~? units 1 dets 2 (waits 117/139 badhand 49/172) tap [?,skeletons,?,?] wall=09:22:51.397
+[student] PLAY skeletons p=0.31 cell 237 board (0.19, 0.55) units 1 24 ms tap [?,skeletons,?,?] hand [rocket,skeletons,?,ice_wizard] elixir 3 wall=09:22:55.272
+[student] TAP slot 1 skeletons cell 237 wall=09:22:55.646
+[student] TRAY first +0.27s tapped slot 1 meant skeletons before [rocket,skeletons,?,ice_wizard] now [rocket,?,?,the_log] slot_now ? elixir 3->1 wall=09:22:55.914
+[student] TRAY settled +1.12s tapped slot 1 meant skeletons before [rocket,skeletons,?,ice_wizard] now [rocket,?,?,ice_wizard] slot_now ? elixir 3->2 wall=09:22:56.766
+[student] WAIT | exact=0 opp=? next=6 t=62s hand=[4, 2, 149, 3] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.05 elixir 4 opp~? units 1 dets 1 (waits 123/146 badhand 49/183) tap [?,ice_wizard,?,?] wall=09:23:01.495
+[student] WAIT p=0.08 elixir 6 opp~? units 1 dets 1 (waits 133/156 badhand 49/193) tap [rocket,ice_wizard,?,x_bow] wall=09:23:08.098
+[student] PLAY ice_wizard p=0.39 cell 396 board (0.03, 0.95) units 1 17 ms tap [rocket,ice_wizard,?,x_bow] hand [rocket,ice_wizard,?,x_bow] elixir 8 wall=09:23:11.663
+[student] TAP slot 1 ice_wizard cell 396 wall=09:23:12.030
+[student] TRAY first +0.28s tapped slot 1 meant ice_wizard before [rocket,ice_wizard,?,x_bow] now [rocket,?,?,x_bow] slot_now ? elixir 8->5 wall=09:23:12.312
+[student] TRAY settled +1.10s tapped slot 1 meant ice_wizard before [rocket,ice_wizard,?,x_bow] now [rocket,?,?,x_bow] slot_now ? elixir 8->5 wall=09:23:13.126
+[student] WAIT p=0.14 elixir 7 opp~? units 2 dets 2 (waits 143/167 badhand 49/204) tap [rocket,the_log,?,x_bow] wall=09:23:17.427
+[student] PLAY rocket p=0.32 cell 255 board (0.19, 0.61) units 2 18 ms tap [rocket,the_log,?,x_bow] hand [rocket,the_log,?,x_bow] elixir 7 wall=09:23:19.410
+[student] TAP slot 0 rocket cell 255 wall=09:23:19.750
+[student] TRAY first +0.28s tapped slot 0 meant rocket before [rocket,the_log,?,x_bow] now [?,the_log,?,the_log] slot_now ? elixir 7->5 wall=09:23:20.031
+[student] TRAY settled +0.60s tapped slot 0 meant rocket before [rocket,the_log,?,x_bow] now [?,the_log,knight,the_log] slot_now ? elixir 7->6 wall=09:23:20.351
+[student] WAIT p=0.10 elixir 3 opp~? units 2 dets 2 (waits 149/174 badhand 52/215) tap [?,the_log,?,?] wall=09:23:23.967
+[student] PLAY tesla p=0.40 cell 310 board (0.22, 0.72) units 6 24 ms tap [tesla,the_log,?,?] hand [tesla,the_log,?,x_bow] elixir 4 wall=09:23:28.163
+[student] TAP slot 0 tesla cell 295 wall=09:23:28.494
+[student] TRAY first +0.29s tapped slot 0 meant tesla before [tesla,the_log,?,x_bow] now [?,the_log,?,?] slot_now ? elixir 4->4 wall=09:23:28.788
+[student] TRAY settled +0.65s tapped slot 0 meant tesla before [tesla,the_log,?,x_bow] now [?,the_log,?,?] slot_now ? elixir 4->1 wall=09:23:29.148
+[student] WAIT NO-TRAY-MATCH p=0.18 elixir 2 opp~? units 3 dets 3 (waits 155/181 badhand 53/226) tap [?,?,?,?] wall=09:23:33.073
+[student] WAIT p=0.07 elixir 4 opp~? units 1 dets 1 (waits 165/191 badhand 53/236) tap [tornado,the_log,?,?] wall=09:23:39.421
+[student] PLAY x_bow p=0.37 cell 254 board (0.14, 0.61) units 3 37 ms tap [tornado,the_log,?,x_bow] hand [tornado,the_log,?,x_bow] elixir 7 wall=09:23:46.308
+[student] TAP slot 3 x_bow cell 218 wall=09:23:46.678
+[student] TRAY first +1.08s tapped slot 3 meant x_bow before [tornado,the_log,?,x_bow] now [tornado,the_log,?,?] slot_now ? elixir 7->5 wall=09:23:47.756
+[student] PLAY skeletons p=0.33 cell 234 board (0.03, 0.58) units 4 24 ms tap [?,the_log,?,skeletons] hand [tornado,the_log,?,skeletons] elixir 2 wall=09:23:49.035
+[student] TAP slot 3 skeletons cell 235 wall=09:23:49.445
+[student] TRAY first +1.17s tapped slot 3 meant skeletons before [tornado,the_log,?,skeletons] now [tornado,the_log,?,?] slot_now ? elixir 2->1 wall=09:23:50.614
+[student] PLAY the_log p=0.30 cell 236 board (0.14, 0.55) units 4 20 ms tap [?,the_log,?,?] hand [tornado,the_log,?,ice_wizard] elixir 2 wall=09:23:53.218
+[student] TAP slot 1 the_log cell 239 wall=09:23:53.560
+[student] TRAY first +1.14s tapped slot 1 meant the_log before [tornado,the_log,?,ice_wizard] now [tornado,?,?,ice_wizard] slot_now ? elixir 2->1 wall=09:23:54.702
+[clock] icon reads x3 but the clock reads x1 -> using the clock (x1)
+[student] PLAY ice_wizard p=0.59 cell 239 board (0.31, 0.55) units 3 29 ms tap [tornado,?,?,ice_wizard] hand [tornado,rocket,?,ice_wizard] elixir 3 wall=09:23:58.420
+[student] TAP slot 3 ice_wizard cell 239 wall=09:23:58.766
+[student] TRAY first +0.71s tapped slot 3 meant ice_wizard before [tornado,rocket,?,ice_wizard] now [tornado,rocket,?,?] slot_now ? elixir 3->3 wall=09:23:59.473
+[clock] icon reads x3 but the clock reads x2 -> using the clock (x2)
+09:24:00 [play] elixir x2
+[student] PLAY tornado p=0.28 cell 165 board (0.19, 0.39) units 2 20 ms tap [tornado,?,?,?] hand [tornado,rocket,?,tesla_evo] elixir 3 wall=09:24:02.692
+[assist] TORNADO king-spot cell 165->332 trigger knight at (0.45,0.50) enemy tracks 6 wall=09:24:02.692
+[student] TAP slot 0 tornado cell 332 wall=09:24:03.080
+[student] TRAY first +0.69s tapped slot 0 meant tornado before [tornado,rocket,?,tesla_evo] now [?,rocket,?,tesla] slot_now ? elixir 3->3 wall=09:24:03.771
+[student] WAIT NO-TRAY-MATCH p=0.80 elixir 3 opp~? units 3 dets 3 (waits 171/202 badhand 55/251) tap [?,?,?,?] wall=09:24:06.931
+[student] PLAY tesla_evo p=0.85 cell 295 board (0.39, 0.69) units 3 21 ms tap [?,?,?,tesla_evo] hand [x_bow,rocket,?,tesla_evo] elixir 5 wall=09:24:09.312
+[student] TAP slot 3 tesla_evo cell 295 wall=09:24:09.662
+[student] TRAY first +0.78s tapped slot 3 meant tesla_evo before [x_bow,rocket,?,tesla_evo] now [tesla,rocket,?,?] slot_now ? elixir 5->4 wall=09:24:10.440
+[student] PLAY skeletons p=0.66 cell 235 board (0.08, 0.55) units 2 31 ms tap [?,?,?,skeletons] hand [ice_wizard,rocket,?,skeletons] elixir 3 wall=09:24:12.187
+[student] TAP slot 3 skeletons cell 235 wall=09:24:12.532
+[student] TRAY first +0.77s tapped slot 3 meant skeletons before [ice_wizard,rocket,?,skeletons] now [ice_wizard,rocket,?,?] slot_now ? elixir 3->3 wall=09:24:13.298
+[student] PLAY the_log p=0.49 cell 237 board (0.19, 0.55) units 3 15 ms tap [?,?,?,the_log] hand [x_bow,rocket,?,the_log] elixir 4 wall=09:24:14.884
+[student] TAP slot 3 the_log cell 254 wall=09:24:15.229
+[student] TRAY first +0.61s tapped slot 3 meant the_log before [x_bow,rocket,?,the_log] now [ice_wizard,rocket,?,?] slot_now ? elixir 4->2 wall=09:24:15.843
+[student] PLAY ice_wizard p=0.46 cell 306 board (0.03, 0.73) units 3 24 ms tap [?,?,?,ice_wizard] hand [x_bow,rocket,?,ice_wizard] elixir 4 wall=09:24:18.417
+[student] TAP slot 3 ice_wizard cell 306 wall=09:24:18.764
+[student] TRAY first +0.73s tapped slot 3 meant ice_wizard before [x_bow,rocket,?,ice_wizard] now [the_log,rocket,?,?] slot_now ? elixir 4->3 wall=09:24:19.492
+[student] WAIT p=0.19 elixir 3 opp~? units 3 dets 3 (waits 174/209 badhand 61/265) tap [?,?,?,tornado] wall=09:24:21.031
+[student] PLAY tornado p=0.43 cell 219 board (0.19, 0.52) units 4 25 ms tap [?,?,?,tornado] hand [ice_wizard,rocket,?,tornado] elixir 3 wall=09:24:21.374
+[student] TAP slot 3 tornado cell 219 wall=09:24:21.744
+[student] TRAY first +0.25s tapped slot 3 meant tornado before [ice_wizard,rocket,?,tornado] now [tesla,rocket,?,?] slot_now ? elixir 3->3 wall=09:24:21.999
+[student] TRAY settled +0.81s tapped slot 3 meant tornado before [ice_wizard,rocket,?,tornado] now [tesla,rocket,?,?] slot_now ? elixir 3->1 wall=09:24:22.551
+[student] PLAY tesla p=0.30 cell 236 board (0.11, 0.56) units 2 26 ms tap [?,?,?,tesla] hand [x_bow,rocket,?,tesla] elixir 4 wall=09:24:25.817
+[student] TAP slot 3 tesla cell 296 wall=09:24:26.187
+[student] TRAY first +0.29s tapped slot 3 meant tesla before [x_bow,rocket,?,tesla] now [tornado,rocket,tornado,?] slot_now ? elixir 4->4 wall=09:24:26.475
+[student] TRAY settled +1.08s tapped slot 3 meant tesla before [x_bow,rocket,?,tesla] now [ice_wizard,rocket,?,?] slot_now ? elixir 4->1 wall=09:24:27.271
+[student] PLAY skeletons p=0.86 cell 325 board (0.08, 0.77) units 4 16 ms tap [?,?,?,skeletons] hand [the_log,rocket,knight,skeletons] elixir 2 wall=09:24:28.553
+[student] TAP slot 3 skeletons cell 325 wall=09:24:28.898
+[student] TRAY first +0.29s tapped slot 3 meant skeletons before [the_log,rocket,knight,skeletons] now [tesla,rocket,?,?] slot_now ? elixir 2->1 wall=09:24:29.190
+[student] TRAY settled +1.08s tapped slot 3 meant skeletons before [the_log,rocket,knight,skeletons] now [the_log,rocket,knight,?] slot_now ? elixir 2->2 wall=09:24:29.974
+[student] PLAY the_log p=0.70 cell 327 board (0.19, 0.77) units 3 31 ms tap [?,?,?,the_log] hand [ice_wizard,rocket,?,the_log] elixir 3 wall=09:24:31.777
+[student] TAP slot 3 the_log cell 326 wall=09:24:32.115
+[student] TRAY first +0.27s tapped slot 3 meant the_log before [ice_wizard,rocket,?,the_log] now [tesla,rocket,?,?] slot_now ? elixir 3->1 wall=09:24:32.383
+[student] TRAY settled +1.13s tapped slot 3 meant the_log before [ice_wizard,rocket,?,the_log] now [the_log,rocket,?,?] slot_now ? elixir 3->2 wall=09:24:33.242
+[student] WAIT NO-TRAY-MATCH p=0.14 elixir 2 opp~? units 1 dets 2 (waits 176/215 badhand 65/279) tap [?,?,?,?] wall=09:24:33.375
+[student] PLAY x_bow p=0.53 cell 267 board (0.86, 0.61) units 3 32 ms tap [x_bow,rocket,?,ice_wizard] hand [x_bow,rocket,?,ice_wizard] elixir 7 wall=09:24:40.025
+[student] TAP slot 0 x_bow cell 231 wall=09:24:40.386
+[student] TRAY first +0.30s tapped slot 0 meant x_bow before [x_bow,rocket,?,ice_wizard] now [?,rocket,?,ice_wizard] slot_now ? elixir 7->5 wall=09:24:40.685
+[student] WAIT NO-TRAY-MATCH p=0.82 elixir 5 opp~? units 5 dets 5 (waits 183/223 badhand 66/290) tap [?,?,?,?] wall=09:24:40.757
+[student] TRAY settled +0.87s tapped slot 0 meant x_bow before [x_bow,rocket,?,ice_wizard] now [?,rocket,knight,ice_wizard] slot_now ? elixir 7->2 wall=09:24:41.256
+[student] PLAY tornado p=0.61 cell 80 board (0.47, 0.2) units 4 24 ms tap [tornado,?,?,ice_wizard] hand [tornado,rocket,?,ice_wizard] elixir 3 wall=09:24:43.148
+[student] TAP slot 0 tornado cell 80 wall=09:24:43.494
+[student] TRAY first +0.27s tapped slot 0 meant tornado before [tornado,rocket,?,ice_wizard] now [?,rocket,?,ice_wizard] slot_now ? elixir 3->3 wall=09:24:43.762
+[student] TRAY settled +0.62s tapped slot 0 meant tornado before [tornado,rocket,?,ice_wizard] now [?,rocket,?,ice_wizard] slot_now ? elixir 3->1 wall=09:24:44.114
+[student] PLAY tesla p=0.53 cell 247 board (0.72, 0.56) units 4 7 ms tap [tesla,?,?,ice_wizard] hand [tesla,rocket,?,ice_wizard] elixir 4 wall=09:24:48.078
+[student] TAP slot 0 tesla cell 247 wall=09:24:48.411
+[student] TRAY first +0.29s tapped slot 0 meant tesla before [tesla,rocket,?,ice_wizard] now [?,rocket,tornado,ice_wizard] slot_now ? elixir 4->4 wall=09:24:48.701
+[student] TRAY settled +0.68s tapped slot 0 meant tesla before [tesla,rocket,?,ice_wizard] now [?,rocket,tornado,ice_wizard] slot_now ? elixir 4->0 wall=09:24:49.090
+[student] WAIT p=0.24 elixir 3 opp~? units 5 dets 5 (waits 191/233 badhand 68/302) tap [skeletons,?,?,ice_wizard] wall=09:24:52.492
+[student] PLAY skeletons p=0.27 cell 250 board (0.92, 0.55) units 7 17 ms tap [skeletons,?,?,ice_wizard] hand [skeletons,rocket,?,ice_wizard] elixir 3 wall=09:24:52.812
+[student] TAP slot 0 skeletons cell 250 wall=09:24:53.150
+[student] TRAY first +0.32s tapped slot 0 meant skeletons before [skeletons,rocket,?,ice_wizard] now [?,rocket,?,ice_wizard] slot_now ? elixir 3->2 wall=09:24:53.470
+[student] TRAY settled +1.11s tapped slot 0 meant skeletons before [skeletons,rocket,?,ice_wizard] now [?,rocket,?,ice_wizard] slot_now ? elixir 3->3 wall=09:24:54.264
+[student] PLAY ice_wizard p=0.56 cell 234 board (0.03, 0.58) units 5 28 ms tap [the_log,?,?,ice_wizard] hand [the_log,rocket,?,ice_wizard] elixir 4 wall=09:24:55.808
+[student] TAP slot 3 ice_wizard cell 235 wall=09:24:56.160
+[student] TRAY first +0.32s tapped slot 3 meant ice_wizard before [the_log,rocket,?,ice_wizard] now [the_log,rocket,knight,?] slot_now ? elixir 4->3 wall=09:24:56.475
+[student] PLAY the_log p=0.71 cell 249 board (0.86, 0.55) units 5 22 ms tap [the_log,?,?,?] hand [the_log,rocket,knight,?] elixir 3 wall=09:24:56.560
+[student] TAP slot 0 the_log cell 244 wall=09:24:56.917
+[student] TRAY first +0.33s tapped slot 0 meant the_log before [the_log,rocket,knight,?] now [?,rocket,tornado,?] slot_now ? elixir 3->1 wall=09:24:57.243
+[student] TRAY settled +0.79s tapped slot 0 meant the_log before [the_log,rocket,knight,?] now [?,rocket,?,rocket] slot_now ? elixir 3->0 wall=09:24:57.704
+[student] PLAY tornado p=0.60 cell 80 board (0.47, 0.2) units 4 30 ms tap [tornado,?,?,?] hand [tornado,rocket,?,ice_wizard] elixir 3 wall=09:25:00.813
+[assist] TORNADO nearest cell 80->201 target skeletons at (0.25,0.43) enemy tracks 5 wall=09:25:00.813
+[student] TAP slot 0 tornado cell 201 wall=09:25:01.165
+[student] TRAY first +0.37s tapped slot 0 meant tornado before [tornado,rocket,?,ice_wizard] now [?,rocket,tornado,?] slot_now ? elixir 3->3 wall=09:25:01.536
+[student] TRAY settled +0.82s tapped slot 0 meant tornado before [tornado,rocket,?,ice_wizard] now [?,rocket,?,?] slot_now ? elixir 3->0 wall=09:25:01.988
+[student] WAIT p=0.07 elixir 4 opp~? units 1 dets 1 (waits 195/241 badhand 71/316) tap [tesla_evo,?,?,?] wall=09:25:06.892
+[student] PLAY tesla_evo p=0.46 cell 241 board (0.39, 0.56) units 2 24 ms tap [tesla_evo,?,?,?] hand [tesla_evo,rocket,?,x_bow] elixir 5 wall=09:25:07.814
+[student] TAP slot 0 tesla_evo cell 241 wall=09:25:08.183
+[student] TRAY first +0.35s tapped slot 0 meant tesla_evo before [tesla_evo,rocket,?,x_bow] now [?,rocket,?,tesla] slot_now ? elixir 5->4 wall=09:25:08.531
+[student] TRAY settled +1.16s tapped slot 0 meant tesla_evo before [tesla_evo,rocket,?,x_bow] now [?,rocket,knight,the_log] slot_now ? elixir 5->2 wall=09:25:09.340
+[student] PLAY skeletons p=0.74 cell 237 board (0.19, 0.55) units 2 21 ms tap [skeletons,?,?,?] hand [skeletons,rocket,?,ice_wizard] elixir 3 wall=09:25:11.225
+[student] TAP slot 0 skeletons cell 237 wall=09:25:11.586
+[student] TRAY first +0.42s tapped slot 0 meant skeletons before [skeletons,rocket,?,ice_wizard] now [?,rocket,?,ice_wizard] slot_now ? elixir 3->3 wall=09:25:12.008
+[student] TRAY settled +1.24s tapped slot 0 meant skeletons before [skeletons,rocket,?,ice_wizard] now [?,rocket,?,ice_wizard] slot_now ? elixir 3->3 wall=09:25:12.827
+[student] PLAY ice_wizard p=0.27 cell 237 board (0.19, 0.55) units 2 26 ms tap [ice_wizard,?,?,?] hand [ice_wizard,rocket,?,x_bow] elixir 4 wall=09:25:14.620
+[student] TAP slot 0 ice_wizard cell 237 wall=09:25:14.977
+[student] TRAY first +0.49s tapped slot 0 meant ice_wizard before [ice_wizard,rocket,?,x_bow] now [?,rocket,?,the_log] slot_now ? elixir 4->3 wall=09:25:15.471
+[student] TRAY settled +1.01s tapped slot 0 meant ice_wizard before [ice_wizard,rocket,?,x_bow] now [?,rocket,?,ice_wizard] slot_now ? elixir 4->2 wall=09:25:15.984
+[student] WAIT p=0.22 elixir 3 opp~? units 4 dets 4 (waits 200/249 badhand 76/329) tap [the_log,?,?,?] wall=09:25:16.839
+[student] PLAY the_log p=0.36 cell 237 board (0.19, 0.55) units 3 34 ms tap [the_log,?,?,?] hand [the_log,rocket,?,x_bow] elixir 5 wall=09:25:19.348
+[student] TAP slot 0 the_log cell 237 wall=09:25:19.693
+[student] TRAY first +0.37s tapped slot 0 meant the_log before [the_log,rocket,?,x_bow] now [?,rocket,?,ice_wizard] slot_now ? elixir 5->3 wall=09:25:20.063
+[student] TRAY settled +0.81s tapped slot 0 meant the_log before [the_log,rocket,?,x_bow] now [?,rocket,?,x_bow] slot_now ? elixir 5->4 wall=09:25:20.498
+[student] PLAY tornado p=0.42 cell 129 board (0.19, 0.3) units 5 18 ms tap [tornado,?,?,?] hand [tornado,rocket,?,x_bow] elixir 5 wall=09:25:22.200
+[student] TAP slot 0 tornado cell 129 wall=09:25:22.569
+[student] TRAY first +0.35s tapped slot 0 meant tornado before [tornado,rocket,?,x_bow] now [?,rocket,?,ice_wizard] slot_now ? elixir 5->3 wall=09:25:22.916
+[student] TRAY settled +0.78s tapped slot 0 meant tornado before [tornado,rocket,?,x_bow] now [?,rocket,?,ice_wizard] slot_now ? elixir 5->3 wall=09:25:23.352
+[student] PLAY tesla p=0.30 cell 243 board (0.5, 0.56) units 1 30 ms tap [tesla,?,?,?] hand [tesla,rocket,?,x_bow] elixir 4 wall=09:25:25.098
+[student] TAP slot 0 tesla cell 243 wall=09:25:25.448
+[student] TRAY first +0.37s tapped slot 0 meant tesla before [tesla,rocket,?,x_bow] now [?,rocket,?,?] slot_now ? elixir 4->4 wall=09:25:25.814
+[student] TRAY settled +0.77s tapped slot 0 meant tesla before [tesla,rocket,?,x_bow] now [?,rocket,?,?] slot_now ? elixir 4->1 wall=09:25:26.220
+[student] PLAY skeletons p=0.38 cell 238 board (0.25, 0.55) units 4 19 ms tap [skeletons,?,?,?] hand [skeletons,rocket,?,the_log] elixir 2 wall=09:25:27.931
+[student] TAP slot 0 skeletons cell 238 wall=09:25:28.281
+[student] TRAY first +0.36s tapped slot 0 meant skeletons before [skeletons,rocket,?,the_log] now [?,rocket,?,the_log] slot_now ? elixir 2->1 wall=09:25:28.640
+[student] TRAY settled +1.10s tapped slot 0 meant skeletons before [skeletons,rocket,?,the_log] now [?,rocket,?,the_log] slot_now ? elixir 2->2 wall=09:25:29.384
+[student] WAIT NO-TRAY-MATCH p=0.20 elixir 2 opp~? units 3 dets 3 (waits 204/257 badhand 81/343) tap [?,?,?,?] wall=09:25:29.460
+[student] PLAY ice_wizard p=0.54 cell 238 board (0.25, 0.55) units 5 8 ms tap [ice_wizard,?,?,?] hand [ice_wizard,rocket,?,x_bow] elixir 4 wall=09:25:32.176
+[student] TAP slot 0 ice_wizard cell 238 wall=09:25:32.595
+[student] TRAY first +0.40s tapped slot 0 meant ice_wizard before [ice_wizard,rocket,?,x_bow] now [?,rocket,?,the_log] slot_now ? elixir 4->3 wall=09:25:32.993
+[student] TRAY settled +0.90s tapped slot 0 meant ice_wizard before [ice_wizard,rocket,?,x_bow] now [?,rocket,?,the_log] slot_now ? elixir 4->2 wall=09:25:33.491
+[student] PLAY the_log p=0.54 cell 240 board (0.36, 0.55) units 7 27 ms tap [the_log,?,?,?] hand [the_log,rocket,?,ice_wizard] elixir 3 wall=09:25:34.485
+[student] TAP slot 0 the_log cell 241 wall=09:25:34.831
+[student] TRAY first +0.38s tapped slot 0 meant the_log before [the_log,rocket,?,ice_wizard] now [?,rocket,?,tesla] slot_now ? elixir 3->2 wall=09:25:35.216
+[student] TRAY settled +0.92s tapped slot 0 meant the_log before [the_log,rocket,?,ice_wizard] now [?,rocket,?,the_log] slot_now ? elixir 3->2 wall=09:25:35.754
+[student] PLAY tornado p=0.59 cell 130 board (0.25, 0.33) units 6 19 ms tap [tornado,?,?,?] hand [tornado,rocket,?,ice_wizard] elixir 3 wall=09:25:37.147
+[student] TAP slot 0 tornado cell 130 wall=09:25:37.510
+[student] TRAY first +0.36s tapped slot 0 meant tornado before [tornado,rocket,?,ice_wizard] now [?,rocket,tornado,?] slot_now ? elixir 3->3 wall=09:25:37.873
+[student] TRAY settled +0.84s tapped slot 0 meant tornado before [tornado,rocket,?,ice_wizard] now [?,rocket,?,?] slot_now ? elixir 3->0 wall=09:25:38.351
+[student] WAIT NO-TRAY-MATCH p=0.07 elixir 3 opp~? units 4 dets 4 (waits 204/260 badhand 85/356) tap [?,?,?,?] wall=09:25:41.754
+[student] PLAY tesla p=0.28 cell 309 board (0.17, 0.72) units 4 18 ms tap [tesla,?,?,?] hand [tesla,rocket,?,x_bow] elixir 4 wall=09:25:44.236
+[student] TAP slot 0 tesla cell 295 wall=09:25:44.567
+[student] TRAY first +0.76s tapped slot 0 meant tesla before [tesla,rocket,?,x_bow] now [tesla,?,?,?] slot_now tesla elixir 4->0 wall=09:25:45.328
+09:25:51 [play] UNKNOWN 0.9s after in-match -> grace hold (label lost: overtime / end animation / dropout; up to 150s)
+09:25:52 [play] state: MATCH_END
+[overlay-replay] saved C:\Users\benpe\ClashBot\icebow\data\overlayed_replays\match_20260912_092159.mp4 (11619 frames, captured 28.3 fps)
+09:25:52 [nav] MATCH_END -> Play Again (located) (0.348,0.914)
+09:25:53 [play] state: UNKNOWN
+09:25:59 [play] state: IN_MATCH
+[student] WAIT | exact=0 opp=? next=2 t=6s hand=[3, 4, 6, 149] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.00 elixir 9 opp~? units 0 dets 0 (waits 213/270 badhand 86/367) tap [x_bow,rocket,the_log,knight] wall=09:26:05.265
+[student] STALL-PLAY the_log p=0.05 cell 237 board (0.19, 0.55) units 1 23 ms tap [x_bow,rocket,the_log,knight] hand [x_bow,rocket,the_log,knight] elixir 10 wall=09:26:11.596
+[student] TAP slot 2 the_log cell 237 wall=09:26:11.961
+[student] TRAY first +0.28s tapped slot 2 meant the_log before [x_bow,rocket,the_log,knight] now [x_bow,rocket,?,knight] slot_now ? elixir 10->8 wall=09:26:12.246
+[student] PLAY x_bow p=0.51 cell 297 board (0.53, 0.7) units 1 30 ms tap [x_bow,rocket,?,knight] hand [x_bow,rocket,?,knight] elixir 8 wall=09:26:12.338
+[student] TAP slot 0 x_bow cell 297 wall=09:26:12.697
+[student] TRAY first +0.24s tapped slot 0 meant x_bow before [x_bow,rocket,?,knight] now [?,rocket,?,knight] slot_now ? elixir 8->5 wall=09:26:12.935
+[student] TRAY settled +0.62s tapped slot 0 meant x_bow before [x_bow,rocket,?,knight] now [?,rocket,ice_wizard,knight] slot_now ? elixir 8->2 wall=09:26:13.313
+[student] PLAY knight p=0.31 cell 238 board (0.25, 0.55) units 2 26 ms tap [?,?,ice_wizard,knight] hand [tesla,rocket,ice_wizard,knight] elixir 3 wall=09:26:16.594
+[student] TAP slot 3 knight cell 238 wall=09:26:16.965
+[student] TRAY first +0.33s tapped slot 3 meant knight before [tesla,rocket,ice_wizard,knight] now [tesla,rocket,tornado,?] slot_now ? elixir 3->3 wall=09:26:17.292
+[student] WAIT NO-TRAY-MATCH p=0.09 elixir 3 opp~? units 1 dets 1 (waits 221/281 badhand 89/380) tap [?,?,?,?] wall=09:26:17.386
+[student] TRAY settled +0.68s tapped slot 3 meant knight before [tesla,rocket,ice_wizard,knight] now [tesla,rocket,ice_wizard,?] slot_now ? elixir 3->0 wall=09:26:17.641
+[student] PLAY skeletons p=0.64 cell 363 board (0.19, 0.86) units 6 29 ms tap [?,?,?,skeletons] hand [tesla,rocket,ice_wizard,skeletons] elixir 1 wall=09:26:21.405
+[student] TAP slot 3 skeletons cell 363 wall=09:26:21.763
+[student] TRAY first +0.28s tapped slot 3 meant skeletons before [tesla,rocket,ice_wizard,skeletons] now [tesla,rocket,ice_wizard,?] slot_now ? elixir 1->1 wall=09:26:22.046
+[student] TRAY settled +0.59s tapped slot 3 meant skeletons before [tesla,rocket,ice_wizard,skeletons] now [tesla,rocket,ice_wizard,?] slot_now ? elixir 1->1 wall=09:26:22.357
+[student] PLAY ice_wizard p=0.57 cell 343 board (0.08, 0.83) units 4 24 ms tap [?,?,ice_wizard,tornado] hand [tesla,rocket,ice_wizard,tornado] elixir 3 wall=09:26:27.476
+[student] TAP slot 2 ice_wizard cell 343 wall=09:26:27.836
+[student] TRAY first +0.29s tapped slot 2 meant ice_wizard before [tesla,rocket,ice_wizard,tornado] now [tesla,rocket,?,tornado] slot_now ? elixir 3->3 wall=09:26:28.122
+[student] TRAY settled +1.09s tapped slot 2 meant ice_wizard before [tesla,rocket,ice_wizard,tornado] now [tesla,rocket,?,tornado] slot_now ? elixir 3->0 wall=09:26:28.926
+[student] WAIT p=0.09 elixir 3 opp~? units 2 dets 2 (waits 230/292 badhand 90/392) tap [?,?,the_log,tornado] wall=09:26:36.531
+[student] WAIT p=0.11 elixir 5 opp~? units 2 dets 2 (waits 240/302 badhand 90/402) tap [tesla,?,the_log,tornado] wall=09:26:42.088
+[student] WAIT p=0.10 elixir 7 opp~? units 2 dets 3 (waits 250/312 badhand 90/412) tap [tesla,rocket,the_log,tornado] wall=09:26:47.637
+[student] PLAY tesla p=0.49 cell 241 board (0.39, 0.56) units 3 22 ms tap [tesla,rocket,the_log,tornado] hand [tesla,rocket,the_log,tornado] elixir 8 wall=09:26:50.542
+[student] TAP slot 0 tesla cell 241 wall=09:26:50.914
+[student] TRAY first +0.27s tapped slot 0 meant tesla before [tesla,rocket,the_log,tornado] now [?,rocket,the_log,tornado] slot_now ? elixir 8->4 wall=09:26:51.188
+[student] TRAY settled +0.90s tapped slot 0 meant tesla before [tesla,rocket,the_log,tornado] now [?,rocket,the_log,tornado] slot_now ? elixir 8->4 wall=09:26:51.810
+[student] WAIT p=0.16 elixir 5 opp~? units 1 dets 1 (waits 260/323 badhand 92/423) tap [?,?,the_log,tornado] wall=09:26:54.789
+[student] PLAY x_bow p=0.29 cell 254 board (0.14, 0.61) units 2 16 ms tap [x_bow,rocket,the_log,tornado] hand [x_bow,rocket,the_log,tornado] elixir 6 wall=09:26:55.539
+[student] TAP slot 0 x_bow cell 218 wall=09:26:55.885
+[student] TRAY first +0.25s tapped slot 0 meant x_bow before [x_bow,rocket,the_log,tornado] now [?,rocket,the_log,tornado] slot_now ? elixir 6->5 wall=09:26:56.131
+[student] TRAY settled +0.60s tapped slot 0 meant x_bow before [x_bow,rocket,the_log,tornado] now [?,rocket,the_log,tornado] slot_now ? elixir 6->0 wall=09:26:56.481
+[student] PLAY knight p=0.58 cell 238 board (0.25, 0.55) units 3 26 ms tap [knight,?,the_log,tornado] hand [knight,rocket,the_log,tornado] elixir 3 wall=09:27:04.160
+[student] TAP slot 0 knight cell 238 wall=09:27:04.509
+[student] TRAY first +0.27s tapped slot 0 meant knight before [knight,rocket,the_log,tornado] now [?,rocket,the_log,tornado] slot_now ? elixir 3->3 wall=09:27:04.777
+[student] TRAY settled +0.58s tapped slot 0 meant knight before [knight,rocket,the_log,tornado] now [?,rocket,the_log,tornado] slot_now ? elixir 3->0 wall=09:27:05.093
+[student] PLAY skeletons p=0.38 cell 235 board (0.08, 0.55) units 5 26 ms tap [skeletons,?,?,?] hand [skeletons,rocket,the_log,tornado] elixir 1 wall=09:27:07.754
+[student] TAP slot 0 skeletons cell 235 wall=09:27:08.144
+[student] TRAY first +0.32s tapped slot 0 meant skeletons before [skeletons,rocket,the_log,tornado] now [?,rocket,the_log,tornado] slot_now ? elixir 1->1 wall=09:27:08.463
+[student] TRAY settled +0.65s tapped slot 0 meant skeletons before [skeletons,rocket,the_log,tornado] now [?,rocket,the_log,tornado] slot_now ? elixir 1->0 wall=09:27:08.798
+[student] WAIT p=0.23 elixir 2 opp~? units 2 dets 2 (waits 268/334 badhand 94/436) tap [?,?,the_log,?] wall=09:27:13.444
+[student] PLAY the_log p=0.32 cell 236 board (0.14, 0.55) units 3 30 ms tap [?,?,the_log,?] hand [ice_wizard,rocket,the_log,tornado] elixir 2 wall=09:27:14.046
+[student] TAP slot 2 the_log cell 236 wall=09:27:14.401
+[student] TRAY first +0.29s tapped slot 2 meant the_log before [ice_wizard,rocket,the_log,tornado] now [ice_wizard,rocket,?,tornado] slot_now ? elixir 2->1 wall=09:27:14.694
+[student] TRAY settled +0.64s tapped slot 2 meant the_log before [ice_wizard,rocket,the_log,tornado] now [tornado,rocket,?,tornado] slot_now ? elixir 2->0 wall=09:27:15.038
+[student] WAIT p=0.08 elixir 5 opp~? units 1 dets 1 (waits 278/345 badhand 94/447) tap [ice_wizard,?,tesla,tornado] wall=09:27:27.829
+[student] PLAY tesla p=0.35 cell 296 board (0.44, 0.69) units 1 27 ms tap [ice_wizard,?,tesla,tornado] hand [ice_wizard,rocket,tesla,tornado] elixir 5 wall=09:27:29.024
+[student] TAP slot 2 tesla cell 296 wall=09:27:29.363
+[student] TRAY first +0.25s tapped slot 2 meant tesla before [ice_wizard,rocket,tesla,tornado] now [ice_wizard,rocket,?,tornado] slot_now ? elixir 5->4 wall=09:27:29.611
+[student] TRAY settled +0.86s tapped slot 2 meant tesla before [ice_wizard,rocket,tesla,tornado] now [ice_wizard,rocket,?,tornado] slot_now ? elixir 5->2 wall=09:27:30.221
+[student] WAIT p=0.07 elixir 5 opp~? units 1 dets 1 (waits 287/355 badhand 95/458) tap [ice_wizard,?,?,tornado] wall=09:27:37.960
+[student] PLAY x_bow p=0.29 cell 256 board (0.25, 0.61) units 1 19 ms tap [ice_wizard,rocket,x_bow,tornado] hand [ice_wizard,rocket,x_bow,tornado] elixir 7 wall=09:27:45.117
+[student] TAP slot 2 x_bow cell 238 wall=09:27:45.479
+[student] TRAY first +0.95s tapped slot 2 meant x_bow before [ice_wizard,rocket,x_bow,tornado] now [ice_wizard,rocket,?,tornado] slot_now ? elixir 7->6 wall=09:27:46.433
+[student] PLAY knight_evo p=0.35 cell 237 board (0.19, 0.55) units 2 26 ms tap [ice_wizard,?,knight_evo,tornado] hand [ice_wizard,rocket,knight_evo,tornado] elixir 3 wall=09:27:50.102
+[student] TAP slot 2 knight_evo cell 237 wall=09:27:50.484
+[student] TRAY first +1.08s tapped slot 2 meant knight_evo before [ice_wizard,rocket,knight_evo,tornado] now [ice_wizard,rocket,?,tornado] slot_now ? elixir 3->3 wall=09:27:51.560
+[student] PLAY skeletons p=0.40 cell 237 board (0.19, 0.55) units 3 22 ms tap [?,?,skeletons,?] hand [ice_wizard,rocket,skeletons,ice_wizard] elixir 1 wall=09:27:54.251
+[student] TAP slot 2 skeletons cell 237 wall=09:27:54.582
+[student] TRAY first +1.17s tapped slot 2 meant skeletons before [ice_wizard,rocket,skeletons,ice_wizard] now [ice_wizard,rocket,?,tornado] slot_now ? elixir 1->1 wall=09:27:55.757
+[clock] icon reads x3 but the clock reads x1 -> using the clock (x1)
+[student] WAIT | exact=0 opp=? next=164 t=118s hand=[2, 4, 6, 0] tw=1.01.01.01.01.01.0 sp=2 unk=0 p=0.04 elixir 2 opp~? units 3 dets 5 (waits 295/366 badhand 97/471) tap [?,?,the_log,?] wall=09:27:57.363
+[student] PLAY the_log p=0.91 cell 237 board (0.19, 0.55) units 3 20 ms tap [ice_wizard,?,the_log,tornado] hand [ice_wizard,rocket,the_log,tornado] elixir 3 wall=09:27:58.177
+[student] TAP slot 2 the_log cell 237 wall=09:27:58.532
+[student] TRAY first +0.71s tapped slot 2 meant the_log before [ice_wizard,rocket,the_log,tornado] now [ice_wizard,rocket,?,tornado] slot_now ? elixir 3->1 wall=09:27:59.240
+[clock] icon reads x3 but the clock reads x2 -> using the clock (x2)
+09:27:59 [play] elixir x2
+[student] PLAY ice_wizard p=0.49 cell 240 board (0.36, 0.55) units 2 22 ms tap [ice_wizard,?,?,tornado] hand [ice_wizard,rocket,tesla_evo,tornado] elixir 3 wall=09:28:01.518
+[student] TAP slot 0 ice_wizard cell 240 wall=09:28:01.874
+[student] TRAY first +0.69s tapped slot 0 meant ice_wizard before [ice_wizard,rocket,tesla_evo,tornado] now [?,rocket,?,tornado] slot_now ? elixir 3->3 wall=09:28:02.564
+[student] PLAY tornado p=0.65 cell 147 board (0.19, 0.36) units 4 24 ms tap [?,?,?,tornado] hand [ice_wizard,rocket,tesla_evo,tornado] elixir 3 wall=09:28:05.605
+[student] TAP slot 3 tornado cell 147 wall=09:28:05.976
+[student] TRAY first +0.56s tapped slot 3 meant tornado before [ice_wizard,rocket,tesla_evo,tornado] now [ice_wizard,rocket,?,?] slot_now ? elixir 3->3 wall=09:28:06.531
+[student] PLAY knight p=0.56 cell 237 board (0.19, 0.55) units 3 26 ms tap [?,?,?,knight] hand [ice_wizard,rocket,tesla_evo,knight] elixir 3 wall=09:28:09.734
+[student] TAP slot 3 knight cell 237 wall=09:28:10.092
+[student] TRAY first +0.67s tapped slot 3 meant knight before [ice_wizard,rocket,tesla_evo,knight] now [ice_wizard,rocket,?,?] slot_now ? elixir 3->3 wall=09:28:10.761
+[student] PLAY skeletons p=0.28 cell 237 board (0.19, 0.55) units 3 28 ms tap [?,?,?,skeletons] hand [the_log,rocket,tesla,skeletons] elixir 2 wall=09:28:12.357
+[student] TAP slot 3 skeletons cell 237 wall=09:28:12.719
+[student] TRAY first +0.67s tapped slot 3 meant skeletons before [the_log,rocket,tesla,skeletons] now [the_log,rocket,?,?] slot_now ? elixir 2->1 wall=09:28:13.393
+[student] PLAY the_log p=0.71 cell 237 board (0.19, 0.55) units 5 18 ms tap [?,?,?,the_log] hand [ice_wizard,rocket,tesla_evo,the_log] elixir 3 wall=09:28:14.995
+[student] TAP slot 3 the_log cell 237 wall=09:28:15.358
+[student] TRAY first +0.58s tapped slot 3 meant the_log before [ice_wizard,rocket,tesla_evo,the_log] now [the_log,rocket,?,?] slot_now ? elixir 3->1 wall=09:28:15.938
+[student] PLAY tesla_evo p=0.73 cell 241 board (0.39, 0.56) units 6 30 ms tap [?,?,tesla_evo,ice_wizard] hand [x_bow,rocket,tesla_evo,ice_wizard] elixir 4 wall=09:28:19.076
+[student] TAP slot 2 tesla_evo cell 293 wall=09:28:19.430
+[student] TRAY first +0.26s tapped slot 2 meant tesla_evo before [x_bow,rocket,tesla_evo,ice_wizard] now [ice_wizard,rocket,?,tornado] slot_now ? elixir 4->4 wall=09:28:19.689
+[student] TRAY settled +0.61s tapped slot 2 meant tesla_evo before [x_bow,rocket,tesla_evo,ice_wizard] now [ice_wizard,rocket,?,ice_wizard] slot_now ? elixir 4->1 wall=09:28:20.044
+[student] WAIT NO-TRAY-MATCH p=0.11 elixir 2 opp~? units 7 dets 7 (waits 295/373 badhand 103/488) tap [?,?,?,?] wall=09:28:21.583
+[student] PLAY tornado p=0.51 cell 80 board (0.47, 0.2) units 5 29 ms tap [?,?,tornado,?] hand [ice_wizard,rocket,tornado,ice_wizard] elixir 3 wall=09:28:23.411
+[student] TAP slot 2 tornado cell 80 wall=09:28:23.762
+[student] TRAY first +0.24s tapped slot 2 meant tornado before [ice_wizard,rocket,tornado,ice_wizard] now [ice_wizard,rocket,?,ice_wizard] slot_now ? elixir 3->3 wall=09:28:24.002
+[student] TRAY settled +0.59s tapped slot 2 meant tornado before [ice_wizard,rocket,tornado,ice_wizard] now [ice_wizard,rocket,?,ice_wizard] slot_now ? elixir 3->1 wall=09:28:24.357
+[student] PLAY ice_wizard p=0.46 cell 363 board (0.19, 0.86) units 5 26 ms tap [?,?,?,ice_wizard] hand [x_bow,rocket,?,ice_wizard] elixir 4 wall=09:28:29.214
+[student] TAP slot 3 ice_wizard cell 363 wall=09:28:29.559
+[student] TRAY first +0.29s tapped slot 3 meant ice_wizard before [x_bow,rocket,?,ice_wizard] now [the_log,rocket,knight,?] slot_now ? elixir 4->3 wall=09:28:29.844
+[student] TRAY settled +0.68s tapped slot 3 meant ice_wizard before [x_bow,rocket,?,ice_wizard] now [the_log,rocket,?,?] slot_now ? elixir 4->2 wall=09:28:30.237
+[student] WAIT NO-TRAY-MATCH p=0.46 elixir 2 opp~? units 3 dets 5 (waits 296/376 badhand 106/500) tap [?,?,?,?] wall=09:28:30.333
+[student] PLAY skeletons p=0.72 cell 363 board (0.19, 0.86) units 4 25 ms tap [?,?,?,skeletons] hand [ice_wizard,rocket,?,skeletons] elixir 2 wall=09:28:30.946
+[student] TAP slot 3 skeletons cell 363 wall=09:28:31.307
+[student] TRAY first +0.26s tapped slot 3 meant skeletons before [ice_wizard,rocket,?,skeletons] now [the_log,rocket,?,?] slot_now ? elixir 2->1 wall=09:28:31.565
+[student] TRAY settled +0.68s tapped slot 3 meant skeletons before [ice_wizard,rocket,?,skeletons] now [the_log,rocket,?,?] slot_now ? elixir 2->2 wall=09:28:31.984
+[student] PLAY the_log p=0.88 cell 381 board (0.19, 0.89) units 6 26 ms tap [?,?,?,the_log] hand [ice_wizard,rocket,?,the_log] elixir 3 wall=09:28:32.718
+[student] TAP slot 3 the_log cell 379 wall=09:28:33.079
+[student] TRAY first +0.27s tapped slot 3 meant the_log before [ice_wizard,rocket,?,the_log] now [tesla,rocket,?,?] slot_now ? elixir 3->2 wall=09:28:33.353
+[student] TRAY settled +0.64s tapped slot 3 meant the_log before [ice_wizard,rocket,?,the_log] now [tesla,rocket,?,?] slot_now ? elixir 3->1 wall=09:28:33.715
+[student] PLAY tesla p=0.32 cell 241 board (0.39, 0.56) units 2 17 ms tap [?,?,?,tesla] hand [x_bow,rocket,?,tesla] elixir 4 wall=09:28:36.770
+[student] TAP slot 3 tesla cell 292 wall=09:28:37.134
+[student] TRAY first +0.24s tapped slot 3 meant tesla before [x_bow,rocket,?,tesla] now [tornado,rocket,tornado,?] slot_now ? elixir 4->4 wall=09:28:37.370
+[student] TRAY settled +1.04s tapped slot 3 meant tesla before [x_bow,rocket,?,tesla] now [ice_wizard,rocket,?,?] slot_now ? elixir 4->1 wall=09:28:38.176
+[student] PLAY tornado p=0.33 cell 165 board (0.19, 0.39) units 5 30 ms tap [?,?,?,tornado] hand [x_bow,rocket,?,tornado] elixir 4 wall=09:28:42.566
+[student] TAP slot 3 tornado cell 165 wall=09:28:42.912
+[student] TRAY first +0.29s tapped slot 3 meant tornado before [x_bow,rocket,?,tornado] now [tesla,rocket,?,?] slot_now ? elixir 4->3 wall=09:28:43.202
+[student] TRAY settled +0.74s tapped slot 3 meant tornado before [x_bow,rocket,?,tornado] now [the_log,rocket,?,?] slot_now ? elixir 4->1 wall=09:28:43.654
+[student] WAIT NO-TRAY-MATCH p=0.02 elixir 2 opp~? units 3 dets 4 (waits 299/383 badhand 108/514) tap [?,?,?,?] wall=09:28:44.485
+[student] PLAY ice_wizard p=0.49 cell 235 board (0.08, 0.55) units 4 28 ms tap [?,?,?,ice_wizard] hand [x_bow,rocket,?,ice_wizard] elixir 4 wall=09:28:46.755
+[student] TAP slot 3 ice_wizard cell 235 wall=09:28:47.096
+[student] TRAY first +0.29s tapped slot 3 meant ice_wizard before [x_bow,rocket,?,ice_wizard] now [tesla,rocket,?,?] slot_now ? elixir 4->3 wall=09:28:47.386
+[student] TRAY settled +0.63s tapped slot 3 meant ice_wizard before [x_bow,rocket,?,ice_wizard] now [tesla,rocket,?,?] slot_now ? elixir 4->1 wall=09:28:47.725
+[student] PLAY skeletons p=0.47 cell 237 board (0.19, 0.55) units 4 23 ms tap [?,?,?,skeletons] hand [ice_wizard,rocket,?,skeletons] elixir 3 wall=09:28:49.619
+[student] TAP slot 3 skeletons cell 237 wall=09:28:49.962
+[student] TRAY first +0.27s tapped slot 3 meant skeletons before [ice_wizard,rocket,?,skeletons] now [the_log,rocket,?,?] slot_now ? elixir 3->2 wall=09:28:50.237
+[student] TRAY settled +0.66s tapped slot 3 meant skeletons before [ice_wizard,rocket,?,skeletons] now [ice_wizard,rocket,?,?] slot_now ? elixir 3->2 wall=09:28:50.619
+[student] WAIT p=0.22 elixir 4 opp~? units 3 dets 3 (waits 304/390 badhand 110/526) tap [?,?,?,the_log] wall=09:28:53.181
+[student] PLAY the_log p=0.55 cell 237 board (0.19, 0.55) units 4 19 ms tap [?,?,?,the_log] hand [x_bow,rocket,?,the_log] elixir 5 wall=09:28:53.993
+[student] TAP slot 3 the_log cell 254 wall=09:28:54.337
+[student] TRAY first +0.24s tapped slot 3 meant the_log before [x_bow,rocket,?,the_log] now [ice_wizard,rocket,?,?] slot_now ? elixir 5->3 wall=09:28:54.577
+09:28:55 [play] UNKNOWN 0.4s after in-match -> grace hold (label lost: overtime / end animation / dropout; up to 150s)
+[student] TRAY settled +1.48s tapped slot 3 meant the_log before [x_bow,rocket,?,the_log] now [tesla,?,?,?] slot_now ? elixir 5->0 wall=09:28:55.816
+09:29:01 [play] state: MATCH_END
+[overlay-replay] saved C:\Users\benpe\ClashBot\icebow\data\overlayed_replays\match_20260912_092559.mp4 (9125 frames, captured 28.5 fps)
+09:29:01 [nav] MATCH_END -> Play Again (located) (0.348,0.914)
+09:29:02 [play] state: UNKNOWN
+09:29:08 [play] state: IN_MATCH
+[student] WAIT p=0.06 elixir 9 opp~? units 0 dets 0 (waits 313/400 badhand 112/537) tap [ice_wizard,the_log,tesla,rocket] wall=09:29:15.817
+[student] PLAY the_log p=0.27 cell 248 board (0.81, 0.55) units 1 26 ms tap [ice_wizard,the_log,tesla,rocket] hand [ice_wizard,the_log,tesla,rocket] elixir 10 wall=09:29:19.491
+[student] TAP slot 1 the_log cell 248 wall=09:29:19.860
+[student] TRAY first +0.25s tapped slot 1 meant the_log before [ice_wizard,the_log,tesla,rocket] now [ice_wizard,?,tesla,rocket] slot_now ? elixir 10->8 wall=09:29:20.114
+[student] TRAY settled +0.61s tapped slot 1 meant the_log before [ice_wizard,the_log,tesla,rocket] now [ice_wizard,?,tesla,rocket] slot_now ? elixir 10->8 wall=09:29:20.470
+[student] WAIT p=0.09 elixir 8 opp~? units 1 dets 2 (waits 323/411 badhand 114/548) tap [ice_wizard,skeletons,tesla,rocket] wall=09:29:23.274
+[student] PLAY rocket p=0.42 cell 121 board (0.75, 0.27) units 1 14 ms tap [ice_wizard,skeletons,tesla,rocket] hand [ice_wizard,skeletons,tesla,rocket] elixir 10 wall=09:29:27.046
+[student] TAP slot 3 rocket cell 121 wall=09:29:27.396
+[student] TRAY first +0.29s tapped slot 3 meant rocket before [ice_wizard,skeletons,tesla,rocket] now [ice_wizard,skeletons,tesla,?] slot_now ? elixir 10->5 wall=09:29:27.690
+[student] TRAY settled +1.06s tapped slot 3 meant rocket before [ice_wizard,skeletons,tesla,rocket] now [ice_wizard,skeletons,tesla,?] slot_now ? elixir 10->4 wall=09:29:28.459
+[student] WAIT | exact=0 opp=? next=0 t=22s hand=[2, 7, 164, 3] tw=1.01.01.01.01.01.0 sp=1 unk=0 p=0.02 elixir 4 opp~? units 1 dets 2 (waits 333/422 badhand 116/559) tap [ice_wizard,skeletons,tesla,?] wall=09:29:31.160
+[student] WAIT | exact=0 opp=? next=0 t=29s hand=[2, 7, 164, 3] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.02 elixir 7 opp~? units 0 dets 0 (waits 343/432 badhand 116/569) tap [ice_wizard,skeletons,tesla,x_bow] wall=09:29:37.391
+[student] PLAY x_bow p=0.45 cell 254 board (0.14, 0.61) units 1 18 ms tap [ice_wizard,skeletons,tesla,x_bow] hand [ice_wizard,skeletons,tesla,x_bow] elixir 9 wall=09:29:43.248
+[student] TAP slot 3 x_bow cell 218 wall=09:29:43.601
+[student] TRAY first +0.28s tapped slot 3 meant x_bow before [ice_wizard,skeletons,tesla,x_bow] now [ice_wizard,skeletons,tesla,?] slot_now ? elixir 9->5 wall=09:29:43.886
+[student] TRAY settled +0.90s tapped slot 3 meant x_bow before [ice_wizard,skeletons,tesla,x_bow] now [ice_wizard,skeletons,tesla,?] slot_now ? elixir 9->3 wall=09:29:44.500
+[student] WAIT p=0.11 elixir 3 opp~? units 2 dets 2 (waits 353/443 badhand 118/580) tap [ice_wizard,skeletons,?,?] wall=09:29:44.577
+[student] PLAY skeletons p=0.37 cell 238 board (0.25, 0.55) units 4 17 ms tap [?,skeletons,?,?] hand [ice_wizard,skeletons,tesla,?] elixir 3 wall=09:29:44.947
+[student] TAP slot 1 skeletons cell 238 wall=09:29:45.294
+[student] TRAY first +0.30s tapped slot 1 meant skeletons before [ice_wizard,skeletons,tesla,?] now [ice_wizard,?,tesla,tornado] slot_now ? elixir 3->2 wall=09:29:45.592
+[student] TRAY settled +0.59s tapped slot 1 meant skeletons before [ice_wizard,skeletons,tesla,?] now [ice_wizard,?,tesla,tornado] slot_now ? elixir 3->3 wall=09:29:45.889
+[student] WAIT p=0.19 elixir 5 opp~? units 2 dets 2 (waits 363/454 badhand 120/591) tap [ice_wizard,knight,tesla,tornado] wall=09:29:51.669
+[student] PLAY tesla p=0.47 cell 279 board (0.5, 0.66) units 3 23 ms tap [ice_wizard,knight,tesla,tornado] hand [ice_wizard,knight,tesla,tornado] elixir 5 wall=09:29:53.476
+[student] TAP slot 2 tesla cell 279 wall=09:29:53.822
+[student] TRAY first +0.28s tapped slot 2 meant tesla before [ice_wizard,knight,tesla,tornado] now [ice_wizard,knight,?,tornado] slot_now ? elixir 5->4 wall=09:29:54.102
+[student] TRAY settled +0.63s tapped slot 2 meant tesla before [ice_wizard,knight,tesla,tornado] now [ice_wizard,knight,?,tornado] slot_now ? elixir 5->2 wall=09:29:54.454
+[student] PLAY knight p=0.32 cell 245 board (0.64, 0.55) units 3 23 ms tap [ice_wizard,knight,the_log,tornado] hand [ice_wizard,knight,the_log,tornado] elixir 3 wall=09:29:58.841
+[student] TAP slot 1 knight cell 245 wall=09:29:59.173
+[student] TRAY first +0.28s tapped slot 1 meant knight before [ice_wizard,knight,the_log,tornado] now [tornado,?,the_log,tornado] slot_now ? elixir 3->3 wall=09:29:59.453
+[student] WAIT NO-TRAY-MATCH p=0.01 elixir 3 opp~? units 3 dets 4 (waits 371/464 badhand 122/603) tap [?,?,?,?] wall=09:29:59.534
+[student] TRAY settled +0.65s tapped slot 1 meant knight before [ice_wizard,knight,the_log,tornado] now [ice_wizard,?,the_log,tornado] slot_now ? elixir 3->1 wall=09:29:59.826
+[student] PLAY ice_wizard p=0.32 cell 333 board (0.53, 0.77) units 3 16 ms tap [ice_wizard,?,the_log,tornado] hand [ice_wizard,rocket,the_log,tornado] elixir 3 wall=09:30:05.915
+[student] TAP slot 0 ice_wizard cell 333 wall=09:30:06.262
+[student] TRAY first +0.31s tapped slot 0 meant ice_wizard before [ice_wizard,rocket,the_log,tornado] now [?,rocket,the_log,tornado] slot_now ? elixir 3->3 wall=09:30:06.577
+[student] TRAY settled +0.70s tapped slot 0 meant ice_wizard before [ice_wizard,rocket,the_log,tornado] now [?,rocket,the_log,tornado] slot_now ? elixir 3->0 wall=09:30:06.959
+[student] WAIT NO-TRAY-MATCH p=0.08 elixir 2 opp~? units 3 dets 3 (waits 377/471 badhand 123/614) tap [?,?,?,?] wall=09:30:12.094
+[student] PLAY the_log p=0.84 cell 337 board (0.75, 0.77) units 5 24 ms tap [?,?,the_log,?] hand [ice_wizard,rocket,the_log,tornado] elixir 2 wall=09:30:13.352
+[student] TAP slot 2 the_log cell 356 wall=09:30:13.730
+[student] TRAY first +0.28s tapped slot 2 meant the_log before [ice_wizard,rocket,the_log,tornado] now [ice_wizard,rocket,?,tornado] slot_now ? elixir 2->2 wall=09:30:14.009
+[student] TRAY settled +0.62s tapped slot 2 meant the_log before [ice_wizard,rocket,the_log,tornado] now [ice_wizard,rocket,?,tornado] slot_now ? elixir 2->1 wall=09:30:14.352
+[student] PLAY skeletons p=0.31 cell 248 board (0.81, 0.55) units 4 29 ms tap [?,?,skeletons,?] hand [tesla,rocket,skeletons,ice_wizard] elixir 1 wall=09:30:15.439
+[student] TAP slot 2 skeletons cell 248 wall=09:30:15.795
+[student] TRAY first +0.31s tapped slot 2 meant skeletons before [tesla,rocket,skeletons,ice_wizard] now [tornado,rocket,?,tornado] slot_now ? elixir 1->1 wall=09:30:16.107
+[student] TRAY settled +0.68s tapped slot 2 meant skeletons before [tesla,rocket,skeletons,ice_wizard] now [ice_wizard,rocket,?,tornado] slot_now ? elixir 1->0 wall=09:30:16.477
+[student] PLAY tornado p=0.30 cell 176 board (0.81, 0.39) units 2 16 ms tap [?,?,?,tornado] hand [ice_wizard,rocket,tesla,tornado] elixir 3 wall=09:30:22.919
+[student] TAP slot 3 tornado cell 176 wall=09:30:23.263
+[student] TRAY first +0.28s tapped slot 3 meant tornado before [ice_wizard,rocket,tesla,tornado] now [tornado,rocket,tesla,?] slot_now ? elixir 3->3 wall=09:30:23.538
+[student] TRAY settled +0.62s tapped slot 3 meant tornado before [ice_wizard,rocket,tesla,tornado] now [tornado,rocket,tesla,?] slot_now ? elixir 3->0 wall=09:30:23.878
+[student] WAIT NO-TRAY-MATCH p=0.07 elixir 2 opp~? units 2 dets 2 (waits 378/475 badhand 124/627) tap [?,?,?,?] wall=09:30:29.352
+[student] WAIT p=0.09 elixir 4 opp~? units 2 dets 2 (waits 388/485 badhand 124/637) tap [?,?,tesla,knight] wall=09:30:35.315
+[student] WAIT p=0.11 elixir 6 opp~? units 1 dets 1 (waits 398/495 badhand 124/647) tap [x_bow,rocket,tesla,knight] wall=09:30:41.480
+[student] PLAY rocket p=0.28 cell 194 board (0.81, 0.45) units 1 21 ms tap [x_bow,rocket,tesla,knight] hand [x_bow,rocket,tesla,knight] elixir 8 wall=09:30:47.084
+[student] TAP slot 1 rocket cell 212 wall=09:30:47.449
+[student] TRAY first +0.28s tapped slot 1 meant rocket before [x_bow,rocket,tesla,knight] now [ice_wizard,?,tesla,knight] slot_now ? elixir 8->5 wall=09:30:47.728
+[student] PLAY knight p=0.49 cell 248 board (0.81, 0.55) units 1 23 ms tap [?,?,?,knight] hand [ice_wizard,?,tesla,knight] elixir 5 wall=09:30:47.799
+[student] TAP slot 3 knight cell 248 wall=09:30:48.155
+[student] TRAY first +0.30s tapped slot 3 meant knight before [ice_wizard,?,tesla,knight] now [x_bow,?,tesla,?] slot_now ? elixir 5->3 wall=09:30:48.457
+[student] TRAY settled +1.47s tapped slot 3 meant knight before [ice_wizard,?,tesla,knight] now [x_bow,ice_wizard,tesla,?] slot_now ? elixir 5->0 wall=09:30:49.627
+[student] WAIT p=0.11 elixir 3 opp~? units 0 dets 0 (waits 407/506 badhand 125/659) tap [?,?,?,the_log] wall=09:30:57.194
+[clock] icon reads x3 but the clock reads x1 -> using the clock (x1)
+[student] PLAY ice_wizard p=0.39 cell 297 board (0.53, 0.7) units 1 22 ms tap [x_bow,ice_wizard,tesla,the_log] hand [x_bow,ice_wizard,tesla,the_log] elixir 6 wall=09:31:05.429
+[student] TAP slot 1 ice_wizard cell 297 wall=09:31:05.788
+[student] TRAY first +0.75s tapped slot 1 meant ice_wizard before [x_bow,ice_wizard,tesla,the_log] now [x_bow,?,tesla,the_log] slot_now ? elixir 6->4 wall=09:31:06.539
+[student] PLAY the_log p=0.55 cell 247 board (0.75, 0.55) units 1 25 ms tap [?,?,tesla,the_log] hand [x_bow,?,tesla,the_log] elixir 4 wall=09:31:07.497
+[student] TAP slot 3 the_log cell 247 wall=09:31:07.843
+[student] TRAY first +0.72s tapped slot 3 meant the_log before [x_bow,?,tesla,the_log] now [ice_wizard,skeletons,tesla,?] slot_now ? elixir 4->3 wall=09:31:08.564
+[clock] icon reads x3 but the clock reads x2 -> using the clock (x2)
+09:31:09 [play] elixir x2
+[student] PLAY skeletons p=0.34 cell 320 board (0.81, 0.73) units 1 33 ms tap [?,skeletons,tesla,?] hand [x_bow,skeletons,tesla,?] elixir 4 wall=09:31:09.511
+[student] TAP slot 1 skeletons cell 266 wall=09:31:09.858
+[student] TRAY first +0.70s tapped slot 1 meant skeletons before [x_bow,skeletons,tesla,?] now [x_bow,?,tesla,tornado] slot_now ? elixir 4->4 wall=09:31:10.559
+[student] WAIT p=0.15 elixir 4 opp~? units 4 dets 5 (waits 417/519 badhand 131/672) tap [?,?,tesla,tornado] wall=09:31:11.426
+[student] PLAY x_bow p=0.43 cell 254 board (0.14, 0.61) units 4 27 ms tap [x_bow,rocket,tesla,tornado] hand [x_bow,rocket,tesla,tornado] elixir 6 wall=09:31:13.902
+[student] TAP slot 0 x_bow cell 218 wall=09:31:14.270
+[student] TRAY first +0.69s tapped slot 0 meant x_bow before [x_bow,rocket,tesla,tornado] now [?,rocket,tesla,tornado] slot_now ? elixir 6->5 wall=09:31:14.959
+[student] PLAY tornado p=0.41 cell 82 board (0.58, 0.17) units 3 20 ms tap [knight_evo,?,tesla,tornado] hand [knight_evo,rocket,tesla,tornado] elixir 4 wall=09:31:18.938
+[student] TAP slot 3 tornado cell 82 wall=09:31:19.286
+[student] TRAY first +0.60s tapped slot 3 meant tornado before [knight_evo,rocket,tesla,tornado] now [tesla,rocket,tesla,?] slot_now ? elixir 4->3 wall=09:31:19.889
+[student] PLAY knight_evo p=0.43 cell 238 board (0.25, 0.55) units 5 37 ms tap [knight_evo,?,?,ice_wizard] hand [knight_evo,rocket,tesla,ice_wizard] elixir 3 wall=09:31:22.394
+[student] TAP slot 0 knight_evo cell 238 wall=09:31:22.756
+[student] TRAY first +0.73s tapped slot 0 meant knight_evo before [knight_evo,rocket,tesla,ice_wizard] now [?,rocket,tesla,ice_wizard] slot_now ? elixir 3->3 wall=09:31:23.483
+[student] PLAY the_log p=0.84 cell 237 board (0.19, 0.55) units 6 16 ms tap [the_log,?,?,ice_wizard] hand [the_log,rocket,tesla,ice_wizard] elixir 3 wall=09:31:26.071
+[student] TAP slot 0 the_log cell 272 wall=09:31:26.415
+[student] TRAY first +0.73s tapped slot 0 meant the_log before [the_log,rocket,tesla,ice_wizard] now [?,rocket,tesla,ice_wizard] slot_now ? elixir 3->1 wall=09:31:27.148
+[student] WAIT p=0.24 elixir 4 opp~? units 1 dets 2 (waits 425/531 badhand 133/686) tap [skeletons,?,tesla,ice_wizard] wall=09:31:30.008
+[student] PLAY tesla p=0.54 cell 297 board (0.5, 0.69) units 4 28 ms tap [skeletons,?,tesla,ice_wizard] hand [skeletons,rocket,tesla,ice_wizard] elixir 4 wall=09:31:30.379
+[student] TAP slot 2 tesla cell 297 wall=09:31:30.729
+[student] TRAY first +0.28s tapped slot 2 meant tesla before [skeletons,rocket,tesla,ice_wizard] now [skeletons,rocket,?,ice_wizard] slot_now ? elixir 4->4 wall=09:31:31.007
+[student] PLAY skeletons p=0.32 cell 242 board (0.47, 0.55) units 4 21 ms tap [skeletons,?,?,?] hand [skeletons,rocket,?,ice_wizard] elixir 4 wall=09:31:31.094
+[student] TAP slot 0 skeletons cell 242 wall=09:31:31.427
+[student] TRAY first +0.24s tapped slot 0 meant skeletons before [skeletons,rocket,?,ice_wizard] now [?,rocket,?,ice_wizard] slot_now ? elixir 4->1 wall=09:31:31.671
+[student] TRAY settled +0.63s tapped slot 0 meant skeletons before [skeletons,rocket,?,ice_wizard] now [?,rocket,rocket,ice_wizard] slot_now ? elixir 4->0 wall=09:31:32.057
+[student] PLAY tornado p=0.42 cell 221 board (0.31, 0.52) units 3 23 ms tap [tornado,?,?,?] hand [tornado,rocket,ice_wizard,ice_wizard] elixir 3 wall=09:31:35.663
+[student] TAP slot 0 tornado cell 221 wall=09:31:36.002
+[student] TRAY first +0.24s tapped slot 0 meant tornado before [tornado,rocket,ice_wizard,ice_wizard] now [?,rocket,rocket,ice_wizard] slot_now ? elixir 3->3 wall=09:31:36.246
+[student] TRAY settled +0.61s tapped slot 0 meant tornado before [tornado,rocket,ice_wizard,ice_wizard] now [?,rocket,ice_wizard,ice_wizard] slot_now ? elixir 3->1 wall=09:31:36.615
+[student] PLAY knight p=0.89 cell 243 board (0.53, 0.55) units 5 28 ms tap [knight,?,?,?] hand [knight,rocket,ice_wizard,ice_wizard] elixir 3 wall=09:31:39.747
+[student] TAP slot 0 knight cell 243 wall=09:31:40.096
+[student] TRAY first +0.27s tapped slot 0 meant knight before [knight,rocket,ice_wizard,ice_wizard] now [?,rocket,rocket,ice_wizard] slot_now ? elixir 3->3 wall=09:31:40.366
+[student] TRAY settled +0.61s tapped slot 0 meant knight before [knight,rocket,ice_wizard,ice_wizard] now [?,rocket,?,ice_wizard] slot_now ? elixir 3->0 wall=09:31:40.702
+[student] PLAY the_log p=0.90 cell 337 board (0.75, 0.77) units 3 26 ms tap [the_log,?,?,?] hand [the_log,rocket,ice_wizard,ice_wizard] elixir 2 wall=09:31:43.227
+[student] TAP slot 0 the_log cell 373 wall=09:31:43.573
+[student] TRAY first +0.27s tapped slot 0 meant the_log before [the_log,rocket,ice_wizard,ice_wizard] now [?,rocket,ice_wizard,ice_wizard] slot_now ? elixir 2->1 wall=09:31:43.840
+[student] TRAY settled +1.06s tapped slot 0 meant the_log before [the_log,rocket,ice_wizard,ice_wizard] now [?,rocket,tesla,ice_wizard] slot_now ? elixir 2->1 wall=09:31:44.636
+[student] WAIT NO-TRAY-MATCH p=0.73 elixir 3 opp~? units 3 dets 4 (waits 425/536 badhand 136/701) tap [?,?,?,?] wall=09:31:47.770
+[student] PLAY ice_wizard p=0.43 cell 341 board (0.97, 0.77) units 3 23 ms tap [tesla_evo,?,?,ice_wizard] hand [tesla_evo,rocket,x_bow,ice_wizard] elixir 4 wall=09:31:48.510
+[student] TAP slot 3 ice_wizard cell 341 wall=09:31:48.860
+[student] TRAY first +0.27s tapped slot 3 meant ice_wizard before [tesla_evo,rocket,x_bow,ice_wizard] now [?,rocket,tesla,?] slot_now ? elixir 4->3 wall=09:31:49.132
+[student] TRAY settled +0.61s tapped slot 3 meant ice_wizard before [tesla_evo,rocket,x_bow,ice_wizard] now [tesla,rocket,the_log,?] slot_now ? elixir 4->2 wall=09:31:49.469
+[student] PLAY skeletons p=0.80 cell 248 board (0.81, 0.55) units 3 19 ms tap [?,?,?,skeletons] hand [tesla,rocket,ice_wizard,skeletons] elixir 2 wall=09:31:50.431
+[student] TAP slot 3 skeletons cell 248 wall=09:31:50.793
+[student] TRAY first +0.28s tapped slot 3 meant skeletons before [tesla,rocket,ice_wizard,skeletons] now [tesla,rocket,the_log,?] slot_now ? elixir 2->1 wall=09:31:51.076
+[student] TRAY settled +0.65s tapped slot 3 meant skeletons before [tesla,rocket,ice_wizard,skeletons] now [tesla,rocket,the_log,?] slot_now ? elixir 2->2 wall=09:31:51.444
+[student] PLAY tornado p=0.67 cell 229 board (0.75, 0.52) units 5 18 ms tap [?,?,?,tornado] hand [tesla_evo,rocket,ice_wizard,tornado] elixir 3 wall=09:31:52.548
+[student] TAP slot 3 tornado cell 229 wall=09:31:52.931
+[student] TRAY first +0.26s tapped slot 3 meant tornado before [tesla_evo,rocket,ice_wizard,tornado] now [tesla,rocket,rocket,?] slot_now ? elixir 3->3 wall=09:31:53.191
+[student] TRAY settled +1.06s tapped slot 3 meant tornado before [tesla_evo,rocket,ice_wizard,tornado] now [tesla,rocket,ice_wizard,?] slot_now ? elixir 3->1 wall=09:31:53.993
+[student] PLAY knight p=0.40 cell 336 board (0.69, 0.77) units 1 27 ms tap [?,?,?,knight] hand [tesla_evo,rocket,ice_wizard,knight] elixir 3 wall=09:31:56.460
+[student] TAP slot 3 knight cell 336 wall=09:31:56.805
+[student] TRAY first +0.27s tapped slot 3 meant knight before [tesla_evo,rocket,ice_wizard,knight] now [?,rocket,?,?] slot_now ? elixir 3->3 wall=09:31:57.074
+[student] TRAY settled +1.06s tapped slot 3 meant knight before [tesla_evo,rocket,ice_wizard,knight] now [tesla,rocket,ice_wizard,?] slot_now ? elixir 3->1 wall=09:31:57.868
+[student] PLAY the_log p=0.38 cell 338 board (0.81, 0.77) units 2 28 ms tap [?,?,?,the_log] hand [tesla_evo,rocket,ice_wizard,the_log] elixir 3 wall=09:32:00.587
+[student] TAP slot 3 the_log cell 391 wall=09:32:00.923
+[student] TRAY first +0.29s tapped slot 3 meant the_log before [tesla_evo,rocket,ice_wizard,the_log] now [tesla,rocket,tesla,?] slot_now ? elixir 3->2 wall=09:32:01.216
+[student] TRAY settled +0.65s tapped slot 3 meant the_log before [tesla_evo,rocket,ice_wizard,the_log] now [tesla,rocket,tesla,?] slot_now ? elixir 3->1 wall=09:32:01.572
+09:32:05 [play] UNKNOWN 0.6s after in-match -> grace hold (label lost: overtime / end animation / dropout; up to 150s)
+09:32:11 [play] state: MATCH_END
+[overlay-replay] saved C:\Users\benpe\ClashBot\icebow\data\overlayed_replays\match_20260912_092908.mp4 (9148 frames, captured 28.4 fps)
+09:32:11 [nav] MATCH_END -> Play Again (located) (0.348,0.914)
+09:32:12 [play] state: UNKNOWN
+09:32:18 [play] state: IN_MATCH
+[student] WAIT | exact=0 opp=? next=0 t=1s hand=[2, 6, -1, -1] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.03 elixir 7 opp~? units 0 dets 0 (waits 426/542 badhand 140/716) tap [ice_wizard,the_log,?,?] wall=09:32:19.110
+[student] WAIT p=0.17 elixir 10 opp~? units 0 dets 0 (waits 436/552 badhand 140/726) tap [ice_wizard,the_log,x_bow,knight] wall=09:32:26.516
+[student] PLAY the_log p=0.69 cell 363 board (0.19, 0.86) units 3 22 ms tap [ice_wizard,the_log,x_bow,knight] hand [ice_wizard,the_log,x_bow,knight] elixir 10 wall=09:32:30.943
+[student] TAP slot 1 the_log cell 381 wall=09:32:31.284
+[student] TRAY first +0.24s tapped slot 1 meant the_log before [ice_wizard,the_log,x_bow,knight] now [ice_wizard,?,x_bow,knight] slot_now ? elixir 10->8 wall=09:32:31.527
+[student] TRAY settled +0.59s tapped slot 1 meant the_log before [ice_wizard,the_log,x_bow,knight] now [ice_wizard,?,x_bow,knight] slot_now ? elixir 10->8 wall=09:32:31.878
+[student] PLAY x_bow p=0.31 cell 254 board (0.14, 0.61) units 1 17 ms tap [ice_wizard,tornado,x_bow,knight] hand [ice_wizard,tornado,x_bow,knight] elixir 8 wall=09:32:32.733
+[student] TAP slot 2 x_bow cell 218 wall=09:32:33.087
+[student] TRAY first +0.30s tapped slot 2 meant x_bow before [ice_wizard,tornado,x_bow,knight] now [ice_wizard,tornado,?,knight] slot_now ? elixir 8->5 wall=09:32:33.391
+[student] TRAY settled +1.09s tapped slot 2 meant x_bow before [ice_wizard,tornado,x_bow,knight] now [ice_wizard,tornado,?,knight] slot_now ? elixir 8->2 wall=09:32:34.176
+[student] WAIT p=0.22 elixir 3 opp~? units 1 dets 1 (waits 445/563 badhand 143/738) tap [ice_wizard,tornado,skeletons,knight] wall=09:32:35.631
+[student] PLAY skeletons p=0.28 cell 238 board (0.25, 0.55) units 1 18 ms tap [ice_wizard,tornado,skeletons,knight] hand [ice_wizard,tornado,skeletons,knight] elixir 3 wall=09:32:37.788
+[student] TAP slot 2 skeletons cell 238 wall=09:32:38.153
+[student] TRAY first +0.22s tapped slot 2 meant skeletons before [ice_wizard,tornado,skeletons,knight] now [ice_wizard,tornado,?,knight] slot_now ? elixir 3->2 wall=09:32:38.378
+[student] TRAY settled +0.54s tapped slot 2 meant skeletons before [ice_wizard,tornado,skeletons,knight] now [ice_wizard,tornado,?,knight] slot_now ? elixir 3->3 wall=09:32:38.691
+[student] PLAY knight p=0.32 cell 238 board (0.25, 0.55) units 2 29 ms tap [ice_wizard,tornado,?,knight] hand [ice_wizard,tornado,rocket,knight] elixir 3 wall=09:32:39.647
+[student] TAP slot 3 knight cell 238 wall=09:32:39.998
+[student] TRAY first +0.28s tapped slot 3 meant knight before [ice_wizard,tornado,rocket,knight] now [ice_wizard,tornado,rocket,?] slot_now ? elixir 3->3 wall=09:32:40.274
+[student] TRAY settled +0.60s tapped slot 3 meant knight before [ice_wizard,tornado,rocket,knight] now [tornado,tornado,rocket,?] slot_now ? elixir 3->0 wall=09:32:40.599
+[student] PLAY ice_wizard p=0.45 cell 239 board (0.31, 0.55) units 3 26 ms tap [ice_wizard,tornado,?,?] hand [ice_wizard,tornado,rocket,tesla] elixir 3 wall=09:32:46.867
+[student] TAP slot 0 ice_wizard cell 239 wall=09:32:47.212
+[student] TRAY first +0.26s tapped slot 0 meant ice_wizard before [ice_wizard,tornado,rocket,tesla] now [?,tornado,rocket,tesla] slot_now ? elixir 3->3 wall=09:32:47.468
+[student] TRAY settled +1.10s tapped slot 0 meant ice_wizard before [ice_wizard,tornado,rocket,tesla] now [?,tornado,rocket,tesla] slot_now ? elixir 3->0 wall=09:32:48.314
+[student] WAIT p=0.14 elixir 3 opp~? units 1 dets 1 (waits 453/574 badhand 146/751) tap [the_log,tornado,?,?] wall=09:32:55.631
+[student] WAIT | exact=0 opp=? next=3 t=45s hand=[6, 0, 4, 164] tw=1.00.71.01.01.01.0 sp=0 unk=0 p=0.03 elixir 5 opp~? units 0 dets 0 (waits 463/584 badhand 146/761) tap [the_log,tornado,?,tesla] wall=09:33:02.783
+[student] PLAY rocket p=0.35 cell 113 board (0.31, 0.27) units 1 32 ms tap [the_log,tornado,rocket,tesla] hand [the_log,tornado,rocket,tesla] elixir 8 wall=09:33:09.267
+[student] TAP slot 2 rocket cell 112 wall=09:33:09.657
+[student] TRAY first +0.26s tapped slot 2 meant rocket before [the_log,tornado,rocket,tesla] now [the_log,tornado,?,tesla] slot_now ? elixir 8->5 wall=09:33:09.919
+[student] TRAY settled +0.62s tapped slot 2 meant rocket before [the_log,tornado,rocket,tesla] now [the_log,tornado,?,tesla] slot_now ? elixir 8->2 wall=09:33:10.282
+[student] WAIT | exact=0 opp=? next=3 t=52s hand=[6, 0, -1, 164] tw=1.00.71.01.01.01.0 sp=0 unk=0 p=0.01 elixir 2 opp~? units 0 dets 0 (waits 473/595 badhand 148/772) tap [the_log,?,?,?] wall=09:33:10.337
+[student] WAIT p=0.08 elixir 4 opp~? units 1 dets 1 (waits 483/605 badhand 150/782) tap [the_log,tornado,?,tesla] wall=09:33:16.004
+[student] PLAY tesla p=0.27 cell 297 board (0.5, 0.69) units 2 19 ms tap [the_log,tornado,?,tesla] hand [the_log,tornado,x_bow,tesla] elixir 5 wall=09:33:18.804
+[student] TAP slot 3 tesla cell 297 wall=09:33:19.179
+[student] TRAY first +0.26s tapped slot 3 meant tesla before [the_log,tornado,x_bow,tesla] now [the_log,tornado,tesla,?] slot_now ? elixir 5->4 wall=09:33:19.435
+[student] TRAY settled +0.58s tapped slot 3 meant tesla before [the_log,tornado,x_bow,tesla] now [the_log,tornado,tesla,?] slot_now ? elixir 5->1 wall=09:33:19.755
+[student] PLAY skeletons p=0.52 cell 237 board (0.19, 0.55) units 4 35 ms tap [the_log,?,?,skeletons] hand [the_log,tornado,tesla_evo,skeletons] elixir 2 wall=09:33:20.629
+[student] TAP slot 3 skeletons cell 237 wall=09:33:20.985
+[student] TRAY first +0.26s tapped slot 3 meant skeletons before [the_log,tornado,tesla_evo,skeletons] now [the_log,tornado,ice_wizard,?] slot_now ? elixir 2->1 wall=09:33:21.245
+[student] TRAY settled +0.58s tapped slot 3 meant skeletons before [the_log,tornado,tesla_evo,skeletons] now [the_log,tornado,ice_wizard,?] slot_now ? elixir 2->1 wall=09:33:21.562
+[student] PLAY the_log p=0.81 cell 345 board (0.19, 0.83) units 4 23 ms tap [the_log,?,?,?] hand [the_log,tornado,ice_wizard,knight] elixir 2 wall=09:33:25.466
+[student] TAP slot 0 the_log cell 381 wall=09:33:25.817
+[student] TRAY first +0.23s tapped slot 0 meant the_log before [the_log,tornado,ice_wizard,knight] now [?,tornado,ice_wizard,knight] slot_now ? elixir 2->2 wall=09:33:26.048
+[student] TRAY settled +1.01s tapped slot 0 meant the_log before [the_log,tornado,ice_wizard,knight] now [?,tornado,ice_wizard,knight] slot_now ? elixir 2->1 wall=09:33:26.829
+[student] WAIT NO-TRAY-MATCH p=0.15 elixir 2 opp~? units 1 dets 2 (waits 488/613 badhand 151/795) tap [?,?,?,?] wall=09:33:29.330
+[student] PLAY knight p=0.77 cell 309 board (0.19, 0.73) units 1 24 ms tap [?,tornado,?,knight] hand [ice_wizard,tornado,ice_wizard,knight] elixir 3 wall=09:33:31.807
+[student] TAP slot 3 knight cell 255 wall=09:33:32.160
+[student] TRAY first +0.27s tapped slot 3 meant knight before [ice_wizard,tornado,ice_wizard,knight] now [tornado,tornado,x_bow,?] slot_now ? elixir 3->3 wall=09:33:32.428
+[student] TRAY settled +0.88s tapped slot 3 meant knight before [ice_wizard,tornado,ice_wizard,knight] now [ice_wizard,tornado,?,?] slot_now ? elixir 3->0 wall=09:33:33.045
+[student] WAIT p=0.16 elixir 4 opp~? units 2 dets 3 (waits 493/619 badhand 152/806) tap [ice_wizard,tornado,?,?] wall=09:33:43.367
+[student] WAIT p=0.18 elixir 6 opp~? units 1 dets 2 (waits 503/629 badhand 152/816) tap [ice_wizard,tornado,x_bow,rocket] wall=09:33:50.747
+[student] PLAY x_bow p=0.38 cell 254 board (0.14, 0.61) units 1 21 ms tap [ice_wizard,tornado,x_bow,rocket] hand [ice_wizard,tornado,x_bow,rocket] elixir 8 wall=09:33:54.473
+[student] TAP slot 2 x_bow cell 218 wall=09:33:54.848
+[student] TRAY first +0.28s tapped slot 2 meant x_bow before [ice_wizard,tornado,x_bow,rocket] now [ice_wizard,tornado,?,rocket] slot_now ? elixir 8->5 wall=09:33:55.129
+[student] TRAY settled +1.06s tapped slot 2 meant x_bow before [ice_wizard,tornado,x_bow,rocket] now [ice_wizard,tornado,?,rocket] slot_now ? elixir 8->2 wall=09:33:55.906
+[student] PLAY tornado p=0.48 cell 80 board (0.47, 0.2) units 2 22 ms tap [ice_wizard,tornado,?,?] hand [ice_wizard,tornado,tesla,rocket] elixir 3 wall=09:33:57.491
+[student] TAP slot 1 tornado cell 80 wall=09:33:57.852
+[student] TRAY first +0.25s tapped slot 1 meant tornado before [ice_wizard,tornado,tesla,rocket] now [tornado,?,tesla,rocket] slot_now ? elixir 3->3 wall=09:33:58.105
+[student] TRAY settled +1.36s tapped slot 1 meant tornado before [ice_wizard,tornado,tesla,rocket] now [tornado,?,tesla,rocket] slot_now ? elixir 3->0 wall=09:33:59.211
+[student] PLAY skeletons p=0.27 cell 238 board (0.25, 0.55) units 1 23 ms tap [?,skeletons,?,?] hand [ice_wizard,skeletons,tesla,rocket] elixir 1 wall=09:34:01.525
+[student] TAP slot 1 skeletons cell 238 wall=09:34:01.882
+[student] TRAY first +1.02s tapped slot 1 meant skeletons before [ice_wizard,skeletons,tesla,rocket] now [tornado,?,tesla,rocket] slot_now ? elixir 1->1 wall=09:34:02.904
+[student] PLAY the_log p=0.66 cell 309 board (0.19, 0.73) units 4 29 ms tap [?,the_log,?,?] hand [ice_wizard,the_log,tesla,rocket] elixir 2 wall=09:34:07.640
+[student] TAP slot 1 the_log cell 326 wall=09:34:08.004
+[student] TRAY first +1.03s tapped slot 1 meant the_log before [ice_wizard,the_log,tesla,rocket] now [ice_wizard,?,tesla,rocket] slot_now ? elixir 2->1 wall=09:34:09.038
+[clock] icon reads x3 but the clock reads x1 -> using the clock (x1)
+[student] WAIT p=0.15 elixir 4 opp~? units 1 dets 2 (waits 511/641 badhand 154/830) tap [ice_wizard,knight_evo,tesla,?] wall=09:34:16.352
+[student] PLAY ice_wizard p=0.30 cell 309 board (0.19, 0.73) units 1 22 ms tap [ice_wizard,knight_evo,tesla,?] hand [ice_wizard,knight_evo,tesla,rocket] elixir 4 wall=09:34:17.080
+[student] TAP slot 0 ice_wizard cell 255 wall=09:34:17.419
+[student] TRAY first +0.71s tapped slot 0 meant ice_wizard before [ice_wizard,knight_evo,tesla,rocket] now [?,knight_evo,tesla,rocket] slot_now ? elixir 4->3 wall=09:34:18.124
+[clock] icon reads x3 but the clock reads x2 -> using the clock (x2)
+09:34:18 [play] elixir x2
+[student] PLAY knight_evo p=0.37 cell 237 board (0.19, 0.55) units 1 25 ms tap [?,knight_evo,tesla,?] hand [x_bow,knight_evo,tesla,rocket] elixir 4 wall=09:34:20.556
+[student] TAP slot 1 knight_evo cell 237 wall=09:34:20.896
+[student] TRAY first +0.59s tapped slot 1 meant knight_evo before [x_bow,knight_evo,tesla,rocket] now [the_log,?,tesla,rocket] slot_now ? elixir 4->3 wall=09:34:21.490
+[student] PLAY tornado p=0.34 cell 84 board (0.69, 0.17) units 3 26 ms tap [?,tornado,?,?] hand [ice_wizard,tornado,tesla,rocket] elixir 3 wall=09:34:23.082
+[student] TAP slot 1 tornado cell 84 wall=09:34:23.435
+[student] TRAY first +0.75s tapped slot 1 meant tornado before [ice_wizard,tornado,tesla,rocket] now [ice_wizard,?,tesla,rocket] slot_now ? elixir 3->3 wall=09:34:24.187
+[student] WAIT p=0.25 elixir 3 opp~? units 3 dets 4 (waits 517/650 badhand 159/843) tap [?,skeletons,?,?] wall=09:34:27.974
+[student] PLAY rocket p=0.27 cell 194 board (0.81, 0.42) units 2 28 ms tap [x_bow,skeletons,tesla,rocket] hand [x_bow,skeletons,tesla,rocket] elixir 6 wall=09:34:31.758
+[student] TAP slot 3 rocket cell 194 wall=09:34:32.134
+[student] TRAY first +0.66s tapped slot 3 meant rocket before [x_bow,skeletons,tesla,rocket] now [ice_wizard,skeletons,tesla,?] slot_now ? elixir 6->5 wall=09:34:32.790
+[student] PLAY skeletons p=0.46 cell 248 board (0.81, 0.55) units 4 24 ms tap [?,skeletons,?,?] hand [ice_wizard,skeletons,tesla,?] elixir 5 wall=09:34:32.871
+[student] TAP slot 1 skeletons cell 248 wall=09:34:33.212
+[student] TRAY first +0.72s tapped slot 1 meant skeletons before [ice_wizard,skeletons,tesla,?] now [tornado,?,?,ice_wizard] slot_now ? elixir 5->1 wall=09:34:33.936
+[student] PLAY the_log p=0.55 cell 247 board (0.75, 0.55) units 4 32 ms tap [?,?,?,the_log] hand [ice_wizard,ice_wizard,tesla,the_log] elixir 3 wall=09:34:37.257
+[student] TAP slot 3 the_log cell 243 wall=09:34:37.599
+[student] TRAY first +0.58s tapped slot 3 meant the_log before [ice_wizard,ice_wizard,tesla,the_log] now [the_log,ice_wizard,tesla,?] slot_now ? elixir 3->2 wall=09:34:38.177
+[student] PLAY knight p=0.34 cell 248 board (0.81, 0.55) units 4 29 ms tap [?,?,?,knight] hand [ice_wizard,ice_wizard,tesla,knight] elixir 3 wall=09:34:39.511
+[student] TAP slot 3 knight cell 248 wall=09:34:39.845
+[student] TRAY first +0.28s tapped slot 3 meant knight before [ice_wizard,ice_wizard,tesla,knight] now [tornado,ice_wizard,tesla,?] slot_now ? elixir 3->3 wall=09:34:40.125
+[student] TRAY settled +0.89s tapped slot 3 meant knight before [ice_wizard,ice_wizard,tesla,knight] now [ice_wizard,ice_wizard,tesla,?] slot_now ? elixir 3->1 wall=09:34:40.738
+[student] WAIT NO-TRAY-MATCH p=0.06 elixir 2 opp~? units 6 dets 8 (waits 521/658 badhand 163/857) tap [?,?,?,?] wall=09:34:42.519
+[student] PLAY tornado p=0.65 cell 157 board (0.75, 0.36) units 4 17 ms tap [?,?,?,tornado] hand [ice_wizard,ice_wizard,tesla,tornado] elixir 3 wall=09:34:43.555
+[student] TAP slot 3 tornado cell 157 wall=09:34:43.884
+[student] TRAY first +0.29s tapped slot 3 meant tornado before [ice_wizard,ice_wizard,tesla,tornado] now [tornado,ice_wizard,tesla,?] slot_now ? elixir 3->3 wall=09:34:44.177
+[student] TRAY settled +0.64s tapped slot 3 meant tornado before [ice_wizard,ice_wizard,tesla,tornado] now [tornado,tornado,tesla,?] slot_now ? elixir 3->0 wall=09:34:44.519
+[student] PLAY ice_wizard p=0.80 cell 336 board (0.69, 0.77) units 6 28 ms tap [?,ice_wizard,tesla,?] hand [x_bow,ice_wizard,tesla,rocket] elixir 4 wall=09:34:49.794
+[student] TAP slot 1 ice_wizard cell 336 wall=09:34:50.143
+[student] TRAY first +0.30s tapped slot 1 meant ice_wizard before [x_bow,ice_wizard,tesla,rocket] now [the_log,?,tesla,rocket] slot_now ? elixir 4->3 wall=09:34:50.444
+[student] TRAY settled +0.97s tapped slot 1 meant ice_wizard before [x_bow,ice_wizard,tesla,rocket] now [the_log,?,tesla,rocket] slot_now ? elixir 4->2 wall=09:34:51.110
+[student] PLAY skeletons p=0.65 cell 364 board (0.25, 0.86) units 3 24 ms tap [?,skeletons,?,?] hand [ice_wizard,skeletons,tesla,rocket] elixir 2 wall=09:34:51.817
+[student] TAP slot 1 skeletons cell 364 wall=09:34:52.179
+[student] TRAY first +0.28s tapped slot 1 meant skeletons before [ice_wizard,skeletons,tesla,rocket] now [the_log,?,tesla,rocket] slot_now ? elixir 2->2 wall=09:34:52.457
+[student] TRAY settled +0.94s tapped slot 1 meant skeletons before [ice_wizard,skeletons,tesla,rocket] now [ice_wizard,?,tesla,rocket] slot_now ? elixir 2->2 wall=09:34:53.118
+[student] PLAY the_log p=0.66 cell 328 board (0.25, 0.77) units 5 16 ms tap [?,the_log,?,?] hand [ice_wizard,the_log,tesla,rocket] elixir 3 wall=09:34:54.366
+[student] TAP slot 1 the_log cell 370 wall=09:34:54.725
+[student] TRAY first +0.23s tapped slot 1 meant the_log before [ice_wizard,the_log,tesla,rocket] now [the_log,?,tesla,rocket] slot_now ? elixir 3->2 wall=09:34:54.958
+[student] TRAY settled +1.01s tapped slot 1 meant the_log before [ice_wizard,the_log,tesla,rocket] now [ice_wizard,?,tesla,rocket] slot_now ? elixir 3->2 wall=09:34:55.740
+[student] WAIT p=0.20 elixir 3 opp~? units 2 dets 3 (waits 522/663 badhand 168/871) tap [?,knight,?,?] wall=09:34:56.216
+[student] PLAY knight p=0.29 cell 332 board (0.47, 0.77) units 3 26 ms tap [?,knight,?,?] hand [ice_wizard,knight,tesla,rocket] elixir 3 wall=09:34:56.811
+[student] TAP slot 1 knight cell 332 wall=09:34:57.162
+[student] TRAY first +0.27s tapped slot 1 meant knight before [ice_wizard,knight,tesla,rocket] now [ice_wizard,?,tesla,rocket] slot_now ? elixir 3->3 wall=09:34:57.436
+[student] TRAY settled +0.85s tapped slot 1 meant knight before [ice_wizard,knight,tesla,rocket] now [ice_wizard,?,tesla,rocket] slot_now ? elixir 3->1 wall=09:34:58.010
+09:34:59 [play] UNKNOWN 0.4s after in-match -> grace hold (label lost: overtime / end animation / dropout; up to 150s)
+09:35:06 [play] state: MATCH_END
+[overlay-replay] saved C:\Users\benpe\ClashBot\icebow\data\overlayed_replays\match_20260912_093218.mp4 (8396 frames, captured 28.5 fps)
+09:35:06 [nav] MATCH_END -> Play Again (located) (0.348,0.914)
+09:35:07 [play] state: UNKNOWN
+09:35:13 [play] state: IN_MATCH
+[student] WAIT | exact=0 opp=? next=149 t=7s hand=[0, 2, 6, 3] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.00 elixir 9 opp~? units 0 dets 0 (waits 531/673 badhand 170/882) tap [tornado,ice_wizard,the_log,x_bow] wall=09:35:20.028
+[student] STALL-PLAY the_log p=0.15 cell 237 board (0.19, 0.55) units 1 22 ms tap [tornado,ice_wizard,the_log,x_bow] hand [tornado,ice_wizard,the_log,x_bow] elixir 10 wall=09:35:25.232
+[student] TAP slot 2 the_log cell 291 wall=09:35:25.603
+[student] TRAY first +0.25s tapped slot 2 meant the_log before [tornado,ice_wizard,the_log,x_bow] now [tornado,ice_wizard,?,x_bow] slot_now ? elixir 10->8 wall=09:35:25.856
+[student] TRAY settled +1.07s tapped slot 2 meant the_log before [tornado,ice_wizard,the_log,x_bow] now [tornado,ice_wizard,?,x_bow] slot_now ? elixir 10->8 wall=09:35:26.672
+[student] WAIT p=0.12 elixir 8 opp~? units 1 dets 2 (waits 541/684 badhand 173/893) tap [tornado,ice_wizard,?,x_bow] wall=09:35:27.347
+[student] WAIT | exact=0 opp=? next=4 t=22s hand=[0, 2, -1, 3] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.04 elixir 10 opp~? units 0 dets 0 (waits 551/694 badhand 183/903) tap [tornado,ice_wizard,?,x_bow] wall=09:35:34.885
+[student] STALL-PLAY x_bow p=0.05 cell 254 board (0.14, 0.61) units 0 15 ms tap [tornado,ice_wizard,?,x_bow] hand [tornado,ice_wizard,?,x_bow] elixir 10 wall=09:35:37.711
+[student] TAP slot 3 x_bow cell 218 wall=09:35:38.084
+[student] TRAY first +0.26s tapped slot 3 meant x_bow before [tornado,ice_wizard,?,x_bow] now [tornado,ice_wizard,?,?] slot_now ? elixir 10->6 wall=09:35:38.347
+[student] TRAY settled +1.07s tapped slot 3 meant x_bow before [tornado,ice_wizard,?,x_bow] now [tornado,ice_wizard,?,?] slot_now ? elixir 10->4 wall=09:35:39.149
+[student] PLAY tornado p=0.36 cell 147 board (0.19, 0.36) units 1 16 ms tap [tornado,ice_wizard,?,?] hand [tornado,ice_wizard,?,?] elixir 4 wall=09:35:39.198
+[student] TAP slot 0 tornado cell 147 wall=09:35:39.550
+[student] TRAY first +0.26s tapped slot 0 meant tornado before [tornado,ice_wizard,?,?] now [?,ice_wizard,?,rocket] slot_now ? elixir 4->3 wall=09:35:39.810
+[student] TRAY settled +0.56s tapped slot 0 meant tornado before [tornado,ice_wizard,?,?] now [?,ice_wizard,?,rocket] slot_now ? elixir 4->1 wall=09:35:40.114
+[student] WAIT p=0.19 elixir 2 opp~? units 2 dets 2 (waits 560/705 badhand 195/915) tap [skeletons,?,?,?] wall=09:35:43.398
+[student] PLAY skeletons p=0.36 cell 238 board (0.25, 0.55) units 3 23 ms tap [skeletons,?,?,?] hand [skeletons,ice_wizard,?,rocket] elixir 2 wall=09:35:45.067
+[student] TAP slot 0 skeletons cell 238 wall=09:35:45.438
+[student] TRAY first +0.25s tapped slot 0 meant skeletons before [skeletons,ice_wizard,?,rocket] now [?,ice_wizard,knight,rocket] slot_now ? elixir 2->2 wall=09:35:45.691
+[student] TRAY settled +0.56s tapped slot 0 meant skeletons before [skeletons,ice_wizard,?,rocket] now [?,ice_wizard,?,rocket] slot_now ? elixir 2->2 wall=09:35:46.002
+[student] PLAY ice_wizard p=0.34 cell 240 board (0.36, 0.55) units 4 19 ms tap [?,ice_wizard,?,?] hand [tesla,ice_wizard,?,rocket] elixir 3 wall=09:35:48.277
+[student] TAP slot 1 ice_wizard cell 240 wall=09:35:48.628
+[student] TRAY first +0.26s tapped slot 1 meant ice_wizard before [tesla,ice_wizard,?,rocket] now [tesla,?,tornado,rocket] slot_now ? elixir 3->3 wall=09:35:48.890
+[student] TRAY settled +0.61s tapped slot 1 meant ice_wizard before [tesla,ice_wizard,?,rocket] now [tesla,?,tornado,rocket] slot_now ? elixir 3->0 wall=09:35:49.236
+[student] PLAY the_log p=0.85 cell 363 board (0.19, 0.86) units 5 18 ms tap [?,the_log,?,?] hand [tesla,the_log,knight,rocket] elixir 2 wall=09:35:53.829
+[student] TAP slot 1 the_log cell 381 wall=09:35:54.169
+[student] TRAY first +0.28s tapped slot 1 meant the_log before [tesla,the_log,knight,rocket] now [tesla,?,tornado,rocket] slot_now ? elixir 2->1 wall=09:35:54.448
+[student] TRAY settled +1.08s tapped slot 1 meant the_log before [tesla,the_log,knight,rocket] now [tesla,?,tornado,rocket] slot_now ? elixir 2->0 wall=09:35:55.252
+[student] WAIT NO-TRAY-MATCH p=0.02 elixir 3 opp~? units 1 dets 1 (waits 563/711 badhand 201/928) tap [?,?,?,?] wall=09:36:01.980
+[student] PLAY tesla p=0.85 cell 295 board (0.39, 0.69) units 2 27 ms tap [tesla,?,?,?] hand [tesla,x_bow,?,rocket] elixir 4 wall=09:36:05.679
+[student] TAP slot 0 tesla cell 295 wall=09:36:06.040
+[student] TRAY first +0.25s tapped slot 0 meant tesla before [tesla,x_bow,?,rocket] now [?,tornado,tornado,rocket] slot_now ? elixir 4->4 wall=09:36:06.287
+[student] TRAY settled +0.64s tapped slot 0 meant tesla before [tesla,x_bow,?,rocket] now [?,tornado,tornado,rocket] slot_now ? elixir 4->0 wall=09:36:06.677
+[student] WAIT NO-TRAY-MATCH p=0.43 elixir 2 opp~? units 2 dets 3 (waits 563/712 badhand 202/939) tap [tornado,?,?,?] wall=09:36:13.124
+[student] PLAY tornado p=0.54 cell 332 board (0.47, 0.77) units 1 20 ms tap [tornado,?,?,?] hand [tornado,ice_wizard,?,rocket] elixir 3 wall=09:36:13.865
+[student] TAP slot 0 tornado cell 332 wall=09:36:14.233
+[student] TRAY first +0.28s tapped slot 0 meant tornado before [tornado,ice_wizard,?,rocket] now [?,x_bow,tornado,rocket] slot_now ? elixir 3->3 wall=09:36:14.511
+[student] TRAY settled +1.09s tapped slot 0 meant tornado before [tornado,ice_wizard,?,rocket] now [?,?,tornado,rocket] slot_now ? elixir 3->0 wall=09:36:15.324
+[student] WAIT p=0.13 elixir 3 opp~? units 0 dets 1 (waits 572/722 badhand 203/950) tap [skeletons,?,?,?] wall=09:36:21.703
+[student] WAIT | exact=0 opp=? next=2 t=76s hand=[7, 3, 149, 4] tw=1.00.0x1.01.01.01.0 sp=0 unk=0 p=0.03 elixir 5 opp~? units 0 dets 0 (waits 582/732 badhand 203/960) tap [skeletons,?,?,?] wall=09:36:29.219
+[student] PLAY skeletons p=0.55 cell 248 board (0.81, 0.55) units 1 29 ms tap [skeletons,?,?,?] hand [skeletons,x_bow,?,rocket] elixir 5 wall=09:36:29.585
+[student] TAP slot 0 skeletons cell 248 wall=09:36:29.931
+[student] TRAY first +0.25s tapped slot 0 meant skeletons before [skeletons,x_bow,?,rocket] now [?,x_bow,?,rocket] slot_now ? elixir 5->4 wall=09:36:30.179
+[student] TRAY settled +0.99s tapped slot 0 meant skeletons before [skeletons,x_bow,?,rocket] now [?,x_bow,?,rocket] slot_now ? elixir 5->5 wall=09:36:30.918
+[student] PLAY ice_wizard p=0.55 cell 250 board (0.92, 0.55) units 3 20 ms tap [ice_wizard,?,?,?] hand [ice_wizard,x_bow,?,rocket] elixir 5 wall=09:36:31.735
+[student] TAP slot 0 ice_wizard cell 250 wall=09:36:32.085
+[student] TRAY first +0.25s tapped slot 0 meant ice_wizard before [ice_wizard,x_bow,?,rocket] now [?,the_log,?,rocket] slot_now ? elixir 5->3 wall=09:36:32.339
+[student] TRAY settled +0.62s tapped slot 0 meant ice_wizard before [ice_wizard,x_bow,?,rocket] now [?,the_log,?,rocket] slot_now ? elixir 5->2 wall=09:36:32.702
+[student] WAIT p=0.18 elixir 4 opp~? units 1 dets 3 (waits 589/741 badhand 206/972) tap [the_log,?,?,?] wall=09:36:37.999
+[student] PLAY the_log p=0.32 cell 248 board (0.81, 0.55) units 1 15 ms tap [the_log,?,?,?] hand [the_log,x_bow,?,rocket] elixir 5 wall=09:36:40.909
+[student] TAP slot 0 the_log cell 248 wall=09:36:41.260
+[student] TRAY first +0.27s tapped slot 0 meant the_log before [the_log,x_bow,?,rocket] now [?,x_bow,?,rocket] slot_now ? elixir 5->4 wall=09:36:41.533
+[student] TRAY settled +0.57s tapped slot 0 meant the_log before [the_log,x_bow,?,rocket] now [?,x_bow,?,rocket] slot_now ? elixir 5->4 wall=09:36:41.826
+[student] PLAY tesla p=0.75 cell 279 board (0.5, 0.66) units 1 27 ms tap [tesla,?,?,?] hand [tesla,x_bow,?,rocket] elixir 4 wall=09:36:43.089
+[student] TAP slot 0 tesla cell 279 wall=09:36:43.462
+[student] TRAY first +0.27s tapped slot 0 meant tesla before [tesla,x_bow,?,rocket] now [?,?,tornado,rocket] slot_now ? elixir 4->4 wall=09:36:43.736
+[student] TRAY settled +0.63s tapped slot 0 meant tesla before [tesla,x_bow,?,rocket] now [?,?,?,rocket] slot_now ? elixir 4->0 wall=09:36:44.089
+[student] WAIT NO-TRAY-MATCH p=0.12 elixir 2 opp~? units 3 dets 3 (waits 595/749 badhand 207/984) tap [?,?,?,?] wall=09:36:48.251
+[student] PLAY tornado p=0.84 cell 350 board (0.47, 0.83) units 3 27 ms tap [tornado,?,?,?] hand [tornado,ice_wizard,?,rocket] elixir 3 wall=09:36:50.512
+[student] TAP slot 0 tornado cell 350 wall=09:36:50.867
+[student] TRAY first +0.27s tapped slot 0 meant tornado before [tornado,ice_wizard,?,rocket] now [?,x_bow,tornado,rocket] slot_now ? elixir 3->3 wall=09:36:51.137
+[student] TRAY settled +0.89s tapped slot 0 meant tornado before [tornado,ice_wizard,?,rocket] now [?,tornado,tornado,rocket] slot_now ? elixir 3->0 wall=09:36:51.762
+[student] WAIT p=0.21 elixir 2 opp~? units 1 dets 2 (waits 601/756 badhand 208/995) tap [skeletons,?,?,?] wall=09:36:58.686
+[student] PLAY skeletons p=0.85 cell 374 board (0.81, 0.86) units 4 17 ms tap [skeletons,?,?,?] hand [skeletons,ice_wizard,?,rocket] elixir 3 wall=09:36:59.808
+[student] TAP slot 0 skeletons cell 374 wall=09:37:00.183
+[student] TRAY first +1.05s tapped slot 0 meant skeletons before [skeletons,ice_wizard,?,rocket] now [?,the_log,?,rocket] slot_now ? elixir 3->1 wall=09:37:01.229
+[student] PLAY ice_wizard p=0.35 cell 319 board (0.75, 0.73) units 2 26 ms tap [ice_wizard,?,?,?] hand [ice_wizard,x_bow,?,rocket] elixir 4 wall=09:37:06.336
+[student] TAP slot 0 ice_wizard cell 265 wall=09:37:06.681
+[student] TRAY first +0.92s tapped slot 0 meant ice_wizard before [ice_wizard,x_bow,?,rocket] now [?,the_log,knight,rocket] slot_now ? elixir 4->3 wall=09:37:07.603
+[clock] icon reads x3 but the clock reads x1 -> using the clock (x1)
+[student] WAIT | exact=0 opp=? next=164 t=120s hand=[6, 3, 149, 4] tw=1.00.0x0.0x1.01.01.0 sp=0 unk=0 p=0.04 elixir 5 opp~? units 2 dets 2 (waits 608/765 badhand 211/1007) tap [the_log,?,?,?] wall=09:37:12.947
+[clock] icon reads x3 but the clock reads x2 -> using the clock (x2)
+09:37:13 [play] elixir x2
+[student] PLAY x_bow p=0.40 cell 254 board (0.14, 0.61) units 1 24 ms tap [the_log,x_bow,?,rocket] hand [the_log,x_bow,?,rocket] elixir 8 wall=09:37:16.664
+[student] TAP slot 1 x_bow cell 218 wall=09:37:17.027
+[student] TRAY first +0.73s tapped slot 1 meant x_bow before [the_log,x_bow,?,rocket] now [the_log,?,?,rocket] slot_now ? elixir 8->5 wall=09:37:17.753
+[student] PLAY the_log p=0.70 cell 236 board (0.14, 0.55) units 1 15 ms tap [the_log,?,?,?] hand [the_log,?,?,rocket] elixir 5 wall=09:37:17.828
+[student] TAP slot 0 the_log cell 236 wall=09:37:18.204
+[student] TRAY first +0.70s tapped slot 0 meant the_log before [the_log,?,?,rocket] now [?,?,?,rocket] slot_now ? elixir 5->1 wall=09:37:18.906
+[student] PLAY tornado p=0.45 cell 194 board (0.81, 0.45) units 2 16 ms tap [tornado,?,?,?] hand [tornado,tesla,?,rocket] elixir 3 wall=09:37:21.211
+[student] TAP slot 0 tornado cell 194 wall=09:37:21.568
+[student] TRAY first +0.71s tapped slot 0 meant tornado before [tornado,tesla,?,rocket] now [?,?,?,rocket] slot_now ? elixir 3->3 wall=09:37:22.283
+[student] PLAY skeletons p=0.78 cell 237 board (0.19, 0.55) units 3 19 ms tap [skeletons,?,?,?] hand [skeletons,?,knight,rocket] elixir 2 wall=09:37:23.720
+[student] TAP slot 0 skeletons cell 237 wall=09:37:24.065
+[student] TRAY first +0.73s tapped slot 0 meant skeletons before [skeletons,?,knight,rocket] now [?,?,?,rocket] slot_now ? elixir 2->1 wall=09:37:24.793
+[student] PLAY ice_wizard p=0.89 cell 236 board (0.14, 0.55) units 5 19 ms tap [ice_wizard,?,?,?] hand [ice_wizard,?,?,rocket] elixir 3 wall=09:37:27.090
+[student] TAP slot 0 ice_wizard cell 236 wall=09:37:27.444
+[student] TRAY first +0.69s tapped slot 0 meant ice_wizard before [ice_wizard,?,?,rocket] now [?,tesla,?,rocket] slot_now ? elixir 3->3 wall=09:37:28.129
+[student] PLAY tesla_evo p=0.62 cell 296 board (0.44, 0.69) units 3 16 ms tap [?,tesla_evo,?,?] hand [x_bow,tesla_evo,?,rocket] elixir 5 wall=09:37:33.487
+[student] TAP slot 1 tesla_evo cell 296 wall=09:37:33.827
+[student] TRAY first +0.30s tapped slot 1 meant tesla_evo before [x_bow,tesla_evo,?,rocket] now [tesla,?,?,rocket] slot_now ? elixir 5->4 wall=09:37:34.129
+[student] TRAY settled +0.69s tapped slot 1 meant tesla_evo before [x_bow,tesla_evo,?,rocket] now [the_log,?,knight,rocket] slot_now ? elixir 5->2 wall=09:37:34.513
+[student] WAIT NO-TRAY-MATCH p=0.26 elixir 2 opp~? units 3 dets 3 (waits 613/776 badhand 215/1023) tap [?,?,?,?] wall=09:37:35.224
+[student] PLAY the_log p=0.34 cell 237 board (0.19, 0.55) units 2 15 ms tap [?,the_log,?,?] hand [ice_wizard,the_log,?,rocket] elixir 3 wall=09:37:35.994
+[student] TAP slot 1 the_log cell 364 wall=09:37:36.343
+[student] TRAY first +0.27s tapped slot 1 meant the_log before [ice_wizard,the_log,?,rocket] now [tesla,?,?,rocket] slot_now ? elixir 3->1 wall=09:37:36.616
+[student] TRAY settled +0.99s tapped slot 1 meant the_log before [ice_wizard,the_log,?,rocket] now [the_log,?,knight,rocket] slot_now ? elixir 3->2 wall=09:37:37.337
+[student] PLAY tornado p=0.82 cell 242 board (0.47, 0.55) units 5 40 ms tap [?,tornado,?,?] hand [ice_wizard,tornado,?,rocket] elixir 3 wall=09:37:38.921
+[assist] TORNADO king-spot cell 242->333 trigger prince at (0.61,0.65) enemy tracks 9 wall=09:37:38.922
+[student] TAP slot 1 tornado cell 333 wall=09:37:39.290
+[student] TRAY first +0.26s tapped slot 1 meant tornado before [ice_wizard,tornado,?,rocket] now [tornado,?,tornado,rocket] slot_now ? elixir 3->3 wall=09:37:39.546
+[student] TRAY settled +0.61s tapped slot 1 meant tornado before [ice_wizard,tornado,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 3->0 wall=09:37:39.904
+[student] PLAY skeletons p=0.39 cell 330 board (0.36, 0.77) units 2 16 ms tap [?,skeletons,?,?] hand [ice_wizard,skeletons,?,rocket] elixir 2 wall=09:37:42.857
+[student] TAP slot 1 skeletons cell 330 wall=09:37:43.198
+[student] TRAY first +0.31s tapped slot 1 meant skeletons before [ice_wizard,skeletons,?,rocket] now [the_log,?,?,rocket] slot_now ? elixir 2->2 wall=09:37:43.504
+[student] TRAY settled +0.66s tapped slot 1 meant skeletons before [ice_wizard,skeletons,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 2->2 wall=09:37:43.859
+09:37:45 [play] UNKNOWN 0.4s after in-match -> grace hold (label lost: overtime / end animation / dropout; up to 150s)
+09:37:52 [play] state: MATCH_END
+[overlay-replay] saved C:\Users\benpe\ClashBot\icebow\data\overlayed_replays\match_20260912_093513.mp4 (7952 frames, captured 29.5 fps)
+09:37:52 [nav] MATCH_END -> Play Again (located) (0.348,0.914)
+09:37:52 [play] state: UNKNOWN
+09:37:59 [play] state: IN_MATCH
+[student] WAIT | exact=0 opp=? next=0 t=2s hand=[3, 7, 2, 4] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.01 elixir 7 opp~? units 0 dets 0 (waits 618/784 badhand 220/1036) tap [x_bow,skeletons,ice_wizard,rocket] wall=09:38:00.754
+[student] WAIT p=0.20 elixir 10 opp~? units 0 dets 0 (waits 628/794 badhand 220/1046) tap [x_bow,skeletons,ice_wizard,rocket] wall=09:38:08.237
+[student] PLAY x_bow p=0.46 cell 254 board (0.14, 0.61) units 1 27 ms tap [x_bow,skeletons,ice_wizard,rocket] hand [x_bow,skeletons,ice_wizard,rocket] elixir 10 wall=09:38:10.908
+[student] TAP slot 0 x_bow cell 218 wall=09:38:11.247
+[student] TRAY first +0.29s tapped slot 0 meant x_bow before [x_bow,skeletons,ice_wizard,rocket] now [?,skeletons,ice_wizard,rocket] slot_now ? elixir 10->5 wall=09:38:11.541
+[student] TRAY settled +1.11s tapped slot 0 meant x_bow before [x_bow,skeletons,ice_wizard,rocket] now [?,skeletons,ice_wizard,rocket] slot_now ? elixir 10->4 wall=09:38:12.360
+[student] WAIT | exact=0 opp=? next=149 t=17s hand=[0, 7, 2, 4] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.03 elixir 5 opp~? units 2 dets 2 (waits 638/805 badhand 222/1057) tap [tornado,skeletons,ice_wizard,?] wall=09:38:16.279
+[student] PLAY tornado p=0.47 cell 147 board (0.19, 0.36) units 3 15 ms tap [tornado,skeletons,ice_wizard,rocket] hand [tornado,skeletons,ice_wizard,rocket] elixir 6 wall=09:38:21.005
+[student] TAP slot 0 tornado cell 147 wall=09:38:21.353
+[student] TRAY first +0.26s tapped slot 0 meant tornado before [tornado,skeletons,ice_wizard,rocket] now [?,skeletons,ice_wizard,rocket] slot_now ? elixir 6->4 wall=09:38:21.610
+[student] TRAY settled +1.01s tapped slot 0 meant tornado before [tornado,skeletons,ice_wizard,rocket] now [?,skeletons,ice_wizard,rocket] slot_now ? elixir 6->4 wall=09:38:22.365
+[student] PLAY skeletons p=0.70 cell 238 board (0.25, 0.55) units 3 28 ms tap [?,skeletons,ice_wizard,?] hand [?,skeletons,ice_wizard,rocket] elixir 4 wall=09:38:22.452
+[student] TAP slot 1 skeletons cell 238 wall=09:38:22.807
+[student] TRAY first +0.28s tapped slot 1 meant skeletons before [?,skeletons,ice_wizard,rocket] now [knight,?,ice_wizard,rocket] slot_now ? elixir 4->3 wall=09:38:23.091
+[student] TRAY settled +0.67s tapped slot 1 meant skeletons before [?,skeletons,ice_wizard,rocket] now [knight,?,ice_wizard,rocket] slot_now ? elixir 4->3 wall=09:38:23.474
+[student] PLAY knight p=0.29 cell 238 board (0.25, 0.55) units 4 16 ms tap [knight,?,ice_wizard,?] hand [knight,?,ice_wizard,rocket] elixir 3 wall=09:38:23.932
+[student] TAP slot 0 knight cell 238 wall=09:38:24.263
+[student] TRAY first +0.31s tapped slot 0 meant knight before [knight,?,ice_wizard,rocket] now [?,the_log,ice_wizard,rocket] slot_now ? elixir 3->4 wall=09:38:24.577
+[student] WAIT NO-TRAY-MATCH p=0.92 elixir 4 opp~? units 5 dets 5 (waits 647/817 badhand 228/1070) tap [?,?,?,?] wall=09:38:24.654
+[student] TRAY settled +0.66s tapped slot 0 meant knight before [knight,?,ice_wizard,rocket] now [?,the_log,ice_wizard,rocket] slot_now ? elixir 3->1 wall=09:38:24.926
+[student] PLAY the_log p=0.41 cell 284 board (0.81, 0.64) units 5 18 ms tap [?,the_log,?,?] hand [tesla,the_log,ice_wizard,rocket] elixir 2 wall=09:38:29.350
+[student] TAP slot 1 the_log cell 284 wall=09:38:29.680
+[student] TRAY first +0.30s tapped slot 1 meant the_log before [tesla,the_log,ice_wizard,rocket] now [tesla,?,ice_wizard,rocket] slot_now ? elixir 2->1 wall=09:38:29.979
+[student] TRAY settled +0.91s tapped slot 1 meant the_log before [tesla,the_log,ice_wizard,rocket] now [tesla,?,ice_wizard,rocket] slot_now ? elixir 2->1 wall=09:38:30.592
+[student] WAIT NO-TRAY-MATCH p=0.80 elixir 3 opp~? units 2 dets 2 (waits 651/822 badhand 228/1081) tap [?,?,?,?] wall=09:38:36.545
+[student] PLAY ice_wizard p=0.65 cell 323 board (0.97, 0.73) units 1 28 ms tap [?,?,ice_wizard,?] hand [tesla,tesla,ice_wizard,rocket] elixir 3 wall=09:38:37.441
+[student] TAP slot 2 ice_wizard cell 323 wall=09:38:37.777
+[student] TRAY first +0.28s tapped slot 2 meant ice_wizard before [tesla,tesla,ice_wizard,rocket] now [tesla,?,?,rocket] slot_now ? elixir 3->3 wall=09:38:38.053
+[student] TRAY settled +0.59s tapped slot 2 meant ice_wizard before [tesla,tesla,ice_wizard,rocket] now [tesla,?,?,rocket] slot_now ? elixir 3->1 wall=09:38:38.364
+[student] PLAY tornado p=0.92 cell 247 board (0.75, 0.55) units 2 17 ms tap [?,?,tornado,?] hand [tesla,ice_wizard,tornado,rocket] elixir 3 wall=09:38:43.999
+[student] TAP slot 2 tornado cell 247 wall=09:38:44.364
+[student] TRAY first +0.25s tapped slot 2 meant tornado before [tesla,ice_wizard,tornado,rocket] now [tesla,x_bow,?,rocket] slot_now ? elixir 3->3 wall=09:38:44.617
+[student] TRAY settled +0.58s tapped slot 2 meant tornado before [tesla,ice_wizard,tornado,rocket] now [tesla,tornado,?,rocket] slot_now ? elixir 3->0 wall=09:38:44.943
+[student] PLAY skeletons p=0.61 cell 242 board (0.47, 0.55) units 1 20 ms tap [?,?,skeletons,?] hand [tesla,?,skeletons,rocket] elixir 1 wall=09:38:46.530
+[student] TAP slot 2 skeletons cell 242 wall=09:38:46.892
+[student] TRAY first +0.30s tapped slot 2 meant skeletons before [tesla,?,skeletons,rocket] now [tesla,x_bow,?,rocket] slot_now ? elixir 1->1 wall=09:38:47.194
+[student] TRAY settled +0.67s tapped slot 2 meant skeletons before [tesla,?,skeletons,rocket] now [tesla,x_bow,?,rocket] slot_now ? elixir 1->0 wall=09:38:47.562
+[student] WAIT NO-TRAY-MATCH p=0.31 elixir 2 opp~? units 2 dets 3 (waits 651/825 badhand 233/1094) tap [?,?,?,?] wall=09:38:54.649
+[student] PLAY tesla p=0.72 cell 247 board (0.72, 0.56) units 2 22 ms tap [tesla,?,?,?] hand [tesla,x_bow,?,rocket] elixir 4 wall=09:38:58.312
+[student] TAP slot 0 tesla cell 247 wall=09:38:58.683
+[student] TRAY first +0.26s tapped slot 0 meant tesla before [tesla,x_bow,?,rocket] now [?,x_bow,tornado,rocket] slot_now ? elixir 4->4 wall=09:38:58.946
+[student] TRAY settled +0.86s tapped slot 0 meant tesla before [tesla,x_bow,?,rocket] now [?,tornado,tornado,rocket] slot_now ? elixir 4->0 wall=09:38:59.542
+[student] WAIT p=0.13 elixir 3 opp~? units 2 dets 2 (waits 654/829 badhand 237/1105) tap [the_log,?,?,?] wall=09:39:07.894
+[student] PLAY the_log p=0.28 cell 248 board (0.81, 0.55) units 2 32 ms tap [the_log,?,?,?] hand [the_log,x_bow,?,rocket] elixir 5 wall=09:39:11.996
+[student] TAP slot 0 the_log cell 248 wall=09:39:12.346
+[student] TRAY first +0.24s tapped slot 0 meant the_log before [the_log,x_bow,?,rocket] now [?,ice_wizard,?,rocket] slot_now ? elixir 5->2 wall=09:39:12.585
+[student] TRAY settled +1.08s tapped slot 0 meant the_log before [the_log,x_bow,?,rocket] now [?,ice_wizard,?,rocket] slot_now ? elixir 5->3 wall=09:39:13.427
+[student] WAIT p=0.07 elixir 4 opp~? units 2 dets 2 (waits 663/839 badhand 238/1116) tap [ice_wizard,?,?,?] wall=09:39:17.156
+[student] PLAY x_bow p=0.38 cell 267 board (0.86, 0.61) units 2 29 ms tap [ice_wizard,x_bow,?,rocket] hand [ice_wizard,x_bow,?,rocket] elixir 7 wall=09:39:23.275
+[student] TAP slot 1 x_bow cell 231 wall=09:39:23.636
+[student] TRAY first +0.30s tapped slot 1 meant x_bow before [ice_wizard,x_bow,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 7->6 wall=09:39:23.931
+[student] TRAY settled +0.66s tapped slot 1 meant x_bow before [ice_wizard,x_bow,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 7->1 wall=09:39:24.294
+[student] WAIT p=0.23 elixir 3 opp~? units 2 dets 3 (waits 672/849 badhand 239/1127) tap [ice_wizard,tornado,?,?] wall=09:39:29.352
+[student] PLAY tornado p=0.29 cell 79 board (0.42, 0.17) units 3 27 ms tap [ice_wizard,tornado,?,?] hand [ice_wizard,tornado,?,rocket] elixir 3 wall=09:39:30.790
+[student] TAP slot 1 tornado cell 79 wall=09:39:31.132
+[student] TRAY first +0.28s tapped slot 1 meant tornado before [ice_wizard,tornado,?,rocket] now [tornado,?,?,rocket] slot_now ? elixir 3->3 wall=09:39:31.417
+[student] TRAY settled +0.64s tapped slot 1 meant tornado before [ice_wizard,tornado,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 3->1 wall=09:39:31.774
+[student] PLAY skeletons p=0.58 cell 242 board (0.47, 0.55) units 3 10 ms tap [?,skeletons,?,?] hand [ice_wizard,skeletons,knight,rocket] elixir 2 wall=09:39:34.339
+[student] TAP slot 1 skeletons cell 242 wall=09:39:34.691
+[student] TRAY first +0.26s tapped slot 1 meant skeletons before [ice_wizard,skeletons,knight,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 2->1 wall=09:39:34.948
+[student] TRAY settled +0.57s tapped slot 1 meant skeletons before [ice_wizard,skeletons,knight,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 2->1 wall=09:39:35.264
+[student] PLAY ice_wizard p=0.28 cell 306 board (0.03, 0.73) units 2 17 ms tap [ice_wizard,tesla,?,?] hand [ice_wizard,tesla,?,rocket] elixir 4 wall=09:39:45.119
+[student] TAP slot 0 ice_wizard cell 306 wall=09:39:45.484
+[student] TRAY first +1.20s tapped slot 0 meant ice_wizard before [ice_wizard,tesla,?,rocket] now [?,ice_wizard,knight,rocket] slot_now ? elixir 4->3 wall=09:39:46.685
+[student] WAIT NO-TRAY-MATCH p=0.48 elixir 3 opp~? units 2 dets 3 (waits 680/860 badhand 242/1140) tap [?,?,?,?] wall=09:39:46.772
+[student] PLAY the_log p=0.64 cell 273 board (0.19, 0.64) units 4 27 ms tap [the_log,?,?,?] hand [the_log,tesla,?,rocket] elixir 3 wall=09:39:49.407
+[student] TAP slot 0 the_log cell 274 wall=09:39:49.762
+[student] TRAY first +1.06s tapped slot 0 meant the_log before [the_log,tesla,?,rocket] now [?,tesla,?,rocket] slot_now ? elixir 3->1 wall=09:39:50.817
+[clock] icon reads x3 but the clock reads x1 -> using the clock (x1)
+[student] PLAY tesla p=0.80 cell 241 board (0.39, 0.56) units 3 28 ms tap [?,tesla,?,?] hand [x_bow,tesla,?,rocket] elixir 4 wall=09:39:56.543
+[student] TAP slot 1 tesla cell 295 wall=09:39:56.891
+[student] TRAY first +0.67s tapped slot 1 meant tesla before [x_bow,tesla,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 4->4 wall=09:39:57.561
+[clock] icon reads x3 but the clock reads x2 -> using the clock (x2)
+09:39:59 [play] elixir x2
+[student] PLAY tornado p=0.51 cell 239 board (0.31, 0.58) units 4 18 ms tap [?,tornado,?,?] hand [ice_wizard,tornado,?,rocket] elixir 3 wall=09:40:00.687
+[student] TAP slot 1 tornado cell 239 wall=09:40:01.024
+[student] TRAY first +0.58s tapped slot 1 meant tornado before [ice_wizard,tornado,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 3->3 wall=09:40:01.600
+[student] PLAY skeletons p=0.54 cell 280 board (0.58, 0.64) units 4 25 ms tap [?,skeletons,?,?] hand [ice_wizard,skeletons,?,rocket] elixir 2 wall=09:40:04.693
+[student] TAP slot 1 skeletons cell 280 wall=09:40:05.040
+[student] TRAY first +0.76s tapped slot 1 meant skeletons before [ice_wizard,skeletons,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 2->2 wall=09:40:05.797
+[student] WAIT NO-TRAY-MATCH p=0.51 elixir 3 opp~? units 5 dets 5 (waits 683/867 badhand 245/1154) tap [?,?,?,?] wall=09:40:06.708
+[student] PLAY ice_wizard p=0.40 cell 298 board (0.58, 0.7) units 4 27 ms tap [?,ice_wizard,?,?] hand [x_bow,ice_wizard,?,rocket] elixir 3 wall=09:40:07.413
+[student] TAP slot 1 ice_wizard cell 298 wall=09:40:07.784
+[student] TRAY first +0.63s tapped slot 1 meant ice_wizard before [x_bow,ice_wizard,?,rocket] now [tesla,?,?,rocket] slot_now ? elixir 3->3 wall=09:40:08.411
+[student] PLAY the_log p=0.50 cell 299 board (0.64, 0.7) units 4 30 ms tap [?,the_log,?,?] hand [ice_wizard,the_log,?,rocket] elixir 2 wall=09:40:10.133
+[student] TAP slot 1 the_log cell 316 wall=09:40:10.475
+[student] TRAY first +0.76s tapped slot 1 meant the_log before [ice_wizard,the_log,?,rocket] now [tesla,?,?,rocket] slot_now ? elixir 2->1 wall=09:40:11.236
+[student] PLAY tesla_evo p=0.49 cell 243 board (0.5, 0.56) units 5 27 ms tap [?,tesla_evo,?,?] hand [x_bow,tesla_evo,?,rocket] elixir 4 wall=09:40:15.902
+[student] TAP slot 1 tesla_evo cell 243 wall=09:40:16.251
+[student] TRAY first +0.76s tapped slot 1 meant tesla_evo before [x_bow,tesla_evo,?,rocket] now [tesla,?,?,rocket] slot_now ? elixir 4->4 wall=09:40:17.011
+[student] PLAY tornado p=0.41 cell 245 board (0.64, 0.58) units 5 18 ms tap [?,tornado,?,?] hand [ice_wizard,tornado,?,rocket] elixir 3 wall=09:40:18.727
+[assist] TORNADO king-spot cell 245->333 trigger electro_giant at (0.51,0.52) enemy tracks 4 wall=09:40:18.727
+[student] TAP slot 1 tornado cell 333 wall=09:40:19.062
+[student] TRAY first +0.30s tapped slot 1 meant tornado before [ice_wizard,tornado,?,rocket] now [tornado,?,tornado,rocket] slot_now ? elixir 3->3 wall=09:40:19.360
+[student] TRAY settled +0.63s tapped slot 1 meant tornado before [ice_wizard,tornado,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 3->1 wall=09:40:19.697
+[student] WAIT p=0.18 elixir 2 opp~? units 5 dets 5 (waits 686/874 badhand 252/1168) tap [?,skeletons,?,?] wall=09:40:21.276
+[student] PLAY x_bow p=0.34 cell 265 board (0.75, 0.61) units 4 25 ms tap [x_bow,skeletons,?,rocket] hand [x_bow,skeletons,?,rocket] elixir 6 wall=09:40:27.228
+[student] TAP slot 0 x_bow cell 229 wall=09:40:27.590
+[student] TRAY first +0.26s tapped slot 0 meant x_bow before [x_bow,skeletons,?,rocket] now [?,skeletons,tornado,rocket] slot_now ? elixir 6->5 wall=09:40:27.852
+[student] TRAY settled +0.86s tapped slot 0 meant x_bow before [x_bow,skeletons,?,rocket] now [?,skeletons,?,rocket] slot_now ? elixir 6->1 wall=09:40:28.454
+[student] WAIT p=0.06 elixir 1 opp~? units 6 dets 7 (waits 695/884 badhand 255/1179) tap [?,skeletons,?,?] wall=09:40:28.857
+[student] PLAY skeletons p=0.28 cell 250 board (0.92, 0.55) units 6 23 ms tap [?,skeletons,?,?] hand [ice_wizard,skeletons,knight,rocket] elixir 2 wall=09:40:29.708
+[student] TAP slot 1 skeletons cell 250 wall=09:40:30.067
+[student] TRAY first +0.25s tapped slot 1 meant skeletons before [ice_wizard,skeletons,knight,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 2->1 wall=09:40:30.320
+[student] TRAY settled +0.62s tapped slot 1 meant skeletons before [ice_wizard,skeletons,knight,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 2->1 wall=09:40:30.687
+[student] PLAY the_log p=0.65 cell 247 board (0.75, 0.55) units 5 15 ms tap [ice_wizard,the_log,?,?] hand [ice_wizard,the_log,?,rocket] elixir 3 wall=09:40:33.095
+[student] TAP slot 1 the_log cell 247 wall=09:40:33.434
+[student] TRAY first +0.28s tapped slot 1 meant the_log before [ice_wizard,the_log,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 3->1 wall=09:40:33.710
+[student] TRAY settled +0.63s tapped slot 1 meant the_log before [ice_wizard,the_log,?,rocket] now [ice_wizard,?,knight,rocket] slot_now ? elixir 3->2 wall=09:40:34.063
+[student] PLAY ice_wizard p=0.76 cell 245 board (0.64, 0.55) units 5 18 ms tap [ice_wizard,?,?,?] hand [ice_wizard,tesla,?,rocket] elixir 3 wall=09:40:35.742
+[student] TAP slot 0 ice_wizard cell 245 wall=09:40:36.114
+[student] TRAY first +0.28s tapped slot 0 meant ice_wizard before [ice_wizard,tesla,?,rocket] now [?,tesla,?,rocket] slot_now ? elixir 3->3 wall=09:40:36.399
+[student] TRAY settled +0.65s tapped slot 0 meant ice_wizard before [ice_wizard,tesla,?,rocket] now [?,?,?,rocket] slot_now ? elixir 3->1 wall=09:40:36.768
+[student] PLAY tornado p=0.73 cell 165 board (0.19, 0.39) units 3 29 ms tap [tornado,?,?,?] hand [tornado,tesla,?,rocket] elixir 3 wall=09:40:39.496
+[student] TAP slot 0 tornado cell 165 wall=09:40:39.837
+[student] TRAY first +0.29s tapped slot 0 meant tornado before [tornado,tesla,?,rocket] now [?,?,tornado,rocket] slot_now ? elixir 3->3 wall=09:40:40.124
+[student] TRAY settled +0.64s tapped slot 0 meant tornado before [tornado,tesla,?,rocket] now [?,?,tornado,rocket] slot_now ? elixir 3->0 wall=09:40:40.473
+[student] PLAY tesla p=0.65 cell 243 board (0.5, 0.56) units 3 16 ms tap [?,tesla,?,?] hand [x_bow,tesla,?,rocket] elixir 4 wall=09:40:45.371
+[student] TAP slot 1 tesla cell 243 wall=09:40:45.712
+[student] TRAY first +0.29s tapped slot 1 meant tesla before [x_bow,tesla,?,rocket] now [tornado,?,tornado,rocket] slot_now ? elixir 4->4 wall=09:40:46.002
+[student] TRAY settled +1.15s tapped slot 1 meant tesla before [x_bow,tesla,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 4->1 wall=09:40:46.863
+[student] PLAY skeletons p=0.54 cell 336 board (0.69, 0.77) units 4 17 ms tap [?,skeletons,?,?] hand [tesla,skeletons,?,rocket] elixir 1 wall=09:40:47.559
+[student] TAP slot 1 skeletons cell 336 wall=09:40:47.917
+[student] TRAY first +0.28s tapped slot 1 meant skeletons before [tesla,skeletons,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 1->1 wall=09:40:48.199
+[student] TRAY settled +0.63s tapped slot 1 meant skeletons before [tesla,skeletons,?,rocket] now [tesla,?,?,rocket] slot_now ? elixir 1->1 wall=09:40:48.546
+[student] WAIT NO-TRAY-MATCH p=0.50 elixir 2 opp~? units 4 dets 5 (waits 697/892 badhand 258/1195) tap [?,?,?,?] wall=09:40:49.643
+[student] PLAY the_log p=0.71 cell 276 board (0.36, 0.64) units 4 25 ms tap [?,the_log,?,?] hand [ice_wizard,the_log,?,rocket] elixir 2 wall=09:40:50.262
+[student] TAP slot 1 the_log cell 369 wall=09:40:50.606
+[student] TRAY first +0.28s tapped slot 1 meant the_log before [ice_wizard,the_log,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 2->2 wall=09:40:50.889
+[student] TRAY settled +0.90s tapped slot 1 meant the_log before [ice_wizard,the_log,?,rocket] now [tesla,?,?,rocket] slot_now ? elixir 2->1 wall=09:40:51.509
+09:40:55 [play] UNKNOWN 0.5s after in-match -> grace hold (label lost: overtime / end animation / dropout; up to 150s)
+09:41:01 [play] state: MATCH_END
+[overlay-replay] saved C:\Users\benpe\ClashBot\icebow\data\overlayed_replays\match_20260912_093759.mp4 (9144 frames, captured 28.1 fps)
+09:41:02 [nav] MATCH_END -> Play Again (located) (0.348,0.914)
+09:41:02 [play] state: UNKNOWN
+09:41:08 [play] state: IN_MATCH
+[student] WAIT | exact=0 opp=? next=0 t=5s hand=[6, 164, 7, 4] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.01 elixir 9 opp~? units 0 dets 0 (waits 703/899 badhand 258/1206) tap [the_log,tesla,skeletons,rocket] wall=09:41:13.712
+[student] STALL-PLAY the_log p=0.06 cell 248 board (0.81, 0.55) units 2 20 ms tap [the_log,tesla,skeletons,rocket] hand [the_log,tesla,skeletons,rocket] elixir 10 wall=09:41:20.910
+[student] TAP slot 0 the_log cell 248 wall=09:41:21.261
+[student] TRAY first +0.27s tapped slot 0 meant the_log before [the_log,tesla,skeletons,rocket] now [?,tesla,skeletons,rocket] slot_now ? elixir 10->7 wall=09:41:21.531
+[student] WAIT | exact=0 opp=? next=0 t=13s hand=[-1, 164, 7, 4] tw=1.01.01.01.01.01.0 sp=2 unk=0 p=0.01 elixir 7 opp~? units 2 dets 4 (waits 713/910 badhand 259/1217) tap [?,tesla,skeletons,rocket] wall=09:41:21.612
+[student] TRAY settled +0.62s tapped slot 0 meant the_log before [the_log,tesla,skeletons,rocket] now [?,tesla,skeletons,rocket] slot_now ? elixir 10->8 wall=09:41:21.885
+[student] WAIT | exact=0 opp=? next=3 t=19s hand=[0, 164, 7, 4] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.01 elixir 9 opp~? units 2 dets 2 (waits 723/920 badhand 261/1227) tap [tornado,tesla,skeletons,rocket] wall=09:41:27.689
+[student] PLAY tesla p=0.61 cell 297 board (0.5, 0.69) units 3 28 ms tap [tornado,tesla,skeletons,rocket] hand [tornado,tesla,skeletons,rocket] elixir 10 wall=09:41:32.149
+[student] TAP slot 1 tesla cell 297 wall=09:41:32.509
+[student] TRAY first +0.27s tapped slot 1 meant tesla before [tornado,tesla,skeletons,rocket] now [tornado,?,skeletons,rocket] slot_now ? elixir 10->5 wall=09:41:32.781
+[student] TRAY settled +0.89s tapped slot 1 meant tesla before [tornado,tesla,skeletons,rocket] now [tornado,?,skeletons,rocket] slot_now ? elixir 10->6 wall=09:41:33.403
+[student] WAIT p=0.16 elixir 6 opp~? units 3 dets 3 (waits 733/931 badhand 263/1238) tap [tornado,?,skeletons,rocket] wall=09:41:33.495
+[student] PLAY skeletons p=0.43 cell 248 board (0.81, 0.55) units 2 24 ms tap [tornado,?,skeletons,rocket] hand [tornado,?,skeletons,rocket] elixir 6 wall=09:41:33.868
+[student] TAP slot 2 skeletons cell 248 wall=09:41:34.219
+[student] TRAY first +0.30s tapped slot 2 meant skeletons before [tornado,?,skeletons,rocket] now [tornado,x_bow,?,rocket] slot_now ? elixir 6->4 wall=09:41:34.514
+[student] PLAY tornado p=0.55 cell 211 board (0.75, 0.48) units 3 16 ms tap [tornado,?,?,?] hand [tornado,x_bow,?,rocket] elixir 4 wall=09:41:34.596
+[student] TAP slot 0 tornado cell 211 wall=09:41:34.961
+[student] TRAY first +0.32s tapped slot 0 meant tornado before [tornado,x_bow,?,rocket] now [?,the_log,?,rocket] slot_now ? elixir 4->3 wall=09:41:35.278
+[student] TRAY settled +0.63s tapped slot 0 meant tornado before [tornado,x_bow,?,rocket] now [?,the_log,ice_wizard,rocket] slot_now ? elixir 4->2 wall=09:41:35.593
+[student] PLAY knight p=0.29 cell 248 board (0.81, 0.55) units 4 28 ms tap [knight,?,?,?] hand [knight,ice_wizard,ice_wizard,rocket] elixir 3 wall=09:41:37.384
+[student] TAP slot 0 knight cell 248 wall=09:41:37.739
+[student] TRAY first +0.30s tapped slot 0 meant knight before [knight,ice_wizard,ice_wizard,rocket] now [?,x_bow,tornado,rocket] slot_now ? elixir 3->3 wall=09:41:38.041
+[student] TRAY settled +0.63s tapped slot 0 meant knight before [knight,ice_wizard,ice_wizard,rocket] now [?,tornado,ice_wizard,rocket] slot_now ? elixir 3->0 wall=09:41:38.364
+[student] WAIT NO-TRAY-MATCH p=0.04 elixir 2 opp~? units 2 dets 2 (waits 734/935 badhand 269/1251) tap [?,?,?,?] wall=09:41:44.962
+[student] WAIT p=0.09 elixir 5 opp~? units 3 dets 3 (waits 744/945 badhand 269/1261) tap [the_log,?,ice_wizard,?] wall=09:41:51.010
+[student] WAIT p=0.24 elixir 7 opp~? units 2 dets 2 (waits 754/955 badhand 269/1271) tap [the_log,x_bow,ice_wizard,rocket] wall=09:41:57.764
+[student] PLAY the_log p=0.38 cell 247 board (0.75, 0.55) units 2 25 ms tap [the_log,x_bow,ice_wizard,rocket] hand [the_log,x_bow,ice_wizard,rocket] elixir 8 wall=09:41:59.227
+[student] TAP slot 0 the_log cell 247 wall=09:41:59.579
+[student] TRAY first +0.28s tapped slot 0 meant the_log before [the_log,x_bow,ice_wizard,rocket] now [?,x_bow,ice_wizard,rocket] slot_now ? elixir 8->6 wall=09:41:59.860
+[student] TRAY settled +0.62s tapped slot 0 meant the_log before [the_log,x_bow,ice_wizard,rocket] now [?,x_bow,ice_wizard,rocket] slot_now ? elixir 8->6 wall=09:42:00.197
+[student] PLAY ice_wizard p=0.38 cell 247 board (0.75, 0.55) units 2 21 ms tap [tesla,x_bow,ice_wizard,rocket] hand [tesla,x_bow,ice_wizard,rocket] elixir 7 wall=09:42:04.551
+[student] TAP slot 2 ice_wizard cell 247 wall=09:42:04.910
+[student] TRAY first +0.28s tapped slot 2 meant ice_wizard before [tesla,x_bow,ice_wizard,rocket] now [tesla,x_bow,?,rocket] slot_now ? elixir 7->5 wall=09:42:05.188
+[student] TRAY settled +0.65s tapped slot 2 meant ice_wizard before [tesla,x_bow,ice_wizard,rocket] now [tesla,x_bow,?,rocket] slot_now ? elixir 7->5 wall=09:42:05.557
+[student] PLAY tesla p=0.29 cell 245 board (0.61, 0.56) units 3 15 ms tap [tesla,?,?,?] hand [tesla,x_bow,?,rocket] elixir 5 wall=09:42:05.633
+[student] TAP slot 0 tesla cell 245 wall=09:42:05.993
+[student] TRAY first +0.31s tapped slot 0 meant tesla before [tesla,x_bow,?,rocket] now [?,tesla,skeletons,?] slot_now ? elixir 5->4 wall=09:42:06.305
+[student] WAIT NO-TRAY-MATCH p=0.60 elixir 4 opp~? units 3 dets 3 (waits 763/967 badhand 275/1284) tap [?,?,?,?] wall=09:42:06.393
+[student] TRAY settled +1.11s tapped slot 0 meant tesla before [tesla,x_bow,?,rocket] now [?,the_log,skeletons,rocket] slot_now ? elixir 5->1 wall=09:42:07.104
+[student] PLAY skeletons p=0.37 cell 302 board (0.81, 0.67) units 2 23 ms tap [?,?,skeletons,?] hand [tornado,the_log,skeletons,rocket] elixir 2 wall=09:42:07.804
+[student] TAP slot 2 skeletons cell 302 wall=09:42:08.179
+[student] TRAY first +0.28s tapped slot 2 meant skeletons before [tornado,the_log,skeletons,rocket] now [tornado,tesla,?,rocket] slot_now ? elixir 2->1 wall=09:42:08.463
+[student] TRAY settled +0.64s tapped slot 2 meant skeletons before [tornado,the_log,skeletons,rocket] now [tornado,tesla,?,rocket] slot_now ? elixir 2->1 wall=09:42:08.815
+[student] WAIT p=0.21 elixir 3 opp~? units 3 dets 3 (waits 768/973 badhand 277/1295) tap [tornado,?,?,?] wall=09:42:15.454
+[student] PLAY tornado p=0.30 cell 9 board (0.53, 0.02) units 2 22 ms tap [tornado,?,?,?] hand [tornado,x_bow,?,rocket] elixir 5 wall=09:42:19.443
+[assist] TORNADO nearest cell 9->19 target elixir_collector at (0.14,0.15) enemy tracks 1 wall=09:42:19.443
+[student] TAP slot 0 tornado cell 19 wall=09:42:19.799
+[student] TRAY first +0.28s tapped slot 0 meant tornado before [tornado,x_bow,?,rocket] now [?,the_log,?,rocket] slot_now ? elixir 5->3 wall=09:42:20.082
+[student] TRAY settled +0.63s tapped slot 0 meant tornado before [tornado,x_bow,?,rocket] now [?,the_log,?,rocket] slot_now ? elixir 5->2 wall=09:42:20.430
+[student] WAIT p=0.12 elixir 3 opp~? units 3 dets 3 (waits 774/980 badhand 280/1306) tap [the_log,?,?,?] wall=09:42:22.290
+[student] PLAY the_log p=0.38 cell 248 board (0.81, 0.55) units 6 29 ms tap [the_log,?,?,?] hand [the_log,x_bow,?,rocket] elixir 5 wall=09:42:27.600
+[student] TAP slot 0 the_log cell 248 wall=09:42:27.952
+[student] TRAY first +0.31s tapped slot 0 meant the_log before [the_log,x_bow,?,rocket] now [?,ice_wizard,?,rocket] slot_now ? elixir 5->3 wall=09:42:28.263
+[student] TRAY settled +0.69s tapped slot 0 meant the_log before [the_log,x_bow,?,rocket] now [?,ice_wizard,?,rocket] slot_now ? elixir 5->3 wall=09:42:28.643
+[student] WAIT NO-TRAY-MATCH p=0.24 elixir 3 opp~? units 3 dets 5 (waits 782/989 badhand 282/1317) tap [?,?,?,?] wall=09:42:28.735
+[student] PLAY ice_wizard p=0.35 cell 297 board (0.53, 0.7) units 3 14 ms tap [ice_wizard,?,?,?] hand [ice_wizard,x_bow,?,rocket] elixir 4 wall=09:42:30.548
+[student] TAP slot 0 ice_wizard cell 297 wall=09:42:30.878
+[student] TRAY first +0.27s tapped slot 0 meant ice_wizard before [ice_wizard,x_bow,?,rocket] now [?,tesla,?,rocket] slot_now ? elixir 4->3 wall=09:42:31.147
+[student] TRAY settled +0.66s tapped slot 0 meant ice_wizard before [ice_wizard,x_bow,?,rocket] now [?,tesla,?,rocket] slot_now ? elixir 4->1 wall=09:42:31.536
+[student] WAIT NO-TRAY-MATCH p=0.87 elixir 3 opp~? units 4 dets 4 (waits 783/991 badhand 284/1328) tap [?,?,?,?] wall=09:42:36.913
+[student] PLAY tesla_evo p=0.54 cell 244 board (0.56, 0.56) units 2 32 ms tap [tesla_evo,?,?,?] hand [tesla_evo,x_bow,?,rocket] elixir 4 wall=09:42:39.009
+[student] TAP slot 0 tesla_evo cell 244 wall=09:42:39.363
+[student] TRAY first +0.27s tapped slot 0 meant tesla_evo before [tesla_evo,x_bow,?,rocket] now [?,x_bow,tornado,rocket] slot_now ? elixir 4->4 wall=09:42:39.633
+[student] TRAY settled +0.93s tapped slot 0 meant tesla_evo before [tesla_evo,x_bow,?,rocket] now [?,tornado,tornado,rocket] slot_now ? elixir 4->0 wall=09:42:40.291
+[student] WAIT p=0.07 elixir 2 opp~? units 3 dets 3 (waits 791/1000 badhand 285/1339) tap [skeletons,?,?,?] wall=09:42:45.743
+[student] PLAY x_bow p=0.34 cell 265 board (0.75, 0.61) units 3 16 ms tap [skeletons,x_bow,?,rocket] hand [skeletons,x_bow,?,rocket] elixir 6 wall=09:42:56.890
+[student] TAP slot 1 x_bow cell 229 wall=09:42:57.247
+[student] TRAY first +1.18s tapped slot 1 meant x_bow before [skeletons,x_bow,?,rocket] now [skeletons,?,tornado,rocket] slot_now ? elixir 6->5 wall=09:42:58.424
+[student] WAIT NO-TRAY-MATCH p=0.48 elixir 5 opp~? units 4 dets 4 (waits 800/1010 badhand 286/1350) tap [?,?,?,?] wall=09:42:58.502
+[student] PLAY skeletons p=0.42 cell 250 board (0.92, 0.55) units 5 24 ms tap [skeletons,tornado,?,?] hand [skeletons,tornado,?,rocket] elixir 3 wall=09:43:04.758
+[student] TAP slot 0 skeletons cell 250 wall=09:43:05.111
+[clock] icon reads x3 but the clock reads x1 -> using the clock (x1)
+[student] TRAY first +0.73s tapped slot 0 meant skeletons before [skeletons,tornado,?,rocket] now [?,tornado,?,rocket] slot_now ? elixir 3->1 wall=09:43:05.837
+[student] PLAY the_log p=0.46 cell 247 board (0.75, 0.55) units 5 28 ms tap [the_log,tornado,?,?] hand [the_log,tornado,?,rocket] elixir 3 wall=09:43:07.442
+[student] TAP slot 0 the_log cell 248 wall=09:43:07.786
+[student] TRAY first +0.79s tapped slot 0 meant the_log before [the_log,tornado,?,rocket] now [?,tornado,?,rocket] slot_now ? elixir 3->1 wall=09:43:08.577
+[clock] icon reads x3 but the clock reads x2 -> using the clock (x2)
+09:43:09 [play] elixir x2
+[student] PLAY tornado p=0.43 cell 158 board (0.81, 0.36) units 5 18 ms tap [?,tornado,?,?] hand [?,tornado,?,rocket] elixir 3 wall=09:43:09.514
+[assist] TORNADO king-spot cell 158->333 trigger bandit at (0.56,0.52) enemy tracks 5 wall=09:43:09.514
+[student] TAP slot 1 tornado cell 333 wall=09:43:09.855
+[student] TRAY first +0.69s tapped slot 1 meant tornado before [?,tornado,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 3->3 wall=09:43:10.549
+[student] PLAY ice_wizard p=0.47 cell 334 board (0.58, 0.77) units 3 17 ms tap [ice_wizard,tesla,?,?] hand [ice_wizard,tesla,?,rocket] elixir 4 wall=09:43:15.062
+[student] TAP slot 0 ice_wizard cell 334 wall=09:43:15.419
+[student] TRAY first +0.75s tapped slot 0 meant ice_wizard before [ice_wizard,tesla,?,rocket] now [?,tesla,knight,rocket] slot_now ? elixir 4->3 wall=09:43:16.173
+[student] WAIT NO-TRAY-MATCH p=0.92 elixir 3 opp~? units 5 dets 5 (waits 807/1021 badhand 290/1364) tap [?,?,?,?] wall=09:43:17.896
+[student] PLAY tesla p=0.77 cell 244 board (0.56, 0.56) units 6 31 ms tap [?,tesla,?,?] hand [x_bow,tesla,?,rocket] elixir 4 wall=09:43:19.586
+[student] TAP slot 1 tesla cell 244 wall=09:43:19.924
+[student] TRAY first +0.68s tapped slot 1 meant tesla before [x_bow,tesla,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 4->4 wall=09:43:20.608
+[student] PLAY skeletons p=0.36 cell 319 board (0.75, 0.73) units 4 21 ms tap [?,skeletons,?,?] hand [the_log,skeletons,?,rocket] elixir 2 wall=09:43:22.305
+[student] TAP slot 1 skeletons cell 265 wall=09:43:22.636
+[student] TRAY first +0.74s tapped slot 1 meant skeletons before [the_log,skeletons,?,rocket] now [the_log,?,?,rocket] slot_now ? elixir 2->2 wall=09:43:23.379
+[student] PLAY the_log p=0.62 cell 337 board (0.75, 0.77) units 6 19 ms tap [?,the_log,?,?] hand [ice_wizard,the_log,?,rocket] elixir 3 wall=09:43:25.452
+[student] TAP slot 1 the_log cell 336 wall=09:43:25.806
+[student] TRAY first +0.76s tapped slot 1 meant the_log before [ice_wizard,the_log,?,rocket] now [the_log,?,?,rocket] slot_now ? elixir 3->2 wall=09:43:26.564
+[student] PLAY tornado p=0.87 cell 212 board (0.81, 0.48) units 6 17 ms tap [?,tornado,?,?] hand [ice_wizard,tornado,?,rocket] elixir 3 wall=09:43:28.259
+[assist] TORNADO king-spot cell 212->333 trigger x_bow at (0.57,0.58) enemy tracks 14 wall=09:43:28.259
+[student] TAP slot 1 tornado cell 333 wall=09:43:28.635
+[student] TRAY first +0.28s tapped slot 1 meant tornado before [ice_wizard,tornado,?,rocket] now [tesla,?,?,rocket] slot_now ? elixir 3->3 wall=09:43:28.911
+[student] TRAY settled +0.59s tapped slot 1 meant tornado before [ice_wizard,tornado,?,rocket] now [tesla,?,?,rocket] slot_now ? elixir 3->1 wall=09:43:29.229
+[student] WAIT NO-TRAY-MATCH p=0.94 elixir 3 opp~? units 3 dets 3 (waits 807/1025 badhand 295/1378) tap [?,?,?,?] wall=09:43:31.961
+[student] PLAY ice_wizard p=0.95 cell 250 board (0.92, 0.55) units 3 28 ms tap [?,ice_wizard,?,?] hand [x_bow,ice_wizard,?,rocket] elixir 4 wall=09:43:32.347
+[student] TAP slot 1 ice_wizard cell 250 wall=09:43:32.692
+[student] TRAY first +0.27s tapped slot 1 meant ice_wizard before [x_bow,ice_wizard,?,rocket] now [tesla,?,?,rocket] slot_now ? elixir 4->3 wall=09:43:32.965
+[student] TRAY settled +0.62s tapped slot 1 meant ice_wizard before [x_bow,ice_wizard,?,rocket] now [tesla,?,?,rocket] slot_now ? elixir 4->1 wall=09:43:33.308
+[student] PLAY tesla p=0.83 cell 246 board (0.67, 0.56) units 5 29 ms tap [?,tesla,?,?] hand [x_bow,tesla,?,rocket] elixir 4 wall=09:43:36.610
+[student] TAP slot 1 tesla cell 246 wall=09:43:36.973
+[student] TRAY first +0.27s tapped slot 1 meant tesla before [x_bow,tesla,?,rocket] now [tornado,?,tornado,rocket] slot_now ? elixir 4->4 wall=09:43:37.246
+[student] TRAY settled +0.65s tapped slot 1 meant tesla before [x_bow,tesla,?,rocket] now [tornado,?,tornado,rocket] slot_now ? elixir 4->0 wall=09:43:37.627
+[student] PLAY skeletons p=0.53 cell 320 board (0.81, 0.73) units 5 27 ms tap [?,skeletons,?,?] hand [the_log,skeletons,knight,rocket] elixir 2 wall=09:43:39.637
+[student] TAP slot 1 skeletons cell 266 wall=09:43:39.984
+[student] TRAY first +0.27s tapped slot 1 meant skeletons before [the_log,skeletons,knight,rocket] now [tesla,?,?,rocket] slot_now ? elixir 2->1 wall=09:43:40.256
+[student] TRAY settled +1.06s tapped slot 1 meant skeletons before [the_log,skeletons,knight,rocket] now [the_log,?,?,rocket] slot_now ? elixir 2->2 wall=09:43:41.040
+[student] PLAY the_log p=0.51 cell 338 board (0.81, 0.77) units 6 16 ms tap [?,the_log,?,?] hand [ice_wizard,the_log,?,rocket] elixir 2 wall=09:43:41.754
+[student] TAP slot 1 the_log cell 339 wall=09:43:42.095
+[student] TRAY first +0.29s tapped slot 1 meant the_log before [ice_wizard,the_log,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 2->1 wall=09:43:42.385
+[student] TRAY settled +0.90s tapped slot 1 meant the_log before [ice_wizard,the_log,?,rocket] now [tesla,?,?,rocket] slot_now ? elixir 2->1 wall=09:43:42.994
+[student] WAIT p=0.22 elixir 3 opp~? units 6 dets 7 (waits 810/1032 badhand 297/1392) tap [?,tornado,?,?] wall=09:43:45.046
+[student] PLAY tornado p=0.29 cell 194 board (0.81, 0.42) units 6 28 ms tap [?,tornado,?,?] hand [x_bow,tornado,?,rocket] elixir 4 wall=09:43:46.959
+[assist] TORNADO nearest cell 194->82 target electro_dragon at (0.56,0.19) enemy tracks 3 wall=09:43:46.959
+[student] TAP slot 1 tornado cell 82 wall=09:43:47.324
+[student] TRAY first +0.27s tapped slot 1 meant tornado before [x_bow,tornado,?,rocket] now [the_log,?,?,rocket] slot_now ? elixir 4->3 wall=09:43:47.597
+[student] TRAY settled +1.06s tapped slot 1 meant tornado before [x_bow,tornado,?,rocket] now [the_log,?,?,rocket] slot_now ? elixir 4->2 wall=09:43:48.385
+[student] PLAY ice_wizard p=0.27 cell 243 board (0.53, 0.55) units 5 28 ms tap [?,ice_wizard,?,?] hand [x_bow,ice_wizard,?,rocket] elixir 5 wall=09:43:52.286
+[student] TAP slot 1 ice_wizard cell 243 wall=09:43:52.631
+[student] TRAY first +0.28s tapped slot 1 meant ice_wizard before [x_bow,ice_wizard,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 5->3 wall=09:43:52.910
+[student] TRAY settled +0.66s tapped slot 1 meant ice_wizard before [x_bow,ice_wizard,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 5->3 wall=09:43:53.295
+[student] WAIT NO-TRAY-MATCH p=0.48 elixir 3 opp~? units 6 dets 6 (waits 814/1038 badhand 301/1404) tap [?,?,?,?] wall=09:43:53.395
+[student] PLAY tesla_evo p=0.57 cell 243 board (0.5, 0.56) units 7 23 ms tap [?,tesla_evo,?,?] hand [x_bow,tesla_evo,?,rocket] elixir 4 wall=09:43:54.954
+[student] TAP slot 1 tesla_evo cell 243 wall=09:43:55.300
+[student] TRAY first +0.26s tapped slot 1 meant tesla_evo before [x_bow,tesla_evo,?,rocket] now [tornado,?,tornado,rocket] slot_now ? elixir 4->4 wall=09:43:55.558
+[student] TRAY settled +0.62s tapped slot 1 meant tesla_evo before [x_bow,tesla_evo,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 4->0 wall=09:43:55.924
+[student] PLAY skeletons p=0.36 cell 247 board (0.75, 0.55) units 8 24 ms tap [?,skeletons,?,?] hand [ice_wizard,skeletons,?,rocket] elixir 3 wall=09:43:58.971
+[student] TAP slot 1 skeletons cell 247 wall=09:43:59.321
+[student] TRAY first +0.30s tapped slot 1 meant skeletons before [ice_wizard,skeletons,?,rocket] now [the_log,?,?,rocket] slot_now ? elixir 3->2 wall=09:43:59.618
+[student] TRAY settled +0.68s tapped slot 1 meant skeletons before [ice_wizard,skeletons,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 3->2 wall=09:43:59.998
+[student] PLAY the_log p=0.30 cell 247 board (0.75, 0.55) units 6 15 ms tap [?,the_log,?,?] hand [ice_wizard,the_log,?,rocket] elixir 3 wall=09:44:00.929
+[student] TAP slot 1 the_log cell 248 wall=09:44:01.271
+[student] TRAY first +0.32s tapped slot 1 meant the_log before [ice_wizard,the_log,?,rocket] now [the_log,?,?,rocket] slot_now ? elixir 3->2 wall=09:44:01.596
+[student] TRAY settled +0.69s tapped slot 1 meant the_log before [ice_wizard,the_log,?,rocket] now [the_log,?,knight,rocket] slot_now ? elixir 3->2 wall=09:44:01.964
+[student] WAIT NO-TRAY-MATCH p=0.01 elixir 2 opp~? units 5 dets 5 (waits 818/1045 badhand 306/1417) tap [?,?,?,?] wall=09:44:02.047
+[student] PLAY tornado p=0.47 cell 175 board (0.75, 0.39) units 8 49 ms tap [?,tornado,?,?] hand [ice_wizard,tornado,?,rocket] elixir 3 wall=09:44:03.710
+[student] TAP slot 1 tornado cell 175 wall=09:44:04.073
+[student] TRAY first +0.39s tapped slot 1 meant tornado before [ice_wizard,tornado,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 3->3 wall=09:44:04.466
+09:44:05 [play] UNKNOWN 0.7s after in-match -> grace hold (label lost: overtime / end animation / dropout; up to 150s)
+[student] TRAY settled +0.97s tapped slot 1 meant tornado before [ice_wizard,tornado,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 3->1 wall=09:44:05.044
+09:44:05 [play] in-match read re-acquired -> grace hold released
+[student] PLAY ice_wizard p=0.32 cell 296 board (0.47, 0.67) units 4 25 ms tap [?,ice_wizard,?,?] hand [x_bow,ice_wizard,?,rocket] elixir 4 wall=09:44:09.547
+[student] TAP slot 1 ice_wizard cell 296 wall=09:44:09.905
+[student] TRAY first +0.40s tapped slot 1 meant ice_wizard before [x_bow,ice_wizard,?,rocket] now [the_log,?,knight,rocket] slot_now ? elixir 4->3 wall=09:44:10.301
+[student] TRAY settled +0.88s tapped slot 1 meant ice_wizard before [x_bow,ice_wizard,?,rocket] now [the_log,?,?,rocket] slot_now ? elixir 4->2 wall=09:44:10.780
+[student] PLAY tesla p=0.90 cell 321 board (0.83, 0.72) units 7 27 ms tap [?,tesla,?,?] hand [x_bow,tesla,?,rocket] elixir 4 wall=09:44:13.544
+[student] TAP slot 1 tesla cell 267 wall=09:44:13.889
+[student] TRAY first +0.36s tapped slot 1 meant tesla before [x_bow,tesla,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 4->4 wall=09:44:14.245
+[student] WAIT NO-TRAY-MATCH p=0.78 elixir 4 opp~? units 6 dets 6 (waits 818/1048 badhand 310/1430) tap [?,?,?,?] wall=09:44:14.311
+[student] TRAY settled +0.79s tapped slot 1 meant tesla before [x_bow,tesla,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 4->1 wall=09:44:14.682
+[student] PLAY skeletons p=0.39 cell 247 board (0.75, 0.55) units 6 31 ms tap [?,skeletons,?,?] hand [the_log,skeletons,knight,rocket] elixir 2 wall=09:44:16.004
+[student] TAP slot 1 skeletons cell 247 wall=09:44:16.336
+[student] TRAY first +0.38s tapped slot 1 meant skeletons before [the_log,skeletons,knight,rocket] now [tesla,?,?,rocket] slot_now ? elixir 2->1 wall=09:44:16.717
+[student] TRAY settled +0.86s tapped slot 1 meant skeletons before [the_log,skeletons,knight,rocket] now [the_log,?,?,rocket] slot_now ? elixir 2->2 wall=09:44:17.198
+[student] PLAY the_log p=0.42 cell 247 board (0.75, 0.55) units 7 16 ms tap [?,the_log,?,?] hand [ice_wizard,the_log,?,rocket] elixir 2 wall=09:44:18.369
+[student] TAP slot 1 the_log cell 355 wall=09:44:18.711
+[student] TRAY first +0.38s tapped slot 1 meant the_log before [ice_wizard,the_log,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 2->1 wall=09:44:19.095
+[student] TRAY settled +0.82s tapped slot 1 meant the_log before [ice_wizard,the_log,?,rocket] now [tesla,?,?,rocket] slot_now ? elixir 2->1 wall=09:44:19.530
+[student] PLAY tornado p=0.91 cell 158 board (0.81, 0.36) units 5 30 ms tap [?,tornado,?,?] hand [ice_wizard,tornado,?,rocket] elixir 3 wall=09:44:21.730
+[student] TAP slot 1 tornado cell 158 wall=09:44:22.066
+[student] TRAY first +0.36s tapped slot 1 meant tornado before [ice_wizard,tornado,?,rocket] now [tornado,?,tornado,rocket] slot_now ? elixir 3->3 wall=09:44:22.424
+[student] TRAY settled +0.81s tapped slot 1 meant tornado before [ice_wizard,tornado,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 3->1 wall=09:44:22.872
+[student] WAIT NO-TRAY-MATCH p=0.78 elixir 3 opp~? units 3 dets 3 (waits 818/1051 badhand 314/1443) tap [?,?,?,?] wall=09:44:26.856
+[student] PLAY ice_wizard p=0.77 cell 249 board (0.86, 0.55) units 3 20 ms tap [?,ice_wizard,?,?] hand [x_bow,ice_wizard,?,rocket] elixir 4 wall=09:44:27.316
+[student] TAP slot 1 ice_wizard cell 249 wall=09:44:27.667
+[student] TRAY first +0.38s tapped slot 1 meant ice_wizard before [x_bow,ice_wizard,?,rocket] now [tesla,?,?,rocket] slot_now ? elixir 4->3 wall=09:44:28.044
+[student] TRAY settled +0.79s tapped slot 1 meant ice_wizard before [x_bow,ice_wizard,?,rocket] now [the_log,?,knight,rocket] slot_now ? elixir 4->2 wall=09:44:28.452
+[student] PLAY tesla p=0.67 cell 243 board (0.5, 0.56) units 4 27 ms tap [?,tesla,?,?] hand [x_bow,tesla,?,rocket] elixir 4 wall=09:44:31.492
+[student] TAP slot 1 tesla cell 243 wall=09:44:31.855
+[student] TRAY first +0.37s tapped slot 1 meant tesla before [x_bow,tesla,?,rocket] now [tornado,?,tornado,rocket] slot_now ? elixir 4->4 wall=09:44:32.224
+[student] TRAY settled +0.84s tapped slot 1 meant tesla before [x_bow,tesla,?,rocket] now [ice_wizard,?,?,rocket] slot_now ? elixir 4->1 wall=09:44:32.700
+[student] PLAY skeletons p=0.29 cell 247 board (0.75, 0.58) units 4 15 ms tap [?,skeletons,?,?] hand [the_log,skeletons,?,rocket] elixir 2 wall=09:44:34.736
+[student] TAP slot 1 skeletons cell 247 wall=09:44:35.076
+[student] TRAY first +0.38s tapped slot 1 meant skeletons before [the_log,skeletons,?,rocket] now [the_log,?,knight,rocket] slot_now ? elixir 2->2 wall=09:44:35.458
+[student] TRAY settled +0.86s tapped slot 1 meant skeletons before [the_log,skeletons,?,rocket] now [the_log,?,?,rocket] slot_now ? elixir 2->2 wall=09:44:35.939
+[student] WAIT NO-TRAY-MATCH p=0.47 elixir 2 opp~? units 3 dets 3 (waits 820/1056 badhand 319/1456) tap [?,?,?,?] wall=09:44:36.042
+09:44:42 [play] state: MATCH_END
+[overlay-replay] saved C:\Users\benpe\ClashBot\icebow\data\overlayed_replays\match_20260912_094108.mp4 (10724 frames, captured 27.7 fps)
+09:44:42 [nav] MATCH_END -> Play Again (located) (0.348,0.914)
+09:44:43 [play] state: UNKNOWN

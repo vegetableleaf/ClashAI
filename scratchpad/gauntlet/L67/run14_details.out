@@ -1,0 +1,14 @@
+PLAY lines: matches 8 plays 236 | repeats within 2 0 (0.0%) | immediate 0 (0.0%)
+taps 236 | with read >= 0.5 s 230 | elixir did NOT fall 40 (17.4%)
+  no-drop by card: {'skeletons': '23/45', 'the_log': '0/45', 'tornado': '6/37', 'ice_wizard': '4/33', 'tesla': '4/32', 'x_bow': '0/17', 'knight': '3/17', 'rocket': '0/4'}
+PLAY decisions 236 | a readable hand card removed from the tap tray in 192 | hand read with a card in two slots 11
+tornado taps 37 | cell changed after decision 8
+[assist] TORNADO lines 8 | kinds {'king-spot': 5, 'nearest': 3} | trigger/target bases {'knight': 1, 'skeletons': 1, 'prince': 1, 'electro_giant': 1, 'elixir_collector': 1, 'bandit': 1, 'x_bow': 1, 'electro_dragon': 1}
+    [assist] TORNADO king-spot cell 165->332 trigger knight at (0.45,0.50) enemy tracks 6 wall=09:24:02.692
+    [assist] TORNADO nearest cell 80->201 target skeletons at (0.25,0.43) enemy tracks 5 wall=09:25:00.813
+    [assist] TORNADO king-spot cell 242->333 trigger prince at (0.61,0.65) enemy tracks 9 wall=09:37:38.922
+    [assist] TORNADO king-spot cell 245->333 trigger electro_giant at (0.51,0.52) enemy tracks 4 wall=09:40:18.727
+    [assist] TORNADO nearest cell 9->19 target elixir_collector at (0.14,0.15) enemy tracks 1 wall=09:42:19.443
+    [assist] TORNADO king-spot cell 158->333 trigger bandit at (0.56,0.52) enemy tracks 5 wall=09:43:09.514
+    [assist] TORNADO king-spot cell 212->333 trigger x_bow at (0.57,0.58) enemy tracks 14 wall=09:43:28.259
+    [assist] TORNADO nearest cell 194->82 target electro_dragon at (0.56,0.19) enemy tracks 3 wall=09:43:46.959

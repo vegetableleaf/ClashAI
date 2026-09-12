@@ -2969,6 +2969,36 @@ F2 detail: 11 of 19 matches still get a STALL-PLAY before any play, now at t 12.
 *What this does NOT establish.* That Tornado waste falls live, and that the fake earthquake was the trigger of run12's redirects -- the next session's `[assist] TORNADO` lines answer both: with T1 a spell can no longer be the trigger, so any remaining king-spot redirects name the real (or mis-tagged troop) track that fired them. The model's doubled Tornado preference from the false token (AD) is untouched until T3.
 
 
+**AF. FIRST RUN WITH P1 + P4 + T1 + T2 (run14, owner 2026-09-12 09:19-09:44; L67z): plays per minute back inside the pro band, repeated taps gone, Tornado redirects cut to a third -- ONE session of 8 matches, so a confirmation run is owed.** Logs `icebow/data/play_20260912_091941.log`, stdout `scratchpad/live_run11.log` (UTF-16, name reused; converted `L67/live_run14_utf8.log`). Outputs `live_run14_scan.json`, `tap_audit_run14.json`, `run14_details.out`. A 1-match run at 09:13 is not counted.
+
+*Same instruments, run12 (16 matches, before P1/P4/T1/T2) vs run14 (8 matches, 24.1 min) (a).*
+
+| | run12 | run14 |
+|---|---|---|
+| plays per min | 13.92 | **9.79** (pro band 8-10.5, L67k) |
+| STALL-PLAY per min, regulation | 0.45 | **0.24** |
+| pinned-high WAIT lines per min, regulation | 0.45 | **0.18** |
+| taps repeating a card from the previous two / immediately | 16.5% / 9.8% | **0 / 0** (236 plays) |
+| taps with no elixir drop >= 0.5 s later | 30.9% | **17.4%** (40/230) |
+| ... the_log / ice_wizard / skeletons | 34% / 42% / 45% | **0/45 / 4/33 / 23/45** |
+| decision hand read with one card in two slots | 8.6% | 4.7% (11/236) |
+| freeze captures with next-card-in-last-3 plays | 75.6% | 0% (8 captures) |
+| Tornado taps moved by the assist / to the king spot | 46/106 / 41/106 | **8/37 / 5/37** |
+| nav stalls / reward taps / fixed Play Again | 1 give-up | 0 / 0 / 0 |
+
+*P1 in operation (a):* a readable card was removed from the tap tray in 192 of 236 decisions -- mostly greyed (unaffordable) cards, which is the filter doing its job; the model still chooses among the rest.
+
+*T2's first trigger log (a):* 8 `[assist] TORNADO` lines -- king-spot 5 (triggers knight, prince, electro_giant, bandit, **x_bow**), nearest 3 (targets skeletons, **elixir_collector**, electro_dragon). No earthquake trigger (T1 removes spells), and no fake earthquake token in this run's 8 freeze captures (too few to say the detector stopped producing it).
+
+*Two Tornado moves aimed at BUILDINGS, which a Tornado cannot pull (a):* the enemy elixir collector at the far back (nearest-fallback), and an "enemy x_bow" at frame (0.57, 0.58) on OUR half (king-spot). The bot placed its own X-Bow at 09:42:57 (cell 229), 31 s before that 09:43:28 redirect; an enemy cannot place a building on our half, so the trigger is **(b) very likely our own X-Bow tagged enemy** -- not directly observed.
+
+*Skeletons' no-drop share (b):* 23 of 45 Skeleton taps show no elixir drop, but so do 17 of the other taps, and in all 40 the tapped slot reads unreadable afterwards, so the slot cannot confirm a deploy. A 1-elixir drop hidden by integer display + regen explains part (~25-35% expected); whether the rest are real non-deploys needs the overlay clips.
+
+*What this does NOT establish.* A durable change -- 8 matches, one session; the same scanner on the next session is the confirmation. Winrate (not measured). Whether plays per minute fell because P1 correctly removes unaffordable taps or because the bot now waits too often (STALL-PLAY fell too, so over-waiting is not indicated).
+
+*Proposed (owner decision):* **N1** the Tornado assist ignores BUILDING tracks (nearest fallback and king-spot trigger). **N2** find why our own X-Bow on our half is served as an enemy (building side prior should call it ours) -- log the team verdict's evidence for building tracks. **T3** stays parked until the fake earthquake is seen again. **P3** (evolved Knight templates) and a clip check of Skeleton taps remain open.
+
+
 ### §5cs.98 -- L67e+f (2026-09-08 06:00-18:00 UTC): **OPTION B GRADED (3 seeds: clean 21.56 +- 0.07, degraded 19.45 +- 0.05) BUT ITS GAIN IS AGAINST A CORRUPTION MODEL WE NOW KNOW IS WRONG. Three label-free live measurements instead: the GATE survives real detector input (live .248-.325 vs engine .294-.298), PLACEMENT COLLAPSES toward the prior (top-1 cell share 0.25 vs 0.07 at matched unit counts), and nothing JITTERS (same-cell 61.4% live vs 38.7% engine -- the collapse seen twice, not a second defect). Ablation names the cause: MISSING VALUES (unit HP, exact/opponent elixir, king HP), not noisy ones -- spell tokens, unknown team tags and low confidence each do NOTHING. Against pro labels, SUPPLYING beats FLAGGING (blank_both 18.78 exact cell / 52.11 card -> fill_both 20.15 / 63.25), so the fill is now wired live and verified (live top-1 share 0.411 -> 0.322)**
 
 **A. Option B, the 3-seed result (a), `s1_v6aug/eval_v3val_icebow_v6aug.out` + `eval_v3degraded_*`.** Augmented set = 622,923 rows (339,192 clean + 283,731 degraded TRAIN rows; val rows clean, so checkpoint selection is v6lat's own rule).

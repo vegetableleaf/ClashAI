@@ -1,0 +1,7266 @@
+{
+ "summary": {
+  "taps": 236,
+  "matches": 8,
+  "verdicts": {
+   "deployed": 189,
+   "ambiguous": 41,
+   "no_settled": 6
+  },
+  "same_card_consecutive_taps": 0,
+  "same_card_kinds": {},
+  "same_card_gap_s": []
+ },
+ "taps": [
+  {
+   "match": 1,
+   "slot": 1,
+   "card": "x_bow",
+   "wall": "09:20:00.047",
+   "first": {
+    "dt": 0.23,
+    "slot_now": "?",
+    "elixir_before": 10,
+    "elixir_now": 6,
+    "now": [
+     "tesla",
+     "?",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "settled": {
+    "dt": 0.58,
+    "slot_now": "?",
+    "elixir_before": 10,
+    "elixir_now": 4,
+    "now": [
+     "tesla",
+     "?",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 1,
+   "slot": 0,
+   "card": "tesla",
+   "wall": "09:20:07.350",
+   "first": {
+    "dt": 0.3,
+    "slot_now": "?",
+    "elixir_before": 6,
+    "elixir_now": 4,
+    "now": [
+     "?",
+     "rocket",
+     "knight",
+     "ice_wizard"
+    ]
+   },
+   "settled": {
+    "dt": 0.64,
+    "slot_now": "?",
+    "elixir_before": 6,
+    "elixir_now": 2,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 1,
+   "slot": 0,
+   "card": "skeletons",
+   "wall": "09:20:10.394",
+   "first": {
+    "dt": 0.22,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "settled": {
+    "dt": 0.51,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 1,
+   "slot": 3,
+   "card": "ice_wizard",
+   "wall": "09:20:13.174",
+   "first": {
+    "dt": 0.26,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "tornado",
+     "rocket",
+     "tornado",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.62,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 0,
+    "now": [
+     "tornado",
+     "rocket",
+     "tornado",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 1,
+   "slot": 0,
+   "card": "tornado",
+   "wall": "09:20:24.281",
+   "first": {
+    "dt": 0.29,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "the_log"
+    ]
+   },
+   "settled": {
+    "dt": 0.87,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "the_log"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 1,
+   "slot": 3,
+   "card": "the_log",
+   "wall": "09:20:29.281",
+   "first": {
+    "dt": 0.32,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 1.12,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 1,
+   "slot": 0,
+   "card": "x_bow",
+   "wall": "09:20:49.885",
+   "first": {
+    "dt": 0.26,
+    "slot_now": "?",
+    "elixir_before": 8,
+    "elixir_now": 5,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "tesla"
+    ]
+   },
+   "settled": {
+    "dt": 0.61,
+    "slot_now": "?",
+    "elixir_before": 8,
+    "elixir_now": 2,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "tesla"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 1,
+   "slot": 0,
+   "card": "skeletons",
+   "wall": "09:20:52.360",
+   "first": {
+    "dt": 0.29,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "?",
+     "rocket",
+     "knight",
+     "tesla"
+    ]
+   },
+   "settled": {
+    "dt": 0.88,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "tesla"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 1,
+   "slot": 3,
+   "card": "tesla",
+   "wall": "09:20:58.859",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "tornado",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.61,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 0,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "tornado",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 1,
+   "slot": 0,
+   "card": "ice_wizard",
+   "wall": "09:21:09.616",
+   "first": {
+    "dt": 0.31,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "tornado"
+    ]
+   },
+   "settled": {
+    "dt": 0.65,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 1,
+   "slot": 3,
+   "card": "tornado",
+   "wall": "09:21:18.889",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "the_log",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.6,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 1,
+    "now": [
+     "the_log",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 1,
+   "slot": 0,
+   "card": "the_log",
+   "wall": "09:21:20.781",
+   "first": {
+    "dt": 0.26,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "rocket",
+     "tornado",
+     "x_bow"
+    ]
+   },
+   "settled": {
+    "dt": 1.11,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 0,
+    "now": [
+     "?",
+     "rocket",
+     "tornado",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 1,
+   "slot": 0,
+   "card": "skeletons",
+   "wall": "09:21:23.756",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 1,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "x_bow"
+    ]
+   },
+   "settled": {
+    "dt": 0.64,
+    "slot_now": "?",
+    "elixir_before": 1,
+    "elixir_now": 0,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 1,
+   "slot": 0,
+   "card": "tesla_evo",
+   "wall": "09:21:36.160",
+   "first": {
+    "dt": 1.1,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "?",
+     "rocket",
+     "tornado",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 1.1,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "?",
+     "rocket",
+     "tornado",
+     "?"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 2,
+   "slot": 3,
+   "card": "the_log",
+   "wall": "09:22:04.884",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 9,
+    "elixir_now": 7,
+    "now": [
+     "skeletons",
+     "knight",
+     "ice_wizard",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 1.04,
+    "slot_now": "?",
+    "elixir_before": 9,
+    "elixir_now": 7,
+    "now": [
+     "skeletons",
+     "knight",
+     "ice_wizard",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 1,
+   "card": "knight",
+   "wall": "09:22:06.345",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 7,
+    "elixir_now": 7,
+    "now": [
+     "skeletons",
+     "?",
+     "ice_wizard",
+     "x_bow"
+    ]
+   },
+   "settled": {
+    "dt": 1.03,
+    "slot_now": "?",
+    "elixir_before": 7,
+    "elixir_now": 5,
+    "now": [
+     "skeletons",
+     "?",
+     "ice_wizard",
+     "x_bow"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 3,
+   "card": "x_bow",
+   "wall": "09:22:17.756",
+   "first": {
+    "dt": 0.3,
+    "slot_now": "?",
+    "elixir_before": 8,
+    "elixir_now": 5,
+    "now": [
+     "skeletons",
+     "tornado",
+     "ice_wizard",
+     "?"
+    ]
+   },
+   "settled": null,
+   "verdict": "no_settled"
+  },
+  {
+   "match": 2,
+   "slot": 0,
+   "card": "skeletons",
+   "wall": "09:22:18.485",
+   "first": {
+    "dt": 0.25,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 2,
+    "now": [
+     "?",
+     "tornado",
+     "ice_wizard",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 1.13,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 2,
+    "now": [
+     "?",
+     "tornado",
+     "ice_wizard",
+     "tesla"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 2,
+   "card": "ice_wizard",
+   "wall": "09:22:23.528",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "rocket",
+     "tornado",
+     "?",
+     "tesla"
+    ]
+   },
+   "settled": {
+    "dt": 0.66,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "rocket",
+     "tornado",
+     "?",
+     "tesla"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 2,
+   "card": "the_log",
+   "wall": "09:22:29.979",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "rocket",
+     "tornado",
+     "?",
+     "tesla"
+    ]
+   },
+   "settled": {
+    "dt": 0.67,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "rocket",
+     "tornado",
+     "?",
+     "tesla"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 3,
+   "card": "tesla",
+   "wall": "09:22:38.306",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "rocket",
+     "tornado",
+     "tornado",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.61,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 0,
+    "now": [
+     "rocket",
+     "tornado",
+     "tornado",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 1,
+   "card": "tornado",
+   "wall": "09:22:49.571",
+   "first": {
+    "dt": 0.23,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "rocket",
+     "?",
+     "?",
+     "tesla"
+    ]
+   },
+   "settled": {
+    "dt": 1.01,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 1,
+    "now": [
+     "rocket",
+     "?",
+     "?",
+     "tesla"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 1,
+   "card": "skeletons",
+   "wall": "09:22:55.646",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "rocket",
+     "?",
+     "?",
+     "the_log"
+    ]
+   },
+   "settled": {
+    "dt": 1.12,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "rocket",
+     "?",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 1,
+   "card": "ice_wizard",
+   "wall": "09:23:12.030",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 8,
+    "elixir_now": 5,
+    "now": [
+     "rocket",
+     "?",
+     "?",
+     "x_bow"
+    ]
+   },
+   "settled": {
+    "dt": 1.1,
+    "slot_now": "?",
+    "elixir_before": 8,
+    "elixir_now": 5,
+    "now": [
+     "rocket",
+     "?",
+     "?",
+     "x_bow"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 0,
+   "card": "rocket",
+   "wall": "09:23:19.750",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 7,
+    "elixir_now": 5,
+    "now": [
+     "?",
+     "the_log",
+     "?",
+     "the_log"
+    ]
+   },
+   "settled": {
+    "dt": 0.6,
+    "slot_now": "?",
+    "elixir_before": 7,
+    "elixir_now": 6,
+    "now": [
+     "?",
+     "the_log",
+     "knight",
+     "the_log"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 0,
+   "card": "tesla",
+   "wall": "09:23:28.494",
+   "first": {
+    "dt": 0.29,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "?",
+     "the_log",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.65,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "the_log",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 3,
+   "card": "x_bow",
+   "wall": "09:23:46.678",
+   "first": {
+    "dt": 1.08,
+    "slot_now": "?",
+    "elixir_before": 7,
+    "elixir_now": 5,
+    "now": [
+     "tornado",
+     "the_log",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 1.08,
+    "slot_now": "?",
+    "elixir_before": 7,
+    "elixir_now": 5,
+    "now": [
+     "tornado",
+     "the_log",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 3,
+   "card": "skeletons",
+   "wall": "09:23:49.445",
+   "first": {
+    "dt": 1.17,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "tornado",
+     "the_log",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 1.17,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "tornado",
+     "the_log",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 1,
+   "card": "the_log",
+   "wall": "09:23:53.560",
+   "first": {
+    "dt": 1.14,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "tornado",
+     "?",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "settled": {
+    "dt": 1.14,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "tornado",
+     "?",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 3,
+   "card": "ice_wizard",
+   "wall": "09:23:58.766",
+   "first": {
+    "dt": 0.71,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "tornado",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.71,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "tornado",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 2,
+   "slot": 0,
+   "card": "tornado",
+   "wall": "09:24:03.080",
+   "first": {
+    "dt": 0.69,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "tesla"
+    ]
+   },
+   "settled": {
+    "dt": 0.69,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "tesla"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 2,
+   "slot": 3,
+   "card": "tesla_evo",
+   "wall": "09:24:09.662",
+   "first": {
+    "dt": 0.78,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 4,
+    "now": [
+     "tesla",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.78,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 4,
+    "now": [
+     "tesla",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 3,
+   "card": "skeletons",
+   "wall": "09:24:12.532",
+   "first": {
+    "dt": 0.77,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.77,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 2,
+   "slot": 3,
+   "card": "the_log",
+   "wall": "09:24:15.229",
+   "first": {
+    "dt": 0.61,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 2,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.61,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 2,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 3,
+   "card": "ice_wizard",
+   "wall": "09:24:18.764",
+   "first": {
+    "dt": 0.73,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "the_log",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.73,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "the_log",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 3,
+   "card": "tornado",
+   "wall": "09:24:21.744",
+   "first": {
+    "dt": 0.25,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "tesla",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.81,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 3,
+   "card": "tesla",
+   "wall": "09:24:26.187",
+   "first": {
+    "dt": 0.29,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "tornado",
+     "rocket",
+     "tornado",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 1.08,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 3,
+   "card": "skeletons",
+   "wall": "09:24:28.898",
+   "first": {
+    "dt": 0.29,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 1.08,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "rocket",
+     "knight",
+     "?"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 2,
+   "slot": 3,
+   "card": "the_log",
+   "wall": "09:24:32.115",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 1.13,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 0,
+   "card": "x_bow",
+   "wall": "09:24:40.386",
+   "first": {
+    "dt": 0.3,
+    "slot_now": "?",
+    "elixir_before": 7,
+    "elixir_now": 5,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "settled": {
+    "dt": 0.87,
+    "slot_now": "?",
+    "elixir_before": 7,
+    "elixir_now": 2,
+    "now": [
+     "?",
+     "rocket",
+     "knight",
+     "ice_wizard"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 0,
+   "card": "tornado",
+   "wall": "09:24:43.494",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "settled": {
+    "dt": 0.62,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 0,
+   "card": "tesla",
+   "wall": "09:24:48.411",
+   "first": {
+    "dt": 0.29,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "?",
+     "rocket",
+     "tornado",
+     "ice_wizard"
+    ]
+   },
+   "settled": {
+    "dt": 0.68,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 0,
+    "now": [
+     "?",
+     "rocket",
+     "tornado",
+     "ice_wizard"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 0,
+   "card": "skeletons",
+   "wall": "09:24:53.150",
+   "first": {
+    "dt": 0.32,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "settled": {
+    "dt": 1.11,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 2,
+   "slot": 3,
+   "card": "ice_wizard",
+   "wall": "09:24:56.160",
+   "first": {
+    "dt": 0.32,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "the_log",
+     "rocket",
+     "knight",
+     "?"
+    ]
+   },
+   "settled": null,
+   "verdict": "no_settled"
+  },
+  {
+   "match": 2,
+   "slot": 0,
+   "card": "the_log",
+   "wall": "09:24:56.917",
+   "first": {
+    "dt": 0.33,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "rocket",
+     "tornado",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.79,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 0,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 0,
+   "card": "tornado",
+   "wall": "09:25:01.165",
+   "first": {
+    "dt": 0.37,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "rocket",
+     "tornado",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.82,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 0,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 0,
+   "card": "tesla_evo",
+   "wall": "09:25:08.183",
+   "first": {
+    "dt": 0.35,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 4,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "tesla"
+    ]
+   },
+   "settled": {
+    "dt": 1.16,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 2,
+    "now": [
+     "?",
+     "rocket",
+     "knight",
+     "the_log"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 0,
+   "card": "skeletons",
+   "wall": "09:25:11.586",
+   "first": {
+    "dt": 0.42,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "settled": {
+    "dt": 1.24,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 2,
+   "slot": 0,
+   "card": "ice_wizard",
+   "wall": "09:25:14.977",
+   "first": {
+    "dt": 0.49,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "the_log"
+    ]
+   },
+   "settled": {
+    "dt": 1.01,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 2,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 0,
+   "card": "the_log",
+   "wall": "09:25:19.693",
+   "first": {
+    "dt": 0.37,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "settled": {
+    "dt": 0.81,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 4,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "x_bow"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 0,
+   "card": "tornado",
+   "wall": "09:25:22.569",
+   "first": {
+    "dt": 0.35,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "settled": {
+    "dt": 0.78,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 0,
+   "card": "tesla",
+   "wall": "09:25:25.448",
+   "first": {
+    "dt": 0.37,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.77,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 0,
+   "card": "skeletons",
+   "wall": "09:25:28.281",
+   "first": {
+    "dt": 0.36,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "the_log"
+    ]
+   },
+   "settled": {
+    "dt": 1.1,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 2,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "the_log"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 2,
+   "slot": 0,
+   "card": "ice_wizard",
+   "wall": "09:25:32.595",
+   "first": {
+    "dt": 0.4,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "the_log"
+    ]
+   },
+   "settled": {
+    "dt": 0.9,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 2,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "the_log"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 0,
+   "card": "the_log",
+   "wall": "09:25:34.831",
+   "first": {
+    "dt": 0.38,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "tesla"
+    ]
+   },
+   "settled": {
+    "dt": 0.92,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "the_log"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 0,
+   "card": "tornado",
+   "wall": "09:25:37.510",
+   "first": {
+    "dt": 0.36,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "rocket",
+     "tornado",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.84,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 0,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 2,
+   "slot": 0,
+   "card": "tesla",
+   "wall": "09:25:44.567",
+   "first": {
+    "dt": 0.76,
+    "slot_now": "tesla",
+    "elixir_before": 4,
+    "elixir_now": 0,
+    "now": [
+     "tesla",
+     "?",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.76,
+    "slot_now": "tesla",
+    "elixir_before": 4,
+    "elixir_now": 0,
+    "now": [
+     "tesla",
+     "?",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 3,
+   "slot": 2,
+   "card": "the_log",
+   "wall": "09:26:11.961",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 10,
+    "elixir_now": 8,
+    "now": [
+     "x_bow",
+     "rocket",
+     "?",
+     "knight"
+    ]
+   },
+   "settled": null,
+   "verdict": "no_settled"
+  },
+  {
+   "match": 3,
+   "slot": 0,
+   "card": "x_bow",
+   "wall": "09:26:12.697",
+   "first": {
+    "dt": 0.24,
+    "slot_now": "?",
+    "elixir_before": 8,
+    "elixir_now": 5,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "knight"
+    ]
+   },
+   "settled": {
+    "dt": 0.62,
+    "slot_now": "?",
+    "elixir_before": 8,
+    "elixir_now": 2,
+    "now": [
+     "?",
+     "rocket",
+     "ice_wizard",
+     "knight"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 3,
+   "slot": 3,
+   "card": "knight",
+   "wall": "09:26:16.965",
+   "first": {
+    "dt": 0.33,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "tesla",
+     "rocket",
+     "tornado",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.68,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 0,
+    "now": [
+     "tesla",
+     "rocket",
+     "ice_wizard",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 3,
+   "slot": 3,
+   "card": "skeletons",
+   "wall": "09:26:21.763",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 1,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "rocket",
+     "ice_wizard",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.59,
+    "slot_now": "?",
+    "elixir_before": 1,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "rocket",
+     "ice_wizard",
+     "?"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 3,
+   "slot": 2,
+   "card": "ice_wizard",
+   "wall": "09:26:27.836",
+   "first": {
+    "dt": 0.29,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "tesla",
+     "rocket",
+     "?",
+     "tornado"
+    ]
+   },
+   "settled": {
+    "dt": 1.09,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 0,
+    "now": [
+     "tesla",
+     "rocket",
+     "?",
+     "tornado"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 3,
+   "slot": 0,
+   "card": "tesla",
+   "wall": "09:26:50.914",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 8,
+    "elixir_now": 4,
+    "now": [
+     "?",
+     "rocket",
+     "the_log",
+     "tornado"
+    ]
+   },
+   "settled": {
+    "dt": 0.9,
+    "slot_now": "?",
+    "elixir_before": 8,
+    "elixir_now": 4,
+    "now": [
+     "?",
+     "rocket",
+     "the_log",
+     "tornado"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 3,
+   "slot": 0,
+   "card": "x_bow",
+   "wall": "09:26:55.885",
+   "first": {
+    "dt": 0.25,
+    "slot_now": "?",
+    "elixir_before": 6,
+    "elixir_now": 5,
+    "now": [
+     "?",
+     "rocket",
+     "the_log",
+     "tornado"
+    ]
+   },
+   "settled": {
+    "dt": 0.6,
+    "slot_now": "?",
+    "elixir_before": 6,
+    "elixir_now": 0,
+    "now": [
+     "?",
+     "rocket",
+     "the_log",
+     "tornado"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 3,
+   "slot": 0,
+   "card": "knight",
+   "wall": "09:27:04.509",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "rocket",
+     "the_log",
+     "tornado"
+    ]
+   },
+   "settled": {
+    "dt": 0.58,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 0,
+    "now": [
+     "?",
+     "rocket",
+     "the_log",
+     "tornado"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 3,
+   "slot": 0,
+   "card": "skeletons",
+   "wall": "09:27:08.144",
+   "first": {
+    "dt": 0.32,
+    "slot_now": "?",
+    "elixir_before": 1,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "rocket",
+     "the_log",
+     "tornado"
+    ]
+   },
+   "settled": {
+    "dt": 0.65,
+    "slot_now": "?",
+    "elixir_before": 1,
+    "elixir_now": 0,
+    "now": [
+     "?",
+     "rocket",
+     "the_log",
+     "tornado"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 3,
+   "slot": 2,
+   "card": "the_log",
+   "wall": "09:27:14.401",
+   "first": {
+    "dt": 0.29,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "tornado"
+    ]
+   },
+   "settled": {
+    "dt": 0.64,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 0,
+    "now": [
+     "tornado",
+     "rocket",
+     "?",
+     "tornado"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 3,
+   "slot": 2,
+   "card": "tesla",
+   "wall": "09:27:29.363",
+   "first": {
+    "dt": 0.25,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 4,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "tornado"
+    ]
+   },
+   "settled": {
+    "dt": 0.86,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 2,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "tornado"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 3,
+   "slot": 2,
+   "card": "x_bow",
+   "wall": "09:27:45.479",
+   "first": {
+    "dt": 0.95,
+    "slot_now": "?",
+    "elixir_before": 7,
+    "elixir_now": 6,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "tornado"
+    ]
+   },
+   "settled": {
+    "dt": 0.95,
+    "slot_now": "?",
+    "elixir_before": 7,
+    "elixir_now": 6,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "tornado"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 3,
+   "slot": 2,
+   "card": "knight_evo",
+   "wall": "09:27:50.484",
+   "first": {
+    "dt": 1.08,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "tornado"
+    ]
+   },
+   "settled": {
+    "dt": 1.08,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "tornado"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 3,
+   "slot": 2,
+   "card": "skeletons",
+   "wall": "09:27:54.582",
+   "first": {
+    "dt": 1.17,
+    "slot_now": "?",
+    "elixir_before": 1,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "tornado"
+    ]
+   },
+   "settled": {
+    "dt": 1.17,
+    "slot_now": "?",
+    "elixir_before": 1,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "tornado"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 3,
+   "slot": 2,
+   "card": "the_log",
+   "wall": "09:27:58.532",
+   "first": {
+    "dt": 0.71,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "tornado"
+    ]
+   },
+   "settled": {
+    "dt": 0.71,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "tornado"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 3,
+   "slot": 0,
+   "card": "ice_wizard",
+   "wall": "09:28:01.874",
+   "first": {
+    "dt": 0.69,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "tornado"
+    ]
+   },
+   "settled": {
+    "dt": 0.69,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "tornado"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 3,
+   "slot": 3,
+   "card": "tornado",
+   "wall": "09:28:05.976",
+   "first": {
+    "dt": 0.56,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.56,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 3,
+   "slot": 3,
+   "card": "knight",
+   "wall": "09:28:10.092",
+   "first": {
+    "dt": 0.67,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.67,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 3,
+   "slot": 3,
+   "card": "skeletons",
+   "wall": "09:28:12.719",
+   "first": {
+    "dt": 0.67,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "the_log",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.67,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "the_log",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 3,
+   "slot": 3,
+   "card": "the_log",
+   "wall": "09:28:15.358",
+   "first": {
+    "dt": 0.58,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "the_log",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.58,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "the_log",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 3,
+   "slot": 2,
+   "card": "tesla_evo",
+   "wall": "09:28:19.430",
+   "first": {
+    "dt": 0.26,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "tornado"
+    ]
+   },
+   "settled": {
+    "dt": 0.61,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 3,
+   "slot": 2,
+   "card": "tornado",
+   "wall": "09:28:23.762",
+   "first": {
+    "dt": 0.24,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "settled": {
+    "dt": 0.59,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 3,
+   "slot": 3,
+   "card": "ice_wizard",
+   "wall": "09:28:29.559",
+   "first": {
+    "dt": 0.29,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "the_log",
+     "rocket",
+     "knight",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.68,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 3,
+   "slot": 3,
+   "card": "skeletons",
+   "wall": "09:28:31.307",
+   "first": {
+    "dt": 0.26,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "the_log",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.68,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 3,
+   "slot": 3,
+   "card": "the_log",
+   "wall": "09:28:33.079",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "tesla",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.64,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 3,
+   "slot": 3,
+   "card": "tesla",
+   "wall": "09:28:37.134",
+   "first": {
+    "dt": 0.24,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "tornado",
+     "rocket",
+     "tornado",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 1.04,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 3,
+   "slot": 3,
+   "card": "tornado",
+   "wall": "09:28:42.912",
+   "first": {
+    "dt": 0.29,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "tesla",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.74,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 1,
+    "now": [
+     "the_log",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 3,
+   "slot": 3,
+   "card": "ice_wizard",
+   "wall": "09:28:47.096",
+   "first": {
+    "dt": 0.29,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "tesla",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.63,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 3,
+   "slot": 3,
+   "card": "skeletons",
+   "wall": "09:28:49.962",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.66,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 3,
+   "slot": 3,
+   "card": "the_log",
+   "wall": "09:28:54.337",
+   "first": {
+    "dt": 0.24,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 3,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 1.48,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 0,
+    "now": [
+     "tesla",
+     "?",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 4,
+   "slot": 1,
+   "card": "the_log",
+   "wall": "09:29:19.860",
+   "first": {
+    "dt": 0.25,
+    "slot_now": "?",
+    "elixir_before": 10,
+    "elixir_now": 8,
+    "now": [
+     "ice_wizard",
+     "?",
+     "tesla",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.61,
+    "slot_now": "?",
+    "elixir_before": 10,
+    "elixir_now": 8,
+    "now": [
+     "ice_wizard",
+     "?",
+     "tesla",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 4,
+   "slot": 3,
+   "card": "rocket",
+   "wall": "09:29:27.396",
+   "first": {
+    "dt": 0.29,
+    "slot_now": "?",
+    "elixir_before": 10,
+    "elixir_now": 5,
+    "now": [
+     "ice_wizard",
+     "skeletons",
+     "tesla",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 1.06,
+    "slot_now": "?",
+    "elixir_before": 10,
+    "elixir_now": 4,
+    "now": [
+     "ice_wizard",
+     "skeletons",
+     "tesla",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 4,
+   "slot": 3,
+   "card": "x_bow",
+   "wall": "09:29:43.601",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 9,
+    "elixir_now": 5,
+    "now": [
+     "ice_wizard",
+     "skeletons",
+     "tesla",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.9,
+    "slot_now": "?",
+    "elixir_before": 9,
+    "elixir_now": 3,
+    "now": [
+     "ice_wizard",
+     "skeletons",
+     "tesla",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 4,
+   "slot": 1,
+   "card": "skeletons",
+   "wall": "09:29:45.294",
+   "first": {
+    "dt": 0.3,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "ice_wizard",
+     "?",
+     "tesla",
+     "tornado"
+    ]
+   },
+   "settled": {
+    "dt": 0.59,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "ice_wizard",
+     "?",
+     "tesla",
+     "tornado"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 4,
+   "slot": 2,
+   "card": "tesla",
+   "wall": "09:29:53.822",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 4,
+    "now": [
+     "ice_wizard",
+     "knight",
+     "?",
+     "tornado"
+    ]
+   },
+   "settled": {
+    "dt": 0.63,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 2,
+    "now": [
+     "ice_wizard",
+     "knight",
+     "?",
+     "tornado"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 4,
+   "slot": 1,
+   "card": "knight",
+   "wall": "09:29:59.173",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "tornado",
+     "?",
+     "the_log",
+     "tornado"
+    ]
+   },
+   "settled": {
+    "dt": 0.65,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "?",
+     "the_log",
+     "tornado"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 4,
+   "slot": 0,
+   "card": "ice_wizard",
+   "wall": "09:30:06.262",
+   "first": {
+    "dt": 0.31,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "rocket",
+     "the_log",
+     "tornado"
+    ]
+   },
+   "settled": {
+    "dt": 0.7,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 0,
+    "now": [
+     "?",
+     "rocket",
+     "the_log",
+     "tornado"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 4,
+   "slot": 2,
+   "card": "the_log",
+   "wall": "09:30:13.730",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 2,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "tornado"
+    ]
+   },
+   "settled": {
+    "dt": 0.62,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "tornado"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 4,
+   "slot": 2,
+   "card": "skeletons",
+   "wall": "09:30:15.795",
+   "first": {
+    "dt": 0.31,
+    "slot_now": "?",
+    "elixir_before": 1,
+    "elixir_now": 1,
+    "now": [
+     "tornado",
+     "rocket",
+     "?",
+     "tornado"
+    ]
+   },
+   "settled": {
+    "dt": 0.68,
+    "slot_now": "?",
+    "elixir_before": 1,
+    "elixir_now": 0,
+    "now": [
+     "ice_wizard",
+     "rocket",
+     "?",
+     "tornado"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 4,
+   "slot": 3,
+   "card": "tornado",
+   "wall": "09:30:23.263",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "tornado",
+     "rocket",
+     "tesla",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.62,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 0,
+    "now": [
+     "tornado",
+     "rocket",
+     "tesla",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 4,
+   "slot": 1,
+   "card": "rocket",
+   "wall": "09:30:47.449",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 8,
+    "elixir_now": 5,
+    "now": [
+     "ice_wizard",
+     "?",
+     "tesla",
+     "knight"
+    ]
+   },
+   "settled": null,
+   "verdict": "no_settled"
+  },
+  {
+   "match": 4,
+   "slot": 3,
+   "card": "knight",
+   "wall": "09:30:48.155",
+   "first": {
+    "dt": 0.3,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 3,
+    "now": [
+     "x_bow",
+     "?",
+     "tesla",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 1.47,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 0,
+    "now": [
+     "x_bow",
+     "ice_wizard",
+     "tesla",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 4,
+   "slot": 1,
+   "card": "ice_wizard",
+   "wall": "09:31:05.788",
+   "first": {
+    "dt": 0.75,
+    "slot_now": "?",
+    "elixir_before": 6,
+    "elixir_now": 4,
+    "now": [
+     "x_bow",
+     "?",
+     "tesla",
+     "the_log"
+    ]
+   },
+   "settled": {
+    "dt": 0.75,
+    "slot_now": "?",
+    "elixir_before": 6,
+    "elixir_now": 4,
+    "now": [
+     "x_bow",
+     "?",
+     "tesla",
+     "the_log"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 4,
+   "slot": 3,
+   "card": "the_log",
+   "wall": "09:31:07.843",
+   "first": {
+    "dt": 0.72,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "ice_wizard",
+     "skeletons",
+     "tesla",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.72,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "ice_wizard",
+     "skeletons",
+     "tesla",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 4,
+   "slot": 1,
+   "card": "skeletons",
+   "wall": "09:31:09.858",
+   "first": {
+    "dt": 0.7,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "x_bow",
+     "?",
+     "tesla",
+     "tornado"
+    ]
+   },
+   "settled": {
+    "dt": 0.7,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "x_bow",
+     "?",
+     "tesla",
+     "tornado"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 4,
+   "slot": 0,
+   "card": "x_bow",
+   "wall": "09:31:14.270",
+   "first": {
+    "dt": 0.69,
+    "slot_now": "?",
+    "elixir_before": 6,
+    "elixir_now": 5,
+    "now": [
+     "?",
+     "rocket",
+     "tesla",
+     "tornado"
+    ]
+   },
+   "settled": {
+    "dt": 0.69,
+    "slot_now": "?",
+    "elixir_before": 6,
+    "elixir_now": 5,
+    "now": [
+     "?",
+     "rocket",
+     "tesla",
+     "tornado"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 4,
+   "slot": 3,
+   "card": "tornado",
+   "wall": "09:31:19.286",
+   "first": {
+    "dt": 0.6,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "tesla",
+     "rocket",
+     "tesla",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.6,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "tesla",
+     "rocket",
+     "tesla",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 4,
+   "slot": 0,
+   "card": "knight_evo",
+   "wall": "09:31:22.756",
+   "first": {
+    "dt": 0.73,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "rocket",
+     "tesla",
+     "ice_wizard"
+    ]
+   },
+   "settled": {
+    "dt": 0.73,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "rocket",
+     "tesla",
+     "ice_wizard"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 4,
+   "slot": 0,
+   "card": "the_log",
+   "wall": "09:31:26.415",
+   "first": {
+    "dt": 0.73,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "rocket",
+     "tesla",
+     "ice_wizard"
+    ]
+   },
+   "settled": {
+    "dt": 0.73,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "rocket",
+     "tesla",
+     "ice_wizard"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 4,
+   "slot": 2,
+   "card": "tesla",
+   "wall": "09:31:30.729",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "skeletons",
+     "rocket",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "settled": null,
+   "verdict": "no_settled"
+  },
+  {
+   "match": 4,
+   "slot": 0,
+   "card": "skeletons",
+   "wall": "09:31:31.427",
+   "first": {
+    "dt": 0.24,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "settled": {
+    "dt": 0.63,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 0,
+    "now": [
+     "?",
+     "rocket",
+     "rocket",
+     "ice_wizard"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 4,
+   "slot": 0,
+   "card": "tornado",
+   "wall": "09:31:36.002",
+   "first": {
+    "dt": 0.24,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "rocket",
+     "rocket",
+     "ice_wizard"
+    ]
+   },
+   "settled": {
+    "dt": 0.61,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "rocket",
+     "ice_wizard",
+     "ice_wizard"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 4,
+   "slot": 0,
+   "card": "knight",
+   "wall": "09:31:40.096",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "rocket",
+     "rocket",
+     "ice_wizard"
+    ]
+   },
+   "settled": {
+    "dt": 0.61,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 0,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 4,
+   "slot": 0,
+   "card": "the_log",
+   "wall": "09:31:43.573",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "rocket",
+     "ice_wizard",
+     "ice_wizard"
+    ]
+   },
+   "settled": {
+    "dt": 1.06,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "rocket",
+     "tesla",
+     "ice_wizard"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 4,
+   "slot": 3,
+   "card": "ice_wizard",
+   "wall": "09:31:48.860",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "rocket",
+     "tesla",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.61,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 2,
+    "now": [
+     "tesla",
+     "rocket",
+     "the_log",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 4,
+   "slot": 3,
+   "card": "skeletons",
+   "wall": "09:31:50.793",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "rocket",
+     "the_log",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.65,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 2,
+    "now": [
+     "tesla",
+     "rocket",
+     "the_log",
+     "?"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 4,
+   "slot": 3,
+   "card": "tornado",
+   "wall": "09:31:52.931",
+   "first": {
+    "dt": 0.26,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "tesla",
+     "rocket",
+     "rocket",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 1.06,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "rocket",
+     "ice_wizard",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 4,
+   "slot": 3,
+   "card": "knight",
+   "wall": "09:31:56.805",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "rocket",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 1.06,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "rocket",
+     "ice_wizard",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 4,
+   "slot": 3,
+   "card": "the_log",
+   "wall": "09:32:00.923",
+   "first": {
+    "dt": 0.29,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "tesla",
+     "rocket",
+     "tesla",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.65,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "rocket",
+     "tesla",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 5,
+   "slot": 1,
+   "card": "the_log",
+   "wall": "09:32:31.284",
+   "first": {
+    "dt": 0.24,
+    "slot_now": "?",
+    "elixir_before": 10,
+    "elixir_now": 8,
+    "now": [
+     "ice_wizard",
+     "?",
+     "x_bow",
+     "knight"
+    ]
+   },
+   "settled": {
+    "dt": 0.59,
+    "slot_now": "?",
+    "elixir_before": 10,
+    "elixir_now": 8,
+    "now": [
+     "ice_wizard",
+     "?",
+     "x_bow",
+     "knight"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 5,
+   "slot": 2,
+   "card": "x_bow",
+   "wall": "09:32:33.087",
+   "first": {
+    "dt": 0.3,
+    "slot_now": "?",
+    "elixir_before": 8,
+    "elixir_now": 5,
+    "now": [
+     "ice_wizard",
+     "tornado",
+     "?",
+     "knight"
+    ]
+   },
+   "settled": {
+    "dt": 1.09,
+    "slot_now": "?",
+    "elixir_before": 8,
+    "elixir_now": 2,
+    "now": [
+     "ice_wizard",
+     "tornado",
+     "?",
+     "knight"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 5,
+   "slot": 2,
+   "card": "skeletons",
+   "wall": "09:32:38.153",
+   "first": {
+    "dt": 0.22,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "ice_wizard",
+     "tornado",
+     "?",
+     "knight"
+    ]
+   },
+   "settled": {
+    "dt": 0.54,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "ice_wizard",
+     "tornado",
+     "?",
+     "knight"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 5,
+   "slot": 3,
+   "card": "knight",
+   "wall": "09:32:39.998",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "ice_wizard",
+     "tornado",
+     "rocket",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.6,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 0,
+    "now": [
+     "tornado",
+     "tornado",
+     "rocket",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 5,
+   "slot": 0,
+   "card": "ice_wizard",
+   "wall": "09:32:47.212",
+   "first": {
+    "dt": 0.26,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "tornado",
+     "rocket",
+     "tesla"
+    ]
+   },
+   "settled": {
+    "dt": 1.1,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 0,
+    "now": [
+     "?",
+     "tornado",
+     "rocket",
+     "tesla"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 5,
+   "slot": 2,
+   "card": "rocket",
+   "wall": "09:33:09.657",
+   "first": {
+    "dt": 0.26,
+    "slot_now": "?",
+    "elixir_before": 8,
+    "elixir_now": 5,
+    "now": [
+     "the_log",
+     "tornado",
+     "?",
+     "tesla"
+    ]
+   },
+   "settled": {
+    "dt": 0.62,
+    "slot_now": "?",
+    "elixir_before": 8,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "tornado",
+     "?",
+     "tesla"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 5,
+   "slot": 3,
+   "card": "tesla",
+   "wall": "09:33:19.179",
+   "first": {
+    "dt": 0.26,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 4,
+    "now": [
+     "the_log",
+     "tornado",
+     "tesla",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.58,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 1,
+    "now": [
+     "the_log",
+     "tornado",
+     "tesla",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 5,
+   "slot": 3,
+   "card": "skeletons",
+   "wall": "09:33:20.985",
+   "first": {
+    "dt": 0.26,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "the_log",
+     "tornado",
+     "ice_wizard",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.58,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "the_log",
+     "tornado",
+     "ice_wizard",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 5,
+   "slot": 0,
+   "card": "the_log",
+   "wall": "09:33:25.817",
+   "first": {
+    "dt": 0.23,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 2,
+    "now": [
+     "?",
+     "tornado",
+     "ice_wizard",
+     "knight"
+    ]
+   },
+   "settled": {
+    "dt": 1.01,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "tornado",
+     "ice_wizard",
+     "knight"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 5,
+   "slot": 3,
+   "card": "knight",
+   "wall": "09:33:32.160",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "tornado",
+     "tornado",
+     "x_bow",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.88,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 0,
+    "now": [
+     "ice_wizard",
+     "tornado",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 5,
+   "slot": 2,
+   "card": "x_bow",
+   "wall": "09:33:54.848",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 8,
+    "elixir_now": 5,
+    "now": [
+     "ice_wizard",
+     "tornado",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 1.06,
+    "slot_now": "?",
+    "elixir_before": 8,
+    "elixir_now": 2,
+    "now": [
+     "ice_wizard",
+     "tornado",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 5,
+   "slot": 1,
+   "card": "tornado",
+   "wall": "09:33:57.852",
+   "first": {
+    "dt": 0.25,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "tornado",
+     "?",
+     "tesla",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 1.36,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 0,
+    "now": [
+     "tornado",
+     "?",
+     "tesla",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 5,
+   "slot": 1,
+   "card": "skeletons",
+   "wall": "09:34:01.882",
+   "first": {
+    "dt": 1.02,
+    "slot_now": "?",
+    "elixir_before": 1,
+    "elixir_now": 1,
+    "now": [
+     "tornado",
+     "?",
+     "tesla",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 1.02,
+    "slot_now": "?",
+    "elixir_before": 1,
+    "elixir_now": 1,
+    "now": [
+     "tornado",
+     "?",
+     "tesla",
+     "rocket"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 5,
+   "slot": 1,
+   "card": "the_log",
+   "wall": "09:34:08.004",
+   "first": {
+    "dt": 1.03,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "?",
+     "tesla",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 1.03,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "?",
+     "tesla",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 5,
+   "slot": 0,
+   "card": "ice_wizard",
+   "wall": "09:34:17.419",
+   "first": {
+    "dt": 0.71,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "knight_evo",
+     "tesla",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.71,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "knight_evo",
+     "tesla",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 5,
+   "slot": 1,
+   "card": "knight_evo",
+   "wall": "09:34:20.896",
+   "first": {
+    "dt": 0.59,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "the_log",
+     "?",
+     "tesla",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.59,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "the_log",
+     "?",
+     "tesla",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 5,
+   "slot": 1,
+   "card": "tornado",
+   "wall": "09:34:23.435",
+   "first": {
+    "dt": 0.75,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "ice_wizard",
+     "?",
+     "tesla",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.75,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "ice_wizard",
+     "?",
+     "tesla",
+     "rocket"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 5,
+   "slot": 3,
+   "card": "rocket",
+   "wall": "09:34:32.134",
+   "first": {
+    "dt": 0.66,
+    "slot_now": "?",
+    "elixir_before": 6,
+    "elixir_now": 5,
+    "now": [
+     "ice_wizard",
+     "skeletons",
+     "tesla",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.66,
+    "slot_now": "?",
+    "elixir_before": 6,
+    "elixir_now": 5,
+    "now": [
+     "ice_wizard",
+     "skeletons",
+     "tesla",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 5,
+   "slot": 1,
+   "card": "skeletons",
+   "wall": "09:34:33.212",
+   "first": {
+    "dt": 0.72,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 1,
+    "now": [
+     "tornado",
+     "?",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "settled": {
+    "dt": 0.72,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 1,
+    "now": [
+     "tornado",
+     "?",
+     "?",
+     "ice_wizard"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 5,
+   "slot": 3,
+   "card": "the_log",
+   "wall": "09:34:37.599",
+   "first": {
+    "dt": 0.58,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "ice_wizard",
+     "tesla",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.58,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "ice_wizard",
+     "tesla",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 5,
+   "slot": 3,
+   "card": "knight",
+   "wall": "09:34:39.845",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "tornado",
+     "ice_wizard",
+     "tesla",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.89,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "ice_wizard",
+     "tesla",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 5,
+   "slot": 3,
+   "card": "tornado",
+   "wall": "09:34:43.884",
+   "first": {
+    "dt": 0.29,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "tornado",
+     "ice_wizard",
+     "tesla",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 0.64,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 0,
+    "now": [
+     "tornado",
+     "tornado",
+     "tesla",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 5,
+   "slot": 1,
+   "card": "ice_wizard",
+   "wall": "09:34:50.143",
+   "first": {
+    "dt": 0.3,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "the_log",
+     "?",
+     "tesla",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.97,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "?",
+     "tesla",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 5,
+   "slot": 1,
+   "card": "skeletons",
+   "wall": "09:34:52.179",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "?",
+     "tesla",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.94,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 2,
+    "now": [
+     "ice_wizard",
+     "?",
+     "tesla",
+     "rocket"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 5,
+   "slot": 1,
+   "card": "the_log",
+   "wall": "09:34:54.725",
+   "first": {
+    "dt": 0.23,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "?",
+     "tesla",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 1.01,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "ice_wizard",
+     "?",
+     "tesla",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 5,
+   "slot": 1,
+   "card": "knight",
+   "wall": "09:34:57.162",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "ice_wizard",
+     "?",
+     "tesla",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.85,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "?",
+     "tesla",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 6,
+   "slot": 2,
+   "card": "the_log",
+   "wall": "09:35:25.603",
+   "first": {
+    "dt": 0.25,
+    "slot_now": "?",
+    "elixir_before": 10,
+    "elixir_now": 8,
+    "now": [
+     "tornado",
+     "ice_wizard",
+     "?",
+     "x_bow"
+    ]
+   },
+   "settled": {
+    "dt": 1.07,
+    "slot_now": "?",
+    "elixir_before": 10,
+    "elixir_now": 8,
+    "now": [
+     "tornado",
+     "ice_wizard",
+     "?",
+     "x_bow"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 6,
+   "slot": 3,
+   "card": "x_bow",
+   "wall": "09:35:38.084",
+   "first": {
+    "dt": 0.26,
+    "slot_now": "?",
+    "elixir_before": 10,
+    "elixir_now": 6,
+    "now": [
+     "tornado",
+     "ice_wizard",
+     "?",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 1.07,
+    "slot_now": "?",
+    "elixir_before": 10,
+    "elixir_now": 4,
+    "now": [
+     "tornado",
+     "ice_wizard",
+     "?",
+     "?"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 6,
+   "slot": 0,
+   "card": "tornado",
+   "wall": "09:35:39.550",
+   "first": {
+    "dt": 0.26,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "ice_wizard",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.56,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "ice_wizard",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 6,
+   "slot": 0,
+   "card": "skeletons",
+   "wall": "09:35:45.438",
+   "first": {
+    "dt": 0.25,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 2,
+    "now": [
+     "?",
+     "ice_wizard",
+     "knight",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.56,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 2,
+    "now": [
+     "?",
+     "ice_wizard",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 6,
+   "slot": 1,
+   "card": "ice_wizard",
+   "wall": "09:35:48.628",
+   "first": {
+    "dt": 0.26,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "tesla",
+     "?",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.61,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 0,
+    "now": [
+     "tesla",
+     "?",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 6,
+   "slot": 1,
+   "card": "the_log",
+   "wall": "09:35:54.169",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "?",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 1.08,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 0,
+    "now": [
+     "tesla",
+     "?",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 6,
+   "slot": 0,
+   "card": "tesla",
+   "wall": "09:36:06.040",
+   "first": {
+    "dt": 0.25,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "?",
+     "tornado",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.64,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 0,
+    "now": [
+     "?",
+     "tornado",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 6,
+   "slot": 0,
+   "card": "tornado",
+   "wall": "09:36:14.233",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "x_bow",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 1.09,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 0,
+    "now": [
+     "?",
+     "?",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 6,
+   "slot": 0,
+   "card": "skeletons",
+   "wall": "09:36:29.931",
+   "first": {
+    "dt": 0.25,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 4,
+    "now": [
+     "?",
+     "x_bow",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.99,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 5,
+    "now": [
+     "?",
+     "x_bow",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 6,
+   "slot": 0,
+   "card": "ice_wizard",
+   "wall": "09:36:32.085",
+   "first": {
+    "dt": 0.25,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "the_log",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.62,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 2,
+    "now": [
+     "?",
+     "the_log",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 6,
+   "slot": 0,
+   "card": "the_log",
+   "wall": "09:36:41.260",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 4,
+    "now": [
+     "?",
+     "x_bow",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.57,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 4,
+    "now": [
+     "?",
+     "x_bow",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 6,
+   "slot": 0,
+   "card": "tesla",
+   "wall": "09:36:43.462",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "?",
+     "?",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.63,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 0,
+    "now": [
+     "?",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 6,
+   "slot": 0,
+   "card": "tornado",
+   "wall": "09:36:50.867",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "x_bow",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.89,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 0,
+    "now": [
+     "?",
+     "tornado",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 6,
+   "slot": 0,
+   "card": "skeletons",
+   "wall": "09:37:00.183",
+   "first": {
+    "dt": 1.05,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "the_log",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 1.05,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "the_log",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 6,
+   "slot": 0,
+   "card": "ice_wizard",
+   "wall": "09:37:06.681",
+   "first": {
+    "dt": 0.92,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "the_log",
+     "knight",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.92,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "the_log",
+     "knight",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 6,
+   "slot": 1,
+   "card": "x_bow",
+   "wall": "09:37:17.027",
+   "first": {
+    "dt": 0.73,
+    "slot_now": "?",
+    "elixir_before": 8,
+    "elixir_now": 5,
+    "now": [
+     "the_log",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.73,
+    "slot_now": "?",
+    "elixir_before": 8,
+    "elixir_now": 5,
+    "now": [
+     "the_log",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 6,
+   "slot": 0,
+   "card": "the_log",
+   "wall": "09:37:18.204",
+   "first": {
+    "dt": 0.7,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.7,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 6,
+   "slot": 0,
+   "card": "tornado",
+   "wall": "09:37:21.568",
+   "first": {
+    "dt": 0.71,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.71,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 6,
+   "slot": 0,
+   "card": "skeletons",
+   "wall": "09:37:24.065",
+   "first": {
+    "dt": 0.73,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.73,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 6,
+   "slot": 0,
+   "card": "ice_wizard",
+   "wall": "09:37:27.444",
+   "first": {
+    "dt": 0.69,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "tesla",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.69,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "tesla",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 6,
+   "slot": 1,
+   "card": "tesla_evo",
+   "wall": "09:37:33.827",
+   "first": {
+    "dt": 0.3,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 4,
+    "now": [
+     "tesla",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.69,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "?",
+     "knight",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 6,
+   "slot": 1,
+   "card": "the_log",
+   "wall": "09:37:36.343",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.99,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "?",
+     "knight",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 6,
+   "slot": 1,
+   "card": "tornado",
+   "wall": "09:37:39.290",
+   "first": {
+    "dt": 0.26,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "tornado",
+     "?",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.61,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 0,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 6,
+   "slot": 1,
+   "card": "skeletons",
+   "wall": "09:37:43.198",
+   "first": {
+    "dt": 0.31,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.66,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 2,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 7,
+   "slot": 0,
+   "card": "x_bow",
+   "wall": "09:38:11.247",
+   "first": {
+    "dt": 0.29,
+    "slot_now": "?",
+    "elixir_before": 10,
+    "elixir_now": 5,
+    "now": [
+     "?",
+     "skeletons",
+     "ice_wizard",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 1.11,
+    "slot_now": "?",
+    "elixir_before": 10,
+    "elixir_now": 4,
+    "now": [
+     "?",
+     "skeletons",
+     "ice_wizard",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 7,
+   "slot": 0,
+   "card": "tornado",
+   "wall": "09:38:21.353",
+   "first": {
+    "dt": 0.26,
+    "slot_now": "?",
+    "elixir_before": 6,
+    "elixir_now": 4,
+    "now": [
+     "?",
+     "skeletons",
+     "ice_wizard",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 1.01,
+    "slot_now": "?",
+    "elixir_before": 6,
+    "elixir_now": 4,
+    "now": [
+     "?",
+     "skeletons",
+     "ice_wizard",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 7,
+   "slot": 1,
+   "card": "skeletons",
+   "wall": "09:38:22.807",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "knight",
+     "?",
+     "ice_wizard",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.67,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "knight",
+     "?",
+     "ice_wizard",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 7,
+   "slot": 0,
+   "card": "knight",
+   "wall": "09:38:24.263",
+   "first": {
+    "dt": 0.31,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 4,
+    "now": [
+     "?",
+     "the_log",
+     "ice_wizard",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.66,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "the_log",
+     "ice_wizard",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 7,
+   "slot": 1,
+   "card": "the_log",
+   "wall": "09:38:29.680",
+   "first": {
+    "dt": 0.3,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "?",
+     "ice_wizard",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.91,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "?",
+     "ice_wizard",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 7,
+   "slot": 2,
+   "card": "ice_wizard",
+   "wall": "09:38:37.777",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "tesla",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.59,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 7,
+   "slot": 2,
+   "card": "tornado",
+   "wall": "09:38:44.364",
+   "first": {
+    "dt": 0.25,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "tesla",
+     "x_bow",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.58,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 0,
+    "now": [
+     "tesla",
+     "tornado",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 7,
+   "slot": 2,
+   "card": "skeletons",
+   "wall": "09:38:46.892",
+   "first": {
+    "dt": 0.3,
+    "slot_now": "?",
+    "elixir_before": 1,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "x_bow",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.67,
+    "slot_now": "?",
+    "elixir_before": 1,
+    "elixir_now": 0,
+    "now": [
+     "tesla",
+     "x_bow",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 7,
+   "slot": 0,
+   "card": "tesla",
+   "wall": "09:38:58.683",
+   "first": {
+    "dt": 0.26,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "?",
+     "x_bow",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.86,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 0,
+    "now": [
+     "?",
+     "tornado",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 7,
+   "slot": 0,
+   "card": "the_log",
+   "wall": "09:39:12.346",
+   "first": {
+    "dt": 0.24,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 2,
+    "now": [
+     "?",
+     "ice_wizard",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 1.08,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "ice_wizard",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 7,
+   "slot": 1,
+   "card": "x_bow",
+   "wall": "09:39:23.636",
+   "first": {
+    "dt": 0.3,
+    "slot_now": "?",
+    "elixir_before": 7,
+    "elixir_now": 6,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.66,
+    "slot_now": "?",
+    "elixir_before": 7,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 7,
+   "slot": 1,
+   "card": "tornado",
+   "wall": "09:39:31.132",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "tornado",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.64,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 7,
+   "slot": 1,
+   "card": "skeletons",
+   "wall": "09:39:34.691",
+   "first": {
+    "dt": 0.26,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.57,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 7,
+   "slot": 0,
+   "card": "ice_wizard",
+   "wall": "09:39:45.484",
+   "first": {
+    "dt": 1.2,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "ice_wizard",
+     "knight",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 1.2,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "ice_wizard",
+     "knight",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 7,
+   "slot": 0,
+   "card": "the_log",
+   "wall": "09:39:49.762",
+   "first": {
+    "dt": 1.06,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "tesla",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 1.06,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "tesla",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 7,
+   "slot": 1,
+   "card": "tesla",
+   "wall": "09:39:56.891",
+   "first": {
+    "dt": 0.67,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.67,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 7,
+   "slot": 1,
+   "card": "tornado",
+   "wall": "09:40:01.024",
+   "first": {
+    "dt": 0.58,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.58,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 7,
+   "slot": 1,
+   "card": "skeletons",
+   "wall": "09:40:05.040",
+   "first": {
+    "dt": 0.76,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 2,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.76,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 2,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 7,
+   "slot": 1,
+   "card": "ice_wizard",
+   "wall": "09:40:07.784",
+   "first": {
+    "dt": 0.63,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "tesla",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.63,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "tesla",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 7,
+   "slot": 1,
+   "card": "the_log",
+   "wall": "09:40:10.475",
+   "first": {
+    "dt": 0.76,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.76,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 7,
+   "slot": 1,
+   "card": "tesla_evo",
+   "wall": "09:40:16.251",
+   "first": {
+    "dt": 0.76,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "tesla",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.76,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "tesla",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 7,
+   "slot": 1,
+   "card": "tornado",
+   "wall": "09:40:19.062",
+   "first": {
+    "dt": 0.3,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "tornado",
+     "?",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.63,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 7,
+   "slot": 0,
+   "card": "x_bow",
+   "wall": "09:40:27.590",
+   "first": {
+    "dt": 0.26,
+    "slot_now": "?",
+    "elixir_before": 6,
+    "elixir_now": 5,
+    "now": [
+     "?",
+     "skeletons",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.86,
+    "slot_now": "?",
+    "elixir_before": 6,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "skeletons",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 7,
+   "slot": 1,
+   "card": "skeletons",
+   "wall": "09:40:30.067",
+   "first": {
+    "dt": 0.25,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.62,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 7,
+   "slot": 1,
+   "card": "the_log",
+   "wall": "09:40:33.434",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.63,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "ice_wizard",
+     "?",
+     "knight",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 7,
+   "slot": 0,
+   "card": "ice_wizard",
+   "wall": "09:40:36.114",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "tesla",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.65,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 7,
+   "slot": 0,
+   "card": "tornado",
+   "wall": "09:40:39.837",
+   "first": {
+    "dt": 0.29,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "?",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.64,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 0,
+    "now": [
+     "?",
+     "?",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 7,
+   "slot": 1,
+   "card": "tesla",
+   "wall": "09:40:45.712",
+   "first": {
+    "dt": 0.29,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "tornado",
+     "?",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 1.15,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 7,
+   "slot": 1,
+   "card": "skeletons",
+   "wall": "09:40:47.917",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 1,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.63,
+    "slot_now": "?",
+    "elixir_before": 1,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 7,
+   "slot": 1,
+   "card": "the_log",
+   "wall": "09:40:50.606",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 2,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.9,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 0,
+   "card": "the_log",
+   "wall": "09:41:21.261",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 10,
+    "elixir_now": 7,
+    "now": [
+     "?",
+     "tesla",
+     "skeletons",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.62,
+    "slot_now": "?",
+    "elixir_before": 10,
+    "elixir_now": 8,
+    "now": [
+     "?",
+     "tesla",
+     "skeletons",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 1,
+   "card": "tesla",
+   "wall": "09:41:32.509",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 10,
+    "elixir_now": 5,
+    "now": [
+     "tornado",
+     "?",
+     "skeletons",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.89,
+    "slot_now": "?",
+    "elixir_before": 10,
+    "elixir_now": 6,
+    "now": [
+     "tornado",
+     "?",
+     "skeletons",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 2,
+   "card": "skeletons",
+   "wall": "09:41:34.219",
+   "first": {
+    "dt": 0.3,
+    "slot_now": "?",
+    "elixir_before": 6,
+    "elixir_now": 4,
+    "now": [
+     "tornado",
+     "x_bow",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": null,
+   "verdict": "no_settled"
+  },
+  {
+   "match": 8,
+   "slot": 0,
+   "card": "tornado",
+   "wall": "09:41:34.961",
+   "first": {
+    "dt": 0.32,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "the_log",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.63,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 2,
+    "now": [
+     "?",
+     "the_log",
+     "ice_wizard",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 0,
+   "card": "knight",
+   "wall": "09:41:37.739",
+   "first": {
+    "dt": 0.3,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "x_bow",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.63,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 0,
+    "now": [
+     "?",
+     "tornado",
+     "ice_wizard",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 0,
+   "card": "the_log",
+   "wall": "09:41:59.579",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 8,
+    "elixir_now": 6,
+    "now": [
+     "?",
+     "x_bow",
+     "ice_wizard",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.62,
+    "slot_now": "?",
+    "elixir_before": 8,
+    "elixir_now": 6,
+    "now": [
+     "?",
+     "x_bow",
+     "ice_wizard",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 2,
+   "card": "ice_wizard",
+   "wall": "09:42:04.910",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 7,
+    "elixir_now": 5,
+    "now": [
+     "tesla",
+     "x_bow",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.65,
+    "slot_now": "?",
+    "elixir_before": 7,
+    "elixir_now": 5,
+    "now": [
+     "tesla",
+     "x_bow",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 0,
+   "card": "tesla",
+   "wall": "09:42:05.993",
+   "first": {
+    "dt": 0.31,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 4,
+    "now": [
+     "?",
+     "tesla",
+     "skeletons",
+     "?"
+    ]
+   },
+   "settled": {
+    "dt": 1.11,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "the_log",
+     "skeletons",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 2,
+   "card": "skeletons",
+   "wall": "09:42:08.179",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "tornado",
+     "tesla",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.64,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "tornado",
+     "tesla",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 0,
+   "card": "tornado",
+   "wall": "09:42:19.799",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "the_log",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.63,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 2,
+    "now": [
+     "?",
+     "the_log",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 0,
+   "card": "the_log",
+   "wall": "09:42:27.952",
+   "first": {
+    "dt": 0.31,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "ice_wizard",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.69,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "ice_wizard",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 0,
+   "card": "ice_wizard",
+   "wall": "09:42:30.878",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "tesla",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.66,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "tesla",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 0,
+   "card": "tesla_evo",
+   "wall": "09:42:39.363",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "?",
+     "x_bow",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.93,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 0,
+    "now": [
+     "?",
+     "tornado",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 1,
+   "card": "x_bow",
+   "wall": "09:42:57.247",
+   "first": {
+    "dt": 1.18,
+    "slot_now": "?",
+    "elixir_before": 6,
+    "elixir_now": 5,
+    "now": [
+     "skeletons",
+     "?",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 1.18,
+    "slot_now": "?",
+    "elixir_before": 6,
+    "elixir_now": 5,
+    "now": [
+     "skeletons",
+     "?",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 0,
+   "card": "skeletons",
+   "wall": "09:43:05.111",
+   "first": {
+    "dt": 0.73,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "tornado",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.73,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "tornado",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 0,
+   "card": "the_log",
+   "wall": "09:43:07.786",
+   "first": {
+    "dt": 0.79,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "tornado",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.79,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "?",
+     "tornado",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 1,
+   "card": "tornado",
+   "wall": "09:43:09.855",
+   "first": {
+    "dt": 0.69,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.69,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 8,
+   "slot": 0,
+   "card": "ice_wizard",
+   "wall": "09:43:15.419",
+   "first": {
+    "dt": 0.75,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "tesla",
+     "knight",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.75,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "?",
+     "tesla",
+     "knight",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 1,
+   "card": "tesla",
+   "wall": "09:43:19.924",
+   "first": {
+    "dt": 0.68,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.68,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 8,
+   "slot": 1,
+   "card": "skeletons",
+   "wall": "09:43:22.636",
+   "first": {
+    "dt": 0.74,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.74,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 8,
+   "slot": 1,
+   "card": "the_log",
+   "wall": "09:43:25.806",
+   "first": {
+    "dt": 0.76,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.76,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 1,
+   "card": "tornado",
+   "wall": "09:43:28.635",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "tesla",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.59,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 1,
+   "card": "ice_wizard",
+   "wall": "09:43:32.692",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "tesla",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.62,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 1,
+   "card": "tesla",
+   "wall": "09:43:36.973",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "tornado",
+     "?",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.65,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 0,
+    "now": [
+     "tornado",
+     "?",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 1,
+   "card": "skeletons",
+   "wall": "09:43:39.984",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 1.06,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 8,
+   "slot": 1,
+   "card": "the_log",
+   "wall": "09:43:42.095",
+   "first": {
+    "dt": 0.29,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.9,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 1,
+   "card": "tornado",
+   "wall": "09:43:47.324",
+   "first": {
+    "dt": 0.27,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "the_log",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 1.06,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 1,
+   "card": "ice_wizard",
+   "wall": "09:43:52.631",
+   "first": {
+    "dt": 0.28,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 3,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.66,
+    "slot_now": "?",
+    "elixir_before": 5,
+    "elixir_now": 3,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 1,
+   "card": "tesla_evo",
+   "wall": "09:43:55.300",
+   "first": {
+    "dt": 0.26,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "tornado",
+     "?",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.62,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 0,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 1,
+   "card": "skeletons",
+   "wall": "09:43:59.321",
+   "first": {
+    "dt": 0.3,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.68,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 1,
+   "card": "the_log",
+   "wall": "09:44:01.271",
+   "first": {
+    "dt": 0.32,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.69,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "?",
+     "knight",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 1,
+   "card": "tornado",
+   "wall": "09:44:04.073",
+   "first": {
+    "dt": 0.39,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.97,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 1,
+   "card": "ice_wizard",
+   "wall": "09:44:09.905",
+   "first": {
+    "dt": 0.4,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "the_log",
+     "?",
+     "knight",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.88,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 1,
+   "card": "tesla",
+   "wall": "09:44:13.889",
+   "first": {
+    "dt": 0.36,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.79,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 1,
+   "card": "skeletons",
+   "wall": "09:44:16.336",
+   "first": {
+    "dt": 0.38,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.86,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "ambiguous"
+  },
+  {
+   "match": 8,
+   "slot": 1,
+   "card": "the_log",
+   "wall": "09:44:18.711",
+   "first": {
+    "dt": 0.38,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.82,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 1,
+    "now": [
+     "tesla",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 1,
+   "card": "tornado",
+   "wall": "09:44:22.066",
+   "first": {
+    "dt": 0.36,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 3,
+    "now": [
+     "tornado",
+     "?",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.81,
+    "slot_now": "?",
+    "elixir_before": 3,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 1,
+   "card": "ice_wizard",
+   "wall": "09:44:27.667",
+   "first": {
+    "dt": 0.38,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 3,
+    "now": [
+     "tesla",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.79,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "?",
+     "knight",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 1,
+   "card": "tesla",
+   "wall": "09:44:31.855",
+   "first": {
+    "dt": 0.37,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 4,
+    "now": [
+     "tornado",
+     "?",
+     "tornado",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.84,
+    "slot_now": "?",
+    "elixir_before": 4,
+    "elixir_now": 1,
+    "now": [
+     "ice_wizard",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "deployed"
+  },
+  {
+   "match": 8,
+   "slot": 1,
+   "card": "skeletons",
+   "wall": "09:44:35.076",
+   "first": {
+    "dt": 0.38,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "?",
+     "knight",
+     "rocket"
+    ]
+   },
+   "settled": {
+    "dt": 0.86,
+    "slot_now": "?",
+    "elixir_before": 2,
+    "elixir_now": 2,
+    "now": [
+     "the_log",
+     "?",
+     "?",
+     "rocket"
+    ]
+   },
+   "verdict": "ambiguous"
+  }
+ ]
+}
