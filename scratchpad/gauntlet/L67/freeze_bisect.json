@@ -1,0 +1,290 @@
+{
+ "n": 121,
+ "excluded_opening_stalls": 22,
+ "by_why": {
+  "pinned_hi": 68,
+  "stall": 53
+ },
+ "side_cols": {
+  "0": 1,
+  "1": 2,
+  "-1": 3
+ },
+ "rescore_max_abs_err": 3.129243850708008e-07,
+ "base_mean_p": 0.028680037707090378,
+ "base": {
+  "mean_p": 0.0287,
+  "frac_over_tau": 0.0
+ },
+ "arms": {
+  "board_empty": {
+   "mean_p": 0.0292,
+   "frac_over_tau": 0.0,
+   "mean_delta": 0.0005,
+   "frac_over_tau_pinned_hi": 0.0,
+   "frac_over_tau_stall": 0.0
+  },
+  "enemy_units_off": {
+   "mean_p": 0.0287,
+   "frac_over_tau": 0.0,
+   "mean_delta": 0.0,
+   "frac_over_tau_pinned_hi": 0.0,
+   "frac_over_tau_stall": 0.0
+  },
+  "my_units_off": {
+   "mean_p": 0.0287,
+   "frac_over_tau": 0.0,
+   "mean_delta": 0.0,
+   "frac_over_tau_pinned_hi": 0.0,
+   "frac_over_tau_stall": 0.0
+  },
+  "unknown_side_off": {
+   "mean_p": 0.0287,
+   "frac_over_tau": 0.0,
+   "mean_delta": 0.0,
+   "frac_over_tau_pinned_hi": 0.0,
+   "frac_over_tau_stall": 0.0
+  },
+  "spells_off": {
+   "mean_p": 0.0304,
+   "frac_over_tau": 0.008,
+   "mean_delta": 0.0017,
+   "frac_over_tau_pinned_hi": 0.0,
+   "frac_over_tau_stall": 0.019
+  },
+  "unit_hp_known_full": {
+   "mean_p": 0.0287,
+   "frac_over_tau": 0.0,
+   "mean_delta": 0.0,
+   "frac_over_tau_pinned_hi": 0.0,
+   "frac_over_tau_stall": 0.0
+  },
+  "unit_conf_1": {
+   "mean_p": 0.0285,
+   "frac_over_tau": 0.0,
+   "mean_delta": -0.0002,
+   "frac_over_tau_pinned_hi": 0.0,
+   "frac_over_tau_stall": 0.0
+  },
+  "unit_age_unknown": {
+   "mean_p": 0.0287,
+   "frac_over_tau": 0.0,
+   "mean_delta": 0.0,
+   "frac_over_tau_pinned_hi": 0.0,
+   "frac_over_tau_stall": 0.0
+  },
+  "unit_deploying_unknown": {
+   "mean_p": 0.0287,
+   "frac_over_tau": 0.0,
+   "mean_delta": 0.0,
+   "frac_over_tau_pinned_hi": 0.0,
+   "frac_over_tau_stall": 0.0
+  },
+  "past_clear": {
+   "mean_p": 0.3188,
+   "frac_over_tau": 0.397,
+   "mean_delta": 0.2901,
+   "frac_over_tau_pinned_hi": 0.353,
+   "frac_over_tau_stall": 0.453
+  },
+  "past_age_3s": {
+   "mean_p": 0.0457,
+   "frac_over_tau": 0.033,
+   "mean_delta": 0.017,
+   "frac_over_tau_pinned_hi": 0.0,
+   "frac_over_tau_stall": 0.075
+  },
+  "past_age_60s": {
+   "mean_p": 0.1221,
+   "frac_over_tau": 0.14,
+   "mean_delta": 0.0934,
+   "frac_over_tau_pinned_hi": 0.118,
+   "frac_over_tau_stall": 0.17
+  },
+  "elixir_10": {
+   "mean_p": 0.0653,
+   "frac_over_tau": 0.041,
+   "mean_delta": 0.0366,
+   "frac_over_tau_pinned_hi": 0.015,
+   "frac_over_tau_stall": 0.075
+  },
+  "elixir_6": {
+   "mean_p": 0.0084,
+   "frac_over_tau": 0.0,
+   "mean_delta": -0.0203,
+   "frac_over_tau_pinned_hi": 0.0,
+   "frac_over_tau_stall": 0.0
+  },
+  "elixir_exact_on": {
+   "mean_p": 0.0263,
+   "frac_over_tau": 0.0,
+   "mean_delta": -0.0024,
+   "frac_over_tau_pinned_hi": 0.0,
+   "frac_over_tau_stall": 0.0
+  },
+  "opp_elixir_5_known": {
+   "mean_p": 0.0086,
+   "frac_over_tau": 0.0,
+   "mean_delta": -0.0201,
+   "frac_over_tau_pinned_hi": 0.0,
+   "frac_over_tau_stall": 0.0
+  },
+  "time_60s_single": {
+   "mean_p": 0.0232,
+   "frac_over_tau": 0.008,
+   "mean_delta": -0.0055,
+   "frac_over_tau_pinned_hi": 0.0,
+   "frac_over_tau_stall": 0.019
+  },
+  "time_150s_double": {
+   "mean_p": 0.0651,
+   "frac_over_tau": 0.066,
+   "mean_delta": 0.0364,
+   "frac_over_tau_pinned_hi": 0.015,
+   "frac_over_tau_stall": 0.132
+  },
+  "towers_full_known": {
+   "mean_p": 0.0291,
+   "frac_over_tau": 0.008,
+   "mean_delta": 0.0005,
+   "frac_over_tau_pinned_hi": 0.0,
+   "frac_over_tau_stall": 0.019
+  },
+  "towers_hp_unknown": {
+   "mean_p": 0.1545,
+   "frac_over_tau": 0.215,
+   "mean_delta": 0.1258,
+   "frac_over_tau_pinned_hi": 0.103,
+   "frac_over_tau_stall": 0.358
+  },
+  "next_unknown": {
+   "mean_p": 0.2097,
+   "frac_over_tau": 0.273,
+   "mean_delta": 0.181,
+   "frac_over_tau_pinned_hi": 0.235,
+   "frac_over_tau_stall": 0.321
+  },
+  "noise_unit_xy_2pct": {
+   "mean_p": 0.0293,
+   "frac_over_tau": 0.008,
+   "mean_delta": 0.0007,
+   "frac_over_tau_pinned_hi": 0.0,
+   "frac_over_tau_stall": 0.019
+  },
+  "noise_time_2pct": {
+   "mean_p": 0.0287,
+   "frac_over_tau": 0.0,
+   "mean_delta": 0.0,
+   "frac_over_tau_pinned_hi": 0.0,
+   "frac_over_tau_stall": 0.0
+  }
+ },
+ "distribution": {
+  "live_captured": {
+   "t": 0.364,
+   "double": 0.479,
+   "overtime": 0.033,
+   "elixir": 0.877,
+   "exact": 0.0,
+   "opp_known": 0.0,
+   "hand_unmapped_slots": 0.083,
+   "next_unmapped": 0.0,
+   "tower_hp_known": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "tower_alive": [
+    1.0,
+    0.68,
+    0.85,
+    0.98,
+    0.88,
+    0.83
+   ],
+   "tokens_per_state": 2.21,
+   "side_0": 0.172,
+   "side_1": 0.825,
+   "side_-1": 0.004,
+   "hp_known": 1.0,
+   "deploying_known": 0.0,
+   "age_known": 0.0,
+   "conf_mean": 0.75,
+   "is_spell": 0.138,
+   "past_slots_filled": 2.94,
+   "past_age_median": 16.89,
+   "past_age_p90": 30.1
+  },
+  "train_elixir_ge_8": {
+   "t": 0.36,
+   "double": 0.421,
+   "overtime": 0.204,
+   "elixir": 0.916,
+   "exact": 1.0,
+   "opp_known": 1.0,
+   "hand_unmapped_slots": 0.0,
+   "next_unmapped": 0.0,
+   "tower_hp_known": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "tower_alive": [
+    1.0,
+    0.99,
+    0.99,
+    1.0,
+    0.99,
+    0.99
+   ],
+   "tokens_per_state": 3.45,
+   "side_0": 0.385,
+   "side_1": 0.615,
+   "side_-1": 0.0,
+   "hp_known": 1.0,
+   "deploying_known": 0.0,
+   "age_known": 0.0,
+   "conf_mean": 1.0,
+   "is_spell": 0.0,
+   "past_slots_filled": 2.46,
+   "past_age_median": 12.25,
+   "past_age_p90": 28.45,
+   "gate_play_rate": 0.388
+  },
+  "train_all": {
+   "t": 0.423,
+   "double": 0.519,
+   "overtime": 0.263,
+   "elixir": 0.633,
+   "exact": 1.0,
+   "opp_known": 1.0,
+   "hand_unmapped_slots": 0.0,
+   "next_unmapped": 0.0,
+   "tower_hp_known": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "tower_alive": [
+    1.0,
+    0.99,
+    0.99,
+    1.0,
+    0.98,
+    0.98
+   ],
+   "past_slots_filled": 2.75,
+   "past_age_median": 8.75,
+   "past_age_p90": 22.15
+  }
+ }
+}

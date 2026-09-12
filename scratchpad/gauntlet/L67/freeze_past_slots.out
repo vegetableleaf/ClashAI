@@ -1,0 +1,24 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+slot names {0: 'tornado', 1: 'tesla_evo', 2: 'ice_wizard', 3: 'x_bow', 4: 'rocket', 5: 'knight_evo', 6: 'the_log', 7: 'skeletons'}
+LIVE 3-play sequence frequency in training: median 0.00e+00 | share never seen 0.719 | share < 1e-4 0.719
+TRAIN rows own sequence frequency:        median 4.28e-03 | share < 1e-4 0.000
+share with a repeated card in past: live 0.719  train 0.000
+most common live sequences: [(['ice_wizard', 'skeletons', 'ice_wizard'], 11), (['the_log', 'knight_evo', 'the_log'], 8), (['skeletons', 'ice_wizard', 'ice_wizard'], 6), (['ice_wizard', 'ice_wizard', 'the_log'], 5), (['ice_wizard', 'the_log', 'ice_wizard'], 5), (['the_log', 'ice_wizard', 'ice_wizard'], 5)]
+TRAIN pro play rate at elixir>=8: empty past 0.205 (n=9142)
+  latest=tornado          age 10-25s: play rate 0.373 (n=1726) | live latest share 0.132
+  latest=tesla_evo        age 10-25s: play rate 0.423 (n=2886) | live latest share 0.041
+  latest=ice_wizard       age 10-25s: play rate 0.389 (n=2265) | live latest share 0.397
+  latest=x_bow            age 10-25s: play rate 0.415 (n=1475) | live latest share 0.000
+  latest=rocket           age 10-25s: play rate 0.364 (n=1450) | live latest share 0.000
+  latest=knight_evo       age 10-25s: play rate 0.403 (n=2310) | live latest share 0.025
+  latest=the_log          age 10-25s: play rate 0.351 (n=2401) | live latest share 0.314
+  latest=skeletons        age 10-25s: play rate 0.350 (n=2536) | live latest share 0.091
+  remove slot id tornado          (in  30 states): mean p 0.040 -> 0.180, >tau 0.27
+  remove slot id tesla_evo        (in  18 states): mean p 0.041 -> 0.122, >tau 0.11
+  remove slot id ice_wizard       (in  77 states): mean p 0.025 -> 0.521, >tau 0.65
+  remove slot id x_bow            (in   4 states): mean p 0.001 -> 0.000, >tau 0.00
+  remove slot id rocket           (in   4 states): mean p 0.070 -> 0.093, >tau 0.25
+  remove slot id knight_evo       (in  17 states): mean p 0.021 -> 0.097, >tau 0.12
+  remove slot id the_log          (in  66 states): mean p 0.028 -> 0.295, >tau 0.42
+  remove slot id skeletons        (in  45 states): mean p 0.031 -> 0.039, >tau 0.04

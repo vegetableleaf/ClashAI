@@ -1,0 +1,916 @@
+[play] policy policy_rl.pt loaded (RL gate ON).
+.\icebow\.venv\Scripts\python.exe : 
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: 
+UserWarning: enable_nested_tensor is True, but 
+self.use_nested_tensor is False because 
+encoder_layer.norm_first was True
+At line:1 char:1
++ .\icebow\.venv\Scripts\python.exe -u 
+icebow\run.py play --student dat ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C:\Us 
+   ers\benpe\..._first was True:String) [], Remot  
+  eException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  self.encoder = nn.TransformerEncoder(enc, layers)
+[play] S1 STUDENT ON: s1_icebow_v6lat_s0.pt (epoch 15, grid lattice, gate tau 0.27, anti-stall 9 elixir / 12s) -- the old policy is loaded but only used for the frames the student declines to answer.
+[play] opp-memory slot 5 source: opp_estimate
+[play] live search unavailable (name 'card_db' is not defined); continuing on the policy alone
+20:52:47 [play] running on cuda. Ctrl+C to stop, or slam the mouse into a screen corner for the failsafe. It navigates menus and plays in-match on its own.
+20:52:47 [play] logging to C:\Users\benpe\ClashBot\icebow\data\play_20260911_205247.log
+20:52:47 [play] state: HOME
+20:52:47 [nav] HOME -> Battle (located) (0.509,0.789)
+20:52:48 [play] state: UNKNOWN
+20:52:54 [play] state: IN_MATCH
+[student] STALL-PLAY the_log p=0.00 cell 237 board (0.19, 0.55) units 0 17 ms
+[student] WAIT p=0.11 elixir 8 opp~? units 1 dets 2 (waits 10/11 badhand 3/11)
+[student] PLAY tornado p=0.32 cell 333 board (0.53, 0.77) units 1 32 ms
+[student] WAIT p=0.15 elixir 8 opp~? units 0 dets 0 (waits 20/22 badhand 5/22)
+[student] PLAY x_bow p=0.29 cell 267 board (0.86, 0.61) units 0 40 ms
+[student] PLAY ice_wizard p=0.80 cell 246 board (0.69, 0.55) units 1 26 ms
+[student] WAIT | exact=0 opp=? next=6 t=22s hand=[7, 164, 0, 4] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.03 elixir 2 opp~? units 3 dets 3 (waits 30/34 badhand 10/34)
+[student] PLAY skeletons p=0.28 cell 247 board (0.75, 0.55) units 3 19 ms
+[student] WAIT | exact=0 opp=? next=0 t=30s hand=[6, 164, 149, 4] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.03 elixir 3 opp~? units 5 dets 5 (waits 40/45 badhand 10/45)
+[student] PLAY tesla p=0.29 cell 247 board (0.72, 0.56) units 3 27 ms
+[student] WAIT | exact=0 opp=? next=3 t=38s hand=[6, 0, 149, 4] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.04 elixir 2 opp~? units 3 dets 3 (waits 50/56 badhand 11/56)
+[student] PLAY the_log p=0.28 cell 273 board (0.19, 0.64) units 2 30 ms
+[student] PLAY tornado p=0.78 cell 333 board (0.53, 0.77) units 2 18 ms
+[student] PLAY tornado p=0.42 cell 237 board (0.19, 0.58) units 3 24 ms
+[student] WAIT p=0.13 elixir 3 opp~? units 1 dets 1 (waits 60/69 badhand 16/69)
+[student] PLAY ice_wizard p=0.28 cell 236 board (0.14, 0.58) units 2 24 ms
+[student] WAIT p=0.09 elixir 5 opp~? units 2 dets 2 (waits 70/80 badhand 17/80)
+[student] WAIT p=0.06 elixir 7 opp~? units 2 dets 2 (waits 80/90 badhand 17/90)
+[student] PLAY knight p=0.49 cell 332 board (0.47, 0.77) units 2 26 ms
+[student] PLAY x_bow p=0.49 cell 267 board (0.86, 0.61) units 1 36 ms
+[student] PLAY skeletons p=0.72 cell 351 board (0.53, 0.83) units 3 19 ms
+[student] PLAY the_log p=0.38 cell 346 board (0.25, 0.83) units 6 34 ms
+20:54:16 [play] UNKNOWN 0.5s after in-match -> grace hold (label lost: overtime / end animation / dropout; up to 150s)
+20:54:23 [play] state: MATCH_END
+[overlay-replay] saved C:\Users\benpe\ClashBot\icebow\data\overlayed_replays\match_20260911_205254.mp4 (4416 frames, captured 26.6 fps)
+20:54:23 [nav] MATCH_END -> Play Again (located) (0.348,0.914)
+20:54:24 [play] state: UNKNOWN
+20:54:30 [play] state: IN_MATCH
+[student] WAIT | exact=0 opp=? next=164 t=4s hand=[0, 4, 149, 6] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.00 elixir 8 opp~? units 0 dets 0 (waits 90/104 badhand 22/104)
+[student] STALL-PLAY the_log p=0.01 cell 237 board (0.19, 0.55) units 0 18 ms
+[student] PLAY tornado p=0.37 cell 384 board (0.36, 0.89) units 1 22 ms
+[student] PLAY tesla p=0.82 cell 325 board (0.06, 0.75) units 2 22 ms
+[student] PLAY knight p=0.40 cell 364 board (0.25, 0.86) units 2 30 ms
+[student] WAIT p=0.09 elixir 2 opp~? units 2 dets 2 (waits 100/118 badhand 32/118)
+[student] WAIT p=0.15 elixir 5 opp~? units 2 dets 2 (waits 110/128 badhand 42/128)
+[student] PLAY x_bow p=0.29 cell 254 board (0.14, 0.61) units 1 19 ms
+[student] PLAY skeletons p=0.81 cell 235 board (0.08, 0.55) units 2 16 ms
+[student] PLAY skeletons p=0.57 cell 238 board (0.25, 0.55) units 4 19 ms
+[student] WAIT | exact=0 opp=? next=0 t=32s hand=[6, 4, 149, 2] tw=1.00.71.01.01.01.0 sp=0 unk=0 p=0.03 elixir 2 opp~? units 3 dets 3 (waits 120/141 badhand 45/141)
+[student] PLAY knight p=0.36 cell 238 board (0.25, 0.55) units 3 20 ms
+[student] WAIT | exact=0 opp=? next=164 t=43s hand=[6, 4, 0, 2] tw=1.00.71.01.01.01.0 sp=0 unk=0 p=0.02 elixir 3 opp~? units 1 dets 1 (waits 130/152 badhand 46/152)
+[student] WAIT | exact=0 opp=? next=164 t=49s hand=[6, 4, 0, 2] tw=1.00.71.01.01.01.0 sp=0 unk=0 p=0.02 elixir 5 opp~? units 2 dets 2 (waits 140/162 badhand 46/162)
+[student] PLAY ice_wizard p=0.28 cell 314 board (0.47, 0.73) units 2 31 ms
+[student] PLAY the_log p=0.74 cell 237 board (0.19, 0.55) units 3 37 ms
+[student] PLAY ice_wizard p=0.70 cell 236 board (0.14, 0.55) units 2 36 ms
+[student] WAIT | exact=0 opp=? next=7 t=57s hand=[3, 4, 0, 164] tw=1.00.71.01.01.01.0 sp=1 unk=0 p=0.00 elixir 3 opp~? units 2 dets 3 (waits 150/175 badhand 49/175)
+[student] WAIT | exact=0 opp=? next=7 t=64s hand=[3, 4, 0, 164] tw=1.00.71.01.01.01.0 sp=1 unk=0 p=0.00 elixir 6 opp~? units 1 dets 2 (waits 160/185 badhand 49/185)
+[student] WAIT | exact=0 opp=? next=7 t=70s hand=[3, 4, 0, 164] tw=1.00.71.01.01.01.0 sp=1 unk=0 p=0.00 elixir 8 opp~? units 0 dets 1 (waits 170/195 badhand 49/195)
+[student] STALL-PLAY x_bow p=0.00 cell 254 board (0.14, 0.61) units 0 23 ms
+[student] PLAY tesla p=0.64 cell 239 board (0.28, 0.56) units 1 25 ms
+[student] PLAY skeletons p=0.51 cell 238 board (0.25, 0.55) units 2 26 ms
+[student] PLAY knight p=0.44 cell 238 board (0.25, 0.55) units 4 21 ms
+[student] PLAY ice_wizard p=0.56 cell 297 board (0.53, 0.67) units 5 18 ms
+[student] WAIT p=0.14 elixir 2 opp~? units 5 dets 6 (waits 180/210 badhand 54/210)
+[student] PLAY the_log p=0.48 cell 273 board (0.19, 0.64) units 5 31 ms
+[student] PLAY tornado p=0.79 cell 237 board (0.19, 0.55) units 2 27 ms
+[student] PLAY skeletons p=0.70 cell 241 board (0.42, 0.55) units 1 19 ms
+[student] PLAY the_log p=0.43 cell 328 board (0.25, 0.77) units 2 34 ms
+[student] PLAY knight_evo p=0.59 cell 310 board (0.25, 0.73) units 3 31 ms
+[student] PLAY the_log p=0.44 cell 328 board (0.25, 0.77) units 2 25 ms
+[clock] icon reads x3 but the clock reads x1 -> using the clock (x1)
+[student] WAIT | exact=0 opp=? next=6 t=118s hand=[3, 4, 2, 164] tw=1.00.0x1.01.01.01.0 sp=0 unk=0 p=0.00 elixir 3 opp~? units 2 dets 2 (waits 190/226 badhand 58/226)
+[clock] icon reads x3 but the clock reads x2 -> using the clock (x2)
+20:56:31 [play] elixir x2
+[student] WAIT | exact=0 opp=? next=6 t=126s hand=[3, 4, 2, 164] tw=1.00.0x1.01.01.01.0 sp=1 unk=0 p=0.00 elixir 9 opp~? units 5 dets 6 (waits 200/236 badhand 58/236)
+[student] STALL-PLAY tesla p=0.00 cell 297 board (0.5, 0.69) units 5 32 ms
+[student] PLAY rocket p=0.29 cell 113 board (0.31, 0.27) units 5 29 ms
+[student] PLAY ice_wizard p=0.64 cell 296 board (0.47, 0.7) units 5 28 ms
+[student] PLAY the_log p=0.89 cell 328 board (0.25, 0.77) units 5 35 ms
+[student] PLAY ice_wizard p=0.95 cell 329 board (0.31, 0.77) units 4 20 ms
+[student] PLAY skeletons p=0.78 cell 331 board (0.42, 0.77) units 3 32 ms
+[student] PLAY ice_wizard p=0.90 cell 329 board (0.31, 0.77) units 5 20 ms
+[student] PLAY knight p=0.63 cell 336 board (0.69, 0.77) units 3 29 ms
+[student] PLAY tornado p=0.41 cell 260 board (0.47, 0.61) units 2 24 ms
+[student] PLAY tornado p=0.36 cell 350 board (0.47, 0.83) units 3 48 ms
+[student] WAIT | exact=0 opp=? next=7 t=150s hand=[6, 6, 164, 4] tw=1.00.0x1.01.01.01.0 sp=1 unk=0 p=0.02 elixir 2 opp~? units 1 dets 2 (waits 210/256 badhand 68/256)
+[student] PLAY ice_wizard p=0.40 cell 334 board (0.58, 0.77) units 4 24 ms
+20:57:05 [play] UNKNOWN 0.5s after in-match -> grace hold (label lost: overtime / end animation / dropout; up to 150s)
+20:57:12 [play] state: MATCH_END
+[overlay-replay] saved C:\Users\benpe\ClashBot\icebow\data\overlayed_replays\match_20260911_205430.mp4 (8092 frames, captured 27.2 fps)
+20:57:12 [nav] MATCH_END -> Play Again (located) (0.348,0.914)
+20:57:13 [play] state: UNKNOWN
+20:57:19 [play] state: IN_MATCH
+[student] WAIT | exact=0 opp=? next=2 t=4s hand=[0, 6, 164, 4] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.00 elixir 8 opp~? units 0 dets 0 (waits 220/267 badhand 69/267)
+[student] STALL-PLAY the_log p=0.00 cell 248 board (0.81, 0.55) units 0 37 ms
+[student] WAIT | exact=0 opp=? next=7 t=11s hand=[0, 2, 164, 4] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.01 elixir 9 opp~? units 0 dets 0 (waits 230/278 badhand 71/278)
+[student] STALL-PLAY tesla p=0.23 cell 279 board (0.5, 0.66) units 1 32 ms
+[student] WAIT | exact=0 opp=? next=7 t=19s hand=[0, 2, -1, 4] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.03 elixir 6 opp~? units 2 dets 2 (waits 240/289 badhand 73/289)
+[student] WAIT p=0.10 elixir 8 opp~? units 2 dets 2 (waits 250/299 badhand 74/299)
+[student] PLAY ice_wizard p=0.30 cell 323 board (0.97, 0.73) units 2 23 ms
+[student] PLAY skeletons p=0.28 cell 248 board (0.81, 0.55) units 3 16 ms
+[student] PLAY tornado p=0.28 cell 230 board (0.81, 0.52) units 4 19 ms
+[student] PLAY knight p=0.29 cell 244 board (0.58, 0.55) units 5 24 ms
+[student] PLAY the_log p=0.32 cell 248 board (0.81, 0.55) units 4 24 ms
+[student] WAIT p=0.26 elixir 3 opp~? units 3 dets 3 (waits 260/314 badhand 80/314)
+[student] PLAY ice_wizard p=0.31 cell 297 board (0.53, 0.7) units 2 34 ms
+[student] PLAY skeletons p=0.57 cell 243 board (0.53, 0.55) units 2 19 ms
+[student] WAIT p=0.08 elixir 2 opp~? units 2 dets 3 (waits 270/326 badhand 80/326)
+[student] WAIT p=0.07 elixir 5 opp~? units 2 dets 2 (waits 280/336 badhand 80/336)
+[student] WAIT p=0.17 elixir 7 opp~? units 1 dets 1 (waits 290/346 badhand 80/346)
+[student] PLAY x_bow p=0.29 cell 267 board (0.86, 0.61) units 1 20 ms
+[student] PLAY tesla p=0.65 cell 247 board (0.72, 0.56) units 2 36 ms
+[student] PLAY tesla p=0.65 cell 247 board (0.72, 0.56) units 2 23 ms
+[student] WAIT | exact=0 opp=? next=6 t=79s hand=[0, -1, -1, 4] tw=1.01.01.01.01.00.9 sp=0 unk=0 p=0.03 elixir 4 opp~? units 4 dets 4 (waits 300/359 badhand 91/359)
+[student] PLAY the_log p=0.54 cell 249 board (0.86, 0.55) units 5 29 ms
+[student] WAIT p=0.13 elixir 3 opp~? units 4 dets 6 (waits 310/370 badhand 91/370)
+[student] PLAY ice_wizard p=0.34 cell 316 board (0.58, 0.73) units 3 15 ms
+[student] PLAY tornado p=0.46 cell 227 board (0.64, 0.52) units 3 23 ms
+[student] PLAY skeletons p=0.52 cell 242 board (0.47, 0.55) units 3 18 ms
+[student] PLAY the_log p=0.34 cell 248 board (0.81, 0.55) units 4 20 ms
+[student] PLAY tornado p=0.59 cell 333 board (0.53, 0.77) units 5 19 ms
+[student] WAIT | exact=0 opp=? next=6 t=107s hand=[-1, 6, 149, 4] tw=1.01.01.01.01.00.0x sp=1 unk=0 p=0.03 elixir 2 opp~? units 1 dets 2 (waits 320/385 badhand 94/385)
+[student] PLAY tesla_evo p=0.53 cell 297 board (0.5, 0.69) units 2 19 ms
+[clock] icon reads x3 but the clock reads x1 -> using the clock (x1)
+[clock] icon reads x3 but the clock reads x2 -> using the clock (x2)
+20:59:20 [play] elixir x2
+[student] WAIT p=0.08 elixir 4 opp~? units 2 dets 2 (waits 330/396 badhand 95/396)
+[student] PLAY x_bow p=0.43 cell 254 board (0.14, 0.61) units 2 21 ms
+[student] PLAY the_log p=0.80 cell 237 board (0.19, 0.55) units 3 28 ms
+[student] PLAY skeletons p=0.33 cell 238 board (0.25, 0.55) units 4 33 ms
+[student] PLAY ice_wizard p=0.46 cell 238 board (0.25, 0.55) units 5 24 ms
+[student] PLAY tornado p=0.48 cell 148 board (0.25, 0.36) units 6 19 ms
+[student] PLAY tesla p=0.38 cell 243 board (0.5, 0.56) units 6 30 ms
+[student] PLAY tornado p=0.54 cell 166 board (0.25, 0.39) units 9 21 ms
+[student] WAIT | exact=0 opp=? next=6 t=142s hand=[0, 3, 149, 4] tw=1.01.01.01.01.00.0x sp=0 unk=0 p=0.04 elixir 4 opp~? units 7 dets 7 (waits 340/413 badhand 99/413)
+[student] PLAY rocket p=0.67 cell 220 board (0.25, 0.52) units 5 29 ms
+[student] PLAY tornado p=0.77 cell 204 board (0.36, 0.48) units 4 22 ms
+[student] WAIT | exact=0 opp=? next=7 t=149s hand=[0, 2, 149, 6] tw=1.01.01.01.01.00.0x sp=0 unk=0 p=0.03 elixir 3 opp~? units 2 dets 2 (waits 350/425 badhand 103/425)
+[student] WAIT p=0.10 elixir 8 opp~? units 2 dets 3 (waits 360/435 badhand 103/435)
+[student] STALL-PLAY the_log p=0.21 cell 248 board (0.81, 0.55) units 3 29 ms
+[student] PLAY x_bow p=0.63 cell 254 board (0.14, 0.61) units 3 34 ms
+[student] PLAY tornado p=0.91 cell 176 board (0.81, 0.39) units 4 32 ms
+[student] PLAY skeletons p=0.57 cell 238 board (0.25, 0.55) units 4 34 ms
+[student] PLAY skeletons p=0.54 cell 238 board (0.25, 0.55) units 4 28 ms
+[student] PLAY ice_wizard p=0.83 cell 323 board (0.97, 0.73) units 5 26 ms
+[student] PLAY the_log p=0.70 cell 320 board (0.81, 0.73) units 4 31 ms
+[student] PLAY the_log p=0.34 cell 320 board (0.81, 0.73) units 4 24 ms
+[student] PLAY ice_wizard p=0.39 cell 323 board (0.97, 0.73) units 4 34 ms
+21:00:16 [play] UNKNOWN 0.7s after in-match -> grace hold (label lost: overtime / end animation / dropout; up to 150s)
+21:00:23 [play] state: MATCH_END
+[overlay-replay] saved C:\Users\benpe\ClashBot\icebow\data\overlayed_replays\match_20260911_205720.mp4 (9171 frames, captured 26.7 fps)
+21:00:23 [nav] MATCH_END -> Play Again (located) (0.348,0.914)
+21:00:24 [play] state: UNKNOWN
+21:00:30 [play] state: IN_MATCH
+[student] WAIT | exact=0 opp=? next=6 t=3s hand=[3, 164, 7, 149] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.04 elixir 8 opp~? units 1 dets 1 (waits 370/454 badhand 109/454)
+[student] STALL-PLAY skeletons p=0.09 cell 423 board (0.53, 0.98) units 2 21 ms
+[student] WAIT p=0.13 elixir 10 opp~? units 5 dets 5 (waits 380/465 badhand 112/465)
+[student] STALL-PLAY x_bow p=0.10 cell 267 board (0.86, 0.61) units 1 29 ms
+[student] PLAY knight p=0.45 cell 247 board (0.75, 0.55) units 2 19 ms
+[student] PLAY the_log p=0.54 cell 249 board (0.86, 0.55) units 2 6 ms
+[student] WAIT p=0.08 elixir 2 opp~? units 2 dets 3 (waits 390/478 badhand 114/478)
+[student] PLAY the_log p=0.27 cell 245 board (0.64, 0.55) units 4 20 ms
+[student] WAIT | exact=0 opp=? next=7 t=32s hand=[0, 164, 2, 4] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.02 elixir 3 opp~? units 2 dets 2 (waits 400/489 badhand 114/489)
+[student] WAIT | exact=0 opp=? next=7 t=38s hand=[0, 164, 2, 4] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.03 elixir 5 opp~? units 1 dets 1 (waits 410/499 badhand 114/499)
+[student] WAIT | exact=0 opp=? next=7 t=46s hand=[0, 164, 2, 4] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.00 elixir 8 opp~? units 0 dets 0 (waits 420/509 badhand 114/509)
+[student] STALL-PLAY tornado p=0.11 cell 333 board (0.53, 0.77) units 1 31 ms
+[student] WAIT | exact=0 opp=? next=3 t=53s hand=[7, 164, 2, 4] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.00 elixir 8 opp~? units 0 dets 0 (waits 430/520 badhand 116/520)
+[student] STALL-PLAY skeletons p=0.01 cell 423 board (0.53, 0.98) units 0 19 ms
+[student] PLAY ice_wizard p=0.30 cell 423 board (0.53, 0.98) units 1 22 ms
+[student] WAIT | exact=0 opp=? next=149 t=62s hand=[3, 164, -1, 4] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.03 elixir 6 opp~? units 0 dets 0 (waits 440/532 badhand 119/532)
+[student] PLAY x_bow p=0.33 cell 267 board (0.86, 0.61) units 3 21 ms
+[student] PLAY knight p=0.71 cell 247 board (0.75, 0.55) units 4 18 ms
+[student] PLAY the_log p=0.27 cell 249 board (0.86, 0.55) units 4 32 ms
+[student] WAIT p=0.24 elixir 3 opp~? units 2 dets 2 (waits 450/545 badhand 131/545)
+[student] PLAY knight p=0.34 cell 247 board (0.75, 0.55) units 2 23 ms
+[student] WAIT p=0.17 elixir 3 opp~? units 3 dets 3 (waits 460/556 badhand 132/556)
+[student] WAIT p=0.25 elixir 5 opp~? units 3 dets 3 (waits 470/566 badhand 132/566)
+[student] PLAY skeletons p=0.39 cell 158 board (0.81, 0.36) units 4 31 ms
+[student] PLAY tornado p=0.66 cell 80 board (0.47, 0.2) units 4 16 ms
+[student] PLAY ice_wizard p=0.64 cell 157 board (0.75, 0.36) units 4 19 ms
+[student] PLAY ice_wizard p=0.34 cell 153 board (0.53, 0.36) units 4 17 ms
+[student] PLAY tornado p=0.30 cell 80 board (0.47, 0.2) units 4 32 ms
+[student] PLAY the_log p=0.28 cell 248 board (0.81, 0.55) units 2 16 ms
+[clock] icon reads x3 but the clock reads x1 -> using the clock (x1)
+[student] WAIT p=0.12 elixir 5 opp~? units 0 dets 0 (waits 480/582 badhand 134/582)
+[student] PLAY x_bow p=0.37 cell 267 board (0.86, 0.61) units 0 30 ms
+[student] PLAY tesla p=0.92 cell 239 board (0.28, 0.56) units 1 24 ms
+[clock] icon reads x3 but the clock reads x2 -> using the clock (x2)
+21:02:31 [play] elixir x2
+[student] PLAY skeletons p=0.82 cell 238 board (0.25, 0.55) units 1 26 ms
+[student] PLAY knight_evo p=0.71 cell 238 board (0.25, 0.55) units 1 30 ms
+[student] PLAY ice_wizard p=0.78 cell 238 board (0.25, 0.55) units 3 19 ms
+[student] PLAY tornado p=0.69 cell 80 board (0.47, 0.2) units 3 22 ms
+[student] PLAY the_log p=0.59 cell 237 board (0.19, 0.55) units 4 26 ms
+[student] PLAY ice_wizard p=0.72 cell 148 board (0.25, 0.36) units 3 36 ms
+[student] PLAY tornado p=0.68 cell 80 board (0.47, 0.2) units 3 22 ms
+[student] PLAY the_log p=0.34 cell 237 board (0.19, 0.55) units 3 19 ms
+[student] PLAY skeletons p=0.78 cell 147 board (0.19, 0.36) units 3 18 ms
+[student] PLAY ice_wizard p=0.75 cell 153 board (0.53, 0.36) units 3 22 ms
+[student] WAIT | exact=0 opp=? next=2 t=145s hand=[149, 164, 3, 4] tw=1.01.01.00.0x1.00.0x sp=0 unk=0 p=0.03 elixir 7 opp~? units 5 dets 5 (waits 490/604 badhand 141/604)
+21:02:59 [play] UNKNOWN 0.4s after in-match -> grace hold (label lost: overtime / end animation / dropout; up to 150s)
+21:03:08 [play] state: MATCH_END
+[overlay-replay] saved C:\Users\benpe\ClashBot\icebow\data\overlayed_replays\match_20260911_210030.mp4 (7919 frames, captured 27.2 fps)
+21:03:08 [nav] MATCH_END -> Play Again (located) (0.348,0.914)
+21:03:09 [play] state: UNKNOWN
+21:03:20 [play] state: IN_MATCH
+[student] PLAY knight p=0.46 cell 422 board (0.47, 0.98) units 0 29 ms
+[student] WAIT | exact=0 opp=? next=0 t=4s hand=[6, 2, 7, 3] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.00 elixir 6 opp~? units 1 dets 1 (waits 500/615 badhand 144/615)
+[student] WAIT | exact=0 opp=? next=0 t=11s hand=[6, 2, 7, 3] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.05 elixir 8 opp~? units 2 dets 2 (waits 510/625 badhand 144/625)
+[student] PLAY x_bow p=0.34 cell 267 board (0.86, 0.61) units 2 31 ms
+[student] PLAY skeletons p=0.28 cell 247 board (0.75, 0.55) units 3 31 ms
+[student] PLAY tesla p=0.31 cell 247 board (0.72, 0.56) units 4 16 ms
+[student] WAIT | exact=0 opp=? next=149 t=24s hand=[6, 2, 4, 0] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.04 elixir 2 opp~? units 4 dets 4 (waits 520/638 badhand 148/638)
+[student] PLAY the_log p=0.55 cell 249 board (0.86, 0.55) units 4 31 ms
+[student] PLAY knight p=0.30 cell 237 board (0.19, 0.55) units 2 28 ms
+[student] WAIT | exact=0 opp=? next=7 t=38s hand=[6, 2, 4, 0] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.02 elixir 2 opp~? units 3 dets 3 (waits 530/650 badhand 149/650)
+[student] PLAY ice_wizard p=0.89 cell 296 board (0.47, 0.7) units 3 20 ms
+[student] PLAY tornado p=0.46 cell 240 board (0.36, 0.58) units 3 19 ms
+[student] PLAY ice_wizard p=0.93 cell 314 board (0.47, 0.73) units 2 18 ms
+[student] PLAY skeletons p=0.40 cell 331 board (0.42, 0.77) units 2 17 ms
+[student] PLAY the_log p=0.33 cell 328 board (0.25, 0.77) units 2 29 ms
+[student] WAIT | exact=0 opp=? next=6 t=56s hand=[3, 2, 4, 164] tw=1.00.0x1.01.01.01.0 sp=2 unk=0 p=0.02 elixir 4 opp~? units 0 dets 2 (waits 540/665 badhand 151/665)
+[student] WAIT | exact=0 opp=? next=6 t=63s hand=[3, 2, 4, 164] tw=1.00.0x1.01.01.01.0 sp=1 unk=0 p=0.03 elixir 7 opp~? units 0 dets 1 (waits 550/675 badhand 151/675)
+[student] STALL-PLAY x_bow p=0.25 cell 254 board (0.14, 0.61) units 1 35 ms
+[student] PLAY tesla p=0.32 cell 239 board (0.28, 0.56) units 2 17 ms
+[student] PLAY the_log p=0.41 cell 236 board (0.14, 0.55) units 3 24 ms
+[student] WAIT | exact=0 opp=? next=0 t=77s hand=[6, 2, 4, 164] tw=1.00.0x1.01.01.01.0 sp=1 unk=0 p=0.03 elixir 2 opp~? units 4 dets 5 (waits 560/688 badhand 154/688)
+[student] PLAY knight_evo p=0.72 cell 236 board (0.14, 0.55) units 4 29 ms
+[student] PLAY ice_wizard p=0.56 cell 251 board (0.97, 0.58) units 3 7 ms
+[student] PLAY the_log p=0.29 cell 266 board (0.81, 0.61) units 4 29 ms
+[student] PLAY skeletons p=0.47 cell 248 board (0.81, 0.58) units 3 18 ms
+[student] WAIT | exact=0 opp=? next=164 t=98s hand=[6, 6, 4, 0] tw=1.00.0x1.01.01.01.0 sp=1 unk=0 p=0.04 elixir 2 opp~? units 4 dets 5 (waits 570/702 badhand 156/702)
+[student] PLAY tornado p=0.68 cell 333 board (0.53, 0.77) units 2 30 ms
+[student] WAIT p=0.10 elixir 4 opp~? units 0 dets 1 (waits 580/713 badhand 157/713)
+[clock] icon reads x3 but the clock reads x1 -> using the clock (x1)
+[student] PLAY rocket p=0.82 cell 121 board (0.75, 0.27) units 1 29 ms
+[clock] icon reads x3 but the clock reads x2 -> using the clock (x2)
+21:05:21 [play] elixir x2
+[student] WAIT | exact=0 opp=? next=2 t=123s hand=[6, 3, -1, 164] tw=1.00.0x1.01.01.01.0 sp=1 unk=0 p=0.04 elixir 4 opp~? units 1 dets 2 (waits 590/724 badhand 160/724)
+[student] PLAY tesla_evo p=0.58 cell 296 board (0.44, 0.69) units 1 17 ms
+[student] PLAY ice_wizard p=0.77 cell 332 board (0.47, 0.77) units 2 26 ms
+[student] PLAY ice_wizard p=0.54 cell 332 board (0.47, 0.77) units 3 30 ms
+[student] PLAY the_log p=0.64 cell 242 board (0.47, 0.55) units 4 28 ms
+[student] WAIT | exact=0 opp=? next=4 t=136s hand=[0, 3, -1, 7] tw=1.00.0x1.01.01.01.0 sp=0 unk=0 p=0.00 elixir 4 opp~? units 2 dets 2 (waits 600/738 badhand 174/738)
+[student] STALL-PLAY skeletons p=0.00 cell 319 board (0.75, 0.73) units 2 30 ms
+[student] PLAY x_bow p=0.70 cell 267 board (0.86, 0.61) units 5 32 ms
+[student] PLAY tornado p=0.81 cell 280 board (0.58, 0.64) units 4 23 ms
+[student] WAIT | exact=0 opp=? next=164 t=145s hand=[-1, -1, 0, 4] tw=1.00.0x0.0x1.01.01.0 sp=0 unk=0 p=0.03 elixir 3 opp~? units 3 dets 3 (waits 610/751 badhand 187/751)
+[student] PLAY ice_wizard p=0.28 cell 246 board (0.69, 0.55) units 2 32 ms
+21:05:53 [play] UNKNOWN 0.4s after in-match -> grace hold (label lost: overtime / end animation / dropout; up to 150s)
+21:06:00 [play] state: MATCH_END
+[overlay-replay] saved C:\Users\benpe\ClashBot\icebow\data\overlayed_replays\match_20260911_210320.mp4 (7971 frames, captured 26.9 fps)
+21:06:00 [nav] MATCH_END -> Play Again (located) (0.348,0.914)
+21:06:00 [play] state: UNKNOWN
+21:06:07 [play] state: IN_MATCH
+[student] STALL-PLAY skeletons p=0.15 cell 423 board (0.53, 0.98) units 0 26 ms
+[student] WAIT | exact=0 opp=? next=0 t=6s hand=[2, 4, 3, 164] tw=1.01.01.01.01.01.0 sp=1 unk=0 p=0.00 elixir 8 opp~? units 1 dets 2 (waits 620/763 badhand 190/763)
+[student] PLAY x_bow p=0.59 cell 254 board (0.14, 0.61) units 6 21 ms
+[student] PLAY ice_wizard p=0.74 cell 235 board (0.08, 0.55) units 5 19 ms
+[student] PLAY knight p=0.42 cell 238 board (0.25, 0.55) units 3 31 ms
+[student] WAIT p=0.08 elixir 2 opp~? units 1 dets 1 (waits 630/776 badhand 192/776)
+[student] WAIT p=0.10 elixir 5 opp~? units 3 dets 3 (waits 640/786 badhand 192/786)
+[student] WAIT | exact=0 opp=? next=7 t=36s hand=[6, 4, 0, 164] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.04 elixir 7 opp~? units 0 dets 0 (waits 650/796 badhand 192/796)
+[student] PLAY the_log p=0.98 cell 345 board (0.19, 0.83) units 3 20 ms
+[student] PLAY tesla p=0.57 cell 296 board (0.44, 0.69) units 1 22 ms
+[student] PLAY skeletons p=0.44 cell 237 board (0.19, 0.58) units 2 22 ms
+[student] WAIT p=0.12 elixir 3 opp~? units 2 dets 2 (waits 660/809 badhand 198/809)
+[student] PLAY tornado p=0.82 cell 349 board (0.42, 0.83) units 3 17 ms
+[student] PLAY ice_wizard p=0.81 cell 343 board (0.08, 0.8) units 4 21 ms
+[student] WAIT | exact=0 opp=? next=164 t=60s hand=[6, 4, 149, 6] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.03 elixir 2 opp~? units 2 dets 2 (waits 670/821 badhand 199/821)
+[student] WAIT | exact=0 opp=? next=164 t=66s hand=[6, 4, 149, 3] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.04 elixir 4 opp~? units 2 dets 2 (waits 680/831 badhand 199/831)
+[student] PLAY the_log p=0.39 cell 237 board (0.19, 0.55) units 3 16 ms
+[student] PLAY tesla p=0.55 cell 240 board (0.33, 0.56) units 2 36 ms
+[student] PLAY tesla p=0.81 cell 243 board (0.5, 0.56) units 4 17 ms
+[student] WAIT p=0.27 elixir 2 opp~? units 2 dets 3 (waits 690/844 badhand 200/844)
+[student] PLAY skeletons p=0.47 cell 237 board (0.19, 0.55) units 3 33 ms
+[student] PLAY the_log p=0.34 cell 237 board (0.19, 0.55) units 4 31 ms
+[student] PLAY ice_wizard p=0.39 cell 240 board (0.36, 0.55) units 5 33 ms
+[student] WAIT | exact=0 opp=? next=2 t=85s hand=[0, 4, 149, -1] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.00 elixir 4 opp~? units 0 dets 0 (waits 700/857 badhand 207/857)
+[student] WAIT | exact=0 opp=? next=2 t=91s hand=[0, 4, 149, 3] tw=1.01.01.01.01.01.0 sp=1 unk=0 p=0.00 elixir 6 opp~? units 0 dets 1 (waits 710/867 badhand 215/867)
+[student] WAIT | exact=0 opp=? next=2 t=97s hand=[0, 4, 149, 3] tw=1.01.01.01.01.01.0 sp=1 unk=0 p=0.00 elixir 8 opp~? units 0 dets 1 (waits 720/877 badhand 215/877)
+[student] STALL-PLAY x_bow p=0.00 cell 254 board (0.14, 0.61) units 0 24 ms
+[student] WAIT p=0.07 elixir 6 opp~? units 2 dets 3 (waits 730/888 badhand 217/888)
+[student] PLAY tornado p=0.39 cell 332 board (0.47, 0.77) units 3 27 ms
+[clock] icon reads x3 but the clock reads x1 -> using the clock (x1)
+[student] PLAY ice_wizard p=0.93 cell 250 board (0.92, 0.55) units 3 27 ms
+[student] PLAY the_log p=0.51 cell 328 board (0.25, 0.77) units 3 20 ms
+[student] PLAY skeletons p=0.35 cell 333 board (0.53, 0.77) units 4 30 ms
+[clock] icon reads x3 but the clock reads x2 -> using the clock (x2)
+21:08:09 [play] elixir x2
+[student] WAIT p=0.13 elixir 5 opp~? units 3 dets 3 (waits 740/902 badhand 231/902)
+[student] PLAY x_bow p=0.43 cell 254 board (0.14, 0.61) units 4 31 ms
+[student] PLAY tesla p=0.50 cell 239 board (0.28, 0.56) units 4 28 ms
+[student] PLAY tornado p=0.79 cell 80 board (0.47, 0.2) units 4 28 ms
+[student] PLAY ice_wizard p=0.86 cell 249 board (0.86, 0.55) units 3 34 ms
+[student] PLAY the_log p=0.52 cell 236 board (0.14, 0.55) units 2 35 ms
+[student] PLAY skeletons p=0.64 cell 238 board (0.25, 0.55) units 2 26 ms
+[student] PLAY tesla_evo p=0.71 cell 297 board (0.5, 0.69) units 3 26 ms
+[student] PLAY ice_wizard p=0.62 cell 316 board (0.58, 0.73) units 4 39 ms
+[student] WAIT | exact=0 opp=? next=2 t=149s hand=[3, 4, 149, 0] tw=1.00.0x1.01.00.0x1.0 sp=1 unk=0 p=0.02 elixir 5 opp~? units 2 dets 3 (waits 750/920 badhand 237/920)
+[student] WAIT p=0.11 elixir 9 opp~? units 1 dets 1 (waits 760/930 badhand 237/930)
+[student] STALL-PLAY x_bow p=0.22 cell 267 board (0.86, 0.61) units 1 28 ms
+[student] PLAY tornado p=0.72 cell 80 board (0.47, 0.2) units 2 38 ms
+[student] PLAY the_log p=0.40 cell 249 board (0.86, 0.55) units 2 31 ms
+[student] PLAY skeletons p=0.33 cell 247 board (0.75, 0.55) units 4 36 ms
+[student] PLAY ice_wizard p=0.60 cell 246 board (0.69, 0.55) units 3 17 ms
+[student] PLAY ice_wizard p=0.97 cell 248 board (0.81, 0.55) units 2 16 ms
+[student] WAIT | exact=0 opp=? next=0 t=174s hand=[3, 4, 149, 164] tw=1.00.0x1.01.00.0x1.0 sp=1 unk=0 p=0.01 elixir 6 opp~? units 4 dets 5 (waits 770/946 badhand 240/946)
+21:09:11 [play] state: MATCH_END
+[overlay-replay] saved C:\Users\benpe\ClashBot\icebow\data\overlayed_replays\match_20260911_210607.mp4 (9207 frames, captured 27.0 fps)
+21:09:11 [nav] MATCH_END -> Play Again (located) (0.348,0.914)
+21:09:12 [play] state: UNKNOWN
+21:09:18 [play] state: IN_MATCH
+[student] STALL-PLAY tesla p=0.02 cell 279 board (0.5, 0.66) units 0 22 ms
+[student] WAIT | exact=0 opp=? next=7 t=6s hand=[0, 2, -1, 149] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.00 elixir 5 opp~? units 1 dets 1 (waits 780/957 badhand 243/957)
+[student] WAIT p=0.11 elixir 7 opp~? units 2 dets 2 (waits 790/967 badhand 243/967)
+[student] PLAY tornado p=0.49 cell 239 board (0.31, 0.58) units 3 26 ms
+[student] PLAY skeletons p=0.63 cell 325 board (0.08, 0.77) units 3 26 ms
+[student] PLAY ice_wizard p=0.30 cell 343 board (0.08, 0.8) units 4 29 ms
+[student] WAIT p=0.08 elixir 3 opp~? units 3 dets 3 (waits 800/980 badhand 250/980)
+[student] WAIT p=0.13 elixir 5 opp~? units 3 dets 3 (waits 810/990 badhand 250/990)
+[student] PLAY the_log p=0.27 cell 237 board (0.19, 0.55) units 3 21 ms
+[student] PLAY knight p=0.68 cell 297 board (0.53, 0.7) units 2 27 ms
+[student] PLAY the_log p=0.66 cell 237 board (0.19, 0.55) units 2 25 ms
+[student] PLAY ice_wizard p=0.28 cell 295 board (0.42, 0.7) units 3 35 ms
+[student] WAIT | exact=0 opp=? next=7 t=34s hand=[4, 3, 164, 0] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.02 elixir 3 opp~? units 1 dets 1 (waits 820/1004 badhand 256/1004)
+[student] WAIT p=0.06 elixir 5 opp~? units 2 dets 2 (waits 830/1014 badhand 256/1014)
+[student] PLAY tesla p=0.34 cell 296 board (0.44, 0.69) units 5 35 ms
+[student] WAIT | exact=0 opp=? next=2 t=46s hand=[4, 3, 7, 0] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.01 elixir 4 opp~? units 5 dets 5 (waits 840/1025 badhand 259/1025)
+[student] WAIT | exact=0 opp=? next=2 t=52s hand=[4, 3, 7, 0] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.01 elixir 6 opp~? units 1 dets 1 (waits 850/1035 badhand 259/1035)
+[student] WAIT | exact=0 opp=? next=2 t=58s hand=[4, 3, 7, 0] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.02 elixir 8 opp~? units 1 dets 1 (waits 860/1045 badhand 259/1045)
+[student] STALL-PLAY skeletons p=0.01 cell 248 board (0.81, 0.58) units 1 28 ms
+[student] PLAY tornado p=0.91 cell 332 board (0.47, 0.77) units 2 28 ms
+[student] PLAY ice_wizard p=0.91 cell 320 board (0.81, 0.73) units 3 20 ms
+[student] WAIT p=0.05 elixir 3 opp~? units 3 dets 3 (waits 870/1058 badhand 267/1058)
+[student] WAIT p=0.15 elixir 6 opp~? units 2 dets 2 (waits 880/1068 badhand 277/1068)
+[student] PLAY the_log p=0.34 cell 248 board (0.81, 0.55) units 1 19 ms
+[student] PLAY rocket p=0.53 cell 230 board (0.81, 0.52) units 1 28 ms
+[student] PLAY x_bow p=0.40 cell 254 board (0.14, 0.61) units 1 30 ms
+[student] PLAY skeletons p=0.35 cell 243 board (0.53, 0.55) units 2 27 ms
+[student] WAIT | exact=0 opp=? next=2 t=86s hand=[0, 6, 149, 164] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.04 elixir 2 opp~? units 3 dets 3 (waits 890/1082 badhand 285/1082)
+[student] PLAY tornado p=0.48 cell 333 board (0.53, 0.77) units 4 33 ms
+[student] PLAY the_log p=0.82 cell 363 board (0.19, 0.86) units 2 26 ms
+[student] PLAY ice_wizard p=0.30 cell 363 board (0.19, 0.86) units 3 28 ms
+[student] PLAY the_log p=0.65 cell 284 board (0.81, 0.64) units 2 22 ms
+[student] WAIT p=0.05 elixir 2 opp~? units 1 dets 2 (waits 900/1096 badhand 287/1096)
+[clock] icon reads x3 but the clock reads x1 -> using the clock (x1)
+[clock] icon reads x3 but the clock reads x2 -> using the clock (x2)
+21:11:19 [play] elixir x2
+[student] WAIT p=0.19 elixir 8 opp~? units 2 dets 2 (waits 910/1106 badhand 287/1106)
+[student] PLAY x_bow p=0.28 cell 254 board (0.14, 0.61) units 3 23 ms
+[student] PLAY tesla_evo p=0.95 cell 239 board (0.28, 0.56) units 4 34 ms
+[student] PLAY skeletons p=0.50 cell 374 board (0.81, 0.86) units 4 21 ms
+[student] PLAY ice_wizard p=0.47 cell 238 board (0.25, 0.55) units 3 26 ms
+[student] PLAY the_log p=0.30 cell 238 board (0.25, 0.55) units 3 25 ms
+[student] WAIT p=0.21 elixir 5 opp~? units 4 dets 5 (waits 920/1121 badhand 298/1121)
+[student] PLAY tornado p=0.28 cell 148 board (0.25, 0.36) units 3 33 ms
+[student] PLAY tesla p=0.31 cell 297 board (0.5, 0.69) units 2 26 ms
+[student] PLAY the_log p=0.52 cell 374 board (0.81, 0.86) units 3 22 ms
+[student] PLAY skeletons p=0.28 cell 248 board (0.81, 0.55) units 3 25 ms
+[student] PLAY the_log p=0.42 cell 248 board (0.81, 0.55) units 4 34 ms
+[student] WAIT | exact=0 opp=? next=6 t=152s hand=[4, 3, 149, 2] tw=1.01.00.0x1.01.01.0 sp=0 unk=0 p=0.00 elixir 6 opp~? units 3 dets 3 (waits 930/1136 badhand 305/1136)
+[student] WAIT | exact=0 opp=? next=6 t=158s hand=[4, 3, 149, 2] tw=1.00.80.0x1.01.01.0 sp=0 unk=0 p=0.00 elixir 10 opp~? units 5 dets 5 (waits 940/1146 badhand 305/1146)
+[student] STALL-PLAY x_bow p=0.00 cell 265 board (0.75, 0.61) units 3 20 ms
+[student] PLAY ice_wizard p=0.94 cell 309 board (0.19, 0.73) units 4 26 ms
+[student] PLAY the_log p=0.50 cell 363 board (0.19, 0.86) units 4 33 ms
+[student] PLAY tornado p=0.54 cell 157 board (0.75, 0.36) units 3 16 ms
+[student] PLAY skeletons p=0.56 cell 242 board (0.47, 0.55) units 3 30 ms
+[student] PLAY the_log p=0.48 cell 284 board (0.81, 0.64) units 4 32 ms
+[student] PLAY tesla p=0.92 cell 246 board (0.67, 0.56) units 5 23 ms
+[student] PLAY tornado p=0.55 cell 247 board (0.75, 0.55) units 5 24 ms
+21:12:15 [play] UNKNOWN 0.5s after in-match -> grace hold (label lost: overtime / end animation / dropout; up to 150s)
+21:12:21 [play] state: MATCH_END
+[overlay-replay] saved C:\Users\benpe\ClashBot\icebow\data\overlayed_replays\match_20260911_210918.mp4 (9148 frames, captured 26.6 fps)
+21:12:21 [nav] MATCH_END -> Play Again (located) (0.348,0.914)
+21:12:22 [play] state: UNKNOWN
+21:12:29 [play] state: IN_MATCH
+[student] STALL-PLAY the_log p=0.01 cell 237 board (0.19, 0.55) units 0 28 ms
+[student] WAIT p=0.14 elixir 7 opp~? units 1 dets 3 (waits 950/1165 badhand 310/1165)
+[student] PLAY knight p=0.34 cell 295 board (0.42, 0.7) units 1 35 ms
+[student] PLAY tesla p=0.28 cell 243 board (0.5, 0.56) units 3 29 ms
+[student] PLAY ice_wizard p=0.72 cell 309 board (0.19, 0.73) units 2 33 ms
+[student] PLAY the_log p=0.34 cell 327 board (0.19, 0.77) units 3 19 ms
+[student] PLAY tornado p=0.46 cell 349 board (0.42, 0.83) units 3 17 ms
+[student] WAIT | exact=0 opp=? next=6 t=16s hand=[2, 3, 7, 4] tw=1.00.71.01.01.01.0 sp=0 unk=0 p=0.03 elixir 1 opp~? units 3 dets 3 (waits 960/1180 badhand 318/1180)
+[student] WAIT | exact=0 opp=? next=6 t=22s hand=[2, 2, 7, 4] tw=1.00.71.01.01.01.0 sp=0 unk=0 p=0.01 elixir 3 opp~? units 3 dets 3 (waits 970/1190 badhand 318/1190)
+[student] WAIT | exact=0 opp=? next=6 t=28s hand=[2, 3, 7, 4] tw=1.00.71.01.01.01.0 sp=0 unk=0 p=0.01 elixir 5 opp~? units 2 dets 2 (waits 980/1200 badhand 318/1200)
+[student] WAIT | exact=0 opp=? next=6 t=34s hand=[2, 3, 7, 4] tw=1.00.71.01.01.01.0 sp=0 unk=0 p=0.03 elixir 7 opp~? units 3 dets 3 (waits 990/1210 badhand 318/1210)
+[student] STALL-PLAY ice_wizard p=0.15 cell 314 board (0.47, 0.73) units 3 19 ms
+[student] PLAY skeletons p=0.84 cell 296 board (0.47, 0.7) units 2 21 ms
+[student] PLAY the_log p=0.83 cell 248 board (0.81, 0.55) units 3 31 ms
+[student] WAIT | exact=0 opp=? next=0 t=43s hand=[164, 3, -1, 4] tw=1.00.71.01.01.01.0 sp=1 unk=0 p=0.03 elixir 4 opp~? units 4 dets 5 (waits 1000/1223 badhand 323/1223)
+[student] WAIT p=0.09 elixir 6 opp~? units 5 dets 5 (waits 1010/1233 badhand 333/1233)
+[student] PLAY tesla p=0.44 cell 279 board (0.5, 0.66) units 4 23 ms
+[student] WAIT p=0.06 elixir 5 opp~? units 3 dets 3 (waits 1020/1244 badhand 344/1244)
+[student] PLAY tornado p=0.29 cell 148 board (0.25, 0.36) units 4 21 ms
+[student] PLAY ice_wizard p=0.35 cell 313 board (0.42, 0.73) units 3 35 ms
+[student] WAIT p=0.09 elixir 2 opp~? units 3 dets 3 (waits 1030/1256 badhand 350/1256)
+[student] PLAY skeletons p=0.45 cell 237 board (0.19, 0.55) units 5 24 ms
+[student] PLAY the_log p=0.49 cell 237 board (0.19, 0.55) units 6 19 ms
+[student] WAIT p=0.13 elixir 2 opp~? units 4 dets 5 (waits 1040/1268 badhand 354/1268)
+[student] PLAY ice_wizard p=0.43 cell 235 board (0.08, 0.55) units 4 26 ms
+[student] PLAY tesla_evo p=0.39 cell 239 board (0.28, 0.56) units 3 18 ms
+[student] PLAY tornado p=0.40 cell 202 board (0.25, 0.48) units 7 21 ms
+[student] WAIT | exact=0 opp=? next=2 t=85s hand=[0, 6, -1, 4] tw=1.00.51.01.01.00.4 sp=0 unk=0 p=0.01 elixir 2 opp~? units 2 dets 2 (waits 1050/1281 badhand 359/1281)
+[student] WAIT | exact=0 opp=? next=2 t=91s hand=[0, 3, -1, 4] tw=1.00.51.01.01.00.0 sp=0 unk=0 p=0.01 elixir 4 opp~? units 2 dets 2 (waits 1060/1291 badhand 369/1291)
+[student] WAIT | exact=0 opp=? next=2 t=96s hand=[0, 3, -1, 4] tw=1.00.51.01.01.00.0 sp=0 unk=0 p=0.00 elixir 6 opp~? units 3 dets 3 (waits 1070/1301 badhand 379/1301)
+[student] STALL-PLAY rocket p=0.01 cell 113 board (0.31, 0.27) units 2 29 ms
+[student] PLAY ice_wizard p=0.91 cell 250 board (0.92, 0.55) units 1 30 ms
+[student] PLAY knight p=0.72 cell 249 board (0.86, 0.55) units 1 28 ms
+[student] PLAY skeletons p=0.37 cell 250 board (0.92, 0.55) units 2 25 ms
+[student] WAIT p=0.18 elixir 2 opp~? units 2 dets 2 (waits 1080/1315 badhand 389/1315)
+[clock] icon reads x3 but the clock reads x1 -> using the clock (x1)
+[student] PLAY tornado p=0.39 cell 158 board (0.81, 0.36) units 4 25 ms
+[clock] icon reads x3 but the clock reads x2 -> using the clock (x2)
+21:14:30 [play] elixir x2
+[student] PLAY ice_wizard p=0.40 cell 251 board (0.97, 0.58) units 2 28 ms
+[student] PLAY the_log p=0.43 cell 248 board (0.81, 0.55) units 3 32 ms
+[student] PLAY knight_evo p=0.47 cell 237 board (0.19, 0.55) units 2 38 ms
+[student] PLAY skeletons p=0.39 cell 242 board (0.47, 0.55) units 3 16 ms
+[student] WAIT p=0.21 elixir 4 opp~? units 3 dets 3 (waits 1090/1330 badhand 394/1330)
+[student] PLAY x_bow p=0.38 cell 296 board (0.47, 0.7) units 3 38 ms
+[student] PLAY ice_wizard p=0.28 cell 306 board (0.03, 0.73) units 4 30 ms
+[student] PLAY the_log p=0.60 cell 292 board (0.25, 0.67) units 6 50 ms
+[student] PLAY knight p=0.79 cell 235 board (0.08, 0.55) units 3 17 ms
+[student] WAIT p=0.21 elixir 1 opp~? units 4 dets 5 (waits 1100/1344 badhand 397/1344)
+[student] PLAY skeletons p=0.54 cell 242 board (0.47, 0.55) units 4 27 ms
+[student] PLAY tornado p=0.70 cell 237 board (0.19, 0.55) units 10 20 ms
+[student] PLAY ice_wizard p=0.88 cell 314 board (0.47, 0.73) units 2 30 ms
+[student] PLAY ice_wizard p=0.76 cell 237 board (0.19, 0.58) units 2 29 ms
+[student] PLAY the_log p=0.62 cell 327 board (0.19, 0.77) units 1 29 ms
+[student] WAIT | exact=0 opp=? next=7 t=164s hand=[164, 6, -1, 4] tw=1.00.51.01.01.00.0 sp=1 unk=0 p=0.00 elixir 2 opp~? units 2 dets 3 (waits 1110/1359 badhand 400/1359)
+[student] PLAY ice_wizard p=0.86 cell 237 board (0.19, 0.58) units 3 27 ms
+[student] PLAY ice_wizard p=0.89 cell 236 board (0.14, 0.55) units 3 11 ms
+[student] WAIT | exact=0 opp=? next=7 t=170s hand=[164, 3, -1, 4] tw=1.00.01.01.01.00.0 sp=0 unk=0 p=0.00 elixir 6 opp~? units 6 dets 6 (waits 1120/1371 badhand 412/1371)
+[student] WAIT | exact=0 opp=? next=7 t=176s hand=[164, 3, -1, 4] tw=1.00.0x1.01.01.00.0 sp=0 unk=0 p=0.03 elixir 10 opp~? units 8 dets 8 (waits 1130/1381 badhand 422/1381)
+21:15:26 [play] UNKNOWN 0.6s after in-match -> grace hold (label lost: overtime / end animation / dropout; up to 150s)
+21:15:32 [play] state: MATCH_END
+[overlay-replay] saved C:\Users\benpe\ClashBot\icebow\data\overlayed_replays\match_20260911_211229.mp4 (9135 frames, captured 24.6 fps)
+21:15:32 [nav] MATCH_END -> Play Again (located) (0.348,0.914)
+21:15:33 [play] state: UNKNOWN
+21:15:40 [play] state: IN_MATCH
+[student] STALL-PLAY tornado p=0.01 cell 332 board (0.47, 0.77) units 0 21 ms
+[student] WAIT | exact=0 opp=? next=164 t=7s hand=[2, 6, -1, 4] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.01 elixir 7 opp~? units 0 dets 0 (waits 1140/1392 badhand 433/1392)
+[student] PLAY the_log p=0.60 cell 248 board (0.81, 0.55) units 2 20 ms
+[student] PLAY tesla p=0.95 cell 279 board (0.5, 0.66) units 3 34 ms
+[student] PLAY ice_wizard p=0.52 cell 250 board (0.92, 0.55) units 3 31 ms
+[student] PLAY skeletons p=0.32 cell 302 board (0.81, 0.67) units 5 29 ms
+[student] WAIT | exact=0 opp=? next=6 t=21s hand=[6, 0, 149, 4] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.03 elixir 2 opp~? units 3 dets 3 (waits 1150/1406 badhand 445/1406)
+[student] PLAY tornado p=0.46 cell 333 board (0.53, 0.77) units 3 35 ms
+[student] PLAY the_log p=0.32 cell 337 board (0.75, 0.77) units 2 31 ms
+[student] PLAY the_log p=0.52 cell 338 board (0.81, 0.77) units 1 25 ms
+[student] PLAY tesla p=0.65 cell 318 board (0.67, 0.72) units 1 22 ms
+[student] WAIT | exact=0 opp=? next=2 t=41s hand=[3, -1, 0, 4] tw=1.01.01.01.01.00.7 sp=0 unk=0 p=0.02 elixir 4 opp~? units 1 dets 1 (waits 1160/1420 badhand 447/1420)
+[student] WAIT | exact=0 opp=? next=7 t=52s hand=[3, 2, 149, 4] tw=1.01.01.01.01.00.7 sp=0 unk=0 p=0.01 elixir 4 opp~? units 1 dets 1 (waits 1170/1430 badhand 447/1430)
+[student] WAIT | exact=0 opp=? next=7 t=58s hand=[3, 2, 149, 4] tw=1.01.01.01.01.00.7 sp=0 unk=0 p=0.01 elixir 6 opp~? units 2 dets 2 (waits 1180/1440 badhand 447/1440)
+[student] WAIT p=0.20 elixir 8 opp~? units 3 dets 3 (waits 1190/1450 badhand 447/1450)
+[student] STALL-PLAY ice_wizard p=0.20 cell 250 board (0.92, 0.55) units 3 29 ms
+[student] PLAY rocket p=0.95 cell 302 board (0.81, 0.7) units 4 33 ms
+[student] PLAY tornado p=0.72 cell 229 board (0.75, 0.52) units 3 29 ms
+[student] PLAY skeletons p=0.33 cell 248 board (0.81, 0.55) units 1 17 ms
+[student] WAIT p=0.08 elixir 3 opp~? units 0 dets 0 (waits 1200/1464 badhand 450/1464)
+[student] WAIT | exact=0 opp=? next=164 t=85s hand=[3, 6, 149, 0] tw=1.01.00.0x1.01.00.5 sp=0 unk=0 p=0.03 elixir 6 opp~? units 0 dets 0 (waits 1210/1474 badhand 450/1474)
+[student] WAIT p=0.13 elixir 8 opp~? units 0 dets 0 (waits 1220/1484 badhand 450/1484)
+[student] PLAY x_bow p=0.46 cell 254 board (0.14, 0.61) units 0 22 ms
+[student] PLAY the_log p=0.76 cell 249 board (0.86, 0.55) units 1 23 ms
+[student] PLAY ice_wizard p=0.92 cell 246 board (0.69, 0.55) units 2 29 ms
+[student] PLAY tornado p=0.42 cell 333 board (0.53, 0.77) units 3 29 ms
+[student] PLAY tornado p=0.97 cell 333 board (0.53, 0.77) units 3 33 ms
+[student] PLAY skeletons p=0.47 cell 237 board (0.19, 0.55) units 3 19 ms
+[clock] icon reads x3 but the clock reads x1 -> using the clock (x1)
+[clock] icon reads x3 but the clock reads x2 -> using the clock (x2)
+21:17:40 [play] elixir x2
+[student] WAIT | exact=0 opp=? next=6 t=122s hand=[164, 4, 149, 3] tw=1.01.00.0x1.01.00.5 sp=1 unk=0 p=0.01 elixir 5 opp~? units 2 dets 3 (waits 1230/1500 badhand 456/1500)
+[student] STALL-PLAY x_bow p=0.02 cell 254 board (0.14, 0.61) units 0 16 ms
+[student] PLAY knight p=0.89 cell 247 board (0.75, 0.55) units 2 22 ms
+[student] PLAY tesla_evo p=0.78 cell 247 board (0.72, 0.56) units 3 18 ms
+[student] PLAY the_log p=0.37 cell 247 board (0.75, 0.55) units 3 14 ms
+[student] PLAY ice_wizard p=0.74 cell 245 board (0.64, 0.55) units 4 32 ms
+[student] WAIT p=0.21 elixir 2 opp~? units 4 dets 5 (waits 1240/1515 badhand 459/1515)
+[student] PLAY skeletons p=0.52 cell 309 board (0.19, 0.73) units 5 29 ms
+[student] PLAY tornado p=0.52 cell 332 board (0.47, 0.77) units 5 33 ms
+[student] PLAY ice_wizard p=0.97 cell 309 board (0.19, 0.73) units 6 14 ms
+[student] PLAY knight p=0.86 cell 309 board (0.19, 0.73) units 4 29 ms
+[student] PLAY the_log p=0.68 cell 238 board (0.25, 0.55) units 3 29 ms
+[student] PLAY the_log p=0.86 cell 238 board (0.25, 0.55) units 2 27 ms
+[student] PLAY ice_wizard p=0.31 cell 296 board (0.47, 0.7) units 2 19 ms
+[student] PLAY skeletons p=0.38 cell 277 board (0.42, 0.64) units 3 25 ms
+[student] PLAY ice_wizard p=0.43 cell 296 board (0.47, 0.7) units 7 18 ms
+[student] WAIT | exact=0 opp=? next=149 t=161s hand=[164, 4, 3, 0] tw=1.00.0x0.0x1.01.00.3 sp=0 unk=0 p=0.00 elixir 5 opp~? units 2 dets 2 (waits 1250/1534 badhand 464/1534)
+[student] WAIT | exact=0 opp=? next=149 t=166s hand=[164, 4, 3, 0] tw=1.00.0x0.0x1.01.00.3 sp=0 unk=0 p=0.00 elixir 8 opp~? units 2 dets 2 (waits 1260/1544 badhand 464/1544)
+[student] STALL-PLAY tesla_evo p=0.01 cell 243 board (0.5, 0.56) units 1 27 ms
+[student] PLAY tornado p=0.88 cell 239 board (0.31, 0.55) units 4 31 ms
+[student] PLAY ice_wizard p=0.96 cell 235 board (0.08, 0.55) units 4 17 ms
+[student] PLAY knight_evo p=0.87 cell 236 board (0.14, 0.55) units 1 38 ms
+[student] WAIT | exact=0 opp=? next=2 t=175s hand=[-1, 4, 4, 6] tw=1.00.0x0.0x1.01.00.0 sp=2 unk=0 p=0.03 elixir 3 opp~? units 1 dets 3 (waits 1270/1558 badhand 468/1558)
+21:18:36 [play] UNKNOWN 0.5s after in-match -> grace hold (label lost: overtime / end animation / dropout; up to 150s)
+21:18:42 [play] state: MATCH_END
+[overlay-replay] saved C:\Users\benpe\ClashBot\icebow\data\overlayed_replays\match_20260911_211540.mp4 (9128 frames, captured 26.6 fps)
+21:18:42 [nav] MATCH_END -> Play Again (located) (0.348,0.914)
+21:18:43 [play] state: UNKNOWN
+21:18:49 [play] state: IN_MATCH
+[student] STALL-PLAY the_log p=0.00 cell 248 board (0.81, 0.55) units 0 19 ms
+[student] WAIT | exact=0 opp=? next=7 t=8s hand=[0, 2, -1, 4] tw=1.01.01.01.01.01.0 sp=1 unk=0 p=0.01 elixir 8 opp~? units 0 dets 1 (waits 1280/1569 badhand 479/1569)
+[student] PLAY tornado p=0.30 cell 84 board (0.69, 0.17) units 1 36 ms
+[student] WAIT | exact=0 opp=? next=7 t=15s hand=[-1, 2, -1, 4] tw=1.01.01.01.01.01.0 sp=1 unk=0 p=0.03 elixir 7 opp~? units 1 dets 2 (waits 1290/1580 badhand 490/1580)
+[student] WAIT p=0.13 elixir 9 opp~? units 1 dets 1 (waits 1300/1590 badhand 500/1590)
+[student] PLAY ice_wizard p=0.34 cell 413 board (0.97, 0.95) units 2 24 ms
+[student] PLAY skeletons p=0.45 cell 250 board (0.92, 0.55) units 3 28 ms
+[student] PLAY tesla p=0.28 cell 279 board (0.5, 0.66) units 4 24 ms
+[student] WAIT p=0.26 elixir 4 opp~? units 3 dets 3 (waits 1310/1603 badhand 513/1603)
+[student] PLAY the_log p=0.28 cell 247 board (0.75, 0.55) units 4 20 ms
+[student] PLAY ice_wizard p=0.28 cell 250 board (0.92, 0.55) units 4 24 ms
+[student] PLAY tornado p=0.70 cell 229 board (0.75, 0.52) units 2 32 ms
+[student] PLAY the_log p=0.49 cell 248 board (0.81, 0.55) units 2 30 ms
+[student] WAIT p=0.10 elixir 3 opp~? units 1 dets 1 (waits 1320/1617 badhand 522/1617)
+[student] WAIT p=0.07 elixir 6 opp~? units 1 dets 1 (waits 1330/1627 badhand 522/1627)
+[student] PLAY x_bow p=0.39 cell 254 board (0.14, 0.61) units 1 27 ms
+[student] PLAY ice_wizard p=0.79 cell 239 board (0.31, 0.55) units 2 31 ms
+[student] PLAY skeletons p=0.61 cell 235 board (0.08, 0.55) units 3 20 ms
+[student] PLAY skeletons p=0.73 cell 235 board (0.08, 0.55) units 3 16 ms
+[student] WAIT p=0.08 elixir 1 opp~? units 2 dets 3 (waits 1340/1641 badhand 525/1641)
+[student] PLAY skeletons p=0.61 cell 238 board (0.25, 0.55) units 3 28 ms
+[student] WAIT | exact=0 opp=? next=0 t=71s hand=[164, 6, 149, 4] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.00 elixir 3 opp~? units 1 dets 1 (waits 1350/1652 badhand 525/1652)
+[student] WAIT | exact=0 opp=? next=0 t=77s hand=[164, 6, 149, 4] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.00 elixir 5 opp~? units 1 dets 1 (waits 1360/1662 badhand 525/1662)
+[student] WAIT | exact=0 opp=? next=0 t=83s hand=[164, 6, 149, 4] tw=1.01.01.01.01.01.0 sp=1 unk=0 p=0.00 elixir 7 opp~? units 1 dets 2 (waits 1370/1672 badhand 525/1672)
+[student] STALL-PLAY the_log p=0.00 cell 237 board (0.19, 0.55) units 2 29 ms
+[student] WAIT | exact=0 opp=? next=3 t=90s hand=[164, 0, 149, 4] tw=1.01.01.01.01.01.0 sp=1 unk=0 p=0.02 elixir 8 opp~? units 2 dets 3 (waits 1380/1683 badhand 527/1683)
+[student] PLAY tesla p=0.30 cell 297 board (0.5, 0.69) units 3 30 ms
+[student] WAIT | exact=0 opp=? next=3 t=97s hand=[-1, 0, 149, 4] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.04 elixir 6 opp~? units 4 dets 4 (waits 1390/1694 badhand 529/1694)
+[student] PLAY rocket p=0.37 cell 238 board (0.25, 0.55) units 4 32 ms
+[student] PLAY tornado p=0.75 cell 238 board (0.25, 0.55) units 2 28 ms
+[student] PLAY ice_wizard p=0.75 cell 306 board (0.03, 0.73) units 2 22 ms
+[student] PLAY skeletons p=0.34 cell 242 board (0.47, 0.55) units 3 19 ms
+[clock] icon reads x2 but the clock reads x1 -> using the clock (x1)
+[clock] icon reads x3 but the clock reads x1 -> using the clock (x1)
+[student] WAIT p=0.09 elixir 4 opp~? units 1 dets 1 (waits 1400/1708 badhand 538/1708)
+[clock] icon reads x3 but the clock reads x2 -> using the clock (x2)
+21:20:50 [play] elixir x2
+[student] PLAY the_log p=0.92 cell 327 board (0.19, 0.77) units 2 18 ms
+[student] PLAY ice_wizard p=0.33 cell 422 board (0.47, 0.98) units 1 32 ms
+[student] WAIT p=0.20 elixir 6 opp~? units 3 dets 3 (waits 1410/1720 badhand 542/1720)
+[student] PLAY x_bow p=0.44 cell 254 board (0.14, 0.61) units 3 29 ms
+[student] PLAY tesla p=0.72 cell 239 board (0.28, 0.56) units 4 18 ms
+[student] PLAY tornado p=0.60 cell 80 board (0.47, 0.2) units 4 29 ms
+[student] PLAY skeletons p=0.37 cell 238 board (0.25, 0.55) units 4 28 ms
+[student] PLAY the_log p=0.73 cell 238 board (0.25, 0.55) units 6 17 ms
+[student] PLAY ice_wizard p=0.49 cell 270 board (0.03, 0.64) units 6 24 ms
+[student] PLAY rocket p=0.60 cell 183 board (0.19, 0.45) units 3 18 ms
+[student] PLAY tornado p=0.37 cell 165 board (0.19, 0.39) units 3 16 ms
+[student] PLAY tornado p=0.29 cell 212 board (0.81, 0.48) units 3 27 ms
+[student] WAIT p=0.07 elixir 2 opp~? units 3 dets 4 (waits 1420/1739 badhand 548/1739)
+[student] PLAY skeletons p=0.33 cell 320 board (0.81, 0.73) units 5 24 ms
+[student] PLAY ice_wizard p=0.89 cell 314 board (0.47, 0.73) units 3 41 ms
+[student] WAIT | exact=0 opp=? next=2 t=163s hand=[3, 164, 149, 6] tw=1.01.01.01.00.0x0.7 sp=0 unk=0 p=0.02 elixir 6 opp~? units 6 dets 6 (waits 1430/1751 badhand 552/1751)
+[student] WAIT p=0.16 elixir 10 opp~? units 4 dets 4 (waits 1440/1761 badhand 552/1761)
+[student] STALL-PLAY the_log p=0.14 cell 299 board (0.64, 0.7) units 4 16 ms
+[student] PLAY ice_wizard p=0.99 cell 306 board (0.03, 0.73) units 4 28 ms
+21:21:45 [play] UNKNOWN 0.4s after in-match -> grace hold (label lost: overtime / end animation / dropout; up to 150s)
+21:21:52 [play] state: MATCH_END
+[overlay-replay] saved C:\Users\benpe\ClashBot\icebow\data\overlayed_replays\match_20260911_211849.mp4 (9164 frames, captured 25.4 fps)
+[overlay-replay] 10/10 clip(s) recorded -- cap reached, recorder off for this session
+21:21:53 [nav] MATCH_END -> Play Again (located) (0.348,0.914)
+21:21:53 [play] state: UNKNOWN
+21:22:00 [play] state: IN_MATCH
+[student] WAIT | exact=0 opp=? next=6 t=3s hand=[4, 164, 3, 149] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.01 elixir 8 opp~? units 0 dets 0 (waits 1450/1773 badhand 556/1773)
+[student] STALL-PLAY x_bow p=0.05 cell 267 board (0.86, 0.61) units 0 25 ms
+[student] PLAY knight p=0.30 cell 247 board (0.75, 0.55) units 1 27 ms
+[student] WAIT p=0.10 elixir 3 opp~? units 3 dets 3 (waits 1460/1785 badhand 557/1785)
+[student] PLAY tesla p=0.31 cell 246 board (0.67, 0.56) units 2 28 ms
+[student] PLAY the_log p=0.39 cell 249 board (0.86, 0.55) units 2 23 ms
+[student] WAIT p=0.05 elixir 3 opp~? units 0 dets 0 (waits 1470/1797 badhand 558/1797)
+[student] WAIT p=0.05 elixir 5 opp~? units 0 dets 0 (waits 1480/1807 badhand 558/1807)
+[student] PLAY ice_wizard p=0.29 cell 422 board (0.47, 0.98) units 0 18 ms
+[student] WAIT | exact=0 opp=? next=7 t=39s hand=[4, -1, 6, 0] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.01 elixir 5 opp~? units 1 dets 1 (waits 1490/1818 badhand 559/1818)
+[student] PLAY skeletons p=0.28 cell 422 board (0.47, 0.98) units 1 15 ms
+[student] PLAY the_log p=0.61 cell 292 board (0.25, 0.67) units 3 36 ms
+[student] WAIT p=0.07 elixir 5 opp~? units 2 dets 2 (waits 1500/1830 badhand 562/1830)
+[student] PLAY x_bow p=0.47 cell 254 board (0.14, 0.61) units 3 30 ms
+[student] PLAY tornado p=0.57 cell 80 board (0.47, 0.2) units 4 23 ms
+[student] PLAY tornado p=0.29 cell 166 board (0.25, 0.39) units 3 93 ms
+[student] WAIT | exact=0 opp=? next=7 t=66s hand=[4, 164, 0, 2] tw=1.00.71.01.01.01.0 sp=0 unk=0 p=0.03 elixir 3 opp~? units 2 dets 2 (waits 1510/1843 badhand 567/1843)
+[student] PLAY ice_wizard p=0.28 cell 309 board (0.19, 0.73) units 1 33 ms
+[student] WAIT | exact=0 opp=? next=6 t=75s hand=[4, 164, 149, 7] tw=1.00.71.01.01.01.0 sp=0 unk=0 p=0.01 elixir 3 opp~? units 0 dets 0 (waits 1520/1854 badhand 568/1854)
+[student] WAIT | exact=0 opp=? next=6 t=82s hand=[4, 164, 149, 7] tw=1.00.71.01.01.01.0 sp=0 unk=0 p=0.01 elixir 5 opp~? units 2 dets 2 (waits 1530/1864 badhand 568/1864)
+[student] WAIT | exact=0 opp=? next=6 t=88s hand=[4, 164, 149, 7] tw=1.00.71.01.01.01.0 sp=0 unk=0 p=0.01 elixir 7 opp~? units 0 dets 0 (waits 1540/1874 badhand 568/1874)
+[student] PLAY skeletons p=0.53 cell 242 board (0.47, 0.55) units 1 25 ms
+[student] PLAY tesla p=0.94 cell 279 board (0.5, 0.66) units 2 26 ms
+[student] PLAY the_log p=0.46 cell 256 board (0.25, 0.61) units 3 22 ms
+[student] PLAY ice_wizard p=0.68 cell 237 board (0.19, 0.55) units 3 18 ms
+[student] WAIT p=0.06 elixir 4 opp~? units 1 dets 1 (waits 1550/1888 badhand 571/1888)
+[student] WAIT p=0.21 elixir 7 opp~? units 1 dets 1 (waits 1560/1898 badhand 577/1898)
+[student] PLAY x_bow p=0.29 cell 267 board (0.86, 0.61) units 1 18 ms
+[student] PLAY tornado p=0.49 cell 80 board (0.47, 0.2) units 2 16 ms
+[clock] icon reads x3 but the clock reads x1 -> using the clock (x1)
+[student] PLAY skeletons p=0.31 cell 247 board (0.75, 0.55) units 5 25 ms
+[student] PLAY ice_wizard p=0.46 cell 250 board (0.92, 0.55) units 6 19 ms
+[clock] icon reads x3 but the clock reads x2 -> using the clock (x2)
+21:24:01 [play] elixir x2
+[student] PLAY the_log p=0.29 cell 266 board (0.81, 0.61) units 7 17 ms
+[student] WAIT p=0.10 elixir 5 opp~? units 2 dets 2 (waits 1570/1913 badhand 581/1913)
+[student] PLAY x_bow p=0.51 cell 267 board (0.86, 0.61) units 1 33 ms
+[student] PLAY tesla p=0.84 cell 247 board (0.72, 0.56) units 3 22 ms
+[student] PLAY tornado p=0.71 cell 176 board (0.81, 0.39) units 1 30 ms
+[student] PLAY skeletons p=0.75 cell 247 board (0.75, 0.55) units 1 17 ms
+[student] PLAY ice_wizard p=0.68 cell 284 board (0.81, 0.64) units 1 31 ms
+[student] PLAY the_log p=0.28 cell 338 board (0.81, 0.77) units 0 17 ms
+[student] PLAY the_log p=0.38 cell 320 board (0.81, 0.73) units 2 32 ms
+[student] PLAY ice_wizard p=0.89 cell 320 board (0.81, 0.73) units 2 17 ms
+[student] PLAY tesla_evo p=0.51 cell 321 board (0.83, 0.72) units 1 22 ms
+[student] WAIT | exact=0 opp=? next=7 t=155s hand=[4, 3, 0, 0] tw=1.00.71.01.01.01.0 sp=0 unk=0 p=0.03 elixir 4 opp~? units 1 dets 1 (waits 1580/1932 badhand 585/1932)
+[student] PLAY x_bow p=0.41 cell 267 board (0.86, 0.61) units 3 16 ms
+[student] PLAY tornado p=0.47 cell 175 board (0.75, 0.39) units 4 15 ms
+[student] WAIT p=0.16 elixir 2 opp~? units 4 dets 4 (waits 1590/1944 badhand 586/1944)
+[student] PLAY skeletons p=0.36 cell 244 board (0.58, 0.55) units 5 29 ms
+[student] PLAY the_log p=0.52 cell 247 board (0.75, 0.55) units 5 22 ms
+[student] PLAY ice_wizard p=0.43 cell 245 board (0.64, 0.55) units 5 21 ms
+[student] WAIT p=0.06 elixir 4 opp~? units 3 dets 3 (waits 1600/1957 badhand 588/1957)
+21:24:56 [play] UNKNOWN 0.6s after in-match -> grace hold (label lost: overtime / end animation / dropout; up to 150s)
+21:24:56 [play] in-match read re-acquired -> grace hold released
+[student] PLAY tesla p=0.28 cell 247 board (0.72, 0.56) units 2 21 ms
+[student] PLAY x_bow p=0.49 cell 265 board (0.75, 0.61) units 2 26 ms
+[student] PLAY tornado p=0.78 cell 157 board (0.75, 0.36) units 6 17 ms
+[student] WAIT p=0.06 elixir 1 opp~? units 3 dets 3 (waits 1610/1970 badhand 597/1970)
+[student] PLAY skeletons p=0.32 cell 248 board (0.81, 0.55) units 2 30 ms
+[student] PLAY tornado p=0.32 cell 175 board (0.75, 0.39) units 5 16 ms
+[student] WAIT p=0.15 elixir 4 opp~? units 2 dets 2 (waits 1620/1982 badhand 599/1982)
+[student] PLAY ice_wizard p=0.44 cell 316 board (0.58, 0.73) units 2 29 ms
+[student] PLAY tesla p=0.59 cell 247 board (0.72, 0.56) units 2 15 ms
+[student] PLAY the_log p=0.30 cell 247 board (0.75, 0.55) units 4 22 ms
+[student] WAIT p=0.24 elixir 2 opp~? units 1 dets 2 (waits 1630/1995 badhand 603/1995)
+[student] PLAY skeletons p=0.35 cell 248 board (0.81, 0.55) units 2 28 ms
+[student] PLAY ice_wizard p=0.39 cell 247 board (0.75, 0.55) units 2 22 ms
+[student] WAIT | exact=0 opp=? next=2 t=214s hand=[4, 3, 149, 0] tw=1.00.71.01.01.01.0 sp=0 unk=0 p=0.01 elixir 7 opp~? units 1 dets 1 (waits 1640/2007 badhand 604/2007)
+[student] WAIT | exact=0 opp=? next=2 t=219s hand=[4, 3, 149, 0] tw=1.00.71.01.01.01.0 sp=0 unk=0 p=0.02 elixir 10 opp~? units 1 dets 1 (waits 1650/2017 badhand 604/2017)
+[student] STALL-PLAY x_bow p=0.02 cell 254 board (0.14, 0.61) units 1 16 ms
+[student] PLAY tornado p=0.95 cell 246 board (0.69, 0.58) units 3 19 ms
+[student] PLAY ice_wizard p=0.97 cell 238 board (0.25, 0.55) units 2 33 ms
+[student] PLAY the_log p=0.60 cell 237 board (0.19, 0.55) units 2 24 ms
+21:25:57 [play] UNKNOWN 0.8s after in-match -> grace hold (label lost: overtime / end animation / dropout; up to 150s)
+21:25:58 [play] in-match read re-acquired -> grace hold released
+21:25:58 [play] state: MATCH_END
+21:25:58 [nav] MATCH_END -> Play Again (located) (0.348,0.914)
+21:25:59 [play] state: UNKNOWN
+21:26:05 [play] state: IN_MATCH
+[student] WAIT | exact=0 opp=? next=0 t=3s hand=[149, 2, 3, 164] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.02 elixir 8 opp~? units 0 dets 0 (waits 1660/2031 badhand 609/2031)
+[student] STALL-PLAY knight p=0.07 cell 423 board (0.53, 0.98) units 0 24 ms
+[student] WAIT | exact=0 opp=? next=7 t=10s hand=[0, 2, 3, 164] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.03 elixir 8 opp~? units 2 dets 2 (waits 1670/2042 badhand 612/2042)
+[student] PLAY tesla p=0.31 cell 309 board (0.17, 0.72) units 4 22 ms
+[student] PLAY tornado p=0.41 cell 385 board (0.42, 0.89) units 6 24 ms
+[student] PLAY ice_wizard p=0.60 cell 343 board (0.08, 0.83) units 3 32 ms
+[student] PLAY skeletons p=0.30 cell 364 board (0.25, 0.86) units 4 31 ms
+[student] WAIT p=0.06 elixir 2 opp~? units 6 dets 6 (waits 1680/2056 badhand 619/2056)
+[student] PLAY ice_wizard p=0.34 cell 297 board (0.53, 0.7) units 7 18 ms
+[student] WAIT p=0.23 elixir 2 opp~? units 5 dets 5 (waits 1690/2067 badhand 620/2067)
+[student] PLAY the_log p=0.34 cell 237 board (0.19, 0.55) units 6 27 ms
+[student] PLAY knight p=0.49 cell 237 board (0.19, 0.55) units 4 19 ms
+[student] PLAY the_log p=0.37 cell 327 board (0.19, 0.77) units 5 17 ms
+[student] WAIT | exact=0 opp=? next=7 t=41s hand=[4, 0, 3, 164] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.01 elixir 7 opp~? units 2 dets 2 (waits 1700/2080 badhand 622/2080)
+[student] WAIT | exact=0 opp=? next=7 t=46s hand=[4, 0, 3, 164] tw=1.00.81.01.01.01.0 sp=1 unk=0 p=0.00 elixir 8 opp~? units 1 dets 2 (waits 1710/2090 badhand 622/2090)
+[student] STALL-PLAY tesla p=0.00 cell 297 board (0.5, 0.69) units 1 13 ms
+[student] PLAY skeletons p=0.56 cell 248 board (0.81, 0.55) units 2 31 ms
+[student] PLAY tornado p=0.37 cell 229 board (0.75, 0.52) units 6 24 ms
+[student] PLAY the_log p=0.52 cell 301 board (0.75, 0.7) units 3 22 ms
+[student] PLAY the_log p=0.31 cell 248 board (0.81, 0.55) units 3 23 ms
+[student] WAIT | exact=0 opp=? next=164 t=60s hand=[4, 149, 2, 2] tw=1.00.81.01.01.01.0 sp=0 unk=0 p=0.02 elixir 3 opp~? units 1 dets 1 (waits 1720/2105 badhand 626/2105)
+[student] WAIT | exact=0 opp=? next=164 t=67s hand=[4, 149, 3, 2] tw=1.00.81.01.01.01.0 sp=1 unk=0 p=0.02 elixir 6 opp~? units 0 dets 1 (waits 1730/2115 badhand 626/2115)
+[student] STALL-PLAY ice_wizard p=0.03 cell 423 board (0.53, 0.98) units 0 27 ms
+[student] WAIT p=0.17 elixir 6 opp~? units 1 dets 1 (waits 1740/2126 badhand 627/2126)
+[student] PLAY x_bow p=0.29 cell 267 board (0.86, 0.61) units 1 21 ms
+[student] PLAY knight_evo p=0.76 cell 247 board (0.75, 0.55) units 2 19 ms
+[student] PLAY skeletons p=0.37 cell 363 board (0.19, 0.86) units 4 21 ms
+[student] WAIT p=0.21 elixir 2 opp~? units 8 dets 9 (waits 1750/2139 badhand 629/2139)
+[student] PLAY the_log p=0.55 cell 247 board (0.75, 0.55) units 9 27 ms
+[student] PLAY ice_wizard p=0.46 cell 250 board (0.92, 0.55) units 6 19 ms
+[student] PLAY tornado p=0.36 cell 71 board (0.97, 0.14) units 5 25 ms
+[student] PLAY knight p=0.82 cell 247 board (0.75, 0.55) units 4 22 ms
+[student] PLAY skeletons p=0.28 cell 248 board (0.81, 0.55) units 3 18 ms
+[clock] icon reads x3 but the clock reads x1 -> using the clock (x1)
+[student] PLAY the_log p=0.42 cell 248 board (0.81, 0.55) units 3 22 ms
+[clock] icon reads x3 but the clock reads x2 -> using the clock (x2)
+21:28:06 [play] elixir x2
+[student] PLAY ice_wizard p=0.44 cell 296 board (0.47, 0.67) units 3 20 ms
+[student] PLAY tornado p=0.37 cell 158 board (0.81, 0.36) units 5 33 ms
+[student] PLAY ice_wizard p=0.43 cell 157 board (0.75, 0.36) units 7 25 ms
+[student] WAIT | exact=0 opp=? next=7 t=129s hand=[4, 149, 3, 164] tw=1.00.51.01.01.00.0x sp=1 unk=0 p=0.01 elixir 3 opp~? units 3 dets 4 (waits 1760/2158 badhand 630/2158)
+[student] WAIT | exact=0 opp=? next=7 t=136s hand=[4, 149, 3, 164] tw=1.00.51.00.0x1.00.0x sp=1 unk=0 p=0.02 elixir 8 opp~? units 1 dets 2 (waits 1770/2168 badhand 630/2168)
+[student] PLAY knight p=0.28 cell 422 board (0.47, 0.98) units 0 22 ms
+[student] PLAY x_bow p=0.43 cell 267 board (0.86, 0.61) units 0 32 ms
+[student] PLAY skeletons p=0.92 cell 238 board (0.25, 0.55) units 1 19 ms
+[student] PLAY the_log p=0.28 cell 237 board (0.19, 0.55) units 3 19 ms
+[student] PLAY ice_wizard p=0.72 cell 235 board (0.08, 0.55) units 2 18 ms
+[student] PLAY tornado p=0.53 cell 80 board (0.47, 0.2) units 3 31 ms
+[student] PLAY skeletons p=0.47 cell 238 board (0.25, 0.55) units 2 20 ms
+[student] PLAY knight_evo p=0.51 cell 238 board (0.25, 0.55) units 3 24 ms
+[student] PLAY tornado p=0.43 cell 80 board (0.47, 0.2) units 3 20 ms
+[student] PLAY the_log p=0.60 cell 256 board (0.25, 0.61) units 4 24 ms
+[student] PLAY ice_wizard p=0.33 cell 238 board (0.25, 0.55) units 3 19 ms
+[student] PLAY tornado p=0.32 cell 80 board (0.47, 0.2) units 5 19 ms
+[student] PLAY the_log p=0.33 cell 237 board (0.19, 0.55) units 2 25 ms
+[student] WAIT p=0.26 elixir 5 opp~? units 4 dets 5 (waits 1780/2191 badhand 637/2191)
+[student] PLAY skeletons p=0.29 cell 235 board (0.08, 0.55) units 4 15 ms
+[student] PLAY x_bow p=0.90 cell 163 board (0.08, 0.39) units 6 16 ms
+[student] PLAY tesla p=0.94 cell 239 board (0.28, 0.56) units 6 30 ms
+[student] PLAY the_log p=0.86 cell 236 board (0.14, 0.55) units 10 27 ms
+[student] PLAY ice_wizard p=0.68 cell 240 board (0.36, 0.55) units 7 17 ms
+[student] PLAY tornado p=0.72 cell 79 board (0.42, 0.17) units 11 22 ms
+21:29:00 [play] UNKNOWN 0.7s after in-match -> grace hold (label lost: overtime / end animation / dropout; up to 150s)
+21:29:07 [play] state: MATCH_END
+21:29:07 [nav] MATCH_END -> Play Again (located) (0.348,0.914)
+21:29:08 [play] state: UNKNOWN
+21:29:14 [play] state: IN_MATCH
+[student] WAIT p=0.12 elixir 8 opp~? units 0 dets 0 (waits 1790/2207 badhand 645/2207)
+[student] PLAY skeletons p=0.28 cell 248 board (0.81, 0.55) units 1 24 ms
+[student] PLAY x_bow p=0.40 cell 267 board (0.86, 0.61) units 1 29 ms
+[student] PLAY knight p=0.86 cell 247 board (0.75, 0.55) units 2 23 ms
+[student] PLAY ice_wizard p=0.63 cell 249 board (0.86, 0.55) units 3 16 ms
+[student] PLAY tornado p=0.83 cell 352 board (0.58, 0.83) units 3 20 ms
+[student] PLAY tornado p=0.39 cell 352 board (0.58, 0.83) units 4 22 ms
+[student] WAIT | exact=0 opp=? next=7 t=22s hand=[164, 6, 4, 2] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.01 elixir 2 opp~? units 2 dets 2 (waits 1800/2223 badhand 650/2223)
+[student] WAIT | exact=0 opp=? next=7 t=28s hand=[164, 6, 4, 2] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.04 elixir 4 opp~? units 2 dets 2 (waits 1810/2233 badhand 650/2233)
+[student] WAIT | exact=0 opp=? next=7 t=35s hand=[164, 6, 4, 2] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.01 elixir 6 opp~? units 1 dets 1 (waits 1820/2243 badhand 650/2243)
+[student] PLAY tesla p=0.88 cell 279 board (0.5, 0.66) units 1 30 ms
+[student] WAIT p=0.07 elixir 5 opp~? units 2 dets 2 (waits 1830/2254 badhand 653/2254)
+[student] WAIT | exact=0 opp=? next=3 t=48s hand=[7, 6, 4, 2] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.01 elixir 7 opp~? units 1 dets 1 (waits 1840/2264 badhand 653/2264)
+[student] STALL-PLAY skeletons p=0.02 cell 423 board (0.53, 0.98) units 1 29 ms
+[student] PLAY x_bow p=0.41 cell 265 board (0.75, 0.61) units 3 29 ms
+[student] PLAY the_log p=0.65 cell 247 board (0.75, 0.55) units 4 29 ms
+[student] PLAY knight p=0.31 cell 249 board (0.86, 0.55) units 4 33 ms
+[student] WAIT p=0.14 elixir 3 opp~? units 6 dets 6 (waits 1850/2278 badhand 658/2278)
+[student] PLAY ice_wizard p=0.42 cell 297 board (0.53, 0.67) units 2 18 ms
+[student] PLAY tornado p=0.40 cell 158 board (0.81, 0.36) units 3 24 ms
+[student] PLAY skeletons p=0.30 cell 250 board (0.92, 0.55) units 8 31 ms
+[student] PLAY ice_wizard p=0.50 cell 249 board (0.86, 0.55) units 5 22 ms
+[student] PLAY tesla p=0.52 cell 250 board (0.89, 0.56) units 3 24 ms
+[student] WAIT p=0.08 elixir 4 opp~? units 3 dets 3 (waits 1860/2293 badhand 661/2293)
+[student] PLAY the_log p=0.30 cell 248 board (0.81, 0.55) units 3 31 ms
+[student] WAIT | exact=0 opp=? next=2 t=102s hand=[149, 0, 4, 3] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.00 elixir 4 opp~? units 0 dets 0 (waits 1870/2304 badhand 661/2304)
+[student] WAIT | exact=0 opp=? next=2 t=113s hand=[149, 0, 4, 3] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.00 elixir 8 opp~? units 0 dets 0 (waits 1880/2314 badhand 661/2314)
+[student] STALL-PLAY x_bow p=0.00 cell 267 board (0.86, 0.61) units 0 17 ms
+[clock] icon reads x3 but the clock reads x1 -> using the clock (x1)
+[student] PLAY knight_evo p=0.81 cell 247 board (0.75, 0.55) units 1 19 ms
+[student] PLAY skeletons p=0.50 cell 247 board (0.75, 0.55) units 2 31 ms
+[clock] icon reads x3 but the clock reads x2 -> using the clock (x2)
+21:31:15 [play] elixir x2
+[student] PLAY ice_wizard p=0.28 cell 245 board (0.64, 0.55) units 6 6 ms
+[student] PLAY tornado p=0.48 cell 175 board (0.75, 0.39) units 9 23 ms
+[student] PLAY tesla_evo p=0.47 cell 247 board (0.72, 0.56) units 5 25 ms
+[student] PLAY the_log p=0.47 cell 249 board (0.86, 0.55) units 4 24 ms
+[student] WAIT p=0.07 elixir 3 opp~? units 6 dets 8 (waits 1890/2331 badhand 667/2331)
+[student] PLAY knight p=0.32 cell 250 board (0.92, 0.55) units 5 20 ms
+[student] PLAY tornado p=0.62 cell 175 board (0.75, 0.39) units 6 25 ms
+[student] PLAY tornado p=0.28 cell 175 board (0.75, 0.39) units 8 16 ms
+[student] PLAY skeletons p=0.40 cell 250 board (0.92, 0.55) units 6 18 ms
+[student] PLAY ice_wizard p=0.43 cell 297 board (0.53, 0.67) units 6 21 ms
+[student] PLAY ice_wizard p=0.30 cell 250 board (0.92, 0.55) units 6 29 ms
+[student] PLAY ice_wizard p=0.78 cell 323 board (0.97, 0.73) units 8 21 ms
+[student] WAIT | exact=0 opp=? next=149 t=149s hand=[3, 6, 4, 164] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.00 elixir 3 opp~? units 7 dets 7 (waits 1900/2348 badhand 674/2348)
+[student] WAIT | exact=0 opp=? next=149 t=153s hand=[3, 6, 4, 164] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.00 elixir 6 opp~? units 7 dets 7 (waits 1910/2358 badhand 674/2358)
+[student] STALL-PLAY the_log p=0.00 cell 248 board (0.81, 0.55) units 5 27 ms
+[student] WAIT | exact=0 opp=? next=0 t=160s hand=[3, -1, 4, 164] tw=1.01.01.01.01.01.0 sp=3 unk=0 p=0.00 elixir 8 opp~? units 3 dets 6 (waits 1920/2369 badhand 677/2369)
+[student] WAIT | exact=0 opp=? next=0 t=164s hand=[3, 149, 4, 164] tw=1.01.00.0x1.01.01.0 sp=0 unk=0 p=0.01 elixir 10 opp~? units 6 dets 6 (waits 1930/2379 badhand 677/2379)
+[student] WAIT | exact=0 opp=? next=0 t=170s hand=[3, 149, 4, 164] tw=1.01.00.0x1.01.01.0 sp=1 unk=0 p=0.02 elixir 10 opp~? units 6 dets 7 (waits 1940/2389 badhand 677/2389)
+[student] STALL-PLAY x_bow p=0.03 cell 254 board (0.14, 0.61) units 6 18 ms
+[student] PLAY tesla p=0.80 cell 297 board (0.5, 0.69) units 5 14 ms
+[student] PLAY knight p=0.69 cell 238 board (0.25, 0.55) units 5 10 ms
+[student] PLAY skeletons p=0.42 cell 309 board (0.19, 0.73) units 6 31 ms
+[student] PLAY knight p=0.40 cell 238 board (0.25, 0.55) units 3 19 ms
+[student] WAIT | exact=0 opp=? next=3 t=185s hand=[0, 6, 4, 2] tw=1.00.70.0x1.01.01.0 sp=0 unk=0 p=0.00 elixir 5 opp~? units 6 dets 6 (waits 1950/2404 badhand 681/2404)
+[student] STALL-PLAY tornado p=0.03 cell 333 board (0.53, 0.77) units 4 32 ms
+[student] PLAY the_log p=0.95 cell 327 board (0.19, 0.77) units 5 22 ms
+[student] PLAY ice_wizard p=0.87 cell 341 board (0.97, 0.77) units 5 32 ms
+[student] PLAY the_log p=0.35 cell 337 board (0.75, 0.77) units 6 26 ms
+[student] PLAY skeletons p=0.59 cell 309 board (0.19, 0.73) units 7 16 ms
+[student] PLAY ice_wizard p=0.92 cell 329 board (0.31, 0.77) units 8 30 ms
+[student] PLAY knight_evo p=0.58 cell 320 board (0.81, 0.73) units 12 36 ms
+[student] PLAY the_log p=0.87 cell 327 board (0.19, 0.77) units 9 24 ms
+[student] WAIT p=0.16 elixir 3 opp~? units 9 dets 9 (waits 1960/2422 badhand 687/2422)
+21:32:40 [play] UNKNOWN 0.4s after in-match -> grace hold (label lost: overtime / end animation / dropout; up to 150s)
+21:32:41 [play] in-match read re-acquired -> grace hold released
+21:32:41 [play] UNKNOWN 0.4s after in-match -> grace hold (label lost: overtime / end animation / dropout; up to 150s)
+21:32:41 [play] in-match read re-acquired -> grace hold released
+21:32:42 [play] state: MATCH_END
+21:32:42 [nav] MATCH_END -> Play Again (located) (0.348,0.914)
+21:32:43 [play] state: UNKNOWN
+21:32:49 [play] state: IN_MATCH
+[student] STALL-PLAY skeletons p=0.22 cell 423 board (0.53, 0.98) units 0 15 ms
+[student] PLAY tesla p=0.76 cell 279 board (0.5, 0.66) units 1 34 ms
+[student] WAIT | exact=0 opp=? next=0 t=8s hand=[6, 2, 4, 149] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.00 elixir 5 opp~? units 3 dets 3 (waits 1970/2434 badhand 693/2434)
+[student] PLAY the_log p=0.42 cell 273 board (0.19, 0.64) units 5 25 ms
+[student] PLAY knight p=0.57 cell 235 board (0.08, 0.55) units 6 35 ms
+[student] PLAY tornado p=0.63 cell 349 board (0.42, 0.83) units 4 25 ms
+[student] WAIT | exact=0 opp=? next=164 t=21s hand=[7, 2, 4, 6] tw=1.00.81.01.01.01.0 sp=0 unk=0 p=0.03 elixir 1 opp~? units 1 dets 1 (waits 1980/2447 badhand 696/2447)
+[student] WAIT | exact=0 opp=? next=164 t=29s hand=[7, 2, 4, 3] tw=1.00.81.01.01.01.0 sp=0 unk=0 p=0.04 elixir 4 opp~? units 1 dets 1 (waits 1990/2457 badhand 696/2457)
+[student] WAIT p=0.14 elixir 7 opp~? units 0 dets 0 (waits 2000/2467 badhand 696/2467)
+[student] PLAY x_bow p=0.45 cell 267 board (0.86, 0.61) units 0 31 ms
+[student] PLAY skeletons p=0.86 cell 247 board (0.75, 0.55) units 1 26 ms
+[student] PLAY ice_wizard p=0.56 cell 246 board (0.69, 0.55) units 2 27 ms
+[student] PLAY the_log p=0.41 cell 249 board (0.86, 0.55) units 3 18 ms
+[student] PLAY knight p=0.48 cell 247 board (0.75, 0.55) units 2 29 ms
+[student] WAIT p=0.17 elixir 3 opp~? units 3 dets 3 (waits 2010/2482 badhand 699/2482)
+[student] PLAY the_log p=0.36 cell 249 board (0.86, 0.55) units 2 20 ms
+[student] WAIT | exact=0 opp=? next=7 t=69s hand=[2, 0, 4, 164] tw=1.00.81.01.01.00.0x sp=0 unk=0 p=0.01 elixir 3 opp~? units 2 dets 2 (waits 2020/2493 badhand 699/2493)
+[student] WAIT | exact=0 opp=? next=7 t=76s hand=[3, 0, 4, 164] tw=1.00.81.01.01.00.0x sp=0 unk=0 p=0.00 elixir 6 opp~? units 0 dets 0 (waits 2030/2503 badhand 699/2503)
+[student] STALL-PLAY x_bow p=0.00 cell 267 board (0.86, 0.61) units 0 20 ms
+[student] PLAY tesla p=0.79 cell 239 board (0.28, 0.56) units 1 19 ms
+[student] PLAY tornado p=0.45 cell 166 board (0.25, 0.39) units 2 17 ms
+[student] PLAY skeletons p=0.69 cell 235 board (0.08, 0.55) units 2 25 ms
+[student] PLAY knight_evo p=0.78 cell 238 board (0.25, 0.55) units 1 29 ms
+[student] WAIT p=0.09 elixir 3 opp~? units 2 dets 2 (waits 2040/2518 badhand 703/2518)
+[student] PLAY the_log p=0.54 cell 237 board (0.19, 0.55) units 3 17 ms
+[student] PLAY ice_wizard p=0.74 cell 240 board (0.36, 0.55) units 3 18 ms
+[student] PLAY ice_wizard p=0.35 cell 238 board (0.25, 0.55) units 6 17 ms
+[student] PLAY ice_wizard p=0.76 cell 153 board (0.53, 0.36) units 8 34 ms
+[clock] icon reads x3 but the clock reads x1 -> using the clock (x1)
+[clock] icon reads x3 but the clock reads x2 -> using the clock (x2)
+21:34:49 [play] elixir x2
+[student] WAIT | exact=0 opp=? next=7 t=123s hand=[3, 0, 4, 164] tw=1.00.81.01.01.00.0x sp=0 unk=0 p=0.00 elixir 7 opp~? units 4 dets 4 (waits 2050/2532 badhand 704/2532)
+[student] STALL-PLAY x_bow p=0.00 cell 254 board (0.14, 0.61) units 8 29 ms
+[student] PLAY tesla p=0.33 cell 239 board (0.28, 0.56) units 4 31 ms
+[student] PLAY skeletons p=0.97 cell 235 board (0.08, 0.55) units 5 29 ms
+[student] PLAY the_log p=0.65 cell 255 board (0.19, 0.61) units 9 34 ms
+[student] PLAY knight p=0.49 cell 309 board (0.19, 0.73) units 2 6 ms
+[student] PLAY ice_wizard p=0.53 cell 237 board (0.19, 0.55) units 1 16 ms
+[student] PLAY ice_wizard p=0.46 cell 237 board (0.19, 0.55) units 2 22 ms
+[student] PLAY tornado p=0.96 cell 239 board (0.31, 0.58) units 8 30 ms
+[student] PLAY tornado p=0.74 cell 349 board (0.42, 0.83) units 5 16 ms
+[student] PLAY skeletons p=0.40 cell 241 board (0.42, 0.55) units 2 20 ms
+21:35:17 [play] UNKNOWN 0.5s after in-match -> grace hold (label lost: overtime / end animation / dropout; up to 150s)
+21:35:25 [play] state: MATCH_END
+21:35:25 [nav] MATCH_END -> Play Again (located) (0.348,0.914)
+21:35:26 [play] state: UNKNOWN
+21:35:35 [play] state: IN_MATCH
+[student] WAIT | exact=0 opp=? next=7 t=2s hand=[3, 4, 0, 164] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.00 elixir 7 opp~? units 0 dets 0 (waits 2060/2552 badhand 712/2552)
+[student] STALL-PLAY tornado p=0.01 cell 333 board (0.53, 0.77) units 0 17 ms
+[student] WAIT p=0.07 elixir 7 opp~? units 1 dets 1 (waits 2070/2563 badhand 714/2563)
+[student] PLAY skeletons p=0.62 cell 266 board (0.81, 0.61) units 1 14 ms
+[student] PLAY tesla p=0.55 cell 323 board (0.94, 0.72) units 1 26 ms
+[student] PLAY the_log p=0.55 cell 338 board (0.81, 0.77) units 4 30 ms
+[student] WAIT | exact=0 opp=? next=0 t=21s hand=[3, 4, 2, 149] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.02 elixir 4 opp~? units 2 dets 2 (waits 2080/2576 badhand 718/2576)
+[student] PLAY ice_wizard p=0.52 cell 250 board (0.92, 0.55) units 2 26 ms
+[student] PLAY knight p=0.43 cell 248 board (0.81, 0.55) units 2 30 ms
+[student] WAIT p=0.15 elixir 3 opp~? units 3 dets 3 (waits 2090/2588 badhand 722/2588)
+[student] WAIT p=0.08 elixir 4 opp~? units 3 dets 3 (waits 2100/2598 badhand 722/2598)
+[student] PLAY skeletons p=0.45 cell 280 board (0.58, 0.64) units 3 28 ms
+[student] PLAY tornado p=0.37 cell 80 board (0.47, 0.2) units 2 26 ms
+[student] WAIT p=0.07 elixir 2 opp~? units 3 dets 4 (waits 2110/2610 badhand 725/2610)
+[student] PLAY ice_wizard p=0.54 cell 297 board (0.53, 0.7) units 4 15 ms
+[student] WAIT | exact=0 opp=? next=2 t=50s hand=[3, 4, 6, 164] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.00 elixir 5 opp~? units 1 dets 1 (waits 2120/2621 badhand 725/2621)
+[student] WAIT | exact=0 opp=? next=2 t=58s hand=[3, 4, 6, 164] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.00 elixir 8 opp~? units 1 dets 1 (waits 2130/2631 badhand 725/2631)
+[student] STALL-PLAY x_bow p=0.00 cell 267 board (0.86, 0.61) units 0 12 ms
+[student] PLAY ice_wizard p=0.61 cell 246 board (0.69, 0.55) units 1 17 ms
+[student] WAIT | exact=0 opp=? next=7 t=68s hand=[149, 4, 6, 164] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.00 elixir 2 opp~? units 4 dets 4 (waits 2140/2643 badhand 728/2643)
+[student] WAIT | exact=0 opp=? next=7 t=74s hand=[149, 4, 6, 164] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.00 elixir 4 opp~? units 2 dets 2 (waits 2150/2653 badhand 728/2653)
+[student] WAIT | exact=0 opp=? next=7 t=79s hand=[149, 4, 6, 164] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.01 elixir 6 opp~? units 2 dets 2 (waits 2160/2663 badhand 728/2663)
+[student] WAIT | exact=0 opp=? next=7 t=85s hand=[149, 4, 6, 164] tw=1.01.01.01.01.01.0 sp=0 unk=0 p=0.00 elixir 8 opp~? units 0 dets 0 (waits 2170/2673 badhand 728/2673)
+[student] STALL-PLAY the_log p=0.00 cell 248 board (0.81, 0.55) units 0 6 ms
+[student] PLAY skeletons p=0.52 cell 422 board (0.47, 0.98) units 0 23 ms
+[student] WAIT p=0.07 elixir 8 opp~? units 3 dets 3 (waits 2180/2685 badhand 732/2685)
+[student] PLAY knight p=0.34 cell 422 board (0.47, 0.98) units 2 26 ms
+[student] WAIT p=0.20 elixir 8 opp~? units 3 dets 3 (waits 2190/2696 badhand 734/2696)
+[student] PLAY x_bow p=0.84 cell 254 board (0.14, 0.61) units 4 32 ms
+[student] PLAY tesla p=0.71 cell 239 board (0.28, 0.56) units 5 21 ms
+[student] PLAY tornado p=0.48 cell 80 board (0.47, 0.2) units 4 15 ms
+[student] PLAY the_log p=0.54 cell 236 board (0.14, 0.55) units 9 30 ms
+[clock] icon reads x3 but the clock reads x1 -> using the clock (x1)
+[student] PLAY skeletons p=0.79 cell 235 board (0.08, 0.55) units 7 37 ms
+[student] PLAY tornado p=0.68 cell 165 board (0.19, 0.39) units 6 16 ms
+[clock] icon reads x3 but the clock reads x2 -> using the clock (x2)
+21:37:37 [play] elixir x2
+[student] PLAY ice_wizard p=0.60 cell 234 board (0.03, 0.58) units 5 22 ms
+[student] PLAY knight_evo p=0.77 cell 235 board (0.08, 0.55) units 6 19 ms
+[student] PLAY ice_wizard p=0.73 cell 235 board (0.08, 0.55) units 5 8 ms
+[student] PLAY the_log p=0.61 cell 236 board (0.14, 0.55) units 5 32 ms
+[student] WAIT p=0.08 elixir 7 opp~? units 2 dets 2 (waits 2200/2716 badhand 740/2716)
+[student] PLAY rocket p=0.42 cell 111 board (0.19, 0.27) units 2 31 ms
+[student] PLAY the_log p=0.49 cell 237 board (0.19, 0.55) units 2 23 ms
+[student] WAIT | exact=0 opp=? next=0 t=144s hand=[2, 7, 3, 164] tw=1.01.01.01.00.0x1.0 sp=1 unk=0 p=0.00 elixir 5 opp~? units 2 dets 3 (waits 2210/2728 badhand 744/2728)
+[student] WAIT | exact=0 opp=? next=0 t=149s hand=[2, 7, 3, 164] tw=1.01.01.01.00.0x1.0 sp=1 unk=0 p=0.00 elixir 8 opp~? units 2 dets 3 (waits 2220/2738 badhand 744/2738)
+[student] STALL-PLAY tesla_evo p=0.02 cell 241 board (0.39, 0.56) units 3 24 ms
+[student] PLAY skeletons p=0.91 cell 237 board (0.19, 0.55) units 4 27 ms
+[student] PLAY ice_wizard p=0.92 cell 320 board (0.81, 0.73) units 7 26 ms
+[student] PLAY the_log p=0.84 cell 338 board (0.81, 0.77) units 4 28 ms
+[student] PLAY tornado p=0.73 cell 238 board (0.25, 0.55) units 5 21 ms
+[student] PLAY knight p=0.90 cell 235 board (0.08, 0.55) units 4 18 ms
+[student] PLAY the_log p=0.48 cell 327 board (0.19, 0.77) units 5 30 ms
+[student] PLAY the_log p=0.38 cell 327 board (0.19, 0.77) units 4 7 ms
+[student] PLAY the_log p=0.60 cell 327 board (0.19, 0.77) units 5 19 ms
+[student] WAIT | exact=0 opp=? next=7 t=165s hand=[4, 149, 3, 164] tw=1.00.70.0x1.00.0x1.0 sp=0 unk=0 p=0.00 elixir 4 opp~? units 2 dets 2 (waits 2230/2757 badhand 751/2757)
+[student] WAIT | exact=0 opp=? next=7 t=172s hand=[4, 149, 3, 164] tw=1.00.70.0x1.00.0x1.0 sp=0 unk=0 p=0.00 elixir 9 opp~? units 0 dets 0 (waits 2240/2767 badhand 751/2767)
+[student] STALL-PLAY rocket p=0.00 cell 113 board (0.31, 0.27) units 0 23 ms
+[student] PLAY ice_wizard p=0.28 cell 235 board (0.08, 0.55) units 2 27 ms
+[student] WAIT | exact=0 opp=? next=2 t=179s hand=[7, 149, 3, 164] tw=1.00.70.0x1.00.0x1.0 sp=2 unk=0 p=0.02 elixir 5 opp~? units 1 dets 3 (waits 2250/2779 badhand 754/2779)
+21:38:45 [play] state: MATCH_END
+21:38:45 [nav] MATCH_END -> Play Again (located) (0.348,0.914)
+21:38:46 [play] state: UNKNOWN
+21:38:52 [play] state: IN_MATCH
+[student] STALL-PLAY tornado p=0.01 cell 333 board (0.53, 0.77) units 0 7 ms
+[student] WAIT p=0.07 elixir 6 opp~? units 0 dets 1 (waits 2260/2790 badhand 756/2790)
+

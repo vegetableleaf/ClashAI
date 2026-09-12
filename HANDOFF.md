@@ -2798,6 +2798,44 @@ Runs 2-7 ran older code (before HandMemory, the affordability mask and anti-stal
 *What this does NOT establish.* Whether `force_focus` beats the specific popup the owner saw (Windows may still refuse; the log line will say `force focus FAILED`, and the give-up then stops the run at 10 min instead of 3 h 45 min). Whether Escape from a stuck results screen reaches HOME in Google Play Games (untested live). The freeze root cause -- that needs the next long session's `freeze_states.jsonl`, then an offline bisection of the captured inputs.
 
 
+**X. FREEZE ROOT CAUSE FOUND IN THE CAPTURED STATES (L67r, 2026-09-11): the gate collapses on IMPOSSIBLE play histories -- the live `past` channel records the same card twice within 3 plays, which training never contains. Plus an anti-stall bug that forces every match's opening play.** Session: owner's icebow run 20:52:54-21:38:52 (`scratchpad/live_run9.log`, UTF-16; converted `L67/live_run10_utf8.log`), plus short icebow runs earlier the same evening and a 3-minute hogeq run (18:13, 1 capture). Scripts: `L67/freeze_bisect.py` (+ `freeze_bisect.json/.out`), `freeze_past_parts.out`, `freeze_past_slots.out`, `freeze_dedupe.out`, `play_repeat_scan.out`.
+
+*The run (a), `live_session_scan.py`:* 15 full matches, 44.0 min in match, 529 plays = 12.01/min, 47 STALL-PLAY, 0 matches with a >= ~47 s high-elixir freeze. No nav ceiling line fired (0 `NO MATCH`).
+
+*The capture worked (a):* `icebow/data/freeze_states.jsonl` 143 records (75 `stall`, 68 `pinned_hi`; 89 from the 20:52 run). Re-scoring every record with `s1_icebow_v6lat_s0.pt` reproduces the logged p to **3.1e-7**.
+
+*Anti-stall BUG (a).* 22 of 75 `stall` records have `idle_s = None`: no play yet this match, all at t 2.8-5.2 s, elixir 9, p 0.001-0.216. `StudentPolicy.decide` measures idle from `_last_play_t or 0.0`, and `reset_match` sets it to None, so the rule fires the FIRST time elixir reads >= 9 -- about one forced opening play per match, before the pro-like wait (pro first play median 12.0 s, 5cs.99 V) ends. **Correction to V:** last night's "anti-stall fired 283 times" includes these; ~1 per match puts roughly 77 of the 283 in the opening, so ~206 mid-match (b, estimated from today's 22-in-~22-matches rate).
+
+*Counterfactual bisection on the 121 non-opening states (a), base mean p 0.029, 0% over tau 0.27.* One input group changed at a time; noise controls (2% jitter of unit xy / match clock) move nothing (0.029).
+
+| change | mean p | share over tau |
+|---|---|---|
+| remove ALL units / enemy / mine / unknown-side / spells | 0.029-0.030 | 0.00-0.01 |
+| unit hp / conf / age / deploying flags | 0.029 | 0.00 |
+| elixir 10 / exact-elixir flag on / opp elixir 5 known | 0.065 / 0.026 / 0.009 | 0.04 / 0 / 0 |
+| clock 150 s double | 0.065 | 0.07 |
+| **past cleared** | **0.319** | **0.40** |
+| **past slot ids removed (xy + ages kept)** | **0.499** | **0.65** |
+| past ages x0.5 / x2 / all 60 s | 0.034 / 0.039 / 0.122 | 0.02 / 0.05 / 0.14 |
+| past y flipped / x mirrored (control) | 0.151 / 0.030 | 0.19 / 0.01 |
+| next card unknown / tower hp unknown (inputs training never has) | 0.210 / 0.154 | 0.27 / 0.21 |
+
+The board is irrelevant to these collapses; the card IDENTITIES in `past` drive them.
+
+*Why (a).* In the pro training rows a card repeated inside the last-3 plays occurs **0.000** of the time -- the 8-card cycle makes it impossible. In the live freeze states **71.9% (87/121)** have one (most common: ice_wizard / skeletons / ice_wizard x11, the_log / knight_evo / the_log x8), and 71.9% of their 3-play sequences never appear in training at all. Across ALL live plays (the stdout logs, same scanner both nights): **11.2% (run9, 2,821 plays) / 10.6% (run10, 530) of plays repeat a card from the previous two; 6.0% repeat the previous card outright**; after a play the history holds a repeat **16.2% / 15.5%** of the time -- so freeze states are enriched **~4.5x** for impossible histories. Repeats by card (run9): ice_wizard 150, the_log 100, tornado 39. Pros at elixir >= 8 with each card as the latest play (10-25 s ago) play again 0.35-0.42 of the time (empty history 0.205): no card teaches "wait after this".
+- **Dedupe counterfactual:** keep only the most recent entry of each slot -> the 87 repeated states go **0.019 -> 0.497, 67% over tau** (stall 73%, pinned 62%).
+- Per-card id removal: ice_wizard 0.025 -> 0.521 (65% over tau, n=77), the_log 0.028 -> 0.295 (42%, n=66), tornado 0.040 -> 0.180 (27%, n=30), skeletons 0.031 -> 0.039.
+- **Remaining unexplained (b):** the 34 freeze states WITHOUT a repeat stay pinned (p 0.052, 0% over tau).
+
+*Mechanism (b, strongly suggested, not directly observed).* `play.py` calls `_student.record_play` right after `controller.play_card`, with no check that the card deployed. A tap that does not deploy (or a tray misread that plays a different card than the one recorded) leaves a phantom entry; the student re-picks the same card, and `past` now holds an impossible repeat. Which of the two it is needs the overlay clips (recorded card vs the card that actually appeared) -- untested.
+
+*Other distribution notes (a).* Live past positions match training (y median 0.604 vs 0.609); ages are older (median 16.9 s vs 8.5 s) but ages barely matter. Live `exact` and `opp_known` are constant 0 vs training's constant 1; setting them to 1 does not lift p. Freeze states have 2.21 unit tokens vs 3.45 in training rows at elixir >= 8, and my princess towers read alive 0.68 / 0.85 vs 0.99 -- freezes are enriched in states with a lost tower (b: losing positions or tower misreads). Unreadable hand slots: 13 of 143 records (9%) -- the tray reader is not the main cause.
+
+*What this does NOT establish.* That fixing `past` fixes the live bot (needs a live run; the counterfactual only says the same inputs with a legal history would pass the gate 67% of the time). Why ~11% of plays repeat. The second cause behind the 34 non-repeat states.
+
+*Proposed (owner decision):* **F1** `StudentPolicy.record_play` enforces the cycle rule -- when the new play's slot already appears in `past`, drop the older copy (exactly the dedupe counterfactual). **F2** anti-stall idle clock starts at match start (`reset_match` sets `_last_play_t = now`). Separable in the logs: F2 removes stalls at t < 6 s, F1 moves mid-match stalls and pinned waits. **F3 (investigate, not ship):** match recorded plays against the overlay clips to find why ~11% of plays repeat.
+
+
 ### §5cs.98 -- L67e+f (2026-09-08 06:00-18:00 UTC): **OPTION B GRADED (3 seeds: clean 21.56 +- 0.07, degraded 19.45 +- 0.05) BUT ITS GAIN IS AGAINST A CORRUPTION MODEL WE NOW KNOW IS WRONG. Three label-free live measurements instead: the GATE survives real detector input (live .248-.325 vs engine .294-.298), PLACEMENT COLLAPSES toward the prior (top-1 cell share 0.25 vs 0.07 at matched unit counts), and nothing JITTERS (same-cell 61.4% live vs 38.7% engine -- the collapse seen twice, not a second defect). Ablation names the cause: MISSING VALUES (unit HP, exact/opponent elixir, king HP), not noisy ones -- spell tokens, unknown team tags and low confidence each do NOTHING. Against pro labels, SUPPLYING beats FLAGGING (blank_both 18.78 exact cell / 52.11 card -> fill_both 20.15 / 63.25), so the fill is now wired live and verified (live top-1 share 0.411 -> 0.322)**
 
 **A. Option B, the 3-seed result (a), `s1_v6aug/eval_v3val_icebow_v6aug.out` + `eval_v3degraded_*`.** Augmented set = 622,923 rows (339,192 clean + 283,731 degraded TRAIN rows; val rows clean, so checkpoint selection is v6lat's own rule).

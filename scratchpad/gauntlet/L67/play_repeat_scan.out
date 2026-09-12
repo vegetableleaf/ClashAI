@@ -1,0 +1,2 @@
+live_run9_utf8.log: matches 77 plays 2821 | plays repeating a card from the previous 2 plays: 317 (11.2%) | immediate repeats 169 (6.0%) | states whose last-3 has a repeat 16.2% | by card {'ice_wizard': 150, 'the_log': 100, 'tornado': 39, 'knight': 10, 'skeletons': 10, 'tesla': 6}
+live_run10_utf8.log: matches 16 plays 530 | plays repeating a card from the previous 2 plays: 56 (10.6%) | immediate repeats 32 (6.0%) | states whose last-3 has a repeat 15.5% | by card {'ice_wizard': 21, 'the_log': 16, 'tornado': 11, 'skeletons': 4, 'tesla': 2, 'knight': 2}

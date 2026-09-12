@@ -1,0 +1,7 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+freeze states 121 | with repeated card in past 87 | without 34
+base p: repeated 0.019 (>tau 0.00) | no repeat 0.052 (>tau 0.00)
+dedupe past (drop older copies): repeated-states p 0.019 -> 0.497, >tau 0.67 | no-repeat states unchanged 0.052
+  stall: repeated share 0.70 | dedupe >tau 0.73 (n=37)
+  pinned_hi: repeated share 0.74 | dedupe >tau 0.62 (n=50)

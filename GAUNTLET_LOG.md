@@ -1650,3 +1650,10 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - **Correction:** the student is consulted ~1/s, not 10/s -- decision cadence, not model compute, bounds reaction time.
 - **Asked the owner:** what was on screen at ~06:26; approve a nav escalation ceiling + a per-match STALL-PLAY capture for the next long session.
 - **L67q (5cs.99 W), owner rulings on V:** the stall was a Windows popup. Shipped a navigator ceiling (2 min: desktop screenshot, log front window, force game focus, Escape only if the game is in front; 10 min: stop play.py + text Discord alert) and a freeze capture that records every anti-stall firing (10/match) and late pinned high-elixir waits (6/match) to `data/freeze_states.jsonl`. 11 new tests OK in both trees; full suites hogeq 1,330 OK, icebow 1 PRE-EXISTING failure (test_xbow_into_push, fails on clean a1d31a8 too); capture write path verified with the real checkpoint. Root cause still needs the next long session.
+
+## L67r (2026-09-11) -- freeze root cause: the gate collapses on IMPOSSIBLE play histories; anti-stall forces every opening
+- **Capture worked:** 143 records (75 stall, 68 pinned_hi); re-score error 3.1e-7. 22 stalls fired before the match's first play at t 2.8-5.2 s: the idle clock counts from 0 -> one forced opening play per match (bug).
+- **Bisection (121 states, base p 0.029):** removing every unit changes nothing (0.029); clearing `past` -> 0.319 (40% over tau); removing past card ids -> 0.499 (65%). Noise controls 0.029.
+- **Why:** training never has a card repeated inside the last 3 plays (0.000); 71.9% of freeze states do vs ~16% of all live post-play states. 11% of live plays repeat a card from the previous two (both nights). Deduping past lifts those states 0.019 -> 0.497 (67% over tau). 34 non-repeat freeze states stay pinned (second cause open).
+- **Likely mechanism (untested):** play.py records a play on every tap with no deployment check.
+- **Asked the owner:** ship F1 (enforce the cycle rule in past) + F2 (idle clock from match start)?

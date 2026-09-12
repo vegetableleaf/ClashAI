@@ -1,0 +1,14 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+LIVE past {"filled_per_state": 2.94, "x_mean": 0.512, "y_p10_med_p90": [0.562, 0.604, 0.854], "age_p10_med_p90": [9.25, 16.89, 30.1], "slot_hist": [40, 20, 122, 4, 4, 20, 96, 50], "y_gt_half_share": 0.975}
+TRAIN past {"filled_per_state": 2.75, "x_mean": 0.503, "y_p10_med_p90": [0.547, 0.609, 0.859], "age_p10_med_p90": [2.0, 8.5, 21.9], "slot_hist": [60413, 110180, 123580, 77275, 38892, 129604, 108867, 132078], "y_gt_half_share": 0.933}
+base                         mean_p 0.029
+past_y_flipped               mean_p 0.151  >tau 0.19  stall 0.26  pinned 0.13
+past_x_mirrored (control)    mean_p 0.030  >tau 0.01  stall 0.02  pinned 0.00
+past_slot_ids_removed        mean_p 0.499  >tau 0.65  stall 0.74  pinned 0.59
+past_age_x0.5                mean_p 0.034  >tau 0.02  stall 0.06  pinned 0.00
+past_age_x2                  mean_p 0.039  >tau 0.05  stall 0.11  pinned 0.00
+past_latest_only             mean_p 0.291  >tau 0.44  stall 0.49  pinned 0.40
+past_drop_latest             mean_p 0.321  >tau 0.40  stall 0.43  pinned 0.37
+past_y_set_train_median_0.61 mean_p 0.017  >tau 0.00  stall 0.00  pinned 0.00
+opening stalls p [0.001, 0.001, 0.003, 0.003, 0.005, 0.007, 0.007, 0.007, 0.011, 0.013, 0.013, 0.022, 0.025, 0.045, 0.065, 0.076, 0.083, 0.094, 0.124, 0.148, 0.149, 0.216] | elixir [9.0]
