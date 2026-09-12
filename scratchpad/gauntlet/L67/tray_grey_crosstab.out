@@ -1,0 +1,6 @@
+crosstab {('badge grey', 'card colour'): 372, ('badge pink', 'card colour'): 1522, ('badge grey', 'card grey'): 1925, ('badge pink', 'card grey'): 1}
+  slot 0: {'badge grey/card colour': 100, 'badge pink/card colour': 340, 'badge grey/card grey': 515, 'badge pink/card grey': 0}
+  slot 1: {'badge grey/card colour': 91, 'badge pink/card colour': 341, 'badge grey/card grey': 523, 'badge pink/card grey': 0}
+  slot 2: {'badge grey/card colour': 80, 'badge pink/card colour': 467, 'badge grey/card grey': 408, 'badge pink/card grey': 0}
+  slot 3: {'badge grey/card colour': 101, 'badge pink/card colour': 374, 'badge grey/card grey': 479, 'badge pink/card grey': 1}
+sheet C:\Users\benpe\AppData\Local\Temp\claude\c--Users-benpe-ClashBot\0f42e640-26bd-44ec-921b-b138244c52b6\scratchpad\tray_grey_crosstab.png

@@ -163,6 +163,9 @@ def play(cfg) -> None:
     # each student tap, so the overlay clips can be aligned and a repeated tap told apart -- the card still in its
     # slot (the tap did not deploy) vs a different card that slid in (HANDOFF 5cs.99 Z). No decision reads these.
     _student_tap: dict = {}
+    # L67w P1: tray slots whose elixir badge is not pink (greyed = unaffordable, or empty) are never offered to the tap
+    # path; null disables that half (a card read in two slots is always refused). See student_live.tap_tray.
+    _tray_min_pink = cfg.get("play", "tray_min_badge_pink", default=0.05)
 
     def _wall() -> str:
         return datetime.now().strftime("%H:%M:%S.%f")[:-3]
@@ -171,7 +174,7 @@ def play(cfg) -> None:
         return [vision.deck_keys[int(h)] if 0 <= int(h) < len(vision.deck_keys) else "?" for h in list(ids)[:4]]
     if _student_ckpt:
         try:
-            from .student_live import StudentPolicy, live_reads as _student_reads
+            from .student_live import StudentPolicy, live_reads as _student_reads, badge_pink, tap_tray
             _stall_elx = cfg.get("play", "stall_elixir", default=9.0)
             _student = StudentPolicy(cfg.path(_student_ckpt), str(cfg.get("play", "student_deck", default="hogeq")),
                                      actions, device=str(device),
@@ -736,7 +739,15 @@ def play(cfg) -> None:
                                      next_name=_nname, hp_tracker=hp_tracker, tower_tracker=tower_tracker,
                                      t_sec=max(0.0, time.time() - clock._start),
                                      opp_elixir=(None if _oe is None else float(_oe)))
-            _sact = _student.decide(_last_dets["all"], _sreads, hand_ids, vision.deck_keys,
+            # L67w P1: the TAP path only gets slots the game will play -- a pink cost badge and a card read once. The
+            # model's hand view above (HandMemory) is unchanged; this stops the phantom taps of run12 (31% of taps
+            # dropped no elixir: greyed cards read as cheap ones, one card read in two slots, HANDOFF 5cs.99 AB/AC).
+            _tap_ids, _tap_why = tap_tray(hand_ids, vision.deck_keys, pink=badge_pink(frame, vision.hand_slots),
+                                          min_pink=_tray_min_pink)
+            for _w in _tap_why:
+                if _w in ("grey", "double"):
+                    _student.stats[f"tray_{_w}"] = _student.stats.get(f"tray_{_w}", 0) + 1
+            _sact = _student.decide(_last_dets["all"], _sreads, _tap_ids, vision.deck_keys,
                                     card_elixir=card_elixir)
             _slast = _student.last or {}
             if _sact is None:                                 # student says WAIT (or nothing mappable)
@@ -750,7 +761,7 @@ def play(cfg) -> None:
                           f"units {_slast.get('units', 0)} dets {len(_last_dets['all'])} "
                           f"(waits {_student.stats.get('wait', 0)}/{_student.stats.get('decisions', 0)}"
                           f" badhand {_student.stats.get('hand_unmapped', 0)}/{_student.stats.get('frames', 0)})"
-                          f" wall={_wall()}",
+                          f" tap [{','.join(_tray_names(_tap_ids))}] wall={_wall()}",
                           flush=True)
                 return
             _scard, _scell = int(_sact[0]), int(_sact[1])
@@ -764,6 +775,7 @@ def play(cfg) -> None:
                   f"{vision.deck_keys[card_id]} p={_slast.get('p_play', 0):.2f} "
                   f"cell {cell} board {tuple(round(v, 2) for v in _slast.get('board_xy', (0, 0)))} "
                   f"units {_slast.get('units', 0)} {_slast.get('ms', 0):.0f} ms "
+                  f"tap [{','.join(_tray_names(_tap_ids))}] "
                   f"hand [{','.join(_tray_names(hand_ids))}] elixir {elixir:.0f} wall={_wall()}", flush=True)
         # ---- LIVE SEARCH OVERRIDE. Set sim.live_search_enabled false to switch it off. --------
         # The policy's (card_id, cell) is already decided above and stays the fallback: decide()

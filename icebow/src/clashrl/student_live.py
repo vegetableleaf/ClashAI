@@ -236,6 +236,62 @@ class StudentPolicy:
         return int(card_id), live_cell, p_play
 
 
+BADGE_BOX = (0.03, 0.015, 0.06)   # elixir-cost badge around a tray slot centre: half-width, top / bottom y offset
+MIN_BADGE_PINK = 0.05             # below this the badge is grey (unaffordable) or absent (empty slot)
+
+
+def badge_pink(frame: np.ndarray, slots: Sequence[Sequence[float]], box=BADGE_BOX) -> list:
+    """Fraction of MAGENTA pixels in each tray card's elixir-cost badge (L67w P1).
+
+    The game greys a card AND its cost badge while it is unaffordable, and an empty slot has no badge, so a pink badge
+    means "this slot can be played now" whatever the card art. MEASURED on 7,624 slot samples from run12's overlay
+    clips: bimodal -- 4,544 below 0.01, ~3,065 at 0.10 or more, 13 in between -- and the contact sheet shows the low
+    mode is exactly greyed cards plus empty slots (HANDOFF 5cs.99 AC). The card's own saturation is NOT used: an empty
+    slot is a saturated blue placeholder. Expects a BGR(A) frame, the capture's format."""
+    import cv2
+    h, w = frame.shape[:2]
+    dx, dy0, dy1 = box
+    out = []
+    for cx, cy in slots:
+        x0, x1 = max(0, int((cx - dx) * w)), max(0, int((cx + dx) * w))
+        y0, y1 = max(0, int((cy + dy0) * h)), max(0, int((cy + dy1) * h))
+        crop = frame[y0:y1, x0:x1]
+        if crop.size == 0:
+            out.append(0.0)
+            continue
+        hsv = cv2.cvtColor(np.ascontiguousarray(crop[..., :3]), cv2.COLOR_BGR2HSV)
+        pink = (hsv[..., 0] >= 140) & (hsv[..., 0] <= 172) & (hsv[..., 1] >= 90) & (hsv[..., 2] >= 90)
+        out.append(float(pink.mean()))
+    return out
+
+
+def tap_tray(hand_ids: Sequence[int], deck_keys: Sequence[str], pink: Optional[Sequence[float]] = None,
+             min_pink: Optional[float] = MIN_BADGE_PINK) -> tuple:
+    """The tray the TAP path may use: (ids with unusable slots set to -1, reason per slot) (L67w P1).
+
+    Removed: an unread slot; a card read in TWO slots (a deck holds one copy, so at least one read is wrong -- run12:
+    8.6% of decisions, and 56% of taps on such a card dropped no elixir); a slot whose badge is not pink (greyed =
+    unaffordable, or empty -- run12: a greyed X-Bow read as ice_wizard was tapped and nothing deployed). `min_pink`
+    None / 0 keeps greyed slots. The model's own hand view (HandMemory) is not touched."""
+    ids = [int(h) for h in list(hand_ids)[:4]]
+    base = [vocab.base_key(str(deck_keys[h])) if 0 <= h < len(deck_keys) else None for h in ids]
+    counts: dict = {}
+    for b in base:
+        if b:
+            counts[b] = counts.get(b, 0) + 1
+    out, why = [], []
+    for k, h in enumerate(ids):
+        if base[k] is None:
+            out.append(-1); why.append("unread")
+        elif counts[base[k]] > 1:
+            out.append(-1); why.append("double")
+        elif pink is not None and min_pink and k < len(pink) and float(pink[k]) < float(min_pink):
+            out.append(-1); why.append("grey")
+        else:
+            out.append(h); why.append("ok")
+    return out, why
+
+
 PAST_HISTORY = 8      # plays kept internally; the model sees the newest PAST_K
 CYCLE_GAP = 3         # a card cannot reappear within this many recorded plays (4 in hand, played card to queue back)
 

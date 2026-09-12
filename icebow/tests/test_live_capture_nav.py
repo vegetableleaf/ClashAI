@@ -126,6 +126,55 @@ class NoMatchCeiling(unittest.TestCase):
         self.assertEqual((_recover_lines(logs), alerts, nav.give_up), ([], [], False))
 
 
+class RewardScreens(unittest.TestCase):
+    """L67w P4: run12 sat on a chest / card reveal (UNKNOWN) until the 10-min give-up."""
+
+    def _reward_taps(self, ctl, nav):
+        return [t for t in ctl.taps if tuple(t) == tuple(nav.reward_tap)]
+
+    def _setup(self):
+        nav, ctl, clock, logs, alerts = _nav()
+        nav.reward_tap, nav.reward_tap_after, nav.reward_tap_every = [0.5, 0.55], 8.0, 2.0
+        nav.stuck_tap, nav.stuck_timeout = [0.645, 0.905], 25.0
+        return nav, ctl, clock, logs
+
+    def test_no_reward_tap_in_a_normal_between_match_transition(self):
+        nav, ctl, clock, logs = self._setup()
+        _run(nav, clock, GameState.UNKNOWN, 7.0, step=0.5)
+        self.assertEqual(ctl.taps, [])
+
+    def test_centre_taps_every_two_seconds_after_the_hold(self):
+        nav, ctl, clock, logs = self._setup()
+        _run(nav, clock, GameState.UNKNOWN, 20.0, step=0.5)          # taps at 8, 10, ..., 20 s
+        self.assertEqual(len(self._reward_taps(ctl, nav)), 7)
+        self.assertEqual(len(ctl.taps), 7)                            # no dismiss before 25 s
+
+    def test_the_25s_dismiss_still_fires_and_restarts_the_hold(self):
+        nav, ctl, clock, logs = self._setup()
+        _run(nav, clock, GameState.UNKNOWN, 32.0, step=0.5)
+        self.assertEqual([t for t in ctl.taps if tuple(t) == (0.645, 0.905)], [(0.645, 0.905)])
+        self.assertEqual(len(self._reward_taps(ctl, nav)), 9)         # 8..24 s; the 25 s dismiss restarts the hold
+
+    def test_a_match_end_or_match_resets_the_hold(self):
+        nav, ctl, clock, logs = self._setup()
+        _run(nav, clock, GameState.UNKNOWN, 7.0, step=0.5)
+        nav.handle(None, GameState.MATCH_END)
+        _run(nav, clock, GameState.UNKNOWN, 7.0, step=0.5)
+        self.assertEqual(self._reward_taps(ctl, nav), [])
+
+    def test_zero_disables_reward_taps(self):
+        nav, ctl, clock, logs = self._setup()
+        nav.reward_tap_after = 0.0
+        _run(nav, clock, GameState.UNKNOWN, 20.0, step=0.5)
+        self.assertEqual(ctl.taps, [])
+
+    def test_recovery_never_sends_escape_on_a_reward_screen(self):
+        nav, ctl, clock, logs, _ = _nav()
+        _run(nav, clock, GameState.UNKNOWN, 130)
+        self.assertEqual(len(_recover_lines(logs)), 1)
+        self.assertEqual(ctl.keys, [])
+
+
 class FreezeCaptureBudget(unittest.TestCase):
     def test_opening_and_low_elixir_waits_are_not_captured(self):
         b = CaptureBudget()

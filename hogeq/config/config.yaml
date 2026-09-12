@@ -185,6 +185,9 @@ nav:
   recover_every_s: 60            # repeat that recovery at most this often
   give_up_after_s: 600           # no match for this long -> stop play.py + text-only Discord alert (0 = never)
   stall_shots_keep: 20           # newest desktop screenshots kept in data/nav_stall
+  reward_tap: [0.5, 0.55]        # L67w P4: on an UNKNOWN screen (chest 'Tap to open', card reveals) tap the game centre ...
+  reward_tap_after_s: 8          # ... after this long (a normal between-match UNKNOWN lasts ~6-7 s) ...
+  reward_tap_every_s: 2          # ... this often. 0 for reward_tap_after_s disables it.
 
 # --- Recording human play (screen + mouse) for imitation data ------------
 record:
@@ -1081,6 +1084,8 @@ play:
                                  # not cover would otherwise hang navigation. Keep this LONGER than your
                                  # typical matchmaking wait so a real search is not cancelled early.
   stuck_tap: [0.645, 0.905]      # where to tap to clear a stuck popup (default = results OK, bottom-right)
+  tray_min_badge_pink: 0.05      # L67w P1: the student taps only tray slots whose elixir-cost badge is at least this pink
+                                 # (greyed = unaffordable, or an empty slot); a card read in two slots is never tapped. null disables the grey half.
 
 # --- Overlay replays: clip the OPENING of every match with the detector's boxes burned in ---
 # When enabled, a background thread (its own screen capture, like the preview window) records the

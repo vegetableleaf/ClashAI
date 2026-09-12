@@ -64,6 +64,15 @@ class MenuNavigator:
         self.give_up = False
         self._now = time.time                            # injectable, so tests do not wait minutes
         self._sleep = time.sleep
+        # L67w P4 REWARD SCREENS. A chest ("Tap to open") and the card reveals after it read as UNKNOWN and need a tap
+        # anywhere, many times over. The dismiss tap below fires once per stuck_timeout (25 s) at the results-OK corner,
+        # which moved run12's chest too slowly to finish inside the 10-min ceiling (HANDOFF 5cs.99 AB). So after
+        # `reward_tap_after_s` on UNKNOWN, tap the game's centre every `reward_tap_every_s`. The normal UNKNOWN between
+        # MATCH_END and the next match lasts ~6-7 s, under the hold; a tap on the arena with no card selected does nothing.
+        self.reward_tap = cfg.get("nav", "reward_tap", default=[0.5, 0.55])
+        self.reward_tap_after = float(cfg.get("nav", "reward_tap_after_s", default=8.0))
+        self.reward_tap_every = float(cfg.get("nav", "reward_tap_every_s", default=2.0))
+        self._last_reward_tap: Optional[float] = None
         self._log = log or self._make_file_log(cfg, label)
 
     @staticmethod
@@ -92,6 +101,7 @@ class MenuNavigator:
         self._off_match_since = None
         self._last_recover = None
         self._recovers = 0
+        self._last_reward_tap = None
 
     def _locate(self, frame, tpl, thr, fallback):
         pt = self.vision.locate(frame, tpl, thr) if tpl else None
@@ -124,9 +134,10 @@ class MenuNavigator:
             fg, is_game = self._foreground()
             focus = getattr(self.controller, "force_focus", None)
             focused = bool(focus()) if callable(focus) else False
-            # Escape only when the GAME is in front (a key must never land in someone else's window), and never
-            # on HOME, where Android back opens the exit dialog instead of leaving a screen.
-            esc = focused and state != GameState.HOME
+            # Escape only when the GAME is in front (a key must never land in someone else's window), and only on
+            # MATCH_END (L67w P4): Android back on HOME opens the exit dialog, and run12's reward screens (UNKNOWN)
+            # ignored eight Escapes -- those are handled by the centre reward tap in handle().
+            esc = focused and state == GameState.MATCH_END
             if esc:
                 self.controller.press_key("esc")
             self._log(f"[nav] NO MATCH for {off:.0f}s (state {state.name}) -> recover #{self._recovers}: "
@@ -226,11 +237,19 @@ class MenuNavigator:
             now = self._now()
             if self._stuck_since is None:
                 self._stuck_since = now
+                self._last_reward_tap = None
             elif now - self._stuck_since >= self.stuck_timeout:
                 self._log(f"[nav] stuck on {state.name} ~{self.stuck_timeout:.0f}s -> dismiss "
                           f"({self.stuck_tap[0]:.3f},{self.stuck_tap[1]:.3f})")
                 self.controller.tap(*self.stuck_tap)
                 self._stuck_since = now
                 self._sleep(self.menu_delay)
+            elif (self.reward_tap_after > 0 and now - self._stuck_since >= self.reward_tap_after
+                  and (self._last_reward_tap is None or now - self._last_reward_tap >= self.reward_tap_every)):
+                self._last_reward_tap = now
+                self._log(f"[nav] {state.name} ~{now - self._stuck_since:.0f}s -> reward tap "
+                          f"({self.reward_tap[0]:.3f},{self.reward_tap[1]:.3f})")
+                self.controller.tap(*self.reward_tap)
+                self._sleep(self.poll_dt)
             else:
                 self._sleep(self.poll_dt)
