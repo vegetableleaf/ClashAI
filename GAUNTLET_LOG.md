@@ -1705,3 +1705,13 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - **Ice Wizard double read:** 198 of 1,578 decisions; clip crops: a greyed X-Bow read as ice_wizard every time; P1 then refuses the real pink Ice Wizard too.
 - **Other:** Tornado 16% (62% enemy half); Rocket 1%; Tesla 9%; Play Again template missed 26x (recovered). First 10 matches 3 W / 7 L, six losses by two crowns (noise-level).
 - **Asked the owner:** which issues they saw; proposed P1b (keep the pink copy of a double read), P5 (greyed X-Bow templates), X2 (an offensive X-Bow rule), N3 (Play Again template).
+
+## L67ae (2026-09-12) -- shipped P1b, P5, X2, N3 + Log-on-air veto; cheap-card collapse measured; hero Ice Wizard
+- **P1b:** a double read keeps the single pink copy (the run16 real Ice Wizard stays playable).
+- **P5:** +20 greyed X-Bow templates; held-out run16: frames with a card read twice 306 -> 15, x_bow reads 412 -> 1,281, high-score changes all carry the 6 badge; residual 22 wrong low-score x_bow reads (~0.3%).
+- **X2:** after an enemy princess falls, X-Bow goes to that tower's pocket (pros 25.2% forward then, 76% dead-lane pocket y 0.391); sticky lane when both are down; config switch.
+- **Log-on-air:** both decks skip a Log whose final corridor holds only air units.
+- **N3:** Play Again accepts a template list and saves one frame per missed results screen (no second template yet -- no frame existed).
+- **Collapse (a):** X-Bow 10% -> 1% of plays from minute 1 to overtime (pros 8-11%); Rocket 1-2% in EVERY phase (pros 3-8%) -- never played, not collapsing; bot median 3 elixir at a play vs pros 7-9; 6-cost affordable at 2-7% of late decisions. Cause (b): affordability mask + low bank; C1 instrumentation proposed.
+- **Trap:** the owner's ice_wizard_hero_*.png are already live Ice Wizard templates (prefix loader).
+- Suites: icebow 1,406 run, 1 failure = the pre-existing test_xbow_into_push clamped-front-row test (fails on clean a1d31a8), 21 skipped; hogeq 1,382 OK (66 skipped).

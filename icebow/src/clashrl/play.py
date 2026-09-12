@@ -26,6 +26,8 @@ from .reward import spell_whiffed          # live spell target mask (see use sit
 from .reward import lead_point, lead_velocity   # 2026-09-03: cast-delay lead for log + rocket
 from .reward import SPAWN_SPELL_BASES, spawn_spell_landing   # L67h: aim at a barrel's LANDING, not the barrel
 from .reward import tornado_pullable                        # L67aa N1: a Tornado never aims at a building
+from .reward import log_only_hits_air                       # L67ae: never roll a Log under air units only
+from .reward import xbow_pocket_cell                        # L67ae X2: offensive X-Bow in a dead tower's pocket
 from .reward import TILE as _TILE
 from .states import GameState
 from .threats import ThreatTracker, THREAT_DIM
@@ -269,6 +271,11 @@ def play(cfg) -> None:
     # past which pros place those 6.5%; it goes through the board warp, so it follows the calibration.
     _xbow_forward_board_y = float(cfg.get("play", "xbow_forward_board_y", default=0.58))
     xbow_live_defense_y = float(actions.warp.board_to_frame(0.5, _xbow_forward_board_y)[1])
+    # L67ae X2: once an enemy princess is down, an X-Bow goes to that tower's POCKET (reward.xbow_pocket_cell); the lane
+    # sticks for the rest of the match. play.xbow_pocket_after_tower false restores X1's always-defensive X-Bow.
+    _xbow_pocket_on = bool(cfg.get("play", "xbow_pocket_after_tower", default=True))
+    _xbow_pocket_y = float(cfg.get("play", "xbow_pocket_board_y", default=0.391))
+    _xbow_pocket = {"side": None}
     tesla_ids = {i for i, key in enumerate(vision.deck_keys)
                  if (key[:-4] if key.endswith("_evo") else key) == "tesla"}
     _deploy_top = float(cfg.get("action", "deploy_top", default=0.44))
@@ -850,7 +857,15 @@ def play(cfg) -> None:
         if slot < 0:
             return
         cell = actions.deploy_clamp(card_id in anywhere_ids, cell)   # only rocket/miner go anywhere
-        if card_id in xbow_ids:               # snap a forward X-Bow onto the nearer lane so it LOCKS the tower
+        if (card_id in xbow_ids and _xbow_pocket_on
+                and (_pk := xbow_pocket_cell(tower_tracker.enemy_alive, actions, _xbow_pocket["side"],
+                                             board_y=_xbow_pocket_y)) is not None):
+            # L67ae X2: an enemy princess is down -> the pro play, an X-Bow in that tower's pocket (sticky lane).
+            print(f"[assist] XBOW pocket cell {cell}->{_pk[0]} side {'left' if _pk[1] == 0 else 'right'} "
+                  f"enemy_alive {list(tower_tracker.enemy_alive)[:3]} wall={_wall()}", flush=True)
+            cell = _pk[0]
+            _xbow_pocket["side"] = _pk[1]
+        elif card_id in xbow_ids:             # snap a forward X-Bow onto the nearer lane so it LOCKS the tower
             gx, gy = cell % gw, cell // gw
             cx, cy = actions.cell_center(gx, gy)
             # WHICH TOWER FIRST. xbow_lock_cell snaps to the NEARER princess, so on a board
@@ -900,6 +915,17 @@ def play(cfg) -> None:
             aim = log_corridor_cell(cx, cy, _tk, actions, _log_half_w, _log_roll, _AIR_BASES)
             if aim is not None:
                 cell = aim
+            # L67ae LOG ON AIR (owner report, run15/16): log_corridor_cell leaves the model's aim alone when no GROUND
+            # enemy is near, so a Log could be cast straight at air units it rolls underneath. Judged on the FINAL cell
+            # and the same led tracks: a corridor holding only flyers skips the play (no tap, nothing recorded).
+            _lgx, _lgy = cell % gw, cell // gw
+            _lcx, _lcy = actions.cell_center(_lgx, _lgy)
+            if log_only_hits_air(_lcx, _lcy, _tk, _log_half_w, _log_roll, _AIR_BASES):
+                if _student is not None:
+                    _student.stats["log_air_veto"] = _student.stats.get("log_air_veto", 0) + 1
+                print(f"[assist] LOG skip: only air units in the roll at cell {cell} "
+                      f"(air {[t[4] for t in _tk if len(t) > 4 and t[4] in _AIR_BASES][:4]}) wall={_wall()}", flush=True)
+                return
         elif card_id in _nado_ids:
             # KING ACTIVATION: the highest-value Tornado in the deck, and the one the model has
             # never attempted live. Only fires when an attacker is actually deep enough to be
@@ -1040,6 +1066,7 @@ def play(cfg) -> None:
                     else:
                         _team_tracker.reset()
                     _cycle_tracker.reset()        # forget last match's cycle order
+                    _xbow_pocket["side"] = None   # L67ae X2: the pocket lane is per match
                     _canvas_stack.reset()         # ...and last match's canvas motion history
                     _replay_rec.new_match()       # arm a fresh overlay-replay clip for this match
                     prev_mult = 1

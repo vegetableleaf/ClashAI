@@ -279,11 +279,23 @@ def tap_tray(hand_ids: Sequence[int], deck_keys: Sequence[str], pink: Optional[S
     for b in base:
         if b:
             counts[b] = counts.get(b, 0) + 1
+    # L67ae P1b: a card read in two slots where exactly ONE copy has a pink badge keeps that copy. run16 (HANDOFF
+    # 5cs.99 AJ): a GREYED X-Bow read as ice_wizard beside the real, affordable Ice Wizard refused both, blocking the
+    # real card in 198 of 1,578 decisions. The greyed copy is still refused; two pink copies still refuse both (one read
+    # is wrong and nothing says which).
+    def _pink(k):
+        return pink is not None and bool(min_pink) and k < len(pink) and float(pink[k]) >= float(min_pink)
+    keep_double: dict = {}
+    for b, n in counts.items():
+        if n > 1:
+            pinks = [k for k in range(len(ids)) if base[k] == b and _pink(k)]
+            if len(pinks) == 1:
+                keep_double[b] = pinks[0]
     out, why = [], []
     for k, h in enumerate(ids):
         if base[k] is None:
             out.append(-1); why.append("unread")
-        elif counts[base[k]] > 1:
+        elif counts[base[k]] > 1 and keep_double.get(base[k]) != k:
             out.append(-1); why.append("double")
         elif pink is not None and min_pink and k < len(pink) and float(pink[k]) < float(min_pink):
             out.append(-1); why.append("grey")

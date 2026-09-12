@@ -104,8 +104,30 @@ class MenuNavigator:
         self._last_reward_tap = None
 
     def _locate(self, frame, tpl, thr, fallback):
-        pt = self.vision.locate(frame, tpl, thr) if tpl else None
-        return (pt, True) if pt else (fallback, False)
+        # L67ae N3: a template may be a LIST of variants (e.g. buttons.play_again_template: [play_again.png,
+        # play_again_2.png]); the first one located wins.
+        for name in (tpl if isinstance(tpl, (list, tuple)) else [tpl]):
+            pt = self.vision.locate(frame, name, thr) if name else None
+            if pt:
+                return pt, True
+        return fallback, False
+
+    def _save_frame(self, frame, tag: str) -> str:
+        """The GAME frame (not the desktop) to data/nav_stall, newest stall_shots_keep kept (L67ae N3)."""
+        try:
+            import cv2
+            self._shot_dir.mkdir(parents=True, exist_ok=True)
+            path = self._shot_dir / f"{tag}_{datetime.now():%Y%m%d_%H%M%S}.png"
+            cv2.imwrite(str(path), frame)
+            shots = sorted(self._shot_dir.glob("*.png"), key=lambda p: p.stat().st_mtime)
+            for old in shots[:max(0, len(shots) - self.stall_shots_keep)]:
+                try:
+                    old.unlink()
+                except OSError:
+                    pass
+            return str(path)
+        except Exception as exc:  # noqa: BLE001
+            return f"(failed: {type(exc).__name__})"
 
     # -- L67q no-match ceiling ------------------------------------------------------------------------------
     def _ceiling(self, state) -> bool:
@@ -216,6 +238,7 @@ class MenuNavigator:
             now = self._now()
             if self._match_end_since is None:
                 self._match_end_since = now
+                self._pa_miss_saved = False
             if now - self._match_end_since >= self.match_end_timeout:
                 # Play Again isn't advancing. Two results-screen variants: the normal one (OK is
                 # bottom-right) and the "OK only, centered" one (Play Again removed). Alternate the tap
@@ -230,6 +253,11 @@ class MenuNavigator:
                 pt, located = self._locate(frame, self.pa_tpl, self.pa_thr, self.play_again)
                 self._log(f"[nav] MATCH_END -> Play Again {'(located)' if located else '(fixed)'} "
                           f"({pt[0]:.3f},{pt[1]:.3f})")
+                if not located and frame is not None and not getattr(self, "_pa_miss_saved", False):
+                    # L67ae N3: run16 missed the template 26 times on a results-screen variant nobody has a picture
+                    # of; keep ONE game frame per episode so the next template can be cut from it.
+                    self._pa_miss_saved = True
+                    self._log(f"[nav] Play Again not located -> saved frame {self._save_frame(frame, 'playagain_miss')}")
                 self.controller.tap(*pt)
             self._sleep(self.menu_delay)
         else:  # UNKNOWN / QUEUING: normally just wait, but don't hang on an unrecognised popup

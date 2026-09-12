@@ -357,6 +357,50 @@ def nado_king_cell(tracks, my_anchors, acts, pull_r=0.16, x_off=0.028, y_off=0.1
     return acts.cell_at(min(0.98, max(0.02, tx)), min(0.98, max(0.02, ty)))
 
 
+def xbow_pocket_cell(enemy_alive, acts, sticky=None, board_y=0.391, lane_x=(0.139, 0.861)):
+    """L67ae X2 -- the OFFENSIVE X-Bow pros actually play: in the POCKET of a destroyed enemy princess tower.
+
+    MEASURED on the icebow v6 pro rows: pros place an X-Bow forward 5-8% of the time whatever the enemy towers' HP,
+    but 25.2% of the time once an enemy princess is down (242 X-Bows); with one down, 76% of those forward X-Bows go
+    in the DEAD tower's lane, at board y 0.391 (68% on the enemy half), median x 0.139 / 0.861 by side. A dead tower's
+    lane stays the target, which also answers the owner's lane-splitting report.
+
+    ``enemy_alive`` is TowerTracker.enemy_alive (left, right[, king]). Returns ``(cell, side)`` -- side 0 left,
+    1 right -- or None when no enemy princess is down, when both are down and ``sticky`` names no lane, or when the
+    cell is not deployable with that pocket open."""
+    alive = list(enemy_alive or [])[:2]
+    if len(alive) < 2:
+        return None
+    dead = [not bool(a) for a in alive]
+    if not any(dead):
+        return None
+    if all(dead):
+        if sticky not in (0, 1):
+            return None
+        side = int(sticky)
+    else:
+        side = 0 if dead[0] else 1
+    fx, fy = acts.warp.board_to_frame(float(lane_x[side]), float(board_y))
+    cell = int(acts.cell_at(fx, fy))
+    mask = acts.deployable_mask(False, pocket=(dead[0], dead[1]))
+    if not (0 <= cell < len(mask) and mask[cell]):
+        return None
+    return cell, side
+
+
+def log_only_hits_air(cx, cy, tracks, half_w=0.064, roll=0.28, air=()):
+    """True when a Log cast at (cx, cy) would roll UNDER air enemies and catch no ground enemy (L67ae).
+
+    Same corridor as ``log_corridor_cell``: lateral |x - cx| <= half_w, from half a width behind the cast point to
+    ``roll`` ahead (forward is decreasing y). The Log cannot hit flyers, so a cast whose corridor holds only air
+    units is 2 elixir for nothing -- the owner saw the model do it (run15/16). A corridor holding nothing at all is
+    NOT vetoed: that may be a tower chip or a pre-placed roll, and the model's choice stands."""
+    inside = [t for t in tracks if abs(t[0] - cx) <= half_w and -0.5 * half_w <= (cy - t[1]) <= roll]
+    if not inside:
+        return False
+    return all((t[4] if len(t) > 4 else None) in air for t in inside)
+
+
 def tornado_pullable(tracks, kind_of):
     """The enemy tracks a Tornado can actually move: BUILDINGS are anchored, so they are dropped (L67aa N1).
 

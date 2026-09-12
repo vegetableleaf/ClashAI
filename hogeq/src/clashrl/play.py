@@ -23,6 +23,7 @@ from .reward import (TowerTracker, pump_rocket_cell, spell_intercept_cell, weake
                      xbow_lock_cell, xbow_offense_depth_cell, xbow_target_lane_cell,
                      tesla_pull_cell)
 from .reward import log_corridor_cell                # 2026-09-04: Log corridor assist (icebow parity, HANDOFF 5cs.18)
+from .reward import log_only_hits_air                # L67ae: never roll a Log under air units only (icebow parity)
 from .reward import lead_point, lead_velocity   # 2026-09-03: cast-delay lead for log + rocket
 from .reward import SPAWN_SPELL_BASES, spawn_spell_landing   # L67h: aim at a barrel's LANDING, not the barrel
 from .reward import TILE as _TILE
@@ -905,6 +906,16 @@ def play(cfg) -> None:
             aim = log_corridor_cell(cx, cy, _tk, actions, _log_half_w, _log_roll, _AIR_BASES)
             if aim is not None:
                 cell = aim
+            # L67ae (owner, run15/16): the corridor assist leaves the model's aim alone when no GROUND enemy is
+            # near, so a Log could still roll under air units only. Judge the FINAL cast corridor and skip it.
+            _lgx, _lgy = cell % gw, cell // gw
+            _lcx, _lcy = actions.cell_center(_lgx, _lgy)
+            if log_only_hits_air(_lcx, _lcy, _tk, _log_half_w, _log_roll, _AIR_BASES):
+                if _student is not None:
+                    _student.stats["log_air_veto"] = _student.stats.get("log_air_veto", 0) + 1
+                print(f"[assist] LOG skip: only air units in the roll at cell {cell} "
+                      f"(air {[t[4] for t in _tk if len(t) > 4 and t[4] in _AIR_BASES][:4]}) wall={_wall()}", flush=True)
+                return
         elif card_id in tesla_ids and _wincon["xy"] is not None:
             # CENTRE-PULL: sit at the far edge of the win condition's OWN aggro radius so it is dragged
             # across the middle instead of beelining the near princess tower.

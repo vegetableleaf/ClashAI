@@ -1,0 +1,26 @@
+template (source candidate #) -> changed reads by OLD identity
+  x_bow_44   (# 36) total  203 {'the_log': 144, 'ice_wizard': 55, '?': 4}
+  x_bow_39   (#  6) total   99 {'tesla': 39, 'ice_wizard': 32, 'the_log': 20, 'tesla_evo': 8}
+  x_bow_59   (# 37) total   88 {'the_log': 38, 'tesla': 33, '?': 17}
+  x_bow_40   (#  9) total   77 {'ice_wizard': 40, 'the_log': 33, 'tornado': 3, 'tesla': 1}
+  x_bow_45   (# 51) total   50 {'tesla': 33, 'ice_wizard': 17}
+  x_bow_55   (#140) total   41 {'tesla': 18, 'the_log': 16, 'ice_wizard': 7}
+  x_bow_50   (#116) total   41 {'the_log': 25, 'ice_wizard': 16}
+  x_bow_41   (# 11) total   34 {'ice_wizard': 33, 'tornado': 1}
+  x_bow_64   (#134) total   30 {'tesla': 20, 'the_log': 6, '?': 4}
+  x_bow_51   (#117) total   27 {'ice_wizard': 26, '?': 1}
+  x_bow_56   (#  4) total   24 {'ice_wizard': 12, 'rocket': 8, 'tornado': 3, '?': 1}
+  x_bow_52   (#118) total   22 {'ice_wizard': 22}
+  x_bow_46   (# 98) total   22 {'the_log': 14, 'ice_wizard': 6, 'tornado': 1, 'tesla': 1}
+  x_bow_42   (# 12) total   22 {'ice_wizard': 22}
+  x_bow_43   (# 13) total   22 {'ice_wizard': 22}
+  x_bow_60   (# 41) total   13 {'tornado': 7, '?': 6}
+  x_bow_54   (#139) total   13 {'ice_wizard': 8, 'tornado': 5}
+  x_bow_53   (#119) total   13 {'ice_wizard': 13}
+  x_bow_47   (# 99) total   12 {'ice_wizard': 11, 'tornado': 1}
+  x_bow_48   (#106) total   11 {'ice_wizard': 10, 'tornado': 1}
+  x_bow_58   (# 21) total   10 {'?': 5, 'rocket': 5}
+  x_bow_63   (#104) total    7 {'?': 7}
+  x_bow_49   (#107) total    3 {'ice_wizard': 3}
+  x_bow_62   (#103) total    2 {'?': 2}
+templates that won nothing: ['x_bow_57', 'x_bow_61', 'x_bow_65']

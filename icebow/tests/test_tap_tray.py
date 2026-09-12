@@ -76,6 +76,21 @@ class TapTray(unittest.TestCase):
         ids, _ = tap_tray([2, 3, 2, 6], KEYS, pink=[0.0, 0.0, 0.0, 0.0], min_pink=None)
         self.assertEqual(ids, [-1, 3, -1, 6])
 
+    def test_p1b_the_run16_case_keeps_the_real_pink_ice_wizard(self):
+        # tray really [ice_wizard (pink), rocket (grey), x_bow (grey, read as ice_wizard), the_log (pink)]
+        ids, why = tap_tray([2, 4, 2, 6], KEYS, pink=[0.20, 0.0, 0.0, 0.15])
+        self.assertEqual(ids, [2, -1, -1, 6])
+        self.assertEqual(why, ["ok", "grey", "double", "ok"])
+
+    def test_p1b_two_pink_copies_are_still_both_refused(self):
+        ids, why = tap_tray([2, 0, 2, 6], KEYS, pink=[0.2, 0.2, 0.2, 0.2])
+        self.assertEqual(ids, [-1, 0, -1, 6])
+        self.assertEqual(why, ["double", "ok", "double", "ok"])
+
+    def test_p1b_two_grey_copies_are_both_refused(self):
+        ids, _ = tap_tray([2, 0, 2, 6], KEYS, pink=[0.0, 0.2, 0.0, 0.2])
+        self.assertEqual(ids, [-1, 0, -1, 6])
+
     def test_no_pink_reading_means_no_grey_filter(self):
         ids, _ = tap_tray([0, 3, 2, 6], KEYS, pink=None)
         self.assertEqual(ids, [0, 3, 2, 6])

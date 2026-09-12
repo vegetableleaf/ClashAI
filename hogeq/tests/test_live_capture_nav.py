@@ -175,6 +175,35 @@ class RewardScreens(unittest.TestCase):
         self.assertEqual(ctl.keys, [])
 
 
+class PlayAgainVariants(unittest.TestCase):
+    """L67ae N3: several Play Again templates, and one saved game frame per results screen that none matches."""
+
+    def test_a_list_of_templates_tries_each(self):
+        nav, ctl, clock, logs, _ = _nav()
+
+        class _V:
+            def locate(self, frame, tpl, thr):
+                return (0.4, 0.9) if tpl == "play_again_2.png" else None
+        nav.vision = _V()
+        nav.pa_tpl = ["play_again.png", "play_again_2.png"]
+        nav.handle(object(), GameState.MATCH_END)
+        self.assertIn((0.4, 0.9), ctl.taps)
+        self.assertTrue(any("(located)" in l for l in logs))
+
+    def test_one_frame_saved_per_results_screen_episode(self):
+        nav, ctl, clock, logs, _ = _nav()
+        saved = []
+        nav._save_frame = lambda frame, tag: saved.append(tag) or f"<{tag}>"
+        nav.pa_tpl = "play_again.png"
+        for _ in range(4):                                            # 4 misses within 6 s: one episode
+            nav.handle(object(), GameState.MATCH_END)
+            clock.t += 1.0
+        self.assertEqual(saved, ["playagain_miss"])
+        nav.reset_state()                                             # a match happened
+        nav.handle(object(), GameState.MATCH_END)
+        self.assertEqual(saved, ["playagain_miss", "playagain_miss"])
+
+
 class FreezeCaptureBudget(unittest.TestCase):
     def test_opening_and_low_elixir_waits_are_not_captured(self):
         b = CaptureBudget()

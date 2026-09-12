@@ -1,0 +1,8 @@
+kept 20 ['x_bow_39', 'x_bow_41', 'x_bow_42', 'x_bow_43', 'x_bow_44', 'x_bow_45', 'x_bow_46', 'x_bow_47', 'x_bow_48', 'x_bow_49', 'x_bow_50', 'x_bow_51', 'x_bow_52', 'x_bow_53', 'x_bow_55', 'x_bow_58', 'x_bow_59', 'x_bow_62', 'x_bow_63', 'x_bow_64']
+frames 1694 slot reads 6776
+unread old 0.087 new 0.080 | frames with a duplicate read: old 306 new 15
+reads old {'rocket': 1487, 'tesla': 1120, 'ice_wizard': 1008, 'the_log': 762, '?': 587, 'tornado': 576, 'x_bow': 412, 'knight': 323, 'skeletons': 277, 'knight_evo': 148, 'tesla_evo': 76}
+    new {'rocket': 1474, 'x_bow': 1281, 'tesla': 975, 'ice_wizard': 657, 'tornado': 567, '?': 540, 'the_log': 466, 'knight': 323, 'skeletons': 277, 'knight_evo': 148, 'tesla_evo': 68}
+changes {('ice_wizard', 'x_bow', 'conf>=0.8'): 334, ('the_log', 'x_bow', 'conf>=0.8'): 295, ('tesla', 'x_bow', 'conf>=0.8'): 143, ('?', 'x_bow', 'conf>=0.8'): 42, ('rocket', 'x_bow', 'conf>=0.8'): 13, ('tornado', 'x_bow', 'conf>=0.8'): 12, ('ice_wizard', 'tornado', 'low<0.7'): 10, ('tesla_evo', 'x_bow', 'conf>=0.8'): 8, ('tornado', 'x_bow', 'low<0.7'): 7, ('ice_wizard', 'x_bow', 'low<0.7'): 5, ('?', 'x_bow', 'low<0.7'): 5, ('tesla', 'x_bow', 'low<0.7'): 2, ('ice_wizard', 'x_bow', 'mid'): 2, ('the_log', 'x_bow', 'low<0.7'): 1}
+x_bow changes below 0.8: 22
+sheet C:\Users\benpe\AppData\Local\Temp\claude\c--Users-benpe-ClashBot\0f42e640-26bd-44ec-921b-b138244c52b6\scratchpad\p5\pruned_low_changes.png

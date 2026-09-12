@@ -100,6 +100,7 @@ buttons:
   quick_match:   [0.690, 0.555]  # (unused in 1v1; kept for reference)
   play_again:    [0.335, 0.905]  # 1v1 results screen -> re-queue immediately ("Play Again", bottom-left); tapped by default so the match loop continues without returning HOME
   play_again_template: play_again.png   # optional PNG in templates/ (e.g. play_again.png) to LOCATE the button each frame -- robust
+                                 # L67ae N3: may be a LIST of variants; a miss saves one game frame per results screen to data/nav_stall.
   play_again_threshold: 0.8      # to layout/window drift. null => fixed play_again coord + the OK-button escalation only.
   results_ok:    [0.645, 0.905]  # 1v1 results screen -> "OK" (bottom-right, returns HOME) -- fallback only
   results_ok_center: [0.5, 0.905] # "OK only" results variant (Play Again removed): the single CENTERED OK button
@@ -1350,6 +1351,9 @@ play:
                                  # (greyed = unaffordable, or an empty slot); a card read in two slots is never tapped. null disables the grey half.
   xbow_forward_board_y: 0.58     # L67ac X1: the live X-Bow assists treat a bow as OFFENSIVE only forward of this BOARD depth
                                  # (pros place 6.5% of X-Bows forward of it); env.xbow_defense_front stays the train-rl band.
+  xbow_pocket_after_tower: true  # L67ae X2: once an enemy princess is down, an X-Bow goes to that tower's POCKET (pros: 25% forward
+                                 # after a tower falls vs 5-8% before, 76% in the dead lane); false = X1's always-defensive X-Bow.
+  xbow_pocket_board_y: 0.391     # L67ae X2: pocket depth (pro median for forward X-Bows in a dead tower's lane)
 
 # --- Overlay replays: clip the OPENING of every match with the detector's boxes burned in ---
 # When enabled, a background thread (its own screen capture, like the preview window) records the

@@ -1,0 +1,10 @@
+BOT run16: card share by match phase | elixir median | x_bow / rocket tappable (pink, read once) at PLAY decisions | in hand read
+  0-60     n= 344 tornado:12% tesla:10% ice_wizard:12% x_bow:10% rocket:1% knight:17% the_log:18% skeletons:20% | elixir_med 5 | x_bow tappable 24% (in hand 33%) rocket tappable 25% (in hand 78%)
+  60-120   n= 311 tornado:13% tesla:8% ice_wizard:16% x_bow:9% rocket:1% knight:19% the_log:17% skeletons:18% | elixir_med 3 | x_bow tappable 18% (in hand 32%) rocket tappable 20% (in hand 96%)
+  120-180  n= 610 tornado:17% tesla:8% ice_wizard:14% x_bow:3% rocket:1% knight:19% the_log:18% skeletons:20% | elixir_med 3 | x_bow tappable 7% (in hand 27%) rocket tappable 7% (in hand 96%)
+  OT 180+  n= 313 tornado:20% tesla:9% ice_wizard:13% x_bow:1% rocket:2% knight:17% the_log:18% skeletons:20% | elixir_med 3 | x_bow tappable 3% (in hand 28%) rocket tappable 2% (in hand 95%)
+PRO icebow v6: card share by match phase | elixir median at play
+  0-60     n= 12494 tornado:7% tesla:13% ice_wizard:17% x_bow:8% rocket:4% knight:18% the_log:14% skeletons:19% | elixir_med 9
+  60-120   n= 12695 tornado:8% tesla:14% ice_wizard:17% x_bow:11% rocket:3% knight:17% the_log:14% skeletons:17% | elixir_med 8
+  120-180  n= 22777 tornado:7% tesla:14% ice_wizard:16% x_bow:11% rocket:5% knight:16% the_log:14% skeletons:16% | elixir_med 7
+  OT 180+  n= 29453 tornado:9% tesla:14% ice_wizard:15% x_bow:8% rocket:8% knight:16% the_log:14% skeletons:16% | elixir_med 7
