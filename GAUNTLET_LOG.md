@@ -1731,3 +1731,9 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - **H3:** rule press of Frosty Fella when ready + >= 2 elixir + one of: enemy win condition within 4 tiles of our building/tower, >= 2 enemies on our X-Bow, >= 3 enemies inside 2.5 tiles on our half; hero within 7 tiles; logs press / accepted / +7 s outcome. Anisotropic tiles from tower anchors. Revert `hero.enabled: false`.
 - **Not established:** press quality (no offline tracks); offence not covered; T3 king-tower phantom untouched.
 - Suites: icebow 1,422 run, 1 failure = the pre-existing test_xbow_into_push clamped-front-row test (fails on clean a1d31a8), 21 skipped; hogeq 1,398 OK (67 skipped). Label Studio guide + E1 design pending (agents).
+
+## L67ah (2026-09-12) -- E1 engine-RL designed; RETRACTED 72.3% (older seeds, not v6lat) and ~3,600 matches/night (really ~1,440)
+- **Retracted (a):** 72.3 +- 2.3 ghost winrate = 5cs.66 S1 seeds at tau 0.5, not v6lat_s0 (no baseline exists); 15.9 s/match was a 2-match smoke, 100-match runs measured ~21 s/slot -> ~1,440 RL matches/night.
+- **Spec changes (a):** degrade() != live view (live fills HP with 1.0) -> live_view(); v6lat trained clean-only (degraded val cell 16.35 vs 21.04); all 477 pool-v0 ghosts are S1 training replays; 27-38% of S1's wins end vs a silent ghost.
+- **Plan (b):** pool v1 293 held-out / 1,505 train (opponent-disjoint); PPO-clip terminal reward, group baseline, KL leash; pre-registered pass >= +5 pp held-out with CI, pro agreement held, plays/min +-20%, exploit stops. ~15 h build; most likely outcome a null.
+- **Asked the owner:** build as designed, measure the v6lat baseline first (~2 h box, no training code), or park.
