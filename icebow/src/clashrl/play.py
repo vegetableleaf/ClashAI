@@ -376,7 +376,16 @@ def play(cfg) -> None:
         forget_s=float(cfg.get("observation", "team_forget_s", default=4.5)),
         motion_min=float(cfg.get("observation", "team_motion_min", default=0.05)),
         deep_mine_y=float(cfg.get("observation", "team_deep_mine_y", default=0.62)),
-        deep_enemy_y=float(cfg.get("observation", "team_deep_enemy_y", default=0.38)))
+        deep_enemy_y=float(cfg.get("observation", "team_deep_enemy_y", default=0.38)),
+        # L67y T1: the three filters train-rl's env.py already passes. play.py built the tracker WITHOUT `is_spell`, so
+        # live enemy SPELL detections were served to the aim assists and the threat gate -- among them a false enemy
+        # "earthquake" on our own king tower (48 of 270 captured states), which the Tornado king-activation assist
+        # aims at (41 of 106 run12 Tornados redirected to that spot; HANDOFF 5cs.99 AD).
+        min_hits=int(cfg.get("observation", "team_track_min_hits", default=2)),
+        # enemy spells are never targets (spawn spells still are). Folded through base_key: CardDB.kind("earthquake_aoe")
+        # is None, so the detector's AoE-ring classes would otherwise slip past a plain kind() check.
+        is_spell=lambda b, _db=_db: _db.kind(card_threat.base_key(str(b))) == "spell",
+        phantom_stale_s=float(cfg.get("observation", "team_phantom_stale_s", default=6.0)))
     _cycle_tracker = CycleTracker(n_cards)   # live estimate of the upcoming-card order (graded next_vec)
     # ---- LIVE ROLLOUT SEARCH (sim.live_search_enabled, OFF by default) ----------------------
     # Search is the only thing that has moved this project's outcome (37.0% -> 85.7% in sim on
@@ -893,9 +902,19 @@ def play(cfg) -> None:
                    else _team_tracker.enemy_tracks(time.time(), True))
             _tk = [(t[0] + vx * _nado_eta, t[1] + vy * _nado_eta) + tuple(t[2:])
                    for t in _tk for vx, vy in (lead_velocity(t, _db),)]
+            _cell0 = cell
             aim = nado_king_cell(_tk, tower_tracker.mine_a, actions, _nado_pull_r)
             if aim is not None:
                 cell = aim
+                # L67y T2 (logging only): WHICH track fired the king-activation pull -- the deepest enemy track inside
+                # the band nado_king_cell uses (its defaults band 0.10, y_off 0.131) -- so a phantom trigger such as the
+                # false enemy earthquake on our king (HANDOFF 5cs.99 AD) is read from the log instead of inferred.
+                _ky = tower_tracker.mine_a[2][1]
+                _trig = max((t for t in _tk if t[1] >= _ky - 0.10 - 0.131), key=lambda t: t[1], default=None)
+                print(f"[assist] TORNADO king-spot cell {_cell0}->{cell} trigger "
+                      f"{(_trig[4] if _trig is not None and len(_trig) > 4 else '?')} at "
+                      f"{('(%.2f,%.2f)' % (_trig[0], _trig[1])) if _trig is not None else '?'} "
+                      f"enemy tracks {len(_tk)} wall={_wall()}", flush=True)
             elif _tk:
                 gx, gy = cell % gw, cell // gw
                 cx, cy = actions.cell_center(gx, gy)
@@ -906,6 +925,9 @@ def play(cfg) -> None:
                     # the same fallback the train-rl env uses. A 3-elixir pull of nothing is worse.
                     _best = min(_tk, key=_dist)
                     cell = actions.cell_at(_best[0], _best[1])
+                    print(f"[assist] TORNADO nearest cell {_cell0}->{cell} target "
+                          f"{(_best[4] if len(_best) > 4 else '?')} at ({_best[0]:.2f},{_best[1]:.2f}) "
+                          f"enemy tracks {len(_tk)} wall={_wall()}", flush=True)
         elif card_id in tesla_ids and _wincon["xy"] is not None:
             # CENTRE-PULL: sit at the far edge of the win condition's OWN aggro radius so it is dragged
             # across the middle instead of beelining the near princess tower.

@@ -1682,3 +1682,4 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - **Model side:** the fake token doubles P(tornado) on the 17 affected states (0.056 -> 0.121).
 - **Correction to X:** bisect's per-side unit arms were no-ops (int keys); board_empty stands.
 - **Asked the owner:** T1 wire is_spell into play.py's tracker; T2 log the assist's trigger; T3 drop spell detections on our king tower from the student input.
+- **L67y (5cs.99 AE), owner "do t1 and t2":** T1 -- play.py's TeamTracker (both decks) gets env.py's filters; the change is `is_spell` (base-folded): enemy non-spawn spells no longer feed the aim assists / threat gate. T2 -- icebow play.py logs `[assist] TORNADO king-spot|nearest cell A->B trigger BASE at (x,y)` whenever the assist moves a cast. New test_play_tracker_wiring.py: 6 OK in each tree; full suites hogeq 1,363 OK, icebow only the pre-existing test_xbow_into_push failure. T3 not shipped.

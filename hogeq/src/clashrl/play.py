@@ -399,7 +399,16 @@ def play(cfg) -> None:
         forget_s=float(cfg.get("observation", "team_forget_s", default=4.5)),
         motion_min=float(cfg.get("observation", "team_motion_min", default=0.05)),
         deep_mine_y=float(cfg.get("observation", "team_deep_mine_y", default=0.62)),
-        deep_enemy_y=float(cfg.get("observation", "team_deep_enemy_y", default=0.38)))
+        deep_enemy_y=float(cfg.get("observation", "team_deep_enemy_y", default=0.38)),
+        # L67y T1: the three filters train-rl's env.py already passes. play.py built the tracker WITHOUT `is_spell`, so
+        # live enemy SPELL detections were served to the aim assists and the threat gate -- among them a false enemy
+        # "earthquake" on our own king tower (48 of 270 captured icebow states), which the Tornado king-activation
+        # assist aims at (41 of 106 run12 Tornados redirected to that spot; HANDOFF 5cs.99 AD).
+        min_hits=int(cfg.get("observation", "team_track_min_hits", default=2)),
+        # enemy spells are never targets (spawn spells still are). Folded through base_key: CardDB.kind("earthquake_aoe")
+        # is None, so the detector's AoE-ring classes would otherwise slip past a plain kind() check.
+        is_spell=lambda b, _db=_db: _db.kind(card_threat.base_key(str(b))) == "spell",
+        phantom_stale_s=float(cfg.get("observation", "team_phantom_stale_s", default=6.0)))
     _cycle_tracker = CycleTracker(n_cards)
     # ---- LIVE ROLLOUT SEARCH (sim.live_search_enabled, OFF by default) ----------------------
     # Search is the only thing that has moved this project's outcome (37.0% -> 85.7% in sim on
