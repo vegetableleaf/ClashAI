@@ -159,6 +159,16 @@ def play(cfg) -> None:
     _student = None
     _student_ckpt = cfg.get("play", "student_ckpt", default=None)
     _student_opp_elixir = bool(cfg.get("play", "student_opp_elixir", default=False))   # L67g: see below
+    # L67u F3 (LOGGING ONLY, owner 2026-09-11): wall-clock stamps on every [student] line, and the tray re-read after
+    # each student tap, so the overlay clips can be aligned and a repeated tap told apart -- the card still in its
+    # slot (the tap did not deploy) vs a different card that slid in (HANDOFF 5cs.99 Z). No decision reads these.
+    _student_tap: dict = {}
+
+    def _wall() -> str:
+        return datetime.now().strftime("%H:%M:%S.%f")[:-3]
+
+    def _tray_names(ids) -> list:
+        return [vision.deck_keys[int(h)] if 0 <= int(h) < len(vision.deck_keys) else "?" for h in list(ids)[:4]]
     if _student_ckpt:
         try:
             from .student_live import StudentPolicy, live_reads as _student_reads
@@ -584,6 +594,23 @@ def play(cfg) -> None:
         _next_id = vision.recognize_next(frame)   # read ONCE: the student below reuses it
         next_vec = _cycle_tracker.observe(hand_ids, _next_id)
         elixir = vision.read_elixir(frame)
+        # L67u F3 (logging only): the tray after the last student tap -- at the FIRST read after it (what the bot sees
+        # before it may tap again) and at the first read >= 0.5 s after it (the settled tray). One line if the first
+        # read is already >= 0.5 s late.
+        if _student_tap:
+            _dt = time.time() - _student_tap["t"]
+            _stage = "first" if not _student_tap.get("first_done") else ("settled" if _dt >= 0.5 else None)
+            if _stage is not None:
+                _now = _tray_names(hand_ids)
+                _k = _student_tap["slot"]
+                print(f"[student] TRAY {_stage} +{_dt:.2f}s tapped slot {_k} meant {_student_tap['card']} "
+                      f"before [{','.join(_student_tap['before'])}] now [{','.join(_now)}] "
+                      f"slot_now {(_now[_k] if 0 <= _k < len(_now) else '?')} "
+                      f"elixir {_student_tap['elixir']:.0f}->{elixir:.0f} wall={_wall()}", flush=True)
+                if _stage == "first" and _dt < 0.5:
+                    _student_tap["first_done"] = True
+                else:
+                    _student_tap.clear()
         threat_vec = threat_tracker.update(frame, time.time()).vector()
         if want_identity or want_interactions:
             threat_vec = np.concatenate([threat_vec, _threat_extra(frame, float(elixir))]).astype(np.float32)
@@ -722,20 +749,22 @@ def play(cfg) -> None:
                           f"elixir {elixir:.0f} opp~{('?' if _oe is None else f'{float(_oe):.1f}')} "
                           f"units {_slast.get('units', 0)} dets {len(_last_dets['all'])} "
                           f"(waits {_student.stats.get('wait', 0)}/{_student.stats.get('decisions', 0)}"
-                          f" badhand {_student.stats.get('hand_unmapped', 0)}/{_student.stats.get('frames', 0)})",
+                          f" badhand {_student.stats.get('hand_unmapped', 0)}/{_student.stats.get('frames', 0)})"
+                          f" wall={_wall()}",
                           flush=True)
                 return
             _scard, _scell = int(_sact[0]), int(_sact[1])
             if elixir + 1e-6 < card_elixir[_scard] or not any(h == _scard for h in hand_ids):
                 _student.stats["skip_unaffordable"] = _student.stats.get("skip_unaffordable", 0) + 1
                 print(f"[student] SKIP unaffordable {vision.deck_keys[_scard]} "
-                      f"(cost {card_elixir[_scard]}, elixir {elixir:.0f})", flush=True)
+                      f"(cost {card_elixir[_scard]}, elixir {elixir:.0f}) wall={_wall()}", flush=True)
                 return
             card_id, cell = _scard, _scell
             print(f"[student] {'STALL-PLAY' if _slast.get('stall') else 'PLAY'} "
                   f"{vision.deck_keys[card_id]} p={_slast.get('p_play', 0):.2f} "
                   f"cell {cell} board {tuple(round(v, 2) for v in _slast.get('board_xy', (0, 0)))} "
-                  f"units {_slast.get('units', 0)} {_slast.get('ms', 0):.0f} ms", flush=True)
+                  f"units {_slast.get('units', 0)} {_slast.get('ms', 0):.0f} ms "
+                  f"hand [{','.join(_tray_names(hand_ids))}] elixir {elixir:.0f} wall={_wall()}", flush=True)
         # ---- LIVE SEARCH OVERRIDE. Set sim.live_search_enabled false to switch it off. --------
         # The policy's (card_id, cell) is already decided above and stays the fallback: decide()
         # returns None to keep it. Placed BEFORE the aim-assist so a searched cell gets the same
@@ -867,6 +896,11 @@ def play(cfg) -> None:
         else:
             gx, gy = cell % gw, cell // gw
             controller.play_card(*actions.decode(slot, gx, gy))
+            if _student is not None:                   # L67u F3 (logging only): remember the tap for the TRAY re-reads
+                _student_tap.clear()
+                _student_tap.update(t=time.time(), slot=int(slot), card=vision.deck_keys[card_id], elixir=float(elixir),
+                                    before=_tray_names(hand_ids))
+                print(f"[student] TAP slot {int(slot)} {vision.deck_keys[card_id]} cell {cell} wall={_wall()}", flush=True)
             _cycle_tracker.record_play(card_id)        # a card left the hand -> it rotates to the queue back
             if _student is not None:                   # L67d: the student's `past` = my last 3 accepted plays
                 _cx, _cy = actions.cell_center(gx, gy)

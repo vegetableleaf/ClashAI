@@ -2888,6 +2888,24 @@ F2 detail: 11 of 19 matches still get a STALL-PLAY before any play, now at t 12.
 *Proposed (owner decision):* **F3 (logging only):** timestamp every `[student]` line and log the tray read just before the tap and ~0.5 s after, so clips and logs align and misrecords can be counted. **F4 (behaviour):** after a tap, (a) do not tap again until the tray read shows the played slot changed or ~1 s has passed, and (b) record the card that actually LEFT the tray, not the one intended. Expected: fewer double taps, plays per minute toward the pro band, an honest `past`.
 
 
+**AA. F3 TAP LOGGING SHIPPED -- logging only (L67u, 2026-09-11; owner: "Do logging only for now").** F4 (the tap cooldown / record-what-left rule) is deliberately NOT shipped; this is the instrument that decides whether Z's reading is right.
+
+*What changed on the live path (S4 disclosure) -- `play.py` in both decks (DECK_SPECIFIC, the same edit in each; hogeq's tap sits inside its ability `else:` branch). No decision reads anything added here. Revert: `git revert <this commit>`.*
+- Every `[student]` WAIT / SKIP / PLAY / STALL-PLAY line ends with `wall=HH:MM:SS.mmm`; PLAY lines also carry `hand [..]` (the raw tray at the decision) and `elixir N`. The stamp is a SUFFIX so `^\[student\] (STALL-)?PLAY` parsers keep working.
+- New `[student] TAP slot k CARD cell C wall=...` right after `controller.play_card` (the tap moment, for aligning overlay clips).
+- New `[student] TRAY first|settled +dt tapped slot k meant CARD before [..] now [..] slot_now X elixir a->b wall=...`: the first tray read after the tap (what the bot sees before it may tap again) and the first read >= 0.5 s after it (one line when the first read is already that late). A new tap replaces a pending one.
+
+*Verification (a).*
+- Both files compile; each has exactly 5 `wall=` stamps, 1 TAP print, 1 TRAY print, 1 tap record; the inserted blocks were read back.
+- `live_session_scan.py` on a synthetic new-format log counts 2 plays / 1 stall / 1 wait / 1 pinned-high -- TAP, TRAY and SKIP lines are not miscounted.
+- New offline `L67/tap_audit.py` (no live effect): classifies each tap from its TRAY lines as `deployed` / `not_deployed` / `ambiguous` / `no_settled`, and consecutive same-card taps as `retap_on_stale` (the first read still showed the card and the second tap hit the same slot) / `repeat_after_not_deployed` / `repeat_other`. Smoke on a synthetic log with one case of each: 4 taps -> deployed 2, not_deployed 1, no_settled 1; the one same-card pair -> retap_on_stale; all as constructed.
+- Full suites: hogeq **1,343 OK (64 skipped)**; icebow **1,361 run, only the PRE-EXISTING `test_xbow_into_push` failure** (fails on clean `a1d31a8`, W). Parity `--strict`: unchanged (the same 5 pre-existing training-side files).
+
+*What this does NOT establish.* Anything about the mechanism yet -- it needs the next owner session. The tray reader itself can be wrong (Z: unreadable slots 0.26 per freeze state), so a `not_deployed` verdict should be spot-checked against the overlay clips using the TAP wall times before F4 is designed.
+
+*Next:* owner's next session -> `tap_audit.py` on its stdout log + the usual scanner; if `retap_on_stale` dominates the same-card repeats, F4 (a) is justified; if `not_deployed` dominates, the tap itself is failing and the fix is in the controller, not the decision loop.
+
+
 ### §5cs.98 -- L67e+f (2026-09-08 06:00-18:00 UTC): **OPTION B GRADED (3 seeds: clean 21.56 +- 0.07, degraded 19.45 +- 0.05) BUT ITS GAIN IS AGAINST A CORRUPTION MODEL WE NOW KNOW IS WRONG. Three label-free live measurements instead: the GATE survives real detector input (live .248-.325 vs engine .294-.298), PLACEMENT COLLAPSES toward the prior (top-1 cell share 0.25 vs 0.07 at matched unit counts), and nothing JITTERS (same-cell 61.4% live vs 38.7% engine -- the collapse seen twice, not a second defect). Ablation names the cause: MISSING VALUES (unit HP, exact/opponent elixir, king HP), not noisy ones -- spell tokens, unknown team tags and low confidence each do NOTHING. Against pro labels, SUPPLYING beats FLAGGING (blank_both 18.78 exact cell / 52.11 card -> fill_both 20.15 / 63.25), so the fill is now wired live and verified (live top-1 share 0.411 -> 0.322)**
 
 **A. Option B, the 3-seed result (a), `s1_v6aug/eval_v3val_icebow_v6aug.out` + `eval_v3degraded_*`.** Augmented set = 622,923 rows (339,192 clean + 283,731 degraded TRAIN rows; val rows clean, so checkpoint selection is v6lat's own rule).
