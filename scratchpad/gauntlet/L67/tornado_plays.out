@@ -1,0 +1,20 @@
+== live_run12_utf8.log: tornado taps 106
+  assist changed the cell on 46/106 | stall plays 3 | units on board median 3.0 (0 units: 1)
+  model board y: min/med/max 0.2 0.46 0.89 {'enemy half': 58, 'my half': 48}
+  model board xy near MY king (x 0.4-0.6, y > 0.85): 4
+    00:27:50.735 cell 176 -> 333 | [student] PLAY tornado p=0.68 cell 176 board (0.81, 0.39) units 3 19 ms hand [tornado,?,?,?] elixir 4 wall=00:27:50.351
+    00:28:17.953 cell 80 -> 196 | [student] PLAY tornado p=0.66 cell 80 board (0.47, 0.2) units 1 17 ms hand [tornado,rocket,?,?] elixir 3 wall=00:28:17.611
+    00:28:28.870 cell 385 -> 385 | [student] PLAY tornado p=0.44 cell 385 board (0.42, 0.89) units 3 20 ms hand [?,rocket,tornado,x_bow] elixir 4 wall=00:28:28.498
+    00:29:10.212 cell 385 -> 385 | [student] PLAY tornado p=0.78 cell 385 board (0.42, 0.89) units 3 28 ms hand [tornado,rocket,knight,tesla_evo] elixir 3 wall=00:29:09.855
+    00:29:50.321 cell 148 -> 148 | [student] PLAY tornado p=0.45 cell 148 board (0.25, 0.36) units 2 20 ms hand [knight,rocket,tornado,ice_wizard] elixir 3 wall=00:29:49.975
+    00:30:07.616 cell 333 -> 333 | [student] PLAY tornado p=0.73 cell 333 board (0.53, 0.77) units 3 30 ms hand [tornado,rocket,tesla,?] elixir 3 wall=00:30:07.233
+== live_run13_utf8.log: tornado taps 10
+  assist changed the cell on 3/10 | stall plays 0 | units on board median 4.0 (0 units: 0)
+  model board y: min/med/max 0.39 0.52 0.83 {'my half': 6, 'enemy half': 4}
+  model board xy near MY king (x 0.4-0.6, y > 0.85): 0
+    08:44:39.174 cell 248 -> 248 | [student] PLAY tornado p=0.67 cell 248 board (0.81, 0.58) units 1 32 ms tap [?,?,?,tornado] hand [tesla,rocket,ice_wizard,tornado] elixir 3 wall=08:44:38.812
+    08:45:14.789 cell 247 -> 247 | [student] PLAY tornado p=0.94 cell 247 board (0.75, 0.55) units 5 29 ms tap [?,?,?,tornado] hand [ice_wizard,rocket,ice_wizard,tornado] elixir 3 wall=08:45:14.451
+    08:45:58.816 cell 176 -> 333 | [student] PLAY tornado p=0.31 cell 176 board (0.81, 0.39) units 2 19 ms tap [tornado,?,?,tesla_evo] hand [tornado,rocket,?,tesla_evo] elixir 4 wall=08:45:58.464
+    08:46:14.983 cell 165 -> 165 | [student] PLAY tornado p=0.69 cell 165 board (0.19, 0.39) units 4 29 ms tap [?,?,?,tornado] hand [ice_wizard,rocket,?,tornado] elixir 3 wall=08:46:14.599
+    08:46:32.969 cell 238 -> 332 | [student] PLAY tornado p=0.95 cell 238 board (0.25, 0.55) units 5 32 ms tap [?,?,?,tornado] hand [ice_wizard,rocket,?,tornado] elixir 3 wall=08:46:32.622
+    08:47:11.917 cell 352 -> 352 | [student] PLAY tornado p=0.61 cell 352 board (0.58, 0.83) units 5 15 ms tap [ice_wizard,tornado,?,rocket] hand [ice_wizard,tornado,?,rocket] elixir 7 wall=08:47:11.545

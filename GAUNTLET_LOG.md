@@ -1674,3 +1674,11 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - **Nav:** stuck on in-game reward screens (chest "Tap to open", card reveal); ceiling recovered 8x, gave up at 10 min, Discord alert sent, play.py stopped.
 - **Asked the owner:** P1 (greyed slot / double read never tapped), P2 (record a play only if elixir falls), P3 (evo templates), P4 (nav taps the centre on reward screens).
 - **L67w (5cs.99 AC), owner "do p1 and p4":** P1 -- the tap path only gets tray slots with a pink elixir badge (greyed = unaffordable or empty removed) and never a card read in two slots; measured first: badge pink bimodal over 7,624 clip samples (4,544 < 0.01 / ~3,065 >= 0.10), the 372 grey-badge-colourful-crop disagreements are all empty slots. P4 -- nav taps the game centre every 2 s after 8 s on UNKNOWN (reward screens); Escape only on MATCH_END. 38 tests OK in both trees; full suites hogeq 1,357 OK, icebow only the pre-existing test_xbow_into_push failure. P2/P3 not shipped.
+
+## L67x (2026-09-12) -- "model wastes every Tornado": the fake enemy earthquake on our king is real; play.py feeds enemy spells to the aim assists
+- **False detection:** `earthquake` at our king tower (board 0.50, 0.87), tagged enemy, in 48 of 270 captured states; conf 0.40-0.72 vs live threshold 0.35.
+- **Redirects:** the Tornado aim assist moved 46 of 106 run12 Tornados, 41 to the king-activation spot (3 of 10 in the 08:43 run). Code: play.py's TeamTracker lacks `is_spell` (env.py passes it), so enemy spell detections are served to assists; the assist fires on any deep track within 0.16 of the spot.
+- **Frames:** one redirected Tornado landed with every enemy at the far tower (wasted); the model's own Tornados pulled units. "Every time" contradicted.
+- **Model side:** the fake token doubles P(tornado) on the 17 affected states (0.056 -> 0.121).
+- **Correction to X:** bisect's per-side unit arms were no-ops (int keys); board_empty stands.
+- **Asked the owner:** T1 wire is_spell into play.py's tracker; T2 log the assist's trigger; T3 drop spell detections on our king tower from the student input.

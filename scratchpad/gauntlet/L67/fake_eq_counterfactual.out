@@ -1,0 +1,7 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+states with the fake earthquake token 48 | tornado in hand 17
+gate p: with fake EQ 0.031 -> removed 0.046
+P(card = tornado | play), tornado in hand: with fake EQ 0.121 -> removed 0.056 | argmax tornado 1 -> 0 of 17
+mean card probs with fake EQ {'tornado': np.float32(0.043), 'tesla_evo': np.float32(0.152), 'ice_wizard': np.float32(0.056), 'x_bow': np.float32(0.357), 'rocket': np.float32(0.154), 'knight_evo': np.float32(0.103), 'the_log': np.float32(0.034), 'skeletons': np.float32(0.101)} 
+removed {'tornado': np.float32(0.02), 'tesla_evo': np.float32(0.11), 'ice_wizard': np.float32(0.04), 'x_bow': np.float32(0.462), 'rocket': np.float32(0.175), 'knight_evo': np.float32(0.08), 'the_log': np.float32(0.029), 'skeletons': np.float32(0.084)}
