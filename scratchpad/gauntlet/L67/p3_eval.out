@@ -1,0 +1,10 @@
+new templates [('knight_36.png', 65), ('knight_37.png', 66), ('knight_38.png', 81), ('knight_39.png', 100), ('knight_40.png', 164), ('knight_41.png', 67), ('knight_42.png', 68), ('knight_43.png', 69), ('knight_44.png', 70), ('knight_45.png', 71), ('knight_46.png', 72), ('knight_47.png', 73), ('knight_48.png', 76), ('knight_49.png', 77), ('knight_50.png', 78), ('knight_evo_7.png', 20), ('knight_evo_8.png', 13), ('knight_evo_9.png', 158)]
+templates per key old {'tornado': 42, 'tesla': 46, 'tesla_evo': 10, 'ice_wizard': 36, 'x_bow': 38, 'rocket': 42, 'knight': 35, 'knight_evo': 6, 'the_log': 35, 'skeletons': 44} 
+                  new {'tornado': 42, 'tesla': 46, 'tesla_evo': 10, 'ice_wizard': 36, 'x_bow': 38, 'rocket': 42, 'knight': 50, 'knight_evo': 9, 'the_log': 35, 'skeletons': 44}
+held-out in-match frames 2116, slot reads 8464
+unread share old 0.187 new 0.071
+reads per identity old {'rocket': 1783, '?': 1580, 'ice_wizard': 1342, 'tornado': 916, 'tesla': 823, 'the_log': 687, 'x_bow': 644, 'knight': 291, 'skeletons': 262, 'knight_evo': 69, 'tesla_evo': 67} 
+                    new {'rocket': 1781, 'ice_wizard': 1342, 'knight': 1318, 'tornado': 867, 'tesla': 822, 'the_log': 687, 'x_bow': 644, '?': 602, 'skeletons': 262, 'knight_evo': 72, 'tesla_evo': 67}
+frames with a knight read anywhere: old 360/2116 (17%) new 1379/2116 (65%)
+changed reads (old -> new): {('?', 'knight'): 977, ('tornado', 'knight'): 48, ('rocket', 'knight'): 2, ('?', 'knight_evo'): 1, ('tornado', 'knight_evo'): 1, ('tesla', 'knight_evo'): 1}
+changed sheet rows 6

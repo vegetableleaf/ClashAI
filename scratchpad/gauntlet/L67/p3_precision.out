@@ -1,0 +1,7 @@
+change counts {('tornado', 'knight'): 48, ('?', 'knight'): 977, ('?', 'knight_evo'): 1, ('rocket', 'knight'): 2, ('tornado', 'knight_evo'): 1, ('tesla', 'knight_evo'): 1}
+wrote precision_tornado_to_knight.png 40
+wrote precision_unread_to_knight.png 40
+wrote precision_unread_to_knight_evo.png 1
+wrote precision_rocket_to_knight.png 2
+wrote precision_tornado_to_knight_evo.png 1
+wrote precision_tesla_to_knight_evo.png 1

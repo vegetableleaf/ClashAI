@@ -1,0 +1,5 @@
+VARIANT B (15 templates: knight_36-50 minus 45, 49; knight_evo_7, 9) | held-out frames 2116, slot reads 8464
+unread share old 0.187  B 0.071
+frames with a knight read: old 17%  B 65%
+reads per identity B {'rocket': 1783, 'ice_wizard': 1342, 'knight': 1298, 'tornado': 885, 'tesla': 822, 'the_log': 687, 'x_bow': 644, '?': 604, 'skeletons': 262, 'knight_evo': 70, 'tesla_evo': 67}
+changes (old, new, band): {('?', 'knight', 'conf>=0.8'): 976, ('tornado', 'knight', 'conf>=0.8'): 31, ('tesla', 'knight_evo', 'low<0.7'): 1}

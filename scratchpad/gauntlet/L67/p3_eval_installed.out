@@ -1,0 +1,3 @@
+templates old knight/evo 35 6 | installed 48 8
+held-out frames 2116, slot reads 8464 | unread old 0.187 installed 0.071 | knight-read frames old 17% installed 65%
+changes {('?', 'knight', 'conf>=0.8'): 976, ('tornado', 'knight', 'conf>=0.8'): 31, ('tesla', 'knight_evo', 'low<0.7'): 1}

@@ -1348,6 +1348,8 @@ play:
   stuck_tap: [0.645, 0.905]      # where to tap to clear a stuck popup (default = results OK, bottom-right)
   tray_min_badge_pink: 0.05      # L67w P1: the student taps only tray slots whose elixir-cost badge is at least this pink
                                  # (greyed = unaffordable, or an empty slot); a card read in two slots is never tapped. null disables the grey half.
+  xbow_forward_board_y: 0.58     # L67ac X1: the live X-Bow assists treat a bow as OFFENSIVE only forward of this BOARD depth
+                                 # (pros place 6.5% of X-Bows forward of it); env.xbow_defense_front stays the train-rl band.
 
 # --- Overlay replays: clip the OPENING of every match with the detector's boxes burned in ---
 # When enabled, a background thread (its own screen capture, like the preview window) records the

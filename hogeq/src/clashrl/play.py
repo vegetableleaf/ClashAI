@@ -284,6 +284,12 @@ def play(cfg) -> None:
                 if (key[:-4] if key.endswith("_evo") else key) == "x_bow"}
     xbow_range = float(cfg.get("env", "xbow_range", default=0.36))
     xbow_defense_front = float(cfg.get("env", "xbow_defense_front", default=0.52))
+    # L67ac X1: the LIVE X-Bow assists judge "offensive bow" by BOARD depth, not by env.xbow_defense_front (a frame-y
+    # reward band that train-rl's env.py also reads, left unchanged). That 0.52 frame cut put the pro X-Bow row (board y
+    # 0.604 = frame y 0.503) on the offensive side, so xbow_offense_depth_cell pushed 16 of 17 icebow run15 X-Bows to the
+    # bridge (HANDOFF 5cs.99 AH). Inert in hogeq (no X-Bow in the deck); kept identical to icebow's block.
+    _xbow_forward_board_y = float(cfg.get("play", "xbow_forward_board_y", default=0.58))
+    xbow_live_defense_y = float(actions.warp.board_to_frame(0.5, _xbow_forward_board_y)[1])
     tesla_ids = {i for i, key in enumerate(vision.deck_keys)
                  if (key[:-4] if key.endswith("_evo") else key) == "tesla"}
     _deploy_top = float(cfg.get("action", "deploy_top", default=0.44))
@@ -859,12 +865,12 @@ def play(cfg) -> None:
             _ehp = ([float(v) for v in _raw]
                     if len(_raw) == 2 and all(v is not None for v in _raw) else None)
             lane = xbow_target_lane_cell(cx, cy, tower_tracker.enemy_a, _ehp,
-                                         tower_tracker.enemy_alive, xbow_defense_front, actions)
+                                         tower_tracker.enemy_alive, xbow_live_defense_y, actions)
             if lane is not None:
                 cell = lane
                 gx, gy = cell % gw, cell // gw
                 cx, cy = actions.cell_center(gx, gy)
-            snapped = xbow_lock_cell(cx, cy, tower_tracker.enemy_a, xbow_range, xbow_defense_front, actions)
+            snapped = xbow_lock_cell(cx, cy, tower_tracker.enemy_a, xbow_range, xbow_live_defense_y, actions)
             if snapped is not None:
                 cell = snapped
             # ...then set its DEPTH from the column: behind a bridge it sits a row back (room to
@@ -872,7 +878,7 @@ def play(cfg) -> None:
             # diagonal to the tower is too long. See reward.xbow_offense_depth_cell.
             gx, gy = cell % gw, cell // gw
             cx, cy = actions.cell_center(gx, gy)
-            depth = xbow_offense_depth_cell(cx, cy, xbow_defense_front, _deploy_top, actions)
+            depth = xbow_offense_depth_cell(cx, cy, xbow_live_defense_y, _deploy_top, actions)
             if depth is not None:
                 cell = depth
         elif card_id in _log_ids:

@@ -1,0 +1,19 @@
+knight_37      {('?', 'conf>=0.8'): 587}
+knight_41      {('?', 'conf>=0.8'): 61}
+knight_49      {('?', 'conf>=0.8'): 16, ('tornado', 'conf>=0.8'): 31, ('tornado', 'low<0.7'): 6, ('?', 'low<0.7'): 1, ('rocket', 'low<0.7'): 2}
+knight_45      {('tornado', 'low<0.7'): 11, ('?', 'conf>=0.8'): 44}
+knight_42      {('?', 'conf>=0.8'): 55}
+knight_50      {('?', 'conf>=0.8'): 49}
+knight_46      {('?', 'conf>=0.8'): 44}
+knight_47      {('?', 'conf>=0.8'): 43}
+knight_48      {('?', 'conf>=0.8'): 39}
+knight_43      {('?', 'conf>=0.8'): 20}
+knight_38      {('?', 'conf>=0.8'): 16}
+knight_evo_8   {('?', 'low<0.7'): 1, ('tornado', 'conf>=0.8'): 1, ('tesla', 'conf>=0.8'): 1}
+knight_40      {('?', 'conf>=0.8'): 2}
+('tornado', 'knight') n 48 | new score <0.7: 17 | 0.7-0.8: 0 | >=0.8: 31
+('?', 'knight') n 977 | new score <0.7: 1 | 0.7-0.8: 0 | >=0.8: 976
+('?', 'knight_evo') n 1 | new score <0.7: 1 | 0.7-0.8: 0 | >=0.8: 0
+('rocket', 'knight') n 2 | new score <0.7: 2 | 0.7-0.8: 0 | >=0.8: 0
+('tornado', 'knight_evo') n 1 | new score <0.7: 0 | 0.7-0.8: 0 | >=0.8: 1
+('tesla', 'knight_evo') n 1 | new score <0.7: 0 | 0.7-0.8: 0 | >=0.8: 1

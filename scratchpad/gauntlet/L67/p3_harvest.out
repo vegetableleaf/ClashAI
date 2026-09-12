@@ -1,0 +1,4 @@
+deck keys ['tornado', 'tesla', 'tesla_evo', 'ice_wizard', 'x_bow', 'rocket', 'knight', 'knight_evo', 'the_log', 'skeletons'] | build clips ['093218', '093513', '093759', '094108', '095418', '095812']
+template size (h, w) (80, 64) | card_w/h 0.055 0.045 | slots [[0.305, 0.89], [0.499, 0.886], [0.68, 0.891], [0.87, 0.888]]
+distinct candidate crops (unread or knight-matched): 170 | by best {'?': 134, 'knight': 23, 'knight_evo': 13}
+montage (1800, 1008, 3)
