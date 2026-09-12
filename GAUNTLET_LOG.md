@@ -1689,3 +1689,4 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - **T2 log:** 8 assist moves; triggers are real enemy troops -- and two BUILDINGS (enemy elixir collector; an "enemy x_bow" on our half 31 s after our own X-Bow, very likely ours mis-tagged).
 - **Open:** Skeletons no-drop 23/45 (display rounding vs real, needs clips).
 - **Asked the owner:** N1 (Tornado assist ignores buildings), N2 (why our X-Bow is served as enemy), keep T3 parked; confirmation run owed (one session, 8 matches).
+- **L67aa (5cs.99 AG), owner "ship N1":** `reward.tornado_pullable` drops building tracks; icebow play.py's Tornado assist applies it before the king-activation trigger and the nearest-enemy fallback (run14: 2 of 8 moves aimed at buildings). New test_tornado_pullable.py: 5 OK in both trees; full suites hogeq 1,368 OK, icebow only the pre-existing test_xbow_into_push failure. N2 waits for the owner's next run.

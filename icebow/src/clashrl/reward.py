@@ -357,6 +357,22 @@ def nado_king_cell(tracks, my_anchors, acts, pull_r=0.16, x_off=0.028, y_off=0.1
     return acts.cell_at(min(0.98, max(0.02, tx)), min(0.98, max(0.02, ty)))
 
 
+def tornado_pullable(tracks, kind_of):
+    """The enemy tracks a Tornado can actually move: BUILDINGS are anchored, so they are dropped (L67aa N1).
+
+    ``tracks`` are ``(x, y, vx, vy[, base])`` tuples (``enemy_tracks(..., with_base=True)``); ``kind_of(base)`` returns
+    a CardDB kind. A track without a base, or whose kind is unknown, is kept -- it may be a unit the card table does
+    not know. MEASURED on run14 (HANDOFF 5cs.99 AF): 2 of 8 Tornado assist moves aimed at a building -- an enemy
+    elixir collector (nearest fallback) and an "enemy x_bow" on our half that was very likely our own X-Bow."""
+    out = []
+    for t in tracks:
+        base = t[4] if len(t) > 4 else None
+        if base and kind_of(base) == "building":
+            continue
+        out.append(t)
+    return out
+
+
 def xbow_target_lane_cell(cx, cy, enemy_anchors, enemy_hp, enemy_alive, defense_y, acts,
                           hp_margin=0.10):
     """Put an OFFENSIVE X-Bow in the lane whose tower is worth shooting at.

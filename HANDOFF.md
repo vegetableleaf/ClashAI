@@ -2999,6 +2999,18 @@ F2 detail: 11 of 19 matches still get a STALL-PLAY before any play, now at t 12.
 *Proposed (owner decision):* **N1** the Tornado assist ignores BUILDING tracks (nearest fallback and king-spot trigger). **N2** find why our own X-Bow on our half is served as an enemy (building side prior should call it ours) -- log the team verdict's evidence for building tracks. **T3** stays parked until the fake earthquake is seen again. **P3** (evolved Knight templates) and a clip check of Skeleton taps remain open.
 
 
+**AG. N1 SHIPPED (L67aa, 2026-09-12; owner: "ship N1, then I will do another short-ish run, then that will make N2 easier to target").** N2 (why our own X-Bow is served as an enemy) waits for that run.
+
+*What changed on the live path (S4 disclosure). Revert: `git revert <this commit>`.*
+- `reward.tornado_pullable(tracks, kind_of)` (shared, byte-identical in both decks): drops tracks whose base is a CardDB `building` (a Tornado cannot move anchored buildings); a track with no base or an unknown kind is kept.
+- `play.py` (icebow only -- hogeq's deck has no Tornado): the Tornado assist filters its predicted enemy tracks through `tornado_pullable` (kind via `card_threat.base_key`) BEFORE `nado_king_cell` and the nearest-enemy fallback, so a building is never the king-activation trigger or the pull target. T2's `[assist] TORNADO` lines are unchanged and now only ever name units.
+- Not changed: which tracks are served as enemies (the own-X-Bow-as-enemy verdict itself is N2), and every other assist.
+
+*Verification (a).* New `tests/test_tornado_pullable.py` (both trees): x_bow / elixir_collector / tesla_evo dropped, knight / prince / electro_dragon kept; base-less and unknown-kind tracks kept; **the run14 case** -- an x_bow alone at frame (0.57, 0.58) fires `nado_king_cell` unfiltered and does not after `tornado_pullable`; a real deep prince still fires it with the x_bow present; play.py applies the filter before the assist (skipped in hogeq, which has no assist). **5 OK in icebow; 5 OK (1 skipped) in hogeq**. Full suites: hogeq **1,368 OK (65 skipped)** = 1,363 + the 5 new (1 skipped: no Tornado assist); icebow **1,386 run, only the PRE-EXISTING `test_xbow_into_push` failure** (fails on clean `a1d31a8`, W). Parity `--strict`: the same 5 pre-existing training-side failures; reward.py identical across decks.
+
+*What this does NOT establish.* The live effect -- the owner's next run: `[assist] TORNADO` lines should name no buildings, and the king-spot share of Tornados should not rise. That run's logs also feed N2.
+
+
 ### §5cs.98 -- L67e+f (2026-09-08 06:00-18:00 UTC): **OPTION B GRADED (3 seeds: clean 21.56 +- 0.07, degraded 19.45 +- 0.05) BUT ITS GAIN IS AGAINST A CORRUPTION MODEL WE NOW KNOW IS WRONG. Three label-free live measurements instead: the GATE survives real detector input (live .248-.325 vs engine .294-.298), PLACEMENT COLLAPSES toward the prior (top-1 cell share 0.25 vs 0.07 at matched unit counts), and nothing JITTERS (same-cell 61.4% live vs 38.7% engine -- the collapse seen twice, not a second defect). Ablation names the cause: MISSING VALUES (unit HP, exact/opponent elixir, king HP), not noisy ones -- spell tokens, unknown team tags and low confidence each do NOTHING. Against pro labels, SUPPLYING beats FLAGGING (blank_both 18.78 exact cell / 52.11 card -> fill_both 20.15 / 63.25), so the fill is now wired live and verified (live top-1 share 0.411 -> 0.322)**
 
 **A. Option B, the 3-seed result (a), `s1_v6aug/eval_v3val_icebow_v6aug.out` + `eval_v3degraded_*`.** Augmented set = 622,923 rows (339,192 clean + 283,731 degraded TRAIN rows; val rows clean, so checkpoint selection is v6lat's own rule).

@@ -25,6 +25,7 @@ from .reward import (TowerTracker, pump_rocket_cell, spell_intercept_cell, weake
 from .reward import spell_whiffed          # live spell target mask (see use site)
 from .reward import lead_point, lead_velocity   # 2026-09-03: cast-delay lead for log + rocket
 from .reward import SPAWN_SPELL_BASES, spawn_spell_landing   # L67h: aim at a barrel's LANDING, not the barrel
+from .reward import tornado_pullable                        # L67aa N1: a Tornado never aims at a building
 from .reward import TILE as _TILE
 from .states import GameState
 from .threats import ThreatTracker, THREAT_DIM
@@ -902,6 +903,9 @@ def play(cfg) -> None:
                    else _team_tracker.enemy_tracks(time.time(), True))
             _tk = [(t[0] + vx * _nado_eta, t[1] + vy * _nado_eta) + tuple(t[2:])
                    for t in _tk for vx, vy in (lead_velocity(t, _db),)]
+            # L67aa N1: a Tornado cannot move BUILDINGS, so a building track is never the pull target (nearest
+            # fallback) or the king-activation trigger. run14: 2 of 8 assist moves aimed at one (HANDOFF 5cs.99 AF).
+            _tk = tornado_pullable(_tk, lambda b: _db.kind(card_threat.base_key(str(b))))
             _cell0 = cell
             aim = nado_king_cell(_tk, tower_tracker.mine_a, actions, _nado_pull_r)
             if aim is not None:
