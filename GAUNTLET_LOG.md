@@ -1737,3 +1737,9 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - **Spec changes (a):** degrade() != live view (live fills HP with 1.0) -> live_view(); v6lat trained clean-only (degraded val cell 16.35 vs 21.04); all 477 pool-v0 ghosts are S1 training replays; 27-38% of S1's wins end vs a silent ghost.
 - **Plan (b):** pool v1 293 held-out / 1,505 train (opponent-disjoint); PPO-clip terminal reward, group baseline, KL leash; pre-registered pass >= +5 pp held-out with CI, pro agreement held, plays/min +-20%, exploit stops. ~15 h build; most likely outcome a null.
 - **Asked the owner:** build as designed, measure the v6lat baseline first (~2 h box, no training code), or park.
+
+## L67ai (2026-09-12) -- run18 (5 matches): Frosty Fella pressed 15x, all 15 accepted, ~8/15 visibly froze enemies; hero_frames.py saved + dry-run
+- **H3 live (a):** 15 presses (12 stacked_push, 3 wincon_at_building), 15 accepted, 0 refused; zone at +7 s: 7 N->0, 4 down, 3 up (lava pups). One press 30 s after deploy (stale hero position).
+- **By eye (b):** ~8 clearly good (tower pushes, Battle Ram, Balloon, Goblin Giant), 1 partial, ~6 no freeze inside the crop (snowman spawns behind the hero's target -- unclear, not proven wasted).
+- **Session (a):** 10.94 plays/min; X-Bow 6.6% of plays, Rocket 1 play; X2 pocket fired twice; Log skip 0; 3 known losses (0-1, 1-2, 1-3), 2 results not captured.
+- **hero_frames.py:** saved to scratchpad/gauntlet/L67; dry run on session 20260912_152220 + live_run11.log -> 26 hero plays, 231 raw frames, no drawn boxes.
