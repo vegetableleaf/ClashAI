@@ -27,7 +27,9 @@ from .reward import lead_point, lead_velocity   # 2026-09-03: cast-delay lead fo
 from .reward import SPAWN_SPELL_BASES, spawn_spell_landing   # L67h: aim at a barrel's LANDING, not the barrel
 from .reward import tornado_pullable                        # L67aa N1: a Tornado never aims at a building
 from .reward import log_only_hits_air                       # L67ae: never roll a Log under air units only
-from .reward import xbow_pocket_cell                        # L67ae X2: offensive X-Bow in a dead tower's pocket
+from .reward import xbow_pocket_cell
+from .hero_ability import (UIMaskedDetector, ability_button_state, frosty_fella_decision,   # L67ag D1 + H3
+                           tiles_between)                        # L67ae X2: offensive X-Bow in a dead tower's pocket
 from .reward import TILE as _TILE
 from .states import GameState
 from .threats import ThreatTracker, THREAT_DIM
@@ -357,6 +359,16 @@ def play(cfg) -> None:
             _detector = _det if _det.available else None
         except Exception:
             _detector = None
+    # L67ag D1 (run17): the hero's ability button is boxed as an ENEMY earthquake (0.91-0.95, ~30% of frames it
+    # shows). Drop detections centred on it while it is on screen. Revert: hero.mask_ability_button: false.
+    if _detector is not None and bool(cfg.get("hero", "mask_ability_button", default=False)):
+        _hb = cfg.get("hero", "button", default=[0.909, 0.765])
+        _detector = UIMaskedDetector(_detector,
+                                     [(float(_hb[0]), float(_hb[1]), float(cfg.get("hero", "mask_radius", default=0.062)))],
+                                     state_radius=float(cfg.get("hero", "state_radius", default=0.045)),
+                                     blue_min=float(cfg.get("hero", "blue_min", default=0.30)),
+                                     grey_min=float(cfg.get("hero", "grey_min", default=0.35)))
+        print("[play] hero: detections on the ability button are dropped while it shows (L67ag D1)", flush=True)
     _ident_state = {"depth": 0.0, "t": None}   # deepest-threat depth + time, for the approach velocity
     _opp_mem = card_threat.OpponentMemory(_db)  # per-match opponent short-term memory (Stage 3)
     _opp_elx = OpponentElixirEstimator(_db)     # live estimate from mirrored spend accounting
@@ -565,6 +577,94 @@ def play(cfg) -> None:
     _home = cfg.get("states", "home_menu", default={}) or {}
     home_tpl, home_thr = _home.get("template", "home_menu.png"), float(_home.get("threshold", 0.8))
 
+    # L67ag H3 (owner 2026-09-12): the hero Ice Wizard's Frosty Fella is pressed by RULE (clashrl/hero_ability.py),
+    # outside the model's action space. Availability = the button's pixels. Every press logs its reason, whether the
+    # game ACCEPTED it (button gone at +1.5 s) and its outcome at +7 s. Revert: hero.enabled: false.
+    _hero_on = bool(cfg.get("hero", "enabled", default=False))
+    _hero_card = str(cfg.get("hero", "card", default="ice_wizard"))
+    _hero_btn = tuple(float(v) for v in cfg.get("hero", "button", default=[0.909, 0.765]))
+    _hero_state = (float(cfg.get("hero", "state_radius", default=0.045)),
+                   float(cfg.get("hero", "blue_min", default=0.30)),
+                   float(cfg.get("hero", "grey_min", default=0.35)))
+    _hero_rule = dict(cost=float(cfg.get("hero", "cost", default=2)),
+                      radius=float(cfg.get("hero", "freeze_radius_tiles", default=2.5)),
+                      wincon_reach=float(cfg.get("hero", "wincon_reach_tiles", default=4.0)),
+                      cluster_min=int(cfg.get("hero", "cluster_min", default=3)),
+                      guard=float(cfg.get("hero", "xbow_guard_tiles", default=3.0)),
+                      hero_reach=float(cfg.get("hero", "hero_reach_tiles", default=7.0)))
+    _hero_min_age = float(cfg.get("hero", "min_age_s", default=1.5))
+    _hero_check_after = float(cfg.get("hero", "check_after_s", default=1.5))
+    _hero_outcome_after = float(cfg.get("hero", "outcome_after_s", default=7.0))
+    _hero = {"t": None, "xy": None, "press": None}
+
+    def _is_wincon(base) -> bool:
+        try:
+            return bool(card_threat.profile(_db, card_threat.base_key(base)).win_condition)
+        except Exception:  # noqa: BLE001 -- an unknown class is simply not a win condition
+            return False
+
+    def _frosty_check(frame, elixir: float) -> bool:
+        """True when Frosty Fella was pressed this tick (the caller then skips the card decision)."""
+        now = time.time()
+        st, blue, _grey = ability_button_state(frame, _hero_btn, *_hero_state)
+        if _hero["press"] is None and st != "ready":
+            return False
+        if _ploop is not None and _ploop.running:
+            dets, _age = _ploop.snapshot()
+            tracks = _ploop.enemy_tracks(now, True, 1.0)
+        else:
+            dets = _last_dets["all"]
+            tracks = _team_tracker.enemy_tracks(now, True, 1.0)
+        enemies = [(t[0], t[1], (t[4] if len(t) > 4 else None)) for t in tracks]
+        mine = [d for d in dets if d.team == "mine"]
+        buildings = [(d.cx, d.gy) for d in mine if d.base in ("x_bow", "tesla")]
+        xbows = [(d.cx, d.gy) for d in mine if d.base == "x_bow"]
+        towers = [tuple(a) for a, alive in zip(tower_tracker.mine_a[:3], list(tower_tracker.mine_alive)[:3]) if alive]
+        p = _hero["press"]
+        if p is not None:
+            if "accepted" not in p and now - p["t"] >= _hero_check_after:
+                p["accepted"] = st != "ready"
+                print(f"[ability] FROSTY {'accepted' if p['accepted'] else 'NOT accepted (button still ready)'} "
+                      f"+{now - p['t']:.1f}s button {st} elixir {p['elixir']:.0f}->{elixir:.0f} wall={_wall()}",
+                      flush=True)
+            if now - p["t"] >= _hero_outcome_after:
+                still = sum(1 for e in enemies if tiles_between(e, p["center"]) <= _hero_rule["radius"])
+                wc = ""
+                if p["wincon"]:
+                    ds = [min((tiles_between(e, a) for a in buildings + towers), default=float("inf"))
+                          for e in enemies if e[2] == p["wincon"]]
+                    wc = (f" {p['wincon']} nearest-building {min(ds):.1f} tiles" if ds
+                          else f" {p['wincon']} not tracked")
+                print(f"[ability] FROSTY outcome +{now - p['t']:.1f}s reason {p['reason']} enemies_in_zone "
+                      f"{p['n']}->{still}{wc} wall={_wall()}", flush=True)
+                _hero["press"] = None
+            return False
+        age = (now - _hero["t"]) if _hero["t"] is not None else None
+        if age is not None and age < _hero_min_age:
+            return False
+        seen = [(d.cx, d.gy) for d in mine if d.base == _hero_card]
+        if seen:
+            hero_xy, hsrc = seen[0], "detector"
+        elif _hero["xy"] is not None:
+            hero_xy, hsrc = _hero["xy"], "deploy"
+        else:
+            hero_xy, hsrc = None, "unknown"
+        r = frosty_fella_decision(enemies, buildings, towers, hero_xy, elixir=elixir, is_wincon=_is_wincon,
+                                  xbows=xbows, **_hero_rule)
+        if r is None:
+            return False
+        if cfg.get("play", "ensure_focus", default=True):
+            controller.ensure_focus()  # L67ag: same guard as play_card -- an unfocused window eats the tap
+        controller.tap(*_hero_btn)
+        _hero["press"] = dict(r, t=now, elixir=float(elixir))
+        if _student is not None:
+            _student.stats["frosty_press"] = _student.stats.get("frosty_press", 0) + 1
+        print(f"[ability] FROSTY press reason {r['reason']} centre ({r['center'][0]:.2f},{r['center'][1]:.2f}) "
+              f"enemies_in_zone {r['n']} wincon {r['wincon']} hero {hsrc} age "
+              f"{('%.1fs' % age) if age is not None else '?'} elixir {elixir:.0f} button blue {blue:.2f} "
+              f"wall={_wall()}", flush=True)
+        return True
+
     def act_in_match(frame) -> None:
         hp_tracker.step(frame)                # keep enemy princess HP + alive flags current
         # L67i: NOT during a grace hold. TowerTracker latches a tower destroyed after 3 consecutive "gone"
@@ -582,6 +682,8 @@ def play(cfg) -> None:
         _next_id = vision.recognize_next(frame)   # read ONCE: the student below reuses it
         next_vec = _cycle_tracker.observe(hand_ids, _next_id)
         elixir = vision.read_elixir(frame)
+        if _hero_on and _frosty_check(frame, float(elixir)):   # L67ag H3: an ability press ends this tick
+            return
         # L67u F3 (logging only): the tray after the last student tap -- at the FIRST read after it (what the bot sees
         # before it may tap again) and at the first read >= 0.5 s after it (the settled tray). One line if the first
         # read is already >= 0.5 s late.
@@ -992,6 +1094,8 @@ def play(cfg) -> None:
         # ANY play (troop or spell) anchors its own detection 'mine' -- base-matched, so your rolling Log
         # is claimed at the cast point while an enemy answer dropped on the same spot is not.
         cx, cy = actions.cell_center(gx, gy)
+        if _hero_on and card_threat.base_key(vision.deck_keys[card_id]) == _hero_card:
+            _hero["t"], _hero["xy"] = time.time(), (cx, cy)   # L67ag H3: the hero's reach is judged from here
         _opp_elx.record_my_play(card_threat.base_key(vision.deck_keys[card_id]))
         if _ploop is not None and _ploop.running:
             _ploop.record_play(cx, cy, time.time(), base=card_threat.base_key(vision.deck_keys[card_id]))
@@ -1067,6 +1171,7 @@ def play(cfg) -> None:
                         _team_tracker.reset()
                     _cycle_tracker.reset()        # forget last match's cycle order
                     _xbow_pocket["side"] = None   # L67ae X2: the pocket lane is per match
+                    _hero.update(t=None, xy=None, press=None)   # L67ag H3: hero state is per match
                     _canvas_stack.reset()         # ...and last match's canvas motion history
                     _replay_rec.new_match()       # arm a fresh overlay-replay clip for this match
                     prev_mult = 1

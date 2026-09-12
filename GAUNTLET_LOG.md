@@ -1724,3 +1724,10 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - **Engine RL (a):** real libg.so, closed loop works, opponent = non-reacting ghost (S1 wins 72.3%); ~3,600 S1 matches / 8 h idle box (b); engine PPO already failed once on the CNN BC init (flat when leashed, collapsed when free).
 - **Owner:** approved ONE overnight S1 engine-RL experiment validated on held-out recorded opponents; ability metrics beyond troop count; wire a freeze-zone rule if pro data is absent.
 - **Next:** D1 button-region mask, D2 detector labels (hero as ice_wizard), H3 ability rule, E1 RL build.
+
+## L67ag (2026-09-12) -- D1 button mask + H3 Frosty Fella rule shipped (icebow live path)
+- **Button states (a):** run17 strips -- absent / grey (unaffordable) / ready (blue); pixel classifier (blue >= 0.30, grey >= 0.35) agreed with every hand-labelled tile; the red `earthquake` phantom sits on the grey state.
+- **D1:** detections centred on the ability button dropped while it shows (shared `hero_ability.UIMaskedDetector`, wrapped before the perception loop). Revert `hero.mask_ability_button: false`.
+- **H3:** rule press of Frosty Fella when ready + >= 2 elixir + one of: enemy win condition within 4 tiles of our building/tower, >= 2 enemies on our X-Bow, >= 3 enemies inside 2.5 tiles on our half; hero within 7 tiles; logs press / accepted / +7 s outcome. Anisotropic tiles from tower anchors. Revert `hero.enabled: false`.
+- **Not established:** press quality (no offline tracks); offence not covered; T3 king-tower phantom untouched.
+- Suites: icebow 1,422 run, 1 failure = the pre-existing test_xbow_into_push clamped-front-row test (fails on clean a1d31a8), 21 skipped; hogeq 1,398 OK (67 skipped). Label Studio guide + E1 design pending (agents).

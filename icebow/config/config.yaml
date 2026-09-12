@@ -1355,6 +1355,30 @@ play:
                                  # after a tower falls vs 5-8% before, 76% in the dead lane); false = X1's always-defensive X-Bow.
   xbow_pocket_board_y: 0.391     # L67ae X2: pocket depth (pro median for forward X-Bows in a dead tower's lane)
 
+# --- Hero Ice Wizard ability: Frosty Fella (L67ag, owner rulings 2026-09-12; HANDOFF 5cs.99 AL/AM) ---
+# The ability is NOT a model action: play.py presses it by rule (clashrl/hero_ability.py). Stats (level 15): 2 elixir,
+# snowman 321 HP spawned behind the Ice Wizard's current target, 108 area damage once, then every enemy within 2.5
+# tiles frozen for 7 s or until the snowman dies. Availability is read from the BUTTON's pixels (run17: the detector
+# mostly does not see the hero). Revert: enabled: false (rule) / mask_ability_button: false (D1).
+hero:
+  enabled: true
+  card: ice_wizard                 # base key of the hero's hand card (the hand templates read the hero as ice_wizard)
+  button: [0.909, 0.765]           # MEASURED run17 (Hough circle); hogeq's champion button [0.963, 0.758] is elsewhere
+  state_radius: 0.045              # disc sampled for ready / grey / absent (frame-width units)
+  blue_min: 0.30                   # ready: blue fraction (run17 ready ~0.36, grey/absent ~0)
+  grey_min: 0.35                   # grey: grey fraction (run17 grey 0.85-0.98)
+  mask_ability_button: true        # D1: drop detections centred on the button while it shows (enemy 'earthquake' phantom)
+  mask_radius: 0.062               # frame-width units (button radius, Hough)
+  cost: 2
+  min_age_s: 1.5                   # no press before the hero has finished deploying
+  freeze_radius_tiles: 2.5
+  wincon_reach_tiles: 4.0          # an enemy win condition this close to our building / tower qualifies
+  cluster_min: 3                   # a push stacked inside the radius
+  xbow_guard_tiles: 3.0            # >= 2 enemies this close to our X-Bow
+  hero_reach_tiles: 7.0            # candidate must be within the hero's reach (Ice Wizard range 5.5 + a step)
+  check_after_s: 1.5               # log whether the press was ACCEPTED (button no longer ready)
+  outcome_after_s: 7.0             # log the outcome (enemies still in the zone, win condition vs building)
+
 # --- Overlay replays: clip the OPENING of every match with the detector's boxes burned in ---
 # When enabled, a background thread (its own screen capture, like the preview window) records the
 # first `seconds` of EVERY match to out_dir/match_<stamp>.mp4 with draw_detections() overlaid --
