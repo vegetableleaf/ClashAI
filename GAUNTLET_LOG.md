@@ -1658,3 +1658,10 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - **Likely mechanism (untested):** play.py records a play on every tap with no deployment check.
 - **Asked the owner:** ship F1 (enforce the cycle rule in past) + F2 (idle clock from match start)?
 - **L67s (5cs.99 Y), owner "ship both":** F1 -- `record_play` drops a same-card entry among the newest 3 plays (history deque 3 -> 8 so real older plays refill the model's view); F2 -- anti-stall idle clock starts at match start. 24 tests OK in both trees (2,000 random plays never show the model a repeat); real-checkpoint smoke: no forced play at match start, stall after 13 s. Full suites hogeq 1,343 OK; icebow only the pre-existing test_xbow_into_push failure. Next: owner session, same scanner (mid-match stalls/min, opening stalls ~0, past_repeat_dropped).
+
+## L67t (2026-09-11) -- F1+F2 live: freezes fell, the collapse moved to the next-card channel (mis-recorded re-taps, untested)
+- **Run11 (F1+F2, 18 matches):** STALL-PLAY/min 1.09 -> 0.65, pinned-high WAITs/min 0.66 -> 0.47, repeats in captured past 56% -> 0%, stalls at t < 12 s 14 -> 0. Plays/min 12.0 -> 14.3; taps repeating a card from the previous two 10.6% -> 16.2% (62/73 immediate repeats with no WAIT between).
+- **Remaining pin:** next card among the last 3 recorded plays in 72.4% of freeze states (run10 34.7%, training 11.8%); swapping in a legal next card lifts those states 0.039 -> 0.778 (98% over tau).
+- **Reading (untested):** fast re-taps deploy the card that slid into the slot but record the intended card, so `past` lags reality; F1 moved the error from "repeat in past" to "next in past".
+- **Correction:** "next among the last 3 plays" is NOT impossible (training 11.8%); only a repeat inside past is.
+- **Asked the owner:** F3 (timestamped PLAY lines + tray read before/after) and F4 (no re-tap until the tray changes or ~1 s; record the card that actually left).

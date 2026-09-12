@@ -1,0 +1,30 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+{"n": 76, "excluded_opening_stalls": 0, "by_why": {"pinned_hi": 34, "stall": 42}, "rescore_max_abs_err": 3.8743019104003906e-07, "base": {"mean_p": 0.0538, "frac_over_tau": 0.0}}
+arm                         mean_p   >tau  d_mean  per-why >tau
+board_empty                  0.063   0.04  +0.009  pinned_hi=0.00 stall=0.07
+enemy_units_off              0.054   0.00  +0.000  pinned_hi=0.00 stall=0.00
+my_units_off                 0.054   0.00  +0.000  pinned_hi=0.00 stall=0.00
+unknown_side_off             0.054   0.00  +0.000  pinned_hi=0.00 stall=0.00
+spells_off                   0.057   0.00  +0.004  pinned_hi=0.00 stall=0.00
+unit_hp_known_full           0.054   0.00  +0.000  pinned_hi=0.00 stall=0.00
+unit_conf_1                  0.054   0.00  -0.000  pinned_hi=0.00 stall=0.00
+unit_age_unknown             0.054   0.00  +0.000  pinned_hi=0.00 stall=0.00
+unit_deploying_unknown       0.054   0.00  +0.000  pinned_hi=0.00 stall=0.00
+past_clear                   0.172   0.20  +0.119  pinned_hi=0.21 stall=0.19
+past_age_3s                  0.062   0.05  +0.008  pinned_hi=0.00 stall=0.10
+past_age_60s                 0.143   0.18  +0.089  pinned_hi=0.18 stall=0.19
+elixir_10                    0.100   0.10  +0.046  pinned_hi=0.12 stall=0.10
+elixir_6                     0.013   0.00  -0.041  pinned_hi=0.00 stall=0.00
+elixir_exact_on              0.041   0.00  -0.013  pinned_hi=0.00 stall=0.00
+opp_elixir_5_known           0.016   0.00  -0.038  pinned_hi=0.00 stall=0.00
+time_60s_single              0.048   0.01  -0.006  pinned_hi=0.00 stall=0.02
+time_150s_double             0.150   0.18  +0.096  pinned_hi=0.06 stall=0.29
+towers_full_known            0.054   0.01  -0.000  pinned_hi=0.00 stall=0.02
+towers_hp_unknown            0.276   0.38  +0.222  pinned_hi=0.27 stall=0.48
+next_unknown                 0.623   0.80  +0.569  pinned_hi=0.77 stall=0.83
+noise_unit_xy_2pct           0.053   0.00  -0.000  pinned_hi=0.00 stall=0.00
+noise_time_2pct              0.054   0.01  +0.000  pinned_hi=0.00 stall=0.02
+live_captured {"t": 0.366, "double": 0.526, "overtime": 0.132, "elixir": 0.896, "exact": 0.0, "opp_known": 0.0, "hand_unmapped_slots": 0.263, "next_unmapped": 0.0, "tower_hp_known": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0], "tower_alive": [1.0, 0.7, 0.82, 1.0, 0.88, 0.72], "tokens_per_state": 2.55, "side_0": 0.232, "side_1": 0.753, "side_-1": 0.015, "hp_known": 1.0, "deploying_known": 0.0, "age_known": 0.0, "conf_mean": 0.736, "is_spell": 0.108, "past_slots_filled": 2.42, "past_age_median": 14.36, "past_age_p90": 27.76}
+train_elixir_ge_8 {"t": 0.36, "double": 0.423, "overtime": 0.206, "elixir": 0.916, "exact": 1.0, "opp_known": 1.0, "hand_unmapped_slots": 0.0, "next_unmapped": 0.0, "tower_hp_known": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0], "tower_alive": [1.0, 0.99, 0.99, 1.0, 0.99, 0.99], "tokens_per_state": 3.45, "side_0": 0.388, "side_1": 0.612, "side_-1": 0.0, "hp_known": 1.0, "deploying_known": 0.0, "age_known": 0.0, "conf_mean": 1.0, "is_spell": 0.0, "past_slots_filled": 2.46, "past_age_median": 12.25, "past_age_p90": 28.45, "gate_play_rate": 0.386}
+train_all {"t": 0.423, "double": 0.519, "overtime": 0.263, "elixir": 0.633, "exact": 1.0, "opp_known": 1.0, "hand_unmapped_slots": 0.0, "next_unmapped": 0.0, "tower_hp_known": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0], "tower_alive": [1.0, 0.99, 0.99, 1.0, 0.98, 0.98], "past_slots_filled": 2.75, "past_age_median": 8.75, "past_age_p90": 22.15}

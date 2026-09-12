@@ -2852,6 +2852,42 @@ The board is irrelevant to these collapses; the card IDENTITIES in `past` drive 
 *What this does NOT establish.* That the live freeze rate falls: the X counterfactual (dedupe within the stored 3) is close to F1 but not identical -- F1 also refills the view from the longer history. The next owner session measures it, on the same scanner: mid-match STALL-PLAY per minute (X: 1.09 regulation, run10), pinned-high WAITs, `past_repeat_dropped` in the stats, and STALL-PLAY at t < 12 s (should be ~0 with F2). Why ~11% of taps repeat a card (F3, the overlay clips) is still open, and so is the second cause behind X's 34 non-repeat freeze states.
 
 
+**Z. F1 + F2 LIVE RESULT (run11, owner session 2026-09-11 22:04-23:10; L67t): both fixes do what they were built to do, freezes fell -- and the remaining collapse moved to the NEXT-CARD channel, most likely because repeated taps are being MIS-RECORDED, not skipped.** Logs `icebow/data/play_20260911_220421.log`, stdout `scratchpad/live_run10.log` (UTF-16; converted `L67/live_run11_utf8.log`). Scripts reused (`live_session_scan.py`, `freeze_bisect.py`) plus `freeze_next_card.out`. All 76 capture records carry `plays_this_match`, so this run is the F1+F2 code (commit `40a4a61`, 22:00; run started 22:04).
+
+*Same scanner, before (run10, 20:52) vs after (run11) (a).*
+
+| | run10 (old code) | run11 (F1+F2) |
+|---|---|---|
+| matches / min in match | 15 / 44.0 | 18 / 59.5 (8 overtime) |
+| plays per min | 12.01 | **14.26** (above the 8-10.5 pro band carried from L67k) |
+| STALL-PLAY per min, regulation / overtime | 1.09 / 0.94 | **0.65 / 0.63** |
+| pinned-high WAIT lines per min, regulation / overtime | 0.66 / 0.81 | **0.47 / 0.41** |
+| matches with a >= ~47 s high-elixir freeze | 0 | 0 |
+| captured states with a repeated card in `past` | 50 of 89 (56.2%) | **0 of 76** (F1 works as coded) |
+| stall captures at t < 12 s | 14 | **0** (F2 works as coded) |
+| taps repeating a card from the previous two (PLAY lines) | 10.6% | **16.2%** (911 plays) |
+| immediate same-card repeats | 6.0% | 8.0% |
+
+F2 detail: 11 of 19 matches still get a STALL-PLAY before any play, now at t 12.1 s+ -- the rule firing as specified (pro first play median 12.0 s, p90 17.6). No `NO MATCH` nav lines, no give-up.
+
+*Repeated taps are fast re-taps (a).* 62 of run11's 73 immediate repeats (run10: 30 of 32) have no WAIT line between the two PLAY lines. Immediate-repeat rate, no WAIT between: 7.8% -> 8.7%; after >= 1 WAIT line: 1.4% -> 5.6%.
+
+*What still pins the gate -- bisection on run11's 76 states (a),* base p 0.054, re-score error 3.9e-7. Board still irrelevant (all units off 0.054, board empty 0.063). Past cleared 0.172 (20% over tau); past ages 60 s 0.143 (18%); elixir 10 0.100; clock 150 s 0.150; tower hp unknown 0.276 and next card unknown **0.623 (80%)** -- both inputs training never contains, so read as pointers, not causes. Unreadable hand slots per state rose 0.083 -> 0.263.
+
+*The next-card channel (a), `freeze_next_card.out`.* Training (30,000 rows): next card in hand 0.0000, duplicate card in hand 0.0000, **next card among the last 3 plays 0.1184** -- NOT impossible (the dataset allows it; why, when a strict cycle would forbid it, is itself unexplained). Captured freeze states: next among the last 3 plays **34.7% (run10) -> 72.4% (run11)**; next in hand 0; duplicate in hand 0. Counterfactual -- replace the next card with each LEGAL alternative (not in hand, not in past) and average:
+
+| | states with next among last 3 plays | other states |
+|---|---|---|
+| run10: base p -> legal next | 0.041 -> **0.672 (88% over tau)**, n=26 | 0.027 -> 0.061 (8%), n=49 |
+| run11: base p -> legal next | 0.039 -> **0.778 (98% over tau)**, n=55 | 0.092 -> 0.170 (24%), n=21 |
+
+*Reading (b, consistent with everything above, not directly observed).* The fast re-taps are not all phantoms. When the bot re-taps a slot while the tray is still animating, the game deploys the card that slid INTO that slot, but play.py records the card it meant to play. The recorded history then lags reality by one play: the real queue-front card (what the next-card reader sees) is a card the history thinks was played recently, and the gate reads "next = a card I just played" as stop. F1 removed the repeated copy, which let an older real play into the 3-play view -- moving the same error from "repeat in past" (56% -> 0%) to "next in past" (35% -> 72%). The rise in plays per minute is in line with double taps counted as plays. **Which card actually deployed on a repeated tap has not been checked**; `[student]` PLAY lines carry no timestamp, so the overlay clips (run11 matches 1-10 exist, 22:04-22:41) cannot yet be aligned to them.
+
+*Correction to X:* X called a card repeated inside `past` impossible and measured training at 0.000 -- that stands. It must not be extended to the next card: training has next-among-last-3 11.8% of the time.
+
+*Proposed (owner decision):* **F3 (logging only):** timestamp every `[student]` line and log the tray read just before the tap and ~0.5 s after, so clips and logs align and misrecords can be counted. **F4 (behaviour):** after a tap, (a) do not tap again until the tray read shows the played slot changed or ~1 s has passed, and (b) record the card that actually LEFT the tray, not the one intended. Expected: fewer double taps, plays per minute toward the pro band, an honest `past`.
+
+
 ### §5cs.98 -- L67e+f (2026-09-08 06:00-18:00 UTC): **OPTION B GRADED (3 seeds: clean 21.56 +- 0.07, degraded 19.45 +- 0.05) BUT ITS GAIN IS AGAINST A CORRUPTION MODEL WE NOW KNOW IS WRONG. Three label-free live measurements instead: the GATE survives real detector input (live .248-.325 vs engine .294-.298), PLACEMENT COLLAPSES toward the prior (top-1 cell share 0.25 vs 0.07 at matched unit counts), and nothing JITTERS (same-cell 61.4% live vs 38.7% engine -- the collapse seen twice, not a second defect). Ablation names the cause: MISSING VALUES (unit HP, exact/opponent elixir, king HP), not noisy ones -- spell tokens, unknown team tags and low confidence each do NOTHING. Against pro labels, SUPPLYING beats FLAGGING (blank_both 18.78 exact cell / 52.11 card -> fill_both 20.15 / 63.25), so the fill is now wired live and verified (live top-1 share 0.411 -> 0.322)**
 
 **A. Option B, the 3-seed result (a), `s1_v6aug/eval_v3val_icebow_v6aug.out` + `eval_v3degraded_*`.** Augmented set = 622,923 rows (339,192 clean + 283,731 degraded TRAIN rows; val rows clean, so checkpoint selection is v6lat's own rule).
