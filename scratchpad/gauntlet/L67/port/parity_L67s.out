@@ -1,0 +1,33 @@
+parity: icebow <-> hogeq   (C:\Users\benpe\ClashBot)
+
+config (must be byte-identical):
+  ok       config/cards_stats.json   (87,766 bytes)
+  ok       config/card_mechanics.json   (22,440 bytes)
+  ok       config/detect_classes.yaml   (5,542 bytes)
+  ok       config/meta_decks.yaml   (232,989 bytes)
+  ok       config/import_allowlist.json   (11,514 bytes)
+  ok       config/import_pins.json   (60,712 bytes)
+  ok       config/cards.yaml   (identical apart from the 848-byte deck block)
+
+src/clashrl: 90 files
+  shared, identical : 70
+  declared different: 15
+  UNEXPECTED        : 5
+
+UNEXPECTED DIVERGENCE -- shared code drifted, or a new deck-specific file needs an allow-list entry:
+  config.py   (contents differ)
+  gate_rule.py   (only in icebow)
+  geometry_reward.py   (only in icebow)
+  model.py   (contents differ)
+  sim_view.py   (contents differ)
+
+tests/ (informational): 90 in both (80 identical, 10 differ), 8 only in icebow, 4 only in hogeq
+
+tools/ (informational): 31 in both (26 identical, 5 differ), 17 only in icebow, 0 only in hogeq
+
+PARITY FAIL: 5 problem(s)
+  src/clashrl/config.py: contents differ
+  src/clashrl/gate_rule.py: only in icebow
+  src/clashrl/geometry_reward.py: only in icebow
+  src/clashrl/model.py: contents differ
+  src/clashrl/sim_view.py: contents differ

@@ -62,7 +62,10 @@ class StudentPolicy:
         self.fill_missing = bool(fill_missing)
         self.ckpt = str(ckpt_path)
         self.epoch = st.get("epoch")
-        self._past: deque = deque(maxlen=PAST_K)          # (deck_slot, board_x, board_y, t_wall)
+        # (deck_slot, board_x, board_y, t_wall). Longer than PAST_K (_past_array takes the newest PAST_K) so that
+        # dropping a phantom entry under the cycle rule (record_play) does not also drop a real older play.
+        self._past: deque = deque(maxlen=PAST_HISTORY)
+        self._plays_match = 0
         self.stats: dict[str, int] = {}
         # ANTI-STALL (L67k). When elixir sits at cap and nothing has been played for `stall_seconds`, take the
         # top AFFORDABLE candidate regardless of the gate. It never overrides a gate that already wants to
@@ -86,7 +89,11 @@ class StudentPolicy:
     # -- state ---------------------------------------------------------------------------------------
     def reset_match(self) -> None:
         self.hand_memory.reset()
-        self._last_play_t = None
+        # L67r F2: the anti-stall idle clock starts at MATCH START. It was None here, and the stall check counted idle
+        # time from 0.0 -- so it fired the first time elixir read >= 9, one forced opening play per match at t 3-5 s
+        # (22 of 75 captured stalls, HANDOFF 5cs.99 X), cutting the pro-like opening wait (pro first play median 12 s).
+        self._last_play_t = time.time()
+        self._plays_match = 0
         self.capture.reset_match()     # L67q: the capture budget is per match
         self._match_idx += 1
         """Forget the previous match's plays. `past` ages are WALL-CLOCK, so without this the first
@@ -97,8 +104,16 @@ class StudentPolicy:
     def record_play(self, card_id: int, board_xy: tuple[float, float], deck_keys: Sequence[str]) -> None:
         """Call after a tap so ``past`` matches the dataset's own 'my last 3 accepted plays'."""
         self._last_play_t = time.time()
+        self._plays_match += 1
         slot = self.deck.slot_of(_key_of(card_id, deck_keys))
         if slot >= 0:
+            # L67r F1: THE CYCLE RULE. A played card returns to hand only after 3 other plays, so the same card inside
+            # the last 3 recorded plays means the OLDER record was a phantom (a tap that did not deploy, or a misread
+            # tray). Training never contains such a history (0.000) and the gate collapses on it: 71.9% of captured
+            # freeze states held one, and dropping the older copy lifted them 0.019 -> 0.497 (5cs.99 X).
+            dropped = drop_cycle_repeats(self._past, slot)
+            if dropped:
+                self.stats["past_repeat_dropped"] = self.stats.get("past_repeat_dropped", 0) + dropped
             self._past.append((slot, float(board_xy[0]), float(board_xy[1]), time.time()))
 
     def _past_array(self, now: float) -> np.ndarray:
@@ -108,6 +123,15 @@ class StudentPolicy:
         return p
 
     # -- decision ------------------------------------------------------------------------------------
+    def _stalled(self, elixir: float, now: float) -> bool:
+        """Anti-stall trigger: elixir >= stall_elixir with no play for stall_seconds, timed from the last play or the
+        match start (L67r F2). A caller that never signalled a match start gets its clock started here."""
+        if self.stall_elixir is None or elixir < self.stall_elixir:
+            return False
+        if self._last_play_t is None:
+            self._last_play_t = now
+        return now - self._last_play_t >= self.stall_seconds
+
     def decide(self, detections: Sequence[Any], reads: LiveReads, hand_ids: Sequence[int],
                deck_keys: Sequence[str], card_elixir: Optional[Sequence[float]] = None
                ) -> Optional[tuple[int, int, float]]:
@@ -181,10 +205,7 @@ class StudentPolicy:
                      # these, and guessing which cost a whole session -- so the live log now carries them.
                      "digest": state_digest(bs)}
         self.stats["decisions"] = self.stats.get("decisions", 0) + 1
-        stalled = False
-        if self.stall_elixir is not None and float(reads.elixir_int) >= self.stall_elixir:
-            idle = time.time() - (self._last_play_t if self._last_play_t is not None else 0.0)
-            stalled = idle >= self.stall_seconds
+        stalled = self._stalled(float(reads.elixir_int), time.time())
         # L67q: CAPTURE THE FREEZE ITSELF for offline bisection -- the failing input, tokens and all. The L67i rule
         # (p < 0.02, first 60 per process) spent its whole budget in match 1 of the owner's 77-match run and caught
         # none of the late-game freezes (5cs.99 V). CaptureBudget picks anti-stall moments and late pinned waits,
@@ -198,6 +219,7 @@ class StudentPolicy:
                     rec = {"why": why, "p": p_play, "t_sec": bs.t_sec, "elixir": float(reads.elixir_int),
                            "match": self._match_idx, "wall": time.time(),
                            "idle_s": (None if self._last_play_t is None else time.time() - self._last_play_t),
+                           "plays_this_match": self._plays_match,
                            "deck_slot": slot, "student_cell": cell,
                            "tok": np.asarray(tok).tolist(), "mask": np.asarray(mask).tolist(),
                            "sc": np.asarray(sc).tolist(), "past": past.tolist(), "digest": self.last["digest"]}
@@ -212,6 +234,25 @@ class StudentPolicy:
             self.stats["stall_fired"] = self.stats.get("stall_fired", 0) + 1
             self.last["stall"] = True
         return int(card_id), live_cell, p_play
+
+
+PAST_HISTORY = 8      # plays kept internally; the model sees the newest PAST_K
+CYCLE_GAP = 3         # a card cannot reappear within this many recorded plays (4 in hand, played card to queue back)
+
+
+def drop_cycle_repeats(past: deque, slot: int, window: int = CYCLE_GAP) -> int:
+    """Remove entries of ``slot`` among the newest ``window`` plays of ``past`` (in place); return how many.
+
+    Called before appending a new play of ``slot``: under the card cycle those entries cannot have been real plays,
+    while an older entry of the same card (a legal return after 3 other plays) is kept."""
+    items = list(past)
+    cut = max(0, len(items) - int(window))
+    keep = items[:cut] + [e for e in items[cut:] if int(e[0]) != int(slot)]
+    n = len(items) - len(keep)
+    if n:
+        past.clear()
+        past.extend(keep)
+    return n
 
 
 class CaptureBudget:
