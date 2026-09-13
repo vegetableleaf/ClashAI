@@ -6,7 +6,11 @@ PyYAML>=6.0          # config
 pygetwindow>=0.0.9   # locate the game window
 pyautogui>=0.9.54    # bot input (used when the trained agent plays)
 pynput>=1.7          # logs YOUR mouse while you play, to label imitation actions
+ultralytics>=8.4.107 # YOLO card/unit detector (needs torch -- install the CUDA torch below FIRST)
+polars>=1.43.0       # reads the HuggingFace pro-replay parquet (tools/hf_to_crawl.py)
 
+# Install torch BEFORE `pip install -r requirements.txt`: ultralytics depends on torch, and
+# if torch is missing pip pulls the CPU-only build from PyPI.
 # PyTorch is required for the CNN policy (behaviour cloning + DQN), but install the
 # build that matches your GPU/CUDA from https://pytorch.org/get-started/locally/
 # e.g. CUDA 12.1:

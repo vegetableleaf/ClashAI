@@ -116,37 +116,56 @@ def play(cfg) -> None:
     rl_path = cfg.path(cfg.get("train", "rl_checkpoint", default="data/policy_rl.pt"))
     if rl_path.exists():
         ckpt_path = rl_path   # prefer the RL-fine-tuned policy when available
-    if not ckpt_path.exists():
-        print(f"[play] no policy at {ckpt_path}. Train one first with `train-bc`.")
+    # L67an (owner 2026-09-12): the old CNN is OPTIONAL when the S1 student is set (--student / play.student_ckpt).
+    # With a student, the student makes every play and every wait (STUDENT OVERRIDE below); the CNN only fed the
+    # hand/affordability masks, which neutral logits reproduce. Without a student nothing changed: no checkpoint,
+    # no play.
+    _no_cnn = not ckpt_path.exists()
+    if _no_cnn and not cfg.get("play", "student_ckpt", default=None):
+        print(f"[play] no policy at {ckpt_path}. Pass an S1 student with --student <ckpt> "
+              f"(or train the old CNN with `train-bc`).")
         return
 
-    ckpt = torch.load(ckpt_path, map_location="cpu")
-    gw, gh = int(ckpt["grid"][0]), int(ckpt["grid"][1])
-    n_cards, n_cells = int(ckpt["n_cards"]), int(ckpt["n_cells"])
-    threat_dim = int(ckpt.get("threat_dim", 14))
-    device = _pick_device(cfg)
-    # Image-branch width is a property of the CHECKPOINT (3 = RGB only, 9 = RGB + semantic canvas),
-    # so a policy trained before the obs-canvas flip still deploys unchanged.
-    in_ch = int(ckpt.get("in_ch", 3))
-    net = PolicyNet(in_ch, n_cards, n_cells, threat_dim=threat_dim).to(device)
-    net.load_state_dict(ckpt["model"])
-    net.eval()
-    # The RL checkpoint also carries the learned WAIT/PLAY gate head (train-rl's no-op). Load it so
-    # play is SYNCED with training: without it, play fired a card every act_period regardless (the
-    # old trol behaviour). A BC-only checkpoint has no gate -> play just gates on affordability.
-    gate = None
-    if "gate" in ckpt:
-        gate = torch.nn.Linear(net.embed_dim, 2).to(device)
-        gate.load_state_dict(ckpt["gate"])
-        gate.eval()
-    is_ppo = ckpt.get("algo") == "ppo"   # PPO heads are LOGITS -> the gate is a thresholded probability
-    # Deploy gate threshold, shared with the sim benchmark and the self-play snapshots so live play
-    # deploys at the SAME rate it was trained/benchmarked at. A raw logit compare is tau=0.5, which
-    # a calibrated gate rarely clears -> the bot hoards elixir and under-deploys. See config.yaml.
-    gate_tau = float(cfg.get("sim", "ppo_gate_threshold", default=0.25))
-    print(f"[play] policy {ckpt_path.name} loaded "
-          f"({'PPO gate ON' if (gate is not None and is_ppo) else 'RL gate ON' if gate is not None else 'BC, no gate'})"
-          + (f", gate tau {gate_tau:g}" if (gate is not None and is_ppo) else "") + ".")
+    if _no_cnn:
+        ckpt, net, gate, is_ppo = None, None, None, False
+        device = _pick_device(cfg)
+        gate_tau = float(cfg.get("sim", "ppo_gate_threshold", default=0.25))
+        # Perception widths mirror the live CNNs (policy_rl.pt in both decks: threat_dim 52 = base + identity +
+        # opponent memory + interactions + tower), so the detector, trackers and threat blocks run as before.
+        # No canvas: only the CNN read it.
+        threat_dim = (THREAT_DIM + card_threat.IDENTITY_DIM + card_threat.OPP_MEMORY_DIM
+                      + interactions.INTERACTION_DIM + 6)
+        in_ch = 3
+        gw = gh = n_cards = n_cells = None      # set from ActionSpace and the deck once they exist
+        print(f"[play] no old policy at {ckpt_path.name} -- running on the S1 student alone.")
+    else:
+        ckpt = torch.load(ckpt_path, map_location="cpu")
+        gw, gh = int(ckpt["grid"][0]), int(ckpt["grid"][1])
+        n_cards, n_cells = int(ckpt["n_cards"]), int(ckpt["n_cells"])
+        threat_dim = int(ckpt.get("threat_dim", 14))
+        device = _pick_device(cfg)
+        # Image-branch width is a property of the CHECKPOINT (3 = RGB only, 9 = RGB + semantic canvas),
+        # so a policy trained before the obs-canvas flip still deploys unchanged.
+        in_ch = int(ckpt.get("in_ch", 3))
+        net = PolicyNet(in_ch, n_cards, n_cells, threat_dim=threat_dim).to(device)
+        net.load_state_dict(ckpt["model"])
+        net.eval()
+        # The RL checkpoint also carries the learned WAIT/PLAY gate head (train-rl's no-op). Load it so
+        # play is SYNCED with training: without it, play fired a card every act_period regardless (the
+        # old trol behaviour). A BC-only checkpoint has no gate -> play just gates on affordability.
+        gate = None
+        if "gate" in ckpt:
+            gate = torch.nn.Linear(net.embed_dim, 2).to(device)
+            gate.load_state_dict(ckpt["gate"])
+            gate.eval()
+        is_ppo = ckpt.get("algo") == "ppo"   # PPO heads are LOGITS -> the gate is a thresholded probability
+        # Deploy gate threshold, shared with the sim benchmark and the self-play snapshots so live play
+        # deploys at the SAME rate it was trained/benchmarked at. A raw logit compare is tau=0.5, which
+        # a calibrated gate rarely clears -> the bot hoards elixir and under-deploys. See config.yaml.
+        gate_tau = float(cfg.get("sim", "ppo_gate_threshold", default=0.25))
+        print(f"[play] policy {ckpt_path.name} loaded "
+              f"({'PPO gate ON' if (gate is not None and is_ppo) else 'RL gate ON' if gate is not None else 'BC, no gate'})"
+              + (f", gate tau {gate_tau:g}" if (gate is not None and is_ppo) else "") + ".")
 
     capture = WindowCapture(cfg.get("window", "title_contains", default=None),
                             cfg.get("window", "region", default=None))
@@ -155,6 +174,9 @@ def play(cfg) -> None:
         return
     vision = Vision(cfg)
     actions = ActionSpace(cfg)
+    if _no_cnn:   # L67an: grid and card count come from the config and the deck, not a checkpoint
+        gw, gh, n_cells = int(actions.gw), int(actions.gh), int(actions.n_cells)
+        n_cards = len(vision.deck_keys)
     controller = Controller(capture, cfg)
     # --- L67d: OPTIONAL S1 student (pipeline/) as the decision maker. OFF unless play.student_ckpt is set.
     # It replaces only the (card, cell) CHOICE; every safety and aim step below still runs on its answer,
@@ -188,11 +210,14 @@ def play(cfg) -> None:
             print(f"[play] S1 STUDENT ON: {Path(_student_ckpt).name} (epoch {_student.epoch}, "
                   f"grid {_student.grid_kind}, gate tau {_student.gate_tau:g}, anti-stall "
                   f"{'off' if _student.stall_elixir is None else f'{_student.stall_elixir:g} elixir / {_student.stall_seconds:g}s'}"
-                  f") -- the old policy is loaded but "
-                  f"only used for the frames the student declines to answer.")
+                  f") -- the student makes every play and every wait"
+                  f"{'' if net is None else '; the old policy only feeds the affordability masks'}.")
         except Exception as exc:                                # noqa: BLE001
             print(f"[play] student_ckpt set but the student failed to load ({exc}); staying on the old policy.")
             _student = None
+    if _no_cnn and _student is None:   # L67an: without the old CNN the student is the only decision maker
+        print("[play] the S1 student did not load and there is no old policy -- nothing to play with; stopping.")
+        return
     rocket_ids = {i for i, key in enumerate(vision.deck_keys)
                   if (key[:-4] if key.endswith("_evo") else key) == "rocket"}
     # LOG + TORNADO AIM ASSISTS. Both cards were flying blind live: every other card with geometry
@@ -310,8 +335,9 @@ def play(cfg) -> None:
     # deck change an old net's heads are the wrong width and its card ids mean different cards --
     # here that would surface as a torch shape error (10-wide hand one-hots into a 9-card net) or,
     # worse, silent nonsense plays.
-    _ckpt_deck = ckpt.get("deck")
-    if n_cards != len(vision.deck_keys) or (_ckpt_deck and list(_ckpt_deck) != list(vision.deck_keys)):
+    _ckpt_deck = ckpt.get("deck") if ckpt is not None else None
+    if ckpt is not None and (n_cards != len(vision.deck_keys)
+                             or (_ckpt_deck and list(_ckpt_deck) != list(vision.deck_keys))):
         print(f"[play] checkpoint/deck MISMATCH -- {ckpt_path.name} was trained for:")
         print(f"[play]   ckpt deck ({n_cards}): {', '.join(map(str, _ckpt_deck or ['?'] * n_cards))}")
         print(f"[play]   config deck ({len(vision.deck_keys)}): {', '.join(vision.deck_keys)}")
@@ -746,9 +772,14 @@ def play(cfg) -> None:
         nv = torch.from_numpy(next_vec).unsqueeze(0).to(device)
         ev = torch.tensor([[elixir / 10.0]], dtype=torch.float32, device=device)
         tv = torch.from_numpy(threat_vec).unsqueeze(0).float().to(device)
-        with torch.no_grad():
-            z, card_logits, cell_logits = net.forward_parts(x, hv, nv, ev, tv)
-            gate_logits = gate(z) if gate is not None else None
+        if net is not None:
+            with torch.no_grad():
+                z, card_logits, cell_logits = net.forward_parts(x, hv, nv, ev, tv)
+                gate_logits = gate(z) if gate is not None else None
+        else:   # L67an: no old CNN -- neutral logits keep the hand/affordability masks and the placement path valid
+            card_logits = torch.zeros((1, n_cards), device=device)
+            cell_logits = torch.zeros((1, n_cards, n_cells), device=device)
+            gate_logits = None
         card_logits = card_logits.masked_fill(hv < 0.5, float("-inf"))   # only cards in hand
         # ELIXIR: mask out any card you can't currently AFFORD (cost from the card DB). This is the
         # hand-card -> elixir-cost tracking: play never taps an unaffordable card (the old fixed

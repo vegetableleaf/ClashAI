@@ -54,8 +54,7 @@ pictures for the detector.
 [ ] Free disk: ~40 GB (Android tools ~15-20 GB, engine files ~1 GB,
     replay downloads ~0.8 GB, your replay corpus and datasets ~1 GB, plus room).
 [ ] Python 3.13 (tested with 3.13.14) from python.org - TICK "Add Python to PATH".
-[ ] Git for Windows (git-scm.com). It also installs "Git Bash" and curl, which
-    Stage 4 uses.
+[ ] Git for Windows (git-scm.com).
 [ ] JDK 17 and the Android SDK command-line tools (needed by the engine sandbox;
     Stage 3 tells you where).
 [ ] Google Play Games for PC with Clash Royale installed, on a throwaway account.
@@ -75,7 +74,7 @@ pictures for the detector.
      FOLDER: icebow       = the "icebow" folder inside it
      FOLDER: sandbox      = research\ext\cr-native-sandbox inside it
 
-2. Use PowerShell unless a stage says "Git Bash".
+2. Use PowerShell for every command.
    (Start menu -> type "PowerShell" -> Enter.)
 
 3. Never run the engine, training and the live bot at the same time. Each one
@@ -118,33 +117,35 @@ pictures for the detector.
 ===============================================================================
 FOLDER: icebow
 
-1. Create the bot's private Python environment and install its packages:
+1. Create the bot's private Python environment:
 
        cd .\icebow
        python -m venv .venv
        .\.venv\Scripts\python.exe -m pip install --upgrade pip
-       .\.venv\Scripts\python.exe -m pip install -r requirements.txt
-       .\.venv\Scripts\python.exe -m pip install ultralytics polars
 
-   (ultralytics = the object detector; polars = reads the downloaded replays.
-   They are not in requirements.txt yet, so install them by hand.)
-
-2. Install PyTorch with CUDA for your NVIDIA card. Newer cards (RTX 40/50 series):
+2. Install PyTorch with CUDA for your NVIDIA card FIRST. Newer cards (RTX 40/50 series):
 
        .\.venv\Scripts\python.exe -m pip install torch --index-url https://download.pytorch.org/whl/cu128
 
    Older cards: pick the matching command at https://pytorch.org/get-started/locally/
+   Torch MUST come before the next step: the detector package needs torch, and if
+   torch is missing pip quietly installs the slow CPU-only version instead.
 
-3. Check the install. This prints your deck and the card list:
+3. Install the rest of the bot's packages:
+
+       .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+
+4. Check the install. This prints your deck and the card list:
 
        .\.venv\Scripts\python.exe run.py cards
 
-4. Check the training code works. Go back to the repo root and run its tests:
+5. Check the training code and the helper tools work. Go back to the repo root:
 
        cd ..
        icebow\.venv\Scripts\python.exe -m unittest pipeline.tests.test_obs_contract
+       icebow\.venv\Scripts\python.exe -m unittest tools.tests.test_tools
 
-   It should end with "OK".
+   Both should end with "OK".
 
 
 ===============================================================================
@@ -199,44 +200,26 @@ are the steps in order.
 ===============================================================================
  STAGE 4 - DOWNLOAD PRO REPLAYS (one time)
 ===============================================================================
-FOLDER: repo root  (step 2 in Git Bash)
+FOLDER: repo root
 
 The replays come from a public dataset on HuggingFace (VanguardX101/IL_Replay,
 about 252,000 matches, 825 MB). Check the dataset page for its licence before you
 use it. About 766 of those matches use the Icebow deck.
 
-1. Make the download folder and fix the download script's path.
+1. Download it. It is safe to re-run if it stops: finished files are checked and
+   skipped.
 
-       New-Item -ItemType Directory -Force scratchpad\gauntlet\L67\hf\replays
-       notepad scratchpad\gauntlet\L67\_hf_dl.sh
+       icebow\.venv\Scripts\python.exe tools\hf_download.py
 
-   Line 3 says   cd /c/Users/benpe/ClashBot/scratchpad/gauntlet/L67/hf
-   Change the start to YOUR repo root, written the Git Bash way. Example: if your
-   repo root is C:\Users\alex\Documents\ClashBot the line becomes
-       cd /c/Users/alex/Documents/ClashBot/scratchpad/gauntlet/L67/hf
-   Save and close Notepad.
+   It saves to data\hf\replays and ends with "DONE ok 52 bad 0".
 
-2. Open Git Bash (Start menu -> "Git Bash"), go to your repo root, and download.
-   It is safe to re-run if it stops; finished files are skipped:
+2. Pick out the Icebow matches and convert them to the format the engine reads:
 
-       cd /c/Users/alex/Documents/ClashBot
-       bash scratchpad/gauntlet/L67/_hf_dl.sh
+       icebow\.venv\Scripts\python.exe tools\hf_to_crawl.py icebow
 
-   It ends with "DONE ok 52 bad 0". Close Git Bash and go back to PowerShell.
-
-3. The converter compares against the project owner's own replay files, which you
-   do not have. Create two EMPTY stand-in files so it runs (PowerShell, repo root):
-
-       New-Item -ItemType Directory -Force icebow\data\royaleapi\crawl2
-       New-Item -ItemType File -Force icebow\data\royaleapi\crawl2\battles.csv
-       New-Item -ItemType File -Force icebow\data\royaleapi\crawl2\plays_ext.csv
-
-4. Pick out the Icebow matches and convert them to the format the engine reads:
-
-       icebow\.venv\Scripts\python.exe scratchpad\gauntlet\L67\hf_to_crawl.py --hf scratchpad\gauntlet\L67\hf\replays --out scratchpad\gauntlet\ext\crawl_hf_icebow
-
-   You get scratchpad\gauntlet\ext\crawl_hf_icebow\ with battles.csv,
-   plays_ext.csv and tags.json (the list of matches to re-play).
+   You get data\hf_crawl\icebow\ with battles.csv, plays_ext.csv and tags.json
+   (the list of matches to re-play). A note that the duplicate check was skipped
+   is normal - that check only applies to the project owner's own replays.
 
 
 ===============================================================================
@@ -270,7 +253,7 @@ FOLDER: repo root  (a different PowerShell window)
 This re-plays every downloaded match inside the engine and saves one file per
 match with the board recorded along the way.
 
-    research\ext\cr-native-sandbox\.venv\Scripts\python.exe research\sandbox_tools\replay_batch.py --crawl scratchpad\gauntlet\ext\crawl_hf_icebow --tags scratchpad\gauntlet\ext\crawl_hf_icebow\tags.json --out scratchpad\gauntlet\ext\corpus_v6\icebow --record-every 20 --record-plays --port 37031 --determinism-every 0
+    research\ext\cr-native-sandbox\.venv\Scripts\python.exe research\sandbox_tools\replay_batch.py --crawl data\hf_crawl\icebow --tags data\hf_crawl\icebow\tags.json --out data\corpus_v6\icebow --record-every 20 --record-plays --port 37031 --determinism-every 0
 
   * DO NOT leave out --record-every 20 or --record-plays. Without them the files
     look fine but the dataset in Stage 8 silently gets no "wait" examples.
@@ -280,7 +263,7 @@ match with the board recorded along the way.
     known gap in the engine. Expect roughly 600 good matches out of 766.
 
 Check the first finished file really recorded the board: open any
-scratchpad\gauntlet\ext\corpus_v6\icebow\replay_*.json in Notepad and search for
+data\corpus_v6\icebow\replay_*.json in Notepad and search for
 "frames". It must be there and not empty.
 
 
@@ -304,7 +287,7 @@ Turn the corpus into rows the network learns from. Always give BOTH --corpus and
 --out (the defaults point at the project owner's files):
 
     New-Item -ItemType Directory -Force icebow\data\pipeline
-    icebow\.venv\Scripts\python.exe -m pipeline.dataset icebow --corpus scratchpad\gauntlet\ext\corpus_v6\icebow --out icebow\data\pipeline\s1_dataset_v6.npz
+    icebow\.venv\Scripts\python.exe -m pipeline.dataset icebow --corpus data\corpus_v6\icebow --out icebow\data\pipeline\s1_dataset_v6.npz
 
 It takes a minute or two and prints how many rows it built. 15% of the matches
 are kept aside automatically to test the model on (the "val" split).
@@ -314,8 +297,8 @@ the detector misses some units and misplaces others; a model that also trained o
 noisy boards may handle that better. This is still being measured, so start with
 the normal dataset. To build it:
 
-    icebow\.venv\Scripts\python.exe scratchpad\gauntlet\L67\build_degraded.py icebow --corpus scratchpad\gauntlet\ext\corpus_v6\icebow --out scratchpad\gauntlet\L67\s1_dataset_v6_degraded_s0.npz --seed 0
-    icebow\.venv\Scripts\python.exe scratchpad\gauntlet\L67\merge_aug.py --clean icebow\data\pipeline\s1_dataset_v6.npz --degraded scratchpad\gauntlet\L67\s1_dataset_v6_degraded_s0.npz --out icebow\data\pipeline\s1_dataset_v6aug.npz
+    icebow\.venv\Scripts\python.exe tools\build_degraded.py icebow --corpus data\corpus_v6\icebow --out icebow\data\pipeline\s1_dataset_v6_degraded_s0.npz --seed 0
+    icebow\.venv\Scripts\python.exe tools\merge_aug.py --clean icebow\data\pipeline\s1_dataset_v6.npz --degraded icebow\data\pipeline\s1_dataset_v6_degraded_s0.npz --out icebow\data\pipeline\s1_dataset_v6aug.npz
 
 
 ===============================================================================
@@ -323,7 +306,7 @@ the normal dataset. To build it:
 ===============================================================================
 FOLDER: repo root
 
-    icebow\.venv\Scripts\python.exe -m pipeline.train_s1 icebow --seed 0 --epochs 20 --data icebow\data\pipeline\s1_dataset_v6.npz --tag v6lat --grid lattice --out-dir scratchpad\s1_runs
+    icebow\.venv\Scripts\python.exe -m pipeline.train_s1 icebow --seed 0 --epochs 20 --data icebow\data\pipeline\s1_dataset_v6.npz --tag v6lat --grid lattice --out-dir data\s1_runs
 
   * It uses your GPU automatically. On an 8 GB laptop GPU, a dataset of ~340,000
     rows took about 5 minutes per epoch (20 epochs = under 2 hours). A dataset
@@ -382,8 +365,7 @@ it, so it must know where the window is.
    back to steps 1-2.
 
 4. Record yourself playing 5-10 matches with the Icebow deck. These recordings are
-   used for the card pictures (Stage 12), the detector (Stage 13) and a small
-   required file (Stage 14):
+   used for the card pictures (Stage 12) and the detector (Stage 13):
 
        .\.venv\Scripts\python.exe run.py record
 
@@ -491,24 +473,7 @@ manual job in the guide: you draw boxes around units on screenshots.
 
 
 ===============================================================================
- STAGE 14 - THE REQUIRED PLACEHOLDER FILE (temporary)
-===============================================================================
-FOLDER: icebow
-
-The live-play command still refuses to start unless an OLD-style model file
-(data\policy.pt) exists. When you play with S1 (Stage 15), S1 makes every play and
-every wait, so this file's quality does not matter - it just has to exist and match
-your deck. Make it from your Stage 11 recordings:
-
-    .\.venv\Scripts\python.exe run.py label --all
-    .\.venv\Scripts\python.exe run.py train-bc
-
-When it finishes, data\policy.pt exists. (This stage will disappear once the live
-code no longer needs the old file.)
-
-
-===============================================================================
- STAGE 15 - LET YOUR S1 MODEL PLAY
+ STAGE 14 - LET YOUR S1 MODEL PLAY
 ===============================================================================
 FOLDER: icebow
 
@@ -528,7 +493,7 @@ FOLDER: icebow
 
 
 ===============================================================================
- STAGE 16 - OPTIONAL EXTRAS
+ STAGE 15 - OPTIONAL EXTRAS
 ===============================================================================
 
 * MEASURE YOUR MODEL IN THE ENGINE (advanced). Instead of watching live matches,
@@ -572,8 +537,9 @@ Replays in Stage 6 never advance / time out:
   sandbox may be missing a fix the project owner uses locally - check the
   project's issue tracker.
 
-hf_to_crawl.py says a file is missing (Stage 4):
-  You skipped Stage 4 step 3 (the two empty stand-in files).
+hf_to_crawl.py says the replay folder is empty (Stage 4):
+  The download (Stage 4 step 1) has not finished. Run it again until it ends with
+  "DONE ok 52 bad 0".
 
 The dataset in Stage 8 has 0 "wait" rows:
   Stage 6 ran without --record-every 20. Delete the corpus folder and re-run
@@ -586,9 +552,6 @@ The dataset in Stage 8 has 0 "wait" rows:
 Training or the bot crashes with "CUDA error" or "out of memory":
   Something else is using the GPU or memory (the detector, another training run,
   the engine). Run one thing at a time.
-
-"no policy at data\policy.pt" when starting play:
-  Do Stage 14.
 
 diag says "no frame" / the captured picture is wrong:
   The game window moved, is minimized, or is covered. Redo Stage 11 steps 1-3.
@@ -611,14 +574,14 @@ The bot plays but ignores enemy units:
 ===============================================================================
 
  Replays -> engine -> dataset -> model   (FOLDER: repo root unless noted)
-   Git Bash:  bash scratchpad/gauntlet/L67/_hf_dl.sh
-   icebow\.venv\Scripts\python.exe scratchpad\gauntlet\L67\hf_to_crawl.py --hf scratchpad\gauntlet\L67\hf\replays --out scratchpad\gauntlet\ext\crawl_hf_icebow
+   icebow\.venv\Scripts\python.exe tools\hf_download.py
+   icebow\.venv\Scripts\python.exe tools\hf_to_crawl.py icebow
    (sandbox)  . .\runtime.env.ps1
    (sandbox)  .\.venv\Scripts\python.exe -m native_core.worker start --workers 1 --base-port 37031 --transport adb --avd-name royale_worker_api31
-   research\ext\cr-native-sandbox\.venv\Scripts\python.exe research\sandbox_tools\replay_batch.py --crawl scratchpad\gauntlet\ext\crawl_hf_icebow --tags scratchpad\gauntlet\ext\crawl_hf_icebow\tags.json --out scratchpad\gauntlet\ext\corpus_v6\icebow --record-every 20 --record-plays --port 37031 --determinism-every 0
+   research\ext\cr-native-sandbox\.venv\Scripts\python.exe research\sandbox_tools\replay_batch.py --crawl data\hf_crawl\icebow --tags data\hf_crawl\icebow\tags.json --out data\corpus_v6\icebow --record-every 20 --record-plays --port 37031 --determinism-every 0
    (sandbox)  .\.venv\Scripts\python.exe -m native_core.worker stop --workers 1 --base-port 37031 --stop-vm
-   icebow\.venv\Scripts\python.exe -m pipeline.dataset icebow --corpus scratchpad\gauntlet\ext\corpus_v6\icebow --out icebow\data\pipeline\s1_dataset_v6.npz
-   icebow\.venv\Scripts\python.exe -m pipeline.train_s1 icebow --seed 0 --epochs 20 --data icebow\data\pipeline\s1_dataset_v6.npz --tag v6lat --grid lattice --out-dir scratchpad\s1_runs
+   icebow\.venv\Scripts\python.exe -m pipeline.dataset icebow --corpus data\corpus_v6\icebow --out icebow\data\pipeline\s1_dataset_v6.npz
+   icebow\.venv\Scripts\python.exe -m pipeline.train_s1 icebow --seed 0 --epochs 20 --data icebow\data\pipeline\s1_dataset_v6.npz --tag v6lat --grid lattice --out-dir data\s1_runs
    icebow\.venv\Scripts\python.exe -m pipeline.eval_s1 icebow icebow\data\pipeline\s1_icebow_v6lat_s0.pt --data icebow\data\pipeline\s1_dataset_v6.npz
 
  Game set-up and live play   (FOLDER: icebow)
@@ -629,8 +592,6 @@ The bot plays but ignores enemy units:
    .\.venv\Scripts\python.exe run.py detect-frames --count 200
    .\.venv\Scripts\python.exe run.py detect-import --export <your-export.json>
    .\.venv\Scripts\python.exe tools\detect\train.py --model yolo11s.pt
-   .\.venv\Scripts\python.exe run.py label --all
-   .\.venv\Scripts\python.exe run.py train-bc
    .\.venv\Scripts\python.exe run.py play --student data\pipeline\s1_icebow_v6lat_s0.pt --student-gate-tau 0.27
 
  Help

@@ -1764,3 +1764,11 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - **Arms (a, paired vs the live rule's 52/100):** clean obs 92 (+40, CI 31-50, 40 vs 0); tau 0.5 68 (+16, CI 5-27, p .007); no affordability mask 63 (+11, CI 2-21, p .043; 52% of 22.8 attempted plays accepted = implicit waiting); no anti-stall 52 (0 discordant; never fires in the engine).
 - **Overlap (a):** of the old rule's 40 extra wins, clean obs also wins 34, tau 0.5 20, no mask 18.
 - **Owner:** live sessions use v6lat (seed not stated). **Asked:** E2 = v6aug_s1 in the engine at tau 0.27 and rate-matched 0.083 (~40 min + boot); E1 RL stays parked.
+
+## L67an (2026-09-12) -- four repo changes: CNN optional with --student, tools/, requirements, README + guide
+- **play.py (both decks):** no `data/policy.pt` is fine when a student is set -- neutral logits keep the masks valid, perception widths mirror the live policy_rl.pt (threat_dim 52), deck guard only for a real checkpoint; unchanged when a CNN exists. Live start without a CNN untested (needs the game window).
+- **tools/:** hf_download.py (stdlib, resumable), hf_to_crawl.py (deck arg, dedupe skipped when the owner's crawl is missing), build_degraded.py, merge_aug.py, 13 offline tests; old converter == new on a real 5,000-replay part; scratchpad originals deleted.
+- **Trap:** scratchpad/gauntlet/ext is NOT gitignored -> newcomer outputs go under repo-root data/.
+- **requirements:** ultralytics + polars, install CUDA torch first.
+- **Docs:** README status/pointer/tools row; Instructions.txt Stage 14 removed, Stage 4 on tools/, data\ outputs.
+- Suites: icebow 1,430 (1 pre-existing fail), hogeq 1,406 OK, tools 13 OK.

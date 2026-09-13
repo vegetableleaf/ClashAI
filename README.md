@@ -12,17 +12,20 @@ and its hand of cards.** From that it decides *which card to play and where to d
 > responsible for any lost accounts.
 
 > [!TIP]
-> **New here?** Read **[icebow/Instructions.txt](icebow/Instructions.txt)** first — a complete,
-> plain-English, from-scratch walkthrough of the original pipeline (prerequisites, install, screen
-> calibration, recording, training, playing). No coding experience needed.
+> **New here?** Read **[icebow/Instructions.txt](icebow/Instructions.txt)** first — a linear,
+> plain-English, from-scratch walkthrough of the current pipeline: pro replays → the real game engine
+> → the S1 model → live play, all trained on your own PC. No coding experience needed.
 
 > [!NOTE]
-> **The training pipeline is being rebuilt (September 2026).** The first version — a hand-written
-> simulator, a pixel CNN, reinforcement learning from win/loss — was measured over ~60 experiment
-> loops and did not improve the bot beyond its imitation starting point. The rebuild ("Square One",
-> below) trains from **professional replays** driven through the **real game engine**. Stage 0 is
-> done; stages 1–4 are in progress. The old pipeline still runs and is kept as the baseline every
-> new stage has to beat. Day-by-day state lives in [HANDOFF.md](HANDOFF.md) and
+> **Where the project stands (September 2026).** The first version — a hand-written simulator, a
+> pixel CNN, reinforcement learning from win/loss — was measured over ~60 experiment loops and did
+> not improve the bot beyond its imitation starting point, and is retired. The bot that plays live
+> now is **S1**: a model that copies **professional replays** re-driven through the **real game
+> engine**, reading the live screen through the same observation builder it trained on. The old CNN
+> is no longer needed to play. Measured in the engine against recorded opponents it never trained on,
+> the biggest remaining cost is **perception noise** (the detector's missed and misplaced units), and
+> a model trained on noisy boards recovers part of it. A search teacher (S3) was tried and made play
+> worse; engine RL is designed but parked. Day-by-day state lives in [HANDOFF.md](HANDOFF.md) and
 > [GAUNTLET_LOG.md](GAUNTLET_LOG.md).
 ---
 
@@ -34,6 +37,7 @@ and its hand of cards.** From that it decides *which card to play and where to d
 | **[`icebow/`](icebow/)** | **X-Bow control deck** — screen reader, detector, live play, original trainer | The live-play path (`play.py`, `replay_mine.py`, the YOLO detector) is what deploys a trained policy into the real game. |
 | **[`hogeq/`](hogeq/)** | **Hog / Earthquake deck** | Same tooling, second deck. Its crawled pro corpus and live path are separate; its models come from the shared `pipeline/`. |
 | [`research/`](research/) | Measurement ledgers, decision records, engine tools | `research/sandbox_tools/` drives pro replays through the game engine (`replay_drive.py`, `replay_batch.py`). |
+| [`tools/`](tools/) | Pro-replay download and dataset helpers | `hf_download.py` (HuggingFace pro replays), `hf_to_crawl.py` (pick one deck's matches for the engine), `build_degraded.py` + `merge_aug.py` (the noisy-board training set). See [`tools/README.md`](tools/README.md). |
 | [`trol/`](trol/) | Scripted bot — the first experiment | Hand-written rules plus a DQN scaffold. Kept for reference. |
 
 The deck folders are named after their decks. Rename them freely — nothing depends on the name.

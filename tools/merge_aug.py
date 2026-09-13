@@ -3,7 +3,10 @@
 Val rows stay clean and identical to the clean build, so checkpoint selection is the same rule v6lat used and the
 only variable is the extra degraded copies of the train rows.
 
-usage: python scratchpad/gauntlet/L67/merge_aug.py --clean <npz> --degraded <npz> --out <npz>
+Moved from scratchpad/gauntlet/L67/merge_aug.py; behaviour unchanged (it has no repo paths of its own).
+
+usage (from the repo root):
+  icebow\\.venv\\Scripts\\python.exe tools\\merge_aug.py --clean <npz> --degraded <npz> --out <npz>
 """
 from __future__ import annotations
 

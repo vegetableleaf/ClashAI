@@ -5,7 +5,10 @@ integer elixir, no king hp / opp elixir, conf redrawn, 0.45-tile position noise)
 Rows, splits and targets are identical to the clean build (the split is a crc32 of the tag; row order is the
 corpus file order), so a checkpoint's clean-vs-degraded scores are a paired comparison on the same states.
 
-usage: python scratchpad/gauntlet/L67/build_degraded.py icebow --out <npz> [--seed 0] [--limit N]
+Moved from scratchpad/gauntlet/L67/build_degraded.py; behaviour unchanged (only the repo-root lookup moved).
+
+usage (from the repo root):
+  icebow\\.venv\\Scripts\\python.exe tools\\build_degraded.py icebow --corpus <corpus dir> --out <npz> [--seed 0] [--limit N]
 """
 from __future__ import annotations
 
@@ -16,7 +19,7 @@ from pathlib import Path
 
 import numpy as np
 
-REPO = Path(__file__).resolve().parents[3]
+REPO = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO))
 
 from pipeline import dataset as ds                      # noqa: E402
