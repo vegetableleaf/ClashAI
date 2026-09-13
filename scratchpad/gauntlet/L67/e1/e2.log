@@ -1,0 +1,12 @@
+2026-09-12T20:46:58 e2 start
+2026-09-12T20:54:41 boot ok: === attempt 1 start 2026-09-12 20:47:01 | exit=1 | === attempt 2 start 2026-09-12 20:53:41 | exit=0
+2026-09-12T20:54:49 liveness ok on 38031
+2026-09-12T20:54:49 e2_repro_v6lat10 launched pid 63116: ckpt icebow\data\pipeline\s1_icebow_v6lat_s0.pt --entries 0:10
+2026-09-12T20:56:50 e2_repro_v6lat10 exited code=0 matches=10 errors=False
+2026-09-12T20:56:50 e2_v6aug_s1_tau027 launched pid 37960: ckpt icebow\data\pipeline\s1_icebow_v6aug_s1.pt --entries 0:100
+2026-09-12T21:20:17 e2_v6aug_s1_tau027 exited code=0 matches=100 errors=False
+2026-09-12T21:20:17 e2_v6aug_s1_tau0083 launched pid 68692: ckpt icebow\data\pipeline\s1_icebow_v6aug_s1.pt --entries 0:100 --tau 0.083
+2026-09-12T21:43:01 e2_v6aug_s1_tau0083 exited code=0 matches=100 errors=False
+2026-09-12T21:43:01 stopping engine services + VM
+2026-09-12T21:43:07 stop done; qemu left=0; free GB 4.9
+2026-09-12T21:43:07 ALL DONE

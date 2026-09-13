@@ -16,3 +16,8 @@
 2026-09-12T19:15:12 pid=44832 attrib arm2_tau05 port=38031 out=C:\Users\benpe\ClashBot\scratchpad\gauntlet\L67\e1\attrib\arm2_tau05\slot0
 2026-09-12T19:33:59 pid=30180 attrib arm3_no_mask port=38031 out=C:\Users\benpe\ClashBot\scratchpad\gauntlet\L67\e1\attrib\arm3_no_mask\slot0
 2026-09-12T19:54:35 pid=59436 attrib arm4_no_stall port=38031 out=C:\Users\benpe\ClashBot\scratchpad\gauntlet\L67\e1\attrib\arm4_no_stall\slot0
+2026-09-12T20:46:57 pid=52772 chain_e2.ps1
+2026-09-12T20:47:00 pid=29624 boot_4
+2026-09-12T20:54:49 pid=63116 e2 e2_repro_v6lat10 port=38031 out=C:\Users\benpe\ClashBot\scratchpad\gauntlet\L67\e1\attrib\e2_repro_v6lat10\slot0
+2026-09-12T20:56:50 pid=37960 e2 e2_v6aug_s1_tau027 port=38031 out=C:\Users\benpe\ClashBot\scratchpad\gauntlet\L67\e1\attrib\e2_v6aug_s1_tau027\slot0
+2026-09-12T21:20:17 pid=68692 e2 e2_v6aug_s1_tau0083 port=38031 out=C:\Users\benpe\ClashBot\scratchpad\gauntlet\L67\e1\attrib\e2_v6aug_s1_tau0083\slot0

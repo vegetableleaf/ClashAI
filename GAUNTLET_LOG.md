@@ -1772,3 +1772,11 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - **requirements:** ultralytics + polars, install CUDA torch first.
 - **Docs:** README status/pointer/tools row; Instructions.txt Stage 14 removed, Stage 4 on tools/, data\ outputs.
 - Suites: icebow 1,430 (1 pre-existing fail), hogeq 1,406 OK, tools 13 OK.
+
+## L67am (2026-09-12) -- E2: v6aug_s1 at tau 0.27 wins 74% vs v6lat 52% in the engine (live rule + live view); holds before ghost exhaustion
+- **Arm A (a):** v6aug_s1 tau 0.27: 74/100 vs v6lat 52 (+22 pp, CI 11-33, 29 vs 7, p 0.0003); 12.7 plays/min.
+- **Arm B (a):** tau 0.083: 45/100 (-7 pp, p 0.28); 0.27 beats 0.083 31 vs 2 on the same entries.
+- **Guard (a):** decided before the script ended v6lat 46.8% -> v6aug 66.2%; paired on 68 common entries 17 vs 6 (p ~0.035); after-script wins 15 -> 27 (half the gain).
+- **Chain (a):** same 100: v6lat 52 -> v6aug 74 -> clean obs 92.
+- **Risk:** v6aug's LIVE gate is shifted (5cs.98: 1.3% plays at tau 0.5 on live frames; 0.083 matched v6lat's live rate) -- live plays/min at 0.27 unmeasured.
+- **Proposed:** live run with `--student data\pipeline\s1_icebow_v6aug_s1.pt --student-gate-tau 0.27`, watch plays/min.

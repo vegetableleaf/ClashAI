@@ -1,0 +1,12 @@
+{"e1_eval": "eval", "policy": "live", "port": 38031, "tasks": 10, "already_done": 0, "grid": "lattice", "tau": 0.27}
+[e1_eval] 1/10 000YLL9RURY8 k=0 win 1-0 184.1s plays 34/40 wall 13.3s
+[e1_eval] 2/10 000YLLP2UC98 k=0 loss 1-3 82.8s plays 14/20 wall 5.9s
+[e1_eval] 3/10 000YLY2VQ92P k=0 loss 0-1 184.1s plays 35/42 wall 11.8s
+[e1_eval] 4/10 000YLYJULG22 k=0 loss 0-3 125.4s plays 17/20 wall 8.6s
+[e1_eval] 5/10 000YLYYCJ8VY k=0 win 1-0 184.1s plays 34/41 wall 13.9s
+[e1_eval] 6/10 002YLQQ0J90P k=0 loss 1-2 184.1s plays 36/38 wall 13.7s
+[e1_eval] 7/10 008YLL2CQVUP k=0 win 2-1 206.1s plays 43/47 wall 15.3s
+[e1_eval] 8/10 008YLQ2RJ00L k=0 win 3-0 113.4s plays 15/17 wall 8.3s
+[e1_eval] 9/10 009Y20G9UY9R k=0 loss 1-2 186.0s plays 35/42 wall 12.8s
+[e1_eval] 10/10 009Y2C2CJ08G k=0 win 2-1 190.2s plays 37/45 wall 12.8s
+{"DONE": {"new_matches": 10, "finished": "2026-09-12 20:56:49", "wall_s_mean": 11.6, "win": 5, "draw": 0, "loss": 5}}
