@@ -1,0 +1,3 @@
+{"e1_eval": "liveness", "policy": "live", "port": 38031, "tasks": 1, "already_done": 0, "grid": "floor", "tau": 0.27}
+{"LIVENESS": {"tag": "000YLL9RURY8", "k": 0, "slot": 0, "port": 38031, "mode": "liveness", "tick_after_reset": 90, "tick": 100, "towers": 6, "opening_hash_match": true, "ok": true, "wall_s": 0.11}}
+{"DONE": {"new_matches": 1, "finished": "2026-09-12 18:52:33", "wall_s_mean": 0.1, "ok": true}}

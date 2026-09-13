@@ -1757,3 +1757,10 @@ Two items queued in §6 for the next PPO run (elixir drift rule; per-card top-ce
 - **Controls (a, 60 paired):** model 58.3% vs none 0% (+58.3, p 6e-11) and rate-matched random 5% (+53.3, p 5e-10).
 - **Rule contrast (a, 100 paired):** tau 0.5 + no mask + no anti-stall + clean obs 89.0% vs live rule 52.0%: +37.0 pp (CI 26-48), 40 vs 3 discordant, p 3e-9; 10.13 vs 13.32 plays/min. Four bundled changes -- not attributed.
 - **Asked the owner:** run the 4-arm attribution screen (one change per arm) before E1.
+
+## L67al (2026-09-12) -- A1 attribution: observation noise costs the live rule 40 pp; tau 0.5 +16, no mask +11, anti-stall 0
+- **Traps fixed (a):** `Start-Process -Wait` waits for descendants (the emulator) -> the first script hung 23 min after a good boot; the in-script scorer's `2>&1` lost its output -> arms re-scored from Bash.
+- **Reproduction (a):** live rule on held-out 0:20 after a new boot = baseline_k0 exactly (20/20 identical outcome/end tick/crowns/plays).
+- **Arms (a, paired vs the live rule's 52/100):** clean obs 92 (+40, CI 31-50, 40 vs 0); tau 0.5 68 (+16, CI 5-27, p .007); no affordability mask 63 (+11, CI 2-21, p .043; 52% of 22.8 attempted plays accepted = implicit waiting); no anti-stall 52 (0 discordant; never fires in the engine).
+- **Overlap (a):** of the old rule's 40 extra wins, clean obs also wins 34, tau 0.5 20, no mask 18.
+- **Owner:** live sessions use v6lat (seed not stated). **Asked:** E2 = v6aug_s1 in the engine at tau 0.27 and rate-matched 0.083 (~40 min + boot); E1 RL stays parked.

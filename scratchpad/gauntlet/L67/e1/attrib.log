@@ -1,0 +1,29 @@
+2026-09-12T18:19:43 attrib start
+2026-09-12T18:51:44 STATE before kill: boot_2 exit=0 at 18:27:15 (attempt 2); chain stuck in Start-Process -Wait on _boot.ps1 (waits for descendants: the emulator); no liveness, no eval run, 0 matches; killing chain pid 68740 by exact PID (no tree kill)
+2026-09-12T18:51:46 chain pid 68740 stopped; VM left running
+2026-09-12T18:52:27 attrib (re)start
+2026-09-12T18:52:27 services already up -- boot skipped
+2026-09-12T18:52:34 liveness ok on 38031
+2026-09-12T18:52:34 repro_live20 launched pid 41588: --entries 0:20
+2026-09-12T18:56:33 repro_live20 exited code=0 matches=20 errors=False
+2026-09-12T18:56:33 score repro_live20: System.Management.Automation.RemoteException
+2026-09-12T18:56:33 score repro_live20: System.Management.Automation.RemoteException
+2026-09-12T18:56:33 arm1_clean_obs launched pid 4232: --entries 0:100 --obs clean
+2026-09-12T19:15:12 arm1_clean_obs exited code=0 matches=100 errors=False
+2026-09-12T19:15:12 score arm1_clean_obs: System.Management.Automation.RemoteException
+2026-09-12T19:15:12 score arm1_clean_obs: System.Management.Automation.RemoteException
+2026-09-12T19:15:12 arm2_tau05 launched pid 44832: --entries 0:100 --tau 0.5
+2026-09-12T19:33:59 arm2_tau05 exited code=0 matches=100 errors=False
+2026-09-12T19:33:59 score arm2_tau05: System.Management.Automation.RemoteException
+2026-09-12T19:33:59 score arm2_tau05: System.Management.Automation.RemoteException
+2026-09-12T19:33:59 arm3_no_mask launched pid 30180: --entries 0:100 --no-afford-mask
+2026-09-12T19:54:34 arm3_no_mask exited code=0 matches=100 errors=False
+2026-09-12T19:54:35 score arm3_no_mask: System.Management.Automation.RemoteException
+2026-09-12T19:54:35 score arm3_no_mask: System.Management.Automation.RemoteException
+2026-09-12T19:54:35 arm4_no_stall launched pid 59436: --entries 0:100 --stall-elixir none
+2026-09-12T20:13:54 arm4_no_stall exited code=0 matches=100 errors=False
+2026-09-12T20:13:54 score arm4_no_stall: System.Management.Automation.RemoteException
+2026-09-12T20:13:54 score arm4_no_stall: System.Management.Automation.RemoteException
+2026-09-12T20:13:54 stopping engine services + VM
+2026-09-12T20:14:00 stop done; qemu left=0; free GB 6.4
+2026-09-12T20:14:00 ALL DONE

@@ -9,3 +9,10 @@
 2026-09-12T17:35:21 pid=62552 ctrl_none60 port=38031 out=C:\Users\benpe\ClashBot\scratchpad\gauntlet\L67\e1\ctrl_none60\slot0
 2026-09-12T17:41:31 pid=44648 ctrl_random60 port=38031 out=C:\Users\benpe\ClashBot\scratchpad\gauntlet\L67\e1\ctrl_random60\slot0
 2026-09-12T17:51:19 pid=42948 cont66_100 port=38031 out=C:\Users\benpe\ClashBot\scratchpad\gauntlet\L67\e1\cont66_100\slot0
+2026-09-12T18:19:43 pid=68740 chain_attrib.ps1
+2026-09-12T18:52:26 pid=31112 chain_attrib.ps1 (relaunch)
+2026-09-12T18:52:34 pid=41588 attrib repro_live20 port=38031 out=C:\Users\benpe\ClashBot\scratchpad\gauntlet\L67\e1\attrib\repro_live20\slot0
+2026-09-12T18:56:33 pid=4232 attrib arm1_clean_obs port=38031 out=C:\Users\benpe\ClashBot\scratchpad\gauntlet\L67\e1\attrib\arm1_clean_obs\slot0
+2026-09-12T19:15:12 pid=44832 attrib arm2_tau05 port=38031 out=C:\Users\benpe\ClashBot\scratchpad\gauntlet\L67\e1\attrib\arm2_tau05\slot0
+2026-09-12T19:33:59 pid=30180 attrib arm3_no_mask port=38031 out=C:\Users\benpe\ClashBot\scratchpad\gauntlet\L67\e1\attrib\arm3_no_mask\slot0
+2026-09-12T19:54:35 pid=59436 attrib arm4_no_stall port=38031 out=C:\Users\benpe\ClashBot\scratchpad\gauntlet\L67\e1\attrib\arm4_no_stall\slot0
