@@ -30,6 +30,7 @@ import sys
 import time
 import zlib
 from collections import Counter
+from dataclasses import fields as dc_fields, replace as dc_replace
 from pathlib import Path
 from typing import Any, Optional, Sequence
 
@@ -42,8 +43,10 @@ if str(REPO) not in sys.path:
 from pipeline import vocab                                                        # noqa: E402
 from pipeline.dataset import _past                                                # noqa: E402
 from pipeline.e1_pool import POOL_V1, load_pool_v1, ours, select_split, sha256_file  # noqa: E402
-from pipeline.e1_view import live_view                                            # noqa: E402
+from pipeline.e1_view import Noise, live_view                                     # noqa: E402
 from pipeline.obs_contract import TICK_S, from_engine, load_deck, to_tokens       # noqa: E402
+
+NOISE_NAMES = tuple(f.name for f in dc_fields(Noise))    # e1_view.Noise's 8 component names
 
 TAU_LIVE = 0.27
 STALL_ELIXIR_LIVE = 9.0
@@ -72,6 +75,21 @@ def parse_shard(spec: str) -> tuple[int, int]:
     if not (n >= 1 and 0 <= i < n):
         raise SystemExit(f"bad --shard {spec!r}")
     return i, n
+
+
+def parse_noise_off(spec: str) -> Noise:
+    """``--noise-off``: comma list of e1_view.Noise component names to switch OFF; '' -> all ON (unchanged
+    """
+    names = [s.strip() for s in str(spec).split(",") if s.strip()]
+    bad = [n for n in names if n not in NOISE_NAMES]
+    if bad:
+        raise SystemExit(f"bad --noise-off name(s) {bad}, choose from {NOISE_NAMES}")
+    return dc_replace(Noise(), **{n: False for n in names})
+
+
+def noise_off_names(noise: Noise) -> list[str]:
+    """The switched-OFF component names, sorted -- what run.json / the header line record for --noise-off."""
+    return sorted(n for n in NOISE_NAMES if not getattr(noise, n))
 
 
 def parse_seeds(spec: str) -> list[int]:
@@ -224,7 +242,7 @@ def run_match(env, model, deck, entry: dict, k: int, cfg: dict) -> dict:
         if last_play_tick is None:
             last_play_tick = tick                            # match start = first decision (anti-stall clock)
         bs = from_engine(ep.compact_raw(state), side, deck, engine_deck=engine_deck, unmapped=unmapped)
-        view = live_view(bs, rng_obs, deck) if cfg["obs"] == "live" else bs
+        view = live_view(bs, rng_obs, deck, cfg["noise"]) if cfg["obs"] == "live" else bs
         n_deg += int(view.source == "degraded")
         tok, mask, sc = to_tokens(view, MAX_U)
         past = _past(done_plays, tick)
@@ -370,6 +388,8 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--stall-elixir", default=str(STALL_ELIXIR_LIVE), help="'none' disables anti-stall")
     ap.add_argument("--stall-seconds", type=float, default=STALL_SECONDS_LIVE)
     ap.add_argument("--obs", choices=("live", "clean"), default="live")
+    ap.add_argument("--noise-off", default="", help="comma list of live-view noise components to switch OFF "
+                    f"(no effect on --obs clean): {','.join(NOISE_NAMES)}")
     ap.add_argument("--decide-every", type=int, default=DECIDE_EVERY)
     ap.add_argument("--device", default="cpu")
     ap.add_argument("--threads", type=int, default=2)
@@ -386,6 +406,8 @@ def main(argv=None) -> int:
         raise SystemExit("--mode eval needs --ckpt")
     shard = parse_shard(a.shard)
     seeds = [0] if a.mode in ("parity", "liveness") else parse_seeds(a.seeds)
+    noise = parse_noise_off(a.noise_off)                  # validated up front, same as shard/seeds above
+    noise_off = noise_off_names(noise)
     stall_elixir = None if str(a.stall_elixir).lower() == "none" else float(a.stall_elixir)
     import torch
     torch.set_num_threads(max(1, int(a.threads)))
@@ -418,7 +440,7 @@ def main(argv=None) -> int:
     run = {"argv": sys.argv[1:] if argv is None else list(argv), "args": {k: str(v) for k, v in vars(a).items()},
            "slot": slot, "pool_sha256": pool_sha, "split_sha256": sha256_file(split_path),
            "n_split_entries": len(entries), "n_tasks": len(tasks), "resumed_done": len(done_keys),
-           "started": time.strftime("%Y-%m-%d %H:%M:%S")}
+           "noise_off": noise_off, "started": time.strftime("%Y-%m-%d %H:%M:%S")}
     deck = load_deck("icebow")
     model, minfo = None, {}
     if a.mode == "eval":
@@ -429,11 +451,12 @@ def main(argv=None) -> int:
     (out / (f"run_resume_{int(time.time())}.json" if a.resume else "run.json")).write_text(
         json.dumps(run, indent=1, default=str), encoding="utf-8")
     cfg = {"policy": a.policy, "tau": float(a.tau), "afford_mask": not a.no_afford_mask, "stall_elixir": stall_elixir,
-           "stall_seconds": float(a.stall_seconds), "obs": a.obs, "p_random": float(a.p_random),
+           "stall_seconds": float(a.stall_seconds), "obs": a.obs, "noise": noise, "p_random": float(a.p_random),
            "random_hand_only": bool(a.random_hand_only), "grid": minfo.get("grid", "floor"), "device": a.device,
            "decide_every": int(a.decide_every), "slot": slot, "port": int(a.port)}
     print(json.dumps({"e1_eval": a.mode, "policy": a.policy, "port": a.port, "tasks": len(tasks),
-                      "already_done": len(done_keys), "grid": cfg["grid"], "tau": cfg["tau"]}), flush=True)
+                      "already_done": len(done_keys), "grid": cfg["grid"], "tau": cfg["tau"],
+                      "noise_off": noise_off}), flush=True)
 
     from pipeline.e1_pool import PoolV1Env
     new = 0
