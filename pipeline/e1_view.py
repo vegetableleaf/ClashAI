@@ -43,8 +43,11 @@ class Noise:
     ``team``      False -> no side -> unknown(-1) and no wrong-team flip; a unit keeps its true engine side.
     ``unit_hp``   False -> units/spells keep their true engine ``hp_frac`` (``hp_known`` 1 in the tokens)
                   instead of degrade() dropping it and live_view re-filling it to 1.0.
-    ``scalars``   False -> exact (unfloored) my_elixir, the true opp_elixir (known), and the true king hp
-                  instead of degrade()'s floor/None/None and live_view's king-hp-1.0 fill.
+    ``my_elixir``  False -> exact (unfloored) my_elixir and ``my_elixir_exact`` unchanged, instead of
+                  degrade()'s floor + ``my_elixir_exact=False``. (O5 split of the old ``scalars`` switch.)
+    ``opp_elixir`` False -> the true opp_elixir (known) instead of degrade()'s None. (O5 split of ``scalars``.)
+    ``king_hp``    False -> the true king hp_frac throughout, instead of degrade() dropping it to None and
+                  live_view re-filling it to 1.0. (O5 split of ``scalars``.)
     ``deploying`` False -> keep whatever ``deploying`` the BoardState already carries, instead of dropping
                   it to None. NOTE: e1_eval's engine rows go through ``policy_io.compact_raw``, which
                   strips ``kind`` from every entity before ``from_engine`` -- so ``deploying`` is already
@@ -58,13 +61,15 @@ class Noise:
     position: bool = True
     team: bool = True
     unit_hp: bool = True
-    scalars: bool = True
+    my_elixir: bool = True
+    opp_elixir: bool = True
+    king_hp: bool = True
     deploying: bool = True
     conf: bool = True
 
 
 ALL_NOISE_OFF = Noise(recall=False, false_pos=False, position=False, team=False, unit_hp=False,
-                      scalars=False, deploying=False, conf=False)
+                      my_elixir=False, opp_elixir=False, king_hp=False, deploying=False, conf=False)
 
 
 # ------------------------------------------------------------------------------------------------------
@@ -146,12 +151,12 @@ def _degrade_switchable(bs: BoardState, rng: np.random.Generator, noise: Noise) 
 
     units = pass_(bs.units, with_fp=True)
     spells = pass_(bs.spells, with_fp=False)
-    towers = tuple((replace(t, hp_frac=None) if noise.scalars else t) if (t.kind == "king" and t.alive) else t
+    towers = tuple((replace(t, hp_frac=None) if noise.king_hp else t) if (t.kind == "king" and t.alive) else t
                    for t in bs.towers)
     return replace(bs, source="degraded", t_source="clock",
-                   my_elixir=float(int(bs.my_elixir)) if noise.scalars else bs.my_elixir,
-                   my_elixir_exact=bs.my_elixir_exact and not noise.scalars,
-                   opp_elixir=bs.opp_elixir if not noise.scalars else None,
+                   my_elixir=float(int(bs.my_elixir)) if noise.my_elixir else bs.my_elixir,
+                   my_elixir_exact=bs.my_elixir_exact and not noise.my_elixir,
+                   opp_elixir=bs.opp_elixir if not noise.opp_elixir else None,
                    towers=towers, units=tuple(units), spells=tuple(spells))
 
 
@@ -171,6 +176,6 @@ def live_view(bs: BoardState, rng: np.random.Generator, deck: Deck, noise: Optio
     allowed = mine_classes(deck)
     units = tuple(_live_unit(u, allowed, noise) for u in d.units)
     spells = tuple(_live_unit(u, allowed, noise) for u in d.spells)
-    towers = tuple(replace(t, hp_frac=KING_HP_LIVE) if (noise.scalars and t.kind == "king" and t.alive) else t
+    towers = tuple(replace(t, hp_frac=KING_HP_LIVE) if (noise.king_hp and t.kind == "king" and t.alive) else t
                    for t in d.towers)
     return replace(d, units=units, spells=spells, towers=towers)

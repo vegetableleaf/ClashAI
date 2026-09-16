@@ -46,7 +46,9 @@ from pipeline.e1_pool import POOL_V1, load_pool_v1, ours, select_split, sha256_f
 from pipeline.e1_view import Noise, live_view                                     # noqa: E402
 from pipeline.obs_contract import TICK_S, from_engine, load_deck, to_tokens       # noqa: E402
 
-NOISE_NAMES = tuple(f.name for f in dc_fields(Noise))    # e1_view.Noise's 8 component names
+NOISE_NAMES = tuple(f.name for f in dc_fields(Noise))    # e1_view.Noise's 10 component names
+NOISE_ALIASES = {"scalars": ("my_elixir", "opp_elixir", "king_hp")}   # O5: pre-split spelling, kept for old
+                                                                        # CLI invocations and recorded run.json
 
 TAU_LIVE = 0.27
 STALL_ELIXIR_LIVE = 9.0
@@ -78,12 +80,17 @@ def parse_shard(spec: str) -> tuple[int, int]:
 
 
 def parse_noise_off(spec: str) -> Noise:
-    """``--noise-off``: comma list of e1_view.Noise component names to switch OFF; '' -> all ON (unchanged
+    """``--noise-off``: comma list of e1_view.Noise component names to switch OFF, plus the O5 alias
+    ``scalars`` (the pre-split name) which expands to ``my_elixir,opp_elixir,king_hp`` -- so old invocations
+    and recorded run.json ``"noise_off": ["scalars"]`` still parse the same way; '' -> all ON (unchanged
     """
-    names = [s.strip() for s in str(spec).split(",") if s.strip()]
+    raw = [s.strip() for s in str(spec).split(",") if s.strip()]
+    names: list[str] = []
+    for n in raw:
+        names.extend(NOISE_ALIASES.get(n, (n,)))
     bad = [n for n in names if n not in NOISE_NAMES]
     if bad:
-        raise SystemExit(f"bad --noise-off name(s) {bad}, choose from {NOISE_NAMES}")
+        raise SystemExit(f"bad --noise-off name(s) {bad}, choose from {NOISE_NAMES} (or alias 'scalars')")
     return dc_replace(Noise(), **{n: False for n in names})
 
 
@@ -389,7 +396,8 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--stall-seconds", type=float, default=STALL_SECONDS_LIVE)
     ap.add_argument("--obs", choices=("live", "clean"), default="live")
     ap.add_argument("--noise-off", default="", help="comma list of live-view noise components to switch OFF "
-                    f"(no effect on --obs clean): {','.join(NOISE_NAMES)}")
+                    f"(no effect on --obs clean): {','.join(NOISE_NAMES)} (plus alias 'scalars' = "
+                    f"{','.join(NOISE_ALIASES['scalars'])})")
     ap.add_argument("--decide-every", type=int, default=DECIDE_EVERY)
     ap.add_argument("--device", default="cpu")
     ap.add_argument("--threads", type=int, default=2)
