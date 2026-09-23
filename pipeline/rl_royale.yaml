@@ -1,0 +1,68 @@
+# pipeline/rl_royale.py defaults -- RL for the icebow S1 policy on RoyaleSim.
+# Any key can be overridden on the command line as key=value (YAML-typed), e.g. max_updates=1 E=8.
+# Paths are relative to the repo root.
+
+# ---- inputs
+init: icebow/data/pipeline/s1_icebow_v6aug_s1.pt   # plan header: RL is initialised from v6aug (grid lattice, epoch 12)
+pool: icebow/data/ghost_pool/pool_env_v1.jsonl     # E1 2.2: pool v1 + its frozen split (sha checked at startup)
+proagree_data: icebow/data/pipeline/s1_dataset.npz # plan "Measured facts" + diff 3: v3 VAL clean (split == 1)
+proagree_rows: 0            # 0 = every VAL row (13,761); the smoke uses 1,000 (plan "Launch")
+
+# ---- batch shape (plan diff 1 + E1 3.2)
+E: 16                       # entries per update, uniform, no repeat within an update (plan diff 1)
+G: 4                        # rollouts per entry = the leave-one-out group (E1 3.2)
+adv_clip: 2.0               # |A| <= 2, no std normalisation (E1 3.2)
+
+# ---- actors (plan diff 5)
+n_actors: 3                 # actor processes (torch.multiprocessing, spawn)
+in_flight: 16               # matches in flight per actor, one shared forward per round (e1_eval.run_batch)
+actor_device: cuda          # plan diff 5
+actor_threads: 2            # torch CPU threads per actor (the box is shared; e1_eval --threads default)
+actor_timeout_s: 3600       # one actor job slower than this counts as a crash (restart once, then stop)
+
+T: 0.5                      # temperature of the gate / card / cell sampling (E1 3.3, plan default)
+tau: 0.27
+afford_mask: true           # allowed = in hand AND cost <= floored elixir (E1 2.3)
+stall_elixir: 9             # anti-stall: elixir >= 9 ... (E1 2.3)
+stall_seconds: 12           # ... and >= 12 s of engine time since my last accepted play (E1 2.3)
+obs: live                   # live_view observation (E1 3.1)
+decide_every: 10            # engine ticks per decision = 0.5 s (E1 2.3)
+
+# ---- learner (plan "Learner" = E1 3.2, 3.4, 3.5)
+learner_device: cuda        # plan diff 5
+lr: 1.0e-5                  # Adam (E1 3.5)
+grad_clip: 0.5              # grad-norm clip (E1 3.5)
+ppo_epochs: 2               # E1 3.5
+minibatch: 256              # decisions per minibatch (E1 3.5)
+clip: 0.2                   # PPO ratio clip (E1 3.2)
+beta0: 0.3                  # KL coefficient start (E1 3.4)
+beta_min: 0.03              # adaptive-beta clamp (E1 3.4)
+beta_max: 3.0               # adaptive-beta clamp (E1 3.4)
+kl_target: 0.10             # kappa on KL_cell (E1 3.4). OWNER-CONTROLLED: the trainer never changes it (plan diff 4)
+seed: 0                     # entry sampling + minibatch order
+
+# ---- schedule
+max_updates: 1000           # the run's update budget
+save_every: 5               # <run>_u{NNNN}.pt every N updates, never overwritten (E1 3.6); _latest.pt every update
+proagree_every: 5           # pro agreement on v3 VAL clean every N updates (plan diff 3, E1 3.6)
+screen_every: 10            # held-out RoyaleSim screen every N updates (plan diff 2)
+screen_entries: 0           # 0 = every RoyaleSim-loadable held-out entry (58); the smoke uses 8
+screen_seeds: [0, 1, 2]     # eval seeds k per entry (174 matches); lead ruling L68 repair: one seed's SE ~8 pp
+
+# ---- stop rules (plan diff 3/6 + E1 3.6 / 4.2); each needs stop_consecutive updates unless marked single
+stop_consecutive: 2         # E1 3.6 "each needs 2 consecutive updates unless marked"
+plays_lo: 0.6               # E1 3.6 rule 1: behaviour plays/min < 0.6x the update-0 value
+plays_hi: 1.6               # E1 3.6 rule 1: ... or > 1.6x
+kl_cell_stop: 0.5           # E1 3.6 rule 2: KL_cell > 0.5 nats with beta at its max clamp
+kl_gate_stop: 0.1           # E1 3.6 rule 2: KL_gate > 0.1 with beta at its max clamp
+tripwire_cell_pp: 1.0       # plan diff 3: STOP if cell < init - 1.0 pp AND latest screen paired delta <= 0 (single)
+hard_cell_pp: 3.0           # plan diff 3 HARD stop: cell < init - 3.0 pp (single)
+hard_card_pp: 3.0           # plan diff 3 HARD stop: card < init - 3.0 pp (single)
+hard_gate_bal: 0.05         # plan diff 3 HARD stop: gate_bal_acc < init - 0.05 (single)
+screen_stop_pp: -10.0       # E1 3.6 rule 4 + lead ruling: entry-clustered paired delta <= -10 pp AND its 95% CI
+                            # upper bound < 0 (single)
+ema_updates: 5              # EMA span of the exploit monitors (E1 3.6 "EMA over 5 updates")
+outlived_pp: 15.0           # E1 4.2.1: outlived-the-script win share EMA > update-0 value + 15 pp
+low_delivered_pp: 10.0      # E1 4.2.2: <= 10-ghost-delivered win share EMA > update-0 value + 10 pp
+ghost_refusal_x: 2.0        # E1 4.2.3: ghost REFUSED per match EMA > max(2x, +1.0) of the update-0 value (rl_gate's
+                            # bound; undelivered = monitor only)

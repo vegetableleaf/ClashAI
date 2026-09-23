@@ -47,10 +47,10 @@ if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
 from pipeline import vocab                                                        # noqa: E402
-from pipeline.dataset import _past                                                # noqa: E402
+from pipeline.dataset import PAST_K, _past                                        # noqa: E402
 from pipeline.e1_pool import POOL_V1, load_pool_v1, ours, select_split, sha256_file  # noqa: E402
 from pipeline.e1_view import Noise, live_view                                     # noqa: E402
-from pipeline.obs_contract import TICK_S, from_engine, load_deck, to_tokens       # noqa: E402
+from pipeline.obs_contract import F as TOK_F, S as SC_S, TICK_S, from_engine, load_deck, to_tokens  # noqa: E402
 
 NOISE_NAMES = tuple(f.name for f in dc_fields(Noise))    # e1_view.Noise's 10 component names
 NOISE_ALIASES = {"scalars": ("my_elixir", "opp_elixir", "king_hp")}   # O5: pre-split spelling, kept for old
@@ -351,7 +351,8 @@ class Match:
         self.engine_deck, self.deck_index_of_slot, self.costs = _slot_maps(env, deck, entry)
         self.tag = str(entry["tag"])
         obs_s = cfg.get("obs_seed")                          # RL actor override; default = today's per-(tag,k) seed
-        self.rng_obs = np.random.default_rng(obs_s if obs_s is not None else obs_seed(self.tag, k))
+        self.obs_seed_used = int(obs_s) if obs_s is not None else obs_seed(self.tag, k)   # recorded by result()
+        self.rng_obs = np.random.default_rng(self.obs_seed_used)
         self.rng_rand = random.Random(random_seed(self.tag, k))
         self.rng_behave = np.random.default_rng(
             behave_seed(self.tag, int(cfg.get("rollout_index", 0)), int(cfg.get("update", 0))))
@@ -447,7 +448,9 @@ class Match:
                 self.done_plays.append((tick, d["slot"], x, y))
                 self.last_play_tick = tick
             else:
-                nm = ep.RESULT_CODE_NAMES.get(code, f"native_{code}")
+                # policy_io's table, which differs from PoolV1Env's _code_names at 13 and 22 (names unchanged).
+                names = env._code_names if type(env).__name__ == "RoyalePoolEnv" else ep.RESULT_CODE_NAMES
+                nm = names.get(code, f"native_{code}")
                 if r.get("placement_valid") is False:
                     nm = f"{nm}/{r.get('placement_reason')}"
                 self.refuse[nm] += 1
@@ -470,7 +473,7 @@ class Match:
             "tag": tag, "k": int(k), "slot": cfg["slot"], "port": cfg["port"], "split": entry.get("split"),
             "entry_index": cfg["entry_index"], "policy": cfg["policy"], "obs": cfg["obs"], "tau": cfg["tau"],
             "afford_mask": cfg["afford_mask"], "stall_elixir": cfg["stall_elixir"], "p_random": cfg["p_random"],
-            "obs_seed": obs_seed(tag, k), "side": self.side,
+            "obs_seed": self.obs_seed_used, "side": self.side,
             "outcome": outcome, "crowns_for": int(crowns[0]), "crowns_against": int(crowns[1]),
             "end_tick": end, "seconds": round(end * TICK_S, 1), "terminated": bool(env.terminated),
             "termination_reason": (env.eng.last_episode or {}).get("termination_reason"),
@@ -496,9 +499,11 @@ class Match:
 
     def _traj_arrays(self) -> dict:
         """cfg["record"]: this match's ``traj`` rows stacked into numpy arrays (rl_plan.md 3.3's per-decision
-        list). Empty (0 decisions recorded -- e.g. cfg["record"] with a non-sample policy) -> empty arrays."""
+        list). Empty (0 decisions recorded -- e.g. cfg["record"] with a non-sample policy) -> empty arrays that keep
+        each key's trailing shape (tok (0, 64, F), mask (0, 64), sc (0, S), past (0, PAST_K, 4), allowed (0, 8))."""
         tj = self.traj
-        stack = (lambda k: np.stack([t[k] for t in tj])) if tj else (lambda k: np.zeros((0,), dtype=np.float32))
+        empty = {"tok": (MAX_U, TOK_F), "mask": (MAX_U,), "sc": (SC_S,), "past": (PAST_K, 4), "allowed": (N_SLOTS,)}
+        stack = (lambda k: np.stack([t[k] for t in tj])) if tj else (lambda k: np.zeros((0, *empty[k]), dtype=np.float32))
         scalar = (lambda k, dt: np.array([t[k] for t in tj], dtype=dt))
         return {"tok": stack("tok").astype(np.float32), "mask": stack("mask").astype(bool),
                 "sc": stack("sc").astype(np.float32), "past": stack("past").astype(np.float32),
@@ -537,7 +542,9 @@ def run_batch(make_env, model, deck, jobs, cfg: dict, n: int, on_result, on_skip
     """
     across all of them (L68: the S1 forward is 84% of a sequential RoyaleSim match; L68e: the decide itself is now
     batched too -- ``live_decide_batch`` / ``sample_decide_batch``, one ``cell_logits`` call per round for every
-    playing row, not one per match). ``jobs`` yields (entry_index, entry, k); ``on_result(line)`` gets each finished
+    playing row, not one per match). ``jobs`` yields (entry_index, entry, k) or (entry_index, entry, k, overrides):
+    ``overrides`` is a dict of per-match cfg keys (the RL actor's rollout_index / update / obs_seed) merged over
+    ``cfg`` for that match only; ``on_result(line)`` gets each finished
     match's ``Match.result()``; an exception type in ``skip`` raised by reset goes to ``on_skip(entry, exc)``.
     Each row's decision depends only on its own tensors and (for ``sample``) its own ``Match.rng_behave``, so a
     match's record does not depend on its batch-mates (float noise in the shared forward/decide aside, L68)."""
@@ -550,10 +557,11 @@ def run_batch(make_env, model, deck, jobs, cfg: dict, n: int, on_result, on_skip
             job = next(jobs, None)
             if job is None:
                 return
-            i, entry, k = job
+            i, entry, k, *rest = job
+            over = dict(rest[0]) if rest and rest[0] else {}
             env = free.pop()
             try:
-                m = Match(env, deck, entry, k, dict(cfg, entry_index=i))
+                m = Match(env, deck, entry, k, {**cfg, **over, "entry_index": i})
             except skip as exc:
                 free.append(env)
                 if on_skip:
