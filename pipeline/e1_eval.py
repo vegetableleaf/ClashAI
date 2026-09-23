@@ -11,6 +11,11 @@
   counted, never retried); ``policy_io.cell_to_engine`` -> ``env.eng.act``.
   Match start for the anti-stall clock = the first decision tick (tick 90, when the engine first accepts deploys).
 Overrides for the section-5cs.66 continuity rule: ``--tau 0.5 --no-afford-mask --stall-elixir none --obs clean``.
+rule for RL rollouts, exact log-probs. gate: ``p_b = sigmoid((z_gate - logit(tau)) / T)``, ``g ~ Bernoulli(p_b)``
+(skipped, forced play, when anti-stall fires); card: ``softmax(card_logits_masked_to_allowed / T)``; cell:
+``softmax(cell_logits(enc, c) / T)`` over all 2,304 cells. ``T`` -> cfg key ``T`` (``--sample-T``, default 0.5); as
+``crc32(f"{tag}:behaviour:{rollout_index}:{update}")`` (cfg keys ``rollout_index``/``update``, default 0). Per-decision
+trajectory recorded when ``cfg["record"]`` is truthy, stacked into ``Match.result()["traj"]``.
 Controls: ``--policy none`` (never plays; the model still scores p), ``--policy random --p-random P`` (state-blind: with
 prob P per decision a uniformly random ALLOWED slot -- ``--random-hand-only`` for policy_io's hand-only rule -- at a
 uniformly random own-half cell).
@@ -25,6 +30,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import random
 import sys
 import time
@@ -57,6 +63,7 @@ DECIDE_EVERY = 10
 MAX_U = 64
 N_SLOTS = 8
 GRID_X, GRID_Y = 36, 64                       # model_v3.GRID_X / GRID_Y (not imported: model_v3 pulls torch)
+N_CELLS = GRID_X * GRID_Y                     # 2,304 half-tile cells (model_v3.N_CELLS)
 SCRIPT_MARGIN_TICKS = 200                     # design 4.2.1: "outlived the script" = end > last ghost tick + 200
 SLOT_OF_PORT = {38031: 0, 38032: 1, 37031: 0, 37032: 1}
 
@@ -70,6 +77,11 @@ def obs_seed(tag: str, k: int) -> int:
 
 def random_seed(tag: str, k: int) -> int:
     return zlib.crc32(f"{tag}:random:{k}".encode())
+
+
+def behave_seed(tag: str, rollout_index: int, update: int) -> int:
+    """rl_plan.md 'Behaviour policy': one RNG per match for the sample policy's draws."""
+    return zlib.crc32(f"{tag}:behaviour:{rollout_index}:{update}".encode())
 
 
 def parse_shard(spec: str) -> tuple[int, int]:
@@ -207,6 +219,107 @@ def random_decide(rng: random.Random, allowed: np.ndarray, p_random: float) -> d
     return {"play": True, "slot": slot, "cell": cell, "why": "random"}
 
 
+def live_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.ndarray, *, tau: float,
+                       device: str = "cpu") -> list[dict]:
+    """``live_decide`` over every row of a shared forward at once. The card argmax and the p-vs-tau compare are
+    elementwise (bit-identical to a per-row loop); ONE ``cell_logits`` call covers every row that plays, so this
+    is O(1) GPU calls per round, not O(matches) (L68e)."""
+    import torch
+    B = allowed.shape[0]
+    p = np.asarray(p, dtype=np.float64)
+    any_allowed = allowed.any(axis=1)
+    out: list[Optional[dict]] = [None] * B
+    with torch.no_grad():
+        logits = heads["card"].clone()
+        logits = logits.masked_fill(~torch.from_numpy(allowed).to(logits.device), float("-inf"))
+        slot = logits.argmax(dim=-1).cpu().numpy()
+        play = any_allowed & ((p > tau) | stalled)
+        play_idx = [r for r in range(B) if play[r]]
+        cell = np.full(B, -1, dtype=np.int64)
+        if play_idx:
+            idx_t = torch.tensor(play_idx, device=logits.device)
+            sub_enc = {k: v[idx_t] for k, v in enc.items()}
+            slot_t = torch.tensor(slot[play_idx], device=logits.device)
+            cell[play_idx] = model.cell_logits(sub_enc, slot_t).argmax(dim=-1).cpu().numpy()
+    for r in range(B):
+        if not any_allowed[r]:
+            out[r] = {"play": False, "slot": -1, "cell": -1, "why": "no_affordable"}
+        elif not play[r]:
+            out[r] = {"play": False, "slot": int(slot[r]), "cell": -1, "why": "wait"}
+        else:
+            out[r] = {"play": True, "slot": int(slot[r]), "cell": int(cell[r]),
+                      "why": "stall" if p[r] <= tau else "gate"}
+    return out
+
+
+def sample_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.ndarray, matches: Sequence,
+                         cfg: dict) -> list[dict]:
+    """rl_plan.md 'Behaviour policy', batched: the tensor work (masked softmaxes, ONE ``cell_logits`` call for
+    every playing row) is shared across the round; each row's Bernoulli/categorical draws come from ITS OWN
+    ``matches[r].rng_behave``, so a row's sampled action never depends on which other matches share the round.
+    ``matches[r]`` needs only a ``.rng_behave`` (an ``np.random.Generator``); ``run_batch`` passes ``Match``
+    instances, the single-row caller (``Match.decide_row``) passes ``[self]``.
+    allowed, stalled, gate_sampled, lp_gate, lp_card, lp_cell (float64), p_gate (untempered sigmoid), T."""
+    import torch
+    tau, T = float(cfg["tau"]), float(cfg.get("T", 0.5))
+    B = allowed.shape[0]
+    p = np.asarray(p, dtype=np.float64)
+    any_allowed = allowed.any(axis=1)
+    gate_sampled = any_allowed & ~stalled                      # forced (stalled) or impossible (no card) -> not sampled
+    logit_tau = math.log(tau / (1.0 - tau))
+    z_gate = heads["gate"].detach().cpu().numpy().astype(np.float64)
+    with np.errstate(over="ignore"):
+        p_b = 1.0 / (1.0 + np.exp(-(z_gate - logit_tau) / T))
+    g = np.zeros(B, dtype=bool)
+    lp_gate = np.zeros(B, dtype=np.float64)
+    for r in range(B):
+        if gate_sampled[r]:
+            g[r] = matches[r].rng_behave.random() < p_b[r]
+            lp_gate[r] = math.log(p_b[r] if g[r] else 1.0 - p_b[r])
+    play = any_allowed & (stalled | g)
+    slot = np.full(B, -1, dtype=np.int64)
+    cell = np.full(B, -1, dtype=np.int64)
+    lp_card = np.zeros(B, dtype=np.float64)
+    lp_cell = np.zeros(B, dtype=np.float64)
+    with torch.no_grad():
+        card_logits = heads["card"].clone()
+        card_logits = card_logits.masked_fill(~torch.from_numpy(allowed).to(card_logits.device), float("-inf"))
+        card_probs = torch.softmax(card_logits.double() / T, dim=-1).cpu().numpy()          # [B, 8]
+        for r in range(B):
+            if play[r]:
+                probs = card_probs[r]
+                c = int(matches[r].rng_behave.choice(N_SLOTS, p=probs))
+                slot[r] = c
+                lp_card[r] = math.log(probs[c])
+        play_idx = [r for r in range(B) if play[r]]
+        if play_idx:
+            idx_t = torch.tensor(play_idx, device=card_logits.device)
+            sub_enc = {k: v[idx_t] for k, v in enc.items()}
+            slot_t = torch.tensor(slot[play_idx], device=card_logits.device)
+            cell_logits = model.cell_logits(sub_enc, slot_t)
+            cell_probs = torch.softmax(cell_logits.double() / T, dim=-1).cpu().numpy()      # [len(play_idx), 2304]
+            for j, r in enumerate(play_idx):
+                probs = cell_probs[j]
+                x = int(matches[r].rng_behave.choice(N_CELLS, p=probs))
+                cell[r] = x
+                lp_cell[r] = math.log(probs[x])
+    out: list[Optional[dict]] = [None] * B
+    for r in range(B):
+        if not any_allowed[r]:
+            why = "no_affordable"
+        elif not play[r]:
+            why = "wait"
+        elif stalled[r]:
+            why = "stall"
+        else:
+            why = "gate"
+        out[r] = {"play": bool(play[r]), "slot": int(slot[r]), "cell": int(cell[r]), "why": why,
+                  "allowed": allowed[r].copy(), "stalled": bool(stalled[r]), "gate_sampled": bool(gate_sampled[r]),
+                  "lp_gate": float(lp_gate[r]), "lp_card": float(lp_card[r]), "lp_cell": float(lp_cell[r]),
+                  "p_gate": float(p[r]), "T": T}
+    return out
+
+
 # ------------------------------------------------------------------------------------------------------
 # one match
 # ------------------------------------------------------------------------------------------------------
@@ -237,14 +350,18 @@ class Match:
         self.side, self.mirror = env.side, env._mirror
         self.engine_deck, self.deck_index_of_slot, self.costs = _slot_maps(env, deck, entry)
         self.tag = str(entry["tag"])
-        self.rng_obs = np.random.default_rng(obs_seed(self.tag, k))
+        obs_s = cfg.get("obs_seed")                          # RL actor override; default = today's per-(tag,k) seed
+        self.rng_obs = np.random.default_rng(obs_s if obs_s is not None else obs_seed(self.tag, k))
         self.rng_rand = random.Random(random_seed(self.tag, k))
+        self.rng_behave = np.random.default_rng(
+            behave_seed(self.tag, int(cfg.get("rollout_index", 0)), int(cfg.get("update", 0))))
         self.unmapped: set = set()
         self.done_plays: list[tuple[int, int, float, float]] = []
         self.last_play_tick: Optional[int] = None
         self.n_dec = self.n_deg = self.n_att = self.n_acc = self.n_stall = self.n_noaff = 0
         self.p_gates: list[float] = []
         self.plays: list[dict] = []
+        self.traj: list[dict] = []                           # cfg["record"]: per-decision rows, see result()
         self.refuse: Counter = Counter()
         self.mix_att: Counter = Counter()
         self.mix_acc: Counter = Counter()
@@ -261,28 +378,58 @@ class Match:
         view = live_view(bs, self.rng_obs, self.deck, cfg["noise"]) if cfg["obs"] == "live" else bs
         self.n_deg += int(view.source == "degraded")
         tok, mask, sc = to_tokens(view, MAX_U)
+        past = _past(self.done_plays, tick)
         self._cur = (tick, bs, view)
-        return tok, mask, sc, _past(self.done_plays, tick)
+        self._obs = (tok, mask, sc, past)                    # kept for cfg["record"] (see apply())
+        return tok, mask, sc, past
+
+    def pre(self, hand) -> tuple[float, np.ndarray, bool]:
+        """
+        sample; random/none use their own affordability rule, unchanged)."""
+        cfg, policy = self.cfg, self.cfg["policy"]
+        tick, bs, view = self._cur
+        el_int = float(int(view.my_elixir))
+        live_like = policy in ("live", "sample")
+        allowed = allowed_slots(hand, self.costs, el_int,
+                                afford_mask=cfg["afford_mask"] if live_like else (not cfg["random_hand_only"]))
+        stalled = anti_stall(el_int, tick, self.last_play_tick, cfg["stall_elixir"], cfg["stall_seconds"]) \
+            if live_like else False
+        return el_int, allowed, stalled
+
+    def decide_row(self, model, enc, heads, p: float, hand) -> dict:
+        """(a) + the per-policy decide, on ONE row's precomputed heads -- the sequential path, and ``run_batch``'s
+        fallback for policies not worth batching (random, none)."""
+        cfg, policy, device = self.cfg, self.cfg["policy"], self.cfg["device"]
+        el_int, allowed, stalled = self.pre(hand)
+        if policy == "live":
+            return live_decide(model, enc, heads, p, allowed, tau=cfg["tau"], stalled=stalled, device=device)
+        if policy == "sample":
+            return sample_decide_batch(model, enc, heads, [p], allowed[None, :], np.array([stalled]), [self], cfg)[0]
+        if policy == "random":
+            return random_decide(self.rng_rand, allowed, cfg["p_random"])
+        return {"play": False, "slot": -1, "cell": -1, "why": "none"}
 
     def step(self, model, enc, heads, p: float, hand) -> None:
+        """sequential path: (a) + decide + (b), unchanged behaviour for every policy (run_match)."""
+        self.apply(p, self.decide_row(model, enc, heads, p, hand))
+
+    def apply(self, p: float, d: dict) -> None:
+        """(b): record p_gate / traj, act on the engine, advance -- the tail of the old ``step`` (L68), unchanged."""
         cfg, env, ep = self.cfg, self.env, self.ep
         tick, bs, view = self._cur
-        policy, grid, device = cfg["policy"], cfg["grid"], cfg["device"]
+        grid = cfg["grid"]
         self.n_dec += 1
         self.p_gates.append(p)
-        el_int = float(int(view.my_elixir))
-        allowed = allowed_slots(hand, self.costs, el_int, afford_mask=cfg["afford_mask"] if policy == "live" else
-                                (not cfg["random_hand_only"]))
-        if policy == "live":
-            st = anti_stall(el_int, tick, self.last_play_tick, cfg["stall_elixir"], cfg["stall_seconds"])
-            d = live_decide(model, enc, heads, p, allowed, tau=cfg["tau"], stalled=st, device=device)
-        elif policy == "random":
-            d = random_decide(self.rng_rand, allowed, cfg["p_random"])
-        else:
-            d = {"play": False, "slot": -1, "cell": -1, "why": "none"}
+        if cfg.get("record") and "lp_gate" in d:              # only the sample decide dicts carry these keys
+            tok, mask, sc, past = self._obs
+            self.traj.append({"tok": tok, "mask": mask, "sc": sc, "past": past, "allowed": d["allowed"],
+                              "stalled": d["stalled"], "gate_sampled": d["gate_sampled"], "played": d["play"],
+                              "slot": d["slot"], "cell": d["cell"], "lp_gate": d["lp_gate"], "lp_card": d["lp_card"],
+                              "lp_cell": d["lp_cell"], "p_gate": d["p_gate"], "T": d["T"]})
         if d["why"] == "no_affordable":
             self.n_noaff += 1
         if d["play"]:
+            el_int = float(int(view.my_elixir))
             self.n_att += 1
             self.n_stall += int(d["why"] == "stall")
             x, y = ep.cell_center(d["cell"], grid)
@@ -344,7 +491,23 @@ class Match:
             "frac_gt_tau": round(float((pg > cfg["tau"]).mean()), 4) if len(pg) else None,
             "real_outcome": entry.get("real_outcome"), "s1_split": entry.get("s1_split"), "group": entry.get("group"),
             "unmapped": sorted(self.unmapped), "wall_s": round(time.perf_counter() - self.t0, 1),
+            **({"traj": self._traj_arrays()} if cfg.get("record") else {}),
         }
+
+    def _traj_arrays(self) -> dict:
+        """cfg["record"]: this match's ``traj`` rows stacked into numpy arrays (rl_plan.md 3.3's per-decision
+        list). Empty (0 decisions recorded -- e.g. cfg["record"] with a non-sample policy) -> empty arrays."""
+        tj = self.traj
+        stack = (lambda k: np.stack([t[k] for t in tj])) if tj else (lambda k: np.zeros((0,), dtype=np.float32))
+        scalar = (lambda k, dt: np.array([t[k] for t in tj], dtype=dt))
+        return {"tok": stack("tok").astype(np.float32), "mask": stack("mask").astype(bool),
+                "sc": stack("sc").astype(np.float32), "past": stack("past").astype(np.float32),
+                "allowed": stack("allowed").astype(bool),
+                "stalled": scalar("stalled", bool), "gate_sampled": scalar("gate_sampled", bool),
+                "played": scalar("played", bool), "slot": scalar("slot", np.int64), "cell": scalar("cell", np.int64),
+                "lp_gate": scalar("lp_gate", np.float64), "lp_card": scalar("lp_card", np.float64),
+                "lp_cell": scalar("lp_cell", np.float64), "p_gate": scalar("p_gate", np.float64),
+                "T": scalar("T", np.float64)}
 
 
 def run_match(env, model, deck, entry: dict, k: int, cfg: dict) -> dict:
@@ -371,10 +534,13 @@ def model_forward_batch(model, toks, masks, scs, pasts, device: str = "cpu"):
 
 
 def run_batch(make_env, model, deck, jobs, cfg: dict, n: int, on_result, on_skip=None, skip=()):
-    """Up to ``n`` matches in flight, ONE model forward per decision round across all of them (L68: the S1 forward
-    is 84% of a sequential RoyaleSim match). ``jobs`` yields (entry_index, entry, k); ``on_result(line)`` gets each
-    finished match's ``Match.result()``; an exception type in ``skip`` raised by reset goes to ``on_skip(entry, exc)``.
-    Decisions are made on each match's own row, so a match's record does not depend on its batch-mates."""
+    """
+    across all of them (L68: the S1 forward is 84% of a sequential RoyaleSim match; L68e: the decide itself is now
+    batched too -- ``live_decide_batch`` / ``sample_decide_batch``, one ``cell_logits`` call per round for every
+    playing row, not one per match). ``jobs`` yields (entry_index, entry, k); ``on_result(line)`` gets each finished
+    match's ``Match.result()``; an exception type in ``skip`` raised by reset goes to ``on_skip(entry, exc)``.
+    Each row's decision depends only on its own tensors and (for ``sample``) its own ``Match.rng_behave``, so a
+    match's record does not depend on its batch-mates (float noise in the shared forward/decide aside, L68)."""
     jobs = iter(jobs)
     free = [make_env() for _ in range(n)]
     live: list[Match] = []
@@ -399,9 +565,20 @@ def run_batch(make_env, model, deck, jobs, cfg: dict, n: int, on_result, on_skip
     while live:
         obs = [m.prepare() for m in live]
         enc, heads, p, hand = model_forward_batch(model, *zip(*obs), device=cfg["device"])
+        policy = cfg["policy"]
+        if policy in ("live", "sample"):
+            pre = [m.pre(hand[r]) for r, m in enumerate(live)]
+            allowed = np.stack([x[1] for x in pre])
+            stalled = np.array([x[2] for x in pre], dtype=bool)
+            decisions = live_decide_batch(model, enc, heads, p, allowed, stalled, tau=cfg["tau"],
+                                          device=cfg["device"]) if policy == "live" else \
+                sample_decide_batch(model, enc, heads, p, allowed, stalled, live, cfg)
+        else:                                                # random / none: cheap, no GPU call -> per-row is fine
+            decisions = [m.decide_row(model, {k: v[r:r + 1] for k, v in enc.items()},
+                                      {k: v[r:r + 1] for k, v in heads.items()}, p[r], hand[r])
+                        for r, m in enumerate(live)]
         for r, m in enumerate(live):
-            m.step(model, {k: v[r:r + 1] for k, v in enc.items()}, {k: v[r:r + 1] for k, v in heads.items()},
-                   p[r], hand[r])
+            m.apply(p[r], decisions[r])
         for m in [m for m in live if m.done]:
             live.remove(m)
             free.append(m.env)
@@ -469,9 +646,12 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--entries", default="all", help="a:b over the split's entries in pool order, 'all', or a tags file")
     ap.add_argument("--seeds", default="0", help="comma list of eval seeds k")
     ap.add_argument("--shard", default="0/1", help="i/n: round-robin share of the (entry, k) tasks")
-    ap.add_argument("--policy", choices=("live", "none", "random"), default="live")
+    ap.add_argument("--policy", choices=("live", "none", "random", "sample"), default="live")
     ap.add_argument("--p-random", type=float, default=0.09)
     ap.add_argument("--random-hand-only", action="store_true", help="random control over hand slots, no affordability")
+    ap.add_argument("--sample-T", type=float, default=0.5, help="--policy sample: softmax/Bernoulli temperature "
+                    "(cfg['record'] / cfg['rollout_index'] / cfg['update'] are for the RL actor, not this CLI: "
+                    "a 'traj' record is numpy, not JSON, so it cannot go through this process's matches.jsonl)")
     ap.add_argument("--mode", choices=("eval", "parity", "liveness"), default="eval",
                     help="liveness = reset the FIRST selected entry + 10 ticks on this port, one line, exit")
     ap.add_argument("--parity-retry", choices=("corpus", "env"), default="corpus",
@@ -547,7 +727,7 @@ def main(argv=None) -> int:
     cfg = {"policy": a.policy, "tau": float(a.tau), "afford_mask": not a.no_afford_mask, "stall_elixir": stall_elixir,
            "stall_seconds": float(a.stall_seconds), "obs": a.obs, "noise": noise, "p_random": float(a.p_random),
            "random_hand_only": bool(a.random_hand_only), "grid": minfo.get("grid", "floor"), "device": a.device,
-           "decide_every": int(a.decide_every), "slot": slot, "port": int(a.port)}
+           "decide_every": int(a.decide_every), "slot": slot, "port": int(a.port), "T": float(a.sample_T)}
     print(json.dumps({"e1_eval": a.mode, "policy": a.policy, "port": a.port, "tasks": len(tasks),
                       "already_done": len(done_keys), "grid": cfg["grid"], "tau": cfg["tau"],
                       "noise_off": noise_off}), flush=True)
