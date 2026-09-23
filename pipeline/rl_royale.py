@@ -18,7 +18,8 @@ One update (``Learner.one_update``):
      log pi recomputed WITH gradients from the stored tok/mask/sc/past exactly as ``sample_decide_batch`` defined it
      (``policy_terms``), L = L_pg + beta (KL_gate + KL_card + KL_cell) on the tempered distributions
      (``minibatch_loss``). Model in eval() for rollout AND update (E1 3.3 dropout trap).
-  5. Update 0, epoch 0, minibatch 0: max |ratio - 1| < 1e-3 and every KL < 1e-5, else AssertionError (a bug, not noise).
+  5. Update 0, epoch 0, minibatch 0: max |ratio - 1| < 1e-4 and every KL < 1e-6 (plan values), else AssertionError
+     (a bug, not noise).
   6. beta x2 / /2 around ``kl_target`` on KL_cell, clamp [beta_min, beta_max] (``adapt_beta``); kl_target never moves.
   7. Held-out screen / pro agreement when due; stop rules (``Guards``, ``tripwire_reason``, ``hard_stop_reason``);
      ``<run>_latest.pt`` every update (tmp + os.replace), ``<run>_u{NNNN}.pt`` every ``save_every`` (never overwritten).
@@ -63,7 +64,7 @@ CKPT_ROOT = REPO / "icebow" / "data" / "bench" / "rl_royale"
 PA_KEYS = ("cell_half_top1", "card_top1", "gate_bal_acc")
 CARD_FILL = -1e9
                             # -inf) but 0 * (lp - ref) stays 0, so the KL has no NaN gradient at masked slots
-ASSERT_RATIO, ASSERT_KL = 1e-3, 1e-5
+ASSERT_RATIO, ASSERT_KL = 1e-4, 1e-6          # rl_plan.md "Learner" (measured L68: 7.8e-6 / ~1e-12)
 SMOKE = {"E": 4, "G": 2, "n_actors": 1, "in_flight": 8, "max_updates": 2, "screen_entries": 8, "proagree_rows": 1000,
          "proagree_every": 1, "screen_every": 1, "save_every": 1}
 TRAJ_KEYS = ("tok", "mask", "sc", "past", "allowed", "gate_sampled", "played", "slot", "cell")
@@ -160,8 +161,16 @@ class Guards:
         self.s["ghost_refused_limit"] = ghost_refused_limit(self.s["base"]["ghost_refused_per_match"],
                                                             float(self.cfg["ghost_refusal_x"]))
 
-    def after_update(self, mon: dict, beta_used: float, kl_cell: float, kl_gate: float) -> list[str]:
+    def after_update(self, mon: dict, beta_used: float, kl_cell: float, kl_gate: float,
+                     ent: Optional[dict] = None, ent_init: Optional[dict] = None) -> list[str]:
         cfg, base, out = self.cfg, self.s["base"] or {}, []
+        # E1 3.4 l.280-281: a head's entropy (policy, epoch 0) below entropy_floor_frac x the INIT's on the same rows
+        for h in ("gate", "card", "cell"):
+            e, e0 = (ent or {}).get(h), (ent_init or {}).get(h)
+            low = e is not None and e0 is not None and e < float(cfg["entropy_floor_frac"]) * e0
+            if self._consec(f"entropy_{h}", low):
+                out.append(f"{h} entropy {e:.4f} < {cfg['entropy_floor_frac']} x init's {e0:.4f} on the same rows for "
+                           f"{cfg['stop_consecutive']} updates")
         ppm, b = mon.get("plays_per_min"), base.get("plays_per_min")
         if ppm is not None and b:
             r = ppm / b
@@ -184,9 +193,12 @@ class Guards:
                        f"update-0 {base.get('ghost_refused_per_match'):.2f}")
         return out
 
-    def screen(self, delta_pp: float, ci_hi_pp: float) -> Optional[str]:
+    def screen(self, delta_pp: Optional[float], ci_hi_pp: Optional[float]) -> Optional[str]:
         """E1 3.6 rule 4 with the lead's noise ruling (single occurrence): the entry-clustered paired delta <= -10 pp
-        AND its bootstrap 95% CI upper bound < 0. The point estimate also feeds the tripwire."""
+        AND its bootstrap 95% CI upper bound < 0. The point estimate also feeds the tripwire. ``delta_pp`` None (no
+        paired match) = no screen: nothing recorded, never a stop."""
+        if delta_pp is None:
+            return None
         self.s["latest_screen_delta_pp"] = float(delta_pp)
         if delta_pp <= self.cfg["screen_stop_pp"] and ci_hi_pp < 0:
             return (f"held-out screen paired delta {delta_pp:+.1f} pp <= {self.cfg['screen_stop_pp']} pp with 95% CI "
@@ -364,6 +376,17 @@ def ppo_update(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
     mb = int(cfg["minibatch"])
     first, last_ep, ep0 = None, [], []
     ratios, clips, gnorms = [], [], []
+    mean = (lambda xs, k: float(np.mean([x[k] for x in xs if x[k] is not None])) if any(x[k] is not None for x in xs) else None)
+    avg = (lambda xs: float(np.mean(xs)) if xs else None)
+
+    def summary(nonfinite: Optional[str]) -> dict:
+        """Every key present even on the non-finite early exit (one_update logs them; None = not measured)."""
+        return {"first": first, "nonfinite": nonfinite, "steps": len(ratios),
+                "kl_gate": mean(last_ep, "kl_gate"), "kl_card": mean(last_ep, "kl_card"),
+                "kl_cell": mean(last_ep, "kl_cell"), "l_pg": mean(last_ep, "l_pg"),
+                "ent": {h: mean(ep0, f"ent_{h}") for h in ("gate", "card", "cell")},
+                "ratio_mean": avg(ratios), "clip_frac": avg(clips), "grad_norm_mean": avg(gnorms)}
+
     for ep in range(int(cfg["ppo_epochs"])):
         perm = torch.from_numpy(rng.permutation(N)).to(dev)
         for s in range(0, N, mb):
@@ -373,22 +396,18 @@ def ppo_update(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
             if first is None:
                 first = st
             if not torch.isfinite(loss):
-                return {"nonfinite": f"loss {float(loss)} at epoch {ep} minibatch {s // mb}", "first": first}
+                return summary(f"loss {float(loss.detach())} at epoch {ep} minibatch {s // mb}")
             opt.zero_grad(set_to_none=True)
             loss.backward()
             gn = torch.nn.utils.clip_grad_norm_(model.parameters(), float(cfg["grad_clip"]))
             if not torch.isfinite(gn):
-                return {"nonfinite": f"grad norm {float(gn)} at epoch {ep} minibatch {s // mb}", "first": first}
+                return summary(f"grad norm {float(gn)} at epoch {ep} minibatch {s // mb}")
             opt.step()
             (ep0 if ep == 0 else []).append(st)
             if ep == int(cfg["ppo_epochs"]) - 1:
                 last_ep.append(st)
             ratios.append(st["ratio_mean"]); clips.append(st["clip_frac"]); gnorms.append(float(gn))
-    mean = (lambda xs, k: float(np.mean([x[k] for x in xs if x[k] is not None])) if any(x[k] is not None for x in xs) else None)
-    return {"first": first, "nonfinite": None, "steps": len(ratios),
-            "kl_gate": mean(last_ep, "kl_gate"), "kl_card": mean(last_ep, "kl_card"), "kl_cell": mean(last_ep, "kl_cell"),
-            "l_pg": mean(last_ep, "l_pg"), "ent": {h: mean(ep0, f"ent_{h}") for h in ("gate", "card", "cell")},
-            "ratio_mean": float(np.mean(ratios)), "clip_frac": float(np.mean(clips)), "grad_norm_mean": float(np.mean(gnorms))}
+    return summary(None)
 
 
 # ------------------------------------------------------------------------------------------------------
@@ -653,7 +672,7 @@ def screen_score(results: list[dict], init: Optional[dict]) -> dict:
         for key in both:
             by_entry.setdefault(key.rsplit(":", 1)[0], []).append(v[key] - init[key])
         ci = cluster_bootstrap(by_entry, DRAWS, GATE_SEED)
-        pp = (lambda x: 100.0 * x if x is not None else 0.0)
+        pp = (lambda x: 100.0 * x if x is not None else None)          # no paired match -> None, never 0.0
         d = [v[key] - init[key] for key in both]
         out.update({"paired": len(both), "paired_entries": len(by_entry), "delta_pp": pp(ci["point"]),
                     "ci_lo_pp": pp(ci["lo"]), "ci_hi_pp": pp(ci["hi"]),
@@ -778,13 +797,16 @@ class Learner:
         os.replace(tmp, path)
 
     def save(self, val: Optional[dict], numbered: bool) -> Optional[Path]:
-        """``<run>_latest.pt`` always; ``<run>_u{NNNN}.pt`` (NNNN = updates done) when ``numbered``, never overwritten."""
+        """``<run>_latest.pt`` always; ``<run>_u{NNNN}.pt`` (NNNN = updates done) when ``numbered``, never overwritten:
+        if it already exists (crash after it, before _latest; resume re-ran the update) it is logged and kept."""
         obj = self._payload(val)
         path = None
         if numbered:
             path = self.ck_dir / f"{self.run}_u{self.update:04d}.pt"
-            assert not path.exists(), f"refusing to overwrite {path}"
-            self._atomic_save(obj, path)
+            if path.exists():                                   # a crash between this save and _latest, then --resume
+                self.log(f"[rl] {path.name} already exists (an earlier attempt at this update) -- kept, not overwritten")
+            else:
+                self._atomic_save(obj, path)
         self._atomic_save(obj, self.ck_dir / f"{self.run}_latest.pt")
         return path
 
@@ -840,7 +862,7 @@ class Learner:
         upd = ppo_update(self.model, self.opt, B, R, cfg, beta_used, self.rng)
         t_upd = time.perf_counter() - t1
         first = upd["first"]
-        if u == 0:
+        if u == 0 and not upd["nonfinite"]:
             bad = first["ratio_maxdev"] >= ASSERT_RATIO or max(first["kl_gate"], first["kl_card"], first["kl_cell"]) >= ASSERT_KL
             assert not bad, (f"ON-POLICY CHECK FAILED at update 0 epoch 0 minibatch 0: max|ratio-1| "
                              f"{first['ratio_maxdev']:.3g} (< {ASSERT_RATIO}), KL gate/card/cell {first['kl_gate']:.3g}/"
@@ -860,8 +882,12 @@ class Learner:
                 self.guards.set_baselines(mon)
                 self.log(f"[rl] update-0 guard baselines {_py(self.guards.s['base'])}; ghost refused/match stop limit "
                          f"{self.guards.s['ghost_refused_limit']:.3f} (EMA, {cfg['stop_consecutive']} consecutive)")
-            reasons += self.guards.after_update(mon, beta_used, upd["kl_cell"] or 0.0, upd["kl_gate"] or 0.0)
-        self.update = u + 1
+            reasons += self.guards.after_update(mon, beta_used, upd["kl_cell"] or 0.0, upd["kl_gate"] or 0.0,
+                                                ent=upd["ent"], ent_init=R["ent"])
+            self.update = u + 1                                 # a crashed update is not counted (crash save = u)
+        else:
+            self.log(f"[rl] NON-FINITE at update {u}: {reasons[0]}; crash save, {self.run}_latest.pt left at the last "
+                     f"good update ({self.update} done)")
         rec = {"type": "update", "update": u, "time": time.strftime("%Y-%m-%d %H:%M:%S"), **mon, **bst,
                "kl_gate": upd["kl_gate"], "kl_card": upd["kl_card"], "kl_cell": upd["kl_cell"], "beta_used": beta_used,
                "beta_next": self.beta, "kl_target": cfg["kl_target"], "l_pg": upd["l_pg"],
@@ -882,6 +908,8 @@ class Learner:
                 rec["wall_screen_s"] = time.perf_counter() - t
                 r = self.guards.screen(rec["screen"]["delta_pp"], rec["screen"]["ci_hi_pp"])
                 reasons += [r] if r else []
+                if rec["screen"]["delta_pp"] is None:
+                    self.log(f"[rl] held-out screen after update {u} had NO paired matches -- counted as no screen")
             if u1 % int(cfg["proagree_every"]) == 0:
                 t = time.perf_counter()
                 pa = self.proagree(self.model)
@@ -894,6 +922,8 @@ class Learner:
                 if not r and cell_low and self.guards.s["latest_screen_delta_pp"] is None:
                     rec["screen"] = self.screen()                 # the tripwire needs a screen; none has run yet
                     self.guards.screen(rec["screen"]["delta_pp"], rec["screen"]["ci_hi_pp"])
+                    if rec["screen"]["delta_pp"] is None:
+                        self.log("[rl] forced tripwire screen had NO paired matches -- tripwire cannot fire this update")
                 r = r or tripwire_reason(pa, init, self.guards.s["latest_screen_delta_pp"], cfg)
                 reasons += [r] if r else []
                 rec["wall_proagree_s"] = time.perf_counter() - t
@@ -919,8 +949,8 @@ class Learner:
                  f"{f(upd['kl_cell'], '{:.4f}')} beta {beta_used:.3g}->{self.beta:.3g} clip {f(upd['clip_frac'])} "
                  f"mixed {bst['mixed_groups']}/{bst['groups']} rows {bst['rows']} "
                  f"wall roll {t_roll:.0f}s upd {t_upd:.0f}s"
-                 + (f" | screen {rec['screen']['winrate']:.3f} d {rec['screen']['delta_pp']:+.1f}pp "
-                    f"CI [{rec['screen']['ci_lo_pp']:+.1f}, {rec['screen']['ci_hi_pp']:+.1f}] "
+                 + (f" | screen {f(rec['screen']['winrate'])} d {f(rec['screen']['delta_pp'], '{:+.1f}')}pp "
+                    f"CI [{f(rec['screen']['ci_lo_pp'], '{:+.1f}')}, {f(rec['screen']['ci_hi_pp'], '{:+.1f}')}] "
                     f"(+{rec['screen']['better']}/-{rec['screen']['worse']})" if "screen" in rec else "")
                  + (f" | proagree cell {rec['proagree']['cell_half_top1']:.4f} card {rec['proagree']['card_top1']:.4f} "
                     f"gate {rec['proagree']['gate_bal_acc']:.4f}" if "proagree" in rec else ""))

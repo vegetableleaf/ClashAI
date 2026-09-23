@@ -61,7 +61,8 @@ hard_card_pp: 3.0           # plan diff 3 HARD stop: card < init - 3.0 pp (singl
 hard_gate_bal: 0.05         # plan diff 3 HARD stop: gate_bal_acc < init - 0.05 (single)
 screen_stop_pp: -10.0       # E1 3.6 rule 4 + lead ruling: entry-clustered paired delta <= -10 pp AND its 95% CI
                             # upper bound < 0 (single)
-ema_updates: 5              # EMA span of the exploit monitors (E1 3.6 "EMA over 5 updates")
+entropy_floor_frac: 0.5     # E1 3.4: a head's entropy (gate/card/cell) < 0.5x the init's on the same rows
+ema_updates: 5             # EMA span of the exploit monitors (E1 3.6 "EMA over 5 updates")
 outlived_pp: 15.0           # E1 4.2.1: outlived-the-script win share EMA > update-0 value + 15 pp
 low_delivered_pp: 10.0      # E1 4.2.2: <= 10-ghost-delivered win share EMA > update-0 value + 10 pp
 ghost_refusal_x: 2.0        # E1 4.2.3: ghost REFUSED per match EMA > max(2x, +1.0) of the update-0 value (rl_gate's
