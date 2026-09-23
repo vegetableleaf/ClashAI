@@ -224,109 +224,189 @@ def _slot_maps(env, deck, entry) -> tuple[list[str], dict[int, int], list[float]
     return engine_deck, deck_index_of_slot, costs
 
 
-def run_match(env, model, deck, entry: dict, k: int, cfg: dict) -> dict:
-    from pipeline import policy_io as ep
-    t0 = time.perf_counter()
-    state = env.reset(entry)
-    side, mirror = env.side, env._mirror
-    engine_deck, deck_index_of_slot, costs = _slot_maps(env, deck, entry)
-    tag = str(entry["tag"])
-    rng_obs = np.random.default_rng(obs_seed(tag, k))
-    rng_rand = random.Random(random_seed(tag, k))
-    policy, grid, device = cfg["policy"], cfg["grid"], cfg["device"]
-    unmapped: set = set()
-    done_plays: list[tuple[int, int, float, float]] = []
-    last_play_tick: Optional[int] = None
-    n_dec = n_deg = n_att = n_acc = n_stall = n_noaff = 0
-    p_gates: list[float] = []
-    plays: list[dict] = []
-    refuse: Counter = Counter()
-    mix_att: Counter = Counter()
-    mix_acc: Counter = Counter()
-    done = False
-    while not done:
-        tick = int(env.tick)
-        if last_play_tick is None:
-            last_play_tick = tick                            # match start = first decision (anti-stall clock)
-        bs = from_engine(ep.compact_raw(state), side, deck, engine_deck=engine_deck, unmapped=unmapped)
-        view = live_view(bs, rng_obs, deck, cfg["noise"]) if cfg["obs"] == "live" else bs
-        n_deg += int(view.source == "degraded")
+class Match:
+    """One ``run_match`` as a state machine -- ``prepare`` (the observation), ``step`` (decide on precomputed heads,
+    act, advance), ``result`` -- so ``run_batch`` can share one model forward across many matches. Same logic, same
+    record, in the same order as the loop it was lifted from (L68)."""
+
+    def __init__(self, env, deck, entry: dict, k: int, cfg: dict):
+        from pipeline import policy_io as ep
+        self.ep, self.env, self.deck, self.entry, self.k, self.cfg = ep, env, deck, entry, int(k), cfg
+        self.t0 = time.perf_counter()
+        self.state = env.reset(entry)
+        self.side, self.mirror = env.side, env._mirror
+        self.engine_deck, self.deck_index_of_slot, self.costs = _slot_maps(env, deck, entry)
+        self.tag = str(entry["tag"])
+        self.rng_obs = np.random.default_rng(obs_seed(self.tag, k))
+        self.rng_rand = random.Random(random_seed(self.tag, k))
+        self.unmapped: set = set()
+        self.done_plays: list[tuple[int, int, float, float]] = []
+        self.last_play_tick: Optional[int] = None
+        self.n_dec = self.n_deg = self.n_att = self.n_acc = self.n_stall = self.n_noaff = 0
+        self.p_gates: list[float] = []
+        self.plays: list[dict] = []
+        self.refuse: Counter = Counter()
+        self.mix_att: Counter = Counter()
+        self.mix_acc: Counter = Counter()
+        self.done = False
+
+    def prepare(self):
+        """-> (tok, mask, sc, past) for the current state."""
+        cfg = self.cfg
+        tick = int(self.env.tick)
+        if self.last_play_tick is None:
+            self.last_play_tick = tick                       # match start = first decision (anti-stall clock)
+        bs = from_engine(self.ep.compact_raw(self.state), self.side, self.deck, engine_deck=self.engine_deck,
+                         unmapped=self.unmapped)
+        view = live_view(bs, self.rng_obs, self.deck, cfg["noise"]) if cfg["obs"] == "live" else bs
+        self.n_deg += int(view.source == "degraded")
         tok, mask, sc = to_tokens(view, MAX_U)
-        past = _past(done_plays, tick)
-        enc, heads, p, hand = model_forward(model, tok, mask, sc, past, device)
-        n_dec += 1
-        p_gates.append(p)
+        self._cur = (tick, bs, view)
+        return tok, mask, sc, _past(self.done_plays, tick)
+
+    def step(self, model, enc, heads, p: float, hand) -> None:
+        cfg, env, ep = self.cfg, self.env, self.ep
+        tick, bs, view = self._cur
+        policy, grid, device = cfg["policy"], cfg["grid"], cfg["device"]
+        self.n_dec += 1
+        self.p_gates.append(p)
         el_int = float(int(view.my_elixir))
-        allowed = allowed_slots(hand, costs, el_int, afford_mask=cfg["afford_mask"] if policy == "live" else
+        allowed = allowed_slots(hand, self.costs, el_int, afford_mask=cfg["afford_mask"] if policy == "live" else
                                 (not cfg["random_hand_only"]))
         if policy == "live":
-            st = anti_stall(el_int, tick, last_play_tick, cfg["stall_elixir"], cfg["stall_seconds"])
+            st = anti_stall(el_int, tick, self.last_play_tick, cfg["stall_elixir"], cfg["stall_seconds"])
             d = live_decide(model, enc, heads, p, allowed, tau=cfg["tau"], stalled=st, device=device)
         elif policy == "random":
-            d = random_decide(rng_rand, allowed, cfg["p_random"])
+            d = random_decide(self.rng_rand, allowed, cfg["p_random"])
         else:
             d = {"play": False, "slot": -1, "cell": -1, "why": "none"}
         if d["why"] == "no_affordable":
-            n_noaff += 1
+            self.n_noaff += 1
         if d["play"]:
-            n_att += 1
-            n_stall += int(d["why"] == "stall")
+            self.n_att += 1
+            self.n_stall += int(d["why"] == "stall")
             x, y = ep.cell_center(d["cell"], grid)
-            X, Y = ep.cell_to_engine(d["cell"], mirror, grid)
-            r = env.eng.act(side=side, deck_index=deck_index_of_slot[d["slot"]], x=X, y=Y)
+            X, Y = ep.cell_to_engine(d["cell"], self.mirror, grid)
+            r = env.eng.act(side=self.side, deck_index=self.deck_index_of_slot[d["slot"]], x=X, y=Y)
             acc = bool(r["accepted"])
             code = int(r.get("result_code", -1))
-            card = deck.cards[d["slot"]]
-            mix_att[card] += 1
+            card = self.deck.cards[d["slot"]]
+            self.mix_att[card] += 1
             rec = {"tick": tick, "slot": d["slot"], "card": card, "cell": d["cell"], "p": round(p, 4), "why": d["why"],
                    "elixir": el_int, "elixir_exact": round(float(bs.my_elixir), 3), "accepted": acc}
             if acc:
-                n_acc += 1
-                mix_acc[card] += 1
-                done_plays.append((tick, d["slot"], x, y))
-                last_play_tick = tick
+                self.n_acc += 1
+                self.mix_acc[card] += 1
+                self.done_plays.append((tick, d["slot"], x, y))
+                self.last_play_tick = tick
             else:
                 nm = ep.RESULT_CODE_NAMES.get(code, f"native_{code}")
                 if r.get("placement_valid") is False:
                     nm = f"{nm}/{r.get('placement_reason')}"
-                refuse[nm] += 1
+                self.refuse[nm] += 1
                 rec["reason"] = nm
-            plays.append(rec)
+            self.plays.append(rec)
         env._advance_to(min(env.tick + cfg["decide_every"], env.tail_cap))
-        state = env.eng.observe()
-        done = bool(env.terminated) or env.tick >= env.tail_cap
-    outcome, crowns = ep._outcome(env, state)
-    minutes = env.tick * TICK_S / 60.0
-    end = int(env.tick)
-    last_ghost = int(entry.get("last_ghost_tick") or 0)
-    after_script = end > last_ghost + SCRIPT_MARGIN_TICKS
-    pg = np.asarray(p_gates, dtype=np.float64)
-    return {
-        "tag": tag, "k": int(k), "slot": cfg["slot"], "port": cfg["port"], "split": entry.get("split"),
-        "entry_index": cfg["entry_index"], "policy": policy, "obs": cfg["obs"], "tau": cfg["tau"],
-        "afford_mask": cfg["afford_mask"], "stall_elixir": cfg["stall_elixir"], "p_random": cfg["p_random"],
-        "obs_seed": obs_seed(tag, k), "side": side,
-        "outcome": outcome, "crowns_for": int(crowns[0]), "crowns_against": int(crowns[1]),
-        "end_tick": end, "seconds": round(end * TICK_S, 1), "terminated": bool(env.terminated),
-        "termination_reason": (env.eng.last_episode or {}).get("termination_reason"),
-        "last_ghost_tick": last_ghost, "after_script": bool(after_script),
-        "won_after_script": bool(after_script and outcome == "win"),
-        "ghost_plays": int(entry.get("ghost_plays") or 0), "ghost_delivered": int(env.ghost_ok),
-        "ghost_refused": int(env.ghost_rejected), "ghost_undelivered": int(env.ghost_undelivered()),
-        "ghost_distinct_delivered": len(env.ghost_cards_delivered), "ghost_refuse_reasons": dict(env.ghost_reject_reasons),
-        "plays_attempted": n_att, "plays_accepted": n_acc, "plays_refused": n_att - n_acc,
-        "refuse_reasons": dict(refuse), "plays_per_min": round(n_att / minutes, 3) if minutes else None,
-        "accepted_per_min": round(n_acc / minutes, 3) if minutes else None,
-        "card_mix_attempted": dict(mix_att), "card_mix_accepted": dict(mix_acc),
-        "play_elixir": [pl["elixir"] for pl in plays], "plays": plays,
-        "stall_fired": n_stall, "no_affordable": n_noaff, "decisions": n_dec, "degraded_obs": n_deg,
-        "degraded_equals_decisions": bool(n_deg == n_dec) if cfg["obs"] == "live" else None,
-        "p_gate_mean": round(float(pg.mean()), 4) if len(pg) else None,
-        "p_gate_p90": round(float(np.percentile(pg, 90)), 4) if len(pg) else None,
-        "frac_gt_tau": round(float((pg > cfg["tau"]).mean()), 4) if len(pg) else None,
-        "real_outcome": entry.get("real_outcome"), "s1_split": entry.get("s1_split"), "group": entry.get("group"),
-        "unmapped": sorted(unmapped), "wall_s": round(time.perf_counter() - t0, 1),
-    }
+        self.state = env.eng.observe()
+        self.done = bool(env.terminated) or env.tick >= env.tail_cap
+
+    def result(self) -> dict:
+        env, entry, cfg, tag, k = self.env, self.entry, self.cfg, self.tag, self.k
+        outcome, crowns = self.ep._outcome(env, self.state)
+        minutes = env.tick * TICK_S / 60.0
+        end = int(env.tick)
+        last_ghost = int(entry.get("last_ghost_tick") or 0)
+        after_script = end > last_ghost + SCRIPT_MARGIN_TICKS
+        pg = np.asarray(self.p_gates, dtype=np.float64)
+        n_att, n_acc, n_dec, n_deg, plays = self.n_att, self.n_acc, self.n_dec, self.n_deg, self.plays
+        return {
+            "tag": tag, "k": int(k), "slot": cfg["slot"], "port": cfg["port"], "split": entry.get("split"),
+            "entry_index": cfg["entry_index"], "policy": cfg["policy"], "obs": cfg["obs"], "tau": cfg["tau"],
+            "afford_mask": cfg["afford_mask"], "stall_elixir": cfg["stall_elixir"], "p_random": cfg["p_random"],
+            "obs_seed": obs_seed(tag, k), "side": self.side,
+            "outcome": outcome, "crowns_for": int(crowns[0]), "crowns_against": int(crowns[1]),
+            "end_tick": end, "seconds": round(end * TICK_S, 1), "terminated": bool(env.terminated),
+            "termination_reason": (env.eng.last_episode or {}).get("termination_reason"),
+            "last_ghost_tick": last_ghost, "after_script": bool(after_script),
+            "won_after_script": bool(after_script and outcome == "win"),
+            "ghost_plays": int(entry.get("ghost_plays") or 0), "ghost_delivered": int(env.ghost_ok),
+            "ghost_refused": int(env.ghost_rejected), "ghost_undelivered": int(env.ghost_undelivered()),
+            "ghost_distinct_delivered": len(env.ghost_cards_delivered), "ghost_refuse_reasons": dict(env.ghost_reject_reasons),
+            "plays_attempted": n_att, "plays_accepted": n_acc, "plays_refused": n_att - n_acc,
+            "refuse_reasons": dict(self.refuse), "plays_per_min": round(n_att / minutes, 3) if minutes else None,
+            "accepted_per_min": round(n_acc / minutes, 3) if minutes else None,
+            "card_mix_attempted": dict(self.mix_att), "card_mix_accepted": dict(self.mix_acc),
+            "play_elixir": [pl["elixir"] for pl in plays], "plays": plays,
+            "stall_fired": self.n_stall, "no_affordable": self.n_noaff, "decisions": n_dec, "degraded_obs": n_deg,
+            "degraded_equals_decisions": bool(n_deg == n_dec) if cfg["obs"] == "live" else None,
+            "p_gate_mean": round(float(pg.mean()), 4) if len(pg) else None,
+            "p_gate_p90": round(float(np.percentile(pg, 90)), 4) if len(pg) else None,
+            "frac_gt_tau": round(float((pg > cfg["tau"]).mean()), 4) if len(pg) else None,
+            "real_outcome": entry.get("real_outcome"), "s1_split": entry.get("s1_split"), "group": entry.get("group"),
+            "unmapped": sorted(self.unmapped), "wall_s": round(time.perf_counter() - self.t0, 1),
+        }
+
+
+def run_match(env, model, deck, entry: dict, k: int, cfg: dict) -> dict:
+    m = Match(env, deck, entry, k, cfg)
+    while not m.done:
+        tok, mask, sc, past = m.prepare()
+        enc, heads, p, hand = model_forward(model, tok, mask, sc, past, cfg["device"])
+        m.step(model, enc, heads, p, hand)
+    return m.result()
+
+
+def model_forward_batch(model, toks, masks, scs, pasts, device: str = "cpu"):
+    """``model_forward`` over a batch: one encode + heads. -> (enc, heads, p [B] floats, hand bool [B, 8])."""
+    import torch
+    from pipeline.model_v3 import hand_mask_from_sc
+    with torch.no_grad():
+        t = (lambda xs: torch.from_numpy(np.ascontiguousarray(np.stack(xs))).to(device))
+        tsc = t(scs)
+        hm = hand_mask_from_sc(tsc)
+        enc = model.encode(t(toks), t(masks), tsc, t(pasts))
+        heads = model.heads(enc, hm)
+        p = torch.sigmoid(heads["gate"]).cpu().tolist()
+    return enc, heads, p, hm.cpu().numpy().astype(bool)
+
+
+def run_batch(make_env, model, deck, jobs, cfg: dict, n: int, on_result, on_skip=None, skip=()):
+    """Up to ``n`` matches in flight, ONE model forward per decision round across all of them (L68: the S1 forward
+    is 84% of a sequential RoyaleSim match). ``jobs`` yields (entry_index, entry, k); ``on_result(line)`` gets each
+    finished match's ``Match.result()``; an exception type in ``skip`` raised by reset goes to ``on_skip(entry, exc)``.
+    Decisions are made on each match's own row, so a match's record does not depend on its batch-mates."""
+    jobs = iter(jobs)
+    free = [make_env() for _ in range(n)]
+    live: list[Match] = []
+
+    def fill():
+        while free:
+            job = next(jobs, None)
+            if job is None:
+                return
+            i, entry, k = job
+            env = free.pop()
+            try:
+                m = Match(env, deck, entry, k, dict(cfg, entry_index=i))
+            except skip as exc:
+                free.append(env)
+                if on_skip:
+                    on_skip(entry, exc)
+                continue
+            live.append(m)
+
+    fill()
+    while live:
+        obs = [m.prepare() for m in live]
+        enc, heads, p, hand = model_forward_batch(model, *zip(*obs), device=cfg["device"])
+        for r, m in enumerate(live):
+            m.step(model, {k: v[r:r + 1] for k, v in enc.items()}, {k: v[r:r + 1] for k, v in heads.items()},
+                   p[r], hand[r])
+        for m in [m for m in live if m.done]:
+            live.remove(m)
+            free.append(m.env)
+            on_result(m.result())
+        fill()
 
 
 def run_liveness(env, entry: dict, cfg: dict) -> dict:
@@ -379,6 +459,8 @@ def build_parser() -> argparse.ArgumentParser:
                     help="royale = RoyaleSim via pipeline/royale_env.py (Royale stack venv); entries whose decks it "
                          "cannot load are skipped and counted, not errors")
     ap.add_argument("--subs", default="", help="royale only: card substitutions, e.g. Tornado=Arrows")
+    ap.add_argument("--batch", type=int, default=1, help="royale + eval only: matches in flight sharing one model "
+                    "forward per round (run_batch; identical records to --batch 1, measured 58/58 in L68)")
     ap.add_argument("--host", default="127.0.0.1")
     ap.add_argument("--ckpt", type=Path, default=None, help="required for --mode eval")
     ap.add_argument("--pool", type=Path, default=POOL_V1)
@@ -485,7 +567,24 @@ def main(argv=None) -> int:
             env = PoolV1Env(port=int(a.port), host=a.host, decision_ticks=int(a.decide_every),
                             drive_our_commands=(a.mode == "parity"),
                             retry_codes=((1050,) if (a.mode == "parity" and a.parity_retry == "corpus") else (13, 1050)))
-        for (i, k) in tasks:
+        batched = a.engine == "royale" and a.mode == "eval" and a.batch > 1
+        if batched:
+            def emit(line):
+                nonlocal new
+                with mpath.open("a", encoding="utf-8") as fh:
+                    fh.write(json.dumps(line) + "\n")
+                results.append(line)
+                new += 1
+                print(f"[e1_eval] {new}/{len(tasks)} {line['tag']} k={line['k']} {line['outcome']} "
+                      f"{line['crowns_for']}-{line['crowns_against']} {line['seconds']}s plays {line['plays_accepted']}/"
+                      f"{line['plays_attempted']}", flush=True)
+            jobs = [(i, entries[i], k) for (i, k) in tasks if (entries[i]["tag"], k) not in done_keys]
+            if a.max_matches:
+                jobs = jobs[:a.max_matches]
+            run_batch(lambda: RoyalePoolEnv(decision_ticks=int(a.decide_every), subs=subs), model, deck, jobs, cfg,
+                      a.batch, on_result=emit, skip=(UnsupportedDeck,),
+                      on_skip=lambda e, exc: unsupported.append({"tag": e["tag"], "why": str(exc)}))
+        for (i, k) in ([] if batched else tasks):
             entry = entries[i]
             if (entry["tag"], k) in done_keys:
                 continue
