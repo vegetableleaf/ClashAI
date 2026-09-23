@@ -196,8 +196,10 @@ class Guards:
     def screen(self, delta_pp: Optional[float], ci_hi_pp: Optional[float]) -> Optional[str]:
         """E1 3.6 rule 4 with the lead's noise ruling (single occurrence): the entry-clustered paired delta <= -10 pp
         AND its bootstrap 95% CI upper bound < 0. The point estimate also feeds the tripwire. ``delta_pp`` None (no
-        paired match) = no screen: nothing recorded, never a stop."""
+        paired match) = no screen: the latest delta becomes None (a stale earlier delta must not feed the tripwire),
+        never a stop."""
         if delta_pp is None:
+            self.s["latest_screen_delta_pp"] = None
             return None
         self.s["latest_screen_delta_pp"] = float(delta_pp)
         if delta_pp <= self.cfg["screen_stop_pp"] and ci_hi_pp < 0:
@@ -454,11 +456,27 @@ def rollout_monitors(results: list[dict], tau: float, T: float) -> dict:
 # ------------------------------------------------------------------------------------------------------
 # actors
 # ------------------------------------------------------------------------------------------------------
+def actor_sender(out_q):
+    """The actor's side of the result queue. ``cancel_join_thread`` so process EXIT never blocks on the queue's feeder
+    send first checks the learner is alive: a dead learner -> nothing is put (returns False) and the caller exits."""
+    import multiprocessing as mp
+    out_q.cancel_join_thread()
+    parent = mp.parent_process()
+
+    def send(msg) -> bool:
+        if parent is not None and not parent.is_alive():
+            return False
+        out_q.put(msg)
+        return True
+    return send
+
+
 def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
     """One actor process: a model copy on ``actor_device`` + RoyaleSim envs; runs ``e1_eval.run_batch`` per job list.
     Messages in: (kind, update, state_dict bytes, jobs [(entry_index, entry, g)]) or None to exit.
     Out: ("ready", aid, gen, pid) | ("done", aid, gen, results, skipped, stats) | ("error", aid, gen, traceback)."""
     import multiprocessing as mp
+    send = actor_sender(out_q)
     torch.set_num_threads(int(base["actor_threads"]))
     try:
         from pipeline.e1_view import Noise
@@ -468,9 +486,9 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
         dev = base["actor_device"]
         deck = load_deck("icebow")
         model = S1Model(d=int(base["d"]), layers=int(base["layers"])).to(dev).eval()
-        out_q.put(("ready", aid, gen, os.getpid()))
+        send(("ready", aid, gen, os.getpid()))
     except Exception:
-        out_q.put(("error", aid, gen, traceback.format_exc()))
+        send(("error", aid, gen, traceback.format_exc()))
         return
     parent = mp.parent_process()
     while True:
@@ -509,9 +527,11 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
                         skip=(UnsupportedDeck,))
             stats = {"wall_s": time.perf_counter() - t0, "matches": len(results),
                      "gpu_peak_mb": (torch.cuda.max_memory_allocated() / 2**20) if dev.startswith("cuda") else None}
-            out_q.put(("done", aid, gen, results, skipped, stats))
+            if not send(("done", aid, gen, results, skipped, stats)):
+                return                                        # learner died mid-job: drop the results, exit
         except Exception:
-            out_q.put(("error", aid, gen, traceback.format_exc()))
+            if not send(("error", aid, gen, traceback.format_exc())):
+                return
 
 
 class ActorCrash(RuntimeError):
@@ -522,10 +542,11 @@ class ActorPool:
     """``n`` actor processes; ``run`` deals a job list round-robin and gathers the records. A crash (error message, dead
     process or timeout) restarts that actor ONCE and re-runs its share; a second crash raises ActorCrash."""
 
-    def __init__(self, base: dict, n: int, log, timeout_s: float):
+    def __init__(self, base: dict, n: int, log, timeout_s: float, pid_file: Optional[Path] = None):
         import torch.multiprocessing as tmp
         self.ctx = tmp.get_context("spawn")
         self.base, self.n, self.log, self.timeout_s = base, int(n), log, float(timeout_s)
+        self.pid_file = pid_file                                 # <run_dir>/actors.pid: one PID per line (RUNBOOK 4)
         self.out_q = self.ctx.Queue()
         self.procs, self.in_qs, self.gen, self.pids = {}, {}, {}, {}
         self.restarts = Counter()
@@ -554,6 +575,8 @@ class ActorPool:
         p.start()
         self.procs[a] = p
         self.pids[a] = p.pid
+        if self.pid_file is not None:                            # refreshed on every (re)start
+            self.pid_file.write_text("".join(f"{pid}\n" for pid in self.pids.values()), encoding="utf-8")
 
     def _crash(self, a: int, why: str) -> None:
         self.log(f"[rl] ACTOR {a} CRASH ({why.strip().splitlines()[-1] if why.strip() else why}); restarts so far "
@@ -962,7 +985,8 @@ class Learner:
         base = {k: self.cfg[k] for k in ("actor_threads", "actor_device", "tau", "T", "afford_mask", "stall_elixir",
                                          "stall_seconds", "obs", "decide_every", "in_flight")}
         base.update({"d": int(a.get("d", 128)), "layers": int(a.get("layers", 4)), "grid": self.grid})
-        self.actors = ActorPool(base, int(self.cfg["n_actors"]), self.log, self.cfg["actor_timeout_s"])
+        self.actors = ActorPool(base, int(self.cfg["n_actors"]), self.log, self.cfg["actor_timeout_s"],
+                                pid_file=self.run_dir / "actors.pid")
         (self.run_dir / "pid.json").write_text(json.dumps({"learner": os.getpid(), "actors": self.actors.pids}),
                                                encoding="utf-8")
 
@@ -1089,6 +1113,7 @@ def main(argv=None) -> int:
         if L is not None and L.actors is not None:
             L.actors.close()
         (run_dir / "pid.json").unlink(missing_ok=True)
+        (run_dir / "actors.pid").unlink(missing_ok=True)       # left in place only if the learner is killed hard
 
 
 if __name__ == "__main__":
