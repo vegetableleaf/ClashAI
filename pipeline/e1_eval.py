@@ -374,7 +374,11 @@ def run_parity(env, entry: dict, cfg: dict) -> dict:
 # ------------------------------------------------------------------------------------------------------
 def build_parser() -> argparse.ArgumentParser:
     ap = argparse.ArgumentParser(description=__doc__.split("\n", 1)[0])
-    ap.add_argument("--port", type=int, required=True, help="engine direct door: 38031 or 38032")
+    ap.add_argument("--port", type=int, required=True, help="unused with --engine royale")
+    ap.add_argument("--engine", choices=("royale",), default="royale",
+                    help="royale = RoyaleSim via pipeline/royale_env.py (Royale stack venv); entries whose decks it "
+                         "cannot load are skipped and counted, not errors")
+    ap.add_argument("--subs", default="", help="royale only: card substitutions, e.g. Tornado=Arrows")
     ap.add_argument("--host", default="127.0.0.1")
     ap.add_argument("--ckpt", type=Path, default=None, help="required for --mode eval")
     ap.add_argument("--pool", type=Path, default=POOL_V1)
@@ -466,14 +470,21 @@ def main(argv=None) -> int:
                       "already_done": len(done_keys), "grid": cfg["grid"], "tau": cfg["tau"],
                       "noise_off": noise_off}), flush=True)
 
-    from pipeline.e1_pool import PoolV1Env
     new = 0
     results: list[dict] = []
     env = None
+    unsupported = UnsupportedDeck = ()
     try:
-        env = PoolV1Env(port=int(a.port), host=a.host, decision_ticks=int(a.decide_every),
-                        drive_our_commands=(a.mode == "parity"),
-                        retry_codes=((1050,) if (a.mode == "parity" and a.parity_retry == "corpus") else (13, 1050)))
+        if a.engine == "royale":
+            from pipeline.royale_env import RoyalePoolEnv, UnsupportedDeck
+            subs = dict(s.split("=", 1) for s in a.subs.split(",") if s)
+            env = RoyalePoolEnv(decision_ticks=int(a.decide_every), subs=subs)
+            unsupported = []
+        else:
+            from pipeline.e1_pool import PoolV1Env
+            env = PoolV1Env(port=int(a.port), host=a.host, decision_ticks=int(a.decide_every),
+                            drive_our_commands=(a.mode == "parity"),
+                            retry_codes=((1050,) if (a.mode == "parity" and a.parity_retry == "corpus") else (13, 1050)))
         for (i, k) in tasks:
             entry = entries[i]
             if (entry["tag"], k) in done_keys:
@@ -486,7 +497,10 @@ def main(argv=None) -> int:
                     line = run_parity(env, entry, cfg)
                 else:
                     line = run_match(env, model, deck, entry, k, cfg)
-            except Exception as exc:                          # engine / socket / timeout: record and stop this slot
+            except UnsupportedDeck as exc:
+                unsupported.append({"tag": entry["tag"], "why": str(exc)})
+                continue
+            except Exception as exc:                        # engine / socket / timeout: record and stop this slot
                 with (out / "errors.jsonl").open("a", encoding="utf-8") as fh:
                     fh.write(json.dumps({"tag": entry["tag"], "k": k, "entry_index": i, "port": a.port,
                                          "error": repr(exc)[:2000], "time": time.strftime("%Y-%m-%d %H:%M:%S")}) + "\n")
@@ -510,7 +524,10 @@ def main(argv=None) -> int:
     finally:
         if env is not None:
             env.close()
+    if a.engine == "royale":
+        (out / "unsupported.json").write_text(json.dumps(unsupported, indent=1), encoding="utf-8")
     summ = {"new_matches": new, "finished": time.strftime("%Y-%m-%d %H:%M:%S"),
+            "engine": a.engine, "skipped_unsupported": len(unsupported) if a.engine == "royale" else 0,
             "wall_s_mean": round(float(np.mean([r["wall_s"] for r in results])), 1) if results else None}
     if a.mode == "liveness":
         summ["ok"] = bool(results and results[0]["ok"])
