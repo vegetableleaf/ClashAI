@@ -2,10 +2,12 @@
 
     icebow/.venv/Scripts/python.exe -m unittest pipeline.tests.test_rl_gate -v
 """
+import io
 import json
 import shutil
 import tempfile
 import unittest
+from contextlib import redirect_stdout
 from pathlib import Path
 
 from pipeline import rl_gate as G
@@ -88,6 +90,76 @@ class TestRlGate(unittest.TestCase):
         self.assertEqual(r["n_pairs"], 24)
         self.assertIn("t024:0", r["unpaired"]["init_only"])
         self.assertEqual(r["unpaired"]["cand_only"], [])
+
+    def test_headline_is_entry_clustered_not_pooled(self):
+        # repair ticket's verifier fixture: 10 tags carry 3 seeds each (draw -> win), 20 tags carry only k=0
+        # (draw -> draw, no change). Pooled delta is 30.0 pp; entry-clustered (the new headline) is ~16.7 pp and
+        # must fall inside its own CI, unlike the pooled figure.
+        init, cand = [], []
+        for i in range(10):
+            for k in range(3):
+                init.append(rec(f"t{i:03d}", k, "draw"))
+                cand.append(rec(f"t{i:03d}", k, "win"))
+        for i in range(10, 30):
+            init.append(rec(f"t{i:03d}", 0, "draw"))
+            cand.append(rec(f"t{i:03d}", 0, "draw"))
+        write_matches(self.tmp / "init", init)
+        write_matches(self.tmp / "cand", cand)
+        r = G.gate(self.tmp / "init", self.tmp / "cand")
+        self.assertAlmostEqual(r["pooled_delta_pp"], 30.0)
+        self.assertAlmostEqual(r["delta_pp"], 100.0 / 6, places=3)          # (10*0.5 + 20*0)/30 * 100
+        self.assertGreaterEqual(r["delta_pp"], r["delta_ci95_pp"]["lo"])
+        self.assertLessEqual(r["delta_pp"], r["delta_ci95_pp"]["hi"])
+        self.assertFalse(r["k_counts_equal"])
+
+    def test_zero_win_init_defaults_share_and_refusal_slack(self):
+        # init never wins (0 wins) and never refuses a ghost play; cand wins some, refuses at 1/match.
+        init = [rec(f"t{i:03d}", 0, "loss", ghost_refused=0) for i in range(20)]
+        cand = [rec(f"t{i:03d}", 0, "win" if i < 12 else "loss", ghost_refused=1) for i in range(20)]
+        write_matches(self.tmp / "init", init)
+        write_matches(self.tmp / "cand", cand)
+        r = G.gate(self.tmp / "init", self.tmp / "cand")
+        self.assertTrue(r["outlived_share_defaulted"]["init"])
+        self.assertEqual(r["outlived_script_win_share_init"], 0.0)
+        self.assertTrue(r["criteria"]["outlived_script_rise_le_15pp"])          # not forced to fail by a None
+        self.assertEqual(r["ghost_refusal_rate_init"], 0.0)
+        self.assertEqual(r["ghost_refusal_rate_bound"], 1.0)                    # max(2*0, 0+1.0)
+        self.assertTrue(r["criteria"]["ghost_refusal_rate_le_2x_init"])         # cand at 1.0 <= bound 1.0
+
+    def test_missing_after_script_marks_unknown_and_insufficient(self):
+        init = [rec(f"t{i:03d}", 0, "win" if i < 12 else "loss") for i in range(25)]
+        del init[0]["after_script"]                                            # one legacy record missing the field
+        cand = [rec(f"t{i:03d}", 0, "win" if i < 15 else "loss") for i in range(25)]
+        write_matches(self.tmp / "init", init)
+        write_matches(self.tmp / "cand", cand)
+        r = G.gate(self.tmp / "init", self.tmp / "cand")
+        self.assertEqual(r["n_entries"], 25)                                    # plenty of tags on their own
+        self.assertTrue(r["before_script_unknown"])
+        self.assertEqual(len(r["before_script_missing_field"]), 1)
+        self.assertIsNone(r["criteria"]["before_script_delta_gt_0"])
+        self.assertEqual(r["verdict"], "INSUFFICIENT")
+
+    def test_duplicate_rows_keep_first_and_are_counted(self):
+        init = [rec("t000", 0, "win"), rec("t000", 0, "loss")]                  # duplicate key, first should win
+        cand = [rec("t000", 0, "win")]
+        write_matches(self.tmp / "init", init)
+        write_matches(self.tmp / "cand", cand)
+        r = G.gate(self.tmp / "init", self.tmp / "cand")
+        self.assertEqual(r["duplicates"], {"init": 1, "cand": 0})
+        self.assertEqual(r["n_pairs"], 1)
+        self.assertEqual(r["winrate_init"], 1.0)                                # first line ("win") kept, not last
+
+    def test_rounding_and_insufficient_heading(self):
+        recs = [rec(f"t{i:03d}", 0, "win" if i < 5 else "loss", plays_per_min=11.742862068965513) for i in range(10)]
+        write_matches(self.tmp / "init", recs)
+        write_matches(self.tmp / "cand", recs)
+        r = G.gate(self.tmp / "init", self.tmp / "cand")
+        self.assertEqual(r["plays_per_min_init"], 11.743)
+        self.assertEqual(r["verdict"], "INSUFFICIENT")
+        buf = io.StringIO()
+        with redirect_stdout(buf):
+            G.print_report(r)
+        self.assertIn("(not graded: insufficient)", buf.getvalue())
 
 
 if __name__ == "__main__":

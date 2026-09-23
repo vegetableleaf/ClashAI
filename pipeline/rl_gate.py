@@ -5,7 +5,13 @@ same held-out ghosts, plus the e1_eval command lines that produce those two runs
     python -m pipeline.rl_gate --commands --init-ckpt icebow/data/pipeline/s1_icebow_v6lat_s0.pt ^
 
 Reads every ``matches.jsonl`` under each ``--init``/``--cand`` dir, recursively (the slot0/slot1 layout of
-key; a (tag, k) present in only one run is reported as unpaired and excluded from every paired statistic.
+counted and warned about (not silently dropped). Pairs the two runs on that key; a (tag, k) present in only one
+run is reported as unpaired and excluded from every paired statistic.
+
+Headline delta is the ENTRY-CLUSTERED estimate (per-tag mean over its k seeds, then mean over tags -- the same
+statistic the bootstrap CI is built from), not the pooled per-(tag,k) delta; the two differ when tags carry unequal
+k counts, and only the entry-clustered one is graded against criterion (i). The pooled delta is still printed, on
+its own secondary line, labelled as pooled.
 
 delta + CI and (iv) the section 4.2 guards, PLUS the design's held-out-screen rule that the gain must also hold
 before the ghost script ended. Item (ii), pro agreement, is NOT computable from matches.jsonl (it needs the clean
@@ -33,9 +39,10 @@ def val(r: dict) -> float:
     return WIN_VAL[r["outcome"]]
 
 
-def load_dir(d: Path) -> dict[tuple[str, int], dict]:
-    """Every matches.jsonl under ``d``, keyed by (tag, k); last line wins on a repeat key."""
+def load_dir(d: Path) -> tuple[dict[tuple[str, int], dict], int]:
+    """Every matches.jsonl under ``d``, keyed by (tag, k). FIRST line wins on a repeat key -> (records, n_dup)."""
     out: dict[tuple[str, int], dict] = {}
+    dup = 0
     for f in sorted(Path(d).glob("**/matches.jsonl")):
         for line in f.read_text(encoding="utf-8").splitlines():
             if not line.strip():
@@ -43,16 +50,29 @@ def load_dir(d: Path) -> dict[tuple[str, int], dict]:
             r = json.loads(line)
             if r.get("mode") in ("parity", "liveness"):          # not eval-mode outcome rows
                 continue
-            out[(str(r["tag"]), int(r.get("k", 0)))] = r
-    return out
+            key = (str(r["tag"]), int(r.get("k", 0)))
+            if key in out:
+                dup += 1
+                continue
+            out[key] = r
+    return out, dup
 
 
 def _mean(xs: list[float]) -> Optional[float]:
     return float(np.mean(xs)) if xs else None
 
 
+def _win_share(wins: list[dict], key_fn) -> tuple[float, bool]:
+    """Mean of key_fn over wins -> (share, defaulted). An empty win list defaults to share 0.0 rather than None,
+    so a zero-win side doesn't force every dependent guard to fail for lack of a number."""
+    if not wins:
+        return 0.0, True
+    return float(np.mean([key_fn(r) for r in wins])), False
+
+
 def gate(init_dir: Path, cand_dir: Path, draws: int = DRAWS, seed: int = GATE_SEED) -> dict:
-    I, C = load_dir(init_dir), load_dir(cand_dir)
+    I, dup_init = load_dir(init_dir)
+    C, dup_cand = load_dir(cand_dir)
     keys = sorted(set(I) & set(C))
     unpaired = {"init_only": sorted(f"{t}:{k}" for t, k in set(I) - set(C)),
                 "cand_only": sorted(f"{t}:{k}" for t, k in set(C) - set(I))}
@@ -66,13 +86,21 @@ def gate(init_dir: Path, cand_dir: Path, draws: int = DRAWS, seed: int = GATE_SE
         better += int(b > a)
         worse += int(b < a)
 
+    k_counts = sorted({len(v) for v in by_entry_delta.values()})
+    unequal_k = len(k_counts) > 1
+
     winrate_init = _mean([val(I[key]) for key in keys])
     winrate_cand = _mean([val(C[key]) for key in keys])
-    delta_pp = (winrate_cand - winrate_init) * 100 if keys else None
+    pooled_delta_pp = (winrate_cand - winrate_init) * 100 if keys else None
     ci = cluster_bootstrap(by_entry_delta, draws, seed) if keys else {"point": None, "lo": None, "hi": None}
+    delta_pp = ci["point"] * 100 if ci["point"] is not None else None          # headline: entry-clustered, matches the CI
 
-    init_before = [I[key] for key in keys if not I[key].get("after_script")]
-    cand_before = [C[key] for key in keys if not C[key].get("after_script")]
+    # before-script subset: a record missing `after_script` is EXCLUDED (not counted as before-script), and its
+    # absence on either side makes the before-script criterion ungradable (UNKNOWN), not silently "True == before".
+    missing_after_script = [f"init:{t}:{k}" for t, k in keys if "after_script" not in I[(t, k)]]
+    missing_after_script += [f"cand:{t}:{k}" for t, k in keys if "after_script" not in C[(t, k)]]
+    init_before = [I[key] for key in keys if I[key].get("after_script") is False]
+    cand_before = [C[key] for key in keys if C[key].get("after_script") is False]
     wr_before_init = _mean([val(r) for r in init_before])
     wr_before_cand = _mean([val(r) for r in cand_before])
     before_delta_pp = (wr_before_cand - wr_before_init) * 100 if None not in (wr_before_init, wr_before_cand) else None
@@ -84,46 +112,59 @@ def gate(init_dir: Path, cand_dir: Path, draws: int = DRAWS, seed: int = GATE_SE
 
     init_wins = [I[key] for key in keys if I[key]["outcome"] == "win"]
     cand_wins = [C[key] for key in keys if C[key]["outcome"] == "win"]
-    outlived_init = _mean([float(bool(r.get("won_after_script"))) for r in init_wins])
-    outlived_cand = _mean([float(bool(r.get("won_after_script"))) for r in cand_wins])
-    outlived_rise_pp = (outlived_cand - outlived_init) * 100 if None not in (outlived_init, outlived_cand) else None
+    outlived_init, outlived_init_defaulted = _win_share(init_wins, lambda r: float(bool(r.get("won_after_script"))))
+    outlived_cand, outlived_cand_defaulted = _win_share(cand_wins, lambda r: float(bool(r.get("won_after_script"))))
+    outlived_rise_pp = (outlived_cand - outlived_init) * 100
 
-    le10_init = _mean([float(int(r.get("ghost_delivered", 0)) <= 10) for r in init_wins])
-    le10_cand = _mean([float(int(r.get("ghost_delivered", 0)) <= 10) for r in cand_wins])
-    le10_rise_pp = (le10_cand - le10_init) * 100 if None not in (le10_init, le10_cand) else None
+    le10_init, le10_init_defaulted = _win_share(init_wins, lambda r: float(int(r.get("ghost_delivered", 0)) <= 10))
+    le10_cand, le10_cand_defaulted = _win_share(cand_wins, lambda r: float(int(r.get("ghost_delivered", 0)) <= 10))
+    le10_rise_pp = (le10_cand - le10_init) * 100
 
     refusal_init = _mean([int(I[key].get("ghost_refused", 0)) + int(I[key].get("ghost_undelivered", 0)) for key in keys])
     refusal_cand = _mean([int(C[key].get("ghost_refused", 0)) + int(C[key].get("ghost_undelivered", 0)) for key in keys])
+    # a zero-refusal init can't be "doubled"; give it +1.0/match of slack instead of demanding cand stay at 0.
+    refusal_bound = max(2 * refusal_init, refusal_init + 1.0) if refusal_init is not None else None
 
     n_tags = len(tags)
-    insufficient = n_tags < MIN_TAGS
+    before_script_unknown = len(missing_after_script) > 0
+    insufficient = n_tags < MIN_TAGS or before_script_unknown
     c1 = delta_pp is not None and delta_pp >= 5.0
     c2 = ci["lo"] is not None and ci["lo"] * 100 > 0
-    c3 = before_delta_pp is not None and before_delta_pp > 0
+    c3: Optional[bool] = None if before_script_unknown else (before_delta_pp is not None and before_delta_pp > 0)
     c4 = ppm_ratio is not None and 0.8 <= ppm_ratio <= 1.2
-    c5 = outlived_rise_pp is not None and outlived_rise_pp <= 15.0
-    c6 = le10_rise_pp is not None and le10_rise_pp <= 10.0
-    c7 = refusal_init is not None and refusal_cand is not None and (
-        refusal_cand == 0 if refusal_init == 0 else refusal_cand <= 2 * refusal_init)
+    c5 = outlived_rise_pp <= 15.0
+    c6 = le10_rise_pp <= 10.0
+    c7 = refusal_bound is not None and refusal_cand is not None and refusal_cand <= refusal_bound
     criteria = {"delta_ge_5pp": c1, "ci_lower_gt_0": c2, "before_script_delta_gt_0": c3,
                 "plays_per_min_ratio_in_0.8_1.2": c4, "outlived_script_rise_le_15pp": c5,
                 "le10_delivered_win_share_rise_le_10pp": c6, "ghost_refusal_rate_le_2x_init": c7}
-    verdict = "INSUFFICIENT" if insufficient else ("PASS" if all(criteria.values()) else "FAIL")
+    graded = {k: v for k, v in criteria.items() if v is not None}
+    verdict = "INSUFFICIENT" if insufficient else ("PASS" if all(graded.values()) else "FAIL")
 
     return {
         "n_pairs": len(keys), "n_entries": n_tags, "unpaired": unpaired,
-        "winrate_init": winrate_init, "winrate_cand": winrate_cand, "delta_pp": delta_pp,
+        "duplicates": {"init": dup_init, "cand": dup_cand},
+        "k_counts_equal": not unequal_k, "k_count_range": [k_counts[0], k_counts[-1]] if k_counts else None,
+        "winrate_init": winrate_init, "winrate_cand": winrate_cand,
+        "delta_pp": delta_pp, "pooled_delta_pp": pooled_delta_pp,
         "delta_ci95_pp": {"lo": ci["lo"] * 100 if ci["lo"] is not None else None,
                           "hi": ci["hi"] * 100 if ci["hi"] is not None else None, "draws": draws, "seed": seed},
         "mcnemar": {"cand_better": better, "cand_worse": worse, "exact_p": mcnemar_exact(better, worse)},
+        "before_script_missing_field": missing_after_script, "before_script_unknown": before_script_unknown,
         "winrate_before_script_init": wr_before_init, "winrate_before_script_cand": wr_before_cand,
         "before_script_delta_pp": before_delta_pp,
-        "plays_per_min_init": m_init, "plays_per_min_cand": m_cand, "plays_per_min_ratio": ppm_ratio,
+        "plays_per_min_init": round(m_init, 3) if m_init is not None else None,
+        "plays_per_min_cand": round(m_cand, 3) if m_cand is not None else None,
+        "plays_per_min_ratio": round(ppm_ratio, 3) if ppm_ratio is not None else None,
         "outlived_script_win_share_init": outlived_init, "outlived_script_win_share_cand": outlived_cand,
         "outlived_script_rise_pp": outlived_rise_pp,
+        "outlived_share_defaulted": {"init": outlived_init_defaulted, "cand": outlived_cand_defaulted},
         "le10_delivered_win_share_init": le10_init, "le10_delivered_win_share_cand": le10_cand,
         "le10_delivered_win_share_rise_pp": le10_rise_pp,
-        "ghost_refusal_rate_init": refusal_init, "ghost_refusal_rate_cand": refusal_cand,
+        "le10_share_defaulted": {"init": le10_init_defaulted, "cand": le10_cand_defaulted},
+        "ghost_refusal_rate_init": round(refusal_init, 3) if refusal_init is not None else None,
+        "ghost_refusal_rate_cand": round(refusal_cand, 3) if refusal_cand is not None else None,
+        "ghost_refusal_rate_bound": round(refusal_bound, 3) if refusal_bound is not None else None,
         "criteria": criteria, "verdict": verdict,
     }
 
@@ -140,36 +181,58 @@ def print_report(r: dict) -> None:
     print(f"paired: {r['n_pairs']} (tag, k) pairs over {r['n_entries']} distinct entries (tags)")
     u = r["unpaired"]
     print(f"unpaired: {len(u['init_only'])} init-only, {len(u['cand_only'])} cand-only (excluded from paired stats)")
-    print(f"winrate  init {_pct(r['winrate_init'])}  cand {_pct(r['winrate_cand'])}  "
-          f"paired delta {_pp(r['delta_pp'])}")
+    d = r["duplicates"]
+    if d["init"] or d["cand"]:
+        print(f"WARNING: duplicate (tag,k) rows dropped (first line kept): {d['init']} in init, {d['cand']} in cand")
+    if not r["k_counts_equal"]:
+        lo, hi = r["k_count_range"]
+        print(f"WARNING: tags have unequal k counts ({lo}-{hi} seeds/tag) -- the entry-clustered stats still weight "
+              f"every tag equally regardless of how many seeds it carries")
+    print(f"winrate  init {_pct(r['winrate_init'])}  cand {_pct(r['winrate_cand'])}")
+    print(f"HEADLINE entry-clustered delta (per-tag mean over k, then mean over tags): {_pp(r['delta_pp'])}")
+    print(f"  pooled (tag,k) delta, for reference only: {_pp(r['pooled_delta_pp'])}")
     ci = r["delta_ci95_pp"]
     print(f"  entry-clustered bootstrap 95% CI of delta: [{ci['lo']:+.1f}, {ci['hi']:+.1f}] pp "
           f"({ci['draws']} draws, seed {ci['seed']})" if ci["lo"] is not None else "  CI: n/a")
     m = r["mcnemar"]
     print(f"  McNemar (tag,k)-level: cand-better {m['cand_better']}, cand-worse {m['cand_worse']} (exact p={m['exact_p']:.4f})")
-    print(f"before-script winrate  init {_pct(r['winrate_before_script_init'])}  cand {_pct(r['winrate_before_script_cand'])}  "
-          f"delta {_pp(r['before_script_delta_pp'])}")
+    if r["before_script_unknown"]:
+        print(f"before-script winrate: UNKNOWN -- after_script missing on {len(r['before_script_missing_field'])} records")
+    else:
+        print(f"before-script winrate  init {_pct(r['winrate_before_script_init'])}  cand {_pct(r['winrate_before_script_cand'])}  "
+              f"delta {_pp(r['before_script_delta_pp'])}")
     print(f"plays/min  init {r['plays_per_min_init']}  cand {r['plays_per_min_cand']}  "
-          f"ratio cand/init {r['plays_per_min_ratio']:.3f}" if r["plays_per_min_ratio"] is not None else "plays/min: n/a")
+          f"ratio cand/init {r['plays_per_min_ratio']}" if r["plays_per_min_ratio"] is not None else "plays/min: n/a")
+    od = r["outlived_share_defaulted"]
+    if od["init"] or od["cand"]:
+        print("note: zero-win side(s) treated as 0.0 outlived-script / <=10-delivered share "
+              f"(init defaulted={od['init']}, cand defaulted={od['cand']})")
     print(f"outlived-the-script win share  init {_pct(r['outlived_script_win_share_init'])}  "
           f"cand {_pct(r['outlived_script_win_share_cand'])}  rise {_pp(r['outlived_script_rise_pp'])}")
     print(f"<=10-delivered win share  init {_pct(r['le10_delivered_win_share_init'])}  "
           f"cand {_pct(r['le10_delivered_win_share_cand'])}  rise {_pp(r['le10_delivered_win_share_rise_pp'])}")
-    print(f"ghost refusal rate/match  init {r['ghost_refusal_rate_init']}  cand {r['ghost_refusal_rate_cand']}")
+    print(f"ghost refusal rate/match  init {r['ghost_refusal_rate_init']}  cand {r['ghost_refusal_rate_cand']}  "
+          f"(pass bound: cand <= {r['ghost_refusal_rate_bound']})")
     print()
     print("item (ii) pro agreement is NOT checked here -- read it from the training log / pipeline.eval_s1 "
           "(clean VAL split, not in matches.jsonl).")
     print()
-    labels = {"delta_ge_5pp": "(i)  paired delta >= +5 pp", "ci_lower_gt_0": "(i)  CI lower bound > 0",
+    labels = {"delta_ge_5pp": "(i)  paired entry-clustered delta >= +5 pp", "ci_lower_gt_0": "(i)  CI lower bound > 0",
               "before_script_delta_gt_0": "     before-script delta > 0",
               "plays_per_min_ratio_in_0.8_1.2": "(iii) plays/min ratio in [0.8, 1.2]",
               "outlived_script_rise_le_15pp": "(iv) outlived-script share rise <= 15 pp",
               "le10_delivered_win_share_rise_le_10pp": "(iv) <=10-delivered win-share rise <= 10 pp",
-              "ghost_refusal_rate_le_2x_init": "(iv) ghost refusal rate <= 2x init"}
+              "ghost_refusal_rate_le_2x_init": "(iv) ghost refusal rate <= 2x init (or init + 1.0/match)"}
+    if r["verdict"] == "INSUFFICIENT":
+        print("(not graded: insufficient)")
     for key, label in labels.items():
-        print(f"  {'PASS' if r['criteria'][key] else 'FAIL'}  {label}")
+        v = r["criteria"][key]
+        status = "UNKNOWN" if v is None else ("PASS" if v else "FAIL")
+        print(f"  {status}  {label}")
     if r["n_entries"] < MIN_TAGS:
         print(f"\nVERDICT: INSUFFICIENT ({r['n_entries']} paired tags < {MIN_TAGS})")
+    elif r["before_script_unknown"]:
+        print(f"\nVERDICT: INSUFFICIENT (after_script missing on {len(r['before_script_missing_field'])} records)")
     else:
         print(f"\nVERDICT: {r['verdict']}")
 
