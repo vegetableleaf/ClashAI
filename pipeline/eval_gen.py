@@ -25,7 +25,7 @@ import torch.nn.functional as Fn
 from .dataset import load as load_ds
 from .model_gen import IDENT, GenModel, card_form_of
 from .model_v3 import GRID_X, GRID_Y, cell_index, cell_label, tile_of_cell
-from .train_s1 import Rows
+from .train_s1 import MAX_U, Rows
 
 DECK_ID_NOTE = ("deck_id is keyed on the 8 BASE card keys (dataset_gen): evo/hero variants of one card list share a "
                 "deck_id, so a 'deck' here merges its form variants")
@@ -40,9 +40,12 @@ class GenRows(Rows):
         hit = dc == wc[:, None]
         wait = np.where(hit.any(1) & (wc > 0), hit.argmax(1), -1)
         super().__init__(dict(arrs, y_slot=arrs["y_hand_pos"], y_wait_slot=wait), idx, device)
-        self.ident = {k: torch.from_numpy(arrs[k].astype(np.int64)).to(device) for k in IDENT}
-        self.card = torch.from_numpy(arrs["y_card"].astype(np.int64)).to(device)
-        self.form = card_form_of(self.ident["deck_card"], self.ident["deck_form"], self.card)
+        # int16 on the device (the v1 set is 3.7M rows); batch() widens to int64
+        ident = {k: torch.from_numpy(arrs[k].astype(np.int16)) for k in IDENT}
+        card = torch.from_numpy(arrs["y_card"].astype(np.int16))
+        self.form = card_form_of(ident["deck_card"], ident["deck_form"], card).to(device)
+        self.ident = {k: v.to(device) for k, v in ident.items()}
+        self.card = card.to(device)
 
     def view(self, idx: np.ndarray) -> "GenRows":
         """Same device arrays, another index set (the arrays are not copied again)."""
@@ -51,10 +54,19 @@ class GenRows(Rows):
         return v
 
     def batch(self, ids: np.ndarray) -> dict:
-        b = super().batch(ids)
-        t = torch.from_numpy(np.asarray(ids)).to(self.dev)
-        b.update({k: v[t] for k, v in self.ident.items()})
-        b["card"], b["form"] = self.card[t], self.form[t]
+        """``train_s1.Rows.batch`` (same keys, same values: first MAX_U units, zero-padded) with the per-row Python
+        copy loop replaced by one gather, plus the identity arrays."""
+        ids = np.asarray(ids)
+        a = self.off[ids]
+        m = np.minimum(self.off[ids + 1] - a, MAX_U)
+        mask = torch.from_numpy(np.arange(MAX_U)[None, :] < m[:, None])
+        src = torch.from_numpy(a[:, None] + np.arange(MAX_U)[None, :]).clamp_(max=max(len(self.tok_all) - 1, 0))
+        tok = self.tok_all[src].masked_fill_(~mask.unsqueeze(-1), 0.0)
+        t = torch.from_numpy(ids).to(self.dev)
+        b = {"tok": tok.to(self.dev), "mask": mask.to(self.dev), "sc": self.sc[t], "past": self.past[t],
+             "xy": self.xy[t], "slot": self.slot[t], "gate": self.gate[t], "wait": self.wait[t], "value": self.value[t]}
+        b.update({k: v[t].long() for k, v in self.ident.items()})
+        b["card"], b["form"] = self.card[t].long(), self.form[t].long()
         return b
 
 
@@ -189,9 +201,18 @@ def load_model(ckpt: Path, device) -> tuple[GenModel, dict]:
     return model, st
 
 
-def run(model: GenModel, arrs: dict, rows: GenRows, grid: str, bs: int = 512) -> dict:
-    v3 = np.where(arrs["v3val"] == 1)[0]
+def val_rows(arrs: dict, sample: int = 0) -> np.ndarray:
+    """All-deck val row ids (split 1); ``sample`` > 0: a FIXED random subset of that many (numpy seed 0, sorted), so
+    every epoch and every standalone eval with the same N scores the same rows."""
     va = np.where(arrs["split"] == 1)[0]
+    if sample and sample < len(va):
+        va = np.sort(np.random.default_rng(0).choice(va, size=sample, replace=False))
+    return va
+
+
+def run(model: GenModel, arrs: dict, rows: GenRows, grid: str, bs: int = 512, val_sample: int = 0) -> dict:
+    v3 = np.where(arrs["v3val"] == 1)[0]
+    va = val_rows(arrs, val_sample)
     log: list = []
     res = {"v3val": {"model": evaluate(model, rows.view(v3), bs, grid), "baseline": baseline(arrs, v3, grid)},
            "val_all": {"model": evaluate(model, rows.view(va), bs, grid, rowlog=log), "baseline": baseline(arrs, va, grid)}}
@@ -208,6 +229,8 @@ def main(argv=None) -> int:
     ap.add_argument("--data", type=Path, required=True)
     ap.add_argument("--out", type=Path, default=None, help="json path (default: <ckpt>.eval.json)")
     ap.add_argument("--bs", type=int, default=512)
+    ap.add_argument("--val-sample", type=int, default=0,
+                    help="score a fixed seed-0 sample of N all-deck val rows (train_gen's per-epoch set) instead of all")
     a = ap.parse_args(argv)
     dev = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model, st = load_model(a.ckpt, dev)
@@ -216,7 +239,8 @@ def main(argv=None) -> int:
         raise SystemExit("card_vocab of the data differs from the checkpoint's: ids would mean other cards")
     grid = st["args"]["grid"]
     rows = GenRows(arrs, np.where(arrs["split"] == 1)[0], dev)
-    res = {"ckpt": str(a.ckpt), "data": str(a.data), "epoch": st.get("epoch"), "grid": grid, **run(model, arrs, rows, grid, a.bs)}
+    res = {"ckpt": str(a.ckpt), "data": str(a.data), "epoch": st.get("epoch"), "grid": grid, "val_sample": a.val_sample,
+           **run(model, arrs, rows, grid, a.bs, a.val_sample)}
     out = a.out or a.ckpt.with_suffix(".eval.json")
     out.write_text(json.dumps(res, indent=1))
     keys = ("cell_half_top1", "cell_tile_top1", "card_top1", "joint_top1", "place_dist", "cell_nll", "gate_acc",

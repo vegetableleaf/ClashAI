@@ -6,10 +6,12 @@
 Mirrors ``train_s1`` (AdamW lr 3e-4, wd 0.01, OneCycle pct 0.05, bs 256, grad clip 1.0, mirror p = 0.5, same loss
 weights): cell CE on PLAY rows teacher-forced on the pro's card IDENTITY, card CE over the 4 hand positions on PLAY
 rows, gate BCE on all rows, 0.5 x wait CE (pointer over the 8 deck cards) on WAIT rows, 0.5 x crown-diff CE on all
-rows. Checkpoint = best val (split 1, all decks) ``--select`` metric (S1's default cell_tile_top1), written to
-``--out-dir/gen[_tag]_s<seed>.pt`` with S1's layout + ``gen`` / ``card_vocab`` / ``d_c``. Each epoch also logs the
-v3val rows (the S1-comparable instrument).
-``--limit-rows N``: a seeded random N of the TRAIN rows (val is always complete, so v3val stays comparable).
+rows (card / wait: rows with no valid target are excluded, and a head with none in the batch contributes 0).
+Each epoch scores the FULL v3val rows (the S1-comparable instrument) and a FIXED seed-0 sample of ``--val-sample`` all-deck
+val rows (default 30,000; ids recorded in the history json); checkpoint = best ``--select`` metric (S1's default
+cell_tile_top1) on that sample, written to ``--out-dir/gen[_tag]_s<seed>.pt`` with S1's layout + ``gen`` /
+``card_vocab`` / ``d_c``.
+``--limit-rows N``: a seeded random N of the TRAIN rows (v3val is always complete).
 ``--deck-weighting sqrt``: each epoch draws len(train) rows WITH replacement, row weight 1 / sqrt(train rows of its
 deck), so a deck's share goes as sqrt(its rows) instead of its rows (icebow/hogeq sides dominate the starter).
 """
@@ -25,11 +27,18 @@ import torch
 import torch.nn.functional as Fn
 
 from .dataset import load as load_ds
-from .eval_gen import GenRows, evaluate
+from .eval_gen import GenRows, evaluate, val_rows
 from .model_gen import GenModel, mirror_gen
 from .model_v3 import cell_label
 
 REPO = Path(__file__).resolve().parents[1]
+
+
+def _ce(logits: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
+    """Cross-entropy over the rows with a real target (>= 0); exactly 0 when there are none (a plain
+    ``ignore_index=-1`` mean is 0/0 = NaN there, and -inf pad logits make ``logits.sum() * 0`` NaN too)."""
+    ok = target >= 0
+    return Fn.cross_entropy(logits[ok], target[ok]) if ok.any() else logits.new_zeros(())
 
 
 def losses(model: GenModel, b: dict, mirror: bool, grid: str = "floor") -> tuple[torch.Tensor, dict]:
@@ -41,9 +50,9 @@ def losses(model: GenModel, b: dict, mirror: bool, grid: str = "floor") -> tuple
     parts = {}
     if play.any():
         parts["cell"] = Fn.cross_entropy(out["cell"][play], cell_label(xy[play], grid))
-        parts["card"] = Fn.cross_entropy(out["card"][play], b["slot"][play], ignore_index=-1)
+        parts["card"] = _ce(out["card"][play], b["slot"][play])
     if (~play).any():
-        parts["wait"] = 0.5 * Fn.cross_entropy(out["wait"][~play], b["wait"][~play], ignore_index=-1)
+        parts["wait"] = 0.5 * _ce(out["wait"][~play], b["wait"][~play])
     parts["gate"] = Fn.binary_cross_entropy_with_logits(out["gate"], b["gate"])
     parts["value"] = 0.5 * Fn.cross_entropy(out["value"], b["value"])
     return sum(parts.values()), {k: float(v.detach()) for k, v in parts.items()}
@@ -66,6 +75,8 @@ def main(argv=None) -> int:
     ap.add_argument("--limit-rows", type=int, default=0)
     ap.add_argument("--deck-weighting", default="none", choices=("none", "sqrt"))
     ap.add_argument("--select", default="cell_tile_top1")
+    ap.add_argument("--val-sample", type=int, default=30000,
+                    help="per-epoch all-deck val = a FIXED seed-0 sample of N val rows (0 = all); v3val is always full")
     a = ap.parse_args(argv)
     arrs, meta = load_ds(a.data)
     if meta.get("grid") != a.grid:
@@ -77,7 +88,7 @@ def main(argv=None) -> int:
     tr_idx = np.where(arrs["split"] == 0)[0]
     if a.limit_rows and a.limit_rows < len(tr_idx):
         tr_idx = np.sort(rng.choice(tr_idx, size=a.limit_rows, replace=False))
-    va_idx = np.where(arrs["split"] == 1)[0]
+    va_idx = val_rows(arrs, a.val_sample)
     v3_idx = np.where(arrs["v3val"] == 1)[0]
     rows = GenRows(arrs, tr_idx, dev)                            # one device copy; val / v3val are views
     va, v3 = rows.view(va_idx), rows.view(v3_idx)
@@ -135,7 +146,8 @@ def main(argv=None) -> int:
             torch.save({"model": model.state_dict(), "args": _args, "deck": "generalist", "epoch": ep + 1, "val": ev,
                         "n_params": n_params, "gen": True, "card_vocab": vocab_list, "d_c": a.d_c}, ckpt)
         (a.out_dir / f"hist_gen_{tag}.json").write_text(json.dumps({"seed": a.seed, "n_params": n_params,
-                                                                     "ckpt": str(ckpt), "hist": hist}, indent=1))
+                                                                     "ckpt": str(ckpt), "val_sample": a.val_sample,
+                                                                     "val_rows": va_idx.tolist(), "hist": hist}))
     st = torch.load(ckpt, map_location=dev)
     model.load_state_dict(st["model"])
     ev_tr = evaluate(model, rows.view(rng.choice(tr_idx, size=min(len(tr_idx), 20000), replace=False)), grid=a.grid)

@@ -29,9 +29,9 @@ from pipeline.model_v3 import S1Model, hand_mask_from_sc
 from pipeline.obs_contract import F as TOK_F, S as SC_S
 
 
-def toy(n: int = 300, seed: int = 0) -> dict:
+def toy(n: int = 300, seed: int = 0, nt_max: int = 12) -> dict:
     rng = np.random.default_rng(seed)
-    nt = rng.integers(1, 12, n)
+    nt = rng.integers(1, nt_max, n)
     tok = rng.normal(size=(int(nt.sum()), TOK_F)).astype(np.float32)
     tok[:, 0] = rng.integers(0, 50, len(tok))
     tok[:, 4:6] = rng.uniform(0, 1, (len(tok), 2))
@@ -169,6 +169,31 @@ class TestModelGen(unittest.TestCase):
                 self.assertAlmostEqual(r1[k], rg[k], places=6, msg=(grid, k))
             self.assertGreater(r1["n_play"], 50)
 
+    def test_batch_matches_train_s1_rows(self):
+        t = toy(n=200, seed=3, nt_max=90)                       # rows longer than MAX_U = 64 are truncated alike
+        self.assertGreater(int(np.diff(t["gen"]["off"]).max()), 64)
+        rows = EG.GenRows(t["gen"], np.arange(200), torch.device("cpu"))
+        ids = np.random.default_rng(0).permutation(200)[:77]
+        b_new, b_old = rows.batch(ids), T1.Rows.batch(rows, ids)
+        for k, v in b_old.items():
+            self.assertTrue(torch.equal(b_new[k], v), k)
+
+    def test_zero_valid_targets_give_zero_loss(self):
+        b = dict(self.b, slot=torch.full_like(self.b["slot"], -1), wait=torch.full_like(self.b["wait"], -1))
+        self.assertTrue(bool((b["gate"] > 0.5).any()) and bool((b["gate"] < 0.5).any()))
+        loss, parts = TG.losses(tiny().train(), b, mirror=False, grid="lattice")
+        self.assertEqual(parts["card"], 0.0)
+        self.assertEqual(parts["wait"], 0.0)
+        self.assertTrue(bool(torch.isfinite(loss)))
+        loss.backward()                                          # the other heads still get a finite gradient
+
+    def test_val_sample_is_fixed(self):
+        g = self.t["gen"]
+        a, b = EG.val_rows(g, 40), EG.val_rows(g, 40)
+        self.assertEqual(a.tolist(), b.tolist())
+        self.assertTrue(bool((g["split"][a] == 1).all()))
+        self.assertEqual(len(EG.val_rows(g, 0)), int((g["split"] == 1).sum()))
+
     def test_checkpoint_roundtrip_and_eval_gen_reproduces(self):
         tmp = Path(tempfile.mkdtemp())
         try:
@@ -177,8 +202,13 @@ class TestModelGen(unittest.TestCase):
             np.savez(tmp / "toy.npz", meta=json.dumps(meta), tags=np.asarray(["t"]), **g)
             with mock.patch("torch.cuda.is_available", return_value=False):
                 TG.main(["--data", str(tmp / "toy.npz"), "--seed", "0", "--epochs", "2", "--out-dir", str(tmp),
-                         "--grid", "lattice", "--d", "32", "--layers", "1", "--d-c", "8", "--bs", "32"])
-                EG.main(["--ckpt", str(tmp / "gen_s0.pt"), "--data", str(tmp / "toy.npz"), "--out", str(tmp / "ev.json")])
+                         "--grid", "lattice", "--d", "32", "--layers", "1", "--d-c", "8", "--bs", "32",
+                         "--val-sample", "50"])
+                EG.main(["--ckpt", str(tmp / "gen_s0.pt"), "--data", str(tmp / "toy.npz"), "--out", str(tmp / "ev.json"),
+                         "--val-sample", "50"])
+            hist = json.loads((tmp / "hist_gen_s0.json").read_text())
+            self.assertEqual(hist["val_rows"], EG.val_rows(g, 50).tolist())
+            self.assertEqual(len(hist["val_rows"]), 50)
             st = torch.load(tmp / "gen_s0.pt")
             self.assertTrue(st["gen"]); self.assertEqual(st["d_c"], 8); self.assertEqual(st["card_vocab"], meta["card_vocab"])
             ev = json.loads((tmp / "ev.json").read_text())
