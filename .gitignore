@@ -72,3 +72,8 @@ scratchpad/gauntlet/L66/clips180/
 scratchpad/gauntlet/L66/*.mp4
 scratchpad/gauntlet/L66/*.webm
 scratchpad/gauntlet/L66/sweep180/
+
+# --- Engine-driven replay corpora and HF crawl conversions (GBs; local data, never committed) ---
+scratchpad/gauntlet/ext/corpus_*/
+scratchpad/gauntlet/L68/generalist/pilot/crawl/
+scratchpad/gauntlet/L68/generalist/pilot/bytediff/
