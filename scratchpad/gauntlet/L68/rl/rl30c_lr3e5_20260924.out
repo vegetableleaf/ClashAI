@@ -1,0 +1,45 @@
+[rl] START rl30c_lr3e5_20260924 pid 76580 config sha 54dee070a19d argv ['--config', 'pipeline/rl_royale.yaml', '--run', 'rl30c_lr3e5_20260924', 'max_updates=30', 'lr=3e-5']
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+[rl] run rl30c_lr3e5_20260924: train 299 loadable, held-out 58 loadable (screen uses 58); init icebow/data/pipeline/s1_icebow_v6aug_s1.pt grid lattice
+[rl] init pro agreement (13761 VAL rows, 12s): cell 0.2073 card 0.6394 gate_bal 0.7636
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+[rl] init held-out screen: 174 matches, winrate 0.747, plays/min 11.65, guards outlived 0.215 <=10dlv 0.008 refused/m 0.557 (160s)
+[rl] saved C:\Users\benpe\ClashBot\icebow\data\bench\rl_royale\rl30c_lr3e5_20260924\rl30c_lr3e5_20260924_u0000.pt
+[rl] update-0 plays/min baseline 11.893 (stop outside [0.6, 1.6]x for 2 updates)
+[rl] u0000 W/L/D 34/30/0 ppm 11.89 pgate 0.102 KL g/c/x 0.0033/0.0019/0.0084 beta 0.3->0.15 clip 0.057 mixed 6/16 rows 11840 wall roll 58s upd 35s
+[rl] u0001 W/L/D 42/22/0 ppm 11.34 pgate 0.100 KL g/c/x 0.0057/0.0034/0.0101 beta 0.15->0.075 clip 0.063 mixed 5/16 rows 10904 wall roll 54s upd 29s
+[rl] u0002 W/L/D 41/23/0 ppm 11.69 pgate 0.103 KL g/c/x 0.0083/0.0058/0.0184 beta 0.075->0.0375 clip 0.068 mixed 7/16 rows 11545 wall roll 73s upd 34s
+[rl] u0003 W/L/D 29/35/0 ppm 11.76 pgate 0.106 KL g/c/x 0.0122/0.0096/0.0325 beta 0.0375->0.03 clip 0.073 mixed 9/16 rows 10778 wall roll 75s upd 28s
+[rl] u0004 W/L/D 43/21/0 ppm 11.83 pgate 0.109 KL g/c/x 0.0195/0.0099/0.0398 beta 0.03->0.03 clip 0.070 mixed 10/16 rows 11998 wall roll 80s upd 42s | proagree cell 0.2036 card 0.6365 gate 0.7673
+[rl] u0005 W/L/D 43/21/0 ppm 11.92 pgate 0.105 KL g/c/x 0.0217/0.0118/0.0382 beta 0.03->0.03 clip 0.067 mixed 7/16 rows 11955 wall roll 89s upd 31s
+[rl] u0006 W/L/D 36/28/0 ppm 11.87 pgate 0.115 KL g/c/x 0.0227/0.0091/0.0494 beta 0.03->0.03 clip 0.065 mixed 7/16 rows 10856 wall roll 70s upd 32s
+[rl] u0007 W/L/D 27/37/0 ppm 11.82 pgate 0.120 KL g/c/x 0.0323/0.0122/0.0560 beta 0.03->0.03 clip 0.066 mixed 10/16 rows 11121 wall roll 71s upd 32s
+[rl] u0008 W/L/D 53/11/0 ppm 11.71 pgate 0.106 KL g/c/x 0.0256/0.0108/0.0487 beta 0.03->0.03 clip 0.064 mixed 4/16 rows 12568 wall roll 74s upd 33s
+[rl] u0009 W/L/D 43/21/0 ppm 11.75 pgate 0.115 KL g/c/x 0.0301/0.0144/0.0488 beta 0.03->0.03 clip 0.068 mixed 5/16 rows 10898 wall roll 62s upd 43s | screen 0.713 d -3.4pp CI [-11.5, +4.6] (+19/-25) guards outlived 0.215->0.274 <=10dlv 0.008->0.016 refused/m 0.557->0.684 | proagree cell 0.2028 card 0.6362 gate 0.7591
+[rl] u0010 W/L/D 36/28/0 ppm 11.74 pgate 0.125 KL g/c/x 0.0380/0.0123/0.0560 beta 0.03->0.03 clip 0.066 mixed 8/16 rows 11039 wall roll 68s upd 28s
+[rl] u0011 W/L/D 35/29/0 ppm 11.98 pgate 0.125 KL g/c/x 0.0434/0.0181/0.0627 beta 0.03->0.03 clip 0.071 mixed 8/16 rows 10413 wall roll 58s upd 31s
+[rl] u0012 W/L/D 47/17/0 ppm 11.78 pgate 0.123 KL g/c/x 0.0338/0.0180/0.0551 beta 0.03->0.03 clip 0.069 mixed 6/16 rows 11320 wall roll 89s upd 38s
+[rl] u0013 W/L/D 38/26/0 ppm 11.95 pgate 0.119 KL g/c/x 0.0371/0.0195/0.0597 beta 0.03->0.03 clip 0.075 mixed 6/16 rows 11377 wall roll 104s upd 30s
+[rl] u0014 W/L/D 47/17/0 ppm 11.62 pgate 0.111 KL g/c/x 0.0403/0.0141/0.0695 beta 0.03->0.03 clip 0.074 mixed 7/16 rows 10995 wall roll 77s upd 29s | proagree cell 0.2079 card 0.6399 gate 0.7497
+[rl] u0015 W/L/D 49/15/0 ppm 11.76 pgate 0.106 KL g/c/x 0.0436/0.0169/0.0580 beta 0.03->0.03 clip 0.065 mixed 4/16 rows 11817 wall roll 81s upd 32s
+[rl] u0016 W/L/D 44/20/0 ppm 12.01 pgate 0.122 KL g/c/x 0.0473/0.0164/0.0649 beta 0.03->0.03 clip 0.076 mixed 5/16 rows 10794 wall roll 73s upd 35s
+[rl] u0017 W/L/D 48/16/0 ppm 11.97 pgate 0.114 KL g/c/x 0.0439/0.0191/0.0676 beta 0.03->0.03 clip 0.065 mixed 9/16 rows 11885 wall roll 95s upd 33s
+[rl] u0018 W/L/D 48/16/0 ppm 12.18 pgate 0.117 KL g/c/x 0.0391/0.0141/0.0686 beta 0.03->0.03 clip 0.080 mixed 5/16 rows 11811 wall roll 81s upd 35s
+[rl] u0019 W/L/D 36/28/0 ppm 12.22 pgate 0.127 KL g/c/x 0.0636/0.0194/0.0684 beta 0.03->0.03 clip 0.068 mixed 10/16 rows 10685 wall roll 88s upd 32s | screen 0.730 d -1.7pp CI [-9.2, +5.7] (+19/-22) guards outlived 0.215->0.276 <=10dlv 0.008->0.016 refused/m 0.557->0.661 | proagree cell 0.2013 card 0.6365 gate 0.7595
+[rl] u0020 W/L/D 41/23/0 ppm 11.73 pgate 0.122 KL g/c/x 0.0479/0.0176/0.0737 beta 0.03->0.03 clip 0.077 mixed 6/16 rows 10139 wall roll 77s upd 29s
+[rl] u0021 W/L/D 37/27/0 ppm 11.69 pgate 0.112 KL g/c/x 0.0516/0.0221/0.0735 beta 0.03->0.03 clip 0.068 mixed 7/16 rows 10453 wall roll 64s upd 30s
+[rl] u0022 W/L/D 38/26/0 ppm 11.74 pgate 0.115 KL g/c/x 0.0496/0.0209/0.0820 beta 0.03->0.03 clip 0.069 mixed 11/16 rows 10884 wall roll 105s upd 77s
+[rl] u0023 W/L/D 36/28/0 ppm 11.95 pgate 0.107 KL g/c/x 0.0532/0.0261/0.0805 beta 0.03->0.03 clip 0.072 mixed 6/16 rows 12498 wall roll 140s upd 232s
+[rl] u0024 W/L/D 44/20/0 ppm 11.86 pgate 0.101 KL g/c/x 0.0539/0.0213/0.0820 beta 0.03->0.03 clip 0.067 mixed 7/16 rows 11957 wall roll 262s upd 150s | proagree cell 0.2081 card 0.6399 gate 0.7433
+[rl] u0025 W/L/D 49/15/0 ppm 12.22 pgate 0.100 KL g/c/x 0.0524/0.0184/0.0889 beta 0.03->0.03 clip 0.070 mixed 5/16 rows 13090 wall roll 190s upd 247s
+[rl] u0026 W/L/D 40/24/0 ppm 11.52 pgate 0.100 KL g/c/x 0.0590/0.0222/0.0766 beta 0.03->0.03 clip 0.072 mixed 5/16 rows 12444 wall roll 277s upd 318s
+[rl] u0027 W/L/D 35/29/0 ppm 11.47 pgate 0.101 KL g/c/x 0.0534/0.0206/0.0737 beta 0.03->0.03 clip 0.069 mixed 7/16 rows 11646 wall roll 322s upd 388s
+[rl] u0028 W/L/D 43/21/0 ppm 11.38 pgate 0.090 KL g/c/x 0.0617/0.0234/0.0744 beta 0.03->0.03 clip 0.060 mixed 5/16 rows 13573 wall roll 314s upd 115s
+[rl] u0029 W/L/D 39/25/0 ppm 11.90 pgate 0.102 KL g/c/x 0.0548/0.0184/0.0775 beta 0.03->0.03 clip 0.063 mixed 5/16 rows 12840 wall roll 246s upd 121s | screen 0.764 d +1.7pp CI [-4.6, +8.0] (+21/-18) guards outlived 0.215->0.226 <=10dlv 0.008->0.015 refused/m 0.557->0.960 | proagree cell 0.2039 card 0.6423 gate 0.7361
+[rl] DONE: max_updates 30 reached
