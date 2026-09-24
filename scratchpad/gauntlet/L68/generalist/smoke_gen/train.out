@@ -1,0 +1,12 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+C:\Users\benpe\ClashBot\pipeline\train_gen.py:113: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\pytorch\torch\csrc\autograd\generated\python_variable_methods.cpp:837.)
+  tot += float(loss); nb += 1
+{"cell_half_top1": 0.1073, "cell_tile_top1": 0.1073, "card_top1": 0.4331, "joint_top1": 0.0452, "cell_nll": 4.5046, "gate_acc": 0.7359, "gate_bal_acc": 0.5, "wait_top1": 0.3576, "value_acc": 0.5242, "place_hit": 0.1073, "place_1t": 0.1679, "place_dist": 6.4858, "emb_cosine": 0.9914, "n_play": 29771, "n": 112724, "epoch": 1, "train_loss": 8.6686, "train_seconds": 936.3, "seconds": 4056, "gpu_peak_mb": 2715}
+{"v3val": {"cell_half_top1": 0.0969, "cell_tile_top1": 0.0951, "card_top1": 0.505, "joint_top1": 0.0469, "cell_nll": 4.6764, "gate_acc": 0.7241, "gate_bal_acc": 0.5, "wait_top1": 0.4417, "value_acc": 0.5908, "place_hit": 0.0969, "place_1t": 0.1649, "place_dist": 5.8285, "emb_cosine": 0.991, "n_play": 3796, "n": 13761}}
+{"FINAL": "s0", "epoch": 1, "val_cell_half": 0.10725202378153237, "val_card": 0.4331060427933224, "v3val_cell_half": 0.09694415173867228, "v3val_card": 0.5050052687038988, "v3val_gate_bal": 0.5, "train_cell_half": 0.10486891385767791, "n_params": 1337678}
+
+real	68m36.124s
+user	0m0.000s
+sys	0m0.061s
