@@ -213,6 +213,25 @@ class HfToCrawlTests(unittest.TestCase):
         self.assertEqual(rep["stats"]["dup_of_our_crawl"], 1)
         self.assertEqual(rep["our_keys"], 1)
 
+    def test_tags_file_mode_keeps_listed_replays_any_deck_in_chunks(self):
+        sel = self.root / "sel.json"
+        sel.write_text(json.dumps([{"tag": "r_other", "sides": {"opponent": "x"}}, {"tag": "r_ice", "sides": {"team": "x"}},
+                                   {"tag": "r_unpos", "sides": {"team": "x"}}, "r_absent"]), encoding="utf-8")
+        out = self.root / "multi"
+        rc, _ = run_main(self.mod.main, ["--tags-file", str(sel), "--hf", str(self.hf), "--out", str(out), "--chunk", "1"])
+        self.assertEqual(rc, 0)
+        rep = json.loads((out / "convert_report.json").read_text(encoding="utf-8"))
+        self.assertEqual((rep["stats"]["kept"], rep["stats"]["skip_unpositioned"], rep["stats"]["missing_from_hf"]), (2, 1, 1))
+        self.assertEqual(json.loads((out / "tags.json").read_text(encoding="utf-8")), ["r_other", "r_ice"])   # file order
+        with (out / "battles.csv").open(encoding="utf-8", newline="") as h:
+            self.assertEqual([b["deck"] for b in csv.DictReader(h)], [",".join(OTHER_HF), ",".join(ICEBOW_HF)])
+        for k, tag in enumerate(["r_other", "r_ice"]):
+            self.assertEqual(json.loads((out / f"chunk_{k:03d}" / "tags.json").read_text(encoding="utf-8")), [tag])
+        with (out / "chunk_001" / "plays_ext.csv").open(encoding="utf-8", newline="") as h:
+            self.assertEqual([p["attr_s"] for p in csv.DictReader(h)], ["blue", "red", "blue", "blue"])   # both sides
+        with self.assertRaises(SystemExit):     # deck AND --tags-file is ambiguous
+            run_main(self.mod.main, ["icebow", "--tags-file", str(sel), "--hf", str(self.hf)])
+
     def test_explicit_missing_dedupe_folder_and_empty_hf_fail_cleanly(self):
         with self.assertRaises(SystemExit):
             self.convert(["icebow", "--hf", str(self.hf), "--out", str(self.root / "o"),

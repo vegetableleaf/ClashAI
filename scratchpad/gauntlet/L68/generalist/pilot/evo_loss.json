@@ -1,0 +1,62 @@
+{
+ "replays": 17853,
+ "undrivable_replays": 6438,
+ "top100_sides": 19996,
+ "sides_lost": 7132,
+ "drivable_sides": 12864,
+ "decks_losing_ge_half": 20,
+ "decks_losing_ge_95pct": 18,
+ "sides_lost_because_own_deck_has_evo": 3956,
+ "top_losers(deck, lost, of_which_own_evo)": [
+  [
+   "elite-barbarians,elixir-collector,furnace,golden-knight,heal-spirit,ice-golem,three-musketeers,zap",
+   200,
+   200
+  ],
+  [
+   "bomber,elite-barbarians,freeze,hog-rider,ice-golem,minions,tesla,zap",
+   200,
+   200
+  ],
+  [
+   "baby-dragon,barbarian-barrel,berserker,elite-barbarians,furnace,golem,minions,vines",
+   200,
+   200
+  ],
+  [
+   "barbarian-barrel,battle-ram,elite-barbarians,giant-skeleton,mother-witch,vines,wizard,zappies",
+   200,
+   200
+  ],
+  [
+   "dark-prince,electro-wizard,elite-barbarians,giant,heal-spirit,rage,sparky,zap",
+   200,
+   200
+  ],
+  [
+   "arrows,bandit,battle-ram,elite-barbarians,golden-knight,heal-spirit,mother-witch,zappies",
+   200,
+   200
+  ],
+  [
+   "arrows,bandit,battle-ram,elite-barbarians,heal-spirit,mother-witch,valkyrie,zappies",
+   200,
+   200
+  ],
+  [
+   "barbarian-barrel,berserker,electro-dragon,elite-barbarians,elixir-collector,golem,skeleton-dragons,tornado",
+   200,
+   200
+  ],
+  [
+   "dark-prince,electro-wizard,elite-barbarians,goblin-giant,heal-spirit,rage,sparky,zap",
+   200,
+   200
+  ],
+  [
+   "arrows,bomber,elite-barbarians,golem,mini-pekka,night-witch,phoenix,zap",
+   200,
+   198
+  ]
+ ]
+}

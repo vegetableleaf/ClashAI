@@ -132,15 +132,131 @@ def match(ks: set, want: frozenset, aliases: dict) -> str | None:
     return None
 
 
+def one_v_one(b: dict, stats: Counter) -> dict | None:
+    sides = {}
+    for side in ("team", "opponent"):
+        pls = b[side]["players"]
+        if len(pls) != 1:
+            stats["skip_not_1v1"] += 1
+            return None
+        sides[side] = pls[0]
+    return sides
+
+
+def positioned_plays(p: dict, stats: Counter) -> list | None:
+    ev = [e for e in p["events"] if e["kind"] == "play_card"]
+    if any(e["source_fields"].get("data_x") is None or e["source_fields"].get("data_y") is None for e in ev):
+        stats["skip_unpositioned"] += 1
+        return None
+    if not ev:
+        stats["skip_no_plays"] += 1
+        return None
+    return ev
+
+
+def to_crawl(tag: str, p: dict, sides: dict, decks: dict, deck_side: str) -> tuple[dict, list[dict]]:
+    """One HF replay -> (battles.csv row, plays_ext.csv rows); `deck` column = deck_side's deck."""
+    b = p["battle"]
+    # abilities are logged too (attr_ability 1, no position) so the play count matches the timeline, as in crawl2
+    evs = sorted(p["events"], key=lambda e: (int(e["source_fields"]["data_t"]), e["source_index"]))
+    rows = []
+    for i, e in enumerate(evs):
+        sf = e["source_fields"]
+        ability = e["kind"] != "play_card"
+        rows.append({"replay_tag": tag, "play_index": i, "tick": int(sf["data_t"]), "seconds": round(int(sf["data_t"]) / 20, 2),
+                     "x_units": "" if ability else int(sf["data_x"]), "y_units": "" if ability else int(sf["data_y"]),
+                     "tile_x": "", "tile_y": "", "attr_ability": int(ability),
+                     "attr_card": "_invalid" if ability else e["card_key"], "attr_s": SIDE_S[e["side"]],
+                     "attr_t": int(sf["data_t"]), "attr_i": int(sf.get("data_i") or 0)})
+    t, o = sides["team"], sides["opponent"]
+    battle = {"replay_tag": tag, "deck": ",".join(decks[deck_side]),
+              "player_tag": "", "player_name": "", "clan_tag": "", "rating": "", "rank": "", "wins_7d": "",
+              "battle_time": "", "battle_timestamp": "", "battle_type": b.get("battle_type", ""),
+              "result": b.get("result", ""), "team_tags": "", "opponent_tags": "",
+              "team_crowns": b["team"]["crowns"], "opponent_crowns": b["opponent"]["crowns"],
+              "team_deck": ",".join(sorted(decks["team"])), "opponent_deck": ",".join(sorted(decks["opponent"])),
+              "team_elixir_total": "", "team_elixir_troop": "", "team_elixir_building": "", "team_elixir_spell": "",
+              "team_elixir_leaked": t.get("elixir_leaked", ""), "oppo_elixir_total": "", "oppo_elixir_troop": "",
+              "oppo_elixir_building": "", "oppo_elixir_spell": "", "oppo_elixir_leaked": o.get("elixir_leaked", ""),
+              "plays": len(rows)}
+    return battle, rows
+
+
+def write_crawl(out: Path, battles: list[dict], plays_rows: list[dict], tags: list[str]) -> None:
+    out.mkdir(parents=True, exist_ok=True)
+    with (out / "battles.csv").open("w", encoding="utf-8", newline="") as h:
+        w = csv.DictWriter(h, fieldnames=BATTLE_COLS); w.writeheader(); w.writerows(battles)
+    with (out / "plays_ext.csv").open("w", encoding="utf-8", newline="") as h:
+        w = csv.DictWriter(h, fieldnames=PLAY_COLS); w.writeheader(); w.writerows(plays_rows)
+    (out / "tags.json").write_text(json.dumps(tags), encoding="utf-8")
+    (out / "tags_a.json").write_text(json.dumps(tags[0::2]), encoding="utf-8")   # one list per engine slot
+    (out / "tags_b.json").write_text(json.dumps(tags[1::2]), encoding="utf-8")
+
+
+def main_tags(a: argparse.Namespace) -> int:
+    """Multi-deck mode (L68 generalist): every replay named in --tags-file, BOTH sides, no deck filter, no dedupe.
+
+    --tags-file: JSON list of tags, or of {"tag": .., "sides": {"team"|"opponent": deck key}} (pilot_select.py);
+    the `deck` column is the first listed selected side's deck (team first). --chunk N additionally writes
+    chunk_000/, chunk_001/, .. of N replays each: replay_drive.load_battle re-reads the whole crawl per tag, so a
+    17k-replay crawl costs seconds per drive while a 250-replay chunk costs milliseconds.
+    """
+    out = a.out if a.out is not None else DEFAULT_OUT_ROOT / Path(a.tags_file).stem
+    parts = sorted(a.hf.glob("part-*.parquet"))
+    if not parts:
+        raise SystemExit(f"no part-*.parquet files in {a.hf} -- run tools/hf_download.py first, or pass --hf")
+    sel = json.loads(Path(a.tags_file).read_text(encoding="utf-8"))
+    want = {(s["tag"] if isinstance(s, dict) else s): ((s.get("sides") or {}) if isinstance(s, dict) else {}) for s in sel}
+    stats, modes = Counter(), Counter()
+    by_tag: dict[str, tuple[dict, list[dict]]] = {}
+    for part in parts:
+        df = pl.read_parquet(part, columns=["replay_tag", "payload_json"])
+        for tag, pj in zip(df["replay_tag"], df["payload_json"]):
+            if tag not in want or tag in by_tag:
+                continue
+            stats["selected_seen"] += 1
+            p = json.loads(pj)
+            sides = one_v_one(p["battle"], stats)
+            if not sides or positioned_plays(p, stats) is None:
+                continue
+            decks = {s: [c["card_key"] for c in sides[s]["deck"]] for s in sides}
+            deck_side = "team" if "team" in want[tag] or "opponent" not in want[tag] else "opponent"
+            by_tag[tag] = to_crawl(tag, p, sides, decks, deck_side)
+            modes[(p["battle"].get("battle_type"), p["battle"].get("game_mode"))] += 1
+            stats["kept"] += 1
+        print(part.name, dict(stats), flush=True)
+    tags = [t for t in want if t in by_tag]     # tags-file order
+    stats["missing_from_hf"] = len(want) - stats["selected_seen"]
+    write_crawl(out, [by_tag[t][0] for t in tags], [r for t in tags for r in by_tag[t][1]], tags)
+    if a.chunk:
+        for k in range(0, len(tags), a.chunk):
+            ts = tags[k:k + a.chunk]
+            write_crawl(out / f"chunk_{k // a.chunk:03d}", [by_tag[t][0] for t in ts], [r for t in ts for r in by_tag[t][1]], ts)
+    rep = {"tags_file": str(a.tags_file), "selected": len(want), "stats": dict(stats), "chunk": a.chunk,
+           "modes": {f"{k[0]}/{k[1]}": v for k, v in modes.most_common()}}
+    (out / "convert_report.json").write_text(json.dumps(rep, indent=1), encoding="utf-8")
+    print(json.dumps(rep))
+    print(f"wrote {len(tags)} replays to {out}", flush=True)
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
-    ap = argparse.ArgumentParser(description="HF replay parquet -> crawl2-shaped folder for one pipeline deck.")
-    ap.add_argument("deck", help="deck name, i.e. pipeline/decks/<deck>.yaml (icebow, hogeq)")
+    ap = argparse.ArgumentParser(description="HF replay parquet -> crawl2-shaped folder for one pipeline deck "
+                                             "(or, with --tags-file, for a list of replays of any decks).")
+    ap.add_argument("deck", nargs="?", help="deck name, i.e. pipeline/decks/<deck>.yaml (icebow, hogeq); omit with --tags-file")
+    ap.add_argument("--tags-file", type=Path, default=None,
+                    help="L68 multi-deck mode: JSON list of replay tags (or pilot_select.py records); both sides, no dedupe")
+    ap.add_argument("--chunk", type=int, default=0, help="with --tags-file: also write chunk_NNN/ sub-crawls of this many replays")
     ap.add_argument("--hf", type=Path, default=DEFAULT_HF, help="folder of part-*.parquet (default: <repo>/data/hf/replays)")
     ap.add_argument("--out", type=Path, default=None, help="output folder (default: <repo>/data/hf_crawl/<deck>, gitignored)")
     ap.add_argument("--dedupe-against", type=Path, default=None,
                     help="crawl2 folder with battles.csv + plays_ext.csv (default: the deck's own <crawl_dir>/crawl2; "
                          "skipped with a note if that is missing)")
     a = ap.parse_args(argv)
+    if (a.tags_file is None) == (a.deck is None):
+        ap.error("give exactly one of: a deck name, or --tags-file")
+    if a.tags_file is not None:
+        return main_tags(a)
     want, aliases, deck_crawl = load_rule(a.deck)
     out = a.out if a.out is not None else DEFAULT_OUT_ROOT / a.deck
     parts = sorted(a.hf.glob("part-*.parquet"))
@@ -161,14 +277,7 @@ def main(argv: list[str] | None = None) -> int:
             stats["replays"] += 1
             p = json.loads(pj)
             b = p["battle"]
-            sides = {}
-            for side in ("team", "opponent"):
-                pls = b[side]["players"]
-                if len(pls) != 1:
-                    stats["skip_not_1v1"] += 1
-                    sides = None
-                    break
-                sides[side] = pls[0]
+            sides = one_v_one(b, stats)
             if not sides:
                 continue
             decks = {s: [c["card_key"] for c in sides[s]["deck"]] for s in sides}
@@ -180,12 +289,8 @@ def main(argv: list[str] | None = None) -> int:
                 stats[f"side_{kinds[s].split(':')[0]}"] += 1
                 if kinds[s].startswith("alias"):
                     stats[kinds[s]] += 1
-            ev = [e for e in p["events"] if e["kind"] == "play_card"]
-            if any(e["source_fields"].get("data_x") is None or e["source_fields"].get("data_y") is None for e in ev):
-                stats["skip_unpositioned"] += 1
-                continue
-            if not ev:
-                stats["skip_no_plays"] += 1
+            ev = positioned_plays(p, stats)
+            if ev is None:
                 continue
             seq = sorted((int(e["source_fields"]["data_t"]), e["card_key"]) for e in ev)
             key = (tuple(sorted(base(c) for c in decks["team"])), tuple(sorted(base(c) for c in decks["opponent"])),
@@ -193,42 +298,16 @@ def main(argv: list[str] | None = None) -> int:
             if key in ours:
                 stats["dup_of_our_crawl"] += 1
                 continue
-            # abilities are logged too (attr_ability 1, no position) so the play count matches the timeline, as in crawl2
-            evs = sorted(p["events"], key=lambda e: (int(e["source_fields"]["data_t"]), e["source_index"]))
-            rows = []
-            for i, e in enumerate(evs):
-                sf = e["source_fields"]
-                ability = e["kind"] != "play_card"
-                rows.append({"replay_tag": tag, "play_index": i, "tick": int(sf["data_t"]), "seconds": round(int(sf["data_t"]) / 20, 2),
-                             "x_units": "" if ability else int(sf["data_x"]), "y_units": "" if ability else int(sf["data_y"]),
-                             "tile_x": "", "tile_y": "", "attr_ability": int(ability),
-                             "attr_card": "_invalid" if ability else e["card_key"], "attr_s": SIDE_S[e["side"]],
-                             "attr_t": int(sf["data_t"]), "attr_i": int(sf.get("data_i") or 0)})
             modes[(b.get("battle_type"), b.get("game_mode"))] += 1
-            t, o = sides["team"], sides["opponent"]
-            battles.append({"replay_tag": tag, "deck": ",".join(decks["team"] if "team" in hit else decks["opponent"]),
-                            "player_tag": "", "player_name": "", "clan_tag": "", "rating": "", "rank": "", "wins_7d": "",
-                            "battle_time": "", "battle_timestamp": "", "battle_type": b.get("battle_type", ""),
-                            "result": b.get("result", ""), "team_tags": "", "opponent_tags": "",
-                            "team_crowns": b["team"]["crowns"], "opponent_crowns": b["opponent"]["crowns"],
-                            "team_deck": ",".join(sorted(decks["team"])), "opponent_deck": ",".join(sorted(decks["opponent"])),
-                            "team_elixir_total": "", "team_elixir_troop": "", "team_elixir_building": "", "team_elixir_spell": "",
-                            "team_elixir_leaked": t.get("elixir_leaked", ""), "oppo_elixir_total": "", "oppo_elixir_troop": "",
-                            "oppo_elixir_building": "", "oppo_elixir_spell": "", "oppo_elixir_leaked": o.get("elixir_leaked", ""),
-                            "plays": len(rows)})
+            battle, rows = to_crawl(tag, p, sides, decks, "team" if "team" in hit else "opponent")
+            battles.append(battle)
             plays_rows.extend(rows)
             tags.append(tag)
             stats["kept"] += 1
             stats["kept_alias_replays"] += int(any(kinds[s].startswith("alias") for s in hit))
         print(part.name, {k: v for k, v in stats.items() if k in ("replays", "kept", "kept_alias_replays",
                                                                   "side_exact", "side_alias")}, flush=True)
-    with (out / "battles.csv").open("w", encoding="utf-8", newline="") as h:
-        w = csv.DictWriter(h, fieldnames=BATTLE_COLS); w.writeheader(); w.writerows(battles)
-    with (out / "plays_ext.csv").open("w", encoding="utf-8", newline="") as h:
-        w = csv.DictWriter(h, fieldnames=PLAY_COLS); w.writeheader(); w.writerows(plays_rows)
-    (out / "tags.json").write_text(json.dumps(tags), encoding="utf-8")
-    (out / "tags_a.json").write_text(json.dumps(tags[0::2]), encoding="utf-8")   # one list per engine slot
-    (out / "tags_b.json").write_text(json.dumps(tags[1::2]), encoding="utf-8")
+    write_crawl(out, battles, plays_rows, tags)
     rep = {"deck": a.deck, "aliases": aliases, "stats": dict(stats),
            "modes": {f"{k[0]}/{k[1]}": v for k, v in modes.most_common()}, "our_keys": len(ours),
            "dedupe_against": None if ours_dir is None else str(ours_dir)}
