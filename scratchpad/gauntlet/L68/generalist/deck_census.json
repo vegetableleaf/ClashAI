@@ -1,0 +1,61 @@
+{
+ "replays": 252238,
+ "deck_sides": 504476,
+ "distinct_decks_exact": 52566,
+ "distinct_decks_base": 47800,
+ "sides_share_top": {
+  "100": 0.414,
+  "1000": 0.737,
+  "10000": 0.915
+ },
+ "replays_per_deck_at_rank": {
+  "1": 15398,
+  "10": 4648,
+  "100": 698,
+  "1000": 58,
+  "5000": 6,
+  "10000": 2
+ },
+ "decks_with_at_least": {
+  "1": 47800,
+  "5": 6405,
+  "10": 3767,
+  "20": 2233,
+  "50": 1121,
+  "100": 658
+ },
+ "distinct_card_keys": 180,
+ "royalesim_loadable_top": {
+  "100": 26,
+  "1000": 183,
+  "10000": 1553
+ },
+ "royalesim_loadable_sides_share": 0.215,
+ "unmapped_card_keys_top": [
+  "lightning",
+  "mother-witch",
+  "vines",
+  "miner",
+  "royal-ghost",
+  "heal-spirit",
+  "rage",
+  "elixir-collector",
+  "graveyard",
+  "cannon-cart",
+  "goblin-hut",
+  "goblinstein",
+  "barbarian-barrel",
+  "void",
+  "furnace",
+  "lumberjack",
+  "three-musketeers",
+  "goblin-drill",
+  "elixir-golem",
+  "rune-giant",
+  "goblin-demolisher",
+  "suspicious-bush",
+  "royal-delivery",
+  "goblin-curse",
+  "ram-rider"
+ ]
+}

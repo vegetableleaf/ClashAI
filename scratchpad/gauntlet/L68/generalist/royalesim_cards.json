@@ -1,0 +1,722 @@
+[
+{
+"name": "Knight",
+"display_name": "Knight",
+"loaded": true
+},
+{
+"name": "Archer",
+"display_name": "Archers",
+"loaded": true
+},
+{
+"name": "Goblins",
+"display_name": "Goblins",
+"loaded": true
+},
+{
+"name": "Giant",
+"display_name": "Giant",
+"loaded": true
+},
+{
+"name": "Pekka",
+"display_name": "P.E.K.K.A",
+"loaded": true
+},
+{
+"name": "Minions",
+"display_name": "Minions",
+"loaded": true
+},
+{
+"name": "Balloon",
+"display_name": "Balloon",
+"loaded": true
+},
+{
+"name": "Witch",
+"display_name": "Witch",
+"loaded": true
+},
+{
+"name": "Barbarians",
+"display_name": "Barbarians",
+"loaded": true
+},
+{
+"name": "Golem",
+"display_name": "Golem",
+"loaded": true
+},
+{
+"name": "Skeletons",
+"display_name": "Skeletons",
+"loaded": true
+},
+{
+"name": "Valkyrie",
+"display_name": "Valkyrie",
+"loaded": true
+},
+{
+"name": "SkeletonArmy",
+"display_name": "Skeleton Army",
+"loaded": true
+},
+{
+"name": "Bomber",
+"display_name": "Bomber",
+"loaded": true
+},
+{
+"name": "Musketeer",
+"display_name": "Musketeer",
+"loaded": true
+},
+{
+"name": "BabyDragon",
+"display_name": "Baby Dragon",
+"loaded": true
+},
+{
+"name": "Prince",
+"display_name": "Prince",
+"loaded": true
+},
+{
+"name": "Wizard",
+"display_name": "Wizard",
+"loaded": true
+},
+{
+"name": "MiniPekka",
+"display_name": "Mini P.E.K.K.A",
+"loaded": true
+},
+{
+"name": "SpearGoblins",
+"display_name": "Spear Goblins",
+"loaded": true
+},
+{
+"name": "GiantSkeleton",
+"display_name": "Giant Skeleton",
+"loaded": true
+},
+{
+"name": "HogRider",
+"display_name": "Hog Rider",
+"loaded": true
+},
+{
+"name": "MinionHorde",
+"display_name": "Minion Horde",
+"loaded": true
+},
+{
+"name": "IceWizard",
+"display_name": "Ice Wizard",
+"loaded": true
+},
+{
+"name": "RoyalGiant",
+"display_name": "Royal Giant",
+"loaded": true
+},
+{
+"name": "SkeletonWarriors",
+"display_name": "Guards",
+"loaded": true
+},
+{
+"name": "Princess",
+"display_name": "Princess",
+"loaded": true
+},
+{
+"name": "DarkPrince",
+"display_name": "Dark Prince",
+"loaded": true
+},
+{
+"name": "ThreeMusketeers",
+"display_name": "Three Musketeers",
+"loaded": false
+},
+{
+"name": "LavaHound",
+"display_name": "Lava Hound",
+"loaded": true
+},
+{
+"name": "IceSpirits",
+"display_name": "Ice Spirits",
+"loaded": true
+},
+{
+"name": "FireSpirits",
+"display_name": "Fire Spirits",
+"loaded": true
+},
+{
+"name": "Miner",
+"display_name": "Miner",
+"loaded": false
+},
+{
+"name": "ZapMachine",
+"display_name": "Sparky",
+"loaded": true
+},
+{
+"name": "Bowler",
+"display_name": "Bowler",
+"loaded": true
+},
+{
+"name": "RageBarbarian",
+"display_name": "Lumberjack",
+"loaded": false
+},
+{
+"name": "BattleRam",
+"display_name": "Battle Ram",
+"loaded": true
+},
+{
+"name": "InfernoDragon",
+"display_name": "Inferno Dragon",
+"loaded": true
+},
+{
+"name": "IceGolemite",
+"display_name": "Ice Golem",
+"loaded": true
+},
+{
+"name": "MegaMinion",
+"display_name": "Mega Minion",
+"loaded": true
+},
+{
+"name": "BlowdartGoblin",
+"display_name": "Dart Goblin",
+"loaded": true
+},
+{
+"name": "GoblinGang",
+"display_name": "Goblin Gang",
+"loaded": true
+},
+{
+"name": "ElectroWizard",
+"display_name": "Electro Wizard",
+"loaded": true
+},
+{
+"name": "AngryBarbarians",
+"display_name": "Elite Barbarians",
+"loaded": true
+},
+{
+"name": "Hunter",
+"display_name": "Hunter",
+"loaded": true
+},
+{
+"name": "AxeMan",
+"display_name": "Executioner",
+"loaded": true
+},
+{
+"name": "Assassin",
+"display_name": "Bandit",
+"loaded": true
+},
+{
+"name": "RoyalRecruits",
+"display_name": "Royal Recruits",
+"loaded": true
+},
+{
+"name": "DarkWitch",
+"display_name": "Night Witch",
+"loaded": true
+},
+{
+"name": "Bats",
+"display_name": "Bats",
+"loaded": true
+},
+{
+"name": "Ghost",
+"display_name": "Ghost",
+"loaded": false
+},
+{
+"name": "RamRider",
+"display_name": "Ram Rider",
+"loaded": false
+},
+{
+"name": "MiniSparkys",
+"display_name": "Mini Sparkys",
+"loaded": true
+},
+{
+"name": "Rascals",
+"display_name": "Rascals",
+"loaded": true
+},
+{
+"name": "MovingCannon",
+"display_name": "Cannon Cart",
+"loaded": false
+},
+{
+"name": "MegaKnight",
+"display_name": "Mega Knight",
+"loaded": true
+},
+{
+"name": "SkeletonBalloon",
+"display_name": "Skeleton Barrel",
+"loaded": false
+},
+{
+"name": "DartBarrell",
+"display_name": "Flying Machine",
+"loaded": true
+},
+{
+"name": "Wallbreakers",
+"display_name": "Wallbreakers",
+"loaded": true
+},
+{
+"name": "RoyalHogs",
+"display_name": "Royal Hogs",
+"loaded": true
+},
+{
+"name": "GoblinGiant",
+"display_name": "Goblin Giant",
+"loaded": false
+},
+{
+"name": "Fisherman",
+"display_name": "Fisherman",
+"loaded": true
+},
+{
+"name": "EliteArcher",
+"display_name": "Elite Archer",
+"loaded": true
+},
+{
+"name": "ElectroDragon",
+"display_name": "Electro Dragon",
+"loaded": true
+},
+{
+"name": "Firecracker",
+"display_name": "Firecracker",
+"loaded": true
+},
+{
+"name": "MightyMiner",
+"display_name": "Mighty Miner",
+"loaded": true
+},
+{
+"name": "SuperWitch",
+"display_name": "Super Witch",
+"loaded": false
+},
+{
+"name": "ElixirGolem",
+"display_name": "Elixir Golem",
+"loaded": false
+},
+{
+"name": "BattleHealer",
+"display_name": "Battle Healer",
+"loaded": true
+},
+{
+"name": "SkeletonKing",
+"display_name": "Skeleton King",
+"loaded": true
+},
+{
+"name": "SuperLavaHound",
+"display_name": "Super Lava Hound",
+"loaded": false
+},
+{
+"name": "SuperEliteArcher",
+"display_name": "Super Elite Archer",
+"loaded": false
+},
+{
+"name": "ArcherQueen",
+"display_name": "Archer Queen",
+"loaded": true
+},
+{
+"name": "SuperHogRider",
+"display_name": "Super Hog Rider",
+"loaded": false
+},
+{
+"name": "GoldenKnight",
+"display_name": "Golden Knight",
+"loaded": true
+},
+{
+"name": "SuperIceGolemite",
+"display_name": "Super Ice Golemite",
+"loaded": true
+},
+{
+"name": "Monk",
+"display_name": "Monk",
+"loaded": true
+},
+{
+"name": "SuperArcher",
+"display_name": "Super Archer",
+"loaded": true
+},
+{
+"name": "RoyalRecruits_Chess",
+"display_name": "Royal Recruits_Chess",
+"loaded": true
+},
+{
+"name": "SkeletonDragons",
+"display_name": "Skeleton Dragons",
+"loaded": true
+},
+{
+"name": "SuperHogRiderTerry",
+"display_name": "Super Hog Rider Terry",
+"loaded": true
+},
+{
+"name": "SuperMiniPekka",
+"display_name": "Super Mini Pekka",
+"loaded": false
+},
+{
+"name": "WitchMother",
+"display_name": "Witch Mother",
+"loaded": false
+},
+{
+"name": "ElectroSpirit",
+"display_name": "Electro Spirit",
+"loaded": true
+},
+{
+"name": "ElectroGiant",
+"display_name": "Electro Giant",
+"loaded": true
+},
+{
+"name": "PrinceBuff",
+"display_name": "Prince Buff",
+"loaded": true
+},
+{
+"name": "Phoenix",
+"display_name": "Phoenix",
+"loaded": true
+},
+{
+"name": "LittlePrince",
+"display_name": "Little Prince",
+"loaded": false
+},
+{
+"name": "TriWizards",
+"display_name": "Tri Wizards",
+"loaded": true
+},
+{
+"name": "GoblinDemolisher",
+"display_name": "Goblin Demolisher",
+"loaded": false
+},
+{
+"name": "GoblinMachine",
+"display_name": "Goblin Machine",
+"loaded": true
+},
+{
+"name": "SuspiciousBush",
+"display_name": "Suspicious Bush",
+"loaded": false
+},
+{
+"name": "SuperKnight",
+"display_name": "Super Knight",
+"loaded": true
+},
+{
+"name": "Goblinstein",
+"display_name": "Goblinstein",
+"loaded": false
+},
+{
+"name": "SkeletonWarriors_SpookyChess",
+"display_name": "Skeleton Warriors_Spooky Chess",
+"loaded": true
+},
+{
+"name": "GiantBuffer",
+"display_name": "Giant Buffer",
+"loaded": false
+},
+{
+"name": "Berserker",
+"display_name": "Berserker",
+"loaded": true
+},
+{
+"name": "BossBandit",
+"display_name": "Boss Bandit",
+"loaded": false
+},
+{
+"name": "MergeMaiden_Normal",
+"display_name": "Merge Maiden_Normal",
+"loaded": true
+},
+{
+"name": "MergeMaiden_Mounted",
+"display_name": "Merge Maiden_Mounted",
+"loaded": true
+},
+{
+"name": "Ronin",
+"display_name": "Ronin",
+"loaded": false
+},
+{
+"name": "Cannon",
+"display_name": "Cannon",
+"loaded": true
+},
+{
+"name": "GoblinHut",
+"display_name": "Goblin Hut",
+"loaded": false
+},
+{
+"name": "Mortar",
+"display_name": "Mortar",
+"loaded": true
+},
+{
+"name": "InfernoTower",
+"display_name": "Inferno Tower",
+"loaded": true
+},
+{
+"name": "BombTower",
+"display_name": "Bomb Tower",
+"loaded": true
+},
+{
+"name": "BarbarianHut",
+"display_name": "Barbarian Hut",
+"loaded": true
+},
+{
+"name": "Tesla",
+"display_name": "Tesla",
+"loaded": true
+},
+{
+"name": "Elixir Collector",
+"display_name": "Elixir Collector",
+"loaded": false
+},
+{
+"name": "Xbow",
+"display_name": "X-Bow",
+"loaded": true
+},
+{
+"name": "Tombstone",
+"display_name": "Tombstone",
+"loaded": true
+},
+{
+"name": "FirespiritHut",
+"display_name": "Furnace",
+"loaded": false
+},
+{
+"name": "BarbarianLauncher",
+"display_name": "Barbarian Launcher",
+"loaded": true
+},
+{
+"name": "GoblinCage",
+"display_name": "Goblin Cage",
+"loaded": true
+},
+{
+"name": "GoblinDrill",
+"display_name": "Goblin Drill",
+"loaded": false
+},
+{
+"name": "GoblinPartyHut",
+"display_name": "Goblin Party Hut",
+"loaded": true
+},
+{
+"name": "GoblinRocketSilo",
+"display_name": "Goblin Rocket Silo",
+"loaded": false
+},
+{
+"name": "Fireball",
+"display_name": "Fireball",
+"loaded": true
+},
+{
+"name": "Arrows",
+"display_name": "Arrows",
+"loaded": true
+},
+{
+"name": "Rage",
+"display_name": "Rage",
+"loaded": false
+},
+{
+"name": "Rocket",
+"display_name": "Rocket",
+"loaded": true
+},
+{
+"name": "GoblinBarrel",
+"display_name": "Goblin Barrel",
+"loaded": true
+},
+{
+"name": "Freeze",
+"display_name": "Freeze",
+"loaded": true
+},
+{
+"name": "Mirror",
+"display_name": "Mirror",
+"loaded": false
+},
+{
+"name": "Lightning",
+"display_name": "Lightning",
+"loaded": false
+},
+{
+"name": "Zap",
+"display_name": "Zap",
+"loaded": true
+},
+{
+"name": "Poison",
+"display_name": "Poison",
+"loaded": true
+},
+{
+"name": "Graveyard",
+"display_name": "Graveyard",
+"loaded": false
+},
+{
+"name": "Log",
+"display_name": "The Log",
+"loaded": true
+},
+{
+"name": "Tornado",
+"display_name": "Tornado",
+"loaded": true
+},
+{
+"name": "Clone",
+"display_name": "Clone",
+"loaded": false
+},
+{
+"name": "Earthquake",
+"display_name": "Earthquake",
+"loaded": true
+},
+{
+"name": "BarbLog",
+"display_name": "Barb Log",
+"loaded": false
+},
+{
+"name": "Heal",
+"display_name": "Heal",
+"loaded": false
+},
+{
+"name": "Snowball",
+"display_name": "Snowball",
+"loaded": true
+},
+{
+"name": "RoyalDelivery",
+"display_name": "Royal Delivery",
+"loaded": false
+},
+{
+"name": "GlobalClone",
+"display_name": "Global Clone",
+"loaded": false
+},
+{
+"name": "GoblinPartyRocket",
+"display_name": "Goblin Party Rocket",
+"loaded": false
+},
+{
+"name": "WarmSpell",
+"display_name": "Warm Spell",
+"loaded": false
+},
+{
+"name": "GlobalLightning",
+"display_name": "Global Lightning",
+"loaded": false
+},
+{
+"name": "DarkMagic",
+"display_name": "Dark Magic",
+"loaded": false
+},
+{
+"name": "GoblinCurse",
+"display_name": "Goblin Curse",
+"loaded": false
+},
+{
+"name": "MergeMaiden",
+"display_name": "Merge Maiden",
+"loaded": false
+},
+{
+"name": "Vines",
+"display_name": "Vines",
+"loaded": false
+}
+]
