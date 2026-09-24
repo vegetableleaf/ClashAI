@@ -132,38 +132,75 @@ def tripwire_reason(pa: dict, init: dict, latest_delta_pp: Optional[float], cfg:
 
 
 def ghost_refused_limit(base: Optional[float], x: float = 2.0) -> Optional[float]:
-    """E1 4.2.3 stop limit on ghost REFUSED plays per match: max(x * update-0, update-0 + 1.0) -- rl_gate's floor, so a
-    near-zero update-0 value is not 'doubled' by a single refusal."""
+    """E1 4.2.3 stop limit on ghost REFUSED plays per match: max(x * init, init + 1.0) -- rl_gate's floor, so a
+    near-zero init value is not 'doubled' by a single refusal."""
     return None if base is None else max(x * base, base + 1.0)
 
 
+def screen_record(r: dict) -> dict:
+    """What a held-out screen keeps per (tag, k) match: the outcome value (rl_gate.WIN_VAL) plus the E1 4.2 exploit
+    fields, so the init and every candidate screen are compared on the SAME matches."""
+    from pipeline.rl_gate import val
+    return {"v": val(r), "win": r["outcome"] == "win", "won_after_script": bool(r["won_after_script"]),
+            "ghost_delivered": int(r["ghost_delivered"]), "ghost_refused": int(r["ghost_refused"])}
+
+
+def exploit_values(recs: list[dict]) -> dict:
+    """E1 4.2.1-3 over a list of ``screen_record``s: outlived-the-script share of wins, <= 10-ghost-delivered share of
+    wins (None without wins), ghost refused plays per match."""
+    wins = [r for r in recs if r["win"]]
+    share = (lambda k: sum(1 for r in wins if k(r)) / len(wins) if wins else None)
+    return {"outlived_win_share": share(lambda r: r["won_after_script"]),
+            "low_delivered_win_share": share(lambda r: r["ghost_delivered"] <= 10),
+            "ghost_refused_per_match": sum(r["ghost_refused"] for r in recs) / len(recs) if recs else None}
+
+
+def exploit_reasons(init: dict, cand: dict, cfg: dict) -> list[str]:
+    """Screen-level exploit guards (single occurrence, lead ruling L68 after the rl30 false alarm): the candidate's
+    values vs the INIT's on the same held-out matches. outlived share > init + outlived_pp; <= 10-delivered share >
+    init + low_delivered_pp; refused/match > max(ghost_refusal_x * init, init + 1.0)."""
+    out = []
+    for key, margin, what in (("outlived_win_share", cfg["outlived_pp"] / 100, "outlived-the-script win share"),
+                              ("low_delivered_win_share", cfg["low_delivered_pp"] / 100, "<=10-delivered win share")):
+        c, i = cand.get(key), init.get(key)
+        if c is not None and i is not None and c > i + margin:
+            out.append(f"held-out {what} {c:.3f} > init {i:.3f} + {margin:.2f} on the same matches")
+    c, lim = cand.get("ghost_refused_per_match"), ghost_refused_limit(init.get("ghost_refused_per_match"),
+                                                                      float(cfg["ghost_refusal_x"]))
+    if c is not None and lim is not None and c > lim:
+        out.append(f"held-out ghost refused/match {c:.2f} > limit {lim:.2f} = max({cfg['ghost_refusal_x']}x, +1.0) of "
+                   f"init {init['ghost_refused_per_match']:.2f} on the same matches")
+    return out
+
+
+GUARD_BASE_KEYS = ("plays_per_min",)
+GUARD_CONSEC_KEYS = ("plays", "kl", "entropy_gate", "entropy_card", "entropy_cell")
+
+
 class Guards:
-    """The per-update stop rules with state (consecutive counters, EMAs, update-0 baselines); ``s`` is plain JSON so
-    it rides in the checkpoint's ``rl`` dict and --resume continues the counters."""
+    """The per-update stop rules with state (consecutive counters, the update-0 plays/min baseline, the latest screen
+    delta); ``s`` is plain JSON so it rides in the checkpoint's ``rl`` dict and --resume continues the counters. The
+    exploit guards are NOT here (they compare held-out screens, ``exploit_reasons``): a train batch samples different
+    ghosts every update, so a train-batch value vs update 0 measures opponent sampling, not the policy (rl30 false
+    alarm, L68). State written by the older code (EMAs, exploit baselines, ghost_refused_limit) loads; those keys are
+    dropped."""
 
     def __init__(self, cfg: dict, state: Optional[dict] = None):
         self.cfg = cfg
-        self.s = state or {"base": None, "consec": {}, "ema": {}, "latest_screen_delta_pp": None}
+        st = state or {}
+        base = st.get("base")
+        self.s = {"base": {k: base.get(k) for k in GUARD_BASE_KEYS} if base else None,
+                  "consec": {k: v for k, v in (st.get("consec") or {}).items() if k in GUARD_CONSEC_KEYS},
+                  "latest_screen_delta_pp": st.get("latest_screen_delta_pp")}
 
     def _consec(self, name: str, cond: bool) -> bool:
         c = self.s["consec"]
         c[name] = c.get(name, 0) + 1 if cond else 0
         return c[name] >= int(self.cfg["stop_consecutive"])
 
-    def _ema(self, name: str, v: Optional[float]) -> Optional[float]:
-        if v is None:
-            return self.s["ema"].get(name)
-        a = 2.0 / (float(self.cfg["ema_updates"]) + 1.0)
-        old = self.s["ema"].get(name)
-        self.s["ema"][name] = v if old is None else a * v + (1 - a) * old
-        return self.s["ema"][name]
-
     def set_baselines(self, mon: dict) -> None:
-        """plan diff 6: the update-0 behaviour values the ratio/margin rules compare against."""
-        self.s["base"] = {k: mon.get(k) for k in ("plays_per_min", "outlived_win_share", "low_delivered_win_share",
-                                                  "ghost_refused_per_match")}
-        self.s["ghost_refused_limit"] = ghost_refused_limit(self.s["base"]["ghost_refused_per_match"],
-                                                            float(self.cfg["ghost_refusal_x"]))
+        """E1 3.6 rule 1: the update-0 behaviour plays/min (a property of the policy's gate, not of the sampled ghosts)."""
+        self.s["base"] = {k: mon.get(k) for k in GUARD_BASE_KEYS}
 
     def after_update(self, mon: dict, beta_used: float, kl_cell: float, kl_gate: float,
                      ent: Optional[dict] = None, ent_init: Optional[dict] = None) -> list[str]:
@@ -185,16 +222,6 @@ class Guards:
         if self._consec("kl", at_clamp and (kl_cell > cfg["kl_cell_stop"] or kl_gate > cfg["kl_gate_stop"])):
             out.append(f"KL_cell {kl_cell:.3f} / KL_gate {kl_gate:.3f} over {cfg['kl_cell_stop']} / {cfg['kl_gate_stop']} "
                        f"with beta at its {cfg['beta_max']} clamp for {cfg['stop_consecutive']} updates")
-        for key, margin, what in (("outlived_win_share", cfg["outlived_pp"] / 100, "outlived-the-script win share"),
-                                  ("low_delivered_win_share", cfg["low_delivered_pp"] / 100, "<=10-delivered win share")):
-            ema, b = self._ema(key, mon.get(key)), base.get(key)
-            if self._consec(key, ema is not None and b is not None and ema > b + margin):
-                out.append(f"{what} EMA {ema:.3f} > update-0 {b:.3f} + {margin:.2f}")
-        # E1 4.2.3 on REFUSED ghost plays only (undelivered = the script outlasting the match; a monitor, not a guard)
-        ema, lim = self._ema("ghost_refused_per_match", mon.get("ghost_refused_per_match")), self.s.get("ghost_refused_limit")
-        if self._consec("ghost_refusal", ema is not None and lim is not None and ema > lim):
-            out.append(f"ghost refused/match EMA {ema:.2f} > limit {lim:.2f} = max({cfg['ghost_refusal_x']}x, +1.0) of "
-                       f"update-0 {base.get('ghost_refused_per_match'):.2f}")
         return out
 
     def screen(self, delta_pp: Optional[float], ci_hi_pp: Optional[float]) -> Optional[str]:
@@ -687,24 +714,31 @@ def screen_score(results: list[dict], init: Optional[dict]) -> dict:
     """Held-out screen (plan diff 2 + lead ruling L68 repair): winrate over (tag, k), and PAIRED vs the init's same
     (tag, k): the ENTRY-CLUSTERED delta (per-tag mean over its seeds, then mean over tags) with its entry-clustered
     bootstrap 95% CI -- rl_gate's headline statistic and helper (e1_score.cluster_bootstrap, 10,000 draws, seed 0) --
-    plus better/worse counts over (tag, k). Win 1, draw 0.5, loss 0 (rl_gate.WIN_VAL). ``per_key`` is keyed "tag:k"."""
+    plus better/worse counts over (tag, k), and the E1 4.2 exploit values of init and candidate on the PAIRED matches
+    (``exploit_init`` / ``exploit_cand``). ``per_key`` ("tag:k") holds ``screen_record``s; an ``init`` value may also be
+    a bare outcome float (init screens cached by older code: delta only, no exploit values). No pair -> None."""
     from pipeline.e1_score import cluster_bootstrap
-    from pipeline.rl_gate import DRAWS, GATE_SEED, val
-    v = {f"{r['tag']}:{int(r['k'])}": val(r) for r in results}
-    out = {"n": len(v), "winrate": float(np.mean(list(v.values()))) if v else None, "per_key": v,
+    from pipeline.rl_gate import DRAWS, GATE_SEED
+    recs = {f"{r['tag']}:{int(r['k'])}": screen_record(r) for r in results}
+    out = {"n": len(recs), "winrate": float(np.mean([x["v"] for x in recs.values()])) if recs else None,
+           "per_key": recs, "exploit": exploit_values(list(recs.values())),
            "plays_per_min": (sum(r["plays_attempted"] for r in results) / (sum(r["seconds"] for r in results) / 60.0))
            if results else None}
     if init is not None:
-        both = sorted(set(v) & set(init))
+        iv = (lambda x: x["v"] if isinstance(x, dict) else float(x))
+        both = sorted(set(recs) & set(init))
         by_entry: dict = {}
         for key in both:
-            by_entry.setdefault(key.rsplit(":", 1)[0], []).append(v[key] - init[key])
+            by_entry.setdefault(key.rsplit(":", 1)[0], []).append(recs[key]["v"] - iv(init[key]))
         ci = cluster_bootstrap(by_entry, DRAWS, GATE_SEED)
         pp = (lambda x: 100.0 * x if x is not None else None)          # no paired match -> None, never 0.0
-        d = [v[key] - init[key] for key in both]
+        d = [recs[key]["v"] - iv(init[key]) for key in both]
+        have = both and all(isinstance(init[key], dict) for key in both)
         out.update({"paired": len(both), "paired_entries": len(by_entry), "delta_pp": pp(ci["point"]),
                     "ci_lo_pp": pp(ci["lo"]), "ci_hi_pp": pp(ci["hi"]),
-                    "better": sum(x > 0 for x in d), "worse": sum(x < 0 for x in d)})
+                    "better": sum(x > 0 for x in d), "worse": sum(x < 0 for x in d),
+                    "exploit_init": exploit_values([init[key] for key in both]) if have else None,
+                    "exploit_cand": exploit_values([recs[key] for key in both]) if have else None})
     return out
 
 
@@ -730,7 +764,7 @@ class Learner:
         self.rng = np.random.default_rng(int(cfg["seed"]))
         self.train, self.heldout = self._entries()
         self.visits = [0] * len(self.train)
-        self.base: dict = {}                                  # init_proagree, init_screen (per "tag:k")
+        self.base: dict = {}                                  # init_proagree, init_screen ("tag:k" -> screen_record)
         self.guards = Guards(cfg)
         self.latest_pa: Optional[dict] = None
         self._rows = None
@@ -795,12 +829,11 @@ class Learner:
         model.eval()
         return {k: (float(v) if isinstance(v, (float, np.floating)) else v) for k, v in ev.items()}
 
-    def screen(self) -> dict:
+    def screen(self, model=None) -> dict:
         jobs = [(i, e, int(k)) for i, e in enumerate(self.screen_entries()) for k in self.cfg["screen_seeds"]]
-        res, skipped, st = self.actors.run("screen", self.update, state_bytes(self.model), jobs)
+        res, skipped, st = self.actors.run("screen", self.update, state_bytes(model or self.model), jobs)
         out = screen_score(res, self.base.get("init_screen"))
         out["skipped"] = len(skipped)
-        out["outlived_win_share"] = rollout_monitors(res, self.cfg["tau"], self.cfg["T"])["outlived_win_share"] if res else None
         return out
 
     # ---- checkpoints -----------------------------------------------------------------------------
@@ -908,8 +941,8 @@ class Learner:
                                    float(cfg["beta_max"]))
             if u == 0 and self.guards.s["base"] is None:
                 self.guards.set_baselines(mon)
-                self.log(f"[rl] update-0 guard baselines {_py(self.guards.s['base'])}; ghost refused/match stop limit "
-                         f"{self.guards.s['ghost_refused_limit']:.3f} (EMA, {cfg['stop_consecutive']} consecutive)")
+                self.log(f"[rl] update-0 plays/min baseline {self.guards.s['base']['plays_per_min']:.3f} (stop outside "
+                         f"[{cfg['plays_lo']}, {cfg['plays_hi']}]x for {cfg['stop_consecutive']} updates)")
             reasons += self.guards.after_update(mon, beta_used, upd["kl_cell"] or 0.0, upd["kl_gate"] or 0.0,
                                                 ent=upd["ent"], ent_init=R["ent"])
             self.update = u + 1                                 # a crashed update is not counted (crash save = u)
@@ -935,7 +968,7 @@ class Learner:
                 rec["screen"] = self.screen()
                 rec["wall_screen_s"] = time.perf_counter() - t
                 r = self.guards.screen(rec["screen"]["delta_pp"], rec["screen"]["ci_hi_pp"])
-                reasons += [r] if r else []
+                reasons += ([r] if r else []) + self._screen_exploit(rec["screen"])
                 if rec["screen"]["delta_pp"] is None:
                     self.log(f"[rl] held-out screen after update {u} had NO paired matches -- counted as no screen")
             if u1 % int(cfg["proagree_every"]) == 0:
@@ -949,7 +982,8 @@ class Learner:
                 cell_low = pa["cell_half_top1"] < init["cell_half_top1"] - cfg["tripwire_cell_pp"] / 100
                 if not r and cell_low and self.guards.s["latest_screen_delta_pp"] is None:
                     rec["screen"] = self.screen()                 # the tripwire needs a screen; none has run yet
-                    self.guards.screen(rec["screen"]["delta_pp"], rec["screen"]["ci_hi_pp"])
+                    r2 = self.guards.screen(rec["screen"]["delta_pp"], rec["screen"]["ci_hi_pp"])
+                    reasons += ([r2] if r2 else []) + self._screen_exploit(rec["screen"])
                     if rec["screen"]["delta_pp"] is None:
                         self.log("[rl] forced tripwire screen had NO paired matches -- tripwire cannot fire this update")
                 r = r or tripwire_reason(pa, init, self.guards.s["latest_screen_delta_pp"], cfg)
@@ -959,6 +993,7 @@ class Learner:
                 reasons.append("STOP file present")
         if "screen" in rec:
             rec["screen"] = {k: v for k, v in rec["screen"].items() if k != "per_key"}
+            rec["screen_guards"] = {"init": rec["screen"].get("exploit_init"), "cand": rec["screen"].get("exploit_cand")}
         t = time.perf_counter()
         if crash:
             rec["crash_ckpt"] = str(self.crash_save("; ".join(reasons)))
@@ -979,10 +1014,29 @@ class Learner:
                  f"wall roll {t_roll:.0f}s upd {t_upd:.0f}s"
                  + (f" | screen {f(rec['screen']['winrate'])} d {f(rec['screen']['delta_pp'], '{:+.1f}')}pp "
                     f"CI [{f(rec['screen']['ci_lo_pp'], '{:+.1f}')}, {f(rec['screen']['ci_hi_pp'], '{:+.1f}')}] "
-                    f"(+{rec['screen']['better']}/-{rec['screen']['worse']})" if "screen" in rec else "")
+                    f"(+{rec['screen']['better']}/-{rec['screen']['worse']}) {exploit_str(rec['screen'])}"
+                    if "screen" in rec else "")
                  + (f" | proagree cell {rec['proagree']['cell_half_top1']:.4f} card {rec['proagree']['card_top1']:.4f} "
                     f"gate {rec['proagree']['gate_bal_acc']:.4f}" if "proagree" in rec else ""))
         return rec, reasons, crash
+
+    def _screen_exploit(self, sc: dict) -> list[str]:
+        if sc.get("exploit_init") is None:
+            self.log("[rl] screen exploit guards SKIPPED: the cached init screen has no per-match exploit fields")
+            return []
+        return exploit_reasons(sc["exploit_init"], sc["exploit_cand"], self.cfg)
+
+    def rebuild_init_screen(self) -> None:
+        """--resume of a run whose cached init screen is outcome-only (older code): re-run it with the frozen INIT
+        weights (greedy live rule, eval seeds: the same matches) so the screen exploit guards have their init side."""
+        t = time.perf_counter()
+        sc = self.screen(self.ref)
+        old = self.base.get("init_screen") or {}
+        same = sum(1 for k, v in sc["per_key"].items() if k in old and not isinstance(old[k], dict) and float(old[k]) == v["v"])
+        self.base["init_screen"] = sc["per_key"]
+        self.log(f"[rl] init screen rebuilt with the init weights for the exploit guards: {sc['n']} matches, "
+                 f"{same}/{len(old)} outcomes identical to the cached ones, {exploit_str({'exploit': sc['exploit']})} "
+                 f"({time.perf_counter() - t:.0f}s)")
 
     # ---- startup + loop --------------------------------------------------------------------------
     def start_actors(self) -> None:
@@ -1012,7 +1066,7 @@ class Learner:
         self.base["init_screen"] = sc["per_key"]
         (self.run_dir / "init_screen.json").write_text(json.dumps(_py(sc), indent=1), encoding="utf-8")
         log(f"[rl] init held-out screen: {sc['n']} matches, winrate {sc['winrate']:.3f}, plays/min "
-            f"{sc['plays_per_min']:.2f} ({time.perf_counter() - t:.0f}s)")
+            f"{sc['plays_per_min']:.2f}, {exploit_str(sc)} ({time.perf_counter() - t:.0f}s)")
         path = self.save(self.base["init_proagree"], numbered=True)
         log(f"[rl] saved {path}")
         self.log.json({"type": "startup", "init_proagree": pa, "init_screen": {k: v for k, v in sc.items()},
@@ -1034,6 +1088,16 @@ class Learner:
                 return 0, "; ".join(reasons)
         self.log(f"[rl] DONE: max_updates {self.cfg['max_updates']} reached")
         return 0, None
+
+
+def exploit_str(sc: dict) -> str:
+    """Screen-line text: the three E1 4.2 values, init -> candidate on the paired matches (or the init screen's own)."""
+    f = (lambda v: "-" if v is None else f"{v:.3f}")
+    keys = (("outlived_win_share", "outlived"), ("low_delivered_win_share", "<=10dlv"), ("ghost_refused_per_match", "refused/m"))
+    if sc.get("exploit_cand") is not None:
+        return "guards " + " ".join(f"{n} {f(sc['exploit_init'][k])}->{f(sc['exploit_cand'][k])}" for k, n in keys)
+    ex = sc.get("exploit") or {}
+    return "guards " + " ".join(f"{n} {f(ex.get(k))}" for k, n in keys)
 
 
 class SmokeFail(AssertionError):
@@ -1091,6 +1155,8 @@ def main(argv=None) -> int:
         if a.resume:
             log(f"[rl] resumed at update {L.update}, beta {L.beta}")
             L.start_actors()
+            if any(not isinstance(v, dict) for v in (L.base.get("init_screen") or {}).values()):
+                L.rebuild_init_screen()
         else:
             L.startup(a.smoke)
         code, why = L.loop()

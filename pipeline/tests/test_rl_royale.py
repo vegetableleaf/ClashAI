@@ -35,7 +35,7 @@ from pipeline.obs_contract import F as TOK_F, S as SC_S         # noqa: E402
 TAU, T = 0.27, 0.5
 CFG = {"stop_consecutive": 2, "plays_lo": 0.6, "plays_hi": 1.6, "kl_cell_stop": 0.5, "kl_gate_stop": 0.1,
        "beta_max": 3.0, "tripwire_cell_pp": 1.0, "hard_cell_pp": 3.0, "hard_card_pp": 3.0, "hard_gate_bal": 0.05,
-       "screen_stop_pp": -10.0, "ema_updates": 5, "outlived_pp": 15.0, "low_delivered_pp": 10.0, "ghost_refusal_x": 2.0,
+       "screen_stop_pp": -10.0, "outlived_pp": 15.0, "low_delivered_pp": 10.0, "ghost_refusal_x": 2.0,
        "entropy_floor_frac": 0.5}
 
 
@@ -245,15 +245,17 @@ class TestStopRules(unittest.TestCase):
         g.after_update({}, 3.0, 0.9, 0.0)
         self.assertEqual(len(g.after_update({}, 3.0, 0.1, 0.2)), 1)                           # KL_gate leg
 
-    def test_exploit_ema(self):
+    def test_train_batch_share_rise_no_longer_stops(self):
+        """rl30 false alarm: the train batch's <=10-delivered / outlived / refused values moving vs update 0 (different
+        ghosts sampled) is a monitor only -- after_update never stops on it."""
         g = RL.Guards(CFG)
-        g.set_baselines({"outlived_win_share": 0.3, "low_delivered_win_share": 0.05, "ghost_refused_per_match": 1.0})
-        out = []
-        for _ in range(6):
-            out = g.after_update({"outlived_win_share": 0.6, "low_delivered_win_share": 0.05,
-                                  "ghost_refused_per_match": 1.0, "ghost_undelivered_per_match": 30.0}, 0.3, 0.0, 0.0)
-        self.assertTrue(any("outlived" in r for r in out), out)
-        self.assertFalse(any("delivered win" in r or "refused" in r for r in out), out)
+        g.set_baselines({"plays_per_min": 11.0, "outlived_win_share": 0.265, "low_delivered_win_share": 0.0,
+                         "ghost_refused_per_match": 0.64})
+        self.assertEqual(g.s["base"], {"plays_per_min": 11.0})
+        for _ in range(8):                                   # the rl30 u4-shaped batch, repeated
+            out = g.after_update({"plays_per_min": 11.0, "outlived_win_share": 0.6, "low_delivered_win_share": 0.241,
+                                  "ghost_refused_per_match": 9.0}, 0.3, 0.0, 0.0)
+            self.assertEqual(out, [])
 
     def test_screen_needs_delta_and_ci(self):
         g = RL.Guards(CFG)
@@ -268,21 +270,88 @@ class TestStopRules(unittest.TestCase):
         self.assertEqual(RL.ghost_refused_limit(0.0), 1.0)
         self.assertIsNone(RL.ghost_refused_limit(None))
 
-    def test_ghost_refused_guard(self):
-        def run(values):
-            g = RL.Guards(CFG)
-            g.set_baselines({"ghost_refused_per_match": 0.64})
-            self.assertAlmostEqual(g.s["ghost_refused_limit"], 1.64)
-            outs = [g.after_update({"ghost_refused_per_match": v, "ghost_undelivered_per_match": 99.0}, 0.3, 0.0, 0.0)
-                    for v in values]
-            return [any("refused" in r for r in o) for o in outs]
-        # the measured noise_L68 sequence (0.64 -> 0.45 -> 1.17), then 1.17 held: the EMA never passes 1.64
-        self.assertFalse(any(run([0.64, 0.45, 1.17, 1.17, 1.17, 1.17, 1.17, 1.17])))
-        # 0.64 -> 2.0 sustained: EMA crosses 1.64 at update 4, fires on the 2nd consecutive crossing (update 5)
-        fired = run([0.64] + [2.0] * 7)
-        first_over = 4                                       # EMAs: .64, 1.09, 1.39, 1.60, 1.73, ...
-        self.assertEqual(fired.index(True), first_over + 1)
-        self.assertFalse(any(fired[:first_over + 1]))
+    def test_old_guard_state_loads(self):
+        """--resume of a checkpoint written before the lead's screen-guard ruling (rl30_20260924_latest.pt's shape):
+        the obsolete EMA / exploit-baseline / ghost_refused_limit keys are dropped, the live counters kept."""
+        old = {"base": {"plays_per_min": 11.89, "outlived_win_share": 0.2647, "low_delivered_win_share": 0.0,
+                        "ghost_refused_per_match": 0.64},
+               "consec": {"plays": 1, "kl": 0, "entropy_gate": 0, "entropy_card": 0, "entropy_cell": 0,
+                          "outlived_win_share": 0, "low_delivered_win_share": 1, "ghost_refusal": 0},
+               "ema": {"outlived_win_share": 0.344, "low_delivered_win_share": 0.11, "ghost_refused_per_match": 0.8},
+               "latest_screen_delta_pp": 1.1, "ghost_refused_limit": 1.64}
+        g = RL.Guards(CFG, RL._py(old))
+        self.assertEqual(g.s["base"], {"plays_per_min": 11.89})
+        self.assertEqual(g.s["consec"], {"plays": 1, "kl": 0, "entropy_gate": 0, "entropy_card": 0, "entropy_cell": 0})
+        self.assertEqual(g.s["latest_screen_delta_pp"], 1.1)
+        self.assertNotIn("ema", g.s)
+        self.assertNotIn("ghost_refused_limit", g.s)
+        out = g.after_update({"plays_per_min": 3.0, "low_delivered_win_share": 0.5}, 0.3, 0.0, 0.0)
+        self.assertEqual(len(out), 1)                        # plays counter continued (1 -> 2), no exploit stop
+        self.assertIn("plays/min", out[0])
+
+
+def _screen_res(tags, k_seeds, *, loss=(), after_script=(), low_dlv=(), refused=0):
+    """Synthetic screen records (e1_eval.Match.result keys screen_record reads)."""
+    return [{"tag": t, "k": k, "outcome": "loss" if (t, k) in loss else "win", "plays_attempted": 10, "seconds": 120.0,
+             "won_after_script": (t, k) in after_script and (t, k) not in loss,
+             "ghost_delivered": 5 if (t, k) in low_dlv else 40, "ghost_refused": refused} for t in tags for k in k_seeds]
+
+
+class TestScreenExploitGuards(unittest.TestCase):
+    """E1 4.2.1-3 on the held-out screen, candidate vs init on the SAME matches (single occurrence)."""
+
+    TAGS = [f"H{i:02d}" for i in range(20)]
+    KEYS = [(t, k) for t in TAGS for k in range(3)]
+
+    def _init(self):
+        sc = RL.screen_score(_screen_res(self.TAGS, range(3), after_script=set(self.KEYS[:15]),
+                                         low_dlv=set(self.KEYS[:3]), refused=0), None)
+        return sc["per_key"]
+
+    def test_identical_screen_does_not_fire(self):
+        init = self._init()
+        sc = RL.screen_score(_screen_res(self.TAGS, range(3), after_script=set(self.KEYS[:15]),
+                                         low_dlv=set(self.KEYS[:3])), init)
+        self.assertEqual(sc["exploit_init"], sc["exploit_cand"])
+        self.assertAlmostEqual(sc["exploit_init"]["outlived_win_share"], 0.25)
+        self.assertEqual(RL.exploit_reasons(sc["exploit_init"], sc["exploit_cand"], CFG), [])
+
+    def test_each_guard_fires(self):
+        init = self._init()
+        outl = RL.screen_score(_screen_res(self.TAGS, range(3), after_script=set(self.KEYS[:25]),      # 0.25 -> 0.417
+                                           low_dlv=set(self.KEYS[:3])), init)
+        r = RL.exploit_reasons(outl["exploit_init"], outl["exploit_cand"], CFG)
+        self.assertEqual(len(r), 1); self.assertIn("outlived", r[0])
+        low = RL.screen_score(_screen_res(self.TAGS, range(3), after_script=set(self.KEYS[:15]),
+                                          low_dlv=set(self.KEYS[:10])), init)                         # 0.05 -> 0.167
+        r = RL.exploit_reasons(low["exploit_init"], low["exploit_cand"], CFG)
+        self.assertEqual(len(r), 1); self.assertIn("<=10-delivered", r[0])
+        ref = RL.screen_score(_screen_res(self.TAGS, range(3), after_script=set(self.KEYS[:15]),
+                                          low_dlv=set(self.KEYS[:3]), refused=2), init)               # 0 -> 2 > 1.0
+        r = RL.exploit_reasons(ref["exploit_init"], ref["exploit_cand"], CFG)
+        self.assertEqual(len(r), 1); self.assertIn("refused", r[0])
+
+    def test_margins_are_inclusive_of_noise(self):
+        init = self._init()                                                                           # refused 0/match
+        sc = RL.screen_score(_screen_res(self.TAGS, range(3), after_script=set(self.KEYS[:23]),       # +13.3 pp < 15
+                                         low_dlv=set(self.KEYS[:8]), refused=1), init)                # +8.3 pp; 1.0 = limit
+        self.assertEqual(RL.exploit_reasons(sc["exploit_init"], sc["exploit_cand"], CFG), [])
+
+    def test_compared_on_paired_matches_only(self):
+        init = self._init()
+        # the candidate screen misses 10 tags; the init side is recomputed on the SAME 10 tags x 3 seeds
+        sc = RL.screen_score(_screen_res(self.TAGS[:10], range(3), after_script=set(self.KEYS[:15]),
+                                         low_dlv=set(self.KEYS[:3])), init)
+        self.assertEqual(sc["paired"], 30)
+        self.assertEqual(sc["exploit_init"], sc["exploit_cand"])
+        self.assertAlmostEqual(sc["exploit_init"]["outlived_win_share"], 0.5)
+
+    def test_old_float_init_has_delta_but_no_guard(self):
+        init = {f"{t}:{k}": 1.0 for t, k in self.KEYS}
+        sc = RL.screen_score(_screen_res(self.TAGS, range(3)), init)
+        self.assertEqual(sc["delta_pp"], 0.0)
+        self.assertIsNone(sc["exploit_init"]); self.assertIsNone(sc["exploit_cand"])
+
 
     # ------------------------------------------------------------------------------------------------------
 class _Skip(Exception):
@@ -342,8 +411,7 @@ class TestScreenScore(unittest.TestCase):
     def test_clustered_delta_and_ci(self):
         tags = [f"T{i:02d}" for i in range(20)]
         init = {f"{t}:{k}": 1.0 for t in tags for k in range(3)}
-        res = [{"tag": t, "k": k, "outcome": "loss" if (t in tags[:4] and k < 2) else "win",
-                "plays_attempted": 10, "seconds": 120.0} for t in tags for k in range(3)]
+        res = _screen_res(tags, range(3), loss={(t, k) for t in tags[:4] for k in range(2)})
         sc = RL.screen_score(res, init)
         self.assertEqual((sc["paired"], sc["paired_entries"], sc["worse"], sc["better"]), (60, 20, 8, 0))
         self.assertAlmostEqual(sc["delta_pp"], -100 * (4 * (2 / 3)) / 20, places=6)          # -13.33 pp
@@ -373,6 +441,23 @@ class TestCheckpointRoundTrip(unittest.TestCase):
         L.guards = RL.Guards(L.cfg)
         L.log = lambda m: None
         return L
+
+    def test_restore_old_format_checkpoint(self):
+        """A checkpoint written by the pre-screen-guard code (old guards dict, outcome-only init screen) restores."""
+        L = self._learner(_tiny_model(5))
+        L.guards.s = {"base": {"plays_per_min": 11.9, "outlived_win_share": 0.26, "low_delivered_win_share": 0.0,
+                               "ghost_refused_per_match": 0.64},
+                      "consec": {"plays": 0, "kl": 0, "low_delivered_win_share": 2, "ghost_refusal": 0},
+                      "ema": {"low_delivered_win_share": 0.11}, "latest_screen_delta_pp": None, "ghost_refused_limit": 1.64}
+        L.update = 6
+        path = self.tmp / "old_latest.pt"
+        torch.save(L._payload(None), path)
+        L2 = self._learner(_tiny_model(9))
+        L2._restore(path)
+        self.assertEqual(L2.update, 6)
+        self.assertEqual(L2.guards.s["base"], {"plays_per_min": 11.9})
+        self.assertEqual(L2.guards.s["consec"], {"plays": 0, "kl": 0})
+        self.assertEqual(L2.base["init_screen"], {"a": 1.0, "b": 0.5})      # outcome-only: main() rebuilds it on resume
 
     def test_round_trip(self):
         from pipeline import engine_play as ep
@@ -436,7 +521,7 @@ class TestEntropyStop(unittest.TestCase):
 
 class TestScreenNoPairs(unittest.TestCase):
     def test_no_pairs_is_none_and_not_a_screen(self):
-        res = [{"tag": "X", "k": 0, "outcome": "loss", "plays_attempted": 5, "seconds": 60.0}]
+        res = _screen_res(["X"], [0], loss={("X", 0)})
         sc = RL.screen_score(res, {"Y:0": 1.0})
         self.assertEqual(sc["paired"], 0)
         self.assertIsNone(sc["delta_pp"]); self.assertIsNone(sc["ci_hi_pp"]); self.assertIsNone(sc["ci_lo_pp"])

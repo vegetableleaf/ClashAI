@@ -46,10 +46,24 @@ Checkpoints: `icebow/data/bench/rl_royale/<name>/` = `<name>_latest.pt` (every u
 | `first_minibatch.ratio_maxdev` | < 1e-4 every update (measured ~8e-6) | on-policy integrity (asserted at update 0) |
 | `screen.delta_pp`, `ci_lo_pp`/`ci_hi_pp`, `better`/`worse` | the signal; stop = delta <= -10 pp AND CI upper < 0 | held-out RoyaleSim, 58 entries x seeds 0,1,2, entry-clustered paired vs init (every `screen_every`) |
 | `proagree_delta_pp` | > -1 pp cell | tripwire: cell < -1 pp AND screen delta <= 0 = stop; hard stop -3 pp cell/card, -0.05 gate |
-| `outlived_win_share`, `low_delivered_win_share`, `ghost_refused_per_match` | near their update-0 values; refused EMA below `guards.ghost_refused_limit` = max(2x, +1.0) of update 0 (logged at update 0) | ghost-exploit guards (E1 4.2); `ghost_undelivered_per_match` is a monitor only |
+| `screen_guards.init` / `.cand` (`outlived_win_share`, `low_delivered_win_share`, `ghost_refused_per_match`) | cand within init + 15 pp / init + 10 pp / max(2x, +1.0) of init | ghost-exploit guards (E1 4.2.1-3) on the HELD-OUT SCREEN, same 174 matches, single occurrence at a screen; also on the screen line as `guards outlived i->c ...` |
+| per-update `outlived_win_share`, `low_delivered_win_share`, `ghost_refused_per_match`, `ghost_undelivered_per_match` | -- | train-batch MONITORS only, never a stop (see below) |
 | `winrate` | descriptive only | train entries are revisited; never a verdict |
 | `visits_distinct`, `visits_max` | -- | pool revisits (299 entries) |
 | `wall_*`, `actor_s_per_match`, `*_gpu_peak_mb` | -- | throughput |
+
+**Why the exploit guards are measured on the held-out screen (L68).** The first 30-update run, `rl30_20260924`,
+stopped after update 5 on `<=10-delivered win share EMA 0.110 > update-0 0.000 + 0.10` -- a false alarm. Each update
+trains on 16 freshly sampled ghosts: update 0's batch happened to contain no ghost with <= 15 recorded plays (median
+51 `ghost_plays`), while updates 1-5 drew 1-4 such short-script ghosts whose matches land in the <= 10-delivered bucket
+whatever the policy does (update 4's 0.241 = the batch with 3 ghosts of <= 10 recorded plays). The outlived-the-script
+share swung 0.265 (update 0) -> 0.581 -> 0.314 -> 0.373 -> 0.379 -> 0.302 over the same updates, and the ghost-refused
+rate has the same flaw: one train batch against another measures which opponents were
+sampled, not a change in the policy. The held-out screen replays the SAME 58 ghosts x seeds 0,1,2 for the init and every
+candidate, so a rise there is the policy's. The train-batch values stay in train_log.jsonl as monitors; plays/min keeps
+its update-0 baseline (a property of the gate, far less sampling-dependent). A run started by the older code resumes
+fine: its obsolete guard state is dropped and, because its cached init screen holds outcomes only, `--resume` re-runs
+the init screen once with the init weights (logged `init screen rebuilt ...`, ~3-5 min) to get the init side.
 
 NOT implemented (monitors you read by hand, not stop rules): E1 4.2.4 won-match length drift (+20 s flag) -- read
 `won_seconds_mean` against update 0; E1 4.2.5 per-ghost flip list -- the screen logs only `better`/`worse` counts, not
