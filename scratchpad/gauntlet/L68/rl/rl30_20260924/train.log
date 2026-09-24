@@ -1,0 +1,13 @@
+[rl] START rl30_20260924 pid 46308 config sha 7723f675463c argv ['--config', 'pipeline/rl_royale.yaml', '--run', 'rl30_20260924', 'max_updates=30']
+[rl] run rl30_20260924: train 299 loadable, held-out 58 loadable (screen uses 58); init icebow/data/pipeline/s1_icebow_v6aug_s1.pt grid lattice
+[rl] init pro agreement (13761 VAL rows, 10s): cell 0.2073 card 0.6394 gate_bal 0.7636
+[rl] init held-out screen: 174 matches, winrate 0.747, plays/min 11.65 (126s)
+[rl] saved C:\Users\benpe\ClashBot\icebow\data\bench\rl_royale\rl30_20260924\rl30_20260924_u0000.pt
+[rl] update-0 guard baselines {'plays_per_min': 11.89265626489561, 'outlived_win_share': 0.2647058823529412, 'low_delivered_win_share': 0.0, 'ghost_refused_per_match': 0.640625}; ghost refused/match stop limit 1.641 (EMA, 2 consecutive)
+[rl] u0000 W/L/D 34/30/0 ppm 11.89 pgate 0.102 KL g/c/x 0.0012/0.0004/0.0024 beta 0.3->0.15 clip 0.018 mixed 6/16 rows 11840 wall roll 53s upd 35s
+[rl] u0001 W/L/D 43/21/0 ppm 11.32 pgate 0.096 KL g/c/x 0.0020/0.0009/0.0028 beta 0.15->0.075 clip 0.016 mixed 5/16 rows 11352 wall roll 52s upd 28s
+[rl] u0002 W/L/D 35/29/0 ppm 11.52 pgate 0.096 KL g/c/x 0.0027/0.0021/0.0055 beta 0.075->0.0375 clip 0.014 mixed 8/16 rows 11416 wall roll 64s upd 29s
+[rl] u0003 W/L/D 51/13/0 ppm 11.35 pgate 0.096 KL g/c/x 0.0061/0.0030/0.0090 beta 0.0375->0.03 clip 0.026 mixed 6/16 rows 12450 wall roll 56s upd 32s
+[rl] u0004 W/L/D 29/35/0 ppm 11.37 pgate 0.095 KL g/c/x 0.0054/0.0027/0.0104 beta 0.03->0.03 clip 0.018 mixed 7/16 rows 11179 wall roll 52s upd 29s | proagree cell 0.2042 card 0.6401 gate 0.7597
+[rl] u0005 W/L/D 43/21/0 ppm 12.18 pgate 0.101 KL g/c/x 0.0059/0.0031/0.0158 beta 0.03->0.03 clip 0.022 mixed 6/16 rows 12558 wall roll 72s upd 33s
+STOP after update 5: <=10-delivered win share EMA 0.110 > update-0 0.000 + 0.10
