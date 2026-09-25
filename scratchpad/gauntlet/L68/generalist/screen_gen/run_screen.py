@@ -80,9 +80,12 @@ def play(a) -> int:
            "decide_every": int(rc["decide_every"]), "slot": 0, "port": 0, "T": float(rc["T"]), "record": False}
     if a.opp_elixir in E.OPP_ELIXIR_MODES:
         cfg["opp_elixir"] = a.opp_elixir
+    if a.action_delay:                           # unset/0 -> cfg unchanged (today's lines)
+        cfg["action_delay_ticks"] = int(a.action_delay)
     meta = {"ckpt": str(a.ckpt), "ckpt_sha256": sha256_file(Path(a.ckpt)), "model": minfo,
             "cfg": {k: v for k, v in cfg.items() if k != "noise"}, "noise_off": E.noise_off_names(cfg["noise"]),
-            "opp_elixir_arg": a.opp_elixir, "screen_seeds": rc["screen_seeds"],
+            "opp_elixir_arg": a.opp_elixir, "action_delay_ticks": int(a.action_delay),
+            "screen_seeds": rc["screen_seeds"],
             "jobs": len(jobs), "resumed_done": len(done), "started": time.strftime("%Y-%m-%d %H:%M:%S")}
     out.parent.mkdir(parents=True, exist_ok=True)
     out.with_suffix(".run.json").write_text(json.dumps(meta, indent=1, default=str), encoding="utf-8")
@@ -131,6 +134,9 @@ def main(argv=None) -> int:
                     help="opponent-elixir SOURCE, overriding only the opp_elixir component of --noise-off: truth = exact, "
                          "hidden = None, counter = OppElixirCounter on the ghost's DELIVERED plays minus bodiless spells "
                          "(memory-reader equivalent), counter_all = every delivered play; default: what --noise-off says")
+    ap.add_argument("--action-delay", type=int, default=0, metavar="TICKS",
+                    help="live deploy lag: a play decided at tick T enters the engine at T + TICKS (no decisions, "
+                         "card in hand, elixir unspent meanwhile); live measured 24-27 ticks. 0 = today")
     ap.add_argument("--resume", action="store_true", help="append to --out, skipping (tag, k) already in it")
     a = ap.parse_args(argv)
     if a.pair:

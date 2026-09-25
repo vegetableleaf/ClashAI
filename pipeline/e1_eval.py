@@ -86,6 +86,12 @@ OPP_ELIXIR_MODES = ("counter", "counter_all")
 # pipeline/tests/test_e1_opp_counter.py.
 BODY_SPELLS = frozenset({"graveyard", "goblin_barrel", "barbarian_barrel", "royal_delivery", "clone"})
 OPP_TRACE_EVERY = 20                          # result()["opp_counter"]["trace"]: one (tick, est, truth) per N decisions
+# cfg["action_delay_ticks"] D (L68 T9; unset/0 = today, byte-identical): live deploy lag. A play decided on the board
+# at tick T enters the engine at T + D (live_play.py: tap -> registered ~24-27 ticks later) at the cell chosen at T.
+# While pending there are no decisions, the card stays in hand and no elixir is spent (Match.apply advances straight
+# to T + D, acts, then on to the first decide_every grid tick after T + D). Past plays / the anti-stall clock use the
+# LANDING tick. A refusal at landing is counted (refuse_reasons, plays_refused_at_landing), never retried; a match
+# that ends first counts plays_unlanded ("match_over_before_landing").
 
 
 # ------------------------------------------------------------------------------------------------------
@@ -486,6 +492,10 @@ class Match:
         from pipeline import engine_play as ep
         self.ep, self.env, self.deck, self.entry, self.k, self.cfg = ep, env, deck, entry, int(k), cfg
         self.t0 = time.perf_counter()
+        self.delay = int(cfg.get("action_delay_ticks") or 0)
+        if self.delay < 0:
+            raise ValueError(f"cfg['action_delay_ticks'] {self.delay} < 0")
+        self.n_unlanded = 0
         self.opp_mode = cfg.get("opp_elixir")
         if self.opp_mode:
             if self.opp_mode not in OPP_ELIXIR_MODES:
@@ -606,24 +616,36 @@ class Match:
                               "lp_cell": d["lp_cell"], "p_gate": d["p_gate"], "T": d["T"]})
         if d["why"] == "no_affordable":
             self.n_noaff += 1
+        delay = self.delay
         if d["play"]:
             el_int = float(int(view.my_elixir))
             self.n_att += 1
             self.n_stall += int(d["why"] == "stall")
             x, y = ep.cell_center(d["cell"], grid)
             X, Y = ep.cell_to_engine(d["cell"], self.mirror, grid)
-            r = env.eng.act(side=self.side, deck_index=self.deck_index_of_slot[d["slot"]], x=X, y=Y)
+            land = tick + delay                               # cfg["action_delay_ticks"]: the play enters here
+            if delay:                                         # pending: board runs on, card in hand, elixir unspent,
+                env._advance_to(min(land, env.tail_cap))      # no decisions (the whole wait is inside this call)
+            landed = not (delay and (env.terminated or env.tick < land))   # False: match over before it landed
+            r = env.eng.act(side=self.side, deck_index=self.deck_index_of_slot[d["slot"]], x=X, y=Y) if landed \
+                else {"accepted": False}
             acc = bool(r["accepted"])
             code = int(r.get("result_code", -1))
             card = self.deck.cards[d["slot"]]
             self.mix_att[card] += 1
             rec = {"tick": tick, "slot": d["slot"], "card": card, "cell": d["cell"], "p": round(p, 4), "why": d["why"],
                    "elixir": el_int, "elixir_exact": round(float(bs.my_elixir), 3), "accepted": acc}
+            if delay:
+                rec["land_tick"] = land
             if acc:
                 self.n_acc += 1
                 self.mix_acc[card] += 1
-                self.done_plays.append((tick, d["slot"], x, y))
-                self.last_play_tick = tick
+                self.done_plays.append((land, d["slot"], x, y))  # past: LANDING tick + position, as training's rows
+                self.last_play_tick = land
+            elif not landed:
+                self.n_unlanded += 1
+                self.refuse["match_over_before_landing"] += 1
+                rec["reason"] = "match_over_before_landing"
             else:
                 # RoyaleSim names its own codes (e.g. 2008 -> out_of_territory); the real engine path keeps
                 # engine_play's table, which differs from PoolV1Env's _code_names at 13 and 22 (names unchanged).
@@ -634,7 +656,9 @@ class Match:
                 self.refuse[nm] += 1
                 rec["reason"] = nm
             self.plays.append(rec)
-        env._advance_to(min(env.tick + cfg["decide_every"], env.tail_cap))
+        de = cfg["decide_every"]
+        # after a delayed play the next decision is the first decide_every grid tick AFTER landing (delay 0: tick + de)
+        env._advance_to(min((tick + de * (delay // de + 1)) if (delay and d["play"]) else env.tick + de, env.tail_cap))
         self.state = env.eng.observe()
         self.done = bool(env.terminated) or env.tick >= env.tail_cap
 
@@ -674,6 +698,8 @@ class Match:
             "unmapped": sorted(self.unmapped), "wall_s": round(time.perf_counter() - self.t0, 1),
             **({"traj": self._traj_arrays()} if cfg.get("record") else {}),
             **({"opp_counter": self._opp_summary()} if self.opp_mode else {}),
+            **({"action_delay_ticks": self.delay, "plays_unlanded": self.n_unlanded,
+                "plays_refused_at_landing": n_att - n_acc - self.n_unlanded} if self.delay else {}),
         }
 
     def _opp_summary(self) -> dict:

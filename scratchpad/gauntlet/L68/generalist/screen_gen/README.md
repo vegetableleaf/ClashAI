@@ -61,3 +61,33 @@ research/ext/Royale/.venv/Scripts/python.exe scratchpad/gauntlet/L68/generalist/
 # pair each against its hidden arm (B vs A):
 ... run_screen.py --pair screen_gen/oppHidden_gen_v1_s0.jsonl screen_gen/oppCounter_gen_v1_s0.jsonl
 ```
+
+## Action-delay arm (`--action-delay TICKS`, L68 T9)
+
+Live, a play goes in ~24-27 ticks (1.2-1.35 s) after the frame the model decided on (first live match: decision tick
+198 -> registered 222, 352 -> 379, 381 -> 408, 568 -> 592, 927 -> 953). The model was trained on the board at the tick
+the pro's card went in, so this arm measures what that lag costs. `--action-delay D` (cfg `action_delay_ticks`,
+`pipeline/e1_eval.py` `Match.apply`) reproduces `live_play.py`'s pending lock:
+- a play decided on the board at tick T enters the engine at T + D, at the cell chosen at T (not revised);
+- while it is pending there are no decisions, the card stays in hand and no elixir is spent; the next decision is the
+  first decide-every grid tick after T + D (D = 26 -> T + 30);
+- the model's own past plays and the anti-stall clock use the LANDING tick and position;
+- a refusal at landing is counted (`refuse_reasons`, `plays_refused_at_landing`), never retried; a match that ends
+  before a play lands counts it in `plays_unlanded` (reason `match_over_before_landing`).
+Each line then carries `action_delay_ticks`, and each play carries `land_tick` (`tick` stays the decision tick).
+0 (default) = today: a 2-match smoke at `--action-delay 0` reproduces `oppCounter_gen_v1_s0.jsonl`'s lines exactly
+apart from `wall_s`. The flag works with `--noise-off` and `--opp-elixir` (the counter reads the ghost's delivered
+plays, which the delay does not change).
+
+The live condition (clean obs + opponent-elixir counter) at D = 26, paired against the existing delay-0 runs:
+```
+research/ext/Royale/.venv/Scripts/python.exe scratchpad/gauntlet/L68/generalist/screen_gen/run_screen.py ^
+    --ckpt icebow/data/pipeline/gen_v1_s0/gen_s0.pt --noise-off all --opp-elixir counter --action-delay 26 ^
+    --out scratchpad/gauntlet/L68/generalist/screen_gen/oppCounterDelay26_gen_v1_s0.jsonl --device cuda --batch 16
+research/ext/Royale/.venv/Scripts/python.exe scratchpad/gauntlet/L68/generalist/screen_gen/run_screen.py ^
+    --ckpt icebow/data/pipeline/s1_icebow_v6lat_s0.pt --noise-off all --opp-elixir counter --action-delay 26 ^
+    --out scratchpad/gauntlet/L68/generalist/screen_gen/oppCounterDelay26_v6lat_s0.jsonl --device cuda --batch 16
+# pair each against its delay-0 run (B vs A):
+... run_screen.py --pair screen_gen/oppCounter_gen_v1_s0.jsonl screen_gen/oppCounterDelay26_gen_v1_s0.jsonl
+... run_screen.py --pair screen_gen/oppCounter_v6lat_s0.jsonl screen_gen/oppCounterDelay26_v6lat_s0.jsonl
+```
