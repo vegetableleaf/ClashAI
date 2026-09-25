@@ -1,0 +1,36 @@
+{
+ "ckpt": "icebow\\data\\pipeline\\s1_icebow_v6lat_s0.pt",
+ "ckpt_sha256": "3fa953587418c500cf38e724461de0eb1dcba388b7b58398e770e9d7586ba662",
+ "model": {
+  "epoch": 15,
+  "n_params": 1264680,
+  "deck": "icebow",
+  "grid": "lattice",
+  "val_cell_tile_top1": 0.21174908728841685
+ },
+ "cfg": {
+  "policy": "live",
+  "tau": 0.27,
+  "afford_mask": true,
+  "stall_elixir": 9,
+  "stall_seconds": 12.0,
+  "obs": "live",
+  "p_random": 0.0,
+  "random_hand_only": false,
+  "grid": "lattice",
+  "device": "cuda",
+  "decide_every": 10,
+  "slot": 0,
+  "port": 0,
+  "T": 0.5,
+  "record": false
+ },
+ "screen_seeds": [
+  0,
+  1,
+  2
+ ],
+ "jobs": 879,
+ "resumed_done": 0,
+ "started": "2026-09-25 02:55:12"
+}

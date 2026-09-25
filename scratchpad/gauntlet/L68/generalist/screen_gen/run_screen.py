@@ -72,10 +72,10 @@ def play(a) -> int:
     model, minfo = E.load_policy(Path(a.ckpt), a.device)
     cfg = {"policy": "live", "tau": float(rc["tau"]), "afford_mask": bool(rc["afford_mask"]),
            "stall_elixir": rc["stall_elixir"], "stall_seconds": float(rc["stall_seconds"]), "obs": rc["obs"],
-           "noise": Noise(), "p_random": 0.0, "random_hand_only": False, "grid": minfo["grid"], "device": a.device,
+           "noise": E.parse_noise_off(",".join(E.NOISE_NAMES) if a.noise_off == "all" else a.noise_off), "p_random": 0.0, "random_hand_only": False, "grid": minfo["grid"], "device": a.device,
            "decide_every": int(rc["decide_every"]), "slot": 0, "port": 0, "T": float(rc["T"]), "record": False}
     meta = {"ckpt": str(a.ckpt), "ckpt_sha256": sha256_file(Path(a.ckpt)), "model": minfo,
-            "cfg": {k: v for k, v in cfg.items() if k != "noise"}, "screen_seeds": rc["screen_seeds"],
+            "cfg": {k: v for k, v in cfg.items() if k != "noise"}, "noise_off": E.noise_off_names(cfg["noise"]), "screen_seeds": rc["screen_seeds"],
             "jobs": len(jobs), "resumed_done": len(done), "started": time.strftime("%Y-%m-%d %H:%M:%S")}
     out.parent.mkdir(parents=True, exist_ok=True)
     out.with_suffix(".run.json").write_text(json.dumps(meta, indent=1, default=str), encoding="utf-8")
@@ -119,6 +119,7 @@ def main(argv=None) -> int:
     ap.add_argument("--threads", type=int, default=2)
     ap.add_argument("--batch", type=int, default=16, help="matches in flight sharing one forward (actors: in_flight 16)")
     ap.add_argument("--max-matches", type=int, default=0, help="smoke: stop after N matches")
+    ap.add_argument("--noise-off", default="", help="e1_eval --noise-off list, or 'all' (clean obs, as the memory reader gives); default '' = the RL screen's all-on")
     ap.add_argument("--resume", action="store_true", help="append to --out, skipping (tag, k) already in it")
     a = ap.parse_args(argv)
     if a.pair:
