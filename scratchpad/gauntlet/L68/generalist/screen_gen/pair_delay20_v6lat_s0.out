@@ -1,0 +1,41 @@
+{
+ "A": "scratchpad\\gauntlet\\L68\\generalist\\screen_gen\\oppCounter_v6lat_s0.jsonl",
+ "B": "scratchpad\\gauntlet\\L68\\generalist\\screen_gen\\oppCounterDelay20_v6lat_s0.jsonl",
+ "A_screen": {
+  "n": 174,
+  "winrate": 0.9137931034482759,
+  "exploit": {
+   "outlived_win_share": 0.1509433962264151,
+   "low_delivered_win_share": 0.018867924528301886,
+   "ghost_refused_per_match": 0.4827586206896552
+  },
+  "plays_per_min": 10.826571310686287
+ },
+ "B_vs_A": {
+  "n": 174,
+  "winrate": 0.896551724137931,
+  "exploit": {
+   "outlived_win_share": 0.17307692307692307,
+   "low_delivered_win_share": 0.019230769230769232,
+   "ghost_refused_per_match": 0.8793103448275862
+  },
+  "plays_per_min": 10.314714704086779,
+  "paired": 174,
+  "paired_entries": 58,
+  "delta_pp": -1.7241379310344827,
+  "ci_lo_pp": -8.620689655172415,
+  "ci_hi_pp": 5.172413793103448,
+  "better": 6,
+  "worse": 9,
+  "exploit_init": {
+   "outlived_win_share": 0.1509433962264151,
+   "low_delivered_win_share": 0.018867924528301886,
+   "ghost_refused_per_match": 0.4827586206896552
+  },
+  "exploit_cand": {
+   "outlived_win_share": 0.17307692307692307,
+   "low_delivered_win_share": 0.019230769230769232,
+   "ghost_refused_per_match": 0.8793103448275862
+  }
+ }
+}
