@@ -77,3 +77,6 @@ scratchpad/gauntlet/L66/sweep180/
 scratchpad/gauntlet/ext/corpus_*/
 scratchpad/gauntlet/L68/generalist/pilot/crawl/
 scratchpad/gauntlet/L68/generalist/pilot/bytediff/
+
+# personal Claude Code permission rules
+.claude/settings.local.json
