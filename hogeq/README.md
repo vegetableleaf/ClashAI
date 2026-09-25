@@ -1,15 +1,21 @@
-# Learning ClashBot (`icebow/`) — imitation learning → RL
+# Learning ClashBot (`hogeq/`) — imitation learning → RL
 
 > 🚀 **New here / setting this up on another PC? Start with [Instructions.txt](Instructions.txt)** —
 > a complete, plain-English, from-scratch guide: prerequisites → install → screen
 > calibration → recording → processing the data → training (simulator + imitation + live RL)
 > → letting the bot play. No coding experience needed.
 
-> 🔀 **Current deck: Icebow X-Bow Control (Classic 1v1)** — the standard Icebow list, a **3.5**
-> avg-elixir cycle deck (NOT 2.9: substantially slower than a standard cycle deck, but it still
-> functions as one — it cannot out-cycle, so defence must be elixir-efficient and banking to ~10
-> for X-Bow(6)+Tesla(4) is correct doctrine).
+> 🔀 **Current deck: Hog Earthquake 2.6 Cycle (Classic 1v1)** — Hog Rider, Evo Firecracker,
+> Mighty Miner, Evo Tesla, The Log, Earthquake, Skeletons, and Ice Spirit. It is a fast **2.75**
+> avg-elixir cycle deck: pressure comes from repeated Hog Rider attacks, Earthquake clears buildings,
+> and Mighty Miner / Evo Tesla anchor defense.
 > [DECK_SWITCH.md](DECK_SWITCH.md) is the ordered runbook for switching the deck (record → templates → label → train).
+
+> [!NOTE]
+> This README was cloned from the Icebow guide. The deck identity and setup path are corrected here,
+> but some later reward examples still mention Icebow-only cards such as Rocket, Tornado, X-Bow, and
+> Ice Wizard; those sections should be treated as inherited examples until the Hog EQ guide is fully
+> rewritten.
 
 A second, **learning** bot (separate from the scripted `../trol` bot). Goal: an
 agent that actually *plays* 1v1 Clash Royale (Classic / ladder), rewarded for
@@ -50,7 +56,7 @@ plays differently — placed on a grid cell, or no-op. Rewards: `+take_enemy_tow
 ## Setup
 
 ```powershell
-cd <your-cloned-repo>\icebow
+cd <your-cloned-repo>\hogeq
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install --upgrade pip
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
