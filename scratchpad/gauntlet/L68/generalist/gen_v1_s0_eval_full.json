@@ -1,0 +1,346 @@
+{
+ "ckpt": "icebow\\data\\pipeline\\gen_v1_s0\\gen_s0.pt",
+ "data": "icebow\\data\\pipeline\\gen_dataset_v1.npz",
+ "epoch": 4,
+ "grid": "lattice",
+ "val_sample": 0,
+ "v3val": {
+  "model": {
+   "cell_half_top1": 0.20706006322444678,
+   "cell_tile_top1": 0.20706006322444678,
+   "card_top1": 0.6456796628029505,
+   "joint_top1": 0.1380400421496312,
+   "cell_nll": 3.1279626168993677,
+   "gate_acc": 0.8285008356950803,
+   "gate_bal_acc": 0.7669375215784222,
+   "wait_top1": 0.5215253386853989,
+   "value_acc": 0.7040186032991789,
+   "place_hit": 0.20706006322444678,
+   "place_1t": 0.3227081138040042,
+   "place_dist": 3.5641052841009655,
+   "emb_cosine": 0.7370650768280029,
+   "n_play": 3796,
+   "n": 13761
+  },
+  "baseline": {
+   "cell_half_percard": 0.0916754478398314,
+   "cell_half_global": 0.03161222339304531,
+   "cell_tile_percard": 0.0916754478398314,
+   "cell_tile_global": 0.03161222339304531,
+   "card_top1_handfreq": 0.4357218124341412,
+   "n_play": 3796
+  }
+ },
+ "val_all": {
+  "model": {
+   "cell_half_top1": 0.21599106184034972,
+   "cell_tile_top1": 0.21612122921389754,
+   "card_top1": 0.6026207031207628,
+   "joint_top1": 0.13466899521634904,
+   "cell_nll": 3.1326967669784525,
+   "gate_acc": 0.8151563914581761,
+   "gate_bal_acc": 0.710224117978105,
+   "wait_top1": 0.48357079093019106,
+   "value_acc": 0.5346027686513235,
+   "place_hit": 0.21599106184034972,
+   "place_1t": 0.32207747128182324,
+   "place_dist": 4.128398119033254,
+   "emb_cosine": 0.7220238447189331,
+   "n_play": 92189,
+   "n": 372239
+  },
+  "baseline": {
+   "cell_half_percard": 0.10755079239388647,
+   "cell_half_global": 0.03903936478321709,
+   "cell_tile_percard": 0.10755079239388647,
+   "cell_tile_global": 0.03903936478321709,
+   "card_top1_handfreq": 0.3044289448849646,
+   "n_play": 92189
+  }
+ },
+ "per_deck_val": {
+  "note": "deck_id is keyed on the 8 BASE card keys (dataset_gen): evo/hero variants of one card list share a deck_id, so a 'deck' here merges its form variants",
+  "buckets_by_train_rows": {
+   "train_rows[0,1)": {
+    "decks": 341,
+    "n_play": 9598,
+    "cell_half_top1": 0.21754532194207127,
+    "cell_tile_top1": 0.21754532194207127,
+    "card_top1": 0.5642842258803917
+   },
+   "train_rows[1,1000)": {
+    "decks": 256,
+    "n_play": 8454,
+    "cell_half_top1": 0.20830376153300212,
+    "cell_tile_top1": 0.20830376153300212,
+    "card_top1": 0.5812633073101491
+   },
+   "train_rows[1000,10000)": {
+    "decks": 137,
+    "n_play": 10734,
+    "cell_half_top1": 0.21091857648593254,
+    "cell_tile_top1": 0.21091857648593254,
+    "card_top1": 0.5980063350102478
+   },
+   "train_rows[10000,100000)": {
+    "decks": 80,
+    "n_play": 48634,
+    "cell_half_top1": 0.2169058683225727,
+    "cell_tile_top1": 0.21717317103261094,
+    "card_top1": 0.6061808611259613
+   },
+   "train_rows[100000,1000000000)": {
+    "decks": 2,
+    "n_play": 14769,
+    "cell_half_top1": 0.2200555217008599,
+    "cell_tile_top1": 0.21998781230956735,
+    "card_top1": 0.6313900738032365
+   }
+  },
+  "top_decks_by_val_rows": [
+   {
+    "deck_id": 1,
+    "train_rows": 299590,
+    "decks": 1,
+    "n_play": 11444,
+    "cell_half_top1": 0.20735756728416638,
+    "cell_tile_top1": 0.20727018524991261,
+    "card_top1": 0.6359664452988466
+   },
+   {
+    "deck_id": 1166,
+    "train_rows": 105923,
+    "decks": 1,
+    "n_play": 3325,
+    "cell_half_top1": 0.2637593984962406,
+    "cell_tile_top1": 0.2637593984962406,
+    "card_top1": 0.6156390977443609
+   },
+   {
+    "deck_id": 89,
+    "train_rows": 76073,
+    "decks": 1,
+    "n_play": 2092,
+    "cell_half_top1": 0.24235181644359466,
+    "cell_tile_top1": 0.24378585086042065,
+    "card_top1": 0.6104206500956023
+   },
+   {
+    "deck_id": 9,
+    "train_rows": 41982,
+    "decks": 1,
+    "n_play": 1495,
+    "cell_half_top1": 0.19063545150501673,
+    "cell_tile_top1": 0.19130434782608696,
+    "card_top1": 0.6434782608695652
+   },
+   {
+    "deck_id": 195,
+    "train_rows": 46260,
+    "decks": 1,
+    "n_play": 1425,
+    "cell_half_top1": 0.2540350877192982,
+    "cell_tile_top1": 0.2554385964912281,
+    "card_top1": 0.632280701754386
+   },
+   {
+    "deck_id": 95,
+    "train_rows": 35572,
+    "decks": 1,
+    "n_play": 1338,
+    "cell_half_top1": 0.20104633781763825,
+    "cell_tile_top1": 0.20104633781763825,
+    "card_top1": 0.5732436472346786
+   },
+   {
+    "deck_id": 56,
+    "train_rows": 31004,
+    "decks": 1,
+    "n_play": 1338,
+    "cell_half_top1": 0.2100149476831091,
+    "cell_tile_top1": 0.2100149476831091,
+    "card_top1": 0.5866965620328849
+   },
+   {
+    "deck_id": 597,
+    "train_rows": 37887,
+    "decks": 1,
+    "n_play": 1279,
+    "cell_half_top1": 0.27756059421422985,
+    "cell_tile_top1": 0.27756059421422985,
+    "card_top1": 0.6419077404222049
+   },
+   {
+    "deck_id": 3,
+    "train_rows": 45635,
+    "decks": 1,
+    "n_play": 1215,
+    "cell_half_top1": 0.23703703703703705,
+    "cell_tile_top1": 0.23703703703703705,
+    "card_top1": 0.5670781893004115
+   },
+   {
+    "deck_id": 606,
+    "train_rows": 27816,
+    "decks": 1,
+    "n_play": 1212,
+    "cell_half_top1": 0.21122112211221122,
+    "cell_tile_top1": 0.21122112211221122,
+    "card_top1": 0.5808580858085809
+   },
+   {
+    "deck_id": 557,
+    "train_rows": 26599,
+    "decks": 1,
+    "n_play": 1122,
+    "cell_half_top1": 0.1657754010695187,
+    "cell_tile_top1": 0.16666666666666666,
+    "card_top1": 0.5918003565062389
+   },
+   {
+    "deck_id": 36,
+    "train_rows": 41488,
+    "decks": 1,
+    "n_play": 1067,
+    "cell_half_top1": 0.24742268041237114,
+    "cell_tile_top1": 0.24742268041237114,
+    "card_top1": 0.6251171508903468
+   },
+   {
+    "deck_id": 39,
+    "train_rows": 29554,
+    "decks": 1,
+    "n_play": 1014,
+    "cell_half_top1": 0.22090729783037474,
+    "cell_tile_top1": 0.22090729783037474,
+    "card_top1": 0.591715976331361
+   },
+   {
+    "deck_id": 41,
+    "train_rows": 33266,
+    "decks": 1,
+    "n_play": 1003,
+    "cell_half_top1": 0.23230309072781655,
+    "cell_tile_top1": 0.2313060817547358,
+    "card_top1": 0.6430707876370887
+   },
+   {
+    "deck_id": 626,
+    "train_rows": 22828,
+    "decks": 1,
+    "n_play": 993,
+    "cell_half_top1": 0.22759315206445116,
+    "cell_tile_top1": 0.22759315206445116,
+    "card_top1": 0.5971802618328298
+   },
+   {
+    "deck_id": 155,
+    "train_rows": 21686,
+    "decks": 1,
+    "n_play": 972,
+    "cell_half_top1": 0.24279835390946503,
+    "cell_tile_top1": 0.24279835390946503,
+    "card_top1": 0.6131687242798354
+   },
+   {
+    "deck_id": 26,
+    "train_rows": 34587,
+    "decks": 1,
+    "n_play": 957,
+    "cell_half_top1": 0.21839080459770116,
+    "cell_tile_top1": 0.21839080459770116,
+    "card_top1": 0.6144200626959248
+   },
+   {
+    "deck_id": 68,
+    "train_rows": 33951,
+    "decks": 1,
+    "n_play": 952,
+    "cell_half_top1": 0.19852941176470587,
+    "cell_tile_top1": 0.19852941176470587,
+    "card_top1": 0.5840336134453782
+   },
+   {
+    "deck_id": 52,
+    "train_rows": 22079,
+    "decks": 1,
+    "n_play": 936,
+    "cell_half_top1": 0.19444444444444445,
+    "cell_tile_top1": 0.1955128205128205,
+    "card_top1": 0.5641025641025641
+   },
+   {
+    "deck_id": 163,
+    "train_rows": 21356,
+    "decks": 1,
+    "n_play": 777,
+    "cell_half_top1": 0.24581724581724582,
+    "cell_tile_top1": 0.24581724581724582,
+    "card_top1": 0.5778635778635779
+   },
+   {
+    "deck_id": 285,
+    "train_rows": 25924,
+    "decks": 1,
+    "n_play": 775,
+    "cell_half_top1": 0.25161290322580643,
+    "cell_tile_top1": 0.25161290322580643,
+    "card_top1": 0.6064516129032258
+   },
+   {
+    "deck_id": 6,
+    "train_rows": 32264,
+    "decks": 1,
+    "n_play": 743,
+    "cell_half_top1": 0.23822341857335128,
+    "cell_tile_top1": 0.23687752355316286,
+    "card_top1": 0.5625841184387618
+   },
+   {
+    "deck_id": 1153,
+    "train_rows": 20404,
+    "decks": 1,
+    "n_play": 711,
+    "cell_half_top1": 0.1518987341772152,
+    "cell_tile_top1": 0.15049226441631505,
+    "card_top1": 0.5949367088607594
+   },
+   {
+    "deck_id": 1114,
+    "train_rows": 20274,
+    "decks": 1,
+    "n_play": 677,
+    "cell_half_top1": 0.26292466765140327,
+    "cell_tile_top1": 0.26292466765140327,
+    "card_top1": 0.6957163958641064
+   },
+   {
+    "deck_id": 638,
+    "train_rows": 19807,
+    "decks": 1,
+    "n_play": 661,
+    "cell_half_top1": 0.2813918305597579,
+    "cell_tile_top1": 0.2813918305597579,
+    "card_top1": 0.6127080181543116
+   }
+  ],
+  "spearman_trainrows_vs_cell_half(decks>=20 val play)": -0.034452033548130326,
+  "n_decks_ge20": 675
+ },
+ "s1_reference_v3val": {
+  "v6lat_s0": {
+   "cell_half_top1": 0.2097,
+   "card_top1": 0.6546,
+   "gate_bal_acc": 0.766
+  },
+  "v6lat_3seed": {
+   "cell_half_top1": "0.2104 +- 0.0022",
+   "card_top1": "0.6499 +- 0.0057"
+  },
+  "v6aug_s1": {
+   "cell_half_top1": 0.2073,
+   "card_top1": 0.6394,
+   "gate_bal_acc": 0.7636
+  }
+ }
+}

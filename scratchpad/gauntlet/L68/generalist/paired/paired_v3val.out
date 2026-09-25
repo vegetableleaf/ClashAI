@@ -1,0 +1,150 @@
+C:\Users\benpe\ClashBot\pipeline\model_v3.py:92: UserWarning: enable_nested_tensor is True, but self.use_nested_tensor is False because encoder_layer.norm_first was True
+  self.encoder = nn.TransformerEncoder(enc, layers)
+# C:\Users\benpe\ClashBot\icebow\.venv\Scripts\python.exe scratchpad/gauntlet/L68/generalist/paired/paired_v3val.py
+# wall=237.5s
+
+{
+ "command": "C:\\Users\\benpe\\ClashBot\\icebow\\.venv\\Scripts\\python.exe scratchpad/gauntlet/L68/generalist/paired/paired_v3val.py",
+ "wall_seconds": 237.5,
+ "n_boot": 10000,
+ "seed": 0,
+ "sanity_gate": {
+  "pass": true,
+  "measured": {
+   "gen": {
+    "cell_half_top1": 0.20706006322444678,
+    "card_top1": 0.6456796628029505
+   },
+   "v6lat_s0": {
+    "cell_half_top1": 0.20969441517386722,
+    "card_top1": 0.65463645943098
+   }
+  },
+  "known": {
+   "gen": {
+    "cell_half_top1": 0.2071,
+    "card_top1": 0.6457
+   },
+   "v6lat_s0": {
+    "cell_half_top1": 0.2097,
+    "card_top1": 0.6546
+   }
+  },
+  "tol": 0.0001
+ },
+ "alignment": {
+  "gen_play_rows": 3796,
+  "s1_play_rows": 3796,
+  "matched": 3796,
+  "gen_only": 0,
+  "s1_only": 0
+ },
+ "results": {
+  "v6lat_s0": {
+   "cell_half_top1": {
+    "n": 3796,
+    "gen_acc": 0.20706006322444678,
+    "s1_acc": 0.20969441517386722,
+    "delta_pp": -0.2634351949420438,
+    "ci95_pp": [
+     -1.4655416970771216,
+     0.9114768921037635
+    ],
+    "mcnemar": {
+     "gen_only_correct": 261,
+     "s1_only_correct": 271
+    }
+   },
+   "card_top1": {
+    "n": 3796,
+    "gen_acc": 0.6456796628029505,
+    "s1_acc": 0.65463645943098,
+    "delta_pp": -0.8956796628029506,
+    "ci95_pp": [
+     -2.149159863763016,
+     0.35982225967547476
+    ],
+    "mcnemar": {
+     "gen_only_correct": 317,
+     "s1_only_correct": 351
+    }
+   }
+  },
+  "v6lat_s1": {
+   "cell_half_top1": {
+    "n": 3796,
+    "gen_acc": 0.20706006322444678,
+    "s1_acc": 0.21285563751317177,
+    "delta_pp": -0.5795574288724986,
+    "ci95_pp": [
+     -1.7803481972647783,
+     0.5400263555607759
+    ],
+    "mcnemar": {
+     "gen_only_correct": 257,
+     "s1_only_correct": 279
+    }
+   },
+   "card_top1": {
+    "n": 3796,
+    "gen_acc": 0.6456796628029505,
+    "s1_acc": 0.6514752370916754,
+    "delta_pp": -0.5795574288724903,
+    "ci95_pp": [
+     -1.7809710012111943,
+     0.596939388187534
+    ],
+    "mcnemar": {
+     "gen_only_correct": 324,
+     "s1_only_correct": 346
+    }
+   }
+  },
+  "v6lat_s2": {
+   "cell_half_top1": {
+    "n": 3796,
+    "gen_acc": 0.20706006322444678,
+    "s1_acc": 0.20864067439409906,
+    "delta_pp": -0.1580611169652274,
+    "ci95_pp": [
+     -1.4776230413009535,
+     1.0939252157231103
+    ],
+    "mcnemar": {
+     "gen_only_correct": 256,
+     "s1_only_correct": 262
+    }
+   },
+   "card_top1": {
+    "n": 3796,
+    "gen_acc": 0.6456796628029505,
+    "s1_acc": 0.6435721812434141,
+    "delta_pp": 0.21074815595364393,
+    "ci95_pp": [
+     -1.0114628132748704,
+     1.4302060578550706
+    ],
+    "mcnemar": {
+     "gen_only_correct": 346,
+     "s1_only_correct": 338
+    }
+   }
+  }
+ },
+ "mean_3seed_delta": {
+  "cell_half_top1": {
+   "delta_pp": -0.33368458025992326,
+   "ci95_pp": [
+    -1.3822402512234473,
+    0.6660044111905317
+   ]
+  },
+  "card_top1": {
+   "delta_pp": -0.42149631190726566,
+   "ci95_pp": [
+    -1.4300072342496386,
+    0.57249397325036
+   ]
+  }
+ }
+}

@@ -331,6 +331,99 @@ def sample_decide_batch(model, enc, heads, p, allowed: np.ndarray, stalled: np.n
 
 
 # ------------------------------------------------------------------------------------------------------
+# generalist (GenModel) behind S1's deck-slot interface (L68 T4)
+# ------------------------------------------------------------------------------------------------------
+class GenPolicy:
+    """A ``pipeline.model_gen.GenModel`` checkpoint behind the S1 deck-SLOT API that ``live_decide(_batch)``,
+    ``sample_decide_batch``, ``Match`` and ``run_batch`` use, so every decide rule (tau, anti-stall, affordability,
+    tempering) is S1's code unchanged. Input = ``dataset_gen``'s training row (``row``). The 4 hand-position card
+    logits are scattered onto the deck slots those positions hold (-inf elsewhere): a hand holds 4 distinct slots, so
+    argmax / softmax over allowed SLOTS == over allowed HAND POSITIONS. ``cell_logits(enc, slot)`` = the GenModel cell
+    head for that slot's card IDENTITY + decked form (per-row tables ``slot_card`` / ``slot_form`` carried in ``enc``).
+    The chosen slot goes to ``Match.apply`` as S1's does (slot -> engine deck index -> ``env.eng.act``)."""
+
+    def __init__(self, model, card_vocab: Sequence[str]):
+        self.model = model
+        self.gid = {k: i for i, k in enumerate(card_vocab)}              # 0 = <pad>
+
+    def slot_ident(self, engine_deck: Sequence[str], deck_index_of_slot: dict) -> tuple[np.ndarray, np.ndarray]:
+        """[9] card id / form per deck slot; index 8 (the sc one-hots' 'unknown' column) = pad (0, FORM_PAD)."""
+        from pipeline.dataset_gen import FORM_PAD, card_form, card_key
+        card = np.zeros(N_SLOTS + 1, np.int64)
+        form = np.full(N_SLOTS + 1, FORM_PAD, np.int64)
+        for s in range(N_SLOTS):
+            nm = engine_deck[deck_index_of_slot[s]]
+            k = card_key(nm)
+            if k not in self.gid:
+                raise KeyError(f"card {nm!r} ({k}) not in the generalist's card_vocab")
+            card[s], form[s] = self.gid[k], card_form(nm)
+        return card, form
+
+    @staticmethod
+    def row(tok, mask, sc, past, slot_card: np.ndarray, slot_form: np.ndarray) -> dict:
+        """S1's (tok, mask, sc, past) -> dataset_gen's row: sc with SC_SLOT_COLS zeroed; hand / next identities decoded
+        from the sc slot one-hots (argmax, 8 -> pad) exactly as ``dataset_gen.replay_rows``; deck in canonical order
+        (stable argsort by card id); past = (card, form, x, y, dt) from S1's (slot, x, y, dt), empty -> (0, 3, -1, -1, -1).
+        ``hand_slot`` [4] (the deck slot at each hand position) is kept for the slot scatter."""
+        from pipeline.dataset_gen import SC_SLOT_COLS
+        hs = sc[7:43].reshape(4, 9).argmax(-1)
+        ns = int(sc[43:52].argmax())
+        sc0 = sc.copy()
+        sc0[SC_SLOT_COLS] = 0.0
+        ps = np.where(past[:, 0] < 0, N_SLOTS, past[:, 0]).astype(np.int64)
+        p5 = np.concatenate([slot_card[ps, None], slot_form[ps, None], past[:, 1:]], -1).astype(np.float32)
+        order = np.argsort(slot_card[:N_SLOTS], kind="stable")
+        return {"tok": tok, "mask": mask, "sc": sc0, "past": p5,
+                "hand_card": slot_card[hs], "hand_form": slot_form[hs], "next_card": slot_card[ns],
+                "next_form": slot_form[ns], "deck_card": slot_card[:N_SLOTS][order],
+                "deck_form": slot_form[:N_SLOTS][order], "hand_slot": hs, "slot_card": slot_card, "slot_form": slot_form}
+
+    def forward_batch(self, rows: Sequence[dict], device: str = "cpu"):
+        """``model_forward_batch``'s contract for gen rows -> (enc, heads, p [B], hand bool [B, 8]); heads["card"] is
+        [B, 8] over deck slots, heads["card_hand"] the raw [B, 4] pointer logits."""
+        import torch
+        keys = ("tok", "mask", "sc", "past", "hand_card", "hand_form", "next_card", "next_form", "deck_card",
+                "deck_form", "hand_slot", "slot_card", "slot_form")
+        with torch.no_grad():
+            b = {k: torch.from_numpy(np.ascontiguousarray(np.stack([r[k] for r in rows]))).to(device) for k in keys}
+            enc = self.model.encode_gen(b)
+            h = self.model.heads_gen(enc, b)
+            B = h["card"].shape[0]
+            card = torch.full((B, N_SLOTS + 1), float("-inf"), dtype=h["card"].dtype, device=h["card"].device)
+            card = card.scatter(1, b["hand_slot"], h["card"])[:, :N_SLOTS]   # col 8 = unknown positions, dropped
+            hand = torch.zeros(B, N_SLOTS + 1, dtype=torch.bool, device=card.device)
+            hand = hand.scatter(1, b["hand_slot"], True)[:, :N_SLOTS]        # = model_v3.hand_mask_from_sc(sc)
+            enc = {**enc, "slot_card": b["slot_card"], "slot_form": b["slot_form"]}
+            heads = {"gate": h["gate"], "card": card, "card_hand": h["card"]}
+            p = torch.sigmoid(h["gate"]).cpu().tolist()
+        return enc, heads, p, hand.cpu().numpy()
+
+    def cell_logits(self, enc: dict, slot):
+        """S1Model.cell_logits' contract: [B, N_CELLS] for deck slot ``slot`` [B] -> that slot's card identity + form."""
+        s = slot.long().unsqueeze(1)
+        return self.model.cell_logits_gen(enc, enc["slot_card"].gather(1, s).squeeze(1),
+                                          enc["slot_form"].gather(1, s).squeeze(1))
+
+
+def load_policy(ckpt, device: str = "cpu"):
+    """-> (model, minfo). A checkpoint dict with ``"gen": True`` -> ``GenPolicy`` (``eval_gen.load_model``); anything
+    else -> ``engine_play.load_model``, unchanged (S1)."""
+    import torch
+    from pipeline import engine_play as ep
+    try:
+        gen = bool(torch.load(ckpt, map_location="cpu").get("gen"))
+    except Exception:                                   # ep.load_model retries a file the trainer is rewriting
+        gen = False
+    if not gen:
+        return ep.load_model(ckpt, device)
+    from pipeline.eval_gen import load_model
+    model, st = load_model(ckpt, torch.device(device))
+    model.eval()
+    return GenPolicy(model, st["card_vocab"]), {"gen": True, "epoch": st.get("epoch"), "n_params": st.get("n_params"),
+                                                 "deck": st.get("deck"), "grid": str(st["args"].get("grid", "lattice"))}
+
+
+# ------------------------------------------------------------------------------------------------------
 # one match
 # ------------------------------------------------------------------------------------------------------
 def _slot_maps(env, deck, entry) -> tuple[list[str], dict[int, int], list[float]]:
@@ -393,6 +486,10 @@ class Match:
         self._cur = (tick, bs, view)
         self._obs = (tok, mask, sc, past)                    # kept for cfg["record"] (see apply())
         return tok, mask, sc, past
+
+    def gen_row(self, policy: GenPolicy) -> dict:
+        """The current prepared state as a generalist row (``GenPolicy.row``); call after ``prepare``."""
+        return policy.row(*self._obs, *policy.slot_ident(self.engine_deck, self.deck_index_of_slot))
 
     def pre(self, hand) -> tuple[float, np.ndarray, bool]:
         """(a): el_int, allowed, stalled for the current prepared state -- shared by every decide path (live,
@@ -530,7 +627,11 @@ def run_match(env, model, deck, entry: dict, k: int, cfg: dict) -> dict:
     m = Match(env, deck, entry, k, cfg)
     while not m.done:
         tok, mask, sc, past = m.prepare()
-        enc, heads, p, hand = model_forward(model, tok, mask, sc, past, cfg["device"])
+        if isinstance(model, GenPolicy):
+            enc, heads, p, hand = model.forward_batch([m.gen_row(model)], cfg["device"])
+            p, hand = p[0], hand[0]
+        else:
+            enc, heads, p, hand = model_forward(model, tok, mask, sc, past, cfg["device"])
         m.step(model, enc, heads, p, hand)
     return m.result()
 
@@ -559,6 +660,9 @@ def run_batch(make_env, model, deck, jobs, cfg: dict, n: int, on_result, on_skip
     match's ``Match.result()``; an exception type in ``skip`` raised by reset goes to ``on_skip(entry, exc)``.
     Each row's decision depends only on its own tensors and (for ``sample``) its own ``Match.rng_behave``, so a
     match's record does not depend on its batch-mates (float noise in the shared forward/decide aside, L68)."""
+    gen = isinstance(model, GenPolicy)
+    if gen and cfg.get("record"):                        # traj stores S1 rows; the RL learner cannot use them for gen
+        raise ValueError("cfg['record'] is S1-only: a GenPolicy trajectory would store the wrong input rows")
     jobs = iter(jobs)
     free = [make_env() for _ in range(n)]
     live: list[Match] = []
@@ -583,7 +687,10 @@ def run_batch(make_env, model, deck, jobs, cfg: dict, n: int, on_result, on_skip
     fill()
     while live:
         obs = [m.prepare() for m in live]
-        enc, heads, p, hand = model_forward_batch(model, *zip(*obs), device=cfg["device"])
+        if gen:
+            enc, heads, p, hand = model.forward_batch([m.gen_row(model) for m in live], cfg["device"])
+        else:
+            enc, heads, p, hand = model_forward_batch(model, *zip(*obs), device=cfg["device"])
         policy = cfg["policy"]
         if policy in ("live", "sample"):
             pre = [m.pre(hand[r]) for r, m in enumerate(live)]
@@ -737,9 +844,8 @@ def main(argv=None) -> int:
     deck = load_deck("icebow")
     model, minfo = None, {}
     if a.mode == "eval":
-        from pipeline import engine_play as ep
         run["ckpt_sha256"] = sha256_file(a.ckpt)
-        model, minfo = ep.load_model(a.ckpt, a.device)
+        model, minfo = load_policy(a.ckpt, a.device)
         run["model"] = minfo
     (out / (f"run_resume_{int(time.time())}.json" if a.resume else "run.json")).write_text(
         json.dumps(run, indent=1, default=str), encoding="utf-8")
