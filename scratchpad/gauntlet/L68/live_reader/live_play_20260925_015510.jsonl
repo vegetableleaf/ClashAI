@@ -1,0 +1,12 @@
+{"event": "start", "screen": [900, 1600], "tau": 0.5, "leak": 9.5, "dry_run": false, "ckpt": "C:\\Users\\benpe\\ClashBot\\icebow\\data\\pipeline\\gen_v1_s0\\gen_s0.pt"}
+{"event": "play", "tick": 198, "name": "Musketeer", "p_play": 0.294, "forced": true, "elixir": 9.5244, "hand_pos": 3, "xy": [0.4722, 0.9844], "tap_hand": [792, 1424], "tap_board": [472, 1213]}
+{"event": "confirmed", "tick": 222, "name": "Musketeer", "intended": [0.4722222222222222, 0.984375], "elixir_drop": 3.5728, "spawn": [[0.4722222222222222, 0.96875]], "err_tiles": 0.5, "latency_s": 1.201}
+{"event": "play", "tick": 352, "name": "Knight", "p_play": 0.5034, "forced": false, "elixir": 8.2656, "hand_pos": 0, "xy": [0.8056, 0.5781], "tap_hand": [279, 1424], "tap_board": [205, 767]}
+{"event": "confirmed", "tick": 379, "name": "Knight", "intended": [0.8055555555555556, 0.578125], "elixir_drop": 2.5194, "spawn": [[0.8056111111111111, 0.5780937500000001]], "err_tiles": 0.0, "latency_s": 1.401}
+{"event": "play", "tick": 381, "name": "MiniPekka", "p_play": 0.6214, "forced": false, "elixir": 5.7818, "hand_pos": 0, "xy": [0.8056, 0.6719], "tap_hand": [279, 1424], "tap_board": [205, 870]}
+{"event": "confirmed", "tick": 408, "name": "MiniPekka", "intended": [0.8055555555555556, 0.671875], "elixir_drop": 3.5194, "spawn": [[0.8056111111111111, 0.6718437500000001]], "err_tiles": 0.0, "latency_s": 1.302}
+{"event": "play", "tick": 568, "name": "Goblins", "p_play": 0.5062, "forced": false, "elixir": 5.1104, "hand_pos": 2, "xy": [0.8056, 0.5469], "tap_hand": [621, 1424], "tap_board": [205, 733]}
+{"event": "confirmed", "tick": 592, "name": "Goblins", "intended": [0.8055555555555556, 0.546875], "elixir_drop": 1.5728, "spawn": [[0.8478888888888889, 0.5753125]], "err_tiles": 1.1868866837234295, "latency_s": 1.2}
+{"event": "play", "tick": 927, "name": "GoblinHut", "p_play": 0.4425, "forced": true, "elixir": 9.5006, "hand_pos": 0, "xy": [0.5278, 0.7031], "tap_hand": [279, 1424], "tap_board": [428, 904]}
+{"event": "confirmed", "tick": 953, "name": "GoblinHut", "intended": [0.5277777777777778, 0.703125], "elixir_drop": 3.5372, "spawn": [[0.5277777777777778, 0.703125]], "err_tiles": 0.0, "latency_s": 1.3}
+{"event": "end", "played": 5, "confirmed": 5, "fails": 0, "seconds": 48.2}
