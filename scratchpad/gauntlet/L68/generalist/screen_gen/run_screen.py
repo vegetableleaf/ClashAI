@@ -82,9 +82,12 @@ def play(a) -> int:
         cfg["opp_elixir"] = a.opp_elixir
     if a.action_delay:                           # unset/0 -> cfg unchanged (today's lines)
         cfg["action_delay_ticks"] = int(a.action_delay)
+    if a.extrapolate:                            # unset/0 -> cfg unchanged (today's lines)
+        cfg["extrapolate_ticks"] = int(a.extrapolate)
     meta = {"ckpt": str(a.ckpt), "ckpt_sha256": sha256_file(Path(a.ckpt)), "model": minfo,
             "cfg": {k: v for k, v in cfg.items() if k != "noise"}, "noise_off": E.noise_off_names(cfg["noise"]),
             "opp_elixir_arg": a.opp_elixir, "action_delay_ticks": int(a.action_delay),
+            "extrapolate_ticks": int(a.extrapolate),
             "screen_seeds": rc["screen_seeds"],
             "jobs": len(jobs), "resumed_done": len(done), "started": time.strftime("%Y-%m-%d %H:%M:%S")}
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -137,6 +140,10 @@ def main(argv=None) -> int:
     ap.add_argument("--action-delay", type=int, default=0, metavar="TICKS",
                     help="live deploy lag: a play decided at tick T enters the engine at T + TICKS (no decisions, "
                          "card in hand, elixir unspent meanwhile); live measured 24-27 ticks. 0 = today")
+    ap.add_argument("--extrapolate", type=int, default=0, metavar="TICKS",
+                    help="each decision sees the raw board advanced TICKS ticks (pipeline/extrapolate.py: units by "
+                         "their velocity over the previous decision round, clock + my elixir regen; opp-elixir "
+                         "counter read at tick + TICKS). 0 = today")
     ap.add_argument("--resume", action="store_true", help="append to --out, skipping (tag, k) already in it")
     a = ap.parse_args(argv)
     if a.pair:

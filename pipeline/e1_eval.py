@@ -92,6 +92,12 @@ OPP_TRACE_EVERY = 20                          # result()["opp_counter"]["trace"]
 # to T + D, acts, then on to the first decide_every grid tick after T + D). Past plays / the anti-stall clock use the
 # LANDING tick. A refusal at landing is counted (refuse_reasons, plays_refused_at_landing), never retried; a match
 # that ends first counts plays_unlanded ("match_over_before_landing").
+# cfg["extrapolate_ticks"] H (L68 T10; unset/0 = today, byte-identical): each decision sees the RAW state advanced H
+# ticks by pipeline.extrapolate.extrapolate (velocity from the previous decision round's raw state of this match;
+# the first decision of a match is not extrapolated). The model input, affordability / anti-stall elixir and the
+# past-play dt use tick + H; the decision / landing / anti-stall clock ticks stay real. cfg["opp_elixir"]: the
+# counter's estimate at tick + H with no further plays (= min(10, est(tick) + regen)), the counter itself never
+# moves past the real tick; the truth-error diagnostic stays est(tick) vs truth(tick).
 
 
 # ------------------------------------------------------------------------------------------------------
@@ -496,6 +502,10 @@ class Match:
         if self.delay < 0:
             raise ValueError(f"cfg['action_delay_ticks'] {self.delay} < 0")
         self.n_unlanded = 0
+        self.extrap = int(cfg.get("extrapolate_ticks") or 0)
+        if self.extrap < 0:
+            raise ValueError(f"cfg['extrapolate_ticks'] {self.extrap} < 0")
+        self._prev_raw = None                                # cfg["extrapolate_ticks"]: last decision's raw state
         self.opp_mode = cfg.get("opp_elixir")
         if self.opp_mode:
             if self.opp_mode not in OPP_ELIXIR_MODES:
@@ -534,19 +544,28 @@ class Match:
         tick = int(self.env.tick)
         if self.last_play_tick is None:
             self.last_play_tick = tick                       # match start = first decision (anti-stall clock)
-        bs = from_engine(self.ep.compact_raw(self.state), self.side, self.deck, engine_deck=self.engine_deck,
+        raw, h = self.state, (self.extrap if self._prev_raw is not None else 0)
+        if self.extrap:                                      # cfg["extrapolate_ticks"]; 0 -> this block is skipped
+            from pipeline.extrapolate import extrapolate
+            if h:
+                raw = extrapolate(self.state, self._prev_raw, h, self.side)
+            self._prev_raw = self.state
+        bs = from_engine(self.ep.compact_raw(raw), self.side, self.deck, engine_deck=self.engine_deck,
                          unmapped=self.unmapped)
         view = live_view(bs, self.rng_obs, self.deck, cfg["noise"]) if cfg["obs"] == "live" else bs
         if self.opp_mode:
             est = self.opp_estimate(tick)
             if bs.opp_elixir is not None:                    # truth read for the result's error log ONLY
-                self.opp_err.append(est - bs.opp_elixir)
+                self.opp_err.append(est - bs.opp_elixir)     # (extrapolate leaves the opponent's elixir at tick)
                 if self.n_dec % OPP_TRACE_EVERY == 0:
                     self.opp_trace.append([tick, round(est, 3), round(bs.opp_elixir, 3)])
+            if h:                                            # the counter at tick + h, no plays in between
+                from pipeline.opp_elixir_count import MAX_ELIXIR, regen_between
+                est = min(MAX_ELIXIR, est + regen_between(tick, tick + h))
             view = dc_replace(view, opp_elixir=est)
         self.n_deg += int(view.source == "degraded")
         tok, mask, sc = to_tokens(view, MAX_U)
-        past = _past(self.done_plays, tick)
+        past = _past(self.done_plays, tick + h)
         self._cur = (tick, bs, view)
         self._obs = (tok, mask, sc, past)                    # kept for cfg["record"] (see apply())
         return tok, mask, sc, past
@@ -700,6 +719,7 @@ class Match:
             **({"opp_counter": self._opp_summary()} if self.opp_mode else {}),
             **({"action_delay_ticks": self.delay, "plays_unlanded": self.n_unlanded,
                 "plays_refused_at_landing": n_att - n_acc - self.n_unlanded} if self.delay else {}),
+            **({"extrapolate_ticks": self.extrap} if self.extrap else {}),
         }
 
     def _opp_summary(self) -> dict:

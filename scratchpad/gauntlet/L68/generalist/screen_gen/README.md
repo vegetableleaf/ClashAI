@@ -91,3 +91,42 @@ research/ext/Royale/.venv/Scripts/python.exe scratchpad/gauntlet/L68/generalist/
 ... run_screen.py --pair screen_gen/oppCounter_gen_v1_s0.jsonl screen_gen/oppCounterDelay26_gen_v1_s0.jsonl
 ... run_screen.py --pair screen_gen/oppCounter_v6lat_s0.jsonl screen_gen/oppCounterDelay26_v6lat_s0.jsonl
 ```
+
+## Extrapolation arm (`--extrapolate TICKS`, L68 T10)
+
+Counter to the action delay above, inference-only: each decision sees the board guessed TICKS ticks ahead instead of
+the stale one. `pipeline/extrapolate.py` (one pure function, shared with the live path later) works on the RAW
+observation before `obs_contract.from_engine` (cfg `extrapolate_ticks`, `pipeline/e1_eval.py` `Match.prepare`):
+- a unit seen in this decision's raw state AND the previous decision round's (same RoyaleSim `entity_id` = engine
+  `uid`, same side and card) moves pos + v * TICKS, v = its displacement / the tick gap between the two rounds
+  (10 ticks, 30 after a delayed play), clamped to the board; new / deploying bodies stay put; towers never move;
+- the clock moves TICKS ahead (t_sec, double elixir / overtime, and the past-play dt follow); MY elixir gets the
+  regen over [tick, tick + TICKS] (`opp_elixir_count.regen_between`, capped at 10) -- affordability and anti-stall
+  read that elixir, the anti-stall clock and the decision / landing ticks stay real;
+- `--opp-elixir counter`: the counter's estimate at tick + TICKS with no further plays; the counter itself and the
+  `opp_counter` truth-error diagnostic stay at the real tick; the true opponent elixir is never read;
+- NOT simulated: HP, deaths, spawns, retargeting (a unit that stops to attack overshoots), spells / effects;
+- the first decision of a match is not extrapolated (no previous round).
+Each line then carries `extrapolate_ticks`. 0 (default) = today: a 2-match smoke at `--action-delay 26` without the
+flag reproduces `oppCounterDelay26_gen_v1_s0.jsonl`'s lines exactly apart from `wall_s`.
+Position check (grading only, `.foreman/scratch/T10/grade_extrap.py`, 1 match, 448 moving-unit samples): at 26 ticks
+the extrapolated position is 0.66 tiles from the true one on average (median 0.41) against 1.56 (median 1.54) for
+the stale board; better in 81% of samples.
+
+The live condition at D = 26 with extrapolation 26, paired against the delay-26 runs (does it recover the lag?) and
+the delay-0 runs (how much is left?):
+```
+research/ext/Royale/.venv/Scripts/python.exe scratchpad/gauntlet/L68/generalist/screen_gen/run_screen.py ^
+    --ckpt icebow/data/pipeline/gen_v1_s0/gen_s0.pt --noise-off all --opp-elixir counter --action-delay 26 ^
+    --extrapolate 26 --out scratchpad/gauntlet/L68/generalist/screen_gen/oppCounterDelay26Ext26_gen_v1_s0.jsonl ^
+    --device cuda --batch 16
+research/ext/Royale/.venv/Scripts/python.exe scratchpad/gauntlet/L68/generalist/screen_gen/run_screen.py ^
+    --ckpt icebow/data/pipeline/s1_icebow_v6lat_s0.pt --noise-off all --opp-elixir counter --action-delay 26 ^
+    --extrapolate 26 --out scratchpad/gauntlet/L68/generalist/screen_gen/oppCounterDelay26Ext26_v6lat_s0.jsonl ^
+    --device cuda --batch 16
+# pair (B vs A):
+... run_screen.py --pair screen_gen/oppCounterDelay26_gen_v1_s0.jsonl screen_gen/oppCounterDelay26Ext26_gen_v1_s0.jsonl
+... run_screen.py --pair screen_gen/oppCounter_gen_v1_s0.jsonl screen_gen/oppCounterDelay26Ext26_gen_v1_s0.jsonl
+... run_screen.py --pair screen_gen/oppCounterDelay26_v6lat_s0.jsonl screen_gen/oppCounterDelay26Ext26_v6lat_s0.jsonl
+... run_screen.py --pair screen_gen/oppCounter_v6lat_s0.jsonl screen_gen/oppCounterDelay26Ext26_v6lat_s0.jsonl
+```
