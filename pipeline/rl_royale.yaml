@@ -1,4 +1,4 @@
-# pipeline/rl_royale.py defaults -- RL for the icebow S1 policy on RoyaleSim.
+# pipeline/rl_royale.py defaults -- RL for the icebow S1 policy (or the generalist: init = a "gen" checkpoint) on RoyaleSim.
 #   plan = scratchpad/gauntlet/L68/rl_plan.md (binding); E1 = scratchpad/gauntlet/L67/e1_engine_rl_design.md.
 # Any key can be overridden on the command line as key=value (YAML-typed), e.g. max_updates=1 E=8.
 # Paths are relative to the repo root.
@@ -8,6 +8,19 @@ init: icebow/data/pipeline/s1_icebow_v6aug_s1.pt   # plan header: RL is initiali
 pool: icebow/data/ghost_pool/pool_env_v1.jsonl     # E1 2.2: pool v1 + its frozen split (sha checked at startup)
 proagree_data: icebow/data/pipeline/s1_dataset.npz # plan "Measured facts" + diff 3: v3 VAL clean (split == 1)
 proagree_rows: 0            # 0 = every VAL row (13,761); the smoke uses 1,000 (plan "Launch")
+proagree_data_gen: icebow/data/pipeline/gen_dataset_v1.npz   # GENERALIST init (a "gen" checkpoint) only: the same
+                            # v3 VAL rows as dataset_gen marks them (v3val == 1), scored by eval_gen.evaluate (T11)
+
+# ---- rollout + held-out screen CONDITIONS (L68 T11). Applied to EVERY actor match -- the rollouts AND the held-out
+# screens (init screen included) -- so train and evaluation conditions match. Defaults = the old behaviour.
+# Measured live condition (HANDOFF "ACTION DELAY"/"EXTRAPOLATION"): noise_off=all opp_elixir=counter action_delay_ticks=26
+# (gen 0.983 -> 0.828 on the held-out screen), + extrapolate_ticks=26 (0.862).
+noise_off: []               # e1_view.Noise components switched OFF (e1_eval --noise-off names, list or comma string);
+                            # all = clean obs (the memory-reader path); [] = today's all-on live_view noise
+opp_elixir: null            # null = the view's own opp elixir; counter = public-events counter (memory-reader
+                            # equivalent, bodiless spells dropped); counter_all = every delivered ghost play
+action_delay_ticks: 0       # live tap->land lag: a play decided at T lands at T + D (live ~24-27 ticks)
+extrapolate_ticks: 0        # each decision sees the raw board advanced H ticks (pipeline/extrapolate.py)
 
 # ---- batch shape (plan diff 1 + E1 3.2)
 E: 16                       # entries per update, uniform, no repeat within an update (plan diff 1)

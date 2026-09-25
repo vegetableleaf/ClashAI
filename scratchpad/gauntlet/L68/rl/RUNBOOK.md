@@ -7,7 +7,7 @@ All commands from the repo root; the trainer runs in the **Royale venv** (it has
 
 ## 0. Offline tests (icebow venv, no engine, ~1-2 min)
 ```
-icebow/.venv/Scripts/python.exe -m unittest pipeline.tests.test_rl_royale -v
+icebow/.venv/Scripts/python.exe -m unittest pipeline.tests.test_rl_royale pipeline.tests.test_rl_gen -v
 ```
 
 ## 1. Smoke (~10-20 min on the busy box)
@@ -136,7 +136,49 @@ rl_gate: read `proagree` from train_log.jsonl or run
 `icebow/.venv/Scripts/python.exe -m pipeline.eval_s1 icebow --data icebow/data/pipeline/s1_dataset.npz <ckpt>`.
 No "best on held-out" selection: gate the checkpoint you decided to gate before looking at screens.
 
-## 7. The KL budget is the owner's
+## 7. Generalist init and live-condition keys (L68 T11)
+**Generalist.** Pass a generalist checkpoint (a train_gen `"gen": True` file) as `init`; the trainer detects it:
+```
+research/ext/Royale/.venv/Scripts/python.exe -m pipeline.rl_royale --config pipeline/rl_royale.yaml --run <name> init=icebow/data/pipeline/gen_v1_s0/gen_s0.pt
+```
+- Actors play `e1_eval.GenPolicy` (as icebow, vs the same ghost pool) and record the generalist's OWN input rows
+  (`e1_eval.GEN_ROW_KEYS`: zeroed-slot `sc`, (card, form, x, y, dt) past, hand/next/deck identities, `hand_slot`).
+- The learner recomputes the sampler's distribution through the sampler's own `GenPolicy.heads_t`: gate as S1; card =
+  the 4 hand-position logits scattered onto their deck slots, softmax / T over the ALLOWED slots (== allowed hand
+  positions); cell = `cell_logits_gen` for the sampled card's identity + form, softmax / T over 2,304. PPO ratio and
+  KL(pi || init) (gate / card / cell, adaptive beta on KL_cell) use exactly these; the update-0 on-policy assert applies.
+- Pro agreement = `eval_gen.evaluate` on the dataset_gen v3val rows (`proagree_data_gen`, default
+  `icebow/data/pipeline/gen_dataset_v1.npz`, `v3val == 1` = S1's 13,761 v3 VAL rows; loaded key by key, ~11 s, the
+  full set ~2.5 min on CPU). Measured (a): reproduces the checkpoint's recorded v3val exactly (cell 0.2071, card 0.6457,
+  gate_bal 0.7669). The tripwire / hard stops are relative to THIS init measurement, not to S1's numbers.
+- Checkpoints add `gen`/`d_c`/`card_vocab`: load with `eval_gen.load_model` or `e1_eval.load_policy` (so `e1_eval
+  --ckpt`, `rl_gate`, `run_screen.py` take them); `engine_play.load_model` does NOT (it is S1-only).
+
+**Conditions** (`rl_royale.yaml`, defaults = the old behaviour; any can be a `key=value` override; recorded in
+`config.yaml` and on the startup log line). They go into EVERY actor match -- rollouts, the init screen and every
+held-out screen -- so training and evaluation run under the same conditions:
+
+| key | default | live condition | meaning |
+|---|---|---|---|
+| `noise_off` | `[]` | `all` | e1_view.Noise components off (list, comma string, or `all` = clean obs, the memory-reader path) |
+| `opp_elixir` | `null` | `counter` | opponent elixir from the public-events counter (bodiless spells dropped); `counter_all` = every play |
+| `action_delay_ticks` | `0` | `26` | a play decided at T lands at T + D (live tap->land ~24-27 ticks) |
+| `extrapolate_ticks` | `0` | `26` | each decision sees the board advanced H ticks (pipeline/extrapolate.py) |
+
+Measured reference (HANDOFF "ACTION DELAY" / "EXTRAPOLATION", greedy screen, 58 distinct matches): generalist clean +
+counter 0.983 -> + delay 26 0.828 -> + extrapolate 26 0.862. NOTE: with `noise_off=all` the eval seeds k=0/1/2 replay
+IDENTICAL screen matches (HANDOFF correction), so the 174-match screen is 58 distinct matches; its CI is entry-clustered
+and stays valid, but `better`/`worse` counts triple-count each entry. Rollouts are unaffected (their obs seed varies
+per (entry, g, update) and the behaviour sampler is stochastic). Resuming a run started before T11 logs the four new
+keys (plus `proagree_data_gen`) as a changed config -- expected.
+
+Smoke with the live condition (CPU; measured 458 s wall, 2026-09-25, T11smoke_gen: SMOKE PASS):
+```
+CUDA_VISIBLE_DEVICES= research/ext/Royale/.venv/Scripts/python.exe -m pipeline.rl_royale --config pipeline/rl_royale.yaml --run T11smoke_gen --smoke init=icebow/data/pipeline/gen_v1_s0/gen_s0.pt noise_off=all opp_elixir=counter action_delay_ticks=26 extrapolate_ticks=26 learner_device=cpu actor_device=cpu
+```
+Tests: `icebow/.venv/Scripts/python.exe -m pytest -q pipeline/tests/test_rl_gen.py`.
+
+## 8. The KL budget is the owner's
 `kl_target` (default 0.10) is NEVER changed by the trainer. Raising it is a manual owner decision, taken only after a
 real-engine `rl_gate` PASS on a checkpoint trained at the current target; then `--resume` with `kl_target=<new>` on the command
 line (logged as a changed config), and record the decision in HANDOFF.

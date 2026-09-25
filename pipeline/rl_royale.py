@@ -1,5 +1,14 @@
-"""RL for the icebow S1 policy on RoyaleSim: PPO-clip, group leave-one-out baseline, terminal reward, KL leash to the
-frozen init. One learner process + ``n_actors`` actor processes (torch.multiprocessing, spawn). L68.
+"""RL for the icebow S1 policy -- or the GENERALIST (GenModel, a ``"gen": True`` init checkpoint, L68 T11) playing
+icebow -- on RoyaleSim: PPO-clip, group leave-one-out baseline, terminal reward, KL leash to the frozen init. One
+learner process + ``n_actors`` actor processes (torch.multiprocessing, spawn). L68.
+
+Generalist init (T11): actors play ``e1_eval.GenPolicy`` and record its own input rows (``e1_eval.GEN_ROW_KEYS``); the
+learner recomputes the sampler's distribution through ``GenPolicy.heads_t`` (card = the 4 hand-position logits scattered
+onto deck slots, i.e. softmax over allowed hand positions; cell = ``cell_logits_gen`` for the chosen card identity +
+form); pro agreement = ``eval_gen.evaluate`` on the dataset_gen v3val rows (``proagree_data_gen``); checkpoints carry
+``gen``/``d_c``/``card_vocab`` so ``eval_gen.load_model`` / ``e1_eval.load_policy`` load them. Conditions (T11):
+``noise_off`` / ``opp_elixir`` / ``action_delay_ticks`` / ``extrapolate_ticks`` go into every actor match cfg, rollouts
+AND held-out screens (``condition_cfg``, ``actor_cfg``); defaults = the old behaviour.
 
     research/ext/Royale/.venv/Scripts/python.exe -m pipeline.rl_royale --config pipeline/rl_royale.yaml --run NAME
     ... --smoke          E=4, G=2, 1 actor, 2 updates + the checks below; prints SMOKE PASS, exits 0
@@ -72,6 +81,40 @@ ASSERT_RATIO, ASSERT_KL = 1e-4, 1e-6          # rl_plan.md "Learner" (measured L
 SMOKE = {"E": 4, "G": 2, "n_actors": 1, "in_flight": 8, "max_updates": 2, "screen_entries": 8, "proagree_rows": 1000,
          "proagree_every": 1, "screen_every": 1, "save_every": 1}
 TRAJ_KEYS = ("tok", "mask", "sc", "past", "allowed", "gate_sampled", "played", "slot", "cell")
+COND_KEYS = ("noise_off", "opp_elixir", "action_delay_ticks", "extrapolate_ticks")   # rl_royale.yaml "conditions"
+
+
+def condition_cfg(c: dict) -> dict:
+    """The rollout / screen CONDITION keys of a config -> e1_eval match-cfg entries (validated; SystemExit on a bad
+    value). ``noise_off``: list or comma string of e1_view.Noise names (e1_eval.parse_noise_off), or ``all`` (clean
+    obs, run_screen's spelling); ``opp_elixir``: None or one of e1_eval.OPP_ELIXIR_MODES; delays: ints >= 0. Missing /
+    empty keys = today's cfg (Noise() all on, no counter, 0, 0), which e1_eval.Match treats exactly like unset."""
+    spec = c.get("noise_off") or []
+    names = [s.strip() for s in spec.split(",") if s.strip()] if isinstance(spec, str) else [str(s) for s in spec]
+    if names == ["all"]:
+        names = list(E.NOISE_NAMES)
+    opp = c.get("opp_elixir") or None
+    if opp is not None and opp not in E.OPP_ELIXIR_MODES:
+        raise SystemExit(f"bad opp_elixir {opp!r}: null or one of {E.OPP_ELIXIR_MODES}")
+    d, h = int(c.get("action_delay_ticks") or 0), int(c.get("extrapolate_ticks") or 0)
+    if d < 0 or h < 0:
+        raise SystemExit(f"action_delay_ticks {d} / extrapolate_ticks {h} must be >= 0")
+    return {"noise": E.parse_noise_off(",".join(names)), "opp_elixir": opp, "action_delay_ticks": d,
+            "extrapolate_ticks": h}
+
+
+def actor_cfg(base: dict, kind: str, aid: int, dev: str) -> dict:
+    """The e1_eval match cfg an actor runs a job under: ``rollout`` = the tempered sampler, recorded; ``screen`` = the
+    greedy live rule. BOTH carry the base's condition keys (``condition_cfg``), so train and screen conditions match."""
+    from pipeline.e1_view import Noise
+    cfg = {"policy": "sample" if kind == "rollout" else "live", "tau": float(base["tau"]),
+           "afford_mask": bool(base["afford_mask"]), "stall_elixir": base["stall_elixir"],
+           "stall_seconds": float(base["stall_seconds"]), "obs": base["obs"], "noise": Noise(),
+           "p_random": 0.0, "random_hand_only": False, "grid": base["grid"], "device": dev,
+           "decide_every": int(base["decide_every"]), "slot": aid, "port": 0, "T": float(base["T"]),
+           "record": kind == "rollout"}
+    cfg.update(condition_cfg(base))
+    return cfg
 
 
 # ------------------------------------------------------------------------------------------------------
@@ -274,7 +317,8 @@ def collate(results: list[dict], adv_clip: float = 2.0) -> tuple[dict, dict]:
     W = match_weights(n_rows)
     use = [j for j, n in enumerate(n_rows) if n]
     cat = (lambda f: np.concatenate([f(j) for j in use]))
-    B = {k: cat(lambda j, k=k: results[j]["traj"][k][keep[j]]) for k in TRAJ_KEYS}
+    gen = bool(use) and "hand_card" in results[use[0]]["traj"]           # GenPolicy rows: + the identity arrays
+    B = {k: cat(lambda j, k=k: results[j]["traj"][k][keep[j]]) for k in TRAJ_KEYS + (E.GEN_IDENT_KEYS if gen else ())}
     for k in ("lp_gate", "lp_card", "lp_cell"):
         B[k] = cat(lambda j, k=k: results[j]["traj"][k][keep[j]])
     B["lp_old"] = B["lp_gate"] + B["lp_card"] + B["lp_cell"]
@@ -286,6 +330,26 @@ def collate(results: list[dict], adv_clip: float = 2.0) -> tuple[dict, dict]:
           "rows": int(len(B["A"])), "rows_played": int(B["played"].sum()), "rows_gate": int(B["gate_sampled"].sum()),
           "decisions": int(sum(len(r["traj"]["played"]) for r in results))}
     return B, st
+
+
+GEN_PA_KEYS = ("sc", "past", "y_xy", "y_hand_pos", "y_gate", "y_wait_card", "y_crowns", "y_card") + (
+    "hand_card", "hand_form", "next_card", "next_form", "deck_card", "deck_form")      # what eval_gen.GenRows reads
+
+
+def gen_v3val_arrays(path: Path, n: int = 0) -> tuple[dict, dict]:
+    """The v3val rows (``v3val == 1``: S1's v3 VAL rows inside a dataset_gen npz) -> (arrays, meta), first ``n`` of them
+    (0 = all), with ``tok``/``off`` re-packed for just those rows. Keys are loaded one at a time (the v1 set is 3.7M
+    rows: tok ~0.9 GB, sc ~1 GB), so the full arrays never sit in memory together."""
+    z = np.load(path, allow_pickle=False)
+    idx = np.where(z["v3val"] == 1)[0]
+    idx = idx[:n] if n else idx
+    off = z["off"]
+    lo, hi = off[idx], off[idx + 1]
+    out = {"off": np.concatenate([[0], np.cumsum(hi - lo)]).astype(off.dtype)}
+    out["tok"] = z["tok"][np.concatenate([np.arange(a, b) for a, b in zip(lo, hi)]).astype(np.int64)]
+    for k in GEN_PA_KEYS:
+        out[k] = z[k][idx]
+    return out, json.loads(str(z["meta"]))
 
 
 def to_device(B: dict, dev) -> dict:
@@ -307,12 +371,21 @@ def policy_terms(model, B: dict, idx, tau: float, T: float) -> dict:
     """Recompute the behaviour log-probs of rows ``idx`` exactly as ``e1_eval.sample_decide_batch`` defined them:
     gate ``sigmoid((z - logit(tau)) / T)`` on gate-sampled rows; card softmax over ``allowed`` of the heads'
     hand-masked logits / T and cell softmax over 2,304 for the recorded slot / T on played rows; float64 after the
-    float32 forward, as the sampler. Gradients flow unless the caller is in no_grad."""
-    tok, mask, sc, past = B["tok"][idx], B["mask"][idx], B["sc"][idx], B["past"][idx]
+    float32 forward, as the sampler. Gradients flow unless the caller is in no_grad.
+    Generalist rows (``hand_card`` in B, a GenModel ``model``): the forward is ``e1_eval.GenPolicy.heads_t`` -- the
+    sampler's own function -- so card = the hand-position logits on their deck slots (softmax over allowed slots ==
+    over allowed hand positions) and cell = ``cell_logits_gen`` for the slot's card identity + form."""
+    if "hand_card" in B:
+        pol = E.GenPolicy(model, ())
+        enc, heads = pol.heads_t({k: B[k][idx] for k in E.GEN_ROW_KEYS})
+        cell_of = pol.cell_logits
+    else:
+        tok, mask, sc, past = B["tok"][idx], B["mask"][idx], B["sc"][idx], B["past"][idx]
+        enc = model.encode(tok, mask, sc, past)
+        heads = model.heads(enc, hand_mask_from_sc(sc))
+        cell_of = model.cell_logits
     allowed, gs, played = B["allowed"][idx], B["gate_sampled"][idx], B["played"][idx]
     slot, cell = B["slot"][idx], B["cell"][idx]
-    enc = model.encode(tok, mask, sc, past)
-    heads = model.heads(enc, hand_mask_from_sc(sc))
     x = (heads["gate"].double() - _logit(tau)) / T
     card_lp = torch.log_softmax(heads["card"].double().masked_fill(~allowed, CARD_FILL) / T, dim=-1)
     lp_gate = torch.where(gs, torch.where(played, Fn.logsigmoid(x), Fn.logsigmoid(-x)), torch.zeros_like(x))
@@ -322,7 +395,7 @@ def policy_terms(model, B: dict, idx, tau: float, T: float) -> dict:
     cell_lp = None
     if len(pi):
         lp_card = lp_card.index_put((pi,), card_lp[pi].gather(1, slot[pi].unsqueeze(1)).squeeze(1))
-        cl = model.cell_logits({k: v[pi] for k, v in enc.items()}, slot[pi])
+        cl = cell_of({k: v[pi] for k, v in enc.items()}, slot[pi])
         cell_lp = torch.log_softmax(cl.double() / T, dim=-1)
         lp_cell = lp_cell.index_put((pi,), cell_lp.gather(1, cell[pi].unsqueeze(1)).squeeze(1))
     return {"x": x, "card_lp": card_lp, "cell_lp": cell_lp, "lp_gate": lp_gate, "lp_card": lp_card, "lp_cell": lp_cell}
@@ -511,13 +584,19 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
     send = actor_sender(out_q)
     torch.set_num_threads(int(base["actor_threads"]))
     try:
-        from pipeline.e1_view import Noise
         from pipeline.model_v3 import S1Model
         from pipeline.obs_contract import load_deck
         from pipeline.royale_env import RoyalePoolEnv, UnsupportedDeck
         dev = base["actor_device"]
         deck = load_deck("icebow")
-        model = S1Model(d=int(base["d"]), layers=int(base["layers"])).to(dev).eval()
+        g = base.get("gen")
+        if g:                                                 # generalist: GenModel weights behind GenPolicy
+            from pipeline.model_gen import GenModel
+            net = GenModel(d=int(base["d"]), layers=int(base["layers"]), d_c=int(g["d_c"]),
+                           n_cards=len(g["card_vocab"])).to(dev).eval()
+            model = E.GenPolicy(net, g["card_vocab"])
+        else:
+            net = model = S1Model(d=int(base["d"]), layers=int(base["layers"])).to(dev).eval()
         send(("ready", aid, gen, os.getpid()))
     except Exception:
         send(("error", aid, gen, traceback.format_exc()))
@@ -537,14 +616,9 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
             t0 = time.perf_counter()
             if dev.startswith("cuda"):
                 torch.cuda.reset_peak_memory_stats()
-            model.load_state_dict(torch.load(io.BytesIO(sd), map_location=dev))
-            model.eval()
-            cfg = {"policy": "sample" if kind == "rollout" else "live", "tau": float(base["tau"]),
-                   "afford_mask": bool(base["afford_mask"]), "stall_elixir": base["stall_elixir"],
-                   "stall_seconds": float(base["stall_seconds"]), "obs": base["obs"], "noise": Noise(),
-                   "p_random": 0.0, "random_hand_only": False, "grid": base["grid"], "device": dev,
-                   "decide_every": int(base["decide_every"]), "slot": aid, "port": 0, "T": float(base["T"]),
-                   "record": kind == "rollout"}
+            net.load_state_dict(torch.load(io.BytesIO(sd), map_location=dev))
+            net.eval()
+            cfg = actor_cfg(base, kind, aid, dev)
             results, skipped = [], []
 
             def on_result(line):
@@ -751,8 +825,14 @@ class Learner:
         self.cfg, self.run, self.run_dir, self.ck_dir, self.log = cfg, run, run_dir, ck_dir, log
         self.dev = torch.device(cfg["learner_device"])
         self.init_path = REPO / cfg["init"]
-        self.model, self.minfo = ep.load_model(self.init_path, str(self.dev))
+        condition_cfg(cfg)                                    # validate the condition keys before anything runs
         ick = torch.load(self.init_path, map_location="cpu")
+        self.gen = {"d_c": int(ick["d_c"]), "card_vocab": list(ick["card_vocab"])} if ick.get("gen") else None
+        if self.gen:                                          # generalist init: the learner trains the GenModel itself
+            self.model = self._load_net(self.init_path)
+            self.minfo = {"gen": True, "grid": str(ick["args"].get("grid", "lattice"))}   # = e1_eval.load_policy's
+        else:
+            self.model, self.minfo = ep.load_model(self.init_path, str(self.dev))
         self.init_meta = {"args": dict(ick["args"]), "deck": ick["deck"], "epoch": ick["epoch"], "n_params": ick["n_params"]}
         self.grid = self.minfo["grid"]
         self.ref = copy.deepcopy(self.model).eval()
@@ -816,8 +896,29 @@ class Learner:
         return self.heldout[:n] if n else self.heldout
 
     # ---- evals -----------------------------------------------------------------------------------
+    def _load_net(self, path: Path):
+        """A checkpoint's network on the learner device, eval(): GenModel via eval_gen.load_model for a generalist
+        run, else engine_play.load_model's S1Model (unchanged)."""
+        if getattr(self, "gen", None):
+            from pipeline.eval_gen import load_model
+            return load_model(path, self.dev)[0].eval()
+        from pipeline import engine_play as ep
+        return ep.load_model(path, str(self.dev))[0]
+
     def proagree(self, model) -> dict:
-        """plan diff 3: train_s1.evaluate on v3 VAL clean (the eval_s1 instrument), first ``proagree_rows`` rows."""
+        """plan diff 3: train_s1.evaluate on v3 VAL clean (the eval_s1 instrument), first ``proagree_rows`` rows.
+        Generalist: eval_gen.evaluate (train_s1.evaluate line for line, hand-position card) on the SAME v3 VAL rows as
+        dataset_gen marks them (``v3val == 1`` in ``proagree_data_gen``), first ``proagree_rows``."""
+        if getattr(self, "gen", None):
+            from pipeline.eval_gen import GenRows, evaluate as evaluate_gen
+            if self._rows is None:
+                arrs, meta = gen_v3val_arrays(REPO / self.cfg["proagree_data_gen"], int(self.cfg["proagree_rows"]))
+                if meta["card_vocab"] != self.gen["card_vocab"]:
+                    raise SystemExit("proagree_data_gen card_vocab differs from the init checkpoint's")
+                self._rows = GenRows(arrs, np.arange(len(arrs["y_gate"])), self.dev)
+            ev = evaluate_gen(model, self._rows, grid=self.grid)
+            model.eval()
+            return {k: (float(v) if isinstance(v, (float, np.floating)) else v) for k, v in ev.items()}
         from pipeline.dataset import load as load_ds
         from pipeline.train_s1 import Rows, evaluate
         if self._rows is None:
@@ -847,9 +948,12 @@ class Learner:
 
     def _payload(self, val: Optional[dict]) -> dict:
         args = dict(self.init_meta["args"]) | {"rl_run": self.run, "rl_init": str(self.cfg["init"])}
-        return {"model": self.model.state_dict(), "args": _py(args), "deck": self.init_meta["deck"],
-                "epoch": self.init_meta["epoch"], "val": _py(val or {}), "n_params": int(self.init_meta["n_params"]),
-                "rl": self._rl_state()}
+        out = {"model": self.model.state_dict(), "args": _py(args), "deck": self.init_meta["deck"],
+               "epoch": self.init_meta["epoch"], "val": _py(val or {}), "n_params": int(self.init_meta["n_params"]),
+               "rl": self._rl_state()}
+        if getattr(self, "gen", None):                       # train_gen's keys: eval_gen / e1_eval.load_policy load it
+            out.update({"gen": True, "d_c": int(self.gen["d_c"]), "card_vocab": list(self.gen["card_vocab"])})
+        return out
 
     def _atomic_save(self, obj: dict, path: Path) -> None:
         assert CKPT_ROOT.resolve() in path.resolve().parents, f"refusing to write {path} outside {CKPT_ROOT}"
@@ -1039,11 +1143,19 @@ class Learner:
                  f"({time.perf_counter() - t:.0f}s)")
 
     # ---- startup + loop --------------------------------------------------------------------------
-    def start_actors(self) -> None:
+    def actor_base(self) -> dict:
+        """What every actor process gets: the decide-rule keys, the model shape (``gen`` = GenModel extras or None)
+        and the condition keys (``COND_KEYS``) that ``actor_cfg`` puts into rollout AND screen matches."""
         a = self.init_meta["args"]
         base = {k: self.cfg[k] for k in ("actor_threads", "actor_device", "tau", "T", "afford_mask", "stall_elixir",
                                          "stall_seconds", "obs", "decide_every", "in_flight")}
         base.update({"d": int(a.get("d", 128)), "layers": int(a.get("layers", 4)), "grid": self.grid})
+        base.update({k: self.cfg.get(k) for k in COND_KEYS})
+        base["gen"] = getattr(self, "gen", None)
+        return base
+
+    def start_actors(self) -> None:
+        base = self.actor_base()
         self.actors = ActorPool(base, int(self.cfg["n_actors"]), self.log, self.cfg["actor_timeout_s"],
                                 pid_file=self.run_dir / "actors.pid")
         (self.run_dir / "pid.json").write_text(json.dumps({"learner": os.getpid(), "actors": self.actors.pids}),
@@ -1053,7 +1165,9 @@ class Learner:
         """Fresh run: init pro agreement, init held-out screen (both cached in the run dir), u0000 before any update."""
         cfg, log = self.cfg, self.log
         log(f"[rl] run {self.run}: train {len(self.train)} loadable, held-out {len(self.heldout)} loadable "
-            f"(screen uses {len(self.screen_entries())}); init {cfg['init']} grid {self.grid}")
+            f"(screen uses {len(self.screen_entries())}); init {cfg['init']} ({'GENERALIST' if self.gen else 'S1'}) "
+            f"grid {self.grid}; conditions (rollouts + screens): "
+            + " ".join(f"{k}={cfg.get(k)}" for k in COND_KEYS))
         t = time.perf_counter()
         pa = self.proagree(self.model)
         self.base["init_proagree"] = {k: pa[k] for k in PA_KEYS + ("cell_tile_top1", "n", "n_play")}
@@ -1072,11 +1186,11 @@ class Learner:
         self.log.json({"type": "startup", "init_proagree": pa, "init_screen": {k: v for k, v in sc.items()},
                        "train_loadable": len(self.train), "heldout_loadable": len(self.heldout), "config": cfg})
         if smoke:
-            from pipeline import engine_play as ep
-            m2, _ = ep.load_model(path, str(self.dev))
+            m2 = self._load_net(path)
             pa2 = self.proagree(m2)
             same = all(pa2[k] == pa[k] for k in pa)
-            log(f"[rl] SMOKE u0000 round trip via engine_play.load_model: pro agreement identical = {same}")
+            log(f"[rl] SMOKE u0000 round trip via {'eval_gen' if self.gen else 'engine_play'}.load_model: pro "
+                f"agreement identical = {same}")
             if not same:
                 raise SmokeFail(f"u0000 reload pro agreement {pa2} != in-memory init {pa}")
 

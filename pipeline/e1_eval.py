@@ -85,6 +85,10 @@ OPP_ELIXIR_MODES = ("counter", "counter_all")
 # scratchpad/gauntlet/L68/opp_elixir/eval_accounting.py BODY_SPELLS / keep("reader", .), pinned equal by
 # pipeline/tests/test_e1_opp_counter.py.
 BODY_SPELLS = frozenset({"graveyard", "goblin_barrel", "barbarian_barrel", "royal_delivery", "clone"})
+# GenPolicy.row keys = the GenModel forward's input (heads_t); recorded per decision for a GenPolicy under cfg["record"]
+GEN_ROW_KEYS = ("tok", "mask", "sc", "past", "hand_card", "hand_form", "next_card", "next_form", "deck_card",
+                "deck_form", "hand_slot", "slot_card", "slot_form")
+GEN_IDENT_KEYS = GEN_ROW_KEYS[4:]             # the integer identity / slot arrays (int64 in the trajectory)
 OPP_TRACE_EVERY = 20                          # result()["opp_counter"]["trace"]: one (tick, est, truth) per N decisions
 # cfg["action_delay_ticks"] D (L68 T9; unset/0 = today, byte-identical): live deploy lag. A play decided on the board
 # at tick T enters the engine at T + D (live_play.py: tap -> registered ~24-27 ticks later) at the cell chosen at T.
@@ -427,24 +431,32 @@ class GenPolicy:
                 "next_form": slot_form[ns], "deck_card": slot_card[:N_SLOTS][order],
                 "deck_form": slot_form[:N_SLOTS][order], "hand_slot": hs, "slot_card": slot_card, "slot_form": slot_form}
 
+    def heads_t(self, b: dict) -> tuple[dict, dict]:
+        """The GenModel forward on a tensor batch ``b`` (``GEN_ROW_KEYS``) -> (enc, heads) in S1's deck-slot layout:
+        heads["card"] [B, 8] = the 4 hand-position logits scattered onto their deck slots (-inf elsewhere),
+        heads["card_hand"] the raw [B, 4]. No no_grad here: the RL learner recomputes the sampler's distribution
+        through this same function WITH gradients (rl_royale.policy_terms)."""
+        import torch
+        enc = self.model.encode_gen(b)
+        h = self.model.heads_gen(enc, b)
+        B = h["card"].shape[0]
+        card = torch.full((B, N_SLOTS + 1), float("-inf"), dtype=h["card"].dtype, device=h["card"].device)
+        card = card.scatter(1, b["hand_slot"], h["card"])[:, :N_SLOTS]       # col 8 = unknown positions, dropped
+        enc = {**enc, "slot_card": b["slot_card"], "slot_form": b["slot_form"]}
+        return enc, {"gate": h["gate"], "card": card, "card_hand": h["card"]}
+
     def forward_batch(self, rows: Sequence[dict], device: str = "cpu"):
         """``model_forward_batch``'s contract for gen rows -> (enc, heads, p [B], hand bool [B, 8]); heads["card"] is
         [B, 8] over deck slots, heads["card_hand"] the raw [B, 4] pointer logits."""
         import torch
-        keys = ("tok", "mask", "sc", "past", "hand_card", "hand_form", "next_card", "next_form", "deck_card",
-                "deck_form", "hand_slot", "slot_card", "slot_form")
         with torch.no_grad():
-            b = {k: torch.from_numpy(np.ascontiguousarray(np.stack([r[k] for r in rows]))).to(device) for k in keys}
-            enc = self.model.encode_gen(b)
-            h = self.model.heads_gen(enc, b)
-            B = h["card"].shape[0]
-            card = torch.full((B, N_SLOTS + 1), float("-inf"), dtype=h["card"].dtype, device=h["card"].device)
-            card = card.scatter(1, b["hand_slot"], h["card"])[:, :N_SLOTS]   # col 8 = unknown positions, dropped
-            hand = torch.zeros(B, N_SLOTS + 1, dtype=torch.bool, device=card.device)
+            b = {k: torch.from_numpy(np.ascontiguousarray(np.stack([r[k] for r in rows]))).to(device)
+                 for k in GEN_ROW_KEYS}
+            enc, heads = self.heads_t(b)
+            B = heads["card"].shape[0]
+            hand = torch.zeros(B, N_SLOTS + 1, dtype=torch.bool, device=heads["card"].device)
             hand = hand.scatter(1, b["hand_slot"], True)[:, :N_SLOTS]        # = model_v3.hand_mask_from_sc(sc)
-            enc = {**enc, "slot_card": b["slot_card"], "slot_form": b["slot_form"]}
-            heads = {"gate": h["gate"], "card": card, "card_hand": h["card"]}
-            p = torch.sigmoid(h["gate"]).cpu().tolist()
+            p = torch.sigmoid(heads["gate"]).cpu().tolist()
         return enc, heads, p, hand.cpu().numpy()
 
     def cell_logits(self, enc: dict, slot):
@@ -533,6 +545,7 @@ class Match:
         self.p_gates: list[float] = []
         self.plays: list[dict] = []
         self.traj: list[dict] = []                           # cfg["record"]: per-decision rows, see result()
+        self._gen_row: Optional[dict] = None                 # gen_row()'s row for the current prepare() (GenPolicy)
         self.refuse: Counter = Counter()
         self.mix_att: Counter = Counter()
         self.mix_acc: Counter = Counter()
@@ -542,6 +555,7 @@ class Match:
         """-> (tok, mask, sc, past) for the current state."""
         cfg = self.cfg
         tick = int(self.env.tick)
+        self._gen_row = None
         if self.last_play_tick is None:
             self.last_play_tick = tick                       # match start = first decision (anti-stall clock)
         raw, h = self.state, (self.extrap if self._prev_raw is not None else 0)
@@ -587,8 +601,10 @@ class Match:
         return self.opp_counter.at(tick)
 
     def gen_row(self, policy: GenPolicy) -> dict:
-        """The current prepared state as a generalist row (``GenPolicy.row``); call after ``prepare``."""
-        return policy.row(*self._obs, *policy.slot_ident(self.engine_deck, self.deck_index_of_slot))
+        """The current prepared state as a generalist row (``GenPolicy.row``); call after ``prepare``. Kept until the
+        next ``prepare`` so cfg["record"] stores the row the GenModel actually saw (``apply``)."""
+        self._gen_row = policy.row(*self._obs, *policy.slot_ident(self.engine_deck, self.deck_index_of_slot))
+        return self._gen_row
 
     def pre(self, hand) -> tuple[float, np.ndarray, bool]:
         """(a): el_int, allowed, stalled for the current prepared state -- shared by every decide path (live,
@@ -629,7 +645,10 @@ class Match:
         self.p_gates.append(p)
         if cfg.get("record") and "lp_gate" in d:              # only the sample decide dicts carry these keys
             tok, mask, sc, past = self._obs
-            self.traj.append({"tok": tok, "mask": mask, "sc": sc, "past": past, "allowed": d["allowed"],
+            row = {"tok": tok, "mask": mask, "sc": sc, "past": past}
+            if self._gen_row is not None:                     # GenPolicy: the generalist's input row (zeroed sc,
+                row = {k: self._gen_row[k] for k in GEN_ROW_KEYS}   # (card, form, x, y, dt) past, identities)
+            self.traj.append({**row, "allowed": d["allowed"],
                               "stalled": d["stalled"], "gate_sampled": d["gate_sampled"], "played": d["play"],
                               "slot": d["slot"], "cell": d["cell"], "lp_gate": d["lp_gate"], "lp_card": d["lp_card"],
                               "lp_cell": d["lp_cell"], "p_gate": d["p_gate"], "T": d["T"]})
@@ -736,12 +755,14 @@ class Match:
     def _traj_arrays(self) -> dict:
         """cfg["record"]: this match's ``traj`` rows stacked into numpy arrays (rl_plan.md 3.3's per-decision
         list). Empty (0 decisions recorded -- e.g. cfg["record"] with a non-sample policy) -> empty arrays that keep
-        each key's trailing shape (tok (0, 64, F), mask (0, 64), sc (0, S), past (0, PAST_K, 4), allowed (0, 8))."""
+        each key's trailing shape (tok (0, 64, F), mask (0, 64), sc (0, S), past (0, PAST_K, 4), allowed (0, 8)).
+        GenPolicy rows (``GEN_ROW_KEYS``) add the ``GEN_IDENT_KEYS`` as int64; their ``sc`` has the slot columns zeroed
+        and ``past`` is (card, form, x, y, dt) [PAST_K, 5] -- the generalist's own input."""
         tj = self.traj
         empty = {"tok": (MAX_U, TOK_F), "mask": (MAX_U,), "sc": (SC_S,), "past": (PAST_K, 4), "allowed": (N_SLOTS,)}
         stack = (lambda k: np.stack([t[k] for t in tj])) if tj else (lambda k: np.zeros((0, *empty[k]), dtype=np.float32))
         scalar = (lambda k, dt: np.array([t[k] for t in tj], dtype=dt))
-        return {"tok": stack("tok").astype(np.float32), "mask": stack("mask").astype(bool),
+        out = {"tok": stack("tok").astype(np.float32), "mask": stack("mask").astype(bool),
                 "sc": stack("sc").astype(np.float32), "past": stack("past").astype(np.float32),
                 "allowed": stack("allowed").astype(bool),
                 "stalled": scalar("stalled", bool), "gate_sampled": scalar("gate_sampled", bool),
@@ -749,6 +770,9 @@ class Match:
                 "lp_gate": scalar("lp_gate", np.float64), "lp_card": scalar("lp_card", np.float64),
                 "lp_cell": scalar("lp_cell", np.float64), "p_gate": scalar("p_gate", np.float64),
                 "T": scalar("T", np.float64)}
+        if tj and "hand_card" in tj[0]:
+            out.update({k: stack(k).astype(np.int64) for k in GEN_IDENT_KEYS})
+        return out
 
 
 def run_match(env, model, deck, entry: dict, k: int, cfg: dict) -> dict:
@@ -789,8 +813,8 @@ def run_batch(make_env, model, deck, jobs, cfg: dict, n: int, on_result, on_skip
     Each row's decision depends only on its own tensors and (for ``sample``) its own ``Match.rng_behave``, so a
     match's record does not depend on its batch-mates (float noise in the shared forward/decide aside, L68)."""
     gen = isinstance(model, GenPolicy)
-    if gen and cfg.get("record"):                        # traj stores S1 rows; the RL learner cannot use them for gen
-        raise ValueError("cfg['record'] is S1-only: a GenPolicy trajectory would store the wrong input rows")
+    if gen and cfg.get("record") and cfg["policy"] != "sample":   # only sample decisions carry log-probs, so a gen
+        raise ValueError("cfg['record'] with a GenPolicy needs policy 'sample' (no other policy records a row)")
     jobs = iter(jobs)
     free = [make_env() for _ in range(n)]
     live: list[Match] = []
