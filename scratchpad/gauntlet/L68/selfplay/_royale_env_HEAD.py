@@ -17,7 +17,6 @@ Needs ``royalesim`` + ``royalegym`` importable (the Royale stack venv, or both i
 """
 from __future__ import annotations
 
-import random
 from collections import Counter
 from typing import Optional
 
@@ -215,63 +214,6 @@ class RoyalePoolEnv:
 
     def close(self) -> None:
         pass
-
-
-class RoyaleSelfPlayEnv(RoyalePoolEnv):
-    """Self-play (L68 league, T12a): ANY two 8-card decks, BOTH sides policy-driven, no ghost.
-
-    ``reset(deck0, deck1, seed)``: a deck is 8 card names (engine spelling ``IceWizard``; a ``@evolution`` / ``@hero``
-    suffix runs as the base card, like the pool) or pool deck items with a ``name``. Each side's deal is a SEEDED
-    shuffle (``self.deal[side]``, reproducible per seed) fed to RoyaleSim's ShuffleMode.NONE cycle -- the same deal
-    mechanics RoyalePoolEnv uses, with the order drawn instead of reconstructed. ``act`` / ``raw`` / warm-up /
-    ``tail_cap`` / game-over handling are RoyalePoolEnv's own (inherited; with no ghosts ``_advance_to`` just steps).
-    ``raw()`` is the full two-sided state; each side mirrors it as today: ``from_engine(obs, side, ...)``. Its
-    ``next_deck_index`` indexes the CALLER's deck order (``self.decks[side]``)."""
-
-    def reset(self, deck0, deck1, seed: int = 0) -> dict:
-        self.seed = int(seed)
-        self.side, self.opp, self._mirror = 0, 1, False          # inherited _crowns reads side 0's view
-        self.decks = {s: [str(it["name"] if isinstance(it, dict) else it).split("@")[0] for it in d]
-                      for s, d in ((0, deck0), (1, deck1))}
-        self.deck_ids = {s: [self.card_id(n) for n in self.decks[s]] for s in (0, 1)}
-        for s in (0, 1):
-            if len(set(self.deck_ids[s])) != 8:
-                raise UnsupportedDeck(f"side {s}: need 8 distinct cards (after subs), got {self.decks[s]}")
-        orders = {s: list(range(8)) for s in (0, 1)}
-        for s in (0, 1):
-            random.Random(f"deal:{self.seed}:{s}").shuffle(orders[s])   # str seed: stable across processes
-        self.deal = {s: [self.decks[s][i] for i in orders[s]] for s in (0, 1)}
-        self.core.reset(self.seed, MatchSetup(decks=[[self.deck_ids[s][i] for i in orders[s]] for s in (0, 1)],
-                                              shuffle=ShuffleMode.NONE))
-        self._ghosts, self._gi, self._pending = [], 0, []
-        self.terminated, self.episode, self.eng.last_episode = False, {}, None
-        self.tick = int(self.core.state().tick)
-        self._advance_to(self.warmup_ticks)
-        return self.raw()
-
-    def act(self, side: int, deck_index: int, x: int, y: int) -> dict:
-        """Deploy ``self.decks[side][deck_index]`` at pool/real-engine units (x, y): RoyalePoolEnv's ``eng.act``."""
-        return self.eng.act(side=side, deck_index=deck_index, x=x, y=y)
-
-    def advance_to(self, tick: int) -> dict:
-        self._advance_to(min(int(tick), self.tail_cap))
-        return self.raw()
-
-    observe = RoyalePoolEnv.raw
-
-    @property
-    def done(self) -> bool:
-        """e1_eval's end rule: game over, or ``tail_cap`` reached."""
-        return bool(self.terminated) or self.tick >= self.tail_cap
-
-    def outcome(self, side: int) -> tuple[str, tuple[int, int]]:
-        """engine_play._outcome for ``side``: the engine winner when game over, else crowns (at ``tail_cap``)."""
-        st = self.core.state()
-        cr = (int(st.players[side].crowns), int(st.players[1 - side].crowns))
-        w = self.episode.get("winner", -1)
-        if w is None or int(w) < 0:
-            return ("draw" if cr[0] == cr[1] else "win" if cr[0] > cr[1] else "loss"), cr
-        return ("win" if int(w) == side else "loss"), cr
 
 
 assert BLUE == 0   # the pool's side 0 is RoyaleSim's Blue (both at low y) -- checked again by the smoke test

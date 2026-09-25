@@ -1,0 +1,2 @@
+{"matches": 50, "decide_every_ticks": 10, "wall_s": 11.12, "matches_per_s": 4.5, "sim_ticks_per_s": 21070, "mean_end_tick": 4686, "mean_plays_per_match": 102.1, "side0_outcomes": {"win": 29, "loss": 21}, "ended_by": {"game_over": 50}}
+{"matches": 50, "decide_every_ticks": 20, "wall_s": 10.13, "matches_per_s": 4.94, "sim_ticks_per_s": 22563, "mean_end_tick": 4572, "mean_plays_per_match": 99.4, "side0_outcomes": {"win": 30, "loss": 20}, "ended_by": {"game_over": 50}}

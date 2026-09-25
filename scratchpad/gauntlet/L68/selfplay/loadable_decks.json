@@ -1,0 +1,4498 @@
+{
+ "top_n": 1000,
+ "census_deck_sides": 504476,
+ "census_distinct_base_decks": 47800,
+ "loadable_in_top_n": 183,
+ "loadable_sides_share_of_census": 0.1705,
+ "top_n_sides_share_of_census": 0.7369,
+ "top_blockers": [
+  [
+   "BarbLog",
+   235
+  ],
+  [
+   "Miner",
+   56
+  ],
+  [
+   "Lightning",
+   47
+  ],
+  [
+   "Elixir Collector",
+   47
+  ],
+  [
+   "FirespiritHut",
+   35
+  ],
+  [
+   "WitchMother",
+   34
+  ],
+  [
+   "MovingCannon",
+   30
+  ],
+  [
+   "Graveyard",
+   29
+  ],
+  [
+   "Heal",
+   28
+  ],
+  [
+   "SkeletonBalloon",
+   28
+  ],
+  [
+   "ElixirGolem",
+   27
+  ],
+  [
+   "Ghost",
+   26
+  ],
+  [
+   "GoblinDrill",
+   25
+  ],
+  [
+   "RageBarbarian",
+   23
+  ],
+  [
+   "GoblinDemolisher",
+   19
+  ]
+ ],
+ "resets_per_s": 5010.0,
+ "wall_s": 227.0,
+ "extra": [
+  {
+   "name": "icebow",
+   "engine": [
+    "Tornado",
+    "Tesla",
+    "IceWizard",
+    "Xbow",
+    "Rocket",
+    "Knight",
+    "Log",
+    "Skeletons"
+   ],
+   "loadable": true,
+   "blocker": null
+  },
+  {
+   "name": "starter",
+   "engine": [
+    "Knight",
+    "GoblinHut",
+    "Goblins",
+    "Arrows",
+    "Fireball",
+    "Giant",
+    "Musketeer",
+    "MiniPekka"
+   ],
+   "loadable": false,
+   "blocker": "GoblinHut"
+  }
+ ],
+ "decks": [
+  {
+   "rank": 2,
+   "sides": 14305,
+   "engine": [
+    "Cannon",
+    "Fireball",
+    "HogRider",
+    "IceGolemite",
+    "IceSpirits",
+    "Musketeer",
+    "Skeletons",
+    "Log"
+   ],
+   "slugs": [
+    "cannon",
+    "fireball",
+    "hog-rider",
+    "ice-golem",
+    "ice-spirit",
+    "musketeer",
+    "skeletons",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 7,
+   "sides": 5600,
+   "engine": [
+    "Cannon",
+    "Earthquake",
+    "ElectroSpirit",
+    "Firecracker",
+    "HogRider",
+    "MightyMiner",
+    "Skeletons",
+    "Log"
+   ],
+   "slugs": [
+    "cannon",
+    "earthquake",
+    "electro-spirit",
+    "firecracker",
+    "hog-rider",
+    "mighty-miner",
+    "skeletons",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 12,
+   "sides": 3824,
+   "engine": [
+    "Cannon",
+    "BlowdartGoblin",
+    "GoblinBarrel",
+    "IceSpirits",
+    "Princess",
+    "SkeletonArmy",
+    "Valkyrie",
+    "Wallbreakers"
+   ],
+   "slugs": [
+    "cannon",
+    "dart-goblin",
+    "goblin-barrel",
+    "ice-spirit",
+    "princess",
+    "skeleton-army",
+    "valkyrie",
+    "wall-breakers"
+   ]
+  },
+  {
+   "rank": 16,
+   "sides": 3053,
+   "engine": [
+    "Archer",
+    "ElectroSpirit",
+    "Fireball",
+    "Knight",
+    "Skeletons",
+    "Tesla",
+    "Log",
+    "Xbow"
+   ],
+   "slugs": [
+    "archers",
+    "electro-spirit",
+    "fireball",
+    "knight",
+    "skeletons",
+    "tesla",
+    "the-log",
+    "x-bow"
+   ]
+  },
+  {
+   "rank": 19,
+   "sides": 2833,
+   "engine": [
+    "Arrows",
+    "Bats",
+    "Giant",
+    "MiniPekka",
+    "MinionHorde",
+    "SkeletonArmy",
+    "ZapMachine",
+    "Zap"
+   ],
+   "slugs": [
+    "arrows",
+    "bats",
+    "giant",
+    "mini-pekka",
+    "minion-horde",
+    "skeleton-army",
+    "sparky",
+    "zap"
+   ]
+  },
+  {
+   "rank": 21,
+   "sides": 2788,
+   "engine": [
+    "AxeMan",
+    "Goblins",
+    "HogRider",
+    "IceSpirits",
+    "Rocket",
+    "Log",
+    "Tornado",
+    "Valkyrie"
+   ],
+   "slugs": [
+    "executioner",
+    "goblins",
+    "hog-rider",
+    "ice-spirit",
+    "rocket",
+    "the-log",
+    "tornado",
+    "valkyrie"
+   ]
+  },
+  {
+   "rank": 24,
+   "sides": 2446,
+   "engine": [
+    "Balloon",
+    "Barbarians",
+    "Fireball",
+    "LavaHound",
+    "MegaMinion",
+    "SkeletonDragons",
+    "Tombstone",
+    "Zap"
+   ],
+   "slugs": [
+    "balloon",
+    "barbarians",
+    "fireball",
+    "lava-hound",
+    "mega-minion",
+    "skeleton-dragons",
+    "tombstone",
+    "zap"
+   ]
+  },
+  {
+   "rank": 27,
+   "sides": 2175,
+   "engine": [
+    "Cannon",
+    "ElectroSpirit",
+    "Fireball",
+    "HogRider",
+    "IceGolemite",
+    "Musketeer",
+    "Skeletons",
+    "Log"
+   ],
+   "slugs": [
+    "cannon",
+    "electro-spirit",
+    "fireball",
+    "hog-rider",
+    "ice-golem",
+    "musketeer",
+    "skeletons",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 31,
+   "sides": 1724,
+   "engine": [
+    "BlowdartGoblin",
+    "GoblinBarrel",
+    "IceSpirits",
+    "InfernoTower",
+    "Knight",
+    "Princess",
+    "SkeletonArmy",
+    "Log"
+   ],
+   "slugs": [
+    "dart-goblin",
+    "goblin-barrel",
+    "ice-spirit",
+    "inferno-tower",
+    "knight",
+    "princess",
+    "skeleton-army",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 34,
+   "sides": 1627,
+   "engine": [
+    "Cannon",
+    "GoblinBarrel",
+    "Goblins",
+    "IceSpirits",
+    "MightyMiner",
+    "Princess",
+    "Rocket",
+    "Log"
+   ],
+   "slugs": [
+    "cannon",
+    "goblin-barrel",
+    "goblins",
+    "ice-spirit",
+    "mighty-miner",
+    "princess",
+    "rocket",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 36,
+   "sides": 1585,
+   "engine": [
+    "Balloon",
+    "Bomber",
+    "Fireball",
+    "Snowball",
+    "InfernoDragon",
+    "LavaHound",
+    "Minions",
+    "SkeletonArmy"
+   ],
+   "slugs": [
+    "balloon",
+    "bomber",
+    "fireball",
+    "giant-snowball",
+    "inferno-dragon",
+    "lava-hound",
+    "minions",
+    "skeleton-army"
+   ]
+  },
+  {
+   "rank": 37,
+   "sides": 1583,
+   "engine": [
+    "Arrows",
+    "Bomber",
+    "AngryBarbarians",
+    "Golem",
+    "MiniPekka",
+    "DarkWitch",
+    "Phoenix",
+    "Zap"
+   ],
+   "slugs": [
+    "arrows",
+    "bomber",
+    "elite-barbarians",
+    "golem",
+    "mini-pekka",
+    "night-witch",
+    "phoenix",
+    "zap"
+   ]
+  },
+  {
+   "rank": 39,
+   "sides": 1425,
+   "engine": [
+    "Balloon",
+    "Fireball",
+    "LavaHound",
+    "MegaMinion",
+    "SkeletonDragons",
+    "Tombstone",
+    "Valkyrie",
+    "Zap"
+   ],
+   "slugs": [
+    "balloon",
+    "fireball",
+    "lava-hound",
+    "mega-minion",
+    "skeleton-dragons",
+    "tombstone",
+    "valkyrie",
+    "zap"
+   ]
+  },
+  {
+   "rank": 41,
+   "sides": 1381,
+   "engine": [
+    "Archer",
+    "Berserker",
+    "ElectroSpirit",
+    "Fireball",
+    "Skeletons",
+    "Tesla",
+    "Log",
+    "Xbow"
+   ],
+   "slugs": [
+    "archers",
+    "berserker",
+    "electro-spirit",
+    "fireball",
+    "skeletons",
+    "tesla",
+    "the-log",
+    "x-bow"
+   ]
+  },
+  {
+   "rank": 43,
+   "sides": 1346,
+   "engine": [
+    "Earthquake",
+    "ElectroSpirit",
+    "Firecracker",
+    "HogRider",
+    "MightyMiner",
+    "Skeletons",
+    "Tesla",
+    "Log"
+   ],
+   "slugs": [
+    "earthquake",
+    "electro-spirit",
+    "firecracker",
+    "hog-rider",
+    "mighty-miner",
+    "skeletons",
+    "tesla",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 47,
+   "sides": 1240,
+   "engine": [
+    "ElectroSpirit",
+    "GoblinBarrel",
+    "Knight",
+    "Princess",
+    "Rocket",
+    "Skeletons",
+    "Tesla",
+    "Log"
+   ],
+   "slugs": [
+    "electro-spirit",
+    "goblin-barrel",
+    "knight",
+    "princess",
+    "rocket",
+    "skeletons",
+    "tesla",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 62,
+   "sides": 1022,
+   "engine": [
+    "Assassin",
+    "BattleRam",
+    "DarkPrince",
+    "ElectroWizard",
+    "Fireball",
+    "Minions",
+    "Pekka",
+    "Zap"
+   ],
+   "slugs": [
+    "bandit",
+    "battle-ram",
+    "dark-prince",
+    "electro-wizard",
+    "fireball",
+    "minions",
+    "pekka",
+    "zap"
+   ]
+  },
+  {
+   "rank": 63,
+   "sides": 990,
+   "engine": [
+    "ArcherQueen",
+    "Arrows",
+    "Assassin",
+    "MegaKnight",
+    "Minions",
+    "Prince",
+    "Wallbreakers",
+    "Zap"
+   ],
+   "slugs": [
+    "archer-queen",
+    "arrows",
+    "bandit",
+    "mega-knight",
+    "minions",
+    "prince",
+    "wall-breakers",
+    "zap"
+   ]
+  },
+  {
+   "rank": 71,
+   "sides": 915,
+   "engine": [
+    "GoblinBarrel",
+    "GoblinGang",
+    "IceSpirits",
+    "InfernoTower",
+    "Knight",
+    "Princess",
+    "Rocket",
+    "Log"
+   ],
+   "slugs": [
+    "goblin-barrel",
+    "goblin-gang",
+    "ice-spirit",
+    "inferno-tower",
+    "knight",
+    "princess",
+    "rocket",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 79,
+   "sides": 854,
+   "engine": [
+    "Arrows",
+    "Balloon",
+    "Bats",
+    "Freeze",
+    "GiantSkeleton",
+    "InfernoDragon",
+    "SkeletonArmy",
+    "SkeletonKing"
+   ],
+   "slugs": [
+    "arrows",
+    "balloon",
+    "bats",
+    "freeze",
+    "giant-skeleton",
+    "inferno-dragon",
+    "skeleton-army",
+    "skeleton-king"
+   ]
+  },
+  {
+   "rank": 80,
+   "sides": 848,
+   "engine": [
+    "Balloon",
+    "Fireball",
+    "SkeletonWarriors",
+    "InfernoDragon",
+    "LavaHound",
+    "SkeletonDragons",
+    "Valkyrie",
+    "Zap"
+   ],
+   "slugs": [
+    "balloon",
+    "fireball",
+    "guards",
+    "inferno-dragon",
+    "lava-hound",
+    "skeleton-dragons",
+    "valkyrie",
+    "zap"
+   ]
+  },
+  {
+   "rank": 86,
+   "sides": 806,
+   "engine": [
+    "IceWizard",
+    "Knight",
+    "Rocket",
+    "Skeletons",
+    "Tesla",
+    "Log",
+    "Tornado",
+    "Xbow"
+   ],
+   "slugs": [
+    "ice-wizard",
+    "knight",
+    "rocket",
+    "skeletons",
+    "tesla",
+    "the-log",
+    "tornado",
+    "x-bow"
+   ]
+  },
+  {
+   "rank": 92,
+   "sides": 784,
+   "engine": [
+    "Berserker",
+    "ElectroSpirit",
+    "GoblinBarrel",
+    "Princess",
+    "Rocket",
+    "Skeletons",
+    "Tesla",
+    "Log"
+   ],
+   "slugs": [
+    "berserker",
+    "electro-spirit",
+    "goblin-barrel",
+    "princess",
+    "rocket",
+    "skeletons",
+    "tesla",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 93,
+   "sides": 782,
+   "engine": [
+    "Arrows",
+    "Bomber",
+    "AngryBarbarians",
+    "Golem",
+    "DarkWitch",
+    "Phoenix",
+    "Valkyrie",
+    "Zap"
+   ],
+   "slugs": [
+    "arrows",
+    "bomber",
+    "elite-barbarians",
+    "golem",
+    "night-witch",
+    "phoenix",
+    "valkyrie",
+    "zap"
+   ]
+  },
+  {
+   "rank": 96,
+   "sides": 740,
+   "engine": [
+    "Bomber",
+    "AngryBarbarians",
+    "Freeze",
+    "HogRider",
+    "IceGolemite",
+    "Minions",
+    "Tesla",
+    "Zap"
+   ],
+   "slugs": [
+    "bomber",
+    "elite-barbarians",
+    "freeze",
+    "hog-rider",
+    "ice-golem",
+    "minions",
+    "tesla",
+    "zap"
+   ]
+  },
+  {
+   "rank": 98,
+   "sides": 721,
+   "engine": [
+    "Bats",
+    "BlowdartGoblin",
+    "GoblinBarrel",
+    "MegaKnight",
+    "Prince",
+    "Princess",
+    "RoyalGiant",
+    "SkeletonArmy"
+   ],
+   "slugs": [
+    "bats",
+    "dart-goblin",
+    "goblin-barrel",
+    "mega-knight",
+    "prince",
+    "princess",
+    "royal-giant",
+    "skeleton-army"
+   ]
+  },
+  {
+   "rank": 107,
+   "sides": 656,
+   "engine": [
+    "ArcherQueen",
+    "Arrows",
+    "Assassin",
+    "Bats",
+    "MegaKnight",
+    "Prince",
+    "Wallbreakers",
+    "Zap"
+   ],
+   "slugs": [
+    "archer-queen",
+    "arrows",
+    "bandit",
+    "bats",
+    "mega-knight",
+    "prince",
+    "wall-breakers",
+    "zap"
+   ]
+  },
+  {
+   "rank": 111,
+   "sides": 645,
+   "engine": [
+    "IceWizard",
+    "Rocket",
+    "Skeletons",
+    "Tesla",
+    "Log",
+    "Tornado",
+    "Valkyrie",
+    "Xbow"
+   ],
+   "slugs": [
+    "ice-wizard",
+    "rocket",
+    "skeletons",
+    "tesla",
+    "the-log",
+    "tornado",
+    "valkyrie",
+    "x-bow"
+   ]
+  },
+  {
+   "rank": 119,
+   "sides": 584,
+   "engine": [
+    "AngryBarbarians",
+    "AxeMan",
+    "Freeze",
+    "HogRider",
+    "IceGolemite",
+    "MiniPekka",
+    "Minions",
+    "Zap"
+   ],
+   "slugs": [
+    "elite-barbarians",
+    "executioner",
+    "freeze",
+    "hog-rider",
+    "ice-golem",
+    "mini-pekka",
+    "minions",
+    "zap"
+   ]
+  },
+  {
+   "rank": 120,
+   "sides": 579,
+   "engine": [
+    "Archer",
+    "Berserker",
+    "ElectroSpirit",
+    "Rocket",
+    "Skeletons",
+    "Tesla",
+    "Log",
+    "Xbow"
+   ],
+   "slugs": [
+    "archers",
+    "berserker",
+    "electro-spirit",
+    "rocket",
+    "skeletons",
+    "tesla",
+    "the-log",
+    "x-bow"
+   ]
+  },
+  {
+   "rank": 124,
+   "sides": 560,
+   "engine": [
+    "ElectroSpirit",
+    "GoblinBarrel",
+    "GoblinGang",
+    "Knight",
+    "Princess",
+    "Rocket",
+    "Tesla",
+    "Log"
+   ],
+   "slugs": [
+    "electro-spirit",
+    "goblin-barrel",
+    "goblin-gang",
+    "knight",
+    "princess",
+    "rocket",
+    "tesla",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 126,
+   "sides": 559,
+   "engine": [
+    "Barbarians",
+    "Bowler",
+    "Fireball",
+    "GoblinBarrel",
+    "GoblinGang",
+    "MinionHorde",
+    "Mortar",
+    "Princess"
+   ],
+   "slugs": [
+    "barbarians",
+    "bowler",
+    "fireball",
+    "goblin-barrel",
+    "goblin-gang",
+    "minion-horde",
+    "mortar",
+    "princess"
+   ]
+  },
+  {
+   "rank": 134,
+   "sides": 548,
+   "engine": [
+    "ArcherQueen",
+    "Arrows",
+    "Assassin",
+    "GoblinGang",
+    "MegaKnight",
+    "Prince",
+    "Wallbreakers",
+    "Zap"
+   ],
+   "slugs": [
+    "archer-queen",
+    "arrows",
+    "bandit",
+    "goblin-gang",
+    "mega-knight",
+    "prince",
+    "wall-breakers",
+    "zap"
+   ]
+  },
+  {
+   "rank": 144,
+   "sides": 518,
+   "engine": [
+    "Assassin",
+    "BattleRam",
+    "DarkPrince",
+    "ElectroWizard",
+    "Fireball",
+    "EliteArcher",
+    "Pekka",
+    "Zap"
+   ],
+   "slugs": [
+    "bandit",
+    "battle-ram",
+    "dark-prince",
+    "electro-wizard",
+    "fireball",
+    "magic-archer",
+    "pekka",
+    "zap"
+   ]
+  },
+  {
+   "rank": 149,
+   "sides": 498,
+   "engine": [
+    "Arrows",
+    "Bats",
+    "DarkPrince",
+    "ElectroWizard",
+    "Giant",
+    "SkeletonArmy",
+    "ZapMachine",
+    "Zap"
+   ],
+   "slugs": [
+    "arrows",
+    "bats",
+    "dark-prince",
+    "electro-wizard",
+    "giant",
+    "skeleton-army",
+    "sparky",
+    "zap"
+   ]
+  },
+  {
+   "rank": 150,
+   "sides": 496,
+   "engine": [
+    "Arrows",
+    "Fireball",
+    "DartBarrell",
+    "GoblinCage",
+    "GoldenKnight",
+    "RoyalHogs",
+    "RoyalRecruits",
+    "MiniSparkys"
+   ],
+   "slugs": [
+    "arrows",
+    "fireball",
+    "flying-machine",
+    "goblin-cage",
+    "golden-knight",
+    "royal-hogs",
+    "royal-recruits",
+    "zappies"
+   ]
+  },
+  {
+   "rank": 157,
+   "sides": 476,
+   "engine": [
+    "Cannon",
+    "ElectroSpirit",
+    "HogRider",
+    "IceGolemite",
+    "Musketeer",
+    "Rocket",
+    "Skeletons",
+    "Log"
+   ],
+   "slugs": [
+    "cannon",
+    "electro-spirit",
+    "hog-rider",
+    "ice-golem",
+    "musketeer",
+    "rocket",
+    "skeletons",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 158,
+   "sides": 475,
+   "engine": [
+    "Arrows",
+    "Balloon",
+    "Bats",
+    "Bowler",
+    "Freeze",
+    "GiantSkeleton",
+    "InfernoDragon",
+    "SkeletonArmy"
+   ],
+   "slugs": [
+    "arrows",
+    "balloon",
+    "bats",
+    "bowler",
+    "freeze",
+    "giant-skeleton",
+    "inferno-dragon",
+    "skeleton-army"
+   ]
+  },
+  {
+   "rank": 162,
+   "sides": 473,
+   "engine": [
+    "Arrows",
+    "Bats",
+    "BattleRam",
+    "Fireball",
+    "GoblinGang",
+    "Pekka",
+    "SkeletonArmy",
+    "SkeletonKing"
+   ],
+   "slugs": [
+    "arrows",
+    "bats",
+    "battle-ram",
+    "fireball",
+    "goblin-gang",
+    "pekka",
+    "skeleton-army",
+    "skeleton-king"
+   ]
+  },
+  {
+   "rank": 168,
+   "sides": 442,
+   "engine": [
+    "Arrows",
+    "Giant",
+    "MiniPekka",
+    "MinionHorde",
+    "Minions",
+    "SkeletonArmy",
+    "ZapMachine",
+    "Zap"
+   ],
+   "slugs": [
+    "arrows",
+    "giant",
+    "mini-pekka",
+    "minion-horde",
+    "minions",
+    "skeleton-army",
+    "sparky",
+    "zap"
+   ]
+  },
+  {
+   "rank": 169,
+   "sides": 442,
+   "engine": [
+    "Bomber",
+    "ElectroDragon",
+    "AngryBarbarians",
+    "Golem",
+    "MegaMinion",
+    "DarkWitch",
+    "SkeletonArmy",
+    "Zap"
+   ],
+   "slugs": [
+    "bomber",
+    "electro-dragon",
+    "elite-barbarians",
+    "golem",
+    "mega-minion",
+    "night-witch",
+    "skeleton-army",
+    "zap"
+   ]
+  },
+  {
+   "rank": 185,
+   "sides": 406,
+   "engine": [
+    "Cannon",
+    "Earthquake",
+    "Firecracker",
+    "HogRider",
+    "IceSpirits",
+    "MightyMiner",
+    "Skeletons",
+    "Log"
+   ],
+   "slugs": [
+    "cannon",
+    "earthquake",
+    "firecracker",
+    "hog-rider",
+    "ice-spirit",
+    "mighty-miner",
+    "skeletons",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 199,
+   "sides": 383,
+   "engine": [
+    "Berserker",
+    "Earthquake",
+    "ElectroSpirit",
+    "Firecracker",
+    "HogRider",
+    "Skeletons",
+    "Tesla",
+    "Log"
+   ],
+   "slugs": [
+    "berserker",
+    "earthquake",
+    "electro-spirit",
+    "firecracker",
+    "hog-rider",
+    "skeletons",
+    "tesla",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 201,
+   "sides": 381,
+   "engine": [
+    "Arrows",
+    "DarkPrince",
+    "Giant",
+    "GoblinGang",
+    "MinionHorde",
+    "SkeletonArmy",
+    "ZapMachine",
+    "Zap"
+   ],
+   "slugs": [
+    "arrows",
+    "dark-prince",
+    "giant",
+    "goblin-gang",
+    "minion-horde",
+    "skeleton-army",
+    "sparky",
+    "zap"
+   ]
+  },
+  {
+   "rank": 204,
+   "sides": 379,
+   "engine": [
+    "BabyDragon",
+    "Bomber",
+    "AngryBarbarians",
+    "Golem",
+    "MegaMinion",
+    "DarkWitch",
+    "Tornado",
+    "Zap"
+   ],
+   "slugs": [
+    "baby-dragon",
+    "bomber",
+    "elite-barbarians",
+    "golem",
+    "mega-minion",
+    "night-witch",
+    "tornado",
+    "zap"
+   ]
+  },
+  {
+   "rank": 206,
+   "sides": 377,
+   "engine": [
+    "Berserker",
+    "BlowdartGoblin",
+    "ElectroSpirit",
+    "GoblinBarrel",
+    "InfernoTower",
+    "Princess",
+    "SkeletonArmy",
+    "Log"
+   ],
+   "slugs": [
+    "berserker",
+    "dart-goblin",
+    "electro-spirit",
+    "goblin-barrel",
+    "inferno-tower",
+    "princess",
+    "skeleton-army",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 209,
+   "sides": 368,
+   "engine": [
+    "Cannon",
+    "BlowdartGoblin",
+    "GoblinBarrel",
+    "Knight",
+    "Princess",
+    "Skeletons",
+    "Log",
+    "Wallbreakers"
+   ],
+   "slugs": [
+    "cannon",
+    "dart-goblin",
+    "goblin-barrel",
+    "knight",
+    "princess",
+    "skeletons",
+    "the-log",
+    "wall-breakers"
+   ]
+  },
+  {
+   "rank": 218,
+   "sides": 354,
+   "engine": [
+    "ElectroSpirit",
+    "GoblinBarrel",
+    "GoblinGang",
+    "InfernoTower",
+    "Knight",
+    "Princess",
+    "Rocket",
+    "Log"
+   ],
+   "slugs": [
+    "electro-spirit",
+    "goblin-barrel",
+    "goblin-gang",
+    "inferno-tower",
+    "knight",
+    "princess",
+    "rocket",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 219,
+   "sides": 353,
+   "engine": [
+    "Archer",
+    "ElectroSpirit",
+    "Knight",
+    "Rocket",
+    "Skeletons",
+    "Tesla",
+    "Log",
+    "Xbow"
+   ],
+   "slugs": [
+    "archers",
+    "electro-spirit",
+    "knight",
+    "rocket",
+    "skeletons",
+    "tesla",
+    "the-log",
+    "x-bow"
+   ]
+  },
+  {
+   "rank": 225,
+   "sides": 349,
+   "engine": [
+    "BlowdartGoblin",
+    "GoblinBarrel",
+    "GoblinGang",
+    "Prince",
+    "Princess",
+    "Rascals",
+    "Rocket",
+    "Log"
+   ],
+   "slugs": [
+    "dart-goblin",
+    "goblin-barrel",
+    "goblin-gang",
+    "prince",
+    "princess",
+    "rascals",
+    "rocket",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 244,
+   "sides": 315,
+   "engine": [
+    "Bats",
+    "Bomber",
+    "Giant",
+    "MiniPekka",
+    "Poison",
+    "SkeletonArmy",
+    "Witch",
+    "Zap"
+   ],
+   "slugs": [
+    "bats",
+    "bomber",
+    "giant",
+    "mini-pekka",
+    "poison",
+    "skeleton-army",
+    "witch",
+    "zap"
+   ]
+  },
+  {
+   "rank": 249,
+   "sides": 307,
+   "engine": [
+    "BombTower",
+    "Earthquake",
+    "Firecracker",
+    "GiantSkeleton",
+    "SkeletonWarriors",
+    "HogRider",
+    "Monk",
+    "Log"
+   ],
+   "slugs": [
+    "bomb-tower",
+    "earthquake",
+    "firecracker",
+    "giant-skeleton",
+    "guards",
+    "hog-rider",
+    "monk",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 262,
+   "sides": 288,
+   "engine": [
+    "BabyDragon",
+    "Balloon",
+    "Berserker",
+    "Bomber",
+    "ElectroSpirit",
+    "Freeze",
+    "Knight",
+    "Tornado"
+   ],
+   "slugs": [
+    "baby-dragon",
+    "balloon",
+    "berserker",
+    "bomber",
+    "electro-spirit",
+    "freeze",
+    "knight",
+    "tornado"
+   ]
+  },
+  {
+   "rank": 269,
+   "sides": 283,
+   "engine": [
+    "Berserker",
+    "GoblinBarrel",
+    "IceSpirits",
+    "InfernoTower",
+    "Princess",
+    "Rocket",
+    "Skeletons",
+    "Log"
+   ],
+   "slugs": [
+    "berserker",
+    "goblin-barrel",
+    "ice-spirit",
+    "inferno-tower",
+    "princess",
+    "rocket",
+    "skeletons",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 272,
+   "sides": 280,
+   "engine": [
+    "Bats",
+    "FireSpirits",
+    "HogRider",
+    "IceGolemite",
+    "MiniPekka",
+    "Princess",
+    "Rocket",
+    "Log"
+   ],
+   "slugs": [
+    "bats",
+    "fire-spirit",
+    "hog-rider",
+    "ice-golem",
+    "mini-pekka",
+    "princess",
+    "rocket",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 275,
+   "sides": 277,
+   "engine": [
+    "Bats",
+    "Fireball",
+    "GoblinGang",
+    "IceGolemite",
+    "MiniPekka",
+    "Princess",
+    "RoyalHogs",
+    "Log"
+   ],
+   "slugs": [
+    "bats",
+    "fireball",
+    "goblin-gang",
+    "ice-golem",
+    "mini-pekka",
+    "princess",
+    "royal-hogs",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 277,
+   "sides": 276,
+   "engine": [
+    "Cannon",
+    "BlowdartGoblin",
+    "GoblinBarrel",
+    "IceSpirits",
+    "Princess",
+    "Skeletons",
+    "Log",
+    "Valkyrie"
+   ],
+   "slugs": [
+    "cannon",
+    "dart-goblin",
+    "goblin-barrel",
+    "ice-spirit",
+    "princess",
+    "skeletons",
+    "the-log",
+    "valkyrie"
+   ]
+  },
+  {
+   "rank": 293,
+   "sides": 261,
+   "engine": [
+    "BlowdartGoblin",
+    "ElectroSpirit",
+    "GoblinBarrel",
+    "InfernoTower",
+    "Knight",
+    "Princess",
+    "SkeletonArmy",
+    "Log"
+   ],
+   "slugs": [
+    "dart-goblin",
+    "electro-spirit",
+    "goblin-barrel",
+    "inferno-tower",
+    "knight",
+    "princess",
+    "skeleton-army",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 308,
+   "sides": 245,
+   "engine": [
+    "Balloon",
+    "ElectroWizard",
+    "AxeMan",
+    "Freeze",
+    "Pekka",
+    "Prince",
+    "Tornado",
+    "Valkyrie"
+   ],
+   "slugs": [
+    "balloon",
+    "electro-wizard",
+    "executioner",
+    "freeze",
+    "pekka",
+    "prince",
+    "tornado",
+    "valkyrie"
+   ]
+  },
+  {
+   "rank": 322,
+   "sides": 234,
+   "engine": [
+    "GoblinBarrel",
+    "GoblinGang",
+    "InfernoTower",
+    "Knight",
+    "Princess",
+    "Rocket",
+    "Skeletons",
+    "Log"
+   ],
+   "slugs": [
+    "goblin-barrel",
+    "goblin-gang",
+    "inferno-tower",
+    "knight",
+    "princess",
+    "rocket",
+    "skeletons",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 326,
+   "sides": 228,
+   "engine": [
+    "BabyDragon",
+    "Barbarians",
+    "ElectroWizard",
+    "Fireball",
+    "InfernoDragon",
+    "LavaHound",
+    "Tornado",
+    "Valkyrie"
+   ],
+   "slugs": [
+    "baby-dragon",
+    "barbarians",
+    "electro-wizard",
+    "fireball",
+    "inferno-dragon",
+    "lava-hound",
+    "tornado",
+    "valkyrie"
+   ]
+  },
+  {
+   "rank": 331,
+   "sides": 223,
+   "engine": [
+    "BabyDragon",
+    "Balloon",
+    "Bomber",
+    "DarkPrince",
+    "ElectroWizard",
+    "Freeze",
+    "Pekka",
+    "Tornado"
+   ],
+   "slugs": [
+    "baby-dragon",
+    "balloon",
+    "bomber",
+    "dark-prince",
+    "electro-wizard",
+    "freeze",
+    "pekka",
+    "tornado"
+   ]
+  },
+  {
+   "rank": 336,
+   "sides": 220,
+   "engine": [
+    "Cannon",
+    "BlowdartGoblin",
+    "ElectroSpirit",
+    "GoblinBarrel",
+    "Princess",
+    "SkeletonArmy",
+    "Valkyrie",
+    "Wallbreakers"
+   ],
+   "slugs": [
+    "cannon",
+    "dart-goblin",
+    "electro-spirit",
+    "goblin-barrel",
+    "princess",
+    "skeleton-army",
+    "valkyrie",
+    "wall-breakers"
+   ]
+  },
+  {
+   "rank": 337,
+   "sides": 218,
+   "engine": [
+    "Assassin",
+    "BattleRam",
+    "ElectroWizard",
+    "Fireball",
+    "EliteArcher",
+    "Pekka",
+    "Valkyrie",
+    "Zap"
+   ],
+   "slugs": [
+    "bandit",
+    "battle-ram",
+    "electro-wizard",
+    "fireball",
+    "magic-archer",
+    "pekka",
+    "valkyrie",
+    "zap"
+   ]
+  },
+  {
+   "rank": 339,
+   "sides": 218,
+   "engine": [
+    "Arrows",
+    "DarkPrince",
+    "MiniPekka",
+    "MinionHorde",
+    "Pekka",
+    "Prince",
+    "Valkyrie",
+    "Witch"
+   ],
+   "slugs": [
+    "arrows",
+    "dark-prince",
+    "mini-pekka",
+    "minion-horde",
+    "pekka",
+    "prince",
+    "valkyrie",
+    "witch"
+   ]
+  },
+  {
+   "rank": 342,
+   "sides": 216,
+   "engine": [
+    "Berserker",
+    "Cannon",
+    "Earthquake",
+    "ElectroSpirit",
+    "Firecracker",
+    "HogRider",
+    "Skeletons",
+    "Log"
+   ],
+   "slugs": [
+    "berserker",
+    "cannon",
+    "earthquake",
+    "electro-spirit",
+    "firecracker",
+    "hog-rider",
+    "skeletons",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 354,
+   "sides": 207,
+   "engine": [
+    "Arrows",
+    "Berserker",
+    "Bomber",
+    "AngryBarbarians",
+    "Golem",
+    "DarkWitch",
+    "Phoenix",
+    "Zap"
+   ],
+   "slugs": [
+    "arrows",
+    "berserker",
+    "bomber",
+    "elite-barbarians",
+    "golem",
+    "night-witch",
+    "phoenix",
+    "zap"
+   ]
+  },
+  {
+   "rank": 355,
+   "sides": 206,
+   "engine": [
+    "BabyDragon",
+    "Balloon",
+    "Barbarians",
+    "Bats",
+    "Fireball",
+    "Pekka",
+    "Tornado",
+    "Zap"
+   ],
+   "slugs": [
+    "baby-dragon",
+    "balloon",
+    "barbarians",
+    "bats",
+    "fireball",
+    "pekka",
+    "tornado",
+    "zap"
+   ]
+  },
+  {
+   "rank": 360,
+   "sides": 204,
+   "engine": [
+    "Assassin",
+    "BattleRam",
+    "DarkPrince",
+    "ElectroWizard",
+    "Minions",
+    "Pekka",
+    "Poison",
+    "Zap"
+   ],
+   "slugs": [
+    "bandit",
+    "battle-ram",
+    "dark-prince",
+    "electro-wizard",
+    "minions",
+    "pekka",
+    "poison",
+    "zap"
+   ]
+  },
+  {
+   "rank": 370,
+   "sides": 197,
+   "engine": [
+    "Cannon",
+    "AxeMan",
+    "FireSpirits",
+    "Snowball",
+    "GoldenKnight",
+    "Rocket",
+    "Skeletons",
+    "Tornado"
+   ],
+   "slugs": [
+    "cannon",
+    "executioner",
+    "fire-spirit",
+    "giant-snowball",
+    "golden-knight",
+    "rocket",
+    "skeletons",
+    "tornado"
+   ]
+  },
+  {
+   "rank": 374,
+   "sides": 194,
+   "engine": [
+    "BlowdartGoblin",
+    "GoblinBarrel",
+    "GoblinGang",
+    "Princess",
+    "Rascals",
+    "RoyalRecruits",
+    "Log",
+    "Wallbreakers"
+   ],
+   "slugs": [
+    "dart-goblin",
+    "goblin-barrel",
+    "goblin-gang",
+    "princess",
+    "rascals",
+    "royal-recruits",
+    "the-log",
+    "wall-breakers"
+   ]
+  },
+  {
+   "rank": 377,
+   "sides": 193,
+   "engine": [
+    "Arrows",
+    "AngryBarbarians",
+    "Fireball",
+    "Golem",
+    "DarkWitch",
+    "Phoenix",
+    "Wizard",
+    "Zap"
+   ],
+   "slugs": [
+    "arrows",
+    "elite-barbarians",
+    "fireball",
+    "golem",
+    "night-witch",
+    "phoenix",
+    "wizard",
+    "zap"
+   ]
+  },
+  {
+   "rank": 379,
+   "sides": 192,
+   "engine": [
+    "Arrows",
+    "Balloon",
+    "Barbarians",
+    "ElectroWizard",
+    "Fireball",
+    "GiantSkeleton",
+    "MiniPekka",
+    "Zap"
+   ],
+   "slugs": [
+    "arrows",
+    "balloon",
+    "barbarians",
+    "electro-wizard",
+    "fireball",
+    "giant-skeleton",
+    "mini-pekka",
+    "zap"
+   ]
+  },
+  {
+   "rank": 386,
+   "sides": 189,
+   "engine": [
+    "Berserker",
+    "AngryBarbarians",
+    "AxeMan",
+    "Freeze",
+    "SkeletonWarriors",
+    "HogRider",
+    "Hunter",
+    "Zap"
+   ],
+   "slugs": [
+    "berserker",
+    "elite-barbarians",
+    "executioner",
+    "freeze",
+    "guards",
+    "hog-rider",
+    "hunter",
+    "zap"
+   ]
+  },
+  {
+   "rank": 390,
+   "sides": 187,
+   "engine": [
+    "Arrows",
+    "Snowball",
+    "HogRider",
+    "MegaMinion",
+    "Musketeer",
+    "SkeletonArmy",
+    "SpearGoblins",
+    "Xbow"
+   ],
+   "slugs": [
+    "arrows",
+    "giant-snowball",
+    "hog-rider",
+    "mega-minion",
+    "musketeer",
+    "skeleton-army",
+    "spear-goblins",
+    "x-bow"
+   ]
+  },
+  {
+   "rank": 397,
+   "sides": 182,
+   "engine": [
+    "Balloon",
+    "Barbarians",
+    "Freeze",
+    "HogRider",
+    "IceWizard",
+    "Musketeer",
+    "Wizard",
+    "Zap"
+   ],
+   "slugs": [
+    "balloon",
+    "barbarians",
+    "freeze",
+    "hog-rider",
+    "ice-wizard",
+    "musketeer",
+    "wizard",
+    "zap"
+   ]
+  },
+  {
+   "rank": 398,
+   "sides": 181,
+   "engine": [
+    "Berserker",
+    "Snowball",
+    "IceWizard",
+    "Rocket",
+    "Skeletons",
+    "Tesla",
+    "Log",
+    "Xbow"
+   ],
+   "slugs": [
+    "berserker",
+    "giant-snowball",
+    "ice-wizard",
+    "rocket",
+    "skeletons",
+    "tesla",
+    "the-log",
+    "x-bow"
+   ]
+  },
+  {
+   "rank": 403,
+   "sides": 180,
+   "engine": [
+    "Arrows",
+    "Berserker",
+    "Bomber",
+    "AngryBarbarians",
+    "Golem",
+    "MegaMinion",
+    "DarkWitch",
+    "Zap"
+   ],
+   "slugs": [
+    "arrows",
+    "berserker",
+    "bomber",
+    "elite-barbarians",
+    "golem",
+    "mega-minion",
+    "night-witch",
+    "zap"
+   ]
+  },
+  {
+   "rank": 404,
+   "sides": 179,
+   "engine": [
+    "Arrows",
+    "Balloon",
+    "Freeze",
+    "GoblinGang",
+    "LavaHound",
+    "MinionHorde",
+    "Minions",
+    "SkeletonArmy"
+   ],
+   "slugs": [
+    "arrows",
+    "balloon",
+    "freeze",
+    "goblin-gang",
+    "lava-hound",
+    "minion-horde",
+    "minions",
+    "skeleton-army"
+   ]
+  },
+  {
+   "rank": 427,
+   "sides": 166,
+   "engine": [
+    "Berserker",
+    "BlowdartGoblin",
+    "IceSpirits",
+    "Mortar",
+    "Rocket",
+    "Skeletons",
+    "Log",
+    "Tornado"
+   ],
+   "slugs": [
+    "berserker",
+    "dart-goblin",
+    "ice-spirit",
+    "mortar",
+    "rocket",
+    "skeletons",
+    "the-log",
+    "tornado"
+   ]
+  },
+  {
+   "rank": 428,
+   "sides": 166,
+   "engine": [
+    "Bats",
+    "Fireball",
+    "Firecracker",
+    "GoblinGang",
+    "IceGolemite",
+    "MiniPekka",
+    "RoyalHogs",
+    "Log"
+   ],
+   "slugs": [
+    "bats",
+    "fireball",
+    "firecracker",
+    "goblin-gang",
+    "ice-golem",
+    "mini-pekka",
+    "royal-hogs",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 429,
+   "sides": 166,
+   "engine": [
+    "Balloon",
+    "Barbarians",
+    "Fireball",
+    "Freeze",
+    "Giant",
+    "InfernoDragon",
+    "Minions",
+    "Zap"
+   ],
+   "slugs": [
+    "balloon",
+    "barbarians",
+    "fireball",
+    "freeze",
+    "giant",
+    "inferno-dragon",
+    "minions",
+    "zap"
+   ]
+  },
+  {
+   "rank": 432,
+   "sides": 165,
+   "engine": [
+    "Cannon",
+    "GoblinBarrel",
+    "IceSpirits",
+    "MightyMiner",
+    "Princess",
+    "Rocket",
+    "Skeletons",
+    "Log"
+   ],
+   "slugs": [
+    "cannon",
+    "goblin-barrel",
+    "ice-spirit",
+    "mighty-miner",
+    "princess",
+    "rocket",
+    "skeletons",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 436,
+   "sides": 161,
+   "engine": [
+    "Cannon",
+    "BlowdartGoblin",
+    "GoblinBarrel",
+    "IceSpirits",
+    "Knight",
+    "Princess",
+    "SkeletonArmy",
+    "Log"
+   ],
+   "slugs": [
+    "cannon",
+    "dart-goblin",
+    "goblin-barrel",
+    "ice-spirit",
+    "knight",
+    "princess",
+    "skeleton-army",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 437,
+   "sides": 160,
+   "engine": [
+    "Bats",
+    "AngryBarbarians",
+    "Fireball",
+    "Firecracker",
+    "GoblinGang",
+    "IceGolemite",
+    "RoyalHogs",
+    "Log"
+   ],
+   "slugs": [
+    "bats",
+    "elite-barbarians",
+    "fireball",
+    "firecracker",
+    "goblin-gang",
+    "ice-golem",
+    "royal-hogs",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 438,
+   "sides": 160,
+   "engine": [
+    "Berserker",
+    "Cannon",
+    "BlowdartGoblin",
+    "FireSpirits",
+    "GoblinBarrel",
+    "Rocket",
+    "Skeletons",
+    "Log"
+   ],
+   "slugs": [
+    "berserker",
+    "cannon",
+    "dart-goblin",
+    "fire-spirit",
+    "goblin-barrel",
+    "rocket",
+    "skeletons",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 447,
+   "sides": 156,
+   "engine": [
+    "Assassin",
+    "BattleRam",
+    "ElectroWizard",
+    "Fireball",
+    "GoldenKnight",
+    "Minions",
+    "Pekka",
+    "Zap"
+   ],
+   "slugs": [
+    "bandit",
+    "battle-ram",
+    "electro-wizard",
+    "fireball",
+    "golden-knight",
+    "minions",
+    "pekka",
+    "zap"
+   ]
+  },
+  {
+   "rank": 448,
+   "sides": 155,
+   "engine": [
+    "Berserker",
+    "DarkPrince",
+    "AngryBarbarians",
+    "Fireball",
+    "HogRider",
+    "Minions",
+    "Musketeer",
+    "Zap"
+   ],
+   "slugs": [
+    "berserker",
+    "dark-prince",
+    "elite-barbarians",
+    "fireball",
+    "hog-rider",
+    "minions",
+    "musketeer",
+    "zap"
+   ]
+  },
+  {
+   "rank": 452,
+   "sides": 154,
+   "engine": [
+    "Arrows",
+    "Freeze",
+    "HogRider",
+    "MiniPekka",
+    "Musketeer",
+    "Princess",
+    "Log",
+    "Valkyrie"
+   ],
+   "slugs": [
+    "arrows",
+    "freeze",
+    "hog-rider",
+    "mini-pekka",
+    "musketeer",
+    "princess",
+    "the-log",
+    "valkyrie"
+   ]
+  },
+  {
+   "rank": 453,
+   "sides": 154,
+   "engine": [
+    "DarkPrince",
+    "AngryBarbarians",
+    "Fireball",
+    "Golem",
+    "Musketeer",
+    "Phoenix",
+    "Skeletons",
+    "Zap"
+   ],
+   "slugs": [
+    "dark-prince",
+    "elite-barbarians",
+    "fireball",
+    "golem",
+    "musketeer",
+    "phoenix",
+    "skeletons",
+    "zap"
+   ]
+  },
+  {
+   "rank": 456,
+   "sides": 153,
+   "engine": [
+    "Berserker",
+    "AxeMan",
+    "HogRider",
+    "IceSpirits",
+    "Rocket",
+    "Log",
+    "Tornado",
+    "Valkyrie"
+   ],
+   "slugs": [
+    "berserker",
+    "executioner",
+    "hog-rider",
+    "ice-spirit",
+    "rocket",
+    "the-log",
+    "tornado",
+    "valkyrie"
+   ]
+  },
+  {
+   "rank": 465,
+   "sides": 151,
+   "engine": [
+    "Arrows",
+    "Barbarians",
+    "HogRider",
+    "MegaMinion",
+    "MinionHorde",
+    "RoyalGiant",
+    "ZapMachine",
+    "Zap"
+   ],
+   "slugs": [
+    "arrows",
+    "barbarians",
+    "hog-rider",
+    "mega-minion",
+    "minion-horde",
+    "royal-giant",
+    "sparky",
+    "zap"
+   ]
+  },
+  {
+   "rank": 466,
+   "sides": 151,
+   "engine": [
+    "Berserker",
+    "AngryBarbarians",
+    "AxeMan",
+    "Freeze",
+    "HogRider",
+    "Hunter",
+    "Pekka",
+    "Zap"
+   ],
+   "slugs": [
+    "berserker",
+    "elite-barbarians",
+    "executioner",
+    "freeze",
+    "hog-rider",
+    "hunter",
+    "pekka",
+    "zap"
+   ]
+  },
+  {
+   "rank": 477,
+   "sides": 147,
+   "engine": [
+    "Berserker",
+    "Cannon",
+    "GoblinBarrel",
+    "GoblinGang",
+    "IceSpirits",
+    "Princess",
+    "Rocket",
+    "Wallbreakers"
+   ],
+   "slugs": [
+    "berserker",
+    "cannon",
+    "goblin-barrel",
+    "goblin-gang",
+    "ice-spirit",
+    "princess",
+    "rocket",
+    "wall-breakers"
+   ]
+  },
+  {
+   "rank": 478,
+   "sides": 146,
+   "engine": [
+    "Cannon",
+    "HogRider",
+    "IceGolemite",
+    "IceSpirits",
+    "Musketeer",
+    "Rocket",
+    "Skeletons",
+    "Log"
+   ],
+   "slugs": [
+    "cannon",
+    "hog-rider",
+    "ice-golem",
+    "ice-spirit",
+    "musketeer",
+    "rocket",
+    "skeletons",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 482,
+   "sides": 145,
+   "engine": [
+    "Bomber",
+    "Cannon",
+    "ElectroGiant",
+    "Knight",
+    "Rocket",
+    "Skeletons",
+    "Log",
+    "Tornado"
+   ],
+   "slugs": [
+    "bomber",
+    "cannon",
+    "electro-giant",
+    "knight",
+    "rocket",
+    "skeletons",
+    "the-log",
+    "tornado"
+   ]
+  },
+  {
+   "rank": 490,
+   "sides": 141,
+   "engine": [
+    "Arrows",
+    "Bats",
+    "DarkPrince",
+    "ElectroWizard",
+    "AngryBarbarians",
+    "Giant",
+    "ZapMachine",
+    "Zap"
+   ],
+   "slugs": [
+    "arrows",
+    "bats",
+    "dark-prince",
+    "electro-wizard",
+    "elite-barbarians",
+    "giant",
+    "sparky",
+    "zap"
+   ]
+  },
+  {
+   "rank": 497,
+   "sides": 140,
+   "engine": [
+    "Berserker",
+    "Cannon",
+    "Fireball",
+    "HogRider",
+    "IceGolemite",
+    "Musketeer",
+    "Skeletons",
+    "Log"
+   ],
+   "slugs": [
+    "berserker",
+    "cannon",
+    "fireball",
+    "hog-rider",
+    "ice-golem",
+    "musketeer",
+    "skeletons",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 502,
+   "sides": 139,
+   "engine": [
+    "Assassin",
+    "BattleRam",
+    "Berserker",
+    "ElectroWizard",
+    "Fireball",
+    "EliteArcher",
+    "Pekka",
+    "Zap"
+   ],
+   "slugs": [
+    "bandit",
+    "battle-ram",
+    "berserker",
+    "electro-wizard",
+    "fireball",
+    "magic-archer",
+    "pekka",
+    "zap"
+   ]
+  },
+  {
+   "rank": 503,
+   "sides": 139,
+   "engine": [
+    "Cannon",
+    "AngryBarbarians",
+    "Fireball",
+    "HogRider",
+    "IceGolemite",
+    "IceSpirits",
+    "Musketeer",
+    "Log"
+   ],
+   "slugs": [
+    "cannon",
+    "elite-barbarians",
+    "fireball",
+    "hog-rider",
+    "ice-golem",
+    "ice-spirit",
+    "musketeer",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 505,
+   "sides": 138,
+   "engine": [
+    "Arrows",
+    "AxeMan",
+    "Fireball",
+    "Golem",
+    "MiniPekka",
+    "Minions",
+    "DarkWitch",
+    "SkeletonArmy"
+   ],
+   "slugs": [
+    "arrows",
+    "executioner",
+    "fireball",
+    "golem",
+    "mini-pekka",
+    "minions",
+    "night-witch",
+    "skeleton-army"
+   ]
+  },
+  {
+   "rank": 519,
+   "sides": 134,
+   "engine": [
+    "Fireball",
+    "Fisherman",
+    "Monk",
+    "RoyalGiant",
+    "Skeletons",
+    "Log",
+    "Witch",
+    "MiniSparkys"
+   ],
+   "slugs": [
+    "fireball",
+    "fisherman",
+    "monk",
+    "royal-giant",
+    "skeletons",
+    "the-log",
+    "witch",
+    "zappies"
+   ]
+  },
+  {
+   "rank": 520,
+   "sides": 133,
+   "engine": [
+    "Arrows",
+    "DarkPrince",
+    "AngryBarbarians",
+    "Golem",
+    "DarkWitch",
+    "Phoenix",
+    "Wizard",
+    "Zap"
+   ],
+   "slugs": [
+    "arrows",
+    "dark-prince",
+    "elite-barbarians",
+    "golem",
+    "night-witch",
+    "phoenix",
+    "wizard",
+    "zap"
+   ]
+  },
+  {
+   "rank": 527,
+   "sides": 130,
+   "engine": [
+    "Berserker",
+    "Cannon",
+    "BlowdartGoblin",
+    "GoblinBarrel",
+    "IceSpirits",
+    "Princess",
+    "SkeletonArmy",
+    "Wallbreakers"
+   ],
+   "slugs": [
+    "berserker",
+    "cannon",
+    "dart-goblin",
+    "goblin-barrel",
+    "ice-spirit",
+    "princess",
+    "skeleton-army",
+    "wall-breakers"
+   ]
+  },
+  {
+   "rank": 538,
+   "sides": 126,
+   "engine": [
+    "AngryBarbarians",
+    "Fireball",
+    "HogRider",
+    "IceGolemite",
+    "Minions",
+    "Princess",
+    "Skeletons",
+    "Log"
+   ],
+   "slugs": [
+    "elite-barbarians",
+    "fireball",
+    "hog-rider",
+    "ice-golem",
+    "minions",
+    "princess",
+    "skeletons",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 544,
+   "sides": 124,
+   "engine": [
+    "Bats",
+    "Berserker",
+    "ElectroSpirit",
+    "InfernoTower",
+    "Princess",
+    "Rocket",
+    "SkeletonArmy",
+    "Log"
+   ],
+   "slugs": [
+    "bats",
+    "berserker",
+    "electro-spirit",
+    "inferno-tower",
+    "princess",
+    "rocket",
+    "skeleton-army",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 546,
+   "sides": 123,
+   "engine": [
+    "Berserker",
+    "Cannon",
+    "Fireball",
+    "HogRider",
+    "IceSpirits",
+    "Musketeer",
+    "Skeletons",
+    "Log"
+   ],
+   "slugs": [
+    "berserker",
+    "cannon",
+    "fireball",
+    "hog-rider",
+    "ice-spirit",
+    "musketeer",
+    "skeletons",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 552,
+   "sides": 122,
+   "engine": [
+    "Cannon",
+    "Fireball",
+    "GoblinBarrel",
+    "InfernoDragon",
+    "MegaKnight",
+    "SkeletonArmy",
+    "Witch",
+    "Zap"
+   ],
+   "slugs": [
+    "cannon",
+    "fireball",
+    "goblin-barrel",
+    "inferno-dragon",
+    "mega-knight",
+    "skeleton-army",
+    "witch",
+    "zap"
+   ]
+  },
+  {
+   "rank": 559,
+   "sides": 120,
+   "engine": [
+    "Arrows",
+    "ElectroWizard",
+    "Fireball",
+    "GoblinBarrel",
+    "HogRider",
+    "InfernoTower",
+    "SkeletonArmy",
+    "Valkyrie"
+   ],
+   "slugs": [
+    "arrows",
+    "electro-wizard",
+    "fireball",
+    "goblin-barrel",
+    "hog-rider",
+    "inferno-tower",
+    "skeleton-army",
+    "valkyrie"
+   ]
+  },
+  {
+   "rank": 561,
+   "sides": 119,
+   "engine": [
+    "Bats",
+    "ElectroSpirit",
+    "HogRider",
+    "IceGolemite",
+    "MiniPekka",
+    "Princess",
+    "Rocket",
+    "Log"
+   ],
+   "slugs": [
+    "bats",
+    "electro-spirit",
+    "hog-rider",
+    "ice-golem",
+    "mini-pekka",
+    "princess",
+    "rocket",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 573,
+   "sides": 117,
+   "engine": [
+    "Earthquake",
+    "Firecracker",
+    "HogRider",
+    "IceSpirits",
+    "MightyMiner",
+    "Skeletons",
+    "Tesla",
+    "Log"
+   ],
+   "slugs": [
+    "earthquake",
+    "firecracker",
+    "hog-rider",
+    "ice-spirit",
+    "mighty-miner",
+    "skeletons",
+    "tesla",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 577,
+   "sides": 116,
+   "engine": [
+    "Arrows",
+    "Assassin",
+    "BattleRam",
+    "DarkPrince",
+    "ElectroWizard",
+    "AngryBarbarians",
+    "Fireball",
+    "Minions"
+   ],
+   "slugs": [
+    "arrows",
+    "bandit",
+    "battle-ram",
+    "dark-prince",
+    "electro-wizard",
+    "elite-barbarians",
+    "fireball",
+    "minions"
+   ]
+  },
+  {
+   "rank": 578,
+   "sides": 116,
+   "engine": [
+    "Arrows",
+    "Barbarians",
+    "HogRider",
+    "MinionHorde",
+    "Minions",
+    "RoyalGiant",
+    "ZapMachine",
+    "Zap"
+   ],
+   "slugs": [
+    "arrows",
+    "barbarians",
+    "hog-rider",
+    "minion-horde",
+    "minions",
+    "royal-giant",
+    "sparky",
+    "zap"
+   ]
+  },
+  {
+   "rank": 580,
+   "sides": 116,
+   "engine": [
+    "BabyDragon",
+    "Balloon",
+    "Fireball",
+    "LavaHound",
+    "MegaMinion",
+    "Tombstone",
+    "Valkyrie",
+    "Zap"
+   ],
+   "slugs": [
+    "baby-dragon",
+    "balloon",
+    "fireball",
+    "lava-hound",
+    "mega-minion",
+    "tombstone",
+    "valkyrie",
+    "zap"
+   ]
+  },
+  {
+   "rank": 583,
+   "sides": 115,
+   "engine": [
+    "ElectroSpirit",
+    "GoblinBarrel",
+    "Goblins",
+    "Knight",
+    "Princess",
+    "Rocket",
+    "Tesla",
+    "Log"
+   ],
+   "slugs": [
+    "electro-spirit",
+    "goblin-barrel",
+    "goblins",
+    "knight",
+    "princess",
+    "rocket",
+    "tesla",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 584,
+   "sides": 115,
+   "engine": [
+    "Berserker",
+    "BlowdartGoblin",
+    "GoblinBarrel",
+    "SkeletonWarriors",
+    "Prince",
+    "Princess",
+    "Rascals",
+    "Log"
+   ],
+   "slugs": [
+    "berserker",
+    "dart-goblin",
+    "goblin-barrel",
+    "guards",
+    "prince",
+    "princess",
+    "rascals",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 587,
+   "sides": 114,
+   "engine": [
+    "ElectroSpirit",
+    "Fireball",
+    "Knight",
+    "Musketeer",
+    "Skeletons",
+    "Tesla",
+    "Log",
+    "Xbow"
+   ],
+   "slugs": [
+    "electro-spirit",
+    "fireball",
+    "knight",
+    "musketeer",
+    "skeletons",
+    "tesla",
+    "the-log",
+    "x-bow"
+   ]
+  },
+  {
+   "rank": 589,
+   "sides": 114,
+   "engine": [
+    "Barbarians",
+    "Berserker",
+    "Earthquake",
+    "ElectroSpirit",
+    "Firecracker",
+    "Hunter",
+    "RoyalHogs",
+    "Log"
+   ],
+   "slugs": [
+    "barbarians",
+    "berserker",
+    "earthquake",
+    "electro-spirit",
+    "firecracker",
+    "hunter",
+    "royal-hogs",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 590,
+   "sides": 113,
+   "engine": [
+    "Berserker",
+    "AngryBarbarians",
+    "Fireball",
+    "IceWizard",
+    "Minions",
+    "RoyalGiant",
+    "Log",
+    "Zap"
+   ],
+   "slugs": [
+    "berserker",
+    "elite-barbarians",
+    "fireball",
+    "ice-wizard",
+    "minions",
+    "royal-giant",
+    "the-log",
+    "zap"
+   ]
+  },
+  {
+   "rank": 615,
+   "sides": 108,
+   "engine": [
+    "Fireball",
+    "DartBarrell",
+    "SkeletonWarriors",
+    "LavaHound",
+    "MegaMinion",
+    "Tombstone",
+    "Valkyrie",
+    "Zap"
+   ],
+   "slugs": [
+    "fireball",
+    "flying-machine",
+    "guards",
+    "lava-hound",
+    "mega-minion",
+    "tombstone",
+    "valkyrie",
+    "zap"
+   ]
+  },
+  {
+   "rank": 621,
+   "sides": 107,
+   "engine": [
+    "Arrows",
+    "Berserker",
+    "BombTower",
+    "BlowdartGoblin",
+    "GoblinBarrel",
+    "IceGolemite",
+    "Rocket",
+    "Skeletons"
+   ],
+   "slugs": [
+    "arrows",
+    "berserker",
+    "bomb-tower",
+    "dart-goblin",
+    "goblin-barrel",
+    "ice-golem",
+    "rocket",
+    "skeletons"
+   ]
+  },
+  {
+   "rank": 632,
+   "sides": 105,
+   "engine": [
+    "Balloon",
+    "Fireball",
+    "InfernoDragon",
+    "LavaHound",
+    "SkeletonDragons",
+    "Tombstone",
+    "Valkyrie",
+    "Zap"
+   ],
+   "slugs": [
+    "balloon",
+    "fireball",
+    "inferno-dragon",
+    "lava-hound",
+    "skeleton-dragons",
+    "tombstone",
+    "valkyrie",
+    "zap"
+   ]
+  },
+  {
+   "rank": 633,
+   "sides": 105,
+   "engine": [
+    "DarkPrince",
+    "Snowball",
+    "GoblinBarrel",
+    "GoldenKnight",
+    "Princess",
+    "Rascals",
+    "Skeletons",
+    "Wallbreakers"
+   ],
+   "slugs": [
+    "dark-prince",
+    "giant-snowball",
+    "goblin-barrel",
+    "golden-knight",
+    "princess",
+    "rascals",
+    "skeletons",
+    "wall-breakers"
+   ]
+  },
+  {
+   "rank": 634,
+   "sides": 105,
+   "engine": [
+    "BlowdartGoblin",
+    "ElectroSpirit",
+    "GoblinBarrel",
+    "InfernoTower",
+    "MightyMiner",
+    "SkeletonArmy",
+    "Log",
+    "Wallbreakers"
+   ],
+   "slugs": [
+    "dart-goblin",
+    "electro-spirit",
+    "goblin-barrel",
+    "inferno-tower",
+    "mighty-miner",
+    "skeleton-army",
+    "the-log",
+    "wall-breakers"
+   ]
+  },
+  {
+   "rank": 639,
+   "sides": 104,
+   "engine": [
+    "Assassin",
+    "DarkPrince",
+    "ElectroWizard",
+    "Firecracker",
+    "SkeletonWarriors",
+    "HogRider",
+    "MegaKnight",
+    "Zap"
+   ],
+   "slugs": [
+    "bandit",
+    "dark-prince",
+    "electro-wizard",
+    "firecracker",
+    "guards",
+    "hog-rider",
+    "mega-knight",
+    "zap"
+   ]
+  },
+  {
+   "rank": 642,
+   "sides": 103,
+   "engine": [
+    "Bats",
+    "Cannon",
+    "Fireball",
+    "HogRider",
+    "IceGolemite",
+    "Musketeer",
+    "Skeletons",
+    "Log"
+   ],
+   "slugs": [
+    "bats",
+    "cannon",
+    "fireball",
+    "hog-rider",
+    "ice-golem",
+    "musketeer",
+    "skeletons",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 651,
+   "sides": 101,
+   "engine": [
+    "Bomber",
+    "Freeze",
+    "Giant",
+    "MiniPekka",
+    "MinionHorde",
+    "ZapMachine",
+    "SpearGoblins",
+    "Zap"
+   ],
+   "slugs": [
+    "bomber",
+    "freeze",
+    "giant",
+    "mini-pekka",
+    "minion-horde",
+    "sparky",
+    "spear-goblins",
+    "zap"
+   ]
+  },
+  {
+   "rank": 658,
+   "sides": 100,
+   "engine": [
+    "Berserker",
+    "ElectroSpirit",
+    "GoblinBarrel",
+    "Goblins",
+    "Princess",
+    "Rocket",
+    "Tesla",
+    "Log"
+   ],
+   "slugs": [
+    "berserker",
+    "electro-spirit",
+    "goblin-barrel",
+    "goblins",
+    "princess",
+    "rocket",
+    "tesla",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 659,
+   "sides": 99,
+   "engine": [
+    "Berserker",
+    "Cannon",
+    "ElectroSpirit",
+    "Fireball",
+    "HogRider",
+    "Musketeer",
+    "Skeletons",
+    "Log"
+   ],
+   "slugs": [
+    "berserker",
+    "cannon",
+    "electro-spirit",
+    "fireball",
+    "hog-rider",
+    "musketeer",
+    "skeletons",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 661,
+   "sides": 99,
+   "engine": [
+    "Arrows",
+    "Balloon",
+    "Bats",
+    "AxeMan",
+    "Freeze",
+    "GiantSkeleton",
+    "InfernoDragon",
+    "SkeletonArmy"
+   ],
+   "slugs": [
+    "arrows",
+    "balloon",
+    "bats",
+    "executioner",
+    "freeze",
+    "giant-skeleton",
+    "inferno-dragon",
+    "skeleton-army"
+   ]
+  },
+  {
+   "rank": 664,
+   "sides": 98,
+   "engine": [
+    "Berserker",
+    "AngryBarbarians",
+    "AxeMan",
+    "Freeze",
+    "HogRider",
+    "Hunter",
+    "Skeletons",
+    "Zap"
+   ],
+   "slugs": [
+    "berserker",
+    "elite-barbarians",
+    "executioner",
+    "freeze",
+    "hog-rider",
+    "hunter",
+    "skeletons",
+    "zap"
+   ]
+  },
+  {
+   "rank": 672,
+   "sides": 96,
+   "engine": [
+    "Arrows",
+    "Bats",
+    "Giant",
+    "GoblinGang",
+    "MinionHorde",
+    "SkeletonArmy",
+    "ZapMachine",
+    "Zap"
+   ],
+   "slugs": [
+    "arrows",
+    "bats",
+    "giant",
+    "goblin-gang",
+    "minion-horde",
+    "skeleton-army",
+    "sparky",
+    "zap"
+   ]
+  },
+  {
+   "rank": 676,
+   "sides": 96,
+   "engine": [
+    "BabyDragon",
+    "Balloon",
+    "Bowler",
+    "Freeze",
+    "Knight",
+    "Phoenix",
+    "Tornado",
+    "MiniSparkys"
+   ],
+   "slugs": [
+    "baby-dragon",
+    "balloon",
+    "bowler",
+    "freeze",
+    "knight",
+    "phoenix",
+    "tornado",
+    "zappies"
+   ]
+  },
+  {
+   "rank": 688,
+   "sides": 94,
+   "engine": [
+    "GoblinGang",
+    "HogRider",
+    "InfernoTower",
+    "Knight",
+    "Prince",
+    "Princess",
+    "Wizard",
+    "Zap"
+   ],
+   "slugs": [
+    "goblin-gang",
+    "hog-rider",
+    "inferno-tower",
+    "knight",
+    "prince",
+    "princess",
+    "wizard",
+    "zap"
+   ]
+  },
+  {
+   "rank": 695,
+   "sides": 93,
+   "engine": [
+    "Arrows",
+    "Giant",
+    "Hunter",
+    "MiniPekka",
+    "MinionHorde",
+    "SkeletonArmy",
+    "ZapMachine",
+    "Zap"
+   ],
+   "slugs": [
+    "arrows",
+    "giant",
+    "hunter",
+    "mini-pekka",
+    "minion-horde",
+    "skeleton-army",
+    "sparky",
+    "zap"
+   ]
+  },
+  {
+   "rank": 699,
+   "sides": 93,
+   "engine": [
+    "ElectroSpirit",
+    "Fireball",
+    "Fisherman",
+    "Monk",
+    "RoyalGiant",
+    "Log",
+    "Tombstone",
+    "Witch"
+   ],
+   "slugs": [
+    "electro-spirit",
+    "fireball",
+    "fisherman",
+    "monk",
+    "royal-giant",
+    "the-log",
+    "tombstone",
+    "witch"
+   ]
+  },
+  {
+   "rank": 704,
+   "sides": 92,
+   "engine": [
+    "Archer",
+    "Fireball",
+    "IceSpirits",
+    "Knight",
+    "Skeletons",
+    "Tesla",
+    "Log",
+    "Xbow"
+   ],
+   "slugs": [
+    "archers",
+    "fireball",
+    "ice-spirit",
+    "knight",
+    "skeletons",
+    "tesla",
+    "the-log",
+    "x-bow"
+   ]
+  },
+  {
+   "rank": 709,
+   "sides": 91,
+   "engine": [
+    "Arrows",
+    "Balloon",
+    "Bats",
+    "Bomber",
+    "Freeze",
+    "Giant",
+    "Minions",
+    "SkeletonArmy"
+   ],
+   "slugs": [
+    "arrows",
+    "balloon",
+    "bats",
+    "bomber",
+    "freeze",
+    "giant",
+    "minions",
+    "skeleton-army"
+   ]
+  },
+  {
+   "rank": 713,
+   "sides": 91,
+   "engine": [
+    "ElectroSpirit",
+    "IceGolemite",
+    "MiniPekka",
+    "Musketeer",
+    "Rocket",
+    "Skeletons",
+    "Log",
+    "Xbow"
+   ],
+   "slugs": [
+    "electro-spirit",
+    "ice-golem",
+    "mini-pekka",
+    "musketeer",
+    "rocket",
+    "skeletons",
+    "the-log",
+    "x-bow"
+   ]
+  },
+  {
+   "rank": 714,
+   "sides": 91,
+   "engine": [
+    "Berserker",
+    "AngryBarbarians",
+    "Fireball",
+    "GiantSkeleton",
+    "HogRider",
+    "SkeletonDragons",
+    "Skeletons",
+    "Zap"
+   ],
+   "slugs": [
+    "berserker",
+    "elite-barbarians",
+    "fireball",
+    "giant-skeleton",
+    "hog-rider",
+    "skeleton-dragons",
+    "skeletons",
+    "zap"
+   ]
+  },
+  {
+   "rank": 722,
+   "sides": 90,
+   "engine": [
+    "Barbarians",
+    "ElectroWizard",
+    "Fireball",
+    "Firecracker",
+    "Prince",
+    "Princess",
+    "RoyalGiant",
+    "Log"
+   ],
+   "slugs": [
+    "barbarians",
+    "electro-wizard",
+    "fireball",
+    "firecracker",
+    "prince",
+    "princess",
+    "royal-giant",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 729,
+   "sides": 89,
+   "engine": [
+    "Archer",
+    "Berserker",
+    "Bowler",
+    "ElectroSpirit",
+    "Mortar",
+    "Rocket",
+    "Skeletons",
+    "Log"
+   ],
+   "slugs": [
+    "archers",
+    "berserker",
+    "bowler",
+    "electro-spirit",
+    "mortar",
+    "rocket",
+    "skeletons",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 736,
+   "sides": 88,
+   "engine": [
+    "Barbarians",
+    "Bats",
+    "Freeze",
+    "GiantSkeleton",
+    "HogRider",
+    "Musketeer",
+    "Witch",
+    "Zap"
+   ],
+   "slugs": [
+    "barbarians",
+    "bats",
+    "freeze",
+    "giant-skeleton",
+    "hog-rider",
+    "musketeer",
+    "witch",
+    "zap"
+   ]
+  },
+  {
+   "rank": 737,
+   "sides": 88,
+   "engine": [
+    "Earthquake",
+    "ElectroSpirit",
+    "AngryBarbarians",
+    "Firecracker",
+    "HogRider",
+    "IceGolemite",
+    "Skeletons",
+    "Log"
+   ],
+   "slugs": [
+    "earthquake",
+    "electro-spirit",
+    "elite-barbarians",
+    "firecracker",
+    "hog-rider",
+    "ice-golem",
+    "skeletons",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 748,
+   "sides": 86,
+   "engine": [
+    "Arrows",
+    "AngryBarbarians",
+    "Giant",
+    "GoblinGang",
+    "MinionHorde",
+    "SkeletonArmy",
+    "ZapMachine",
+    "Zap"
+   ],
+   "slugs": [
+    "arrows",
+    "elite-barbarians",
+    "giant",
+    "goblin-gang",
+    "minion-horde",
+    "skeleton-army",
+    "sparky",
+    "zap"
+   ]
+  },
+  {
+   "rank": 752,
+   "sides": 86,
+   "engine": [
+    "Bats",
+    "Berserker",
+    "Bomber",
+    "AngryBarbarians",
+    "HogRider",
+    "IceSpirits",
+    "Skeletons",
+    "Zap"
+   ],
+   "slugs": [
+    "bats",
+    "berserker",
+    "bomber",
+    "elite-barbarians",
+    "hog-rider",
+    "ice-spirit",
+    "skeletons",
+    "zap"
+   ]
+  },
+  {
+   "rank": 757,
+   "sides": 85,
+   "engine": [
+    "Earthquake",
+    "ElectroSpirit",
+    "Firecracker",
+    "HogRider",
+    "Skeletons",
+    "Tesla",
+    "Log",
+    "Valkyrie"
+   ],
+   "slugs": [
+    "earthquake",
+    "electro-spirit",
+    "firecracker",
+    "hog-rider",
+    "skeletons",
+    "tesla",
+    "the-log",
+    "valkyrie"
+   ]
+  },
+  {
+   "rank": 782,
+   "sides": 83,
+   "engine": [
+    "ElectroSpirit",
+    "Fireball",
+    "Fisherman",
+    "Hunter",
+    "Monk",
+    "RoyalGiant",
+    "Skeletons",
+    "Log"
+   ],
+   "slugs": [
+    "electro-spirit",
+    "fireball",
+    "fisherman",
+    "hunter",
+    "monk",
+    "royal-giant",
+    "skeletons",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 783,
+   "sides": 83,
+   "engine": [
+    "BabyDragon",
+    "Balloon",
+    "Barbarians",
+    "Fireball",
+    "LavaHound",
+    "MegaMinion",
+    "Tombstone",
+    "Zap"
+   ],
+   "slugs": [
+    "baby-dragon",
+    "balloon",
+    "barbarians",
+    "fireball",
+    "lava-hound",
+    "mega-minion",
+    "tombstone",
+    "zap"
+   ]
+  },
+  {
+   "rank": 784,
+   "sides": 83,
+   "engine": [
+    "Bomber",
+    "Fireball",
+    "Golem",
+    "MegaMinion",
+    "MiniPekka",
+    "DarkWitch",
+    "SkeletonArmy",
+    "Zap"
+   ],
+   "slugs": [
+    "bomber",
+    "fireball",
+    "golem",
+    "mega-minion",
+    "mini-pekka",
+    "night-witch",
+    "skeleton-army",
+    "zap"
+   ]
+  },
+  {
+   "rank": 788,
+   "sides": 82,
+   "engine": [
+    "BlowdartGoblin",
+    "GoblinBarrel",
+    "GoblinGang",
+    "Prince",
+    "Princess",
+    "Rascals",
+    "Log",
+    "Valkyrie"
+   ],
+   "slugs": [
+    "dart-goblin",
+    "goblin-barrel",
+    "goblin-gang",
+    "prince",
+    "princess",
+    "rascals",
+    "the-log",
+    "valkyrie"
+   ]
+  },
+  {
+   "rank": 795,
+   "sides": 81,
+   "engine": [
+    "Assassin",
+    "BattleRam",
+    "ElectroWizard",
+    "Snowball",
+    "GoldenKnight",
+    "SkeletonWarriors",
+    "Pekka",
+    "Wizard"
+   ],
+   "slugs": [
+    "bandit",
+    "battle-ram",
+    "electro-wizard",
+    "giant-snowball",
+    "golden-knight",
+    "guards",
+    "pekka",
+    "wizard"
+   ]
+  },
+  {
+   "rank": 800,
+   "sides": 80,
+   "engine": [
+    "IceSpirits",
+    "IceWizard",
+    "Knight",
+    "Rocket",
+    "Skeletons",
+    "Tesla",
+    "Log",
+    "Xbow"
+   ],
+   "slugs": [
+    "ice-spirit",
+    "ice-wizard",
+    "knight",
+    "rocket",
+    "skeletons",
+    "tesla",
+    "the-log",
+    "x-bow"
+   ]
+  },
+  {
+   "rank": 801,
+   "sides": 80,
+   "engine": [
+    "Fireball",
+    "Firecracker",
+    "GoblinGang",
+    "Knight",
+    "MiniPekka",
+    "Minions",
+    "RoyalHogs",
+    "Log"
+   ],
+   "slugs": [
+    "fireball",
+    "firecracker",
+    "goblin-gang",
+    "knight",
+    "mini-pekka",
+    "minions",
+    "royal-hogs",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 803,
+   "sides": 79,
+   "engine": [
+    "Arrows",
+    "Balloon",
+    "Freeze",
+    "Giant",
+    "Minions",
+    "SkeletonArmy",
+    "SkeletonDragons",
+    "Skeletons"
+   ],
+   "slugs": [
+    "arrows",
+    "balloon",
+    "freeze",
+    "giant",
+    "minions",
+    "skeleton-army",
+    "skeleton-dragons",
+    "skeletons"
+   ]
+  },
+  {
+   "rank": 806,
+   "sides": 79,
+   "engine": [
+    "Arrows",
+    "Fireball",
+    "SkeletonWarriors",
+    "HogRider",
+    "MightyMiner",
+    "Minions",
+    "RoyalRecruits",
+    "Wallbreakers"
+   ],
+   "slugs": [
+    "arrows",
+    "fireball",
+    "guards",
+    "hog-rider",
+    "mighty-miner",
+    "minions",
+    "royal-recruits",
+    "wall-breakers"
+   ]
+  },
+  {
+   "rank": 808,
+   "sides": 79,
+   "engine": [
+    "ElectroSpirit",
+    "GoblinBarrel",
+    "Princess",
+    "Rocket",
+    "Skeletons",
+    "Tesla",
+    "Log",
+    "Valkyrie"
+   ],
+   "slugs": [
+    "electro-spirit",
+    "goblin-barrel",
+    "princess",
+    "rocket",
+    "skeletons",
+    "tesla",
+    "the-log",
+    "valkyrie"
+   ]
+  },
+  {
+   "rank": 816,
+   "sides": 77,
+   "engine": [
+    "Arrows",
+    "Balloon",
+    "Bats",
+    "Bomber",
+    "Freeze",
+    "Giant",
+    "Minions",
+    "Skeletons"
+   ],
+   "slugs": [
+    "arrows",
+    "balloon",
+    "bats",
+    "bomber",
+    "freeze",
+    "giant",
+    "minions",
+    "skeletons"
+   ]
+  },
+  {
+   "rank": 835,
+   "sides": 74,
+   "engine": [
+    "Archer",
+    "IceSpirits",
+    "Knight",
+    "Mortar",
+    "Rocket",
+    "Skeletons",
+    "Log",
+    "Tornado"
+   ],
+   "slugs": [
+    "archers",
+    "ice-spirit",
+    "knight",
+    "mortar",
+    "rocket",
+    "skeletons",
+    "the-log",
+    "tornado"
+   ]
+  },
+  {
+   "rank": 843,
+   "sides": 73,
+   "engine": [
+    "Assassin",
+    "DarkPrince",
+    "ElectroWizard",
+    "Firecracker",
+    "HogRider",
+    "MegaKnight",
+    "Prince",
+    "Zap"
+   ],
+   "slugs": [
+    "bandit",
+    "dark-prince",
+    "electro-wizard",
+    "firecracker",
+    "hog-rider",
+    "mega-knight",
+    "prince",
+    "zap"
+   ]
+  },
+  {
+   "rank": 848,
+   "sides": 73,
+   "engine": [
+    "BabyDragon",
+    "Balloon",
+    "Bowler",
+    "Freeze",
+    "GiantSkeleton",
+    "InfernoDragon",
+    "Tombstone",
+    "Tornado"
+   ],
+   "slugs": [
+    "baby-dragon",
+    "balloon",
+    "bowler",
+    "freeze",
+    "giant-skeleton",
+    "inferno-dragon",
+    "tombstone",
+    "tornado"
+   ]
+  },
+  {
+   "rank": 861,
+   "sides": 71,
+   "engine": [
+    "ElectroSpirit",
+    "Fireball",
+    "Fisherman",
+    "SkeletonWarriors",
+    "Hunter",
+    "Monk",
+    "RoyalGiant",
+    "Log"
+   ],
+   "slugs": [
+    "electro-spirit",
+    "fireball",
+    "fisherman",
+    "guards",
+    "hunter",
+    "monk",
+    "royal-giant",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 863,
+   "sides": 71,
+   "engine": [
+    "Bats",
+    "Freeze",
+    "HogRider",
+    "IceGolemite",
+    "MiniPekka",
+    "Princess",
+    "Skeletons",
+    "Log"
+   ],
+   "slugs": [
+    "bats",
+    "freeze",
+    "hog-rider",
+    "ice-golem",
+    "mini-pekka",
+    "princess",
+    "skeletons",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 864,
+   "sides": 71,
+   "engine": [
+    "DarkPrince",
+    "BlowdartGoblin",
+    "GoblinBarrel",
+    "InfernoTower",
+    "Rascals",
+    "SkeletonArmy",
+    "Log",
+    "Wallbreakers"
+   ],
+   "slugs": [
+    "dark-prince",
+    "dart-goblin",
+    "goblin-barrel",
+    "inferno-tower",
+    "rascals",
+    "skeleton-army",
+    "the-log",
+    "wall-breakers"
+   ]
+  },
+  {
+   "rank": 871,
+   "sides": 70,
+   "engine": [
+    "Berserker",
+    "AngryBarbarians",
+    "IceWizard",
+    "Rocket",
+    "Skeletons",
+    "Tesla",
+    "Log",
+    "Xbow"
+   ],
+   "slugs": [
+    "berserker",
+    "elite-barbarians",
+    "ice-wizard",
+    "rocket",
+    "skeletons",
+    "tesla",
+    "the-log",
+    "x-bow"
+   ]
+  },
+  {
+   "rank": 872,
+   "sides": 70,
+   "engine": [
+    "BlowdartGoblin",
+    "ElectroSpirit",
+    "GoblinBarrel",
+    "Goblins",
+    "InfernoTower",
+    "MightyMiner",
+    "Log",
+    "Wallbreakers"
+   ],
+   "slugs": [
+    "dart-goblin",
+    "electro-spirit",
+    "goblin-barrel",
+    "goblins",
+    "inferno-tower",
+    "mighty-miner",
+    "the-log",
+    "wall-breakers"
+   ]
+  },
+  {
+   "rank": 878,
+   "sides": 69,
+   "engine": [
+    "ElectroSpirit",
+    "FireSpirits",
+    "Knight",
+    "Princess",
+    "Rocket",
+    "Skeletons",
+    "Tesla",
+    "Log"
+   ],
+   "slugs": [
+    "electro-spirit",
+    "fire-spirit",
+    "knight",
+    "princess",
+    "rocket",
+    "skeletons",
+    "tesla",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 881,
+   "sides": 69,
+   "engine": [
+    "Berserker",
+    "GoblinBarrel",
+    "IceSpirits",
+    "InfernoTower",
+    "Princess",
+    "Rocket",
+    "SkeletonArmy",
+    "Log"
+   ],
+   "slugs": [
+    "berserker",
+    "goblin-barrel",
+    "ice-spirit",
+    "inferno-tower",
+    "princess",
+    "rocket",
+    "skeleton-army",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 890,
+   "sides": 68,
+   "engine": [
+    "Assassin",
+    "BattleRam",
+    "DarkPrince",
+    "ElectroWizard",
+    "Fireball",
+    "Pekka",
+    "SkeletonDragons",
+    "Zap"
+   ],
+   "slugs": [
+    "bandit",
+    "battle-ram",
+    "dark-prince",
+    "electro-wizard",
+    "fireball",
+    "pekka",
+    "skeleton-dragons",
+    "zap"
+   ]
+  },
+  {
+   "rank": 896,
+   "sides": 68,
+   "engine": [
+    "Berserker",
+    "Cannon",
+    "BlowdartGoblin",
+    "GoblinBarrel",
+    "Princess",
+    "SkeletonArmy",
+    "Log",
+    "Valkyrie"
+   ],
+   "slugs": [
+    "berserker",
+    "cannon",
+    "dart-goblin",
+    "goblin-barrel",
+    "princess",
+    "skeleton-army",
+    "the-log",
+    "valkyrie"
+   ]
+  },
+  {
+   "rank": 904,
+   "sides": 67,
+   "engine": [
+    "Cannon",
+    "Fireball",
+    "HogRider",
+    "IceSpirits",
+    "Musketeer",
+    "Skeletons",
+    "Log",
+    "Valkyrie"
+   ],
+   "slugs": [
+    "cannon",
+    "fireball",
+    "hog-rider",
+    "ice-spirit",
+    "musketeer",
+    "skeletons",
+    "the-log",
+    "valkyrie"
+   ]
+  },
+  {
+   "rank": 914,
+   "sides": 66,
+   "engine": [
+    "Cannon",
+    "Earthquake",
+    "HogRider",
+    "Skeletons",
+    "Log",
+    "Tornado",
+    "Valkyrie",
+    "Wizard"
+   ],
+   "slugs": [
+    "cannon",
+    "earthquake",
+    "hog-rider",
+    "skeletons",
+    "the-log",
+    "tornado",
+    "valkyrie",
+    "wizard"
+   ]
+  },
+  {
+   "rank": 922,
+   "sides": 65,
+   "engine": [
+    "Arrows",
+    "Balloon",
+    "Barbarians",
+    "SkeletonWarriors",
+    "IceWizard",
+    "InfernoDragon",
+    "RoyalHogs",
+    "Zap"
+   ],
+   "slugs": [
+    "arrows",
+    "balloon",
+    "barbarians",
+    "guards",
+    "ice-wizard",
+    "inferno-dragon",
+    "royal-hogs",
+    "zap"
+   ]
+  },
+  {
+   "rank": 933,
+   "sides": 63,
+   "engine": [
+    "Arrows",
+    "Balloon",
+    "Barbarians",
+    "Freeze",
+    "Goblins",
+    "InfernoDragon",
+    "LavaHound",
+    "SkeletonDragons"
+   ],
+   "slugs": [
+    "arrows",
+    "balloon",
+    "barbarians",
+    "freeze",
+    "goblins",
+    "inferno-dragon",
+    "lava-hound",
+    "skeleton-dragons"
+   ]
+  },
+  {
+   "rank": 938,
+   "sides": 63,
+   "engine": [
+    "Cannon",
+    "ElectroSpirit",
+    "GoblinBarrel",
+    "Goblins",
+    "MightyMiner",
+    "Princess",
+    "Rocket",
+    "Log"
+   ],
+   "slugs": [
+    "cannon",
+    "electro-spirit",
+    "goblin-barrel",
+    "goblins",
+    "mighty-miner",
+    "princess",
+    "rocket",
+    "the-log"
+   ]
+  },
+  {
+   "rank": 943,
+   "sides": 63,
+   "engine": [
+    "Bomber",
+    "AngryBarbarians",
+    "Fireball",
+    "Golem",
+    "MiniPekka",
+    "SkeletonDragons",
+    "Skeletons",
+    "Zap"
+   ],
+   "slugs": [
+    "bomber",
+    "elite-barbarians",
+    "fireball",
+    "golem",
+    "mini-pekka",
+    "skeleton-dragons",
+    "skeletons",
+    "zap"
+   ]
+  },
+  {
+   "rank": 951,
+   "sides": 62,
+   "engine": [
+    "Fireball",
+    "Giant",
+    "MiniPekka",
+    "MinionHorde",
+    "Minions",
+    "SkeletonArmy",
+    "ZapMachine",
+    "Zap"
+   ],
+   "slugs": [
+    "fireball",
+    "giant",
+    "mini-pekka",
+    "minion-horde",
+    "minions",
+    "skeleton-army",
+    "sparky",
+    "zap"
+   ]
+  },
+  {
+   "rank": 962,
+   "sides": 61,
+   "engine": [
+    "Balloon",
+    "Barbarians",
+    "Fireball",
+    "InfernoDragon",
+    "LavaHound",
+    "SkeletonDragons",
+    "Tombstone",
+    "Zap"
+   ],
+   "slugs": [
+    "balloon",
+    "barbarians",
+    "fireball",
+    "inferno-dragon",
+    "lava-hound",
+    "skeleton-dragons",
+    "tombstone",
+    "zap"
+   ]
+  },
+  {
+   "rank": 968,
+   "sides": 61,
+   "engine": [
+    "AxeMan",
+    "Freeze",
+    "SkeletonWarriors",
+    "HogRider",
+    "MegaKnight",
+    "MegaMinion",
+    "Minions",
+    "Valkyrie"
+   ],
+   "slugs": [
+    "executioner",
+    "freeze",
+    "guards",
+    "hog-rider",
+    "mega-knight",
+    "mega-minion",
+    "minions",
+    "valkyrie"
+   ]
+  },
+  {
+   "rank": 969,
+   "sides": 60,
+   "engine": [
+    "Berserker",
+    "Bomber",
+    "ElectroSpirit",
+    "Rocket",
+    "Skeletons",
+    "Tesla",
+    "Log",
+    "Xbow"
+   ],
+   "slugs": [
+    "berserker",
+    "bomber",
+    "electro-spirit",
+    "rocket",
+    "skeletons",
+    "tesla",
+    "the-log",
+    "x-bow"
+   ]
+  },
+  {
+   "rank": 977,
+   "sides": 60,
+   "engine": [
+    "Fireball",
+    "Fisherman",
+    "Monk",
+    "RoyalGiant",
+    "Skeletons",
+    "Log",
+    "Wizard",
+    "MiniSparkys"
+   ],
+   "slugs": [
+    "fireball",
+    "fisherman",
+    "monk",
+    "royal-giant",
+    "skeletons",
+    "the-log",
+    "wizard",
+    "zappies"
+   ]
+  },
+  {
+   "rank": 985,
+   "sides": 59,
+   "engine": [
+    "Fireball",
+    "GiantSkeleton",
+    "HogRider",
+    "Knight",
+    "SkeletonArmy",
+    "Log",
+    "Tornado",
+    "Wizard"
+   ],
+   "slugs": [
+    "fireball",
+    "giant-skeleton",
+    "hog-rider",
+    "knight",
+    "skeleton-army",
+    "the-log",
+    "tornado",
+    "wizard"
+   ]
+  },
+  {
+   "rank": 996,
+   "sides": 59,
+   "engine": [
+    "Bomber",
+    "ElectroSpirit",
+    "IceWizard",
+    "Mortar",
+    "Rocket",
+    "Skeletons",
+    "Tornado",
+    "Valkyrie"
+   ],
+   "slugs": [
+    "bomber",
+    "electro-spirit",
+    "ice-wizard",
+    "mortar",
+    "rocket",
+    "skeletons",
+    "tornado",
+    "valkyrie"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,104 @@
+{
+ "top_n": 1000,
+ "census_deck_sides": 504476,
+ "census_distinct_base_decks": 47800,
+ "loadable_in_top_n": 183,
+ "loadable_sides_share_of_census": 0.1705,
+ "top_n_sides_share_of_census": 0.7369,
+ "top_blockers": [
+  [
+   "BarbLog",
+   235
+  ],
+  [
+   "Miner",
+   56
+  ],
+  [
+   "Lightning",
+   47
+  ],
+  [
+   "Elixir Collector",
+   47
+  ],
+  [
+   "FirespiritHut",
+   35
+  ],
+  [
+   "WitchMother",
+   34
+  ],
+  [
+   "MovingCannon",
+   30
+  ],
+  [
+   "Graveyard",
+   29
+  ],
+  [
+   "Heal",
+   28
+  ],
+  [
+   "SkeletonBalloon",
+   28
+  ],
+  [
+   "ElixirGolem",
+   27
+  ],
+  [
+   "Ghost",
+   26
+  ],
+  [
+   "GoblinDrill",
+   25
+  ],
+  [
+   "RageBarbarian",
+   23
+  ],
+  [
+   "GoblinDemolisher",
+   19
+  ]
+ ],
+ "resets_per_s": 5010.0,
+ "wall_s": 227.0,
+ "extra": [
+  {
+   "name": "icebow",
+   "engine": [
+    "Tornado",
+    "Tesla",
+    "IceWizard",
+    "Xbow",
+    "Rocket",
+    "Knight",
+    "Log",
+    "Skeletons"
+   ],
+   "loadable": true,
+   "blocker": null
+  },
+  {
+   "name": "starter",
+   "engine": [
+    "Knight",
+    "GoblinHut",
+    "Goblins",
+    "Arrows",
+    "Fireball",
+    "Giant",
+    "Musketeer",
+    "MiniPekka"
+   ],
+   "loadable": false,
+   "blocker": "GoblinHut"
+  }
+ ]
+}
