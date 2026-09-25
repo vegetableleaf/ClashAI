@@ -1,0 +1,35 @@
+entities 419047
+kind by fresh(<40 ticks since same-side same-card play): [((False, 12), 3478), ((False, 13), 48144), ((False, 14), 8734), ((False, 15), 295917), ((True, 12), 3713), ((True, 13), 3456), ((True, 14), 22299), ((True, 15), 33306)]
+kind by ticks since the nearest same-side same-card play (bucket 10; 100 = 100-399; none = no play in 400):
+   0 {15: 2859, 14: 8557, 13: 667, 12: 1405}
+   10 {14: 12348, 12: 1532, 13: 82, 15: 513}
+   20 {15: 12008, 13: 1154, 14: 900, 12: 309}
+   30 {15: 17926, 14: 494, 13: 1553, 12: 467}
+   40 {15: 22674, 12: 908, 14: 1040, 13: 1769}
+   50 {14: 711, 15: 20393, 13: 1759, 12: 1163}
+   60 {15: 16389, 13: 1545, 12: 809, 14: 1083}
+   70 {13: 1900, 15: 15138, 14: 601, 12: 55}
+   80 {15: 15039, 13: 1957, 14: 436, 12: 54}
+   90 {15: 13902, 13: 1959, 12: 48, 14: 388}
+   100 {15: 175592, 13: 32843, 14: 4222, 12: 420}
+   none {15: 16790, 13: 4412, 14: 253, 12: 21}
+spawner cards (fresh, kind) counts:
+   barbarian_barrel {(False, 15): 2696, (False, 14): 790, (True, 14): 335, (True, 15): 1}
+   elixir_golem {(False, 15): 1951, (True, 14): 37, (True, 15): 104, (False, 14): 24}
+   furnace {(True, 14): 62, (False, 15): 3188, (False, 14): 201, (True, 15): 118}
+   goblin_barrel {(False, 14): 1266, (False, 15): 368, (True, 14): 6}
+   goblin_drill {(True, 15): 121, (False, 13): 470, (False, 15): 779, (False, 12): 138, (False, 14): 129, (True, 13): 2, (True, 12): 6}
+   goblin_giant {(False, 15): 444, (True, 14): 21, (False, 14): 23, (True, 15): 16}
+   goblin_hut {(False, 13): 739, (False, 15): 1058, (True, 13): 69, (False, 14): 68, (True, 14): 24, (True, 15): 42, (True, 12): 38, (False, 12): 1}
+   goblinstein {(False, 15): 5027, (True, 15): 295, (False, 14): 62, (True, 14): 178, (True, 12): 5}
+   golem {(False, 14): 52, (False, 15): 1427, (True, 14): 39, (True, 15): 12}
+   graveyard {(False, 15): 1971, (False, 14): 1089}
+   lava_hound {(False, 15): 2356, (True, 15): 52, (True, 14): 23, (False, 14): 36}
+   mother_witch {(True, 14): 72, (False, 15): 1422, (True, 15): 81, (False, 14): 8}
+   night_witch {(False, 15): 3541, (True, 15): 51, (True, 14): 31, (False, 14): 8}
+   phoenix {(True, 14): 9, (False, 15): 247, (True, 15): 15, (False, 14): 4}
+   royal_delivery {(False, 15): 143, (False, 14): 6}
+   skeleton_barrel {(False, 15): 2921, (True, 15): 125, (False, 14): 1004, (True, 14): 118}
+   skeleton_king {(True, 14): 38, (False, 15): 1180, (True, 15): 70, (False, 14): 7}
+   tombstone {(False, 13): 2678, (False, 15): 3817, (True, 12): 193, (True, 13): 251, (True, 15): 255, (False, 14): 1, (False, 12): 4}
+   witch {(False, 15): 6565, (True, 14): 55, (True, 15): 151, (False, 14): 8}

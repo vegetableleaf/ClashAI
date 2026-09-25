@@ -1,0 +1,13 @@
+same-side same-card re-play gaps: 207639
+  quantile 0: 112 ticks
+  quantile 0.0001: 130 ticks
+  quantile 0.001: 158 ticks
+  quantile 0.01: 209 ticks
+  quantile 0.05: 275 ticks
+  quantile 0.5: 639 ticks
+  re-plays within 20 ticks: 0 (0.000%)
+  re-plays within 40 ticks: 0 (0.000%)
+  re-plays within 60 ticks: 0 (0.000%)
+  re-plays within 80 ticks: 0 (0.000%)
+  re-plays within 100 ticks: 0 (0.000%)
+  re-plays within 120 ticks: 5 (0.002%)

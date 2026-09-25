@@ -76,6 +76,17 @@ N_CELLS = GRID_X * GRID_Y                     # 2,304 half-tile cells (model_v3.
 SCRIPT_MARGIN_TICKS = 200                     # design 4.2.1: "outlived the script" = end > last ghost tick + 200
 SLOT_OF_PORT = {38031: 0, 38032: 1, 37031: 0, 37032: 1}
 
+# cfg["opp_elixir"] (L68 T8b; unset/None = today's obs, untouched): the model's BoardState.opp_elixir is replaced by
+# pipeline.opp_elixir_count.OppElixirCounter fed ONLY the ghost's DELIVERED plays at ticks <= now.
+#   counter      the memory-reader equivalent: bodiless spells dropped (the reader decodes no effects)
+#   counter_all  every delivered play (perfect-detection upper bound)
+OPP_ELIXIR_MODES = ("counter", "counter_all")
+# Spells whose bodies carry the spell's card id, so the reader sees them. COPY of
+# scratchpad/gauntlet/L68/opp_elixir/eval_accounting.py BODY_SPELLS / keep("reader", .), pinned equal by
+# pipeline/tests/test_e1_opp_counter.py.
+BODY_SPELLS = frozenset({"graveyard", "goblin_barrel", "barbarian_barrel", "royal_delivery", "clone"})
+OPP_TRACE_EVERY = 20                          # result()["opp_counter"]["trace"]: one (tick, est, truth) per N decisions
+
 
 # ------------------------------------------------------------------------------------------------------
 # pure helpers (tested offline)
@@ -118,6 +129,32 @@ def parse_noise_off(spec: str) -> Noise:
 def noise_off_names(noise: Noise) -> list[str]:
     """The switched-OFF component names, sorted -- what run.json / the header line record for --noise-off."""
     return sorted(n for n in NOISE_NAMES if not getattr(noise, n))
+
+
+def opp_play_kept(mode: str, key: str) -> bool:
+    """Is a delivered opponent play (base key, e.g. 'the_log') charged by the ``mode`` counter?"""
+    if mode == "counter_all":
+        return True
+    from pipeline.opp_elixir_count import card_db
+    return card_db().kind(key) != "spell" or key in BODY_SPELLS
+
+
+def tap_ghost_deliveries(env) -> None:
+    """Record every ghost play ``env`` DELIVERS as ``env.opp_delivered`` [(tick it went in, card slug)], in order.
+    Wraps the env INSTANCE's ``_fire_ghosts_at`` once (RoyalePoolEnv / PoolV1Mixin both deliver only there, with
+    ``tick`` = the engine tick of the act) and diffs ``ghost_cards_delivered`` around each call -- the recorded
+    ``ghost_events`` carry the SCHEDULED tick, which is earlier than delivery for a retried refusal. Call before
+    every ``env.reset`` (clears the list; deliveries during the warm-up are kept)."""
+    if not hasattr(env, "opp_delivered"):
+        fire = env._fire_ghosts_at
+
+        def tapped(tick):
+            before = Counter(env.ghost_cards_delivered)
+            fire(tick)
+            for card, n in (Counter(env.ghost_cards_delivered) - before).items():
+                env.opp_delivered.extend([(int(tick), str(card))] * n)
+        env._fire_ghosts_at = tapped
+    env.opp_delivered = []
 
 
 def parse_seeds(spec: str) -> list[int]:
@@ -449,6 +486,16 @@ class Match:
         from pipeline import engine_play as ep
         self.ep, self.env, self.deck, self.entry, self.k, self.cfg = ep, env, deck, entry, int(k), cfg
         self.t0 = time.perf_counter()
+        self.opp_mode = cfg.get("opp_elixir")
+        if self.opp_mode:
+            if self.opp_mode not in OPP_ELIXIR_MODES:
+                raise ValueError(f"cfg['opp_elixir'] {self.opp_mode!r} not in {OPP_ELIXIR_MODES}")
+            from pipeline.opp_elixir_count import OppElixirCounter
+            tap_ghost_deliveries(env)
+            self.opp_counter = OppElixirCounter()
+            self.opp_i = self.opp_fed = self.opp_dropped = 0
+            self.opp_err: list[float] = []
+            self.opp_trace: list[list] = []
         self.state = env.reset(entry)
         self.side, self.mirror = env.side, env._mirror
         self.engine_deck, self.deck_index_of_slot, self.costs = _slot_maps(env, deck, entry)
@@ -480,12 +527,35 @@ class Match:
         bs = from_engine(self.ep.compact_raw(self.state), self.side, self.deck, engine_deck=self.engine_deck,
                          unmapped=self.unmapped)
         view = live_view(bs, self.rng_obs, self.deck, cfg["noise"]) if cfg["obs"] == "live" else bs
+        if self.opp_mode:
+            est = self.opp_estimate(tick)
+            if bs.opp_elixir is not None:                    # truth read for the result's error log ONLY
+                self.opp_err.append(est - bs.opp_elixir)
+                if self.n_dec % OPP_TRACE_EVERY == 0:
+                    self.opp_trace.append([tick, round(est, 3), round(bs.opp_elixir, 3)])
+            view = dc_replace(view, opp_elixir=est)
         self.n_deg += int(view.source == "degraded")
         tok, mask, sc = to_tokens(view, MAX_U)
         past = _past(self.done_plays, tick)
         self._cur = (tick, bs, view)
         self._obs = (tok, mask, sc, past)                    # kept for cfg["record"] (see apply())
         return tok, mask, sc, past
+
+    def opp_estimate(self, tick: int) -> float:
+        """cfg["opp_elixir"]: feed the counter the ghost plays delivered at ticks <= ``tick`` not yet fed (kept per
+        ``opp_play_kept``), then its estimate at ``tick``. Reads only ``env.opp_delivered``, never a state."""
+        from pipeline.opp_elixir_count import card_cost
+        dl = self.env.opp_delivered
+        while self.opp_i < len(dl) and dl[self.opp_i][0] <= tick:
+            t, card = dl[self.opp_i]
+            self.opp_i += 1
+            key = card.replace("-", "_")
+            if opp_play_kept(self.opp_mode, key):
+                self.opp_counter.play(t, key, card_cost(key))
+                self.opp_fed += 1
+            else:
+                self.opp_dropped += 1
+        return self.opp_counter.at(tick)
 
     def gen_row(self, policy: GenPolicy) -> dict:
         """The current prepared state as a generalist row (``GenPolicy.row``); call after ``prepare``."""
@@ -603,7 +673,19 @@ class Match:
             "real_outcome": entry.get("real_outcome"), "s1_split": entry.get("s1_split"), "group": entry.get("group"),
             "unmapped": sorted(self.unmapped), "wall_s": round(time.perf_counter() - self.t0, 1),
             **({"traj": self._traj_arrays()} if cfg.get("record") else {}),
+            **({"opp_counter": self._opp_summary()} if self.opp_mode else {}),
         }
+
+    def _opp_summary(self) -> dict:
+        """cfg["opp_elixir"]: counter bookkeeping + estimate-minus-TRUE-elixir over this match's decisions (a
+        diagnostic; the truth never reaches the estimate) and a (tick, est, truth) sample every OPP_TRACE_EVERY."""
+        e = np.asarray(self.opp_err, dtype=np.float64)
+        c = self.opp_counter
+        return {"mode": self.opp_mode, "fed": self.opp_fed, "dropped": self.opp_dropped,
+                "undelivered_to_counter": len(self.env.opp_delivered) - self.opp_i,
+                "rebases": c.rebases, "rebase_total": round(c.rebase_total, 3),
+                "mae": round(float(np.abs(e).mean()), 4) if len(e) else None,
+                "bias": round(float(e.mean()), 4) if len(e) else None, "n": int(len(e)), "trace": self.opp_trace}
 
     def _traj_arrays(self) -> dict:
         """cfg["record"]: this match's ``traj`` rows stacked into numpy arrays (rl_plan.md 3.3's per-decision

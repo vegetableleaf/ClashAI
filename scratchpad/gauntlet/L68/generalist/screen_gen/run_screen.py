@@ -23,6 +23,7 @@ import argparse
 import json
 import sys
 import time
+from dataclasses import replace
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[5]
@@ -70,12 +71,18 @@ def play(a) -> int:
     heldout = select_split(load_pool_v1(pool), "heldout")
     jobs = [(i, e, int(k)) for i, e in enumerate(heldout) for k in rc["screen_seeds"] if (e["tag"], int(k)) not in done]
     model, minfo = E.load_policy(Path(a.ckpt), a.device)
+    noise = E.parse_noise_off(",".join(E.NOISE_NAMES) if a.noise_off == "all" else a.noise_off)
+    if a.opp_elixir:                             # the opp-elixir SOURCE; every other component stays --noise-off's
+        noise = replace(noise, opp_elixir=a.opp_elixir != "truth")
     cfg = {"policy": "live", "tau": float(rc["tau"]), "afford_mask": bool(rc["afford_mask"]),
            "stall_elixir": rc["stall_elixir"], "stall_seconds": float(rc["stall_seconds"]), "obs": rc["obs"],
-           "noise": E.parse_noise_off(",".join(E.NOISE_NAMES) if a.noise_off == "all" else a.noise_off), "p_random": 0.0, "random_hand_only": False, "grid": minfo["grid"], "device": a.device,
+           "noise": noise, "p_random": 0.0, "random_hand_only": False, "grid": minfo["grid"], "device": a.device,
            "decide_every": int(rc["decide_every"]), "slot": 0, "port": 0, "T": float(rc["T"]), "record": False}
+    if a.opp_elixir in E.OPP_ELIXIR_MODES:
+        cfg["opp_elixir"] = a.opp_elixir
     meta = {"ckpt": str(a.ckpt), "ckpt_sha256": sha256_file(Path(a.ckpt)), "model": minfo,
-            "cfg": {k: v for k, v in cfg.items() if k != "noise"}, "noise_off": E.noise_off_names(cfg["noise"]), "screen_seeds": rc["screen_seeds"],
+            "cfg": {k: v for k, v in cfg.items() if k != "noise"}, "noise_off": E.noise_off_names(cfg["noise"]),
+            "opp_elixir_arg": a.opp_elixir, "screen_seeds": rc["screen_seeds"],
             "jobs": len(jobs), "resumed_done": len(done), "started": time.strftime("%Y-%m-%d %H:%M:%S")}
     out.parent.mkdir(parents=True, exist_ok=True)
     out.with_suffix(".run.json").write_text(json.dumps(meta, indent=1, default=str), encoding="utf-8")
@@ -120,6 +127,10 @@ def main(argv=None) -> int:
     ap.add_argument("--batch", type=int, default=16, help="matches in flight sharing one forward (actors: in_flight 16)")
     ap.add_argument("--max-matches", type=int, default=0, help="smoke: stop after N matches")
     ap.add_argument("--noise-off", default="", help="e1_eval --noise-off list, or 'all' (clean obs, as the memory reader gives); default '' = the RL screen's all-on")
+    ap.add_argument("--opp-elixir", choices=("truth", "hidden", "counter", "counter_all"), default=None,
+                    help="opponent-elixir SOURCE, overriding only the opp_elixir component of --noise-off: truth = exact, "
+                         "hidden = None, counter = OppElixirCounter on the ghost's DELIVERED plays minus bodiless spells "
+                         "(memory-reader equivalent), counter_all = every delivered play; default: what --noise-off says")
     ap.add_argument("--resume", action="store_true", help="append to --out, skipping (tag, k) already in it")
     a = ap.parse_args(argv)
     if a.pair:

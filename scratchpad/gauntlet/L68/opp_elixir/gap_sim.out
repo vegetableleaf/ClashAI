@@ -1,0 +1,10 @@
+replays per deck 500 (both sides graded as the opponent); count-conserving tracker True
+rule gap  truth  missed (of which never seen)  miss%  missed_elixir  extra  extra_elixir  top extra cards
+new  0s   59951    959 (  925)   1.60          2122    105          357  [(35, 'skeletons'), (25, 'spirit_empress_air'), (22, 'witch'), (13, 'goblins'), (3, 'clone')]
+old  0s   59951   1060 (  925)   1.77          2389    923         2425  [(621, 'tombstone'), (192, 'skeletons'), (62, 'skeleton_army'), (28, 'goblin_hut'), (10, 'clone')]
+new  1s   59951   1284 ( 1250)   2.14          2484    122          396  [(36, 'skeletons'), (25, 'spirit_empress_air'), (22, 'witch'), (17, 'goblins'), (11, 'suspicious_bush')]
+old  1s   59951   1696 ( 1250)   2.83          3770    983         2791  [(577, 'tombstone'), (174, 'skeletons'), (63, 'skeleton_army'), (58, 'furnace'), (56, 'goblin_hut')]
+new  2s   59951   1853 ( 1818)   3.09          3245    136          439  [(33, 'skeletons'), (25, 'spirit_empress_air'), (21, 'witch'), (19, 'suspicious_bush'), (18, 'goblins')]
+old  2s   59951   7384 ( 1818)  12.32         21738    826         2382  [(478, 'tombstone'), (138, 'skeletons'), (72, 'goblin_hut'), (53, 'furnace'), (45, 'skeleton_army')]
+new  3s   59951   2740 ( 2700)   4.57          4575    168          550  [(29, 'skeletons'), (26, 'suspicious_bush'), (26, 'goblins'), (25, 'spirit_empress_air'), (24, 'witch')]
+old  3s   59951  13135 ( 2700)  21.91         39892    641         1840  [(373, 'tombstone'), (110, 'skeletons'), (44, 'goblin_hut'), (42, 'furnace'), (35, 'skeleton_army')]

@@ -1,0 +1,49 @@
+{
+ "ckpt": "icebow\\data\\pipeline\\gen_v1_s0\\gen_s0.pt",
+ "ckpt_sha256": "05db85a0a141126223a892787aacc13f291de24a2adeab5c5875531094ce6c53",
+ "model": {
+  "gen": true,
+  "epoch": 4,
+  "n_params": 1337678,
+  "deck": "generalist",
+  "grid": "lattice"
+ },
+ "cfg": {
+  "policy": "live",
+  "tau": 0.27,
+  "afford_mask": true,
+  "stall_elixir": 9,
+  "stall_seconds": 12.0,
+  "obs": "live",
+  "p_random": 0.0,
+  "random_hand_only": false,
+  "grid": "lattice",
+  "device": "cuda",
+  "decide_every": 10,
+  "slot": 0,
+  "port": 0,
+  "T": 0.5,
+  "record": false,
+  "opp_elixir": "counter"
+ },
+ "noise_off": [
+  "conf",
+  "deploying",
+  "false_pos",
+  "king_hp",
+  "my_elixir",
+  "position",
+  "recall",
+  "team",
+  "unit_hp"
+ ],
+ "opp_elixir_arg": "counter",
+ "screen_seeds": [
+  0,
+  1,
+  2
+ ],
+ "jobs": 879,
+ "resumed_done": 0,
+ "started": "2026-09-25 10:13:15"
+}

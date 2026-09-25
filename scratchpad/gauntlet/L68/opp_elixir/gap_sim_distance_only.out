@@ -1,0 +1,10 @@
+replays per deck 500 (both sides graded as the opponent); count-conserving tracker False
+rule gap  truth  missed (of which never seen)  miss%  missed_elixir  extra  extra_elixir  top extra cards
+new  0s   59951    746 (  680)   1.24          1318   1515         4731  [(352, 'skeletons'), (128, 'hog_rider'), (127, 'skeleton_army'), (69, 'royal_hogs'), (60, 'bandit')]
+old  0s   59951    808 (  680)   1.35          1460   5671        17087  [(1171, 'skeleton_army'), (845, 'skeletons'), (667, 'tombstone'), (488, 'goblin_drill'), (472, 'royal_hogs')]
+new  1s   59951   1068 ( 1005)   1.78          1674   1520         4763  [(342, 'skeletons'), (144, 'hog_rider'), (119, 'skeleton_army'), (69, 'royal_hogs'), (60, 'bandit')]
+old  1s   59951   1433 ( 1005)   2.39          2817   5386        16435  [(1030, 'skeleton_army'), (799, 'skeletons'), (622, 'tombstone'), (446, 'royal_hogs'), (404, 'goblin_drill')]
+new  2s   59951   1633 ( 1574)   2.72          2413   1521         4787  [(333, 'skeletons'), (152, 'hog_rider'), (120, 'skeleton_army'), (72, 'royal_hogs'), (55, 'minion_horde')]
+old  2s   59951   6896 ( 1574)  11.50         20061   4539        13889  [(873, 'skeleton_army'), (667, 'skeletons'), (512, 'tombstone'), (364, 'royal_hogs'), (340, 'goblin_drill')]
+new  3s   59951   2521 ( 2456)   4.21          3740   1473         4693  [(298, 'skeletons'), (158, 'hog_rider'), (122, 'skeleton_army'), (75, 'royal_hogs'), (52, 'bats')]
+old  3s   59951  12490 ( 2456)  20.83         37704   3646        11095  [(722, 'skeleton_army'), (529, 'skeletons'), (408, 'tombstone'), (292, 'royal_hogs'), (249, 'goblin_drill')]
