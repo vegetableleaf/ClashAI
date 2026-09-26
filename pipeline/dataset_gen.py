@@ -19,7 +19,7 @@ wait rows), so ``--grid lattice`` = §5cs.70. The i=1 rotation (§5cs.67) is app
 driven corpora are already in one frame. Replays without ``frames`` give no wait rows (§5cs.69) -- counted.
 
 usage: icebow/.venv/Scripts/python.exe -m pipeline.dataset_gen --corpus DIR [DIR ...] --out PATH.npz
-       [--grid lattice] [--limit N] [--workers 4]
+       [--grid lattice] [--limit N] [--workers 4] [--shift-ticks 26]
 """
 from __future__ import annotations
 
@@ -68,7 +68,7 @@ def side_deck(names: list[str]) -> Optional[Deck]:
                 src_dir=Path(), crawl_dir=Path(), data_dir=Path())
 
 
-def replay_rows(path: str, wait_stride: int = 40, play_window: int = 20) -> dict[str, Any]:
+def replay_rows(path: str, wait_stride: int = 40, play_window: int = 20, shift_ticks: int = 0) -> dict[str, Any]:
     """One replay file -> its rows with card identities as indices into the returned local ``keys`` (-1 = pad)."""
     global _ICEBOW
     try:
@@ -98,7 +98,7 @@ def replay_rows(path: str, wait_stride: int = 40, play_window: int = 20) -> dict
         for s in ((0,) if mirror else (0, 1)):                   # a mirror match is built once, both sides
             if decks[s] is not None:
                 build_replay(rec, decks[s], rows, 0, wait_stride=wait_stride, play_window=play_window, val_pct=0,
-                             stats=st)
+                             stats=st, shift_ticks=shift_ticks)
         a = rows.arrays()
         n = len(a["sc"])
         side = a["side"].astype(np.int64)
@@ -145,7 +145,7 @@ def v3val_tags(npz: Path = V3VAL_NPZ) -> set[str]:
 
 def build(corpora: list[Path], out: Path, *, grid: str = "lattice", limit: int = 0, workers: int = 4,
           wait_stride: int = 40, play_window: int = 20, val_pct: int = 10, v3val_npz: Path = V3VAL_NPZ,
-          log=sys.stderr) -> dict[str, Any]:
+          shift_ticks: int = 0, log=sys.stderr) -> dict[str, Any]:
     t0 = time.time()
     files, seen = [], set()
     for c in corpora:
@@ -156,7 +156,7 @@ def build(corpora: list[Path], out: Path, *, grid: str = "lattice", limit: int =
     if limit:
         files = files[:limit]
     keep_val = v3val_tags(v3val_npz)
-    jobs = [(f, wait_stride, play_window) for f in files]
+    jobs = [(f, wait_stride, play_window, shift_ticks) for f in files]
     if workers > 1:
         with ProcessPoolExecutor(max_workers=workers) as ex:
             res = []
@@ -237,7 +237,7 @@ def build(corpora: list[Path], out: Path, *, grid: str = "lattice", limit: int =
     meta = {
         "kind": "generalist", "corpora": [str(c) for c in corpora], "files_seen": len(files), "replays": len(tags),
         "failed": failed, "grid": grid, "wait_stride": wait_stride, "play_window": play_window, "val_pct": val_pct,
-        "v3val_npz": str(v3val_npz), "v3val_tags": len(keep_val), "F": F, "S": S, "PAST_K": PAST_K,
+        "shift_ticks": shift_ticks, "v3val_npz": str(v3val_npz), "v3val_tags": len(keep_val), "F": F, "S": S, "PAST_K": PAST_K,
         "sc_zeroed_cols": [SC_SLOT_COLS.start, SC_SLOT_COLS.stop],
         "past_cols": ["card", "form", "x", "y", "dt_s"], "card_pad": CARD_PAD,
         "forms": {"0": "base", "1": "evo", "2": "hero", "3": "pad"},
@@ -269,9 +269,11 @@ def main(argv: Optional[list[str]] = None) -> int:
     ap.add_argument("--play-window", type=int, default=20)
     ap.add_argument("--val-pct", type=int, default=10)
     ap.add_argument("--v3val-npz", type=Path, default=V3VAL_NPZ)
+    ap.add_argument("--shift-ticks", type=int, default=0)
     a = ap.parse_args(argv)
     s = build(a.corpus, a.out, grid=a.grid, limit=a.limit, workers=a.workers, wait_stride=a.wait_stride,
-              play_window=a.play_window, val_pct=a.val_pct, v3val_npz=a.v3val_npz)
+              play_window=a.play_window, val_pct=a.val_pct, v3val_npz=a.v3val_npz,
+              shift_ticks=a.shift_ticks)
     print(json.dumps(s, default=str))
     return 0
 

@@ -25,6 +25,7 @@ Both decks share this file unchanged (owner ruling: hogeq inherits every change)
 from __future__ import annotations
 
 import argparse
+import bisect
 import json
 import sys
 import time
@@ -82,6 +83,26 @@ def _as_compact(pf: dict) -> dict:
     return out
 
 
+def _hand_of(nxt: dict, pframes: dict, side: int) -> tuple[list, Any]:
+    """My (hand, next) just before accepted play ``nxt``: a hand changes only on its owner's accepted play, so
+    this is my hand at every tick since my previous accepted play."""
+    pf_next = pframes.get(int(nxt["play_index"]))
+    me = next((p for p in (pf_next or {}).get("players") or [] if int(p["side"]) == side), None)
+    return list(nxt.get("hand_before") or (me or {}).get("hand") or []), (me or {}).get("next")
+
+
+def _shift_frame(frames: list, fticks: list, p: int, shift: int, every: int) -> Optional[dict]:
+    """The compact frame nearest to ``p - shift`` among frames at least ``shift - every // 2`` ticks before p
+    (16 for shift 26 on the 20-tick grid; ties -> the later frame), at most ``shift + every`` before; else None."""
+    lo = max(1, shift - every // 2)
+    best, i = None, bisect.bisect_right(fticks, p - lo) - 1
+    while i >= 0 and p - fticks[i] <= shift + every:
+        if best is None or abs(p - fticks[i] - shift) < abs(p - fticks[best] - shift):
+            best = i
+        i -= 1
+    return None if best is None else frames[best]
+
+
 def _tag_split(tag: str, val_pct: int) -> int:
     return 1 if (zlib.crc32(tag.encode()) % 100) < val_pct else 0
 
@@ -132,10 +153,19 @@ class _Rows:
 
 
 def build_replay(rec: dict, deck: Deck, rows: _Rows, rep_index: int, *, wait_stride: int = 40,
-                 play_window: int = 20, val_pct: int = 15, stats: Optional[dict] = None) -> None:
+                 play_window: int = 20, val_pct: int = 15, stats: Optional[dict] = None,
+                 shift_ticks: int = 0) -> None:
+    """
+    compact frame ~shift_ticks before the play (``_shift_frame``) with the hand/next of that pre-act snapshot
+    (my plays at tick >= t0 not yet made), past plays strictly before that tick, row ``tick`` = that frame's; a row whose card is not in that hand
+    (another play of mine in between) is dropped. Wait rows then also need no accepted play in
+    (t, t + shift_ticks + play_window]. 0 = the unshifted builder."""
     st = stats if stats is not None else {}
     split = _tag_split(str(rec["tag"]), val_pct)
     pframes = {int(p["play_index"]): p for p in rec.get("play_frames") or []}
+    frames = rec.get("frames") or []
+    fticks = [int(fr["tick"]) for fr in frames]
+    rec_every = int(rec.get("record_every") or 20)
     for side in deck_sides(rec, deck):
         engine_deck = rec["final_decks"][str(side)]
         mirror = side == 1
@@ -146,6 +176,8 @@ def build_replay(rec: dict, deck: Deck, rows: _Rows, rep_index: int, *, wait_str
             st["no_plays"] = st.get("no_plays", 0) + 1
             continue
         crowns = _crowns(rec, side)
+        acc = [e for e in plays if e.get("accepted")]
+        acc_t = [int(e["tick"]) for e in acc]
         done: list[tuple[int, int, float, float]] = []
         for e in plays:
             pf = pframes.get(int(e["play_index"]))
@@ -156,20 +188,41 @@ def build_replay(rec: dict, deck: Deck, rows: _Rows, rep_index: int, *, wait_str
             if slot < 0:
                 st["unmapped_card:" + str(e["card"])] = st.get("unmapped_card:" + str(e["card"]), 0) + 1
                 continue
-            bs = from_engine(_as_compact(pf), side, deck, engine_deck=engine_deck,
-                             unmapped=st.setdefault("unmapped", set()))
             xy = _engine_xy(float(e["x"]), float(e["y"]), mirror)
-            rows.add(bs, slot=slot, xy=xy, gate=1, wait_slot=slot, wait_dt=0.0, tick=int(pf["tick"]),
-                     rep=rep_index, side=side, split=split, past=_past(done, int(pf["tick"])), crowns=crowns)
+            if shift_ticks:
+                fr = _shift_frame(frames, fticks, int(e["tick"]), shift_ticks, rec_every)
+                drop = "shift_no_frame" if fr is None else None
+                if fr is not None:
+                    t0 = int(fr["tick"])
+                    # frames are snapshotted BEFORE the tick's plays act (one sits on every play tick), so
+                    # the hand at t0 is hand_before of my first accepted play at tick >= t0
+                    hand, nxt_card = _hand_of(acc[bisect.bisect_left(acc_t, t0)], pframes, side)
+                    obs = dict(fr)
+                    obs["players"] = [{"side": side, "hand": hand, "next": nxt_card}]
+                    bs = from_engine(obs, side, deck, engine_deck=engine_deck,
+                                     unmapped=st.setdefault("unmapped", set()))
+                    drop = ("shift_no_hand" if len(hand) != 4 else
+                            "shift_drop_combo" if deck.card_ids[slot] not in bs.my_hand else None)
+                if drop:
+                    st[drop] = st.get(drop, 0) + 1
+                    done.append((int(e["tick"]), slot, xy[0], xy[1]))     # the play still happened
+                    continue
+                off = "shift_off:" + str(int(e["tick"]) - t0)
+                st[off] = st.get(off, 0) + 1
+            else:
+                t0 = int(pf["tick"])
+                bs = from_engine(_as_compact(pf), side, deck, engine_deck=engine_deck,
+                                 unmapped=st.setdefault("unmapped", set()))
+            rows.add(bs, slot=slot, xy=xy, gate=1, wait_slot=slot, wait_dt=0.0, tick=t0,
+                     rep=rep_index, side=side, split=split, past=_past(done, t0), crowns=crowns)
             done.append((int(e["tick"]), slot, xy[0], xy[1]))
             st["play_rows"] = st.get("play_rows", 0) + 1
         # WAIT rows from compact frames. Only ACCEPTED plays count: the engine's hand changes only on an
         # accepted play, so between accepted plays k and k+1 the hand is exactly hand_before(k+1).
-        plays = [e for e in plays if e.get("accepted")]
-        acc_ticks = [int(e["tick"]) for e in plays]
+        plays, acc_ticks = acc, acc_t
         j = 0
-        every = max(1, wait_stride // max(1, int(rec.get("record_every") or 20)))
-        for k, fr in enumerate(rec.get("frames") or []):
+        every = max(1, wait_stride // max(1, rec_every))
+        for k, fr in enumerate(frames):
             t = int(fr["tick"])
             if k % every:
                 continue
@@ -178,17 +231,15 @@ def build_replay(rec: dict, deck: Deck, rows: _Rows, rep_index: int, *, wait_str
             if j >= len(plays):
                 break                                   # after my last play: hand unknown
             nxt = plays[j]
-            if any(t < a <= t + play_window for a in acc_ticks):
+            if any(t < a <= t + play_window + shift_ticks for a in acc_ticks):
                 st["wait_in_window"] = st.get("wait_in_window", 0) + 1
                 continue
-            pf_next = pframes.get(int(nxt["play_index"]))
-            me = next((p for p in (pf_next or {}).get("players") or [] if int(p["side"]) == side), None)
-            hand = list(nxt.get("hand_before") or (me or {}).get("hand") or [])
+            hand, nxt_card = _hand_of(nxt, pframes, side)
             if len(hand) != 4:
                 st["wait_no_hand"] = st.get("wait_no_hand", 0) + 1
                 continue
             obs = dict(fr)
-            obs["players"] = [{"side": side, "hand": hand, "next": (me or {}).get("next")}]
+            obs["players"] = [{"side": side, "hand": hand, "next": nxt_card}]
             bs = from_engine(obs, side, deck, engine_deck=engine_deck, unmapped=st.setdefault("unmapped", set()))
             wslot = crawl_slot(deck, nxt["card"])
             rows.add(bs, slot=-1, xy=(-1.0, -1.0), gate=0, wait_slot=wslot,
