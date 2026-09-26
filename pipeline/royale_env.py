@@ -31,9 +31,11 @@ SCALE = 18                      # RoyaleSim units per pool/real-engine unit (18,
 # RoyaleSim's elixir regen, (from_tick, elixir per tick) -- MEASURED T12b (.foreman/scratch/T12b/elixir_schedule_probe.py:
 # every tick of a mirror all-spell match from tick 0 to its end, both sides): start 6.000 at tick 0 (as the real engine);
 # 1/56 per tick (milli deltas 18/17, mean 17.86) on [0, 2400); 1/28 (36/35, mean 35.72) from 2400 THROUGH overtime --
-# NO triple phase (the real engine: 0.0537 from 4800); the match ends at tick 6000 (OVERTIME_S 120). The real engine's
-# schedule is opp_elixir_count.REGEN_SCHEDULE; e1_eval's opp-elixir counter uses this one on RoyaleSim envs.
-REGEN_SCHEDULE = ((0, 1 / 56), (2400, 1 / 28), (6000, 0.0))
+# no triple phase in upstream f046df9 (the real engine: 0.0537 from 4800); the match ends at tick 6000 (OVERTIME_S 120).
+# LOCAL PATCH 2026-09-25 (owner): research/ext/Royale/RoyaleSim state.rs gains TRIPLE elixir (3 x the 1x step = 3/56 per
+# tick) for the last 60 s of overtime, i.e. from tick 4800, as the real engine -- re-measured after the rebuild. The real
+# engine's schedule is opp_elixir_count.REGEN_SCHEDULE; e1_eval's opp-elixir counter uses this one on RoyaleSim envs.
+REGEN_SCHEDULE = ((0, 1 / 56), (2400, 1 / 28), (4800, 3 / 56), (6000, 0.0))
 NOT_ENOUGH_ELIXIR = 13         # the real engine's code, so e1_eval / the ghost retry read it unchanged
 NOT_IN_HAND = 1003              # deck_index names a card that is not in the hand right now
 REFUSED_BASE = 2000             # 2000 + DeployStatus for every other refusal

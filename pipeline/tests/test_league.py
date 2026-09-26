@@ -315,7 +315,8 @@ class TestCounterSchedule(unittest.TestCase):
 
     def test_royale_env_declares_the_measured_schedule(self):
         src = (REPO / "pipeline" / "royale_env.py").read_text(encoding="utf-8")
-        self.assertIn("REGEN_SCHEDULE = ((0, 1 / 56), (2400, 1 / 28), (6000, 0.0))", src)
+        # re-measured after the 2026-09-25 local RoyaleSim patch (triple elixir from tick 4800: deltas 54/53 milli)
+        self.assertIn("REGEN_SCHEDULE = ((0, 1 / 56), (2400, 1 / 28), (4800, 3 / 56), (6000, 0.0))", src)
         self.assertIn("self.elixir_regen_schedule = REGEN_SCHEDULE", src)
 
 

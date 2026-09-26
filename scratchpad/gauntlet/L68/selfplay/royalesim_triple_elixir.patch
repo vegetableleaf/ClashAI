@@ -1,0 +1,73 @@
+diff --git a/crates/royalesim/src/py.rs b/crates/royalesim/src/py.rs
+index 1581336..14a31a4 100644
+--- a/crates/royalesim/src/py.rs
++++ b/crates/royalesim/src/py.rs
+@@ -430,7 +430,7 @@ pub fn state_json_text(s: &BattleState, cards: &CardDb, id_of_idx: &[i32], slot_
+         tick_ms,
+         ceil_div(regular_ms, tick_ms),
+         ceil_div((c.overtime_s as i64) * 1000, tick_ms),
+-        if double { 2 } else { 1 },
++        if crate::state::triple_elixir(s.is_overtime(), elapsed, regular_ms, c.overtime_s) { 3 } else if double { 2 } else { 1 },
+         s.is_overtime(),
+         s.is_done(),
+         winner,
+diff --git a/crates/royalesim/src/state.rs b/crates/royalesim/src/state.rs
+index 3201636..e049708 100644
+--- a/crates/royalesim/src/state.rs
++++ b/crates/royalesim/src/state.rs
+@@ -1917,7 +1917,7 @@ pub struct BattleState {
+     /// anything without a LifeTime and under lifetime.HP_DECAY = expiry_hit.
+     lifetime_acc: Vec<i32>,
+     mana_unit: i64,
+-    mana_rate: [i64; 2],
++    mana_rate: [i64; 3],
+     scratch: Scratch,
+     phase_trace: Option<Vec<Phase>>,
+ }
+@@ -1948,6 +1948,14 @@ fn gcd(a: i64, b: i64) -> i64 {
+     }
+ }
+ 
++/// LOCAL PATCH (ClashBot): triple elixir in the last TRIPLE_ELIXIR_LAST_S seconds of overtime (tick 4800 of 6000 at
++/// REGULAR_TIME_S 180 / OVERTIME_S 120 / TICK_MS 50), as the real engine does.
++pub const TRIPLE_ELIXIR_LAST_S: i64 = 60;
++
++pub fn triple_elixir(overtime: bool, elapsed_ms: i64, regular_ms: i64, overtime_s: i32) -> bool {
++    overtime && elapsed_ms >= regular_ms + ((overtime_s as i64) - TRIPLE_ELIXIR_LAST_S).max(0) * 1000
++}
++
+ impl BattleState {
+     /// Build a battle; panics with the reason if the config is invalid.
+     pub fn new(seed: u64, config: BattleConfig) -> BattleState {
+@@ -1963,7 +1971,11 @@ impl BattleState {
+         // integers per tick and elixir never accumulates rounding error.
+         let mana_unit = r1 / gcd(r1, r2) * r2;
+         let per_tick = |regen: i64| (c.tick_ms as i64) * (c.max_mana as i64) * (mana_unit / regen);
+-        let mana_rate = [per_tick(r1), per_tick(r2)];
++        // LOCAL PATCH (ClashBot, 2026-09-25): a third, TRIPLE rate for the last TRIPLE_ELIXIR_LAST_S of overtime.
++        // calibration.json MANA_REGEN_MS_OVERTIME measured 537 raw/tick (1/10000 elixir) in late overtime but the
++        // engine had no third rate; ClashBot's real-engine replays place the switch at tick 4800 (2,178 frame pairs
++        // straddling it). 3 x the 1x step keeps elixir exact in mana_unit (535.7 raw/tick vs the game's 537).
++        let mana_rate = [per_tick(r1), per_tick(r2), 3 * per_tick(r1)];
+ 
+         let mut rng = Rng::new(seed);
+         let mut players: Vec<PlayerState> = Vec::with_capacity(2);
+@@ -2601,7 +2613,8 @@ impl BattleState {
+         let elapsed = self.elapsed_ms(self.tick);
+         let regular = (c.regular_time_s as i64) * 1000;
+         let double = self.overtime || regular - elapsed <= (c.mana_speed_up_remaining_s as i64) * 1000;
+-        let rate = self.mana_rate[usize::from(double)];
++        let triple = triple_elixir(self.overtime, elapsed, regular, c.overtime_s);
++        let rate = self.mana_rate[if triple { 2 } else { usize::from(double) }];
+         let cap = (c.max_mana as i64) * self.mana_unit;
+         for p in self.players.iter_mut() {
+             p.mana = (p.mana + rate).min(cap);
+@@ -6575,7 +6588,7 @@ struct Snapshot {
+     #[serde(default)]
+     lifetime_acc: Vec<i32>,
+     mana_unit: i64,
+-    mana_rate: [i64; 2],
++    mana_rate: [i64; 3],
+     state_hash: u64,
+ }
+ 
