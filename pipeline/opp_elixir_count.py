@@ -55,11 +55,11 @@ MAX_ELIXIR = 10.0
 REGEN_SCHEDULE: tuple[tuple[int, float], ...] = ((0, 0.0178), (2400, 0.0357), (4800, 0.0537), (6002, 0.0))
 
 
-def regen_between(t0: float, t1: float) -> float:
-    """Elixir regenerated over [t0, t1) ignoring the cap."""
+def regen_between(t0: float, t1: float, schedule: tuple[tuple[int, float], ...] = REGEN_SCHEDULE) -> float:
+    """Elixir regenerated over [t0, t1) ignoring the cap, under ``schedule`` (default: the real engine's)."""
     total = 0.0
-    for i, (lo, rate) in enumerate(REGEN_SCHEDULE):
-        hi = REGEN_SCHEDULE[i + 1][0] if i + 1 < len(REGEN_SCHEDULE) else float("inf")
+    for i, (lo, rate) in enumerate(schedule):
+        hi = schedule[i + 1][0] if i + 1 < len(schedule) else float("inf")
         a, b = max(t0, lo), min(t1, hi)
         if b > a:
             total += rate * (b - a)
@@ -67,9 +67,14 @@ def regen_between(t0: float, t1: float) -> float:
 
 
 class OppElixirCounter:
-    """Layer (a). Feed plays in tick order with ``play``; read with ``at``. Time only moves forward."""
+    """Layer (a). Feed plays in tick order with ``play``; read with ``at``. Time only moves forward.
+    ``schedule``: the regen schedule of the engine being counted, (from_tick, elixir per tick) ascending; None = the
+    real engine's ``REGEN_SCHEDULE`` (live, and every caller before T12b). A simulator with a different schedule passes
+    its own (``royale_env.RoyalePoolEnv.elixir_regen_schedule``), so the counter's error in simulation is the real one
+    (missed plays) and not a schedule mismatch."""
 
-    def __init__(self, start: float = START_ELIXIR):
+    def __init__(self, start: float = START_ELIXIR, schedule: Optional[tuple[tuple[int, float], ...]] = None):
+        self.schedule = REGEN_SCHEDULE if schedule is None else tuple((int(t), float(r)) for t, r in schedule)
         self.tick = 0
         self.est = float(start)
         self.rebases = 0          # plays the estimate could not afford (estimate was low)
@@ -78,8 +83,12 @@ class OppElixirCounter:
 
     def _advance(self, tick: int) -> None:
         if tick > self.tick:      # capped regen is lost; rates are >= 0 so one clamp == clamping per tick
-            self.est = min(MAX_ELIXIR, self.est + regen_between(self.tick, tick))
+            self.est = min(MAX_ELIXIR, self.est + regen_between(self.tick, tick, self.schedule))
             self.tick = tick
+
+    def regen(self, t0: float, t1: float) -> float:
+        """``regen_between`` under this counter's schedule."""
+        return regen_between(t0, t1, self.schedule)
 
     def at(self, tick: int) -> float:
         """Estimate at ``tick`` (plays at this tick already fed are included)."""

@@ -28,6 +28,12 @@ from royalegym.rust_engine import RustEngine
 from pipeline.e1_pool import ours
 
 SCALE = 18                      # RoyaleSim units per pool/real-engine unit (18,000 vs 1,000 per tile)
+# RoyaleSim's elixir regen, (from_tick, elixir per tick) -- MEASURED T12b (.foreman/scratch/T12b/elixir_schedule_probe.py:
+# every tick of a mirror all-spell match from tick 0 to its end, both sides): start 6.000 at tick 0 (as the real engine);
+# 1/56 per tick (milli deltas 18/17, mean 17.86) on [0, 2400); 1/28 (36/35, mean 35.72) from 2400 THROUGH overtime --
+# NO triple phase (the real engine: 0.0537 from 4800); the match ends at tick 6000 (OVERTIME_S 120). The real engine's
+# schedule is opp_elixir_count.REGEN_SCHEDULE; e1_eval's opp-elixir counter uses this one on RoyaleSim envs.
+REGEN_SCHEDULE = ((0, 1 / 56), (2400, 1 / 28), (6000, 0.0))
 NOT_ENOUGH_ELIXIR = 13         # the real engine's code, so e1_eval / the ghost retry read it unchanged
 NOT_IN_HAND = 1003              # deck_index names a card that is not in the hand right now
 REFUSED_BASE = 2000             # 2000 + DeployStatus for every other refusal
@@ -95,6 +101,7 @@ class RoyalePoolEnv:
         self.warmup_ticks, self.seed, self.subs = int(warmup_ticks), int(seed), dict(subs or {})
         self.eng = _Core(self)
         self._code_names = RESULT_CODE_NAMES
+        self.elixir_regen_schedule = REGEN_SCHEDULE          # e1_eval's opp-elixir counter reads it (T12b)
 
     # ---------------------------------------------------------------- decks
     def card_id(self, name: str) -> int:
@@ -229,14 +236,14 @@ class RoyaleSelfPlayEnv(RoyalePoolEnv):
     ``next_deck_index`` indexes the CALLER's deck order (``self.decks[side]``)."""
 
     def reset(self, deck0, deck1, seed: int = 0) -> dict:
-        self.seed = int(seed)
+        decks = {s: [str(it["name"] if isinstance(it, dict) else it).split("@")[0] for it in d]
+                 for s, d in ((0, deck0), (1, deck1))}
+        deck_ids = {s: [self.card_id(n) for n in decks[s]] for s in (0, 1)}
+        for s in (0, 1):                                          # validate BEFORE touching any state (T12b)
+            if len(deck_ids[s]) != 8 or len(set(deck_ids[s])) != 8:
+                raise UnsupportedDeck(f"side {s}: need 8 distinct cards (after subs), got {decks[s]}")
+        self.decks, self.deck_ids, self.seed = decks, deck_ids, int(seed)
         self.side, self.opp, self._mirror = 0, 1, False          # inherited _crowns reads side 0's view
-        self.decks = {s: [str(it["name"] if isinstance(it, dict) else it).split("@")[0] for it in d]
-                      for s, d in ((0, deck0), (1, deck1))}
-        self.deck_ids = {s: [self.card_id(n) for n in self.decks[s]] for s in (0, 1)}
-        for s in (0, 1):
-            if len(set(self.deck_ids[s])) != 8:
-                raise UnsupportedDeck(f"side {s}: need 8 distinct cards (after subs), got {self.decks[s]}")
         orders = {s: list(range(8)) for s in (0, 1)}
         for s in (0, 1):
             random.Random(f"deal:{self.seed}:{s}").shuffle(orders[s])   # str seed: stable across processes
@@ -258,6 +265,12 @@ class RoyaleSelfPlayEnv(RoyalePoolEnv):
         return self.raw()
 
     observe = RoyalePoolEnv.raw
+
+    def costs(self, side: int) -> list[int]:
+        """Elixir cost of each of ``self.decks[side]`` (deck order), from RoyaleSim's catalogue."""
+        if not hasattr(self, "_elixir"):
+            self._elixir = {c.card_id: c.elixir for c in self.core.cards()}
+        return [int(self._elixir[c]) for c in self.deck_ids[side]]
 
     @property
     def done(self) -> bool:

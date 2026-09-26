@@ -132,8 +132,15 @@ icebow/.venv/Scripts/python.exe -m pipeline.rl_gate --init scratchpad/gauntlet/L
 ```
 Real engine (the verdict that counts): same with `--engine real` (boot both engine slots first, ports 38031/38032; see
 HANDOFF / `e1/_boot.ps1`), four printed lines (init/cand x slot0/slot1). Pro agreement for criterion (ii) is not in
-rl_gate: read `proagree` from train_log.jsonl or run
-`icebow/.venv/Scripts/python.exe -m pipeline.eval_s1 icebow --data icebow/data/pipeline/s1_dataset.npz <ckpt>`.
+rl_gate: read `proagree` from train_log.jsonl or run, for an S1 checkpoint,
+`icebow/.venv/Scripts/python.exe -m pipeline.eval_s1 icebow --data icebow/data/pipeline/s1_dataset.npz <ckpt>`;
+for a GENERALIST checkpoint (`"gen": True`, every run with a gen init) `eval_s1` is WRONG (it is S1-only) -- use
+`icebow/.venv/Scripts/python.exe -m pipeline.eval_gen --ckpt <ckpt> --data icebow/data/pipeline/gen_dataset_v1.npz --out scratchpad/gauntlet/L68/rl/<name>/eval_gen_<u>.json`
+and read its v3val block (the rows the trainer's tripwire uses).
+**Condition (T12b).** A run trained under the live condition must be gated under it: add
+`--config scratchpad/gauntlet/L68/rl/<name>/config.yaml` to `rl_gate --commands`; every printed e1_eval line then
+carries the run's `--noise-off / --opp-elixir / --action-delay / --extrapolate` (a comment line shows which). Without
+`--config` the lines are the old default condition.
 No "best on held-out" selection: gate the checkpoint you decided to gate before looking at screens.
 
 ## 7. Generalist init and live-condition keys (L68 T11)
@@ -177,6 +184,98 @@ Smoke with the live condition (CPU; measured 458 s wall, 2026-09-25, T11smoke_ge
 CUDA_VISIBLE_DEVICES= research/ext/Royale/.venv/Scripts/python.exe -m pipeline.rl_royale --config pipeline/rl_royale.yaml --run T11smoke_gen --smoke init=icebow/data/pipeline/gen_v1_s0/gen_s0.pt noise_off=all opp_elixir=counter action_delay_ticks=26 extrapolate_ticks=26 learner_device=cpu actor_device=cpu
 ```
 Tests: `icebow/.venv/Scripts/python.exe -m pytest -q pipeline/tests/test_rl_gen.py`.
+
+## 9. Self-play LEAGUE (L68 T12b)
+Owner design (rulings 2026-09-25): ONE learner = the generalist; opponents = a pool of FROZEN policies; every match under
+the live condition on BOTH sides; evaluation unchanged (held-out ghost screen + pro-agreement tripwire + guards).
+
+**Start the real run (GPU; owner-approved start only -- the laptop is shared):**
+```
+research/ext/Royale/.venv/Scripts/python.exe -m pipeline.rl_royale --config pipeline/rl_royale.yaml --run <name> init=icebow/data/pipeline/gen_v1_s0/gen_s0.pt league=true noise_off=all opp_elixir=counter action_delay_ticks=26 extrapolate_ticks=26
+```
+Everything else is the yaml default (the recommended block below). `league=true` refuses a non-generalist init.
+
+**Recommended league block (the yaml defaults; `leash: max` is the yaml default for new runs):**
+| key | value | why |
+|---|---|---|
+| `league_opp_policy` | `sample` | the opponent plays the learner's own tempered rule (T 0.5, its own RNG): (1) G rollouts of one matchup then differ on BOTH sides, so more LOO groups carry a mixed outcome (the gradient's sample size); (2) under `noise_off=all` a greedy (`live`) frozen opponent is a deterministic function of the board, a fixed line the learner can learn to exploit instead of learning the game; (3) snapshot-vs-learner is symmetric. `live` = the frozen policy exactly as it plays for real -- switch if the owner wants the greedy opponent. |
+| `league_mix` | latest 0.35, older 0.25, init 0.2, s1 0.2 | latest snapshot = the hardest current opponent (the self-play core); older snapshots (uniform over the pool minus the newest) = anti-forgetting / anti-cycling; init = the pro-imitated style (closest to ladder opponents, and the anchor the tripwire measures against); S1 = the icebow expert on the owner's deck. Renormalised over what exists: before the first snapshot `latest` IS the init (init effectively 0.55/0.75 -> 73% with s1 27%); `older` needs 2 snapshots. |
+| `league_snapshot_every` / `_keep` | 10 / 8 | a snapshot = 10 updates of drift (KL_cell measured 0.002-0.006 per update at lr 1e-5, so consecutive snapshots are distinct but close); 8 kept = the last 80 updates of history. |
+| `league_icebow_share` | 0.2 | P(learner deck = icebow) = 0.2 exactly (icebow is removed from the census list, so it only enters here); opponent decks: 0.2 icebow too, and the S1 specialist ALWAYS icebow -> opponents play icebow P(s1) + (1 - P(s1)) x 0.2 = 0.36 of matches once 2 snapshots exist (0.41 before, P(s1) = 0.27). |
+| `league_deck_alpha` / `_floor` | 0.5 / 0.5 | other decks: P(deck i) = max(sides_i^0.5, 0.5 x mean_j sides_j^0.5), normalised over the 182 census decks (183 loadable minus icebow). Measured: max 3.87% (rank 2, 14,305 sides), min 0.27% (22 decks at the floor), effective decks 1/sum p^2 = 112, head-20 share 30.6%. Plain frequency (alpha 1) would give max 16.8%, effective 22.7, head-20 62% -- the long tail would be starved. |
+
+**One update (league on).** `sample_matchups` draws E matchups from the learner's rng (resume continues the stream),
+in this order per matchup: opponent (`league_mix`), learner deck, opponent deck (S1 -> icebow), learner side (uniform
+0/1), deal seed. Each matchup is one LOO group, run G times (behaviour seeds differ per g on both sides; the deal, decks,
+sides and opponent are the group's). Actors run `e1_eval.run_selfplay_batch` on `RoyaleSelfPlayEnv`: per round every
+side that decides now (across all in-flight matches) is observed FIRST, then one forward + one batched decide per
+policy (the learner, and each distinct frozen opponent in flight), then all act -- a play made on a tick is invisible to
+that tick's decisions (board and counter alike). Each side: its own mirrored view (`from_engine(raw, side)`), obs /
+behaviour RNGs (the opponent's tag is `<tag>:opp`), past plays, anti-stall clock, extrapolation state. Delay D: a decided
+play is queued and lands at T + D while the OTHER side keeps deciding; the deciding side's next decision is the first
+grid tick after landing (same as the ghost path). Opp-elixir counter: fed the OTHER side's ACCEPTED plays at their
+LANDING tick (dataset_gen card slug, e.g. `the-log`), never either side's elixir. Only the learner's side is recorded;
+frozen opponents are read from their checkpoint files by the actors (`e1_eval.load_policy`, cached per path) and never
+receive a gradient or a write. Reward and outcome are the learner side's (`RoyaleSelfPlayEnv.outcome(side)`).
+A self-play record fills the ghost keys with the opponent: `ghost_delivered` = its accepted plays, `ghost_refused` =
+refused at landing, `ghost_undelivered` = unlanded; `won_after_script` is always False (no script).
+
+**Snapshots.** Every `league_snapshot_every` updates (after the update, before `_latest.pt`):
+`icebow/data/bench/rl_royale/<name>/<name>_snap_u{NNNN}.pt` = the weights + the keys `e1_eval.load_policy` reads (gen,
+args, d_c, card_vocab, epoch, n_params, deck) -- no optimizer moments, no rl state: 5.40 MB (5,400,725 bytes, measured T12bsmoke_a2; the gen_s0 init file is 5.40 MB) (the first T12b version,
+a full checkpoint, measured 16.1 MB). The pool keeps the newest `league_snapshot_keep`; an EVICTED snapshot file is
+deleted right after `_latest.pt` (which holds the new pool) is saved, so a crash in between leaves an orphan file,
+never a saved pool naming a missing one. Numbered checkpoints `<name>_u{NNNN}.pt` are separate files and are never
+deleted. If a snapshot file for the current update already exists (crash after it, then `--resume` re-ran the update):
+identical weights -> kept (logged); different weights -> the run STOPS (RuntimeError "already exists with DIFFERENT
+weights"): move that file aside and resume again. The pool rides in the checkpoint's `rl.league`; `--resume` restores
+it and the sampling rng. League keys are checked at startup (`validate_league`): snapshot_every / keep integers >= 1,
+mix weights finite >= 0 over latest/older/init/s1 with a positive sum, icebow share in [0, 1], alpha / floor >= 0,
+opp policy live|sample -- a bad value exits with the key named.
+
+**Opp-elixir counter in simulation (T12b a2, measured).** RoyaleSim's regen schedule is NOT the real engine's
+(`.foreman/scratch/T12b/elixir_schedule_probe.py`, every tick of a mirror all-spell match, both sides): start 6.0 at
+tick 0 (same); 1/56 per tick on [0, 2400) (real 0.0178); 1/28 from 2400 THROUGH overtime (real: triple, 0.0537, from
+4800); the match ends at tick 6000 (real regen stops 6002). `royale_env.REGEN_SCHEDULE` holds it; every RoyaleSim env
+(`RoyalePoolEnv` / `RoyaleSelfPlayEnv`, i.e. rollouts AND the held-out screen) declares it and e1_eval's counter uses
+it; anything else (the real engine, live) keeps the real `opp_elixir_count.REGEN_SCHEDULE` (default, unchanged).
+Effect (`.foreman/scratch/T12b/counter_probe*.py`, estimate minus TRUE opponent elixir per decision):
+| path | arm | real schedule (before) | RoyaleSim schedule (now) |
+|---|---|---|---|
+| self-play, 8 league matchups, both sides, 5.5k decisions | counter_all | MAE 0.421 (0.081 < tick 4800, 4.754 after) | MAE 0.000 |
+| | counter | MAE 3.598, bias +3.596 | MAE 3.544, bias +3.544 |
+| ghost screen, 8 held-out entries, 2.3k decisions | counter_all | MAE 0.044 | MAE 0.000 |
+| | counter | MAE 0.769 | MAE 0.757 |
+With the schedule fixed, counter_all is exact, so ALL of the remaining `counter` error is bodiless spells (log, zap,
+arrows, fireball, rocket, tornado, ...) -- the real-world error mechanism, not a simulator drift. Self-play's error is
+~4.7x the ghost path's because its opponents play more of them: 178 dropped of 708 counted plays (25%) vs 26 of 188
+(14%) on the ghost screen, and a dropped spell keeps the estimate high until the cap. Not fixed here:
+`pipeline/extrapolate.py` forecasts MY elixir with the real schedule on RoyaleSim too (differs only after tick 4800).
+
+**Leash (owner ruling).** `leash: max` steers adaptive beta on max(KL_gate, KL_card, KL_cell); `cell` = the old
+KL_cell-only rule exactly (unit test + the T12b equivalence run). A run started before the key resumes with `cell`
+(logged). The KL stop rule (beta at clamp AND KL_cell > 0.5 or KL_gate > 0.1) is unchanged.
+
+**Watch (train_log.jsonl, league on):** `league.by_opp.{init,snapshot,s1}` (n, W/L/D, winrate of the learner),
+`league.by_deck.{icebow,head,tail}` (learner deck bucket; head = the 20 most-played census decks), `league.draws`,
+`league.plays_per_min` / `league.opp_plays_per_min`, `matchups` (opponent id, decks, side per group), `snapshot` /
+`league_pool`, `leash`, `kl_leash`, `kl_driver` (the head that drove beta). Human line: `(leash max: <head>)` and
+`| league wr init .xx/n snapshot .xx/n s1 .xx/n D n +snap_uNNNN`. Self-play win rates are DESCRIPTIVE: the opponents
+move with the learner; the verdicts stay the held-out ghost screen, pro agreement and rl_gate.
+
+**Smoke (CPU, league + live condition + gen init):**
+```
+CUDA_VISIBLE_DEVICES= research/ext/Royale/.venv/Scripts/python.exe -m pipeline.rl_royale --config pipeline/rl_royale.yaml --run T12bsmoke --smoke init=icebow/data/pipeline/gen_v1_s0/gen_s0.pt league=true noise_off=all opp_elixir=counter action_delay_ticks=26 extrapolate_ticks=26 learner_device=cpu actor_device=cpu
+```
+(`--smoke` sets `league_snapshot_every: 1`, so both updates add a snapshot and update 1 can draw one; the resume
+check also compares the league pool.) Measured 2026-09-25, T12bsmoke: SMOKE PASS in 632 s wall (1 actor, 2 threads, 8
+in flight): per update 8 self-play matches, rollout 82-87 s (~10.5 actor-s per match, both sides batched), PPO update
+51-61 s on ~2,000-2,100 rows, held-out screen (24 matches) 99-118 s; u0000 added `snap_u0001`, u0001 drew it (4 of 8
+matches) and added `snap_u0002`; resume check restored update / beta / optimizer / rng / guards / league pool.
+**CPU estimate for the real shape** (E 16 x G 4 = 64 matches, ~16k rows; NOT measured at that size, scaled from the
+smoke): rollout ~64 x 10.5 / 3 actors ~ 3.7 min (less if the bigger in-flight batch amortises better), PPO ~8x the
+smoke's ~56 s ~ 7.5 min, plus the screen (174 matches, ~4.5 actor-s each / 3 actors ~ 4.4 min every 10 updates) and
+full pro agreement (~2.5 min every 5) -> ~12-13 min per update on CPU. The real run is meant for the GPU.
 
 ## 8. The KL budget is the owner's
 `kl_target` (default 0.10) is NEVER changed by the trainer. Raising it is a manual owner decision, taken only after a

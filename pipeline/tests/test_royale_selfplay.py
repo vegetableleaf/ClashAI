@@ -133,6 +133,77 @@ class TestSelfPlay(unittest.TestCase):
         with self.assertRaises(UnsupportedDeck):
             env.reset(ICEBOW, HOGEQ[:7] + ["Log"], seed=0)      # duplicate card
 
+    def test_nine_cards_with_a_duplicate_raises(self):
+        """T12b fix (a): 8 distinct ids is not enough -- the list must also BE 8 long."""
+        env = RoyaleSelfPlayEnv()
+        with self.assertRaises(UnsupportedDeck):
+            env.reset(ICEBOW, HOGEQ + ["Log"], seed=0)           # 9 items, 8 distinct
+        with self.assertRaises(UnsupportedDeck):
+            env.reset(ICEBOW[:7], HOGEQ, seed=0)                 # 7
+
+    def test_failed_reset_leaves_state_untouched(self):
+        """T12b fix (b): validation happens before any assignment."""
+        env = RoyaleSelfPlayEnv()
+        env.reset(ICEBOW, HOGEQ, seed=5)
+        before = (dict(env.decks), dict(env.deck_ids), env.seed, env.tick)
+        with self.assertRaises(UnsupportedDeck):
+            env.reset(STARTER, HOGEQ, seed=9)
+        with self.assertRaises(UnsupportedDeck):
+            env.reset(ICEBOW, HOGEQ + ["Log"], seed=9)
+        self.assertEqual((dict(env.decks), dict(env.deck_ids), env.seed, env.tick), before)
+
+    def test_costs_are_the_catalogue(self):
+        env = RoyaleSelfPlayEnv()
+        env.reset(ICEBOW, HOGEQ, seed=0)
+        cat = {c.name: c.elixir for c in env.core.cards()}
+        for s in (0, 1):
+            self.assertEqual(env.costs(s), [cat[n] for n in env.decks[s]])
+
+
+@unittest.skipIf(RoyaleSelfPlayEnv is None, "royalegym not importable (run in research/ext/Royale/.venv)")
+class TestLeagueMatchOnRoyaleSim(unittest.TestCase):
+    """T12b: e1_eval.run_selfplay_batch on the REAL engine, the full live condition on both sides (clean obs, opp
+    counter, delay 26, extrapolate 26): tiny random GenModels (learner, frozen snapshot) and a tiny S1Model (the icebow
+    specialist, icebow only)."""
+
+    def test_selfplay_batch_under_live_condition(self):
+        import numpy as np
+        import torch
+        from pipeline import e1_eval as E
+        from pipeline.dataset_gen import card_key
+        from pipeline.e1_view import Noise
+        from pipeline.model_gen import GenModel
+        from pipeline.model_v3 import S1Model
+        vocab = ["<pad>"] + sorted({card_key(n) for n in ICEBOW + HOGEQ})
+        torch.manual_seed(0)
+        learner = E.GenPolicy(GenModel(d=16, layers=1, heads=2, d_c=8, n_cards=len(vocab)).eval(), vocab)
+        snap = E.GenPolicy(GenModel(d=16, layers=1, heads=2, d_c=8, n_cards=len(vocab)).eval(), vocab)
+        s1 = S1Model(d=16, layers=1, heads=2).eval()
+        cfg = {"policy": "sample", "tau": 0.27, "afford_mask": True, "stall_elixir": 9.0, "stall_seconds": 12.0,
+               "obs": "live", "noise": Noise(**{n: False for n in E.NOISE_NAMES}), "p_random": 0.0,
+               "random_hand_only": False, "grid": "lattice", "device": "cpu", "decide_every": 10, "slot": 0, "port": 0,
+               "T": 0.5, "record": True, "opp_elixir": "counter", "action_delay_ticks": 26, "extrapolate_ticks": 26}
+        ocfg = {**cfg, "record": False}
+        spec = lambda i, opp, side, od: {"tag": f"sp_{i}", "opp": {"id": opp, "type": opp}, "learner_deck": HOGEQ,
+                                         "opp_deck": od, "learner_side": side, "seed": i}
+        jobs = [(0, spec(0, "snap", 0, HOGEQ), 0, {"rollout_index": 0, "update": 0}),
+                (1, spec(1, "s1", 1, ICEBOW), 0, {"rollout_index": 0, "update": 0})]
+        out = []
+        E.run_selfplay_batch(lambda: RoyaleSelfPlayEnv(), learner, {"snap": (snap, ocfg), "s1": (s1, ocfg)}, jobs,
+                             cfg, 2, on_result=out.append)
+        self.assertEqual(len(out), 2)
+        for r in out:
+            self.assertIn(r["outcome"], ("win", "loss", "draw"))
+            self.assertGreater(r["plays_accepted"], 5, r["tag"])
+            self.assertGreater(r["opp_side"]["plays_accepted"], 5, r["tag"])
+            self.assertEqual(len(r["traj"]["played"]), r["decisions"])
+            self.assertTrue(all(p["land_tick"] == p["tick"] + 26 for p in r["plays"]))
+            oc = r["opp_counter"]
+            self.assertGreater(oc["fed"] + oc["dropped"], 0)
+            self.assertLessEqual(oc["fed"] + oc["dropped"], r["opp_side"]["plays_accepted"])
+            self.assertEqual(r["extrapolate_ticks"], 26)
+            self.assertTrue(np.isfinite(r["traj"]["lp_cell"]).all())
+
 
 if __name__ == "__main__":
     unittest.main()

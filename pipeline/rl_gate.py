@@ -7,6 +7,10 @@ same held-out ghosts, plus the e1_eval command lines that produce those two runs
     python -m pipeline.rl_gate --commands --init-ckpt icebow/data/pipeline/s1_icebow_v6lat_s0.pt ^
         --cand-ckpt icebow/data/pipeline/e1_latest.pt --out-root scratchpad/gauntlet/L67/e1/final --engine real
 
+``--commands --config <run dir>/config.yaml`` (L68 T12b): the printed e1_eval lines carry that RL run's CONDITION keys
+(noise_off / opp_elixir / action_delay_ticks / extrapolate_ticks -> --noise-off / --opp-elixir / --action-delay /
+--extrapolate), so the gate evaluates under the condition the run trained and screened under.
+
 Reads every ``matches.jsonl`` under each ``--init``/``--cand`` dir, recursively (the slot0/slot1 layout of
 scratchpad/gauntlet/L68/rank/score.py), keyed by (tag, k) -- FIRST line wins on a repeat key, and the repeat is
 counted and warned about (not silently dropped). Pairs the two runs on that key; a (tag, k) present in only one
@@ -20,7 +24,8 @@ its own secondary line, labelled as pooled.
 Verdict: scratchpad/gauntlet/L67/e1_engine_rl_design.md section 2.3 "Pre-registered verdict (b)" items (i) paired
 delta + CI and (iv) the section 4.2 guards, PLUS the design's held-out-screen rule that the gain must also hold
 before the ghost script ended. Item (ii), pro agreement, is NOT computable from matches.jsonl (it needs the clean
-VAL split) -- see the printed note; read it from the training log / ``pipeline.eval_s1`` instead.
+VAL split) -- see the printed note; read it from the training log, or ``pipeline.eval_s1`` (S1 checkpoints) /
+``pipeline.eval_gen`` (generalist checkpoints, ``"gen": True``) instead.
 """
 from __future__ import annotations
 
@@ -219,8 +224,8 @@ def print_report(r: dict) -> None:
     print(f"ghost refusal rate/match  init {r['ghost_refusal_rate_init']}  cand {r['ghost_refusal_rate_cand']}  "
           f"(pass bound: cand <= {r['ghost_refusal_rate_bound']})")
     print()
-    print("item (ii) pro agreement is NOT checked here -- read it from the training log / pipeline.eval_s1 "
-          "(clean VAL split, not in matches.jsonl).")
+    print("item (ii) pro agreement is NOT checked here -- read it from the training log, or pipeline.eval_s1 (S1) / "
+          "pipeline.eval_gen (generalist checkpoint) on the clean VAL split (not in matches.jsonl).")
     print()
     labels = {"delta_ge_5pp": "(i)  paired entry-clustered delta >= +5 pp", "ci_lower_gt_0": "(i)  CI lower bound > 0",
               "before_script_delta_gt_0": "     before-script delta > 0",
@@ -242,11 +247,33 @@ def print_report(r: dict) -> None:
         print(f"\nVERDICT: {r['verdict']}")
 
 
-def print_commands(init_ckpt: str, cand_ckpt: str, out_root: str, engine: str) -> None:
+def condition_flags(cfg: Optional[dict]) -> str:
+    """An rl_royale config's condition keys -> the e1_eval flags that reproduce them ('' for the defaults / no config).
+    ``noise_off``: list, comma string or ``all`` (e1_eval's alias for every component)."""
+    if not cfg:
+        return ""
+    spec = cfg.get("noise_off") or []
+    names = [x.strip() for x in spec.split(",") if x.strip()] if isinstance(spec, str) else [str(x) for x in spec]
+    out = []
+    if names:
+        out.append(f"--noise-off {','.join(names)}")
+    if cfg.get("opp_elixir"):
+        out.append(f"--opp-elixir {cfg['opp_elixir']}")
+    if int(cfg.get("action_delay_ticks") or 0):
+        out.append(f"--action-delay {int(cfg['action_delay_ticks'])}")
+    if int(cfg.get("extrapolate_ticks") or 0):
+        out.append(f"--extrapolate {int(cfg['extrapolate_ticks'])}")
+    return "".join(" " + f for f in out)
+
+
+def print_commands(init_ckpt: str, cand_ckpt: str, out_root: str, engine: str, cfg: Optional[dict] = None) -> None:
+    cond = condition_flags(cfg)
+    if cfg is not None:
+        print(f"# condition from the run config:{cond or ' none (the defaults)'}")
     if engine == "royale":
         for label, ckpt in (("init", init_ckpt), ("cand", cand_ckpt)):
             print(f"research/ext/Royale/.venv/Scripts/python.exe -m pipeline.e1_eval --engine royale --port 0 "
-                  f"--ckpt {ckpt} --split heldout --entries all --seeds 0,1,2 --device cuda --batch 29 "
+                  f"--ckpt {ckpt} --split heldout --entries all --seeds 0,1,2 --device cuda --batch 29{cond} "
                   f"--out {out_root}/{label}")
         print("\nnote: e1_eval --engine royale skips entries RoyaleSim cannot load; unpaired-count them, don't stop the gate.")
     else:
@@ -254,7 +281,7 @@ def print_commands(init_ckpt: str, cand_ckpt: str, out_root: str, engine: str) -
         for label, ckpt in (("init", init_ckpt), ("cand", cand_ckpt)):
             for slot, (port, shard) in ports.items():
                 print(f"icebow/.venv/Scripts/python.exe -m pipeline.e1_eval --port {port} --ckpt {ckpt} "
-                      f"--split heldout --entries all --seeds 0,1,2 --shard {shard} --out {out_root}/{label}/{slot}")
+                      f"--split heldout --entries all --seeds 0,1,2 --shard {shard}{cond} --out {out_root}/{label}/{slot}")
         print("\nnote: boot the real engine first (see HANDOFF / e1/_boot.ps1) before running these.")
 
 
@@ -268,6 +295,8 @@ def build_argparser() -> argparse.ArgumentParser:
     ap.add_argument("--cand-ckpt", help="--commands only")
     ap.add_argument("--out-root", help="--commands only: --out root (forward slashes), <root>/init and <root>/cand")
     ap.add_argument("--engine", choices=("real", "royale"), default="real", help="--commands only")
+    ap.add_argument("--config", type=Path, default=None, help="--commands only: the RL run's config.yaml; its "
+                    "condition keys become e1_eval flags (--noise-off / --opp-elixir / --action-delay / --extrapolate)")
     return ap
 
 
@@ -277,7 +306,11 @@ def main(argv=None) -> None:
     if args.commands:
         if not (args.init_ckpt and args.cand_ckpt and args.out_root):
             ap.error("--commands needs --init-ckpt, --cand-ckpt and --out-root")
-        print_commands(args.init_ckpt, args.cand_ckpt, args.out_root, args.engine)
+        cfg = None
+        if args.config:
+            import yaml
+            cfg = yaml.safe_load(args.config.read_text(encoding="utf-8"))
+        print_commands(args.init_ckpt, args.cand_ckpt, args.out_root, args.engine, cfg)
         return
     if not (args.init and args.cand):
         ap.error("need --init and --cand (or --commands)")

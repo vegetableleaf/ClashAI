@@ -10,6 +10,15 @@ form); pro agreement = ``eval_gen.evaluate`` on the dataset_gen v3val rows (``pr
 ``noise_off`` / ``opp_elixir`` / ``action_delay_ticks`` / ``extrapolate_ticks`` go into every actor match cfg, rollouts
 AND held-out screens (``condition_cfg``, ``actor_cfg``); defaults = the old behaviour.
 
+LEAGUE (T12b, ``league: true``, generalist init only): every rollout is a SELF-PLAY match (``e1_eval.run_selfplay_batch``
+on RoyaleSelfPlayEnv): the learner (sampled + recorded as above) vs a FROZEN opponent -- the init generalist, the S1
+icebow specialist (icebow only) or a learner snapshot (``<run>_snap_u{NNNN}.pt`` every ``league_snapshot_every``
+updates, newest ``league_snapshot_keep`` in the pool) -- on decks drawn from the census pool (``sample_matchups``); E
+matchups = the LOO groups, G rollouts each; both sides under the condition keys. Pool + sampling rng ride in the
+checkpoint (--resume continues them). The held-out ghost screen, pro agreement and guards are unchanged.
+LEASH (T12b, owner ruling): ``leash: max`` steers beta on max(KL_gate, KL_card, KL_cell) (``leash_kl``); ``cell`` = the
+old KL_cell rule exactly (and what a run resumed from before the key keeps).
+
     research/ext/Royale/.venv/Scripts/python.exe -m pipeline.rl_royale --config pipeline/rl_royale.yaml --run NAME
     ... --smoke          E=4, G=2, 1 actor, 2 updates + the checks below; prints SMOKE PASS, exits 0
     ... --resume         continue from <run>_latest.pt exactly (update counter, beta, optimizer, rng, guards)
@@ -32,7 +41,8 @@ One update (``Learner.one_update``):
      (``minibatch_loss``). Model in eval() for rollout AND update (E1 3.3 dropout trap).
   5. Update 0, epoch 0, minibatch 0: max |ratio - 1| < 1e-4 and every KL < 1e-6 (plan values), else AssertionError
      (a bug, not noise).
-  6. beta x2 / /2 around ``kl_target`` on KL_cell, clamp [beta_min, beta_max] (``adapt_beta``); kl_target never moves.
+  6. beta x2 / /2 around ``kl_target`` on the leash KL (``leash_kl``: KL_cell, or the max of the three), clamp
+     [beta_min, beta_max] (``adapt_beta``); kl_target never moves.
   7. Held-out screen / pro agreement when due; stop rules (``Guards``, ``tripwire_reason``, ``hard_stop_reason``);
      ``<run>_latest.pt`` every update (tmp + os.replace), ``<run>_u{NNNN}.pt`` every ``save_every`` (never overwritten).
 Checkpoint = train_s1 layout (model/args/deck/epoch/val/n_params) + an ``rl`` dict, all ``weights_only``-loadable, so
@@ -79,7 +89,7 @@ CARD_FILL = -1e9            # finite "not allowed" card logit: exp underflows to
                             # -inf) but 0 * (lp - ref) stays 0, so the KL has no NaN gradient at masked slots
 ASSERT_RATIO, ASSERT_KL = 1e-4, 1e-6          # rl_plan.md "Learner" (measured L68: 7.8e-6 / ~1e-12)
 SMOKE = {"E": 4, "G": 2, "n_actors": 1, "in_flight": 8, "max_updates": 2, "screen_entries": 8, "proagree_rows": 1000,
-         "proagree_every": 1, "screen_every": 1, "save_every": 1}
+         "proagree_every": 1, "screen_every": 1, "save_every": 1, "league_snapshot_every": 1}
 TRAJ_KEYS = ("tok", "mask", "sc", "past", "allowed", "gate_sampled", "played", "slot", "cell")
 COND_KEYS = ("noise_off", "opp_elixir", "action_delay_ticks", "extrapolate_ticks")   # rl_royale.yaml "conditions"
 
@@ -142,6 +152,22 @@ def match_weights(n_rows) -> list[np.ndarray]:
     n = [int(k) for k in n_rows]
     M = sum(1 for k in n if k > 0)
     return [np.full(k, 1.0 / (k * M)) if k else np.zeros(0) for k in n]
+
+
+LEASH_MODES = ("cell", "max")
+
+
+def leash_kl(upd: dict, mode: str) -> tuple[float, str]:
+    """The KL ``adapt_beta`` steers on (owner ruling 2026-09-25, T12b), from ``ppo_update``'s monitors (None = 0.0):
+    ``cell`` = KL_cell (the S1 rule, unchanged); ``max`` = max(KL_gate, KL_card, KL_cell). -> (value, the head that
+    drove it; a tie goes to the first of gate, card, cell). A config without the key is ``cell`` (Learner)."""
+    kls = {h: float(upd.get(f"kl_{h}") or 0.0) for h in ("gate", "card", "cell")}
+    if mode == "cell":
+        return kls["cell"], "cell"
+    if mode != "max":
+        raise ValueError(f"leash {mode!r} not in {LEASH_MODES}")
+    h = max(kls, key=kls.get)
+    return kls[h], h
 
 
 def adapt_beta(beta: float, kl_cell: float, target: float, lo: float = 0.03, hi: float = 3.0) -> float:
@@ -287,6 +313,130 @@ def rollout_jobs(jobs, update: int) -> list[tuple]:
     behaviour seed index and the obs seed are per (entry, g), not per batch (test_rl_royale.TestRolloutJobsSeeds)."""
     return [(i, entry, g, {"rollout_index": int(g), "update": int(update),
                            "obs_seed": rl_obs_seed(str(entry["tag"]), int(g), int(update))}) for i, entry, g in jobs]
+
+
+# ------------------------------------------------------------------------------------------------------
+# league (L68 T12b): opponents, decks, matchups, monitors -- pure, tested offline (pipeline/tests/test_league.py)
+# ------------------------------------------------------------------------------------------------------
+OPP_CATS = ("latest", "older", "init", "s1")
+DECK_BUCKETS = ("icebow", "head", "tail")
+HEAD_DECKS = 20                     # "head" bucket = the 20 most-played loadable census decks (~30% of census draws)
+
+
+def league_decks(path: Path) -> list[dict]:
+    """loadable_decks.json's census decks (census order) -> [{name, engine, sides, bucket}], icebow REMOVED: icebow
+    enters only through ``league_icebow_share`` (``sample_deck``), so its share is exactly that number."""
+    ice = sorted(n.split("@")[0] for n in E.ICEBOW_ENGINE_DECK)
+    out = []
+    for x in json.loads(Path(path).read_text(encoding="utf-8"))["decks"]:
+        if sorted(x["engine"]) == ice:
+            continue
+        out.append({"name": f"r{x['rank']}", "engine": list(x["engine"]), "sides": int(x["sides"]),
+                    "bucket": "head" if len(out) < HEAD_DECKS else "tail"})
+    return out
+
+
+ICEBOW_DECK = {"name": "icebow", "engine": list(E.ICEBOW_ENGINE_DECK), "sides": None, "bucket": "icebow"}
+
+
+def deck_weights(sides, alpha: float, floor: float) -> np.ndarray:
+    """Census-frequency tempering with a floor: w_i = max(sides_i ** alpha, floor * mean_j(sides_j ** alpha)),
+    normalised to sum 1."""
+    w = np.asarray(sides, dtype=np.float64) ** float(alpha)
+    w = np.maximum(w, float(floor) * w.mean())
+    return w / w.sum()
+
+
+def sample_deck(rng: np.random.Generator, census: list[dict], p: np.ndarray, icebow_share: float) -> dict:
+    """icebow with probability ``icebow_share``, else a census deck drawn with ``p`` (``deck_weights``)."""
+    if rng.random() < float(icebow_share):
+        return ICEBOW_DECK
+    return census[int(rng.choice(len(census), p=p))]
+
+
+def validate_league(cfg: dict) -> None:
+    """The league keys, checked before anything runs (SystemExit with the offending key and value)."""
+    bad = []
+    for k in ("league_snapshot_every", "league_snapshot_keep"):
+        v = cfg.get(k)
+        if not (isinstance(v, int) and not isinstance(v, bool) and v >= 1):
+            bad.append(f"{k} must be an integer >= 1, got {v!r}")
+    mix = cfg.get("league_mix")
+    if not isinstance(mix, dict) or set(mix) - set(OPP_CATS):
+        bad.append(f"league_mix must be a mapping over {OPP_CATS}, got {mix!r}")
+    else:
+        vals = {c: mix.get(c, 0.0) for c in OPP_CATS}
+        if any(not isinstance(v, (int, float)) or isinstance(v, bool) or not math.isfinite(v) or v < 0
+               for v in vals.values()):
+            bad.append(f"league_mix weights must be finite numbers >= 0, got {mix!r}")
+        elif sum(vals.values()) <= 0:
+            bad.append(f"league_mix weights must have a positive sum, got {mix!r}")
+    sh = cfg.get("league_icebow_share")
+    if not (isinstance(sh, (int, float)) and not isinstance(sh, bool) and 0.0 <= sh <= 1.0):
+        bad.append(f"league_icebow_share must be a number in [0, 1], got {sh!r}")
+    for k in ("league_deck_alpha", "league_deck_floor"):
+        v = cfg.get(k)
+        if not (isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v) and v >= 0):
+            bad.append(f"{k} must be a finite number >= 0, got {v!r}")
+    if cfg.get("league_opp_policy") not in ("live", "sample"):
+        bad.append(f"league_opp_policy must be live or sample, got {cfg.get('league_opp_policy')!r}")
+    if bad:
+        raise SystemExit("bad league config: " + "; ".join(bad))
+
+
+def opponent_mix(n_snaps: int, mix: dict) -> dict:
+    """The opponent categories available with ``n_snaps`` snapshots and their probabilities (``mix`` renormalised):
+    ``latest`` always (the newest snapshot, or the init before the first), ``older`` from 2 snapshots on, ``init``,
+    ``s1``; a category with weight 0 is left out."""
+    ok = [c for c in OPP_CATS if float(mix.get(c, 0.0)) > 0 and (c != "older" or n_snaps >= 2)]
+    tot = sum(float(mix[c]) for c in ok)
+    return {c: float(mix[c]) / tot for c in ok}
+
+
+def sample_opponent(rng: np.random.Generator, snaps: list[dict], mix: dict, init_path: str, s1_path: str) -> dict:
+    """-> {id, cat, type, path}: ``type`` (init / snapshot / s1) is what the monitors group by."""
+    m = opponent_mix(len(snaps), mix)
+    cats = list(m)
+    cat = cats[int(rng.choice(len(cats), p=[m[c] for c in cats]))]
+    if cat == "s1":
+        return {"id": "s1", "cat": cat, "type": "s1", "path": str(s1_path)}
+    if cat == "init" or (cat == "latest" and not snaps):
+        return {"id": "init", "cat": cat, "type": "init", "path": str(init_path)}
+    sn = snaps[-1] if cat == "latest" else snaps[int(rng.integers(len(snaps) - 1))]
+    return {"id": sn["id"], "cat": cat, "type": "snapshot", "path": sn["path"]}
+
+
+def sample_matchups(rng: np.random.Generator, n: int, update: int, snaps: list[dict], cfg: dict, census: list[dict],
+                    p: np.ndarray) -> list[dict]:
+    """``n`` league matchups (one LOO group each): opponent (``sample_opponent``), learner deck (``sample_deck``),
+    opponent deck (the same rule; ALWAYS icebow for the S1 specialist, the only deck it can play), learner side
+    (uniform) and the env's deal seed -- drawn in that order per matchup from ``rng`` (the learner's own, so resume
+    continues the stream)."""
+    out = []
+    for i in range(int(n)):
+        opp = sample_opponent(rng, snaps, cfg["league_mix"], cfg["init"], cfg["league_specialist"])
+        ld = sample_deck(rng, census, p, cfg["league_icebow_share"])
+        od = ICEBOW_DECK if opp["type"] == "s1" else sample_deck(rng, census, p, cfg["league_icebow_share"])
+        out.append({"tag": f"sp{int(update):04d}_{i:02d}", "opp": opp,
+                    "learner_deck": ld["engine"], "learner_deck_name": ld["name"], "learner_bucket": ld["bucket"],
+                    "opp_deck": od["engine"], "opp_deck_name": od["name"],
+                    "learner_side": int(rng.integers(2)), "seed": int(rng.integers(2 ** 31 - 1))})
+    return out
+
+
+def league_monitors(results: list[dict]) -> dict:
+    """Per-update self-play monitors: learner W/L/D and win rate by opponent type and by learner-deck bucket, draws,
+    learner and opponent plays/min."""
+    def wdl(rs):
+        n = len(rs)
+        w, l_ = sum(r["outcome"] == "win" for r in rs), sum(r["outcome"] == "loss" for r in rs)
+        return {"n": n, "W": w, "L": l_, "D": n - w - l_, "winrate": w / n if n else None}
+    minutes = sum(r["seconds"] for r in results) / 60.0
+    return {"by_opp": {t: wdl([r for r in results if r["league"]["opp"]["type"] == t]) for t in ("init", "snapshot", "s1")},
+            "by_deck": {b: wdl([r for r in results if r["league"]["learner_bucket"] == b]) for b in DECK_BUCKETS},
+            "draws": sum(r["outcome"] == "draw" for r in results),
+            "plays_per_min": sum(r["plays_attempted"] for r in results) / minutes if minutes else None,
+            "opp_plays_per_min": sum(r["opp_side"]["plays_attempted"] for r in results) / minutes if minutes else None}
 
 
 def _py(x):
@@ -577,8 +727,10 @@ def actor_sender(out_q):
 
 
 def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
-    """One actor process: a model copy on ``actor_device`` + RoyaleSim envs; runs ``e1_eval.run_batch`` per job list.
-    Messages in: (kind, update, state_dict bytes, jobs [(entry_index, entry, g)]) or None to exit.
+    """One actor process: a model copy on ``actor_device`` + RoyaleSim envs; runs ``e1_eval.run_batch`` per job list
+    (``selfplay``: ``e1_eval.run_selfplay_batch`` with the frozen opponents the jobs name, loaded read-only from their
+    checkpoint files by ``e1_eval.load_policy`` and cached by path; the learner's weights come in the message as always).
+    Messages in: (kind, update, state_dict bytes, jobs [(entry_index, entry | league spec, g)]) or None to exit.
     Out: ("ready", aid, gen, pid) | ("done", aid, gen, results, skipped, stats) | ("error", aid, gen, traceback)."""
     import multiprocessing as mp
     send = actor_sender(out_q)
@@ -586,8 +738,9 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
     try:
         from pipeline.model_v3 import S1Model
         from pipeline.obs_contract import load_deck
-        from pipeline.royale_env import RoyalePoolEnv, UnsupportedDeck
+        from pipeline.royale_env import RoyalePoolEnv, RoyaleSelfPlayEnv, UnsupportedDeck
         dev = base["actor_device"]
+        opp_cache: dict = {}                                  # league: checkpoint path -> (frozen policy, its grid)
         deck = load_deck("icebow")
         g = base.get("gen")
         if g:                                                 # generalist: GenModel weights behind GenPolicy
@@ -622,15 +775,30 @@ def actor_main(aid: int, gen: int, in_q, out_q, base: dict) -> None:
             results, skipped = [], []
 
             def on_result(line):
-                if kind == "rollout":
+                if kind in ("rollout", "selfplay"):
                     line["rollout_index"], line["update"] = int(line["k"]), int(update)
                 results.append(line)
 
-            it = rollout_jobs(jobs, update) if kind == "rollout" else jobs     # screen: eval obs seed of (tag, k)
-            E.run_batch(lambda: RoyalePoolEnv(decision_ticks=int(base["decide_every"])), model, deck, it, cfg,
-                        max(1, min(int(base["in_flight"]), len(jobs))), on_result=on_result,
-                        on_skip=lambda e, exc: skipped.append({"tag": e["tag"], "why": str(exc)}),
-                        skip=(UnsupportedDeck,))
+            n_fl = max(1, min(int(base["in_flight"]), len(jobs)))
+            on_skip = (lambda e, exc: skipped.append({"tag": e["tag"], "why": str(exc)}))
+            if kind == "selfplay":
+                cfg = actor_cfg(base, "rollout", aid, dev)
+                need = {j[1]["opp"]["path"] for j in jobs}
+                for pth in [x for x in opp_cache if x not in need]:
+                    del opp_cache[pth]
+                for pth in need - set(opp_cache):
+                    pol, mi = E.load_policy(REPO / pth, dev)
+                    opp_cache[pth] = (pol, str(mi.get("grid", "floor")))
+                opps = {j[1]["opp"]["id"]: (opp_cache[j[1]["opp"]["path"]][0],
+                                            {**cfg, "policy": base["league_opp_policy"], "record": False,
+                                             "grid": opp_cache[j[1]["opp"]["path"]][1]}) for j in jobs}
+                E.run_selfplay_batch(lambda: RoyaleSelfPlayEnv(decision_ticks=int(base["decide_every"])), model, opps,
+                                     rollout_jobs(jobs, update), cfg, n_fl, on_result=on_result, on_skip=on_skip,
+                                     skip=(UnsupportedDeck,))
+            else:
+                it = rollout_jobs(jobs, update) if kind == "rollout" else jobs     # screen: eval obs seed of (tag, k)
+                E.run_batch(lambda: RoyalePoolEnv(decision_ticks=int(base["decide_every"])), model, deck, it, cfg,
+                            n_fl, on_result=on_result, on_skip=on_skip, skip=(UnsupportedDeck,))
             stats = {"wall_s": time.perf_counter() - t0, "matches": len(results),
                      "gpu_peak_mb": (torch.cuda.max_memory_allocated() / 2**20) if dev.startswith("cuda") else None}
             if not send(("done", aid, gen, results, skipped, stats)):
@@ -835,6 +1003,9 @@ class Learner:
             self.model, self.minfo = ep.load_model(self.init_path, str(self.dev))
         self.init_meta = {"args": dict(ick["args"]), "deck": ick["deck"], "epoch": ick["epoch"], "n_params": ick["n_params"]}
         self.grid = self.minfo["grid"]
+        self.league = None                                    # league on: {"snapshots": [{id, update, path}]}
+        if cfg.get("league"):
+            self._league_setup()
         self.ref = copy.deepcopy(self.model).eval()
         for p in self.ref.parameters():
             p.requires_grad_(False)
@@ -852,6 +1023,68 @@ class Learner:
         self.resumed = resume
         if resume:
             self._restore(self.ck_dir / f"{run}_latest.pt")
+
+    def _league_setup(self) -> None:
+        """League on (T12b): the learner must be the generalist; the deck pool + its sampling weights; opponents =
+        init + the S1 specialist + snapshots (none yet; ``_restore`` brings a resumed run's back)."""
+        cfg = self.cfg
+        if not self.gen:
+            raise SystemExit("league: the learner must be the generalist (a 'gen' init); S1 plays only icebow")
+        validate_league(cfg)
+        if not (REPO / cfg["league_specialist"]).exists():
+            raise SystemExit(f"league_specialist {cfg['league_specialist']} not found")
+        self.census = league_decks(REPO / cfg["league_decks"])
+        self.census_p = deck_weights([d["sides"] for d in self.census], cfg["league_deck_alpha"],
+                                     cfg["league_deck_floor"])
+        self.league = {"snapshots": []}
+
+    def _snapshot_payload(self) -> dict:
+        """What a FROZEN opponent needs and nothing else: the weights + the keys ``e1_eval.load_policy`` /
+        ``eval_gen.load_model`` read (gen, args, d_c, card_vocab, epoch, n_params, deck). No optimizer, no rl state."""
+        return {"model": {k: v.detach().cpu() for k, v in self.model.state_dict().items()},
+                "args": _py(dict(self.init_meta["args"]) | {"rl_run": self.run, "rl_init": str(self.cfg["init"])}),
+                "deck": self.init_meta["deck"], "epoch": self.init_meta["epoch"],
+                "n_params": int(self.init_meta["n_params"]), "gen": True, "d_c": int(self.gen["d_c"]),
+                "card_vocab": list(self.gen["card_vocab"]), "snapshot": {"run": self.run, "update": int(self.update)}}
+
+    def _snapshot(self) -> tuple[str, list[Path]]:
+        """Freeze the learner now as a league opponent: ``<run>_snap_u{NNNN}.pt`` beside the checkpoints (weights +
+        load metadata only, ``_snapshot_payload``); the pool keeps the newest ``league_snapshot_keep``. -> (its id, the
+        EVICTED snapshot files): the caller deletes those only AFTER ``_latest.pt`` (which holds the new pool) is
+        saved, so a crash in between never leaves a saved pool naming a deleted file. An existing file for this update
+        (a crash after it, then --resume re-ran the update) is kept if its weights are identical, else this raises:
+        the pool must never silently change what a snapshot id plays."""
+        path = self.ck_dir / f"{self.run}_snap_u{self.update:04d}.pt"
+        obj = self._snapshot_payload()
+        if path.exists():
+            old = torch.load(path, map_location="cpu")["model"]
+            if set(old) != set(obj["model"]) or not all(torch.equal(old[k], obj["model"][k]) for k in old):
+                raise RuntimeError(f"snapshot {path} already exists with DIFFERENT weights (a crash after it was written, "
+                                   f"then --resume re-ran update {self.update}); move it aside and resume again")
+            self.log(f"[rl] {path.name} already exists with identical weights -- kept")
+        else:
+            self._atomic_save(obj, path)
+        try:
+            rel = path.resolve().relative_to(REPO).as_posix()
+        except ValueError:
+            rel = str(path)
+        snaps = self.league["snapshots"]
+        snaps.append({"id": f"snap_u{self.update:04d}", "update": int(self.update), "path": rel})
+        keep = int(self.cfg["league_snapshot_keep"])
+        evicted = snaps[:-keep]
+        del snaps[:-keep]
+        return snaps[-1]["id"], [REPO / e["path"] for e in evicted]
+
+    def _delete_evicted(self, files: list[Path]) -> list[str]:
+        """Delete evicted snapshot files: only this run's own ``_snap_`` files inside its checkpoint dir (a numbered
+        checkpoint ``_uNNNN.pt`` is a separate file and is never touched here)."""
+        gone = []
+        for f in files:
+            f = Path(f)
+            if f.resolve().parent == self.ck_dir.resolve() and f.name.startswith(f"{self.run}_snap_u"):
+                f.unlink(missing_ok=True)
+                gone.append(f.name)
+        return gone
 
     # ---- entries ---------------------------------------------------------------------------------
     def _entries(self) -> tuple[list[dict], list[dict]]:
@@ -944,7 +1177,7 @@ class Learner:
                 "config": _py(self.cfg), "config_sha256": config_sha(self.cfg), "run": self.run,
                 "init": str(self.cfg["init"]), "pool_sha256": self.pool_sha,
                 "baselines": _py({**self.base, "init_screen": self.base.get("init_screen")}),
-                "guards": _py(self.guards.s)}
+                "guards": _py(self.guards.s), **({"league": _py(self.league)} if getattr(self, "league", None) else {})}
 
     def _payload(self, val: Optional[dict]) -> dict:
         args = dict(self.init_meta["args"]) | {"rl_run": self.run, "rl_init": str(self.cfg["init"])}
@@ -993,6 +1226,12 @@ class Learner:
         self.visits = list(rl["visits"])
         self.base = dict(rl["baselines"])
         self.guards = Guards(self.cfg, rl["guards"])
+        if getattr(self, "league", None) is not None:
+            self.league = dict(rl.get("league") or {"snapshots": []})
+        if "leash" not in rl["config"] and self.cfg.get("leash", "cell") != "cell":
+            self.log(f"[rl] RESUME of a run from before the leash key: leash stays 'cell' (was {self.cfg['leash']!r} "
+                     f"in this config) -- the old run's beta rule")
+            self.cfg["leash"] = "cell"
         if rl["config_sha256"] != config_sha(self.cfg):
             diff = {k: (rl["config"].get(k), v) for k, v in self.cfg.items() if rl["config"].get(k) != v}
             self.log(f"[rl] RESUME with a changed config (old, new): {diff}")
@@ -1002,6 +1241,15 @@ class Learner:
     # ---- one update ------------------------------------------------------------------------------
     def rollout(self, u: int) -> tuple[list[dict], dict]:
         E_, G = int(self.cfg["E"]), int(self.cfg["G"])
+        if getattr(self, "league", None) is not None:           # league: E self-play matchups x G rollouts
+            specs = sample_matchups(self.rng, E_, u, self.league["snapshots"], self.cfg, self.census, self.census_p)
+            jobs = [(i, sp, g) for i, sp in enumerate(specs) for g in range(G)]
+            res, skipped, st = self.actors.run("selfplay", u, state_bytes(self.model), jobs)
+            if skipped:
+                self.log(f"[rl] WARNING {len(skipped)} self-play rollout(s) skipped: {skipped[:3]}")
+            return res, {"picked": [], "actors": st, "skipped": len(skipped),
+                         "league": [{"opp": sp["opp"]["id"], "learner_deck": sp["learner_deck_name"],
+                                     "opp_deck": sp["opp_deck_name"], "side": sp["learner_side"]} for sp in specs]}
         pick = self.rng.choice(len(self.train), size=min(E_, len(self.train)), replace=False)
         for i in pick:
             self.visits[int(i)] += 1
@@ -1018,6 +1266,9 @@ class Learner:
         results, rinfo = self.rollout(u)
         t_roll = time.perf_counter() - t0
         mon = rollout_monitors(results, cfg["tau"], cfg["T"])
+        league = getattr(self, "league", None) is not None
+        if league:
+            mon["league"] = league_monitors(results)
         Bn, bst = collate(results, float(cfg["adv_clip"]))
         del results
         t1 = time.perf_counter()
@@ -1040,8 +1291,10 @@ class Learner:
         elif not all(bool(torch.isfinite(p).all()) for p in self.model.parameters()):
             reasons.append("non-finite parameters after the update")
             crash = True
+        leash = cfg.get("leash", "cell")
+        kl_leash, kl_driver = leash_kl(upd, leash)
         if not crash:
-            self.beta = adapt_beta(beta_used, upd["kl_cell"] or 0.0, float(cfg["kl_target"]), float(cfg["beta_min"]),
+            self.beta = adapt_beta(beta_used, kl_leash, float(cfg["kl_target"]), float(cfg["beta_min"]),
                                    float(cfg["beta_max"]))
             if u == 0 and self.guards.s["base"] is None:
                 self.guards.set_baselines(mon)
@@ -1055,11 +1308,13 @@ class Learner:
                      f"good update ({self.update} done)")
         rec = {"type": "update", "update": u, "time": time.strftime("%Y-%m-%d %H:%M:%S"), **mon, **bst,
                "kl_gate": upd["kl_gate"], "kl_card": upd["kl_card"], "kl_cell": upd["kl_cell"], "beta_used": beta_used,
-               "beta_next": self.beta, "kl_target": cfg["kl_target"], "l_pg": upd["l_pg"],
+               "beta_next": self.beta, "kl_target": cfg["kl_target"], "leash": leash, "kl_leash": kl_leash,
+               "kl_driver": kl_driver, "l_pg": upd["l_pg"],
                "entropy": upd["ent"], "entropy_init": R["ent"], "clip_frac": upd["clip_frac"],
                "ratio_mean": upd["ratio_mean"], "grad_norm_mean": upd["grad_norm_mean"],
                "first_minibatch": {k: first[k] for k in ("ratio_maxdev", "kl_gate", "kl_card", "kl_cell", "lp_maxdiff")},
-               "picked": rinfo["picked"], "skipped": rinfo["skipped"], "visits_distinct": sum(v > 0 for v in self.visits),
+               "picked": rinfo["picked"], "skipped": rinfo["skipped"],
+               **({"matchups": rinfo["league"]} if league else {}), "visits_distinct": sum(v > 0 for v in self.visits),
                "visits_max": max(self.visits), "guards": copy.deepcopy(self.guards.s),
                "wall_rollout_s": t_roll, "wall_update_s": t_upd,
                "actor_s_per_match": {a: s["wall_s"] / max(s["matches"], 1) for a, s in rinfo["actors"].items()},
@@ -1102,9 +1357,16 @@ class Learner:
         if crash:
             rec["crash_ckpt"] = str(self.crash_save("; ".join(reasons)))
         else:
+            evicted: list = []
+            if league and self.update % int(cfg["league_snapshot_every"]) == 0:
+                rec["snapshot"], evicted = self._snapshot()
+            if league:
+                rec["league_pool"] = [x["id"] for x in self.league["snapshots"]]
             numbered = self.save(self.latest_pa if "proagree" in rec else None,
                                  self.update % int(cfg["save_every"]) == 0)
             rec["ckpt"] = str(numbered) if numbered else None
+            if evicted:                                       # only now: _latest.pt no longer names them
+                rec["snapshot_deleted"] = self._delete_evicted(evicted)
         rec["wall_save_s"] = time.perf_counter() - t
         rec["wall_total_s"] = time.perf_counter() - t0
         rec["learner_gpu_peak_mb"] = torch.cuda.max_memory_allocated(self.dev) / 2**20 if self.dev.type == "cuda" else None
@@ -1113,9 +1375,14 @@ class Learner:
         f = (lambda v, s="{:.3f}": "-" if v is None else s.format(v))
         self.log(f"[rl] u{u:04d} W/L/D {mon['W']}/{mon['L']}/{mon['D']} ppm {f(mon['plays_per_min'], '{:.2f}')} "
                  f"pgate {f(mon['p_gate_mean'])} KL g/c/x {f(upd['kl_gate'], '{:.4f}')}/{f(upd['kl_card'], '{:.4f}')}/"
-                 f"{f(upd['kl_cell'], '{:.4f}')} beta {beta_used:.3g}->{self.beta:.3g} clip {f(upd['clip_frac'])} "
+                 f"{f(upd['kl_cell'], '{:.4f}')} beta {beta_used:.3g}->{self.beta:.3g}"
+                 + (f" (leash max: {kl_driver})" if leash == "max" else "") + f" clip {f(upd['clip_frac'])} "
                  f"mixed {bst['mixed_groups']}/{bst['groups']} rows {bst['rows']} "
                  f"wall roll {t_roll:.0f}s upd {t_upd:.0f}s"
+                 + (" | league wr " + " ".join(f"{t} {f(v['winrate'], '{:.2f}')}/{v['n']}"
+                                               for t, v in mon["league"]["by_opp"].items())
+                    + f" D {mon['league']['draws']}" + (f" +{rec['snapshot']}" if "snapshot" in rec else "")
+                    if league else "")
                  + (f" | screen {f(rec['screen']['winrate'])} d {f(rec['screen']['delta_pp'], '{:+.1f}')}pp "
                     f"CI [{f(rec['screen']['ci_lo_pp'], '{:+.1f}')}, {f(rec['screen']['ci_hi_pp'], '{:+.1f}')}] "
                     f"(+{rec['screen']['better']}/-{rec['screen']['worse']}) {exploit_str(rec['screen'])}"
@@ -1152,6 +1419,7 @@ class Learner:
         base.update({"d": int(a.get("d", 128)), "layers": int(a.get("layers", 4)), "grid": self.grid})
         base.update({k: self.cfg.get(k) for k in COND_KEYS})
         base["gen"] = getattr(self, "gen", None)
+        base["league_opp_policy"] = self.cfg.get("league_opp_policy", "sample")
         return base
 
     def start_actors(self) -> None:
@@ -1167,7 +1435,13 @@ class Learner:
         log(f"[rl] run {self.run}: train {len(self.train)} loadable, held-out {len(self.heldout)} loadable "
             f"(screen uses {len(self.screen_entries())}); init {cfg['init']} ({'GENERALIST' if self.gen else 'S1'}) "
             f"grid {self.grid}; conditions (rollouts + screens): "
-            + " ".join(f"{k}={cfg.get(k)}" for k in COND_KEYS))
+            + " ".join(f"{k}={cfg.get(k)}" for k in COND_KEYS) + f"; leash {cfg.get('leash', 'cell')}")
+        if self.league is not None:
+            log(f"[rl] LEAGUE: {len(self.census)} census decks + icebow (share {cfg['league_icebow_share']}), weights "
+                f"sides^{cfg['league_deck_alpha']} floor {cfg['league_deck_floor']}x mean (max p {self.census_p.max():.4f}, "
+                f"min {self.census_p.min():.4f}); opponents mix {cfg['league_mix']} (opp policy "
+                f"{cfg['league_opp_policy']}), S1 specialist {cfg['league_specialist']} (icebow only); snapshot every "
+                f"{cfg['league_snapshot_every']} updates, keep {cfg['league_snapshot_keep']}")
         t = time.perf_counter()
         pa = self.proagree(self.model)
         self.base["init_proagree"] = {k: pa[k] for k in PA_KEYS + ("cell_tile_top1", "n", "n_play")}
@@ -1228,7 +1502,10 @@ def smoke_resume_check(cfg, run, run_dir, ck_dir, log, live: Learner) -> None:
               "opt_moments": all(torch.equal(s1["state"][k][m], s2["state"][k][m].to(s1["state"][k][m].device))
                                  for k in s1["state"] for m in ("exp_avg", "exp_avg_sq")),
               "params": all(torch.equal(a, b) for a, b in zip(live.model.state_dict().values(), L2.model.state_dict().values())),
-              "guards": json.dumps(_py(L2.guards.s), sort_keys=True) == json.dumps(_py(live.guards.s), sort_keys=True)}
+              "guards": json.dumps(_py(L2.guards.s), sort_keys=True) == json.dumps(_py(live.guards.s), sort_keys=True),
+              "league": L2.league == live.league}
+    if live.league is not None and not live.league["snapshots"]:
+        raise SmokeFail("league smoke added no snapshot (set league_snapshot_every small)")
     step = float(next(iter(s2["state"].values()))["step"]) if s2["state"] else None
     log(f"[rl] SMOKE resume check: update {L2.update}, beta {L2.beta}, optimizer step {step}: {checks}")
     bad = [k for k, v in checks.items() if not v]

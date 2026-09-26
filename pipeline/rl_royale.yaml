@@ -22,6 +22,23 @@ opp_elixir: null            # null = the view's own opp elixir; counter = public
 action_delay_ticks: 0       # live tap->land lag: a play decided at T lands at T + D (live ~24-27 ticks)
 extrapolate_ticks: 0        # each decision sees the raw board advanced H ticks (pipeline/extrapolate.py)
 
+# ---- self-play LEAGUE (L68 T12b; RUNBOOK section 9). Off = the ghost-pool rollouts above, unchanged. On: every
+# rollout is a self-play match on RoyaleSelfPlayEnv -- the learner (a generalist init, sampled + recorded) vs a FROZEN
+# opponent -- E matchups (the LOO groups) x G rollouts per update, both sides under the condition keys above. The
+# held-out ghost screen, pro agreement and every guard are unchanged.
+league: false
+league_decks: scratchpad/gauntlet/L68/selfplay/loadable_decks.json   # the 183 RoyaleSim-loadable top-1000 census decks
+league_specialist: icebow/data/pipeline/s1_icebow_v6aug_s1.pt        # the S1 icebow specialist: frozen, icebow ONLY
+league_opp_policy: sample   # how frozen opponents play: sample (the learner's tempered rule, T, own RNG) or live (greedy)
+league_mix: {latest: 0.35, older: 0.25, init: 0.2, s1: 0.2}   # opponent draw; renormalised over what exists (latest =
+                            # the init until the first snapshot; older needs 2 snapshots)
+league_snapshot_every: 10   # freeze the learner into the pool every N updates (<run>_snap_u{NNNN}.pt beside the
+                            # checkpoints: weights + load metadata only). Keys checked at startup (rl_royale.validate_league)
+league_snapshot_keep: 8     # the pool keeps the newest K snapshots (an evicted snapshot file is deleted)
+league_icebow_share: 0.2    # P(deck = icebow), learner and opponent alike (the S1 specialist: always icebow)
+league_deck_alpha: 0.5      # other decks: P ~ max(sides^alpha, floor * mean(sides^alpha)) over the census decks
+league_deck_floor: 0.5
+
 # ---- batch shape (plan diff 1 + E1 3.2)
 E: 16                       # entries per update, uniform, no repeat within an update (plan diff 1)
 G: 4                        # rollouts per entry = the leave-one-out group (E1 3.2)
@@ -53,7 +70,9 @@ clip: 0.2                   # PPO ratio clip (E1 3.2)
 beta0: 0.3                  # KL coefficient start (E1 3.4)
 beta_min: 0.03              # adaptive-beta clamp (E1 3.4)
 beta_max: 3.0               # adaptive-beta clamp (E1 3.4)
-kl_target: 0.10             # kappa on KL_cell (E1 3.4). OWNER-CONTROLLED: the trainer never changes it (plan diff 4)
+kl_target: 0.10             # kappa on the leash KL (E1 3.4). OWNER-CONTROLLED: the trainer never changes it (plan diff 4)
+leash: max                  # the KL adapt_beta steers on (owner ruling 2026-09-25, T12b): max = max(KL_gate, KL_card,
+                            # KL_cell); cell = KL_cell only (the S1 rule; a run resumed from before this key keeps cell)
 seed: 0                     # entry sampling + minibatch order
 
 # ---- schedule

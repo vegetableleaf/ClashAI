@@ -32,6 +32,12 @@ uniformly random own-half cell).
 (``PoolV1Env(drive_our_commands=True)``) to the corpus final tick; the final ``state_hash`` is compared with the
 corpus record (design 6.2 gate: >= 19/20).
 
+Live condition on the CLI (L68 T12b; the RL trainer's condition keys, so a gate reproduces the training condition):
+``--noise-off all --opp-elixir counter --action-delay 26 --extrapolate 26`` (cfg keys noise / opp_elixir /
+action_delay_ticks / extrapolate_ticks; defaults = unset = the old behaviour). ``rl_gate --commands --config`` emits them.
+Self-play (L68 T12b league, the RL actor only -- not this CLI): ``SelfPlayMatch`` / ``run_selfplay_batch`` run two
+policies on one ``royale_env.RoyaleSelfPlayEnv``, each side a ``SelfPlaySide`` (Match's code, its own mirrored view).
+
 Outputs in ``--out`` (refused if it exists non-empty, unless ``--resume``): ``run.json`` (args, shas, model info),
 ``matches.jsonl`` (one line per match, flushed), ``errors.jsonl`` (engine failures; the process exits 3), ``done.json``.
 """
@@ -62,8 +68,9 @@ from pipeline.e1_view import Noise, live_view                                   
 from pipeline.obs_contract import F as TOK_F, S as SC_S, TICK_S, from_engine, load_deck, to_tokens  # noqa: E402
 
 NOISE_NAMES = tuple(f.name for f in dc_fields(Noise))    # e1_view.Noise's 10 component names
-NOISE_ALIASES = {"scalars": ("my_elixir", "opp_elixir", "king_hp")}   # O5: pre-split spelling, kept for old
-                                                                        # CLI invocations and recorded run.json
+NOISE_ALIASES = {"scalars": ("my_elixir", "opp_elixir", "king_hp"),   # O5: pre-split spelling, kept for old
+                 "all": NOISE_NAMES}                                    # CLI invocations and recorded run.json;
+                                                                        # all = every component (rl_royale's spelling)
 
 TAU_LIVE = 0.27
 STALL_ELIXIR_LIVE = 9.0
@@ -130,7 +137,8 @@ def parse_shard(spec: str) -> tuple[int, int]:
 def parse_noise_off(spec: str) -> Noise:
     """``--noise-off``: comma list of e1_view.Noise component names to switch OFF, plus the O5 alias
     ``scalars`` (the pre-split name) which expands to ``my_elixir,opp_elixir,king_hp`` -- so old invocations
-    and recorded run.json ``"noise_off": ["scalars"]`` still parse the same way; '' -> all ON (unchanged
+    and recorded run.json ``"noise_off": ["scalars"]`` still parse the same way (``all`` = every component, the RL
+    config's spelling of the live condition); '' -> all ON (unchanged
     live_view). Unknown name -> SystemExit (L67aq attribution screen, HANDOFF "AW. L67aq" proposal 1)."""
     raw = [s.strip() for s in str(spec).split(",") if s.strip()]
     names: list[str] = []
@@ -507,8 +515,20 @@ class Match:
     record, in the same order as the loop it was lifted from (L68)."""
 
     def __init__(self, env, deck, entry: dict, k: int, cfg: dict):
+        self._setup(env, deck, k, cfg)
+        self.entry = entry
+        if self.opp_mode:
+            tap_ghost_deliveries(env)
+        self.state = env.reset(entry)
+        self.side, self.mirror = env.side, env._mirror
+        self.engine_deck, self.deck_index_of_slot, self.costs = _slot_maps(env, deck, entry)
+        self._seed(str(entry["tag"]))
+
+    def _setup(self, env, deck, k: int, cfg: dict) -> None:
+        """Everything but the episode: cfg checks, the opp-elixir counter, the per-match tallies (shared with
+        ``SelfPlaySide``, which plays one side of an env another object resets)."""
         from pipeline import engine_play as ep
-        self.ep, self.env, self.deck, self.entry, self.k, self.cfg = ep, env, deck, entry, int(k), cfg
+        self.ep, self.env, self.deck, self.k, self.cfg = ep, env, deck, int(k), cfg
         self.t0 = time.perf_counter()
         self.delay = int(cfg.get("action_delay_ticks") or 0)
         if self.delay < 0:
@@ -523,21 +543,25 @@ class Match:
             if self.opp_mode not in OPP_ELIXIR_MODES:
                 raise ValueError(f"cfg['opp_elixir'] {self.opp_mode!r} not in {OPP_ELIXIR_MODES}")
             from pipeline.opp_elixir_count import OppElixirCounter
-            tap_ghost_deliveries(env)
-            self.opp_counter = OppElixirCounter()
+            # the counted engine's regen schedule: RoyaleSim envs declare theirs (royale_env.REGEN_SCHEDULE, no
+            # triple phase); anything else (the real engine) -> the counter's default, the real schedule (T12b)
+            self.opp_counter = OppElixirCounter(schedule=getattr(env, "elixir_regen_schedule", None))
             self.opp_i = self.opp_fed = self.opp_dropped = 0
             self.opp_err: list[float] = []
             self.opp_trace: list[list] = []
-        self.state = env.reset(entry)
-        self.side, self.mirror = env.side, env._mirror
-        self.engine_deck, self.deck_index_of_slot, self.costs = _slot_maps(env, deck, entry)
-        self.tag = str(entry["tag"])
+        self._tallies()
+
+    def _seed(self, tag: str) -> None:
+        cfg, k = self.cfg, self.k
+        self.tag = tag
         obs_s = cfg.get("obs_seed")                          # RL actor override; default = today's per-(tag,k) seed
         self.obs_seed_used = int(obs_s) if obs_s is not None else obs_seed(self.tag, k)   # recorded by result()
         self.rng_obs = np.random.default_rng(self.obs_seed_used)
         self.rng_rand = random.Random(random_seed(self.tag, k))
         self.rng_behave = np.random.default_rng(
             behave_seed(self.tag, int(cfg.get("rollout_index", 0)), int(cfg.get("update", 0))))
+
+    def _tallies(self) -> None:
         self.unmapped: set = set()
         self.done_plays: list[tuple[int, int, float, float]] = []
         self.last_play_tick: Optional[int] = None
@@ -574,8 +598,8 @@ class Match:
                 if self.n_dec % OPP_TRACE_EVERY == 0:
                     self.opp_trace.append([tick, round(est, 3), round(bs.opp_elixir, 3)])
             if h:                                            # the counter at tick + h, no plays in between
-                from pipeline.opp_elixir_count import MAX_ELIXIR, regen_between
-                est = min(MAX_ELIXIR, est + regen_between(tick, tick + h))
+                from pipeline.opp_elixir_count import MAX_ELIXIR
+                est = min(MAX_ELIXIR, est + self.opp_counter.regen(tick, tick + h))
             view = dc_replace(view, opp_elixir=est)
         self.n_deg += int(view.source == "degraded")
         tok, mask, sc = to_tokens(view, MAX_U)
@@ -588,7 +612,7 @@ class Match:
         """cfg["opp_elixir"]: feed the counter the ghost plays delivered at ticks <= ``tick`` not yet fed (kept per
         ``opp_play_kept``), then its estimate at ``tick``. Reads only ``env.opp_delivered``, never a state."""
         from pipeline.opp_elixir_count import card_cost
-        dl = self.env.opp_delivered
+        dl = self._opp_plays()
         while self.opp_i < len(dl) and dl[self.opp_i][0] <= tick:
             t, card = dl[self.opp_i]
             self.opp_i += 1
@@ -599,6 +623,10 @@ class Match:
             else:
                 self.opp_dropped += 1
         return self.opp_counter.at(tick)
+
+    def _opp_plays(self) -> list:
+        """[(tick it went in, card slug)] the opponent-elixir counter may read: the ghost's deliveries here."""
+        return self.env.opp_delivered
 
     def gen_row(self, policy: GenPolicy) -> dict:
         """The current prepared state as a generalist row (``GenPolicy.row``); call after ``prepare``. Kept until the
@@ -638,9 +666,25 @@ class Match:
 
     def apply(self, p: float, d: dict) -> None:
         """(b): record p_gate / traj, act on the engine, advance -- the tail of the old ``step`` (L68), unchanged."""
-        cfg, env, ep = self.cfg, self.env, self.ep
+        env = self.env
+        tick = self._record(p, d)
+        delay = self.delay
+        if d["play"]:
+            land = tick + delay                               # cfg["action_delay_ticks"]: the play enters here
+            if delay:                                         # pending: board runs on, card in hand, elixir unspent,
+                env._advance_to(min(land, env.tail_cap))      # no decisions (the whole wait is inside this call)
+            landed = not (delay and (env.terminated or env.tick < land))   # False: match over before it landed
+            self._land(p, d, land, landed)
+        de = self.cfg["decide_every"]
+        # after a delayed play the next decision is the first decide_every grid tick AFTER landing (delay 0: tick + de)
+        env._advance_to(min((tick + de * (delay // de + 1)) if (delay and d["play"]) else env.tick + de, env.tail_cap))
+        self.state = env.eng.observe()
+        self.done = bool(env.terminated) or env.tick >= env.tail_cap
+
+    def _record(self, p: float, d: dict) -> int:
+        """(b), first half: the decision's tallies and its cfg["record"] row. -> the decision tick."""
+        cfg = self.cfg
         tick, bs, view = self._cur
-        grid = cfg["grid"]
         self.n_dec += 1
         self.p_gates.append(p)
         if cfg.get("record") and "lp_gate" in d:              # only the sample decide dicts carry these keys
@@ -654,59 +698,56 @@ class Match:
                               "lp_cell": d["lp_cell"], "p_gate": d["p_gate"], "T": d["T"]})
         if d["why"] == "no_affordable":
             self.n_noaff += 1
-        delay = self.delay
-        if d["play"]:
-            el_int = float(int(view.my_elixir))
-            self.n_att += 1
-            self.n_stall += int(d["why"] == "stall")
-            x, y = ep.cell_center(d["cell"], grid)
-            X, Y = ep.cell_to_engine(d["cell"], self.mirror, grid)
-            land = tick + delay                               # cfg["action_delay_ticks"]: the play enters here
-            if delay:                                         # pending: board runs on, card in hand, elixir unspent,
-                env._advance_to(min(land, env.tail_cap))      # no decisions (the whole wait is inside this call)
-            landed = not (delay and (env.terminated or env.tick < land))   # False: match over before it landed
-            r = env.eng.act(side=self.side, deck_index=self.deck_index_of_slot[d["slot"]], x=X, y=Y) if landed \
-                else {"accepted": False}
-            acc = bool(r["accepted"])
-            code = int(r.get("result_code", -1))
-            card = self.deck.cards[d["slot"]]
-            self.mix_att[card] += 1
-            rec = {"tick": tick, "slot": d["slot"], "card": card, "cell": d["cell"], "p": round(p, 4), "why": d["why"],
-                   "elixir": el_int, "elixir_exact": round(float(bs.my_elixir), 3), "accepted": acc}
-            if delay:
-                rec["land_tick"] = land
-            if acc:
-                self.n_acc += 1
-                self.mix_acc[card] += 1
-                self.done_plays.append((land, d["slot"], x, y))  # past: LANDING tick + position, as training's rows
-                self.last_play_tick = land
-            elif not landed:
-                self.n_unlanded += 1
-                self.refuse["match_over_before_landing"] += 1
-                rec["reason"] = "match_over_before_landing"
-            else:
-                # RoyaleSim names its own codes (e.g. 2008 -> out_of_territory); the real engine path keeps
-                # engine_play's table, which differs from PoolV1Env's _code_names at 13 and 22 (names unchanged).
-                names = env._code_names if type(env).__name__ == "RoyalePoolEnv" else ep.RESULT_CODE_NAMES
-                nm = names.get(code, f"native_{code}")
-                if r.get("placement_valid") is False:
-                    nm = f"{nm}/{r.get('placement_reason')}"
-                self.refuse[nm] += 1
-                rec["reason"] = nm
-            self.plays.append(rec)
-        de = cfg["decide_every"]
-        # after a delayed play the next decision is the first decide_every grid tick AFTER landing (delay 0: tick + de)
-        env._advance_to(min((tick + de * (delay // de + 1)) if (delay and d["play"]) else env.tick + de, env.tail_cap))
-        self.state = env.eng.observe()
-        self.done = bool(env.terminated) or env.tick >= env.tail_cap
+        return tick
+
+    def _land(self, p: float, d: dict, land: int, landed: bool) -> bool:
+        """(b), second half: the decided play (``self._cur``'s decision) enters the engine at ``land`` -- or never,
+        ``landed`` False = the match ended first. Acts, tallies, past / anti-stall clock. -> accepted."""
+        cfg, env, ep = self.cfg, self.env, self.ep
+        tick, bs, view = self._cur
+        grid = cfg["grid"]
+        el_int = float(int(view.my_elixir))
+        self.n_att += 1
+        self.n_stall += int(d["why"] == "stall")
+        x, y = ep.cell_center(d["cell"], grid)
+        X, Y = ep.cell_to_engine(d["cell"], self.mirror, grid)
+        r = env.eng.act(side=self.side, deck_index=self.deck_index_of_slot[d["slot"]], x=X, y=Y) if landed \
+            else {"accepted": False}
+        acc = bool(r["accepted"])
+        code = int(r.get("result_code", -1))
+        card = self.deck.cards[d["slot"]]
+        self.mix_att[card] += 1
+        rec = {"tick": tick, "slot": d["slot"], "card": card, "cell": d["cell"], "p": round(p, 4), "why": d["why"],
+               "elixir": el_int, "elixir_exact": round(float(bs.my_elixir), 3), "accepted": acc}
+        if self.delay:
+            rec["land_tick"] = land
+        if acc:
+            self.n_acc += 1
+            self.mix_acc[card] += 1
+            self.done_plays.append((land, d["slot"], x, y))  # past: LANDING tick + position, as training's rows
+            self.last_play_tick = land
+        elif not landed:
+            self.n_unlanded += 1
+            self.refuse["match_over_before_landing"] += 1
+            rec["reason"] = "match_over_before_landing"
+        else:
+            # RoyaleSim names its own codes (e.g. 2008 -> out_of_territory); the real engine path keeps
+            # engine_play's table, which differs from PoolV1Env's _code_names at 13 and 22 (names unchanged).
+            names = env._code_names if type(env).__name__ in ("RoyalePoolEnv", "RoyaleSelfPlayEnv") \
+                else ep.RESULT_CODE_NAMES
+            nm = names.get(code, f"native_{code}")
+            if r.get("placement_valid") is False:
+                nm = f"{nm}/{r.get('placement_reason')}"
+            self.refuse[nm] += 1
+            rec["reason"] = nm
+        self.plays.append(rec)
+        return acc
 
     def result(self) -> dict:
         env, entry, cfg, tag, k = self.env, self.entry, self.cfg, self.tag, self.k
-        outcome, crowns = self.ep._outcome(env, self.state)
+        outcome, crowns = self._outcome()
         minutes = env.tick * TICK_S / 60.0
         end = int(env.tick)
-        last_ghost = int(entry.get("last_ghost_tick") or 0)
-        after_script = end > last_ghost + SCRIPT_MARGIN_TICKS
         pg = np.asarray(self.p_gates, dtype=np.float64)
         n_att, n_acc, n_dec, n_deg, plays = self.n_att, self.n_acc, self.n_dec, self.n_deg, self.plays
         return {
@@ -717,11 +758,7 @@ class Match:
             "outcome": outcome, "crowns_for": int(crowns[0]), "crowns_against": int(crowns[1]),
             "end_tick": end, "seconds": round(end * TICK_S, 1), "terminated": bool(env.terminated),
             "termination_reason": (env.eng.last_episode or {}).get("termination_reason"),
-            "last_ghost_tick": last_ghost, "after_script": bool(after_script),
-            "won_after_script": bool(after_script and outcome == "win"),
-            "ghost_plays": int(entry.get("ghost_plays") or 0), "ghost_delivered": int(env.ghost_ok),
-            "ghost_refused": int(env.ghost_rejected), "ghost_undelivered": int(env.ghost_undelivered()),
-            "ghost_distinct_delivered": len(env.ghost_cards_delivered), "ghost_refuse_reasons": dict(env.ghost_reject_reasons),
+            **self._opponent_fields(outcome, end),
             "plays_attempted": n_att, "plays_accepted": n_acc, "plays_refused": n_att - n_acc,
             "refuse_reasons": dict(self.refuse), "plays_per_min": round(n_att / minutes, 3) if minutes else None,
             "accepted_per_min": round(n_acc / minutes, 3) if minutes else None,
@@ -741,13 +778,28 @@ class Match:
             **({"extrapolate_ticks": self.extrap} if self.extrap else {}),
         }
 
+    def _outcome(self) -> tuple[str, tuple[int, int]]:
+        return self.ep._outcome(self.env, self.state)
+
+    def _opponent_fields(self, outcome: str, end: int) -> dict:
+        """result()'s opponent block, in its key order: the ghost script and its delivery."""
+        env, entry = self.env, self.entry
+        last_ghost = int(entry.get("last_ghost_tick") or 0)
+        after_script = end > last_ghost + SCRIPT_MARGIN_TICKS
+        return {"last_ghost_tick": last_ghost, "after_script": bool(after_script),
+                "won_after_script": bool(after_script and outcome == "win"),
+                "ghost_plays": int(entry.get("ghost_plays") or 0), "ghost_delivered": int(env.ghost_ok),
+                "ghost_refused": int(env.ghost_rejected), "ghost_undelivered": int(env.ghost_undelivered()),
+                "ghost_distinct_delivered": len(env.ghost_cards_delivered),
+                "ghost_refuse_reasons": dict(env.ghost_reject_reasons)}
+
     def _opp_summary(self) -> dict:
         """cfg["opp_elixir"]: counter bookkeeping + estimate-minus-TRUE-elixir over this match's decisions (a
         diagnostic; the truth never reaches the estimate) and a (tick, est, truth) sample every OPP_TRACE_EVERY."""
         e = np.asarray(self.opp_err, dtype=np.float64)
         c = self.opp_counter
         return {"mode": self.opp_mode, "fed": self.opp_fed, "dropped": self.opp_dropped,
-                "undelivered_to_counter": len(self.env.opp_delivered) - self.opp_i,
+                "undelivered_to_counter": len(self._opp_plays()) - self.opp_i,
                 "rebases": c.rebases, "rebase_total": round(c.rebase_total, 3),
                 "mae": round(float(np.abs(e).mean()), 4) if len(e) else None,
                 "bias": round(float(e.mean()), 4) if len(e) else None, "n": int(len(e)), "trace": self.opp_trace}
@@ -864,6 +916,219 @@ def run_batch(make_env, model, deck, jobs, cfg: dict, n: int, on_result, on_skip
         fill()
 
 
+# ------------------------------------------------------------------------------------------------------
+# self-play (L68 T12b league): two policy-driven sides on ONE RoyaleSelfPlayEnv
+# ------------------------------------------------------------------------------------------------------
+ICEBOW_ENGINE_DECK = ("Tornado", "Tesla@evolution", "IceWizard", "Xbow", "Rocket", "Knight@evolution", "Log",
+                      "Skeletons")                  # the pool's icebow deck (engine names, forms as the corpus has them)
+_SP_DECKS: dict = {}
+
+
+def selfplay_deck(names: Sequence[str]):
+    """The obs-contract ``Deck`` a self-play side with engine deck ``names`` is observed under. Icebow -> icebow's own
+    yaml deck (S1's slot order = the ghost path's deck). Any other deck -> ``dataset_gen.side_deck`` (placeholder card
+    ids that only feed the sc slot one-hots, which ``GenPolicy.row`` decodes and zeroes) with ``config`` set to a
+    per-deck path in icebow's config dir: ``live_view``'s ``mine_classes`` caches by that path and reads the card DB
+    beside it. ValueError if the 8 names do not make 8 distinct cards."""
+    from pipeline.dataset_gen import card_key, side_deck
+    key = tuple(sorted(str(card_key(n)) for n in names))
+    if key not in _SP_DECKS:
+        ice = load_deck("icebow")
+        if key == tuple(sorted(card_key(n) for n in ICEBOW_ENGINE_DECK)):
+            _SP_DECKS[key] = ice
+        else:
+            d = side_deck(list(names))
+            if d is None:
+                raise ValueError(f"not an 8-distinct-card deck: {list(names)}")
+            _SP_DECKS[key] = dc_replace(d, name="selfplay", src_dir=ice.src_dir,
+                                        config=ice.config.with_name(f"_selfplay_{'+'.join(key)}.yaml"))
+    return _SP_DECKS[key]
+
+
+class SelfPlaySide(Match):
+    """One side of a ``SelfPlayMatch``: Match's observation / decide / record / landing code for ``side`` of a shared
+    RoyaleSelfPlayEnv (its own mirrored view, RNGs, past plays, anti-stall clock, live-condition state), with the env
+    reset and advanced by the SelfPlayMatch. Two differences from the ghost Match. (1) cfg["action_delay_ticks"] D: a
+    decided play is QUEUED (``pending``) and landed by the SelfPlayMatch at T + D while the OTHER side keeps deciding;
+    this side's next decision is the first grid tick after landing, as Match.apply. (2) cfg["opp_elixir"]: the
+    counter reads the OTHER side's ACCEPTED plays at their landing tick (``accepted``), never its elixir."""
+
+    def __init__(self, env, names: Sequence[str], side: int, tag: str, k: int, cfg: dict, model=None):
+        self._setup(env, selfplay_deck(names), k, cfg)
+        self.entry, self.model = {"tag": tag}, model
+        self.side, self.mirror = int(side), int(side) == 1
+        self.engine_deck = list(names)
+        ix = {self.deck.slot_of(vocab.engine_key(n)): i for i, n in enumerate(names)}
+        if sorted(ix) != list(range(N_SLOTS)):
+            raise RuntimeError(f"{tag}: engine deck {list(names)} does not cover the 8 deck slots")
+        self.deck_index_of_slot = ix
+        cost = env.costs(self.side)
+        self.costs = [float(cost[ix[s]]) for s in range(N_SLOTS)]
+        self._seed(tag)
+        self.accepted: list[tuple[int, str]] = []          # (landing tick, card slug) -> the other side's counter
+        self.other: Optional["SelfPlaySide"] = None
+        self.pending: Optional[tuple] = None                # (landing tick, p, decision)
+        self.next_tick = int(env.tick)
+
+    def _opp_plays(self) -> list:
+        return self.other.accepted
+
+    def apply(self, p: float, d: dict) -> None:
+        tick = self._record(p, d)
+        de, delay = self.cfg["decide_every"], self.delay
+        if d["play"] and delay:
+            self.pending = (tick + delay, p, d)
+            self.next_tick = tick + de * (delay // de + 1)
+            return
+        if d["play"]:
+            self._land(p, d, tick, True)
+        self.next_tick = tick + de
+
+    def _land(self, p: float, d: dict, land: int, landed: bool) -> bool:
+        from pipeline.dataset_gen import card_key
+        acc = super()._land(p, d, land, landed)
+        if acc:
+            self.accepted.append((int(land), str(card_key(self.engine_deck[self.deck_index_of_slot[d["slot"]]]))))
+        return acc
+
+    def _outcome(self) -> tuple[str, tuple[int, int]]:
+        return self.env.outcome(self.side)
+
+    def _opponent_fields(self, outcome: str, end: int) -> dict:
+        """The ghost block's keys filled with the OTHER side's plays (no script to outlive), so rl_royale's monitors
+        read a self-play record unchanged: delivered = accepted, refused = refused at landing, undelivered = unlanded."""
+        o = self.other
+        return {"last_ghost_tick": 0, "after_script": False, "won_after_script": False, "ghost_plays": o.n_att,
+                "ghost_delivered": o.n_acc, "ghost_refused": o.n_att - o.n_acc - o.n_unlanded,
+                "ghost_undelivered": o.n_unlanded, "ghost_distinct_delivered": len(o.mix_acc),
+                "ghost_refuse_reasons": dict(o.refuse)}
+
+
+class SelfPlayMatch:
+    """One self-play match (L68 T12b): ``env.reset`` with spec's decks and deal seed, the learner on
+    spec["learner_side"] under ``cfg`` and the frozen opponent on the other side under ``opp_cfg``. ``due()`` advances
+    the env to the next tick at which a side decides, landing queued delayed plays on the way (side 0 first when two
+    land on one tick), and returns the deciding sides ([] = over; plays still queued then count as unlanded).
+    ``result()`` = the learner side's record + ``league`` (the spec) + ``opp_side`` (the opponent's play counts)."""
+
+    def __init__(self, env, spec: dict, k: int, cfg: dict, opp_cfg: dict, learner=None, opponent=None):
+        self.env, self.spec = env, spec
+        L = int(spec["learner_side"])
+        decks = {L: spec["learner_deck"], 1 - L: spec["opp_deck"]}
+        env.reset(decks[0], decks[1], int(spec["seed"]))
+        tag = str(spec["tag"])
+        self.learner = SelfPlaySide(env, spec["learner_deck"], L, tag, k, cfg, learner)
+        self.opp = SelfPlaySide(env, spec["opp_deck"], 1 - L, f"{tag}:opp", k, opp_cfg, opponent)
+        self.learner.other, self.opp.other = self.opp, self.learner
+        self.sides = sorted((self.learner, self.opp), key=lambda s: s.side)
+
+    def due(self) -> list[SelfPlaySide]:
+        env = self.env
+        while True:
+            t = int(env.tick)
+            for s in self.sides:
+                if s.pending and s.pending[0] <= t and not env.terminated:
+                    (land, p, d), s.pending = s.pending, None
+                    s._land(p, d, land, True)
+            if env.done:
+                for s in self.sides:
+                    if s.pending:
+                        (land, p, d), s.pending = s.pending, None
+                        s._land(p, d, land, False)
+                return []
+            ds = [s for s in self.sides if s.next_tick <= t]
+            if ds:
+                raw = env.raw()
+                for s in ds:
+                    s.state = raw
+                return ds
+            nxt = min([s.next_tick for s in self.sides] + [s.pending[0] for s in self.sides if s.pending])
+            env._advance_to(min(nxt, env.tail_cap))
+
+    def result(self) -> dict:
+        r = self.learner.result()
+        o, minutes = self.opp, self.env.tick * TICK_S / 60.0
+        r["league"] = dict(self.spec)
+        r["opp_side"] = {"side": o.side, "policy": o.cfg["policy"], "plays_attempted": o.n_att,
+                         "plays_accepted": o.n_acc, "plays_per_min": round(o.n_att / minutes, 3) if minutes else None,
+                         "stall_fired": o.n_stall, "decisions": o.n_dec}
+        return r
+
+
+def run_selfplay_batch(make_env, learner, opponents: dict, jobs, cfg: dict, n: int, on_result, on_skip=None, skip=()):
+    """``run_batch`` for self-play (L68 T12b). Up to ``n`` ``SelfPlayMatch``es in flight; each round prepares EVERY side
+    that decides now across them (all before any acts: a play made this tick is invisible to this tick's decisions,
+    board and counter alike), then ONE forward + one batched decide PER POLICY -- the learner, and each distinct frozen
+    opponent in flight -- then applies. ``learner`` plays under ``cfg`` (the rollout cfg: policy sample, record);
+    ``opponents`` maps spec["opp"]["id"] -> (policy, the cfg its side plays under: live or sample, NEVER record --
+    only the learner's side is recorded). Nothing here changes any weights. ``jobs``: (i, spec, g[, overrides]) as
+    run_batch's; the overrides (rollout_index / update / obs_seed) go to the learner's side, rollout_index / update also
+    to the opponent's (whose tag, hence obs and behaviour seeds, is ``<tag>:opp``)."""
+    for c in [cfg] + [oc for _, oc in opponents.values()]:
+        if c["policy"] not in ("live", "sample"):
+            raise ValueError(f"self-play policies are live or sample, not {c['policy']!r}")
+    if any(oc.get("record") for _, oc in opponents.values()):
+        raise ValueError("a frozen opponent's side is never recorded")
+    if cfg.get("record") and cfg["policy"] != "sample":
+        raise ValueError("cfg['record'] needs policy 'sample' (no other policy records a row)")
+    jobs = iter(jobs)
+    free = [make_env() for _ in range(n)]
+    live: list[SelfPlayMatch] = []
+
+    def fill():
+        while free:
+            job = next(jobs, None)
+            if job is None:
+                return
+            i, spec, k, *rest = job
+            over = dict(rest[0]) if rest and rest[0] else {}
+            opp, ocfg = opponents[spec["opp"]["id"]]
+            env = free.pop()
+            try:
+                m = SelfPlayMatch(env, spec, k, {**cfg, **over, "entry_index": i},
+                                  {**ocfg, **{x: v for x, v in over.items() if x != "obs_seed"}, "entry_index": i},
+                                  learner, opp)
+            except skip as exc:
+                free.append(env)
+                if on_skip:
+                    on_skip(spec, exc)
+                continue
+            live.append(m)
+
+    fill()
+    while live:
+        due: list[SelfPlaySide] = []
+        for m in list(live):
+            ds = m.due()
+            if ds:
+                due += ds
+            else:
+                live.remove(m)
+                free.append(m.env)
+                on_result(m.result())
+        fill()
+        for s in due:
+            s.prepare()
+        groups: dict = {}
+        for s in due:
+            groups.setdefault(id(s.model), []).append(s)
+        todo = []
+        for sides in groups.values():
+            model, c = sides[0].model, sides[0].cfg
+            if isinstance(model, GenPolicy):
+                enc, heads, p, hand = model.forward_batch([s.gen_row(model) for s in sides], c["device"])
+            else:
+                enc, heads, p, hand = model_forward_batch(model, *zip(*[s._obs for s in sides]), device=c["device"])
+            pre = [s.pre(hand[r]) for r, s in enumerate(sides)]
+            allowed = np.stack([x[1] for x in pre])
+            stalled = np.array([x[2] for x in pre], dtype=bool)
+            decisions = live_decide_batch(model, enc, heads, p, allowed, stalled, tau=c["tau"], device=c["device"]) \
+                if c["policy"] == "live" else sample_decide_batch(model, enc, heads, p, allowed, stalled, sides, c)
+            todo += [(s, p[r], decisions[r]) for r, s in enumerate(sides)]
+        for s, pr, d in todo:
+            s.apply(pr, d)
+
+
 def run_liveness(env, entry: dict, cfg: dict) -> dict:
     """The caller's own path (design 5.5): ``PoolV1Env(port).reset(entry)`` + 10 ticks + observe()."""
     t0 = time.perf_counter()
@@ -942,6 +1207,15 @@ def build_parser() -> argparse.ArgumentParser:
     ap.add_argument("--noise-off", default="", help="comma list of live-view noise components to switch OFF "
                     f"(no effect on --obs clean): {','.join(NOISE_NAMES)} (plus alias 'scalars' = "
                     f"{','.join(NOISE_ALIASES['scalars'])})")
+    ap.add_argument("--opp-elixir", choices=OPP_ELIXIR_MODES, default=None,
+                    help="opponent elixir from the public-events counter fed the ghost's delivered plays (cfg "
+                         "'opp_elixir'; counter = the memory-reader equivalent); default: the view's own")
+    ap.add_argument("--action-delay", type=int, default=0,
+                    help="live tap->land lag in engine ticks: a play decided at T lands at T + D (cfg "
+                         "'action_delay_ticks'; the live condition is 26)")
+    ap.add_argument("--extrapolate", type=int, default=0,
+                    help="each decision sees the raw board advanced H ticks (cfg 'extrapolate_ticks'; 26 with the "
+                         "live condition's delay)")
     ap.add_argument("--decide-every", type=int, default=DECIDE_EVERY)
     ap.add_argument("--device", default="cpu")
     ap.add_argument("--threads", type=int, default=2)
@@ -961,6 +1235,8 @@ def main(argv=None) -> int:
     noise = parse_noise_off(a.noise_off)                  # validated up front, same as shard/seeds above
     noise_off = noise_off_names(noise)
     stall_elixir = None if str(a.stall_elixir).lower() == "none" else float(a.stall_elixir)
+    if a.action_delay < 0 or a.extrapolate < 0:
+        raise SystemExit(f"--action-delay {a.action_delay} / --extrapolate {a.extrapolate} must be >= 0")
     import torch
     torch.set_num_threads(max(1, int(a.threads)))
 
@@ -1004,10 +1280,12 @@ def main(argv=None) -> int:
     cfg = {"policy": a.policy, "tau": float(a.tau), "afford_mask": not a.no_afford_mask, "stall_elixir": stall_elixir,
            "stall_seconds": float(a.stall_seconds), "obs": a.obs, "noise": noise, "p_random": float(a.p_random),
            "random_hand_only": bool(a.random_hand_only), "grid": minfo.get("grid", "floor"), "device": a.device,
-           "decide_every": int(a.decide_every), "slot": slot, "port": int(a.port), "T": float(a.sample_T)}
+           "decide_every": int(a.decide_every), "slot": slot, "port": int(a.port), "T": float(a.sample_T),
+           "opp_elixir": a.opp_elixir, "action_delay_ticks": int(a.action_delay), "extrapolate_ticks": int(a.extrapolate)}
     print(json.dumps({"e1_eval": a.mode, "policy": a.policy, "port": a.port, "tasks": len(tasks),
                       "already_done": len(done_keys), "grid": cfg["grid"], "tau": cfg["tau"],
-                      "noise_off": noise_off}), flush=True)
+                      "noise_off": noise_off, "opp_elixir": a.opp_elixir, "action_delay_ticks": a.action_delay,
+                      "extrapolate_ticks": a.extrapolate}), flush=True)
 
     new = 0
     results: list[dict] = []

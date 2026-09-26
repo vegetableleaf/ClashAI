@@ -201,10 +201,14 @@ class TestGenDecide(unittest.TestCase):
         self.assertEqual(ea.eng.calls, eb.eng.calls)
         self.assertEqual(a["plays"], b["plays"])
 
-    def test_record_refused_for_gen(self):
-        with self.assertRaises(ValueError):
+    def test_record_needs_sample_policy_for_gen(self):
+        """T11: a generalist IS recorded -- under policy 'sample' (the only decide rule that carries log-probs); a
+        record request with any other policy is refused up front."""
+        with self.assertRaisesRegex(ValueError, "sample"):
             E.run_batch(lambda: _FakeEnv(), E.GenPolicy(_tiny_gen(), VOCAB), None, [], {**_cfg(), "record": True}, 1,
                         on_result=print)
+        E.run_batch(lambda: _FakeEnv(), E.GenPolicy(_tiny_gen(), VOCAB), None, [],
+                    {**_cfg(), "record": True, "policy": "sample"}, 1, on_result=print)       # accepted
 
 
 class TestLoadPolicy(unittest.TestCase):
