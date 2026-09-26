@@ -27,8 +27,9 @@ from pipeline.e1_pool import ours
 SCALE = 18
 # RoyaleSim's elixir regen, (from_tick, elixir per tick) -- MEASURED T12b (.foreman/scratch/T12b/elixir_schedule_probe.py:
 # 1/56 per tick (milli deltas 18/17, mean 17.86) on [0, 2400); 1/28 (36/35, mean 35.72) from 2400 THROUGH overtime --
-# schedule is opp_elixir_count.REGEN_SCHEDULE; e1_eval's opp-elixir counter uses this one on RoyaleSim envs.
-REGEN_SCHEDULE = ((0, 1 / 56), (2400, 1 / 28), (6000, 0.0))
+# LOCAL PATCH 2026-09-25 (owner): research/ext/Royale/RoyaleSim state.rs gains TRIPLE elixir (3 x the 1x step = 3/56 per
+# engine's schedule is opp_elixir_count.REGEN_SCHEDULE; e1_eval's opp-elixir counter uses this one on RoyaleSim envs.
+REGEN_SCHEDULE = ((0, 1 / 56), (2400, 1 / 28), (4800, 3 / 56), (6000, 0.0))
 NOT_ENOUGH_ELIXIR = 13
 NOT_IN_HAND = 1003              # deck_index names a card that is not in the hand right now
 REFUSED_BASE = 2000             # 2000 + DeployStatus for every other refusal
