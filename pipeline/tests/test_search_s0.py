@@ -202,52 +202,96 @@ class TestPlainIsE1(unittest.TestCase):
 
 @unittest.skipIf(RoyaleSelfPlayEnv is None, "royalegym not importable (run in research/ext/Royale/.venv)")
 class TestScorer(unittest.TestCase):
-    KNIGHT_FRAC = 0.3021846697339407     # threat_value.bodies_ignore_frac(db, ["knight"]), icebow card DB, tower 15
+    # threat_value.bodies_ignore_frac(db, ["knight"], tower_level=11, enemy_level=11), icebow card DB (at tower 15 it
+    # is 0.3021846697339407 -- the hard-coded level this replaced)
+    KNIGHT_FRAC = 0.6597358327221133
+    P, K = 3052, 4824                    # RoyaleSim's princess / king max_hp = clashrl.levels PRINCESS_HP / KING_HP [11]
 
-    @staticmethod
-    def state(towers, units, crowns):
+    @classmethod
+    def state(cls, towers, units, crowns, pmax=None, kmax=None):
         from royalegym.protocol import EntityKind
+        pmax, kmax = pmax or cls.P, kmax or cls.K
         ents = []
         for team, (l, r, k) in towers.items():
-            ents += [SimpleNamespace(team=team, kind=EntityKind.PRINCESS_TOWER, hp=l, max_hp=1000, card_id=-1),
-                     SimpleNamespace(team=team, kind=EntityKind.PRINCESS_TOWER, hp=r, max_hp=1000, card_id=-1),
-                     SimpleNamespace(team=team, kind=EntityKind.KING_TOWER, hp=k, max_hp=2000, card_id=-1)]
+            ents += [SimpleNamespace(team=team, kind=EntityKind.PRINCESS_TOWER, hp=l, max_hp=pmax, card_id=-1),
+                     SimpleNamespace(team=team, kind=EntityKind.PRINCESS_TOWER, hp=r, max_hp=pmax, card_id=-1),
+                     SimpleNamespace(team=team, kind=EntityKind.KING_TOWER, hp=k, max_hp=kmax, card_id=-1)]
         ents += [SimpleNamespace(team=t, kind=kind, hp=hp, max_hp=hp, card_id=cid) for t, kind, hp, cid in units]
         return SimpleNamespace(entities=ents, players=[SimpleNamespace(crowns=c) for c in crowns])
 
     def test_hand_computed(self):
-        """(4) before: towers full, our Knight; after: their left princess dead, our right princess 700, one Xbow ours,
-        three theirs (board capped at 1.0), 1-0 crowns, spent 6. Hand: (4-3) - (4-3.7) - 6*0.061
-        + ((0.366 - 1.0) - (KNIGHT - 0)) + 1 = 0.397815..."""
+        """(4) level-11 towers. Before: all full, our Knight. After: their left princess dead (-1.0), our right princess
+        -916 hp (-916/3052), one Xbow ours, three theirs (3 x 0.366 capped at 1.0), 1-0 crowns, spent 6. Hand:
+        1.0 - 916/3052 - 6*0.061 + ((0.366 - 1.0) - (KNIGHT - 0)) + 1 = 0.040133..."""
         from royalegym.protocol import EntityKind
         cat = [SimpleNamespace(card_id=0, name="Knight", elixir=3, count=1),
                SimpleNamespace(card_id=1, name="Xbow", elixir=6, count=1)]
-        sc = S.Scorer(cat)
-        full = (1000, 1000, 2000)
+        sc = S.Scorer(cat, tower_level=11, card_level=11)
+        full, tot = (self.P, self.P, self.K), (2 * self.P + self.K) / self.P
         s0 = sc.snapshot(self.state({0: full, 1: full}, [(0, EntityKind.TROOP, 500, 0)], (0, 0)), us=0)
-        self.assertEqual((s0["ours"], s0["theirs"], s0["bv1"], s0["cr0"], s0["cr1"]), (4.0, 4.0, 0.0, 0, 0))
+        self.assertEqual((s0["bv1"], s0["cr0"], s0["cr1"]), (0.0, 0, 0))
+        self.assertAlmostEqual(s0["ours"], tot)
+        self.assertAlmostEqual(s0["theirs"], tot)
         self.assertAlmostEqual(s0["bv0"], self.KNIGHT_FRAC, places=12)
         xb = lambda t: (t, EntityKind.BUILDING, 1000, 1)
-        s1 = sc.snapshot(self.state({0: (1000, 700, 2000), 1: (0, 1000, 2000)}, [xb(0), xb(1), xb(1), xb(1)], (1, 0)),
-                         us=0)
-        self.assertAlmostEqual(s1["ours"], 3.7)
-        self.assertAlmostEqual(s1["theirs"], 3.0)
+        after = {0: (self.P, self.P - 916, self.K), 1: (0, self.P, self.K)}
+        s1 = sc.snapshot(self.state(after, [xb(0), xb(1), xb(1), xb(1)], (1, 0)), us=0)
+        self.assertAlmostEqual(s1["ours"], tot - 916 / self.P)
+        self.assertAlmostEqual(s1["theirs"], tot - 1.0)
         self.assertAlmostEqual(s1["bv0"], 0.366)
         self.assertAlmostEqual(s1["bv1"], 1.0)                   # 3 x 0.366 = 1.098 -> BOARD_CAP
-        hand = (4 - 3) - (4 - 3.7) - 6 * 0.061 + ((0.366 - 1.0) - (self.KNIGHT_FRAC - 0.0)) + 1.0 * (1 - 0)
+        hand = 1.0 - 916 / 3052 - 6 * 0.061 + ((0.366 - 1.0) - (self.KNIGHT_FRAC - 0.0)) + 1.0 * (1 - 0)
         self.assertAlmostEqual(sc.score(s0, s1, 6.0), hand, places=12)
-        self.assertAlmostEqual(hand, 0.3978153302660593, places=12)
+        self.assertAlmostEqual(hand, 0.04013310567893513, places=12)
         # the other side's view of the same pair: us = 1
         t0 = sc.snapshot(self.state({0: full, 1: full}, [(0, EntityKind.TROOP, 500, 0)], (0, 0)), us=1)
-        t1 = sc.snapshot(self.state({0: (1000, 700, 2000), 1: (0, 1000, 2000)}, [xb(0), xb(1), xb(1), xb(1)], (1, 0)),
-                         us=1)
-        self.assertAlmostEqual(sc.score(t0, t1, 0.0), (4 - 3.7) - (4 - 3) + ((1.0 - 0.366) - (0.0 - self.KNIGHT_FRAC)) - 1)
+        t1 = sc.snapshot(self.state(after, [xb(0), xb(1), xb(1), xb(1)], (1, 0)), us=1)
+        self.assertAlmostEqual(sc.score(t0, t1, 0.0), -0.4061331056789351, places=12)   # 916/3052 - 1 + (0.634 + K) - 1
 
     def test_dead_units_and_towers(self):
         from royalegym.protocol import EntityKind
-        sc = S.Scorer([SimpleNamespace(card_id=0, name="Knight", elixir=3, count=1)])
-        s = sc.snapshot(self.state({0: (0, -5, 0), 1: (1000, 1000, 2000)}, [(1, EntityKind.TROOP, 0, 0)], (0, 3)), us=0)
+        sc = S.Scorer([SimpleNamespace(card_id=0, name="Knight", elixir=3, count=1)], tower_level=11, card_level=11)
+        s = sc.snapshot(self.state({0: (0, -5, 0), 1: (self.P, self.P, self.K)}, [(1, EntityKind.TROOP, 0, 0)], (0, 3)),
+                        us=0)
         self.assertEqual((s["ours"], s["bv1"]), (0.0, 0.0))     # negative hp clipped; a 0-hp body is not on board
+
+    def test_tower_level_must_match_the_state(self):
+        """A Scorer whose tower_level is not the state's princess level refuses to score (the verifier's bug: 15 vs 11);
+        engine_tower_level reads 11 / 15 from the tables and refuses unknown or mixed levels."""
+        cat = [SimpleNamespace(card_id=0, name="Knight", elixir=3, count=1)]
+        st11 = self.state({0: (self.P,) * 2 + (self.K,), 1: (self.P,) * 2 + (self.K,)}, [], (0, 0))
+        with self.assertRaises(ValueError):
+            S.Scorer(cat, tower_level=15, card_level=11).snapshot(st11, us=0)
+        self.assertEqual(S.engine_tower_level(st11), 11)
+        st15 = self.state({0: (4424, 4424, 7032), 1: (4424, 4424, 7032)}, [], (0, 0), pmax=4424, kmax=7032)
+        self.assertEqual(S.engine_tower_level(st15), 15)
+        S.Scorer(cat, tower_level=15, card_level=11).snapshot(st15, us=0)        # consistent -> fine
+        for pm, km in ((1000, 2000), (3052, 7032)):                             # unknown / princess-king disagree
+            with self.assertRaises(ValueError):
+                S.engine_tower_level(self.state({0: (pm, pm, km), 1: (pm, pm, km)}, [], (0, 0), pmax=pm, kmax=km))
+
+    def test_scorer_levels_are_the_engines(self):
+        """The Scorer the Runner builds (make_scorer) uses the ENGINE's princess level and card level, and its
+        threat_value tower HP is the engine's princess max_hp: fails if a level is hard-coded differently."""
+        from clashrl import levels, threat_value as TV
+        from royalegym.protocol import EntityKind
+        env = RoyaleSelfPlayEnv()
+        env.reset(ICEBOW, HOGEQ, seed=0)
+        st = env.core.state()
+        pmax = {e.max_hp for e in st.entities if e.kind == EntityKind.PRINCESS_TOWER}
+        self.assertEqual(len(pmax), 1)
+        pmax = pmax.pop()
+        sc = S.make_scorer(env)
+        self.assertEqual(sc.tower_level, levels.PRINCESS_HP.index(pmax))
+        self.assertEqual(TV.tower_hp(sc.tower_level), pmax)
+        self.assertEqual(sc.card_level, int(env.core.card_level))
+        self.assertEqual((sc.tower_level, sc.card_level), (11, 11))              # RoyaleSim today, measured
+        sc.snapshot(st, us=0)                                                     # the consistency check passes
+        cards = {c.name: c for c in env.core.cards()}                           # DB stats at the engine's card level
+        for n in ("Knight", "IceWizard", "HogRider", "Valkyrie"):
+            from pipeline.dataset_gen import card_key
+            self.assertEqual(levels.scale(sc.db.get(card_key(n))["hitpoints"], sc.card_level, levels.REF_LEVEL),
+                             cards[n].hitpoints, n)
 
 
 @unittest.skipIf(RoyaleSelfPlayEnv is None, "royalegym not importable (run in research/ext/Royale/.venv)")

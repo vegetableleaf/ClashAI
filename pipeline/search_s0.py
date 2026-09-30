@@ -13,7 +13,8 @@ DESIGN (lead-fixed, L69 ticket S0)
                 cell logits); each scored by ONE rollout, argmax played, ties -> WAIT. Nothing affordable -> WAIT, no
                 search. Off-interval decisions play the plain rule.
     force_play  the top candidate (top card, top cell), no rollouts -- "does playing at all explain the gain".
-    random      a uniform pick among the same shortlist's PLAY candidates -- "does choosing matter".
+    random      a uniform pick among the same shortlist's PLAY candidates ONLY (WAIT is never drawn, as in the old
+                harness's random control) -- "does choosing matter".
     never       our side never plays (anti-stall included) -- the restraint floor: the Scorer subtracts spent elixir
                 over a 12 s horizon, so WAIT can win by construction; search must beat THIS, not only plain.
   ``--search-min-p P`` (default 0 = the faithful design, search every decision): search arm only, a decision whose
@@ -41,7 +42,14 @@ DESIGN (lead-fixed, L69 ticket S0)
              hut's goblins count as huts) -- a known approximation.
       u.spec.elixir / (squad_count or count)  (bodies with no finite ignore cost)
           -> CardInfo.elixir / max(1, CardInfo.count) from the RoyaleSim catalogue
-      db / tower_level                  -> clashrl.cards.shared() (icebow's card DB) / 15, threat_value unchanged
+      db                                -> clashrl.cards.shared() (icebow's card DB), threat_value unchanged
+      tower_level (old: 15)             -> the ENGINE's: the princess max_hp at the root mapped through
+                                           levels.PRINCESS_HP (RoyaleSim: 3052 = level 11; king 4824 = KING_HP[11]
+                                           cross-checked); no exact match -> ValueError. The tower term's unit
+                                           (princess max_hp) and threat_value's (tower_hp(tower_level)) are then the
+                                           same number, which Scorer.tower_frac enforces.
+      enemy_level (old: threat_value default 11) -> the engine's card_level (RoyaleSim 11; the DB's stats are
+                                           stored at REF_LEVEL 11 and equal the engine's CardInfo.hitpoints)
       spent                             -> the candidate's catalogue cost iff it was ACCEPTED at landing inside the fork
   Team 0 of the old scorer = OUR side (the learner), team 1 = the opponent.
 
@@ -92,14 +100,15 @@ SHARED_ENV = ("core", "eng", "ids", "names", "subs", "_code_names", "elixir_rege
 class Scorer:
     """``clashrl.sim.rollout_search.Scorer`` on RoyaleSim states (mapping: module docstring). ``us`` = our team."""
 
-    def __init__(self, catalogue, crown_w: float = CROWN_W, tower_level: int = 15, db=None):
+    def __init__(self, catalogue, *, tower_level: int, card_level: int, crown_w: float = CROWN_W, db=None):
         from clashrl import threat_value as TV
         from clashrl.cards import shared
         from pipeline.dataset_gen import card_key
         self.TV, self.db = TV, (db if db is not None else shared())
         self.cards = {c.card_id: c for c in catalogue}
         self.base = {c.card_id: card_key(c.name) for c in catalogue}
-        self.crown_w, self.tower_level = float(crown_w), int(tower_level)
+        self.crown_w, self.tower_level, self.card_level = float(crown_w), int(tower_level), int(card_level)
+        self.princess_hp = float(TV.tower_hp(self.tower_level))   # threat_value's unit = the tower term's unit
         self._finite: dict = {}
         self._ref: dict = {}
 
@@ -107,7 +116,8 @@ class Scorer:
         v = self._finite.get(base)
         if v is None:
             try:
-                v = math.isfinite(self.TV.ignore_cost_frac(self.db, base, tower_level=self.tower_level))
+                v = math.isfinite(self.TV.ignore_cost_frac(self.db, base, tower_level=self.tower_level,
+                                                             enemy_level=self.card_level))
             except Exception:           # noqa: BLE001 -- an unknown card is never ignorable (old Scorer)
                 v = False
             self._finite[base] = v
@@ -128,7 +138,8 @@ class Scorer:
                 extra += (float(c.elixir) / max(1, int(c.count))) * self.TV.ELIXIR_TO_TOWER
         v = 0.0
         if finite:
-            v = float(self.TV.bodies_ignore_frac(self.db, finite, tower_level=self.tower_level))
+            v = float(self.TV.bodies_ignore_frac(self.db, finite, tower_level=self.tower_level,
+                                                 enemy_level=self.card_level))
             if not math.isfinite(v):
                 v = BOARD_CAP
         return min(BOARD_CAP, v + extra)
@@ -139,6 +150,9 @@ class Scorer:
         tw = [e for e in st.entities if e.team == team and e.kind in (EntityKind.KING_TOWER, EntityKind.PRINCESS_TOWER)]
         for e in tw:
             if e.kind == EntityKind.PRINCESS_TOWER and team not in self._ref:
+                if float(e.max_hp) != self.princess_hp:          # tower term and board term in different units
+                    raise ValueError(f"princess max_hp {e.max_hp} != threat_value tower_hp({self.tower_level}) "
+                                     f"{self.princess_hp:g}: Scorer tower_level does not match the engine")
                 self._ref[team] = max(1.0, float(e.max_hp))
         return sum(max(0.0, float(e.hp)) for e in tw) / self._ref.get(team, 1.0)
 
@@ -153,6 +167,31 @@ class Scorer:
         board = (s1["bv0"] - s1["bv1"]) - (s0["bv0"] - s0["bv1"])
         d_crowns = (s1["cr0"] - s0["cr0"]) - (s1["cr1"] - s0["cr1"])
         return enemy_destroyed - ours_lost - spent * self.TV.ELIXIR_TO_TOWER + board + self.crown_w * d_crowns
+
+
+def engine_tower_level(st) -> int:
+    """The crown-tower level of a RoyaleSim state: every PRINCESS max_hp mapped through levels.PRINCESS_HP, every KING
+    max_hp through KING_HP; all must agree on ONE level (ValueError otherwise, or if any value is not in the table)."""
+    from clashrl import levels
+    from royalegym.protocol import EntityKind
+    lv = set()
+    for e in st.entities:
+        tbl = {EntityKind.PRINCESS_TOWER: levels.PRINCESS_HP, EntityKind.KING_TOWER: levels.KING_HP}.get(e.kind)
+        if tbl is None:
+            continue
+        hit = [i for i, v in enumerate(tbl) if i and v == int(e.max_hp)]
+        if len(hit) != 1:
+            raise ValueError(f"{EntityKind(e.kind).name} max_hp {e.max_hp} matches no single level in clashrl.levels")
+        lv.add(hit[0])
+    if len(lv) != 1:
+        raise ValueError(f"crown towers disagree on (or show no) level: {sorted(lv)}")
+    return lv.pop()
+
+
+def make_scorer(env) -> Scorer:
+    """The Scorer at the ENGINE's tower and card levels (never a hard-coded one)."""
+    return Scorer(env.core.cards(), tower_level=engine_tower_level(env.core.state()),
+                  card_level=int(env.core.card_level))
 
 
 def choose(wait_score: float, scores) -> int:
@@ -263,7 +302,7 @@ class Runner:
         from pipeline.e1_eval import live_decide_batch
         env, L = m.env, m.learner.side
         if self.scorer is None:
-            self.scorer = Scorer(env.core.cards())
+            self.scorer = make_scorer(env)
         blob = env.core.save_state()
         acts = [WAIT] + cands
         forks = [fork_into(m, e2, blob) for e2 in self._pool(len(acts))]
