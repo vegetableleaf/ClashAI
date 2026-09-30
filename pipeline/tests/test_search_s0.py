@@ -72,11 +72,41 @@ def tiny_models():
     return gen, opp_gen, s1
 
 
-def runner(tail_cap=7200, horizon_s=4.0):
+def runner(tail_cap=7200, horizon_s=4.0, rollout_self="idle", tau=S.TAU_PLAIN if RoyaleSelfPlayEnv else 0):
     gen, opp_gen, s1 = tiny_models()
-    lcfg = S.live_cfg(S.TAU_PLAIN, "lattice")
-    opps = {"s1": (s1, S.live_cfg(S.TAU_OPP, "lattice")), "gen": (opp_gen, S.live_cfg(S.TAU_OPP, "lattice"))}
-    return S.Runner(gen, opps, lcfg, lambda: RoyaleSelfPlayEnv(tail_cap=tail_cap), horizon_s=horizon_s)
+    lcfg = S.live_cfg(tau, "lattice")
+    opps = {"s1": (s1, S.live_cfg(S.TAU_OPP, "lattice")), "gen": (opp_gen, S.live_cfg(S.TAU_OPP, "lattice")),
+            "self": (gen, S.live_cfg(S.TAU_OPP, "lattice"))}      # the opponent IS the rollout self-model
+    return S.Runner(gen, opps, lcfg, lambda: RoyaleSelfPlayEnv(tail_cap=tail_cap), horizon_s=horizon_s,
+                    rollout_self=rollout_self)
+
+
+def new_st():
+    st = {k: 0 for k in ("eligible", "searched", "unsearched", "gate_skipped", "overrides", "chose_wait",
+                         "plain_wait_overridden", "moved_cell", "n_cands")}
+    st["search_s"] = 0.0
+    return st
+
+
+def to_root(tc, run, opp_id, deck, seed, after=900):
+    """Play the plain arm until our side decides (tick >= after) with a card affordable; the due sides are PREPARED
+    and nothing is applied yet. -> (m, ds, p, enc, heads, allowed)."""
+    m = run.setup(opp_id, seed, deck)
+    st, rng = new_st(), random.Random(0)
+    while True:
+        ds = m.due()
+        tc.assertTrue(ds)
+        if m.learner in ds and m.env.tick >= after:
+            for s in ds:
+                s.prepare()
+            p, enc, heads, hand = S.forward(m.learner)
+            _, allowed, _ = m.learner.pre(hand)
+            if allowed.any():
+                return m, ds, p, enc, heads, allowed
+            for s in ds:
+                s.apply(0.5, {"play": False, "slot": -1, "cell": -1, "why": "wait"})
+            continue
+        run.round(m, ds, "plain", st, rng)
 
 
 def scripted_round(m, ds):
@@ -134,32 +164,12 @@ class TestFork(unittest.TestCase):
             self.assertEqual(side_digest(a), side_digest(b))
         self.assertGreater(m.learner.n_acc, 8)                   # the segment after the fork really played
 
-    def test_fork_isolation(self):
-        """(2) all candidate rollouts leave the real match's engine, env fields and both sides unchanged; the
-        candidate lands at root + 26 inside its fork; the opponent keeps playing in the forks."""
-        run = runner()
-        m = run.setup("s1", 3, ICEBOW)
-        st = {k: 0 for k in ("eligible", "searched", "overrides", "chose_wait", "plain_wait_overridden", "moved_cell",
-                             "n_cands")}
-        st["search_s"] = 0.0
-        rng = random.Random(0)
-        while True:
-            ds = m.due()
-            self.assertTrue(ds)
-            if m.learner in ds and m.env.tick >= 900:
-                for s in ds:
-                    s.prepare()
-                p, enc, heads, hand = S.forward(m.learner)
-                _, allowed, _ = m.learner.pre(hand)
-                if allowed.any():
-                    break
-                for s in ds:
-                    s.apply(0.5, {"play": False, "slot": -1, "cell": -1, "why": "wait"})
-                continue
-            run.round(m, ds, "plain", st, rng)
+    def _isolation(self, mode):
+        run = runner(rollout_self=mode)
+        m, ds, p, enc, heads, allowed = to_root(self, run, "s1", ICEBOW, 3)
         cands = S.shortlist(run.learner, enc, heads, allowed, 4, 3)
         self.assertGreaterEqual(len(cands), 3)
-        root = int(m.env.tick)
+        root, n0 = int(m.env.tick), len(m.learner.plays)
         before = (m.env.core.state_hash(), env_digest(m.env), side_digest(m.learner), side_digest(m.opp))
         ws, sc = run.rollout_scores(m, ds, cands, p)
         after = (m.env.core.state_hash(), env_digest(m.env), side_digest(m.learner), side_digest(m.opp))
@@ -168,12 +178,106 @@ class TestFork(unittest.TestCase):
         self.assertTrue(all(np.isfinite([ws] + sc)))
         forks = run.last_forks
         self.assertTrue(all(f.env.tick == root + run.H for f in forks))
-        self.assertEqual(forks[0].learner.n_att, m.learner.n_att)                  # WAIT fork: no play
-        for f in forks[1:]:
-            self.assertEqual(f.learner.plays[-1]["land_tick"], root + 26)
-            self.assertEqual(f.learner.n_att, m.learner.n_att + 1)                  # the candidate, nothing else
+        for f, c in zip(forks[1:], cands):                                         # the candidate is the first play
+            first = f.learner.plays[n0]
+            self.assertEqual((first["land_tick"], first["slot"], first["cell"]), (root + 26, c["slot"], c["cell"]))
         self.assertTrue(any(f.opp.n_att > m.opp.n_att for f in forks))             # the self-model opponent played
         self.assertIs(m.opp.model, run.opps["s1"][0])                             # the real opponent kept its policy
+        return m, forks, n0
+
+    def test_fork_isolation(self):
+        """(2) idle (S0): all candidate rollouts leave the real match's engine, env fields and both sides unchanged; the
+        candidate lands at root + 26 inside its fork and our side does nothing else; the opponent keeps playing."""
+        m, forks, n0 = self._isolation("idle")
+        self.assertEqual(forks[0].learner.n_att, m.learner.n_att)                  # WAIT fork: no play
+        for f in forks[1:]:
+            self.assertEqual(f.learner.n_att, m.learner.n_att + 1)                  # the candidate, nothing else
+        for f in forks:            # idle: spent = the candidate's cost iff it landed -- S0's term, unchanged
+            recs = f.learner.plays[n0:]
+            self.assertLessEqual(len(recs), 1)
+            old = float(f.learner.costs[recs[0]["slot"]]) if recs and recs[0]["accepted"] else 0.0
+            self.assertEqual(S.fork_spent(f.learner, n0), old)
+
+    def test_fork_isolation_policy(self):
+        """(c) --rollout-self policy: the same isolation with our side ACTIVE in every fork."""
+        m, forks, n0 = self._isolation("policy")
+        self.assertTrue(all(f.learner.next_tick < S.NEVER for f in forks))
+
+
+@unittest.skipIf(RoyaleSelfPlayEnv is None, "royalegym not importable (run in research/ext/Royale/.venv)")
+class TestRolloutSelfPolicy(unittest.TestCase):
+    def test_policy_fork_equals_real_continuation(self):
+        """(a) + (c): with --rollout-self policy, the WAIT fork IS the real match continued with our side WAITing at the
+        root and then playing its plain rule, when the real opponent is the rollout self-model (gen, tau 0.27): same
+        engine hash at root + H, same plays on both sides -- so our side plays in the fork exactly when its gate would.
+        (tau 0 for our side here so the tiny model's gate opens and plays happen inside the window.)"""
+        from pipeline.e1_eval import live_decide_batch
+        run = runner(rollout_self="policy", tau=0.0)
+        m, ds, p, enc, heads, allowed = to_root(self, run, "self", HOGEQ, 3)
+        root, n0, o0 = int(m.env.tick), len(m.learner.plays), len(m.opp.plays)
+        run.rollout_scores(m, ds, [], p)                                           # WAIT only
+        f = run.last_forks[0]
+        todo = []                                                                  # the real root round, our side WAIT
+        for s in ds:
+            if s is m.learner:
+                todo.append((s, p, S.WAIT))
+                continue
+            ps, e, h, hd = S.forward(s)
+            _, al, stl = s.pre(hd)
+            todo.append((s, ps, live_decide_batch(s.model, e, h, [ps], al[None], np.array([stl]), tau=s.cfg["tau"])[0]))
+        for s, ps, d in todo:
+            s.apply(ps, d)
+        st, rng = new_st(), random.Random(0)
+        m.env.tail_cap = root + run.H                                               # end the real match where the fork ends
+        while True:
+            ds = m.due()
+            if not ds:
+                break
+            run.round(m, ds, "plain", st, rng)
+        self.assertEqual((m.env.tick, f.env.tick), (root + run.H, root + run.H))
+        self.assertEqual(f.env.core.state_hash(), m.env.core.state_hash())
+        cut = lambda pl: [(x["tick"], x["slot"], x["cell"], x["land_tick"], x["accepted"], x.get("reason")) for x in pl]
+        ours = cut(f.learner.plays[n0:])
+        self.assertEqual(ours, cut(m.learner.plays[n0:]))
+        self.assertEqual(cut(f.opp.plays[o0:]), cut(m.opp.plays[o0:]))
+        self.assertTrue(ours and all(t > root for t, *_ in ours))                  # our side played AFTER the root WAIT
+        # idle on the same root: our side makes no play at all in the WAIT fork
+        run.rollout_self = "idle"
+        m2, ds2, p2, *_ = to_root(self, run, "self", HOGEQ, 3)
+        run.rollout_scores(m2, ds2, [], p2)
+        self.assertEqual(len(run.last_forks[0].learner.plays), len(m2.learner.plays))
+
+
+    def test_policy_follow_ups_are_charged(self):
+        """policy mode: a follow-up play ACCEPTED in a fork is charged in the score -- every returned score equals
+        Scorer.score(root, horizon, sum of the costs of ALL our accepted fork plays), and the WAIT fork (no candidate)
+        has accepted follow-ups, so a nonzero charge. Cells forced to CELL (own half) so the tiny model's plays land."""
+        run = runner(rollout_self="policy", tau=0.0)
+        m, ds, p, enc, heads, allowed = to_root(self, run, "s1", ICEBOW, 3)
+        cands = S.shortlist(run.learner, enc, heads, allowed, 2, 1)
+        n0 = len(m.learner.plays)
+        s0 = run.scorer.snapshot(m.env.core.state(), m.learner.side) if run.scorer else None
+        orig = E.live_decide_batch
+
+        def forced(*a, **k):                                   # every rollout play at CELL (both roles)
+            return [{**d, "cell": CELL} if d["play"] else d for d in orig(*a, **k)]
+        E.live_decide_batch = forced
+        try:
+            ws, sc = run.rollout_scores(m, ds, cands, p)
+        finally:
+            E.live_decide_batch = orig
+        s0 = s0 or run.scorer.snapshot(m.env.core.state(), m.learner.side)
+        L = m.learner.side
+        for f, got in zip(run.last_forks, [ws] + sc):
+            spent = S.fork_spent(f.learner, n0)
+            self.assertEqual(spent, sum(f.learner.costs[r["slot"]] for r in f.learner.plays[n0:] if r["accepted"]))
+            self.assertAlmostEqual(got, run.scorer.score(s0, run.scorer.snapshot(f.env.core.state(), L), spent),
+                                   places=12)
+        wait = run.last_forks[0].learner.plays[n0:]
+        self.assertTrue(any(r["accepted"] for r in wait), wait)                    # a follow-up landed ...
+        self.assertGreater(S.fork_spent(run.last_forks[0].learner, n0), 0.0)        # ... and is charged
+        free = run.scorer.score(s0, run.scorer.snapshot(run.last_forks[0].env.core.state(), L), 0.0)
+        self.assertLess(ws, free)
 
 
 @unittest.skipIf(RoyaleSelfPlayEnv is None, "royalegym not importable (run in research/ext/Royale/.venv)")
@@ -296,6 +400,15 @@ class TestScorer(unittest.TestCase):
 
 @unittest.skipIf(RoyaleSelfPlayEnv is None, "royalegym not importable (run in research/ext/Royale/.venv)")
 class TestChoose(unittest.TestCase):
+    def test_fork_spent_sums_accepted_only(self):
+        side = SimpleNamespace(costs=[1, 2, 3, 4, 5, 6, 7, 8],
+                               plays=[{"slot": 7, "accepted": True},                                  # before the root
+                                      {"slot": 2, "accepted": True}, {"slot": 5, "accepted": False},
+                                      {"slot": 0, "accepted": True}])
+        self.assertEqual(S.fork_spent(side, 1), 3.0 + 1.0)
+        self.assertEqual(S.fork_spent(side, 4), 0.0)
+
+
     def test_argmax_rule(self):
         """(5) all equal -> WAIT; one dominating -> it; ties among candidates -> the first."""
         self.assertEqual(S.choose(0.0, [0.0, 0.0, 0.0]), -1)

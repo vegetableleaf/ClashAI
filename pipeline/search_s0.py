@@ -23,7 +23,10 @@ DESIGN (lead-fixed, L69 ticket S0)
   and lands at tick + 26 exactly as the plain policy's play would.
   ROLLOUT: fork = RoyaleSim ``save_state``/``load_state`` into a pooled engine + deep copies of the env's python fields
   and BOTH sides' python state (models / cfg / deck shared, never copied). In a fork our candidate lands normally and
-  our side then makes NO further plays; the opponent keeps deciding through its own SelfPlaySide code path and its own
+  our side then makes NO further plays (``--rollout-self idle``, the default = S0; ``policy``: our side keeps
+  extrapolation 26, counter -- batched across forks per role like the opponent; the scorer charges EVERY accepted
+  play of ours in the fork, candidate + follow-ups, so follow-ups never add board/tower value for free); the
+  opponent keeps deciding through its own SelfPlaySide code path and its own
   does not know S1's policy). If the opponent also decides at the root tick, its fork decision is the self-model's.
   Horizon ``--horizon`` s (12 s = 240 ticks) = the fork env's tail_cap. All forks of one decision run in LOCKSTEP
   rounds so the opponent's forward passes are ONE batch across forks.
@@ -50,7 +53,10 @@ DESIGN (lead-fixed, L69 ticket S0)
                                            same number, which Scorer.tower_frac enforces.
       enemy_level (old: threat_value default 11) -> the engine's card_level (RoyaleSim 11; the DB's stats are
                                            stored at REF_LEVEL 11 and equal the engine's CardInfo.hitpoints)
-      spent                             -> the candidate's catalogue cost iff it was ACCEPTED at landing inside the fork
+      spent                             -> ``fork_spent``: the catalogue costs of ALL our plays ACCEPTED in the fork
+                                           between root and horizon. Idle: only the candidate can play, so this is
+                                           the candidate's cost iff it landed (the old Scorer's ``spent``); policy:
+                                           candidate + follow-ups (lead ruling, L69 option 1).
   Team 0 of the old scorer = OUR side (the learner), team 1 = the opponent.
 
 DISCLOSED OPTIMISM: rollouts start from the TRUE engine state -- the opponent's hidden hand, cycle, exact elixir and
@@ -83,6 +89,7 @@ from pipeline import e1_eval as E                                               
 GEN_CKPT = "icebow/data/pipeline/gen_v1_s0/gen_s0.pt"
 S1_CKPT = "icebow/data/pipeline/s1_icebow_v6aug_s1.pt"
 ARMS = ("plain", "search", "force_play", "random", "never")
+ROLLOUT_SELF = ("idle", "policy")
 TAU_PLAIN, TAU_OPP = 0.35, 0.27
 CROWN_W = 1.0
 BOARD_CAP = 1.0                         # old Scorer: each side's pooled board value capped at one tower fraction
@@ -167,6 +174,12 @@ class Scorer:
         board = (s1["bv0"] - s1["bv1"]) - (s0["bv0"] - s0["bv1"])
         d_crowns = (s1["cr0"] - s0["cr0"]) - (s1["cr1"] - s0["cr1"])
         return enemy_destroyed - ours_lost - spent * self.TV.ELIXIR_TO_TOWER + board + self.crown_w * d_crowns
+
+
+def fork_spent(side, n0: int) -> float:
+    """Elixir ``side`` spent in a fork: the catalogue cost of every play ACCEPTED after its first ``n0`` play records
+    (candidate + any follow-ups; refused / unlanded plays cost nothing)."""
+    return float(sum(side.costs[r["slot"]] for r in side.plays[n0:] if r["accepted"]))
 
 
 def engine_tower_level(st) -> int:
@@ -278,10 +291,13 @@ class Runner:
 
     def __init__(self, learner, opps: dict, learner_cfg: dict, make_env, *, horizon_s: float = 12.0,
                  interval: int = 1, topk: int = 4, cells: int = 3, scorer: Optional[Scorer] = None,
-                 search_min_p: float = 0.0):
+                 search_min_p: float = 0.0, rollout_self: str = "idle"):
         self.learner, self.opps, self.lcfg, self.make_env = learner, opps, learner_cfg, make_env
         self.dev = learner_cfg["device"]                  # our policy AND the rollout self-model's forwards
         self.search_min_p = float(search_min_p)
+        if rollout_self not in ROLLOUT_SELF:
+            raise ValueError(f"rollout_self {rollout_self!r} not in {ROLLOUT_SELF}")
+        self.rollout_self = rollout_self
         self.H = int(round(float(horizon_s) / E.TICK_S))
         self.interval, self.topk, self.cells = max(1, int(interval)), int(topk), int(cells)
         for oid, (_, oc) in opps.items():
@@ -309,12 +325,13 @@ class Runner:
         s0 = self.scorer.snapshot(env.core.state(), L)
         cap = min(env.tail_cap, int(env.tick) + self.H)
         ocfg = {**m.opp.cfg, "policy": "live", "tau": TAU_OPP, "grid": self.lcfg["grid"], "device": self.dev}
-        acc0 = m.learner.n_acc
+        n0 = len(m.learner.plays)                                 # the candidate's record index in every fork
         for f, a in zip(forks, acts):
             f.env.tail_cap = cap
             f.opp.model, f.opp.cfg = self.learner, ocfg
             f.learner.apply(p, a)
-            f.learner.next_tick = NEVER
+            if self.rollout_self == "idle":
+                f.learner.next_tick = NEVER                       # S0: our side makes no further plays
         first = [f.opp for f in forks] if m.opp in ds else []     # the opponent decides at the root too: self-model
         active = list(forks)
         while True:
@@ -330,17 +347,25 @@ class Runner:
                     break
                 for s in due:
                     s.prepare()
-            enc, heads, pp, hand = self.learner.forward_batch([s.gen_row(self.learner) for s in due], self.dev)
-            pre = [s.pre(hand[r]) for r, s in enumerate(due)]
-            dec = live_decide_batch(self.learner, enc, heads, pp, np.stack([x[1] for x in pre]),
-                                    np.array([x[2] for x in pre], dtype=bool), tau=TAU_OPP, device=self.dev)
-            for r, s in enumerate(due):
-                s.apply(pp[r], dec[r])
+            # one batched forward + decide PER ROLE across forks (opponent self-model at tau 0.27; with --rollout-self
+            # policy, our side at its own cfg tau); decide all, then apply in due order (run_selfplay_batch's order)
+            todo = {}
+            for role in (1 - L, L):
+                sides = [s for s in due if s.side == role]
+                if not sides:
+                    continue
+                enc, heads, pp, hand = self.learner.forward_batch([s.gen_row(self.learner) for s in sides], self.dev)
+                pre = [s.pre(hand[r]) for r, s in enumerate(sides)]
+                dec = live_decide_batch(self.learner, enc, heads, pp, np.stack([x[1] for x in pre]),
+                                        np.array([x[2] for x in pre], dtype=bool), tau=sides[0].cfg["tau"],
+                                        device=self.dev)
+                todo.update({id(s): (pp[r], dec[r]) for r, s in enumerate(sides)})
+            for s in due:
+                s.apply(*todo[id(s)])
         self.last_forks = forks                                   # kept for inspection (tests)
         out = []
         for f, a in zip(forks, acts):
-            spent = float(f.learner.costs[a["slot"]]) if (a["play"] and f.learner.n_acc > acc0) else 0.0
-            out.append(self.scorer.score(s0, self.scorer.snapshot(f.env.core.state(), L), spent))
+            out.append(self.scorer.score(s0, self.scorer.snapshot(f.env.core.state(), L), fork_spent(f.learner, n0)))
         return out[0], out[1:]
 
     # -- one match -------------------------------------------------------------------------------------
@@ -376,7 +401,7 @@ class Runner:
                 "crowns_for": r["crowns_for"], "crowns_against": r["crowns_against"],
                 "crowns_diff": r["crowns_for"] - r["crowns_against"],
                 "tower_hp_for": hp_for, "tower_hp_against": hp_against, "tower_hp_diff": hp_for - hp_against,
-                "device": self.dev, "search_min_p": self.search_min_p,
+                "device": self.dev, "search_min_p": self.search_min_p, "rollout_self": self.rollout_self,
                 "end_tick": r["end_tick"], "tail_cap": int(env.tail_cap), "wall_truncated": truncated,
                 "plays_attempted": r["plays_attempted"], "plays_accepted": r["plays_accepted"],
                 "opp_plays_accepted": r["opp_side"]["plays_accepted"], "decisions": r["decisions"],
@@ -468,7 +493,7 @@ def _init_worker(args: dict) -> None:
     _W["runner"] = Runner(gen, opps, live_cfg(TAU_PLAIN, gi["grid"], dev),
                           lambda: RoyaleSelfPlayEnv(decision_ticks=10, tail_cap=cap),
                           horizon_s=args["horizon"], interval=args["interval"], topk=args["topk"], cells=args["cells"],
-                          search_min_p=args["search_min_p"])
+                          search_min_p=args["search_min_p"], rollout_self=args.get("rollout_self", "idle"))
     _W["census"] = league_decks(REPO / "scratchpad/gauntlet/L68/selfplay/loadable_decks.json")
 
 
@@ -569,6 +594,8 @@ def main(argv=None) -> int:
                     help="torch device for our policy, the rollout self-model and the opponents (cuda: owner's OK)")
     ap.add_argument("--search-min-p", type=float, default=0.0,
                     help="search arm: a decision with plain gate p < P and no stall is a WAIT without search (0 = off)")
+    ap.add_argument("--rollout-self", default="idle", choices=ROLLOUT_SELF,
+                    help="our side in a fork after the candidate: idle (S0) or policy (its own live rule, tau 0.35)")
     ap.add_argument("--workers", type=int, default=1, help="parallel matches (processes)")
     ap.add_argument("--tail-cap", type=int, default=7200, help="match end tick cap (RoyaleSelfPlayEnv tail_cap)")
     ap.add_argument("--max-wall-min", type=float, default=0.0,
@@ -592,7 +619,7 @@ def main(argv=None) -> int:
     deadline = time.time() + 60.0 * a.max_wall_min if a.max_wall_min else 0.0
     wargs = {"gen": a.gen, "s1": a.s1, "opps": opps, "threads": a.threads, "tail_cap": a.tail_cap, "horizon": a.horizon,
              "interval": a.interval, "topk": a.topk, "cells": a.cells,
-             "device": a.device, "search_min_p": a.search_min_p}
+             "device": a.device, "search_min_p": a.search_min_p, "rollout_self": a.rollout_self}
     (a.out / "run.json").write_text(json.dumps({**vars(a), "out": str(a.out), "summarise": None,
                                                 "gen_sha256": sha256(REPO / a.gen), "s1_sha256": sha256(REPO / a.s1),
                                                 "tau_plain": TAU_PLAIN, "tau_opp": TAU_OPP, "crown_w": CROWN_W,
