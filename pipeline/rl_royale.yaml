@@ -34,6 +34,7 @@ league_snapshot_every: 10   # freeze the learner into the pool every N updates (
                             # checkpoints: weights + load metadata only). Keys checked at startup (rl_royale.validate_league)
 league_snapshot_keep: 8     # the pool keeps the newest K snapshots (an evicted snapshot file is deleted)
 league_icebow_share: 0.2    # P(deck = icebow), learner and opponent alike (the S1 specialist: always icebow)
+# league_learner_icebow_share: null   # optional: P(learner deck = icebow) ONLY (null = league_icebow_share); opponents keep league_icebow_share
 league_deck_alpha: 0.5      # other decks: P ~ max(sides^alpha, floor * mean(sides^alpha)) over the census decks
 league_deck_floor: 0.5
 

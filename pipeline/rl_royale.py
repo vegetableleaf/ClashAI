@@ -369,6 +369,9 @@ def validate_league(cfg: dict) -> None:
     sh = cfg.get("league_icebow_share")
     if not (isinstance(sh, (int, float)) and not isinstance(sh, bool) and 0.0 <= sh <= 1.0):
         bad.append(f"league_icebow_share must be a number in [0, 1], got {sh!r}")
+    lsh = cfg.get("league_learner_icebow_share")
+    if lsh is not None and not (isinstance(lsh, (int, float)) and not isinstance(lsh, bool) and 0.0 <= lsh <= 1.0):
+        bad.append(f"league_learner_icebow_share must be null or a number in [0, 1], got {lsh!r}")
     for k in ("league_deck_alpha", "league_deck_floor"):
         v = cfg.get(k)
         if not (isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v) and v >= 0):
@@ -406,11 +409,14 @@ def sample_matchups(rng: np.random.Generator, n: int, update: int, snaps: list[d
     """``n`` league matchups (one LOO group each): opponent (``sample_opponent``), learner deck (``sample_deck``),
     opponent deck (the same rule; ALWAYS icebow for the S1 specialist, the only deck it can play), learner side
     (uniform) and the env's deal seed -- drawn in that order per matchup from ``rng`` (the learner's own, so resume
-    continues the stream)."""
+    continues the stream). ``league_learner_icebow_share`` (optional) replaces ``league_icebow_share`` for the
+    learner's deck only; the draw order is the same either way (an icebow hit skips the census ``choice``)."""
     out = []
+    lshare = cfg.get("league_learner_icebow_share")
+    lshare = cfg["league_icebow_share"] if lshare is None else lshare      # null = the shared rule (league1/1b)
     for i in range(int(n)):
         opp = sample_opponent(rng, snaps, cfg["league_mix"], cfg["init"], cfg["league_specialist"])
-        ld = sample_deck(rng, census, p, cfg["league_icebow_share"])
+        ld = sample_deck(rng, census, p, lshare)
         od = ICEBOW_DECK if opp["type"] == "s1" else sample_deck(rng, census, p, cfg["league_icebow_share"])
         out.append({"tag": f"sp{int(update):04d}_{i:02d}", "opp": opp,
                     "learner_deck": ld["engine"], "learner_deck_name": ld["name"], "learner_bucket": ld["bucket"],
