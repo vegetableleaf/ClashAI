@@ -1521,8 +1521,8 @@ def main(argv=None) -> int:
         if (run_dir / "STOP").exists():
             raise SystemExit(f"REFUSING resume: {run_dir / 'STOP'} exists (delete it first)")
     else:
-        for d in (run_dir, ck_dir):
-            if d.exists() and any(d.iterdir()):
+        for d in (run_dir, ck_dir):   # a pre-seeded entries.json alone is allowed: it pins another run's entry set
+            if d.exists() and any(p.name != "entries.json" for p in d.iterdir()):
                 raise SystemExit(f"REFUSING: {d} exists and is not empty (new --run name, or --resume)")
     run_dir.mkdir(parents=True, exist_ok=True)
     ck_dir.mkdir(parents=True, exist_ok=True)
