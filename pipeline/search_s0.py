@@ -67,6 +67,20 @@ DESIGN (lead-fixed, L69 ticket S0)
                                            the candidate's cost iff it landed (the old Scorer's ``spent``); policy:
                                            candidate + follow-ups (lead ruling, L69 option 1).
   Team 0 of the old scorer = OUR side (the learner), team 1 = the opponent.
+  ``--scorer v2`` (L69 scorer upgrade; default v1 = everything above, unchanged): only the BOARD value changes. v1 prices
+  every body at its card's catalogue HP wherever it stands. v2 gives each body a multiplier
+      m = hp_frac * pos,   hp_frac = clip(hp / max_hp, 0, 1)   (the entity's own engine max_hp; shields ignored)
+      pos = 0.5 + clip((y - y_own) / (y_opp - y_own), 0, 1)     in [0.5, 1.5]
+  where y_own / y_opp = the princess-tower y line of the unit's OWN team / of the other team (engine frame, read from
+  the state, cached per team). So for OUR units pos grows as they advance toward the enemy towers (threat) and for
+  ENEMY units as they approach OUR towers (danger): 0.5 at/behind their own princess line (threatens nothing yet),
+  1.0 at the river midpoint (= the v1 price), 1.5 at/past the opposing princess line (on a tower). Linear, bounded,
+  symmetric, mean 1 over the lane, one constant (POS_HALF = 0.5). Elixir-priced bodies (no finite ignore cost): v1's
+  per-body value x m. The pooled threat_value part stays POOLED (v1's superlinear clearing queue) and is multiplied by
+  the elixir-weighted mean m of its bodies (weight = catalogue elixir / count; plain mean if every weight is 0), so a
+  lone unit is exactly v1 x m. BOARD_CAP applies after, as in v1. Known limits: a defender standing at its own tower
+  is discounted to 0.5 (the ticket's threat/danger reading, not "useful on defence"); the pooled HP scaling is linear
+  although threat_value's queue is superlinear in HP.
 
 DISCLOSED OPTIMISM: rollouts start from the TRUE engine state -- the opponent's hidden hand, cycle, exact elixir and
 is the only deliberate information limit. A gain here is an UPPER bound on what the same search gets from a belief
@@ -101,6 +115,8 @@ ARMS = ("plain", "search", "force_play", "random", "never")
 ROLLOUT_SELF = ("idle", "policy")
 TAU_PLAIN, TAU_OPP = 0.35, 0.27
 CROWN_W = 1.0
+SCORERS = ("v1", "v2")                  # --scorer: v1 = the ported Scorer; v2 = board value x current HP x position
+POS_HALF = 0.5                          # v2 position factor = 1 -+ POS_HALF (own princess line .. enemy princess line)
 BOARD_CAP = 1.0                         # old Scorer: each side's pooled board value capped at one tower fraction
 NEVER = 10 ** 9                         # a fork's our-side next_tick: it never decides again
 WAIT = {"play": False, "slot": -1, "cell": -1, "why": "search_wait"}
@@ -116,7 +132,8 @@ SHARED_ENV = ("core", "eng", "ids", "names", "subs", "_code_names", "elixir_rege
 class Scorer:
     """``clashrl.sim.rollout_search.Scorer`` on RoyaleSim states (mapping: module docstring). ``us`` = our team."""
 
-    def __init__(self, catalogue, *, tower_level: int, card_level: int, crown_w: float = CROWN_W, db=None):
+    def __init__(self, catalogue, *, tower_level: int, card_level: int, crown_w: float = CROWN_W, db=None,
+                 version: str = "v1"):
         from clashrl import threat_value as TV
         from clashrl.cards import shared
         from pipeline.dataset_gen import card_key
@@ -127,6 +144,26 @@ class Scorer:
         self.princess_hp = float(TV.tower_hp(self.tower_level))   # threat_value's unit = the tower term's unit
         self._finite: dict = {}
         self._ref: dict = {}
+        if version not in SCORERS:
+            raise ValueError(f"scorer {version!r} not in {SCORERS}")
+        self.version = version
+        self._yline: dict = {}           # v2: team -> its princess-tower y (engine frame), first seen
+
+    def ylines(self, st) -> dict:
+        """v2: each team's princess-tower y line (a king tower's y only if that team has shown no princess yet)."""
+        from royalegym.protocol import EntityKind
+        for kind in (EntityKind.PRINCESS_TOWER, EntityKind.KING_TOWER):
+            for e in st.entities:
+                if e.kind == kind and e.team not in self._yline:
+                    self._yline[e.team] = float(e.y)
+        return self._yline
+
+    def unit_mult(self, e, yl: dict) -> float:
+        """v2 per-body multiplier: hp_frac x position factor (module docstring)."""
+        hp = min(1.0, max(0.0, float(e.hp)) / max(1.0, float(e.max_hp)))
+        own, opp = yl[e.team], yl[1 - e.team]
+        t = min(1.0, max(0.0, (float(e.y) - own) / (opp - own)))
+        return hp * (1.0 - POS_HALF + 2.0 * POS_HALF * t)
 
     def _has_finite_ignore(self, base: str) -> bool:
         v = self._finite.get(base)
@@ -141,23 +178,30 @@ class Scorer:
 
     def board_value(self, st, team: int) -> float:
         from royalegym.protocol import EMPTY_CARD, EntityKind
-        finite, extra = [], 0.0
+        v2 = self.version == "v2"
+        yl = self.ylines(st) if v2 else None
+        finite, wm, extra = [], [], 0.0
         for e in st.entities:
             if e.team != team or e.hp <= 0 or e.kind not in (EntityKind.TROOP, EntityKind.BUILDING) \
                     or e.card_id == EMPTY_CARD:
                 continue
             b = self.base.get(e.card_id)
+            m = self.unit_mult(e, yl) if v2 else 1.0
+            c = self.cards[e.card_id]
             if b and self._has_finite_ignore(b):
                 finite.append(b)
-            else:
-                c = self.cards[e.card_id]
-                extra += (float(c.elixir) / max(1, int(c.count))) * self.TV.ELIXIR_TO_TOWER
+                wm.append((float(c.elixir) / max(1, int(c.count)), m))
+            else:                                                    # v1: m = 1.0, so x * m == x exactly
+                extra += (float(c.elixir) / max(1, int(c.count))) * self.TV.ELIXIR_TO_TOWER * m
         v = 0.0
         if finite:
             v = float(self.TV.bodies_ignore_frac(self.db, finite, tower_level=self.tower_level,
                                                  enemy_level=self.card_level))
             if not math.isfinite(v):
                 v = BOARD_CAP
+            if v2:
+                wsum = sum(w for w, _ in wm)
+                v *= sum(w * m for w, m in wm) / wsum if wsum > 0 else sum(m for _, m in wm) / len(wm)
         return min(BOARD_CAP, v + extra)
 
     def tower_frac(self, st, team: int) -> float:
@@ -210,10 +254,10 @@ def engine_tower_level(st) -> int:
     return lv.pop()
 
 
-def make_scorer(env) -> Scorer:
+def make_scorer(env, version: str = "v1") -> Scorer:
     """The Scorer at the ENGINE's tower and card levels (never a hard-coded one)."""
     return Scorer(env.core.cards(), tower_level=engine_tower_level(env.core.state()),
-                  card_level=int(env.core.card_level))
+                  card_level=int(env.core.card_level), version=version)
 
 
 def choose(wait_score: float, scores) -> int:
@@ -300,7 +344,7 @@ class Runner:
 
     def __init__(self, learner, opps: dict, learner_cfg: dict, make_env, *, horizon_s: float = 12.0,
                  interval: int = 1, topk: int = 4, cells: int = 3, scorer: Optional[Scorer] = None,
-                 search_min_p: float = 0.0, rollout_self: str = "idle"):
+                 search_min_p: float = 0.0, rollout_self: str = "idle", scorer_version: str = "v1"):
         self.learner, self.opps, self.lcfg, self.make_env = learner, opps, learner_cfg, make_env
         self.dev = learner_cfg["device"]                  # our policy AND the rollout self-model's forwards
         self.search_min_p = float(search_min_p)
@@ -314,6 +358,9 @@ class Runner:
                 raise ValueError(f"opponent {oid} grid {oc['grid']} != self-model grid {learner_cfg['grid']}")
         self.pool: list = []
         self.scorer = scorer
+        if scorer_version not in SCORERS:
+            raise ValueError(f"scorer {scorer_version!r} not in {SCORERS}")
+        self.scorer_version = scorer_version
 
     def _pool(self, n: int) -> list:
         while len(self.pool) < n:
@@ -327,7 +374,7 @@ class Runner:
         from pipeline.e1_eval import live_decide_batch
         env, L = m.env, m.learner.side
         if self.scorer is None:
-            self.scorer = make_scorer(env)
+            self.scorer = make_scorer(env, self.scorer_version)
         blob = env.core.save_state()
         acts = [WAIT] + cands
         forks = [fork_into(m, e2, blob) for e2 in self._pool(len(acts))]
@@ -504,33 +551,38 @@ def _init_worker(args: dict) -> None:
     _W["runner"] = Runner(gen, opps, live_cfg(TAU_PLAIN, gi["grid"], dev),
                           lambda: RoyaleSelfPlayEnv(decision_ticks=10, tail_cap=cap, forms_mode=fm),
                           horizon_s=args["horizon"], interval=args["interval"], topk=args["topk"], cells=args["cells"],
-                          search_min_p=args["search_min_p"], rollout_self=args.get("rollout_self", "idle"))
+                          search_min_p=args["search_min_p"], rollout_self=args.get("rollout_self", "idle"),
+                          scorer_version=args.get("scorer", "v1"))
     _W["census"] = league_decks(REPO / "scratchpad/gauntlet/L68/selfplay/loadable_decks.json")
+
+
+def setup_job(run, census, opp_id: str, seed: int):
+    """-> (SelfPlayMatch, opponent deck name) for (opp_id, seed): S1 plays icebow; gen a seeded census deck, redrawn
+    deterministically while unloadable or holding a card the generalist never saw. None = no loadable deck."""
+    from pipeline.dataset_gen import card_key
+    from pipeline.royale_env import UnsupportedDeck
+    if opp_id == "s1":
+        return run.setup(opp_id, seed, E.ICEBOW_ENGINE_DECK), "icebow"
+    for j in range(50):                                            # redraw an unloadable deck, deterministically
+        d = opp_deck_for(seed * 1000 + j, census)
+        if any(card_key(n) not in run.opps[opp_id][0].gid for n in d["engine"]):
+            continue                                               # a card the generalist never saw
+        try:
+            return run.setup(opp_id, seed, d["engine"]), d["name"]
+        except (UnsupportedDeck, KeyError):
+            continue
+    return None
 
 
 def _run_job(job: tuple) -> dict:
     arm, opp_id, seed, deadline = job
     if deadline and time.time() > deadline:
         return {"arm": arm, "opp": opp_id, "seed": seed, "skipped": "wall budget"}
-    from pipeline.dataset_gen import card_key
-    from pipeline.royale_env import UnsupportedDeck
-    run, census = _W["runner"], _W["census"]
-    if opp_id == "s1":
-        m, name = run.setup(opp_id, seed, E.ICEBOW_ENGINE_DECK), "icebow"
-    else:
-        for j in range(50):                                        # redraw an unloadable deck, deterministically
-            d = opp_deck_for(seed * 1000 + j, census)
-            if any(card_key(n) not in run.opps[opp_id][0].gid for n in d["engine"]):
-                continue                                           # a card the generalist never saw
-            try:
-                m = run.setup(opp_id, seed, d["engine"])
-                name = d["name"]
-                break
-            except (UnsupportedDeck, KeyError):
-                continue
-        else:
-            return {"arm": arm, "opp": opp_id, "seed": seed, "skipped": "no loadable deck"}
-    rec = run.play(arm, m, deadline or None)
+    got = setup_job(_W["runner"], _W["census"], opp_id, seed)
+    if got is None:
+        return {"arm": arm, "opp": opp_id, "seed": seed, "skipped": "no loadable deck"}
+    m, name = got
+    rec = _W["runner"].play(arm, m, deadline or None)
     rec["opp_deck_name"] = name
     rec.update(_W.get("opp_meta") or {})
     return rec
@@ -611,6 +663,8 @@ def main(argv=None) -> int:
                     help="search arm: a decision with plain gate p < P and no stall is a WAIT without search (0 = off)")
     ap.add_argument("--rollout-self", default="idle", choices=ROLLOUT_SELF,
                     help="our side in a fork after the candidate: idle (S0) or policy (its own live rule, tau 0.35)")
+    ap.add_argument("--scorer", default="v1", choices=SCORERS,
+                    help="rollout Scorer: v1 (ported, default) or v2 (board value x current HP x position)")
     ap.add_argument("--workers", type=int, default=1, help="parallel matches (processes)")
     ap.add_argument("--tail-cap", type=int, default=7200, help="match end tick cap (RoyaleSelfPlayEnv tail_cap)")
     ap.add_argument("--forms-mode", default="base", choices=("base", "deck"),
@@ -641,7 +695,7 @@ def main(argv=None) -> int:
     wargs = {"gen": a.gen, "opp_gen": a.opp_gen, "opp_gen_sha256": opp_sha, "s1": a.s1, "opps": opps, "threads": a.threads, "tail_cap": a.tail_cap, "horizon": a.horizon,
              "interval": a.interval, "topk": a.topk, "cells": a.cells,
              "device": a.device, "search_min_p": a.search_min_p, "rollout_self": a.rollout_self,
-             "forms_mode": a.forms_mode}
+             "forms_mode": a.forms_mode, "scorer": a.scorer}
     (a.out / "run.json").write_text(json.dumps({**vars(a), "out": str(a.out), "summarise": None,
                                                 "gen_sha256": sha256(REPO / a.gen), "opp_gen_sha256": opp_sha,
                                                 "s1_sha256": sha256(REPO / a.s1),
