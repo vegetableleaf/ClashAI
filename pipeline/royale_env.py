@@ -7,7 +7,7 @@ Overtime: RoyaleSim ships 60 s (2018 locations.csv); the 2026 corpus runs to 5,9
 with ``match.OVERTIME_S`` = 120 (L68 local patch) or 62% of pool matches end a minute early.
 
 What the engine cannot play is a DECK problem, not a runtime one: ``reset`` refuses an entry whose decks name a card
-the catalogue lacks, unless ``subs`` maps it to one it has (e.g. {"Tornado": "Arrows"} while Tornado is unimplemented).
+the catalogue lacks, unless ``subs`` maps it to one it has (e.g. {"Tornado": "Arrows"} for an engine without Tornado; RoyaleSim plays real Tornado since 2026-09-23, and no run passes subs).
 Evolution / hero forms run as the base card -- RoyaleSim has no forms.
 
 Needs ``royalesim`` + ``royalegym`` importable (the Royale stack venv, or both installed into the caller's venv).
