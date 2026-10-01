@@ -494,5 +494,80 @@ class TestNeverArm(unittest.TestCase):
         self.assertTrue(all(p["why"] != "stall" for p in run.last_result["plays"]))
 
 
+@unittest.skipIf(RoyaleSelfPlayEnv is None, "royalegym not importable (run in research/ext/Royale/.venv)")
+class TestOppGen(unittest.TestCase):
+    """--opp-gen: the frozen 'gen' opponent's checkpoint, separate from --gen (ours + the rollout self-model)."""
+
+    def _worker(self, **extra):
+        """_init_worker with E.load_policy faked: path 'A' -> tiny model 0, path 'B' -> tiny model 1 (both 'lattice')."""
+        calls, tiny = [], tiny_models()
+        orig = S.E.load_policy
+        S.E.load_policy = lambda path, dev="cpu": (calls.append(Path(path).name) or
+                                                    (tiny[0 if Path(path).name == "A" else 1], {"grid": "lattice"}))
+        try:
+            S._W.clear()
+            S._init_worker({"gen": "A", "s1": "S", "opps": ["gen"], "threads": 1, "tail_cap": 600, "horizon": 4.0,
+                            "interval": 1, "topk": 4, "cells": 3, "device": "cpu", "search_min_p": 0.0, **extra})
+        finally:
+            S.E.load_policy = orig
+        return S._W["runner"], calls, tiny
+
+    def test_default_is_unchanged(self):
+        """No --opp-gen == --opp-gen = --gen: same loads, same plain-arm match, == a hand-built Runner."""
+        r0, c0, _ = self._worker()
+        r1, c1, _ = self._worker(opp_gen="A", opp_gen_sha256="x")
+        self.assertEqual((c0, c1), (["A", "A"], ["A", "A"]))
+        self.assertEqual(S._W["opp_meta"], {"opp_gen": "A", "opp_gen_sha256": "x"})
+        keys = ("outcome", "crowns_for", "crowns_against", "tower_hp_diff", "plays_attempted", "plays_accepted",
+                "opp_plays_accepted", "decisions", "end_tick")
+        outs = []
+        for r in (r0, r1):
+            r.opps["gen"][0].model.load_state_dict(r.learner.model.state_dict())     # fake model 0 twice: opp == ours
+            outs.append(r.play("plain", r.setup("gen", 2, HOGEQ)))
+        ref = runner(tail_cap=600)
+        ref.opps["gen"][0].model.load_state_dict(ref.learner.model.state_dict())
+        want = ref.play("plain", ref.setup("gen", 2, HOGEQ))
+        for o in outs:
+            self.assertEqual({k: o[k] for k in keys}, {k: want[k] for k in keys})
+
+    def test_opp_gen_is_the_opponent_only(self):
+        r, calls, tiny = self._worker(opp_gen="B")
+        self.assertEqual(calls, ["A", "B"])
+        self.assertIs(r.learner, tiny[0])                           # ours (and the rollout self-model) = --gen
+        self.assertIs(r.opps["gen"][0], tiny[1])                    # the frozen opponent = --opp-gen
+        self.assertEqual(S._W["opp_meta"]["opp_gen"], "B")
+        m = r.setup("gen", 2, HOGEQ)
+        self.assertIs(m.learner.model, tiny[0])
+        self.assertIs(m.opp.model, tiny[1])
+
+    def test_match_line_and_run_json_record_it(self):
+        import json
+        import tempfile
+        S._W.clear()
+        S._W["opp_meta"] = {"opp_gen": "B", "opp_gen_sha256": "abc"}
+        S._W["runner"] = SimpleNamespace(setup=lambda *a, **k: "m", play=lambda arm, m, d: {"arm": arm})
+        S._W["census"] = []
+        rec = S._run_job(("plain", "s1", 0, 0.0))
+        self.assertEqual((rec["opp_gen"], rec["opp_gen_sha256"]), ("B", "abc"))
+        S._W.clear()
+        o_init, o_job = S._init_worker, S._run_job
+        S._init_worker = lambda args: None
+        S._run_job = lambda job: {"arm": job[0], "opp": job[1], "seed": job[2], "skipped": "stub"}
+        try:
+            runs = {}
+            for name, extra in (("default", []), ("cand", ["--opp-gen", S.S1_CKPT])):
+                with tempfile.TemporaryDirectory() as d:
+                    S.main(["--out", str(Path(d) / "o"), "--seeds", "0:1", "--opps", "gen", "--arms", "plain"] + extra)
+                    runs[name] = json.loads((Path(d) / "o" / "run.json").read_text())
+        finally:
+            S._init_worker, S._run_job = o_init, o_job
+        d0, d1 = runs["default"], runs["cand"]
+        self.assertEqual((d0["opp_gen"], d0["opp_gen_sha256"]), (d0["gen"], d0["gen_sha256"]))
+        self.assertEqual((d1["opp_gen"], d1["opp_gen_sha256"]), (S.S1_CKPT, d1["s1_sha256"]))
+        self.assertEqual(d1["gen"], S.GEN_CKPT)
+        for k in set(d0) - {"opp_gen", "opp_gen_sha256", "started", "out"}:
+            self.assertEqual(d0[k], d1[k], k)
+
+
 if __name__ == "__main__":
     unittest.main()
