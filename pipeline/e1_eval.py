@@ -673,6 +673,9 @@ class Match:
             row = {"tok": tok, "mask": mask, "sc": sc, "past": past}
             if self._gen_row is not None:                     # GenPolicy: the generalist's input row (zeroed sc,
                 row = {k: self._gen_row[k] for k in GEN_ROW_KEYS}   # (card, form, x, y, dt) past, identities)
+            if cfg.get("record_phi"):                         # rl_royale shaping (R2): what Phi needs, own view
+                from pipeline.reward_shaping import phi_record
+                row = {**row, "phi_state": phi_record(self.state, self.side)}
             self.traj.append({**row, "allowed": d["allowed"],
                               "stalled": d["stalled"], "gate_sampled": d["gate_sampled"], "played": d["play"],
                               "slot": d["slot"], "cell": d["cell"], "lp_gate": d["lp_gate"], "lp_card": d["lp_card"],
@@ -804,6 +807,8 @@ class Match:
                 "T": scalar("T", np.float64)}
         if tj and "hand_card" in tj[0]:
             out.update({k: stack(k).astype(np.int64) for k in GEN_IDENT_KEYS})
+        if tj and "phi_state" in tj[0]:                      # cfg["record_phi"]: reward_shaping.phi_record rows
+            out["phi_state"] = stack("phi_state").astype(np.float64)
         return out
 
 

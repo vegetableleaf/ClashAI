@@ -51,6 +51,13 @@ gae_lambda: 0.95            # gae: GAE lambda
 vf_coef: 0.5                # gae: value-loss coefficient
 vf_clip: 0.2                # gae: PPO value clip around the update's starting V (V in [-1, 1])
 critic_warmup_updates: 0    # gae: the first N updates train ONLY the value head (no L_pg, no KL term, beta held)
+vf_trunk_grad: true         # gae: false = the value loss trains value_head only (trunk features detached on the value
+                            # path; the policy gradient unchanged). Logged either way: gae.vf_trunk_share
+# ---- potential-based shaping (R2, reward_plan.md 2 / 3b; gae only, refused with match_loo): F_t = gamma Phi(s_{t+1})
+# - Phi(s_t) added to r_step on every kept row, gamma = gae_gamma, Phi = 0 after the match's last kept row
+shaping: none               # none | tower_crown (Phi = w_tower (own - foe tower HP fractions)/3 + w_crown crown diff/3)
+shaping_w_tower: 0.3        # plan 3b: |Phi| <= (5/3) w = 0.5 x the terminal reward at w 0.3
+shaping_w_crown: 0.3
 
 # ---- actors (plan diff 5)
 n_actors: 3                 # actor processes (torch.multiprocessing, spawn)

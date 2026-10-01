@@ -34,6 +34,9 @@ One update (``Learner.one_update``):
      head (``value_scalar``), GAE(gae_gamma, gae_lambda) advantages normalised per batch (``gae_batch``), + vf_coef x a
      PPO-clipped value loss; the first ``critic_warmup_updates`` updates train ONLY the value head (no L_pg, no KL,
      beta held).
+     ``vf_trunk_grad: false`` (default true): the value loss reaches value_head only. ``shaping: tower_crown`` (R2,
+     gae only; default none): F_t = gae_gamma Phi(s_{t+1}) - Phi(s_t) (``reward_shaping``, Phi = 0 at the match end)
+     added to ``r_step`` on every kept row, from the ``phi_state`` rows e1_eval records under ``record_phi``.
   3. Rows that sampled nothing (no card allowed) are dropped; each remaining decision carries weight 1/(n_i M) so a
      match's decisions sum to 1/M (``match_weights``: the loss is averaged per match, then over the batch).
   4. Frozen-ref terms once per update (``ref_terms``); ``ppo_epochs`` x minibatches of ``minibatch`` decisions:
@@ -80,6 +83,7 @@ if str(REPO) not in sys.path:
     sys.path.insert(0, str(REPO))
 
 from pipeline import e1_eval as E                                               # noqa: E402
+from pipeline import reward_shaping as RS                                       # noqa: E402
 from pipeline.model_v3 import hand_mask_from_sc                                 # noqa: E402
 
 RUN_ROOT = REPO / "scratchpad" / "gauntlet" / "L68" / "rl"
@@ -124,6 +128,8 @@ def actor_cfg(base: dict, kind: str, aid: int, dev: str) -> dict:
            "decide_every": int(base["decide_every"]), "slot": aid, "port": 0, "T": float(base["T"]),
            "record": kind == "rollout"}
     cfg.update(condition_cfg(base))
+    if kind == "rollout" and base.get("shaping", "none") != "none":
+        cfg["record_phi"] = True                              # R2: each row carries reward_shaping.phi_record
     return cfg
 
 
@@ -143,8 +149,11 @@ def loo_advantage(R, clip: float = 2.0) -> np.ndarray:
 
 
 ADV_MODES = ("match_loo", "gae")
+SHAPING_MODES = ("none", "tower_crown")         # R2 (reward_plan.md 2 / 3b): potential shaping, gae only
 GAE_DEFAULTS = {"advantage": "match_loo", "gae_gamma": 0.999, "gae_lambda": 0.95, "vf_coef": 0.5, "vf_clip": 0.2,
-                "critic_warmup_updates": 0}     # a config WITHOUT these keys (a run started before R1) = match_loo
+                "critic_warmup_updates": 0,     # a config WITHOUT these keys (a run started before R1) = match_loo
+                "shaping": "none", "shaping_w_tower": 0.3, "shaping_w_crown": 0.3,   # ... and no shaping (R2)
+                "vf_trunk_grad": True}          # ... and the value loss trains the shared trunk (R1 as committed)
 
 
 def adv_cfg(cfg: dict) -> dict:
@@ -165,6 +174,17 @@ def adv_cfg(cfg: dict) -> dict:
     w = c["critic_warmup_updates"]
     if not (isinstance(w, int) and not isinstance(w, bool) and w >= 0):
         bad.append(f"critic_warmup_updates must be an integer >= 0, got {w!r}")
+    if c["shaping"] not in SHAPING_MODES:
+        bad.append(f"shaping must be one of {SHAPING_MODES}, got {c['shaping']!r}")
+    elif c["shaping"] != "none" and c["advantage"] != "gae":
+        bad.append(f"shaping {c['shaping']!r} needs advantage gae (summed per match it telescopes to a constant)")
+    for k in ("shaping_w_tower", "shaping_w_crown"):
+        if not (num(c[k]) and c[k] >= 0.0):
+            bad.append(f"{k} must be a finite number >= 0, got {c[k]!r}")
+    if not isinstance(c["vf_trunk_grad"], bool):
+        bad.append(f"vf_trunk_grad must be true or false, got {c['vf_trunk_grad']!r}")
+    elif not c["vf_trunk_grad"] and c["advantage"] != "gae":
+        bad.append("vf_trunk_grad false needs advantage gae (match_loo has no value loss)")
     if bad:
         raise SystemExit("bad advantage config: " + "; ".join(bad))
     return c
@@ -526,10 +546,13 @@ def _py(x):
 # ------------------------------------------------------------------------------------------------------
 # trajectories -> one batch
 # ------------------------------------------------------------------------------------------------------
-def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_loo") -> tuple[dict, dict]:
+def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_loo",
+            shaping: Optional[dict] = None) -> tuple[dict, dict]:
     """Rollout result records (each with ``traj`` = ``Match._traj_arrays``) -> numpy batch of the CONTRIBUTING rows
     (gate sampled or card/cell played) with per-row A, per-match weight w, match id, and the stored log-probs.
-    ``advantage="gae"`` adds ``r_step`` (``terminal_rewards``); A stays the LOO value until ``gae_batch`` replaces it."""
+    ``advantage="gae"`` adds ``r_step`` (``terminal_rewards``); A stays the LOO value until ``gae_batch`` replaces it.
+    ``shaping`` (gae only; {gamma, w_tower, w_crown}): + F_t (``shaping_rewards``) on every kept row of r_step, and
+    the stats under ``st["shaping"]``."""
     groups: dict = {}
     for j, r in enumerate(results):
         groups.setdefault(r["entry_index"], []).append(j)
@@ -555,14 +578,48 @@ def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_
     B["A"] = cat(lambda j: np.full(n_rows[j], A[j]))
     B["w"] = cat(lambda j: W[j])
     B["match"] = cat(lambda j: np.full(n_rows[j], j))
+    sh = None
     if advantage == "gae":
         rs = terminal_rewards(n_rows, [r["outcome"] for r in results])
+        if shaping is not None:
+            sh = {j: shaping_rewards(results[j]["traj"]["phi_state"][keep[j]], shaping) for j in use}
+            for j in use:
+                rs[j] = rs[j] + sh[j]["F"]
         B["r_step"] = cat(lambda j: rs[j])
+    elif shaping is not None:
+        raise ValueError("shaping needs advantage gae")
     st = {"matches": len(results), "groups": len(groups), "mixed_groups": mixed,
           "mixed_group_share": mixed / max(len(groups), 1), "mean_abs_A": float(np.abs(A).mean()) if len(A) else 0.0,
           "rows": int(len(B["A"])), "rows_played": int(B["played"].sum()), "rows_gate": int(B["gate_sampled"].sum()),
           "decisions": int(sum(len(r["traj"]["played"]) for r in results))}
+    if sh is not None:
+        st["shaping"] = shaping_stats([sh[j] for j in use])
     return B, st
+
+
+def shaping_rewards(phi_rows, shaping: dict) -> dict:
+    """One match's R2 shaping on its KEPT rows (``reward_shaping.phi_record`` rows, time order): F_t = gamma Phi(s_{t+1})
+    - Phi(s_t) with gamma = ``gae_gamma`` per kept row (the GAE step unit) and Phi = 0 after the last kept row (the
+    match end). -> numpy F, its weighted terms tower / crown (F = tower + crown), and Phi(s_t) per row (``phi``, the
+    terminal 0 dropped) with its weighted terms ``phi_tower`` / ``phi_crown``."""
+    pt, pc = (np.atleast_1d(x).astype(np.float64) for x in RS.phi_parts(phi_rows))
+    wt, wc = float(shaping["w_tower"]), float(shaping["w_crown"])
+    out = RS.shaping_from_parts(pt.tolist(), pc.tolist(), float(shaping["gamma"]), (wt, wc))
+    return {"F": np.asarray(out["F"]), "tower": np.asarray(out["tower"]), "crown": np.asarray(out["crown"]),
+            "phi": np.asarray(out["phi"][:-1]), "phi_tower": wt * pt, "phi_crown": wc * pc}
+
+
+def shaping_stats(per_match: list[dict]) -> dict:
+    """Per-update R2 monitors over every kept row: mean |F| and |Phi(s_t)|, each per term, and ``shaping_dominates``
+    = mean |Phi| / 1.0 (the terminal reward's magnitude; plan 3b: -Phi(s_t) is the shaping part of every
+    return-to-go, so a value above 0.5 means shaping is louder than half of winning)."""
+    c = (lambda k: np.concatenate([m[k] for m in per_match]) if per_match else np.zeros(0))
+    m = (lambda k: float(np.abs(c(k)).mean()) if len(c(k)) else None)
+    st = {f"mean_abs_{k}": m(k) for k in ("F", "tower", "crown", "phi", "phi_tower", "phi_crown")}
+    st["max_abs_phi"] = float(np.abs(c("phi")).max()) if len(c("phi")) else None
+    st["shaping_dominates"] = None if st["mean_abs_phi"] is None else st["mean_abs_phi"] / 1.0
+    st["rows"] = int(len(c("F")))
+    return st
 
 
 GEN_PA_KEYS = ("sc", "past", "y_xy", "y_hand_pos", "y_gate", "y_wait_card", "y_crowns", "y_card") + (
@@ -600,13 +657,14 @@ def _logit(p: float) -> float:
     return math.log(p / (1.0 - p))
 
 
-def policy_terms(model, B: dict, idx, tau: float, T: float, value: bool = False) -> dict:
+def policy_terms(model, B: dict, idx, tau: float, T: float, value: bool = False, value_trunk: bool = True) -> dict:
     """Recompute the behaviour log-probs of rows ``idx`` exactly as ``e1_eval.sample_decide_batch`` defined them:
     gate ``sigmoid((z - logit(tau)) / T)`` on gate-sampled rows; card softmax over ``allowed`` of the heads'
     hand-masked logits / T and cell softmax over 2,304 for the recorded slot / T on played rows; float64 after the
     Generalist rows (``hand_card`` in B, a GenModel ``model``): the forward is ``e1_eval.GenPolicy.heads_t`` -- the
     over allowed hand positions) and cell = ``cell_logits_gen`` for the slot's card identity + form.
-    ``value``: also ``v`` = ``value_scalar`` of the value head on the same forward (gae mode only)."""
+    ``value``: also ``v`` = ``value_scalar`` of the value head on the same forward (gae mode only); ``value_trunk``
+    False (``vf_trunk_grad: false``) detaches the trunk features under ``v``, so a loss on ``v`` reaches value_head only."""
     if "hand_card" in B:
         pol = E.GenPolicy(model, ())
         enc, heads = pol.heads_t({k: B[k][idx] for k in E.GEN_ROW_KEYS})
@@ -632,7 +690,7 @@ def policy_terms(model, B: dict, idx, tau: float, T: float, value: bool = False)
         lp_cell = lp_cell.index_put((pi,), cell_lp.gather(1, cell[pi].unsqueeze(1)).squeeze(1))
     out = {"x": x, "card_lp": card_lp, "cell_lp": cell_lp, "lp_gate": lp_gate, "lp_card": lp_card, "lp_cell": lp_cell}
     if value:
-        out["v"] = value_scalar(model.value_head(enc["g"]))
+        out["v"] = value_scalar(model.value_head(enc["g"] if value_trunk else enc["g"].detach()))
     return out
 
 
@@ -720,8 +778,10 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
     n_total / |mb| so each minibatch estimates the full-batch loss; + beta (mean KL_gate + mean KL_card + mean KL_cell).
     ``vf`` (gae mode: {coef, clip, policy}): + coef x the PPO-clipped value loss 0.5 max((V - ret)^2, (V_old +
     clip(V - V_old, +-clip) - ret)^2), per-match weighted like L_pg; ``policy`` False (critic warm-up) = the value
-    loss ALONE (no L_pg, no KL term). None = the match_loo loss, unchanged."""
-    t = policy_terms(model, B, idx, tau, T, value=vf is not None)
+    loss ALONE (no L_pg, no KL term); ``trunk_grad`` False (default True) = the value loss trains value_head only.
+    None = the match_loo loss, unchanged."""
+    t = policy_terms(model, B, idx, tau, T, value=vf is not None,
+                     value_trunk=True if vf is None else bool(vf.get("trunk_grad", True)))
     lp_new = t["lp_gate"] + t["lp_card"] + t["lp_cell"]
     ratio = torch.exp(lp_new - B["lp_old"][idx])
     A, w = B["A"][idx], B["w"][idx]
@@ -750,6 +810,28 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
         if vf is not None:
             st["l_v"] = float(l_v)
     return loss, st
+
+
+def vf_grad_share(model, B: dict, R: dict, cfg: dict, beta: float, vf: dict) -> dict:
+    """gae-mode monitor (R1 verifier finding F2: the value loss also trains the shared trunk, moving the policy where
+    the KL monitors do not look). On ONE minibatch (``minibatch`` rows strided over the batch; no step, no .grad
+    written, no RNG drawn): the gradient norms, on the TRUNK, of the value part of the loss as trained (vf_coef x L_v;
+    exactly 0 with ``vf["trunk_grad"]`` False) and of the policy part (L_pg + beta KL). Trunk = every parameter but
+    value_head that the value loss reaches through the trunk features. -> {share = |g_v| / (|g_v| + |g_pg|), norms}."""
+    N = len(B["A"])
+    idx = torch.arange(0, N, max(1, N // int(cfg["minibatch"])), device=B["A"].device)[:int(cfg["minibatch"])]
+    kw = dict(tau=cfg["tau"], T=cfg["T"], clip=cfg["clip"], beta=beta, n_total=N)
+    params = [p for n, p in model.named_parameters() if p.requires_grad and not n.startswith("value_head.")]
+    l_v, _ = minibatch_loss(model, B, R, idx, vf={**vf, "policy": False, "trunk_grad": True}, **kw)
+    g_reach = torch.autograd.grad(l_v, params, allow_unused=True)
+    trunk = [i for i, g in enumerate(g_reach) if g is not None]
+    l_pg, _ = minibatch_loss(model, B, R, idx, **kw)
+    g_pg = torch.autograd.grad(l_pg, [params[i] for i in trunk], allow_unused=True)
+    norm = (lambda gs: math.sqrt(sum(float((g.double() ** 2).sum()) for g in gs if g is not None)))
+    nv = norm([g_reach[i] for i in trunk]) if vf.get("trunk_grad", True) else 0.0
+    npg = norm(g_pg)
+    return {"share": nv / (nv + npg) if nv + npg > 0 else None, "grad_v": nv, "grad_pg": npg,
+            "trunk_tensors": len(trunk), "rows": int(len(idx))}
 
 
 def ppo_update(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.random.Generator,
@@ -1416,7 +1498,9 @@ class Learner:
             mon["league"] = league_monitors(results)
         ac = adv_cfg(cfg)
         gae_on = ac["advantage"] == "gae"
-        Bn, bst = collate(results, float(cfg["adv_clip"]), advantage=ac["advantage"])
+        shp = ({"gamma": ac["gae_gamma"], "w_tower": ac["shaping_w_tower"], "w_crown": ac["shaping_w_crown"]}
+               if ac["shaping"] != "none" else None)
+        Bn, bst = collate(results, float(cfg["adv_clip"]), advantage=ac["advantage"], shaping=shp)
         del results
         t1 = time.perf_counter()
         B = to_device(Bn, self.dev)
@@ -1426,7 +1510,8 @@ class Learner:
         warm = gae_on and self.update < ac["critic_warmup_updates"]        # critic warm-up: policy frozen
         if gae_on:
             gst = gae_batch(self.model, B, cfg)
-            vf = {"coef": ac["vf_coef"], "clip": ac["vf_clip"], "policy": not warm}
+            vf = {"coef": ac["vf_coef"], "clip": ac["vf_clip"], "policy": not warm, "trunk_grad": ac["vf_trunk_grad"]}
+            gst["vf_trunk_share"] = None if warm else vf_grad_share(self.model, B, R, cfg, beta_used, vf)
         upd = ppo_update(self.model, self.opt, B, R, cfg, beta_used, self.rng, vf=vf)
         t_upd = time.perf_counter() - t1
         first = upd["first"]
@@ -1474,7 +1559,8 @@ class Learner:
                "actor_gpu_peak_mb": {a: s["gpu_peak_mb"] for a, s in rinfo["actors"].items()}}
         if gae_on:
             rec["gae"] = {**gst, "l_v": upd["l_v"], "l_v_first": upd["l_v_first"], "critic_warmup": warm,
-                          "gamma": ac["gae_gamma"], "lambda": ac["gae_lambda"], "vf_coef": ac["vf_coef"]}
+                          "gamma": ac["gae_gamma"], "lambda": ac["gae_lambda"], "vf_coef": ac["vf_coef"],
+                          "vf_trunk_grad": ac["vf_trunk_grad"], "shaping": ac["shaping"]}
         del B, R
         if not crash:
             u1 = self.update
@@ -1529,6 +1615,7 @@ class Learner:
         rec["stop"] = reasons
         self.log.json(rec)
         f = (lambda v, s="{:.3f}": "-" if v is None else s.format(v))
+        shs = bst.get("shaping")                                # R2 monitors (shaping on only)
         self.log(f"[rl] u{u:04d} W/L/D {mon['W']}/{mon['L']}/{mon['D']} ppm {f(mon['plays_per_min'], '{:.2f}')} "
                  f"pgate {f(mon['p_gate_mean'])} KL g/c/x {f(upd['kl_gate'], '{:.4f}')}/{f(upd['kl_card'], '{:.4f}')}/"
                  f"{f(upd['kl_cell'], '{:.4f}')} beta {beta_used:.3g}->{self.beta:.3g}"
@@ -1537,7 +1624,11 @@ class Learner:
                  f"wall roll {t_roll:.0f}s upd {t_upd:.0f}s"
                  + (f" | gae{' WARMUP (critic only)' if warm else ''} vloss {f(upd['l_v'], '{:.4f}')} ev "
                     f"{f(gst['explained_var'])} A {f(gst['adv_mean'], '{:+.4f}')}/{f(gst['adv_std'], '{:.4f}')} "
-                    f"ret {f(gst['ret_mean'], '{:+.3f}')} V {f(gst['v_mean'], '{:+.3f}')}" if gae_on else "")
+                    f"ret {f(gst['ret_mean'], '{:+.3f}')} V {f(gst['v_mean'], '{:+.3f}')} vshare "
+                    f"{f((gst['vf_trunk_share'] or {}).get('share'))}" if gae_on else "")
+                 + (f" | shape |F| {f(shs['mean_abs_F'], '{:.4f}')} (t {f(shs['mean_abs_tower'], '{:.4f}')} c "
+                    f"{f(shs['mean_abs_crown'], '{:.4f}')}) |Phi| {f(shs['mean_abs_phi'], '{:.4f}')} dom "
+                    f"{f(shs['shaping_dominates'])}" if shs else "")
                  + (" | league wr " + " ".join(f"{t} {f(v['winrate'], '{:.2f}')}/{v['n']}"
                                                for t, v in mon["league"]["by_opp"].items())
                     + f" D {mon['league']['draws']}" + (f" +{rec['snapshot']}" if "snapshot" in rec else "")
@@ -1579,6 +1670,8 @@ class Learner:
         base.update({k: self.cfg.get(k) for k in COND_KEYS})
         base["gen"] = getattr(self, "gen", None)
         base["league_opp_policy"] = self.cfg.get("league_opp_policy", "sample")
+        if self.cfg.get("shaping", "none") != "none":         # R2: actor_cfg -> record_phi (absent by default)
+            base["shaping"] = self.cfg["shaping"]
         return base
 
     def start_actors(self) -> None:

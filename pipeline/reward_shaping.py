@@ -22,6 +22,8 @@ from __future__ import annotations
 
 from typing import Optional, Sequence
 
+import numpy as np
+
 N_TOWERS = 3                    # 1 king + 2 princess per side
 
 
@@ -67,6 +69,21 @@ def phi(state: dict, side: int, w_tower: float, w_crown: float) -> float:
     return w_tower * phi_tower(state, side) + w_crown * phi_crown(state, side)
 
 
+def phi_record(state: dict, side: int) -> list[float]:
+    """What Phi needs of one state from ``side``'s view, the 8 floats e1_eval records per decision under
+    ``cfg["record_phi"]``: own tower HP fractions (3, an absent tower = 0), the foe's (3), own crowns, foe crowns."""
+    pad = (lambda xs: xs + [0.0] * (N_TOWERS - len(xs)))
+    c = crowns(state)
+    return pad(tower_fracs(state, side)) + pad(tower_fracs(state, 1 - side)) + [float(c[side]), float(c[1 - side])]
+
+
+def phi_parts(rec) -> tuple:
+    """(phi_tower, phi_crown) of ``phi_record`` rows (one row or [n, 8]): the same values as the state functions."""
+    r = np.asarray(rec, dtype=np.float64)
+    tower = ((r[..., 0] + r[..., 1] + r[..., 2]) - (r[..., 3] + r[..., 4] + r[..., 5])) / N_TOWERS
+    return tower, (r[..., 6] - r[..., 7]) / N_TOWERS
+
+
 def shaping_terms(states: Sequence[dict], side: int, gamma: float, weights: tuple[float, float],
                   terminal_index: Optional[int] = None) -> dict:
     """Per-decision shaping over one match. ``states`` = the states at decisions 0..n-1 (optionally followed by the
@@ -74,12 +91,21 @@ def shaping_terms(states: Sequence[dict], side: int, gamma: float, weights: tupl
     the state there holds, and states past T are ignored. Returns F (length T: F_t = gamma * Phi(s_{t+1}) - Phi(s_t))
     and the same per term (``tower``, ``crown``, each already weighted, summing to F), plus ``phi`` (length T+1, the
     last 0)."""
-    w_tower, w_crown = float(weights[0]), float(weights[1])
     T = len(states) if terminal_index is None else int(terminal_index)
     if not 0 < T <= len(states):
         raise ValueError(f"terminal_index {T} outside (0, {len(states)}]")
-    pt = [w_tower * phi_tower(s, side) for s in states[:T]] + [0.0]
-    pc = [w_crown * phi_crown(s, side) for s in states[:T]] + [0.0]
+    return shaping_from_parts([phi_tower(s, side) for s in states[:T]], [phi_crown(s, side) for s in states[:T]],
+                              gamma, weights)
+
+
+def shaping_from_parts(tower: Sequence[float], crown: Sequence[float], gamma: float,
+                       weights: tuple[float, float]) -> dict:
+    """``shaping_terms`` on the UNWEIGHTED potentials of decisions 0..T-1 (``phi_tower`` / ``phi_crown`` values, or
+    ``phi_parts`` of recorded rows); the state after the last one is terminal (Phi = 0)."""
+    w_tower, w_crown = float(weights[0]), float(weights[1])
+    T = len(tower)
+    pt = [w_tower * float(x) for x in tower] + [0.0]
+    pc = [w_crown * float(x) for x in crown] + [0.0]
     ft = [gamma * pt[t + 1] - pt[t] for t in range(T)]
     fc = [gamma * pc[t + 1] - pc[t] for t in range(T)]
     return {"F": [a + b for a, b in zip(ft, fc)], "tower": ft, "crown": fc,
