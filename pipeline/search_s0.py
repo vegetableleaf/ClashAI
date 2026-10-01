@@ -71,8 +71,8 @@ DESIGN (lead-fixed, L69 ticket S0)
   every body at its card's catalogue HP wherever it stands. v2 gives each body a multiplier
       m = hp_frac * pos,   hp_frac = clip(hp / max_hp, 0, 1)   (the entity's own engine max_hp; shields ignored)
       pos = 0.5 + clip((y - y_own) / (y_opp - y_own), 0, 1)     in [0.5, 1.5]
-  where y_own / y_opp = the princess-tower y line of the unit's OWN team / of the other team (engine frame, read from
-  the state, cached per team). So for OUR units pos grows as they advance toward the enemy towers (threat) and for
+  where y_own / y_opp = the princess-tower y line of the unit's OWN team / of the other team (engine frame; cached per
+  team from the first state with BOTH its princess towers present, else the arena constant ARENA_PRINCESS_Y). So for OUR units pos grows as they advance toward the enemy towers (threat) and for
   ENEMY units as they approach OUR towers (danger): 0.5 at/behind their own princess line (threatens nothing yet),
   1.0 at the river midpoint (= the v1 price), 1.5 at/past the opposing princess line (on a tower). Linear, bounded,
   symmetric, mean 1 over the lane, one constant (POS_HALF = 0.5). Elixir-priced bodies (no finite ignore cost): v1's
@@ -116,6 +116,7 @@ ROLLOUT_SELF = ("idle", "policy")
 TAU_PLAIN, TAU_OPP = 0.35, 0.27
 CROWN_W = 1.0
 SCORERS = ("v1", "v2")                  # --scorer: v1 = the ported Scorer; v2 = board value x current HP x position
+ARENA_PRINCESS_Y = (117000.0, 459000.0)  # RoyaleSim princess-tower y, team 0 / 1 (engine frame, symmetric about 288000)
 POS_HALF = 0.5                          # v2 position factor = 1 -+ POS_HALF (own princess line .. enemy princess line)
 BOARD_CAP = 1.0                         # old Scorer: each side's pooled board value capped at one tower fraction
 NEVER = 10 ** 9                         # a fork's our-side next_tick: it never decides again
@@ -150,13 +151,16 @@ class Scorer:
         self._yline: dict = {}           # v2: team -> its princess-tower y (engine frame), first seen
 
     def ylines(self, st) -> dict:
-        """v2: each team's princess-tower y line (a king tower's y only if that team has shown no princess yet)."""
+        """v2: each team's princess-tower y line, cached from the first state showing BOTH of that team's princess
+        towers at one y; until then the engine's fixed arena line ARENA_PRINCESS_Y (never a king tower's y)."""
         from royalegym.protocol import EntityKind
-        for kind in (EntityKind.PRINCESS_TOWER, EntityKind.KING_TOWER):
-            for e in st.entities:
-                if e.kind == kind and e.team not in self._yline:
-                    self._yline[e.team] = float(e.y)
-        return self._yline
+        for team in (0, 1):
+            if team not in self._yline:
+                ys = {float(e.y) for e in st.entities if e.team == team and e.kind == EntityKind.PRINCESS_TOWER}
+                n = sum(1 for e in st.entities if e.team == team and e.kind == EntityKind.PRINCESS_TOWER)
+                if n == 2 and len(ys) == 1:
+                    self._yline[team] = ys.pop()
+        return {t: self._yline.get(t, ARENA_PRINCESS_Y[t]) for t in (0, 1)}
 
     def unit_mult(self, e, yl: dict) -> float:
         """v2 per-body multiplier: hp_frac x position factor (module docstring)."""
