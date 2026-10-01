@@ -29,6 +29,11 @@ One update (``Learner.one_update``):
      ``policy="sample"``, ``record=True``; behaviour seed ``crc32(f"{tag}:behaviour:{g}:{update}")`` (e1_eval),
      obs seed ``crc32(f"{tag}:obs:{g}:{update}")`` (here, ``rl_obs_seed``), both per (entry, g).
   2. R = +1/-1/0; A_i = R_i - mean_{j != i} R_j over the entry's G rollouts, |A| <= 2 (``loo_advantage``).
+     ``advantage: gae`` (R1, L69 reward_plan.md; default ``match_loo`` = the line above, unchanged): per-row reward
+     ``r_step`` (0, the outcome on a match's last row), critic V = P(win) - P(loss) from the EXISTING crown-diff value
+     head (``value_scalar``), GAE(gae_gamma, gae_lambda) advantages normalised per batch (``gae_batch``), + vf_coef x a
+     PPO-clipped value loss; the first ``critic_warmup_updates`` updates train ONLY the value head (no L_pg, no KL,
+     beta held).
   3. Rows that sampled nothing (no card allowed) are dropped; each remaining decision carries weight 1/(n_i M) so a
      match's decisions sum to 1/M (``match_weights``: the loss is averaged per match, then over the batch).
   4. Frozen-ref terms once per update (``ref_terms``); ``ppo_epochs`` x minibatches of ``minibatch`` decisions:
@@ -135,6 +140,79 @@ def loo_advantage(R, clip: float = 2.0) -> np.ndarray:
     if len(R) < 2:
         return np.zeros(len(R))
     return np.clip(R - (R.sum() - R) / (len(R) - 1), -clip, clip)
+
+
+ADV_MODES = ("match_loo", "gae")
+GAE_DEFAULTS = {"advantage": "match_loo", "gae_gamma": 0.999, "gae_lambda": 0.95, "vf_coef": 0.5, "vf_clip": 0.2,
+                "critic_warmup_updates": 0}     # a config WITHOUT these keys (a run started before R1) = match_loo
+
+
+def adv_cfg(cfg: dict) -> dict:
+    """The R1 keys of a config (``GAE_DEFAULTS`` for missing ones), validated: SystemExit naming the bad key."""
+    c = {k: cfg.get(k, v) for k, v in GAE_DEFAULTS.items()}
+    num = (lambda v: isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v))
+    bad = []
+    if c["advantage"] not in ADV_MODES:
+        bad.append(f"advantage must be one of {ADV_MODES}, got {c['advantage']!r}")
+    if not (num(c["gae_gamma"]) and 0.0 < c["gae_gamma"] <= 1.0):
+        bad.append(f"gae_gamma must be in (0, 1], got {c['gae_gamma']!r}")
+    if not (num(c["gae_lambda"]) and 0.0 <= c["gae_lambda"] <= 1.0):
+        bad.append(f"gae_lambda must be in [0, 1], got {c['gae_lambda']!r}")
+    if not (num(c["vf_coef"]) and c["vf_coef"] >= 0.0):
+        bad.append(f"vf_coef must be a finite number >= 0, got {c['vf_coef']!r}")
+    if not (num(c["vf_clip"]) and c["vf_clip"] > 0.0):
+        bad.append(f"vf_clip must be a finite number > 0, got {c['vf_clip']!r}")
+    w = c["critic_warmup_updates"]
+    if not (isinstance(w, int) and not isinstance(w, bool) and w >= 0):
+        bad.append(f"critic_warmup_updates must be an integer >= 0, got {w!r}")
+    if bad:
+        raise SystemExit("bad advantage config: " + "; ".join(bad))
+    return c
+
+
+def value_scalar(logits: torch.Tensor) -> torch.Tensor:
+    """The critic V(s) in [-1, 1] from the EXISTING value head: its 7 classes are the crown difference (mine - theirs)
+    -3..3 at class diff + 3 (train_s1.Rows), from the side the observation belongs to. V = P(diff > 0) - P(diff < 0)
+    = P(win) - P(loss), the expectation of the +1 / -1 / 0 terminal reward; float64 like the policy terms."""
+    p = torch.softmax(logits.double(), dim=-1)
+    return p[..., 4:].sum(-1) - p[..., :3].sum(-1)
+
+
+def terminal_rewards(n_rows, outcomes) -> list[np.ndarray]:
+    """Per-row step reward of each match: 0 on every row, ``reward(outcome)`` on its LAST contributing row (the
+    outcome is the learner side's own, e1_eval ``_outcome``, whichever side it played). R2's shaping term adds onto
+    this array (``F_t`` per row) without changing anything else."""
+    out = []
+    for n, o in zip(n_rows, outcomes):
+        r = np.zeros(int(n))
+        if n:
+            r[-1] = reward(o)
+        out.append(r)
+    return out
+
+
+def gae(r, v, match, gamma: float, lam: float) -> tuple[np.ndarray, np.ndarray]:
+    """GAE(gamma, lambda) over rows grouped in contiguous time-ordered matches (``match`` id per row): delta_t = r_t +
+    gamma V_{t+1} - V_t with V after a match's last row = 0 (terminal); A_t = delta_t + gamma lambda A_{t+1} within the
+    match. -> (A, returns = A + V); lambda = 1 makes the returns the discounted returns-to-go. One step = one
+    contributing decision row (rows collate drops are skipped, not discounted)."""
+    r, v, m = (np.asarray(x, dtype=np.float64) for x in (r, v, match))
+    A = np.zeros(len(r))
+    nxt_v, nxt_a = 0.0, 0.0
+    for t in range(len(r) - 1, -1, -1):
+        if t == len(r) - 1 or m[t + 1] != m[t]:
+            nxt_v, nxt_a = 0.0, 0.0
+        d = r[t] + gamma * nxt_v - v[t]
+        A[t] = nxt_a = d + gamma * lam * nxt_a
+        nxt_v = v[t]
+    return A, A + v
+
+
+def explained_variance(v, ret) -> Optional[float]:
+    """1 - Var(ret - v) / Var(ret); None when Var(ret) == 0."""
+    v, ret = np.asarray(v, dtype=np.float64), np.asarray(ret, dtype=np.float64)
+    var = float(ret.var())
+    return None if var == 0 else 1.0 - float((ret - v).var()) / var
 
 
 def rl_obs_seed(tag: str, g: int, update: int) -> int:
@@ -448,9 +526,10 @@ def _py(x):
 # ------------------------------------------------------------------------------------------------------
 # trajectories -> one batch
 # ------------------------------------------------------------------------------------------------------
-def collate(results: list[dict], adv_clip: float = 2.0) -> tuple[dict, dict]:
+def collate(results: list[dict], adv_clip: float = 2.0, advantage: str = "match_loo") -> tuple[dict, dict]:
     """Rollout result records (each with ``traj`` = ``Match._traj_arrays``) -> numpy batch of the CONTRIBUTING rows
-    (gate sampled or card/cell played) with per-row A, per-match weight w, match id, and the stored log-probs."""
+    (gate sampled or card/cell played) with per-row A, per-match weight w, match id, and the stored log-probs.
+    ``advantage="gae"`` adds ``r_step`` (``terminal_rewards``); A stays the LOO value until ``gae_batch`` replaces it."""
     groups: dict = {}
     for j, r in enumerate(results):
         groups.setdefault(r["entry_index"], []).append(j)
@@ -476,6 +555,9 @@ def collate(results: list[dict], adv_clip: float = 2.0) -> tuple[dict, dict]:
     B["A"] = cat(lambda j: np.full(n_rows[j], A[j]))
     B["w"] = cat(lambda j: W[j])
     B["match"] = cat(lambda j: np.full(n_rows[j], j))
+    if advantage == "gae":
+        rs = terminal_rewards(n_rows, [r["outcome"] for r in results])
+        B["r_step"] = cat(lambda j: rs[j])
     st = {"matches": len(results), "groups": len(groups), "mixed_groups": mixed,
           "mixed_group_share": mixed / max(len(groups), 1), "mean_abs_A": float(np.abs(A).mean()) if len(A) else 0.0,
           "rows": int(len(B["A"])), "rows_played": int(B["played"].sum()), "rows_gate": int(B["gate_sampled"].sum()),
@@ -518,12 +600,13 @@ def _logit(p: float) -> float:
     return math.log(p / (1.0 - p))
 
 
-def policy_terms(model, B: dict, idx, tau: float, T: float) -> dict:
+def policy_terms(model, B: dict, idx, tau: float, T: float, value: bool = False) -> dict:
     """Recompute the behaviour log-probs of rows ``idx`` exactly as ``e1_eval.sample_decide_batch`` defined them:
     gate ``sigmoid((z - logit(tau)) / T)`` on gate-sampled rows; card softmax over ``allowed`` of the heads'
     hand-masked logits / T and cell softmax over 2,304 for the recorded slot / T on played rows; float64 after the
     Generalist rows (``hand_card`` in B, a GenModel ``model``): the forward is ``e1_eval.GenPolicy.heads_t`` -- the
-    over allowed hand positions) and cell = ``cell_logits_gen`` for the slot's card identity + form."""
+    over allowed hand positions) and cell = ``cell_logits_gen`` for the slot's card identity + form.
+    ``value``: also ``v`` = ``value_scalar`` of the value head on the same forward (gae mode only)."""
     if "hand_card" in B:
         pol = E.GenPolicy(model, ())
         enc, heads = pol.heads_t({k: B[k][idx] for k in E.GEN_ROW_KEYS})
@@ -547,7 +630,43 @@ def policy_terms(model, B: dict, idx, tau: float, T: float) -> dict:
         cl = cell_of({k: v[pi] for k, v in enc.items()}, slot[pi])
         cell_lp = torch.log_softmax(cl.double() / T, dim=-1)
         lp_cell = lp_cell.index_put((pi,), cell_lp.gather(1, cell[pi].unsqueeze(1)).squeeze(1))
-    return {"x": x, "card_lp": card_lp, "cell_lp": cell_lp, "lp_gate": lp_gate, "lp_card": lp_card, "lp_cell": lp_cell}
+    out = {"x": x, "card_lp": card_lp, "cell_lp": cell_lp, "lp_gate": lp_gate, "lp_card": lp_card, "lp_cell": lp_cell}
+    if value:
+        out["v"] = value_scalar(model.value_head(enc["g"]))
+    return out
+
+
+@torch.no_grad()
+def value_rows(model, B: dict, chunk: int = 512) -> torch.Tensor:
+    """V(s) (``value_scalar``) of every row under ``model``, no grad: the encoder + value head only."""
+    N = len(B["A"])
+    out = []
+    for s in range(0, N, chunk):
+        idx = torch.arange(s, min(s + chunk, N), device=B["A"].device)
+        if "hand_card" in B:
+            enc = model.encode_gen({k: B[k][idx] for k in E.GEN_ROW_KEYS})
+        else:
+            enc = model.encode(B["tok"][idx], B["mask"][idx], B["sc"][idx], B["past"][idx])
+        out.append(value_scalar(model.value_head(enc["g"])))
+    return torch.cat(out) if out else torch.zeros(0, dtype=torch.float64, device=B["A"].device)
+
+
+def gae_batch(model, B: dict, cfg: dict) -> dict:
+    """gae mode, once per update BEFORE any step (``model`` = the behaviour policy): ``v_old`` = V(s) per row, GAE over
+    ``r_step`` -> ``ret`` (value target) and ``A`` normalised over the batch (mean 0, std 1). -> monitors (advantage
+    mean / std BEFORE normalisation, return mean, V mean, explained variance of v_old for ret)."""
+    c = adv_cfg(cfg)
+    v = value_rows(model, B)
+    A, ret = gae(B["r_step"].cpu().numpy(), v.cpu().numpy(), B["match"].cpu().numpy(), c["gae_gamma"],
+                 c["gae_lambda"])
+    st = {"adv_mean": float(A.mean()) if len(A) else None, "adv_std": float(A.std()) if len(A) else None,
+          "ret_mean": float(ret.mean()) if len(ret) else None, "v_mean": float(v.mean()) if len(v) else None,
+          "explained_var": explained_variance(v.cpu().numpy(), ret) if len(A) else None}
+    dev = B["A"].device
+    B["A"] = torch.from_numpy((A - A.mean()) / (A.std() + 1e-8) if len(A) else A).to(dev)
+    B["ret"] = torch.from_numpy(ret).to(dev)
+    B["v_old"] = v
+    return st
 
 
 def bern_kl(xp, xq):
@@ -596,10 +715,13 @@ def ref_terms(ref, B: dict, tau: float, T: float, chunk: int = 512) -> dict:
 
 
 def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: float, beta: float,
-                   n_total: int) -> tuple[torch.Tensor, dict]:
+                   n_total: int, vf: Optional[dict] = None) -> tuple[torch.Tensor, dict]:
     """PPO-clip on the joint log pi = lp_gate + g (lp_card + lp_cell) (E1 3.3) with per-match weights, scaled by
-    n_total / |mb| so each minibatch estimates the full-batch loss; + beta (mean KL_gate + mean KL_card + mean KL_cell)."""
-    t = policy_terms(model, B, idx, tau, T)
+    n_total / |mb| so each minibatch estimates the full-batch loss; + beta (mean KL_gate + mean KL_card + mean KL_cell).
+    ``vf`` (gae mode: {coef, clip, policy}): + coef x the PPO-clipped value loss 0.5 max((V - ret)^2, (V_old +
+    clip(V - V_old, +-clip) - ret)^2), per-match weighted like L_pg; ``policy`` False (critic warm-up) = the value
+    loss ALONE (no L_pg, no KL term). None = the match_loo loss, unchanged."""
+    t = policy_terms(model, B, idx, tau, T, value=vf is not None)
     lp_new = t["lp_gate"] + t["lp_card"] + t["lp_cell"]
     ratio = torch.exp(lp_new - B["lp_old"][idx])
     A, w = B["A"][idx], B["w"][idx]
@@ -611,6 +733,11 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
     kl_c = cat_kl(t["card_lp"][pl], R["card_lp"][idx][pl]).mean() if pl.any() else zero
     kl_x = cat_kl(t["cell_lp"], R["cell_lp"][R["play_pos"][idx[pl]]]).mean() if pl.any() else zero
     loss = l_pg + beta * (kl_g + kl_c + kl_x)
+    if vf is not None:
+        v, v_old, ret = t["v"], B["v_old"][idx], B["ret"][idx]
+        v_clip = v_old + (v - v_old).clamp(-float(vf["clip"]), float(vf["clip"]))
+        l_v = (w * 0.5 * torch.max((v - ret) ** 2, (v_clip - ret) ** 2)).sum() * (n_total / len(idx))
+        loss = (loss if vf["policy"] else 0.0) + float(vf["coef"]) * l_v
     with torch.no_grad():
         dev_ = (ratio - 1).abs()
         st = {"l_pg": float(l_pg), "kl_gate": float(kl_g), "kl_card": float(kl_c), "kl_cell": float(kl_x),
@@ -620,12 +747,30 @@ def minibatch_loss(model, B: dict, R: dict, idx, *, tau: float, T: float, clip: 
               "ent_gate": float(bern_ent(t["x"][gs]).mean()) if gs.any() else None,
               "ent_card": float(cat_ent(t["card_lp"][pl]).mean()) if pl.any() else None,
               "ent_cell": float(cat_ent(t["cell_lp"]).mean()) if pl.any() else None}
+        if vf is not None:
+            st["l_v"] = float(l_v)
     return loss, st
 
 
-def ppo_update(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.random.Generator) -> dict:
+def ppo_update(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.random.Generator,
+               vf: Optional[dict] = None) -> dict:
     """``ppo_epochs`` passes over the batch in random minibatches. Returns the monitors; ``first`` = epoch 0 minibatch 0
-    (the on-policy check), ``nonfinite`` set (and the step skipped) on a non-finite loss or gradient norm."""
+    (the on-policy check), ``nonfinite`` set (and the step skipped) on a non-finite loss or gradient norm.
+    ``vf`` (gae mode, ``minibatch_loss``): + ``l_v``; ``vf["policy"]`` False = critic warm-up: ONLY ``value_head``
+    parameters get gradients (the trunk is shared with the policy heads, so training it would move the policy)."""
+    frozen = [p for n, p in model.named_parameters()
+              if vf is not None and not vf["policy"] and not n.startswith("value_head.") and p.requires_grad]
+    for p in frozen:
+        p.requires_grad_(False)
+    try:
+        return _ppo_steps(model, opt, B, R, cfg, beta, rng, vf)
+    finally:
+        for p in frozen:
+            p.requires_grad_(True)
+
+
+def _ppo_steps(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.random.Generator,
+               vf: Optional[dict]) -> dict:
     N = len(B["A"])
     dev = B["A"].device
     mb = int(cfg["minibatch"])
@@ -640,14 +785,15 @@ def ppo_update(model, opt, B: dict, R: dict, cfg: dict, beta: float, rng: np.ran
                 "kl_gate": mean(last_ep, "kl_gate"), "kl_card": mean(last_ep, "kl_card"),
                 "kl_cell": mean(last_ep, "kl_cell"), "l_pg": mean(last_ep, "l_pg"),
                 "ent": {h: mean(ep0, f"ent_{h}") for h in ("gate", "card", "cell")},
-                "ratio_mean": avg(ratios), "clip_frac": avg(clips), "grad_norm_mean": avg(gnorms)}
+                "ratio_mean": avg(ratios), "clip_frac": avg(clips), "grad_norm_mean": avg(gnorms),
+                **({"l_v": mean(last_ep, "l_v"), "l_v_first": first["l_v"] if first else None} if vf is not None else {})}
 
     for ep in range(int(cfg["ppo_epochs"])):
         perm = torch.from_numpy(rng.permutation(N)).to(dev)
         for s in range(0, N, mb):
             idx = perm[s:s + mb]
             loss, st = minibatch_loss(model, B, R, idx, tau=cfg["tau"], T=cfg["T"], clip=cfg["clip"], beta=beta,
-                                      n_total=N)
+                                      n_total=N, vf=vf)
             if first is None:
                 first = st
             if not torch.isfinite(loss):
@@ -992,6 +1138,7 @@ class Learner:
         self.dev = torch.device(cfg["learner_device"])
         self.init_path = REPO / cfg["init"]
         condition_cfg(cfg)                                    # validate the condition keys before anything runs
+        adv_cfg(cfg)                                          # ... and the advantage (R1) keys
         ick = torch.load(self.init_path, map_location="cpu")
         self.gen = {"d_c": int(ick["d_c"]), "card_vocab": list(ick["card_vocab"])} if ick.get("gen") else None
         if self.gen:                                          # generalist init: the learner trains the GenModel itself
@@ -1267,13 +1414,20 @@ class Learner:
         league = getattr(self, "league", None) is not None
         if league:
             mon["league"] = league_monitors(results)
-        Bn, bst = collate(results, float(cfg["adv_clip"]))
+        ac = adv_cfg(cfg)
+        gae_on = ac["advantage"] == "gae"
+        Bn, bst = collate(results, float(cfg["adv_clip"]), advantage=ac["advantage"])
         del results
         t1 = time.perf_counter()
         B = to_device(Bn, self.dev)
         R = ref_terms(self.ref, B, cfg["tau"], cfg["T"])
         beta_used = self.beta
-        upd = ppo_update(self.model, self.opt, B, R, cfg, beta_used, self.rng)
+        vf = gst = None
+        warm = gae_on and self.update < ac["critic_warmup_updates"]        # critic warm-up: policy frozen
+        if gae_on:
+            gst = gae_batch(self.model, B, cfg)
+            vf = {"coef": ac["vf_coef"], "clip": ac["vf_clip"], "policy": not warm}
+        upd = ppo_update(self.model, self.opt, B, R, cfg, beta_used, self.rng, vf=vf)
         t_upd = time.perf_counter() - t1
         first = upd["first"]
         if u == 0 and not upd["nonfinite"]:
@@ -1292,8 +1446,9 @@ class Learner:
         leash = cfg.get("leash", "cell")
         kl_leash, kl_driver = leash_kl(upd, leash)
         if not crash:
-            self.beta = adapt_beta(beta_used, kl_leash, float(cfg["kl_target"]), float(cfg["beta_min"]),
-                                   float(cfg["beta_max"]))
+            if not warm:                                        # warm-up: no KL step (the policy did not move)
+                self.beta = adapt_beta(beta_used, kl_leash, float(cfg["kl_target"]), float(cfg["beta_min"]),
+                                       float(cfg["beta_max"]))
             if u == 0 and self.guards.s["base"] is None:
                 self.guards.set_baselines(mon)
                 self.log(f"[rl] update-0 plays/min baseline {self.guards.s['base']['plays_per_min']:.3f} (stop outside "
@@ -1317,6 +1472,9 @@ class Learner:
                "wall_rollout_s": t_roll, "wall_update_s": t_upd,
                "actor_s_per_match": {a: s["wall_s"] / max(s["matches"], 1) for a, s in rinfo["actors"].items()},
                "actor_gpu_peak_mb": {a: s["gpu_peak_mb"] for a, s in rinfo["actors"].items()}}
+        if gae_on:
+            rec["gae"] = {**gst, "l_v": upd["l_v"], "l_v_first": upd["l_v_first"], "critic_warmup": warm,
+                          "gamma": ac["gae_gamma"], "lambda": ac["gae_lambda"], "vf_coef": ac["vf_coef"]}
         del B, R
         if not crash:
             u1 = self.update
@@ -1377,6 +1535,9 @@ class Learner:
                  + (f" (leash max: {kl_driver})" if leash == "max" else "") + f" clip {f(upd['clip_frac'])} "
                  f"mixed {bst['mixed_groups']}/{bst['groups']} rows {bst['rows']} "
                  f"wall roll {t_roll:.0f}s upd {t_upd:.0f}s"
+                 + (f" | gae{' WARMUP (critic only)' if warm else ''} vloss {f(upd['l_v'], '{:.4f}')} ev "
+                    f"{f(gst['explained_var'])} A {f(gst['adv_mean'], '{:+.4f}')}/{f(gst['adv_std'], '{:.4f}')} "
+                    f"ret {f(gst['ret_mean'], '{:+.3f}')} V {f(gst['v_mean'], '{:+.3f}')}" if gae_on else "")
                  + (" | league wr " + " ".join(f"{t} {f(v['winrate'], '{:.2f}')}/{v['n']}"
                                                for t, v in mon["league"]["by_opp"].items())
                     + f" D {mon['league']['draws']}" + (f" +{rec['snapshot']}" if "snapshot" in rec else "")
@@ -1433,7 +1594,9 @@ class Learner:
         log(f"[rl] run {self.run}: train {len(self.train)} loadable, held-out {len(self.heldout)} loadable "
             f"(screen uses {len(self.screen_entries())}); init {cfg['init']} ({'GENERALIST' if self.gen else 'S1'}) "
             f"grid {self.grid}; conditions (rollouts + screens): "
-            + " ".join(f"{k}={cfg.get(k)}" for k in COND_KEYS) + f"; leash {cfg.get('leash', 'cell')}")
+            + " ".join(f"{k}={cfg.get(k)}" for k in COND_KEYS) + f"; leash {cfg.get('leash', 'cell')}"
+            + ("; advantage gae " + " ".join(f"{k}={v}" for k, v in adv_cfg(cfg).items() if k != "advantage")
+               if adv_cfg(cfg)["advantage"] == "gae" else ""))
         if self.league is not None:
             log(f"[rl] LEAGUE: {len(self.census)} census decks + icebow (share {cfg['league_icebow_share']}), weights "
                 f"sides^{cfg['league_deck_alpha']} floor {cfg['league_deck_floor']}x mean (max p {self.census_p.max():.4f}, "

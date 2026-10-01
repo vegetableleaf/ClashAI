@@ -43,6 +43,15 @@ E: 16                       # entries per update, uniform, no repeat within an u
 G: 4                        # rollouts per entry = the leave-one-out group (E1 3.2)
 adv_clip: 2.0               # |A| <= 2, no std normalisation (E1 3.2)
 
+# older copy of this file) = match_loo: rl_royale.adv_cfg reads every one with its default (rl_royale.GAE_DEFAULTS).
+advantage: match_loo        # match_loo = the per-match LOO advantage above (unchanged); gae = per-decision GAE with
+                            # V = P(win) - P(loss) from the existing crown-diff value head, normalised per batch
+gae_gamma: 0.999            # gae: discount per contributing decision row (0.5 s)
+gae_lambda: 0.95            # gae: GAE lambda
+vf_coef: 0.5                # gae: value-loss coefficient
+vf_clip: 0.2                # gae: PPO value clip around the update's starting V (V in [-1, 1])
+critic_warmup_updates: 0    # gae: the first N updates train ONLY the value head (no L_pg, no KL term, beta held)
+
 # ---- actors (plan diff 5)
 n_actors: 3                 # actor processes (torch.multiprocessing, spawn)
 in_flight: 16               # matches in flight per actor, one shared forward per round (e1_eval.run_batch)
